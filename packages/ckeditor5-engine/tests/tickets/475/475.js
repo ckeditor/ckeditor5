@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 
 import Feature from '/ckeditor5/feature.js';
@@ -51,12 +49,12 @@ export default class AutoLinker extends Feature {
 
 			for ( let value of changes.range.getItems( { singleCharacters: true } ) ) {
 				const walker = new TreeWalker( {
-					direction: 'BACKWARD',
+					direction: 'backward',
 					startPosition: Position.createAfter( value )
 				} );
 
 				const currentValue = walker.next().value;
-				const text = currentValue.item.text;
+				const text = currentValue.item.data;
 
 				if ( !text ) {
 					return;
@@ -71,7 +69,7 @@ export default class AutoLinker extends Feature {
 				const doc = this.editor.document;
 				const url = matchedUrl[ 0 ];
 				const offset = _getLastPathPart( currentValue.nextPosition.path ) + matchedUrl.index;
-				const livePos = LivePosition.createFromParentAndOffset( currentValue.item.commonParent, offset );
+				const livePos = LivePosition.createFromParentAndOffset( currentValue.item.parent, offset );
 
 				doc.enqueueChanges( () => {
 					const urlRange = Range.createFromPositionAndShift( livePos, url.length );
@@ -87,6 +85,6 @@ function _getLastPathPart( path ) {
 }
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ 'delete', 'enter', 'typing', 'paragraph', 'undo', Link, AutoLinker ],
+	features: [ 'enter', 'typing', 'paragraph', 'undo', Link, AutoLinker ],
 	toolbar: [ 'undo', 'redo' ]
 } );

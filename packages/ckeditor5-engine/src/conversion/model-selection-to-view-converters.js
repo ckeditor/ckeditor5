@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ViewElement from '../view/element.js';
 import ViewRange from '../view/range.js';
 import viewWriter from '../view/writer.js';
@@ -58,15 +56,15 @@ export function convertRangeSelection() {
  *
  * Example of view state before and after converting collapsed selection:
  *
- *		<p><strong>f^oo<strong>bar</p>
+ *		   <p><strong>f^oo<strong>bar</p>
  *		-> <p><strong>f</strong>^<strong>oo</strong>bar</p>
  *
- * By breaking attribute elements like `<strong>` selection is in correct elements. See also complementary
+ * By breaking attribute elements like `<strong>`, selection is in correct element. See also complementary
  * {@link engine.conversion.modelSelectionToView.convertSelectionAttribute attribute converter} for selection attributes,
  * which wraps collapsed selection into view elements. Those converters together ensure, that selection ends up in
- * appropriate elements.
+ * appropriate attribute elements.
  *
- * See also {@link engine.conversion.modelSelectionToView.clearAttributes} which do the clean-up by merging attributes.
+ * See also {@link engine.conversion.modelSelectionToView.clearAttributes} which does a clean-up by merging attributes.
  *
  * @external engine.conversion.modelSelectionToView
  * @function engine.conversion.modelSelectionToView.convertCollapsedSelection
@@ -118,20 +116,21 @@ export function convertCollapsedSelection() {
  * **Note:** You can use the same `elementCreator` function for this converter factory and {@link engine.conversion.modelToView.wrap}
  * model to view converter, as long as the `elementCreator` function uses only the first parameter (attribute value).
  *
- * Example of view state after converting collapsed selection. The scenario is: selection is inside bold text (`<strong>` element)
- * but it does not have bold attribute itself, but has italic attribute instead (let's assume that user turned off bold and turned
- * on italic with selection collapsed):
- *
  *		modelDispatcher.on( 'selection', convertCollapsedSelection() );
  *		modelDispatcher.on( 'selectionAttribute:italic', convertSelectionAttribute( new ViewAttributeElement( 'em' ) ) );
+ *		modelDispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( new ViewAttributeElement( 'strong' ) ) );
  *
  * Example of view states before and after converting collapsed selection:
  *
- *		<p><em>f^oo</em>bar</p>
+ *		   <p><em>f^oo</em>bar</p>
  *		-> <p><em>f</em>^<em>oo</em>bar</p>
  *		-> <p><em>f^oo</em>bar</p>
  *
- *		<p><strong>f^oo<strong>bar</p>
+ * Example of view state after converting collapsed selection. The scenario is: selection is inside bold text (`<strong>` element)
+ * but it does not have bold attribute itself and has italic attribute instead (let's assume that user turned off bold and turned
+ * on italic with selection collapsed):
+ *
+ *		   <p><strong>f^oo<strong>bar</p>
  *		-> <p><strong>f</strong>^<strong>oo<strong>bar</p>
  *		-> <p><strong>f</strong><em>^</em><strong>oo</strong>bar</p>
  *
@@ -176,13 +175,13 @@ export function convertSelectionAttribute( elementCreator ) {
  * {@link engine.view.AttributeElement view attribute elements} and merge sibling attributes at all start and end
  * positions of all ranges.
  *
- *		<p><strong>^</strong></p>
+ *		   <p><strong>^</strong></p>
  *		-> <p>^</p>
  *
- *		<p><strong>foo</strong>^<strong>bar</strong>bar</p>
+ *		   <p><strong>foo</strong>^<strong>bar</strong>bar</p>
  *		-> <p><strong>foo^bar<strong>bar</p>
  *
- *		<p><strong>foo</strong><em>^</em><strong>bar</strong>bar</p>
+ *		   <p><strong>foo</strong><em>^</em><strong>bar</strong>bar</p>
  *		-> <p><strong>foo^bar<strong>bar</p>
  *
  * This listener should be assigned before any converter for the new selection:

@@ -5,8 +5,6 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import FocusObserver from '/ckeditor5/engine/view/observer/focusobserver.js';
 import ViewDocument from '/ckeditor5/engine/view/document.js';
 import ViewRange from '/ckeditor5/engine/view/range.js';
@@ -16,7 +14,7 @@ describe( 'FocusObserver', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument();
-		observer = viewDocument.addObserver( FocusObserver );
+		observer = viewDocument.getObserver( FocusObserver );
 	} );
 
 	it( 'should define domEventType', () => {

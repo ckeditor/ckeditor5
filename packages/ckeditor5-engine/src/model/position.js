@@ -3,17 +3,29 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import DocumentFragment from './documentfragment.js';
 import Element from './element.js';
 import last from '../../utils/lib/lodash/last.js';
 import compareArrays from '../../utils/comparearrays';
 import CKEditorError from '../../utils/ckeditorerror.js';
+import Text from './text.js';
 
 /**
- * Position in the tree. Position is always located before or after a node.
- * See {@link #path} property for more information.
+ * Represents a position in the model tree.
+ *
+ * Since position in a model is represented by a {@link engine.model.Position#root position root} and
+ * {@link engine.model.Position#path position path} it is possible to create positions placed in non-existing elements.
+ * This requirement is important for {@link engine.model.operation.transfrom operational transformation}.
+ *
+ * Also, {@link engine.model.operation.Operation operations} kept in {@link engine.model.Document#history document history}
+ * are storing positions (and ranges) which were correct when those operations were applied, but may not be correct
+ * after document got changed.
+ *
+ * When changes are applied to model, it may also happen that {@link engine.model.Position#parent position parent} will change
+ * even if position path has not changed. Keep in mind, that if a position leads to non-existing element,
+ * {@link engine.model.Position#parent} and some other properties and methods will throw errors.
+ *
+ * In most cases, position with wrong path is caused by an error in code, but it is sometimes needed, as described above.
  *
  * @memberOf engine.model
  */
@@ -21,9 +33,8 @@ export default class Position {
 	/**
 	 * Creates a position.
 	 *
-	 * @param {engine.model.Element|engine.model.DocumentFragment} root
-	 * Root of the position path. Element (most often a {@link engine.model.RootElement}) or a document fragment.
-	 * @param {Array.<Number>} path Position path. See {@link engine.model.Position#path} property for more information.
+	 * @param {engine.model.Element|engine.model.DocumentFragment} root Root of the position.
+	 * @param {Array.<Number>} path Position path. See {@link engine.model.Position#path}.
 	 */
 	constructor( root, path ) {
 		if ( !( root instanceof Element ) && !( root instanceof DocumentFragment ) ) {
@@ -58,19 +69,31 @@ export default class Position {
 		this.root = root;
 
 		/**
-		 * Position of the node it the tree. Must contain at least one item. For example:
+		 * Position of the node it the tree.
 		 *
-		 *		 root
-		 *		  |- p         Before: [ 0 ]       After: [ 1 ]
-		 *		  |- ul        Before: [ 1 ]       After: [ 2 ]
-		 *		     |- li     Before: [ 1, 0 ]    After: [ 1, 1 ]
-		 *		     |  |- f   Before: [ 1, 0, 0 ] After: [ 1, 0, 1 ]
-		 *		     |  |- o   Before: [ 1, 0, 1 ] After: [ 1, 0, 2 ]
-		 *		     |  |- o   Before: [ 1, 0, 2 ] After: [ 1, 0, 3 ]
-		 *		     |- li     Before: [ 1, 1 ]    After: [ 1, 2 ]
-		 *		        |- b   Before: [ 1, 1, 0 ] After: [ 1, 1, 1 ]
-		 *		        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
-		 *		        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
+		 * Position can be placed before, after or in a {@link engine.model.Node node} if that node has
+		 * {@link engine.model.Node#offsetSize} greater than `1`. Items in position path are
+		 * {@link engine.model.Node#startOffset starting offsets} of position ancestors, starting from direct root children,
+		 * down to the position offset in it's parent.
+		 *
+		 *		 ROOT
+		 *		  |- P            before: [ 0 ]         after: [ 1 ]
+		 *		  |- UL           before: [ 1 ]         after: [ 2 ]
+		 *		     |- LI        before: [ 1, 0 ]      after: [ 1, 1 ]
+		 *		     |  |- foo    before: [ 1, 0, 0 ]   after: [ 1, 0, 3 ]
+		 *		     |- LI        before: [ 1, 1 ]      after: [ 1, 2 ]
+		 *		        |- bar    before: [ 1, 1, 0 ]   after: [ 1, 1, 3 ]
+		 *
+		 * `foo` and `bar` are representing {@link engine.model.Text text nodes}. Since text nodes has offset size
+		 * greater than `1` you can place position offset between their start and end:
+		 *
+		 *		 ROOT
+		 *		  |- P
+		 *		  |- UL
+		 *		     |- LI
+		 *		     |  |- f^o|o  ^ has path: [ 1, 0, 1 ]   | has path: [ 1, 0, 2 ]
+		 *		     |- LI
+		 *		        |- b^a|r  ^ has path: [ 1, 1, 1 ]   | has path: [ 1, 1, 2 ]
 		 *
 		 * @member {Array.<Number>} engine.model.Position#path
 		 */
@@ -78,29 +101,54 @@ export default class Position {
 	}
 
 	/**
-	 * Node directly after the position.
+	 * Position {@link engine.model.Position#offset offset} converted to an index in position's parent node. It is
+	 * equal to the {@link engine.model.Node#getIndex index} of a node after this position. If position is placed
+	 * in text node, position index is equal to the index of that text node.
 	 *
 	 * @readonly
-	 * @type {engine.model.Node}
+	 * @type {Number}
 	 */
-	get nodeAfter() {
-		return this.parent.getChild( this.offset ) || null;
+	get index() {
+		return this.parent.offsetToIndex( this.offset );
 	}
 
 	/**
-	 * Node directly before the position.
+	 * Returns {@link engine.model.Text text node} instance in which this position is placed or `null` if this
+	 * position is not in a text node.
+	 *
+	 * @readonly
+	 * @type {engine.model.Text|null}
+	 */
+	get textNode() {
+		let node = this.parent.getChild( this.index );
+
+		return ( node instanceof Text && node.startOffset < this.offset ) ? node : null;
+	}
+
+	/**
+	 * Node directly after this position or `null` if this position is in text node.
+	 *
+	 * @readonly
+	 * @type {engine.model.Node|null}
+	 */
+	get nodeAfter() {
+		return this.textNode === null ? this.parent.getChild( this.index ) : null;
+	}
+
+	/**
+	 * Node directly before this position or `null` if this position is in text node.
 	 *
 	 * @readonly
 	 * @type {Node}
 	 */
 	get nodeBefore() {
-		return this.parent.getChild( this.offset - 1 ) || null;
+		return this.textNode === null ? this.parent.getChild( this.index - 1 ) : null;
 	}
 
 	/**
-	 * Offset at which the position is located in the {@link #parent}.
+	 * Offset at which this position is located in it's {@link engine.model.Position#parent parent}. It is equal
+	 * to the last item in position {@link engine.model.Position#path path}.
 	 *
-	 * @readonly
 	 * @type {Number}
 	 */
 	get offset() {
@@ -108,8 +156,6 @@ export default class Position {
 	}
 
 	/**
-	 * Sets offset in the parent, which is the last element of the path.
-	 *
 	 * @param {Number} newOffset
 	 */
 	set offset( newOffset ) {
@@ -117,7 +163,12 @@ export default class Position {
 	}
 
 	/**
-	 * Parent element of the position. The position is located at {@link #offset} in this element.
+	 * Parent element of this position.
+	 *
+	 * Keep in mind that `parent` value is calculated when the property is accessed. If {@link engine.model.Position#path position path}
+	 * leads to a non-existing element, `parent` property will throw error.
+	 *
+	 * Also it is a good idea to cache `parent` property if it is used frequently in an algorithm (i.e. in a long loop).
 	 *
 	 * @readonly
 	 * @type {engine.model.Element}
@@ -125,10 +176,8 @@ export default class Position {
 	get parent() {
 		let parent = this.root;
 
-		let i, len;
-
-		for ( i = 0, len = this.path.length - 1; i < len; i++ ) {
-			parent = parent.getChild( this.path[ i ] );
+		for ( let i = 0; i < this.path.length - 1; i++ ) {
+			parent = parent.getChild( parent.offsetToIndex( this.path[ i ] ) );
 		}
 
 		return parent;
@@ -142,45 +191,47 @@ export default class Position {
 	 */
 	compareWith( otherPosition ) {
 		if ( this.root != otherPosition.root ) {
-			return 'DIFFERENT';
+			return 'different';
 		}
 
 		const result = compareArrays( this.path, otherPosition.path );
 
 		switch ( result ) {
-			case 'SAME':
-				return 'SAME';
+			case 'same':
+				return 'same';
 
-			case 'PREFIX':
-				return 'BEFORE';
+			case 'prefix':
+				return 'before';
 
-			case 'EXTENSION':
-				return 'AFTER';
+			case 'extension':
+				return 'after';
 
 			default:
 				if ( this.path[ result ] < otherPosition.path[ result ] ) {
-					return 'BEFORE';
+					return 'before';
 				} else {
-					return 'AFTER';
+					return 'after';
 				}
 		}
 	}
 
 	/**
-	 * Returns the path to the parent, which is the {@link engine.model.Position#path} without the last element.
+	 * Returns a path to this position's parent. Parent path is equal to position {@link engine.model.Position#path path}
+	 * but without the last item.
 	 *
 	 * This method returns the parent path even if the parent does not exists.
 	 *
-	 * @returns {Number[]} Path to the parent.
+	 * @returns {Array.<Number>} Path to the parent.
 	 */
 	getParentPath() {
 		return this.path.slice( 0, -1 );
 	}
 
 	/**
-	 * Returns a new instance of Position with offset incremented by `shift` value.
+	 * Returns a new instance of `Position`, that has same {@link engine.model.Position#parent parent} but it's offset
+	 * is shifted by `shift` value (can be a negative value).
 	 *
-	 * @param {Number} shift How position offset should get changed. Accepts negative values.
+	 * @param {Number} shift Offset shift. Can be a negative value.
 	 * @returns {engine.model.Position} Shifted position.
 	 */
 	getShiftedBy( shift ) {
@@ -193,129 +244,6 @@ export default class Position {
 	}
 
 	/**
-	 * Returns this position after being updated by removing `howMany` nodes starting from `deletePosition`.
-	 * It may happen that this position is in a removed node. If that is the case, `null` is returned instead.
-	 *
-	 * @protected
-	 * @param {engine.model.Position} deletePosition Position before the first removed node.
-	 * @param {Number} howMany How many nodes are removed.
-	 * @returns {engine.model.Position|null} Transformed position or `null`.
-	 */
-	getTransformedByDeletion( deletePosition, howMany ) {
-		let transformed = Position.createFromPosition( this );
-
-		// This position can't be affected if deletion was in a different root.
-		if ( this.root != deletePosition.root ) {
-			return transformed;
-		}
-
-		if ( compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'SAME' ) {
-			// If nodes are removed from the node that is pointed by this position...
-			if ( deletePosition.offset < this.offset ) {
-				// And are removed from before an offset of that position...
-				if ( deletePosition.offset + howMany > this.offset ) {
-					// Position is in removed range, it's no longer in the tree.
-					return null;
-				} else {
-					// Decrement the offset accordingly.
-					transformed.offset -= howMany;
-				}
-			}
-		} else if ( compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'PREFIX' ) {
-			// If nodes are removed from a node that is on a path to this position...
-			const i = deletePosition.path.length - 1;
-
-			if ( deletePosition.offset <= this.path[ i ] ) {
-				// And are removed from before next node of that path...
-				if ( deletePosition.offset + howMany > this.path[ i ] ) {
-					// If the next node of that path is removed return null
-					// because the node containing this position got removed.
-					return null;
-				} else {
-					// Otherwise, decrement index on that path.
-					transformed.path[ i ] -= howMany;
-				}
-			}
-		}
-
-		return transformed;
-	}
-
-	/**
-	 * Returns this position after being updated by inserting `howMany` nodes at `insertPosition`.
-	 *
-	 * @protected
-	 * @param {engine.model.Position} insertPosition Position where nodes are inserted.
-	 * @param {Number} howMany How many nodes are inserted.
-	 * @param {Boolean} insertBefore Flag indicating whether nodes are inserted before or after `insertPosition`.
-	 * This is important only when `insertPosition` and this position are same. If that is the case and the flag is
-	 * set to `true`, this position will get transformed. If the flag is set to `false`, it won't.
-	 * @returns {engine.model.Position} Transformed position.
-	 */
-	getTransformedByInsertion( insertPosition, howMany, insertBefore ) {
-		let transformed = Position.createFromPosition( this );
-
-		// This position can't be affected if insertion was in a different root.
-		if ( this.root != insertPosition.root ) {
-			return transformed;
-		}
-
-		if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'SAME' ) {
-			// If nodes are inserted in the node that is pointed by this position...
-			if ( insertPosition.offset < this.offset || ( insertPosition.offset == this.offset && insertBefore ) ) {
-				// And are inserted before an offset of that position...
-				// "Push" this positions offset.
-				transformed.offset += howMany;
-			}
-		} else if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'PREFIX' ) {
-			// If nodes are inserted in a node that is on a path to this position...
-			const i = insertPosition.path.length - 1;
-
-			if ( insertPosition.offset <= this.path[ i ] ) {
-				// And are inserted before next node of that path...
-				// "Push" the index on that path.
-				transformed.path[ i ] += howMany;
-			}
-		}
-
-		return transformed;
-	}
-
-	/**
-	 * Returns this position after being updated by moving `howMany` nodes from `sourcePosition` to `targetPosition`.
-	 *
-	 * @protected
-	 * @param {engine.model.Position} sourcePosition Position before the first element to move.
-	 * @param {engine.model.Position} targetPosition Position where moved elements will be inserted.
-	 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
-	 * @param {Boolean} insertBefore Flag indicating whether moved nodes are pasted before or after `insertPosition`.
-	 * This is important only when `targetPosition` and this position are same. If that is the case and the flag is
-	 * set to `true`, this position will get transformed by range insertion. If the flag is set to `false`, it won't.
-	 * @param {Boolean} [sticky] Flag indicating whether this position "sticks" to range, that is if it should be moved
-	 * with the moved range if it is equal to one of range's boundaries.
-	 * @returns {engine.model.Position} Transformed position.
-	 */
-	getTransformedByMove( sourcePosition, targetPosition, howMany, insertBefore, sticky ) {
-		// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
-		let transformed = this.getTransformedByDeletion( sourcePosition, howMany );
-
-		// Then we update target position, as it could be affected by nodes removal too.
-		targetPosition = targetPosition.getTransformedByDeletion( sourcePosition, howMany );
-
-		if ( transformed === null || ( sticky && transformed.isEqual( sourcePosition ) ) ) {
-			// This position is inside moved range (or sticks to it).
-			// In this case, we calculate a combination of this position, move source position and target position.
-			transformed = this._getCombined( sourcePosition, targetPosition );
-		} else {
-			// This position is not inside a removed range.
-			// In next step, we simply reflect inserting `howMany` nodes, which might further affect the position.
-			transformed = transformed.getTransformedByInsertion( targetPosition, howMany, insertBefore );
-		}
-
-		return transformed;
-	}
-
-	/**
 	 * Checks whether this position is after given position.
 	 *
 	 * @see engine.model.Position#isBefore
@@ -324,7 +252,7 @@ export default class Position {
 	 * @returns {Boolean} True if this position is after given position.
 	 */
 	isAfter( otherPosition ) {
-		return this.compareWith( otherPosition ) == 'AFTER';
+		return this.compareWith( otherPosition ) == 'after';
 	}
 
 	/**
@@ -359,23 +287,23 @@ export default class Position {
 	 * @returns {Boolean} True if this position is before given position.
 	 */
 	isBefore( otherPosition ) {
-		return this.compareWith( otherPosition ) == 'BEFORE';
+		return this.compareWith( otherPosition ) == 'before';
 	}
 
 	/**
-	 * Checks whether this position equals given position.
+	 * Checks whether this position is equal to given position.
 	 *
 	 * @param {engine.model.Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if positions are same.
 	 */
 	isEqual( otherPosition ) {
-		return this.compareWith( otherPosition ) == 'SAME';
+		return this.compareWith( otherPosition ) == 'same';
 	}
 
 	/**
-	 * Checks whether this position is touching given position. Positions touch when there are no characters
+	 * Checks whether this position is touching given position. Positions touch when there are no text nodes
 	 * or empty nodes in a range between them. Technically, those positions are not equal but in many cases
-	 * they are very similar or even indistinguishable when they touch.
+	 * they are very similar or even indistinguishable.
 	 *
 	 * @param {engine.model.Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if positions touch.
@@ -386,15 +314,15 @@ export default class Position {
 		let compare = this.compareWith( otherPosition );
 
 		switch ( compare ) {
-			case 'SAME':
+			case 'same':
 				return true;
 
-			case 'BEFORE':
+			case 'before':
 				left = Position.createFromPosition( this );
 				right = Position.createFromPosition( otherPosition );
 				break;
 
-			case 'AFTER':
+			case 'after':
 				left = Position.createFromPosition( otherPosition );
 				right = Position.createFromPosition( this );
 				break;
@@ -403,20 +331,24 @@ export default class Position {
 				return false;
 		}
 
+		// Cached for optimization purposes.
+		let leftParent = left.parent;
+
 		while ( left.path.length + right.path.length ) {
 			if ( left.isEqual( right ) ) {
 				return true;
 			}
 
 			if ( left.path.length > right.path.length ) {
-				if ( left.nodeAfter !== null ) {
+				if ( left.offset !== leftParent.getMaxOffset() ) {
 					return false;
 				}
 
 				left.path = left.path.slice( 0, -1 );
+				leftParent = leftParent.parent;
 				left.offset++;
 			} else {
-				if ( right.nodeBefore !== null ) {
+				if ( right.offset !== 0 ) {
 					return false;
 				}
 
@@ -426,7 +358,7 @@ export default class Position {
 	}
 
 	/**
-	 * Whether position is at the beginning of its {@link engine.model.Position#parent}.
+	 * Returns `true` if position is at the beginning of its {@link engine.model.Position#parent parent}, `false` otherwise.
 	 *
 	 * @returns {Boolean}
 	 */
@@ -435,177 +367,149 @@ export default class Position {
 	}
 
 	/**
-	 * Whether position is at the end of its {@link engine.model.Position#parent}.
+	 * Returns `true` if position is at the end of its {@link engine.model.Position#parent parent}, `false` otherwise.
 	 *
 	 * @returns {Boolean}
 	 */
 	isAtEnd() {
-		return this.offset == this.parent.getChildCount();
+		return this.offset == this.parent.getMaxOffset();
 	}
 
 	/**
-	 * Creates position at the given location. The location can be specified as:
+	 * Returns a copy of this position that is updated by removing `howMany` nodes starting from `deletePosition`.
+	 * It may happen that this position is in a removed node. If that is the case, `null` is returned instead.
 	 *
-	 * * a {@link engine.model.Position position},
-	 * * parent element and offset (offset defaults to `0`),
-	 * * parent element and `'END'` (sets selection at the end of that element),
-	 * * node and `'BEFORE'` or `'AFTER'` (sets selection before or after the given node).
-	 *
-	 * This method is a shortcut to other constructors such as:
-	 *
-	 * * {@link engine.model.Position.createBefore},
-	 * * {@link engine.model.Position.createAfter},
-	 * * {@link engine.model.Position.createFromParentAndOffset},
-	 * * {@link engine.model.Position.createFromPosition}.
-	 *
-	 * @param {engine.model.Node|engine.model.Position} nodeOrPosition
-	 * @param {Number|'END'|'BEFORE'|'AFTER'} [offset=0] Offset or one of the flags. Used only when
-	 * first parameter is a node.
+	 * @protected
+	 * @param {engine.model.Position} deletePosition Position before the first removed node.
+	 * @param {Number} howMany How many nodes are removed.
+	 * @returns {engine.model.Position|null} Transformed position or `null`.
 	 */
-	static createAt( nodeOrPosition, offset ) {
-		let node;
+	_getTransformedByDeletion( deletePosition, howMany ) {
+		let transformed = Position.createFromPosition( this );
 
-		if ( nodeOrPosition instanceof Position ) {
-			return this.createFromPosition( nodeOrPosition );
-		} else {
-			node = nodeOrPosition;
+		// This position can't be affected if deletion was in a different root.
+		if ( this.root != deletePosition.root ) {
+			return transformed;
+		}
 
-			if ( offset == 'END' ) {
-				offset = node.getChildCount();
-			} else if ( offset == 'BEFORE' ) {
-				return this.createBefore( node );
-			} else if ( offset == 'AFTER' ) {
-				return this.createAfter( node );
-			} else if ( !offset ) {
-				offset = 0;
+		if ( compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'same' ) {
+			// If nodes are removed from the node that is pointed by this position...
+			if ( deletePosition.offset < this.offset ) {
+				// And are removed from before an offset of that position...
+				if ( deletePosition.offset + howMany > this.offset ) {
+					// Position is in removed range, it's no longer in the tree.
+					return null;
+				} else {
+					// Decrement the offset accordingly.
+					transformed.offset -= howMany;
+				}
 			}
+		} else if ( compareArrays( deletePosition.getParentPath(), this.getParentPath() ) == 'prefix' ) {
+			// If nodes are removed from a node that is on a path to this position...
+			const i = deletePosition.path.length - 1;
 
-			return this.createFromParentAndOffset( node, offset );
+			if ( deletePosition.offset <= this.path[ i ] ) {
+				// And are removed from before next node of that path...
+				if ( deletePosition.offset + howMany > this.path[ i ] ) {
+					// If the next node of that path is removed return null
+					// because the node containing this position got removed.
+					return null;
+				} else {
+					// Otherwise, decrement index on that path.
+					transformed.path[ i ] -= howMany;
+				}
+			}
 		}
+
+		return transformed;
 	}
 
 	/**
-	 * Creates a new position after given node.
+	 * Returns a copy of this position that is updated by inserting `howMany` nodes at `insertPosition`.
 	 *
-	 * @see {@link engine.model.TreeWalkerValue}
-	 *
-	 * @param {engine.model.Node} node Node the position should be directly after.
-	 * @returns {engine.model.Position}
+	 * @protected
+	 * @param {engine.model.Position} insertPosition Position where nodes are inserted.
+	 * @param {Number} howMany How many nodes are inserted.
+	 * @param {Boolean} insertBefore Flag indicating whether nodes are inserted before or after `insertPosition`.
+	 * This is important only when `insertPosition` and this position are same. If that is the case and the flag is
+	 * set to `true`, this position will get transformed. If the flag is set to `false`, it won't.
+	 * @returns {engine.model.Position} Transformed position.
 	 */
-	static createAfter( node ) {
-		if ( !node.parent ) {
-			/**
-			 * You can not make position after root.
-			 *
-			 * @error position-after-root
-			 * @param {engine.model.Node} root
-			 */
-			throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: node } );
+	_getTransformedByInsertion( insertPosition, howMany, insertBefore ) {
+		let transformed = Position.createFromPosition( this );
+
+		// This position can't be affected if insertion was in a different root.
+		if ( this.root != insertPosition.root ) {
+			return transformed;
 		}
 
-		return this.createFromParentAndOffset( node.parent, node.getIndex() + 1 );
+		if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'same' ) {
+			// If nodes are inserted in the node that is pointed by this position...
+			if ( insertPosition.offset < this.offset || ( insertPosition.offset == this.offset && insertBefore ) ) {
+				// And are inserted before an offset of that position...
+				// "Push" this positions offset.
+				transformed.offset += howMany;
+			}
+		} else if ( compareArrays( insertPosition.getParentPath(), this.getParentPath() ) == 'prefix' ) {
+			// If nodes are inserted in a node that is on a path to this position...
+			const i = insertPosition.path.length - 1;
+
+			if ( insertPosition.offset <= this.path[ i ] ) {
+				// And are inserted before next node of that path...
+				// "Push" the index on that path.
+				transformed.path[ i ] += howMany;
+			}
+		}
+
+		return transformed;
 	}
 
 	/**
-	 * Creates a new position before the given node.
+	 * Returns a copy of this position that is updated by moving `howMany` nodes from `sourcePosition` to `targetPosition`.
 	 *
-	 * @see {@link engine.model.TreeWalkerValue}
-	 *
-	 * @param {engine.model.node} node Node the position should be directly before.
-	 * @returns {engine.model.Position}
+	 * @protected
+	 * @param {engine.model.Position} sourcePosition Position before the first element to move.
+	 * @param {engine.model.Position} targetPosition Position where moved elements will be inserted.
+	 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
+	 * @param {Boolean} insertBefore Flag indicating whether moved nodes are pasted before or after `insertPosition`.
+	 * This is important only when `targetPosition` and this position are same. If that is the case and the flag is
+	 * set to `true`, this position will get transformed by range insertion. If the flag is set to `false`, it won't.
+	 * @param {Boolean} [sticky] Flag indicating whether this position "sticks" to range, that is if it should be moved
+	 * with the moved range if it is equal to one of range's boundaries.
+	 * @returns {engine.model.Position} Transformed position.
 	 */
-	static createBefore( node ) {
-		if ( !node.parent ) {
-			/**
-			 * You can not make position before root.
-			 *
-			 * @error position-before-root
-			 * @param {engine.model.Node} root
-			 */
-			throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: node } );
+	_getTransformedByMove( sourcePosition, targetPosition, howMany, insertBefore, sticky ) {
+		// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
+		let transformed = this._getTransformedByDeletion( sourcePosition, howMany );
+
+		// Then we update target position, as it could be affected by nodes removal too.
+		targetPosition = targetPosition._getTransformedByDeletion( sourcePosition, howMany );
+
+		if ( transformed === null || ( sticky && transformed.isEqual( sourcePosition ) ) ) {
+			// This position is inside moved range (or sticks to it).
+			// In this case, we calculate a combination of this position, move source position and target position.
+			transformed = this._getCombined( sourcePosition, targetPosition );
+		} else {
+			// This position is not inside a removed range.
+			// In next step, we simply reflect inserting `howMany` nodes, which might further affect the position.
+			transformed = transformed._getTransformedByInsertion( targetPosition, howMany, insertBefore );
 		}
 
-		return this.createFromParentAndOffset( node.parent, node.getIndex() );
+		return transformed;
 	}
 
 	/**
-	 * Creates a new position from the parent element and the offset in that element.
+	 * Returns a new position that is a combination of this position and given positions.
 	 *
-	 * @param {engine.model.Element|engine.model.DocumentFragment} parent Position's parent element or
-	 * document fragment.
-	 * @param {Number} offset Position's offset.
-	 * @returns {engine.model.Position}
-	 */
-	static createFromParentAndOffset( parent, offset ) {
-		if ( !( parent instanceof Element || parent instanceof DocumentFragment ) ) {
-			/**
-			 * Position parent have to be a model element or model document fragment.
-			 *
-			 * @error position-parent-incorrect
-			 */
-			throw new CKEditorError( 'position-parent-incorrect: Position parent have to be a model element or model document fragment.' );
-		}
-
-		const path = parent.getPath();
-
-		path.push( offset );
-
-		return new this( parent.root, path );
-	}
-
-	/**
-	 * Creates and returns a new instance of Position, which is equal to passed position.
-	 *
-	 * @param {engine.model.Position} position Position to be cloned.
-	 * @returns {engine.model.Position}
-	 */
-	static createFromPosition( position ) {
-		return new this( position.root, position.path.slice() );
-	}
-
-	/**
-	 * Creates Element object from deserilized object, ie. from parsed JSON string.
-	 *
-	 * @param {Object} json Deserialized JSON object.
-	 * @param {engine.model.Document} doc Document on which this operation will be applied.
-	 * @returns {engine.model.Position}
-	 */
-	static fromJSON( json, doc ) {
-		if ( json.root === '$graveyard' ) {
-			return new Position( doc.graveyard, json.path );
-		}
-
-		if ( !doc.hasRoot( json.root ) ) {
-			/**
-			 * Cannot create position for document. Root with specified name does not exist.
-			 *
-			 * @error position-fromjson-no-root
-			 * @param {String} rootName
-			 */
-			throw new CKEditorError(
-				'position-fromjson-no-root: Cannot create position for document. Root with specified name does not exist.',
-				{ rootName: json.root }
-			);
-		}
-
-		return new Position( doc.getRoot( json.root ), json.path );
-	}
-
-	/**
-	 * Returns a new position that is a combination of this position and given positions. The combined
-	 * position is this position transformed by moving a range starting at `from` to `to` position.
-	 * It is expected that this position is inside the moved range.
-	 *
-	 * In other words, this method in a smart way "cuts out" `source` path from this position and
-	 * injects `target` path in it's place, while doing necessary fixes in order to get a correct path.
+	 * The combined position is a copy of this position transformed by moving a range starting at `source` position
+	 * to the `target` position. It is expected that this position is inside the moved range.
 	 *
 	 * Example:
 	 *
-	 * 	let original = new Position( root, [ 2, 3, 1 ] );
-	 * 	let source = new Position( root, [ 2, 2 ] );
-	 * 	let target = new Position( otherRoot, [ 1, 1, 3 ] );
-	 * 	let combined = original.getCombined( source, target );
-	 * 	// combined.path is [ 1, 1, 4, 1 ], combined.root is otherRoot
+	 *		let original = new Position( root, [ 2, 3, 1 ] );
+	 *		let source = new Position( root, [ 2, 2 ] );
+	 *		let target = new Position( otherRoot, [ 1, 1, 3 ] );
+	 *		original._getCombined( source, target ); // path is [ 1, 1, 4, 1 ], root is `otherRoot`
 	 *
 	 * Explanation:
 	 *
@@ -638,11 +542,151 @@ export default class Position {
 
 		return combined;
 	}
+
+	/**
+	 * Creates position at the given location. The location can be specified as:
+	 *
+	 * * a {@link engine.model.Position position},
+	 * * parent element and offset (offset defaults to `0`),
+	 * * parent element and `'end'` (sets position at the end of that element),
+	 * * {@link engine.model.Item model item} and `'before'` or `'after'` (sets position before or after given model item).
+	 *
+	 * This method is a shortcut to other constructors such as:
+	 *
+	 * * {@link engine.model.Position.createBefore},
+	 * * {@link engine.model.Position.createAfter},
+	 * * {@link engine.model.Position.createFromParentAndOffset},
+	 * * {@link engine.model.Position.createFromPosition}.
+	 *
+	 * @param {engine.model.Item|engine.model.Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * first parameter is a {@link engine.model.Item model item}.
+	 */
+	static createAt( itemOrPosition, offset ) {
+		if ( itemOrPosition instanceof Position ) {
+			return this.createFromPosition( itemOrPosition );
+		} else {
+			const node = itemOrPosition;
+
+			if ( offset == 'end' ) {
+				offset = node.getMaxOffset();
+			} else if ( offset == 'before' ) {
+				return this.createBefore( node );
+			} else if ( offset == 'after' ) {
+				return this.createAfter( node );
+			} else if ( !offset ) {
+				offset = 0;
+			}
+
+			return this.createFromParentAndOffset( node, offset );
+		}
+	}
+
+	/**
+	 * Creates a new position, after given {@link engine.model.Item model item}.
+	 *
+	 * @param {engine.model.Item} item Item after which the position should be placed.
+	 * @returns {engine.model.Position}
+	 */
+	static createAfter( item ) {
+		if ( !item.parent ) {
+			/**
+			 * You can not make position after root.
+			 *
+			 * @error position-after-root
+			 * @param {engine.model.Item} root
+			 */
+			throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: item } );
+		}
+
+		return this.createFromParentAndOffset( item.parent, item.endOffset );
+	}
+
+	/**
+	 * Creates a new position, before the given {@link engine.model.Item model item}.
+	 *
+	 * @param {engine.model.Item} item Item before which the position should be placed.
+	 * @returns {engine.model.Position}
+	 */
+	static createBefore( item ) {
+		if ( !item.parent ) {
+			/**
+			 * You can not make position before root.
+			 *
+			 * @error position-before-root
+			 * @param {engine.model.Item} root
+			 */
+			throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: item } );
+		}
+
+		return this.createFromParentAndOffset( item.parent, item.startOffset );
+	}
+
+	/**
+	 * Creates a new position from the parent element and an offset in that element.
+	 *
+	 * @param {engine.model.Element|engine.model.DocumentFragment} parent Position's parent.
+	 * @param {Number} offset Position's offset.
+	 * @returns {engine.model.Position}
+	 */
+	static createFromParentAndOffset( parent, offset ) {
+		if ( !( parent instanceof Element || parent instanceof DocumentFragment ) ) {
+			/**
+			 * Position parent have to be a model element or model document fragment.
+			 *
+			 * @error position-parent-incorrect
+			 */
+			throw new CKEditorError( 'position-parent-incorrect: Position parent have to be a element or document fragment.' );
+		}
+
+		const path = parent.getPath();
+
+		path.push( offset );
+
+		return new this( parent.root, path );
+	}
+
+	/**
+	 * Creates a new position, which is equal to passed position.
+	 *
+	 * @param {engine.model.Position} position Position to be cloned.
+	 * @returns {engine.model.Position}
+	 */
+	static createFromPosition( position ) {
+		return new this( position.root, position.path.slice() );
+	}
+
+	/**
+	 * Creates a `Position` instance from given plain object (i.e. parsed JSON string).
+	 *
+	 * @param {Object} json Plain object to be converted to `Position`.
+	 * @returns {engine.model.Position} `Position` instance created using given plain object.
+	 */
+	static fromJSON( json, doc ) {
+		if ( json.root === '$graveyard' ) {
+			return new Position( doc.graveyard, json.path );
+		}
+
+		if ( !doc.hasRoot( json.root ) ) {
+			/**
+			 * Cannot create position for document. Root with specified name does not exist.
+			 *
+			 * @error position-fromjson-no-root
+			 * @param {String} rootName
+			 */
+			throw new CKEditorError(
+				'position-fromjson-no-root: Cannot create position for document. Root with specified name does not exist.',
+				{ rootName: json.root }
+			);
+		}
+
+		return new Position( doc.getRoot( json.root ), json.path );
+	}
 }
 
 /**
- * A flag indicating whether this position is `'BEFORE'` or `'AFTER'` or `'SAME'` as given position.
- * If positions are in different roots `'DIFFERENT'` flag is returned.
+ * A flag indicating whether this position is `'before'` or `'after'` or `'same'` as given position.
+ * If positions are in different roots `'different'` flag is returned.
  *
  * @typedef {String} engine.model.PositionRelation
  */

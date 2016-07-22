@@ -5,8 +5,6 @@
 
 /* bender-tags: conversion */
 
-'use strict';
-
 import Mapper from '/ckeditor5/engine/conversion/mapper.js';
 
 import ModelElement from '/ckeditor5/engine/model/element.js';
@@ -104,9 +102,9 @@ describe( 'Mapper', () => {
 
 			modelImg = new ModelElement( 'img' );
 			modelP = new ModelElement( 'p', {}, [
-				'y',
+				new ModelText( 'y' ),
 				new ModelText( 'foo', { b: true, i: true } ),
-				'bar',
+				new ModelText( 'bar' ),
 				modelImg,
 				new ModelText( 'b', { u: true } ),
 				new ModelText( 'o', { u: true, sup: true } ),
@@ -115,9 +113,9 @@ describe( 'Mapper', () => {
 
 			modelDiv = new ModelRootElement();
 			modelDiv.appendChildren( [
-				'x',
+				new ModelText( 'x' ),
 				modelP,
-				'zz'
+				new ModelText( 'zz' )
 			] );
 
 			viewTextB = new ViewText( 'b' );
@@ -309,10 +307,10 @@ describe( 'Mapper', () => {
 			//   └─ zz                   ---> viewTextZZ
 
 			modelImg = new ModelElement( 'img' );
-			modelCaption = new ModelElement( 'caption', {}, 'foo' );
+			modelCaption = new ModelElement( 'caption', {}, new ModelText( 'foo' ) );
 			modelWidget = new ModelElement( 'widget', {}, [ modelImg, modelCaption ] );
 			modelDiv = new ModelRootElement();
-			modelDiv.appendChildren( [ 'x', modelWidget, 'zz' ] );
+			modelDiv.appendChildren( [ new ModelText( 'x' ), modelWidget, new ModelText( 'zz' ) ] );
 
 			viewTextX = new ViewText( 'y' );
 			viewTextZZ = new ViewText( 'zz' );

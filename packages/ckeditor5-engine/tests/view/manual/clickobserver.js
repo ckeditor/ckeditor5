@@ -5,8 +5,6 @@
 
 /* global console:false */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/view/document.js';
 import DomEventObserver from '/ckeditor5/engine/view/observer/domeventobserver.js';
 

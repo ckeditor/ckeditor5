@@ -5,8 +5,6 @@
 
 /* bender-tags: model */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import Schema from '/ckeditor5/engine/model/schema.js';
 import Composer from '/ckeditor5/engine/model/composer/composer.js';
@@ -29,7 +27,7 @@ describe( 'Document', () => {
 			expect( doc ).to.have.property( '_roots' ).that.is.instanceof( Map );
 			expect( doc._roots.size ).to.equal( 1 );
 			expect( doc.graveyard ).to.be.instanceof( RootElement );
-			expect( doc.graveyard.getChildCount() ).to.equal( 0 );
+			expect( doc.graveyard.getMaxOffset() ).to.equal( 0 );
 			expect( count( doc.selection.getRanges() ) ).to.equal( 1 );
 
 			expect( doc.composer ).to.be.instanceof( Composer );
@@ -56,7 +54,7 @@ describe( 'Document', () => {
 
 			expect( doc._roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
-			expect( root.getChildCount() ).to.equal( 0 );
+			expect( root.getMaxOffset() ).to.equal( 0 );
 			expect( root ).to.have.property( 'name', '$root' );
 			expect( root ).to.have.property( 'rootName', 'main' );
 		} );
@@ -66,7 +64,7 @@ describe( 'Document', () => {
 
 			expect( doc._roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
-			expect( root.getChildCount() ).to.equal( 0 );
+			expect( root.getMaxOffset() ).to.equal( 0 );
 			expect( root ).to.have.property( 'name', 'customElementName' );
 			expect( root ).to.have.property( 'rootName', 'customRootName' );
 		} );

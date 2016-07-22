@@ -5,8 +5,6 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import ViewRange from '/ckeditor5/engine/view/range.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import ViewSelection from '/ckeditor5/engine/view/selection.js';
@@ -31,8 +29,8 @@ describe( 'SelectionObserver', () => {
 
 		viewDocument.createRoot( document.getElementById( 'main' ) );
 
-		mutationObserver = viewDocument.addObserver( MutationObserver );
-		selectionObserver = viewDocument.addObserver( SelectionObserver );
+		mutationObserver = viewDocument.getObserver( MutationObserver );
+		selectionObserver = viewDocument.getObserver( SelectionObserver );
 
 		viewRoot = viewDocument.getRoot();
 

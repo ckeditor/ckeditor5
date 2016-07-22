@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import { addTransformationCase, defaultTransform } from './transform.js';
 
 import Range from '../range.js';
@@ -64,7 +62,7 @@ addTransformationCase( MoveDelta, MergeDelta, ( a, b, isStrong ) => {
 
 	const operateInSameParent =
 		a.sourcePosition.root == b.position.root &&
-		compareArrays( a.sourcePosition.getParentPath(), b.position.getParentPath() ) === 'SAME';
+		compareArrays( a.sourcePosition.getParentPath(), b.position.getParentPath() ) === 'same';
 
 	const mergeInsideMoveRange = a.sourcePosition.offset <= b.position.offset && a.sourcePosition.offset + a.howMany > b.position.offset;
 
@@ -96,7 +94,7 @@ addTransformationCase( MergeDelta, MoveDelta, ( a, b, isStrong ) => {
 
 	const operateInSameParent =
 		a.position.root == b.sourcePosition.root &&
-		compareArrays( a.position.getParentPath(), b.sourcePosition.getParentPath() ) === 'SAME';
+		compareArrays( a.position.getParentPath(), b.sourcePosition.getParentPath() ) === 'same';
 
 	const mergeInsideMoveRange = b.sourcePosition.offset <= a.position.offset && b.sourcePosition.offset + b.howMany > a.position.offset;
 
@@ -113,7 +111,7 @@ addTransformationCase( SplitDelta, SplitDelta, ( a, b, isStrong ) => {
 	const pathB = b.position.getParentPath();
 
 	// The special case is for splits inside the same parent.
-	if ( compareArrays( pathA, pathB ) == 'SAME' ) {
+	if ( compareArrays( pathA, pathB ) == 'same' ) {
 		if ( a.position.offset == b.position.offset ) {
 			// We are applying split at the position where split already happened. Additional split is not needed.
 			return [ noDelta() ];
@@ -167,7 +165,7 @@ addTransformationCase( SplitDelta, SplitDelta, ( a, b, isStrong ) => {
 addTransformationCase( SplitDelta, UnwrapDelta, ( a, b, isStrong ) => {
 	// If incoming split delta tries to split a node that just got unwrapped, there is actually nothing to split,
 	// so we discard that delta.
-	if ( compareArrays( b.position.path, a.position.getParentPath() ) === 'SAME' ) {
+	if ( compareArrays( b.position.path, a.position.getParentPath() ) === 'same' ) {
 		return [ noDelta() ];
 	}
 
@@ -179,12 +177,12 @@ addTransformationCase( SplitDelta, WrapDelta, ( a, b, isStrong ) => {
 	// If split is applied at the position between wrapped nodes, we cancel the split as it's results may be unexpected and
 	// very weird. Even if we do some "magic" we don't know what really are users' expectations.
 
-	const operateInSameParent = compareArrays( a.position.getParentPath(), b.range.start.getParentPath() ) === 'SAME';
+	const operateInSameParent = compareArrays( a.position.getParentPath(), b.range.start.getParentPath() ) === 'same';
 	const splitInsideWrapRange = b.range.start.offset < a.position.offset && b.range.end.offset >= a.position.offset;
 
 	if ( operateInSameParent && splitInsideWrapRange ) {
 		return [ noDelta() ];
-	} else if ( compareArrays( a.position.getParentPath(), b.range.end.getShiftedBy( -1 ).path ) === 'SAME' ) {
+	} else if ( compareArrays( a.position.getParentPath(), b.range.end.getShiftedBy( -1 ).path ) === 'same' ) {
 		// Split position is directly inside the last node from wrap range.
 		// If that's the case, we manually change split delta so it will "target" inside the wrapping element.
 		// By doing so we will be inserting split node right to the original node which feels natural and is a good UX.
@@ -229,7 +227,7 @@ addTransformationCase( SplitDelta, WrapDelta, ( a, b, isStrong ) => {
 addTransformationCase( UnwrapDelta, SplitDelta, ( a, b, isStrong ) => {
 	// If incoming unwrap delta tries to unwrap node that got split we should unwrap the original node and the split copy.
 	// This can be achieved either by reverting split and applying unwrap to singular node, or creating additional unwrap delta.
-	if ( compareArrays( a.position.path, b.position.getParentPath() ) === 'SAME' ) {
+	if ( compareArrays( a.position.path, b.position.getParentPath() ) === 'same' ) {
 		const transformed = [
 			b.getReversed(),
 			a.clone()
@@ -266,7 +264,7 @@ addTransformationCase( WrapDelta, SplitDelta, ( a, b, isStrong ) => {
 	// If incoming wrap delta tries to wrap range that contains split position, we have to cancel the split and apply
 	// the wrap. Since split was already applied, we have to revert it.
 
-	const operateInSameParent = compareArrays( a.range.start.getParentPath(), b.position.getParentPath() ) === 'SAME';
+	const operateInSameParent = compareArrays( a.range.start.getParentPath(), b.position.getParentPath() ) === 'same';
 	const splitInsideWrapRange = a.range.start.offset < b.position.offset && a.range.end.offset >= b.position.offset;
 
 	if ( operateInSameParent && splitInsideWrapRange ) {
@@ -274,7 +272,7 @@ addTransformationCase( WrapDelta, SplitDelta, ( a, b, isStrong ) => {
 			b.getReversed(),
 			a.clone()
 		];
-	} else if ( compareArrays( b.position.getParentPath(), a.range.end.getShiftedBy( -1 ).path ) === 'SAME' ) {
+	} else if ( compareArrays( b.position.getParentPath(), a.range.end.getShiftedBy( -1 ).path ) === 'same' ) {
 		const delta = a.clone();
 
 		// Move wrapping element insert position one node further so it is after the split node insertion.
@@ -296,16 +294,19 @@ addTransformationCase( WrapDelta, SplitDelta, ( a, b, isStrong ) => {
 // Creates an attribute delta that sets attribute from given `attributeDelta` on nodes from given `weakInsertDelta`.
 function _getComplementaryAttrDelta( weakInsertDelta, attributeDelta ) {
 	const complementaryAttrDelta = new AttributeDelta();
+	const nodes = weakInsertDelta.nodes;
 
 	// At the beginning we store the attribute value from the first node on `weakInsertDelta` node list.
-	let val = weakInsertDelta.nodeList.get( 0 ).getAttribute( attributeDelta.key );
+	let val = nodes.getNode( 0 ).getAttribute( attributeDelta.key );
 
 	// This stores the last index of `weakInsertDelta` node list where the attribute value was different
 	// than in the previous node. We need it to create separate `AttributeOperation`s for nodes with different attributes.
-	let lastIndex = 0;
+	let lastOffset = 0;
+	// Sum of offsets of already processed nodes.
+	let offsetSum = nodes.getNode( 0 ).offsetSize;
 
-	for ( let i = 0; i < weakInsertDelta.nodeList.length; i++ ) {
-		const node = weakInsertDelta.nodeList.get( i );
+	for ( let i = 1; i < nodes.length; i++ ) {
+		const node = nodes.getNode( i );
 		const nodeAttrVal = node.getAttribute( attributeDelta.key );
 
 		// If previous node has different attribute value, we will create an operation to the point before current node.
@@ -314,28 +315,31 @@ function _getComplementaryAttrDelta( weakInsertDelta, attributeDelta ) {
 			// New operation is created only when it is needed. If given node already has proper value for this
 			// attribute we simply skip it without adding a new operation.
 			if ( val != attributeDelta.value ) {
-				const range = new Range( weakInsertDelta.position.getShiftedBy( lastIndex ), weakInsertDelta.position.getShiftedBy( i ) );
-
-				// We don't care about base version because it will be updated after transformations anyway.
-				const attrOperation = new AttributeOperation( range, attributeDelta.key, val, attributeDelta.value, 0 );
-				complementaryAttrDelta.addOperation( attrOperation );
+				addOperation();
 			}
 
 			val = nodeAttrVal;
-			lastIndex = i;
+			lastOffset = offsetSum;
 		}
+
+		offsetSum = offsetSum + node.offsetSize;
 	}
 
 	// At the end we have to add additional `AttributeOperation` for the last part of node list. If all nodes on the
 	// node list had same attributes, this will be the only operation added to the delta.
-	const range = new Range(
-		weakInsertDelta.position.getShiftedBy( lastIndex ),
-		weakInsertDelta.position.getShiftedBy( weakInsertDelta.nodeList.length )
-	);
-
-	complementaryAttrDelta.addOperation( new AttributeOperation( range, attributeDelta.key, val, attributeDelta.value, 0 ) );
+	addOperation();
 
 	return complementaryAttrDelta;
+
+	function addOperation() {
+		const range = new Range(
+			weakInsertDelta.position.getShiftedBy( lastOffset ),
+			weakInsertDelta.position.getShiftedBy( offsetSum )
+		);
+
+		const attrOperation = new AttributeOperation( range, attributeDelta.key, val, attributeDelta.value, 0 );
+		complementaryAttrDelta.addOperation( attrOperation );
+	}
 }
 
 // This is "no-op" delta, it has no type and only no-operation, it basically does nothing.

@@ -5,10 +5,9 @@
 
 /* bender-tags: model, delta */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import Position from '/ckeditor5/engine/model/position.js';
+import Text from '/ckeditor5/engine/model/text.js';
 import WeakInsertDelta from '/ckeditor5/engine/model/delta/weakinsertdelta.js';
 
 describe( 'Batch', () => {
@@ -18,7 +17,7 @@ describe( 'Batch', () => {
 		doc = new Document();
 		root = doc.createRoot();
 
-		root.insertChildren( 0, 'abc' );
+		root.insertChildren( 0, new Text( 'abc' ) );
 
 		batch = doc.batch();
 
@@ -31,16 +30,14 @@ describe( 'Batch', () => {
 
 	describe( 'weakInsert', () => {
 		it( 'should insert given nodes at given position', () => {
-			expect( root.getChildCount() ).to.equal( 6 );
-			expect( root.getChild( 2 ).character ).to.equal( 'x' );
-			expect( root.getChild( 3 ).character ).to.equal( 'y' );
-			expect( root.getChild( 4 ).character ).to.equal( 'z' );
+			expect( root.getMaxOffset() ).to.equal( 6 );
+			expect( root.getChild( 0 ).data ).to.equal( 'ab' );
+			expect( root.getChild( 1 ).data ).to.equal( 'xyz' );
+			expect( root.getChild( 2 ).data ).to.equal( 'c' );
 		} );
 
 		it( 'should set inserted nodes attributes to same as current selection attributes', () => {
-			expect( Array.from( root.getChild( 2 )._attrs ) ).to.deep.equal( attrs );
-			expect( Array.from( root.getChild( 3 )._attrs ) ).to.deep.equal( attrs );
-			expect( Array.from( root.getChild( 4 )._attrs ) ).to.deep.equal( attrs );
+			expect( Array.from( root.getChild( 1 ).getAttributes() ) ).to.deep.equal( attrs );
 		} );
 
 		it( 'should be chainable', () => {

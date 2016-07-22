@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Delta from './delta.js';
 import DeltaFactory from './deltafactory.js';
 import UnwrapDelta from './unwrapdelta.js';
@@ -36,7 +34,7 @@ export default class WrapDelta extends Delta {
 	}
 
 	/**
-	 * How many nodes is wrapped by the delta or `null` if there are no operations in delta.
+	 * Offset size of range to wrap by the delta or `null` if there are no operations in delta.
 	 *
 	 * @type {Number}
 	 */
@@ -66,22 +64,31 @@ export default class WrapDelta extends Delta {
 		return this.operations[ 1 ] || null;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	get _reverseDeltaClass() {
 		return UnwrapDelta;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	static get className() {
 		return 'engine.model.delta.WrapDelta';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	static get _priority() {
 		return 10;
 	}
 }
 
 /**
- * Wraps given range with given element or with a new element of specified name if string has been passed.
- * **Note:** given range should be a "flat range" (see {@link engine.model.Range#isFlat}). If not, error will be thrown.
+ * Wraps given range with given element or with a new element with specified name, if string has been passed.
+ * **Note:** range to wrap should be a "flat range" (see {@link engine.model.Range#isFlat}). If not, error will be thrown.
  *
  * @chainable
  * @method engine.model.Batch#wrap

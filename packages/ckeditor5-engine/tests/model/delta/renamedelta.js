@@ -5,10 +5,10 @@
 
 /* bender-tags: model, delta */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 import RenameDelta from '/ckeditor5/engine/model/delta/renamedelta.js';
 
@@ -19,7 +19,7 @@ describe( 'Batch', () => {
 		doc = new Document();
 		root = doc.createRoot();
 
-		const p = new Element( 'p', null, 'abc' );
+		const p = new Element( 'p', null, new Text( 'abc' ) );
 		root.appendChildren( p );
 
 		batch = doc.batch();
@@ -29,9 +29,15 @@ describe( 'Batch', () => {
 
 	describe( 'rename', () => {
 		it( 'should rename given element', () => {
-			expect( root.getChildCount() ).to.equal( 1 );
+			expect( root.getMaxOffset() ).to.equal( 1 );
 			expect( root.getChild( 0 ) ).to.have.property( 'name', 'h' );
-			expect( root.getChild( 0 ).getText() ).to.equal( 'abc' );
+			expect( root.getChild( 0 ) ).to.have.property( 'name', 'h' );
+		} );
+
+		it( 'should throw if not an Element instance is passed', () => {
+			expect( () => {
+				batch.rename( 'h', new Text( 'abc' ) );
+			} ).to.throw( CKEditorError, /^batch-rename-not-element-instance/ );
 		} );
 
 		it( 'should be chainable', () => {
@@ -74,7 +80,7 @@ describe( 'RenameDelta', () => {
 		} );
 
 		it( 'should return correct RenameDelta', () => {
-			root.appendChildren( new Element( 'p', null, 'abc' ) );
+			root.appendChildren( new Element( 'p', null, new Text( 'abc' ) ) );
 
 			const batch = doc.batch();
 
@@ -86,9 +92,8 @@ describe( 'RenameDelta', () => {
 				doc.applyOperation( operation );
 			} );
 
-			expect( root.getChildCount() ).to.equal( 1 );
+			expect( root.getMaxOffset() ).to.equal( 1 );
 			expect( root.getChild( 0 ) ).to.have.property( 'name', 'p' );
-			expect( root.getChild( 0 ).getText() ).to.equal( 'abc' );
 		} );
 	} );
 

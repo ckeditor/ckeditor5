@@ -5,8 +5,6 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import ViewDocument from '/ckeditor5/engine/view/document.js';
 import MutationObserver from '/ckeditor5/engine/view/observer/mutationobserver.js';
 import { parse } from '/tests/engine/_utils/view.js';
@@ -23,7 +21,7 @@ describe( 'MutationObserver', () => {
 		viewDocument.selection.removeAllRanges();
 		document.getSelection().removeAllRanges();
 
-		mutationObserver = viewDocument.addObserver( MutationObserver );
+		mutationObserver = viewDocument.getObserver( MutationObserver );
 
 		viewDocument.on( 'mutations', ( evt, mutations ) => lastMutations = mutations );
 

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 /**
  * View matcher class.
  * Instance of this class can be used to find {@link engine.view.Element elements} that match given pattern.

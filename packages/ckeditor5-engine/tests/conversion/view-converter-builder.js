@@ -5,8 +5,6 @@
 
 /* bender-tags: conversion */
 
-'use strict';
-
 import BuildViewConverterFor from '/ckeditor5/engine/conversion/view-converter-builder.js';
 
 import ModelSchema from '/ckeditor5/engine/model/schema.js';
@@ -42,7 +40,7 @@ function modelToString( item ) {
 	if ( item instanceof ModelTextProxy ) {
 		let attributes = modelAttributesToString( item );
 
-		result = attributes ? '<$text' + attributes + '>' + item.text + '</$text>' : item.text;
+		result = attributes ? '<$text' + attributes + '>' + item.data + '</$text>' : item.data;
 	} else {
 		let walker = new ModelWalker( { boundaries: ModelRange.createFromElement( item ), shallow: true } );
 

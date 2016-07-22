@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Position from './position.js';
 import Element from './element.js';
 import clone from '../../utils/lib/lodash/clone.js';
@@ -115,12 +113,12 @@ export class SchemaItem {
 	 * Returns all paths of given type that were previously registered in the item.
 	 *
 	 * @private
-	 * @param {String} type Paths' type. Possible values are `ALLOW` or `DISALLOW`.
+	 * @param {String} type Paths' type. Possible values are `allow` or `disallow`.
 	 * @param {String} [attribute] If set, only paths registered for given attribute will be returned.
 	 * @returns {Array} Paths registered in the item.
 	 */
 	_getPaths( type, attribute ) {
-		const source = type === 'ALLOW' ? this._allowed : this._disallowed;
+		const source = type === 'allow' ? this._allowed : this._disallowed;
 		const paths = [];
 
 		for ( let item of source ) {
@@ -165,7 +163,7 @@ export class SchemaItem {
 	 * Checks whether this item has any registered path of given type that matches provided path.
 	 *
 	 * @protected
-	 * @param {String} type Paths' type. Possible values are `ALLOW` or `DISALLOW`.
+	 * @param {String} type Paths' type. Possible values are `allow` or `disallow`.
 	 * @param {Array.<String>} checkPath Path to check.
 	 * @param {String} [attribute] If set, only paths registered for given attribute will be checked.
 	 * @returns {Boolean} `true` if item has any registered matching path, `false` otherwise.
@@ -384,7 +382,7 @@ export default class Schema {
 		// If there is matching disallow path, this query is not valid with schema.
 		for ( let attribute of query.attributes ) {
 			for ( let schemaItem of schemaItems ) {
-				if ( schemaItem._hasMatchingPath( 'DISALLOW', path, attribute ) ) {
+				if ( schemaItem._hasMatchingPath( 'disallow', path, attribute ) ) {
 					return false;
 				}
 			}
@@ -400,7 +398,7 @@ export default class Schema {
 			let matched = false;
 
 			for ( let schemaItem of schemaItems ) {
-				if ( schemaItem._hasMatchingPath( 'ALLOW', path, attribute ) ) {
+				if ( schemaItem._hasMatchingPath( 'allow', path, attribute ) ) {
 					matched = true;
 					break;
 				}

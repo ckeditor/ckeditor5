@@ -5,11 +5,10 @@
 
 /* bender-tags: model */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import DocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import LivePosition from '/ckeditor5/engine/model/liveposition.js';
 import Range from '/ckeditor5/engine/model/range.js';
@@ -22,10 +21,10 @@ describe( 'LivePosition', () => {
 		doc = new Document();
 		root = doc.createRoot();
 
-		li1 = new Element( 'li', [], 'abcdef' );
-		li2 = new Element( 'li', [], 'foobar' );
+		li1 = new Element( 'li', [], new Text( 'abcdef' ) );
+		li2 = new Element( 'li', [], new Text( 'foobar' ) );
 		ul = new Element( 'ul', [], [ li1, li2 ] );
-		p = new Element( 'p', [], 'qwerty' );
+		p = new Element( 'p', [], new Text( 'qwerty' ) );
 
 		root.insertChildren( 0, [ p, ul ] );
 	} );

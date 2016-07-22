@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
@@ -14,7 +12,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
  *
  * **Note:** deltas kept in `History` should be used only to transform deltas. It's not advised to use `History` to get
  * original delta basing on it's {@link engine.model.delta.Delta#baseVersion baseVersion}. Also, after transforming a
- * delta by deltas from `History`, fix it's base version accordingly (set to {@link engine.model.Document#version}.
+ * delta by deltas from `History`, fix it's base version accordingly (set it to {@link engine.model.Document#version document version}).
  *
  * @memberOf engine.model
  */
@@ -58,7 +56,7 @@ export default class History {
 	/**
 	 * Returns deltas added to the history.
 	 *
-	 * @param {Number} [from=0] Base version from which deltas should be returned (inclusive). Defaults to `0` which means
+	 * @param {Number} [from=0] Base version from which deltas should be returned (inclusive). Defaults to `0`, which means
 	 * that deltas from the first one will be returned.
 	 * @param {Number} [to=Number.POSITIVE_INFINITY] Base version up to which deltas should be returned (exclusive).
 	 * Defaults to `Number.POSITIVE_INFINITY` which means that deltas up to the last one will be returned.
@@ -145,7 +143,7 @@ export default class History {
 	 * **Note:** if delta with `baseVersion` was already updated by multiple deltas, all updated deltas will be removed
 	 * and new deltas will be inserted at their position.
 	 *
-	 * **Note:** delta marked as reversed won't get updated.
+	 * **Note:** removed delta won't get updated.
 	 *
 	 * @param {Number} baseVersion Base version of a delta to update.
 	 * @param {Iterable.<engine.model.delta.Delta>} updatedDeltas Deltas to be inserted in place of updated delta.

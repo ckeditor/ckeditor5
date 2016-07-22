@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 export default {
 	'img onerror': '<p><img onerror="%xss%" src="produce404" /></p>',
 	'video onerror': '<p><video onerror="%xss%">foo</video></p>',

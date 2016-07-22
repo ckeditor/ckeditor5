@@ -5,8 +5,6 @@
 
 /* bender-tags: model */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
@@ -16,6 +14,7 @@ import LiveRange from '/ckeditor5/engine/model/liverange.js';
 import LiveSelection from '/ckeditor5/engine/model/liveselection.js';
 import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
+import count from '/ckeditor5/utils/count.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import { wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
@@ -36,11 +35,11 @@ describe( 'LiveSelection', () => {
 		root.appendChildren( [
 			new Element( 'p' ),
 			new Element( 'p' ),
-			new Element( 'p', [], 'foobar' ),
+			new Element( 'p', [], new Text( 'foobar' ) ),
 			new Element( 'p' ),
 			new Element( 'p' ),
 			new Element( 'p' ),
-			new Element( 'p', [], 'foobar' )
+			new Element( 'p', [], new Text( 'foobar' ) )
 		] );
 		selection = doc.selection;
 		doc.schema.registerItem( 'p', '$block' );
@@ -67,7 +66,7 @@ describe( 'LiveSelection', () => {
 		it( 'should be set to the beginning of the doc if there is no editable element', () => {
 			doc = new Document();
 			root = doc.createRoot();
-			root.insertChildren( 0, 'foobar' );
+			root.insertChildren( 0, new Text( 'foobar' ) );
 			selection = doc.selection;
 
 			const ranges = Array.from( selection.getRanges() );
@@ -76,8 +75,7 @@ describe( 'LiveSelection', () => {
 			expect( selection.anchor.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
 			expect( selection.focus.isEqual( new Position( root, [ 0 ] ) ) ).to.be.true;
 			expect( selection ).to.have.property( 'isBackward', false );
-			expect( selection._attrs ).to.be.instanceof( Map );
-			expect( selection._attrs.size ).to.equal( 0 );
+			expect( count( selection.getAttributes() ) ).to.equal( 0 );
 		} );
 
 		it( 'should skip element when you can not put selection', () => {
@@ -85,7 +83,7 @@ describe( 'LiveSelection', () => {
 			root = doc.createRoot();
 			root.insertChildren( 0, [
 				new Element( 'img' ),
-				new Element( 'p', [], 'foobar' )
+				new Element( 'p', [], new Text( 'foobar' ) )
 			] );
 			doc.schema.registerItem( 'img' );
 			doc.schema.registerItem( 'p', '$block' );
@@ -97,8 +95,7 @@ describe( 'LiveSelection', () => {
 			expect( selection.anchor.isEqual( new Position( root, [ 1, 0 ] ) ) ).to.be.true;
 			expect( selection.focus.isEqual( new Position( root, [ 1, 0 ] ) ) ).to.be.true;
 			expect( selection ).to.have.property( 'isBackward', false );
-			expect( selection._attrs ).to.be.instanceof( Map );
-			expect( selection._attrs.size ).to.equal( 0 );
+			expect( count( selection.getAttributes() ) ).to.equal( 0 );
 		} );
 	} );
 
@@ -167,12 +164,12 @@ describe( 'LiveSelection', () => {
 	describe( 'setFocus', () => {
 		it( 'modifies default range', () => {
 			const startPos = selection.getFirstPosition();
-			const endPos = Position.createAt( root, 'END' );
+			const endPos = Position.createAt( root, 'end' );
 
 			selection.setFocus( endPos );
 
-			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'SAME' );
-			expect( selection.focus.compareWith( endPos ) ).to.equal( 'SAME' );
+			expect( selection.anchor.compareWith( startPos ) ).to.equal( 'same' );
+			expect( selection.focus.compareWith( endPos ) ).to.equal( 'same' );
 		} );
 
 		it( 'detaches the range it replaces', () => {
@@ -290,7 +287,11 @@ describe( 'LiveSelection', () => {
 		let spy;
 
 		beforeEach( () => {
-			root.insertChildren( 0, [ new Element( 'ul', [], 'abcdef' ), new Element( 'p', [], 'foobar' ), 'xyz' ] );
+			root.insertChildren( 0, [
+				new Element( 'ul', [], new Text( 'abcdef' ) ),
+				new Element( 'p', [], new Text( 'foobar' ) ),
+				new Text( 'xyz' )
+			] );
 
 			selection.addRange( new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 1, 4 ] ) ) );
 
@@ -433,7 +434,7 @@ describe( 'LiveSelection', () => {
 
 		beforeEach( () => {
 			root.insertChildren( 0, [
-				new Element( 'p', [], 'foobar' ),
+				new Element( 'p', [], new Text( 'foobar' ) ),
 				new Element( 'p', [], [] )
 			] );
 

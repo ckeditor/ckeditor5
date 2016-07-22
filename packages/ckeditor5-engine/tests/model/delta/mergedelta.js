@@ -5,11 +5,10 @@
 
 /* bender-tags: model, delta */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 import MergeDelta from '/ckeditor5/engine/model/delta/mergedelta.js';
@@ -19,6 +18,8 @@ import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
 import ReinsertOperation from '/ckeditor5/engine/model/operation/reinsertoperation.js';
 
+import count from '/ckeditor5/utils/count.js';
+
 describe( 'Batch', () => {
 	let doc, root, p1, p2, batch;
 
@@ -26,8 +27,8 @@ describe( 'Batch', () => {
 		doc = new Document();
 		root = doc.createRoot();
 
-		p1 = new Element( 'p', { key1: 'value1' }, 'foo' );
-		p2 = new Element( 'p', { key2: 'value2' }, 'bar' );
+		p1 = new Element( 'p', { key1: 'value1' }, new Text( 'foo' ) );
+		p2 = new Element( 'p', { key2: 'value2' }, new Text( 'bar' ) );
 
 		root.insertChildren( 0, [ p1, p2 ] );
 	} );
@@ -36,17 +37,12 @@ describe( 'Batch', () => {
 		it( 'should merge foo and bar into foobar', () => {
 			doc.batch().merge( new Position( root, [ 1 ] ) );
 
-			expect( root.getChildCount() ).to.equal( 1 );
+			expect( root.getMaxOffset() ).to.equal( 1 );
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
-			expect( root.getChild( 0 ).getChildCount() ).to.equal( 6 );
-			expect( root.getChild( 0 )._attrs.size ).to.equal( 1 );
+			expect( root.getChild( 0 ).getMaxOffset() ).to.equal( 6 );
+			expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
 			expect( root.getChild( 0 ).getAttribute( 'key1' ) ).to.equal( 'value1' );
-			expect( root.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
-			expect( root.getChild( 0 ).getChild( 1 ).character ).to.equal( 'o' );
-			expect( root.getChild( 0 ).getChild( 2 ).character ).to.equal( 'o' );
-			expect( root.getChild( 0 ).getChild( 3 ).character ).to.equal( 'b' );
-			expect( root.getChild( 0 ).getChild( 4 ).character ).to.equal( 'a' );
-			expect( root.getChild( 0 ).getChild( 5 ).character ).to.equal( 'r' );
+			expect( root.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foobar' );
 		} );
 
 		it( 'should throw if there is no element after', () => {

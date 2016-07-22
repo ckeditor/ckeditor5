@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Delta from './delta.js';
 import DeltaFactory from './deltafactory.js';
 import RemoveDelta from './removedelta.js';
@@ -22,6 +20,7 @@ export default class InsertDelta extends Delta {
 	/**
 	 * Position where the delta inserts nodes or `null` if there are no operations in the delta.
 	 *
+	 * @readonly
 	 * @type {engine.model.Position|null}
 	 */
 	get position() {
@@ -31,15 +30,17 @@ export default class InsertDelta extends Delta {
 	/**
 	 * Node list containing all the nodes inserted by the delta or `null` if there are no operations in the delta.
 	 *
+	 * @readonly
 	 * @type {engine.model.NodeList|null}
 	 */
-	get nodeList() {
-		return this._insertOperation ? this._insertOperation.nodeList : null;
+	get nodes() {
+		return this._insertOperation ? this._insertOperation.nodes : null;
 	}
 
 	/**
 	 * Insert operation that is saved in this delta or `null` if there are no operations in the delta.
 	 *
+	 * @readonly
 	 * @protected
 	 * @type {engine.model.operation.InsertOperation|null}
 	 */
@@ -47,6 +48,9 @@ export default class InsertDelta extends Delta {
 		return this.operations[ 0 ] || null;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	get _reverseDeltaClass() {
 		return RemoveDelta;
 	}
@@ -58,6 +62,9 @@ export default class InsertDelta extends Delta {
 		return 'engine.model.delta.InsertDelta';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	static get _priority() {
 		return 20;
 	}

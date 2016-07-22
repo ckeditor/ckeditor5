@@ -5,12 +5,11 @@
 
 /* bender-tags: model */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import DocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
+import TextProxy from '/ckeditor5/engine/model/textproxy.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
@@ -19,7 +18,7 @@ import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
 testUtils.createSinonSandbox();
 
 describe( 'position', () => {
-	let doc, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r;
+	let doc, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r, foz, bar;
 
 	// root
 	//  |- p         Before: [ 0 ]       After: [ 1 ]
@@ -38,17 +37,21 @@ describe( 'position', () => {
 		root = doc.createRoot();
 		otherRoot = doc.createRoot( '$root', 'otherRoot' );
 
-		li1 = new Element( 'li', [], 'foz' );
+		foz = new Text( 'foz' );
 
-		f = li1.getChild( 0 );
-		o = li1.getChild( 1 );
-		z = li1.getChild( 2 );
+		li1 = new Element( 'li', [], foz );
 
-		li2 = new Element( 'li', [], 'bar' );
+		f = new TextProxy( foz, 0, 1 );
+		o = new TextProxy( foz, 1, 1 );
+		z = new TextProxy( foz, 2, 1 );
 
-		b = li2.getChild( 0 );
-		a = li2.getChild( 1 );
-		r = li2.getChild( 2 );
+		bar = new Text( 'bar' );
+
+		li2 = new Element( 'li', [], bar );
+
+		b = new TextProxy( bar, 0, 1 );
+		a = new TextProxy( bar, 1, 1 );
+		r = new TextProxy( bar, 2, 1 );
 
 		ul = new Element( 'ul', [], [ li1, li2 ] );
 
@@ -164,15 +167,15 @@ describe( 'position', () => {
 		} );
 
 		it( 'should create positions from node and flag', () => {
-			expect( Position.createAt( root, 'END' ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
+			expect( Position.createAt( root, 'end' ) ).to.have.property( 'path' ).that.deep.equals( [ 2 ] );
 
-			expect( Position.createAt( p, 'BEFORE' ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
-			expect( Position.createAt( a, 'BEFORE' ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 1 ] );
+			expect( Position.createAt( p, 'before' ) ).to.have.property( 'path' ).that.deep.equals( [ 0 ] );
+			expect( Position.createAt( a, 'before' ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 1 ] );
 
-			expect( Position.createAt( p, 'AFTER' ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
-			expect( Position.createAt( a, 'AFTER' ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 2 ] );
+			expect( Position.createAt( p, 'after' ) ).to.have.property( 'path' ).that.deep.equals( [ 1 ] );
+			expect( Position.createAt( a, 'after' ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 1, 2 ] );
 
-			expect( Position.createAt( ul, 'END' ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 2 ] );
+			expect( Position.createAt( ul, 'end' ) ).to.have.property( 'path' ).that.deep.equals( [ 1, 2 ] );
 		} );
 	} );
 
@@ -273,6 +276,23 @@ describe( 'position', () => {
 		expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'offset' ).that.equals( 3 );
 	} );
 
+	it( 'should have index', () => {
+		expect( new Position( root, [ 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+		expect( new Position( root, [ 1 ] ) ).to.have.property( 'index' ).that.equals( 1 );
+		expect( new Position( root, [ 2 ] ) ).to.have.property( 'index' ).that.equals( 2 );
+
+		expect( new Position( root, [ 0, 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+
+		expect( new Position( root, [ 1, 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+		expect( new Position( root, [ 1, 1 ] ) ).to.have.property( 'index' ).that.equals( 1 );
+		expect( new Position( root, [ 1, 2 ] ) ).to.have.property( 'index' ).that.equals( 2 );
+
+		expect( new Position( root, [ 1, 0, 0 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+		expect( new Position( root, [ 1, 0, 1 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+		expect( new Position( root, [ 1, 0, 2 ] ) ).to.have.property( 'index' ).that.equals( 0 );
+		expect( new Position( root, [ 1, 0, 3 ] ) ).to.have.property( 'index' ).that.equals( 1 );
+	} );
+
 	it( 'should be able to set offset', () => {
 		let position = new Position( root, [ 1, 0, 2 ] );
 		position.offset = 4;
@@ -281,7 +301,7 @@ describe( 'position', () => {
 		expect( position.path ).to.deep.equal( [ 1, 0, 4 ] );
 	} );
 
-	it( 'should have nodeBefore', () => {
+	it( 'should have nodeBefore if it is not inside a text node', () => {
 		expect( new Position( root, [ 0 ] ).nodeBefore ).to.be.null;
 		expect( new Position( root, [ 1 ] ).nodeBefore ).to.equal( p );
 		expect( new Position( root, [ 2 ] ).nodeBefore ).to.equal( ul );
@@ -293,12 +313,12 @@ describe( 'position', () => {
 		expect( new Position( root, [ 1, 2 ] ).nodeBefore ).to.equal( li2 );
 
 		expect( new Position( root, [ 1, 0, 0 ] ).nodeBefore ).to.be.null;
-		expect( new Position( root, [ 1, 0, 1 ] ).nodeBefore.character ).to.equal( 'f' );
-		expect( new Position( root, [ 1, 0, 2 ] ).nodeBefore.character ).to.equal( 'o' );
-		expect( new Position( root, [ 1, 0, 3 ] ).nodeBefore.character ).to.equal( 'z' );
+		expect( new Position( root, [ 1, 0, 1 ] ).nodeBefore ).to.be.null;
+		expect( new Position( root, [ 1, 0, 2 ] ).nodeBefore ).to.be.null;
+		expect( new Position( root, [ 1, 0, 3 ] ).nodeBefore.data ).to.equal( 'foz' );
 	} );
 
-	it( 'should have nodeAfter', () => {
+	it( 'should have nodeAfter if it is not inside a text node', () => {
 		expect( new Position( root, [ 0 ] ).nodeAfter ).to.equal( p );
 		expect( new Position( root, [ 1 ] ).nodeAfter ).to.equal( ul );
 		expect( new Position( root, [ 2 ] ).nodeAfter ).to.be.null;
@@ -309,10 +329,32 @@ describe( 'position', () => {
 		expect( new Position( root, [ 1, 1 ] ).nodeAfter ).to.equal( li2 );
 		expect( new Position( root, [ 1, 2 ] ).nodeAfter ).to.be.null;
 
-		expect( new Position( root, [ 1, 0, 0 ] ).nodeAfter.character ).to.equal( 'f' );
-		expect( new Position( root, [ 1, 0, 1 ] ).nodeAfter.character ).to.equal( 'o' );
-		expect( new Position( root, [ 1, 0, 2 ] ).nodeAfter.character ).to.equal( 'z' );
+		expect( new Position( root, [ 1, 0, 0 ] ).nodeAfter.data ).to.equal( 'foz' );
+		expect( new Position( root, [ 1, 0, 1 ] ).nodeAfter ).to.be.null;
+		expect( new Position( root, [ 1, 0, 2 ] ).nodeAfter ).to.be.null;
 		expect( new Position( root, [ 1, 0, 3 ] ).nodeAfter ).to.be.null;
+	} );
+
+	it( 'should have a text node property if it is in text node', () => {
+		expect( new Position( root, [ 0 ] ).textNode ).to.be.null;
+		expect( new Position( root, [ 1 ] ).textNode ).to.be.null;
+		expect( new Position( root, [ 2 ] ).textNode ).to.be.null;
+
+		expect( new Position( root, [ 0, 0 ] ).textNode ).to.be.null;
+
+		expect( new Position( root, [ 1, 0 ] ).textNode ).to.be.null;
+		expect( new Position( root, [ 1, 1 ] ).textNode ).to.be.null;
+		expect( new Position( root, [ 1, 2 ] ).textNode ).to.be.null;
+
+		expect( new Position( root, [ 1, 0, 0 ] ).textNode ).to.be.null;
+		expect( new Position( root, [ 1, 0, 1 ] ).textNode ).to.equal( foz );
+		expect( new Position( root, [ 1, 0, 2 ] ).textNode ).to.equal( foz );
+		expect( new Position( root, [ 1, 0, 3 ] ).textNode ).to.be.null;
+
+		expect( new Position( root, [ 1, 1, 0 ] ).textNode ).to.be.null;
+		expect( new Position( root, [ 1, 1, 1 ] ).textNode ).to.equal( bar );
+		expect( new Position( root, [ 1, 1, 2 ] ).textNode ).to.equal( bar );
+		expect( new Position( root, [ 1, 1, 3 ] ).textNode ).to.be.null;
 	} );
 
 	it( 'should have proper parent path', () => {
@@ -456,45 +498,45 @@ describe( 'position', () => {
 
 	describe( 'isAtEnd', () => {
 		it( 'should return true if position is at the end of its parent', () => {
-			expect( new Position( root, [ root.getChildCount() ] ).isAtEnd() ).to.be.true;
+			expect( new Position( root, [ root.getMaxOffset() ] ).isAtEnd() ).to.be.true;
 			expect( new Position( root, [ 0 ] ).isAtEnd() ).to.be.false;
 		} );
 	} );
 
 	describe( 'compareWith', () => {
-		it( 'should return SAME if positions are same', () => {
+		it( 'should return same if positions are same', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const compared = new Position( root, [ 1, 2, 3 ] );
 
-			expect( position.compareWith( compared ) ).to.equal( 'SAME' );
+			expect( position.compareWith( compared ) ).to.equal( 'same' );
 		} );
 
-		it( 'should return BEFORE if the position is before compared one', () => {
+		it( 'should return before if the position is before compared one', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const compared = new Position( root, [ 1, 3 ] );
 
-			expect( position.compareWith( compared ) ).to.equal( 'BEFORE' );
+			expect( position.compareWith( compared ) ).to.equal( 'before' );
 		} );
 
-		it( 'should return AFTER if the position is after compared one', () => {
+		it( 'should return after if the position is after compared one', () => {
 			const position = new Position( root, [ 1, 2, 3, 4 ] );
 			const compared = new Position( root, [ 1, 2, 3 ] );
 
-			expect( position.compareWith( compared ) ).to.equal( 'AFTER' );
+			expect( position.compareWith( compared ) ).to.equal( 'after' );
 		} );
 
-		it( 'should return DIFFERENT if positions are in different roots', () => {
+		it( 'should return different if positions are in different roots', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
 			const compared = new Position( otherRoot, [ 1, 2, 3 ] );
 
-			expect( position.compareWith( compared ) ).to.equal( 'DIFFERENT' );
+			expect( position.compareWith( compared ) ).to.equal( 'different' );
 		} );
 	} );
 
-	describe( 'getTransformedByInsertion', () => {
+	describe( '_getTransformedByInsertion', () => {
 		it( 'should return a new Position instance', () => {
 			const position = new Position( root, [ 0 ] );
-			const transformed = position.getTransformedByInsertion( new Position( root, [ 2 ] ), 4, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 2 ] ), 4, false );
 
 			expect( transformed ).not.to.equal( position );
 			expect( transformed ).to.be.instanceof( Position );
@@ -502,58 +544,58 @@ describe( 'position', () => {
 
 		it( 'should increment offset if insertion is in the same parent and closer offset', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 2, 2 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 2 ] ), 2, false );
 
 			expect( transformed.offset ).to.equal( 5 );
 		} );
 
 		it( 'should not increment offset if insertion position is in different root', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByInsertion( new Position( otherRoot, [ 1, 2, 2 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( otherRoot, [ 1, 2, 2 ] ), 2, false );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should not increment offset if insertion is in the same parent and the same offset', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 2, 3 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 3 ] ), 2, false );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should increment offset if insertion is in the same parent and the same offset and it is inserted before', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 2, 3 ] ), 2, true );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 3 ] ), 2, true );
 
 			expect( transformed.offset ).to.equal( 5 );
 		} );
 
 		it( 'should not increment offset if insertion is in the same parent and further offset', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 2, 4 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2, 4 ] ), 2, false );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should update path if insertion position parent is a node from that path and offset is before next node on that path', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 2 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 2 ] ), 2, false );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 4, 3 ] );
 		} );
 
 		it( 'should not update path if insertion position parent is a node from that path and offset is after next node on that path', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByInsertion( new Position( root, [ 1, 3 ] ), 2, false );
+			const transformed = position._getTransformedByInsertion( new Position( root, [ 1, 3 ] ), 2, false );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
 		} );
 	} );
 
-	describe( 'getTransformedByDeletion', () => {
+	describe( '_getTransformedByDeletion', () => {
 		it( 'should return a new Position instance', () => {
 			const position = new Position( root, [ 0 ] );
-			const transformed = position.getTransformedByDeletion( new Position( root, [ 2 ] ), 4 );
+			const transformed = position._getTransformedByDeletion( new Position( root, [ 2 ] ), 4 );
 
 			expect( transformed ).not.to.equal( position );
 			expect( transformed ).to.be.instanceof( Position );
@@ -561,86 +603,86 @@ describe( 'position', () => {
 
 		it( 'should return null if original position is inside one of removed nodes', () => {
 			const position = new Position( root, [ 1, 2 ] );
-			const transformed = position.getTransformedByDeletion( new Position( root, [ 0 ] ), 2 );
+			const transformed = position._getTransformedByDeletion( new Position( root, [ 0 ] ), 2 );
 
 			expect( transformed ).to.be.null;
 		} );
 
 		it( 'should decrement offset if deletion is in the same parent and closer offset', () => {
 			const position = new Position( root, [ 1, 2, 7 ] );
-			const transformed = position.getTransformedByDeletion( new Position( root, [ 1, 2, 2 ] ), 2 );
+			const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 2, 2 ] ), 2 );
 
 			expect( transformed.offset ).to.equal( 5 );
 		} );
 
 		it( 'should return null if original position is between removed nodes', () => {
 			const position = new Position( root, [ 1, 2, 4 ] );
-			const transformed = position.getTransformedByDeletion( new Position( root, [ 1, 2, 3 ] ), 5 );
+			const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 2, 3 ] ), 5 );
 
 			expect( transformed ).to.be.null;
 		} );
 
 		it( 'should not decrement offset if deletion position is in different root', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByDeletion( new Position( otherRoot, [ 1, 2, 1 ] ), 2 );
+			const transformed = position._getTransformedByDeletion( new Position( otherRoot, [ 1, 2, 1 ] ), 2 );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should not decrement offset if deletion is in the same parent and further offset', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByDeletion( new Position( root, [ 1, 2, 4 ] ), 2 );
+			const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 2, 4 ] ), 2 );
 
 			expect( transformed.offset ).to.equal( 3 );
 		} );
 
 		it( 'should update path if deletion position parent is a node from that path and offset is before next node on that path', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByDeletion( new Position( root, [ 1, 0 ] ), 2 );
+			const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 0 ] ), 2 );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 0, 3 ] );
 		} );
 
 		it( 'should not update path if deletion position parent is a node from that path and offset is after next node on that path', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByDeletion( new Position( root, [ 1, 3 ] ), 2 );
+			const transformed = position._getTransformedByDeletion( new Position( root, [ 1, 3 ] ), 2 );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
 		} );
 	} );
 
-	describe( 'getTransformedByMove', () => {
+	describe( '_getTransformedByMove', () => {
 		it( 'should increment offset if a range was moved to the same parent and closer offset', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByMove( new Position( root, [ 2 ] ), new Position( root, [ 1, 2, 0 ] ), 3, false );
+			const transformed = position._getTransformedByMove( new Position( root, [ 2 ] ), new Position( root, [ 1, 2, 0 ] ), 3, false );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 6 ] );
 		} );
 
 		it( 'should decrement offset if a range was moved from the same parent and closer offset', () => {
 			const position = new Position( root, [ 1, 2, 6 ] );
-			const transformed = position.getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false );
+			const transformed = position._getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 3 ] );
 		} );
 
 		it( 'should decrement offset if position was at the end of a range and move was not sticky', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false );
+			const transformed = position._getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false );
 
 			expect( transformed.path ).to.deep.equal( [ 1, 2, 0 ] );
 		} );
 
 		it( 'should update path if position was at the end of a range and move was sticky', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false, true );
+			const transformed = position._getTransformedByMove( new Position( root, [ 1, 2, 0 ] ), new Position( root, [ 2 ] ), 3, false, true );
 
 			expect( transformed.path ).to.deep.equal( [ 5 ] );
 		} );
 
 		it( 'should update path if a range contained this position', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
-			const transformed = position.getTransformedByMove( new Position( root, [ 1, 1 ] ), new Position( root, [ 2, 1 ] ), 3, false );
+			const transformed = position._getTransformedByMove( new Position( root, [ 1, 1 ] ), new Position( root, [ 2, 1 ] ), 3, false );
 
 			expect( transformed.path ).to.deep.equal( [ 2, 2, 3 ] );
 		} );

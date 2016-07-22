@@ -5,14 +5,13 @@
 
 /* bender-tags: model, operation */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import ReinsertOperation from '/ckeditor5/engine/model/operation/reinsertoperation.js';
 import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
 import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'ReinsertOperation', () => {
@@ -78,19 +77,19 @@ describe( 'ReinsertOperation', () => {
 		let reverse = operation.getReversed();
 
 		const element = new Element();
-		element.insertChildren( 0, 'xx' );
+		element.insertChildren( 0, new Text( 'xx' ) );
 		graveyard.insertChildren( 0, element );
 
 		doc.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getChildCount() ).to.equal( 2 );
-		expect( element.getChildCount() ).to.equal( 0 );
+		expect( root.getMaxOffset() ).to.equal( 2 );
+		expect( element.getMaxOffset() ).to.equal( 0 );
 
 		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( root.getChildCount() ).to.equal( 0 );
+		expect( root.getMaxOffset() ).to.equal( 0 );
 		// Don't check `element` - nodes are moved to new holder element.
 	} );
 

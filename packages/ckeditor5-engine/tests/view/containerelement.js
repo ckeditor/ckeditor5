@@ -5,8 +5,6 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Element from '/ckeditor5/engine/view/element.js';
 import { parse } from '/tests/engine/_utils/view.js';

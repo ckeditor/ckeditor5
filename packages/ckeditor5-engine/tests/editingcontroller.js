@@ -5,15 +5,9 @@
 
 /* bender-tags: view */
 
-'use strict';
-
 import EditingController from '/ckeditor5/engine/editingcontroller.js';
 
 import ViewDocument from '/ckeditor5/engine/view/document.js';
-import MutationObserver from '/ckeditor5/engine/view/observer/mutationobserver.js';
-import SelectionObserver from '/ckeditor5/engine/view/observer/selectionobserver.js';
-import FocusObserver from '/ckeditor5/engine/view/observer/focusobserver.js';
-import KeyObserver from '/ckeditor5/engine/view/observer/keyobserver.js';
 
 import Mapper from '/ckeditor5/engine/conversion/mapper.js';
 import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
@@ -43,13 +37,6 @@ describe( 'EditingController', () => {
 			expect( editing ).to.have.property( 'view' ).that.is.instanceof( ViewDocument );
 			expect( editing ).to.have.property( 'mapper' ).that.is.instanceof( Mapper );
 			expect( editing ).to.have.property( 'modelToView' ).that.is.instanceof( ModelConversionDispatcher );
-		} );
-
-		it( 'should add observers', () => {
-			expect( editing.view.getObserver( MutationObserver ) ).to.be.instanceof( MutationObserver );
-			expect( editing.view.getObserver( SelectionObserver ) ).to.be.instanceof( SelectionObserver );
-			expect( editing.view.getObserver( FocusObserver ) ).to.be.instanceof( FocusObserver );
-			expect( editing.view.getObserver( KeyObserver ) ).to.be.instanceof( KeyObserver );
 		} );
 	} );
 

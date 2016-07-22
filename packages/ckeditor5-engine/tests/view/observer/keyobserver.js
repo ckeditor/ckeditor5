@@ -5,8 +5,6 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import KeyObserver from '/ckeditor5/engine/view/observer/keyobserver.js';
 import ViewDocument from '/ckeditor5/engine/view/document.js';
 import { getCode } from '/ckeditor5/utils/keyboard.js';
@@ -16,7 +14,7 @@ describe( 'KeyObserver', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument();
-		observer = viewDocument.addObserver( KeyObserver );
+		observer = viewDocument.getObserver( KeyObserver );
 	} );
 
 	it( 'should define domEventType', () => {

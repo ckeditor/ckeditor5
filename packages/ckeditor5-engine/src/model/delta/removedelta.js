@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import MoveDelta from './movedelta.js';
 import { register } from '../batch.js';
 import DeltaFactory from './deltafactory.js';
@@ -35,25 +33,25 @@ function addRemoveOperation( batch, delta, position, howMany ) {
 }
 
 /**
- * Removes given node or range of nodes.
+ * Removes given {@link engine.model.Item model item} or given range.
  *
  * @chainable
  * @method engine.model.Batch#remove
- * @param {engine.model.Node|engine.model.Range} nodeOrRange Node or range of nodes to remove.
+ * @param {engine.model.Item|engine.model.Range} itemOrRange Model item or range to remove.
  */
-register( 'remove', function( nodeOrRange ) {
+register( 'remove', function( itemOrRange ) {
 	const delta = new RemoveDelta();
 	this.addDelta( delta );
 
-	if ( nodeOrRange instanceof Range ) {
+	if ( itemOrRange instanceof Range ) {
 		// The array is reversed, so the ranges are correct and do not have to be updated.
-		let ranges = nodeOrRange.getMinimalFlatRanges().reverse();
+		let ranges = itemOrRange.getMinimalFlatRanges().reverse();
 
 		for ( let flat of ranges ) {
 			addRemoveOperation( this, delta, flat.start, flat.end.offset - flat.start.offset );
 		}
 	} else {
-		addRemoveOperation( this, delta, Position.createBefore( nodeOrRange ), 1 );
+		addRemoveOperation( this, delta, Position.createBefore( itemOrRange ), 1 );
 	}
 
 	return this;

@@ -5,8 +5,6 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import {
 	BR_FILLER,
 	NBSP_FILLER,

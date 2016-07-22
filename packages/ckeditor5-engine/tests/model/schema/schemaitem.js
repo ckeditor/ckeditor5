@@ -5,8 +5,6 @@
 
 /* bender-tags: model */
 
-'use strict';
-
 import Schema from '/ckeditor5/engine/model/schema.js';
 import { SchemaItem as SchemaItem } from '/ckeditor5/engine/model/schema.js';
 
@@ -42,7 +40,7 @@ describe( 'allow', () => {
 		item.allow( path1 );
 		item.allow( path2 );
 
-		let paths = item._getPaths( 'ALLOW' );
+		let paths = item._getPaths( 'allow' );
 
 		expect( paths.length ).to.equal( 2 );
 
@@ -58,8 +56,8 @@ describe( 'allow', () => {
 		item.allow( [ 'div' ] );
 		item.allow( [ 'header' ], 'bold' );
 
-		let pathsWithNoAttribute = item._getPaths( 'ALLOW' );
-		let pathsWithBoldAttribute = item._getPaths( 'ALLOW', 'bold' );
+		let pathsWithNoAttribute = item._getPaths( 'allow' );
+		let pathsWithBoldAttribute = item._getPaths( 'allow', 'bold' );
 
 		expect( pathsWithNoAttribute.length ).to.equal( 1 );
 		expect( pathsWithNoAttribute[ 0 ] ).to.deep.equal( [ 'div' ] );
@@ -78,7 +76,7 @@ describe( 'disallow', () => {
 		item.disallow( path1 );
 		item.disallow( path2 );
 
-		let paths = item._getPaths( 'DISALLOW' );
+		let paths = item._getPaths( 'disallow' );
 
 		expect( paths.length ).to.equal( 2 );
 
@@ -94,8 +92,8 @@ describe( 'disallow', () => {
 		item.disallow( [ 'div' ] );
 		item.disallow( [ 'header' ], 'bold' );
 
-		let pathsWithNoAttribute = item._getPaths( 'DISALLOW' );
-		let pathsWithBoldAttribute = item._getPaths( 'DISALLOW', 'bold' );
+		let pathsWithNoAttribute = item._getPaths( 'disallow' );
+		let pathsWithBoldAttribute = item._getPaths( 'disallow', 'bold' );
 
 		expect( pathsWithNoAttribute.length ).to.equal( 1 );
 		expect( pathsWithNoAttribute[ 0 ] ).to.deep.equal( [ 'div' ] );
@@ -111,25 +109,25 @@ describe( '_hasMatchingPath', () => {
 		item.allow( [ 'div' , 'header' ] );
 		item.allow( [ 'image' ] );
 
-		expect( item._hasMatchingPath( 'ALLOW', [ 'div', 'header' ] ) ).to.be.true;
-		expect( item._hasMatchingPath( 'ALLOW', [ 'html', 'div', 'header' ] ) ).to.be.true;
-		expect( item._hasMatchingPath( 'ALLOW', [ 'div', 'header', 'span' ] ) ).to.be.true;
-		expect( item._hasMatchingPath( 'ALLOW', [ 'html', 'div', 'p', 'header', 'span' ] ) ).to.be.true;
+		expect( item._hasMatchingPath( 'allow', [ 'div', 'header' ] ) ).to.be.true;
+		expect( item._hasMatchingPath( 'allow', [ 'html', 'div', 'header' ] ) ).to.be.true;
+		expect( item._hasMatchingPath( 'allow', [ 'div', 'header', 'span' ] ) ).to.be.true;
+		expect( item._hasMatchingPath( 'allow', [ 'html', 'div', 'p', 'header', 'span' ] ) ).to.be.true;
 	} );
 
 	it( 'should return false if there are no allowed paths that match query path', () => {
 		item.allow( [ 'div', 'p' ] );
 
-		expect( item._hasMatchingPath( 'ALLOW', [ 'p' ] ) ).to.be.false;
-		expect( item._hasMatchingPath( 'ALLOW', [ 'div' ] ) ).to.be.false;
-		expect( item._hasMatchingPath( 'ALLOW', [ 'p', 'div' ] ) ).to.be.false;
+		expect( item._hasMatchingPath( 'allow', [ 'p' ] ) ).to.be.false;
+		expect( item._hasMatchingPath( 'allow', [ 'div' ] ) ).to.be.false;
+		expect( item._hasMatchingPath( 'allow', [ 'p', 'div' ] ) ).to.be.false;
 	} );
 
 	it( 'should return true if there is at least one disallowed path that matches query path', () => {
 		item.allow( [ 'div', 'header' ] );
 		item.disallow( [ 'p', 'header' ] );
 
-		expect( item._hasMatchingPath( 'DISALLOW', [ 'html', 'div', 'p', 'header', 'span' ] ) ).to.be.true;
+		expect( item._hasMatchingPath( 'disallow', [ 'html', 'div', 'p', 'header', 'span' ] ) ).to.be.true;
 	} );
 
 	it( 'should use only paths that are registered for given attribute', () => {
@@ -138,12 +136,12 @@ describe( '_hasMatchingPath', () => {
 		item.allow( [ 'header' ] );
 		item.disallow( [ 'header' ], 'bold' );
 
-		expect( item._hasMatchingPath( 'ALLOW', [ 'html', 'div', 'p' ]  ) ).to.be.true;
-		expect( item._hasMatchingPath( 'ALLOW', [ 'html', 'div' ] ) ).to.be.false;
-		expect( item._hasMatchingPath( 'ALLOW', [ 'html', 'div' ], 'bold' ) ).to.be.true;
+		expect( item._hasMatchingPath( 'allow', [ 'html', 'div', 'p' ]  ) ).to.be.true;
+		expect( item._hasMatchingPath( 'allow', [ 'html', 'div' ] ) ).to.be.false;
+		expect( item._hasMatchingPath( 'allow', [ 'html', 'div' ], 'bold' ) ).to.be.true;
 
-		expect( item._hasMatchingPath( 'DISALLOW', [ 'html', 'div', 'header' ] ) ).to.be.false;
-		expect( item._hasMatchingPath( 'DISALLOW', [ 'html', 'div', 'p', 'header', 'span' ], 'bold' ) ).to.be.true;
+		expect( item._hasMatchingPath( 'disallow', [ 'html', 'div', 'header' ] ) ).to.be.false;
+		expect( item._hasMatchingPath( 'disallow', [ 'html', 'div', 'p', 'header', 'span' ], 'bold' ) ).to.be.true;
 	} );
 } );
 

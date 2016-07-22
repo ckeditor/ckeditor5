@@ -5,10 +5,12 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/view/document.js';
 import Observer from '/ckeditor5/engine/view/observer/observer.js';
+import MutationObserver from '/ckeditor5/engine/view/observer/mutationobserver.js';
+import SelectionObserver from '/ckeditor5/engine/view/observer/selectionobserver.js';
+import FocusObserver from '/ckeditor5/engine/view/observer/focusobserver.js';
+import KeyObserver from '/ckeditor5/engine/view/observer/keyobserver.js';
 import Renderer from '/ckeditor5/engine/view/renderer.js';
 import ViewRange from '/ckeditor5/engine/view/range.js';
 import DomConverter from '/ckeditor5/engine/view/domconverter.js';
@@ -19,6 +21,7 @@ import log from '/ckeditor5/utils/log.js';
 testUtils.createSinonSandbox();
 
 describe( 'Document', () => {
+	const DEFAULT_OBSERVERS_COUNT = 4;
 	let ObserverMock, ObserverMockGlobalCount, instantiated, enabled;
 
 	beforeEach( () => {
@@ -55,10 +58,19 @@ describe( 'Document', () => {
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 0 );
 			expect( count( viewDocument.roots ) ).to.equal( 0 );
-			expect( count( viewDocument._observers ) ).to.equal( 0 );
 			expect( viewDocument ).to.have.property( 'renderer' ).that.is.instanceOf( Renderer );
 			expect( viewDocument ).to.have.property( 'domConverter' ).that.is.instanceOf( DomConverter );
 			expect( viewDocument ).to.have.property( 'isFocused' ).that.is.false;
+		} );
+
+		it( 'should add default observers', () => {
+			const viewDocument = new Document();
+
+			expect( count( viewDocument._observers ) ).to.equal( DEFAULT_OBSERVERS_COUNT );
+			expect( viewDocument.getObserver( MutationObserver ) ).to.be.instanceof( MutationObserver );
+			expect( viewDocument.getObserver( SelectionObserver ) ).to.be.instanceof( SelectionObserver );
+			expect( viewDocument.getObserver( FocusObserver ) ).to.be.instanceof( FocusObserver );
+			expect( viewDocument.getObserver( KeyObserver ) ).to.be.instanceof( KeyObserver );
 		} );
 	} );
 
@@ -226,13 +238,13 @@ describe( 'Document', () => {
 		it( 'should be instantiated and enabled on adding', () => {
 			const observerMock = viewDocument.addObserver( ObserverMock );
 
-			expect( viewDocument._observers.size ).to.equal( 1 );
+			expect( viewDocument._observers.size ).to.equal( DEFAULT_OBSERVERS_COUNT + 1 );
 
 			expect( observerMock ).to.have.property( 'document', viewDocument );
 			sinon.assert.calledOnce( observerMock.enable );
 		} );
 
-		it( 'should return observer instance ever time addObserver is called', () => {
+		it( 'should return observer instance each time addObserver is called', () => {
 			const observerMock1 = viewDocument.addObserver( ObserverMock );
 			const observerMock2 = viewDocument.addObserver( ObserverMock );
 
@@ -245,12 +257,12 @@ describe( 'Document', () => {
 			viewDocument.addObserver( ObserverMockGlobalCount );
 			viewDocument.addObserver( ObserverMockGlobalCount );
 
-			expect( viewDocument._observers.size ).to.equal( 1 );
+			expect( viewDocument._observers.size ).to.equal( DEFAULT_OBSERVERS_COUNT + 1 );
 			expect( instantiated ).to.equal( 1 );
 			expect( enabled ).to.equal( 1 );
 
 			viewDocument.addObserver( ObserverMock );
-			expect( viewDocument._observers.size ).to.equal( 2 );
+			expect( viewDocument._observers.size ).to.equal( DEFAULT_OBSERVERS_COUNT + 2 );
 		} );
 
 		it( 'should instantiate child class of already registered observer', () => {
@@ -264,7 +276,7 @@ describe( 'Document', () => {
 			viewDocument.addObserver( ObserverMock );
 			viewDocument.addObserver( ChildObserverMock );
 
-			expect( viewDocument._observers.size ).to.equal( 2 );
+			expect( viewDocument._observers.size ).to.equal( DEFAULT_OBSERVERS_COUNT + 2 );
 		} );
 
 		it( 'should be disabled and re-enabled on render', () => {
@@ -375,7 +387,7 @@ describe( 'Document', () => {
 
 			viewDocument.focus();
 
-			expect( converterFocusSpy.calledOnce ).to.be.true;
+			expect( converterFocusSpy.called ).to.be.true;
 			expect( renderSpy.calledOnce ).to.be.true;
 			expect( document.activeElement ).to.equal( domEditable );
 			const domSelection = document.getSelection();

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import operationTransform from '../operation/transform.js';
 import arrayUtils from '../../../utils/lib/lodash/array.js';
 
@@ -62,7 +60,7 @@ function updateBaseVersion( baseVersion, deltas ) {
 /**
  * The default delta transformation function. It is used for those deltas that are not in special case conflict.
  *
- * This algorithm is similar to popular `dOPT` algorithm used in operational transformation, as we are in fact
+ * This algorithm is similar to a popular `dOPT` algorithm used in operational transformation, as we are in fact
  * transforming two sets of operations by each other.
  *
  * @external engine.model.delta.transform

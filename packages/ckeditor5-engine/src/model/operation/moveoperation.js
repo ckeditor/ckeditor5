@@ -3,48 +3,47 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Operation from './operation.js';
 import Position from '../position.js';
 import Range from '../range.js';
 import CKEditorError from '../../../utils/ckeditorerror.js';
 import compareArrays from '../../../utils/comparearrays.js';
+import writer from './../writer.js';
 
 /**
- * Operation to move list of subsequent nodes from one position in the document to another.
+ * Operation to move a range of {@link engine.model.Item model items} to given {@link engine.model.Position target position}.
  *
  * @memberOf engine.model.operation
- * @extends engine.model.operation.Operation
  */
 export default class MoveOperation extends Operation {
 	/**
 	 * Creates a move operation.
 	 *
-	 * @param {engine.model.Position} sourcePosition Position before the first node to move.
-	 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
-	 * @param {engine.model.Position} targetPosition Position where moved nodes will be inserted.
+	 * @param {engine.model.Position} sourcePosition Position before the first {@link engine.model.Item model item} to move.
+	 * @param {Number} howMany Offset size of moved range. Moved range will start from `sourcePosition` and end at
+	 * `sourcePosition` with offset shifted by `howMany`.
+	 * @param {engine.model.Position} targetPosition Position at which moved nodes will be inserted.
 	 * @param {Number} baseVersion {@link engine.model.Document#version} on which operation can be applied.
 	 */
 	constructor( sourcePosition, howMany, targetPosition, baseVersion ) {
 		super( baseVersion );
 
 		/**
-		 * Source move position.
+		 * Position before the first {@link engine.model.Item model item} to move.
 		 *
 		 * @member {engine.model.Position} engine.model.operation.MoveOperation#sourcePosition
 		 */
 		this.sourcePosition = Position.createFromPosition( sourcePosition );
 
 		/**
-		 * How many nodes to move.
+		 * Offset size of moved range.
 		 *
 		 * @member {Number} engine.model.operation.MoveOperation#howMany
 		 */
 		this.howMany = howMany;
 
 		/**
-		 * Target move position.
+		 * Position at which moved nodes will be inserted.
 		 *
 		 * @member {engine.model.Position} engine.model.operation.MoveOperation#targetPosition
 		 */
@@ -64,7 +63,7 @@ export default class MoveOperation extends Operation {
 		 *
 		 * @member {engine.model.Position} engine.model.operation.MoveOperation#movedRangeStart
 		 */
-		this.movedRangeStart = this.targetPosition.getTransformedByDeletion( this.sourcePosition, this.howMany );
+		this.movedRangeStart = this.targetPosition._getTransformedByDeletion( this.sourcePosition, this.howMany );
 
 		/**
 		 * Defines whether `MoveOperation` is sticky. If `MoveOperation` is sticky, during
@@ -77,11 +76,15 @@ export default class MoveOperation extends Operation {
 		this.isSticky = false;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	get type() {
 		return 'move';
 	}
 
 	/**
+	 * @inheritDoc
 	 * @returns {engine.model.operation.MoveOperation}
 	 */
 	clone() {
@@ -92,10 +95,11 @@ export default class MoveOperation extends Operation {
 	}
 
 	/**
+	 * @inheritDoc
 	 * @returns {engine.model.operation.MoveOperation}
 	 */
 	getReversed() {
-		let newTargetPosition = this.sourcePosition.getTransformedByInsertion( this.targetPosition, this.howMany );
+		let newTargetPosition = this.sourcePosition._getTransformedByInsertion( this.targetPosition, this.howMany );
 
 		const op = new this.constructor( this.movedRangeStart, this.howMany, newTargetPosition, this.baseVersion + 1 );
 		op.isSticky = this.isSticky;
@@ -103,6 +107,9 @@ export default class MoveOperation extends Operation {
 		return op;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	_execute() {
 		let sourceElement = this.sourcePosition.parent;
 		let targetElement = this.targetPosition.parent;
@@ -121,7 +128,7 @@ export default class MoveOperation extends Operation {
 			throw new CKEditorError(
 				'operation-move-position-invalid: Source position or target position is invalid.'
 			);
-		} else if ( sourceOffset + this.howMany > sourceElement.getChildCount() ) {
+		} else if ( sourceOffset + this.howMany > sourceElement.getMaxOffset() ) {
 			/**
 			 * The nodes which should be moved do not exist.
 			 *
@@ -140,7 +147,7 @@ export default class MoveOperation extends Operation {
 				'operation-move-range-into-itself: Trying to move a range of nodes to the inside of that range.'
 			);
 		} else if ( this.sourcePosition.root == this.targetPosition.root ) {
-			if ( compareArrays( this.sourcePosition.getParentPath(), this.targetPosition.getParentPath() ) == 'PREFIX' ) {
+			if ( compareArrays( this.sourcePosition.getParentPath(), this.targetPosition.getParentPath() ) == 'prefix' ) {
 				let i = this.sourcePosition.path.length - 1;
 
 				if ( this.targetPosition.path[ i ] >= sourceOffset && this.targetPosition.path[ i ] < sourceOffset + this.howMany ) {
@@ -155,21 +162,12 @@ export default class MoveOperation extends Operation {
 				}
 			}
 		}
-		// End of validation.
 
-		// If we move children in the same element and we remove elements on the position before the target we
-		// need to update a target offset.
-		if ( sourceElement === targetElement && sourceOffset < targetOffset ) {
-			targetOffset -= this.howMany;
-		}
-
-		const removedNodes = sourceElement.removeChildren( sourceOffset, this.howMany );
-
-		targetElement.insertChildren( targetOffset, removedNodes );
+		const range = writer.move( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
 
 		return {
 			sourcePosition: this.sourcePosition,
-			range: Range.createFromPositionAndShift( this.movedRangeStart, this.howMany )
+			range: range
 		};
 	}
 
@@ -181,7 +179,7 @@ export default class MoveOperation extends Operation {
 	}
 
 	/**
-	 * Creates MoveOperation object from deserilized object, i.e. from parsed JSON string.
+	 * Creates `MoveOperation` object from deserilized object, i.e. from parsed JSON string.
 	 *
 	 * @param {Object} json Deserialized JSON object.
 	 * @param {engine.model.Document} document Document on which this operation will be applied.

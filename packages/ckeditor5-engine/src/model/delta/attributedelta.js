@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Delta from './delta.js';
 import DeltaFactory from './deltafactory.js';
 import { register } from '../batch.js';
@@ -16,7 +14,7 @@ import RootElement from '../rootelement.js';
 import Element from '../element.js';
 
 /**
- * To provide specific OT behavior and better collisions solving, change methods ({@link engine.model.Batch#setAttr}
+ * To provide specific OT behavior and better collisions solving, methods to change attributes ({@link engine.model.Batch#setAttr}
  * and {@link engine.model.Batch#removeAttr}) use `AttributeDelta` class which inherits from the `Delta` class and may
  * overwrite some methods.
  *
@@ -27,6 +25,7 @@ export default class AttributeDelta extends Delta {
 	/**
 	 * The attribute key that is changed by the delta or `null` if the delta has no operations.
 	 *
+	 * @readonly
 	 * @type {String|null}
 	 */
 	get key() {
@@ -36,6 +35,7 @@ export default class AttributeDelta extends Delta {
 	/**
 	 * The attribute value that is set by the delta or `null` if the delta has no operations.
 	 *
+	 * @readonly
 	 * @type {*|null}
 	 */
 	get value() {
@@ -45,6 +45,7 @@ export default class AttributeDelta extends Delta {
 	/**
 	 * The range on which delta operates or `null` if the delta has no operations.
 	 *
+	 * @readonly
 	 * @type {engine.model.Range|null}
 	 */
 	get range() {
@@ -77,13 +78,16 @@ export default class AttributeDelta extends Delta {
 		return 'engine.model.delta.AttributeDelta';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	static get _priority() {
 		return 20;
 	}
 }
 
 /**
- * To provide specific OT behavior and better collisions solving, change methods ({@link engine.model.Batch#setAttr}
+ * To provide specific OT behavior and better collisions solving, methods to change attributes ({@link engine.model.Batch#setAttr}
  * and {@link engine.model.Batch#removeAttr}) use `RootAttributeDelta` class which inherits from the `Delta` class and may
  * overwrite some methods.
  *
@@ -100,62 +104,63 @@ export class RootAttributeDelta extends Delta {
 }
 
 /**
- * Sets the value of the attribute of the node or on the range.
+ * Sets value of the attribute with given key on a {@link engine.model.Item model item} or on a {@link engine.model.Range range}.
  *
  * @chainable
  * @method engine.model.Batch#setAttr
  * @param {String} key Attribute key.
  * @param {*} value Attribute new value.
- * @param {engine.model.Node|engine.model.Range} nodeOrRange Node or range on which the attribute will be set.
+ * @param {engine.model.Item|engine.model.Range} itemOrRange Model item or range on which the attribute will be set.
  */
-register( 'setAttr', function( key, value, nodeOrRange ) {
-	attribute( this, key, value, nodeOrRange );
+register( 'setAttr', function( key, value, itemOrRange ) {
+	attribute( this, key, value, itemOrRange );
 
 	return this;
 } );
 
 /**
- * Removes an attribute from the range.
+ * Removes an attribute with given key from a {@link engine model.Item model item} or from a {@link engine.model.Range range}.
  *
  * @chainable
  * @method engine.model.Batch#removeAttr
  * @param {String} key Attribute key.
- * @param {engine.model.Node|engine.model.Range} nodeOrRange Node or range on which the attribute will be removed.
+ * @param {engine.model.Item|engine.model.Range} itemOrRange Model item or range from which the attribute will be removed.
  */
-register( 'removeAttr', function( key, nodeOrRange ) {
-	attribute( this, key, null, nodeOrRange );
+register( 'removeAttr', function( key, itemOrRange ) {
+	attribute( this, key, null, itemOrRange );
 
 	return this;
 } );
 
-function attribute( batch, key, value, nodeOrRange ) {
-	if ( nodeOrRange instanceof Range ) {
-		changeRange( batch, batch.document, key, value, nodeOrRange );
+function attribute( batch, key, value, itemOrRange ) {
+	if ( itemOrRange instanceof Range ) {
+		changeRange( batch, batch.document, key, value, itemOrRange );
 	} else {
-		changeNode( batch, batch.document, key, value, nodeOrRange );
+		changeItem( batch, batch.document, key, value, itemOrRange );
 	}
 }
 
-function changeNode( batch, doc, key, value, node ) {
-	const previousValue = node.getAttribute( key );
+function changeItem( batch, doc, key, value, item ) {
+	const previousValue = item.getAttribute( key );
 	let range, operation;
 
-	const delta = node instanceof RootElement ? new RootAttributeDelta() : new AttributeDelta();
+	const delta = item instanceof RootElement ? new RootAttributeDelta() : new AttributeDelta();
 	batch.addDelta( delta );
 
 	if ( previousValue != value ) {
-		if ( node instanceof RootElement ) {
+		if ( item instanceof RootElement ) {
 			// If we change attributes of root element, we have to use `RootAttributeOperation`.
-			operation = new RootAttributeOperation( node, key, previousValue, value, doc.version );
+			operation = new RootAttributeOperation( item, key, previousValue, value, doc.version );
 		} else {
-			if ( node instanceof Element ) {
+			if ( item instanceof Element ) {
 				// If we change the attribute of the element, we do not want to change attributes of its children, so
-				// the end on the range can not be put after the closing tag, it should be inside that element with the
-				// offset 0, so the range will contains only the opening tag...
-				range = new Range( Position.createBefore( node ), Position.createFromParentAndOffset( node, 0 ) );
+				// the end of the range cannot be after the closing tag, it should be inside that element, before any of
+				// it's children, so the range will contain only the opening tag.
+				range = new Range( Position.createBefore( item ), Position.createFromParentAndOffset( item, 0 ) );
 			} else {
-				// ...but for characters we can not put the range inside it, so we end the range after that character.
-				range = new Range( Position.createBefore( node ), Position.createAfter( node ) );
+				// If `item` is text proxy, we create a range from the beginning to the end of that text proxy, to change
+				// all characters represented by it.
+				range = new Range( Position.createBefore( item ), Position.createAfter( item ) );
 			}
 
 			operation = new AttributeOperation( range, key, previousValue || null, value || null, doc.version );
@@ -166,7 +171,7 @@ function changeNode( batch, doc, key, value, node ) {
 	}
 }
 
-// Because attribute operation needs to have the same attribute value on the whole range, this function split the range
+// Because attribute operation needs to have the same attribute value on the whole range, this function splits the range
 // into smaller parts.
 function changeRange( batch, doc, attributeKey, attributeValue, range ) {
 	const delta = new AttributeDelta();
@@ -217,5 +222,4 @@ function changeRange( batch, doc, attributeKey, attributeValue, range ) {
 }
 
 DeltaFactory.register( AttributeDelta );
-
 DeltaFactory.register( RootAttributeDelta );

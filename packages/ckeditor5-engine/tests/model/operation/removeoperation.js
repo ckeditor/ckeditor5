@@ -5,13 +5,12 @@
 
 /* bender-tags: model, operation */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import ReinsertOperation from '/ckeditor5/engine/model/operation/reinsertoperation.js';
 import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import Position from '/ckeditor5/engine/model/position.js';
+import Text from '/ckeditor5/engine/model/text.js';
 import Delta from '/ckeditor5/engine/model/delta/delta.js';
 import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
@@ -55,7 +54,7 @@ describe( 'RemoveOperation', () => {
 	} );
 
 	it( 'should remove set of nodes and append them to holder element in graveyard root', () => {
-		root.insertChildren( 0, 'fozbar' );
+		root.insertChildren( 0, new Text( 'fozbar' ) );
 
 		doc.applyOperation( wrapInDelta(
 			new RemoveOperation(
@@ -66,16 +65,15 @@ describe( 'RemoveOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getChildCount() ).to.equal( 4 );
-		expect( root.getChild( 2 ).character ).to.equal( 'a' );
+		expect( root.getMaxOffset() ).to.equal( 4 );
+		expect( root.getChild( 0 ).data ).to.equal( 'foar' );
 
-		expect( graveyard.getChildCount() ).to.equal( 1 );
-		expect( graveyard.getChild( 0 ).getChild( 0 ).character ).to.equal( 'z' );
-		expect( graveyard.getChild( 0 ).getChild( 1 ).character ).to.equal( 'b' );
+		expect( graveyard.getMaxOffset() ).to.equal( 1 );
+		expect( graveyard.getChild( 0 ).getChild( 0 ).data ).to.equal( 'zb' );
 	} );
 
 	it( 'should create new holder element for remove operations in different deltas', () => {
-		root.insertChildren( 0, 'fozbar' );
+		root.insertChildren( 0, new Text( 'fozbar' ) );
 
 		doc.applyOperation( wrapInDelta(
 			new RemoveOperation(
@@ -101,14 +99,14 @@ describe( 'RemoveOperation', () => {
 			)
 		) );
 
-		expect( graveyard.getChildCount() ).to.equal( 3 );
-		expect( graveyard.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
-		expect( graveyard.getChild( 1 ).getChild( 0 ).character ).to.equal( 'o' );
-		expect( graveyard.getChild( 2 ).getChild( 0 ).character ).to.equal( 'z' );
+		expect( graveyard.getMaxOffset() ).to.equal( 3 );
+		expect( graveyard.getChild( 0 ).getChild( 0 ).data ).to.equal( 'f' );
+		expect( graveyard.getChild( 1 ).getChild( 0 ).data ).to.equal( 'o' );
+		expect( graveyard.getChild( 2 ).getChild( 0 ).data ).to.equal( 'z' );
 	} );
 
 	it( 'should not create new holder element for remove operation if it was already created for given delta', () => {
-		root.insertChildren( 0, 'fozbar' );
+		root.insertChildren( 0, new Text( 'fozbar' ) );
 
 		let delta = new Delta();
 
@@ -131,8 +129,7 @@ describe( 'RemoveOperation', () => {
 		doc.applyOperation( removeOpB );
 
 		expect( graveyard.getChildCount() ).to.equal( 1 );
-		expect( graveyard.getChild( 0 ).getChild( 0 ).character ).to.equal( 'f' );
-		expect( graveyard.getChild( 0 ).getChild( 1 ).character ).to.equal( 'o' );
+		expect( graveyard.getChild( 0 ).getChild( 0 ).data ).to.equal( 'fo' );
 	} );
 
 	it( 'should create RemoveOperation with same parameters when cloned', () => {
@@ -164,20 +161,18 @@ describe( 'RemoveOperation', () => {
 		let operation = new RemoveOperation( position, 3, 0 );
 		let reverse = operation.getReversed();
 
-		root.insertChildren( 0, 'bar' );
+		root.insertChildren( 0, new Text( 'bar' ) );
 
 		doc.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getChildCount() ).to.equal( 0 );
+		expect( root.getMaxOffset() ).to.equal( 0 );
 
 		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( root.getChildCount() ).to.equal( 3 );
-		expect( root.getChild( 0 ).character ).to.equal( 'b' );
-		expect( root.getChild( 1 ).character ).to.equal( 'a' );
-		expect( root.getChild( 2 ).character ).to.equal( 'r' );
+		expect( root.getMaxOffset() ).to.equal( 3 );
+		expect( root.getChild( 0 ).data ).to.equal( 'bar' );
 	} );
 
 	describe( 'toJSON', () => {

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Element from './element.js';
 import Text from './text.js';
 import TextProxy from './textproxy.js';
@@ -24,16 +22,16 @@ export default class TreeWalker {
 	 * @param {Object} options Object with configuration.
 	 * @param {engine.view.Range} [options.boundaries=null] Range to define boundaries of the iterator.
 	 * @param {engine.view.Position} [options.startPosition] Starting position.
-	 * @param {'FORWARD'|'BACKWARD'} [options.direction='FORWARD'] Walking direction.
+	 * @param {'forward'|'backward'} [options.direction='forward'] Walking direction.
 	 * @param {Boolean} [options.singleCharacters=false] Flag indicating whether all characters from
 	 * {@link engine.view.Text} should be returned as one {@link engine.view.Text} (`false`) ore one by one as
 	 * {@link engine.view.TextProxy} (`true`).
 	 * @param {Boolean} [options.shallow=false] Flag indicating whether iterator should enter elements or not. If the
-	 * iterator is shallow child nodes of any iterated node will not be returned along with `ELEMENT_END` tag.
-	 * @param {Boolean} [options.ignoreElementEnd=false] Flag indicating whether iterator should ignore `ELEMENT_END`
+	 * iterator is shallow child nodes of any iterated node will not be returned along with `elementEnd` tag.
+	 * @param {Boolean} [options.ignoreElementEnd=false] Flag indicating whether iterator should ignore `elementEnd`
 	 * tags. If the option is true walker will not return a parent node of start position. If this option is `true`
 	 * each {@link engine.view.Element} will be returned once, while if the option is `false` they might be returned
-	 * twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
+	 * twice: for `'elementStart'` and `'elementEnd'`.
 	 */
 	constructor( options = {} ) {
 		if ( !options.boundaries && !options.startPosition ) {
@@ -45,9 +43,9 @@ export default class TreeWalker {
 			throw new CKEditorError( 'tree-walker-no-start-position: Neither boundaries nor starting position have been defined.' );
 		}
 
-		if ( options.direction && options.direction != 'FORWARD' && options.direction != 'BACKWARD' ) {
+		if ( options.direction && options.direction != 'forward' && options.direction != 'backward' ) {
 			throw new CKEditorError(
-				'tree-walker-unknown-direction: Only `BACKWARD` and `FORWARD` direction allowed.',
+				'tree-walker-unknown-direction: Only `backward` and `forward` direction allowed.',
 				{ direction: options.direction }
 			);
 		}
@@ -55,7 +53,7 @@ export default class TreeWalker {
 		/**
 		 * Iterator boundaries.
 		 *
-		 * When the iterator is walking `FORWARD` on the end of boundary or is walking `BACKWARD`
+		 * When the iterator is walking `'forward'` on the end of boundary or is walking `'backward'`
 		 * on the start of boundary, then `{ done: true }` is returned.
 		 *
 		 * If boundaries are not defined they are set before first and after last child of the root node.
@@ -67,7 +65,7 @@ export default class TreeWalker {
 
 		/**
 		 * Iterator position. If start position is not defined then position depends on {@link #direction}. If direction is
-		 * `FORWARD` position starts form the beginning, when direction is `BACKWARD` position starts from the end.
+		 * `'forward'` position starts form the beginning, when direction is `'backward'` position starts from the end.
 		 *
 		 * @readonly
 		 * @member {engine.view.Position} engine.view.TreeWalker#position
@@ -75,16 +73,16 @@ export default class TreeWalker {
 		if ( options.startPosition ) {
 			this.position = Position.createFromPosition( options.startPosition );
 		} else {
-			this.position = Position.createFromPosition( options.boundaries[ options.direction == 'BACKWARD' ? 'end' : 'start' ] );
+			this.position = Position.createFromPosition( options.boundaries[ options.direction == 'backward' ? 'end' : 'start' ] );
 		}
 
 		/**
-		 * Walking direction. Defaults `FORWARD`.
+		 * Walking direction. Defaults `'forward'`.
 		 *
 		 * @readonly
-		 * @member {'BACKWARD'|'FORWARD'} engine.view.TreeWalker#direction
+		 * @member {'backward'|'forward'} engine.view.TreeWalker#direction
 		 */
-		this.direction = options.direction || 'FORWARD';
+		this.direction = options.direction || 'forward';
 
 		/**
 		 * Flag indicating whether all characters from {@link engine.view.Text} should be returned as one
@@ -97,7 +95,7 @@ export default class TreeWalker {
 
 		/**
 		 * Flag indicating whether iterator should enter elements or not. If the iterator is shallow child nodes of any
-		 * iterated node will not be returned along with `ELEMENT_END` tag.
+		 * iterated node will not be returned along with `elementEnd` tag.
 		 *
 		 * @readonly
 		 * @member {Boolean} engine.view.TreeWalker#shallow
@@ -105,9 +103,9 @@ export default class TreeWalker {
 		this.shallow = !!options.shallow;
 
 		/**
-		 * Flag indicating whether iterator should ignore `ELEMENT_END` tags. If set to `true`, walker will not
+		 * Flag indicating whether iterator should ignore `elementEnd` tags. If set to `true`, walker will not
 		 * return a parent node of the start position. Each {@link engine.view.Element} will be returned once.
-		 * When set to `false` each element might be returned twice: for `'ELEMENT_START'` and `'ELEMENT_END'`.
+		 * When set to `false` each element might be returned twice: for `'elementStart'` and `'elementEnd'`.
 		 *
 		 * @readonly
 		 * @member {Boolean} engine.view.TreeWalker#ignoreElementEnd
@@ -145,7 +143,7 @@ export default class TreeWalker {
 	 * @returns {Object} Object implementing iterator interface, returning information about taken step.
 	 */
 	next() {
-		if ( this.direction == 'FORWARD' ) {
+		if ( this.direction == 'forward' ) {
 			return this._next();
 		} else {
 			return this._previous();
@@ -194,7 +192,7 @@ export default class TreeWalker {
 
 			this.position = position;
 
-			return this._formatReturnValue( 'ELEMENT_START', node, previousPosition, position, 1 );
+			return this._formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
 		} else if ( node instanceof Text ) {
 			if ( this.singleCharacters ) {
 				position = new Position( node, 0 );
@@ -217,7 +215,7 @@ export default class TreeWalker {
 
 				this.position = position;
 
-				return this._formatReturnValue( 'TEXT', item, previousPosition, position, charactersCount );
+				return this._formatReturnValue( 'text', item, previousPosition, position, charactersCount );
 			}
 		} else if ( typeof node == 'string' ) {
 			let textLength;
@@ -236,7 +234,7 @@ export default class TreeWalker {
 			position.offset += textLength;
 			this.position = position;
 
-			return this._formatReturnValue( 'TEXT', textProxy, previousPosition, position, textLength );
+			return this._formatReturnValue( 'text', textProxy, previousPosition, position, textLength );
 		} else {
 			// `node` is not set, we reached the end of current `parent`.
 			position = Position.createAfter( parent );
@@ -245,7 +243,7 @@ export default class TreeWalker {
 			if ( this.ignoreElementEnd ) {
 				return this._next();
 			} else {
-				return this._formatReturnValue( 'ELEMENT_END', parent, previousPosition, position );
+				return this._formatReturnValue( 'elementEnd', parent, previousPosition, position );
 			}
 		}
 	}
@@ -291,13 +289,13 @@ export default class TreeWalker {
 				if ( this.ignoreElementEnd ) {
 					return this._previous();
 				} else {
-					return this._formatReturnValue( 'ELEMENT_END', node, previousPosition, position );
+					return this._formatReturnValue( 'elementEnd', node, previousPosition, position );
 				}
 			} else {
 				position.offset--;
 				this.position = position;
 
-				return this._formatReturnValue( 'ELEMENT_START', node, previousPosition, position, 1 );
+				return this._formatReturnValue( 'elementStart', node, previousPosition, position, 1 );
 			}
 		} else if ( node instanceof Text ) {
 			if ( this.singleCharacters ) {
@@ -323,7 +321,7 @@ export default class TreeWalker {
 
 				this.position = position;
 
-				return this._formatReturnValue( 'TEXT', item, previousPosition, position, charactersCount );
+				return this._formatReturnValue( 'text', item, previousPosition, position, charactersCount );
 			}
 		} else if ( typeof node == 'string' ) {
 			let textLength;
@@ -343,13 +341,13 @@ export default class TreeWalker {
 
 			this.position = position;
 
-			return this._formatReturnValue( 'TEXT', textProxy, previousPosition, position, textLength );
+			return this._formatReturnValue( 'text', textProxy, previousPosition, position, textLength );
 		} else {
 			// `node` is not set, we reached the beginning of current `parent`.
 			position = Position.createBefore( parent );
 			this.position = position;
 
-			return this._formatReturnValue( 'ELEMENT_START', parent, previousPosition, position, 1 );
+			return this._formatReturnValue( 'elementStart', parent, previousPosition, position, 1 );
 		}
 	}
 
@@ -372,7 +370,7 @@ export default class TreeWalker {
 		if ( item instanceof TextProxy ) {
 			// Position is at the end of Text.
 			if ( item.index + item.data.length == item.textNode.data.length ) {
-				if ( this.direction == 'FORWARD' ) {
+				if ( this.direction == 'forward' ) {
 					nextPosition = Position.createAfter( item.textNode );
 					// When we change nextPosition of returned value we need also update walker current position.
 					this.position = nextPosition;
@@ -383,7 +381,7 @@ export default class TreeWalker {
 
 			// Position is at the begining ot the text.
 			if ( item.index === 0 ) {
-				if ( this.direction == 'FORWARD' ) {
+				if ( this.direction == 'forward' ) {
 					previousPosition = Position.createBefore( item.textNode );
 				} else {
 					nextPosition = Position.createBefore( item.textNode );
@@ -408,9 +406,9 @@ export default class TreeWalker {
 
 /**
  * Type of the step made by {@link engine.view.TreeWalker}.
- * Possible values: `'ELEMENT_START'` if walker is at the beginning of a node, `'ELEMENT_END'` if walker is at the end
- * of node, or `'TEXT'` if walker traversed over single and multiple characters.
- * For {@link engine.view.Text} `ELEMENT_START` and `ELEMENT_END` is not returned.
+ * Possible values: `'elementStart'` if walker is at the beginning of a node, `'elementEnd'` if walker is at the end
+ * of node, or `'text'` if walker traversed over single and multiple characters.
+ * For {@link engine.view.Text} `elementStart` and `elementEnd` is not returned.
  *
  * @typedef {String} engine.view.TreeWalkerValueType
  */
@@ -422,26 +420,26 @@ export default class TreeWalker {
  * @property {engine.view.TreeWalkerValueType} type
  * @property {engine.view.Item} item Item between old and new positions of {@link engine.view.TreeWalker}.
  * @property {engine.view.Position} previousPosition Previous position of the iterator.
- * * Forward iteration: For `'ELEMENT_END'` it is the last position inside the element. For all other types it is the
+ * * Forward iteration: For `'elementEnd'` it is the last position inside the element. For all other types it is the
  * position before the item. Note that it is more efficient to use this position then calculate the position before
  * the node using {@link engine.view.Position.createBefore}.
- * * Backward iteration: For `'ELEMENT_START'` it is the first position inside the element. For all other types it is
+ * * Backward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
  * the position after item.
  * * If the position is at the beginning or at the end of the {@link engine.view.Text} it is always moved from the
  * inside of the Text to its parent just before or just after Text.
  * @property {engine.view.Position} nextPosition Next position of the iterator.
- * * Forward iteration: For `'ELEMENT_START'` it is the first position inside the element. For all other types it is
+ * * Forward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
  * the position after the item.
- * * Backward iteration: For `'ELEMENT_END'` it is last position inside element. For all other types it is the position
+ * * Backward iteration: For `'elementEnd'` it is last position inside element. For all other types it is the position
  * before the item.
  * * If the position is at the beginning or at the end of the {@link engine.view.Text} it is always moved from the
  * inside of the Text to its parent just before or just after Text.
- * @property {Number} [length] Length of the item. For `'ELEMENT_START'` it is 1. For `'TEXT'` it is
- * the length of the text. For `'ELEMENT_END'` it is undefined.
+ * @property {Number} [length] Length of the item. For `'elementStart'` it is 1. For `'text'` it is
+ * the length of the text. For `'elementEnd'` it is undefined.
  */
 
 /**
  * Tree walking directions.
  *
- * @typedef {'FORWARD'|'BACKWARD'} engine.view.TreeWalkerDirection
+ * @typedef {'forward'|'backward'} engine.view.TreeWalkerDirection
  */

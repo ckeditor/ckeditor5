@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ViewText from './text.js';
 import ViewElement from './element.js';
 import ViewPosition from './position.js';
@@ -89,7 +87,7 @@ export default class Renderer {
 
 		/**
 		 * Position of the inline {@link engine.view.filler filler}.
-		 * It should always be put BEFORE the text which contains filler.
+		 * It should always be put before the text which contains filler.
 		 *
 		 * @private
 		 * @member {engine.view.Position} engine.view.Renderer#_inlineFillerPosition
@@ -383,12 +381,12 @@ export default class Renderer {
 		let i = 0;
 
 		for ( let action of actions ) {
-			if ( action === 'INSERT' ) {
+			if ( action === 'insert' ) {
 				insertAt( domElement, i, expectedDomChildren[ i ] );
 				i++;
-			} else if ( action === 'DELETE' ) {
+			} else if ( action === 'delete' ) {
 				remove( actualDomChildren[ i ] );
-			} else { // 'EQUAL'
+			} else { // 'equal'
 				i++;
 			}
 		}

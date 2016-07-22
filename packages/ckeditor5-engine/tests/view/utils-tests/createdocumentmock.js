@@ -5,8 +5,6 @@
 
 /* bender-tags: view */
 
-'use strict';
-
 import createDocumentMock from '/tests/engine/view/_utils/createdocumentmock.js';
 
 describe( 'createDocumentMock', () => {

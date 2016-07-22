@@ -5,8 +5,6 @@
 
 /* bender-tags: model, operation */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import RootAttributeOperation from '/ckeditor5/engine/model/operation/rootattributeoperation.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';

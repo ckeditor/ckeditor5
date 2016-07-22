@@ -3,15 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * The Batch class groups document changes (deltas). All deltas grouped in a single Batch can be
- * reverted together, so you can think about the Batch as a single undo step. If you want to extend one
- * undo step you can call another method on the same Batch object. If you want to create a separate undo step
- * you can create a new Batch.
+ * `Batch` instance groups document changes ({@link engine.model.Delta deltas}). All deltas grouped in a single `Batch` can be
+ * reverted together, so you can think about `Batch` as of a single undo step. If you want to extend given undo step you
+ * can call another method on the same `Batch` object. If you want to create a separate undo step you can create a new `Batch`.
  *
  * For example to create two separate undo steps you can call:
  *
@@ -32,7 +29,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
  */
 export default class Batch {
 	/**
-	 * Creates Batch instance. Not recommended to use directly, use {@link engine.model.Document#batch} instead.
+	 * Creates `Batch` instance. Not recommended to use directly, use {@link engine.model.Document#batch} instead.
 	 *
 	 * @param {engine.model.Document} document Document which this Batch changes.
 	 * @param {'transparent'|'default'} [type='default'] Type of the batch.
@@ -105,7 +102,7 @@ export default class Batch {
 }
 
 /**
- * Function to register batch methods. To make code scalable Batch do not have modification
+ * Function to register batch methods. To make code scalable `Batch` do not have modification
  * methods built in. They can be registered using this method.
  *
  * This method checks if there is no naming collision and throws `batch-register-taken` if the method name
@@ -116,10 +113,10 @@ export default class Batch {
  * For example:
  *
  *		Batch.register( 'insert', function( position, nodes ) {
- *			// You can use a class inherit from Delta if that class should handle OT in the special way.
+ *			// You can use a class inheriting from `Delta` if that class should handle OT in a special way.
  *			const delta = new Delta();
  *
- *			// Add delta to the Batch instance. It is important to add delta to batch before applying any operation.
+ *			// Add delta to the Batch instance. It is important to add a delta to the batch before applying any operation.
  *			this.addDelta( delta );
  *
  *			// Create operations which should be components of this delta.

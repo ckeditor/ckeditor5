@@ -5,8 +5,6 @@
 
 /* bender-tags: model */
 
-'use strict';
-
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Element from '/ckeditor5/engine/model/element.js';
@@ -131,19 +129,13 @@ describe( 'Range', () => {
 	} );
 
 	describe( 'static constructors', () => {
-		let p, f, o, z;
+		let p;
 
 		// root
 		//  |- p
-		//     |- f
-		//     |- o
-		//     |- z
+		//     |- foz
 		beforeEach( () => {
-			f = new Text( 'f' );
-			o = new Text( 'o' );
-			z = new Text( 'z' );
-
-			p = new Element( 'p', [], [ f, o, z ] );
+			p = new Element( 'p', [], new Text( 'foz' ) );
 
 			root.insertChildren( 0, [ p ] );
 		} );
@@ -275,9 +267,9 @@ describe( 'Range', () => {
 			let items = Array.from( range.getItems( { singleCharacters: true } ) );
 
 			expect( items.length ).to.equal( 3 );
-			expect( items[ 0 ].character ).to.equal( 'b' );
+			expect( items[ 0 ].data ).to.equal( 'b' );
 			expect( items[ 1 ] ).to.equal( e2 );
-			expect( items[ 2 ].character ).to.equal( 'x' );
+			expect( items[ 2 ].data ).to.equal( 'x' );
 		} );
 	} );
 
@@ -345,10 +337,10 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'getTransformedByInsertion', () => {
+	describe( '_getTransformedByInsertion', () => {
 		it( 'should return an array of Range objects', () => {
 			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
-			const transformed = range.getTransformedByInsertion( new Position( root, [ 2 ] ), 2 );
+			const transformed = range._getTransformedByInsertion( new Position( root, [ 2 ] ), 2 );
 
 			expect( transformed ).to.be.instanceof( Array );
 			expect( transformed[ 0 ] ).to.be.instanceof( Range );
@@ -356,7 +348,7 @@ describe( 'Range', () => {
 
 		it( 'should update it\'s positions offsets if insertion is before range and they are affected', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 4 ] ) );
-			const transformed = range.getTransformedByInsertion( new Position( root, [ 3, 1 ] ), 2 );
+			const transformed = range._getTransformedByInsertion( new Position( root, [ 3, 1 ] ), 2 );
 
 			expect( transformed[ 0 ].start.offset ).to.equal( 4 );
 			expect( transformed[ 0 ].end.offset ).to.equal( 6 );
@@ -364,7 +356,7 @@ describe( 'Range', () => {
 
 		it( 'should update it\'s positions paths if insertion is before range and they are affected', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
-			const transformed = range.getTransformedByInsertion( new Position( root, [ 0 ] ), 2 );
+			const transformed = range._getTransformedByInsertion( new Position( root, [ 0 ] ), 2 );
 
 			expect( transformed[ 0 ].start.path[ 0 ] ).to.equal( 5 );
 			expect( transformed[ 0 ].end.path[ 0 ] ).to.equal( 6 );
@@ -372,7 +364,7 @@ describe( 'Range', () => {
 
 		it( 'should expand range if insertion was in the middle of range', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
-			const transformed = range.getTransformedByInsertion( new Position( root, [ 5, 0 ] ), 4 );
+			const transformed = range._getTransformedByInsertion( new Position( root, [ 5, 0 ] ), 4 );
 
 			expect( transformed.length ).to.equal( 1 );
 
@@ -382,7 +374,7 @@ describe( 'Range', () => {
 
 		it( 'should return array with two ranges if insertion was in the middle of range and spread flag was set', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
-			const transformed = range.getTransformedByInsertion( new Position( root, [ 4, 1, 6 ] ), 4, true );
+			const transformed = range._getTransformedByInsertion( new Position( root, [ 4, 1, 6 ] ), 4, true );
 
 			expect( transformed.length ).to.equal( 2 );
 
@@ -395,7 +387,7 @@ describe( 'Range', () => {
 
 		it( 'should not expand range if insertion is equal to start boundary of the range', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 8 ] ) );
-			const transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3 );
+			const transformed = range._getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 5 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 11 ] );
@@ -403,7 +395,7 @@ describe( 'Range', () => {
 
 		it( 'should expand range if insertion is equal to start boundary of the range and sticky flag is set', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 8 ] ) );
-			const transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3, false, true );
+			const transformed = range._getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3, false, true );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 11 ] );
@@ -411,7 +403,7 @@ describe( 'Range', () => {
 
 		it( 'should not update positions if insertion is before range (but not equal to the start boundary)', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 8 ] ) );
-			const transformed = range.getTransformedByInsertion( new Position( root, [ 3, 1 ] ), 3 );
+			const transformed = range._getTransformedByInsertion( new Position( root, [ 3, 1 ] ), 3 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 5 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 11 ] );
@@ -419,7 +411,7 @@ describe( 'Range', () => {
 
 		it( 'should not expand range if insertion is equal to end boundary of the range', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
-			const transformed = range.getTransformedByInsertion( new Position( root, [ 4, 4 ] ), 3 );
+			const transformed = range._getTransformedByInsertion( new Position( root, [ 4, 4 ] ), 3 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 4 ] );
@@ -427,7 +419,7 @@ describe( 'Range', () => {
 
 		it( 'should expand range if insertion is equal to end boundary of the range and sticky flag is set', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
-			const transformed = range.getTransformedByInsertion( new Position( root, [ 4, 4 ] ), 3, false, true );
+			const transformed = range._getTransformedByInsertion( new Position( root, [ 4, 4 ] ), 3, false, true );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 7 ] );
@@ -435,7 +427,7 @@ describe( 'Range', () => {
 
 		it( 'should not update positions if insertion is after range (but not equal to the end boundary)', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
-			const transformed = range.getTransformedByInsertion( new Position( root, [ 4, 5 ] ), 3 );
+			const transformed = range._getTransformedByInsertion( new Position( root, [ 4, 5 ] ), 3 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 4 ] );
@@ -443,7 +435,7 @@ describe( 'Range', () => {
 
 		it( 'should not change if the range is collapsed and isSticky is false', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 2 ] ) );
-			const transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3, false, false );
+			const transformed = range._getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3, false, false );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 2 ] );
@@ -451,17 +443,17 @@ describe( 'Range', () => {
 
 		it( 'should move after inserted nodes if the range is collapsed and isSticky is true', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 2 ] ) );
-			const transformed = range.getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3, false, true );
+			const transformed = range._getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3, false, true );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 5 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 5 ] );
 		} );
 	} );
 
-	describe( 'getTransformedByMove', () => {
+	describe( '_getTransformedByMove', () => {
 		it( 'should return an array of Range objects', () => {
 			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
-			const transformed = range.getTransformedByMove( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ), 2 );
+			const transformed = range._getTransformedByMove( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ), 2 );
 
 			expect( transformed ).to.be.instanceof( Array );
 			expect( transformed[ 0 ] ).to.be.instanceof( Range );
@@ -469,7 +461,7 @@ describe( 'Range', () => {
 
 		it( 'should update it\'s positions offsets if target is before range and they are affected', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 4 ] ) );
-			const transformed = range.getTransformedByMove( new Position( root, [ 8, 1 ] ), new Position( root, [ 3, 1 ] ), 2 );
+			const transformed = range._getTransformedByMove( new Position( root, [ 8, 1 ] ), new Position( root, [ 3, 1 ] ), 2 );
 
 			expect( transformed[ 0 ].start.offset ).to.equal( 4 );
 			expect( transformed[ 0 ].end.offset ).to.equal( 6 );
@@ -477,7 +469,7 @@ describe( 'Range', () => {
 
 		it( 'should update it\'s positions paths if target is before range and they are affected', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
-			const transformed = range.getTransformedByMove( new Position( root, [ 8 ] ), new Position( root, [ 0 ] ), 2 );
+			const transformed = range._getTransformedByMove( new Position( root, [ 8 ] ), new Position( root, [ 0 ] ), 2 );
 
 			expect( transformed[ 0 ].start.path[ 0 ] ).to.equal( 5 );
 			expect( transformed[ 0 ].end.path[ 0 ] ).to.equal( 6 );
@@ -485,7 +477,7 @@ describe( 'Range', () => {
 
 		it( 'should expand range if target was in the middle of range', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
-			const transformed = range.getTransformedByMove( new Position( root, [ 8 ] ), new Position( root, [ 5, 0 ] ), 4 );
+			const transformed = range._getTransformedByMove( new Position( root, [ 8 ] ), new Position( root, [ 5, 0 ] ), 4 );
 
 			expect( transformed.length ).to.equal( 1 );
 
@@ -495,7 +487,7 @@ describe( 'Range', () => {
 
 		it( 'should not expand range if insertion is equal to start boundary of the range', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 8 ] ) );
-			const transformed = range.getTransformedByMove( new Position( root, [ 8, 2 ] ), new Position( root, [ 3, 2 ] ), 3 );
+			const transformed = range._getTransformedByMove( new Position( root, [ 8, 2 ] ), new Position( root, [ 3, 2 ] ), 3 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 5 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 11 ] );
@@ -503,7 +495,7 @@ describe( 'Range', () => {
 
 		it( 'should not expand range if insertion is equal to end boundary of the range', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
-			const transformed = range.getTransformedByMove( new Position( root, [ 8, 4 ] ), new Position( root, [ 4, 4 ] ), 3 );
+			const transformed = range._getTransformedByMove( new Position( root, [ 8, 4 ] ), new Position( root, [ 4, 4 ] ), 3 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 4 ] );
@@ -511,7 +503,7 @@ describe( 'Range', () => {
 
 		it( 'should update it\'s positions offsets if source is before range and they are affected', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 4 ] ) );
-			const transformed = range.getTransformedByMove( new Position( root, [ 3, 0 ] ), new Position( root, [ 8, 1 ] ), 2 );
+			const transformed = range._getTransformedByMove( new Position( root, [ 3, 0 ] ), new Position( root, [ 8, 1 ] ), 2 );
 
 			expect( transformed[ 0 ].start.offset ).to.equal( 0 );
 			expect( transformed[ 0 ].end.offset ).to.equal( 2 );
@@ -519,7 +511,7 @@ describe( 'Range', () => {
 
 		it( 'should update it\'s positions paths if source is before range and they are affected', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
-			const transformed = range.getTransformedByMove( new Position( root, [ 0 ] ), new Position( root, [ 8 ] ), 2 );
+			const transformed = range._getTransformedByMove( new Position( root, [ 0 ] ), new Position( root, [ 8 ] ), 2 );
 
 			expect( transformed[ 0 ].start.path[ 0 ] ).to.equal( 1 );
 			expect( transformed[ 0 ].end.path[ 0 ] ).to.equal( 2 );
@@ -527,7 +519,7 @@ describe( 'Range', () => {
 
 		it( 'should shrink range if source was in the middle of range', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
-			const transformed = range.getTransformedByMove( new Position( root, [ 5, 0 ] ), new Position( root, [ 8 ] ), 4 );
+			const transformed = range._getTransformedByMove( new Position( root, [ 5, 0 ] ), new Position( root, [ 8 ] ), 4 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 5, 0 ] );
@@ -535,7 +527,7 @@ describe( 'Range', () => {
 
 		it( 'should shrink range if source contained range start position', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
-			const transformed = range.getTransformedByMove( new Position( root, [ 3, 1 ] ), new Position( root, [ 8 ] ), 2 );
+			const transformed = range._getTransformedByMove( new Position( root, [ 3, 1 ] ), new Position( root, [ 8 ] ), 2 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 1 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 5, 4 ] );
@@ -543,7 +535,7 @@ describe( 'Range', () => {
 
 		it( 'should shrink range if source contained range end position', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 5, 4 ] ) );
-			const transformed = range.getTransformedByMove( new Position( root, [ 5, 3 ] ), new Position( root, [ 8 ] ), 2 );
+			const transformed = range._getTransformedByMove( new Position( root, [ 5, 3 ] ), new Position( root, [ 8 ] ), 2 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 5, 3 ] );
@@ -551,7 +543,7 @@ describe( 'Range', () => {
 
 		it( 'should move range if it was contained in moved range', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 7 ] ) );
-			const transformed = range.getTransformedByMove( new Position( root, [ 3 ] ), new Position( root, [ 6 ] ), 2 );
+			const transformed = range._getTransformedByMove( new Position( root, [ 3 ] ), new Position( root, [ 6 ] ), 2 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 4, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 7 ] );
@@ -736,21 +728,21 @@ describe( 'Range', () => {
 
 	function mapNodesToNames( nodes ) {
 		return nodes.map( ( node ) => {
-			return ( node instanceof Element ) ? 'E:' + node.name : 'T:' + ( node.text || node.character );
+			return ( node instanceof Element ) ? 'E:' + node.name : 'T:' + node.data;
 		} );
 	}
 
 	function prepareRichRoot() {
 		root.insertChildren( 0, [
 			new Element( 'div', [], [
-				new Element( 'h', [], 'first' ),
-				new Element( 'p', [], 'lorem ipsum' )
+				new Element( 'h', [], new Text( 'first' ) ),
+				new Element( 'p', [], new Text( 'lorem ipsum' ) )
 			] ),
-			new Element( 'p', [], 'foo' ),
-			new Element( 'p', [], 'bar' ),
+			new Element( 'p', [], new Text( 'foo' ) ),
+			new Element( 'p', [], new Text( 'bar' ) ),
 			new Element( 'div', [], [
-				new Element( 'h', [], 'second' ),
-				new Element( 'p', [], 'lorem' )
+				new Element( 'h', [], new Text( 'second' ) ),
+				new Element( 'p', [], new Text( 'lorem' ) )
 			] )
 		] );
 	}

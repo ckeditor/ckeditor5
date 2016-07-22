@@ -3,14 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ViewDocument from './view/document.js';
-import MutationObserver from './view/observer/mutationobserver.js';
-import SelectionObserver from './view/observer/selectionobserver.js';
-import FocusObserver from './view/observer/focusobserver.js';
-import KeyObserver from './view/observer/keyobserver.js';
-
 import Mapper from './conversion/mapper.js';
 import ModelConversionDispatcher from './conversion/modelconversiondispatcher.js';
 import { insertText, remove, move } from './conversion/model-to-view-converters.js';
@@ -26,15 +19,7 @@ import EmitterMixin from '../utils/emittermixin.js';
 /**
  * Controller for the editing pipeline. The editing pipeline controls {@link engine.EditingController#model model} rendering,
  * including selection handling. It also creates {@link engine.EditingController#view view document} which build a
- * browser-independent virtualization over the DOM elements. Editing controller also attach default converters and
- * observers.
- *
- * Note that the following observers are attached by the controller and are always available:
- *
- * * {@link view.observer.MutationObserver},
- * * {@link view.observer.SelectionObserver},
- * * {@link view.observer.FocusObserver},
- * * {@link view.observer.KeyObserver}.
+ * browser-independent virtualization over the DOM elements. Editing controller also attach default converters.
  *
  * @memberOf engine
  */
@@ -60,12 +45,6 @@ export default class EditingController {
 		 * @member {engine.view.document} engine.EditingController#view
 		 */
 		this.view = new ViewDocument();
-
-		// Attach default observers.
-		this.view.addObserver( MutationObserver );
-		this.view.addObserver( SelectionObserver );
-		this.view.addObserver( FocusObserver );
-		this.view.addObserver( KeyObserver );
 
 		/**
 		 * Mapper which describes model-view binding.

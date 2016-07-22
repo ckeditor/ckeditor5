@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import mix from '../../utils/mix.js';
 import isIterable from '../../utils/isiterable.js';
 import EmitterMixin from '../../utils/emittermixin.js';
@@ -144,7 +142,7 @@ export default class DocumentFragment {
 	 * @fires engine.view.Node#change
 	 */
 	_fireChange( type, node ) {
-		this.fire( 'change', type, node );
+		this.fire( 'change:' + type, node );
 	}
 }
 

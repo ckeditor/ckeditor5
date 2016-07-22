@@ -5,8 +5,6 @@
 
 /* bender-tags: view */
 
-'use strict';
-
 import ModelDocument from '/ckeditor5/engine/model/document.js';
 import DataController from '/ckeditor5/engine/datacontroller.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';

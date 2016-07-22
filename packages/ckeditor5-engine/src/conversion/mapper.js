@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ModelPosition from '../model/position.js';
 import ViewPosition from '../view/position.js';
 import ModelRange from '../model/range.js';
@@ -14,8 +12,8 @@ import ViewText from '../view/text.js';
 /**
  * Maps elements and positions between {@link engine.view.Document view} and {@link engine.model model}.
  *
- * Mapper use binded elements to find corresponding elements and positions, so, to get proper results,
- * all Tree Model elements should be {@link engine.conversion.Mapper#bindElements binded}.
+ * Mapper use bound elements to find corresponding elements and positions, so, to get proper results,
+ * all model elements should be {@link engine.conversion.Mapper#bindElements bound}.
  *
  * @memberOf engine.conversion
  */
@@ -25,7 +23,7 @@ export default class Mapper {
 	 */
 	constructor() {
 		/**
-		 * Model element to View element mapping.
+		 * Model element to view element mapping.
 		 *
 		 * @private
 		 * @member {WeakMap} engine.conversion.Mapper#_modelToViewMapping
@@ -33,7 +31,7 @@ export default class Mapper {
 		this._modelToViewMapping = new WeakMap();
 
 		/**
-		 * View element to Model element mapping.
+		 * View element to model element mapping.
 		 *
 		 * @private
 		 * @member {WeakMap} engine.conversion.Mapper#_viewToModelMapping
@@ -67,7 +65,7 @@ export default class Mapper {
 	 * Gets the corresponding model element.
 	 *
 	 * @param {engine.view.Element} viewElement View element.
-	 * @returns {engine.model.Element|null} Corresponding model element or `null` if not found.
+	 * @returns {engine.model.Element|undefined} Corresponding model element or `undefined` if not found.
 	 */
 	toModelElement( viewElement ) {
 		return this._viewToModelMapping.get( viewElement );
@@ -77,7 +75,7 @@ export default class Mapper {
 	 * Gets the corresponding view element.
 	 *
 	 * @param {engine.model.Element} modelElement Model element.
-	 * @returns {engine.view.Element|null} Corresponding view element or `null` if not found.
+	 * @returns {engine.view.Element|undefined} Corresponding view element or `undefined` if not found.
 	 */
 	toViewElement( modelElement ) {
 		return this._modelToViewMapping.get( modelElement );
@@ -156,10 +154,10 @@ export default class Mapper {
 	_toModelOffset( viewParent, viewOffset, viewBlock ) {
 		if ( viewBlock != viewParent ) {
 			// See example.
-			const offsetToParentBegging = this._toModelOffset( viewParent.parent, viewParent.getIndex(), viewBlock );
+			const offsetToParentStart = this._toModelOffset( viewParent.parent, viewParent.getIndex(), viewBlock );
 			const offsetInParent = this._toModelOffset( viewParent, viewOffset, viewParent );
 
-			return offsetToParentBegging + offsetInParent;
+			return offsetToParentStart + offsetInParent;
 		}
 
 		// viewBlock == viewParent, so we need to calculate the offset in the parent element.
@@ -185,8 +183,8 @@ export default class Mapper {
 	 * Examples:
 	 *
 	 *		foo          -> 3 // Length of the text is the length of data.
-	 *		<b>foo</b>   -> 3 // Length the element which has no corresponding model element is a length of its children.
-	 *		<p>foo</p>   -> 1 // Length the element which has corresponding model element is always 1.
+	 *		<b>foo</b>   -> 3 // Length of the element which has no corresponding model element is a length of its children.
+	 *		<p>foo</p>   -> 1 // Length of the element which has corresponding model element is always 1.
 	 *
 	 * @private
 	 * @param {engine.view.Element} viewNode View node.

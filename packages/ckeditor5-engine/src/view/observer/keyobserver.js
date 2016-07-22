@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import DomEventObserver from './domeventobserver.js';
 import { getCode } from '../../../utils/keyboard.js';
 
 /**
  * {@link engine.view.Document#keydown Key down} event observer.
  *
- * Note that this observer is attached by the {@link engine.EditingController} and is available by default.
+ * Note that this observer is attached by the {@link engine.view.Document} and is available by default.
  *
  * @memberOf engine.view.observer
  * @extends engine.view.observer.DomEventObserver
@@ -43,7 +41,7 @@ export default class KeyObserver extends DomEventObserver {
  *
  * Introduced by {@link engine.view.observer.KeyObserver}.
  *
- * Note that because {@link engine.view.observer.KeyObserver} is attached by the {@link engine.EditingController}
+ * Note that because {@link engine.view.observer.KeyObserver} is attached by the {@link engine.view.Document}
  * this event is available by default.
  *
  * @see engine.view.observer.KeyObserver

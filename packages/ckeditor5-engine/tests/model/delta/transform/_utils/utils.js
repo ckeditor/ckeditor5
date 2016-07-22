@@ -5,10 +5,9 @@
 
 /* bender-tags: model, operation */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/model/document.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
 
 import Position from '/ckeditor5/engine/model/position.js';
 import Range from '/ckeditor5/engine/model/range.js';
@@ -156,7 +155,7 @@ export function expectOperation( op, params ) {
 			expect( op ).to.be.instanceof( params[ i ] );
 		}
 		else if ( i == 'nodes' ) {
-			expect( op.nodeList._nodes ).to.deep.equal( params[ i ] );
+			expect( Array.from( op.nodes ) ).to.deep.equal( params[ i ] );
 		} else if ( params[ i ] instanceof Position || params[ i ] instanceof Range ) {
 			expect( op[ i ].isEqual( params[ i ] ) ).to.be.true;
 		} else {
@@ -178,16 +177,16 @@ export function getFilledDocument() {
 	root.insertChildren( 0, [
 		new Element( 'x' ),
 		new Element( 'x' ),
-		new Element( 'x', [], 'a' ),
+		new Element( 'x', [], new Text( 'a' ) ),
 		new Element( 'div', [], [
 			new Element( 'x' ),
 			new Element( 'x' ),
-			new Element( 'x', [], 'a' ),
+			new Element( 'x', [], new Text( 'a' ) ),
 			new Element( 'div', [], [
 				new Element( 'x' ),
 				new Element( 'x' ),
-				new Element( 'x', [], 'abcd' ),
-				new Element( 'p', [], 'abcfoobarxyz' )
+				new Element( 'x', [], new Text( 'abcd' ) ),
+				new Element( 'p', [], new Text( 'abcfoobarxyz' ) )
 			] )
 		] )
 	] );

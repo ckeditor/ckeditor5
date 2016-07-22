@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import clone from '../../../utils/lib/lodash/clone.js';
 import DeltaFactory from './deltafactory.js';
 
@@ -57,7 +55,6 @@ export default class Delta {
 	}
 
 	/**
-	 * @protected
 	 * @param {Number} baseVersion
 	 */
 	set baseVersion( baseVersion ) {

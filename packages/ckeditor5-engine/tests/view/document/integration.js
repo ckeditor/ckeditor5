@@ -5,8 +5,6 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import Document from '/ckeditor5/engine/view/document.js';
 import ViewElement from '/ckeditor5/engine/view/element.js';
 import { isBlockFiller, BR_FILLER } from '/ckeditor5/engine/view/filler.js';

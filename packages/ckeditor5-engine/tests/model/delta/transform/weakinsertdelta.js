@@ -5,8 +5,6 @@
 
 /* bender-tags: model, operation */
 
-'use strict';
-
 import transformations from '/ckeditor5/engine/model/delta/basic-transformations.js';
 /*jshint unused: false*/
 
@@ -49,6 +47,7 @@ describe( 'transform', () => {
 					'a',
 					new Text( 'b', { key: 'new' } ),
 					new Text( 'c', { key: 'different' } ),
+					new Text( 'c', { key: 'different', key2: true } ),
 					'de'
 				],
 				baseVersion
@@ -90,7 +89,7 @@ describe( 'transform', () => {
 						},
 						{
 							type: AttributeOperation,
-							range: new Range( new Position( root, [ 3, 3, 2 ] ), new Position( root, [ 3, 3, 3 ] ) ),
+							range: new Range( new Position( root, [ 3, 3, 2 ] ), new Position( root, [ 3, 3, 4 ] ) ),
 							key: 'key',
 							oldValue: 'different',
 							newValue: 'new',
@@ -98,7 +97,7 @@ describe( 'transform', () => {
 						},
 						{
 							type: AttributeOperation,
-							range: new Range( new Position( root, [ 3, 3, 3 ] ), new Position( root, [ 3, 3, 5 ] ) ),
+							range: new Range( new Position( root, [ 3, 3, 4 ] ), new Position( root, [ 3, 3, 6 ] ) ),
 							key: 'key',
 							oldValue: undefined,
 							newValue: 'new',

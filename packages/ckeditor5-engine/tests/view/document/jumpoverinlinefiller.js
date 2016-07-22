@@ -5,11 +5,8 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import ViewRange from '/ckeditor5/engine/view/range.js';
 import ViewDocument from '/ckeditor5/engine/view/document.js';
-import KeyObserver from '/ckeditor5/engine/view/observer/keyobserver.js';
 import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '/ckeditor5/engine/view/filler.js';
 
 import { keyCodes } from '/ckeditor5/utils/keyboard.js';
@@ -21,8 +18,6 @@ describe( 'Document', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument();
-
-		viewDocument.addObserver( KeyObserver );
 
 		viewDocument.createRoot( document.getElementById( 'editor' ) );
 

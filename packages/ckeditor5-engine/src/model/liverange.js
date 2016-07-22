@@ -3,14 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Range from './range.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import mix from '../../utils/mix.js';
 
 /**
- * LiveRange is a Range in the Tree Model that updates itself as the tree changes. It may be used as a bookmark.
+ * `LiveRange` is a type of {@link engine.model.Range Range} that updates itself as {@link engine.model.Document document}
+ * is changed through operations. It may be used as a bookmark.
  *
  * **Note:** Be very careful when dealing with `LiveRange`. Each `LiveRange` instance bind events that might
  * have to be unbound. Use {@link engine.model.LiveRange#detach detach} whenever you don't need `LiveRange` anymore.
@@ -30,7 +29,7 @@ export default class LiveRange extends Range {
 	}
 
 	/**
-	 * Unbinds all events previously bound by LiveRange. Use it whenever you don't need LiveRange instance
+	 * Unbinds all events previously bound by `LiveRange`. Use it whenever you don't need `LiveRange` instance
 	 * anymore (i.e. when leaving scope in which it was declared or before re-assigning variable that was
 	 * referring to it).
 	 */
@@ -76,7 +75,7 @@ export default class LiveRange extends Range {
 }
 
 /**
- * Binds this LiveRange to the {@link engine.model.Document} that owns this range.
+ * Binds this `LiveRange` to the {@link engine.model.Document document} that owns this range's {@link engine.model.Range#root root}.
  *
  * @ignore
  * @private
@@ -89,32 +88,30 @@ function bindWithDocument() {
 		this.root.document,
 		'change',
 		( event, type, changes ) => {
-			fixBoundaries.call( this, type, changes.range, changes.sourcePosition );
+			transform.call( this, type, changes.range, changes.sourcePosition );
 		},
 		this
 	);
 }
 
 /**
- * LiveRange boundaries are instances of {@link engine.model.LivePosition}, so it is updated thanks to them. This method
- * additionally fixes the results of updating live positions taking into account that those live positions
- * are boundaries of a range. An example case for fixing live positions is end boundary is moved before start boundary.
+ * Updates this range accordingly to the updates applied to the model. Bases on change events.
  *
  * @ignore
  * @private
- * @method fixBoundaries
+ * @method transform
  * @param {String} type Type of changes applied to the Tree Model.
  * @param {engine.model.Range} range Range containing the result of applied change.
  * @param {engine.model.Position} [position] Additional position parameter provided by some change events.
  */
-function fixBoundaries( type, range, position ) {
+function transform( type, range, position ) {
 	/* jshint validthis: true */
 	let updated;
 	const howMany = range.end.offset - range.start.offset;
 
 	switch ( type ) {
 		case 'insert':
-			updated = this.getTransformedByInsertion( range.start, howMany, false, true )[ 0 ];
+			updated = this._getTransformedByInsertion( range.start, howMany, false, true )[ 0 ];
 			break;
 
 		case 'move':
@@ -122,12 +119,12 @@ function fixBoundaries( type, range, position ) {
 		case 'reinsert':
 			const sourcePosition = position;
 
-			// Range.getTransformedByMove is expecting `targetPosition` to be "before" move
+			// Range._getTransformedByMove is expecting `targetPosition` to be "before" move
 			// (before transformation). `range.start` is already after the move happened.
 			// We have to revert `range.start` to the state before the move.
-			const targetPosition = range.start.getTransformedByInsertion( sourcePosition, howMany );
+			const targetPosition = range.start._getTransformedByInsertion( sourcePosition, howMany );
 
-			const result = this.getTransformedByMove( sourcePosition, targetPosition, howMany, false, true );
+			const result = this._getTransformedByMove( sourcePosition, targetPosition, howMany, false, true );
 
 			// First item in the array is the "difference" part, so a part of the range
 			// that did not get moved. We use it as reference range and expand if possible.
@@ -135,7 +132,7 @@ function fixBoundaries( type, range, position ) {
 
 			// We will check if there is other range and if it is touching the reference range.
 			// If it does, we will expand the reference range (at the beginning or at the end).
-			// Keep in mind that without settings `spread` flag, `getTransformedByMove` may
+			// Keep in mind that without settings `spread` flag, `_getTransformedByMove` may
 			// return maximum two ranges.
 			if ( result.length > 1 ) {
 				let otherRange = result[ 1 ];

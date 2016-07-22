@@ -3,15 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Selection from './selection.js';
 import Renderer from './renderer.js';
 import DomConverter from './domconverter.js';
 import RootEditableElement from './rooteditableelement.js';
 import { injectQuirksHandling } from './filler.js';
 import log from '../../utils/log.js';
-
+import MutationObserver from './observer/mutationobserver.js';
+import SelectionObserver from './observer/selectionobserver.js';
+import FocusObserver from './observer/focusobserver.js';
+import KeyObserver from './observer/keyobserver.js';
 import mix from '../../utils/mix.js';
 import ObservableMixin from '../../utils/observablemixin.js';
 
@@ -23,6 +24,13 @@ import ObservableMixin from '../../utils/observablemixin.js';
  *
  * If you want to only transform the tree of view elements to the DOM elements you can use the
  * {@link engine.view.DomConverter DomConverter}.
+ *
+ * Note that the following observers are added by the class constructor and are always available:
+ *
+ * * {@link view.observer.MutationObserver},
+ * * {@link view.observer.SelectionObserver},
+ * * {@link view.observer.FocusObserver},
+ * * {@link view.observer.KeyObserver}.
  *
  * @memberOf engine.view
  * @mixes utils.EmitterMixin
@@ -93,6 +101,12 @@ export default class Document {
 		 * @member {Map.<Function, engine.view.Observer>} engine.view.Document#_observers
 		 */
 		this._observers = new Map();
+
+		// Add default observers.
+		this.addObserver( MutationObserver );
+		this.addObserver( SelectionObserver );
+		this.addObserver( FocusObserver );
+		this.addObserver( KeyObserver );
 
 		injectQuirksHandling( this );
 

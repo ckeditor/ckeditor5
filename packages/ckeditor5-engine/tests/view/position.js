@@ -5,8 +5,6 @@
 
 /* bender-tags: view, browser-only */
 
-'use strict';
-
 import Position from '/ckeditor5/engine/view/position.js';
 import Node from '/ckeditor5/engine/view/node.js';
 import Element from '/ckeditor5/engine/view/element.js';
@@ -257,37 +255,37 @@ describe( 'Position', () => {
 	} );
 
 	describe( 'compareWith', () => {
-		it( 'should return SAME if positions are same', () => {
+		it( 'should return same if positions are same', () => {
 			const root = new Node();
 			const position = new Position( root, 0 );
 			const compared = new Position( root, 0 );
 
-			expect( position.compareWith( compared ) ).to.equal( 'SAME' );
+			expect( position.compareWith( compared ) ).to.equal( 'same' );
 		} );
 
-		it( 'should return BEFORE if the position is before compared one', () => {
+		it( 'should return before if the position is before compared one', () => {
 			const root = new Node();
 			const position = new Position( root, 0 );
 			const compared = new Position( root, 1 );
 
-			expect( position.compareWith( compared ) ).to.equal( 'BEFORE' );
+			expect( position.compareWith( compared ) ).to.equal( 'before' );
 		} );
 
-		it( 'should return AFTER if the position is after compared one', () => {
+		it( 'should return after if the position is after compared one', () => {
 			const root = new Node();
 			const position = new Position( root, 4 );
 			const compared = new Position( root, 1 );
 
-			expect( position.compareWith( compared ) ).to.equal( 'AFTER' );
+			expect( position.compareWith( compared ) ).to.equal( 'after' );
 		} );
 
-		it( 'should return DIFFERENT if positions are in different roots', () => {
+		it( 'should return different if positions are in different roots', () => {
 			const root1 = new Node();
 			const root2 = new Node();
 			const position = new Position( root1, 4 );
 			const compared = new Position( root2, 1 );
 
-			expect( position.compareWith( compared ) ).to.equal( 'DIFFERENT' );
+			expect( position.compareWith( compared ) ).to.equal( 'different' );
 		} );
 	} );
 

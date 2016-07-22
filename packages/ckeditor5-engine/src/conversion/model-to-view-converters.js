@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ModelTreeWalker from '../model/treewalker.js';
 import ModelRange from '../model/range.js';
 
@@ -81,7 +79,7 @@ export function insertText() {
 		consumable.consume( data.item, 'insert' );
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-		const viewText = new ViewText( data.item.text );
+		const viewText = new ViewText( data.item.data );
 
 		viewWriter.insert( viewPosition, viewText );
 
@@ -185,7 +183,7 @@ export function removeAttribute( attributeCreator ) {
 /**
  * Function factory, creates a converter that converts set/change attribute changes from the model to the view. In this case,
  * model attributes are converted to a view element that will be wrapping view nodes which corresponding model nodes had
- * the attribute set. This is useful for attributes like `bold`, which may be set on a text nodes in model but are
+ * the attribute set. This is useful for attributes like `bold`, which may be set on text nodes in model but are
  * represented as an element in the view:
  *
  *		[paragraph]              MODEL ====> VIEW        <p>

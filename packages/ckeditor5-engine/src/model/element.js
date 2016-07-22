@@ -3,27 +3,27 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Node from './node.js';
 import NodeList from './nodelist.js';
-import DocumentFragment from './documentfragment.js';
-import Range from './range.js';
-import toMap from '../../utils/tomap.js';
+import Text from './text.js';
+import isIterable from '../../utils/isiterable.js';
 
 /**
- * Tree data model element.
+ * Model element. Type of {@link engine.model.Node node} that has a {@link engine.model.Element#name name} and
+ * {@link engine.model.Element#getChildren child nodes}.
+ *
+ * **Important**: see {@link engine.model.Node} to read about restrictions using `Element` and `Node` API.
  *
  * @memberOf engine.model
  */
 export default class Element extends Node {
 	/**
-	 * Creates a tree data model element.
+	 * Creates a model element.
 	 *
-	 * @param {String} name Node name.
-	 * @param {Iterable} [attrs] Iterable collection of attributes.
-	 * @param {engine.model.NodeSet} [children] List of nodes to be inserted.
-	 * into created element. List of nodes can be of any type accepted by the {@link engine.model.NodeList} constructor.
+	 * @param {String} name Element's name.
+	 * @param {Object} [attrs] Element's attributes. See {@link utils.toMap} for a list of accepted values.
+	 * @param {engine.model.Node|Iterable.<engine.model.Node>} [children] One or more nodes to be inserted as children of
+	 * created element.
 	 */
 	constructor( name, attrs, children ) {
 		super( attrs );
@@ -39,7 +39,7 @@ export default class Element extends Node {
 		/**
 		 * List of children nodes.
 		 *
-		 * @protected
+		 * @private
 		 * @member {engine.model.NodeList} engine.model.Element#_children
 		 */
 		this._children = new NodeList();
@@ -50,129 +50,22 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Gets child at the given index.
+	 * Creates a copy of this element and returns it. Created element has same name and attributes as original element.
+	 * If clone is not deep, children of copied element are references to the same nodes as in original element.
+	 * If clone is deep, original element's children are also cloned.
 	 *
-	 * @param {Number} index Index of child.
-	 * @returns {engine.model.Node} Child node.
+	 * @param {Boolean} [deep=false] Decides whether children of this element should also be cloned (`true`) or not (`false`).
 	 */
-	getChild( index ) {
-		return this._children.get( index );
+	clone( deep = false ) {
+		const children = deep ?
+			Array.from( this._children ).map( ( node ) => node.clone() ) :
+			Array.from( this._children );
+
+		return new Element( this.name, this.getAttributes(), children );
 	}
 
 	/**
-	 * Gets the number of element's children.
-	 *
-	 * @returns {Number} The number of element's children.
-	 */
-	getChildCount() {
-		return this._children.length;
-	}
-
-	/**
-	 * Gets index of the given child node.
-	 *
-	 * @param {engine.model.Node} node Child node.
-	 * @returns {Number} Index of the child node.
-	 */
-	getChildIndex( node ) {
-		return this._children.indexOf( node );
-	}
-
-	/**
-	 * {@link engine.model.Element#insert Inserts} a child node or a list of child nodes at the end of this node and sets
-	 * the parent of these nodes to this element.
-	 *
-	 * Note that the list of children can be modified only in elements not yet attached to the document.
-	 * All attached nodes should be modified using the {@link engine.model.operation.InsertOperation}.
-	 *
-	 * @param {engine.model.NodeSet} nodes The list of nodes to be inserted.
-	 */
-	appendChildren( nodes ) {
-		this.insertChildren( this.getChildCount(), nodes );
-	}
-
-	/**
-	 * Inserts a list of child nodes on the given index and sets the parent of these nodes to this element.
-	 *
-	 * Note that the list of children can be modified only in elements not yet attached to the document.
-	 * All attached nodes should be modified using the {@link engine.model.operation.InsertOperation}.
-	 *
-	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {engine.model.NodeSet} nodes The list of nodes to be inserted.
-	 */
-	insertChildren( index, nodes ) {
-		let nodeList = new NodeList( nodes );
-
-		for ( let node of nodeList._nodes ) {
-			node.parent = this;
-		}
-
-		// Clean original DocumentFragment so it won't contain nodes that were added somewhere else.
-		if ( nodes instanceof DocumentFragment ) {
-			nodes._children = new NodeList();
-		}
-
-		this._children.insert( index, nodeList );
-	}
-
-	/**
-	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
-	 *
-	 * Note that the list of children can be modified only in elements not yet attached to the document.
-	 * All attached nodes should be modified using the {@link engine.model.operation.RemoveOperation}.
-	 *
-	 * @param {Number} index Position of the first node to remove.
-	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @returns {engine.model.NodeList} The list of removed nodes.
-	 */
-	removeChildren( index, howMany = 1 ) {
-		let nodeList = this._children.remove( index, howMany );
-
-		for ( let node of nodeList._nodes ) {
-			node.parent = null;
-		}
-
-		return nodeList;
-	}
-
-	/**
-	 * Sets attribute on the element. If attribute with the same key already is set, it overwrites its value.
-	 *
-	 * @param {String} key Key of attribute to set.
-	 * @param {*} value Attribute value.
-	 */
-	setAttribute( key, value ) {
-		this._attrs.set( key, value );
-	}
-
-	/**
-	 * Removes all attributes from the element and sets given attributes.
-	 *
-	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set. See {@link engine.model.Node#getAttributes}.
-	 */
-	setAttributesTo( attrs ) {
-		this._attrs = toMap( attrs );
-	}
-
-	/**
-	 * Removes an attribute with given key from the element.
-	 *
-	 * @param {String} key Key of attribute to remove.
-	 * @returns {Boolean} `true` if the attribute was set on the element, `false` otherwise.
-	 */
-	removeAttribute( key ) {
-		return this._attrs.delete( key );
-	}
-
-	/**
-	 * Removes all attributes from the element.
-	 */
-	clearAttributes() {
-		this._attrs.clear();
-	}
-
-	/**
-	 * Checks whether element is empty (has no children).
+	 * Returns `true` if there are no nodes inside this element, `false` otherwise.
 	 *
 	 * @returns {Boolean}
 	 */
@@ -181,54 +74,175 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Gets the text content of the element. The return value is created by concatenating all
-	 * text nodes in this element and its descendants.
+	 * Gets the child at the given index.
 	 *
-	 * @returns {String}
+	 * @param {Number} index Index of child.
+	 * @returns {engine.model.Node} Child node.
 	 */
-	getText() {
-		let text = '';
-
-		for ( let value of Range.createFromElement( this ) ) {
-			if ( value.type == 'TEXT' ) {
-				text += value.item.text;
-			}
-		}
-
-		return text;
+	getChild( index ) {
+		return this._children.getNode( index );
 	}
 
 	/**
-	 * Custom toJSON method to solve child-parent circular dependencies.
+	 * Returns an index of the given child node. Returns `null` if given node is not a child of this element.
 	 *
-	 * @returns {Object} Clone of this object with the parent property replaced with its name.
+	 * @param {engine.model.Node} node Child node to look for.
+	 * @returns {Number} Child node's index in this element.
+	 */
+	getChildIndex( node ) {
+		return this._children.getNodeIndex( node );
+	}
+
+	/**
+	 * Returns an iterator that iterates over all of this element's children.
+	 *
+	 * @returns {Iterable.<engine.model.Node>}
+	 */
+	getChildren() {
+		return this._children[ Symbol.iterator ]();
+	}
+
+	/**
+	 * Returns the number of this element's children.
+	 *
+	 * @returns {Number}
+	 */
+	getChildCount() {
+		return this._children.length;
+	}
+
+	/**
+	 * Returns the starting offset of given child. Starting offset is equal to the sum of
+	 * {engine.model.Node#offsetSize offset sizes} of all node's siblings that are before it. Returns `null` if
+	 * given node is not a child of this element.
+	 *
+	 * @param {engine.model.Node} node Child node to look for.
+	 * @returns {Number} Child node's starting offset.
+	 */
+	getChildStartOffset( node ) {
+		return this._children.getNodeStartOffset( node );
+	}
+
+	/**
+	 * Returns the sum of {engine.model.Node#offsetSize offset sizes} of all of this element's children.
+	 *
+	 * @returns {Number}
+	 */
+	getMaxOffset() {
+		return this._children.totalOffset;
+	}
+
+	/**
+	 * Returns index of a node that occupies given offset. If given offset is too low, returns `0`. If given offset is
+	 * too high, returns {@link engine.model.Element#getChildCount index after last child}.
+	 *
+	 *		const textNode = new Text( 'foo' );
+	 *		const pElement = new Element( 'p' );
+	 *		const divElement = new Element( [ textNode, pElement ] );
+	 *		divElement.offsetToIndex( -1 ); // Returns 0, because offset is too low.
+	 *		divElement.offsetToIndex( 0 ); // Returns 0, because offset 0 is taken by `textNode` which is at index 0.
+	 *		divElement.offsetToIndex( 1 ); // Returns 0, because `textNode` has `offsetSize` equal to 3, so it occupies offset 1 too.
+	 *		divElement.offsetToIndex( 2 ); // Returns 0.
+	 *		divElement.offsetToIndex( 3 ); // Returns 1.
+	 *		divElement.offsetToIndex( 4 ); // Returns 2. There are no nodes at offset 4, so last available index is returned.
+	 *
+	 * @param {Number} offset Offset to look for.
+	 * @returns {Number}
+	 */
+	offsetToIndex( offset ) {
+		return this._children.offsetToIndex( offset );
+	}
+
+	/**
+	 * {@link engine.model.Element#insertChildren Inserts} one or more nodes at the end of this element.
+	 *
+	 * @param {engine.model.Node|Iterable.<engine.model.Node>} nodes Nodes to be inserted.
+	 */
+	appendChildren( nodes ) {
+		this.insertChildren( this.getChildCount(), nodes );
+	}
+
+	/**
+	 * Inserts one or more nodes at the given index and sets {@link engine.model.Node#parent parent} of these nodes
+	 * to this element.
+	 *
+	 * @param {Number} index Index at which nodes should be inserted.
+	 * @param {engine.model.Node|Iterable.<engine.model.Node>} nodes Nodes to be inserted.
+	 */
+	insertChildren( index, nodes ) {
+		if ( !isIterable( nodes ) ) {
+			nodes = [ nodes ];
+		}
+
+		for ( let node of nodes ) {
+			node.parent = this;
+		}
+
+		this._children.insertNodes( index, nodes );
+	}
+
+	/**
+	 * Removes one or more nodes starting at the given index and sets {@link engine.model.Node#parent parent} of these nodes to `null`.
+	 *
+	 * @param {Number} index Index of the first node to remove.
+	 * @param {Number} [howMany=1] Number of nodes to remove.
+	 * @returns {Array.<engine.model.Node>} Array containing removed nodes.
+	 */
+	removeChildren( index, howMany = 1 ) {
+		const nodes = this._children.removeNodes( index, howMany );
+
+		for ( let node of nodes ) {
+			node.parent = null;
+		}
+
+		return nodes;
+	}
+
+	/**
+	 * Converts `Element` instance to plain object and returns it. Takes care of converting all of this element's children.
+	 *
+	 * @returns {Object} `Element` instance converted to plain object.
 	 */
 	toJSON() {
 		let json = super.toJSON();
 
-		if ( this._children.length ) {
-			json.children = this._children.toJSON();
-		}
-
 		json.name = this.name;
+
+		if ( this._children.length > 0 ) {
+			json.children = [];
+
+			for ( let node of this._children ) {
+				json.children.push( node.toJSON() );
+			}
+		}
 
 		return json;
 	}
 
 	/**
-	 * Creates Element object from deserilized object, ie. from parsed JSON string.
+	 * Creates an `Element` instance from given plain object (i.e. parsed JSON string).
+	 * Converts `Element` children to proper nodes.
 	 *
-	 *		let deserialized = JSON.parse( JSON.stringify( someElementObject ) );
-	 *		let element = NodeList.fromJSON( deserialized );
-	 *
-	 * @param {Object} json
-	 * @returns {engine.model.Element}
+	 * @param {Object} json Plain object to be converted to `Element`.
+	 * @returns {engine.model.Element} `Element` instance created using given plain object.
 	 */
 	static fromJSON( json ) {
+		let children = null;
+
 		if ( json.children ) {
-			return new Element( json.name, json.attributes, NodeList.fromJSON( json.children ) );
+			children = [];
+
+			for ( let child of json.children ) {
+				if ( child.name ) {
+					// If child has name property, it is an Element.
+					children.push( Element.fromJSON( child ) );
+				} else {
+					// Otherwise, it is a Text node.
+					children.push( Text.fromJSON( child ) );
+				}
+			}
 		}
 
-		return new Element( json.name, json.attributes );
+		return new Element( json.name, json.attributes, children );
 	}
 }

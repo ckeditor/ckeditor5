@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import {
 	insertElement,
 	setAttribute,
@@ -42,9 +40,9 @@ import ViewContainerElement from '../view/containerelement.js';
  *		BuildModelConverterFor( dispatcher ).fromAttribute( 'src' ).toAttribute();
  *
  * 3. Model attribute to view element converter. This is a converter that takes model attributes and represents them
- * as view elements. Those view elements are wrapping view elements are node that correspond to model elements and
- * nodes which had converter attribute. It is suitable for attributes like `bold`, where `bold` attribute set on model
- * text nodes is converter to `strong` view element.
+ * as view elements. Elements created by this kind of converter are wrapping other view elements. Wrapped view nodes
+ * correspond to model nodes had converter attribute. It is suitable for attributes like `bold`, where `bold` attribute
+ * set on model text nodes is converter to `strong` view element.
  *
  *		BuildModelConverterFor( dispatcher ).fromAttribute( 'bold' ).toElement( 'strong' );
  *
@@ -52,8 +50,8 @@ import ViewContainerElement from '../view/containerelement.js';
  * and {@link engine.conversion.ModelConverterBuilder#toAttribute} methods. See their descriptions to learn more.
  *
  * It is also possible to {@link engine.conversion.ModelConverterBuilder#withPriority change default priority}
- * of created converters to decide which converter should be fired earlier and which later. This is useful if you provide
- * a general converter but want to provide different converter for a specific-case (i.e. given model element is converted
+ * of created converters to decide which converter should be fired earlier and which later. This is useful if you have
+ * a general converter but also want to provide different special-case converters (i.e. given model element is converted
  * always to given view element, but if it has given attribute it is converter to other view element). For this,
  * use {@link engine.conversion.ModelConverterBuilder#withPriority withPriority} right after `from...` method.
  *
@@ -127,8 +125,8 @@ class ModelConverterBuilder {
 	 * Default priority is `10`.
 	 *
 	 * **Note:** Keep in mind that event priority, that is set by this modifier, is used for attribute priority
-	 * when {@link engine.view.writer} is used. This changes how model attributes converter to view elements are
-	 * ordered, i.e.: `<strong><em>foo</em></strong>` vs `<em><strong>foo</strong></em>`. Using priority you can also
+	 * when {@link engine.view.writer} is used. This changes how view elements are ordered,
+	 * i.e.: `<strong><em>foo</em></strong>` vs `<em><strong>foo</strong></em>`. Using priority you can also
 	 * prevent node merging, i.e.: `<span class="bold"><span class="theme">foo</span><span>` vs `<span class="bold theme">foo</span>`.
 	 * If you want to prevent merging, just set different priority for both converters.
 	 *

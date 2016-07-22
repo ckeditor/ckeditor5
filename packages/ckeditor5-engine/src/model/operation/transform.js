@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import InsertOperation from './insertoperation.js';
 import AttributeOperation from './attributeoperation.js';
 import RootAttributeOperation from './rootattributeoperation.js';
@@ -16,10 +14,8 @@ import isEqual from '../../../utils/lib/lodash/isEqual.js';
 import compareArrays from '../../../utils/comparearrays.js';
 
 /**
- * Transforms given {@link engine.model.operation.Operation operation} by another
- * {@link engine.model.operation.Operation operation} and
- * returns the result of that transformation as an array containing one or more
- * {@link engine.model.operation.Operation operation} elements.
+ * Transforms given {@link engine.model.operation.Operation operation} by another {@link engine.model.operation.Operation operation}
+ * and returns the result of that transformation as an array containing one or more {@link engine.model.operation.Operation operations}.
  *
  * Operations work on specified positions, passed to them when they are created. Whenever {@link engine.model.Document document}
  * changes, we have to reflect those modifications by updating or "transforming" operations which are not yet applied.
@@ -67,7 +63,7 @@ const ot = {
 			const transformed = a.clone();
 
 			// Transform insert position by the other operation position.
-			transformed.position = transformed.position.getTransformedByInsertion( b.position, b.nodeList.length, !isStrong );
+			transformed.position = transformed.position._getTransformedByInsertion( b.position, b.nodes.totalOffset, !isStrong );
 
 			return [ transformed ];
 		},
@@ -82,7 +78,7 @@ const ot = {
 			const transformed = a.clone();
 
 			// Transform insert position by the other operation parameters.
-			transformed.position = a.position.getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !isStrong, b.isSticky );
+			transformed.position = a.position._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !isStrong, b.isSticky );
 
 			return [ transformed ];
 		}
@@ -92,7 +88,7 @@ const ot = {
 		// Transforms AttributeOperation `a` by InsertOperation `b`. Returns results as an array of operations.
 		InsertOperation( a, b ) {
 			// Transform this operation's range.
-			const ranges = a.range.getTransformedByInsertion( b.position, b.nodeList.length, true, false );
+			const ranges = a.range._getTransformedByInsertion( b.position, b.nodes.totalOffset, true, false );
 
 			// Map transformed range(s) to operations and return them.
 			return ranges.reverse().map( ( range ) => {
@@ -171,15 +167,15 @@ const ot = {
 				// Take the start and the end of the range and transform them by deletion of moved nodes.
 				// Note that if rangeB was inside AttributeOperation range, only difference.end will be transformed.
 				// This nicely covers the joining simplification we did in the previous step.
-				difference.start = difference.start.getTransformedByDeletion( b.sourcePosition, b.howMany );
-				difference.end = difference.end.getTransformedByDeletion( b.sourcePosition, b.howMany );
+				difference.start = difference.start._getTransformedByDeletion( b.sourcePosition, b.howMany );
+				difference.end = difference.end._getTransformedByDeletion( b.sourcePosition, b.howMany );
 
 				// MoveOperation pastes nodes into target position. We acknowledge this by proper transformation.
 				// Note that since we operate on transformed difference range, we should transform by
 				// previously transformed target position.
-				// Note that we do not use Position.getTransformedByMove on range boundaries because we need to
+				// Note that we do not use Position._getTransformedByMove on range boundaries because we need to
 				// transform by insertion a range as a whole, since newTargetPosition might be inside that range.
-				ranges = difference.getTransformedByInsertion( b.movedRangeStart, b.howMany, true, false ).reverse();
+				ranges = difference._getTransformedByInsertion( b.movedRangeStart, b.howMany, true, false ).reverse();
 			}
 
 			if ( common !== null ) {
@@ -225,12 +221,14 @@ const ot = {
 		InsertOperation( a, b, isStrong ) {
 			// Create range from MoveOperation properties and transform it by insertion.
 			let range = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
-			range = range.getTransformedByInsertion( b.position, b.nodeList.length, false, a.isSticky )[ 0 ];
+			range = range._getTransformedByInsertion( b.position, b.nodes.totalOffset, false, a.isSticky )[ 0 ];
 
 			let result = new a.constructor(
 				range.start,
 				range.end.offset - range.start.offset,
-				a instanceof RemoveOperation ? a.baseVersion : a.targetPosition.getTransformedByInsertion( b.position, b.nodeList.length, !isStrong ),
+				a instanceof RemoveOperation ?
+					a.baseVersion :
+					a.targetPosition._getTransformedByInsertion( b.position, b.nodes.totalOffset, !isStrong ),
 				a instanceof RemoveOperation ? undefined : a.baseVersion
 			);
 
@@ -289,8 +287,8 @@ const ot = {
 			let difference = joinRanges( rangeA.getDifference( rangeB ) );
 
 			if ( difference ) {
-				difference.start = difference.start.getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !a.isSticky, false );
-				difference.end = difference.end.getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, a.isSticky, false );
+				difference.start = difference.start._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, !a.isSticky, false );
+				difference.end = difference.end._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, a.isSticky, false );
 
 				ranges.push( difference );
 			}
@@ -322,7 +320,7 @@ const ot = {
 			let aIsInside = rangeB.containsRange( rangeA ) &&
 				( rangeB.containsPosition( a.targetPosition ) || rangeB.start.isEqual( a.targetPosition ) || rangeB.end.isEqual( a.targetPosition ) );
 
-			if ( common !== null && ( aCompB === 'EXTENSION' || ( aCompB === 'SAME' && isStrong ) || aIsInside ) && !bTargetsToA ) {
+			if ( common !== null && ( aCompB === 'extension' || ( aCompB === 'same' && isStrong ) || aIsInside ) && !bTargetsToA ) {
 				// Here we do not need to worry that newTargetPosition is inside moved range, because that
 				// would mean that the MoveOperation targets into itself, and that is incorrect operation.
 				// Instead, we calculate the new position of that part of original range.
@@ -344,7 +342,7 @@ const ot = {
 			}
 
 			// Target position also could be affected by the other MoveOperation. We will transform it.
-			let newTargetPosition = a.targetPosition.getTransformedByMove(
+			let newTargetPosition = a.targetPosition._getTransformedByMove(
 				b.sourcePosition,
 				b.targetPosition,
 				b.howMany,
@@ -424,7 +422,7 @@ function updateBaseVersions( baseVersion, operations ) {
 
 // Checks whether MoveOperation targetPosition is inside a node from the moved range of the other MoveOperation.
 function moveTargetIntoMovedRange( a, b ) {
-	return a.targetPosition.getTransformedByDeletion( b.sourcePosition, b.howMany ) === null;
+	return a.targetPosition._getTransformedByDeletion( b.sourcePosition, b.howMany ) === null;
 }
 
 // Gets an array of Ranges and produces one Range out of it. The root of a new range will be same as

@@ -5,8 +5,6 @@
 
 /* bender-tags: view */
 
-'use strict';
-
 import ObservableMixin from '/ckeditor5/utils/observablemixin.js';
 import Selection from '/ckeditor5/engine/view/selection.js';
 
