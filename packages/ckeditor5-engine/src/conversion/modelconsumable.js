@@ -39,9 +39,7 @@ import TextProxy from '../model/textproxy.js';
  *		//
  *		// [image]
  *		//   └─ [caption]
- *		//       ├─ f
- *		//       ├─ o
- *		//       └─ o
+ *		//       └─ foo
  *		//
  *		// View:
  *		//
@@ -241,22 +239,18 @@ export default class ModelConsumable {
 	_getSymbolForTextProxy( textProxy ) {
 		let symbol = null;
 
-		const startIndex = textProxy.first.getIndex();
-		const endIndex = startIndex + textProxy.text.length;
-		const parent = textProxy.commonParent;
+		const startMap = this._textProxyRegistry.get( textProxy.startOffset );
 
-		const startIndexMap = this._textProxyRegistry.get( startIndex );
+		if ( startMap ) {
+			const endMap = startMap.get( textProxy.endOffset );
 
-		if ( startIndexMap ) {
-			const endIndexMap = startIndexMap.get( endIndex );
-
-			if ( endIndexMap ) {
-				symbol = endIndexMap.get( parent );
+			if ( endMap ) {
+				symbol = endMap.get( textProxy.parent );
 			}
 		}
 
 		if ( !symbol ) {
-			symbol = this._addSymbolForTextProxy( startIndex, endIndex, parent );
+			symbol = this._addSymbolForTextProxy( textProxy.startOffset, textProxy.endOffset, textProxy.parent );
 		}
 
 		return symbol;
@@ -273,25 +267,25 @@ export default class ModelConsumable {
 	 * @param {engine.model.Element} parent Text proxy parent.
 	 * @returns {Symbol} Symbol generated for given properties.
 	 */
-	_addSymbolForTextProxy( startIndex, endIndex, parent ) {
+	_addSymbolForTextProxy( start, end, parent ) {
 		const symbol = Symbol();
-		let startIndexMap, endIndexMap;
+		let startMap, endMap;
 
-		startIndexMap = this._textProxyRegistry.get( startIndex );
+		startMap = this._textProxyRegistry.get( start );
 
-		if ( !startIndexMap ) {
-			startIndexMap = new Map();
-			this._textProxyRegistry.set( startIndex, startIndexMap );
+		if ( !startMap ) {
+			startMap = new Map();
+			this._textProxyRegistry.set( start, startMap );
 		}
 
-		endIndexMap = startIndexMap.get( endIndex );
+		endMap = startMap.get( end );
 
-		if ( !endIndexMap ) {
-			endIndexMap = new Map();
-			startIndexMap.set( endIndex, endIndexMap );
+		if ( !endMap ) {
+			endMap = new Map();
+			startMap.set( end, endMap );
 		}
 
-		endIndexMap.set( parent, symbol );
+		endMap.set( parent, symbol );
 
 		return symbol;
 	}

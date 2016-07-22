@@ -10,6 +10,7 @@ import Document from '/ckeditor5/engine/model/document.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
 import RemoveDelta from '/ckeditor5/engine/model/delta/removedelta.js';
 
 describe( 'Batch', () => {
@@ -19,11 +20,11 @@ describe( 'Batch', () => {
 		doc = new Document();
 		root = doc.createRoot();
 
-		div = new Element( 'div', [], 'foobar' );
-		p = new Element( 'p', [], 'abcxyz' );
+		div = new Element( 'div', [], new Text( 'foobar' ) );
+		p = new Element( 'p', [], new Text( 'abcxyz' ) );
 
-		div.insertChildren( 4, [ new Element( 'p', [], 'gggg' ) ] );
-		div.insertChildren( 2, [ new Element( 'p', [], 'hhhh' ) ] );
+		div.insertChildren( 0, [ new Element( 'p', [], new Text( 'gggg' ) ) ] );
+		div.insertChildren( 2, [ new Element( 'p', [], new Text( 'hhhh' ) ) ] );
 
 		root.insertChildren( 0, [ div, p ] );
 
@@ -31,21 +32,22 @@ describe( 'Batch', () => {
 
 		// Range starts in ROOT > DIV > P > gg|gg.
 		// Range ends in ROOT > DIV > ...|ar.
-		range = new Range( new Position( root, [ 0, 2, 2 ] ), new Position( root, [ 0, 6 ] ) );
+		range = new Range( new Position( root, [ 0, 0, 2 ] ), new Position( root, [ 0, 5 ] ) );
 	} );
 
 	describe( 'remove', () => {
 		it( 'should remove specified node', () => {
 			batch.remove( div );
 
+			expect( root.getMaxOffset() ).to.equal( 1 );
 			expect( root.getChildCount() ).to.equal( 1 );
 			expect( getNodesAndText( Range.createFromElement( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
 		} );
 
-		it( 'should move any range of nodes', () => {
+		it( 'should remove any range of nodes', () => {
 			batch.remove( range );
 
-			expect( getNodesAndText( Range.createFromElement( root.getChild( 0 ) ) ) ).to.equal( 'foPhhPar' );
+			expect( getNodesAndText( Range.createFromElement( root.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
 			expect( getNodesAndText( Range.createFromElement( root.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
 		} );
 

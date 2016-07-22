@@ -39,7 +39,7 @@ export default function modifySelection( selection, options = {} ) {
 	let value = next.value;
 
 	// 2. Consume next character.
-	if ( value.type == 'character' ) {
+	if ( value.type == 'text' ) {
 		selection.setFocus( value.nextPosition );
 
 		return;
@@ -65,7 +65,7 @@ export default function modifySelection( selection, options = {} ) {
 
 	// 4.2. Character found after element end. Not really a valid case in our data model, but let's
 	// do something sensible and put the selection focus before that character.
-	if ( value.type == 'character' ) {
+	if ( value.type == 'text' ) {
 		selection.setFocus( value.previousPosition );
 	}
 	// 4.3. OK, we're entering a new element. So let's place there the focus.

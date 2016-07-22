@@ -40,7 +40,7 @@ function modelToString( item ) {
 	if ( item instanceof ModelTextProxy ) {
 		let attributes = modelAttributesToString( item );
 
-		result = attributes ? '<$text' + attributes + '>' + item.text + '</$text>' : item.text;
+		result = attributes ? '<$text' + attributes + '>' + item.data + '</$text>' : item.data;
 	} else {
 		let walker = new ModelWalker( { boundaries: ModelRange.createFromElement( item ), shallow: true } );
 

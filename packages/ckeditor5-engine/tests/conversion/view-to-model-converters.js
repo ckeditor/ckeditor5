@@ -36,7 +36,7 @@ describe( 'convertText', () => {
 		const result = dispatcher.convert( viewText, objWithContext );
 
 		expect( result ).to.be.instanceof( ModelText );
-		expect( result.text ).to.equal( 'foobar' );
+		expect( result.data ).to.equal( 'foobar' );
 	} );
 
 	it( 'should not convert already consumed texts', () => {
@@ -54,7 +54,7 @@ describe( 'convertText', () => {
 		const result = dispatcher.convert( viewText, objWithContext );
 
 		expect( result ).to.be.instanceof( ModelText );
-		expect( result.text ).to.equal( 'foo****ba****r' );
+		expect( result.data ).to.equal( 'foo****ba****r' );
 	} );
 
 	it( 'should not convert text if it is wrong with schema', () => {
@@ -69,7 +69,7 @@ describe( 'convertText', () => {
 
 		result = dispatcher.convert( viewText, { context: [ '$block' ] } );
 		expect( result ).to.be.instanceof( ModelText );
-		expect( result.text ).to.equal( 'foobar' );
+		expect( result.data ).to.equal( 'foobar' );
 	} );
 } );
 
@@ -89,13 +89,8 @@ describe( 'convertToModelFragment', () => {
 		const result = dispatcher.convert( viewFragment, objWithContext );
 
 		expect( result ).to.be.instanceof( ModelDocumentFragment );
-		expect( result.getChildCount() ).to.equal( 6 );
-		expect( result.getChild( 0 ).character ).to.equal( 'f' );
-		expect( result.getChild( 1 ).character ).to.equal( 'o' );
-		expect( result.getChild( 2 ).character ).to.equal( 'o' );
-		expect( result.getChild( 3 ).character ).to.equal( 'b' );
-		expect( result.getChild( 4 ).character ).to.equal( 'a' );
-		expect( result.getChild( 5 ).character ).to.equal( 'r' );
+		expect( result.getMaxOffset() ).to.equal( 6 );
+		expect( result.getChild( 0 ).data ).to.equal( 'foobar' );
 	} );
 
 	it( 'should not convert already consumed (converted) changes', () => {
@@ -120,9 +115,7 @@ describe( 'convertToModelFragment', () => {
 
 		expect( result ).to.be.instanceof( ModelElement );
 		expect( result.name ).to.equal( 'paragraph' );
-		expect( result.getChildCount() ).to.equal( 3 );
-		expect( result.getChild( 0 ).character ).to.equal( 'f' );
-		expect( result.getChild( 1 ).character ).to.equal( 'o' );
-		expect( result.getChild( 2 ).character ).to.equal( 'o' );
+		expect( result.getMaxOffset() ).to.equal( 3 );
+		expect( result.getChild( 0 ).data ).to.equal( 'foo' );
 	} );
 } );

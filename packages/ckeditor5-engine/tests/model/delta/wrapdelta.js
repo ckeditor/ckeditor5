@@ -9,6 +9,7 @@ import Document from '/ckeditor5/engine/model/document.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 import WrapDelta from '/ckeditor5/engine/model/delta/wrapdelta.js';
@@ -25,7 +26,7 @@ describe( 'Batch', () => {
 		doc = new Document();
 		root = doc.createRoot();
 
-		root.insertChildren( 0, 'foobar' );
+		root.insertChildren( 0, new Text( 'foobar' ) );
 
 		range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
 	} );
@@ -35,31 +36,25 @@ describe( 'Batch', () => {
 			let p = new Element( 'p' );
 			doc.batch().wrap( range, p );
 
-			expect( root.getChildCount() ).to.equal( 5 );
-			expect( root.getChild( 0 ).character ).to.equal( 'f' );
-			expect( root.getChild( 1 ).character ).to.equal( 'o' );
-			expect( root.getChild( 2 ) ).to.equal( p );
-			expect( p.getChild( 0 ).character ).to.equal( 'o' );
-			expect( p.getChild( 1 ).character ).to.equal( 'b' );
-			expect( root.getChild( 3 ).character ).to.equal( 'a' );
-			expect( root.getChild( 4 ).character ).to.equal( 'r' );
+			expect( root.getMaxOffset() ).to.equal( 5 );
+			expect( root.getChild( 0 ).data ).to.equal( 'fo' );
+			expect( root.getChild( 1 ) ).to.equal( p );
+			expect( p.getChild( 0 ).data ).to.equal( 'ob' );
+			expect( root.getChild( 2 ).data ).to.equal( 'ar' );
 		} );
 
 		it( 'should wrap flat range with an element of given name', () => {
 			doc.batch().wrap( range, 'p' );
 
-			expect( root.getChildCount() ).to.equal( 5 );
-			expect( root.getChild( 0 ).character ).to.equal( 'f' );
-			expect( root.getChild( 1 ).character ).to.equal( 'o' );
-			expect( root.getChild( 2 ).name ).to.equal( 'p' );
-			expect( root.getChild( 2 ).getChild( 0 ).character ).to.equal( 'o' );
-			expect( root.getChild( 2 ).getChild( 1 ).character ).to.equal( 'b' );
-			expect( root.getChild( 3 ).character ).to.equal( 'a' );
-			expect( root.getChild( 4 ).character ).to.equal( 'r' );
+			expect( root.getMaxOffset() ).to.equal( 5 );
+			expect( root.getChild( 0 ).data ).to.equal( 'fo' );
+			expect( root.getChild( 1 ).name ).to.equal( 'p' );
+			expect( root.getChild( 1 ).getChild( 0 ).data ).to.equal( 'ob' );
+			expect( root.getChild( 2 ).data ).to.equal( 'ar' );
 		} );
 
 		it( 'should throw if range to wrap is not flat', () => {
-			root.insertChildren( 6, [ new Element( 'p', [], 'xyz' ) ] );
+			root.insertChildren( 1, [ new Element( 'p', [], new Text( 'xyz' ) ) ] );
 			let notFlatRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 6, 2 ] ) );
 
 			expect( () => {
@@ -68,7 +63,7 @@ describe( 'Batch', () => {
 		} );
 
 		it( 'should throw if element to wrap with has children', () => {
-			let p = new Element( 'p', [], 'a' );
+			let p = new Element( 'p', [], new Text( 'a' ) );
 
 			expect( () => {
 				doc.batch().wrap( range, p );
@@ -125,7 +120,7 @@ describe( 'WrapDelta', () => {
 		} );
 
 		it( 'should be equal to wrapped range', () => {
-			wrapDelta.operations.push( new InsertOperation( new Position( root, [ 1, 6 ] ), 1 ) );
+			wrapDelta.operations.push( new InsertOperation( new Position( root, [ 1, 6 ] ), [], 1 ) );
 			wrapDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1 ] ), 5, new Position( root, [ 1, 6, 0 ] ) ) );
 
 			expect( wrapDelta.range.start.isEqual( new Position( root, [ 1, 1 ] ) ) ).to.be.true;
@@ -141,7 +136,7 @@ describe( 'WrapDelta', () => {
 		it( 'should be equal to the number of wrapped elements', () => {
 			let howMany = 5;
 
-			wrapDelta.operations.push( new InsertOperation( new Position( root, [ 1, 6 ] ), 1 ) );
+			wrapDelta.operations.push( new InsertOperation( new Position( root, [ 1, 6 ] ), [], 1 ) );
 			wrapDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1 ] ), howMany, new Position( root, [ 1, 6, 0 ] ) ) );
 
 			expect( wrapDelta.howMany ).to.equal( 5 );
@@ -157,7 +152,7 @@ describe( 'WrapDelta', () => {
 		} );
 
 		it( 'should return correct UnwrapDelta', () => {
-			wrapDelta.operations.push( new InsertOperation( new Position( root, [ 1, 6 ] ), 1 ) );
+			wrapDelta.operations.push( new InsertOperation( new Position( root, [ 1, 6 ] ), new Element( 'p' ), 1 ) );
 			wrapDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1 ] ), 5, new Position( root, [ 1, 6, 0 ] ) ) );
 
 			let reversed = wrapDelta.getReversed();
@@ -182,7 +177,7 @@ describe( 'WrapDelta', () => {
 		} );
 
 		it( 'should be equal to the first operation in the delta', () => {
-			let insertOperation = new InsertOperation( new Position( root, [ 1, 6 ] ), 1 );
+			let insertOperation = new InsertOperation( new Position( root, [ 1, 6 ] ), [], 1 );
 
 			wrapDelta.operations.push( insertOperation );
 			wrapDelta.operations.push( new MoveOperation( new Position( root, [ 1, 1 ] ), 5, new Position( root, [ 1, 6, 0 ] ) ) );

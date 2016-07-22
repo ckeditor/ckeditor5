@@ -7,6 +7,7 @@
 
 import Document from '/ckeditor5/engine/model/document.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import LiveRange from '/ckeditor5/engine/model/liverange.js';
@@ -18,7 +19,7 @@ import count from '/ckeditor5/utils/count.js';
 testUtils.createSinonSandbox();
 
 describe( 'Selection', () => {
-	let doc, root, selection, liveRange, range;
+	let doc, root, selection, liveRange, range, range1, range2, range3;
 
 	beforeEach( () => {
 		doc = new Document();
@@ -26,16 +27,20 @@ describe( 'Selection', () => {
 		root.appendChildren( [
 			new Element( 'p' ),
 			new Element( 'p' ),
-			new Element( 'p', [], 'foobar' ),
+			new Element( 'p', [], new Text( 'foobar' ) ),
 			new Element( 'p' ),
 			new Element( 'p' ),
 			new Element( 'p' ),
-			new Element( 'p', [], 'foobar' )
+			new Element( 'p', [], new Text( 'foobar' ) )
 		] );
 		selection = new Selection();
 
 		liveRange = new LiveRange( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 		range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 2, 2 ] ) );
+
+		range1 = new Range( new Position( root, [ 1 ] ), new Position( root, [ 4 ] ) );
+		range2 = new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) );
+		range3 = new Range( new Position( root, [ 6 ] ), new Position( root, [ 7 ] ) );
 	} );
 
 	afterEach( () => {
@@ -104,7 +109,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.addRange( { invalid: 'Range' } );
-			} ).to.throw( CKEditorError, 'selection-invalid-range: Invalid Range.' );
+			} ).to.throw( CKEditorError, /selection-added-not-range/ );
 		} );
 
 		it( 'should copy added ranges and store multiple ranges', () => {
@@ -216,7 +221,7 @@ describe( 'Selection', () => {
 
 			const focus = selection.focus;
 			expect( focus ).to.have.property( 'parent', root );
-			expect( focus ).to.have.property( 'offset', root.getChildCount() );
+			expect( focus ).to.have.property( 'offset', root.getMaxOffset() );
 		} );
 
 		it( 'sets selection before the specified element', () => {
@@ -498,7 +503,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.setRanges( [ { invalid: 'range' } ] );
-			} ).to.throw( CKEditorError, 'selection-invalid-range: Invalid Range.' );
+			} ).to.throw( CKEditorError, /selection-added-not-range/ );
 		} );
 
 		it( 'should remove all ranges and add given ranges', () => {
@@ -529,6 +534,22 @@ describe( 'Selection', () => {
 		} );
 	} );
 
+	describe( 'setTo', () => {
+		it( 'should set selection to be same as given selection, using setRanges method', () => {
+			sinon.spy( selection, 'setRanges' );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1 );
+			otherSelection.addRange( range2, true );
+
+			selection.setTo( otherSelection );
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2 ] );
+			expect( selection.isBackward ).to.be.true;
+			expect( selection.setRanges.calledOnce ).to.be.true;
+		} );
+	} );
+
 	describe( 'getFirstRange', () => {
 		it( 'should return null if no ranges were added', () => {
 			expect( selection.getFirstRange() ).to.be.null;
@@ -536,13 +557,13 @@ describe( 'Selection', () => {
 
 		it( 'should return a range which start position is before all other ranges\' start positions', () => {
 			// This will not be the first range despite being added as first
-			selection.addRange( new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ) );
+			selection.addRange( range2 );
 
 			// This should be the first range.
-			selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 4 ] ) ) );
+			selection.addRange( range1 );
 
 			// A random range that is not first.
-			selection.addRange( new Range( new Position( root, [ 6 ] ), new Position( root, [ 7 ] ) ) );
+			selection.addRange( range3 );
 
 			let range = selection.getFirstRange();
 
@@ -557,18 +578,141 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return a position that is in selection and is before any other position from the selection', () => {
-			// This will not be a range containing the first position despite being added as first
-			selection.addRange( new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ) );
+			// This will not be the first range despite being added as first
+			selection.addRange( range2 );
 
 			// This should be the first range.
-			selection.addRange( new Range( new Position( root, [ 1 ] ), new Position( root, [ 4 ] ) ) );
+			selection.addRange( range1 );
 
 			// A random range that is not first.
-			selection.addRange( new Range( new Position( root, [ 6 ] ), new Position( root, [ 7 ] ) ) );
+			selection.addRange( range3 );
 
 			let position = selection.getFirstPosition();
 
 			expect( position.path ).to.deep.equal( [ 1 ] );
+		} );
+	} );
+
+	describe( 'getLastRange', () => {
+		it( 'should return null if no ranges were added', () => {
+			expect( selection.getLastRange() ).to.be.null;
+		} );
+
+		it( 'should return a range which start position is before all other ranges\' start positions', () => {
+			selection.addRange( range3 );
+			selection.addRange( range1 );
+			selection.addRange( range2 );
+
+			let range = selection.getLastRange();
+
+			expect( range.start.path ).to.deep.equal( [ 6 ] );
+			expect( range.end.path ).to.deep.equal( [ 7 ] );
+		} );
+	} );
+
+	describe( 'getLastPosition', () => {
+		it( 'should return null if no ranges were added', () => {
+			expect( selection.getLastPosition() ).to.be.null;
+		} );
+
+		it( 'should return a position that is in selection and is before any other position from the selection', () => {
+			selection.addRange( range3 );
+			selection.addRange( range1 );
+			selection.addRange( range2 );
+
+			let position = selection.getLastPosition();
+
+			expect( position.path ).to.deep.equal( [ 7 ] );
+		} );
+	} );
+
+	describe( 'isEqual', () => {
+		it( 'should return true if selections equal', () => {
+			selection.addRange( range1 );
+			selection.addRange( range2 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1 );
+			otherSelection.addRange( range2 );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.true;
+		} );
+
+		it( 'should return true if backward selections equal', () => {
+			selection.addRange( range1, true );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1, true );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.true;
+		} );
+
+		it( 'should return false if ranges count does not equal', () => {
+			selection.addRange( range1 );
+			selection.addRange( range2 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1 );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.false;
+		} );
+
+		it( 'should return false if ranges do not equal', () => {
+			selection.addRange( range1 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range2 );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.false;
+		} );
+
+		it( 'should return false if directions do not equal', () => {
+			selection.addRange( range1 );
+
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1, true );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'collapseToStart', () => {
+		it( 'should collapse to start position and fire change event', () => {
+			selection.setRanges( [ range2, range1, range3 ] );
+			selection.collapseToStart();
+
+			expect( selection.rangeCount ).to.equal( 1 );
+			expect( selection.isCollapsed ).to.be.true;
+			expect( selection.getFirstPosition().isEqual( range1.start ) ).to.be.true;
+		} );
+
+		it( 'should do nothing if no ranges present', () => {
+			const spy = sinon.spy( selection, 'fire' );
+
+			selection.collapseToStart();
+
+			spy.restore();
+			expect( spy.notCalled ).to.be.true;
+		} );
+	} );
+
+	describe( 'collapseToEnd', () => {
+		it( 'should collapse to start position and fire change event', () => {
+			selection.setRanges( [ range2, range3, range1 ] );
+			selection.collapseToEnd();
+
+			expect( selection.rangeCount ).to.equal( 1 );
+			expect( selection.isCollapsed ).to.be.true;
+			expect( selection.getLastPosition().isEqual( range3.end ) ).to.be.true;
+		} );
+
+		it( 'should do nothing if no ranges present', () => {
+			const spy = sinon.spy( selection, 'fire' );
+
+			selection.collapseToEnd();
+
+			spy.restore();
+			expect( spy.notCalled ).to.be.true;
 		} );
 	} );
 
@@ -597,7 +741,7 @@ describe( 'Selection', () => {
 
 		beforeEach( () => {
 			root.insertChildren( 0, [
-				new Element( 'p', [], 'foobar' ),
+				new Element( 'p', [], new Text( 'foobar' ) ),
 				new Element( 'p', [], [] )
 			] );
 
@@ -629,7 +773,7 @@ describe( 'Selection', () => {
 		} );
 
 		describe( 'getAttributes', () => {
-			it( 'should return an iterator that iterates over all attributes set on the text fragment', () => {
+			it( 'should return an iterator that iterates over all attributes set on selection', () => {
 				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
 				selection.setAttribute( 'abc', 'xyz' );
@@ -637,6 +781,18 @@ describe( 'Selection', () => {
 				let attrs = Array.from( selection.getAttributes() );
 
 				expect( attrs ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'abc', 'xyz' ] ] );
+			} );
+		} );
+
+		describe( 'getAttributeKeys', () => {
+			it( 'should return iterator that iterates over all attribute keys set on selection', () => {
+				selection.setRanges( [ rangeInFullP ] );
+				selection.setAttribute( 'foo', 'bar' );
+				selection.setAttribute( 'abc', 'xyz' );
+
+				let attrs = Array.from( selection.getAttributeKeys() );
+
+				expect( attrs ).to.deep.equal( [ 'foo', 'abc' ] );
 			} );
 		} );
 

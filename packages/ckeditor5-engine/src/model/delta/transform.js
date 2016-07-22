@@ -60,7 +60,7 @@ function updateBaseVersion( baseVersion, deltas ) {
 /**
  * The default delta transformation function. It is used for those deltas that are not in special case conflict.
  *
- * This algorithm is similar to popular `dOPT` algorithm used in operational transformation, as we are in fact
+ * This algorithm is similar to a popular `dOPT` algorithm used in operational transformation, as we are in fact
  * transforming two sets of operations by each other.
  *
  * @external engine.model.delta.transform

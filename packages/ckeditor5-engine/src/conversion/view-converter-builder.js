@@ -5,6 +5,8 @@
 
 import Matcher from '../view/matcher.js';
 import ModelElement from '../model/element.js';
+import ModelPosition from '../model/position.js';
+import modelWriter from '../model/writer.js';
 import isIterable from '../../utils/isiterable.js';
 
 /**
@@ -253,8 +255,7 @@ class ViewConverterBuilder {
 					const modelElement = element instanceof Function ? element( data.input ) : new ModelElement( element );
 
 					// Check whether generated structure is okay with `Schema`.
-					// TODO: Make it more sane after .getAttributeKeys() is available for ModelElement.
-					const keys = Array.from( modelElement.getAttributes() ).map( ( attribute ) => attribute[ 0 ] );
+					const keys = Array.from( modelElement.getAttributeKeys() );
 
 					if ( !conversionApi.schema.check( { name: modelElement.name, attributes: keys, inside: data.context } ) ) {
 						continue;
@@ -270,7 +271,9 @@ class ViewConverterBuilder {
 					data.context.push( modelElement );
 
 					// Convert children of converted view element and append them to `modelElement`.
-					modelElement.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
+					const modelChildren = conversionApi.convertChildren( data.input, consumable, data );
+					const insertPosition = ModelPosition.createAt( modelElement, 'end' );
+					modelWriter.insert( insertPosition, modelChildren );
 
 					// Remove created `modelElement` from the parents stack.
 					data.context.pop();
@@ -368,7 +371,7 @@ class ViewConverterBuilder {
 	}
 }
 
-// Helper function that sets given attributes on given `engine.model.Item` or `engine.model.DocumentFragment`.
+// Helper function that sets given attributes on given `engine.model.Node` or `engine.model.DocumentFragment`.
 function setAttributeOn( toChange, attribute, data, conversionApi ) {
 	if ( isIterable( toChange ) ) {
 		for ( let node of toChange ) {
@@ -378,8 +381,8 @@ function setAttributeOn( toChange, attribute, data, conversionApi ) {
 		return;
 	}
 
-	// TODO: Make it more sane after .getAttributeKeys() is available for ModelElement.
-	const keys = Array.from( toChange.getAttributes() ).map( ( attribute ) => attribute[ 0 ] ).concat( attribute.key );
+	const keys = Array.from( toChange.getAttributeKeys() );
+	keys.push( attribute.key );
 
 	const schemaQuery = {
 		name: toChange.name || '$text',

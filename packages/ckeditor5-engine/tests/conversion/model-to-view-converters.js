@@ -10,6 +10,7 @@ import ModelElement from '/ckeditor5/engine/model/element.js';
 import ModelText from '/ckeditor5/engine/model/text.js';
 import ModelRange from '/ckeditor5/engine/model/range.js';
 import ModelPosition from '/ckeditor5/engine/model/position.js';
+import modelWriter from '/ckeditor5/engine/model/writer.js';
 
 import ViewElement from '/ckeditor5/engine/view/element.js';
 import ViewContainerElement from '/ckeditor5/engine/view/containerelement.js';
@@ -77,7 +78,7 @@ function viewToString( item ) {
 
 describe( 'insertText', () => {
 	it( 'should convert text insertion in model to view text', () => {
-		modelRoot.appendChildren( 'foobar' );
+		modelRoot.appendChildren( new ModelText( 'foobar' ) );
 		dispatcher.on( 'insert:$text', insertText() );
 
 		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
@@ -88,7 +89,7 @@ describe( 'insertText', () => {
 
 describe( 'insertElement', () => {
 	it( 'should convert element insertion in model to and map positions for future converting', () => {
-		const modelElement = new ModelElement( 'paragraph', null, 'foobar' );
+		const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) );
 		const viewElement = new ViewContainerElement( 'p' );
 
 		modelRoot.appendChildren( modelElement );
@@ -108,8 +109,8 @@ describe( 'insertElement', () => {
 				return new ViewContainerElement( 'p' );
 			}
 		};
-		const niceP = new ModelElement( 'myParagraph', { nice: true }, 'foo' );
-		const badP = new ModelElement( 'myParagraph', null, 'bar' );
+		const niceP = new ModelElement( 'myParagraph', { nice: true }, new ModelText( 'foo' ) );
+		const badP = new ModelElement( 'myParagraph', null, new ModelText( 'bar' ) );
 
 		modelRoot.appendChildren( [ niceP, badP ] );
 
@@ -124,7 +125,7 @@ describe( 'insertElement', () => {
 
 describe( 'setAttribute/removeAttribute', () => {
 	it( 'should convert attribute insert/change/remove on a model node', () => {
-		const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, 'foobar' );
+		const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
 		const viewElement = new ViewContainerElement( 'p' );
 
 		modelRoot.appendChildren( modelElement );
@@ -150,7 +151,7 @@ describe( 'setAttribute/removeAttribute', () => {
 	} );
 
 	it( 'should convert insert/change/remove with attribute generating function as a parameter', () => {
-		const modelParagraph = new ModelElement( 'paragraph', { theme: 'nice' }, 'foobar' );
+		const modelParagraph = new ModelElement( 'paragraph', { theme: 'nice' }, new ModelText( 'foobar' ) );
 		const modelDiv = new ModelElement( 'div', { theme: 'nice' } );
 
 		const themeConverter = ( value, key, data ) => {
@@ -201,9 +202,7 @@ describe( 'wrap/unwrap', () => {
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 
-		for ( let value of ModelRange.createFromElement( modelElement ) ) {
-			value.item.removeAttribute( 'bold' );
-		}
+		modelWriter.removeAttribute( ModelRange.createFromElement( modelElement ), 'bold' );
 
 		dispatcher.convertAttribute( 'removeAttribute', ModelRange.createFromElement( modelElement ), 'bold', true, null );
 
@@ -230,9 +229,7 @@ describe( 'wrap/unwrap', () => {
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 
-		for ( let value of ModelRange.createFromElement( modelElement ) ) {
-			value.item.removeAttribute( 'style' );
-		}
+		modelWriter.removeAttribute( ModelRange.createFromElement( modelElement ), 'style' );
 
 		dispatcher.convertAttribute( 'removeAttribute', ModelRange.createFromElement( modelElement ), 'style', 'bold', null );
 
@@ -240,8 +237,12 @@ describe( 'wrap/unwrap', () => {
 	} );
 
 	it( 'should update range on re-wrapping attribute (#475)', () => {
-		const modelElement = new ModelElement( 'paragraph', null,
-			[ 'x', new ModelText( 'foo', { link: 'http://foo.com' } ), 'x' ] );
+		const modelElement = new ModelElement( 'paragraph', null, [
+			new ModelText( 'x' ),
+			new ModelText( 'foo', { link: 'http://foo.com' } ),
+			new ModelText( 'x' )
+		] );
+
 		const viewP = new ViewContainerElement( 'p' );
 
 		const elementGenerator = ( href ) => new ViewAttributeElement( 'a', { href } );
@@ -258,9 +259,7 @@ describe( 'wrap/unwrap', () => {
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>x<a href="http://foo.com">foo</a>x</p></div>' );
 
-		for ( let value of ModelRange.createFromElement( modelElement ) ) {
-			value.item.setAttribute( 'link', 'http://foobar.com' );
-		}
+		modelWriter.setAttribute( ModelRange.createFromElement( modelElement ), 'link', 'http://foobar.com' );
 
 		dispatcher.convertAttribute(
 			'changeAttribute',
@@ -276,8 +275,13 @@ describe( 'wrap/unwrap', () => {
 
 describe( 'move', () => {
 	it( 'should move items in view accordingly to changes in model', () => {
-		const modelDivA = new ModelElement( 'div', null, [ 'foo', new ModelElement( 'image' ) ] );
-		const modelDivB = new ModelElement( 'div', null, [ 'xxyy' ] );
+		const modelDivA = new ModelElement( 'div', null, [
+			new ModelText( 'foo' ),
+			new ModelElement( 'image' ),
+			new ModelText( 'bar' )
+		] );
+
+		const modelDivB = new ModelElement( 'div', null, new ModelText( 'xxyy' ) );
 
 		modelRoot.appendChildren( [ modelDivA, modelDivB ] );
 		dispatcher.on( 'insert:div', insertElement( new ViewContainerElement( 'div' ) ) );
@@ -287,21 +291,25 @@ describe( 'move', () => {
 
 		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
 
-		const removedNodes = modelDivA.removeChildren( 2, 2 );
-		modelDivB.insertChildren( 2, removedNodes );
+		const removedNodes = modelDivA.removeChildren( 0, 2 );
+		modelDivB.insertChildren( 0, removedNodes );
 
 		dispatcher.convertMove(
-			ModelPosition.createFromParentAndOffset( modelDivA, 2 ),
-			ModelRange.createFromParentsAndOffsets( modelDivB, 2, modelDivB, 4 )
+			ModelPosition.createFromParentAndOffset( modelDivA, 0 ),
+			ModelRange.createFromParentsAndOffsets( modelDivB, 0, modelDivB, 4 )
 		);
 
-		expect( viewToString( viewRoot ) ).to.equal( '<div><div>fo</div><div>xxo<img></img>yy</div></div>' );
+		expect( viewToString( viewRoot ) ).to.equal( '<div><div>bar</div><div>foo<img></img>xxyy</div></div>' );
 	} );
 } );
 
 describe( 'remove', () => {
 	it( 'should remove items from view accordingly to changes in model', () => {
-		const modelDiv = new ModelElement( 'div', null, [ 'foo', new ModelElement( 'image' ) ] );
+		const modelDiv = new ModelElement( 'div', null, [
+			new ModelText( 'foo' ),
+			new ModelElement( 'image' ),
+			new ModelText( 'bar' )
+		] );
 
 		modelRoot.appendChildren( modelDiv );
 		dispatcher.on( 'insert:div', insertElement( new ViewContainerElement( 'div' ) ) );
@@ -311,14 +319,14 @@ describe( 'remove', () => {
 
 		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
 
-		const removedNodes = modelDiv.removeChildren( 2, 2 );
-		modelDoc.graveyard.insertChildren( 2, removedNodes );
+		const removedNodes = modelDiv.removeChildren( 0, 2 );
+		modelDoc.graveyard.insertChildren( 0, removedNodes );
 
 		dispatcher.convertRemove(
-			ModelPosition.createFromParentAndOffset( modelDiv, 2 ),
-			ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 2 )
+			ModelPosition.createFromParentAndOffset( modelDiv, 0 ),
+			ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 4 )
 		);
 
-		expect( viewToString( viewRoot ) ).to.equal( '<div><div>fo</div></div>' );
+		expect( viewToString( viewRoot ) ).to.equal( '<div><div>bar</div></div>' );
 	} );
 } );

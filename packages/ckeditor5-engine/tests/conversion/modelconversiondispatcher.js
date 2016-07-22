@@ -40,7 +40,7 @@ describe( 'ModelConversionDispatcher', () => {
 
 		beforeEach( () => {
 			image = new ModelElement( 'image' );
-			root.appendChildren( [ image, 'foobar' ] );
+			root.appendChildren( [ image, new ModelText( 'foobar' ) ] );
 
 			imagePos = ModelPosition.createBefore( image );
 
@@ -198,7 +198,7 @@ describe( 'ModelConversionDispatcher', () => {
 			root.appendChildren( [
 				new ModelText( 'foo', { bold: true } ),
 				new ModelElement( 'image' ),
-				'bar',
+				new ModelText( 'bar' ),
 				new ModelElement( 'paragraph', { class: 'nice' }, new ModelText( 'xx', { italic: true } ) )
 			] );
 
@@ -208,7 +208,7 @@ describe( 'ModelConversionDispatcher', () => {
 			// We will check everything connected with insert event:
 			dispatcher.on( 'insert', ( evt, data, consumable ) => {
 				// Check if the item is correct.
-				const itemId = data.item.name ? data.item.name : '$text:' + data.item.text;
+				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
 				// Check if the range is correct.
 				const log = 'insert:' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
 
@@ -222,7 +222,7 @@ describe( 'ModelConversionDispatcher', () => {
 
 			// Same here.
 			dispatcher.on( 'addAttribute', ( evt, data, consumable ) => {
-				const itemId = data.item.name ? data.item.name : '$text:' + data.item.text;
+				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
 				const key = data.attributeKey;
 				const value = data.attributeNewValue;
 				const log = 'addAttribute:' + key + ':' + value + ':' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
@@ -250,7 +250,9 @@ describe( 'ModelConversionDispatcher', () => {
 
 		it( 'should not fire events for already consumed parts of model', () => {
 			root.appendChildren( [
-				new ModelElement( 'image', { src: 'foo.jpg', title: 'bar', bold: true }, new ModelElement( 'caption', {}, 'title' ) )
+				new ModelElement( 'image', { src: 'foo.jpg', title: 'bar', bold: true }, [
+					new ModelElement( 'caption', {}, new ModelText( 'title' ) )
+				] )
 			] );
 
 			sinon.spy( dispatcher, 'fire' );
@@ -276,7 +278,7 @@ describe( 'ModelConversionDispatcher', () => {
 
 	describe( 'convertMove', () => {
 		it( 'should fire single event for moved range', () => {
-			root.appendChildren( 'barfoo' );
+			root.appendChildren( new ModelText( 'barfoo' ) );
 
 			const range = ModelRange.createFromParentsAndOffsets( root, 0, root, 3 );
 			const loggedEvents = [];
@@ -294,8 +296,8 @@ describe( 'ModelConversionDispatcher', () => {
 
 	describe( 'convertRemove', () => {
 		it( 'should fire single event for removed range', () => {
-			root.appendChildren( 'foo' );
-			doc.graveyard.appendChildren( 'bar' );
+			root.appendChildren( new ModelText( 'foo' ) );
+			doc.graveyard.appendChildren( new ModelText( 'bar' ) );
 
 			const range = ModelRange.createFromParentsAndOffsets( doc.graveyard, 0, doc.graveyard, 3 );
 			const loggedEvents = [];
@@ -323,7 +325,7 @@ describe( 'ModelConversionDispatcher', () => {
 			const loggedEvents = [];
 
 			dispatcher.on( 'addAttribute', ( evt, data, consumable ) => {
-				const itemId = data.item.name ? data.item.name : '$text:' + data.item.text;
+				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
 				const key = data.attributeKey;
 				const value = data.attributeNewValue;
 				const log = 'addAttribute:' + key + ':' + value + ':' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
@@ -368,7 +370,7 @@ describe( 'ModelConversionDispatcher', () => {
 		beforeEach( () => {
 			dispatcher.off( 'selection' );
 
-			root.appendChildren( 'foobar' );
+			root.appendChildren( new ModelText( 'foobar' ) );
 			doc.selection.setRanges( [
 				new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) ),
 				new ModelRange( new ModelPosition( root, [ 4 ] ), new ModelPosition( root, [ 5 ] ) )
