@@ -68,13 +68,13 @@ describe( 'Batch', () => {
 			} );
 
 			it( 'should create the attribute on text node', () => {
-				batch.setAttr( text, 'b', 2 );
+				batch.setAttribute( text, 'b', 2 );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( root.getChild( 1 ).getAttribute( 'b' ) ).to.equal( 2 );
 			} );
 
 			it( 'should change the attribute of text node', () => {
-				batch.setAttr( text, 'a', 2 );
+				batch.setAttribute( text, 'a', 2 );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( root.getChild( 1 ).getAttribute( 'a' ) ).to.equal( 2 );
 			} );
@@ -106,7 +106,7 @@ describe( 'Batch', () => {
 			} );
 
 			it( 'should remove the attribute from character', () => {
-				batch.removeAttr( text, 'a' );
+				batch.removeAttribute( text, 'a' );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( root.getChild( 1 ).getAttribute( 'a' ) ).to.be.undefined;
 			} );
