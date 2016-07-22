@@ -186,7 +186,7 @@ describe( 'RootAttributeOperation', () => {
 					doc.version
 				)
 			) );
-		} ).to.throw( CKEditorError, /operation-rootattribute-no-attr-to-remove/ );
+		} ).to.throw( CKEditorError, /rootattribute-operation-wrong-old-value/ );
 	} );
 
 	it( 'should throw an error when one try to insert and the attribute already exists', () => {
@@ -202,7 +202,7 @@ describe( 'RootAttributeOperation', () => {
 					doc.version
 				)
 			) );
-		} ).to.throw( CKEditorError, /operation-rootattribute-attr-exists/ );
+		} ).to.throw( CKEditorError, /rootattribute-operation-attribute-exists/ );
 	} );
 
 	it( 'should create a RootAttributeOperation with the same parameters when cloned', () => {
@@ -271,7 +271,7 @@ describe( 'RootAttributeOperation', () => {
 
 			expect( () => {
 				RootAttributeOperation.fromJSON( serialized, doc );
-			} ).to.throw( CKEditorError, /rootattributeoperation-fromjson-no-root/ );
+			} ).to.throw( CKEditorError, /rootattribute-operation-fromjson-no-roo/ );
 		} );
 	} );
 } );

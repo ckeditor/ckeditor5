@@ -54,76 +54,76 @@ describe( 'Batch', () => {
 			root.insertChildren( 0, [ node, text ] );
 		} );
 
-		describe( 'setAttr', () => {
+		describe( 'setAttribute', () => {
 			it( 'should create the attribute on element', () => {
-				batch.setAttr( 'b', 2, node );
+				batch.setAttribute( node, 'b', 2 );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( node.getAttribute( 'b' ) ).to.equal( 2 );
 			} );
 
 			it( 'should change the attribute of element', () => {
-				batch.setAttr( 'a', 2, node );
+				batch.setAttribute( node, 'a', 2 );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( node.getAttribute( 'a' ) ).to.equal( 2 );
 			} );
 
 			it( 'should create the attribute on text node', () => {
-				batch.setAttr( 'b', 2, text );
+				batch.setAttribute( text, 'b', 2 );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( root.getChild( 1 ).getAttribute( 'b' ) ).to.equal( 2 );
 			} );
 
 			it( 'should change the attribute of text node', () => {
-				batch.setAttr( 'a', 2, text );
+				batch.setAttribute( text, 'a', 2 );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( root.getChild( 1 ).getAttribute( 'a' ) ).to.equal( 2 );
 			} );
 
 			it( 'should do nothing if the attribute value is the same', () => {
-				batch.setAttr( 'a', 1, node );
+				batch.setAttribute( node, 'a', 1 );
 				expect( getOperationsCount() ).to.equal( 0 );
 				expect( node.getAttribute( 'a' ) ).to.equal( 1 );
 			} );
 
 			it( 'should be chainable', () => {
-				const chain = batch.setAttr( 'b', 2, node );
+				const chain = batch.setAttribute( node, 'b', 2 );
 				expect( chain ).to.equal( batch );
 			} );
 
 			it( 'should add delta to batch and operation to delta before applying operation', () => {
 				sinon.spy( doc, 'applyOperation' );
-				batch.setAttr( 'b', 2, node );
+				batch.setAttribute( node, 'b', 2 );
 
 				expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
 			} );
 		} );
 
-		describe( 'removeAttr', () => {
+		describe( 'removeAttribute', () => {
 			it( 'should remove the attribute from element', () => {
-				batch.removeAttr( 'a', node );
+				batch.removeAttribute( node, 'a' );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( node.getAttribute( 'a' ) ).to.be.undefined;
 			} );
 
 			it( 'should remove the attribute from character', () => {
-				batch.removeAttr( 'a', text );
+				batch.removeAttribute( text, 'a' );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( root.getChild( 1 ).getAttribute( 'a' ) ).to.be.undefined;
 			} );
 
 			it( 'should do nothing if the attribute is not set', () => {
-				batch.removeAttr( 'b', node );
+				batch.removeAttribute( node, 'b' );
 				expect( getOperationsCount() ).to.equal( 0 );
 			} );
 
 			it( 'should be chainable', () => {
-				const chain = batch.removeAttr( 'a', node );
+				const chain = batch.removeAttribute( node, 'a' );
 				expect( chain ).to.equal( batch );
 			} );
 
 			it( 'should add delta to batch and operation to delta before applying operation', () => {
 				sinon.spy( doc, 'applyOperation' );
-				batch.removeAttr( 'a', node );
+				batch.removeAttribute( node, 'a' );
 
 				expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
 			} );
@@ -172,44 +172,44 @@ describe( 'Batch', () => {
 				.join( '' );
 		}
 
-		describe( 'setAttr', () => {
+		describe( 'setAttribute', () => {
 			it( 'should set the attribute on the range', () => {
-				batch.setAttr( 'a', 3, getRange( 3, 6 ) );
+				batch.setAttribute( getRange( 3, 6 ), 'a', 3 );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( getChangesAttrsCount() ).to.equal( 3 );
 				expect( getCompressedAttrs() ).to.equal( '111333111222---1112------' );
 			} );
 
 			it( 'should split the operations if parts of the range have different attributes', () => {
-				batch.setAttr( 'a', 3, getRange( 4, 14 ) );
+				batch.setAttribute( getRange( 4, 14 ), 'a', 3 );
 				expect( getOperationsCount() ).to.equal( 4 );
 				expect( getChangesAttrsCount() ).to.equal( 10 );
 				expect( getCompressedAttrs() ).to.equal( '111-3333333333-1112------' );
 			} );
 
 			it( 'should split the operations if parts of the part of the range have the attribute', () => {
-				batch.setAttr( 'a', 2, getRange( 4, 14 ) );
+				batch.setAttribute( getRange( 4, 14 ), 'a', 2 );
 				expect( getOperationsCount() ).to.equal( 3 );
 				expect( getChangesAttrsCount() ).to.equal( 7 );
 				expect( getCompressedAttrs() ).to.equal( '111-2222222222-1112------' );
 			} );
 
 			it( 'should strip the range if the beginning have the attribute', () => {
-				batch.setAttr( 'a', 1, getRange( 1, 5 ) );
+				batch.setAttribute( getRange( 1, 5 ), 'a', 1 );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( getChangesAttrsCount() ).to.equal( 2 );
 				expect( getCompressedAttrs() ).to.equal( '11111-111222---1112------' );
 			} );
 
 			it( 'should strip the range if the ending have the attribute', () => {
-				batch.setAttr( 'a', 1, getRange( 13, 17 ) );
+				batch.setAttribute( getRange( 13, 17 ), 'a', 1 );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( getChangesAttrsCount() ).to.equal( 2 );
 				expect( getCompressedAttrs() ).to.equal( '111---111222-111112------' );
 			} );
 
 			it( 'should do nothing if the range has attribute', () => {
-				batch.setAttr( 'a', 1, getRange( 0, 3 ) );
+				batch.setAttribute( getRange( 0, 3 ), 'a', 1 );
 				expect( getOperationsCount() ).to.equal( 0 );
 				expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 			} );
@@ -220,7 +220,7 @@ describe( 'Batch', () => {
 					new Position( root, [ 19 ] )
 				);
 
-				batch.setAttr( 'a', 1, range );
+				batch.setAttribute( range, 'a', 1 );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( getChangesAttrsCount() ).to.equal( 2 );
 				expect( getCompressedAttrs() ).to.equal( '111---111222---1112-11---' );
@@ -232,7 +232,7 @@ describe( 'Batch', () => {
 					new Position( root, [ 21 ] )
 				);
 
-				batch.setAttr( 'a', 1, range );
+				batch.setAttribute( range, 'a', 1 );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( getChangesAttrsCount() ).to.equal( 4 );
 				expect( getCompressedAttrs() ).to.equal( '111---111222---1112-1111-' );
@@ -244,75 +244,75 @@ describe( 'Batch', () => {
 					new Position( root, [ 19 ] )
 				);
 
-				batch.setAttr( 'a', 3, range );
+				batch.setAttribute( range, 'a', 3 );
 				expect( getOperationsCount() ).to.equal( 0 );
 				expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 			} );
 
 			it( 'should not create an operation if is collapsed', () => {
-				batch.setAttr( 'a', 1, getRange( 3, 3 ) );
+				batch.setAttribute( getRange( 3, 3 ), 'a', 1 );
 				expect( getOperationsCount() ).to.equal( 0 );
 				expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 			} );
 
 			it( 'should create a proper operations for the mixed range', () => {
-				batch.setAttr( 'a', 1, getRange( 0, 20 ) );
+				batch.setAttribute( getRange( 0, 20 ), 'a', 1 );
 				expect( getOperationsCount() ).to.equal( 5 );
 				expect( getChangesAttrsCount() ).to.equal( 14 );
 				expect( getCompressedAttrs() ).to.equal( '11111111111111111111111--' );
 			} );
 
 			it( 'should be chainable', () => {
-				const chain = batch.setAttr( 'a', 3, getRange( 3, 6 ) );
+				const chain = batch.setAttribute( getRange( 3, 6 ), 'a', 3 );
 				expect( chain ).to.equal( batch );
 			} );
 
 			it( 'should add delta to batch and operation to delta before applying operation', () => {
 				sinon.spy( doc, 'applyOperation' );
-				batch.setAttr( 'a', 3, getRange( 3, 6 ) );
+				batch.setAttribute( getRange( 3, 6 ), 'a', 3 );
 
 				expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
 			} );
 		} );
 
-		describe( 'removeAttr', () => {
+		describe( 'removeAttribute', () => {
 			it( 'should remove the attribute on the range', () => {
-				batch.removeAttr( 'a', getRange( 0, 2 ) );
+				batch.removeAttribute( getRange( 0, 2 ), 'a' );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( getChangesAttrsCount() ).to.equal( 2 );
 				expect( getCompressedAttrs() ).to.equal( '--1---111222---1112------' );
 			} );
 
 			it( 'should split the operations if parts of the range have different attributes', () => {
-				batch.removeAttr( 'a', getRange( 7, 11 ) );
+				batch.removeAttribute( getRange( 7, 11 ), 'a' );
 				expect( getOperationsCount() ).to.equal( 2 );
 				expect( getChangesAttrsCount() ).to.equal( 4 );
 				expect( getCompressedAttrs() ).to.equal( '111---1----2---1112------' );
 			} );
 
 			it( 'should split the operations if parts of the part of the range have no attribute', () => {
-				batch.removeAttr( 'a', getRange( 1, 7 ) );
+				batch.removeAttribute( getRange( 1, 7 ), 'a' );
 				expect( getOperationsCount() ).to.equal( 2 );
 				expect( getChangesAttrsCount() ).to.equal( 3 );
 				expect( getCompressedAttrs() ).to.equal( '1------11222---1112------' );
 			} );
 
 			it( 'should strip the range if the beginning have no attribute', () => {
-				batch.removeAttr( 'a', getRange( 4, 12 ) );
+				batch.removeAttribute( getRange( 4, 12 ), 'a' );
 				expect( getOperationsCount() ).to.equal( 2 );
 				expect( getChangesAttrsCount() ).to.equal( 6 );
 				expect( getCompressedAttrs() ).to.equal( '111------------1112------' );
 			} );
 
 			it( 'should strip the range if the ending have no attribute', () => {
-				batch.removeAttr( 'a', getRange( 7, 15 ) );
+				batch.removeAttribute( getRange( 7, 15 ), 'a' );
 				expect( getOperationsCount() ).to.equal( 2 );
 				expect( getChangesAttrsCount() ).to.equal( 5 );
 				expect( getCompressedAttrs() ).to.equal( '111---1--------1112------' );
 			} );
 
 			it( 'should do nothing if the range has no attribute', () => {
-				batch.removeAttr( 'a', getRange( 4, 5 ) );
+				batch.removeAttribute( getRange( 4, 5 ), 'a' );
 				expect( getOperationsCount() ).to.equal( 0 );
 				expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 			} );
@@ -323,40 +323,40 @@ describe( 'Batch', () => {
 					new Position( root, [ 19 ] )
 				);
 
-				batch.removeAttr( 'a', range );
+				batch.removeAttribute( range, 'a' );
 				expect( getOperationsCount() ).to.equal( 0 );
 				expect( getChangesAttrsCount() ).to.equal( 0 );
 				expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 			} );
 
 			it( 'should not apply operation twice in the range contains opening and closing tags', () => {
-				batch.removeAttr( 'a', getRange( 18, 22 ) );
+				batch.removeAttribute( getRange( 18, 22 ), 'a' );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( getChangesAttrsCount() ).to.equal( 1 );
 				expect( getCompressedAttrs() ).to.equal( '111---111222---111-------' );
 			} );
 
 			it( 'should not create an operation if range is collapsed', () => {
-				batch.removeAttr( 'a', getRange( 3, 3 ) );
+				batch.removeAttribute( getRange( 3, 3 ), 'a' );
 				expect( getOperationsCount() ).to.equal( 0 );
 				expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 			} );
 
 			it( 'should create a proper operations for the mixed range', () => {
-				batch.removeAttr( 'a', getRange( 3, 15 ) );
+				batch.removeAttribute( getRange( 3, 15 ), 'a' );
 				expect( getOperationsCount() ).to.equal( 2 );
 				expect( getChangesAttrsCount() ).to.equal( 6 );
 				expect( getCompressedAttrs() ).to.equal( '111------------1112------' );
 			} );
 
 			it( 'should be chainable', () => {
-				const chain = batch.removeAttr( 'a', getRange( 0, 2 ) );
+				const chain = batch.removeAttribute( getRange( 0, 2 ), 'a' );
 				expect( chain ).to.equal( batch );
 			} );
 
 			it( 'should add delta to batch and operation to delta before applying operation', () => {
 				sinon.spy( doc, 'applyOperation' );
-				batch.removeAttr( 'a', getRange( 0, 2 ) );
+				batch.removeAttribute( getRange( 0, 2 ), 'a' );
 
 				expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
 			} );
@@ -364,38 +364,38 @@ describe( 'Batch', () => {
 	} );
 
 	describe( 'change attribute on root element', () => {
-		describe( 'setAttr', () => {
+		describe( 'setAttribute', () => {
 			it( 'should create the attribute on root', () => {
-				batch.setAttr( 'b', 2, root );
+				batch.setAttribute( root, 'b', 2  );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( root.getAttribute( 'b' ) ).to.equal( 2 );
 			} );
 
 			it( 'should change the attribute of root', () => {
-				batch.setAttr( 'a', 2, root );
+				batch.setAttribute( root, 'a', 2 );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( root.getAttribute( 'a' ) ).to.equal( 2 );
 			} );
 
 			it( 'should do nothing if the attribute value is the same', () => {
-				batch.setAttr( 'a', 1, root );
+				batch.setAttribute( root, 'a', 1 );
 				expect( getOperationsCount() ).to.equal( 1 );
-				batch.setAttr( 'a', 1, root );
+				batch.setAttribute( root, 'a', 1 );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( root.getAttribute( 'a' ) ).to.equal( 1 );
 			} );
 		} );
 
-		describe( 'removeAttr', () => {
+		describe( 'removeAttribute', () => {
 			it( 'should remove the attribute from root', () => {
-				batch.setAttr( 'a', 1, root );
-				batch.removeAttr( 'a', root );
+				batch.setAttribute( root, 'a', 1 );
+				batch.removeAttribute( root, 'a' );
 				expect( getOperationsCount() ).to.equal( 2 );
 				expect( root.getAttribute( 'a' ) ).to.be.undefined;
 			} );
 
 			it( 'should do nothing if the attribute is not set', () => {
-				batch.removeAttr( 'b', root );
+				batch.removeAttribute( root, 'b' );
 				expect( getOperationsCount() ).to.equal( 0 );
 			} );
 		} );

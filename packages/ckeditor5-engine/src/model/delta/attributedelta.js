@@ -14,9 +14,9 @@ import RootElement from '../rootelement.js';
 import Element from '../element.js';
 
 /**
- * To provide specific OT behavior and better collisions solving, methods to change attributes ({@link engine.model.Batch#setAttr}
- * and {@link engine.model.Batch#removeAttr}) use `AttributeDelta` class which inherits from the `Delta` class and may
- * overwrite some methods.
+ * To provide specific OT behavior and better collisions solving, methods to change attributes
+ * ({@link engine.model.Batch#setAttribute} and {@link engine.model.Batch#removeAttribute}) use `AttributeDelta` class
+ * which inherits from the `Delta` class and may overwrite some methods.
  *
  * @memberOf engine.model.delta
  * @extends engine.model.delta.Delta
@@ -87,8 +87,8 @@ export default class AttributeDelta extends Delta {
 }
 
 /**
- * To provide specific OT behavior and better collisions solving, methods to change attributes ({@link engine.model.Batch#setAttr}
- * and {@link engine.model.Batch#removeAttr}) use `RootAttributeDelta` class which inherits from the `Delta` class and may
+ * To provide specific OT behavior and better collisions solving, methods to change attributes ({@link engine.model.Batch#setAttribute}
+ * and {@link engine.model.Batch#removeAttribute}) use `RootAttributeDelta` class which inherits from the `Delta` class and may
  * overwrite some methods.
  *
  * @memberOf engine.model.delta
@@ -107,12 +107,12 @@ export class RootAttributeDelta extends Delta {
  * Sets value of the attribute with given key on a {@link engine.model.Item model item} or on a {@link engine.model.Range range}.
  *
  * @chainable
- * @method engine.model.Batch#setAttr
+ * @method engine.model.Batch#setAttribute
+ * @param {engine.model.Item|engine.model.Range} itemOrRange Model item or range on which the attribute will be set.
  * @param {String} key Attribute key.
  * @param {*} value Attribute new value.
- * @param {engine.model.Item|engine.model.Range} itemOrRange Model item or range on which the attribute will be set.
  */
-register( 'setAttr', function( key, value, itemOrRange ) {
+register( 'setAttribute', function( itemOrRange, key, value ) {
 	attribute( this, key, value, itemOrRange );
 
 	return this;
@@ -122,11 +122,11 @@ register( 'setAttr', function( key, value, itemOrRange ) {
  * Removes an attribute with given key from a {@link engine model.Item model item} or from a {@link engine.model.Range range}.
  *
  * @chainable
- * @method engine.model.Batch#removeAttr
- * @param {String} key Attribute key.
  * @param {engine.model.Item|engine.model.Range} itemOrRange Model item or range from which the attribute will be removed.
+ * @method engine.model.Batch#removeAttribute
+ * @param {String} key Attribute key.
  */
-register( 'removeAttr', function( key, itemOrRange ) {
+register( 'removeAttribute', function( itemOrRange, key ) {
 	attribute( this, key, null, itemOrRange );
 
 	return this;
