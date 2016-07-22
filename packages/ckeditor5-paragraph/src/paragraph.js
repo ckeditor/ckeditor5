@@ -8,8 +8,8 @@ import BuildModelConverterFor from '../engine/conversion/model-converter-builder
 import BuildViewConverterFor from '../engine/conversion/view-converter-builder.js';
 
 /**
- * A paragraph feature for editor.
- * Introduces `<paragraph>` element in the model which renders as `<p>` in the DOM and data.
+ * The paragraph feature for the editor.
+ * Introduces the `<paragraph>` element in the model which renders as a `<p>` element in the DOM and data.
  *
  * @memberOf paragraph
  * @extends ckeditor5.Feature
