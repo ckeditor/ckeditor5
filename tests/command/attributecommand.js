@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Editor from '/ckeditor5/editor/editor.js';
 import Document from '/ckeditor5/engine/model/document.js';
 import AttributeCommand from '/ckeditor5/command/attributecommand.js';
@@ -12,6 +10,8 @@ import Text from '/ckeditor5/engine/model/text.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import writer from '/ckeditor5/engine/model/writer.js';
+import { itemAt } from '/tests/engine/model/_utils/utils.js';
 
 let editor, command, modelDoc, root;
 
@@ -62,7 +62,15 @@ describe( '_doExecute', () => {
 		let attrs = {};
 		attrs[ attrKey ] = true;
 
-		root.insertChildren( 0, [ new Element( 'p', [] , [ 'abc', new Text( 'foobar', attrs ), 'xyz' ] ), new Element( 'p' ) ] );
+		root.insertChildren( 0, [
+			new Element( 'p', [] , [
+				new Text( 'abc' ),
+				new Text( 'foobar', attrs ),
+				new Text( 'xyz' )
+			] ),
+			new Element( 'p' )
+		] );
+
 		p = root.getChild( 0 );
 	} );
 
@@ -74,8 +82,10 @@ describe( '_doExecute', () => {
 		command._doExecute();
 
 		expect( command.value ).to.be.true;
-		expect( p.getChild( 1 ).hasAttribute( attrKey ) ).to.be.true;
-		expect( p.getChild( 2 ).hasAttribute( attrKey ) ).to.be.true;
+
+		expect( p.getChild( 0 ).hasAttribute( attrKey ) ).to.be.false;
+		expect( itemAt( p, 1 ).hasAttribute( attrKey ) ).to.be.true;
+		expect( itemAt( p, 2 ).hasAttribute( attrKey ) ).to.be.true;
 	} );
 
 	it( 'should remove attribute from selected nodes if the command value was true', () => {
@@ -86,9 +96,9 @@ describe( '_doExecute', () => {
 		command._doExecute();
 
 		expect( command.value ).to.be.false;
-		expect( p.getChild( 3 ).hasAttribute( attrKey ) ).to.be.false;
-		expect( p.getChild( 4 ).hasAttribute( attrKey ) ).to.be.false;
-		expect( p.getChild( 5 ).hasAttribute( attrKey ) ).to.be.false;
+		expect( itemAt( p, 3 ).hasAttribute( attrKey ) ).to.be.false;
+		expect( itemAt( p, 4 ).hasAttribute( attrKey ) ).to.be.false;
+		expect( itemAt( p, 5 ).hasAttribute( attrKey ) ).to.be.false;
 	} );
 
 	it( 'should add attribute on selected nodes if execute parameter was set to true', () => {
@@ -99,7 +109,7 @@ describe( '_doExecute', () => {
 		command._doExecute( true );
 
 		expect( command.value ).to.be.true;
-		expect( p.getChild( 9 ).hasAttribute( attrKey ) ).to.be.true;
+		expect( itemAt( p, 9 ).hasAttribute( attrKey ) ).to.be.true;
 	} );
 
 	it( 'should remove attribute on selected nodes if execute parameter was set to false', () => {
@@ -110,8 +120,8 @@ describe( '_doExecute', () => {
 		command._doExecute( false );
 
 		expect( command.value ).to.be.false;
-		expect( p.getChild( 3 ).hasAttribute( attrKey ) ).to.be.false;
-		expect( p.getChild( 4 ).hasAttribute( attrKey ) ).to.be.false;
+		expect( itemAt( p, 3 ).hasAttribute( attrKey ) ).to.be.false;
+		expect( itemAt( p, 4 ).hasAttribute( attrKey ) ).to.be.false;
 	} );
 
 	it( 'should change selection attribute if selection is collapsed in non-empty parent', () => {
@@ -174,8 +184,9 @@ describe( '_doExecute', () => {
 	} );
 
 	it( 'should not apply attribute change where it would invalid schema', () => {
-		p.insertChildren( 3, new Element( 'image' ) );
-		p.insertChildren( 12, new Element( 'image' ) );
+		writer.insert( Position.createFromParentAndOffset( p, 3 ), new Element( 'image' ) );
+		writer.insert( Position.createFromParentAndOffset( p, 12 ), new Element( 'image' ) );
+
 		modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 13 ] ) ) ] );
 
 		expect( command.isEnabled ).to.be.true;
@@ -184,8 +195,10 @@ describe( '_doExecute', () => {
 
 		let expectedHas = [ 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 ];
 
-		for ( let i = 0; i < expectedHas.length; i++ ) {
-			expect( p.getChild( i ).hasAttribute( attrKey ) ).to.equal( !!expectedHas[ i ] );
+		let i = 0;
+
+		for ( let node of Range.createFromElement( p ).getItems( { singleCharacters: true } ) ) {
+			expect( node.hasAttribute( attrKey ) ).to.equal( !!expectedHas[ i++ ] );
 		}
 	} );
 } );
@@ -194,10 +207,10 @@ describe( '_checkEnabled', () => {
 	beforeEach( () => {
 		root.insertChildren( 0, [
 			new Element( 'p', [], [
-				'foo',
+				new Text( 'foo' ),
 				new Element( 'img' ),
 				new Element( 'img' ),
-				'bar'
+				new Text( 'bar' )
 			] ),
 			new Element( 'h1' ),
 			new Element( 'p' )

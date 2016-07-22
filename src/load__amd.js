@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 // We import the 'require' module, so Require.JS gives us a localized version of require().
 // Otherwise we would use the global one which resolves paths relatively to the base dir.
 import require from 'require';

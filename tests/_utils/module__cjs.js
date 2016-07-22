@@ -5,8 +5,6 @@
 
 /* globals require, process */
 
-'use strict';
-
 const mockery = require( 'mockery' );
 mockery.enable( {
 	warnOnReplace: false,

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Editor from '/ckeditor5/editor/editor.js';
 import Command from '/ckeditor5/command/command.js';
 

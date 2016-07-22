@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import load from '/ckeditor5/load.js';
 
 describe( 'load()', () => {

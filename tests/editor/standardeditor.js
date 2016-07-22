@@ -5,8 +5,6 @@
 
 /* bender-tags: editor, browser-only */
 
-'use strict';
-
 import StandardEditor from '/ckeditor5/editor/standardeditor.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 import { getData, setData } from '/tests/engine/_utils/model.js';

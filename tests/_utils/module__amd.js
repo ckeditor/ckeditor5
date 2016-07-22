@@ -5,8 +5,6 @@
 
 /* globals bender, define, require */
 
-'use strict';
-
 /**
  * AMD tools related to CKEditor.
  */
