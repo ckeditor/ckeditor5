@@ -93,13 +93,13 @@ export default class RootAttributeOperation extends Operation {
 			/**
 			 * The attribute which should be removed does not exists for the given node.
 			 *
-			 * @error operation-rootattribute-no-attr-to-remove
+			 * @error rootattribute-operation-wrong-old-value
 			 * @param {engine.model.RootElement} root
 			 * @param {String} key
 			 * @param {*} value
 			 */
 			throw new CKEditorError(
-				'operation-rootattribute-no-attr-to-remove: The attribute which should be removed does not exists for given node.',
+				'rootattribute-operation-wrong-old-value: Changed node has different attribute value than operation\'s old attribute value.',
 				{ root: this.root, key: this.key }
 			);
 		}
@@ -108,12 +108,12 @@ export default class RootAttributeOperation extends Operation {
 			/**
 			 * The attribute with given key already exists for the given node.
 			 *
-			 * @error operation-rootattribute-attr-exists
+			 * @error rootattribute-operation-attribute-exists
 			 * @param {engine.model.RootElement} root
 			 * @param {String} key
 			 */
 			throw new CKEditorError(
-				'operation-rootattribute-attr-exists: The attribute with given key already exists.',
+				'rootattribute-operation-attribute-exists: The attribute with given key already exists.',
 				{ root: this.root, key: this.key }
 			);
 		}
@@ -150,7 +150,7 @@ export default class RootAttributeOperation extends Operation {
 			 * @param {String} rootName
 			 */
 			throw new CKEditorError(
-				'rootattributeoperation-fromjson-no-root: Cannot create RootAttributeOperation. Root with specified name does not exist.',
+				'rootattribute-operation-fromjson-no-root: Cannot create RootAttributeOperation. Root with specified name does not exist.',
 				{ rootName: json }
 			);
 		}

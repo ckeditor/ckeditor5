@@ -124,12 +124,12 @@ export default class AttributeOperation extends Operation {
 				/**
 				 * The attribute with given key already exists for the given node.
 				 *
-				 * @error operation-attribute-attr-exists
+				 * @error attribute-operation-attribute-exists
 				 * @param {engine.model.Node} node
 				 * @param {String} key
 				 */
 				throw new CKEditorError(
-					'operation-attribute-attr-exists: The attribute with given key already exists.',
+					'attribute-operation-attribute-exists: The attribute with given key already exists.',
 					{ node: item, key: this.key }
 				);
 			}

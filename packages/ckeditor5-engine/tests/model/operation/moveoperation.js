@@ -161,7 +161,7 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /operation-move-nodes-do-not-exist/ );
+		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /move-operation-nodes-do-not-exist/ );
 	} );
 
 	it( 'should throw an error if target or source parent-element specified by position does not exist', () => {
@@ -178,7 +178,7 @@ describe( 'MoveOperation', () => {
 
 		root.removeChildren( 1 );
 
-		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /operation-move-position-invalid/ );
+		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /move-operation-position-invalid/ );
 	} );
 
 	it( 'should throw an error if operation tries to move a range between the beginning and the end of that range', () => {
@@ -191,7 +191,7 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /operation-move-range-into-itself/ );
+		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /move-operation-range-into-itself/ );
 	} );
 
 	it( 'should throw an error if operation tries to move a range into a sub-tree of a node that is in that range', () => {
@@ -205,7 +205,7 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /operation-move-node-into-itself/ );
+		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /move-operation-node-into-itself/ );
 	} );
 
 	it( 'should not throw an error if operation move a range into a sibling', () => {

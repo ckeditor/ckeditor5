@@ -312,7 +312,7 @@ describe( 'AttributeOperation', () => {
 					doc.version
 				)
 			) );
-		} ).to.throw( CKEditorError, /operation-attribute-attr-exists/ );
+		} ).to.throw( CKEditorError, /attribute-operation-attribute-exists/ );
 	} );
 
 	it( 'should create an AttributeOperation with the same parameters when cloned', () => {
