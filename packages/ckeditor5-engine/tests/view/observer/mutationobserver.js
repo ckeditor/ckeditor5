@@ -49,6 +49,17 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].oldText ).to.equal( 'foo' );
 	} );
 
+	it( 'should not observe if disabled', () => {
+		const additional = document.getElementById( 'additional' );
+		mutationObserver.disable();
+		viewDocument.createRoot( additional, 'additional' );
+
+		additional.textContent = 'foobar';
+		mutationObserver.flush();
+
+		expect( lastMutations ).to.be.null;
+	} );
+
 	it( 'should handle bold', () => {
 		domEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'f';
 		const domB = document.createElement( 'b' );
