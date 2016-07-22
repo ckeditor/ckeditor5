@@ -55,7 +55,7 @@ describe( 'UndoCommand', () => {
 			editor.document.selection.setRanges( [ r( 2, 4 ) ], true );
 			batch1 = doc.batch();
 			undo.addBatch( batch1 );
-			batch1.setAttr( 'key', 'value', r( 2, 4 ) );
+			batch1.setAttribute( r( 2, 4 ), 'key', 'value' );
 			/*
 			 [root]
 			 - f
@@ -293,7 +293,7 @@ describe( 'UndoCommand', () => {
 			editor.document.selection.setRanges( [ r( 0, 3 ) ] );
 			let batch2 = doc.batch();
 			undo.addBatch( batch2 );
-			batch2.setAttr( 'uppercase', true, r( 0, 3 ) );
+			batch2.setAttribute( r( 0, 3 ), 'uppercase', true );
 			expect( getCaseText( root ) ).to.equal( 'EBCdf' );
 
 			undo._execute( batch0 );
@@ -325,7 +325,7 @@ describe( 'UndoCommand', () => {
 			editor.document.selection.setRanges( [ r( 1, 4 ) ] );
 			let batch0 = doc.batch();
 			undo.addBatch( batch0 );
-			batch0.setAttr( 'uppercase', true, r( 1, 4 ) );
+			batch0.setAttribute( r( 1, 4 ), 'uppercase', true );
 			expect( getCaseText( root ) ).to.equal( 'aBCDef' );
 
 			editor.document.selection.setRanges( [ r( 3, 4 ) ] );
@@ -350,7 +350,7 @@ describe( 'UndoCommand', () => {
 			editor.document.selection.setRanges( [ r( 0, 1 ) ] );
 			let batch0 = doc.batch();
 			undo.addBatch( batch0 );
-			batch0.setAttr( 'uppercase', true, r( 0, 1 ) );
+			batch0.setAttribute( r( 0, 1 ), 'uppercase', true );
 			expect( getCaseText( root ) ).to.equal( 'Abcdef' );
 
 			doc.history.removeDelta( 0 );
