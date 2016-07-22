@@ -19,8 +19,6 @@ const fs = require( 'fs' );
 const sass = require( 'node-sass' );
 const minimist = require( 'minimist' );
 const sprite = require( 'gulp-svg-sprite' );
-const pipe = require( 'multipipe' );
-const filter = require( 'gulp-filter' );
 
 const utils = {
 	/**
@@ -422,7 +420,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	 * @returns {Stream}
 	 */
 	filterThemeEntryPoints() {
-		return filter( '**/theme.scss' );
+		return gulpFilter( '**/theme.scss' );
 	},
 
 	/**
@@ -571,7 +569,7 @@ require( [ 'tests' ], bender.defer(), function( err ) {
 	 */
 	getThemeFormatDestStreams( buildDir, formats, transformationStream ) {
 		return formats.map( f => {
-			return pipe(
+			return multipipe(
 				transformationStream ? transformationStream( f ) : utils.noop(),
 				gulp.dest( path.join( buildDir, f, 'theme' ) ),
 				utils.noop( file => {
