@@ -20,7 +20,7 @@ import CKEditorError from '../../../utils/ckeditorerror.js';
  */
 export default class MoveDelta extends Delta {
 	/**
-	 * How many nodes are moved by the delta or `null` if there are no operations in the delta.
+	 * Offset size of moved range or `null` if there are no operations in the delta.
 	 *
 	 * @type {Number|null}
 	 */
@@ -51,7 +51,8 @@ export default class MoveDelta extends Delta {
 	}
 
 	/**
-	 * Move operation that is saved in this delta or `null` if there are no operations in the delta.
+	 * {@link engine.model.delta.MoveDelta#_moveOperation Move operation} that is saved in this delta or `null`
+	 * if there are no operations in the delta.
 	 *
 	 * @protected
 	 * @type {engine.model.operation.MoveOperation|null}
@@ -60,6 +61,9 @@ export default class MoveDelta extends Delta {
 		return this.operations[ 0 ] || null;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	get _reverseDeltaClass() {
 		return MoveDelta;
 	}
@@ -71,6 +75,9 @@ export default class MoveDelta extends Delta {
 		return 'engine.model.delta.MoveDelta';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	static get _priority() {
 		return 20;
 	}
@@ -83,19 +90,19 @@ function addMoveOperation( batch, delta, sourcePosition, howMany, targetPosition
 }
 
 /**
- * Moves given node or given range of nodes to target position.
+ * Moves given {@link engine.model.Item model item} or given range to target position.
  *
  * @chainable
  * @method engine.model.Batch#move
- * @param {engine.model.Node|engine.model.Range} nodeOrRange Node or range of nodes to move.
+ * @param {engine.model.Item|engine.model.Range} itemOrRange Model item or range of nodes to move.
  * @param {engine.model.Position} targetPosition Position where moved nodes will be inserted.
  */
-register( 'move', function( nodeOrRange, targetPosition ) {
+register( 'move', function( itemOrRange, targetPosition ) {
 	const delta = new MoveDelta();
 	this.addDelta( delta );
 
-	if ( nodeOrRange instanceof Range ) {
-		if ( !nodeOrRange.isFlat ) {
+	if ( itemOrRange instanceof Range ) {
+		if ( !itemOrRange.isFlat ) {
 			/**
 			 * Range to move is not flat.
 			 *
@@ -104,9 +111,9 @@ register( 'move', function( nodeOrRange, targetPosition ) {
 			throw new CKEditorError( 'batch-move-range-not-flat: Range to move is not flat.' );
 		}
 
-		addMoveOperation( this, delta, nodeOrRange.start, nodeOrRange.end.offset - nodeOrRange.start.offset, targetPosition );
+		addMoveOperation( this, delta, itemOrRange.start, itemOrRange.end.offset - itemOrRange.start.offset, targetPosition );
 	} else {
-		addMoveOperation( this, delta, Position.createBefore( nodeOrRange ), 1, targetPosition );
+		addMoveOperation( this, delta, Position.createBefore( itemOrRange ), 1, targetPosition );
 	}
 
 	return this;

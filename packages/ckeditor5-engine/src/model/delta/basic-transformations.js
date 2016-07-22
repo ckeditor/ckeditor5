@@ -294,16 +294,19 @@ addTransformationCase( WrapDelta, SplitDelta, ( a, b, isStrong ) => {
 // Creates an attribute delta that sets attribute from given `attributeDelta` on nodes from given `weakInsertDelta`.
 function _getComplementaryAttrDelta( weakInsertDelta, attributeDelta ) {
 	const complementaryAttrDelta = new AttributeDelta();
+	const nodes = weakInsertDelta.nodes;
 
 	// At the beginning we store the attribute value from the first node on `weakInsertDelta` node list.
-	let val = weakInsertDelta.nodeList.get( 0 ).getAttribute( attributeDelta.key );
+	let val = nodes.getNode( 0 ).getAttribute( attributeDelta.key );
 
 	// This stores the last index of `weakInsertDelta` node list where the attribute value was different
 	// than in the previous node. We need it to create separate `AttributeOperation`s for nodes with different attributes.
-	let lastIndex = 0;
+	let lastOffset = 0;
+	// Sum of offsets of already processed nodes.
+	let offsetSum = nodes.getNode( 0 ).offsetSize;
 
-	for ( let i = 0; i < weakInsertDelta.nodeList.length; i++ ) {
-		const node = weakInsertDelta.nodeList.get( i );
+	for ( let i = 1; i < nodes.length; i++ ) {
+		const node = nodes.getNode( i );
 		const nodeAttrVal = node.getAttribute( attributeDelta.key );
 
 		// If previous node has different attribute value, we will create an operation to the point before current node.
@@ -312,28 +315,31 @@ function _getComplementaryAttrDelta( weakInsertDelta, attributeDelta ) {
 			// New operation is created only when it is needed. If given node already has proper value for this
 			// attribute we simply skip it without adding a new operation.
 			if ( val != attributeDelta.value ) {
-				const range = new Range( weakInsertDelta.position.getShiftedBy( lastIndex ), weakInsertDelta.position.getShiftedBy( i ) );
-
-				// We don't care about base version because it will be updated after transformations anyway.
-				const attrOperation = new AttributeOperation( range, attributeDelta.key, val, attributeDelta.value, 0 );
-				complementaryAttrDelta.addOperation( attrOperation );
+				addOperation();
 			}
 
 			val = nodeAttrVal;
-			lastIndex = i;
+			lastOffset = offsetSum;
 		}
+
+		offsetSum = offsetSum + node.offsetSize;
 	}
 
 	// At the end we have to add additional `AttributeOperation` for the last part of node list. If all nodes on the
 	// node list had same attributes, this will be the only operation added to the delta.
-	const range = new Range(
-		weakInsertDelta.position.getShiftedBy( lastIndex ),
-		weakInsertDelta.position.getShiftedBy( weakInsertDelta.nodeList.length )
-	);
-
-	complementaryAttrDelta.addOperation( new AttributeOperation( range, attributeDelta.key, val, attributeDelta.value, 0 ) );
+	addOperation();
 
 	return complementaryAttrDelta;
+
+	function addOperation() {
+		const range = new Range(
+			weakInsertDelta.position.getShiftedBy( lastOffset ),
+			weakInsertDelta.position.getShiftedBy( offsetSum )
+		);
+
+		const attrOperation = new AttributeOperation( range, attributeDelta.key, val, attributeDelta.value, 0 );
+		complementaryAttrDelta.addOperation( attrOperation );
+	}
 }
 
 // This is "no-op" delta, it has no type and only no-operation, it basically does nothing.

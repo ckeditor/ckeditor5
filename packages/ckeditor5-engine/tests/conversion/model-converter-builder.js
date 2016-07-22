@@ -12,6 +12,7 @@ import ModelElement from '/ckeditor5/engine/model/element.js';
 import ModelText from '/ckeditor5/engine/model/text.js';
 import ModelRange from '/ckeditor5/engine/model/range.js';
 import ModelPosition from '/ckeditor5/engine/model/position.js';
+import modelWriter from '/ckeditor5/engine/model/writer.js';
 
 import ViewDocument from '/ckeditor5/engine/view/document.js';
 import ViewElement from '/ckeditor5/engine/view/element.js';
@@ -93,7 +94,7 @@ describe( 'Model converter builder', () => {
 		it( 'using passed view element name', () => {
 			BuildModelConverterFor( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
 
-			let modelElement = new ModelElement( 'paragraph', null, 'foobar' );
+			let modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
@@ -117,7 +118,7 @@ describe( 'Model converter builder', () => {
 				.fromElement( 'header' )
 				.toElement( ( data ) => new ViewContainerElement( 'h' + data.item.getAttribute( 'level' ) ) );
 
-			let modelElement = new ModelElement( 'header', { level: 2 }, 'foobar' );
+			let modelElement = new ModelElement( 'header', { level: 2 }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
@@ -141,9 +142,7 @@ describe( 'Model converter builder', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><strong>foo</strong></div>' );
 
-			for ( let value of ModelRange.createFromElement( modelRoot ) ) {
-				value.item.removeAttribute( 'bold' );
-			}
+			modelWriter.removeAttribute( ModelRange.createFromElement( modelRoot ), 'bold' );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createFromElement( modelRoot ), 'bold', true, null );
 
@@ -160,9 +159,7 @@ describe( 'Model converter builder', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><strong>foo</strong></div>' );
 
-			for ( let value of ModelRange.createFromElement( modelRoot ) ) {
-				value.item.removeAttribute( 'bold' );
-			}
+			modelWriter.removeAttribute( ModelRange.createFromElement( modelRoot ), 'bold' );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createFromElement( modelRoot ), 'bold', true, null );
 
@@ -179,17 +176,13 @@ describe( 'Model converter builder', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><em>foo</em></div>' );
 
-			for ( let value of ModelRange.createFromElement( modelRoot ) ) {
-				value.item.setAttribute( 'italic', 'i' );
-			}
+			modelWriter.setAttribute( ModelRange.createFromElement( modelRoot ), 'italic', 'i' );
 
 			dispatcher.convertAttribute( 'changeAttribute', ModelRange.createFromElement( modelRoot ), 'italic', 'em', 'i' );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><i>foo</i></div>' );
 
-			for ( let value of ModelRange.createFromElement( modelRoot ) ) {
-				value.item.removeAttribute();
-			}
+			modelWriter.removeAttribute( ModelRange.createFromElement( modelRoot ), 'italic' );
 
 			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createFromElement( modelRoot ), 'italic', 'i', null );
 
@@ -268,7 +261,7 @@ describe( 'Model converter builder', () => {
 		it( 'using default 1-to-1 conversion', () => {
 			BuildModelConverterFor( dispatcher ).fromAttribute( 'class' ).toAttribute();
 
-			let modelElement = new ModelElement( 'paragraph', { class: 'myClass' }, 'foobar' );
+			let modelElement = new ModelElement( 'paragraph', { class: 'myClass' }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
@@ -289,7 +282,7 @@ describe( 'Model converter builder', () => {
 		it( 'using passed attribute key', () => {
 			BuildModelConverterFor( dispatcher ).fromAttribute( 'theme' ).toAttribute( 'class' );
 
-			let modelElement = new ModelElement( 'paragraph', { theme: 'abc' }, 'foobar' );
+			let modelElement = new ModelElement( 'paragraph', { theme: 'abc' }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
@@ -310,7 +303,7 @@ describe( 'Model converter builder', () => {
 		it( 'using passed attribute key and value', () => {
 			BuildModelConverterFor( dispatcher ).fromAttribute( 'highlighted' ).toAttribute( 'style', 'background:yellow' );
 
-			let modelElement = new ModelElement( 'paragraph', { 'highlighted': true }, 'foobar' );
+			let modelElement = new ModelElement( 'paragraph', { 'highlighted': true }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
@@ -328,7 +321,7 @@ describe( 'Model converter builder', () => {
 				.fromAttribute( 'theme' )
 				.toAttribute( ( value ) => ( { key: 'class', value: value + '-theme' } ) );
 
-			let modelElement = new ModelElement( 'paragraph', { theme: 'nice' }, 'foobar' );
+			let modelElement = new ModelElement( 'paragraph', { theme: 'nice' }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
@@ -352,7 +345,7 @@ describe( 'Model converter builder', () => {
 			BuildModelConverterFor( dispatcher ).fromElement( 'custom' ).toElement( 'custom' );
 			BuildModelConverterFor( dispatcher ).fromElement( 'custom' ).withPriority( 0 ).toElement( 'other' );
 
-			let modelElement = new ModelElement( 'custom', null, 'foobar' );
+			let modelElement = new ModelElement( 'custom', null, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
@@ -368,7 +361,7 @@ describe( 'Model converter builder', () => {
 		// If above would do something this one would not be fired:
 		BuildModelConverterFor( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
 
-		let modelElement = new ModelElement( 'div', null, new ModelElement( 'paragraph', null, 'foobar' ) );
+		let modelElement = new ModelElement( 'div', null, new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) ) );
 		modelRoot.appendChildren( modelElement );
 
 		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );

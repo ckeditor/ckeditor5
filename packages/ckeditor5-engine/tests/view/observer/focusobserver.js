@@ -14,7 +14,7 @@ describe( 'FocusObserver', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument();
-		observer = viewDocument.addObserver( FocusObserver );
+		observer = viewDocument.getObserver( FocusObserver );
 	} );
 
 	it( 'should define domEventType', () => {

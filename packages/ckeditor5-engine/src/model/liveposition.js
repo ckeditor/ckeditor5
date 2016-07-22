@@ -11,12 +11,14 @@ import mix from '../../utils/mix.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * LivePosition is a position in {@link engine.model.Document Document} that updates itself as Document is changed
- * through operations. It may be used as a bookmark in the Document.
- * **Note:** Contrary to {@link engine.model.Position}, LivePosition works only in roots that are
+ * `LivePosition` is a type of {@link engine.model.Position Position} that updates itself as {@link engine.model.Document document}
+ * is changed through operations. It may be used as a bookmark.
+ *
+ * **Note:** Contrary to {@link engine.model.Position}, `LivePosition` works only in roots that are
  * {@link engine.model.RootElement}. If {@link engine.model.DocumentFragment} is passed, error will be thrown.
- * **Note:** Be very careful when dealing with LivePosition. Each LivePosition instance bind events that might
- * have to be unbound. Use {@link engine.model.LivePosition#detach} whenever you don't need LivePosition anymore.
+ *
+ * **Note:** Be very careful when dealing with `LivePosition`. Each `LivePosition` instance bind events that might
+ * have to be unbound. Use {@link engine.model.LivePosition#detach} whenever you don't need `LivePosition` anymore.
  *
  * @memberOf engine.model
  * @extends engine.model.Position
@@ -44,10 +46,10 @@ export default class LivePosition extends Position {
 		super( root, path );
 
 		/**
-		 * Flag representing LivePosition stickiness. LivePosition might be sticking to previous node or next node.
-		 * Whenever some nodes are inserted at the same position as LivePosition, `stickiness` is checked to decide if
+		 * Flag representing `LivePosition` stickiness. `LivePosition` might be sticking to previous node or next node.
+		 * Whenever some nodes are inserted at the same position as `LivePosition`, `stickiness` is checked to decide if
 		 * LivePosition should be moved. Similar applies when a range of nodes is moved and one of it's boundary
-		 * position is same as LivePosition.
+		 * position is same as `LivePosition`.
 		 *
 		 * Examples:
 		 *
@@ -69,7 +71,7 @@ export default class LivePosition extends Position {
 	}
 
 	/**
-	 * Unbinds all events previously bound by LivePosition. Use it whenever you don't need LivePosition instance
+	 * Unbinds all events previously bound by `LivePosition`. Use it whenever you don't need `LivePosition` instance
 	 * anymore (i.e. when leaving scope in which it was declared or before re-assigning variable that was
 	 * referring to it).
 	 */
@@ -112,7 +114,8 @@ export default class LivePosition extends Position {
 }
 
 /**
- * Binds this LivePosition to the {@link engine.model.Document} that owns this position {@link engine.model.RootElement root}.
+ * Binds this `LivePosition` to the {@link engine.model.Document document} that owns
+ * this position's {@link engine.model.Position#root root}.
  *
  * @ignore
  * @private
@@ -132,7 +135,7 @@ function bindWithDocument() {
 }
 
 /**
- * Updates this position accordingly to the updates applied to the Tree Model. Bases on change events.
+ * Updates this position accordingly to the updates applied to the model. Bases on change events.
  *
  * @ignore
  * @private
@@ -150,7 +153,7 @@ function transform( type, range, position ) {
 	switch ( type ) {
 		case 'insert':
 			let insertBefore = this.stickiness == 'STICKS_TO_NEXT';
-			transformed = this.getTransformedByInsertion( range.start, howMany, insertBefore );
+			transformed = this._getTransformedByInsertion( range.start, howMany, insertBefore );
 			break;
 
 		case 'move':
@@ -162,12 +165,12 @@ function transform( type, range, position ) {
 				( originalRange.start.isEqual( this ) && this.stickiness == 'STICKS_TO_NEXT' ) ||
 				( originalRange.end.isEqual( this ) && this.stickiness == 'STICKS_TO_PREVIOUS' );
 
-			// We can't use .getTransformedByMove() because we have a different if-condition.
+			// We can't use ._getTransformedByMove() because we have a different if-condition.
 			if ( gotMoved ) {
 				transformed = this._getCombined( position, range.start );
 			} else {
 				let insertBefore = this.stickiness == 'STICKS_TO_NEXT';
-				transformed = this.getTransformedByMove( position, range.start, howMany, insertBefore );
+				transformed = this._getTransformedByMove( position, range.start, howMany, insertBefore );
 			}
 			break;
 		default:

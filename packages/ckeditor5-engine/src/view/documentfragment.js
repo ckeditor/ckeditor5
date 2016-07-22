@@ -142,7 +142,7 @@ export default class DocumentFragment {
 	 * @fires engine.view.Node#change
 	 */
 	_fireChange( type, node ) {
-		this.fire( 'change', type, node );
+		this.fire( 'change:' + type, node );
 	}
 }
 

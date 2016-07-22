@@ -7,11 +7,12 @@
 
 import Document from '/ckeditor5/engine/model/document.js';
 import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
 import AttributeOperation from '/ckeditor5/engine/model/operation/attributeoperation.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Range from '/ckeditor5/engine/model/range.js';
-import Text from '/ckeditor5/engine/model/text.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import count from '/ckeditor5/utils/count.js';
 import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'AttributeOperation', () => {
@@ -61,7 +62,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should insert attribute to the set of nodes', () => {
-		root.insertChildren( 0, 'bar' );
+		root.insertChildren( 0, new Text( 'bar' ) );
 
 		doc.applyOperation( wrapInDelta(
 			new AttributeOperation(
@@ -74,10 +75,11 @@ describe( 'AttributeOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getChildCount() ).to.equal( 3 );
+		expect( root.getMaxOffset() ).to.equal( 3 );
 		expect( root.getChild( 0 ).hasAttribute( 'isNew' ) ).to.be.true;
-		expect( root.getChild( 1 ).hasAttribute( 'isNew' ) ).to.be.true;
-		expect( root.getChild( 2 )._attrs.size ).to.equal( 0 );
+		expect( root.getChild( 0 ).data ).to.equal( 'ba' );
+		expect( root.getChild( 1 ).hasAttribute( 'isNew' ) ).to.be.false;
+		expect( root.getChild( 1 ).data ).to.equal( 'r' );
 	} );
 
 	it( 'should add attribute to the existing attributes', () => {
@@ -94,8 +96,8 @@ describe( 'AttributeOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getChildCount() ).to.equal( 1 );
-		expect( root.getChild( 0 )._attrs.size ).to.equal( 3 );
+		expect( root.getMaxOffset() ).to.equal( 1 );
+		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 3 );
 		expect( root.getChild( 0 ).hasAttribute( 'isNew' ) ).to.be.true;
 		expect( root.getChild( 0 ).hasAttribute( 'foo' ) ).to.be.true;
 		expect( root.getChild( 0 ).hasAttribute( 'bar' ) ).to.be.true;
@@ -115,13 +117,11 @@ describe( 'AttributeOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getChildCount() ).to.equal( 3 );
-		expect( root.getChild( 0 )._attrs.size ).to.equal( 1 );
+		expect( root.getMaxOffset() ).to.equal( 3 );
+		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
 		expect( root.getChild( 0 ).getAttribute( 'isNew' ) ).to.be.true;
-		expect( root.getChild( 1 )._attrs.size ).to.equal( 1 );
-		expect( root.getChild( 1 ).getAttribute( 'isNew' ) ).to.be.true;
-		expect( root.getChild( 2 )._attrs.size ).to.equal( 1 );
-		expect( root.getChild( 2 ).getAttribute( 'isNew' ) ).to.be.false;
+		expect( count( root.getChild( 1 ).getAttributes() ) ).to.equal( 1 );
+		expect( root.getChild( 1 ).getAttribute( 'isNew' ) ).to.be.false;
 	} );
 
 	it( 'should change attribute in the middle of existing attributes', () => {
@@ -138,8 +138,8 @@ describe( 'AttributeOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getChildCount() ).to.equal( 1 );
-		expect( root.getChild( 0 )._attrs.size ).to.equal( 3 );
+		expect( root.getMaxOffset() ).to.equal( 1 );
+		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 3 );
 		expect( root.getChild( 0 ).getAttribute( 'foo' ) ).to.be.true;
 		expect( root.getChild( 0 ).getAttribute( 'x' ) ).to.equal( 2 );
 		expect( root.getChild( 0 ).getAttribute( 'bar' ) ).to.be.true;
@@ -159,8 +159,8 @@ describe( 'AttributeOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getChildCount() ).to.equal( 1 );
-		expect( root.getChild( 0 )._attrs.size ).to.equal( 2 );
+		expect( root.getMaxOffset() ).to.equal( 1 );
+		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 2 );
 		expect( root.getChild( 0 ).hasAttribute( 'foo' ) ).to.be.true;
 		expect( root.getChild( 0 ).hasAttribute( 'bar' ) ).to.be.true;
 	} );
@@ -179,7 +179,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should undo adding attribute by applying reverse operation', () => {
-		root.insertChildren( 0, 'bar' );
+		root.insertChildren( 0, new Text( 'bar' ) );
 
 		let operation = new AttributeOperation(
 			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
@@ -195,15 +195,13 @@ describe( 'AttributeOperation', () => {
 		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( root.getChildCount() ).to.equal( 3 );
-		expect( root.getChild( 0 )._attrs.size ).to.equal( 0 );
-		expect( root.getChild( 1 )._attrs.size ).to.equal( 0 );
-		expect( root.getChild( 2 )._attrs.size ).to.equal( 0 );
+		expect( root.getMaxOffset() ).to.equal( 3 );
+		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 0 );
 	} );
 
 	it( 'should not set attribute of element if change range starts in the middle of that element', () => {
-		let eleA = new Element( 'a', [], 'abc' );
-		let eleB = new Element( 'b', [], 'xyz' );
+		let eleA = new Element( 'a', [], new Text( 'abc' ) );
+		let eleB = new Element( 'b', [], new Text( 'xyz' ) );
 
 		root.insertChildren( 0, [ eleA, eleB ] );
 
@@ -223,8 +221,8 @@ describe( 'AttributeOperation', () => {
 	it( 'should not remove attribute of element if change range starts in the middle of that element', () => {
 		let fooAttr = { foo: true };
 
-		let eleA = new Element( 'a', fooAttr, 'abc' );
-		let eleB = new Element( 'b', fooAttr, 'xyz' );
+		let eleA = new Element( 'a', fooAttr, new Text( 'abc' ) );
+		let eleB = new Element( 'b', fooAttr, new Text( 'xyz' ) );
 
 		root.insertChildren( 0, [ eleA, eleB ] );
 
@@ -258,13 +256,9 @@ describe( 'AttributeOperation', () => {
 		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( root.getChildCount() ).to.equal( 3 );
-		expect( root.getChild( 0 )._attrs.size ).to.equal( 1 );
+		expect( root.getMaxOffset() ).to.equal( 3 );
+		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
 		expect( root.getChild( 0 ).getAttribute( 'isNew' ) ).to.be.false;
-		expect( root.getChild( 1 )._attrs.size ).to.equal( 1 );
-		expect( root.getChild( 1 ).getAttribute( 'isNew' ) ).to.be.false;
-		expect( root.getChild( 2 )._attrs.size ).to.equal( 1 );
-		expect( root.getChild( 2 ).getAttribute( 'isNew' ) ).to.be.false;
 	} );
 
 	it( 'should undo remove attribute by applying reverse operation', () => {
@@ -284,17 +278,13 @@ describe( 'AttributeOperation', () => {
 		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( root.getChildCount() ).to.equal( 3 );
-		expect( root.getChild( 0 )._attrs.size ).to.equal( 1 );
+		expect( root.getMaxOffset() ).to.equal( 3 );
+		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
 		expect( root.getChild( 0 ).getAttribute( 'foo' ) ).to.be.true;
-		expect( root.getChild( 1 )._attrs.size ).to.equal( 1 );
-		expect( root.getChild( 1 ).getAttribute( 'foo' ) ).to.be.true;
-		expect( root.getChild( 2 )._attrs.size ).to.equal( 1 );
-		expect( root.getChild( 2 ).getAttribute( 'foo' ) ).to.be.true;
 	} );
 
 	it( 'should throw an error when one try to remove and the attribute does not exists', () => {
-		root.insertChildren( 0, 'x' );
+		root.insertChildren( 0, new Text( 'x' ) );
 
 		expect( () => {
 			doc.applyOperation( wrapInDelta(
@@ -306,7 +296,7 @@ describe( 'AttributeOperation', () => {
 					doc.version
 				)
 			) );
-		} ).to.throw( CKEditorError, /operation-attribute-no-attr-to-remove/ );
+		} ).to.throw( CKEditorError, /operation-attribute-wrong-old-value/ );
 	} );
 
 	it( 'should throw an error when one try to insert and the attribute already exists', () => {
@@ -349,7 +339,7 @@ describe( 'AttributeOperation', () => {
 		let attrB = { foo: 'b' };
 
 		root.insertChildren( 0, new Text( 'abc', attrA ) );
-		root.insertChildren( 3, new Text( 'xyz', attrB ) );
+		root.insertChildren( 1, new Text( 'xyz', attrB ) );
 
 		doc.applyOperation( wrapInDelta(
 			new AttributeOperation(
@@ -361,8 +351,8 @@ describe( 'AttributeOperation', () => {
 			) )
 		);
 
-		expect( root._children._nodes[ 0 ].text ).to.equal( 'a' );
-		expect( root._children._nodes[ 1 ].text ).to.equal( 'bcxyz' );
+		expect( root.getChild( 0 ).data ).to.equal( 'a' );
+		expect( root.getChild( 1 ).data ).to.equal( 'bcxyz' );
 	} );
 
 	describe( 'toJSON', () => {

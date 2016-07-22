@@ -12,7 +12,8 @@ import toMap from '../../utils/tomap.js';
 
 /**
  * `Selection` is a group of {@link engine.model.Range ranges} which has a direction specified by
- * {@link engine.model.Selection#anchor anchor} and {@link engine.model.Selection#focus focus}.
+ * {@link engine.model.Selection#anchor anchor} and {@link engine.model.Selection#focus focus}. Additionally,
+ * `Selection` may have it's own attributes.
  *
  * @memberOf engine.model
  */
@@ -30,7 +31,7 @@ export default class Selection {
 		this._lastRangeBackward = false;
 
 		/**
-		 * Stores all ranges that are selected.
+		 * Stores selection ranges.
 		 *
 		 * @protected
 		 * @member {Array.<engine.model.Range>} engine.model.Selection#_ranges
@@ -47,6 +48,296 @@ export default class Selection {
 	}
 
 	/**
+	 * Selection anchor. Anchor may be described as a position where the most recent part of the selection starts.
+	 * Together with {@link engine.model.Selection#focus} they define the direction of selection, which is important
+	 * when expanding/shrinking selection. Anchor is always {@link engine.model.Range#start start} or
+	 * {@link engine.model.Range#end end} position of the most recently added range.
+	 *
+	 * Is set to `null` if there are no ranges in selection.
+	 *
+	 * @see engine.model.Selection#focus
+	 * @readonly
+	 * @type {engine.model.Position|null}
+	 */
+	get anchor() {
+		if ( this._ranges.length > 0 ) {
+			const range = this._ranges[ this._ranges.length - 1 ];
+
+			return this._lastRangeBackward ? range.end : range.start;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Selection focus. Focus is a position where the selection ends.
+	 *
+	 * Is set to `null` if there are no ranges in selection.
+	 *
+	 * @see engine.model.Selection#anchor
+	 * @readonly
+	 * @type {engine.model.Position|null}
+	 */
+	get focus() {
+		if ( this._ranges.length > 0 ) {
+			const range = this._ranges[ this._ranges.length - 1 ];
+
+			return this._lastRangeBackward ? range.start : range.end;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Returns whether the selection is collapsed. Selection is collapsed when there is exactly one range which is
+	 * collapsed.
+	 *
+	 * @readonly
+	 * @type {Boolean}
+	 */
+	get isCollapsed() {
+		const length = this._ranges.length;
+
+		if ( length === 1 ) {
+			return this._ranges[ 0 ].isCollapsed;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Returns number of ranges in selection.
+	 *
+	 * @type {Number}
+	 */
+	get rangeCount() {
+		return this._ranges.length;
+	}
+
+	/**
+	 * Specifies whether the {@link engine.model.Selection#focus} precedes {@link engine.model.Selection#anchor}.
+	 *
+	 * @type {Boolean}
+	 */
+	get isBackward() {
+		return !this.isCollapsed && this._lastRangeBackward;
+	}
+
+	/**
+	 * Checks whether, this selection is equal to given selection. Selections equal if they have the same ranges and directions.
+	 *
+	 * @param {engine.model.Selection} otherSelection Selection to compare with.
+	 * @returns {Boolean} `true` if selections are equal, `false` otherwise.
+	 */
+	isEqual( otherSelection ) {
+		const rangeCount = this.rangeCount;
+
+		if ( rangeCount != otherSelection.rangeCount ) {
+			return false;
+		}
+
+		for ( let i = 0; i < this.rangeCount; i++ ) {
+			if ( !this._ranges[ i ].isEqual( otherSelection._ranges[ i ] ) ) {
+				return false;
+			}
+		}
+
+		return this.isBackward === otherSelection.isBackward;
+	}
+
+	/**
+	 * Returns an iterator that iterates over copies of selection ranges.
+	 *
+	 * @returns {Iterator.<engine.model.Range>}
+	 */
+	*getRanges() {
+		for ( let range of this._ranges ) {
+			yield Range.createFromRange( range );
+		}
+	}
+
+	/**
+	 * Returns a copy of the first range in the selection. First range is the one which {@link engine.model.Range#start start} position
+	 * {@link engine.model.Position#isBefore is before} start position of all other ranges (not to confuse with the first range
+	 * added to the selection).
+	 *
+	 * Returns `null` if there are no ranges in selection.
+	 *
+	 * @returns {engine.model.Range|null}
+	 */
+	getFirstRange() {
+		let first = null;
+
+		for ( let range of this._ranges ) {
+			if ( !first || range.start.isBefore( first.start ) ) {
+				first = range;
+			}
+		}
+
+		return first ? Range.createFromRange( first ) : null;
+	}
+
+	/**
+	 * Returns a copy of the last range in the selection. Last range is the one which {@link engine.model.Range#end end} position
+	 * {@link engine.model.Position#isAfter is after} end position of all other ranges (not to confuse with the range most
+	 * recently added to the selection).
+	 *
+	 * Returns `null` if there are no ranges in selection.
+	 *
+	 * @returns {engine.model.Range|null}
+	 */
+	getLastRange() {
+		let last = null;
+
+		for ( let range of this._ranges ) {
+			if ( !last || range.end.isAfter( last.end ) ) {
+				last = range;
+			}
+		}
+
+		return last ? Range.createFromRange( last ) : null;
+	}
+
+	/**
+	 * Returns the first position in the selection. First position is the position that {@link engine.model.Position#isBefore is before}
+	 * any other position in the selection.
+	 *
+	 * Returns `null` if there are no ranges in selection.
+	 *
+	 * @returns {engine.model.Position|null}
+	 */
+	getFirstPosition() {
+		const first = this.getFirstRange();
+
+		return first ? Position.createFromPosition( first.start ) : null;
+	}
+
+	/**
+	 * Returns the last position in the selection. Last position is the position that {@link engine.model.Position#isAfter is after}
+	 * any other position in the selection.
+	 *
+	 * Returns `null` if there are no ranges in selection.
+	 *
+	 * @returns {engine.model.Position|null}
+	 */
+	getLastPosition() {
+		const lastRange = this.getLastRange();
+
+		return lastRange ? Position.createFromPosition( lastRange.end ) : null;
+	}
+
+	/**
+	 * Adds a range to this selection. Added range is copied. This means that passed range is not saved in `Selection`
+	 * instance and operating on it will not change `Selection` state.
+	 *
+	 * Accepts a flag describing in which way the selection is made - passed range might be selected from
+	 * {@link engine.model.Range#start start} to {@link engine.model.Range#end end} or from {@link engine.model.Range#end end}
+	 * to {@link engine.model.Range#start start}. The flag is used to set {@link engine.model.Selection#anchor} and
+	 * {@link engine.model.Selection#focus} properties.
+	 *
+	 * @fires engine.model.Selection#change:range
+	 * @param {engine.model.Range} range Range to add.
+	 * @param {Boolean} [isBackward=false] Flag describing if added range was selected forward - from start to end (`false`)
+	 * or backward - from end to start (`true`).
+	 */
+	addRange( range, isBackward = false ) {
+		this._pushRange( range );
+		this._lastRangeBackward = !!isBackward;
+
+		this.fire( 'change:range' );
+	}
+
+	/**
+	 * Removes all ranges that were added to the selection.
+	 *
+	 * @fires engine.model.Selection#change:range
+	 */
+	removeAllRanges() {
+		this._ranges = [];
+
+		this.fire( 'change:range' );
+	}
+
+	/**
+	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
+	 * is treated like the last added range and is used to set {@link engine.model.Selection#anchor} and
+	 * {@link engine.model.Selection#focus}. Accepts a flag describing in which direction the selection is made
+	 * (see {@link engine.model.Selection#addRange}).
+	 *
+	 * @fires engine.model.Selection#change:range
+	 * @param {Iterable.<engine.model.Range>} newRanges Ranges to set.
+	 * @param {Boolean} [isLastBackward=false] Flag describing if last added range was selected forward - from start to end (`false`)
+	 * or backward - from end to start (`true`).
+	 */
+	setRanges( newRanges, isLastBackward ) {
+		this._ranges = [];
+
+		for ( let range of newRanges ) {
+			this._pushRange( range );
+		}
+
+		this._lastRangeBackward = !!isLastBackward;
+
+		this.fire( 'change:range' );
+	}
+
+	/**
+	 * Sets this selection's ranges and direction to the ranges and direction of the given selection.
+	 *
+	 * @param {engine.model.Selection} otherSelection
+	 */
+	setTo( otherSelection ) {
+		this.setRanges( otherSelection.getRanges(), otherSelection.isBackward );
+	}
+
+	/**
+	 * Sets collapsed selection in the specified location.
+	 *
+	 * The location can be specified in the same form as {@link engine.model.Position.createAt} parameters.
+	 *
+	 * @fires engine.model.Selection#change:range
+	 * @param {engine.model.Item|engine.model.Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * first parameter is a {@link engine.model.Item model item}.
+	 */
+	collapse( itemOrPosition, offset ) {
+		const pos = Position.createAt( itemOrPosition, offset );
+		const range = new Range( pos, pos );
+
+		this.setRanges( [ range ] );
+	}
+
+	/**
+	 * Collapses selection to the selection's {@link engine.model.Selection#getFirstPosition first position}.
+	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
+	 * inside selection.
+	 *
+	 * @fires engine.view.Selection#change
+	 */
+	collapseToStart() {
+		const startPosition = this.getFirstPosition();
+
+		if ( startPosition !== null ) {
+			this.setRanges( [ new Range( startPosition, startPosition ) ] );
+		}
+	}
+
+	/**
+	 * Collapses selection to the selection's {@link engine.model.Selection#getLastPosition last position}.
+	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
+	 * inside selection.
+	 *
+	 * @fires engine.view.Selection#change
+	 */
+	collapseToEnd() {
+		const endPosition = this.getLastPosition();
+
+		if ( endPosition !== null ) {
+			this.setRanges( [ new Range( endPosition, endPosition ) ] );
+		}
+	}
+
+	/**
 	 * Gets an attribute value for given key or `undefined` if that attribute is not set on the selection.
 	 *
 	 * @param {String} key Key of attribute to look for.
@@ -57,12 +348,24 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns iterator that iterates over this selection attributes.
+	 * Returns iterator that iterates over this selection's attributes.
+	 *
+	 * Attributes are returned as arrays containing two items. First one is attribute key and second is attribute value.
+	 * This format is accepted by native `Map` object and also can be passed in `Node` constructor.
 	 *
 	 * @returns {Iterable.<*>}
 	 */
 	getAttributes() {
-		return this._attrs[ Symbol.iterator ]();
+		return this._attrs.entries();
+	}
+
+	/**
+	 * Returns iterator that iterates over this selection's attribute keys.
+	 *
+	 * @returns {Iterator.<String>}
+	 */
+	getAttributeKeys() {
+		return this._attrs.keys();
 	}
 
 	/**
@@ -99,7 +402,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Sets attribute on the selection. If attribute with the same key already is set, it overwrites its values.
+	 * Sets attribute on the selection. If attribute with the same key already is set, it's value is overwritten.
 	 *
 	 * @fires engine.model.Selection#change:attribute
 	 * @param {String} key Key of attribute to set.
@@ -124,215 +427,16 @@ export default class Selection {
 	}
 
 	/**
-	 * Selection anchor. Anchor may be described as a position where the selection starts. Together with
-	 * {@link engine.model.Selection#focus} they define the direction of selection, which is important
-	 * when expanding/shrinking selection. Anchor is always the start or end of the most recent added range.
-	 *
-	 * Is set to `null` if there are no ranges in selection.
-	 *
-	 * @see engine.model.Selection#focus
-	 * @type {engine.model.Position|null}
-	 */
-	get anchor() {
-		if ( this._ranges.length > 0 ) {
-			const range = this._ranges[ this._ranges.length - 1 ];
-
-			return this._lastRangeBackward ? range.end : range.start;
-		}
-
-		return null;
-	}
-
-	/**
-	 * Selection focus. Focus is a position where the selection ends.
-	 *
-	 * Is set to `null` if there are no ranges in selection.
-	 *
-	 * @see engine.model.Selection#anchor
-	 * @type {engine.model.Position|null}
-	 */
-	get focus() {
-		if ( this._ranges.length > 0 ) {
-			const range = this._ranges[ this._ranges.length - 1 ];
-
-			return this._lastRangeBackward ? range.start : range.end;
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns whether the selection is collapsed. Selection is collapsed when there is exactly one range which is
-	 * collapsed.
-	 *
-	 * @type {Boolean}
-	 */
-	get isCollapsed() {
-		const length = this._ranges.length;
-
-		if ( length === 1 ) {
-			return this._ranges[ 0 ].isCollapsed;
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Returns number of ranges in selection.
-	 *
-	 * @type {Number}
-     */
-	get rangeCount() {
-		return this._ranges.length;
-	}
-
-	/**
-	 * Specifies whether the {@link engine.model.Selection#focus} precedes {@link engine.model.Selection#anchor}.
-	 *
-	 * @type {Boolean}
-	 */
-	get isBackward() {
-		return !this.isCollapsed && this._lastRangeBackward;
-	}
-
-	/**
-	 * Adds a range to the selection. Added range is copied. This means that passed range is not saved in `Selection`
-	 * instance and operating on it will not change `Selection` state.
-	 *
-	 * Accepts a flag describing in which way the selection is made - passed range might be selected from
-	 * {@link engine.model.Range#start start} to {@link engine.model.Range#end end} or from {@link engine.model.Range#end end}
-	 * to {@link engine.model.Range#start start}. The flag is used to set {@link engine.model.Selection#anchor} and
-	 * {@link engine.model.Selection#focus} properties.
-	 *
-	 * @fires engine.model.Selection#change:range
-	 * @param {engine.model.Range} range Range to add.
-	 * @param {Boolean} [isBackward] Flag describing if added range was selected forward - from start to end (`false`)
-	 * or backward - from end to start (`true`). Defaults to `false`.
-	 */
-	addRange( range, isBackward ) {
-		if ( !( range instanceof Range ) ) {
-			throw new CKEditorError( 'selection-invalid-range: Invalid Range.' );
-		}
-
-		this._pushRange( range );
-		this._lastRangeBackward = !!isBackward;
-
-		this.fire( 'change:range' );
-	}
-
-	/**
-	 * Returns an iterator that iterates over copies of selection ranges.
-	 *
-	 * @returns {Iterator.<engine.model.Range>}
-	 */
-	*getRanges() {
-		for ( let range of this._ranges ) {
-			yield Range.createFromRange( range );
-		}
-	}
-
-	/**
-	 * Returns a copy of the first range in the selection. First range is the one which {@link engine.model.Range#start start} position
-	 * {@link engine.model.Position#isBefore is before} start position of all other ranges (not to confuse with the first range
-	 * added to the selection).
-	 *
-	 * Returns `null` if there are no ranges in selection.
-	 *
-	 * @returns {engine.model.Range|null}
-	 */
-	getFirstRange() {
-		let first = null;
-
-		for ( let i = 0; i < this._ranges.length; i++ ) {
-			let range = this._ranges[ i ];
-
-			if ( !first || range.start.isBefore( first.start ) ) {
-				first = range;
-			}
-		}
-
-		return first ? Range.createFromRange( first ) : null;
-	}
-
-	/**
-	 * Returns the first position in the selection. First position is the position that {@link engine.model.Position#isBefore is before}
-	 * any other position in the selection ranges.
-	 *
-	 * Returns `null` if there are no ranges in selection.
-	 *
-	 * @returns {engine.model.Position|null}
-	 */
-	getFirstPosition() {
-		const first = this.getFirstRange();
-
-		return first ? Position.createFromPosition( first.start ) : null;
-	}
-
-	/**
-	 * Removes all ranges that were added to the selection. Fires update event.
-	 *
-	 * @fires engine.model.Selection#change:range
-	 */
-	removeAllRanges() {
-		this._ranges = [];
-
-		this.fire( 'change:range' );
-	}
-
-	/**
-	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
-	 * is treated like the last added range and is used to set {@link #anchor} and {@link #focus}. Accepts a flag
-	 * describing in which way the selection is made (see {@link #addRange}).
-	 *
-	 * @fires engine.model.Selection#change:range
-	 * @param {Iterable.<engine.model.Range>} newRanges Iterable set of ranges that should be set.
-	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end (`false`)
-	 * or backward - from end to start (`true`). Defaults to `false`.
-	 */
-	setRanges( newRanges, isLastBackward ) {
-		this._ranges = [];
-
-		for ( let range of newRanges ) {
-			if ( !( range instanceof Range ) ) {
-				throw new CKEditorError( 'selection-invalid-range: Invalid Range.' );
-			}
-
-			this._pushRange( range );
-		}
-
-		this._lastRangeBackward = !!isLastBackward;
-
-		this.fire( 'change:range' );
-	}
-
-	/**
-	 * Sets collapsed selection in the specified location.
+	 * Sets {@link engine.model.Selection#focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as {@link engine.model.Position.createAt} parameters.
 	 *
 	 * @fires engine.model.Selection#change:range
-	 * @param {engine.model.Node|engine.model.Position} nodeOrPosition
+	 * @param {engine.model.Item|engine.model.Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
-	 * first parameter is a node.
+	 * first parameter is a {@link engine.model.Item model item}.
 	 */
-	collapse( nodeOrPosition, offset ) {
-		const pos = Position.createAt( nodeOrPosition, offset );
-		const range = new Range( pos, pos );
-
-		this.setRanges( [ range ] );
-	}
-
-	/**
-	 * Sets {@link engine.model.Selection#focus} in the specified location.
-	 *
-	 * The location can be specified in the same form as {@link engine.model.Position.createAt} parameters.
-	 *
-	 * @fires engine.model.Selection#change:range
-	 * @param {engine.model.Node|engine.model.Position} nodeOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
-	 * first parameter is a node.
-	 */
-	setFocus( nodeOrPosition, offset ) {
+	setFocus( itemOrPosition, offset ) {
 		if ( this.anchor === null ) {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.
@@ -342,7 +446,7 @@ export default class Selection {
 			throw new CKEditorError( 'selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.' );
 		}
 
-		const newFocus = Position.createAt( nodeOrPosition, offset );
+		const newFocus = Position.createAt( itemOrPosition, offset );
 
 		if ( newFocus.compareWith( this.focus ) == 'same' ) {
 			return;
@@ -362,22 +466,37 @@ export default class Selection {
 	}
 
 	/**
-	 * Creates and returns an instance of {@link engine.model.Selection} that is a clone of given selection,
-	 * meaning that it has same ranges and same direction as it.
+	 * Creates and returns an instance of `Selection` that is a clone of given selection, meaning that it has same
+	 * ranges and same direction as this selection.
 	 *
 	 * @params {engine.model.Selection} otherSelection Selection to be cloned.
 	 * @returns {engine.model.Selection} `Selection` instance that is a clone of given selection.
 	 */
 	static createFromSelection( otherSelection ) {
 		const selection = new this();
-		selection.setRanges( otherSelection.getRanges(), otherSelection.isBackward );
+		selection.setTo( otherSelection );
 
 		return selection;
 	}
 
 	/**
+	 * Adds given range to internal {@link engine.model.Selection#_ranges ranges array}. Throws an error
+	 * if given range is intersecting with any range that is already stored in this selection.
+	 *
+	 * @protected
+	 * @param {engine.model.Range} range Range to add.
+	 */
+	_pushRange( range ) {
+		if ( !( range instanceof Range ) ) {
+			throw new CKEditorError( 'selection-added-not-range: Trying to add an object that is not an instance of Range.' );
+		}
+
+		this._checkRange( range );
+		this._ranges.push( Range.createFromRange( range ) );
+	}
+
+	/**
 	 * Checks if given range intersects with ranges that are already in the selection. Throws an error if it does.
-	 * This method is extracted from {@link engine.model.Selection#_pushRange } so it is easier to override it.
 	 *
 	 * @param {engine.model.Range} range Range to check.
 	 * @protected
@@ -407,18 +526,6 @@ export default class Selection {
 	 */
 	_popRange() {
 		this._ranges.pop();
-	}
-
-	/**
-	 * Adds given range to internal {@link engine.model.Selection#_ranges ranges array}. Throws an error
-	 * if given range is intersecting with any range that is already stored in this selection.
-	 *
-	 * @protected
-	 * @param {engine.model.Range} range Range to add.
-	 */
-	_pushRange( range ) {
-		this._checkRange( range );
-		this._ranges.push( Range.createFromRange( range ) );
 	}
 }
 

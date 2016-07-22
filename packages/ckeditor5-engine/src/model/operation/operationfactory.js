@@ -30,7 +30,7 @@ operations[ RootAttributeOperation.className ] = RootAttributeOperation;
  */
 export default class OperationFactory {
 	/**
-	 * Creates concrete Operation object from deserilized object, i.e. from parsed JSON string.
+	 * Creates concrete `Operation` object from deserilized object, i.e. from parsed JSON string.
 	 *
 	 * @param {Object} json Deserialized JSON object.
 	 * @param {engine.model.Document} document Document on which this operation will be applied.

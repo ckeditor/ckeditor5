@@ -6,102 +6,65 @@
 /* bender-tags: model */
 
 import Text from '/ckeditor5/engine/model/text.js';
+import Node from '/ckeditor5/engine/model/node.js';
+import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'Text', () => {
 	describe( 'constructor', () => {
-		it( 'should create character without attributes', () => {
+		it( 'should create text node without attributes', () => {
 			let text = new Text( 'bar', { bold: true } );
 
-			expect( text ).to.have.property( 'text' ).that.equals( 'bar' );
-			expect( text ).to.have.property( '_attrs' ).that.is.instanceof( Map );
-			expect( Array.from( text._attrs ) ).to.deep.equal( [ [ 'bold', true ] ] );
+			expect( text ).to.be.instanceof( Node );
+			expect( text ).to.have.property( 'data' ).that.equals( 'bar' );
+			expect( Array.from( text.getAttributes() ) ).to.deep.equal( [ [ 'bold', true ] ] );
 		} );
 
 		it( 'should create empty text object', () => {
 			let empty1 = new Text();
 			let empty2 = new Text( '' );
 
-			expect( empty1.text ).to.equal( '' );
-			expect( empty2.text ).to.equal( '' );
+			expect( empty1.data ).to.equal( '' );
+			expect( empty2.data ).to.equal( '' );
 		} );
 	} );
 
-	describe( 'attributes interface', () => {
-		let text;
-
-		beforeEach( () => {
-			text = new Text( 'bar', { foo: 'bar' } );
+	describe( 'offsetSize', () => {
+		it( 'should be equal to the number of characters in text node', () => {
+			expect( new Text( '' ).offsetSize ).to.equal( 0 );
+			expect( new Text( 'abc' ).offsetSize ).to.equal( 3 );
 		} );
+	} );
 
-		describe( 'hasAttribute', () => {
-			it( 'should return true if element contains attribute with given key', () => {
-				expect( text.hasAttribute( 'foo' ) ).to.be.true;
-			} );
+	describe( 'clone', () => {
+		it( 'should return a new Text instance, with data and attributes equal to cloned text node', () => {
+			let text = new Text( 'foo', { bold: true } );
+			let copy = text.clone();
 
-			it( 'should return false if element does not contain attribute with given key', () => {
-				expect( text.hasAttribute( 'bar' ) ).to.be.false;
-			} );
+			expect( copy.data ).to.equal( 'foo' );
+			expect( Array.from( copy.getAttributes() ) ).to.deep.equal( [ [ 'bold', true ] ] );
 		} );
+	} );
 
-		describe( 'getAttribute', () => {
-			it( 'should return attribute value for given key if element contains given attribute', () => {
-				expect( text.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			} );
+	describe( 'toJSON', () => {
+		it( 'should serialize text node', () => {
+			let text = new Text( 'foo', { bold: true } );
 
-			it( 'should return undefined if element does not contain given attribute', () => {
-				expect( text.getAttribute( 'bar' ) ).to.be.undefined;
-			} );
-		} );
-
-		describe( 'getAttributes', () => {
-			it( 'should return an iterator that iterates over all attributes set on the element', () => {
-				expect( Array.from( text.getAttributes() ) ).to.deep.equal( [ [ 'foo', 'bar' ] ] );
+			expect( jsonParseStringify( text ) ).to.deep.equal( {
+				attributes: [ [ 'bold', true ] ],
+				data: 'foo'
 			} );
 		} );
+	} );
 
-		describe( 'setAttribute', () => {
-			it( 'should set given attribute on the element', () => {
-				text.setAttribute( 'abc', 'xyz' );
+	describe( 'fromJSON', () => {
+		it( 'should create text node', () => {
+			let text = new Text( 'foo', { bold: true } );
 
-				expect( text.getAttribute( 'abc' ) ).to.equal( 'xyz' );
-			} );
-		} );
+			let serialized = jsonParseStringify( text );
+			let deserialized = Text.fromJSON( serialized );
 
-		describe( 'setAttributesTo', () => {
-			it( 'should remove all attributes set on element and set the given ones', () => {
-				text.setAttribute( 'abc', 'xyz' );
-				text.setAttributesTo( { bold: true } );
-
-				expect( text.getAttribute( 'bold' ) ).to.equal( true );
-				expect( text.getAttribute( 'foo' ) ).to.be.undefined;
-				expect( text.getAttribute( 'abc' ) ).to.be.undefined;
-			} );
-		} );
-
-		describe( 'removeAttribute', () => {
-			it( 'should remove attribute set on the element and return true', () => {
-				let result = text.removeAttribute( 'foo' );
-
-				expect( text.getAttribute( 'foo' ) ).to.be.undefined;
-				expect( result ).to.be.true;
-			} );
-
-			it( 'should return false if element does not contain given attribute', () => {
-				let result = text.removeAttribute( 'abc' );
-
-				expect( result ).to.be.false;
-			} );
-		} );
-
-		describe( 'clearAttributes', () => {
-			it( 'should remove all attributes from the element', () => {
-				text.setAttribute( 'abc', 'xyz' );
-
-				text.clearAttributes();
-
-				expect( text.getAttribute( 'foo' ) ).to.be.undefined;
-				expect( text.getAttribute( 'abc' ) ).to.be.undefined;
-			} );
+			expect( deserialized.data ).to.equal( 'foo' );
+			expect( Array.from( deserialized.getAttributes() ) ).to.deep.equal( [ [ 'bold', true ] ] );
 		} );
 	} );
 } );
