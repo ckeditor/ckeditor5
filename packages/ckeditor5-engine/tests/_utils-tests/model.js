@@ -58,6 +58,7 @@ describe( 'model test utils', () => {
 			const parseSpy = sandbox.spy( setData, '_parse' );
 			const options = {};
 			const data = '<b>btext</b>text';
+			document.schema.registerItem( 'b', '$inline' );
 
 			setData( document, data, options );
 
@@ -71,6 +72,7 @@ describe( 'model test utils', () => {
 			const parseSpy = sandbox.spy( setData, '_parse' );
 			const options = {};
 			const data = '<selection><b>btext</b></selection>';
+			document.schema.registerItem( 'b', '$inline' );
 
 			setData( document, data, options );
 
@@ -80,11 +82,63 @@ describe( 'model test utils', () => {
 			expect( args[ 0 ] ).to.equal( data );
 		} );
 
+		it( 'should insert text', () => {
+			test( 'this is test text', '<selection />this is test text' );
+		} );
+
+		it( 'should insert text with selection around', () => {
+			test( '<selection>this is test text</selection>' );
+		} );
+
+		it( 'should insert text with selection inside #1', () => {
+			test( 'this <selection>is test</selection> text' );
+		} );
+
+		it( 'should insert text with selection inside #2', () => {
+			test( '<selection>this is test</selection> text' );
+		} );
+
+		it( 'should insert text with selection inside #2', () => {
+			test( 'this is <selection>test text</selection>' );
+		} );
+
+		it( 'should insert element', () => {
+			document.schema.registerItem( 'b', '$inline' );
+			test( '<b>foo bar</b>', '<selection /><b>foo bar</b>' );
+		} );
+
+		it( 'should insert element with selection inside #1', () => {
+			document.schema.registerItem( 'b', '$inline' );
+			test( '<b><selection>foo </selection>bar</b>' );
+		} );
+
+		it( 'should insert element with selection inside #2', () => {
+			document.schema.registerItem( 'b', '$inline' );
+			test( '<selection><b>foo </selection>bar</b>' );
+		} );
+
+		it( 'should insert element with selection inside #3', () => {
+			document.schema.registerItem( 'b', '$inline' );
+			test( '<b><selection>foo bar</b></selection>' );
+		} );
+
+		it( 'should insert backward selection', () => {
+			document.schema.registerItem( 'b', '$inline' );
+			test( '<b><selection backward>foo bar</b></selection>' );
+		} );
+
 		it( 'should throw an error when passing invalid document', () => {
 			expect( () => {
 				setData( { invalid: 'document' } );
 			} ).to.throw( TypeError, 'Document needs to be an instance of engine.model.Document.' );
 		} );
+
+		function test( data, expected ) {
+			expected = expected || data;
+
+			setData( document, data );
+			expect( getData( document ) ).to.equal( expected );
+		}
 	} );
 
 	describe( 'stringify', () => {

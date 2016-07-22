@@ -435,6 +435,7 @@ describe( 'table cell selection converter', () => {
 	} );
 
 	it( 'should add a class to the selected table cell', () => {
+		modelDoc.schema.registerItem( 'table', '$block' );
 		test(
 			// table tr#0, table tr#1
 			[ [ 0, 0, 0 ], [ 0, 0, 1 ] ],
@@ -444,6 +445,7 @@ describe( 'table cell selection converter', () => {
 	} );
 
 	it( 'should not be used if selection contains more than just a table cell', () => {
+		modelDoc.schema.registerItem( 'table', '$block' );
 		test(
 			// table tr td#1, table tr#2
 			[ [ 0, 0, 0, 1 ], [ 0, 0, 2 ] ],
