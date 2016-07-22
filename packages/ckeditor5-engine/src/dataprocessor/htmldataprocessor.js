@@ -4,6 +4,8 @@
  */
 
 import BasicHtmlWriter from './basichtmlwriter.js';
+import DomConverter from '../view/domconverter.js';
+import { NBSP_FILLER } from '../view/filler.js';
 
 /**
  * HtmlDataProcessor class.
@@ -26,6 +28,14 @@ export default class HtmlDataProcessor {
 		this._domParser = new DOMParser();
 
 		/**
+		 * DOM converter used to convert DOM elements to view elements.
+		 *
+		 * @private
+		 * @member {engine.view.DomConverter} engine.dataProcessor.HtmlDataProcessor#_domConverter.
+		 */
+		this._domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
+
+		/**
 		 * BasicHtmlWriter instance used to convert DOM elements to HTML string.
 		 *
 		 * @private
@@ -35,23 +45,42 @@ export default class HtmlDataProcessor {
 	}
 
 	/**
-	 * Converts provided document fragment to data format - in this case HTML string.
+	 * Converts provided {@link engine.view.DocumentFragment DocumentFragment} to data format - in this case HTML string.
 	 *
-	 * @param {DocumentFragment} fragment
-	 * @returns {String}
+	 * @param {engine.view.DocumentFragment} viewFragment
+	 * @returns {String} HTML string.
 	 */
-	toData( fragment ) {
-		return this._htmlWriter.getHtml( fragment );
+	toData( viewFragment ) {
+		// Convert view DocumentFragment to DOM DocumentFragment.
+		const domFragment = this._domConverter.viewToDom( viewFragment, document );
+
+		// Convert DOM DocumentFragment to HTML output.
+		return this._htmlWriter.getHtml( domFragment );
+	}
+
+	/**
+	 * Converts provided HTML string to view tree.
+	 *
+	 * @param {String} data HTML string.
+	 * @returns {engine.view.Node|engine.view.DocumentFragment|null} Converted view element.
+	 */
+	toView( data ) {
+		// Convert input HTML data to DOM DocumentFragment.
+		const domFragment = this._toDom( data );
+
+		// Convert DOM DocumentFragment to view DocumentFragment.
+		return this._domConverter.domToView( domFragment );
 	}
 
 	/**
 	 * Converts HTML String to its DOM representation. Returns DocumentFragment, containing nodes parsed from
 	 * provided data.
 	 *
+	 * @private
 	 * @param {String} data
 	 * @returns {DocumentFragment}
 	 */
-	toDom( data ) {
+	_toDom( data ) {
 		const document = this._domParser.parseFromString( data, 'text/html' );
 		const fragment = document.createDocumentFragment();
 		const nodes = document.body.childNodes;

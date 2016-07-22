@@ -10,23 +10,23 @@
 /**
  * DataProcessor interface. It should be implemented by actual DataProcessors.
  * Each data processor implements a certain format of the data. E.g. `MarkdownDataProcessor` will convert the data
- * (Markdown string) to a DocumentFragment and back.
+ * (Markdown string) to a {@link engine.view.DocumentFragment DocumentFragment} and back.
  *
  * @interface engine.dataProcessor.DataProcessor
  */
 
 /**
- * Converts a DocumentFragment to data.
+ * Converts a {@link engine.view.DocumentFragment DocumentFragment} to data.
  *
  * @method engine.dataProcessor.DataProcessor#toData
- * @param {DocumentFragment} fragment DocumentFragment to be processed.
+ * @param {engine.view.DocumentFragment} fragment DocumentFragment to be processed.
  * @returns {*}
  */
 
 /**
- * Converts data to a DocumentFragment.
+ * Converts data to a {@link engine.view.DocumentFragment DocumentFragment}.
  *
- * @method engine.dataProcessor.DataProcessor#toDom
+ * @method engine.dataProcessor.DataProcessor#toView
  * @param {*} data Data to be processed.
- * @returns {DocumentFragment}
+ * @returns {engine.view.DocumentFragment DocumentFragment}
  */
