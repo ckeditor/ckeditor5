@@ -12,6 +12,9 @@ const viewDocument = new Document();
 viewDocument.createRoot( document.getElementById( 'editor' ) );
 
 viewDocument.on( 'mutations', ( evt, mutations ) => console.log( mutations ) );
+viewDocument.on( 'selectionChange', ( evt, data ) => {
+	viewDocument.selection.setTo( data.newSelection );
+} );
 
 setData( viewDocument,
 	'<container:p>foo</container:p>' +
