@@ -10,9 +10,8 @@ const chai = require( 'chai' );
 const filterBy = require( 'gulp-filter-by' );
 const filter = require( 'gulp-filter' );
 const sinon = require( 'sinon' );
-const devTools = require( '../../utils/tools' );
 const semver = require( 'semver' );
-const buildUtils = require( '../build/utils' );
+const { tools, build } = require( 'ckeditor5-dev-utils' );
 const benderConfig = require( '../../../bender' );
 
 /**
@@ -101,7 +100,7 @@ module.exports = () => {
 				.pipe( tasks.skipManual() )
 				.pipe( tasks.skipIgnored() )
 				.pipe( mocha( { reporter: 'progress' } ) )
-				.pipe( tasks.coverage ? istanbul.writeReports() : buildUtils.noop() );
+				.pipe( tasks.coverage ? istanbul.writeReports() : build.noop() );
 		},
 
 		/**
@@ -111,7 +110,7 @@ module.exports = () => {
 		 */
 		skipManual() {
 			return filter( ( file ) => {
-				return !devTools.isFile( file.path.slice( 0, -3 ) + '.md' );
+				return !tools.isFile( file.path.slice( 0, -3 ) + '.md' );
 			} );
 		},
 
@@ -133,7 +132,7 @@ module.exports = () => {
 		devTest() {
 			return gulp.src( 'dev/tests/**/*.js' )
 				.pipe( mocha() )
-				.pipe( tasks.coverage ? istanbul.writeReports() : buildUtils.noop() );
+				.pipe( tasks.coverage ? istanbul.writeReports() : build.noop() );
 		},
 
 		/**

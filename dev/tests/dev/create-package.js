@@ -10,10 +10,9 @@
 const chai = require( 'chai' );
 const sinon = require( 'sinon' );
 const expect = chai.expect;
-const tools = require( '../../utils/tools' );
 const inquiries = require( '../../tasks/dev/utils/inquiries' );
-const git = require( '../../utils/git' );
 const path = require( 'path' );
+const { tools, git } = require( 'ckeditor5-dev-utils' );
 
 describe( 'dev-create-package', () => {
 	let spies;

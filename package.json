@@ -35,6 +35,7 @@
     "benderjs-promise": "^0.1.0",
     "benderjs-sinon": "^0.3.0",
     "chai": "^3.4.0",
+    "ckeditor5-dev-utils": "ckeditor/ckeditor5-dev-utils",
     "concat-stream": "^1.5.1",
     "del": "^2.0.2",
     "fs-extra": "^0.26.4",
