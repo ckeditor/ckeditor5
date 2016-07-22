@@ -62,8 +62,8 @@ getData._stringify = stringify;
  * @param {engine.view.Document} document
  * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
- * @param {String} [rootName] Root name where parsed data will be stored. If not provided, default `main` name will be
- * used.
+ * @param {String} [options.rootName='main'] Root name where parsed data will be stored. If not provided,
+ * default `main` name will be used.
  */
 export function setData( document, data, options = {} ) {
 	if ( !( document instanceof Document ) ) {
