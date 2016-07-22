@@ -97,9 +97,12 @@ describe( 'StandardEditor', () => {
 				} );
 		} );
 
-		it( 'should set data of the first root', () => {
+		it( 'should get data of the first root', () => {
 			editor.document.createRoot();
 			editor.document.createRoot( '$root', 'secondRoot' );
+
+			editor.editing.createRoot( 'div' );
+			editor.editing.createRoot( 'div', 'secondRoot' );
 
 			setData( editor.document, 'foo' );
 
