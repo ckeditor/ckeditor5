@@ -9,7 +9,7 @@ import LivePosition from '../engine/model/liveposition.js';
 import Position from '../engine/model/position.js';
 
 /**
- * Enter command. Used by the {@link enter.Enter enter feature} to handle the <kbd>Enter</kbd> key.
+ * The Enter command. It is used by the {@link enter.Enter Enter feature} to handle the <kbd>Enter</kbd> key.
  *
  * @member enter
  * @extends ckeditor5.command.Command
@@ -25,14 +25,14 @@ export default class EnterCommand extends Command {
 }
 
 /**
- * Enters new block in the way how <kbd>Enter</kbd> is expected to work.
+ * Creates a new block in the way that the <kbd>Enter</kbd> key is expected to work.
  *
- * @param {engine.model.Batch} batch Batch to which the deltas will be added.
+ * @param {engine.model.Batch} batch A batch to which the deltas will be added.
  * @param {engine.model.Selection} selection
  * @param {Object} options
- * @param {Boolean} options.defaultBlockName Name of the block which should be created when enter leaves
- * another block. Usuall set to `'paragraph'`. E.g. when entering block in `<heading>foo^</heading>` the result will be
- * `<heading>foo</heading><paragraph>^</paragraph>`.
+ * @param {Boolean} options.defaultBlockName The name of the block which should be created when Enter leaves
+ * another block. Usually set to `'paragraph'`. For example, when creating a block in `<heading>foo^</heading>`,
+ * the result will be `<heading>foo</heading><paragraph>^</paragraph>`.
  */
 export function enterBlock( batch, selection, options = {} ) {
 	const defaultBlockName = options.defaultBlockName;

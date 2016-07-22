@@ -8,7 +8,7 @@ import EnterCommand from './entercommand.js';
 import EnterObserver from './enterobserver.js';
 
 /**
- * The enter feature. Handles the <kbd>Enter</kbd> and <kbd>Shift + Enter</kbd> keys in the editor.
+ * The Enter feature. Handles the <kbd>Enter</kbd> and <kbd>Shift + Enter</kbd> keys in the editor.
  *
  * @memberOf enter
  * @extends ckeditor5.Feature
@@ -22,7 +22,7 @@ export default class Enter extends Feature {
 
 		editor.commands.set( 'enter', new EnterCommand( editor ) );
 
-		// TODO We may use keystroke handler for that.
+		// TODO We may use the keystroke handler for that.
 		this.listenTo( editingView, 'enter', ( evt, data ) => {
 			editor.execute( 'enter' );
 			data.preventDefault();
