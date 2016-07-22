@@ -190,7 +190,7 @@ describe( 'Range', () => {
 	} );
 
 	describe( 'iterator', () => {
-		it( 'should merge characters with same attributes', () => {
+		it( 'should iterate over the range returning tree walker values', () => {
 			prepareRichRoot( root );
 
 			let range = new Range( new Position( root, [ 0, 0, 3 ] ), new Position( root, [ 3, 0, 2 ] ) );

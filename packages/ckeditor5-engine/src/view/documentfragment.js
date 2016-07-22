@@ -41,6 +41,25 @@ export default class DocumentFragment {
 	}
 
 	/**
+	 * Artificial root of `DocumentFragment`. Returns itself. Added for compatibility reasons.
+	 *
+	 * @readonly
+	 * @type {engine.model.DocumentFragment}
+	 */
+	get root() {
+		return this;
+	}
+
+	/**
+	 * Returns ancestor elements of `DocumentFragment`, which is an empty array. Added for compatibility reasons.
+	 *
+	 * @returns {Array}
+	 */
+	getAncestors() {
+		return [];
+	}
+
+	/**
 	 * {@link engine.view.DocumentFragment#insertChildren Insert} a child node or a list of child nodes at the end
 	 * and sets the parent of these nodes to this fragment.
 	 *
@@ -114,6 +133,15 @@ export default class DocumentFragment {
 		}
 
 		return count;
+	}
+
+	/**
+	 * Returns `true` if there are no nodes inside this document fragment, `false` otherwise.
+	 *
+	 * @returns {Boolean}
+	 */
+	isEmpty() {
+		return this.getChildCount() === 0;
 	}
 
 	/**

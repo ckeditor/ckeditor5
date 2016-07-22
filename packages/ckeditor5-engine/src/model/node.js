@@ -242,6 +242,27 @@ export default class Node {
 	}
 
 	/**
+	 * Returns ancestors array of this node.
+	 *
+	 * @param {Object} options Options object.
+	 * @param {Boolean} [options.includeNode=false] When set to `true` this node will be also included in parent's array.
+	 * @param {Boolean} [options.parentFirst=false] When set to `true`, array will be sorted from node's parent to root element,
+	 * otherwise root element will be the first item in the array.
+	 * @returns {Array} Array with ancestors.
+	 */
+	getAncestors( options = { includeNode: false, parentFirst: false } ) {
+		const ancestors = [];
+		let parent = options.includeNode ? this : this.parent;
+
+		while ( parent ) {
+			ancestors[ options.parentFirst ? 'push' : 'unshift' ]( parent );
+			parent = parent.parent;
+		}
+
+		return ancestors;
+	}
+
+	/**
 	 * Removes this node from it's parent.
 	 */
 	remove() {

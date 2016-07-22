@@ -135,7 +135,6 @@ export default class Element extends Node {
 	 * @fires engine.view.Node#change
 	 * @param {engine.view.Node|Iterable.<engine.view.Node>} nodes Node or the list of nodes to be inserted.
 	 * @returns {Number} Number of appended nodes.
-
 	 */
 	appendChildren( nodes ) {
 		return this.insertChildren( this.getChildCount(), nodes );
@@ -180,8 +179,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Returns an iterator that contains the keys for attributes.
-	 * Order of inserting attributes is not preserved.
+	 * Returns an iterator that contains the keys for attributes. Order of inserting attributes is not preserved.
 	 *
 	 * @returns {Iterator.<String>} Keys for attributes.
 	 */
@@ -198,6 +196,26 @@ export default class Element extends Node {
 		// It can be simplified to `yield* this._attrs.keys();`.
 		for ( let key of this._attrs.keys() ) {
 			yield key;
+		}
+	}
+
+	/**
+	 * Returns iterator that iterates over this element's attributes.
+	 *
+	 * Attributes are returned as arrays containing two items. First one is attribute key and second is attribute value.
+	 * This format is accepted by native `Map` object and also can be passed in `Node` constructor.
+	 *
+	 * @returns {Iterable.<*>}
+	 */
+	*getAttributes() {
+		yield* this._attrs.entries();
+
+		if ( this._classes.size > 0 ) {
+			yield [ 'class', this.getAttribute( 'class' ) ];
+		}
+
+		if ( this._styles.size > 0 ) {
+			yield [ 'style', this.getAttribute( 'style' ) ];
 		}
 	}
 
@@ -350,6 +368,15 @@ export default class Element extends Node {
 		}
 
 		return this._children.splice( index, howMany );
+	}
+
+	/**
+	 * Returns `true` if there are no nodes inside this element, `false` otherwise.
+	 *
+	 * @returns {Boolean}
+	 */
+	isEmpty() {
+		return this._children.length === 0;
 	}
 
 	/**

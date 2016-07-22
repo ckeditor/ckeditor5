@@ -1,0 +1,10 @@
+/**
+ * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * Item is a {@link engine.view.Node Node} or {engine.view.TextProxy TextProxy}.
+ *
+ * @typedef {engine.view.Node|engine.view.TextProxy} engine.view.Item
+ */

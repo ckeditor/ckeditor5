@@ -220,6 +220,30 @@ describe( 'Node', () => {
 		} );
 	} );
 
+	describe( 'getAncestors', () => {
+		it( 'should return proper array of ancestor nodes', () => {
+			expect( root.getAncestors() ).to.deep.equal( [] );
+			expect( two.getAncestors() ).to.deep.equal( [ root ] );
+			expect( textBA.getAncestors() ).to.deep.equal( [ root, two ] );
+		} );
+
+		it( 'should include itself if includeNode option is set to true', () => {
+			expect( root.getAncestors( { includeNode: true } ) ).to.deep.equal( [ root ] );
+			expect( two.getAncestors( { includeNode: true } ) ).to.deep.equal( [ root, two ] );
+			expect( textBA.getAncestors( { includeNode: true } ) ).to.deep.equal( [ root, two, textBA ] );
+			expect( img.getAncestors( { includeNode: true } ) ).to.deep.equal( [ root, two, img ] );
+			expect( textR.getAncestors( { includeNode: true } ) ).to.deep.equal( [ root, two, textR ] );
+		} );
+
+		it( 'should reverse order if parentFirst option is set to true', () => {
+			expect( root.getAncestors( { includeNode: true, parentFirst: true } ) ).to.deep.equal( [ root ] );
+			expect( two.getAncestors( { includeNode: true, parentFirst: true } ) ).to.deep.equal( [ two, root ] );
+			expect( textBA.getAncestors( { includeNode: true, parentFirst: true } ) ).to.deep.equal( [ textBA, two, root ] );
+			expect( img.getAncestors( { includeNode: true, parentFirst: true } ) ).to.deep.equal( [ img, two, root ] );
+			expect( textR.getAncestors( { includeNode: true, parentFirst: true } ) ).to.deep.equal( [ textR, two, root ] );
+		} );
+	} );
+
 	describe( 'attributes interface', () => {
 		let node = new Node( { foo: 'bar' } );
 

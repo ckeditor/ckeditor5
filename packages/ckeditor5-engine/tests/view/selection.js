@@ -9,6 +9,8 @@ import Selection from '/ckeditor5/engine/view/selection.js';
 import Range from '/ckeditor5/engine/view/range.js';
 import Document from '/ckeditor5/engine/view/document.js';
 import Element from '/ckeditor5/engine/view/element.js';
+import Text from '/ckeditor5/engine/view/text.js';
+import Position from '/ckeditor5/engine/view/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Selection', () => {
@@ -303,7 +305,7 @@ describe( 'Selection', () => {
 			selection.addRange( range1 );
 
 			const otherSelection = new Selection();
-			otherSelection.addRange( range2, true );
+			otherSelection.addRange( range1, true );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
@@ -387,6 +389,68 @@ describe( 'Selection', () => {
 		} );
 	} );
 
+	describe( 'collapse', () => {
+		beforeEach( () => {
+			selection.setRanges( [ range1, range2 ] );
+		} );
+
+		it( 'should collapse selection at position', () => {
+			const position = new Position( el, 4 );
+
+			selection.collapse( position );
+			const range = selection.getFirstRange();
+
+			expect( range.start.parent ).to.equal( el );
+			expect( range.start.offset ).to.equal( 4 );
+			expect( range.start.isEqual( range.end ) ).to.be.true;
+		} );
+
+		it( 'should collapse selection at node and offset', () => {
+			const foo = new Text( 'foo' );
+			const p = new Element( 'p', null, foo );
+
+			selection.collapse( foo );
+			let range = selection.getFirstRange();
+
+			expect( range.start.parent ).to.equal( foo );
+			expect( range.start.offset ).to.equal( 0 );
+			expect( range.start.isEqual( range.end ) ).to.be.true;
+
+			selection.collapse( p, 1 );
+			range = selection.getFirstRange();
+
+			expect( range.start.parent ).to.equal( p );
+			expect( range.start.offset ).to.equal( 1 );
+			expect( range.start.isEqual( range.end ) ).to.be.true;
+		} );
+
+		it( 'should collapse selection at node and flag', () => {
+			const foo = new Text( 'foo' );
+			const p = new Element( 'p', null, foo );
+
+			selection.collapse( foo, 'end' );
+			let range = selection.getFirstRange();
+
+			expect( range.start.parent ).to.equal( foo );
+			expect( range.start.offset ).to.equal( 3 );
+			expect( range.start.isEqual( range.end ) ).to.be.true;
+
+			selection.collapse( foo, 'before' );
+			range = selection.getFirstRange();
+
+			expect( range.start.parent ).to.equal( p );
+			expect( range.start.offset ).to.equal( 0 );
+			expect( range.start.isEqual( range.end ) ).to.be.true;
+
+			selection.collapse( foo, 'after' );
+			range = selection.getFirstRange();
+
+			expect( range.start.parent ).to.equal( p );
+			expect( range.start.offset ).to.equal( 1 );
+			expect( range.start.isEqual( range.end ) ).to.be.true;
+		} );
+	} );
+
 	describe( 'collapseToStart', () => {
 		it( 'should collapse to start position and fire change event', ( done ) => {
 			selection.setRanges( [ range1, range2, range3 ] );
@@ -454,6 +518,25 @@ describe( 'Selection', () => {
 			selection.addRange( Range.createFromParentsAndOffsets( element, 0, element, 0 ) );
 
 			expect( selection.getEditableElement() ).to.equal( root );
+		} );
+	} );
+
+	describe( 'createFromSelection', () => {
+		it( 'should return a Selection instance with same ranges and direction as given selection', () => {
+			selection.setRanges( [ range1, range2 ], true );
+
+			const snapshot = Selection.createFromSelection( selection );
+
+			expect( snapshot.isBackward ).to.equal( selection.isBackward );
+
+			const selectionRanges = Array.from( selection.getRanges() );
+			const snapshotRanges = Array.from( snapshot.getRanges() );
+
+			expect( selectionRanges.length ).to.equal( snapshotRanges.length );
+
+			for ( let i = 0; i < selectionRanges.length; i++ ) {
+				expect( selectionRanges[ i ].isEqual( snapshotRanges[ i ] ) ).to.be.true;
+			}
 		} );
 	} );
 } );

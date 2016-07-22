@@ -8,6 +8,7 @@
 import Position from '/ckeditor5/engine/view/position.js';
 import Node from '/ckeditor5/engine/view/node.js';
 import Element from '/ckeditor5/engine/view/element.js';
+import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import EditableElement from '/ckeditor5/engine/view/editableelement.js';
 import Document from '/ckeditor5/engine/view/document.js';
 import Text from '/ckeditor5/engine/view/text.js';
@@ -97,6 +98,83 @@ describe( 'Position', () => {
 			const shifted = position.getShiftedBy( -20 );
 
 			expect( shifted.offset ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'getRoot', () => {
+		it( 'should return it\'s parent root', () => {
+			const foo = new Text( 'foo' );
+			const docFrag = new DocumentFragment( foo );
+
+			expect( new Position( foo, 1 ).getRoot() ).to.equal( docFrag );
+
+			const bar = new Text( 'bar' );
+			const p = new Element( 'p', null, bar );
+
+			expect( new Position( bar, 2 ).getRoot() ).to.equal( p );
+			expect( new Position( p, 0 ).getRoot() ).to.equal( p );
+		} );
+	} );
+
+	describe( 'getAncestors', () => {
+		it( 'should return it\'s parent and all it\'s ancestors', () => {
+			const foo = new Text( 'foo' );
+			const p = new Element( 'p', null, foo );
+			const div = new Element( 'div', null, p );
+			const docFrag = new DocumentFragment( div );
+
+			expect( new Position( foo, 1 ).getAncestors() ).to.deep.equal( [ docFrag, div, p, foo ] );
+		} );
+	} );
+
+	describe( 'createAt', () => {
+		it( 'should create positions from positions', () => {
+			const spy = sinon.spy( Position, 'createFromPosition' );
+
+			const p = new Element( 'p' );
+			const position = new Position( p, 0 );
+			const created = Position.createAt( position );
+
+			expect( created.isEqual( position ) ).to.be.true;
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should create positions from node and offset', () => {
+			const foo = new Text( 'foo' );
+			const p = new Element( 'p', null, foo );
+
+			expect( Position.createAt( foo ).parent ).to.equal( foo );
+			expect( Position.createAt( foo ).offset ).to.equal( 0 );
+
+			expect( Position.createAt( foo, 2 ).parent ).to.equal( foo );
+			expect( Position.createAt( foo, 2 ).offset ).to.equal( 2 );
+
+			expect( Position.createAt( p, 1 ).parent ).to.equal( p );
+			expect( Position.createAt( p, 1 ).offset ).to.equal( 1 );
+		} );
+
+		it( 'should create positions from node and flag', () => {
+			const foo = new Text( 'foo' );
+			const p = new Element( 'p', null, foo );
+
+			const fooEnd = Position.createAt( foo, 'end' );
+			const fooBefore = Position.createAt( foo, 'before' );
+			const fooAfter = Position.createAt( foo, 'after' );
+
+			const pEnd = Position.createAt( p, 'end' );
+			// pBefore and pAfter would throw.
+
+			expect( fooEnd.parent ).to.equal( foo );
+			expect( fooEnd.offset ).to.equal( 3 );
+
+			expect( fooBefore.parent ).to.equal( p );
+			expect( fooBefore.offset ).to.equal( 0 );
+
+			expect( fooAfter.parent ).to.equal( p );
+			expect( fooAfter.offset ).to.equal( 1 );
+
+			expect( pEnd.parent ).to.equal( p );
+			expect( pEnd.offset ).to.equal( 1 );
 		} );
 	} );
 
@@ -251,6 +329,38 @@ describe( 'Position', () => {
 			expect( position3.isAfter( position4 ) ).to.be.false;
 			expect( position5.isAfter( position3 ) ).to.be.true;
 			expect( position2.isAfter( position6 ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'isAtStart', () => {
+		it( 'should return true if it is at the start of it\'s parent', () => {
+			const foo = new Text( 'foo' );
+			const position = new Position( foo, 0 );
+			expect( position.isAtStart( position ) ).to.be.true;
+		} );
+
+		it( 'should return false if it is not at the start of it\'s parent', () => {
+			const foo = new Text( 'foo' );
+			const position = new Position( foo, 1 );
+			expect( position.isAtStart( position ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isAtEnd', () => {
+		it( 'should return true if it is at the end of it\'s parent', () => {
+			const foo = new Text( 'foo' );
+			const p = new Element( 'p', null, foo );
+
+			expect( new Position( foo, 3 ).isAtEnd() ).to.be.true;
+			expect( new Position( p, 1 ).isAtEnd() ).to.be.true;
+		} );
+
+		it( 'should return false if it is not at the end of it\'s parent', () => {
+			const foo = new Text( 'foo' );
+			const p = new Element( 'p', null, foo );
+
+			expect( new Position( foo, 2 ).isAtEnd() ).to.be.false;
+			expect( new Position( p, 0 ).isAtEnd() ).to.be.false;
 		} );
 	} );
 
