@@ -17,10 +17,4 @@ export default class Typing extends Feature {
 	static get requires() {
 		return [ Input, Delete ];
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-	}
 }
