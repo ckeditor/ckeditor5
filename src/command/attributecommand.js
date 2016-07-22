@@ -132,9 +132,9 @@ export default class AttributeCommand extends Command {
 
 				for ( let range of ranges ) {
 					if ( value ) {
-						batch.setAttr( this.attributeKey, value, range );
+						batch.setAttribute( range, this.attributeKey, value );
 					} else {
-						batch.removeAttr( this.attributeKey, range );
+						batch.removeAttribute( range, this.attributeKey );
 					}
 				}
 			} );
