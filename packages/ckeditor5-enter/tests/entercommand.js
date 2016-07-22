@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
 import { default as EnterCommand, enterBlock } from '/ckeditor5/enter/entercommand.js';
 import { getData, setData } from '/tests/engine/_utils/model.js';

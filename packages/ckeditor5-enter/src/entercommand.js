@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-'use strict';
-
 import Command from '../command/command.js';
 import Element from '../engine/model/element.js';
 import LivePosition from '../engine/model/liveposition.js';
