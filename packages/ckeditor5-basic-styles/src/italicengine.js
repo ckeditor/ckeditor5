@@ -5,7 +5,7 @@
 
 import Feature from '../feature.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
-import BuildViewConverterFor from '../engine/conversion/view-converter-builder.js';
+import buildViewConverter from '../engine/conversion/buildviewconverter.js';
 import AttributeCommand from '../command/attributecommand.js';
 
 const ITALIC = 'italic';
@@ -25,7 +25,7 @@ export default class ItalicEngine extends Feature {
 			.toElement( 'em' );
 
 		// Build converter from view to model for data pipeline.
-		BuildViewConverterFor( data.viewToModel )
+		buildViewConverter().for( data.viewToModel )
 			.fromElement( 'em' )
 			.fromElement( 'i' )
 			.fromAttribute( 'style', { 'font-style': 'italic' } )
