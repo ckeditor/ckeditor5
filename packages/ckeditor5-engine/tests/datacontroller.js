@@ -9,7 +9,7 @@ import ModelDocument from '/ckeditor5/engine/model/document.js';
 import DataController from '/ckeditor5/engine/datacontroller.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
-import BuildViewConverterFor  from '/ckeditor5/engine/conversion/view-converter-builder.js';
+import buildViewConverter  from '/ckeditor5/engine/conversion/buildviewconverter.js';
 import buildModelConverter  from '/ckeditor5/engine/conversion/buildmodelconverter.js';
 
 import { getData, setData, stringify } from '/tests/engine/_utils/model.js';
@@ -50,7 +50,7 @@ describe( 'DataController', () => {
 		it( 'should set paragraph', () => {
 			schema.registerItem( 'paragraph', '$block' );
 
-			BuildViewConverterFor( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
+			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 
 			const model = data.parse( '<p>foo<b>bar</b></p>' );
 
@@ -60,7 +60,7 @@ describe( 'DataController', () => {
 		it( 'should set two paragraphs', () => {
 			schema.registerItem( 'paragraph', '$block' );
 
-			BuildViewConverterFor( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
+			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 
 			const model = data.parse( '<p>foo</p><p>bar</p>' );
 
@@ -72,8 +72,8 @@ describe( 'DataController', () => {
 			schema.registerItem( 'paragraph', '$block' );
 			schema.allow( { name: '$text', attributes: [ 'bold' ], inside: '$block' } );
 
-			BuildViewConverterFor( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
-			BuildViewConverterFor( data.viewToModel ).fromElement( 'b' ).toAttribute( 'bold', true );
+			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
+			buildViewConverter().for( data.viewToModel ).fromElement( 'b' ).toAttribute( 'bold', true );
 
 			const model = data.parse( '<p>foo<b>bar</b></p>' );
 

@@ -64,9 +64,6 @@ import ViewContainerElement from '../view/containerelement.js';
 class ModelConverterBuilder {
 	/**
 	 * Creates `ModelConverterBuilder` with given `dispatchers` registered to it.
-	 *
-	 * @param {Array.<engine.conversion.ModelConversionDispatcher>} dispatchers Dispatchers to which converters will
-	 * be attached.
 	 */
 	constructor() {
 		/**

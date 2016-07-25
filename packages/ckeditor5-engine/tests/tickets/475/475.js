@@ -13,7 +13,7 @@ import Range from '/ckeditor5/engine/model/range.js';
 import LivePosition from '/ckeditor5/engine/model/liveposition.js';
 
 import buildModelConverter from '/ckeditor5/engine/conversion/buildmodelconverter.js';
-import BuildViewConverterFor from '/ckeditor5/engine/conversion/view-converter-builder.js';
+import buildViewConverter from '/ckeditor5/engine/conversion/buildviewconverter.js';
 
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 
@@ -32,7 +32,7 @@ export default class Link extends Feature {
 			.toElement( ( href ) => new AttributeElement( 'a', { href } ) );
 
 		// Build converter from view to model for data pipeline.
-		BuildViewConverterFor( data.viewToModel )
+		buildViewConverter().for( data.viewToModel )
 			.fromElement( 'a' )
 			.toAttribute( ( viewElement ) => ( { key: 'link', value: viewElement.getAttribute( 'href' ) } ) );
 	}
