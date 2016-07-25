@@ -8,7 +8,6 @@ module.exports = {
 
 	// List of features.
 	features: [
-		'delete',
 		'typing',
 		'undo',
 		'basic-styles/bold',
