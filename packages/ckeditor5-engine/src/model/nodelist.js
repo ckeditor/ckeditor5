@@ -93,10 +93,10 @@ export default class NodeList {
 	}
 
 	/**
-	 * Converts index "position" to offset "position".
+	 * Converts index to offset in node list.
 	 *
-	 * Returns starting offset of a node that is at given index. If given index is too low, `0` is returned. If
-	 * given index is too high, {@link engine.model.NodeList#getMaxOffset last available offset} is returned.
+	 * Returns starting offset of a node that is at given index. Throws {@link utils.CKEditorError CKEditorError}
+	 * `nodelist-index-out-of-bounds` if given index is less than `0` or more than {@link engine.model.NodeList#length}.
 	 *
 	 * @param {Number} index Node's index.
 	 * @returns {Number} Node's starting offset.
@@ -121,10 +121,10 @@ export default class NodeList {
 	}
 
 	/**
-	 * Converts offset "position" to index "position".
+	 * Converts offset in node list to index.
 	 *
-	 * Returns index of a node that occupies given offset. If given offset is too low, `0` is returned. If
-	 * given offset is too high, {@link engine.model.NodeList#length last available index} is returned.
+	 * Returns index of a node that occupies given offset. Throws {@link utils.CKEditorError CKEditorError}
+	 * `nodelist-offset-out-of-bounds` if given offset is less than `0` or more than {@link engine.model.NodeList#getMaxOffset}.
 	 *
 	 * @param {Number} offset Offset to look for.
 	 * @returns {Number} Index of a node that occupies given offset.
