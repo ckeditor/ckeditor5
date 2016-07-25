@@ -4,8 +4,8 @@
  */
 
 import Feature from '../feature.js';
-import BuildModelConverterFor from '../engine/conversion/model-converter-builder.js';
-import BuildViewConverterFor from '../engine/conversion/view-converter-builder.js';
+import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
+import buildViewConverter from '../engine/conversion/buildviewconverter.js';
 
 /**
  * The paragraph feature for the editor.
@@ -27,12 +27,12 @@ export default class Paragraph extends Feature {
 		editor.document.schema.registerItem( 'paragraph', '$block' );
 
 		// Build converter from model to view for data and editing pipelines.
-		BuildModelConverterFor( data.modelToView, editing.modelToView )
+		buildModelConverter().for( data.modelToView, editing.modelToView )
 			.fromElement( 'paragraph' )
 			.toElement( 'p' );
 
 		// Build converter from view to model for data pipeline.
-		BuildViewConverterFor( data.viewToModel )
+		buildViewConverter().for( data.viewToModel )
 			.fromElement( 'p' )
 			.toElement( 'paragraph' );
 	}
