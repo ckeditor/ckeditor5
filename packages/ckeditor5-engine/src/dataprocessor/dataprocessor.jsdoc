@@ -28,5 +28,5 @@
  *
  * @method engine.dataProcessor.DataProcessor#toView
  * @param {*} data Data to be processed.
- * @returns {engine.view.DocumentFragment DocumentFragment}
+ * @returns {engine.view.DocumentFragment}
  */
