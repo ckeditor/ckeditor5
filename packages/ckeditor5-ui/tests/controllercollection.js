@@ -8,20 +8,43 @@
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import ControllerCollection from '/ckeditor5/ui/controllercollection.js';
 import Controller from '/ckeditor5/ui/controller.js';
+import Collection from '/ckeditor5/utils/collection.js';
+import Model from '/ckeditor5/ui/model.js';
 import View from '/ckeditor5/ui/view.js';
+import Template from '/ckeditor5/ui/template.js';
 
 testUtils.createSinonSandbox();
 
-let ParentView;
+let ParentView, ItemController, ItemView;
+let modelCollection;
 
 describe( 'ControllerCollection', () => {
-	beforeEach( defineParentViewClass );
+	beforeEach( () => {
+		defineParentViewClass();
+		defineItemControllerClass();
+		defineItemViewClass();
+		createModelCollection();
+	} );
 
 	describe( 'constructor', () => {
 		it( 'should throw when no name is passed', () => {
 			expect( () => {
 				new ControllerCollection();
 			} ).to.throw( /^ui-controllercollection-no-name/ );
+		} );
+
+		it( 'activates model collection synchronization', () => {
+			const modelCollection = new Collection( {
+				idProperty: 'uid'
+			} );
+
+			modelCollection.add( new Model( {
+				uid: 'foo'
+			} ) );
+
+			const controllers = new ControllerCollection( 'synced', modelCollection, ItemController, ItemView );
+
+			expect( controllers ).to.have.length( 1 );
 		} );
 	} );
 
@@ -95,6 +118,51 @@ describe( 'ControllerCollection', () => {
 				} );
 		} );
 	} );
+
+	describe( '_sync', () => {
+		it( 'expands the initial collection of the models', () => {
+			const controllers = new ControllerCollection( 'synced' );
+
+			controllers._sync( modelCollection, ItemController, ItemView );
+
+			expect( controllers ).to.have.length( 5 );
+			expect( controllers.get( 0 ).model.uid ).to.equal( '0' );
+			expect( controllers.get( 4 ).model.uid ).to.equal( '4' );
+		} );
+
+		it( 'uses the controller and view classes to expand the collection', () => {
+			const controllers = new ControllerCollection( 'synced' );
+
+			controllers._sync( modelCollection, ItemController, ItemView );
+
+			expect( controllers.get( 0 ) ).to.be.instanceOf( ItemController );
+			expect( controllers.get( 0 ).view ).to.be.instanceOf( ItemView );
+		} );
+
+		it( 'supports adding new models to the collection', () => {
+			const controllers = new ControllerCollection( 'synced' );
+
+			controllers._sync( modelCollection, ItemController, ItemView );
+
+			modelCollection.add( new Model( { uid: '6' } ) );
+			modelCollection.add( new Model( { uid: '5' } ), 5 );
+
+			expect( controllers.get( 5 ).model.uid ).to.equal( '5' );
+			expect( controllers.get( 6 ).model.uid ).to.equal( '6' );
+			expect( controllers ).to.have.length( 7 );
+		} );
+
+		it( 'supports removing models from the collection', () => {
+			const controllers = new ControllerCollection( 'synced' );
+
+			controllers._sync( modelCollection, ItemController, ItemView );
+
+			modelCollection.remove( 2 );
+			modelCollection.remove( 3 );
+
+			expect( controllers.map( c => c.id ) ).to.have.members( [ '0', '1', '3' ] );
+		} );
+	} );
 } );
 
 function defineParentViewClass() {
@@ -106,4 +174,42 @@ function defineParentViewClass() {
 			this.register( 'x', true );
 		}
 	};
+}
+
+function defineItemControllerClass() {
+	ItemController = class extends Controller {
+		constructor( model, view ) {
+			super( model, view );
+
+			view.model.bind( 'uid' ).to( model );
+		}
+	};
+}
+
+function defineItemViewClass() {
+	ItemView = class extends View {
+		constructor() {
+			super();
+
+			const bind = this.bind;
+
+			this.template = new Template( {
+				tag: 'li',
+
+				attributes: {
+					id: bind.to( 'uid' )
+				}
+			} );
+		}
+	};
+}
+
+function createModelCollection() {
+	modelCollection = new Collection( { idProperty: 'uid' } );
+
+	for ( let i = 0; i < 5; i++ ) {
+		modelCollection.add( new Model( {
+			uid: Number( i ).toString()
+		} ) );
+	}
 }
