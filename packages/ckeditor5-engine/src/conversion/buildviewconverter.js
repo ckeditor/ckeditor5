@@ -104,6 +104,7 @@ class ViewConverterBuilder {
 	 *
 	 * @chainable
 	 * @param {...engine.conversion.ViewConversionDispatcher} dispatchers One or more dispatchers.
+	 * @returns {engine.conversion.ViewConverterBuilder}
 	 */
 	for( ...dispatchers ) {
 		this._dispatchers = dispatchers;

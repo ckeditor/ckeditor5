@@ -88,6 +88,7 @@ class ModelConverterBuilder {
 	 *
 	 * @chainable
 	 * @param {...engine.conversion.ModelConversionDispatcher} dispatchers One or more dispatchers.
+	 * @returns {engine.conversion.ModelConverterBuilder}
 	 */
 	for( ...dispatchers ) {
 		this._dispatchers = dispatchers;
