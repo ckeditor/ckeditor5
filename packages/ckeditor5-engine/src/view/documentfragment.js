@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+import Text from './text.js';
 import mix from '../../utils/mix.js';
 import isIterable from '../../utils/isiterable.js';
 import EmitterMixin from '../../utils/emittermixin.js';
@@ -120,9 +121,7 @@ export default class DocumentFragment {
 		this._fireChange( 'children', this );
 		let count = 0;
 
-		if ( !isIterable( nodes ) ) {
-			nodes = [ nodes ];
-		}
+		nodes = normalize( nodes );
 
 		for ( let node of nodes ) {
 			node.parent = this;
@@ -175,3 +174,21 @@ export default class DocumentFragment {
 }
 
 mix( DocumentFragment, EmitterMixin );
+
+// Converts strings to Text and non-iterables to arrays.
+//
+// @param {String|engine.view.Node|Iterable.<String|engine.view.Node>}
+// @return {Iterable.<engine.view.Node>}
+function normalize( nodes ) {
+	// Separate condition because string is iterable.
+	if ( typeof nodes == 'string' ) {
+		return [ new Text( nodes ) ];
+	}
+
+	if ( !isIterable( nodes ) ) {
+		nodes = [ nodes ];
+	}
+
+	// Array.from to enable .map() on non-arrays.
+	return Array.from( nodes ).map( ( node ) => typeof node == 'string' ? new Text( node ) : node );
+}

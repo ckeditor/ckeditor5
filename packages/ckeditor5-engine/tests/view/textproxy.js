@@ -32,11 +32,13 @@ describe( 'TextProxy', () => {
 			expect( textProxy ).to.have.property( 'offsetInText' ).to.equal( 2 );
 		} );
 
-		it( 'should get text from specified offset to the end of textNode if length is not defined', () => {
-			textProxy = new TextProxy( text, 2 );
+		it( 'should have isPartial property', () => {
+			let startTextProxy = new TextProxy( text, 0, 4 );
+			let fullTextProxy = new TextProxy( text, 0, 8 );
 
-			expect( textProxy ).to.have.property( 'data' ).to.equal( 'cdefgh' );
-			expect( textProxy ).to.have.property( 'offsetInText' ).to.equal( 2 );
+			expect( textProxy.isPartial ).to.be.true;
+			expect( startTextProxy.isPartial ).to.be.true;
+			expect( fullTextProxy.isPartial ).to.be.false;
 		} );
 	} );
 

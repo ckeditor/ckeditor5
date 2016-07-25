@@ -311,7 +311,7 @@ export default class TreeWalker {
 				if ( node == this._boundaryStartParent ) {
 					const offset = this.boundaries.start.offset;
 
-					item = new TextProxy( node, offset );
+					item = new TextProxy( node, offset, node.data.length - offset );
 					charactersCount = item.data.length;
 					position = Position.createBefore( item );
 				} else {

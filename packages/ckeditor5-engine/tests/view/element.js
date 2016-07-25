@@ -255,6 +255,13 @@ describe( 'Element', () => {
 				expect( count2 ).to.equal( 1 );
 			} );
 
+			it( 'should accept strings', () => {
+				parent.insertChildren( 0, 'abc' );
+
+				expect( parent.getChildCount() ).to.equal( 1 );
+				expect( parent.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
+			} );
+
 			it( 'should append children', () => {
 				const count1 = parent.insertChildren( 0, el1 );
 				const count2 = parent.appendChildren( el2 );

@@ -25,14 +25,6 @@ export default class NodeList {
 		 */
 		this._nodes = [];
 
-		/**
-		 * Represents which node occupies given offset.
-		 *
-		 * @private
-		 * @member {Array.<engine.model.Node>} engine.model.NodeList#_nodeAtOffset
-		 */
-		this._nodeAtOffset = [];
-
 		if ( nodes ) {
 			this.insertNodes( 0, nodes );
 		}
@@ -61,8 +53,8 @@ export default class NodeList {
 	 *
 	 * @returns {Number}
 	 */
-	get totalOffset() {
-		return this._nodeAtOffset.length;
+	getMaxOffset() {
+		return this._nodes.reduce( ( sum, node ) => sum + node.offsetSize, 0 );
 	}
 
 	/**
@@ -95,51 +87,69 @@ export default class NodeList {
 	 * @returns {Number|null} Node's starting offset.
 	 */
 	getNodeStartOffset( node ) {
-		const offset = this._nodeAtOffset.indexOf( node );
+		const index = this.getNodeIndex( node );
 
-		return offset == -1 ? null : offset;
+		return index === null ? null : this._nodes.slice( 0, index ).reduce( ( sum, node ) => sum + node.offsetSize, 0 );
 	}
 
 	/**
-	 * Converts index "position" to offset "position".
+	 * Converts index to offset in node list.
 	 *
-	 * Returns starting offset of a node that is at given index. If given index is too low, `0` is returned. If
-	 * given index is too high, {@link engine.model.NodeList#totalOffset last available offset} is returned.
+	 * Returns starting offset of a node that is at given index. Throws {@link utils.CKEditorError CKEditorError}
+	 * `nodelist-index-out-of-bounds` if given index is less than `0` or more than {@link engine.model.NodeList#length}.
 	 *
 	 * @param {Number} index Node's index.
 	 * @returns {Number} Node's starting offset.
 	 */
 	indexToOffset( index ) {
-		if ( index < 0 ) {
-			return 0;
-		} else if ( index >= this._nodes.length ) {
-			return this.totalOffset;
+		if ( index == this._nodes.length ) {
+			return this.getMaxOffset();
 		}
 
 		const node = this._nodes[ index ];
+
+		if ( !node ) {
+			/**
+			 * Given index cannot be found in the node list.
+			 *
+			 * @error nodelist-index-out-of-bounds
+			 */
+			throw new CKEditorError( 'nodelist-index-out-of-bounds: Given index cannot be found in the node list.' );
+		}
 
 		return this.getNodeStartOffset( node );
 	}
 
 	/**
-	 * Converts offset "position" to index "position".
+	 * Converts offset in node list to index.
 	 *
-	 * Returns index of a node that occupies given offset. If given offset is too low, `0` is returned. If
-	 * given offset is too high, {@link engine.model.NodeList#length last available index} is returned.
+	 * Returns index of a node that occupies given offset. Throws {@link utils.CKEditorError CKEditorError}
+	 * `nodelist-offset-out-of-bounds` if given offset is less than `0` or more than {@link engine.model.NodeList#getMaxOffset}.
 	 *
 	 * @param {Number} offset Offset to look for.
 	 * @returns {Number} Index of a node that occupies given offset.
 	 */
 	offsetToIndex( offset ) {
-		if ( offset < 0 ) {
-			return 0;
-		} else if ( offset >= this._nodeAtOffset.length ) {
-			return this.length;
+		let totalOffset = 0;
+
+		for ( let node of this._nodes ) {
+			if ( offset >= totalOffset && offset < totalOffset + node.offsetSize  ) {
+				return this.getNodeIndex( node );
+			}
+
+			totalOffset += node.offsetSize;
 		}
 
-		const node = this._nodeAtOffset[ offset ];
+		if ( totalOffset != offset ) {
+			/**
+			 * Given offset cannot be found in the node list.
+			 *
+			 * @error nodelist-offset-out-of-bounds
+			 */
+			throw new CKEditorError( 'nodelist-offset-out-of-bounds: Given offset cannot be found in the node list.' );
+		}
 
-		return this.getNodeIndex( node );
+		return this.length;
 	}
 
 	/**
@@ -161,19 +171,7 @@ export default class NodeList {
 			}
 		}
 
-		const offset = this.indexToOffset( index );
-
 		this._nodes.splice( index, 0, ...nodes );
-
-		const offsetsArray = [];
-
-		for ( let node of nodes ) {
-			for ( let i = 0; i < node.offsetSize; i++ ) {
-				offsetsArray.push( node );
-			}
-		}
-
-		this._nodeAtOffset.splice( offset, 0, ...offsetsArray );
 	}
 
 	/**
@@ -184,13 +182,6 @@ export default class NodeList {
 	 * @returns {Array.<engine.model.Node>} Array containing removed nodes.
 	 */
 	removeNodes( indexStart, howMany = 1 ) {
-		const indexEnd = indexStart + howMany;
-
-		const offsetStart = this.indexToOffset( indexStart );
-		const offsetEnd = this.indexToOffset( indexEnd );
-
-		this._nodeAtOffset.splice( offsetStart, offsetEnd - offsetStart );
-
 		return this._nodes.splice( indexStart, howMany );
 	}
 

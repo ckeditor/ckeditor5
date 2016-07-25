@@ -72,10 +72,33 @@ describe( 'TextProxy', () => {
 		expect( textProxyNoParent ).to.have.property( 'offsetInText' ).that.equals( 1 );
 	} );
 
+	it( 'should have isPartial property', () => {
+		let startTextProxy = new TextProxy( text, 0, 4 );
+		let fullTextProxy = new TextProxy( text, 0, 6 );
+
+		expect( textProxy.isPartial ).to.be.true;
+		expect( startTextProxy.isPartial ).to.be.true;
+		expect( fullTextProxy.isPartial ).to.be.false;
+	} );
+
 	describe( 'getPath', () => {
 		it( 'should return path to the text proxy', () => {
 			expect( textProxy.getPath() ).to.deep.equal( [ 0, 5 ] );
 			expect( textProxyNoParent.getPath() ).to.deep.equal( [] );
+		} );
+	} );
+
+	describe( 'getAncestors', () => {
+		it( 'should return proper array of ancestor nodes', () => {
+			expect( textProxy.getAncestors() ).to.deep.equal( [ root, element ] );
+		} );
+
+		it( 'should include itself if includeNode option is set to true', () => {
+			expect( textProxy.getAncestors( { includeNode: true } ) ).to.deep.equal( [ root, element, textProxy ] );
+		} );
+
+		it( 'should reverse order if parentFirst option is set to true', () => {
+			expect( textProxy.getAncestors( { includeNode: true, parentFirst: true } ) ).to.deep.equal( [ textProxy, element, root ] );
 		} );
 	} );
 

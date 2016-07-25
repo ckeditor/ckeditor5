@@ -63,7 +63,7 @@ const ot = {
 			const transformed = a.clone();
 
 			// Transform insert position by the other operation position.
-			transformed.position = transformed.position._getTransformedByInsertion( b.position, b.nodes.totalOffset, !isStrong );
+			transformed.position = transformed.position._getTransformedByInsertion( b.position, b.nodes.getMaxOffset(), !isStrong );
 
 			return [ transformed ];
 		},
@@ -88,7 +88,7 @@ const ot = {
 		// Transforms AttributeOperation `a` by InsertOperation `b`. Returns results as an array of operations.
 		InsertOperation( a, b ) {
 			// Transform this operation's range.
-			const ranges = a.range._getTransformedByInsertion( b.position, b.nodes.totalOffset, true, false );
+			const ranges = a.range._getTransformedByInsertion( b.position, b.nodes.getMaxOffset(), true, false );
 
 			// Map transformed range(s) to operations and return them.
 			return ranges.reverse().map( ( range ) => {
@@ -221,14 +221,14 @@ const ot = {
 		InsertOperation( a, b, isStrong ) {
 			// Create range from MoveOperation properties and transform it by insertion.
 			let range = Range.createFromPositionAndShift( a.sourcePosition, a.howMany );
-			range = range._getTransformedByInsertion( b.position, b.nodes.totalOffset, false, a.isSticky )[ 0 ];
+			range = range._getTransformedByInsertion( b.position, b.nodes.getMaxOffset(), false, a.isSticky )[ 0 ];
 
 			let result = new a.constructor(
 				range.start,
 				range.end.offset - range.start.offset,
 				a instanceof RemoveOperation ?
 					a.baseVersion :
-					a.targetPosition._getTransformedByInsertion( b.position, b.nodes.totalOffset, !isStrong ),
+					a.targetPosition._getTransformedByInsertion( b.position, b.nodes.getMaxOffset(), !isStrong ),
 				a instanceof RemoveOperation ? undefined : a.baseVersion
 			);
 

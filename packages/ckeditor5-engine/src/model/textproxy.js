@@ -131,6 +131,21 @@ export default class TextProxy {
 	}
 
 	/**
+	 * Flag indicating whether `TextProxy` instance covers only part of the original {@link engine.model.Text text node}
+	 * (`true`) or the whole text node (`false`).
+	 *
+	 * This is `false` when text proxy starts at the very beginning of {@link engine.model.TextProxy#textNode textNode}
+	 * ({@link engine.model.TextProxy#offsetInText offsetInText} equals `0`) and text proxy sizes is equal to
+	 * text node size.
+	 *
+	 * @readonly
+	 * @type {Boolean}
+	 */
+	get isPartial() {
+		return this.offsetInText !== 0 || this.offsetSize !== this.textNode.offsetSize;
+	}
+
+	/**
 	 * Gets path to this text proxy.
 	 *
 	 * @see engine.model.Node#getPath
@@ -145,6 +160,27 @@ export default class TextProxy {
 		}
 
 		return path;
+	}
+
+	/**
+	 * Returns ancestors array of this text proxy.
+	 *
+	 * @param {Object} options Options object.
+	 * @param {Boolean} [options.includeNode=false] When set to `true` this text proxy will be also included in parent's array.
+	 * @param {Boolean} [options.parentFirst=false] When set to `true`, array will be sorted from text proxy parent to root element,
+	 * otherwise root element will be the first item in the array.
+	 * @returns {Array} Array with ancestors.
+	 */
+	getAncestors( options = { includeNode: false, parentFirst: false } ) {
+		const ancestors = [];
+		let parent = options.includeNode ? this : this.parent;
+
+		while ( parent ) {
+			ancestors[ options.parentFirst ? 'push' : 'unshift' ]( parent );
+			parent = parent.parent;
+		}
+
+		return ancestors;
 	}
 
 	/**
