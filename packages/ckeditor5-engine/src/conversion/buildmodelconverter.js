@@ -20,7 +20,7 @@ import ViewContainerElement from '../view/containerelement.js';
  * Provides chainable, high-level API to easily build basic model-to-view converters that are appended to given
  * dispatchers. In many cases, this is the API that should be used to specify how abstract model elements and
  * attributes should be represented in the view (and then later in DOM). Instances of this class are created by
- * {@link engine.conversion.BuildModelConverterFor}.
+ * {@link engine.conversion.buildModelConverter}.
  *
  * If you need more complex converters, see {@link engine.conversion.ModelConversionDispatcher},
  * {@link engine.conversion.modelToView}, {@link engine.conversion.ModelConsumable}, {@link engine.conversion.Mapper}.
@@ -30,21 +30,21 @@ import ViewContainerElement from '../view/containerelement.js';
  * 1. Model element to view element converter. This is a converter that takes the model element and represents it
  * in the view.
  *
- *		BuildModelConverterFor( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
- *		BuildModelConverterFor( dispatcher ).fromElement( 'image' ).toElement( 'img' );
+ *		buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
+ *		buildModelConverter().for( dispatcher ).fromElement( 'image' ).toElement( 'img' );
  *
  * 2. Model attribute to view attribute converter. This is a converter that operates on model element attributes
  * and converts them to view element attributes. It is suitable for elements like `image` (`src`, `title` attributes).
  *
- *		BuildModelConverterFor( dispatcher ).fromElement( 'image' ).toElement( 'img' );
- *		BuildModelConverterFor( dispatcher ).fromAttribute( 'src' ).toAttribute();
+ *		buildModelConverter().for( dispatcher ).fromElement( 'image' ).toElement( 'img' );
+ *		buildModelConverter().for( dispatcher ).fromAttribute( 'src' ).toAttribute();
  *
  * 3. Model attribute to view element converter. This is a converter that takes model attributes and represents them
  * as view elements. Elements created by this kind of converter are wrapping other view elements. Wrapped view nodes
  * correspond to model nodes had converter attribute. It is suitable for attributes like `bold`, where `bold` attribute
  * set on model text nodes is converter to `strong` view element.
  *
- *		BuildModelConverterFor( dispatcher ).fromAttribute( 'bold' ).toElement( 'strong' );
+ *		buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toElement( 'strong' );
  *
  * It is possible to provide various different parameters for {@link engine.conversion.ModelConverterBuilder#toElement}
  * and {@link engine.conversion.ModelConverterBuilder#toAttribute} methods. See their descriptions to learn more.
@@ -68,14 +68,14 @@ class ModelConverterBuilder {
 	 * @param {Array.<engine.conversion.ModelConversionDispatcher>} dispatchers Dispatchers to which converters will
 	 * be attached.
 	 */
-	constructor( dispatchers ) {
+	constructor() {
 		/**
 		 * Dispatchers to which converters will be attached.
 		 *
 		 * @type {Array.<engine.conversion.ModelConversionDispatcher>}
 		 * @private
 		 */
-		this._dispatchers = dispatchers;
+		this._dispatchers = [];
 
 		/**
 		 * Contains data about registered "from" query.
@@ -84,6 +84,18 @@ class ModelConverterBuilder {
 		 * @private
 		 */
 		this._from = null;
+	}
+
+	/**
+	 * Set one or more dispatchers which the built converter will be attached to.
+	 *
+	 * @chainable
+	 * @param {...engine.conversion.ModelConversionDispatcher} dispatchers One or more dispatchers.
+	 */
+	for( ...dispatchers ) {
+		this._dispatchers = dispatchers;
+
+		return this;
 	}
 
 	/**
@@ -130,8 +142,8 @@ class ModelConverterBuilder {
 	 * prevent node merging, i.e.: `<span class="bold"><span class="theme">foo</span><span>` vs `<span class="bold theme">foo</span>`.
 	 * If you want to prevent merging, just set different priority for both converters.
 	 *
-	 *		BuildModelConverterFor( dispatcher ).fromAttribute( 'bold' ).withPriority( 2 ).toElement( 'strong' );
-	 *		BuildModelConverterFor( dispatcher ).fromAttribute( 'italic' ).withPriority( 3 ).toElement( 'em' );
+	 *		buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).withPriority( 2 ).toElement( 'strong' );
+	 *		buildModelConverter().for( dispatcher ).fromAttribute( 'italic' ).withPriority( 3 ).toElement( 'em' );
 	 *
 	 * @chainable
 	 * @param {Number} priority Converter priority.
@@ -152,15 +164,15 @@ class ModelConverterBuilder {
 	 * proper type of view element: {@link engine.view.ViewContainerElement ViewContainerElement} if you convert
 	 * from element or {@link engine.view.ViewAttributeElement ViewAttributeElement} if you convert from attribute.
 	 *
-	 *		BuildModelConverterFor( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
+	 *		buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
 	 *
-	 *		BuildModelConverterFor( dispatcher ).fromElement( 'image' ).toElement( new ViewContainerElement( 'img' ) );
+	 *		buildModelConverter().for( dispatcher ).fromElement( 'image' ).toElement( new ViewContainerElement( 'img' ) );
 	 *
-	 *		BuildModelConverterFor( dispatcher )
+	 *		buildModelConverter().for( dispatcher )
 	 *			.fromElement( 'header' )
 	 *			.toElement( ( data ) => new ViewContainerElement( 'h' + data.item.getAttribute( 'level' ) ) );
 	 *
-	 *		BuildModelConverterFor( dispatcher ).fromAttribute( 'bold' ).toElement( new ViewAttributeElement( 'strong' ) );
+	 *		buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toElement( new ViewAttributeElement( 'strong' ) );
 	 *
 	 * Creator function will be passed different values depending whether conversion is from element or from attribute:
 	 *
@@ -210,13 +222,13 @@ class ModelConverterBuilder {
 	 * This function will be passed model attribute value and model attribute key as first two parameters and then
 	 * all dispatcher's {engine.conversion.ModelConversionDispatcher#event:changeAttribute changeAttribute event} parameters.
 	 *
-	 *		BuildModelConverterFor( dispatcher ).fromAttribute( 'class' ).toAttribute( '' );
+	 *		buildModelConverter().for( dispatcher ).fromAttribute( 'class' ).toAttribute( '' );
 	 *
-	 *		BuildModelConverterFor( dispatcher ).fromAttribute( 'linkTitle' ).toAttribute( 'title' );
+	 *		buildModelConverter().for( dispatcher ).fromAttribute( 'linkTitle' ).toAttribute( 'title' );
 	 *
-	 *		BuildModelConverterFor( dispatcher ).fromAttribute( 'highlighted' ).toAttribute( 'style', 'background:yellow' );
+	 *		buildModelConverter().for( dispatcher ).fromAttribute( 'highlighted' ).toAttribute( 'style', 'background:yellow' );
 	 *
-	 *		BuildModelConverterFor( dispatcher )
+	 *		buildModelConverter().for( dispatcher )
 	 *			.fromAttribute( 'theme' )
 	 *			.toAttribute( ( value ) => ( { key: 'class', value: value + '-theme' } ) );
 	 *
@@ -270,11 +282,9 @@ class ModelConverterBuilder {
  * model-to-view converters and attach them to provided dispatchers. The method returns an instance of
  * {@link engine.conversion.ModelConverterBuilder}.
  *
- * @external engine.conversion.BuildModelConverterFor
+ * @external engine.conversion.buildModelConverter
  * @memberOf engine.conversion
- * @param {...engine.conversion.ModelConversionDispatcher} dispatchers One or more dispatchers which
- * the built converter will be attached to.
  */
-export default function BuildModelConverterFor( ...dispatchers ) {
-	return new ModelConverterBuilder( dispatchers );
+export default function buildModelConverter() {
+	return new ModelConverterBuilder();
 }

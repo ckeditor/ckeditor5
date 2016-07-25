@@ -10,7 +10,7 @@ import DataController from '/ckeditor5/engine/datacontroller.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
 import BuildViewConverterFor  from '/ckeditor5/engine/conversion/view-converter-builder.js';
-import BuildModelConverterFor  from '/ckeditor5/engine/conversion/model-converter-builder.js';
+import buildModelConverter  from '/ckeditor5/engine/conversion/buildmodelconverter.js';
 
 import { getData, setData, stringify } from '/tests/engine/_utils/model.js';
 
@@ -139,7 +139,7 @@ describe( 'DataController', () => {
 			modelDocument.schema.registerItem( 'paragraph', '$block' );
 			setData( modelDocument, '<paragraph>foo</paragraph>' );
 
-			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 		} );
@@ -148,7 +148,7 @@ describe( 'DataController', () => {
 			modelDocument.schema.registerItem( 'paragraph', '$block' );
 			setData( modelDocument, '<paragraph></paragraph>' );
 
-			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 
 			expect( data.get() ).to.equal( '<p>&nbsp;</p>' );
 		} );
@@ -157,7 +157,7 @@ describe( 'DataController', () => {
 			modelDocument.schema.registerItem( 'paragraph', '$block' );
 			setData( modelDocument, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
-			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 
 			expect( data.get() ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
@@ -172,7 +172,7 @@ describe( 'DataController', () => {
 			modelDocument.schema.registerItem( 'paragraph', '$block' );
 			setData( modelDocument, '<paragraph>foo<$text bold=true>bar</$text></paragraph>' );
 
-			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 
 			expect( data.get() ).to.equal( '<p>foobar</p>' );
 		} );
@@ -181,8 +181,8 @@ describe( 'DataController', () => {
 			modelDocument.schema.registerItem( 'paragraph', '$block' );
 			setData( modelDocument, '<paragraph>foo<$text bold=true>bar</$text></paragraph>' );
 
-			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
-			BuildModelConverterFor( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
+			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			buildModelConverter().for( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
 
 			expect( data.get() ).to.equal( '<p>foo<b>bar</b></p>' );
 		} );
@@ -192,8 +192,8 @@ describe( 'DataController', () => {
 			setData( modelDocument, '<paragraph>foo</paragraph>', { rootName: 'main' } );
 			setData( modelDocument, 'Bar', { rootName: 'title' } );
 
-			BuildModelConverterFor( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
-			BuildModelConverterFor( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
+			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			buildModelConverter().for( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 			expect( data.get( 'main' ) ).to.equal( '<p>foo</p>' );

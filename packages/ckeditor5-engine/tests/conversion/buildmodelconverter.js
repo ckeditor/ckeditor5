@@ -5,7 +5,7 @@
 
 /* bender-tags: conversion */
 
-import BuildModelConverterFor from '/ckeditor5/engine/conversion/model-converter-builder.js';
+import buildModelConverter from '/ckeditor5/engine/conversion/buildmodelconverter.js';
 
 import ModelDocument from '/ckeditor5/engine/model/document.js';
 import ModelElement from '/ckeditor5/engine/model/element.js';
@@ -92,7 +92,7 @@ describe( 'Model converter builder', () => {
 
 	describe( 'model element to view element conversion', () => {
 		it( 'using passed view element name', () => {
-			BuildModelConverterFor( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
+			buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
 
 			let modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
@@ -103,7 +103,7 @@ describe( 'Model converter builder', () => {
 		} );
 
 		it( 'using passed view element', () => {
-			BuildModelConverterFor( dispatcher ).fromElement( 'image' ).toElement( new ViewContainerElement( 'img' ) );
+			buildModelConverter().for( dispatcher ).fromElement( 'image' ).toElement( new ViewContainerElement( 'img' ) );
 
 			let modelElement = new ModelElement( 'image' );
 			modelRoot.appendChildren( modelElement );
@@ -114,7 +114,7 @@ describe( 'Model converter builder', () => {
 		} );
 
 		it( 'using passed creator function', () => {
-			BuildModelConverterFor( dispatcher )
+			buildModelConverter().for( dispatcher )
 				.fromElement( 'header' )
 				.toElement( ( data ) => new ViewContainerElement( 'h' + data.item.getAttribute( 'level' ) ) );
 
@@ -129,11 +129,11 @@ describe( 'Model converter builder', () => {
 
 	describe( 'model attribute to view element conversion', () => {
 		beforeEach( () => {
-			BuildModelConverterFor( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
+			buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
 		} );
 
 		it( 'using passed view element name', () => {
-			BuildModelConverterFor( dispatcher ).fromAttribute( 'bold' ).toElement( 'strong' );
+			buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toElement( 'strong' );
 
 			let modelElement = new ModelText( 'foo', { bold: true } );
 			modelRoot.appendChildren( modelElement );
@@ -150,7 +150,7 @@ describe( 'Model converter builder', () => {
 		} );
 
 		it( 'using passed view element', () => {
-			BuildModelConverterFor( dispatcher ).fromAttribute( 'bold' ).toElement( new ViewAttributeElement( 'strong' ) );
+			buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toElement( new ViewAttributeElement( 'strong' ) );
 
 			let modelElement = new ModelText( 'foo', { bold: true } );
 			modelRoot.appendChildren( modelElement );
@@ -167,7 +167,7 @@ describe( 'Model converter builder', () => {
 		} );
 
 		it( 'using passed creator function', () => {
-			BuildModelConverterFor( dispatcher ).fromAttribute( 'italic' ).toElement( ( value ) => new ViewAttributeElement( value ) );
+			buildModelConverter().for( dispatcher ).fromAttribute( 'italic' ).toElement( ( value ) => new ViewAttributeElement( value ) );
 
 			let modelElement = new ModelText( 'foo', { italic: 'em' } );
 			modelRoot.appendChildren( modelElement );
@@ -195,7 +195,7 @@ describe( 'Model converter builder', () => {
 			dispatcher.on( 'selection', convertCollapsedSelection() );
 
 			// Model converter builder should add selection converter.
-			BuildModelConverterFor( dispatcher ).fromAttribute( 'italic' ).toElement( ( value ) => new ViewAttributeElement( value ) );
+			buildModelConverter().for( dispatcher ).fromAttribute( 'italic' ).toElement( ( value ) => new ViewAttributeElement( value ) );
 
 			modelRoot.appendChildren( new ModelText( 'foo', { italic: 'em' } ) );
 
@@ -255,11 +255,11 @@ describe( 'Model converter builder', () => {
 
 	describe( 'model attribute to view attribute conversion', () => {
 		beforeEach( () => {
-			BuildModelConverterFor( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
+			buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
 		} );
 
 		it( 'using default 1-to-1 conversion', () => {
-			BuildModelConverterFor( dispatcher ).fromAttribute( 'class' ).toAttribute();
+			buildModelConverter().for( dispatcher ).fromAttribute( 'class' ).toAttribute();
 
 			let modelElement = new ModelElement( 'paragraph', { class: 'myClass' }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
@@ -280,7 +280,7 @@ describe( 'Model converter builder', () => {
 		} );
 
 		it( 'using passed attribute key', () => {
-			BuildModelConverterFor( dispatcher ).fromAttribute( 'theme' ).toAttribute( 'class' );
+			buildModelConverter().for( dispatcher ).fromAttribute( 'theme' ).toAttribute( 'class' );
 
 			let modelElement = new ModelElement( 'paragraph', { theme: 'abc' }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
@@ -301,7 +301,7 @@ describe( 'Model converter builder', () => {
 		} );
 
 		it( 'using passed attribute key and value', () => {
-			BuildModelConverterFor( dispatcher ).fromAttribute( 'highlighted' ).toAttribute( 'style', 'background:yellow' );
+			buildModelConverter().for( dispatcher ).fromAttribute( 'highlighted' ).toAttribute( 'style', 'background:yellow' );
 
 			let modelElement = new ModelElement( 'paragraph', { 'highlighted': true }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
@@ -317,7 +317,7 @@ describe( 'Model converter builder', () => {
 		} );
 
 		it( 'using passed attribute creator function', () => {
-			BuildModelConverterFor( dispatcher )
+			buildModelConverter().for( dispatcher )
 				.fromAttribute( 'theme' )
 				.toAttribute( ( value ) => ( { key: 'class', value: value + '-theme' } ) );
 
@@ -342,8 +342,8 @@ describe( 'Model converter builder', () => {
 
 	describe( 'withPriority', () => {
 		it( 'should change default converters priority', () => {
-			BuildModelConverterFor( dispatcher ).fromElement( 'custom' ).toElement( 'custom' );
-			BuildModelConverterFor( dispatcher ).fromElement( 'custom' ).withPriority( 0 ).toElement( 'other' );
+			buildModelConverter().for( dispatcher ).fromElement( 'custom' ).toElement( 'custom' );
+			buildModelConverter().for( dispatcher ).fromElement( 'custom' ).withPriority( 0 ).toElement( 'other' );
 
 			let modelElement = new ModelElement( 'custom', null, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
@@ -355,11 +355,11 @@ describe( 'Model converter builder', () => {
 	} );
 
 	it( 'should do nothing on model element to view attribute conversion', () => {
-		BuildModelConverterFor( dispatcher ).fromElement( 'div' ).toElement( 'div' );
+		buildModelConverter().for( dispatcher ).fromElement( 'div' ).toElement( 'div' );
 		// Should do nothing:
-		BuildModelConverterFor( dispatcher ).fromElement( 'paragraph' ).toAttribute( 'paragraph', true );
+		buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toAttribute( 'paragraph', true );
 		// If above would do something this one would not be fired:
-		BuildModelConverterFor( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
+		buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
 
 		let modelElement = new ModelElement( 'div', null, new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) ) );
 		modelRoot.appendChildren( modelElement );

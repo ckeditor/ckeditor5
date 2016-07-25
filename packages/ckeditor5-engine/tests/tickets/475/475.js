@@ -12,7 +12,7 @@ import Position from '/ckeditor5/engine/model/position.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import LivePosition from '/ckeditor5/engine/model/liveposition.js';
 
-import BuildModelConverterFor from '/ckeditor5/engine/conversion/model-converter-builder.js';
+import buildModelConverter from '/ckeditor5/engine/conversion/buildmodelconverter.js';
 import BuildViewConverterFor from '/ckeditor5/engine/conversion/view-converter-builder.js';
 
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
@@ -27,7 +27,7 @@ export default class Link extends Feature {
 		editor.document.schema.allow( { name: '$inline', attributes: [ 'link' ] } );
 
 		// Build converter from model to view for data and editing pipelines.
-		BuildModelConverterFor( data.modelToView, editing.modelToView )
+		buildModelConverter().for( data.modelToView, editing.modelToView )
 			.fromAttribute( 'link' )
 			.toElement( ( href ) => new AttributeElement( 'a', { href } ) );
 

@@ -70,7 +70,7 @@ export default class DataController {
 		 *
 		 * Or use {@link engine.conversion.ModelConverterBuilder}:
 		 *
-		 *		BuildModelConverterFor( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
+		 *		buildModelConverter().for( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
 		 *
 		 * @readonly
 		 * @member {engine.conversion.ModelConversionDispatcher} engine.DataController#modelToView
