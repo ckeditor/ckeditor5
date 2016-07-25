@@ -5,7 +5,7 @@
 
 import Feature from '../feature.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
-import BuildViewConverterFor from '../engine/conversion/view-converter-builder.js';
+import buildViewConverter from '../engine/conversion/buildviewconverter.js';
 import Paragraph from '../paragraph/paragraph.js';
 import HeadingsCommand from './headingscommand.js';
 
@@ -51,7 +51,7 @@ export default class HeadingsEngine extends Feature {
 					.toElement( format.viewElement );
 
 				// Build converter from view to model for data pipeline.
-				BuildViewConverterFor( data.viewToModel )
+				buildViewConverter().for( data.viewToModel )
 					.fromElement( format.viewElement )
 					.toElement( format.id );
 			}
