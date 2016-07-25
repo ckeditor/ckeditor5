@@ -5,7 +5,7 @@
 
 import Feature from '../feature.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
-import BuildViewConverterFor from '../engine/conversion/view-converter-builder.js';
+import buildViewConverter from '../engine/conversion/buildviewconverter.js';
 
 /**
  * The paragraph feature for the editor.
@@ -32,7 +32,7 @@ export default class Paragraph extends Feature {
 			.toElement( 'p' );
 
 		// Build converter from view to model for data pipeline.
-		BuildViewConverterFor( data.viewToModel )
+		buildViewConverter().for( data.viewToModel )
 			.fromElement( 'p' )
 			.toElement( 'paragraph' );
 	}
