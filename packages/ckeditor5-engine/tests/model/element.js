@@ -10,6 +10,7 @@ import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
 import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
 import count from '/ckeditor5/utils/count.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Element', () => {
 	describe( 'constructor', () => {
@@ -91,6 +92,16 @@ describe( 'Element', () => {
 			expect( element.getChild( 0 ).name ).to.equal( 'image' );
 			expect( element.getChild( 1 ).data ).to.equal( 'xy' );
 			expect( element.getChild( 2 ).name ).to.equal( 'list' );
+		} );
+
+		it( 'should accept strings', () => {
+			let element = new Element( 'div' );
+			element.insertChildren( 0, [ new Element( 'p' ), 'abc' ] );
+
+			expect( element.getChildCount() ).to.equal( 2 );
+			expect( element.getMaxOffset() ).to.equal( 4 );
+			expect( element.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
+			expect( element.getChild( 1 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 		} );
 	} );
 
@@ -198,13 +209,18 @@ describe( 'Element', () => {
 			expect( element.offsetToIndex( 4 ) ).to.equal( 2 );
 		} );
 
-		it( 'should return 0 if offset is too low', () => {
-			expect( element.offsetToIndex( -1 ) ).to.equal( 0 );
+		it( 'should throw if given offset is too high or too low', () => {
+			expect( () => {
+				element.offsetToIndex( -1 );
+			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
+
+			expect( () => {
+				element.offsetToIndex( 55 );
+			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
 		} );
 
-		it( 'should return element\'s child count if offset is too high', () => {
+		it( 'should return length if given offset is equal to getMaxOffset()', () => {
 			expect( element.offsetToIndex( 5 ) ).to.equal( 3 );
-			expect( element.offsetToIndex( 33 ) ).to.equal( 3 );
 		} );
 	} );
 

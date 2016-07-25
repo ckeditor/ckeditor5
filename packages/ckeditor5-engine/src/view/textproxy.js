@@ -18,21 +18,15 @@
  */
 export default class TextProxy {
 	/**
-	 * Creates a tree view text proxy.
+	 * Creates a text proxy.
 	 *
-	 * @param {engine.view.Text} textNode Text node which text proxy is a substring.
-	 * @param {Number} startOffset Offset from beginning of {#textNode} and first character of {#data}.
-	 * @param {Number} [length] Length of substring. If is not set then the end offset is at the end of {#textNode}.
+	 * @protected
+	 * @param {engine.view.Text} textNode Text node which part is represented by this text proxy.
+	 * @param {Number} offsetInText Offset in {@link engine.view.TextProxy#textNode text node} from which the text proxy starts.
+	 * @param {Number} length Text proxy length, that is how many text node's characters, starting from `offsetInText` it represents.
+	 * @constructor
 	 */
-	constructor( textNode, startOffset, length ) {
-		/**
-		 * Element that is a parent of this text proxy.
-		 *
-		 * @readonly
-		 * @member {engine.view.Element|engine.view.DocumentFragment|null} engine.view.Node#parent
-		 */
-		this.parent = textNode.parent;
-
+	constructor( textNode, offsetInText, length ) {
 		/**
 		 * Reference to the {@link engine.view.Text} element which TextProxy is a substring.
 		 *
@@ -42,23 +36,45 @@ export default class TextProxy {
 		this.textNode = textNode;
 
 		/**
+		 * Text data represented by this text proxy.
+		 *
+		 * @readonly
+		 * @member {String} engine.view.TextProxy#data
+		 */
+		this.data = textNode.data.substring( offsetInText, offsetInText + length );
+
+		/**
 		 * Offset in the `textNode` where this `TextProxy` instance starts.
 		 *
 		 * @readonly
 		 * @member {Number} engine.view.TextProxy#offsetInText
 		 */
-		this.offsetInText = startOffset;
+		this.offsetInText = offsetInText;
+	}
 
-		/**
-		 * The text content.
-		 *
-		 * @readonly
-		 * @member {String} engine.view.TextProxy#data
-		 */
-		this.data = textNode.data.substring(
-			startOffset,
-			startOffset + ( length || textNode.data.length - startOffset )
-		);
+	/**
+	 * Element that is a parent of this text proxy.
+	 *
+	 * @readonly
+	 * @type {engine.view.Element|engine.view.DocumentFragment|null}
+	 */
+	get parent() {
+		return this.textNode.parent;
+	}
+
+	/**
+	 * Flag indicating whether `TextProxy` instance covers only part of the original {@link engine.view.Text text node}
+	 * (`true`) or the whole text node (`false`).
+	 *
+	 * This is `false` when text proxy starts at the very beginning of {@link engine.view.TextProxy#textNode textNode}
+	 * ({@link engine.view.TextProxy#offsetInText offsetInText} equals `0`) and text proxy sizes is equal to
+	 * text node size.
+	 *
+	 * @readonly
+	 * @type {Boolean}
+	 */
+	get isPartial() {
+		return this.offsetInText !== 0 || this.data.length !== this.textNode.data.length;
 	}
 
 	/**

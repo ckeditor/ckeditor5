@@ -4,6 +4,7 @@
  */
 
 import Node from './node.js';
+import Text from './text.js';
 import objectToMap from '../../utils/objecttomap.js';
 import isIterable from '../../utils/isiterable.js';
 import isPlainObject from '../../utils/lib/lodash/isPlainObject.js';
@@ -301,9 +302,7 @@ export default class Element extends Node {
 		this._fireChange( 'children', this );
 		let count = 0;
 
-		if ( !isIterable( nodes ) ) {
-			nodes = [ nodes ];
-		}
+		nodes = normalize( nodes );
 
 		for ( let node of nodes ) {
 			node.parent = this;
@@ -593,4 +592,22 @@ function parseClasses( classesSet, classesString ) {
 	const classArray = classesString.split( /\s+/ );
 	classesSet.clear();
 	classArray.forEach( name => classesSet.add( name ) );
+}
+
+// Converts strings to Text and non-iterables to arrays.
+//
+// @param {String|engine.view.Node|Iterable.<String|engine.view.Node>}
+// @return {Iterable.<engine.view.Node>}
+function normalize( nodes ) {
+	// Separate condition because string is iterable.
+	if ( typeof nodes == 'string' ) {
+		return [ new Text( nodes ) ];
+	}
+
+	if ( !isIterable( nodes ) ) {
+		nodes = [ nodes ];
+	}
+
+	// Array.from to enable .map() on non-arrays.
+	return Array.from( nodes ).map( ( node ) => typeof node == 'string' ? new Text( node ) : node );
 }

@@ -129,7 +129,7 @@ export default class Element extends Node {
 	 * @returns {Number}
 	 */
 	getMaxOffset() {
-		return this._children.totalOffset;
+		return this._children.getMaxOffset();
 	}
 
 	/**
@@ -170,9 +170,7 @@ export default class Element extends Node {
 	 * @param {engine.model.Node|Iterable.<engine.model.Node>} nodes Nodes to be inserted.
 	 */
 	insertChildren( index, nodes ) {
-		if ( !isIterable( nodes ) ) {
-			nodes = [ nodes ];
-		}
+		nodes = normalize( nodes );
 
 		for ( let node of nodes ) {
 			node.parent = this;
@@ -245,4 +243,22 @@ export default class Element extends Node {
 
 		return new Element( json.name, json.attributes, children );
 	}
+}
+
+// Converts strings to Text and non-iterables to arrays.
+//
+// @param {String|engine.model.Node|Iterable.<String|engine.model.Node>}
+// @return {Iterable.<engine.model.Node>}
+function normalize( nodes ) {
+	// Separate condition because string is iterable.
+	if ( typeof nodes == 'string' ) {
+		return [ new Text( nodes ) ];
+	}
+
+	if ( !isIterable( nodes ) ) {
+		nodes = [ nodes ];
+	}
+
+	// Array.from to enable .map() on non-arrays.
+	return Array.from( nodes ).map( ( node ) => typeof node == 'string' ? new Text( node ) : node );
 }

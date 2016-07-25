@@ -13,6 +13,9 @@ import Text from './text.js';
 /**
  * Represents a position in the model tree.
  *
+ * **Note:** Position is based on offsets, not indexes. This means that position in element containing two text nodes
+ * with data `foo` and `bar`, position between them has offset `3`, not `1`. See {@link engine.model.Position#path} for more.
+ *
  * Since position in a model is represented by a {@link engine.model.Position#root position root} and
  * {@link engine.model.Position#path position path} it is possible to create positions placed in non-existing elements.
  * This requirement is important for {@link engine.model.operation.transfrom operational transformation}.
@@ -69,7 +72,7 @@ export default class Position {
 		this.root = root;
 
 		/**
-		 * Position of the node it the tree.
+		 * Position of the node it the tree. Path is described through offsets, not indexes.
 		 *
 		 * Position can be placed before, after or in a {@link engine.model.Node node} if that node has
 		 * {@link engine.model.Node#offsetSize} greater than `1`. Items in position path are

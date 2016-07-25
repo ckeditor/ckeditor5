@@ -40,9 +40,9 @@ describe( 'NodeList', () => {
 		} );
 	} );
 
-	describe( 'totalOffset', () => {
+	describe( 'getMaxOffset', () => {
 		it( 'should be equal to the sum of offsetSize of all nodes in node list', () => {
-			expect( nodes.totalOffset ).to.equal( 5 );
+			expect( nodes.getMaxOffset() ).to.equal( 5 );
 		} );
 	} );
 
@@ -84,13 +84,18 @@ describe( 'NodeList', () => {
 			expect( nodes.indexToOffset( 2 ) ).to.equal( 4 );
 		} );
 
-		it( 'should return 0 if given index was lower than 0', () => {
-			expect( nodes.indexToOffset( -1 ) ).to.equal( 0 );
+		it( 'should throw if given offset is too high or too low', () => {
+			expect( () => {
+				nodes.indexToOffset( -1 );
+			} ).to.throw( CKEditorError, /nodelist-index-out-of-bounds/ );
+
+			expect( () => {
+				nodes.indexToOffset( 99 );
+			} ).to.throw( CKEditorError, /nodelist-index-out-of-bounds/ );
 		} );
 
-		it( 'should return totalOffset if given index was too high', () => {
+		it( 'should return length if given offset is equal to getMaxOffset()', () => {
 			expect( nodes.indexToOffset( 3 ) ).to.equal( 5 );
-			expect( nodes.indexToOffset( 99 ) ).to.equal( 5 );
 		} );
 	} );
 
@@ -103,13 +108,18 @@ describe( 'NodeList', () => {
 			expect( nodes.offsetToIndex( 4 ) ).to.equal( 2 );
 		} );
 
-		it( 'should return 0 if given offset was lower than 0', () => {
-			expect( nodes.offsetToIndex( -1 ) ).to.equal( 0 );
+		it( 'should throw if given offset is too high or too low', () => {
+			expect( () => {
+				nodes.offsetToIndex( -1 );
+			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
+
+			expect( () => {
+				nodes.offsetToIndex( 55 );
+			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
 		} );
 
-		it( 'should return length if given offset was too high', () => {
+		it( 'should return length if given offset is equal to getMaxOffset()', () => {
 			expect( nodes.offsetToIndex( 5 ) ).to.equal( 3 );
-			expect( nodes.offsetToIndex( 99 ) ).to.equal( 3 );
 		} );
 	} );
 
@@ -123,7 +133,7 @@ describe( 'NodeList', () => {
 			nodes.insertNodes( 4, [ bar, xyz ] );
 
 			expect( nodes.length ).to.equal( 6 );
-			expect( nodes.totalOffset ).to.equal( 12 );
+			expect( nodes.getMaxOffset() ).to.equal( 12 );
 
 			expect( Array.from( nodes ) ).to.deep.equal( [ p, newImg, foo, img, bar, xyz ] );
 
@@ -161,7 +171,7 @@ describe( 'NodeList', () => {
 			nodes.removeNodes( 0, 2 );
 
 			expect( nodes.length ).to.equal( 1 );
-			expect( nodes.totalOffset ).to.equal( 1 );
+			expect( nodes.getMaxOffset() ).to.equal( 1 );
 
 			expect( nodes.getNode( 0 ) ).to.equal( img );
 			expect( nodes.getNodeIndex( img ) ).to.equal( 0 );
@@ -172,7 +182,7 @@ describe( 'NodeList', () => {
 			nodes.removeNodes( 1 );
 
 			expect( nodes.length ).to.equal( 2 );
-			expect( nodes.totalOffset ).to.equal( 2 );
+			expect( nodes.getMaxOffset() ).to.equal( 2 );
 
 			expect( nodes.getNode( 0 ) ).to.equal( p );
 			expect( nodes.getNode( 1 ) ).to.equal( img );
