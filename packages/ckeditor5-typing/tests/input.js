@@ -8,8 +8,8 @@ import Input from '/ckeditor5/typing/input.js';
 import Paragraph from '/ckeditor5/paragraph/paragraph.js';
 
 import ModelRange from '/ckeditor5/engine/model/range.js';
-import BuildModelConverterFor from '/ckeditor5/engine/conversion/model-converter-builder.js';
-import BuildViewConverterFor from '/ckeditor5/engine/conversion/view-converter-builder.js';
+import buildModelConverter from '/ckeditor5/engine/conversion/buildmodelconverter.js';
+import buildViewConverter from '/ckeditor5/engine/conversion/buildviewconverter.js';
 
 import ViewText from '/ckeditor5/engine/view/text.js';
 import ViewElement from '/ckeditor5/engine/view/element.js';
@@ -33,11 +33,11 @@ describe( 'Input feature', () => {
 				// Mock image feature.
 				newEditor.document.schema.registerItem( 'image', '$inline' );
 
-				BuildModelConverterFor( newEditor.data.modelToView, newEditor.editing.modelToView )
+				buildModelConverter().for( newEditor.data.modelToView, newEditor.editing.modelToView )
 					.fromElement( 'image' )
 					.toElement( 'img' );
 
-				BuildViewConverterFor( newEditor.data.viewToModel )
+				buildViewConverter().for( newEditor.data.viewToModel )
 					.fromElement( 'img' )
 					.toElement( 'image' );
 
