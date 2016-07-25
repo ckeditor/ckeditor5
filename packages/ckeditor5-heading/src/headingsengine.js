@@ -4,7 +4,7 @@
  */
 
 import Feature from '../feature.js';
-import BuildModelConverterFor from '../engine/conversion/model-converter-builder.js';
+import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import BuildViewConverterFor from '../engine/conversion/view-converter-builder.js';
 import Paragraph from '../paragraph/paragraph.js';
 import HeadingsCommand from './headingscommand.js';
@@ -46,7 +46,7 @@ export default class HeadingsEngine extends Feature {
 				editor.document.schema.registerItem( format.id, '$block' );
 
 				// Build converter from model to view for data and editing pipelines.
-				BuildModelConverterFor( data.modelToView, editing.modelToView )
+				buildModelConverter().for( data.modelToView, editing.modelToView )
 					.fromElement( format.id )
 					.toElement( format.viewElement );
 
