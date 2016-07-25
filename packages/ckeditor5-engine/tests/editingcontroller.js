@@ -11,7 +11,7 @@ import ViewDocument from '/ckeditor5/engine/view/document.js';
 
 import Mapper from '/ckeditor5/engine/conversion/mapper.js';
 import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
-import BuildModelConverterFor from '/ckeditor5/engine/conversion/model-converter-builder.js';
+import buildModelConverter from '/ckeditor5/engine/conversion/buildmodelconverter.js';
 
 import ModelDocument from '/ckeditor5/engine/model/document.js';
 import ModelPosition from '/ckeditor5/engine/model/position.js';
@@ -114,7 +114,7 @@ describe( 'EditingController', () => {
 			viewRoot = editing.createRoot( domRoot );
 
 			model.schema.registerItem( 'paragraph', '$block' );
-			BuildModelConverterFor( editing.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			buildModelConverter().for( editing.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 		} );
 
 		beforeEach( () => {

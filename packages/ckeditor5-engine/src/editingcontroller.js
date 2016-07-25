@@ -64,7 +64,7 @@ export default class EditingController {
 		 *
 		 * Or use {@link engine.conversion.ModelConverterBuilder}:
 		 *
-		 *		BuildModelConverterFor( editing.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
+		 *		buildModelConverter().for( editing.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
 		 *
 		 * @readonly
 		 * @member {engine.conversion.ModelConversionDispatcher} engine.EditingController#modelToView

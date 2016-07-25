@@ -9,7 +9,7 @@ import ModelRange from '/ckeditor5/engine/model/range.js';
 
 import { setData } from '/tests/engine/_utils/model.js';
 
-import BuildModelConverterFor from '/ckeditor5/engine/conversion/model-converter-builder.js';
+import buildModelConverter from '/ckeditor5/engine/conversion/buildmodelconverter.js';
 
 const model = new Document();
 model.createRoot();
@@ -18,7 +18,7 @@ const editing = new EditingController( model );
 editing.createRoot( document.getElementById( 'editor' ) );
 
 model.schema.registerItem( 'paragraph', '$block' );
-BuildModelConverterFor( editing.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+buildModelConverter().for( editing.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 
 setData( model,
 	'<paragraph>foo</paragraph>' +

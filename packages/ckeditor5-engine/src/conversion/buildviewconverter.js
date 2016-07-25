@@ -15,7 +15,7 @@ import isIterable from '../../utils/isiterable.js';
  * HTML content to the editor. Then, converters are used to translate this structure, possibly removing unknown/incorrect
  * nodes, and add it to the model. Also multiple, different elements might be translated into the same thing in the
  * model, i.e. `<b>` and `<strong>` elements might be converted to `bold` attribute (even though `bold` attribute will
- * be then converted only to `<strong>` tag). Instances of this class are created by {@link engine.conversion.BuildViewConverterFor}.
+ * be then converted only to `<strong>` tag). Instances of this class are created by {@link engine.conversion.buildViewConverter}.
  *
  * If you need more complex converters, see {@link engine.conversion.ViewConversionDispatcher},
  * {@link engine.conversion.viewToModel}, {@link engine.conversion.ViewConsumable}.
@@ -24,22 +24,22 @@ import isIterable from '../../utils/isiterable.js';
  *
  * 1. View element to model element:
  *
- *		BuildViewConverterFor( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+ *		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
  *
  * 2. View element to model attribute:
  *
- *		BuildViewConverterFor( dispatcher ).fromElement( 'b' ).fromElement( 'strong' ).toAttribute( 'bold', 'true' );
+ *		buildViewConverter().for( dispatcher ).fromElement( 'b' ).fromElement( 'strong' ).toAttribute( 'bold', 'true' );
  *
  * 3. View attribute to model attribute:
  *
- *		BuildViewConverterFor( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttribute( 'bold', 'true' );
- *		BuildViewConverterFor( dispatcher )
+ *		buildViewConverter().for( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttribute( 'bold', 'true' );
+ *		buildViewConverter().for( dispatcher )
  *			.fromAttribute( 'class' )
  *			.toAttribute( ( viewElement ) => ( { class: viewElement.getAttribute( 'class' ) } ) );
  *
  * 4. View elements and attributes to model attribute:
  *
- *		BuildViewConverterFor( dispatcher )
+ *		buildViewConverter().for( dispatcher )
  *			.fromElement( 'b' ).fromElement( 'strong' ).fromAttribute( 'style', { 'font-weight': 'bold' } )
  *			.toAttribute( 'bold', 'true' );
  *
@@ -48,9 +48,9 @@ import isIterable from '../../utils/isiterable.js';
  *
  *		const matcher = new ViewMatcher();
  *		matcher.add( 'div', { class: 'quote' } );
- *		BuildViewConverterFor( dispatcher ).from( matcher ).toElement( 'quote' );
+ *		buildViewConverter().for( dispatcher ).from( matcher ).toElement( 'quote' );
  *
- *		BuildViewConverterFor( dispatcher ).from( { name: 'span', class: 'bold' } ).toAttribute( 'bold', 'true' );
+ *		buildViewConverter().for( dispatcher ).from( { name: 'span', class: 'bold' } ).toAttribute( 'bold', 'true' );
  *
  * Note, that converters built using `ViewConverterBuilder` automatically check {@link engine.model.Schema schema}
  * if created model structure is valid. If given conversion would be invalid according to schema, it is ignored.
@@ -80,18 +80,15 @@ import isIterable from '../../utils/isiterable.js';
 class ViewConverterBuilder {
 	/**
 	 * Creates `ViewConverterBuilder` with given `dispatchers` registered to it.
-	 *
-	 * @param {Array.<engine.conversion.ViewConversionDispatcher>} dispatchers Dispatchers to which converters will
-	 * be attached.
 	 */
-	constructor( dispatchers ) {
+	constructor() {
 		/**
 		 * Dispatchers to which converters will be attached.
 		 *
 		 * @type {Array.<engine.conversion.ViewConversionDispatcher>}
 		 * @private
 		 */
-		this._dispatchers = dispatchers;
+		this._dispatchers = [];
 
 		/**
 		 * Stores "from" queries.
@@ -103,9 +100,21 @@ class ViewConverterBuilder {
 	}
 
 	/**
+	 * Set one or more dispatchers which the built converter will be attached to.
+	 *
+	 * @chainable
+	 * @param {...engine.conversion.ViewConversionDispatcher} dispatchers One or more dispatchers.
+	 */
+	for( ...dispatchers ) {
+		this._dispatchers = dispatchers;
+
+		return this;
+	}
+
+	/**
 	 * Registers what view element should be converted.
 	 *
-	 *		BuildViewConverterFor( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+	 *		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 	 *
 	 * @chainable
 	 * @param {String} elementName View element name.
@@ -118,7 +127,7 @@ class ViewConverterBuilder {
 	/**
 	 * Registers what view attribute should be converted.
 	 *
-	 *		BuildViewConverterFor( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttribute( 'bold', 'true' );
+	 *		buildViewConverter().for( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttribute( 'bold', 'true' );
 	 *
 	 * @chainable
 	 * @param {String|RegExp} key View attribute key.
@@ -138,9 +147,9 @@ class ViewConverterBuilder {
 	 *
 	 *		const matcher = new ViewMatcher();
 	 *		matcher.add( 'div', { class: 'quote' } );
-	 *		BuildViewConverterFor( dispatcher ).from( matcher ).toElement( 'quote' );
+	 *		buildViewConverter().for( dispatcher ).from( matcher ).toElement( 'quote' );
 	 *
-	 *		BuildViewConverterFor( dispatcher ).from( { name: 'span', class: 'bold' } ).toAttribute( 'bold', 'true' );
+	 *		buildViewConverter().for( dispatcher ).from( { name: 'span', class: 'bold' } ).toAttribute( 'bold', 'true' );
 	 *
 	 * @chainable
 	 * @param {Object|engine.view.Matcher} matcher View matcher or view matcher pattern.
@@ -169,11 +178,11 @@ class ViewConverterBuilder {
 	 *		// conversion will have to be done in separate converter.
 	 *		// Without consuming modifier, the converter would consume both class and name, so a converter for
 	 *		// span element would not be fired.
-	 *		BuildViewConverterFor( dispatcher )
+	 *		buildViewConverter().for( dispatcher )
 	 *			.from( { name: 'span', class: 'bold' } ).consuming( { class: 'bold' } )
 	 *			.toAttribute( 'bold', 'true' } );
 	 *
-	 *		BuildViewConverterFor( dispatcher )
+	 *		buildViewConverter().for( dispatcher )
 	 *			.fromElement( 'img' ).consuming( { name: true, attributes: [ 'src', 'title' ] } )
 	 *			.toElement( ( viewElement ) => new ModelElement( 'image', { src: viewElement.getAttribute( 'src' ),
 	 *																		title: viewElement.getAttribute( 'title' ) } );
@@ -199,10 +208,10 @@ class ViewConverterBuilder {
 	 * Changes default priority for built converter. It modifies the last `from...` query. Can be used after each
 	 * `from...` query in given chain. Useful for overwriting converters. The lower the number, the earlier converter will be fired.
 	 *
-	 *		BuildViewConverterFor( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+	 *		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 	 *		// Register converter with proper priority, otherwise "p" element would get consumed by first
 	 *		// converter and the second converter would not be fired.
-	 *		BuildViewConverterFor( dispatcher )
+	 *		buildViewConverter().for( dispatcher )
 	 *			.from( { name: 'p', class: 'custom' } ).withPriority( 9 )
 	 *			.toElement( 'customParagraph' );
 	 *
@@ -230,8 +239,8 @@ class ViewConverterBuilder {
 	 * name as a `string` or a function that will return model element instance. If you provide creator function,
 	 * it will be passed converted view element as first and only parameter.
 	 *
-	 *		BuildViewConverterFor( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
-	 *		BuildViewConverterFor( dispatcher )
+	 *		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+	 *		buildViewConverter().for( dispatcher )
 	 *			.fromElement( 'img' )
 	 *			.toElement( ( viewElement ) => new ModelElement( 'image', { src: viewElement.getAttribute( 'src' ) } );
 	 *
@@ -297,8 +306,8 @@ class ViewConverterBuilder {
 	 * representing attribute key and attribute value or a function that returns an object with `key` and `value` properties.
 	 * If you provide creator function, it will be passed converted view element as first and only parameter.
 	 *
-	 *		BuildViewConverterFor( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttribute( 'bold', 'true' );
-	 *		BuildViewConverterFor( dispatcher )
+	 *		buildViewConverter().for( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttribute( 'bold', 'true' );
+	 *		buildViewConverter().for( dispatcher )
 	 *			.fromAttribute( 'class' )
 	 *			.toAttribute( ( viewElement ) => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
 	 *
@@ -400,11 +409,9 @@ function setAttributeOn( toChange, attribute, data, conversionApi ) {
  * view-to-model converters and attach them to provided dispatchers. The method returns an instance of
  * {@link engine.conversion.ViewConverterBuilder}.
  *
- * @external engine.conversion.BuildViewConverterFor
+ * @external engine.conversion.buildViewConverter
  * @memberOf engine.conversion
- * @param {...engine.conversion.ViewConversionDispatcher} dispatchers One or more dispatchers to which
- * the built converter will be attached.
  */
-export default function BuildViewConverterFor( ...dispatchers ) {
-	return new ViewConverterBuilder( dispatchers );
+export default function buildViewConverter() {
+	return new ViewConverterBuilder();
 }

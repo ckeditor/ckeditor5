@@ -70,7 +70,7 @@ export default class DataController {
 		 *
 		 * Or use {@link engine.conversion.ModelConverterBuilder}:
 		 *
-		 *		BuildModelConverterFor( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
+		 *		buildModelConverter().for( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
 		 *
 		 * @readonly
 		 * @member {engine.conversion.ModelConversionDispatcher} engine.DataController#modelToView
@@ -88,7 +88,7 @@ export default class DataController {
 		 *
 		 * Or use {@link engine.conversion.ViewConverterBuilder}:
 		 *
-		 *		BuildViewConverterFor( data.viewToModel ).fromElement( 'b' ).toAttribute( 'bold', 'true' );
+		 *		buildViewConverter().for( data.viewToModel ).fromElement( 'b' ).toAttribute( 'bold', 'true' );
 		 *
 		 * @readonly
 		 * @member {engine.conversion.ViewConversionDispatcher} engine.DataController#viewToModel

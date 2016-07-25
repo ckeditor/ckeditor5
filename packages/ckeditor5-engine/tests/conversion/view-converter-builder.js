@@ -5,7 +5,7 @@
 
 /* bender-tags: conversion */
 
-import BuildViewConverterFor from '/ckeditor5/engine/conversion/view-converter-builder.js';
+import buildViewConverter from '/ckeditor5/engine/conversion/buildviewconverter.js';
 
 import ModelSchema from '/ckeditor5/engine/model/schema.js';
 import ModelDocument from '/ckeditor5/engine/model/document.js';
@@ -94,7 +94,7 @@ describe( 'View converter builder', () => {
 	} );
 
 	it( 'should convert from view element to model element', () => {
-		BuildViewConverterFor( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
 		const result = dispatcher.convert( new ViewContainerElement( 'p', null, new ViewText( 'foo' ) ), objWithContext );
 		modelRoot.appendChildren( result );
@@ -103,7 +103,7 @@ describe( 'View converter builder', () => {
 	} );
 
 	it( 'should convert from view element to model element using creator function', () => {
-		BuildViewConverterFor( dispatcher )
+		buildViewConverter().for( dispatcher )
 			.fromElement( 'img' )
 			.toElement( ( viewElement ) => new ModelElement( 'image', { src: viewElement.getAttribute( 'src' ) } ) );
 
@@ -114,7 +114,7 @@ describe( 'View converter builder', () => {
 	} );
 
 	it( 'should convert from view element to model attribute', () => {
-		BuildViewConverterFor( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
+		buildViewConverter().for( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
 
 		const result = dispatcher.convert( new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), objWithContext );
 		modelRoot.appendChildren( result );
@@ -124,7 +124,7 @@ describe( 'View converter builder', () => {
 	} );
 
 	it( 'should convert from view element to model attributes using creator function', () => {
-		BuildViewConverterFor( dispatcher )
+		buildViewConverter().for( dispatcher )
 			.fromElement( 'a' )
 			.toAttribute( ( viewElement ) => ( { key: 'linkHref', value: viewElement.getAttribute( 'href' ) } ) );
 
@@ -136,9 +136,9 @@ describe( 'View converter builder', () => {
 	} );
 
 	it( 'should convert from view attribute to model attribute', () => {
-		BuildViewConverterFor( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
-		BuildViewConverterFor( dispatcher )
+		buildViewConverter().for( dispatcher )
 			.fromAttribute( 'class' )
 			.toAttribute( ( viewElement ) => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
 
@@ -151,9 +151,9 @@ describe( 'View converter builder', () => {
 	it( 'should convert from view attribute and key to model attribute', () => {
 		dispatcher.on( 'documentFragment', convertToModelFragment() );
 
-		BuildViewConverterFor( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
-		BuildViewConverterFor( dispatcher ).fromAttribute( 'class', 'important' ).toAttribute( 'important', true );
-		BuildViewConverterFor( dispatcher ).fromAttribute( 'class', 'theme-nice' ).toAttribute( 'theme', 'nice' );
+		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+		buildViewConverter().for( dispatcher ).fromAttribute( 'class', 'important' ).toAttribute( 'important', true );
+		buildViewConverter().for( dispatcher ).fromAttribute( 'class', 'theme-nice' ).toAttribute( 'theme', 'nice' );
 
 		const viewStructure = new ViewDocumentFragment( [
 			new ViewContainerElement( 'p', { class: 'important' }, new ViewText( 'foo' ) ),
@@ -167,9 +167,9 @@ describe( 'View converter builder', () => {
 	} );
 
 	it( 'should convert from multiple view entities to model attribute', () => {
-		BuildViewConverterFor( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
-		BuildViewConverterFor( dispatcher )
+		buildViewConverter().for( dispatcher )
 			.fromElement( 'strong' )
 			.fromElement( 'b' )
 			.fromAttribute( 'class', 'bold' )
@@ -190,13 +190,13 @@ describe( 'View converter builder', () => {
 	} );
 
 	it( 'should convert from pattern to model element', () => {
-		BuildViewConverterFor( dispatcher ).from(
+		buildViewConverter().for( dispatcher ).from(
 			{ name: 'span', class: 'megatron', attribute: { head: 'megatron', body: 'megatron', legs: 'megatron' } }
 		).toElement( 'MEGATRON' );
 
 		// Adding callbacks later so they are called later. MEGATRON callback is more important.
-		BuildViewConverterFor( dispatcher ).fromElement( 'span' ).toElement( 'span' );
-		BuildViewConverterFor( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+		buildViewConverter().for( dispatcher ).fromElement( 'span' ).toElement( 'span' );
+		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
 		let result;
 
@@ -242,10 +242,10 @@ describe( 'View converter builder', () => {
 	} );
 
 	it( 'should convert from pattern to model attribute', () => {
-		BuildViewConverterFor( dispatcher ).fromElement( 'span' ).toElement( 'span' );
+		buildViewConverter().for( dispatcher ).fromElement( 'span' ).toElement( 'span' );
 
 		// This time without name so default span converter will convert children.
-		BuildViewConverterFor( dispatcher )
+		buildViewConverter().for( dispatcher )
 			.from( { class: 'megatron', attribute: { head: 'megatron', body: 'megatron', legs: 'megatron' } } )
 			.toAttribute( 'transformer', 'megatron' );
 
@@ -262,10 +262,10 @@ describe( 'View converter builder', () => {
 	} );
 
 	it( 'should set different priorities for `toElement` and `toAttribute` conversion', () => {
-		BuildViewConverterFor( dispatcher )
+		buildViewConverter().for( dispatcher )
 			.fromAttribute( 'class' )
 			.toAttribute( ( viewElement ) => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
-		BuildViewConverterFor( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
 		let result = dispatcher.convert( new ViewContainerElement( 'p', { class: 'myClass' }, new ViewText( 'foo' ) ), objWithContext );
 		modelRoot.appendChildren( result );
@@ -275,8 +275,8 @@ describe( 'View converter builder', () => {
 	} );
 
 	it( 'should overwrite default priorities for converters', () => {
-		BuildViewConverterFor( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
-		BuildViewConverterFor( dispatcher )
+		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+		buildViewConverter().for( dispatcher )
 			.fromAttribute( 'class' )
 			.toAttribute( ( viewElement ) => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
 
@@ -286,7 +286,7 @@ describe( 'View converter builder', () => {
 		modelRoot.appendChildren( result );
 		expect( modelToString( result ) ).to.equal( '<paragraph class="myClass">foo</paragraph>' );
 
-		BuildViewConverterFor( dispatcher )
+		buildViewConverter().for( dispatcher )
 			.from( { name: 'p', class: 'myClass' } ).withPriority( -1 ) // Default for `toElement` is 0.
 			.toElement( 'customP' );
 
@@ -297,15 +297,15 @@ describe( 'View converter builder', () => {
 
 	it( 'should overwrite default consumed values', () => {
 		// Converter (1).
-		BuildViewConverterFor( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
 		// Converter (2).
-		BuildViewConverterFor( dispatcher )
+		buildViewConverter().for( dispatcher )
 			.from( { name: 'p', class: 'decorated' } ).consuming( { class: 'decorated' } )
 			.toAttribute( 'decorated', true );
 
 		// Converter (3).
-		BuildViewConverterFor( dispatcher )
+		buildViewConverter().for( dispatcher )
 			.fromAttribute( 'class', 'small' ).consuming( { class: 'small' } )
 			.toAttribute( 'size', 'small' );
 
@@ -322,12 +322,12 @@ describe( 'View converter builder', () => {
 
 	it( 'should convert from matcher instance to model', () => {
 		// Universal class converter, synonymous to .fromAttribute( 'class' ).
-		BuildViewConverterFor( dispatcher )
+		buildViewConverter().for( dispatcher )
 			.from( new ViewMatcher( { class: /.*/ } ) )
 			.toAttribute( ( viewElement ) => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
 
 		// Universal element converter.
-		BuildViewConverterFor( dispatcher )
+		buildViewConverter().for( dispatcher )
 			.from( new ViewMatcher( { name: /.*/ } ) )
 			.toElement( ( viewElement ) => new ModelElement( viewElement.name ) );
 
@@ -342,9 +342,9 @@ describe( 'View converter builder', () => {
 	} );
 
 	it( 'should filter out structure that is wrong with schema', () => {
-		BuildViewConverterFor( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
-		BuildViewConverterFor( dispatcher ).fromElement( 'div' ).toElement( 'div' );
-		BuildViewConverterFor( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+		buildViewConverter().for( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
+		buildViewConverter().for( dispatcher ).fromElement( 'div' ).toElement( 'div' );
+		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
 		schema.disallow( { name: '$text', attributes: 'bold', inside: 'paragraph' } );
 		schema.disallow( { name: 'div', inside: '$root' } );
