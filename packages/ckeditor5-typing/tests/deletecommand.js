@@ -31,9 +31,9 @@ describe( 'DeleteCommand', () => {
 
 	describe( 'execute', () => {
 		it( 'uses enqueueChanges', () => {
-			const spy = sinon.spy( doc, 'enqueueChanges' );
-
 			setData( doc, '<p>foo<selection />bar</p>' );
+
+			const spy = sinon.spy( doc, 'enqueueChanges' );
 
 			editor.execute( 'delete' );
 
