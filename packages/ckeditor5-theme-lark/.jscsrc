@@ -1,63 +1,93 @@
 {
-	"esnext": true,
-
-	"requireCurlyBraces": [
-		"if", "else", "for", "while", "do", "switch", "try", "catch"
-	],
-	"requireSpaceBeforeKeywords": true,
-	"requireSpaceAfterKeywords": [
-		"do", "for", "if", "else", "switch", "case", "try", "catch", "void", "while", "with", "return", "typeof"
-	],
-	"requireSpaceBeforeBlockStatements": true,
-	"requireParenthesesAroundIIFE": true,
-	"requireSpacesInConditionalExpression": {
-		"afterTest": true,
-		"beforeConsequent": true,
-		"afterConsequent": true,
-		"beforeAlternate": true
-	},
-	"requireSpacesInFunction": {
-		"beforeOpeningCurlyBrace": true
-	},
-	"disallowSpacesInFunction": {
-		"beforeOpeningRoundBrace": true
-	},
-	"disallowSpacesInCallExpression": true,
-	"disallowMultipleVarDecl": "exceptUndefined",
-	"requireBlocksOnNewline": true,
-	"disallowPaddingNewlinesInBlocks": true,
-	"requirePaddingNewlinesBeforeKeywords": [
-		"do", "for", "if", "switch", "case", "try", "while", "with", "return"
-	],
-	"requireSpacesInsideObjectBrackets": "all",
-	"requireSpacesInsideArrayBrackets": "all",
-	"requireSpacesInsideParentheses": "all",
-	"disallowSpaceAfterObjectKeys": true,
-	"requireSpaceBeforeObjectValues": true,
-	"requireCommaBeforeLineBreak": true,
-	"requireOperatorBeforeLineBreak": true,
-	"disallowSpaceAfterPrefixUnaryOperators": true,
-	"disallowSpaceBeforePostfixUnaryOperators": true,
-	"requireSpaceBeforeBinaryOperators": true,
-	"disallowImplicitTypeConversion": [
-		"numeric", "binary", "string"
-	],
-	"requireCamelCaseOrUpperCaseIdentifiers": true,
-	"requireSpaceAfterBinaryOperators": true,
-	"disallowKeywords": [
-		"with"
-	],
-	"disallowMultipleLineStrings": true,
-	"disallowMultipleLineBreaks": true,
-	"disallowMixedSpacesAndTabs": true,
-	"disallowTrailingWhitespace": true,
-	"maximumLineLength": 140,
-	"requireCapitalizedConstructors": true,
-	"requireDotNotation": true,
-	"disallowYodaConditions": true,
-	"disallowNewlineBeforeBlockStatements": true,
-	"validateLineBreaks": "LF",
-	"validateQuoteMarks": "'",
-	"validateIndentation": "\t",
-	"safeContextKeyword": [ "that" ]
+  "esnext": true,
+  "requireCurlyBraces": [
+    "if",
+    "else",
+    "for",
+    "while",
+    "do",
+    "switch",
+    "try",
+    "catch"
+  ],
+  "requireSpaceBeforeKeywords": true,
+  "requireSpaceAfterKeywords": [
+    "do",
+    "for",
+    "if",
+    "else",
+    "switch",
+    "case",
+    "try",
+    "catch",
+    "void",
+    "while",
+    "with",
+    "return",
+    "typeof"
+  ],
+  "requireSpaceBeforeBlockStatements": true,
+  "requireParenthesesAroundIIFE": true,
+  "requireSpacesInConditionalExpression": {
+    "afterTest": true,
+    "beforeConsequent": true,
+    "afterConsequent": true,
+    "beforeAlternate": true
+  },
+  "requireSpacesInFunction": {
+    "beforeOpeningCurlyBrace": true
+  },
+  "disallowSpacesInFunction": {
+    "beforeOpeningRoundBrace": true
+  },
+  "disallowSpacesInCallExpression": true,
+  "disallowMultipleVarDecl": "exceptUndefined",
+  "requireBlocksOnNewline": true,
+  "disallowPaddingNewlinesInBlocks": true,
+  "requirePaddingNewlinesBeforeKeywords": [
+    "do",
+    "for",
+    "if",
+    "switch",
+    "case",
+    "try",
+    "while",
+    "with",
+    "return"
+  ],
+  "requireSpacesInsideObjectBrackets": "all",
+  "requireSpacesInsideArrayBrackets": "all",
+  "requireSpacesInsideParentheses": "all",
+  "disallowSpaceAfterObjectKeys": true,
+  "requireSpaceBeforeObjectValues": true,
+  "requireCommaBeforeLineBreak": true,
+  "requireOperatorBeforeLineBreak": true,
+  "disallowSpaceAfterPrefixUnaryOperators": true,
+  "disallowSpaceBeforePostfixUnaryOperators": true,
+  "requireSpaceBeforeBinaryOperators": true,
+  "disallowImplicitTypeConversion": [
+    "numeric",
+    "binary",
+    "string"
+  ],
+  "requireCamelCaseOrUpperCaseIdentifiers": true,
+  "requireSpaceAfterBinaryOperators": true,
+  "disallowKeywords": [
+    "with"
+  ],
+  "disallowMultipleLineStrings": true,
+  "disallowMultipleLineBreaks": true,
+  "disallowMixedSpacesAndTabs": true,
+  "disallowTrailingWhitespace": true,
+  "maximumLineLength": 140,
+  "requireCapitalizedConstructors": true,
+  "requireDotNotation": true,
+  "disallowYodaConditions": true,
+  "disallowNewlineBeforeBlockStatements": true,
+  "validateLineBreaks": "LF",
+  "validateQuoteMarks": "'",
+  "validateIndentation": "\t",
+  "safeContextKeyword": [
+    "that"
+  ]
 }
