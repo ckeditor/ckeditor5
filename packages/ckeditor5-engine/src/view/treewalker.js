@@ -164,7 +164,7 @@ export default class TreeWalker {
 		const parent = position.parent;
 
 		// We are at the end of the root.
-		if ( parent.parent === null && position.offset === parent.getChildCount() ) {
+		if ( parent.parent === null && position.offset === parent.childCount ) {
 			return { done: true };
 		}
 
@@ -283,7 +283,7 @@ export default class TreeWalker {
 
 		if ( node instanceof Element ) {
 			if ( !this.shallow ) {
-				position = new Position( node, node.getChildCount() );
+				position = new Position( node, node.childCount );
 				this.position = position;
 
 				if ( this.ignoreElementEnd ) {

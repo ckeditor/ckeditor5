@@ -499,13 +499,13 @@ describe( 'Selection', () => {
 
 	describe( 'getEditableElement', () => {
 		it( 'should return null if no ranges in selection', () => {
-			expect( selection.getEditableElement() ).to.be.null;
+			expect( selection.editableElement ).to.be.null;
 		} );
 
 		it( 'should return null if selection is placed in container that is not EditableElement', () => {
 			selection.addRange( range1 );
 
-			expect( selection.getEditableElement() ).to.be.null;
+			expect( selection.editableElement ).to.be.null;
 		} );
 
 		it( 'should return EditableElement when selection is placed inside', () => {
@@ -517,7 +517,7 @@ describe( 'Selection', () => {
 
 			selection.addRange( Range.createFromParentsAndOffsets( element, 0, element, 0 ) );
 
-			expect( selection.getEditableElement() ).to.equal( root );
+			expect( selection.editableElement ).to.equal( root );
 		} );
 	} );
 

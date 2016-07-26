@@ -313,7 +313,7 @@ describe( 'view test utils', () => {
 			const fragment = parse( '' );
 
 			expect( fragment ).to.be.instanceOf( DocumentFragment );
-			expect( fragment.getChildCount() ).to.equal( 0 );
+			expect( fragment.childCount ).to.equal( 0 );
 		} );
 
 		it( 'should return empty DocumentFragment and Selection for string containing range only', () => {
@@ -337,7 +337,7 @@ describe( 'view test utils', () => {
 		it( 'should create DocumentFragment when multiple elements on root', () => {
 			const view = parse( '<b></b><i></i>' );
 			expect( view ).to.be.instanceOf( DocumentFragment );
-			expect( view.getChildCount() ).to.equal( 2 );
+			expect( view.childCount ).to.equal( 2 );
 			expect( view.getChild( 0 ).isSimilar( new Element( 'b' ) ) ).to.be.true;
 			expect( view.getChild( 1 ).isSimilar( new Element( 'i' ) ) ).to.be.true;
 		} );
@@ -360,7 +360,7 @@ describe( 'view test utils', () => {
 
 			expect( view ).to.be.instanceof( Element );
 			expect( view.isSimilar( element ) ).to.be.true;
-			expect( view.getChildCount() ).to.equal( 1 );
+			expect( view.childCount ).to.equal( 1 );
 			const text = view.getChild( 0 );
 			expect( text ).to.be.instanceof( Text );
 			expect( text.data ).to.equal( 'foobar' );
@@ -372,7 +372,7 @@ describe( 'view test utils', () => {
 
 			expect( view ).to.be.instanceof( Element );
 			expect( view.isSimilar( element ) ).to.be.true;
-			expect( view.getChildCount() ).to.equal( 0 );
+			expect( view.childCount ).to.equal( 0 );
 		} );
 
 		it( 'should parse element type', () => {
@@ -403,12 +403,12 @@ describe( 'view test utils', () => {
 		it( 'should paste nested elements and texts', () => {
 			const parsed = parse( '<container:p>foo<b:12>bar<i:25>qux</i:25></b:12></container:p>' );
 			expect( parsed.isSimilar( new ContainerElement( 'p' ) ) ).to.be.true;
-			expect( parsed.getChildCount() ).to.equal( 2 );
+			expect( parsed.childCount ).to.equal( 2 );
 			expect( parsed.getChild( 0 ) ).to.be.instanceof( Text ).and.have.property( 'data' ).that.equal( 'foo' );
 			const b = parsed.getChild( 1 );
 			expect( b ).to.be.instanceof( AttributeElement );
 			expect( b.priority ).to.equal( 12 );
-			expect( b.getChildCount() ).to.equal( 2 );
+			expect( b.childCount ).to.equal( 2 );
 			expect( b.getChild( 0 ) ).to.be.instanceof( Text ).and.have.property( 'data' ).that.equal( 'bar' );
 			const i = b.getChild( 1 );
 			expect( i ).to.be.instanceof( AttributeElement );
@@ -430,11 +430,11 @@ describe( 'view test utils', () => {
 		it( 'should parse selection range between elements', () => {
 			const { view, selection } = parse( '<p>[<b>foobar]</b>[]</p>' );
 			expect( view ).to.be.instanceof( Element );
-			expect( view.getChildCount() ).to.equal( 1 );
+			expect( view.childCount ).to.equal( 1 );
 			const b = view.getChild( 0 );
 			expect( b ).to.be.instanceof( Element );
 			expect( b.name ).to.equal( 'b' );
-			expect( b.getChildCount() ).to.equal( 1 );
+			expect( b.childCount ).to.equal( 1 );
 			const text = b.getChild( 0 );
 			expect( text ).to.be.instanceof( Text );
 			expect( text.data ).to.equal( 'foobar' );
@@ -447,7 +447,7 @@ describe( 'view test utils', () => {
 		it( 'should parse ranges #1', () => {
 			const { view, selection } = parse( '<container:p>foo{bar]</container:p>' );
 			expect( view.isSimilar( new ContainerElement( 'p' ) ) ).to.be.true;
-			expect( view.getChildCount() ).to.equal( 1 );
+			expect( view.childCount ).to.equal( 1 );
 			const text = view.getChild( 0 );
 			expect( text ).to.be.instanceof( Text );
 			expect( text.data ).to.equal( 'foobar' );
@@ -458,13 +458,13 @@ describe( 'view test utils', () => {
 		it( 'should parse ranges #2', () => {
 			const { view, selection } = parse( '<attribute:b>[foob}ar<i>{baz</i>]</attribute:b>' );
 			expect( view.isSimilar( new AttributeElement( 'b' ) ) ).to.be.true;
-			expect( view.getChildCount() ).to.equal( 2 );
+			expect( view.childCount ).to.equal( 2 );
 			const text1 = view.getChild( 0 );
 			expect( text1 ).to.be.instanceof( Text );
 			expect( text1.data ).to.equal( 'foobar' );
 			const i = view.getChild( 1 );
 			expect( i.isSimilar( new Element( 'i' ) ) ).to.be.true;
-			expect( i.getChildCount() ).to.equal( 1 );
+			expect( i.childCount ).to.equal( 1 );
 			const text2 = i.getChild( 0 );
 			expect( text2 ).to.be.instanceof( Text );
 			expect( text2.data ).to.equal( 'baz' );

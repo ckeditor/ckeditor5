@@ -73,7 +73,7 @@ export default class AttributeElement extends Element {
 	 */
 	getFillerOffset() {
 		// <b>foo</b> does not need filler.
-		if ( this.getChildCount() ) {
+		if ( this.childCount ) {
 			return null;
 		}
 
@@ -81,14 +81,14 @@ export default class AttributeElement extends Element {
 
 		// <p><b></b></p> needs filler -> <p><b><br></b></p>
 		while ( element instanceof AttributeElement ) {
-			if ( element.getChildCount() > 1 ) {
+			if ( element.childCount > 1 ) {
 				return null;
 			}
 
 			element = element.parent;
 		}
 
-		if ( !element || element.getChildCount() > 1 ) {
+		if ( !element || element.childCount > 1 ) {
 			return null;
 		}
 

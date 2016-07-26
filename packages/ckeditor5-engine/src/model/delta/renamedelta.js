@@ -70,7 +70,7 @@ register( 'rename', function( newName, element ) {
 
 	apply(
 		this, delta,
-		new MoveOperation( Position.createAt( element ), element.getMaxOffset(), Position.createAt( newElement ), this.document.version )
+		new MoveOperation( Position.createAt( element ), element.maxOffset, Position.createAt( newElement ), this.document.version )
 	);
 
 	apply(

@@ -44,7 +44,7 @@ describe( 'TextProxy', () => {
 
 	describe( 'getDocument', () => {
 		it( 'should return null if any parent has not set Document', () => {
-			expect( textProxy.getDocument() ).to.be.null;
+			expect( textProxy.document ).to.be.null;
 		} );
 
 		it( 'should return Document attached to the parent element', () => {
@@ -53,13 +53,13 @@ describe( 'TextProxy', () => {
 
 			wrapper.parent = root;
 
-			expect( textProxy.getDocument() ).to.equal( docMock );
+			expect( textProxy.document ).to.equal( docMock );
 		} );
 
 		it( 'should return null if element is inside DocumentFragment', () => {
 			new DocumentFragment( [ wrapper ] );
 
-			expect( textProxy.getDocument() ).to.be.null;
+			expect( textProxy.document ).to.be.null;
 		} );
 	} );
 
@@ -69,7 +69,7 @@ describe( 'TextProxy', () => {
 
 			wrapper.parent = root;
 
-			expect( textProxy.getRoot() ).to.equal( root );
+			expect( textProxy.root ).to.equal( root );
 		} );
 	} );
 

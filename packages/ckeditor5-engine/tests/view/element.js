@@ -44,7 +44,7 @@ describe( 'Element', () => {
 			const parent = new Element( 'div', [], [ child ] );
 
 			expect( parent ).to.have.property( 'name' ).that.equals( 'div' );
-			expect( parent.getChildCount() ).to.equal( 1 );
+			expect( parent.childCount ).to.equal( 1 );
 			expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
 		} );
 
@@ -76,13 +76,13 @@ describe( 'Element', () => {
 		it( 'should return true if there are no children in element', () => {
 			const element = new Element( 'p' );
 
-			expect( element.isEmpty() ).to.be.true;
+			expect( element.isEmpty ).to.be.true;
 		} );
 
 		it( 'should return false if there are children in element', () => {
 			const fragment = new Element( 'p', null, new Element( 'img' ) );
 
-			expect( fragment.isEmpty() ).to.be.false;
+			expect( fragment.isEmpty ).to.be.false;
 		} );
 	} );
 
@@ -102,14 +102,14 @@ describe( 'Element', () => {
 				new Element( 'b', { attr: 'baz' } ),
 				new Element( 'span', { attr: 'qux' } )
 			] );
-			const count = el.getChildCount();
+			const count = el.childCount;
 			const clone = el.clone( true );
 
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );
 			expect( clone.getAttribute( 'attr1' ) ).to.equal( 'foo' );
 			expect( clone.getAttribute( 'attr2' ) ).to.equal( 'bar' );
-			expect( clone.getChildCount() ).to.equal( count );
+			expect( clone.childCount ).to.equal( count );
 
 			for ( let i = 0; i < count; i++ ) {
 				const child = el.getChild( i );
@@ -132,7 +132,7 @@ describe( 'Element', () => {
 			expect( clone.name ).to.equal( el.name );
 			expect( clone.getAttribute( 'attr1' ) ).to.equal( 'foo' );
 			expect( clone.getAttribute( 'attr2' ) ).to.equal( 'bar' );
-			expect( clone.getChildCount() ).to.equal( 0 );
+			expect( clone.childCount ).to.equal( 0 );
 		} );
 
 		it( 'should clone class attribute', () => {
@@ -247,7 +247,7 @@ describe( 'Element', () => {
 				const count1 = parent.insertChildren( 0, [ el1, el3 ] );
 				const count2 = parent.insertChildren( 1, el2 );
 
-				expect( parent.getChildCount() ).to.equal( 3 );
+				expect( parent.childCount ).to.equal( 3 );
 				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
 				expect( parent.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el2' );
 				expect( parent.getChild( 2 ) ).to.have.property( 'name' ).that.equals( 'el3' );
@@ -258,8 +258,14 @@ describe( 'Element', () => {
 			it( 'should accept strings', () => {
 				parent.insertChildren( 0, 'abc' );
 
-				expect( parent.getChildCount() ).to.equal( 1 );
+				expect( parent.childCount ).to.equal( 1 );
 				expect( parent.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
+
+				parent.removeChildren( 0, 1 );
+				parent.insertChildren( 0, [ new Element( 'p' ), 'abc' ] );
+
+				expect( parent.childCount ).to.equal( 2 );
+				expect( parent.getChild( 1 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 			} );
 
 			it( 'should append children', () => {
@@ -267,7 +273,7 @@ describe( 'Element', () => {
 				const count2 = parent.appendChildren( el2 );
 				const count3 = parent.appendChildren( el3 );
 
-				expect( parent.getChildCount() ).to.equal( 3 );
+				expect( parent.childCount ).to.equal( 3 );
 				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
 				expect( parent.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el2' );
 				expect( parent.getChild( 2 ) ).to.have.property( 'name' ).that.equals( 'el3' );
@@ -283,7 +289,7 @@ describe( 'Element', () => {
 				parent.appendChildren( el2 );
 				parent.appendChildren( el3 );
 
-				expect( parent.getChildCount() ).to.equal( 3 );
+				expect( parent.childCount ).to.equal( 3 );
 				expect( parent.getChildIndex( el1 ) ).to.equal( 0 );
 				expect( parent.getChildIndex( el2 ) ).to.equal( 1 );
 				expect( parent.getChildIndex( el3 ) ).to.equal( 2 );
@@ -317,7 +323,7 @@ describe( 'Element', () => {
 
 				parent.removeChildren( 1, 2 );
 
-				expect( parent.getChildCount() ).to.equal( 2 );
+				expect( parent.childCount ).to.equal( 2 );
 				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
 				expect( parent.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el4' );
 
@@ -334,7 +340,7 @@ describe( 'Element', () => {
 
 				const removed = parent.removeChildren( 1 );
 
-				expect( parent.getChildCount() ).to.equal( 2 );
+				expect( parent.childCount ).to.equal( 2 );
 				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
 				expect( parent.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el3' );
 

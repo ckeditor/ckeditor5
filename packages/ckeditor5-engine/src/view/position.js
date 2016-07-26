@@ -69,6 +69,58 @@ export default class Position {
 	}
 
 	/**
+	 * Is `true` if position is at the beginning of its {@link engine.view.Position#parent parent}, `false` otherwise.
+	 *
+	 * @readonly
+	 * @type {Boolean}
+	 */
+	get isAtStart() {
+		return this.offset === 0;
+	}
+
+	/**
+	 * Is `true` if position is at the end of its {@link engine.view.Position#parent parent}, `false` otherwise.
+	 *
+	 * @readonly
+	 * @type {Boolean}
+	 */
+	get isAtEnd() {
+		const endOffset = this.parent instanceof Text ? this.parent.data.length : this.parent.childCount;
+
+		return this.offset === endOffset;
+	}
+
+	/**
+	 * Position's root, that is the root of the position's parent element.
+	 *
+	 * @readonly
+	 * @type {engine.view.Node|engine.view.DocumentFragment}
+	 */
+	get root() {
+		return this.parent.root;
+	}
+
+	/**
+	 * {@link engine.view.EditableElement EditableElement} instance that contains this position, or `null` if
+	 * position is not inside an editable element.
+	 *
+	 * @type {engine.view.EditableElement|null}
+	 */
+	get editableElement() {
+		let editable = this.parent;
+
+		while ( !( editable instanceof EditableElement ) ) {
+			if ( editable.parent ) {
+				editable = editable.parent;
+			} else {
+				return null;
+			}
+		}
+
+		return editable;
+	}
+
+	/**
 	 * Returns a new instance of Position with offset incremented by `shift` value.
 	 *
 	 * @param {Number} shift How position offset should get changed. Accepts negative values.
@@ -81,15 +133,6 @@ export default class Position {
 		shifted.offset = offset < 0 ? 0 : offset;
 
 		return shifted;
-	}
-
-	/**
-	 * Returns position root, that is the root of the position's parent element.
-	 *
-	 * @returns {engine.view.Node|engine.view.DocumentFragment} Position's root.
-	 */
-	getRoot() {
-		return this.parent.getRoot();
 	}
 
 	/**
@@ -137,26 +180,6 @@ export default class Position {
 	 */
 	isAfter( otherPosition ) {
 		return this.compareWith( otherPosition ) == 'after';
-	}
-
-	/**
-	 * Returns `true` if position is at the beginning of its {@link engine.view.Position#parent parent}, `false` otherwise.
-	 *
-	 * @returns {Boolean}
-	 */
-	isAtStart() {
-		return this.offset === 0;
-	}
-
-	/**
-	 * Returns `true` if position is at the end of its {@link engine.view.Position#parent parent}, `false` otherwise.
-	 *
-	 * @returns {Boolean}
-	 */
-	isAtEnd() {
-		const endOffset = this.parent instanceof Text ? this.parent.data.length : this.parent.getChildCount();
-
-		return this.offset === endOffset;
 	}
 
 	/**
@@ -209,38 +232,19 @@ export default class Position {
 
 		// Check if common ancestor is not one of the parents.
 		if ( commonAncestor === this.parent ) {
-			const index = this.offset - nextAncestor2.getIndex();
+			const index = this.offset - nextAncestor2.index;
 
 			return index <= 0 ? 'before' : 'after';
 		} else if ( commonAncestor === otherPosition.parent ) {
-			const index = nextAncestor1.getIndex() - otherPosition.offset;
+			const index = nextAncestor1.index - otherPosition.offset;
 
 			return index < 0 ? 'before' : 'after';
 		}
 
-		const index = nextAncestor1.getIndex() - nextAncestor2.getIndex();
+		const index = nextAncestor1.index - nextAncestor2.index;
 
 		// Compare indexes of next ancestors inside common one.
 		return index < 0 ? 'before' : 'after';
-	}
-
-	/**
-	 * Returns {@link engine.view.EditableElement EditableElement} instance that contains this position.
-	 *
-	 * @returns {engine.view.EditableElement|null} Returns closest EditableElement or null if none is found.
-	 */
-	getEditableElement() {
-		let editable = this.parent;
-
-		while ( !( editable instanceof EditableElement ) ) {
-			if ( editable.parent ) {
-				editable = editable.parent;
-			} else {
-				return null;
-			}
-		}
-
-		return editable;
 	}
 
 	/**
@@ -268,7 +272,7 @@ export default class Position {
 			let node = itemOrPosition;
 
 			if ( offset == 'end' ) {
-				offset = node instanceof Text ? node.data.length : node.getChildCount();
+				offset = node instanceof Text ? node.data.length : node.childCount;
 			} else if ( offset == 'before' ) {
 				return this.createBefore( node );
 			} else if ( offset == 'after' ) {
@@ -303,7 +307,7 @@ export default class Position {
 			throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: item } );
 		}
 
-		return new Position( item.parent, item.getIndex() + 1 );
+		return new Position( item.parent, item.index + 1 );
 	}
 
 	/**
@@ -328,7 +332,7 @@ export default class Position {
 			throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: item } );
 		}
 
-		return new Position( item.parent, item.getIndex() );
+		return new Position( item.parent, item.index );
 	}
 
 	/**

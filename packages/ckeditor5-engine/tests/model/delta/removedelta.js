@@ -39,8 +39,8 @@ describe( 'Batch', () => {
 		it( 'should remove specified node', () => {
 			batch.remove( div );
 
-			expect( root.getMaxOffset() ).to.equal( 1 );
-			expect( root.getChildCount() ).to.equal( 1 );
+			expect( root.maxOffset ).to.equal( 1 );
+			expect( root.childCount ).to.equal( 1 );
 			expect( getNodesAndText( Range.createFromElement( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
 		} );
 

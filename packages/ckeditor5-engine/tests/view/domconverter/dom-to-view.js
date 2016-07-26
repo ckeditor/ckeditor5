@@ -40,7 +40,7 @@ describe( 'DomConverter', () => {
 			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
 			expect( count( viewP.getAttributeKeys() ) ).to.equal( 1 );
 
-			expect( viewP.getChildCount() ).to.equal( 2 );
+			expect( viewP.childCount ).to.equal( 2 );
 			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
 			expect( viewP.getChild( 1 ).data ).to.equal( 'foo' );
 
@@ -61,7 +61,7 @@ describe( 'DomConverter', () => {
 			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
 			expect( count( viewP.getAttributeKeys() ) ).to.equal( 1 );
 
-			expect( viewP.getChildCount() ).to.equal( 2 );
+			expect( viewP.childCount ).to.equal( 2 );
 			expect( viewP.getChild( 0 ).name ).to.equal( 'img' );
 			expect( viewP.getChild( 1 ).data ).to.equal( 'foo' );
 
@@ -86,7 +86,7 @@ describe( 'DomConverter', () => {
 			expect( viewP.getAttribute( 'class' ) ).to.equal( 'foo' );
 			expect( count( viewP.getAttributeKeys() ) ).to.equal( 1 );
 
-			expect( viewP.getChildCount() ).to.equal( 0 );
+			expect( viewP.childCount ).to.equal( 0 );
 			expect( converter.getCorrespondingDom( viewP ) ).to.not.equal( domP );
 		} );
 
@@ -101,7 +101,7 @@ describe( 'DomConverter', () => {
 			const viewFragment = converter.domToView( domFragment, { bind: true } );
 
 			expect( viewFragment ).to.be.an.instanceof( ViewDocumentFragment );
-			expect( viewFragment.getChildCount() ).to.equal( 2 );
+			expect( viewFragment.childCount ).to.equal( 2 );
 			expect( viewFragment.getChild( 0 ).name ).to.equal( 'img' );
 			expect( viewFragment.getChild( 1 ).data ).to.equal( 'foo' );
 
@@ -125,7 +125,7 @@ describe( 'DomConverter', () => {
 
 			expect( viewFragment ).to.be.an.instanceof( ViewDocumentFragment );
 
-			expect( viewFragment.getChildCount() ).to.equal( 0 );
+			expect( viewFragment.childCount ).to.equal( 0 );
 			expect( converter.getCorrespondingDom( viewFragment ) ).to.not.equal( domFragment );
 		} );
 

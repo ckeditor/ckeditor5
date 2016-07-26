@@ -75,7 +75,7 @@ export default class Matcher {
 	 *		matcher.add( ( element ) => {
 	 *			// Result of this function will be included in `match`
 	 *			// property of the object returned from matcher.match() call.
-	 *			if ( element.name === 'div' && element.getChildCount() > 0 ) {
+	 *			if ( element.name === 'div' && element.childCount > 0 ) {
 	 *				return { name: true };
 	 *			}
 	 *

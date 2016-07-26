@@ -107,7 +107,7 @@ register( 'wrap', function( range, elementOrString ) {
 
 	let element = elementOrString instanceof Element ? elementOrString : new Element( elementOrString );
 
-	if ( element.getChildCount() > 0 ) {
+	if ( element.childCount > 0 ) {
 		/**
 		 * Element to wrap with is not empty.
 		 *

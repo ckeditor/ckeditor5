@@ -26,7 +26,7 @@ describe( 'writer', () => {
 		let { view, selection } = parse( input );
 
 		const newRange = insert( selection.getFirstPosition(), nodesToInsert );
-		expect( stringify( view.getRoot(), newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
+		expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
 	}
 
 	describe( 'insert', () => {

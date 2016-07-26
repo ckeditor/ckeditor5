@@ -34,8 +34,8 @@ describe( 'Batch', () => {
 
 	describe( 'insert', () => {
 		it( 'should insert given nodes at given position', () => {
-			expect( root.getChildCount() ).to.equal( 4 );
-			expect( root.getMaxOffset() ).to.equal( 5 );
+			expect( root.childCount ).to.equal( 4 );
+			expect( root.maxOffset ).to.equal( 5 );
 			expect( root.getChild( 1 ) ).to.equal( p );
 			expect( root.getChild( 2 ) ).to.equal( ul );
 		} );

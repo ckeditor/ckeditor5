@@ -487,7 +487,7 @@ function test( selectionPaths, modelInput, expectedView, selectionAttributes = {
 	}
 
 	// Remove view children since we do not want to convert deletion.
-	viewRoot.removeChildren( 0, viewRoot.getChildCount() );
+	viewRoot.removeChildren( 0, viewRoot.childCount );
 
 	// Convert model to view.
 	dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );

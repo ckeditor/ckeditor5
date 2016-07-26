@@ -96,7 +96,7 @@ describe( 'EditableElement', () => {
 			const docMock = createDocumentMock();
 			const root = new RootEditableElement( docMock, 'div' );
 
-			expect( root.getDocument() ).to.equal( docMock );
+			expect( root.document ).to.equal( docMock );
 		} );
 	} );
 } );

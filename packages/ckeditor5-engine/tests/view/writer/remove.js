@@ -55,7 +55,7 @@ describe( 'writer', () => {
 			const fragment = remove( range );
 
 			expect( fragment ).to.be.instanceof( DocumentFragment );
-			expect( fragment.getChildCount() ).to.equal( 0 );
+			expect( fragment.childCount ).to.equal( 0 );
 			expect( range.isCollapsed ).to.be.true;
 		} );
 

@@ -53,16 +53,6 @@ export default class TextProxy {
 	}
 
 	/**
-	 * Element that is a parent of this text proxy.
-	 *
-	 * @readonly
-	 * @type {engine.view.Element|engine.view.DocumentFragment|null}
-	 */
-	get parent() {
-		return this.textNode.parent;
-	}
-
-	/**
 	 * Flag indicating whether `TextProxy` instance covers only part of the original {@link engine.view.Text text node}
 	 * (`true`) or the whole text node (`false`).
 	 *
@@ -78,22 +68,34 @@ export default class TextProxy {
 	}
 
 	/**
-	 * Gets {@link engine.view.Document} reference, from the {@link engine.view.Node#getRoot root} of
-	 * {#textNode} or returns null if the root has no reference to the {@link engine.view.Document}.
+	 * Parent of this text proxy, which is same as parent of text node represented by this text proxy.
 	 *
-	 * @returns {engine.view.Document|null} View Document of the text proxy or null.
+	 * @readonly
+	 * @type {engine.view.Element|engine.view.DocumentFragment|null}
 	 */
-	getDocument() {
-		return this.textNode.getDocument();
+	get parent() {
+		return this.textNode.parent;
 	}
 
 	/**
-	 * Gets the top parent for the {#textNode}. If there is no parent {#textNode} is the root.
+	 * Root of this text proxy, which is same as root of text node represented by this text proxy.
 	 *
-	 * @returns {engine.view.Node}
+	 * @readonly
+	 * @type {engine.view.Node|engine.view.DocumentFragment}
 	 */
-	getRoot() {
-		return this.textNode.getRoot();
+	get root() {
+		return this.textNode.root;
+	}
+
+	/**
+	 * {@link engine.view.Document View document} that owns this text proxy, or `null` if the text proxy is inside
+	 * {@link engine.view.DocumentFragment document fragment}.
+	 *
+	 * @readonly
+	 * @type {engine.view.Document|null}
+	 */
+	get document() {
+		return this.textNode.document;
 	}
 
 	/**

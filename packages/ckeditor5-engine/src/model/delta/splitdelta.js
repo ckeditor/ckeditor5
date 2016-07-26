@@ -126,7 +126,7 @@ register( 'split', function( position ) {
 
 	const move = new MoveOperation(
 		position,
-		splitElement.getMaxOffset() - position.offset,
+		splitElement.maxOffset - position.offset,
 		Position.createFromParentAndOffset( copy, 0 ),
 		this.document.version
 	);

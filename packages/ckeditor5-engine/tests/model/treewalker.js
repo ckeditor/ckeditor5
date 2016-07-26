@@ -601,9 +601,9 @@ function expectEnd( value, expected, options = {} ) {
 
 	if ( options.direction == 'backward' ) {
 		previousPosition = Position.createAfter( value.item );
-		nextPosition = Position.createFromParentAndOffset( value.item, value.item.getMaxOffset() );
+		nextPosition = Position.createFromParentAndOffset( value.item, value.item.maxOffset );
 	} else {
-		previousPosition = Position.createFromParentAndOffset( value.item, value.item.getMaxOffset() );
+		previousPosition = Position.createFromParentAndOffset( value.item, value.item.maxOffset );
 		nextPosition = Position.createAfter( value.item );
 	}
 

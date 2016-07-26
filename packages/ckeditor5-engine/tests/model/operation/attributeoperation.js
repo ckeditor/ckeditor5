@@ -75,7 +75,7 @@ describe( 'AttributeOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 3 );
+		expect( root.maxOffset ).to.equal( 3 );
 		expect( root.getChild( 0 ).hasAttribute( 'isNew' ) ).to.be.true;
 		expect( root.getChild( 0 ).data ).to.equal( 'ba' );
 		expect( root.getChild( 1 ).hasAttribute( 'isNew' ) ).to.be.false;
@@ -96,7 +96,7 @@ describe( 'AttributeOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 1 );
+		expect( root.maxOffset ).to.equal( 1 );
 		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 3 );
 		expect( root.getChild( 0 ).hasAttribute( 'isNew' ) ).to.be.true;
 		expect( root.getChild( 0 ).hasAttribute( 'foo' ) ).to.be.true;
@@ -117,7 +117,7 @@ describe( 'AttributeOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 3 );
+		expect( root.maxOffset ).to.equal( 3 );
 		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
 		expect( root.getChild( 0 ).getAttribute( 'isNew' ) ).to.be.true;
 		expect( count( root.getChild( 1 ).getAttributes() ) ).to.equal( 1 );
@@ -138,7 +138,7 @@ describe( 'AttributeOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 1 );
+		expect( root.maxOffset ).to.equal( 1 );
 		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 3 );
 		expect( root.getChild( 0 ).getAttribute( 'foo' ) ).to.be.true;
 		expect( root.getChild( 0 ).getAttribute( 'x' ) ).to.equal( 2 );
@@ -159,7 +159,7 @@ describe( 'AttributeOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 1 );
+		expect( root.maxOffset ).to.equal( 1 );
 		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 2 );
 		expect( root.getChild( 0 ).hasAttribute( 'foo' ) ).to.be.true;
 		expect( root.getChild( 0 ).hasAttribute( 'bar' ) ).to.be.true;
@@ -195,7 +195,7 @@ describe( 'AttributeOperation', () => {
 		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( root.getMaxOffset() ).to.equal( 3 );
+		expect( root.maxOffset ).to.equal( 3 );
 		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 0 );
 	} );
 
@@ -256,7 +256,7 @@ describe( 'AttributeOperation', () => {
 		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( root.getMaxOffset() ).to.equal( 3 );
+		expect( root.maxOffset ).to.equal( 3 );
 		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
 		expect( root.getChild( 0 ).getAttribute( 'isNew' ) ).to.be.false;
 	} );
@@ -278,7 +278,7 @@ describe( 'AttributeOperation', () => {
 		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( root.getMaxOffset() ).to.equal( 3 );
+		expect( root.maxOffset ).to.equal( 3 );
 		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
 		expect( root.getChild( 0 ).getAttribute( 'foo' ) ).to.be.true;
 	} );

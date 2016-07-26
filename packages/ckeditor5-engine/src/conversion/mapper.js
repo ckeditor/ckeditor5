@@ -154,7 +154,7 @@ export default class Mapper {
 	_toModelOffset( viewParent, viewOffset, viewBlock ) {
 		if ( viewBlock != viewParent ) {
 			// See example.
-			const offsetToParentStart = this._toModelOffset( viewParent.parent, viewParent.getIndex(), viewBlock );
+			const offsetToParentStart = this._toModelOffset( viewParent.parent, viewParent.index, viewBlock );
 			const offsetInParent = this._toModelOffset( viewParent, viewOffset, viewParent );
 
 			return offsetToParentStart + offsetInParent;

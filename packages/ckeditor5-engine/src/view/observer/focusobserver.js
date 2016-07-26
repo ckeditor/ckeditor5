@@ -26,7 +26,7 @@ export default class FocusObserver extends DomEventObserver {
 		} );
 
 		document.on( 'blur', ( evt, data ) => {
-			const selectedEditable = document.selection.getEditableElement();
+			const selectedEditable = document.selection.editableElement;
 
 			if ( selectedEditable === null || selectedEditable === data.target ) {
 				document.isFocused = false;

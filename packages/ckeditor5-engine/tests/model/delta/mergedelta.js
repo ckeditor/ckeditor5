@@ -37,9 +37,9 @@ describe( 'Batch', () => {
 		it( 'should merge foo and bar into foobar', () => {
 			doc.batch().merge( new Position( root, [ 1 ] ) );
 
-			expect( root.getMaxOffset() ).to.equal( 1 );
+			expect( root.maxOffset ).to.equal( 1 );
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
-			expect( root.getChild( 0 ).getMaxOffset() ).to.equal( 6 );
+			expect( root.getChild( 0 ).maxOffset ).to.equal( 6 );
 			expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
 			expect( root.getChild( 0 ).getAttribute( 'key1' ) ).to.equal( 'value1' );
 			expect( root.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foobar' );

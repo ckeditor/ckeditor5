@@ -201,7 +201,7 @@ export function clearAttributes() {
 			// Not collapsed selection should not have artifacts.
 			if ( range.isCollapsed ) {
 				// Position might be in the node removed by the view writer.
-				if ( range.end.parent.getDocument() ) {
+				if ( range.end.parent.document ) {
 					viewWriter.mergeAt( range.start );
 				}
 			}

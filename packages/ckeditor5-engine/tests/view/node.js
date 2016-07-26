@@ -33,29 +33,29 @@ describe( 'Node', () => {
 
 	describe( 'getNextSibling/getPreviousSibling', () => {
 		it( 'should return next sibling', () => {
-			expect( root.getNextSibling() ).to.be.null;
+			expect( root.nextSibling ).to.be.null;
 
-			expect( one.getNextSibling() ).to.equal( two );
-			expect( two.getNextSibling() ).to.equal( three );
-			expect( three.getNextSibling() ).to.be.null;
+			expect( one.nextSibling ).to.equal( two );
+			expect( two.nextSibling ).to.equal( three );
+			expect( three.nextSibling ).to.be.null;
 
-			expect( charB.getNextSibling() ).to.equal( charA );
-			expect( charA.getNextSibling() ).to.equal( img );
-			expect( img.getNextSibling() ).to.equal( charR );
-			expect( charR.getNextSibling() ).to.be.null;
+			expect( charB.nextSibling ).to.equal( charA );
+			expect( charA.nextSibling ).to.equal( img );
+			expect( img.nextSibling ).to.equal( charR );
+			expect( charR.nextSibling ).to.be.null;
 		} );
 
 		it( 'should return previous sibling', () => {
-			expect( root.getPreviousSibling() ).to.be.null;
+			expect( root.previousSibling ).to.be.null;
 
-			expect( one.getPreviousSibling() ).to.be.null;
-			expect( two.getPreviousSibling() ).to.equal( one );
-			expect( three.getPreviousSibling() ).to.equal( two );
+			expect( one.previousSibling ).to.be.null;
+			expect( two.previousSibling ).to.equal( one );
+			expect( three.previousSibling ).to.equal( two );
 
-			expect( charB.getPreviousSibling() ).to.be.null;
-			expect( charA.getPreviousSibling() ).to.equal( charB );
-			expect( img.getPreviousSibling() ).to.equal( charA );
-			expect( charR.getPreviousSibling() ).to.equal( img );
+			expect( charB.previousSibling ).to.be.null;
+			expect( charA.previousSibling ).to.equal( charB );
+			expect( img.previousSibling ).to.equal( charA );
+			expect( charR.previousSibling ).to.equal( img );
 		} );
 	} );
 
@@ -113,18 +113,18 @@ describe( 'Node', () => {
 
 	describe( 'getIndex', () => {
 		it( 'should return null if the parent is null', () => {
-			expect( root.getIndex() ).to.be.null;
+			expect( root.index ).to.be.null;
 		} );
 
 		it( 'should return index in the parent', () => {
-			expect( one.getIndex() ).to.equal( 0 );
-			expect( two.getIndex() ).to.equal( 1 );
-			expect( three.getIndex() ).to.equal( 2 );
+			expect( one.index ).to.equal( 0 );
+			expect( two.index ).to.equal( 1 );
+			expect( three.index ).to.equal( 2 );
 
-			expect( charB.getIndex() ).to.equal( 0 );
-			expect( charA.getIndex() ).to.equal( 1 );
-			expect( img.getIndex() ).to.equal( 2 );
-			expect( charR.getIndex() ).to.equal( 3 );
+			expect( charB.index ).to.equal( 0 );
+			expect( charA.index ).to.equal( 1 );
+			expect( img.index ).to.equal( 2 );
+			expect( charR.index ).to.equal( 3 );
 		} );
 
 		it( 'should throw an error if parent does not contain element', () => {
@@ -135,7 +135,7 @@ describe( 'Node', () => {
 
 			expect(
 				() => {
-					f.getIndex();
+					f.index;
 				}
 			).to.throw( CKEditorError, /view-node-not-found-in-parent/ );
 		} );
@@ -143,7 +143,7 @@ describe( 'Node', () => {
 
 	describe( 'getDocument', () => {
 		it( 'should return null if any parent has not set Document', () => {
-			expect( charA.getDocument() ).to.be.null;
+			expect( charA.document ).to.be.null;
 		} );
 
 		it( 'should return Document attached to the parent element', () => {
@@ -153,15 +153,15 @@ describe( 'Node', () => {
 
 			child.parent = parent;
 
-			expect( parent.getDocument() ).to.equal( docMock );
-			expect( child.getDocument() ).to.equal( docMock );
+			expect( parent.document ).to.equal( docMock );
+			expect( child.document ).to.equal( docMock );
 		} );
 
 		it( 'should return null if element is inside DocumentFragment', () => {
 			const child = new Element( 'p' );
 			new DocumentFragment( [ child ] );
 
-			expect( child.getDocument() ).to.be.null;
+			expect( child.document ).to.be.null;
 		} );
 	} );
 
@@ -169,7 +169,7 @@ describe( 'Node', () => {
 		it( 'should return this element if it has no parent', () => {
 			const child = new Element( 'p' );
 
-			expect( child.getRoot() ).to.equal( child );
+			expect( child.root ).to.equal( child );
 		} );
 
 		it( 'should return root element', () => {
@@ -178,8 +178,8 @@ describe( 'Node', () => {
 
 			child.parent = parent;
 
-			expect( parent.getRoot() ).to.equal( parent );
-			expect( child.getRoot() ).to.equal( parent );
+			expect( parent.root ).to.equal( parent );
+			expect( child.root ).to.equal( parent );
 		} );
 	} );
 
@@ -196,7 +196,7 @@ describe( 'Node', () => {
 			const char = new Text( 'a' );
 			const parent = new Element( 'p', null, [ char ] );
 			const removeChildrenSpy = sinon.spy( parent, 'removeChildren' );
-			const index = char.getIndex();
+			const index = char.index;
 			char.remove();
 			removeChildrenSpy.restore();
 			sinon.assert.calledOnce( removeChildrenSpy );

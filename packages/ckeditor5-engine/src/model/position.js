@@ -104,6 +104,44 @@ export default class Position {
 	}
 
 	/**
+	 * Offset at which this position is located in it's {@link engine.model.Position#parent parent}. It is equal
+	 * to the last item in position {@link engine.model.Position#path path}.
+	 *
+	 * @type {Number}
+	 */
+	get offset() {
+		return last( this.path );
+	}
+
+	/**
+	 * @param {Number} newOffset
+	 */
+	set offset( newOffset ) {
+		this.path[ this.path.length - 1 ] = newOffset;
+	}
+
+	/**
+	 * Parent element of this position.
+	 *
+	 * Keep in mind that `parent` value is calculated when the property is accessed. If {@link engine.model.Position#path position path}
+	 * leads to a non-existing element, `parent` property will throw error.
+	 *
+	 * Also it is a good idea to cache `parent` property if it is used frequently in an algorithm (i.e. in a long loop).
+	 *
+	 * @readonly
+	 * @type {engine.model.Element}
+	 */
+	get parent() {
+		let parent = this.root;
+
+		for ( let i = 0; i < this.path.length - 1; i++ ) {
+			parent = parent.getChild( parent.offsetToIndex( this.path[ i ] ) );
+		}
+
+		return parent;
+	}
+
+	/**
 	 * Position {@link engine.model.Position#offset offset} converted to an index in position's parent node. It is
 	 * equal to the {@link engine.model.Node#getIndex index} of a node after this position. If position is placed
 	 * in text node, position index is equal to the index of that text node.
@@ -149,41 +187,23 @@ export default class Position {
 	}
 
 	/**
-	 * Offset at which this position is located in it's {@link engine.model.Position#parent parent}. It is equal
-	 * to the last item in position {@link engine.model.Position#path path}.
-	 *
-	 * @type {Number}
-	 */
-	get offset() {
-		return last( this.path );
-	}
-
-	/**
-	 * @param {Number} newOffset
-	 */
-	set offset( newOffset ) {
-		this.path[ this.path.length - 1 ] = newOffset;
-	}
-
-	/**
-	 * Parent element of this position.
-	 *
-	 * Keep in mind that `parent` value is calculated when the property is accessed. If {@link engine.model.Position#path position path}
-	 * leads to a non-existing element, `parent` property will throw error.
-	 *
-	 * Also it is a good idea to cache `parent` property if it is used frequently in an algorithm (i.e. in a long loop).
+	 * Is `true` if position is at the beginning of its {@link engine.model.Position#parent parent}, `false` otherwise.
 	 *
 	 * @readonly
-	 * @type {engine.model.Element}
+	 * @type {Boolean}
 	 */
-	get parent() {
-		let parent = this.root;
+	get isAtStart() {
+		return this.offset === 0;
+	}
 
-		for ( let i = 0; i < this.path.length - 1; i++ ) {
-			parent = parent.getChild( parent.offsetToIndex( this.path[ i ] ) );
-		}
-
-		return parent;
+	/**
+	 * Is `true` if position is at the end of its {@link engine.model.Position#parent parent}, `false` otherwise.
+	 *
+	 * @readonly
+	 * @type {Boolean}
+	 */
+	get isAtEnd() {
+		return this.offset == this.parent.maxOffset;
 	}
 
 	/**
@@ -343,7 +363,7 @@ export default class Position {
 			}
 
 			if ( left.path.length > right.path.length ) {
-				if ( left.offset !== leftParent.getMaxOffset() ) {
+				if ( left.offset !== leftParent.maxOffset ) {
 					return false;
 				}
 
@@ -358,24 +378,6 @@ export default class Position {
 				right.path = right.path.slice( 0, -1 );
 			}
 		}
-	}
-
-	/**
-	 * Returns `true` if position is at the beginning of its {@link engine.model.Position#parent parent}, `false` otherwise.
-	 *
-	 * @returns {Boolean}
-	 */
-	isAtStart() {
-		return this.offset === 0;
-	}
-
-	/**
-	 * Returns `true` if position is at the end of its {@link engine.model.Position#parent parent}, `false` otherwise.
-	 *
-	 * @returns {Boolean}
-	 */
-	isAtEnd() {
-		return this.offset == this.parent.getMaxOffset();
 	}
 
 	/**
@@ -572,7 +574,7 @@ export default class Position {
 			const node = itemOrPosition;
 
 			if ( offset == 'end' ) {
-				offset = node.getMaxOffset();
+				offset = node.maxOffset;
 			} else if ( offset == 'before' ) {
 				return this.createBefore( node );
 			} else if ( offset == 'after' ) {

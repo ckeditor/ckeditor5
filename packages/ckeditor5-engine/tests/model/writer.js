@@ -78,7 +78,7 @@ describe( 'writer', () => {
 			writer.remove( range );
 
 			expectData( 'fooxyz' );
-			expect( root.getChildCount() ).to.equal( 1 );
+			expect( root.childCount ).to.equal( 1 );
 		} );
 
 		it( 'should throw if given range is not flat', () => {

@@ -265,7 +265,7 @@ export default class Document {
 	 */
 	focus() {
 		if ( !this.isFocused ) {
-			const editable = this.selection.getEditableElement();
+			const editable = this.selection.editableElement;
 
 			if ( editable ) {
 				this.domConverter.focus( editable );

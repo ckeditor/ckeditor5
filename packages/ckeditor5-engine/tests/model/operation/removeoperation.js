@@ -65,10 +65,10 @@ describe( 'RemoveOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 4 );
+		expect( root.maxOffset ).to.equal( 4 );
 		expect( root.getChild( 0 ).data ).to.equal( 'foar' );
 
-		expect( graveyard.getMaxOffset() ).to.equal( 1 );
+		expect( graveyard.maxOffset ).to.equal( 1 );
 		expect( graveyard.getChild( 0 ).getChild( 0 ).data ).to.equal( 'zb' );
 	} );
 
@@ -99,7 +99,7 @@ describe( 'RemoveOperation', () => {
 			)
 		) );
 
-		expect( graveyard.getMaxOffset() ).to.equal( 3 );
+		expect( graveyard.maxOffset ).to.equal( 3 );
 		expect( graveyard.getChild( 0 ).getChild( 0 ).data ).to.equal( 'f' );
 		expect( graveyard.getChild( 1 ).getChild( 0 ).data ).to.equal( 'o' );
 		expect( graveyard.getChild( 2 ).getChild( 0 ).data ).to.equal( 'z' );
@@ -128,7 +128,7 @@ describe( 'RemoveOperation', () => {
 		doc.applyOperation( removeOpA );
 		doc.applyOperation( removeOpB );
 
-		expect( graveyard.getChildCount() ).to.equal( 1 );
+		expect( graveyard.childCount ).to.equal( 1 );
 		expect( graveyard.getChild( 0 ).getChild( 0 ).data ).to.equal( 'fo' );
 	} );
 
@@ -166,12 +166,12 @@ describe( 'RemoveOperation', () => {
 		doc.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 0 );
+		expect( root.maxOffset ).to.equal( 0 );
 
 		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( root.getMaxOffset() ).to.equal( 3 );
+		expect( root.maxOffset ).to.equal( 3 );
 		expect( root.getChild( 0 ).data ).to.equal( 'bar' );
 	} );
 

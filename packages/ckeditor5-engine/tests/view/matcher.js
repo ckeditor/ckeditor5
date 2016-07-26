@@ -215,7 +215,7 @@ describe( 'Matcher', () => {
 		it( 'should allow to use function as a pattern', () => {
 			const match = { name: true };
 			const pattern = ( element ) => {
-				if ( element.name === 'div' && element.getChildCount() > 0 ) {
+				if ( element.name === 'div' && element.childCount > 0 ) {
 					return match;
 				}
 

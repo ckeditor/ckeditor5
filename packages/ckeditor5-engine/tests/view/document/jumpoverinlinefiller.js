@@ -16,10 +16,9 @@ import { parse, setData } from '/tests/engine/_utils/view.js';
 describe( 'Document', () => {
 	let viewDocument;
 
-	beforeEach( () => {
+	before( () => {
 		viewDocument = new ViewDocument();
-
-		viewDocument.createRoot( document.getElementById( 'editor' ) );
+		viewDocument.createRoot( document.getElementById( 'editor' ) ) ;
 
 		document.getSelection().removeAllRanges();
 

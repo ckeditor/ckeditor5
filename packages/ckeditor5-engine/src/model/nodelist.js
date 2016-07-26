@@ -40,20 +40,22 @@ export default class NodeList {
 	}
 
 	/**
-	 * Returns the number of nodes contained inside this node list.
+	 * Number of nodes contained inside this node list.
 	 *
-	 * @returns {Number}
+	 * @readonly
+	 * @type {Number}
 	 */
 	get length() {
 		return this._nodes.length;
 	}
 
 	/**
-	 * Returns the sum of {engine.model.Node#offsetSize offset sizes} of all nodes contained inside this node list.
+	 * Sum of {@link engine.model.Node#offsetSize offset sizes} of all nodes contained inside this node list.
 	 *
-	 * @returns {Number}
+	 * @readonly
+	 * @type {Number}
 	 */
-	getMaxOffset() {
+	get maxOffset() {
 		return this._nodes.reduce( ( sum, node ) => sum + node.offsetSize, 0 );
 	}
 
@@ -103,7 +105,7 @@ export default class NodeList {
 	 */
 	indexToOffset( index ) {
 		if ( index == this._nodes.length ) {
-			return this.getMaxOffset();
+			return this.maxOffset;
 		}
 
 		const node = this._nodes[ index ];

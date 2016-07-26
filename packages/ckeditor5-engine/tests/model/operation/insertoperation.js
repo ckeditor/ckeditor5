@@ -42,7 +42,7 @@ describe( 'InsertOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 1 );
+		expect( root.maxOffset ).to.equal( 1 );
 		expect( root.getChild( 0 ).data ).to.equal( 'x' );
 	} );
 
@@ -56,7 +56,7 @@ describe( 'InsertOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 1 );
+		expect( root.maxOffset ).to.equal( 1 );
 		expect( root.getChild( 0 ).name ).to.equal( 'p' );
 	} );
 
@@ -70,8 +70,8 @@ describe( 'InsertOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 7 );
-		expect( root.getChildCount() ).to.equal( 3 );
+		expect( root.maxOffset ).to.equal( 7 );
+		expect( root.childCount ).to.equal( 3 );
 		expect( root.getChild( 0 ).data ).to.equal( 'bar' );
 		expect( root.getChild( 1 ).name ).to.equal( 'p' );
 		expect( root.getChild( 2 ).data ).to.equal( 'foo' );
@@ -89,7 +89,7 @@ describe( 'InsertOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 5 );
+		expect( root.maxOffset ).to.equal( 5 );
 		expect( root.getChild( 0 ).data ).to.equal( 'xbary' );
 	} );
 
@@ -103,7 +103,7 @@ describe( 'InsertOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 7 );
+		expect( root.maxOffset ).to.equal( 7 );
 		expect( root.getChild( 0 ).data ).to.equal( 'fooxbar' );
 	} );
 
@@ -139,7 +139,7 @@ describe( 'InsertOperation', () => {
 		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( root.getMaxOffset() ).to.equal( 0 );
+		expect( root.maxOffset ).to.equal( 0 );
 	} );
 
 	it( 'should undo insert set of nodes by applying reverse operation', () => {
@@ -158,7 +158,7 @@ describe( 'InsertOperation', () => {
 		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( root.getMaxOffset() ).to.equal( 0 );
+		expect( root.maxOffset ).to.equal( 0 );
 	} );
 
 	it( 'should create operation with the same parameters when cloned', () => {
@@ -197,8 +197,8 @@ describe( 'InsertOperation', () => {
 		expect( op.nodes.getNode( 0 ).name ).to.equal( 'p' );
 		expect( Array.from( op.nodes.getNode( 0 ).getAttributes() ) ).to.deep.equal( [ [ 'key', 'value' ] ] );
 
-		expect( op.nodes.getNode( 0 ).getChildCount() ).to.equal( 0 );
-		expect( element.getChildCount() ).to.equal( 1 );
+		expect( op.nodes.getNode( 0 ).childCount ).to.equal( 0 );
+		expect( element.childCount ).to.equal( 1 );
 
 		expect( op2.nodes.getNode( 0 ) ).not.to.equal( text );
 	} );

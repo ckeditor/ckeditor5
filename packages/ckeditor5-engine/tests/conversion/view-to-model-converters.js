@@ -89,7 +89,7 @@ describe( 'convertToModelFragment', () => {
 		const result = dispatcher.convert( viewFragment, objWithContext );
 
 		expect( result ).to.be.instanceof( ModelDocumentFragment );
-		expect( result.getMaxOffset() ).to.equal( 6 );
+		expect( result.maxOffset ).to.equal( 6 );
 		expect( result.getChild( 0 ).data ).to.equal( 'foobar' );
 	} );
 
@@ -115,7 +115,7 @@ describe( 'convertToModelFragment', () => {
 
 		expect( result ).to.be.instanceof( ModelElement );
 		expect( result.name ).to.equal( 'paragraph' );
-		expect( result.getMaxOffset() ).to.equal( 3 );
+		expect( result.maxOffset ).to.equal( 3 );
 		expect( result.getChild( 0 ).data ).to.equal( 'foo' );
 	} );
 } );

@@ -104,7 +104,7 @@ export function insertText() {
  *			let value = data.attributeNewValue;
  *
  *			// Force attribute value to 'empty' if the model element is empty.
- *			if ( data.item.getChildCount() === 0 ) {
+ *			if ( data.item.childCount === 0 ) {
  *				value = 'empty';
  *			}
  *
@@ -151,7 +151,7 @@ export function setAttribute( attributeCreator ) {
  *			let value = data.attributeNewValue;
  *
  *			// Force attribute value to 'empty' if the model element is empty.
- *			if ( data.item.getChildCount() === 0 ) {
+ *			if ( data.item.childCount === 0 ) {
  *				value = 'empty';
  *			}
  *

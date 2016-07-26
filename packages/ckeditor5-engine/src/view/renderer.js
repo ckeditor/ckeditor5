@@ -280,7 +280,7 @@ export default class Renderer {
 		const selectionOffset = selectionPosition.offset;
 
 		// If there is no DOM root we do not care about fillers.
-		if ( !this.domConverter.getCorrespondingDomElement( selectionParent.getRoot() ) ) {
+		if ( !this.domConverter.getCorrespondingDomElement( selectionParent.root ) ) {
 			return false;
 		}
 
@@ -317,7 +317,7 @@ export default class Renderer {
 
 		const filler = this._inlineFillerPosition;
 
-		if ( filler && filler.parent == viewText.parent && filler.offset == viewText.getIndex() ) {
+		if ( filler && filler.parent == viewText.parent && filler.offset == viewText.index ) {
 			expectedText = INLINE_FILLER + expectedText;
 		}
 
@@ -428,7 +428,7 @@ export default class Renderer {
 			return;
 		}
 
-		const selectedEditable = this.selection.getEditableElement();
+		const selectedEditable = this.selection.editableElement;
 		const domRoot = this.domConverter.getCorrespondingDomElement( selectedEditable );
 
 		if ( !domRoot ) {
@@ -446,7 +446,7 @@ export default class Renderer {
 
 		for ( let range of this.selection.getRanges() ) {
 			// Update ranges only in currently selected editable.
-			if ( range.start.parent.getRoot() == selectedEditable ) {
+			if ( range.start.parent.root == selectedEditable ) {
 				const domRangeStart = this.domConverter.viewPositionToDom( range.start );
 				const domRangeEnd = this.domConverter.viewPositionToDom( range.end );
 				const domRange = new Range();
@@ -479,7 +479,7 @@ export default class Renderer {
 	 */
 	_updateFocus() {
 		if ( this.isFocused ) {
-			const editable = this.selection.getEditableElement();
+			const editable = this.selection.editableElement;
 
 			if ( editable ) {
 				this.domConverter.focus( editable );
