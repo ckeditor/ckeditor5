@@ -13,15 +13,14 @@ const gulpWatch = require( 'gulp-watch' );
 const gulpPlumber = require( 'gulp-plumber' );
 const gutil = require( 'gulp-util' );
 const filter = require( 'gulp-filter' );
-const utils = require( './utils' );
 const runSequence = require( 'run-sequence' );
-const tools = require( '../../utils/tools' );
+const { build, tools } = require( 'ckeditor5-dev-utils' );
 
 module.exports = ( config ) => {
 	const buildDir = path.join( config.ROOT_DIR, config.BUILD_DIR );
 	const themesGlob = path.join( 'theme', '**', '*.scss' );
 	const iconsGlob = path.join( 'theme', 'icons', '*.svg' );
-	const args = utils.parseArguments();
+	const args = build.parseArguments();
 
 	const tasks = {
 		clean: {
@@ -42,7 +41,7 @@ module.exports = ( config ) => {
 			 */
 			js( options ) {
 				// TODO: ES6 default function parameters
-				options = options || utils.parseArguments();
+				options = options || build.parseArguments();
 
 				return tools.clean( buildDir, path.join( `@(${ options.formats.join( '|' ) })`, '!(theme)' ) );
 			},
@@ -77,7 +76,7 @@ module.exports = ( config ) => {
 					const glob = path.join( config.ROOT_DIR, 'ckeditor.js' );
 
 					return gulp.src( glob )
-						.pipe( watch ? gulpWatch( glob ) : utils.noop() );
+						.pipe( watch ? gulpWatch( glob ) : build.noop() );
 				},
 
 				/**
@@ -90,8 +89,8 @@ module.exports = ( config ) => {
 					const glob = path.join( config.ROOT_DIR, '@(src|tests)', '**', '*' );
 
 					return gulp.src( glob, { nodir: true } )
-						.pipe( watch ? gulpWatch( glob ) : utils.noop() )
-						.pipe( utils.renameCKEditor5Files() );
+						.pipe( watch ? gulpWatch( glob ) : build.noop() )
+						.pipe( build.renameCKEditor5Files() );
 				},
 
 				/**
@@ -101,7 +100,7 @@ module.exports = ( config ) => {
 				 * @returns {Stream}
 				 */
 				packages( watch ) {
-					const dirs = utils.getPackages( config.ROOT_DIR );
+					const dirs = build.getPackages( config.ROOT_DIR );
 
 					const streams = dirs.map( ( dirPath ) => {
 						const glob = path.join( dirPath, '@(src|tests)', '**', '*' );
@@ -110,11 +109,11 @@ module.exports = ( config ) => {
 						const opts = { base: baseDir, nodir: true };
 
 						return gulp.src( glob, opts )
-							.pipe( watch ? gulpWatch( glob, opts ) : utils.noop() );
+							.pipe( watch ? gulpWatch( glob, opts ) : build.noop() );
 					} );
 
 					return merge.apply( null, streams )
-						.pipe( utils.renamePackageFiles() );
+						.pipe( build.renamePackageFiles() );
 				}
 			},
 
@@ -124,7 +123,7 @@ module.exports = ( config ) => {
 			 * @returns {Stream}
 			 */
 			sass() {
-				const dirs = utils.getPackages( config.ROOT_DIR );
+				const dirs = build.getPackages( config.ROOT_DIR );
 
 				const streams = dirs.map( ( dirPath ) => {
 					const glob = path.join( dirPath, themesGlob );
@@ -138,7 +137,7 @@ module.exports = ( config ) => {
 			},
 
 			icons() {
-				const dirs = utils.getPackages( config.ROOT_DIR );
+				const dirs = build.getPackages( config.ROOT_DIR );
 
 				const streams = dirs.map( ( dirPath ) => {
 					const glob = path.join( dirPath, iconsGlob );
@@ -196,12 +195,12 @@ module.exports = ( config ) => {
 				// Multipipe and gulp-mirror seem to work this way, so we get a single error emitter.
 				const codeStream = tasks.src.js.all( options.watch )
 					.pipe(
-						utils.noop( ( file ) => {
+						build.noop( ( file ) => {
 							gutil.log( `Processing '${ gutil.colors.cyan( file.path ) }'...` );
 						} )
 					);
-				const conversionStreamGenerator = utils.getConversionStreamGenerator( buildDir );
-				const outputStream = utils.noop();
+				const conversionStreamGenerator = build.getConversionStreamGenerator( buildDir );
+				const outputStream = build.noop();
 
 				let inputStream;
 				let conversionStream;
@@ -237,7 +236,7 @@ module.exports = ( config ) => {
 				}
 
 				function startStreams() {
-					inputStream = utils.noop();
+					inputStream = build.noop();
 					conversionStream = createConversionStream();
 
 					codeStream
@@ -266,7 +265,7 @@ module.exports = ( config ) => {
 					const glob = path.join( config.ROOT_DIR, 'node_modules', 'ckeditor5-*', themesGlob );
 
 					// Initial build.
-					build();
+					buildSass();
 
 					gutil.log( `Watching theme files in '${ gutil.colors.cyan( glob ) }' for changes...` );
 
@@ -274,24 +273,24 @@ module.exports = ( config ) => {
 						gutil.log( `Theme file '${ gutil.colors.cyan( event.path ) }' has been ${ event.type }...` );
 
 						// Re-build the entire theme if the file has been changed.
-						return build();
+						return buildSass();
 					} );
 				} else {
-					return build();
+					return buildSass();
 				}
 
-				function build() {
-					const formatStreams = utils.getThemeFormatDestStreams( buildDir, options.formats );
+				function buildSass() {
+					const formatStreams = build.getThemeFormatDestStreams( buildDir, options.formats );
 
 					return tasks.src.sass()
 						.pipe( gulpPlumber() )
-						.pipe( utils.filterThemeEntryPoints() )
+						.pipe( build.filterThemeEntryPoints() )
 						.pipe(
-							utils.noop( file => {
+							build.noop( file => {
 								gutil.log( `Found theme entry point '${ gutil.colors.cyan( file.path ) }'.` );
 							} )
 						)
-						.pipe( utils.compileThemes( 'ckeditor.css' ) )
+						.pipe( build.compileThemes( 'ckeditor.css' ) )
 						.pipe( mirror( formatStreams ) )
 						.on( 'error', console.log );
 				}
@@ -306,16 +305,21 @@ module.exports = ( config ) => {
 			 * @returns {Stream}
 			 */
 			icons( options ) {
-				const formatStreams = utils.getThemeFormatDestStreams( buildDir, options.formats, format => {
+				const formatStreams = build.getThemeFormatDestStreams( buildDir, options.formats, format => {
 					if ( format !== 'esnext' ) {
-						return utils.transpile( format, utils.getBabelOptionsForSource( format ) );
+						return build.transpile( format, build.getBabelOptionsForSource( format ) );
 					} else {
-						return utils.noop();
+						return build.noop();
 					}
 				} );
 
+				const spriteOptions = {
+					template: path.join( __dirname, 'iconmanagermodel.tpl' ),
+					dest: 'iconmanagermodel.js',
+				};
+
 				return tasks.src.icons()
-					.pipe( utils.compileIconSprite() )
+					.pipe( build.compileIconSprite( spriteOptions ) )
 					.pipe( filter( '*.js' ) )
 					.pipe( mirror( formatStreams ) );
 			}

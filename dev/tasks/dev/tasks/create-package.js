@@ -6,10 +6,8 @@
 'use strict';
 
 const inquiries = require( '../utils/inquiries' );
-const git = require( '../../../utils/git' );
-const tools = require( '../../../utils/tools' );
 const path = require( 'path' );
-const log = require( '../../../utils/log' );
+const { git, tools, log } = require( 'ckeditor5-dev-utils' );
 
 /**
  * 1. Ask for new package name.

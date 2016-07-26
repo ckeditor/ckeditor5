@@ -37,6 +37,8 @@
     "ckeditor5-dev-lint": "ckeditor/ckeditor5-dev-lint",
     "del": "^2.0.2",
     "fs-extra": "^0.26.4",
+    "ckeditor5-dev-utils": "ckeditor/ckeditor5-dev-utils",
+    "concat-stream": "^1.5.1",
     "git-guppy": "^1.1.0",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.0",
@@ -65,9 +67,6 @@
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "mockery": "^1.4.0",
-    "multipipe": "^0.3.0",
-    "ncp": "^2.0.0",
-    "node-sass": "^3.7.0",
     "parse-gitignore": "^0.2.0",
     "pretty-bytes": "^3.0.1",
     "regenerator-runtime": "^0.9.5",
@@ -75,8 +74,8 @@
     "rollup-plugin-babel": "^2.4.0",
     "run-sequence": "^1.1.5",
     "semver": "^5.1.0",
-    "shelljs": "^0",
     "sinon": "^1.17.0",
+    "through2": "^2.0.0",
     "vinyl": "^1.1.1"
   },
   "engines": {

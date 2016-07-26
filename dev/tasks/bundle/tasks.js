@@ -16,7 +16,7 @@ const utils = require( './utils' );
 const rollup = require( 'rollup' ).rollup;
 const rollupBabel = require( 'rollup-plugin-babel' );
 const mkdirp = require( 'mkdirp' );
-const tools = require( '../../utils/tools' );
+const { tools } = require( 'ckeditor5-dev-utils' );
 
 module.exports = ( config ) => {
 	const args = utils.parseArguments();

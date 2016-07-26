@@ -10,7 +10,6 @@
 const mockery = require( 'mockery' );
 const sinon = require( 'sinon' );
 const Vinyl = require( 'vinyl' );
-const utils = require( '../../tasks/build/utils' );
 const babel = require( 'babel-core' );
 const chai = require( 'chai' );
 const expect = chai.expect;
@@ -18,6 +17,7 @@ const gutil = require( 'gulp-util' );
 const gulp = require( 'gulp' );
 const path = require( 'path' );
 const through = require( 'through2' );
+const { build } = require( 'ckeditor5-dev-utils' );
 
 describe( 'build-tasks', () => {
 	let sandbox, tasks;
@@ -103,7 +103,7 @@ describe( 'build-tasks', () => {
 			const code = 'export default {};';
 			sandbox.stub( gutil, 'log' );
 
-			const build = tasks.build.js;
+			const buildTask = tasks.build.js;
 			const stream = require( 'stream' );
 			const files = [
 				new Vinyl( {
@@ -126,7 +126,7 @@ describe( 'build-tasks', () => {
 			} );
 
 			// Stub output stream.
-			sandbox.stub( utils, 'destBuild', () => {
+			sandbox.stub( build, 'destBuild', () => {
 				return through( { objectMode: true }, ( file, encoding, cb ) => {
 					written++;
 
@@ -138,7 +138,7 @@ describe( 'build-tasks', () => {
 				} );
 			} );
 
-			const conversionStream = build( { formats: [ 'amd' ] } );
+			const conversionStream = buildTask( { formats: [ 'amd' ] } );
 
 			conversionStream.on( 'finish', () => {
 				expect( written ).to.equal( 1 );

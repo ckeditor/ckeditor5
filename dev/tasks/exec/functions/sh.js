@@ -5,7 +5,7 @@
 
 'use strict';
 
-const tools = require( '../../../utils/tools' );
+const { tools } = require( 'ckeditor5-dev-utils' );
 
 /**
  * Runs custom shell command over each package.

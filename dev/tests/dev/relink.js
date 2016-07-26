@@ -8,9 +8,8 @@
 'use strict';
 
 const sinon = require( 'sinon' );
-const tools = require( '../../utils/tools' );
-const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
 const path = require( 'path' );
+const { tools, workspace } = require( 'ckeditor5-dev-utils' );
 
 describe( 'dev-relink', () => {
 	const task = require( '../../tasks/dev/tasks/relink' );
@@ -21,8 +20,8 @@ describe( 'dev-relink', () => {
 
 	it( 'should link dev repositories', () => {
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
-		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getDependencies' );
-		const getDirectoriesStub = sinon.stub( ckeditor5Dirs, 'getDirectories' ).returns( dirs );
+		const getDependenciesSpy = sinon.spy( workspace, 'getDependencies' );
+		const getDirectoriesStub = sinon.stub( workspace, 'getDirectories' ).returns( dirs );
 		const linkStub = sinon.stub( tools, 'linkDirectories' );
 		const json = {
 			dependencies: {
@@ -44,8 +43,8 @@ describe( 'dev-relink', () => {
 	} );
 
 	it( 'should not link when no dependencies are found', () => {
-		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getDependencies' );
-		const getDirectoriesStub = sinon.stub( ckeditor5Dirs, 'getDirectories' );
+		const getDependenciesSpy = sinon.spy( workspace, 'getDependencies' );
+		const getDirectoriesStub = sinon.stub( workspace, 'getDirectories' );
 		const linkStub = sinon.stub( tools, 'linkDirectories' );
 		const json = {
 			dependencies: {
@@ -63,8 +62,8 @@ describe( 'dev-relink', () => {
 	} );
 
 	it( 'should not link when no plugins in dev mode', () => {
-		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getDependencies' );
-		const getDirectoriesStub = sinon.stub( ckeditor5Dirs, 'getDirectories' ).returns( [] );
+		const getDependenciesSpy = sinon.spy( workspace, 'getDependencies' );
+		const getDirectoriesStub = sinon.stub( workspace, 'getDirectories' ).returns( [] );
 		const linkStub = sinon.stub( tools, 'linkDirectories' );
 		const json = {
 			dependencies: {
@@ -84,8 +83,8 @@ describe( 'dev-relink', () => {
 
 	it( 'should write error message when linking is unsuccessful', () => {
 		const dirs = [ 'ckeditor5-core' ];
-		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getDependencies' );
-		const getDirectoriesStub = sinon.stub( ckeditor5Dirs, 'getDirectories' ).returns( dirs );
+		const getDependenciesSpy = sinon.spy( workspace, 'getDependencies' );
+		const getDirectoriesStub = sinon.stub( workspace, 'getDirectories' ).returns( dirs );
 		const error = new Error( 'Error message.' );
 		const linkStub = sinon.stub( tools, 'linkDirectories' ).throws( error );
 		const json = {
@@ -96,7 +95,7 @@ describe( 'dev-relink', () => {
 			}
 		};
 		const writeErrorSpy = sinon.spy();
-		const log = require( '../../utils/log' );
+		const { log } = require( 'ckeditor5-dev-utils' );
 		log.configure( () => {}, writeErrorSpy );
 
 		task( ckeditor5Path, json, workspaceRoot );

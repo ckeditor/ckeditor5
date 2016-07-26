@@ -8,13 +8,11 @@
 'use strict';
 
 const sinon = require( 'sinon' );
-const tools = require( '../../utils/tools' );
-const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
-const git = require( '../../utils/git' );
 const path = require( 'path' );
 const chai = require( 'chai' );
 const expect = chai.expect;
 const gulp = require( 'gulp' );
+const { tools, workspace, git } = require( 'ckeditor5-dev-utils' );
 
 describe( 'dev-update', () => {
 	const updateTask = require( '../../tasks/dev/tasks/update' );
@@ -24,7 +22,7 @@ describe( 'dev-update', () => {
 	const spies = {};
 
 	beforeEach( () => {
-		spies.getDependencies = sinon.spy( ckeditor5Dirs, 'getDependencies' );
+		spies.getDependencies = sinon.spy( workspace, 'getDependencies' );
 		spies.checkout = sinon.stub( git, 'checkout' );
 		spies.pull = sinon.stub( git, 'pull' );
 		spies.fetchAll = sinon.stub( git, 'fetchAll' );
@@ -40,8 +38,8 @@ describe( 'dev-update', () => {
 	it( 'should update dev repositories', () => {
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
 		const installTask = sinon.spy();
-		spies.getDirectories = sinon.stub( ckeditor5Dirs, 'getDirectories' ).returns( dirs );
-		spies.getSymlinks = sinon.stub( ckeditor5Dirs, 'getSymlinks' ).returns( [] );
+		spies.getDirectories = sinon.stub( workspace, 'getDirectories' ).returns( dirs );
+		spies.getSymlinks = sinon.stub( workspace, 'getSymlinks' ).returns( [] );
 
 		const json = {
 			dependencies: {
@@ -80,8 +78,8 @@ describe( 'dev-update', () => {
 	it( 'should install missing dependencies', () => {
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
 		const installTask = sinon.spy();
-		spies.getDirectories = sinon.stub( ckeditor5Dirs, 'getDirectories' ).returns( dirs );
-		spies.getSymlinks = sinon.stub( ckeditor5Dirs, 'getSymlinks' ).returns( [] );
+		spies.getDirectories = sinon.stub( workspace, 'getDirectories' ).returns( dirs );
+		spies.getSymlinks = sinon.stub( workspace, 'getSymlinks' ).returns( [] );
 
 		const json = {
 			dependencies: {
@@ -123,8 +121,8 @@ describe( 'dev-update', () => {
 	it( 'should remove symlinks that are not needed', () => {
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
 		const installTask = sinon.spy();
-		spies.getDirectories = sinon.stub( ckeditor5Dirs, 'getDirectories' ).returns( dirs );
-		spies.getSymlinks = sinon.stub( ckeditor5Dirs, 'getSymlinks' ).returns( [ 'ckeditor5-unused' ] );
+		spies.getDirectories = sinon.stub( workspace, 'getDirectories' ).returns( dirs );
+		spies.getSymlinks = sinon.stub( workspace, 'getSymlinks' ).returns( [ 'ckeditor5-unused' ] );
 
 		const json = {
 			dependencies: {
@@ -163,13 +161,13 @@ describe( 'dev-update', () => {
 	} );
 
 	it( 'should catch linking errors', () => {
-		const log = require( '../../utils/log' );
+		const { log } = require( 'ckeditor5-dev-utils' );
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
 		const installTask = sinon.spy();
 		const outSpy = sinon.spy();
 		const errSpy = sinon.spy();
-		spies.getDirectories = sinon.stub( ckeditor5Dirs, 'getDirectories' ).returns( dirs );
-		spies.getSymlinks = sinon.stub( ckeditor5Dirs, 'getSymlinks' ).returns( [ 'ckeditor5-unused' ] );
+		spies.getDirectories = sinon.stub( workspace, 'getDirectories' ).returns( dirs );
+		spies.getSymlinks = sinon.stub( workspace, 'getSymlinks' ).returns( [ 'ckeditor5-unused' ] );
 		spies.linkDirectories.throws();
 
 		log.configure( outSpy, errSpy );
@@ -210,11 +208,11 @@ describe( 'dev-update', () => {
 
 	it( 'should skip updating if no dependencies found and fetch only main repository', () => {
 		spies.getDependencies.restore();
-		spies.getDependencies = sinon.stub( ckeditor5Dirs, 'getDependencies' ).returns( null );
+		spies.getDependencies = sinon.stub( workspace, 'getDependencies' ).returns( null );
 		const dirs = [ 'ckeditor5-core', 'ckeditor5-devtest' ];
 		const installTask = sinon.spy();
-		spies.getDirectories = sinon.stub( ckeditor5Dirs, 'getDirectories' ).returns( dirs );
-		spies.getSymlinks = sinon.stub( ckeditor5Dirs, 'getSymlinks' ).returns( [] );
+		spies.getDirectories = sinon.stub( workspace, 'getDirectories' ).returns( dirs );
+		spies.getSymlinks = sinon.stub( workspace, 'getSymlinks' ).returns( [] );
 
 		const json = {
 			dependencies: {

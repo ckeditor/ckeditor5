@@ -45,7 +45,7 @@ describe( 'exec-tasks', () => {
 	describe( 'execOnRepositories', () => {
 		it( 'should throw error when there is no specified task', () => {
 			const errorMessage = 'Missing task parameter: --task task-name';
-			const log = require( '../../utils/log' );
+			const { log } = require( 'ckeditor5-dev-utils' );
 			const logErrSpy = sandbox.stub( log, 'err' );
 
 			mockery.registerMock( 'minimist', () => {
@@ -61,7 +61,7 @@ describe( 'exec-tasks', () => {
 		} );
 
 		it( 'should throw error when task cannot be found', () => {
-			const log = require( '../../utils/log' );
+			const { log } = require( 'ckeditor5-dev-utils' );
 			const logErrSpy = sandbox.stub( log, 'err' );
 
 			mockery.registerMock( 'minimist', () => {
@@ -77,11 +77,10 @@ describe( 'exec-tasks', () => {
 		} );
 
 		it( 'should load task module', () => {
-			const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
-			const log = require( '../../utils/log' );
+			const { workspace, log } = require( 'ckeditor5-dev-utils' );
 			const logErrSpy = sandbox.stub( log, 'err' );
 
-			sandbox.stub( ckeditor5Dirs, 'getDevDirectories' ).returns( [] );
+			sandbox.stub( workspace, 'getDevDirectories' ).returns( [] );
 			mockery.registerMock( 'minimist', () => {
 				return { task: 'task-to-run' };
 			} );
@@ -94,9 +93,8 @@ describe( 'exec-tasks', () => {
 		} );
 
 		it( 'should log error when task is throwing exceptions', () => {
-			const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
+			const { workspace, log } = require( 'ckeditor5-dev-utils' );
 			const taskStub = sinon.stub();
-			const log = require( '../../utils/log' );
 			const logErrSpy = sandbox.stub( log, 'err' );
 
 			taskStub.onSecondCall().throws();
@@ -104,7 +102,7 @@ describe( 'exec-tasks', () => {
 			mockery.registerMock( 'minimist', () => {
 				return { task: 'task-to-run' };
 			} );
-			sandbox.stub( ckeditor5Dirs, 'getDevDirectories' ).returns( getDevDirectoriesResult );
+			sandbox.stub( workspace, 'getDevDirectories' ).returns( getDevDirectoriesResult );
 			mockery.registerMock( './functions/task-to-run', taskStub );
 			const tasks = require( '../../tasks/exec/tasks' )( config );
 
@@ -118,13 +116,13 @@ describe( 'exec-tasks', () => {
 		} );
 
 		it( 'should execute task over directories', () => {
-			const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
+			const { workspace } = require( 'ckeditor5-dev-utils' );
 			const taskStub = sinon.stub();
 
 			mockery.registerMock( 'minimist', () => {
 				return { task: 'task-to-run' };
 			} );
-			sandbox.stub( ckeditor5Dirs, 'getDevDirectories' ).returns( getDevDirectoriesResult );
+			sandbox.stub( workspace, 'getDevDirectories' ).returns( getDevDirectoriesResult );
 			mockery.registerMock( './functions/task-to-run', taskStub );
 			const tasks = require( '../../tasks/exec/tasks' )( config );
 
@@ -137,7 +135,7 @@ describe( 'exec-tasks', () => {
 
 		it( 'should execute task over specific directory', () => {
 			const Stream = require( 'stream' );
-			const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
+			const { workspace } = require( 'ckeditor5-dev-utils' );
 			const taskStub = sinon.stub().returns( new Stream() );
 
 			mockery.registerMock( 'minimist', () => {
@@ -146,7 +144,7 @@ describe( 'exec-tasks', () => {
 					repository: 'test1'
 				};
 			} );
-			sandbox.stub( ckeditor5Dirs, 'getDevDirectories' ).returns( getDevDirectoriesResult );
+			sandbox.stub( workspace, 'getDevDirectories' ).returns( getDevDirectoriesResult );
 			mockery.registerMock( './functions/task-to-run', taskStub );
 			const tasks = require( '../../tasks/exec/tasks' )( config );
 
