@@ -18,6 +18,13 @@
 		top: .9em;
 		margin-left: ck-spacing( 'medium' );
 	}
+
+	// #23
+	.ck-button__label {
+		width: 7em;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 }
 
 .ck-dropdown__panel {
