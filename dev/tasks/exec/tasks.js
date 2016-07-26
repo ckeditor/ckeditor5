@@ -9,8 +9,7 @@ const gulp = require( 'gulp' );
 const minimist = require( 'minimist' );
 const path = require( 'path' );
 const merge = require( 'merge-stream' );
-const log = require( '../../utils/log' );
-const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
+const { log, workspace } = require( 'ckeditor5-dev-utils' );
 
 /**
  * Run task over `ckeditor5-*` repositories.
@@ -81,7 +80,7 @@ function execute( execTask, ckeditor5Path, packageJSON, workspaceRoot, params ) 
 	const specificRepository = params.repository;
 	const includeRoot = !!params[ 'include-root' ];
 
-	let devDirectories = ckeditor5Dirs.getDevDirectories( workspacePath, packageJSON, ckeditor5Path, includeRoot );
+	let devDirectories = workspace.getDevDirectories( workspacePath, packageJSON, ckeditor5Path, includeRoot );
 
 	if ( specificRepository ) {
 		devDirectories = devDirectories.filter( ( dir ) => {

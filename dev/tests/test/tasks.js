@@ -7,17 +7,16 @@
 
 'use strict';
 
-const tasks = require( '../../tasks/test/tasks' )();
-const buildUtils = require( '../../tasks/build/utils' );
-const devTools = require( '../../utils/tools' );
 const Vinyl = require( 'vinyl' );
+const tasks = require( '../../tasks/test/tasks' )();
+const { build, tools } = require( 'ckeditor5-dev-utils' );
 
 describe( 'test-node', () => {
 	describe( 'skipManual', () => {
 		it( 'should skip manual tests', ( done ) => {
 			const stream = tasks.skipManual();
 			const spy = sinon.spy();
-			const stub = sinon.stub( devTools, 'isFile', ( file ) => {
+			const stub = sinon.stub( tools, 'isFile', ( file ) => {
 				return file == 'file1.md';
 			} );
 			const unitTestFile = new Vinyl( {
@@ -31,7 +30,7 @@ describe( 'test-node', () => {
 				contents: null
 			} );
 
-			stream.pipe( buildUtils.noop( spy ) );
+			stream.pipe( build.noop( spy ) );
 
 			stream.once( 'finish', () => {
 				sinon.assert.calledOnce( spy );
@@ -61,7 +60,7 @@ describe( 'test-node', () => {
 				path: 'file1.js',
 				contents: new Buffer( '/* bender-tags: tag, browser-only */' )
 			} );
-			const noop = buildUtils.noop( spy );
+			const noop = build.noop( spy );
 			noop.once( 'finish', () => {
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, unitTestFile );

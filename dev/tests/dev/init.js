@@ -8,7 +8,7 @@
 'use strict';
 
 const sinon = require( 'sinon' );
-const ckeditor5Dirs = require( '../../utils/ckeditor5-dirs' );
+const { workspace } = require( 'ckeditor5-dev-utils' );
 
 describe( 'dev-init', () => {
 	const initTask = require( '../../tasks/dev/tasks/init' );
@@ -16,7 +16,7 @@ describe( 'dev-init', () => {
 	const workspaceRoot = '..';
 
 	it( 'should get all ckedtior5- dependencies and execute dev-install on them', () => {
-		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getDependencies' );
+		const getDependenciesSpy = sinon.spy( workspace, 'getDependencies' );
 		const installSpy = sinon.spy();
 		const JSON = {
 			dependencies: {
@@ -39,7 +39,7 @@ describe( 'dev-init', () => {
 	} );
 
 	it( 'should not call dev-install if no ckedtior5- dependencies', () => {
-		const getDependenciesSpy = sinon.spy( ckeditor5Dirs, 'getDependencies' );
+		const getDependenciesSpy = sinon.spy( workspace, 'getDependencies' );
 		const installSpy = sinon.spy();
 		const JSON = {
 			dependencies: {}
