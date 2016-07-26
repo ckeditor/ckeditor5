@@ -265,7 +265,7 @@ function transformRangesByDeltas( ranges, deltas ) {
 					case 'insert':
 						result = ranges[ i ]._getTransformedByInsertion(
 							operation.position,
-							operation.nodes.getMaxOffset(),
+							operation.nodes.maxOffset,
 							true
 						);
 						break;
