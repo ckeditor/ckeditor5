@@ -47,9 +47,6 @@ module.exports = ( ckeditor5Path, workspaceRoot ) => {
 		],
 		'dev/': [
 			'dev/.jshintrc'
-		],
-		'dev/tasks/lint/': [
-			'dev/tasks/lint/tasks.js'
 		]
 	};
 
