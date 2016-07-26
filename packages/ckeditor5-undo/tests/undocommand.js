@@ -175,7 +175,7 @@ describe( 'UndoCommand', () => {
 			 [root]
 			 */
 
-			expect( root.getChildCount() ).to.equal( 0 );
+			expect( root.childCount ).to.equal( 0 );
 			expect( editor.document.selection.getRanges().next().value.isEqual( r( 0, 0 ) ) ).to.be.true;
 		} );
 
@@ -218,7 +218,7 @@ describe( 'UndoCommand', () => {
 			// The `P` element wasn't removed because it wasn`t added by undone batch.
 			// It would be perfect if the `P` got removed aswell because wrapping was on removed nodes.
 			// But this would need a lot of logic / hardcoded ifs or a post-fixer.
-			expect( root.getChildCount() ).to.equal( 1 );
+			expect( root.childCount ).to.equal( 1 );
 			expect( itemAt( root, 0 ).name ).to.equal( 'p' );
 
 			expect( editor.document.selection.getRanges().next().value.isEqual( r( 0, 0 ) ) ).to.be.true;
@@ -229,14 +229,14 @@ describe( 'UndoCommand', () => {
 			// This does nothing in the `root` because attributes were set on nodes that already got removed.
 			// But those nodes should change in the graveyard and we can check them there.
 
-			expect( root.getChildCount() ).to.equal( 1 );
+			expect( root.childCount ).to.equal( 1 );
 			expect( itemAt( root, 0 ).name ).to.equal( 'p' );
 
 			// Operations for undoing that batch were working on graveyard so document selection should not change.
 			expect( editor.document.selection.getRanges().next().value.isEqual( r( 0, 0 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
 
-			expect( doc.graveyard.getChild( 0 ).getMaxOffset() ).to.equal( 6 );
+			expect( doc.graveyard.getChild( 0 ).maxOffset ).to.equal( 6 );
 
 			for ( let char of doc.graveyard._children ) {
 				expect( char.hasAttribute( 'key' ) ).to.be.false;
@@ -244,7 +244,7 @@ describe( 'UndoCommand', () => {
 
 			// Let's undo wrapping. This should leave us with empty root.
 			undo._execute( batch3 );
-			expect( root.getMaxOffset() ).to.equal( 0 );
+			expect( root.maxOffset ).to.equal( 0 );
 
 			// Once again transformed range ends up in the graveyard.
 			expect( editor.document.selection.getRanges().next().value.isEqual( r( 0, 0 ) ) ).to.be.true;
@@ -257,7 +257,7 @@ describe( 'UndoCommand', () => {
 		function getCaseText( root ) {
 			let text = '';
 
-			for ( let i = 0; i < root.getChildCount(); i++ ) {
+			for ( let i = 0; i < root.childCount; i++ ) {
 				let node = root.getChild( i );
 				text += node.getAttribute( 'uppercase' ) ? node.data.toUpperCase() : node.data;
 			}
