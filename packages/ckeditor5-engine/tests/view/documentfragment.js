@@ -15,14 +15,14 @@ describe( 'DocumentFragment', () => {
 			const fragment = new DocumentFragment();
 
 			expect( fragment ).to.be.an.instanceof( DocumentFragment );
-			expect( fragment.getChildCount() ).to.equal( 0 );
+			expect( fragment.childCount ).to.equal( 0 );
 		} );
 
 		it( 'should create DocumentFragment with child node', () => {
 			const child = new Element( 'p' );
 			const fragment = new DocumentFragment( child );
 
-			expect( fragment.getChildCount() ).to.equal( 1 );
+			expect( fragment.childCount ).to.equal( 1 );
 			expect( fragment.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
 		} );
 
@@ -30,7 +30,7 @@ describe( 'DocumentFragment', () => {
 			const children = [ new Element( 'p' ), new Element( 'div' ) ];
 			const fragment = new DocumentFragment( children );
 
-			expect( fragment.getChildCount() ).to.equal( 2 );
+			expect( fragment.childCount ).to.equal( 2 );
 			expect( fragment.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( fragment.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'div' );
 		} );
@@ -69,13 +69,13 @@ describe( 'DocumentFragment', () => {
 		it( 'should return true if there are no children in document fragment', () => {
 			const fragment = new DocumentFragment();
 
-			expect( fragment.isEmpty() ).to.be.true;
+			expect( fragment.isEmpty ).to.be.true;
 		} );
 
 		it( 'should return false if there are children in document fragment', () => {
 			const fragment = new DocumentFragment( [ new Element( 'p' ) ] );
 
-			expect( fragment.isEmpty() ).to.be.false;
+			expect( fragment.isEmpty ).to.be.false;
 		} );
 	} );
 
@@ -95,7 +95,7 @@ describe( 'DocumentFragment', () => {
 				const count1 = fragment.insertChildren( 0, [ el1, el3 ] );
 				const count2 = fragment.insertChildren( 1, el2 );
 
-				expect( fragment.getChildCount() ).to.equal( 3 );
+				expect( fragment.childCount ).to.equal( 3 );
 				expect( fragment.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
 				expect( fragment.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el2' );
 				expect( fragment.getChild( 2 ) ).to.have.property( 'name' ).that.equals( 'el3' );
@@ -106,8 +106,14 @@ describe( 'DocumentFragment', () => {
 			it( 'should accept strings', () => {
 				fragment.insertChildren( 0, 'abc' );
 
-				expect( fragment.getChildCount() ).to.equal( 1 );
+				expect( fragment.childCount ).to.equal( 1 );
 				expect( fragment.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
+
+				fragment.removeChildren( 0, 1 );
+				fragment.insertChildren( 0, [ new Element( 'p' ), 'abc' ] );
+
+				expect( fragment.childCount ).to.equal( 2 );
+				expect( fragment.getChild( 1 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 			} );
 
 			it( 'should append children', () => {
@@ -115,7 +121,7 @@ describe( 'DocumentFragment', () => {
 				const count2 = fragment.appendChildren( el2 );
 				const count3 = fragment.appendChildren( el3 );
 
-				expect( fragment.getChildCount() ).to.equal( 3 );
+				expect( fragment.childCount ).to.equal( 3 );
 				expect( fragment.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
 				expect( fragment.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el2' );
 				expect( fragment.getChild( 2 ) ).to.have.property( 'name' ).that.equals( 'el3' );
@@ -149,7 +155,7 @@ describe( 'DocumentFragment', () => {
 				fragment.appendChildren( el2 );
 				fragment.appendChildren( el3 );
 
-				expect( fragment.getChildCount() ).to.equal( 3 );
+				expect( fragment.childCount ).to.equal( 3 );
 				expect( fragment.getChildIndex( el1 ) ).to.equal( 0 );
 				expect( fragment.getChildIndex( el2 ) ).to.equal( 1 );
 				expect( fragment.getChildIndex( el3 ) ).to.equal( 2 );
@@ -183,7 +189,7 @@ describe( 'DocumentFragment', () => {
 
 				fragment.removeChildren( 1, 2 );
 
-				expect( fragment.getChildCount() ).to.equal( 2 );
+				expect( fragment.childCount ).to.equal( 2 );
 				expect( fragment.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
 				expect( fragment.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el4' );
 
@@ -200,7 +206,7 @@ describe( 'DocumentFragment', () => {
 
 				const removed = fragment.removeChildren( 1 );
 
-				expect( fragment.getChildCount() ).to.equal( 2 );
+				expect( fragment.childCount ).to.equal( 2 );
 				expect( fragment.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
 				expect( fragment.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'el3' );
 
@@ -222,40 +228,40 @@ describe( 'DocumentFragment', () => {
 	} );
 
 	describe( 'node methods when inserted to fragment', () => {
-		it( 'getIndex() should return proper value', () => {
+		it( 'index should return proper value', () => {
 			const node1 = new Node();
 			const node2 = new Node();
 			const node3 = new Node();
 			const fragment = new DocumentFragment( [ node1, node2, node3 ] );
 
-			expect( node1.getIndex() ).to.equal( 0 );
-			expect( node2.getIndex() ).to.equal( 1 );
-			expect( node3.getIndex() ).to.equal( 2 );
+			expect( node1.index ).to.equal( 0 );
+			expect( node2.index ).to.equal( 1 );
+			expect( node3.index ).to.equal( 2 );
 			expect( node1.parent ).to.equal( fragment );
 			expect( node2.parent ).to.equal( fragment );
 			expect( node3.parent ).to.equal( fragment );
 		} );
 
-		it( 'getNextSibling() should return proper node', () => {
+		it( 'nextSibling should return proper node', () => {
 			const node1 = new Node();
 			const node2 = new Node();
 			const node3 = new Node();
 			new DocumentFragment( [ node1, node2, node3 ] );
 
-			expect( node1.getNextSibling() ).to.equal( node2 );
-			expect( node2.getNextSibling() ).to.equal( node3 );
-			expect( node3.getNextSibling() ).to.be.null;
+			expect( node1.nextSibling ).to.equal( node2 );
+			expect( node2.nextSibling ).to.equal( node3 );
+			expect( node3.nextSibling ).to.be.null;
 		} );
 
-		it( 'getPreviousSibling() should return proper node', () => {
+		it( 'previousSibling should return proper node', () => {
 			const node1 = new Node();
 			const node2 = new Node();
 			const node3 = new Node();
 			new DocumentFragment( [ node1, node2, node3 ] );
 
-			expect( node1.getPreviousSibling() ).to.be.null;
-			expect( node2.getPreviousSibling() ).to.equal( node1 );
-			expect( node3.getPreviousSibling() ).to.equal( node2 );
+			expect( node1.previousSibling ).to.be.null;
+			expect( node2.previousSibling ).to.equal( node1 );
+			expect( node3.previousSibling ).to.equal( node2 );
 		} );
 
 		it( 'remove() should remove node from fragment', () => {
@@ -267,7 +273,7 @@ describe( 'DocumentFragment', () => {
 			node1.remove();
 			node3.remove();
 
-			expect( fragment.getChildCount() ).to.equal( 1 );
+			expect( fragment.childCount ).to.equal( 1 );
 			expect( node1.parent ).to.be.null;
 			expect( node3.parent ).to.be.null;
 			expect( fragment.getChild( 0 ) ).to.equal( node2 );

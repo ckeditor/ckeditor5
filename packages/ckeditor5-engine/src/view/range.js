@@ -75,8 +75,8 @@ export default class Range {
 	 *
 	 * @type {engine.view.Element|engine.view.DocumentFragment}
 	 */
-	getRoot() {
-		return this.start.getRoot();
+	get root() {
+		return this.start.root;
 	}
 
 	/**
@@ -331,6 +331,6 @@ export default class Range {
 	 * @returns {engine.view.Range}
 	 */
 	static createFromElement( element ) {
-		return this.createFromParentsAndOffsets( element, 0, element, element.getChildCount() );
+		return this.createFromParentsAndOffsets( element, 0, element, element.childCount );
 	}
 }

@@ -200,7 +200,7 @@ export default class LiveSelection extends Selection {
 	*_getStoredAttributes() {
 		const selectionParent = this.getFirstPosition().parent;
 
-		if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
+		if ( this.isCollapsed && selectionParent.childCount === 0 ) {
 			for ( let key of selectionParent.getAttributeKeys() ) {
 				if ( key.indexOf( storePrefix ) === 0 ) {
 					const realKey = key.substr( storePrefix.length );
@@ -220,7 +220,7 @@ export default class LiveSelection extends Selection {
 	_removeStoredAttribute( key ) {
 		const selectionParent = this.getFirstPosition().parent;
 
-		if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
+		if ( this.isCollapsed && selectionParent.childCount === 0 ) {
 			const storeKey = LiveSelection._getStoreAttributeKey( key );
 
 			this._document.enqueueChanges( () => {
@@ -240,7 +240,7 @@ export default class LiveSelection extends Selection {
 	_storeAttribute( key, value ) {
 		const selectionParent = this.getFirstPosition().parent;
 
-		if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
+		if ( this.isCollapsed && selectionParent.childCount === 0 ) {
 			const storeKey = LiveSelection._getStoreAttributeKey( key );
 
 			this._document.enqueueChanges( () => {
@@ -258,7 +258,7 @@ export default class LiveSelection extends Selection {
 	_setStoredAttributesTo( attrs ) {
 		const selectionParent = this.getFirstPosition().parent;
 
-		if ( this.isCollapsed && selectionParent.getChildCount() === 0 ) {
+		if ( this.isCollapsed && selectionParent.childCount === 0 ) {
 			this._document.enqueueChanges( () => {
 				const batch = this._document.batch();
 

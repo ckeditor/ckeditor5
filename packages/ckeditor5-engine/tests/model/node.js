@@ -112,17 +112,17 @@ describe( 'Node', () => {
 
 	describe( 'getIndex', () => {
 		it( 'should return null if the parent is null', () => {
-			expect( root.getIndex() ).to.be.null;
+			expect( root.index ).to.be.null;
 		} );
 
 		it( 'should return index in the parent', () => {
-			expect( one.getIndex() ).to.equal( 0 );
-			expect( two.getIndex() ).to.equal( 1 );
-			expect( three.getIndex() ).to.equal( 2 );
+			expect( one.index ).to.equal( 0 );
+			expect( two.index ).to.equal( 1 );
+			expect( three.index ).to.equal( 2 );
 
-			expect( textBA.getIndex() ).to.equal( 0 );
-			expect( img.getIndex() ).to.equal( 1 );
-			expect( textR.getIndex() ).to.equal( 2 );
+			expect( textBA.index ).to.equal( 0 );
+			expect( img.index ).to.equal( 1 );
+			expect( textR.index ).to.equal( 2 );
 		} );
 
 		it( 'should throw an error if parent does not contain element', () => {
@@ -130,7 +130,7 @@ describe( 'Node', () => {
 
 			expect(
 				() => {
-					node.getIndex();
+					node.index;
 				}
 			).to.throw( CKEditorError, /node-not-found-in-parent/ );
 		} );
@@ -153,7 +153,7 @@ describe( 'Node', () => {
 
 			node.remove();
 
-			expect( element.getChildCount() ).to.equal( 0 );
+			expect( element.childCount ).to.equal( 0 );
 			expect( node.parent ).to.be.null;
 		} );
 

@@ -56,6 +56,6 @@ export default class ContainerElement extends Element {
 	 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
 	 */
 	getFillerOffset() {
-		return this.getChildCount() === 0 ? 0 : null;
+		return this.childCount === 0 ? 0 : null;
 	}
 }

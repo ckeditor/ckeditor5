@@ -68,36 +68,6 @@ export default class TextProxy {
 	}
 
 	/**
-	 * Parent of this text proxy, which is same as parent of text node represented by this text proxy.
-	 *
-	 * @readonly
-	 * @type {engine.model.Element|engine.model.DocumentFragment|null}
-	 */
-	get parent() {
-		return this.textNode.parent;
-	}
-
-	/**
-	 * Root of this text proxy, which is same as root of text node represented by this text proxy.
-	 *
-	 * @readonly
-	 * @type {engine.model.Element|engine.model.DocumentFragment}
-	 */
-	get root() {
-		return this.textNode.root;
-	}
-
-	/**
-	 * {@link engine.model.Document Document} that owns text node represented by this text proxy or `null` if the text node
-	 * has no parent or is inside a {@link engine.model.DocumentFragment DocumentFragment}.
-	 *
-	 * @returns {engine.model.Document|null}
-	 */
-	get document() {
-		return this.textNode.document;
-	}
-
-	/**
 	 * Offset at which this text proxy starts in it's parent.
 	 *
 	 * @see engine.model.Node#startOffset
@@ -143,6 +113,36 @@ export default class TextProxy {
 	 */
 	get isPartial() {
 		return this.offsetInText !== 0 || this.offsetSize !== this.textNode.offsetSize;
+	}
+
+	/**
+	 * Parent of this text proxy, which is same as parent of text node represented by this text proxy.
+	 *
+	 * @readonly
+	 * @type {engine.model.Element|engine.model.DocumentFragment|null}
+	 */
+	get parent() {
+		return this.textNode.parent;
+	}
+
+	/**
+	 * Root of this text proxy, which is same as root of text node represented by this text proxy.
+	 *
+	 * @readonly
+	 * @type {engine.model.Element|engine.model.DocumentFragment}
+	 */
+	get root() {
+		return this.textNode.root;
+	}
+
+	/**
+	 * {@link engine.model.Document Document} that owns text node represented by this text proxy or `null` if the text node
+	 * has no parent or is inside a {@link engine.model.DocumentFragment DocumentFragment}.
+	 *
+	 * @returns {engine.model.Document|null}
+	 */
+	get document() {
+		return this.textNode.document;
 	}
 
 	/**

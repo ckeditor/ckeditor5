@@ -83,13 +83,13 @@ describe( 'ReinsertOperation', () => {
 		doc.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 2 );
-		expect( element.getMaxOffset() ).to.equal( 0 );
+		expect( root.maxOffset ).to.equal( 2 );
+		expect( element.maxOffset ).to.equal( 0 );
 
 		doc.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( root.getMaxOffset() ).to.equal( 0 );
+		expect( root.maxOffset ).to.equal( 0 );
 		// Don't check `element` - nodes are moved to new holder element.
 	} );
 

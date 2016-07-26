@@ -27,7 +27,7 @@ describe( 'Document', () => {
 			expect( doc ).to.have.property( '_roots' ).that.is.instanceof( Map );
 			expect( doc._roots.size ).to.equal( 1 );
 			expect( doc.graveyard ).to.be.instanceof( RootElement );
-			expect( doc.graveyard.getMaxOffset() ).to.equal( 0 );
+			expect( doc.graveyard.maxOffset ).to.equal( 0 );
 			expect( count( doc.selection.getRanges() ) ).to.equal( 1 );
 
 			expect( doc.composer ).to.be.instanceof( Composer );
@@ -35,16 +35,16 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'rootNames', () => {
+	describe( 'getRootNames()', () => {
 		it( 'should return empty iterator if no roots exist', () => {
-			expect( count( doc.rootNames ) ).to.equal( 0 );
+			expect( count( doc.getRootNames() ) ).to.equal( 0 );
 		} );
 
 		it( 'should return an iterator of all roots without the graveyard', () => {
 			doc.createRoot( '$root', 'a' );
 			doc.createRoot( '$root', 'b' );
 
-			expect( Array.from( doc.rootNames ) ).to.deep.equal( [ 'a', 'b' ] );
+			expect( Array.from( doc.getRootNames() ) ).to.deep.equal( [ 'a', 'b' ] );
 		} );
 	} );
 
@@ -54,7 +54,7 @@ describe( 'Document', () => {
 
 			expect( doc._roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
-			expect( root.getMaxOffset() ).to.equal( 0 );
+			expect( root.maxOffset ).to.equal( 0 );
 			expect( root ).to.have.property( 'name', '$root' );
 			expect( root ).to.have.property( 'rootName', 'main' );
 		} );
@@ -64,7 +64,7 @@ describe( 'Document', () => {
 
 			expect( doc._roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
-			expect( root.getMaxOffset() ).to.equal( 0 );
+			expect( root.maxOffset ).to.equal( 0 );
 			expect( root ).to.have.property( 'name', 'customElementName' );
 			expect( root ).to.have.property( 'rootName', 'customRootName' );
 		} );

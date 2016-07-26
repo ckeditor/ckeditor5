@@ -42,6 +42,24 @@ export default class DocumentFragment {
 	}
 
 	/**
+	 * Gets the number of elements in fragment.
+	 *
+	 * @returns {Number} The number of elements.
+	 */
+	get childCount() {
+		return this._children.length;
+	}
+
+	/**
+	 * Returns `true` if there are no nodes inside this document fragment, `false` otherwise.
+	 *
+	 * @returns {Boolean}
+	 */
+	get isEmpty() {
+		return this.childCount === 0;
+	}
+
+	/**
 	 * Artificial root of `DocumentFragment`. Returns itself. Added for compatibility reasons.
 	 *
 	 * @readonly
@@ -68,7 +86,7 @@ export default class DocumentFragment {
 	 * @returns {Number} Number of appended nodes.
 	 */
 	appendChildren( nodes ) {
-		return this.insertChildren( this.getChildCount(), nodes );
+		return this.insertChildren( this.childCount, nodes );
 	}
 
 	/**
@@ -79,15 +97,6 @@ export default class DocumentFragment {
 	 */
 	getChild( index ) {
 		return this._children[ index ];
-	}
-
-	/**
-	 * Gets the number of elements in fragment.
-	 *
-	 * @returns {Number} The number of elements.
-	 */
-	getChildCount() {
-		return this._children.length;
 	}
 
 	/**
@@ -132,15 +141,6 @@ export default class DocumentFragment {
 		}
 
 		return count;
-	}
-
-	/**
-	 * Returns `true` if there are no nodes inside this document fragment, `false` otherwise.
-	 *
-	 * @returns {Boolean}
-	 */
-	isEmpty() {
-		return this.getChildCount() === 0;
 	}
 
 	/**

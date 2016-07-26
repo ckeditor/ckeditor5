@@ -103,6 +103,24 @@ export default class Element extends Node {
 	}
 
 	/**
+	 * Gets the number of element's children.
+	 *
+	 * @returns {Number} The number of element's children.
+	 */
+	get childCount() {
+		return this._children.length;
+	}
+
+	/**
+	 * Returns `true` if there are no nodes inside this element, `false` otherwise.
+	 *
+	 * @returns {Boolean}
+	 */
+	get isEmpty() {
+		return this._children.length === 0;
+	}
+
+	/**
 	 * Clones provided element.
 	 *
 	 * @param {Boolean} deep If set to `true` clones element and all its children recursively. When set to `false`,
@@ -138,7 +156,7 @@ export default class Element extends Node {
 	 * @returns {Number} Number of appended nodes.
 	 */
 	appendChildren( nodes ) {
-		return this.insertChildren( this.getChildCount(), nodes );
+		return this.insertChildren( this.childCount, nodes );
 	}
 
 	/**
@@ -149,15 +167,6 @@ export default class Element extends Node {
 	 */
 	getChild( index ) {
 		return this._children[ index ];
-	}
-
-	/**
-	 * Gets the number of element's children.
-	 *
-	 * @returns {Number} The number of element's children.
-	 */
-	getChildCount() {
-		return this._children.length;
 	}
 
 	/**
@@ -367,15 +376,6 @@ export default class Element extends Node {
 		}
 
 		return this._children.splice( index, howMany );
-	}
-
-	/**
-	 * Returns `true` if there are no nodes inside this element, `false` otherwise.
-	 *
-	 * @returns {Boolean}
-	 */
-	isEmpty() {
-		return this._children.length === 0;
 	}
 
 	/**

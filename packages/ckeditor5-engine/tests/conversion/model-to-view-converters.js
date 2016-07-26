@@ -155,7 +155,7 @@ describe( 'setAttribute/removeAttribute', () => {
 		const modelDiv = new ModelElement( 'div', { theme: 'nice' } );
 
 		const themeConverter = ( value, key, data ) => {
-			if ( data.item instanceof ModelElement && data.item.getChildCount() > 0 ) {
+			if ( data.item instanceof ModelElement && data.item.childCount > 0 ) {
 				value += ' ' + 'fix-content';
 			}
 

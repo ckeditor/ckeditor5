@@ -412,7 +412,7 @@ export default class DomConverter {
 				const viewBefore = this.getCorrespondingView( domParent.childNodes[ domOffset - 1 ] );
 
 				if ( viewBefore ) {
-					return new ViewPosition( viewBefore.parent, viewBefore.getIndex() + 1 );
+					return new ViewPosition( viewBefore.parent, viewBefore.index + 1 );
 				}
 			}
 
@@ -501,11 +501,11 @@ export default class DomConverter {
 			const viewElement = this.getCorrespondingViewElement( previousSibling );
 
 			if ( viewElement ) {
-				const nextSibling = viewElement.getNextSibling();
+				const nextSibling = viewElement.nextSibling;
 
 				// It might be filler which has no corresponding view node.
 				if ( nextSibling instanceof ViewText ) {
-					return viewElement.getNextSibling();
+					return viewElement.nextSibling;
 				} else {
 					return null;
 				}
@@ -590,7 +590,7 @@ export default class DomConverter {
 	 * @returns {Text|null} Corresponding DOM text node or `null`, if it was not possible to find a corresponding node.
 	 */
 	getCorrespondingDomText( viewText ) {
-		const previousSibling = viewText.getPreviousSibling();
+		const previousSibling = viewText.previousSibling;
 
 		// Try to use previous sibling to find the corresponding text node.
 		if ( previousSibling && this.getCorrespondingDom( previousSibling ) ) {

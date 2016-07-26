@@ -273,9 +273,9 @@ export function parse( data, options = {} ) {
 	// If custom root is provided - move all nodes there.
 	if ( options.rootElement ) {
 		const root = options.rootElement;
-		const nodes = view.removeChildren( 0, view.getChildCount() );
+		const nodes = view.removeChildren( 0, view.childCount );
 
-		root.removeChildren( 0, root.getChildCount() );
+		root.removeChildren( 0, root.childCount );
 		root.appendChildren( nodes );
 
 		view = root;
@@ -285,7 +285,7 @@ export function parse( data, options = {} ) {
 	const ranges = rangeParser.parse( view, options.order );
 
 	// If only one element is returned inside DocumentFragment - return that element.
-	if ( view instanceof ViewDocumentFragment && view.getChildCount() === 1 ) {
+	if ( view instanceof ViewDocumentFragment && view.childCount === 1 ) {
 		view = view.getChild( 0 );
 	}
 
@@ -390,7 +390,7 @@ class RangeParser {
 			}
 			text = text.replace( regexp, '' );
 			node.data = text;
-			const index = node.getIndex();
+			const index = node.index;
 			const parent = node.parent;
 
 			// Remove empty text nodes.

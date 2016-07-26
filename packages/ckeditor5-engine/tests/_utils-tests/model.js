@@ -372,7 +372,7 @@ describe( 'model test utils', () => {
 			data: '<selection />',
 			check( fragment, selection ) {
 				expect( fragment ).to.be.instanceOf( DocumentFragment );
-				expect( fragment.getChildCount() ).to.equal( 0 );
+				expect( fragment.childCount ).to.equal( 0 );
 				expect( selection.rangeCount ).to.equal( 1 );
 				expect( selection.getFirstRange().isEqual( Range.createFromParentsAndOffsets( fragment, 0, fragment, 0 ) ) ).to.be.true;
 			}
@@ -393,7 +393,7 @@ describe( 'model test utils', () => {
 			data: '<a></a><b></b>',
 			check( fragment ) {
 				expect( fragment ).to.be.instanceOf( DocumentFragment );
-				expect( fragment.getChildCount() ).to.equal( 2 );
+				expect( fragment.childCount ).to.equal( 2 );
 			}
 		} );
 
@@ -423,8 +423,8 @@ describe( 'model test utils', () => {
 		test( 'sets text attributes', {
 			data: '<$text bold=true italic=true>foo</$text><$text bold=true>bar</$text>bom',
 			check( root ) {
-				expect( root.getChildCount() ).to.equal( 3 );
-				expect( root.getMaxOffset() ).to.equal( 9 );
+				expect( root.childCount ).to.equal( 3 );
+				expect( root.maxOffset ).to.equal( 9 );
 				expect( root.getChild( 0 ) ).to.have.property( 'data', 'foo' );
 				expect( root.getChild( 0 ).getAttribute( 'italic' ) ).to.equal( true );
 				expect( root.getChild( 1 ) ).to.have.property( 'data', 'bar' );
@@ -522,7 +522,7 @@ describe( 'model test utils', () => {
 			test( 'sets collapsed selection between text and text with attributes', {
 				data: 'foo<selection /><$text bold=true>bar</$text>',
 				check( root, selection ) {
-					expect( root.getMaxOffset() ).to.equal( 6 );
+					expect( root.maxOffset ).to.equal( 6 );
 					expect( selection.getAttribute( 'bold' ) ).to.be.undefined;
 				}
 			} );

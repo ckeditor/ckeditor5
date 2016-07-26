@@ -121,9 +121,9 @@ describe( 'EditingController', () => {
 			// Note: The below code is highly overcomplicated due to #455.
 
 			model.selection.removeAllRanges();
-			modelRoot.removeChildren( 0, modelRoot.getChildCount() );
+			modelRoot.removeChildren( 0, modelRoot.childCount );
 
-			viewRoot.removeChildren( 0, viewRoot.getChildCount() );
+			viewRoot.removeChildren( 0, viewRoot.childCount );
 
 			const modelData = new ModelDocumentFragment( parse(
 				'<paragraph>foo</paragraph>' +

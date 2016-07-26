@@ -64,61 +64,29 @@ export default class Node {
 	}
 
 	/**
-	 * Node's next sibling or `null` if the node is a last child of it's parent or if the node has no parent.
+	 * Index of this node in it's parent or `null` if the node has no parent.
 	 *
-	 * @readonly
-	 * @type {engine.model.Node|null}
-	 */
-	get nextSibling() {
-		const index = this.getIndex();
-
-		return ( index !== null && this.parent.getChild( index + 1 ) ) || null;
-	}
-
-	/**
-	 * Node's previous sibling or `null` if the node is a first child of it's parent or if the node has no parent.
+	 * Throws error if the parent element does not contain this node. This means that model tree got broken.
 	 *
-	 * @readonly
-	 * @type {engine.model.Node|null}
+	 * @returns {Number|null}
 	 */
-	get previousSibling() {
-		const index = this.getIndex();
+	get index() {
+		let pos;
 
-		return ( index !== null && this.parent.getChild( index - 1 ) ) || null;
-	}
-
-	/**
-	 * The top-most ancestor of the node. If node has no parent it is the root itself. If the node is a part
-	 * of {@link engine.model.DocumentFragment}, it's `root` is equal to that `DocumentFragment`.
-	 *
-	 * @readonly
-	 * @type {engine.model.Node|engine.model.DocumentFragment}
-	 */
-	get root() {
-		let root = this;
-
-		while ( root.parent ) {
-			root = root.parent;
-		}
-
-		return root;
-	}
-
-	/**
-	 * {@link engine.model.Document Document} that owns this node or `null` if the node has no parent or is inside
-	 * a {@link engine.model.DocumentFragment DocumentFragment}.
-	 *
-	 * @readonly
-	 * @type {engine.model.Document|null}
-	 */
-	get document() {
-		// This is a top element of a sub-tree.
-		if ( this.root == this ) {
+		if ( !this.parent ) {
 			return null;
 		}
 
-		// Root may be `DocumentFragment` which does not have document property.
-		return this.root.document || null;
+		if ( ( pos = this.parent.getChildIndex( this ) ) === null ) {
+			/**
+			 * The node's parent does not contain this node.
+			 *
+			 * @error node-not-found-in-parent
+			 */
+			throw new CKEditorError( 'node-not-found-in-parent: The node\'s parent does not contain this node.' );
+		}
+
+		return pos;
 	}
 
 	/**
@@ -179,38 +147,70 @@ export default class Node {
 	}
 
 	/**
+	 * Node's next sibling or `null` if the node is a last child of it's parent or if the node has no parent.
+	 *
+	 * @readonly
+	 * @type {engine.model.Node|null}
+	 */
+	get nextSibling() {
+		const index = this.index;
+
+		return ( index !== null && this.parent.getChild( index + 1 ) ) || null;
+	}
+
+	/**
+	 * Node's previous sibling or `null` if the node is a first child of it's parent or if the node has no parent.
+	 *
+	 * @readonly
+	 * @type {engine.model.Node|null}
+	 */
+	get previousSibling() {
+		const index = this.index;
+
+		return ( index !== null && this.parent.getChild( index - 1 ) ) || null;
+	}
+
+	/**
+	 * The top-most ancestor of the node. If node has no parent it is the root itself. If the node is a part
+	 * of {@link engine.model.DocumentFragment}, it's `root` is equal to that `DocumentFragment`.
+	 *
+	 * @readonly
+	 * @type {engine.model.Node|engine.model.DocumentFragment}
+	 */
+	get root() {
+		let root = this;
+
+		while ( root.parent ) {
+			root = root.parent;
+		}
+
+		return root;
+	}
+
+	/**
+	 * {@link engine.model.Document Document} that owns this node or `null` if the node has no parent or is inside
+	 * a {@link engine.model.DocumentFragment DocumentFragment}.
+	 *
+	 * @readonly
+	 * @type {engine.model.Document|null}
+	 */
+	get document() {
+		// This is a top element of a sub-tree.
+		if ( this.root == this ) {
+			return null;
+		}
+
+		// Root may be `DocumentFragment` which does not have document property.
+		return this.root.document || null;
+	}
+
+	/**
 	 * Creates a copy of this node, that is a node with exactly same attributes, and returns it.
 	 *
 	 * @returns {engine.model.Node} Node with same attributes as this node.
 	 */
 	clone() {
 		return new Node( this._attrs );
-	}
-
-	/**
-	 * Index of this node in it's parent or `null` if the node has no parent.
-	 *
-	 * Throws error if the parent element does not contain this node. This means that model tree got broken.
-	 *
-	 * @returns {Number|null}
-	 */
-	getIndex() {
-		let pos;
-
-		if ( !this.parent ) {
-			return null;
-		}
-
-		if ( ( pos = this.parent.getChildIndex( this ) ) === null ) {
-			/**
-			 * The node's parent does not contain this node.
-			 *
-			 * @error node-not-found-in-parent
-			 */
-			throw new CKEditorError( 'node-not-found-in-parent: The node\'s parent does not contain this node.' );
-		}
-
-		return pos;
 	}
 
 	/**
@@ -266,7 +266,7 @@ export default class Node {
 	 * Removes this node from it's parent.
 	 */
 	remove() {
-		this.parent.removeChildren( this.getIndex() );
+		this.parent.removeChildren( this.index );
 	}
 
 	/**

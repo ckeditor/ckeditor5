@@ -17,7 +17,7 @@ describe( 'HtmlDataProcessor', () => {
 		it( 'should return empty DocumentFragment when empty string is passed', () => {
 			const fragment = dataProcessor.toView( '' );
 			expect( fragment ).to.be.an.instanceOf( ViewDocumentFragment );
-			expect( fragment.getChildCount() ).to.equal( 0 );
+			expect( fragment.childCount ).to.equal( 0 );
 		} );
 
 		it( 'should convert HTML to DocumentFragment with single text node', () => {

@@ -20,7 +20,7 @@ describe( 'writer', () => {
 		let { view, selection } = parse( input );
 
 		const newPosition = breakAt( selection.getFirstPosition() );
-		expect( stringify( view.getRoot(), newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
+		expect( stringify( view.root, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
 	}
 
 	describe( 'breakAt', () => {

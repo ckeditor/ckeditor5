@@ -106,13 +106,13 @@ describe( 'Position', () => {
 			const foo = new Text( 'foo' );
 			const docFrag = new DocumentFragment( foo );
 
-			expect( new Position( foo, 1 ).getRoot() ).to.equal( docFrag );
+			expect( new Position( foo, 1 ).root ).to.equal( docFrag );
 
 			const bar = new Text( 'bar' );
 			const p = new Element( 'p', null, bar );
 
-			expect( new Position( bar, 2 ).getRoot() ).to.equal( p );
-			expect( new Position( p, 0 ).getRoot() ).to.equal( p );
+			expect( new Position( bar, 2 ).root ).to.equal( p );
+			expect( new Position( p, 0 ).root ).to.equal( p );
 		} );
 	} );
 
@@ -336,13 +336,13 @@ describe( 'Position', () => {
 		it( 'should return true if it is at the start of it\'s parent', () => {
 			const foo = new Text( 'foo' );
 			const position = new Position( foo, 0 );
-			expect( position.isAtStart( position ) ).to.be.true;
+			expect( position.isAtStart ).to.be.true;
 		} );
 
 		it( 'should return false if it is not at the start of it\'s parent', () => {
 			const foo = new Text( 'foo' );
 			const position = new Position( foo, 1 );
-			expect( position.isAtStart( position ) ).to.be.false;
+			expect( position.isAtStart ).to.be.false;
 		} );
 	} );
 
@@ -351,16 +351,16 @@ describe( 'Position', () => {
 			const foo = new Text( 'foo' );
 			const p = new Element( 'p', null, foo );
 
-			expect( new Position( foo, 3 ).isAtEnd() ).to.be.true;
-			expect( new Position( p, 1 ).isAtEnd() ).to.be.true;
+			expect( new Position( foo, 3 ).isAtEnd ).to.be.true;
+			expect( new Position( p, 1 ).isAtEnd ).to.be.true;
 		} );
 
 		it( 'should return false if it is not at the end of it\'s parent', () => {
 			const foo = new Text( 'foo' );
 			const p = new Element( 'p', null, foo );
 
-			expect( new Position( foo, 2 ).isAtEnd() ).to.be.false;
-			expect( new Position( p, 0 ).isAtEnd() ).to.be.false;
+			expect( new Position( foo, 2 ).isAtEnd ).to.be.false;
+			expect( new Position( p, 0 ).isAtEnd ).to.be.false;
 		} );
 	} );
 
@@ -453,7 +453,7 @@ describe( 'Position', () => {
 		it( 'should return null if position is not inside EditableElement', () => {
 			const position = new Position( new Element( 'p' ), 0 );
 
-			expect( position.getEditableElement() ).to.be.null;
+			expect( position.editableElement ).to.be.null;
 		} );
 
 		it( 'should return EditableElement when position is placed inside', () => {
@@ -462,7 +462,7 @@ describe( 'Position', () => {
 			const editable = new EditableElement( document, 'div', null, p );
 			const position = new Position( p, 0 );
 
-			expect( position.getEditableElement() ).to.equal( editable );
+			expect( position.editableElement ).to.equal( editable );
 		} );
 	} );
 } );

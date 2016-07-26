@@ -69,14 +69,14 @@ describe( 'Range', () => {
 			const viewRoot = new Element( 'div' );
 			const range = getRange( '<p>f{oo</p><p>ba}r</p>', { rootElement: viewRoot } );
 
-			expect( range.getRoot() ).to.equal( viewRoot );
+			expect( range.root ).to.equal( viewRoot );
 		} );
 
 		it( 'should return document fragment in which range is created', () => {
 			const viewFrag = new DocumentFragment();
 			const range = getRange( '<p>f{oo</p><p>ba}r</p>', { rootElement: viewFrag } );
 
-			expect( range.getRoot() ).to.equal( viewFrag );
+			expect( range.root ).to.equal( viewFrag );
 		} );
 	} );
 

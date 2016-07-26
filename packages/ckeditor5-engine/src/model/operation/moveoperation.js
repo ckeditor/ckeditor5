@@ -128,7 +128,7 @@ export default class MoveOperation extends Operation {
 			throw new CKEditorError(
 				'move-operation-position-invalid: Source position or target position is invalid.'
 			);
-		} else if ( sourceOffset + this.howMany > sourceElement.getMaxOffset() ) {
+		} else if ( sourceOffset + this.howMany > sourceElement.maxOffset ) {
 			/**
 			 * The nodes which should be moved do not exist.
 			 *

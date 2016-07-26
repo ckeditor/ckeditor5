@@ -66,6 +66,16 @@ export default class Document {
 		this.schema = new Schema();
 
 		/**
+		 * Document's history.
+		 *
+		 * **Note:** Be aware that deltas applied to the stored deltas might be removed or changed.
+		 *
+		 * @readonly
+		 * @member {engine.model.History} engine.model.Document#history
+		 */
+		this.history = new History( this );
+
+		/**
 		 * Composer for this document. Set of tools to work with the document.
 		 *
 		 * The features can tune up these tools to better work on their specific cases.
@@ -103,16 +113,6 @@ export default class Document {
 
 		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 		this.createRoot( '$root', graveyardName );
-
-		/**
-		 * Document's history.
-		 *
-		 * **Note:** Be aware that deltas applied to the stored deltas might be removed or changed.
-		 *
-		 * @readonly
-		 * @member {engine.model.History} engine.model.Document#history
-		 */
-		this.history = new History( this );
 	}
 
 	/**
@@ -123,16 +123,6 @@ export default class Document {
 	 */
 	get graveyard() {
 		return this.getRoot( graveyardName );
-	}
-
-	/**
-	 * Gets names of all roots (without the {@link engine.model.Document#graveyard}).
-	 *
-	 * @readonly
-	 * @type {Iterable.<String>}
-	 */
-	get rootNames() {
-		return Array.from( this._roots.keys() ).filter( ( name ) => name != graveyardName );
 	}
 
 	/**
@@ -263,6 +253,16 @@ export default class Document {
 		}
 
 		return this._roots.get( name );
+	}
+
+	/**
+	 * Gets names of all roots (without the {@link engine.model.Document#graveyard}).
+	 *
+	 * @readonly
+	 * @type {Iterable.<String>}
+	 */
+	getRootNames() {
+		return Array.from( this._roots.keys() ).filter( ( name ) => name != graveyardName );
 	}
 
 	/**

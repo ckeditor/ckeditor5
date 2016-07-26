@@ -111,6 +111,19 @@ export default class Selection {
 	}
 
 	/**
+	 * Returns {@link engine.view.EditableElement EditableElement} instance that contains this selection.
+	 *
+	 * @returns {engine.view.EditableElement|null} Returns closest EditableElement or null if none is found.
+	 */
+	get editableElement() {
+		if ( this.rangeCount ) {
+			return this.getFirstPosition().editableElement;
+		}
+
+		return null;
+	}
+
+	/**
 	 * Adds a range to the selection. Added range is copied. This means that passed range is not saved in the
 	 * selection instance and you can safely operate on it.
 	 *
@@ -326,19 +339,6 @@ export default class Selection {
 		if ( endPosition !== null ) {
 			this.setRanges( [ new Range( endPosition, endPosition ) ] );
 		}
-	}
-
-	/**
-	 * Returns {@link engine.view.EditableElement EditableElement} instance that contains this selection.
-	 *
-	 * @returns {engine.view.EditableElement|null} Returns closest EditableElement or null if none is found.
-	 */
-	getEditableElement() {
-		if ( this.rangeCount ) {
-			return this.getFirstPosition().getEditableElement();
-		}
-
-		return null;
 	}
 
 	/**

@@ -33,7 +33,7 @@ describe( 'Batch', () => {
 		it( 'should unwrap given element', () => {
 			doc.batch().unwrap( p );
 
-			expect( root.getMaxOffset() ).to.equal( 5 );
+			expect( root.maxOffset ).to.equal( 5 );
 			expect( root.getChild( 0 ).data ).to.equal( 'axyzb' );
 		} );
 

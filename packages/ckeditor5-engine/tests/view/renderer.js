@@ -122,7 +122,11 @@ describe( 'Renderer', () => {
 			renderer.isFocused = true;
 
 			// Fake selection editable - it is needed to render selection properly.
-			testUtils.sinon.stub( selection, 'getEditableElement', () => selectionEditable );
+			Object.defineProperty( selection, 'editableElement', {
+				get: function() {
+					return selectionEditable;
+				}
+			} );
 		} );
 
 		it( 'should update attributes', () => {
@@ -983,7 +987,7 @@ describe( 'Renderer', () => {
 
 		it( 'should handle focusing element', () => {
 			const domFocusSpy = testUtils.sinon.spy( domRoot, 'focus' );
-			const editable = selection.getEditableElement();
+			const editable = selection.editableElement;
 
 			renderer.render();
 

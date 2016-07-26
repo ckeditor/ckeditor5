@@ -53,7 +53,7 @@ export default class NodeList {
 	 *
 	 * @returns {Number}
 	 */
-	getMaxOffset() {
+	get maxOffset() {
 		return this._nodes.reduce( ( sum, node ) => sum + node.offsetSize, 0 );
 	}
 
@@ -103,7 +103,7 @@ export default class NodeList {
 	 */
 	indexToOffset( index ) {
 		if ( index == this._nodes.length ) {
-			return this.getMaxOffset();
+			return this.maxOffset;
 		}
 
 		const node = this._nodes[ index ];

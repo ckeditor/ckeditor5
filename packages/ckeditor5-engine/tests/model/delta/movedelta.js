@@ -38,7 +38,7 @@ describe( 'Batch', () => {
 		it( 'should move specified node', () => {
 			batch.move( div, new Position( root, [ 2 ] ) );
 
-			expect( root.getMaxOffset() ).to.equal( 2 );
+			expect( root.maxOffset ).to.equal( 2 );
 			expect( getNodesAndText( Range.createFromElement( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
 			expect( getNodesAndText( Range.createFromElement( root.getChild( 1 ) ) ) ).to.equal( 'PggggPfoobarPhhhhP' );
 		} );

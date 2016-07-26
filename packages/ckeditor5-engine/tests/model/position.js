@@ -491,15 +491,15 @@ describe( 'position', () => {
 
 	describe( 'isAtStart', () => {
 		it( 'should return true if position is at the beginning of its parent', () => {
-			expect( new Position( root, [ 0 ] ).isAtStart() ).to.be.true;
-			expect( new Position( root, [ 1 ] ).isAtStart() ).to.be.false;
+			expect( new Position( root, [ 0 ] ).isAtStart ).to.be.true;
+			expect( new Position( root, [ 1 ] ).isAtStart ).to.be.false;
 		} );
 	} );
 
 	describe( 'isAtEnd', () => {
 		it( 'should return true if position is at the end of its parent', () => {
-			expect( new Position( root, [ root.getMaxOffset() ] ).isAtEnd() ).to.be.true;
-			expect( new Position( root, [ 0 ] ).isAtEnd() ).to.be.false;
+			expect( new Position( root, [ root.maxOffset ] ).isAtEnd ).to.be.true;
+			expect( new Position( root, [ 0 ] ).isAtEnd ).to.be.false;
 		} );
 	} );
 

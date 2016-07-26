@@ -44,22 +44,21 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * Artificial root of `DocumentFragment`. Returns itself. Added for compatibility reasons.
+	 * Returns the number of this document fragment's children.
 	 *
-	 * @readonly
-	 * @type {engine.model.DocumentFragment}
+	 * @returns {Number}
 	 */
-	get root() {
-		return this;
+	get childCount() {
+		return this._children.length;
 	}
 
 	/**
-	 * Returns path to a `DocumentFragment`, which is an empty array. Added for compatibility reasons.
+	 * Returns the sum of {engine.model.Node#offsetSize offset sizes} of all of this document fragment's children.
 	 *
-	 * @returns {Array}
+	 * @returns {Number}
 	 */
-	getPath() {
-		return [];
+	get maxOffset() {
+		return this._children.maxOffset;
 	}
 
 	/**
@@ -67,8 +66,18 @@ export default class DocumentFragment {
 	 *
 	 * @returns {Boolean}
 	 */
-	isEmpty() {
-		return this.getChildCount() === 0;
+	get isEmpty() {
+		return this.childCount === 0;
+	}
+
+	/**
+	 * Artificial root of `DocumentFragment`. Returns itself. Added for compatibility reasons.
+	 *
+	 * @readonly
+	 * @type {engine.model.DocumentFragment}
+	 */
+	get root() {
+		return this;
 	}
 
 	/**
@@ -82,16 +91,6 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * Returns an index of the given child node. Returns `null` if given node is not a child of this document fragment.
-	 *
-	 * @param {engine.model.Node} node Child node to look for.
-	 * @returns {Number|null} Child node's index.
-	 */
-	getChildIndex( node ) {
-		return this._children.getNodeIndex( node );
-	}
-
-	/**
 	 * Returns an iterator that iterates over all of this document fragment's children.
 	 *
 	 * @returns {Iterable.<engine.model.Node>}
@@ -101,12 +100,13 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * Returns the number of this document fragment's children.
+	 * Returns an index of the given child node. Returns `null` if given node is not a child of this document fragment.
 	 *
-	 * @returns {Number}
+	 * @param {engine.model.Node} node Child node to look for.
+	 * @returns {Number|null} Child node's index.
 	 */
-	getChildCount() {
-		return this._children.length;
+	getChildIndex( node ) {
+		return this._children.getNodeIndex( node );
 	}
 
 	/**
@@ -122,12 +122,12 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * Returns the sum of {engine.model.Node#offsetSize offset sizes} of all of this document fragment's children.
+	 * Returns path to a `DocumentFragment`, which is an empty array. Added for compatibility reasons.
 	 *
-	 * @returns {Number}
+	 * @returns {Array}
 	 */
-	getMaxOffset() {
-		return this._children.getMaxOffset();
+	getPath() {
+		return [];
 	}
 
 	/**
@@ -159,7 +159,7 @@ export default class DocumentFragment {
 	 * @param {engine.model.Node|Iterable.<engine.model.Node>} nodes Nodes to be inserted.
 	 */
 	appendChildren( nodes ) {
-		this.insertChildren( this.getChildCount(), nodes );
+		this.insertChildren( this.childCount, nodes );
 	}
 
 	/**

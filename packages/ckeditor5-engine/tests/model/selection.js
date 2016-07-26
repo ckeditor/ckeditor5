@@ -221,7 +221,7 @@ describe( 'Selection', () => {
 
 			const focus = selection.focus;
 			expect( focus ).to.have.property( 'parent', root );
-			expect( focus ).to.have.property( 'offset', root.getMaxOffset() );
+			expect( focus ).to.have.property( 'offset', root.maxOffset );
 		} );
 
 		it( 'sets selection before the specified element', () => {

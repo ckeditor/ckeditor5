@@ -30,7 +30,7 @@ describe( 'Batch', () => {
 
 	describe( 'weakInsert', () => {
 		it( 'should insert given nodes at given position', () => {
-			expect( root.getMaxOffset() ).to.equal( 6 );
+			expect( root.maxOffset ).to.equal( 6 );
 			expect( root.getChild( 0 ).data ).to.equal( 'ab' );
 			expect( root.getChild( 1 ).data ).to.equal( 'xyz' );
 			expect( root.getChild( 2 ).data ).to.equal( 'c' );

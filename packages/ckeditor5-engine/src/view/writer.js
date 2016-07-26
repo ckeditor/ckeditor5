@@ -102,9 +102,9 @@ export function mergeAt( position ) {
 	}
 
 	// When inside empty attribute - remove it.
-	if ( positionParent instanceof AttributeElement && positionParent.getChildCount() === 0 ) {
+	if ( positionParent instanceof AttributeElement && positionParent.childCount === 0 ) {
 		const parent = positionParent.parent;
-		const offset = positionParent.getIndex();
+		const offset = positionParent.index;
 		positionParent.remove();
 
 		return mergeAt( new Position( parent, offset ) );
@@ -131,7 +131,7 @@ export function mergeAt( position ) {
 	// When selection is between same nodes.
 	else if ( nodeBefore.isSimilar( nodeAfter ) ) {
 		// Move all children nodes from node placed after selection and remove that node.
-		const count = nodeBefore.getChildCount();
+		const count = nodeBefore.childCount;
 		nodeBefore.appendChildren( nodeAfter.getChildren() );
 		nodeAfter.remove();
 
@@ -295,7 +295,7 @@ export function wrap( range, attribute ) {
 	// Range is inside single attribute and spans on all children.
 	if ( rangeSpansOnAllChildren( range ) && wrapAttributeElement( attribute, range.start.parent ) ) {
 		const parent = range.start.parent.parent;
-		const index = range.start.parent.getIndex();
+		const index = range.start.parent.index;
 
 		return Range.createFromParentsAndOffsets( parent, index, parent, index + 1 ) ;
 	}
@@ -369,7 +369,7 @@ export function wrapPosition( position, attribute ) {
 	wrap( wrapRange, attribute );
 
 	// Remove fake element and place new position there.
-	const newPosition = new Position( fakePosition.parent, fakePosition.getIndex() );
+	const newPosition = new Position( fakePosition.parent, fakePosition.index );
 	fakePosition.remove();
 
 	// If position is placed between text nodes - merge them and return position inside.
@@ -485,11 +485,11 @@ function _breakRange( range, forceSplitText = false ) {
 	}
 
 	const breakEnd = _breakAt( rangeEnd, forceSplitText );
-	const count = breakEnd.parent.getChildCount();
+	const count = breakEnd.parent.childCount;
 	const breakStart = _breakAt( rangeStart, forceSplitText );
 
 	// Calculate new break end offset.
-	breakEnd.offset += breakEnd.parent.getChildCount() - count;
+	breakEnd.offset += breakEnd.parent.childCount - count;
 
 	return new Range( breakStart, breakEnd );
 }
@@ -521,13 +521,13 @@ function _breakAt( position, forceSplitText = false ) {
 		return _breakAt( breakTextNode( position ), forceSplitText );
 	}
 
-	const length = positionParent.getChildCount();
+	const length = positionParent.childCount;
 
 	// <p>foo<b><u>bar{}</u></b></p>
 	// <p>foo<b><u>bar</u>[]</b></p>
 	// <p>foo<b><u>bar</u></b>[]</p>
 	if ( positionOffset == length ) {
-		const newPosition = new Position( positionParent.parent, positionParent.getIndex() + 1 );
+		const newPosition = new Position( positionParent.parent, positionParent.index + 1 );
 
 		return _breakAt( newPosition, forceSplitText );
 	} else
@@ -535,7 +535,7 @@ function _breakAt( position, forceSplitText = false ) {
 	// <p>foo<b>[]<u>bar</u></b></p>
 	// <p>foo{}<b><u>bar</u></b></p>
 	if ( positionOffset === 0 ) {
-		const newPosition = new Position( positionParent.parent, positionParent.getIndex() );
+		const newPosition = new Position( positionParent.parent, positionParent.index );
 
 		return _breakAt( newPosition, forceSplitText );
 	}
@@ -544,7 +544,7 @@ function _breakAt( position, forceSplitText = false ) {
 	// <p>foo<b><u>b</u>[]<u>ar</u></b></p>
 	// <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
 	else {
-		const offsetAfter = positionParent.getIndex() + 1;
+		const offsetAfter = positionParent.index + 1;
 
 		// Break element.
 		const clonedNode = positionParent.clone();
@@ -553,7 +553,7 @@ function _breakAt( position, forceSplitText = false ) {
 		positionParent.parent.insertChildren( offsetAfter, clonedNode );
 
 		// Get nodes to move.
-		const count = positionParent.getChildCount() - positionOffset;
+		const count = positionParent.childCount - positionOffset;
 		const nodesToMove = positionParent.removeChildren( positionOffset, count );
 
 		// Move nodes to cloned node.
@@ -584,7 +584,7 @@ function unwrapChildren( parent, startOffset, endOffset, attribute ) {
 		// If attributes are the similar, then unwrap.
 		if (  child.isSimilar( attribute ) ) {
 			const unwrapped = child.getChildren();
-			const count = child.getChildCount();
+			const count = child.childCount;
 
 			// Replace wrapper element with its children
 			child.remove();
@@ -603,7 +603,7 @@ function unwrapChildren( parent, startOffset, endOffset, attribute ) {
 		} else {
 			// If other nested attribute is found start unwrapping there.
 			if ( child instanceof AttributeElement ) {
-				unwrapChildren( child, 0, child.getChildCount(), attribute );
+				unwrapChildren( child, 0, child.childCount, attribute );
 			}
 
 			i++;
@@ -663,7 +663,7 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 		} else {
 			// If other nested attribute is found start wrapping there.
 			if ( child instanceof AttributeElement ) {
-				wrapChildren( child, 0, child.getChildCount(), attribute );
+				wrapChildren( child, 0, child.childCount, attribute );
 			}
 		}
 
@@ -726,11 +726,11 @@ function movePositionToTextNode( position ) {
 // @returns {engine.view.Position} New position after breaking text node.
 function breakTextNode( position ) {
 	if ( position.offset == position.parent.data.length ) {
-		return new Position( position.parent.parent, position.parent.getIndex() + 1 );
+		return new Position( position.parent.parent, position.parent.index + 1 );
 	}
 
 	if ( position.offset === 0 ) {
-		return new Position( position.parent.parent, position.parent.getIndex() );
+		return new Position( position.parent.parent, position.parent.index );
 	}
 
 	// Get part of the text that need to be moved.
@@ -740,10 +740,10 @@ function breakTextNode( position ) {
 	position.parent.data = position.parent.data.slice( 0, position.offset );
 
 	// Insert new text node after position's parent text node.
-	position.parent.parent.insertChildren( position.parent.getIndex() + 1, new Text( textToMove ) );
+	position.parent.parent.insertChildren( position.parent.index + 1, new Text( textToMove ) );
 
 	// Return new position between two newly created text nodes.
-	return new Position( position.parent.parent, position.parent.getIndex() + 1 );
+	return new Position( position.parent.parent, position.parent.index + 1 );
 }
 
 // Merges two text nodes into first node. Removes second node and returns merge position.
@@ -888,7 +888,7 @@ function unwrapAttributeElement( wrapper, toUnwrap ) {
 // @returns {Boolean}
 function rangeSpansOnAllChildren( range ) {
 	return range.start.parent == range.end.parent && range.start.parent instanceof AttributeElement &&
-		range.start.offset === 0 && range.end.offset === range.start.parent.getChildCount();
+		range.start.offset === 0 && range.end.offset === range.start.parent.childCount;
 }
 
 // Checks if provided nodes are valid to insert. Checks if each node is an instance of

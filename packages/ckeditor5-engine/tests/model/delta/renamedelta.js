@@ -29,7 +29,7 @@ describe( 'Batch', () => {
 
 	describe( 'rename', () => {
 		it( 'should rename given element', () => {
-			expect( root.getMaxOffset() ).to.equal( 1 );
+			expect( root.maxOffset ).to.equal( 1 );
 			expect( root.getChild( 0 ) ).to.have.property( 'name', 'h' );
 			expect( root.getChild( 0 ) ).to.have.property( 'name', 'h' );
 		} );
@@ -92,7 +92,7 @@ describe( 'RenameDelta', () => {
 				doc.applyOperation( operation );
 			} );
 
-			expect( root.getMaxOffset() ).to.equal( 1 );
+			expect( root.maxOffset ).to.equal( 1 );
 			expect( root.getChild( 0 ) ).to.have.property( 'name', 'p' );
 		} );
 	} );

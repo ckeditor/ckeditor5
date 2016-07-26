@@ -177,7 +177,7 @@ export default class TreeWalker {
 		const parent = this._visitedParent;
 
 		// We are at the end of the root.
-		if ( parent.parent === null && position.offset === parent.getMaxOffset() ) {
+		if ( parent.parent === null && position.offset === parent.maxOffset ) {
 			return { done: true };
 		}
 
@@ -268,7 +268,7 @@ export default class TreeWalker {
 			position.offset--;
 
 			if ( !this.shallow ) {
-				position.path.push( node.getMaxOffset() );
+				position.path.push( node.maxOffset );
 				this.position = position;
 				this._visitedParent = node;
 

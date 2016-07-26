@@ -109,9 +109,9 @@ register( 'merge', function( position ) {
 	}
 
 	const positionAfter = Position.createFromParentAndOffset( nodeAfter, 0 );
-	const positionBefore = Position.createFromParentAndOffset( nodeBefore, nodeBefore.getMaxOffset() );
+	const positionBefore = Position.createFromParentAndOffset( nodeBefore, nodeBefore.maxOffset );
 
-	const move = new MoveOperation( positionAfter, nodeAfter.getMaxOffset(), positionBefore, this.document.version );
+	const move = new MoveOperation( positionAfter, nodeAfter.maxOffset, positionBefore, this.document.version );
 	move.isSticky = true;
 	delta.addOperation( move );
 	this.document.applyOperation( move );

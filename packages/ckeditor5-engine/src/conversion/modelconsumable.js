@@ -57,7 +57,7 @@ import TextProxy from '../model/textproxy.js';
  *			const insertPosition = conversionApi.mapper.toViewPosition( data.range.start );
  *
  *			// Check if the `image` element has children.
- *			if ( data.item.getChildCount() > 0 ) {
+ *			if ( data.item.childCount > 0 ) {
  *				const modelCaption = data.item.getChild( 0 );
  *
  *				// `modelCaption` insertion change is consumed from consumable values.

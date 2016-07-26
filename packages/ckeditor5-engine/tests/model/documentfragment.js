@@ -16,15 +16,15 @@ describe( 'DocumentFragment', () => {
 		it( 'should create empty document fragment', () => {
 			let frag = new DocumentFragment();
 
-			expect( frag.getChildCount() ).to.equal( 0 );
-			expect( frag.getMaxOffset() ).to.equal( 0 );
+			expect( frag.childCount ).to.equal( 0 );
+			expect( frag.maxOffset ).to.equal( 0 );
 		} );
 
 		it( 'should create document fragment with children', () => {
 			let frag = new DocumentFragment( [ new Text( 'xx' ), new Element( 'p' ), new Text( 'yy' ) ] );
 
-			expect( frag.getChildCount() ).to.equal( 3 );
-			expect( frag.getMaxOffset() ).to.equal( 5 );
+			expect( frag.childCount ).to.equal( 3 );
+			expect( frag.maxOffset ).to.equal( 5 );
 
 			expect( frag.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'xx' );
 			expect( frag.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'p' );
@@ -61,13 +61,13 @@ describe( 'DocumentFragment', () => {
 		it( 'should return true if document fragment has no children', () => {
 			let frag = new DocumentFragment();
 
-			expect( frag.isEmpty() ).to.be.true;
+			expect( frag.isEmpty ).to.be.true;
 		} );
 
 		it( 'should return false if document fragment has children', () => {
 			let frag = new DocumentFragment( new Text( 'a' ) );
 
-			expect( frag.isEmpty() ).to.be.false;
+			expect( frag.isEmpty ).to.be.false;
 		} );
 	} );
 
@@ -96,7 +96,7 @@ describe( 'DocumentFragment', () => {
 			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
 		} );
 
-		it( 'should return length if given offset is equal to getMaxOffset()', () => {
+		it( 'should return length if given offset is equal to maxOffset', () => {
 			expect( frag.offsetToIndex( 5 ) ).to.equal( 3 );
 		} );
 	} );
@@ -106,18 +106,25 @@ describe( 'DocumentFragment', () => {
 			let frag = new DocumentFragment( new Text( 'xy' ) );
 			frag.insertChildren( 1, new Text( 'foo' ) );
 
-			expect( frag.getChildCount() ).to.equal( 2 );
-			expect( frag.getMaxOffset() ).to.equal( 5 );
+			expect( frag.childCount ).to.equal( 2 );
+			expect( frag.maxOffset ).to.equal( 5 );
 			expect( frag.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'xy' );
 			expect( frag.getChild( 1 ) ).to.have.property( 'data' ).that.equals( 'foo' );
 		} );
 
 		it( 'should accept strings and arrays', () => {
 			let frag = new DocumentFragment();
+
+			frag.insertChildren( 0, 'abc' );
+			expect( frag.childCount ).to.equal( 1 );
+			expect( frag.maxOffset ).to.equal( 3 );
+			expect( frag.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
+
+			frag.removeChildren( 0, 1 );
 			frag.insertChildren( 0, [ new Element( 'p' ), 'abc' ] );
 
-			expect( frag.getChildCount() ).to.equal( 2 );
-			expect( frag.getMaxOffset() ).to.equal( 4 );
+			expect( frag.childCount ).to.equal( 2 );
+			expect( frag.maxOffset ).to.equal( 4 );
 			expect( frag.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( frag.getChild( 1 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 		} );
@@ -128,8 +135,8 @@ describe( 'DocumentFragment', () => {
 			let frag = new DocumentFragment( new Text( 'xy' ) );
 			frag.appendChildren( new Text( 'foo' ) );
 
-			expect( frag.getChildCount() ).to.equal( 2 );
-			expect( frag.getMaxOffset() ).to.equal( 5 );
+			expect( frag.childCount ).to.equal( 2 );
+			expect( frag.maxOffset ).to.equal( 5 );
 			expect( frag.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'xy' );
 			expect( frag.getChild( 1 ) ).to.have.property( 'data' ).that.equals( 'foo' );
 		} );
@@ -140,8 +147,8 @@ describe( 'DocumentFragment', () => {
 			let frag = new DocumentFragment( [ new Text( 'foobar' ), new Element( 'image' ) ] );
 			let removed = frag.removeChildren( 1, 1 );
 
-			expect( frag.getChildCount() ).to.equal( 1 );
-			expect( frag.getMaxOffset() ).to.equal( 6 );
+			expect( frag.childCount ).to.equal( 1 );
+			expect( frag.maxOffset ).to.equal( 6 );
 
 			expect( frag.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'foobar' );
 
@@ -153,8 +160,8 @@ describe( 'DocumentFragment', () => {
 			let frag = new DocumentFragment( [ new Text( 'foo' ), new Element( 'image' ) ] );
 			let removed = frag.removeChildren( 0 );
 
-			expect( frag.getChildCount() ).to.equal( 1 );
-			expect( frag.getMaxOffset() ).to.equal( 1 );
+			expect( frag.childCount ).to.equal( 1 );
+			expect( frag.maxOffset ).to.equal( 1 );
 			expect( frag.getChild( 0 ).name ).to.equal( 'image' );
 
 			expect( removed.length ).to.equal( 1 );
@@ -201,7 +208,7 @@ describe( 'DocumentFragment', () => {
 		it( 'should return number of children nodes', () => {
 			let frag = new DocumentFragment( new Text( 'bar' ) );
 
-			expect( frag.getChildCount() ).to.equal( 1 );
+			expect( frag.childCount ).to.equal( 1 );
 		} );
 	} );
 
@@ -209,7 +216,7 @@ describe( 'DocumentFragment', () => {
 		it( 'should return offset after the last children', () => {
 			let frag = new DocumentFragment( new Text( 'bar' ) );
 
-			expect( frag.getMaxOffset() ).to.equal( 3 );
+			expect( frag.maxOffset ).to.equal( 3 );
 		} );
 	} );
 
@@ -250,7 +257,7 @@ describe( 'DocumentFragment', () => {
 			let serialized = jsonParseStringify( frag );
 			let deserialized = DocumentFragment.fromJSON( serialized );
 
-			expect( deserialized.isEmpty() ).to.be.true;
+			expect( deserialized.isEmpty ).to.be.true;
 		} );
 
 		it( 'should create element with children', () => {
@@ -261,7 +268,7 @@ describe( 'DocumentFragment', () => {
 			let serialized = jsonParseStringify( frag );
 			let deserialized = DocumentFragment.fromJSON( serialized );
 
-			expect( deserialized.getChildCount() ).to.equal( 2 );
+			expect( deserialized.childCount ).to.equal( 2 );
 
 			expect( deserialized.getChild( 0 ).name ).to.equal( 'p' );
 			expect( deserialized.getChild( 0 ).parent ).to.equal( deserialized );

@@ -59,11 +59,11 @@ describe( 'MoveOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 2 );
+		expect( root.maxOffset ).to.equal( 2 );
 		expect( root.getChild( 0 ).name ).to.equal( 'p1' );
 		expect( root.getChild( 1 ).name ).to.equal( 'p2' );
-		expect( p1.getMaxOffset() ).to.equal( 0 );
-		expect( p2.getMaxOffset() ).to.equal( 1 );
+		expect( p1.maxOffset ).to.equal( 0 );
+		expect( p2.maxOffset ).to.equal( 1 );
 		expect( p2.getChild( 0 ).name ).to.equal( 'x' );
 	} );
 
@@ -80,7 +80,7 @@ describe( 'MoveOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 5 );
+		expect( root.maxOffset ).to.equal( 5 );
 		expect( root.getChild( 0 ).data ).to.equal( 'xarbx' );
 	} );
 
@@ -97,7 +97,7 @@ describe( 'MoveOperation', () => {
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 5 );
+		expect( root.maxOffset ).to.equal( 5 );
 		expect( root.getChild( 0 ).data ).to.equal( 'xrbax' );
 	} );
 
@@ -137,18 +137,18 @@ describe( 'MoveOperation', () => {
 		doc.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( root.getMaxOffset() ).to.equal( 2 );
-		expect( p1.getMaxOffset() ).to.equal( 0 );
-		expect( p2.getMaxOffset() ).to.equal( 1 );
+		expect( root.maxOffset ).to.equal( 2 );
+		expect( p1.maxOffset ).to.equal( 0 );
+		expect( p2.maxOffset ).to.equal( 1 );
 		expect( p2.getChild( 0 ).name ).to.equal( 'x' );
 
 		doc.applyOperation( wrapInDelta( operation.getReversed() ) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( root.getMaxOffset() ).to.equal( 2 );
-		expect( p1.getMaxOffset() ).to.equal( 1 );
+		expect( root.maxOffset ).to.equal( 2 );
+		expect( p1.maxOffset ).to.equal( 1 );
 		expect( p1.getChild( 0 ).name ).to.equal( 'x' );
-		expect( p2.getMaxOffset() ).to.equal( 0 );
+		expect( p2.maxOffset ).to.equal( 0 );
 	} );
 
 	it( 'should throw an error if number of nodes to move exceeds the number of existing nodes in given element', () => {
@@ -225,8 +225,8 @@ describe( 'MoveOperation', () => {
 			}
 		).not.to.throw();
 
-		expect( root.getMaxOffset() ).to.equal( 4 );
-		expect( p.getMaxOffset() ).to.equal( 1 );
+		expect( root.maxOffset ).to.equal( 4 );
+		expect( p.maxOffset ).to.equal( 1 );
 		expect( p.getChild( 0 ).data ).to.equal( 'b' );
 	} );
 

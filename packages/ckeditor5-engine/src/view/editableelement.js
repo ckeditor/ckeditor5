@@ -51,13 +51,13 @@ export default class EditableElement extends ContainerElement {
 		this.bind( 'isFocused' ).to(
 			document,
 			'isFocused',
-			( isFocused ) => isFocused && document.selection.getEditableElement() == this
+			( isFocused ) => isFocused && document.selection.editableElement == this
 		);
 
 		// Update focus state after each rendering. Selection might be moved to different editable before rendering,
 		// but this does not mean that editable has focus - it will be placed there after rendering.
 		this.listenTo( document, 'render', () => {
-			this.isFocused = document.isFocused && document.selection.getEditableElement() == this;
+			this.isFocused = document.isFocused && document.selection.editableElement == this;
 		}, null, 11 );
 	}
 
@@ -66,7 +66,7 @@ export default class EditableElement extends ContainerElement {
 	 *
 	 * @returns {engine.view.Document|null} View Document of the node or `null`.
 	 */
-	getDocument() {
+	get document() {
 		return this._document;
 	}
 }

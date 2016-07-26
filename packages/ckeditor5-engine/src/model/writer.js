@@ -153,7 +153,7 @@ export function setAttribute( range, key, value ) {
 		}
 
 		// After attributes changing it may happen that some text nodes can be merged. Try to merge with previous node.
-		_mergeNodesAtIndex( node.parent, node.getIndex() );
+		_mergeNodesAtIndex( node.parent, node.index );
 	}
 
 	// Try to merge last changed node with it's previous sibling (not covered by the loop above).
@@ -259,7 +259,7 @@ function _splitNodeAtPosition( position ) {
 
 	if ( textNode ) {
 		const offsetDiff = position.offset - textNode.startOffset;
-		const index = textNode.getIndex();
+		const index = textNode.index;
 
 		element.removeChildren( index, 1 );
 

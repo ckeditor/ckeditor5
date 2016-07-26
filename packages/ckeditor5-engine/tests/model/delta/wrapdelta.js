@@ -36,7 +36,7 @@ describe( 'Batch', () => {
 			let p = new Element( 'p' );
 			doc.batch().wrap( range, p );
 
-			expect( root.getMaxOffset() ).to.equal( 5 );
+			expect( root.maxOffset ).to.equal( 5 );
 			expect( root.getChild( 0 ).data ).to.equal( 'fo' );
 			expect( root.getChild( 1 ) ).to.equal( p );
 			expect( p.getChild( 0 ).data ).to.equal( 'ob' );
@@ -46,7 +46,7 @@ describe( 'Batch', () => {
 		it( 'should wrap flat range with an element of given name', () => {
 			doc.batch().wrap( range, 'p' );
 
-			expect( root.getMaxOffset() ).to.equal( 5 );
+			expect( root.maxOffset ).to.equal( 5 );
 			expect( root.getChild( 0 ).data ).to.equal( 'fo' );
 			expect( root.getChild( 1 ).name ).to.equal( 'p' );
 			expect( root.getChild( 1 ).getChild( 0 ).data ).to.equal( 'ob' );

@@ -161,7 +161,7 @@ describe( 'image with caption converters', () => {
 			const insertPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
 			// Check if the `image` element has children.
-			if ( data.item.getChildCount() > 0 ) {
+			if ( data.item.childCount > 0 ) {
 				const modelCaption = data.item.getChild( 0 );
 
 				// `modelCaption` insertion change is consumed from consumable values.
@@ -420,7 +420,7 @@ describe( 'custom attribute handling for given element', () => {
 					viewA.setAttribute( 'title', data.item.getAttribute( 'linkTitle' ) );
 				}
 
-				viewWriter.insert( new ViewPosition( viewElement, viewElement.getChildCount() ), viewA );
+				viewWriter.insert( new ViewPosition( viewElement, viewElement.childCount ), viewA );
 			}
 
 			evt.stop();
@@ -432,7 +432,7 @@ describe( 'custom attribute handling for given element', () => {
 			consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 
 			const viewElement = conversionApi.mapper.toViewElement( data.item );
-			const viewA = viewElement.getChild( viewElement.getChildCount() - 1 );
+			const viewA = viewElement.getChild( viewElement.childCount - 1 );
 
 			if ( data.attributeNewValue !== null ) {
 				viewA.setAttribute( viewKey, data.attributeNewValue );
@@ -450,8 +450,8 @@ describe( 'custom attribute handling for given element', () => {
 			consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 
 			const viewElement = conversionApi.mapper.toViewElement( data.item );
-			const viewA = viewElement.getChild( viewElement.getChildCount() - 1 );
-			const aIndex = viewA.getIndex();
+			const viewA = viewElement.getChild( viewElement.childCount - 1 );
+			const aIndex = viewA.index;
 
 			viewWriter.remove( ViewRange.createFromParentsAndOffsets( viewElement, aIndex, viewElement, aIndex + 1 ) );
 
@@ -464,7 +464,7 @@ describe( 'custom attribute handling for given element', () => {
 			if ( consumable.consume( data.input, { name: true } ) ) {
 				data.output = new ModelElement( 'quote' );
 
-				const viewA = data.input.getChild( data.input.getChildCount() - 1 );
+				const viewA = data.input.getChild( data.input.childCount - 1 );
 
 				// Convert the special "a" first, before converting all children.
 				if ( viewA instanceof ViewElement && viewA.name == 'a' && consumable.consume( viewA, { name: true } ) ) {

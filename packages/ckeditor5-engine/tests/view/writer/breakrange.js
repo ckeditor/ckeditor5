@@ -23,7 +23,7 @@ describe( 'writer', () => {
 		let { view, selection } = parse( input );
 
 		const newRange = breakRange( selection.getFirstRange() );
-		expect( stringify( view.getRoot(), newRange, { showType: true } ) ).to.equal( expected );
+		expect( stringify( view.root, newRange, { showType: true } ) ).to.equal( expected );
 	}
 
 	describe( 'breakRange', () => {

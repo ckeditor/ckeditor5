@@ -53,16 +53,6 @@ export default class TextProxy {
 	}
 
 	/**
-	 * Element that is a parent of this text proxy.
-	 *
-	 * @readonly
-	 * @type {engine.view.Element|engine.view.DocumentFragment|null}
-	 */
-	get parent() {
-		return this.textNode.parent;
-	}
-
-	/**
 	 * Flag indicating whether `TextProxy` instance covers only part of the original {@link engine.view.Text text node}
 	 * (`true`) or the whole text node (`false`).
 	 *
@@ -78,13 +68,13 @@ export default class TextProxy {
 	}
 
 	/**
-	 * Gets {@link engine.view.Document} reference, from the {@link engine.view.Node#getRoot root} of
-	 * {#textNode} or returns null if the root has no reference to the {@link engine.view.Document}.
+	 * Element that is a parent of this text proxy.
 	 *
-	 * @returns {engine.view.Document|null} View Document of the text proxy or null.
+	 * @readonly
+	 * @type {engine.view.Element|engine.view.DocumentFragment|null}
 	 */
-	getDocument() {
-		return this.textNode.getDocument();
+	get parent() {
+		return this.textNode.parent;
 	}
 
 	/**
@@ -92,8 +82,18 @@ export default class TextProxy {
 	 *
 	 * @returns {engine.view.Node}
 	 */
-	getRoot() {
-		return this.textNode.getRoot();
+	get root() {
+		return this.textNode.root;
+	}
+
+	/**
+	 * Gets {@link engine.view.Document} reference, from the {@link engine.view.Node#getRoot root} of
+	 * {#textNode} or returns null if the root has no reference to the {@link engine.view.Document}.
+	 *
+	 * @returns {engine.view.Document|null} View Document of the text proxy or null.
+	 */
+	get document() {
+		return this.textNode.document;
 	}
 
 	/**

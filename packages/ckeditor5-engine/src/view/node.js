@@ -36,7 +36,7 @@ export default class Node {
 	 *
 	 * @returns {Number|null} Index of the node in the parent element or null if the node has not parent.
 	 */
-	getIndex() {
+	get index() {
 		let pos;
 
 		if ( !this.parent ) {
@@ -61,8 +61,8 @@ export default class Node {
 	 *
 	 * @returns {engine.view.Node|null} Nodes next sibling or `null` if it is the last child.
 	 */
-	getNextSibling() {
-		const index = this.getIndex();
+	get nextSibling() {
+		const index = this.index;
 
 		return ( index !== null && this.parent.getChild( index + 1 ) ) || null;
 	}
@@ -72,10 +72,25 @@ export default class Node {
 	 *
 	 * @returns {engine.view.Node|null} Nodes previous sibling or `null` if it is the first child.
 	 */
-	getPreviousSibling() {
-		const index = this.getIndex();
+	get previousSibling() {
+		const index = this.index;
 
 		return ( index !== null && this.parent.getChild( index - 1 ) ) || null;
+	}
+
+	/**
+	 * Gets the top parent for the node. If node has no parent it is the root itself.
+	 *
+	 * @returns {engine.view.Node|engine.view.DocumentFragment}
+	 */
+	get root() {
+		let root = this;
+
+		while ( root.parent ) {
+			root = root.parent;
+		}
+
+		return root;
 	}
 
 	/**
@@ -84,28 +99,13 @@ export default class Node {
 	 *
 	 * @returns {engine.view.Document|null} View document of the node or null.
 	 */
-	getDocument() {
+	get document() {
 		// Parent might be Node, null or DocumentFragment.
 		if ( this.parent instanceof Node ) {
-			return this.parent.getDocument();
+			return this.parent.document;
 		} else {
 			return null;
 		}
-	}
-
-	/**
-	 * Gets the top parent for the node. If node has no parent it is the root itself.
-	 *
-	 * @returns {engine.view.Node|engine.view.DocumentFragment}
-	 */
-	getRoot() {
-		let root = this;
-
-		while ( root.parent ) {
-			root = root.parent;
-		}
-
-		return root;
 	}
 
 	/**
@@ -133,7 +133,7 @@ export default class Node {
 	 * Removes node from parent.
 	 */
 	remove() {
-		this.parent.removeChildren( this.getIndex() );
+		this.parent.removeChildren( this.index );
 	}
 
 	/**

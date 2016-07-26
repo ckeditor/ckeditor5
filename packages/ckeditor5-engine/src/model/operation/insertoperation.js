@@ -66,7 +66,7 @@ export default class InsertOperation extends Operation {
 	 * @returns {engine.model.operation.RemoveOperation}
 	 */
 	getReversed() {
-		return new RemoveOperation( this.position, this.nodes.getMaxOffset(), this.baseVersion + 1 );
+		return new RemoveOperation( this.position, this.nodes.maxOffset, this.baseVersion + 1 );
 	}
 
 	/**

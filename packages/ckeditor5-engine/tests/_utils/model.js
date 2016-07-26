@@ -193,7 +193,7 @@ export function parse( data ) {
 
 	const handlers = {
 		text( token ) {
-			writer.insert( Position.createFromParentAndOffset( root, root.getMaxOffset() ), new Text( token.data, textAttributes ) );
+			writer.insert( Position.createFromParentAndOffset( root, root.maxOffset ), new Text( token.data, textAttributes ) );
 		},
 
 		textStart( token ) {
@@ -211,7 +211,7 @@ export function parse( data ) {
 
 		openingTag( token ) {
 			let el = new Element( token.name, token.attributes );
-			writer.insert( Position.createFromParentAndOffset( root, root.getMaxOffset() ), el );
+			writer.insert( Position.createFromParentAndOffset( root, root.maxOffset ), el );
 
 			root = el;
 
@@ -233,7 +233,7 @@ export function parse( data ) {
 		},
 
 		selectionStart( token ) {
-			selectionStart = Position.createFromParentAndOffset( root, root.getMaxOffset() );
+			selectionStart = Position.createFromParentAndOffset( root, root.maxOffset );
 			selectionAttributes = token.attributes;
 		},
 
@@ -243,7 +243,7 @@ export function parse( data ) {
 			}
 
 			withSelection = true;
-			selectionEnd = Position.createFromParentAndOffset( root, root.getMaxOffset() );
+			selectionEnd = Position.createFromParentAndOffset( root, root.maxOffset );
 
 			selection.setRanges(
 				[ new Range( selectionStart, selectionEnd ) ],
@@ -269,7 +269,7 @@ export function parse( data ) {
 	}
 
 	// If root DocumentFragment contains only one element - return that element.
-	if ( root instanceof DocumentFragment && root.getChildCount() == 1 ) {
+	if ( root instanceof DocumentFragment && root.childCount == 1 ) {
 		root = root.getChild( 0 );
 	}
 

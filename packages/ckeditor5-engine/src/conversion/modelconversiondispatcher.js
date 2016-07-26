@@ -93,7 +93,7 @@ import extend from '../../utils/lib/lodash/extend.js';
  *			// after `data.item` insert conversion was done. If the event is fired due to attribute insertion coming from
  *			// different source, `data.item` already existed. This means we are safe to get `viewQuote` from mapper.
  *			const viewQuote = conversionApi.mapper.toViewElement( data.item );
- *			const position = new ViewPosition( viewQuote, viewQuote.getChildCount() );
+ *			const position = new ViewPosition( viewQuote, viewQuote.childCount );
  *			viewWriter.insert( position, viewSourceBtn );
  *
  *			evt.stop();

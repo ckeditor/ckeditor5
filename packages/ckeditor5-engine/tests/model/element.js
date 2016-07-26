@@ -34,8 +34,8 @@ describe( 'Element', () => {
 		it( 'should create element with children', () => {
 			let element = new Element( 'elem', [], new Text( 'foo' ) );
 
-			expect( element.getChildCount() ).to.equal( 1 );
-			expect( element.getMaxOffset() ).to.equal( 3 );
+			expect( element.childCount ).to.equal( 1 );
+			expect( element.maxOffset ).to.equal( 3 );
 			expect( element.getChild( 0 ).data ).to.equal( 'foo' );
 		} );
 	} );
@@ -62,7 +62,7 @@ describe( 'Element', () => {
 
 			expect( copy.name ).to.equal( 'elem' );
 			expect( Array.from( copy.getAttributes() ) ).to.deep.equal( [ [ 'bold', true ], [ 'italic', true ] ] );
-			expect( copy.getChildCount() ).to.equal( 2 );
+			expect( copy.childCount ).to.equal( 2 );
 
 			expect( copy.getChild( 0 ) ).not.to.equal( p );
 			expect( copy.getChild( 1 ) ).not.to.equal( foo );
@@ -77,18 +77,18 @@ describe( 'Element', () => {
 			let element = new Element( 'elem', [], new Text( 'xy' ) );
 			element.insertChildren( 1, new Text( 'foo' ) );
 
-			expect( element.getChildCount() ).to.equal( 2 );
-			expect( element.getMaxOffset() ).to.equal( 5 );
+			expect( element.childCount ).to.equal( 2 );
+			expect( element.maxOffset ).to.equal( 5 );
 			expect( element.getChild( 0 ).data ).to.equal( 'xy' );
 			expect( element.getChild( 1 ).data ).to.equal( 'foo' );
 		} );
 
-		it( 'should add children to the element', () => {
+		it( 'should accept arrays and strings', () => {
 			let element = new Element( 'elem' );
-			element.insertChildren( 0, [ new Element( 'image' ), new Text( 'xy' ), new Element( 'list' ) ] );
+			element.insertChildren( 0, [ new Element( 'image' ), 'xy', new Element( 'list' ) ] );
 
-			expect( element.getChildCount() ).to.equal( 3 );
-			expect( element.getMaxOffset() ).to.equal( 4 );
+			expect( element.childCount ).to.equal( 3 );
+			expect( element.maxOffset ).to.equal( 4 );
 			expect( element.getChild( 0 ).name ).to.equal( 'image' );
 			expect( element.getChild( 1 ).data ).to.equal( 'xy' );
 			expect( element.getChild( 2 ).name ).to.equal( 'list' );
@@ -96,12 +96,11 @@ describe( 'Element', () => {
 
 		it( 'should accept strings', () => {
 			let element = new Element( 'div' );
-			element.insertChildren( 0, [ new Element( 'p' ), 'abc' ] );
+			element.insertChildren( 0, 'abc' );
 
-			expect( element.getChildCount() ).to.equal( 2 );
-			expect( element.getMaxOffset() ).to.equal( 4 );
-			expect( element.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
-			expect( element.getChild( 1 ) ).to.have.property( 'data' ).that.equals( 'abc' );
+			expect( element.childCount ).to.equal( 1 );
+			expect( element.maxOffset ).to.equal( 3 );
+			expect( element.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 		} );
 	} );
 
@@ -123,8 +122,8 @@ describe( 'Element', () => {
 			let element = new Element( 'elem', [], [ new Text( 'foobar' ), new Element( 'image' ) ] );
 			let removed = element.removeChildren( 1, 1 );
 
-			expect( element.getChildCount() ).to.equal( 1 );
-			expect( element.getMaxOffset() ).to.equal( 6 );
+			expect( element.childCount ).to.equal( 1 );
+			expect( element.maxOffset ).to.equal( 6 );
 
 			expect( element.getChild( 0 ).data ).to.equal( 'foobar' );
 
@@ -136,8 +135,8 @@ describe( 'Element', () => {
 			let element = new Element( 'element', [], [ new Text( 'foo' ), new Element( 'image' ) ] );
 			let removed = element.removeChildren( 0 );
 
-			expect( element.getChildCount() ).to.equal( 1 );
-			expect( element.getMaxOffset() ).to.equal( 1 );
+			expect( element.childCount ).to.equal( 1 );
+			expect( element.maxOffset ).to.equal( 1 );
 			expect( element.getChild( 0 ).name ).to.equal( 'image' );
 
 			expect( removed.length ).to.equal( 1 );
@@ -175,7 +174,7 @@ describe( 'Element', () => {
 		it( 'should return number of children', () => {
 			let element = new Element( 'elem', [], new Text( 'bar' ) );
 
-			expect( element.getChildCount() ).to.equal( 1 );
+			expect( element.childCount ).to.equal( 1 );
 		} );
 	} );
 
@@ -183,14 +182,14 @@ describe( 'Element', () => {
 		it( 'should return offset number after the last child', () => {
 			let element = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
 
-			expect( element.getMaxOffset() ).to.equal( 5 );
+			expect( element.maxOffset ).to.equal( 5 );
 		} );
 	} );
 
 	describe( 'isEmpty', () => {
 		it( 'checks whether element has no children', () => {
-			expect( new Element( 'a' ).isEmpty() ).to.be.true;
-			expect( new Element( 'a', null, new Text( 'x' ) ).isEmpty() ).to.be.false;
+			expect( new Element( 'a' ).isEmpty ).to.be.true;
+			expect( new Element( 'a', null, new Text( 'x' ) ).isEmpty ).to.be.false;
 		} );
 	} );
 
@@ -219,7 +218,7 @@ describe( 'Element', () => {
 			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
 		} );
 
-		it( 'should return length if given offset is equal to getMaxOffset()', () => {
+		it( 'should return length if given offset is equal to maxOffset', () => {
 			expect( element.offsetToIndex( 5 ) ).to.equal( 3 );
 		} );
 	} );
@@ -276,7 +275,7 @@ describe( 'Element', () => {
 
 			expect( deserialized.parent ).to.be.null;
 			expect( deserialized.name ).to.equal( 'el' );
-			expect( deserialized.getChildCount() ).to.equal( 0 );
+			expect( deserialized.childCount ).to.equal( 0 );
 		} );
 
 		it( 'should create element with attributes', () => {
@@ -288,7 +287,7 @@ describe( 'Element', () => {
 
 			expect( deserialized.parent ).to.be.null;
 			expect( deserialized.name ).to.equal( 'el' );
-			expect( deserialized.getChildCount() ).to.equal( 0 );
+			expect( deserialized.childCount ).to.equal( 0 );
 			expect( deserialized.hasAttribute( 'foo' ) ).to.be.true;
 			expect( deserialized.getAttribute( 'foo' ) ).to.be.true;
 		} );
@@ -304,7 +303,7 @@ describe( 'Element', () => {
 
 			expect( deserialized.parent ).to.be.null;
 			expect( deserialized.name ).to.equal( 'el' );
-			expect( deserialized.getChildCount() ).to.equal( 2 );
+			expect( deserialized.childCount ).to.equal( 2 );
 
 			expect( deserialized.getChild( 0 ).name ).to.equal( 'p' );
 			expect( deserialized.getChild( 0 ).parent ).to.equal( deserialized );

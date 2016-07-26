@@ -277,7 +277,7 @@ export default class Range {
 
 		// Go up.
 		while ( pos.path.length > diffAt + 1 ) {
-			let howMany = posParent.getMaxOffset() - pos.offset;
+			let howMany = posParent.maxOffset - pos.offset;
 
 			if ( howMany !== 0 ) {
 				ranges.push( new Range( pos, pos.getShiftedBy( howMany ) ) );
@@ -496,7 +496,7 @@ export default class Range {
 	 * @returns {engine.model.Range}
 	 */
 	static createFromElement( element ) {
-		return this.createFromParentsAndOffsets( element, 0, element, element.getMaxOffset() );
+		return this.createFromParentsAndOffsets( element, 0, element, element.maxOffset );
 	}
 
 	/**

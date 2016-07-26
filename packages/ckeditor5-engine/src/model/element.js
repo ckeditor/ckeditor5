@@ -50,18 +50,21 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Creates a copy of this element and returns it. Created element has same name and attributes as original element.
-	 * If clone is not deep, children of copied element are references to the same nodes as in original element.
-	 * If clone is deep, original element's children are also cloned.
+	 * Returns the number of this element's children.
 	 *
-	 * @param {Boolean} [deep=false] Decides whether children of this element should also be cloned (`true`) or not (`false`).
+	 * @returns {Number}
 	 */
-	clone( deep = false ) {
-		const children = deep ?
-			Array.from( this._children ).map( ( node ) => node.clone() ) :
-			Array.from( this._children );
+	get childCount() {
+		return this._children.length;
+	}
 
-		return new Element( this.name, this.getAttributes(), children );
+	/**
+	 * Returns the sum of {engine.model.Node#offsetSize offset sizes} of all of this element's children.
+	 *
+	 * @returns {Number}
+	 */
+	get maxOffset() {
+		return this._children.maxOffset;
 	}
 
 	/**
@@ -69,8 +72,8 @@ export default class Element extends Node {
 	 *
 	 * @returns {Boolean}
 	 */
-	isEmpty() {
-		return this.getChildCount() === 0;
+	get isEmpty() {
+		return this.childCount === 0;
 	}
 
 	/**
@@ -84,16 +87,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Returns an index of the given child node. Returns `null` if given node is not a child of this element.
-	 *
-	 * @param {engine.model.Node} node Child node to look for.
-	 * @returns {Number} Child node's index in this element.
-	 */
-	getChildIndex( node ) {
-		return this._children.getNodeIndex( node );
-	}
-
-	/**
 	 * Returns an iterator that iterates over all of this element's children.
 	 *
 	 * @returns {Iterable.<engine.model.Node>}
@@ -103,12 +96,13 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Returns the number of this element's children.
+	 * Returns an index of the given child node. Returns `null` if given node is not a child of this element.
 	 *
-	 * @returns {Number}
+	 * @param {engine.model.Node} node Child node to look for.
+	 * @returns {Number} Child node's index in this element.
 	 */
-	getChildCount() {
-		return this._children.length;
+	getChildIndex( node ) {
+		return this._children.getNodeIndex( node );
 	}
 
 	/**
@@ -124,12 +118,18 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Returns the sum of {engine.model.Node#offsetSize offset sizes} of all of this element's children.
+	 * Creates a copy of this element and returns it. Created element has same name and attributes as original element.
+	 * If clone is not deep, children of copied element are references to the same nodes as in original element.
+	 * If clone is deep, original element's children are also cloned.
 	 *
-	 * @returns {Number}
+	 * @param {Boolean} [deep=false] Decides whether children of this element should also be cloned (`true`) or not (`false`).
 	 */
-	getMaxOffset() {
-		return this._children.getMaxOffset();
+	clone( deep = false ) {
+		const children = deep ?
+			Array.from( this._children ).map( ( node ) => node.clone() ) :
+			Array.from( this._children );
+
+		return new Element( this.name, this.getAttributes(), children );
 	}
 
 	/**
@@ -159,7 +159,7 @@ export default class Element extends Node {
 	 * @param {engine.model.Node|Iterable.<engine.model.Node>} nodes Nodes to be inserted.
 	 */
 	appendChildren( nodes ) {
-		this.insertChildren( this.getChildCount(), nodes );
+		this.insertChildren( this.childCount, nodes );
 	}
 
 	/**

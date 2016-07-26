@@ -36,16 +36,16 @@ describe( 'Batch', () => {
 		it( 'should split foobar to foo and bar', () => {
 			doc.batch().split( new Position( root, [ 0, 3 ] ) );
 
-			expect( root.getMaxOffset() ).to.equal( 2 );
+			expect( root.maxOffset ).to.equal( 2 );
 
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
-			expect( root.getChild( 0 ).getMaxOffset() ).to.equal( 3 );
+			expect( root.getChild( 0 ).maxOffset ).to.equal( 3 );
 			expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
 			expect( root.getChild( 0 ).getAttribute( 'key' ) ).to.equal( 'value' );
 			expect( root.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
 
 			expect( root.getChild( 1 ).name ).to.equal( 'p' );
-			expect( root.getChild( 1 ).getMaxOffset() ).to.equal( 3 );
+			expect( root.getChild( 1 ).maxOffset ).to.equal( 3 );
 			expect( count( root.getChild( 1 ).getAttributes() ) ).to.equal( 1 );
 			expect( root.getChild( 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
 			expect( root.getChild( 1 ).getChild( 0 ).data ).to.equal( 'bar' );
@@ -54,16 +54,16 @@ describe( 'Batch', () => {
 		it( 'should create an empty paragraph if we split at the end', () => {
 			doc.batch().split( new Position( root, [ 0, 6 ] ) );
 
-			expect( root.getMaxOffset() ).to.equal( 2 );
+			expect( root.maxOffset ).to.equal( 2 );
 
 			expect( root.getChild( 0 ).name ).to.equal( 'p' );
-			expect( root.getChild( 0 ).getMaxOffset() ).to.equal( 6 );
+			expect( root.getChild( 0 ).maxOffset ).to.equal( 6 );
 			expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
 			expect( root.getChild( 0 ).getAttribute( 'key' ) ).to.equal( 'value' );
 			expect( root.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foobar' );
 
 			expect( root.getChild( 1 ).name ).to.equal( 'p' );
-			expect( root.getChild( 1 ).getMaxOffset() ).to.equal( 0 );
+			expect( root.getChild( 1 ).maxOffset ).to.equal( 0 );
 			expect( count( root.getChild( 1 ).getAttributes() ) ).to.equal( 1 );
 			expect( root.getChild( 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
 		} );
