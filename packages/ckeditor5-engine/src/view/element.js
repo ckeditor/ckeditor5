@@ -103,18 +103,20 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Gets the number of element's children.
+	 * Number of element's children.
 	 *
-	 * @returns {Number} The number of element's children.
+	 * @readonly
+	 * @type {Number}
 	 */
 	get childCount() {
 		return this._children.length;
 	}
 
 	/**
-	 * Returns `true` if there are no nodes inside this element, `false` otherwise.
+	 * Is `true` if there are no nodes inside this element, `false` otherwise.
 	 *
-	 * @returns {Boolean}
+	 * @readonly
+	 * @type {Boolean}
 	 */
 	get isEmpty() {
 		return this._children.length === 0;

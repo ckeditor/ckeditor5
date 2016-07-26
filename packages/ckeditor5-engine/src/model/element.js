@@ -50,27 +50,30 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Returns the number of this element's children.
+	 * Number of this element's children.
 	 *
-	 * @returns {Number}
+	 * @readonly
+	 * @type {Number}
 	 */
 	get childCount() {
 		return this._children.length;
 	}
 
 	/**
-	 * Returns the sum of {engine.model.Node#offsetSize offset sizes} of all of this element's children.
+	 * Sum of {engine.model.Node#offsetSize offset sizes} of all of this element's children.
 	 *
-	 * @returns {Number}
+	 * @readonly
+	 * @type {Number}
 	 */
 	get maxOffset() {
 		return this._children.maxOffset;
 	}
 
 	/**
-	 * Returns `true` if there are no nodes inside this element, `false` otherwise.
+	 * Is `true` if there are no nodes inside this element, `false` otherwise.
 	 *
-	 * @returns {Boolean}
+	 * @readonly
+	 * @type {Boolean}
 	 */
 	get isEmpty() {
 		return this.childCount === 0;

@@ -187,18 +187,20 @@ export default class Position {
 	}
 
 	/**
-	 * Returns `true` if position is at the beginning of its {@link engine.model.Position#parent parent}, `false` otherwise.
+	 * Is `true` if position is at the beginning of its {@link engine.model.Position#parent parent}, `false` otherwise.
 	 *
-	 * @returns {Boolean}
+	 * @readonly
+	 * @type {Boolean}
 	 */
 	get isAtStart() {
 		return this.offset === 0;
 	}
 
 	/**
-	 * Returns `true` if position is at the end of its {@link engine.model.Position#parent parent}, `false` otherwise.
+	 * Is `true` if position is at the end of its {@link engine.model.Position#parent parent}, `false` otherwise.
 	 *
-	 * @returns {Boolean}
+	 * @readonly
+	 * @type {Boolean}
 	 */
 	get isAtEnd() {
 		return this.offset == this.parent.maxOffset;

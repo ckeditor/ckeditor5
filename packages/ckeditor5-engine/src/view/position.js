@@ -69,18 +69,20 @@ export default class Position {
 	}
 
 	/**
-	 * Returns `true` if position is at the beginning of its {@link engine.view.Position#parent parent}, `false` otherwise.
+	 * Is `true` if position is at the beginning of its {@link engine.view.Position#parent parent}, `false` otherwise.
 	 *
-	 * @returns {Boolean}
+	 * @readonly
+	 * @type {Boolean}
 	 */
 	get isAtStart() {
 		return this.offset === 0;
 	}
 
 	/**
-	 * Returns `true` if position is at the end of its {@link engine.view.Position#parent parent}, `false` otherwise.
+	 * Is `true` if position is at the end of its {@link engine.view.Position#parent parent}, `false` otherwise.
 	 *
-	 * @returns {Boolean}
+	 * @readonly
+	 * @type {Boolean}
 	 */
 	get isAtEnd() {
 		const endOffset = this.parent instanceof Text ? this.parent.data.length : this.parent.childCount;
@@ -89,18 +91,20 @@ export default class Position {
 	}
 
 	/**
-	 * Returns position root, that is the root of the position's parent element.
+	 * Position's root, that is the root of the position's parent element.
 	 *
-	 * @returns {engine.view.Node|engine.view.DocumentFragment} Position's root.
+	 * @readonly
+	 * @type {engine.view.Node|engine.view.DocumentFragment}
 	 */
 	get root() {
 		return this.parent.root;
 	}
 
 	/**
-	 * Returns {@link engine.view.EditableElement EditableElement} instance that contains this position.
+	 * {@link engine.view.EditableElement EditableElement} instance that contains this position, or `null` if
+	 * position is not inside an editable element.
 	 *
-	 * @returns {engine.view.EditableElement|null} Returns closest EditableElement or null if none is found.
+	 * @type {engine.view.EditableElement|null}
 	 */
 	get editableElement() {
 		let editable = this.parent;

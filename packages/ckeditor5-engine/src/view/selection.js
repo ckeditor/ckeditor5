@@ -111,9 +111,10 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns {@link engine.view.EditableElement EditableElement} instance that contains this selection.
+	 * {@link engine.view.EditableElement EditableElement} instance that contains this selection, or `null`
+	 * if the selection is not inside an editable element.
 	 *
-	 * @returns {engine.view.EditableElement|null} Returns closest EditableElement or null if none is found.
+	 * @type {engine.view.EditableElement|null}
 	 */
 	get editableElement() {
 		if ( this.rangeCount ) {

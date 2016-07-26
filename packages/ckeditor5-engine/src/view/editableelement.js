@@ -62,9 +62,9 @@ export default class EditableElement extends ContainerElement {
 	}
 
 	/**
-	 * Gets the {@link engine.view.Document} reference.
+	 * {@link engine.view.Document View document} reference that owns this editable element.
 	 *
-	 * @returns {engine.view.Document|null} View Document of the node or `null`.
+	 * @type {engine.view.Document|null}
 	 */
 	get document() {
 		return this._document;

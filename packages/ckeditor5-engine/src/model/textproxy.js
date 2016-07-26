@@ -129,7 +129,7 @@ export default class TextProxy {
 	 * Root of this text proxy, which is same as root of text node represented by this text proxy.
 	 *
 	 * @readonly
-	 * @type {engine.model.Element|engine.model.DocumentFragment}
+	 * @type {engine.model.Node|engine.model.DocumentFragment}
 	 */
 	get root() {
 		return this.textNode.root;
@@ -139,7 +139,8 @@ export default class TextProxy {
 	 * {@link engine.model.Document Document} that owns text node represented by this text proxy or `null` if the text node
 	 * has no parent or is inside a {@link engine.model.DocumentFragment DocumentFragment}.
 	 *
-	 * @returns {engine.model.Document|null}
+	 * @readonly
+	 * @type {engine.model.Document|null}
 	 */
 	get document() {
 		return this.textNode.document;

@@ -256,16 +256,6 @@ export default class Document {
 	}
 
 	/**
-	 * Gets names of all roots (without the {@link engine.model.Document#graveyard}).
-	 *
-	 * @readonly
-	 * @type {Iterable.<String>}
-	 */
-	getRootNames() {
-		return Array.from( this._roots.keys() ).filter( ( name ) => name != graveyardName );
-	}
-
-	/**
 	 * Checks if root with given name is defined.
 	 *
 	 * @param {String} name Name of root to check.
@@ -273,6 +263,15 @@ export default class Document {
 	 */
 	hasRoot( name ) {
 		return this._roots.has( name );
+	}
+
+	/**
+	 * Returns array with names of all roots (without the {@link engine.model.Document#graveyard}) added to the document.
+	 *
+	 * @returns {Array.<String>} Roots names.
+	 */
+	getRootNames() {
+		return Array.from( this._roots.keys() ).filter( ( name ) => name != graveyardName );
 	}
 
 	/**

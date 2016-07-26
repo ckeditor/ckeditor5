@@ -66,9 +66,11 @@ export default class Node {
 	/**
 	 * Index of this node in it's parent or `null` if the node has no parent.
 	 *
-	 * Throws error if the parent element does not contain this node. This means that model tree got broken.
+	 * Accessing this property throws an error if this node's parent element does not contain it.
+	 * This means that model tree got broken.
 	 *
-	 * @returns {Number|null}
+	 * @readonly
+	 * @type {Number|null}
 	 */
 	get index() {
 		let pos;
@@ -93,7 +95,8 @@ export default class Node {
 	 * Offset at which this node starts in it's parent. It is equal to the sum of {@link engine.model.Node#offsetSize offsetSize}
 	 * of all it's previous siblings. Equals to `null` if node has no parent.
 	 *
-	 * Throws error if the parent element does not contain this node. This means that model tree got broken.
+	 * Accessing this property throws an error if this node's parent element does not contain it.
+	 * This means that model tree got broken.
 	 *
 	 * @readonly
 	 * @type {Number|Null}

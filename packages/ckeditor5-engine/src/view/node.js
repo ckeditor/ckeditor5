@@ -30,11 +30,13 @@ export default class Node {
 	}
 
 	/**
-	 * Returns index of the node in the parent element or null if the node has no parent.
+	 * Index of the node in the parent element or null if the node has no parent.
 	 *
-	 * Throws error if the parent element does not contain this node.
+	 * Accessing this property throws an error if this node's parent element does not contain it.
+	 * This means that view tree got broken.
 	 *
-	 * @returns {Number|null} Index of the node in the parent element or null if the node has not parent.
+	 * @readonly
+	 * @type {Number|null}
 	 */
 	get index() {
 		let pos;
@@ -57,9 +59,10 @@ export default class Node {
 	}
 
 	/**
-	 * Returns nodes next sibling or `null` if it is the last child.
+	 * Node's next sibling, or `null` if it is the last child.
 	 *
-	 * @returns {engine.view.Node|null} Nodes next sibling or `null` if it is the last child.
+	 * @readonly
+	 * @type {engine.view.Node|null}
 	 */
 	get nextSibling() {
 		const index = this.index;
@@ -68,9 +71,10 @@ export default class Node {
 	}
 
 	/**
-	 * Returns nodes previous sibling or `null` if it is the first child.
+	 * Node's previous sibling, or `null` if it is the first child.
 	 *
-	 * @returns {engine.view.Node|null} Nodes previous sibling or `null` if it is the first child.
+	 * @readonly
+	 * @type {engine.view.Node|null}
 	 */
 	get previousSibling() {
 		const index = this.index;
@@ -79,9 +83,10 @@ export default class Node {
 	}
 
 	/**
-	 * Gets the top parent for the node. If node has no parent it is the root itself.
+	 * Top-most ancestor of the node. If the node has no parent it is the root itself.
 	 *
-	 * @returns {engine.view.Node|engine.view.DocumentFragment}
+	 * @readonly
+	 * @type {engine.view.Node|engine.view.DocumentFragment}
 	 */
 	get root() {
 		let root = this;
@@ -94,10 +99,11 @@ export default class Node {
 	}
 
 	/**
-	 * Gets {@link engine.view.Document} reference, from the {@link engine.view.Node#getRoot root} or
-	 * returns null if the root has no reference to the {@link engine.view.Document}.
+	 * {@link engine.view.Document View document} that owns this node, or `null` if the node is inside
+	 * {@link engine.view.DocumentFragment document fragment}.
 	 *
-	 * @returns {engine.view.Document|null} View document of the node or null.
+	 * @readonly
+	 * @type {engine.view.Document|null}
 	 */
 	get document() {
 		// Parent might be Node, null or DocumentFragment.

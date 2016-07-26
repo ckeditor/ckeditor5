@@ -44,27 +44,30 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * Returns the number of this document fragment's children.
+	 * Number of this document fragment's children.
 	 *
-	 * @returns {Number}
+	 * @readonly
+	 * @type {Number}
 	 */
 	get childCount() {
 		return this._children.length;
 	}
 
 	/**
-	 * Returns the sum of {engine.model.Node#offsetSize offset sizes} of all of this document fragment's children.
+	 * Sum of {engine.model.Node#offsetSize offset sizes} of all of this document fragment's children.
 	 *
-	 * @returns {Number}
+	 * @readonly
+	 * @type {Number}
 	 */
 	get maxOffset() {
 		return this._children.maxOffset;
 	}
 
 	/**
-	 * Returns `true` if there are no nodes inside this document fragment, `false` otherwise.
+	 * Is `true` if there are no nodes inside this document fragment, `false` otherwise.
 	 *
-	 * @returns {Boolean}
+	 * @readonly
+	 * @type {Boolean}
 	 */
 	get isEmpty() {
 		return this.childCount === 0;

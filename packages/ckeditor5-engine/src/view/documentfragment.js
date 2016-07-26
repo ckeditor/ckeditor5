@@ -42,18 +42,20 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * Gets the number of elements in fragment.
+	 * Number of child nodes in this document fragment.
 	 *
-	 * @returns {Number} The number of elements.
+	 * @readonly
+	 * @type {Number} The number of elements.
 	 */
 	get childCount() {
 		return this._children.length;
 	}
 
 	/**
-	 * Returns `true` if there are no nodes inside this document fragment, `false` otherwise.
+	 * Is `true` if there are no nodes inside this document fragment, `false` otherwise.
 	 *
-	 * @returns {Boolean}
+	 * @readonly
+	 * @type {Boolean}
 	 */
 	get isEmpty() {
 		return this.childCount === 0;
