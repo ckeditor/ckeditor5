@@ -14,7 +14,7 @@ const config = {
 	]
 };
 
-const ckeditor5Lint = require( 'ckeditor5-dev-task-lint' )( config );
+const ckeditor5Lint = require( 'ckeditor5-dev-lint' )( config );
 
 gulp.task( 'lint', ckeditor5Lint.lint );
 gulp.task( 'lint-staged', ckeditor5Lint.lintStaged );

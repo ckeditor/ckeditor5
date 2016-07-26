@@ -16,7 +16,7 @@ const config = {
 	]
 };
 
-const ckeditor5Lint = require( 'ckeditor5-dev-task-lint' )( config );
+const ckeditor5Lint = require( 'ckeditor5-dev-lint' )( config );
 
 require( './dev/tasks/build/tasks' )( config ).register();
 require( './dev/tasks/bundle/tasks' )( config ).register();
