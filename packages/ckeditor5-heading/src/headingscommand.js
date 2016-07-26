@@ -7,23 +7,23 @@ import Command from '../command/command.js';
 import RootElement from '../engine/model/rootelement.js';
 
 /**
- * Headings command. Used by the {@link headings.Headings headings feature}.
+ * The headings command. It is used by the {@link headings.Headings headings feature}.
  *
  * @memberOf headings
  * @extends ckeditor5.command.Command
  */
 export default class HeadingsCommand extends Command {
 	/**
-	 * Creates instance of the command.
+	 * Creates an instance of the command.
 	 *
 	 * @param {ckeditor5.editor.Editor} editor Editor instance.
-	 * @param {Array.<headings.HeadingsFormat>} formats Headings formats to be used by command's instance.
+	 * @param {Array.<headings.HeadingsFormat>} formats Heading formats to be used by the command instance.
 	 */
 	constructor( editor, formats ) {
 		super( editor );
 
 		/**
-		 * Headings formats used by this command.
+		 * Heading formats used by this command.
 		 *
 		 * @readonly
 		 * @member {headings.HeadingsFormat} headings.HeadingsCommand#formats
@@ -31,7 +31,7 @@ export default class HeadingsCommand extends Command {
 		this.formats = formats;
 
 		/**
-		 * Currently selected headings format.
+		 * The currently selected heading format.
 		 *
 		 * @readonly
 		 * @observable
@@ -39,7 +39,7 @@ export default class HeadingsCommand extends Command {
 		 */
 		this.set( 'value', this.defaultFormat );
 
-		// Listen on selection change and set current command's format to format in current selection.
+		// Listen on selection change and set current command's format to format in the current selection.
 		this.listenTo( editor.document.selection, 'change', () => {
 			const position = editor.document.selection.getFirstPosition();
 			const block = findTopmostBlock( position );
@@ -66,9 +66,9 @@ export default class HeadingsCommand extends Command {
 	/**
 	 * Executes the command if it is enabled.
 	 *
-	 * @param {String} [formatId] Identifier of the headings format that should be applied. It should be one of the
-	 * {@link headings.HeadingsFormat} provided to the command's constructor. If this parameter is not provided, value
-	 * from {@link headings.HeadingsCommand#defaultFormat defaultFormat} will be used.
+	 * @param {String} [formatId] The identifier of the heading format that should be applied. It should be one of the
+	 * {@link headings.HeadingsFormat heading formats} provided to the command constructor. If this parameter is not provided,
+	 * the value from {@link headings.HeadingsCommand#defaultFormat defaultFormat} will be used.
 	 */
 	_doExecute( formatId = this.defaultFormat.id ) {
 		// TODO: What should happen if format is not found?
@@ -127,7 +127,7 @@ export default class HeadingsCommand extends Command {
 	}
 
 	/**
-	 * Returns format by given id.
+	 * Returns the format by a given ID.
 	 *
 	 * @private
 	 * @param {String} id
@@ -138,15 +138,15 @@ export default class HeadingsCommand extends Command {
 	}
 }
 
-// Looks for topmost element from position parent to element placed in root.
+// Looks for the topmost element in the position's ancestor (up to an element in the root).
 //
-// NOTE: This method does not checks schema directly - assumes that only block elements can be placed directly inside
-// root.
+// NOTE: This method does not check the schema directly &mdash; it assumes that only block elements can be placed directly inside
+// the root.
 //
 // @private
 // @param {engine.model.Position} position
-// @param {Boolean} [nodeAfter=true] When position is placed inside root element this will determine if element before
-// or after given position will be returned.
+// @param {Boolean} [nodeAfter=true] When the position is placed inside the root element, this will determine if the element before
+// or after a given position will be returned.
 // @returns {engine.model.Element}
 function findTopmostBlock( position, nodeAfter = true ) {
 	let parent = position.parent;
@@ -164,10 +164,10 @@ function findTopmostBlock( position, nodeAfter = true ) {
 }
 
 /**
- * Headings format descriptor.
+ * Heading format descriptor.
  *
  * @typedef {Object} headings.HeadingsFormat
- * @property {String} id Format identifier, it will be used as element's name in the model.
- * @property {String} viewElement Name of the view element that will be used to represent model element in the view.
- * @property {String} label Display name of the format.
+ * @property {String} id Format identifier. It will be used as the element's name in the model.
+ * @property {String} viewElement The name of the view element that will be used to represent the model element in the view.
+ * @property {String} label The display name of the format.
  */

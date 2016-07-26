@@ -17,8 +17,8 @@ const formats = [
 ];
 
 /**
- * The headings feature. Handles switching between block formats - different headings and paragraph.
- * This class represents the engine part of the Headings feature.
+ * The headings feature. It handles switching between block formats &mdash; different headings and paragraph.
+ * This class represents the engine part of the headings feature.
  *
  * @memberOf headings
  * @extends ckeditor5.Feature

@@ -11,7 +11,8 @@ import ListDropdownView from '../ui/dropdown/list/listdropdownview.js';
 import Collection from '../utils/collection.js';
 
 /**
- * The headings feature. Introduces a "headings" drop-down and a command which allow switching paragraphs into headings.
+ * The headings feature. It introduces the headings drop-down list and the command that allows
+ * to convert paragraphs into headings.
  *
  * @memberOf headings
  * @extends ckeditor5.Feature
