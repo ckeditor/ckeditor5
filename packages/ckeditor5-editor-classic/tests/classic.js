@@ -41,7 +41,7 @@ describe( 'ClassicEditor', () => {
 		} );
 
 		it( 'creates a single document root', () => {
-			expect( count( editor.document.rootNames ) ).to.equal( 1 );
+			expect( count( editor.document.getRootNames() ) ).to.equal( 1 );
 			expect( editor.document.getRoot() ).to.have.property( 'name', '$root' );
 		} );
 
