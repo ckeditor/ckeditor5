@@ -54,7 +54,7 @@ export function enterBlock( batch, selection, options = {} ) {
 	if ( isSelectionEmpty ) {
 		splitBlock( batch, selection, range.start, defaultBlockName );
 	} else {
-		const shouldMerge = range.start.isAtStart() && range.end.isAtEnd();
+		const shouldMerge = range.start.isAtStart && range.end.isAtEnd;
 		const isContainedWithinOneElement = ( startElement == endElement );
 
 		doc.composer.deleteContents( batch, selection, { merge: shouldMerge } );
@@ -94,7 +94,7 @@ function splitBlock( batch, selection, splitPos, defaultBlockName ) {
 	const doc = batch.document;
 	const parent = splitPos.parent;
 
-	if ( splitPos.isAtEnd() ) {
+	if ( splitPos.isAtEnd ) {
 		const newElement = new Element( getNewBlockName( doc, parent, defaultBlockName ) );
 
 		batch.insert( Position.createAfter( parent ), newElement );
