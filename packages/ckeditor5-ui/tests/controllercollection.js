@@ -45,9 +45,7 @@ describe( 'ControllerCollection', () => {
 		it( 'should add a child controller and return promise', () => {
 			const parentController = new Controller();
 			const childController = new Controller();
-			const collection = new ControllerCollection( 'x' );
-
-			parentController.collections.add( collection );
+			const collection = parentController.addCollection( 'x' );
 
 			const returned = collection.add( childController );
 
@@ -59,9 +57,7 @@ describe( 'ControllerCollection', () => {
 			const parentController = new Controller();
 			const childController1 = new Controller();
 			const childController2 = new Controller();
-			const collection = new ControllerCollection( 'x' );
-
-			parentController.collections.add( collection );
+			const collection = parentController.addCollection( 'x' );
 
 			collection.add( childController1 );
 			collection.add( childController2, 0 );
@@ -74,9 +70,8 @@ describe( 'ControllerCollection', () => {
 			const parentController = new Controller( null, new ParentView() );
 			const childController = new Controller( null, new View() );
 			const spy = testUtils.sinon.spy( childController, 'init' );
-			const collection = new ControllerCollection( 'x' );
+			const collection = parentController.addCollection( 'x' );
 
-			parentController.collections.add( collection );
 			collection.add( childController );
 			collection.remove( childController );
 
@@ -95,9 +90,7 @@ describe( 'ControllerCollection', () => {
 			const parentController = new Controller( null, new ParentView() );
 			const childController = new Controller( null, new View() );
 			const spy = testUtils.sinon.spy( childController, 'init' );
-			const collection = new ControllerCollection( 'x' );
-
-			parentController.collections.add( collection );
+			const collection = parentController.addCollection( 'x' );
 
 			return parentController.init()
 				.then( () => {

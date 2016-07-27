@@ -4,7 +4,6 @@
  */
 
 import Controller from '../controller.js';
-import ControllerCollection from '../controllercollection.js';
 import ComponentFactory from '../componentfactory.js';
 import ObservableMixin from '../../utils/observablemixin.js';
 import IconManager from '../iconmanager/iconmanager.js';
@@ -46,7 +45,7 @@ export default class EditorUI extends Controller {
 		 */
 		this.featureComponents = new ComponentFactory( editor );
 
-		this.collections.add( new ControllerCollection( 'body' ) );
+		this.addCollection( 'body' );
 	}
 
 	/**

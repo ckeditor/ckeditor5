@@ -5,7 +5,6 @@
 
 import View from '/ckeditor5/ui/view.js';
 import Controller from '/ckeditor5/ui/controller.js';
-import ControllerCollection from '/ckeditor5/ui/controllercollection.js';
 
 /**
  * Test utils for CKEditor UI.
@@ -44,7 +43,7 @@ const utils = {
 		const controller = new Controller( null, new TestUIView() );
 
 		for ( let r in regions ) {
-			controller.collections.add( new ControllerCollection( r ) );
+			controller.addCollection( r );
 		}
 
 		return controller.init().then( () => {

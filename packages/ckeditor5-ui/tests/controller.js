@@ -451,7 +451,7 @@ function defineParentControllerClass() {
 		constructor( ...args ) {
 			super( ...args );
 
-			this.collections.add( new ControllerCollection( 'x' ) );
+			this.addCollection( 'x' );
 		}
 	};
 }
