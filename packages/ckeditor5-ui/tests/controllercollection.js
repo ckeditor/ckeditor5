@@ -16,7 +16,7 @@ import Template from '/ckeditor5/ui/template.js';
 testUtils.createSinonSandbox();
 
 let ParentView, ItemController, ItemView;
-let modelCollection;
+let models;
 
 describe( 'ControllerCollection', () => {
 	beforeEach( () => {
@@ -33,18 +33,11 @@ describe( 'ControllerCollection', () => {
 			} ).to.throw( /^ui-controllercollection-no-name/ );
 		} );
 
-		it( 'activates model collection synchronization', () => {
-			const modelCollection = new Collection( {
-				idProperty: 'uid'
-			} );
+		it( 'accepts locale', () => {
+			const locale = {};
+			const collection = new ControllerCollection( 'foo', locale );
 
-			modelCollection.add( new Model( {
-				uid: 'foo'
-			} ) );
-
-			const controllers = new ControllerCollection( 'synced', modelCollection, ItemController, ItemView );
-
-			expect( controllers ).to.have.length( 1 );
+			expect( collection.locale ).to.equal( locale );
 		} );
 	} );
 
@@ -119,48 +112,143 @@ describe( 'ControllerCollection', () => {
 		} );
 	} );
 
-	describe( '_sync', () => {
-		it( 'expands the initial collection of the models', () => {
-			const controllers = new ControllerCollection( 'synced' );
-
-			controllers._sync( modelCollection, ItemController, ItemView );
-
-			expect( controllers ).to.have.length( 5 );
-			expect( controllers.get( 0 ).model.uid ).to.equal( '0' );
-			expect( controllers.get( 4 ).model.uid ).to.equal( '4' );
+	describe( 'bind', () => {
+		it( 'returns object', () => {
+			expect( new ControllerCollection( 'foo' ).bind( {} ) ).to.be.an( 'object' );
 		} );
 
-		it( 'uses the controller and view classes to expand the collection', () => {
-			const controllers = new ControllerCollection( 'synced' );
+		it( 'provides "as" interface', () => {
+			const bind = new ControllerCollection( 'foo' ).bind( {} );
 
-			controllers._sync( modelCollection, ItemController, ItemView );
-
-			expect( controllers.get( 0 ) ).to.be.instanceOf( ItemController );
-			expect( controllers.get( 0 ).view ).to.be.instanceOf( ItemView );
+			expect( bind ).to.have.keys( 'as' );
+			expect( bind.as ).to.be.a( 'function' );
 		} );
 
-		it( 'supports adding new models to the collection', () => {
-			const controllers = new ControllerCollection( 'synced' );
+		describe( 'as', () => {
+			it( 'does not chain', () => {
+				const controllers = new ControllerCollection( 'synced' );
+				const returned = controllers.bind( models ).as( ItemController, ItemView );
 
-			controllers._sync( modelCollection, ItemController, ItemView );
+				expect( returned ).to.be.undefined;
+			} );
 
-			modelCollection.add( new Model( { uid: '6' } ) );
-			modelCollection.add( new Model( { uid: '5' } ), 5 );
+			describe( 'standard factory', () => {
+				it( 'expands the initial collection of the models', () => {
+					const controllers = new ControllerCollection( 'synced' );
 
-			expect( controllers.get( 5 ).model.uid ).to.equal( '5' );
-			expect( controllers.get( 6 ).model.uid ).to.equal( '6' );
-			expect( controllers ).to.have.length( 7 );
-		} );
+					controllers.bind( models ).as( ItemController, ItemView );
 
-		it( 'supports removing models from the collection', () => {
-			const controllers = new ControllerCollection( 'synced' );
+					expect( controllers ).to.have.length( 5 );
+					expect( controllers.get( 0 ).model.uid ).to.equal( '0' );
+					expect( controllers.get( 4 ).model.uid ).to.equal( '4' );
+				} );
 
-			controllers._sync( modelCollection, ItemController, ItemView );
+				it( 'uses the controller and view classes to expand the collection', () => {
+					const controllers = new ControllerCollection( 'synced' );
 
-			modelCollection.remove( 2 );
-			modelCollection.remove( 3 );
+					controllers.bind( models ).as( ItemController, ItemView );
 
-			expect( controllers.map( c => c.id ) ).to.have.members( [ '0', '1', '3' ] );
+					expect( controllers.get( 0 ) ).to.be.instanceOf( ItemController );
+					expect( controllers.get( 0 ).view ).to.be.instanceOf( ItemView );
+				} );
+
+				it( 'supports adding new models to the collection', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ItemController, ItemView );
+
+					models.add( new Model( { uid: '6' } ) );
+					models.add( new Model( { uid: '5' } ), 5 );
+
+					expect( controllers.get( 5 ).model.uid ).to.equal( '5' );
+					expect( controllers.get( 6 ).model.uid ).to.equal( '6' );
+					expect( controllers ).to.have.length( 7 );
+				} );
+
+				it( 'supports removing models from the collection', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ItemController, ItemView );
+
+					models.remove( 2 );
+					models.remove( 3 );
+
+					expect( controllers.map( c => c.id ) ).to.have.members( [ '0', '1', '3' ] );
+				} );
+
+				it( 'passes controller collection\'s locale to the views', () => {
+					const locale = {};
+					const controllers = new ControllerCollection( 'synced', locale );
+
+					controllers.bind( models ).as( ItemController, ItemView );
+
+					expect( controllers.get( 0 ).view.locale ).to.equal( locale );
+				} );
+			} );
+
+			describe( 'custom factory', () => {
+				it( 'expands the initial collection of the models', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ( model, locale ) => {
+						return new ItemController( model, new ItemView( locale ) );
+					} );
+
+					expect( controllers ).to.have.length( 5 );
+					expect( controllers.get( 0 ).model.uid ).to.equal( '0' );
+					expect( controllers.get( 4 ).model.uid ).to.equal( '4' );
+				} );
+
+				it( 'uses the controller and view classes to expand the collection', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ( model, locale ) => {
+						return new ItemController( model, new ItemView( locale ) );
+					} );
+
+					expect( controllers.get( 0 ) ).to.be.instanceOf( ItemController );
+					expect( controllers.get( 0 ).view ).to.be.instanceOf( ItemView );
+				} );
+
+				it( 'supports adding new models to the collection', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ( model, locale ) => {
+						return new ItemController( model, new ItemView( locale ) );
+					} );
+
+					models.add( new Model( { uid: '6' } ) );
+					models.add( new Model( { uid: '5' } ), 5 );
+
+					expect( controllers.get( 5 ).model.uid ).to.equal( '5' );
+					expect( controllers.get( 6 ).model.uid ).to.equal( '6' );
+					expect( controllers ).to.have.length( 7 );
+				} );
+
+				it( 'supports removing models from the collection', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ( model, locale ) => {
+						return new ItemController( model, new ItemView( locale ) );
+					} );
+
+					models.remove( 2 );
+					models.remove( 3 );
+
+					expect( controllers.map( c => c.id ) ).to.have.members( [ '0', '1', '3' ] );
+				} );
+
+				it( 'passes controller collection\'s locale to the views', () => {
+					const locale = {};
+					const controllers = new ControllerCollection( 'synced', locale );
+
+					controllers.bind( models ).as( ( model, locale ) => {
+						return new ItemController( model, new ItemView( locale ) );
+					} );
+
+					expect( controllers.get( 0 ).view.locale ).to.equal( locale );
+				} );
+			} );
 		} );
 	} );
 } );
@@ -188,8 +276,8 @@ function defineItemControllerClass() {
 
 function defineItemViewClass() {
 	ItemView = class extends View {
-		constructor() {
-			super();
+		constructor( locale ) {
+			super( locale );
 
 			const bind = this.bind;
 
@@ -205,10 +293,10 @@ function defineItemViewClass() {
 }
 
 function createModelCollection() {
-	modelCollection = new Collection( { idProperty: 'uid' } );
+	models = new Collection( { idProperty: 'uid' } );
 
 	for ( let i = 0; i < 5; i++ ) {
-		modelCollection.add( new Model( {
+		models.add( new Model( {
 			uid: Number( i ).toString()
 		} ) );
 	}
