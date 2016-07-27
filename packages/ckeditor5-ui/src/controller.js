@@ -4,6 +4,7 @@
  */
 
 import Collection from '../utils/collection.js';
+import ControllerCollection from './controllercollection.js';
 import CKEditorError from '../utils/ckeditorerror.js';
 import EmitterMixin from '../utils/emittermixin.js';
 import mix from '../utils/mix.js';
@@ -150,6 +151,21 @@ export default class Controller {
 		} ) );
 
 		return Promise.all( promises );
+	}
+
+	/**
+	 * Adds a new collection to {@link ui.Controller#collections}.
+	 *
+	 * @param {String} collectionName Name of the controller collection.
+	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
+	 * See {@link ui.ControllerCollection#locale}.
+	 */
+	addCollection( collectionName, locale ) {
+		const collection = new ControllerCollection( collectionName, locale );
+
+		this.collections.add( collection );
+
+		return collection;
 	}
 
 	/**
