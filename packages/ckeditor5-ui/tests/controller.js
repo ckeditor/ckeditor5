@@ -406,6 +406,33 @@ describe( 'Controller', () => {
 				} );
 		} );
 	} );
+
+	describe( 'addCollection', () => {
+		it( 'should add a new collection', () => {
+			const controller = new Controller();
+
+			controller.addCollection( 'foo' );
+
+			expect( controller.collections ).to.have.length( 1 );
+			expect( controller.collections.get( 'foo' ).name ).to.equal( 'foo' );
+		} );
+
+		it( 'should return the collection which has been created (chaining)', () => {
+			const controller = new Controller();
+			const returned = controller.addCollection( 'foo' );
+
+			expect( returned ).to.be.instanceOf( ControllerCollection );
+		} );
+
+		it( 'should pass locale to controller collection', () => {
+			const controller = new Controller();
+			const locale = {};
+
+			controller.addCollection( 'foo', locale );
+
+			expect( controller.collections.get( 'foo' ).locale ).to.equal( locale );
+		} );
+	} );
 } );
 
 function defineParentViewClass() {
