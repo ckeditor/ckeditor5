@@ -15,7 +15,6 @@ import mix from '../utils/mix.js';
  * @memberOf ui
  * @mixes utils.EmitterMixin
  */
-
 export default class Controller {
 	/**
 	 * Creates an instance of the {@link ui.Controller} class.

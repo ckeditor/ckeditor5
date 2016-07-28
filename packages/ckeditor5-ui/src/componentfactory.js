@@ -16,7 +16,6 @@ import CKEditorError from '../utils/ckeditorerror.js';
  *
  * @memberOf ui
  */
-
 export default class ComponentFactory {
 	/**
 	 * Creates ComponentFactory instance.
