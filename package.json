@@ -61,7 +61,6 @@
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "mockery": "^1.4.0",
-    "parse-gitignore": "^0.2.0",
     "pretty-bytes": "^3.0.1",
     "regenerator-runtime": "^0.9.5",
     "rollup": "^0.33.0",
