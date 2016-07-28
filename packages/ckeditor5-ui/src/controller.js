@@ -159,6 +159,7 @@ export default class Controller {
 	 * @param {String} collectionName Name of the controller collection.
 	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
 	 * See {@link ui.ControllerCollection#locale}.
+	 * @returns {ui.ControllerCollection} The new collection instance.
 	 */
 	addCollection( collectionName, locale ) {
 		const collection = new ControllerCollection( collectionName, locale );
@@ -184,6 +185,7 @@ export default class Controller {
 	 *
 	 * @param {String} collectionName Name of the Controller Collection.
 	 * @param {ui.Controller|Number} toRemove A Controller instance or index to be removed.
+	 * @returns {Object} The removed item.
 	 */
 	remove( collectionName, toRemove ) {
 		return this.collections.get( collectionName ).remove( toRemove );
