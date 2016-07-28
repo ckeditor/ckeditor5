@@ -10,7 +10,7 @@ const viewDocument = new Document();
 viewDocument.createRoot( document.getElementById( 'editor' ) );
 
 setData( viewDocument,
-    '<container:p>foo</container:p>' +
-    '<container:p>bar</container:p>' );
+	'<container:p>foo</container:p>' +
+	'<container:p>bar</container:p>' );
 
 viewDocument.render();
