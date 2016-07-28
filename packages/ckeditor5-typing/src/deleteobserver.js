@@ -41,7 +41,7 @@ export default class DeleteObserver extends Observer {
 }
 
 /**
- * Event fired when the user tries to delete contents (e.g. presses <kbd>Delete</kbd> or <kbd>Backspace</kbd>).
+ * Event fired when the user tries to delete content (e.g. presses <kbd>Delete</kbd> or <kbd>Backspace</kbd>).
  *
  * Note: This event is fired by the {@link typing.DeleteObserver observer}
  * (usually registered by the {@link typing.Delete delete feature}).

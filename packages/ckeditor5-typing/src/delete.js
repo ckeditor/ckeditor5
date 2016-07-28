@@ -8,7 +8,7 @@ import DeleteCommand from './deletecommand.js';
 import DeleteObserver from './deleteobserver.js';
 
 /**
- * The delete and backspace feature. Handles <kbd>Delete</kbd> and <kbd>Backspace</kbd> keys in the editor.
+ * The delete and backspace feature. Handles the <kbd>Delete</kbd> and <kbd>Backspace</kbd> keys in the editor.
  *
  * @memberOf typing
  * @extends ckeditor5.Feature

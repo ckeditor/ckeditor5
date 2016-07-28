@@ -14,7 +14,7 @@ import count from '../utils/count.js';
  * The buffer has a configurable limit of atomic changes that it can accomodate. After the limit was
  * exceeded (see {@link typing.ChangeBuffer#input}), a new batch is created in {@link typing.ChangeBuffer#batch}.
  *
- * To use the change buffer you need to let it know about number of changes that has been added to the batch:
+ * To use the change buffer you need to let it know about the number of changes that were added to the batch:
  *
  *		const buffer = new ChangeBuffer( document, LIMIT );
  *
@@ -26,14 +26,14 @@ import count from '../utils/count.js';
  */
 export default class ChangeBuffer {
 	/**
-	 * Creates a new instance of the ChangeBuffer.
+	 * Creates a new instance of the change buffer.
 	 *
 	 * @param {engine.treeModel.Document} document
-	 * @param {Number} [limit=20] Maximum number of atomic changes which can be contained in one batch.
+	 * @param {Number} [limit=20] The maximum number of atomic changes which can be contained in one batch.
 	 */
 	constructor( doc, limit = 20 ) {
 		/**
-		 * Instance of the document.
+		 * The document instance.
 		 *
 		 * @readonly
 		 * @property {engine.treeModel.Document} typing.ChangeBuffer#document
@@ -41,8 +41,8 @@ export default class ChangeBuffer {
 		this.document = doc;
 
 		/**
-		 * Number of atomic changes in the buffer. Once it exceeds the {@link typing.ChangeBuffer#limit},
-		 * {@link typing.ChangeBuffer#batch batch} is set to a new batch.
+		 * The number of atomic changes in the buffer. Once it exceeds the {@link typing.ChangeBuffer#limit},
+		 * the {@link typing.ChangeBuffer#batch batch} is set to a new one.
 		 *
 		 * @readonly
 		 * @property {Number} typing.ChangeBuffer#size
@@ -50,7 +50,7 @@ export default class ChangeBuffer {
 		this.size = 0;
 
 		/**
-		 * Maximum number of atomic changes which can be contained in one batch.
+		 * The maximum number of atomic changes which can be contained in one batch.
 		 *
 		 * @readonly
 		 * @property {Number} typing.ChangeBuffer#limit
@@ -71,7 +71,7 @@ export default class ChangeBuffer {
 		 */
 
 		/**
-		 * The callback to document change event which later needs to be removed.
+		 * The callback to document the change event which later needs to be removed.
 		 *
 		 * @private
 		 * @property typing.ChangeBuffer#_changeCallback
@@ -79,8 +79,8 @@ export default class ChangeBuffer {
 	}
 
 	/**
-	 * Current batch to which a feature should add its deltas. Once the {@link typing.ChangeBuffer#size}
-	 * reach or exceeds the {@link typing.ChangeBuffer#limit}, then the batch is set to a new instance and size is reset.
+	 * The current batch to which a feature should add its deltas. Once the {@link typing.ChangeBuffer#size}
+	 * is reached or exceeds the {@link typing.ChangeBuffer#limit}, the batch is set to a new instance and the size is reset.
 	 *
 	 * @type {engine.treeModel.batch.Batch}
 	 */
@@ -93,10 +93,10 @@ export default class ChangeBuffer {
 	}
 
 	/**
-	 * Input number of changes into the buffer. Once the {@link typing.ChangeBuffer#size}
-	 * reach or exceeds the {@link typing.ChangeBuffer#limit}, then the batch is set to a new instance and size is reset.
+	 * The input number of changes into the buffer. Once the {@link typing.ChangeBuffer#size} is
+	 * reached or exceeds the {@link typing.ChangeBuffer#limit}, the batch is set to a new instance and the size is reset.
 	 *
-	 * @param {Number} changeCount Number of atomic changes to input.
+	 * @param {Number} changeCount The number of atomic changes to input.
 	 */
 	input( changeCount ) {
 		this.size += changeCount;
@@ -114,11 +114,11 @@ export default class ChangeBuffer {
 	}
 
 	/**
-	 * To be called in order to notify the buffer about batches which appeared in the document.
+	 * The method to be called in order to notify the buffer about batches which appeared in the document.
 	 * The method will check whether it is a new batch and in that case the buffer will be flushed.
 	 *
-	 * The reason why the buffer needs to be flushed whenever a new batch appears is that changes added afterwards
-	 * should be added to a new batch. For instance, when a user types, then inserts an image and then types again,
+	 * The reason why the buffer needs to be flushed whenever a new batch appears is that the changes added afterwards
+	 * should be added to a new batch. For instance, when the  user types, then inserts an image, and then types again,
 	 * the characters typed after inserting the image should be added to a different batch than the characters typed before.
 	 *
 	 * @private
@@ -132,7 +132,7 @@ export default class ChangeBuffer {
 	}
 
 	/**
-	 * Resets change buffer.
+	 * Resets the change buffer.
 	 *
 	 * @private
 	 */

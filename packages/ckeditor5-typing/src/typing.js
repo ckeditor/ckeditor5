@@ -8,7 +8,7 @@ import Input from './input';
 import Delete from './delete';
 
 /**
- * The typing feature. Handles... typing.
+ * The typing feature. Handles typing.
  *
  * @memberOf typing
  * @extends ckeditor5.Feature

@@ -9,7 +9,7 @@ import ChangeBuffer from './changebuffer.js';
 import count from '../utils/count.js';
 
 /**
- * Delete command. Used by the {@link typing.Delete delete feature} to handle <kbd>Delete</kbd> and
+ * The delete command. Used by the {@link typing.Delete delete feature} to handle the <kbd>Delete</kbd> and
  * <kbd>Backspace</kbd> keys.
  *
  * @member typing
@@ -17,18 +17,18 @@ import count from '../utils/count.js';
  */
 export default class DeleteCommand extends Command {
 	/**
-	 * Creates instance of the command;
+	 * Creates an instance of the command.
 	 *
 	 * @param {ckeditor5.Editor} editor
-	 * @param {'forward'|'backward'} direction The directionality of the delete (in what direction it should
-	 * consume the content when selection is collapsed).
+	 * @param {'forward'|'backward'} direction The directionality of the delete describing in what direction it
+	 * should consume the content when the selection is collapsed.
 	 */
 	constructor( editor, direction ) {
 		super( editor );
 
 		/**
-		 * The directionality of the delete (in what direction it should
-		 * consume the content when selection is collapsed).
+		 * The directionality of the delete describing in what direction it should
+		 * consume the content when the selection is collapsed.
 		 *
 		 * @readonly
 		 * @member {'forward'|'backward'} typing.DeleteCommand#direction
@@ -46,8 +46,8 @@ export default class DeleteCommand extends Command {
 	}
 
 	/**
-	 * Executes the command: depending on whether the selection is collapsed or not, deletes its contents
-	 * or piece of content in the {@link typing.DeleteCommand#direction defined direction}.
+	 * Executes the delete command. Depending on whether the selection is collapsed or not, deletes its content
+	 * or a piece of content in the {@link typing.DeleteCommand#direction defined direction}.
 	 *
 	 * @param {Object} [options] The command options.
 	 * @param {'character'} [options.unit='character'] See {@link engine.model.composer.modifySelection}'s options.

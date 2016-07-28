@@ -14,7 +14,7 @@ import diffToChanges from '../utils/difftochanges.js';
 import { getCode } from '../utils/keyboard.js';
 
 /**
- * Handles text input, coming from keyboard or other input methods.
+ * Handles text input coming from the keyboard or other input methods.
  *
  * @memberOf typing
  * @extends ckeditor5.Feature
@@ -35,7 +35,7 @@ export default class Input extends Feature {
 		 */
 		this._buffer = new ChangeBuffer( editor.document, editor.config.get( 'typing.undoStep' ) || 20 );
 
-		// TODO The above default config value should be defines using editor.config.define() once it's fixed.
+		// TODO The above default configuration value should be defined using editor.config.define() once it's fixed.
 
 		this.listenTo( editingView, 'keydown', ( evt, data ) => {
 			this._handleKeydown( data );
@@ -57,15 +57,15 @@ export default class Input extends Feature {
 	}
 
 	/**
-	 * Handles keydown event. We need to guess whether such a keystroke is going to result
-	 * in typing. If so, then before character insertion happens, we need to delete
-	 * any selected content. Otherwise, a default browser deletion mechanism would be
+	 * Handles the keydown event. We need to guess whether such keystroke is going to result
+	 * in typing. If so, then before character insertion happens, any selected content needs
+	 * to be deleted. Otherwise the default browser deletion mechanism would be
 	 * triggered, resulting in:
 	 *
-	 * * hundreds of mutations which couldn't be handled,
-	 * * but most importantly, loss of a control over how content is being deleted.
+	 * * Hundreds of mutations which could not be handled.
+	 * * But most importantly, loss of control over how the content is being deleted.
 	 *
-	 * The method is used in a low-prior listener, hence allowing other listeners (e.g. delete or enter features)
+	 * The method is used in a low-priority listener, hence allowing other listeners (e.g. delete or enter features)
 	 * to handle the event.
 	 *
 	 * @private
@@ -104,7 +104,7 @@ export default class Input extends Feature {
  */
 class MutationHandler {
 	/**
-	 * Creates instance of the mutation handler.
+	 * Creates an instance of the mutation handler.
 	 *
 	 * @param {engine.EditingController} editing
 	 * @param {typing.ChangeBuffer} buffer
@@ -125,7 +125,7 @@ class MutationHandler {
 		this.buffer = buffer;
 
 		/**
-		 * Number of inserted characters which need to be feed to the {@link #buffer change buffer}
+		 * The number of inserted characters which need to be fed to the {@link #buffer change buffer}
 		 * on {@link #commit}.
 		 *
 		 * @member {Number} typing.Input.MutationHandler#insertedCharacterCount
@@ -133,11 +133,11 @@ class MutationHandler {
 		this.insertedCharacterCount = 0;
 
 		/**
-		 * Position to which the selection should be moved on {@link #commit}.
+		 * The position to which the selection should be moved on {@link #commit}.
 		 *
-		 * Note: Currently, the mutation handler will move selection to the position set by the
+		 * Note: Currently, the mutation handler will move the selection to the position set by the
 		 * last consumer. Placing the selection right after the last change will work for many cases, but not
-		 * for ones like autocorrection or spellchecking. The caret should be placed after the whole piece
+		 * for ones like autocorrect or spell checking. The caret should be placed after the whole piece
 		 * which was corrected (e.g. a word), not after the letter that was replaced.
 		 *
 		 * @member {engine.model.Position} typing.Input.MutationHandler#selectionPosition
@@ -145,7 +145,7 @@ class MutationHandler {
 	}
 
 	/**
-	 * Handle given mutations.
+	 * Handles given mutations.
 	 *
 	 * @param {Array.<engine.view.Document~MutatatedText|engine.view.Document~MutatatedChildren>} mutations
 	 */
@@ -265,9 +265,9 @@ for ( let code = 112; code <= 135; code++ ) {
 	safeKeycodes.push( code );
 }
 
-// Returns true if a keystroke should not cause any content change caused by "typing".
+// Returns `true` if a keystroke should not cause any content change caused by "typing".
 //
-// Note: this implementation is very simple and will need to be refined with time.
+// Note: This implementation is very simple and will need to be refined with time.
 //
 // @param {engine.view.observer.keyObserver.KeyEventData} keyData
 // @returns {Boolean}
