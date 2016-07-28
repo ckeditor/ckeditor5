@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
- /* bender-tags: ui, iconmanager */
+/* bender-tags: ui, iconmanager */
 
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import IconManager from '/ckeditor5/ui/iconmanager/iconmanager.js';
