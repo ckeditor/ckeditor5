@@ -3,7 +3,7 @@ Classic Editor
 
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-classic/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-classic#info=devDependencies)
 
-Classic Editor for CKEditor 5. More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5-editor-classic>.
+Classic Editor for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-editor-classic>.
 
 ## License
 

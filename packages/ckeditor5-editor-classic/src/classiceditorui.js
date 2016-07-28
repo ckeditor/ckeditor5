@@ -69,7 +69,7 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 	}
 
 	/**
-	 * Creates editor sticky toolbar.
+	 * Creates the sticky toolbar of the editor.
 	 *
 	 * @protected
 	 * @returns {ui.toolbar.Toolbar}
@@ -87,7 +87,7 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 	}
 
 	/**
-	 * Creates editor main editable.
+	 * Creates the main editable of the editor.
 	 *
 	 * @protected
 	 * @returns {ui.editableUI.EditableUI}

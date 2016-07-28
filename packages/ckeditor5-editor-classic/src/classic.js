@@ -25,7 +25,7 @@ export default class ClassicEditor extends StandardEditor {
 	 *
 	 * @param {HTMLElement} element The DOM element that will be the source for the created editor.
 	 * The data will be loaded from it and loaded back to it once the editor is destroyed.
-	 * @param {Object} config The editor config.
+	 * @param {Object} config The editor configuration.
 	 */
 	constructor( element, config ) {
 		super( element, config );
@@ -40,7 +40,7 @@ export default class ClassicEditor extends StandardEditor {
 		this.ui.view = new BoxedEditorUIView( this.locale );
 
 		/**
-		 * The element replacer instance used to hide editor element.
+		 * The element replacer instance used to hide the editor element.
 		 *
 		 * @protected
 		 * @member {utils.ElementReplacer} editor-classic.Classic#_elementReplacer
@@ -77,9 +77,9 @@ export default class ClassicEditor extends StandardEditor {
 	 *			console.error( err.stack );
 	 *		} );
 	 *
-	 * @param {HTMLElement} element See {@link ckeditor5.editor.ClassicEditor#constructor}'s param.
-	 * @param {Object} config See {@link ckeditor5.editor.ClassicEditor#constructor}'s param.
-	 * @returns {Promise} Promise resolved once editor is ready.
+	 * @param {HTMLElement} element See {@link ckeditor5.editor.ClassicEditor#constructor}'s parameters.
+	 * @param {Object} config See {@link ckeditor5.editor.ClassicEditor#constructor}'s parameters.
+	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * @returns {ckeditor5.editor.StandardEditor} return.editor The editor instance.
 	 */
 	static create( element, config ) {
