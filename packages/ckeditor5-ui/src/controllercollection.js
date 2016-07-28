@@ -140,23 +140,19 @@ export default class ControllerCollection extends Collection {
 	 *		data.remove( 0 );
 	 *		console.log( controllers.length == 1 );
 	 *
-	 *
 	 * @param {utils.Collection.<ui.Model>} models Models to be synchronized with this controller collection.
+	 * @returns {Function} The `as` function in the `bind( models ).as( ... )` chain.
+	 * It activates factory using controller and view classes or uses a custom callback to produce
+	 * controller (view) instances.
+	 * @param {Function} return.ControllerClassOrFunction Specifies the constructor of the controller to be used or
+	 * a custom callback function which produces controllers.
+	 * @param {Function} [return.ViewClass] Specifies constructor of the view to be used. If not specified,
+	 * `ControllerClassOrFunction` works as as custom callback function.
 	 */
 	bind( models ) {
 		const idProperty = models._idProperty;
 
 		return {
-			/**
-			 * Activates factory using controller and view classes or uses a custom callback to produce
-			 * controller (view) instances.
-			 *
-			 * @method ui.ControllerCollection.bind#as
-			 * @param {Function} ControllerClassOrFunction Specifies the constructor of the controller to be used or
-			 * a custom callback function which produces controllers.
-	 		 * @param {Function} [ViewClass] Specifies constructor of the view to be used. If not specified,
-	 		 * `ControllerClassOrFunction` works as as custom callback function.
-			 */
 			as: ( ControllerClassOrFunction, ViewClass ) => {
 				const createController = ViewClass ?
 						defaultControllerFactory( ControllerClassOrFunction, ViewClass, idProperty )
