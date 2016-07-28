@@ -29,7 +29,7 @@ gulp.task( 'default', [ 'build' ] );
 gulp.task( 'pre-commit', [ 'lint-staged' ] );
 
 // Development environment tasks.
-const ckeditor5DevEnv = require( 'ckeditor5-dev-env' )( config.WORKSPACE_DIR );
+const ckeditor5DevEnv = require( 'ckeditor5-dev-env' )( config );
 gulp.task( 'init', ckeditor5DevEnv.initRepository );
 gulp.task( 'create-package', ckeditor5DevEnv.createPackage );
 gulp.task( 'update', ckeditor5DevEnv.updateRepositories );
