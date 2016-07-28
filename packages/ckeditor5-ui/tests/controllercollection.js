@@ -8,20 +8,36 @@
 import testUtils from '/tests/ckeditor5/_utils/utils.js';
 import ControllerCollection from '/ckeditor5/ui/controllercollection.js';
 import Controller from '/ckeditor5/ui/controller.js';
+import Collection from '/ckeditor5/utils/collection.js';
+import Model from '/ckeditor5/ui/model.js';
 import View from '/ckeditor5/ui/view.js';
+import Template from '/ckeditor5/ui/template.js';
 
 testUtils.createSinonSandbox();
 
-let ParentView;
+let ParentView, ItemController, ItemView;
+let models;
 
 describe( 'ControllerCollection', () => {
-	beforeEach( defineParentViewClass );
+	beforeEach( () => {
+		defineParentViewClass();
+		defineItemControllerClass();
+		defineItemViewClass();
+		createModelCollection();
+	} );
 
 	describe( 'constructor', () => {
 		it( 'should throw when no name is passed', () => {
 			expect( () => {
 				new ControllerCollection();
 			} ).to.throw( /^ui-controllercollection-no-name/ );
+		} );
+
+		it( 'accepts locale', () => {
+			const locale = {};
+			const collection = new ControllerCollection( 'foo', locale );
+
+			expect( collection.locale ).to.equal( locale );
 		} );
 	} );
 
@@ -95,6 +111,146 @@ describe( 'ControllerCollection', () => {
 				} );
 		} );
 	} );
+
+	describe( 'bind', () => {
+		it( 'returns object', () => {
+			expect( new ControllerCollection( 'foo' ).bind( {} ) ).to.be.an( 'object' );
+		} );
+
+		it( 'provides "as" interface', () => {
+			const bind = new ControllerCollection( 'foo' ).bind( {} );
+
+			expect( bind ).to.have.keys( 'as' );
+			expect( bind.as ).to.be.a( 'function' );
+		} );
+
+		describe( 'as', () => {
+			it( 'does not chain', () => {
+				const controllers = new ControllerCollection( 'synced' );
+				const returned = controllers.bind( models ).as( ItemController, ItemView );
+
+				expect( returned ).to.be.undefined;
+			} );
+
+			describe( 'standard factory', () => {
+				it( 'expands the initial collection of the models', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ItemController, ItemView );
+
+					expect( controllers ).to.have.length( 5 );
+					expect( controllers.get( 0 ).model.uid ).to.equal( '0' );
+					expect( controllers.get( 4 ).model.uid ).to.equal( '4' );
+				} );
+
+				it( 'uses the controller and view classes to expand the collection', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ItemController, ItemView );
+
+					expect( controllers.get( 0 ) ).to.be.instanceOf( ItemController );
+					expect( controllers.get( 0 ).view ).to.be.instanceOf( ItemView );
+				} );
+
+				it( 'supports adding new models to the collection', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ItemController, ItemView );
+
+					models.add( new Model( { uid: '6' } ) );
+					models.add( new Model( { uid: '5' } ), 5 );
+
+					expect( controllers.get( 5 ).model.uid ).to.equal( '5' );
+					expect( controllers.get( 6 ).model.uid ).to.equal( '6' );
+					expect( controllers ).to.have.length( 7 );
+				} );
+
+				it( 'supports removing models from the collection', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ItemController, ItemView );
+
+					models.remove( 2 );
+					models.remove( 3 );
+
+					expect( controllers.map( c => c.id ) ).to.have.members( [ '0', '1', '3' ] );
+				} );
+
+				it( 'passes controller collection\'s locale to the views', () => {
+					const locale = {};
+					const controllers = new ControllerCollection( 'synced', locale );
+
+					controllers.bind( models ).as( ItemController, ItemView );
+
+					expect( controllers.get( 0 ).view.locale ).to.equal( locale );
+				} );
+			} );
+
+			describe( 'custom factory', () => {
+				it( 'expands the initial collection of the models', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ( model, locale ) => {
+						return new ItemController( model, new ItemView( locale ) );
+					} );
+
+					expect( controllers ).to.have.length( 5 );
+					expect( controllers.get( 0 ).model.uid ).to.equal( '0' );
+					expect( controllers.get( 4 ).model.uid ).to.equal( '4' );
+				} );
+
+				it( 'uses the controller and view classes to expand the collection', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ( model, locale ) => {
+						return new ItemController( model, new ItemView( locale ) );
+					} );
+
+					expect( controllers.get( 0 ) ).to.be.instanceOf( ItemController );
+					expect( controllers.get( 0 ).view ).to.be.instanceOf( ItemView );
+				} );
+
+				it( 'supports adding new models to the collection', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ( model, locale ) => {
+						return new ItemController( model, new ItemView( locale ) );
+					} );
+
+					models.add( new Model( { uid: '6' } ) );
+					models.add( new Model( { uid: '5' } ), 5 );
+
+					expect( controllers.get( 5 ).model.uid ).to.equal( '5' );
+					expect( controllers.get( 6 ).model.uid ).to.equal( '6' );
+					expect( controllers ).to.have.length( 7 );
+				} );
+
+				it( 'supports removing models from the collection', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ( model, locale ) => {
+						return new ItemController( model, new ItemView( locale ) );
+					} );
+
+					models.remove( 2 );
+					models.remove( 3 );
+
+					expect( controllers.map( c => c.id ) ).to.have.members( [ '0', '1', '3' ] );
+				} );
+
+				it( 'passes controller collection\'s locale to the views', () => {
+					const locale = {};
+					const controllers = new ControllerCollection( 'synced', locale );
+
+					controllers.bind( models ).as( ( model, locale ) => {
+						return new ItemController( model, new ItemView( locale ) );
+					} );
+
+					expect( controllers.get( 0 ).view.locale ).to.equal( locale );
+				} );
+			} );
+		} );
+	} );
 } );
 
 function defineParentViewClass() {
@@ -106,4 +262,42 @@ function defineParentViewClass() {
 			this.register( 'x', true );
 		}
 	};
+}
+
+function defineItemControllerClass() {
+	ItemController = class extends Controller {
+		constructor( model, view ) {
+			super( model, view );
+
+			view.model.bind( 'uid' ).to( model );
+		}
+	};
+}
+
+function defineItemViewClass() {
+	ItemView = class extends View {
+		constructor( locale ) {
+			super( locale );
+
+			const bind = this.bind;
+
+			this.template = new Template( {
+				tag: 'li',
+
+				attributes: {
+					id: bind.to( 'uid' )
+				}
+			} );
+		}
+	};
+}
+
+function createModelCollection() {
+	models = new Collection( { idProperty: 'uid' } );
+
+	for ( let i = 0; i < 5; i++ ) {
+		models.add( new Model( {
+			uid: Number( i ).toString()
+		} ) );
+	}
 }
