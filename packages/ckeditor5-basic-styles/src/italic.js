@@ -9,11 +9,24 @@ import ButtonController from '../ui/button/button.js';
 import ButtonView from '../ui/button/buttonview.js';
 import Model from '../ui/model.js';
 
+/**
+ * Italic feature. It requires {@link basicStyles.ItalicEngine ItalicEngine feature}.
+ * This feature creates also a UI component (`italic` button) and registers `CTRL+I` keystroke.
+ *
+ * @memberOf basicStyles
+ * @extends ckeditor5.Feature
+ */
 export default class Italic extends Feature {
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ ItalicEngine ];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const t = editor.t;

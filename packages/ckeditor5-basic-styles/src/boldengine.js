@@ -10,7 +10,17 @@ import AttributeCommand from '../command/attributecommand.js';
 
 const BOLD = 'bold';
 
+/**
+ * Bold feature. It registers `bold` command and introduces `bold` attribute in the model, which renders to the view
+ * as `<strong>` element.
+ *
+ * @memberOf basicStyles
+ * @extends ckeditor5.Feature
+ */
 export default class BoldEngine extends Feature {
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const data = editor.data;
