@@ -8,7 +8,6 @@
 import mix from '/ckeditor5/utils/mix.js';
 import Editor from '/ckeditor5/editor/editor.js';
 import Controller from '/ckeditor5/ui/controller.js';
-import ControllerCollection from '/ckeditor5/ui/controllercollection.js';
 import ToolbarBindingsMixin from '/ckeditor5/ui/bindings/toolbarbindingsmixin.js';
 
 describe( 'ToolbarBindingsMixin', () => {
@@ -21,7 +20,7 @@ describe( 'ToolbarBindingsMixin', () => {
 			constructor( model, view ) {
 				super( model, view );
 
-				this.collections.add( new ControllerCollection( 'buttons' ) );
+				this.addCollection( 'buttons' );
 			}
 		}
 

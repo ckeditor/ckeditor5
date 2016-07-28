@@ -4,7 +4,6 @@
  */
 
 import EditorUI from '../../../ui/editorui/editorui.js';
-import ControllerCollection from '../../../ui/controllercollection.js';
 
 /**
  * The boxed editor UI controller class. This class controls an editor interface
@@ -27,8 +26,8 @@ export default class BoxedEditorUI extends EditorUI {
 	constructor( editor ) {
 		super( editor );
 
-		this.collections.add( new ControllerCollection( 'top' ) );
-		this.collections.add( new ControllerCollection( 'main' ) );
+		this.addCollection( 'top' );
+		this.addCollection( 'main' );
 
 		const config = editor.config;
 
