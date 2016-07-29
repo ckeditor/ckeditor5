@@ -68,7 +68,7 @@ describe( 'EditableUIView', () => {
 			it( 'reacts on editable.isReadOnly', () => {
 				editable.isReadOnly = true;
 
-				expect( view.element.getAttribute( 'contenteditable' ) ).to.equal( 'false' );
+				expect( view.element.hasAttribute( 'contenteditable' ) ).to.be.false;
 			} );
 		} );
 	} );
