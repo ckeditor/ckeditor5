@@ -10,8 +10,9 @@ import ButtonView from '../ui/button/buttonview.js';
 import Model from '../ui/model.js';
 
 /**
- * Bold feature. It requires {@link basic-styles.BoldEngine BoldEngine feature}.
- * This feature creates also a UI component (`bold` button) and registers <kbd>CTRL+B</kbd> keystroke.
+ * The Bold feature. It introduces the `bold` button and <kbd>CTRL+B</kbd> keystroke.
+ *
+ * It uses the {@link basic-styles.BoldEngine Bold engine feature}.
  *
  * @memberOf basic-styles
  * @extends ckeditor5.Feature

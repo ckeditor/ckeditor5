@@ -10,8 +10,9 @@ import ButtonView from '../ui/button/buttonview.js';
 import Model from '../ui/model.js';
 
 /**
- * Italic feature. It requires {@link basic-styles.ItalicEngine ItalicEngine feature}.
- * This feature creates also a UI component (`italic` button) and registers <kbd>CTRL+I</kbd> keystroke.
+ * The Italic feature. It introduces the `italic` button and <kbd>CTRL+I</kbd> keystroke.
+ *
+ * It uses the {@link basic-styles.ItalicEngine Italic engine feature}.
  *
  * @memberOf basic-styles
  * @extends ckeditor5.Feature

@@ -11,8 +11,10 @@ import AttributeCommand from '../command/attributecommand.js';
 const ITALIC = 'italic';
 
 /**
- * Italic feature. It registers `italic` command and introduces `italic` attribute in the model, which renders to the view
- * as `<em>` element.
+ * Italic engine feature.
+ *
+ * It registers the `italic` command and introduces the `italic` attribute in the model, which renders to the view
+ * as an`<em>` element.
  *
  * @memberOf basic-styles
  * @extends ckeditor5.Feature
