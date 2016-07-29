@@ -145,7 +145,7 @@ export function register( name, creator ) {
 		 * @param {String} name
 		 */
 		throw new CKEditorError(
-			'batch-register-taken: This batch method name is already taken.',
+			'model-batch-register-taken: This batch method name is already taken.',
 			{ name: name } );
 	}
 

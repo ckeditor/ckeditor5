@@ -200,7 +200,7 @@ export default class History {
 			 *
 			 * @error history-wrong-version
 			 */
-			throw new CKEditorError( 'history-wrong-version: Given base version points to the middle of a delta.' );
+			throw new CKEditorError( 'model-history-wrong-version: Given base version points to the middle of a delta.' );
 		}
 
 		return index;

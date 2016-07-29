@@ -46,7 +46,7 @@ export default class Position {
 			 *
 			 * @error position-root-invalid.
 			 */
-			throw new CKEditorError( 'position-root-invalid: Position root invalid.' );
+			throw new CKEditorError( 'model-position-root-invalid: Position root invalid.' );
 		}
 
 		if ( !( path instanceof Array ) || path.length === 0 ) {
@@ -56,7 +56,7 @@ export default class Position {
 			 * @error position-path-incorrect
 			 * @param path
 			 */
-			throw new CKEditorError( 'position-path-incorrect: Position path must be an Array with at least one item.', { path: path } );
+			throw new CKEditorError( 'model-position-path-incorrect: Position path must be an Array with at least one item.', { path: path } );
 		}
 
 		// Normalize the root and path (if element was passed).
@@ -601,7 +601,7 @@ export default class Position {
 			 * @error position-after-root
 			 * @param {engine.model.Item} root
 			 */
-			throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: item } );
+			throw new CKEditorError( 'model-position-after-root: You can not make position after root.', { root: item } );
 		}
 
 		return this.createFromParentAndOffset( item.parent, item.endOffset );
@@ -621,7 +621,7 @@ export default class Position {
 			 * @error position-before-root
 			 * @param {engine.model.Item} root
 			 */
-			throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: item } );
+			throw new CKEditorError( 'model-position-before-root: You can not make position before root.', { root: item } );
 		}
 
 		return this.createFromParentAndOffset( item.parent, item.startOffset );
@@ -641,7 +641,7 @@ export default class Position {
 			 *
 			 * @error position-parent-incorrect
 			 */
-			throw new CKEditorError( 'position-parent-incorrect: Position parent have to be a element or document fragment.' );
+			throw new CKEditorError( 'model-position-parent-incorrect: Position parent have to be a element or document fragment.' );
 		}
 
 		const path = parent.getPath();
@@ -680,7 +680,7 @@ export default class Position {
 			 * @param {String} rootName
 			 */
 			throw new CKEditorError(
-				'position-fromjson-no-root: Cannot create position for document. Root with specified name does not exist.',
+				'model-position-fromjson-no-root: Cannot create position for document. Root with specified name does not exist.',
 				{ rootName: json.root }
 			);
 		}

@@ -304,7 +304,7 @@ export default class Position {
 			 * @error position-after-root
 			 * @param {engine.view.Node} root
 			 */
-			throw new CKEditorError( 'position-after-root: You can not make position after root.', { root: item } );
+			throw new CKEditorError( 'view-position-after-root: You can not make position after root.', { root: item } );
 		}
 
 		return new Position( item.parent, item.index + 1 );
@@ -329,7 +329,7 @@ export default class Position {
 			 * @error position-before-root
 			 * @param {engine.view.Node} root
 			 */
-			throw new CKEditorError( 'position-before-root: You can not make position before root.', { root: item } );
+			throw new CKEditorError( 'view-position-before-root: You can not make position before root.', { root: item } );
 		}
 
 		return new Position( item.parent, item.index );

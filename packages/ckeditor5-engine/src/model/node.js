@@ -85,7 +85,7 @@ export default class Node {
 			 *
 			 * @error node-not-found-in-parent
 			 */
-			throw new CKEditorError( 'node-not-found-in-parent: The node\'s parent does not contain this node.' );
+			throw new CKEditorError( 'model-node-not-found-in-parent: The node\'s parent does not contain this node.' );
 		}
 
 		return pos;
@@ -114,7 +114,7 @@ export default class Node {
 			 *
 			 * @error node-not-found-in-parent
 			 */
-			throw new CKEditorError( 'node-not-found-in-parent: The node\'s parent does not contain this node.' );
+			throw new CKEditorError( 'model-node-not-found-in-parent: The node\'s parent does not contain this node.' );
 		}
 
 		return pos;
