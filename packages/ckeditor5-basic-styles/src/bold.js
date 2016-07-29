@@ -9,11 +9,25 @@ import ButtonController from '../ui/button/button.js';
 import ButtonView from '../ui/button/buttonview.js';
 import Model from '../ui/model.js';
 
+/**
+ * The Bold feature. It introduces the `bold` button and <kbd>CTRL+B</kbd> keystroke.
+ *
+ * It uses the {@link basic-styles.BoldEngine Bold engine feature}.
+ *
+ * @memberOf basic-styles
+ * @extends ckeditor5.Feature
+ */
 export default class Bold extends Feature {
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ BoldEngine ];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
