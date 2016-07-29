@@ -425,12 +425,10 @@ describe( 'Controller', () => {
 		} );
 
 		it( 'should pass locale to controller collection', () => {
-			const controller = new Controller();
 			const locale = {};
+			const view = new View( locale );
 
-			controller.addCollection( 'foo', locale );
-
-			expect( controller.collections.get( 'foo' ).locale ).to.equal( locale );
+			expect( new Controller( {}, view ).addCollection( 'foo' ).locale ).to.equal( locale );
 		} );
 	} );
 } );

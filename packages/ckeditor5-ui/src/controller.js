@@ -156,12 +156,10 @@ export default class Controller {
 	 * Adds a new collection to {@link ui.Controller#collections}.
 	 *
 	 * @param {String} collectionName Name of the controller collection.
-	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
-	 * See {@link ui.ControllerCollection#locale}.
 	 * @returns {ui.ControllerCollection} The new collection instance.
 	 */
-	addCollection( collectionName, locale ) {
-		const collection = new ControllerCollection( collectionName, locale );
+	addCollection( collectionName ) {
+		const collection = new ControllerCollection( collectionName, this.view && this.view.locale );
 
 		this.collections.add( collection );
 
