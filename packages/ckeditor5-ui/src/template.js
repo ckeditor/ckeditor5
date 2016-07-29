@@ -966,8 +966,11 @@ function extendTemplateDefinition( def, extDef ) {
 	}
 }
 
+// Checks if value is "falsy".
+// Note: 0 (Number) is not "falsy" in this context.
+//
+// @param {*} value Value to be checked.
 function isFalsy( value ) {
-	// Note 0 is not falsy in this context.
 	return !value && value !== 0;
 }
 
