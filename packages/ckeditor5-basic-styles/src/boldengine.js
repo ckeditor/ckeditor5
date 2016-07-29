@@ -14,7 +14,7 @@ const BOLD = 'bold';
  * Bold feature. It registers `bold` command and introduces `bold` attribute in the model, which renders to the view
  * as `<strong>` element.
  *
- * @memberOf basicStyles
+ * @memberOf basic-styles
  * @extends ckeditor5.Feature
  */
 export default class BoldEngine extends Feature {

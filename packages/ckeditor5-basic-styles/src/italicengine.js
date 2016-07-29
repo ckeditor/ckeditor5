@@ -14,7 +14,7 @@ const ITALIC = 'italic';
  * Italic feature. It registers `italic` command and introduces `italic` attribute in the model, which renders to the view
  * as `<em>` element.
  *
- * @memberOf basicStyles
+ * @memberOf basic-styles
  * @extends ckeditor5.Feature
  */
 export default class ItalicEngine extends Feature {
