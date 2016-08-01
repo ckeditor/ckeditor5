@@ -4,22 +4,27 @@
  */
 
 import Mapper from '/ckeditor5/engine/conversion/mapper.js';
+import Document from '/ckeditor5/engine/model/document.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import RootElement from '/ckeditor5/engine/model/rootelement.js';
-import Selection from '/ckeditor5/engine/model/selection.js';
-import Document from '/ckeditor5/engine/model/document.js';
-import ViewConversionDispatcher from '/ckeditor5/engine/conversion/viewconversiondispatcher.js';
+
 import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
+import ModelSelection from '/ckeditor5/engine/model/selection.js';
+import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import ModelElement from '/ckeditor5/engine/model/element.js';
 import ModelText from '/ckeditor5/engine/model/text.js';
-import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
+import modelWriter from '/ckeditor5/engine/model/writer.js';
+
+import ViewConversionDispatcher from '/ckeditor5/engine/conversion/viewconversiondispatcher.js';
+import ViewSelection from '/ckeditor5/engine/view/selection.js';
 import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import { parse as viewParse, stringify as viewStringify  } from '/tests/engine/_utils/view.js';
-import { normalizeNodes } from '/ckeditor5/engine/model/writer.js';
 import ViewElement from '/ckeditor5/engine/view/containerelement.js';
 import ViewText from '/ckeditor5/engine/view/text.js';
 import viewWriter from '/ckeditor5/engine/view/writer.js';
+
+import { parse as viewParse, stringify as viewStringify } from '/tests/engine/_utils/view.js';
+import { convertRangeSelection, convertCollapsedSelection } from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
 
 let mapper;
 
@@ -59,9 +64,9 @@ getData._stringify = stringify;
  * @param {engine.model.Document} document
  * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
- * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to selection.
  * @param {String} [options.rootName='main'] Root name where parsed data will be stored. If not provided, default `main`
  * name will be used.
+ * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to selection.
  * @param {String} [options.batchType='transparent'] Batch type used for inserting elements. See {@link engine.model.Batch#type}.
  */
 export function setData( document, data, options = {} ) {
@@ -70,13 +75,13 @@ export function setData( document, data, options = {} ) {
 	}
 
 	let model, selection;
-	const result = setData._parse( data, { schema: document.schema } );
+	const parseResult = setData._parse( data, document.schema );
 
-	if ( result.model && result.selection ) {
-		model = result.model;
-		selection = result.selection;
+	if ( parseResult.model ) {
+		model = parseResult.model;
+		selection = parseResult.selection;
 	} else {
-		model = result;
+		model = parseResult;
 	}
 
 	// Save to model.
@@ -87,36 +92,22 @@ export function setData( document, data, options = {} ) {
 			.remove( Range.createIn( modelRoot ) )
 			.insert( Position.createAt( modelRoot, 0 ), model );
 
+		// Clear selection
+		document.selection.clearAttributes();
+		document.selection.removeAllRanges();
+
 		if ( selection ) {
 			const ranges = [];
 
 			for ( let viewRange of selection.getRanges() ) {
-				let start, end;
-
-				const range = mapper.toModelRange( viewRange );
-
-				// Each range returned from `parse()` method has its root placed in DocumentFragment.
-				// Here we convert each range to have its root re-calculated properly and be placed inside
-				// model document root.
-				if ( range.start.parent instanceof ModelDocumentFragment ) {
-					start = Position.createFromParentAndOffset( modelRoot, range.start.offset );
-				} else {
-					start = Position.createFromParentAndOffset( range.start.parent, range.start.offset );
-				}
-
-				if ( range.end.parent instanceof ModelDocumentFragment ) {
-					end = Position.createFromParentAndOffset( modelRoot, range.end.offset );
-				} else {
-					end = Position.createFromParentAndOffset( range.end.parent, range.end.offset );
-				}
-
-				ranges.push( new Range( start, end ) );
+				ranges.push( ( mapper.toModelRange( viewRange ) ) );
 			}
 
 			document.selection.setRanges( ranges, selection.isBackward );
 
-			if ( options.selectionAttribtes ) {
-				document.selection.setAttributesTo( options.selectionAttribtes );
+			if ( options.selectionAttributes ) {
+				// Something overwrites selection attributes ??!!
+				document.selection.setAttributesTo( options.selectionAttributes );
 			}
 		}
 	} );
@@ -157,45 +148,46 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 		}
 	}
 
-	if ( selectionOrPositionOrRange instanceof Selection ) {
+	if ( selectionOrPositionOrRange instanceof ModelSelection ) {
 		selection = selectionOrPositionOrRange;
 	} else if ( selectionOrPositionOrRange instanceof Range ) {
-		selection = new Selection();
+		selection = new ModelSelection();
 		selection.addRange( selectionOrPositionOrRange );
 	} else if ( selectionOrPositionOrRange instanceof Position ) {
-		selection = new Selection();
+		selection = new ModelSelection();
 		selection.addRange( new Range( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
 	}
 
 	// Setup model -> view converter.
 	const viewDocumentFragment = new ViewDocumentFragment();
-	const modelToView = new ModelConversionDispatcher( {
-		mapper: mapper
-	} );
+	const viewSelection = new ViewSelection();
+	const modelToView = new ModelConversionDispatcher( { mapper, viewSelection } );
 
 	modelToView.on( 'insert:$text', insertText() );
 	modelToView.on( 'insert', insertElement() );
+	modelToView.on( 'selection', convertRangeSelection() );
+	modelToView.on( 'selection', convertCollapsedSelection() );
 
 	mapper.bindElements( node, viewDocumentFragment );
 
 	// Convert view to model.
 	modelToView.convertInsert( range );
+	modelToView.convertSelection( selection );
 	mapper.clearBindings();
 
 	// Return parsed to data model.
-	return viewStringify( viewDocumentFragment, selection );
+	return viewStringify( viewDocumentFragment, viewSelection );
 }
 
 /**
  * Parses HTML-like string and returns model {@link engine.model.RootElement rootElement}.
  *
  * @param {String} data HTML-like string to be parsed.
- * @param {Object} options
- * @param {engine.model.Schema} [options.schema] Document schema.
+ * @param {engine.model.Schema} schema Document schema.
  * @returns {engine.model.Element|engine.model.Text|engine.model.DocumentFragment|Object} Returns parsed model node or
  * object with two fields `model` and `selection` when selection ranges were included in data to parse.
  */
-export function parse( data, options ) {
+export function parse( data, schema ) {
 	mapper = new Mapper();
 
 	// Parse data to view using view utils.
@@ -214,9 +206,7 @@ export function parse( data, options ) {
 	viewDocumentFragment = viewDocumentFragment.parent ? viewDocumentFragment.parent : viewDocumentFragment;
 
 	// Setup view -> model converter.
-	const viewToModel = new ViewConversionDispatcher( {
-		schema: options.schema
-	} );
+	const viewToModel = new ViewConversionDispatcher( { schema } );
 
 	viewToModel.on( 'text', convertToModelText() );
 	viewToModel.on( 'element:model-text', convertToModelTextWithAttributes(), null, 9999 );
@@ -251,7 +241,7 @@ function convertToModelFragment() {
 		if ( !data.output && consumable.test( data.input, { name: true } ) ) {
 			const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
 
-			data.output = new ModelDocumentFragment( normalizeNodes( convertedChildren ) );
+			data.output = new ModelDocumentFragment( modelWriter.normalizeNodes( convertedChildren ) );
 
 			mapper.bindElements( data.output, data.input );
 		}
