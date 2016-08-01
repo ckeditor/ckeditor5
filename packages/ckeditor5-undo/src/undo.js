@@ -155,8 +155,7 @@ export default class Undo extends Feature {
 		const model = new Model( {
 			isOn: false,
 			label: label,
-			icon: name,
-			iconAlign: 'left'
+			icon: name
 		} );
 
 		model.bind( 'isEnabled' ).to( command, 'isEnabled' );
