@@ -20,11 +20,12 @@ import ViewConversionDispatcher from '/ckeditor5/engine/conversion/viewconversio
 import ViewSelection from '/ckeditor5/engine/view/selection.js';
 import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import ViewElement from '/ckeditor5/engine/view/containerelement.js';
-import ViewText from '/ckeditor5/engine/view/text.js';
 import viewWriter from '/ckeditor5/engine/view/writer.js';
 
 import { parse as viewParse, stringify as viewStringify } from '/tests/engine/_utils/view.js';
 import { convertRangeSelection, convertCollapsedSelection } from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
+import { insertText } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
+import { convertText as convertToModelText } from '/ckeditor5/engine/conversion/view-to-model-converters.js';
 
 let mapper;
 
@@ -262,12 +263,6 @@ function convertToModelElement() {
 	};
 }
 
-function convertToModelText() {
-	return ( evt, data ) => {
-		data.output = new ModelText( data.input.data );
-	};
-}
-
 function convertToModelTextWithAttributes() {
 	return ( evt, data, consumable ) => {
 		if ( consumable.consume( data.input, { name: true } ) ) {
@@ -287,19 +282,6 @@ function insertElement() {
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		viewWriter.insert( viewPosition, viewElement );
-
-		evt.stop();
-	};
-}
-
-function insertText() {
-	return ( evt, data, consumable, conversionApi ) => {
-		consumable.consume( data.item, 'insert' );
-
-		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-		const viewText = new ViewText( data.item.data );
-
-		viewWriter.insert( viewPosition, viewText );
 
 		evt.stop();
 	};
