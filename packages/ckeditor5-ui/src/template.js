@@ -9,6 +9,7 @@ import CKEditorError from '../utils/ckeditorerror.js';
 import mix from '../utils/mix.js';
 import EmitterMixin from '../utils/emittermixin.js';
 import cloneDeepWith from '../utils/lib/lodash/cloneDeepWith.js';
+import isObject from '../utils/lib/lodash/isObject.js';
 
 const bindToSymbol = Symbol( 'bindTo' );
 const bindIfSymbol = Symbol( 'bindIf' );
@@ -401,17 +402,20 @@ export default class Template {
 
 		for ( attrName in attributes ) {
 			attrValue = attributes[ attrName ];
-			attrNs = attrValue[ 0 ].ns || null;
+
+			// Detect custom namespace:
+			// 		{ class: { ns: 'abc', value: Template.bind( ... ).to( ... ) } }
+			attrNs = isObject( attrValue[ 0 ] ) && attrValue[ 0 ].ns ? attrValue[ 0 ].ns : null;
 
 			// Activate binding if one is found. Cases:
 			// 		{ class: [ Template.bind( ... ).to( ... ) ] }
 			// 		{ class: [ 'bar', Template.bind( ... ).to( ... ), 'baz' ] }
 			// 		{ class: { ns: 'abc', value: Template.bind( ... ).to( ... ) } }
 			if ( hasBinding( attrValue ) ) {
-				// Normalize attributes with additional data like namespace:
-				//		{ class: { ns: 'abc', value: [ ... ] } }
 				this._bindToObservable(
-					attrValue[ 0 ].value || attrValue,
+					// Normalize attributes with additional data like namespace:
+					//		{ class: { ns: 'abc', value: [ ... ] } }
+					attrNs ? attrValue[ 0 ].value : attrValue,
 					el,
 					getAttributeUpdater( el, attrName, attrNs )
 				);
@@ -437,9 +441,11 @@ export default class Template {
 					// Flatten the array.
 					.reduce( ( p, n ) => p.concat( n ), [] )
 					// Convert into string.
-					.reduce( arrayValueReducer );
+					.reduce( arrayValueReducer, '' );
 
-				el.setAttributeNS( attrNs, attrName, attrValue );
+				if ( !isFalsy( attrValue ) ) {
+					el.setAttributeNS( attrNs, attrName, attrValue );
+				}
 			}
 		}
 	}
@@ -553,9 +559,11 @@ export default class Template {
 	 */
 	_bindToObservable( valueSchema ) {
 		valueSchema
-			// Filter inactive bindings from schema, like static strings, etc.
+			// Filter "falsy" (false, undefined, null, '') value schema components out.
+			.filter( item => !isFalsy( item ) )
+			// Filter inactive bindings from schema, like static strings ('foo'), numbers (42), etc.
 			.filter( item => item.observable )
-			// Let the emitter listen to observable change:attribute event.
+			// Once only the actual binding are left, let the emitter listen to observable change:attribute event.
 			// TODO: Reduce the number of listeners attached as many bindings may listen
 			// to the same observable attribute.
 			.forEach( ( { emitter, observable, attribute } ) => {
@@ -605,9 +613,9 @@ function hasBinding( valueSchema ) {
 // @return {Array}
 function getBindingValue( valueSchema, domNode ) {
 	return valueSchema.map( schemaItem => {
-		let { observable, callback, type } = schemaItem;
-
-		if ( observable ) {
+		// Process {@link ui.TemplateBinding} bindings.
+		if ( isObject( schemaItem ) ) {
+			let { observable, callback, type } = schemaItem;
 			let modelValue = observable[ schemaItem.attribute ];
 
 			// Process the value with the callback.
@@ -616,13 +624,14 @@ function getBindingValue( valueSchema, domNode ) {
 			}
 
 			if ( type === bindIfSymbol ) {
-				return !!modelValue ? schemaItem.valueIfTrue || true : '';
+				return isFalsy( modelValue ) ? false : ( schemaItem.valueIfTrue || true );
 			} else {
 				return modelValue;
 			}
-		} else {
-			return schemaItem;
 		}
+
+		// All static values like strings, numbers, and "falsy" values (false, null, undefined, '', etc.) just pass.
+		return schemaItem;
 	} );
 }
 
@@ -634,26 +643,19 @@ function getBindingValue( valueSchema, domNode ) {
 // @param {Function} domUpdater A function which updates DOM (like attribute or text).
 function syncBinding( valueSchema, domNode, domUpdater ) {
 	let value = getBindingValue( valueSchema, domNode );
-	let shouldSet;
 
 	// Check if valueSchema is a single Template.bind.if, like:
 	//		{ class: Template.bind.if( 'foo' ) }
 	if ( valueSchema.length == 1 && valueSchema[ 0 ].type == bindIfSymbol ) {
 		value = value[ 0 ];
-		shouldSet = value !== '';
-
-		if ( shouldSet ) {
-			value = value === true ? '' : value;
-		}
 	} else {
 		value = value.reduce( arrayValueReducer, '' );
-		shouldSet = value;
 	}
 
-	if ( shouldSet ) {
-		domUpdater.set( value );
-	} else {
+	if ( isFalsy( value ) ) {
 		domUpdater.remove();
+	} else {
+		domUpdater.set( value );
 	}
 }
 
@@ -889,10 +891,13 @@ function arrayify( obj, key ) {
 // @param {String} cur
 // @returns {String}
 function arrayValueReducer( prev, cur ) {
-	return prev === '' ?
-			`${cur}`
-		:
-			cur === '' ? `${prev}` : `${prev} ${cur}`;
+	if ( isFalsy( cur ) ) {
+		return prev;
+	} else if ( isFalsy( prev ) )  {
+		return cur;
+	} else {
+		return `${prev} ${cur}`;
+	}
 }
 
 // Extends one object defined in the following format:
@@ -959,6 +964,14 @@ function extendTemplateDefinition( def, extDef ) {
 			extendTemplateDefinition( def.children[ index ], extChildDef );
 		} );
 	}
+}
+
+// Checks if value is "falsy".
+// Note: 0 (Number) is not "falsy" in this context.
+//
+// @param {*} value Value to be checked.
+function isFalsy( value ) {
+	return !value && value !== 0;
 }
 
 /**

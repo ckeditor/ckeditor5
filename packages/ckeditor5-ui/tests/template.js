@@ -165,7 +165,7 @@ describe( 'Template', () => {
 				children: [ 'foo' ]
 			} ).render();
 
-			expect( el.outerHTML ).to.be.equal( '<p class="" x="">foo</p>' );
+			expect( el.outerHTML ).to.be.equal( '<p>foo</p>' );
 		} );
 
 		it( 'renders HTMLElement attributes – falsy values', () => {
@@ -173,12 +173,13 @@ describe( 'Template', () => {
 				tag: 'p',
 				attributes: {
 					class: false,
-					x: [ '', null ]
+					x: [ '', null, undefined, false ],
+					y: [ 'foo', null, undefined, false ]
 				},
 				children: [ 'foo' ]
 			} ).render();
 
-			expect( el.outerHTML ).to.be.equal( '<p class="false" x="null">foo</p>' );
+			expect( el.outerHTML ).to.be.equal( '<p y="foo">foo</p>' );
 		} );
 
 		it( 'renders HTMLElement attributes in a custom namespace', () => {
@@ -427,7 +428,8 @@ describe( 'Template', () => {
 						attributes: {
 							style: {
 								width: null,
-								height: false
+								height: false,
+								color: undefined
 							}
 						}
 					} );
@@ -988,7 +990,7 @@ describe( 'Template', () => {
 					} );
 
 					observable.foo = 'moo';
-					expect( el.outerHTML ).to.equal( '<p class="undefined">moo</p>' );
+					expect( el.outerHTML ).to.equal( '<p>moo</p>' );
 
 					observable.foo = 'changed';
 					expect( el.outerHTML ).to.equal( '<p class="changed">changed</p>' );
@@ -1049,28 +1051,31 @@ describe( 'Template', () => {
 					setElement( {
 						tag: 'p',
 						attributes: {
-							'class': bind.to( 'foo' )
+							simple: bind.to( 'foo' ),
+							complex: [ null, bind.to( 'foo' ), undefined, false ],
+							zero: [ 0, bind.to( 'foo' ) ],
+							emptystring: [ '', bind.to( 'foo' ) ]
 						},
 						children: [ 'abc' ]
 					} );
 
 					observable.foo = 'bar';
-					expect( el.outerHTML ).to.equal( '<p class="bar">abc</p>' );
-
-					observable.foo = false;
-					expect( el.outerHTML ).to.equal( '<p class="false">abc</p>' );
-
-					observable.foo = null;
-					expect( el.outerHTML ).to.equal( '<p class="null">abc</p>' );
-
-					observable.foo = undefined;
-					expect( el.outerHTML ).to.equal( '<p class="undefined">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p simple="bar" complex="bar" zero="0 bar" emptystring="bar">abc</p>' );
 
 					observable.foo = 0;
-					expect( el.outerHTML ).to.equal( '<p class="0">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p simple="0" complex="0" zero="0 0" emptystring="0">abc</p>' );
+
+					observable.foo = false;
+					expect( el.outerHTML ).to.equal( '<p zero="0">abc</p>' );
+
+					observable.foo = null;
+					expect( el.outerHTML ).to.equal( '<p zero="0">abc</p>' );
+
+					observable.foo = undefined;
+					expect( el.outerHTML ).to.equal( '<p zero="0">abc</p>' );
 
 					observable.foo = '';
-					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p zero="0">abc</p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – a custom namespace', () => {
@@ -1124,14 +1129,26 @@ describe( 'Template', () => {
 						children: [ 'abc' ]
 					} );
 
+					observable.foo = 'bar';
+					expect( el.outerHTML ).to.equal( '<p class="true">abc</p>' );
+
 					observable.foo = true;
-					expect( el.outerHTML ).to.equal( '<p class="">abc</p>' );
+					expect( el.outerHTML ).to.equal( '<p class="true">abc</p>' );
+
+					observable.foo = 0;
+					expect( el.outerHTML ).to.equal( '<p class="true">abc</p>' );
 
 					observable.foo = false;
 					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 
-					observable.foo = 'bar';
-					expect( el.outerHTML ).to.equal( '<p class="">abc</p>' );
+					observable.foo = null;
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
+
+					observable.foo = undefined;
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
+
+					observable.foo = '';
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 				} );
 
 				// TODO: Is this alright? It makes sense but it's pretty useless. Text Node cannot be
@@ -1146,13 +1163,25 @@ describe( 'Template', () => {
 						]
 					} );
 
+					observable.foo = 'abc';
+					expect( el.outerHTML ).to.equal( '<p>true</p>' );
+
 					observable.foo = true;
-					expect( el.outerHTML ).to.equal( '<p></p>' );
+					expect( el.outerHTML ).to.equal( '<p>true</p>' );
+
+					observable.foo = 0;
+					expect( el.outerHTML ).to.equal( '<p>true</p>' );
 
 					observable.foo = false;
 					expect( el.outerHTML ).to.equal( '<p></p>' );
 
-					observable.foo = 'bar';
+					observable.foo = null;
+					expect( el.outerHTML ).to.equal( '<p></p>' );
+
+					observable.foo = undefined;
+					expect( el.outerHTML ).to.equal( '<p></p>' );
+
+					observable.foo = '';
 					expect( el.outerHTML ).to.equal( '<p></p>' );
 				} );
 
@@ -1168,11 +1197,23 @@ describe( 'Template', () => {
 					observable.foo = 'bar';
 					expect( el.outerHTML ).to.equal( '<p class="bar">abc</p>' );
 
-					observable.foo = false;
-					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
+					observable.foo = true;
+					expect( el.outerHTML ).to.equal( '<p class="bar">abc</p>' );
+
+					observable.foo = 0;
+					expect( el.outerHTML ).to.equal( '<p class="bar">abc</p>' );
 
 					observable.foo = 64;
 					expect( el.outerHTML ).to.equal( '<p class="bar">abc</p>' );
+
+					observable.foo = false;
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
+
+					observable.foo = null;
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
+
+					observable.foo = undefined;
+					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – value of an attribute (Text Node)', () => {
@@ -1266,6 +1307,12 @@ describe( 'Template', () => {
 					observable.foo = 'bar';
 					expect( el.outerHTML ).to.equal( '<p class="foo-is-set">abc</p>' );
 
+					observable.foo = true;
+					expect( el.outerHTML ).to.equal( '<p class="foo-is-set">abc</p>' );
+
+					observable.foo = 0;
+					expect( el.outerHTML ).to.equal( '<p class="foo-is-set">abc</p>' );
+
 					observable.foo = false;
 					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 
@@ -1276,9 +1323,6 @@ describe( 'Template', () => {
 					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 
 					observable.foo = '';
-					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
-
-					observable.foo = 0;
 					expect( el.outerHTML ).to.equal( '<p>abc</p>' );
 				} );
 			} );
