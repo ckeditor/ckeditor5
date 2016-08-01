@@ -49,5 +49,6 @@ export default class IconManagerView extends View {
 /**
  * The actual SVG (HTML) of the icons to be injected in DOM.
  *
+ * @observable
  * @member {String} ui.iconManager.IconManagerViewModel#sprite
  */

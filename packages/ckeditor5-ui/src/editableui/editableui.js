@@ -51,17 +51,20 @@ export default class EditableUI extends Controller {
 /**
  * Controls whether the editable is writable or not.
  *
+ * @observable
  * @member {Boolean} ui.editableUI.EditableUIModel#isReadOnly
  */
 
 /**
  * Controls whether the editable is focused, i.e. the user is typing in it.
  *
+ * @observable
  * @member {Boolean} ui.editableUI.EditableUIModel#isFocused
  */
 
 /**
  * The name of the editable UI.
  *
+ * @observable
  * @member {String} ui.editableUI.EditableUIModel#name
  */
