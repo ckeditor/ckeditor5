@@ -55,7 +55,7 @@ class ViewElementConsumables {
 	 *		consumables.add( { attribute: 'title', class: 'foo', style: 'color' } );
 	 *		consumables.add( { attribute: [ 'title', 'name' ], class: [ 'foo', 'bar' ] );
 	 *
-	 * Throws {@link utils.CKEditorError CKEditorError} `conversion-viewconsumable-invalid-attribute` when `class` or `style`
+	 * Throws {@link utils.CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
 	 * attribute is provided - it should be handled separately by providing `style` and `class` in consumables object.
 	 *
 	 * @param {Object} consumables Object describing which parts of the element can be consumed.
@@ -178,7 +178,7 @@ class ViewElementConsumables {
 	/**
 	 * Helper method that adds consumables of a given type: attribute, class or style.
 	 *
-	 * Throws {@link utils.CKEditorError CKEditorError} `conversion-viewconsumable-invalid-attribute` when `class` or `style`
+	 * Throws {@link utils.CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
 	 * type is provided - it should be handled separately by providing actual style/class type.
 	 *
 	 * @private
@@ -196,7 +196,7 @@ class ViewElementConsumables {
 				 *
 				 * @error viewconsumable-invalid-attribute
 				 */
-				throw new CKEditorError( 'conversion-viewconsumable-invalid-attribute: Classes and styles should be handled separately.' );
+				throw new CKEditorError( 'viewconsumable-invalid-attribute: Classes and styles should be handled separately.' );
 			}
 
 			consumables.set( name, true );
@@ -343,7 +343,7 @@ export default class ViewConsumable {
 	 *		viewConsumable.add( textNode ); // Adds text node to consume.
 	 *		viewConsumable.add( docFragment ); // Adds document fragment to consume.
 	 *
-	 * Throws {@link utils.CKEditorError CKEditorError} `conversion-viewconsumable-invalid-attribute` when `class` or `style`
+	 * Throws {@link utils.CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
 	 * attribute is provided - it should be handled separately by providing actual style/class.
 	 *
 	 *		viewConsumable.add( p, { attribute: 'style' } ); // This call will throw an exception.
