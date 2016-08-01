@@ -24,7 +24,6 @@ const config = {
 
 require( './dev/tasks/bundle/tasks' )( config ).register();
 require( './dev/tasks/test/tasks' )( config ).register();
-require( './dev/tasks/docs/tasks' )( config ).register();
 
 // Lint tasks.
 const ckeditor5Lint = require( 'ckeditor5-dev-lint' )( config );
@@ -47,32 +46,37 @@ gulp.task( 'exec', ckeditor5DevEnv.execOnRepositories );
 
 // Build tasks.
 const ckeditor5DevBuilder = require( 'ckeditor5-dev-builder' )( config );
+const builder = ckeditor5DevBuilder.builder;
 gulp.task( 'build', callback => {
 	runSequence( 'build:clean:all', 'build:themes', 'build:js', callback );
 } );
 
-gulp.task( 'build:clean:all', ckeditor5DevBuilder.clean.all );
-gulp.task( 'build:clean:themes', ckeditor5DevBuilder.clean.themes );
-gulp.task( 'build:clean:js', () => ckeditor5DevBuilder.clean.js() );
+gulp.task( 'build:clean:all', builder.clean.all );
+gulp.task( 'build:clean:themes', builder.clean.themes );
+gulp.task( 'build:clean:js', () => builder.clean.js() );
 
 gulp.task( 'build:themes', ( callback ) => {
 	runSequence( 'build:clean:themes', 'build:icons', 'build:sass', callback );
 } );
 
-gulp.task( 'build:sass', () => ckeditor5DevBuilder.build.sass() );
-gulp.task( 'build:icons', () => ckeditor5DevBuilder.build.icons() );
-gulp.task( 'build:js', [ 'build:clean:js' ], () => ckeditor5DevBuilder.build.js() );
+gulp.task( 'build:sass', () => builder.build.sass() );
+gulp.task( 'build:icons', () => builder.build.icons() );
+gulp.task( 'build:js', [ 'build:clean:js' ], () => builder.build.js() );
 
 // Tasks specific for preparing build with unmodified source files. Uses by `gulp docs` or `gulp bundle`.
-gulp.task( 'build:clean:js:esnext', () => ckeditor5DevBuilder.clean.js( { formats: [ 'esnext' ] } ) );
-gulp.task( 'build:clean:themes:esnext', () => ckeditor5DevBuilder.clean.themes( { formats: [ 'esnext' ] } ) );
-gulp.task( 'build:sass:esnext', () => ckeditor5DevBuilder.build.sass( { formats: [ 'esnext' ] } ) );
-gulp.task( 'build:icons:esnext', () => ckeditor5DevBuilder.build.icons( { formats: [ 'esnext' ] } ) );
-gulp.task( 'build:js:esnext', [ 'build:clean:js:esnext' ], () => ckeditor5DevBuilder.build.js( { formats: [ 'esnext' ] } ) );
+gulp.task( 'build:clean:js:esnext', () => builder.clean.js( { formats: [ 'esnext' ] } ) );
+gulp.task( 'build:clean:themes:esnext', () => builder.clean.themes( { formats: [ 'esnext' ] } ) );
+gulp.task( 'build:sass:esnext', () => builder.build.sass( { formats: [ 'esnext' ] } ) );
+gulp.task( 'build:icons:esnext', () => builder.build.icons( { formats: [ 'esnext' ] } ) );
+gulp.task( 'build:js:esnext', [ 'build:clean:js:esnext' ], () => builder.build.js( { formats: [ 'esnext' ] } ) );
 gulp.task( 'build:themes:esnext', ( callback ) => {
 	runSequence( 'build:clean:themes:esnext', 'build:icons:esnext', 'build:sass:esnext', callback );
 } );
 
 // Tasks specific for testing under node.
-gulp.task( 'build:clean:js:cjs', () => ckeditor5DevBuilder.clean.js( { formats: [ 'cjs' ] } ) );
-gulp.task( 'build:js:cjs', [ 'build:clean:js:cjs' ], () => ckeditor5DevBuilder.build.js( { formats: [ 'cjs' ] } ) );
+gulp.task( 'build:clean:js:cjs', () => builder.clean.js( { formats: [ 'cjs' ] } ) );
+gulp.task( 'build:js:cjs', [ 'build:clean:js:cjs' ], () => builder.build.js( { formats: [ 'cjs' ] } ) );
+
+// Docs.
+const docsBuilder = ckeditor5DevBuilder.docs;
+gulp.task( 'docs', [ 'build:js:esnext' ], docsBuilder.buildDocs );
