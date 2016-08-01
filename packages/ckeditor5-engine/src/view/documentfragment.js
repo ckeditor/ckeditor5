@@ -45,7 +45,7 @@ export default class DocumentFragment {
 	 * Number of child nodes in this document fragment.
 	 *
 	 * @readonly
-	 * @type {Number} The number of elements.
+	 * @type {Number}
 	 */
 	get childCount() {
 		return this._children.length;
