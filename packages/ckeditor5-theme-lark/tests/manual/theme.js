@@ -124,27 +124,13 @@ function renderButton( ui ) {
 	iconManagerModel.icons.forEach( i => {
 		ui.add( 'button-icon', button( {
 			label: i,
-			icon: i,
-			iconAlign: 'left'
+			icon: i
 		} ) );
 	} );
 
-	ui.add( 'button-icon-custom', button( {
-		label: 'Icon to the left',
-		icon: 'bold',
-		iconAlign: 'left'
-	} ) );
-
-	ui.add( 'button-icon-custom', button( {
-		label: 'Icon to the right (RTL)',
-		icon: 'bold',
-		iconAlign: 'right'
-	} ) );
-
 	const styledButton = button( {
-		label: 'Button with icon and custom styles',
-		icon: 'italic',
-		iconAlign: 'left'
+		label: 'Button with an icon and custom styles',
+		icon: 'italic'
 	} );
 
 	// TODO: It probably requires model interface.
@@ -155,21 +141,18 @@ function renderButton( ui ) {
 	ui.add( 'button-icon-states', button( {
 		label: 'Disabled',
 		icon: 'bold',
-		iconAlign: 'left',
 		isEnabled: false
 	} ) );
 
 	ui.add( 'button-icon-states', button( {
 		label: 'Bold',
 		withText: false,
-		icon: 'bold',
-		iconAlign: 'left'
+		icon: 'bold'
 	} ) );
 
 	const colChangeButton = button( {
 		label: 'Icon follows text color',
-		icon: 'bold',
-		iconAlign: 'left'
+		icon: 'bold'
 	} );
 
 	// TODO: It requires model interface.
@@ -188,15 +171,13 @@ function renderButton( ui ) {
 		ui.add( `button-responsive-${ i }`, button( {
 			label: 'Bold',
 			icon: 'bold',
-			iconAlign: 'left',
 			isEnabled: true
 		} ) );
 
 		const notextButton = button( {
 			label: 'Link',
 			withText: false,
-			icon: 'link',
-			iconAlign: 'left'
+			icon: 'link'
 		} );
 
 		// TODO: It requires model interface.
@@ -249,9 +230,8 @@ function renderToolbar( ui ) {
 		button(),
 		text(),
 		button( {
-			label: 'Button with icon',
-			icon: 'bold',
-			iconAlign: 'left'
+			label: 'Button with an icon',
+			icon: 'bold'
 		} ),
 		dropdown(),
 		button()
@@ -264,9 +244,8 @@ function renderToolbar( ui ) {
 			label: 'A button which corners are also rounded because of toolbar class'
 		} ),
 		button( {
-			label: 'Button with icon',
-			icon: 'bold',
-			iconAlign: 'left'
+			label: 'Button with an icon',
+			icon: 'bold'
 		} )
 	] ) );
 
@@ -290,14 +269,12 @@ function renderToolbar( ui ) {
 		toolbarSeparator(),
 		button( {
 			label: 'Link',
-			icon: 'link',
-			iconAlign: 'left'
+			icon: 'link'
 		} ),
 		toolbarSeparator(),
 		button( {
 			label: 'Unlink RTL',
-			icon: 'unlink',
-			iconAlign: 'right'
+			icon: 'unlink'
 		} )
 	] ) );
 
@@ -309,18 +286,15 @@ function renderToolbar( ui ) {
 		toolbarNewLine(),
 		button( {
 			label: 'Link',
-			icon: 'link',
-			iconAlign: 'left'
+			icon: 'link'
 		} ),
 		button( {
 			label: 'Unlink RTL',
-			icon: 'unlink',
-			iconAlign: 'right'
+			icon: 'unlink'
 		} ),
 		button( {
 			label: 'Link',
-			icon: 'link',
-			iconAlign: 'left'
+			icon: 'link'
 		} )
 	] ) );
 }
@@ -351,9 +325,9 @@ function button( {
 	isEnabled = true,
 	isOn = false,
 	withText = true,
-	icon, iconAlign
+	icon
 } = {} ) {
-	const model = new Model( { label, isEnabled, isOn, withText, icon, iconAlign } );
+	const model = new Model( { label, isEnabled, isOn, withText, icon } );
 
 	return new Button( model, new ButtonView() );
 }

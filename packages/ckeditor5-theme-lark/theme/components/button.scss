@@ -58,7 +58,7 @@
  * @access public
  */
 @mixin ck-button-icon {
-	[class*="ck-icon"] {
+	.ck-icon {
 		@content;
 	}
 }
@@ -74,23 +74,15 @@ a.ck-button {
 	@include ck-rounded-corners();
 
 	@include ck-button-icon {
-		margin-left: 0;
-		margin-right: 0;
+		float: left;
 	}
 
 	&.ck-button-with-text {
 		padding: ck-spacing( 'small' ) ck-spacing();
 
-		.ck-icon {
-			&-left {
-				margin-left: -#{ck-spacing( 'small' )};
-				margin-right: ck-spacing( 'small' );
-			}
-
-			&-right {
-				margin-right: -#{ck-spacing( 'small' )};
-				margin-left: ck-spacing( 'small' );
-			}
+		@include ck-button-icon {
+			margin-left: -#{ck-spacing( 'small' )};
+			margin-right: ck-spacing( 'small' );
 		}
 
 		.ck-button__label {
