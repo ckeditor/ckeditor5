@@ -337,7 +337,7 @@ class RangeParser {
 		if ( order.length ) {
 			if ( order.length != ranges.length ) {
 				throw new Error(
-					`Parse error - there are ${ ranges.length} ranges found, but ranges order array contains ${ order.length } elements.`
+					`Parse error - there are ${ ranges.length } ranges found, but ranges order array contains ${ order.length } elements.`
 				);
 			}
 

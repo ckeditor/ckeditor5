@@ -3,16 +3,25 @@
  * For licensing, see LICENSE.md.
  */
 
-import TreeWalker from '/ckeditor5/engine/model/treewalker.js';
+import Mapper from '/ckeditor5/engine/conversion/mapper.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
-import Text from '/ckeditor5/engine/model/text.js';
 import RootElement from '/ckeditor5/engine/model/rootelement.js';
-import Element from '/ckeditor5/engine/model/element.js';
-import DocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import Selection from '/ckeditor5/engine/model/selection.js';
 import Document from '/ckeditor5/engine/model/document.js';
-import writer from '/ckeditor5/engine/model/writer.js';
+import ViewConversionDispatcher from '/ckeditor5/engine/conversion/viewconversiondispatcher.js';
+import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
+import ModelElement from '/ckeditor5/engine/model/element.js';
+import ModelText from '/ckeditor5/engine/model/text.js';
+import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
+import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
+import { parse as viewParse, stringify as viewStringify  } from '/tests/engine/_utils/view.js';
+import { normalizeNodes } from '/ckeditor5/engine/model/writer.js';
+import ViewElement from '/ckeditor5/engine/view/containerelement.js';
+import ViewText from '/ckeditor5/engine/view/text.js';
+import viewWriter from '/ckeditor5/engine/view/writer.js';
+
+let mapper;
 
 /**
  * Writes the contents of the {@link engine.model.Document Document} to an HTML-like string.
@@ -50,6 +59,7 @@ getData._stringify = stringify;
  * @param {engine.model.Document} document
  * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
+ * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to selection.
  * @param {String} [options.rootName='main'] Root name where parsed data will be stored. If not provided, default `main`
  * name will be used.
  * @param {String} [options.batchType='transparent'] Batch type used for inserting elements. See {@link engine.model.Batch#type}.
@@ -60,7 +70,7 @@ export function setData( document, data, options = {} ) {
 	}
 
 	let model, selection;
-	const result = setData._parse( data );
+	const result = setData._parse( data, { schema: document.schema } );
 
 	if ( result.model && result.selection ) {
 		model = result.model;
@@ -80,19 +90,21 @@ export function setData( document, data, options = {} ) {
 		if ( selection ) {
 			const ranges = [];
 
-			for ( let range of selection.getRanges() ) {
+			for ( let viewRange of selection.getRanges() ) {
 				let start, end;
+
+				const range = mapper.toModelRange( viewRange );
 
 				// Each range returned from `parse()` method has its root placed in DocumentFragment.
 				// Here we convert each range to have its root re-calculated properly and be placed inside
 				// model document root.
-				if ( range.start.parent instanceof DocumentFragment ) {
+				if ( range.start.parent instanceof ModelDocumentFragment ) {
 					start = Position.createFromParentAndOffset( modelRoot, range.start.offset );
 				} else {
 					start = Position.createFromParentAndOffset( range.start.parent, range.start.offset );
 				}
 
-				if ( range.end.parent instanceof DocumentFragment ) {
+				if ( range.end.parent instanceof ModelDocumentFragment ) {
 					end = Position.createFromParentAndOffset( modelRoot, range.end.offset );
 				} else {
 					end = Position.createFromParentAndOffset( range.end.parent, range.end.offset );
@@ -102,6 +114,10 @@ export function setData( document, data, options = {} ) {
 			}
 
 			document.selection.setRanges( ranges, selection.isBackward );
+
+			if ( options.selectionAttribtes ) {
+				document.selection.setAttributesTo( options.selectionAttribtes );
+			}
 		}
 	} );
 }
@@ -114,22 +130,25 @@ setData._parse = parse;
  *
  * @param {engine.model.RootElement|engine.model.Element|engine.model.Text|
  * engine.model.DocumentFragment} node Node to stringify.
- * @param {engine.model.Selection|engine.model.Position|engine.model.Range} [selectionOrPositionOrRange = null ]
+ * @param {engine.model.Selection|engine.model.Position|engine.model.Range} [selectionOrPositionOrRange=null]
  * Selection instance which ranges will be included in returned string data. If Range instance is provided - it will be
  * converted to selection containing this range. If Position instance is provided - it will be converted to selection
  * containing one range collapsed at this position.
  * @returns {String} HTML-like string representing the model.
  */
 export function stringify( node, selectionOrPositionOrRange = null ) {
+	mapper = new Mapper();
+
 	let selection, range;
 
-	if ( node instanceof RootElement || node instanceof DocumentFragment ) {
-		range = Range.createIn( node );
+	// Create a range wrapping passed node.
+	if ( node instanceof RootElement || node instanceof ModelDocumentFragment ) {
+		range = Range.createFromElement( node );
 	} else {
 		// Node is detached - create new document fragment.
 		if ( !node.parent ) {
-			const fragment = new DocumentFragment( node );
-			range = Range.createIn( fragment );
+			const fragment = new ModelDocumentFragment( node );
+			range = Range.createFromElement( fragment );
 		} else {
 			range = new Range(
 				Position.createBefore( node ),
@@ -137,10 +156,6 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 			);
 		}
 	}
-
-	const walker = new TreeWalker( {
-		boundaries: range
-	} );
 
 	if ( selectionOrPositionOrRange instanceof Selection ) {
 		selection = selectionOrPositionOrRange;
@@ -152,25 +167,23 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 		selection.addRange( new Range( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
 	}
 
-	let ret = '';
-	let lastPosition = Position.createFromPosition( range.start );
-	const withSelection = !!selection;
+	// Setup model -> view converter.
+	const viewDocumentFragment = new ViewDocumentFragment();
+	const modelToView = new ModelConversionDispatcher( {
+		mapper: mapper
+	} );
 
-	for ( let value of walker ) {
-		if ( withSelection ) {
-			ret += writeSelection( value.previousPosition, selection );
-		}
+	modelToView.on( 'insert:$text', insertText() );
+	modelToView.on( 'insert', insertElement() );
 
-		ret += writeItem( value, selection, { selection: withSelection } );
+	mapper.bindElements( node, viewDocumentFragment );
 
-		lastPosition = value.nextPosition;
-	}
+	// Convert view to model.
+	modelToView.convertInsert( range );
+	mapper.clearBindings();
 
-	if ( withSelection ) {
-		ret += writeSelection( lastPosition, selection );
-	}
-
-	return ret;
+	// Return parsed to data model.
+	return viewStringify( viewDocumentFragment, selection );
 }
 
 /**
@@ -178,327 +191,126 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  *
  * @param {String} data HTML-like string to be parsed.
  * @param {Object} options
+ * @param {engine.model.Schema} [options.schema] Document schema.
  * @returns {engine.model.Element|engine.model.Text|engine.model.DocumentFragment|Object} Returns parsed model node or
  * object with two fields `model` and `selection` when selection ranges were included in data to parse.
  */
-export function parse( data ) {
-	let root, selection;
-	let withSelection = false;
+export function parse( data, options ) {
+	mapper = new Mapper();
 
-	root = new DocumentFragment();
-	selection = new Selection();
+	// Parse data to view using view utils.
+	const view = viewParse( data );
 
-	const path = [];
-	let selectionStart, selectionEnd, selectionAttributes, textAttributes;
+	// Retrieve DocumentFragment and Selection from parsed view.
+	let viewDocumentFragment, selection;
 
-	const handlers = {
-		text( token ) {
-			writer.insert( Position.createFromParentAndOffset( root, root.maxOffset ), new Text( token.data, textAttributes ) );
-		},
-
-		textStart( token ) {
-			textAttributes = token.attributes;
-			path.push( '$text' );
-		},
-
-		textEnd() {
-			if ( path.pop() != '$text' ) {
-				throw new Error( 'Parse error - unexpected closing tag.' );
-			}
-
-			textAttributes = null;
-		},
-
-		openingTag( token ) {
-			let el = new Element( token.name, token.attributes );
-			writer.insert( Position.createFromParentAndOffset( root, root.maxOffset ), el );
-
-			root = el;
-
-			path.push( token.name );
-		},
-
-		closingTag( token ) {
-			if ( path.pop() != token.name ) {
-				throw new Error( 'Parse error - unexpected closing tag.' );
-			}
-
-			root = root.parent;
-		},
-
-		collapsedSelection( token ) {
-			withSelection = true;
-			selection.collapse( root, 'end' );
-			selection.setAttributesTo( token.attributes );
-		},
-
-		selectionStart( token ) {
-			selectionStart = Position.createFromParentAndOffset( root, root.maxOffset );
-			selectionAttributes = token.attributes;
-		},
-
-		selectionEnd() {
-			if ( !selectionStart ) {
-				throw new Error( 'Parse error - missing selection start.' );
-			}
-
-			withSelection = true;
-			selectionEnd = Position.createFromParentAndOffset( root, root.maxOffset );
-
-			selection.setRanges(
-				[ new Range( selectionStart, selectionEnd ) ],
-				selectionAttributes.backward
-			);
-
-			delete selectionAttributes.backward;
-
-			selection.setAttributesTo( selectionAttributes );
-		}
-	};
-
-	for ( let token of tokenize( data ) ) {
-		handlers[ token.type ]( token );
+	if ( view.view && view.selection ) {
+		viewDocumentFragment = view.view;
+		selection = view.selection;
+	} else {
+		viewDocumentFragment = view;
 	}
 
-	if ( path.length ) {
-		throw new Error( 'Parse error - missing closing tags: ' + path.join( ', ' ) + '.' );
-	}
+	viewDocumentFragment = viewDocumentFragment.parent ? viewDocumentFragment.parent : viewDocumentFragment;
 
-	if ( selectionStart && !selectionEnd ) {
-		throw new Error( 'Parse error - missing selection end.' );
-	}
+	// Setup view -> model converter.
+	const viewToModel = new ViewConversionDispatcher( {
+		schema: options.schema
+	} );
+
+	viewToModel.on( 'text', convertToModelText() );
+	viewToModel.on( 'element:model-text', convertToModelTextWithAttributes(), null, 9999 );
+	viewToModel.on( 'element', convertToModelElement(), null, 9999 );
+	viewToModel.on( 'documentFragment', convertToModelFragment(), null, 9999 );
+
+	// Convert view to model.
+	let root = viewToModel.convert( viewDocumentFragment, { context: [ '$root' ] } );
 
 	// If root DocumentFragment contains only one element - return that element.
 	if ( root instanceof DocumentFragment && root.childCount == 1 ) {
 		root = root.getChild( 0 );
 	}
 
-	if ( withSelection ) {
+	// Return model end selection when selection was specified.
+	if ( selection ) {
 		return {
 			model: root,
 			selection: selection
 		};
 	}
 
+	// Otherwise return model only.
 	return root;
 }
 
-// -- getData helpers ---------------------------------------------------------
+// -- converters view -> model -----------------------------------------------------
 
-function writeItem( walkerValue, selection, options ) {
-	const type = walkerValue.type;
-	const item = walkerValue.item;
+function convertToModelFragment() {
+	return ( evt, data, consumable, conversionApi ) => {
+		// Second argument in `consumable.test` is discarded for ViewDocumentFragment but is needed for ViewElement.
+		if ( !data.output && consumable.test( data.input, { name: true } ) ) {
+			const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
 
-	if ( type == 'elementStart' ) {
-		let attrs = writeAttributes( item.getAttributes() );
+			data.output = new ModelDocumentFragment( normalizeNodes( convertedChildren ) );
 
-		if ( attrs ) {
-			return `<${ item.name } ${ attrs }>`;
+			mapper.bindElements( data.output, data.input );
 		}
-
-		return `<${ item.name }>`;
-	}
-
-	if ( type == 'elementEnd' ) {
-		return `</${ item.name }>`;
-	}
-
-	return writeText( walkerValue, selection, options );
+	};
 }
 
-function writeText( walkerValue, selection, options ) {
-	const item = walkerValue.item;
-	const attrs = writeAttributes( item.getAttributes() );
-	let text = Array.from( item.data );
+function convertToModelElement() {
+	return ( evt, data, consumable, conversionApi ) => {
+		if ( consumable.consume( data.input, { name: true } ) ) {
+			data.output = new ModelElement( data.input.name, data.input.getAttributes() );
 
-	if ( options.selection ) {
-		const startIndex = walkerValue.previousPosition.offset + 1;
-		const endIndex = walkerValue.nextPosition.offset - 1;
-		let index = startIndex;
+			mapper.bindElements( data.output, data.input );
 
-		while ( index <= endIndex ) {
-			// Add the selection marker without changing any indexes, so if second marker must be added
-			// in the same loop it does not blow up.
-			text[ index - startIndex ] +=
-				writeSelection( Position.createFromParentAndOffset( item.parent, index ), selection );
-
-			index++;
+			data.context.push( data.output );
+			data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
+			data.context.pop();
 		}
-	}
-
-	text = text.join( '' );
-
-	if ( attrs ) {
-		return `<$text ${ attrs }>${ text }</$text>`;
-	}
-
-	return text;
+	};
 }
 
-function writeAttributes( attrs ) {
-	attrs = Array.from( attrs );
-
-	return attrs.map( attr => attr[ 0 ] + '=' + JSON.stringify( attr[ 1 ] ) ).sort().join( ' ' );
+function convertToModelText() {
+	return ( evt, data ) => {
+		data.output = new ModelText( data.input.data );
+	};
 }
 
-function writeSelection( currentPosition, selection ) {
-	// TODO: This function obviously handles only the first range.
-	const range = selection.getFirstRange();
-
-	// Handle end of the selection.
-	if ( !selection.isCollapsed && range.end.compareWith( currentPosition ) == 'same' ) {
-		return '</selection>';
-	}
-
-	// Handle no match.
-	if ( range.start.compareWith( currentPosition ) != 'same' ) {
-		return '';
-	}
-
-	// Handle beginning of the selection.
-
-	let ret = '<selection';
-	const attrs = writeAttributes( selection.getAttributes() );
-
-	// TODO: Once we'll support multiple ranges this will need to check which range it is.
-	if ( selection.isBackward ) {
-		ret += ' backward';
-	}
-
-	if ( attrs ) {
-		ret += ' ' + attrs;
-	}
-
-	ret += ( selection.isCollapsed ? ' />' : '>' );
-
-	return ret;
+function convertToModelTextWithAttributes() {
+	return ( evt, data, consumable ) => {
+		if ( consumable.consume( data.input, { name: true } ) ) {
+			data.output = new ModelText( data.input.getChild( 0 ).data, data.input.getAttributes() );
+		}
+	};
 }
 
-// -- setData helpers ---------------------------------------------------------
+// -- converters model -> view -----------------------------------------------------
 
-const patterns = {
-	selection: /^<(\/?selection)( [^>]*)?>/,
-	tag: /^<([^>]+)>/,
-	text: /^[^<]+/
-};
+function insertElement() {
+	return ( evt, data, consumable, conversionApi ) => {
+		consumable.consume( data.item, 'insert' );
 
-const handlers = {
-	selection( match ) {
-		const tagName = match[ 1 ];
-		const tagExtension = match[ 2 ] || '';
+		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+		const viewElement = new ViewElement( data.item.name, data.item.getAttributes() );
 
-		if ( tagName[ 0 ] == '/' ) {
-			return {
-				type: 'selectionEnd'
-			};
-		}
+		conversionApi.mapper.bindElements( data.item, viewElement );
+		viewWriter.insert( viewPosition, viewElement );
 
-		if ( tagExtension.endsWith( ' /' ) ) {
-			return {
-				type: 'collapsedSelection',
-				attributes: parseAttributes( tagExtension.slice( 1, -2 ) )
-			};
-		}
-
-		return {
-			type: 'selectionStart',
-			attributes: parseAttributes( tagExtension.slice( 1 ) )
-		};
-	},
-
-	tag( match ) {
-		const tagContents = match[ 1 ].split( /\s+/ );
-		const tagName = tagContents.shift();
-		const attrs = tagContents.join( ' ' );
-
-		if ( tagName == '/$text' ) {
-			return {
-				type: 'textEnd'
-			};
-		}
-
-		if ( tagName == '$text' ) {
-			return {
-				type: 'textStart',
-				attributes: parseAttributes( attrs )
-			};
-		}
-
-		if ( tagName[ 0 ] == '/' ) {
-			return {
-				type: 'closingTag',
-				name: tagName.slice( 1 )
-			};
-		}
-
-		return {
-			type: 'openingTag',
-			name: tagName,
-			attributes: parseAttributes( attrs )
-		};
-	},
-
-	text( match ) {
-		return {
-			type: 'text',
-			data: match[ 0 ]
-		};
-	}
-};
-
-function *tokenize( data ) {
-	while ( data ) {
-		const consumed = consumeNextToken( data );
-
-		data = consumed.data;
-		yield consumed.token;
-	}
+		evt.stop();
+	};
 }
 
-function consumeNextToken( data ) {
-	let match;
+function insertText() {
+	return ( evt, data, consumable, conversionApi ) => {
+		consumable.consume( data.item, 'insert' );
 
-	for ( let patternName in patterns ) {
-		match = data.match( patterns[ patternName ] );
+		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+		const viewText = new ViewText( data.item.data );
 
-		if ( match ) {
-			data = data.slice( match[ 0 ].length );
+		viewWriter.insert( viewPosition, viewText );
 
-			return {
-				token: handlers[ patternName ]( match ),
-				data
-			};
-		}
-	}
-
-	throw new Error( 'Parse error - unexpected token: ' + data + '.' );
-}
-
-function parseAttributes( attrsString ) {
-	attrsString = attrsString.trim();
-
-	if ( !attrsString  ) {
-		return {};
-	}
-
-	const pattern = /(?:backward|(\w+)=("[^"]+"|[^\s]+))\s*/;
-	const attrs = {};
-
-	while ( attrsString ) {
-		let match = attrsString.match( pattern );
-
-		if ( !match ) {
-			throw new Error( 'Parse error - unexpected token: ' + attrsString + '.' );
-		}
-
-		if ( match[ 0 ].trim() == 'backward' ) {
-			attrs.backward = true;
-		} else {
-			attrs[ match[ 1 ] ] = JSON.parse( match[ 2 ] );
-		}
-
-		attrsString = attrsString.slice( match[ 0 ].length );
-	}
-
-	return attrs;
+		evt.stop();
+	};
 }

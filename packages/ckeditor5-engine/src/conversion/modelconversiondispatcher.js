@@ -57,7 +57,7 @@ import extend from '../../utils/lib/lodash/extend.js';
  *			const viewElement = new ViewElement( 'p' );
  *
  *			// Bind the newly created view element to model element so positions will map accordingly in future.
- *			conversionApi.mapper.bindElements( data.item, viewNode );
+ *			conversionApi.mapper.bindElements( data.item, viewElement );
  *
  *			// Add the newly created view element to the view.
  *			viewWriter.insert( viewPosition, viewElement );

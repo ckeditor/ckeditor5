@@ -24,7 +24,7 @@ import ModelPosition from './model/position.js';
  *
  * * {@link engine.dataProcessor.DataProcessor data processor},
  * * {@link engine.conversion.ModelConversionDispatcher model to view} and
- * {@link engine.conversion.ViewConversionDispatcher view to model} converters.
+ * * {@link engine.conversion.ViewConversionDispatcher view to model} converters.
  *
  * @memberOf engine
  */

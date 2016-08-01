@@ -81,9 +81,19 @@ export default class HtmlDataProcessor {
 	 * @returns {DocumentFragment}
 	 */
 	_toDom( data ) {
-		const document = this._domParser.parseFromString( data, 'text/html' );
+		data = `<div>${ data }</div>`;
+
+		const document = this._domParser.parseFromString( data, 'text/xml' );
+
+		// Temporary parse validation.
+		const parserError = document.querySelector( 'parsererror' );
+
+		if ( parserError ) {
+			throw new Error( parserError.querySelector( 'div' ).textContent );
+		}
+
 		const fragment = document.createDocumentFragment();
-		const nodes = document.body.childNodes;
+		const nodes = document.documentElement.childNodes;
 
 		while ( nodes.length > 0 ) {
 			fragment.appendChild( nodes[ 0 ] );
