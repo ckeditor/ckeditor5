@@ -67,6 +67,8 @@ module.exports = ( config ) => {
 		 *			]
 		 *		};
 		 *
+		 * ** Note: ** Entry file is a physically existing file because rollup requires it.
+		 *
 		 * @param {String} configFilePath Path to the bundle configuration file.
 		 * @returns {Promise} Promise that resolve bundling for CSS and JS.
 		 */
@@ -84,6 +86,7 @@ module.exports = ( config ) => {
 			const config = require( path.resolve( '.', configFilePath ) );
 
 			// Create a temporary entry file with proper directory structure if not exist.
+			// Entry file can not be a stream because rollup requires physically existing file.
 			mkdirp.sync( bundleTmpDir );
 			fs.writeFileSync( temporaryEntryFilePath, utils.renderEntryFileContent( bundleTmpDir, config ) );
 
