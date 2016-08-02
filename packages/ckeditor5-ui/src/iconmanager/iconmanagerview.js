@@ -47,7 +47,7 @@ export default class IconManagerView extends View {
 		const symbols = tmp.firstChild.childNodes;
 
 		// Pick symbols from the tmp and put them into icon manager.
-		// Note MS Edge does not support forEach or Symbol.iterator for NodeList.
+		// Note: MS Edge does not support forEach or Symbol.iterator for NodeList.
 		for ( let i = 0; i < symbols.length; ++i ) {
 			this.element.appendChild( document.importNode( symbols[ i ], true ) );
 		}
