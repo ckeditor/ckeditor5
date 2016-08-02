@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../feature.js';
+import Feature from '../core/feature.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
 
@@ -12,7 +12,7 @@ import buildViewConverter from '../engine/conversion/buildviewconverter.js';
  * Introduces the `<paragraph>` element in the model which renders as a `<p>` element in the DOM and data.
  *
  * @memberOf paragraph
- * @extends ckeditor5.Feature
+ * @extends core.Feature
  */
 export default class Paragraph extends Feature {
 	/**
