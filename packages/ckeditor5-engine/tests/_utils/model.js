@@ -19,12 +19,17 @@ import ViewConversionDispatcher from '/ckeditor5/engine/conversion/viewconversio
 import ViewSelection from '/ckeditor5/engine/view/selection.js';
 import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import ViewElement from '/ckeditor5/engine/view/containerelement.js';
+import ViewText from '/ckeditor5/engine/view/text.js';
 import viewWriter from '/ckeditor5/engine/view/writer.js';
 
 import { parse as viewParse, stringify as viewStringify } from '/tests/engine/_utils/view.js';
 import { convertRangeSelection, convertCollapsedSelection } from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
-import { insertText } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
 import { convertText, convertToModelFragment } from '/ckeditor5/engine/conversion/view-to-model-converters.js';
+
+// Test utils uses `<$text foo="bar">Lorem ipsum</$text>` notation to create text with attributes, but `$text` is not
+// valid XML element name, so needs to be parsed before conversion to view.
+const VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT = 'view-text-with-attributes';
+const DATA_STRING_TEXT_WITH_ATTRIBUTES_ELEMENT = '$text';
 
 /**
  * Writes the contents of the {@link engine.model.Document Document} to an HTML-like string.
@@ -128,7 +133,6 @@ setData._parse = parse;
  */
 export function stringify( node, selectionOrPositionOrRange = null ) {
 	const mapper = new Mapper();
-
 	let selection, range;
 
 	// Create a range wrapping passed node.
@@ -175,17 +179,25 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	mapper.clearBindings();
 
 	// Return parsed to data model.
-	return viewStringify( viewDocumentFragment, viewSelection );
+	let data = viewStringify( viewDocumentFragment, viewSelection );
+
+	// Replace valid XML text element name to `$text`.
+	return data.replace( new RegExp( VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT, 'g' ), DATA_STRING_TEXT_WITH_ATTRIBUTES_ELEMENT );
 }
 
 /**
  * Parses HTML-like string and returns model {@link engine.model.RootElement rootElement}.
  *
  * @param {String} data HTML-like string to be parsed.
+ * @param {engine.model.schema} schema Schema instance for element validation.
+ * @param {engine.model.mapper} [mapper=new Mapper()] Mapper instance to keep relation with selection.
  * @returns {engine.model.Element|engine.model.Text|engine.model.DocumentFragment|Object} Returns parsed model node or
  * object with two fields `model` and `selection` when selection ranges were included in data to parse.
  */
 export function parse( data, schema, mapper = new Mapper() ) {
+	// Replace not accepted by XML `$text` element by valid one.
+	data = data.replace( new RegExp( '\\' + DATA_STRING_TEXT_WITH_ATTRIBUTES_ELEMENT, 'g' ), VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT );
+
 	// Parse data to view using view utils.
 	const view = viewParse( data );
 
@@ -205,7 +217,7 @@ export function parse( data, schema, mapper = new Mapper() ) {
 	const viewToModel = new ViewConversionDispatcher( { mapper, schema } );
 
 	viewToModel.on( 'text', convertText() );
-	viewToModel.on( 'element:model-text', convertToModelTextWithAttributes(), null, 9999 );
+	viewToModel.on( `element:${ VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT }`, convertToModelTextWithAttributes(), null, 9999 );
 	viewToModel.on( 'element', convertToModelElement(), null, 9999 );
 	viewToModel.on( 'documentFragment', convertToModelFragment(), null, 9999 );
 
@@ -238,7 +250,8 @@ function convertToModelElement() {
 			inside: data.context
 		};
 
-		if ( !conversionApi.schema.check( schemaQuery ) ) {
+		// `VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT` can not be validate because it won't be registered in schema.
+		if ( data.input.name !== VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT && !conversionApi.schema.check( schemaQuery ) ) {
 			throw new Error( `Conversion error - element ${ schemaQuery.name } not allowed in specified context.` );
 		}
 
@@ -284,6 +297,24 @@ function insertElement() {
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		viewWriter.insert( viewPosition, viewElement );
+	};
+}
+
+function insertText() {
+	return ( evt, data, consumable, conversionApi ) => {
+		consumable.consume( data.item, 'insert' );
+
+		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+		const textAttributes = data.item.getAttributes();
+		let node;
+
+		if ( textAttributes.length ) {
+			node = new ViewElement( VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT, textAttributes );
+		} else {
+			node = new ViewText( data.item.data );
+		}
+
+		viewWriter.insert( viewPosition, node );
 
 		evt.stop();
 	};
