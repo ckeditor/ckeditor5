@@ -14,7 +14,6 @@ import ModelSelection from '/ckeditor5/engine/model/selection.js';
 import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import ModelElement from '/ckeditor5/engine/model/element.js';
 import ModelText from '/ckeditor5/engine/model/text.js';
-import modelWriter from '/ckeditor5/engine/model/writer.js';
 
 import ViewConversionDispatcher from '/ckeditor5/engine/conversion/viewconversiondispatcher.js';
 import ViewSelection from '/ckeditor5/engine/view/selection.js';
@@ -25,6 +24,7 @@ import viewWriter from '/ckeditor5/engine/view/writer.js';
 import { parse as viewParse, stringify as viewStringify } from '/tests/engine/_utils/view.js';
 import { convertRangeSelection, convertCollapsedSelection } from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
 import { insertText } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
+import { convertText, convertToModelFragment } from '/ckeditor5/engine/conversion/view-to-model-converters.js';
 
 /**
  * Writes the contents of the {@link engine.model.Document Document} to an HTML-like string.
@@ -74,7 +74,7 @@ export function setData( document, data, options = {} ) {
 
 	const mapper = new Mapper();
 	let model, selection;
-	const parseResult = setData._parse( data, mapper );
+	const parseResult = setData._parse( data, document.schema, mapper );
 
 	if ( parseResult.model ) {
 		model = parseResult.model;
@@ -185,7 +185,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  * @returns {engine.model.Element|engine.model.Text|engine.model.DocumentFragment|Object} Returns parsed model node or
  * object with two fields `model` and `selection` when selection ranges were included in data to parse.
  */
-export function parse( data, mapper = new Mapper() ) {
+export function parse( data, schema, mapper = new Mapper() ) {
 	// Parse data to view using view utils.
 	const view = viewParse( data );
 
@@ -202,9 +202,9 @@ export function parse( data, mapper = new Mapper() ) {
 	viewDocumentFragment = viewDocumentFragment.parent ? viewDocumentFragment.parent : viewDocumentFragment;
 
 	// Setup view -> model converter.
-	const viewToModel = new ViewConversionDispatcher( { mapper } );
+	const viewToModel = new ViewConversionDispatcher( { mapper, schema } );
 
-	viewToModel.on( 'text', convertToModelText() );
+	viewToModel.on( 'text', convertText() );
 	viewToModel.on( 'element:model-text', convertToModelTextWithAttributes(), null, 9999 );
 	viewToModel.on( 'element', convertToModelElement(), null, 9999 );
 	viewToModel.on( 'documentFragment', convertToModelFragment(), null, 9999 );
@@ -231,21 +231,17 @@ export function parse( data, mapper = new Mapper() ) {
 
 // -- converters view -> model -----------------------------------------------------
 
-function convertToModelFragment() {
-	return ( evt, data, consumable, conversionApi ) => {
-		// Second argument in `consumable.test` is discarded for ViewDocumentFragment but is needed for ViewElement.
-		if ( !data.output && consumable.test( data.input, { name: true } ) ) {
-			const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
-
-			data.output = new ModelDocumentFragment( modelWriter.normalizeNodes( convertedChildren ) );
-
-			conversionApi.mapper.bindElements( data.output, data.input );
-		}
-	};
-}
-
 function convertToModelElement() {
 	return ( evt, data, consumable, conversionApi ) => {
+		const schemaQuery = {
+			name: data.input.name,
+			inside: data.context
+		};
+
+		if ( !conversionApi.schema.check( schemaQuery ) ) {
+			throw new Error( `Conversion error - element ${ schemaQuery.name } not allowed in specified context.` );
+		}
+
 		if ( consumable.consume( data.input, { name: true } ) ) {
 			data.output = new ModelElement( data.input.name, data.input.getAttributes() );
 
@@ -258,18 +254,21 @@ function convertToModelElement() {
 	};
 }
 
-function convertToModelText() {
-	return ( evt, data, consumable ) => {
-		if ( consumable.consume( data.input ) ) {
-			data.output = new ModelText( data.input.data );
-		}
-	};
-}
-
 function convertToModelTextWithAttributes() {
-	return ( evt, data, consumable ) => {
-		if ( consumable.consume( data.input, { name: true } ) ) {
-			data.output = new ModelText( data.input.getChild( 0 ).data, data.input.getAttributes() );
+	return ( evt, data, consumable, conversionApi ) => {
+		const schemaQuery = {
+			name: '$text',
+			inside: data.context
+		};
+
+		if ( !conversionApi.schema.check( schemaQuery ) ) {
+			throw new Error( `Conversion error - element ${ schemaQuery.name } not allowed in specified context.` );
+		}
+
+		if ( conversionApi.schema.check( schemaQuery ) ) {
+			if ( consumable.consume( data.input, { name: true } ) ) {
+				data.output = new ModelText( data.input.getChild( 0 ).data, data.input.getAttributes() );
+			}
 		}
 	};
 }
