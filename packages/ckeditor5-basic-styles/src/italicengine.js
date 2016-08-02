@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../feature.js';
+import Feature from '../core/feature.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
-import AttributeCommand from '../command/attributecommand.js';
+import AttributeCommand from '../core/command/attributecommand.js';
 
 const ITALIC = 'italic';
 
@@ -17,7 +17,7 @@ const ITALIC = 'italic';
  * as an`<em>` element.
  *
  * @memberOf basic-styles
- * @extends ckeditor5.Feature
+ * @extends core.Feature
  */
 export default class ItalicEngine extends Feature {
 	/**
