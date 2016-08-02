@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
+import ModelTestEditor from '/tests/core/_utils/modeltesteditor.js';
 import HeadingsCommand from '/ckeditor5/headings/headingscommand.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import { setData, getData } from '/tests/engine/_utils/model.js';

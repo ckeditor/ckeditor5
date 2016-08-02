@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../feature.js';
+import Feature from '../core/feature.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
 import Paragraph from '../paragraph/paragraph.js';
@@ -21,7 +21,7 @@ const formats = [
  * This class represents the engine part of the headings feature.
  *
  * @memberOf headings
- * @extends ckeditor5.Feature
+ * @extends core.Feature
  */
 export default class HeadingsEngine extends Feature {
 	/**
