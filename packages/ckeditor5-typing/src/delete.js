@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../feature.js';
+import Feature from '../core/feature.js';
 import DeleteCommand from './deletecommand.js';
 import DeleteObserver from './deleteobserver.js';
 
@@ -11,7 +11,7 @@ import DeleteObserver from './deleteobserver.js';
  * The delete and backspace feature. Handles the <kbd>Delete</kbd> and <kbd>Backspace</kbd> keys in the editor.
  *
  * @memberOf typing
- * @extends ckeditor5.Feature
+ * @extends core.Feature
  */
 export default class Delete extends Feature {
 	init() {

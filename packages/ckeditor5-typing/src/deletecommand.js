@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Command from '../command/command.js';
+import Command from '../core/command/command.js';
 import Selection from '../engine/model/selection.js';
 import ChangeBuffer from './changebuffer.js';
 import count from '../utils/count.js';
@@ -13,13 +13,13 @@ import count from '../utils/count.js';
  * <kbd>Backspace</kbd> keys.
  *
  * @member typing
- * @extends ckeditor5.command.Command
+ * @extends core.command.Command
  */
 export default class DeleteCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {ckeditor5.Editor} editor
+	 * @param {core.editor.Editor} editor
 	 * @param {'forward'|'backward'} direction The directionality of the delete describing in what direction it
 	 * should consume the content when the selection is collapsed.
 	 */

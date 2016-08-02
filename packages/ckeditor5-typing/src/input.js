@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../feature.js';
+import Feature from '../core/feature.js';
 import ChangeBuffer from './changebuffer.js';
 import ModelPosition from '../engine/model/position.js';
 import ModelRange from '../engine/model/range.js';
@@ -17,7 +17,7 @@ import { getCode } from '../utils/keyboard.js';
  * Handles text input coming from the keyboard or other input methods.
  *
  * @memberOf typing
- * @extends ckeditor5.Feature
+ * @extends core.Feature
  */
 export default class Input extends Feature {
 	/**

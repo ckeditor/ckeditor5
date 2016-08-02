@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../feature.js';
+import Feature from '../core/feature.js';
 import Input from './input';
 import Delete from './delete';
 
@@ -11,7 +11,7 @@ import Delete from './delete';
  * The typing feature. Handles typing.
  *
  * @memberOf typing
- * @extends ckeditor5.Feature
+ * @extends core.Feature
  */
 export default class Typing extends Feature {
 	static get requires() {
