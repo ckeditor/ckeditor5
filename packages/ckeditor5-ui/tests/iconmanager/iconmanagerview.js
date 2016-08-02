@@ -18,7 +18,7 @@ describe( 'IconManagerView', () => {
 	beforeEach( () => {
 		view = new IconManagerView();
 		model = new Model( {
-			sprite: 'foo'
+			sprite: '<symbol><title>foo</title></symbol>'
 		} );
 
 		return new IconManager( model, view ).init();
@@ -26,16 +26,14 @@ describe( 'IconManagerView', () => {
 
 	describe( 'constructor', () => {
 		it( 'creates element from template', () => {
-			expect( view.element.tagName ).to.be.equal( 'svg' );
-			expect( view.element.getAttribute( 'class' ) ).to.be.equal( 'ck-icon-manager-sprite' );
+			expect( view.element.tagName ).to.equal( 'svg' );
+			expect( view.element.getAttribute( 'class' ) ).to.equal( 'ck-icon-manager-sprite' );
 		} );
 	} );
 
 	describe( 'init', () => {
 		it( 'initializes the sprite', () => {
-			view.init();
-
-			expect( view.element.innerHTML ).to.be.equal( 'foo' );
+			expect( view.element.innerHTML ).to.equal( '<symbol><title>foo</title></symbol>' );
 		} );
 	} );
 } );

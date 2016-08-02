@@ -34,7 +34,23 @@ export default class IconManagerView extends View {
 	}
 
 	init() {
-		this.element.innerHTML = this.model.sprite;
+		// Note: In MS Edge it's not enough to set:
+		//
+		//		this.element.innerHTML = this.model.sprite;
+		//
+		// because for some reason the browser won't parse the symbols string
+		// properly as svg content. Instead, an explicit parsing is needed (#55).
+		const tmp = document.createElement( 'div' );
+
+		tmp.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg">${ this.model.sprite }</svg>`;
+
+		const symbols = tmp.firstChild.childNodes;
+
+		// Pick symbols from the tmp and put them into icon manager.
+		// Note: MS Edge does not support forEach or Symbol.iterator for NodeList.
+		for ( let i = 0; i < symbols.length; ++i ) {
+			this.element.appendChild( document.importNode( symbols[ i ], true ) );
+		}
 
 		return super.init();
 	}
