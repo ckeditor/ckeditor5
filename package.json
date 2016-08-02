@@ -34,6 +34,7 @@
     "benderjs-promise": "^0.1.0",
     "benderjs-sinon": "^0.3.0",
     "chai": "^3.4.0",
+    "ckeditor5-dev-bundler-rollup": "ckeditor/ckeditor5-dev-bundler-rollup",
     "ckeditor5-dev-env": "ckeditor/ckeditor5-dev-env",
     "ckeditor5-dev-lint": "ckeditor/ckeditor5-dev-lint",
     "ckeditor5-dev-utils": "ckeditor/ckeditor5-dev-utils",
