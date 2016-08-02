@@ -52,7 +52,8 @@ export function insert( position, nodes ) {
 	const parent = position.parent;
 
 	// Insertion might be in a text node, we should split it if that's the case.
-	let index = _splitNodeAtPosition( position );
+	_splitNodeAtPosition( position );
+	const index = position.index;
 
 	// Insert nodes at given index. After splitting we have a proper index and insertion is between nodes,
 	// using basic `Element` API.
@@ -86,15 +87,15 @@ export function remove( range ) {
 	const parent = range.start.parent;
 
 	// Range may be inside text nodes, we have to split them if that's the case.
-	const indexStart = _splitNodeAtPosition( range.start );
-	const indexEnd = _splitNodeAtPosition( range.end );
+	_splitNodeAtPosition( range.start );
+	_splitNodeAtPosition( range.end );
 
 	// Remove the text nodes using basic `Element` API.
-	const removed = parent.removeChildren( indexStart, indexEnd - indexStart );
+	const removed = parent.removeChildren( range.start.index, range.end.index - range.start.index );
 
 	// Merge text nodes, if possible. After some nodes were removed, node before and after removed range will be
 	// touching at the position equal to the removed range beginning. We check merging possibility there.
-	_mergeNodesAtIndex( parent, indexStart );
+	_mergeNodesAtIndex( parent, range.start.index );
 
 	return removed;
 }
@@ -137,7 +138,7 @@ export function move( sourceRange, targetPosition ) {
 export function setAttribute( range, key, value ) {
 	// Range might start or end in text nodes, so we have to split them.
 	_splitNodeAtPosition( range.start );
-	const indexEnd = _splitNodeAtPosition( range.end );
+	_splitNodeAtPosition( range.end );
 
 	// Iterate over all items in the range.
 	for ( let item of range.getItems() ) {
@@ -157,7 +158,7 @@ export function setAttribute( range, key, value ) {
 	}
 
 	// Try to merge last changed node with it's previous sibling (not covered by the loop above).
-	_mergeNodesAtIndex( range.end.parent, indexEnd );
+	_mergeNodesAtIndex( range.end.parent, range.end.index );
 }
 
 /**
@@ -251,7 +252,6 @@ function _mergeNodesAtIndex( element, index ) {
  * @ignore
  * @private
  * @param {engine.model.Position} position Position at which node should be split.
- * @returns {Number} Index, in position's parent element, between split nodes.
  */
 function _splitNodeAtPosition( position ) {
 	const textNode = position.textNode;
@@ -267,11 +267,7 @@ function _splitNodeAtPosition( position ) {
 		const secondPart = new Text( textNode.data.substr( offsetDiff ), textNode.getAttributes() );
 
 		element.insertChildren( index, [ firstPart, secondPart ] );
-
-		return index + 1;
 	}
-
-	return element.offsetToIndex( position.offset );
 }
 
 /**
