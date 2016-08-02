@@ -55,6 +55,15 @@ describe( 'writer', () => {
 			);
 		} );
 
+		it( 'should support unicode', () => {
+			test(
+				'<container:p>நி{லை}க்கு</container:p>',
+				'<container:p>நி{}கு</container:p>',
+				'<container:p>நிக்கு</container:p>',
+				'<container:p>நி{லை}கு</container:p>'
+			);
+		} );
+
 		it( 'should move parts of nodes', () => {
 			test(
 				'<container:p>f{oo<attribute:b:10>ba}r</attribute:b:10></container:p>',

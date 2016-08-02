@@ -85,6 +85,15 @@ describe( 'insertText', () => {
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div>foobar</div>' );
 	} );
+
+	it( 'should support unicode', () => {
+		modelRoot.appendChildren( new ModelText( 'நிலைக்கு' ) );
+		dispatcher.on( 'insert:$text', insertText() );
+
+		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div>நிலைக்கு</div>' );
+	} );
 } );
 
 describe( 'insertElement', () => {
@@ -271,6 +280,28 @@ describe( 'wrap/unwrap', () => {
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p><a href="http://foobar.com">xfoox</a></p></div>' );
 	} );
+
+	it( 'should support unicode', () => {
+		const modelElement = new ModelElement( 'paragraph', null, [ 'நி', new ModelText( 'லைக்', { bold: true } ), 'கு' ] );
+		const viewP = new ViewContainerElement( 'p' );
+		const viewB = new ViewAttributeElement( 'b' );
+
+		modelRoot.appendChildren( modelElement );
+		dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
+		dispatcher.on( 'insert:$text', insertText() );
+		dispatcher.on( 'addAttribute:bold', wrap( viewB ) );
+		dispatcher.on( 'removeAttribute:bold', unwrap( viewB ) );
+
+		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><p>நி<b>லைக்</b>கு</p></div>' );
+
+		modelWriter.removeAttribute( ModelRange.createFromElement( modelElement ), 'bold' );
+
+		dispatcher.convertAttribute( 'removeAttribute', ModelRange.createFromElement( modelElement ), 'bold', true, null );
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><p>நிலைக்கு</p></div>' );
+	} );
 } );
 
 describe( 'move', () => {
@@ -301,6 +332,30 @@ describe( 'move', () => {
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><div>bar</div><div>foo<img></img>xxyy</div></div>' );
 	} );
+
+	it( 'should support unicode', () => {
+		const modelDivA = new ModelElement( 'div', null, 'நிலைக்கு' );
+		const modelDivB = new ModelElement( 'div' );
+
+		modelRoot.appendChildren( [ modelDivA, modelDivB ] );
+		dispatcher.on( 'insert:div', insertElement( new ViewContainerElement( 'div' ) ) );
+		dispatcher.on( 'insert:$text', insertText() );
+		dispatcher.on( 'move', move() );
+
+		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+
+		modelWriter.move(
+			ModelRange.createFromParentsAndOffsets( modelDivA, 2, modelDivA, 6 ),
+			ModelPosition.createAt( modelDivB, 'end' )
+		);
+
+		dispatcher.convertMove(
+			ModelPosition.createFromParentAndOffset( modelDivA, 2 ),
+			ModelRange.createFromParentsAndOffsets( modelDivB, 0, modelDivB, 4 )
+		);
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><div>நிகு</div><div>லைக்</div></div>' );
+	} );
 } );
 
 describe( 'remove', () => {
@@ -328,5 +383,28 @@ describe( 'remove', () => {
 		);
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><div>bar</div></div>' );
+	} );
+
+	it( 'should support unicode', () => {
+		const modelDiv = new ModelElement( 'div', null, 'நிலைக்கு' );
+
+		modelRoot.appendChildren( modelDiv );
+		dispatcher.on( 'insert:div', insertElement( new ViewContainerElement( 'div' ) ) );
+		dispatcher.on( 'insert:$text', insertText() );
+		dispatcher.on( 'remove', remove() );
+
+		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+
+		modelWriter.move(
+			ModelRange.createFromParentsAndOffsets( modelDiv, 0, modelDiv, 6 ),
+			ModelPosition.createAt( modelDoc.graveyard, 'end' )
+		);
+
+		dispatcher.convertRemove(
+			ModelPosition.createFromParentAndOffset( modelDiv, 0 ),
+			ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 6 )
+		);
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><div>கு</div></div>' );
 	} );
 } );

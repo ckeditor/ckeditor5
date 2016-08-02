@@ -138,6 +138,14 @@ describe( 'writer', () => {
 			);
 		} );
 
+		it( 'should insert unicode text into unicode text', () => {
+			test(
+				'நி{}க்கு',
+				[ 'லை' ],
+				'நி{லை}க்கு'
+			);
+		} );
+
 		it( 'should throw when inserting Element', () => {
 			const element = new Element( 'b' );
 			const container = new ContainerElement( 'p' );
