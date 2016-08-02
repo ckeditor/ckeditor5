@@ -14,7 +14,7 @@ import StickyToolbarView from '/ckeditor5/ui/toolbar/sticky/stickytoolbarview.js
 import EditableUI from '/ckeditor5/ui/editableui/editableui.js';
 import InlineEditableUIView from '/ckeditor5/ui/editableui/inline/inlineeditableuiview.js';
 
-import ClassicTestEditor from '/tests/ckeditor5/_utils/classictesteditor.js';
+import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
 
 describe( 'ClassicEditorUI', () => {
 	let editorElement, editor, editorUI;

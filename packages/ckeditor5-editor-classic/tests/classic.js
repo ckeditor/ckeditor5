@@ -12,7 +12,7 @@ import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor
 
 import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 
-import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import testUtils from '/tests/core/_utils/utils.js';
 import count from '/ckeditor5/utils/count.js';
 
 testUtils.createSinonSandbox();
