@@ -25,9 +25,6 @@ import viewWriter from '/ckeditor5/engine/view/writer.js';
 import { parse as viewParse, stringify as viewStringify } from '/tests/engine/_utils/view.js';
 import { convertRangeSelection, convertCollapsedSelection } from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
 import { insertText } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
-import { convertText as convertToModelText } from '/ckeditor5/engine/conversion/view-to-model-converters.js';
-
-let mapper;
 
 /**
  * Writes the contents of the {@link engine.model.Document Document} to an HTML-like string.
@@ -75,8 +72,9 @@ export function setData( document, data, options = {} ) {
 		throw new TypeError( 'Document needs to be an instance of engine.model.Document.' );
 	}
 
+	const mapper = new Mapper();
 	let model, selection;
-	const parseResult = setData._parse( data, document.schema );
+	const parseResult = setData._parse( data, mapper );
 
 	if ( parseResult.model ) {
 		model = parseResult.model;
@@ -129,7 +127,7 @@ setData._parse = parse;
  * @returns {String} HTML-like string representing the model.
  */
 export function stringify( node, selectionOrPositionOrRange = null ) {
-	mapper = new Mapper();
+	const mapper = new Mapper();
 
 	let selection, range;
 
@@ -184,13 +182,10 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  * Parses HTML-like string and returns model {@link engine.model.RootElement rootElement}.
  *
  * @param {String} data HTML-like string to be parsed.
- * @param {engine.model.Schema} schema Document schema.
  * @returns {engine.model.Element|engine.model.Text|engine.model.DocumentFragment|Object} Returns parsed model node or
  * object with two fields `model` and `selection` when selection ranges were included in data to parse.
  */
-export function parse( data, schema ) {
-	mapper = new Mapper();
-
+export function parse( data, mapper = new Mapper() ) {
 	// Parse data to view using view utils.
 	const view = viewParse( data );
 
@@ -207,7 +202,7 @@ export function parse( data, schema ) {
 	viewDocumentFragment = viewDocumentFragment.parent ? viewDocumentFragment.parent : viewDocumentFragment;
 
 	// Setup view -> model converter.
-	const viewToModel = new ViewConversionDispatcher( { schema } );
+	const viewToModel = new ViewConversionDispatcher( { mapper } );
 
 	viewToModel.on( 'text', convertToModelText() );
 	viewToModel.on( 'element:model-text', convertToModelTextWithAttributes(), null, 9999 );
@@ -244,7 +239,7 @@ function convertToModelFragment() {
 
 			data.output = new ModelDocumentFragment( modelWriter.normalizeNodes( convertedChildren ) );
 
-			mapper.bindElements( data.output, data.input );
+			conversionApi.mapper.bindElements( data.output, data.input );
 		}
 	};
 }
@@ -254,11 +249,19 @@ function convertToModelElement() {
 		if ( consumable.consume( data.input, { name: true } ) ) {
 			data.output = new ModelElement( data.input.name, data.input.getAttributes() );
 
-			mapper.bindElements( data.output, data.input );
+			conversionApi.mapper.bindElements( data.output, data.input );
 
 			data.context.push( data.output );
 			data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
 			data.context.pop();
+		}
+	};
+}
+
+function convertToModelText() {
+	return ( evt, data, consumable ) => {
+		if ( consumable.consume( data.input ) ) {
+			data.output = new ModelText( data.input.data );
 		}
 	};
 }
