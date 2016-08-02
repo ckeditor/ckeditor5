@@ -21,7 +21,7 @@ export default class BoxedEditorUI extends EditorUI {
 	/**
 	 * Creates a boxed editor UI instance.
 	 *
-	 * @param {ckeditor5.Editor} editor
+	 * @param {core.editor.Editor} editor
 	 */
 	constructor( editor ) {
 		super( editor );
@@ -32,7 +32,7 @@ export default class BoxedEditorUI extends EditorUI {
 		const config = editor.config;
 
 		/**
-		 * The editor's width. Defaults to {@link ckeditor5.editor.config.ui.width}.
+		 * The editor's width. Defaults to {@link core.editor.config.ui.width}.
 		 *
 		 * Note: a specific creator that was used must support this setting.
 		 *
@@ -42,7 +42,7 @@ export default class BoxedEditorUI extends EditorUI {
 		this.set( 'width', config.get( 'ui.width' ) );
 
 		/**
-		 * The editor's height. Defaults to {@link ckeditor5.editor.config.ui.height}.
+		 * The editor's height. Defaults to {@link core.editor.config.ui.height}.
 		 *
 		 * Note: a specific creator that was used must support this setting.
 		 *

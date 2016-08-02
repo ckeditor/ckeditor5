@@ -18,7 +18,7 @@ export default class EditorUIView extends View {
 	/**
 	 * Creates an instance of the editor UI view class.
 	 *
-	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
+	 * @param {utils.Locale} [locale] The {@link core.editor.Editor#locale editor's locale} instance.
 	 */
 	constructor( locale ) {
 		super( locale );

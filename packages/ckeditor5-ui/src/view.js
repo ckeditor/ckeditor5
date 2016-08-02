@@ -21,7 +21,7 @@ export default class View {
 	/**
 	 * Creates an instance of the {@link ui.View} class.
 	 *
-	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
+	 * @param {utils.Locale} [locale] The {@link core.editor.Editor#locale editor's locale} instance.
 	 */
 	constructor( locale ) {
 		/**
@@ -105,6 +105,9 @@ export default class View {
 		return ( this._element = this.template.render() );
 	}
 
+	/**
+	 * @type {HTMLElement}
+	 */
 	set element( el ) {
 		this._element = el;
 	}

@@ -28,14 +28,14 @@ export default class EditorUI extends Controller {
 	/**
 	 * Creates an instance of {@link ui.editorUI.EditorUI} class.
 	 *
-	 * @param {ckeditor5.Editor} editor
+	 * @param {core.editor.Editor} editor
 	 */
 	constructor( editor ) {
 		super();
 
 		/**
 		 * @readonly
-		 * @member {ckeditor5.Editor} ui.editorUI.EditorUI#editor
+		 * @member {core.editor.Editor} ui.editorUI.EditorUI#editor
 		 */
 		this.editor = editor;
 

@@ -23,7 +23,7 @@ export default class ControllerCollection extends Collection {
 	 * manage list–like components. See {@link ui.ControllerCollection#bind} to learn more.
 	 *
 	 * @param {String} name Name of the collection.
-	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
+	 * @param {utils.Locale} [locale] The {@link core.editor.Editor#locale editor's locale} instance.
 	 */
 	constructor( name, locale ) {
 		super();
@@ -187,7 +187,7 @@ function defaultControllerFactory( ControllerClass, ViewClass, idProperty ) {
 	// Returns a controller instance (and its view) for given model and class names.
 	//
 	// @param {ui.Model} model A model of the controller.
-	// @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
+	// @param {utils.Locale} [locale] The {@link core.editor.Editor#locale editor's locale} instance.
 	// @returns {ui.Controller}
 	return ( model, locale ) => {
 		return flagController( new ControllerClass( model, new ViewClass( locale ) ), idProperty );
@@ -203,7 +203,7 @@ function customControllerFactory( callback, idProperty ) {
 	// Returns a controller instance (and its view) produced by the custom callback.
 	//
 	// @param {ui.Model} model A model of the controller.
-	// @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
+	// @param {utils.Locale} [locale] The {@link core.editor.Editor#locale editor's locale} instance.
 	// @returns {ui.Controller}
 	return ( ...args ) => {
 		return flagController( callback( ...args ), idProperty );

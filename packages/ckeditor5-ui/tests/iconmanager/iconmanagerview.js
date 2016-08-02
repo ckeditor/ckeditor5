@@ -5,7 +5,7 @@
 
 /* bender-tags: ui, iconmanager */
 
-import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import testUtils from '/tests/core/_utils/utils.js';
 import IconManager from '/ckeditor5/ui/iconmanager/iconmanager.js';
 import IconManagerView from '/ckeditor5/ui/iconmanager/iconmanagerview.js';
 import Model from '/ckeditor5/ui/model.js';
