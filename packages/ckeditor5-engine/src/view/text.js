@@ -28,7 +28,7 @@ export default class Text extends Node {
 		 * @private
 		 * @member {String} engine.view.Text#_data
 		 */
-		this._data = data;
+		this._data = data ? data.normalize() : '';
 	}
 
 	/**
@@ -52,7 +52,7 @@ export default class Text extends Node {
 	set data( data ) {
 		this._fireChange( 'text', this );
 
-		this._data = data;
+		this._data = data ? data.normalize() : '';
 	}
 
 	/**

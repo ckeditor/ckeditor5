@@ -33,7 +33,7 @@ export default class Text extends Node {
 		 *
 		 * @type {String}
 		 */
-		this.data = data || '';
+		this.data = data ? data.normalize() : '';
 	}
 
 	/**
