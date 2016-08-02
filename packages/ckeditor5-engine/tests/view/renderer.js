@@ -14,7 +14,7 @@ import Renderer from '/ckeditor5/engine/view/renderer.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { parse } from '/tests/engine/_utils/view.js';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '/ckeditor5/engine/view/filler.js';
-import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import testUtils from '/tests/core/_utils/utils.js';
 import createElement from '/ckeditor5/utils/dom/createelement.js';
 
 testUtils.createSinonSandbox();

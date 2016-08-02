@@ -12,7 +12,7 @@ import Text from '/ckeditor5/engine/model/text.js';
 import TextProxy from '/ckeditor5/engine/model/textproxy.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import testUtils from '/tests/core/_utils/utils.js';
 import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
 
 testUtils.createSinonSandbox();

@@ -14,7 +14,7 @@ import KeyObserver from '/ckeditor5/engine/view/observer/keyobserver.js';
 import Renderer from '/ckeditor5/engine/view/renderer.js';
 import ViewRange from '/ckeditor5/engine/view/range.js';
 import DomConverter from '/ckeditor5/engine/view/domconverter.js';
-import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import testUtils from '/tests/core/_utils/utils.js';
 import count from '/ckeditor5/utils/count.js';
 import log from '/ckeditor5/utils/log.js';
 

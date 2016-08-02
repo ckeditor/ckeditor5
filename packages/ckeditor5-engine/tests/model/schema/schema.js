@@ -11,7 +11,7 @@ import Document from '/ckeditor5/engine/model/document.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import testUtils from '/tests/core/_utils/utils.js';
 
 testUtils.createSinonSandbox();
 
