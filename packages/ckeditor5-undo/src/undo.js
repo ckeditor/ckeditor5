@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../feature.js';
+import Feature from '../core/feature.js';
 import UndoEngine from './undoengine.js';
 import Model from '../ui/model.js';
 import Button from '../ui/button/button.js';
@@ -115,7 +115,7 @@ import ButtonView from '../ui/button/buttonview.js';
  * simultaneously updating them. Then deltas are applied to the document and removed from history (fig. 5).
  *
  * @memberOf undo
- * @extends ckeditor5.Feature
+ * @extends core.Feature
  */
 export default class Undo extends Feature {
 	/**

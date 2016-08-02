@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import ClassicTestEditor from '/tests/ckeditor5/_utils/classictesteditor.js';
+import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
 import Undo from '/ckeditor5/undo/undo.js';
 import UndoEngine from '/ckeditor5/undo/undoengine.js';
 import ButtonController from '/ckeditor5/ui/button/button.js';
-import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import testUtils from '/tests/core/_utils/utils.js';
 import { keyCodes } from '/ckeditor5/utils/keyboard.js';
 
 testUtils.createSinonSandbox();

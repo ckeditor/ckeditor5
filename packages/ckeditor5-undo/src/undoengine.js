@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../feature.js';
+import Feature from '../core/feature.js';
 import UndoCommand from './undocommand.js';
 import RedoCommand from './redocommand.js';
 
@@ -14,7 +14,7 @@ import RedoCommand from './redocommand.js';
  * the {@link engine.model.Document#batch Batch API}.
  *
  * @memberOf undo
- * @extends ckeditor5.Feature
+ * @extends core.Feature
  */
 export default class UndoEngine extends Feature {
 	/**
