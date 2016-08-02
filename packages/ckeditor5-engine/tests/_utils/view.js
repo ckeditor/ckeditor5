@@ -125,6 +125,11 @@ setData._parse = parse;
  *
  *		stringify( p, selection ); // '<p><b>f{ooba}r</b></p>'
  *
+ * NOTE:
+ * Characters representing range placed inside text are customizable by `characterForSelectionInText` option.
+ * It is mainly needed when view stringify function is used by model stringify util, then range
+ * is represented with `[` and `]`.
+ *
  * Multiple ranges are supported:
  *
  *		const text = new Text( 'foobar' );
@@ -175,6 +180,9 @@ setData._parse = parse;
  * (`<span:12>`, `<b:10>`).
  * @param {Boolean} [options.ignoreRoot=false] When set to `true` root's element opening and closing will not be printed.
  * Mainly used by `getData` function to ignore {@link engine.view.Document Document's} root element.
+ * @param {Array<String>} [options.characterForSelectionInText=['{','}']] At default range placed inside text is
+ * represented with `{` and `}` characters, but when stringify function is used by model stringify util then characters
+ * are changed to `[` and `]`.
  * @returns {String} HTML-like string representing the view.
  */
 export function stringify( node, selectionOrPositionOrRange = null, options = {} ) {
@@ -188,6 +196,10 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
 		selection.addRange( selectionOrPositionOrRange );
 	} else {
 		selection = selectionOrPositionOrRange;
+	}
+
+	if ( !options.characterForSelectionInText ) {
+		options.characterForSelectionInText = [ TEXT_RANGE_START_TOKEN, TEXT_RANGE_END_TOKEN ];
 	}
 
 	const viewStringify = new ViewStringify( node, selection, options );
@@ -520,6 +532,7 @@ class ViewStringify {
 	 * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed.
 	 * @param {Boolean} [options.ignoreRoot=false] When set to `true` root's element opening and closing tag will not
 	 * be outputted.
+	 * @param {Array<String>} [options.characterForSelectionInText = [ '{', '}' ]
 	 */
 	constructor( root, selection = null, options = {} ) {
 		this.root = root;
@@ -533,6 +546,7 @@ class ViewStringify {
 		this.showType = !!options.showType;
 		this.showPriority = !!options.showPriority;
 		this.ignoreRoot = !!options.ignoreRoot;
+		this.characterForSelectionInText = options.characterForSelectionInText;
 	}
 
 	/**
@@ -646,14 +660,14 @@ class ViewStringify {
 
 			if ( start.parent == node && start.offset >= 0 && start.offset <= length ) {
 				if ( range.isCollapsed ) {
-					result[ end.offset ].collapsed += TEXT_RANGE_START_TOKEN + TEXT_RANGE_END_TOKEN;
+					result[ end.offset ].collapsed += this.characterForSelectionInText.join( '' );
 				} else {
-					result[ start.offset ].start += TEXT_RANGE_START_TOKEN;
+					result[ start.offset ].start += this.characterForSelectionInText[ 0 ];
 				}
 			}
 
 			if ( end.parent == node && end.offset >= 0 && end.offset <= length && !range.isCollapsed  ) {
-				result[ end.offset ].end += TEXT_RANGE_END_TOKEN;
+				result[ end.offset ].end += this.characterForSelectionInText[ 1 ];
 			}
 		}
 

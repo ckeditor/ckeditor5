@@ -23,10 +23,7 @@ import ViewText from '/ckeditor5/engine/view/text.js';
 import viewWriter from '/ckeditor5/engine/view/writer.js';
 
 import { parse as viewParse, stringify as viewStringify } from '/tests/engine/_utils/view.js';
-import {
-	convertRangeSelection,
-	convertCollapsedSelection
-} from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
+import { convertRangeSelection, convertCollapsedSelection } from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
 import { convertText, convertToModelFragment } from '/ckeditor5/engine/conversion/view-to-model-converters.js';
 
 // Test utils uses `<$text foo="bar">Lorem ipsum</$text>` notation to create text with attributes, but `$text` is not
@@ -194,7 +191,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	mapper.clearBindings();
 
 	// Parse view to data string.
-	let data = viewStringify( viewDocumentFragment, viewSelection );
+	let data = viewStringify( viewDocumentFragment, viewSelection, { characterForSelectionInText: [ '[', ']' ] } );
 
 	// Replace valid XML text element name to `$text`.
 	return data.replace( new RegExp( VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT, 'g' ), DATA_STRING_TEXT_WITH_ATTRIBUTES_ELEMENT );
