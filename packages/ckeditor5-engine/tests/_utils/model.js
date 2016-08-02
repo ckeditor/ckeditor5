@@ -23,7 +23,10 @@ import ViewText from '/ckeditor5/engine/view/text.js';
 import viewWriter from '/ckeditor5/engine/view/writer.js';
 
 import { parse as viewParse, stringify as viewStringify } from '/tests/engine/_utils/view.js';
-import { convertRangeSelection, convertCollapsedSelection } from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
+import {
+	convertRangeSelection,
+	convertCollapsedSelection
+} from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
 import { convertText, convertToModelFragment } from '/ckeditor5/engine/conversion/view-to-model-converters.js';
 
 // Test utils uses `<$text foo="bar">Lorem ipsum</$text>` notation to create text with attributes, but `$text` is not
@@ -33,6 +36,9 @@ const DATA_STRING_TEXT_WITH_ATTRIBUTES_ELEMENT = '$text';
 
 /**
  * Writes the contents of the {@link engine.model.Document Document} to an HTML-like string.
+ *
+ * ** Note: ** {@link engine.model.Text text} node contains attributes will be represented as:
+ *        <$text attribute="value">Text data</$text>
  *
  * @param {engine.model.Document} document
  * @param {Object} [options]
@@ -61,8 +67,10 @@ getData._stringify = stringify;
  * Sets the contents of the {@link engine.model.Document Document} provided as HTML-like string.
  * It uses {@link engine.model.Document#enqueueChanges enqueueChanges} method.
  *
- * NOTE:
- * Remember to register elements in {@link engine.model.Document#schema document's schema} before inserting them.
+ * ** Note: ** Remember to register elements in {@link engine.model.Document#schema document's schema} before inserting them.
+ *
+ * ** Note: ** To create {@link engine.model.Text text} node witch containing attributes use:
+ *        <$text attribute="value">Text data</$text>
  *
  * @param {engine.model.Document} document
  * @param {String} data HTML-like string to write into Document.
@@ -77,29 +85,37 @@ export function setData( document, data, options = {} ) {
 		throw new TypeError( 'Document needs to be an instance of engine.model.Document.' );
 	}
 
+	let modelDocumentFragment, selection;
 	const mapper = new Mapper();
-	let model, selection;
-	const parseResult = setData._parse( data, document.schema, mapper );
-
-	if ( parseResult.model ) {
-		model = parseResult.model;
-		selection = parseResult.selection;
-	} else {
-		model = parseResult;
-	}
-
-	// Save to model.
 	const modelRoot = document.getRoot( options.rootName || 'main' );
 
+	// Parse data string to model.
+	const parsedResult = setData._parse( data, document.schema, mapper );
+
+	// Retrieve DocumentFragment and Selection from parsed model.
+	if ( parsedResult.model ) {
+		modelDocumentFragment = parsedResult.model;
+		selection = parsedResult.selection;
+	} else {
+		modelDocumentFragment = parsedResult;
+	}
+
 	document.enqueueChanges( () => {
+		// Replace existing model in document by new one.
 		document.batch( options.batchType || 'transparent' )
-			.remove( Range.createIn( modelRoot ) )
-			.insert( Position.createAt( modelRoot, 0 ), model );
+			.remove( Range.createFromElement( modelRoot ) )
+			.insert( Position.createAt( modelRoot, 0 ), modelDocumentFragment );
 
 		// Clear selection
 		document.selection.clearAttributes();
 		document.selection.removeAllRanges();
 
+		// Set attributes to selection if specified.
+		if ( options.selectionAttributes ) {
+			document.selection.setAttributesTo( options.selectionAttributes );
+		}
+
+		// Convert view selection to model if selection is defined.
 		if ( selection ) {
 			const ranges = [];
 
@@ -108,11 +124,6 @@ export function setData( document, data, options = {} ) {
 			}
 
 			document.selection.setRanges( ranges, selection.isBackward );
-
-			if ( options.selectionAttributes ) {
-				// Something overwrites selection attributes ??!!
-				document.selection.setAttributesTo( options.selectionAttributes );
-			}
 		}
 	} );
 }
@@ -122,6 +133,9 @@ setData._parse = parse;
 
 /**
  * Converts model nodes to HTML-like string representation.
+ *
+ * ** Note: ** {@link engine.model.Text text} node contains attributes will be represented as:
+ *        <$text attribute="value">Text data</$text>
  *
  * @param {engine.model.RootElement|engine.model.Element|engine.model.Text|
  * engine.model.DocumentFragment} node Node to stringify.
@@ -151,6 +165,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 		}
 	}
 
+	// Get selection from passed selection or position or range if at least one is specified.
 	if ( selectionOrPositionOrRange instanceof ModelSelection ) {
 		selection = selectionOrPositionOrRange;
 	} else if ( selectionOrPositionOrRange instanceof Range ) {
@@ -178,7 +193,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	modelToView.convertSelection( selection );
 	mapper.clearBindings();
 
-	// Return parsed to data model.
+	// Parse view to data string.
 	let data = viewStringify( viewDocumentFragment, viewSelection );
 
 	// Replace valid XML text element name to `$text`.
@@ -188,9 +203,14 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 /**
  * Parses HTML-like string and returns model {@link engine.model.RootElement rootElement}.
  *
+ * ** Note: ** To create {@link engine.model.Text text} node witch containing attributes use:
+ *        <$text attribute="value">Text data</$text>
+ *
  * @param {String} data HTML-like string to be parsed.
- * @param {engine.model.schema} schema Schema instance for element validation.
- * @param {engine.model.mapper} [mapper=new Mapper()] Mapper instance to keep relation with selection.
+ * @param {engine.model.schema} schema Schema instance uses by converters for validation. Element not registered
+ * in schema won't be created.
+ * @param {engine.model.mapper} [mapper=new Mapper()] Mapper instance uses mainly by `setData` method to map position
+ * between {@link engine.view.document Document} and {@link engine.model.document Document}.
  * @returns {engine.model.Element|engine.model.Text|engine.model.DocumentFragment|Object} Returns parsed model node or
  * object with two fields `model` and `selection` when selection ranges were included in data to parse.
  */
@@ -199,16 +219,16 @@ export function parse( data, schema, mapper = new Mapper() ) {
 	data = data.replace( new RegExp( '\\' + DATA_STRING_TEXT_WITH_ATTRIBUTES_ELEMENT, 'g' ), VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT );
 
 	// Parse data to view using view utils.
-	const view = viewParse( data );
+	const parsedResult = viewParse( data );
 
 	// Retrieve DocumentFragment and Selection from parsed view.
 	let viewDocumentFragment, selection;
 
-	if ( view.view && view.selection ) {
-		viewDocumentFragment = view.view;
-		selection = view.selection;
+	if ( parsedResult.view && parsedResult.selection ) {
+		viewDocumentFragment = parsedResult.view;
+		selection = parsedResult.selection;
 	} else {
-		viewDocumentFragment = view;
+		viewDocumentFragment = parsedResult;
 	}
 
 	viewDocumentFragment = viewDocumentFragment.parent ? viewDocumentFragment.parent : viewDocumentFragment;
@@ -250,19 +270,21 @@ function convertToModelElement() {
 			inside: data.context
 		};
 
-		// `VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT` can not be validate because it won't be registered in schema.
-		if ( data.input.name !== VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT && !conversionApi.schema.check( schemaQuery ) ) {
-			throw new Error( `Conversion error - element ${ schemaQuery.name } not allowed in specified context.` );
-		}
+		// `VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT` is handled in specified way by `convertToModelTextWithAttributes`.
+		if ( data.input.name !== VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT ) {
+			if ( !conversionApi.schema.check( schemaQuery ) ) {
+				throw new Error( `Element '${ schemaQuery.name }' not allowed in context.` );
+			}
 
-		if ( consumable.consume( data.input, { name: true } ) ) {
-			data.output = new ModelElement( data.input.name, data.input.getAttributes() );
+			if ( consumable.consume( data.input, { name: true } ) ) {
+				data.output = new ModelElement( data.input.name, data.input.getAttributes() );
 
-			conversionApi.mapper.bindElements( data.output, data.input );
+				conversionApi.mapper.bindElements( data.output, data.input );
 
-			data.context.push( data.output );
-			data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
-			data.context.pop();
+				data.context.push( data.output );
+				data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
+				data.context.pop();
+			}
 		}
 	};
 }
@@ -275,7 +297,7 @@ function convertToModelTextWithAttributes() {
 		};
 
 		if ( !conversionApi.schema.check( schemaQuery ) ) {
-			throw new Error( `Conversion error - element ${ schemaQuery.name } not allowed in specified context.` );
+			throw new Error( `Element '${ schemaQuery.name }' not allowed in context.` );
 		}
 
 		if ( conversionApi.schema.check( schemaQuery ) ) {
