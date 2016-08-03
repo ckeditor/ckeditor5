@@ -76,7 +76,7 @@ describe( 'Document', () => {
 				() => {
 					doc.createRoot( '$root', 'rootName' );
 				}
-			).to.throw( CKEditorError, /document-createRoot-name-exists/ );
+			).to.throw( CKEditorError, /model-document-createRoot-name-exists/ );
 		} );
 	} );
 
@@ -93,7 +93,7 @@ describe( 'Document', () => {
 				() => {
 					doc.getRoot( 'root' );
 				}
-			).to.throw( CKEditorError, /document-getRoot-root-not-exist/ );
+			).to.throw( CKEditorError, /model-document-getRoot-root-not-exist/ );
 		} );
 	} );
 
@@ -147,7 +147,7 @@ describe( 'Document', () => {
 				() => {
 					doc.applyOperation( operation );
 				}
-			).to.throw( CKEditorError, /document-applyOperation-wrong-version/ );
+			).to.throw( CKEditorError, /model-document-applyOperation-wrong-version/ );
 		} );
 	} );
 

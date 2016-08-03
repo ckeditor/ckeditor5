@@ -97,7 +97,7 @@ describe( 'Renderer', () => {
 		it( 'should throw if the type is unknown', () => {
 			expect( () => {
 				renderer.markToSync( 'UNKNOWN', viewRoot );
-			} ).to.throw( CKEditorError, /^renderer-unknown-type/ );
+			} ).to.throw( CKEditorError, /^view-renderer-unknown-type/ );
 		} );
 	} );
 

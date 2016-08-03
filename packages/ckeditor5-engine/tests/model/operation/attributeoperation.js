@@ -296,7 +296,7 @@ describe( 'AttributeOperation', () => {
 					doc.version
 				)
 			) );
-		} ).to.throw( CKEditorError, /operation-attribute-wrong-old-value/ );
+		} ).to.throw( CKEditorError, /attribute-operation-wrong-old-value/ );
 	} );
 
 	it( 'should throw an error when one try to insert and the attribute already exists', () => {

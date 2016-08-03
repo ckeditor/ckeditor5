@@ -56,21 +56,21 @@ describe( 'TreeWalker', () => {
 		it( 'should throw if neither boundaries nor starting position is set', () => {
 			expect( () => {
 				new TreeWalker();
-			} ).to.throw( CKEditorError, /^tree-walker-no-start-position/ );
+			} ).to.throw( CKEditorError, /^view-tree-walker-no-start-position/ );
 
 			expect( () => {
 				new TreeWalker( {} );
-			} ).to.throw( CKEditorError, /^tree-walker-no-start-position/ );
+			} ).to.throw( CKEditorError, /^view-tree-walker-no-start-position/ );
 
 			expect( () => {
 				new TreeWalker( { singleCharacters: true } );
-			} ).to.throw( CKEditorError, /^tree-walker-no-start-position/ );
+			} ).to.throw( CKEditorError, /^view-tree-walker-no-start-position/ );
 		} );
 
 		it( 'should throw if walking direction is unknown', () => {
 			expect( () => {
 				new TreeWalker( { startPosition: rootBeginning, direction: 'unknown' } );
-			} ).to.throw( CKEditorError, /^tree-walker-unknown-direction/ );
+			} ).to.throw( CKEditorError, /^view-tree-walker-unknown-direction/ );
 		} );
 	} );
 

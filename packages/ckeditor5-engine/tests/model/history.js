@@ -130,7 +130,7 @@ describe( 'History', () => {
 		it( 'should throw if given history point is "inside" delta', () => {
 			expect( () => {
 				Array.from( history.getDeltas( 2 ) );
-			} ).to.throw( CKEditorError, /history-wrong-version/ );
+			} ).to.throw( CKEditorError, /model-history-wrong-version/ );
 		} );
 	} );
 
