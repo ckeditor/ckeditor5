@@ -4,10 +4,10 @@
  */
 
 import ItalicEngine from '/ckeditor5/basic-styles/italicengine.js';
-import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
+import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
 import { getData as getModelData } from '/tests/engine/_utils/model.js';
 import { getData as getViewData } from '/tests/engine/_utils/view.js';
-import AttributeCommand from '/ckeditor5/command/attributecommand.js';
+import AttributeCommand from '/ckeditor5/core/command/attributecommand.js';
 
 describe( 'ItalicEngine', () => {
 	let editor, doc;

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../feature.js';
+import Feature from '../core/feature.js';
 import ItalicEngine from './italicengine.js';
 import ButtonController from '../ui/button/button.js';
 import ButtonView from '../ui/button/buttonview.js';
@@ -15,7 +15,7 @@ import Model from '../ui/model.js';
  * It uses the {@link basic-styles.ItalicEngine Italic engine feature}.
  *
  * @memberOf basic-styles
- * @extends ckeditor5.Feature
+ * @extends core.Feature
  */
 export default class Italic extends Feature {
 	/**
