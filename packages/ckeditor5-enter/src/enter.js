@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../feature.js';
+import Feature from '../core/feature.js';
 import EnterCommand from './entercommand.js';
 import EnterObserver from './enterobserver.js';
 
@@ -11,7 +11,7 @@ import EnterObserver from './enterobserver.js';
  * The Enter feature. Handles the <kbd>Enter</kbd> and <kbd>Shift + Enter</kbd> keys in the editor.
  *
  * @memberOf enter
- * @extends ckeditor5.Feature
+ * @extends core.Feature
  */
 export default class Enter extends Feature {
 	init() {
