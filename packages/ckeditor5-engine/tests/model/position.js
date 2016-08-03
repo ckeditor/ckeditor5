@@ -141,7 +141,7 @@ describe( 'position', () => {
 		it( 'throws when parent is not an element', () => {
 			expect( () => {
 				Position.createFromParentAndOffset( b, 0 );
-			} ).to.throw( CKEditorError, /^position-parent-incorrect/ );
+			} ).to.throw( CKEditorError, /^model-position-parent-incorrect/ );
 		} );
 
 		it( 'works with a doc frag', () => {
