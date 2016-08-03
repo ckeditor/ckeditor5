@@ -109,7 +109,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.addRange( { invalid: 'Range' } );
-			} ).to.throw( CKEditorError, /selection-added-not-range/ );
+			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
 		} );
 
 		it( 'should copy added ranges and store multiple ranges', () => {
@@ -179,7 +179,7 @@ describe( 'Selection', () => {
 						new Position( root, [ 1, 2 ] )
 					)
 				);
-			} ).to.throw( CKEditorError, /selection-range-intersects/ );
+			} ).to.throw( CKEditorError, /model-selection-range-intersects/ );
 		} );
 	} );
 
@@ -315,7 +315,7 @@ describe( 'Selection', () => {
 
 			expect( () => {
 				selection.setFocus( endPos );
-			} ).to.throw( CKEditorError, /selection-setFocus-no-ranges/ );
+			} ).to.throw( CKEditorError, /model-selection-setFocus-no-ranges/ );
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
@@ -503,7 +503,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.setRanges( [ { invalid: 'range' } ] );
-			} ).to.throw( CKEditorError, /selection-added-not-range/ );
+			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
 		} );
 
 		it( 'should remove all ranges and add given ranges', () => {

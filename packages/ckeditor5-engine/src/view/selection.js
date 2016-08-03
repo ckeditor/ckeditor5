@@ -134,7 +134,7 @@ export default class Selection {
 	 * The flag is used to set {@link engine.view.Selection#anchor anchor} and
 	 * {@link engine.view.Selection#focus focus} properties.
 	 *
-	 * Throws {@link utils.CKEditorError CKEditorError} `selection-range-intersects` if added range intersects
+	 * Throws {@link utils.CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
 	 * with ranges already stored in Selection instance.
 	 *
 	 * @fires engine.view.Selection#change
@@ -142,7 +142,7 @@ export default class Selection {
 	 */
 	addRange( range, isBackward ) {
 		if ( !( range instanceof Range ) ) {
-			throw new CKEditorError( 'selection-invalid-range: Invalid Range.' );
+			throw new CKEditorError( 'view-selection-invalid-range: Invalid Range.' );
 		}
 
 		this._pushRange( range );
@@ -276,7 +276,7 @@ export default class Selection {
 
 		for ( let range of newRanges ) {
 			if ( !( range instanceof Range ) ) {
-				throw new CKEditorError( 'selection-invalid-range: Invalid Range.' );
+				throw new CKEditorError( 'view-selection-invalid-range: Invalid Range.' );
 			}
 
 			this._pushRange( range );
@@ -359,7 +359,7 @@ export default class Selection {
 	/**
 	 * Adds range to selection - creates copy of given range so it can be safely used and modified.
 	 *
-	 * Throws {@link utils.CKEditorError CKEditorError} `selection-range-intersects` if added range intersects
+	 * Throws {@link utils.CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
 	 * with ranges already stored in selection instance.
 	 *
 	 * @private
@@ -376,7 +376,7 @@ export default class Selection {
 				 * @param {engine.view.Range} intersectingRange Range from selection that intersects with `addedRange`.
 				 */
 				throw new CKEditorError(
-					'selection-range-intersects: Trying to add a range that intersects with another range from selection.',
+					'view-selection-range-intersects: Trying to add a range that intersects with another range from selection.',
 					{ addedRange: range, intersectingRange: storedRange }
 				);
 			}

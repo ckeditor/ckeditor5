@@ -147,7 +147,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.addRange( { invalid: 'range' } );
-			} ).to.throw( CKEditorError, 'selection-invalid-range: Invalid Range.' );
+			} ).to.throw( CKEditorError, 'view-selection-invalid-range: Invalid Range.' );
 		} );
 
 		it( 'should add range to selection ranges', () => {
@@ -169,11 +169,11 @@ describe( 'Selection', () => {
 			selection.addRange( range1 );
 			expect( () => {
 				selection.addRange( range2 );
-			} ).to.throw( CKEditorError, 'selection-range-intersects' );
+			} ).to.throw( CKEditorError, 'view-selection-range-intersects' );
 
 			expect( () => {
 				selection.addRange( range1 );
-			} ).to.throw( CKEditorError, 'selection-range-intersects' );
+			} ).to.throw( CKEditorError, 'view-selection-range-intersects' );
 		} );
 	} );
 
@@ -337,7 +337,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.setRanges( [ { invalid: 'range' } ] );
-			} ).to.throw( CKEditorError, 'selection-invalid-range: Invalid Range.' );
+			} ).to.throw( CKEditorError, 'view-selection-invalid-range: Invalid Range.' );
 		} );
 
 		it( 'should add ranges and fire change event', ( done ) => {

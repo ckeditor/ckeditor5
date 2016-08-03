@@ -132,7 +132,7 @@ describe( 'Node', () => {
 				() => {
 					node.index;
 				}
-			).to.throw( CKEditorError, /node-not-found-in-parent/ );
+			).to.throw( CKEditorError, /model-node-not-found-in-parent/ );
 		} );
 	} );
 
@@ -186,7 +186,7 @@ describe( 'Node', () => {
 				() => {
 					node.startOffset;
 				}
-			).to.throw( CKEditorError, /node-not-found-in-parent/ );
+			).to.throw( CKEditorError, /model-node-not-found-in-parent/ );
 		} );
 	} );
 

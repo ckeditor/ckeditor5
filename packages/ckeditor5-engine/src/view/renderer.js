@@ -137,7 +137,7 @@ export default class Renderer {
 				 *
 				 * @error renderer-unknown-type
 				 */
-				throw new CKEditorError( 'renderer-unknown-type: Unknown type passed to Renderer.markToSync.' );
+				throw new CKEditorError( 'view-renderer-unknown-type: Unknown type passed to Renderer.markToSync.' );
 			}
 		}
 	}
@@ -254,7 +254,7 @@ export default class Renderer {
 			 *
 			 * @error renderer-render-no-inline-filler.
 			 */
-			throw new CKEditorError( 'renderer-render-no-inline-filler: No inline filler on expected position.' );
+			throw new CKEditorError( 'view-renderer-render-no-inline-filler: No inline filler on expected position.' );
 		}
 
 		if ( isInlineFiller( domFillerNode ) ) {

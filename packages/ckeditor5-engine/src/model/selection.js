@@ -443,7 +443,7 @@ export default class Selection {
 			 *
 			 * @error selection-setFocus-no-ranges
 			 */
-			throw new CKEditorError( 'selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.' );
+			throw new CKEditorError( 'model-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.' );
 		}
 
 		const newFocus = Position.createAt( itemOrPosition, offset );
@@ -488,7 +488,7 @@ export default class Selection {
 	 */
 	_pushRange( range ) {
 		if ( !( range instanceof Range ) ) {
-			throw new CKEditorError( 'selection-added-not-range: Trying to add an object that is not an instance of Range.' );
+			throw new CKEditorError( 'model-selection-added-not-range: Trying to add an object that is not an instance of Range.' );
 		}
 
 		this._checkRange( range );
@@ -512,7 +512,7 @@ export default class Selection {
 				 * @param {engine.model.Range} intersectingRange Range from selection that intersects with `addedRange`.
 				 */
 				throw new CKEditorError(
-					'selection-range-intersects: Trying to add a range that intersects with another range from selection.',
+					'model-selection-range-intersects: Trying to add a range that intersects with another range from selection.',
 					{ addedRange: range, intersectingRange: this._ranges[ i ] }
 				);
 			}

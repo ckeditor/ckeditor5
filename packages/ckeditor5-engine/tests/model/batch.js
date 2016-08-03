@@ -58,7 +58,7 @@ describe( 'Batch', () => {
 
 			expect( () => {
 				register( 'foo', () => {} );
-			} ).to.throw( CKEditorError, /^batch-register-taken/ );
+			} ).to.throw( CKEditorError, /^model-batch-register-taken/ );
 		} );
 	} );
 

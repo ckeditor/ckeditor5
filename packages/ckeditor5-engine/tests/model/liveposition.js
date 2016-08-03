@@ -39,7 +39,7 @@ describe( 'LivePosition', () => {
 	it( 'should throw if given root is not a RootElement', () => {
 		expect( () => {
 			new LivePosition( new DocumentFragment(), [ 1 ] );
-		} ).to.throw( CKEditorError, /liveposition-root-not-rootelement/ );
+		} ).to.throw( CKEditorError, /model-liveposition-root-not-rootelement/ );
 	} );
 
 	it( 'should listen to a change event of the document that owns this position root', () => {

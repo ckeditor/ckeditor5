@@ -71,13 +71,13 @@ describe( 'registerItem', () => {
 
 		expect( () => {
 			schema.registerItem( 'new' );
-		} ).to.throw( CKEditorError, /schema-item-exists/ );
+		} ).to.throw( CKEditorError, /model-schema-item-exists/ );
 	} );
 
 	it( 'should throw if base item has not been registered in schema', () => {
 		expect( () => {
 			schema.registerItem( 'new', 'old' );
-		} ).to.throw( CKEditorError, /schema-no-item/ );
+		} ).to.throw( CKEditorError, /model-schema-no-item/ );
 	} );
 } );
 
@@ -103,7 +103,7 @@ describe( '_getItem', () => {
 	it( 'should throw if there is no item registered under given name', () => {
 		expect( () => {
 			schema._getItem( 'new' );
-		} ).to.throw( CKEditorError, /schema-no-item/ );
+		} ).to.throw( CKEditorError, /model-schema-no-item/ );
 	} );
 } );
 

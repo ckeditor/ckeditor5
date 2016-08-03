@@ -98,7 +98,7 @@ export default class NodeList {
 	 * Converts index to offset in node list.
 	 *
 	 * Returns starting offset of a node that is at given index. Throws {@link utils.CKEditorError CKEditorError}
-	 * `nodelist-index-out-of-bounds` if given index is less than `0` or more than {@link engine.model.NodeList#length}.
+	 * `model-nodelist-index-out-of-bounds` if given index is less than `0` or more than {@link engine.model.NodeList#length}.
 	 *
 	 * @param {Number} index Node's index.
 	 * @returns {Number} Node's starting offset.
@@ -116,7 +116,7 @@ export default class NodeList {
 			 *
 			 * @error nodelist-index-out-of-bounds
 			 */
-			throw new CKEditorError( 'nodelist-index-out-of-bounds: Given index cannot be found in the node list.' );
+			throw new CKEditorError( 'model-nodelist-index-out-of-bounds: Given index cannot be found in the node list.' );
 		}
 
 		return this.getNodeStartOffset( node );
@@ -126,7 +126,7 @@ export default class NodeList {
 	 * Converts offset in node list to index.
 	 *
 	 * Returns index of a node that occupies given offset. Throws {@link utils.CKEditorError CKEditorError}
-	 * `nodelist-offset-out-of-bounds` if given offset is less than `0` or more than {@link engine.model.NodeList#getMaxOffset}.
+	 * `model-nodelist-offset-out-of-bounds` if given offset is less than `0` or more than {@link engine.model.NodeList#getMaxOffset}.
 	 *
 	 * @param {Number} offset Offset to look for.
 	 * @returns {Number} Index of a node that occupies given offset.
@@ -148,7 +148,7 @@ export default class NodeList {
 			 *
 			 * @error nodelist-offset-out-of-bounds
 			 */
-			throw new CKEditorError( 'nodelist-offset-out-of-bounds: Given offset cannot be found in the node list.' );
+			throw new CKEditorError( 'model-nodelist-offset-out-of-bounds: Given offset cannot be found in the node list.' );
 		}
 
 		return this.length;
@@ -169,7 +169,7 @@ export default class NodeList {
 				 *
 				 * @error nodelist-insertNodes-not-node
 				 */
-				throw new CKEditorError( 'nodelist-insertNodes-not-node: Trying to insert an object which is not a Node instance.' );
+				throw new CKEditorError( 'model-nodelist-insertNodes-not-node: Trying to insert an object which is not a Node instance.' );
 			}
 		}
 

@@ -403,7 +403,7 @@ describe( 'Position', () => {
 		it( 'should throw error if one try to create positions before root', () => {
 			expect( () => {
 				Position.createBefore( parse( '<p></p>' ) );
-			} ).to.throw( CKEditorError, /position-before-root/ );
+			} ).to.throw( CKEditorError, /view-position-before-root/ );
 		} );
 
 		it( 'should create positions before `Node`', () => {
@@ -428,7 +428,7 @@ describe( 'Position', () => {
 		it( 'should throw error if one try to create positions after root', () => {
 			expect( () => {
 				Position.createAfter( parse( '<p></p>' ) );
-			} ).to.throw( CKEditorError, /position-after-root/ );
+			} ).to.throw( CKEditorError, /view-position-after-root/ );
 		} );
 
 		it( 'should create positions after `Node`', () => {

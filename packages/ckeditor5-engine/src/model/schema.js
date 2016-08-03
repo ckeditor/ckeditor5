@@ -440,7 +440,7 @@ export default class Schema {
 			 *
 			 * @error schema-item-exists
 			 */
-			throw new CKEditorError( 'schema-item-exists: Item with specified name already exists in schema.' );
+			throw new CKEditorError( 'model-schema-item-exists: Item with specified name already exists in schema.' );
 		}
 
 		if ( !!isExtending && !this.hasItem( isExtending ) ) {
@@ -449,7 +449,7 @@ export default class Schema {
 			 *
 			 * @error schema-no-item
 			 */
-			throw new CKEditorError( 'schema-no-item: Item with specified name does not exist in schema.' );
+			throw new CKEditorError( 'model-schema-no-item: Item with specified name does not exist in schema.' );
 		}
 
 		// Create new SchemaItem and add it to the items store.
@@ -479,7 +479,7 @@ export default class Schema {
 			 *
 			 * @error schema-no-item
 			 */
-			throw new CKEditorError( 'schema-no-item: Item with specified name does not exist in schema.' );
+			throw new CKEditorError( 'model-schema-no-item: Item with specified name does not exist in schema.' );
 		}
 
 		return this._items.get( itemName );

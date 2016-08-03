@@ -87,11 +87,11 @@ describe( 'NodeList', () => {
 		it( 'should throw if given offset is too high or too low', () => {
 			expect( () => {
 				nodes.indexToOffset( -1 );
-			} ).to.throw( CKEditorError, /nodelist-index-out-of-bounds/ );
+			} ).to.throw( CKEditorError, /model-nodelist-index-out-of-bounds/ );
 
 			expect( () => {
 				nodes.indexToOffset( 99 );
-			} ).to.throw( CKEditorError, /nodelist-index-out-of-bounds/ );
+			} ).to.throw( CKEditorError, /model-nodelist-index-out-of-bounds/ );
 		} );
 
 		it( 'should return length if given offset is equal to maxOffset', () => {

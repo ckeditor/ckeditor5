@@ -142,7 +142,7 @@ export default class Document {
 			 * @param {engine.model.operation.Operation} operation
 			 */
 			throw new CKEditorError(
-				'document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
+				'model-document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
 				{ operation: operation } );
 		}
 
@@ -189,7 +189,7 @@ export default class Document {
 			 * @param {String} name
 			 */
 			throw new CKEditorError(
-				'document-createRoot-name-exists: Root with specified name already exists.',
+				'model-document-createRoot-name-exists: Root with specified name already exists.',
 				{ name: rootName }
 			);
 		}
@@ -247,7 +247,7 @@ export default class Document {
 			 * @param {String} name
 			 */
 			throw new CKEditorError(
-				'document-getRoot-root-not-exist: Root with specified name does not exist.',
+				'model-document-getRoot-root-not-exist: Root with specified name does not exist.',
 				{ name: name }
 			);
 		}
