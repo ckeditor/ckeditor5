@@ -56,19 +56,6 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	init() {
-		const toolbar = this.editor.config.get( 'toolbar' );
-
-		if ( toolbar ) {
-			this.toolbar.addButtons( toolbar );
-		}
-
-		return super.init();
-	}
-
-	/**
 	 * Creates the sticky toolbar of the editor.
 	 *
 	 * @protected
@@ -76,8 +63,10 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 	 */
 	_createToolbar() {
 		const editor = this.editor;
+		const model = new Model( {
+			config: this.editor.config.get( 'toolbar' )
+		} );
 
-		const model = new Model();
 		model.bind( 'isActive' ).to( editor.editing.view.getRoot(), 'isFocused' );
 
 		const toolbar = new StickyToolbar( model, new StickyToolbarView( editor.locale ), editor );
