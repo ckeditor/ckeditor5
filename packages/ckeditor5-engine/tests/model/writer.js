@@ -42,19 +42,19 @@ describe( 'writer', () => {
 		it( 'should insert nodes between nodes', () => {
 			writer.insert( Position.createAt( root, 3 ), [ 'xxx', new Element( 'p' ) ] );
 
-			expectData( 'fooxxx<p></p><$text bold=true>bar</$text><image src="img.jpg"></image>xyz' );
+			expectData( 'fooxxx<p></p><$text bold="true">bar</$text><image src="img.jpg"></image>xyz' );
 		} );
 
 		it( 'should split text node if nodes at inserted at offset inside text node', () => {
 			writer.insert( Position.createAt( root, 5 ), new Element( 'p' ) );
 
-			expectData( 'foo<$text bold=true>ba</$text><p></p><$text bold=true>r</$text><image src="img.jpg"></image>xyz' );
+			expectData( 'foo<$text bold="true">ba</$text><p></p><$text bold="true">r</$text><image src="img.jpg"></image>xyz' );
 		} );
 
 		it( 'should merge text nodes if possible', () => {
 			writer.insert( Position.createAt( root, 3 ), new Text( 'xxx', { bold: true } ) );
 
-			expectData( 'foo<$text bold=true>xxxbar</$text><image src="img.jpg"></image>xyz' );
+			expectData( 'foo<$text bold="true">xxxbar</$text><image src="img.jpg"></image>xyz' );
 		} );
 	} );
 
@@ -70,7 +70,7 @@ describe( 'writer', () => {
 			const range = Range.createFromParentsAndOffsets( root, 1, root, 5 );
 			writer.remove( range );
 
-			expectData( 'f<$text bold=true>r</$text><image src="img.jpg"></image>xyz' );
+			expectData( 'f<$text bold="true">r</$text><image src="img.jpg"></image>xyz' );
 		} );
 
 		it( 'should merge text nodes if possible', () => {
@@ -93,7 +93,7 @@ describe( 'writer', () => {
 			const range = Range.createFromParentsAndOffsets( root, 3, root, 6 );
 			writer.move( range, Position.createAt( root, 0 ) );
 
-			expectData( '<$text bold=true>bar</$text>foo<image src="img.jpg"></image>xyz' );
+			expectData( '<$text bold="true">bar</$text>foo<image src="img.jpg"></image>xyz' );
 		} );
 
 		it( 'should use remove and insert methods', () => {
@@ -112,7 +112,7 @@ describe( 'writer', () => {
 			const range = Range.createFromParentsAndOffsets( root, 3, root, 6 );
 			writer.move( range, Position.createAt( root, 10 ) );
 
-			expectData( 'foo<image src="img.jpg"></image>xyz<$text bold=true>bar</$text>' );
+			expectData( 'foo<image src="img.jpg"></image>xyz<$text bold="true">bar</$text>' );
 		} );
 
 		it( 'should throw if given range is not flat', () => {
@@ -127,21 +127,21 @@ describe( 'writer', () => {
 			const range = Range.createFromParentsAndOffsets( root, 6, root, 8 );
 			writer.setAttribute( range, 'newAttr', true );
 
-			expectData( 'foo<$text bold=true>bar</$text><image newAttr=true src="img.jpg"></image><$text newAttr=true>x</$text>yz' );
+			expectData( 'foo<$text bold="true">bar</$text><image newAttr="true" src="img.jpg"></image><$text newAttr="true">x</$text>yz' );
 		} );
 
 		it( 'should remove attribute if null was passed as a value', () => {
 			const range = Range.createFromParentsAndOffsets( root, 6, root, 7 );
 			writer.setAttribute( range, 'src', null );
 
-			expectData( 'foo<$text bold=true>bar</$text><image></image>xyz' );
+			expectData( 'foo<$text bold="true">bar</$text><image></image>xyz' );
 		} );
 
 		it( 'should merge nodes if possible', () => {
 			const range = Range.createFromParentsAndOffsets( root, 0, root, 3 );
 			writer.setAttribute( range, 'bold', true );
 
-			expectData( '<$text bold=true>foobar</$text><image src="img.jpg"></image>xyz' );
+			expectData( '<$text bold="true">foobar</$text><image src="img.jpg"></image>xyz' );
 		} );
 	} );
 
