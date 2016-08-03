@@ -23,7 +23,7 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 	/**
 	 * Creates an instance of the classic editor UI.
 	 *
-	 * @param {ckeditor5.editor.Editor} editor
+	 * @param {core.editor.Editor} editor
 	 */
 	constructor( editor ) {
 		super( editor );

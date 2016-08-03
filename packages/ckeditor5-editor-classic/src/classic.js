@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import StandardEditor from '../editor/standardeditor.js';
+import StandardEditor from '../core/editor/standardeditor.js';
 
 import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
 
@@ -17,7 +17,7 @@ import ElementReplacer from '../utils/elementreplacer.js';
  * enclosed in a boxed UI.
  *
  * @memberOf editor-classic
- * @extends ckeditor5.editor.StandardEditor
+ * @extends core.editor.StandardEditor
  */
 export default class ClassicEditor extends StandardEditor {
 	/**
@@ -77,10 +77,10 @@ export default class ClassicEditor extends StandardEditor {
 	 *			console.error( err.stack );
 	 *		} );
 	 *
-	 * @param {HTMLElement} element See {@link ckeditor5.editor.ClassicEditor#constructor}'s parameters.
-	 * @param {Object} config See {@link ckeditor5.editor.ClassicEditor#constructor}'s parameters.
+	 * @param {HTMLElement} element See {@link core.editor.ClassicEditor#constructor}'s parameters.
+	 * @param {Object} config See {@link core.editor.ClassicEditor#constructor}'s parameters.
 	 * @returns {Promise} A promise resolved once the editor is ready.
-	 * @returns {ckeditor5.editor.StandardEditor} return.editor The editor instance.
+	 * @returns {core.editor.StandardEditor} return.editor The editor instance.
 	 */
 	static create( element, config ) {
 		return new Promise( ( resolve ) => {
