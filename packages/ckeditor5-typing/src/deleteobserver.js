@@ -22,13 +22,15 @@ export default class DeleteObserver extends Observer {
 
 			if ( data.keyCode == keyCodes.delete ) {
 				deleteData.direction = 'forward';
+				deleteData.unit = 'character';
 			} else if ( data.keyCode == keyCodes.backspace ) {
 				deleteData.direction = 'backward';
+				deleteData.unit = 'codePoint';
 			} else {
 				return;
 			}
 
-			deleteData.unit = data.altKey ? 'word' : 'character';
+			deleteData.unit = data.altKey ? 'word' : deleteData.unit;
 
 			document.fire( 'delete', new DomEventData( document, data.domEvent, deleteData ) );
 		} );

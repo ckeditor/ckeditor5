@@ -24,7 +24,7 @@ export default class Delete extends Feature {
 		editor.commands.set( 'delete', new DeleteCommand( editor, 'backward' ) );
 
 		this.listenTo( editingView, 'delete', ( evt, data ) => {
-			editor.execute( data.direction == 'forward' ? 'forwardDelete' : 'delete' );
+			editor.execute( data.direction == 'forward' ? 'forwardDelete' : 'delete', { unit: data.unit } );
 			data.preventDefault();
 		} );
 	}
