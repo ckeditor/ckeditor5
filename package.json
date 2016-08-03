@@ -12,6 +12,7 @@
     "ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic",
     "ckeditor5-engine": "ckeditor/ckeditor5-engine",
     "ckeditor5-enter": "ckeditor/ckeditor5-enter",
+    "ckeditor5-graphemes": "ckeditor/ckeditor5-graphemes",
     "ckeditor5-headings": "ckeditor/ckeditor5-headings",
     "ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph",
     "ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark",
