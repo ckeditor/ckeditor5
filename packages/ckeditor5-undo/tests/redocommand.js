@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
+import ModelTestEditor from '/tests/core/_utils/modeltesteditor.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import UndoCommand from '/ckeditor5/undo/undocommand.js';

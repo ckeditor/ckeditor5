@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Command from '../command/command.js';
+import Command from '../core/command/command.js';
 import transform from '../engine/model/delta/transform.js';
 
 /**
