@@ -8,22 +8,22 @@ import DomConverter from '../view/domconverter.js';
 import { NBSP_FILLER } from '../view/filler.js';
 
 /**
- * HtmlDataProcessor class.
- * This data processor implementation uses HTML as input/output data.
+ * XmlDataProcessor class.
+ * This data processor implementation uses XML as input/output data.
  *
  * @memberOf engine.dataProcessor
  * @implements engine.dataProcessor.DataProcessor
  */
-export default class HtmlDataProcessor {
+export default class XmlDataProcessor {
 	/**
-	 * Creates a new instance of the HtmlDataProcessor class.
+	 * Creates a new instance of the XmlDataProcessor class.
 	 */
 	constructor() {
 		/**
-		 * DOMParser instance used to parse HTML string to HTMLDocument.
+		 * DOMParser instance used to parse XML string to XMLDocument.
 		 *
 		 * @private
-		 * @member {DOMParser} engine.dataProcessor.HtmlDataProcessor#_domParser
+		 * @member {DOMParser} engine.dataProcessor.XmlDataProcessor#_domParser
 		 */
 		this._domParser = new DOMParser();
 
@@ -31,7 +31,7 @@ export default class HtmlDataProcessor {
 		 * DOM converter used to convert DOM elements to view elements.
 		 *
 		 * @private
-		 * @member {engine.view.DomConverter} engine.dataProcessor.HtmlDataProcessor#_domConverter.
+		 * @member {engine.view.DomConverter} engine.dataProcessor.XmlDataProcessor#_domConverter.
 		 */
 		this._domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
 
@@ -45,10 +45,10 @@ export default class HtmlDataProcessor {
 	}
 
 	/**
-	 * Converts provided {@link engine.view.DocumentFragment DocumentFragment} to data format - in this case HTML string.
+	 * Converts provided {@link engine.view.DocumentFragment DocumentFragment} to data format - in this case XML string.
 	 *
 	 * @param {engine.view.DocumentFragment} viewFragment
-	 * @returns {String} HTML string.
+	 * @returns {String} XML string.
 	 */
 	toData( viewFragment ) {
 		// Convert view DocumentFragment to DOM DocumentFragment.
@@ -59,13 +59,13 @@ export default class HtmlDataProcessor {
 	}
 
 	/**
-	 * Converts provided HTML string to view tree.
+	 * Converts provided XML string to view tree.
 	 *
-	 * @param {String} data HTML string.
+	 * @param {String} data XML string.
 	 * @returns {engine.view.Node|engine.view.DocumentFragment|null} Converted view element.
 	 */
 	toView( data ) {
-		// Convert input HTML data to DOM DocumentFragment.
+		// Convert input XML data to DOM DocumentFragment.
 		const domFragment = this._toDom( data );
 
 		// Convert DOM DocumentFragment to view DocumentFragment.
@@ -73,7 +73,7 @@ export default class HtmlDataProcessor {
 	}
 
 	/**
-	 * Converts HTML String to its DOM representation. Returns DocumentFragment, containing nodes parsed from
+	 * Converts XML String to its DOM representation. Returns DocumentFragment, containing nodes parsed from
 	 * provided data.
 	 *
 	 * @private
@@ -81,9 +81,19 @@ export default class HtmlDataProcessor {
 	 * @returns {DocumentFragment}
 	 */
 	_toDom( data ) {
-		const document = this._domParser.parseFromString( data, 'text/html' );
+		data = `<xml xmlns:attribute="foo" xmlns:container="foo">${ data }</xml>`;
+
+		const document = this._domParser.parseFromString( data, 'text/xml' );
+
+		// Parse validation.
+		const parserError = document.querySelector( 'parsererror' );
+
+		if ( parserError ) {
+			throw new Error( 'Parse error - ' + parserError.querySelector( 'div' ).textContent );
+		}
+
 		const fragment = document.createDocumentFragment();
-		const nodes = document.body.childNodes;
+		const nodes = document.documentElement.childNodes;
 
 		while ( nodes.length > 0 ) {
 			fragment.appendChild( nodes[ 0 ] );
