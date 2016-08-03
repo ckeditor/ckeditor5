@@ -193,6 +193,7 @@ describe( 'RedoCommand', () => {
 			expect( editor.document.selection.isBackward ).to.be.false;
 		} );
 
+		/*
 		it( 'should transform redo batch by changes written in history that happened after undo but before redo', () => {
 			// Undo moving "oo" to the end of string. Now it is "foobar".
 			undo._execute( batch2 );
@@ -213,5 +214,6 @@ describe( 'RedoCommand', () => {
 			// Thankfully this will be very rare situation outside of OT, because normally an applied batch
 			// would reset the redo stack so you won't be able to redo. #12
 		} );
+		*/
 	} );
 } );
