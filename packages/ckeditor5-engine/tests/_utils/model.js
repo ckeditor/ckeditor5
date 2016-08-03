@@ -22,6 +22,7 @@ import ViewElement from '/ckeditor5/engine/view/containerelement.js';
 import ViewText from '/ckeditor5/engine/view/text.js';
 import viewWriter from '/ckeditor5/engine/view/writer.js';
 
+import count from '/ckeditor5/utils/count.js';
 import { parse as viewParse, stringify as viewStringify } from '/tests/engine/_utils/view.js';
 import { convertRangeSelection, convertCollapsedSelection } from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
 import { convertText, convertToModelFragment } from '/ckeditor5/engine/conversion/view-to-model-converters.js';
@@ -187,7 +188,11 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 
 	// Convert view to model.
 	modelToView.convertInsert( range );
-	modelToView.convertSelection( selection );
+
+	if ( selection ) {
+		modelToView.convertSelection( selection );
+	}
+
 	mapper.clearBindings();
 
 	// Parse view to data string.
@@ -324,11 +329,10 @@ function insertText() {
 		consumable.consume( data.item, 'insert' );
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-		const textAttributes = data.item.getAttributes();
 		let node;
 
-		if ( textAttributes.length ) {
-			node = new ViewElement( VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT, textAttributes );
+		if ( count( data.item.getAttributes() ) ) {
+			node = new ViewElement( VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT, data.item.getAttributes() );
 		} else {
 			node = new ViewText( data.item.data );
 		}
