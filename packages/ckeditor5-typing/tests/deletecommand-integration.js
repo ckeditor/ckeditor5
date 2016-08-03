@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from '/tests/ckeditor5/_utils/modeltesteditor.js';
+import ModelTestEditor from '/tests/core/_utils/modeltesteditor.js';
 import DeleteCommand from '/ckeditor5/typing/deletecommand.js';
 import UndoEngine from '/ckeditor5/undo/undoengine.js';
 import { getData, setData } from '/tests/engine/_utils/model.js';

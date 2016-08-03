@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualTestEditor from '/tests/ckeditor5/_utils/virtualtesteditor.js';
+import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
 import Delete from '/ckeditor5/typing/delete.js';
 import DomEventData from '/ckeditor5/engine/view/observer/domeventdata.js';
 
