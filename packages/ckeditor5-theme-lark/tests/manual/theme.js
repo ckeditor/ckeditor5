@@ -313,8 +313,7 @@ function text() {
 
 function icon( name ) {
 	const model = new Model( {
-		name: name,
-		align: ''
+		name: name
 	} );
 
 	return new Icon( model, new IconView() );
