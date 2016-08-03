@@ -28,6 +28,12 @@ export default class Toolbar extends BaseToolbar {
 
 		this.editor = editor;
 	}
+
+	init() {
+		this.bindToolbarItems();
+
+		return super.init();
+	}
 }
 
 mix( Toolbar, ToolbarBindingsMixin );
