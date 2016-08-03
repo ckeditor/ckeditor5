@@ -329,12 +329,13 @@ function insertText() {
 		consumable.consume( data.item, 'insert' );
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+		const viewText = new ViewText( data.item.data );
 		let node;
 
 		if ( count( data.item.getAttributes() ) ) {
-			node = new ViewElement( VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT, data.item.getAttributes() );
+			node = new ViewElement( VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT, data.item.getAttributes(), [ viewText ] );
 		} else {
-			node = new ViewText( data.item.data );
+			node = viewText;
 		}
 
 		viewWriter.insert( viewPosition, node );
