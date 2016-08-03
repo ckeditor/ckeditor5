@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
-import Command from '../command/command.js';
+import Command from '../core/command/command.js';
 import RootElement from '../engine/model/rootelement.js';
 
 /**
  * The headings command. It is used by the {@link headings.Headings headings feature}.
  *
  * @memberOf headings
- * @extends ckeditor5.command.Command
+ * @extends core.command.Command
  */
 export default class HeadingsCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {ckeditor5.editor.Editor} editor Editor instance.
+	 * @param {core.editor.Editor} editor Editor instance.
 	 * @param {Array.<headings.HeadingsFormat>} formats Heading formats to be used by the command instance.
 	 */
 	constructor( editor, formats ) {

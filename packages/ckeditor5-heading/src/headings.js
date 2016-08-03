@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../feature.js';
+import Feature from '../core/feature.js';
 import HeadingsEngine from './headingsengine.js';
 import Model from '../ui/model.js';
 import ListDropdownController from '../ui/dropdown/list/listdropdown.js';
@@ -15,7 +15,7 @@ import Collection from '../utils/collection.js';
  * to convert paragraphs into headings.
  *
  * @memberOf headings
- * @extends ckeditor5.Feature
+ * @extends core.Feature
  */
 export default class Headings extends Feature {
 	/**

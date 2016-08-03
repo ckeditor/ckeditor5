@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import ClassicTestEditor from '/tests/ckeditor5/_utils/classictesteditor.js';
+import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
 import Headings from '/ckeditor5/headings/headings.js';
 import HeadingsEngine from '/ckeditor5/headings/headingsengine.js';
 import ListDropdown from '/ckeditor5/ui/dropdown/list/listdropdown.js';
-import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import testUtils from '/tests/core/_utils/utils.js';
 
 testUtils.createSinonSandbox();
 
