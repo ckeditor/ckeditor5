@@ -38,8 +38,7 @@ export default class Bold extends Feature {
 			isEnabled: true,
 			isOn: false,
 			label: t( 'Bold' ),
-			icon: 'bold',
-			iconAlign: 'left'
+			icon: 'bold'
 		} );
 
 		// Bind button model to command.
