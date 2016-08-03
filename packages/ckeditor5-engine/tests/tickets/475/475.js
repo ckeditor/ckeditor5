@@ -5,7 +5,7 @@
 
 import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 
-import Feature from '/ckeditor5/feature.js';
+import Feature from '/ckeditor5/core/feature.js';
 
 import TreeWalker from '/ckeditor5/engine/model/treewalker.js';
 import Position from '/ckeditor5/engine/model/position.js';

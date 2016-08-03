@@ -15,7 +15,7 @@ import LiveSelection from '/ckeditor5/engine/model/liveselection.js';
 import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import count from '/ckeditor5/utils/count.js';
-import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import testUtils from '/tests/core/_utils/utils.js';
 import { wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 testUtils.createSinonSandbox();
