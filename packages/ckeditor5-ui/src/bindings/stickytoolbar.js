@@ -21,7 +21,7 @@ export default class StickyToolbar extends BaseStickyToolbar {
 	 *
 	 * @param {ui.stickyToolbar.StickyToolbarModel} model Model of this sticky toolbar.
 	 * @param {ui.View} view View of this sticky toolbar.
-	 * @param {ckeditor5.Editor} editor
+	 * @param {core.editor.Editor} editor
 	 */
 	constructor( model, view, editor ) {
 		super( model, view );

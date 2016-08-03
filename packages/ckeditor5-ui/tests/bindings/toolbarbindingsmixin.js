@@ -6,7 +6,7 @@
 /* bender-tags: ui, toolbar */
 
 import mix from '/ckeditor5/utils/mix.js';
-import Editor from '/ckeditor5/editor/editor.js';
+import Editor from '/ckeditor5/core/editor/editor.js';
 import Controller from '/ckeditor5/ui/controller.js';
 import ToolbarBindingsMixin from '/ckeditor5/ui/bindings/toolbarbindingsmixin.js';
 

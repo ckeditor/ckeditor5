@@ -18,7 +18,7 @@ export default class EditableUIView extends View {
 	/**
 	 * Creates an instance of {@link ui.editableUI.EditableUIView} class.
 	 *
-	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
+	 * @param {utils.Locale} [locale] The {@link core.editor.Editor#locale editor's locale} instance.
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, this view
 	 * should create it. Otherwise, the existing element should be used.
 	 */
