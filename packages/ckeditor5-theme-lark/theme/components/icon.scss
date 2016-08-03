@@ -31,16 +31,6 @@ $ck-icon-size: 20px;
 	// Inherit cursor style (#5).
 	cursor: inherit;
 
-	&-left {
-		float: left;
-		margin-right: ck-spacing( 'small' );
-	}
-
-	&-right {
-		float: right;
-		margin-left: ck-spacing( 'small' );
-	}
-
 	* {
 		// Inherit cursor style (#5).
 		cursor: inherit;
