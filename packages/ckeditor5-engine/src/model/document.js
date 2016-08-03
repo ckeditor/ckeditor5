@@ -17,6 +17,7 @@ import clone from '../../utils/lib/lodash/clone.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 import mix from '../../utils/mix.js';
+import { isInsideSurrogatePair, isInsideCombinedSymbol } from '../../utils/unicode.js';
 
 const graveyardName = '$graveyard';
 
@@ -109,6 +110,22 @@ export default class Document {
 
 		this.on( 'changesDone', () => {
 			this.selection._updateAttributes();
+		} );
+
+		// Add events that will ensure selection correctness.
+		this.selection.on( 'change:range', () => {
+			for ( let range of this.selection.getRanges() ) {
+				if ( !this._validateSelectionRange( range ) ) {
+					/**
+					 * Range from document selection starts or ends at incorrect position.
+					 *
+					 * @error document-selection-wrong-position
+					 * @param {engine.model.Range} range
+					 */
+					throw new CKEditorError( 'document-selection-wrong-position: ' +
+						'Range from document selection starts or ends at incorrect position.', { range } );
+				}
+			}
 		} );
 
 		// Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
@@ -307,6 +324,18 @@ export default class Document {
 	}
 
 	/**
+	 * Checks whether given {@link engine.model.Range range} is a valid range for
+	 * {@link engine.model.Document#selection document's selection}.
+	 *
+	 * @private
+	 * @param {engine.model.Range} range Range to check.
+	 * @returns {Boolean} `true` if `range` is valid, `false` otherwise.
+	 */
+	_validateSelectionRange( range ) {
+		return validateTextNodePosition( range.start ) && validateTextNodePosition( range.end );
+	}
+
+	/**
 	 * Fired when document changes by applying an operation.
 	 *
 	 * There are 5 types of change:
@@ -349,3 +378,18 @@ export default class Document {
 }
 
 mix( Document, EmitterMixin );
+
+// Checks whether given range boundary position is valid for document selection, meaning that is not between
+// unicode surrogate pairs or base character and combining marks.
+function validateTextNodePosition( rangeBoundary ) {
+	const textNode = rangeBoundary.textNode;
+
+	if ( textNode ) {
+		const data = textNode.data;
+		const offset = rangeBoundary.offset - textNode.startOffset;
+
+		return !isInsideSurrogatePair( data, offset ) && !isInsideCombinedSymbol( data, offset );
+	}
+
+	return true;
+}
