@@ -22,7 +22,6 @@ const config = {
 	]
 };
 
-require( './dev/tasks/bundle/tasks' )( config ).register();
 require( './dev/tasks/test/tasks' )( config ).register();
 
 // Lint tasks.
@@ -43,6 +42,30 @@ gulp.task( 'st', ckeditor5DevEnv.checkStatus );
 gulp.task( 'relink', ckeditor5DevEnv.relink );
 gulp.task( 'install', ckeditor5DevEnv.installPackage );
 gulp.task( 'exec', ckeditor5DevEnv.execOnRepositories );
+
+// Bundling tasks.
+const ckeditor5DevBundle = require( 'ckeditor5-dev-bundler-rollup' )( config );
+gulp.task( 'bundle:clean', ckeditor5DevBundle.clean );
+gulp.task( 'bundle:generate',
+	[
+		'bundle:clean',
+		'build:js:esnext',
+		'build:themes:esnext'
+	],
+	ckeditor5DevBundle.generateFromConfig
+);
+gulp.task( 'bundle:minify:js', ckeditor5DevBundle.minify.js );
+gulp.task( 'bundle:minify:css', ckeditor5DevBundle.minify.css );
+
+gulp.task( 'bundle', ( callback ) => {
+	runSequence( 'bundle:generate',
+		[
+			'bundle:minify:js',
+			'bundle:minify:css'
+		],
+		() => ckeditor5DevBundle.showSummary( callback )
+	);
+} );
 
 // Build tasks.
 const ckeditor5DevBuilder = require( 'ckeditor5-dev-builder' )( config );
