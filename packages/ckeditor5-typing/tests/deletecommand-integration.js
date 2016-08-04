@@ -38,7 +38,7 @@ function assertOutput( output ) {
 
 describe( 'DeleteCommand integration', () => {
 	it( 'deletes characters (and group changes in batches) and rollbacks', () => {
-		setData( doc, '<p>123456789<selection /></p>' );
+		setData( doc, '<p>123456789[]</p>' );
 
 		for ( let i = 0; i < 3; ++i ) {
 			editor.execute( 'delete' );
@@ -46,11 +46,11 @@ describe( 'DeleteCommand integration', () => {
 
 		editor.execute( 'undo' );
 
-		assertOutput( '<p>123456789<selection /></p>' );
+		assertOutput( '<p>123456789[]</p>' );
 	} );
 
 	it( 'deletes characters (and group changes in batches) and rollbacks - test step', () => {
-		setData( doc, '<p>123456789<selection /></p>' );
+		setData( doc, '<p>123456789[]</p>' );
 
 		for ( let i = 0; i < 6; ++i ) {
 			editor.execute( 'delete' );
@@ -58,15 +58,15 @@ describe( 'DeleteCommand integration', () => {
 
 		editor.execute( 'undo' );
 
-		assertOutput( '<p>123456<selection /></p>' );
+		assertOutput( '<p>123456[]</p>' );
 
 		editor.execute( 'undo' );
 
-		assertOutput( '<p>123456789<selection /></p>' );
+		assertOutput( '<p>123456789[]</p>' );
 	} );
 
 	it( 'deletes elements (and group changes in batches) and rollbacks', () => {
-		setData( doc, '<p><img>1</img><img>2</img><img>3</img><img>4</img><img>5</img><img>6</img><selection /></p>' );
+		setData( doc, '<p><img>1</img><img>2</img><img>3</img><img>4</img><img>5</img><img>6</img>[]</p>' );
 
 		for ( let i = 0; i < 3; ++i ) {
 			editor.execute( 'delete' );
@@ -74,11 +74,11 @@ describe( 'DeleteCommand integration', () => {
 
 		editor.execute( 'undo' );
 
-		assertOutput( '<p><img>1</img><img>2</img><img>3</img><img>4</img><img>5</img><img>6</img><selection /></p>' );
+		assertOutput( '<p><img>1</img><img>2</img><img>3</img><img>4</img><img>5</img><img>6</img>[]</p>' );
 	} );
 
 	it( 'merges elements (and group changes in batches) and rollbacks', () => {
-		setData( doc, '<p>123456</p><p><selection />78</p>' );
+		setData( doc, '<p>123456</p><p>[]78</p>' );
 
 		for ( let i = 0; i < 6; ++i ) {
 			editor.execute( 'delete' );
@@ -88,15 +88,15 @@ describe( 'DeleteCommand integration', () => {
 
 		// Deleted 6,5,4, <P> does not count.
 		// It's not the most elegant solution, but is the best if we don't want to make complicated algorithm.
-		assertOutput( '<p>123<selection />78</p>' );
+		assertOutput( '<p>123[]78</p>' );
 
 		editor.execute( 'undo' );
 
-		assertOutput( '<p>123456</p><p><selection />78</p>' );
+		assertOutput( '<p>123456</p><p>[]78</p>' );
 	} );
 
 	it( 'merges elements (and group changes in batches) and rollbacks - non-collapsed selection', () => {
-		setData( doc, '<p>12345<selection>6</p><p>7</selection>8</p>' );
+		setData( doc, '<p>12345[6</p><p>7]8</p>' );
 
 		editor.execute( 'delete' );
 		editor.execute( 'delete' );
@@ -104,10 +104,10 @@ describe( 'DeleteCommand integration', () => {
 
 		editor.execute( 'undo' );
 
-		assertOutput( '<p>1234<selection />8</p>' );
+		assertOutput( '<p>1234[]8</p>' );
 
 		editor.execute( 'undo' );
 
-		assertOutput( '<p>12345<selection>6</p><p>7</selection>8</p>' );
+		assertOutput( '<p>12345[6</p><p>7]8</p>' );
 	} );
 } );

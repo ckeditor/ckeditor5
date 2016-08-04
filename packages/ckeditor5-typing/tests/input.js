@@ -17,7 +17,7 @@ import ViewElement from '/ckeditor5/engine/view/element.js';
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 import { getCode } from '/ckeditor5/utils/keyboard.js';
 
-import { getData as getModelData } from '/tests/engine/_utils/model.js';
+import { getData as getModelData, stringify as modelStringify } from '/tests/engine/_utils/model.js';
 import { getData as getViewData } from '/tests/engine/_utils/view.js';
 
 describe( 'Input feature', () => {
@@ -89,7 +89,7 @@ describe( 'Input feature', () => {
 				}
 			] );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>foox<selection />bar</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>foox[]bar</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>foox{}bar</p>' );
 		} );
 
@@ -103,7 +103,7 @@ describe( 'Input feature', () => {
 				}
 			] );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>food<selection />ar</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>food[]ar</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>food{}ar</p>' );
 		} );
 
@@ -119,7 +119,7 @@ describe( 'Input feature', () => {
 				}
 			] );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>x<selection /></paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>x[]</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>x{}</p>' );
 		} );
 
@@ -135,7 +135,7 @@ describe( 'Input feature', () => {
 				}
 			] );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph></paragraph>' );
+			expect( modelStringify( modelRoot ) ).to.equal( '<paragraph></paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p></p>' );
 		} );
 
@@ -149,7 +149,7 @@ describe( 'Input feature', () => {
 				}
 			] );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>foo<selection />bar</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>foo{}bar</p>' );
 		} );
 
@@ -165,7 +165,7 @@ describe( 'Input feature', () => {
 				}
 			] );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>foo<image></image>x<selection /></paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo<image></image>x[]</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>foo<img></img>x{}</p>' );
 		} );
 
@@ -179,7 +179,7 @@ describe( 'Input feature', () => {
 				}
 			] );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>foo<selection />bar</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>foo{}bar</p>' );
 		} );
 
@@ -195,7 +195,7 @@ describe( 'Input feature', () => {
 				}
 			] );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph></paragraph>' );
+			expect( modelStringify( modelRoot ) ).to.equal( '<paragraph></paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p></p>' );
 		} );
 	} );
@@ -208,7 +208,7 @@ describe( 'Input feature', () => {
 			} );
 
 			listenter.listenTo( view, 'keydown', () => {
-				expect( getModelData( model ) ).to.equal( '<paragraph>fo<selection />ar</paragraph>' );
+				expect( getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
 
 				view.fire( 'mutations', [
 					{
@@ -222,7 +222,7 @@ describe( 'Input feature', () => {
 
 			view.fire( 'keydown', { keyCode: getCode( 'y' ) } );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>foy<selection />ar</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>foy[]ar</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>foy{}ar</p>' );
 		} );
 
@@ -234,7 +234,7 @@ describe( 'Input feature', () => {
 
 			view.fire( 'keydown', { keyCode: getCode( 'arrowright' ) } );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>fo<selection>ob</selection>ar</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
 
 		it( 'should do nothing on ctrl combinations', () => {
@@ -245,7 +245,7 @@ describe( 'Input feature', () => {
 
 			view.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>fo<selection>ob</selection>ar</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
 
 		it( 'should do nothing on non printable keys', () => {
@@ -258,13 +258,13 @@ describe( 'Input feature', () => {
 			view.fire( 'keydown', { keyCode: 35 } ); // Home
 			view.fire( 'keydown', { keyCode: 112 } ); // F1
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>fo<selection>ob</selection>ar</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
 
 		it( 'should do nothing if selection is collapsed', () => {
 			view.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>foo<selection />bar</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 		} );
 	} );
 
