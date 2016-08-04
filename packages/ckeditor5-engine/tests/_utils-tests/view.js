@@ -240,7 +240,7 @@ describe( 'view test utils', () => {
 			const p = new ContainerElement( 'p', null, b );
 
 			expect( stringify( p, null, { showPriority: true } ) )
-				.to.equal( '<p><b:10>foobar</b:10></p>' );
+				.to.equal( '<p><b view-priority="10">foobar</b></p>' );
 		} );
 
 		it( 'should parse DocumentFragment as root', () => {
@@ -412,10 +412,10 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should parse element priority', () => {
-			const parsed1 = parse( '<b:12></b:12>' );
+			const parsed1 = parse( '<b view-priority="12"></b>' );
 			const attribute1 = new AttributeElement( 'b' );
 			attribute1.priority = 12;
-			const parsed2 = parse( '<attribute:b:44></attribute:b:44>' );
+			const parsed2 = parse( '<attribute:b view-priority="44"></attribute:b>' );
 			const attribute2 = new AttributeElement( 'b' );
 			attribute2.priority = 44;
 
@@ -425,7 +425,7 @@ describe( 'view test utils', () => {
 		} );
 
 		it( 'should paste nested elements and texts', () => {
-			const parsed = parse( '<container:p>foo<b:12>bar<i:25>qux</i:25></b:12></container:p>' );
+			const parsed = parse( '<container:p>foo<b view-priority="12">bar<i view-priority="25">qux</i></b></container:p>' );
 			expect( parsed.isSimilar( new ContainerElement( 'p' ) ) ).to.be.true;
 			expect( parsed.childCount ).to.equal( 2 );
 			expect( parsed.getChild( 0 ) ).to.be.instanceof( Text ).and.have.property( 'data' ).that.equal( 'foo' );
