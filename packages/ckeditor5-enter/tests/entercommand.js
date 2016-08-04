@@ -30,7 +30,7 @@ beforeEach( () => {
 
 describe( 'EnterCommand', () => {
 	it( 'enters a block using enqueueChanges', () => {
-		setData( doc, '<p>foo<selection /></p>' );
+		setData( doc, '<p>foo[]</p>' );
 
 		const spy = sinon.spy( doc, 'enqueueChanges' );
 
@@ -42,7 +42,7 @@ describe( 'EnterCommand', () => {
 
 	it( 'uses paragraph as default block', () => {
 		schema.registerItem( 'paragraph', '$block' );
-		setData( doc, '<h>foo<selection /></h>' );
+		setData( doc, '<h>foo[]</h>' );
 
 		editor.execute( 'enter' );
 
@@ -54,71 +54,71 @@ describe( 'enterBlock', () => {
 	describe( 'collapsed selection', () => {
 		test(
 			'does nothing in the root',
-			'foo<selection />bar',
-			'foo<selection />bar',
+			'foo[]bar',
+			'foo[]bar',
 			{ defaultBlockName: 'p' }
 		);
 
 		test(
 			'splits block',
-			'<p>x</p><p>foo<selection />bar</p><p>y</p>',
-			'<p>x</p><p>foo</p><p><selection />bar</p><p>y</p>',
+			'<p>x</p><p>foo[]bar</p><p>y</p>',
+			'<p>x</p><p>foo</p><p>[]bar</p><p>y</p>',
 			{ defaultBlockName: 'p' }
 		);
 
 		test(
 			'splits block (other than default)',
-			'<p>x</p><h>foo<selection />bar</h><p>y</p>',
-			'<p>x</p><h>foo</h><h><selection />bar</h><p>y</p>',
+			'<p>x</p><h>foo[]bar</h><p>y</p>',
+			'<p>x</p><h>foo</h><h>[]bar</h><p>y</p>',
 			{ defaultBlockName: 'p' }
 		);
 
 		test(
 			'splits block at the end',
-			'<p>x</p><p>foo<selection /></p><p>y</p>',
-			'<p>x</p><p>foo</p><p><selection /></p><p>y</p>',
+			'<p>x</p><p>foo[]</p><p>y</p>',
+			'<p>x</p><p>foo</p><p>[]</p><p>y</p>',
 			{ defaultBlockName: 'p' }
 		);
 
 		test(
 			'splits block at the beginning',
-			'<p>x</p><p><selection />foo</p><p>y</p>',
-			'<p>x</p><p></p><p><selection />foo</p><p>y</p>',
+			'<p>x</p><p>[]foo</p><p>y</p>',
+			'<p>x</p><p></p><p>[]foo</p><p>y</p>',
 			{ defaultBlockName: 'p' }
 		);
 
 		test(
 			'splits block at the beginning (other than default)',
-			'<p>x</p><h><selection />foo</h><p>y</p>',
-			'<p>x</p><h></h><h><selection />foo</h><p>y</p>',
+			'<p>x</p><h>[]foo</h><p>y</p>',
+			'<p>x</p><h></h><h>[]foo</h><p>y</p>',
 			{ defaultBlockName: 'p' }
 		);
 
 		test(
 			'creates default block when leaving other block',
-			'<h>foo<selection /></h><p>x</p>',
-			'<h>foo</h><p><selection /></p><p>x</p>',
+			'<h>foo[]</h><p>x</p>',
+			'<h>foo</h><p>[]</p><p>x</p>',
 			{ defaultBlockName: 'p' }
 		);
 
 		test(
 			'does not rename when default block is not allowed',
-			'<h>foo<selection /></h><p>x</p>',
-			'<h>foo</h><h><selection /></h><p>x</p>',
+			'<h>foo[]</h><p>x</p>',
+			'<h>foo</h><h>[]</h><p>x</p>',
 			{ defaultBlockName: 'xxx' }
 		);
 
 		test(
 			'inserts new block after empty one',
-			'<p>x</p><p><selection /></p><p>y</p>',
-			'<p>x</p><p></p><p><selection /></p><p>y</p>',
+			'<p>x</p><p>[]</p><p>y</p>',
+			'<p>x</p><p></p><p>[]</p><p>y</p>',
 			{ defaultBlockName: 'p' }
 		);
 
 		test(
 			'inserts new block after empty one (other than default)',
-			'<p>x</p><h><selection /></h><p>y</p>',
-			'<p>x</p><h></h><p><selection /></p><p>y</p>',
+			'<p>x</p><h>[]</h><p>y</p>',
+			'<p>x</p><h></h><p>[]</p><p>y</p>',
 			{ defaultBlockName: 'p' }
 		);
 	} );
@@ -126,66 +126,69 @@ describe( 'enterBlock', () => {
 	describe( 'non-collapsed selection', () => {
 		test(
 			'only deletes the content when directly in the root',
-			'fo<selection>ob</selection>ar',
-			'fo<selection />ar',
+			'fo[ob]ar',
+			'fo[]ar',
 			{ defaultBlockName: 'p' }
 		);
 
 		test(
 			'deletes text and splits',
-			'<p>ab<selection>cd</selection>ef</p><p>ghi</p>',
-			'<p>ab</p><p><selection />ef</p><p>ghi</p>',
+			'<p>ab[cd]ef</p><p>ghi</p>',
+			'<p>ab</p><p>[]ef</p><p>ghi</p>',
 			{ defaultBlockName: 'p' }
 		);
 
 		test(
 			'deletes text and splits (other than default)',
-			'<h>ab<selection>cd</selection>ef</h>',
-			'<h>ab</h><h><selection />ef</h>',
+			'<h>ab[cd]ef</h>',
+			'<h>ab</h><h>[]ef</h>',
 			{ defaultBlockName: 'p' }
 		);
 
 		test(
 			'places selection in the 2nd element',
-			'<h>ab<selection>c</h><p>d</selection>ef</p><p>ghi</p>',
-			'<h>ab</h><p><selection />ef</p><p>ghi</p>',
+			'<h>ab[c</h><p>d]ef</p><p>ghi</p>',
+			'<h>ab</h><p>[]ef</p><p>ghi</p>',
 			{ defaultBlockName: 'p' }
 		);
 
 		test(
 			'leaves one empty element after one was fully selected',
-			'<p>x</p><p><selection>abcdef</selection></p><p>y</p>',
-			'<p>x</p><p><selection /></p><p>y</p>',
+			'<p>x</p><p>[abcdef]</p><p>y</p>',
+			'<p>x</p><p>[]</p><p>y</p>',
 			{ defaultBlockName: 'p' }
 		);
 
 		test(
 			'leaves one (default) empty element after one was fully selected',
-			'<h><selection>abcdef</selection></h>',
-			'<p><selection /></p>',
+			'<h>[abcdef]</h>',
+			'<p>[]</p>',
 			{ defaultBlockName: 'p' }
 		);
 
 		test(
 			'leaves one (default) empty element after two were fully selected',
-			'<h><selection>abc</h><p>def</selection></p>',
-			'<p><selection /></p>',
+			'<h>[abc</h><p>def]</p>',
+			'<p>[]</p>',
 			{ defaultBlockName: 'p' }
 		);
 
-		test(
-			'leaves one (default) empty element after two were fully selected (backward)',
-			'<h><selection backward>abc</h><p>def</selection></p>',
-			'<p><selection /></p>',
-			{ defaultBlockName: 'p' }
-		);
+		it( 'leaves one (default) empty element after two were fully selected (backward)', () => {
+			setData( doc, '<h>[abc</h><p>def]</p>' );
+			// @TODO: Add option for setting selection direction to model utils.
+			doc.selection._lastRangeBackward = true;
+
+			enterBlock( doc.batch(), doc.selection, { defaultBlockName: 'p' } );
+
+			expect( getData( doc ).to.equal( '<p>[]</p>' );
+		} );
 
 		it( 'uses composer.deleteContents', () => {
 			const spy = sinon.spy();
 
 			doc.composer.on( 'deleteContents', spy );
 
-			setData( doc, '<p><selection>x</selection></p>' );
+			setData( doc, '<p>[x]</p>' );
 
 			enterBlock( doc.batch(), doc.selection, { defaultBlockName: 'p' } );
 
