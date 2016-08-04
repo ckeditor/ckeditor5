@@ -48,21 +48,21 @@ describe( 'BoldEngine', () => {
 		it( 'should convert <strong> to bold attribute', () => {
 			editor.setData( '<strong>foo</strong>bar' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text bold=true>foo</$text>bar' );
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text bold="true">foo</$text>bar' );
 			expect( editor.getData() ).to.equal( '<strong>foo</strong>bar' );
 		} );
 
 		it( 'should convert <b> to bold attribute', () => {
 			editor.setData( '<b>foo</b>bar' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text bold=true>foo</$text>bar' );
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text bold="true">foo</$text>bar' );
 			expect( editor.getData() ).to.equal( '<strong>foo</strong>bar' );
 		} );
 
 		it( 'should convert font-weight:bold to bold attribute', () => {
 			editor.setData( '<span style="font-weight: bold;">foo</span>bar' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text bold=true>foo</$text>bar' );
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text bold="true">foo</$text>bar' );
 			expect( editor.getData() ).to.equal( '<strong>foo</strong>bar' );
 		} );
 	} );

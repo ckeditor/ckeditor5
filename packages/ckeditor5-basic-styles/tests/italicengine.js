@@ -48,21 +48,21 @@ describe( 'ItalicEngine', () => {
 		it( 'should convert <em> to italic attribute', () => {
 			editor.setData( '<em>foo</em>bar' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text italic=true>foo</$text>bar' );
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text italic="true">foo</$text>bar' );
 			expect( editor.getData() ).to.equal( '<em>foo</em>bar' );
 		} );
 
 		it( 'should convert <i> to italic attribute', () => {
 			editor.setData( '<i>foo</i>bar' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text italic=true>foo</$text>bar' );
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text italic="true">foo</$text>bar' );
 			expect( editor.getData() ).to.equal( '<em>foo</em>bar' );
 		} );
 
 		it( 'should convert font-weight:italic to italic attribute', () => {
 			editor.setData( '<span style="font-style: italic;">foo</span>bar' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text italic=true>foo</$text>bar' );
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text italic="true">foo</$text>bar' );
 			expect( editor.getData() ).to.equal( '<em>foo</em>bar' );
 		} );
 	} );
