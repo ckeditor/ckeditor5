@@ -42,27 +42,26 @@ export default class Headings extends Feature {
 			} ) );
 		}
 
-		// Create item list model.
-		const itemListModel = new Model( {
-			items: collection
-		} );
-
 		// Create dropdown model.
 		const dropdownModel = new Model( {
 			isEnabled: true,
 			isOn: false,
 			label: 'Headings',
 			withText: true,
-			content: itemListModel
+
+			// Create item list model.
+			content: new Model( {
+				items: collection
+			} )
 		} );
 
 		// Bind dropdown model to command.
 		dropdownModel.bind( 'isEnabled' ).to( command, 'isEnabled' );
 		dropdownModel.bind( 'label' ).to( command, 'value', format => format.label );
 
-		// Execute command when item from dropdown is selected.
-		this.listenTo( itemListModel, 'execute', ( evt, itemModel ) => {
-			editor.execute( 'headings', itemModel.id );
+		// Execute command when an item from the dropdown is selected.
+		this.listenTo( dropdownModel, 'execute', ( dropdownModelEvt, listModelEvt, { source: { id } } ) => {
+			editor.execute( 'headings', id );
 			editor.editing.view.focus();
 		} );
 
