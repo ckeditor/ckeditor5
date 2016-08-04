@@ -12,6 +12,7 @@ import Collection from '/ckeditor5/utils/collection.js';
 import Model from '/ckeditor5/ui/model.js';
 import View from '/ckeditor5/ui/view.js';
 import Template from '/ckeditor5/ui/template.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 testUtils.createSinonSandbox();
 
@@ -244,6 +245,177 @@ describe( 'ControllerCollection', () => {
 			} );
 		} );
 	} );
+
+	describe( 'pipe', () => {
+		it( 'should throw when event names are not strings', () => {
+			const collection = new ControllerCollection( 'foo' );
+
+			expect( () => {
+				collection.pipe();
+			} ).to.throw( CKEditorError, /ui-controllercollection-pipe-wrong-events/ );
+
+			expect( () => {
+				collection.pipe( new Date() );
+			} ).to.throw( CKEditorError, /ui-controllercollection-pipe-wrong-events/ );
+
+			expect( () => {
+				collection.pipe( 'color', new Date() );
+			} ).to.throw( CKEditorError, /ui-controllercollection-pipe-wrong-events/ );
+		} );
+
+		it( 'returns object', () => {
+			expect( new ControllerCollection( 'foo' ).pipe( 'foo' ) ).to.be.an( 'object' );
+		} );
+
+		it( 'provides "to" interface', () => {
+			const pipe = new ControllerCollection( 'foo' ).pipe( 'foo' );
+
+			expect( pipe ).to.have.keys( 'to' );
+			expect( pipe.to ).to.be.a( 'function' );
+		} );
+
+		describe( 'to', () => {
+			it( 'does not chain', () => {
+				const collection = new ControllerCollection( 'foo' );
+				const returned = collection.pipe( 'foo' ).to( {} );
+
+				expect( returned ).to.be.undefined;
+			} );
+
+			it( 'forwards an event to another observable – existing controller', ( done ) => {
+				const target = new Model();
+				const collection = new ControllerCollection( 'foo' );
+				const model = new Model();
+
+				collection.add( new Controller( model ) );
+				collection.pipe( 'foo' ).to( target );
+
+				target.on( 'foo', ( ...args ) => {
+					assertPipe( args, 'foo', target, model );
+					done();
+				} );
+
+				model.fire( 'foo' );
+			} );
+
+			it( 'forwards an event to another observable – new controller', ( done ) => {
+				const target = new Model();
+				const collection = new ControllerCollection( 'foo' );
+				const model = new Model();
+
+				collection.pipe( 'foo' ).to( target );
+				collection.add( new Controller( model ) );
+
+				target.on( 'foo', ( ...args ) => {
+					assertPipe( args, 'foo', target, model );
+					done();
+				} );
+
+				model.fire( 'foo' );
+			} );
+
+			it( 'forwards multiple events to another observable', () => {
+				const target = new Model();
+				const collection = new ControllerCollection( 'foo' );
+				const modelA = new Model();
+				const modelB = new Model();
+				const modelC = new Model();
+
+				collection.pipe( 'foo', 'bar', 'baz' ).to( target );
+				collection.add( new Controller( modelA ) );
+				collection.add( new Controller( modelB ) );
+				collection.add( new Controller( modelC ) );
+
+				const evts = [];
+
+				function recordEvent( ...args ) {
+					evts.push( args );
+				}
+
+				target.on( 'foo', recordEvent );
+				target.on( 'bar', recordEvent );
+				target.on( 'baz', recordEvent );
+
+				modelA.fire( 'foo' );
+
+				expect( evts ).to.have.length( 1 );
+				assertPipe( evts[ 0 ], 'foo', target, modelA );
+
+				modelB.fire( 'bar' );
+
+				expect( evts ).to.have.length( 2 );
+				assertPipe( evts[ 1 ], 'bar', target, modelB );
+
+				modelC.fire( 'baz' );
+
+				expect( evts ).to.have.length( 3 );
+				assertPipe( evts[ 2 ], 'baz', target, modelC );
+			} );
+
+			it( 'does not forward events which are not supposed to be piped', () => {
+				const target = new Model();
+				const collection = new ControllerCollection( 'foo' );
+				const model = new Model();
+
+				collection.pipe( 'foo', 'bar', 'baz' ).to( target );
+				collection.add( new Controller( model ) );
+
+				let firedCounter = 0;
+				target.on( 'foo', () => ++firedCounter );
+				target.on( 'bar', () => ++firedCounter );
+				target.on( 'baz', () => ++firedCounter );
+
+				model.fire( 'foo' );
+				model.fire( 'baz' );
+				model.fire( 'baz' );
+				model.fire( 'not-piped' );
+
+				expect( firedCounter ).to.equal( 3 );
+			} );
+
+			it( 'stops forwarding when controller removed from the collection', () => {
+				const target = new Model();
+				const collection = new ControllerCollection( 'foo' );
+				const model = new Model();
+
+				collection.pipe( 'foo' ).to( target );
+				collection.add( new Controller( model ) );
+
+				let firedCounter = 0;
+				target.on( 'foo', () => ++firedCounter );
+
+				model.fire( 'foo' );
+				collection.remove( 0 );
+				model.fire( 'foo' );
+
+				expect( firedCounter ).to.equal( 1 );
+			} );
+
+			it( 'supports deep event piping', ( done ) => {
+				const collection = new ControllerCollection( 'foo' );
+				const target = new Model();
+				const modelA = new Model();
+				const modelAA = new Model();
+
+				const controllerA = new Controller( modelA );
+				const controllerAA = new Controller( modelAA );
+				const barCollection = controllerA.addCollection( 'bar' );
+
+				collection.add( controllerA );
+				collection.pipe( 'foo' ).to( target );
+
+				barCollection.add( controllerAA );
+				barCollection.pipe( 'foo' ).to( modelA );
+
+				target.on( 'foo', ( ...args ) => {
+					assertPipe( args, 'foo', target, modelA, modelAA );
+					done();
+				} );
+
+				modelAA.fire( 'foo' );
+			} );
+		} );
+	} );
 } );
 
 function defineParentViewClass() {
@@ -292,5 +464,16 @@ function createModelCollection() {
 		models.add( new Model( {
 			uid: Number( i ).toString()
 		} ) );
+	}
+}
+
+function assertPipe( evtArgs, expectedName, ...observables ) {
+	let pipeNumber = 0;
+
+	for ( let observable of observables ) {
+		expect( evtArgs[ pipeNumber ].name ).to.equal( expectedName );
+		expect( evtArgs[ pipeNumber ].source ).to.equal( observable );
+
+		++pipeNumber;
 	}
 }

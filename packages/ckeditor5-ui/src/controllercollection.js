@@ -175,6 +175,82 @@ export default class ControllerCollection extends Collection {
 			}
 		};
 	}
+
+	/**
+	 * Delegates selected events coming from within the controller models in the collection to desired
+	 * {@link ObservableMixin} instance. For instance:
+	 *
+	 *		const modelA = new Model();
+	 *		const modelB = new Model();
+	 *		const modelC = new Model();
+	 *
+	 *		const controllers = new ControllerCollection( 'name' );
+	 *
+	 *		controllers.pipe( 'eventX' ).to( modelB );
+	 *		controllers.pipe( 'eventX', 'eventY' ).to( modelC );
+	 *
+	 *		controllers.add( new Controller( modelA, ... ) );
+	 *
+	 * then `eventX` is piped (fired by) `modelB` and `modelC` along with `customData`:
+	 *
+	 *		modelA.fire( 'eventX', customData );
+	 *
+	 * and `eventY` is piped (fired by) `modelC` along with `customData`:
+	 *
+	 *		modelA.fire( 'eventY', customData );
+	 *
+	 * See {@link utils.ObservableMixin#pipe}.
+	 *
+	 * @param {String...} events {@link ui.Controller#model} event names to be piped to another {@link utils.ObservableMixin}.
+	 * @returns {ui.ControllerCollection.pipe#to}
+	 */
+	pipe( ...events ) {
+		if ( !events.length || !isStringArray( events ) ) {
+			/**
+			 * All event names must be strings.
+			 *
+			 * @error ui-controllercollection-pipe-wrong-events
+			 */
+			throw new CKEditorError( 'ui-controllercollection-pipe-wrong-events: All event names must be strings.' );
+		}
+
+		return {
+			/**
+			 * Selects destination for {@link utils.ObservableMixin#pipe} events.
+			 *
+			 * @method ui.ControllerCollection.pipe#to
+			 * @param {ObservableMixin} destination An `ObservableMixin` instance which is the destination for piped events.
+			 */
+			to: ( dest ) => {
+				const pipeEvent = evtName => {
+					return ( ...args ) => {
+						dest.fire( evtName, ...args );
+					};
+				};
+
+				// Activate piping on existing controllers in this collection.
+				for ( let controller of this ) {
+					for ( let evtName of events ) {
+						dest.listenTo( controller.model, evtName, pipeEvent( evtName ) );
+					}
+				}
+
+				// Activate piping on future controllers in this collection.
+				this.on( 'add', ( evt, controller ) => {
+					for ( let evtName of events ) {
+						dest.listenTo( controller.model, evtName, pipeEvent( evtName ) );
+					}
+				} );
+
+				// Deactivate piping when controller is removed from this collection.
+				this.on( 'remove', ( evt, controller ) => {
+					for ( let evtName of events ) {
+						dest.stopListening( controller.model, evtName );
+					}
+				} );
+			}
+		};
+	}
 }
 
 // Initializes controller factory with controller and view classes.
@@ -221,4 +297,13 @@ function flagController( controller, idProperty ) {
 	controller.id = controller.model[ idProperty ];
 
 	return controller;
+}
+
+// Check if all entries of the array are of `String` type.
+//
+// @private
+// @param {Array} arr An array to be checked.
+// @returns {Boolean}
+function isStringArray( arr ) {
+	return arr.every( a => typeof a == 'string' );
 }
