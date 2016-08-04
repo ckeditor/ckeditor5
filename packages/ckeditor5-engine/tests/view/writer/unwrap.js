@@ -115,7 +115,7 @@ describe( 'writer', () => {
 
 		it( 'should unwrap part of the node', () => {
 			test(
-				'<container:p>[baz<attribute:b view-priority="1">foo}bar</attribute:b>',
+				'<container:p>[baz<attribute:b view-priority="1">foo}bar</attribute:b></container:p>',
 				'<attribute:b view-priority="1"></attribute:b>',
 				'<container:p>[bazfoo]<attribute:b view-priority="1">bar</attribute:b></container:p>'
 			);
@@ -248,7 +248,7 @@ describe( 'writer', () => {
 		it( 'should not unwrap single element when attributes are different', () => {
 			test(
 				'<container:p>[<attribute:b view-priority="1" baz="qux" foo="bar">test</attribute:b>]</container:p>',
-				'<attribute:b baz="qux" test="true"></attribute:b view-priority="1">',
+				'<attribute:b view-priority="1" baz="qux" test="true"></attribute:b>',
 				'<container:p>[<attribute:b view-priority="1" baz="qux" foo="bar">test</attribute:b>]</container:p>'
 			);
 		} );

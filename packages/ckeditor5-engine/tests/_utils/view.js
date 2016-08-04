@@ -5,7 +5,7 @@
 
 import Document from '/ckeditor5/engine/view/document.js';
 import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+import XmlDataProcessor from '/ckeditor5/engine/dataprocessor/xmldataprocessor.js';
 import ViewElement from '/ckeditor5/engine/view/element.js';
 import Selection from '/ckeditor5/engine/view/selection.js';
 import Range from '/ckeditor5/engine/view/range.js';
@@ -274,7 +274,7 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
 export function parse( data, options = {} ) {
 	options.order = options.order || [];
 	const rangeParser = new RangeParser();
-	const processor = new HtmlDataProcessor();
+	const processor = new XmlDataProcessor();
 
 	// Convert data to view.
 	let view = processor.toView( data );

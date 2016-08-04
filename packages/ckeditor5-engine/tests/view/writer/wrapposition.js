@@ -81,7 +81,7 @@ describe( 'wrapPosition', () => {
 
 	it( 'should merge with existing attributes #1', () => {
 		test(
-			'<container:p><attribute:b view-priority="1">foo</attribute:b:1>[]</container:p>',
+			'<container:p><attribute:b view-priority="1">foo</attribute:b>[]</container:p>',
 			'<attribute:b view-priority="1"></attribute:b>',
 			'<container:p><attribute:b view-priority="1">foo{}</attribute:b></container:p>'
 		);
