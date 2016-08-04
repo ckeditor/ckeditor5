@@ -22,7 +22,7 @@ describe( 'Composer', () => {
 
 	describe( 'constructor', () => {
 		it( 'attaches deleteContents default listener', () => {
-			setData( document, '<p>f<selection>oo</p><p>ba</selection>r</p>' );
+			setData( document, '<p>f[oo</p><p>ba]r</p>' );
 
 			const batch = document.batch();
 
@@ -33,7 +33,7 @@ describe( 'Composer', () => {
 		} );
 
 		it( 'attaches deleteContents default listener which passes options', () => {
-			setData( document, '<p>f<selection>oo</p><p>ba</selection>r</p>' );
+			setData( document, '<p>f[oo</p><p>ba]r</p>' );
 
 			const batch = document.batch();
 
@@ -47,7 +47,7 @@ describe( 'Composer', () => {
 		} );
 
 		it( 'attaches modifySelection default listener', () => {
-			setData( document, '<p>foo<selection />bar</p>' );
+			setData( document, '<p>foo[]bar</p>' );
 
 			composer.fire( 'modifySelection', {
 				selection: document.selection,

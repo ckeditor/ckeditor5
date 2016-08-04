@@ -47,6 +47,7 @@ describe( 'convertSelectionChange', () => {
 
 		convertSelection( null, { newSelection: viewSelection } );
 
+		expect( modelGetData( model ) ).to.equals( '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
 		expect( modelGetData( model ) ).to.equal( '<paragraph>f<selection />oo</paragraph><paragraph>bar</paragraph>' );
 	} );
 
@@ -76,9 +77,8 @@ describe( 'convertSelectionChange', () => {
 
 		convertSelection( null, { newSelection: viewSelection } );
 
-		// Too bad getData shows only the first range.
 		expect( modelGetData( model ) ).to.equal(
-			'<paragraph>f<selection>o</selection>o</paragraph><paragraph>bar</paragraph>' );
+			'<paragraph>f[o]o</paragraph><paragraph>b[a]r</paragraph>' );
 
 		const ranges = Array.from( model.selection.getRanges() );
 		expect( ranges.length ).to.equal( 2 );
@@ -101,8 +101,8 @@ describe( 'convertSelectionChange', () => {
 
 		convertSelection( null, { newSelection: viewSelection } );
 
-		// Too bad getData shows only the first range.
 		expect( modelGetData( model ) ).to.equal(
-			'<paragraph>f<selection backward>o</selection>o</paragraph><paragraph>bar</paragraph>' );
+			'<paragraph>f[o]o</paragraph><paragraph>b[a]r</paragraph>' );
+		expect( model.selection.isBackward() ).to.true;
 	} );
 } );
