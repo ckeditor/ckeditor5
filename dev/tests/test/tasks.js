@@ -9,12 +9,12 @@
 
 const Vinyl = require( 'vinyl' );
 const tasks = require( '../../tasks/test/tasks' )();
-const { build, tools } = require( 'ckeditor5-dev-utils' );
+const { stream, tools } = require( 'ckeditor5-dev-utils' );
 
 describe( 'test-node', () => {
 	describe( 'skipManual', () => {
 		it( 'should skip manual tests', ( done ) => {
-			const stream = tasks.skipManual();
+			const streamTask = tasks.skipManual();
 			const spy = sinon.spy();
 			const stub = sinon.stub( tools, 'isFile', ( file ) => {
 				return file == 'file1.md';
@@ -30,25 +30,25 @@ describe( 'test-node', () => {
 				contents: null
 			} );
 
-			stream.pipe( build.noop( spy ) );
+			streamTask.pipe( stream.noop( spy ) );
 
-			stream.once( 'finish', () => {
+			streamTask.once( 'finish', () => {
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, unitTestFile );
 				done();
 			} );
 
-			stream.write( manualTestFile );
-			stream.write( unitTestFile );
+			streamTask.write( manualTestFile );
+			streamTask.write( unitTestFile );
 
-			stream.end();
+			streamTask.end();
 			stub.restore();
 		} );
 	} );
 
 	describe( 'skipIgnored', () => {
 		it( 'should skip files marked to ignore', ( done ) => {
-			const stream = tasks.skipIgnored();
+			const streamTask = tasks.skipIgnored();
 			const spy = sinon.spy();
 			const unitTestFile = new Vinyl( {
 				cwd: './',
@@ -60,18 +60,18 @@ describe( 'test-node', () => {
 				path: 'file1.js',
 				contents: new Buffer( '/* bender-tags: tag, browser-only */' )
 			} );
-			const noop = build.noop( spy );
+			const noop = stream.noop( spy );
 			noop.once( 'finish', () => {
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, unitTestFile );
 				done();
 			} );
 
-			stream.pipe( noop );
-			stream.write( manualTestFile );
-			stream.write( unitTestFile );
+			streamTask.pipe( noop );
+			streamTask.write( manualTestFile );
+			streamTask.write( unitTestFile );
 
-			stream.end();
+			streamTask.end();
 		} );
 	} );
 } );
