@@ -14,6 +14,7 @@ import ModelSelection from '/ckeditor5/engine/model/selection.js';
 import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import ModelElement from '/ckeditor5/engine/model/element.js';
 import ModelText from '/ckeditor5/engine/model/text.js';
+import modelWriter from '/ckeditor5/engine/model/writer.js';
 
 import ViewConversionDispatcher from '/ckeditor5/engine/conversion/viewconversiondispatcher.js';
 import ViewSelection from '/ckeditor5/engine/view/selection.js';
@@ -25,7 +26,6 @@ import viewWriter from '/ckeditor5/engine/view/writer.js';
 import count from '/ckeditor5/utils/count.js';
 import { parse as viewParse, stringify as viewStringify } from '/tests/engine/_utils/view.js';
 import { convertRangeSelection, convertCollapsedSelection } from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
-import { convertText, convertToModelFragment } from '/ckeditor5/engine/conversion/view-to-model-converters.js';
 
 // Test utils uses `<$text foo="bar">Lorem ipsum</$text>` notation to create text with attributes, but `$text` is not
 // valid XML element name, so needs to be parsed before conversion to view.
@@ -238,8 +238,8 @@ export function parse( data, schema, mapper = new Mapper() ) {
 	// Setup view -> model converter.
 	const viewToModel = new ViewConversionDispatcher( { mapper, schema } );
 
-	viewToModel.on( 'text', convertText() );
-	viewToModel.on( `element:${ VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT }`, convertToModelTextWithAttributes(), null, 9999 );
+	viewToModel.on( 'text', convertToModelText() );
+	viewToModel.on( `element:${ VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT }`, convertToModelText( true ), null, 9999 );
 	viewToModel.on( 'element', convertToModelElement(), null, 9999 );
 	viewToModel.on( 'documentFragment', convertToModelFragment(), null, 9999 );
 
@@ -265,6 +265,18 @@ export function parse( data, schema, mapper = new Mapper() ) {
 
 // -- converters view -> model -----------------------------------------------------
 
+function convertToModelFragment() {
+	return ( evt, data, consumable, conversionApi ) => {
+		// Second argument in `consumable.test` is discarded for ViewDocumentFragment but is needed for ViewElement.
+		if ( !data.output && consumable.test( data.input, { name: true } ) ) {
+			const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
+
+			data.output = new ModelDocumentFragment( modelWriter.normalizeNodes( convertedChildren ) );
+			conversionApi.mapper.bindElements( data.output, data.input );
+		}
+	};
+}
+
 function convertToModelElement() {
 	return ( evt, data, consumable, conversionApi ) => {
 		const schemaQuery = {
@@ -280,7 +292,6 @@ function convertToModelElement() {
 
 			if ( consumable.consume( data.input, { name: true } ) ) {
 				data.output = new ModelElement( data.input.name, data.input.getAttributes() );
-
 				conversionApi.mapper.bindElements( data.output, data.input );
 
 				data.context.push( data.output );
@@ -291,7 +302,7 @@ function convertToModelElement() {
 	};
 }
 
-function convertToModelTextWithAttributes() {
+function convertToModelText( withAttributes = false ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		const schemaQuery = {
 			name: '$text',
@@ -304,7 +315,15 @@ function convertToModelTextWithAttributes() {
 
 		if ( conversionApi.schema.check( schemaQuery ) ) {
 			if ( consumable.consume( data.input, { name: true } ) ) {
-				data.output = new ModelText( data.input.getChild( 0 ).data, data.input.getAttributes() );
+				let node;
+
+				if ( withAttributes ) {
+					node = new ModelText( data.input.getChild( 0 ).data, data.input.getAttributes() );
+				} else {
+					node = new ModelText( data.input.data );
+				}
+
+				data.output = node;
 			}
 		}
 	};
