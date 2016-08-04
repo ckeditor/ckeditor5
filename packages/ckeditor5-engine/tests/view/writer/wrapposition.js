@@ -41,16 +41,16 @@ describe( 'wrapPosition', () => {
 	it( 'should wrap position at the beginning of text node', () => {
 		test(
 			'<container:p>{}foobar</container:p>',
-			'<attribute:b:1></attribute:b:1>',
-			'<container:p><attribute:b:1>[]</attribute:b:1>foobar</container:p>'
+			'<attribute:b view-priority="1"></attribute:b>',
+			'<container:p><attribute:b view-priority="1">[]</attribute:b>foobar</container:p>'
 		);
 	} );
 
 	it( 'should wrap position inside text node', () => {
 		test(
 			'<container:p>foo{}bar</container:p>',
-			'<attribute:b:1></attribute:b:1>',
-			'<container:p>foo<attribute:b:1>[]</attribute:b:1>bar</container:p>'
+			'<attribute:b view-priority="1"></attribute:b>',
+			'<container:p>foo<attribute:b view-priority="1">[]</attribute:b>bar</container:p>'
 		);
 	} );
 
@@ -64,61 +64,62 @@ describe( 'wrapPosition', () => {
 
 	it( 'should wrap position inside document fragment', () => {
 		test(
-			'<attribute:b:1>foo</attribute:b:1>[]<attribute:b:3>bar</attribute:b:3>',
-			'<attribute:b:2></attribute:b:2>',
-			'<attribute:b:1>foo</attribute:b:1><attribute:b:2>[]</attribute:b:2><attribute:b:3>bar</attribute:b:3>'
+			'<attribute:b view-priority="1">foo</attribute:b>[]<attribute:b view-priority="3">bar</attribute:b>',
+			'<attribute:b view-priority="2"></attribute:b>',
+			'<attribute:b view-priority="1">foo</attribute:b><attribute:b view-priority="2">[]</attribute:b>' +
+			'<attribute:b view-priority="3">bar</attribute:b>'
 		);
 	} );
 
 	it( 'should wrap position at the end of text node', () => {
 		test(
 			'<container:p>foobar{}</container:p>',
-			'<attribute:b:1></attribute:b:1>',
-			'<container:p>foobar<attribute:b:1>[]</attribute:b:1></container:p>'
+			'<attribute:b view-priority="1"></attribute:b>',
+			'<container:p>foobar<attribute:b view-priority="1">[]</attribute:b></container:p>'
 		);
 	} );
 
 	it( 'should merge with existing attributes #1', () => {
 		test(
-			'<container:p><attribute:b:1>foo</attribute:b:1>[]</container:p>',
-			'<attribute:b:1></attribute:b:1>',
-			'<container:p><attribute:b:1>foo{}</attribute:b:1></container:p>'
+			'<container:p><attribute:b view-priority="1">foo</attribute:b:1>[]</container:p>',
+			'<attribute:b view-priority="1"></attribute:b>',
+			'<container:p><attribute:b view-priority="1">foo{}</attribute:b></container:p>'
 		);
 	} );
 
 	it( 'should merge with existing attributes #2', () => {
 		test(
-			'<container:p>[]<attribute:b:1>foo</attribute:b:1></container:p>',
-			'<attribute:b:1></attribute:b:1>',
-			'<container:p><attribute:b:1>{}foo</attribute:b:1></container:p>'
+			'<container:p>[]<attribute:b view-priority="1">foo</attribute:b></container:p>',
+			'<attribute:b view-priority="1"></attribute:b>',
+			'<container:p><attribute:b view-priority="1">{}foo</attribute:b></container:p>'
 		);
 	} );
 
 	it( 'should wrap when inside nested attributes', () => {
 		test(
-			'<container:p><attribute:b:1>foo{}bar</attribute:b:1></container:p>',
-			'<attribute:u:1></attribute:u:1>',
+			'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>',
+			'<attribute:u view-priority="1"></attribute:u>',
 			'<container:p>' +
-				'<attribute:b:1>foo</attribute:b:1>' +
-				'<attribute:u:1><attribute:b:1>[]</attribute:b:1></attribute:u:1>' +
-				'<attribute:b:1>bar</attribute:b:1>' +
+				'<attribute:b view-priority="1">foo</attribute:b>' +
+				'<attribute:u view-priority="1"><attribute:b view-priority="1">[]</attribute:b></attribute:u>' +
+				'<attribute:b view-priority="1">bar</attribute:b>' +
 			'</container:p>'
 		);
 	} );
 
 	it( 'should merge when wrapping between same attribute', () => {
 		test(
-			'<container:p><attribute:b:1>foo</attribute:b:1>[]<attribute:b:1>bar</attribute:b:1></container:p>',
-			'<attribute:b:1></attribute:b:1>',
-			'<container:p><attribute:b:1>foo{}bar</attribute:b:1></container:p>'
+			'<container:p><attribute:b view-priority="1">foo</attribute:b>[]<attribute:b view-priority="1">bar</attribute:b></container:p>',
+			'<attribute:b view-priority="1"></attribute:b>',
+			'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>'
 		);
 	} );
 
 	it( 'should move position to text node if in same attribute', () => {
 		test(
-			'<container:p><attribute:b:1>foobar[]</attribute:b:1></container:p>',
-			'<attribute:b:1></attribute:b:1>',
-			'<container:p><attribute:b:1>foobar{}</attribute:b:1></container:p>'
+			'<container:p><attribute:b view-priority="1">foobar[]</attribute:b></container:p>',
+			'<attribute:b view-priority="1"></attribute:b>',
+			'<container:p><attribute:b view-priority="1">foobar{}</attribute:b></container:p>'
 		);
 	} );
 } );

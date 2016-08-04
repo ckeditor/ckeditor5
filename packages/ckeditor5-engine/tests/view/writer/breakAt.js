@@ -47,55 +47,67 @@ describe( 'writer', () => {
 
 		it( 'should split attribute element', () => {
 			test(
-				'<container:p><attribute:b:1>foo{}bar</attribute:b:1></container:p>',
-				'<container:p><attribute:b:1>foo</attribute:b:1>[]<attribute:b:1>bar</attribute:b:1></container:p>'
+				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>',
+				'<container:p>' +
+					'<attribute:b view-priority="1">foo</attribute:b>[]<attribute:b view-priority="1">bar</attribute:b>' +
+				'</container:p>'
 			);
 		} );
 
 		it( 'should move from beginning of the nested text node to the container', () => {
 			test(
-				'<container:p><attribute:b:1><attribute:u:1>{}foobar</attribute:u:1></attribute:b:1></container:p>',
-				'<container:p>[]<attribute:b:1><attribute:u:1>foobar</attribute:u:1></attribute:b:1></container:p>'
+				'<container:p>' +
+					'<attribute:b view-priority="1"><attribute:u view-priority="1">{}foobar</attribute:u></attribute:b>' +
+				'</container:p>',
+				'<container:p>' +
+					'[]<attribute:b view-priority="1"><attribute:u view-priority="1">foobar</attribute:u></attribute:b>' +
+				'</container:p>'
 			);
 		} );
 
 		it( 'should stick selection in text node if it is in container', () => {
 			test(
-				'<container:p>foo{}<attribute:b:1>bar</attribute:b:1></container:p>',
-				'<container:p>foo{}<attribute:b:1>bar</attribute:b:1></container:p>'
+				'<container:p>foo{}<attribute:b view-priority="1">bar</attribute:b></container:p>',
+				'<container:p>foo{}<attribute:b view-priority="1">bar</attribute:b></container:p>'
 			);
 		} );
 
 		it( 'should split nested attributes', () => {
 			test(
-				'<container:p><attribute:b:1><attribute:u:1>foo{}bar</attribute:u:1></attribute:b:1></container:p>',
 				'<container:p>' +
-					'<attribute:b:1>' +
-						'<attribute:u:1>' +
+					'<attribute:b view-priority="1"><attribute:u view-priority="1">foo{}bar</attribute:u></attribute:b>' +
+				'</container:p>',
+				'<container:p>' +
+					'<attribute:b view-priority="1">' +
+						'<attribute:u view-priority="1">' +
 							'foo' +
-						'</attribute:u:1>' +
-					'</attribute:b:1>' +
+						'</attribute:u>' +
+					'</attribute:b>' +
 					'[]' +
-					'<attribute:b:1>' +
-						'<attribute:u:1>' +
+					'<attribute:b view-priority="1">' +
+						'<attribute:u view-priority="1">' +
 							'bar' +
-						'</attribute:u:1>' +
-					'</attribute:b:1>' +
+						'</attribute:u>' +
+					'</attribute:b>' +
 				'</container:p>'
 			);
 		} );
 
 		it( 'should move from end of the nested text node to the container', () => {
 			test(
-				'<container:p><attribute:b:1><attribute:u:1>foobar{}</attribute:u:1></attribute:b:1></container:p>',
-				'<container:p><attribute:b:1><attribute:u:1>foobar</attribute:u:1></attribute:b:1>[]</container:p>'
+				'<container:p>' +
+					'<attribute:b view-priority="1"><attribute:u view-priority="1">foobar{}</attribute:u></attribute:b>' +
+				'</container:p>',
+				'<container:p>' +
+					'<attribute:b view-priority="1"><attribute:u view-priority="1">foobar</attribute:u></attribute:b>[]' +
+				'</container:p>'
 			);
 		} );
 
 		it( 'should split attribute element directly in document fragment', () => {
 			test(
-				'<attribute:b:1>foo{}bar</attribute:b:1>',
-				'<attribute:b:1>foo</attribute:b:1>[]<attribute:b:1>bar</attribute:b:1>'
+				'<attribute:b view-priority="1">foo{}bar</attribute:b>',
+				'<attribute:b view-priority="1">foo</attribute:b>[]<attribute:b view-priority="1">bar</attribute:b>'
 			);
 		} );
 

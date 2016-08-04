@@ -42,16 +42,16 @@ describe( 'writer', () => {
 		it( 'wraps single text node', () => {
 			test(
 				'<container:p>[foobar]</container:p>',
-				'<attribute:b:1></attribute:b:1>',
-				'<container:p>[<attribute:b:1>foobar</attribute:b:1>]</container:p>'
+				'<attribute:b view-priority="1"></attribute:b>',
+				'<container:p>[<attribute:b view-priority="1">foobar</attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'wraps single text node in document fragment', () => {
 			test(
 				'{foobar}',
-				'<attribute:b:1></attribute:b:1>',
-				'[<attribute:b:1>foobar</attribute:b:1>]'
+				'<attribute:b view-priority="1"></attribute:b>',
+				'[<attribute:b view-priority="1">foobar</attribute:b>]'
 			);
 		} );
 
@@ -94,16 +94,16 @@ describe( 'writer', () => {
 		it( 'wraps part of a single text node #1', () => {
 			test(
 				'<container:p>[foo}bar</container:p>',
-				'<attribute:b:1></attribute:b:1>',
-				'<container:p>[<attribute:b:1>foo</attribute:b:1>]bar</container:p>'
+				'<attribute:b view-priority="1"></attribute:b>',
+				'<container:p>[<attribute:b view-priority="1">foo</attribute:b>]bar</container:p>'
 			);
 		} );
 
 		it( 'wraps part of a single text node #2', () => {
 			test(
 				'<container:p>{foo}bar</container:p>',
-				'<attribute:b:1></attribute:b:1>',
-				'<container:p>[<attribute:b:1>foo</attribute:b:1>]bar</container:p>'
+				'<attribute:b view-priority="1"></attribute:b>',
+				'<container:p>[<attribute:b view-priority="1">foo</attribute:b>]bar</container:p>'
 			);
 		} );
 
@@ -118,70 +118,76 @@ describe( 'writer', () => {
 		it( 'wraps part of a single text node #3', () => {
 			test(
 				'<container:p>foo{bar}</container:p>',
-				'<attribute:b:1></attribute:b:1>',
-				'<container:p>foo[<attribute:b:1>bar</attribute:b:1>]</container:p>'
+				'<attribute:b view-priority="1"></attribute:b>',
+				'<container:p>foo[<attribute:b view-priority="1">bar</attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'should not wrap inside nested containers', () => {
 			test(
 				'<container:div>[foobar<container:p>baz</container:p>]</container:div>',
-				'<attribute:b:1></attribute:b:1>',
-				'<container:div>[<attribute:b:1>foobar</attribute:b:1><container:p>baz</container:p>]</container:div>'
+				'<attribute:b view-priority="1"></attribute:b>',
+				'<container:div>[<attribute:b view-priority="1">foobar</attribute:b><container:p>baz</container:p>]</container:div>'
 			);
 		} );
 
 		it( 'wraps according to priorities', () => {
 			test(
-				'<container:p>[<attribute:u:1>foobar</attribute:u:1>]</container:p>',
-				'<attribute:b:2></attribute:b:2>',
-				'<container:p>[<attribute:u:1><attribute:b:2>foobar</attribute:b:2></attribute:u:1>]</container:p>'
+				'<container:p>[<attribute:u view-priority="1">foobar</attribute:u>]</container:p>',
+				'<attribute:b view-priority="2"></attribute:b>',
+				'<container:p>' +
+					'[<attribute:u view-priority="1"><attribute:b view-priority="2">foobar</attribute:b></attribute:u>]' +
+				'</container:p>'
 			);
 		} );
 
 		it( 'merges wrapped nodes #1', () => {
 			test(
-				'<container:p>[<attribute:b:1>foo</attribute:b:1>bar<attribute:b:1>baz</attribute:b:1>]</container:p>',
-				'<attribute:b:1></attribute:b:1>',
-				'<container:p>[<attribute:b:1>foobarbaz</attribute:b:1>]</container:p>'
+				'<container:p>' +
+					'[<attribute:b view-priority="1">foo</attribute:b>bar<attribute:b view-priority="1">baz</attribute:b>]' +
+				'</container:p>',
+				'<attribute:b view-priority="1"></attribute:b>',
+				'<container:p>[<attribute:b view-priority="1">foobarbaz</attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'merges wrapped nodes #2', () => {
 			test(
-				'<container:p><attribute:b:1>foo</attribute:b:1>[bar}baz</container:p>',
-				'<attribute:b:1></attribute:b:1>',
-				'<container:p><attribute:b:1>foo{bar</attribute:b:1>]baz</container:p>'
+				'<container:p><attribute:b view-priority="1">foo</attribute:b>[bar}baz</container:p>',
+				'<attribute:b view-priority="1"></attribute:b>',
+				'<container:p><attribute:b view-priority="1">foo{bar</attribute:b>]baz</container:p>'
 			);
 		} );
 
 		it( 'merges wrapped nodes #3', () => {
 			test(
-				'<container:p><attribute:b:1>foobar</attribute:b:1>[baz]</container:p>',
-				'<attribute:b:1></attribute:b:1>',
-				'<container:p><attribute:b:1>foobar{baz</attribute:b:1>]</container:p>'
+				'<container:p><attribute:b view-priority="1">foobar</attribute:b>[baz]</container:p>',
+				'<attribute:b view-priority="1"></attribute:b>',
+				'<container:p><attribute:b view-priority="1">foobar{baz</attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'merges wrapped nodes #4', () => {
 			test(
-				'<container:p>[foo<attribute:i:1>bar</attribute:i:1>]baz</container:p>',
-				'<attribute:b:1></attribute:b:1>',
-				'<container:p>[<attribute:b:1>foo<attribute:i:1>bar</attribute:i:1></attribute:b:1>]baz</container:p>'
+				'<container:p>[foo<attribute:i view-priority="1">bar</attribute:i>]baz</container:p>',
+				'<attribute:b view-priority="1"></attribute:b>',
+				'<container:p>' +
+					'[<attribute:b view-priority="1">foo<attribute:i view-priority="1">bar</attribute:i></attribute:b>]baz' +
+				'</container:p>'
 			);
 		} );
 
 		it( 'merges wrapped nodes #5', () => {
 			test(
-				'<container:p>[foo<attribute:i:1>bar</attribute:i:1>baz]</container:p>',
-				'<attribute:b:2></attribute:b:2>',
+				'<container:p>[foo<attribute:i view-priority="1">bar</attribute:i>baz]</container:p>',
+				'<attribute:b view-priority="2"></attribute:b>',
 				'<container:p>' +
 				'[' +
-					'<attribute:b:2>foo</attribute:b:2>' +
-					'<attribute:i:1>' +
-						'<attribute:b:2>bar</attribute:b:2>' +
-					'</attribute:i:1>' +
-					'<attribute:b:2>baz</attribute:b:2>' +
+					'<attribute:b view-priority="2">foo</attribute:b>' +
+					'<attribute:i view-priority="1">' +
+						'<attribute:b view-priority="2">bar</attribute:b>' +
+					'</attribute:i>' +
+					'<attribute:b view-priority="2">baz</attribute:b>' +
 				']' +
 				'</container:p>'
 			);
@@ -189,45 +195,47 @@ describe( 'writer', () => {
 
 		it( 'should wrap single element by merging attributes', () => {
 			test(
-				'<container:p>[<attribute:b:1 foo="bar" one="two"></attribute:b:1>]</container:p>',
-				'<attribute:b:1 baz="qux" one="two"></attribute:b:1>',
-				'<container:p>[<attribute:b:1 baz="qux" foo="bar" one="two"></attribute:b:1>]</container:p>'
+				'<container:p>[<attribute:b view-priority="1" foo="bar" one="two"></attribute:b>]</container:p>',
+				'<attribute:b view-priority="1" baz="qux" one="two"></attribute:b>',
+				'<container:p>[<attribute:b view-priority="1" baz="qux" foo="bar" one="two"></attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'should not merge attributes when they differ', () => {
 			test(
-				'<container:p>[<attribute:b:1 foo="bar"></attribute:b:1>]</container:p>',
-				'<attribute:b:1 foo="baz"></attribute:b:1>',
-				'<container:p>[<attribute:b:1 foo="baz"><attribute:b:1 foo="bar"></attribute:b:1></attribute:b:1>]</container:p>'
+				'<container:p>[<attribute:b view-priority="1" foo="bar"></attribute:b>]</container:p>',
+				'<attribute:b view-priority="1" foo="baz"></attribute:b>',
+				'<container:p>' +
+					'[<attribute:b view-priority="1" foo="baz"><attribute:b view-priority="1" foo="bar"></attribute:b></attribute:b>]' +
+				'</container:p>'
 			);
 		} );
 
 		it( 'should wrap single element by merging classes', () => {
 			test(
-				'<container:p>[<attribute:b:1 class="foo bar baz"></attribute:b:1>]</container:p>',
-				'<attribute:b:1 class="foo bar qux jax"></attribute:b:1>',
-				'<container:p>[<attribute:b:1 class="foo bar baz qux jax"></attribute:b:1>]</container:p>'
+				'<container:p>[<attribute:b view-priority="1" class="foo bar baz"></attribute:b>]</container:p>',
+				'<attribute:b view-priority="1" class="foo bar qux jax"></attribute:b>',
+				'<container:p>[<attribute:b view-priority="1" class="foo bar baz qux jax"></attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'should wrap single element by merging styles', () => {
 			test(
-				'<container:p>[<attribute:b:1 style="color:red; position: absolute;"></attribute:b:1>]</container:p>',
-				'<attribute:b:1 style="color:red; top: 20px;"></attribute:b:1>',
-				'<container:p>[<attribute:b:1 style="color:red;position:absolute;top:20px;"></attribute:b:1>]</container:p>'
+				'<container:p>[<attribute:b view-priority="1" style="color:red; position: absolute;"></attribute:b>]</container:p>',
+				'<attribute:b view-priority="1" style="color:red; top: 20px;"></attribute:b>',
+				'<container:p>[<attribute:b view-priority="1" style="color:red;position:absolute;top:20px;"></attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'should not merge styles when they differ', () => {
 			test(
-				'<container:p>[<attribute:b:1 style="color:red;"></attribute:b:1>]</container:p>',
-				'<attribute:b:1 style="color:black;"></attribute:b:1>',
+				'<container:p>[<attribute:b view-priority="1" style="color:red;"></attribute:b>]</container:p>',
+				'<attribute:b view-priority="1" style="color:black;"></attribute:b>',
 				'<container:p>' +
 				'[' +
-					'<attribute:b:1 style="color:black;">' +
-						'<attribute:b:1 style="color:red;"></attribute:b:1>' +
-					'</attribute:b:1>' +
+					'<attribute:b view-priority="1" style="color:black;">' +
+						'<attribute:b view-priority="1" style="color:red;"></attribute:b>' +
+					'</attribute:b>' +
 				']' +
 				'</container:p>'
 			);
@@ -235,27 +243,29 @@ describe( 'writer', () => {
 
 		it( 'should not merge single elements when they have different priority', () => {
 			test(
-				'<container:p>[<attribute:b:2 style="color:red;"></attribute:b:2>]</container:p>',
-				'<attribute:b:1 style="color:red;"></attribute:b:1>',
+				'<container:p>[<attribute:b view-priority="2" style="color:red;"></attribute:b>]</container:p>',
+				'<attribute:b view-priority="1" style="color:red;"></attribute:b>',
 				'<container:p>' +
 				'[' +
-					'<attribute:b:1 style="color:red;">' +
-						'<attribute:b:2 style="color:red;"></attribute:b:2>' +
-					'</attribute:b:1>' +
+					'<attribute:b view-priority="1" style="color:red;">' +
+						'<attribute:b view-priority="2" style="color:red;"></attribute:b>' +
+					'</attribute:b>' +
 				']</container:p>'
 			);
 		} );
 
 		it( 'should be merged with outside element when wrapping all children', () => {
 			test(
-				'<container:p><attribute:b:1 foo="bar">[foobar<attribute:i:1>baz</attribute:i:1>]</attribute:b:1></container:p>',
-				'<attribute:b:1 baz="qux"></attribute:b:1>',
+				'<container:p>' +
+					'<attribute:b view-priority="1" foo="bar">[foobar<attribute:i view-priority="1">baz</attribute:i>]</attribute:b>' +
+				'</container:p>',
+				'<attribute:b view-priority="1" baz="qux"></attribute:b>',
 				'<container:p>' +
 				'[' +
-					'<attribute:b:1 baz="qux" foo="bar">' +
+					'<attribute:b view-priority="1" baz="qux" foo="bar">' +
 						'foobar' +
-						'<attribute:i:1>baz</attribute:i:1>' +
-					'</attribute:b:1>' +
+						'<attribute:i view-priority="1">baz</attribute:i>' +
+					'</attribute:b>' +
 				']' +
 				'</container:p>'
 			);

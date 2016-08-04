@@ -34,7 +34,7 @@ describe( 'writer', () => {
 		it( 'should do nothing on collapsed ranges', () => {
 			test(
 				'<container:p>f{}oo</container:p>',
-				'<attribute:b:10></attribute:b:10>',
+				'<attribute:b view-priority="10"></attribute:b>',
 				'<container:p>f{}oo</container:p>'
 			);
 		} );
@@ -42,7 +42,7 @@ describe( 'writer', () => {
 		it( 'should do nothing on single text node', () => {
 			test(
 				'<container:p>[foobar]</container:p>',
-				'<attribute:b:1></attribute:b:1>',
+				'<attribute:b view-priority="1"></attribute:b>',
 				'<container:p>[foobar]</container:p>'
 			);
 		} );
@@ -85,17 +85,17 @@ describe( 'writer', () => {
 
 		it( 'should unwrap single node', () => {
 			test(
-				'<container:p>[<attribute:b:1>foobar</attribute:b:1>]</container:p>',
-				'<attribute:b:1></attribute:b:1>',
+				'<container:p>[<attribute:b view-priority="1">foobar</attribute:b>]</container:p>',
+				'<attribute:b view-priority="1"></attribute:b>',
 				'<container:p>[foobar]</container:p>'
 			);
 		} );
 
 		it( 'should not unwrap attributes with different priorities #1', () => {
 			test(
-				'<container:p>[<attribute:b:1>foobar</attribute:b:1>]</container:p>',
-				'<attribute:b:2></attribute:b:2>',
-				'<container:p>[<attribute:b:1>foobar</attribute:b:1>]</container:p>'
+				'<container:p>[<attribute:b view-priority="1">foobar</attribute:b>]</container:p>',
+				'<attribute:b view-priority="2"></attribute:b>',
+				'<container:p>[<attribute:b view-priority="1">foobar</attribute:b>]</container:p>'
 			);
 		} );
 
@@ -103,21 +103,21 @@ describe( 'writer', () => {
 			test(
 				'<container:p>' +
 				'[' +
-					'<attribute:b:2>foo</attribute:b:2>' +
-					'<attribute:b:1>bar</attribute:b:1>' +
-					'<attribute:b:2>baz</attribute:b:2>' +
+					'<attribute:b view-priority="2">foo</attribute:b>' +
+					'<attribute:b view-priority="1">bar</attribute:b>' +
+					'<attribute:b view-priority="2">baz</attribute:b>' +
 				']' +
 				'</container:p>',
-				'<attribute:b:2></attribute:b:2>',
-				'<container:p>[foo<attribute:b:1>bar</attribute:b:1>baz]</container:p>'
+				'<attribute:b view-priority="2"></attribute:b>',
+				'<container:p>[foo<attribute:b view-priority="1">bar</attribute:b>baz]</container:p>'
 			);
 		} );
 
 		it( 'should unwrap part of the node', () => {
 			test(
-				'<container:p>[baz<attribute:b:1>foo}bar</attribute:b:1>',
-				'<attribute:b:1></attribute:b:1>',
-				'<container:p>[bazfoo]<attribute:b:1>bar</attribute:b:1></container:p>'
+				'<container:p>[baz<attribute:b view-priority="1">foo}bar</attribute:b>',
+				'<attribute:b view-priority="1"></attribute:b>',
+				'<container:p>[bazfoo]<attribute:b view-priority="1">bar</attribute:b></container:p>'
 			);
 		} );
 
@@ -131,16 +131,16 @@ describe( 'writer', () => {
 
 		it( 'should unwrap nested attributes', () => {
 			test(
-				'<container:p>[<attribute:u:1><attribute:b:1>foobar</attribute:b:1></attribute:u:1>]</container:p>',
-				'<attribute:b:1></attribute:b:1>',
-				'<container:p>[<attribute:u:1>foobar</attribute:u:1>]</container:p>'
+				'<container:p>[<attribute:u view-priority="1"><attribute:b view-priority="1">foobar</attribute:b></attribute:u>]</container:p>',
+				'<attribute:b view-priority="1"></attribute:b>',
+				'<container:p>[<attribute:u view-priority="1">foobar</attribute:u>]</container:p>'
 			);
 		} );
 
 		it( 'should merge unwrapped nodes #1', () => {
 			test(
-				'<container:p>foo[<attribute:b:1>bar</attribute:b:1>]baz</container:p>',
-				'<attribute:b:1></attribute:b:1>',
+				'<container:p>foo[<attribute:b view-priority="1">bar</attribute:b>]baz</container:p>',
+				'<attribute:b view-priority="1"></attribute:b>',
 				'<container:p>foo{bar}baz</container:p>'
 			);
 		} );
@@ -148,15 +148,15 @@ describe( 'writer', () => {
 		it( 'should merge unwrapped nodes #2', () => {
 			const input = '<container:p>' +
 			'foo' +
-				'<attribute:u:1>bar</attribute:u:1>' +
+				'<attribute:u view-priority="1">bar</attribute:u>' +
 				'[' +
-				'<attribute:b:1>' +
-					'<attribute:u:1>bazqux</attribute:u:1>' +
-				'</attribute:b:1>' +
+				'<attribute:b view-priority="1">' +
+					'<attribute:u view-priority="1">bazqux</attribute:u>' +
+				'</attribute:b>' +
 				']' +
 			'</container:p>';
-			const attribute = '<attribute:b:1></attribute:b:1>';
-			const result = '<container:p>foo<attribute:u:1>bar{bazqux</attribute:u:1>]</container:p>';
+			const attribute = '<attribute:b view-priority="1"></attribute:b>';
+			const result = '<container:p>foo<attribute:u view-priority="1">bar{bazqux</attribute:u>]</container:p>';
 
 			test( input, attribute, result );
 		} );
@@ -164,19 +164,19 @@ describe( 'writer', () => {
 		it( 'should merge unwrapped nodes #3', () => {
 			const input = '<container:p>' +
 				'foo' +
-				'<attribute:u:1>bar</attribute:u:1>' +
+				'<attribute:u view-priority="1">bar</attribute:u>' +
 				'[' +
-				'<attribute:b:1>' +
-					'<attribute:u:1>baz}qux</attribute:u:1>' +
-				'</attribute:b:1>' +
+				'<attribute:b view-priority="1">' +
+					'<attribute:u view-priority="1">baz}qux</attribute:u>' +
+				'</attribute:b>' +
 			'</container:p>';
-			const attribute = '<attribute:b:1></attribute:b:1>';
+			const attribute = '<attribute:b view-priority="1"></attribute:b>';
 			const result = '<container:p>' +
 				'foo' +
-				'<attribute:u:1>bar{baz</attribute:u:1>]' +
-				'<attribute:b:1>' +
-					'<attribute:u:1>qux</attribute:u:1>' +
-				'</attribute:b:1>' +
+				'<attribute:u view-priority="1">bar{baz</attribute:u>]' +
+				'<attribute:b view-priority="1">' +
+					'<attribute:u view-priority="1">qux</attribute:u>' +
+				'</attribute:b>' +
 			'</container:p>';
 
 			test( input, attribute, result );
@@ -185,18 +185,18 @@ describe( 'writer', () => {
 		it( 'should merge unwrapped nodes #4', () => {
 			const input = '<container:p>' +
 				'foo' +
-				'<attribute:u:1>bar</attribute:u:1>' +
+				'<attribute:u view-priority="1">bar</attribute:u>' +
 				'[' +
-				'<attribute:b:1>' +
-					'<attribute:u:1>baz</attribute:u:1>' +
-				'</attribute:b:1>' +
+				'<attribute:b view-priority="1">' +
+					'<attribute:u view-priority="1">baz</attribute:u>' +
+				'</attribute:b>' +
 				']' +
-				'<attribute:u:1>qux</attribute:u:1>' +
+				'<attribute:u view-priority="1">qux</attribute:u>' +
 			'</container:p>';
-			const attribute = '<attribute:b:1></attribute:b:1>';
+			const attribute = '<attribute:b view-priority="1"></attribute:b>';
 			const result = '<container:p>' +
 				'foo' +
-				'<attribute:u:1>bar{baz}qux</attribute:u:1>' +
+				'<attribute:u view-priority="1">bar{baz}qux</attribute:u>' +
 			'</container:p>';
 
 			test( input, attribute, result );
@@ -205,13 +205,13 @@ describe( 'writer', () => {
 		it( 'should merge unwrapped nodes #5', () => {
 			const input = '<container:p>' +
 				'[' +
-				'<attribute:b:1><attribute:u:1>foo</attribute:u:1></attribute:b:1>' +
-				'<attribute:b:1><attribute:u:1>bar</attribute:u:1></attribute:b:1>' +
-				'<attribute:b:1><attribute:u:1>baz</attribute:u:1></attribute:b:1>' +
+				'<attribute:b view-priority="1"><attribute:u view-priority="1">foo</attribute:u></attribute:b>' +
+				'<attribute:b view-priority="1"><attribute:u view-priority="1">bar</attribute:u></attribute:b>' +
+				'<attribute:b view-priority="1"><attribute:u view-priority="1">baz</attribute:u></attribute:b>' +
 				']' +
 			'</container:p>';
-			const attribute = '<attribute:b:1></attribute:b:1>';
-			const result = '<container:p>[<attribute:u:1>foobarbaz</attribute:u:1>]</container:p>';
+			const attribute = '<attribute:b view-priority="1"></attribute:b>';
+			const result = '<container:p>[<attribute:u view-priority="1">foobarbaz</attribute:u>]</container:p>';
 
 			test( input, attribute, result );
 		} );
@@ -219,76 +219,82 @@ describe( 'writer', () => {
 		it( 'should unwrap mixed ranges #1', () => {
 			const input = '<container:p>' +
 				'[' +
-				'<attribute:u:1>' +
-					'<attribute:b:1>foo]</attribute:b:1>' +
-				'</attribute:u:1>' +
+				'<attribute:u view-priority="1">' +
+					'<attribute:b view-priority="1">foo]</attribute:b>' +
+				'</attribute:u>' +
 			'</container:p>';
-			const attribute = '<attribute:b:1></attribute:b:1>';
-			const result = '<container:p>[<attribute:u:1>foo</attribute:u:1>]</container:p>';
+			const attribute = '<attribute:b view-priority="1"></attribute:b>';
+			const result = '<container:p>[<attribute:u view-priority="1">foo</attribute:u>]</container:p>';
 
 			test( input, attribute, result );
 		} );
 
 		it( 'should unwrap mixed ranges #2', () => {
 			test(
-				'<container:p>[<attribute:u:1><attribute:b:1>foo}</attribute:b:1></attribute:u></container:p>',
-				'<attribute:b:1></attribute:b:1>',
-				'<container:p>[<attribute:u:1>foo</attribute:u:1>]</container:p>'
+				'<container:p>[<attribute:u view-priority="1"><attribute:b view-priority="1">foo}</attribute:b></attribute:u></container:p>',
+				'<attribute:b view-priority="1"></attribute:b>',
+				'<container:p>[<attribute:u view-priority="1">foo</attribute:u>]</container:p>'
 			);
 		} );
 
 		it( 'should unwrap single element by removing matching attributes', () => {
 			test(
-				'<container:p>[<attribute:b:1 foo="bar" baz="qux">test</attribute:b:1>]</container:p>',
-				'<attribute:b:1 baz="qux"></attribute:b:1>',
-				'<container:p>[<attribute:b:1 foo="bar">test</attribute:b:1>]</container:p>'
+				'<container:p>[<attribute:b view-priority="1" foo="bar" baz="qux">test</attribute:b>]</container:p>',
+				'<attribute:b view-priority="1" baz="qux"></attribute:b>',
+				'<container:p>[<attribute:b view-priority="1" foo="bar">test</attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'should not unwrap single element when attributes are different', () => {
 			test(
-				'<container:p>[<attribute:b:1 baz="qux" foo="bar">test</attribute:b:1>]</container:p>',
-				'<attribute:b:1 baz="qux" test="true"></attribute:b:1>',
-				'<container:p>[<attribute:b:1 baz="qux" foo="bar">test</attribute:b:1>]</container:p>'
+				'<container:p>[<attribute:b view-priority="1" baz="qux" foo="bar">test</attribute:b>]</container:p>',
+				'<attribute:b baz="qux" test="true"></attribute:b view-priority="1">',
+				'<container:p>[<attribute:b view-priority="1" baz="qux" foo="bar">test</attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'should unwrap single element by removing matching classes', () => {
 			test(
-				'<container:p>[<attribute:b:1 class="foo bar baz">test</attribute:b:1>]</container:p>',
-				'<attribute:b:1 class="baz foo"></attribute:b:1>',
-				'<container:p>[<attribute:b:1 class="bar">test</attribute:b:1>]</container:p>'
+				'<container:p>[<attribute:b view-priority="1" class="foo bar baz">test</attribute:b>]</container:p>',
+				'<attribute:b view-priority="1" class="baz foo"></attribute:b>',
+				'<container:p>[<attribute:b view-priority="1" class="bar">test</attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'should not unwrap single element when classes are different', () => {
 			test(
-				'<container:p>[<attribute:b:1 class="foo bar baz">test</attribute:b:1>]</container:p>',
-				'<attribute:b:1 class="baz foo qux"></attribute:b:1>',
-				'<container:p>[<attribute:b:1 class="foo bar baz">test</attribute:b:1>]</container:p>'
+				'<container:p>[<attribute:b view-priority="1" class="foo bar baz">test</attribute:b>]</container:p>',
+				'<attribute:b view-priority="1" class="baz foo qux"></attribute:b>',
+				'<container:p>[<attribute:b view-priority="1" class="foo bar baz">test</attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'should unwrap single element by removing matching styles', () => {
 			test(
-				'<container:p>[<attribute:b:1 style="color:red;position:absolute;top:10px;">test</attribute:b:1>]</container:p>',
-				'<attribute:b:1 style="position: absolute;"></attribute:b:1>',
-				'<container:p>[<attribute:b:1 style="color:red;top:10px;">test</attribute:b:1>]</container:p>'
+				'<container:p>' +
+					'[<attribute:b view-priority="1" style="color:red;position:absolute;top:10px;">test</attribute:b>]' +
+				'</container:p>',
+				'<attribute:b view-priority="1" style="position: absolute;"></attribute:b>',
+				'<container:p>[<attribute:b view-priority="1" style="color:red;top:10px;">test</attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'should not unwrap single element when styles are different', () => {
 			test(
-				'<container:p>[<attribute:b:1 style="color:red;position:absolute;top:10px;">test</attribute:b:1>]</container:p>',
-				'<attribute:b:1 style="position: relative;"></attribute:b:1>',
-				'<container:p>[<attribute:b:1 style="color:red;position:absolute;top:10px;">test</attribute:b:1>]</container:p>'
+				'<container:p>' +
+					'[<attribute:b view-priority="1" style="color:red;position:absolute;top:10px;">test</attribute:b>]' +
+				'</container:p>',
+				'<attribute:b view-priority="1" style="position: relative;"></attribute:b>',
+				'<container:p>' +
+					'[<attribute:b view-priority="1" style="color:red;position:absolute;top:10px;">test</attribute:b>]' +
+				'</container:p>'
 			);
 		} );
 
 		it( 'should unwrap single node in document fragment', () => {
 			test(
-				'<container:p>[<attribute:b:1>foobar</attribute:b:1>]</container:p>',
-				'<attribute:b:1></attribute:b:1>',
+				'<container:p>[<attribute:b view-priority="1">foobar</attribute:b>]</container:p>',
+				'<attribute:b view-priority="1"></attribute:b>',
 				'<container:p>[foobar]</container:p>'
 			);
 		} );

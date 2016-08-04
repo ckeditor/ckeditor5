@@ -65,8 +65,8 @@ describe( 'writer', () => {
 		it( 'should break attributes when inserting into text node', () => {
 			test(
 				'<container:p>foo{}bar</container:p>',
-				[ '<attribute:b:1>baz</attribute:b:1>' ],
-				'<container:p>foo[<attribute:b:1>baz</attribute:b:1>]bar</container:p>'
+				[ '<attribute:b view-priority="1">baz</attribute:b>' ],
+				'<container:p>foo[<attribute:b view-priority="1">baz</attribute:b>]bar</container:p>'
 			);
 		} );
 
@@ -80,28 +80,28 @@ describe( 'writer', () => {
 
 		it( 'should merge same attribute nodes', () => {
 			test(
-				'<container:p><attribute:b:1>foo{}bar</attribute:b:1></container:p>',
-				[ '<attribute:b:1>baz</attribute:b:1>' ],
-				'<container:p><attribute:b:1>foo{baz}bar</attribute:b:1></container:p>'
+				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>',
+				[ '<attribute:b view-priority="1">baz</attribute:b>' ],
+				'<container:p><attribute:b view-priority="1">foo{baz}bar</attribute:b></container:p>'
 			);
 		} );
 
 		it( 'should not merge different attributes', () => {
 			test(
-				'<container:p><attribute:b:1>foo{}bar</attribute:b:1></container:p>',
-				[ '<attribute:b:2>baz</attribute:b:2>' ],
+				'<container:p><attribute:b view-priority="1">foo{}bar</attribute:b></container:p>',
+				[ '<attribute:b view-priority="2">baz</attribute:b>' ],
 				'<container:p>' +
-					'<attribute:b:1>' +
+					'<attribute:b view-priority="1">' +
 						'foo' +
-					'</attribute:b:1>' +
+					'</attribute:b>' +
 					'[' +
-					'<attribute:b:2>' +
+					'<attribute:b view-priority="2">' +
 						'baz' +
-					'</attribute:b:2>' +
+					'</attribute:b>' +
 					']' +
-					'<attribute:b:1>' +
+					'<attribute:b view-priority="1">' +
 						'bar' +
-					'</attribute:b:1>' +
+					'</attribute:b>' +
 				'</container:p>'
 			);
 		} );
@@ -109,16 +109,16 @@ describe( 'writer', () => {
 		it( 'should allow to insert multiple nodes', () => {
 			test(
 				'<container:p>[]</container:p>',
-				[ '<attribute:b:1>foo</attribute:b:1>', 'bar' ],
-				'<container:p>[<attribute:b:1>foo</attribute:b:1>bar]</container:p>'
+				[ '<attribute:b view-priority="1">foo</attribute:b>', 'bar' ],
+				'<container:p>[<attribute:b view-priority="1">foo</attribute:b>bar]</container:p>'
 			);
 		} );
 
 		it( 'should merge after inserting multiple nodes', () => {
 			test(
-				'<container:p><attribute:b:1>qux</attribute:b:1>[]baz</container:p>',
-				[ '<attribute:b:1>foo</attribute:b:1>', 'bar' ],
-				'<container:p><attribute:b:1>qux{foo</attribute:b:1>bar}baz</container:p>'
+				'<container:p><attribute:b view-priority="1">qux</attribute:b>[]baz</container:p>',
+				[ '<attribute:b view-priority="1">foo</attribute:b>', 'bar' ],
+				'<container:p><attribute:b view-priority="1">qux{foo</attribute:b>bar}baz</container:p>'
 			);
 		} );
 
@@ -132,9 +132,9 @@ describe( 'writer', () => {
 
 		it( 'should merge same attribute nodes in document fragment', () => {
 			test(
-				'<attribute:b:2>foo</attribute:b:2>[]',
-				[ '<attribute:b:1>bar</attribute:b:1>' ],
-				'<attribute:b:2>foo</attribute:b:2>[<attribute:b:1>bar</attribute:b:1>]'
+				'<attribute:b view-priority="2">foo</attribute:b>[]',
+				[ '<attribute:b view-priority="1">bar</attribute:b>' ],
+				'<attribute:b view-priority="2">foo</attribute:b>[<attribute:b view-priority="1">bar</attribute:b>]'
 			);
 		} );
 
