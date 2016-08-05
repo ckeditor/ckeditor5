@@ -10,9 +10,9 @@ import ButtonView from '../ui/button/buttonview.js';
 import Model from '../ui/model.js';
 
 /**
- * The Italic feature. It introduces the `italic` button and <kbd>CTRL+I</kbd> keystroke.
+ * The italic feature. It introduces the Italic button and the <kbd>Ctrl+I</kbd> keystroke.
  *
- * It uses the {@link basic-styles.ItalicEngine Italic engine feature}.
+ * It uses the {@link basic-styles.ItalicEngine italic engine feature}.
  *
  * @memberOf basic-styles
  * @extends core.Feature
@@ -50,7 +50,7 @@ export default class Italic extends Feature {
 		// Add bold button to feature components.
 		editor.ui.featureComponents.add( 'italic', ButtonController, ButtonView, buttonModel );
 
-		// Set the CTRL+I keystroke.
+		// Set the Ctrl+I keystroke.
 		editor.keystrokes.set( 'CTRL+I', 'italic' );
 	}
 }

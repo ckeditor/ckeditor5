@@ -11,10 +11,10 @@ import AttributeCommand from '../core/command/attributecommand.js';
 const ITALIC = 'italic';
 
 /**
- * Italic engine feature.
+ * The italic engine feature.
  *
- * It registers the `italic` command and introduces the `italic` attribute in the model, which renders to the view
- * as an`<em>` element.
+ * It registers the `italic` command and introduces the `italic` attribute in the model which renders to the view
+ * as an `<em>` element.
  *
  * @memberOf basic-styles
  * @extends core.Feature

@@ -11,10 +11,10 @@ import AttributeCommand from '../core/command/attributecommand.js';
 const BOLD = 'bold';
 
 /**
- * Bold engine feature.
+ * The bold engine feature.
  *
- * It registers `bold` command and introduces `bold` attribute in the model, which renders to the view
- * as an `<strong>` element.
+ * It registers the `bold` command and introduces the `bold` attribute in the model which renders to the view
+ * as a `<strong>` element.
  *
  * @memberOf basic-styles
  * @extends core.Feature

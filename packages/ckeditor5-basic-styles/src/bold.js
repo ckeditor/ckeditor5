@@ -10,9 +10,9 @@ import ButtonView from '../ui/button/buttonview.js';
 import Model from '../ui/model.js';
 
 /**
- * The Bold feature. It introduces the `bold` button and <kbd>CTRL+B</kbd> keystroke.
+ * The bold feature. It introduces the Bold button and the <kbd>Ctrl+B</kbd> keystroke.
  *
- * It uses the {@link basic-styles.BoldEngine Bold engine feature}.
+ * It uses the {@link basic-styles.BoldEngine bold engine feature}.
  *
  * @memberOf basic-styles
  * @extends core.Feature
@@ -50,7 +50,7 @@ export default class Bold extends Feature {
 		// Add bold button to feature components.
 		editor.ui.featureComponents.add( 'bold', ButtonController, ButtonView, buttonModel );
 
-		// Set the CTRL+B keystroke.
+		// Set the Ctrl+B keystroke.
 		editor.keystrokes.set( 'CTRL+B', 'bold' );
 	}
 }
