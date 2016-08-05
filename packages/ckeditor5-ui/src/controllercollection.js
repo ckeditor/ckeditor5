@@ -144,9 +144,9 @@ export default class ControllerCollection extends Collection {
 	 * @returns {Function} The `as` function in the `bind( models ).as( ... )` chain.
 	 * It activates factory using controller and view classes or uses a custom callback to produce
 	 * controller (view) instances.
-	 * @param {Function} return.ControllerClassOrFunction Specifies the constructor of the controller to be used or
+	 * @returns {Function} return.ControllerClassOrFunction Specifies the constructor of the controller to be used or
 	 * a custom callback function which produces controllers.
-	 * @param {Function} [return.ViewClass] Specifies constructor of the view to be used. If not specified,
+	 * @returns {Function} [return.ViewClass] Specifies constructor of the view to be used. If not specified,
 	 * `ControllerClassOrFunction` works as as custom callback function.
 	 */
 	bind( models ) {
@@ -201,8 +201,8 @@ export default class ControllerCollection extends Collection {
 	 *
 	 * See {@link utils.ObservableMixin#pipe}.
 	 *
-	 * @param {String...} events {@link ui.Controller#model} event names to be piped to another {@link utils.ObservableMixin}.
-	 * @returns {ui.ControllerCollection.pipe#to}
+	 * @param {...String} events {@link ui.Controller#model} event names to be piped to another {@link utils.ObservableMixin}.
+	 * @returns {ui.ControllerCollection#pipe#to}
 	 */
 	pipe( ...events ) {
 		if ( !events.length || !isStringArray( events ) ) {
@@ -219,26 +219,20 @@ export default class ControllerCollection extends Collection {
 			 * Selects destination for {@link utils.ObservableMixin#pipe} events.
 			 *
 			 * @method ui.ControllerCollection.pipe#to
-			 * @param {ObservableMixin} destination An `ObservableMixin` instance which is the destination for piped events.
+			 * @param {utils.ObservableMixin} dest An `ObservableMixin` instance which is the destination for piped events.
 			 */
 			to: ( dest ) => {
-				const pipeEvent = evtName => {
-					return ( ...args ) => {
-						dest.fire( evtName, ...args );
-					};
-				};
-
 				// Activate piping on existing controllers in this collection.
 				for ( let controller of this ) {
 					for ( let evtName of events ) {
-						dest.listenTo( controller.model, evtName, pipeEvent( evtName ) );
+						controller.model.pipe( evtName ).to( dest );
 					}
 				}
 
 				// Activate piping on future controllers in this collection.
 				this.on( 'add', ( evt, controller ) => {
 					for ( let evtName of events ) {
-						dest.listenTo( controller.model, evtName, pipeEvent( evtName ) );
+						controller.model.pipe( evtName ).to( dest );
 					}
 				} );
 
