@@ -154,6 +154,17 @@ describe( 'view test utils', () => {
 			expect( stringify( p, selection ) ).to.equal( '<p><b>foobar</b>[<b>bazqux</b>]</p>' );
 		} );
 
+		it( 'should support unicode', () => {
+			const text = new Text( 'நிலைக்கு' );
+			const b = new Element( 'b', null, text );
+			const p = new Element( 'p', null, b );
+			const range = Range.createFromParentsAndOffsets( p, 0, text, 4 );
+			const selection = new Selection();
+			selection.addRange( range );
+
+			expect( stringify( p, selection ) ).to.equal( '<p>[<b>நிலை}க்கு</b></p>' );
+		} );
+
 		it( 'should write collapsed selection ranges inside elements', () => {
 			const text = new Text( 'foobar' );
 			const p = new Element( 'p', null, text );
@@ -442,6 +453,29 @@ describe( 'view test utils', () => {
 			const ranges = [ ...selection.getRanges() ];
 			expect( ranges[ 0 ].isEqual( Range.createFromParentsAndOffsets( view, 0, b, 1 ) ) ).to.be.true;
 			expect( ranges[ 1 ].isEqual( Range.createFromParentsAndOffsets( view, 1, view, 1 ) ) ).to.be.true;
+		} );
+
+		it( 'should support unicode', () => {
+			const { view, selection } = parse( '<p>[<b>நிலை}க்கு</b></p>' );
+
+			expect( view ).to.be.instanceof( Element );
+			expect( view.name ).to.equal( 'p' );
+			expect( view.childCount ).to.equal( 1 );
+
+			const b = view.getChild( 0 );
+			expect( b.name ).to.equal( 'b' );
+			expect( b.childCount ).to.equal( 1 );
+
+			const text = b.getChild( 0 );
+			expect( text.data ).to.equal( 'நிலைக்கு' );
+
+			expect( selection.rangeCount ).to.equal( 1 );
+			const range = selection.getFirstRange();
+
+			expect( range.start.parent ).to.equal( view );
+			expect( range.start.offset ).to.equal( 0 );
+			expect( range.end.parent ).to.equal( text );
+			expect( range.end.offset ).to.equal( 4 );
 		} );
 
 		it( 'should parse ranges #1', () => {

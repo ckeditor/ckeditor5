@@ -46,6 +46,13 @@ describe( 'model test utils', () => {
 			sinon.assert.calledWithExactly( stringifySpy, root, document.selection );
 		} );
 
+		it( 'should support unicode', () => {
+			root.appendChildren( 'நிலைக்கு' );
+			document.selection.addRange( Range.createFromParentsAndOffsets( root, 2, root, 6 ) );
+
+			expect( getData( document ) ).to.equal( 'நி<selection>லைக்</selection>கு' );
+		} );
+
 		it( 'should throw an error when passing invalid document', () => {
 			expect( () => {
 				getData( { invalid: 'document' } );
@@ -125,6 +132,10 @@ describe( 'model test utils', () => {
 		it( 'should insert backward selection', () => {
 			document.schema.registerItem( 'b', '$inline' );
 			test( '<b><selection backward>foo bar</b></selection>' );
+		} );
+
+		it( 'should support unicode', () => {
+			test( 'நி<selection>லைக்</selection>கு' );
 		} );
 
 		it( 'should throw an error when passing invalid document', () => {

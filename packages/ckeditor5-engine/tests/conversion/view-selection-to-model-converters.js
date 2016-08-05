@@ -47,7 +47,24 @@ describe( 'convertSelectionChange', () => {
 
 		convertSelection( null, { newSelection: viewSelection } );
 
-		expect( modelGetData( model ) ).to.equals( '<paragraph>f<selection />oo</paragraph><paragraph>bar</paragraph>' );
+		expect( modelGetData( model ) ).to.equal( '<paragraph>f<selection />oo</paragraph><paragraph>bar</paragraph>' );
+	} );
+
+	it( 'should support unicode', () => {
+		modelSetData( model, '<paragraph>நிலைக்கு</paragraph>' );
+		viewSetData( view, '<p>நிலைக்கு</p>' );
+
+		// Re-bind elements that were just re-set.
+		mapper.bindElements( modelRoot.getChild( 0 ), viewRoot.getChild( 0 ) );
+
+		const viewSelection = new ViewSelection();
+		viewSelection.addRange(
+			ViewRange.createFromParentsAndOffsets( viewRoot.getChild( 0 ).getChild( 0 ), 2, viewRoot.getChild( 0 ).getChild( 0 ), 6 )
+		);
+
+		convertSelection( null, { newSelection: viewSelection } );
+
+		expect( modelGetData( model ) ).to.equal( '<paragraph>நி<selection>லைக்</selection>கு</paragraph>' );
 	} );
 
 	it( 'should convert multi ranges selection', () => {
@@ -60,24 +77,24 @@ describe( 'convertSelectionChange', () => {
 		convertSelection( null, { newSelection: viewSelection } );
 
 		// Too bad getData shows only the first range.
-		expect( modelGetData( model ) ).to.equals(
+		expect( modelGetData( model ) ).to.equal(
 			'<paragraph>f<selection>o</selection>o</paragraph><paragraph>bar</paragraph>' );
 
 		const ranges = Array.from( model.selection.getRanges() );
-		expect( ranges.length ).to.equals( 2 );
+		expect( ranges.length ).to.equal( 2 );
 
-		expect( ranges[ 0 ].start.parent ).to.equals( modelRoot.getChild( 0 ) );
-		expect( ranges[ 0 ].start.offset ).to.equals( 1 );
-		expect( ranges[ 0 ].end.parent ).to.equals( modelRoot.getChild( 0 ) );
-		expect( ranges[ 0 ].end.offset ).to.equals( 2 );
+		expect( ranges[ 0 ].start.parent ).to.equal( modelRoot.getChild( 0 ) );
+		expect( ranges[ 0 ].start.offset ).to.equal( 1 );
+		expect( ranges[ 0 ].end.parent ).to.equal( modelRoot.getChild( 0 ) );
+		expect( ranges[ 0 ].end.offset ).to.equal( 2 );
 
-		expect( ranges[ 1 ].start.parent ).to.equals( modelRoot.getChild( 1 ) );
-		expect( ranges[ 1 ].start.offset ).to.equals( 1 );
-		expect( ranges[ 1 ].end.parent ).to.equals( modelRoot.getChild( 1 ) );
-		expect( ranges[ 1 ].end.offset ).to.equals( 2 );
+		expect( ranges[ 1 ].start.parent ).to.equal( modelRoot.getChild( 1 ) );
+		expect( ranges[ 1 ].start.offset ).to.equal( 1 );
+		expect( ranges[ 1 ].end.parent ).to.equal( modelRoot.getChild( 1 ) );
+		expect( ranges[ 1 ].end.offset ).to.equal( 2 );
 	} );
 
-	it( 'should convert revers selection', () => {
+	it( 'should convert reverse selection', () => {
 		const viewSelection = new ViewSelection();
 		viewSelection.addRange( ViewRange.createFromParentsAndOffsets(
 			viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 2 ), true );
@@ -85,7 +102,7 @@ describe( 'convertSelectionChange', () => {
 		convertSelection( null, { newSelection: viewSelection } );
 
 		// Too bad getData shows only the first range.
-		expect( modelGetData( model ) ).to.equals(
+		expect( modelGetData( model ) ).to.equal(
 			'<paragraph>f<selection backward>o</selection>o</paragraph><paragraph>bar</paragraph>' );
 	} );
 } );

@@ -11,6 +11,7 @@ import Composer from '/ckeditor5/engine/model/composer/composer.js';
 import RootElement from '/ckeditor5/engine/model/rootelement.js';
 import Batch from '/ckeditor5/engine/model/batch.js';
 import Delta from '/ckeditor5/engine/model/delta/delta.js';
+import Range from '/ckeditor5/engine/model/range.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import count from '/ckeditor5/utils/count.js';
 import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
@@ -223,20 +224,64 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	it( 'should update selection attributes whenever selection gets updated', () => {
-		sinon.spy( doc.selection, '_updateAttributes' );
+	describe( 'selection', () => {
+		it( 'should get updated attributes whenever selection gets updated', () => {
+			sinon.spy( doc.selection, '_updateAttributes' );
 
-		doc.selection.fire( 'change:range' );
+			doc.selection.fire( 'change:range' );
 
-		expect( doc.selection._updateAttributes.called ).to.be.true;
-	} );
+			expect( doc.selection._updateAttributes.called ).to.be.true;
+		} );
 
-	it( 'should update selection attributes whenever changes to the document are applied', () => {
-		sinon.spy( doc.selection, '_updateAttributes' );
+		it( 'should get updated attributes whenever changes to the document are applied', () => {
+			sinon.spy( doc.selection, '_updateAttributes' );
 
-		doc.fire( 'changesDone' );
+			doc.fire( 'changesDone' );
 
-		expect( doc.selection._updateAttributes.called ).to.be.true;
+			expect( doc.selection._updateAttributes.called ).to.be.true;
+		} );
+
+		it( 'should throw if one of ranges starts or ends inside surrogate pair', () => {
+			const root = doc.createRoot();
+			root.appendChildren( '\uD83D\uDCA9' );
+
+			expect( () => {
+				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 0, root, 1 ) ] );
+			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+			expect( () => {
+				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 2 ) ] );
+			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+		} );
+
+		it( 'should throw if one of ranges starts or ends between base character and combining mark', () => {
+			const root = doc.createRoot();
+			root.appendChildren( 'foo̻̐ͩbar' );
+
+			expect( () => {
+				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 3, root, 9 ) ] );
+			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+			expect( () => {
+				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 4, root, 9 ) ] );
+			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+			expect( () => {
+				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 5, root, 9 ) ] );
+			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+			expect( () => {
+				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 3 ) ] );
+			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+			expect( () => {
+				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 4 ) ] );
+			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+
+			expect( () => {
+				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 5 ) ] );
+			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+		} );
 	} );
 
 	describe( '_getDefaultRoot', () => {

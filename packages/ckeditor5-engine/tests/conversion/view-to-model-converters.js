@@ -71,6 +71,17 @@ describe( 'convertText', () => {
 		expect( result ).to.be.instanceof( ModelText );
 		expect( result.data ).to.equal( 'foobar' );
 	} );
+
+	it( 'should support unicode', () => {
+		const viewText = new ViewText( 'நிலைக்கு' );
+
+		dispatcher.on( 'text', convertText() );
+
+		const result = dispatcher.convert( viewText, objWithContext );
+
+		expect( result ).to.be.instanceof( ModelText );
+		expect( result.data ).to.equal( 'நிலைக்கு' );
+	} );
 } );
 
 describe( 'convertToModelFragment', () => {

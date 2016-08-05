@@ -66,5 +66,18 @@ describe( 'Text', () => {
 			expect( deserialized.data ).to.equal( 'foo' );
 			expect( Array.from( deserialized.getAttributes() ) ).to.deep.equal( [ [ 'bold', true ] ] );
 		} );
+
+		it( 'should support unicode', () => {
+			let textQ = new Text( 'நி' );
+			let json = jsonParseStringify( textQ );
+
+			expect( json ).to.deep.equal( {
+				data: 'நி'
+			} );
+
+			let deserialized = Text.fromJSON( json );
+
+			expect( deserialized.data ).to.equal( 'நி' );
+		} );
 	} );
 } );
