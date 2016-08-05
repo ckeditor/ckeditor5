@@ -116,7 +116,7 @@ export default class Document {
 			this.disableObservers();
 			this.renderer.render();
 			this.enableObservers();
-		}, 'normal' );
+		} );
 	}
 
 	/**

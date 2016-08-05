@@ -95,7 +95,7 @@ export default class EditingController {
 		}, 'low' );
 
 		// Convert view selection to model.
-		this._listenter.listenTo( this.view, 'selectionChange', convertSelectionChange( model, this.mapper ), 'normal' );
+		this._listenter.listenTo( this.view, 'selectionChange', convertSelectionChange( model, this.mapper ) );
 
 		// Attach default content converters.
 		this.modelToView.on( 'insert:$text', insertText(), 'lowest' );

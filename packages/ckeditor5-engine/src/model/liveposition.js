@@ -129,9 +129,7 @@ function bindWithDocument() {
 		'change',
 		( event, type, changes ) => {
 			transform.call( this, type, changes.range, changes.sourcePosition );
-		},
-		'normal',
-		this
+		}
 	);
 }
 
