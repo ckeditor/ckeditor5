@@ -11,7 +11,7 @@ import View from '/ckeditor5/ui/view.js';
 import Controller from '/ckeditor5/ui/controller.js';
 import StickyToolbar from '/ckeditor5/ui/bindings/stickytoolbar.js';
 
-import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import testUtils from '/tests/core/_utils/utils.js';
 testUtils.createSinonSandbox();
 
 describe( 'StickyToolbar', () => {
