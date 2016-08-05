@@ -5,10 +5,7 @@
 
 import EventInfo from './eventinfo.js';
 import uid from './uid.js';
-
-// Saves how many callbacks has been already added. Does not decrement when callback is removed.
-// Used internally as a unique id for a callback.
-let eventsCounter = 0;
+import priorities from './priorities.js';
 
 /**
  * Mixin that injects the events API into its host.
@@ -29,20 +26,18 @@ const EmitterMixin = {
 	 *
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
+	 * @param {utils.PriorityString|Number} [priority='normal'] The priority of this event callback. The higher
+	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
+	 * order they were added.
 	 * @param {Object} [ctx] The object that represents `this` in the callback. Defaults to the object firing the
 	 * event.
-	 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
-	 * Lower values are called first.
 	 * @method utils.EmitterMixin#on
 	 */
-	on( event, callback, ctx, priority ) {
+	on( event, callback, priority = 'normal', ctx = null ) {
 		createEventNamespace( this, event );
 		const lists = getCallbacksListsForNamespace( this, event );
 
-		// Set the priority defaults.
-		if ( typeof priority != 'number' ) {
-			priority = 10;
-		}
+		priority = priorities.get( priority );
 
 		callback = {
 			callback: callback,
@@ -52,24 +47,21 @@ const EmitterMixin = {
 
 		// Add the callback to all callbacks list.
 		for ( let callbacks of lists ) {
-			// Save counter value as unique id.
-			callback.counter = ++eventsCounter;
-
 			// Add the callback to the list in the right priority position.
 			let added = false;
 
-			for ( let i = callbacks.length - 1; i >= 0; i-- ) {
-				if ( callbacks[ i ].priority <= priority ) {
-					callbacks.splice( i + 1, 0, callback );
+			for ( let i = 0; i < callbacks.length; i++ ) {
+				if ( callbacks[ i ].priority < priority ) {
+					callbacks.splice( i, 0, callback );
 					added = true;
 
 					break;
 				}
 			}
 
-			// Add to the beginning if right place was not found.
+			// Add at the end, if right place was not found.
 			if ( !added ) {
-				callbacks.unshift( callback );
+				callbacks.push( callback );
 			}
 		}
 	},
@@ -80,13 +72,12 @@ const EmitterMixin = {
 	 *
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
+	 * @param {utils.EventPriority} [priority='normal'] The priority of this event callback.
 	 * @param {Object} [ctx] The object that represents `this` in the callback. Defaults to the object firing the
 	 * event.
-	 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
-	 * Lower values are called first.
 	 * @method utils.EmitterMixin#once
 	 */
-	once( event, callback, ctx, priority ) {
+	once( event, callback, priority, ctx ) {
 		const onceCallback = function( event ) {
 			// Go off() at the first call.
 			event.off();
@@ -96,7 +87,7 @@ const EmitterMixin = {
 		};
 
 		// Make a similar on() call, simply replacing the callback.
-		this.on( event, onceCallback, ctx, priority );
+		this.on( event, onceCallback, priority, ctx );
 	},
 
 	/**
@@ -130,12 +121,12 @@ const EmitterMixin = {
 	 * @param {utils.Emitter} emitter The object that fires the event.
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
-	 * @param {Object} [ctx] The object that represents `this` in the callback. Defaults to `emitter`.
-	 * @param {Number} [priority=10] The priority of this callback in relation to other callbacks to that same event.
-	 * Lower values are called first.
+	 * @param {utils.EventPriority} [priority='normal'] The priority of this event callback.
+	 * @param {Object} [ctx] The object that represents `this` in the callback. Defaults to the object firing the
+	 * event.
 	 * @method utils.EmitterMixin#listenTo
 	 */
-	listenTo( emitter, event, callback, ctx, priority ) {
+	listenTo( emitter, event, callback, priority, ctx ) {
 		let emitters, emitterId, emitterInfo, eventCallbacks;
 
 		// _listeningTo contains a list of emitters that this object is listening to.
@@ -174,7 +165,7 @@ const EmitterMixin = {
 		eventCallbacks.push( callback );
 
 		// Finally register the callback to the event.
-		emitter.on( event, callback, ctx, priority );
+		emitter.on( event, callback, priority, ctx );
 	},
 
 	/**
@@ -241,11 +232,18 @@ const EmitterMixin = {
 	 * @method utils.EmitterMixin#fire
 	 */
 	fire( event, args ) {
-		const callbacks = getCallbacksForEvent( this, event );
+		let callbacks = getCallbacksForEvent( this, event );
 
 		if ( !callbacks ) {
 			return;
 		}
+
+		// Copying callbacks array is the easiest and most secure way of preventing infinite loops, when event callbacks
+		// are added while processing other callbacks. Previous solution involved adding counters (unique ids) but
+		// failed if callbacks were added to the queue before currently processed callback.
+		// If this proves to be too inefficient, another method is to change `.on()` so callbacks are stored if same
+		// event is currently processed. Then, `.fire()` at the end, would have to add all stored events.
+		callbacks = Array.from( callbacks );
 
 		let eventInfo = new EventInfo( this, event );
 
@@ -253,15 +251,7 @@ const EmitterMixin = {
 		args = Array.prototype.slice.call( arguments, 1 );
 		args.unshift( eventInfo );
 
-		// Save how many callbacks were added at the moment when the event has been fired.
-		const counter = eventsCounter;
-
 		for ( let i = 0; i < callbacks.length; i++ ) {
-			// Filter out callbacks that have been added after event has been fired.
-			if ( callbacks[ i ].counter > counter ) {
-				continue;
-			}
-
 			callbacks[ i ].callback.apply( callbacks[ i ].ctx, args );
 
 			// Remove the callback from future requests if off() has been called.
@@ -269,9 +259,7 @@ const EmitterMixin = {
 				// Remove the called mark for the next calls.
 				delete eventInfo.off.called;
 
-				// Remove the callback from the list (fixing the next index).
-				callbacks.splice( i, 1 );
-				i--;
+				this.off( event, callbacks[ i ].callback, callbacks[ i ].ctx );
 			}
 
 			// Do not execute next callbacks if stop() was called.
