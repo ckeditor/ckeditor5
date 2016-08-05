@@ -45,7 +45,7 @@ gulp.task( 'exec', ckeditor5DevEnv.execOnRepositories );
 
 // Bundling tasks.
 const ckeditor5DevBundle = require( 'ckeditor5-dev-bundler-rollup' )( config );
-gulp.task( 'bundle:clean', ckeditor5DevBundle.clean );
+gulp.task( 'bundle:clean', ckeditor5DevBundle.cleanFromConfig );
 gulp.task( 'bundle:generate',
 	[
 		'bundle:clean',
@@ -54,8 +54,8 @@ gulp.task( 'bundle:generate',
 	],
 	ckeditor5DevBundle.generateFromConfig
 );
-gulp.task( 'bundle:minify:js', ckeditor5DevBundle.minify.js );
-gulp.task( 'bundle:minify:css', ckeditor5DevBundle.minify.css );
+gulp.task( 'bundle:minify:js', ckeditor5DevBundle.minify.jsFromConfig );
+gulp.task( 'bundle:minify:css', ckeditor5DevBundle.minify.cssFromConfig );
 
 gulp.task( 'bundle', ( callback ) => {
 	runSequence( 'bundle:generate',
@@ -63,7 +63,7 @@ gulp.task( 'bundle', ( callback ) => {
 			'bundle:minify:js',
 			'bundle:minify:css'
 		],
-		() => ckeditor5DevBundle.showSummary( callback )
+		() => ckeditor5DevBundle.showSummaryFromConfig( callback )
 	);
 } );
 
