@@ -126,10 +126,9 @@ setData._parse = parse;
  *
  *		stringify( p, selection ); // '<p><b>f{ooba}r</b></p>'
  *
- * NOTE:
- * Characters representing range placed inside text are customizable by `characterForSelectionInText` option.
- * It is mainly needed when view stringify function is used by model stringify util, then range
- * is represented with `[` and `]`.
+ * ** Note: **
+ * It is possible to unify selection markers to `[` and `]` for both (inside and outside text)
+ * by setting `sameSelectionCharacters=true` option. It is mainly used when view stringify option is used by model utils.
  *
  * Multiple ranges are supported:
  *
@@ -181,9 +180,8 @@ setData._parse = parse;
  * (`<span view-priority="12">`, `<b view-priority="10">`).
  * @param {Boolean} [options.ignoreRoot=false] When set to `true` root's element opening and closing will not be printed.
  * Mainly used by `getData` function to ignore {@link engine.view.Document Document's} root element.
- * @param {Array<String>} [options.characterForSelectionInText=['{','}']] At default range placed inside text is
- * represented with `{` and `}` characters, but when stringify function is used by model stringify util then characters
- * are changed to `[` and `]`.
+ * @param {Boolean} [options.sameSelectionCharacters=false] When set to `true` then selection inside text will be marked as `{` and `}`
+ * and selection outside text as `[` and `]`. When set to `false` then both will be marked as `[` and `]` only.
  * @returns {String} HTML-like string representing the view.
  */
 export function stringify( node, selectionOrPositionOrRange = null, options = {} ) {
@@ -197,10 +195,6 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
 		selection.addRange( selectionOrPositionOrRange );
 	} else {
 		selection = selectionOrPositionOrRange;
-	}
-
-	if ( !options.characterForSelectionInText ) {
-		options.characterForSelectionInText = [ TEXT_RANGE_START_TOKEN, TEXT_RANGE_END_TOKEN ];
 	}
 
 	const viewStringify = new ViewStringify( node, selection, options );
@@ -231,6 +225,10 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  * Ranges placed outside text nodes should be marked using `[` and `]` brackets:
  *
  *		const { root, selection } = parse( '<p>[<b>foobar</b>]</p>' );
+ *
+ * ** Note: **
+ * It is possible to unify selection markers to `[` and `]` for both (inside and outside text)
+ * by setting `sameSelectionCharacters=true` option. It is mainly used when view parse option is used by model utils.
  *
  * Sometimes there is a need for defining order of ranges inside created selection. This can be achieved by providing
  * ranges order array as additional parameter:
@@ -268,12 +266,16 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  * When set to `null` root element will be created automatically. If set to
  * {@link engine.view.Element Element} or {@link engine.view.DocumentFragment DocumentFragment} - this node
  * will be used as root for all parsed nodes.
+ * @param {Boolean} [options.sameSelectionCharacters=false] When set to `true` then selection inside text should be marked using `{` and `}`
+ * and selection outside text using `[` and `]`. When set to `false` then both should be marked with `[` and `]` only.
  * @returns {engine.view.Text|engine.view.Element|engine.view.DocumentFragment|Object} Returns parsed view node
  * or object with two fields `view` and `selection` when selection ranges were included in data to parse.
  */
 export function parse( data, options = {} ) {
 	options.order = options.order || [];
-	const rangeParser = new RangeParser();
+	const rangeParser = new RangeParser( {
+		sameSelectionCharacters: options.sameSelectionCharacters
+	} );
 	const processor = new XmlDataProcessor();
 
 	// Convert data to view.
@@ -327,6 +329,18 @@ export function parse( data, options = {} ) {
  * @private
  */
 class RangeParser {
+
+	/**
+	 * Create RangeParser instance.
+	 *
+	 * @param {Object} options RangeParser configuration.
+	 * @param {Boolean} [options.sameSelectionCharacters=false] When set to `true` it means that selection inside text is marked as
+	 * `{` and `}` and selection outside text as `[` and `]`. When set to `false` then both are marked as `[` and `]`.
+	 */
+	constructor( options ) {
+		this.sameSelectionCharacters = !!options.sameSelectionCharacters;
+	}
+
 	/**
 	 * Parses the view, and returns ranges represented inside {@link engine.view.Text Text nodes}.
 	 * Method will remove all occurrences of `{`, `}`, `[` and `]` from found text nodes. If text node is empty after
@@ -396,11 +410,13 @@ class RangeParser {
 
 				brackets.push( {
 					bracket: bracket,
-					textOffset: index - offset
+					textOffset: index - offset,
+					outer: index === 0 || index == node._data.length - 1
 				} );
 
 				offset++;
 			}
+
 			text = text.replace( regexp, '' );
 			node.data = text;
 			const index = node.index;
@@ -414,7 +430,10 @@ class RangeParser {
 			for ( let item of brackets ) {
 				// Non-empty text node.
 				if ( text ) {
-					if ( item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) {
+					if (
+						( this.sameSelectionCharacters && !item.outer ) ||
+						( !this.sameSelectionCharacters && ( item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) )
+					) {
 						// Store information about text range delimiter.
 						this._positions.push( {
 							bracket: item.bracket,
@@ -422,7 +441,7 @@ class RangeParser {
 						} );
 					} else {
 						// Check if element range delimiter is not placed inside text node.
-						if ( item.textOffset !== 0 && item.textOffset !== text.length ) {
+						if ( !this.sameSelectionCharacters && item.textOffset !== 0 && item.textOffset !== text.length ) {
 							throw new Error( `Parse error - range delimiter '${ item.bracket }' is placed inside text node.` );
 						}
 
@@ -436,7 +455,7 @@ class RangeParser {
 						} );
 					}
 				} else {
-					if ( item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) {
+					if ( !this.sameSelectionCharacters && item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) {
 						throw new Error( `Parse error - text range delimiter '${ item.bracket }' is placed inside empty text node. ` );
 					}
 
@@ -533,7 +552,8 @@ class ViewStringify {
 	 * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed.
 	 * @param {Boolean} [options.ignoreRoot=false] When set to `true` root's element opening and closing tag will not
 	 * be outputted.
-	 * @param {Array<String>} [options.characterForSelectionInText = [ '{', '}' ]
+	 * @param {Boolean} [options.sameSelectionCharacters=false] When set to `true` it means that selection inside text is marked as
+	 * `{` and `}` and selection outside text as `[` and `]`. When set to `false` then both are marked as `[` and `]`.
 	 */
 	constructor( root, selection = null, options = {} ) {
 		this.root = root;
@@ -547,7 +567,7 @@ class ViewStringify {
 		this.showType = !!options.showType;
 		this.showPriority = !!options.showPriority;
 		this.ignoreRoot = !!options.ignoreRoot;
-		this.characterForSelectionInText = options.characterForSelectionInText;
+		this.sameSelectionCharacters = !!options.sameSelectionCharacters;
 	}
 
 	/**
@@ -641,6 +661,15 @@ class ViewStringify {
 	_stringifyTextRanges( node ) {
 		const length = node.data.length;
 		let result = node.data.split( '' );
+		let rangeStartToken, rangeEndToken;
+
+		if ( this.sameSelectionCharacters ) {
+			rangeStartToken = ELEMENT_RANGE_START_TOKEN;
+			rangeEndToken = ELEMENT_RANGE_END_TOKEN;
+		} else {
+			rangeStartToken = TEXT_RANGE_START_TOKEN;
+			rangeEndToken = TEXT_RANGE_END_TOKEN;
+		}
 
 		// Add one more element for ranges ending after last character in text.
 		result[ length ] = '';
@@ -661,14 +690,14 @@ class ViewStringify {
 
 			if ( start.parent == node && start.offset >= 0 && start.offset <= length ) {
 				if ( range.isCollapsed ) {
-					result[ end.offset ].collapsed += this.characterForSelectionInText.join( '' );
+					result[ end.offset ].collapsed += rangeStartToken + rangeEndToken;
 				} else {
-					result[ start.offset ].start += this.characterForSelectionInText[ 0 ];
+					result[ start.offset ].start += rangeStartToken;
 				}
 			}
 
 			if ( end.parent == node && end.offset >= 0 && end.offset <= length && !range.isCollapsed  ) {
-				result[ end.offset ].end += this.characterForSelectionInText[ 1 ];
+				result[ end.offset ].end += rangeEndToken;
 			}
 		}
 

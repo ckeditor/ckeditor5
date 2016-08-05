@@ -186,7 +186,7 @@ describe( 'view test utils', () => {
 			expect( stringify( p, selection ) ).to.equal( '<p><b>f{ooba}r</b><b>bazqux</b></p>' );
 		} );
 
-		it( 'should write selection ranges inside text represented by custom characters', () => {
+		it( 'should write selection ranges inside text represented by `[` and `]` characters', () => {
 			const text1 = new Text( 'foobar' );
 			const text2 = new Text( 'bazqux' );
 			const b1 = new Element( 'b', null, text1 );
@@ -195,8 +195,8 @@ describe( 'view test utils', () => {
 			const range = Range.createFromParentsAndOffsets( text1, 1, text1, 5 );
 			const selection = new Selection();
 			selection.addRange( range );
-			expect( stringify( p, selection, { characterForSelectionInText: [ '_SELECTION-START_', '_SELECTION-END_' ] } ) )
-				.to.equal( '<p><b>f_SELECTION-START_ooba_SELECTION-END_r</b><b>bazqux</b></p>' );
+			expect( stringify( p, selection, { sameSelectionCharacters: true } ) )
+				.to.equal( '<p><b>f[ooba]r</b><b>bazqux</b></p>' );
 		} );
 
 		it( 'should write collapsed selection ranges inside texts', () => {

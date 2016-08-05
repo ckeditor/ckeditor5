@@ -196,7 +196,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	mapper.clearBindings();
 
 	// Parse view to data string.
-	let data = viewStringify( viewDocumentFragment, viewSelection, { characterForSelectionInText: [ '[', ']' ] } );
+	let data = viewStringify( viewDocumentFragment, viewSelection, { sameSelectionCharacters: true } );
 
 	// Replace valid XML text element name to `$text`.
 	return data.replace( new RegExp( VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT, 'g' ), DATA_STRING_TEXT_WITH_ATTRIBUTES_ELEMENT );
@@ -221,7 +221,7 @@ export function parse( data, schema, mapper = new Mapper() ) {
 	data = data.replace( new RegExp( '\\' + DATA_STRING_TEXT_WITH_ATTRIBUTES_ELEMENT, 'g' ), VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT );
 
 	// Parse data to view using view utils.
-	const parsedResult = viewParse( data );
+	const parsedResult = viewParse( data, { sameSelectionCharacters: true } );
 
 	// Retrieve DocumentFragment and Selection from parsed view.
 	let viewDocumentFragment, selection;
