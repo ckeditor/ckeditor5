@@ -8,6 +8,10 @@
 import ClassicEditorUI from '/ckeditor5/editor-classic/classiceditorui.js';
 import BoxedEditorUIView from '/ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
 
+import Model from '/ckeditor5/ui/model.js';
+import Button from '/ckeditor5/ui/button/button.js';
+import ButtonView from '/ckeditor5/ui/button/buttonview.js';
+
 import Toolbar from '/ckeditor5/ui/toolbar/toolbar.js';
 import StickyToolbarView from '/ckeditor5/ui/toolbar/sticky/stickytoolbarview.js';
 
@@ -23,9 +27,15 @@ describe( 'ClassicEditorUI', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		editor = new ClassicTestEditor( editorElement );
-		editorUI = new ClassicEditorUI( editor );
+		editor = new ClassicTestEditor( editorElement, {
+			toolbar: [ 'foo', 'bar' ]
+		} );
+
+		editor.ui = editorUI = new ClassicEditorUI( editor );
 		editorUI.view = new BoxedEditorUIView( editor.locale );
+
+		editorUI.featureComponents.add( 'foo', Button, ButtonView, new Model( {} ) );
+		editorUI.featureComponents.add( 'bar', Button, ButtonView, new Model( {} ) );
 	} );
 
 	describe( 'constructor', () => {
@@ -52,24 +62,16 @@ describe( 'ClassicEditorUI', () => {
 	} );
 
 	describe( 'init', () => {
-		it( 'adds buttons', () => {
-			editor.config.set( 'toolbar', [ 'foo', 'bar' ] );
-
-			document.body.appendChild( editorUI.view.element );
-
-			const spy = sinon.stub( editorUI.toolbar, 'addButtons' );
-
-			return editorUI.init()
-				.then( () => {
-					expect( spy.calledOnce ).to.be.true;
-					expect( spy.args[ 0 ][ 0 ] ).to.deep.equal( [ 'foo', 'bar' ] );
-				} );
-		} );
-
 		it( 'returns a promise', () => {
 			document.body.appendChild( editorUI.view.element );
 
 			expect( editorUI.init() ).to.be.instanceof( Promise );
+		} );
+	} );
+
+	describe( '_createToolbar', () => {
+		it( 'passes toolbar config to the model', () => {
+			expect( editorUI.toolbar.model.config ).to.have.members( [ 'foo', 'bar' ] );
 		} );
 	} );
 } );
