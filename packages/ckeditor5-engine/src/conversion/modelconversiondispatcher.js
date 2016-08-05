@@ -97,7 +97,7 @@ import extend from '../../utils/lib/lodash/extend.js';
  *			viewWriter.insert( position, viewSourceBtn );
  *
  *			evt.stop();
- *		}, 1 );
+ *		}, 'high' );
  *
  * @memberOf engine.conversion
  */

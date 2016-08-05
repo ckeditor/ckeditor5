@@ -78,7 +78,7 @@ export default class DataController {
 		this.modelToView = new ModelConversionDispatcher( {
 			mapper: this._mapper
 		} );
-		this.modelToView.on( 'insert:$text', insertText() );
+		this.modelToView.on( 'insert:$text', insertText(), 'lowest' );
 
 		/**
 		 * View to model conversion dispatcher used by the {@link engine.DataController#set set method}.
@@ -102,9 +102,9 @@ export default class DataController {
 		// Note that if there is no default converter for the element it will be skipped, for instance `<b>foo</b>` will be
 		// converted to nothing. We add `convertToModelFragment` as a last converter so it converts children of that
 		// element to the document fragment so `<b>foo</b>` will be converted to `foo` if there is no converter for `<b>`.
-		this.viewToModel.on( 'text', convertText() );
-		this.viewToModel.on( 'element', convertToModelFragment(), null, 9999 );
-		this.viewToModel.on( 'documentFragment', convertToModelFragment(), null, 9999 );
+		this.viewToModel.on( 'text', convertText(), 'lowest' );
+		this.viewToModel.on( 'element', convertToModelFragment(), 'lowest' );
+		this.viewToModel.on( 'documentFragment', convertToModelFragment(), 'lowest' );
 	}
 
 	/**

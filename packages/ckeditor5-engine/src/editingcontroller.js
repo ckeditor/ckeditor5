@@ -83,27 +83,29 @@ export default class EditingController {
 		 */
 		this._listenter = Object.create( EmitterMixin );
 
-		// Convert view selection to model.
-		this._listenter.listenTo( this.view, 'selectionChange', convertSelectionChange( model, this.mapper ) );
-
+		// Convert changes in model to view.
 		this._listenter.listenTo( this.model, 'change', ( evt, type, changes ) => {
 			this.modelToView.convertChange( type, changes );
-		} );
+		}, 'low' );
 
+		// Convert model selection to view.
 		this._listenter.listenTo( this.model, 'changesDone', () => {
 			this.modelToView.convertSelection( model.selection );
 			this.view.render();
-		} );
+		}, 'low' );
+
+		// Convert view selection to model.
+		this._listenter.listenTo( this.view, 'selectionChange', convertSelectionChange( model, this.mapper ) );
 
 		// Attach default content converters.
-		this.modelToView.on( 'insert:$text', insertText() );
-		this.modelToView.on( 'remove', remove() );
-		this.modelToView.on( 'move', move() );
+		this.modelToView.on( 'insert:$text', insertText(), 'lowest' );
+		this.modelToView.on( 'remove', remove(), 'low' );
+		this.modelToView.on( 'move', move(), 'low' );
 
 		// Attach default selection converters.
-		this.modelToView.on( 'selection', clearAttributes() );
-		this.modelToView.on( 'selection', convertRangeSelection() );
-		this.modelToView.on( 'selection', convertCollapsedSelection() );
+		this.modelToView.on( 'selection', clearAttributes(), 'low' );
+		this.modelToView.on( 'selection', convertRangeSelection(), 'low' );
+		this.modelToView.on( 'selection', convertCollapsedSelection(), 'low' );
 	}
 
 	/**

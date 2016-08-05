@@ -58,7 +58,7 @@ export default class EditableElement extends ContainerElement {
 		// but this does not mean that editable has focus - it will be placed there after rendering.
 		this.listenTo( document, 'render', () => {
 			this.isFocused = document.isFocused && document.selection.editableElement == this;
-		}, null, 11 );
+		}, 'low' );
 	}
 
 	/**

@@ -186,23 +186,23 @@ class ModelConverterBuilder {
 	 * @param {String|engine.view.ViewElement|Function} element Element created by converter.
 	 */
 	toElement( element ) {
-		const priority = this._from.priority === null ? 10 : this._from.priority;
+		const priority = this._from.priority === null ? 'normal' : this._from.priority;
 
 		for ( let dispatcher of this._dispatchers ) {
 			if ( this._from.type == 'element' ) {
 				// From model element to view element -> insert element.
 				element = typeof element == 'string' ? new ViewContainerElement( element ) : element;
 
-				dispatcher.on( 'insert:' + this._from.name, insertElement( element ), null, priority );
+				dispatcher.on( 'insert:' + this._from.name, insertElement( element ), priority );
 			} else {
 				// From model attribute to view element -> wrap and unwrap.
 				element = typeof element == 'string' ? new ViewAttributeElement( element ) : element;
 
-				dispatcher.on( 'addAttribute:' + this._from.key, wrap( element ), null, priority );
-				dispatcher.on( 'changeAttribute:' + this._from.key, wrap( element ), null, priority );
-				dispatcher.on( 'removeAttribute:' + this._from.key, unwrap( element ), null, priority );
+				dispatcher.on( 'addAttribute:' + this._from.key, wrap( element ), priority );
+				dispatcher.on( 'changeAttribute:' + this._from.key, wrap( element ), priority );
+				dispatcher.on( 'removeAttribute:' + this._from.key, unwrap( element ), priority );
 
-				dispatcher.on( 'selectionAttribute:' + this._from.key, convertSelectionAttribute( element ), null, priority );
+				dispatcher.on( 'selectionAttribute:' + this._from.key, convertSelectionAttribute( element ), priority );
 			}
 		}
 	}
@@ -268,9 +268,9 @@ class ModelConverterBuilder {
 		}
 
 		for ( let dispatcher of this._dispatchers ) {
-			dispatcher.on( 'addAttribute:' + this._from.key, setAttribute( attributeCreator ), null, this._from.priority || 10 );
-			dispatcher.on( 'changeAttribute:' + this._from.key, setAttribute( attributeCreator ), null, this._from.priority || 10 );
-			dispatcher.on( 'removeAttribute:' + this._from.key, removeAttribute( attributeCreator ), null, this._from.priority || 10 );
+			dispatcher.on( 'addAttribute:' + this._from.key, setAttribute( attributeCreator ), this._from.priority || 'normal' );
+			dispatcher.on( 'changeAttribute:' + this._from.key, setAttribute( attributeCreator ), this._from.priority || 'normal' );
+			dispatcher.on( 'removeAttribute:' + this._from.key, removeAttribute( attributeCreator ), this._from.priority || 'normal' );
 		}
 	}
 }

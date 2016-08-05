@@ -332,8 +332,8 @@ describe( 'image with caption converters', () => {
 describe( 'custom attribute handling for given element', () => {
 	beforeEach( () => {
 		// NORMAL LINK MODEL TO VIEW CONVERTERS
-		modelDispatcher.on( 'addAttribute:linkHref', wrap( ( value ) => new ViewAttributeElement( 'a', { href: value } ) ), null, 99 );
-		modelDispatcher.on( 'addAttribute:linkTitle', wrap( ( value ) => new ViewAttributeElement( 'a', { title: value } ) ), null, 99 );
+		modelDispatcher.on( 'addAttribute:linkHref', wrap( ( value ) => new ViewAttributeElement( 'a', { href: value } ) ) );
+		modelDispatcher.on( 'addAttribute:linkTitle', wrap( ( value ) => new ViewAttributeElement( 'a', { title: value } ) ) );
 
 		const changeLinkAttribute = function( elementCreator ) {
 			return ( evt, data, consumable, conversionApi ) => {
@@ -352,30 +352,22 @@ describe( 'custom attribute handling for given element', () => {
 
 		modelDispatcher.on(
 			'changeAttribute:linkHref',
-			changeLinkAttribute( ( value ) => new ViewAttributeElement( 'a', { href: value } ) ),
-			null,
-			99
+			changeLinkAttribute( ( value ) => new ViewAttributeElement( 'a', { href: value } ) )
 		);
 
 		modelDispatcher.on(
 			'changeAttribute:linkTitle',
-			changeLinkAttribute( ( value ) => new ViewAttributeElement( 'a', { title: value } ) ),
-			null,
-			99
+			changeLinkAttribute( ( value ) => new ViewAttributeElement( 'a', { title: value } ) )
 		);
 
 		modelDispatcher.on(
 			'removeAttribute:linkHref',
-			unwrap( ( value ) => new ViewAttributeElement( 'a', { href: value } ) ),
-			null,
-			99
+			unwrap( ( value ) => new ViewAttributeElement( 'a', { href: value } ) )
 		);
 
 		modelDispatcher.on(
 			'removeAttribute:linkTitle',
-			unwrap( ( value ) => new ViewAttributeElement( 'a', { title: value } ) ),
-			null,
-			99
+			unwrap( ( value ) => new ViewAttributeElement( 'a', { title: value } ) )
 		);
 
 		// NORMAL LINK VIEW TO MODEL CONVERTERS
@@ -424,7 +416,7 @@ describe( 'custom attribute handling for given element', () => {
 			}
 
 			evt.stop();
-		} );
+		}, 'high' );
 
 		const modelChangeLinkAttrQuoteConverter = function( evt, data, consumable, conversionApi ) {
 			let viewKey = data.attributeKey.substr( 4 ).toLowerCase();
@@ -443,8 +435,8 @@ describe( 'custom attribute handling for given element', () => {
 			evt.stop();
 		};
 
-		modelDispatcher.on( 'changeAttribute:linkHref:quote', modelChangeLinkAttrQuoteConverter );
-		modelDispatcher.on( 'changeAttribute:linkTitle:quote', modelChangeLinkAttrQuoteConverter );
+		modelDispatcher.on( 'changeAttribute:linkHref:quote', modelChangeLinkAttrQuoteConverter, 'high' );
+		modelDispatcher.on( 'changeAttribute:linkTitle:quote', modelChangeLinkAttrQuoteConverter, 'high' );
 
 		modelDispatcher.on( 'removeAttribute:linkHref:quote', ( evt, data, consumable, conversionApi ) => {
 			consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
@@ -456,8 +448,8 @@ describe( 'custom attribute handling for given element', () => {
 			viewWriter.remove( ViewRange.createFromParentsAndOffsets( viewElement, aIndex, viewElement, aIndex + 1 ) );
 
 			evt.stop();
-		} );
-		modelDispatcher.on( 'removeAttribute:linkTitle:quote', modelChangeLinkAttrQuoteConverter );
+		}, 'high' );
+		modelDispatcher.on( 'removeAttribute:linkTitle:quote', modelChangeLinkAttrQuoteConverter, 'high' );
 
 		// QUOTE VIEW TO MODEL CONVERTERS
 		viewDispatcher.on( 'element:blockquote', ( evt, data, consumable, conversionApi ) => {
@@ -660,10 +652,10 @@ it( 'default table view to model converter', () => {
 describe( 'universal converter', () => {
 	beforeEach( () => {
 		// "Universal" converters
-		modelDispatcher.on( 'insert', insertElement( ( data ) => new ViewContainerElement( data.item.name ) ), null, 99 );
-		modelDispatcher.on( 'addAttribute', setAttribute(), null, 99 );
-		modelDispatcher.on( 'changeAttribute', setAttribute(), null, 99 );
-		modelDispatcher.on( 'removeAttribute', removeAttribute(), null, 99 );
+		modelDispatcher.on( 'insert', insertElement( ( data ) => new ViewContainerElement( data.item.name ) ), 'lowest' );
+		modelDispatcher.on( 'addAttribute', setAttribute(), 'lowest' );
+		modelDispatcher.on( 'changeAttribute', setAttribute(), 'lowest' );
+		modelDispatcher.on( 'removeAttribute', removeAttribute(), 'lowest' );
 
 		viewDispatcher.on( 'element', ( evt, data, consumable, conversionApi ) => {
 			if ( consumable.consume( data.input, { name: true } ) ) {
@@ -677,9 +669,9 @@ describe( 'universal converter', () => {
 
 				data.output.appendChildren( conversionApi.convertChildren( data.input, consumable ) );
 			}
-		}, null, 99 );
+		}, 'lowest' );
 
-		// "Real" converters -- added with sooner priority. Should overwrite the "universal" converters.
+		// "Real" converters -- added with higher priority. Should overwrite the "universal" converters.
 		modelDispatcher.on( 'insert:image', insertElement( new ViewContainerElement( 'img' ) ) );
 		modelDispatcher.on( 'addAttribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
 		modelDispatcher.on( 'changeAttribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );

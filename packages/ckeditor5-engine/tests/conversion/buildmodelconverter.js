@@ -343,7 +343,7 @@ describe( 'Model converter builder', () => {
 	describe( 'withPriority', () => {
 		it( 'should change default converters priority', () => {
 			buildModelConverter().for( dispatcher ).fromElement( 'custom' ).toElement( 'custom' );
-			buildModelConverter().for( dispatcher ).fromElement( 'custom' ).withPriority( 0 ).toElement( 'other' );
+			buildModelConverter().for( dispatcher ).fromElement( 'custom' ).withPriority( 'high' ).toElement( 'other' );
 
 			let modelElement = new ModelElement( 'custom', null, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
