@@ -36,7 +36,7 @@ describe( 'Delete feature', () => {
 		} ) );
 
 		expect( spy.calledOnce ).to.be.true;
-		expect( spy.calledWithExactly( 'forwardDelete' ) ).to.be.true;
+		expect( spy.calledWithMatch( 'forwardDelete', { unit: 'character' } ) ).to.be.true;
 
 		expect( domEvt.preventDefault.calledOnce ).to.be.true;
 
@@ -46,7 +46,7 @@ describe( 'Delete feature', () => {
 		} ) );
 
 		expect( spy.calledTwice ).to.be.true;
-		expect( spy.calledWithExactly( 'delete' ) ).to.be.true;
+		expect( spy.calledWithMatch( 'delete', { unit: 'character' } ) ).to.be.true;
 	} );
 
 	function getDomEvent() {
