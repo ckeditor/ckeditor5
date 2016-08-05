@@ -42,9 +42,9 @@ describe( 'convertText', () => {
 	it( 'should not convert already consumed texts', () => {
 		const viewText = new ViewText( 'foofuckbafuckr' );
 
-		// Default converter for elements. Returns just converted children. Added with late priority.
-		dispatcher.on( 'text', convertText(), dispatcher, 9999 );
-		// Added with sooner priority. Should make the above converter not fire.
+		// Default converter for elements. Returns just converted children. Added with lowest priority.
+		dispatcher.on( 'text', convertText(), 'lowest' );
+		// Added with normal priority. Should make the above converter not fire.
 		dispatcher.on( 'text', ( evt, data, consumable ) => {
 			if ( consumable.consume( data.input ) ) {
 				data.output = new ModelText( data.input.data.replace( /fuck/gi, '****' ) );
@@ -98,9 +98,9 @@ describe( 'convertToModelFragment', () => {
 
 		// To get any meaningful results we have to actually convert something.
 		dispatcher.on( 'text', convertText() );
-		// Default converter for elements. Returns just converted children. Added with late priority.
-		dispatcher.on( 'element', convertToModelFragment(), dispatcher, 9999 );
-		// Added with sooner priority. Should make the above converter not fire.
+		// Default converter for elements. Returns just converted children. Added with lowest priority.
+		dispatcher.on( 'element', convertToModelFragment(), 'lowest' );
+		// Added with normal priority. Should make the above converter not fire.
 		dispatcher.on( 'element:p', ( evt, data, consumable, conversionApi ) => {
 			if ( consumable.consume( data.input, { name: true } ) ) {
 				data.output = new ModelElement( 'paragraph' );

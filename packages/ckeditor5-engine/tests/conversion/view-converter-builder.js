@@ -287,7 +287,7 @@ describe( 'View converter builder', () => {
 		expect( modelToString( result ) ).to.equal( '<paragraph class="myClass">foo</paragraph>' );
 
 		buildViewConverter().for( dispatcher )
-			.from( { name: 'p', class: 'myClass' } ).withPriority( -1 ) // Default for `toElement` is 0.
+			.from( { name: 'p', class: 'myClass' } ).withPriority( 'high' )
 			.toElement( 'customP' );
 
 		result = dispatcher.convert( new ViewContainerElement( 'p', { class: 'myClass' }, new ViewText( 'foo' ) ), objWithContext );

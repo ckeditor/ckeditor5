@@ -297,7 +297,7 @@ class ViewConverterBuilder {
 			};
 		};
 
-		this._setCallback( eventCallbackGen, 10 );
+		this._setCallback( eventCallbackGen, 'normal' );
 	}
 
 	/**
@@ -352,7 +352,7 @@ class ViewConverterBuilder {
 			};
 		};
 
-		this._setCallback( eventCallbackGen, 1000 );
+		this._setCallback( eventCallbackGen, 'low' );
 	}
 
 	/**
@@ -375,7 +375,7 @@ class ViewConverterBuilder {
 
 			// Add event to each registered dispatcher.
 			for ( let dispatcher of this._dispatchers ) {
-				dispatcher.on( eventName, eventCallback, null, priority );
+				dispatcher.on( eventName, eventCallback, priority );
 			}
 		}
 	}

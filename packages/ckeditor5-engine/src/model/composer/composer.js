@@ -25,8 +25,8 @@ export default class Composer {
 	 * Creates an instance of the composer.
 	 */
 	constructor() {
-		this.on( 'deleteContents', ( evt, data ) => deleteContents( data.batch, data.selection, data.options ) );
-		this.on( 'modifySelection', ( evt, data ) => modifySelection( data.selection, data.options ) );
+		this.on( 'deleteContents', ( evt, data ) => deleteContents( data.batch, data.selection, data.options ), 'normal' );
+		this.on( 'modifySelection', ( evt, data ) => modifySelection( data.selection, data.options ), 'normal' );
 	}
 
 	/**

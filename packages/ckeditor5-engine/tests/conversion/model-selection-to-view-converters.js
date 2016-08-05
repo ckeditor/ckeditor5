@@ -55,9 +55,9 @@ beforeEach( () => {
 	dispatcher.on( 'addAttribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
 
 	// Default selection converters.
-	dispatcher.on( 'selection', clearAttributes() );
-	dispatcher.on( 'selection', convertRangeSelection() );
-	dispatcher.on( 'selection', convertCollapsedSelection() );
+	dispatcher.on( 'selection', clearAttributes(), 'low' );
+	dispatcher.on( 'selection', convertRangeSelection(), 'low' );
+	dispatcher.on( 'selection', convertCollapsedSelection(), 'low' );
 } );
 
 describe( 'default converters', () => {
@@ -137,7 +137,7 @@ describe( 'default converters', () => {
 			// This should prevent default callback doing anything.
 			dispatcher.on( 'selection', ( evt, data, consumable ) => {
 				expect( consumable.consume( data.selection, 'selection' ) ).to.be.true;
-			}, null, 0 );
+			}, 'high' );
 
 			// Similar test case as the first in this suite.
 			test(
@@ -198,11 +198,11 @@ describe( 'default converters', () => {
 			// This should prevent default callbacks doing anything.
 			dispatcher.on( 'selection', ( evt, data, consumable ) => {
 				expect( consumable.consume( data.selection, 'selection' ) ).to.be.true;
-			}, null, 0 );
+			}, 'high' );
 
 			dispatcher.on( 'selectionAttribute:bold', ( evt, data, consumable ) => {
 				expect( consumable.consume( data.selection, 'selectionAttribute:bold' ) ).to.be.true;
-			}, null, 0 );
+			}, 'high' );
 
 			// Similar test case as above
 			test(
@@ -423,7 +423,7 @@ describe( 'table cell selection converter', () => {
 					viewNode.addClass( 'selected' );
 				}
 			}
-		}, null, 0 );
+		} );
 	} );
 
 	it( 'should not be used to convert selection that is not on table cell', () => {
@@ -437,7 +437,7 @@ describe( 'table cell selection converter', () => {
 	it( 'should add a class to the selected table cell', () => {
 		modelDoc.schema.registerItem( 'table', '$block' );
 		test(
-			// table tr#0, table tr#1
+			// table tr#0 |td#0, table tr#0 td#0|
 			[ [ 0, 0, 0 ], [ 0, 0, 1 ] ],
 			'<table><tr><td>foo</td></tr><tr><td>bar</td></tr></table>',
 			'<table><tr><td class="selected">foo</td></tr><tr><td>bar</td></tr></table>'
