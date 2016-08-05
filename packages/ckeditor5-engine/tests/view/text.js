@@ -63,15 +63,4 @@ describe( 'Element', () => {
 			expect( text.data ).to.equal( 'bar' );
 		} );
 	} );
-
-	// This is same set of tests as in engine.model.Text tests. Look there for comments on tests.
-	describe( 'unicode support', () => {
-		it( 'should normalize strings kept in data', () => {
-			let dataCombined = '\u006E\u0303';
-			let textN = new Text( dataCombined );
-
-			expect( textN.data ).to.equal( '\u00F1' );
-			expect( textN.data.length ).to.equal( 1 );
-		} );
-	} );
 } );

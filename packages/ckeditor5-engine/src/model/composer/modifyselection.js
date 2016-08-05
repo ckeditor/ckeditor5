@@ -8,31 +8,26 @@ import TreeWalker from '../treewalker.js';
 import Range from '../range.js';
 import { isInsideSurrogatePair, isInsideCombinedSymbol } from '../../../utils/unicode.js';
 
-/* jshint -W100 */
 /**
  * Modifies the selection. Currently the supported modifications are:
  *
  * * Extending. The selection focus is moved in the specified `options.direction` with a step specified in `options.unit`.
  * Possible values for `unit` are:
  *  * `'character'` (default) - moves selection by one user-perceived character. In most cases this means moving by one
- *  character in {String} sense. However, unicode also defines "combing marks". These are special symbols, that combines
+ *  character in `String` sense. However, unicode also defines "combing marks". These are special symbols, that combines
  *  with a symbol before it ("base character") to create one user-perceived character. For example, `q̣̇` is a normal
  *  letter `q` with two "combining marks": upper dot (`Ux0307`) and lower dot (`Ux0323`). For most actions, i.e. extending
  *  selection by one position, it is correct to include both "base character" and all of it's "combining marks". That is
  *  why `'character'` value is most natural and common method of modifying selection.
  *  * `'codePoint'` - moves selection by one unicode code point. In contrary to, `'character'` unit, this will insert
  *  selection between "base character" and "combining mark", because "combining marks" have their own unicode code points.
- *  However, for technical reasons, unicode code points with values above `UxFFFF` are represented in native {String} by
+ *  However, for technical reasons, unicode code points with values above `UxFFFF` are represented in native `String` by
  *  two characters, called "surrogate pairs". Halves of "surrogate pairs" have a meaning only when placed next to each other.
- *  For example `𨭎` is represented in {String} by `\uD862\uDF4E`. Both `\uD862` and `\uDF4E` do not have any meaning
+ *  For example `𨭎` is represented in `String` by `\uD862\uDF4E`. Both `\uD862` and `\uDF4E` do not have any meaning
  *  outside the pair (are rendered as ? when alone). Position between them would be incorrect. In this case, selection
  *  extension will include whole "surrogate pair".
  *
  * **Note:** if you extend a forward selection in a backward direction you will in fact shrink it.
- *
- * **Note:** you may use `CKEditor5 Graphemes` feature available at https://github.com/ckeditor/ckeditor5-graphemes
- * to enhance `'character'` option to support so-called "graphemes". This feature is not available in
- * `engine` out-of-the-box due to it's big size and niche usage.
  *
  * @method engine.model.composer.modifySelection
  * @param {engine.model.Selection} selection The selection to modify.
@@ -40,7 +35,6 @@ import { isInsideSurrogatePair, isInsideCombinedSymbol } from '../../../utils/un
  * @param {'forward'|'backward'} [options.direction='forward'] The direction in which the selection should be modified.
  * @param {'character'|'codePoint'} [options.unit='character'] The unit by which selection should be modified.
  */
-/* jshint +W100 */
 export default function modifySelection( selection, options = {} ) {
 	const isForward = options.direction != 'backward';
 	options.unit = options.unit ? options.unit : 'character';

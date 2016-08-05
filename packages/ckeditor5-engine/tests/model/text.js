@@ -66,22 +66,8 @@ describe( 'Text', () => {
 			expect( deserialized.data ).to.equal( 'foo' );
 			expect( Array.from( deserialized.getAttributes() ) ).to.deep.equal( [ [ 'bold', true ] ] );
 		} );
-	} );
 
-	// All characters, code points, combined symbols, etc. can be looked up in browsers console to better understand what is going on.
-	describe( 'unicode support', () => {
-		it( 'should normalize strings kept in data', () => {
-			// This is a letter "n" with so-called combining mark, similar to ~, which code point is \u0303.
-			// Those two characters together combines to "ñ", but that character already has it's code point: \u00F1.
-			let dataCombined = '\u006E\u0303';
-			let textN = new Text( dataCombined );
-
-			expect( textN.data ).to.equal( '\u00F1' ); // "ñ" got normalized to \u00F1.
-			expect( textN.data.length ).to.equal( 1 ); // It is now just one character.
-			expect( textN.offsetSize ).to.equal( 1 ); // And has correct offset size.
-		} );
-
-		it( 'should be properly serialized and de-serialized', () => {
+		it( 'should support unicode', () => {
 			let textQ = new Text( 'நி' );
 			let json = jsonParseStringify( textQ );
 

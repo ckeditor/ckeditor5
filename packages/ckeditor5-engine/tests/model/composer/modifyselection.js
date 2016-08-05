@@ -125,19 +125,6 @@ describe( 'Delete utils', () => {
 					{ direction: 'backward' }
 				);
 
-				//test(
-				//	'unicode support - forward',
-				//	'<p>நி<selection>லை</selection>க்கு</p>',
-				//	'<p>நி<selection>லைக்</selection>கு</p>'
-				//);
-				//
-				//test(
-				//	'unicode support - backward',
-				//	'<p>நி<selection backward>லை</selection>க்கு</p>',
-				//	'<p><selection backward>நிலை</selection>க்கு</p>',
-				//	{ direction: 'backward' }
-				//);
-
 				test(
 					'unicode support - combining mark forward',
 					'<p>foo<selection />b̂ar</p>',
@@ -326,20 +313,6 @@ describe( 'Delete utils', () => {
 				'<p>fo<selection>o</selection>̻̐ͩbar</p>',
 				{ unit: 'codePoint' }
 			);
-
-			//test(
-			//	'extends one unicode code point forward',
-			//	'<p>நி<selection>லை</selection>க்கு</p>',
-			//	'<p>நி<selection>லைக</selection>்கு</p>',
-			//	{ unit: 'codePoint' }
-			//);
-			//
-			//test(
-			//	'shrinks one unicode code point backward (combining mark case) ',
-			//	'<p>நி<selection>லைக்</selection>கு</p>',
-			//	'<p>நி<selection>லைக</selection>்கு</p>',
-			//	{ unit: 'codePoint', direction: 'backward' }
-			//);
 
 			test(
 				'unicode support - surrogate pairs forward',
