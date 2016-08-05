@@ -21,12 +21,12 @@ export default class ComponentFactory {
 	 * Creates ComponentFactory instance.
 	 *
 	 * @constructor
-	 * @param {ckeditor5.Editor} editor The editor instance.
+	 * @param {core.editor.Editor} editor The editor instance.
 	 */
 	constructor( editor ) {
 		/**
 		 * @readonly
-		 * @member {ckeditor5.Editor} ui.ComponentFactory#editor
+		 * @member {core.editor.Editor} ui.ComponentFactory#editor
 		 */
 		this.editor = editor;
 

@@ -6,7 +6,7 @@
 /* global document, HTMLElement */
 /* bender-tags: ui */
 
-import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import testUtils from '/tests/core/_utils/utils.js';
 import View from '/ckeditor5/ui/view.js';
 import Template from '/ckeditor5/ui/template.js';
 import Region from '/ckeditor5/ui/region.js';

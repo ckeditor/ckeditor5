@@ -24,7 +24,7 @@ export default class EditableUI extends Controller {
 	 * @param {engine.view.RootEditableElement} editable The editable element (in the engine).
 	 * Also the {@link ui.editableUI.EditableUIModel} for editable UI instance.
 	 * @param {ui.View} [view] An instance of EditableUIView.
-	 * @param {ckeditor5.Editor} [editor] The editor instance.
+	 * @param {core.editor.Editor} [editor] The editor instance.
 	 */
 	constructor( editable, view, editor ) {
 		super( editable, view );
@@ -33,7 +33,7 @@ export default class EditableUI extends Controller {
 		 * The editor instance.
 		 *
 		 * @readonly
-		 * @member {ckeditor5.Editor} ui.editableUI.EditableUI#editor
+		 * @member {core.editor.Editor} ui.editableUI.EditableUI#editor
 		 */
 		this.editor = editor;
 
@@ -51,17 +51,20 @@ export default class EditableUI extends Controller {
 /**
  * Controls whether the editable is writable or not.
  *
+ * @observable
  * @member {Boolean} ui.editableUI.EditableUIModel#isReadOnly
  */
 
 /**
  * Controls whether the editable is focused, i.e. the user is typing in it.
  *
+ * @observable
  * @member {Boolean} ui.editableUI.EditableUIModel#isFocused
  */
 
 /**
  * The name of the editable UI.
  *
+ * @observable
  * @member {String} ui.editableUI.EditableUIModel#name
  */

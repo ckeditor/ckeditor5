@@ -5,7 +5,7 @@
 
 /* bender-tags: ui */
 
-import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import testUtils from '/tests/core/_utils/utils.js';
 import View from '/ckeditor5/ui/view.js';
 import Controller from '/ckeditor5/ui/controller.js';
 import ControllerCollection from '/ckeditor5/ui/controllercollection.js';

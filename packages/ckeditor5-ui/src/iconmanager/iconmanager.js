@@ -45,11 +45,13 @@ export default class IconManager extends Controller {
 /**
  * An array of icon names which are brought by the {@link ui.iconManager.IconManagerModel#sprite}.
  *
+ * @observable
  * @member {Array.<String>} ui.iconManager.IconManagerModel#icons
  */
 
 /**
  * The actual SVG (HTML) of the icons to be injected in DOM.
  *
+ * @observable
  * @member {String} ui.iconManager.IconManagerModel#sprite
  */

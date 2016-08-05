@@ -23,7 +23,7 @@ export default class ControllerCollection extends Collection {
 	 * manage list–like components. See {@link ui.ControllerCollection#bind} to learn more.
 	 *
 	 * @param {String} name Name of the collection.
-	 * @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
+	 * @param {utils.Locale} [locale] The {@link core.editor.Editor#locale editor's locale} instance.
 	 */
 	constructor( name, locale ) {
 		super();

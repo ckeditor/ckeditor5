@@ -5,7 +5,7 @@
 
 /* bender-tags: editable */
 
-import StandardEditor from '/ckeditor5/editor/standardeditor.js';
+import StandardEditor from '/ckeditor5/core/editor/standardeditor.js';
 import EditableUI from '/ckeditor5/ui/editableui/editableui.js';
 import EditableUIView from '/ckeditor5/ui/editableui/editableuiview.js';
 import testUtils from '/tests/utils/_utils/utils.js';

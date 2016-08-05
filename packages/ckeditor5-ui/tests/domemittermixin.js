@@ -6,7 +6,7 @@
 /* global document, Event, MouseEvent */
 /* bender-tags: ui */
 
-import testUtils from '/tests/ckeditor5/_utils/utils.js';
+import testUtils from '/tests/core/_utils/utils.js';
 import DOMEmitterMixin from '/ckeditor5/ui/domemittermixin.js';
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 
