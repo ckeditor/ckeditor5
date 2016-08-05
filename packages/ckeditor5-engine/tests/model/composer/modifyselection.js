@@ -6,8 +6,9 @@
 /* bender-tags: model, composer */
 
 import Document from '/ckeditor5/engine/model/document.js';
+import Selection from '/ckeditor5/engine/model/selection.js';
 import modifySelection from '/ckeditor5/engine/model/composer/modifyselection.js';
-import { setData, getData } from '/tests/engine/_utils/model.js';
+import { setData, stringify } from '/tests/engine/_utils/model.js';
 
 describe( 'Delete utils', () => {
 	let document;
@@ -123,6 +124,51 @@ describe( 'Delete utils', () => {
 					'<p>fo<selection backward><img></img></selection>o</p>',
 					{ direction: 'backward' }
 				);
+
+				test(
+					'unicode support - combining mark forward',
+					'<p>foo<selection />b̂ar</p>',
+					'<p>foo<selection>b̂</selection>ar</p>'
+				);
+
+				test(
+					'unicode support - combining mark backward',
+					'<p>foob̂<selection />ar</p>',
+					'<p>foo<selection backward>b̂</selection>ar</p>',
+					{ direction: 'backward' }
+				);
+
+				test(
+					'unicode support - combining mark multiple',
+					'<p>fo<selection />o̻̐ͩbar</p>',
+					'<p>fo<selection>o̻̐ͩ</selection>bar</p>'
+				);
+
+				test(
+					'unicode support - combining mark multiple backward',
+					'<p>foo̻̐ͩ<selection />bar</p>',
+					'<p>fo<selection backward>o̻̐ͩ</selection>bar</p>',
+					{ direction: 'backward' }
+				);
+
+				test(
+					'unicode support - combining mark to the end',
+					'<p>fo<selection />o̻̐ͩ</p>',
+					'<p>fo<selection>o̻̐ͩ</selection></p>'
+				);
+
+				test(
+					'unicode support - surrogate pairs forward',
+					'<p><selection />\uD83D\uDCA9</p>',
+					'<p><selection>\uD83D\uDCA9</selection></p>'
+				);
+
+				test(
+					'unicode support - surrogate pairs backward',
+					'<p>\uD83D\uDCA9<selection /></p>',
+					'<p><selection backward>\uD83D\uDCA9</selection></p>',
+					{ direction: 'backward' }
+				);
 			} );
 
 			describe( 'beyond element', () => {
@@ -218,21 +264,86 @@ describe( 'Delete utils', () => {
 			} );
 		} );
 
-		test(
-			'updates selection attributes',
-			'<p><$text bold=true>foo</$text><selection>b</selection></p>',
-			'<p><$text bold=true>foo</$text><selection bold=true />b</p>',
-			{ direction: 'backward' }
-		);
+		describe( 'unit=codePoint', () => {
+			test(
+				'does nothing on empty content',
+				'<selection />',
+				'<selection />',
+				{ unit: 'codePoint' }
+			);
+
+			test(
+				'does nothing on empty content (with empty element)',
+				'<p><selection /></p>',
+				'<p><selection /></p>',
+				{ unit: 'codePoint' }
+			);
+
+			test(
+				'extends one user-perceived character forward - latin letters',
+				'<p>f<selection />oo</p>',
+				'<p>f<selection>o</selection>o</p>',
+				{ unit: 'codePoint' }
+			);
+
+			test(
+				'extends one user-perceived character backward - latin letters',
+				'<p>fo<selection />o</p>',
+				'<p>f<selection backward>o</selection>o</p>',
+				{ unit: 'codePoint', direction: 'backward' }
+			);
+
+			test(
+				'unicode support - combining mark forward',
+				'<p>foo<selection />b̂ar</p>',
+				'<p>foo<selection>b</selection>̂ar</p>',
+				{ unit: 'codePoint' }
+			);
+
+			test(
+				'unicode support - combining mark backward',
+				'<p>foob̂<selection />ar</p>',
+				'<p>foob<selection backward>̂</selection>ar</p>',
+				{ unit: 'codePoint', direction: 'backward' }
+			);
+
+			test(
+				'unicode support - combining mark multiple',
+				'<p>fo<selection />o̻̐ͩbar</p>',
+				'<p>fo<selection>o</selection>̻̐ͩbar</p>',
+				{ unit: 'codePoint' }
+			);
+
+			test(
+				'unicode support - surrogate pairs forward',
+				'<p><selection />\uD83D\uDCA9</p>',
+				'<p><selection>\uD83D\uDCA9</selection></p>',
+				{ unit: 'codePoint' }
+			);
+
+			test(
+				'unicode support surrogate pairs backward',
+				'<p>\uD83D\uDCA9<selection /></p>',
+				'<p><selection backward>\uD83D\uDCA9</selection></p>',
+				{ unit: 'codePoint', direction: 'backward' }
+			);
+		} );
 	} );
 
 	function test( title, input, output, options ) {
 		it( title, () => {
+			input = input.normalize();
+			output = output.normalize();
+
 			setData( document, input );
 
-			modifySelection( document.selection, options );
+			// Creating new instance of selection instead of operation on engine.model.Document#selection.
+			// Document's selection will throw errors in some test cases (which are correct cases, but only for
+			// non-document selections).
+			const testSelection = Selection.createFromSelection( document.selection );
+			modifySelection( testSelection, options );
 
-			expect( getData( document ) ).to.equal( output );
+			expect( stringify( document.getRoot(), testSelection ) ).to.equal( output );
 		} );
 	}
 } );

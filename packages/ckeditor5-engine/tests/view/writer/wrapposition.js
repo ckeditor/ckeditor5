@@ -54,6 +54,14 @@ describe( 'wrapPosition', () => {
 		);
 	} );
 
+	it( 'should support unicode', () => {
+		test(
+			'<container:p>நிலை{}க்கு</container:p>',
+			'<attribute:b:1></attribute:b:1>',
+			'<container:p>நிலை<attribute:b:1>[]</attribute:b:1>க்கு</container:p>'
+		);
+	} );
+
 	it( 'should wrap position inside document fragment', () => {
 		test(
 			'<attribute:b:1>foo</attribute:b:1>[]<attribute:b:3>bar</attribute:b:3>',

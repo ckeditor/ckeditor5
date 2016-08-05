@@ -79,6 +79,14 @@ describe( 'writer', () => {
 			);
 		} );
 
+		it( 'should support unicode', () => {
+			test(
+				'<container:p>நி{லை<attribute:b:10>க்}கு</attribute:b:10></container:p>',
+				'<container:p>நி[]<attribute:b:10>கு</attribute:b:10></container:p>',
+				'லை<attribute:b:10>க்</attribute:b:10>'
+			);
+		} );
+
 		it( 'should merge after removing #1', () => {
 			test(
 				'<container:p><attribute:b:1>foo</attribute:b:1>[bar]<attribute:b:1>bazqux</attribute:b:1></container:p>',

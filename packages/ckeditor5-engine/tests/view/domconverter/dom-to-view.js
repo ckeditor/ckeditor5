@@ -69,6 +69,21 @@ describe( 'DomConverter', () => {
 			expect( converter.getCorrespondingDom( viewP.getChild( 0 ) ) ).to.equal( domP.childNodes[ 0 ] );
 		} );
 
+		it( 'should support unicode', () => {
+			const domText = document.createTextNode( 'நிலைக்கு' );
+			const domP = createElement( document, 'p', { 'class': 'foo' }, [ domText ] );
+
+			const viewP = converter.domToView( domP, { bind: true } );
+
+			expect( viewP.childCount ).to.equal( 1 );
+
+			const viewText = viewP.getChild( 0 );
+			expect( viewText.data ).to.equal( 'நிலைக்கு' );
+
+			expect( converter.getCorrespondingDom( viewP ) ).to.equal( domP );
+			expect( converter.getCorrespondingDom( viewP.getChild( 0 ) ) ).to.equal( domP.childNodes[ 0 ] );
+		} );
+
 		it( 'should create tree of view elements from DOM element without children', () => {
 			const domImg = createElement( document, 'img' );
 			const domText = document.createTextNode( 'foo' );
@@ -197,6 +212,19 @@ describe( 'DomConverter', () => {
 			const viewPosition = converter.domPositionToView( domText, 2 );
 
 			expect( stringify( viewP, viewPosition ) ).to.equal( '<p>fo{}o<b>bar</b></p>' );
+		} );
+
+		it( 'should support unicode', () => {
+			const domText = document.createTextNode( 'நிலைக்கு' );
+			const domP = createElement( document, 'p', null, [ domText ] );
+
+			const viewP = parse( '<p>நிலைக்கு</p>' );
+
+			converter.bindElements( domP, viewP );
+
+			const viewPosition = converter.domPositionToView( domText, 4 );
+
+			expect( stringify( viewP, viewPosition ) ).to.equal( '<p>நிலை{}க்கு</p>' );
 		} );
 
 		it( 'should converter position in element', () => {

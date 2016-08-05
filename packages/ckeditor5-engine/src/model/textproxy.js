@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+import CKEditorError from '../../utils/ckeditorerror.js';
+
 /**
  * `TextProxy` represents a part of {@link engine.model.Text text node}.
  *
@@ -15,11 +17,12 @@
  * on model nodes.
  *
  * **Note:** Some `TextProxy` instances may represent whole text node, not just a part of it.
+ * See {@link engine.model.TextProxy#isPartial}.
  *
  * **Note:** `TextProxy` is not an instance of {@link engine.model.Node node}. Keep this in mind when using it as a
  * parameter of methods.
  *
- * **Note:** `TextProxy` is readonly interface. If you want to perform changes on model data represented by a `TextProxy`
+ * **Note:** `TextProxy` is a readonly interface. If you want to perform changes on model data represented by a `TextProxy`
  * use {@link engine.model.writer model writer API}.
  *
  * **Note:** `TextProxy` instances are created on the fly, basing on the current state of model. Because of this, it is
@@ -50,6 +53,23 @@ export default class TextProxy {
 		 */
 		this.textNode = textNode;
 
+		if ( offsetInText < 0 || offsetInText > textNode.offsetSize ) {
+			/**
+			 * Given offsetInText value is incorrect.
+			 *
+			 * @error model-textproxy-wrong-offsetintext
+			 */
+			throw new CKEditorError( 'model-textproxy-wrong-offsetintext: Given offsetInText value is incorrect.' );
+		}
+
+		if ( length < 0 || offsetInText + length > textNode.offsetSize ) {
+			/**
+			 * Given length value is incorrect.
+			 *
+			 * @error model-textproxy-wrong-length
+			 */
+			throw new CKEditorError( 'model-textproxy-wrong-length: Given length value is incorrect.' );
+		}
 		/**
 		 * Text data represented by this text proxy.
 		 *
@@ -112,7 +132,7 @@ export default class TextProxy {
 	 * @type {Boolean}
 	 */
 	get isPartial() {
-		return this.offsetInText !== 0 || this.offsetSize !== this.textNode.offsetSize;
+		return this.offsetSize !== this.textNode.offsetSize;
 	}
 
 	/**
@@ -150,8 +170,7 @@ export default class TextProxy {
 	 * Gets path to this text proxy.
 	 *
 	 * @see engine.model.Node#getPath
-	 * @readonly
-	 * @type {Array.<Number>}
+	 * @returns {Array.<Number>}
 	 */
 	getPath() {
 		const path = this.textNode.getPath();
