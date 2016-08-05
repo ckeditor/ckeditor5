@@ -9,12 +9,12 @@
 
 const Vinyl = require( 'vinyl' );
 const tasks = require( '../../tasks/test/tasks' )();
-const { stream, tools } = require( 'ckeditor5-dev-utils' );
+const { stream: streamUtils, tools } = require( 'ckeditor5-dev-utils' );
 
 describe( 'test-node', () => {
 	describe( 'skipManual', () => {
 		it( 'should skip manual tests', ( done ) => {
-			const streamTask = tasks.skipManual();
+			const stream = tasks.skipManual();
 			const spy = sinon.spy();
 			const stub = sinon.stub( tools, 'isFile', ( file ) => {
 				return file == 'file1.md';
@@ -30,25 +30,25 @@ describe( 'test-node', () => {
 				contents: null
 			} );
 
-			streamTask.pipe( stream.noop( spy ) );
+			stream.pipe( streamUtils.noop( spy ) );
 
-			streamTask.once( 'finish', () => {
+			stream.once( 'finish', () => {
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, unitTestFile );
 				done();
 			} );
 
-			streamTask.write( manualTestFile );
-			streamTask.write( unitTestFile );
+			stream.write( manualTestFile );
+			stream.write( unitTestFile );
 
-			streamTask.end();
+			stream.end();
 			stub.restore();
 		} );
 	} );
 
 	describe( 'skipIgnored', () => {
 		it( 'should skip files marked to ignore', ( done ) => {
-			const streamTask = tasks.skipIgnored();
+			const stream = tasks.skipIgnored();
 			const spy = sinon.spy();
 			const unitTestFile = new Vinyl( {
 				cwd: './',
@@ -60,18 +60,18 @@ describe( 'test-node', () => {
 				path: 'file1.js',
 				contents: new Buffer( '/* bender-tags: tag, browser-only */' )
 			} );
-			const noop = stream.noop( spy );
+			const noop = streamUtils.noop( spy );
 			noop.once( 'finish', () => {
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, unitTestFile );
 				done();
 			} );
 
-			streamTask.pipe( noop );
-			streamTask.write( manualTestFile );
-			streamTask.write( unitTestFile );
+			stream.pipe( noop );
+			stream.write( manualTestFile );
+			stream.write( unitTestFile );
 
-			streamTask.end();
+			stream.end();
 		} );
 	} );
 } );
