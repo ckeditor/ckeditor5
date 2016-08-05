@@ -9,7 +9,7 @@
 
 const Vinyl = require( 'vinyl' );
 const tasks = require( '../../tasks/test/tasks' )();
-const { build, tools } = require( 'ckeditor5-dev-utils' );
+const { stream: streamUtils, tools } = require( 'ckeditor5-dev-utils' );
 
 describe( 'test-node', () => {
 	describe( 'skipManual', () => {
@@ -30,7 +30,7 @@ describe( 'test-node', () => {
 				contents: null
 			} );
 
-			stream.pipe( build.noop( spy ) );
+			stream.pipe( streamUtils.noop( spy ) );
 
 			stream.once( 'finish', () => {
 				sinon.assert.calledOnce( spy );
@@ -60,7 +60,7 @@ describe( 'test-node', () => {
 				path: 'file1.js',
 				contents: new Buffer( '/* bender-tags: tag, browser-only */' )
 			} );
-			const noop = build.noop( spy );
+			const noop = streamUtils.noop( spy );
 			noop.once( 'finish', () => {
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, unitTestFile );

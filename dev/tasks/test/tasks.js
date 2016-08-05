@@ -11,7 +11,7 @@ const filterBy = require( 'gulp-filter-by' );
 const filter = require( 'gulp-filter' );
 const sinon = require( 'sinon' );
 const semver = require( 'semver' );
-const { tools, build } = require( 'ckeditor5-dev-utils' );
+const { tools, stream } = require( 'ckeditor5-dev-utils' );
 const benderConfig = require( '../../../bender' );
 
 /**
@@ -100,7 +100,7 @@ module.exports = () => {
 				.pipe( tasks.skipManual() )
 				.pipe( tasks.skipIgnored() )
 				.pipe( mocha( { reporter: 'progress' } ) )
-				.pipe( tasks.coverage ? istanbul.writeReports() : build.noop() );
+				.pipe( tasks.coverage ? istanbul.writeReports() : stream.noop() );
 		},
 
 		/**
@@ -132,7 +132,7 @@ module.exports = () => {
 		devTest() {
 			return gulp.src( 'dev/tests/**/*.js' )
 				.pipe( mocha() )
-				.pipe( tasks.coverage ? istanbul.writeReports() : build.noop() );
+				.pipe( tasks.coverage ? istanbul.writeReports() : stream.noop() );
 		},
 
 		/**
