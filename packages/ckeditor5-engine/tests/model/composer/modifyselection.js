@@ -16,6 +16,9 @@ describe( 'Delete utils', () => {
 	beforeEach( () => {
 		document = new Document();
 		document.schema.registerItem( 'p', '$block' );
+		document.schema.registerItem( 'x', '$block' );
+		document.schema.registerItem( 'img', '$inline' );
+		document.schema.allow( { name: '$text', inside: '$root' } );
 		document.createRoot();
 	} );
 
@@ -24,149 +27,149 @@ describe( 'Delete utils', () => {
 			describe( 'within element', () => {
 				test(
 					'does nothing on empty content',
-					'<selection />',
-					'<selection />'
+					'[]',
+					'[]'
 				);
 
 				test(
 					'does nothing on empty content (with empty element)',
-					'<p><selection /></p>',
-					'<p><selection /></p>'
+					'<p>[]</p>',
+					'<p>[]</p>'
 				);
 
 				test(
 					'does nothing on empty content (backward)',
-					'<selection />',
-					'<selection />',
+					'[]',
+					'[]',
 					{ direction: 'backward' }
 				);
 
 				test(
 					'does nothing on root boundary',
-					'<p>foo<selection /></p>',
-					'<p>foo<selection /></p>'
+					'<p>foo[]</p>',
+					'<p>foo[]</p>'
 				);
 
 				test(
 					'does nothing on root boundary (backward)',
-					'<p><selection />foo</p>',
-					'<p><selection />foo</p>',
+					'<p>[]foo</p>',
+					'<p>[]foo</p>',
 					{ direction: 'backward' }
 				);
 
 				test(
 					'extends one character forward',
-					'<p>f<selection />oo</p>',
-					'<p>f<selection>o</selection>o</p>'
+					'<p>f[]oo</p>',
+					'<p>f[o]o</p>'
 				);
 
 				test(
 					'extends one character backward',
-					'<p>fo<selection />o</p>',
-					'<p>f<selection backward>o</selection>o</p>',
+					'<p>fo[]o</p>',
+					'<p>f<selection backward>o]o</p>',
 					{ direction: 'backward' }
 				);
 
 				test(
 					'extends one character forward (non-collapsed)',
-					'<p>f<selection>o</selection>obar</p>',
-					'<p>f<selection>oo</selection>bar</p>'
+					'<p>f[o]obar</p>',
+					'<p>f[oo]bar</p>'
 				);
 
 				test(
 					'extends one character backward (non-collapsed)',
-					'<p>foob<selection backward>a</selection>r</p>',
-					'<p>foo<selection backward>ba</selection>r</p>',
+					'<p>foob<selection backward>a]r</p>',
+					'<p>foo<selection backward>ba]r</p>',
 					{ direction: 'backward' }
 				);
 
 				test(
 					'extends to element boundary',
-					'<p>fo<selection />o</p>',
-					'<p>fo<selection>o</selection></p>'
+					'<p>fo[]o</p>',
+					'<p>fo[o]</p>'
 				);
 
 				test(
 					'extends to element boundary (backward)',
-					'<p>f<selection />oo</p>',
-					'<p><selection backward>f</selection>oo</p>',
+					'<p>f[]oo</p>',
+					'<p><selection backward>f]oo</p>',
 					{ direction: 'backward' }
 				);
 
 				test(
 					'shrinks forward selection (to collapsed)',
-					'<p>foo<selection>b</selection>ar</p>',
-					'<p>foo<selection />bar</p>',
+					'<p>foo[b]ar</p>',
+					'<p>foo[]bar</p>',
 					{ direction: 'backward' }
 				);
 
 				test(
 					'shrinks backward selection (to collapsed)',
-					'<p>foo<selection backward>b</selection>ar</p>',
-					'<p>foob<selection />ar</p>'
+					'<p>foo<selection backward>b]ar</p>',
+					'<p>foob[]ar</p>'
 				);
 
 				test(
 					'extends one element forward',
-					'<p>f<selection /><img></img>oo</p>',
-					'<p>f<selection><img></img></selection>oo</p>'
+					'<p>f[]<img></img>oo</p>',
+					'<p>f[<img></img>]oo</p>'
 				);
 
 				test(
 					'extends one non-empty element forward',
-					'<p>f<selection /><img>x</img>oo</p>',
-					'<p>f<selection><img>x</img></selection>oo</p>'
+					'<p>f[]<img>x</img>oo</p>',
+					'<p>f[<img>x</img>]oo</p>'
 				);
 
 				test(
 					'extends one element backward',
-					'<p>fo<img></img><selection />o</p>',
-					'<p>fo<selection backward><img></img></selection>o</p>',
+					'<p>fo<img></img>[]o</p>',
+					'<p>fo<selection backward><img></img>]o</p>',
 					{ direction: 'backward' }
 				);
 
 				test(
 					'unicode support - combining mark forward',
-					'<p>foo<selection />b̂ar</p>',
-					'<p>foo<selection>b̂</selection>ar</p>'
+					'<p>foo[]b̂ar</p>',
+					'<p>foo[b̂]ar</p>'
 				);
 
 				test(
 					'unicode support - combining mark backward',
-					'<p>foob̂<selection />ar</p>',
-					'<p>foo<selection backward>b̂</selection>ar</p>',
+					'<p>foob̂[]ar</p>',
+					'<p>foo<selection backward>b̂]ar</p>',
 					{ direction: 'backward' }
 				);
 
 				test(
 					'unicode support - combining mark multiple',
-					'<p>fo<selection />o̻̐ͩbar</p>',
-					'<p>fo<selection>o̻̐ͩ</selection>bar</p>'
+					'<p>fo[]o̻̐ͩbar</p>',
+					'<p>fo[o̻̐ͩ]bar</p>'
 				);
 
 				test(
 					'unicode support - combining mark multiple backward',
-					'<p>foo̻̐ͩ<selection />bar</p>',
-					'<p>fo<selection backward>o̻̐ͩ</selection>bar</p>',
+					'<p>foo̻̐ͩ[]bar</p>',
+					'<p>fo<selection backward>o̻̐ͩ]bar</p>',
 					{ direction: 'backward' }
 				);
 
 				test(
 					'unicode support - combining mark to the end',
-					'<p>fo<selection />o̻̐ͩ</p>',
-					'<p>fo<selection>o̻̐ͩ</selection></p>'
+					'<p>fo[]o̻̐ͩ</p>',
+					'<p>fo[o̻̐ͩ]</p>'
 				);
 
 				test(
 					'unicode support - surrogate pairs forward',
-					'<p><selection />\uD83D\uDCA9</p>',
-					'<p><selection>\uD83D\uDCA9</selection></p>'
+					'<p>[]\uD83D\uDCA9</p>',
+					'<p>[\uD83D\uDCA9]</p>'
 				);
 
 				test(
 					'unicode support - surrogate pairs backward',
-					'<p>\uD83D\uDCA9<selection /></p>',
-					'<p><selection backward>\uD83D\uDCA9</selection></p>',
+					'<p>\uD83D\uDCA9[]</p>',
+					'<p><selection backward>\uD83D\uDCA9]</p>',
 					{ direction: 'backward' }
 				);
 			} );
@@ -174,91 +177,98 @@ describe( 'Delete utils', () => {
 			describe( 'beyond element', () => {
 				test(
 					'extends over boundary of empty elements',
-					'<p><selection /></p><p></p><p></p>',
-					'<p><selection></p><p></selection></p><p></p>'
+					'<p>[]</p><p></p><p></p>',
+					'<p>[</p><p>]</p><p></p>'
 				);
 
 				test(
 					'extends over boundary of empty elements (backward)',
-					'<p></p><p></p><p><selection /></p>',
-					'<p></p><p><selection backward></p><p></selection></p>',
+					'<p></p><p></p><p>[]</p>',
+					'<p></p><p><selection backward></p><p>]</p>',
 					{ direction: 'backward' }
 				);
 
 				test(
 					'extends over boundary of non-empty elements',
-					'<p>a<selection /></p><p>bcd</p>',
-					'<p>a<selection></p><p></selection>bcd</p>'
+					'<p>a[]</p><p>bcd</p>',
+					'<p>a[</p><p>]bcd</p>'
 				);
 
 				test(
 					'extends over boundary of non-empty elements (backward)',
-					'<p>a</p><p><selection />bcd</p>',
-					'<p>a<selection backward></p><p></selection>bcd</p>',
+					'<p>a</p><p>[]bcd</p>',
+					'<p>a<selection backward></p><p>]bcd</p>',
 					{ direction: 'backward' }
 				);
 
 				test(
 					'extends over character after boundary',
-					'<p>a<selection></p><p></selection>bcd</p>',
-					'<p>a<selection></p><p>b</selection>cd</p>'
+					'<p>a[</p><p>]bcd</p>',
+					'<p>a[</p><p>b]cd</p>'
 				);
 
 				test(
 					'extends over character after boundary (backward)',
-					'<p>abc<selection backward></p><p></selection>d</p>',
-					'<p>ab<selection backward>c</p><p></selection>d</p>',
+					'<p>abc<selection backward></p><p>]d</p>',
+					'<p>ab<selection backward>c</p><p>]d</p>',
 					{ direction: 'backward' }
 				);
 
 				test(
 					'extends over boundary when next element has nested elements',
-					'<p>a<selection /></p><p><x>bcd</x></p>',
-					'<p>a<selection></p><p></selection><x>bcd</x></p>'
+					'<p>a[]</p><p><x>bcd</x></p>',
+					'<p>a[</p><p>]<x>bcd</x></p>'
 				);
 
 				test(
 					'extends over element when next element has nested elements',
-					'<p>a<selection></p><p></selection><x>bcd</x>ef</p>',
-					'<p>a<selection></p><p><x>bcd</x></selection>ef</p>'
+					'<p>a[</p><p>]<x>bcd</x>ef</p>',
+					'<p>a[</p><p><x>bcd</x>]ef</p>'
 				);
 
 				test(
 					'extends over element when next node is a text',
-					'<p>a<selection /></p>bc',
-					'<p>a<selection></p></selection>bc'
+					'<p>a[]</p>bc',
+					'<p>a[</p>]bc'
 				);
 
 				test(
 					'extends over element when next node is a text (backward)',
-					'ab<p><selection />c</p>',
-					'ab<selection backward><p></selection>c</p>',
+					'ab<p>[]c</p>',
+					'ab<selection backward><p>]c</p>',
 					{ direction: 'backward' }
 				);
 
 				test(
 					'shrinks over boundary of empty elements',
-					'<p><selection backward></p><p></selection></p>',
-					'<p></p><p><selection /></p>'
+					'<p><selection backward></p><p>]</p>',
+					'<p></p><p>[]</p>'
 				);
 
 				test(
 					'shrinks over boundary of empty elements (backward)',
-					'<p><selection></p><p></selection></p>',
-					'<p><selection /></p><p></p>',
+					'<p>[</p><p>]</p>',
+					'<p>[]</p><p></p>',
 					{ direction: 'backward' }
 				);
 
 				test(
 					'shrinks over boundary of non-empty elements',
-					'<p>a<selection backward></p><p></selection>b</p>',
-					'<p>a</p><p><selection />b</p>'
+					'<p>a<selection backward></p><p>]b</p>',
+					'<p>a</p><p>[]b</p>'
 				);
 
 				test(
 					'shrinks over boundary of non-empty elements (backward)',
-					'<p>a<selection></p><p></selection>b</p>',
-					'<p>a<selection /></p><p>b</p>',
+					'<p>a[</p><p>]b</p>',
+					'<p>a[]</p><p>b</p>',
+					{ direction: 'backward' }
+				);
+
+				test(
+					'updates selection attributes',
+					'<p><$text bold="true">foo</$text>[b]</p>',
+					'<p><$text bold="true>"foo</$text><selection bold=true />b</p>',
 					{ direction: 'backward' }
 				);
 			} );
@@ -267,70 +277,70 @@ describe( 'Delete utils', () => {
 		describe( 'unit=codePoint', () => {
 			test(
 				'does nothing on empty content',
-				'<selection />',
-				'<selection />',
+				'[]',
+				'[]',
 				{ unit: 'codePoint' }
 			);
 
 			test(
 				'does nothing on empty content (with empty element)',
-				'<p><selection /></p>',
-				'<p><selection /></p>',
+				'<p>[]</p>',
+				'<p>[]</p>',
 				{ unit: 'codePoint' }
 			);
 
 			test(
 				'extends one user-perceived character forward - latin letters',
-				'<p>f<selection />oo</p>',
-				'<p>f<selection>o</selection>o</p>',
+				'<p>f[]oo</p>',
+				'<p>f[o]o</p>',
 				{ unit: 'codePoint' }
 			);
 
 			test(
 				'extends one user-perceived character backward - latin letters',
-				'<p>fo<selection />o</p>',
-				'<p>f<selection backward>o</selection>o</p>',
+				'<p>fo[]o</p>',
+				'<p>f<selection backward>o]o</p>',
 				{ unit: 'codePoint', direction: 'backward' }
 			);
 
 			test(
 				'unicode support - combining mark forward',
-				'<p>foo<selection />b̂ar</p>',
-				'<p>foo<selection>b</selection>̂ar</p>',
+				'<p>foo[]b̂ar</p>',
+				'<p>foo[b]̂ar</p>',
 				{ unit: 'codePoint' }
 			);
 
 			test(
 				'unicode support - combining mark backward',
-				'<p>foob̂<selection />ar</p>',
-				'<p>foob<selection backward>̂</selection>ar</p>',
+				'<p>foob̂[]ar</p>',
+				'<p>foob<selection backward>̂]ar</p>',
 				{ unit: 'codePoint', direction: 'backward' }
 			);
 
 			test(
 				'unicode support - combining mark multiple',
-				'<p>fo<selection />o̻̐ͩbar</p>',
-				'<p>fo<selection>o</selection>̻̐ͩbar</p>',
+				'<p>fo[]o̻̐ͩbar</p>',
+				'<p>fo[o]̻̐ͩbar</p>',
 				{ unit: 'codePoint' }
 			);
 
 			test(
 				'unicode support - surrogate pairs forward',
-				'<p><selection />\uD83D\uDCA9</p>',
-				'<p><selection>\uD83D\uDCA9</selection></p>',
+				'<p>[]\uD83D\uDCA9</p>',
+				'<p>[\uD83D\uDCA9]</p>',
 				{ unit: 'codePoint' }
 			);
 
 			test(
 				'unicode support surrogate pairs backward',
-				'<p>\uD83D\uDCA9<selection /></p>',
-				'<p><selection backward>\uD83D\uDCA9</selection></p>',
+				'<p>\uD83D\uDCA9[]</p>',
+				'<p><selection backward>\uD83D\uDCA9]</p>',
 				{ unit: 'codePoint', direction: 'backward' }
 			);
 		} );
 	} );
 
-	function test( title, input, output, options ) {
+	function test( title, input, output, options, isBackward ) {
 		it( title, () => {
 			input = input.normalize();
 			output = output.normalize();
@@ -344,6 +354,7 @@ describe( 'Delete utils', () => {
 			modifySelection( testSelection, options );
 
 			expect( stringify( document.getRoot(), testSelection ) ).to.equal( output );
+			expect( document.selection.isBackward ).to.equal( !!isBackward );
 		} );
 	}
 } );

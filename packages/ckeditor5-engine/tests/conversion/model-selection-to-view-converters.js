@@ -217,7 +217,7 @@ describe( 'default converters', () => {
 			// Similar test case as above
 			test(
 				[ 3, 3 ],
-				'f<$text bold=true>ooba</$text>r',
+				'f<$text bold="true">ooba</$text>r',
 				'f<strong>ooba</strong>r' // No selection in view.
 			);
 		} );

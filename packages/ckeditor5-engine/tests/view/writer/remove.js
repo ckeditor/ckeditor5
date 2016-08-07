@@ -81,9 +81,9 @@ describe( 'writer', () => {
 
 		it( 'should support unicode', () => {
 			test(
-				'<container:p>நி{லை<attribute:b:10>க்}கு</attribute:b:10></container:p>',
-				'<container:p>நி[]<attribute:b:10>கு</attribute:b:10></container:p>',
-				'லை<attribute:b:10>க்</attribute:b:10>'
+				'<container:p>நி{லை<attribute:b view-priority="10">க்}கு</attribute:b></container:p>',
+				'<container:p>நி[]<attribute:b view-priority="10">கு</attribute:b></container:p>',
+				'லை<attribute:b view-priority="10">க்</attribute:b>'
 			);
 		} );
 

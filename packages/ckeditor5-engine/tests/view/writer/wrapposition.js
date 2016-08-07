@@ -57,8 +57,8 @@ describe( 'wrapPosition', () => {
 	it( 'should support unicode', () => {
 		test(
 			'<container:p>நிலை{}க்கு</container:p>',
-			'<attribute:b:1></attribute:b:1>',
-			'<container:p>நிலை<attribute:b:1>[]</attribute:b:1>க்கு</container:p>'
+			'<attribute:b view-priority="1"></attribute:b>',
+			'<container:p>நிலை<attribute:b view-priority="1">[]</attribute:b>க்கு</container:p>'
 		);
 	} );
 

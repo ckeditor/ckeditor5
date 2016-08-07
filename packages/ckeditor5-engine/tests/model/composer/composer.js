@@ -28,7 +28,7 @@ describe( 'Composer', () => {
 
 			composer.fire( 'deleteContents', { batch, selection: document.selection } );
 
-			expect( getData( document ) ).to.equal( '<p>f<selection /></p><p>r</p>' );
+			expect( getData( document ) ).to.equal( '<p>f[]</p><p>r</p>' );
 			expect( batch.deltas ).to.not.be.empty;
 		} );
 
@@ -43,7 +43,7 @@ describe( 'Composer', () => {
 				options: { merge: true }
 			} );
 
-			expect( getData( document ) ).to.equal( '<p>f<selection />r</p>' );
+			expect( getData( document ) ).to.equal( '<p>f[]r</p>' );
 		} );
 
 		it( 'attaches modifySelection default listener', () => {
@@ -57,7 +57,8 @@ describe( 'Composer', () => {
 			} );
 
 			expect( getData( document ) )
-				.to.equal( '<p>fo<selection backward>o</selection>bar</p>' );
+				.to.equal( '<p>fo[o]bar</p>' );
+			expect( document.selection.isBackward ).to.true;
 		} );
 	} );
 

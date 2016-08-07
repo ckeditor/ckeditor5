@@ -123,9 +123,9 @@ describe( 'writer', () => {
 
 		it( 'should support unicode', () => {
 			test(
-				'<container:p>[நிலை<attribute:b:1>க்}கு</attribute:b:1>',
-				'<attribute:b:1></attribute:b:1>',
-				'<container:p>[நிலைக்]<attribute:b:1>கு</attribute:b:1></container:p>'
+				'<container:p>[நிலை<attribute:b view-priority="1">க்}கு</attribute:b></container:p>',
+				'<attribute:b view-priority="1"></attribute:b>',
+				'<container:p>[நிலைக்]<attribute:b view-priority="1">கு</attribute:b></container:p>'
 			);
 		} );
 
