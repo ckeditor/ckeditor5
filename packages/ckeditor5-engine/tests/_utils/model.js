@@ -76,6 +76,7 @@ getData._stringify = stringify;
  * @param {String} [options.rootName='main'] Root name where parsed data will be stored. If not provided, default `main`
  * name will be used.
  * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to selection.
+ * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward.
  * @param {String} [options.batchType='transparent'] Batch type used for inserting elements. See {@link engine.model.Batch#type}.
  */
 export function setData( document, data, options = {} ) {
@@ -84,11 +85,13 @@ export function setData( document, data, options = {} ) {
 	}
 
 	let modelDocumentFragment, selection;
-	const mapper = new Mapper();
 	const modelRoot = document.getRoot( options.rootName || 'main' );
 
 	// Parse data string to model.
-	const parsedResult = setData._parse( data, document.schema, mapper );
+	const parsedResult = setData._parse( data, document.schema, {
+		lastRangeBackward: options.lastRangeBackward,
+		selectionAttributes: options.selectionAttributes
+	} );
 
 	// Retrieve DocumentFragment and Selection from parsed model.
 	if ( parsedResult.model ) {
@@ -104,24 +107,37 @@ export function setData( document, data, options = {} ) {
 			.remove( Range.createFromElement( modelRoot ) )
 			.insert( Position.createAt( modelRoot, 0 ), modelDocumentFragment );
 
-		// Clear selection
+		// Clean up previous document selection.
 		document.selection.clearAttributes();
 		document.selection.removeAllRanges();
 
-		// Set attributes to selection if specified.
-		if ( options.selectionAttributes ) {
-			document.selection.setAttributesTo( options.selectionAttributes );
-		}
-
-		// Convert view selection to model if selection is defined.
+		// Update document selection if specified.
 		if ( selection ) {
 			const ranges = [];
 
-			for ( let viewRange of selection.getRanges() ) {
-				ranges.push( ( mapper.toModelRange( viewRange ) ) );
+			for ( let range of selection.getRanges() ) {
+				let start, end;
+
+				// Each range returned from `parse()` method has its root placed in DocumentFragment.
+				// Here we convert each range to have its root re-calculated properly and be placed inside
+				// model document root.
+				if ( range.start.parent instanceof ModelDocumentFragment ) {
+					start = Position.createFromParentAndOffset( modelRoot, range.start.offset );
+				} else {
+					start = Position.createFromParentAndOffset( range.start.parent, range.start.offset );
+				}
+
+				if ( range.end.parent instanceof ModelDocumentFragment ) {
+					end = Position.createFromParentAndOffset( modelRoot, range.end.offset );
+				} else {
+					end = Position.createFromParentAndOffset( range.end.parent, range.end.offset );
+				}
+
+				ranges.push( new Range( start, end ) );
 			}
 
 			document.selection.setRanges( ranges, selection.isBackward );
+			document.selection.setAttributesTo( selection.getAttributes() );
 		}
 	} );
 }
@@ -147,7 +163,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	const mapper = new Mapper();
 	let selection, range;
 
-	// Create a range wrapping passed node.
+	// Create a range witch wraps passed node.
 	if ( node instanceof RootElement || node instanceof ModelDocumentFragment ) {
 		range = Range.createFromElement( node );
 	} else {
@@ -174,31 +190,31 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 		selection.addRange( new Range( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
 	}
 
-	// Setup model -> view converter.
+	// Setup model to view converter.
 	const viewDocumentFragment = new ViewDocumentFragment();
 	const viewSelection = new ViewSelection();
 	const modelToView = new ModelConversionDispatcher( { mapper, viewSelection } );
+
+	// Bind root elements.
+	mapper.bindElements( node.root, viewDocumentFragment );
 
 	modelToView.on( 'insert:$text', insertText() );
 	modelToView.on( 'insert', insertElement() );
 	modelToView.on( 'selection', convertRangeSelection() );
 	modelToView.on( 'selection', convertCollapsedSelection() );
 
-	mapper.bindElements( node, viewDocumentFragment );
-
-	// Convert view to model.
+	// Convert model to view.
 	modelToView.convertInsert( range );
 
+	// Convert model selection to view selection.
 	if ( selection ) {
 		modelToView.convertSelection( selection );
 	}
 
-	mapper.clearBindings();
-
 	// Parse view to data string.
 	let data = viewStringify( viewDocumentFragment, viewSelection, { sameSelectionCharacters: true } );
 
-	// Replace valid XML text element name to `$text`.
+	// Replace valid XML `model-test` element name to `$text`.
 	return data.replace( new RegExp( VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT, 'g' ), DATA_STRING_TEXT_WITH_ATTRIBUTES_ELEMENT );
 }
 
@@ -209,34 +225,37 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  *        <$text attribute="value">Text data</$text>
  *
  * @param {String} data HTML-like string to be parsed.
- * @param {engine.model.schema} schema Schema instance uses by converters for validation. Element not registered
- * in schema won't be created.
- * @param {engine.model.mapper} [mapper=new Mapper()] Mapper instance uses mainly by `setData` method to map position
- * between {@link engine.view.document Document} and {@link engine.model.document Document}.
+ * @param {engine.model.schema} schema Schema instance uses by converters for element validation.
+ * @param {Object} options Additional configuration.
+ * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward.
+ * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to selection.
  * @returns {engine.model.Element|engine.model.Text|engine.model.DocumentFragment|Object} Returns parsed model node or
  * object with two fields `model` and `selection` when selection ranges were included in data to parse.
  */
-export function parse( data, schema, mapper = new Mapper() ) {
-	// Replace not accepted by XML `$text` element by valid one.
+export function parse( data, schema, options = {} ) {
+	const mapper = new Mapper();
+
+	// Replace not accepted by XML `$text` tag name by valid one `model-text`.
 	data = data.replace( new RegExp( '\\' + DATA_STRING_TEXT_WITH_ATTRIBUTES_ELEMENT, 'g' ), VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT );
 
 	// Parse data to view using view utils.
-	const parsedResult = viewParse( data, { sameSelectionCharacters: true } );
+	const parsedResult = viewParse( data, {
+		sameSelectionCharacters: true,
+		lastRangeBackward: !!options.lastRangeBackward
+	} );
 
 	// Retrieve DocumentFragment and Selection from parsed view.
-	let viewDocumentFragment, selection;
+	let viewDocumentFragment, viewSelection;
 
 	if ( parsedResult.view && parsedResult.selection ) {
 		viewDocumentFragment = parsedResult.view;
-		selection = parsedResult.selection;
+		viewSelection = parsedResult.selection;
 	} else {
 		viewDocumentFragment = parsedResult;
 	}
 
-	viewDocumentFragment = viewDocumentFragment.parent ? viewDocumentFragment.parent : viewDocumentFragment;
-
-	// Setup view -> model converter.
-	const viewToModel = new ViewConversionDispatcher( { mapper, schema } );
+	// Setup view to model converter.
+	const viewToModel = new ViewConversionDispatcher( { schema, mapper } );
 
 	viewToModel.on( 'text', convertToModelText() );
 	viewToModel.on( `element:${ VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT }`, convertToModelText( true ), null, 9999 );
@@ -244,23 +263,41 @@ export function parse( data, schema, mapper = new Mapper() ) {
 	viewToModel.on( 'documentFragment', convertToModelFragment(), null, 9999 );
 
 	// Convert view to model.
-	let root = viewToModel.convert( viewDocumentFragment, { context: [ '$root' ] } );
+	let model = viewToModel.convert( viewDocumentFragment.root, { context: [ '$root' ] } );
 
 	// If root DocumentFragment contains only one element - return that element.
-	if ( root instanceof DocumentFragment && root.childCount == 1 ) {
-		root = root.getChild( 0 );
+	if ( model instanceof ModelDocumentFragment && model.childCount == 1 ) {
+		model = model.getChild( 0 );
+	}
+
+	// Convert view selection to model selection.
+	let selection;
+
+	if ( viewSelection ) {
+		const ranges = [];
+
+		// Convert ranges.
+		for ( let viewRange of viewSelection.getRanges() ) {
+			ranges.push( ( mapper.toModelRange( viewRange ) ) );
+		}
+
+		// Create new selection.
+		selection = new ModelSelection();
+		selection.setRanges( ranges, viewSelection.isBackward );
+
+		// Set attributes to selection if specified.
+		if ( options.selectionAttributes ) {
+			selection.setAttributesTo( options.selectionAttributes );
+		}
 	}
 
 	// Return model end selection when selection was specified.
 	if ( selection ) {
-		return {
-			model: root,
-			selection: selection
-		};
+		return { model, selection };
 	}
 
 	// Otherwise return model only.
-	return root;
+	return model;
 }
 
 // -- converters view -> model -----------------------------------------------------
