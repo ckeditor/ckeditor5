@@ -25,7 +25,7 @@ const config = {
 			files: [
 				'node_modules/requirejs/require.js'
 			],
-			basePath: '/apps/ckeditor/build/amd/'
+			basePath: '/apps/ckeditor/build/modules/amd/'
 		}
 	},
 
@@ -33,18 +33,18 @@ const config = {
 		all: {
 			applications: [ 'ckeditor' ],
 			paths: [
-				'build/amd/tests/**',
-				'!build/amd/tests/**/@(_utils|_assets)/**'
+				'build/modules/amd/tests/**',
+				'!build/modules/amd/tests/**/@(_utils|_assets)/**'
 			]
 		}
 	},
 
 	coverage: {
 		paths: [
-			'build/amd/ckeditor.js',
-			'build/amd/ckeditor5/**/*.js',
-			'build/amd/tests/**/_*/*.js',
-			'!build/amd/ckeditor5/*/lib/**'
+			'build/modules/amd/ckeditor.js',
+			'build/modules/amd/ckeditor5/**/*.js',
+			'build/modules/amd/tests/**/_*/*.js',
+			'!build/modules/amd/ckeditor5/*/lib/**'
 		]
 	},
 
