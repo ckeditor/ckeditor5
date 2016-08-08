@@ -140,8 +140,8 @@ export default class ControllerCollection extends Collection {
 	 *		data.remove( 0 );
 	 *		console.log( controllers.length == 1 );
 	 *
-	 * @param {utils.Collection.<ui.Model>} models Models to be synchronized with this controller collection.
-	 * @returns {Function} The `as` function in the `bind( models ).as( ... )` chain.
+	 * @param {utils.Collection.<ui.Model>} collection Models to be synchronized with this controller collection.
+	 * @returns {Function} The `as` function in the `bind( collection ).as( ... )` chain.
 	 * It activates factory using controller and view classes or uses a custom callback to produce
 	 * controller (view) instances.
 	 * @returns {Function} return.ControllerClassOrFunction Specifies the constructor of the controller to be used or
@@ -149,28 +149,28 @@ export default class ControllerCollection extends Collection {
 	 * @returns {Function} [return.ViewClass] Specifies constructor of the view to be used. If not specified,
 	 * `ControllerClassOrFunction` works as as custom callback function.
 	 */
-	bind( models ) {
-		const idProperty = models._idProperty;
+	bind( collection ) {
+		const controllerMap = new Map();
 
 		return {
 			as: ( ControllerClassOrFunction, ViewClass ) => {
-				const createController = ViewClass ?
-						defaultControllerFactory( ControllerClassOrFunction, ViewClass, idProperty )
+				const factory = ViewClass ?
+						defaultControllerFactory( ControllerClassOrFunction, ViewClass, controllerMap )
 					:
-						customControllerFactory( ControllerClassOrFunction, idProperty );
+						genericControllerFactory( ControllerClassOrFunction, controllerMap );
 
-				for ( let model of models ) {
-					this.add( createController( model, this.locale ) );
+				for ( let item of collection ) {
+					this.add( factory.create( item, this.locale ) );
 				}
 
-				// Updated controller collection when a new model is added.
-				models.on( 'add', ( evt, model, index ) => {
-					this.add( createController( model, this.locale ), index );
+				// Updated controller collection when a new item is added.
+				collection.on( 'add', ( evt, item, index ) => {
+					this.add( factory.create( item, this.locale ), index );
 				} );
 
-				// Update controller collection when a model is removed.
-				models.on( 'remove', ( evt, model ) => {
-					this.remove( model[ idProperty ] );
+				// Update controller collection when a item is removed.
+				collection.on( 'remove', ( evt, item ) => {
+					this.remove( factory.delete( item ) );
 				} );
 			}
 		};
@@ -247,50 +247,51 @@ export default class ControllerCollection extends Collection {
 	}
 }
 
+// Initializes a generic controller factory.
+//
+// @param {Function} createController A function which returns controller instance if provided with data and locale.
+// @param {Map} controllerMap A Map used to associate data in the collection with corresponding controller instance.
+// @returns {Object}
+function genericControllerFactory( createController, controllerMap ) {
+	return {
+		// Returns a controller instance (and its view) for given data (i.e. Model) and locale.
+		//
+		// @param {Object} data A data to creates the controller, usually {@link ui.Model}.
+		// @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
+		// @returns {ui.Controller}
+		create( data, locale ) {
+			const controller = createController( data, locale );
+
+			controllerMap.set( data, controller );
+
+			return controller;
+		},
+
+		// Deletes controller instance in the factory by associated data and returns
+		// the controller instance.
+		//
+		// @param {Object} data A data associated with the controller, usually {@link ui.Model}.
+		// @returns {ui.Controller}
+		delete( data ) {
+			const controller = controllerMap.get( data );
+
+			controllerMap.delete( controller );
+
+			return controller;
+		}
+	};
+}
+
 // Initializes controller factory with controller and view classes.
 //
 // @param {Function} ControllerClass Specifies the constructor of the controller to be used.
 // @param {Function} ViewClass Specifies constructor of the view.
-// @param {String} idProperty A property used to associate the controller with its model {@link utils.Collection._idProperty}.
-// @returns {Function}
-function defaultControllerFactory( ControllerClass, ViewClass, idProperty ) {
-	// Returns a controller instance (and its view) for given model and class names.
-	//
-	// @param {ui.Model} model A model of the controller.
-	// @param {utils.Locale} [locale] The {@link core.editor.Editor#locale editor's locale} instance.
-	// @returns {ui.Controller}
-	return ( model, locale ) => {
-		return flagController( new ControllerClass( model, new ViewClass( locale ) ), idProperty );
-	};
-}
-
-// Initializes controller factory which is fed by a custom callback.
-//
-// @param {Function} callback A callback which is to return an instance of {@link ui.Controller}.
-// @param {String} idProperty A property used to associate the controller with its model {@link utils.Collection._idProperty}.
-// @returns {Function}
-function customControllerFactory( callback, idProperty ) {
-	// Returns a controller instance (and its view) produced by the custom callback.
-	//
-	// @param {ui.Model} model A model of the controller.
-	// @param {utils.Locale} [locale] The {@link core.editor.Editor#locale editor's locale} instance.
-	// @returns {ui.Controller}
-	return ( ...args ) => {
-		return flagController( callback( ...args ), idProperty );
-	};
-}
-
-// Gives the controller an id corresponding with {@link utils.Collection#_idProperty} of the model.
-// It allows retrieving this controller instance by the model in the future
-// and avoids a brute–force search in the entire controller collection.
-//
-// @param {ui.Controller} controller An instance of controller.
-// @param {String} idProperty A property used to associate the controller with its model {@link utils.Collection._idProperty}.
-// @returns {ui.Controller}
-function flagController( controller, idProperty ) {
-	controller.id = controller.model[ idProperty ];
-
-	return controller;
+// @param {Map} controllerMap A Map used to associate data in the collection with corresponding controller instance.
+// @returns {Object}
+function defaultControllerFactory( ControllerClass, ViewClass, controllerMap ) {
+	return genericControllerFactory( ( model, locale ) => {
+		return new ControllerClass( model, new ViewClass( locale ) );
+	}, controllerMap );
 }
 
 // Check if all entries of the array are of `String` type.

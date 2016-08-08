@@ -3,63 +3,66 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: ui, toolbar */
+/* bender-tags: ui, bindings, toolbar */
 
 import mix from '/ckeditor5/utils/mix.js';
 import Editor from '/ckeditor5/core/editor/editor.js';
+import Collection from '/ckeditor5/utils/collection.js';
+import Model from '/ckeditor5/ui/model.js';
 import Controller from '/ckeditor5/ui/controller.js';
 import ToolbarBindingsMixin from '/ckeditor5/ui/bindings/toolbarbindingsmixin.js';
 
 describe( 'ToolbarBindingsMixin', () => {
-	let mixinInstance, editor;
+	const editor = new Editor();
+	let mixinInstance;
+
+	editor.ui = {
+		featureComponents: {
+			create: () => new Controller()
+		}
+	};
+
+	class MixClass extends Controller {
+		constructor( model, view ) {
+			super( model, view );
+
+			this.editor = editor;
+			this.addCollection( 'items' );
+		}
+	}
+
+	mix( MixClass, ToolbarBindingsMixin );
 
 	beforeEach( () => {
-		editor = new Editor();
-
-		class MixClass extends Controller {
-			constructor( model, view ) {
-				super( model, view );
-
-				this.addCollection( 'buttons' );
-			}
-		}
-
-		mix( MixClass, ToolbarBindingsMixin );
-
-		mixinInstance = new MixClass();
-		mixinInstance.editor = editor;
+		mixinInstance = new MixClass( new Model( {
+			config: [ 'bold', 'italic' ]
+		} ) );
 	} );
 
-	describe( 'addButtons', () => {
-		it( 'creates buttons for each button name', () => {
-			const createSpy = sinon.spy( () => new Controller() );
+	describe( 'bindToolbarItems', () => {
+		it( 'creates item collection', () => {
+			mixinInstance.bindToolbarItems();
 
-			editor.ui = {
-				featureComponents: {
-					create: createSpy
-				}
-			};
-
-			mixinInstance.addButtons( [ 'foo', 'bar' ] );
-
-			expect( createSpy.callCount ).to.equal( 2 );
-			expect( createSpy.firstCall.calledWith( 'foo' ) ).to.be.true;
-			expect( createSpy.secondCall.calledWith( 'bar' ) ).to.be.true;
+			expect( mixinInstance.items ).to.be.instanceOf( Collection );
+			expect( mixinInstance.items.map( i => i.name ) ).to.have.members( [ 'bold', 'italic' ] );
 		} );
 
-		it( 'adds created components to the collection of buttons', () => {
-			const component = new Controller();
-			const createSpy = sinon.spy( () => component );
+		it( 'works when no config specified in the model', () => {
+			mixinInstance = new MixClass( new Model( {} ) );
+			mixinInstance.bindToolbarItems();
 
-			editor.ui = {
-				featureComponents: {
-					create: createSpy
-				}
-			};
+			expect( mixinInstance.items ).to.be.instanceOf( Collection );
+			expect( mixinInstance.items ).to.have.length( 0 );
+		} );
 
-			mixinInstance.addButtons( [ 'foo' ] );
+		it( 'binds item collection to "items" controller collection', () => {
+			const items = mixinInstance.collections.get( 'items' );
 
-			expect( mixinInstance.collections.get( 'buttons' ).get( 0 ) ).to.equal( component );
+			expect( items ).to.have.length( 0 );
+
+			mixinInstance.bindToolbarItems();
+
+			expect( items ).to.have.length( 2 );
 		} );
 	} );
 } );

@@ -28,6 +28,12 @@ export default class StickyToolbar extends BaseStickyToolbar {
 
 		this.editor = editor;
 	}
+
+	init() {
+		this.bindToolbarItems();
+
+		return super.init();
+	}
 }
 
 mix( StickyToolbar, ToolbarBindingsMixin );

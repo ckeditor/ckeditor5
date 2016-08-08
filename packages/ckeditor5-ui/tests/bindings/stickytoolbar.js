@@ -3,27 +3,50 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: ui, toolbar */
+/* bender-tags: ui, bindings, toolbar */
 
 import Editor from '/ckeditor5/core/editor/editor.js';
 import Model from '/ckeditor5/ui/model.js';
 import View from '/ckeditor5/ui/view.js';
-import StickyToolbar from '/ckeditor5/ui/bindings/toolbar.js';
+import Controller from '/ckeditor5/ui/controller.js';
+import StickyToolbar from '/ckeditor5/ui/bindings/stickytoolbar.js';
+
+import testUtils from '/tests/core/_utils/utils.js';
+testUtils.createSinonSandbox();
 
 describe( 'StickyToolbar', () => {
-	let toolbar, model, editor;
+	let toolbar, model;
+
+	const editor = new Editor();
+
+	editor.ui = {
+		featureComponents: {
+			create: () => new Controller()
+		}
+	};
 
 	beforeEach( () => {
-		editor = new Editor();
 		model = new Model( {
-			isActive: false
+			isActive: false,
+			config: [ 'bold', 'italic' ]
 		} );
+
 		toolbar = new StickyToolbar( model, new View(), editor );
 	} );
 
 	describe( 'constructor', () => {
 		it( 'sets all the properties', () => {
 			expect( toolbar ).to.have.property( 'editor', editor );
+		} );
+	} );
+
+	describe( 'init', () => {
+		it( 'calls bindToolbarItems', () => {
+			const spy = testUtils.sinon.spy( toolbar, 'bindToolbarItems' );
+
+			return toolbar.init().then( () => {
+				expect( spy.calledOnce ).to.be.true;
+			} );
 		} );
 	} );
 } );

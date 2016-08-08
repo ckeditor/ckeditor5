@@ -167,7 +167,7 @@ describe( 'ControllerCollection', () => {
 					models.remove( 2 );
 					models.remove( 3 );
 
-					expect( controllers.map( c => c.id ) ).to.have.members( [ '0', '1', '3' ] );
+					expect( controllers.map( c => c.model.uid ) ).to.have.members( [ '0', '1', '3' ] );
 				} );
 
 				it( 'passes controller collection\'s locale to the views', () => {
@@ -229,7 +229,7 @@ describe( 'ControllerCollection', () => {
 					models.remove( 2 );
 					models.remove( 3 );
 
-					expect( controllers.map( c => c.id ) ).to.have.members( [ '0', '1', '3' ] );
+					expect( controllers.map( c => c.model.uid ) ).to.have.members( [ '0', '1', '3' ] );
 				} );
 
 				it( 'passes controller collection\'s locale to the views', () => {
@@ -241,6 +241,30 @@ describe( 'ControllerCollection', () => {
 					} );
 
 					expect( controllers.get( 0 ).view.locale ).to.equal( locale );
+				} );
+			} );
+
+			describe( 'custom data format with custom factory', () => {
+				it( 'expands the initial collection of the models', () => {
+					const controllers = new ControllerCollection( 'synced' );
+					const data = new Collection();
+
+					data.add( { foo: 'a' } );
+					data.add( { foo: 'b' } );
+
+					controllers.bind( data ).as( ( item, locale ) => {
+						const model = new Model( {
+							custom: item.foo
+						} );
+
+						return new ItemController( model, new ItemView( locale ) );
+					} );
+
+					expect( controllers ).to.have.length( 2 );
+					expect( controllers.get( 0 ).model.custom ).to.equal( 'a' );
+					expect( controllers.get( 1 ).model.custom ).to.equal( 'b' );
+					expect( controllers.get( 0 ) ).to.be.instanceOf( ItemController );
+					expect( controllers.get( 0 ).view ).to.be.instanceOf( ItemView );
 				} );
 			} );
 		} );
