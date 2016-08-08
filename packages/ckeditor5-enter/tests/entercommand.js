@@ -25,6 +25,7 @@ beforeEach( () => {
 			schema.registerItem( 'img', '$inline' );
 			schema.registerItem( 'p', '$block' );
 			schema.registerItem( 'h', '$block' );
+			schema.allow( { name: '$text', inside: '$root' } );
 		} );
 } );
 
