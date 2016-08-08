@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+import Range from '/ckeditor5/engine/model/range.js';
 import TreeWalker from '/ckeditor5/engine/model/treewalker.js';
 import Text from '/ckeditor5/engine/model/text.js';
 import TextProxy from '/ckeditor5/engine/model/textproxy.js';
@@ -99,4 +100,15 @@ export function getText( element ) {
 	}
 
 	return text;
+}
+
+/**
+ * Creates a range on given {@link engine.model.Element element} only. The range starts directly before that element
+ * and ends before the first child of that element.
+ *
+ * @param {engine.model.Element} element Element on which range should be created.
+ * @returns {engine.model.Range}
+ */
+export function createRangeOnElementOnly( element ) {
+	return Range.createFromParentsAndOffsets( element.parent, element.startOffset, element, 0 );
 }

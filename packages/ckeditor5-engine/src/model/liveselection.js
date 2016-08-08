@@ -181,7 +181,7 @@ export default class LiveSelection extends Selection {
 		const defaultRoot = this._document._getDefaultRoot();
 
 		// Find the first position where the selection can be put.
-		for ( let position of Range.createFromElement( defaultRoot ).getPositions() ) {
+		for ( let position of Range.createIn( defaultRoot ).getPositions() ) {
 			if ( this._document.schema.check( { name: '$text', inside: position } ) ) {
 				return new Range( position, position );
 			}

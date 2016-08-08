@@ -34,6 +34,14 @@ describe( 'Range', () => {
 			expect( range.start.offset ).to.equal( start.offset );
 			expect( range.end.offset ).to.equal( end.offset );
 		} );
+
+		it( 'creates collapsed range', () => {
+			const start = new Position( {}, 1 );
+			const range = new Range( start );
+
+			expect( range.start.isEqual( start ) ).to.be.true;
+			expect( range.isCollapsed ).to.be.true;
+		} );
 	} );
 
 	describe( 'iterator', () => {
@@ -490,14 +498,25 @@ describe( 'Range', () => {
 			div = new Element( 'div', null, p );
 		} );
 
-		describe( 'createFromElement', () => {
+		describe( 'createIn', () => {
 			it( 'should return range', () => {
-				const range = Range.createFromElement( p );
+				const range = Range.createIn( p );
 
 				expect( range.start.parent ).to.deep.equal( p );
 				expect( range.start.offset ).to.deep.equal( 0 );
 				expect( range.end.parent ).to.deep.equal( p );
 				expect( range.end.offset ).to.deep.equal( 1 );
+			} );
+		} );
+
+		describe( 'createOn', () => {
+			it( 'should return range', () => {
+				const range = Range.createOn( p );
+
+				expect( range.start.parent ).to.equal( div );
+				expect( range.start.offset ).to.equal( 0 );
+				expect( range.end.parent ).to.equal( div );
+				expect( range.end.offset ).to.equal( 1 );
 			} );
 		} );
 

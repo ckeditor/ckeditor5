@@ -165,7 +165,7 @@ describe( 'Batch', () => {
 
 		function getCompressedAttrs() {
 			// default: 111---111222---1112------
-			const range = Range.createFromElement( root );
+			const range = Range.createIn( root );
 
 			return Array.from( range.getItems( { singleCharacters: true } ) )
 				.map( item => item.getAttribute( 'a' ) || '-' )

@@ -74,7 +74,7 @@ export function setData( document, data, options = {} ) {
 
 	document.enqueueChanges( () => {
 		document.batch( options.batchType || 'transparent' )
-			.remove( Range.createFromElement( modelRoot ) )
+			.remove( Range.createIn( modelRoot ) )
 			.insert( Position.createAt( modelRoot, 0 ), model );
 
 		if ( selection ) {
@@ -124,12 +124,12 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	let selection, range;
 
 	if ( node instanceof RootElement || node instanceof DocumentFragment ) {
-		range = Range.createFromElement( node );
+		range = Range.createIn( node );
 	} else {
 		// Node is detached - create new document fragment.
 		if ( !node.parent ) {
 			const fragment = new DocumentFragment( node );
-			range = Range.createFromElement( fragment );
+			range = Range.createIn( fragment );
 		} else {
 			range = new Range(
 				Position.createBefore( node ),

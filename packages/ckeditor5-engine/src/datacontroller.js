@@ -117,7 +117,7 @@ export default class DataController {
 	get( rootName = 'main' ) {
 		// Get model range.
 		const modelRoot = this.model.getRoot( rootName );
-		const modelRange = ModelRange.createFromElement( modelRoot );
+		const modelRange = ModelRange.createIn( modelRoot );
 
 		// model -> view
 		const viewDocumentFragment = new ViewDocumentFragment();
@@ -148,7 +148,7 @@ export default class DataController {
 		this.model.enqueueChanges( () => {
 			// Initial batch should be ignored by features like undo, etc.
 			this.model.batch( 'transparent' )
-				.remove( ModelRange.createFromElement( modelRoot ) )
+				.remove( ModelRange.createIn( modelRoot ) )
 				.insert( ModelPosition.createAt( modelRoot, 0 ), this.parse( data ) );
 		} );
 	}

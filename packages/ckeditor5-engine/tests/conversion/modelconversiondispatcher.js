@@ -202,7 +202,7 @@ describe( 'ModelConversionDispatcher', () => {
 				new ModelElement( 'paragraph', { class: 'nice' }, new ModelText( 'xx', { italic: true } ) )
 			] );
 
-			const range = ModelRange.createFromElement( root );
+			const range = ModelRange.createIn( root );
 			const loggedEvents = [];
 
 			// We will check everything connected with insert event:
@@ -262,7 +262,7 @@ describe( 'ModelConversionDispatcher', () => {
 				consumable.consume( data.item, 'addAttribute:bold' );
 			} );
 
-			const range = ModelRange.createFromElement( root );
+			const range = ModelRange.createIn( root );
 
 			dispatcher.convertInsert( range );
 
@@ -321,7 +321,7 @@ describe( 'ModelConversionDispatcher', () => {
 				new ModelElement( 'paragraph', { bold: true, class: 'nice' }, new ModelText( 'xx', { bold: true, italic: true } ) )
 			] );
 
-			const range = ModelRange.createFromElement( root );
+			const range = ModelRange.createIn( root );
 			const loggedEvents = [];
 
 			dispatcher.on( 'addAttribute', ( evt, data, consumable ) => {
@@ -357,7 +357,7 @@ describe( 'ModelConversionDispatcher', () => {
 				consumable.consume( data.item.getChild( 0 ), 'removeAttribute:attr' );
 			} );
 
-			const range = ModelRange.createFromElement( root );
+			const range = ModelRange.createIn( root );
 
 			dispatcher.convertAttribute( 'removeAttribute', range, 'attr', 'value', null );
 
@@ -391,7 +391,7 @@ describe( 'ModelConversionDispatcher', () => {
 		it( 'should prepare correct list of consumable values', () => {
 			doc.enqueueChanges( () => {
 				doc.batch()
-					.setAttribute( ModelRange.createFromElement( root ), 'bold', true )
+					.setAttribute( ModelRange.createIn( root ), 'bold', true )
 					.setAttribute( ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ), 'italic', true );
 			} );
 
@@ -409,7 +409,7 @@ describe( 'ModelConversionDispatcher', () => {
 
 			doc.enqueueChanges( () => {
 				doc.batch()
-					.setAttribute( ModelRange.createFromElement( root ), 'bold', true )
+					.setAttribute( ModelRange.createIn( root ), 'bold', true )
 					.setAttribute( ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ), 'italic', true );
 			} );
 
@@ -428,7 +428,7 @@ describe( 'ModelConversionDispatcher', () => {
 
 			doc.enqueueChanges( () => {
 				doc.batch()
-					.setAttribute( ModelRange.createFromElement( root ), 'bold', true )
+					.setAttribute( ModelRange.createIn( root ), 'bold', true )
 					.setAttribute( ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ), 'italic', true );
 			} );
 

@@ -38,9 +38,9 @@ export default class LiveRange extends Range {
 	}
 
 	/**
-	 * @see engine.model.Range.createFromElement
+	 * @see engine.model.Range.createIn
 	 * @static
-	 * @method engine.model.LiveRange.createFromElement
+	 * @method engine.model.LiveRange.createIn
 	 * @param {engine.model.Element} element
 	 * @returns {engine.model.LiveRange}
 	 */

@@ -498,7 +498,7 @@ function test( selectionPaths, modelInput, expectedView, selectionAttributes = {
 	viewRoot.removeChildren( 0, viewRoot.childCount );
 
 	// Convert model to view.
-	dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+	dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 	dispatcher.convertSelection( modelSelection );
 
 	// Stringify view and check if it is same as expected.

@@ -39,16 +39,16 @@ describe( 'Batch', () => {
 			batch.move( div, new Position( root, [ 2 ] ) );
 
 			expect( root.maxOffset ).to.equal( 2 );
-			expect( getNodesAndText( Range.createFromElement( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
-			expect( getNodesAndText( Range.createFromElement( root.getChild( 1 ) ) ) ).to.equal( 'PggggPfoobarPhhhhP' );
+			expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
+			expect( getNodesAndText( Range.createIn( root.getChild( 1 ) ) ) ).to.equal( 'PggggPfoobarPhhhhP' );
 		} );
 
 		it( 'should move flat range of nodes', () => {
 			let range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 7 ] ) );
 			batch.move( range, new Position( root, [ 1, 3 ] ) );
 
-			expect( getNodesAndText( Range.createFromElement( root.getChild( 0 ) ) ) ).to.equal( 'PggggPfoPhhhhP' );
-			expect( getNodesAndText( Range.createFromElement( root.getChild( 1 ) ) ) ).to.equal( 'abcobarxyz' );
+			expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggggPfoPhhhhP' );
+			expect( getNodesAndText( Range.createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcobarxyz' );
 		} );
 
 		it( 'should throw if given range is not flat', () => {

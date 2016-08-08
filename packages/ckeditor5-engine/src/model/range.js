@@ -19,9 +19,9 @@ export default class Range {
 	 * **Note:** Constructor creates it's own {@link engine.model.Position Position} instances basing on passed values.
 	 *
 	 * @param {engine.model.Position} start Start position.
-	 * @param {engine.model.Position} end End position.
+	 * @param {engine.model.Position} [end] End position. If not set, range will be collapsed at `start` position.
 	 */
-	constructor( start, end ) {
+	constructor( start, end = null ) {
 		/**
 		 * Start position.
 		 *
@@ -36,7 +36,7 @@ export default class Range {
 		 * @readonly
 		 * @member {engine.model.Position} engine.model.Range#end
 		 */
-		this.end = Position.createFromPosition( end );
+		this.end = end ? Position.createFromPosition( end ) : Position.createFromPosition( start );
 	}
 
 	/**
@@ -489,28 +489,6 @@ export default class Range {
 	}
 
 	/**
-	 * Creates a range inside an {@link engine.model.Element element} which starts before the first child of
-	 * that element and ends after the last child of that element.
-	 *
-	 * @param {engine.model.Element} element Element which is a parent for the range.
-	 * @returns {engine.model.Range}
-	 */
-	static createFromElement( element ) {
-		return this.createFromParentsAndOffsets( element, 0, element, element.maxOffset );
-	}
-
-	/**
-	 * Creates a range on given {@link engine.model.Element element} only. The range starts directly before that element
-	 * and ends before the first child of that element.
-	 *
-	 * @param {engine.model.Element} element Element on which range should be created.
-	 * @returns {engine.model.Range}
-	 */
-	static createOnElement( element ) {
-		return this.createFromParentsAndOffsets( element.parent, element.startOffset, element, 0 );
-	}
-
-	/**
 	 * Creates a new range, spreading from specified {@link engine.model.Position position} to a position moved by
 	 * given `shift`. If `shift` is a negative value, shifted position is treated as the beginning of the range.
 	 *
@@ -552,9 +530,31 @@ export default class Range {
 	}
 
 	/**
+	 * Creates a range inside an {@link engine.model.Element element} which starts before the first child of
+	 * that element and ends after the last child of that element.
+	 *
+	 * @param {engine.model.Element} element Element which is a parent for the range.
+	 * @returns {engine.model.Range}
+	 */
+	static createIn( element ) {
+		return this.createFromParentsAndOffsets( element, 0, element, element.maxOffset );
+	}
+
+	/**
+	 * Creates a range that starts before given {@link engine.model.Node node} and ends after it.
+	 *
+	 * @param {engine.model.Node} node
+	 * @returns {engine.model.Range}
+	 */
+	static createOn( node ) {
+		return this.createFromPositionAndShift( Position.createBefore( node ), node.offsetSize );
+	}
+
+	/**
 	 * Creates a `Range` instance from given plain object (i.e. parsed JSON string).
 	 *
 	 * @param {Object} json Plain object to be converted to `Range`.
+	 * @param {engine.model.Document} doc Document object that will be range owner.
 	 * @returns {engine.model.Element} `Range` instance created using given plain object.
 	 */
 	static fromJSON( json, doc ) {

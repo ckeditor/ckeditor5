@@ -8,7 +8,8 @@ import {
 	jsonParseStringify,
 	wrapInDelta,
 	itemAt,
-	getText
+	getText,
+	createRangeOnElementOnly
 } from '/tests/engine/model/_utils/utils.js';
 import Document from '/ckeditor5/engine/model/document.js';
 import Range from '/ckeditor5/engine/model/range.js';
@@ -33,7 +34,7 @@ describe( 'getNodesAndText', () => {
 	} );
 
 	it( 'reads two elements with text', () => {
-		expect( getNodesAndText( Range.createFromElement( root ) ) ).to.equal( 'DIVfoobarDIVPabcxyzP' );
+		expect( getNodesAndText( Range.createIn( root ) ) ).to.equal( 'DIVfoobarDIVPabcxyzP' );
 	} );
 } );
 
@@ -110,5 +111,17 @@ describe( 'getText', () => {
 		] );
 
 		expect( getText( div ) ).to.equal( 'aaa bbbcccddd' );
+	} );
+} );
+
+describe( 'createRangeOnElementOnly', () => {
+	it( 'should create a range that contains only the given element', () => {
+		const parent = new Element( 'parent' );
+		const element = new Element( 'elem' );
+		parent.appendChildren( element );
+
+		const range = createRangeOnElementOnly( element );
+
+		expect( Array.from( range.getItems() ) ).to.deep.equal( [ element ] );
 	} );
 } );
