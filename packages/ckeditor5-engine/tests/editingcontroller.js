@@ -128,7 +128,8 @@ describe( 'EditingController', () => {
 			const modelData = new ModelDocumentFragment( parse(
 				'<paragraph>foo</paragraph>' +
 				'<paragraph></paragraph>' +
-				'<paragraph>bar</paragraph>'
+				'<paragraph>bar</paragraph>',
+				model.schema
 			)._children );
 
 			model.enqueueChanges( () => {
@@ -174,7 +175,7 @@ describe( 'EditingController', () => {
 					expect( getModelData( model ) ).to.equal(
 						'<paragraph>foo</paragraph>' +
 						'<paragraph></paragraph>' +
-						'<paragraph>b<selection>a</selection>r</paragraph>' );
+						'<paragraph>b[a]r</paragraph>' );
 					done();
 				} );
 			} );
@@ -246,7 +247,7 @@ describe( 'EditingController', () => {
 			editing.destroy();
 
 			model.enqueueChanges( () => {
-				const modelData = parse( '<paragraph>foo</paragraph>' ).getChild( 0 );
+				const modelData = parse( '<paragraph>foo</paragraph>', model.schema ).getChild( 0 );
 				model.batch().insert( ModelPosition.createAt( model.getRoot(), 0 ), modelData );
 			} );
 

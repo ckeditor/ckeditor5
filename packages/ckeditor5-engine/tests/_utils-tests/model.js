@@ -418,7 +418,9 @@ describe( 'model test utils', () => {
 			data: '<a foo="1" bar="true" car="x y"><b x="y"></b></a>',
 			output: '<a bar="true" car="x y" foo="1"><b x="y"></b></a>',
 			check( a ) {
+				expect( a.getAttribute( 'bar' ) ).to.equal( 'true' );
 				expect( a.getAttribute( 'car' ) ).to.equal( 'x y' );
+				expect( a.getAttribute( 'foo' ) ).to.equal( '1' );
 			}
 		} );
 

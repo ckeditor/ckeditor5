@@ -46,11 +46,13 @@ describe( 'Delete utils', () => {
 				'f[]o'
 			);
 
-			test(
-				'xdeletes single character (backward selection)',
-				'f<selection backward>o]o',
-				'f[]o'
-			);
+			it( 'deletes single character (backward selection)' , () => {
+				setData( document, 'f[o]o', { lastRangeBackward: true } );
+
+				deleteContents( document.batch(), document.selection );
+
+				expect( getData( document ) ).to.equal( 'f[]o' );
+			} );
 
 			test(
 				'deletes whole text',
@@ -85,29 +87,49 @@ describe( 'Delete utils', () => {
 		} );
 
 		describe( 'with text attributes', () => {
-			test(
-				'deletes characters (first half has attrs)',
-				'<$text bold="true">fo<selection bold=true>o</$text>b]ar',
-				'<$text bold="true">fo</$text><selection bold=true />ar'
-			);
+			it( 'deletes characters (first half has attrs)', () => {
+				setData( document, '<$text bold="true">fo[o</$text>b]ar', { selectionAttributes: {
+					bold: true
+				} } );
 
-			test(
-				'deletes characters (2nd half has attrs)',
-				'fo<selection bold=true>o<$text bold="true">b]ar</$text>',
-				'fo[]<$text bold="true">ar</$text>'
-			);
+				deleteContents( document.batch(), document.selection );
 
-			test(
-				'clears selection attrs when emptied content',
-				'<p>x</p><p><selection bold=true><$text bold="true">foo</$text>]</p><p>y</p>',
-				'<p>x</p><p>[]</p><p>y</p>'
-			);
+				expect( getData( document ) ).to.equal( '<$text bold="true">fo</$text>[]ar' );
+				expect( document.selection.getAttribute( 'bold' ) ).to.equal( 'true' );
+			} );
 
-			test(
-				'leaves selection attributes when text contains them',
-				'<p>x<$text bold="true">a<selection bold=true>foo]b</$text>y</p>',
-				'<p>x<$text bold="true">a<selection bold=true />b</$text>y</p>'
-			);
+			it( 'deletes characters (2nd half has attrs)', () => {
+				setData( document, 'fo[o<$text bold="true">b]ar</$text>', { selectionAttributes: {
+					bold: true
+				} } );
+
+				deleteContents( document.batch(), document.selection );
+
+				expect( getData( document ) ).to.equal( 'fo[]<$text bold="true">ar</$text>' );
+				expect( document.selection.getAttribute( 'bold' ) ).to.undefined;
+			} );
+
+			it( 'clears selection attrs when emptied content', () => {
+				setData( document, '<p>x</p><p>[<$text bold="true">foo</$text>]</p><p>y</p>', { selectionAttributes: {
+					bold: true
+				} } );
+
+				deleteContents( document.batch(), document.selection );
+
+				expect( getData( document ) ).to.equal( '<p>x</p><p>[]</p><p>y</p>' );
+				expect( document.selection.getAttribute( 'bold' ) ).to.undefined;
+			} );
+
+			it( 'leaves selection attributes when text contains them', () => {
+				setData( document, '<p>x<$text bold="true">a[foo]b</$text>y</p>', { selectionAttributes: {
+					bold: true
+				} } );
+
+				deleteContents( document.batch(), document.selection );
+
+				expect( getData( document ) ).to.equal( '<p>x<$text bold="true">a[]b</$text>y</p>' );
+				expect( document.selection.getAttribute( 'bold' ) ).to.equal( 'true' );
+			} );
 		} );
 
 		// Note: The algorithm does not care what kind of it's merging as it knows nothing useful about these elements.
@@ -154,12 +176,13 @@ describe( 'Delete utils', () => {
 				{ merge: true }
 			);
 
-			test(
-				'merges second element into the first one (different name, backward selection)',
-				'<p>x</p><h1>fo<selection backward>o</h1><p>b]ar</p><p>y</p>',
-				'<p>x</p><h1>fo[]ar</h1><p>y</p>',
-				{ merge: true }
-			);
+			it( 'merges second element into the first one (different name, backward selection)', () => {
+				setData( document, '<p>x</p><h1>fo[o</h1><p>b]ar</p><p>y</p>', { lastRangeBackward: true } );
+
+				deleteContents( document.batch(), document.selection, { merge: true } );
+
+				expect( getData( document ) ).to.equal( '<p>x</p><h1>fo[]ar</h1><p>y</p>' );
+			} );
 
 			test(
 				'merges second element into the first one (different attrs)',

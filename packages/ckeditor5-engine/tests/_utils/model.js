@@ -75,7 +75,7 @@ getData._stringify = stringify;
  * @param {Object} options
  * @param {String} [options.rootName='main'] Root name where parsed data will be stored. If not provided, default `main`
  * name will be used.
- * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to selection.
+ * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to the selection.
  * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward.
  * @param {String} [options.batchType='transparent'] Batch type used for inserting elements. See {@link engine.model.Batch#type}.
  */
@@ -104,7 +104,7 @@ export function setData( document, data, options = {} ) {
 	document.enqueueChanges( () => {
 		// Replace existing model in document by new one.
 		document.batch( options.batchType || 'transparent' )
-			.remove( Range.createFromElement( modelRoot ) )
+			.remove( Range.createIn( modelRoot ) )
 			.insert( Position.createAt( modelRoot, 0 ), modelDocumentFragment );
 
 		// Clean up previous document selection.
@@ -165,12 +165,12 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 
 	// Create a range witch wraps passed node.
 	if ( node instanceof RootElement || node instanceof ModelDocumentFragment ) {
-		range = Range.createFromElement( node );
+		range = Range.createIn( node );
 	} else {
 		// Node is detached - create new document fragment.
 		if ( !node.parent ) {
 			const fragment = new ModelDocumentFragment( node );
-			range = Range.createFromElement( fragment );
+			range = Range.createIn( fragment );
 		} else {
 			range = new Range(
 				Position.createBefore( node ),
@@ -227,8 +227,8 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  * @param {String} data HTML-like string to be parsed.
  * @param {engine.model.schema} schema Schema instance uses by converters for element validation.
  * @param {Object} options Additional configuration.
+ * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to the selection.
  * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward.
- * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to selection.
  * @returns {engine.model.Element|engine.model.Text|engine.model.DocumentFragment|Object} Returns parsed model node or
  * object with two fields `model` and `selection` when selection ranges were included in data to parse.
  */
