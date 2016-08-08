@@ -25,6 +25,7 @@ beforeEach( () => {
 			schema.registerItem( 'img', '$inline' );
 			schema.registerItem( 'p', '$block' );
 			schema.registerItem( 'h', '$block' );
+			schema.allow( { name: '$text', inside: '$root' } );
 		} );
 } );
 
@@ -180,7 +181,7 @@ describe( 'enterBlock', () => {
 
 			enterBlock( doc.batch(), doc.selection, { defaultBlockName: 'p' } );
 
-			expect( getData( doc ).to.equal( '<p>[]</p>' );
+			expect( getData( doc ) ).to.equal( '<p>[]</p>' );
 		} );
 
 		it( 'uses composer.deleteContents', () => {
