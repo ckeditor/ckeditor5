@@ -197,7 +197,7 @@ describe( '_doExecute', () => {
 
 		let i = 0;
 
-		for ( let node of Range.createFromElement( p ).getItems( { singleCharacters: true } ) ) {
+		for ( let node of Range.createIn( p ).getItems( { singleCharacters: true } ) ) {
 			expect( node.hasAttribute( attrKey ) ).to.equal( !!expectedHas[ i++ ] );
 		}
 	} );
