@@ -40,6 +40,8 @@ import {
 } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
 import { convertToModelFragment, convertText } from '/ckeditor5/engine/conversion/view-to-model-converters.js';
 
+import { createRangeOnElementOnly } from '/tests/engine/model/_utils/utils.js';
+
 let modelDoc, modelRoot, viewRoot, mapper, modelDispatcher, viewDispatcher;
 
 beforeEach( () => {
@@ -112,7 +114,7 @@ function modelToString( item ) {
 
 		result = attributes ? '<$text' + attributes + '>' + item.data + '</$text>' : item.data;
 	} else {
-		let walker = new ModelWalker( { boundaries: ModelRange.createFromElement( item ), shallow: true } );
+		let walker = new ModelWalker( { boundaries: ModelRange.createIn( item ), shallow: true } );
 
 		for ( let value of walker ) {
 			result += modelToString( value.item );
@@ -252,14 +254,14 @@ describe( 'image with caption converters', () => {
 	it( 'should convert model images changes without caption to view', () => {
 		let modelElement = new ModelElement( 'image', { src: 'bar.jpg', title: 'bar' } );
 		modelRoot.appendChildren( modelElement );
-		modelDispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		modelDispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><img src="bar.jpg" title="bar"></img></div>' );
 
 		modelElement.setAttribute( 'src', 'new.jpg' );
 		modelElement.removeAttribute( 'title' );
-		modelDispatcher.convertAttribute( 'changeAttribute', ModelRange.createOnElement( modelElement ), 'src', 'bar.jpg', 'new.jpg' );
-		modelDispatcher.convertAttribute( 'removeAttribute', ModelRange.createOnElement( modelElement ), 'title', 'bar', null );
+		modelDispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'src', 'bar.jpg', 'new.jpg' );
+		modelDispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'title', 'bar', null );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><img src="new.jpg"></img></div>' );
 	} );
@@ -269,7 +271,7 @@ describe( 'image with caption converters', () => {
 			new ModelElement( 'caption', {}, new ModelText( 'foobar' ) )
 		] );
 		modelRoot.appendChildren( modelElement );
-		modelDispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		modelDispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal(
 			'<div><figure><img src="foo.jpg" title="foo"></img><figcaption>foobar</figcaption></figure></div>'
@@ -277,8 +279,8 @@ describe( 'image with caption converters', () => {
 
 		modelElement.setAttribute( 'src', 'new.jpg' );
 		modelElement.removeAttribute( 'title' );
-		modelDispatcher.convertAttribute( 'changeAttribute', ModelRange.createOnElement( modelElement ), 'src', 'bar.jpg', 'new.jpg' );
-		modelDispatcher.convertAttribute( 'removeAttribute', ModelRange.createOnElement( modelElement ), 'title', 'bar', null );
+		modelDispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'src', 'bar.jpg', 'new.jpg' );
+		modelDispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'title', 'bar', null );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><figure><img src="new.jpg"></img><figcaption>foobar</figcaption></figure></div>' );
 	} );
@@ -479,7 +481,7 @@ describe( 'custom attribute handling for given element', () => {
 		const modelText = new ModelText( 'foo', { linkHref: 'foo.html', linkTitle: 'Foo title' } );
 		modelRoot.appendChildren( modelText );
 
-		let range = ModelRange.createFromElement( modelRoot );
+		let range = ModelRange.createIn( modelRoot );
 
 		modelDispatcher.convertInsert( range );
 
@@ -497,12 +499,12 @@ describe( 'custom attribute handling for given element', () => {
 		modelDoc.graveyard.appendChildren( removed );
 		modelDispatcher.convertRemove(
 			ModelPosition.createFromParentAndOffset( modelRoot, 0 ),
-			ModelRange.createFromElement( modelDoc.graveyard )
+			ModelRange.createIn( modelDoc.graveyard )
 		);
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><a href="bar.html" title="Bar title">oo</a></div>' );
 
-		range = ModelRange.createFromElement( modelRoot );
+		range = ModelRange.createIn( modelRoot );
 
 		// Let's remove just one attribute.
 		modelWriter.removeAttribute( range, 'linkTitle' );
@@ -531,7 +533,7 @@ describe( 'custom attribute handling for given element', () => {
 	it( 'should convert quote model element with linkHref and linkTitle attribute to view', () => {
 		let modelElement = new ModelElement( 'quote', { linkHref: 'foo.html', linkTitle: 'Foo source' }, new ModelText( 'foo' ) );
 		modelRoot.appendChildren( modelElement );
-		modelDispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		modelDispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		let expected = '<div><blockquote>foo<a href="foo.html" title="Foo source">see source</a></blockquote></div>';
 		expect( viewToString( viewRoot ) ).to.equal( expected );
@@ -549,14 +551,14 @@ describe( 'custom attribute handling for given element', () => {
 		modelElement.removeAttribute( 'linkTitle' );
 		modelElement.setAttribute( 'linkHref', 'bar.html' );
 
-		modelDispatcher.convertAttribute( 'removeAttribute', ModelRange.createOnElement( modelElement ), 'linkTitle', 'Foo source', null );
-		modelDispatcher.convertAttribute( 'changeAttribute', ModelRange.createOnElement( modelElement ), 'linkHref', 'foo.html', 'bar.html' );
+		modelDispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'linkTitle', 'Foo source', null );
+		modelDispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'linkHref', 'foo.html', 'bar.html' );
 
 		expected = '<div><blockquote>foo<strong>bar</strong><a href="bar.html">see source</a></blockquote></div>';
 		expect( viewToString( viewRoot ) ).to.equal( expected );
 
 		modelElement.removeAttribute( 'linkHref' );
-		modelDispatcher.convertAttribute( 'removeAttribute', ModelRange.createFromElement( modelRoot ), 'linkHref', 'bar.html', null );
+		modelDispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelRoot ), 'linkHref', 'bar.html', null );
 
 		expected = '<div><blockquote>foo<strong>bar</strong></blockquote></div>';
 		expect( viewToString( viewRoot ) ).to.equal( expected );
@@ -716,7 +718,7 @@ describe( 'universal converter', () => {
 		] );
 
 		modelRoot.appendChildren( modelElement );
-		modelDispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		modelDispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal(
 			'<div>' +

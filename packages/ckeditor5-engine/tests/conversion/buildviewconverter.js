@@ -42,7 +42,7 @@ function modelToString( item ) {
 
 		result = attributes ? '<$text' + attributes + '>' + item.data + '</$text>' : item.data;
 	} else {
-		let walker = new ModelWalker( { boundaries: ModelRange.createFromElement( item ), shallow: true } );
+		let walker = new ModelWalker( { boundaries: ModelRange.createIn( item ), shallow: true } );
 
 		for ( let value of walker ) {
 			result += modelToString( value.item );

@@ -34,6 +34,8 @@ import {
 	clearAttributes
 } from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
 
+import { createRangeOnElementOnly } from '/tests/engine/model/_utils/utils.js';
+
 function viewAttributesToString( item ) {
 	let result = '';
 
@@ -97,7 +99,7 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -108,7 +110,7 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelElement( 'image' );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><img></img></div>' );
 		} );
@@ -121,7 +123,7 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelElement( 'header', { level: 2 }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><h2>foobar</h2></div>' );
 		} );
@@ -138,13 +140,13 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelText( 'foo', { bold: true } );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><strong>foo</strong></div>' );
 
-			modelWriter.removeAttribute( ModelRange.createFromElement( modelRoot ), 'bold' );
+			modelWriter.removeAttribute( ModelRange.createIn( modelRoot ), 'bold' );
 
-			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createFromElement( modelRoot ), 'bold', true, null );
+			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelRoot ), 'bold', true, null );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>foo</div>' );
 		} );
@@ -155,13 +157,13 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelText( 'foo', { bold: true } );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><strong>foo</strong></div>' );
 
-			modelWriter.removeAttribute( ModelRange.createFromElement( modelRoot ), 'bold' );
+			modelWriter.removeAttribute( ModelRange.createIn( modelRoot ), 'bold' );
 
-			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createFromElement( modelRoot ), 'bold', true, null );
+			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelRoot ), 'bold', true, null );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>foo</div>' );
 		} );
@@ -172,19 +174,19 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelText( 'foo', { italic: 'em' } );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><em>foo</em></div>' );
 
-			modelWriter.setAttribute( ModelRange.createFromElement( modelRoot ), 'italic', 'i' );
+			modelWriter.setAttribute( ModelRange.createIn( modelRoot ), 'italic', 'i' );
 
-			dispatcher.convertAttribute( 'changeAttribute', ModelRange.createFromElement( modelRoot ), 'italic', 'em', 'i' );
+			dispatcher.convertAttribute( 'changeAttribute', ModelRange.createIn( modelRoot ), 'italic', 'em', 'i' );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><i>foo</i></div>' );
 
-			modelWriter.removeAttribute( ModelRange.createFromElement( modelRoot ), 'italic' );
+			modelWriter.removeAttribute( ModelRange.createIn( modelRoot ), 'italic' );
 
-			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createFromElement( modelRoot ), 'italic', 'i', null );
+			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelRoot ), 'italic', 'i', null );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>foo</div>' );
 		} );
@@ -205,7 +207,7 @@ describe( 'Model converter builder', () => {
 			modelDoc.selection._updateAttributes();
 
 			// Convert stuff.
-			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 			dispatcher.convertSelection( modelDoc.selection );
 
 			// Check if view structure is ok.
@@ -264,17 +266,17 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelElement( 'paragraph', { class: 'myClass' }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="myClass">foobar</p></div>' );
 
 			modelElement.setAttribute( 'class', 'newClass' );
-			dispatcher.convertAttribute( 'changeAttribute', ModelRange.createOnElement( modelElement ), 'class', 'myClass', 'newClass' );
+			dispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'class', 'myClass', 'newClass' );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="newClass">foobar</p></div>' );
 
 			modelElement.removeAttribute( 'class' );
-			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createOnElement( modelElement ), 'class', 'newClass', null );
+			dispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'class', 'newClass', null );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -285,17 +287,17 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelElement( 'paragraph', { theme: 'abc' }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="abc">foobar</p></div>' );
 
 			modelElement.setAttribute( 'theme', 'xyz' );
-			dispatcher.convertAttribute( 'changeAttribute', ModelRange.createOnElement( modelElement ), 'theme', 'abc', 'xyz' );
+			dispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'theme', 'abc', 'xyz' );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="xyz">foobar</p></div>' );
 
 			modelElement.removeAttribute( 'theme' );
-			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createOnElement( modelElement ), 'theme', 'xyz', null );
+			dispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'theme', 'xyz', null );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -306,12 +308,12 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelElement( 'paragraph', { 'highlighted': true }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p style="background:yellow;">foobar</p></div>' );
 
 			modelElement.removeAttribute( 'highlighted' );
-			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createOnElement( modelElement ), 'highlighted', true, null );
+			dispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'highlighted', true, null );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -324,17 +326,17 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelElement( 'paragraph', { theme: 'nice' }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="nice-theme">foobar</p></div>' );
 
 			modelElement.setAttribute( 'theme', 'good' );
-			dispatcher.convertAttribute( 'changeAttribute', ModelRange.createOnElement( modelElement ), 'theme', 'nice', 'good' );
+			dispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'theme', 'nice', 'good' );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="good-theme">foobar</p></div>' );
 
 			modelElement.removeAttribute( 'theme' );
-			dispatcher.convertAttribute( 'removeAttribute', ModelRange.createOnElement( modelElement ), 'theme', 'good', null );
+			dispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'theme', 'good', null );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -348,7 +350,7 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelElement( 'custom', null, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><other>foobar</other></div>' );
 		} );
@@ -364,7 +366,7 @@ describe( 'Model converter builder', () => {
 		let modelElement = new ModelElement( 'div', null, new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) ) );
 		modelRoot.appendChildren( modelElement );
 
-		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><div><p>foobar</p></div></div>' );
 	} );

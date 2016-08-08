@@ -32,6 +32,13 @@ describe( 'Range', () => {
 			expect( range.start.isEqual( start ) ).to.be.true;
 			expect( range.end.isEqual( end ) ).to.be.true;
 		} );
+
+		it( 'should create collapsed range', () => {
+			const collapsed = new Range( start );
+
+			expect( collapsed.start.isEqual( start ) ).to.be.true;
+			expect( collapsed.isCollapsed ).to.be.true;
+		} );
 	} );
 
 	describe( 'root', () => {
@@ -140,21 +147,21 @@ describe( 'Range', () => {
 			root.insertChildren( 0, [ p ] );
 		} );
 
-		describe( 'createFromElement', () => {
+		describe( 'createIn', () => {
 			it( 'should return range', () => {
-				const range = Range.createFromElement( p );
+				const range = Range.createIn( p );
 
 				expect( range.start.path ).to.deep.equal( [ 0, 0 ] );
 				expect( range.end.path ).to.deep.equal( [ 0, 3 ] );
 			} );
 		} );
 
-		describe( 'createOnElement', () => {
+		describe( 'createOn', () => {
 			it( 'should return range', () => {
-				const range = Range.createOnElement( p );
+				const range = Range.createOn( p );
 
 				expect( range.start.path ).to.deep.equal( [ 0 ] );
-				expect( range.end.path ).to.deep.equal( [ 0, 0 ] );
+				expect( range.end.path ).to.deep.equal( [ 1 ] );
 			} );
 		} );
 

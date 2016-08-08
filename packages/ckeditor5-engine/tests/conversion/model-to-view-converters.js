@@ -30,6 +30,8 @@ import {
 	remove
 } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
 
+import { createRangeOnElementOnly } from '/tests/engine/model/_utils/utils.js';
+
 let dispatcher, modelDoc, modelRoot, mapper, viewRoot;
 
 beforeEach( () => {
@@ -81,7 +83,7 @@ describe( 'insertText', () => {
 		modelRoot.appendChildren( new ModelText( 'foobar' ) );
 		dispatcher.on( 'insert:$text', insertText() );
 
-		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div>foobar</div>' );
 	} );
@@ -105,7 +107,7 @@ describe( 'insertElement', () => {
 		dispatcher.on( 'insert:paragraph', insertElement( viewElement ) );
 		dispatcher.on( 'insert:$text', insertText() );
 
-		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 	} );
@@ -126,7 +128,7 @@ describe( 'insertElement', () => {
 		dispatcher.on( 'insert:myParagraph', insertElement( elementGenerator ) );
 		dispatcher.on( 'insert:$text', insertText() );
 
-		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div><p>bar</p></div>' );
 	} );
@@ -144,17 +146,17 @@ describe( 'setAttribute/removeAttribute', () => {
 		dispatcher.on( 'changeAttribute:class', setAttribute() );
 		dispatcher.on( 'removeAttribute:class', removeAttribute() );
 
-		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p class="foo">foobar</p></div>' );
 
 		modelElement.setAttribute( 'class', 'bar' );
-		dispatcher.convertAttribute( 'changeAttribute', ModelRange.createOnElement( modelElement ), 'class', 'foo', 'bar' );
+		dispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelElement ), 'class', 'foo', 'bar' );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p class="bar">foobar</p></div>' );
 
 		modelElement.removeAttribute( 'class' );
-		dispatcher.convertAttribute( 'removeAttribute', ModelRange.createOnElement( modelElement ), 'class', 'bar', null );
+		dispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'class', 'bar', null );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 	} );
@@ -179,17 +181,17 @@ describe( 'setAttribute/removeAttribute', () => {
 		dispatcher.on( 'changeAttribute:theme', setAttribute( themeConverter ) );
 		dispatcher.on( 'removeAttribute:theme', removeAttribute( themeConverter ) );
 
-		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p class="nice fix-content">foobar</p><div class="nice"></div></div>' );
 
 		modelParagraph.setAttribute( 'theme', 'awesome' );
-		dispatcher.convertAttribute( 'changeAttribute', ModelRange.createOnElement( modelParagraph ), 'theme', 'nice', 'awesome' );
+		dispatcher.convertAttribute( 'changeAttribute', createRangeOnElementOnly( modelParagraph ), 'theme', 'nice', 'awesome' );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p class="awesome fix-content">foobar</p><div class="nice"></div></div>' );
 
 		modelParagraph.removeAttribute( 'theme' );
-		dispatcher.convertAttribute( 'removeAttribute', ModelRange.createOnElement( modelParagraph ), 'theme', 'awesome', null );
+		dispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelParagraph ), 'theme', 'awesome', null );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p><div class="nice"></div></div>' );
 	} );
@@ -207,13 +209,13 @@ describe( 'wrap/unwrap', () => {
 		dispatcher.on( 'addAttribute:bold', wrap( viewB ) );
 		dispatcher.on( 'removeAttribute:bold', unwrap( viewB ) );
 
-		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 
-		modelWriter.removeAttribute( ModelRange.createFromElement( modelElement ), 'bold' );
+		modelWriter.removeAttribute( ModelRange.createIn( modelElement ), 'bold' );
 
-		dispatcher.convertAttribute( 'removeAttribute', ModelRange.createFromElement( modelElement ), 'bold', true, null );
+		dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'bold', true, null );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 	} );
@@ -234,13 +236,13 @@ describe( 'wrap/unwrap', () => {
 		dispatcher.on( 'addAttribute:style', wrap( elementGenerator ) );
 		dispatcher.on( 'removeAttribute:style', unwrap( elementGenerator ) );
 
-		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 
-		modelWriter.removeAttribute( ModelRange.createFromElement( modelElement ), 'style' );
+		modelWriter.removeAttribute( ModelRange.createIn( modelElement ), 'style' );
 
-		dispatcher.convertAttribute( 'removeAttribute', ModelRange.createFromElement( modelElement ), 'style', 'bold', null );
+		dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'style', 'bold', null );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 	} );
@@ -263,16 +265,16 @@ describe( 'wrap/unwrap', () => {
 		dispatcher.on( 'changeAttribute:link', wrap( elementGenerator ) );
 
 		dispatcher.convertInsert(
-			ModelRange.createFromElement( modelRoot )
+			ModelRange.createIn( modelRoot )
 		);
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>x<a href="http://foo.com">foo</a>x</p></div>' );
 
-		modelWriter.setAttribute( ModelRange.createFromElement( modelElement ), 'link', 'http://foobar.com' );
+		modelWriter.setAttribute( ModelRange.createIn( modelElement ), 'link', 'http://foobar.com' );
 
 		dispatcher.convertAttribute(
 			'changeAttribute',
-			ModelRange.createFromElement( modelElement ),
+			ModelRange.createIn( modelElement ),
 			'link',
 			'http://foo.com',
 			'http://foobar.com'
@@ -320,7 +322,7 @@ describe( 'move', () => {
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'move', move() );
 
-		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		const removedNodes = modelDivA.removeChildren( 0, 2 );
 		modelDivB.insertChildren( 0, removedNodes );
@@ -372,7 +374,7 @@ describe( 'remove', () => {
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'remove', remove() );
 
-		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		const removedNodes = modelDiv.removeChildren( 0, 2 );
 		modelDoc.graveyard.insertChildren( 0, removedNodes );

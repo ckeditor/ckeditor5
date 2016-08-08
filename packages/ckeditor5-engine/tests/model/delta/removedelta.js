@@ -41,14 +41,14 @@ describe( 'Batch', () => {
 
 			expect( root.maxOffset ).to.equal( 1 );
 			expect( root.childCount ).to.equal( 1 );
-			expect( getNodesAndText( Range.createFromElement( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
+			expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'abcxyz' );
 		} );
 
 		it( 'should remove any range of nodes', () => {
 			batch.remove( range );
 
-			expect( getNodesAndText( Range.createFromElement( root.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
-			expect( getNodesAndText( Range.createFromElement( root.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
+			expect( getNodesAndText( Range.createIn( root.getChild( 0 ) ) ) ).to.equal( 'PggParPhhhhP' );
+			expect( getNodesAndText( Range.createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
 		} );
 
 		it( 'should create minimal number of operations when removing a range', () => {

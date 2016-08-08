@@ -14,12 +14,13 @@ import TreeWalker from './treewalker.js';
 export default class Range {
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
+	 *
 	 * **Note:** Constructor creates it's own {@link engine.view.Position} instances basing on passed values.
 	 *
 	 * @param {engine.view.Position} start Start position.
-	 * @param {engine.view.Position} end End position.
+	 * @param {engine.view.Position} [end] End position. If not set, range will be collapsed at `start` position.
 	 */
-	constructor( start, end ) {
+	constructor( start, end = null ) {
 		/**
 		 * Start position.
 		 *
@@ -34,7 +35,7 @@ export default class Range {
 		 * @member engine.view.Range#end
 		 * @type {engine.view.Position}
 		 */
-		this.end = Position.createFromPosition( end );
+		this.end = end ? Position.createFromPosition( end ) : Position.createFromPosition( start );
 	}
 
 	/**
@@ -330,7 +331,17 @@ export default class Range {
 	 * @param {engine.view.Element} element Element which is a parent for the range.
 	 * @returns {engine.view.Range}
 	 */
-	static createFromElement( element ) {
+	static createIn( element ) {
 		return this.createFromParentsAndOffsets( element, 0, element, element.childCount );
+	}
+
+	/**
+	 * Creates a range that starts before given {@link engine.view.Node node} and ends after it.
+	 *
+	 * @param {engine.view.Node} node
+	 * @returns {engine.view.Range}
+	 */
+	static createOn( node ) {
+		return this.createFromPositionAndShift( Position.createBefore( node ), 1 );
 	}
 }

@@ -65,8 +65,8 @@ describe( 'LiveRange', () => {
 		LiveRange.prototype.stopListening.restore();
 	} );
 
-	it( 'createFromElement should return LiveRange', () => {
-		let range = LiveRange.createFromElement( p );
+	it( 'createIn should return LiveRange', () => {
+		let range = LiveRange.createIn( p );
 		expect( range ).to.be.instanceof( LiveRange );
 		range.detach();
 	} );
