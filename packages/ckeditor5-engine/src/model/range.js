@@ -541,13 +541,13 @@ export default class Range {
 	}
 
 	/**
-	 * Creates a range that starts before given {@link engine.model.Node node} and ends after it.
+	 * Creates a range that starts before given {@link engine.model.Item model item} and ends after it.
 	 *
-	 * @param {engine.model.Node} node
+	 * @param {engine.model.Item} item
 	 * @returns {engine.model.Range}
 	 */
-	static createOn( node ) {
-		return this.createFromPositionAndShift( Position.createBefore( node ), node.offsetSize );
+	static createOn( item ) {
+		return this.createFromPositionAndShift( Position.createBefore( item ), item.offsetSize );
 	}
 
 	/**
