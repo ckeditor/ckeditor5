@@ -679,6 +679,12 @@ describe( 'delegate', () => {
 } );
 
 describe( 'stopDelegating', () => {
+	it( 'passes if no delegation was set', () => {
+		expect( () => {
+			getEmitterInstance().stopDelegating();
+		} ).to.not.throw();
+	} );
+
 	it( 'stops delegating all events to all emitters', () => {
 		const emitterA = getEmitterInstance();
 		const emitterB = getEmitterInstance();
@@ -751,6 +757,18 @@ describe( 'stopDelegating', () => {
 		emitterA.fire( 'foo' );
 
 		expect( fireLog ).to.deep.equal( [ 'B#foo', 'C#foo', 'B#foo' ] );
+	} );
+
+	it( 'passes when stopping delegation of a specific event to an emitter which wasn\'t a destination', () => {
+		const emitterA = getEmitterInstance();
+		const emitterB = getEmitterInstance();
+		const emitterC = getEmitterInstance();
+
+		emitterA.delegate( 'foo' ).to( emitterB );
+
+		expect( () => {
+			emitterA.stopDelegating( 'foo', emitterC );
+		} ).to.not.throw();
 	} );
 } );
 
