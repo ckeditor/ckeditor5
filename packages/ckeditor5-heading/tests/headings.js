@@ -51,10 +51,11 @@ describe( 'Headings', () => {
 		const controller = editor.ui.featureComponents.create( 'headings' );
 		const model = controller.model;
 
-		model.fire( 'execute', {}, { source: { id: 'paragraph', label: 'Paragraph' } } );
+		model.id = 'foo';
+		model.fire( 'execute' );
 
 		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'headings', 'paragraph' );
+		sinon.assert.calledWithExactly( executeSpy, 'headings', 'foo' );
 	} );
 
 	it( 'should focus view after command execution', () => {
@@ -62,7 +63,7 @@ describe( 'Headings', () => {
 		const controller = editor.ui.featureComponents.create( 'headings' );
 		const model = controller.model;
 
-		model.fire( 'execute', {}, { source: { id: 'paragraph', label: 'Paragraph' } } );
+		model.fire( 'execute' );
 
 		sinon.assert.calledOnce( focusSpy );
 	} );

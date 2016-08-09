@@ -60,8 +60,8 @@ export default class Headings extends Feature {
 		dropdownModel.bind( 'label' ).to( command, 'value', format => format.label );
 
 		// Execute command when an item from the dropdown is selected.
-		this.listenTo( dropdownModel, 'execute', ( dropdownModelEvt, listModelEvt, { source: { id } } ) => {
-			editor.execute( 'headings', id );
+		this.listenTo( dropdownModel, 'execute', ( evt ) => {
+			editor.execute( 'headings', evt.source.id );
 			editor.editing.view.focus();
 		} );
 
