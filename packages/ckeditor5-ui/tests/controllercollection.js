@@ -270,38 +270,38 @@ describe( 'ControllerCollection', () => {
 		} );
 	} );
 
-	describe( 'pipe', () => {
+	describe( 'delegate', () => {
 		it( 'should throw when event names are not strings', () => {
 			const collection = new ControllerCollection( 'foo' );
 
 			expect( () => {
-				collection.pipe();
-			} ).to.throw( CKEditorError, /ui-controllercollection-pipe-wrong-events/ );
+				collection.delegate();
+			} ).to.throw( CKEditorError, /ui-controllercollection-delegate-wrong-events/ );
 
 			expect( () => {
-				collection.pipe( new Date() );
-			} ).to.throw( CKEditorError, /ui-controllercollection-pipe-wrong-events/ );
+				collection.delegate( new Date() );
+			} ).to.throw( CKEditorError, /ui-controllercollection-delegate-wrong-events/ );
 
 			expect( () => {
-				collection.pipe( 'color', new Date() );
-			} ).to.throw( CKEditorError, /ui-controllercollection-pipe-wrong-events/ );
+				collection.delegate( 'color', new Date() );
+			} ).to.throw( CKEditorError, /ui-controllercollection-delegate-wrong-events/ );
 		} );
 
 		it( 'returns object', () => {
-			expect( new ControllerCollection( 'foo' ).pipe( 'foo' ) ).to.be.an( 'object' );
+			expect( new ControllerCollection( 'foo' ).delegate( 'foo' ) ).to.be.an( 'object' );
 		} );
 
 		it( 'provides "to" interface', () => {
-			const pipe = new ControllerCollection( 'foo' ).pipe( 'foo' );
+			const delegate = new ControllerCollection( 'foo' ).delegate( 'foo' );
 
-			expect( pipe ).to.have.keys( 'to' );
-			expect( pipe.to ).to.be.a( 'function' );
+			expect( delegate ).to.have.keys( 'to' );
+			expect( delegate.to ).to.be.a( 'function' );
 		} );
 
 		describe( 'to', () => {
 			it( 'does not chain', () => {
 				const collection = new ControllerCollection( 'foo' );
-				const returned = collection.pipe( 'foo' ).to( {} );
+				const returned = collection.delegate( 'foo' ).to( {} );
 
 				expect( returned ).to.be.undefined;
 			} );
@@ -312,10 +312,16 @@ describe( 'ControllerCollection', () => {
 				const model = new Model();
 
 				collection.add( new Controller( model ) );
-				collection.pipe( 'foo' ).to( target );
+				collection.delegate( 'foo' ).to( target );
 
 				target.on( 'foo', ( ...args ) => {
-					assertPipe( args, 'foo', target, model );
+					assertDelegated( args, {
+						expectedName: 'foo',
+						expectedSource: model,
+						expectedPath: [ model, target ],
+						expectedData: []
+					} );
+
 					done();
 				} );
 
@@ -327,11 +333,17 @@ describe( 'ControllerCollection', () => {
 				const collection = new ControllerCollection( 'foo' );
 				const model = new Model();
 
-				collection.pipe( 'foo' ).to( target );
+				collection.delegate( 'foo' ).to( target );
 				collection.add( new Controller( model ) );
 
 				target.on( 'foo', ( ...args ) => {
-					assertPipe( args, 'foo', target, model );
+					assertDelegated( args, {
+						expectedName: 'foo',
+						expectedSource: model,
+						expectedPath: [ model, target ],
+						expectedData: []
+					} );
+
 					done();
 				} );
 
@@ -345,7 +357,7 @@ describe( 'ControllerCollection', () => {
 				const modelB = new Model();
 				const modelC = new Model();
 
-				collection.pipe( 'foo', 'bar', 'baz' ).to( target );
+				collection.delegate( 'foo', 'bar', 'baz' ).to( target );
 				collection.add( new Controller( modelA ) );
 				collection.add( new Controller( modelB ) );
 				collection.add( new Controller( modelC ) );
@@ -363,25 +375,40 @@ describe( 'ControllerCollection', () => {
 				modelA.fire( 'foo' );
 
 				expect( evts ).to.have.length( 1 );
-				assertPipe( evts[ 0 ], 'foo', target, modelA );
+				assertDelegated( evts[ 0 ], {
+					expectedName: 'foo',
+					expectedSource: modelA,
+					expectedPath: [ modelA, target ],
+					expectedData: []
+				} );
 
 				modelB.fire( 'bar' );
 
 				expect( evts ).to.have.length( 2 );
-				assertPipe( evts[ 1 ], 'bar', target, modelB );
+				assertDelegated( evts[ 1 ], {
+					expectedName: 'bar',
+					expectedSource: modelB,
+					expectedPath: [ modelB, target ],
+					expectedData: []
+				} );
 
 				modelC.fire( 'baz' );
 
 				expect( evts ).to.have.length( 3 );
-				assertPipe( evts[ 2 ], 'baz', target, modelC );
+				assertDelegated( evts[ 2 ], {
+					expectedName: 'baz',
+					expectedSource: modelC,
+					expectedPath: [ modelC, target ],
+					expectedData: []
+				} );
 			} );
 
-			it( 'does not forward events which are not supposed to be piped', () => {
+			it( 'does not forward events which are not supposed to be delegated', () => {
 				const target = new Model();
 				const collection = new ControllerCollection( 'foo' );
 				const model = new Model();
 
-				collection.pipe( 'foo', 'bar', 'baz' ).to( target );
+				collection.delegate( 'foo', 'bar', 'baz' ).to( target );
 				collection.add( new Controller( model ) );
 
 				let firedCounter = 0;
@@ -392,7 +419,7 @@ describe( 'ControllerCollection', () => {
 				model.fire( 'foo' );
 				model.fire( 'baz' );
 				model.fire( 'baz' );
-				model.fire( 'not-piped' );
+				model.fire( 'not-delegated' );
 
 				expect( firedCounter ).to.equal( 3 );
 			} );
@@ -402,7 +429,7 @@ describe( 'ControllerCollection', () => {
 				const collection = new ControllerCollection( 'foo' );
 				const model = new Model();
 
-				collection.pipe( 'foo' ).to( target );
+				collection.delegate( 'foo' ).to( target );
 				collection.add( new Controller( model ) );
 
 				let firedCounter = 0;
@@ -415,28 +442,35 @@ describe( 'ControllerCollection', () => {
 				expect( firedCounter ).to.equal( 1 );
 			} );
 
-			it( 'supports deep event piping', ( done ) => {
+			it( 'supports deep event delegation', ( done ) => {
 				const collection = new ControllerCollection( 'foo' );
 				const target = new Model();
 				const modelA = new Model();
 				const modelAA = new Model();
+				const data = {};
 
 				const controllerA = new Controller( modelA );
 				const controllerAA = new Controller( modelAA );
 				const barCollection = controllerA.addCollection( 'bar' );
 
 				collection.add( controllerA );
-				collection.pipe( 'foo' ).to( target );
+				collection.delegate( 'foo' ).to( target );
 
 				barCollection.add( controllerAA );
-				barCollection.pipe( 'foo' ).to( modelA );
+				barCollection.delegate( 'foo' ).to( modelA );
 
 				target.on( 'foo', ( ...args ) => {
-					assertPipe( args, 'foo', target, modelA, modelAA );
+					assertDelegated( args, {
+						expectedName: 'foo',
+						expectedSource: modelAA,
+						expectedPath: [ modelAA, modelA, target ],
+						expectedData: [ data ]
+					} );
+
 					done();
 				} );
 
-				modelAA.fire( 'foo' );
+				modelAA.fire( 'foo', data );
 			} );
 		} );
 	} );
@@ -491,13 +525,11 @@ function createModelCollection() {
 	}
 }
 
-function assertPipe( evtArgs, expectedName, ...observables ) {
-	let pipeNumber = 0;
+function assertDelegated( evtArgs, { expectedName, expectedSource, expectedPath, expectedData } ) {
+	const evtInfo = evtArgs[ 0 ];
 
-	for ( let observable of observables ) {
-		expect( evtArgs[ pipeNumber ].name ).to.equal( expectedName );
-		expect( evtArgs[ pipeNumber ].source ).to.equal( observable );
-
-		++pipeNumber;
-	}
+	expect( evtInfo.name ).to.equal( expectedName );
+	expect( evtInfo.source ).to.equal( expectedSource );
+	expect( evtInfo.path ).to.deep.equal( expectedPath );
+	expect( evtArgs.slice( 1 ) ).to.deep.equal( expectedData );
 }

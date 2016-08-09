@@ -177,8 +177,8 @@ export default class ControllerCollection extends Collection {
 	}
 
 	/**
-	 * Delegates selected events coming from within the controller models in the collection to desired
-	 * {@link ObservableMixin} instance. For instance:
+	 * Delegates selected events coming from within controller models in the collection to desired
+	 * {@link utils.EmitterMixin}. For instance:
 	 *
 	 *		const modelA = new Model();
 	 *		const modelB = new Model();
@@ -186,60 +186,60 @@ export default class ControllerCollection extends Collection {
 	 *
 	 *		const controllers = new ControllerCollection( 'name' );
 	 *
-	 *		controllers.pipe( 'eventX' ).to( modelB );
-	 *		controllers.pipe( 'eventX', 'eventY' ).to( modelC );
+	 *		controllers.delegate( 'eventX' ).to( modelB );
+	 *		controllers.delegate( 'eventX', 'eventY' ).to( modelC );
 	 *
 	 *		controllers.add( new Controller( modelA, ... ) );
 	 *
-	 * then `eventX` is piped (fired by) `modelB` and `modelC` along with `customData`:
+	 * then `eventX` is delegated (fired by) `modelB` and `modelC` along with `customData`:
 	 *
 	 *		modelA.fire( 'eventX', customData );
 	 *
-	 * and `eventY` is piped (fired by) `modelC` along with `customData`:
+	 * and `eventY` is delegated (fired by) `modelC` along with `customData`:
 	 *
 	 *		modelA.fire( 'eventY', customData );
 	 *
-	 * See {@link utils.ObservableMixin#pipe}.
+	 * See {@link utils.EmitterMixin#delegate}.
 	 *
-	 * @param {...String} events {@link ui.Controller#model} event names to be piped to another {@link utils.ObservableMixin}.
-	 * @returns {ui.ControllerCollection#pipe#to}
+	 * @param {...String} events {@link ui.Controller#model} event names to be delegated to another {@link utils.EmitterMixin}.
+	 * @returns {ui.ControllerCollection#delegate#to}
 	 */
-	pipe( ...events ) {
+	delegate( ...events ) {
 		if ( !events.length || !isStringArray( events ) ) {
 			/**
 			 * All event names must be strings.
 			 *
-			 * @error ui-controllercollection-pipe-wrong-events
+			 * @error ui-controllercollection-delegate-wrong-events
 			 */
-			throw new CKEditorError( 'ui-controllercollection-pipe-wrong-events: All event names must be strings.' );
+			throw new CKEditorError( 'ui-controllercollection-delegate-wrong-events: All event names must be strings.' );
 		}
 
 		return {
 			/**
-			 * Selects destination for {@link utils.ObservableMixin#pipe} events.
+			 * Selects destination for {@link utils.EmitterMixin#delegate} events.
 			 *
-			 * @method ui.ControllerCollection.pipe#to
-			 * @param {utils.ObservableMixin} dest An `ObservableMixin` instance which is the destination for piped events.
+			 * @method ui.ControllerCollection.delegate#to
+			 * @param {utils.EmitterMixin} dest An `EmitterMixin` instance which is the destination for delegated events.
 			 */
 			to: ( dest ) => {
-				// Activate piping on existing controllers in this collection.
+				// Activate delegating on existing controllers in this collection.
 				for ( let controller of this ) {
 					for ( let evtName of events ) {
-						controller.model.pipe( evtName ).to( dest );
+						controller.model.delegate( evtName ).to( dest );
 					}
 				}
 
-				// Activate piping on future controllers in this collection.
+				// Activate delegating on future controllers in this collection.
 				this.on( 'add', ( evt, controller ) => {
 					for ( let evtName of events ) {
-						controller.model.pipe( evtName ).to( dest );
+						controller.model.delegate( evtName ).to( dest );
 					}
 				} );
 
-				// Deactivate piping when controller is removed from this collection.
+				// Deactivate delegating when controller is removed from this collection.
 				this.on( 'remove', ( evt, controller ) => {
 					for ( let evtName of events ) {
-						dest.stopListening( controller.model, evtName );
+						controller.model.stopDelegating( evtName, dest );
 					}
 				} );
 			}
