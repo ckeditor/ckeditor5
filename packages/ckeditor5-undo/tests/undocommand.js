@@ -125,7 +125,7 @@ describe( 'UndoCommand', () => {
 			expect( itemAt( root, 0 ).getAttribute( 'key' ) ).to.equal( 'value' );
 			expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
 
-			expect( editor.document.selection.getRanges().next().value.isEqual( r( 0, 3 ) ) ).to.be.true;
+			expect( editor.document.selection.getFirstRange().isEqual( r( 0, 3 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
 
 			undo._execute();
@@ -145,7 +145,7 @@ describe( 'UndoCommand', () => {
 			expect( itemAt( root, 2 ).getAttribute( 'key' ) ).to.equal( 'value' );
 			expect( itemAt( root, 3 ).getAttribute( 'key' ) ).to.equal( 'value' );
 
-			expect( editor.document.selection.getRanges().next().value.isEqual( r( 1, 3 ) ) ).to.be.true;
+			expect( editor.document.selection.getFirstRange().isEqual( r( 1, 3 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
 
 			undo._execute();
@@ -165,7 +165,7 @@ describe( 'UndoCommand', () => {
 			expect( itemAt( root, 2 ).hasAttribute( 'key' ) ).to.be.false;
 			expect( itemAt( root, 3 ).hasAttribute( 'key' ) ).to.be.false;
 
-			expect( editor.document.selection.getRanges().next().value.isEqual( r( 2, 4 ) ) ).to.be.true;
+			expect( editor.document.selection.getFirstRange().isEqual( r( 2, 4 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.true;
 
 			undo._execute();
@@ -176,7 +176,7 @@ describe( 'UndoCommand', () => {
 			 */
 
 			expect( root.childCount ).to.equal( 0 );
-			expect( editor.document.selection.getRanges().next().value.isEqual( r( 0, 0 ) ) ).to.be.true;
+			expect( editor.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
 		} );
 
 		it( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert set attribute)', () => {
@@ -203,7 +203,7 @@ describe( 'UndoCommand', () => {
 
 			// Selection is only partially restored because the range got broken.
 			// The selection would have to best on letter "b" and letter "o", but it is set only on letter "b".
-			expect( editor.document.selection.getRanges().next().value.isEqual( r( [ 0, 0 ], [ 0, 1 ] ) ) ).to.be.true;
+			expect( editor.document.selection.getFirstRange().isEqual( r( [ 0, 0 ], [ 0, 1 ] ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.true;
 		} );
 
@@ -221,7 +221,7 @@ describe( 'UndoCommand', () => {
 			expect( root.childCount ).to.equal( 1 );
 			expect( itemAt( root, 0 ).name ).to.equal( 'p' );
 
-			expect( editor.document.selection.getRanges().next().value.isEqual( r( 0, 0 ) ) ).to.be.true;
+			expect( editor.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
 
 			undo._execute( batch1 );
@@ -233,7 +233,7 @@ describe( 'UndoCommand', () => {
 			expect( itemAt( root, 0 ).name ).to.equal( 'p' );
 
 			// Operations for undoing that batch were working on graveyard so document selection should not change.
-			expect( editor.document.selection.getRanges().next().value.isEqual( r( 0, 0 ) ) ).to.be.true;
+			expect( editor.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
 
 			expect( doc.graveyard.getChild( 0 ).maxOffset ).to.equal( 6 );
@@ -247,7 +247,7 @@ describe( 'UndoCommand', () => {
 			expect( root.maxOffset ).to.equal( 0 );
 
 			// Once again transformed range ends up in the graveyard.
-			expect( editor.document.selection.getRanges().next().value.isEqual( r( 0, 0 ) ) ).to.be.true;
+			expect( editor.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
 		} );
 	} );
@@ -339,7 +339,7 @@ describe( 'UndoCommand', () => {
 			// After undo-attr: acdbef <--- "cdb" should be selected, it would look weird if only "cd" or "b" is selected
 			// but the whole unbroken part "cdb" changed attribute.
 			expect( getCaseText( root ) ).to.equal( 'adbcef' );
-			expect( editor.document.selection.getRanges().next().value.isEqual( r( 1, 4 ) ) ).to.be.true;
+			expect( editor.document.selection.getFirstRange().isEqual( r( 1, 4 ) ) ).to.be.true;
 		} );
 
 		it( 'does nothing (and not crashes) if delta to undo is no longer in history', () => {

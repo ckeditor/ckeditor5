@@ -37,10 +37,10 @@ describe( 'RedoCommand', () => {
 			undo = new UndoCommand( editor );
 
 			// Simple integration with undo.
-			doc.on( 'change', ( evt, type, data, batch ) => {
-				if ( undo._createdBatches.has( batch ) && !batches.has( batch ) ) {
-					redo.addBatch( batch );
-					batches.add( batch );
+			undo.on( 'revert', ( evt, undoneBatch, undoingBatch ) => {
+				if ( !batches.has( undoingBatch ) ) {
+					redo.addBatch( undoingBatch );
+					batches.add( undoingBatch );
 				}
 			} );
 
@@ -113,9 +113,9 @@ describe( 'RedoCommand', () => {
 		} );
 
 		it( 'should redo series of batches undone by undo command', () => {
-			undo._execute( batch2 );
-			undo._execute( batch1 );
-			undo._execute( batch0 );
+			undo._execute();
+			undo._execute();
+			undo._execute();
 
 			redo._execute();
 			// Should be like after applying `batch0`:
@@ -123,25 +123,25 @@ describe( 'RedoCommand', () => {
 			 [root]
 			 - f
 			 - o
-			 - {o
-			 - b}
+			 - o
+			 - b
 			 - a
-			 - r
+			 - r{}
 			 */
 			expect( getText( root ) ).to.equal( 'foobar' );
 			expect( Array.from( root.getChildren() ).find( node => node.hasAttribute( 'key' ) ) ).to.be.undefined;
 
-			expect( editor.document.selection.getRanges().next().value.isEqual( r( 2, 4 ) ) ).to.be.true;
-			expect( editor.document.selection.isBackward ).to.be.true;
+			expect( editor.document.selection.getRanges().next().value.isEqual( r( 6, 6 ) ) ).to.be.true;
+			expect( editor.document.selection.isBackward ).to.be.false;
 
 			redo._execute();
 			// Should be like after applying `batch1`:
 			/*
 			 [root]
 			 - f
-			 - {o
-			 - o} (key: value)
-			 - b (key: value)
+			 - o
+			 - {o (key: value)
+			 - b} (key: value)
 			 - a
 			 - r
 			 */
@@ -149,8 +149,8 @@ describe( 'RedoCommand', () => {
 			expect( itemAt( root, 2 ).getAttribute( 'key' ) ).to.equal( 'value' );
 			expect( itemAt( root, 3 ).getAttribute( 'key' ) ).to.equal( 'value' );
 
-			expect( editor.document.selection.getRanges().next().value.isEqual( r( 1, 3 ) ) ).to.be.true;
-			expect( editor.document.selection.isBackward ).to.be.false;
+			expect( editor.document.selection.getRanges().next().value.isEqual( r( 2, 4 ) ) ).to.be.true;
+			expect( editor.document.selection.isBackward ).to.be.true;
 
 			redo._execute();
 			// Should be like after applying `batch2`:
@@ -182,38 +182,72 @@ describe( 'RedoCommand', () => {
 			 - b (key: value)
 			 - a
 			 - r
-			 - {o
-			 - o} (key: value)
+			 - o
+			 - o{} (key: value)
 			 */
 			expect( getText( root ) ).to.equal( 'fbaroo' );
 			expect( itemAt( root, 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
 			expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
 
-			expect( editor.document.selection.getRanges().next().value.isEqual( r( 4, 6 ) ) ).to.be.true;
+			expect( editor.document.selection.getRanges().next().value.isEqual( r( 6, 6 ) ) ).to.be.true;
 			expect( editor.document.selection.isBackward ).to.be.false;
 		} );
 
-		/*
-		it( 'should transform redo batch by changes written in history that happened after undo but before redo', () => {
-			// Undo moving "oo" to the end of string. Now it is "foobar".
+		it( 'should redo batch selectively undone by undo command #2', () => {
+			undo._execute( batch1 );
 			undo._execute( batch2 );
-
-			// Remove "ar".
-			editor.document.selection.setRanges( [ r( 4, 6 ) ] );
-			doc.batch().remove( r( 4, 6 ) );
-			editor.document.selection.setRanges( [ r( 4, 4 ) ] );
-
-			// Redo moving "oo" to the end of string. It should be "fboo".
+			redo._execute();
 			redo._execute();
 
-			expect( getText( root ) ).to.equal( 'fboo' );
+			// Should be back to original state:
+			/*
+			 [root]
+			 - f
+			 - {b} (key: value)
+			 - a
+			 - r
+			 - o
+			 - o (key: value)
+			 */
+			expect( getText( root ) ).to.equal( 'fbaroo' );
 			expect( itemAt( root, 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
-			expect( itemAt( root, 3 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
 
-			// Selection after redo is not working properly if there was another batch in-between.
-			// Thankfully this will be very rare situation outside of OT, because normally an applied batch
-			// would reset the redo stack so you won't be able to redo. #12
+			expect( editor.document.selection.getRanges().next().value.isEqual( r( 1, 2 ) ) ).to.be.true;
+			expect( editor.document.selection.isBackward ).to.be.true;
 		} );
-		*/
+
+		it( 'should transform redo batch by changes written in history that happened after undo but before redo #2', () => {
+			// Now it is "fBaroO".
+			// Undo moving "oo" to the end of string. Now it is "foOBar". Capitals mean set attribute.
+			undo._execute();
+
+			// Remove "ar".
+			doc.batch().remove( r( 4, 6 ) );
+
+			// Undo setting attribute on "ob". Now it is "foob".
+			undo._execute();
+
+			// Append "xx" at the beginning. Now it is "xxfoob".
+			doc.batch().insert( p( 0 ), 'xx' );
+
+			// Redo setting attribute on "ob". Now it is "xxfoOB".
+			redo._execute();
+
+			expect( getText( root ) ).to.equal( 'xxfoob' );
+			expect( itemAt( root, 4 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( editor.document.selection.getFirstRange().isEqual( r( 4, 6 ) ) ).to.be.true;
+			expect( editor.document.selection.isBackward ).to.be.true;
+
+			// Redo moving "oo". Now it is "xxfBoO". Selection is expected to be on just moved "oO".
+			redo._execute();
+
+			expect( getText( root ) ).to.equal( 'xxfboo' );
+			expect( itemAt( root, 3 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( editor.document.selection.getFirstRange().isEqual( r( 4, 6 ) ) ).to.be.true;
+			expect( editor.document.selection.isBackward ).to.be.false;
+		} );
 	} );
 } );
