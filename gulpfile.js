@@ -12,8 +12,13 @@ const runSequence = require( 'run-sequence' );
 
 const config = {
 	ROOT_DIR: '.',
-	BUILD_DIR: 'build',
-	BUNDLE_DIR: 'bundle',
+	MODULE_DIR: {
+		amd: 'build/modules/amd',
+		cjs: 'build/modules/cjs',
+		esnext: 'build/modules/esnext'
+	},
+	DOCS_DIR: 'build/docs',
+	BUNDLE_DIR: 'build/dist',
 	WORKSPACE_DIR: '..',
 
 	// Files ignored by jshint and jscs tasks. Files from .gitignore will be added automatically during tasks execution.
@@ -70,12 +75,14 @@ gulp.task( 'bundle', ( callback ) => {
 // Build tasks.
 const ckeditor5DevBuilder = require( 'ckeditor5-dev-builder' )( config );
 const builder = ckeditor5DevBuilder.builder;
+
 gulp.task( 'build', callback => {
 	runSequence( 'build:clean:all', 'build:themes', 'build:js', callback );
 } );
 
-gulp.task( 'build:clean:all', builder.clean.all );
-gulp.task( 'build:clean:themes', builder.clean.themes );
+// Clean tasks.
+gulp.task( 'build:clean:all', () => builder.clean.all() );
+gulp.task( 'build:clean:themes', () => builder.clean.themes() );
 gulp.task( 'build:clean:js', () => builder.clean.js() );
 
 gulp.task( 'build:themes', ( callback ) => {

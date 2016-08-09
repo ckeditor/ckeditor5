@@ -8,7 +8,7 @@
 .*/**
 
 node_modules/**
-build/**
-bundle/**
+build/dist/**
+build/modules/**
+build/docs/**
 coverage/**
-dist/**
