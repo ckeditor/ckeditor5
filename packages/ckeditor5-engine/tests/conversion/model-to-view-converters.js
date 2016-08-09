@@ -92,7 +92,7 @@ describe( 'insertText', () => {
 		modelRoot.appendChildren( new ModelText( 'நிலைக்கு' ) );
 		dispatcher.on( 'insert:$text', insertText() );
 
-		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div>நிலைக்கு</div>' );
 	} );
@@ -294,13 +294,13 @@ describe( 'wrap/unwrap', () => {
 		dispatcher.on( 'addAttribute:bold', wrap( viewB ) );
 		dispatcher.on( 'removeAttribute:bold', unwrap( viewB ) );
 
-		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>நி<b>லைக்</b>கு</p></div>' );
 
-		modelWriter.removeAttribute( ModelRange.createFromElement( modelElement ), 'bold' );
+		modelWriter.removeAttribute( ModelRange.createIn( modelElement ), 'bold' );
 
-		dispatcher.convertAttribute( 'removeAttribute', ModelRange.createFromElement( modelElement ), 'bold', true, null );
+		dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'bold', true, null );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>நிலைக்கு</p></div>' );
 	} );
@@ -344,7 +344,7 @@ describe( 'move', () => {
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'move', move() );
 
-		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		modelWriter.move(
 			ModelRange.createFromParentsAndOffsets( modelDivA, 2, modelDivA, 6 ),
@@ -395,7 +395,7 @@ describe( 'remove', () => {
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'remove', remove() );
 
-		dispatcher.convertInsert( ModelRange.createFromElement( modelRoot ) );
+		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
 
 		modelWriter.move(
 			ModelRange.createFromParentsAndOffsets( modelDiv, 0, modelDiv, 6 ),
