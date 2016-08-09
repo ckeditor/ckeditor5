@@ -233,7 +233,7 @@ describe( 'ModelConversionDispatcher', () => {
 				expect( consumable.consume( data.item, 'addAttribute:' + key ) ).to.be.true;
 			} );
 
-			dispatcher.convertInsert( range );
+			dispatcher.convertInsertion( range );
 
 			// Check the data passed to called events and the order of them.
 			expect( loggedEvents ).to.deep.equal( [
@@ -264,7 +264,7 @@ describe( 'ModelConversionDispatcher', () => {
 
 			const range = ModelRange.createIn( root );
 
-			dispatcher.convertInsert( range );
+			dispatcher.convertInsertion( range );
 
 			expect( dispatcher.fire.calledWith( 'insert:image' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'addAttribute:src:image' ) ).to.be.true;
