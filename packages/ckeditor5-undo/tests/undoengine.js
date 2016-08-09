@@ -63,13 +63,11 @@ describe( 'UndoEngine', () => {
 		expect( undo._redoCommand.clearStack.called ).to.be.false;
 	} );
 
-	it( 'should add a batch to redo command, if it\'s type is undo', () => {
+	it( 'should add a batch to redo command on undo revert event', () => {
 		sinon.spy( undo._redoCommand, 'addBatch' );
 		sinon.spy( undo._redoCommand, 'clearStack' );
 
-		undo._undoCommand._createdBatches.add( batch );
-
-		batch.insert( new Position( root, [ 0 ] ), 'foobar' );
+		undo._undoCommand.fire( 'revert', null, batch );
 
 		expect( undo._redoCommand.addBatch.calledOnce ).to.be.true;
 		expect( undo._redoCommand.clearStack.called ).to.be.false;

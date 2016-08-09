@@ -31,8 +31,19 @@ export default class RedoCommand extends BaseCommand {
 		// All changes have to be done in one `enqueueChanges` callback so other listeners will not
 		// step between consecutive deltas, or won't do changes to the document before selection is properly restored.
 		this.editor.document.enqueueChanges( () => {
+			const lastDelta = item.batch.deltas[ item.batch.deltas.length - 1 ];
+			const nextBaseVersion = lastDelta.baseVersion + lastDelta.operations.length;
+
+			// Selection state is from the moment after undo happened. It needs to be transformed by all the deltas
+			// that happened after the selection state got saved. Unfortunately it is tricky, because those deltas
+			// are already compressed in the history (they are removed).
+			// Because of that we will transform the selection only by non-redo deltas
+			const deltas = Array.from( this.editor.document.history.getDeltas( nextBaseVersion ) ).filter( ( delta ) => {
+				return !this._createdBatches.has( delta.batch );
+			} );
+
+			this._restoreSelection( item.selection.ranges, item.selection.isBackward, deltas );
 			this._redo( item.batch );
-			this._restoreSelection( item.selection.ranges, item.selection.isBackward );
 		} );
 
 		this.refreshState();
@@ -44,8 +55,6 @@ export default class RedoCommand extends BaseCommand {
 	 *
 	 * @private
 	 * @param {engine.model.Batch} storedBatch Batch, which deltas will be reversed, transformed and applied.
-	 * @param {engine.model.Batch} redoingBatch Batch that will contain transformed and applied deltas from `storedBatch`.
-	 * @param {engine.model.Document} document Document that is operated on by the command.
 	 */
 	_redo( storedBatch ) {
 		const document = this.editor.document;
@@ -92,17 +101,5 @@ export default class RedoCommand extends BaseCommand {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Restores {@link engine.model.Document#selection document selection} state after a batch has been re-done. This
-	 * is a helper method for {@link undo.RedoCommand#_doExecute}.
-	 *
-	 * @private
-	 * @param {Array.<engine.model.Range>} ranges Ranges to be restored.
-	 * @param {Boolean} isBackward Flag describing if restored range was selected forward or backward.
-	 */
-	_restoreSelection( ranges, isBackward ) {
-		this.editor.document.selection.setRanges( ranges, isBackward );
 	}
 }

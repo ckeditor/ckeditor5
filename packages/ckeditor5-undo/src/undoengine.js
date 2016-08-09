@@ -65,13 +65,10 @@ export default class UndoEngine extends Feature {
 			if ( this._batchRegistry.has( batch ) || batch.type == 'transparent' ) {
 				return;
 			} else {
-				if ( this._undoCommand._createdBatches.has( batch ) ) {
-					// If this batch comes from `undoCommand`, add it to `redoCommand` stack.
-					this._redoCommand.addBatch( batch );
-				} else if ( this._redoCommand._createdBatches.has( batch ) ) {
+				if ( this._redoCommand._createdBatches.has( batch ) ) {
 					// If this batch comes from `redoCommand`, add it to `undoCommand` stack.
 					this._undoCommand.addBatch( batch );
-				} else {
+				} else if ( !this._undoCommand._createdBatches.has( batch ) ) {
 					// A default batch - these are new changes in the document, not introduced by undo feature.
 					// Add them to `undoCommand` stack and clear `redoCommand` stack.
 					this._undoCommand.addBatch( batch );
@@ -81,6 +78,10 @@ export default class UndoEngine extends Feature {
 
 			// Add the batch to the registry so it will not be processed again.
 			this._batchRegistry.add( batch );
+		} );
+
+		this.listenTo( this._undoCommand, 'revert', ( evt, undoneBatch, undoingBatch ) => {
+			this._redoCommand.addBatch( undoingBatch );
 		} );
 	}
 }
