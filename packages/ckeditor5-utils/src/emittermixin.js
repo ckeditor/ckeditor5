@@ -227,44 +227,131 @@ const EmitterMixin = {
 	 * The first parameter passed to callbacks is an {@link EventInfo} object, followed by the optional `args` provided in
 	 * the `fire()` method call.
 	 *
-	 * @param {String} event The name of the event.
+	 * @param {String|utils.EventInfo} eventOrInfo The name of the event or `EventInfo` object if event is delegated.
 	 * @param {...*} [args] Additional arguments to be passed to the callbacks.
 	 * @method utils.EmitterMixin#fire
 	 */
-	fire( event, args ) {
+	fire( eventOrInfo, ...args ) {
+		const eventInfo = eventOrInfo instanceof EventInfo ? eventOrInfo : new EventInfo( this, eventOrInfo );
+		const event = eventInfo.name;
 		let callbacks = getCallbacksForEvent( this, event );
 
-		if ( !callbacks ) {
+		// Record that the event passed this emitter on its path.
+		eventInfo.path.push( this );
+
+		// Handle event listener callbacks first.
+		if ( callbacks ) {
+			// Arguments passed to each callback.
+			const callbackArgs = [ eventInfo, ...args ];
+
+			// Copying callbacks array is the easiest and most secure way of preventing infinite loops, when event callbacks
+			// are added while processing other callbacks. Previous solution involved adding counters (unique ids) but
+			// failed if callbacks were added to the queue before currently processed callback.
+			// If this proves to be too inefficient, another method is to change `.on()` so callbacks are stored if same
+			// event is currently processed. Then, `.fire()` at the end, would have to add all stored events.
+			callbacks = Array.from( callbacks );
+
+			for ( let i = 0; i < callbacks.length; i++ ) {
+				callbacks[ i ].callback.apply( callbacks[ i ].ctx, callbackArgs );
+
+				// Remove the callback from future requests if off() has been called.
+				if ( eventInfo.off.called ) {
+					// Remove the called mark for the next calls.
+					delete eventInfo.off.called;
+
+					this.off( event, callbacks[ i ].callback, callbacks[ i ].ctx );
+				}
+
+				// Do not execute next callbacks if stop() was called.
+				if ( eventInfo.stop.called ) {
+					break;
+				}
+			}
+		}
+
+		// Delegate event to other emitters if needed.
+		if ( this._delegations ) {
+			const destinations = this._delegations.get( event );
+
+			if ( destinations ) {
+				for ( let dest of destinations ) {
+					dest.fire( eventInfo, ...args );
+				}
+			}
+		}
+	},
+
+	/**
+	 * Delegates selected events to another {@link utils.Emitter}. For instance:
+	 *
+	 *		emitterA.delegate( 'eventX' ).to( emitterB );
+	 *		emitterA.delegate( 'eventX', 'eventY' ).to( emitterC );
+	 *
+	 * then `eventX` is delegated (fired by) `emitterB` and `emitterC` along with `data`:
+	 *
+	 *		emitterA.fire( 'eventX', data );
+	 *
+	 * and `eventY` is delegated (fired by) `emitterC` along with `data`:
+	 *
+	 *		emitterA.fire( 'eventY', data );
+	 *
+	 * @method utils.EmitterMixin#delegate
+	 * @param {String...} events Event names that will be delegated to another emitter.
+	 * @returns {utils.EmitterMixin.delegate#to}
+	 */
+	delegate( ...events ) {
+		return {
+			/**
+			 * Selects destination for {@link utils.EmitterMixin#delegate} events.
+			 *
+			 * @method utils.EmitterMixin.delegate#to
+			 * @param {utils.Emitter} emitter An `EmitterMixin` instance which is the destination for delegated events.
+			 */
+			to: ( emitter ) => {
+				if ( !this._delegations ) {
+					this._delegations = new Map();
+				}
+
+				for ( let eventName of events ) {
+					let destinations = this._delegations.get( eventName );
+
+					if ( !destinations ) {
+						this._delegations.set( eventName, [ emitter ] );
+					} else {
+						destinations.push( emitter );
+					}
+				}
+			}
+		};
+	},
+
+	/**
+	 * Stops delegating events. It can be used at different levels:
+	 *
+	 * * To stop delegating all events.
+	 * * To stop delegating a specific event to all emitters.
+	 * * To stop delegating a specific event to a specific emitter.
+	 *
+	 * @param {String} [event] The name of the event to stop delegating. If omitted, stops it all delegations.
+	 * @param {utils.Emitter} [emitter] (requires `event`) The object to stop delegating a particular event to. If omitted,
+	 * stops delegation of `event` to all emitters.
+	 * @method utils.EmitterMixin#stopDelegating
+	 */
+	stopDelegating( event, emitter ) {
+		if ( !this._delegations ) {
 			return;
 		}
 
-		// Copying callbacks array is the easiest and most secure way of preventing infinite loops, when event callbacks
-		// are added while processing other callbacks. Previous solution involved adding counters (unique ids) but
-		// failed if callbacks were added to the queue before currently processed callback.
-		// If this proves to be too inefficient, another method is to change `.on()` so callbacks are stored if same
-		// event is currently processed. Then, `.fire()` at the end, would have to add all stored events.
-		callbacks = Array.from( callbacks );
+		if ( !event ) {
+			this._delegations.clear();
+		} else if ( !emitter ) {
+			this._delegations.delete( event );
+		} else {
+			const destinations = this._delegations.get( event );
+			const index = destinations.indexOf( emitter );
 
-		let eventInfo = new EventInfo( this, event );
-
-		// Take the list of arguments to pass to the callbacks.
-		args = Array.prototype.slice.call( arguments, 1 );
-		args.unshift( eventInfo );
-
-		for ( let i = 0; i < callbacks.length; i++ ) {
-			callbacks[ i ].callback.apply( callbacks[ i ].ctx, args );
-
-			// Remove the callback from future requests if off() has been called.
-			if ( eventInfo.off.called ) {
-				// Remove the called mark for the next calls.
-				delete eventInfo.off.called;
-
-				this.off( event, callbacks[ i ].callback, callbacks[ i ].ctx );
-			}
-
-			// Do not execute next callbacks if stop() was called.
-			if ( eventInfo.stop.called ) {
-				break;
+			if ( index !== -1 ) {
+				destinations.splice( index, 1 );
 			}
 		}
 	}

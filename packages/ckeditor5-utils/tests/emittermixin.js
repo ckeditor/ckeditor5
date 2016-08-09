@@ -526,6 +526,234 @@ describe( 'stopListening', () => {
 	} );
 } );
 
+describe( 'delegate', () => {
+	it( 'should chain for a single event', () => {
+		const emitter = getEmitterInstance();
+
+		expect( emitter.delegate( 'foo' ) ).to.contain.keys( 'to' );
+	} );
+
+	it( 'should chain for multiple events', () => {
+		const emitter = getEmitterInstance();
+
+		expect( emitter.delegate( 'foo', 'bar' ) ).to.contain.keys( 'to' );
+	} );
+
+	describe( 'to', () => {
+		it( 'forwards an event to another emitter', ( done ) => {
+			const emitterA = getEmitterInstance();
+			const emitterB = getEmitterInstance();
+			const dataA = {};
+			const dataB = {};
+
+			emitterB.delegate( 'foo' ).to( emitterA );
+
+			emitterA.on( 'foo', ( ...args ) => {
+				assertDelegated( args, {
+					expectedSource: emitterB,
+					expectedName: 'foo',
+					expectedPath: [ emitterB, emitterA ],
+					expectedData: [ dataA, dataB ]
+				} );
+
+				done();
+			} );
+
+			emitterB.fire( 'foo', dataA, dataB );
+		} );
+
+		it( 'forwards multiple events to another emitter', () => {
+			const emitterA = getEmitterInstance();
+			const emitterB = getEmitterInstance();
+			const dataA = {};
+			const dataB = {};
+
+			emitterB.delegate( 'foo', 'bar', 'baz' ).to( emitterA );
+
+			const evts = [];
+
+			function recordEvent( ...args ) {
+				evts.push( args );
+			}
+
+			emitterA.on( 'foo', recordEvent );
+			emitterA.on( 'bar', recordEvent );
+			emitterA.on( 'baz', recordEvent );
+
+			emitterB.fire( 'foo', dataA, dataB );
+
+			expect( evts ).to.have.length( 1 );
+			assertDelegated( evts[ 0 ], {
+				expectedSource: emitterB,
+				expectedName: 'foo',
+				expectedPath: [ emitterB, emitterA ],
+				expectedData: [ dataA, dataB ]
+			} );
+
+			emitterB.fire( 'bar' );
+
+			expect( evts ).to.have.length( 2 );
+			assertDelegated( evts[ 1 ], {
+				expectedSource: emitterB,
+				expectedName: 'bar',
+				expectedPath: [ emitterB, emitterA ],
+				expectedData: []
+			} );
+
+			emitterB.fire( 'baz' );
+
+			expect( evts ).to.have.length( 3 );
+			assertDelegated( evts[ 2 ], {
+				expectedSource: emitterB,
+				expectedName: 'baz',
+				expectedPath: [ emitterB, emitterA ],
+				expectedData: []
+			} );
+
+			emitterB.fire( 'not-delegated' );
+			expect( evts ).to.have.length( 3 );
+		} );
+
+		it( 'does not forward events which are not supposed to be delegated', () => {
+			const emitterA = getEmitterInstance();
+			const emitterB = getEmitterInstance();
+
+			emitterB.delegate( 'foo', 'bar', 'baz' ).to( emitterA );
+
+			let fireLog = [];
+			emitterA.on( 'foo', () => fireLog.push( 'A#foo' ) );
+			emitterA.on( 'bar', () => fireLog.push( 'A#bar' ) );
+			emitterA.on( 'baz', () => fireLog.push( 'A#baz' ) );
+
+			emitterB.fire( 'foo' );
+			emitterB.fire( 'bar' );
+			emitterB.fire( 'baz' );
+			emitterB.fire( 'not-delegated' );
+
+			expect( fireLog ).to.deep.equal( [ 'A#foo', 'A#bar', 'A#baz' ] );
+		} );
+
+		it( 'supports deep chain event delegation', ( done ) => {
+			const emitterA = getEmitterInstance();
+			const emitterB = getEmitterInstance();
+			const emitterC = getEmitterInstance();
+			const data = {};
+
+			emitterC.delegate( 'foo' ).to( emitterB );
+			emitterB.delegate( 'foo' ).to( emitterA );
+
+			emitterA.on( 'foo', ( ...args ) => {
+				assertDelegated( args, {
+					expectedSource: emitterC,
+					expectedName: 'foo',
+					expectedPath: [ emitterC, emitterB, emitterA ],
+					expectedData: [ data ]
+				} );
+
+				done();
+			} );
+
+			emitterC.fire( 'foo', data );
+		} );
+
+		it( 'executes callbacks first, then delegates further', ( done ) => {
+			const emitterA = getEmitterInstance();
+			const emitterB = getEmitterInstance();
+			const callOrder = [];
+
+			emitterB.delegate( 'foo' ).to( emitterA );
+
+			emitterA.on( 'foo', () => {
+				callOrder.push( 'emitterA' );
+				expect( callOrder ).to.deep.equal( [ 'emitterB', 'emitterA' ] );
+				done();
+			} );
+
+			emitterB.on( 'foo', () => {
+				callOrder.push( 'emitterB' );
+			} );
+
+			emitterB.fire( 'foo' );
+		} );
+	} );
+} );
+
+describe( 'stopDelegating', () => {
+	it( 'stops delegating all events to all emitters', () => {
+		const emitterA = getEmitterInstance();
+		const emitterB = getEmitterInstance();
+		const emitterC = getEmitterInstance();
+
+		emitterA.delegate( 'foo' ).to( emitterB );
+		emitterA.delegate( 'bar' ).to( emitterC );
+
+		let fireLog = [];
+		emitterB.on( 'foo', () => fireLog.push( 'B#foo' ) );
+		emitterC.on( 'bar', () => fireLog.push( 'C#bar' ) );
+
+		emitterA.fire( 'foo' );
+		emitterA.fire( 'bar' );
+
+		expect( fireLog ).to.deep.equal( [ 'B#foo', 'C#bar' ] );
+
+		emitterA.stopDelegating();
+
+		emitterA.fire( 'foo' );
+		emitterA.fire( 'bar' );
+
+		expect( fireLog ).to.deep.equal( [ 'B#foo', 'C#bar' ] );
+	} );
+
+	it( 'stops delegating a specific event to all emitters', () => {
+		const emitterA = getEmitterInstance();
+		const emitterB = getEmitterInstance();
+		const emitterC = getEmitterInstance();
+
+		emitterA.delegate( 'foo' ).to( emitterB );
+		emitterA.delegate( 'foo' ).to( emitterC );
+		emitterA.delegate( 'bar' ).to( emitterC );
+
+		let fireLog = [];
+		emitterB.on( 'foo', () => fireLog.push( 'B#foo' ) );
+		emitterC.on( 'foo', () => fireLog.push( 'C#foo' ) );
+		emitterC.on( 'bar', () => fireLog.push( 'C#bar' ) );
+
+		emitterA.fire( 'foo' );
+		emitterA.fire( 'bar' );
+
+		expect( fireLog ).to.deep.equal( [ 'B#foo', 'C#foo', 'C#bar' ] );
+
+		emitterA.stopDelegating( 'foo' );
+
+		emitterA.fire( 'foo' );
+		emitterA.fire( 'bar' );
+
+		expect( fireLog ).to.deep.equal( [ 'B#foo', 'C#foo', 'C#bar', 'C#bar' ] );
+	} );
+
+	it( 'stops delegating a specific event to a specific emitter', () => {
+		const emitterA = getEmitterInstance();
+		const emitterB = getEmitterInstance();
+		const emitterC = getEmitterInstance();
+
+		emitterA.delegate( 'foo' ).to( emitterB );
+		emitterA.delegate( 'foo' ).to( emitterC );
+
+		let fireLog = [];
+		emitterB.on( 'foo', () => fireLog.push( 'B#foo' ) );
+		emitterC.on( 'foo', () => fireLog.push( 'C#foo' ) );
+
+		emitterA.fire( 'foo' );
+
+		expect( fireLog ).to.deep.equal( [ 'B#foo', 'C#foo' ] );
+
+		emitterA.stopDelegating( 'foo', emitterC );
+		emitterA.fire( 'foo' );
+
+		expect( fireLog ).to.deep.equal( [ 'B#foo', 'C#foo', 'B#foo' ] );
+	} );
+} );
+
 function refreshEmitter() {
 	emitter = getEmitterInstance();
 }
@@ -536,4 +764,13 @@ function refreshListener() {
 
 function getEmitterInstance() {
 	return Object.create( EmitterMixin );
+}
+
+function assertDelegated( evtArgs, { expectedName, expectedSource, expectedPath, expectedData } ) {
+	const evtInfo = evtArgs[ 0 ];
+
+	expect( evtInfo.name ).to.equal( expectedName );
+	expect( evtInfo.source ).to.equal( expectedSource );
+	expect( evtInfo.path ).to.deep.equal( expectedPath );
+	expect( evtArgs.slice( 1 ) ).to.deep.equal( expectedData );
 }
