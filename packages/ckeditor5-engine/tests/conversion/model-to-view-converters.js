@@ -83,7 +83,7 @@ describe( 'insertText', () => {
 		modelRoot.appendChildren( new ModelText( 'foobar' ) );
 		dispatcher.on( 'insert:$text', insertText() );
 
-		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div>foobar</div>' );
 	} );
@@ -92,7 +92,7 @@ describe( 'insertText', () => {
 		modelRoot.appendChildren( new ModelText( 'நிலைக்கு' ) );
 		dispatcher.on( 'insert:$text', insertText() );
 
-		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div>நிலைக்கு</div>' );
 	} );
@@ -107,7 +107,7 @@ describe( 'insertElement', () => {
 		dispatcher.on( 'insert:paragraph', insertElement( viewElement ) );
 		dispatcher.on( 'insert:$text', insertText() );
 
-		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 	} );
@@ -128,7 +128,7 @@ describe( 'insertElement', () => {
 		dispatcher.on( 'insert:myParagraph', insertElement( elementGenerator ) );
 		dispatcher.on( 'insert:$text', insertText() );
 
-		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div><p>bar</p></div>' );
 	} );
@@ -146,7 +146,7 @@ describe( 'setAttribute/removeAttribute', () => {
 		dispatcher.on( 'changeAttribute:class', setAttribute() );
 		dispatcher.on( 'removeAttribute:class', removeAttribute() );
 
-		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p class="foo">foobar</p></div>' );
 
@@ -181,7 +181,7 @@ describe( 'setAttribute/removeAttribute', () => {
 		dispatcher.on( 'changeAttribute:theme', setAttribute( themeConverter ) );
 		dispatcher.on( 'removeAttribute:theme', removeAttribute( themeConverter ) );
 
-		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p class="nice fix-content">foobar</p><div class="nice"></div></div>' );
 
@@ -209,7 +209,7 @@ describe( 'wrap/unwrap', () => {
 		dispatcher.on( 'addAttribute:bold', wrap( viewB ) );
 		dispatcher.on( 'removeAttribute:bold', unwrap( viewB ) );
 
-		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 
@@ -236,7 +236,7 @@ describe( 'wrap/unwrap', () => {
 		dispatcher.on( 'addAttribute:style', wrap( elementGenerator ) );
 		dispatcher.on( 'removeAttribute:style', unwrap( elementGenerator ) );
 
-		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 
@@ -264,7 +264,7 @@ describe( 'wrap/unwrap', () => {
 		dispatcher.on( 'addAttribute:link', wrap( elementGenerator ) );
 		dispatcher.on( 'changeAttribute:link', wrap( elementGenerator ) );
 
-		dispatcher.convertInsert(
+		dispatcher.convertInsertion(
 			ModelRange.createIn( modelRoot )
 		);
 
@@ -294,7 +294,7 @@ describe( 'wrap/unwrap', () => {
 		dispatcher.on( 'addAttribute:bold', wrap( viewB ) );
 		dispatcher.on( 'removeAttribute:bold', unwrap( viewB ) );
 
-		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>நி<b>லைக்</b>கு</p></div>' );
 
@@ -322,7 +322,7 @@ describe( 'move', () => {
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'move', move() );
 
-		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		const removedNodes = modelDivA.removeChildren( 0, 2 );
 		modelDivB.insertChildren( 0, removedNodes );
@@ -344,7 +344,7 @@ describe( 'move', () => {
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'move', move() );
 
-		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		modelWriter.move(
 			ModelRange.createFromParentsAndOffsets( modelDivA, 2, modelDivA, 6 ),
@@ -374,7 +374,7 @@ describe( 'remove', () => {
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'remove', remove() );
 
-		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		const removedNodes = modelDiv.removeChildren( 0, 2 );
 		modelDoc.graveyard.insertChildren( 0, removedNodes );
@@ -395,7 +395,7 @@ describe( 'remove', () => {
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'remove', remove() );
 
-		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		modelWriter.move(
 			ModelRange.createFromParentsAndOffsets( modelDiv, 0, modelDiv, 6 ),

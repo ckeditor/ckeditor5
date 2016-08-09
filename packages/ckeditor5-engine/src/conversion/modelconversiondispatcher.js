@@ -139,7 +139,7 @@ export default class ModelConversionDispatcher {
 		}
 
 		if ( type == 'insert' || type == 'reinsert' ) {
-			this.convertInsert( data.range );
+			this.convertInsertion( data.range );
 		} else if ( type == 'move' ) {
 			this.convertMove( data.sourcePosition, data.range );
 		} else if ( type == 'remove' ) {
@@ -159,7 +159,7 @@ export default class ModelConversionDispatcher {
 	 * @fires engine.conversion.ModelConversionDispatcher#addAttribute
 	 * @param {engine.model.Range} range Inserted range.
 	 */
-	convertInsert( range ) {
+	convertInsertion( range ) {
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
 		const consumable = this._createInsertConsumable( range );
 

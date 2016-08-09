@@ -254,7 +254,7 @@ describe( 'image with caption converters', () => {
 	it( 'should convert model images changes without caption to view', () => {
 		let modelElement = new ModelElement( 'image', { src: 'bar.jpg', title: 'bar' } );
 		modelRoot.appendChildren( modelElement );
-		modelDispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		modelDispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><img src="bar.jpg" title="bar"></img></div>' );
 
@@ -271,7 +271,7 @@ describe( 'image with caption converters', () => {
 			new ModelElement( 'caption', {}, new ModelText( 'foobar' ) )
 		] );
 		modelRoot.appendChildren( modelElement );
-		modelDispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		modelDispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal(
 			'<div><figure><img src="foo.jpg" title="foo"></img><figcaption>foobar</figcaption></figure></div>'
@@ -483,7 +483,7 @@ describe( 'custom attribute handling for given element', () => {
 
 		let range = ModelRange.createIn( modelRoot );
 
-		modelDispatcher.convertInsert( range );
+		modelDispatcher.convertInsertion( range );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><a href="foo.html" title="Foo title">foo</a></div>' );
 
@@ -533,7 +533,7 @@ describe( 'custom attribute handling for given element', () => {
 	it( 'should convert quote model element with linkHref and linkTitle attribute to view', () => {
 		let modelElement = new ModelElement( 'quote', { linkHref: 'foo.html', linkTitle: 'Foo source' }, new ModelText( 'foo' ) );
 		modelRoot.appendChildren( modelElement );
-		modelDispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		modelDispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		let expected = '<div><blockquote>foo<a href="foo.html" title="Foo source">see source</a></blockquote></div>';
 		expect( viewToString( viewRoot ) ).to.equal( expected );
@@ -543,7 +543,7 @@ describe( 'custom attribute handling for given element', () => {
 		modelDispatcher.on( 'removeAttribute:bold', unwrap( new ViewAttributeElement( 'strong' ) ) );
 
 		modelElement.appendChildren( new ModelText( 'bar', { bold: true } ) );
-		modelDispatcher.convertInsert( ModelRange.createFromParentsAndOffsets( modelElement, 3, modelElement, 6 ) );
+		modelDispatcher.convertInsertion( ModelRange.createFromParentsAndOffsets( modelElement, 3, modelElement, 6 ) );
 
 		expected = '<div><blockquote>foo<strong>bar</strong><a href="foo.html" title="Foo source">see source</a></blockquote></div>';
 		expect( viewToString( viewRoot ) ).to.equal( expected );
@@ -718,7 +718,7 @@ describe( 'universal converter', () => {
 		] );
 
 		modelRoot.appendChildren( modelElement );
-		modelDispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		modelDispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal(
 			'<div>' +
