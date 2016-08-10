@@ -196,18 +196,18 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	// Bind root elements.
 	mapper.bindElements( node.root, viewDocumentFragment );
 
-	modelToView.on( 'insert:$text', insertText(), 'lowest' );
+	modelToView.on( 'insert:$text', insertText() );
 	modelToView.on( 'addAttribute', wrap( ( value, data ) => {
 		if ( data.item instanceof ModelTextProxy ) {
 			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: value } );
 		}
-	} ), 'lowest' );
-	modelToView.on( 'insert', insertElement( data => new ViewElement( data.item.name, data.item.getAttributes() )  ), 'lowest' );
-	modelToView.on( 'selection', convertRangeSelection(), 'lowest' );
-	modelToView.on( 'selection', convertCollapsedSelection(), 'lowest' );
+	} ) );
+	modelToView.on( 'insert', insertElement( data => new ViewElement( data.item.name, data.item.getAttributes() )  ) );
+	modelToView.on( 'selection', convertRangeSelection() );
+	modelToView.on( 'selection', convertCollapsedSelection() );
 	modelToView.on( 'selectionAttribute', convertSelectionAttribute( ( value, data ) => {
 		return new ViewAttributeElement( 'model-text-with-attributes', { [ data.key ]: value } );
-	} ), 'lowest' );
+	} ) );
 
 	// Convert model to view.
 	modelToView.convertInsertion( range );
@@ -263,10 +263,10 @@ export function parse( data, schema, options = {} ) {
 	// Setup view to model converter.
 	const viewToModel = new ViewConversionDispatcher( { schema, mapper } );
 
-	viewToModel.on( 'documentFragment', convertToModelFragment(), 'lowest' );
-	viewToModel.on( `element:model-text-with-attributes`, convertToModelText( true ), 'lowest' );
-	viewToModel.on( 'element', convertToModelElement(), 'lowest' );
-	viewToModel.on( 'text', convertToModelText(), 'lowest' );
+	viewToModel.on( 'documentFragment', convertToModelFragment() );
+	viewToModel.on( `element:model-text-with-attributes`, convertToModelText( true ) );
+	viewToModel.on( 'element', convertToModelElement() );
+	viewToModel.on( 'text', convertToModelText() );
 
 	// Convert view to model.
 	let model = viewToModel.convert( viewDocumentFragment.root, { context: [ '$root' ] } );
