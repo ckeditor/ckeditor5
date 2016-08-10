@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
 /* bender-tags: editable */
 
 import StandardEditor from '/ckeditor5/core/editor/standardeditor.js';

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
+
 import View from '../view.js';
 import Template from '../template.js';
 

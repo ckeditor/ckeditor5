@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
 /* bender-tags: editable */
 
 import EditableUI from '/ckeditor5/ui/editableui/editableui.js';
