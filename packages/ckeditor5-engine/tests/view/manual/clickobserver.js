@@ -21,7 +21,7 @@ class ClickObserver1 extends DomEventObserver {
 	}
 
 	onDomEvent( domEvt ) {
-		this.fire( 'click', this.id, domEvt.target.id );
+		this.fire( 'click', domEvt, { id: this.id } );
 	}
 }
 
@@ -35,11 +35,11 @@ class ClickObserver2 extends DomEventObserver {
 	}
 
 	onDomEvent( domEvt ) {
-		this.fire( 'click', this.id, domEvt.target.id );
+		this.fire( 'click', domEvt, { id: this.id } );
 	}
 }
 
-viewDocument.on( 'click', ( evt, eventId, elementId ) => console.log( 'click', eventId, elementId ) );
+viewDocument.on( 'click', ( evt, evtData ) => console.log( 'click', evtData.id, evtData.domTarget.id ) );
 document.getElementById( 'enable1' ).addEventListener( 'click', () => observer1.enable() );
 document.getElementById( 'disable1' ).addEventListener( 'click', () => observer1.disable() );
 
