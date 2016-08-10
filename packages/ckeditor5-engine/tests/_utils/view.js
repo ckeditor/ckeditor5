@@ -18,7 +18,6 @@ const ELEMENT_RANGE_START_TOKEN = '[';
 const ELEMENT_RANGE_END_TOKEN = ']';
 const TEXT_RANGE_START_TOKEN = '{';
 const TEXT_RANGE_END_TOKEN = '}';
-const VIEW_PRIORITY_ATTRIBUTE = 'view-priority';
 
 /**
  * Writes the contents of the {@link engine.view.Document Document} to an HTML-like string.
@@ -779,7 +778,7 @@ class ViewStringify {
 	 */
 	_stringifyElementPriority( element ) {
 		if ( this.showPriority && element instanceof AttributeElement ) {
-			return `${ VIEW_PRIORITY_ATTRIBUTE }="${ element.priority }"`;
+			return `view-priority="${ element.priority }"`;
 		}
 
 		return '';
@@ -878,8 +877,8 @@ function _convertElement( viewElement ) {
 // returns {Number|null} info.priority Parsed priority of the element.
 function _convertElementNameAndPriority( viewElement ) {
 	const parts = viewElement.name.split( ':' );
-	const priority = _convertPriority( viewElement.getAttribute( VIEW_PRIORITY_ATTRIBUTE ) );
-	viewElement.removeAttribute( VIEW_PRIORITY_ATTRIBUTE );
+	const priority = _convertPriority( viewElement.getAttribute( 'view-priority' ) );
+	viewElement.removeAttribute( 'view-priority' );
 
 	if ( parts.length == 1 ) {
 		return {
