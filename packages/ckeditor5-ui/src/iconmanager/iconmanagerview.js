@@ -24,7 +24,7 @@ export default class IconManagerView extends View {
 			tag: 'svg',
 			ns: 'http://www.w3.org/2000/svg',
 			attributes: {
-				class: 'ck-icon-manager-sprite'
+				class: 'ck-icon-manager__sprite'
 			}
 		} );
 

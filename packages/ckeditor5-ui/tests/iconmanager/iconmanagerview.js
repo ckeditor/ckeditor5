@@ -27,7 +27,7 @@ describe( 'IconManagerView', () => {
 	describe( 'constructor', () => {
 		it( 'creates element from template', () => {
 			expect( view.element.tagName ).to.equal( 'svg' );
-			expect( view.element.getAttribute( 'class' ) ).to.equal( 'ck-icon-manager-sprite' );
+			expect( view.element.getAttribute( 'class' ) ).to.equal( 'ck-icon-manager__sprite' );
 		} );
 	} );
 
