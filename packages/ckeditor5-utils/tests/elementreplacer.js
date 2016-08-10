@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
 /* bender-tags: browser-only */
 
 import ElementReplacer from '/ckeditor5/utils/elementreplacer.js';

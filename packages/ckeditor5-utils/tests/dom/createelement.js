@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
 /* bender-tags: dom, browser-only */
 
 import createElement from '/ckeditor5/utils/dom/createelement.js';

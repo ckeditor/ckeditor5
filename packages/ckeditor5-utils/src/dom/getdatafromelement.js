@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals HTMLTextAreaElement */
+
 /**
  * Gets data from a given source element.
  *
