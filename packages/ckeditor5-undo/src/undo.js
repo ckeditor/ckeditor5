@@ -12,14 +12,14 @@ import ButtonView from '../ui/button/buttonview.js';
 /**
  * The undo feature. It introduces the Undo and Redo buttons to the editor.
  *
- * Below is the explanation of the undo mechanism working together with {@link engine.model.CompressedHistory CompressedHistory}:
+ * Below is the explanation of the undo mechanism working together with {@link engine.model.History History}:
  *
  * Whenever a {@link engine.model.Delta delta} is applied to the {@link engine.model.Document document}, it is saved to
- * `CompressedHistory` as is. The {@link engine.model.Batch batch} that owns that delta is also saved, in {@link undo.UndoCommand},
+ * `History` as is. The {@link engine.model.Batch batch} that owns that delta is also saved, in {@link undo.UndoCommand},
  * together with the selection that was present in the document before the delta was applied. A batch is saved instead of the delta
  * because changes are undone batch-by-batch, not delta-by-delta and a batch is seen as one undo step.
  *
- * After some changes happen to the document, the `CompressedHistory` and `UndoCommand` stack can be represented as follows:
+ * After some changes happen to the document, the `History` and `UndoCommand` stack can be represented as follows:
  *
  *		  History                           Undo stack
  *		===========             ==================================
@@ -60,7 +60,7 @@ import ButtonView from '../ui/button/buttonview.js';
  * operational transformation algorithms assume there is no connection between two transformed operations when resolving
  * conflicts, which is true for example for collaborative editing, but is not true for the undo algorithm.
  *
- * To prevent both problems, `CompressedHistory` introduces an API to {@link engine.model.CompressedDelta#removeDelta remove}
+ * To prevent both problems, `History` introduces an API to {@link engine.model.History#removeDelta remove}
  * deltas from history. It is used to remove undone and undoing deltas after they are applied. It feels right &mdash; since when a
  * delta is undone or reversed, it is "removed" and there should be no sign of it in the history (fig. 1).
  *
@@ -94,11 +94,11 @@ import ButtonView from '../ui/button/buttonview.js';
  * It is an obvious error &mdash; transforming by that delta would lead to incorrect results or "repeating" history would
  * produce a different document than the actual one.
  *
- * To prevent this situation, `B3` needs to also be {@link engine.model.CompressedHistory#updateDelta updated} in history.
+ * To prevent this situation, `B3` needs to also be {@link engine.model.History#updateDelta updated} in history.
  * It should be kept in a state that "does not remember" deltas that were removed from history. It is easily
  * achieved while transforming the reversed delta. For example, when `C2r` is transformed by `B3`, at the same time `B3` is
  * transformed by `C2r`. Transforming `B3` that remembers `C2` by a delta reversing `C2` effectively makes `B3` "forget" about `C2`.
- * By doing these transformation you effectively make `B3` base on `B2` which is the correct state of history (fig. 4).
+ * By doing these transformations you effectively make `B3` base on `B2` which is the correct state of history (fig. 4).
  *
  *		     History (fig. 4)                         History (fig. 5)
  *		===========================            ===============================

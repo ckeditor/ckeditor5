@@ -8,10 +8,10 @@ import { transformDelta as transformDelta } from './basecommand.js';
 
 /**
  * The redo command stores {@link engine.model.Batch batches} that were used to undo a batch by {@link undo.UndoCommand UndoCommand}.
- * It is able to redo a previously undone batch by reversing the undoing batches created by `UndoCommand`. A reversed batch is
+ * It is able to redo a previously undone batch by reversing the undoing batches created by `UndoCommand`. The reversed batch is
  * also transformed by batches from {@link engine.model.Document#history history} that happened after it and are not other redo batches.
  *
- * The redo command also takes care of restoring the {@link engine.model.Document#selection selection} to the state before
+ * The redo command also takes care of restoring the {@link engine.model.Document#selection document selection} to the state before
  * an undone batch was applied.
  *
  * @memberOf undo

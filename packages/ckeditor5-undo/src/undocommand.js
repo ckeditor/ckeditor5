@@ -11,8 +11,8 @@ import { transformDelta, transformRangesByDeltas } from './basecommand.js';
  * and is able to undo a batch by reversing it and transforming by other batches from {@link engine.model.Document#history history}
  * that happened after the reversed batch.
  *
- * The undo command also takes care of restoring the {@link engine.model.Document#selection selection} to the state before the
- * undone batch was applied.
+ * The undo command also takes care of restoring the {@link engine.model.Document#selection document selection} to the state before
+ * the undone batch was applied.
  *
  * @memberOf undo
  * @extends undo.BaseCommand
