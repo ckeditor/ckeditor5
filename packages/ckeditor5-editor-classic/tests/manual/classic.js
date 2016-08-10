@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global console:false */
+/* globals console:false, document, window */
 
 import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 import testUtils from '/tests/utils/_utils/utils.js';
