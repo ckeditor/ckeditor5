@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals window */
+
 import Observer from './observer.js';
 import { startsWithFiller, getDataWithoutFiller } from '../filler.js';
 

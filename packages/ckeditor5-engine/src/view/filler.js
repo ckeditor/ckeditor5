@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals window, Range, Text */
+
 import { keyCodes } from '../../utils/keyboard.js';
 
 /**
