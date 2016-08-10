@@ -72,8 +72,8 @@ gulp.task( 'bundle', ( callback ) => {
 	);
 } );
 
-// Build tasks.
-const ckeditor5DevCompiler = require( 'ckeditor5-dev-builder' )( config );
+// Compile tasks.
+const ckeditor5DevCompiler = require( 'ckeditor5-dev-compiler' )( config );
 const compiler = ckeditor5DevCompiler.compiler;
 
 gulp.task( 'compile', callback => {
