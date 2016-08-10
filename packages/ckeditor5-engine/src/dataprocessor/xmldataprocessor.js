@@ -30,10 +30,10 @@ export default class XmlDataProcessor {
 		 * E.g. Registering namespaces [ 'attribute', 'container' ] allows to use `<attirbute:tagName></attribute:tagName>` and
 		 * `<container:tagName></container:tagName>` input. It is mainly for debugging.
 		 *
-		 * @private
-		 * @member {DOMParser} engine.dataProcessor.XmlDataProcessor#_namespaces
+		 * @public
+		 * @member {DOMParser} engine.dataProcessor.XmlDataProcessor#namespaces
 		 */
-		this._namespaces = options.namespaces || [];
+		this.namespaces = options.namespaces || [];
 
 		/**
 		 * DOMParser instance used to parse XML string to XMLDocument.
@@ -100,7 +100,7 @@ export default class XmlDataProcessor {
 	 */
 	_toDom( data ) {
 		// Stringify namespaces.
-		const namespaces = this._namespaces.map( nsp => `xmlns:${ nsp }="nsp"` ).join( ' ' );
+		const namespaces = this.namespaces.map( nsp => `xmlns:${ nsp }="nsp"` ).join( ' ' );
 
 		// Wrap data into root element with optional namespace definitions.
 		data = `<xml ${ namespaces }>${ data }</xml>`;
