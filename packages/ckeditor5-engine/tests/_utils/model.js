@@ -196,18 +196,18 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	// Bind root elements.
 	mapper.bindElements( node.root, viewDocumentFragment );
 
-	modelToView.on( 'insert:$text', insertText(), 'lowest' );
+	modelToView.on( 'insert:$text', insertText() );
 	modelToView.on( 'addAttribute', wrap( ( value, data ) => {
 		if ( data.item instanceof ModelTextProxy ) {
 			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: value } );
 		}
-	} ), 'lowest' );
-	modelToView.on( 'insert', insertElement( data => new ViewElement( data.item.name, data.item.getAttributes() )  ), 'lowest' );
-	modelToView.on( 'selection', convertRangeSelection(), 'lowest' );
-	modelToView.on( 'selection', convertCollapsedSelection(), 'lowest' );
+	} ) );
+	modelToView.on( 'insert', insertElement( data => new ViewElement( data.item.name, data.item.getAttributes() )  ) );
+	modelToView.on( 'selection', convertRangeSelection() );
+	modelToView.on( 'selection', convertCollapsedSelection() );
 	modelToView.on( 'selectionAttribute', convertSelectionAttribute( ( value, data ) => {
 		return new ViewAttributeElement( 'model-text-with-attributes', { [ data.key ]: value } );
-	} ), 'lowest' );
+	} ) );
 
 	// Convert model to view.
 	modelToView.convertInsertion( range );
@@ -263,10 +263,10 @@ export function parse( data, schema, options = {} ) {
 	// Setup view to model converter.
 	const viewToModel = new ViewConversionDispatcher( { schema, mapper } );
 
-	viewToModel.on( 'documentFragment', convertToModelFragment(), 'lowest' );
-	viewToModel.on( `element:model-text-with-attributes`, convertToModelText( true ), 'lowest' );
-	viewToModel.on( 'element', convertToModelElement(), 'lowest' );
-	viewToModel.on( 'text', convertToModelText(), 'lowest' );
+	viewToModel.on( 'documentFragment', convertToModelFragment() );
+	viewToModel.on( `element:model-text-with-attributes`, convertToModelText( true ) );
+	viewToModel.on( 'element', convertToModelElement() );
+	viewToModel.on( 'text', convertToModelText() );
 
 	// Convert view to model.
 	let model = viewToModel.convert( viewDocumentFragment.root, { context: [ '$root' ] } );
@@ -310,13 +310,10 @@ export function parse( data, schema, options = {} ) {
 
 function convertToModelFragment() {
 	return ( evt, data, consumable, conversionApi ) => {
-		// Second argument in `consumable.test` is discarded for ViewDocumentFragment but is needed for ViewElement.
-		if ( !data.output && consumable.test( data.input, { name: true } ) ) {
-			const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
+		const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
 
-			data.output = new ModelDocumentFragment( modelWriter.normalizeNodes( convertedChildren ) );
-			conversionApi.mapper.bindElements( data.output, data.input );
-		}
+		data.output = new ModelDocumentFragment( modelWriter.normalizeNodes( convertedChildren ) );
+		conversionApi.mapper.bindElements( data.output, data.input );
 
 		evt.stop();
 	};
@@ -333,14 +330,12 @@ function convertToModelElement() {
 			throw new Error( `Element '${ schemaQuery.name }' not allowed in context.` );
 		}
 
-		if ( consumable.consume( data.input, { name: true } ) ) {
-			data.output = new ModelElement( data.input.name, data.input.getAttributes() );
-			conversionApi.mapper.bindElements( data.output, data.input );
+		data.output = new ModelElement( data.input.name, data.input.getAttributes() );
+		conversionApi.mapper.bindElements( data.output, data.input );
 
-			data.context.push( data.output );
-			data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
-			data.context.pop();
-		}
+		data.context.push( data.output );
+		data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
+		data.context.pop();
 
 		evt.stop();
 	};
@@ -357,19 +352,15 @@ function convertToModelText( withAttributes = false ) {
 			throw new Error( `Element '${ schemaQuery.name }' not allowed in context.` );
 		}
 
-		if ( conversionApi.schema.check( schemaQuery ) ) {
-			if ( consumable.consume( data.input, { name: true } ) ) {
-				let node;
+		let node;
 
-				if ( withAttributes ) {
-					node = new ModelText( data.input.getChild( 0 ).data, data.input.getAttributes() );
-				} else {
-					node = new ModelText( data.input.data );
-				}
-
-				data.output = node;
-			}
+		if ( withAttributes ) {
+			node = new ModelText( data.input.getChild( 0 ).data, data.input.getAttributes() );
+		} else {
+			node = new ModelText( data.input.data );
 		}
+
+		data.output = node;
 
 		evt.stop();
 	};

@@ -888,22 +888,18 @@ function _convertElementNameAndPriority( viewElement ) {
 		};
 	}
 
-	if ( parts.length == 2 ) {
-		// Check if type and name: container:div.
-		const type = _convertType( parts[ 0 ] );
+	// Check if type and name: container:div.
+	const type = _convertType( parts[ 0 ] );
 
-		if ( type ) {
-			return {
-				name: parts[ 1 ],
-				type: type,
-				priority: priority
-			};
-		}
-
-		throw new Error( `Parse error - cannot parse element's name: ${ viewElement.name }.` );
+	if ( type ) {
+		return {
+			name: parts[ 1 ],
+			type: type,
+			priority: priority
+		};
 	}
 
-	throw new Error( `Parse error - cannot parse element's tag name: ${ viewElement.name }.` );
+	throw new Error( `Parse error - cannot parse element's name: ${ viewElement.name }.` );
 }
 
 // Checks if element's type is allowed. Returns `attribute`, `container` or `null`.
