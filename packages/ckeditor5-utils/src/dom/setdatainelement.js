@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals HTMLTextAreaElement */
+
 /**
  * Sets data in a given element.
  *

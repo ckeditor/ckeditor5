@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
 /* bender-tags: dom, browser-only */
 
 import remove from '/ckeditor5/utils/dom/remove.js';

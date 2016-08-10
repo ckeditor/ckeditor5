@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
 /* bender-tags: dom, browser-only */
 
 import indexOf from '/ckeditor5/utils/dom/indexof.js';
