@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals setTimeout, Range, document */
 /* bender-tags: view, browser-only */
 
 import ViewRange from '/ckeditor5/engine/view/range.js';

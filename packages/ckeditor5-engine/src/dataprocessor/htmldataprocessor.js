@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document, DOMParser */
+
 import BasicHtmlWriter from './basichtmlwriter.js';
 import DomConverter from '../view/domconverter.js';
 import { NBSP_FILLER } from '../view/filler.js';

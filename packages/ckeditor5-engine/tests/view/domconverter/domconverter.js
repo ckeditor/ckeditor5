@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
 /* bender-tags: view, domconverter */
 
 import DomConverter from '/ckeditor5/engine/view/domconverter.js';

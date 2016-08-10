@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals setTimeout, window */
 /* bender-tags: browser-only */
 
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';

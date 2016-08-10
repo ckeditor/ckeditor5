@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global console:false */
+/* globals console:false, document */
 
 import Document from '/ckeditor5/engine/view/document.js';
 import { setData } from '/tests/engine/_utils/view.js';

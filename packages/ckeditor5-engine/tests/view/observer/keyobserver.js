@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
 /* bender-tags: view, browser-only */
 
 import KeyObserver from '/ckeditor5/engine/view/observer/keyobserver.js';

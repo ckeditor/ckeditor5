@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals Range, DocumentFragment, HTMLElement, document */
 /* bender-tags: view, domconverter, browser-only */
 
 import ViewText from '/ckeditor5/engine/view/text.js';
