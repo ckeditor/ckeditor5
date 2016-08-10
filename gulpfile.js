@@ -54,8 +54,8 @@ gulp.task( 'bundle:clean', ckeditor5DevBundle.cleanFromConfig );
 gulp.task( 'bundle:generate',
 	[
 		'bundle:clean',
-		'build:js:esnext',
-		'build:themes:esnext'
+		'compile:js:esnext',
+		'compile:themes:esnext'
 	],
 	ckeditor5DevBundle.generateFromConfig
 );
@@ -72,41 +72,41 @@ gulp.task( 'bundle', ( callback ) => {
 	);
 } );
 
-// Build tasks.
-const ckeditor5DevBuilder = require( 'ckeditor5-dev-builder' )( config );
-const builder = ckeditor5DevBuilder.builder;
+// Compile tasks.
+const ckeditor5DevCompiler = require( 'ckeditor5-dev-compiler' )( config );
+const compiler = ckeditor5DevCompiler.compiler;
 
-gulp.task( 'build', callback => {
-	runSequence( 'build:clean:all', 'build:themes', 'build:js', callback );
+gulp.task( 'compile', callback => {
+	runSequence( 'compile:clean:all', 'compile:themes', 'compile:js', callback );
 } );
 
 // Clean tasks.
-gulp.task( 'build:clean:all', () => builder.clean.all() );
-gulp.task( 'build:clean:themes', () => builder.clean.themes() );
-gulp.task( 'build:clean:js', () => builder.clean.js() );
+gulp.task( 'compile:clean:all', () => compiler.clean.all() );
+gulp.task( 'compile:clean:themes', () => compiler.clean.themes() );
+gulp.task( 'compile:clean:js', () => compiler.clean.js() );
 
-gulp.task( 'build:themes', ( callback ) => {
-	runSequence( 'build:clean:themes', 'build:icons', 'build:sass', callback );
+gulp.task( 'compile:themes', ( callback ) => {
+	runSequence( 'compile:clean:themes', 'compile:icons', 'compile:sass', callback );
 } );
 
-gulp.task( 'build:sass', () => builder.build.sass() );
-gulp.task( 'build:icons', () => builder.build.icons() );
-gulp.task( 'build:js', [ 'build:clean:js' ], () => builder.build.js() );
+gulp.task( 'compile:sass', () => compiler.compile.sass() );
+gulp.task( 'compile:icons', () => compiler.compile.icons() );
+gulp.task( 'compile:js', [ 'compile:clean:js' ], () => compiler.compile.js() );
 
-// Tasks specific for preparing build with unmodified source files. Uses by `gulp docs` or `gulp bundle`.
-gulp.task( 'build:clean:js:esnext', () => builder.clean.js( { formats: [ 'esnext' ] } ) );
-gulp.task( 'build:clean:themes:esnext', () => builder.clean.themes( { formats: [ 'esnext' ] } ) );
-gulp.task( 'build:sass:esnext', () => builder.build.sass( { formats: [ 'esnext' ] } ) );
-gulp.task( 'build:icons:esnext', () => builder.build.icons( { formats: [ 'esnext' ] } ) );
-gulp.task( 'build:js:esnext', [ 'build:clean:js:esnext' ], () => builder.build.js( { formats: [ 'esnext' ] } ) );
-gulp.task( 'build:themes:esnext', ( callback ) => {
-	runSequence( 'build:clean:themes:esnext', 'build:icons:esnext', 'build:sass:esnext', callback );
+// Tasks specific for preparing compiled output with unmodified source files. Uses by `gulp docs` or `gulp bundle`.
+gulp.task( 'compile:clean:js:esnext', () => compiler.clean.js( { formats: [ 'esnext' ] } ) );
+gulp.task( 'compile:clean:themes:esnext', () => compiler.clean.themes( { formats: [ 'esnext' ] } ) );
+gulp.task( 'compile:sass:esnext', () => compiler.compile.sass( { formats: [ 'esnext' ] } ) );
+gulp.task( 'compile:icons:esnext', () => compiler.compile.icons( { formats: [ 'esnext' ] } ) );
+gulp.task( 'compile:js:esnext', [ 'compile:clean:js:esnext' ], () => compiler.compile.js( { formats: [ 'esnext' ] } ) );
+gulp.task( 'compile:themes:esnext', ( callback ) => {
+	runSequence( 'compile:clean:themes:esnext', 'compile:icons:esnext', 'compile:sass:esnext', callback );
 } );
 
 // Tasks specific for testing under node.
-gulp.task( 'build:clean:js:cjs', () => builder.clean.js( { formats: [ 'cjs' ] } ) );
-gulp.task( 'build:js:cjs', [ 'build:clean:js:cjs' ], () => builder.build.js( { formats: [ 'cjs' ] } ) );
+gulp.task( 'compile:clean:js:cjs', () => compiler.clean.js( { formats: [ 'cjs' ] } ) );
+gulp.task( 'compile:js:cjs', [ 'compile:clean:js:cjs' ], () => compiler.compile.js( { formats: [ 'cjs' ] } ) );
 
 // Docs.
-const docsBuilder = ckeditor5DevBuilder.docs;
-gulp.task( 'docs', [ 'build:js:esnext' ], docsBuilder.buildDocs );
+const docsBuilder = ckeditor5DevCompiler.docs;
+gulp.task( 'docs', [ 'compile:js:esnext' ], docsBuilder.buildDocs );
