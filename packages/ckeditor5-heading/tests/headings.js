@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
+
 import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
 import Headings from '/ckeditor5/headings/headings.js';
 import HeadingsEngine from '/ckeditor5/headings/headingsengine.js';
