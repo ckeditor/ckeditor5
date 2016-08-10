@@ -347,13 +347,17 @@ describe( 'Delete utils', () => {
 				{ unit: 'codePoint' }
 			);
 
-			it.skip( 'unicode support - combining mark backward', () => {
-				setData( document, '<p>foob[]̂ar</p>' );
+			it( 'unicode support - combining mark backward', () => {
+				setData( document, '<p>foob̂[]ar</p>' );
 
-				modifySelection( document.selection, { unit: 'codePoint', direction: 'backward' } );
+				// Creating new instance of selection instead of operation on engine.model.Document#selection.
+				// Document's selection will throw errors in some test cases (which are correct cases, but only for
+				// non-document selections).
+				const testSelection = Selection.createFromSelection( document.selection );
+				modifySelection( testSelection, { unit: 'codePoint', direction: 'backward' } );
 
-				expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>foob[]̂̂ar</p>' );
-				expect( document.selection.isBackward ).to.true;
+				expect( stringify( document.getRoot(), testSelection ) ).to.equal( '<p>foob[̂]ar</p>' );
+				expect( testSelection.isBackward ).to.true;
 			} );
 
 			test(
