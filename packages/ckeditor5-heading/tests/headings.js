@@ -49,20 +49,21 @@ describe( 'Headings', () => {
 	it( 'should execute format command on model execute event', () => {
 		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 		const controller = editor.ui.featureComponents.create( 'headings' );
-		const model = controller.model.content;
+		const model = controller.model;
 
-		model.fire( 'execute', { id: 'paragraph', label: 'Paragraph' } );
+		model.id = 'foo';
+		model.fire( 'execute' );
 
 		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'headings', 'paragraph' );
+		sinon.assert.calledWithExactly( executeSpy, 'headings', 'foo' );
 	} );
 
 	it( 'should focus view after command execution', () => {
 		const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 		const controller = editor.ui.featureComponents.create( 'headings' );
-		const model = controller.model.content;
+		const model = controller.model;
 
-		model.fire( 'execute', { id: 'paragraph', label: 'Paragraph' } );
+		model.fire( 'execute' );
 
 		sinon.assert.calledOnce( focusSpy );
 	} );
