@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
+
 import testUtils from '/tests/ui/_utils/utils.js';
 
 describe( 'utils', () => {

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document, Event, MouseEvent */
+/* globals document, window, Event, MouseEvent */
 /* bender-tags: ui */
 
 import testUtils from '/tests/core/_utils/utils.js';
