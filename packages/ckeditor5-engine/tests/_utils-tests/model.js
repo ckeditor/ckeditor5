@@ -10,6 +10,7 @@ import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
+import count from '/ckeditor5/utils/count.js';
 
 describe( 'model test utils', () => {
 	let document, root, selection, sandbox;
@@ -288,6 +289,7 @@ describe( 'model test utils', () => {
 					'<a></a>foo<$text bold="true">bar</$text>[]<b></b>'
 				);
 				expect( selection.getAttribute( 'bold' ) ).to.true;
+				expect( count( selection.getAttributes() ) ).to.equal( 1 );
 			} );
 
 			it( 'writes selection collapsed at the end of the root', () => {
@@ -308,6 +310,7 @@ describe( 'model test utils', () => {
 					'<a></a>foo<$text bold="true">b[]ar</$text><b></b>'
 				);
 				expect( selection.getAttribute( 'bold' ) ).to.true;
+				expect( count( selection.getAttributes() ) ).to.equal( 1 );
 			} );
 
 			it( 'writes flat selection containing couple of nodes', () => {
@@ -531,7 +534,7 @@ describe( 'model test utils', () => {
 				data: 'x[y]z'
 			} );
 
-			it( 'sets a backward selection containing an element', () => {
+			it( 'sets selection within a text with different attributes', () => {
 				const result = parse( '<$text bold="true">fo[o</$text>ba]r', document.schema, {
 					selectionAttributes: { bold: true }
 				} );

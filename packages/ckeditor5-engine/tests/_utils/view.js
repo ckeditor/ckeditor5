@@ -266,8 +266,8 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  * When set to `null` root element will be created automatically. If set to
  * {@link engine.view.Element Element} or {@link engine.view.DocumentFragment DocumentFragment} - this node
  * will be used as root for all parsed nodes.
- * @param {Boolean} [options.sameSelectionCharacters=false] When set to `true` then selection inside text should be marked using `{` and `}`
- * and selection outside text using `[` and `]`. When set to `false` then both should be marked with `[` and `]` only.
+ * @param {Boolean} [options.sameSelectionCharacters=false] When set to `false` then selection inside text should be marked using
+ * `{` and `}` and selection outside text using `[` and `]`. When set to `true` then both should be marked with `[` and `]` only.
  * @returns {engine.view.Text|engine.view.Element|engine.view.DocumentFragment|Object} Returns parsed view node
  * or object with two fields `view` and `selection` when selection ranges were included in data to parse.
  */
