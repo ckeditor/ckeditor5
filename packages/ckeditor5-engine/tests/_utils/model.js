@@ -310,13 +310,10 @@ export function parse( data, schema, options = {} ) {
 
 function convertToModelFragment() {
 	return ( evt, data, consumable, conversionApi ) => {
-		// Second argument in `consumable.test` is discarded for ViewDocumentFragment but is needed for ViewElement.
-		if ( !data.output && consumable.test( data.input, { name: true } ) ) {
-			const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
+		const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
 
-			data.output = new ModelDocumentFragment( modelWriter.normalizeNodes( convertedChildren ) );
-			conversionApi.mapper.bindElements( data.output, data.input );
-		}
+		data.output = new ModelDocumentFragment( modelWriter.normalizeNodes( convertedChildren ) );
+		conversionApi.mapper.bindElements( data.output, data.input );
 
 		evt.stop();
 	};
@@ -333,14 +330,12 @@ function convertToModelElement() {
 			throw new Error( `Element '${ schemaQuery.name }' not allowed in context.` );
 		}
 
-		if ( consumable.consume( data.input, { name: true } ) ) {
-			data.output = new ModelElement( data.input.name, data.input.getAttributes() );
-			conversionApi.mapper.bindElements( data.output, data.input );
+		data.output = new ModelElement( data.input.name, data.input.getAttributes() );
+		conversionApi.mapper.bindElements( data.output, data.input );
 
-			data.context.push( data.output );
-			data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
-			data.context.pop();
-		}
+		data.context.push( data.output );
+		data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
+		data.context.pop();
 
 		evt.stop();
 	};
@@ -357,19 +352,15 @@ function convertToModelText( withAttributes = false ) {
 			throw new Error( `Element '${ schemaQuery.name }' not allowed in context.` );
 		}
 
-		if ( conversionApi.schema.check( schemaQuery ) ) {
-			if ( consumable.consume( data.input, { name: true } ) ) {
-				let node;
+		let node;
 
-				if ( withAttributes ) {
-					node = new ModelText( data.input.getChild( 0 ).data, data.input.getAttributes() );
-				} else {
-					node = new ModelText( data.input.data );
-				}
-
-				data.output = node;
-			}
+		if ( withAttributes ) {
+			node = new ModelText( data.input.getChild( 0 ).data, data.input.getAttributes() );
+		} else {
+			node = new ModelText( data.input.data );
 		}
+
+		data.output = node;
 
 		evt.stop();
 	};
