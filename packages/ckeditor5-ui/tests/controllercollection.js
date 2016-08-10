@@ -356,26 +356,26 @@ describe( 'ControllerCollection', () => {
 				const modelA = new Model();
 				const modelB = new Model();
 				const modelC = new Model();
+				const spyFoo = sinon.spy();
+				const spyBar = sinon.spy();
+				const spyBaz = sinon.spy();
 
 				collection.delegate( 'foo', 'bar', 'baz' ).to( target );
 				collection.add( new Controller( modelA ) );
 				collection.add( new Controller( modelB ) );
 				collection.add( new Controller( modelC ) );
 
-				const evts = [];
-
-				function recordEvent( ...args ) {
-					evts.push( args );
-				}
-
-				target.on( 'foo', recordEvent );
-				target.on( 'bar', recordEvent );
-				target.on( 'baz', recordEvent );
+				target.on( 'foo', spyFoo );
+				target.on( 'bar', spyBar );
+				target.on( 'baz', spyBaz );
 
 				modelA.fire( 'foo' );
 
-				expect( evts ).to.have.length( 1 );
-				assertDelegated( evts[ 0 ], {
+				sinon.assert.calledOnce( spyFoo );
+				sinon.assert.notCalled( spyBar );
+				sinon.assert.notCalled( spyBaz );
+
+				assertDelegated( spyFoo.args[ 0 ], {
 					expectedName: 'foo',
 					expectedSource: modelA,
 					expectedPath: [ modelA, target ],
@@ -384,8 +384,11 @@ describe( 'ControllerCollection', () => {
 
 				modelB.fire( 'bar' );
 
-				expect( evts ).to.have.length( 2 );
-				assertDelegated( evts[ 1 ], {
+				sinon.assert.calledOnce( spyFoo );
+				sinon.assert.calledOnce( spyBar );
+				sinon.assert.notCalled( spyBaz );
+
+				assertDelegated( spyBar.args[ 0 ], {
 					expectedName: 'bar',
 					expectedSource: modelB,
 					expectedPath: [ modelB, target ],
@@ -394,52 +397,68 @@ describe( 'ControllerCollection', () => {
 
 				modelC.fire( 'baz' );
 
-				expect( evts ).to.have.length( 3 );
-				assertDelegated( evts[ 2 ], {
+				sinon.assert.calledOnce( spyFoo );
+				sinon.assert.calledOnce( spyBar );
+				sinon.assert.calledOnce( spyBaz );
+
+				assertDelegated( spyBaz.args[ 0 ], {
 					expectedName: 'baz',
 					expectedSource: modelC,
 					expectedPath: [ modelC, target ],
 					expectedData: []
 				} );
+
+				modelC.fire( 'not-delegated' );
+
+				sinon.assert.calledOnce( spyFoo );
+				sinon.assert.calledOnce( spyBar );
+				sinon.assert.calledOnce( spyBaz );
 			} );
 
 			it( 'does not forward events which are not supposed to be delegated', () => {
 				const target = new Model();
 				const collection = new ControllerCollection( 'foo' );
 				const model = new Model();
+				const spyFoo = sinon.spy();
+				const spyBar = sinon.spy();
+				const spyBaz = sinon.spy();
 
 				collection.delegate( 'foo', 'bar', 'baz' ).to( target );
 				collection.add( new Controller( model ) );
 
-				let firedCounter = 0;
-				target.on( 'foo', () => ++firedCounter );
-				target.on( 'bar', () => ++firedCounter );
-				target.on( 'baz', () => ++firedCounter );
+				target.on( 'foo', spyFoo );
+				target.on( 'bar', spyBar );
+				target.on( 'baz', spyBaz );
 
 				model.fire( 'foo' );
-				model.fire( 'baz' );
+				model.fire( 'bar' );
 				model.fire( 'baz' );
 				model.fire( 'not-delegated' );
 
-				expect( firedCounter ).to.equal( 3 );
+				sinon.assert.callOrder( spyFoo, spyBar, spyBaz );
+				sinon.assert.callCount( spyFoo, 1 );
+				sinon.assert.callCount( spyBar, 1 );
+				sinon.assert.callCount( spyBaz, 1 );
 			} );
 
 			it( 'stops forwarding when controller removed from the collection', () => {
 				const target = new Model();
 				const collection = new ControllerCollection( 'foo' );
 				const model = new Model();
+				const spy = sinon.spy();
 
 				collection.delegate( 'foo' ).to( target );
+				target.on( 'foo', spy );
+
 				collection.add( new Controller( model ) );
-
-				let firedCounter = 0;
-				target.on( 'foo', () => ++firedCounter );
-
 				model.fire( 'foo' );
+
+				sinon.assert.callCount( spy, 1 );
+
 				collection.remove( 0 );
 				model.fire( 'foo' );
 
-				expect( firedCounter ).to.equal( 1 );
+				sinon.assert.callCount( spy, 1 );
 			} );
 
 			it( 'supports deep event delegation', ( done ) => {
