@@ -16,6 +16,7 @@ import Text from '/ckeditor5/engine/view/text.js';
 import Selection from '/ckeditor5/engine/view/selection.js';
 import Range from '/ckeditor5/engine/view/range.js';
 import Document from '/ckeditor5/engine/view/document.js';
+import XmlDataProcessor from '/ckeditor5/engine/dataprocessor/xmldataprocessor.js';
 
 describe( 'view test utils', () => {
 	describe( 'getData, setData', () => {
@@ -586,22 +587,16 @@ describe( 'view test utils', () => {
 			} ).to.throw( Error );
 		} );
 
-		it( 'should throw when wrong tag name is provided #1', () => {
-			expect( () => {
-				parse( '<b:bar></b:bar>' );
-			} ).to.throw( Error );
-		} );
+		it( 'should throw when wrong type is provided', () => {
+			sinon.stub( XmlDataProcessor.prototype, 'toView', () => {
+				return new ContainerElement( 'invalidType:b' );
+			} );
 
-		it( 'should throw when wrong tag name is provided #2', () => {
 			expect( () => {
-				parse( '<container:b:bar></container:b:bar>' );
-			} ).to.throw( Error );
-		} );
+				parse( 'sth' );
+			} ).to.throw( Error, `Parse error - cannot parse element's name: invalidType:b.` );
 
-		it( 'should throw when wrong tag name is provided #3', () => {
-			expect( () => {
-				parse( '<container:b:10:test></container:b:10:test>' );
-			} ).to.throw( Error );
+			XmlDataProcessor.prototype.toView.restore();
 		} );
 
 		it( 'should use provided root element #1', () => {

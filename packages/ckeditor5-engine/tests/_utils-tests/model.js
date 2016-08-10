@@ -454,8 +454,22 @@ describe( 'model test utils', () => {
 
 		it( 'throws when invalid XML', () => {
 			expect( () => {
-				parse( '<a><b></a></b>' );
-			} ).to.throw( Error );
+				parse( '<a><b></a></b>', document.schema );
+			} ).to.throw( Error, /Parse error/ );
+		} );
+
+		it( 'throws when try to set element not registered in schema', () => {
+			expect( () => {
+				parse( '<xyz></xyz>', document.schema );
+			} ).to.throw( Error, `Element 'xyz' not allowed in context.` );
+		} );
+
+		it( 'throws when try to set text directly to $root without registering it', () => {
+			const doc = new Document();
+
+			expect( () => {
+				parse( 'text', doc.schema );
+			} ).to.throw( Error, `Element '$text' not allowed in context.` );
 		} );
 
 		describe( 'selection', () => {
