@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
+
 import StandardEditor from '/ckeditor5/core/editor/standardeditor.js';
 import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';

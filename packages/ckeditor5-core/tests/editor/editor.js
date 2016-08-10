@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals setTimeout */
 /* bender-tags: editor, browser-only */
 
 import moduleUtils from '/tests/core/_utils/module.js';

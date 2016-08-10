@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global require, bender */
+/* globals require, bender, window */
 
 import testUtils from '/tests/core/_utils/utils.js';
 import moduleTestUtils from '/tests/core/_utils/module.js';
