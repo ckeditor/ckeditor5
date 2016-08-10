@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
 /* bender-tags: editor, browser-only */
 
 import ClassicEditorUI from '/ckeditor5/editor-classic/classiceditorui.js';
