@@ -31,7 +31,7 @@ describe( 'DeleteCommand', () => {
 
 	describe( 'execute', () => {
 		it( 'uses enqueueChanges', () => {
-			setData( doc, '<p>foo<selection />bar</p>' );
+			setData( doc, '<p>foo[]bar</p>' );
 
 			const spy = sinon.spy( doc, 'enqueueChanges' );
 
@@ -41,38 +41,38 @@ describe( 'DeleteCommand', () => {
 		} );
 
 		it( 'deletes previous character when selection is collapsed', () => {
-			setData( doc, '<p>foo<selection />bar</p>' );
+			setData( doc, '<p>foo[]bar</p>' );
 
 			editor.execute( 'delete' );
 
-			expect( getData( doc, { selection: true } ) ).to.equal( '<p>fo<selection />bar</p>' );
+			expect( getData( doc, { selection: true } ) ).to.equal( '<p>fo[]bar</p>' );
 		} );
 
 		it( 'deletes selection contents', () => {
-			setData( doc, '<p>fo<selection>ob</selection>ar</p>' );
+			setData( doc, '<p>fo[ob]ar</p>' );
 
 			editor.execute( 'delete' );
 
-			expect( getData( doc, { selection: true } ) ).to.equal( '<p>fo<selection />ar</p>' );
+			expect( getData( doc, { selection: true } ) ).to.equal( '<p>fo[]ar</p>' );
 		} );
 
 		it( 'merges elements', () => {
-			setData( doc, '<p>foo</p><p><selection />bar</p>' );
+			setData( doc, '<p>foo</p><p>[]bar</p>' );
 
 			editor.execute( 'delete' );
 
-			expect( getData( doc, { selection: true } ) ).to.equal( '<p>foo<selection />bar</p>' );
+			expect( getData( doc, { selection: true } ) ).to.equal( '<p>foo[]bar</p>' );
 		} );
 
 		it( 'does not try to delete when selection is at the boundary', () => {
 			const spy = sinon.spy();
 
 			doc.composer.on( 'deleteContents', spy );
-			setData( doc, '<p><selection />foo</p>' );
+			setData( doc, '<p>[]foo</p>' );
 
 			editor.execute( 'delete' );
 
-			expect( getData( doc, { selection: true } ) ).to.equal( '<p><selection />foo</p>' );
+			expect( getData( doc, { selection: true } ) ).to.equal( '<p>[]foo</p>' );
 			expect( spy.callCount ).to.equal( 0 );
 		} );
 
@@ -80,7 +80,7 @@ describe( 'DeleteCommand', () => {
 			const spy = sinon.spy();
 
 			doc.composer.on( 'modifySelection', spy );
-			setData( doc, '<p>foo<selection />bar</p>' );
+			setData( doc, '<p>foo[]bar</p>' );
 
 			editor.commands.get( 'delete' ).direction = 'forward';
 
