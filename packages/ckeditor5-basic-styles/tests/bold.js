@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
+
 import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
 import Bold from '/ckeditor5/basic-styles/bold.js';
 import BoldEngine from '/ckeditor5/basic-styles/boldengine.js';
