@@ -3,19 +3,38 @@
  * For licensing, see LICENSE.md.
  */
 
-import TreeWalker from '/ckeditor5/engine/model/treewalker.js';
-import Range from '/ckeditor5/engine/model/range.js';
-import Position from '/ckeditor5/engine/model/position.js';
-import Text from '/ckeditor5/engine/model/text.js';
+import Mapper from '/ckeditor5/engine/conversion/mapper.js';
+import { parse as viewParse, stringify as viewStringify } from '/tests/engine/_utils/view.js';
+import {
+	convertRangeSelection,
+	convertCollapsedSelection,
+	convertSelectionAttribute
+} from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
+import { insertText, insertElement, wrap } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
+
 import RootElement from '/ckeditor5/engine/model/rootelement.js';
-import Element from '/ckeditor5/engine/model/element.js';
-import DocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
-import Selection from '/ckeditor5/engine/model/selection.js';
-import Document from '/ckeditor5/engine/model/document.js';
-import writer from '/ckeditor5/engine/model/writer.js';
+import ModelDocument from '/ckeditor5/engine/model/document.js';
+import ModelRange from '/ckeditor5/engine/model/range.js';
+import ModelPosition from '/ckeditor5/engine/model/position.js';
+import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
+import ModelSelection from '/ckeditor5/engine/model/selection.js';
+import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
+import ModelElement from '/ckeditor5/engine/model/element.js';
+import ModelText from '/ckeditor5/engine/model/text.js';
+import ModelTextProxy from '/ckeditor5/engine/model/textproxy.js';
+import modelWriter from '/ckeditor5/engine/model/writer.js';
+
+import ViewConversionDispatcher from '/ckeditor5/engine/conversion/viewconversiondispatcher.js';
+import ViewSelection from '/ckeditor5/engine/view/selection.js';
+import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
+import ViewElement from '/ckeditor5/engine/view/containerelement.js';
+import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 
 /**
  * Writes the contents of the {@link engine.model.Document Document} to an HTML-like string.
+ *
+ * ** Note: ** {@link engine.model.Text text} node contains attributes will be represented as:
+ *        <$text attribute="value">Text data</$text>
  *
  * @param {engine.model.Document} document
  * @param {Object} [options]
@@ -26,7 +45,7 @@ import writer from '/ckeditor5/engine/model/writer.js';
  * @returns {String} The stringified data.
  */
 export function getData( document, options = {} ) {
-	if ( !( document instanceof Document ) ) {
+	if ( !( document instanceof ModelDocument ) ) {
 		throw new TypeError( 'Document needs to be an instance of engine.model.Document.' );
 	}
 
@@ -44,39 +63,53 @@ getData._stringify = stringify;
  * Sets the contents of the {@link engine.model.Document Document} provided as HTML-like string.
  * It uses {@link engine.model.Document#enqueueChanges enqueueChanges} method.
  *
- * NOTE:
- * Remember to register elements in {@link engine.model.Document#schema document's schema} before inserting them.
+ * ** Note: ** Remember to register elements in {@link engine.model.Document#schema document's schema} before inserting them.
+ *
+ * ** Note: ** To create {@link engine.model.Text text} node witch containing attributes use:
+ *        <$text attribute="value">Text data</$text>
  *
  * @param {engine.model.Document} document
  * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
  * @param {String} [options.rootName='main'] Root name where parsed data will be stored. If not provided, default `main`
  * name will be used.
+ * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to the selection.
+ * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward.
  * @param {String} [options.batchType='transparent'] Batch type used for inserting elements. See {@link engine.model.Batch#type}.
  */
 export function setData( document, data, options = {} ) {
-	if ( !( document instanceof Document ) ) {
+	if ( !( document instanceof ModelDocument ) ) {
 		throw new TypeError( 'Document needs to be an instance of engine.model.Document.' );
 	}
 
-	let model, selection;
-	const result = setData._parse( data );
-
-	if ( result.model && result.selection ) {
-		model = result.model;
-		selection = result.selection;
-	} else {
-		model = result;
-	}
-
-	// Save to model.
+	let modelDocumentFragment, selection;
 	const modelRoot = document.getRoot( options.rootName || 'main' );
 
-	document.enqueueChanges( () => {
-		document.batch( options.batchType || 'transparent' )
-			.remove( Range.createIn( modelRoot ) )
-			.insert( Position.createAt( modelRoot, 0 ), model );
+	// Parse data string to model.
+	const parsedResult = setData._parse( data, document.schema, {
+		lastRangeBackward: options.lastRangeBackward,
+		selectionAttributes: options.selectionAttributes
+	} );
 
+	// Retrieve DocumentFragment and Selection from parsed model.
+	if ( parsedResult.model ) {
+		modelDocumentFragment = parsedResult.model;
+		selection = parsedResult.selection;
+	} else {
+		modelDocumentFragment = parsedResult;
+	}
+
+	document.enqueueChanges( () => {
+		// Replace existing model in document by new one.
+		document.batch( options.batchType || 'transparent' )
+			.remove( ModelRange.createIn( modelRoot ) )
+			.insert( ModelPosition.createAt( modelRoot, 0 ), modelDocumentFragment );
+
+		// Clean up previous document selection.
+		document.selection.clearAttributes();
+		document.selection.removeAllRanges();
+
+		// Update document selection if specified.
 		if ( selection ) {
 			const ranges = [];
 
@@ -86,22 +119,23 @@ export function setData( document, data, options = {} ) {
 				// Each range returned from `parse()` method has its root placed in DocumentFragment.
 				// Here we convert each range to have its root re-calculated properly and be placed inside
 				// model document root.
-				if ( range.start.parent instanceof DocumentFragment ) {
-					start = Position.createFromParentAndOffset( modelRoot, range.start.offset );
+				if ( range.start.parent instanceof ModelDocumentFragment ) {
+					start = ModelPosition.createFromParentAndOffset( modelRoot, range.start.offset );
 				} else {
-					start = Position.createFromParentAndOffset( range.start.parent, range.start.offset );
+					start = ModelPosition.createFromParentAndOffset( range.start.parent, range.start.offset );
 				}
 
-				if ( range.end.parent instanceof DocumentFragment ) {
-					end = Position.createFromParentAndOffset( modelRoot, range.end.offset );
+				if ( range.end.parent instanceof ModelDocumentFragment ) {
+					end = ModelPosition.createFromParentAndOffset( modelRoot, range.end.offset );
 				} else {
-					end = Position.createFromParentAndOffset( range.end.parent, range.end.offset );
+					end = ModelPosition.createFromParentAndOffset( range.end.parent, range.end.offset );
 				}
 
-				ranges.push( new Range( start, end ) );
+				ranges.push( new ModelRange( start, end ) );
 			}
 
 			document.selection.setRanges( ranges, selection.isBackward );
+			document.selection.setAttributesTo( selection.getAttributes() );
 		}
 	} );
 }
@@ -112,393 +146,231 @@ setData._parse = parse;
 /**
  * Converts model nodes to HTML-like string representation.
  *
+ * ** Note: ** {@link engine.model.Text text} node contains attributes will be represented as:
+ *        <$text attribute="value">Text data</$text>
+ *
  * @param {engine.model.RootElement|engine.model.Element|engine.model.Text|
  * engine.model.DocumentFragment} node Node to stringify.
- * @param {engine.model.Selection|engine.model.Position|engine.model.Range} [selectionOrPositionOrRange = null ]
+ * @param {engine.model.Selection|engine.model.Position|engine.model.Range} [selectionOrPositionOrRange=null]
  * Selection instance which ranges will be included in returned string data. If Range instance is provided - it will be
  * converted to selection containing this range. If Position instance is provided - it will be converted to selection
  * containing one range collapsed at this position.
  * @returns {String} HTML-like string representing the model.
  */
 export function stringify( node, selectionOrPositionOrRange = null ) {
+	const mapper = new Mapper();
 	let selection, range;
 
-	if ( node instanceof RootElement || node instanceof DocumentFragment ) {
-		range = Range.createIn( node );
+	// Create a range witch wraps passed node.
+	if ( node instanceof RootElement || node instanceof ModelDocumentFragment ) {
+		range = ModelRange.createIn( node );
 	} else {
 		// Node is detached - create new document fragment.
 		if ( !node.parent ) {
-			const fragment = new DocumentFragment( node );
-			range = Range.createIn( fragment );
+			const fragment = new ModelDocumentFragment( node );
+			range = ModelRange.createIn( fragment );
 		} else {
-			range = new Range(
-				Position.createBefore( node ),
-				Position.createAfter( node )
+			range = new ModelRange(
+				ModelPosition.createBefore( node ),
+				ModelPosition.createAfter( node )
 			);
 		}
 	}
 
-	const walker = new TreeWalker( {
-		boundaries: range
-	} );
-
-	if ( selectionOrPositionOrRange instanceof Selection ) {
+	// Get selection from passed selection or position or range if at least one is specified.
+	if ( selectionOrPositionOrRange instanceof ModelSelection ) {
 		selection = selectionOrPositionOrRange;
-	} else if ( selectionOrPositionOrRange instanceof Range ) {
-		selection = new Selection();
+	} else if ( selectionOrPositionOrRange instanceof ModelRange ) {
+		selection = new ModelSelection();
 		selection.addRange( selectionOrPositionOrRange );
-	} else if ( selectionOrPositionOrRange instanceof Position ) {
-		selection = new Selection();
-		selection.addRange( new Range( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
+	} else if ( selectionOrPositionOrRange instanceof ModelPosition ) {
+		selection = new ModelSelection();
+		selection.addRange( new ModelRange( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
 	}
 
-	let ret = '';
-	let lastPosition = Position.createFromPosition( range.start );
-	const withSelection = !!selection;
+	// Setup model to view converter.
+	const viewDocumentFragment = new ViewDocumentFragment();
+	const viewSelection = new ViewSelection();
+	const modelToView = new ModelConversionDispatcher( { mapper, viewSelection } );
 
-	for ( let value of walker ) {
-		if ( withSelection ) {
-			ret += writeSelection( value.previousPosition, selection );
+	// Bind root elements.
+	mapper.bindElements( node.root, viewDocumentFragment );
+
+	modelToView.on( 'insert:$text', insertText(), 'lowest' );
+	modelToView.on( 'addAttribute', wrap( ( value, data ) => {
+		if ( data.item instanceof ModelTextProxy ) {
+			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: value } );
 		}
+	} ), 'lowest' );
+	modelToView.on( 'insert', insertElement( data => new ViewElement( data.item.name, data.item.getAttributes() )  ), 'lowest' );
+	modelToView.on( 'selection', convertRangeSelection(), 'lowest' );
+	modelToView.on( 'selection', convertCollapsedSelection(), 'lowest' );
+	modelToView.on( 'selectionAttribute', convertSelectionAttribute( ( value, data ) => {
+		return new ViewAttributeElement( 'model-text-with-attributes', { [ data.key ]: value } );
+	} ), 'lowest' );
 
-		ret += writeItem( value, selection, { selection: withSelection } );
+	// Convert model to view.
+	modelToView.convertInsertion( range );
 
-		lastPosition = value.nextPosition;
+	// Convert model selection to view selection.
+	if ( selection ) {
+		modelToView.convertSelection( selection );
 	}
 
-	if ( withSelection ) {
-		ret += writeSelection( lastPosition, selection );
-	}
+	// Parse view to data string.
+	let data = viewStringify( viewDocumentFragment, viewSelection, { sameSelectionCharacters: true } );
 
-	return ret;
+	// Replace valid XML `model-text-with-attributes` element name to `$text`.
+	return data.replace( new RegExp( 'model-text-with-attributes', 'g' ), '$text' );
 }
 
 /**
  * Parses HTML-like string and returns model {@link engine.model.RootElement rootElement}.
  *
+ * ** Note: ** To create {@link engine.model.Text text} node witch containing attributes use:
+ *        <$text attribute="value">Text data</$text>
+ *
  * @param {String} data HTML-like string to be parsed.
- * @param {Object} options
+ * @param {engine.model.schema} schema Schema instance uses by converters for element validation.
+ * @param {Object} options Additional configuration.
+ * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to the selection.
+ * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward.
  * @returns {engine.model.Element|engine.model.Text|engine.model.DocumentFragment|Object} Returns parsed model node or
  * object with two fields `model` and `selection` when selection ranges were included in data to parse.
  */
-export function parse( data ) {
-	let root, selection;
-	let withSelection = false;
+export function parse( data, schema, options = {} ) {
+	const mapper = new Mapper();
 
-	root = new DocumentFragment();
-	selection = new Selection();
+	// Replace not accepted by XML `$text` tag name by valid one `model-text-with-attributes`.
+	data = data.replace( new RegExp( '\\$text', 'g' ), 'model-text-with-attributes' );
 
-	const path = [];
-	let selectionStart, selectionEnd, selectionAttributes, textAttributes;
+	// Parse data to view using view utils.
+	const parsedResult = viewParse( data, {
+		sameSelectionCharacters: true,
+		lastRangeBackward: !!options.lastRangeBackward
+	} );
 
-	const handlers = {
-		text( token ) {
-			writer.insert( Position.createFromParentAndOffset( root, root.maxOffset ), new Text( token.data, textAttributes ) );
-		},
+	// Retrieve DocumentFragment and Selection from parsed view.
+	let viewDocumentFragment, viewSelection;
 
-		textStart( token ) {
-			textAttributes = token.attributes;
-			path.push( '$text' );
-		},
-
-		textEnd() {
-			if ( path.pop() != '$text' ) {
-				throw new Error( 'Parse error - unexpected closing tag.' );
-			}
-
-			textAttributes = null;
-		},
-
-		openingTag( token ) {
-			let el = new Element( token.name, token.attributes );
-			writer.insert( Position.createFromParentAndOffset( root, root.maxOffset ), el );
-
-			root = el;
-
-			path.push( token.name );
-		},
-
-		closingTag( token ) {
-			if ( path.pop() != token.name ) {
-				throw new Error( 'Parse error - unexpected closing tag.' );
-			}
-
-			root = root.parent;
-		},
-
-		collapsedSelection( token ) {
-			withSelection = true;
-			selection.collapse( root, 'end' );
-			selection.setAttributesTo( token.attributes );
-		},
-
-		selectionStart( token ) {
-			selectionStart = Position.createFromParentAndOffset( root, root.maxOffset );
-			selectionAttributes = token.attributes;
-		},
-
-		selectionEnd() {
-			if ( !selectionStart ) {
-				throw new Error( 'Parse error - missing selection start.' );
-			}
-
-			withSelection = true;
-			selectionEnd = Position.createFromParentAndOffset( root, root.maxOffset );
-
-			selection.setRanges(
-				[ new Range( selectionStart, selectionEnd ) ],
-				selectionAttributes.backward
-			);
-
-			delete selectionAttributes.backward;
-
-			selection.setAttributesTo( selectionAttributes );
-		}
-	};
-
-	for ( let token of tokenize( data ) ) {
-		handlers[ token.type ]( token );
+	if ( parsedResult.view && parsedResult.selection ) {
+		viewDocumentFragment = parsedResult.view;
+		viewSelection = parsedResult.selection;
+	} else {
+		viewDocumentFragment = parsedResult;
 	}
 
-	if ( path.length ) {
-		throw new Error( 'Parse error - missing closing tags: ' + path.join( ', ' ) + '.' );
-	}
+	// Setup view to model converter.
+	const viewToModel = new ViewConversionDispatcher( { schema, mapper } );
 
-	if ( selectionStart && !selectionEnd ) {
-		throw new Error( 'Parse error - missing selection end.' );
-	}
+	viewToModel.on( 'documentFragment', convertToModelFragment(), 'lowest' );
+	viewToModel.on( `element:model-text-with-attributes`, convertToModelText( true ), 'lowest' );
+	viewToModel.on( 'element', convertToModelElement(), 'lowest' );
+	viewToModel.on( 'text', convertToModelText(), 'lowest' );
+
+	// Convert view to model.
+	let model = viewToModel.convert( viewDocumentFragment.root, { context: [ '$root' ] } );
 
 	// If root DocumentFragment contains only one element - return that element.
-	if ( root instanceof DocumentFragment && root.childCount == 1 ) {
-		root = root.getChild( 0 );
+	if ( model instanceof ModelDocumentFragment && model.childCount == 1 ) {
+		model = model.getChild( 0 );
 	}
 
-	if ( withSelection ) {
-		return {
-			model: root,
-			selection: selection
+	// Convert view selection to model selection.
+	let selection;
+
+	if ( viewSelection ) {
+		const ranges = [];
+
+		// Convert ranges.
+		for ( let viewRange of viewSelection.getRanges() ) {
+			ranges.push( ( mapper.toModelRange( viewRange ) ) );
+		}
+
+		// Create new selection.
+		selection = new ModelSelection();
+		selection.setRanges( ranges, viewSelection.isBackward );
+
+		// Set attributes to selection if specified.
+		if ( options.selectionAttributes ) {
+			selection.setAttributesTo( options.selectionAttributes );
+		}
+	}
+
+	// Return model end selection when selection was specified.
+	if ( selection ) {
+		return { model, selection };
+	}
+
+	// Otherwise return model only.
+	return model;
+}
+
+// -- converters view -> model -----------------------------------------------------
+
+function convertToModelFragment() {
+	return ( evt, data, consumable, conversionApi ) => {
+		// Second argument in `consumable.test` is discarded for ViewDocumentFragment but is needed for ViewElement.
+		if ( !data.output && consumable.test( data.input, { name: true } ) ) {
+			const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
+
+			data.output = new ModelDocumentFragment( modelWriter.normalizeNodes( convertedChildren ) );
+			conversionApi.mapper.bindElements( data.output, data.input );
+		}
+
+		evt.stop();
+	};
+}
+
+function convertToModelElement() {
+	return ( evt, data, consumable, conversionApi ) => {
+		const schemaQuery = {
+			name: data.input.name,
+			inside: data.context
 		};
-	}
 
-	return root;
-}
-
-// -- getData helpers ---------------------------------------------------------
-
-function writeItem( walkerValue, selection, options ) {
-	const type = walkerValue.type;
-	const item = walkerValue.item;
-
-	if ( type == 'elementStart' ) {
-		let attrs = writeAttributes( item.getAttributes() );
-
-		if ( attrs ) {
-			return `<${ item.name } ${ attrs }>`;
+		if ( !conversionApi.schema.check( schemaQuery ) ) {
+			throw new Error( `Element '${ schemaQuery.name }' not allowed in context.` );
 		}
 
-		return `<${ item.name }>`;
-	}
+		if ( consumable.consume( data.input, { name: true } ) ) {
+			data.output = new ModelElement( data.input.name, data.input.getAttributes() );
+			conversionApi.mapper.bindElements( data.output, data.input );
 
-	if ( type == 'elementEnd' ) {
-		return `</${ item.name }>`;
-	}
-
-	return writeText( walkerValue, selection, options );
-}
-
-function writeText( walkerValue, selection, options ) {
-	const item = walkerValue.item;
-	const attrs = writeAttributes( item.getAttributes() );
-	let text = Array.from( item.data );
-
-	if ( options.selection ) {
-		const startIndex = walkerValue.previousPosition.offset + 1;
-		const endIndex = walkerValue.nextPosition.offset - 1;
-		let index = startIndex;
-
-		while ( index <= endIndex ) {
-			// Add the selection marker without changing any indexes, so if second marker must be added
-			// in the same loop it does not blow up.
-			text[ index - startIndex ] +=
-				writeSelection( Position.createFromParentAndOffset( item.parent, index ), selection );
-
-			index++;
-		}
-	}
-
-	text = text.join( '' );
-
-	if ( attrs ) {
-		return `<$text ${ attrs }>${ text }</$text>`;
-	}
-
-	return text;
-}
-
-function writeAttributes( attrs ) {
-	attrs = Array.from( attrs );
-
-	return attrs.map( attr => attr[ 0 ] + '=' + JSON.stringify( attr[ 1 ] ) ).sort().join( ' ' );
-}
-
-function writeSelection( currentPosition, selection ) {
-	// TODO: This function obviously handles only the first range.
-	const range = selection.getFirstRange();
-
-	// Handle end of the selection.
-	if ( !selection.isCollapsed && range.end.compareWith( currentPosition ) == 'same' ) {
-		return '</selection>';
-	}
-
-	// Handle no match.
-	if ( range.start.compareWith( currentPosition ) != 'same' ) {
-		return '';
-	}
-
-	// Handle beginning of the selection.
-
-	let ret = '<selection';
-	const attrs = writeAttributes( selection.getAttributes() );
-
-	// TODO: Once we'll support multiple ranges this will need to check which range it is.
-	if ( selection.isBackward ) {
-		ret += ' backward';
-	}
-
-	if ( attrs ) {
-		ret += ' ' + attrs;
-	}
-
-	ret += ( selection.isCollapsed ? ' />' : '>' );
-
-	return ret;
-}
-
-// -- setData helpers ---------------------------------------------------------
-
-const patterns = {
-	selection: /^<(\/?selection)( [^>]*)?>/,
-	tag: /^<([^>]+)>/,
-	text: /^[^<]+/
-};
-
-const handlers = {
-	selection( match ) {
-		const tagName = match[ 1 ];
-		const tagExtension = match[ 2 ] || '';
-
-		if ( tagName[ 0 ] == '/' ) {
-			return {
-				type: 'selectionEnd'
-			};
+			data.context.push( data.output );
+			data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
+			data.context.pop();
 		}
 
-		if ( tagExtension.endsWith( ' /' ) ) {
-			return {
-				type: 'collapsedSelection',
-				attributes: parseAttributes( tagExtension.slice( 1, -2 ) )
-			};
-		}
+		evt.stop();
+	};
+}
 
-		return {
-			type: 'selectionStart',
-			attributes: parseAttributes( tagExtension.slice( 1 ) )
+function convertToModelText( withAttributes = false ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		const schemaQuery = {
+			name: '$text',
+			inside: data.context
 		};
-	},
 
-	tag( match ) {
-		const tagContents = match[ 1 ].split( /\s+/ );
-		const tagName = tagContents.shift();
-		const attrs = tagContents.join( ' ' );
-
-		if ( tagName == '/$text' ) {
-			return {
-				type: 'textEnd'
-			};
+		if ( !conversionApi.schema.check( schemaQuery ) ) {
+			throw new Error( `Element '${ schemaQuery.name }' not allowed in context.` );
 		}
 
-		if ( tagName == '$text' ) {
-			return {
-				type: 'textStart',
-				attributes: parseAttributes( attrs )
-			};
+		if ( conversionApi.schema.check( schemaQuery ) ) {
+			if ( consumable.consume( data.input, { name: true } ) ) {
+				let node;
+
+				if ( withAttributes ) {
+					node = new ModelText( data.input.getChild( 0 ).data, data.input.getAttributes() );
+				} else {
+					node = new ModelText( data.input.data );
+				}
+
+				data.output = node;
+			}
 		}
 
-		if ( tagName[ 0 ] == '/' ) {
-			return {
-				type: 'closingTag',
-				name: tagName.slice( 1 )
-			};
-		}
-
-		return {
-			type: 'openingTag',
-			name: tagName,
-			attributes: parseAttributes( attrs )
-		};
-	},
-
-	text( match ) {
-		return {
-			type: 'text',
-			data: match[ 0 ]
-		};
-	}
-};
-
-function *tokenize( data ) {
-	while ( data ) {
-		const consumed = consumeNextToken( data );
-
-		data = consumed.data;
-		yield consumed.token;
-	}
-}
-
-function consumeNextToken( data ) {
-	let match;
-
-	for ( let patternName in patterns ) {
-		match = data.match( patterns[ patternName ] );
-
-		if ( match ) {
-			data = data.slice( match[ 0 ].length );
-
-			return {
-				token: handlers[ patternName ]( match ),
-				data
-			};
-		}
-	}
-
-	throw new Error( 'Parse error - unexpected token: ' + data + '.' );
-}
-
-function parseAttributes( attrsString ) {
-	attrsString = attrsString.trim();
-
-	if ( !attrsString  ) {
-		return {};
-	}
-
-	const pattern = /(?:backward|(\w+)=("[^"]+"|[^\s]+))\s*/;
-	const attrs = {};
-
-	while ( attrsString ) {
-		let match = attrsString.match( pattern );
-
-		if ( !match ) {
-			throw new Error( 'Parse error - unexpected token: ' + attrsString + '.' );
-		}
-
-		if ( match[ 0 ].trim() == 'backward' ) {
-			attrs.backward = true;
-		} else {
-			attrs[ match[ 1 ] ] = JSON.parse( match[ 2 ] );
-		}
-
-		attrsString = attrsString.slice( match[ 0 ].length );
-	}
-
-	return attrs;
+		evt.stop();
+	};
 }

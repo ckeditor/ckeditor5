@@ -5,7 +5,7 @@
 
 import Document from '/ckeditor5/engine/view/document.js';
 import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+import XmlDataProcessor from '/ckeditor5/engine/dataprocessor/xmldataprocessor.js';
 import ViewElement from '/ckeditor5/engine/view/element.js';
 import Selection from '/ckeditor5/engine/view/selection.js';
 import Range from '/ckeditor5/engine/view/range.js';
@@ -31,7 +31,7 @@ const TEXT_RANGE_END_TOKEN = '}';
  * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed (`<container:p>`
  * instead of `<p>` and `<attribute:b>` instead of `<b>`).
  * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed
- * (`<span:12>`, `<b:10>`).
+ * (`<span view-priority="12">`, `<b view-priority="10">`).
  * @returns {String} The stringified data.
  */
 export function getData( document, options = {} ) {
@@ -125,6 +125,10 @@ setData._parse = parse;
  *
  *		stringify( p, selection ); // '<p><b>f{ooba}r</b></p>'
  *
+ * ** Note: **
+ * It is possible to unify selection markers to `[` and `]` for both (inside and outside text)
+ * by setting `sameSelectionCharacters=true` option. It is mainly used when view stringify option is used by model utils.
+ *
  * Multiple ranges are supported:
  *
  *		const text = new Text( 'foobar' );
@@ -161,7 +165,7 @@ setData._parse = parse;
  *
  *		const attribute = new AttributeElement( 'b' );
  *		attribute.priority = 20;
- *		getData( attribute, null, { showPriority: true } ); // <b:20></b:20>
+ *		getData( attribute, null, { showPriority: true } ); // <b view-priority="20"></b>
  *
  * @param {engine.view.Text|engine.view.Element|engine.view.DocumentFragment} node Node to stringify.
  * @param {engine.view.Selection|engine.view.Position|engine.view.Range} [selectionOrPositionOrRange = null ]
@@ -172,9 +176,11 @@ setData._parse = parse;
  * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed (`<container:p>`
  * instead of `<p>` and `<attribute:b>` instead of `<b>`).
  * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed
- * (`<span:12>`, `<b:10>`).
+ * (`<span view-priority="12">`, `<b view-priority="10">`).
  * @param {Boolean} [options.ignoreRoot=false] When set to `true` root's element opening and closing will not be printed.
  * Mainly used by `getData` function to ignore {@link engine.view.Document Document's} root element.
+ * @param {Boolean} [options.sameSelectionCharacters=false] When set to `true` then selection inside text will be marked as `{` and `}`
+ * and selection outside text as `[` and `]`. When set to `false` then both will be marked as `[` and `]` only.
  * @returns {String} HTML-like string representing the view.
  */
 export function stringify( node, selectionOrPositionOrRange = null, options = {} ) {
@@ -219,6 +225,10 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  *
  *		const { root, selection } = parse( '<p>[<b>foobar</b>]</p>' );
  *
+ * ** Note: **
+ * It is possible to unify selection markers to `[` and `]` for both (inside and outside text)
+ * by setting `sameSelectionCharacters=true` option. It is mainly used when view parse option is used by model utils.
+ *
  * Sometimes there is a need for defining order of ranges inside created selection. This can be achieved by providing
  * ranges order array as additional parameter:
  *
@@ -255,13 +265,19 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  * When set to `null` root element will be created automatically. If set to
  * {@link engine.view.Element Element} or {@link engine.view.DocumentFragment DocumentFragment} - this node
  * will be used as root for all parsed nodes.
+ * @param {Boolean} [options.sameSelectionCharacters=false] When set to `false` then selection inside text should be marked using
+ * `{` and `}` and selection outside text using `[` and `]`. When set to `true` then both should be marked with `[` and `]` only.
  * @returns {engine.view.Text|engine.view.Element|engine.view.DocumentFragment|Object} Returns parsed view node
  * or object with two fields `view` and `selection` when selection ranges were included in data to parse.
  */
 export function parse( data, options = {} ) {
 	options.order = options.order || [];
-	const rangeParser = new RangeParser();
-	const processor = new HtmlDataProcessor();
+	const rangeParser = new RangeParser( {
+		sameSelectionCharacters: options.sameSelectionCharacters
+	} );
+	const processor = new XmlDataProcessor( {
+		namespaces: [ 'attribute', 'container' ]
+	} );
 
 	// Convert data to view.
 	let view = processor.toView( data );
@@ -314,6 +330,18 @@ export function parse( data, options = {} ) {
  * @private
  */
 class RangeParser {
+
+	/**
+	 * Create RangeParser instance.
+	 *
+	 * @param {Object} options RangeParser configuration.
+	 * @param {Boolean} [options.sameSelectionCharacters=false] When set to `true` it means that selection inside text is marked as
+	 * `{` and `}` and selection outside text as `[` and `]`. When set to `false` then both are marked as `[` and `]`.
+	 */
+	constructor( options ) {
+		this.sameSelectionCharacters = !!options.sameSelectionCharacters;
+	}
+
 	/**
 	 * Parses the view, and returns ranges represented inside {@link engine.view.Text Text nodes}.
 	 * Method will remove all occurrences of `{`, `}`, `[` and `]` from found text nodes. If text node is empty after
@@ -337,7 +365,7 @@ class RangeParser {
 		if ( order.length ) {
 			if ( order.length != ranges.length ) {
 				throw new Error(
-					`Parse error - there are ${ ranges.length} ranges found, but ranges order array contains ${ order.length } elements.`
+					`Parse error - there are ${ ranges.length } ranges found, but ranges order array contains ${ order.length } elements.`
 				);
 			}
 
@@ -383,11 +411,13 @@ class RangeParser {
 
 				brackets.push( {
 					bracket: bracket,
-					textOffset: index - offset
+					textOffset: index - offset,
+					outer: index === 0 || index == node._data.length - 1
 				} );
 
 				offset++;
 			}
+
 			text = text.replace( regexp, '' );
 			node.data = text;
 			const index = node.index;
@@ -401,7 +431,10 @@ class RangeParser {
 			for ( let item of brackets ) {
 				// Non-empty text node.
 				if ( text ) {
-					if ( item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) {
+					if (
+						( this.sameSelectionCharacters && !item.outer ) ||
+						( !this.sameSelectionCharacters && ( item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) )
+					) {
 						// Store information about text range delimiter.
 						this._positions.push( {
 							bracket: item.bracket,
@@ -409,7 +442,7 @@ class RangeParser {
 						} );
 					} else {
 						// Check if element range delimiter is not placed inside text node.
-						if ( item.textOffset !== 0 && item.textOffset !== text.length ) {
+						if ( !this.sameSelectionCharacters && item.textOffset !== 0 && item.textOffset !== text.length ) {
 							throw new Error( `Parse error - range delimiter '${ item.bracket }' is placed inside text node.` );
 						}
 
@@ -423,7 +456,7 @@ class RangeParser {
 						} );
 					}
 				} else {
-					if ( item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) {
+					if ( !this.sameSelectionCharacters && item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) {
 						throw new Error( `Parse error - text range delimiter '${ item.bracket }' is placed inside empty text node. ` );
 					}
 
@@ -520,6 +553,8 @@ class ViewStringify {
 	 * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed.
 	 * @param {Boolean} [options.ignoreRoot=false] When set to `true` root's element opening and closing tag will not
 	 * be outputted.
+	 * @param {Boolean} [options.sameSelectionCharacters=false] When set to `true` it means that selection inside text is marked as
+	 * `{` and `}` and selection outside text as `[` and `]`. When set to `false` then both are marked as `[` and `]`.
 	 */
 	constructor( root, selection = null, options = {} ) {
 		this.root = root;
@@ -533,6 +568,7 @@ class ViewStringify {
 		this.showType = !!options.showType;
 		this.showPriority = !!options.showPriority;
 		this.ignoreRoot = !!options.ignoreRoot;
+		this.sameSelectionCharacters = !!options.sameSelectionCharacters;
 	}
 
 	/**
@@ -626,6 +662,15 @@ class ViewStringify {
 	_stringifyTextRanges( node ) {
 		const length = node.data.length;
 		let result = node.data.split( '' );
+		let rangeStartToken, rangeEndToken;
+
+		if ( this.sameSelectionCharacters ) {
+			rangeStartToken = ELEMENT_RANGE_START_TOKEN;
+			rangeEndToken = ELEMENT_RANGE_END_TOKEN;
+		} else {
+			rangeStartToken = TEXT_RANGE_START_TOKEN;
+			rangeEndToken = TEXT_RANGE_END_TOKEN;
+		}
 
 		// Add one more element for ranges ending after last character in text.
 		result[ length ] = '';
@@ -646,14 +691,14 @@ class ViewStringify {
 
 			if ( start.parent == node && start.offset >= 0 && start.offset <= length ) {
 				if ( range.isCollapsed ) {
-					result[ end.offset ].collapsed += TEXT_RANGE_START_TOKEN + TEXT_RANGE_END_TOKEN;
+					result[ end.offset ].collapsed += rangeStartToken + rangeEndToken;
 				} else {
-					result[ start.offset ].start += TEXT_RANGE_START_TOKEN;
+					result[ start.offset ].start += rangeStartToken;
 				}
 			}
 
 			if ( end.parent == node && end.offset >= 0 && end.offset <= length && !range.isCollapsed  ) {
-				result[ end.offset ].end += TEXT_RANGE_END_TOKEN;
+				result[ end.offset ].end += rangeEndToken;
 			}
 		}
 
@@ -663,7 +708,7 @@ class ViewStringify {
 	/**
 	 * Converts passed {@link engine.view.Element Element} to opening tag.
 	 * Depending on current configuration opening tag can be simple (`<a>`), contain type prefix (`<container:p>` or
-	 * `<attribute:a>`), contain priority information ( `<attribute:a priority=20>` ). Element's attributes also
+	 * `<attribute:a>`), contain priority information ( `<attribute:a view-priority="20">` ). Element's attributes also
 	 * will be included (`<a href="http://ckeditor.com" name="foobar">`).
 	 *
 	 * @private
@@ -672,17 +717,18 @@ class ViewStringify {
 	 */
 	_stringifyElementOpen( element ) {
 		const priority = this._stringifyElementPriority( element );
+
 		const type = this._stringifyElementType( element );
-		const name = [ type, element.name, priority ].filter( i=> i !== '' ).join( ':' );
+		const name = [ type, element.name ].filter( i=> i !== '' ).join( ':' );
 		const attributes = this._stringifyElementAttributes( element );
-		const parts = [ name, attributes ];
+		const parts = [ name, priority, attributes ];
 
 		return `<${ parts.filter( i => i !== '' ).join( ' ' ) }>`;
 	}
 
 	/**
 	 * Converts passed {@link engine.view.Element Element} to closing tag.
-	 * Depending on current configuration opening tag can be simple (`</a>`) or contain type prefix (`</container:p>` or
+	 * Depending on current configuration closing tag can be simple (`</a>`) or contain type prefix (`</container:p>` or
 	 * `</attribute:a>`).
 	 *
 	 * @private
@@ -690,9 +736,8 @@ class ViewStringify {
 	 * @returns {String}
 	 */
 	_stringifyElementClose( element ) {
-		const priority = this._stringifyElementPriority( element );
 		const type = this._stringifyElementType( element );
-		const name = [ type, element.name, priority ].filter( i=> i !== '' ).join( ':' );
+		const name = [ type, element.name ].filter( i=> i !== '' ).join( ':' );
 
 		return `</${ name }>`;
 	}
@@ -733,7 +778,7 @@ class ViewStringify {
 	 */
 	_stringifyElementPriority( element ) {
 		if ( this.showPriority && element instanceof AttributeElement ) {
-			return element.priority;
+			return `view-priority="${ element.priority }"`;
 		}
 
 		return '';
@@ -786,19 +831,19 @@ function _convertViewElements( rootNode ) {
 
 // Converts {@link engine.view.Element Element} to {@link engine.view.AttributeElement AttributeElement} or
 // {@link engine.view.ContainerElement ContainerElement}.
-// If element's name is in format `attribute:b:1` or `b:11` it will be converted to
+// If element's name is in format `attribute:b` with `view-priority="11"` attribute it will be converted to
 // {@link engine.view.AttributeElement AttributeElement} with priority 11.
 // If element's name is in format `container:p` - it will be converted to
 // {@link engine.view.ContainerElement ContainerElement}.
-// If element's name will not contain any additional information - {@link engine.view.Element view Element}will be
+// If element's name will not contain any additional information - {@link engine.view.Element view Element} will be
 // returned.
 //
 // @param {engine.view.Element} viewElement View element to convert.
 // @returns {engine.view.Element|engine.view.AttributeElement|engine.view.ContainerElement} Tree view
 // element converted according to it's name.
 function _convertElement( viewElement ) {
-	const info = _convertElementName( viewElement );
 	let newElement;
+	const info = _convertElementNameAndPriority( viewElement );
 
 	if ( info.type == 'attribute' ) {
 		newElement = new AttributeElement( info.name );
@@ -820,24 +865,26 @@ function _convertElement( viewElement ) {
 	return newElement;
 }
 
-// Converts {@link engine.view.Element#name Element's name} information needed for creating
+// Converts `view-priority` attribute and {@link engine.view.Element#name Element's name} information needed for creating
 // {@link engine.view.AttributeElement AttributeElement} or {@link engine.view.ContainerElement ContainerElement} instance.
-// Name can be provided in couple formats: as a simple element's name (`div`), as a type and name (`container:div`,
-// `attribute:span`), as a name and priority (`span:12`) and as a type, priority, name trio (`attribute:span:12`);
+// Name can be provided in two formats: as a simple element's name (`div`), or as a type and name (`container:div`,
+// `attribute:span`);
 //
 // @param {engine.view.Element} element Element which name should be converted.
 // @returns {Object} info Object with parsed information.
 // @returns {String} info.name Parsed name of the element.
 // @returns {String|null} info.type Parsed type of the element, can be `attribute` or `container`.
 // returns {Number|null} info.priority Parsed priority of the element.
-function _convertElementName( viewElement ) {
+function _convertElementNameAndPriority( viewElement ) {
 	const parts = viewElement.name.split( ':' );
+	const priority = _convertPriority( viewElement.getAttribute( 'view-priority' ) );
+	viewElement.removeAttribute( 'view-priority' );
 
 	if ( parts.length == 1 ) {
 		return {
 			name: parts[ 0 ],
-			type: null,
-			priority: null
+			type: priority !== null ? 'attribute' : null,
+			priority: priority
 		};
 	}
 
@@ -849,36 +896,11 @@ function _convertElementName( viewElement ) {
 			return {
 				name: parts[ 1 ],
 				type: type,
-				priority: null
-			};
-		}
-
-		// Check if name and priority: span:10.
-		const priority = _convertPriority( parts[ 1 ] );
-
-		if ( priority !== null ) {
-			return {
-				name: parts[ 0 ],
-				type: 'attribute',
 				priority: priority
 			};
 		}
 
 		throw new Error( `Parse error - cannot parse element's name: ${ viewElement.name }.` );
-	}
-
-	// Check if name is in format type:name:priority.
-	if ( parts.length === 3 ) {
-		const type = _convertType( parts[ 0 ] );
-		const priority = _convertPriority( parts[ 2 ] );
-
-		if ( type && priority !== null ) {
-			return {
-				name: parts[ 1 ],
-				type: type,
-				priority: priority
-			};
-		}
 	}
 
 	throw new Error( `Parse error - cannot parse element's tag name: ${ viewElement.name }.` );

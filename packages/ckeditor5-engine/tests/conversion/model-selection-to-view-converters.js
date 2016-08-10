@@ -42,6 +42,8 @@ beforeEach( () => {
 	modelRoot = modelDoc.createRoot();
 	modelSelection = modelDoc.selection;
 
+	modelDoc.schema.allow( { name: '$text', inside: '$root' } );
+
 	viewDoc = new ViewDocument();
 	viewRoot = viewDoc.createRoot( 'div' );
 	viewSelection = viewDoc.selection;
@@ -87,7 +89,7 @@ describe( 'default converters', () => {
 		it( 'in same container, over attribute', () => {
 			test(
 				[ 1, 5 ],
-				'fo<$text bold=true>ob</$text>ar',
+				'fo<$text bold="true">ob</$text>ar',
 				'f{o<strong>ob</strong>a}r'
 			);
 		} );
@@ -95,7 +97,7 @@ describe( 'default converters', () => {
 		it( 'in same container, next to attribute', () => {
 			test(
 				[ 1, 2 ],
-				'fo<$text bold=true>ob</$text>ar',
+				'fo<$text bold="true">ob</$text>ar',
 				'f{o}<strong>ob</strong>ar'
 			);
 		} );
@@ -103,7 +105,7 @@ describe( 'default converters', () => {
 		it( 'in same attribute', () => {
 			test(
 				[ 2, 4 ],
-				'f<$text bold=true>ooba</$text>r',
+				'f<$text bold="true">ooba</$text>r',
 				'f<strong>o{ob}a</strong>r'
 			);
 		} );
@@ -111,7 +113,7 @@ describe( 'default converters', () => {
 		it( 'in same attribute, selection same as attribute', () => {
 			test(
 				[ 2, 4 ],
-				'fo<$text bold=true>ob</$text>ar',
+				'fo<$text bold="true">ob</$text>ar',
 				'fo{<strong>ob</strong>}ar'
 			);
 		} );
@@ -119,7 +121,7 @@ describe( 'default converters', () => {
 		it( 'starts in text node, ends in attribute #1', () => {
 			test(
 				[ 1, 3 ],
-				'fo<$text bold=true>ob</$text>ar',
+				'fo<$text bold="true">ob</$text>ar',
 				'f{o<strong>o}b</strong>ar'
 			);
 		} );
@@ -127,7 +129,7 @@ describe( 'default converters', () => {
 		it( 'starts in text node, ends in attribute #2', () => {
 			test(
 				[ 1, 4 ],
-				'fo<$text bold=true>ob</$text>ar',
+				'fo<$text bold="true">ob</$text>ar',
 				'f{o<strong>ob</strong>}ar'
 			);
 		} );
@@ -135,7 +137,7 @@ describe( 'default converters', () => {
 		it( 'starts in attribute, ends in text node', () => {
 			test(
 				[ 3, 5 ],
-				'fo<$text bold=true>ob</$text>ar',
+				'fo<$text bold="true">ob</$text>ar',
 				'fo<strong>o{b</strong>a}r'
 			);
 		} );
@@ -178,7 +180,7 @@ describe( 'default converters', () => {
 		it( 'in attribute', () => {
 			test(
 				[ 3, 3 ],
-				'f<$text bold=true>ooba</$text>r',
+				'f<$text bold="true">ooba</$text>r',
 				'f<strong>oo{}ba</strong>r'
 			);
 		} );
@@ -195,7 +197,7 @@ describe( 'default converters', () => {
 		it( 'in attribute with extra attributes', () => {
 			test(
 				[ 3, 3 ],
-				'f<$text bold=true>ooba</$text>r',
+				'f<$text bold="true">ooba</$text>r',
 				'f<strong>oo</strong><em><strong>[]</strong></em><strong>ba</strong>r',
 				{ italic: true }
 			);
@@ -215,7 +217,7 @@ describe( 'default converters', () => {
 			// Similar test case as above
 			test(
 				[ 3, 3 ],
-				'f<$text bold=true>ooba</$text>r',
+				'f<$text bold="true">ooba</$text>r',
 				'f<strong>ooba</strong>r' // No selection in view.
 			);
 		} );
@@ -311,16 +313,16 @@ describe( 'clean-up', () => {
 
 describe( 'using element creator for attributes conversion', () => {
 	beforeEach( () => {
-		function styleElementCreator( styleValue ) {
-			if ( styleValue == 'important' ) {
+		function themeElementCreator( themeValue ) {
+			if ( themeValue == 'important' ) {
 				return new ViewAttributeElement( 'strong', { style: 'text-transform:uppercase;' } );
-			} else if ( styleValue == 'gold' ) {
+			} else if ( themeValue == 'gold' ) {
 				return new ViewAttributeElement( 'span', { style: 'color:yellow;' } );
 			}
 		}
 
-		dispatcher.on( 'selectionAttribute:style', convertSelectionAttribute( styleElementCreator ) );
-		dispatcher.on( 'addAttribute:style', wrap( styleElementCreator ) );
+		dispatcher.on( 'selectionAttribute:theme', convertSelectionAttribute( themeElementCreator ) );
+		dispatcher.on( 'addAttribute:theme', wrap( themeElementCreator ) );
 
 		dispatcher.on( 'selectionAttribute:italic', convertSelectionAttribute( new ViewAttributeElement( 'em' ) ) );
 	} );
@@ -329,7 +331,7 @@ describe( 'using element creator for attributes conversion', () => {
 		it( 'in same container, over attribute', () => {
 			test(
 				[ 1, 5 ],
-				'fo<$text style="gold">ob</$text>ar',
+				'fo<$text theme="gold">ob</$text>ar',
 				'f{o<span style="color:yellow;">ob</span>a}r'
 			);
 		} );
@@ -337,7 +339,7 @@ describe( 'using element creator for attributes conversion', () => {
 		it( 'in same attribute', () => {
 			test(
 				[ 2, 4 ],
-				'f<$text style="gold">ooba</$text>r',
+				'f<$text theme="gold">ooba</$text>r',
 				'f<span style="color:yellow;">o{ob}a</span>r'
 			);
 		} );
@@ -345,7 +347,7 @@ describe( 'using element creator for attributes conversion', () => {
 		it( 'in same attribute, selection same as attribute', () => {
 			test(
 				[ 2, 4 ],
-				'fo<$text style="important">ob</$text>ar',
+				'fo<$text theme="important">ob</$text>ar',
 				'fo{<strong style="text-transform:uppercase;">ob</strong>}ar'
 			);
 		} );
@@ -353,7 +355,7 @@ describe( 'using element creator for attributes conversion', () => {
 		it( 'starts in attribute, ends in text node', () => {
 			test(
 				[ 3, 5 ],
-				'fo<$text style="important">ob</$text>ar',
+				'fo<$text theme="important">ob</$text>ar',
 				'fo<strong style="text-transform:uppercase;">o{b</strong>a}r'
 			);
 		} );
@@ -363,24 +365,24 @@ describe( 'using element creator for attributes conversion', () => {
 		it( 'in attribute', () => {
 			test(
 				[ 3, 3 ],
-				'f<$text style="gold">ooba</$text>r',
+				'f<$text theme="gold">ooba</$text>r',
 				'f<span style="color:yellow;">oo{}ba</span>r'
 			);
 		} );
 
-		it( 'in container with style attribute', () => {
+		it( 'in container with theme attribute', () => {
 			test(
 				[ 1, 1 ],
 				'foobar',
 				'f<strong style="text-transform:uppercase;">[]</strong>oobar',
-				{ style: 'important' }
+				{ theme: 'important' }
 			);
 		} );
 
-		it( 'in style attribute with extra attributes #1', () => {
+		it( 'in theme attribute with extra attributes #1', () => {
 			test(
 				[ 3, 3 ],
-				'f<$text style="gold">ooba</$text>r',
+				'f<$text theme="gold">ooba</$text>r',
 				'f<span style="color:yellow;">oo</span>' +
 				'<em><span style="color:yellow;">[]</span></em>' +
 				'<span style="color:yellow;">ba</span>r',
@@ -388,18 +390,18 @@ describe( 'using element creator for attributes conversion', () => {
 			);
 		} );
 
-		it( 'in style attribute with extra attributes #2', () => {
+		it( 'in theme attribute with extra attributes #2', () => {
 			// In contrary to test above, we don't have strong + span on the selection.
 			// This is because strong and span are both created by the same attribute.
 			// Since style="important" overwrites style="gold" on selection, we have only strong element.
 			// In example above, selection has both style and italic attribute.
 			test(
 				[ 3, 3 ],
-				'f<$text style="gold">ooba</$text>r',
+				'f<$text theme="gold">ooba</$text>r',
 				'f<span style="color:yellow;">oo</span>' +
 				'<strong style="text-transform:uppercase;">[]</strong>' +
 				'<span style="color:yellow;">ba</span>r',
-				{ style: 'important' }
+				{ theme: 'important' }
 			);
 		} );
 	} );
@@ -407,6 +409,10 @@ describe( 'using element creator for attributes conversion', () => {
 
 describe( 'table cell selection converter', () => {
 	beforeEach( () => {
+		modelDoc.schema.registerItem( 'table', '$block' );
+		modelDoc.schema.registerItem( 'tr', '$block' );
+		modelDoc.schema.registerItem( 'td', '$block' );
+
 		// "Universal" converter to convert table structure.
 		const tableConverter = insertElement( ( data ) => new ViewContainerElement( data.item.name ) );
 		dispatcher.on( 'insert:table', tableConverter );
@@ -437,13 +443,12 @@ describe( 'table cell selection converter', () => {
 	it( 'should not be used to convert selection that is not on table cell', () => {
 		test(
 			[ 1, 5 ],
-			'f<selection>o<$text bold=true>ob</$text>a</selection>r',
+			'f{o<$text bold="true">ob</$text>a}r',
 			'f{o<strong>ob</strong>a}r'
 		);
 	} );
 
 	it( 'should add a class to the selected table cell', () => {
-		modelDoc.schema.registerItem( 'table', '$block' );
 		test(
 			// table tr#0 |td#0, table tr#0 td#0|
 			[ [ 0, 0, 0 ], [ 0, 0, 1 ] ],
@@ -453,7 +458,6 @@ describe( 'table cell selection converter', () => {
 	} );
 
 	it( 'should not be used if selection contains more than just a table cell', () => {
-		modelDoc.schema.registerItem( 'table', '$block' );
 		test(
 			// table tr td#1, table tr#2
 			[ [ 0, 0, 0, 1 ], [ 0, 0, 2 ] ],

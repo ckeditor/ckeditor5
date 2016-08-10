@@ -46,15 +46,15 @@ describe( 'writer', () => {
 
 		it( 'should not merge when position is placed at the beginning of the container', () => {
 			test(
-				'<container:p>[]<attribute:b:1></attribute:b:1></container:p>',
-				'<container:p>[]<attribute:b:1></attribute:b:1></container:p>'
+				'<container:p>[]<attribute:b view-priority="1"></attribute:b></container:p>',
+				'<container:p>[]<attribute:b view-priority="1"></attribute:b></container:p>'
 			);
 		} );
 
 		it( 'should not merge when position is placed at the end of the container', () => {
 			test(
-				'<container:p><attribute:b:1></attribute:b:1>[]</container:p>',
-				'<container:p><attribute:b:1></attribute:b:1>[]</container:p>'
+				'<container:p><attribute:b view-priority="1"></attribute:b>[]</container:p>',
+				'<container:p><attribute:b view-priority="1"></attribute:b>[]</container:p>'
 			);
 		} );
 
@@ -71,29 +71,41 @@ describe( 'writer', () => {
 
 		it( 'should merge when placed between similar attribute nodes', () => {
 			test(
-				'<container:p><attribute:b:1 foo="bar">baz</attribute:b:1>[]<attribute:b:1 foo="bar">qux</attribute:b:1></container:p>',
-				'<container:p><attribute:b:1 foo="bar">baz{}qux</attribute:b:1></container:p>'
+				'<container:p>' +
+					'<attribute:b view-priority="1" foo="bar">baz</attribute:b>[]<attribute:b view-priority="1" foo="bar">qux</attribute:b>' +
+				'</container:p>',
+				'<container:p><attribute:b view-priority="1" foo="bar">baz{}qux</attribute:b></container:p>'
 			);
 		} );
 
 		it( 'should not merge when placed between non-similar attribute nodes', () => {
 			test(
-				'<container:p><attribute:b:1 foo="bar"></attribute:b:1>[]<attribute:b:1 foo="baz"></attribute:b:1></container:p>',
-				'<container:p><attribute:b:1 foo="bar"></attribute:b:1>[]<attribute:b:1 foo="baz"></attribute:b:1></container:p>'
+				'<container:p>' +
+					'<attribute:b view-priority="1" foo="bar"></attribute:b>[]<attribute:b view-priority="1" foo="baz"></attribute:b>' +
+				'</container:p>',
+				'<container:p>' +
+					'<attribute:b view-priority="1" foo="bar"></attribute:b>[]<attribute:b view-priority="1" foo="baz"></attribute:b>' +
+				'</container:p>'
 			);
 		} );
 
 		it( 'should not merge when placed between similar attribute nodes with different priority', () => {
 			test(
-				'<container:p><attribute:b:1 foo="bar"></attribute:b:1>[]<attribute:b:2 foo="bar"></attribute:b:2></container:p>',
-				'<container:p><attribute:b:1 foo="bar"></attribute:b:1>[]<attribute:b:2 foo="bar"></attribute:b:2></container:p>'
+				'<container:p>' +
+					'<attribute:b view-priority="1" foo="bar"></attribute:b>[]<attribute:b view-priority="2" foo="bar"></attribute:b>' +
+				'</container:p>',
+				'<container:p>' +
+					'<attribute:b view-priority="1" foo="bar"></attribute:b>[]<attribute:b view-priority="2" foo="bar"></attribute:b>' +
+				'</container:p>'
 			);
 		} );
 
 		it( 'should merge attribute nodes and their contents if possible', () => {
 			test(
-				'<container:p><attribute:b:1 foo="bar">foo</attribute:b:1>[]<attribute:b:1 foo="bar">bar</attribute:b:1></container:p>',
-				'<container:p><attribute:b:1 foo="bar">foo{}bar</attribute:b:1></container:p>'
+				'<container:p>' +
+					'<attribute:b view-priority="1" foo="bar">foo</attribute:b>[]<attribute:b view-priority="1" foo="bar">bar</attribute:b>' +
+				'</container:p>',
+				'<container:p><attribute:b view-priority="1" foo="bar">foo{}bar</attribute:b></container:p>'
 			);
 		} );
 
@@ -107,7 +119,7 @@ describe( 'writer', () => {
 		it( 'should remove empty attributes after merge #2', () => {
 			test(
 				'<container:p><attribute:b>foo</attribute:b><attribute:i>[]</attribute:i><attribute:b>bar</attribute:b></container:p>',
-				'<container:p><attribute:b:10>foo{}bar</attribute:b:10></container:p>'
+				'<container:p><attribute:b view-priority="10">foo{}bar</attribute:b></container:p>'
 			);
 		} );
 

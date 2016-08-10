@@ -16,6 +16,9 @@ describe( 'Delete utils', () => {
 	beforeEach( () => {
 		document = new Document();
 		document.schema.registerItem( 'p', '$block' );
+		document.schema.registerItem( 'x', '$block' );
+		document.schema.registerItem( 'img', '$inline' );
+		document.schema.allow( { name: '$text', inside: '$root' } );
 		document.createRoot();
 	} );
 
@@ -24,309 +27,357 @@ describe( 'Delete utils', () => {
 			describe( 'within element', () => {
 				test(
 					'does nothing on empty content',
-					'<selection />',
-					'<selection />'
+					'[]',
+					'[]'
 				);
 
 				test(
 					'does nothing on empty content (with empty element)',
-					'<p><selection /></p>',
-					'<p><selection /></p>'
+					'<p>[]</p>',
+					'<p>[]</p>'
 				);
 
 				test(
 					'does nothing on empty content (backward)',
-					'<selection />',
-					'<selection />',
+					'[]',
+					'[]',
 					{ direction: 'backward' }
 				);
 
 				test(
 					'does nothing on root boundary',
-					'<p>foo<selection /></p>',
-					'<p>foo<selection /></p>'
+					'<p>foo[]</p>',
+					'<p>foo[]</p>'
 				);
 
 				test(
 					'does nothing on root boundary (backward)',
-					'<p><selection />foo</p>',
-					'<p><selection />foo</p>',
+					'<p>[]foo</p>',
+					'<p>[]foo</p>',
 					{ direction: 'backward' }
 				);
 
 				test(
 					'extends one character forward',
-					'<p>f<selection />oo</p>',
-					'<p>f<selection>o</selection>o</p>'
+					'<p>f[]oo</p>',
+					'<p>f[o]o</p>'
 				);
 
-				test(
-					'extends one character backward',
-					'<p>fo<selection />o</p>',
-					'<p>f<selection backward>o</selection>o</p>',
-					{ direction: 'backward' }
-				);
+				it( 'extends one character backward', () => {
+					setData( document, '<p>fo[]o</p>', { lastRangeBackward: true } );
+
+					modifySelection( document.selection, { direction: 'backward' } );
+
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>f[o]o</p>' );
+					expect( document.selection.isBackward ).to.true;
+				} );
 
 				test(
 					'extends one character forward (non-collapsed)',
-					'<p>f<selection>o</selection>obar</p>',
-					'<p>f<selection>oo</selection>bar</p>'
+					'<p>f[o]obar</p>',
+					'<p>f[oo]bar</p>'
 				);
 
-				test(
-					'extends one character backward (non-collapsed)',
-					'<p>foob<selection backward>a</selection>r</p>',
-					'<p>foo<selection backward>ba</selection>r</p>',
-					{ direction: 'backward' }
-				);
+				it( 'extends one character backward (non-collapsed)', () => {
+					setData( document, '<p>foob[a]r</p>', { lastRangeBackward: true } );
+
+					modifySelection( document.selection, { direction: 'backward' } );
+
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>foo[ba]r</p>' );
+					expect( document.selection.isBackward ).to.true;
+				} );
 
 				test(
 					'extends to element boundary',
-					'<p>fo<selection />o</p>',
-					'<p>fo<selection>o</selection></p>'
+					'<p>fo[]o</p>',
+					'<p>fo[o]</p>'
 				);
 
-				test(
-					'extends to element boundary (backward)',
-					'<p>f<selection />oo</p>',
-					'<p><selection backward>f</selection>oo</p>',
-					{ direction: 'backward' }
-				);
+				it( 'extends to element boundary (backward)', () => {
+					setData( document, '<p>f[]oo</p>' );
+
+					modifySelection( document.selection, { direction: 'backward' } );
+
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>[f]oo</p>' );
+					expect( document.selection.isBackward ).to.true;
+				} );
 
 				test(
 					'shrinks forward selection (to collapsed)',
-					'<p>foo<selection>b</selection>ar</p>',
-					'<p>foo<selection />bar</p>',
+					'<p>foo[b]ar</p>',
+					'<p>foo[]bar</p>',
 					{ direction: 'backward' }
 				);
 
-				test(
-					'shrinks backward selection (to collapsed)',
-					'<p>foo<selection backward>b</selection>ar</p>',
-					'<p>foob<selection />ar</p>'
-				);
+				it( 'shrinks backward selection (to collapsed)', () => {
+					setData( document, '<p>foo[b]ar</p>', { lastRangeBackward: true } );
+
+					modifySelection( document.selection );
+
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>foob[]ar</p>' );
+					expect( document.selection.isBackward ).to.false;
+				} );
 
 				test(
 					'extends one element forward',
-					'<p>f<selection /><img></img>oo</p>',
-					'<p>f<selection><img></img></selection>oo</p>'
+					'<p>f[]<img></img>oo</p>',
+					'<p>f[<img></img>]oo</p>'
 				);
 
 				test(
 					'extends one non-empty element forward',
-					'<p>f<selection /><img>x</img>oo</p>',
-					'<p>f<selection><img>x</img></selection>oo</p>'
+					'<p>f[]<img>x</img>oo</p>',
+					'<p>f[<img>x</img>]oo</p>'
 				);
 
-				test(
-					'extends one element backward',
-					'<p>fo<img></img><selection />o</p>',
-					'<p>fo<selection backward><img></img></selection>o</p>',
-					{ direction: 'backward' }
-				);
+				it( 'extends one element backward', () => {
+					setData( document, '<p>fo<img></img>[]o</p>' );
+
+					modifySelection( document.selection, { direction: 'backward' } );
+
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>fo[<img></img>]o</p>' );
+					expect( document.selection.isBackward ).to.true;
+				} );
 
 				test(
 					'unicode support - combining mark forward',
-					'<p>foo<selection />b̂ar</p>',
-					'<p>foo<selection>b̂</selection>ar</p>'
+					'<p>foo[]b̂ar</p>',
+					'<p>foo[b̂]ar</p>'
 				);
 
-				test(
-					'unicode support - combining mark backward',
-					'<p>foob̂<selection />ar</p>',
-					'<p>foo<selection backward>b̂</selection>ar</p>',
-					{ direction: 'backward' }
-				);
+				it( 'unicode support - combining mark backward', () => {
+					setData( document, '<p>foob̂[]ar</p>' );
+
+					modifySelection( document.selection, { direction: 'backward' } );
+
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>foo[b̂]ar</p>' );
+					expect( document.selection.isBackward ).to.true;
+				} );
 
 				test(
 					'unicode support - combining mark multiple',
-					'<p>fo<selection />o̻̐ͩbar</p>',
-					'<p>fo<selection>o̻̐ͩ</selection>bar</p>'
+					'<p>fo[]o̻̐ͩbar</p>',
+					'<p>fo[o̻̐ͩ]bar</p>'
 				);
 
-				test(
-					'unicode support - combining mark multiple backward',
-					'<p>foo̻̐ͩ<selection />bar</p>',
-					'<p>fo<selection backward>o̻̐ͩ</selection>bar</p>',
-					{ direction: 'backward' }
-				);
+				it( 'unicode support - combining mark multiple backward', () => {
+					setData( document, '<p>foo̻̐ͩ[]bar</p>' );
+
+					modifySelection( document.selection, { direction: 'backward' } );
+
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>fo[o̻̐ͩ]bar</p>' );
+					expect( document.selection.isBackward ).to.true;
+				} );
 
 				test(
 					'unicode support - combining mark to the end',
-					'<p>fo<selection />o̻̐ͩ</p>',
-					'<p>fo<selection>o̻̐ͩ</selection></p>'
+					'<p>fo[]o̻̐ͩ</p>',
+					'<p>fo[o̻̐ͩ]</p>'
 				);
 
 				test(
 					'unicode support - surrogate pairs forward',
-					'<p><selection />\uD83D\uDCA9</p>',
-					'<p><selection>\uD83D\uDCA9</selection></p>'
+					'<p>[]\uD83D\uDCA9</p>',
+					'<p>[\uD83D\uDCA9]</p>'
 				);
 
-				test(
-					'unicode support - surrogate pairs backward',
-					'<p>\uD83D\uDCA9<selection /></p>',
-					'<p><selection backward>\uD83D\uDCA9</selection></p>',
-					{ direction: 'backward' }
-				);
+				it( 'unicode support - surrogate pairs backward', () => {
+					setData( document, '<p>\uD83D\uDCA9[]</p>' );
+
+					modifySelection( document.selection, { direction: 'backward' } );
+
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>[\uD83D\uDCA9]</p>' );
+					expect( document.selection.isBackward ).to.true;
+				} );
 			} );
 
 			describe( 'beyond element', () => {
 				test(
 					'extends over boundary of empty elements',
-					'<p><selection /></p><p></p><p></p>',
-					'<p><selection></p><p></selection></p><p></p>'
+					'<p>[]</p><p></p><p></p>',
+					'<p>[</p><p>]</p><p></p>'
 				);
 
-				test(
-					'extends over boundary of empty elements (backward)',
-					'<p></p><p></p><p><selection /></p>',
-					'<p></p><p><selection backward></p><p></selection></p>',
-					{ direction: 'backward' }
-				);
+				it( 'extends over boundary of empty elements (backward)', () => {
+					setData( document, '<p></p><p></p><p>[]</p>' );
+
+					modifySelection( document.selection, { direction: 'backward' } );
+
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p></p><p>[</p><p>]</p>' );
+					expect( document.selection.isBackward ).to.true;
+				} );
 
 				test(
 					'extends over boundary of non-empty elements',
-					'<p>a<selection /></p><p>bcd</p>',
-					'<p>a<selection></p><p></selection>bcd</p>'
+					'<p>a[]</p><p>bcd</p>',
+					'<p>a[</p><p>]bcd</p>'
 				);
 
-				test(
-					'extends over boundary of non-empty elements (backward)',
-					'<p>a</p><p><selection />bcd</p>',
-					'<p>a<selection backward></p><p></selection>bcd</p>',
-					{ direction: 'backward' }
-				);
+				it( 'extends over boundary of non-empty elements (backward)', () => {
+					setData( document, '<p>a</p><p>[]bcd</p>' );
+
+					modifySelection( document.selection, { direction: 'backward' } );
+
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>a[</p><p>]bcd</p>' );
+					expect( document.selection.isBackward ).to.true;
+				} );
 
 				test(
 					'extends over character after boundary',
-					'<p>a<selection></p><p></selection>bcd</p>',
-					'<p>a<selection></p><p>b</selection>cd</p>'
+					'<p>a[</p><p>]bcd</p>',
+					'<p>a[</p><p>b]cd</p>'
 				);
 
-				test(
-					'extends over character after boundary (backward)',
-					'<p>abc<selection backward></p><p></selection>d</p>',
-					'<p>ab<selection backward>c</p><p></selection>d</p>',
-					{ direction: 'backward' }
-				);
+				it( 'extends over character after boundary (backward)', () => {
+					setData( document, '<p>abc[</p><p>]d</p>', { lastRangeBackward: true } );
+
+					modifySelection( document.selection, { direction: 'backward' } );
+
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>ab[c</p><p>]d</p>' );
+					expect( document.selection.isBackward ).to.true;
+				} );
 
 				test(
 					'extends over boundary when next element has nested elements',
-					'<p>a<selection /></p><p><x>bcd</x></p>',
-					'<p>a<selection></p><p></selection><x>bcd</x></p>'
+					'<p>a[]</p><p><x>bcd</x></p>',
+					'<p>a[</p><p>]<x>bcd</x></p>'
 				);
 
 				test(
 					'extends over element when next element has nested elements',
-					'<p>a<selection></p><p></selection><x>bcd</x>ef</p>',
-					'<p>a<selection></p><p><x>bcd</x></selection>ef</p>'
+					'<p>a[</p><p>]<x>bcd</x>ef</p>',
+					'<p>a[</p><p><x>bcd</x>]ef</p>'
 				);
 
 				test(
 					'extends over element when next node is a text',
-					'<p>a<selection /></p>bc',
-					'<p>a<selection></p></selection>bc'
+					'<p>a[]</p>bc',
+					'<p>a[</p>]bc'
 				);
 
-				test(
-					'extends over element when next node is a text (backward)',
-					'ab<p><selection />c</p>',
-					'ab<selection backward><p></selection>c</p>',
-					{ direction: 'backward' }
-				);
+				it( 'extends over element when next node is a text (backward)', () => {
+					setData( document, 'ab<p>[]c</p>' );
 
-				test(
-					'shrinks over boundary of empty elements',
-					'<p><selection backward></p><p></selection></p>',
-					'<p></p><p><selection /></p>'
-				);
+					modifySelection( document.selection, { direction: 'backward' } );
 
-				test(
-					'shrinks over boundary of empty elements (backward)',
-					'<p><selection></p><p></selection></p>',
-					'<p><selection /></p><p></p>',
-					{ direction: 'backward' }
-				);
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( 'ab[<p>]c</p>' );
+					expect( document.selection.isBackward ).to.true;
+				} );
 
-				test(
-					'shrinks over boundary of non-empty elements',
-					'<p>a<selection backward></p><p></selection>b</p>',
-					'<p>a</p><p><selection />b</p>'
-				);
+				it( 'shrinks over boundary of empty elements', () => {
+					setData( document, '<p>[</p><p>]</p>', { lastRangeBackward: true } );
+
+					modifySelection( document.selection );
+
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p></p><p>[]</p>' );
+					expect( document.selection.isBackward ).to.false;
+				} );
+
+				it( 'shrinks over boundary of empty elements (backward)', () => {
+					setData( document, '<p>[</p><p>]</p>' );
+
+					modifySelection( document.selection, { direction: 'backward' } );
+
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>[]</p><p></p>' );
+					expect( document.selection.isBackward ).to.false;
+				} );
+
+				it( 'shrinks over boundary of non-empty elements', () => {
+					setData( document, '<p>a[</p><p>]b</p>', { lastRangeBackward: true } );
+
+					modifySelection( document.selection );
+
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>a</p><p>[]b</p>' );
+					expect( document.selection.isBackward ).to.false;
+				} );
 
 				test(
 					'shrinks over boundary of non-empty elements (backward)',
-					'<p>a<selection></p><p></selection>b</p>',
-					'<p>a<selection /></p><p>b</p>',
+					'<p>a[</p><p>]b</p>',
+					'<p>a[]</p><p>b</p>',
 					{ direction: 'backward' }
 				);
+
+				it( 'updates selection attributes', () => {
+					setData( document, '<p><$text bold="true">foo</$text>[b]</p>' );
+
+					modifySelection( document.selection, { direction: 'backward' } );
+
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p><$text bold="true">foo[]</$text>b</p>' );
+					expect( document.selection.getAttribute( 'bold' ) ).to.equal( 'true' );
+				} );
 			} );
 		} );
 
 		describe( 'unit=codePoint', () => {
 			test(
 				'does nothing on empty content',
-				'<selection />',
-				'<selection />',
+				'[]',
+				'[]',
 				{ unit: 'codePoint' }
 			);
 
 			test(
 				'does nothing on empty content (with empty element)',
-				'<p><selection /></p>',
-				'<p><selection /></p>',
+				'<p>[]</p>',
+				'<p>[]</p>',
 				{ unit: 'codePoint' }
 			);
 
 			test(
 				'extends one user-perceived character forward - latin letters',
-				'<p>f<selection />oo</p>',
-				'<p>f<selection>o</selection>o</p>',
+				'<p>f[]oo</p>',
+				'<p>f[o]o</p>',
 				{ unit: 'codePoint' }
 			);
 
-			test(
-				'extends one user-perceived character backward - latin letters',
-				'<p>fo<selection />o</p>',
-				'<p>f<selection backward>o</selection>o</p>',
-				{ unit: 'codePoint', direction: 'backward' }
-			);
+			it( 'extends one user-perceived character backward - latin letters', () => {
+				setData( document, '<p>fo[]o</p>' );
+
+				modifySelection( document.selection, { unit: 'codePoint', direction: 'backward' } );
+
+				expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>f[o]o</p>' );
+				expect( document.selection.isBackward ).to.true;
+			} );
 
 			test(
 				'unicode support - combining mark forward',
-				'<p>foo<selection />b̂ar</p>',
-				'<p>foo<selection>b</selection>̂ar</p>',
+				'<p>foo[]b̂ar</p>',
+				'<p>foo[b]̂ar</p>',
 				{ unit: 'codePoint' }
 			);
 
-			test(
-				'unicode support - combining mark backward',
-				'<p>foob̂<selection />ar</p>',
-				'<p>foob<selection backward>̂</selection>ar</p>',
-				{ unit: 'codePoint', direction: 'backward' }
-			);
+			it.skip( 'unicode support - combining mark backward', () => {
+				setData( document, '<p>foob[]̂ar</p>' );
+
+				modifySelection( document.selection, { unit: 'codePoint', direction: 'backward' } );
+
+				expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>foob[]̂̂ar</p>' );
+				expect( document.selection.isBackward ).to.true;
+			} );
 
 			test(
 				'unicode support - combining mark multiple',
-				'<p>fo<selection />o̻̐ͩbar</p>',
-				'<p>fo<selection>o</selection>̻̐ͩbar</p>',
+				'<p>fo[]o̻̐ͩbar</p>',
+				'<p>fo[o]̻̐ͩbar</p>',
 				{ unit: 'codePoint' }
 			);
 
 			test(
 				'unicode support - surrogate pairs forward',
-				'<p><selection />\uD83D\uDCA9</p>',
-				'<p><selection>\uD83D\uDCA9</selection></p>',
+				'<p>[]\uD83D\uDCA9</p>',
+				'<p>[\uD83D\uDCA9]</p>',
 				{ unit: 'codePoint' }
 			);
 
-			test(
-				'unicode support surrogate pairs backward',
-				'<p>\uD83D\uDCA9<selection /></p>',
-				'<p><selection backward>\uD83D\uDCA9</selection></p>',
-				{ unit: 'codePoint', direction: 'backward' }
-			);
+			it( 'unicode support surrogate pairs backward', () => {
+				setData( document, '<p>\uD83D\uDCA9[]</p>' );
+
+				modifySelection( document.selection, { unit: 'codePoint', direction: 'backward' } );
+
+				expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>[\uD83D\uDCA9]</p>' );
+				expect( document.selection.isBackward ).to.true;
+			} );
 		} );
 	} );
 

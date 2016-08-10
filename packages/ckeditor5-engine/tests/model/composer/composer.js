@@ -22,18 +22,18 @@ describe( 'Composer', () => {
 
 	describe( 'constructor', () => {
 		it( 'attaches deleteContents default listener', () => {
-			setData( document, '<p>f<selection>oo</p><p>ba</selection>r</p>' );
+			setData( document, '<p>f[oo</p><p>ba]r</p>' );
 
 			const batch = document.batch();
 
 			composer.fire( 'deleteContents', { batch, selection: document.selection } );
 
-			expect( getData( document ) ).to.equal( '<p>f<selection /></p><p>r</p>' );
+			expect( getData( document ) ).to.equal( '<p>f[]</p><p>r</p>' );
 			expect( batch.deltas ).to.not.be.empty;
 		} );
 
 		it( 'attaches deleteContents default listener which passes options', () => {
-			setData( document, '<p>f<selection>oo</p><p>ba</selection>r</p>' );
+			setData( document, '<p>f[oo</p><p>ba]r</p>' );
 
 			const batch = document.batch();
 
@@ -43,11 +43,11 @@ describe( 'Composer', () => {
 				options: { merge: true }
 			} );
 
-			expect( getData( document ) ).to.equal( '<p>f<selection />r</p>' );
+			expect( getData( document ) ).to.equal( '<p>f[]r</p>' );
 		} );
 
 		it( 'attaches modifySelection default listener', () => {
-			setData( document, '<p>foo<selection />bar</p>' );
+			setData( document, '<p>foo[]bar</p>' );
 
 			composer.fire( 'modifySelection', {
 				selection: document.selection,
@@ -57,7 +57,8 @@ describe( 'Composer', () => {
 			} );
 
 			expect( getData( document ) )
-				.to.equal( '<p>fo<selection backward>o</selection>bar</p>' );
+				.to.equal( '<p>fo[o]bar</p>' );
+			expect( document.selection.isBackward ).to.true;
 		} );
 	} );
 

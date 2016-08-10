@@ -26,6 +26,8 @@ describe( 'Delete utils', () => {
 		schema.registerItem( 'pchild' );
 
 		schema.allow( { name: 'pchild', inside: 'p' } );
+		schema.allow( { name: '$text', inside: '$root' } );
+		schema.allow( { name: 'img', inside: '$root' } );
 		schema.allow( { name: '$text', attributes: [ 'bold', 'italic' ] } );
 		schema.allow( { name: 'p', attributes: [ 'align' ] } );
 	} );
@@ -34,78 +36,100 @@ describe( 'Delete utils', () => {
 		describe( 'in simple scenarios', () => {
 			test(
 				'does nothing on collapsed selection',
-				'f<selection />oo',
-				'f<selection />oo'
+				'f[]oo',
+				'f[]oo'
 			);
 
 			test(
 				'deletes single character',
-				'f<selection>o</selection>o',
-				'f<selection />o'
+				'f[o]o',
+				'f[]o'
 			);
 
-			test(
-				'xdeletes single character (backward selection)',
-				'f<selection backward>o</selection>o',
-				'f<selection />o'
-			);
+			it( 'deletes single character (backward selection)' , () => {
+				setData( document, 'f[o]o', { lastRangeBackward: true } );
+
+				deleteContents( document.batch(), document.selection );
+
+				expect( getData( document ) ).to.equal( 'f[]o' );
+			} );
 
 			test(
 				'deletes whole text',
-				'<selection>foo</selection>',
-				'<selection />'
+				'[foo]',
+				'[]'
 			);
 
 			test(
 				'deletes whole text between nodes',
-				'<img></img><selection>foo</selection><img></img>',
-				'<img></img><selection /><img></img>'
+				'<img></img>[foo]<img></img>',
+				'<img></img>[]<img></img>'
 			);
 
 			test(
 				'deletes an element',
-				'x<selection><img></img></selection>y',
-				'x<selection />y'
+				'x[<img></img>]y',
+				'x[]y'
 			);
 
 			test(
 				'deletes a bunch of nodes',
-				'w<selection>x<img></img>y</selection>z',
-				'w<selection />z'
+				'w[x<img></img>y]z',
+				'w[]z'
 			);
 
 			test(
 				'does not break things when option.merge passed',
-				'w<selection>x<img></img>y</selection>z',
-				'w<selection />z',
+				'w[x<img></img>y]z',
+				'w[]z',
 				{ merge: true }
 			);
 		} );
 
 		describe( 'with text attributes', () => {
-			test(
-				'deletes characters (first half has attrs)',
-				'<$text bold=true>fo<selection bold=true>o</$text>b</selection>ar',
-				'<$text bold=true>fo</$text><selection bold=true />ar'
-			);
+			it( 'deletes characters (first half has attrs)', () => {
+				setData( document, '<$text bold="true">fo[o</$text>b]ar', { selectionAttributes: {
+					bold: true
+				} } );
 
-			test(
-				'deletes characters (2nd half has attrs)',
-				'fo<selection bold=true>o<$text bold=true>b</selection>ar</$text>',
-				'fo<selection /><$text bold=true>ar</$text>'
-			);
+				deleteContents( document.batch(), document.selection );
 
-			test(
-				'clears selection attrs when emptied content',
-				'<p>x</p><p><selection bold=true><$text bold=true>foo</$text></selection></p><p>y</p>',
-				'<p>x</p><p><selection /></p><p>y</p>'
-			);
+				expect( getData( document ) ).to.equal( '<$text bold="true">fo[]</$text>ar' );
+				expect( document.selection.getAttribute( 'bold' ) ).to.equal( 'true' );
+			} );
 
-			test(
-				'leaves selection attributes when text contains them',
-				'<p>x<$text bold=true>a<selection bold=true>foo</selection>b</$text>y</p>',
-				'<p>x<$text bold=true>a<selection bold=true />b</$text>y</p>'
-			);
+			it( 'deletes characters (2nd half has attrs)', () => {
+				setData( document, 'fo[o<$text bold="true">b]ar</$text>', { selectionAttributes: {
+					bold: true
+				} } );
+
+				deleteContents( document.batch(), document.selection );
+
+				expect( getData( document ) ).to.equal( 'fo[]<$text bold="true">ar</$text>' );
+				expect( document.selection.getAttribute( 'bold' ) ).to.undefined;
+			} );
+
+			it( 'clears selection attrs when emptied content', () => {
+				setData( document, '<p>x</p><p>[<$text bold="true">foo</$text>]</p><p>y</p>', { selectionAttributes: {
+					bold: true
+				} } );
+
+				deleteContents( document.batch(), document.selection );
+
+				expect( getData( document ) ).to.equal( '<p>x</p><p>[]</p><p>y</p>' );
+				expect( document.selection.getAttribute( 'bold' ) ).to.undefined;
+			} );
+
+			it( 'leaves selection attributes when text contains them', () => {
+				setData( document, '<p>x<$text bold="true">a[foo]b</$text>y</p>', { selectionAttributes: {
+					bold: true
+				} } );
+
+				deleteContents( document.batch(), document.selection );
+
+				expect( getData( document ) ).to.equal( '<p>x<$text bold="true">a[]b</$text>y</p>' );
+				expect( document.selection.getAttribute( 'bold' ) ).to.equal( 'true' );
+			} );
 		} );
 
 		// Note: The algorithm does not care what kind of it's merging as it knows nothing useful about these elements.
@@ -120,101 +144,102 @@ describe( 'Delete utils', () => {
 		describe( 'in multi-element scenarios', () => {
 			test(
 				'do not merge when no need to',
-				'<p>x</p><p><selection>foo</selection></p><p>y</p>',
-				'<p>x</p><p><selection /></p><p>y</p>',
+				'<p>x</p><p>[foo]</p><p>y</p>',
+				'<p>x</p><p>[]</p><p>y</p>',
 				{ merge: true }
 			);
 
 			test(
 				'merges second element into the first one (same name)',
-				'<p>x</p><p>fo<selection>o</p><p>b</selection>ar</p><p>y</p>',
-				'<p>x</p><p>fo<selection />ar</p><p>y</p>',
+				'<p>x</p><p>fo[o</p><p>b]ar</p><p>y</p>',
+				'<p>x</p><p>fo[]ar</p><p>y</p>',
 				{ merge: true }
 			);
 
 			test(
 				'does not merge second element into the first one (same name, !option.merge)',
-				'<p>x</p><p>fo<selection>o</p><p>b</selection>ar</p><p>y</p>',
-				'<p>x</p><p>fo<selection /></p><p>ar</p><p>y</p>'
+				'<p>x</p><p>fo[o</p><p>b]ar</p><p>y</p>',
+				'<p>x</p><p>fo[]</p><p>ar</p><p>y</p>'
 			);
 
 			test(
 				'merges second element into the first one (same name)',
-				'<p>x</p><p>fo<selection>o</p><p>b</selection>ar</p><p>y</p>',
-				'<p>x</p><p>fo<selection />ar</p><p>y</p>',
+				'<p>x</p><p>fo[o</p><p>b]ar</p><p>y</p>',
+				'<p>x</p><p>fo[]ar</p><p>y</p>',
 				{ merge: true }
 			);
 
 			test(
 				'merges second element into the first one (different name)',
-				'<p>x</p><h1>fo<selection>o</h1><p>b</selection>ar</p><p>y</p>',
-				'<p>x</p><h1>fo<selection />ar</h1><p>y</p>',
+				'<p>x</p><h1>fo[o</h1><p>b]ar</p><p>y</p>',
+				'<p>x</p><h1>fo[]ar</h1><p>y</p>',
 				{ merge: true }
 			);
 
-			test(
-				'merges second element into the first one (different name, backward selection)',
-				'<p>x</p><h1>fo<selection backward>o</h1><p>b</selection>ar</p><p>y</p>',
-				'<p>x</p><h1>fo<selection />ar</h1><p>y</p>',
-				{ merge: true }
-			);
+			it( 'merges second element into the first one (different name, backward selection)', () => {
+				setData( document, '<p>x</p><h1>fo[o</h1><p>b]ar</p><p>y</p>', { lastRangeBackward: true } );
+
+				deleteContents( document.batch(), document.selection, { merge: true } );
+
+				expect( getData( document ) ).to.equal( '<p>x</p><h1>fo[]ar</h1><p>y</p>' );
+			} );
 
 			test(
 				'merges second element into the first one (different attrs)',
-				'<p>x</p><p align="l">fo<selection>o</p><p>b</selection>ar</p><p>y</p>',
-				'<p>x</p><p align="l">fo<selection />ar</p><p>y</p>',
+				'<p>x</p><p align="l">fo[o</p><p>b]ar</p><p>y</p>',
+				'<p>x</p><p align="l">fo[]ar</p><p>y</p>',
 				{ merge: true }
 			);
 
 			test(
 				'merges second element to an empty first element',
-				'<p>x</p><h1><selection></h1><p>fo</selection>o</p><p>y</p>',
-				'<p>x</p><h1><selection />o</h1><p>y</p>',
+				'<p>x</p><h1>[</h1><p>fo]o</p><p>y</p>',
+				'<p>x</p><h1>[]o</h1><p>y</p>',
 				{ merge: true }
 			);
 
 			test(
 				'merges elements when deep nested',
-				'<p>x<pchild>fo<selection>o</pchild></p><p><pchild>b</selection>ar</pchild>y</p>',
-				'<p>x<pchild>fo<selection />ar</pchild>y</p>',
+				'<p>x<pchild>fo[o</pchild></p><p><pchild>b]ar</pchild>y</p>',
+				'<p>x<pchild>fo[]ar</pchild>y</p>',
 				{ merge: true }
 			);
 
 			// For code coverage reasons.
 			test(
 				'merges element when selection is in two consecutive nodes even when it is empty',
-				'<p>foo<selection></p><p></selection>bar</p>',
-				'<p>foo<selection />bar</p>',
+				'<p>foo[</p><p>]bar</p>',
+				'<p>foo[]bar</p>',
 				{ merge: true }
 			);
 
 			// If you disagree with this case please read the notes before this section.
 			test(
 				'merges elements when left end deep nested',
-				'<p>x<pchild>fo<selection>o</pchild></p><p>b</selection>ary</p>',
-				'<p>x<pchild>fo<selection /></pchild>ary</p>',
+				'<p>x<pchild>fo[o</pchild></p><p>b]ary</p>',
+				'<p>x<pchild>fo[]</pchild>ary</p>',
 				{ merge: true }
 			);
 
 			// If you disagree with this case please read the notes before this section.
 			test(
 				'merges elements when right end deep nested',
-				'<p>xfo<selection>o</p><p><pchild>b</selection>ar</pchild>y<img></img></p>',
-				'<p>xfo<selection /><pchild>ar</pchild>y<img></img></p>',
+				'<p>xfo[o</p><p><pchild>b]ar</pchild>y<img></img></p>',
+				'<p>xfo[]<pchild>ar</pchild>y<img></img></p>',
 				{ merge: true }
 			);
 
 			test(
 				'merges elements when more content in the right branch',
-				'<p>xfo<selection>o</p><p>b</selection>a<pchild>r</pchild>y</p>',
-				'<p>xfo<selection />a<pchild>r</pchild>y</p>',
+				'<p>xfo[o</p><p>b]a<pchild>r</pchild>y</p>',
+				'<p>xfo[]a<pchild>r</pchild>y</p>',
 				{ merge: true }
 			);
 
 			test(
 				'leaves just one element when all selected',
-				'<h1><selection>x</h1><p>foo</p><p>y</selection></p>',
-				'<h1><selection /></h1>',
+				'<h1>[x</h1><p>foo</p><p>y]</p>',
+				'<h1>[]</h1>',
 				{ merge: true }
 			);
 		} );

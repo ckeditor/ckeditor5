@@ -47,7 +47,8 @@ describe( 'convertSelectionChange', () => {
 
 		convertSelection( null, { newSelection: viewSelection } );
 
-		expect( modelGetData( model ) ).to.equal( '<paragraph>f<selection />oo</paragraph><paragraph>bar</paragraph>' );
+		expect( modelGetData( model ) ).to.equals( '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
+		expect( modelGetData( model ) ).to.equal( '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
 	} );
 
 	it( 'should support unicode', () => {
@@ -64,7 +65,7 @@ describe( 'convertSelectionChange', () => {
 
 		convertSelection( null, { newSelection: viewSelection } );
 
-		expect( modelGetData( model ) ).to.equal( '<paragraph>நி<selection>லைக்</selection>கு</paragraph>' );
+		expect( modelGetData( model ) ).to.equal( '<paragraph>நி[லைக்]கு</paragraph>' );
 	} );
 
 	it( 'should convert multi ranges selection', () => {
@@ -76,9 +77,8 @@ describe( 'convertSelectionChange', () => {
 
 		convertSelection( null, { newSelection: viewSelection } );
 
-		// Too bad getData shows only the first range.
 		expect( modelGetData( model ) ).to.equal(
-			'<paragraph>f<selection>o</selection>o</paragraph><paragraph>bar</paragraph>' );
+			'<paragraph>f[o]o</paragraph><paragraph>b[a]r</paragraph>' );
 
 		const ranges = Array.from( model.selection.getRanges() );
 		expect( ranges.length ).to.equal( 2 );
@@ -98,11 +98,12 @@ describe( 'convertSelectionChange', () => {
 		const viewSelection = new ViewSelection();
 		viewSelection.addRange( ViewRange.createFromParentsAndOffsets(
 			viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 2 ), true );
+		viewSelection.addRange( ViewRange.createFromParentsAndOffsets(
+			viewRoot.getChild( 1 ).getChild( 0 ), 1, viewRoot.getChild( 1 ).getChild( 0 ), 2 ), true );
 
 		convertSelection( null, { newSelection: viewSelection } );
 
-		// Too bad getData shows only the first range.
-		expect( modelGetData( model ) ).to.equal(
-			'<paragraph>f<selection backward>o</selection>o</paragraph><paragraph>bar</paragraph>' );
+		expect( modelGetData( model ) ).to.equal( '<paragraph>f[o]o</paragraph><paragraph>b[a]r</paragraph>' );
+		expect( model.selection.isBackward ).to.true;
 	} );
 } );

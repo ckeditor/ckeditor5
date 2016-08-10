@@ -78,7 +78,7 @@ describe( 'DataController', () => {
 			const model = data.parse( '<p>foo<b>bar</b></p>' );
 
 			expect( stringify( model ) ).to.equal(
-				'<paragraph>foo<$text bold=true>bar</$text></paragraph>' );
+				'<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 		} );
 	} );
 
@@ -163,6 +163,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should get text directly in root', () => {
+			modelDocument.schema.allow( { name: '$text', inside: '$root' } );
 			setData( modelDocument, 'foo' );
 
 			expect( data.get() ).to.equal( 'foo' );
@@ -170,7 +171,7 @@ describe( 'DataController', () => {
 
 		it( 'should get paragraphs without bold', () => {
 			modelDocument.schema.registerItem( 'paragraph', '$block' );
-			setData( modelDocument, '<paragraph>foo<$text bold=true>bar</$text></paragraph>' );
+			setData( modelDocument, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 
@@ -179,7 +180,7 @@ describe( 'DataController', () => {
 
 		it( 'should get paragraphs with bold', () => {
 			modelDocument.schema.registerItem( 'paragraph', '$block' );
-			setData( modelDocument, '<paragraph>foo<$text bold=true>bar</$text></paragraph>' );
+			setData( modelDocument, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 			buildModelConverter().for( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
@@ -189,6 +190,8 @@ describe( 'DataController', () => {
 
 		it( 'should get root name as a parameter', () => {
 			modelDocument.schema.registerItem( 'paragraph', '$block' );
+			modelDocument.schema.allow( { name: '$text', inside: '$root' } );
+
 			setData( modelDocument, '<paragraph>foo</paragraph>', { rootName: 'main' } );
 			setData( modelDocument, 'Bar', { rootName: 'title' } );
 

@@ -66,28 +66,36 @@ describe( 'writer', () => {
 
 		it( 'should move parts of nodes', () => {
 			test(
-				'<container:p>f{oo<attribute:b:10>ba}r</attribute:b:10></container:p>',
-				'<container:p>[]<attribute:b:10>qux</attribute:b:10></container:p>',
-				'<container:p>f<attribute:b:10>r</attribute:b:10></container:p>',
-				'<container:p>[oo<attribute:b:10>ba}qux</attribute:b:10></container:p>'
+				'<container:p>f{oo<attribute:b view-priority="10">ba}r</attribute:b></container:p>',
+				'<container:p>[]<attribute:b view-priority="10">qux</attribute:b></container:p>',
+				'<container:p>f<attribute:b view-priority="10">r</attribute:b></container:p>',
+				'<container:p>[oo<attribute:b view-priority="10">ba}qux</attribute:b></container:p>'
 			);
 		} );
 
 		it( 'should merge after moving #1', () => {
 			test(
-				'<container:p><attribute:b:1>foo</attribute:b:1>[bar]<attribute:b:1>bazqux</attribute:b:1></container:p>',
-				'<container:p><attribute:b:1>foo{}bazqux</attribute:b:1></container:p>',
-				'<container:p><attribute:b:1>foobazqux</attribute:b:1></container:p>',
-				'<container:p><attribute:b:1>foo</attribute:b:1>[bar]<attribute:b:1>bazqux</attribute:b:1></container:p>'
+				'<container:p>' +
+					'<attribute:b view-priority="1">foo</attribute:b>[bar]<attribute:b view-priority="1">bazqux</attribute:b>' +
+				'</container:p>',
+				'<container:p><attribute:b view-priority="1">foo{}bazqux</attribute:b></container:p>',
+				'<container:p><attribute:b view-priority="1">foobazqux</attribute:b></container:p>',
+				'<container:p>' +
+					'<attribute:b view-priority="1">foo</attribute:b>[bar]<attribute:b view-priority="1">bazqux</attribute:b>' +
+				'</container:p>'
 			);
 		} );
 
 		it( 'should merge after moving #2', () => {
 			test(
-				'<container:p><attribute:b:1>fo{o</attribute:b:1>bar<attribute:b:1>ba}zqux</attribute:b:1></container:p>',
-				'<container:p><attribute:b:1>fo{}zqux</attribute:b:1></container:p>',
-				'<container:p><attribute:b:1>fozqux</attribute:b:1></container:p>',
-				'<container:p><attribute:b:1>fo{o</attribute:b:1>bar<attribute:b:1>ba}zqux</attribute:b:1></container:p>'
+				'<container:p>' +
+					'<attribute:b view-priority="1">fo{o</attribute:b>bar<attribute:b view-priority="1">ba}zqux</attribute:b>' +
+				'</container:p>',
+				'<container:p><attribute:b view-priority="1">fo{}zqux</attribute:b></container:p>',
+				'<container:p><attribute:b view-priority="1">fozqux</attribute:b></container:p>',
+				'<container:p>' +
+					'<attribute:b view-priority="1">fo{o</attribute:b>bar<attribute:b view-priority="1">ba}zqux</attribute:b>' +
+				'</container:p>'
 			);
 		} );
 
