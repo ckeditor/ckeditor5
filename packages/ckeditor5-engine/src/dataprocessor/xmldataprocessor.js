@@ -11,7 +11,7 @@ import { NBSP_FILLER } from '../view/filler.js';
  * XmlDataProcessor class.
  * This data processor implementation uses XML as input/output data.
  * This class is needed because unlike HTML, XML allows to use any tag with any value.
- * E.g. `<link>Text</link>` is a valid XML byt invalid HTML.
+ * E.g. `<link>Text</link>` is a valid XML but invalid HTML.
  *
  * @memberOf engine.dataProcessor
  * @implements engine.dataProcessor.DataProcessor
