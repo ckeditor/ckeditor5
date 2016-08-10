@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
 /* bender-tags: view, browser-only */
 
 import Document from '/ckeditor5/engine/view/document.js';

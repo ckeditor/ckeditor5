@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
 /* bender-tags: view, domconverter, browser-only */
 
 import ViewElement from '/ckeditor5/engine/view/element.js';

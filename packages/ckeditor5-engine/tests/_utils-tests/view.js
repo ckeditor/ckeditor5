@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
 /* bender-tags: browser-only */
 
 import { parse, stringify, getData, setData }from '/tests/engine/_utils/view.js';

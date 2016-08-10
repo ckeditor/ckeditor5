@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
 /* bender-tags: browser-only */
 
 import BasicHtmlWriter from '/ckeditor5/engine/dataprocessor/basichtmlwriter.js';

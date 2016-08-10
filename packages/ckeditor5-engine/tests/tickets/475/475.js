@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
+
 import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 
 import Feature from '/ckeditor5/core/feature.js';

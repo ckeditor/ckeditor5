@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global console:false */
+/* globals console:false, document */
 
 import Document from '/ckeditor5/engine/view/document.js';
 import DomEventObserver from '/ckeditor5/engine/view/observer/domeventobserver.js';

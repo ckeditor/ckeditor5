@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals setTimeout, Range, document */
 /* bender-tags: view */
 
 import EditingController from '/ckeditor5/engine/editingcontroller.js';

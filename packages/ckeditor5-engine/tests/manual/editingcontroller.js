@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
+
 import EditingController from '/ckeditor5/engine/editingcontroller.js';
 import Document from '/ckeditor5/engine/model/document.js';
 import ModelRange from '/ckeditor5/engine/model/range.js';
