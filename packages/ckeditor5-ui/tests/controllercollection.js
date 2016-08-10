@@ -12,6 +12,7 @@ import Collection from '/ckeditor5/utils/collection.js';
 import Model from '/ckeditor5/ui/model.js';
 import View from '/ckeditor5/ui/view.js';
 import Template from '/ckeditor5/ui/template.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 testUtils.createSinonSandbox();
 
@@ -268,6 +269,230 @@ describe( 'ControllerCollection', () => {
 			} );
 		} );
 	} );
+
+	describe( 'delegate', () => {
+		it( 'should throw when event names are not strings', () => {
+			const collection = new ControllerCollection( 'foo' );
+
+			expect( () => {
+				collection.delegate();
+			} ).to.throw( CKEditorError, /ui-controllercollection-delegate-wrong-events/ );
+
+			expect( () => {
+				collection.delegate( new Date() );
+			} ).to.throw( CKEditorError, /ui-controllercollection-delegate-wrong-events/ );
+
+			expect( () => {
+				collection.delegate( 'color', new Date() );
+			} ).to.throw( CKEditorError, /ui-controllercollection-delegate-wrong-events/ );
+		} );
+
+		it( 'returns object', () => {
+			expect( new ControllerCollection( 'foo' ).delegate( 'foo' ) ).to.be.an( 'object' );
+		} );
+
+		it( 'provides "to" interface', () => {
+			const delegate = new ControllerCollection( 'foo' ).delegate( 'foo' );
+
+			expect( delegate ).to.have.keys( 'to' );
+			expect( delegate.to ).to.be.a( 'function' );
+		} );
+
+		describe( 'to', () => {
+			it( 'does not chain', () => {
+				const collection = new ControllerCollection( 'foo' );
+				const returned = collection.delegate( 'foo' ).to( {} );
+
+				expect( returned ).to.be.undefined;
+			} );
+
+			it( 'forwards an event to another observable – existing controller', ( done ) => {
+				const target = new Model();
+				const collection = new ControllerCollection( 'foo' );
+				const model = new Model();
+
+				collection.add( new Controller( model ) );
+				collection.delegate( 'foo' ).to( target );
+
+				target.on( 'foo', ( ...args ) => {
+					assertDelegated( args, {
+						expectedName: 'foo',
+						expectedSource: model,
+						expectedPath: [ model, target ],
+						expectedData: []
+					} );
+
+					done();
+				} );
+
+				model.fire( 'foo' );
+			} );
+
+			it( 'forwards an event to another observable – new controller', ( done ) => {
+				const target = new Model();
+				const collection = new ControllerCollection( 'foo' );
+				const model = new Model();
+
+				collection.delegate( 'foo' ).to( target );
+				collection.add( new Controller( model ) );
+
+				target.on( 'foo', ( ...args ) => {
+					assertDelegated( args, {
+						expectedName: 'foo',
+						expectedSource: model,
+						expectedPath: [ model, target ],
+						expectedData: []
+					} );
+
+					done();
+				} );
+
+				model.fire( 'foo' );
+			} );
+
+			it( 'forwards multiple events to another observable', () => {
+				const target = new Model();
+				const collection = new ControllerCollection( 'foo' );
+				const modelA = new Model();
+				const modelB = new Model();
+				const modelC = new Model();
+				const spyFoo = sinon.spy();
+				const spyBar = sinon.spy();
+				const spyBaz = sinon.spy();
+
+				collection.delegate( 'foo', 'bar', 'baz' ).to( target );
+				collection.add( new Controller( modelA ) );
+				collection.add( new Controller( modelB ) );
+				collection.add( new Controller( modelC ) );
+
+				target.on( 'foo', spyFoo );
+				target.on( 'bar', spyBar );
+				target.on( 'baz', spyBaz );
+
+				modelA.fire( 'foo' );
+
+				sinon.assert.calledOnce( spyFoo );
+				sinon.assert.notCalled( spyBar );
+				sinon.assert.notCalled( spyBaz );
+
+				assertDelegated( spyFoo.args[ 0 ], {
+					expectedName: 'foo',
+					expectedSource: modelA,
+					expectedPath: [ modelA, target ],
+					expectedData: []
+				} );
+
+				modelB.fire( 'bar' );
+
+				sinon.assert.calledOnce( spyFoo );
+				sinon.assert.calledOnce( spyBar );
+				sinon.assert.notCalled( spyBaz );
+
+				assertDelegated( spyBar.args[ 0 ], {
+					expectedName: 'bar',
+					expectedSource: modelB,
+					expectedPath: [ modelB, target ],
+					expectedData: []
+				} );
+
+				modelC.fire( 'baz' );
+
+				sinon.assert.calledOnce( spyFoo );
+				sinon.assert.calledOnce( spyBar );
+				sinon.assert.calledOnce( spyBaz );
+
+				assertDelegated( spyBaz.args[ 0 ], {
+					expectedName: 'baz',
+					expectedSource: modelC,
+					expectedPath: [ modelC, target ],
+					expectedData: []
+				} );
+
+				modelC.fire( 'not-delegated' );
+
+				sinon.assert.calledOnce( spyFoo );
+				sinon.assert.calledOnce( spyBar );
+				sinon.assert.calledOnce( spyBaz );
+			} );
+
+			it( 'does not forward events which are not supposed to be delegated', () => {
+				const target = new Model();
+				const collection = new ControllerCollection( 'foo' );
+				const model = new Model();
+				const spyFoo = sinon.spy();
+				const spyBar = sinon.spy();
+				const spyBaz = sinon.spy();
+
+				collection.delegate( 'foo', 'bar', 'baz' ).to( target );
+				collection.add( new Controller( model ) );
+
+				target.on( 'foo', spyFoo );
+				target.on( 'bar', spyBar );
+				target.on( 'baz', spyBaz );
+
+				model.fire( 'foo' );
+				model.fire( 'bar' );
+				model.fire( 'baz' );
+				model.fire( 'not-delegated' );
+
+				sinon.assert.callOrder( spyFoo, spyBar, spyBaz );
+				sinon.assert.callCount( spyFoo, 1 );
+				sinon.assert.callCount( spyBar, 1 );
+				sinon.assert.callCount( spyBaz, 1 );
+			} );
+
+			it( 'stops forwarding when controller removed from the collection', () => {
+				const target = new Model();
+				const collection = new ControllerCollection( 'foo' );
+				const model = new Model();
+				const spy = sinon.spy();
+
+				collection.delegate( 'foo' ).to( target );
+				target.on( 'foo', spy );
+
+				collection.add( new Controller( model ) );
+				model.fire( 'foo' );
+
+				sinon.assert.callCount( spy, 1 );
+
+				collection.remove( 0 );
+				model.fire( 'foo' );
+
+				sinon.assert.callCount( spy, 1 );
+			} );
+
+			it( 'supports deep event delegation', ( done ) => {
+				const collection = new ControllerCollection( 'foo' );
+				const target = new Model();
+				const modelA = new Model();
+				const modelAA = new Model();
+				const data = {};
+
+				const controllerA = new Controller( modelA );
+				const controllerAA = new Controller( modelAA );
+				const barCollection = controllerA.addCollection( 'bar' );
+
+				collection.add( controllerA );
+				collection.delegate( 'foo' ).to( target );
+
+				barCollection.add( controllerAA );
+				barCollection.delegate( 'foo' ).to( modelA );
+
+				target.on( 'foo', ( ...args ) => {
+					assertDelegated( args, {
+						expectedName: 'foo',
+						expectedSource: modelAA,
+						expectedPath: [ modelAA, modelA, target ],
+						expectedData: [ data ]
+					} );
+
+					done();
+				} );
+
+				modelAA.fire( 'foo', data );
+			} );
+		} );
+	} );
 } );
 
 function defineParentViewClass() {
@@ -317,4 +542,13 @@ function createModelCollection() {
 			uid: Number( i ).toString()
 		} ) );
 	}
+}
+
+function assertDelegated( evtArgs, { expectedName, expectedSource, expectedPath, expectedData } ) {
+	const evtInfo = evtArgs[ 0 ];
+
+	expect( evtInfo.name ).to.equal( expectedName );
+	expect( evtInfo.source ).to.equal( expectedSource );
+	expect( evtInfo.path ).to.deep.equal( expectedPath );
+	expect( evtArgs.slice( 1 ) ).to.deep.equal( expectedData );
 }

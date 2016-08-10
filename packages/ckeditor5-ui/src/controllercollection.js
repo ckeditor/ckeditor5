@@ -144,9 +144,9 @@ export default class ControllerCollection extends Collection {
 	 * @returns {Function} The `as` function in the `bind( collection ).as( ... )` chain.
 	 * It activates factory using controller and view classes or uses a custom callback to produce
 	 * controller (view) instances.
-	 * @param {Function} return.ControllerClassOrFunction Specifies the constructor of the controller to be used or
+	 * @returns {Function} return.ControllerClassOrFunction Specifies the constructor of the controller to be used or
 	 * a custom callback function which produces controllers.
-	 * @param {Function} [return.ViewClass] Specifies constructor of the view to be used. If not specified,
+	 * @returns {Function} [return.ViewClass] Specifies constructor of the view to be used. If not specified,
 	 * `ControllerClassOrFunction` works as as custom callback function.
 	 */
 	bind( collection ) {
@@ -171,6 +171,76 @@ export default class ControllerCollection extends Collection {
 				// Update controller collection when a item is removed.
 				collection.on( 'remove', ( evt, item ) => {
 					this.remove( factory.delete( item ) );
+				} );
+			}
+		};
+	}
+
+	/**
+	 * Delegates selected events coming from within controller models in the collection to desired
+	 * {@link utils.EmitterMixin}. For instance:
+	 *
+	 *		const modelA = new Model();
+	 *		const modelB = new Model();
+	 *		const modelC = new Model();
+	 *
+	 *		const controllers = new ControllerCollection( 'name' );
+	 *
+	 *		controllers.delegate( 'eventX' ).to( modelB );
+	 *		controllers.delegate( 'eventX', 'eventY' ).to( modelC );
+	 *
+	 *		controllers.add( new Controller( modelA, ... ) );
+	 *
+	 * then `eventX` is delegated (fired by) `modelB` and `modelC` along with `customData`:
+	 *
+	 *		modelA.fire( 'eventX', customData );
+	 *
+	 * and `eventY` is delegated (fired by) `modelC` along with `customData`:
+	 *
+	 *		modelA.fire( 'eventY', customData );
+	 *
+	 * See {@link utils.EmitterMixin#delegate}.
+	 *
+	 * @param {...String} events {@link ui.Controller#model} event names to be delegated to another {@link utils.EmitterMixin}.
+	 * @returns {ui.ControllerCollection#delegate#to}
+	 */
+	delegate( ...events ) {
+		if ( !events.length || !isStringArray( events ) ) {
+			/**
+			 * All event names must be strings.
+			 *
+			 * @error ui-controllercollection-delegate-wrong-events
+			 */
+			throw new CKEditorError( 'ui-controllercollection-delegate-wrong-events: All event names must be strings.' );
+		}
+
+		return {
+			/**
+			 * Selects destination for {@link utils.EmitterMixin#delegate} events.
+			 *
+			 * @method ui.ControllerCollection.delegate#to
+			 * @param {utils.EmitterMixin} dest An `EmitterMixin` instance which is the destination for delegated events.
+			 */
+			to: ( dest ) => {
+				// Activate delegating on existing controllers in this collection.
+				for ( let controller of this ) {
+					for ( let evtName of events ) {
+						controller.model.delegate( evtName ).to( dest );
+					}
+				}
+
+				// Activate delegating on future controllers in this collection.
+				this.on( 'add', ( evt, controller ) => {
+					for ( let evtName of events ) {
+						controller.model.delegate( evtName ).to( dest );
+					}
+				} );
+
+				// Deactivate delegating when controller is removed from this collection.
+				this.on( 'remove', ( evt, controller ) => {
+					for ( let evtName of events ) {
+						controller.model.stopDelegating( evtName, dest );
+					}
 				} );
 			}
 		};
@@ -222,4 +292,13 @@ function defaultControllerFactory( ControllerClass, ViewClass, controllerMap ) {
 	return genericControllerFactory( ( model, locale ) => {
 		return new ControllerClass( model, new ViewClass( locale ) );
 	}, controllerMap );
+}
+
+// Check if all entries of the array are of `String` type.
+//
+// @private
+// @param {Array} arr An array to be checked.
+// @returns {Boolean}
+function isStringArray( arr ) {
+	return arr.every( a => typeof a == 'string' );
 }
