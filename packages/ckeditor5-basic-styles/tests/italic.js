@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
+
 import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
 import Italic from '/ckeditor5/basic-styles/italic.js';
 import ItalicEngine from '/ckeditor5/basic-styles/italicengine.js';
