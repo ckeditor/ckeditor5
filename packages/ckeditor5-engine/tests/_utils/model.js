@@ -4,11 +4,15 @@
  */
 
 import Mapper from '/ckeditor5/engine/conversion/mapper.js';
-import Document from '/ckeditor5/engine/model/document.js';
-import Range from '/ckeditor5/engine/model/range.js';
-import Position from '/ckeditor5/engine/model/position.js';
-import RootElement from '/ckeditor5/engine/model/rootelement.js';
+import count from '/ckeditor5/utils/count.js';
+import { parse as viewParse, stringify as viewStringify } from '/tests/engine/_utils/view.js';
+import { convertRangeSelection, convertCollapsedSelection } from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
+import { insertElement } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
 
+import RootElement from '/ckeditor5/engine/model/rootelement.js';
+import ModelDocument from '/ckeditor5/engine/model/document.js';
+import ModelRange from '/ckeditor5/engine/model/range.js';
+import ModelPosition from '/ckeditor5/engine/model/position.js';
 import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
 import ModelSelection from '/ckeditor5/engine/model/selection.js';
 import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
@@ -22,15 +26,6 @@ import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import ViewElement from '/ckeditor5/engine/view/containerelement.js';
 import ViewText from '/ckeditor5/engine/view/text.js';
 import viewWriter from '/ckeditor5/engine/view/writer.js';
-
-import count from '/ckeditor5/utils/count.js';
-import { parse as viewParse, stringify as viewStringify } from '/tests/engine/_utils/view.js';
-import { convertRangeSelection, convertCollapsedSelection } from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
-
-// Test utils uses `<$text foo="bar">Lorem ipsum</$text>` notation to create text with attributes, but `$text` is not
-// valid XML element name, so needs to be parsed before conversion to view.
-const VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT = 'view-text-with-attributes';
-const DATA_STRING_TEXT_WITH_ATTRIBUTES_ELEMENT = '$text';
 
 /**
  * Writes the contents of the {@link engine.model.Document Document} to an HTML-like string.
@@ -47,7 +42,7 @@ const DATA_STRING_TEXT_WITH_ATTRIBUTES_ELEMENT = '$text';
  * @returns {String} The stringified data.
  */
 export function getData( document, options = {} ) {
-	if ( !( document instanceof Document ) ) {
+	if ( !( document instanceof ModelDocument ) ) {
 		throw new TypeError( 'Document needs to be an instance of engine.model.Document.' );
 	}
 
@@ -80,7 +75,7 @@ getData._stringify = stringify;
  * @param {String} [options.batchType='transparent'] Batch type used for inserting elements. See {@link engine.model.Batch#type}.
  */
 export function setData( document, data, options = {} ) {
-	if ( !( document instanceof Document ) ) {
+	if ( !( document instanceof ModelDocument ) ) {
 		throw new TypeError( 'Document needs to be an instance of engine.model.Document.' );
 	}
 
@@ -104,8 +99,8 @@ export function setData( document, data, options = {} ) {
 	document.enqueueChanges( () => {
 		// Replace existing model in document by new one.
 		document.batch( options.batchType || 'transparent' )
-			.remove( Range.createIn( modelRoot ) )
-			.insert( Position.createAt( modelRoot, 0 ), modelDocumentFragment );
+			.remove( ModelRange.createIn( modelRoot ) )
+			.insert( ModelPosition.createAt( modelRoot, 0 ), modelDocumentFragment );
 
 		// Clean up previous document selection.
 		document.selection.clearAttributes();
@@ -122,18 +117,18 @@ export function setData( document, data, options = {} ) {
 				// Here we convert each range to have its root re-calculated properly and be placed inside
 				// model document root.
 				if ( range.start.parent instanceof ModelDocumentFragment ) {
-					start = Position.createFromParentAndOffset( modelRoot, range.start.offset );
+					start = ModelPosition.createFromParentAndOffset( modelRoot, range.start.offset );
 				} else {
-					start = Position.createFromParentAndOffset( range.start.parent, range.start.offset );
+					start = ModelPosition.createFromParentAndOffset( range.start.parent, range.start.offset );
 				}
 
 				if ( range.end.parent instanceof ModelDocumentFragment ) {
-					end = Position.createFromParentAndOffset( modelRoot, range.end.offset );
+					end = ModelPosition.createFromParentAndOffset( modelRoot, range.end.offset );
 				} else {
-					end = Position.createFromParentAndOffset( range.end.parent, range.end.offset );
+					end = ModelPosition.createFromParentAndOffset( range.end.parent, range.end.offset );
 				}
 
-				ranges.push( new Range( start, end ) );
+				ranges.push( new ModelRange( start, end ) );
 			}
 
 			document.selection.setRanges( ranges, selection.isBackward );
@@ -165,16 +160,16 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 
 	// Create a range witch wraps passed node.
 	if ( node instanceof RootElement || node instanceof ModelDocumentFragment ) {
-		range = Range.createIn( node );
+		range = ModelRange.createIn( node );
 	} else {
 		// Node is detached - create new document fragment.
 		if ( !node.parent ) {
 			const fragment = new ModelDocumentFragment( node );
-			range = Range.createIn( fragment );
+			range = ModelRange.createIn( fragment );
 		} else {
-			range = new Range(
-				Position.createBefore( node ),
-				Position.createAfter( node )
+			range = new ModelRange(
+				ModelPosition.createBefore( node ),
+				ModelPosition.createAfter( node )
 			);
 		}
 	}
@@ -182,12 +177,12 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	// Get selection from passed selection or position or range if at least one is specified.
 	if ( selectionOrPositionOrRange instanceof ModelSelection ) {
 		selection = selectionOrPositionOrRange;
-	} else if ( selectionOrPositionOrRange instanceof Range ) {
+	} else if ( selectionOrPositionOrRange instanceof ModelRange ) {
 		selection = new ModelSelection();
 		selection.addRange( selectionOrPositionOrRange );
-	} else if ( selectionOrPositionOrRange instanceof Position ) {
+	} else if ( selectionOrPositionOrRange instanceof ModelPosition ) {
 		selection = new ModelSelection();
-		selection.addRange( new Range( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
+		selection.addRange( new ModelRange( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
 	}
 
 	// Setup model to view converter.
@@ -198,10 +193,10 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	// Bind root elements.
 	mapper.bindElements( node.root, viewDocumentFragment );
 
-	modelToView.on( 'insert:$text', insertText() );
-	modelToView.on( 'insert', insertElement() );
-	modelToView.on( 'selection', convertRangeSelection() );
-	modelToView.on( 'selection', convertCollapsedSelection() );
+	modelToView.on( 'insert:$text', insertText(), 'lowest' );
+	modelToView.on( 'insert', insertElement( data => new ViewElement( data.item.name, data.item.getAttributes() )  ), 'lowest' );
+	modelToView.on( 'selection', convertRangeSelection(), 'lowest' );
+	modelToView.on( 'selection', convertCollapsedSelection(), 'lowest' );
 
 	// Convert model to view.
 	modelToView.convertInsert( range );
@@ -214,8 +209,8 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	// Parse view to data string.
 	let data = viewStringify( viewDocumentFragment, viewSelection, { sameSelectionCharacters: true } );
 
-	// Replace valid XML `model-test` element name to `$text`.
-	return data.replace( new RegExp( VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT, 'g' ), DATA_STRING_TEXT_WITH_ATTRIBUTES_ELEMENT );
+	// Replace valid XML `model-text-with-attributes` element name to `$text`.
+	return data.replace( new RegExp( 'model-text-with-attributes', 'g' ), '$text' );
 }
 
 /**
@@ -235,8 +230,8 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 export function parse( data, schema, options = {} ) {
 	const mapper = new Mapper();
 
-	// Replace not accepted by XML `$text` tag name by valid one `model-text`.
-	data = data.replace( new RegExp( '\\' + DATA_STRING_TEXT_WITH_ATTRIBUTES_ELEMENT, 'g' ), VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT );
+	// Replace not accepted by XML `$text` tag name by valid one `model-text-with-attributes`.
+	data = data.replace( new RegExp( '\\$text', 'g' ), 'model-text-with-attributes' );
 
 	// Parse data to view using view utils.
 	const parsedResult = viewParse( data, {
@@ -257,10 +252,10 @@ export function parse( data, schema, options = {} ) {
 	// Setup view to model converter.
 	const viewToModel = new ViewConversionDispatcher( { schema, mapper } );
 
-	viewToModel.on( 'text', convertToModelText() );
-	viewToModel.on( `element:${ VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT }`, convertToModelText( true ), null, 9999 );
-	viewToModel.on( 'element', convertToModelElement(), null, 9999 );
-	viewToModel.on( 'documentFragment', convertToModelFragment(), null, 9999 );
+	viewToModel.on( 'documentFragment', convertToModelFragment(), 'lowest' );
+	viewToModel.on( `element:model-text-with-attributes`, convertToModelText( true ), 'lowest' );
+	viewToModel.on( 'element', convertToModelElement(), 'lowest' );
+	viewToModel.on( 'text', convertToModelText(), 'lowest' );
 
 	// Convert view to model.
 	let model = viewToModel.convert( viewDocumentFragment.root, { context: [ '$root' ] } );
@@ -311,6 +306,8 @@ function convertToModelFragment() {
 			data.output = new ModelDocumentFragment( modelWriter.normalizeNodes( convertedChildren ) );
 			conversionApi.mapper.bindElements( data.output, data.input );
 		}
+
+		evt.stop();
 	};
 }
 
@@ -321,21 +318,20 @@ function convertToModelElement() {
 			inside: data.context
 		};
 
-		// `VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT` is handled in specified way by `convertToModelTextWithAttributes`.
-		if ( data.input.name !== VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT ) {
-			if ( !conversionApi.schema.check( schemaQuery ) ) {
-				throw new Error( `Element '${ schemaQuery.name }' not allowed in context.` );
-			}
-
-			if ( consumable.consume( data.input, { name: true } ) ) {
-				data.output = new ModelElement( data.input.name, data.input.getAttributes() );
-				conversionApi.mapper.bindElements( data.output, data.input );
-
-				data.context.push( data.output );
-				data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
-				data.context.pop();
-			}
+		if ( !conversionApi.schema.check( schemaQuery ) ) {
+			throw new Error( `Element '${ schemaQuery.name }' not allowed in context.` );
 		}
+
+		if ( consumable.consume( data.input, { name: true } ) ) {
+			data.output = new ModelElement( data.input.name, data.input.getAttributes() );
+			conversionApi.mapper.bindElements( data.output, data.input );
+
+			data.context.push( data.output );
+			data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
+			data.context.pop();
+		}
+
+		evt.stop();
 	};
 }
 
@@ -363,22 +359,12 @@ function convertToModelText( withAttributes = false ) {
 				data.output = node;
 			}
 		}
+
+		evt.stop();
 	};
 }
 
 // -- converters model -> view -----------------------------------------------------
-
-function insertElement() {
-	return ( evt, data, consumable, conversionApi ) => {
-		consumable.consume( data.item, 'insert' );
-
-		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-		const viewElement = new ViewElement( data.item.name, data.item.getAttributes() );
-
-		conversionApi.mapper.bindElements( data.item, viewElement );
-		viewWriter.insert( viewPosition, viewElement );
-	};
-}
 
 function insertText() {
 	return ( evt, data, consumable, conversionApi ) => {
@@ -389,7 +375,7 @@ function insertText() {
 		let node;
 
 		if ( count( data.item.getAttributes() ) ) {
-			node = new ViewElement( VIEW_TEXT_WITH_ATTRIBUTES_ELEMENT, data.item.getAttributes(), [ viewText ] );
+			node = new ViewElement( 'model-text-with-attributes', data.item.getAttributes(), [ viewText ] );
 		} else {
 			node = viewText;
 		}
