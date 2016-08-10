@@ -77,7 +77,7 @@ a.ck-button {
 		float: left;
 	}
 
-	&.ck-button-with-text {
+	&.ck-button_with-text {
 		padding: ck-spacing( 'small' ) ck-spacing();
 
 		@include ck-button-icon {
