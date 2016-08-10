@@ -10,6 +10,8 @@ import { NBSP_FILLER } from '../view/filler.js';
 /**
  * XmlDataProcessor class.
  * This data processor implementation uses XML as input/output data.
+ * This class is needed because unlike HTML, XML allows to use any tag with any value.
+ * E.g. `<link>Text</link>` is a valid XML byt invalid HTML.
  *
  * @memberOf engine.dataProcessor
  * @implements engine.dataProcessor.DataProcessor
@@ -17,8 +19,22 @@ import { NBSP_FILLER } from '../view/filler.js';
 export default class XmlDataProcessor {
 	/**
 	 * Creates a new instance of the XmlDataProcessor class.
+	 *
+	 * @param {Object} options Configuration options.
+	 * @param {Array<String>} [options.namespaces=[]] List of namespaces allowed to use in XML input.
 	 */
-	constructor() {
+	constructor( options = {} ) {
+		/**
+		 * List of namespaces allowed to use in XML input.
+		 *
+		 * E.g. Registering namespaces [ 'attribute', 'container' ] allows to use `<attirbute:tagName></attribute:tagName>` and
+		 * `<container:tagName></container:tagName>` input. It is mainly for debugging.
+		 *
+		 * @private
+		 * @member {DOMParser} engine.dataProcessor.XmlDataProcessor#_namespaces
+		 */
+		this._namespaces = options.namespaces || [];
+
 		/**
 		 * DOMParser instance used to parse XML string to XMLDocument.
 		 *
@@ -36,7 +52,8 @@ export default class XmlDataProcessor {
 		this._domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
 
 		/**
-		 * BasicHtmlWriter instance used to convert DOM elements to HTML string.
+		 * BasicHtmlWriter instance used to convert DOM elements to XML string.
+		 * There is no need to use dedicated for XML writer because BasicHtmlWriter works well in this case.
 		 *
 		 * @private
 		 * @member {engine.dataProcessor.BasicHtmlWriter} engine.dataProcessor.HtmlDataProcessor#_htmlWriter
@@ -54,7 +71,8 @@ export default class XmlDataProcessor {
 		// Convert view DocumentFragment to DOM DocumentFragment.
 		const domFragment = this._domConverter.viewToDom( viewFragment, document );
 
-		// Convert DOM DocumentFragment to HTML output.
+		// Convert DOM DocumentFragment to XML output.
+		// There is no need to use dedicated for XML serializing method because BasicHtmlWriter works well in this case.
 		return this._htmlWriter.getHtml( domFragment );
 	}
 
@@ -81,7 +99,11 @@ export default class XmlDataProcessor {
 	 * @returns {DocumentFragment}
 	 */
 	_toDom( data ) {
-		data = `<xml xmlns:attribute="foo" xmlns:container="foo">${ data }</xml>`;
+		// Stringify namespaces.
+		const namespaces = this._namespaces.map( nsp => `xmlns:${ nsp }="nsp"` ).join( ' ' );
+
+		// Wrap data into root element with optional namespace definitions.
+		data = `<xml ${ namespaces }>${ data }</xml>`;
 
 		const document = this._domParser.parseFromString( data, 'text/xml' );
 

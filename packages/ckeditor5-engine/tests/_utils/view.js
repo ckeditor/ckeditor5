@@ -276,7 +276,9 @@ export function parse( data, options = {} ) {
 	const rangeParser = new RangeParser( {
 		sameSelectionCharacters: options.sameSelectionCharacters
 	} );
-	const processor = new XmlDataProcessor();
+	const processor = new XmlDataProcessor( {
+		namespaces: [ 'attribute', 'container' ]
+	} );
 
 	// Convert data to view.
 	let view = processor.toView( data );

@@ -11,7 +11,11 @@ import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'XmlDataProcessor', () => {
-	const dataProcessor = new XmlDataProcessor();
+	let dataProcessor;
+
+	beforeEach( () => {
+		dataProcessor = new XmlDataProcessor();
+	} );
 
 	describe( 'toView', () => {
 		it( 'should return empty DocumentFragment when empty string is passed', () => {
@@ -36,6 +40,22 @@ describe( 'XmlDataProcessor', () => {
 			const fragment = dataProcessor.toView( 'foo <b>bar</b> text' );
 
 			expect( stringify( fragment ) ).to.equal( 'foo <b>bar</b> text' );
+		} );
+
+		it( 'should allow to use registered namespaces', () => {
+			dataProcessor = new XmlDataProcessor( {
+				namespaces: [ 'foo', 'bar' ]
+			} );
+
+			const fragment = dataProcessor.toView( '<foo:a><bar:b></bar:b></foo:a><bar:b><foo:a></foo:a></bar:b>' );
+
+			expect( stringify( fragment ) ).to.equal( '<foo:a><bar:b></bar:b></foo:a><bar:b><foo:a></foo:a></bar:b>' );
+		} );
+
+		it( 'should throw an error when use not registered namespaces', () => {
+			expect( () => {
+				dataProcessor.toView( '<foo:a></foo:a>' );
+			} ).to.throw( Error, /Parse error/ );
 		} );
 
 		it( 'should thrown an error when markup is invalid', () => {
