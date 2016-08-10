@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
+
 import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
 import Undo from '/ckeditor5/undo/undo.js';
 import UndoEngine from '/ckeditor5/undo/undoengine.js';
