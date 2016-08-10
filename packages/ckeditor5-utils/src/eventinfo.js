@@ -27,6 +27,13 @@ export default class EventInfo {
 		 */
 		this.name = name;
 
+		/**
+		 * Path this event has followed. See {@link utils.EmitterMixin#delegate}.
+		 *
+		 * @member utils.EventInfo#path
+		 */
+		this.path = [];
+
 		// The following methods are defined in the constructor because they must be re-created per instance.
 
 		/**

@@ -11,6 +11,7 @@ describe( 'EventInfo', () => {
 
 		expect( event.source ).to.equal( this );
 		expect( event.name ).to.equal( 'test' );
+		expect( event.path ).to.deep.equal( [] );
 		expect( event.stop.called ).to.not.be.true;
 		expect( event.off.called ).to.not.be.true;
 	} );
