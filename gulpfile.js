@@ -48,10 +48,13 @@ gulp.task( 'relink', ckeditor5DevEnv.relink );
 gulp.task( 'install', ckeditor5DevEnv.installPackage );
 gulp.task( 'exec', ckeditor5DevEnv.execOnRepositories );
 
-// Bundling tasks.
+// Bundling and building tasks.
 const ckeditor5DevBundle = require( 'ckeditor5-dev-bundler-rollup' )( config );
 gulp.task( 'bundle:clean', ckeditor5DevBundle.cleanFromConfig );
-gulp.task( 'bundle:generate',
+gulp.task( 'bundle:minify:js', ckeditor5DevBundle.minify.jsFromConfig );
+gulp.task( 'bundle:minify:css', ckeditor5DevBundle.minify.cssFromConfig );
+
+gulp.task( 'build:generate',
 	[
 		'bundle:clean',
 		'compile:js:esnext',
@@ -59,11 +62,9 @@ gulp.task( 'bundle:generate',
 	],
 	ckeditor5DevBundle.generateFromConfig
 );
-gulp.task( 'bundle:minify:js', ckeditor5DevBundle.minify.jsFromConfig );
-gulp.task( 'bundle:minify:css', ckeditor5DevBundle.minify.cssFromConfig );
 
-gulp.task( 'bundle', ( callback ) => {
-	runSequence( 'bundle:generate',
+gulp.task( 'build', ( callback ) => {
+	runSequence( 'build:generate',
 		[
 			'bundle:minify:js',
 			'bundle:minify:css'
