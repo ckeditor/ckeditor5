@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
+
 import testUtils from '/tests/ui/_utils/utils.js';
 
 import Collection from '/ckeditor5/utils/collection.js';
