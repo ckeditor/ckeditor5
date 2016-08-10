@@ -7,11 +7,11 @@ import BaseCommand from './basecommand.js';
 import { transformDelta, transformRangesByDeltas } from './basecommand.js';
 
 /**
- * Undo command stores {@link engine.model.Batch batches} applied to the {@link engine.model.Document document}
+ * The undo command stores {@link engine.model.Batch batches} applied to the {@link engine.model.Document document}
  * and is able to undo a batch by reversing it and transforming by other batches from {@link engine.model.Document#history history}
  * that happened after the reversed batch.
  *
- * Undo command also takes care of restoring {@link engine.model.Document#selection selection} to the state before the
+ * The undo command also takes care of restoring the {@link engine.model.Document#selection selection} to the state before the
  * undone batch was applied.
  *
  * @memberOf undo
@@ -19,13 +19,13 @@ import { transformDelta, transformRangesByDeltas } from './basecommand.js';
  */
 export default class UndoCommand extends BaseCommand {
 	/**
-	 * Executes the command: reverts a {@link engine.model.Batch batch} added to the command's stack, transforms
-	 * and applies reverted version on the {@link engine.model.Document document} and removes the batch from the stack.
-	 * Then, restores {@link engine.model.Document#selection document selection}.
+	 * Executes the command. This method reverts a {@link engine.model.Batch batch} added to the command's stack, transforms
+	 * and applies the reverted version on the {@link engine.model.Document document} and removes the batch from the stack.
+	 * Then, it restores the {@link engine.model.Document#selection document selection}.
 	 *
 	 * @protected
 	 * @fires undo.UndoCommand#event:revert
-	 * @param {engine.model.Batch} [batch] Batch that should be undone. If not set, the last added batch will be undone.
+	 * @param {engine.model.Batch} [batch] A batch that should be undone. If not set, the last added batch will be undone.
 	 */
 	_doExecute( batch = null ) {
 		// If batch is not given, set `batchIndex` to the last index in command stack.
@@ -48,11 +48,11 @@ export default class UndoCommand extends BaseCommand {
 	}
 
 	/**
-	 * Returns index in {@link undo.BaseCommand#_stack} pointing to the item that is storing a batch that has given
+	 * Returns an index in {@link undo.BaseCommand#_stack} pointing to the item that is storing a batch that has a given
 	 * {@link engine.model.Batch#baseVersion}.
 	 *
 	 * @private
-	 * @param {Number} baseVersion Base version of the batch to find.
+	 * @param {Number} baseVersion The base version of the batch to find.
 	 * @returns {Number|null}
 	 */
 	_getItemIndexFromBaseVersion( baseVersion ) {
@@ -66,11 +66,11 @@ export default class UndoCommand extends BaseCommand {
 	}
 
 	/**
-	 * Un-does a batch by reversing a batch from history, transforming that reversed batch and applying it. This is
+	 * Undoes a batch by reversing a batch from history, transforming that reversed batch and applying it. This is
 	 * a helper method for {@link undo.UndoCommand#_doExecute}.
 	 *
 	 * @private
-	 * @param {engine.model.Batch} batchToUndo Batch, which deltas will be reversed, transformed and applied.
+	 * @param {engine.model.Batch} batchToUndo A batch whose deltas will be reversed, transformed and applied.
 	 */
 	_undo( batchToUndo ) {
 		const document = this.editor.document;

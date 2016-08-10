@@ -7,21 +7,21 @@ import BaseCommand from './basecommand.js';
 import { transformDelta as transformDelta } from './basecommand.js';
 
 /**
- * Redo command stores {@link engine.model.Batch batches} that were used to undo a batch by {@link undo.UndoCommand UndoCommand}.
- * It is able to redo a previously undone batch by reversing the undoing batches created by `UndoCommand`. Reversed batch is
+ * The redo command stores {@link engine.model.Batch batches} that were used to undo a batch by {@link undo.UndoCommand UndoCommand}.
+ * It is able to redo a previously undone batch by reversing the undoing batches created by `UndoCommand`. A reversed batch is
  * also transformed by batches from {@link engine.model.Document#history history} that happened after it and are not other redo batches.
  *
- * Redo command also takes care of restoring {@link engine.model.Document#selection selection} to the state before
- * undone batch was applied.
+ * The redo command also takes care of restoring the {@link engine.model.Document#selection selection} to the state before
+ * an undone batch was applied.
  *
  * @memberOf undo
  * @extends undo.BaseCommand
  */
 export default class RedoCommand extends BaseCommand {
 	/**
-	 * Executes the command: reverts last {@link engine.model.Batch batch} added to the command's stack, applies
-	 * reverted and transformed version on the {@link engine.model.Document document} and removes the batch from the stack.
-	 * Then, restores {@link engine.model.Document#selection document selection}.
+	 * Executes the command. This method reverts the last {@link engine.model.Batch batch} added to the command's stack, applies
+	 * the reverted and transformed version on the {@link engine.model.Document document} and removes the batch from the stack.
+	 * Then, it restores the {@link engine.model.Document#selection document selection}.
 	 *
 	 * @protected
 	 */
@@ -50,11 +50,11 @@ export default class RedoCommand extends BaseCommand {
 	}
 
 	/**
-	 * Re-does a batch by reversing the batch that undone it, transforming that batch and applying it. This is
+	 * Redoes a batch by reversing the batch that has undone it, transforming that batch and applying it. This is
 	 * a helper method for {@link undo.RedoCommand#_doExecute}.
 	 *
 	 * @private
-	 * @param {engine.model.Batch} storedBatch Batch, which deltas will be reversed, transformed and applied.
+	 * @param {engine.model.Batch} storedBatch The batch whose deltas will be reversed, transformed and applied.
 	 */
 	_redo( storedBatch ) {
 		const document = this.editor.document;

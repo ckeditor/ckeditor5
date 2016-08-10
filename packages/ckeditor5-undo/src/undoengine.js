@@ -8,7 +8,7 @@ import UndoCommand from './undocommand.js';
 import RedoCommand from './redocommand.js';
 
 /**
- * Undo engine feature.
+ * The undo engine feature.
  *
  * Undo brings in possibility to undo and redo changes done in the model by deltas through
  * the {@link engine.model.Document#batch Batch API}.
@@ -24,23 +24,23 @@ export default class UndoEngine extends Feature {
 		super( editor );
 
 		/**
-		 * Command which manages undo {@link engine.model.Batch batches} stack (history).
-		 * Created and registered during {@link undo.UndoEngine#init feature initialization}.
+		 * The command that manages undo {@link engine.model.Batch batches} stack (history).
+		 * Created and registered during the {@link undo.UndoEngine#init feature initialization}.
 		 *
 		 * @private
 		 * @member {undo.UndoEngineCommand} undo.UndoEngine#_undoCommand
 		 */
 
 		/**
-		 * Command which manages redo {@link engine.model.Batch batches} stack (history).
-		 * Created and registered during {@link undo.UndoEngine#init feature initialization}.
+		 * The command that manages redo {@link engine.model.Batch batches} stack (history).
+		 * Created and registered during the {@link undo.UndoEngine#init feature initialization}.
 		 *
 		 * @private
 		 * @member {undo.UndoEngineCommand} undo.UndoEngine#_redoCommand
 		 */
 
 		/**
-		 * Keeps track of which batch has been registered in Undo.
+		 * Keeps track of which batches were registered in undo.
 		 *
 		 * @private
 		 * @member {WeakSet.<engine.model.Batch>} undo.UndoEngine#_batchRegistry

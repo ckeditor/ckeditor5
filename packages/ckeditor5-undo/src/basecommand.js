@@ -19,7 +19,7 @@ export default class BaseCommand extends Command {
 		/**
 		 * Stack of items stored by the command. These are pairs of:
 		 *
-		 * * {@link engine.model.Batch batch} saved by the command and,
+		 * * {@link engine.model.Batch batch} saved by the command,
 		 * * {@link engine.model.Selection selection} state at the moment of saving the batch.
 		 *
 		 * @protected
@@ -43,7 +43,7 @@ export default class BaseCommand extends Command {
 	 * Stores a batch in the command, together with the selection state of the {@link engine.model.Document document}
 	 * created by the editor which this command is registered to.
 	 *
-	 * @param {engine.model.Batch} batch Batch to add.
+	 * @param {engine.model.Batch} batch The batch to add.
 	 */
 	addBatch( batch ) {
 		const selection = {
@@ -71,11 +71,11 @@ export default class BaseCommand extends Command {
 	}
 
 	/**
-	 * Restores {@link engine.model.Document#selection document selection} state after a batch has been undone.
+	 * Restores the {@link engine.model.Document#selection document selection} state after a batch was undone.
 	 *
 	 * @protected
 	 * @param {Array.<engine.model.Range>} ranges Ranges to be restored.
-	 * @param {Boolean} isBackward Flag describing if restored range was selected forward or backward.
+	 * @param {Boolean} isBackward A flag describing whether the restored range was selected forward or backward.
 	 */
 	_restoreSelection( ranges, isBackward, deltas ) {
 		const document = this.editor.document;
