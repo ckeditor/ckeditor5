@@ -161,7 +161,7 @@ export function convertSelectionAttribute( elementCreator ) {
 
 		const viewElement = elementCreator instanceof ViewElement ?
 				elementCreator.clone( true ) :
-				elementCreator( data.value, selection, consumable, conversionApi );
+				elementCreator( data.value, data, selection, consumable, conversionApi );
 
 		viewPosition = viewWriter.wrapPosition( viewPosition, viewElement );
 

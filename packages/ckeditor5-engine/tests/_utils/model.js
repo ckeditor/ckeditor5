@@ -4,10 +4,13 @@
  */
 
 import Mapper from '/ckeditor5/engine/conversion/mapper.js';
-import count from '/ckeditor5/utils/count.js';
 import { parse as viewParse, stringify as viewStringify } from '/tests/engine/_utils/view.js';
-import { convertRangeSelection, convertCollapsedSelection } from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
-import { insertElement } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
+import {
+	convertRangeSelection,
+	convertCollapsedSelection,
+	convertSelectionAttribute
+} from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
+import { insertText, insertElement, wrap } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
 
 import RootElement from '/ckeditor5/engine/model/rootelement.js';
 import ModelDocument from '/ckeditor5/engine/model/document.js';
@@ -18,14 +21,14 @@ import ModelSelection from '/ckeditor5/engine/model/selection.js';
 import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import ModelElement from '/ckeditor5/engine/model/element.js';
 import ModelText from '/ckeditor5/engine/model/text.js';
+import ModelTextProxy from '/ckeditor5/engine/model/textproxy.js';
 import modelWriter from '/ckeditor5/engine/model/writer.js';
 
 import ViewConversionDispatcher from '/ckeditor5/engine/conversion/viewconversiondispatcher.js';
 import ViewSelection from '/ckeditor5/engine/view/selection.js';
 import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import ViewElement from '/ckeditor5/engine/view/containerelement.js';
-import ViewText from '/ckeditor5/engine/view/text.js';
-import viewWriter from '/ckeditor5/engine/view/writer.js';
+import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 
 /**
  * Writes the contents of the {@link engine.model.Document Document} to an HTML-like string.
@@ -194,9 +197,17 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	mapper.bindElements( node.root, viewDocumentFragment );
 
 	modelToView.on( 'insert:$text', insertText(), 'lowest' );
+	modelToView.on( 'addAttribute', wrap( ( value, data ) => {
+		if ( data.item instanceof ModelTextProxy ) {
+			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: value } );
+		}
+	} ), 'lowest' );
 	modelToView.on( 'insert', insertElement( data => new ViewElement( data.item.name, data.item.getAttributes() )  ), 'lowest' );
 	modelToView.on( 'selection', convertRangeSelection(), 'lowest' );
 	modelToView.on( 'selection', convertCollapsedSelection(), 'lowest' );
+	modelToView.on( 'selectionAttribute', convertSelectionAttribute( ( value, data ) => {
+		return new ViewAttributeElement( 'model-text-with-attributes', { [ data.key ]: value } );
+	} ), 'lowest' );
 
 	// Convert model to view.
 	modelToView.convertInsertion( range );
@@ -359,28 +370,6 @@ function convertToModelText( withAttributes = false ) {
 				data.output = node;
 			}
 		}
-
-		evt.stop();
-	};
-}
-
-// -- converters model -> view -----------------------------------------------------
-
-function insertText() {
-	return ( evt, data, consumable, conversionApi ) => {
-		consumable.consume( data.item, 'insert' );
-
-		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-		const viewText = new ViewText( data.item.data );
-		let node;
-
-		if ( count( data.item.getAttributes() ) ) {
-			node = new ViewElement( 'model-text-with-attributes', data.item.getAttributes(), [ viewText ] );
-		} else {
-			node = viewText;
-		}
-
-		viewWriter.insert( viewPosition, node );
 
 		evt.stop();
 	};

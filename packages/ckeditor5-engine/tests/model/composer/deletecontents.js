@@ -94,7 +94,7 @@ describe( 'Delete utils', () => {
 
 				deleteContents( document.batch(), document.selection );
 
-				expect( getData( document ) ).to.equal( '<$text bold="true">fo</$text>[]ar' );
+				expect( getData( document ) ).to.equal( '<$text bold="true">fo[]</$text>ar' );
 				expect( document.selection.getAttribute( 'bold' ) ).to.equal( 'true' );
 			} );
 

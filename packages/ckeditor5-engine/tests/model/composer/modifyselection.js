@@ -303,7 +303,7 @@ describe( 'Delete utils', () => {
 
 					modifySelection( document.selection, { direction: 'backward' } );
 
-					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p><$text bold="true">foo</$text>[]b</p>' );
+					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p><$text bold="true">foo[]</$text>b</p>' );
 					expect( document.selection.getAttribute( 'bold' ) ).to.equal( 'true' );
 				} );
 			} );
