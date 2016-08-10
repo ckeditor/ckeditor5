@@ -450,39 +450,9 @@ describe( 'model test utils', () => {
 			}
 		} );
 
-		it( 'throws when unexpected closing tag', () => {
+		it( 'throws when invalid XML', () => {
 			expect( () => {
 				parse( '<a><b></a></b>' );
-			} ).to.throw( Error );
-		} );
-
-		it( 'throws when unexpected attribute', () => {
-			expect( () => {
-				parse( '<a ?></a>' );
-			} ).to.throw( Error );
-		} );
-
-		it( 'throws when incorrect tag', () => {
-			expect( () => {
-				parse( '<a' );
-			} ).to.throw( Error );
-		} );
-
-		it( 'throws when missing closing tag', () => {
-			expect( () => {
-				parse( '<a><b></b>' );
-			} ).to.throw( Error );
-		} );
-
-		it( 'throws when missing opening tag for text', () => {
-			expect( () => {
-				parse( '</$text>' );
-			} ).to.throw( Error );
-		} );
-
-		it( 'throws when missing closing tag for text', () => {
-			expect( () => {
-				parse( '<$text>' );
 			} ).to.throw( Error );
 		} );
 
