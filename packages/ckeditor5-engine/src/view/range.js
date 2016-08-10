@@ -336,12 +336,12 @@ export default class Range {
 	}
 
 	/**
-	 * Creates a range that starts before given {@link engine.view.Node node} and ends after it.
+	 * Creates a range that starts before given {@link engine.view.Item view item} and ends after it.
 	 *
-	 * @param {engine.view.Node} node
+	 * @param {engine.view.Item} item
 	 * @returns {engine.view.Range}
 	 */
-	static createOn( node ) {
-		return this.createFromPositionAndShift( Position.createBefore( node ), 1 );
+	static createOn( item ) {
+		return this.createFromPositionAndShift( Position.createBefore( item ), 1 );
 	}
 }

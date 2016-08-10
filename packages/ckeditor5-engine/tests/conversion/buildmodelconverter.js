@@ -99,7 +99,7 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
@@ -110,7 +110,7 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelElement( 'image' );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><img></img></div>' );
 		} );
@@ -123,7 +123,7 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelElement( 'header', { level: 2 }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><h2>foobar</h2></div>' );
 		} );
@@ -140,7 +140,7 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelText( 'foo', { bold: true } );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><strong>foo</strong></div>' );
 
@@ -157,7 +157,7 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelText( 'foo', { bold: true } );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><strong>foo</strong></div>' );
 
@@ -174,7 +174,7 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelText( 'foo', { italic: 'em' } );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><em>foo</em></div>' );
 
@@ -207,7 +207,7 @@ describe( 'Model converter builder', () => {
 			modelDoc.selection._updateAttributes();
 
 			// Convert stuff.
-			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 			dispatcher.convertSelection( modelDoc.selection );
 
 			// Check if view structure is ok.
@@ -266,7 +266,7 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelElement( 'paragraph', { class: 'myClass' }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="myClass">foobar</p></div>' );
 
@@ -287,7 +287,7 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelElement( 'paragraph', { theme: 'abc' }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="abc">foobar</p></div>' );
 
@@ -308,7 +308,7 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelElement( 'paragraph', { 'highlighted': true }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p style="background:yellow;">foobar</p></div>' );
 
@@ -326,7 +326,7 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelElement( 'paragraph', { theme: 'nice' }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="nice-theme">foobar</p></div>' );
 
@@ -350,7 +350,7 @@ describe( 'Model converter builder', () => {
 			let modelElement = new ModelElement( 'custom', null, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
-			dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><other>foobar</other></div>' );
 		} );
@@ -366,7 +366,7 @@ describe( 'Model converter builder', () => {
 		let modelElement = new ModelElement( 'div', null, new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) ) );
 		modelRoot.appendChildren( modelElement );
 
-		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><div><p>foobar</p></div></div>' );
 	} );

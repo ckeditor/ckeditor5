@@ -199,7 +199,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	modelToView.on( 'selection', convertCollapsedSelection(), 'lowest' );
 
 	// Convert model to view.
-	modelToView.convertInsert( range );
+	modelToView.convertInsertion( range );
 
 	// Convert model selection to view selection.
 	if ( selection ) {

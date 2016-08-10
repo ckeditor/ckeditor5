@@ -123,7 +123,7 @@ export default class DataController {
 		const viewDocumentFragment = new ViewDocumentFragment();
 		this._mapper.bindElements( modelRoot, viewDocumentFragment );
 
-		this.modelToView.convertInsert( modelRange );
+		this.modelToView.convertInsertion( modelRange );
 
 		this._mapper.clearBindings();
 
