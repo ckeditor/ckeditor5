@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
+
 import DeleteObserver from '/ckeditor5/typing/deleteobserver.js';
 import ViewDocument from '/ckeditor5/engine/view/document.js';
 import DomEventData from '/ckeditor5/engine/view/observer/domeventdata.js';
