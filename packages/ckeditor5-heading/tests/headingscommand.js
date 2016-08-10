@@ -65,32 +65,32 @@ describe( 'HeadingsCommand', () => {
 			}
 
 			it( 'uses paragraph as default value', () => {
-				setData( document, '<heading1>foo<selection />bar</heading1>' );
+				setData( document, '<heading1>foo[]bar</heading1>' );
 				command._doExecute();
 
-				expect( getData( document ) ).to.equal( '<paragraph>foo<selection />bar</paragraph>' );
+				expect( getData( document ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
 
 			it( 'converts to default format when executed with already applied format', () => {
-				setData( document, '<heading1>foo<selection />bar</heading1>' );
+				setData( document, '<heading1>foo[]bar</heading1>' );
 				command._doExecute( 'heading1' );
 
-				expect( getData( document ) ).to.equal( '<paragraph>foo<selection />bar</paragraph>' );
+				expect( getData( document ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
 
 			it( 'converts topmost blocks', () => {
-				setData( document, '<heading1><b>foo<selection /></b>bar</heading1>' );
+				setData( document, '<heading1><b>foo[]</b>bar</heading1>' );
 				command._doExecute( 'heading1' );
 
-				expect( getData( document ) ).to.equal( '<paragraph><b>foo<selection /></b>bar</paragraph>' );
+				expect( getData( document ) ).to.equal( '<paragraph><b>foo[]</b>bar</paragraph>' );
 			} );
 
 			function test( from, to ) {
 				it( `converts ${ from.id } to ${ to.id } on collapsed selection`, () => {
-					setData( document, `<${ from.id }>foo<selection />bar</${ from.id }>` );
+					setData( document, `<${ from.id }>foo[]bar</${ from.id }>` );
 					command._doExecute( to.id );
 
-					expect( getData( document ) ).to.equal( `<${ to.id }>foo<selection />bar</${ to.id }>` );
+					expect( getData( document ) ).to.equal( `<${ to.id }>foo[]bar</${ to.id }>` );
 				} );
 			}
 		} );
@@ -104,29 +104,29 @@ describe( 'HeadingsCommand', () => {
 			}
 
 			it( 'converts all elements where selection is applied', () => {
-				setData( document, '<heading1>foo<selection></heading1><heading2>bar</heading2><heading2></selection>baz</heading2>' );
+				setData( document, '<heading1>foo[</heading1><heading2>bar</heading2><heading2>]baz</heading2>' );
 				command._doExecute( 'paragraph' );
 
 				expect( getData( document ) ).to.equal(
-					'<paragraph>foo<selection></paragraph><paragraph>bar</paragraph><paragraph></selection>baz</paragraph>'
+					'<paragraph>foo[</paragraph><paragraph>bar</paragraph><paragraph>]baz</paragraph>'
 				);
 			} );
 
 			it( 'resets to default value all elements with same format', () => {
-				setData( document, '<heading1>foo<selection></heading1><heading1>bar</heading1><heading2>baz</heading2></selection>' );
+				setData( document, '<heading1>foo[</heading1><heading1>bar</heading1><heading2>baz</heading2>]' );
 				command._doExecute( 'heading1' );
 
 				expect( getData( document ) ).to.equal(
-					'<paragraph>foo<selection></paragraph><paragraph>bar</paragraph><heading2>baz</heading2></selection>'
+					'<paragraph>foo[</paragraph><paragraph>bar</paragraph><heading2>baz</heading2>]'
 				);
 			} );
 
 			function test( from, to ) {
 				it( `converts ${ from.id } to ${ to.id } on non-collapsed selection`, () => {
-					setData( document, `<${ from.id }>foo<selection>bar</${ from.id }><${ from.id }>baz</selection>qux</${ from.id }>` );
+					setData( document, `<${ from.id }>foo[bar</${ from.id }><${ from.id }>baz]qux</${ from.id }>` );
 					command._doExecute( to.id );
 
-					expect( getData( document ) ).to.equal( `<${ to.id }>foo<selection>bar</${ to.id }><${ to.id }>baz</selection>qux</${ to.id }>` );
+					expect( getData( document ) ).to.equal( `<${ to.id }>foo[bar</${ to.id }><${ to.id }>baz]qux</${ to.id }>` );
 				} );
 			}
 		} );
