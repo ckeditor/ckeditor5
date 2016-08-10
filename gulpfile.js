@@ -33,7 +33,7 @@ require( './dev/tasks/test/tasks' )( config ).register();
 const ckeditor5Lint = require( 'ckeditor5-dev-lint' )( config );
 gulp.task( 'lint', ckeditor5Lint.lint );
 gulp.task( 'lint-staged', ckeditor5Lint.lintStaged );
-gulp.task( 'default', [ 'build' ] );
+gulp.task( 'default', [ 'compile' ] );
 gulp.task( 'pre-commit', [ 'lint-staged' ] );
 
 // Development environment tasks.
