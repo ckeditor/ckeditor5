@@ -406,8 +406,7 @@ function stringifyAttributeValue( data ) {
 
 // Loop trough attributes map and converts each value by passed converter.
 function *convertAttributes( attributes, converter ) {
-	for ( let attribute of attributes ) {
-		attribute[ 1 ] = converter( attribute[ 1 ] );
-		yield attribute;
+	for ( let [ key, value ] of attributes ) {
+		yield [ key, converter( value ) ];
 	}
 }
