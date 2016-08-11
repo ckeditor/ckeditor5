@@ -56,13 +56,6 @@ describe( 'model test utils', () => {
 			sinon.assert.calledWithExactly( stringifySpy, root, document.selection );
 		} );
 
-		it( 'should support unicode', () => {
-			root.appendChildren( 'நிலைக்கு' );
-			document.selection.addRange( Range.createFromParentsAndOffsets( root, 2, root, 6 ) );
-
-			expect( getData( document ) ).to.equal( 'நி[லைக்]கு' );
-		} );
-
 		it( 'should throw an error when passing invalid document', () => {
 			expect( () => {
 				getData( { invalid: 'document' } );
@@ -117,6 +110,10 @@ describe( 'model test utils', () => {
 			test( 'this is [test text]' );
 		} );
 
+		it( 'should insert unicode text with selection', () => {
+			test( 'நி[லைக்]கு' );
+		} );
+
 		it( 'should insert element', () => {
 			test( '<b>foo bar</b>', '[]<b>foo bar</b>' );
 		} );
@@ -140,10 +137,6 @@ describe( 'model test utils', () => {
 			expect( document.selection.isBackward ).to.true;
 		} );
 
-		it( 'should support unicode', () => {
-			test( 'நி[லைக்]கு' );
-		} );
-
 		it( 'should throw an error when passing invalid document', () => {
 			expect( () => {
 				setData( { invalid: 'document' } );
@@ -161,6 +154,7 @@ describe( 'model test utils', () => {
 	describe( 'stringify', () => {
 		it( 'should stringify text', () => {
 			const text = new Text( 'text', { underline: true, bold: true } );
+
 			expect( stringify( text ) ).to.equal( '<$text bold="true" underline="true">text</$text>' );
 		} );
 
@@ -201,7 +195,7 @@ describe( 'model test utils', () => {
 		it( 'writes element attributes', () => {
 			root.appendChildren(
 				new Element( 'a', { foo: true, bar: 1, car: false }, [
-					new Element( 'b', { fooBar: 'x y', barFoo: JSON.stringify( { x: 1, y: 2 } ) } )
+					new Element( 'b', { fooBar: 'x y', barFoo: { x: 1, y: 2 } } )
 				] )
 			);
 
@@ -229,6 +223,12 @@ describe( 'model test utils', () => {
 			);
 		} );
 
+		it( 'writes unicode text', () => {
+			root.appendChildren( new Text( 'நிலைக்கு' ) );
+
+			expect( stringify( root ) ).to.equal( 'நிலைக்கு' );
+		} );
+
 		describe( 'selection', () => {
 			let elA, elB;
 
@@ -251,10 +251,6 @@ describe( 'model test utils', () => {
 				expect( stringify( root, selection ) ).to.equal(
 					'[]'
 				);
-			} );
-
-			it( 'writes only requested element', () => {
-				expect( stringify( elA ) ).to.equal( '<a></a>' );
 			} );
 
 			it( 'writes selection collapsed in an element', () => {
@@ -287,8 +283,6 @@ describe( 'model test utils', () => {
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold="true">bar[]</$text><b></b>'
 				);
-				expect( selection.getAttribute( 'bold' ) ).to.true;
-				expect( count( selection.getAttributes() ) ).to.equal( 1 );
 			} );
 
 			it( 'writes selection collapsed at the end of the root', () => {
@@ -308,8 +302,6 @@ describe( 'model test utils', () => {
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold="true">b[]ar</$text><b></b>'
 				);
-				expect( selection.getAttribute( 'bold' ) ).to.true;
-				expect( count( selection.getAttributes() ) ).to.equal( 1 );
 			} );
 
 			it( 'writes flat selection containing couple of nodes', () => {
@@ -351,6 +343,15 @@ describe( 'model test utils', () => {
 				expect( stringify( root, selection ) ).to.equal(
 					'<a>[</a>foo<$text bold="true">bar</$text><b>]</b>'
 				);
+			} );
+
+			it( 'writes selection in unicode text', () => {
+				const root = document.createRoot( '$root', 'empty' );
+
+				root.appendChildren( new Text( 'நிலைக்கு' ) );
+				selection.addRange( Range.createFromParentsAndOffsets( root, 2, root, 6 ) );
+
+				expect( stringify( root, selection ) ).to.equal( 'நி[லைக்]கு' );
 			} );
 
 			it( 'uses range and coverts it to selection', () => {
@@ -416,25 +417,41 @@ describe( 'model test utils', () => {
 			data: 'foo<a>bar</a>bom'
 		} );
 
+		test( 'creates text nodes with unicode text', {
+			data: 'நிலைக்கு'
+		} );
+
 		test( 'sets elements attributes', {
-			data: '<a foo="1" bar="true" car="x y"><b x="y"></b></a>',
-			output: '<a bar="true" car="x y" foo="1"><b x="y"></b></a>',
-			check( a ) {
-				expect( a.getAttribute( 'bar' ) ).to.equal( 'true' );
-				expect( a.getAttribute( 'car' ) ).to.equal( 'x y' );
-				expect( a.getAttribute( 'foo' ) ).to.equal( '1' );
+			data: '<a bar="true" car="x y" foo="1"></a><b x="y"></b>',
+			output: '<a bar="true" car="x y" foo="1"></a><b x="y"></b>',
+			check( root ) {
+				expect( root.getChild( 0 ).getAttribute( 'bar' ) ).to.equal( true );
+				expect( root.getChild( 0 ).getAttribute( 'car' ) ).to.equal( 'x y' );
+				expect( root.getChild( 0 ).getAttribute( 'foo' ) ).to.equal( 1 );
+				expect( root.getChild( 1 ).getAttribute( 'x' ) ).to.equal( 'y' );
 			}
 		} );
 
 		test( 'sets text attributes', {
-			data: '<$text bold="true" italic="true">foo</$text><$text bold="true">bar</$text>bom',
+			data: '<$text bar="true" car="x y" foo="1">foo</$text><$text x="y">bar</$text>bom',
 			check( root ) {
 				expect( root.childCount ).to.equal( 3 );
 				expect( root.maxOffset ).to.equal( 9 );
-				expect( root.getChild( 0 ) ).to.have.property( 'data', 'foo' );
-				expect( root.getChild( 0 ).getAttribute( 'italic' ) ).to.equal( 'true' );
-				expect( root.getChild( 1 ) ).to.have.property( 'data', 'bar' );
-				expect( root.getChild( 1 ).getAttribute( 'bold' ) ).to.equal( 'true' );
+				expect( root.getChild( 0 ).getAttribute( 'bar' ) ).to.equal( true );
+				expect( root.getChild( 0 ).getAttribute( 'car' ) ).to.equal( 'x y' );
+				expect( root.getChild( 0 ).getAttribute( 'foo' ) ).to.equal( 1 );
+				expect( root.getChild( 1 ).getAttribute( 'x' ) ).to.equal( 'y' );
+				expect( count( root.getChild( 2 ).getAttributes() ) ).to.equal( 0 );
+			}
+		} );
+
+		test( 'creates element with complex attributes', {
+			data: `<a foo='{"x":1,"y":2}'></a>`,
+			output: '<a foo="{"x":1,"y":2}"></a>',
+			check( a ) {
+				expect( count( a.getAttributes() ) ).to.equal( 1 );
+				expect( a.getAttribute( 'foo' ) ).to.have.property( 'x', 1 );
+				expect( a.getAttribute( 'foo' ) ).to.have.property( 'y', 2 );
 			}
 		} );
 

@@ -95,7 +95,7 @@ describe( 'Delete utils', () => {
 				deleteContents( document.batch(), document.selection );
 
 				expect( getData( document ) ).to.equal( '<$text bold="true">fo[]</$text>ar' );
-				expect( document.selection.getAttribute( 'bold' ) ).to.equal( 'true' );
+				expect( document.selection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
 
 			it( 'deletes characters (2nd half has attrs)', () => {
@@ -128,7 +128,7 @@ describe( 'Delete utils', () => {
 				deleteContents( document.batch(), document.selection );
 
 				expect( getData( document ) ).to.equal( '<p>x<$text bold="true">a[]b</$text>y</p>' );
-				expect( document.selection.getAttribute( 'bold' ) ).to.equal( 'true' );
+				expect( document.selection.getAttribute( 'bold' ) ).to.equal( true );
 			} );
 		} );
 

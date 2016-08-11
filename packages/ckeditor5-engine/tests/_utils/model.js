@@ -3,15 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import Mapper from '/ckeditor5/engine/conversion/mapper.js';
-import { parse as viewParse, stringify as viewStringify } from '/tests/engine/_utils/view.js';
-import {
-	convertRangeSelection,
-	convertCollapsedSelection,
-	convertSelectionAttribute
-} from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
-import { insertText, insertElement, wrap } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
-
 import RootElement from '/ckeditor5/engine/model/rootelement.js';
 import ModelDocument from '/ckeditor5/engine/model/document.js';
 import ModelRange from '/ckeditor5/engine/model/range.js';
@@ -29,6 +20,16 @@ import ViewSelection from '/ckeditor5/engine/view/selection.js';
 import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import ViewElement from '/ckeditor5/engine/view/containerelement.js';
 import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
+
+import Mapper from '/ckeditor5/engine/conversion/mapper.js';
+import { parse as viewParse, stringify as viewStringify } from '/tests/engine/_utils/view.js';
+import {
+	convertRangeSelection,
+	convertCollapsedSelection,
+	convertSelectionAttribute
+} from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
+import { insertText, insertElement, wrap } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
+import isPlainObject from '/ckeditor5/utils/lib/lodash/isplainobject.js';
 
 /**
  * Writes the contents of the {@link engine.model.Document Document} to an HTML-like string.
@@ -199,10 +200,15 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	modelToView.on( 'insert:$text', insertText() );
 	modelToView.on( 'addAttribute', wrap( ( value, data ) => {
 		if ( data.item instanceof ModelTextProxy ) {
-			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: value } );
+			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: stringifyObject( value ) } );
 		}
 	} ) );
-	modelToView.on( 'insert', insertElement( data => new ViewElement( data.item.name, data.item.getAttributes() )  ) );
+	modelToView.on( 'insert', insertElement( ( data ) => {
+		// Stringify object types values for properly display as an output string.
+		const attributes = parseAttributes( data.item.getAttributes(), stringifyObject );
+
+		return new ViewElement( data.item.name, attributes );
+	} ) );
 	modelToView.on( 'selection', convertRangeSelection() );
 	modelToView.on( 'selection', convertCollapsedSelection() );
 	modelToView.on( 'selectionAttribute', convertSelectionAttribute( ( value, data ) => {
@@ -330,7 +336,11 @@ function convertToModelElement() {
 			throw new Error( `Element '${ schemaQuery.name }' not allowed in context.` );
 		}
 
-		data.output = new ModelElement( data.input.name, data.input.getAttributes() );
+		// View attribute value is a string so we want to typecast it to the original type.
+		// E.g. `bold="true"` - value will be parsed from string `"true"` to boolean `true`.
+		const attributes = parseAttributes( data.input.getAttributes(), parseValue );
+
+		data.output = new ModelElement( data.input.name, attributes );
 		conversionApi.mapper.bindElements( data.output, data.input );
 
 		data.context.push( data.output );
@@ -355,7 +365,11 @@ function convertToModelText( withAttributes = false ) {
 		let node;
 
 		if ( withAttributes ) {
-			node = new ModelText( data.input.getChild( 0 ).data, data.input.getAttributes() );
+			// View attribute value is a string so we want to typecast it to the original type.
+			// E.g. `bold="true"` - value will be parsed from string `"true"` to boolean `true`.
+			const attributes = parseAttributes( data.input.getAttributes(), parseValue );
+
+			node = new ModelText( data.input.getChild( 0 ).data, attributes );
 		} else {
 			node = new ModelText( data.input.data );
 		}
@@ -364,4 +378,36 @@ function convertToModelText( withAttributes = false ) {
 
 		evt.stop();
 	};
+}
+
+// Typecast string value to the original type.
+// 		`'true'` => `true`
+// 		`'1'` => `1`
+//		`'{"x":1,"y":2}'` => `{ x: 1, y: 2 }`
+function parseValue( attribute ) {
+	try {
+		return JSON.parse( attribute );
+	} catch ( e ) {
+		return attribute;
+	}
+}
+
+// When value is an Object stringify it.
+function stringifyObject( data ) {
+	if ( isPlainObject( data ) ) {
+		return JSON.stringify( data );
+	}
+
+	return data;
+}
+
+// Loop trough attributes map and parse each value by passed parser.
+function parseAttributes( attributes, parser ) {
+	let result = new Map();
+
+	for ( let attribute of attributes ) {
+		result.set( attribute[ 0 ], parser( attribute[ 1 ] ) );
+	}
+
+	return result;
 }
