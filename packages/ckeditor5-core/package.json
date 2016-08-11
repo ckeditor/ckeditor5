@@ -1,13 +1,13 @@
 {
   "name": "ckeditor5-core",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "",
   "keywords": [],
   "dependencies": {},
   "devDependencies": {
-	  "gulp": "^3.9.0",
-	  "guppy-pre-commit": "^0.3.0",
-	  "ckeditor5-dev-lint": "ckeditor/ckeditor5-dev-lint"
+    "gulp": "^3.9.0",
+    "guppy-pre-commit": "^0.3.0",
+    "ckeditor5-dev-lint": "ckeditor/ckeditor5-dev-lint"
   },
   "engines": {
     "node": ">=5.0.0",
