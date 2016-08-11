@@ -200,12 +200,12 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	modelToView.on( 'insert:$text', insertText() );
 	modelToView.on( 'addAttribute', wrap( ( value, data ) => {
 		if ( data.item instanceof ModelTextProxy ) {
-			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: stringifyObject( value ) } );
+			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: stringifyAttributeValue( value ) } );
 		}
 	} ) );
 	modelToView.on( 'insert', insertElement( ( data ) => {
 		// Stringify object types values for properly display as an output string.
-		const attributes = parseAttributes( data.item.getAttributes(), stringifyObject );
+		const attributes = convertAttributes( data.item.getAttributes(), stringifyAttributeValue );
 
 		return new ViewElement( data.item.name, attributes );
 	} ) );
@@ -338,7 +338,7 @@ function convertToModelElement() {
 
 		// View attribute value is a string so we want to typecast it to the original type.
 		// E.g. `bold="true"` - value will be parsed from string `"true"` to boolean `true`.
-		const attributes = parseAttributes( data.input.getAttributes(), parseValue );
+		const attributes = convertAttributes( data.input.getAttributes(), parseAttributeValue );
 
 		data.output = new ModelElement( data.input.name, attributes );
 		conversionApi.mapper.bindElements( data.output, data.input );
@@ -367,7 +367,7 @@ function convertToModelText( withAttributes = false ) {
 		if ( withAttributes ) {
 			// View attribute value is a string so we want to typecast it to the original type.
 			// E.g. `bold="true"` - value will be parsed from string `"true"` to boolean `true`.
-			const attributes = parseAttributes( data.input.getAttributes(), parseValue );
+			const attributes = convertAttributes( data.input.getAttributes(), parseAttributeValue );
 
 			node = new ModelText( data.input.getChild( 0 ).data, attributes );
 		} else {
@@ -380,11 +380,14 @@ function convertToModelText( withAttributes = false ) {
 	};
 }
 
-// Typecast string value to the original type.
+// Tries to get original type of attribute value using JSON parsing:
 // 		`'true'` => `true`
 // 		`'1'` => `1`
 //		`'{"x":1,"y":2}'` => `{ x: 1, y: 2 }`
-function parseValue( attribute ) {
+//
+// Parse error means that value should be a string:
+//		`'foobar'` => `'foobar'`
+function parseAttributeValue( attribute ) {
 	try {
 		return JSON.parse( attribute );
 	} catch ( e ) {
@@ -393,7 +396,7 @@ function parseValue( attribute ) {
 }
 
 // When value is an Object stringify it.
-function stringifyObject( data ) {
+function stringifyAttributeValue( data ) {
 	if ( isPlainObject( data ) ) {
 		return JSON.stringify( data );
 	}
@@ -401,13 +404,10 @@ function stringifyObject( data ) {
 	return data;
 }
 
-// Loop trough attributes map and parse each value by passed parser.
-function parseAttributes( attributes, parser ) {
-	let result = new Map();
-
+// Loop trough attributes map and converts each value by passed converter.
+function *convertAttributes( attributes, converter ) {
 	for ( let attribute of attributes ) {
-		result.set( attribute[ 0 ], parser( attribute[ 1 ] ) );
+		attribute[ 1 ] = converter( attribute[ 1 ] );
+		yield attribute;
 	}
-
-	return result;
 }
