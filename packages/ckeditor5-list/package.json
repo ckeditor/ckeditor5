@@ -1,0 +1,21 @@
+{
+  "name": "ckeditor5-list",
+  "version": "0.0.1",
+  "description": "Introduces ordered and unordered lists feature to CKEditor5.",
+  "keywords": [],
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "guppy-pre-commit": "^0.3.0",
+    "ckeditor5-dev-lint": "ckeditor/ckeditor5-dev-lint"
+  },
+  "engines": {
+    "node": ">=5.0.0",
+    "npm": ">=3.0.0"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "See LICENSE.md",
+  "homepage": "",
+  "bugs": "",
+  "repository": ""
+}
