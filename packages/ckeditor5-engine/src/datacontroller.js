@@ -146,6 +146,11 @@ export default class DataController {
 		const modelRoot = this.model.getRoot( rootName );
 
 		this.model.enqueueChanges( () => {
+			// Clearing selection is a workaround for ticket #569 (LiveRange loses position after removing data from document).
+			// After fixing it this code should be removed.
+			this.model.selection.removeAllRanges();
+			this.model.selection.clearAttributes();
+
 			// Initial batch should be ignored by features like undo, etc.
 			this.model.batch( 'transparent' )
 				.remove( ModelRange.createIn( modelRoot ) )
