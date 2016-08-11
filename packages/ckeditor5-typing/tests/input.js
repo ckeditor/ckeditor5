@@ -17,7 +17,7 @@ import ViewElement from '/ckeditor5/engine/view/element.js';
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 import { getCode } from '/ckeditor5/utils/keyboard.js';
 
-import { getData as getModelData, stringify as modelStringify } from '/tests/engine/_utils/model.js';
+import { getData as getModelData } from '/tests/engine/_utils/model.js';
 import { getData as getViewData } from '/tests/engine/_utils/view.js';
 
 describe( 'Input feature', () => {
@@ -135,8 +135,8 @@ describe( 'Input feature', () => {
 				}
 			] );
 
-			expect( modelStringify( modelRoot ) ).to.equal( '<paragraph></paragraph>' );
-			expect( getViewData( view ) ).to.equal( '<p></p>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>[]</p>' );
 		} );
 
 		it( 'should do nothing when two nodes were inserted and one removed', () => {
@@ -195,8 +195,8 @@ describe( 'Input feature', () => {
 				}
 			] );
 
-			expect( modelStringify( modelRoot ) ).to.equal( '<paragraph></paragraph>' );
-			expect( getViewData( view ) ).to.equal( '<p></p>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>[]</p>' );
 		} );
 	} );
 
