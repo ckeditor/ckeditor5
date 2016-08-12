@@ -21,6 +21,9 @@ const config = {
 	BUNDLE_DIR: 'build/dist',
 	WORKSPACE_DIR: '..',
 
+	// Path to the default configuration file for bundler.
+	BUNDLE_DEFAULT_CONFIG: 'dev/bundles/build-config-standard.js',
+
 	// Files ignored by jshint and jscs tasks. Files from .gitignore will be added automatically during tasks execution.
 	IGNORED_FILES: [
 		'src/lib/**'
