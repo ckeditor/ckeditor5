@@ -5,7 +5,7 @@
 
 import BoldEngine from '/ckeditor5/basic-styles/boldengine.js';
 import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
-import { getData as getModelData } from '/tests/engine/_utils/model.js';
+import { getData as getModelData, setData as setModelData } from '/tests/engine/_utils/model.js';
 import { getData as getViewData } from '/tests/engine/_utils/view.js';
 import AttributeCommand from '/ckeditor5/core/command/attributecommand.js';
 
@@ -69,8 +69,7 @@ describe( 'BoldEngine', () => {
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert paragraph', () => {
-			// Workaround for setting model data: https://github.com/ckeditor/ckeditor5-engine/issues/455
-			editor.setData( '<strong>foo</strong>bar' );
+			setModelData( doc, '<$text bold="true">foo</$text>bar' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<strong>foo</strong>bar' );
 		} );
