@@ -68,7 +68,7 @@ describe( 'BoldEngine', () => {
 	} );
 
 	describe( 'editing pipeline conversion', () => {
-		it( 'should convert paragraph', () => {
+		it( 'should convert attribute', () => {
 			setModelData( doc, '<$text bold="true">foo</$text>bar' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<strong>foo</strong>bar' );

@@ -68,7 +68,7 @@ describe( 'ItalicEngine', () => {
 	} );
 
 	describe( 'editing pipeline conversion', () => {
-		it( 'should convert paragraph', () => {
+		it( 'should convert attribute', () => {
 			setModelData( doc, '<$text italic="true">foo</$text>bar' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<em>foo</em>bar' );
