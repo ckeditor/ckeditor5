@@ -1,4 +1,4 @@
-Link feature for CKEditor 5.
+CKEditor 5 Link Feature
 ========================================
 
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-link/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-link#info=devDependencies)
