@@ -24,6 +24,19 @@ const config = {
 	// Path to the default configuration file for bundler.
 	BUNDLE_DEFAULT_CONFIG: 'dev/bundles/build-config-standard.js',
 
+	DOCUMENTATION: {
+		SOURCE_DIR: '.docs',
+		DESTINATION_DIR: 'build/docs',
+		SAMPLES: {
+			EXTENSIONS: [ 'md', 'html', 'js' ],
+			DIRECTORY: 'samples'
+		},
+		GUIDES: {
+			EXTENSIONS: [ 'md' ],
+			DIRECTORY: 'guides'
+		}
+	},
+
 	// Files ignored by jshint and jscs tasks. Files from .gitignore will be added automatically during tasks execution.
 	IGNORED_FILES: [
 		'src/lib/**'
@@ -110,6 +123,23 @@ gulp.task( 'compile:themes:esnext', ( callback ) => {
 // Tasks specific for testing under node.
 gulp.task( 'compile:clean:js:cjs', () => compiler.clean.js( { formats: [ 'cjs' ] } ) );
 gulp.task( 'compile:js:cjs', [ 'compile:clean:js:cjs' ], () => compiler.compile.js( { formats: [ 'cjs' ] } ) );
+
+// Tasks specific for testing releases.
+gulp.task( 'test:samples:local', () => compiler.compile.tests.local() );
+gulp.task( 'test:samples:bundled', [ 'compile:samples' ], () => compiler.compile.tests.bundled() );
+gulp.task( 'test:samples', [ 'test:samples:local', 'test:samples:bundled' ] );
+
+// Tasks specific for building editors for testing releases.
+gulp.task( 'compile:samples:clean', ckeditor5DevBundle.cleanSamples );
+
+gulp.task( 'compile:samples',
+	[
+		'compile:samples:clean',
+		'compile:js:esnext',
+		'compile:themes:esnext'
+	],
+	ckeditor5DevBundle.buildEditorsForSamples
+);
 
 // Docs.
 const docsBuilder = ckeditor5DevCompiler.docs;
