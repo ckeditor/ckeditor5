@@ -8,10 +8,8 @@
   "dependencies": {},
   "devDependencies": {
     "ckeditor5-dev-lint": "github:ckeditor/ckeditor5-dev-lint",
-    "del": "^2.2.0",
     "gulp": "^3.9.0",
-    "guppy-pre-commit": "^0.3.0",
-    "lodash-cli": "^4"
+    "guppy-pre-commit": "^0.3.0"
   },
   "engines": {
     "node": ">=5.0.0",
