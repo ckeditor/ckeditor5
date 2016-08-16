@@ -34,8 +34,9 @@ import isPlainObject from '/ckeditor5/utils/lib/lodash/isplainobject.js';
 /**
  * Writes the contents of the {@link engine.model.Document Document} to an HTML-like string.
  *
- * ** Note: ** {@link engine.model.Text text} node contains attributes will be represented as:
- *        <$text attribute="value">Text data</$text>
+ * **Note:** {@link engine.model.Text text} node contains attributes will be represented as:
+ *
+ *		<$text attribute="value">Text data</$text>
  *
  * @param {engine.model.Document} document
  * @param {Object} [options]
@@ -64,10 +65,11 @@ getData._stringify = stringify;
  * Sets the contents of the {@link engine.model.Document Document} provided as HTML-like string.
  * It uses {@link engine.model.Document#enqueueChanges enqueueChanges} method.
  *
- * ** Note: ** Remember to register elements in {@link engine.model.Document#schema document's schema} before inserting them.
+ * **Note:** Remember to register elements in {@link engine.model.Document#schema document's schema} before inserting them.
  *
- * ** Note: ** To create {@link engine.model.Text text} node witch containing attributes use:
- *        <$text attribute="value">Text data</$text>
+ * **Note:** To create {@link engine.model.Text text} node witch containing attributes use:
+ *
+ *		<$text attribute="value">Text data</$text>
  *
  * @param {engine.model.Document} document
  * @param {String} data HTML-like string to write into Document.
@@ -147,8 +149,9 @@ setData._parse = parse;
 /**
  * Converts model nodes to HTML-like string representation.
  *
- * ** Note: ** {@link engine.model.Text text} node contains attributes will be represented as:
- *        <$text attribute="value">Text data</$text>
+ * **Note:** {@link engine.model.Text text} node contains attributes will be represented as:
+ *
+ *		<$text attribute="value">Text data</$text>
  *
  * @param {engine.model.RootElement|engine.model.Element|engine.model.Text|
  * engine.model.DocumentFragment} node Node to stringify.
@@ -233,8 +236,9 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 /**
  * Parses HTML-like string and returns model {@link engine.model.RootElement rootElement}.
  *
- * ** Note: ** To create {@link engine.model.Text text} node witch containing attributes use:
- *        <$text attribute="value">Text data</$text>
+ * **Note:** To create {@link engine.model.Text text} node witch containing attributes use:
+ *
+ *		<$text attribute="value">Text data</$text>
  *
  * @param {String} data HTML-like string to be parsed.
  * @param {engine.model.schema} schema Schema instance uses by converters for element validation.
@@ -312,7 +316,7 @@ export function parse( data, schema, options = {} ) {
 	return model;
 }
 
-// -- converters view -> model -----------------------------------------------------
+// -- Converters view -> model -----------------------------------------------------
 
 function convertToModelFragment() {
 	return ( evt, data, consumable, conversionApi ) => {
@@ -381,11 +385,13 @@ function convertToModelText( withAttributes = false ) {
 }
 
 // Tries to get original type of attribute value using JSON parsing:
-// 		`'true'` => `true`
-// 		`'1'` => `1`
+//
+//		`'true'` => `true`
+//		`'1'` => `1`
 //		`'{"x":1,"y":2}'` => `{ x: 1, y: 2 }`
 //
 // Parse error means that value should be a string:
+//
 //		`'foobar'` => `'foobar'`
 function parseAttributeValue( attribute ) {
 	try {
