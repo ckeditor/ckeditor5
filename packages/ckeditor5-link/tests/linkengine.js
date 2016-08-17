@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import LinkEngine from '/ckeditor5/link/engine.js';
+import LinkEngine from '/ckeditor5/link/linkengine.js';
+import LinkCommand from '/ckeditor5/link/linkcommand.js';
 import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
 import { getData as getModelData, setData as setModelData } from '/tests/engine/_utils/model.js';
 import { getData as getViewData } from '/tests/engine/_utils/view.js';
@@ -30,6 +31,17 @@ describe( 'LinkEngine', () => {
 
 	it( 'should set proper schema rules', () => {
 		expect( doc.schema.check( { name: '$inline', attributes: [ 'link' ] } ) ).to.be.true;
+	} );
+
+	describe( 'command', () => {
+		it( 'should register link command', () => {
+			expect( editor.commands.has( 'link' ) ).to.be.true;
+
+			const command = editor.commands.get( 'link' );
+
+			expect( command ).to.be.instanceOf( LinkCommand );
+			expect( command ).to.have.property( 'attributeKey', 'link' );
+		} );
 	} );
 
 	describe( 'data pipeline conversions', () => {
