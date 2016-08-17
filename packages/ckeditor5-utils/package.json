@@ -14,12 +14,12 @@
     "lodash-cli": "^4"
   },
   "engines": {
-    "node": ">=5.0.0",
+    "node": ">=6.0.0",
     "npm": ">=3.0.0"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "See LICENSE.md",
-  "homepage": "https://github.com/ckeditor/ckeditor5-utils",
+  "homepage": "https://ckeditor5.github.io",
   "bugs": "https://github.com/ckeditor/ckeditor5-utils/issues",
   "repository": {
     "type": "git",
