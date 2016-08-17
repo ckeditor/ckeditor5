@@ -10,11 +10,11 @@ import ButtonView from '../ui/button/buttonview.js';
 import Model from '../ui/model.js';
 
 /**
- * The bold feature. It introduces the Bold button and the <kbd>Ctrl+B</kbd> keystroke.
+ * The link feature.
  *
- * It uses the {@link basic-styles.BoldEngine bold engine feature}.
+ * It uses the {@link basic-styles.LinkEngine link engine feature}.
  *
- * @memberOf basic-styles
+ * @memberOf link
  * @extends core.Feature
  */
 export default class Link extends Feature {
@@ -45,9 +45,10 @@ export default class Link extends Feature {
 		buttonModel.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
 
 		// Execute command.
-		this.listenTo( buttonModel, 'execute', () => editor.execute( 'link', 'http://www.cksource.com' ) );
+		const hrefValue = 'http://www.cksource.com'; // Temporary href value.
+		this.listenTo( buttonModel, 'execute', () => editor.execute( 'link', hrefValue ) );
 
-		// Add bold button to feature components.
+		// Add link button to feature components.
 		editor.ui.featureComponents.add( 'link', ButtonController, ButtonView, buttonModel );
 	}
 }
