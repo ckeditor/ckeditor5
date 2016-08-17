@@ -6,7 +6,7 @@
 import Feature from '../core/feature.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
-import AttributeCommand from '../core/command/attributecommand.js';
+import ToggleAttributeCommand from '../core/command/toggleattributecommand.js';
 
 const ITALIC = 'italic';
 
@@ -44,6 +44,6 @@ export default class ItalicEngine extends Feature {
 			.toAttribute( ITALIC, true );
 
 		// Create italic command.
-		editor.commands.set( ITALIC, new AttributeCommand( editor, ITALIC ) );
+		editor.commands.set( ITALIC, new ToggleAttributeCommand( editor, ITALIC ) );
 	}
 }
