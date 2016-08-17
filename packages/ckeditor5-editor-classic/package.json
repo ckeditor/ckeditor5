@@ -10,12 +10,15 @@
     "guppy-pre-commit": "^0.3.0"
   },
   "engines": {
-    "node": ">=5.0.0",
+    "node": ">=6.0.0",
     "npm": ">=3.0.0"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "See LICENSE.md",
-  "homepage": "",
-  "bugs": "",
-  "repository": ""
+  "homepage": "https://ckeditor5.github.io",
+  "bugs": "https://github.com/ckeditor/ckeditor5-editor/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5-editor.git"
+  }
 }
