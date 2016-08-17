@@ -30,8 +30,6 @@ const config = {
 	]
 };
 
-require( './dev/tasks/test/tasks' )( config ).register();
-
 // Lint tasks.
 const ckeditor5Lint = require( 'ckeditor5-dev-lint' )( config );
 gulp.task( 'lint', ckeditor5Lint.lint );
