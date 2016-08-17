@@ -7,6 +7,7 @@ import Feature from '../core/feature.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
 import AttributeElement from '../engine/view/attributeelement.js';
+import LinkCommand from './linkcommand.js';
 
 /**
  * The link engine feature.
@@ -16,7 +17,7 @@ import AttributeElement from '../engine/view/attributeelement.js';
  * @memberOf link
  * @extends core.Feature
  */
-export default class BoldEngine extends Feature {
+export default class LinkEngine extends Feature {
 	/**
 	 * @inheritDoc
 	 */
@@ -40,5 +41,8 @@ export default class BoldEngine extends Feature {
 				key: 'link',
 				value: viewElement.getAttribute( 'href' )
 			} ) );
+
+		// Create link command.
+		editor.commands.set( 'link', new LinkCommand( editor ) );
 	}
 }
