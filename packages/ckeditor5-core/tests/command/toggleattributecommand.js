@@ -5,7 +5,7 @@
 
 import Editor from '/ckeditor5/core/editor/editor.js';
 import Document from '/ckeditor5/engine/model/document.js';
-import AttributeCommand from '/ckeditor5/core/command/attributecommand.js';
+import ToggleAttributeCommand from '/ckeditor5/core/command/toggleattributecommand.js';
 import Text from '/ckeditor5/engine/model/text.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
@@ -24,7 +24,7 @@ beforeEach( () => {
 	modelDoc = editor.document;
 	root = modelDoc.createRoot();
 
-	command = new AttributeCommand( editor, attrKey );
+	command = new ToggleAttributeCommand( editor, attrKey );
 
 	modelDoc.schema.registerItem( 'p', '$block' );
 	modelDoc.schema.registerItem( 'h1', '$block' );
