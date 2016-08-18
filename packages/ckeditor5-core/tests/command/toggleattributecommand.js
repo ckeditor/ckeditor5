@@ -6,12 +6,9 @@
 import Editor from '/ckeditor5/core/editor/editor.js';
 import Document from '/ckeditor5/engine/model/document.js';
 import ToggleAttributeCommand from '/ckeditor5/core/command/toggleattributecommand.js';
-import Text from '/ckeditor5/engine/model/text.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
-import Element from '/ckeditor5/engine/model/element.js';
-import writer from '/ckeditor5/engine/model/writer.js';
-import { itemAt } from '/tests/engine/model/_utils/utils.js';
+import { setData, getData } from '/tests/engine/_utils/model.js';
 
 describe( 'ToggleAttributeCommand', () => {
 	const attrKey = 'bold';
@@ -56,76 +53,50 @@ describe( 'ToggleAttributeCommand', () => {
 	} );
 
 	describe( '_doExecute', () => {
-		let p;
-
-		beforeEach( () => {
-			let attrs = {};
-			attrs[ attrKey ] = true;
-
-			root.insertChildren( 0, [
-				new Element( 'p', [], [
-					new Text( 'abc' ),
-					new Text( 'foobar', attrs ),
-					new Text( 'xyz' )
-				] ),
-				new Element( 'p' )
-			] );
-
-			p = root.getChild( 0 );
-		} );
-
 		it( 'should add attribute on selected nodes if the command value was false', () => {
-			modelDoc.selection.addRange( new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ) );
+			setData( modelDoc, '<p>a[bc<$text bold="true">fo]obar</$text>xyz</p>' );
 
 			expect( command.value ).to.be.false;
 
 			command._doExecute();
 
 			expect( command.value ).to.be.true;
-
-			expect( p.getChild( 0 ).hasAttribute( attrKey ) ).to.be.false;
-			expect( itemAt( p, 1 ).hasAttribute( attrKey ) ).to.be.true;
-			expect( itemAt( p, 2 ).hasAttribute( attrKey ) ).to.be.true;
+			expect( getData( modelDoc ) ).to.equal( '<p>a[<$text bold="true">bcfo]obar</$text>xyz</p>' );
 		} );
 
 		it( 'should remove attribute from selected nodes if the command value was true', () => {
-			modelDoc.selection.addRange( new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 6 ] ) ) );
+			setData( modelDoc, '<p>abc[<$text bold="true">foo]bar</$text>xyz</p>' );
 
 			expect( command.value ).to.be.true;
 
 			command._doExecute();
 
+			expect( getData( modelDoc ) ).to.equal( '<p>abc[foo]<$text bold="true">bar</$text>xyz</p>' );
 			expect( command.value ).to.be.false;
-			expect( itemAt( p, 3 ).hasAttribute( attrKey ) ).to.be.false;
-			expect( itemAt( p, 4 ).hasAttribute( attrKey ) ).to.be.false;
-			expect( itemAt( p, 5 ).hasAttribute( attrKey ) ).to.be.false;
 		} );
 
 		it( 'should add attribute on selected nodes if execute parameter was set to true', () => {
-			modelDoc.selection.addRange( new Range( new Position( root, [ 0, 7 ] ), new Position( root, [ 0, 10 ] ) ) );
+			setData( modelDoc, '<p>abc<$text bold="true">foob[ar</$text>x]yz</p>' );
 
 			expect( command.value ).to.be.true;
 
 			command._doExecute( true );
 
 			expect( command.value ).to.be.true;
-			expect( itemAt( p, 9 ).hasAttribute( attrKey ) ).to.be.true;
+			expect( getData( modelDoc ) ).to.equal( '<p>abc<$text bold="true">foob[arx</$text>]yz</p>' );
 		} );
 
 		it( 'should remove attribute on selected nodes if execute parameter was set to false', () => {
-			modelDoc.selection.addRange( new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ) );
-
-			expect( command.value ).to.be.false;
+			setData( modelDoc, '<p>a[bc<$text bold="true">fo]obar</$text>xyz</p>' );
 
 			command._doExecute( false );
 
 			expect( command.value ).to.be.false;
-			expect( itemAt( p, 3 ).hasAttribute( attrKey ) ).to.be.false;
-			expect( itemAt( p, 4 ).hasAttribute( attrKey ) ).to.be.false;
+			expect( getData( modelDoc ) ).to.equal( '<p>a[bcfo]<$text bold="true">obar</$text>xyz</p>' );
 		} );
 
 		it( 'should change selection attribute if selection is collapsed in non-empty parent', () => {
-			modelDoc.selection.addRange( new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) );
+			setData( modelDoc, '<p>a[]bc<$text bold="true">foobar</$text>xyz</p><p></p>' );
 
 			expect( command.value ).to.be.false;
 
@@ -141,7 +112,8 @@ describe( 'ToggleAttributeCommand', () => {
 		} );
 
 		it( 'should not store attribute change on selection if selection is collapsed in non-empty parent', () => {
-			modelDoc.selection.addRange( new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) );
+			setData( modelDoc, '<p>a[]bc<$text bold="true">foobar</$text>xyz</p>' );
+
 			command._doExecute();
 
 			// It should not save that bold was executed at position ( root, [ 0, 1 ] ).
@@ -156,7 +128,7 @@ describe( 'ToggleAttributeCommand', () => {
 		} );
 
 		it( 'should change selection attribute and store it if selection is collapsed in empty parent', () => {
-			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) ] );
+			setData( modelDoc, '<p>abc<$text bold="true">foobar</$text>xyz</p><p>[]</p>' );
 
 			expect( command.value ).to.be.false;
 
@@ -184,81 +156,50 @@ describe( 'ToggleAttributeCommand', () => {
 		} );
 
 		it( 'should not apply attribute change where it would invalid schema', () => {
-			writer.insert( Position.createFromParentAndOffset( p, 3 ), new Element( 'image' ) );
-			writer.insert( Position.createFromParentAndOffset( p, 12 ), new Element( 'image' ) );
-
-			modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 13 ] ) ) ] );
+			modelDoc.schema.registerItem( 'image', '$block' );
+			setData( modelDoc, '<p>ab[c<image></image><$text bold="true">foobar</$text>xy<image></image>]z</p>' );
 
 			expect( command.isEnabled ).to.be.true;
 
 			command._doExecute();
 
-			let expectedHas = [ 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 ];
-
-			let i = 0;
-
-			for ( let node of Range.createIn( p ).getItems( { singleCharacters: true } ) ) {
-				expect( node.hasAttribute( attrKey ) ).to.equal( !!expectedHas[ i++ ] );
-			}
+			expect( getData( modelDoc ) )
+				.to.equal( '<p>ab[<$text bold="true">c</$text><image></image><$text bold="true">foobarxy</$text><image></image>]z</p>' );
 		} );
 	} );
 
 	describe( '_checkEnabled', () => {
-		beforeEach( () => {
-			root.insertChildren( 0, [
-				new Element( 'p', [], [
-					new Text( 'foo' ),
-					new Element( 'img' ),
-					new Element( 'img' ),
-					new Text( 'bar' )
-				] ),
-				new Element( 'h1' ),
-				new Element( 'p' )
-			] );
-		} );
+		describe( '_checkEnabled', () => {
+			// This test doesn't tests every possible case.
+			// Method `_checkEnabled` uses `isAttributeAllowedInSelection` helper which is fully tested in his own test.
 
-		describe( 'when selection is collapsed', () => {
-			it( 'should return true if characters with the attribute can be placed at caret position', () => {
-				modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) ] );
-				expect( command._checkEnabled() ).to.be.true;
+			beforeEach( () => {
+				modelDoc.schema.registerItem( 'x', '$block' );
+				modelDoc.schema.disallow( { name: '$text', inside: 'x', attributes: 'link' } );
 			} );
 
-			it( 'should return false if characters with the attribute cannot be placed at caret position', () => {
-				modelDoc.selection.setRanges( [ new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) ] );
-				expect( command._checkEnabled() ).to.be.false;
+			describe( 'when selection is collapsed', () => {
+				it( 'should return true if characters with the attribute can be placed at caret position', () => {
+					setData( modelDoc, '<p>f[]oo</p>' );
+					expect( command._checkEnabled() ).to.be.true;
+				} );
 
-				modelDoc.selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) ] );
-				expect( command._checkEnabled() ).to.be.false;
-			} );
-		} );
-
-		describe( 'when selection is not collapsed', () => {
-			it( 'should return true if there is at least one node in selection that can have the attribute', () => {
-				// Simple selection on a few characters.
-				modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 3 ] ) ) ] );
-				expect( command._checkEnabled() ).to.be.true;
-
-				// Selection spans over characters but also include nodes that can't have attribute.
-				modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 6 ] ) ) ] );
-				expect( command._checkEnabled() ).to.be.true;
-
-				// Selection on whole root content. Characters in P can have an attribute so it's valid.
-				modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ) ] );
-				expect( command._checkEnabled() ).to.be.true;
-
-				// Selection on empty P. P can have the attribute.
-				modelDoc.selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 3 ] ) ) ] );
-				expect( command._checkEnabled() ).to.be.true;
+				it( 'should return false if characters with the attribute cannot be placed at caret position', () => {
+					setData( modelDoc, '<x>fo[]o</x>' );
+					expect( command._checkEnabled() ).to.be.false;
+				} );
 			} );
 
-			it( 'should return false if there are no nodes in selection that can have the attribute', () => {
-				// Selection on DIV which can't have bold text.
-				modelDoc.selection.setRanges( [ new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) ) ] );
-				expect( command._checkEnabled() ).to.be.false;
+			describe( 'when selection is not collapsed', () => {
+				it( 'should return true if there is at least one node in selection that can have the attribute', () => {
+					setData( modelDoc, '<p>[foo]</p>' );
+					expect( command._checkEnabled() ).to.be.true;
+				} );
 
-				// Selection on two images which can't be bold.
-				modelDoc.selection.setRanges( [ new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 5 ] ) ) ] );
-				expect( command._checkEnabled() ).to.be.false;
+				it( 'should return false if there are no nodes in selection that can have the attribute', () => {
+					setData( modelDoc, '<x>[foo]</x>' );
+					expect( command._checkEnabled() ).to.be.false;
+				} );
 			} );
 		} );
 	} );
