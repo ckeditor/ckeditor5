@@ -8,7 +8,7 @@
 
 'use strict';
 
-( () => {
+( function() {
 	// This seems to be the only way to force Require.JS to load modules starting with '/' from a different path.
 	var load = requirejs.load;
 	requirejs.load = function( context, moduleId, url ) {
