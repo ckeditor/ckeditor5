@@ -42,7 +42,7 @@ export default class Link extends Feature {
 		} );
 
 		// Bind button model to command.
-		buttonModel.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+		buttonModel.bind( 'isOn', 'isEnabled' ).to( command, 'isValue', 'isEnabled' );
 
 		// Execute command.
 		const hrefValue = 'http://www.cksource.com'; // Temporary href value.
