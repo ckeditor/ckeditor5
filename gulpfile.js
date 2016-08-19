@@ -121,7 +121,7 @@ gulp.task( 'compile:clean:js:cjs', () => compiler.clean.js( { formats: [ 'cjs' ]
 gulp.task( 'compile:js:cjs', [ 'compile:clean:js:cjs' ], () => compiler.compile.js( { formats: [ 'cjs' ] } ) );
 
 // Tasks specific for testing releases.
-gulp.task( 'test:samples:local', () => compiler.compile.tests.local() );
+gulp.task( 'test:samples:local', [ 'compile' ], () => compiler.compile.tests.local() );
 gulp.task( 'test:samples:bundled', [ 'compile:samples' ], () => compiler.compile.tests.bundled() );
 gulp.task( 'test:samples', [ 'test:samples:local', 'test:samples:bundled' ] );
 
