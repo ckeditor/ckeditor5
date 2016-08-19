@@ -29,27 +29,27 @@
 		chai.use( addThrowsCKEditorError.bind( null, CKEditorError ) );
 
 		// Self-test of the extension. Function names will help find those tests in case of regression.
-		chai.expect( function throwCKEditorErrorSelfTest() {
+		chai.expect( function throwCKEditorErrorSelfTest1() {
 			throw new CKEditorError();
 		} ).to.throwCKEditorError();
 
-		chai.expect( function throwCKEditorErrorSelfTest() {
+		chai.expect( function throwCKEditorErrorSelfTest2() {
 			throw new Error();
 		} ).to.not.throwCKEditorError();
 
-		chai.expect( function throwCKEditorErrorSelfTest() {
+		chai.expect( function throwCKEditorErrorSelfTest3() {
 			throw new CKEditorError( 'custom message' );
 		} ).to.throwCKEditorError( 'message' );
 
-		chai.expect( function throwCKEditorErrorSelfTest() {
+		chai.expect( function throwCKEditorErrorSelfTest4() {
 			throw new CKEditorError( 'another msg' );
 		} ).to.throwCKEditorError( /msg/ );
 
-		chai.expect( function throwCKEditorErrorSelfTest() {
+		chai.expect( function throwCKEditorErrorSelfTest5() {
 			throw new CKEditorError( 'another msg' );
 		} ).to.throwCKEditorError( /^another/ );
 
-		chai.expect( function throwCKEditorErrorSelfTest() {
+		chai.expect( function throwCKEditorErrorSelfTest6() {
 			throw new CKEditorError( 'another msg' );
 		} ).to.throwCKEditorError( /msg$/ );
 	} );
