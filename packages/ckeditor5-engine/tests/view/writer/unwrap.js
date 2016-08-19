@@ -12,7 +12,6 @@ import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 import Position from '/ckeditor5/engine/view/position.js';
 import Range from '/ckeditor5/engine/view/range.js';
 import Text from '/ckeditor5/engine/view/text.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'writer', () => {
@@ -57,7 +56,7 @@ describe( 'writer', () => {
 
 			expect( () => {
 				unwrap( range, b );
-			} ).to.throw( CKEditorError, 'view-writer-unwrap-invalid-attribute' );
+			} ).to.throwCKEditorError( 'view-writer-unwrap-invalid-attribute' );
 		} );
 
 		it( 'should throw error when range placed in two containers', () => {
@@ -71,7 +70,7 @@ describe( 'writer', () => {
 
 			expect( () => {
 				unwrap( range, b );
-			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
+			} ).to.throwCKEditorError( 'view-writer-invalid-range-container' );
 		} );
 
 		it( 'should throw when range has no parent container', () => {
@@ -80,7 +79,7 @@ describe( 'writer', () => {
 
 			expect( () => {
 				unwrap( Range.createFromParentsAndOffsets( el, 0, el, 0 ), b );
-			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
+			} ).to.throwCKEditorError( 'view-writer-invalid-range-container' );
 		} );
 
 		it( 'should unwrap single node', () => {

@@ -9,7 +9,6 @@ import Document from '/ckeditor5/engine/model/document.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 import MergeDelta from '/ckeditor5/engine/model/delta/mergedelta.js';
 import SplitDelta from '/ckeditor5/engine/model/delta/splitdelta.js';
@@ -71,7 +70,7 @@ describe( 'Batch', () => {
 		it( 'should throw if we try to split a root', () => {
 			expect( () => {
 				doc.batch().split( new Position( root, [ 0 ] ) );
-			} ).to.throw( CKEditorError, /^batch-split-root/ );
+			} ).to.throwCKEditorError( /^batch-split-root/ );
 		} );
 
 		it( 'should be chainable', () => {

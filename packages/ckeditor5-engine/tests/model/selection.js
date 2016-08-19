@@ -12,7 +12,6 @@ import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import LiveRange from '/ckeditor5/engine/model/liverange.js';
 import Selection from '/ckeditor5/engine/model/selection.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import testUtils from '/tests/core/_utils/utils.js';
 import count from '/ckeditor5/utils/count.js';
 
@@ -109,7 +108,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.addRange( { invalid: 'Range' } );
-			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
+			} ).to.throwCKEditorError( /model-selection-added-not-range/ );
 		} );
 
 		it( 'should copy added ranges and store multiple ranges', () => {
@@ -179,7 +178,7 @@ describe( 'Selection', () => {
 						new Position( root, [ 1, 2 ] )
 					)
 				);
-			} ).to.throw( CKEditorError, /model-selection-range-intersects/ );
+			} ).to.throwCKEditorError( /model-selection-range-intersects/ );
 		} );
 	} );
 
@@ -315,7 +314,7 @@ describe( 'Selection', () => {
 
 			expect( () => {
 				selection.setFocus( endPos );
-			} ).to.throw( CKEditorError, /model-selection-setFocus-no-ranges/ );
+			} ).to.throwCKEditorError( /model-selection-setFocus-no-ranges/ );
 		} );
 
 		it( 'modifies existing collapsed selection', () => {
@@ -503,7 +502,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.setRanges( [ { invalid: 'range' } ] );
-			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
+			} ).to.throwCKEditorError( /model-selection-added-not-range/ );
 		} );
 
 		it( 'should remove all ranges and add given ranges', () => {

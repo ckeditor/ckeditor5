@@ -11,7 +11,6 @@ import Document from '/ckeditor5/engine/view/document.js';
 import Element from '/ckeditor5/engine/view/element.js';
 import Text from '/ckeditor5/engine/view/text.js';
 import Position from '/ckeditor5/engine/view/position.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Selection', () => {
 	let selection;
@@ -147,7 +146,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.addRange( { invalid: 'range' } );
-			} ).to.throw( CKEditorError, 'view-selection-invalid-range: Invalid Range.' );
+			} ).to.throwCKEditorError( 'view-selection-invalid-range: Invalid Range.' );
 		} );
 
 		it( 'should add range to selection ranges', () => {
@@ -169,11 +168,11 @@ describe( 'Selection', () => {
 			selection.addRange( range1 );
 			expect( () => {
 				selection.addRange( range2 );
-			} ).to.throw( CKEditorError, 'view-selection-range-intersects' );
+			} ).to.throwCKEditorError( 'view-selection-range-intersects' );
 
 			expect( () => {
 				selection.addRange( range1 );
-			} ).to.throw( CKEditorError, 'view-selection-range-intersects' );
+			} ).to.throwCKEditorError( 'view-selection-range-intersects' );
 		} );
 	} );
 
@@ -337,7 +336,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.setRanges( [ { invalid: 'range' } ] );
-			} ).to.throw( CKEditorError, 'view-selection-invalid-range: Invalid Range.' );
+			} ).to.throwCKEditorError( 'view-selection-invalid-range: Invalid Range.' );
 		} );
 
 		it( 'should add ranges and fire change event', ( done ) => {

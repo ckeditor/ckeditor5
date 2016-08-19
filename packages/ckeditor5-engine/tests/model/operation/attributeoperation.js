@@ -11,7 +11,6 @@ import Text from '/ckeditor5/engine/model/text.js';
 import AttributeOperation from '/ckeditor5/engine/model/operation/attributeoperation.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Range from '/ckeditor5/engine/model/range.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import count from '/ckeditor5/utils/count.js';
 import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
@@ -296,7 +295,7 @@ describe( 'AttributeOperation', () => {
 					doc.version
 				)
 			) );
-		} ).to.throw( CKEditorError, /attribute-operation-wrong-old-value/ );
+		} ).to.throwCKEditorError( /attribute-operation-wrong-old-value/ );
 	} );
 
 	it( 'should throw an error when one try to insert and the attribute already exists', () => {
@@ -312,7 +311,7 @@ describe( 'AttributeOperation', () => {
 					doc.version
 				)
 			) );
-		} ).to.throw( CKEditorError, /attribute-operation-attribute-exists/ );
+		} ).to.throwCKEditorError( /attribute-operation-attribute-exists/ );
 	} );
 
 	it( 'should create an AttributeOperation with the same parameters when cloned', () => {

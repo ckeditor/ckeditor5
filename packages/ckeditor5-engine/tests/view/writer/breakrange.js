@@ -10,7 +10,6 @@ import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 import Range from '/ckeditor5/engine/view/range.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'writer', () => {
 	/**
@@ -33,7 +32,7 @@ describe( 'writer', () => {
 
 			expect( () => {
 				breakRange( Range.createFromParentsAndOffsets( p1, 0, p2, 0 ) );
-			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
+			} ).to.throwCKEditorError( 'view-writer-invalid-range-container' );
 		} );
 
 		it( 'should throw when range has no parent container', () => {
@@ -41,7 +40,7 @@ describe( 'writer', () => {
 
 			expect( () => {
 				breakRange( Range.createFromParentsAndOffsets( el, 0, el, 0 ) );
-			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
+			} ).to.throwCKEditorError( 'view-writer-invalid-range-container' );
 		} );
 
 		it( 'should not break text nodes if they are not in attribute elements', () => {

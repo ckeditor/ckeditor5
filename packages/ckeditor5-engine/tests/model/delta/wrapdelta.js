@@ -10,7 +10,6 @@ import Position from '/ckeditor5/engine/model/position.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 import WrapDelta from '/ckeditor5/engine/model/delta/wrapdelta.js';
 import UnwrapDelta from '/ckeditor5/engine/model/delta/unwrapdelta.js';
@@ -59,7 +58,7 @@ describe( 'Batch', () => {
 
 			expect( () => {
 				doc.batch().wrap( notFlatRange, 'p' );
-			} ).to.throw( CKEditorError, /^batch-wrap-range-not-flat/ );
+			} ).to.throwCKEditorError( /^batch-wrap-range-not-flat/ );
 		} );
 
 		it( 'should throw if element to wrap with has children', () => {
@@ -67,7 +66,7 @@ describe( 'Batch', () => {
 
 			expect( () => {
 				doc.batch().wrap( range, p );
-			} ).to.throw( CKEditorError, /^batch-wrap-element-not-empty/ );
+			} ).to.throwCKEditorError( /^batch-wrap-element-not-empty/ );
 		} );
 
 		it( 'should throw if element to wrap with has children', () => {
@@ -76,7 +75,7 @@ describe( 'Batch', () => {
 
 			expect( () => {
 				doc.batch().wrap( range, p );
-			} ).to.throw( CKEditorError, /^batch-wrap-element-attached/ );
+			} ).to.throwCKEditorError( /^batch-wrap-element-attached/ );
 		} );
 
 		it( 'should be chainable', () => {

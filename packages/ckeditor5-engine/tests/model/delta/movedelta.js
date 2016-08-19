@@ -11,7 +11,6 @@ import Position from '/ckeditor5/engine/model/position.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 import MoveDelta from '/ckeditor5/engine/model/delta/movedelta.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
@@ -56,7 +55,7 @@ describe( 'Batch', () => {
 
 			expect( () => {
 				doc.batch().move( notFlatRange, new Position( root, [ 1, 3 ] ) );
-			} ).to.throw( CKEditorError, /^batch-move-range-not-flat/ );
+			} ).to.throwCKEditorError( /^batch-move-range-not-flat/ );
 		} );
 
 		it( 'should be chainable', () => {
