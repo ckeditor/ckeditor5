@@ -25,8 +25,6 @@ const config = {
 	BUNDLE_DEFAULT_CONFIG: 'dev/bundles/build-config-standard.js',
 
 	DOCUMENTATION: {
-		// Path to the built editors for samples.
-		EDITORS_DIST: '.docs/assets/scripts/samples',
 		// Glob pattern with samples.
 		SAMPLES: 'docs/samples/**/*.@(md|html|js)',
 		// Glob pattern with guides.
@@ -126,11 +124,8 @@ gulp.task( 'test:samples:bundled', [ 'compile:samples' ], () => compiler.compile
 gulp.task( 'test:samples', [ 'test:samples:local', 'test:samples:bundled' ] );
 
 // Tasks specific for building editors for testing releases.
-gulp.task( 'compile:samples:clean', ckeditor5DevBundle.cleanSamplesEditors );
-
 gulp.task( 'compile:samples',
 	[
-		'compile:samples:clean',
 		'compile:js:esnext',
 		'compile:themes:esnext'
 	],
