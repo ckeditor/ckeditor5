@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+import uid from '../../utils/uid.js';
 import View from '../../ui/view.js';
 import Template from '../../ui/template.js';
 
@@ -23,10 +24,12 @@ export default class LinkBalloonPanelView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor() {
-		super();
+	constructor( locale ) {
+		super( locale );
 
+		const t = this.t;
 		const bind = this.bind;
+		const urlFieldId = `ck-input-${ uid() }`;
 
 		this.template = new Template( {
 			tag: 'div',
@@ -45,10 +48,44 @@ export default class LinkBalloonPanelView extends View {
 					maxWidth: bind.to( 'maxWidth', ( value ) => `${ value }px` ),
 					maxHeight: bind.to( 'maxHeight', ( value ) => `${ value }px` ),
 				}
-			}
+			},
+
+			children: [
+				{
+					tag: 'label',
+					attributes: {
+						class: [
+							'ck-input__label'
+						],
+						for: urlFieldId
+					},
+					children: [
+						t( 'Link URL' )
+					]
+				},
+				{
+					tag: 'input',
+					attributes: {
+						class: [
+							'ck-input',
+							'ck-input-text'
+						],
+						id: urlFieldId,
+						type: 'text'
+					}
+				},
+				{
+					tag: 'div',
+					attributes: {
+						class: [
+							'ck-balloon-panel__buttons'
+						]
+					}
+				}
+			]
 		} );
 
-		this.register( 'main', el => el );
+		this.register( 'buttons', '.ck-balloon-panel__buttons' );
 	}
 
 	show() {

@@ -66,18 +66,15 @@ export default class Link extends Feature {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 		const editableViewElement = editor.ui.editable.view.element;
-		const t = editor.t;
 
 		// Create panel model.
 		const balloonPanelModel = new Model( {
 			maxWidth: 300
 		} );
 
-		this.balloonPanel = new LinkBalloonPanel( balloonPanelModel, new LinkBalloonPanelView( t ) );
+		this.balloonPanel = new LinkBalloonPanel( balloonPanelModel, new LinkBalloonPanelView( editor.locale ) );
 
 		editor.ui.add( 'body', this.balloonPanel );
-
-		this.balloonPanel.view.element.innerHTML = 'LinkBalloonPanel';
 
 		editingView.on( 'render', () => {
 			const firstParent = editingView.selection.getFirstPosition().parent;

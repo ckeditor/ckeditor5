@@ -3,7 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+import Model from '../../ui/model.js';
 import Controller from '../../ui/controller.js';
+import Button from '../../ui/button/button.js';
+import ButtonView from '../../ui/button/buttonview.js';
 
 /**
  * The link balloon panel controller class.
@@ -23,11 +26,23 @@ export default class LinkBalloonPanel extends Controller {
 	constructor( model, view ) {
 		super( model, view );
 
-		view.model.bind( 'arrow', 'maxWidth', 'maxHeight' ).to( model );
+		const t = this.view.t;
 
+		view.model.bind( 'arrow', 'maxWidth', 'maxHeight' ).to( model );
 		view.model.set( 'top', 0 );
 		view.model.set( 'left', 0 );
-
 		view.model.set( 'isVisible', false );
+
+		const buttonModel = new Model( {
+			isEnabled: true,
+			isOn: false,
+			label: t( 'Save' ),
+			withText: true
+		} );
+
+		this.saveButton = new Button( buttonModel, new ButtonView( this.locale ) );
+		this.saveButton.view.element.classList.add( 'ck-button-action' );
+
+		this.addCollection( 'buttons' ).add( this.saveButton );
 	}
 }

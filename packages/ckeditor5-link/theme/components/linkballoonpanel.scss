@@ -7,6 +7,9 @@ $ck-balloon-arrow-half-width: 10px;
 
 // TODO: This will become BalloonPanel component stylesheet.
 .ck-balloon-panel {
+	@include ck-unselectable();
+	@include ck-rounded-corners();
+
 	display: none;
 	position: absolute;
 	background: ck-color( 'background' );
@@ -108,5 +111,10 @@ $ck-balloon-arrow-half-width: 10px;
 
 	&_visible {
 		display: block;
+	}
+
+	&__buttons {
+		text-align: right;
+		margin-top: ck-spacing( 'medium' );
 	}
 }
