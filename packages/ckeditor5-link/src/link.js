@@ -69,8 +69,13 @@ export default class Link extends Feature {
 
 		// Create panel model.
 		const balloonPanelModel = new Model( {
-			maxWidth: 300
+			maxWidth: 300,
+			url: 'foo'
 		} );
+
+		// this.listenTo( balloonPanelModel, 'change:url', ( ...args ) => {
+		// 	console.log( 'URL has changed', args );
+		// } );
 
 		this.balloonPanel = new LinkBalloonPanel( balloonPanelModel, new LinkBalloonPanelView( editor.locale ) );
 
@@ -94,6 +99,14 @@ export default class Link extends Feature {
 			}
 		}, this );
 
-		editingView.on( 'blur', () => this.balloonPanel.view.hide() );
+		editingView.on( 'blur', ( evt, domEvtData ) => {
+			// TODO: Lame FocusManager.
+			// TODO input and label as separate components.
+			if ( domEvtData.domEvent.relatedTarget === this.balloonPanel.view.element.querySelector( 'input' ) ) {
+				domEvtData.domEvent.preventDefault();
+			} else {
+				this.balloonPanel.view.hide();
+			}
+		} );
 	}
 }

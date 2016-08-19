@@ -28,7 +28,7 @@ export default class LinkBalloonPanel extends Controller {
 
 		const t = this.view.t;
 
-		view.model.bind( 'arrow', 'maxWidth', 'maxHeight' ).to( model );
+		view.model.bind( 'arrow', 'maxWidth', 'maxHeight', 'url' ).to( model );
 		view.model.set( 'top', 0 );
 		view.model.set( 'left', 0 );
 		view.model.set( 'isVisible', false );
@@ -38,6 +38,12 @@ export default class LinkBalloonPanel extends Controller {
 			isOn: false,
 			label: t( 'Save' ),
 			withText: true
+		} );
+
+		buttonModel.on( 'execute', () => {
+			// TODO input and label as separate components.
+			model.url = view.element.querySelector( 'input' ).value;
+			this.view.hide();
 		} );
 
 		this.saveButton = new Button( buttonModel, new ButtonView( this.locale ) );

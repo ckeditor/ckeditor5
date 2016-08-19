@@ -71,7 +71,11 @@ export default class LinkBalloonPanelView extends View {
 							'ck-input-text'
 						],
 						id: urlFieldId,
-						type: 'text'
+						type: 'text',
+						value: bind.to( 'url' )
+					},
+					on: {
+						change: bind.to( 'urlChange' )
 					}
 				},
 				{
