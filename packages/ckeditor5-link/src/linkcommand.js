@@ -40,7 +40,7 @@ export default class LinkCommand extends Command {
 	/**
 	 * Checks if {@link engine.model.Document#schema} allows to create attribute in {@link engine.model.Document#selection}
 	 *
-	 * @private
+	 * @protected
 	 * @returns {Boolean}
 	 */
 	_checkEnabled() {

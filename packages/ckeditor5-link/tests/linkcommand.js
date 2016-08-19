@@ -86,7 +86,7 @@ describe( 'LinkCommand', () => {
 			} );
 
 			it( 'should overwrite existing link attribute when selected text wraps text with link attribute', () => {
-				setData( document, 'f[o<$text link="some url">o</$text>ba]r' );
+				setData( document, 'f[o<$text link="other url">o</$text>ba]r' );
 
 				expect( command.isValue ).to.false;
 
@@ -97,36 +97,36 @@ describe( 'LinkCommand', () => {
 			} );
 
 			it( 'should split text and overwrite attribute value when selection is inside text with link attribute', () => {
-				setData( document, 'f<$text link="some url">o[ob]a</$text>r' );
+				setData( document, 'f<$text link="other url">o[ob]a</$text>r' );
 
 				expect( command.isValue ).to.true;
 
 				command._doExecute( 'url' );
 
 				expect( getData( document ) )
-					.to.equal( 'f<$text link="some url">o</$text>[<$text link="url">ob</$text>]<$text link="some url">a</$text>r' );
+					.to.equal( 'f<$text link="other url">o</$text>[<$text link="url">ob</$text>]<$text link="other url">a</$text>r' );
 				expect( command.isValue ).to.true;
 			} );
 
-			it( 'should overwrite link attribute of selected text only, when selection starts inside text with link attribute', () => {
-				setData( document, 'f<$text link="some url">o[o</$text>ba]r' );
+			it( 'should overwrite link attribute of selected text only, when selection start inside text with link attribute', () => {
+				setData( document, 'f<$text link="other url">o[o</$text>ba]r' );
 
 				expect( command.isValue ).to.true;
 
 				command._doExecute( 'url' );
 
-				expect( getData( document ) ).to.equal( 'f<$text link="some url">o</$text>[<$text link="url">oba</$text>]r' );
+				expect( getData( document ) ).to.equal( 'f<$text link="other url">o</$text>[<$text link="url">oba</$text>]r' );
 				expect( command.isValue ).to.true;
 			} );
 
 			it( 'should overwrite link attribute of selected text only, when selection end inside text with link attribute', () => {
-				setData( document, 'f[o<$text link="some url">ob]a</$text>r' );
+				setData( document, 'f[o<$text link="other url">ob]a</$text>r' );
 
 				expect( command.isValue ).to.false;
 
 				command._doExecute( 'url' );
 
-				expect( getData( document ) ).to.equal( 'f[<$text link="url">oob</$text>]<$text link="some url">a</$text>r' );
+				expect( getData( document ) ).to.equal( 'f[<$text link="url">oob</$text>]<$text link="other url">a</$text>r' );
 				expect( command.isValue ).to.true;
 			} );
 
@@ -168,7 +168,16 @@ describe( 'LinkCommand', () => {
 				expect( getData( document ) ).to.equal( 'foo[<$text link="url">url</$text>]bar' );
 			} );
 
-			it( 'should not insert text with link attribute when text is not allowed in parent', () => {
+			it( 'should insert text with link attribute and data equal to href when selection is inside text with link attribute', () => {
+				setData( document, '<$text link="other url">foo[]bar</$text>' );
+
+				command._doExecute( 'url' );
+
+				expect( getData( document ) )
+					.to.equal( '<$text link="other url">foo</$text>[<$text link="url">url</$text>]<$text link="other url">bar</$text>' );
+			} );
+
+			it( 'should not insert text with link attribute when is not allowed in parent', () => {
 				document.schema.disallow( { name: '$text', attributes: 'link', inside: 'p' } );
 				setData( document, '<p>foo[]bar</p>' );
 
