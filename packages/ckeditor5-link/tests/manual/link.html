@@ -1,7 +1,61 @@
 <head>
 	<link rel="stylesheet" href="%APPS_DIR%ckeditor/build/modules/amd/theme/ckeditor.css">
+	<style>
+		a[href*="nw"], a[href*="ne"], a[href*="sw"], a[href*="se"] {
+			position: absolute;
+		}
+
+		a[href*="nw"] {
+			top: 10px;
+			left: 10px;
+		}
+
+		a[href*="ne"] {
+			top: 10px;
+			right: 10px;
+		}
+
+		a[href*="sw"] {
+			bottom: 10px;
+			left: 10px;
+		}
+
+		a[href*="se"] {
+			bottom: 10px;
+			right: 10px;
+		}
+
+		.ck-editor_balloon-demo .ck-editor__editable {
+			height: 300px;
+			position: relative;
+		}
+	</style>
 </head>
+
+<h2>Simple editor</h2>
 
 <div id="editor">
 	<p>This is an <a href="http://ckeditor.com">CKEditor5</a> from <a href="http://cksource.com">CKSource</a>.</p>
 </div>
+
+<h2>Balloon testing sample</h2>
+
+<div id="editor-balloon-demo">
+	<p>
+		<a href="http://nw">North West</a>
+		<a href="http://ne">North East</a>
+		<a href="http://sw">South West</a>
+		<a href="http://se">South East</a>
+	</p>
+</div>
+
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Theophrastus mediocriterne delectat, cum tractat locos ab Aristotele ante tractatos? Idemne, quod iucunde? Quid igitur, inquit, eos responsuros putas? Nos cum te, M. Duo Reges: constructio interrete. Quod ea non occurrentia fingunt, vincunt Aristonem; Quibusnam praeteritis? Conclusum est enim contra Cyrenaicos satis acute, nihil ad Epicurum. Quid iudicant sensus? Zenonis est, inquam, hoc Stoici. </p>
+
+<p style="width: 2000px">Invidiosum nomen est, infame, suspectum. Sed ne, dum huic obsequor, vobis molestus sim. Nunc agendum est subtilius. Fatebuntur Stoici haec omnia dicta esse praeclare, neque eam causam Zenoni desciscendi fuisse. Piso, familiaris noster, et alia multa et hoc loco Stoicos irridebat: Quid enim? Quid, si etiam iucunda memoria est praeteritorum malorum? </p>
+
+<p>Si longus, levis; Quia nec honesto quic quam honestius nec turpi turpius. Qui-vere falsone, quaerere mittimus-dicitur oculis se privasse; Si stante, hoc natura videlicet vult, salvam esse se, quod concedimus; Ita relinquet duas, de quibus etiam atque etiam consideret. Qui-vere falsone, quaerere mittimus-dicitur oculis se privasse; Terram, mihi crede, ea lanx et maria deprimet. Ut optime, secundum naturam affectum esse possit. </p>
+
+<p>Duo enim genera quae erant, fecit tria. Nam si amitti vita beata potest, beata esse non potest. Verum tamen cum de rebus grandioribus dicas, ipsae res verba rapiunt; Si autem id non concedatur, non continuo vita beata tollitur. Sed quanta sit alias, nunc tantum possitne esse tanta. Non enim solum Torquatus dixit quid sentiret, sed etiam cur. At modo dixeras nihil in istis rebus esse, quod interesset. Quid autem habent admirationis, cum prope accesseris? </p>
+
+<p>Facile est hoc cernere in primis puerorum aetatulis. Qui non moveatur et offensione turpitudinis et comprobatione honestatis? Quid de Pythagora? Potius inflammat, ut coercendi magis quam dedocendi esse videantur. Ita multo sanguine profuso in laetitia et in victoria est mortuus. Satisne ergo pudori consulat, si quis sine teste libidini pareat? Tum mihi Piso: Quid ergo? </p>
+

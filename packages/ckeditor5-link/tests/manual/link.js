@@ -17,3 +17,14 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .catch( err => {
 	console.error( err.stack );
 } );
+
+ClassicEditor.create( document.querySelector( '#editor-balloon-demo' ), {
+	features: [ 'link', 'typing', 'paragraph', 'undo' ],
+	toolbar: [ 'link', 'undo', 'redo' ]
+} )
+.then( editor => {
+	editor.ui.view.element.classList.add( 'ck-editor_balloon-demo' );
+} )
+.catch( err => {
+	console.error( err.stack );
+} );
