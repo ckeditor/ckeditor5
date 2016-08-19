@@ -256,7 +256,7 @@ describe( 'load', () => {
 				throw new Error( 'Test error: this promise should not be resolved successfully' );
 			} )
 			.catch( ( err ) => {
-				expect( err ).to.be.an.instanceof( CKEditorError );
+				expect( CKEditorError.isCKEditorError( err ) ).to.be.true;
 				expect( err.message ).to.match( /^plugincollection-instance/ );
 
 				sinon.assert.calledOnce( logSpy );
