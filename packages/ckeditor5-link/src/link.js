@@ -90,11 +90,10 @@ export default class Link extends Feature {
 					editableViewElement
 				);
 			} else {
-				const selection = document.getSelection();
-
-				if ( selection && selection.rangeCount ) {
-					this.balloonPanel.view.attachTo( selection.getRangeAt( 0 ), editableViewElement );
-				}
+				this.balloonPanel.view.attachTo(
+					editingView.domConverter.viewRangeToDom( editingView.selection.getFirstRange() ),
+					editableViewElement
+				);
 			}
 		}, this );
 
