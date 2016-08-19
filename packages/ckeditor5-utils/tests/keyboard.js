@@ -4,7 +4,6 @@
  */
 
 import { keyCodes, getCode, parseKeystroke } from '/ckeditor5/utils/keyboard.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Keyboard', () => {
 	describe( 'keyCodes', () => {
@@ -43,7 +42,7 @@ describe( 'Keyboard', () => {
 		it( 'throws when passed unknown key name', () => {
 			expect( () => {
 				getCode( 'foo' );
-			} ).to.throw( CKEditorError, /^keyboard-unknown-key:/ );
+			} ).to.throwCKEditorError( /^keyboard-unknown-key:/ );
 		} );
 
 		it( 'gets code of a keystroke info', () => {
@@ -84,7 +83,7 @@ describe( 'Keyboard', () => {
 		it( 'throws on unknown name', () => {
 			expect( () => {
 				parseKeystroke( 'foo' );
-			} ).to.throw( CKEditorError, /^keyboard-unknown-key:/ );
+			} ).to.throwCKEditorError( /^keyboard-unknown-key:/ );
 		} );
 	} );
 } );
