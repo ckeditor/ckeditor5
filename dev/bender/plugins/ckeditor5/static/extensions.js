@@ -96,8 +96,8 @@
 			// jscs:disable disallowMultipleVarDecl
 
 			var obj = utils.flag( this, 'object' ),
-				actuallyGot = '' ,
-				thrown = false ,
+				actuallyGot = '',
+				thrown = false,
 				thrownError = null,
 				message;
 
@@ -161,9 +161,9 @@
 			}
 
 			this.assert(
-				thrown === true ,
-					'expected #{this} to throw an error' + actuallyGot ,
-					'expected #{this} to not throw an error' + actuallyGot ,
+				thrown === true,
+					'expected #{this} to throw an error' + actuallyGot,
+					'expected #{this} to not throw an error' + actuallyGot,
 					'CKEditorError',
 					( thrownError instanceof Error ? thrownError.toString() : thrownError )
 			);
