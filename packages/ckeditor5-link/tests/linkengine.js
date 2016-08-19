@@ -40,12 +40,11 @@ describe( 'LinkEngine', () => {
 			const command = editor.commands.get( 'link' );
 
 			expect( command ).to.be.instanceOf( LinkCommand );
-			expect( command ).to.have.property( 'attributeKey', 'link' );
 		} );
 	} );
 
 	describe( 'data pipeline conversions', () => {
-		it( 'should convert `<a href="url">` to `bold="url"` attribute', () => {
+		it( 'should convert `<a href="url">` to `link="url"` attribute', () => {
 			editor.setData( '<a href="url">foo</a>bar' );
 
 			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text link="url">foo</$text>bar' );
