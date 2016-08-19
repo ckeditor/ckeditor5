@@ -51,4 +51,14 @@ describe( 'CKEditorError', () => {
 		expect( error ).to.have.property( 'message', 'foo {"bar":"a","bom":{"x":1},"bim":10}' );
 		expect( error ).to.have.property( 'data', data );
 	} );
+
+	describe( 'isCKEditorError', () => {
+		it( 'checks if error is an instance of CKEditorError', () => {
+			let ckeditorError = new CKEditorError( 'foo' );
+			let regularError = new Error( 'foo' );
+
+			expect( CKEditorError.isCKEditorError( ckeditorError ) ).to.be.true;
+			expect( CKEditorError.isCKEditorError( regularError ) ).to.be.false;
+		} );
+	} );
 } );

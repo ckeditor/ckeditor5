@@ -46,4 +46,14 @@ export default class CKEditorError extends Error {
 		 */
 		this.data = data;
 	}
+
+	/**
+	 * Checks if error is an instance of CKEditorError class.
+	 *
+	 * @param {Object} error Object to check.
+	 * @returns {Boolean}
+	 */
+	static isCKEditorError( error ) {
+		return error instanceof CKEditorError;
+	}
 }
