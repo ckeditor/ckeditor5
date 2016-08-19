@@ -14,8 +14,6 @@ import Document from '/ckeditor5/engine/view/document.js';
 import Text from '/ckeditor5/engine/view/text.js';
 import TextProxy from '/ckeditor5/engine/view/textproxy.js';
 
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-
 import { parse } from '/tests/engine/_utils/view.js';
 
 describe( 'Position', () => {
@@ -403,7 +401,7 @@ describe( 'Position', () => {
 		it( 'should throw error if one try to create positions before root', () => {
 			expect( () => {
 				Position.createBefore( parse( '<p></p>' ) );
-			} ).to.throw( CKEditorError, /view-position-before-root/ );
+			} ).to.throwCKEditorError( /view-position-before-root/ );
 		} );
 
 		it( 'should create positions before `Node`', () => {
@@ -428,7 +426,7 @@ describe( 'Position', () => {
 		it( 'should throw error if one try to create positions after root', () => {
 			expect( () => {
 				Position.createAfter( parse( '<p></p>' ) );
-			} ).to.throw( CKEditorError, /view-position-after-root/ );
+			} ).to.throwCKEditorError( /view-position-after-root/ );
 		} );
 
 		it( 'should create positions after `Node`', () => {

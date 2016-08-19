@@ -10,7 +10,6 @@ import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
 import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
 import count from '/ckeditor5/utils/count.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Element', () => {
 	describe( 'constructor', () => {
@@ -211,11 +210,11 @@ describe( 'Element', () => {
 		it( 'should throw if given offset is too high or too low', () => {
 			expect( () => {
 				element.offsetToIndex( -1 );
-			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
+			} ).to.throwCKEditorError( /nodelist-offset-out-of-bounds/ );
 
 			expect( () => {
 				element.offsetToIndex( 55 );
-			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
+			} ).to.throwCKEditorError( /nodelist-offset-out-of-bounds/ );
 		} );
 
 		it( 'should return length if given offset is equal to maxOffset', () => {

@@ -15,8 +15,6 @@ import Range from '/ckeditor5/engine/model/range.js';
 import writer from '/ckeditor5/engine/model/writer.js';
 import { getData } from '/tests/engine/_utils/model.js';
 
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-
 let doc, root;
 
 describe( 'writer', () => {
@@ -84,7 +82,7 @@ describe( 'writer', () => {
 		it( 'should throw if given range is not flat', () => {
 			expect( () => {
 				writer.remove( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1, 2 ] ) ) );
-			} ).to.throw( CKEditorError, /model-writer-remove-range-not-flat/ );
+			} ).to.throwCKEditorError( /model-writer-remove-range-not-flat/ );
 		} );
 	} );
 
@@ -118,7 +116,7 @@ describe( 'writer', () => {
 		it( 'should throw if given range is not flat', () => {
 			expect( () => {
 				writer.move( new Range( new Position( root, [ 0 ] ), new Position( root, [ 1, 2 ] ) ), null );
-			} ).to.throw( CKEditorError, /model-writer-move-range-not-flat/ );
+			} ).to.throwCKEditorError( /model-writer-move-range-not-flat/ );
 		} );
 	} );
 

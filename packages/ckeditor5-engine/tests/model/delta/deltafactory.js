@@ -16,8 +16,6 @@ import ReinsertOperation from '/ckeditor5/engine/model/operation/reinsertoperati
 import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
 import RootAttributeOperation from '/ckeditor5/engine/model/operation/rootattributeoperation.js';
 
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-
 import DeltaFactory from '/ckeditor5/engine/model/delta/deltafactory.js';
 
 import Document from '/ckeditor5/engine/model/document.js';
@@ -55,7 +53,7 @@ describe( 'DeltaFactory', () => {
 		it( 'should throw error for unregistered delta', () => {
 			expect( () => {
 				DeltaFactory.fromJSON( jsonParseStringify( new BarDelta() ), {} );
-			} ).to.throw( CKEditorError, /^delta-fromjson-no-deserializer/ );
+			} ).to.throwCKEditorError( /^delta-fromjson-no-deserializer/ );
 		} );
 
 		it( 'should create delta with AttributeOperation', () => {

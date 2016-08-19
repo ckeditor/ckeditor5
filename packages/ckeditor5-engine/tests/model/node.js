@@ -10,7 +10,6 @@ import DocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import Node from '/ckeditor5/engine/model/node.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import count from '/ckeditor5/utils/count.js';
 
 describe( 'Node', () => {
@@ -132,7 +131,7 @@ describe( 'Node', () => {
 				() => {
 					node.index;
 				}
-			).to.throw( CKEditorError, /model-node-not-found-in-parent/ );
+			).to.throwCKEditorError( /model-node-not-found-in-parent/ );
 		} );
 	} );
 
@@ -186,7 +185,7 @@ describe( 'Node', () => {
 				() => {
 					node.startOffset;
 				}
-			).to.throw( CKEditorError, /model-node-not-found-in-parent/ );
+			).to.throwCKEditorError( /model-node-not-found-in-parent/ );
 		} );
 	} );
 
