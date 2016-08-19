@@ -25,16 +25,12 @@ const config = {
 	BUNDLE_DEFAULT_CONFIG: 'dev/bundles/build-config-standard.js',
 
 	DOCUMENTATION: {
-		SOURCE_DIR: '.docs',
-		DESTINATION_DIR: 'build/docs',
-		SAMPLES: {
-			EXTENSIONS: [ 'md', 'html', 'js' ],
-			DIRECTORY: 'samples'
-		},
-		GUIDES: {
-			EXTENSIONS: [ 'md' ],
-			DIRECTORY: 'guides'
-		}
+		// Path to the built editors for samples.
+		EDITORS_DIST: '.docs/assets/scripts/samples',
+		// Glob pattern with samples.
+		SAMPLES: 'docs/samples/**/*.@(md|html|js)',
+		// Glob pattern with guides.
+		GUIDES: 'docs/guides/**/*.md'
 	},
 
 	// Files ignored by jshint and jscs tasks. Files from .gitignore will be added automatically during tasks execution.
@@ -130,7 +126,7 @@ gulp.task( 'test:samples:bundled', [ 'compile:samples' ], () => compiler.compile
 gulp.task( 'test:samples', [ 'test:samples:local', 'test:samples:bundled' ] );
 
 // Tasks specific for building editors for testing releases.
-gulp.task( 'compile:samples:clean', ckeditor5DevBundle.cleanSamples );
+gulp.task( 'compile:samples:clean', ckeditor5DevBundle.cleanSamplesEditors );
 
 gulp.task( 'compile:samples',
 	[
