@@ -21,7 +21,7 @@
 		return load( context, moduleId, url );
 	};
 
-	// Extend ChaiJS with custom exception check.
+	// Extend ChaiJS with custom exception check `expect().to.throwCKEditorError( [ msg ] )`.
 	require( [ '/ckeditor5/utils/ckeditorerror.js', 'chai' ], function( CKEditorError, chai ) {
 		CKEditorError = CKEditorError.default;
 
@@ -129,8 +129,8 @@
 				if ( ( message !== null && message !== undefined ) && errMsg && errMsg instanceof RegExp ) {
 					this.assert(
 						errMsg.exec( message ),
-						'expected #{this} to throw error matching #{exp} but got #{act}',
-						'expected #{this} to throw error not matching #{exp}',
+						'expected #{this} to throw CKEditorError matching #{exp} but got #{act}',
+						'expected #{this} to throw CKEditorError not matching #{exp}',
 						errMsg,
 						message
 					);
@@ -141,8 +141,8 @@
 				} else if ( ( message !== null && message !== undefined ) && errMsg && typeof errMsg == 'string' ) {
 					this.assert(
 						message.indexOf( errMsg ) !== -1,
-						'expected #{this} to throw error including #{exp} but got #{act}',
-						'expected #{this} to throw error not including #{act}',
+						'expected #{this} to throw CKEditorError including #{exp} but got #{act}',
+						'expected #{this} to throw CKEditorError not including #{act}',
 						errMsg,
 						message
 					);
@@ -162,8 +162,8 @@
 
 			this.assert(
 				thrown === true,
-					'expected #{this} to throw an error' + actuallyGot,
-					'expected #{this} to not throw an error' + actuallyGot,
+					'expected #{this} to throw an CKEditorError' + actuallyGot,
+					'expected #{this} to not throw an CKEditorError' + actuallyGot,
 					'CKEditorError',
 					( thrownError instanceof Error ? thrownError.toString() : thrownError )
 			);
