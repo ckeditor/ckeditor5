@@ -1,0 +1,11 @@
+{
+  "esnext": true,
+  "immed": true,
+  "loopfunc": true,
+  "noarg": true,
+  "nonbsp": true,
+  "undef": true,
+  "unused": true,
+  "strict": "implied",
+  "varstmt": true
+}
