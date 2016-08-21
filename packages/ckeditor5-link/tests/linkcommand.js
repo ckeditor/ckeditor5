@@ -30,18 +30,18 @@ describe( 'LinkCommand', () => {
 		command.destroy();
 	} );
 
-	describe( 'isValue', () => {
+	describe( 'hasValue', () => {
 		describe( 'collapsed selection', () => {
 			it( 'should be equal `true` when selection is placed inside element with link attribute', () => {
 				setData( document, `<$text link="url">foo[]bar</$text>` );
 
-				expect( command.isValue ).to.true;
+				expect( command.hasValue ).to.true;
 			} );
 
 			it( 'should be equal `false` when selection is placed inside element without link attribute', () => {
 				setData( document, `<$text bold="true">foo[]bar</$text>` );
 
-				expect( command.isValue ).to.false;
+				expect( command.hasValue ).to.false;
 			} );
 		} );
 
@@ -49,13 +49,13 @@ describe( 'LinkCommand', () => {
 			it( 'should be equal `true` when selection contains only elements with link attribute', () => {
 				setData( document, 'fo[<$text link="url">ob</$text>]ar' );
 
-				expect( command.isValue ).to.true;
+				expect( command.hasValue ).to.true;
 			} );
 
 			it( 'should be equal `false` when selection contains not only elements with link attribute', () => {
 				setData( document, 'f[o<$text link="url">ob</$text>]ar' );
 
-				expect( command.isValue ).to.false;
+				expect( command.hasValue ).to.false;
 			} );
 		} );
 	} );
@@ -65,22 +65,22 @@ describe( 'LinkCommand', () => {
 			it( 'should set link attribute to selected text', () => {
 				setData( document, 'f[ooba]r' );
 
-				expect( command.isValue ).to.false;
+				expect( command.hasValue ).to.false;
 
 				command._doExecute( 'url' );
 
 				expect( getData( document ) ).to.equal( 'f[<$text link="url">ooba</$text>]r' );
-				expect( command.isValue ).to.true;
+				expect( command.hasValue ).to.true;
 			} );
 
 			it( 'should set link attribute to selected text when text already has attributes', () => {
 				setData( document, 'f[o<$text bold="true">oba]r</$text>' );
 
-				expect( command.isValue ).to.false;
+				expect( command.hasValue ).to.false;
 
 				command._doExecute( 'url' );
 
-				expect( command.isValue ).to.true;
+				expect( command.hasValue ).to.true;
 				expect( getData( document ) )
 					.to.equal( 'f[<$text link="url">o</$text><$text bold="true" link="url">oba</$text>]<$text bold="true">r</$text>' );
 			} );
@@ -88,58 +88,58 @@ describe( 'LinkCommand', () => {
 			it( 'should overwrite existing link attribute when selected text wraps text with link attribute', () => {
 				setData( document, 'f[o<$text link="other url">o</$text>ba]r' );
 
-				expect( command.isValue ).to.false;
+				expect( command.hasValue ).to.false;
 
 				command._doExecute( 'url' );
 
 				expect( getData( document ) ).to.equal( 'f[<$text link="url">ooba</$text>]r' );
-				expect( command.isValue ).to.true;
+				expect( command.hasValue ).to.true;
 			} );
 
 			it( 'should split text and overwrite attribute value when selection is inside text with link attribute', () => {
 				setData( document, 'f<$text link="other url">o[ob]a</$text>r' );
 
-				expect( command.isValue ).to.true;
+				expect( command.hasValue ).to.true;
 
 				command._doExecute( 'url' );
 
 				expect( getData( document ) )
 					.to.equal( 'f<$text link="other url">o</$text>[<$text link="url">ob</$text>]<$text link="other url">a</$text>r' );
-				expect( command.isValue ).to.true;
+				expect( command.hasValue ).to.true;
 			} );
 
 			it( 'should overwrite link attribute of selected text only, when selection start inside text with link attribute', () => {
 				setData( document, 'f<$text link="other url">o[o</$text>ba]r' );
 
-				expect( command.isValue ).to.true;
+				expect( command.hasValue ).to.true;
 
 				command._doExecute( 'url' );
 
 				expect( getData( document ) ).to.equal( 'f<$text link="other url">o</$text>[<$text link="url">oba</$text>]r' );
-				expect( command.isValue ).to.true;
+				expect( command.hasValue ).to.true;
 			} );
 
 			it( 'should overwrite link attribute of selected text only, when selection end inside text with link attribute', () => {
 				setData( document, 'f[o<$text link="other url">ob]a</$text>r' );
 
-				expect( command.isValue ).to.false;
+				expect( command.hasValue ).to.false;
 
 				command._doExecute( 'url' );
 
 				expect( getData( document ) ).to.equal( 'f[<$text link="url">oob</$text>]<$text link="other url">a</$text>r' );
-				expect( command.isValue ).to.true;
+				expect( command.hasValue ).to.true;
 			} );
 
 			it( 'should set link attribute to selected text when text is split by $block element', () => {
 				setData( document, '<p>f[oo</p><p>ba]r</p>' );
 
-				expect( command.isValue ).to.false;
+				expect( command.hasValue ).to.false;
 
 				command._doExecute( 'url' );
 
 				expect( getData( document ) )
 					.to.equal( '<p>f[<$text link="url">oo</$text></p><p><$text link="url">ba</$text>]r</p>' );
-				expect( command.isValue ).to.true;
+				expect( command.hasValue ).to.true;
 			} );
 
 			it( 'should set link attribute only to allowed elements and omit disallowed', () => {
@@ -149,13 +149,13 @@ describe( 'LinkCommand', () => {
 
 				setData( document, '<p>f[oo<img></img>ba]r</p>' );
 
-				expect( command.isValue ).to.false;
+				expect( command.hasValue ).to.false;
 
 				command._doExecute( 'url' );
 
 				expect( getData( document ) )
 					.to.equal( '<p>f[<$text link="url">oo</$text><img></img><$text link="url">ba</$text>]r</p>' );
-				expect( command.isValue ).to.true;
+				expect( command.hasValue ).to.true;
 			} );
 		} );
 
