@@ -31,7 +31,7 @@ export default class Link extends Feature {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
-		const command = editor.commands.get( 'link' );
+		const linkCommand = editor.commands.get( 'link' );
 
 		// Create button model.
 		const buttonModel = new Model( {
@@ -41,14 +41,25 @@ export default class Link extends Feature {
 			icon: 'link'
 		} );
 
-		// Bind button model to command.
-		buttonModel.bind( 'isOn', 'isEnabled' ).to( command, 'isValue', 'isEnabled' );
+		const unlinkButtonModel = new Model( {
+			isEnabled: true,
+			isOn: false,
+			label: t( 'Unlink' ),
+			icon: 'unlink'
+		} );
 
-		// Execute command.
+		// Button <-> Command binding.
+		buttonModel.bind( 'isOn', 'isEnabled' ).to( linkCommand, 'hasValue', 'isEnabled' );
+
+		// Execute linking.
 		const hrefValue = 'http://www.cksource.com'; // Temporary href value.
 		this.listenTo( buttonModel, 'execute', () => editor.execute( 'link', hrefValue ) );
 
+		// Execute unlinking.
+		this.listenTo( unlinkButtonModel, 'execute', () => editor.execute( 'unlink' ) );
+
 		// Add link button to feature components.
 		editor.ui.featureComponents.add( 'link', ButtonController, ButtonView, buttonModel );
+		editor.ui.featureComponents.add( 'unlink', ButtonController, ButtonView, unlinkButtonModel );
 	}
 }
