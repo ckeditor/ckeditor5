@@ -10,12 +10,15 @@
     "ckeditor5-dev-lint": "ckeditor/ckeditor5-dev-lint"
   },
   "engines": {
-    "node": ">=5.0.0",
+    "node": ">=6.0.0",
     "npm": ">=3.0.0"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "See LICENSE.md",
-  "homepage": "",
-  "bugs": "",
-  "repository": ""
+  "homepage": "https://ckeditor5.github.io",
+  "bugs": "https://github.com/ckeditor/ckeditor5-link/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5-link.git"
+  }
 }

@@ -5,6 +5,7 @@
 
 import LinkEngine from '/ckeditor5/link/linkengine.js';
 import LinkCommand from '/ckeditor5/link/linkcommand.js';
+import UnlinkCommand from '/ckeditor5/link/unlinkcommand.js';
 import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
 import { getData as getModelData, setData as setModelData } from '/tests/engine/_utils/model.js';
 import { getData as getViewData } from '/tests/engine/_utils/view.js';
@@ -40,6 +41,14 @@ describe( 'LinkEngine', () => {
 			const command = editor.commands.get( 'link' );
 
 			expect( command ).to.be.instanceOf( LinkCommand );
+		} );
+
+		it( 'should register unlink command', () => {
+			expect( editor.commands.has( 'unlink' ) ).to.be.true;
+
+			const command = editor.commands.get( 'unlink' );
+
+			expect( command ).to.be.instanceOf( UnlinkCommand );
 		} );
 	} );
 

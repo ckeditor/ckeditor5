@@ -8,6 +8,7 @@ import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
 import AttributeElement from '../engine/view/attributeelement.js';
 import LinkCommand from './linkcommand.js';
+import UnlinkCommand from './unlinkcommand.js';
 
 /**
  * The link engine feature.
@@ -42,7 +43,8 @@ export default class LinkEngine extends Feature {
 				value: viewElement.getAttribute( 'href' )
 			} ) );
 
-		// Create link command.
+		// Create linking commands.
 		editor.commands.set( 'link', new LinkCommand( editor ) );
+		editor.commands.set( 'unlink', new UnlinkCommand( editor ) );
 	}
 }

@@ -30,17 +30,17 @@ export default class LinkCommand extends Command {
 		 * @observable
 		 * @member {Boolean} core.command.ToggleAttributeCommand#value
 		 */
-		this.set( 'isValue', false );
+		this.set( 'hasValue', false );
 
 		this.listenTo( this.editor.document.selection, 'change:attribute', () => {
-			this.isValue = this.editor.document.selection.hasAttribute( 'link' );
+			this.hasValue = this.editor.document.selection.hasAttribute( 'link' );
 		} );
 	}
 
 	/**
 	 * Checks if {@link engine.model.Document#schema} allows to create attribute in {@link engine.model.Document#selection}
 	 *
-	 * @private
+	 * @protected
 	 * @returns {Boolean}
 	 */
 	_checkEnabled() {
@@ -50,16 +50,16 @@ export default class LinkCommand extends Command {
 	}
 
 	/**
-	 * Executes the command if it is enabled.
+	 * Executes the command.
 	 *
-	 * When selection is not-collapsed then `link` attribute will be applied to nodes inside selection, but only to
+	 * When selection is non-collapsed then `link` attribute will be applied to nodes inside selection, but only to
 	 * this nodes where `link` attribute is allowed (disallowed nodes will be omitted).
 	 *
 	 * When selection is collapsed then new {@link engine.model.Text Text node} with `link` attribute will be inserted
 	 * in place of caret, but only if such an element is allowed in this place. _data of inserted text will be equal
 	 * to `href` parameter. Selection will be updated to wrap just inserted text node.
 	 *
-	 * @private
+	 * @protected
 	 * @param {String} href Link destination.
 	 */
 	_doExecute( href ) {
