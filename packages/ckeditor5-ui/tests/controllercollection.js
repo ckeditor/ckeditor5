@@ -13,7 +13,6 @@ import Collection from '/ckeditor5/utils/collection.js';
 import Model from '/ckeditor5/ui/model.js';
 import View from '/ckeditor5/ui/view.js';
 import Template from '/ckeditor5/ui/template.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 testUtils.createSinonSandbox();
 
@@ -277,15 +276,15 @@ describe( 'ControllerCollection', () => {
 
 			expect( () => {
 				collection.delegate();
-			} ).to.throw( CKEditorError, /ui-controllercollection-delegate-wrong-events/ );
+			} ).to.throwCKEditorError( /ui-controllercollection-delegate-wrong-events/ );
 
 			expect( () => {
 				collection.delegate( new Date() );
-			} ).to.throw( CKEditorError, /ui-controllercollection-delegate-wrong-events/ );
+			} ).to.throwCKEditorError( /ui-controllercollection-delegate-wrong-events/ );
 
 			expect( () => {
 				collection.delegate( 'color', new Date() );
-			} ).to.throw( CKEditorError, /ui-controllercollection-delegate-wrong-events/ );
+			} ).to.throwCKEditorError( /ui-controllercollection-delegate-wrong-events/ );
 		} );
 
 		it( 'returns object', () => {

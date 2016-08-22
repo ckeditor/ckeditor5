@@ -9,7 +9,6 @@
 import testUtils from '/tests/core/_utils/utils.js';
 import Template from '/ckeditor5/ui/template.js';
 import Model from '/ckeditor5/ui/model.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 import DOMEmitterMixin from '/ckeditor5/ui/domemittermixin.js';
 
@@ -109,14 +108,14 @@ describe( 'Template', () => {
 		it( 'throws when wrong template definition', () => {
 			expect( () => {
 				new Template( {} ).render();
-			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
+			} ).to.throwCKEditorError( /ui-template-wrong-syntax/ );
 
 			expect( () => {
 				new Template( {
 					tag: 'p',
 					text: 'foo'
 				} ).render();
-			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
+			} ).to.throwCKEditorError( /ui-template-wrong-syntax/ );
 		} );
 
 		it( 'creates HTMLElement', () => {
@@ -462,7 +461,7 @@ describe( 'Template', () => {
 					tag: 'p',
 					text: 'foo'
 				} ).apply( el );
-			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
+			} ).to.throwCKEditorError( /ui-template-wrong-syntax/ );
 		} );
 
 		it( 'throws when no HTMLElement passed', () => {
@@ -470,7 +469,7 @@ describe( 'Template', () => {
 				new Template( {
 					tag: 'p'
 				} ).apply();
-			} ).to.throw( CKEditorError, /ui-template-wrong-node/ );
+			} ).to.throwCKEditorError( /ui-template-wrong-node/ );
 		} );
 
 		it( 'accepts empty template definition', () => {
@@ -1757,7 +1756,7 @@ describe( 'Template', () => {
 						},
 						'it should fail'
 					);
-				} ).to.throw( CKEditorError, /ui-template-extend-children-mismatch/ );
+				} ).to.throwCKEditorError( /ui-template-extend-children-mismatch/ );
 			} );
 
 			it( 'should throw when no children in target but extending one', () => {
@@ -1775,7 +1774,7 @@ describe( 'Template', () => {
 						},
 						'it should fail'
 					);
-				} ).to.throw( CKEditorError, /ui-template-extend-children-mismatch/ );
+				} ).to.throwCKEditorError( /ui-template-extend-children-mismatch/ );
 			} );
 
 			it( 'should throw when the number of children does not correspond on some deeper level', () => {
@@ -1818,7 +1817,7 @@ describe( 'Template', () => {
 						},
 						'it should fail'
 					);
-				} ).to.throw( CKEditorError, /ui-template-extend-children-mismatch/ );
+				} ).to.throwCKEditorError( /ui-template-extend-children-mismatch/ );
 			} );
 
 			it( 'extends existing - simple', () => {
