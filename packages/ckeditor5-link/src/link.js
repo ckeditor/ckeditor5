@@ -68,16 +68,18 @@ export default class Link extends Feature {
 		const editingView = editor.editing.view;
 		const editableViewElement = editor.ui.editable.view.element;
 
-		// Create panel model.
-		const balloonPanelModel = new Model( {
+		// Create the model of the panel.
+		const panelModel = new Model( {
 			maxWidth: 300,
 			url: 'http://example.com'
 		} );
 
-		balloonPanelModel.on( 'execute', () => {
+		// Observe #execute event from within the model of the panel, which means that
+		// the "Save" button has been clicked.
+		this.listenTo( panelModel, 'execute', () => {
 			const urlValue = this.balloonPanel.urlInput.value;
 
-			// TODO: validate balloonPanelModel#url with some RegExp imported from v4.
+			// TODO: validate panelModel#url with some RegExp imported from v4.
 			if ( urlValue ) {
 				/* global console */
 				console.log( `URL "${ urlValue }" to be set.` );
@@ -88,7 +90,12 @@ export default class Link extends Feature {
 			}
 		} );
 
-		this.balloonPanel = new LinkBalloonPanel( balloonPanelModel, new LinkBalloonPanelView( editor.locale ) );
+		/**
+		 * TODO
+		 *
+		 * @member {} todo
+		 */
+		this.balloonPanel = new LinkBalloonPanel( panelModel, new LinkBalloonPanelView( editor.locale ) );
 
 		editingView.on( 'render', () => {
 			const firstParent = editingView.selection.getFirstPosition().parent;
