@@ -48,6 +48,10 @@ export default class LabeledInput extends Controller {
 		contentCollection.add( this.label, 0 );
 	}
 
+	get value() {
+		return this.input.value;
+	}
+
 	_createInput() {
 		const model = new Model();
 

@@ -42,16 +42,14 @@ export default class LinkBalloonPanel extends BalloonPanel {
 
 		model.bind( 'value' ).to( this.model, 'url' );
 
-		const labeledInput = new LabeledInput( model, new LabeledInputView( this.locale ) );
-
 		/**
 		 * TODO
 		 *
 		 * @member {} todo
 		 */
-		this.urlInput = labeledInput.input;
+		this.urlInput = new LabeledInput( model, new LabeledInputView( this.locale ) );
 
-		return labeledInput;
+		return this.urlInput;
 	}
 
 	_createButtons() {
@@ -81,19 +79,17 @@ export default class LinkBalloonPanel extends BalloonPanel {
 
 	_createSaveButton() {
 		const t = this.view.t;
-		const model = new Model( {
+		const saveModel = new Model( {
 			isEnabled: true,
 			isOn: false,
 			label: t( 'Save' ),
 			withText: true
 		} );
 
-		model.on( 'execute', () => {
-			this.model.url = this.urlInput.value;
-			this.view.hide();
-		} );
+		saveModel.delegate( 'execute' ).to( this.model );
 
-		const button = new Button( model, new ButtonView( this.locale ) );
+		const button = new Button( saveModel, new ButtonView( this.locale ) );
+
 		button.view.element.classList.add( 'ck-button-action' );
 
 		return button;
@@ -101,15 +97,15 @@ export default class LinkBalloonPanel extends BalloonPanel {
 
 	_createCancelButton() {
 		const t = this.view.t;
-		const model = new Model( {
+		const cancelModel = new Model( {
 			isEnabled: true,
 			isOn: false,
 			label: t( 'Cancel' ),
 			withText: true
 		} );
 
-		model.on( 'execute', () => this.view.hide() );
+		cancelModel.on( 'execute', () => this.view.hide() );
 
-		return new Button( model, new ButtonView( this.locale ) );
+		return new Button( cancelModel, new ButtonView( this.locale ) );
 	}
 }

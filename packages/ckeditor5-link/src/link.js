@@ -64,6 +64,7 @@ export default class Link extends Feature {
 
 	_createBalloonPanel() {
 		const editor = this.editor;
+		const t = editor.t;
 		const editingView = editor.editing.view;
 		const editableViewElement = editor.ui.editable.view.element;
 
@@ -73,13 +74,21 @@ export default class Link extends Feature {
 			url: 'http://example.com'
 		} );
 
-		// this.listenTo( balloonPanelModel, 'change:url', ( ...args ) => {
-		// 	console.log( 'URL has changed', args );
-		// } );
+		balloonPanelModel.on( 'execute', () => {
+			const urlValue = this.balloonPanel.urlInput.value;
+
+			// TODO: validate balloonPanelModel#url with some RegExp imported from v4.
+			if ( urlValue ) {
+				/* global console */
+				console.log( `URL "${ urlValue }" to be set.` );
+				this.balloonPanel.view.hide();
+			} else {
+				window.alert( t( `"${ urlValue }" URL address is incorrect.` ) );
+				this.balloonPanel.urlInput.view.focus();
+			}
+		} );
 
 		this.balloonPanel = new LinkBalloonPanel( balloonPanelModel, new LinkBalloonPanelView( editor.locale ) );
-
-		editor.ui.add( 'body', this.balloonPanel );
 
 		editingView.on( 'render', () => {
 			const firstParent = editingView.selection.getFirstPosition().parent;
@@ -109,5 +118,7 @@ export default class Link extends Feature {
 				this.balloonPanel.view.hide();
 			}
 		} );
+
+		editor.ui.add( 'body', this.balloonPanel );
 	}
 }

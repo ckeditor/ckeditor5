@@ -25,4 +25,8 @@ export default class InputText extends Controller {
 		view.model.bind( 'value' ).to( model );
 		view.model.set( 'uid', `ck-input-${ uid() }` );
 	}
+
+	get value() {
+		return this.view.element.value;
+	}
 }
