@@ -5,6 +5,17 @@ $ck-balloon-arrow-offset: 2px;
 $ck-balloon-arrow-height: 15px;
 $ck-balloon-arrow-half-width: 10px;
 
+$ck-def-z: (
+	'default': 1,
+	'modal': 999
+	// 'topmost': 9999
+);
+
+// TODO: Move it to _zindex.scss.
+@function ck-z( $layer: 'default', $index: 0 ) {
+	@return map-get( $ck-def-z, $layer ) + $index;
+}
+
 // TODO: This will become BalloonPanel component stylesheet.
 .ck-balloon-panel {
 	@include ck-unselectable();
