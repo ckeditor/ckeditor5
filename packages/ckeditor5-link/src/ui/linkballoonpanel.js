@@ -26,29 +26,52 @@ export default class LinkBalloonPanel extends Controller {
 	constructor( model, view ) {
 		super( model, view );
 
-		const t = this.view.t;
-
 		view.model.bind( 'arrow', 'maxWidth', 'maxHeight', 'url' ).to( model );
 		view.model.set( 'top', 0 );
 		view.model.set( 'left', 0 );
 		view.model.set( 'isVisible', false );
 
-		const buttonModel = new Model( {
+		const buttonsCollection = this.addCollection( 'buttons' );
+
+		this.saveButton = this._createSaveButton();
+		this.cancelButton = this._createCancelButton();
+
+		buttonsCollection.add( this.cancelButton );
+		buttonsCollection.add( this.saveButton );
+	}
+
+	_createSaveButton() {
+		const t = this.view.t;
+		const saveButtonModel = new Model( {
 			isEnabled: true,
 			isOn: false,
 			label: t( 'Save' ),
 			withText: true
 		} );
 
-		buttonModel.on( 'execute', () => {
+		saveButtonModel.on( 'execute', () => {
 			// TODO input and label as separate components.
-			model.url = view.element.querySelector( 'input' ).value;
+			this.model.url = this.view.element.querySelector( 'input' ).value;
 			this.view.hide();
 		} );
 
-		this.saveButton = new Button( buttonModel, new ButtonView( this.locale ) );
-		this.saveButton.view.element.classList.add( 'ck-button-action' );
+		const button = new Button( saveButtonModel, new ButtonView( this.locale ) );
+		button.view.element.classList.add( 'ck-button-action' );
 
-		this.addCollection( 'buttons' ).add( this.saveButton );
+		return button;
+	}
+
+	_createCancelButton() {
+		const t = this.view.t;
+		const cancelButtonModel = new Model( {
+			isEnabled: true,
+			isOn: false,
+			label: t( 'Cancel' ),
+			withText: true
+		} );
+
+		cancelButtonModel.on( 'execute', () => this.view.hide() );
+
+		return new Button( cancelButtonModel, new ButtonView( this.locale ) );
 	}
 }

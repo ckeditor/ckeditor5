@@ -116,5 +116,9 @@ $ck-balloon-arrow-half-width: 10px;
 	&__buttons {
 		text-align: right;
 		margin-top: ck-spacing( 'medium' );
+
+		* + * {
+			margin-left: ck-spacing( 'medium' );
+		}
 	}
 }
