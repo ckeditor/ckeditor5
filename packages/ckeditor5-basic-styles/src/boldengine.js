@@ -6,7 +6,7 @@
 import Feature from '../core/feature.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
-import AttributeCommand from '../core/command/attributecommand.js';
+import ToggleAttributeCommand from '../core/command/toggleattributecommand.js';
 
 const BOLD = 'bold';
 
@@ -44,6 +44,6 @@ export default class BoldEngine extends Feature {
 			.toAttribute( BOLD, true );
 
 		// Create bold command.
-		editor.commands.set( BOLD, new AttributeCommand( editor, BOLD ) );
+		editor.commands.set( BOLD, new ToggleAttributeCommand( editor, BOLD ) );
 	}
 }

@@ -7,7 +7,7 @@ import ItalicEngine from '/ckeditor5/basic-styles/italicengine.js';
 import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
 import { getData as getModelData, setData as setModelData } from '/tests/engine/_utils/model.js';
 import { getData as getViewData } from '/tests/engine/_utils/view.js';
-import AttributeCommand from '/ckeditor5/core/command/attributecommand.js';
+import ToggleAttributeCommand from '/ckeditor5/core/command/toggleattributecommand.js';
 
 describe( 'ItalicEngine', () => {
 	let editor, doc;
@@ -39,7 +39,7 @@ describe( 'ItalicEngine', () => {
 
 			const command = editor.commands.get( 'italic' );
 
-			expect( command ).to.be.instanceOf( AttributeCommand );
+			expect( command ).to.be.instanceOf( ToggleAttributeCommand );
 			expect( command ).to.have.property( 'attributeKey', 'italic' );
 		} );
 	} );
