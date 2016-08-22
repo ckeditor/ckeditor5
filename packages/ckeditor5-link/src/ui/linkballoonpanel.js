@@ -30,33 +30,28 @@ export default class LinkBalloonPanel extends BalloonPanel {
 
 		const contentCollection = this.collections.get( 'content' );
 
-		/**
-		 * TODO
-		 *
-		 * @member {} todo
-		 */
-		this.labeledInput = this._createLabeledInput();
-
-		/**
-		 * TODO
-		 *
-		 * @member {} todo
-		 */
-		this.urlInput = this.labeledInput.input;
-
-		contentCollection.add( this.labeledInput );
+		contentCollection.add( this._createLabeledInput() );
 		contentCollection.add( this._createButtons() );
 	}
 
 	_createLabeledInput() {
 		const t = this.view.t;
-		const labeledInputModel = new Model( {
+		const model = new Model( {
 			label: t( 'Link URL' )
 		} );
 
-		labeledInputModel.bind( 'value' ).to( this.model, 'url' );
+		model.bind( 'value' ).to( this.model, 'url' );
 
-		return new LabeledInput( labeledInputModel, new LabeledInputView( this.locale ) );
+		const labeledInput = new LabeledInput( model, new LabeledInputView( this.locale ) );
+
+		/**
+		 * TODO
+		 *
+		 * @member {} todo
+		 */
+		this.urlInput = labeledInput.input;
+
+		return labeledInput;
 	}
 
 	_createButtons() {
@@ -64,7 +59,18 @@ export default class LinkBalloonPanel extends BalloonPanel {
 			alignRight: true
 		} ), new BoxView( this.locale ) );
 
+		/**
+		 * TODO
+		 *
+		 * @member {} todo
+		 */
 		this.saveButton = this._createSaveButton();
+
+		/**
+		 * TODO
+		 *
+		 * @member {} todo
+		 */
 		this.cancelButton = this._createCancelButton();
 
 		box.add( 'content', this.cancelButton );

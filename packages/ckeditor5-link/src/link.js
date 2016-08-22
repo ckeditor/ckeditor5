@@ -70,7 +70,7 @@ export default class Link extends Feature {
 		// Create panel model.
 		const balloonPanelModel = new Model( {
 			maxWidth: 300,
-			url: 'foo'
+			url: 'http://example.com'
 		} );
 
 		// this.listenTo( balloonPanelModel, 'change:url', ( ...args ) => {
@@ -97,10 +97,12 @@ export default class Link extends Feature {
 					editableViewElement
 				);
 			}
+
+			this.balloonPanel.urlInput.view.focus();
 		}, this );
 
+		// TODO: It's a lame FocusManager.
 		editingView.on( 'blur', ( evt, domEvtData ) => {
-			// TODO: Lame FocusManager.
 			if ( domEvtData.domEvent.relatedTarget === this.balloonPanel.urlInput ) {
 				domEvtData.domEvent.preventDefault();
 			} else {

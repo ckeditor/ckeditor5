@@ -36,4 +36,8 @@ export default class InputTextView extends View {
 			}
 		} );
 	}
+
+	focus() {
+		this.element.focus();
+	}
 }
