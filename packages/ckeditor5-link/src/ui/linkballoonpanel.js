@@ -4,19 +4,21 @@
  */
 
 import Model from '../../ui/model.js';
-import Controller from '../../ui/controller.js';
 import Button from '../../ui/button/button.js';
 import ButtonView from '../../ui/button/buttonview.js';
+import BalloonPanel from './balloonpanel.js';
+import LabeledInput from './labeledinput.js';
+import LabeledInputView from './labeledinputview.js';
+import Box from './box.js';
+import BoxView from './boxview.js';
 
 /**
  * The link balloon panel controller class.
  *
- * TODO: extends BalloonPanel
- *
  * @memberOf link.ui
  * @extends ui.Controller
  */
-export default class LinkBalloonPanel extends Controller {
+export default class LinkBalloonPanel extends BalloonPanel {
 	/**
 	 * Creates an instance of {@link ui.dropdown.Dropdown} class.
 	 *
@@ -26,36 +28,66 @@ export default class LinkBalloonPanel extends Controller {
 	constructor( model, view ) {
 		super( model, view );
 
-		view.model.bind( 'arrow', 'maxWidth', 'maxHeight', 'url' ).to( model );
-		view.model.set( 'top', 0 );
-		view.model.set( 'left', 0 );
-		view.model.set( 'isVisible', false );
+		const contentCollection = this.collections.get( 'content' );
 
-		const buttonsCollection = this.addCollection( 'buttons' );
+		/**
+		 * TODO
+		 *
+		 * @member {} todo
+		 */
+		this.labeledInput = this._createLabeledInput();
+
+		/**
+		 * TODO
+		 *
+		 * @member {} todo
+		 */
+		this.urlInput = this.labeledInput.input;
+
+		contentCollection.add( this.labeledInput );
+		contentCollection.add( this._createButtons() );
+	}
+
+	_createLabeledInput() {
+		const t = this.view.t;
+		const labeledInputModel = new Model( {
+			label: t( 'Link URL' )
+		} );
+
+		labeledInputModel.bind( 'value' ).to( this.model, 'url' );
+
+		return new LabeledInput( labeledInputModel, new LabeledInputView( this.locale ) );
+	}
+
+	_createButtons() {
+		const box = new Box( new Model( {
+			alignRight: true
+		} ), new BoxView( this.locale ) );
 
 		this.saveButton = this._createSaveButton();
 		this.cancelButton = this._createCancelButton();
 
-		buttonsCollection.add( this.cancelButton );
-		buttonsCollection.add( this.saveButton );
+		box.add( 'content', this.cancelButton );
+		box.add( 'content', this.saveButton );
+
+		return box;
 	}
 
 	_createSaveButton() {
 		const t = this.view.t;
-		const saveButtonModel = new Model( {
+		const model = new Model( {
 			isEnabled: true,
 			isOn: false,
 			label: t( 'Save' ),
 			withText: true
 		} );
 
-		saveButtonModel.on( 'execute', () => {
-			// TODO input and label as separate components.
-			this.model.url = this.view.element.querySelector( 'input' ).value;
+		model.on( 'execute', () => {
+			this.model.url = this.urlInput.value;
 			this.view.hide();
 		} );
 
-		const button = new Button( saveButtonModel, new ButtonView( this.locale ) );
+		const button = new Button( model, new ButtonView( this.locale ) );
 		button.view.element.classList.add( 'ck-button-action' );
 
 		return button;
@@ -63,15 +95,15 @@ export default class LinkBalloonPanel extends Controller {
 
 	_createCancelButton() {
 		const t = this.view.t;
-		const cancelButtonModel = new Model( {
+		const model = new Model( {
 			isEnabled: true,
 			isOn: false,
 			label: t( 'Cancel' ),
 			withText: true
 		} );
 
-		cancelButtonModel.on( 'execute', () => this.view.hide() );
+		model.on( 'execute', () => this.view.hide() );
 
-		return new Button( cancelButtonModel, new ButtonView( this.locale ) );
+		return new Button( model, new ButtonView( this.locale ) );
 	}
 }

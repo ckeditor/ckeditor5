@@ -101,8 +101,7 @@ export default class Link extends Feature {
 
 		editingView.on( 'blur', ( evt, domEvtData ) => {
 			// TODO: Lame FocusManager.
-			// TODO input and label as separate components.
-			if ( domEvtData.domEvent.relatedTarget === this.balloonPanel.view.element.querySelector( 'input' ) ) {
+			if ( domEvtData.domEvent.relatedTarget === this.balloonPanel.urlInput ) {
 				domEvtData.domEvent.preventDefault();
 			} else {
 				this.balloonPanel.view.hide();

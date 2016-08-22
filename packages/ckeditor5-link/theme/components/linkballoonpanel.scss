@@ -10,6 +10,9 @@ $ck-balloon-arrow-half-width: 10px;
 	@include ck-unselectable();
 	@include ck-rounded-corners();
 
+	min-width: 50px;
+	min-height: 15px;
+
 	display: none;
 	position: absolute;
 	background: ck-color( 'background' );
@@ -113,8 +116,7 @@ $ck-balloon-arrow-half-width: 10px;
 		display: block;
 	}
 
-	&__buttons {
-		text-align: right;
+	.ck-box {
 		margin-top: ck-spacing( 'medium' );
 
 		* + * {

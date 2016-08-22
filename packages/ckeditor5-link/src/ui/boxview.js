@@ -3,30 +3,36 @@
  * For licensing, see LICENSE.md.
  */
 
+import View from '../../ui/view.js';
 import Template from '../../ui/template.js';
-import BalloonPanelView from './balloonpanelview.js';
 
 /**
- * The link balloon panel view class.
+ * The box view class.
  *
- * See {@link ui.balloonPanel.BalloonPanelView}.
+ * See {@link ui.box.Box}.
  *
- * @memberOf link.ui
+ * @memberOf ui.box
  * @extends ui.View
  */
-export default class LinkBalloonPanelView extends BalloonPanelView {
+export default class BoxView extends View {
 	/**
 	 * @inheritDoc
 	 */
 	constructor( locale ) {
 		super( locale );
 
-		Template.extend( this.template, {
+		const bind = this.bind;
+
+		this.template = new Template( {
+			tag: 'div',
 			attributes: {
 				class: [
-					'ck-link-balloon-panel',
+					'ck-box',
+					bind.if( 'alignRight', 'ck-box_align_right' )
 				]
 			}
 		} );
+
+		this.register( 'content', el => el );
 	}
 }
