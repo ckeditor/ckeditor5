@@ -27,7 +27,7 @@ export default class InputLabelView extends View {
 			tag: 'label',
 			attributes: {
 				class: [
-					'ck-labeled-input__label'
+					'ck-input__label'
 				],
 				for: bind.to( 'for' )
 			},

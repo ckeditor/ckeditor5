@@ -21,31 +21,13 @@ export default class LabeledInputView extends View {
 	constructor( locale ) {
 		super( locale );
 
-		const bind = this.bind;
-
 		this.template = new Template( {
 			tag: 'div',
 			attributes: {
 				class: [
 					'ck-labeled-input',
 				]
-			},
-			children: [
-				{
-					tag: 'label',
-					attributes: {
-						class: [
-							'ck-labeled-input__label'
-						],
-						for: bind.to( 'uid' )
-					},
-					children: [
-						{
-							text: bind.to( 'label' )
-						}
-					]
-				},
-			]
+			}
 		} );
 
 		this.register( 'content', el => el );
