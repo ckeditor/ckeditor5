@@ -62,6 +62,40 @@ export default class Link extends Feature {
 		editor.ui.featureComponents.add( 'link', ButtonController, ButtonView, buttonModel );
 	}
 
+	/**
+	 *	                       +------------------------------------+
+	 *	                       | <a href="http://foo.com">[foo]</a> |
+	 *	                       +------------------------------------+
+	 *	                                      Document
+	 *	             Value set in doc   ^                   +
+	 *	             if it's correct.   |                   |
+	 *	                                |                   |
+	 *	                      +---------+--------+          |
+	 *	Panel.urlInput#value  | Value validation |          |  User clicked "Link" in
+	 *	       is validated.  +---------+--------+          |  the toolbar. Retrieving
+	 *	                                |                   |  URL from Document and setting
+	 *	             PanelModel fires   |                   |  PanelModel#url.
+	 *	          PanelModel#execute.   +                   v
+	 *
+	 *	                              +-----------------------+
+	 *	                              | url: 'http://foo.com' |
+	 *	                              +-----------------------+
+	 *	                                      PanelModel
+	 *	                                ^                   +
+	 *	                                |                   |  Input field is
+	 *	                  User clicked  |                   |  in sync with
+	 *	                       "Save".  |                   |  PanelModel#url.
+	 *	                                +                   v
+	 *
+	 *	                            +--------------------------+
+	 *	                            | +----------------------+ |
+	 *	                            | |http://foo.com        | |
+	 *	                            | +----------------------+ |
+	 *	                            |                   +----+ |
+	 *	                            |                   |Save| |
+	 *	                            |                   +----+ |
+	 *	                            +--------------------------+
+	 */
 	_createBalloonPanel() {
 		const editor = this.editor;
 		const t = editor.t;
