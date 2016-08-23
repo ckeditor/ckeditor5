@@ -70,27 +70,17 @@ export default class LinkCommand extends Command {
 			const batch = document.batch();
 
 			if ( selection.isCollapsed ) {
-				const ranges = selection.getRanges();
-				const updatedRanges = [];
+				const position = selection.getFirstPosition();
+				const parent = position.parent;
 
-				for ( let range of ranges ) {
-					// Get parent of current selection position.
-					const parent = range.start.parent;
+				// Insert Text node with link attribute if is allowed in parent.
+				if ( document.schema.check( { name: '$text', attributes: 'link', inside: parent.name } ) ) {
+					const node = new Text( href, { link: href } );
 
-					// Insert Text node with link attribute if is allowed in parent.
-					if ( document.schema.check( { name: '$text', attributes: 'link', inside: parent.name } ) ) {
-						const node = new Text( href, { link: href } );
+					batch.insert( position, node );
 
-						batch.insert( range.start, node );
-						// Create new range wrapping just created node.
-						updatedRanges.push( Range.createOn( node ) );
-					}
-				}
-
-				// Update selection.
-				// If there is no updatedRanges it means that each insertion was disallowed.
-				if ( updatedRanges.length ) {
-					selection.setRanges( updatedRanges, selection.isBackward );
+					// Create new range wrapping just created node.
+					selection.setRanges( [ Range.createOn( node ) ] );
 					selection.setAttribute( 'link', href );
 				}
 			} else {
