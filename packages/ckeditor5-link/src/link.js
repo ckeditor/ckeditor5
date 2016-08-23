@@ -38,6 +38,8 @@ export default class Link extends Feature {
 		const t = editor.t;
 		const command = editor.commands.get( 'link' );
 
+		this._createBalloonPanel();
+
 		// Create button model.
 		const buttonModel = new Model( {
 			isEnabled: true,
@@ -52,10 +54,6 @@ export default class Link extends Feature {
 				return;
 			}
 
-			if ( !this.balloonPanel ) {
-				this._createBalloonPanel();
-			}
-
 			this._attachPanelToElement();
 		} );
 
@@ -66,10 +64,6 @@ export default class Link extends Feature {
 		// @TODO: Get click event from editor instead of DOM.
 		this.editor.ui.editable.view.element.addEventListener( 'click', () => {
 			if ( editor.document.selection.isCollapsed && command.value !== undefined ) {
-				if ( !this.balloonPanel ) {
-					this._createBalloonPanel();
-				}
-
 				this._attachPanelToElement();
 			}
 		} );
@@ -148,7 +142,7 @@ export default class Link extends Feature {
 
 		// TODO: It's a lame FocusManager.
 		editingView.on( 'blur', ( evt, domEvtData ) => {
-			if ( domEvtData.domEvent.relatedTarget === this.balloonPanel.urlInput ) {
+			if ( domEvtData.domEvent.relatedTarget === this.balloonPanel.urlInput.input.view.element ) {
 				domEvtData.domEvent.preventDefault();
 			} else {
 				this.balloonPanel.view.hide();
@@ -156,14 +150,9 @@ export default class Link extends Feature {
 		} );
 
 		editor.ui.add( 'body', this.balloonPanel );
-		// this.balloonPanel.urlInput.view.focus();
 	}
 
 	_attachPanelToElement() {
-		if ( !this.balloonPanel ) {
-			return;
-		}
-
 		// Adjust balloon position.
 		const editingView = this.editor.editing.view;
 		const editableViewElement = this.editor.ui.editable.view.element;
@@ -182,5 +171,7 @@ export default class Link extends Feature {
 				editableViewElement
 			);
 		}
+
+		this.balloonPanel.urlInput.view.focus();
 	}
 }
