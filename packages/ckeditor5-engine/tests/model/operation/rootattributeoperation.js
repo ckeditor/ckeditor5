@@ -7,6 +7,7 @@
 
 import Document from '/ckeditor5/engine/model/document.js';
 import RootAttributeOperation from '/ckeditor5/engine/model/operation/rootattributeoperation.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'RootAttributeOperation', () => {
@@ -185,7 +186,7 @@ describe( 'RootAttributeOperation', () => {
 					doc.version
 				)
 			) );
-		} ).to.throwCKEditorError( /rootattribute-operation-wrong-old-value/ );
+		} ).to.throw( CKEditorError, /rootattribute-operation-wrong-old-value/ );
 	} );
 
 	it( 'should throw an error when one try to insert and the attribute already exists', () => {
@@ -201,7 +202,7 @@ describe( 'RootAttributeOperation', () => {
 					doc.version
 				)
 			) );
-		} ).to.throwCKEditorError( /rootattribute-operation-attribute-exists/ );
+		} ).to.throw( CKEditorError, /rootattribute-operation-attribute-exists/ );
 	} );
 
 	it( 'should create a RootAttributeOperation with the same parameters when cloned', () => {
@@ -270,7 +271,7 @@ describe( 'RootAttributeOperation', () => {
 
 			expect( () => {
 				RootAttributeOperation.fromJSON( serialized, doc );
-			} ).to.throwCKEditorError( /rootattribute-operation-fromjson-no-roo/ );
+			} ).to.throw( CKEditorError, /rootattribute-operation-fromjson-no-roo/ );
 		} );
 	} );
 } );

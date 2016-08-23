@@ -8,6 +8,7 @@
 import Document from '/ckeditor5/engine/model/document.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 import RenameDelta from '/ckeditor5/engine/model/delta/renamedelta.js';
 
@@ -36,7 +37,7 @@ describe( 'Batch', () => {
 		it( 'should throw if not an Element instance is passed', () => {
 			expect( () => {
 				batch.rename( 'h', new Text( 'abc' ) );
-			} ).to.throwCKEditorError( /^batch-rename-not-element-instance/ );
+			} ).to.throw( CKEditorError, /^batch-rename-not-element-instance/ );
 		} );
 
 		it( 'should be chainable', () => {

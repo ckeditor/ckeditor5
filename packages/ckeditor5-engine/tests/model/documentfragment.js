@@ -9,6 +9,7 @@ import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
 import DocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'DocumentFragment', () => {
 	describe( 'constructor', () => {
@@ -88,11 +89,11 @@ describe( 'DocumentFragment', () => {
 		it( 'should throw if given offset is too high or too low', () => {
 			expect( () => {
 				frag.offsetToIndex( -1 );
-			} ).to.throwCKEditorError( /nodelist-offset-out-of-bounds/ );
+			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
 
 			expect( () => {
 				frag.offsetToIndex( 55 );
-			} ).to.throwCKEditorError( /nodelist-offset-out-of-bounds/ );
+			} ).to.throw( CKEditorError, /nodelist-offset-out-of-bounds/ );
 		} );
 
 		it( 'should return length if given offset is equal to maxOffset', () => {

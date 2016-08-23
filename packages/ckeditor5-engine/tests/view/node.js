@@ -9,6 +9,7 @@ import Element from '/ckeditor5/engine/view/element.js';
 import Text from '/ckeditor5/engine/view/text.js';
 import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import RootEditableElement from '/ckeditor5/engine/view/rooteditableelement.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 import createDocumentMock from '/tests/engine/view/_utils/createdocumentmock.js';
 
@@ -136,7 +137,7 @@ describe( 'Node', () => {
 				() => {
 					f.index;
 				}
-			).to.throwCKEditorError( /view-node-not-found-in-parent/ );
+			).to.throw( CKEditorError, /view-node-not-found-in-parent/ );
 		} );
 	} );
 

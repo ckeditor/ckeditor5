@@ -9,6 +9,7 @@ import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
 import TextProxy from '/ckeditor5/engine/model/textproxy.js';
 import Document from '/ckeditor5/engine/model/document.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'TextProxy', () => {
 	let doc, element, textProxy, root, textProxyNoParent, text, textNoParent;
@@ -84,21 +85,21 @@ describe( 'TextProxy', () => {
 	it( 'should throw if wrong offsetInText is passed', () => {
 		expect( () => {
 			new TextProxy( text, -1, 2 );
-		} ).to.throwCKEditorError( /model-textproxy-wrong-offsetintext/ );
+		} ).to.throw( CKEditorError, /model-textproxy-wrong-offsetintext/ );
 
 		expect( () => {
 			new TextProxy( text, 9, 1 );
-		} ).to.throwCKEditorError( /model-textproxy-wrong-offsetintext/ );
+		} ).to.throw( CKEditorError, /model-textproxy-wrong-offsetintext/ );
 	} );
 
 	it( 'should throw if wrong length is passed', () => {
 		expect( () => {
 			new TextProxy( text, 2, -1 );
-		} ).to.throwCKEditorError( /model-textproxy-wrong-length/ );
+		} ).to.throw( CKEditorError, /model-textproxy-wrong-length/ );
 
 		expect( () => {
 			new TextProxy( text, 2, 9 );
-		} ).to.throwCKEditorError( /model-textproxy-wrong-length/ );
+		} ).to.throw( CKEditorError, /model-textproxy-wrong-length/ );
 	} );
 
 	describe( 'getPath', () => {

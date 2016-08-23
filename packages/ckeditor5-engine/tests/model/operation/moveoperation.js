@@ -10,6 +10,7 @@ import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
 
 describe( 'MoveOperation', () => {
@@ -160,7 +161,7 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throwCKEditorError( /move-operation-nodes-do-not-exist/ );
+		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /move-operation-nodes-do-not-exist/ );
 	} );
 
 	it( 'should throw an error if target or source parent-element specified by position does not exist', () => {
@@ -177,7 +178,7 @@ describe( 'MoveOperation', () => {
 
 		root.removeChildren( 1 );
 
-		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throwCKEditorError( /move-operation-position-invalid/ );
+		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /move-operation-position-invalid/ );
 	} );
 
 	it( 'should throw an error if operation tries to move a range between the beginning and the end of that range', () => {
@@ -190,7 +191,7 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throwCKEditorError( /move-operation-range-into-itself/ );
+		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /move-operation-range-into-itself/ );
 	} );
 
 	it( 'should throw an error if operation tries to move a range into a sub-tree of a node that is in that range', () => {
@@ -204,7 +205,7 @@ describe( 'MoveOperation', () => {
 			doc.version
 		);
 
-		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throwCKEditorError( /move-operation-node-into-itself/ );
+		expect( () => doc.applyOperation( wrapInDelta( operation ) ) ).to.throw( CKEditorError, /move-operation-node-into-itself/ );
 	} );
 
 	it( 'should not throw an error if operation move a range into a sibling', () => {

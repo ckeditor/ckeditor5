@@ -11,6 +11,7 @@ import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
 import TextProxy from '/ckeditor5/engine/model/textproxy.js';
 import Position from '/ckeditor5/engine/model/position.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import testUtils from '/tests/core/_utils/utils.js';
 import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
 
@@ -101,21 +102,21 @@ describe( 'position', () => {
 		it( 'should throw error if given path is incorrect', () => {
 			expect( () => {
 				new Position( root, {} );
-			} ).to.throwCKEditorError( /model-position-path-incorrect/ );
+			} ).to.throw( CKEditorError, /model-position-path-incorrect/ );
 
 			expect( () => {
 				new Position( root, [] );
-			} ).to.throwCKEditorError( /model-position-path-incorrect/ );
+			} ).to.throw( CKEditorError, /model-position-path-incorrect/ );
 		} );
 
 		it( 'should throw error if given root is invalid', () => {
 			expect( () => {
 				new Position( new Text( 'a' ) );
-			} ).to.throwCKEditorError( /model-position-root-invalid/ );
+			} ).to.throw( CKEditorError, /model-position-root-invalid/ );
 
 			expect( () => {
 				new Position();
-			} ).to.throwCKEditorError( /model-position-root-invalid/ );
+			} ).to.throw( CKEditorError, /model-position-root-invalid/ );
 		} );
 	} );
 
@@ -140,7 +141,7 @@ describe( 'position', () => {
 		it( 'throws when parent is not an element', () => {
 			expect( () => {
 				Position.createFromParentAndOffset( b, 0 );
-			} ).to.throwCKEditorError( /^model-position-parent-incorrect/ );
+			} ).to.throw( CKEditorError, /^model-position-parent-incorrect/ );
 		} );
 
 		it( 'works with a doc frag', () => {
@@ -200,7 +201,7 @@ describe( 'position', () => {
 		it( 'should throw error if one try to create positions before root', () => {
 			expect( () => {
 				Position.createBefore( root );
-			} ).to.throwCKEditorError( /model-position-before-root/ );
+			} ).to.throw( CKEditorError, /model-position-before-root/ );
 		} );
 	} );
 
@@ -226,7 +227,7 @@ describe( 'position', () => {
 		it( 'should throw error if one try to make positions after root', () => {
 			expect( () => {
 				Position.createAfter( root );
-			} ).to.throwCKEditorError( /model-position-after-root/ );
+			} ).to.throw( CKEditorError, /model-position-after-root/ );
 		} );
 	} );
 
@@ -762,7 +763,7 @@ describe( 'position', () => {
 				() => {
 					Position.fromJSON( { root: 'noroot', path: [ 0 ] }, doc );
 				}
-			).to.throwCKEditorError( /model-position-fromjson-no-root/ );
+			).to.throw( CKEditorError, /model-position-fromjson-no-root/ );
 		} );
 	} );
 } );

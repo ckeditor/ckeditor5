@@ -10,6 +10,7 @@ import { SchemaItem as SchemaItem } from '/ckeditor5/engine/model/schema.js';
 import Document from '/ckeditor5/engine/model/document.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import Position from '/ckeditor5/engine/model/position.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import testUtils from '/tests/core/_utils/utils.js';
 
 testUtils.createSinonSandbox();
@@ -70,13 +71,13 @@ describe( 'registerItem', () => {
 
 		expect( () => {
 			schema.registerItem( 'new' );
-		} ).to.throwCKEditorError( /model-schema-item-exists/ );
+		} ).to.throw( CKEditorError, /model-schema-item-exists/ );
 	} );
 
 	it( 'should throw if base item has not been registered in schema', () => {
 		expect( () => {
 			schema.registerItem( 'new', 'old' );
-		} ).to.throwCKEditorError( /model-schema-no-item/ );
+		} ).to.throw( CKEditorError, /model-schema-no-item/ );
 	} );
 } );
 
@@ -102,7 +103,7 @@ describe( '_getItem', () => {
 	it( 'should throw if there is no item registered under given name', () => {
 		expect( () => {
 			schema._getItem( 'new' );
-		} ).to.throwCKEditorError( /model-schema-no-item/ );
+		} ).to.throw( CKEditorError, /model-schema-no-item/ );
 	} );
 } );
 

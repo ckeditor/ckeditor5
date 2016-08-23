@@ -12,6 +12,7 @@ import Text from '/ckeditor5/engine/model/text.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import LivePosition from '/ckeditor5/engine/model/liveposition.js';
 import Range from '/ckeditor5/engine/model/range.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'LivePosition', () => {
 	let doc, root, ul, p, li1, li2;
@@ -38,7 +39,7 @@ describe( 'LivePosition', () => {
 	it( 'should throw if given root is not a RootElement', () => {
 		expect( () => {
 			new LivePosition( new DocumentFragment(), [ 1 ] );
-		} ).to.throwCKEditorError( /model-liveposition-root-not-rootelement/ );
+		} ).to.throw( CKEditorError, /model-liveposition-root-not-rootelement/ );
 	} );
 
 	it( 'should listen to a change event of the document that owns this position root', () => {

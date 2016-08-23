@@ -9,6 +9,7 @@ import Document from '/ckeditor5/engine/model/document.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 import MergeDelta from '/ckeditor5/engine/model/delta/mergedelta.js';
 import SplitDelta from '/ckeditor5/engine/model/delta/splitdelta.js';
@@ -47,13 +48,13 @@ describe( 'Batch', () => {
 		it( 'should throw if there is no element after', () => {
 			expect( () => {
 				doc.batch().merge( new Position( root, [ 2 ] ) );
-			} ).to.throwCKEditorError( /^batch-merge-no-element-after/ );
+			} ).to.throw( CKEditorError, /^batch-merge-no-element-after/ );
 		} );
 
 		it( 'should throw if there is no element before', () => {
 			expect( () => {
 				doc.batch().merge( new Position( root, [ 0, 2 ] ) );
-			} ).to.throwCKEditorError( /^batch-merge-no-element-before/ );
+			} ).to.throw( CKEditorError, /^batch-merge-no-element-before/ );
 		} );
 
 		it( 'should be chainable', () => {

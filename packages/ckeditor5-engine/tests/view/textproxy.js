@@ -10,6 +10,7 @@ import Text from '/ckeditor5/engine/view/text.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import RootEditableElement from '/ckeditor5/engine/view/rooteditableelement.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 import createDocumentMock from '/tests/engine/view/_utils/createdocumentmock.js';
 
@@ -44,21 +45,21 @@ describe( 'TextProxy', () => {
 		it( 'should throw if wrong offsetInText is passed', () => {
 			expect( () => {
 				new TextProxy( text, -1, 2 );
-			} ).to.throwCKEditorError( /view-textproxy-wrong-offsetintext/ );
+			} ).to.throw( CKEditorError, /view-textproxy-wrong-offsetintext/ );
 
 			expect( () => {
 				new TextProxy( text, 9, 1 );
-			} ).to.throwCKEditorError( /view-textproxy-wrong-offsetintext/ );
+			} ).to.throw( CKEditorError, /view-textproxy-wrong-offsetintext/ );
 		} );
 
 		it( 'should throw if wrong length is passed', () => {
 			expect( () => {
 				new TextProxy( text, 2, -1 );
-			} ).to.throwCKEditorError( /view-textproxy-wrong-length/ );
+			} ).to.throw( CKEditorError, /view-textproxy-wrong-length/ );
 
 			expect( () => {
 				new TextProxy( text, 2, 9 );
-			} ).to.throwCKEditorError( /view-textproxy-wrong-length/ );
+			} ).to.throw( CKEditorError, /view-textproxy-wrong-length/ );
 		} );
 	} );
 

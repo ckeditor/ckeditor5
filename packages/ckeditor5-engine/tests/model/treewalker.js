@@ -11,6 +11,7 @@ import Text from '/ckeditor5/engine/model/text.js';
 import TreeWalker from '/ckeditor5/engine/model/treewalker.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Range from '/ckeditor5/engine/model/range.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'TreeWalker', () => {
 	let doc, root, img1, paragraph, ba, r, img2, x;
@@ -49,21 +50,21 @@ describe( 'TreeWalker', () => {
 		it( 'should throw if neither boundaries nor starting position is set', () => {
 			expect( () => {
 				new TreeWalker();
-			} ).to.throwCKEditorError( /^model-tree-walker-no-start-position/ );
+			} ).to.throw( CKEditorError, /^model-tree-walker-no-start-position/ );
 
 			expect( () => {
 				new TreeWalker( {} );
-			} ).to.throwCKEditorError( /^model-tree-walker-no-start-position/ );
+			} ).to.throw( CKEditorError, /^model-tree-walker-no-start-position/ );
 
 			expect( () => {
 				new TreeWalker( { singleCharacters: true } );
-			} ).to.throwCKEditorError( /^model-tree-walker-no-start-position/ );
+			} ).to.throw( CKEditorError, /^model-tree-walker-no-start-position/ );
 		} );
 
 		it( 'should throw if walking direction is unknown', () => {
 			expect( () => {
 				new TreeWalker( { startPosition: rootBeginning, direction: 'unknown' } );
-			} ).to.throwCKEditorError( /^model-tree-walker-unknown-direction/ );
+			} ).to.throw( CKEditorError, /^model-tree-walker-unknown-direction/ );
 		} );
 	} );
 

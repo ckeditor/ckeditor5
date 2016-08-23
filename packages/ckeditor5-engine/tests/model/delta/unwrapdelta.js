@@ -9,6 +9,7 @@ import Document from '/ckeditor5/engine/model/document.js';
 import Element from '/ckeditor5/engine/model/element.js';
 import Text from '/ckeditor5/engine/model/text.js';
 import Position from '/ckeditor5/engine/model/position.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 import UnwrapDelta from '/ckeditor5/engine/model/delta/unwrapdelta.js';
 import WrapDelta from '/ckeditor5/engine/model/delta/wrapdelta.js';
@@ -41,7 +42,7 @@ describe( 'Batch', () => {
 
 			expect( () => {
 				doc.batch().unwrap( element );
-			} ).to.throwCKEditorError( /^batch-unwrap-element-no-parent/ );
+			} ).to.throw( CKEditorError, /^batch-unwrap-element-no-parent/ );
 		} );
 
 		it( 'should be chainable', () => {

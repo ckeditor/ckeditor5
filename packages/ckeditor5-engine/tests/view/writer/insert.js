@@ -9,6 +9,7 @@ import { insert } from '/ckeditor5/engine/view/writer.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Element from '/ckeditor5/engine/view/element.js';
 import Position from '/ckeditor5/engine/view/position.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 
@@ -151,7 +152,7 @@ describe( 'writer', () => {
 			const position = new Position( container, 0 );
 			expect( () => {
 				insert( position, element );
-			} ).to.throwCKEditorError( 'view-writer-insert-invalid-node' );
+			} ).to.throw( CKEditorError, 'view-writer-insert-invalid-node' );
 		} );
 
 		it( 'should throw when Element is inserted as child node', () => {
@@ -162,7 +163,7 @@ describe( 'writer', () => {
 
 			expect( () => {
 				insert( position, root );
-			} ).to.throwCKEditorError( 'view-writer-insert-invalid-node' );
+			} ).to.throw( CKEditorError, 'view-writer-insert-invalid-node' );
 		} );
 
 		it( 'should throw when position is not placed inside container', () => {
@@ -172,7 +173,7 @@ describe( 'writer', () => {
 
 			expect( () => {
 				insert( position, attributeElement );
-			} ).to.throwCKEditorError( 'view-writer-invalid-position-container' );
+			} ).to.throw( CKEditorError, 'view-writer-invalid-position-container' );
 		} );
 	} );
 } );

@@ -12,6 +12,7 @@ import Batch from '/ckeditor5/engine/model/batch.js';
 import { register } from '/ckeditor5/engine/model/batch.js';
 import Delta from '/ckeditor5/engine/model/delta/delta.js';
 import Operation from '/ckeditor5/engine/model/operation/operation.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Batch', () => {
 	it( 'should have registered basic methods', () => {
@@ -57,7 +58,7 @@ describe( 'Batch', () => {
 
 			expect( () => {
 				register( 'foo', () => {} );
-			} ).to.throwCKEditorError( /^model-batch-register-taken/ );
+			} ).to.throw( CKEditorError, /^model-batch-register-taken/ );
 		} );
 	} );
 

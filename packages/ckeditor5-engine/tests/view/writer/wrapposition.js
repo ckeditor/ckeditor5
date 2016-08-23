@@ -10,6 +10,7 @@ import Text from '/ckeditor5/engine/view/text.js';
 import Element from '/ckeditor5/engine/view/element.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Position from '/ckeditor5/engine/view/position.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'wrapPosition', () => {
@@ -34,7 +35,7 @@ describe( 'wrapPosition', () => {
 
 		expect( () => {
 			wrapPosition( position, b );
-		} ).to.throwCKEditorError( 'view-writer-wrap-invalid-attribute' );
+		} ).to.throw( CKEditorError, 'view-writer-wrap-invalid-attribute' );
 	} );
 
 	it( 'should wrap position at the beginning of text node', () => {

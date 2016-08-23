@@ -12,6 +12,7 @@ import RootElement from '/ckeditor5/engine/model/rootelement.js';
 import Batch from '/ckeditor5/engine/model/batch.js';
 import Delta from '/ckeditor5/engine/model/delta/delta.js';
 import Range from '/ckeditor5/engine/model/range.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import count from '/ckeditor5/utils/count.js';
 import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
 
@@ -76,7 +77,7 @@ describe( 'Document', () => {
 				() => {
 					doc.createRoot( '$root', 'rootName' );
 				}
-			).to.throwCKEditorError( /model-document-createRoot-name-exists/ );
+			).to.throw( CKEditorError, /model-document-createRoot-name-exists/ );
 		} );
 	} );
 
@@ -93,7 +94,7 @@ describe( 'Document', () => {
 				() => {
 					doc.getRoot( 'root' );
 				}
-			).to.throwCKEditorError( /model-document-getRoot-root-not-exist/ );
+			).to.throw( CKEditorError, /model-document-getRoot-root-not-exist/ );
 		} );
 	} );
 
@@ -147,7 +148,7 @@ describe( 'Document', () => {
 				() => {
 					doc.applyOperation( operation );
 				}
-			).to.throwCKEditorError( /model-document-applyOperation-wrong-version/ );
+			).to.throw( CKEditorError, /model-document-applyOperation-wrong-version/ );
 		} );
 	} );
 
@@ -246,11 +247,11 @@ describe( 'Document', () => {
 
 			expect( () => {
 				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 0, root, 1 ) ] );
-			} ).to.throwCKEditorError( /document-selection-wrong-position/ );
+			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 			expect( () => {
 				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 2 ) ] );
-			} ).to.throwCKEditorError( /document-selection-wrong-position/ );
+			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 		} );
 
 		it( 'should throw if one of ranges starts or ends between base character and combining mark', () => {
@@ -259,27 +260,27 @@ describe( 'Document', () => {
 
 			expect( () => {
 				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 3, root, 9 ) ] );
-			} ).to.throwCKEditorError( /document-selection-wrong-position/ );
+			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 			expect( () => {
 				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 4, root, 9 ) ] );
-			} ).to.throwCKEditorError( /document-selection-wrong-position/ );
+			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 			expect( () => {
 				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 5, root, 9 ) ] );
-			} ).to.throwCKEditorError( /document-selection-wrong-position/ );
+			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 			expect( () => {
 				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 3 ) ] );
-			} ).to.throwCKEditorError( /document-selection-wrong-position/ );
+			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 			expect( () => {
 				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 4 ) ] );
-			} ).to.throwCKEditorError( /document-selection-wrong-position/ );
+			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 
 			expect( () => {
 				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 5 ) ] );
-			} ).to.throwCKEditorError( /document-selection-wrong-position/ );
+			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
 		} );
 	} );
 

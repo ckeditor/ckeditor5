@@ -7,6 +7,8 @@ import History from '/ckeditor5/engine/model/history.js';
 import Delta from '/ckeditor5/engine/model/delta/delta.js';
 import Operation from '/ckeditor5/engine/model/operation/operation.js';
 
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+
 describe( 'History', () => {
 	let history;
 
@@ -128,7 +130,7 @@ describe( 'History', () => {
 		it( 'should throw if given history point is "inside" delta', () => {
 			expect( () => {
 				Array.from( history.getDeltas( 2 ) );
-			} ).to.throwCKEditorError( /model-history-wrong-version/ );
+			} ).to.throw( CKEditorError, /model-history-wrong-version/ );
 		} );
 	} );
 
