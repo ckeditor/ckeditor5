@@ -13,7 +13,7 @@ import UnlinkCommand from './unlinkcommand.js';
 /**
  * The link engine feature.
  *
- * It introduces the `link="url"` attribute in the model which renders to the view as a `<a href="url">` element.
+ * It introduces the `linkHref="url"` attribute in the model which renders to the view as a `<a href="url">` element.
  *
  * @memberOf link
  * @extends core.Feature
@@ -28,18 +28,18 @@ export default class LinkEngine extends Feature {
 		const editing = editor.editing;
 
 		// Allow link attribute on all inline nodes.
-		editor.document.schema.allow( { name: '$inline', attributes: [ 'link' ] } );
+		editor.document.schema.allow( { name: '$inline', attributes: 'linkHref' } );
 
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )
-			.fromAttribute( 'link' )
-			.toElement( ( href ) => new AttributeElement( 'a', { href } ) );
+			.fromAttribute( 'linkHref' )
+			.toElement( ( linkHref ) => new AttributeElement( 'a', { href: linkHref } ) );
 
 		// Build converter from view to model for data pipeline.
 		buildViewConverter().for( data.viewToModel )
 			.fromElement( 'a' )
 			.toAttribute( ( viewElement ) => ( {
-				key: 'link',
+				key: 'linkHref',
 				value: viewElement.getAttribute( 'href' )
 			} ) );
 
