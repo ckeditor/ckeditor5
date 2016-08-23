@@ -34,11 +34,6 @@ export default class Link extends Feature {
 	 * @inheritDoc
 	 */
 	init() {
-		this._createButtons();
-		this._createBalloonPanel();
-	}
-
-	_createButtons() {
 		const editor = this.editor;
 		const t = editor.t;
 		const command = editor.commands.get( 'link' );
@@ -51,15 +46,19 @@ export default class Link extends Feature {
 			icon: 'link'
 		} );
 
-		// Bind button model to command.
-		buttonModel.bind( 'isOn', 'isEnabled' ).to( command, 'isValue', 'isEnabled' );
-
-		// Execute command.
-		const hrefValue = 'http://www.cksource.com'; // Temporary href value.
-		this.listenTo( buttonModel, 'execute', () => editor.execute( 'link', hrefValue ) );
+		// Show Balloon Panel on button click.
+		this.listenTo( buttonModel, 'execute', () => this._createBalloonPanel( command.value ) );
 
 		// Add link button to feature components.
 		editor.ui.featureComponents.add( 'link', ButtonController, ButtonView, buttonModel );
+
+		// Show Balloon Panel on click directly in some link element.
+		// @TODO: Get click event from editor instead of DOM.
+		this.editor.ui.editable.view.element.addEventListener( 'click', () => {
+			if ( editor.document.selection.isCollapsed && command.value !== undefined ) {
+				this._createBalloonPanel( command.value );
+			}
+		} );
 	}
 
 	/**
@@ -96,7 +95,7 @@ export default class Link extends Feature {
 	 *	                            |                   +----+ |
 	 *	                            +--------------------------+
 	 */
-	_createBalloonPanel() {
+	_createBalloonPanel( url ) {
 		const editor = this.editor;
 		const t = editor.t;
 		const editingView = editor.editing.view;
@@ -105,7 +104,7 @@ export default class Link extends Feature {
 		// Create the model of the panel.
 		const panelModel = new Model( {
 			maxWidth: 300,
-			url: 'http://example.com'
+			url: url
 		} );
 
 		// Observe #execute event from within the model of the panel, which means that
@@ -115,8 +114,7 @@ export default class Link extends Feature {
 
 			// TODO: validate panelModel#url with some RegExp imported from v4.
 			if ( urlValue ) {
-				/* global console */
-				console.log( `URL "${ urlValue }" to be set.` );
+				this.editor.execute( 'link', urlValue );
 				this.balloonPanel.view.hide();
 			} else {
 				window.alert( t( `"${ urlValue }" URL address is incorrect.` ) );
@@ -131,26 +129,6 @@ export default class Link extends Feature {
 		 */
 		this.balloonPanel = new LinkBalloonPanel( panelModel, new LinkBalloonPanelView( editor.locale ) );
 
-		editingView.on( 'render', () => {
-			const firstParent = editingView.selection.getFirstPosition().parent;
-			const firstParentAncestors = firstParent.getAncestors();
-			const anchor = firstParentAncestors.find( ( ancestor ) => ancestor.name === 'a' );
-
-			if ( anchor ) {
-				this.balloonPanel.view.attachTo(
-					editingView.domConverter.getCorrespondingDomElement( anchor ),
-					editableViewElement
-				);
-			} else {
-				this.balloonPanel.view.attachTo(
-					editingView.domConverter.viewRangeToDom( editingView.selection.getFirstRange() ),
-					editableViewElement
-				);
-			}
-
-			this.balloonPanel.urlInput.view.focus();
-		}, this );
-
 		// TODO: It's a lame FocusManager.
 		editingView.on( 'blur', ( evt, domEvtData ) => {
 			if ( domEvtData.domEvent.relatedTarget === this.balloonPanel.urlInput ) {
@@ -161,5 +139,23 @@ export default class Link extends Feature {
 		} );
 
 		editor.ui.add( 'body', this.balloonPanel );
+		// this.balloonPanel.urlInput.view.focus();
+
+		// Adjust Balloon position depends on selection place.
+		const firstParent = editingView.selection.getFirstPosition().parent;
+		const firstParentAncestors = firstParent.getAncestors();
+		const anchor = firstParentAncestors.find( ( ancestor ) => ancestor.name === 'a' );
+
+		if ( anchor ) {
+			this.balloonPanel.view.attachTo(
+				editingView.domConverter.getCorrespondingDomElement( anchor ),
+				editableViewElement
+			);
+		} else {
+			this.balloonPanel.view.attachTo(
+				editingView.domConverter.viewRangeToDom( editingView.selection.getFirstRange() ),
+				editableViewElement
+			);
+		}
 	}
 }

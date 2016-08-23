@@ -30,10 +30,10 @@ export default class LinkCommand extends Command {
 		 * @observable
 		 * @member {Boolean} core.command.ToggleAttributeCommand#value
 		 */
-		this.set( 'hasValue', false );
+		this.set( 'value', false );
 
 		this.listenTo( this.editor.document.selection, 'change:attribute', () => {
-			this.hasValue = this.editor.document.selection.hasAttribute( 'link' );
+			this.value = this.editor.document.selection.getAttribute( 'link' );
 		} );
 	}
 
