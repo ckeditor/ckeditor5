@@ -7,6 +7,7 @@
 
 import Editor from '/ckeditor5/core/editor/editor.js';
 import ComponentFactory from '/ckeditor5/ui/componentfactory.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'ComponentFactory', () => {
 	let editor, factory;
@@ -28,7 +29,7 @@ describe( 'ComponentFactory', () => {
 
 			expect( () => {
 				factory.add( 'foo', class {}, class {}, {} );
-			} ).to.throwCKEditorError( /^componentfactory-item-exists/ );
+			} ).to.throw( CKEditorError, /^componentfactory-item-exists/ );
 		} );
 	} );
 

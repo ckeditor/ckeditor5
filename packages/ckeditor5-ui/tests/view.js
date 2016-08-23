@@ -10,6 +10,7 @@ import testUtils from '/tests/core/_utils/utils.js';
 import View from '/ckeditor5/ui/view.js';
 import Template from '/ckeditor5/ui/template.js';
 import Region from '/ckeditor5/ui/region.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 let TestView, view;
 
@@ -140,30 +141,30 @@ describe( 'View', () => {
 		it( 'should throw when first argument is neither Region instance nor string', () => {
 			expect( () => {
 				view.register( new Date() );
-			} ).to.throwCKEditorError( /ui-view-register-wrongtype/ );
+			} ).to.throw( CKEditorError, /ui-view-register-wrongtype/ );
 		} );
 
 		it( 'should throw when missing the selector argument', () => {
 			expect( () => {
 				view.register( 'x' );
-			} ).to.throwCKEditorError( /ui-view-register-badselector/ );
+			} ).to.throw( CKEditorError, /ui-view-register-badselector/ );
 		} );
 
 		it( 'should throw when selector argument is of a wrong type', () => {
 			expect( () => {
 				view.register( 'x', new Date() );
-			} ).to.throwCKEditorError( /ui-view-register-badselector/ );
+			} ).to.throw( CKEditorError, /ui-view-register-badselector/ );
 
 			expect( () => {
 				view.register( 'x', false );
-			} ).to.throwCKEditorError( /ui-view-register-badselector/ );
+			} ).to.throw( CKEditorError, /ui-view-register-badselector/ );
 		} );
 
 		it( 'should throw when overriding an existing region but without override flag set', () => {
 			expect( () => {
 				view.register( 'x', true );
 				view.register( new Region( 'x' ), true );
-			} ).to.throwCKEditorError( /ui-view-register-override/ );
+			} ).to.throw( CKEditorError, /ui-view-register-override/ );
 		} );
 
 		it( 'should register a new region with region name as a first argument', () => {

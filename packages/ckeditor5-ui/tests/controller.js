@@ -50,7 +50,7 @@ describe( 'Controller', () => {
 					throw new Error( 'This should not be executed.' );
 				} )
 				.catch( ( err ) => {
-					expect( CKEditorError.isCKEditorError( err ) ).to.be.true;
+					expect( err ).to.be.instanceof( CKEditorError );
 					expect( err.message ).to.match( /ui-controller-init-re/ );
 				} );
 		} );
