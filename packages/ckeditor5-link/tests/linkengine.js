@@ -31,7 +31,7 @@ describe( 'LinkEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( doc.schema.check( { name: '$inline', attributes: [ 'link' ] } ) ).to.be.true;
+		expect( doc.schema.check( { name: '$inline', attributes: [ 'linkHref' ] } ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
@@ -53,17 +53,17 @@ describe( 'LinkEngine', () => {
 	} );
 
 	describe( 'data pipeline conversions', () => {
-		it( 'should convert `<a href="url">` to `link="url"` attribute', () => {
+		it( 'should convert `<a href="url">` to `linkHref="url"` attribute', () => {
 			editor.setData( '<a href="url">foo</a>bar' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text link="url">foo</$text>bar' );
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text linkHref="url">foo</$text>bar' );
 			expect( editor.getData() ).to.equal( '<a href="url">foo</a>bar' );
 		} );
 	} );
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert attribute', () => {
-			setModelData( doc, '<$text link="url">foo</$text>bar' );
+			setModelData( doc, '<$text linkHref="url">foo</$text>bar' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<a href="url">foo</a>bar' );
 		} );

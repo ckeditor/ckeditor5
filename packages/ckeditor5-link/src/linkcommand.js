@@ -24,7 +24,7 @@ export default class LinkCommand extends Command {
 		super( editor );
 
 		/**
-		 * Currently selected link attribute value.
+		 * Currently selected linkHref attribute value.
 		 *
 		 * @observable
 		 * @member {Boolean} core.command.ToggleAttributeCommand#value
@@ -32,7 +32,7 @@ export default class LinkCommand extends Command {
 		this.set( 'value', undefined );
 
 		this.listenTo( this.editor.document.selection, 'change:attribute', () => {
-			this.value = this.editor.document.selection.getAttribute( 'link' );
+			this.value = this.editor.document.selection.getAttribute( 'linkHref' );
 		} );
 	}
 
@@ -45,16 +45,16 @@ export default class LinkCommand extends Command {
 	_checkEnabled() {
 		const document = this.editor.document;
 
-		return isAttributeAllowedInSelection( 'link', document.selection, document.schema );
+		return isAttributeAllowedInSelection( 'linkHref', document.selection, document.schema );
 	}
 
 	/**
 	 * Executes the command.
 	 *
-	 * When selection is non-collapsed then `link` attribute will be applied to nodes inside selection, but only to
-	 * this nodes where `link` attribute is allowed (disallowed nodes will be omitted).
+	 * When selection is non-collapsed then `linkHref` attribute will be applied to nodes inside selection, but only to
+	 * this nodes where `linkHref` attribute is allowed (disallowed nodes will be omitted).
 	 *
-	 * When selection is collapsed then new {@link engine.model.Text Text node} with `link` attribute will be inserted
+	 * When selection is collapsed then new {@link engine.model.Text Text node} with `linkHref` attribute will be inserted
 	 * in place of caret, but only if such an element is allowed in this place. _data of inserted text will be equal
 	 * to `href` parameter. Selection will be updated to wrap just inserted text node.
 	 *
@@ -73,23 +73,23 @@ export default class LinkCommand extends Command {
 				const position = selection.getFirstPosition();
 				const parent = position.parent;
 
-				// Insert Text node with link attribute if is allowed in parent.
-				if ( document.schema.check( { name: '$text', attributes: 'link', inside: parent.name } ) ) {
-					const node = new Text( href, { link: href } );
+				// Insert Text node with linkHref attribute if is allowed in parent.
+				if ( document.schema.check( { name: '$text', attributes: 'linkHref', inside: parent.name } ) ) {
+					const node = new Text( href, { linkHref: href } );
 
 					batch.insert( position, node );
 
 					// Create new range wrapping just created node.
 					selection.setRanges( [ Range.createOn( node ) ] );
-					selection.setAttribute( 'link', href );
+					selection.setAttribute( 'linkHref', href );
 				}
 			} else {
 				// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges
-				// omitting nodes where `link` attribute is disallowed.
-				const ranges = getSchemaValidRanges( 'link', selection.getRanges(), document.schema );
+				// omitting nodes where `linkHref` attribute is disallowed.
+				const ranges = getSchemaValidRanges( 'linkHref', selection.getRanges(), document.schema );
 
 				for ( let range of ranges ) {
-					batch.setAttribute( range, 'link', href );
+					batch.setAttribute( range, 'linkHref', href );
 				}
 			}
 		} );

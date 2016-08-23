@@ -15,10 +15,9 @@ export default class UnlinkCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * When selection is collapsed then whole link will be unlinked. {@link engine.model.TreeWalker TreeWalker} is
-	 * looking for link bounds going forward and backward from the caret position.
+	 * When selection is collapsed then walk through each stick node with `linkHref` attribute and remove this attribute.
 	 *
-	 * If selection is non-collapsed then only selected range will be unlinked.
+	 * If selection is non-collapsed then remove `linkHref` from each node in selected range.
 	 *
 	 * @protected
 	 */
@@ -30,19 +29,19 @@ export default class UnlinkCommand extends Command {
 			// Keep it as one undo step.
 			const batch = document.batch();
 
-			// When selection is collapsed we have to remove link attribute from every stick sibling with the same attribute value.
+			// When selection is collapsed we are removing `linkHref` attribute from every stick sibling with the same attribute value.
 			if ( selection.isCollapsed ) {
-				const linkValue = selection.getAttribute( 'link' );
+				const linkValue = selection.getAttribute( 'linkHref' );
 				const position = selection.getFirstPosition();
 				let sibling;
 
 				// Get node on the right side of the selection. When selection is inside TextNode then get this node.
 				sibling = position.textNode === null ? position.nodeAfter : position.textNode;
 
-				// Walk forward and remove link attribute from each stick element with the same attribute value.
+				// Walk forward and remove `linkHref` attribute from each stick element with the same attribute value.
 				while ( sibling ) {
-					if ( sibling.getAttribute( 'link' ) == linkValue ) {
-						batch.removeAttribute( sibling, 'link' );
+					if ( sibling.getAttribute( 'linkHref' ) == linkValue ) {
+						batch.removeAttribute( sibling, 'linkHref' );
 						sibling = sibling.nextSibling;
 					} else {
 						sibling = null;
@@ -50,22 +49,22 @@ export default class UnlinkCommand extends Command {
 				}
 
 				// Get node on the left side of the selection. When selection is inside TextNode then get node just after
-				// TextNode because link attribute has been already removed from TextNode during forward walking.
+				// TextNode because `linkHref` attribute has been already removed from TextNode during forward walking.
 				sibling = position.textNode === null ? position.nodeBefore : position.textNode.previousSibling;
 
-				// Walk backward and remove link attribute from each stick element with the same attribute value.
+				// Walk backward and remove `linkHref` attribute from each stick element with the same attribute value.
 				while ( sibling ) {
-					if ( sibling.getAttribute( 'link' ) == linkValue ) {
-						batch.removeAttribute( sibling, 'link' );
+					if ( sibling.getAttribute( 'linkHref' ) == linkValue ) {
+						batch.removeAttribute( sibling, 'linkHref' );
 						sibling = sibling.previousSibling;
 					} else {
 						sibling = null;
 					}
 				}
 			} else {
-				// When selection is non-collapsed then we are unlinking selected ranges.
+				// When selection is non-collapsed then we are removing `linkHref` attribute from each node inside the ranges.
 				for ( let range of selection.getRanges() ) {
-					batch.removeAttribute( range, 'link' );
+					batch.removeAttribute( range, 'linkHref' );
 				}
 			}
 		} );

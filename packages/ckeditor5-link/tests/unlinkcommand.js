@@ -20,9 +20,9 @@ describe( 'UnlinkCommand', () => {
 				// Allow text in $root.
 				document.schema.allow( { name: '$text', inside: '$root' } );
 
-				// Allow text with link attribute in paragraph.
+				// Allow text with `linkHref` attribute in paragraph.
 				document.schema.registerItem( 'p', '$block' );
-				document.schema.allow( { name: '$text', attributes: 'link', inside: '$root' } );
+				document.schema.allow( { name: '$text', attributes: 'linkHref', inside: '$root' } );
 			} );
 	} );
 
@@ -32,116 +32,167 @@ describe( 'UnlinkCommand', () => {
 
 	describe( '_doExecute', () => {
 		describe( 'non-collapsed selection', () => {
-			it( 'should remove link attribute from selected text', () => {
-				setData( document, '<$text link="url">f[ooba]r</$text>' );
+			it( 'should remove `linkHref` attribute from selected text', () => {
+				setData( document, '<$text linkHref="url">f[ooba]r</$text>' );
 
 				command._doExecute();
 
-				expect( getData( document ) ).to.equal( '<$text link="url">f</$text>[ooba]<$text link="url">r</$text>' );
+				expect( getData( document ) ).to.equal( '<$text linkHref="url">f</$text>[ooba]<$text linkHref="url">r</$text>' );
 			} );
 
-			it( 'should remove link attribute from selected text and do not modified other attributes', () => {
-				setData( document, '<$text bold="true" link="url">f[ooba]r</$text>' );
+			it( 'should remove `linkHref` attribute from selected text and do not modified other attributes', () => {
+				setData( document, '<$text bold="true" linkHref="url">f[ooba]r</$text>' );
 
 				command._doExecute();
 
-				expect( getData( document ) )
-					.to.equal( '<$text bold="true" link="url">f</$text>[<$text bold="true">ooba</$text>]<$text bold="true" link="url">r</$text>' );
+				expect( getData( document ) ).to.equal(
+					'<$text bold="true" linkHref="url">f</$text>' +
+					'[<$text bold="true">ooba</$text>]' +
+					'<$text bold="true" linkHref="url">r</$text>'
+				);
 			} );
 
-			it( 'should remove link attribute from selected text when attributes have different value', () => {
-				setData( document, '[<$text link="url">foo</$text><$text link="other url">bar</$text>]' );
+			it( 'should remove `linkHref` attribute from selected text when attributes have different value', () => {
+				setData( document, '[<$text linkHref="url">foo</$text><$text linkHref="other url">bar</$text>]' );
 
 				command._doExecute();
 
 				expect( getData( document ) ).to.equal( '[foobar]' );
 			} );
+
+			it( 'should remove `linkHref` attribute from selection', () => {
+				setData( document, '<$text linkHref="url">f[ooba]r</$text>' );
+
+				command._doExecute();
+
+				expect( document.selection.hasAttribute( 'linkHref' ) ).to.false;
+			} );
 		} );
 
 		describe( 'collapsed selection', () => {
-			it( 'should remove link attribute from selection siblings with the same attribute value', () => {
-				setData( document, '<$text link="url">foo[]bar</$text>' );
+			it( 'should remove `linkHref` attribute from selection siblings with the same attribute value', () => {
+				setData( document, '<$text linkHref="url">foo[]bar</$text>' );
 
 				command._doExecute();
 
 				expect( getData( document ) ).to.equal( 'foo[]bar' );
 			} );
 
-			it( 'should remove link attribute from selection siblings with the same attribute value and do not ' +
-				'modified other attributes',
+			it(
+				'should remove `linkHref` attribute from selection siblings with the same attribute value and do not modify other attributes',
 			() => {
-				setData( document, '<$text bold="true" link="url">foo[]bar</$text>' );
+				setData(
+					document,
+					'<$text linkHref="other url">fo</$text>' +
+					'<$text linkHref="url">o[]b</$text>' +
+					'<$text linkHref="other url">ar</$text>'
+				);
 
 				command._doExecute();
 
-				expect( getData( document ) ).to.equal( '<$text bold="true">foo[]bar</$text>' );
+				expect( getData( document ) ).to.equal(
+					'<$text linkHref="other url">fo</$text>' +
+					'o[]b' +
+					'<$text linkHref="other url">ar</$text>'
+				);
+			} );
+
+			it( 'should do nothing with nodes with the same `linkHref` value when there is a node with different value `linkHref` ' +
+				'attribute between', () => {
+				setData(
+					document,
+					'<$text linkHref="same url">f</$text>' +
+					'<$text linkHref="other url">o</$text>' +
+					'<$text linkHref="same url">o[]b</$text>' +
+					'<$text linkHref="other url">a</$text>' +
+					'<$text linkHref="same url">r</$text>'
+				);
+
+				command._doExecute();
+
+				expect( getData( document ) )
+					.to.equal(
+						'<$text linkHref="same url">f</$text>' +
+						'<$text linkHref="other url">o</$text>' +
+						'o[]b' +
+						'<$text linkHref="other url">a</$text>' +
+						'<$text linkHref="same url">r</$text>'
+					);
 			} );
 
 			it(
-				'should remove link attribute from selection siblings with the same attribute value and do nothing ' +
-				'with other value links',
+				'should remove `linkHref` attribute from selection siblings with the same attribute value and do nothing with other ' +
+				'attributes',
 			() => {
-				setData( document, '<$text link="other url">fo</$text><$text link="url">o[]b</$text><$text link="other url">ar</$text>' );
+				setData(
+					document,
+					'<$text linkHref="url">f</$text>' +
+					'<$text bold="true" linkHref="url">o</$text>' +
+					'<$text linkHref="url">o[]b</$text>' +
+					'<$text bold="true" linkHref="url">a</$text>' +
+					'<$text linkHref="url">r</$text>'
+				);
 
 				command._doExecute();
 
-				expect( getData( document ) ).to.equal( '<$text link="other url">fo</$text>o[]b<$text link="other url">ar</$text>' );
+				expect( getData( document ) ).to.equal(
+					'f' +
+					'<$text bold="true">o</$text>' +
+					'o[]b' +
+					'<$text bold="true">a</$text>' +
+					'r'
+				);
 			} );
 
-			it( 'should do nothing with the same value links when there is a link with other value between', () => {
-					setData(
-						document,
-						'<$text link="same url">f</$text>' +
-						'<$text link="other url">o</$text>' +
-						'<$text link="same url">o[]b</$text>' +
-						'<$text link="other url">a</$text>' +
-						'<$text link="same url">r</$text>'
-					);
-
-					command._doExecute();
-
-					expect( getData( document ) )
-						.to.equal(
-							'<$text link="same url">f</$text>' +
-							'<$text link="other url">o</$text>' +
-							'o[]b' +
-							'<$text link="other url">a</$text>' +
-							'<$text link="same url">r</$text>'
-						);
-				} );
-
-			it( 'should remove link attribute from selection siblings only in the same parent as selection parent', () => {
-				setData( document, '<p><$text link="url">fo[]o</$text></p><p><$text link="url">bar</$text></p>' );
+			it( 'should remove `linkHref` attribute from selection siblings only in the same parent as selection parent', () => {
+				setData(
+					document,
+					'<p><$text linkHref="url">bar</$text></p>' +
+					'<p><$text linkHref="url">fo[]o</$text></p>' +
+					'<p><$text linkHref="url">bar</$text></p>'
+				);
 
 				command._doExecute();
 
-				expect( getData( document ) ).to.equal( '<p>fo[]o</p><p><$text link="url">bar</$text></p>' );
+				expect( getData( document ) ).to.equal(
+					'<p><$text linkHref="url">bar</$text></p>' +
+					'<p>fo[]o</p>' +
+					'<p><$text linkHref="url">bar</$text></p>'
+				);
 			} );
 
-			it( 'should remove link attribute from selection siblings when selection is at the end of link', () => {
-				setData( document, '<$text link="url">foobar</$text>[]' );
+			it( 'should remove `linkHref` attribute from selection siblings when selection is at the end of link', () => {
+				setData( document, '<$text linkHref="url">foobar</$text>[]' );
 
 				command._doExecute();
 
 				expect( getData( document ) ).to.equal( 'foobar[]' );
 			} );
 
-			it( 'should remove link attribute from selection siblings when selection is at the beginning of link', () => {
-				setData( document, '[]<$text link="url">foobar</$text>' );
+			it( 'should remove `linkHref` attribute from selection siblings when selection is at the beginning of link', () => {
+				setData( document, '[]<$text linkHref="url">foobar</$text>' );
 
 				command._doExecute();
 
 				expect( getData( document ) ).to.equal( '[]foobar' );
 			} );
 
-			it( 'should remove link attribute from selection siblings on the left side when selection is between two ' +
-				'elements with different link attributes',
+			it( 'should remove `linkHref` attribute from selection siblings on the left side when selection is between two elements with ' +
+				'different `linkHref` attributes',
 			() => {
-				setData( document, '<$text link="url">foo</$text>[]<$text link="other url">bar</$text>' );
+				setData( document, '<$text linkHref="url">foo</$text>[]<$text linkHref="other url">bar</$text>' );
 
 				command._doExecute();
 
-				expect( getData( document ) ).to.equal( 'foo[]<$text link="other url">bar</$text>' );
+				expect( getData( document ) ).to.equal( 'foo[]<$text linkHref="other url">bar</$text>' );
+			} );
+
+			it( 'should remove `linkHref` attribute from selection', () => {
+				setData( document, '<$text linkHref="url">foo[]bar</$text>' );
+
+				command._doExecute();
+
+				expect( document.selection.hasAttribute( 'linkHref' ) ).to.false;
 			} );
 		} );
 	} );
