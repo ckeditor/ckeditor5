@@ -8,6 +8,7 @@
 import Editor from '/ckeditor5/core/editor/editor.js';
 import Command from '/ckeditor5/core/command/command.js';
 import Locale from '/ckeditor5/utils/locale.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Editor', () => {
 	describe( 'locale', () => {
@@ -69,7 +70,7 @@ describe( 'Editor', () => {
 
 			expect( () => {
 				editor.execute( 'command' );
-			} ).to.throwCKEditorError( /^editor-command-not-found:/ );
+			} ).to.throw( CKEditorError, /^editor-command-not-found:/ );
 		} );
 	} );
 } );
