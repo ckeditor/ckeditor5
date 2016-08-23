@@ -5,6 +5,7 @@
 
 import testUtils from '/tests/core/_utils/utils.js';
 import Collection from '/ckeditor5/utils/collection.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 testUtils.createSinonSandbox();
 
@@ -124,7 +125,7 @@ describe( 'Collection', () => {
 
 			expect( () => {
 				collection.add( item2 );
-			} ).to.throwCKEditorError( /^collection-add-item-already-exists/ );
+			} ).to.throw( CKEditorError, /^collection-add-item-already-exists/ );
 		} );
 
 		it( 'should throw when item\'s id is not a string', () => {
@@ -132,7 +133,7 @@ describe( 'Collection', () => {
 
 			expect( () => {
 				collection.add( item );
-			} ).to.throwCKEditorError( /^collection-add-invalid-id/ );
+			} ).to.throw( CKEditorError, /^collection-add-invalid-id/ );
 		} );
 
 		it(
@@ -294,7 +295,7 @@ describe( 'Collection', () => {
 		it( 'should throw if neither string or number given', () => {
 			expect( () => {
 				collection.get( true );
-			} ).to.throwCKEditorError( /^collection-get-invalid-arg/ );
+			} ).to.throw( CKEditorError, /^collection-get-invalid-arg/ );
 		} );
 	} );
 
@@ -399,7 +400,7 @@ describe( 'Collection', () => {
 
 			expect( () => {
 				collection.remove( 1 );
-			} ).to.throwCKEditorError( /^collection-remove-404/ );
+			} ).to.throw( CKEditorError, /^collection-remove-404/ );
 
 			expect( collection ).to.have.length( 1 );
 		} );
@@ -409,7 +410,7 @@ describe( 'Collection', () => {
 
 			expect( () => {
 				collection.remove( 'bar' );
-			} ).to.throwCKEditorError( /^collection-remove-404/ );
+			} ).to.throw( CKEditorError, /^collection-remove-404/ );
 
 			expect( collection ).to.have.length( 1 );
 		} );
@@ -419,7 +420,7 @@ describe( 'Collection', () => {
 
 			expect( () => {
 				collection.remove( getItem( 'bar' ) );
-			} ).to.throwCKEditorError( /^collection-remove-404/ );
+			} ).to.throw( CKEditorError, /^collection-remove-404/ );
 
 			expect( collection ).to.have.length( 1 );
 		} );
