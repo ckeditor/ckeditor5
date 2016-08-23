@@ -24,16 +24,15 @@ export default class LinkCommand extends Command {
 		super( editor );
 
 		/**
-		 * Flag indicating whether command is active. For collapsed selection it means that typed characters will have
-		 * the command's attribute set. For range selection it means that all nodes inside have the attribute applied.
+		 * Currently selected link attribute value.
 		 *
 		 * @observable
 		 * @member {Boolean} core.command.ToggleAttributeCommand#value
 		 */
-		this.set( 'hasValue', false );
+		this.set( 'value', undefined );
 
 		this.listenTo( this.editor.document.selection, 'change:attribute', () => {
-			this.hasValue = this.editor.document.selection.hasAttribute( 'link' );
+			this.value = this.editor.document.selection.getAttribute( 'link' );
 		} );
 	}
 
