@@ -48,6 +48,10 @@ export default class Link extends Feature {
 
 		// Show Balloon Panel on button click.
 		this.listenTo( buttonModel, 'execute', () => {
+			if ( !this.editor.editing.view.isFocused ) {
+				return;
+			}
+
 			if ( !this.balloonPanel ) {
 				this._createBalloonPanel();
 			}
@@ -58,7 +62,7 @@ export default class Link extends Feature {
 		// Add link button to feature components.
 		editor.ui.featureComponents.add( 'link', ButtonController, ButtonView, buttonModel );
 
-		// Show Balloon Panel on click directly in some link element.
+		// Show Balloon Panel on click directly on some link element.
 		// @TODO: Get click event from editor instead of DOM.
 		this.editor.ui.editable.view.element.addEventListener( 'click', () => {
 			if ( editor.document.selection.isCollapsed && command.value !== undefined ) {
