@@ -47,7 +47,13 @@ export default class Link extends Feature {
 		} );
 
 		// Show Balloon Panel on button click.
-		this.listenTo( buttonModel, 'execute', () => this._createBalloonPanel( command.value ) );
+		this.listenTo( buttonModel, 'execute', () => {
+			if ( !this.balloonPanel ) {
+				this._createBalloonPanel();
+			}
+
+			this._attachPanelToElement();
+		} );
 
 		// Add link button to feature components.
 		editor.ui.featureComponents.add( 'link', ButtonController, ButtonView, buttonModel );
@@ -56,7 +62,11 @@ export default class Link extends Feature {
 		// @TODO: Get click event from editor instead of DOM.
 		this.editor.ui.editable.view.element.addEventListener( 'click', () => {
 			if ( editor.document.selection.isCollapsed && command.value !== undefined ) {
-				this._createBalloonPanel( command.value );
+				if ( !this.balloonPanel ) {
+					this._createBalloonPanel();
+				}
+
+				this._attachPanelToElement();
 			}
 		} );
 	}
@@ -95,17 +105,20 @@ export default class Link extends Feature {
 	 *	                            |                   +----+ |
 	 *	                            +--------------------------+
 	 */
-	_createBalloonPanel( url ) {
+	_createBalloonPanel() {
 		const editor = this.editor;
 		const t = editor.t;
+		const command = this.editor.commands.get( 'link' );
 		const editingView = editor.editing.view;
-		const editableViewElement = editor.ui.editable.view.element;
 
 		// Create the model of the panel.
 		const panelModel = new Model( {
 			maxWidth: 300,
-			url: url
+			url: command.value
 		} );
+
+		// Bind panel model to command.
+		panelModel.bind( 'url' ).to( command, 'value' );
 
 		// Observe #execute event from within the model of the panel, which means that
 		// the "Save" button has been clicked.
@@ -140,8 +153,16 @@ export default class Link extends Feature {
 
 		editor.ui.add( 'body', this.balloonPanel );
 		// this.balloonPanel.urlInput.view.focus();
+	}
 
-		// Adjust Balloon position depends on selection place.
+	_attachPanelToElement() {
+		if ( !this.balloonPanel ) {
+			return;
+		}
+
+		// Adjust balloon position.
+		const editingView = this.editor.editing.view;
+		const editableViewElement = this.editor.ui.editable.view.element;
 		const firstParent = editingView.selection.getFirstPosition().parent;
 		const firstParentAncestors = firstParent.getAncestors();
 		const anchor = firstParentAncestors.find( ( ancestor ) => ancestor.name === 'a' );
