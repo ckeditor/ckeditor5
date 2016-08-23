@@ -39,7 +39,7 @@ const config = {
 
 // Lint tasks. ---------------------------------------------------------------
 
-const ckeditor5Lint = require( 'ckeditor5-dev-lint' )( config );
+const ckeditor5Lint = require( '@ckeditor/ckeditor5-dev-lint' )( config );
 
 gulp.task( 'lint', ckeditor5Lint.lint );
 gulp.task( 'lint-staged', ckeditor5Lint.lintStaged );
@@ -47,7 +47,7 @@ gulp.task( 'pre-commit', [ 'lint-staged' ] );
 
 // Development environment tasks. ---------------------------------------------
 
-const ckeditor5DevEnv = require( 'ckeditor5-dev-env' )( config );
+const ckeditor5DevEnv = require( '@ckeditor/ckeditor5-dev-env' )( config );
 
 gulp.task( 'init', ckeditor5DevEnv.initRepository );
 gulp.task( 'create-package', ckeditor5DevEnv.createPackage );
@@ -61,7 +61,7 @@ gulp.task( 'exec', ckeditor5DevEnv.execOnRepositories );
 
 // Compilation tasks. ---------------------------------------------------------
 
-const ckeditor5DevCompiler = require( 'ckeditor5-dev-compiler' )( config );
+const ckeditor5DevCompiler = require( '@ckeditor/ckeditor5-dev-compiler' )( config );
 const compiler = ckeditor5DevCompiler.compiler;
 
 gulp.task( 'default', [ 'compile' ] );
@@ -101,7 +101,7 @@ gulp.task( 'compile:themes:esnext', callback => {
 
 // Building tasks. ------------------------------------------------------------
 
-const ckeditor5DevBundle = require( 'ckeditor5-dev-bundler-rollup' )( config );
+const ckeditor5DevBundle = require( '@ckeditor/ckeditor5-dev-bundler-rollup' )( config );
 
 gulp.task( 'build', callback => {
 	runSequence(
