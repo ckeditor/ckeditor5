@@ -8,6 +8,7 @@ import Text from '../engine/model/text.js';
 import Range from '../engine/model/range.js';
 import getSchemaValidRanges from '../core/command/helpers/getschemavalidranges.js';
 import isAttributeAllowedInSelection from '../core/command/helpers/isattributeallowedinselection.js';
+import findLinkRange from './findlinkrange.js';
 
 /**
  * The link command. It is used by the {@link Link.Link link feature}.
@@ -54,9 +55,11 @@ export default class LinkCommand extends Command {
 	 * When selection is non-collapsed then `linkHref` attribute will be applied to nodes inside selection, but only to
 	 * this nodes where `linkHref` attribute is allowed (disallowed nodes will be omitted).
 	 *
-	 * When selection is collapsed then new {@link engine.model.Text Text node} with `linkHref` attribute will be inserted
-	 * in place of caret, but only if such an element is allowed in this place. _data of inserted text will be equal
-	 * to `href` parameter. Selection will be updated to wrap just inserted text node.
+	 * When selection is collapsed and is not inside text with `linkHref` attribute then new {@link engine.model.Text Text node} with
+	 * `linkHref` attribute will be inserted in place of caret, but only if such an element is allowed in this place. _data of inserted
+	 * text will be equal to `href` parameter. Selection will be updated to wrap just inserted text node.
+	 *
+	 * When selection is collapsed and is inside text with `linkHref` attribute then attribute value will be updated.
 	 *
 	 * @protected
 	 * @param {String} href Link destination.
@@ -69,19 +72,29 @@ export default class LinkCommand extends Command {
 			// Keep it as one undo step.
 			const batch = document.batch();
 
+			// If selection is collapsed then update selected link or insert new one at the place of caret.
 			if ( selection.isCollapsed ) {
 				const position = selection.getFirstPosition();
 				const parent = position.parent;
 
-				// Insert Text node with linkHref attribute if is allowed in parent.
-				if ( document.schema.check( { name: '$text', attributes: 'linkHref', inside: parent.name } ) ) {
+				// When selection is inside text with `linkHref` attribute.
+				if ( selection.hasAttribute( 'linkHref' ) ) {
+					// Then update `linkHref` value.
+					const linkRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ) );
+
+					batch.setAttribute( linkRange, 'linkHref', href );
+
+					// Create new range wrapping changed link.
+					selection.setRanges( [ linkRange ] );
+				}
+				// If not then insert text node with `linkHref` attribute in place of caret.
+				else if ( document.schema.check( { name: '$text', attributes: 'linkHref', inside: parent.name } ) ) {
 					const node = new Text( href, { linkHref: href } );
 
 					batch.insert( position, node );
 
-					// Create new range wrapping just created node.
+					// Create new range wrapping created node.
 					selection.setRanges( [ Range.createOn( node ) ] );
-					selection.setAttribute( 'linkHref', href );
 				}
 			} else {
 				// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges
