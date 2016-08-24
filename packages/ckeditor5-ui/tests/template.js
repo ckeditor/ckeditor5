@@ -419,7 +419,7 @@ describe( 'Template', () => {
 
 					observable.backgroundColor = '';
 
-					expect( el.outerHTML ).to.be.equal( '<p></p>' );
+					expect( el.outerHTML ).to.be.equal( '<p></p>' ); // x
 				} );
 
 				it( 'renders with falsy values', () => {
