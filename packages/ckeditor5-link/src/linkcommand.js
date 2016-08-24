@@ -8,7 +8,7 @@ import Text from '../engine/model/text.js';
 import Range from '../engine/model/range.js';
 import getSchemaValidRanges from '../core/command/helpers/getschemavalidranges.js';
 import isAttributeAllowedInSelection from '../core/command/helpers/isattributeallowedinselection.js';
-import findLinkRange from './findLinkRange.js';
+import findLinkRange from './findlinkrange.js';
 
 /**
  * The link command. It is used by the {@link Link.Link link feature}.
@@ -86,9 +86,9 @@ export default class LinkCommand extends Command {
 
 					// Create new range wrapping changed link.
 					selection.setRanges( [ linkRange ] );
-
+				}
 				// If not then insert text node with `linkHref` attribute in place of caret.
-				} else if ( document.schema.check( { name: '$text', attributes: 'linkHref', inside: parent.name } ) ) {
+				else if ( document.schema.check( { name: '$text', attributes: 'linkHref', inside: parent.name } ) ) {
 					const node = new Text( href, { linkHref: href } );
 
 					batch.insert( position, node );

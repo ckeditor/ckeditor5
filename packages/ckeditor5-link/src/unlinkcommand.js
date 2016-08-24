@@ -4,7 +4,7 @@
  */
 
 import Command from '../core/command/command.js';
-import findLinkRange from './findLinkRange.js';
+import findLinkRange from './findlinkrange.js';
 
 /**
  * The unlink command. It is used by the {@link Link.Link link feature}.
