@@ -71,7 +71,7 @@ gulp.task( 'compile', callback => {
 } );
 
 // TODO This task is temporary: https://github.com/ckeditor/ckeditor5-dev-compiler/issues/24
-gulp.task( 'compile:sample-tests', [ 'compile' ], () => compiler.compile.sampleTests.local() );
+gulp.task( 'compile:sample-tests', [ 'compile' ], () => compiler.compile.sampleTests.source() );
 gulp.task( 'compile:bundled-sample-tests', [ 'compile:bundled-sample-tests:build-editors' ],
 	() => compiler.compile.sampleTests.bundled() );
 
