@@ -70,10 +70,8 @@ gulp.task( 'compile', callback => {
 	runSequence( 'compile:clean:all', 'compile:themes', 'compile:js', callback );
 } );
 
-// TODO This task is temporary: https://github.com/ckeditor/ckeditor5-dev-compiler/issues/24
-gulp.task( 'compile:sample-tests', [ 'compile' ], () => compiler.compile.sampleTests.source() );
 gulp.task( 'compile:bundled-sample-tests', [ 'compile:bundled-sample-tests:build-editors' ],
-	() => compiler.compile.sampleTests.bundled() );
+	() => compiler.compile.bundledSampleTests() );
 
 // Helpers. ---------------------------
 
@@ -147,7 +145,7 @@ gulp.task( 'docs', [ 'compile:js:esnext' ], docsBuilder.buildDocs );
 
 // Testing. -------------------------------------------------------------------
 
-// TODO The below code is here only temporarily. It will be extracted to a separat package
+// TODO The below code is here only temporarily. It will be extracted to a separate package
 // once we'll understand better where it should belong. Right now it's somewhere beyond testing
 // environment, compilation and documentation.
 
@@ -161,7 +159,7 @@ gulp.task( 'docs', [ 'compile:js:esnext' ], docsBuilder.buildDocs );
  */
 function buildEditorsForSamples() {
 	const { utils: compilerUtils } = require( '@ckeditor/ckeditor5-dev-compiler' )( config );
-	const { stream, tools: tools } = require( '@ckeditor/ckeditor5-dev-utils' );
+	const { stream, tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 	const gulpFilter = require( 'gulp-filter' );
 	const gulpRename = require( 'gulp-rename' );
