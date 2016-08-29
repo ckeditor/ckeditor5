@@ -33,6 +33,7 @@
     "benderjs-sinon": "^0.3.0",
     "@ckeditor/ckeditor5-dev-bundler-rollup": "ckeditor/ckeditor5-dev-bundler-rollup",
     "@ckeditor/ckeditor5-dev-compiler": "ckeditor/ckeditor5-dev-compiler",
+    "@ckeditor/ckeditor5-dev-docs": "ckeditor/ckeditor5-dev-docs#t/1",
     "@ckeditor/ckeditor5-dev-env": "^1.0.0",
     "@ckeditor/ckeditor5-dev-lint": "^1.0.1",
     "@ckeditor/ckeditor5-dev-utils": "ckeditor/ckeditor5-dev-utils",

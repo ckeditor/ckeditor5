@@ -17,7 +17,6 @@ const config = {
 		cjs: 'build/modules/cjs',
 		esnext: 'build/modules/esnext'
 	},
-	DOCS_DIR: 'build/docs',
 	BUNDLE_DIR: 'build/dist',
 	WORKSPACE_DIR: '..',
 
@@ -25,6 +24,10 @@ const config = {
 	BUNDLE_DEFAULT_CONFIG: 'dev/bundles/build-config-standard.js',
 
 	DOCUMENTATION: {
+		// Path to the temporary documentation files.
+		SOURCE_DIR: '.docs',
+		// Path to the built documentation.
+		DESTINATION_DIR: 'build/docs',
 		// Glob pattern with samples.
 		SAMPLES: 'docs/samples/**/*.@(md|html|js)',
 		// Glob pattern with guides.
@@ -139,9 +142,10 @@ gulp.task( 'compile:bundled-sample-tests:build-editors',
 
 // Documentation. -------------------------------------------------------------
 
-const docsBuilder = ckeditor5DevCompiler.docs( config );
+const docsBuilder = require( '@ckeditor/ckeditor5-dev-docs' )( config );
 
-gulp.task( 'docs', [ 'compile:js:esnext' ], docsBuilder.buildDocs );
+gulp.task( 'docs', [ 'compile:js:esnext', 'docs:prepare' ], docsBuilder.buildDocs );
+gulp.task( 'docs:prepare', docsBuilder.collectDocumentationFiles );
 
 // Testing. -------------------------------------------------------------------
 
