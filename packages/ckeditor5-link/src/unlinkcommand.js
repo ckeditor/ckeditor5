@@ -14,6 +14,27 @@ import findLinkRange from './findlinkrange.js';
  */
 export default class UnlinkCommand extends Command {
 	/**
+	 * @see core.command.Command
+	 * @param {core.editor.Editor} editor
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		/**
+		 * Flag indicating whether command is active. For collapsed selection it means that typed characters will have
+		 * the command's attribute set. For range selection it means that all nodes inside have the attribute applied.
+		 *
+		 * @observable
+		 * @member {Boolean} core.command.ToggleAttributeCommand#value
+		 */
+		this.set( 'hasValue', undefined );
+
+		this.listenTo( this.editor.document.selection, 'change:attribute', () => {
+			this.hasValue = this.editor.document.selection.hasAttribute( 'linkHref' );
+		} );
+	}
+
+	/**
 	 * Executes the command.
 	 *
 	 * When selection is collapsed then remove `linkHref` attribute from each stick node with the same `linkHref` attribute value.

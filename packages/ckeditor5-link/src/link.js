@@ -44,6 +44,7 @@ export default class Link extends Feature {
 		 */
 		this.balloonPanel = this._createBalloonPanel();
 		this._createToolbarLinkButton();
+		this._createToolbarUnlinkButton();
 
 		// Register document click observer
 		viewDocument.addObserver( ClickObserver );
@@ -63,17 +64,17 @@ export default class Link extends Feature {
 		const t = editor.t;
 
 		// Create button model.
-		const buttonModel = new Model( {
+		const linkButtonModel = new Model( {
 			isEnabled: true,
 			isOn: false,
 			label: t( 'Link' ),
 			icon: 'link'
 		} );
 
-		buttonModel.bind( 'url' ).to( linkCommand, 'value' );
+		linkButtonModel.bind( 'url', 'isEnabled' ).to( linkCommand, 'value', 'isEnabled' );
 
 		// Show Balloon Panel on button click.
-		this.listenTo( buttonModel, 'execute', () => {
+		this.listenTo( linkButtonModel, 'execute', () => {
 			if ( !viewDocument.isFocused ) {
 				return;
 			}
@@ -82,7 +83,36 @@ export default class Link extends Feature {
 		} );
 
 		// Add link button to feature components.
-		editor.ui.featureComponents.add( 'link', ButtonController, ButtonView, buttonModel );
+		editor.ui.featureComponents.add( 'link', ButtonController, ButtonView, linkButtonModel );
+	}
+
+	_createToolbarUnlinkButton() {
+		const editor = this.editor;
+		const t = editor.t;
+		const unlinkCommand = editor.commands.get( 'unlink' );
+
+		// Create button model.
+		const unlinkButtonModel = new Model( {
+			isEnabled: true,
+			isOn: false,
+			label: t( 'Unlink' ),
+			icon: 'unlink'
+		} );
+
+		// Bind button model to command.
+		unlinkButtonModel.bind( 'isEnabled' ).to( unlinkCommand, 'hasValue' );
+
+		// Execute command.
+		this.listenTo( unlinkButtonModel, 'execute', () => {
+			editor.execute( 'unlink' );
+
+			if ( this.balloonPanel && this.balloonPanel.view.isVisible ) {
+				this.balloonPanel.view.hide();
+			}
+		} );
+
+		// Add link button to feature components.
+		editor.ui.featureComponents.add( 'unlink', ButtonController, ButtonView, unlinkButtonModel );
 	}
 
 	/**

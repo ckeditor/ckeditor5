@@ -9,7 +9,7 @@ import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	features: [ 'link', 'typing', 'paragraph', 'undo' ],
-	toolbar: [ 'link', 'undo', 'redo' ]
+	toolbar: [ 'link', 'unlink', 'undo', 'redo' ]
 } )
 .then( editor => {
 	window.editor = editor;
@@ -20,7 +20,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 ClassicEditor.create( document.querySelector( '#editor-balloon-demo' ), {
 	features: [ 'link', 'typing', 'paragraph', 'undo' ],
-	toolbar: [ 'link', 'undo', 'redo' ]
+	toolbar: [ 'link', 'unlink', 'undo', 'redo' ]
 } )
 .then( editor => {
 	editor.ui.view.element.classList.add( 'ck-editor_balloon-demo' );
