@@ -61,8 +61,8 @@ gulp.task( 'exec', ckeditor5DevEnv.execOnRepositories );
 
 // Compilation tasks. ---------------------------------------------------------
 
-const ckeditor5DevCompiler = require( '@ckeditor/ckeditor5-dev-compiler' )( config );
-const compiler = ckeditor5DevCompiler.compiler;
+const ckeditor5DevCompiler = require( '@ckeditor/ckeditor5-dev-compiler' );
+const compiler = ckeditor5DevCompiler.compiler( config );
 
 gulp.task( 'default', [ 'compile' ] );
 
@@ -139,7 +139,7 @@ gulp.task( 'compile:bundled-sample-tests:build-editors',
 
 // Documentation. -------------------------------------------------------------
 
-const docsBuilder = ckeditor5DevCompiler.docs;
+const docsBuilder = ckeditor5DevCompiler.docs( config );
 
 gulp.task( 'docs', [ 'compile:js:esnext' ], docsBuilder.buildDocs );
 
@@ -158,7 +158,7 @@ gulp.task( 'docs', [ 'compile:js:esnext' ], docsBuilder.buildDocs );
  * @returns {Stream}
  */
 function buildEditorsForSamples() {
-	const { utils: compilerUtils } = require( '@ckeditor/ckeditor5-dev-compiler' )( config );
+	const { utils: compilerUtils } = require( '@ckeditor/ckeditor5-dev-compiler' );
 	const { stream, tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 	const gulpFilter = require( 'gulp-filter' );
