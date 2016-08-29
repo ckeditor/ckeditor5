@@ -6,11 +6,13 @@
 import Model from '../../ui/model.js';
 import Button from '../../ui/button/button.js';
 import ButtonView from '../../ui/button/buttonview.js';
-import BalloonPanel from './balloonpanel.js';
-import LabeledInput from './labeledinput.js';
-import LabeledInputView from './labeledinputview.js';
-import Box from './box.js';
-import BoxView from './boxview.js';
+import BalloonPanel from '../../ui/balloonpanel/balloonpanel.js';
+import LabeledInput from '../../ui/labeledinput/labeledinput.js';
+import LabeledInputView from '../../ui/labeledinput/labeledinputview.js';
+import Form from '../../ui/form/form.js';
+import FormView from '../../ui/form/formview.js';
+import Box from '../../ui/box/box.js';
+import BoxView from '../../ui/box/boxview.js';
 
 /**
  * The link balloon panel controller class.
@@ -28,10 +30,24 @@ export default class LinkBalloonPanel extends BalloonPanel {
 	constructor( model, view ) {
 		super( model, view );
 
-		const contentCollection = this.collections.get( 'content' );
+		this.add( 'content', this._createForm() );
+	}
 
-		contentCollection.add( this._createLabeledInput() );
-		contentCollection.add( this._createButtons() );
+	_createForm() {
+		const formModel = new Model();
+
+		formModel.delegate( 'execute' ).to( this.model );
+
+		/**
+		 * TODO
+		 *
+		 * @member {} todo
+		 */
+		this.form = new Form( formModel, new FormView( this.locale ) );
+		this.form.add( 'content', this._createLabeledInput() );
+		this.form.add( 'content', this._createButtons() );
+
+		return this.form;
 	}
 
 	_createLabeledInput() {
@@ -83,10 +99,9 @@ export default class LinkBalloonPanel extends BalloonPanel {
 			isEnabled: true,
 			isOn: false,
 			label: t( 'Save' ),
-			withText: true
+			withText: true,
+			type: 'submit'
 		} );
-
-		saveModel.delegate( 'execute' ).to( this.model );
 
 		const button = new Button( saveModel, new ButtonView( this.locale ) );
 

@@ -4,7 +4,7 @@
  */
 
 import Template from '../../ui/template.js';
-import BalloonPanelView from './balloonpanelview.js';
+import BalloonPanelView from '../../ui/balloonpanel/balloonpanelview.js';
 
 /**
  * The link balloon panel view class.

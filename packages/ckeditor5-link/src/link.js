@@ -4,9 +4,10 @@
  */
 
 import Feature from '../core/feature.js';
-import Model from '../ui/model.js';
-
 import LinkEngine from './linkengine.js';
+import ClickObserver from '../engine/view/observer/clickobserver.js';
+
+import Model from '../ui/model.js';
 
 import ButtonController from '../ui/button/button.js';
 import ButtonView from '../ui/button/buttonview.js';
@@ -35,10 +36,31 @@ export default class Link extends Feature {
 	 */
 	init() {
 		const editor = this.editor;
-		const t = editor.t;
-		const command = editor.commands.get( 'link' );
+		const viewDocument = editor.editing.view;
+		const linkCommand = editor.commands.get( 'link' );
 
-		this._createBalloonPanel();
+		/**
+		 * @TODO
+		 */
+		this.balloonPanel = this._createBalloonPanel();
+		this._createToolbarLinkButton();
+
+		// Register document click observer
+		viewDocument.addObserver( ClickObserver );
+
+		// Handle click on document and show panel when click target is a link element.
+		viewDocument.on( 'click', () => {
+			if ( viewDocument.selection.isCollapsed && linkCommand.value !== undefined ) {
+				this._attachPanelToElement();
+			}
+		} );
+	}
+
+	_createToolbarLinkButton() {
+		const editor = this.editor;
+		const viewDocument = editor.editing.view;
+		const linkCommand = editor.commands.get( 'link' );
+		const t = editor.t;
 
 		// Create button model.
 		const buttonModel = new Model( {
@@ -48,9 +70,11 @@ export default class Link extends Feature {
 			icon: 'link'
 		} );
 
+		buttonModel.bind( 'url' ).to( linkCommand, 'value' );
+
 		// Show Balloon Panel on button click.
 		this.listenTo( buttonModel, 'execute', () => {
-			if ( !this.editor.editing.view.isFocused ) {
+			if ( !viewDocument.isFocused ) {
 				return;
 			}
 
@@ -59,14 +83,6 @@ export default class Link extends Feature {
 
 		// Add link button to feature components.
 		editor.ui.featureComponents.add( 'link', ButtonController, ButtonView, buttonModel );
-
-		// Show Balloon Panel on click directly on some link element.
-		// @TODO: Get click event from editor instead of DOM.
-		this.editor.ui.editable.view.element.addEventListener( 'click', () => {
-			if ( editor.document.selection.isCollapsed && command.value !== undefined ) {
-				this._attachPanelToElement();
-			}
-		} );
 	}
 
 	/**
@@ -105,69 +121,67 @@ export default class Link extends Feature {
 	 */
 	_createBalloonPanel() {
 		const editor = this.editor;
+		const viewDocument = editor.editing.view;
 		const t = editor.t;
-		const command = this.editor.commands.get( 'link' );
-		const editingView = editor.editing.view;
+		const linkCommand = editor.commands.get( 'link' );
 
 		// Create the model of the panel.
 		const panelModel = new Model( {
 			maxWidth: 300,
-			url: command.value
+			url: linkCommand.value
 		} );
 
 		// Bind panel model to command.
-		panelModel.bind( 'url' ).to( command, 'value' );
+		panelModel.bind( 'url' ).to( linkCommand, 'value' );
 
-		// Observe #execute event from within the model of the panel, which means that
-		// the "Save" button has been clicked.
+		// Create balloon Panel instance.
+		const balloonPanel = new LinkBalloonPanel( panelModel, new LinkBalloonPanelView( editor.locale ) );
+
+		// Observe #execute event from within the model of the panel, which means that the "Save" button has been clicked.
 		this.listenTo( panelModel, 'execute', () => {
-			const urlValue = this.balloonPanel.urlInput.value;
+			const urlValue = balloonPanel.urlInput.value;
 
-			// TODO: validate panelModel#url with some RegExp imported from v4.
+			// TODO: Validate panelModel#url with some RegExp imported from v4.
 			if ( urlValue ) {
-				this.editor.execute( 'link', urlValue );
-				this.balloonPanel.view.hide();
+				editor.execute( 'link', urlValue );
+				balloonPanel.view.hide();
 			} else {
 				window.alert( t( `"${ urlValue }" URL address is incorrect.` ) );
-				this.balloonPanel.urlInput.view.focus();
+				balloonPanel.urlInput.view.focus();
 			}
 		} );
 
-		/**
-		 * TODO
-		 *
-		 * @member {} todo
-		 */
-		this.balloonPanel = new LinkBalloonPanel( panelModel, new LinkBalloonPanelView( editor.locale ) );
+		// Always focus editor on panel hide.
+		this.listenTo( panelModel, 'hide', () => viewDocument.focus() );
 
-		// TODO: It's a lame FocusManager.
-		editingView.on( 'blur', ( evt, domEvtData ) => {
-			if ( domEvtData.domEvent.relatedTarget === this.balloonPanel.urlInput.input.view.element ) {
+		// TODO: Create real focus manager.
+		viewDocument.on( 'focus', () => balloonPanel.view.hide() );
+		viewDocument.on( 'blur', ( evt, domEvtData ) => {
+			if ( domEvtData.domEvent.relatedTarget === balloonPanel.urlInput.input.view.element ) {
 				domEvtData.domEvent.preventDefault();
-			} else {
-				this.balloonPanel.view.hide();
 			}
 		} );
 
-		editor.ui.add( 'body', this.balloonPanel );
+		editor.ui.add( 'body', balloonPanel );
+
+		return balloonPanel;
 	}
 
 	_attachPanelToElement() {
-		// Adjust balloon position.
-		const editingView = this.editor.editing.view;
+		const viewDocument = this.editor.editing.view;
 		const editableViewElement = this.editor.ui.editable.view.element;
-		const firstParent = editingView.selection.getFirstPosition().parent;
-		const firstParentAncestors = firstParent.getAncestors();
-		const anchor = firstParentAncestors.find( ( ancestor ) => ancestor.name === 'a' );
+		const viewSelectionParent = viewDocument.selection.getFirstPosition().parent;
+		const viewSelectionParentAncestors = viewSelectionParent.getAncestors();
+		const linkElement = viewSelectionParentAncestors.find( ( ancestor ) => ancestor.name === 'a' );
 
-		if ( anchor ) {
+		if ( linkElement ) {
 			this.balloonPanel.view.attachTo(
-				editingView.domConverter.getCorrespondingDomElement( anchor ),
+				viewDocument.domConverter.getCorrespondingDomElement( linkElement ),
 				editableViewElement
 			);
 		} else {
 			this.balloonPanel.view.attachTo(
-				editingView.domConverter.viewRangeToDom( editingView.selection.getFirstRange() ),
+				viewDocument.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() ),
 				editableViewElement
 			);
 		}
