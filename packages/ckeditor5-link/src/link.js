@@ -55,6 +55,9 @@ export default class Link extends Feature {
 				this._attachPanelToElement();
 			}
 		} );
+
+		// Handle Ctrl+l keystroke and show panel.
+		editor.keystrokes.set( 'CTRL+l', () => this._attachPanelToElement() );
 	}
 
 	_createToolbarLinkButton() {
