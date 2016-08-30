@@ -65,7 +65,7 @@ import ButtonView from '../ui/button/buttonview.js';
  * delta is undone or reversed, it is "removed" and there should be no sign of it in the history (fig. 1).
  *
  * Notes:
- * 
+ *
  * * `---` symbolizes a removed delta.
  * * `'` symbolizes a reversed delta that was later transformed.
  *
@@ -136,8 +136,8 @@ export default class Undo extends Feature {
 		const editor = this.editor;
 		const t = editor.t;
 
-		this._addButton( 'undo', t( 'Undo' ) );
-		this._addButton( 'redo', t( 'Redo' ) );
+		this._addButton( 'undo', t( 'Undo' ), 'CTRL+Z' );
+		this._addButton( 'redo', t( 'Redo' ), 'CTRL+Y' );
 
 		editor.keystrokes.set( 'CTRL+Z', 'undo' );
 		editor.keystrokes.set( 'CTRL+Y', 'redo' );
@@ -150,8 +150,9 @@ export default class Undo extends Feature {
 	 * @private
 	 * @param {String} name Command name.
 	 * @param {String} label Button label.
+	 * @param {String} keystroke Command keystroke.
 	 */
-	_addButton( name, label ) {
+	_addButton( name, label, keystroke ) {
 		const editor = this.editor;
 
 		const command = editor.commands.get( name );
@@ -159,7 +160,8 @@ export default class Undo extends Feature {
 		const model = new Model( {
 			isOn: false,
 			label: label,
-			icon: name
+			icon: name,
+			keystroke
 		} );
 
 		model.bind( 'isEnabled' ).to( command, 'isEnabled' );
