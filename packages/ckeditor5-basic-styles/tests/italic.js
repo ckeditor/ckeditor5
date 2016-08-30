@@ -72,7 +72,11 @@ describe( 'Italic', () => {
 		expect( model.isEnabled ).to.be.false;
 	} );
 
-	it( 'should set CTRL+I keystroke', () => {
+	it( 'should set keystroke in the model', () => {
+		expect( italicController.model.keystroke ).to.equal( 'CTRL+I' );
+	} );
+
+	it( 'should set editor keystroke', () => {
 		const spy = sinon.spy( editor, 'execute' );
 
 		const wasHandled = editor.keystrokes.press( { keyCode: keyCodes.i, ctrlKey: true } );

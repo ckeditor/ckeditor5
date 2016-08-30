@@ -32,13 +32,15 @@ export default class Bold extends Feature {
 		const editor = this.editor;
 		const t = editor.t;
 		const command = editor.commands.get( 'bold' );
+		const keystroke = 'CTRL+B';
 
 		// Create button model.
 		const buttonModel = new Model( {
 			isEnabled: true,
 			isOn: false,
 			label: t( 'Bold' ),
-			icon: 'bold'
+			icon: 'bold',
+			keystroke
 		} );
 
 		// Bind button model to command.
@@ -51,6 +53,6 @@ export default class Bold extends Feature {
 		editor.ui.featureComponents.add( 'bold', ButtonController, ButtonView, buttonModel );
 
 		// Set the Ctrl+B keystroke.
-		editor.keystrokes.set( 'CTRL+B', 'bold' );
+		editor.keystrokes.set( keystroke, 'bold' );
 	}
 }
