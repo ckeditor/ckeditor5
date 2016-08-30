@@ -4,6 +4,7 @@
  */
 
 import CKEditorError from './ckeditorerror.js';
+import env from './env.js';
 
 /**
  * Set of utils related to keyboard support.
@@ -82,12 +83,32 @@ export function getCode( key ) {
  */
 export function parseKeystroke( keystroke ) {
 	if ( typeof keystroke == 'string' ) {
-		keystroke = keystroke.split( /\s*\+\s*/ );
+		keystroke = splitKeystrokeText( keystroke );
 	}
 
 	return keystroke
 		.map( key => ( typeof key == 'string' ) ? getCode( key ) : key )
 		.reduce( ( key, sum ) => sum + key, 0 );
+}
+
+/**
+ * It translates any keystroke string text like `"CTRL+A"` to an
+ * environment–specific keystroke, i.e. `"⌘A"` on Mac OSX.
+ *
+ * @method utils.keyboard.getEnvKeystrokeText
+ * @param {String} keystroke Keystroke text.
+ * @returns {String} Keystroke text specific for the environment.
+ */
+export function getEnvKeystrokeText( keystroke ) {
+	const split = splitKeystrokeText( keystroke );
+
+	if ( env.mac ) {
+		if ( split[ 0 ].toLowerCase() == 'ctrl' ) {
+			return '⌘' + ( split[ 1 ] || '' );
+		}
+	}
+
+	return keystroke;
 }
 
 function generateKnownKeyCodes() {
@@ -123,6 +144,10 @@ function generateKnownKeyCodes() {
 	}
 
 	return keyCodes;
+}
+
+function splitKeystrokeText( keystroke ) {
+	return keystroke.split( /\s*\+\s*/ );
 }
 
 /**
