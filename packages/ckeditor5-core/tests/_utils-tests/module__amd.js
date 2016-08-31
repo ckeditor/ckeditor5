@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals require, bender, window */
+/* globals bender, window, require:true, define:true */
 
 import testUtils from '/tests/core/_utils/utils.js';
 import moduleTestUtils from '/tests/core/_utils/module.js';
@@ -36,6 +36,10 @@ describe( 'amdTestUtils', () => {
 	describe( 'define()', () => {
 		it( 'defines a module by using global define()', () => {
 			const spy = testUtils.sinon.spy( window, 'define' );
+
+			// Required for Sinon's problems with spies on global objects in Safari.
+			define = window.define;
+
 			const expectedDeps = [ 'exports' ].concat( [ 'bar', 'ckeditor' ].map( getModulePath ) );
 
 			moduleTestUtils.define( 'test1', [ 'bar', 'ckeditor' ], () => {} );
@@ -47,6 +51,10 @@ describe( 'amdTestUtils', () => {
 
 		it( 'maps body args and returned value', () => {
 			const spy = testUtils.sinon.spy( window, 'define' );
+
+			// Required for Sinon's problems with spies on global objects in Safari.
+			define = window.define;
+
 			const bodySpy = sinon.spy( () => 'ret' );
 
 			moduleTestUtils.define( 'test2', [ 'bar', 'ckeditor' ], bodySpy );
@@ -65,6 +73,9 @@ describe( 'amdTestUtils', () => {
 
 		it( 'works with module name and body', () => {
 			const spy = testUtils.sinon.spy( window, 'define' );
+
+			// Required for Sinon's problems with spies on global objects in Safari.
+			define = window.define;
 
 			moduleTestUtils.define( 'test1', () => {} );
 
@@ -97,13 +108,17 @@ describe( 'amdTestUtils', () => {
 
 	describe( 'require', () => {
 		it( 'blocks Bender and loads modules through global require()', () => {
-			let requireCb;
+			let requireCb = () => {};
 			const deferCbSpy = sinon.spy();
 
 			testUtils.sinon.stub( bender, 'defer', () => deferCbSpy );
+
 			testUtils.sinon.stub( window, 'require', ( deps, cb ) => {
 				requireCb = cb;
 			} );
+
+			// Required for Sinon's problems with spies on global objects in Safari.
+			require = window.require;
 
 			const modules = moduleTestUtils.require( { foo: 'foo/oof', bar: 'bar' } );
 
