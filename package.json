@@ -25,6 +25,7 @@
     "requirejs": "Reinmar/requirejs"
   },
   "devDependencies": {
+    "babel-polyfill": "^6.13.0",
     "benderjs": "^0.4.1",
     "benderjs-chai": "^0.2.0",
     "benderjs-coverage": "benderjs/benderjs-coverage#t/4",
