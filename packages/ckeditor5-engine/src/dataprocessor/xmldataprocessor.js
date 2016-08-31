@@ -107,17 +107,17 @@ export default class XmlDataProcessor {
 		// Wrap data into root element with optional namespace definitions.
 		data = `<xml ${ namespaces }>${ data }</xml>`;
 
-		const document = this._domParser.parseFromString( data, 'text/xml' );
+		const parsedDocument = this._domParser.parseFromString( data, 'text/xml' );
 
 		// Parse validation.
-		const parserError = document.querySelector( 'parsererror' );
+		const parserError = parsedDocument.querySelector( 'parsererror' );
 
 		if ( parserError ) {
 			throw new Error( 'Parse error - ' + parserError.textContent );
 		}
 
-		const fragment = document.createDocumentFragment();
-		const nodes = document.documentElement.childNodes;
+		const fragment = parsedDocument.createDocumentFragment();
+		const nodes = parsedDocument.documentElement.childNodes;
 
 		while ( nodes.length > 0 ) {
 			fragment.appendChild( nodes[ 0 ] );
