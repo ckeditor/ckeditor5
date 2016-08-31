@@ -113,7 +113,7 @@ export default class XmlDataProcessor {
 		const parserError = document.querySelector( 'parsererror' );
 
 		if ( parserError ) {
-			throw new Error( 'Parse error - ' + parserError.querySelector( 'div' ).textContent );
+			throw new Error( 'Parse error - ' + parserError.textContent );
 		}
 
 		const fragment = document.createDocumentFragment();
