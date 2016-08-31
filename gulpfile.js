@@ -142,10 +142,18 @@ gulp.task( 'compile:bundled-sample-tests:build-editors',
 
 // Documentation. -------------------------------------------------------------
 
-const docsBuilder = require( '@ckeditor/ckeditor5-dev-docs' )( config );
+const ckeditor5DevDocs = require( '@ckeditor/ckeditor5-dev-docs' );
+const docsBuilder = ckeditor5DevDocs.docs( config );
 
-gulp.task( 'docs', [ 'compile:js:esnext', 'docs:prepare' ], docsBuilder.buildDocs );
-gulp.task( 'docs:prepare', docsBuilder.collectDocumentationFiles );
+gulp.task( 'docs', [ 'compile:js:esnext', 'docs:prepare-files', 'docs:editors' ], docsBuilder.buildDocs );
+
+// Collect documentation files.
+gulp.task( 'docs:prepare-files:clean', docsBuilder.removeDocumentationFiles );
+gulp.task( 'docs:prepare-files', [ 'docs:prepare-files:clean' ], docsBuilder.collectDocumentationFiles );
+
+// Build editors for samples.
+gulp.task( 'docs:editors:clean', docsBuilder.removeBuiltEditors );
+gulp.task( 'docs:editors', [ 'docs:editors:clean', 'compile:js:esnext' ], docsBuilder.buildSamplesEditors );
 
 // Testing. -------------------------------------------------------------------
 
