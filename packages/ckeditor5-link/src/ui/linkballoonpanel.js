@@ -17,12 +17,22 @@ import BoxView from '../../ui/box/boxview.js';
 /**
  * The link balloon panel controller class.
  *
+ * 		const model = new Model( {
+ *			maxWidth: 300,
+ *			url: 'http://ckeditor.com'
+ *		} );
+ *
+ *		// An instance of LinkBalloonPanel.
+ *		new LinkBalloonPanel( model, new LinkBalloonPanelView() );
+ *
+ * See {@link link.ui.LinkBalloonPanelView}.
+ *
  * @memberOf link.ui
- * @extends ui.Controller
+ * @extends ui.balloonPanel.BalloonPanel
  */
 export default class LinkBalloonPanel extends BalloonPanel {
 	/**
-	 * Creates an instance of {@link ui.dropdown.Dropdown} class.
+	 * Creates an instance of {@link link.ui.LinkBalloonPanel} class.
 	 *
 	 * @param {ui.balloonPanel.BalloonPanelModel} model Model of this balloon panel.
 	 * @param {ui.View} view View of this balloon panel.
@@ -33,23 +43,37 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		this.add( 'content', this._createForm() );
 	}
 
+	/**
+	 * Initialize {@link ui.form.Form Form} component with input and buttons.
+	 *
+	 * @private
+	 * @returns {ui.form.Form} Form component.
+	 */
 	_createForm() {
 		const formModel = new Model();
 
 		formModel.delegate( 'execute' ).to( this.model );
 
 		/**
-		 * TODO
+		 * Instance of {@link ui.form.Form Form} component.
 		 *
-		 * @member {} todo
+		 * @member {ui.form.Form} link.ui.LinkBalloonPanel#form
 		 */
 		this.form = new Form( formModel, new FormView( this.locale ) );
+
+		// Add Input and buttons as a form content.
 		this.form.add( 'content', this._createLabeledInput() );
 		this.form.add( 'content', this._createButtons() );
 
 		return this.form;
 	}
 
+	/**
+	 * Initialize {@link ui.input.LabeledInput LabeledInput} for providing `href` value.
+	 *
+	 * @private
+	 * @returns {ui.input.LabeledInput} Labeled input component.
+	 */
 	_createLabeledInput() {
 		const t = this.view.t;
 		const model = new Model( {
@@ -59,40 +83,53 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		model.bind( 'value' ).to( this.model, 'url' );
 
 		/**
-		 * TODO
+		 * Input component for providing `href` value.
 		 *
-		 * @member {} todo
+		 * @member {ui.input.LabeledInput} link.ui.LinkBalloonPanel#urlInput
 		 */
 		this.urlInput = new LabeledInput( model, new LabeledInputView( this.locale ) );
 
 		return this.urlInput;
 	}
 
+	/**
+	 * Create {@link ui.box.Box Box} instance with `Cancel` and `Save` buttons.
+	 *
+	 * @private
+	 * @returns {ui.box.Box} Box component.
+	 */
 	_createButtons() {
 		const box = new Box( new Model( {
 			alignRight: true
 		} ), new BoxView( this.locale ) );
 
 		/**
-		 * TODO
+		 * Button component for submitting form.
 		 *
-		 * @member {} todo
+		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#saveButton
 		 */
 		this.saveButton = this._createSaveButton();
 
 		/**
-		 * TODO
+		 * Button component for canceling form.
 		 *
-		 * @member {} todo
+		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#cancelButton
 		 */
 		this.cancelButton = this._createCancelButton();
 
+		// Add `Cancel` and `Save` buttons as a box content.
 		box.add( 'content', this.cancelButton );
 		box.add( 'content', this.saveButton );
 
 		return box;
 	}
 
+	/**
+	 * Initialize {@link ui.button.Button Button} for submitting form.
+	 *
+	 * @private
+	 * @returns {ui.button.Button} Save button component.
+	 */
 	_createSaveButton() {
 		const t = this.view.t;
 		const saveModel = new Model( {
@@ -110,6 +147,12 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		return button;
 	}
 
+	/**
+	 * Initialize {@link ui.button.Button Button} for canceling form.
+	 *
+	 * @private
+	 * @returns {ui.button.Button} Cancel button component.
+	 */
 	_createCancelButton() {
 		const t = this.view.t;
 		const cancelModel = new Model( {
