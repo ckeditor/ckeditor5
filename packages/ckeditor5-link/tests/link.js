@@ -4,7 +4,7 @@
  */
 
 /* globals document */
-/* bender-tags: link */
+/* bender-tags: link, browser-only */
 
 import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
 import testUtils from '/tests/core/_utils/utils.js';

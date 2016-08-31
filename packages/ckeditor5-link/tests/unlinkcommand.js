@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
+/* bender-tags: link */
+
 import ModelTestEditor from '/tests/core/_utils/modeltesteditor.js';
 import UnlinkCommand from '/ckeditor5/link/unlinkcommand.js';
 import { setData, getData } from '/tests/engine/_utils/model.js';
-
-/* bender-tags: link */
 
 describe( 'UnlinkCommand', () => {
 	let editor, document, command;

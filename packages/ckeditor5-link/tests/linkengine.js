@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
+/* bender-tags: link */
+
 import LinkEngine from '/ckeditor5/link/linkengine.js';
 import LinkCommand from '/ckeditor5/link/linkcommand.js';
 import UnlinkCommand from '/ckeditor5/link/unlinkcommand.js';
 import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
 import { getData as getModelData, setData as setModelData } from '/tests/engine/_utils/model.js';
 import { getData as getViewData } from '/tests/engine/_utils/view.js';
-
-/* bender-tags: link */
 
 describe( 'LinkEngine', () => {
 	let editor, doc;
