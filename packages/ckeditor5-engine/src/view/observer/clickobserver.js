@@ -9,6 +9,7 @@ import DomEventObserver from './domeventobserver.js';
  * {@link engine.view.Document#click Click} event observer.
  *
  * Note that this observer is not attached by the {@link engine.view.Document} and is not available by default.
+ * To make it available it needs to be added to {@link engine.view.Document} by {@link engine.view.Document#addObserver} method.
  *
  * @memberOf engine.view.observer
  * @extends engine.view.observer.DomEventObserver
