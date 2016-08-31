@@ -170,8 +170,8 @@ gulp.task( 'docs:editors', [ 'docs:editors:clean', 'compile:js:esnext' ], docsBu
  * @returns {Stream}
  */
 function buildEditorsForSamples() {
-	const { utils: compilerUtils } = require( '@ckeditor/ckeditor5-dev-compiler' );
 	const { stream, tools } = require( '@ckeditor/ckeditor5-dev-utils' );
+	const { utils: docsUtils } = require( '@ckeditor/ckeditor5-dev-docs' );
 
 	const gulpFilter = require( 'gulp-filter' );
 	const gulpRename = require( 'gulp-rename' );
@@ -179,31 +179,14 @@ function buildEditorsForSamples() {
 
 	const bundleDir = path.join( config.ROOT_DIR, config.BUNDLE_DIR );
 
-	return compilerUtils.getFilesStream( config.ROOT_DIR, config.DOCUMENTATION.SAMPLES )
+	return docsUtils.getSamplesStream( config.ROOT_DIR, config.DOCUMENTATION.SAMPLES )
 		.pipe( gulpFilter( ( file ) => path.extname( file.path ) === '.js' ) )
 		.pipe( gulpRename( ( file ) => {
 			file.dirname = file.dirname.replace( '/docs/samples', '' );
 		} ) )
 		.pipe( stream.noop( ( file ) => {
-			const contents = file.contents.toString( 'utf-8' );
-			const bundleConfig = {};
-
-			// Prepare the config based on sample.
-
-			bundleConfig.format = 'iife';
-
-			// Find `moduleName` from line which ends with "// editor:name".
-			bundleConfig.moduleName = contents.match( /([a-z]+)\.create(.*)\/\/ ?editor:name/i )[ 1 ];
-
-			// Find `editor` from line which ends with "// editor:module".
-			bundleConfig.editor = contents.match( /([-a-z0-9]+\/[-a-z0-9]+)(\.js)?'; ?\/\/ ?editor:module/i )[ 1 ];
-
-			// Find `features` from line which ends with "// editor:features".
-			bundleConfig.features = contents.match( /(\[[^\]]+\]),? ?\/\/ ?(.*)editor:features/i )[ 1 ]
-				.match( /([a-z-\/]+)/gi );
-
-			// Extract `path` from Sample's path.
-			bundleConfig.path = file.path.match( /ckeditor5-(.*)\.js$/ )[ 1 ];
+			const bundleConfig = docsUtils.getBundlerConfigFromSample( file.contents );
+			bundleConfig.path = file.path.match( /\/samples\/(.*)\.js$/ )[ 1 ];
 
 			const splitPath = bundleConfig.path.split( path.sep );
 			const packageName = splitPath[ 0 ];
@@ -229,8 +212,8 @@ function buildEditorsForSamples() {
 
 					// Copy editor builds to proper directory.
 					return Promise.all( [
-						tools.copyFile( `${ builtEditorPath }.js`, destinationPath ),
-						tools.copyFile( `${ builtEditorPath }.css`, destinationPath )
+						tools.copyFile( `${ builtEditorPath }.js`, `${ destinationPath }.js` ),
+						tools.copyFile( `${ builtEditorPath }.css`, `${ destinationPath }.css` )
 					] );
 				} )
 				// And clean up.
