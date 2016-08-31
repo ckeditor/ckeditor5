@@ -9,6 +9,8 @@ import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import { setData } from '/tests/engine/_utils/model.js';
 
+/* bender-tags: link */
+
 describe( 'findLinkRange', () => {
 	let document, root;
 
