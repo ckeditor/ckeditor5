@@ -185,7 +185,8 @@ function buildEditorsForSamples() {
 			file.dirname = file.dirname.replace( '/docs/samples', '' );
 		} ) )
 		.pipe( stream.noop( ( file ) => {
-			const bundleConfig = docsUtils.getBundlerConfigFromSample( file.contents );
+			const bundleConfig = docsUtils.getBundlerConfigFromSample( file.contents.toString( 'utf-8' ) );
+			bundleConfig.format = 'iife';
 			bundleConfig.path = file.path.match( /\/samples\/(.*)\.js$/ )[ 1 ];
 
 			const splitPath = bundleConfig.path.split( path.sep );
