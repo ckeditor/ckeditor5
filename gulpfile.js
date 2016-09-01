@@ -128,17 +128,6 @@ gulp.task( 'bundle:generate',
 	ckeditor5DevBundler.generateFromConfig
 );
 
-const ckeditor5DevTests = require( '@ckeditor/ckeditor5-dev-tests' )( config );
-
-// Task specific for building editors for testing releases.
-gulp.task( 'compile:bundled-sample-tests:build-editors',
-	[
-		'compile:js:esnext',
-		'compile:themes:esnext'
-	],
-	ckeditor5DevTests.buildEditorsForSamples
-);
-
 // Documentation. -------------------------------------------------------------
 
 const docsBuilder = ckeditor5DevCompiler.docs( config );

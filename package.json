@@ -29,7 +29,6 @@
     "@ckeditor/ckeditor5-dev-compiler": "ckeditor/ckeditor5-dev-compiler",
     "@ckeditor/ckeditor5-dev-env": "^1.0.0",
     "@ckeditor/ckeditor5-dev-lint": "^1.0.1",
-    "@ckeditor/ckeditor5-dev-tests": "ckeditor/ckeditor5-dev-tests",
     "@ckeditor/ckeditor5-dev-utils": "ckeditor/ckeditor5-dev-utils",
     "babel-polyfill": "^6.13.0",
     "benderjs": "^0.4.1",
