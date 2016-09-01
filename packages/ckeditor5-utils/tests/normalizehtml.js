@@ -8,50 +8,50 @@ import normalizeHtml from '/ckeditor5/utils/normalizehtml.js';
 describe( 'utils', () => {
 	describe( 'normalizeHtml', () => {
 		it( 'should sort attributes', () => {
-			let actual = '<a style="border:1px;" class="" href="file://"></a>';
-			let expected = '<a class="" href="file://" style="border:1px;"></a>';
+			const actual = '<a style="border:1px;" class="" href="file://"></a>';
+			const expected = '<a class="" href="file://" style="border:1px;"></a>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
 
 		it( 'should normalize styles', () => {
-			let actual = '<a style="border:1px"></a>';
-			let expected = '<a style="border:1px;"></a>';
+			const actual = '<a style="border:1px"></a>';
+			const expected = '<a style="border:1px;"></a>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
 
 		it( 'should lowercase attributes', () => {
-			let actual = '<A CLASS="" HREF="file://" STYLE="border:1px;"></A>';
-			let expected = '<a class="" href="file://" style="border:1px;"></a>';
+			const actual = '<A CLASS="" HREF="file://" STYLE="border:1px;"></A>';
+			const expected = '<a class="" href="file://" style="border:1px;"></a>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
 
 		it( 'should trim whitespace', () => {
-			let actual = '<a class="  " href="file://"      style="border:  1px"></a>';
-			let expected = '<a class="" href="file://" style="border:1px;"></a>';
+			const actual = '<a class="  " href="file://"      style="border:  1px"></a>';
+			const expected = '<a class="" href="file://" style="border:1px;"></a>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
 
 		it( 'should remove empty style attribute', () => {
-			let actual = '<a style=""></a>';
-			let expected = '<a></a>';
+			const actual = '<a style=""></a>';
+			const expected = '<a></a>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
 
 		it( 'should leave empty class attribute', () => {
-			let actual = '<p class=""></p>';
-			let expected = '<p class=""></p>';
+			const actual = '<p class=""></p>';
+			const expected = '<p class=""></p>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
 
 		it( 'should not sort attribute value', () => {
-			let actual = '<a class="b c a"></a>';
-			let expected = actual;
+			const actual = '<a class="b c a"></a>';
+			const expected = actual;
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
