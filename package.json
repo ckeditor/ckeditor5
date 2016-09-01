@@ -38,8 +38,6 @@
     "benderjs-promise": "^0.1.0",
     "benderjs-sinon": "^0.3.0",
     "gulp": "^3.9.0",
-    "gulp-filter": "^4.0.0",
-    "gulp-rename": "^1.2.2",
     "guppy-pre-commit": "^0.3.0",
     "run-sequence": "^1.1.5"
   },
