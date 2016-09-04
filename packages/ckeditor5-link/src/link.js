@@ -218,7 +218,8 @@ export default class Link extends Feature {
 	 */
 	_attachPanelToElement() {
 		const viewDocument = this.editor.editing.view;
-		const editableViewElement = this.editor.ui.editable.view.element;
+		const domEditableElement = viewDocument.domConverter.getCorrespondingDomElement( viewDocument.selection.editableElement );
+
 		const viewSelectionParent = viewDocument.selection.getFirstPosition().parent;
 		const viewSelectionParentAncestors = viewSelectionParent.getAncestors();
 		const linkElement = viewSelectionParentAncestors.find( ( ancestor ) => ancestor.name === 'a' );
@@ -227,14 +228,14 @@ export default class Link extends Feature {
 		if ( linkElement ) {
 			this.balloonPanel.view.attachTo(
 				viewDocument.domConverter.getCorrespondingDomElement( linkElement ),
-				editableViewElement
+				domEditableElement
 			);
 		}
 		// Otherwise attach panel to the selection.
 		else {
 			this.balloonPanel.view.attachTo(
 				viewDocument.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() ),
-				editableViewElement
+				domEditableElement
 			);
 		}
 

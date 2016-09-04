@@ -9,13 +9,12 @@
 import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
 import testUtils from '/tests/core/_utils/utils.js';
 import { keyCodes } from '/ckeditor5/utils/keyboard.js';
+import { setData as setModelData } from '/tests/engine/_utils/model.js';
 
 import Link from '/ckeditor5/link/link.js';
 import LinkEngine from '/ckeditor5/link/linkengine.js';
 import Button from '/ckeditor5/ui/button/button.js';
 import LinkBalloonPanel from '/ckeditor5/link/ui/linkballoonpanel.js';
-
-import Range from '/ckeditor5/engine/model/range.js';
 
 import ClickObserver from '/ckeditor5/engine/view/observer/clickobserver.js';
 
@@ -73,7 +72,7 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should open panel on linkButton#model execute event, when editor is focused', () => {
-			editor.editing.view.focus();
+			editor.editing.view.isFocused = true;
 
 			linkButton.model.fire( 'execute' );
 
@@ -171,14 +170,11 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should show panel on editor click, when selection is inside link element', () => {
-			const modelRoot = editor.document.getRoot();
 			const observer = editor.editing.view.getObserver( ClickObserver );
 			const linkCommand = editor.commands.get( 'link' );
 
-			// Insert link element to document and put selection inside this element `<a href="url">so{}me url</a>`.
 			editor.document.schema.allow( { name: '$text', inside: '$root' } );
-			editor.setData( '<a href="url">some url</a>' );
-			editor.document.selection.setRanges( [ Range.createFromParentsAndOffsets( modelRoot, 2, modelRoot, 2 ) ] );
+			setModelData( editor.document, '<$text linkHref="url">some[] url</$text>' );
 			linkCommand.value = 'url';
 
 			observer.fire( 'click', { target: document.body } );
@@ -187,10 +183,9 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should not show panel on editor click, when selection is not inside link element', () => {
-			const modelRoot = editor.document.getRoot();
 			const observer = editor.editing.view.getObserver( ClickObserver );
 
-			editor.document.selection.setRanges( [ Range.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 0 ) ] );
+			setModelData( editor.document, '[]' );
 
 			observer.fire( 'click', { target: document.body } );
 
