@@ -11,7 +11,7 @@ import count from '../utils/count.js';
  *
  * Batches represent single undo steps, hence changes added to one single batch are undone together.
  *
- * The buffer has a configurable limit of atomic changes that it can accomodate. After the limit was
+ * The buffer has a configurable limit of atomic changes that it can accommodate. After the limit was
  * exceeded (see {@link typing.ChangeBuffer#input}), a new batch is created in {@link typing.ChangeBuffer#batch}.
  *
  * To use the change buffer you need to let it know about the number of changes that were added to the batch:
