@@ -78,7 +78,7 @@ describe( 'LinkBalloonPanel', () => {
 					expect( linkBalloonPanel.saveButton ).to.instanceof( Button );
 				} );
 
-				it( 'should trigger model#execute event after clicking', ( done ) => {
+				it( 'should fire model#execute event on DOM click event', ( done ) => {
 					const executeSpy = sinon.spy();
 
 					model.on( 'execute', executeSpy );
@@ -107,6 +107,22 @@ describe( 'LinkBalloonPanel', () => {
 					linkBalloonPanel.cancelButton.model.fire( 'execute' );
 
 					expect( hideSpy.calledOnce ).to.true;
+				} );
+			} );
+
+			describe( 'unlinkButton', () => {
+				it( 'should create Button instance', () => {
+					expect( linkBalloonPanel.unlinkButton ).to.instanceof( Button );
+				} );
+
+				it( 'should fire model#execute-unlink event on unlinkButton.model#execute event', () => {
+					const executeUnlinkSpy = sinon.spy();
+
+					model.on( 'execute-unlink', executeUnlinkSpy );
+
+					linkBalloonPanel.unlinkButton.model.fire( 'execute' );
+
+					expect( executeUnlinkSpy.calledOnce ).to.true;
 				} );
 			} );
 		} );

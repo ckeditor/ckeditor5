@@ -3,4 +3,21 @@
 
 .ck-link-balloon-panel {
 	padding: ck-spacing();
+
+	// Box to accommodate buttons.
+	&_actions {
+		display: flex;
+		flex-direction: row-reverse;
+		padding-top: ck-spacing();
+
+		.ck-button {
+			& + .ck-button {
+				margin-right: ck-spacing( 'medium' );
+			}
+		}
+
+		.ck-box {
+			flex-grow: 2;
+		}
+	}
 }

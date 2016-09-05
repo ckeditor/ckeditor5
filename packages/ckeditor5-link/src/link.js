@@ -186,6 +186,13 @@ export default class Link extends Feature {
 			balloonPanel.view.hide();
 		} );
 
+		// Observe `LinkBalloonPanelMode#execute-unlink` event from within the model of the panel,
+		// which means that the `Unlink` button has been clicked.
+		this.listenTo( panelModel, 'execute-unlink', () => {
+			editor.execute( 'unlink' );
+			balloonPanel.view.hide();
+		} );
+
 		// Always focus editor on panel hide.
 		this.listenTo( panelModel, 'hide', () => viewDocument.focus() );
 

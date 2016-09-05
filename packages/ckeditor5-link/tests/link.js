@@ -174,6 +174,31 @@ describe( 'Link', () => {
 			expect( executeSpy.calledWithExactly( 'link', 'http://cksource.com' ) ).to.true;
 		} );
 
+		it( 'should hide balloon panel on balloonPanel#model execute event', () => {
+			const hideSpy = testUtils.sinon.spy( balloonPanel.view, 'hide' );
+
+			balloonPanel.model.fire( 'execute' );
+
+			expect( hideSpy.calledOnce ).to.true;
+		} );
+
+		it( 'should execute unlink command on balloonPanel#model execute-unlink event', () => {
+			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+
+			balloonPanel.model.fire( 'execute-unlink' );
+
+			expect( executeSpy.calledOnce ).to.true;
+			expect( executeSpy.calledWithExactly( 'unlink' ) ).to.true;
+		} );
+
+		it( 'should hide balloon panel on balloonPanel#model execute-unlink event', () => {
+			const hideSpy = testUtils.sinon.spy( balloonPanel.view, 'hide' );
+
+			balloonPanel.model.fire( 'execute-unlink' );
+
+			expect( hideSpy.calledOnce ).to.true;
+		} );
+
 		it( 'should append panel element to the body', () => {
 			expect( document.body.contains( balloonPanel.view.element ) );
 		} );

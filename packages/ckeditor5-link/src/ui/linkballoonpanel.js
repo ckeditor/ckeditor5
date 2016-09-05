@@ -99,9 +99,12 @@ export default class LinkBalloonPanel extends BalloonPanel {
 	 * @returns {ui.box.Box} Box component.
 	 */
 	_createButtons() {
-		const box = new Box( new Model( {
-			alignRight: true
+		const wrapper = new Box( new Model( {
+			alignContent: 'right'
 		} ), new BoxView( this.locale ) );
+		wrapper.view.element.classList.add( 'ck-link-balloon-panel_actions' );
+
+		const additionalActions = new Box( new Model(), new BoxView( this.locale ) );
 
 		/**
 		 * Button component for submitting form.
@@ -117,11 +120,23 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		 */
 		this.cancelButton = this._createCancelButton();
 
-		// Add `Cancel` and `Save` buttons as a box content.
-		box.add( 'content', this.cancelButton );
-		box.add( 'content', this.saveButton );
+		/**
+		 * Button component for unlinking.
+		 *
+		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#unlinkButton
+		 */
+		this.unlinkButton = this._createUnlinkButton();
 
-		return box;
+		// Add `Save`, `Cancel` and `Unlink` buttons as a wrapper content.
+		wrapper.add( 'content', this.saveButton );
+		wrapper.add( 'content', this.cancelButton );
+
+		// Append Unlink button into additional action box.
+		additionalActions.add( 'content', this.unlinkButton );
+
+		wrapper.add( 'content', additionalActions );
+
+		return wrapper;
 	}
 
 	/**
@@ -165,5 +180,29 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		cancelModel.on( 'execute', () => this.view.hide() );
 
 		return new Button( cancelModel, new ButtonView( this.locale ) );
+	}
+
+	/**
+	 * Initialize {@link ui.button.Button Button} for unlinking command.
+	 *
+	 * @private
+	 * @returns {ui.button.Button} Unlink button component.
+	 */
+	_createUnlinkButton() {
+		const t = this.view.t;
+		const unlinkModel = new Model( {
+			isEnabled: true,
+			isOn: false,
+			label: t( 'Unlink' ),
+			withText: true
+		} );
+
+		unlinkModel.on( 'execute', () => this.model.fire( 'execute-unlink' ) );
+
+		const button = new Button( unlinkModel, new ButtonView( this.locale ) );
+
+		button.view.element.classList.add( 'ck-button-action' );
+
+		return button;
 	}
 }
