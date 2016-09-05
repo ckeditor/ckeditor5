@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: link */
-
 import LinkEngine from '/ckeditor5/link/linkengine.js';
 import LinkCommand from '/ckeditor5/link/linkcommand.js';
 import UnlinkCommand from '/ckeditor5/link/unlinkcommand.js';

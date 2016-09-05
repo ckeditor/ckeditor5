@@ -72,9 +72,10 @@ export default class Link extends Feature {
 			icon: 'link'
 		} );
 
+		// Bind button model to command.
 		linkButtonModel.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
-		// Show Balloon Panel on button click.
+		// Show Balloon Panel on button click only when editor is focused.
 		this.listenTo( linkButtonModel, 'execute', () => {
 			if ( !viewDocument.isFocused ) {
 				return;
@@ -108,7 +109,7 @@ export default class Link extends Feature {
 		// Bind button model to command.
 		unlinkButtonModel.bind( 'isEnabled' ).to( unlinkCommand, 'hasValue' );
 
-		// Execute command.
+		// Execute unlink command and hide panel if is opened.
 		this.listenTo( unlinkButtonModel, 'execute', () => {
 			editor.execute( 'unlink' );
 
@@ -117,7 +118,7 @@ export default class Link extends Feature {
 			}
 		} );
 
-		// Add link button to feature components.
+		// Add unlink button to feature components.
 		editor.ui.featureComponents.add( 'unlink', ButtonController, ButtonView, unlinkButtonModel );
 	}
 
@@ -174,11 +175,11 @@ export default class Link extends Feature {
 		// Bind panel model to command.
 		panelModel.bind( 'url' ).to( linkCommand, 'value' );
 
-		// Create balloon Panel instance.
+		// Create Balloon panel instance.
 		const balloonPanel = new LinkBalloonPanel( panelModel, new LinkBalloonPanelView( editor.locale ) );
 
 		// Observe `LinkBalloonPanelMode#execute` event from within the model of the panel,
-		// which means that the "Save" button has been clicked.
+		// which means that the `Save` button has been clicked.
 		this.listenTo( panelModel, 'execute', () => {
 			editor.execute( 'link', balloonPanel.urlInput.value );
 			balloonPanel.view.hide();
@@ -191,7 +192,7 @@ export default class Link extends Feature {
 		// @TODO replace it by some FocusManager.
 		viewDocument.on( 'focus', () => balloonPanel.view.hide() );
 
-		// Handle click on document and show panel when selection is placed in in link element.
+		// Handle click on document and show panel when selection is placed in the link element.
 		viewDocument.on( 'click', () => {
 			if ( viewDocument.selection.isCollapsed && linkCommand.value !== undefined ) {
 				this._attachPanelToElement();
