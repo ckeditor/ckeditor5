@@ -20,16 +20,18 @@ import ClickObserver from '/ckeditor5/engine/view/observer/clickobserver.js';
 testUtils.createSinonSandbox();
 
 describe( 'Link', () => {
-	let editor, linkFeature, linkButton, unlinkButton, balloonPanel;
+	let editor, linkFeature, linkButton, unlinkButton, balloonPanel, editorElement;
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
+		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
 			features: [ Link ]
 		} )
 			.then( newEditor => {
+				newEditor.editing.view.attachDomRoot( editorElement );
+
 				editor = newEditor;
 
 				linkFeature = editor.plugins.get( Link );
@@ -83,6 +85,34 @@ describe( 'Link', () => {
 
 			expect( linkFeature.balloonPanel.view.isVisible ).to.false;
 		} );
+
+		it( 'should open panel attached to the link element, when collapsed selection is inside link element', () => {
+			const attachToSpy = sinon.spy( balloonPanel.view, 'attachTo' );
+
+			editor.document.schema.allow( { name: '$text', inside: '$root' } );
+			setModelData( editor.document, '<$text linkHref="url">some[] url</$text>' );
+			editor.editing.view.isFocused = true;
+
+			linkButton.model.fire( 'execute' );
+
+			const linkElement = editorElement.querySelector( 'a' );
+
+			expect( attachToSpy.calledWithExactly( linkElement, editorElement ) ).to.true;
+		} );
+
+		it( 'should open panel attached to the selection, when there is non-collapsed selection', () => {
+			const attachToSpy = sinon.spy( balloonPanel.view, 'attachTo' );
+
+			editor.document.schema.allow( { name: '$text', inside: '$root' } );
+			setModelData( editor.document, 'so[me ur]l' );
+			editor.editing.view.isFocused = true;
+
+			linkButton.model.fire( 'execute' );
+
+			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
+
+			expect( attachToSpy.calledWithExactly( selectedRange, editorElement ) ).to.true;
+		} );
 	} );
 
 	describe( 'unlink toolbar button', () => {
@@ -118,7 +148,7 @@ describe( 'Link', () => {
 		} );
 	} );
 
-	describe( 'link panel', () => {
+	describe( 'link balloon panel', () => {
 		it( 'should create LinkBalloonPanel component', () => {
 			expect( balloonPanel ).to.instanceOf( LinkBalloonPanel );
 		} );
@@ -155,33 +185,33 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should focus editor on balloonPanel#model hide event', () => {
+			const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+
 			balloonPanel.model.fire( 'hide' );
 
-			expect( editor.editing.view.isFocused ).to.true;
+			expect( focusSpy.calledOnce ).to.true;
 		} );
 
 		it( 'should hide panel on editor focus event', () => {
 			balloonPanel.view.model.isVisible = true;
 
-			editor.editing.view.focus();
+			editor.editing.view.fire( 'focus' );
 
 			expect( balloonPanel.view.model.isVisible ).to.false;
 		} );
 
-		it( 'should show panel on editor click, when selection is inside link element', () => {
+		it( 'should open panel on editor click, when selection is inside link element', () => {
 			const observer = editor.editing.view.getObserver( ClickObserver );
-			const linkCommand = editor.commands.get( 'link' );
 
 			editor.document.schema.allow( { name: '$text', inside: '$root' } );
 			setModelData( editor.document, '<$text linkHref="url">some[] url</$text>' );
-			linkCommand.value = 'url';
 
 			observer.fire( 'click', { target: document.body } );
 
 			expect( balloonPanel.view.model.isVisible ).to.true;
 		} );
 
-		it( 'should not show panel on editor click, when selection is not inside link element', () => {
+		it( 'should not open panel on editor click, when selection is not inside link element', () => {
 			const observer = editor.editing.view.getObserver( ClickObserver );
 
 			setModelData( editor.document, '[]' );
