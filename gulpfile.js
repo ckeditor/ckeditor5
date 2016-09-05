@@ -131,14 +131,7 @@ gulp.task( 'bundle:generate',
 	ckeditor5DevBundler.generateFromConfig
 );
 
-// Task specific for building editors for testing releases.
-gulp.task( 'compile:bundled-sample-tests:build-editors',
-	[
-		'compile:js:esnext',
-		'compile:themes:esnext'
-	],
-	buildEditorsForSamples
-);
+// Documentation. -------------------------------------------------------------
 
 // Documentation. -------------------------------------------------------------
 
@@ -154,70 +147,3 @@ gulp.task( 'docs:prepare-files', [ 'docs:prepare-files:clean' ], docsBuilder.col
 // Build editors for samples.
 gulp.task( 'docs:editors:clean', docsBuilder.removeBuiltEditors );
 gulp.task( 'docs:editors', [ 'docs:editors:clean', 'compile:js:esnext' ], docsBuilder.buildSamplesEditors );
-
-// Testing. -------------------------------------------------------------------
-
-// TODO The below code is here only temporarily. It will be extracted to a separate package
-// once we'll understand better where it should belong. Right now it's somewhere beyond testing
-// environment, compilation and documentation.
-
-/**
- * Prepares configurations for bundler based on sample files and builds editors
- * based on prepared configuration.
- *
- * You can find more details in: https://github.com/ckeditor/ckeditor5/issues/260
- *
- * @returns {Stream}
- */
-function buildEditorsForSamples() {
-	const { stream, tools } = require( '@ckeditor/ckeditor5-dev-utils' );
-	const { utils: docsUtils } = require( '@ckeditor/ckeditor5-dev-docs' );
-
-	const gulpFilter = require( 'gulp-filter' );
-	const gulpRename = require( 'gulp-rename' );
-	const path = require( 'path' );
-
-	const bundleDir = path.join( config.ROOT_DIR, config.BUNDLE_DIR );
-
-	return docsUtils.getSamplesStream( config.ROOT_DIR, config.DOCUMENTATION.SAMPLES )
-		.pipe( gulpFilter( ( file ) => path.extname( file.path ) === '.js' ) )
-		.pipe( gulpRename( ( file ) => {
-			file.dirname = file.dirname.replace( '/docs/samples', '' );
-		} ) )
-		.pipe( stream.noop( ( file ) => {
-			const bundleConfig = docsUtils.getBundlerConfigFromSample( file.contents.toString( 'utf-8' ) );
-			bundleConfig.format = 'iife';
-			bundleConfig.path = file.path.match( /\/samples\/(.*)\.js$/ )[ 1 ];
-
-			const splitPath = bundleConfig.path.split( path.sep );
-			const packageName = splitPath[ 0 ];
-
-			// Clean the output paths.
-			return ckeditor5DevBundler.clean( bundleConfig )
-				// Then bundle a editor.
-				.then( () => ckeditor5DevBundler.generate( bundleConfig ) )
-				// Then copy created files.
-				.then( () => {
-					const beginPath = splitPath.slice( 1, -1 ).join( path.sep ) || '.';
-					const fileName = splitPath.slice( -1 ).join();
-					const builtEditorPath = path.join( bundleDir, bundleConfig.path, bundleConfig.moduleName );
-					const destinationPath = path.join.apply( null, [
-						config.MODULE_DIR.amd,
-						'tests',
-						packageName,
-						'samples',
-						beginPath,
-						'_assets',
-						fileName
-					] );
-
-					// Copy editor builds to proper directory.
-					return Promise.all( [
-						tools.copyFile( `${ builtEditorPath }.js`, `${ destinationPath }.js` ),
-						tools.copyFile( `${ builtEditorPath }.css`, `${ destinationPath }.css` )
-					] );
-				} )
-				// And clean up.
-				.then( () => tools.clean( path.join( config.BUNDLE_DIR, packageName, '..' ), packageName ) );
-		} ) );
-}
