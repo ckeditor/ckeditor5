@@ -138,7 +138,11 @@ gulp.task( 'bundle:generate',
 const ckeditor5DevDocs = require( '@ckeditor/ckeditor5-dev-docs' );
 const docsBuilder = ckeditor5DevDocs.docs( config );
 
-gulp.task( 'docs', [ 'compile:js:esnext', 'docs:prepare-files', 'docs:editors' ], docsBuilder.buildDocs );
+gulp.task( 'docs', [ 'compile:js:esnext' ], ( done ) => {
+	runSequence( [ 'docs:prepare-files', 'docs:editors' ], 'docs:build', done );
+} );
+
+gulp.task( 'docs:build', docsBuilder.buildDocs );
 
 // Collect documentation files.
 gulp.task( 'docs:prepare-files:clean', docsBuilder.removeDocumentationFiles );
