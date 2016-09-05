@@ -5,6 +5,7 @@
 
 import LinkEngine from '/ckeditor5/link/linkengine.js';
 import LinkCommand from '/ckeditor5/link/linkcommand.js';
+import LinkElement from '/ckeditor5/link/linkelement.js';
 import UnlinkCommand from '/ckeditor5/link/unlinkcommand.js';
 import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
 import { getData as getModelData, setData as setModelData } from '/tests/engine/_utils/model.js';
@@ -66,6 +67,12 @@ describe( 'LinkEngine', () => {
 			setModelData( doc, '<$text linkHref="url">foo</$text>bar' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<a href="url">foo</a>bar' );
+		} );
+
+		it( 'should convert to `LinkElement` instance', () => {
+			setModelData( doc, '<$text linkHref="url">foo</$text>bar' );
+
+			expect( editor.editing.view.getRoot().getChild( 0 ) ).to.be.instanceof( LinkElement );
 		} );
 	} );
 } );

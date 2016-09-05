@@ -4,8 +4,9 @@
  */
 
 import Feature from '../core/feature.js';
-import LinkEngine from './linkengine.js';
 import ClickObserver from '../engine/view/observer/clickobserver.js';
+import LinkEngine from './linkengine.js';
+import LinkElement from './linkelement.js';
 
 import Model from '../ui/model.js';
 
@@ -223,7 +224,7 @@ export default class Link extends Feature {
 
 		const viewSelectionParent = viewDocument.selection.getFirstPosition().parent;
 		const viewSelectionParentAncestors = viewSelectionParent.getAncestors();
-		const linkElement = viewSelectionParentAncestors.find( ( ancestor ) => ancestor.name === 'a' );
+		const linkElement = viewSelectionParentAncestors.find( ( ancestor ) => ancestor instanceof LinkElement );
 
 		// When selection is inside link element, then attach panel to this element.
 		if ( linkElement ) {
