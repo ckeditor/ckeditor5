@@ -30,21 +30,21 @@ describe( 'LinkBalloonPanel', () => {
 	} );
 
 	describe( 'constructor', () => {
-		it( 'should extends BalloonPanel class', () => {
+		it( 'should extend BalloonPanel class', () => {
 			expect( linkBalloonPanel ).to.be.instanceOf( BalloonPanel );
 		} );
 
 		describe( 'child components', () => {
 			describe( 'form', () => {
-				it( 'should creates Form instance', () => {
+				it( 'should create Form instance', () => {
 					expect( linkBalloonPanel.form ).to.instanceof( Form );
 				} );
 
-				it( 'should appends to "content" collection', () => {
+				it( 'should append to "content" collection', () => {
 					expect( linkBalloonPanel.collections.get( 'content' ).get( 0 ) ).to.deep.equal( linkBalloonPanel.form );
 				} );
 
-				it( 'should delegates form.model#execute to the model', () => {
+				it( 'should delegate form.model#execute to the model', () => {
 					const executeSpy = sinon.spy();
 
 					model.on( 'execute', executeSpy );
@@ -56,15 +56,15 @@ describe( 'LinkBalloonPanel', () => {
 			} );
 
 			describe( 'urlInput', () => {
-				it( 'should creates LabeledInput instance', () => {
+				it( 'should create LabeledInput instance', () => {
 					expect( linkBalloonPanel.urlInput ).to.instanceof( LabeledInput );
 				} );
 
-				it( 'should appends to Form "content" collection', () => {
+				it( 'should append to Form "content" collection', () => {
 					expect( linkBalloonPanel.form.collections.get( 'content' ).get( 0 ) ).to.deep.equal( linkBalloonPanel.urlInput );
 				} );
 
-				it( 'should binds model#url to urlInput.model#value', () => {
+				it( 'should bind model#url to urlInput.model#value', () => {
 					expect( linkBalloonPanel.urlInput.model.value ).to.equal( model.url ).to.equal( 'http://ckeditor.com' );
 
 					model.url = 'http://cksource.com';
@@ -74,7 +74,7 @@ describe( 'LinkBalloonPanel', () => {
 			} );
 
 			describe( 'saveButton', () => {
-				it( 'should creates Button instance', () => {
+				it( 'should create Button instance', () => {
 					expect( linkBalloonPanel.saveButton ).to.instanceof( Button );
 				} );
 
@@ -97,7 +97,7 @@ describe( 'LinkBalloonPanel', () => {
 			} );
 
 			describe( 'cancelButton', () => {
-				it( 'should creates Button instance', () => {
+				it( 'should create Button instance', () => {
 					expect( linkBalloonPanel.cancelButton ).to.instanceof( Button );
 				} );
 

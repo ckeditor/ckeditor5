@@ -16,7 +16,7 @@ describe( 'LinkBalloonPanelView', () => {
 	} );
 
 	describe( 'constructor', () => {
-		it( 'should extends BalloonPanelView class', () => {
+		it( 'should extend BalloonPanelView class', () => {
 			expect( view ).to.be.instanceof( BalloonPanelView );
 		} );
 
