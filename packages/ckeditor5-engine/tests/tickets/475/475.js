@@ -19,7 +19,7 @@ import buildViewConverter from '/ckeditor5/engine/conversion/buildviewconverter.
 
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 
-export default class Link extends Feature {
+class Link extends Feature {
 	init() {
 		const editor = this.editor;
 		const data = editor.data;
@@ -42,7 +42,7 @@ export default class Link extends Feature {
 
 const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 
-export default class AutoLinker extends Feature {
+class AutoLinker extends Feature {
 	init() {
 		this.editor.document.on( 'change', ( event, type, changes, batch ) => {
 			if ( type != 'insert' ) {
