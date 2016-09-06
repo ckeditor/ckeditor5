@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import { keyCodes, getCode, parseKeystroke } from '/ckeditor5/utils/keyboard.js';
+import env from '/ckeditor5/utils/env.js';
+import { keyCodes, getCode, parseKeystroke, getEnvKeystrokeText } from '/ckeditor5/utils/keyboard.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Keyboard', () => {
@@ -85,6 +86,44 @@ describe( 'Keyboard', () => {
 			expect( () => {
 				parseKeystroke( 'foo' );
 			} ).to.throw( CKEditorError, /^keyboard-unknown-key:/ );
+		} );
+	} );
+
+	describe( 'getEnvKeystrokeText', () => {
+		let initialEnvMac = env.mac;
+
+		afterEach( () => {
+			env.mac = initialEnvMac;
+		} );
+
+		describe( 'on Macintosh', () => {
+			beforeEach( () => {
+				env.mac = true;
+			} );
+
+			it( 'replaces CTRL with ⌘', () => {
+				expect( getEnvKeystrokeText( 'CTRL' ) ).to.equal( '⌘' );
+				expect( getEnvKeystrokeText( 'CTRL+A' ) ).to.equal( '⌘A' );
+				expect( getEnvKeystrokeText( 'ctrl+A' ) ).to.equal( '⌘A' );
+			} );
+
+			it( 'does not touch other keys', () => {
+				expect( getEnvKeystrokeText( 'SHIFT+A' ) ).to.equal( 'SHIFT+A' );
+				expect( getEnvKeystrokeText( 'A' ) ).to.equal( 'A' );
+			} );
+		} );
+
+		describe( 'on non–Macintosh', () => {
+			beforeEach( () => {
+				env.mac = false;
+			} );
+
+			it( 'does not touch anything', () => {
+				expect( getEnvKeystrokeText( 'CTRL+A' ) ).to.equal( 'CTRL+A' );
+				expect( getEnvKeystrokeText( 'ctrl+A' ) ).to.equal( 'ctrl+A' );
+				expect( getEnvKeystrokeText( 'SHIFT+A' ) ).to.equal( 'SHIFT+A' );
+				expect( getEnvKeystrokeText( 'A' ) ).to.equal( 'A' );
+			} );
 		} );
 	} );
 } );
