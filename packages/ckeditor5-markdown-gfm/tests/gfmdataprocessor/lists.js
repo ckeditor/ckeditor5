@@ -1,0 +1,109 @@
+/**
+ * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
+import { stringify } from '/tests/engine/_utils/view.js';
+
+describe( 'GFMDataProcessor', () => {
+	let dataProcessor;
+
+	beforeEach( () => {
+		dataProcessor = new MarkdownDataProcessor();
+	} );
+
+	describe( 'lists', () => {
+		describe( 'toView', () => {
+			it( 'should process tight asterisks', () => {
+				const viewFragment = dataProcessor.toView( '*	item 1\n*	item 2\n*	item 3' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<ul><li>item 1</li><li>item 2</li><li>item 3</li></ul>' );
+			} );
+
+			it( 'should process loose asterisks', () => {
+				const viewFragment = dataProcessor.toView( '*	item 1\n\n*	item 2\n\n*	item 3' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<ul><li><p>item 1</p></li><li><p>item 2</p></li><li><p>item 3</p></li></ul>' );
+			} );
+
+			it( 'should process tight pluses', () => {
+				const viewFragment = dataProcessor.toView( '+	item 1\n+	item 2\n+	item 3' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<ul><li>item 1</li><li>item 2</li><li>item 3</li></ul>' );
+			} );
+
+			it( 'should process loose pluses', () => {
+				const viewFragment = dataProcessor.toView( '+	item 1\n\n+	item 2\n\n+	item 3' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<ul><li><p>item 1</p></li><li><p>item 2</p></li><li><p>item 3</p></li></ul>' );
+			} );
+
+			it( 'should process tight minuses', () => {
+				const viewFragment = dataProcessor.toView( '-	item 1\n-	item 2\n-	item 3' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<ul><li>item 1</li><li>item 2</li><li>item 3</li></ul>' );
+			} );
+
+			it( 'should process loose minuses', () => {
+				const viewFragment = dataProcessor.toView( '-	item 1\n\n-	item 2\n\n-	item 3' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<ul><li><p>item 1</p></li><li><p>item 2</p></li><li><p>item 3</p></li></ul>' );
+			} );
+
+			it( 'should process ordered list with tabs', () => {
+				const viewFragment = dataProcessor.toView( '1.	item 1\n2.	item 2\n3.	item 3' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<ol><li>item 1</li><li>item 2</li><li>item 3</li></ol>' );
+			} );
+
+			it( 'should process ordered list with spaces', () => {
+				const viewFragment = dataProcessor.toView( '1. item 1\n2. item 2\n3. item 3' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<ol><li>item 1</li><li>item 2</li><li>item 3</li></ol>' );
+			} );
+
+			it( 'should process loose ordered list with tabs', () => {
+				const viewFragment = dataProcessor.toView( '1.	item 1\n\n2.	item 2\n\n3.	item 3' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<ol><li><p>item 1</p></li><li><p>item 2</p></li><li><p>item 3</p></li></ol>' );
+			} );
+
+			it( 'should process loose ordered list with spaces', () => {
+				const viewFragment = dataProcessor.toView( '1. item 1\n\n2. item 2\n\n3. item 3' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<ol><li><p>item 1</p></li><li><p>item 2</p></li><li><p>item 3</p></li></ol>' );
+			} );
+
+			it( 'should process ordered list with multiple paragraphs in them', () => {
+				const viewFragment = dataProcessor.toView( '1.	Item 1, graf one.\n\n	Item 2. graf two. The quick brown fox jumped over the lazy dogs\n	back.\n	\n2.	Item 2.\n\n3.	Item 3.' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<ol><li><p>Item 1, graf one.</p><p>Item 2. graf two. The quick brown fox jumped over the lazy dogs<br></br>back.</p></li><li><p>Item 2.</p></li><li><p>Item 3.</p></li></ol>' );
+			} );
+
+			it( 'should process nested lists', () => {
+				const viewFragment = dataProcessor.toView( '*	Tab\n	*	Tab\n		*	Tab' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<ul><li>Tab<ul><li>Tab<ul><li>Tab</li></ul></li></ul></li></ul>' );
+			} );
+
+			it( 'should process nested and mixed lists', () => {
+				const viewFragment = dataProcessor.toView( '1. First\n2. Second:\n	* Fee\n	* Fie\n	* Foe\n3. Third' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<ol><li>First</li><li>Second:<ul><li>Fee</li><li>Fie</li><li>Foe</li></ul></li><li>Third</li></ol>' );
+			} );
+
+			it( 'should process nested and mixed loose lists', () => {
+				const viewFragment = dataProcessor.toView( '1. First\n\n2. Second:\n	* Fee\n	* Fie\n	* Foe\n\n3. Third' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<ol><li><p>First</p></li><li><p>Second:</p><ul><li>Fee</li><li>Fie</li><li>Foe</li></ul></li><li><p>Third</p></li></ol>' );
+			} );
+
+			it( 'should create same bullet from different list indicatiors', () => {
+				const viewFragment = dataProcessor.toView( '* test\n+ test\n- test' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<ul><li>test</li><li>test</li><li>test</li></ul>' );
+			} );
+		} );
+	} );
+} );

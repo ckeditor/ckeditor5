@@ -6,6 +6,7 @@
 import marked from './lib/marked.js';
 import toMarkdown from './lib/to-markdown.js';
 import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
+import GFMRenderer from './renderer.js';
 
 export default class GFMDataProcessor extends HtmlDataProcessor {
 	constructor() {
@@ -16,10 +17,11 @@ export default class GFMDataProcessor extends HtmlDataProcessor {
 		const html = marked.parse( data, {
 			gfm: true,
 			breaks: true,
-			xhtml: true
+			xhtml: true,
+			renderer: new GFMRenderer()
 		} );
 
-		return super.toView( html.replace( /\n/g, '' ) );
+		return super.toView( html );
 	}
 
 	toData( viewFragment ) {
