@@ -72,7 +72,11 @@ describe( 'Bold', () => {
 		expect( model.isEnabled ).to.be.false;
 	} );
 
-	it( 'should set CTRL+B keystroke', () => {
+	it( 'should set keystroke in the model', () => {
+		expect( boldController.model.keystroke ).to.equal( 'CTRL+B' );
+	} );
+
+	it( 'should set editor keystroke', () => {
 		const spy = sinon.spy( editor, 'execute' );
 
 		const wasHandled = editor.keystrokes.press( { keyCode: keyCodes.b, ctrlKey: true } );

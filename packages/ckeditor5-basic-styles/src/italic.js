@@ -32,13 +32,15 @@ export default class Italic extends Feature {
 		const editor = this.editor;
 		const t = editor.t;
 		const command = editor.commands.get( 'italic' );
+		const keystroke = 'CTRL+I';
 
 		// Create button model.
 		const buttonModel = new Model( {
 			isEnabled: true,
 			isOn: false,
 			label: t( 'Italic' ),
-			icon: 'italic'
+			icon: 'italic',
+			keystroke
 		} );
 
 		// Bind button model to command.
@@ -51,6 +53,6 @@ export default class Italic extends Feature {
 		editor.ui.featureComponents.add( 'italic', ButtonController, ButtonView, buttonModel );
 
 		// Set the Ctrl+I keystroke.
-		editor.keystrokes.set( 'CTRL+I', 'italic' );
+		editor.keystrokes.set( keystroke, 'italic' );
 	}
 }
