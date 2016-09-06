@@ -36,8 +36,8 @@ describe( 'Undo', () => {
 		expect( editor.plugins.get( UndoEngine ) ).to.be.instanceOf( UndoEngine );
 	} );
 
-	testButton( 'undo' );
-	testButton( 'redo' );
+	testButton( 'undo', 'CTRL+Z' );
+	testButton( 'redo', 'CTRL+Y' );
 
 	it( 'should set CTRL+Z keystroke', () => {
 		const spy = sinon.stub( editor, 'execute' );
@@ -66,7 +66,7 @@ describe( 'Undo', () => {
 		expect( spy.calledWithExactly( 'redo' ) ).to.be.true;
 	} );
 
-	function testButton( featureName ) {
+	function testButton( featureName, featureKeystroke ) {
 		describe( `${ featureName } button`, () => {
 			let buttonController;
 
@@ -99,6 +99,10 @@ describe( 'Undo', () => {
 
 				command.isEnabled = !initState;
 				expect( model.isEnabled ).to.equal( !initState );
+			} );
+
+			it( 'should set keystroke in the model', () => {
+				expect( buttonController.model.keystroke ).to.equal( featureKeystroke );
 			} );
 		} );
 	}
