@@ -14,7 +14,7 @@ describe( 'ClickObserver', () => {
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument();
-		observer = viewDocument.getObserver( ClickObserver );
+		observer = viewDocument.addObserver( ClickObserver );
 	} );
 
 	it( 'should define domEventType', () => {
