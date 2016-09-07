@@ -251,6 +251,15 @@ export default class Position {
 	}
 
 	/**
+	 * Returns ancestors array of this position, that is this position's parent and it's ancestors.
+	 *
+	 * @returns {Array.<engine.model.Item>} Array with ancestors.
+	 */
+	getAncestors() {
+		return this.parent.getAncestors( { includeNode: true, parentFirst: true } );
+	}
+
+	/**
 	 * Returns a new instance of `Position`, that has same {@link engine.model.Position#parent parent} but it's offset
 	 * is shifted by `shift` value (can be a negative value).
 	 *
