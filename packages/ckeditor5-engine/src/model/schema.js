@@ -438,7 +438,7 @@ export default class Schema {
 			/**
 			 * Item with specified name already exists in schema.
 			 *
-			 * @error schema-item-exists
+			 * @error model-schema-item-exists
 			 */
 			throw new CKEditorError( 'model-schema-item-exists: Item with specified name already exists in schema.' );
 		}
@@ -447,7 +447,7 @@ export default class Schema {
 			/**
 			 * Item with specified name does not exist in schema.
 			 *
-			 * @error schema-no-item
+			 * @error model-schema-no-item
 			 */
 			throw new CKEditorError( 'model-schema-no-item: Item with specified name does not exist in schema.' );
 		}
@@ -465,6 +465,28 @@ export default class Schema {
 	}
 
 	/**
+	 * Checks whether item of given name is extending item of another given name.
+	 *
+	 * @param {String} childItemName Name of the child item.
+	 * @param {String} parentItemName Name of the parent item.
+	 * @returns {Boolean} `true` if child item extends parent item, `false` otherwise.
+	 */
+	itemExtends( childItemName, parentItemName ) {
+		if ( !this.hasItem( childItemName ) || !this.hasItem( parentItemName ) ) {
+			/**
+			 * Item with specified name does not exist in schema.
+			 *
+			 * @error model-schema-no-item
+			 */
+			throw new CKEditorError( 'model-schema-no-item: Item with specified name does not exist in schema.' );
+		}
+
+		const chain = this._extensionChains.get( childItemName );
+
+		return chain.some( itemName => itemName == parentItemName );
+	}
+
+	/**
 	 * Returns {@link engine.model.SchemaItem schema item} that was registered in the schema under given name.
 	 * If item has not been found, throws error.
 	 *
@@ -477,7 +499,7 @@ export default class Schema {
 			/**
 			 * Item with specified name does not exist in schema.
 			 *
-			 * @error schema-no-item
+			 * @error model-schema-no-item
 			 */
 			throw new CKEditorError( 'model-schema-no-item: Item with specified name does not exist in schema.' );
 		}

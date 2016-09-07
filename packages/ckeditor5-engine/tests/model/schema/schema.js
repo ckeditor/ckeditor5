@@ -316,6 +316,35 @@ describe( 'check', () => {
 	} );
 } );
 
+describe( 'itemExtends', () => {
+	it( 'should return true if given item extends another given item', () => {
+		schema.registerItem( 'div', '$block' );
+		schema.registerItem( 'myDiv', 'div' );
+
+		expect( schema.itemExtends( 'div', '$block' ) ).to.be.true;
+		expect( schema.itemExtends( 'myDiv', 'div' ) ).to.be.true;
+		expect( schema.itemExtends( 'myDiv', '$block' ) ).to.be.true;
+	} );
+
+	it( 'should return false if given item does not extend another given item', () => {
+		schema.registerItem( 'div' );
+		schema.registerItem( 'myDiv', 'div' );
+
+		expect( schema.itemExtends( 'div', '$block' ) ).to.be.false;
+		expect( schema.itemExtends( 'div', 'myDiv' ) ).to.be.false;
+	} );
+
+	it( 'should throw if one or both given items are not registered in schema', () => {
+		expect( () => {
+			schema.itemExtends( 'foo', '$block' );
+		} ).to.throw( CKEditorError, /model-schema-no-item/ );
+
+		expect( () => {
+			schema.itemExtends( '$block', 'foo' );
+		} ).to.throw( CKEditorError, /model-schema-no-item/ );
+	} );
+} );
+
 describe( '_normalizeQueryPath', () => {
 	it( 'should normalize string with spaces to an array of strings', () => {
 		expect( Schema._normalizeQueryPath( '$root div strong' ) ).to.deep.equal( [ '$root', 'div', 'strong' ] );
