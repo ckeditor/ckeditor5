@@ -218,7 +218,7 @@ describe( 'Input feature', () => {
 						node: viewRoot.getChild( 0 ).getChild( 0 )
 					}
 				] );
-			}, null, 1000000 );
+			}, 'lowest' );
 
 			view.fire( 'keydown', { keyCode: getCode( 'y' ) } );
 
