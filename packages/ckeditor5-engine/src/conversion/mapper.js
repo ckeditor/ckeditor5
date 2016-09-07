@@ -51,14 +51,14 @@ export default class Mapper {
 		this._viewToModelMapping = new WeakMap();
 
 		// Add default callback for model to view position mapping.
-		this.on( 'modelToViewPosition', ( evt, mapper, modelPosition, data ) => {
+		this.on( 'modelToViewPosition', ( evt, modelPosition, data ) => {
 			let viewContainer = this._modelToViewMapping.get( modelPosition.parent );
 
 			data.viewPosition = this._findPositionIn( viewContainer, modelPosition.offset );
 		}, 'lowest' );
 
 		// Add default callback for view to model position mapping.
-		this.on( 'viewToModelPosition', ( evt, mapper, viewPosition, data ) => {
+		this.on( 'viewToModelPosition', ( evt, viewPosition, data ) => {
 			let viewBlock = viewPosition.parent;
 			let modelParent = this._viewToModelMapping.get( viewBlock );
 
@@ -181,7 +181,7 @@ export default class Mapper {
 			modelPosition: null
 		};
 
-		this.fire( 'viewToModelPosition', this, viewPosition, data );
+		this.fire( 'viewToModelPosition', viewPosition, data );
 
 		return data.modelPosition;
 	}
@@ -198,7 +198,7 @@ export default class Mapper {
 			viewPosition: null
 		};
 
-		this.fire( 'modelToViewPosition', this, modelPosition, data );
+		this.fire( 'modelToViewPosition', modelPosition, data );
 
 		return data.viewPosition;
 	}
@@ -399,7 +399,6 @@ mix( Mapper, EmitterMixin );
  * the condition that checks if special case scenario happened should be as simple as possible.
  *
  * @event engine.conversion.Mapper.modelToViewPosition
- * @param {engine.conversion.Mapper} mapper Mapper instance that fired the event.
  * @param {engine.model.Position} modelPosition Model position to be mapped.
  * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
  * `viewPosition` value to that object with calculated {@link engine.view.Position view position}.
@@ -423,7 +422,6 @@ mix( Mapper, EmitterMixin );
  *		} );
  *
  * @event engine.conversion.Mapper.viewToModelPosition
- * @param {engine.conversion.Mapper} mapper Mapper instance that fired the event.
  * @param {engine.view.Position} viewPosition View position to be mapped.
  * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
  * `modelPosition` value to that object with calculated {@link engine.model.Position model position}.
