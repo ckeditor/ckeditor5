@@ -25,7 +25,9 @@ const config = {
 
 	DOCUMENTATION: {
 		// Path to the temporary documentation files.
-		SOURCE_DIR: '.docs',
+		TEMPORARY_DIR: 'build/docs/.tmp',
+		// Path to the built editors.
+		BUNDLE_DIR: 'build/docs/scripts/assets',
 		// Path to the built documentation.
 		DESTINATION_DIR: 'build/docs',
 		// Glob pattern with samples.
@@ -138,16 +140,12 @@ gulp.task( 'bundle:generate',
 const ckeditor5DevDocs = require( '@ckeditor/ckeditor5-dev-docs' );
 const docsBuilder = ckeditor5DevDocs.docs( config );
 
-gulp.task( 'docs', [ 'compile:js:esnext' ], ( done ) => {
+gulp.task( 'docs', [ 'docs:clean', 'compile:js:esnext' ], ( done ) => {
 	runSequence( [ 'docs:prepare-files', 'docs:editors' ], 'docs:build', done );
 } );
 
+// Documentation's helpers.
+gulp.task( 'docs:clean', docsBuilder.clean );
 gulp.task( 'docs:build', docsBuilder.buildDocs );
-
-// Collect documentation files.
-gulp.task( 'docs:prepare-files:clean', docsBuilder.removeDocumentationFiles );
-gulp.task( 'docs:prepare-files', [ 'docs:prepare-files:clean' ], docsBuilder.collectDocumentationFiles );
-
-// Build editors for samples.
-gulp.task( 'docs:editors:clean', docsBuilder.removeBuiltEditors );
-gulp.task( 'docs:editors', [ 'docs:editors:clean', 'compile:js:esnext' ], docsBuilder.buildSamplesEditors );
+gulp.task( 'docs:prepare-files', docsBuilder.collectDocumentationFiles );
+gulp.task( 'docs:editors', [ 'compile:js:esnext' ], docsBuilder.buildEditorsForSamples );
