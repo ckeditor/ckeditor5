@@ -90,7 +90,7 @@ describe( 'transform', () => {
 							type: AttributeOperation,
 							range: new Range( new Position( root, [ 3, 3, 0 ] ), new Position( root, [ 3, 3, 1 ] ) ),
 							key: 'key',
-							oldValue: undefined,
+							oldValue: null,
 							newValue: 'new',
 							baseVersion: baseVersion + 2
 						},
@@ -106,7 +106,7 @@ describe( 'transform', () => {
 							type: AttributeOperation,
 							range: new Range( new Position( root, [ 3, 3, 3 ] ), new Position( root, [ 3, 3, 5 ] ) ),
 							key: 'key',
-							oldValue: undefined,
+							oldValue: null,
 							newValue: 'new',
 							baseVersion: baseVersion + 4
 						}
