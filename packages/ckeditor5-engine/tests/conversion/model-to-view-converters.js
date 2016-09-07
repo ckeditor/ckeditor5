@@ -335,6 +335,33 @@ describe( 'move', () => {
 		expect( viewToString( viewRoot ) ).to.equal( '<div><div>bar</div><div>foo<img></img>xxyy</div></div>' );
 	} );
 
+	it( 'should not execute if value was already consumed', () => {
+		const modelDivA = new ModelElement( 'div', null, new ModelText( 'foo' ) );
+		const modelDivB = new ModelElement( 'div', null, new ModelText( 'xxyy' ) );
+
+		modelRoot.appendChildren( [ modelDivA, modelDivB ] );
+		dispatcher.on( 'insert:div', insertElement( new ViewContainerElement( 'div' ) ) );
+		dispatcher.on( 'insert:$text', insertText() );
+		dispatcher.on( 'move', move() );
+		dispatcher.on( 'move', ( evt, data, consumable ) => {
+			consumable.consume( data.item, 'move' );
+		}, 'high' );
+
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div><div>xxyy</div></div>' );
+
+		const removedNodes = modelDivA.removeChildren( 0, 1 );
+		modelDivB.insertChildren( 0, removedNodes );
+
+		dispatcher.convertMove(
+			ModelPosition.createFromParentAndOffset( modelDivA, 0 ),
+			ModelRange.createFromParentsAndOffsets( modelDivB, 0, modelDivB, 3 )
+		);
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div><div>xxyy</div></div>' );
+	} );
+
 	it( 'should support unicode', () => {
 		const modelDivA = new ModelElement( 'div', null, 'நிலைக்கு' );
 		const modelDivB = new ModelElement( 'div' );
@@ -385,6 +412,32 @@ describe( 'remove', () => {
 		);
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><div>bar</div></div>' );
+	} );
+
+	it( 'should not execute if value was already consumed', () => {
+		const modelDiv = new ModelElement( 'div', null, new ModelText( 'foo' ) );
+
+		modelRoot.appendChildren( modelDiv );
+		dispatcher.on( 'insert:div', insertElement( new ViewContainerElement( 'div' ) ) );
+		dispatcher.on( 'insert:$text', insertText() );
+		dispatcher.on( 'remove', remove() );
+		dispatcher.on( 'remove', ( evt, data, consumable ) => {
+			consumable.consume( data.item, 'remove' );
+		}, 'high' );
+
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
+
+		const removedNodes = modelDiv.removeChildren( 0, 1 );
+		modelDoc.graveyard.insertChildren( 0, removedNodes );
+
+		dispatcher.convertRemove(
+			ModelPosition.createFromParentAndOffset( modelDiv, 0 ),
+			ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 3 )
+		);
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
 	} );
 
 	it( 'should support unicode', () => {
