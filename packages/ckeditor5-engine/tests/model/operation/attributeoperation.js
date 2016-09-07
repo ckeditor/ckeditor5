@@ -41,7 +41,7 @@ describe( 'AttributeOperation', () => {
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
 				'key',
 				'oldValue',
-				null,
+				undefined, // `undefined` should also be accepted as a value, it is same as `null`.
 				doc.version
 			);
 
@@ -68,7 +68,7 @@ describe( 'AttributeOperation', () => {
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
 				'isNew',
-				null,
+				undefined, // `undefined` should also be accepted as a value, it is same as `null`.
 				true,
 				doc.version
 			)
