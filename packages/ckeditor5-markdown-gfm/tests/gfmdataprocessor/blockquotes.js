@@ -28,9 +28,61 @@ describe( 'GFMDataProcessor', () => {
 			} );
 
 			it( 'should process list within a blockquote', () => {
-				const viewFragment = dataProcessor.toView( '> A list within a blockquote:\n> \n> *	asterisk 1\n> *	asterisk 2\n> *	asterisk 3\n' );
+				const viewFragment = dataProcessor.toView(
+					'> A list within a blockquote:\n' +
+					'> \n' +
+					'> *	asterisk 1\n' +
+					'> *	asterisk 2\n' +
+					'> *	asterisk 3\n'
+				);
 
-				expect( stringify( viewFragment ) ).to.equal( '<blockquote><p>A list within a blockquote:</p><ul><li>asterisk 1</li><li>asterisk 2</li><li>asterisk 3</li></ul></blockquote>' );
+				expect( stringify( viewFragment ) ).to.equal(
+					'<blockquote>' +
+						'<p>A list within a blockquote:</p>' +
+						'<ul>' +
+							'<li>asterisk 1</li>' +
+							'<li>asterisk 2</li>' +
+							'<li>asterisk 3</li>' +
+						'</ul>' +
+					'</blockquote>'
+				);
+			} );
+
+			it( 'should process blockquotes with code inside', () => {
+				const viewFragment = dataProcessor.toView(
+					'> Example 1:\n' +
+					'>\n' +
+					'>     sub status {\n' +
+					'>         print "working";\n' +
+					'>     }\n' +
+					'>\n' +
+					'> Example 2:\n' +
+					'>\n' +
+					'>     sub status {\n' +
+					'>         return "working";\n' +
+					'>     }\n'
+				);
+
+				expect( stringify( viewFragment ) ).to.equal(
+					'<blockquote>' +
+						'<p>Example 1:</p>' +
+						'<pre>' +
+							'<code>' +
+								'sub status {\n' +
+								'    print "working";\n' +
+								'}' +
+							'</code>' +
+						'</pre>' +
+						'<p>Example 2:</p>' +
+						'<pre>' +
+							'<code>' +
+								'sub status {\n' +
+								'    return "working";\n' +
+								'}' +
+							'</code>' +
+						'</pre>' +
+					'</blockquote>'
+				);
 			} );
 		} );
 	} );
