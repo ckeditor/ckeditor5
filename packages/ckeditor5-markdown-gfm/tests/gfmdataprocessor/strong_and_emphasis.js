@@ -56,6 +56,18 @@ describe( 'GFMDataProcessor', () => {
 
 				expect( stringify( viewFragment ) ).to.equal( '<p>This should_not_be_emp.</p>' );
 			} );
+
+			it( 'should process nested emphasis #1', () => {
+				const viewFragment = dataProcessor.toView( '*test **test** test*' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<p><em>test <strong>test</strong> test</em></p>' );
+			} );
+
+			it( 'should process nested emphasis #2', () => {
+				const viewFragment = dataProcessor.toView( '_test __test__ test_' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<p><em>test <strong>test</strong> test</em></p>' );
+			} );
 		} );
 	} );
 } );

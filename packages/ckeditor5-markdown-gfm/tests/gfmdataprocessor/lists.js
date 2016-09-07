@@ -76,9 +76,27 @@ describe( 'GFMDataProcessor', () => {
 			} );
 
 			it( 'should process ordered list with multiple paragraphs in them', () => {
-				const viewFragment = dataProcessor.toView( '1.	Item 1, graf one.\n\n	Item 2. graf two. The quick brown fox jumped over the lazy dogs\n	back.\n	\n2.	Item 2.\n\n3.	Item 3.' );
+				const viewFragment = dataProcessor.toView(
+					'1.	Item 1, graf one.\n\n' +
+					'	Item 2. graf two. The quick brown fox jumped over the lazy dogs\n' +
+					'	back.\n	\n' +
+					'2.	Item 2.\n\n' +
+					'3.	Item 3.' );
 
-				expect( stringify( viewFragment ) ).to.equal( '<ol><li><p>Item 1, graf one.</p><p>Item 2. graf two. The quick brown fox jumped over the lazy dogs<br></br>back.</p></li><li><p>Item 2.</p></li><li><p>Item 3.</p></li></ol>' );
+				expect( stringify( viewFragment ) ).to.equal(
+					'<ol>' +
+						'<li>' +
+							'<p>Item 1, graf one.</p>' +
+							'<p>Item 2. graf two. The quick brown fox jumped over the lazy dogs<br></br>back.</p>' +
+						'</li>' +
+						'<li>' +
+							'<p>Item 2.</p>' +
+						'</li>' +
+						'<li>' +
+							'<p>Item 3.</p>' +
+						'</li>' +
+					'</ol>'
+				);
 			} );
 
 			it( 'should process nested lists', () => {
@@ -90,16 +108,45 @@ describe( 'GFMDataProcessor', () => {
 			it( 'should process nested and mixed lists', () => {
 				const viewFragment = dataProcessor.toView( '1. First\n2. Second:\n	* Fee\n	* Fie\n	* Foe\n3. Third' );
 
-				expect( stringify( viewFragment ) ).to.equal( '<ol><li>First</li><li>Second:<ul><li>Fee</li><li>Fie</li><li>Foe</li></ul></li><li>Third</li></ol>' );
+				expect( stringify( viewFragment ) ).to.equal(
+					'<ol>' +
+						'<li>First</li>' +
+						'<li>Second:' +
+							'<ul>' +
+								'<li>Fee</li>' +
+								'<li>Fie</li>' +
+								'<li>Foe</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>Third</li>' +
+					'</ol>'
+				);
 			} );
 
 			it( 'should process nested and mixed loose lists', () => {
 				const viewFragment = dataProcessor.toView( '1. First\n\n2. Second:\n	* Fee\n	* Fie\n	* Foe\n\n3. Third' );
 
-				expect( stringify( viewFragment ) ).to.equal( '<ol><li><p>First</p></li><li><p>Second:</p><ul><li>Fee</li><li>Fie</li><li>Foe</li></ul></li><li><p>Third</p></li></ol>' );
+				expect( stringify( viewFragment ) ).to.equal(
+					'<ol>' +
+						'<li>' +
+							'<p>First</p>' +
+						'</li>' +
+						'<li>' +
+							'<p>Second:</p>' +
+							'<ul>' +
+								'<li>Fee</li>' +
+								'<li>Fie</li>' +
+								'<li>Foe</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>' +
+							'<p>Third</p>' +
+						'</li>' +
+					'</ol>'
+				);
 			} );
 
-			it( 'should create same bullet from different list indicatiors', () => {
+			it( 'should create same bullet from different list indicators', () => {
 				const viewFragment = dataProcessor.toView( '* test\n+ test\n- test' );
 
 				expect( stringify( viewFragment ) ).to.equal( '<ul><li>test</li><li>test</li><li>test</li></ul>' );

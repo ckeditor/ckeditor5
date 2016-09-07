@@ -72,14 +72,14 @@ Renderer.prototype.table = function( header, body ) {
 };
 
 Renderer.prototype.tablerow = function( content ) {
-	return '<tr>\n' + content + '</tr>\n';
+	return '<tr>' + content + '</tr>';
 };
 
 Renderer.prototype.tablecell = function( content, flags ) {
 	const type = flags.header ? 'th' : 'td';
-	const tag = flags.align ? '<' + type + ' style="text-align:' + flags.align + '">' : '<' + type + '>';
+	const tag = flags.align ? `<${ type } align="${ flags.align }">` : `<${ type }>`;
 
-	return tag + content + '</' + type + '>\n';
+	return tag + content + `</${ type }>`;
 };
 
 // span level renderer

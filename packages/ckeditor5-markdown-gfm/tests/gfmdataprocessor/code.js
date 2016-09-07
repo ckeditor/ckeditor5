@@ -13,8 +13,27 @@ describe( 'GFMDataProcessor', () => {
 		dataProcessor = new MarkdownDataProcessor();
 	} );
 
-	describe( 'code blocks', () => {
+	describe( 'code', () => {
 		describe( 'toView', () => {
+			it( 'should process inline code', () => {
+				const viewFragment = dataProcessor.toView( 'regular text and `inline code`' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<p>regular text and <code>inline code</code></p>' );
+			} );
+
+			it( 'should properly process backticks when combined', () => {
+				const viewFragment = dataProcessor.toView( '`<fake a="` content of attribute `">`' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<p><code><fake a="</code> content of attribute <code>"></code></p>' );
+			} );
+
+			it( 'should properly process backticks inside code spans', () => {
+				const viewFragment = dataProcessor.toView( '`` `backticks` ``' );
+
+				// This should be checked - why there is a space after `bacticks`.
+				expect( stringify( viewFragment ) ).to.equal( '<p><code>`backticks` </code></p>' );
+			} );
+
 			it( 'should process code blocks indented with tabs', () => {
 				const viewFragment = dataProcessor.toView( '	code block' );
 

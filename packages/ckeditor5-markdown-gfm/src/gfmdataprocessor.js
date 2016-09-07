@@ -17,6 +17,7 @@ export default class GFMDataProcessor extends HtmlDataProcessor {
 		const html = marked.parse( data, {
 			gfm: true,
 			breaks: true,
+			tables: true,
 			xhtml: true,
 			renderer: new GFMRenderer()
 		} );
