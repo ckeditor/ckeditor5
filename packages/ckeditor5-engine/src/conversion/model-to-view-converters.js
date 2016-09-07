@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTreeWalker from '../model/treewalker.js';
 import ModelRange from '../model/range.js';
 
 import ViewElement from '../view/element.js';
@@ -283,21 +282,15 @@ export function unwrap( elementCreator ) {
  * @returns {Function} Move event converter.
  */
 export function move() {
-	return ( evt, data, conversionApi ) => {
-		const walker = new ModelTreeWalker( { boundaries: data.range, shallow: true } );
+	return ( evt, data, consumable, conversionApi ) => {
+		if ( consumable.consume( data.item, 'move' ) ) {
+			const sourceModelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, data.item.offsetSize );
+			const sourceViewRange = conversionApi.mapper.toViewRange( sourceModelRange );
 
-		let length = 0;
+			const targetViewPosition = conversionApi.mapper.toViewPosition( data.targetPosition );
 
-		for ( let value of walker ) {
-			length += value.length;
+			viewWriter.move( sourceViewRange, targetViewPosition );
 		}
-
-		const sourceModelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, length );
-
-		const sourceViewRange = conversionApi.mapper.toViewRange( sourceModelRange );
-		const targetViewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-
-		viewWriter.move( sourceViewRange, targetViewPosition );
 	};
 }
 
@@ -311,19 +304,18 @@ export function move() {
  * @returns {Function} Remove event converter.
  */
 export function remove() {
-	return ( evt, data, conversionApi ) => {
-		const walker = new ModelTreeWalker( { boundaries: data.range, shallow: true } );
+	return ( evt, data, consumable, conversionApi ) => {
+		if ( consumable.consume( data.item, 'remove' ) ) {
+			const sourceModelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, data.item.offsetSize );
+			const sourceViewRange = conversionApi.mapper.toViewRange( sourceModelRange );
 
-		let length = 0;
+			viewWriter.remove( sourceViewRange );
 
-		for ( let value of walker ) {
-			length += value.length;
+			conversionApi.mapper.unbindModelElement( data.item );
 		}
+	};
+}
 
-		const sourceModelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, length );
-		const sourceViewRange = conversionApi.mapper.toViewRange( sourceModelRange );
-
-		viewWriter.remove( sourceViewRange );
 	};
 }
 

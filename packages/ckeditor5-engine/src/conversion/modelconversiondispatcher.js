@@ -5,6 +5,7 @@
 
 import Consumable from './modelconsumable.js';
 import Range from '../model/range.js';
+import Position from '../model/position.js';
 import TextProxy from '../model/textproxy.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import mix from '../../utils/mix.js';
@@ -195,12 +196,20 @@ export default class ModelConversionDispatcher {
 	 * @param {engine.model.Range} range Moved range (after move).
 	 */
 	convertMove( sourcePosition, range ) {
-		const data = {
-			sourcePosition: sourcePosition,
-			range: range
-		};
+		const consumable = this._createConsumableForRange( range, 'move' );
 
-		this.fire( 'move', data, this.conversionApi );
+		// Fire a separate event for each top-most node and text fragment contained in the range.
+		const items = Array.from( range.getItems( { shallow: true } ) ).reverse();
+
+		for ( let item of items ) {
+			const data = {
+				sourcePosition: sourcePosition.getShiftedBy( item.startOffset - range.start.offset ),
+				targetPosition: Position.createAt( range.start ),
+				item: item
+			};
+
+			this._testAndFire( 'move', data, consumable );
+		}
 	}
 
 	/**
@@ -211,12 +220,19 @@ export default class ModelConversionDispatcher {
 	 * @param {engine.model.Range} range Removed range (after remove, in {@link engine.model.Document#graveyard graveyard root}).
 	 */
 	convertRemove( sourcePosition, range ) {
-		const data = {
-			sourcePosition: sourcePosition,
-			range: range
-		};
+		const consumable = this._createConsumableForRange( range, 'remove' );
 
-		this.fire( 'remove', data, this.conversionApi );
+		// Fire a separate event for each top-most node and text fragment contained in the range.
+		const items = Array.from( range.getItems( { shallow: true } ) ).reverse();
+
+		for ( let item of items ) {
+			const data = {
+				sourcePosition: sourcePosition.getShiftedBy( item.startOffset - range.start.offset ),
+				item: item
+			};
+
+			this._testAndFire( 'remove', data, consumable );
+		}
 	}
 
 	/**
@@ -233,7 +249,7 @@ export default class ModelConversionDispatcher {
 	 */
 	convertAttribute( type, range, key, oldValue, newValue ) {
 		// Create a list with attributes to consume.
-		const consumable = this._createAttributeConsumable( type, range, key );
+		const consumable = this._createConsumableForRange( range, type + ':' + key );
 
 		// Create a separate attribute event for each node in the range.
 		for ( let value of range ) {
@@ -302,22 +318,18 @@ export default class ModelConversionDispatcher {
 	}
 
 	/**
-	 * Creates {@link engine.conversion.ModelConsumable} with values to consume from given range, assuming that
-	 * given range has just had it's attributes changed.
+	 * Creates {@link engine.conversion.ModelConsumable} with values of given `type` for each item from given `range`.
 	 *
 	 * @private
-	 * @param {String} type Change type. Possible values: `addAttribute`, `removeAttribute`, `changeAttribute`.
-	 * @param {engine.conversion.Range} range Changed range.
-	 * @param {String} key Attribute key.
+	 * @param {engine.conversion.Range} range Affected range.
+	 * @param {String} type Consumable type.
 	 * @returns {engine.conversion.ModelConsumable} Values to consume.
 	 */
-	_createAttributeConsumable( type, range, key ) {
+	_createConsumableForRange( range, type ) {
 		const consumable = new Consumable();
 
-		for ( let value of range ) {
-			const item = value.item;
-
-			consumable.add( item, type + ':' + key );
+		for ( let item of range.getItems() ) {
+			consumable.add( item, type );
 		}
 
 		return consumable;
@@ -360,7 +372,7 @@ export default class ModelConversionDispatcher {
 			return;
 		}
 
-		if ( type === 'insert' ) {
+		if ( type === 'insert' || type === 'remove' || type == 'move' ) {
 			if ( data.item instanceof TextProxy ) {
 				// Example: insert:$text.
 				this.fire( type + ':$text', data, consumable, this.conversionApi );
