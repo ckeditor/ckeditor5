@@ -265,11 +265,12 @@ describe( 'LiveSelection', () => {
 		} );
 	} );
 
-	describe( 'getFirstPosition', () => {
-		it( 'should return start position of default range if no ranges were added', () => {
-			const firstPosition = selection.getFirstPosition();
+	describe( 'getLastRange', () => {
+		it( 'should return default range if no ranges were added', () => {
+			const lastRange = selection.getLastRange();
 
-			expect( firstPosition.isEqual( new Position( root, [ 0, 0 ] ) ) );
+			expect( lastRange.start.isEqual( new Position( root, [ 0, 0 ] ) ) );
+			expect( lastRange.end.isEqual( new Position( root, [ 0, 0 ] ) ) );
 		} );
 	} );
 

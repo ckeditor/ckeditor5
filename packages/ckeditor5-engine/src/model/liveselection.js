@@ -108,6 +108,13 @@ export default class LiveSelection extends Selection {
 	/**
 	 * @inheritDoc
 	 */
+	getLastRange() {
+		return super.getLastRange() || this._getDefaultRange();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	removeAllRanges() {
 		this.destroy();
 		super.removeAllRanges();
