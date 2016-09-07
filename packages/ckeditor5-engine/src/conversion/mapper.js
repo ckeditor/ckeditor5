@@ -26,6 +26,7 @@ import mix from '../../utils/mix.js';
  * and {@link engine.conversion.Mapper#toModelPosition toModelPosition} methods. `Mapper` adds it's own default callbacks
  * with `'lowest'` priority. To override default `Mapper` mapping, add custom callback with higher priority and
  * stop the event.
+ *
  * @memberOf engine.conversion
  */
 export default class Mapper {
@@ -249,22 +250,25 @@ export default class Mapper {
 	/**
 	 * Gets the length of the view element in the model.
 	 *
+	 * The length is calculated as follows:
+	 * * length of a {@link engine.view.Text text node} is equal to the length of it's {@link engine.view.Text#data data},
+	 * * length of a mapped {@link engine.view.Element element} is equal to it's {@link engine.view.Element#modelLength modelLength},
+	 * * length of a not-mapped {@link engine.view.Element element} is equal to the length of it's children.
+	 *
 	 * Examples:
 	 *
-	 *		foo          -> 3 // Length of the text is the length of data.
-	 *		<b>foo</b>   -> 3 // Length of the element which has no corresponding model element is a length of its children.
-	 *		<p>foo</p>   -> 1 // Length of the element which has corresponding model element is always 1.
+	 *		foo                     -> 3 // Text length is equal to it's data length.
+	 *		<p>foo</p>              -> 1 // Length of an element which is mapped is equal to modelLength, 1 by default.
+	 *		<b>foo</b>              -> 3 // Length of an element which is not mapped is a length of its children.
+	 *		<div><p>x</p><p>y</p>   -> 2 // Assuming that <div> is not mapped and <p> are mapped.
 	 *
 	 * @private
 	 * @param {engine.view.Element} viewNode View node.
 	 * @returns {Number} Length of the node in the tree model.
 	 */
 	_getModelLength( viewNode ) {
-		// If we need mapping to be more flexible this method may fire event, so every feature may define the relation
-		// between length in the model to the length in the view, for example if one element in the model creates two
-		// elements in the view. Now I can not find any example where such feature would be useful.
 		if ( this._viewToModelMapping.has( viewNode ) ) {
-			return 1;
+			return viewNode.modelLength;
 		} else if ( viewNode instanceof ViewText ) {
 			return viewNode.data.length;
 		} else {

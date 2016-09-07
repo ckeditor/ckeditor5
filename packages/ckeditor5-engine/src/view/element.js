@@ -123,6 +123,17 @@ export default class Element extends Node {
 	}
 
 	/**
+	 * Length of this view element in model if it is mapped. This value can be overwritten in classes extending
+	 * {@link engine.view.Element Element} to provide correct position mapping in {@link engine.conversion.Mapper Mapper}.
+	 *
+	 * @readonly
+	 * @type {Number}
+	 */
+	get modelLength() {
+		return 1;
+	}
+
+	/**
 	 * Clones provided element.
 	 *
 	 * @param {Boolean} deep If set to `true` clones element and all its children recursively. When set to `false`,
