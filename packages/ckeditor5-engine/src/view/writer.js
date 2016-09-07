@@ -21,7 +21,9 @@ import isIterable from '../../utils/isiterable.js';
 export default {
 	breakAt,
 	breakRange,
+	breakContainer,
 	mergeAt,
+	mergeContainers,
 	insert,
 	remove,
 	move,
@@ -69,6 +71,57 @@ export function breakAt( position ) {
  */
 export function breakRange( range ) {
 	return _breakRange( range );
+}
+
+/**
+ * Breaks {@link engine.view.ContainerElement container view element} into two, at the given position. Position
+ * has to be directly inside container element and cannot be in root. Does not break if position is at the beginning
+ * or at the end of it's parent element.
+ *
+ *		<p>foo^bar</p> -> <p>foo</p><p>bar</p>
+ *		<div><p>foo</p>^<p>bar</p></div> -> <div><p>foo</p></div><div><p>bar</p></div>
+ *		<p>^foobar</p> -> ^<p>foobar</p>
+ *		<p>foobar^</p> -> <p>foobar</p>^
+ *
+ * @param {engine.view.Position} position Position where to break element.
+ * @returns {engine.view.Position} Position between broken elements. If element has not been broken, the returned position
+ * is placed either before it or after it.
+ */
+export function breakContainer( position ) {
+	const element = position.parent;
+
+	if ( !( element instanceof ContainerElement ) ) {
+		/**
+		 * Trying to break an element which is not a container element.
+		 *
+		 * @error view-writer-break-non-container-element
+		 */
+		throw new CKEditorError( 'view-writer-break-non-container-element: Trying to break an element which is not a container element.' );
+	}
+
+	if ( !element.parent ) {
+		/**
+		 * Trying to break root element.
+		 *
+		 * @error view-writer-break-root
+		 */
+		throw new CKEditorError( 'view-writer-break-root: Trying to break root element.' );
+	}
+
+	if ( position.isAtStart ) {
+		return Position.createBefore( element );
+	} else if ( !position.isAtEnd ) {
+		const newElement = element.clone( false );
+
+		insert( Position.createAfter( element ), newElement );
+
+		const sourceRange = new Range( position, Position.createAt( element, 'end' ) );
+		const targetPosition = new Position( newElement, 0 );
+
+		move( sourceRange, targetPosition );
+	}
+
+	return Position.createAfter( element );
 }
 
 /**
@@ -141,6 +194,38 @@ export function mergeAt( position ) {
 	}
 
 	return position;
+}
+
+/**
+ * Merges two {@link engine.view.ContainerElement container view elements} that are before and after given position.
+ * Precisly, the element after the position is removed and it's contents are moved to element before the position.
+ *
+ *		<p>foo</p>^<p>bar</p> -> <p>foo^bar</p>
+ *		<div>foo</div>^<p>bar</p> -> <div>foo^bar</div>
+ *
+ * @param position
+ * @returns {Position}
+ */
+export function mergeContainers( position ) {
+	const prev = position.nodeBefore;
+	const next = position.nodeAfter;
+
+	if ( !prev || !next || !( prev instanceof ContainerElement ) || !( next instanceof ContainerElement ) ) {
+		/**
+		 * Element before and after given position cannot be merged.
+		 *
+		 * @error view-writer-merge-containers-invalid-position
+		 */
+		throw new CKEditorError( 'view-writer-merge-containers-invalid-position: Element before and after given position cannot be merged.' );
+	}
+
+	const lastChild = prev.getChild( prev.childCount - 1 );
+	const newPosition = lastChild instanceof Text ? Position.createAt( lastChild, 'end' ) : Position.createAt( prev, 'end' );
+
+	move( Range.createIn( next ), Position.createAt( prev, 'end' ) );
+	remove( Range.createOn( next ) );
+
+	return newPosition;
 }
 
 /**
