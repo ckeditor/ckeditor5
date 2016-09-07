@@ -57,10 +57,9 @@ export default class DataController {
 		 * cleared directly after data are converted. However, the mapper is defined as class property, because
 		 * it needs to be passed to the `ModelConversionDispatcher` as a conversion API.
 		 *
-		 * @private
 		 * @member {engine.conversion.Mapper} engine.DataController#_mapper
 		 */
-		this._mapper = new Mapper();
+		this.mapper = new Mapper();
 
 		/**
 		 * Model to view conversion dispatcher used by the {@link engine.DataController#get get method}.
@@ -76,7 +75,7 @@ export default class DataController {
 		 * @member {engine.conversion.ModelConversionDispatcher} engine.DataController#modelToView
 		 */
 		this.modelToView = new ModelConversionDispatcher( {
-			mapper: this._mapper
+			mapper: this.mapper
 		} );
 		this.modelToView.on( 'insert:$text', insertText(), 'lowest' );
 
@@ -121,11 +120,11 @@ export default class DataController {
 
 		// model -> view
 		const viewDocumentFragment = new ViewDocumentFragment();
-		this._mapper.bindElements( modelRoot, viewDocumentFragment );
+		this.mapper.bindElements( modelRoot, viewDocumentFragment );
 
 		this.modelToView.convertInsertion( modelRange );
 
-		this._mapper.clearBindings();
+		this.mapper.clearBindings();
 
 		// view -> data
 		return this.processor.toData( viewDocumentFragment );
