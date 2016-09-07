@@ -284,7 +284,7 @@ describe( 'ModelConversionDispatcher', () => {
 			const loggedEvents = [];
 
 			dispatcher.on( 'move', ( evt, data ) => {
-				const log = 'move:' + data.sourcePosition.path + ':' + data.range.start.path + ':' + data.range.end.path;
+				const log = 'move:' + data.sourcePosition.path + ':' + data.targetPosition.path + ':' + data.item.offsetSize;
 				loggedEvents.push( log );
 			} );
 
@@ -303,13 +303,13 @@ describe( 'ModelConversionDispatcher', () => {
 			const loggedEvents = [];
 
 			dispatcher.on( 'remove', ( evt, data ) => {
-				const log = 'remove:' + data.sourcePosition.path + ':' + data.range.start.path + ':' + data.range.end.path;
+				const log = 'remove:' + data.sourcePosition.path + ':' + data.item.offsetSize;
 				loggedEvents.push( log );
 			} );
 
 			dispatcher.convertRemove( ModelPosition.createFromParentAndOffset( root , 3 ), range );
 
-			expect( loggedEvents ).to.deep.equal( [ 'remove:3:0:3' ] );
+			expect( loggedEvents ).to.deep.equal( [ 'remove:3:3' ] );
 		} );
 	} );
 
