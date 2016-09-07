@@ -107,7 +107,7 @@ const ObservableMixin = {
 	 *		A.bind( 'a' ).to( B, 'b', C, 'd', ( b, d ) => b + d );
 	 *
 	 * @method utils.ObservableMixin#bind
-	 * @param {String...} bindAttrs Observable attributes that will be bound to another observable(s).
+	 * @param {...String} bindAttrs Observable attributes that will be bound to another observable(s).
 	 * @returns {utils.BindChain}
 	 */
 	bind( ...bindAttrs ) {
@@ -188,7 +188,7 @@ const ObservableMixin = {
 	 *		A.unbind();
 	 *
 	 * @method utils.ObservableMixin#unbind
-	 * @param {String} [unbindAttrs] Observable attributes to be unbound. All the bindings will
+	 * @param {...String} [unbindAttrs] Observable attributes to be unbound. All the bindings will
 	 * be released if no attributes provided.
 	 */
 	unbind( ...unbindAttrs ) {

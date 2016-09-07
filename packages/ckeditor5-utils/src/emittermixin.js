@@ -296,7 +296,7 @@ const EmitterMixin = {
 	 *		emitterA.fire( 'eventY', data );
 	 *
 	 * @method utils.EmitterMixin#delegate
-	 * @param {String...} events Event names that will be delegated to another emitter.
+	 * @param {...String} events Event names that will be delegated to another emitter.
 	 * @returns {utils.EmitterMixin.delegate#to}
 	 */
 	delegate( ...events ) {
