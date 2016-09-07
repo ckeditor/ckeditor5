@@ -87,6 +87,40 @@ export default class Mapper {
 	}
 
 	/**
+	 * Unbinds given {@link engine.view.Element view element} from the map.
+	 *
+	 * @param {engine.view.Element} viewElement View element to unbind.
+	 */
+	unbindViewElement( viewElement ) {
+		const modelElement = this.toModelElement( viewElement );
+
+		this._unbindElements( modelElement, viewElement );
+	}
+
+	/**
+	 * Unbinds given {@link engine.model.Element model element} from the map.
+	 *
+	 * @param {engine.model.Element} modelElement Model element to unbind.
+	 */
+	unbindModelElement( modelElement ) {
+		const viewElement = this.toViewElement( modelElement );
+
+		this._unbindElements( modelElement, viewElement );
+	}
+
+	/**
+	 * Removes binding between given elements.
+	 *
+	 * @private
+	 * @param {engine.model.Element} modelElement Model element to unbind.
+	 * @param {engine.view.Element} viewElement View element to unbind.
+	 */
+	_unbindElements( modelElement, viewElement ) {
+		this._viewToModelMapping.delete( viewElement );
+		this._modelToViewMapping.delete( modelElement );
+	}
+
+	/**
 	 * Removes all model to view and view to model bindings.
 	 */
 	clearBindings() {
