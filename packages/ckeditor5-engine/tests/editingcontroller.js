@@ -115,12 +115,13 @@ describe( 'EditingController', () => {
 			viewRoot = editing.createRoot( domRoot );
 
 			model.schema.registerItem( 'paragraph', '$block' );
+			model.schema.registerItem( 'div', '$block' );
 			buildModelConverter().for( editing.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			buildModelConverter().for( editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 		} );
 
 		beforeEach( () => {
 			// Note: The below code is highly overcomplicated due to #455.
-
 			model.selection.removeAllRanges();
 			modelRoot.removeChildren( 0, modelRoot.childCount );
 
@@ -155,6 +156,16 @@ describe( 'EditingController', () => {
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<p>f</p><p>{}oo</p><p></p><p>bar</p>' );
+		} );
+
+		it( 'should convert rename', () => {
+			expect( getViewData( editing.view ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
+
+			model.enqueueChanges( () => {
+				model.batch().rename( 'div', modelRoot.getChild( 0 ) );
+			} );
+
+			expect( getViewData( editing.view ) ).to.equal( '<div>f{}oo</div><p></p><p>bar</p>' );
 		} );
 
 		it( 'should convert delete', () => {

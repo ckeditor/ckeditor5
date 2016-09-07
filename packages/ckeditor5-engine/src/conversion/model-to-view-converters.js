@@ -4,6 +4,7 @@
  */
 
 import ModelRange from '../model/range.js';
+import ModelElement from '../model/element.js';
 
 import ViewElement from '../view/element.js';
 import ViewText from '../view/text.js';
@@ -295,7 +296,7 @@ export function move() {
 }
 
 /**
- * Function factory, creates a default model-to-view converter for nodes remove changes.
+ * Function factory, creates a default model-to-view converter for node remove changes.
  *
  *		modelDispatcher.on( 'remove', remove() );
  *
@@ -316,6 +317,37 @@ export function remove() {
 	};
 }
 
+/**
+ * Function factory, creates default model-to-view converter for elements which name has changed.
+ *
+ *		modelDispatcher.on( 'rename', rename() );
+ *
+ * This converter enables default behavior of rename conversion implemented in {@link engine.conversion.ModelConversionDispatcher}.
+ * It exposes fake model element `fakeElement` and provides proper model-view bindings between original and fake model elements
+ * and their view counterparts.
+ *
+ * @external engine.conversion.modelToView
+ * @function engine.conversion.modelToView.rename
+ * @returns {Function}
+ */
+export function rename() {
+	return ( evt, data, consumable, conversionApi ) => {
+		if ( consumable.test( data.element, 'rename' ) ) {
+			// Create fake element in model, needed for conversion purposes.
+			const fakeElement = new ModelElement( data.oldName, data.element.getAttributes() );
+			// Append the fake element to artificial document fragment to enable making range on it.
+			data.element.parent.insertChildren( data.element.index, fakeElement );
+
+			// Rebind view element to the fake element.
+			// Check what was bound to renamed element.
+			const oldViewElement = conversionApi.mapper.toViewElement( data.element );
+			// Unbind renamed element.
+			conversionApi.mapper.unbindModelElement( data.element );
+			// Bind view element to the fake element.
+			conversionApi.mapper.bindElements( fakeElement, oldViewElement );
+
+			data.fakeElement = fakeElement;
+		}
 	};
 }
 

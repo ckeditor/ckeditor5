@@ -126,6 +126,7 @@ export default class ModelConversionDispatcher {
 	 * @fires engine.conversion.ModelConversionDispatcher#insert
 	 * @fires engine.conversion.ModelConversionDispatcher#move
 	 * @fires engine.conversion.ModelConversionDispatcher#remove
+	 * @fires engine.conversion.ModelConversionDispatcher#rename
 	 * @fires engine.conversion.ModelConversionDispatcher#addAttribute
 	 * @fires engine.conversion.ModelConversionDispatcher#removeAttribute
 	 * @fires engine.conversion.ModelConversionDispatcher#changeAttribute
@@ -147,6 +148,8 @@ export default class ModelConversionDispatcher {
 			this.convertRemove( data.sourcePosition, data.range );
 		} else if ( type == 'addAttribute' || type == 'removeAttribute' || type == 'changeAttribute' ) {
 			this.convertAttribute( type, data.range, data.key, data.oldValue, data.newValue );
+		} else if ( type == 'rename' ) {
+			this.convertRename( data.element, data.oldName );
 		}
 	}
 
@@ -264,6 +267,50 @@ export default class ModelConversionDispatcher {
 			};
 
 			this._testAndFire( type + ':' + key, data, consumable, this.conversionApi );
+		}
+	}
+
+	/**
+	 * Fires events needed to handle rename conversion.
+	 *
+	 * Renaming is handled by:
+	 * * firing insertion conversion - for a new element (renamed clone of old element),
+	 * * firing move conversion - moving children of old element to new element,
+	 * * firing remove conversion - removing old element.
+	 *
+	 * This way two goals are achieved:
+	 * * no need to provide additional converters for renaming,
+	 * * contents of renamed element do not have to be re-rendered.
+	 *
+	 * @fires engine.conversion.ModelConversionDispatcher#event:rename
+	 * @fires engine.conversion.ModelConversionDispatcher#event:insert
+	 * @fires engine.conversion.ModelConversionDispatcher#event:move
+	 * @fires engine.conversion.ModelConversionDispatcher#event:remove
+	 * @param {engine.view.Element} element Renamed element.
+	 * @param {String} oldName Name of the renamed element before it was renamed.
+	 */
+	convertRename( element, oldName ) {
+		const consumable = new Consumable();
+		consumable.add( element, 'rename' );
+
+		// Callbacks added to `rename` event should either provide totally custom handling of rename conversion
+		// or create "fake element" in model that is needed to fire default rename conversion.
+		const data = { element, oldName };
+		this.fire( 'rename:' + element.name + ':' + oldName, data, consumable, this.conversionApi );
+
+		// Default callback should provide `data.fakeElement` model element that is needed for firing conversion.
+		if ( data.fakeElement ) {
+			const insertRange = Range.createFromParentsAndOffsets( element.parent, element.startOffset, element, 0 );
+			const moveSourcePosition = Position.createAt( data.fakeElement, 0 );
+			const moveRange = Range.createIn( data.element );
+			const removeRange = Range.createOn( data.fakeElement );
+
+			this.convertInsertion( insertRange );
+			this.convertMove( moveSourcePosition, moveRange );
+			this.convertRemove( removeRange.start, removeRange );
+
+			// Cleanup.
+			data.fakeElement.remove();
 		}
 	}
 
@@ -424,6 +471,29 @@ export default class ModelConversionDispatcher {
 	 * @param {Object} data Additional information about the change.
 	 * @param {engine.model.Position} data.sourcePosition Position from where the range has been removed.
 	 * @param {engine.model.Range} data.range Removed range (in {@link engine.model.Document#graveyard graveyard root}).
+	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
+	 */
+
+	/**
+	 * Fired for renamed element.
+	 *
+	 * **Note:** rename event is a specific event because it requires to have a specific callback. The callback should either
+	 * consume value from `consumable` (and provide all renaming functionality) or add `output` object to `data` object
+	 * with following values:
+	 * * `insertRange` - range in model containing renamed element only (without children),
+	 * * `moveRange` - range in model containing renamed element children only (without renamed element),
+	 * * `moveSourcePosition` - range in model in empty, fake element,
+	 * * `removeRange` - range in model containing the fake element.
+	 *
+	 * For model to view conversion, {@link engine.conversion.modelToView.rename default rename converter} handles
+	 * creating fake element, filling `data` with values and providing correct binding between elements. Use that
+	 * callback as the default callback for renaming.
+	 *
+	 * @event engine.conversion.ModelConversionDispatcher.rename
+	 * @param {Object} data Additional information about the change.
+	 * @param {engine.model.Element} data.element Renamed element.
+	 * @param {String} data.oldName Old name of the renamed element.
+	 * @param {engine.conversion.ModelConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */
 

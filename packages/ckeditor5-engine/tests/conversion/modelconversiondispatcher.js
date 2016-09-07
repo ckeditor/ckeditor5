@@ -7,6 +7,7 @@
 
 import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
 import ModelDocument from '/ckeditor5/engine/model/document.js';
+import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import ModelText from '/ckeditor5/engine/model/text.js';
 import ModelElement from '/ckeditor5/engine/model/element.js';
 import ModelRange from '/ckeditor5/engine/model/range.js';
@@ -109,6 +110,16 @@ describe( 'ModelConversionDispatcher', () => {
 			doc.batch().remove( image );
 
 			expect( cbRemove.called );
+		} );
+
+		it( 'should fire rename callback for rename changes', () => {
+			const cbRename = sinon.spy();
+
+			dispatcher.on( 'rename', cbRename );
+
+			doc.batch().rename( 'figure', image );
+
+			expect( cbRename.called );
 		} );
 
 		it( 'should fire addAttribute callbacks for add attribute change', () => {
@@ -310,6 +321,49 @@ describe( 'ModelConversionDispatcher', () => {
 			dispatcher.convertRemove( ModelPosition.createFromParentAndOffset( root , 3 ), range );
 
 			expect( loggedEvents ).to.deep.equal( [ 'remove:3:3' ] );
+		} );
+	} );
+
+	describe( 'convertRename', () => {
+		it( 'should fire rename event with correct name, consumable, and renamed element and it\'s old name in data', ( done ) => {
+			const oldName = 'oldName';
+			const element = new ModelElement( oldName );
+			element.name = 'newName';
+
+			dispatcher.on( 'rename', ( evt, data, consumable ) => {
+				expect( evt.name ).to.equal( 'rename:newName:oldName' );
+				expect( data.element ).to.equal( element );
+				expect( data.oldName ).to.equal( oldName );
+				expect( consumable.test( data.element, 'rename' ) ).to.be.true;
+
+				done();
+			} );
+
+			dispatcher.convertRename( element, oldName );
+		} );
+
+		it( 'should fire insert, move and remove conversion if fake model element was provided in data object', () => {
+			sinon.spy( dispatcher, 'convertInsertion' );
+			sinon.spy( dispatcher, 'convertMove' );
+			sinon.spy( dispatcher, 'convertRemove' );
+
+			dispatcher.on( 'rename', ( evt, data ) => {
+				const fakeElement = new ModelElement( 'oldName' );
+				const fakeParent = new ModelDocumentFragment();
+				fakeParent.appendChildren( fakeElement );
+
+				data.fakeElement = fakeElement;
+			} );
+
+			const element = new ModelElement( 'newName' );
+			const parent = new ModelDocumentFragment();
+			parent.appendChildren( element );
+
+			dispatcher.convertRename( element, 'oldName' );
+
+			expect( dispatcher.convertInsertion.calledOnce ).to.be.true;
+			expect( dispatcher.convertMove.calledOnce ).to.be.true;
+			expect( dispatcher.convertRemove.calledOnce ).to.be.true;
 		} );
 	} );
 

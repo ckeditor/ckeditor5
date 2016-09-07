@@ -27,7 +27,8 @@ import {
 	wrap,
 	unwrap,
 	move,
-	remove
+	remove,
+	rename
 } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
 
 import { createRangeOnElementOnly } from '/tests/engine/model/_utils/utils.js';
@@ -461,5 +462,84 @@ describe( 'remove', () => {
 		);
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><div>கு</div></div>' );
+	} );
+} );
+
+describe( 'rename', () => {
+	const oldName = 'oldName';
+	const newName = 'newName';
+
+	let element, converters;
+
+	beforeEach( () => {
+		converters = {
+			insertText: insertText(),
+			insert:	insertElement( ( data ) => new ViewContainerElement( data.item.name ) ),
+			move: move(),
+			remove: remove(),
+			rename: rename()
+		};
+
+		sinon.spy( converters, 'insert' );
+		sinon.spy( converters, 'move' );
+		sinon.spy( converters, 'remove' );
+
+		element = new ModelElement( oldName, null, new ModelText( 'foo' ) );
+		modelRoot.appendChildren( element );
+
+		dispatcher.on( 'insert:$text', converters.insertText );
+		dispatcher.on( 'insert', converters.insert );
+		dispatcher.on( 'move', converters.move );
+		dispatcher.on( 'remove', converters.remove );
+		dispatcher.on( 'rename', converters.rename );
+
+		dispatcher.convertInsertion( ModelRange.createOn( element ) );
+
+		element.name = newName;
+	} );
+
+	afterEach( () => {
+		converters.insert.restore();
+		converters.move.restore();
+		converters.remove.restore();
+	} );
+
+	it( 'should unbind renamed element from view, add fake element to model and bind it with proper view element', () => {
+		const viewElement = viewRoot.getChild( 0 );
+
+		dispatcher.on( 'rename', ( evt, data, consumable, conversionApi ) => {
+			expect( data.fakeElement ).to.be.instanceof( ModelElement );
+			expect( data.fakeElement.parent ).to.equal( data.element.parent );
+
+			expect( conversionApi.mapper.toViewElement( data.element ) ).to.be.undefined;
+			expect( conversionApi.mapper.toViewElement( data.fakeElement ) ).to.equal( viewElement );
+		} );
+
+		dispatcher.convertRename( element, oldName );
+	} );
+
+	it( 'should enable default rename conversion, that uses already registered callbacks', () => {
+		expect( viewRoot.getChild( 0 ).name ).to.equal( 'oldName' );
+		dispatcher.convertRename( element, oldName );
+
+		// Called twice, first time when renamed element was originally inserted to model and converted to view.
+		expect( converters.insert.calledTwice ).to.be.true;
+		expect( converters.move.calledOnce ).to.be.true;
+		expect( converters.remove.calledOnce ).to.be.true;
+
+		expect( viewRoot.getChild( 0 ).name ).to.equal( 'newName' );
+		expect( viewRoot.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+	} );
+
+	it( 'should not execute if converted value was already consumed', () => {
+		dispatcher.on( 'rename', ( evt, data, consumable ) => {
+			consumable.consume( data.element, 'rename' );
+		}, 'high' );
+
+		dispatcher.on( 'rename', ( evt, data ) => {
+			expect( data.fakeElement ).to.be.undefined;
+		} );
+
+		dispatcher.convertRename( element, oldName );
 	} );
 } );

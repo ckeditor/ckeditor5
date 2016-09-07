@@ -88,10 +88,14 @@ function bindWithDocument() {
 		this.root.document,
 		'change',
 		( event, type, changes ) => {
-			transform.call( this, type, changes.range, changes.sourcePosition );
+			if ( supportedTypes.has( type ) ) {
+				transform.call( this, type, changes.range, changes.sourcePosition );
+			}
 		}
 	);
 }
+
+const supportedTypes = new Set( [ 'insert', 'move', 'remove', 'reinsert' ] );
 
 /**
  * Updates this range accordingly to the updates applied to the model. Bases on change events.
@@ -146,10 +150,8 @@ function transform( type, range, position ) {
 			break;
 	}
 
-	if ( updated ) {
-		this.start = updated.start;
-		this.end = updated.end;
-	}
+	this.start = updated.start;
+	this.end = updated.end;
 }
 
 mix( LiveRange, EmitterMixin );

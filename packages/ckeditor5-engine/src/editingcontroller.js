@@ -6,7 +6,7 @@
 import ViewDocument from './view/document.js';
 import Mapper from './conversion/mapper.js';
 import ModelConversionDispatcher from './conversion/modelconversiondispatcher.js';
-import { insertText, remove, move } from './conversion/model-to-view-converters.js';
+import { insertText, remove, move, rename } from './conversion/model-to-view-converters.js';
 import { convertSelectionChange } from './conversion/view-selection-to-model-converters.js';
 import {
 	convertRangeSelection,
@@ -101,6 +101,7 @@ export default class EditingController {
 		this.modelToView.on( 'insert:$text', insertText(), 'lowest' );
 		this.modelToView.on( 'remove', remove(), 'low' );
 		this.modelToView.on( 'move', move(), 'low' );
+		this.modelToView.on( 'rename', rename(), 'low' );
 
 		// Attach default selection converters.
 		this.modelToView.on( 'selection', clearAttributes(), 'low' );
