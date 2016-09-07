@@ -31,7 +31,6 @@ export default class Element extends Node {
 		/**
 		 * Element name.
 		 *
-		 * @readonly
 		 * @member {String} engine.model.Element#name
 		 */
 		this.name = name;

@@ -67,8 +67,8 @@ export default class Operation {
 		 *
 		 * @protected
 		 * @method engine.model.operation.Operation#_execute
-		 * @returns {Object} Object with additional information about the applied changes. Always has `range`
-		 * property containing changed nodes. May have additional properties depending on the operation type.
+		 * @returns {Object} Object with additional information about the applied changes. It properties depends on the
+		 * operation type.
 		 */
 	}
 
