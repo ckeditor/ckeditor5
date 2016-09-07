@@ -4,6 +4,7 @@
  */
 
 /* bender-tags: browser-only */
+/* globals window, setTimeout */
 
 import XmlDataProcessor from '/ckeditor5/engine/dataprocessor/xmldataprocessor.js';
 import xssTemplates from '/tests/engine/dataprocessor/_utils/xsstemplates.js';
