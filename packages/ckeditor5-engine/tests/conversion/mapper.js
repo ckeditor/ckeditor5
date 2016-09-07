@@ -54,6 +54,42 @@ describe( 'Mapper', () => {
 		} );
 	} );
 
+	describe( 'unbindModelElement', () => {
+		it( 'should remove binding between given model element and view element that it was bound to', () => {
+			const viewA = new ViewElement( 'a' );
+			const modelA = new ModelElement( 'a' );
+
+			const mapper = new Mapper();
+			mapper.bindElements( modelA, viewA );
+
+			expect( mapper.toModelElement( viewA ) ).to.equal( modelA );
+			expect( mapper.toViewElement( modelA ) ).to.equal( viewA );
+
+			mapper.unbindModelElement( modelA );
+
+			expect( mapper.toModelElement( viewA ) ).to.be.undefined;
+			expect( mapper.toViewElement( modelA ) ).to.be.undefined;
+		} );
+	} );
+
+	describe( 'unbindViewElement', () => {
+		it( 'should remove binding between given view element and model element that it was bound to', () => {
+			const viewA = new ViewElement( 'a' );
+			const modelA = new ModelElement( 'a' );
+
+			const mapper = new Mapper();
+			mapper.bindElements( modelA, viewA );
+
+			expect( mapper.toModelElement( viewA ) ).to.equal( modelA );
+			expect( mapper.toViewElement( modelA ) ).to.equal( viewA );
+
+			mapper.unbindViewElement( viewA );
+
+			expect( mapper.toModelElement( viewA ) ).to.be.undefined;
+			expect( mapper.toViewElement( modelA ) ).to.be.undefined;
+		} );
+	} );
+
 	describe( 'Standard mapping', () => {
 		let modelDiv, modelP, modelImg;
 
@@ -62,7 +98,7 @@ describe( 'Mapper', () => {
 
 		let mapper;
 
-		before( () => {
+		beforeEach( () => {
 			// Tree Model:
 			//
 			// <div>             ---> modelDiv
@@ -164,6 +200,22 @@ describe( 'Mapper', () => {
 				expect( modelPosition.offset ).to.equal( modelOffset );
 			}
 
+			it( 'should fire viewToModelPosition event and return value calculated in callback to that event', () => {
+				const viewPosition = new ViewPosition( viewDiv, 0 );
+				const stub = {};
+
+				mapper.on( 'viewToModelPosition', ( evt, position, data ) => {
+					expect( position ).to.equal( viewPosition );
+
+					data.modelPosition = stub;
+					evt.stop();
+				} );
+
+				const result = mapper.toModelPosition( viewPosition );
+
+				expect( result ).to.equal( stub );
+			} );
+
 			it( 'should transform viewDiv 0', () => createToModelTest( viewDiv, 0, modelDiv, 0 ) );
 			it( 'should transform viewDiv 1', () => createToModelTest( viewDiv, 1, modelDiv, 1 ) );
 			it( 'should transform viewDiv 2', () => createToModelTest( viewDiv, 2, modelDiv, 2 ) );
@@ -227,6 +279,22 @@ describe( 'Mapper', () => {
 				expect( viewPosition.parent ).to.equal( viewElement );
 				expect( viewPosition.offset ).to.equal( viewOffset );
 			}
+
+			it( 'should fire modelToViewPosition event and return value calculated in callback to that event', () => {
+				const modelPosition = new ModelPosition( modelDiv, [ 0 ] );
+				const stub = {};
+
+				mapper.on( 'modelToViewPosition', ( evt, position, data ) => {
+					expect( position ).to.equal( modelPosition );
+
+					data.viewPosition = stub;
+					evt.stop();
+				} );
+
+				const result = mapper.toViewPosition( modelPosition );
+
+				expect( result ).to.equal( stub );
+			} );
 
 			it( 'should transform modelDiv 0', () => createToViewTest( modelDiv, 0, viewTextX, 0 ) );
 			it( 'should transform modelDiv 1', () => createToViewTest( modelDiv, 1, viewTextX, 1 ) );
