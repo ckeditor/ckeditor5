@@ -34,12 +34,12 @@ export default class LinkFormView extends FormView {
 				tag: 'div',
 				attributes: {
 					class: [
-						'ck-link-form_actions'
+						'ck-link-form-actions'
 					]
 				}
 			}
 		];
 
-		this.register( 'actions', 'div.ck-link-form_actions' );
+		this.register( 'actions', 'div.ck-link-form-actions' );
 	}
 }
