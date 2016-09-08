@@ -18,8 +18,6 @@ $ck-balloon-arrow-half-width: 10px;
 	background: ck-color( 'background' );
 	border: 1px solid ck-border-color( 'foreground' );
 
-	// TODO: Create helper for shadows.
-	box-shadow: 0 0 5px ck-color( 'foreground', -15 );
 	z-index: ck-z( 'modal' );
 
 	&:before,
