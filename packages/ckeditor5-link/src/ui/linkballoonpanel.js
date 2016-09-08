@@ -11,6 +11,8 @@ import LabeledInput from '../../ui/labeledinput/labeledinput.js';
 import LabeledInputView from '../../ui/labeledinput/labeledinputview.js';
 import LinkForm from './linkform.js';
 import LinkFormView from './linkformview.js';
+import InputText from '../../ui/inputtext/inputtext.js';
+import InputTextView from '../../ui/inputtext/inputtextview.js';
 
 /**
  * The link balloon panel controller class.
@@ -88,9 +90,6 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		this.form.add( 'actions', this.cancelButton );
 		this.form.add( 'actions', this.unlinkButton );
 
-		// Add `Unlink` button to the form additional action.
-		// this.form.add( 'additionalActions', this.unlinkButton );
-
 		return this.form;
 	}
 
@@ -105,6 +104,7 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		const model = new Model( {
 			label: t( 'Link URL' )
 		} );
+		const inputText = new InputText( new Model(), new InputTextView( this.locale ) );
 
 		model.bind( 'value' ).to( this.model, 'url' );
 
@@ -113,7 +113,7 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		 *
 		 * @member {ui.input.LabeledInput} link.ui.LinkBalloonPanel#urlInput
 		 */
-		this.urlInput = new LabeledInput( model, new LabeledInputView( this.locale ) );
+		this.urlInput = new LabeledInput( model, new LabeledInputView( this.locale ), inputText );
 
 		return this.urlInput;
 	}
