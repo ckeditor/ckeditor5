@@ -30,7 +30,6 @@
 .ck-dropdown__panel {
 	border: 1px solid ck-border-color( 'foreground' );
 	display: none;
-	box-shadow: 0 0 5px ck-color( 'foreground', -15 );
 	position: absolute;
 	left: 0px;
 
@@ -42,6 +41,7 @@
 	z-index: ck-z();
 
 	@include ck-rounded-corners();
+	@include ck-shadow();
 
 	&-visible {
 		display: inline-block;

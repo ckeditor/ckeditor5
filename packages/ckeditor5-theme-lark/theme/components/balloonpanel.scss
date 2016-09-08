@@ -8,6 +8,7 @@ $ck-balloon-arrow-half-width: 10px;
 .ck-balloon-panel {
 	@include ck-unselectable();
 	@include ck-rounded-corners();
+	@include ck-shadow();
 
 	min-width: 50px;
 	min-height: 15px;
@@ -32,7 +33,7 @@ $ck-balloon-arrow-half-width: 10px;
 	}
 
 	&:before {
-		z-index: ck-z( 'default' );
+		z-index: ck-z();
 	}
 
 	&:after {

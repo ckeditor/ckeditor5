@@ -1,7 +1,6 @@
 // Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
-.ck-input__label {
-	display: block;
-	font-weight: bold;
+@mixin ck-shadow() {
+	box-shadow: 0 0 5px ck-color( 'foreground', -15 );
 }
