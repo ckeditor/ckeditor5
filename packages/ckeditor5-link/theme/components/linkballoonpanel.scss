@@ -5,19 +5,20 @@
 	padding: ck-spacing();
 
 	// Box to accommodate buttons.
-	&_actions {
-		display: flex;
-		flex-direction: row-reverse;
+	.ck-link-form_actions {
+		clear: both;
 		padding-top: ck-spacing();
 
 		.ck-button {
+			float: right;
+
 			& + .ck-button {
 				margin-right: ck-spacing( 'medium' );
-			}
-		}
 
-		.ck-box {
-			flex-grow: 2;
+				& + .ck-button {
+					float: left;
+				}
+			}
 		}
 	}
 }

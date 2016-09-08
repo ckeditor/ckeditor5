@@ -209,10 +209,12 @@ describe( 'Link', () => {
 			expect( balloonPanel.view.model.isVisible ).to.true;
 		} );
 
-		it( 'should focus editor on balloonPanel#model hide event', () => {
+		it( 'should focus editor on balloonPanel hide', () => {
 			const focusSpy = sinon.spy( editor.editing.view, 'focus' );
 
-			balloonPanel.model.fire( 'hide' );
+			balloonPanel.view.model.isVisible = true;
+
+			balloonPanel.view.model.isVisible = false;
 
 			expect( focusSpy.calledOnce ).to.true;
 		} );

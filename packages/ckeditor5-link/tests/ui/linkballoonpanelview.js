@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: ui, link */
+/* bender-tags: ui, balloonPanel */
 
 import LinkBalloonPanelView from '/ckeditor5/link/ui/linkballoonpanelview.js';
 import BalloonPanelView from '/ckeditor5/ui/balloonpanel/balloonpanelview.js';

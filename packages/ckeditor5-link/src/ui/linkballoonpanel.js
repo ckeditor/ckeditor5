@@ -9,10 +9,8 @@ import ButtonView from '../../ui/button/buttonview.js';
 import BalloonPanel from '../../ui/balloonpanel/balloonpanel.js';
 import LabeledInput from '../../ui/labeledinput/labeledinput.js';
 import LabeledInputView from '../../ui/labeledinput/labeledinputview.js';
-import Form from '../../ui/form/form.js';
-import FormView from '../../ui/form/formview.js';
-import Box from '../../ui/box/box.js';
-import BoxView from '../../ui/box/boxview.js';
+import LinkForm from './linkform.js';
+import LinkFormView from './linkformview.js';
 
 /**
  * The link balloon panel controller class.
@@ -34,8 +32,8 @@ export default class LinkBalloonPanel extends BalloonPanel {
 	/**
 	 * Creates an instance of {@link link.ui.LinkBalloonPanel} class.
 	 *
-	 * @param {ui.balloonPanel.BalloonPanelModel} model Model of this balloon panel.
-	 * @param {ui.View} view View of this balloon panel.
+	 * @param {link.ui.balloonPanel.LinkBalloonPanelModel} model Model of this link balloon panel.
+	 * @param {ui.View} view View of this link balloon panel.
 	 */
 	constructor( model, view ) {
 		super( model, view );
@@ -59,11 +57,39 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		 *
 		 * @member {ui.form.Form} link.ui.LinkBalloonPanel#form
 		 */
-		this.form = new Form( formModel, new FormView( this.locale ) );
+		this.form = new LinkForm( formModel, new LinkFormView( this.locale ) );
 
-		// Add Input and buttons as a form content.
+		/**
+		 * Button component for submitting form.
+		 *
+		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#saveButton
+		 */
+		this.saveButton = this._createSaveButton();
+
+		/**
+		 * Button component for canceling form.
+		 *
+		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#cancelButton
+		 */
+		this.cancelButton = this._createCancelButton();
+
+		/**
+		 * Button component for unlinking.
+		 *
+		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#unlinkButton
+		 */
+		this.unlinkButton = this._createUnlinkButton();
+
+		// Add Input to the form content.
 		this.form.add( 'content', this._createLabeledInput() );
-		this.form.add( 'content', this._createButtons() );
+
+		// Add `Save` and `Cancel` buttons to the form actions.
+		this.form.add( 'actions', this.saveButton );
+		this.form.add( 'actions', this.cancelButton );
+		this.form.add( 'actions', this.unlinkButton );
+
+		// Add `Unlink` button to the form additional action.
+		// this.form.add( 'additionalActions', this.unlinkButton );
 
 		return this.form;
 	}
@@ -90,53 +116,6 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		this.urlInput = new LabeledInput( model, new LabeledInputView( this.locale ) );
 
 		return this.urlInput;
-	}
-
-	/**
-	 * Create {@link ui.box.Box Box} instance with `Cancel` and `Save` buttons.
-	 *
-	 * @private
-	 * @returns {ui.box.Box} Box component.
-	 */
-	_createButtons() {
-		const wrapper = new Box( new Model( {
-			alignContent: 'right'
-		} ), new BoxView( this.locale ) );
-		wrapper.view.element.classList.add( 'ck-link-balloon-panel_actions' );
-
-		const additionalActions = new Box( new Model(), new BoxView( this.locale ) );
-
-		/**
-		 * Button component for submitting form.
-		 *
-		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#saveButton
-		 */
-		this.saveButton = this._createSaveButton();
-
-		/**
-		 * Button component for canceling form.
-		 *
-		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#cancelButton
-		 */
-		this.cancelButton = this._createCancelButton();
-
-		/**
-		 * Button component for unlinking.
-		 *
-		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#unlinkButton
-		 */
-		this.unlinkButton = this._createUnlinkButton();
-
-		// Add `Save`, `Cancel` and `Unlink` buttons as a wrapper content.
-		wrapper.add( 'content', this.saveButton );
-		wrapper.add( 'content', this.cancelButton );
-
-		// Append Unlink button into additional action box.
-		additionalActions.add( 'content', this.unlinkButton );
-
-		wrapper.add( 'content', additionalActions );
-
-		return wrapper;
 	}
 
 	/**

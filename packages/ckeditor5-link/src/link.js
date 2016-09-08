@@ -194,7 +194,11 @@ export default class Link extends Feature {
 		} );
 
 		// Always focus editor on panel hide.
-		this.listenTo( panelModel, 'hide', () => viewDocument.focus() );
+		this.listenTo( balloonPanel.view.model, 'change:isVisible', ( evt, propertyName, value ) => {
+			if ( !value ) {
+				viewDocument.focus();
+			}
+		} );
 
 		// Hide panel on editor focus.
 		// @TODO replace it by some FocusManager.

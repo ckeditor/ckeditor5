@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: ui, link */
+/* bender-tags: ui, balloonPanel */
 
 import LinkBalloonPanel from '/ckeditor5/link/ui/linkballoonpanel.js';
 import LinkBalloonPanelView from '/ckeditor5/link/ui/linkballoonpanelview.js';
 import BalloonPanel from '/ckeditor5/ui/balloonpanel/balloonpanel.js';
 import Model from '/ckeditor5/ui/model.js';
 
-import Form from '/ckeditor5/ui/form/form.js';
+import LinkForm from '/ckeditor5/link/ui/linkform.js';
 import LabeledInput from '/ckeditor5/ui/labeledinput/labeledinput.js';
 import Button from '/ckeditor5/ui/button/button.js';
 
@@ -36,11 +36,11 @@ describe( 'LinkBalloonPanel', () => {
 
 		describe( 'child components', () => {
 			describe( 'form', () => {
-				it( 'should create Form instance', () => {
-					expect( linkBalloonPanel.form ).to.instanceof( Form );
+				it( 'should be created', () => {
+					expect( linkBalloonPanel.form ).to.instanceof( LinkForm );
 				} );
 
-				it( 'should append to "content" collection', () => {
+				it( 'should be appended to "content" collection', () => {
 					expect( linkBalloonPanel.collections.get( 'content' ).get( 0 ) ).to.deep.equal( linkBalloonPanel.form );
 				} );
 
@@ -56,11 +56,11 @@ describe( 'LinkBalloonPanel', () => {
 			} );
 
 			describe( 'urlInput', () => {
-				it( 'should create LabeledInput instance', () => {
+				it( 'should be created', () => {
 					expect( linkBalloonPanel.urlInput ).to.instanceof( LabeledInput );
 				} );
 
-				it( 'should append to Form "content" collection', () => {
+				it( 'should be appended to the form "content" collection', () => {
 					expect( linkBalloonPanel.form.collections.get( 'content' ).get( 0 ) ).to.deep.equal( linkBalloonPanel.urlInput );
 				} );
 
@@ -74,8 +74,12 @@ describe( 'LinkBalloonPanel', () => {
 			} );
 
 			describe( 'saveButton', () => {
-				it( 'should create Button instance', () => {
+				it( 'should be created', () => {
 					expect( linkBalloonPanel.saveButton ).to.instanceof( Button );
+				} );
+
+				it( 'should be appended to the form "actions" collection', () => {
+					expect( linkBalloonPanel.form.collections.get( 'actions' ).get( 0 ) ).to.deep.equal( linkBalloonPanel.saveButton );
 				} );
 
 				it( 'should fire model#execute event on DOM click event', ( done ) => {
@@ -91,14 +95,18 @@ describe( 'LinkBalloonPanel', () => {
 					} );
 				} );
 
-				it( 'should be a submit', () => {
+				it( 'should be a type `submit`', () => {
 					expect( linkBalloonPanel.saveButton.model.type ).to.equal( 'submit' );
 				} );
 			} );
 
 			describe( 'cancelButton', () => {
-				it( 'should create Button instance', () => {
+				it( 'should be created', () => {
 					expect( linkBalloonPanel.cancelButton ).to.instanceof( Button );
+				} );
+
+				it( 'should be appended to the form "actions" collection', () => {
+					expect( linkBalloonPanel.form.collections.get( 'actions' ).get( 1 ) ).to.deep.equal( linkBalloonPanel.cancelButton );
 				} );
 
 				it( 'should hide LinkBalloonPanel on cancelButton.model#execute event', () => {
@@ -111,8 +119,12 @@ describe( 'LinkBalloonPanel', () => {
 			} );
 
 			describe( 'unlinkButton', () => {
-				it( 'should create Button instance', () => {
+				it( 'should be created', () => {
 					expect( linkBalloonPanel.unlinkButton ).to.instanceof( Button );
+				} );
+
+				it( 'should be appended to the form "actions" collection', () => {
+					expect( linkBalloonPanel.form.collections.get( 'actions' ).get( 2 ) ).to.deep.equal( linkBalloonPanel.unlinkButton );
 				} );
 
 				it( 'should fire model#execute-unlink event on unlinkButton.model#execute event', () => {
