@@ -29,16 +29,16 @@ describe( 'Link', () => {
 		return ClassicTestEditor.create( editorElement, {
 			features: [ Link ]
 		} )
-			.then( newEditor => {
-				newEditor.editing.view.attachDomRoot( editorElement );
+		.then( newEditor => {
+			newEditor.editing.view.attachDomRoot( editorElement );
 
-				editor = newEditor;
+			editor = newEditor;
 
-				linkFeature = editor.plugins.get( Link );
-				linkButton = editor.ui.featureComponents.create( 'link' );
-				unlinkButton = editor.ui.featureComponents.create( 'unlink' );
-				balloonPanel = linkFeature.balloonPanel;
-			} );
+			linkFeature = editor.plugins.get( Link );
+			linkButton = editor.ui.featureComponents.create( 'link' );
+			unlinkButton = editor.ui.featureComponents.create( 'unlink' );
+			balloonPanel = linkFeature.balloonPanel;
+		} );
 	} );
 
 	afterEach( () => {
@@ -81,6 +81,8 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should not open panel on linkButton#model execute event, when editor is not focused', () => {
+			editor.editing.view.isFocused = false;
+
 			linkButton.model.fire( 'execute' );
 
 			expect( linkFeature.balloonPanel.view.isVisible ).to.false;

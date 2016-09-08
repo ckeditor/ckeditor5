@@ -28,7 +28,7 @@ describe( 'LinkFormView', () => {
 
 		it( 'should register "actions" region', () => {
 			expect( view.regions.get( 1 ).name ).to.equal( 'actions' );
-			expect( view.regions.get( 1 ).element ).to.equal( view.element.querySelector( '.ck-link-form-actions' ) );
+			expect( view.regions.get( 1 ).element ).to.equal( view.element.querySelector( '.ck-link-form__actions' ) );
 		} );
 	} );
 } );

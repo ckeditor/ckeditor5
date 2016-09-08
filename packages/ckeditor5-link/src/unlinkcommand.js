@@ -25,7 +25,7 @@ export default class UnlinkCommand extends Command {
 		 * the command's attribute set. For range selection it means that all nodes inside have the attribute applied.
 		 *
 		 * @observable
-		 * @member {Boolean} core.command.ToggleAttributeCommand#value
+		 * @member {Boolean} core.command.ToggleAttributeCommand#hasValue
 		 */
 		this.set( 'hasValue', undefined );
 

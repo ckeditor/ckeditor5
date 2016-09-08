@@ -9,9 +9,9 @@ import FormView from '../../ui/form/formview.js';
 /**
  * The link form view controller class.
  *
- * See {@link link.ui.LinkForm}.
+ * See {@link link.LinkForm}.
  *
- * @memberOf link.ui
+ * @memberOf link
  * @extends ui.form.FormView
  */
 export default class LinkFormView extends FormView {
@@ -34,12 +34,12 @@ export default class LinkFormView extends FormView {
 				tag: 'div',
 				attributes: {
 					class: [
-						'ck-link-form-actions'
+						'ck-link-form__actions'
 					]
 				}
 			}
 		];
 
-		this.register( 'actions', 'div.ck-link-form-actions' );
+		this.register( 'actions', 'div.ck-link-form__actions' );
 	}
 }

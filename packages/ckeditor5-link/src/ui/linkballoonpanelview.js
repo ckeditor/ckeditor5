@@ -9,9 +9,9 @@ import BalloonPanelView from '../../ui/balloonpanel/balloonpanelview.js';
 /**
  * The link balloon panel view class.
  *
- * See {@link link.ui.LinkBalloonPanel}.
+ * See {@link link.LinkBalloonPanel}.
  *
- * @memberOf link.ui
+ * @memberOf link
  * @extends ui.balloonPanel.BalloonPanelView
  */
 export default class LinkBalloonPanelView extends BalloonPanelView {

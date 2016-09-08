@@ -17,7 +17,7 @@ import InputTextView from '../../ui/inputtext/inputtextview.js';
 /**
  * The link balloon panel controller class.
  *
- * 		const model = new Model( {
+ *		const model = new Model( {
  *			maxWidth: 300,
  *			url: 'http://ckeditor.com'
  *		} );
@@ -25,16 +25,16 @@ import InputTextView from '../../ui/inputtext/inputtextview.js';
  *		// An instance of LinkBalloonPanel.
  *		new LinkBalloonPanel( model, new LinkBalloonPanelView() );
  *
- * See {@link link.ui.LinkBalloonPanelView}.
+ * See {@link link.LinkBalloonPanelView}.
  *
- * @memberOf link.ui
+ * @memberOf link
  * @extends ui.balloonPanel.BalloonPanel
  */
 export default class LinkBalloonPanel extends BalloonPanel {
 	/**
-	 * Creates an instance of {@link link.ui.LinkBalloonPanel} class.
+	 * Creates an instance of {@link link.LinkBalloonPanel} class.
 	 *
-	 * @param {link.ui.balloonPanel.LinkBalloonPanelModel} model Model of this link balloon panel.
+	 * @param {link.balloonPanel.LinkBalloonPanelModel} model Model of this link balloon panel.
 	 * @param {ui.View} view View of this link balloon panel.
 	 */
 	constructor( model, view ) {
@@ -57,28 +57,28 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		/**
 		 * Instance of {@link ui.form.Form Form} component.
 		 *
-		 * @member {ui.form.Form} link.ui.LinkBalloonPanel#form
+		 * @member {ui.form.Form} link.LinkBalloonPanel#form
 		 */
 		this.form = new LinkForm( formModel, new LinkFormView( this.locale ) );
 
 		/**
 		 * Button component for submitting form.
 		 *
-		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#saveButton
+		 * @member {ui.button.Button} link.LinkBalloonPanel#saveButton
 		 */
 		this.saveButton = this._createSaveButton();
 
 		/**
 		 * Button component for canceling form.
 		 *
-		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#cancelButton
+		 * @member {ui.button.Button} link.LinkBalloonPanel#cancelButton
 		 */
 		this.cancelButton = this._createCancelButton();
 
 		/**
 		 * Button component for unlinking.
 		 *
-		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#unlinkButton
+		 * @member {ui.button.Button} link.LinkBalloonPanel#unlinkButton
 		 */
 		this.unlinkButton = this._createUnlinkButton();
 
@@ -111,7 +111,7 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		/**
 		 * Input component for providing `href` value.
 		 *
-		 * @member {ui.input.LabeledInput} link.ui.LinkBalloonPanel#urlInput
+		 * @member {ui.input.LabeledInput} link.LinkBalloonPanel#urlInput
 		 */
 		this.urlInput = new LabeledInput( model, new LabeledInputView( this.locale ), inputText );
 
@@ -173,14 +173,12 @@ export default class LinkBalloonPanel extends BalloonPanel {
 			isEnabled: true,
 			isOn: false,
 			label: t( 'Unlink' ),
-			withText: true
+			icon: 'unlink'
 		} );
 
 		unlinkModel.on( 'execute', () => this.model.fire( 'execute-unlink' ) );
 
 		const button = new Button( unlinkModel, new ButtonView( this.locale ) );
-
-		button.view.element.classList.add( 'ck-button-action' );
 
 		return button;
 	}

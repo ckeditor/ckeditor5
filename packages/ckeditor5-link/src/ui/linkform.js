@@ -10,16 +10,16 @@ import Form from '../../ui/form/form.js';
  *
  *		new LinkForm( new Model(), new LinkFormView() );
  *
- * See {@link link.ui.LinkFormView}.
+ * See {@link link.LinkFormView}.
  *
- * @memberOf link.ui
+ * @memberOf link
  * @extends ui.form.Form
  */
 export default class LinkForm extends Form {
 	/**
-	 * Creates an instance of {@link link.ui.LinkForm} class.
+	 * Creates an instance of {@link link.LinkForm} class.
 	 *
-	 * @param {link.ui.LinkFormModel} model Model of this link form.
+	 * @param {link.LinkFormModel} model Model of this link form.
 	 * @param {ui.View} view View of this link form.
 	 */
 	constructor( model, view ) {
