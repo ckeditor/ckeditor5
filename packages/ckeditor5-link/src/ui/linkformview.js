@@ -9,9 +9,9 @@ import FormView from '../../ui/form/formview.js';
 /**
  * The link form view controller class.
  *
- * See {@link link.LinkForm}.
+ * See {@link link.ui.LinkForm}.
  *
- * @memberOf link
+ * @memberOf link.ui
  * @extends ui.form.FormView
  */
 export default class LinkFormView extends FormView {

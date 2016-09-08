@@ -166,11 +166,11 @@ describe( 'Link', () => {
 			expect( model.url ).to.equal( 'http://cksource.com' );
 		} );
 
-		it( 'should execute link command on balloonPanel#model execute event', () => {
+		it( 'should execute link command on balloonPanel#model executeLink event', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
 			balloonPanel.model.url = 'http://cksource.com';
-			balloonPanel.model.fire( 'execute' );
+			balloonPanel.model.fire( 'executeLink' );
 
 			expect( executeSpy.calledOnce ).to.true;
 			expect( executeSpy.calledWithExactly( 'link', 'http://cksource.com' ) ).to.true;
@@ -179,24 +179,24 @@ describe( 'Link', () => {
 		it( 'should hide balloon panel on balloonPanel#model execute event', () => {
 			const hideSpy = testUtils.sinon.spy( balloonPanel.view, 'hide' );
 
-			balloonPanel.model.fire( 'execute' );
+			balloonPanel.model.fire( 'executeLink' );
 
 			expect( hideSpy.calledOnce ).to.true;
 		} );
 
-		it( 'should execute unlink command on balloonPanel#model execute-unlink event', () => {
+		it( 'should execute unlink command on balloonPanel#model executeUnlink event', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-			balloonPanel.model.fire( 'execute-unlink' );
+			balloonPanel.model.fire( 'executeUnlink' );
 
 			expect( executeSpy.calledOnce ).to.true;
 			expect( executeSpy.calledWithExactly( 'unlink' ) ).to.true;
 		} );
 
-		it( 'should hide balloon panel on balloonPanel#model execute-unlink event', () => {
+		it( 'should hide balloon panel on balloonPanel#model executeUnlink event', () => {
 			const hideSpy = testUtils.sinon.spy( balloonPanel.view, 'hide' );
 
-			balloonPanel.model.fire( 'execute-unlink' );
+			balloonPanel.model.fire( 'executeUnlink' );
 
 			expect( hideSpy.calledOnce ).to.true;
 		} );

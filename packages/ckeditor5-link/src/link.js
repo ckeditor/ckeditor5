@@ -19,7 +19,7 @@ import LinkBalloonPanelView from './ui/linkballoonpanelview.js';
 /**
  * The link feature. It introduces the Link and Unlink buttons and the <kbd>Ctrl+L</kbd> keystroke.
  *
- * It uses the {@link basic-styles.LinkEngine link engine feature}.
+ * It uses the {@link link.LinkEngine link engine feature}.
  *
  * @memberOf link
  * @extends core.Feature
@@ -36,13 +36,12 @@ export default class Link extends Feature {
 	 * @inheritDoc
 	 */
 	init() {
-		// Register document click observer.
 		this.editor.editing.view.addObserver( ClickObserver );
 
 		/**
 		 * Link balloon panel component.
 		 *
-		 * @member {link.LinkBalloonPanel}
+		 * @member {link.ui.LinkBalloonPanel}
 		 */
 		this.balloonPanel = this._createBalloonPanel();
 
@@ -52,8 +51,8 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Create toolbar link button. Click on button will show
-	 * {@link link.LinkBalloonPanel LinkBalloonPanel} attached to the selection.
+	 * Creates toolbar link button. Click on button will show
+	 * {@link link.ui.LinkBalloonPanel LinkBalloonPanel} attached to the selection.
 	 *
 	 * @private
 	 */
@@ -89,7 +88,7 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Create toolbar unlink button. Click on button will unlink selected link.
+	 * Creates toolbar unlink button. Click on button will unlink selected link.
 	 *
 	 * @private
 	 */
@@ -123,7 +122,7 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Create {@link link.LinkBalloonPanel LinkBalloonPanel} instance
+	 * Creates {@link link.ui.LinkBalloonPanel LinkBalloonPanel} instance
 	 * and attach link command to LinkBalloonPanelModel#execute event.
 	 *
 	 *	                       +------------------------------------+
@@ -159,7 +158,7 @@ export default class Link extends Feature {
 	 *	                            |                   +----+ |
 	 *	                            +--------------------------+
 	 * @private
-	 * @returns {link.LinkBalloonPanel} Link balloon panel instance.
+	 * @returns {link.ui.LinkBalloonPanel} Link balloon panel instance.
 	 */
 	_createBalloonPanel() {
 		const editor = this.editor;
@@ -177,16 +176,16 @@ export default class Link extends Feature {
 		// Create Balloon panel instance.
 		const balloonPanel = new LinkBalloonPanel( panelModel, new LinkBalloonPanelView( editor.locale ) );
 
-		// Observe `LinkBalloonPanelMode#execute` event from within the model of the panel,
+		// Observe `LinkBalloonPanelMode#executeLink` event from within the model of the panel,
 		// which means that the `Save` button has been clicked.
-		this.listenTo( panelModel, 'execute', () => {
+		this.listenTo( panelModel, 'executeLink', () => {
 			editor.execute( 'link', balloonPanel.urlInput.value );
 			balloonPanel.view.hide();
 		} );
 
-		// Observe `LinkBalloonPanelMode#execute-unlink` event from within the model of the panel,
+		// Observe `LinkBalloonPanelMode#executeUnlink` event from within the model of the panel,
 		// which means that the `Unlink` button has been clicked.
-		this.listenTo( panelModel, 'execute-unlink', () => {
+		this.listenTo( panelModel, 'executeUnlink', () => {
 			editor.execute( 'unlink' );
 			balloonPanel.view.hide();
 		} );
@@ -209,8 +208,8 @@ export default class Link extends Feature {
 			}
 		} );
 
-		// Handle `Ctrl+l` keystroke and show panel.
-		editor.keystrokes.set( 'CTRL+l', () => this._attachPanelToElement() );
+		// Handle `Ctrl+L` keystroke and show panel.
+		editor.keystrokes.set( 'CTRL+L', () => this._attachPanelToElement() );
 
 		// Append panel element to body.
 		editor.ui.add( 'body', balloonPanel );
@@ -219,7 +218,7 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Show {@link link#balloonPanel LinkBalloonPanel} and attach to target element.
+	 * Shows {@link link#balloonPanel LinkBalloonPanel} and attach to target element.
 	 * If selection is collapsed and is placed inside link element, then panel will be attached
 	 * to whole link element, otherwise will be attached to the selection.
 	 *

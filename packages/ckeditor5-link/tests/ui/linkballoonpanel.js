@@ -44,10 +44,10 @@ describe( 'LinkBalloonPanel', () => {
 					expect( linkBalloonPanel.collections.get( 'content' ).get( 0 ) ).to.deep.equal( linkBalloonPanel.form );
 				} );
 
-				it( 'should delegate form.model#execute to the model', () => {
+				it( 'should fire model#executeLink event on form.model#execute event', () => {
 					const executeSpy = sinon.spy();
 
-					model.on( 'execute', executeSpy );
+					model.on( 'executeLink', executeSpy );
 
 					linkBalloonPanel.form.model.fire( 'execute' );
 
@@ -82,10 +82,10 @@ describe( 'LinkBalloonPanel', () => {
 					expect( linkBalloonPanel.form.collections.get( 'actions' ).get( 0 ) ).to.deep.equal( linkBalloonPanel.saveButton );
 				} );
 
-				it( 'should fire model#execute event on DOM click event', ( done ) => {
+				it( 'should fire model#executeLink event on DOM click event', ( done ) => {
 					const executeSpy = sinon.spy();
 
-					model.on( 'execute', executeSpy );
+					model.on( 'executeLink', executeSpy );
 
 					linkBalloonPanel.init().then( () => {
 						linkBalloonPanel.saveButton.view.element.click();
@@ -127,10 +127,10 @@ describe( 'LinkBalloonPanel', () => {
 					expect( linkBalloonPanel.form.collections.get( 'actions' ).get( 2 ) ).to.deep.equal( linkBalloonPanel.unlinkButton );
 				} );
 
-				it( 'should fire model#execute-unlink event on unlinkButton.model#execute event', () => {
+				it( 'should fire model#executeUnlink event on unlinkButton.model#execute event', () => {
 					const executeUnlinkSpy = sinon.spy();
 
-					model.on( 'execute-unlink', executeUnlinkSpy );
+					model.on( 'executeUnlink', executeUnlinkSpy );
 
 					linkBalloonPanel.unlinkButton.model.fire( 'execute' );
 

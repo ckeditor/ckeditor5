@@ -25,14 +25,14 @@ import InputTextView from '../../ui/inputtext/inputtextview.js';
  *		// An instance of LinkBalloonPanel.
  *		new LinkBalloonPanel( model, new LinkBalloonPanelView() );
  *
- * See {@link link.LinkBalloonPanelView}.
+ * See {@link link.ui.LinkBalloonPanelView}.
  *
- * @memberOf link
+ * @memberOf link.ui
  * @extends ui.balloonPanel.BalloonPanel
  */
 export default class LinkBalloonPanel extends BalloonPanel {
 	/**
-	 * Creates an instance of {@link link.LinkBalloonPanel} class.
+	 * Creates an instance of {@link link.ui.LinkBalloonPanel} class.
 	 *
 	 * @param {link.balloonPanel.LinkBalloonPanelModel} model Model of this link balloon panel.
 	 * @param {ui.View} view View of this link balloon panel.
@@ -44,7 +44,7 @@ export default class LinkBalloonPanel extends BalloonPanel {
 	}
 
 	/**
-	 * Initialize {@link ui.form.Form Form} component with input and buttons.
+	 * Initializes {@link ui.form.Form Form} component with input and buttons.
 	 *
 	 * @private
 	 * @returns {ui.form.Form} Form component.
@@ -52,33 +52,33 @@ export default class LinkBalloonPanel extends BalloonPanel {
 	_createForm() {
 		const formModel = new Model();
 
-		formModel.delegate( 'execute' ).to( this.model );
+		formModel.on( 'execute', () => this.model.fire( 'executeLink' ) );
 
 		/**
 		 * Instance of {@link ui.form.Form Form} component.
 		 *
-		 * @member {ui.form.Form} link.LinkBalloonPanel#form
+		 * @member {ui.form.Form} link.ui.LinkBalloonPanel#form
 		 */
 		this.form = new LinkForm( formModel, new LinkFormView( this.locale ) );
 
 		/**
 		 * Button component for submitting form.
 		 *
-		 * @member {ui.button.Button} link.LinkBalloonPanel#saveButton
+		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#saveButton
 		 */
 		this.saveButton = this._createSaveButton();
 
 		/**
 		 * Button component for canceling form.
 		 *
-		 * @member {ui.button.Button} link.LinkBalloonPanel#cancelButton
+		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#cancelButton
 		 */
 		this.cancelButton = this._createCancelButton();
 
 		/**
 		 * Button component for unlinking.
 		 *
-		 * @member {ui.button.Button} link.LinkBalloonPanel#unlinkButton
+		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#unlinkButton
 		 */
 		this.unlinkButton = this._createUnlinkButton();
 
@@ -94,7 +94,7 @@ export default class LinkBalloonPanel extends BalloonPanel {
 	}
 
 	/**
-	 * Initialize {@link ui.input.LabeledInput LabeledInput} for providing `href` value.
+	 * Initializes {@link ui.input.LabeledInput LabeledInput} for providing `href` value.
 	 *
 	 * @private
 	 * @returns {ui.input.LabeledInput} Labeled input component.
@@ -111,7 +111,7 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		/**
 		 * Input component for providing `href` value.
 		 *
-		 * @member {ui.input.LabeledInput} link.LinkBalloonPanel#urlInput
+		 * @member {ui.input.LabeledInput} link.ui.LinkBalloonPanel#urlInput
 		 */
 		this.urlInput = new LabeledInput( model, new LabeledInputView( this.locale ), inputText );
 
@@ -119,7 +119,7 @@ export default class LinkBalloonPanel extends BalloonPanel {
 	}
 
 	/**
-	 * Initialize {@link ui.button.Button Button} for submitting form.
+	 * Initializes {@link ui.button.Button Button} for submitting form.
 	 *
 	 * @private
 	 * @returns {ui.button.Button} Save button component.
@@ -142,7 +142,7 @@ export default class LinkBalloonPanel extends BalloonPanel {
 	}
 
 	/**
-	 * Initialize {@link ui.button.Button Button} for canceling form.
+	 * Initializes {@link ui.button.Button Button} for canceling form.
 	 *
 	 * @private
 	 * @returns {ui.button.Button} Cancel button component.
@@ -162,7 +162,7 @@ export default class LinkBalloonPanel extends BalloonPanel {
 	}
 
 	/**
-	 * Initialize {@link ui.button.Button Button} for unlinking command.
+	 * Initializes {@link ui.button.Button Button} for unlinking command.
 	 *
 	 * @private
 	 * @returns {ui.button.Button} Unlink button component.
@@ -176,10 +176,28 @@ export default class LinkBalloonPanel extends BalloonPanel {
 			icon: 'unlink'
 		} );
 
-		unlinkModel.on( 'execute', () => this.model.fire( 'execute-unlink' ) );
+		unlinkModel.on( 'execute', () => this.model.fire( 'executeUnlink' ) );
 
 		const button = new Button( unlinkModel, new ButtonView( this.locale ) );
 
 		return button;
 	}
 }
+
+/**
+ * The LinkBalloonPanel component {@link ui.Model model} interface.
+ *
+ * @interface link.ui.LinkBalloonPanelModel
+ */
+
+/**
+ * Fired when the LinkForm is submit.
+ *
+ * @event link.ui.LinkBalloonPanelModel#executeLink
+ */
+
+/**
+ * Fired when the Unlink button is executed.
+ *
+ * @event link.ui.LinkBalloonPanelModel#executeUnlink
+ */
