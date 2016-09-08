@@ -27,7 +27,7 @@ const config = {
 		// Path to the temporary documentation files.
 		TEMPORARY_DIR: 'build/docs/.tmp',
 		// Path to the built editors.
-		BUNDLE_DIR: 'build/docs/scripts/assets',
+		BUNDLE_DIR: 'build/docs/assets/scripts/samples',
 		// Path to the built documentation.
 		DESTINATION_DIR: 'build/docs',
 		// Glob pattern with samples.
@@ -148,4 +148,4 @@ gulp.task( 'docs', [ 'docs:clean', 'compile:js:esnext' ], ( done ) => {
 gulp.task( 'docs:clean', docsBuilder.clean );
 gulp.task( 'docs:build', docsBuilder.buildDocs );
 gulp.task( 'docs:prepare-files', docsBuilder.collectDocumentationFiles );
-gulp.task( 'docs:editors', [ 'compile:js:esnext' ], docsBuilder.buildEditorsForSamples );
+gulp.task( 'docs:editors', [ 'compile:js:esnext', 'compile:themes:esnext' ], docsBuilder.buildEditorsForSamples );
