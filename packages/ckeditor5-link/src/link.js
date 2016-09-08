@@ -70,7 +70,8 @@ export default class Link extends Feature {
 			isEnabled: true,
 			isOn: false,
 			label: t( 'Link' ),
-			icon: 'link'
+			icon: 'link',
+			keystroke: 'CTRL+l'
 		} );
 
 		// Bind button model to command.
