@@ -63,6 +63,111 @@ describe( 'GFMDataProcessor', () => {
 
 				expect( stringify( viewFragment ) ).to.equal( '<pre><code>the lines in this block  \nall contain trailing spaces  </code></pre>' );
 			} );
+
+			it( 'should process code block with language name', () => {
+				const viewFragment = dataProcessor.toView(
+					'``` js\n' +
+					'var a = \'hello\';\n' +
+					'console.log(a + \' world\');\n' +
+					'```'
+				);
+
+				expect( stringify( viewFragment ) ).to.equal(
+					'<pre>' +
+						'<code class="lang-js">' +
+							'var a = \'hello\';\n' +
+							'console.log(a + \' world\');' +
+						'</code>' +
+					'</pre>' );
+			} );
+
+			it( 'should process code block with language name and using ~~~ as delimiter', () => {
+				const viewFragment = dataProcessor.toView(
+					'~~~ bash\n' +
+					'var a = \'hello\';\n' +
+					'console.log(a + \' world\');\n' +
+					'~~~'
+				);
+
+				expect( stringify( viewFragment ) ).to.equal(
+					'<pre>' +
+					'<code class="lang-bash">' +
+					'var a = \'hello\';\n' +
+					'console.log(a + \' world\');' +
+					'</code>' +
+					'</pre>' );
+			} );
+
+			it( 'should process code block with language name and using ``````` as delimiter', () => {
+				const viewFragment = dataProcessor.toView(
+					'``````` js\n' +
+					'var a = \'hello\';\n' +
+					'console.log(a + \' world\');\n' +
+					'```````'
+				);
+
+				expect( stringify( viewFragment ) ).to.equal(
+					'<pre>' +
+					'<code class="lang-js">' +
+					'var a = \'hello\';\n' +
+					'console.log(a + \' world\');' +
+					'</code>' +
+					'</pre>' );
+			} );
+
+			it( 'should process code block with language name and using ~~~~~~~~~~ as delimiter', () => {
+				const viewFragment = dataProcessor.toView(
+					'~~~~~~~~~~ js\n' +
+					'var a = \'hello\';\n' +
+					'console.log(a + \' world\');\n' +
+					'~~~~~~~~~~'
+				);
+
+				expect( stringify( viewFragment ) ).to.equal(
+					'<pre>' +
+					'<code class="lang-js">' +
+					'var a = \'hello\';\n' +
+					'console.log(a + \' world\');' +
+					'</code>' +
+					'</pre>' );
+			} );
+
+			it( 'should process empty code block', () => {
+				const viewFragment = dataProcessor.toView(
+					'``` js\n' +
+					'```'
+				);
+
+				expect( stringify( viewFragment ) ).to.equal(
+					'<pre>' +
+						'<code class="lang-js">' +
+						'</code>' +
+					'</pre>' );
+			} );
+
+			it( 'should process code block with empty line', () => {
+				const viewFragment = dataProcessor.toView(
+					'``` js\n\n' +
+					'```'
+				);
+
+				expect( stringify( viewFragment ) ).to.equal(
+					'<pre>' +
+					'<code class="lang-js">' +
+					'</code>' +
+					'</pre>'
+				);
+			} );
+
+			it( 'should process nested code', () => {
+				const viewFragment = dataProcessor.toView(
+					'````` code `` code ``` `````'
+				);
+
+				expect( stringify( viewFragment ) ).to.equal(
+					'<p><code>code `` code ``` </code></p>'
+				);
+			} );
 		} );
 	} );
 } );

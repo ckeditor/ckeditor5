@@ -62,6 +62,12 @@ describe( 'GFMDataProcessor', () => {
 
 				expect( stringify( viewFragment ) ).to.equal( '<h6 id="level-6">Level 6</h6>' );
 			} );
+
+			it( 'should create header when more spaces before text', () => {
+				const viewFragment = dataProcessor.toView( '#      Level 1' );
+
+				expect( stringify( viewFragment ) ).to.equal( '<h1 id="level-1">Level 1</h1>' );
+			} );
 		} );
 	} );
 } );

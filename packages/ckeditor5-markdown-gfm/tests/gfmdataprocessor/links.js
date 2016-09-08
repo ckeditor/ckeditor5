@@ -331,6 +331,15 @@ describe( 'GFMDataProcessor', () => {
 
 				expect( stringify( viewFragment ) ).to.equal( '<p>This is <a href="foo">multiline<br></br>reference</a></p>' );
 			} );
+
+			it( 'should process reference links case-insensitve', () => {
+				const viewFragment = dataProcessor.toView(
+					'[hi]\n' +
+					'[HI]: /url'
+				);
+
+				expect( stringify( viewFragment ) ).to.equal( '<p><a href="/url">hi</a></p>' );
+			} );
 		} );
 	} );
 } );
