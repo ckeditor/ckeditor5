@@ -105,7 +105,6 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		const model = new Model( {
 			label: t( 'Link URL' )
 		} );
-		const inputText = new InputText( new Model(), new InputTextView( this.locale ) );
 
 		model.bind( 'value' ).to( this.model, 'url' );
 
@@ -114,9 +113,8 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		 *
 		 * @member {ui.input.LabeledInput} link.ui.LinkBalloonPanel#urlInput
 		 */
-		this.urlInput = new LabeledInput( model, new LabeledInputView( this.locale ), inputText );
-
-		return this.urlInput;
+		return ( this.urlInput = new LabeledInput( model, new LabeledInputView( this.locale ),
+			InputText, InputTextView, new Model() ) );
 	}
 
 	/**
