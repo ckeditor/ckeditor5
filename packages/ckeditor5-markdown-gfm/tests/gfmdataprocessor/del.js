@@ -4,7 +4,7 @@
  */
 
 import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
-import { stringify } from '/tests/engine/_utils/view.js';
+import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'GFMDataProcessor', () => {
 	let dataProcessor;
@@ -25,6 +25,20 @@ describe( 'GFMDataProcessor', () => {
 				const viewFragment = dataProcessor.toView( 'This is ~~deleted content~~.' );
 
 				expect( stringify( viewFragment ) ).to.equal( '<p>This is <del>deleted content</del>.</p>' );
+			} );
+		} );
+
+		describe( 'toData', () => {
+			it( 'should process deleted text', () => {
+				const viewFragment = parse( '<p><del>deleted</del></p>' );
+
+				expect( dataProcessor.toData( viewFragment ) ).to.equal( '~~deleted~~' );
+			} );
+
+			it( 'should process deleted inside text', () => {
+				const viewFragment = parse( '<p>This is <del>deleted content</del>.</p>' );
+
+				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'This is ~~deleted content~~.' );
 			} );
 		} );
 	} );

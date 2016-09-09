@@ -4,7 +4,7 @@
  */
 
 import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
-import { stringify } from '/tests/engine/_utils/view.js';
+import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'GFMDataProcessor', () => {
 	let dataProcessor;
@@ -166,6 +166,30 @@ describe( 'GFMDataProcessor', () => {
 
 				expect( stringify( viewFragment ) ).to.equal(
 					'<p><code>code `` code ``` </code></p>'
+				);
+			} );
+		} );
+
+		describe( 'toData', () => {
+			it( 'should process inline code', () => {
+				const viewFragment = parse( '<p>regular text and <code>inline code</code></p>' );
+
+				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'regular text and `inline code`' );
+			} );
+
+			it( 'should properly process code blocks', () => {
+				const viewFragment = parse( '<pre><code>code block</code></pre>' );
+
+				expect( dataProcessor.toData( viewFragment ) ).to.equal( '```\ncode block\n```' );
+			} );
+
+			it( 'should process code block with language name', () => {
+				const viewFragment = parse( '<pre><code class="lang-js">code block</code></pre>' );
+
+				expect( dataProcessor.toData( viewFragment ) ).to.equal(
+					'``` js\n' +
+					'code block\n' +
+					'```'
 				);
 			} );
 		} );
