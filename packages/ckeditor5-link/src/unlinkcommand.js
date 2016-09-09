@@ -25,7 +25,7 @@ export default class UnlinkCommand extends Command {
 		 * the command's attribute set. For range selection it means that all nodes inside have the attribute applied.
 		 *
 		 * @observable
-		 * @member {Boolean} core.command.ToggleAttributeCommand#hasValue
+		 * @member {Boolean} link.UnlinkCommand#hasValue
 		 */
 		this.set( 'hasValue', undefined );
 
@@ -37,9 +37,8 @@ export default class UnlinkCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * When selection is collapsed then remove `linkHref` attribute from each stick node with the same `linkHref` attribute value.
-	 *
-	 * When selection is non-collapsed then remove `linkHref` from each node in selected ranges.
+	 * When the selection is collapsed, removes `linkHref` attribute from each node with the same `linkHref` attribute value.
+	 * When the selection is non-collapsed, removes `linkHref` from each node in selected ranges.
 	 *
 	 * @protected
 	 */

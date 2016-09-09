@@ -185,19 +185,20 @@ export default class LinkBalloonPanel extends BalloonPanel {
 }
 
 /**
- * The LinkBalloonPanel component {@link ui.Model model} interface.
+ * The link balloon panel component {@link ui.Model} interface.
  *
- * @interface link.ui.LinkBalloonPanelModel
+ * @interface link.LinkBalloonPanelModel
  */
 
 /**
- * Fired when the LinkForm is submit.
+ * URL of the link displayed in the panel.
  *
- * @event link.ui.LinkBalloonPanelModel#executeLink
+ * @observable
+ * @member {String} link.LinkBalloonPanelModel#url
  */
 
 /**
- * Fired when the Unlink button is executed.
+ * Fired when "OK" action has been executed by the user in the panel.
  *
- * @event link.ui.LinkBalloonPanelModel#executeUnlink
+ * @event link.LinkBalloonPanelModel#execute
  */

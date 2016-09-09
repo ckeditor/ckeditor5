@@ -41,7 +41,7 @@ export default class Link extends Feature {
 		/**
 		 * Link balloon panel component.
 		 *
-		 * @member {link.ui.LinkBalloonPanel}
+		 * @member {link.LinkBalloonPanel} link.Link#balloonPanel
 		 */
 		this.balloonPanel = this._createBalloonPanel();
 
@@ -51,8 +51,8 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Creates toolbar link button. Click on button will show
-	 * {@link link.ui.LinkBalloonPanel LinkBalloonPanel} attached to the selection.
+	 * Creates a toolbar link button. Clicking this button will show
+	 * {@link link.Link#balloonPanel} attached to the selection.
 	 *
 	 * @private
 	 */
@@ -71,10 +71,10 @@ export default class Link extends Feature {
 			keystroke: 'CTRL+L'
 		} );
 
-		// Bind button model to command.
+		// Bind button model to the command.
 		linkButtonModel.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
-		// Show Balloon Panel on button click only when editor is focused.
+		// Show the panel on button click only when editor is focused.
 		this.listenTo( linkButtonModel, 'execute', () => {
 			if ( !viewDocument.isFocused ) {
 				return;
@@ -88,7 +88,8 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Creates toolbar unlink button. Click on button will unlink selected link.
+	 * Create a toolbar unlink button. Clicking this button will unlink
+	 * the selected link.
 	 *
 	 * @private
 	 */
@@ -97,7 +98,7 @@ export default class Link extends Feature {
 		const t = editor.t;
 		const unlinkCommand = editor.commands.get( 'unlink' );
 
-		// Create button model.
+		// Create the button model.
 		const unlinkButtonModel = new Model( {
 			isEnabled: false,
 			isOn: false,
@@ -105,10 +106,10 @@ export default class Link extends Feature {
 			icon: 'unlink'
 		} );
 
-		// Bind button model to command.
+		// Bind button model to the command.
 		unlinkButtonModel.bind( 'isEnabled' ).to( unlinkCommand, 'hasValue' );
 
-		// Execute unlink command and hide panel if is open.
+		// Execute unlink command and hide panel, if open.
 		this.listenTo( unlinkButtonModel, 'execute', () => {
 			editor.execute( 'unlink' );
 
@@ -122,8 +123,8 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Creates {@link link.ui.LinkBalloonPanel LinkBalloonPanel} instance
-	 * and attach link command to LinkBalloonPanelModel#execute event.
+	 * Creates the {@link link.LinkBalloonPanel LinkBalloonPanel} instance
+	 * and attaches link command to {@link link.LinkBalloonPanelModel#execute} event.
 	 *
 	 *	                       +------------------------------------+
 	 *	                       | <a href="http://foo.com">[foo]</a> |
@@ -173,7 +174,7 @@ export default class Link extends Feature {
 		// Bind panel model to command.
 		panelModel.bind( 'url' ).to( linkCommand, 'value' );
 
-		// Create Balloon panel instance.
+		// Create the balloon panel instance.
 		const balloonPanel = new LinkBalloonPanel( panelModel, new LinkBalloonPanelView( editor.locale ) );
 
 		// Observe `LinkBalloonPanelMode#executeLink` event from within the model of the panel,
