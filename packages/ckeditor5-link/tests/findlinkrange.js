@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* bender-tags: link */
+
 import findLinkRange from '/ckeditor5/link/findlinkrange.js';
 import Document from '/ckeditor5/engine/model/document.js';
 import Range from '/ckeditor5/engine/model/range.js';

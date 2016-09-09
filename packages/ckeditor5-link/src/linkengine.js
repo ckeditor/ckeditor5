@@ -6,7 +6,7 @@
 import Feature from '../core/feature.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
-import AttributeElement from '../engine/view/attributeelement.js';
+import LinkElement from './linkelement.js';
 import LinkCommand from './linkcommand.js';
 import UnlinkCommand from './unlinkcommand.js';
 
@@ -33,7 +33,7 @@ export default class LinkEngine extends Feature {
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )
 			.fromAttribute( 'linkHref' )
-			.toElement( ( linkHref ) => new AttributeElement( 'a', { href: linkHref } ) );
+			.toElement( ( linkHref ) => new LinkElement( 'a', { href: linkHref } ) );
 
 		// Build converter from view to model for data pipeline.
 		buildViewConverter().for( data.viewToModel )

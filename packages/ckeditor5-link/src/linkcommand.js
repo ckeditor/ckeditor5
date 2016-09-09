@@ -25,7 +25,7 @@ export default class LinkCommand extends Command {
 		super( editor );
 
 		/**
-		 * Currently selected linkHref attribute value.
+		 * Currently selected `linkHref` attribute value.
 		 *
 		 * @observable
 		 * @member {Boolean} core.command.ToggleAttributeCommand#value
@@ -52,14 +52,14 @@ export default class LinkCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * When selection is non-collapsed then `linkHref` attribute will be applied to nodes inside selection, but only to
-	 * this nodes where `linkHref` attribute is allowed (disallowed nodes will be omitted).
+	 * When selection is non-collapsed, then `linkHref` attribute will be applied to nodes inside selection, but only to
+	 * those nodes where `linkHref` attribute is allowed (disallowed nodes will be omitted).
 	 *
-	 * When selection is collapsed and is not inside text with `linkHref` attribute then new {@link engine.model.Text Text node} with
-	 * `linkHref` attribute will be inserted in place of caret, but only if such an element is allowed in this place. _data of inserted
-	 * text will be equal to `href` parameter. Selection will be updated to wrap just inserted text node.
+	 * When selection is collapsed and is not inside text with `linkHref` attribute, then new {@link engine.model.Text Text node} with
+	 * `linkHref` attribute will be inserted in place of caret, but only if such an element is allowed in this place. `_data` of
+	 * the inserted text will equal `href` parameter. Selection will be updated to wrap just inserted text node.
 	 *
-	 * When selection is collapsed and is inside text with `linkHref` attribute then attribute value will be updated.
+	 * When selection is collapsed and inside text with `linkHref` attribute, the attribute value will be updated.
 	 *
 	 * @protected
 	 * @param {String} href Link destination.
