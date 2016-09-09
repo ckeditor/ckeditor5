@@ -1,0 +1,14 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+.ck-input {
+	&-text {
+		@include ck-rounded-corners();
+		@include ck-focus-shadow();
+
+		border: 1px solid ck-border-color( 'foreground' );
+		padding: ck-spacing( 'medium' );
+		min-width: 250px;
+		box-shadow: 0 2px 3px ck-color( 'foreground', -7 ) inset;
+	}
+}

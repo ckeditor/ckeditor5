@@ -1,0 +1,114 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+$ck-balloon-arrow-offset: 2px;
+$ck-balloon-arrow-height: 15px;
+$ck-balloon-arrow-half-width: 10px;
+
+.ck-balloon-panel {
+	@include ck-unselectable();
+	@include ck-rounded-corners();
+	@include ck-dropshadow();
+
+	min-width: 50px;
+	min-height: 15px;
+
+	display: none;
+	position: absolute;
+	background: ck-color( 'background' );
+	border: 1px solid ck-border-color( 'foreground' );
+
+	z-index: ck-z( 'modal' );
+
+	&:before,
+	&:after {
+		content: "";
+		position: absolute;
+
+		width: 0;
+		height: 0;
+		border-style: solid;
+	}
+
+	&:before {
+		z-index: ck-z();
+	}
+
+	&:after {
+		z-index: ck-z( 'default', 1 );
+	}
+
+	&_arrow_se,
+	&_arrow_sw {
+		&:before,
+		&:after {
+			border-width: 0 $ck-balloon-arrow-half-width $ck-balloon-arrow-height $ck-balloon-arrow-half-width;
+		}
+
+		&:before {
+			z-index: ck-z( 'default' );
+			border-color: transparent transparent ck-border-color( 'foreground' ) transparent;
+		}
+
+		&:after {
+			z-index: ck-z( 'default', 1 );
+			border-color: transparent transparent ck-color( 'background' ) transparent;
+			margin-top: $ck-balloon-arrow-offset;
+		}
+	}
+
+	&_arrow_ne,
+	&_arrow_nw {
+		&:before,
+		&:after {
+			border-width: $ck-balloon-arrow-height $ck-balloon-arrow-half-width 0 $ck-balloon-arrow-half-width;
+		}
+
+		&:before {
+			z-index: ck-z( 'default' );
+			border-color: ck-border-color( 'foreground' ) transparent  transparent;
+		}
+
+		&:after {
+			z-index: ck-z( 'default', 1 );
+			border-color: ck-color( 'background' ) transparent transparent transparent;
+			margin-bottom: $ck-balloon-arrow-offset;
+		}
+	}
+
+	&_arrow_se {
+		&:before,
+		&:after {
+			left: 2 * $ck-balloon-arrow-half-width;
+			top: -$ck-balloon-arrow-height;
+		}
+	}
+
+	&_arrow_sw {
+		&:before,
+		&:after {
+			right: 2 * $ck-balloon-arrow-half-width;
+			top: -$ck-balloon-arrow-height;
+		}
+	}
+
+	&_arrow_ne {
+		&:before,
+		&:after {
+			left: 2 * $ck-balloon-arrow-half-width;
+			bottom: -$ck-balloon-arrow-height;
+		}
+	}
+
+	&_arrow_nw {
+		&:before,
+		&:after {
+			right: 2 * $ck-balloon-arrow-half-width;
+			bottom: -$ck-balloon-arrow-height;
+		}
+	}
+
+	&_visible {
+		display: block;
+	}
+}
