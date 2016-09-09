@@ -3,31 +3,16 @@
 
 .ck-link {
 	&-balloon-panel {
-		padding: ck-spacing();
-		background: ck-color( 'foreground' );
+		padding: ck-spacing( 'large' );
 
-		&.ck-balloon-panel {
-			&_arrow_se,
-			&_arrow_sw {
-				&:after {
-					border-bottom-color: ck-color( 'foreground' );
-				}
-			}
-
-			&_arrow_ne,
-			&_arrow_nw {
-				border-top-color: ck-color( 'foreground' );
-			}
-		}
-
-		.ck-input-text {
-			background: ck-color( 'background' );
+		.ck-label {
+			margin-bottom: ck-spacing( 'small' );
 		}
 	}
 
 	&-form__actions {
 		clear: both;
-		padding-top: ck-spacing();
+		padding-top: ck-spacing( 'large' );
 
 		.ck-button {
 			float: right;
