@@ -28,3 +28,10 @@ export default class LinkForm extends Form {
 		this.addCollection( 'actions' );
 	}
 }
+
+/**
+ * The link form component {@link ui.Model model} interface.
+ *
+ * @extends ui.form.FormModel
+ * @interface link.ui.LinkFormModel
+ */

@@ -34,7 +34,7 @@ export default class LinkBalloonPanel extends BalloonPanel {
 	/**
 	 * Creates an instance of {@link link.ui.LinkBalloonPanel} class.
 	 *
-	 * @param {link.balloonPanel.LinkBalloonPanelModel} model Model of this link balloon panel.
+	 * @param {link.ui.LinkBalloonPanelModel} model Model of this link balloon panel.
 	 * @param {ui.View} view View of this link balloon panel.
 	 */
 	constructor( model, view ) {
@@ -44,10 +44,10 @@ export default class LinkBalloonPanel extends BalloonPanel {
 	}
 
 	/**
-	 * Initializes {@link ui.form.Form Form} component with input and buttons.
+	 * Initializes {@link link.ui.Form} component with input and buttons.
 	 *
 	 * @private
-	 * @returns {ui.form.Form} Form component.
+	 * @returns {link.ui.Form} Form component.
 	 */
 	_createForm() {
 		const formModel = new Model();
@@ -55,28 +55,28 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		formModel.on( 'execute', () => this.model.fire( 'executeLink' ) );
 
 		/**
-		 * Instance of {@link ui.form.Form Form} component.
+		 * An instance of {@link link.ui.Form} component.
 		 *
-		 * @member {ui.form.Form} link.ui.LinkBalloonPanel#form
+		 * @member {link.ui.Form} link.ui.LinkBalloonPanel#form
 		 */
 		this.form = new LinkForm( formModel, new LinkFormView( this.locale ) );
 
 		/**
-		 * Button component for submitting form.
+		 * The button component for submitting form.
 		 *
 		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#saveButton
 		 */
 		this.saveButton = this._createSaveButton();
 
 		/**
-		 * Button component for canceling form.
+		 * The button component for canceling form.
 		 *
 		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#cancelButton
 		 */
 		this.cancelButton = this._createCancelButton();
 
 		/**
-		 * Button component for unlinking.
+		 * The button component for unlinking.
 		 *
 		 * @member {ui.button.Button} link.ui.LinkBalloonPanel#unlinkButton
 		 */
@@ -94,7 +94,8 @@ export default class LinkBalloonPanel extends BalloonPanel {
 	}
 
 	/**
-	 * Initializes {@link ui.input.LabeledInput LabeledInput} for providing `href` value.
+	 * Initializes the {@link ui.input.LabeledInput LabeledInput} which displays
+	 * and allows manipulation of the `href` attribute in edited link.
 	 *
 	 * @private
 	 * @returns {ui.input.LabeledInput} Labeled input component.
@@ -109,7 +110,7 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		model.bind( 'value' ).to( this.model, 'url' );
 
 		/**
-		 * Input component for providing `href` value.
+		 * The input component to display and manipulate the `href` attribute.
 		 *
 		 * @member {ui.input.LabeledInput} link.ui.LinkBalloonPanel#urlInput
 		 */
@@ -119,7 +120,7 @@ export default class LinkBalloonPanel extends BalloonPanel {
 	}
 
 	/**
-	 * Initializes {@link ui.button.Button Button} for submitting form.
+	 * Initializes the {@link ui.button.Button} for submitting the form.
 	 *
 	 * @private
 	 * @returns {ui.button.Button} Save button component.
@@ -142,7 +143,7 @@ export default class LinkBalloonPanel extends BalloonPanel {
 	}
 
 	/**
-	 * Initializes {@link ui.button.Button Button} for canceling form.
+	 * Initializes the {@link ui.button.Button Button} for canceling the form.
 	 *
 	 * @private
 	 * @returns {ui.button.Button} Cancel button component.
@@ -162,7 +163,7 @@ export default class LinkBalloonPanel extends BalloonPanel {
 	}
 
 	/**
-	 * Initializes {@link ui.button.Button Button} for unlinking command.
+	 * Initializes the {@link ui.button.Button Button} for the `unlink` command.
 	 *
 	 * @private
 	 * @returns {ui.button.Button} Unlink button component.
@@ -187,18 +188,19 @@ export default class LinkBalloonPanel extends BalloonPanel {
 /**
  * The link balloon panel component {@link ui.Model} interface.
  *
- * @interface link.LinkBalloonPanelModel
+ * @extends ui.balloonPanel.BalloonPanelModel
+ * @interface link.ui.LinkBalloonPanelModel
  */
 
 /**
- * URL of the link displayed in the panel.
+ * URL of the link displayed in the {@link link.ui.LinkBalloonPanel#urlInput}.
  *
  * @observable
- * @member {String} link.LinkBalloonPanelModel#url
+ * @member {String} link.ui.LinkBalloonPanelModel#url
  */
 
 /**
- * Fired when "OK" action has been executed by the user in the panel.
+ * Fired when {@link link.ui.LinkBalloonPanel#saveButton} has been executed by the user.
  *
- * @event link.LinkBalloonPanelModel#execute
+ * @event link.ui.LinkBalloonPanelModel#execute
  */

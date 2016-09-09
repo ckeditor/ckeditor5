@@ -41,7 +41,7 @@ export default class Link extends Feature {
 		/**
 		 * Link balloon panel component.
 		 *
-		 * @member {link.LinkBalloonPanel} link.Link#balloonPanel
+		 * @member {link.ui.LinkBalloonPanel} link.Link#balloonPanel
 		 */
 		this.balloonPanel = this._createBalloonPanel();
 
@@ -123,7 +123,7 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Creates the {@link link.LinkBalloonPanel LinkBalloonPanel} instance
+	 * Creates the {@link link.ui.LinkBalloonPanel LinkBalloonPanel} instance
 	 * and attaches link command to {@link link.LinkBalloonPanelModel#execute} event.
 	 *
 	 *	                       +------------------------------------+
