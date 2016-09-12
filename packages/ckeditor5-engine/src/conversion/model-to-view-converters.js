@@ -335,7 +335,7 @@ export function remove() {
 export function rename() {
 	return ( evt, data, consumable, conversionApi ) => {
 		if ( consumable.test( data.element, 'rename' ) ) {
-			// Create fake element in model, needed for conversion purposes.
+			// Create fake model element that will represent "old version" of renamed element.
 			const fakeElement = new ModelElement( data.oldName, data.element.getAttributes() );
 			// Append the fake element to model document to enable making range on it.
 			data.element.parent.insertChildren( data.element.index, fakeElement );
@@ -357,8 +357,8 @@ export function rename() {
 			// Remove range containing the fake element. Will be used to remove original view element from the view.
 			const removeRange = ModelRange.createOn( fakeElement );
 
-			// Start the "real" conversion. Use already defined converters by firing insertion, move and remove
-			// conversion on correct ranges / positions.
+			// Start the conversion. Use already defined converters by firing insertion, move and remove conversion
+			// on correct ranges / positions.
 			conversionApi.dispatcher.convertInsertion( insertRange );
 			conversionApi.dispatcher.convertMove( moveSourcePosition, moveRange );
 			conversionApi.dispatcher.convertRemove( removeRange.start, removeRange );
