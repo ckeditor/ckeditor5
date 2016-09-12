@@ -80,6 +80,18 @@ describe( 'Link', () => {
 			expect( linkFeature.balloonPanel.view.isVisible ).to.true;
 		} );
 
+		it( 'should select panel input value when panel is opened', () => {
+			const selectSpy = sinon.spy( linkFeature.balloonPanel.urlInput.view, 'select' );
+
+			editor.editing.view.isFocused = true;
+
+			linkButton.model.fire( 'execute' );
+
+			expect( selectSpy.calledOnce ).to.true;
+
+			selectSpy.restore();
+		} );
+
 		it( 'should not open panel on linkButton#model execute event, when editor is not focused', () => {
 			editor.editing.view.isFocused = false;
 
