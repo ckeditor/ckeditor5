@@ -19,7 +19,7 @@ const config = {
 	]
 };
 
-const ckeditor5Lint = require( 'ckeditor5-dev-lint' )( config );
+const ckeditor5Lint = require( '@ckeditor/ckeditor5-dev-lint' )( config );
 
 require( './dev/tasks/lodash/tasks' )();
 
