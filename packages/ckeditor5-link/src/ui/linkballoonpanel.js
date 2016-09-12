@@ -44,10 +44,10 @@ export default class LinkBalloonPanel extends BalloonPanel {
 	}
 
 	/**
-	 * Initializes {@link link.ui.Form} component with input and buttons.
+	 * Initializes {@link link.ui.LinkForm} component with input and buttons.
 	 *
 	 * @private
-	 * @returns {link.ui.Form} Form component.
+	 * @returns {link.ui.LinkForm} Form component.
 	 */
 	_createForm() {
 		const formModel = new Model();
@@ -55,9 +55,9 @@ export default class LinkBalloonPanel extends BalloonPanel {
 		formModel.on( 'execute', () => this.model.fire( 'executeLink' ) );
 
 		/**
-		 * An instance of {@link link.ui.Form} component.
+		 * An instance of {@link link.ui.LinkForm} component.
 		 *
-		 * @member {link.ui.Form} link.ui.LinkBalloonPanel#form
+		 * @member {link.ui.LinkForm} link.ui.LinkBalloonPanel#form
 		 */
 		this.form = new LinkForm( formModel, new LinkFormView( this.locale ) );
 
