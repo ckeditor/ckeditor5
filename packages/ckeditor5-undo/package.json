@@ -5,7 +5,7 @@
   "keywords": [],
   "dependencies": {},
   "devDependencies": {
-    "ckeditor5-dev-lint": "github:ckeditor/ckeditor5-dev-lint",
+    "@ckeditor/ckeditor5-dev-lint": "^1.0.1",
     "gulp": "^3.9.0",
     "guppy-pre-commit": "^0.3.0"
   },
