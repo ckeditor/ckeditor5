@@ -19,10 +19,9 @@ import isIterable from '../../utils/isiterable.js';
  */
 
 export default {
-	breakAt,
-	breakRange,
+	breakAttributes,
 	breakContainer,
-	mergeAt,
+	mergeAttributes,
 	mergeContainers,
 	insert,
 	remove,
@@ -33,44 +32,40 @@ export default {
 };
 
 /**
- * Breaks attribute nodes at provided position. It breaks `attribute` nodes inside `container` node.
+ * Breaks attribute nodes at provided position or at boundaries of provided range. It breaks attribute elements inside
+ * up to a container element.
  *
  * In following examples `<p>` is a container, `<b>` and `<u>` are attribute nodes:
  *
  *		<p>foo<b><u>bar{}</u></b></p> -> <p>foo<b><u>bar</u></b>[]</p>
  *		<p>foo<b><u>{}bar</u></b></p> -> <p>foo{}<b><u>bar</u></b></p>
  *		<p>foo<b><u>b{}ar</u></b></p> -> <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
+ *		<p><b>fo{o</b><u>ba}r</u></p> -> <p><b>fo</b><b>o</b><u>ba</u><u>r</u></b></p>
  *
- * Note that {@link engine.view.DocumentFragment DocumentFragment} is treated like a container.
+ * **Note:** {@link engine.view.DocumentFragment DocumentFragment} is treated like a container.
+ *
+ * **Note:** Difference between {@link engine.view.writer.breakAttributes breakAttributes} and
+ * {@link engine.view.writer.breakContainer breakContainer} is that `breakAttributes` breaks all
+ * {@link engine.view.AttributeElement attribute elements} that are ancestors of given `position`, up to the first
+ * encountered {@link engine.view.ContainerElement container element}. `breakContainer` assumes that given `position`
+ * is directly in container element and breaks that container element.
+ *
+ * Throws {@link utils.CKEditorError CKEditorError} `view-writer-invalid-range-container` when {@link engine.view.Range#start start}
+ * and {@link engine.view.Range#end end} positions of a passed range are not placed inside same parent container.
  *
  * @see engine.view.AttributeElement
  * @see engine.view.ContainerElement
- * @function engine.view.writer.breakAt
- * @param {engine.view.Position} position Position where to break attributes.
- * @returns {engine.view.Position} New position after breaking the attributes.
+ * @see engine.view.writer.breakContainer
+ * @function engine.view.writer.breakAttributes
+ * @param {engine.view.Position|engine.view.Range} positionOrRange Position where to break attribute elements.
+ * @returns {engine.view.Position|engine.view.Range} New position or range, after breaking the attribute elements.
  */
-export function breakAt( position ) {
-	return _breakAt( position, false );
-}
-
-/**
- * Uses {@link engine.view.writer.breakAt breakAt} method to break attributes on
- * {@link engine.view.Range#start start} and {@link engine.view.Range#end end} positions of
- * provided {@link engine.view.Range Range}.
- *
- * Throws {@link utils.CKEditorError CKEditorError} `view-writer-invalid-range-container` when
- * {@link engine.view.Range#start start} and {@link engine.view.Range#end end} positions are not placed inside
- * same parent container.
- *
- * Note that {@link engine.view.DocumentFragment DocumentFragment} is treated like a container.
- *
- * @see engine.view.writer.breakAt
- * @function engine.view.writer.breakRange
- * @param {engine.view.Range} range Range which `start` and `end` positions will be used to break attributes.
- * @returns {engine.view.Range} New range with boundaries located at break positions.
- */
-export function breakRange( range ) {
-	return _breakRange( range );
+export function breakAttributes( positionOrRange ) {
+	if ( positionOrRange instanceof Position ) {
+		return _breakAttributes( positionOrRange );
+	} else {
+		return _breakAttributesRange( positionOrRange );
+	}
 }
 
 /**
@@ -83,6 +78,16 @@ export function breakRange( range ) {
  *		<p>^foobar</p> -> ^<p>foobar</p>
  *		<p>foobar^</p> -> <p>foobar</p>^
  *
+ * **Note:** Difference between {@link engine.view.writer.breakAttributes breakAttributes} and
+ * {@link engine.view.writer.breakContainer breakContainer} is that `breakAttributes` breaks all
+ * {@link engine.view.AttributeElement attribute elements} that are ancestors of given `position`, up to the first
+ * encountered {@link engine.view.ContainerElement container element}. `breakContainer` assumes that given `position`
+ * is directly in container element and breaks that container element.
+ *
+ * @see engine.view.AttributeElement
+ * @see engine.view.ContainerElement
+ * @see engine.view.writer.breakAttributes
+ * @function engine.view.writer.breakContainer
  * @param {engine.view.Position} position Position where to break element.
  * @returns {engine.view.Position} Position between broken elements. If element has not been broken, the returned position
  * is placed either before it or after it.
@@ -125,10 +130,10 @@ export function breakContainer( position ) {
 }
 
 /**
- * Merges attribute nodes. It also merges text nodes if needed.
- * Only {@link engine.view.AttributeElement#isSimilar similar} `attribute` nodes can be merged.
+ * Merges {@link engine.view.AttributeElement attribute elements}. It also merges text nodes if needed.
+ * Only {@link engine.view.AttributeElement#isSimilar similar} attribute elements can be merged.
  *
- * In following examples `<p>` is a container and `<b>` is an attribute node:
+ * In following examples `<p>` is a container and `<b>` is an attribute element:
  *
  *		<p>foo[]bar</p> -> <p>foo{}bar</p>
  *		<p><b>foo</b>[]<b>bar</b> -> <p><b>foo{}bar</b></b>
@@ -139,13 +144,19 @@ export function breakContainer( position ) {
  *		<p><b>[]</b></p> -> <p>[]</p>
  *		<p><b>foo</b><i>[]</i><b>bar</b></p> -> <p><b>foo{}bar</b></p>
  *
+ * **Note:** Difference between {@link engine.view.writer.mergeAttributes mergeAttributes} and
+ * {@link engine.view.writer.mergeContainers mergeContainers} is that `mergeAttributes` merges two
+ * {@link engine.view.AttributeElement attribute elements} or {@link engine.view.Text text nodes}
+ * while `mergeContainer` merges two {@link engine.view.ContainerElement container elements}.
+ *
  * @see engine.view.AttributeElement
  * @see engine.view.ContainerElement
- * @function engine.view.writer.mergeAt
+ * @see engine.view.writer.mergeContainers
+ * @function engine.view.writer.mergeAttributes
  * @param {engine.view.Position} position Merge position.
  * @returns {engine.view.Position} Position after merge.
  */
-export function mergeAt( position ) {
+export function mergeAttributes( position ) {
 	const positionOffset = position.offset;
 	const positionParent = position.parent;
 
@@ -160,7 +171,7 @@ export function mergeAt( position ) {
 		const offset = positionParent.index;
 		positionParent.remove();
 
-		return mergeAt( new Position( parent, offset ) );
+		return mergeAttributes( new Position( parent, offset ) );
 	}
 
 	const nodeBefore = positionParent.getChild( positionOffset - 1 );
@@ -190,21 +201,30 @@ export function mergeAt( position ) {
 
 		// New position is located inside the first node, before new nodes.
 		// Call this method recursively to merge again if needed.
-		return mergeAt( new Position( nodeBefore, count ) );
+		return mergeAttributes( new Position( nodeBefore, count ) );
 	}
 
 	return position;
 }
 
 /**
- * Merges two {@link engine.view.ContainerElement container view elements} that are before and after given position.
- * Precisly, the element after the position is removed and it's contents are moved to element before the position.
+ * Merges two {@link engine.view.ContainerElement container elements} that are before and after given position.
+ * Precisely, the element after the position is removed and it's contents are moved to element before the position.
  *
  *		<p>foo</p>^<p>bar</p> -> <p>foo^bar</p>
  *		<div>foo</div>^<p>bar</p> -> <div>foo^bar</div>
  *
- * @param position
- * @returns {Position}
+ * **Note:** Difference between {@link engine.view.writer.mergeAttributes mergeAttributes} and
+ * {@link engine.view.writer.mergeContainers mergeContainers} is that `mergeAttributes` merges two
+ * {@link engine.view.AttributeElement attribute elements} or {@link engine.view.Text text nodes}
+ * while `mergeContainer` merges two {@link engine.view.ContainerElement container elements}.
+ *
+ * @see engine.view.AttributeElement
+ * @see engine.view.ContainerElement
+ * @see engine.view.writer.mergeAttributes
+ * @function engine.view.writer.mergeContainers
+ * @param {engine.view.Position} position Merge position.
+ * @returns {engine.view.Position} Position after merge.
  */
 export function mergeContainers( position ) {
 	const prev = position.nodeBefore;
@@ -216,7 +236,8 @@ export function mergeContainers( position ) {
 		 *
 		 * @error view-writer-merge-containers-invalid-position
 		 */
-		throw new CKEditorError( 'view-writer-merge-containers-invalid-position: Element before and after given position cannot be merged.' );
+		throw new CKEditorError( 'view-writer-merge-containers-invalid-position: ' +
+			'Element before and after given position cannot be merged.' );
 	}
 
 	const lastChild = prev.getChild( prev.childCount - 1 );
@@ -261,11 +282,11 @@ export function insert( position, nodes ) {
 		throw new CKEditorError( 'view-writer-invalid-position-container' );
 	}
 
-	const insertionPosition = _breakAt( position, true );
+	const insertionPosition = _breakAttributes( position, true );
 
 	const length = container.insertChildren( insertionPosition.offset, nodes );
 	const endPosition = insertionPosition.getShiftedBy( length );
-	const start = mergeAt( insertionPosition );
+	const start = mergeAttributes( insertionPosition );
 
 	// When no nodes were inserted - return collapsed range.
 	if ( length === 0 ) {
@@ -276,7 +297,7 @@ export function insert( position, nodes ) {
 			endPosition.offset--;
 		}
 
-		const end = mergeAt( endPosition );
+		const end = mergeAttributes( endPosition );
 
 		return new Range( start, end );
 	}
@@ -303,7 +324,7 @@ export function remove( range ) {
 	}
 
 	// Break attributes at range start and end.
-	const { start: breakStart, end: breakEnd } = _breakRange( range, true );
+	const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
 	const parentContainer = breakStart.parent;
 
 	const count = breakEnd.offset - breakStart.offset;
@@ -312,7 +333,7 @@ export function remove( range ) {
 	const removed = parentContainer.removeChildren( breakStart.offset, count );
 
 	// Merge after removing.
-	const mergePosition = mergeAt( breakStart );
+	const mergePosition = mergeAttributes( breakStart );
 	range.start = mergePosition;
 	range.end = Position.createFromPosition( mergePosition );
 
@@ -386,7 +407,7 @@ export function wrap( range, attribute ) {
 	}
 
 	// Break attributes at range start and end.
-	const { start: breakStart, end: breakEnd } = _breakRange( range, true );
+	const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
 	const parentContainer = breakStart.parent;
 
 	// Unwrap children located between break points.
@@ -396,13 +417,13 @@ export function wrap( range, attribute ) {
 	const newRange = wrapChildren( parentContainer, unwrappedRange.start.offset, unwrappedRange.end.offset, attribute );
 
 	// Merge attributes at the both ends and return a new range.
-	const start = mergeAt( newRange.start );
+	const start = mergeAttributes( newRange.start );
 
 	// If start position was merged - move end position back.
 	if ( !start.isEqual( newRange.start ) ) {
 		newRange.end.offset--;
 	}
-	const end = mergeAt( newRange.end );
+	const end = mergeAttributes( newRange.end );
 
 	return new Range( start, end );
 }
@@ -510,20 +531,20 @@ export function unwrap( range, attribute ) {
 	}
 
 	// Break attributes at range start and end.
-	const { start: breakStart, end: breakEnd } = _breakRange( range, true );
+	const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
 	const parentContainer = breakStart.parent;
 
 	// Unwrap children located between break points.
 	const newRange = unwrapChildren( parentContainer, breakStart.offset, breakEnd.offset, attribute );
 
 	// Merge attributes at the both ends and return a new range.
-	const start = mergeAt( newRange.start );
+	const start = mergeAttributes( newRange.start );
 
 	// If start position was merged - move end position back.
 	if ( !start.isEqual( newRange.start ) ) {
 		newRange.end.offset--;
 	}
-	const end = mergeAt( newRange.end );
+	const end = mergeAttributes( newRange.end );
 
 	return new Range( start, end );
 }
@@ -548,7 +569,7 @@ function getParentContainer( position ) {
 	return parent;
 }
 
-// Function used by both public breakRange (without splitting text nodes) and by other methods (with
+// Function used by both public breakAttributes (without splitting text nodes) and by other methods (with
 // splitting text nodes).
 //
 // @param {engine.view.Range} range Range which `start` and `end` positions will be used to break attributes.
@@ -556,7 +577,7 @@ function getParentContainer( position ) {
 // container element. This behavior will result in incorrect view state, but is needed by other view writing methods
 // which then fixes view state. Defaults to `false`.
 // @returns {engine.view.Range} New range with located at break positions.
-function _breakRange( range, forceSplitText = false ) {
+function _breakAttributesRange( range, forceSplitText = false ) {
 	const rangeStart = range.start;
 	const rangeEnd = range.end;
 
@@ -564,14 +585,14 @@ function _breakRange( range, forceSplitText = false ) {
 
 	// Break at the collapsed position. Return new collapsed range.
 	if ( range.isCollapsed ) {
-		const position = _breakAt( range.start, forceSplitText );
+		const position = _breakAttributes( range.start, forceSplitText );
 
 		return new Range( position, position );
 	}
 
-	const breakEnd = _breakAt( rangeEnd, forceSplitText );
+	const breakEnd = _breakAttributes( rangeEnd, forceSplitText );
 	const count = breakEnd.parent.childCount;
-	const breakStart = _breakAt( rangeStart, forceSplitText );
+	const breakStart = _breakAttributes( rangeStart, forceSplitText );
 
 	// Calculate new break end offset.
 	breakEnd.offset += breakEnd.parent.childCount - count;
@@ -579,7 +600,7 @@ function _breakRange( range, forceSplitText = false ) {
 	return new Range( breakStart, breakEnd );
 }
 
-// Function used by public breakAt (without splitting text nodes) and by other methods (with
+// Function used by public breakAttributes (without splitting text nodes) and by other methods (with
 // splitting text nodes).
 //
 // @param {engine.view.Position} position Position where to break attributes.
@@ -587,7 +608,7 @@ function _breakRange( range, forceSplitText = false ) {
 // container element. This behavior will result in incorrect view state, but is needed by other view writing methods
 // which then fixes view state. Defaults to `false`.
 // @returns {engine.view.Position} New position after breaking the attributes.
-function _breakAt( position, forceSplitText = false ) {
+function _breakAttributes( position, forceSplitText = false ) {
 	const positionOffset = position.offset;
 	const positionParent = position.parent;
 
@@ -603,7 +624,7 @@ function _breakAt( position, forceSplitText = false ) {
 
 	// Break text and start again in new position.
 	if ( positionParent instanceof Text ) {
-		return _breakAt( breakTextNode( position ), forceSplitText );
+		return _breakAttributes( breakTextNode( position ), forceSplitText );
 	}
 
 	const length = positionParent.childCount;
@@ -614,7 +635,7 @@ function _breakAt( position, forceSplitText = false ) {
 	if ( positionOffset == length ) {
 		const newPosition = new Position( positionParent.parent, positionParent.index + 1 );
 
-		return _breakAt( newPosition, forceSplitText );
+		return _breakAttributes( newPosition, forceSplitText );
 	} else
 	// <p>foo<b><u>{}bar</u></b></p>
 	// <p>foo<b>[]<u>bar</u></b></p>
@@ -622,7 +643,7 @@ function _breakAt( position, forceSplitText = false ) {
 	if ( positionOffset === 0 ) {
 		const newPosition = new Position( positionParent.parent, positionParent.index );
 
-		return _breakAt( newPosition, forceSplitText );
+		return _breakAttributes( newPosition, forceSplitText );
 	}
 	// <p>foo<b><u>b{}ar</u></b></p>
 	// <p>foo<b><u>b[]ar</u></b></p>
@@ -647,7 +668,7 @@ function _breakAt( position, forceSplitText = false ) {
 		// Create new position to work on.
 		const newPosition = new Position( positionParent.parent, offsetAfter );
 
-		return _breakAt( newPosition, forceSplitText );
+		return _breakAttributes( newPosition, forceSplitText );
 	}
 }
 
@@ -706,7 +727,7 @@ function unwrapChildren( parent, startOffset, endOffset, attribute ) {
 			continue;
 		}
 
-		const newPosition = mergeAt( position );
+		const newPosition = mergeAttributes( position );
 
 		// If nodes were merged - other merge offsets will change.
 		if ( !newPosition.isEqual( position ) ) {
@@ -764,7 +785,7 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 			continue;
 		}
 
-		const newPosition = mergeAt( position );
+		const newPosition = mergeAttributes( position );
 
 		// If nodes were merged - other merge offsets will change.
 		if ( !newPosition.isEqual( position ) ) {

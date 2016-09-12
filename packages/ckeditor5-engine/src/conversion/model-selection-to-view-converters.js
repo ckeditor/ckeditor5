@@ -84,7 +84,7 @@ export function convertCollapsedSelection() {
 
 		const modelPosition = selection.getFirstPosition();
 		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
-		const brokenPosition = viewWriter.breakAt( viewPosition );
+		const brokenPosition = viewWriter.breakAttributes( viewPosition );
 
 		conversionApi.viewSelection.removeAllRanges();
 		conversionApi.viewSelection.addRange( new ViewRange( brokenPosition, brokenPosition ) );
@@ -202,7 +202,7 @@ export function clearAttributes() {
 			if ( range.isCollapsed ) {
 				// Position might be in the node removed by the view writer.
 				if ( range.end.parent.document ) {
-					viewWriter.mergeAt( range.start );
+					viewWriter.mergeAttributes( range.start );
 				}
 			}
 		}
