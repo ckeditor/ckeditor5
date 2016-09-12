@@ -4,6 +4,7 @@
  */
 
 import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
+import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'GFMDataProcessor', () => {
@@ -87,14 +88,20 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		describe( 'toData', () => {
+			let viewFragment;
+
+			beforeEach( () => {
+				viewFragment = new DocumentFragment();
+			} );
+
 			it( 'should process single blockquotes', () => {
-				const viewFragment = parse( '<blockquote><p>foo bar</p></blockquote>' );
+				viewFragment.appendChildren( parse( '<blockquote><p>foo bar</p></blockquote>' ) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal( '> foo bar' );
 			} );
 
 			it( 'should process nested blockquotes', () => {
-				const viewFragment = parse(
+				viewFragment.appendChildren( parse(
 					'<blockquote>' +
 						'<p>foo</p>' +
 						'<blockquote>' +
@@ -102,7 +109,7 @@ describe( 'GFMDataProcessor', () => {
 						'</blockquote>' +
 						'<p>foo</p>' +
 					'</blockquote>'
-				);
+				) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal(
 					'> foo\n' +
@@ -114,7 +121,7 @@ describe( 'GFMDataProcessor', () => {
 			} );
 
 			it( 'should process list within a blockquote', () => {
-				const viewFragment = parse(
+				viewFragment.appendChildren( parse(
 					'<blockquote>' +
 						'<p>A list within a blockquote:</p>' +
 						'<ul>' +
@@ -123,7 +130,7 @@ describe( 'GFMDataProcessor', () => {
 							'<li>asterisk 3</li>' +
 						'</ul>' +
 					'</blockquote>'
-				);
+				) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal(
 					'> A list within a blockquote:\n' +
@@ -135,7 +142,7 @@ describe( 'GFMDataProcessor', () => {
 			} );
 
 			it( 'should process blockquotes with code inside', () => {
-				const viewFragment = parse(
+				viewFragment.appendChildren( parse(
 					'<blockquote>' +
 						'<p>Example 1:</p>' +
 						'<pre>' +
@@ -151,7 +158,7 @@ describe( 'GFMDataProcessor', () => {
 						'</pre>' +
 					'</blockquote>',
 					{ sameSelectionCharacters: true }
-				);
+				) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal(
 					'> Example 1:\n' +

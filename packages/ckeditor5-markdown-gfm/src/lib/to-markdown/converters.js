@@ -48,5 +48,5 @@ export default [
 
 			return hPrefix + ' ' + content;
 		}
-	},
+	}
 ];

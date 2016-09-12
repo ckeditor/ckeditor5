@@ -4,7 +4,8 @@
  */
 
 import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
-import { stringify } from '/tests/engine/_utils/view.js';
+import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
+import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'GFMDataProcessor', () => {
 	let dataProcessor;
@@ -22,9 +23,9 @@ describe( 'GFMDataProcessor', () => {
 			} );
 
 			it( 'multiline', () => {
-				const viewFragment = dataProcessor.toView( 'first\n    second\n   third' );
+				const viewFragment = dataProcessor.toView( 'first\nsecond\nthird' );
 
-				expect( stringify( viewFragment ) ).to.equal( '<p>first<br></br>    second<br></br>   third</p>' );
+				expect( stringify( viewFragment ) ).to.equal( '<p>first<br></br>second<br></br>third</p>' );
 			} );
 
 			it( 'with header after #1', () => {
@@ -55,6 +56,59 @@ describe( 'GFMDataProcessor', () => {
 				const viewFragment = dataProcessor.toView( 'single line\n<div>div element</div>' );
 
 				expect( stringify( viewFragment ) ).to.equal( '<p>single line</p><div>div element</div>' );
+			} );
+		} );
+
+		describe( 'toData', () => {
+			let viewFragment;
+
+			beforeEach( () => {
+				viewFragment = new DocumentFragment();
+			} );
+
+			it( 'should process single line paragraph', () => {
+				viewFragment.appendChildren( parse( '<p>single line paragraph</p>' ) );
+
+				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'single line paragraph' );
+			} );
+
+			it( 'should process multi line paragraph', () => {
+				viewFragment.appendChildren( parse( '<p>first<br></br>second<br></br>third</p>' ) );
+
+				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'first\nsecond\nthird' );
+			} );
+
+			it( 'should process multi line paragraph with header after it', () => {
+				viewFragment.appendChildren( parse( '<p>single line</p><h1 id="header">header</h1>' ) );
+
+				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'single line\n\n# header' );
+			} );
+
+			it( 'should process multi line paragraph with blockquote after it', () => {
+				viewFragment.appendChildren( parse( '<p>single line</p><blockquote><p>quote</p></blockquote>' ) );
+
+				expect( dataProcessor.toData( viewFragment ) ).to.equal(
+					'single line\n\n' +
+					'> quote'
+				);
+			} );
+
+			it( 'should process paragraph with list after', () => {
+				viewFragment.appendChildren( parse( '<p>single line</p><ul><li>item</li></ul>' ) );
+
+				expect( dataProcessor.toData( viewFragment ) ).to.equal(
+					'single line\n\n' +
+					'*   item'
+				);
+			} );
+
+			it( 'should process paragraph with div after', () => {
+				viewFragment.appendChildren( parse( '<p>single line</p><div>div element</div>' ) );
+
+				expect( dataProcessor.toData( viewFragment ) ).to.equal(
+					'single line\n\n' +
+					'<div>div element</div>'
+				);
 			} );
 		} );
 	} );

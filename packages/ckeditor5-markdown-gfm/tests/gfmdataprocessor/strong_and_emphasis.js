@@ -4,6 +4,7 @@
  */
 
 import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
+import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'GFMDataProcessor', () => {
@@ -71,26 +72,32 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		describe( 'toData', () => {
+			let viewFragment;
+
+			beforeEach( () => {
+				viewFragment = new DocumentFragment();
+			} );
+
 			it( 'should process strong', () => {
-				const viewFragment = parse( '<p><strong>strong</strong> and <strong>this too</strong></p>' );
+				viewFragment.appendChildren( parse( '<p><strong>strong</strong> and <strong>this too</strong></p>' ) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal( '**strong** and **this too**' );
 			} );
 
 			it( 'should process emphasis', () => {
-				const viewFragment = parse( '<p><em>emphasis</em> and <em>this too</em></p>' );
+				viewFragment.appendChildren( parse( '<p><em>emphasis</em> and <em>this too</em></p>' ) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal( '_emphasis_ and _this too_' );
 			} );
 
 			it( 'should process strong and emphasis together #1', () => {
-				const viewFragment = parse( '<p><strong><em>This is strong and em.</em></strong></p>' );
+				viewFragment.appendChildren( parse( '<p><strong><em>This is strong and em.</em></strong></p>' ) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal( '**_This is strong and em._**' );
 			} );
 
 			it( 'should process strong and emphasis together #2', () => {
-				const viewFragment = parse( '<p><em><strong>This is strong and em.</strong></em></p>' );
+				viewFragment.appendChildren( parse( '<p><em><strong>This is strong and em.</strong></em></p>' ) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal( '_**This is strong and em.**_' );
 			} );

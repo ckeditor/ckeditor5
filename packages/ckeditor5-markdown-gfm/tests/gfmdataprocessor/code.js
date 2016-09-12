@@ -4,6 +4,7 @@
  */
 
 import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
+import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'GFMDataProcessor', () => {
@@ -171,20 +172,26 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		describe( 'toData', () => {
+			let viewFragment;
+
+			beforeEach( () => {
+				viewFragment = new DocumentFragment();
+			} );
+
 			it( 'should process inline code', () => {
-				const viewFragment = parse( '<p>regular text and <code>inline code</code></p>' );
+				viewFragment.appendChildren( parse( '<p>regular text and <code>inline code</code></p>' ) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'regular text and `inline code`' );
 			} );
 
 			it( 'should properly process code blocks', () => {
-				const viewFragment = parse( '<pre><code>code block</code></pre>' );
+				viewFragment.appendChildren( parse( '<pre><code>code block</code></pre>' ) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal( '```\ncode block\n```' );
 			} );
 
 			it( 'should process code block with language name', () => {
-				const viewFragment = parse( '<pre><code class="lang-js">code block</code></pre>' );
+				viewFragment.appendChildren( parse( '<pre><code class="lang-js">code block</code></pre>' ) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal(
 					'``` js\n' +

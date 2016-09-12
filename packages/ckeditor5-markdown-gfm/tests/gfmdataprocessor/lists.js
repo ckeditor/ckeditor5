@@ -4,6 +4,7 @@
  */
 
 import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
+import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'GFMDataProcessor', () => {
@@ -225,14 +226,20 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		describe( 'toData', () => {
+			let viewFragment;
+
+			beforeEach( () => {
+				viewFragment = new DocumentFragment();
+			} );
+
 			it( 'should process unordered lists', () => {
-				const viewFragment = parse(
+				viewFragment.appendChildren( parse(
 					'<ul>' +
 						'<li>item 1</li>' +
 						'<li>item 2</li>' +
 						'<li>item 3</li>' +
 					'</ul>'
-				);
+				) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal(
 					'*   item 1\n' +
@@ -242,13 +249,13 @@ describe( 'GFMDataProcessor', () => {
 			} );
 
 			it( 'should process ordered lists', () => {
-				const viewFragment = parse(
+				viewFragment.appendChildren( parse(
 					'<ol>' +
 						'<li>item 1</li>' +
 						'<li>item 2</li>' +
 						'<li>item 3</li>' +
 					'</ol>'
-				);
+				) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal(
 					'1.  item 1\n' +
@@ -256,31 +263,6 @@ describe( 'GFMDataProcessor', () => {
 					'3.  item 3'
 				);
 			} );
-
-			// it( 'should process ordered list with multiple paragraphs in them', () => {
-			// 	const viewFragment = parse(
-			// 		'<ol>' +
-			// 			'<li>' +
-			// 				'<p>Item 1, p1</p>' +
-			// 				'<p>Item 1, p2<br></br>next line</p>' +
-			// 			'</li>' +
-			// 			'<li>' +
-			// 				'<p>Item 2.</p>' +
-			// 			'</li>' +
-			// 			'<li>' +
-			// 				'<p>Item 3.</p>' +
-			// 			'</li>' +
-			// 		'</ol>'
-			// 	);
-			//
-			// 	expect( dataProcessor.toData( viewFragment ) ).to.equal(
-			// 		'1.  Item 1, p1\n\n' +
-			// 		'    Item 1, p2\n' +
-			// 		'    next line\n\n' +
-			// 		'2.  Item 2.\n\n' +
-			// 		'3.  Item 3.'
-			// 	);
-			// } );
 		} );
 	} );
 } );

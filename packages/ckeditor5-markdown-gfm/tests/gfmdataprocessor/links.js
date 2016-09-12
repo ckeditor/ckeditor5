@@ -4,6 +4,7 @@
  */
 
 import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
+import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'GFMDataProcessor', () => {
@@ -343,68 +344,78 @@ describe( 'GFMDataProcessor', () => {
 		} );
 
 		describe( 'toData', () => {
+			let viewFragment;
+
+			beforeEach( () => {
+				viewFragment = new DocumentFragment();
+			} );
+
 			it( 'should process links', () => {
-				const viewFragment = parse( '<p>Link: <a href="http://example.com/">http://example.com/</a>.</p>' );
+				viewFragment.appendChildren( parse( '<p>Link: <a href="http://example.com/">http://example.com/</a>.</p>' ) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'Link: [http://example.com/](http://example.com/).' );
 			} );
 
 			it( 'should process links with params', () => {
-				const viewFragment = parse(
+				viewFragment.appendChildren( parse(
 					'<p>' +
 						'Link: <a href="http://example.com/?foo=1&amp;bar=2">http://example.com/?foo=1&amp;bar=2</a>.' +
-					'</p>' );
+					'</p>'
+				) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'Link: [http://example.com/?foo=1&bar=2](http://example.com/?foo=1&bar=2).' );
 			} );
 
 			it( 'should process links with titles', () => {
-				const viewFragment = parse(
+				viewFragment.appendChildren( parse(
 					'<p>' +
 					'Link: <a href="http://example.com/" title="Link title">example site</a>.' +
-					'</p>' );
+					'</p>'
+				) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'Link: [example site](http://example.com/ "Link title").' );
 			} );
 
 			it( 'should process links with spaces in URL', () => {
-				const viewFragment = parse(
+				viewFragment.appendChildren( parse(
 					'<p>' +
 					'Link: <a href="url/has space">example</a>.' +
-					'</p>' );
+					'</p>'
+				) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'Link: [example](url/has space).' );
 			} );
 
 			it( 'should process links with titles and spaces in URL', () => {
-				const viewFragment = parse(
+				viewFragment.appendChildren( parse(
 					'<p>' +
 					'Link: <a href="url/has space" title="Link title">example</a>.' +
-					'</p>' );
+					'</p>'
+				) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'Link: [example](url/has space "Link title").' );
 			} );
 
 			it( 'should process empty links #1', () => {
-				const viewFragment = parse( '<p><a>Empty</a></p>' );
+				viewFragment.appendChildren( parse( '<p><a>Empty</a></p>' ) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal( '[Empty]()' );
 			} );
 
 			it( 'should process empty links #2', () => {
-				const viewFragment = parse( '<p><a></a></p>' );
+				viewFragment.appendChildren( parse( '<p><a></a></p>' ) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal( '[]()' );
 			} );
 
 			it( 'should process empty links with title #1', () => {
-				const viewFragment = parse( '<p><a title="Link Title">Empty</a></p>' );
+				viewFragment.appendChildren( parse( '<p><a title="Link Title">Empty</a></p>' ) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal( '[Empty]("Link Title")' );
 			} );
 
 			it( 'should process empty links with title #2', () => {
-				const viewFragment = parse( '<p><a title="Link Title"></a></p>' );
+				viewFragment.appendChildren( parse( '<p><a title="Link Title"></a></p>' ) );
 
 				expect( dataProcessor.toData( viewFragment ) ).to.equal( '[]("Link Title")' );
 			} );
