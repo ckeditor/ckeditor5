@@ -215,6 +215,39 @@ export default class Mapper {
 	}
 
 	/**
+	 * Registers a callback that evaluates the length in the model of a view element with given name.
+	 *
+	 * The callback is fired with one argument, which is a view element instance. The callback is expected to return
+	 * a number representing the length of view element in model.
+	 *
+	 *		// List item in view may contain nested list, which have other list items. In model though,
+	 *		// the lists are represented by flat structure. Because of those differences, length of list view element
+	 *		// may be greater than one. In the callback it's checked how many nested list items are in evaluated list item.
+	 *
+	 *		function getViewListItemLength( element ) {
+	 *			let length = 1;
+	 *
+	 *			for ( let child of element.getChildren() ) {
+	 *				if ( child.name == 'ul' || child.name == 'ol' ) {
+	 *					for ( let item of child.getChildren() ) {
+	 *						length += getViewListItemLength( item );
+	 *					}
+	 *				}
+	 *			}
+	 *
+	 *			return length;
+	 *		}
+	 *
+	 *		mapper.registerViewToModelLength( 'li', getViewListItemLength );
+	 *
+	 * @param {String} viewElementName Name of view element for which callback is registered.
+	 * @param {Function} lengthCallback Function return a length of view element instance in model.
+	 */
+	registerViewToModelLength( viewElementName, lengthCallback ) {
+		this._viewToModelLengthCallbacks.set( viewElementName, lengthCallback );
+	}
+
+	/**
 	 * Calculates model offset based on the view position and the block element.
 	 *
 	 * Example:
@@ -279,7 +312,9 @@ export default class Mapper {
 	 */
 	_getModelLength( viewNode ) {
 		if ( this._viewToModelMapping.has( viewNode ) ) {
-			return viewNode.modelLength;
+			const callback = this._viewToModelLengthCallbacks.get( viewNode.name );
+
+			return callback ? callback( viewNode ) : 1;
 		} else if ( viewNode instanceof ViewText ) {
 			return viewNode.data.length;
 		} else {

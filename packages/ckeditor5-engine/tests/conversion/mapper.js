@@ -470,4 +470,74 @@ describe( 'Mapper', () => {
 			it( 'should transform modelCaption 3', () => createToViewTest( modelCaption, 3, viewTextFOO, 3 ) );
 		} );
 	} );
+
+	describe( 'List mapping (test registerViewToModelLengthCallback)', () => {
+		function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
+			const viewPosition = new ViewPosition( viewElement, viewOffset );
+			const modelPosition = mapper.toModelPosition( viewPosition );
+			expect( modelPosition.parent ).to.equal( modelElement );
+			expect( modelPosition.offset ).to.equal( modelOffset );
+		}
+
+		let mapper;
+
+		let modelRoot;
+		let modelListItem1, modelListItem2;
+		let modelListItem11, modelListItem12;
+
+		let viewRoot;
+		let viewList, viewListNested;
+		let viewListItem1, viewListItem2;
+		let viewListItem11, viewListItem12;
+
+		before( () => {
+			modelListItem1 = new ModelElement( 'listItem', null, new ModelText( 'aaa' ) );
+			modelListItem11 = new ModelElement( 'listItem', null, new ModelText( 'bbb' ) );
+			modelListItem12 = new ModelElement( 'listItem', null, new ModelText( 'ccc' ) );
+			modelListItem2 = new ModelElement( 'listItem', null, new ModelText( 'xxx' ) );
+
+			modelRoot = new ModelRootElement( 'root', null, [ modelListItem1, modelListItem11, modelListItem12, modelListItem2 ] );
+
+			viewListItem11 = new ViewElement( 'li', null, new ViewText( 'bbb' ) );
+			viewListItem12 = new ViewElement( 'li', null, new ViewText( 'ccc' ) );
+			viewListNested = new ViewElement( 'ul', null, [ viewListItem11, viewListItem12 ] );
+
+			viewListItem1 = new ViewElement( 'li', null, [ new ViewText( 'aaa' ), viewListNested ] );
+			viewListItem2 = new ViewElement( 'li', null, new ViewText( 'ddd' ) );
+			viewList = new ViewElement( 'ul', null, [ viewListItem1, viewListItem2 ] );
+
+			viewRoot = new ViewElement( 'div', null, viewList );
+
+			mapper = new Mapper();
+			mapper.bindElements( modelRoot, viewRoot );
+			mapper.bindElements( modelListItem1, viewListItem1 );
+			mapper.bindElements( modelListItem11, viewListItem11 );
+			mapper.bindElements( modelListItem12, viewListItem12 );
+			mapper.bindElements( modelListItem2, viewListItem2 );
+
+			function getViewListItemLength( element ) {
+				let length = 1;
+
+				for ( let child of element.getChildren() ) {
+					if ( child.name == 'ul' || child.name == 'ol' ) {
+						for ( let item of child.getChildren() ) {
+							length += getViewListItemLength( item );
+						}
+					}
+				}
+
+				return length;
+			}
+
+			mapper.registerViewToModelLength( 'li', getViewListItemLength );
+		} );
+
+		describe( 'toModelPosition', () => {
+			it( 'should transform viewRoot 0', () => createToModelTest( viewRoot, 0, modelRoot, 0 ) );
+			it( 'should transform viewRoot 1', () => createToModelTest( viewRoot, 1, modelRoot, 4 ) );
+			it( 'should transform viewList 0', () => createToModelTest( viewList, 0, modelRoot, 0 ) );
+			it( 'should transform viewList 1', () => createToModelTest( viewList, 1, modelRoot, 3 ) );
+			it( 'should transform viewList 2', () => createToModelTest( viewList, 2, modelRoot, 4 ) );
+		} );
+	} );
 } );
