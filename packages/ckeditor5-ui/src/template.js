@@ -8,14 +8,16 @@
 import CKEditorError from '../utils/ckeditorerror.js';
 import mix from '../utils/mix.js';
 import EmitterMixin from '../utils/emittermixin.js';
+import Collection from '../utils/collection.js';
 import cloneDeepWith from '../utils/lib/lodash/cloneDeepWith.js';
 import isObject from '../utils/lib/lodash/isObject.js';
 
 const bindToSymbol = Symbol( 'bindTo' );
 const bindIfSymbol = Symbol( 'bindIf' );
+const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 
 /**
- * A basic Template class. It renders DOM HTMLElements from {@link ui.TemplateDefinition} and supports
+ * A basic Template class. It renders DOM HTMLElement or Text from {@link ui.TemplateDefinition} and supports
  * element attributes, children, bindings to {@link utils.ObservableMixin} instances and DOM events
  * propagation. For example:
  *
@@ -36,7 +38,7 @@ const bindIfSymbol = Symbol( 'bindIf' );
  *
  *		<p class="foo" style="background-color: yellow;">A paragraph.</p>
  *
- * See {@link ui.TemplateDefinition} to know more about templates and see complex examples.
+ * See {@link ui.TemplateDefinition} to know more about templates and complex template definitions.
  *
  * @memberOf ui
  */
@@ -47,38 +49,66 @@ export default class Template {
 	 * @param {ui.TemplateDefinition} def The definition of the template.
 	 */
 	constructor( def ) {
-		const defClone = clone( def );
-
-		normalize( defClone );
+		Object.assign( this, normalize( clone( def ) ) );
 
 		/**
-		 * Definition of this template.
+		 * Tag of this template, i.e. `div`, indicating that the instance will render
+		 * to an HTMLElement.
 		 *
-		 * @readonly
-		 * @member {ui.TemplateDefinition} ui.Template#definition
+		 * @member {String} ui.Template#tag
 		 */
-		this.definition = defClone;
+
+		/**
+		 * Text of this template, indicating that the instance will render to a DOM Text.
+		 *
+		 * @member {Array.<String,ui.TemplateValueSchema> ui.Template#text
+		 */
+
+		/**
+		 * Attributes of this template, i.e. `{ id: [ 'ck-id' ] }`, corresponding with
+		 * HTML attributes on HTMLElement.
+		 *
+		 * Note: Only when {@link ui.Template#tag} is defined.
+		 *
+		 * @member {Object} ui.Template#attributes
+		 */
+
+		/**
+		 * Children of this template; sub–templates. Each one is an independent
+		 * instance of {@link ui.Template}.
+		 *
+		 * Note: Only when {@link ui.Template#tag} is defined.
+		 *
+		 * @member {utils.Collection.<ui.Template>} ui.Template#children
+		 */
+
+		/**
+		 * DOM event listeners of this template.
+		 *
+		 * @member {Object} ui.Template#eventListeners
+		 */
 	}
 
 	/**
-	 * Renders DOM Node using {@link ui.Template#definition}.
+	 * Renders a DOM Node (`HTMLElement` or `Text`) out of the template.
 	 *
 	 * @see ui.Template#apply
 	 *
-	 * @returns {HTMLElement}
+	 * @returns {HTMLElement|Text}
 	 */
 	render() {
-		return this._renderNode( this.definition, undefined, true );
+		return this._renderNode( undefined, true );
 	}
 
 	/**
-	 * Applies template {@link ui.Template#def} to existing DOM tree.
+	 * Applies template {@link ui.Template#def} to existing DOM Node, either `HTMLElement` or `Text`.
 	 *
-	 * **Note:** No new DOM nodes (elements, text nodes) will be created.
+	 * **Note:** No new DOM nodes (HTMLElement or Text) will be created.
+	 *
 	 *		const element = document.createElement( 'div' );
 	 *		const bind = Template.bind( observableInstance, emitterInstance );
 	 *
-	 *		const template = new Template( {
+	 *		new Template( {
 	 *			attrs: {
 	 *				id: 'first-div',
 	 *				class: bind.to( 'divClass' )
@@ -89,14 +119,12 @@ export default class Template {
 	 *			children: [
 	 *				'Div text.'
 	 *			]
-	 *		} );
-	 *
-	 *		template.apply( element );
+	 *		} ).apply( element );
 	 *
 	 *		element.outerHTML == "<div id="first-div" class="my-div">Div text.</div>"
 	 *
 	 * @see ui.Template#render
-	 * @param {Node} element Root element for template to apply.
+	 * @param {Node} element Root element for the template to apply.
 	 */
 	apply( node ) {
 		if ( !node ) {
@@ -108,7 +136,7 @@ export default class Template {
 			throw new CKEditorError( 'ui-template-wrong-node: No DOM Node specified.' );
 		}
 
-		return this._renderNode( this.definition, node );
+		return this._renderNode( node );
 	}
 
 	/**
@@ -257,8 +285,8 @@ export default class Template {
 	 *			]
 	 *		} );
 	 *
-	 *		// Fragment extension.
-	 *		Template.extend( instance.definition.children[ 0 ], {
+	 *		// Child extension.
+	 *		Template.extend( instance.children.get( 0 ), {
 	 *			attributes: {
 	 *				class: 'd'
 	 *			}
@@ -270,48 +298,30 @@ export default class Template {
 	 *			<span class="b c d">Span</span>
 	 *		</p>
 	 *
-	 * @param {ui.Template|ui.TemplateDefinition} instanceOrDef Existing Template instance or definition to be extended.
-	 * @param {ui.TemplateDefinition} extDef An extension to existing instance or definition.
+	 * @param {ui.Template} template Existing Template instance to be extended.
+	 * @param {ui.TemplateDefinition} def An extension to existing an template instance.
 	 */
-	static extend( instanceOrDef, extDef ) {
-		const extDefClone = clone( extDef );
-
-		normalize( extDefClone );
-
-		if ( instanceOrDef instanceof Template ) {
-			extendTemplateDefinition( instanceOrDef.definition, extDefClone );
-		}
-		// Extend a particular child in existing template instance.
-		//
-		//		Template.extend( instance.definition.children[ 0 ], {
-		//			attributes: {
-		//				class: 'd'
-		//			}
-		//		} );
-		//
-		else {
-			extendTemplateDefinition( instanceOrDef, extDefClone );
-		}
+	static extend( template, def ) {
+		extendTemplate( template, normalize( clone( def ) ) );
 	}
 
 	/**
-	 * Renders a DOM Node from definition.
+	 * Renders a DOM Node (either `HTMLElement` or `Text`) out of the template.
 	 *
 	 * @protected
-	 * @param {ui.TemplateDefinition} def Definition of a Node.
-	 * @param {Node} applyNode If specified, template `def` will be applied to existing DOM Node.
+	 * @param {Node} applyNode If specified, this template will be applied to existing DOM Node.
 	 * @param {Boolean} intoFragment If set, children are rendered into DocumentFragment.
 	 * @returns {HTMLElement} A rendered Node.
 	 */
-	_renderNode( def, applyNode, intoFragment ) {
+	_renderNode( applyNode, intoFragment ) {
 		let isInvalid;
 
 		if ( applyNode ) {
 			// When applying, a definition cannot have "tag" and "text" at the same time.
-			isInvalid = def.tag && def.text;
+			isInvalid = this.tag && this.text;
 		} else {
-			// When rendering, a definition must have either "tag" or "text": XOR( def.tag, def.text ).
-			isInvalid = def.tag ? def.text : !def.text;
+			// When rendering, a definition must have either "tag" or "text": XOR( this.tag, this.text ).
+			isInvalid = this.tag ? this.text : !this.text;
 		}
 
 		if ( isInvalid ) {
@@ -324,84 +334,80 @@ export default class Template {
 			throw new CKEditorError( 'ui-template-wrong-syntax: Node definition must have either "tag" or "text" when rendering new Node.' );
 		}
 
-		return def.text ?
-			this._renderText( def, applyNode ) : this._renderElement( def, applyNode, intoFragment );
+		return this.text ? this._renderText( applyNode ) : this._renderElement( applyNode, intoFragment );
 	}
 
 	/**
-	 * Renders an HTMLElement from TemplateDefinition.
+	 * Renders an `HTMLElement` out of the template.
 	 *
 	 * @protected
-	 * @param {ui.TemplateDefinition} def Definition of an element.
-	 * @param {HTMLElement} applyElement If specified, template `def` will be applied to existing HTMLElement.
+	 * @param {HTMLElement} applyElement If specified, this template will be applied to existing HTMLElement.
 	 * @param {Boolean} intoFragment If set, children are rendered into DocumentFragment.
 	 * @returns {HTMLElement} A rendered element.
 	 */
-	_renderElement( def, applyElement, intoFragment ) {
+	_renderElement( applyElement, intoFragment ) {
 		const el = applyElement ||
-			document.createElementNS( def.ns || 'http://www.w3.org/1999/xhtml', def.tag );
+			document.createElementNS( this.ns || xhtmlNs, this.tag );
 
-		this._renderElementAttributes( def, el );
+		this._renderAttributes( el );
 
 		// Invoke children recursively.
 		if ( intoFragment ) {
 			const docFragment = document.createDocumentFragment();
 
-			this._renderElementChildren( def, docFragment );
+			this._renderElementChildren( docFragment );
 
 			el.appendChild( docFragment );
 		} else {
-			this._renderElementChildren( def, el, !!applyElement );
+			this._renderElementChildren( el, !!applyElement );
 		}
 
 		// Setup DOM bindings event listeners.
-		this._setUpListeners( def, el );
+		this._setUpListeners( el );
 
 		return el;
 	}
 
 	/**
-	 * Renders a Text from TemplateDefinition or String.
+	 * Renders a `Text` node out of {@link ui.Template#text}.
 	 *
 	 * @protected
-	 * @param {TemplateDefinition|String} def Definition of Text or its value.
-	 * @param {HTMLElement} textNode If specified, template `def` will be applied to existing Text Node.
-	 * @returns {Text} A rendered Text.
+	 * @param {HTMLElement} textNode If specified, this template instance will be applied to an existing Text Node.
+	 * @returns {Text} A rendered Text node in DOM.
 	 */
-	_renderText( valueSchemaOrText, textNode = document.createTextNode( '' ) ) {
+	_renderText( textNode = document.createTextNode( '' ) ) {
 		// Check if this Text Node is bound to Observable. Cases:
 		//		{ text: [ Template.bind( ... ).to( ... ) ] }
 		//		{ text: [ 'foo', Template.bind( ... ).to( ... ), ... ] }
-		if ( hasBinding( valueSchemaOrText.text ) ) {
-			this._bindToObservable( valueSchemaOrText.text, textNode, getTextUpdater( textNode ) );
+		if ( hasBinding( this.text ) ) {
+			this._bindToObservable( this.text, textNode, getTextUpdater( textNode ) );
 		}
 
 		// Simply set text. Cases:
 		// 		{ text: [ 'all', 'are', 'static' ] }
 		// 		{ text: [ 'foo' ] }
 		else {
-			textNode.textContent = valueSchemaOrText.text.join( '' );
+			textNode.textContent = this.text.join( '' );
 		}
 
 		return textNode;
 	}
 
 	/**
-	 * Renders element attributes from definition.
+	 * Renders an `HTMLElement` attributes out of {@link ui.Template#attributes}.
 	 *
 	 * @protected
-	 * @param {ui.TemplateDefinition} def Definition of an element.
-	 * @param {HTMLElement} el Element which is rendered.
+	 * @param {HTMLElement} el Element which attributes are to be rendered.
 	 */
-	_renderElementAttributes( { attributes }, el ) {
+	_renderAttributes( el ) {
 		let attrName, attrValue, attrNs;
 
-		if ( !attributes ) {
+		if ( !this.attributes ) {
 			return;
 		}
 
-		for ( attrName in attributes ) {
-			attrValue = attributes[ attrName ];
+		for ( attrName in this.attributes ) {
+			attrValue = this.attributes[ attrName ];
 
 			// Detect custom namespace:
 			// 		{ class: { ns: 'abc', value: Template.bind( ... ).to( ... ) } }
@@ -451,7 +457,7 @@ export default class Template {
 	}
 
 	/**
-	 * Renders `style` attribute.
+	 * Renders `style` attribute of an `HTMLElement` based on {@link ui.Template#attributes}.
 	 *
 	 * Style attribute is an {Object} with static values:
 	 *
@@ -497,42 +503,39 @@ export default class Template {
 	}
 
 	/**
-	 * Recursively renders element children from definition by
-	 * calling {@link ui.Template#_renderElement}.
+	 * Recursively renders element children from {@link ui.Template#children}.
 	 *
 	 * @protected
-	 * @param {ui.TemplateDefinition} def Definition of an element.
-	 * @param {HTMLElement} el Element which is rendered.
-	 * @param {Boolean} isApply Traverse existing DOM structure only, don't modify DOM.
+	 * @param {HTMLElement} elOrDocFragment Element or DocumentFragment which is being rendered.
+	 * @param {Boolean} shouldApply Traverse existing DOM structure only, don't modify DOM.
 	 */
-	_renderElementChildren( def, el, isApply ) {
-		if ( def.children ) {
-			def.children.forEach( ( childDef, index ) => {
-				if ( isApply ) {
-					this._renderNode( childDef, el.childNodes[ index ] );
-				} else {
-					el.appendChild( this._renderNode( childDef ) );
-				}
-			} );
+	_renderElementChildren( elOrDocFragment, shouldApply ) {
+		let childIndex = 0;
+
+		for ( let template of this.children ) {
+			if ( shouldApply ) {
+				template._renderNode( elOrDocFragment.childNodes[ childIndex++ ] );
+			} else {
+				elOrDocFragment.appendChild( template.render() );
+			}
 		}
 	}
 
 	/**
-	 * Activates element `on` listeners passed in element definition.
+	 * Activates {@link ui.Template#on} listeners on a passed `HTMLElement`.
 	 *
 	 * @protected
-	 * @param {ui.TemplateDefinition} def Definition of an element.
 	 * @param {HTMLElement} el Element which is being rendered.
 	 */
-	_setUpListeners( def, el ) {
-		if ( !def.on ) {
+	_setUpListeners( el ) {
+		if ( !this.eventListeners ) {
 			return;
 		}
 
-		for ( let key in def.on ) {
+		for ( let key in this.eventListeners ) {
 			const [ domEvtName, domSelector ] = key.split( '@' );
 
-			for ( let schemaItem of def.on[ key ] ) {
+			for ( let schemaItem of this.eventListeners[ key ] ) {
 				schemaItem.emitter.listenTo( el, domEvtName, ( evt, domEvt ) => {
 					if ( !domSelector || domEvt.target.matches( domSelector ) ) {
 						if ( typeof schemaItem.eventNameOrFunction == 'function' ) {
@@ -722,9 +725,10 @@ function getStyleUpdater( el, styleName ) {
 // @returns {ui.TemplateDefinition}
 function clone( def ) {
 	const clone = cloneDeepWith( def, value => {
-		// Don't clone Template.bind* bindings because there are references
-		// to Observable and DOMEmitterMixin instances inside, which are external
-		// to the Template.
+		// Don't clone the `Template.bind`* bindings because of the references to Observable
+		// and DOMEmitterMixin instances inside, which would also be traversed and cloned by greedy
+		// cloneDeepWith algorithm. There's no point in cloning Observable/DOMEmitterMixins
+		// along with the definition.
 		if ( value && value.type ) {
 			return value;
 		}
@@ -738,30 +742,42 @@ function clone( def ) {
 // See:
 //  * {@link normalizeAttributes}
 //  * {@link normalizeListeners}
-//  * {@link normalizeTextString}
+//  * {@link normalizePlainTextDefinition}
 //  * {@link normalizeTextDefinition}
 //
 // @param {ui.TemplateDefinition} def
+// @returns {ui.TemplateDefinition} Normalized definition.
 function normalize( def ) {
-	if ( def.text ) {
+	if ( typeof def == 'string' ) {
+		def = normalizePlainTextDefinition( def );
+	} else if ( def.text ) {
 		normalizeTextDefinition( def );
 	}
 
-	if ( def.attributes ) {
-		normalizeAttributes( def.attributes );
-	}
-
 	if ( def.on ) {
-		normalizeListeners( def.on );
+		def.eventListeners = normalizeListeners( def.on );
+
+		// Template mixes EmitterMixin, so delete #on to avoid collision.
+		delete def.on;
 	}
 
-	if ( def.children ) {
-		// Splicing children array inside so no forEach.
-		for ( let i = def.children.length; i--; ) {
-			normalizeTextString( def.children, def.children[ i ], i );
-			normalize( def.children[ i ] );
+	if ( !def.text ) {
+		if ( def.attributes ) {
+			normalizeAttributes( def.attributes );
 		}
+
+		const children = new Collection();
+
+		if ( def.children ) {
+			for ( let child of def.children ) {
+				children.add( new Template( child ) );
+			}
+		}
+
+		def.children = children;
 	}
+
+	return def;
 }
 
 // Normalizes "attributes" section of {@link ui.TemplateDefinition}.
@@ -812,33 +828,29 @@ function normalizeAttributes( attrs ) {
 //		}
 //
 // @param {Object} listeners
+// @returns {Object} Object containing normalized listeners.
 function normalizeListeners( listeners ) {
 	for ( let l in listeners ) {
 		arrayify( listeners, l );
 	}
+
+	return listeners;
 }
 
-// Normalizes "string" text in "children" section of {@link ui.TemplateDefinition}.
+// Normalizes "string" {@link ui.TemplateDefinition}.
 //
-//		children: [
-//			'abc',
-//		]
+//		"foo"
 //
 // becomes
 //
-//		children: [
-//			{ text: [ 'abc' ] },
-//		]
+//		{ text: [ 'foo' ] },
 //
-// @param {Array} children
-// @param {ui.TemplateDefinition} child
-// @param {Number} index
-function normalizeTextString( children, child, index ) {
-	if ( typeof child == 'string' ) {
-		children.splice( index, 1, {
-			text: [ child ]
-		} );
-	}
+// @param {String} def
+// @returns {ui.TemplateDefinition} Normalized template definition.
+function normalizePlainTextDefinition( def ) {
+	return {
+		text: [ def ]
+	};
 }
 
 // Normalizes text {@link ui.TemplateDefinition}.
@@ -924,34 +936,34 @@ function extendObjectValueArray( obj, ext ) {
 	}
 }
 
-// A helper for {@link ui.Template#extend}. Recursively extends {@link ui.Template#definition}
-// with content from another definition. See {@link ui.Template#extend} to learn more.
+// A helper for {@link ui.Template#extend}. Recursively extends {@link ui.Template} instance
+// with content from {ui.TemplateDefinition}. See {@link ui.Template#extend} to learn more.
 //
-// @param {ui.TemplateDefinition} def A base template definition.
-// @param {ui.TemplateDefinition} extDef An extension to existing definition.
-function extendTemplateDefinition( def, extDef ) {
-	if ( extDef.attributes ) {
-		if ( !def.attributes ) {
-			def.attributes = {};
+// @param {ui.Template} def A template instance to be extended.
+// @param {ui.TemplateDefinition} def A definition which is to extend the template instance.
+function extendTemplate( template, def ) {
+	if ( def.attributes ) {
+		if ( !template.attributes ) {
+			template.attributes = {};
 		}
 
-		extendObjectValueArray( def.attributes, extDef.attributes );
+		extendObjectValueArray( template.attributes, def.attributes );
 	}
 
-	if ( extDef.on ) {
-		if ( !def.on ) {
-			def.on = {};
+	if ( def.eventListeners ) {
+		if ( !template.eventListeners ) {
+			template.eventListeners = {};
 		}
 
-		extendObjectValueArray( def.on, extDef.on );
+		extendObjectValueArray( template.eventListeners, def.eventListeners );
 	}
 
-	if ( extDef.text ) {
-		def.text.push( ...extDef.text );
+	if ( def.text ) {
+		template.text.push( ...def.text );
 	}
 
-	if ( extDef.children ) {
-		if ( !def.children || def.children.length != extDef.children.length ) {
+	if ( def.children && def.children.length ) {
+		if ( template.children.length != def.children.length ) {
 			/**
 			 * The number of children in extended definition does not match.
 			 *
@@ -960,9 +972,11 @@ function extendTemplateDefinition( def, extDef ) {
 			throw new CKEditorError( 'ui-template-extend-children-mismatch: The number of children in extended definition does not match.' );
 		}
 
-		extDef.children.forEach( ( extChildDef, index ) => {
-			extendTemplateDefinition( def.children[ index ], extChildDef );
-		} );
+		let childIndex = 0;
+
+		for ( let childDef of def.children ) {
+			extendTemplate( template.children.get( childIndex++ ), childDef );
+		}
 	}
 }
 
@@ -1011,7 +1025,7 @@ function isFalsy( value ) {
  * @property {String} tag
  * @property {Array.<ui.TemplateDefinition>} [children]
  * @property {Object.<String,ui.TemplateValueSchema>} [attributes]
- * @property {String|ui.TemplateValueSchema} [text]
+ * @property {String|ui.TemplateValueSchema|Array.<String|ui.TemplateValueSchema>} [text]
  * @property {Object.<String,ui.TemplateListenerSchema>} [on]
  */
 
