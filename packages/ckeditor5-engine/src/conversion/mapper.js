@@ -51,7 +51,7 @@ export default class Mapper {
 		this._viewToModelMapping = new WeakMap();
 
 		/**
-		 * A map containing callbacks between view element classes and functions evaluating length of view elements
+		 * A map containing callbacks between view element names and functions evaluating length of view elements
 		 * in model.
 		 *
 		 * @private
