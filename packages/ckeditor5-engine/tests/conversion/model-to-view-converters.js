@@ -504,20 +504,6 @@ describe( 'rename', () => {
 		converters.remove.restore();
 	} );
 
-	it( 'should unbind renamed element from view, add fake element to model and bind it with proper view element', () => {
-		const viewElement = viewRoot.getChild( 0 );
-
-		dispatcher.on( 'rename', ( evt, data, consumable, conversionApi ) => {
-			expect( data.fakeElement ).to.be.instanceof( ModelElement );
-			expect( data.fakeElement.parent ).to.equal( data.element.parent );
-
-			expect( conversionApi.mapper.toViewElement( data.element ) ).to.be.undefined;
-			expect( conversionApi.mapper.toViewElement( data.fakeElement ) ).to.equal( viewElement );
-		} );
-
-		dispatcher.convertRename( element, oldName );
-	} );
-
 	it( 'should enable default rename conversion, that uses already registered callbacks', () => {
 		expect( viewRoot.getChild( 0 ).name ).to.equal( 'oldName' );
 		dispatcher.convertRename( element, oldName );

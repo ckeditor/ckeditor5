@@ -4,6 +4,7 @@
  */
 
 import ModelRange from '../model/range.js';
+import ModelPosition from '../model/position.js';
 import ModelElement from '../model/element.js';
 
 import ViewElement from '../view/element.js';
@@ -322,12 +323,13 @@ export function remove() {
  *
  *		modelDispatcher.on( 'rename', rename() );
  *
- * This converter enables default behavior of rename conversion implemented in {@link engine.conversion.ModelConversionDispatcher}.
- * It exposes fake model element `fakeElement` and provides proper model-view bindings between original and fake model elements
- * and their view counterparts.
+ * This converter re-uses converters added for `insert`, `move` and `remove` change types.
  *
  * @external engine.conversion.modelToView
  * @function engine.conversion.modelToView.rename
+ * @fires engine.conversion.ModelConversionDispatcher#event:insert
+ * @fires engine.conversion.ModelConversionDispatcher#event:move
+ * @fires engine.conversion.ModelConversionDispatcher#event:remove
  * @returns {Function}
  */
 export function rename() {
@@ -335,10 +337,9 @@ export function rename() {
 		if ( consumable.test( data.element, 'rename' ) ) {
 			// Create fake element in model, needed for conversion purposes.
 			const fakeElement = new ModelElement( data.oldName, data.element.getAttributes() );
-			// Append the fake element to artificial document fragment to enable making range on it.
+			// Append the fake element to model document to enable making range on it.
 			data.element.parent.insertChildren( data.element.index, fakeElement );
 
-			// Rebind view element to the fake element.
 			// Check what was bound to renamed element.
 			const oldViewElement = conversionApi.mapper.toViewElement( data.element );
 			// Unbind renamed element.
@@ -346,7 +347,24 @@ export function rename() {
 			// Bind view element to the fake element.
 			conversionApi.mapper.bindElements( fakeElement, oldViewElement );
 
-			data.fakeElement = fakeElement;
+			// The range that includes only the renamed element. Will be used to insert an empty element in the view.
+			const insertRange = ModelRange.createFromParentsAndOffsets( data.element.parent, data.element.startOffset, data.element, 0 );
+
+			// Move source position and range of moved nodes. Will be used to move nodes from original view element to renamed one.
+			const moveSourcePosition = ModelPosition.createAt( fakeElement, 0 );
+			const moveRange = ModelRange.createIn( data.element );
+
+			// Remove range containing the fake element. Will be used to remove original view element from the view.
+			const removeRange = ModelRange.createOn( fakeElement );
+
+			// Start the "real" conversion. Use already defined converters by firing insertion, move and remove
+			// conversion on correct ranges / positions.
+			conversionApi.dispatcher.convertInsertion( insertRange );
+			conversionApi.dispatcher.convertMove( moveSourcePosition, moveRange );
+			conversionApi.dispatcher.convertRemove( removeRange.start, removeRange );
+
+			// Cleanup.
+			fakeElement.remove();
 		}
 	};
 }

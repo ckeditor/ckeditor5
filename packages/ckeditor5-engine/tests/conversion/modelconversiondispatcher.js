@@ -7,7 +7,6 @@
 
 import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
 import ModelDocument from '/ckeditor5/engine/model/document.js';
-import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import ModelText from '/ckeditor5/engine/model/text.js';
 import ModelElement from '/ckeditor5/engine/model/element.js';
 import ModelRange from '/ckeditor5/engine/model/range.js';
@@ -340,30 +339,6 @@ describe( 'ModelConversionDispatcher', () => {
 			} );
 
 			dispatcher.convertRename( element, oldName );
-		} );
-
-		it( 'should fire insert, move and remove conversion if fake model element was provided in data object', () => {
-			sinon.spy( dispatcher, 'convertInsertion' );
-			sinon.spy( dispatcher, 'convertMove' );
-			sinon.spy( dispatcher, 'convertRemove' );
-
-			dispatcher.on( 'rename', ( evt, data ) => {
-				const fakeElement = new ModelElement( 'oldName' );
-				const fakeParent = new ModelDocumentFragment();
-				fakeParent.appendChildren( fakeElement );
-
-				data.fakeElement = fakeElement;
-			} );
-
-			const element = new ModelElement( 'newName' );
-			const parent = new ModelDocumentFragment();
-			parent.appendChildren( element );
-
-			dispatcher.convertRename( element, 'oldName' );
-
-			expect( dispatcher.convertInsertion.calledOnce ).to.be.true;
-			expect( dispatcher.convertMove.calledOnce ).to.be.true;
-			expect( dispatcher.convertRemove.calledOnce ).to.be.true;
 		} );
 	} );
 
