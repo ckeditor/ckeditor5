@@ -91,6 +91,20 @@ describe( 'Mapper', () => {
 	} );
 
 	describe( 'Standard mapping', () => {
+		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
+			const modelPosition = ModelPosition.createFromParentAndOffset( modelElement, modelOffset );
+			const viewPosition = mapper.toViewPosition( modelPosition );
+			expect( viewPosition.parent ).to.equal( viewElement );
+			expect( viewPosition.offset ).to.equal( viewOffset );
+		}
+
+		function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
+			const viewPosition = new ViewPosition( viewElement, viewOffset );
+			const modelPosition = mapper.toModelPosition( viewPosition );
+			expect( modelPosition.parent ).to.equal( modelElement );
+			expect( modelPosition.offset ).to.equal( modelOffset );
+		}
+
 		let modelDiv, modelP, modelImg;
 
 		let viewDiv, viewP, viewB, viewI, viewU, viewSup, viewImg;
@@ -193,19 +207,12 @@ describe( 'Mapper', () => {
 		} );
 
 		describe( 'toModelPosition', () => {
-			function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
-				const viewPosition = new ViewPosition( viewElement, viewOffset );
-				const modelPosition = mapper.toModelPosition( viewPosition );
-				expect( modelPosition.parent ).to.equal( modelElement );
-				expect( modelPosition.offset ).to.equal( modelOffset );
-			}
-
 			it( 'should fire viewToModelPosition event and return value calculated in callback to that event', () => {
 				const viewPosition = new ViewPosition( viewDiv, 0 );
 				const stub = {};
 
-				mapper.on( 'viewToModelPosition', ( evt, position, data ) => {
-					expect( position ).to.equal( viewPosition );
+				mapper.on( 'viewToModelPosition', ( evt, data ) => {
+					expect( data.viewPosition ).to.equal( viewPosition );
 
 					data.modelPosition = stub;
 					evt.stop();
@@ -273,19 +280,12 @@ describe( 'Mapper', () => {
 		} );
 
 		describe( 'toViewPosition', () => {
-			function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
-				const modelPosition = ModelPosition.createFromParentAndOffset( modelElement, modelOffset );
-				const viewPosition = mapper.toViewPosition( modelPosition );
-				expect( viewPosition.parent ).to.equal( viewElement );
-				expect( viewPosition.offset ).to.equal( viewOffset );
-			}
-
 			it( 'should fire modelToViewPosition event and return value calculated in callback to that event', () => {
 				const modelPosition = new ModelPosition( modelDiv, [ 0 ] );
 				const stub = {};
 
-				mapper.on( 'modelToViewPosition', ( evt, position, data ) => {
-					expect( position ).to.equal( modelPosition );
+				mapper.on( 'modelToViewPosition', ( evt, data ) => {
+					expect( data.modelPosition ).to.equal( modelPosition );
 
 					data.viewPosition = stub;
 					evt.stop();
@@ -340,6 +340,20 @@ describe( 'Mapper', () => {
 	} );
 
 	describe( 'Widget mapping', () => {
+		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
+			const modelPosition = ModelPosition.createFromParentAndOffset( modelElement, modelOffset );
+			const viewPosition = mapper.toViewPosition( modelPosition );
+			expect( viewPosition.parent ).to.equal( viewElement );
+			expect( viewPosition.offset ).to.equal( viewOffset );
+		}
+
+		function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
+			const viewPosition = new ViewPosition( viewElement, viewOffset );
+			const modelPosition = mapper.toModelPosition( viewPosition );
+			expect( modelPosition.parent ).to.equal( modelElement );
+			expect( modelPosition.offset ).to.equal( modelOffset );
+		}
+
 		let modelDiv, modelWidget, modelImg, modelCaption;
 
 		let viewDiv, viewWidget, viewMask, viewWrapper, viewImg, viewCaption;
@@ -418,13 +432,6 @@ describe( 'Mapper', () => {
 		} );
 
 		describe( 'toModelPosition', () => {
-			function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
-				const viewPosition = new ViewPosition( viewElement, viewOffset );
-				const modelPosition = mapper.toModelPosition( viewPosition );
-				expect( modelPosition.parent ).to.equal( modelElement );
-				expect( modelPosition.offset ).to.equal( modelOffset );
-			}
-
 			it( 'should transform viewDiv 0', () => createToModelTest( viewDiv, 0, modelDiv, 0 ) );
 			it( 'should transform viewDiv 1', () => createToModelTest( viewDiv, 1, modelDiv, 1 ) );
 			it( 'should transform viewDiv 2', () => createToModelTest( viewDiv, 2, modelDiv, 2 ) );
@@ -449,13 +456,6 @@ describe( 'Mapper', () => {
 		} );
 
 		describe( 'toViewPosition', () => {
-			function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
-				const modelPosition = ModelPosition.createFromParentAndOffset( modelElement, modelOffset );
-				const viewPosition = mapper.toViewPosition( modelPosition );
-				expect( viewPosition.parent ).to.equal( viewElement );
-				expect( viewPosition.offset ).to.equal( viewOffset );
-			}
-
 			it( 'should transform modelDiv 0', () => createToViewTest( modelDiv, 0, viewTextX, 0 ) );
 			it( 'should transform modelDiv 1', () => createToViewTest( modelDiv, 1, viewTextX, 1 ) );
 			it( 'should transform modelDiv 2', () => createToViewTest( modelDiv, 2, viewTextZZ, 0 ) );

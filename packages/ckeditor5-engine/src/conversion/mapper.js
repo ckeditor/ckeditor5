@@ -50,16 +50,25 @@ export default class Mapper {
 		 */
 		this._viewToModelMapping = new WeakMap();
 
-		// Add default callback for model to view position mapping.
-		this.on( 'modelToViewPosition', ( evt, modelPosition, data ) => {
-			let viewContainer = this._modelToViewMapping.get( modelPosition.parent );
+		/**
+		 * A map containing callbacks between view element classes and functions evaluating length of view elements
+		 * in model.
+		 *
+		 * @private
+		 * @member {Map} engine.conversion.Mapper#_viewToModelLengthCallbacks
+		 */
+		this._viewToModelLengthCallbacks = new Map();
 
-			data.viewPosition = this._findPositionIn( viewContainer, modelPosition.offset );
+		// Add default callback for model to view position mapping.
+		this.on( 'modelToViewPosition', ( evt, data ) => {
+			let viewContainer = this._modelToViewMapping.get( data.modelPosition.parent );
+
+			data.viewPosition = this._findPositionIn( viewContainer, data.modelPosition.offset );
 		}, 'lowest' );
 
 		// Add default callback for view to model position mapping.
-		this.on( 'viewToModelPosition', ( evt, viewPosition, data ) => {
-			let viewBlock = viewPosition.parent;
+		this.on( 'viewToModelPosition', ( evt, data ) => {
+			let viewBlock = data.viewPosition.parent;
 			let modelParent = this._viewToModelMapping.get( viewBlock );
 
 			while ( !modelParent ) {
@@ -67,7 +76,7 @@ export default class Mapper {
 				modelParent = this._viewToModelMapping.get( viewBlock );
 			}
 
-			let modelOffset = this._toModelOffset( viewPosition.parent, viewPosition.offset, viewBlock );
+			let modelOffset = this._toModelOffset( data.viewPosition.parent, data.viewPosition.offset, viewBlock );
 
 			data.modelPosition = ModelPosition.createFromParentAndOffset( modelParent, modelOffset );
 		}, 'lowest' );
@@ -178,10 +187,11 @@ export default class Mapper {
 	 */
 	toModelPosition( viewPosition ) {
 		const data = {
+			viewPosition: viewPosition,
 			modelPosition: null
 		};
 
-		this.fire( 'viewToModelPosition', viewPosition, data );
+		this.fire( 'viewToModelPosition', data );
 
 		return data.modelPosition;
 	}
@@ -195,10 +205,11 @@ export default class Mapper {
 	 */
 	toViewPosition( modelPosition ) {
 		const data = {
-			viewPosition: null
+			viewPosition: null,
+			modelPosition: modelPosition
 		};
 
-		this.fire( 'modelToViewPosition', modelPosition, data );
+		this.fire( 'modelToViewPosition', data );
 
 		return data.viewPosition;
 	}
