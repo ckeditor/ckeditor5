@@ -83,6 +83,8 @@ export default class LiveRange extends Range {
  */
 function bindWithDocument() {
 	/*jshint validthis: true */
+	// Operation types handled by LiveRange (these are operations that change model tree structure).
+	const supportedTypes = new Set( [ 'insert', 'move', 'remove', 'reinsert' ] );
 
 	this.listenTo(
 		this.root.document,
@@ -94,8 +96,6 @@ function bindWithDocument() {
 		}
 	);
 }
-
-const supportedTypes = new Set( [ 'insert', 'move', 'remove', 'reinsert' ] );
 
 /**
  * Updates this range accordingly to the updates applied to the model. Bases on change events.
