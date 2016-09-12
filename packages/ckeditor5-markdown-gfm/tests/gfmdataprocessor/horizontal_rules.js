@@ -4,7 +4,7 @@
  */
 
 import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
-import { stringify } from '/tests/engine/_utils/view.js';
+import { stringify, parse } from '/tests/engine/_utils/view.js';
 
 describe( 'GFMDataProcessor', () => {
 	let dataProcessor;
@@ -205,6 +205,14 @@ describe( 'GFMDataProcessor', () => {
 
 					expect( stringify( viewFragment ) ).to.equal( '<pre><code>_ _ _</code></pre>' );
 				} );
+			} );
+		} );
+
+		describe( 'toData', () => {
+			it( 'should process horizontal rules', () => {
+				const viewFragment = parse( '<hr></hr>' );
+
+				expect( dataProcessor.toData( viewFragment ) ).to.equal( '* * *' );
 			} );
 		} );
 	} );

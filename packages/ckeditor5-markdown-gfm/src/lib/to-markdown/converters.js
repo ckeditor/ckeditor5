@@ -5,10 +5,9 @@
 
 // Exports an array with custom converters used by to-markdown library.
 export default [
-
 	// Converting code blocks with class name matching output from marked library.
 	{
-		filter: (node) =>  {
+		filter: ( node ) =>  {
 			const regexp = /lang-(.+)/;
 
 			return node.nodeName === 'PRE' &&
@@ -21,6 +20,33 @@ export default [
 			const lang = regexp.exec( node.firstChild.className )[ 1 ];
 
 			return '\n\n``` ' + lang + '\n' + node.firstChild.textContent + '\n```\n\n';
+		}
+	},
+	// Converting empty links.
+	{
+		filter: ( node ) => {
+			return node.nodeName === 'A' && !node.getAttribute( 'href' );
+		},
+
+		replacement: ( content, node ) => {
+			const title = node.title ? `"${node.title}"` : '';
+
+			return `[${ content }](${ title })`;
+		}
+	},
+
+	// Headers - fixing newline at the beginning.
+	{
+		filter: [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ],
+		replacement: ( content, node ) => {
+			const hLevel = node.nodeName.charAt( 1 );
+			let hPrefix = '';
+
+			for ( let i = 0; i < hLevel; i++ ) {
+				hPrefix += '#';
+			}
+
+			return hPrefix + ' ' + content;
 		}
 	},
 ];
