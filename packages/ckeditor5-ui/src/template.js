@@ -92,7 +92,7 @@ export default class Template {
 	/**
 	 * Renders a DOM Node (`HTMLElement` or `Text`) out of the template.
 	 *
-	 * @see ui.Template#apply
+	 * @see {@link ui.Template#apply}.
 	 *
 	 * @returns {HTMLElement|Text}
 	 */
@@ -101,9 +101,10 @@ export default class Template {
 	}
 
 	/**
-	 * Applies template {@link ui.Template#def} to existing DOM Node, either `HTMLElement` or `Text`.
+	 * Applies the template to an existing DOM Node, either `HTMLElement` or `Text`.
 	 *
-	 * **Note:** No new DOM nodes (HTMLElement or Text) will be created.
+	 * **Note:** No new DOM nodes (HTMLElement or Text) will be created. Applying extends
+	 * attributes ({@link ui.TemplateDefinition#attributes}) and listeners ({@link ui.TemplateDefinition#on}) only.
 	 *
 	 *		const element = document.createElement( 'div' );
 	 *		const bind = Template.bind( observableInstance, emitterInstance );
@@ -248,7 +249,7 @@ export default class Template {
 	}
 
 	/**
-	 * Extends {@link ui.Template} or {@link ui.TemplateDefinition} with additional content.
+	 * Extends {@link ui.Template} instance with additional content from {@link ui.TemplateDefinition}.
 	 *
 	 *		const bind = Template.bind( observable, emitterInstance );
 	 *		const instance = new Template( {
@@ -309,8 +310,8 @@ export default class Template {
 	 * Renders a DOM Node (either `HTMLElement` or `Text`) out of the template.
 	 *
 	 * @protected
-	 * @param {Node} applyNode If specified, this template will be applied to existing DOM Node.
-	 * @param {Boolean} intoFragment If set, children are rendered into DocumentFragment.
+	 * @param {Node} applyNode If specified, this template will be applied to an existing DOM Node.
+	 * @param {Boolean} intoFragment If set, children are rendered into `DocumentFragment`.
 	 * @returns {HTMLElement} A rendered Node.
 	 */
 	_renderNode( applyNode, intoFragment ) {
@@ -341,9 +342,9 @@ export default class Template {
 	 * Renders an `HTMLElement` out of the template.
 	 *
 	 * @protected
-	 * @param {HTMLElement} applyElement If specified, this template will be applied to existing HTMLElement.
-	 * @param {Boolean} intoFragment If set, children are rendered into DocumentFragment.
-	 * @returns {HTMLElement} A rendered element.
+	 * @param {HTMLElement} applyElement If specified, this template will be applied to an existing `HTMLElement`.
+	 * @param {Boolean} intoFragment If set, children are rendered into `DocumentFragment`.
+	 * @returns {HTMLElement} A rendered `HTMLElement`.
 	 */
 	_renderElement( applyElement, intoFragment ) {
 		const el = applyElement ||
@@ -372,8 +373,8 @@ export default class Template {
 	 * Renders a `Text` node out of {@link ui.Template#text}.
 	 *
 	 * @protected
-	 * @param {HTMLElement} textNode If specified, this template instance will be applied to an existing Text Node.
-	 * @returns {Text} A rendered Text node in DOM.
+	 * @param {HTMLElement} textNode If specified, this template instance will be applied to an existing `Text` Node.
+	 * @returns {Text} A rendered `Text` node in DOM.
 	 */
 	_renderText( textNode = document.createTextNode( '' ) ) {
 		// Check if this Text Node is bound to Observable. Cases:
@@ -397,7 +398,7 @@ export default class Template {
 	 * Renders an `HTMLElement` attributes out of {@link ui.Template#attributes}.
 	 *
 	 * @protected
-	 * @param {HTMLElement} el Element which attributes are to be rendered.
+	 * @param {HTMLElement} el `HTMLElement` which attributes are to be rendered.
 	 */
 	_renderAttributes( el ) {
 		let attrName, attrValue, attrNs;
@@ -475,12 +476,12 @@ export default class Template {
 	 * 			}
 	 * 		}
 	 *
-	 * Note: `style` attribute is rendered without setting namespace. It does not seem to be
+	 * Note: `style` attribute is rendered without setting the namespace. It does not seem to be
 	 * needed.
 	 *
 	 * @private
 	 * @param {ui.TemplateDefinition.attributes.styles} styles Styles definition.
-	 * @param {HTMLElement} el Element which is rendered.
+	 * @param {HTMLElement} el `HTMLElement` which `style` attribute is rendered.
 	 */
 	_renderStyleAttribute( styles, el ) {
 		for ( let styleName in styles ) {
@@ -503,10 +504,10 @@ export default class Template {
 	}
 
 	/**
-	 * Recursively renders element children from {@link ui.Template#children}.
+	 * Recursively renders `HTMLElement` children from {@link ui.Template#children}.
 	 *
 	 * @protected
-	 * @param {HTMLElement} elOrDocFragment Element or DocumentFragment which is being rendered.
+	 * @param {HTMLElement} elOrDocFragment `HTMLElement` or `DocumentFragment` which is being rendered.
 	 * @param {Boolean} shouldApply Traverse existing DOM structure only, don't modify DOM.
 	 */
 	_renderElementChildren( elOrDocFragment, shouldApply ) {
@@ -525,7 +526,7 @@ export default class Template {
 	 * Activates {@link ui.Template#on} listeners on a passed `HTMLElement`.
 	 *
 	 * @protected
-	 * @param {HTMLElement} el Element which is being rendered.
+	 * @param {HTMLElement} el `HTMLElement` which is being rendered.
 	 */
 	_setUpListeners( el ) {
 		if ( !this.eventListeners ) {
