@@ -251,6 +251,6 @@ export default class Link extends Feature {
 		}
 
 		// Set focus to the panel input.
-		this.balloonPanel.urlInput.view.focus();
+		this.balloonPanel.urlInput.view.select();
 	}
 }
