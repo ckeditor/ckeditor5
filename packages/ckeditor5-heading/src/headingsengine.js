@@ -60,5 +60,20 @@ export default class HeadingsEngine extends Feature {
 		// Register command.
 		const command = new HeadingsCommand( editor, formats );
 		editor.commands.set( 'headings', command );
+
+		// If Enter Command is added to the editor, alter it's behavior.
+		const enterCommand = editor.commands.get( 'enter' );
+
+		if ( enterCommand ) {
+			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
+				const positionParent = editor.document.selection.getFirstPosition().parent;
+				const batch = data.batch;
+				const isHeading = formats.some( ( format ) => format.id == positionParent.name );
+
+				if ( isHeading && positionParent.name != command.defaultFormat.id && positionParent.childCount === 0 ) {
+					batch.rename( command.defaultFormat.id, positionParent );
+				}
+			} );
+		}
 	}
 }

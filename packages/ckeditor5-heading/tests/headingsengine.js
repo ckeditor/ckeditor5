@@ -7,6 +7,7 @@ import HeadingsEngine from '/ckeditor5/headings/headingsengine.js';
 import Paragraph from '/ckeditor5/paragraph/paragraph.js';
 import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
 import HeadingsCommand from '/ckeditor5/headings/headingscommand.js';
+import Enter from '/ckeditor5/enter/enter.js';
 import { getData } from '/tests/engine/_utils/model.js';
 
 describe( 'HeadingsEngine', () => {
@@ -14,7 +15,7 @@ describe( 'HeadingsEngine', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			features: [ HeadingsEngine ]
+			features: [ Enter, HeadingsEngine ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
@@ -71,5 +72,24 @@ describe( 'HeadingsEngine', () => {
 
 		expect( getData( document, { withoutSelection: true } ) ).to.equal( '<heading3>foobar</heading3>' );
 		expect( editor.getData() ).to.equal( '<h4>foobar</h4>' );
+	} );
+
+	it( 'should make enter command insert a defaultFormat block if selection ended at the end of heading block', () => {
+		editor.setData( '<h2>foobar</h2>' );
+		document.selection.collapse( document.getRoot().getChild( 0 ), 'end' );
+
+		editor.execute( 'enter' );
+
+		expect( getData( document ) ).to.equal( '<heading1>foobar</heading1><paragraph>[]</paragraph>' );
+	} );
+
+	it( 'should not alter enter command if selection not ended at the end of heading block', () => {
+		// This test is to fill code coverage.
+		editor.setData( '<h2>foobar</h2>' );
+		document.selection.collapse( document.getRoot().getChild( 0 ), 3 );
+
+		editor.execute( 'enter' );
+
+		expect( getData( document ) ).to.equal( '<heading1>foo</heading1><heading1>[]bar</heading1>' );
 	} );
 } );

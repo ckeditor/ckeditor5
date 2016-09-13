@@ -16,7 +16,7 @@ const formats = [
 ];
 
 describe( 'HeadingsCommand', () => {
-	let editor, document, command, root;
+	let editor, document, command, root, schema;
 
 	beforeEach( () => {
 		return ModelTestEditor.create()
@@ -24,7 +24,7 @@ describe( 'HeadingsCommand', () => {
 				editor = newEditor;
 				document = editor.document;
 				command = new HeadingsCommand( editor, formats );
-				const schema = document.schema;
+				schema = document.schema;
 
 				for ( let format of formats ) {
 					schema.registerItem( format.id, '$block' );
@@ -53,6 +53,15 @@ describe( 'HeadingsCommand', () => {
 				expect( command.value ).to.equal( format );
 			} );
 		}
+
+		it( 'should be equal to defaultFormat if format has not been found', () => {
+			schema.registerItem( 'div', '$block' );
+			setData( document, '<div>xyz</div>' );
+			const element = root.getChild( 0 );
+			document.selection.addRange( Range.createFromParentsAndOffsets( element, 1, element, 1 ) );
+
+			expect( command.value ).to.equal( command.defaultFormat );
+		} );
 	} );
 
 	describe( '_doExecute', () => {
