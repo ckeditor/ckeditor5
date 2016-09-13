@@ -29,16 +29,12 @@ export default class LinkFormView extends FormView {
 			}
 		} );
 
-		this.template.definition.children = [
-			{
-				tag: 'div',
-				attributes: {
-					class: [
-						'ck-link-form__actions'
-					]
-				}
+		this.template.children.add( new Template( {
+			tag: 'div',
+			attributes: {
+				class: 'ck-link-form__actions'
 			}
-		];
+		} ) );
 
 		this.register( 'actions', 'div.ck-link-form__actions' );
 	}
