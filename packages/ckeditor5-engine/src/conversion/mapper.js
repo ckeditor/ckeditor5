@@ -119,18 +119,6 @@ export default class Mapper {
 	}
 
 	/**
-	 * Removes binding between given elements.
-	 *
-	 * @private
-	 * @param {engine.model.Element} modelElement Model element to unbind.
-	 * @param {engine.view.Element} viewElement View element to unbind.
-	 */
-	_unbindElements( modelElement, viewElement ) {
-		this._viewToModelMapping.delete( viewElement );
-		this._modelToViewMapping.delete( modelElement );
-	}
-
-	/**
 	 * Removes all model to view and view to model bindings.
 	 */
 	clearBindings() {
@@ -292,17 +280,30 @@ export default class Mapper {
 	}
 
 	/**
+	 * Removes binding between given elements.
+	 *
+	 * @private
+	 * @param {engine.model.Element} modelElement Model element to unbind.
+	 * @param {engine.view.Element} viewElement View element to unbind.
+	 */
+	_unbindElements( modelElement, viewElement ) {
+		this._viewToModelMapping.delete( viewElement );
+		this._modelToViewMapping.delete( modelElement );
+	}
+
+	/**
 	 * Gets the length of the view element in the model.
 	 *
 	 * The length is calculated as follows:
 	 * * length of a {@link engine.view.Text text node} is equal to the length of it's {@link engine.view.Text#data data},
-	 * * length of a mapped {@link engine.view.Element element} is equal to it's {@link engine.view.Element#modelLength modelLength},
+	 * * length of a mapped {@link engine.view.Element element} is equal to 1 or to the value evaluated by the callback
+	 * added through {@link engine.conversion.Mapper#registerViewToModelLength},
 	 * * length of a not-mapped {@link engine.view.Element element} is equal to the length of it's children.
 	 *
 	 * Examples:
 	 *
 	 *		foo                     -> 3 // Text length is equal to it's data length.
-	 *		<p>foo</p>              -> 1 // Length of an element which is mapped is equal to modelLength, 1 by default.
+	 *		<p>foo</p>              -> 1 // Length of an element which is mapped is by default equal to 1.
 	 *		<b>foo</b>              -> 3 // Length of an element which is not mapped is a length of its children.
 	 *		<div><p>x</p><p>y</p>   -> 2 // Assuming that <div> is not mapped and <p> are mapped.
 	 *
