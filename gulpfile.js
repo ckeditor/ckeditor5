@@ -17,7 +17,6 @@ const config = {
 		cjs: 'build/modules/cjs',
 		esnext: 'build/modules/esnext'
 	},
-	DOCS_DIR: 'build/docs',
 	BUNDLE_DIR: 'build/dist',
 	WORKSPACE_DIR: '..',
 
@@ -25,6 +24,12 @@ const config = {
 	BUNDLE_DEFAULT_CONFIG: 'dev/bundles/build-config-standard.js',
 
 	DOCUMENTATION: {
+		// Path to the temporary documentation files.
+		TEMPORARY_DIR: 'build/docs/.tmp',
+		// Path to the built editors.
+		BUNDLE_DIR: 'build/docs/assets/scripts/samples',
+		// Path to the built documentation.
+		DESTINATION_DIR: 'build/docs',
 		// Glob pattern with samples.
 		SAMPLES: 'docs/samples/**/*.@(md|html|js)',
 		// Glob pattern with guides.
@@ -130,6 +135,17 @@ gulp.task( 'bundle:generate',
 
 // Documentation. -------------------------------------------------------------
 
-const docsBuilder = ckeditor5DevCompiler.docs( config );
+// Documentation. -------------------------------------------------------------
 
-gulp.task( 'docs', [ 'compile:js:esnext' ], docsBuilder.buildDocs );
+const ckeditor5DevDocs = require( '@ckeditor/ckeditor5-dev-docs' );
+const docsBuilder = ckeditor5DevDocs.docs( config );
+
+gulp.task( 'docs', [ 'docs:clean', 'compile:js:esnext' ], ( done ) => {
+	runSequence( [ 'docs:prepare-files', 'docs:editors' ], 'docs:build', done );
+} );
+
+// Documentation's helpers.
+gulp.task( 'docs:clean', docsBuilder.clean );
+gulp.task( 'docs:build', docsBuilder.buildDocs );
+gulp.task( 'docs:prepare-files', docsBuilder.collectDocumentationFiles );
+gulp.task( 'docs:editors', [ 'compile:js:esnext', 'compile:themes:esnext' ], docsBuilder.buildEditorsForSamples );
