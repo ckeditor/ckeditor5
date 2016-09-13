@@ -5,7 +5,7 @@
 
 /* bender-tags: view, browser-only */
 
-import { mergeAt } from '/ckeditor5/engine/view/writer.js';
+import { mergeAttributes } from '/ckeditor5/engine/view/writer.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Text from '/ckeditor5/engine/view/text.js';
 import Position from '/ckeditor5/engine/view/position.js';
@@ -21,11 +21,11 @@ describe( 'writer', () => {
 	 */
 	function test( input, expected ) {
 		const { view, selection } = parse( input );
-		const newPosition = mergeAt( selection.getFirstPosition() );
+		const newPosition = mergeAttributes( selection.getFirstPosition() );
 		expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
 	}
 
-	describe( 'mergeAt', () => {
+	describe( 'mergeAttributes', () => {
 		it( 'should not merge if inside text node', () => {
 			test( '<container:p>fo{}bar</container:p>', '<container:p>fo{}bar</container:p>' );
 		} );
@@ -65,7 +65,7 @@ describe( 'writer', () => {
 			const p = new ContainerElement( 'p', null, [ t1, t2 ] );
 			const position = new Position( p, 1 );
 
-			const newPosition = mergeAt( position );
+			const newPosition = mergeAttributes( position );
 			expect( stringify( p, newPosition ) ).to.equal( '<p>foo{}bar</p>' );
 		} );
 

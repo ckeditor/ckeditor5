@@ -6,9 +6,7 @@
 import Delta from './delta.js';
 import DeltaFactory from './deltafactory.js';
 import { register } from '../batch.js';
-import InsertOperation from '../operation/insertoperation.js';
-import RemoveOperation from '../operation/removeoperation.js';
-import MoveOperation from '../operation/moveoperation.js';
+import RenameOperation from '../operation/renameoperation.js';
 import Element from '../element.js';
 import Position from '../position.js';
 import CKEditorError from '../../../utils/ckeditorerror.js';
@@ -61,21 +59,9 @@ register( 'rename', function( newName, element ) {
 	const delta = new RenameDelta();
 	this.addDelta( delta );
 
-	const newElement = new Element( newName );
-
 	apply(
 		this, delta,
-		new InsertOperation( Position.createAfter( element ), newElement, this.document.version )
-	);
-
-	apply(
-		this, delta,
-		new MoveOperation( Position.createAt( element ), element.maxOffset, Position.createAt( newElement ), this.document.version )
-	);
-
-	apply(
-		this, delta,
-		new RemoveOperation( Position.createBefore( element ), 1, this.document.version )
+		new RenameOperation( Position.createBefore( element ), element.name, newName, this.document.version )
 	);
 
 	return this;

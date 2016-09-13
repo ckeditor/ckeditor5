@@ -5,6 +5,7 @@
 
 import Consumable from './modelconsumable.js';
 import Range from '../model/range.js';
+import Position from '../model/position.js';
 import TextProxy from '../model/textproxy.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import mix from '../../utils/mix.js';
@@ -113,7 +114,7 @@ export default class ModelConversionDispatcher {
 		 *
 		 * @member {Object} engine.conversion.ModelConversionDispatcher#conversionApi
 		 */
-		this.conversionApi = extend( {}, conversionApi );
+		this.conversionApi = extend( { dispatcher: this }, conversionApi );
 	}
 
 	/**
@@ -125,6 +126,7 @@ export default class ModelConversionDispatcher {
 	 * @fires engine.conversion.ModelConversionDispatcher#insert
 	 * @fires engine.conversion.ModelConversionDispatcher#move
 	 * @fires engine.conversion.ModelConversionDispatcher#remove
+	 * @fires engine.conversion.ModelConversionDispatcher#rename
 	 * @fires engine.conversion.ModelConversionDispatcher#addAttribute
 	 * @fires engine.conversion.ModelConversionDispatcher#removeAttribute
 	 * @fires engine.conversion.ModelConversionDispatcher#changeAttribute
@@ -146,6 +148,8 @@ export default class ModelConversionDispatcher {
 			this.convertRemove( data.sourcePosition, data.range );
 		} else if ( type == 'addAttribute' || type == 'removeAttribute' || type == 'changeAttribute' ) {
 			this.convertAttribute( type, data.range, data.key, data.oldValue, data.newValue );
+		} else if ( type == 'rename' ) {
+			this.convertRename( data.element, data.oldName );
 		}
 	}
 
@@ -195,12 +199,20 @@ export default class ModelConversionDispatcher {
 	 * @param {engine.model.Range} range Moved range (after move).
 	 */
 	convertMove( sourcePosition, range ) {
-		const data = {
-			sourcePosition: sourcePosition,
-			range: range
-		};
+		const consumable = this._createConsumableForRange( range, 'move' );
 
-		this.fire( 'move', data, this.conversionApi );
+		// Fire a separate event for each top-most node and text fragment contained in the range.
+		const items = Array.from( range.getItems( { shallow: true } ) ).reverse();
+
+		for ( let item of items ) {
+			const data = {
+				sourcePosition: sourcePosition.getShiftedBy( item.startOffset - range.start.offset ),
+				targetPosition: Position.createAt( range.start ),
+				item: item
+			};
+
+			this._testAndFire( 'move', data, consumable );
+		}
 	}
 
 	/**
@@ -211,12 +223,19 @@ export default class ModelConversionDispatcher {
 	 * @param {engine.model.Range} range Removed range (after remove, in {@link engine.model.Document#graveyard graveyard root}).
 	 */
 	convertRemove( sourcePosition, range ) {
-		const data = {
-			sourcePosition: sourcePosition,
-			range: range
-		};
+		const consumable = this._createConsumableForRange( range, 'remove' );
 
-		this.fire( 'remove', data, this.conversionApi );
+		// Fire a separate event for each top-most node and text fragment contained in the range.
+		const items = Array.from( range.getItems( { shallow: true } ) ).reverse();
+
+		for ( let item of items ) {
+			const data = {
+				sourcePosition: sourcePosition.getShiftedBy( item.startOffset - range.start.offset ),
+				item: item
+			};
+
+			this._testAndFire( 'remove', data, consumable );
+		}
 	}
 
 	/**
@@ -233,7 +252,7 @@ export default class ModelConversionDispatcher {
 	 */
 	convertAttribute( type, range, key, oldValue, newValue ) {
 		// Create a list with attributes to consume.
-		const consumable = this._createAttributeConsumable( type, range, key );
+		const consumable = this._createConsumableForRange( range, type + ':' + key );
 
 		// Create a separate attribute event for each node in the range.
 		for ( let value of range ) {
@@ -249,6 +268,21 @@ export default class ModelConversionDispatcher {
 
 			this._testAndFire( type + ':' + key, data, consumable, this.conversionApi );
 		}
+	}
+
+	/**
+	 * Fires rename event with data based on passed values.
+	 *
+	 * @fires engine.conversion.ModelConversionDispatcher#event:rename
+	 * @param {engine.view.Element} element Renamed element.
+	 * @param {String} oldName Name of the renamed element before it was renamed.
+	 */
+	convertRename( element, oldName ) {
+		const consumable = new Consumable();
+		consumable.add( element, 'rename' );
+
+		const data = { element, oldName };
+		this.fire( 'rename:' + element.name + ':' + oldName, data, consumable, this.conversionApi );
 	}
 
 	/**
@@ -302,22 +336,18 @@ export default class ModelConversionDispatcher {
 	}
 
 	/**
-	 * Creates {@link engine.conversion.ModelConsumable} with values to consume from given range, assuming that
-	 * given range has just had it's attributes changed.
+	 * Creates {@link engine.conversion.ModelConsumable} with values of given `type` for each item from given `range`.
 	 *
 	 * @private
-	 * @param {String} type Change type. Possible values: `addAttribute`, `removeAttribute`, `changeAttribute`.
-	 * @param {engine.conversion.Range} range Changed range.
-	 * @param {String} key Attribute key.
+	 * @param {engine.conversion.Range} range Affected range.
+	 * @param {String} type Consumable type.
 	 * @returns {engine.conversion.ModelConsumable} Values to consume.
 	 */
-	_createAttributeConsumable( type, range, key ) {
+	_createConsumableForRange( range, type ) {
 		const consumable = new Consumable();
 
-		for ( let value of range ) {
-			const item = value.item;
-
-			consumable.add( item, type + ':' + key );
+		for ( let item of range.getItems() ) {
+			consumable.add( item, type );
 		}
 
 		return consumable;
@@ -360,7 +390,7 @@ export default class ModelConversionDispatcher {
 			return;
 		}
 
-		if ( type === 'insert' ) {
+		if ( type === 'insert' || type === 'remove' || type == 'move' ) {
 			if ( data.item instanceof TextProxy ) {
 				// Example: insert:$text.
 				this.fire( type + ':$text', data, consumable, this.conversionApi );
@@ -412,6 +442,17 @@ export default class ModelConversionDispatcher {
 	 * @param {Object} data Additional information about the change.
 	 * @param {engine.model.Position} data.sourcePosition Position from where the range has been removed.
 	 * @param {engine.model.Range} data.range Removed range (in {@link engine.model.Document#graveyard graveyard root}).
+	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
+	 */
+
+	/**
+	 * Fired for renamed element.
+	 *
+	 * @event engine.conversion.ModelConversionDispatcher.rename
+	 * @param {Object} data Additional information about the change.
+	 * @param {engine.model.Element} data.element Renamed element.
+	 * @param {String} data.oldName Old name of the renamed element.
+	 * @param {engine.conversion.ModelConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */
 

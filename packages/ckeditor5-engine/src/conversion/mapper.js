@@ -4,16 +4,28 @@
  */
 
 import ModelPosition from '../model/position.js';
-import ViewPosition from '../view/position.js';
 import ModelRange from '../model/range.js';
+
+import ViewPosition from '../view/position.js';
 import ViewRange from '../view/range.js';
 import ViewText from '../view/text.js';
+
+import EmitterMixin from '../../utils/emittermixin.js';
+import mix from '../../utils/mix.js';
 
 /**
  * Maps elements and positions between {@link engine.view.Document view} and {@link engine.model model}.
  *
  * Mapper use bound elements to find corresponding elements and positions, so, to get proper results,
  * all model elements should be {@link engine.conversion.Mapper#bindElements bound}.
+ *
+ * To map complex model to/from view relations, you may provide custom callbacks for
+ * {@link engine.conversion.Mapper#event:modelToViewPosition modelToViewPosition event} and
+ * {@link engine.conversion.Mapper#event:viewToModelPosition viewToModelPosition event} that are fired whenever
+ * a position mapping request occurs. Those events are fired by {@link engine.conversion.Mapper#toViewPosition toViewPosition}
+ * and {@link engine.conversion.Mapper#toModelPosition toModelPosition} methods. `Mapper` adds it's own default callbacks
+ * with `'lowest'` priority. To override default `Mapper` mapping, add custom callback with higher priority and
+ * stop the event.
  *
  * @memberOf engine.conversion
  */
@@ -37,6 +49,37 @@ export default class Mapper {
 		 * @member {WeakMap} engine.conversion.Mapper#_viewToModelMapping
 		 */
 		this._viewToModelMapping = new WeakMap();
+
+		/**
+		 * A map containing callbacks between view element names and functions evaluating length of view elements
+		 * in model.
+		 *
+		 * @private
+		 * @member {Map} engine.conversion.Mapper#_viewToModelLengthCallbacks
+		 */
+		this._viewToModelLengthCallbacks = new Map();
+
+		// Add default callback for model to view position mapping.
+		this.on( 'modelToViewPosition', ( evt, data ) => {
+			let viewContainer = this._modelToViewMapping.get( data.modelPosition.parent );
+
+			data.viewPosition = this._findPositionIn( viewContainer, data.modelPosition.offset );
+		}, 'lowest' );
+
+		// Add default callback for view to model position mapping.
+		this.on( 'viewToModelPosition', ( evt, data ) => {
+			let viewBlock = data.viewPosition.parent;
+			let modelParent = this._viewToModelMapping.get( viewBlock );
+
+			while ( !modelParent ) {
+				viewBlock = viewBlock.parent;
+				modelParent = this._viewToModelMapping.get( viewBlock );
+			}
+
+			let modelOffset = this._toModelOffset( data.viewPosition.parent, data.viewPosition.offset, viewBlock );
+
+			data.modelPosition = ModelPosition.createFromParentAndOffset( modelParent, modelOffset );
+		}, 'lowest' );
 	}
 
 	/**
@@ -51,6 +94,40 @@ export default class Mapper {
 	bindElements( modelElement, viewElement ) {
 		this._modelToViewMapping.set( modelElement, viewElement );
 		this._viewToModelMapping.set( viewElement, modelElement );
+	}
+
+	/**
+	 * Unbinds given {@link engine.view.Element view element} from the map.
+	 *
+	 * @param {engine.view.Element} viewElement View element to unbind.
+	 */
+	unbindViewElement( viewElement ) {
+		const modelElement = this.toModelElement( viewElement );
+
+		this._unbindElements( modelElement, viewElement );
+	}
+
+	/**
+	 * Unbinds given {@link engine.model.Element model element} from the map.
+	 *
+	 * @param {engine.model.Element} modelElement Model element to unbind.
+	 */
+	unbindModelElement( modelElement ) {
+		const viewElement = this.toViewElement( modelElement );
+
+		this._unbindElements( modelElement, viewElement );
+	}
+
+	/**
+	 * Removes binding between given elements.
+	 *
+	 * @private
+	 * @param {engine.model.Element} modelElement Model element to unbind.
+	 * @param {engine.view.Element} viewElement View element to unbind.
+	 */
+	_unbindElements( modelElement, viewElement ) {
+		this._viewToModelMapping.delete( viewElement );
+		this._modelToViewMapping.delete( modelElement );
 	}
 
 	/**
@@ -104,33 +181,70 @@ export default class Mapper {
 	/**
 	 * Gets the corresponding model position.
 	 *
+	 * @fires engine.conversion.Mapper#event:viewToModelPosition
 	 * @param {engine.view.Position} viewPosition View position.
 	 * @returns {engine.model.Position} Corresponding model position.
 	 */
 	toModelPosition( viewPosition ) {
-		let viewBlock = viewPosition.parent;
-		let modelParent =  this._viewToModelMapping.get( viewBlock );
+		const data = {
+			viewPosition: viewPosition,
+			modelPosition: null
+		};
 
-		while ( !modelParent ) {
-			viewBlock = viewBlock.parent;
-			modelParent = this._viewToModelMapping.get( viewBlock );
-		}
+		this.fire( 'viewToModelPosition', data );
 
-		let modelOffset = this._toModelOffset( viewPosition.parent, viewPosition.offset, viewBlock );
-
-		return ModelPosition.createFromParentAndOffset( modelParent, modelOffset );
+		return data.modelPosition;
 	}
 
 	/**
 	 * Gets the corresponding view position.
 	 *
+	 * @fires engine.conversion.Mapper#event:modelToViewPosition
 	 * @param {engine.model.Position} modelPosition Model position.
 	 * @returns {engine.view.Position} Corresponding view position.
 	 */
 	toViewPosition( modelPosition ) {
-		let viewContainer = this._modelToViewMapping.get( modelPosition.parent );
+		const data = {
+			viewPosition: null,
+			modelPosition: modelPosition
+		};
 
-		return this._findPositionIn( viewContainer, modelPosition.offset );
+		this.fire( 'modelToViewPosition', data );
+
+		return data.viewPosition;
+	}
+
+	/**
+	 * Registers a callback that evaluates the length in the model of a view element with given name.
+	 *
+	 * The callback is fired with one argument, which is a view element instance. The callback is expected to return
+	 * a number representing the length of view element in model.
+	 *
+	 *		// List item in view may contain nested list, which have other list items. In model though,
+	 *		// the lists are represented by flat structure. Because of those differences, length of list view element
+	 *		// may be greater than one. In the callback it's checked how many nested list items are in evaluated list item.
+	 *
+	 *		function getViewListItemLength( element ) {
+	 *			let length = 1;
+	 *
+	 *			for ( let child of element.getChildren() ) {
+	 *				if ( child.name == 'ul' || child.name == 'ol' ) {
+	 *					for ( let item of child.getChildren() ) {
+	 *						length += getViewListItemLength( item );
+	 *					}
+	 *				}
+	 *			}
+	 *
+	 *			return length;
+	 *		}
+	 *
+	 *		mapper.registerViewToModelLength( 'li', getViewListItemLength );
+	 *
+	 * @param {String} viewElementName Name of view element for which callback is registered.
+	 * @param {Function} lengthCallback Function return a length of view element instance in model.
+	 */
+	registerViewToModelLength( viewElementName, lengthCallback ) {
+		this._viewToModelLengthCallbacks.set( viewElementName, lengthCallback );
 	}
 
 	/**
@@ -180,22 +294,27 @@ export default class Mapper {
 	/**
 	 * Gets the length of the view element in the model.
 	 *
+	 * The length is calculated as follows:
+	 * * length of a {@link engine.view.Text text node} is equal to the length of it's {@link engine.view.Text#data data},
+	 * * length of a mapped {@link engine.view.Element element} is equal to it's {@link engine.view.Element#modelLength modelLength},
+	 * * length of a not-mapped {@link engine.view.Element element} is equal to the length of it's children.
+	 *
 	 * Examples:
 	 *
-	 *		foo          -> 3 // Length of the text is the length of data.
-	 *		<b>foo</b>   -> 3 // Length of the element which has no corresponding model element is a length of its children.
-	 *		<p>foo</p>   -> 1 // Length of the element which has corresponding model element is always 1.
+	 *		foo                     -> 3 // Text length is equal to it's data length.
+	 *		<p>foo</p>              -> 1 // Length of an element which is mapped is equal to modelLength, 1 by default.
+	 *		<b>foo</b>              -> 3 // Length of an element which is not mapped is a length of its children.
+	 *		<div><p>x</p><p>y</p>   -> 2 // Assuming that <div> is not mapped and <p> are mapped.
 	 *
 	 * @private
 	 * @param {engine.view.Element} viewNode View node.
 	 * @returns {Number} Length of the node in the tree model.
 	 */
 	_getModelLength( viewNode ) {
-		// If we need mapping to be more flexible this method may fire event, so every feature may define the relation
-		// between length in the model to the length in the view, for example if one element in the model creates two
-		// elements in the view. Now I can not find any example where such feature would be useful.
 		if ( this._viewToModelMapping.has( viewNode ) ) {
-			return 1;
+			const callback = this._viewToModelLengthCallbacks.get( viewNode.name );
+
+			return callback ? callback( viewNode ) : 1;
 		} else if ( viewNode instanceof ViewText ) {
 			return viewNode.data.length;
 		} else {
@@ -298,3 +417,58 @@ export default class Mapper {
 		return viewPosition;
 	}
 }
+
+mix( Mapper, EmitterMixin );
+
+/**
+ * Fired for each model-to-view position mapping request. The purpose of this event is to enable custom model-to-view position
+ * mapping. Callbacks added to this event take {@link engine.model.Position model position} and are expected to calculate
+ * {@link engine.view.Position view position}. Calculated view position should be added as `viewPosition` value in
+ * `data` object that is passed as one of parameters to the event callback.
+ *
+ * 		// Assume that "captionedImage" model element is converted to <img> and following <span> elements in view,
+ * 		// and the model element is bound to <img> element. Force mapping model positions inside "captionedImage" to that <span> element.
+ *		mapper.on( 'modelToViewPosition', ( evt, mapper, modelPosition, data ) => {
+ *			const positionParent = modelPosition.parent;
+ *
+ *			if ( positionParent.name == 'captionedImage' ) {
+ *				const viewImg = mapper.toViewElement( positionParent );
+ *				const viewCaption = viewImg.nextSibling; // The <span> element.
+ *
+ *				data.viewPosition = new ViewPosition( viewCaption, modelPosition.offset );
+ *				evt.stop();
+ *			}
+ *		} );
+ *
+ * **Note:** these callbacks are called **very often**. For efficiency reasons, it is advised to use them only when position
+ * mapping between given model and view elements is unsolvable using just elements mapping and default algorithm. Also,
+ * the condition that checks if special case scenario happened should be as simple as possible.
+ *
+ * @event engine.conversion.Mapper.modelToViewPosition
+ * @param {engine.model.Position} modelPosition Model position to be mapped.
+ * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
+ * `viewPosition` value to that object with calculated {@link engine.view.Position view position}.
+ */
+
+/**
+ * Fired for each view-to-model position mapping request. See {@link engine.conversion.Mapper#event:modelToViewPosition}.
+ *
+ * 		// See example in `modelToViewPosition` event description.
+ * 		// This custom mapping will map positions from <span> element next to <img> to the "captionedImage" element.
+ *		mapper.on( 'viewToModelPosition', ( evt, mapper, viewPosition, data ) => {
+ *			const positionParent = viewPosition.parent;
+ *
+ *			if ( positionParent.hasClass( 'image-caption' ) ) {
+ *				const viewImg = positionParent.previousSibling;
+ *				const modelImg = mapper.toModelElement( viewImg );
+ *
+ *				data.modelPosition = new ModelPosition( modelImg, viewPosition.offset );
+ *				evt.stop();
+ *			}
+ *		} );
+ *
+ * @event engine.conversion.Mapper.viewToModelPosition
+ * @param {engine.view.Position} viewPosition View position to be mapped.
+ * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
+ * `modelPosition` value to that object with calculated {@link engine.model.Position model position}.
+ */

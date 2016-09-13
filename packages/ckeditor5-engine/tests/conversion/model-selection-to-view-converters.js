@@ -13,7 +13,7 @@ import ModelPosition from '/ckeditor5/engine/model/position.js';
 import ViewDocument from '/ckeditor5/engine/view/document.js';
 import ViewContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
-import { mergeAt } from '/ckeditor5/engine/view/writer.js';
+import { mergeAttributes } from '/ckeditor5/engine/view/writer.js';
 
 import Mapper from '/ckeditor5/engine/conversion/mapper.js';
 import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
@@ -296,7 +296,7 @@ describe( 'clean-up', () => {
 			);
 
 			// Remove <b></b> manually.
-			mergeAt( viewSelection.getFirstPosition() );
+			mergeAttributes( viewSelection.getFirstPosition() );
 
 			const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
 			modelDoc.selection.setRanges( [ modelRange ] );

@@ -111,6 +111,16 @@ describe( 'ModelConversionDispatcher', () => {
 			expect( cbRemove.called );
 		} );
 
+		it( 'should fire rename callback for rename changes', () => {
+			const cbRename = sinon.spy();
+
+			dispatcher.on( 'rename', cbRename );
+
+			doc.batch().rename( 'figure', image );
+
+			expect( cbRename.called );
+		} );
+
 		it( 'should fire addAttribute callbacks for add attribute change', () => {
 			const cbAddText = sinon.spy();
 			const cbAddImage = sinon.spy();
@@ -284,7 +294,7 @@ describe( 'ModelConversionDispatcher', () => {
 			const loggedEvents = [];
 
 			dispatcher.on( 'move', ( evt, data ) => {
-				const log = 'move:' + data.sourcePosition.path + ':' + data.range.start.path + ':' + data.range.end.path;
+				const log = 'move:' + data.sourcePosition.path + ':' + data.targetPosition.path + ':' + data.item.offsetSize;
 				loggedEvents.push( log );
 			} );
 
@@ -303,13 +313,32 @@ describe( 'ModelConversionDispatcher', () => {
 			const loggedEvents = [];
 
 			dispatcher.on( 'remove', ( evt, data ) => {
-				const log = 'remove:' + data.sourcePosition.path + ':' + data.range.start.path + ':' + data.range.end.path;
+				const log = 'remove:' + data.sourcePosition.path + ':' + data.item.offsetSize;
 				loggedEvents.push( log );
 			} );
 
 			dispatcher.convertRemove( ModelPosition.createFromParentAndOffset( root , 3 ), range );
 
-			expect( loggedEvents ).to.deep.equal( [ 'remove:3:0:3' ] );
+			expect( loggedEvents ).to.deep.equal( [ 'remove:3:3' ] );
+		} );
+	} );
+
+	describe( 'convertRename', () => {
+		it( 'should fire rename event with correct name, consumable, and renamed element and it\'s old name in data', ( done ) => {
+			const oldName = 'oldName';
+			const element = new ModelElement( oldName );
+			element.name = 'newName';
+
+			dispatcher.on( 'rename', ( evt, data, consumable ) => {
+				expect( evt.name ).to.equal( 'rename:newName:oldName' );
+				expect( data.element ).to.equal( element );
+				expect( data.oldName ).to.equal( oldName );
+				expect( consumable.test( data.element, 'rename' ) ).to.be.true;
+
+				done();
+			} );
+
+			dispatcher.convertRename( element, oldName );
 		} );
 	} );
 

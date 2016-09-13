@@ -27,7 +27,8 @@ import {
 	wrap,
 	unwrap,
 	move,
-	remove
+	remove,
+	rename
 } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
 
 import { createRangeOnElementOnly } from '/tests/engine/model/_utils/utils.js';
@@ -335,6 +336,33 @@ describe( 'move', () => {
 		expect( viewToString( viewRoot ) ).to.equal( '<div><div>bar</div><div>foo<img></img>xxyy</div></div>' );
 	} );
 
+	it( 'should not execute if value was already consumed', () => {
+		const modelDivA = new ModelElement( 'div', null, new ModelText( 'foo' ) );
+		const modelDivB = new ModelElement( 'div', null, new ModelText( 'xxyy' ) );
+
+		modelRoot.appendChildren( [ modelDivA, modelDivB ] );
+		dispatcher.on( 'insert:div', insertElement( new ViewContainerElement( 'div' ) ) );
+		dispatcher.on( 'insert:$text', insertText() );
+		dispatcher.on( 'move', move() );
+		dispatcher.on( 'move', ( evt, data, consumable ) => {
+			consumable.consume( data.item, 'move' );
+		}, 'high' );
+
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div><div>xxyy</div></div>' );
+
+		const removedNodes = modelDivA.removeChildren( 0, 1 );
+		modelDivB.insertChildren( 0, removedNodes );
+
+		dispatcher.convertMove(
+			ModelPosition.createFromParentAndOffset( modelDivA, 0 ),
+			ModelRange.createFromParentsAndOffsets( modelDivB, 0, modelDivB, 3 )
+		);
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div><div>xxyy</div></div>' );
+	} );
+
 	it( 'should support unicode', () => {
 		const modelDivA = new ModelElement( 'div', null, 'நிலைக்கு' );
 		const modelDivB = new ModelElement( 'div' );
@@ -387,6 +415,32 @@ describe( 'remove', () => {
 		expect( viewToString( viewRoot ) ).to.equal( '<div><div>bar</div></div>' );
 	} );
 
+	it( 'should not execute if value was already consumed', () => {
+		const modelDiv = new ModelElement( 'div', null, new ModelText( 'foo' ) );
+
+		modelRoot.appendChildren( modelDiv );
+		dispatcher.on( 'insert:div', insertElement( new ViewContainerElement( 'div' ) ) );
+		dispatcher.on( 'insert:$text', insertText() );
+		dispatcher.on( 'remove', remove() );
+		dispatcher.on( 'remove', ( evt, data, consumable ) => {
+			consumable.consume( data.item, 'remove' );
+		}, 'high' );
+
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
+
+		const removedNodes = modelDiv.removeChildren( 0, 1 );
+		modelDoc.graveyard.insertChildren( 0, removedNodes );
+
+		dispatcher.convertRemove(
+			ModelPosition.createFromParentAndOffset( modelDiv, 0 ),
+			ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 3 )
+		);
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
+	} );
+
 	it( 'should support unicode', () => {
 		const modelDiv = new ModelElement( 'div', null, 'நிலைக்கு' );
 
@@ -408,5 +462,70 @@ describe( 'remove', () => {
 		);
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><div>கு</div></div>' );
+	} );
+} );
+
+describe( 'rename', () => {
+	const oldName = 'oldName';
+	const newName = 'newName';
+
+	let element, converters;
+
+	beforeEach( () => {
+		converters = {
+			insertText: insertText(),
+			insert:	insertElement( ( data ) => new ViewContainerElement( data.item.name ) ),
+			move: move(),
+			remove: remove(),
+			rename: rename()
+		};
+
+		sinon.spy( converters, 'insert' );
+		sinon.spy( converters, 'move' );
+		sinon.spy( converters, 'remove' );
+
+		element = new ModelElement( oldName, null, new ModelText( 'foo' ) );
+		modelRoot.appendChildren( element );
+
+		dispatcher.on( 'insert:$text', converters.insertText );
+		dispatcher.on( 'insert', converters.insert );
+		dispatcher.on( 'move', converters.move );
+		dispatcher.on( 'remove', converters.remove );
+		dispatcher.on( 'rename', converters.rename );
+
+		dispatcher.convertInsertion( ModelRange.createOn( element ) );
+
+		element.name = newName;
+	} );
+
+	afterEach( () => {
+		converters.insert.restore();
+		converters.move.restore();
+		converters.remove.restore();
+	} );
+
+	it( 'should enable default rename conversion, that uses already registered callbacks', () => {
+		expect( viewRoot.getChild( 0 ).name ).to.equal( 'oldName' );
+		dispatcher.convertRename( element, oldName );
+
+		// Called twice, first time when renamed element was originally inserted to model and converted to view.
+		expect( converters.insert.calledTwice ).to.be.true;
+		expect( converters.move.calledOnce ).to.be.true;
+		expect( converters.remove.calledOnce ).to.be.true;
+
+		expect( viewRoot.getChild( 0 ).name ).to.equal( 'newName' );
+		expect( viewRoot.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+	} );
+
+	it( 'should not execute if converted value was already consumed', () => {
+		dispatcher.on( 'rename', ( evt, data, consumable ) => {
+			consumable.consume( data.element, 'rename' );
+		}, 'high' );
+
+		dispatcher.on( 'rename', ( evt, data ) => {
+			expect( data.fakeElement ).to.be.undefined;
+		} );
+
+		dispatcher.convertRename( element, oldName );
 	} );
 } );

@@ -141,7 +141,7 @@ export default class Position {
 	 * @returns {Array} Array with ancestors.
 	 */
 	getAncestors() {
-		return this.parent.getAncestors().concat( this.parent );
+		return this.parent.getAncestors( { includeNode: true, parentFirst: true } );
 	}
 
 	/**

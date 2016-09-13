@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTreeWalker from '../model/treewalker.js';
 import ModelRange from '../model/range.js';
+import ModelPosition from '../model/position.js';
+import ModelElement from '../model/element.js';
 
 import ViewElement from '../view/element.js';
 import ViewText from '../view/text.js';
@@ -283,26 +284,20 @@ export function unwrap( elementCreator ) {
  * @returns {Function} Move event converter.
  */
 export function move() {
-	return ( evt, data, conversionApi ) => {
-		const walker = new ModelTreeWalker( { boundaries: data.range, shallow: true } );
+	return ( evt, data, consumable, conversionApi ) => {
+		if ( consumable.consume( data.item, 'move' ) ) {
+			const sourceModelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, data.item.offsetSize );
+			const sourceViewRange = conversionApi.mapper.toViewRange( sourceModelRange );
 
-		let length = 0;
+			const targetViewPosition = conversionApi.mapper.toViewPosition( data.targetPosition );
 
-		for ( let value of walker ) {
-			length += value.length;
+			viewWriter.move( sourceViewRange, targetViewPosition );
 		}
-
-		const sourceModelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, length );
-
-		const sourceViewRange = conversionApi.mapper.toViewRange( sourceModelRange );
-		const targetViewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-
-		viewWriter.move( sourceViewRange, targetViewPosition );
 	};
 }
 
 /**
- * Function factory, creates a default model-to-view converter for nodes remove changes.
+ * Function factory, creates a default model-to-view converter for node remove changes.
  *
  *		modelDispatcher.on( 'remove', remove() );
  *
@@ -311,19 +306,66 @@ export function move() {
  * @returns {Function} Remove event converter.
  */
 export function remove() {
-	return ( evt, data, conversionApi ) => {
-		const walker = new ModelTreeWalker( { boundaries: data.range, shallow: true } );
+	return ( evt, data, consumable, conversionApi ) => {
+		if ( consumable.consume( data.item, 'remove' ) ) {
+			const sourceModelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, data.item.offsetSize );
+			const sourceViewRange = conversionApi.mapper.toViewRange( sourceModelRange );
 
-		let length = 0;
+			viewWriter.remove( sourceViewRange );
 
-		for ( let value of walker ) {
-			length += value.length;
+			conversionApi.mapper.unbindModelElement( data.item );
 		}
+	};
+}
 
-		const sourceModelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, length );
-		const sourceViewRange = conversionApi.mapper.toViewRange( sourceModelRange );
+/**
+ * Function factory, creates default model-to-view converter for elements which name has changed.
+ *
+ *		modelDispatcher.on( 'rename', rename() );
+ *
+ * This converter re-uses converters added for `insert`, `move` and `remove` change types.
+ *
+ * @external engine.conversion.modelToView
+ * @function engine.conversion.modelToView.rename
+ * @fires engine.conversion.ModelConversionDispatcher#event:insert
+ * @fires engine.conversion.ModelConversionDispatcher#event:move
+ * @fires engine.conversion.ModelConversionDispatcher#event:remove
+ * @returns {Function}
+ */
+export function rename() {
+	return ( evt, data, consumable, conversionApi ) => {
+		if ( consumable.test( data.element, 'rename' ) ) {
+			// Create fake model element that will represent "old version" of renamed element.
+			const fakeElement = new ModelElement( data.oldName, data.element.getAttributes() );
+			// Append the fake element to model document to enable making range on it.
+			data.element.parent.insertChildren( data.element.index, fakeElement );
 
-		viewWriter.remove( sourceViewRange );
+			// Check what was bound to renamed element.
+			const oldViewElement = conversionApi.mapper.toViewElement( data.element );
+			// Unbind renamed element.
+			conversionApi.mapper.unbindModelElement( data.element );
+			// Bind view element to the fake element.
+			conversionApi.mapper.bindElements( fakeElement, oldViewElement );
+
+			// The range that includes only the renamed element. Will be used to insert an empty element in the view.
+			const insertRange = ModelRange.createFromParentsAndOffsets( data.element.parent, data.element.startOffset, data.element, 0 );
+
+			// Move source position and range of moved nodes. Will be used to move nodes from original view element to renamed one.
+			const moveSourcePosition = ModelPosition.createAt( fakeElement, 0 );
+			const moveRange = ModelRange.createIn( data.element );
+
+			// Remove range containing the fake element. Will be used to remove original view element from the view.
+			const removeRange = ModelRange.createOn( fakeElement );
+
+			// Start the conversion. Use already defined converters by firing insertion, move and remove conversion
+			// on correct ranges / positions.
+			conversionApi.dispatcher.convertInsertion( insertRange );
+			conversionApi.dispatcher.convertMove( moveSourcePosition, moveRange );
+			conversionApi.dispatcher.convertRemove( removeRange.start, removeRange );
+
+			// Cleanup.
+			fakeElement.remove();
+		}
 	};
 }
 

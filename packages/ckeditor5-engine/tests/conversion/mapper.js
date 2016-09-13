@@ -54,7 +54,57 @@ describe( 'Mapper', () => {
 		} );
 	} );
 
+	describe( 'unbindModelElement', () => {
+		it( 'should remove binding between given model element and view element that it was bound to', () => {
+			const viewA = new ViewElement( 'a' );
+			const modelA = new ModelElement( 'a' );
+
+			const mapper = new Mapper();
+			mapper.bindElements( modelA, viewA );
+
+			expect( mapper.toModelElement( viewA ) ).to.equal( modelA );
+			expect( mapper.toViewElement( modelA ) ).to.equal( viewA );
+
+			mapper.unbindModelElement( modelA );
+
+			expect( mapper.toModelElement( viewA ) ).to.be.undefined;
+			expect( mapper.toViewElement( modelA ) ).to.be.undefined;
+		} );
+	} );
+
+	describe( 'unbindViewElement', () => {
+		it( 'should remove binding between given view element and model element that it was bound to', () => {
+			const viewA = new ViewElement( 'a' );
+			const modelA = new ModelElement( 'a' );
+
+			const mapper = new Mapper();
+			mapper.bindElements( modelA, viewA );
+
+			expect( mapper.toModelElement( viewA ) ).to.equal( modelA );
+			expect( mapper.toViewElement( modelA ) ).to.equal( viewA );
+
+			mapper.unbindViewElement( viewA );
+
+			expect( mapper.toModelElement( viewA ) ).to.be.undefined;
+			expect( mapper.toViewElement( modelA ) ).to.be.undefined;
+		} );
+	} );
+
 	describe( 'Standard mapping', () => {
+		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
+			const modelPosition = ModelPosition.createFromParentAndOffset( modelElement, modelOffset );
+			const viewPosition = mapper.toViewPosition( modelPosition );
+			expect( viewPosition.parent ).to.equal( viewElement );
+			expect( viewPosition.offset ).to.equal( viewOffset );
+		}
+
+		function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
+			const viewPosition = new ViewPosition( viewElement, viewOffset );
+			const modelPosition = mapper.toModelPosition( viewPosition );
+			expect( modelPosition.parent ).to.equal( modelElement );
+			expect( modelPosition.offset ).to.equal( modelOffset );
+		}
+
 		let modelDiv, modelP, modelImg;
 
 		let viewDiv, viewP, viewB, viewI, viewU, viewSup, viewImg;
@@ -62,7 +112,7 @@ describe( 'Mapper', () => {
 
 		let mapper;
 
-		before( () => {
+		beforeEach( () => {
 			// Tree Model:
 			//
 			// <div>             ---> modelDiv
@@ -157,12 +207,21 @@ describe( 'Mapper', () => {
 		} );
 
 		describe( 'toModelPosition', () => {
-			function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
-				const viewPosition = new ViewPosition( viewElement, viewOffset );
-				const modelPosition = mapper.toModelPosition( viewPosition );
-				expect( modelPosition.parent ).to.equal( modelElement );
-				expect( modelPosition.offset ).to.equal( modelOffset );
-			}
+			it( 'should fire viewToModelPosition event and return value calculated in callback to that event', () => {
+				const viewPosition = new ViewPosition( viewDiv, 0 );
+				const stub = {};
+
+				mapper.on( 'viewToModelPosition', ( evt, data ) => {
+					expect( data.viewPosition ).to.equal( viewPosition );
+
+					data.modelPosition = stub;
+					evt.stop();
+				} );
+
+				const result = mapper.toModelPosition( viewPosition );
+
+				expect( result ).to.equal( stub );
+			} );
 
 			it( 'should transform viewDiv 0', () => createToModelTest( viewDiv, 0, modelDiv, 0 ) );
 			it( 'should transform viewDiv 1', () => createToModelTest( viewDiv, 1, modelDiv, 1 ) );
@@ -221,12 +280,21 @@ describe( 'Mapper', () => {
 		} );
 
 		describe( 'toViewPosition', () => {
-			function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
-				const modelPosition = ModelPosition.createFromParentAndOffset( modelElement, modelOffset );
-				const viewPosition = mapper.toViewPosition( modelPosition );
-				expect( viewPosition.parent ).to.equal( viewElement );
-				expect( viewPosition.offset ).to.equal( viewOffset );
-			}
+			it( 'should fire modelToViewPosition event and return value calculated in callback to that event', () => {
+				const modelPosition = new ModelPosition( modelDiv, [ 0 ] );
+				const stub = {};
+
+				mapper.on( 'modelToViewPosition', ( evt, data ) => {
+					expect( data.modelPosition ).to.equal( modelPosition );
+
+					data.viewPosition = stub;
+					evt.stop();
+				} );
+
+				const result = mapper.toViewPosition( modelPosition );
+
+				expect( result ).to.equal( stub );
+			} );
 
 			it( 'should transform modelDiv 0', () => createToViewTest( modelDiv, 0, viewTextX, 0 ) );
 			it( 'should transform modelDiv 1', () => createToViewTest( modelDiv, 1, viewTextX, 1 ) );
@@ -272,6 +340,20 @@ describe( 'Mapper', () => {
 	} );
 
 	describe( 'Widget mapping', () => {
+		function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
+			const modelPosition = ModelPosition.createFromParentAndOffset( modelElement, modelOffset );
+			const viewPosition = mapper.toViewPosition( modelPosition );
+			expect( viewPosition.parent ).to.equal( viewElement );
+			expect( viewPosition.offset ).to.equal( viewOffset );
+		}
+
+		function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
+			const viewPosition = new ViewPosition( viewElement, viewOffset );
+			const modelPosition = mapper.toModelPosition( viewPosition );
+			expect( modelPosition.parent ).to.equal( modelElement );
+			expect( modelPosition.offset ).to.equal( modelOffset );
+		}
+
 		let modelDiv, modelWidget, modelImg, modelCaption;
 
 		let viewDiv, viewWidget, viewMask, viewWrapper, viewImg, viewCaption;
@@ -350,13 +432,6 @@ describe( 'Mapper', () => {
 		} );
 
 		describe( 'toModelPosition', () => {
-			function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
-				const viewPosition = new ViewPosition( viewElement, viewOffset );
-				const modelPosition = mapper.toModelPosition( viewPosition );
-				expect( modelPosition.parent ).to.equal( modelElement );
-				expect( modelPosition.offset ).to.equal( modelOffset );
-			}
-
 			it( 'should transform viewDiv 0', () => createToModelTest( viewDiv, 0, modelDiv, 0 ) );
 			it( 'should transform viewDiv 1', () => createToModelTest( viewDiv, 1, modelDiv, 1 ) );
 			it( 'should transform viewDiv 2', () => createToModelTest( viewDiv, 2, modelDiv, 2 ) );
@@ -381,13 +456,6 @@ describe( 'Mapper', () => {
 		} );
 
 		describe( 'toViewPosition', () => {
-			function createToViewTest( modelElement, modelOffset, viewElement, viewOffset ) {
-				const modelPosition = ModelPosition.createFromParentAndOffset( modelElement, modelOffset );
-				const viewPosition = mapper.toViewPosition( modelPosition );
-				expect( viewPosition.parent ).to.equal( viewElement );
-				expect( viewPosition.offset ).to.equal( viewOffset );
-			}
-
 			it( 'should transform modelDiv 0', () => createToViewTest( modelDiv, 0, viewTextX, 0 ) );
 			it( 'should transform modelDiv 1', () => createToViewTest( modelDiv, 1, viewTextX, 1 ) );
 			it( 'should transform modelDiv 2', () => createToViewTest( modelDiv, 2, viewTextZZ, 0 ) );
@@ -400,6 +468,76 @@ describe( 'Mapper', () => {
 			it( 'should transform modelCaption 1', () => createToViewTest( modelCaption, 1, viewTextFOO, 1 ) );
 			it( 'should transform modelCaption 2', () => createToViewTest( modelCaption, 2, viewTextFOO, 2 ) );
 			it( 'should transform modelCaption 3', () => createToViewTest( modelCaption, 3, viewTextFOO, 3 ) );
+		} );
+	} );
+
+	describe( 'List mapping (test registerViewToModelLengthCallback)', () => {
+		function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
+			const viewPosition = new ViewPosition( viewElement, viewOffset );
+			const modelPosition = mapper.toModelPosition( viewPosition );
+			expect( modelPosition.parent ).to.equal( modelElement );
+			expect( modelPosition.offset ).to.equal( modelOffset );
+		}
+
+		let mapper;
+
+		let modelRoot;
+		let modelListItem1, modelListItem2;
+		let modelListItem11, modelListItem12;
+
+		let viewRoot;
+		let viewList, viewListNested;
+		let viewListItem1, viewListItem2;
+		let viewListItem11, viewListItem12;
+
+		before( () => {
+			modelListItem1 = new ModelElement( 'listItem', null, new ModelText( 'aaa' ) );
+			modelListItem11 = new ModelElement( 'listItem', null, new ModelText( 'bbb' ) );
+			modelListItem12 = new ModelElement( 'listItem', null, new ModelText( 'ccc' ) );
+			modelListItem2 = new ModelElement( 'listItem', null, new ModelText( 'xxx' ) );
+
+			modelRoot = new ModelRootElement( 'root', null, [ modelListItem1, modelListItem11, modelListItem12, modelListItem2 ] );
+
+			viewListItem11 = new ViewElement( 'li', null, new ViewText( 'bbb' ) );
+			viewListItem12 = new ViewElement( 'li', null, new ViewText( 'ccc' ) );
+			viewListNested = new ViewElement( 'ul', null, [ viewListItem11, viewListItem12 ] );
+
+			viewListItem1 = new ViewElement( 'li', null, [ new ViewText( 'aaa' ), viewListNested ] );
+			viewListItem2 = new ViewElement( 'li', null, new ViewText( 'ddd' ) );
+			viewList = new ViewElement( 'ul', null, [ viewListItem1, viewListItem2 ] );
+
+			viewRoot = new ViewElement( 'div', null, viewList );
+
+			mapper = new Mapper();
+			mapper.bindElements( modelRoot, viewRoot );
+			mapper.bindElements( modelListItem1, viewListItem1 );
+			mapper.bindElements( modelListItem11, viewListItem11 );
+			mapper.bindElements( modelListItem12, viewListItem12 );
+			mapper.bindElements( modelListItem2, viewListItem2 );
+
+			function getViewListItemLength( element ) {
+				let length = 1;
+
+				for ( let child of element.getChildren() ) {
+					if ( child.name == 'ul' || child.name == 'ol' ) {
+						for ( let item of child.getChildren() ) {
+							length += getViewListItemLength( item );
+						}
+					}
+				}
+
+				return length;
+			}
+
+			mapper.registerViewToModelLength( 'li', getViewListItemLength );
+		} );
+
+		describe( 'toModelPosition', () => {
+			it( 'should transform viewRoot 0', () => createToModelTest( viewRoot, 0, modelRoot, 0 ) );
+			it( 'should transform viewRoot 1', () => createToModelTest( viewRoot, 1, modelRoot, 4 ) );
+			it( 'should transform viewList 0', () => createToModelTest( viewList, 0, modelRoot, 0 ) );
+			it( 'should transform viewList 1', () => createToModelTest( viewList, 1, modelRoot, 3 ) );
+			it( 'should transform viewList 2', () => createToModelTest( viewList, 2, modelRoot, 4 ) );
 		} );
 	} );
 } );

@@ -6,6 +6,7 @@
 import InsertOperation from './insertoperation.js';
 import AttributeOperation from './attributeoperation.js';
 import RootAttributeOperation from './rootattributeoperation.js';
+import RenameOperation from './renameoperation.js';
 import MoveOperation from './moveoperation.js';
 import RemoveOperation from './removeoperation.js';
 import NoOperation from './nooperation.js';
@@ -72,6 +73,8 @@ const ot = {
 
 		RootAttributeOperation: doNotUpdate,
 
+		RenameOperation: doNotUpdate,
+
 		// Transforms InsertOperation `a` by MoveOperation `b`. Accepts a flag stating whether `a` is more important
 		// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
 		MoveOperation( a, b, isStrong ) {
@@ -133,6 +136,8 @@ const ot = {
 		},
 
 		RootAttributeOperation: doNotUpdate,
+
+		RenameOperation: doNotUpdate,
 
 		// Transforms AttributeOperation `a` by MoveOperation `b`. Returns results as an array of operations.
 		MoveOperation( a, b ) {
@@ -212,7 +217,49 @@ const ot = {
 			return [ a.clone() ];
 		},
 
+		RenameOperation: doNotUpdate,
+
 		MoveOperation: doNotUpdate
+	},
+
+	RenameOperation: {
+		// Transforms RenameOperation `a` by InsertOperation `b`. Returns results as an array of operations.
+		InsertOperation( a, b ) {
+			// Clone the operation, we don't want to alter the original operation.
+			const clone = a.clone();
+
+			// Transform this operation's position.
+			clone.position = clone.position._getTransformedByInsertion( b.position, b.nodes.maxOffset, true );
+
+			return [ clone ];
+		},
+
+		AttributeOperation: doNotUpdate,
+
+		RootAttributeOperation: doNotUpdate,
+
+		// Transforms RenameOperation `a` by RenameOperation `b`. Accepts a flag stating whether `a` is more important
+		// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
+		RenameOperation( a, b, isStrong ) {
+			// Clone the operation, we don't want to alter the original operation.
+			const clone = a.clone();
+
+			if ( a.position.isEqual( b.position ) && !isStrong ) {
+				return [ new NoOperation( a.baseVersion ) ];
+			}
+
+			return [ clone ];
+		},
+
+		// Transforms RenameOperation `a` by MoveOperation `b`. Returns results as an array of operations.
+		MoveOperation( a, b ) {
+			const clone = a.clone();
+			const isSticky = clone.position.isEqual( b.sourcePosition );
+
+			clone.position = clone.position._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, true, isSticky );
+
+			return [ clone ];
+		}
 	},
 
 	MoveOperation: {
@@ -240,6 +287,8 @@ const ot = {
 		AttributeOperation: doNotUpdate,
 
 		RootAttributeOperation: doNotUpdate,
+
+		RenameOperation: doNotUpdate,
 
 		// Transforms MoveOperation `a` by MoveOperation `b`. Accepts a flag stating whether `a` is more important
 		// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
@@ -379,6 +428,8 @@ function transform( a, b, isStrong ) {
 		group = ot.AttributeOperation;
 	} else if ( a instanceof RootAttributeOperation ) {
 		group = ot.RootAttributeOperation;
+	} else if ( a instanceof RenameOperation ) {
+		group = ot.RenameOperation;
 	} else if ( a instanceof MoveOperation ) {
 		group = ot.MoveOperation;
 	} else {
@@ -392,6 +443,8 @@ function transform( a, b, isStrong ) {
 			algorithm = group.AttributeOperation;
 		} else if ( b instanceof RootAttributeOperation ) {
 			algorithm = group.RootAttributeOperation;
+		} else if ( b instanceof RenameOperation ) {
+			algorithm = group.RenameOperation;
 		} else if ( b instanceof MoveOperation ) {
 			algorithm = group.MoveOperation;
 		} else {

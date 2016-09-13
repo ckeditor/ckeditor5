@@ -503,6 +503,12 @@ describe( 'position', () => {
 		} );
 	} );
 
+	describe( 'getAncestors', () => {
+		it( 'should return position parent element and it\'s ancestors', () => {
+			expect( new Position( root, [ 1, 1, 1 ] ).getAncestors() ).to.deep.equal( [ li2, ul, root ] );
+		} );
+	} );
+
 	describe( 'compareWith', () => {
 		it( 'should return same if positions are same', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );

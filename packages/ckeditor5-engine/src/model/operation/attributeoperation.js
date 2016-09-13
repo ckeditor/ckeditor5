@@ -60,7 +60,7 @@ export default class AttributeOperation extends Operation {
 		 * @readonly
 		 * @member {*} engine.model.operation.AttributeOperation#oldValue
 		 */
-		this.oldValue = oldValue;
+		this.oldValue = oldValue === undefined ? null : oldValue;
 
 		/**
 		 * New value of the attribute with given key or `null`, if operation should remove attribute.
@@ -68,7 +68,7 @@ export default class AttributeOperation extends Operation {
 		 * @readonly
 		 * @member {*} engine.model.operation.AttributeOperation#newValue
 		 */
-		this.newValue = newValue;
+		this.newValue = newValue === undefined ? null : newValue;
 	}
 
 	/**

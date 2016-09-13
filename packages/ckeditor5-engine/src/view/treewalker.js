@@ -370,7 +370,7 @@ export default class TreeWalker {
 		if ( item instanceof TextProxy ) {
 			// Position is at the end of Text.
 			if ( item.offsetInText + item.data.length == item.textNode.data.length ) {
-				if ( this.direction == 'forward' ) {
+				if ( this.direction == 'forward' && !( this.boundaries && this.boundaries.end.isEqual( this.position ) ) ) {
 					nextPosition = Position.createAfter( item.textNode );
 					// When we change nextPosition of returned value we need also update walker current position.
 					this.position = nextPosition;
@@ -381,12 +381,12 @@ export default class TreeWalker {
 
 			// Position is at the begining ot the text.
 			if ( item.offsetInText === 0 ) {
-				if ( this.direction == 'forward' ) {
-					previousPosition = Position.createBefore( item.textNode );
-				} else {
+				if ( this.direction == 'backward' && !( this.boundaries && this.boundaries.start.isEqual( this.position ) ) ) {
 					nextPosition = Position.createBefore( item.textNode );
 					// When we change nextPosition of returned value we need also update walker current position.
 					this.position = nextPosition;
+				} else {
+					previousPosition = Position.createBefore( item.textNode );
 				}
 			}
 		}

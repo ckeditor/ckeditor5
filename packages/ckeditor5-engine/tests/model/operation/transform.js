@@ -18,6 +18,7 @@ import AttributeOperation from '/ckeditor5/engine/model/operation/attributeopera
 import RootAttributeOperation from '/ckeditor5/engine/model/operation/rootattributeoperation.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
+import RenameOperation from '/ckeditor5/engine/model/operation/renameoperation.js';
 import NoOperation from '/ckeditor5/engine/model/operation/nooperation.js';
 
 describe( 'transform', () => {
@@ -396,6 +397,17 @@ describe( 'transform', () => {
 		describe( 'by NoOperation', () => {
 			it( 'no operation update', () => {
 				let transformBy = new NoOperation( baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by RenameOperation', () => {
+			it( 'no position update', () => {
+				let transformBy = new RenameOperation( new Position( root, [ 0, 2, 0 ] ), 'oldName', 'newName', baseVersion );
 
 				let transOp = transform( op, transformBy );
 
@@ -1087,6 +1099,17 @@ describe( 'transform', () => {
 					expectOperation( transOp[ 0 ], expected );
 				} );
 			} );
+
+			describe( 'by RenameOperation', () => {
+				it( 'no position update', () => {
+					let transformBy = new RenameOperation( new Position( root, [ 1, 0 ] ), 'oldName', 'newName', baseVersion );
+
+					let transOp = transform( op, transformBy );
+
+					expect( transOp.length ).to.equal( 1 );
+					expectOperation( transOp[ 0 ], expected );
+				} );
+			} );
 		} );
 
 		// Some extra cases for a AttributeOperation that operates on single tree level range.
@@ -1537,6 +1560,17 @@ describe( 'transform', () => {
 		describe( 'by NoOperation', () => {
 			it( 'no operation update', () => {
 				let transformBy = new NoOperation( baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by RenameOperation', () => {
+			it( 'no position update', () => {
+				let transformBy = new RenameOperation( new Position( root, [ 0 ] ), 'oldName', 'newName', baseVersion );
 
 				let transOp = transform( op, transformBy );
 
@@ -2647,6 +2681,17 @@ describe( 'transform', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
+
+		describe( 'by RenameOperation', () => {
+			it( 'no position update', () => {
+				let transformBy = new RenameOperation( new Position( root, [ 2, 2, 4 ] ), 'oldName', 'newName', baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
 	} );
 
 	describe( 'NoOperation', () => {
@@ -2734,6 +2779,280 @@ describe( 'transform', () => {
 				let transOp = transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by RenameOperation', () => {
+			it( 'no position update', () => {
+				let transformBy = new RenameOperation( new Position( root, [ 0, 2, 0 ] ), 'oldName', 'newName', baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+	} );
+
+	describe( 'RenameOperation', () => {
+		beforeEach( () => {
+			const position = new Position( root, [ 0, 2, 2 ] );
+
+			op = new RenameOperation( position, 'oldName', 'newName', baseVersion );
+
+			expected = {
+				position: position,
+				oldName: 'oldName',
+				newName: 'newName',
+				baseVersion: baseVersion + 1
+			};
+		} );
+
+		describe( 'by InsertOperation', () => {
+			it( 'target before renamed element: offset update', () => {
+				let transformBy = new InsertOperation(
+					new Position( root, [ 0, 2, 1 ] ),
+					[ nodeA, nodeB ],
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expected.position.offset = 4;
+
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'target after renamed element: no change', () => {
+				let transformBy = new InsertOperation(
+					new Position( root, [ 0, 2, 3 ] ),
+					[ nodeA, nodeB ],
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'target before a node on path to renamed element: path update', () => {
+				let transformBy = new InsertOperation(
+					new Position( root, [ 0, 1 ] ),
+					[ nodeA, nodeB ],
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expected.position.path = [ 0, 4, 2 ];
+
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'target after a node on path to renamed element: no change', () => {
+				let transformBy = new InsertOperation(
+					new Position( root, [ 0, 3 ] ),
+					[ nodeA, nodeB ],
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by AttributeOperation', () => {
+			it( 'no operation update', () => {
+				let transformBy = new AttributeOperation(
+					new Range(
+						new Position( root, [ 0, 2, 1 ] ),
+						new Position( root, [ 1, 3 ] )
+					),
+					'foo',
+					'bar',
+					'xyz',
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by RootAttributeOperation', () => {
+			it( 'no operation update', () => {
+				let transformBy = new RootAttributeOperation(
+					root,
+					'foo',
+					null,
+					'bar',
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by RenameOperation', () => {
+			it( 'different element: no change', () => {
+				let transformBy = new RenameOperation(
+					new Position( root, [ 0, 2, 1 ] ),
+					'foo',
+					'bar',
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'same element and is important: convert to NoOperation', () => {
+				let transformBy = new RenameOperation(
+					new Position( root, [ 0, 2, 2 ] ),
+					'oldName',
+					'otherName',
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy, false );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], {
+					type: NoOperation,
+					baseVersion: baseVersion + 1
+				} );
+			} );
+
+			it( 'same element and is not important: no change', () => {
+				let transformBy = new RenameOperation(
+					new Position( root, [ 0, 2, 2 ] ),
+					'oldName',
+					'otherName',
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy, true );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by MoveOperation', () => {
+			it( 'moved range before renamed element: update offset', () => {
+				let transformBy = new MoveOperation(
+					new Position( root, [ 0, 2, 0 ] ),
+					2,
+					new Position( root, [ 2, 5 ] ),
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expected.position.offset = 0;
+
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'moved range before an element on path to renamed element: update path', () => {
+				let transformBy = new MoveOperation(
+					new Position( root, [ 0, 0 ] ),
+					2,
+					new Position( root, [ 2, 5 ] ),
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expected.position.path = [ 0, 0, 2 ];
+
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'moved range contains renamed element: update path', () => {
+				let transformBy = new MoveOperation(
+					new Position( root, [ 0, 2, 1 ] ),
+					3,
+					new Position( root, [ 2, 5 ] ),
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expected.position.path = [ 2, 6 ];
+
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'moved range contains renamed element parent: updated path', () => {
+				let transformBy = new MoveOperation(
+					new Position( root, [ 0, 1 ] ),
+					3,
+					new Position( root, [ 2, 5 ] ),
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expected.position.path = [ 2, 6, 2 ];
+
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'move target before renamed element: update offset', () => {
+				let transformBy = new MoveOperation(
+					new Position( root, [ 2, 5 ] ),
+					2,
+					new Position( root, [ 0, 2, 1 ] ),
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expected.position.offset = 4;
+
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'move target before an element on path to renamed element: update path', () => {
+				let transformBy = new MoveOperation(
+					new Position( root, [ 0, 2, 0 ] ),
+					2,
+					new Position( root, [ 2, 5 ] ),
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expected.position.offset = 0;
+
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );

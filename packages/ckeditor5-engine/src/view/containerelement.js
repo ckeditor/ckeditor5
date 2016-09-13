@@ -20,14 +20,14 @@ import Element from './element.js';
  * to put caret inside it, even if the container is empty.
  *
  * Secondly, {@link engine.view.writer view writer} uses this information.
- * Nodes {@link engine.view.writer.breakAt breaking} and {@link engine.view.writer.mergeAt merging}
+ * Nodes {@link engine.view.writer.breakAttributes breaking} and {@link engine.view.writer.mergeAttributes merging}
  * is performed only in a bounds of a container nodes.
  *
  * For instance if `<p>` is an container and `<b>` is attribute:
  *
  *		<p><b>fo^o</b></p>
  *
- * {@link engine.view.writer.breakAt breakAt} will create:
+ * {@link engine.view.writer.breakAttributes breakAttributes} will create:
  *
  *		<p><b>fo</b><b>o</b></p>
  *

@@ -123,7 +123,7 @@ describe( 'Position', () => {
 			const div = new Element( 'div', null, p );
 			const docFrag = new DocumentFragment( div );
 
-			expect( new Position( foo, 1 ).getAncestors() ).to.deep.equal( [ docFrag, div, p, foo ] );
+			expect( new Position( foo, 1 ).getAncestors() ).to.deep.equal( [ foo, p, div, docFrag ] );
 		} );
 	} );
 

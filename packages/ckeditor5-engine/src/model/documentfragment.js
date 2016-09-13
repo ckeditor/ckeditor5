@@ -18,7 +18,7 @@ export default class DocumentFragment {
 	/**
 	 * Creates an empty `DocumentFragment`.
 	 *
-	 * @param {engine.model.Node|Iterable.<engine.model.Node>} children Nodes to be contained inside the `DocumentFragment`.
+	 * @param {engine.model.Node|Iterable.<engine.model.Node>} [children] Nodes to be contained inside the `DocumentFragment`.
 	 */
 	constructor( children ) {
 		/**
