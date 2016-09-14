@@ -61,7 +61,7 @@ export default class Template {
 		/**
 		 * Text of this template, indicating that the instance will render to a DOM Text.
 		 *
-		 * @member {Array.<String,ui.TemplateValueSchema> ui.Template#text
+		 * @member {Array.<String|ui.TemplateValueSchema> ui.Template#text
 		 */
 
 		/**
@@ -312,7 +312,7 @@ export default class Template {
 	 * @protected
 	 * @param {Node} applyNode If specified, this template will be applied to an existing DOM Node.
 	 * @param {Boolean} intoFragment If set, children are rendered into `DocumentFragment`.
-	 * @returns {HTMLElement} A rendered Node.
+	 * @returns {HTMLElement|Text} A rendered Node.
 	 */
 	_renderNode( applyNode, intoFragment ) {
 		let isInvalid;
