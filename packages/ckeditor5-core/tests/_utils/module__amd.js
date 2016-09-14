@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals bender, define, require */
+/* globals bender, window */
 
 /**
  * AMD tools related to CKEditor.
@@ -84,7 +84,7 @@ const utils = {
 		// Use the exports object instead of returning from modules in order to handle circular deps.
 		// http://requirejs.org/docs/api.html#circular
 		deps.unshift( 'exports' );
-		define( utils.getModulePath( path ), deps, function( exports ) {
+		window.define( utils.getModulePath( path ), deps, function( exports ) {
 			const loadedDeps = Array.from( arguments ).slice( 1 ).map( ( module ) => module.default );
 
 			exports.default = body.apply( this, loadedDeps );
@@ -116,7 +116,7 @@ const utils = {
 			paths.push( utils.getModulePath( modules[ name ] ) );
 		}
 
-		require( paths, function( ...loaded ) {
+		window.require( paths, function( ...loaded ) {
 			for ( let i = 0; i < names.length; i++ ) {
 				resolved[ names[ i ] ] = loaded[ i ].default;
 			}
