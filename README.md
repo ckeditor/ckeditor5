@@ -14,7 +14,7 @@ Read more in the [CKEditor 5 v0.2.0 release blog post](http://ckeditor.com/blog/
 
 Check the basic CKEditor 5 sample on the [GitHub.io page](https://ckeditor5.github.io/).
 
-[Periodic updates and news](https://github.com/ckeditor/ckeditor5/wiki/News-and-Updates) about the project can be found on the wiki pages of [ckeditor5](https://github.com/ckeditor/ckeditor5).
+[Periodic news and updates](https://github.com/ckeditor/ckeditor5-design/labels/announcement) about the project can be found in the [CKEditor 5 design repository](https://github.com/ckeditor/ckeditor5-design).
 
 ## Project Organization
 
