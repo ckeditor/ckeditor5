@@ -9,8 +9,9 @@ describe( 'utils', () => {
 	describe( 'unicode', () => {
 		describe( 'isSurrogateHalf', () => {
 			it( 'should return true if given character is a surrogate half', () => {
-				// Half of pile of poo.
-				expect( isSurrogateHalf( '\uD83D' ) ).to.be.true;
+				// Half of pile of poo - U+D83D
+				// It is not string because of problem with Babel replacing half of the surrogate with actual (wrong) character.
+				expect( isSurrogateHalf( String.fromCharCode( 0xD83D ) ) ).to.be.true;
 			} );
 
 			it( 'should return false if given character is not a surrogate half', () => {
