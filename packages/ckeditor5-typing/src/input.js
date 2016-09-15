@@ -39,7 +39,7 @@ export default class Input extends Feature {
 
 		this.listenTo( editingView, 'keydown', ( evt, data ) => {
 			this._handleKeydown( data );
-		}, 'lowest' );
+		}, { priority: 'lowest' } );
 
 		this.listenTo( editingView, 'mutations', ( evt, mutations ) => {
 			this._handleMutations( mutations );
