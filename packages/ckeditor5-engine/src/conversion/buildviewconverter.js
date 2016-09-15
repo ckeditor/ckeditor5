@@ -375,7 +375,7 @@ class ViewConverterBuilder {
 
 			// Add event to each registered dispatcher.
 			for ( let dispatcher of this._dispatchers ) {
-				dispatcher.on( eventName, eventCallback, priority );
+				dispatcher.on( eventName, eventCallback, { priority } );
 			}
 		}
 	}

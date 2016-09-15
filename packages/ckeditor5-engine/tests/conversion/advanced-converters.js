@@ -418,7 +418,7 @@ describe( 'custom attribute handling for given element', () => {
 			}
 
 			evt.stop();
-		}, 'high' );
+		}, { priority: 'high' } );
 
 		const modelChangeLinkAttrQuoteConverter = function( evt, data, consumable, conversionApi ) {
 			let viewKey = data.attributeKey.substr( 4 ).toLowerCase();
@@ -437,8 +437,8 @@ describe( 'custom attribute handling for given element', () => {
 			evt.stop();
 		};
 
-		modelDispatcher.on( 'changeAttribute:linkHref:quote', modelChangeLinkAttrQuoteConverter, 'high' );
-		modelDispatcher.on( 'changeAttribute:linkTitle:quote', modelChangeLinkAttrQuoteConverter, 'high' );
+		modelDispatcher.on( 'changeAttribute:linkHref:quote', modelChangeLinkAttrQuoteConverter, { priority: 'high' } );
+		modelDispatcher.on( 'changeAttribute:linkTitle:quote', modelChangeLinkAttrQuoteConverter, { priority: 'high' } );
 
 		modelDispatcher.on( 'removeAttribute:linkHref:quote', ( evt, data, consumable, conversionApi ) => {
 			consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
@@ -450,8 +450,8 @@ describe( 'custom attribute handling for given element', () => {
 			viewWriter.remove( ViewRange.createFromParentsAndOffsets( viewElement, aIndex, viewElement, aIndex + 1 ) );
 
 			evt.stop();
-		}, 'high' );
-		modelDispatcher.on( 'removeAttribute:linkTitle:quote', modelChangeLinkAttrQuoteConverter, 'high' );
+		}, { priority: 'high' } );
+		modelDispatcher.on( 'removeAttribute:linkTitle:quote', modelChangeLinkAttrQuoteConverter, { priority: 'high' } );
 
 		// QUOTE VIEW TO MODEL CONVERTERS
 		viewDispatcher.on( 'element:blockquote', ( evt, data, consumable, conversionApi ) => {
@@ -654,10 +654,10 @@ it( 'default table view to model converter', () => {
 describe( 'universal converter', () => {
 	beforeEach( () => {
 		// "Universal" converters
-		modelDispatcher.on( 'insert', insertElement( ( data ) => new ViewContainerElement( data.item.name ) ), 'lowest' );
-		modelDispatcher.on( 'addAttribute', setAttribute(), 'lowest' );
-		modelDispatcher.on( 'changeAttribute', setAttribute(), 'lowest' );
-		modelDispatcher.on( 'removeAttribute', removeAttribute(), 'lowest' );
+		modelDispatcher.on( 'insert', insertElement( ( data ) => new ViewContainerElement( data.item.name ) ), { priority: 'lowest' } );
+		modelDispatcher.on( 'addAttribute', setAttribute(), { priority: 'lowest' } );
+		modelDispatcher.on( 'changeAttribute', setAttribute(), { priority: 'lowest' } );
+		modelDispatcher.on( 'removeAttribute', removeAttribute(), { priority: 'lowest' } );
 
 		viewDispatcher.on( 'element', ( evt, data, consumable, conversionApi ) => {
 			if ( consumable.consume( data.input, { name: true } ) ) {
@@ -671,7 +671,7 @@ describe( 'universal converter', () => {
 
 				data.output.appendChildren( conversionApi.convertChildren( data.input, consumable ) );
 			}
-		}, 'lowest' );
+		}, { priority: 'lowest' } );
 
 		// "Real" converters -- added with higher priority. Should overwrite the "universal" converters.
 		modelDispatcher.on( 'insert:image', insertElement( new ViewContainerElement( 'img' ) ) );

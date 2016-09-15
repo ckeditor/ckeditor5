@@ -346,7 +346,7 @@ describe( 'move', () => {
 		dispatcher.on( 'move', move() );
 		dispatcher.on( 'move', ( evt, data, consumable ) => {
 			consumable.consume( data.item, 'move' );
-		}, 'high' );
+		}, { priority: 'high' } );
 
 		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
@@ -424,7 +424,7 @@ describe( 'remove', () => {
 		dispatcher.on( 'remove', remove() );
 		dispatcher.on( 'remove', ( evt, data, consumable ) => {
 			consumable.consume( data.item, 'remove' );
-		}, 'high' );
+		}, { priority: 'high' } );
 
 		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
@@ -520,7 +520,7 @@ describe( 'rename', () => {
 	it( 'should not execute if converted value was already consumed', () => {
 		dispatcher.on( 'rename', ( evt, data, consumable ) => {
 			consumable.consume( data.element, 'rename' );
-		}, 'high' );
+		}, { priority: 'high' } );
 
 		dispatcher.on( 'rename', ( evt, data ) => {
 			expect( data.fakeElement ).to.be.undefined;
