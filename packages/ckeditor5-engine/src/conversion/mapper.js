@@ -64,7 +64,7 @@ export default class Mapper {
 			let viewContainer = this._modelToViewMapping.get( data.modelPosition.parent );
 
 			data.viewPosition = this._findPositionIn( viewContainer, data.modelPosition.offset );
-		}, 'lowest' );
+		}, { priority: 'lowest' } );
 
 		// Add default callback for view to model position mapping.
 		this.on( 'viewToModelPosition', ( evt, data ) => {
@@ -79,7 +79,7 @@ export default class Mapper {
 			let modelOffset = this._toModelOffset( data.viewPosition.parent, data.viewPosition.offset, viewBlock );
 
 			data.modelPosition = ModelPosition.createFromParentAndOffset( modelParent, modelOffset );
-		}, 'lowest' );
+		}, { priority: 'lowest' } );
 	}
 
 	/**

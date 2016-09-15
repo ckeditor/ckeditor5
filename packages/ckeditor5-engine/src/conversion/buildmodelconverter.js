@@ -193,16 +193,16 @@ class ModelConverterBuilder {
 				// From model element to view element -> insert element.
 				element = typeof element == 'string' ? new ViewContainerElement( element ) : element;
 
-				dispatcher.on( 'insert:' + this._from.name, insertElement( element ), priority );
+				dispatcher.on( 'insert:' + this._from.name, insertElement( element ), { priority } );
 			} else {
 				// From model attribute to view element -> wrap and unwrap.
 				element = typeof element == 'string' ? new ViewAttributeElement( element ) : element;
 
-				dispatcher.on( 'addAttribute:' + this._from.key, wrap( element ), priority );
-				dispatcher.on( 'changeAttribute:' + this._from.key, wrap( element ), priority );
-				dispatcher.on( 'removeAttribute:' + this._from.key, unwrap( element ), priority );
+				dispatcher.on( 'addAttribute:' + this._from.key, wrap( element ), { priority } );
+				dispatcher.on( 'changeAttribute:' + this._from.key, wrap( element ), { priority } );
+				dispatcher.on( 'removeAttribute:' + this._from.key, unwrap( element ), { priority } );
 
-				dispatcher.on( 'selectionAttribute:' + this._from.key, convertSelectionAttribute( element ), priority );
+				dispatcher.on( 'selectionAttribute:' + this._from.key, convertSelectionAttribute( element ), { priority } );
 			}
 		}
 	}
@@ -268,9 +268,11 @@ class ModelConverterBuilder {
 		}
 
 		for ( let dispatcher of this._dispatchers ) {
-			dispatcher.on( 'addAttribute:' + this._from.key, setAttribute( attributeCreator ), this._from.priority || 'normal' );
-			dispatcher.on( 'changeAttribute:' + this._from.key, setAttribute( attributeCreator ), this._from.priority || 'normal' );
-			dispatcher.on( 'removeAttribute:' + this._from.key, removeAttribute( attributeCreator ), this._from.priority || 'normal' );
+			const options = { priority: this._from.priority || 'normal' };
+
+			dispatcher.on( 'addAttribute:' + this._from.key, setAttribute( attributeCreator ), options );
+			dispatcher.on( 'changeAttribute:' + this._from.key, setAttribute( attributeCreator ), options );
+			dispatcher.on( 'removeAttribute:' + this._from.key, removeAttribute( attributeCreator ), options );
 		}
 	}
 }

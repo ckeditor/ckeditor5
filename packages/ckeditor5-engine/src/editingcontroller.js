@@ -86,27 +86,27 @@ export default class EditingController {
 		// Convert changes in model to view.
 		this._listenter.listenTo( this.model, 'change', ( evt, type, changes ) => {
 			this.modelToView.convertChange( type, changes );
-		}, 'low' );
+		}, { priority: 'low' } );
 
 		// Convert model selection to view.
 		this._listenter.listenTo( this.model, 'changesDone', () => {
 			this.modelToView.convertSelection( model.selection );
 			this.view.render();
-		}, 'low' );
+		}, { priority: 'low' } );
 
 		// Convert view selection to model.
 		this._listenter.listenTo( this.view, 'selectionChange', convertSelectionChange( model, this.mapper ) );
 
 		// Attach default content converters.
-		this.modelToView.on( 'insert:$text', insertText(), 'lowest' );
-		this.modelToView.on( 'remove', remove(), 'low' );
-		this.modelToView.on( 'move', move(), 'low' );
-		this.modelToView.on( 'rename', rename(), 'low' );
+		this.modelToView.on( 'insert:$text', insertText(), { priority: 'lowest' } );
+		this.modelToView.on( 'remove', remove(), { priority: 'low' } );
+		this.modelToView.on( 'move', move(), { priority: 'low' } );
+		this.modelToView.on( 'rename', rename(), { priority: 'low' } );
 
 		// Attach default selection converters.
-		this.modelToView.on( 'selection', clearAttributes(), 'low' );
-		this.modelToView.on( 'selection', convertRangeSelection(), 'low' );
-		this.modelToView.on( 'selection', convertCollapsedSelection(), 'low' );
+		this.modelToView.on( 'selection', clearAttributes(), { priority: 'low' } );
+		this.modelToView.on( 'selection', convertRangeSelection(), { priority: 'low' } );
+		this.modelToView.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 	}
 
 	/**

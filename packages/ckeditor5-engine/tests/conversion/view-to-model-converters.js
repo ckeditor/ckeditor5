@@ -43,7 +43,7 @@ describe( 'convertText', () => {
 		const viewText = new ViewText( 'foofuckbafuckr' );
 
 		// Default converter for elements. Returns just converted children. Added with lowest priority.
-		dispatcher.on( 'text', convertText(), 'lowest' );
+		dispatcher.on( 'text', convertText(), { priority: 'lowest' } );
 		// Added with normal priority. Should make the above converter not fire.
 		dispatcher.on( 'text', ( evt, data, consumable ) => {
 			if ( consumable.consume( data.input ) ) {
@@ -110,7 +110,7 @@ describe( 'convertToModelFragment', () => {
 		// To get any meaningful results we have to actually convert something.
 		dispatcher.on( 'text', convertText() );
 		// Default converter for elements. Returns just converted children. Added with lowest priority.
-		dispatcher.on( 'element', convertToModelFragment(), 'lowest' );
+		dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		// Added with normal priority. Should make the above converter not fire.
 		dispatcher.on( 'element:p', ( evt, data, consumable, conversionApi ) => {
 			if ( consumable.consume( data.input, { name: true } ) ) {

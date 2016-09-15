@@ -57,9 +57,9 @@ beforeEach( () => {
 	dispatcher.on( 'addAttribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
 
 	// Default selection converters.
-	dispatcher.on( 'selection', clearAttributes(), 'low' );
-	dispatcher.on( 'selection', convertRangeSelection(), 'low' );
-	dispatcher.on( 'selection', convertCollapsedSelection(), 'low' );
+	dispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
+	dispatcher.on( 'selection', convertRangeSelection(), { priority: 'low' } );
+	dispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 } );
 
 describe( 'default converters', () => {
@@ -147,7 +147,7 @@ describe( 'default converters', () => {
 			// This should prevent default callback doing anything.
 			dispatcher.on( 'selection', ( evt, data, consumable ) => {
 				expect( consumable.consume( data.selection, 'selection' ) ).to.be.true;
-			}, 'high' );
+			}, { priority: 'high' } );
 
 			// Similar test case as the first in this suite.
 			test(
@@ -208,11 +208,11 @@ describe( 'default converters', () => {
 			// This should prevent default callbacks doing anything.
 			dispatcher.on( 'selection', ( evt, data, consumable ) => {
 				expect( consumable.consume( data.selection, 'selection' ) ).to.be.true;
-			}, 'high' );
+			}, { priority: 'high' } );
 
 			dispatcher.on( 'selectionAttribute:bold', ( evt, data, consumable ) => {
 				expect( consumable.consume( data.selection, 'selectionAttribute:bold' ) ).to.be.true;
-			}, 'high' );
+			}, { priority: 'high' } );
 
 			// Similar test case as above
 			test(
