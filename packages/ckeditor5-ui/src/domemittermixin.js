@@ -51,8 +51,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * @param {utils.PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
-	 * @param {Object} [options.ctx] The object that represents `this` in the callback. Defaults to the object firing the
-	 * event.
+	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
 	 *
 	 * @method ui.ProxyEmitter#on
 	 */
@@ -85,7 +84,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 *
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to stop being called.
-	 * @param {Object} [ctx] The context object to be removed, pared with the given callback. To handle cases where
+	 * @param {Object} [context] The context object to be removed, pared with the given callback. To handle cases where
 	 * the same callback is used several times with different contexts.
 	 *
 	 * @method ui.ProxyEmitter#off
@@ -173,8 +172,7 @@ const DOMEmitterMixin = extend( {}, EmitterMixin, {
 	 * @param {utils.PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
-	 * @param {Object} [options.ctx] The object that represents `this` in the callback. Defaults to the object firing the
-	 * event.
+	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
 	 *
 	 * @method ui.DOMEmitterMixin#listenTo
 	 */
