@@ -29,6 +29,14 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 		super( editor );
 
 		/**
+		 * Toolbar controller.
+		 *
+		 * @readonly
+		 * @member {ui.toolbar.Toolbar} editor-classic.ClassicEditorUI#toolbar
+		 */
+		this.toolbar = this._createToolbar();
+
+		/**
 		 * Editable UI controller.
 		 *
 		 * @readonly
@@ -37,14 +45,11 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 		this.editable = this._createEditableUI();
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
-		/**
-		 * Toolbar controller.
-		 *
-		 * @readonly
-		 * @member {ui.toolbar.Toolbar} editor-classic.ClassicEditorUI#toolbar
-		 */
-		this.toolbar = this._createToolbar( this.editor.ui.view.element );
+		this.toolbar.model.set( 'limiterElement', this.editor.ui.view.element );
 
 		return super.init();
 	}
@@ -65,7 +70,7 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 	 * @protected
 	 * @returns {ui.toolbar.Toolbar}
 	 */
-	_createToolbar( editorUiElement ) {
+	_createToolbar() {
 		const editor = this.editor;
 		const model = new Model( {
 			config: this.editor.config.get( 'toolbar' )
@@ -73,7 +78,7 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 
 		model.bind( 'isActive' ).to( editor.editing.view.getRoot(), 'isFocused' );
 
-		const toolbar = new StickyToolbar( model, new StickyToolbarView( editor.locale, editorUiElement ), editor );
+		const toolbar = new StickyToolbar( model, new StickyToolbarView( editor.locale ), editor );
 		this.add( 'top', toolbar );
 
 		return toolbar;

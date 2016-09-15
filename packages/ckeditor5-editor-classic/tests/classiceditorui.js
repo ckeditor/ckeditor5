@@ -40,6 +40,11 @@ describe( 'ClassicEditorUI', () => {
 	} );
 
 	describe( 'constructor', () => {
+		it( 'creates toolbar', () => {
+			expect( editorUI.toolbar ).to.be.instanceof( Toolbar );
+			expect( editorUI.toolbar.view ).to.be.instanceof( StickyToolbarView );
+		} );
+
 		it( 'creates editable', () => {
 			expect( editorUI.editable ).to.be.instanceof( EditableUI );
 			expect( editorUI.editable.view ).to.be.instanceof( InlineEditableUIView );
@@ -64,10 +69,9 @@ describe( 'ClassicEditorUI', () => {
 			expect( editorUI.init() ).to.be.instanceof( Promise );
 		} );
 
-		it( 'creates toolbar', ( done ) => {
+		it( 'sets toolbar.model#limiterElement', ( done ) => {
 			return editorUI.init().then( () => {
-				expect( editorUI.toolbar ).to.be.instanceof( Toolbar );
-				expect( editorUI.toolbar.view ).to.be.instanceof( StickyToolbarView );
+				expect( editorUI.toolbar.model.limiterElement ).to.equal( editorUI.view.element );
 
 				done();
 			} );
@@ -75,16 +79,8 @@ describe( 'ClassicEditorUI', () => {
 	} );
 
 	describe( '_createToolbar', () => {
-		beforeEach( () => {
-			return editorUI.init();
-		} );
-
 		it( 'passes toolbar config to the model', () => {
 			expect( editorUI.toolbar.model.config ).to.have.members( [ 'foo', 'bar' ] );
-		} );
-
-		it( 'passes the limiter element to the view constructor', () => {
-			expect( editorUI.toolbar.view.limiterElement ).to.equal( editorUI.view.element );
 		} );
 	} );
 } );
