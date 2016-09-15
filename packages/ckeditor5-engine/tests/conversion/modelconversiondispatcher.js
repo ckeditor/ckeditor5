@@ -116,7 +116,7 @@ describe( 'ModelConversionDispatcher', () => {
 
 			dispatcher.on( 'rename', cbRename );
 
-			doc.batch().rename( 'figure', image );
+			doc.batch().rename( image, 'figure' );
 
 			expect( cbRename.called );
 		} );
