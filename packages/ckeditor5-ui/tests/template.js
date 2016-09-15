@@ -12,6 +12,7 @@ import Model from '/ckeditor5/ui/model.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 import DOMEmitterMixin from '/ckeditor5/ui/domemittermixin.js';
+import Collection from '/ckeditor5/utils/collection.js';
 import normalizeHtml from '/tests/utils/_utils/normalizehtml.js';
 
 testUtils.createSinonSandbox();
@@ -20,16 +21,7 @@ let el, text;
 
 describe( 'Template', () => {
 	describe( 'constructor', () => {
-		it( 'accepts template definition', () => {
-			const def = {
-				tag: 'p'
-			};
-
-			expect( new Template( def ).definition ).to.not.equal( def );
-			expect( new Template( def ).definition.tag ).to.equal( 'p' );
-		} );
-
-		it( 'normalizes template definition', () => {
+		it( 'accepts and normalizes the definition', () => {
 			const bind = Template.bind( new Model( {} ), Object.create( DOMEmitterMixin ) );
 			const tpl = new Template( {
 				tag: 'p',
@@ -63,23 +55,41 @@ describe( 'Template', () => {
 				}
 			} );
 
-			const def = tpl.definition;
+			expect( tpl.attributes.a[ 0 ] ).to.equal( 'foo' );
+			expect( tpl.attributes.b[ 0 ] ).to.equal( 'bar' );
+			expect( tpl.attributes.b[ 1 ] ).to.equal( 'baz' );
+			expect( tpl.attributes.c[ 0 ].value[ 0 ].type ).to.be.a( 'symbol' );
 
-			expect( def.attributes.a[ 0 ] ).to.equal( 'foo' );
-			expect( def.attributes.b[ 0 ] ).to.equal( 'bar' );
-			expect( def.attributes.b[ 1 ] ).to.equal( 'baz' );
-			expect( def.attributes.c[ 0 ].value[ 0 ].type ).to.be.a( 'symbol' );
+			expect( tpl.children ).to.have.length( 4 );
+			expect( tpl.children.get( 0 ).text[ 0 ] ).to.equal( 'content' );
+			expect( tpl.children.get( 1 ).text[ 0 ].type ).to.be.a( 'symbol' );
+			expect( tpl.children.get( 2 ).text[ 0 ] ).to.equal( 'abc' );
+			expect( tpl.children.get( 3 ).text[ 0 ] ).to.equal( 'a' );
+			expect( tpl.children.get( 3 ).text[ 1 ] ).to.equal( 'b' );
 
-			expect( def.children[ 0 ].text[ 0 ] ).to.equal( 'content' );
-			expect( def.children[ 1 ].text[ 0 ].type ).to.be.a( 'symbol' );
-			expect( def.children[ 2 ].text[ 0 ] ).to.equal( 'abc' );
-			expect( def.children[ 3 ].text[ 0 ] ).to.equal( 'a' );
-			expect( def.children[ 3 ].text[ 1 ] ).to.equal( 'b' );
+			expect( tpl.eventListeners[ 'a@span' ][ 0 ].type ).to.be.a( 'symbol' );
+			expect( tpl.eventListeners[ 'b@span' ][ 0 ].type ).to.be.a( 'symbol' );
+			expect( tpl.eventListeners[ 'c@span' ][ 0 ].type ).to.be.a( 'symbol' );
+			expect( tpl.eventListeners[ 'c@span' ][ 1 ].type ).to.be.a( 'symbol' );
 
-			expect( def.on[ 'a@span' ][ 0 ].type ).to.be.a( 'symbol' );
-			expect( def.on[ 'b@span' ][ 0 ].type ).to.be.a( 'symbol' );
-			expect( def.on[ 'c@span' ][ 0 ].type ).to.be.a( 'symbol' );
-			expect( def.on[ 'c@span' ][ 1 ].type ).to.be.a( 'symbol' );
+			// Note that Template mixes EmitterMixin.
+			expect( tpl.on ).to.be.a( 'function' );
+			expect( tpl.on[ 'a@span' ] ).to.be.undefined;
+		} );
+
+		it( 'defines #children collection', () => {
+			const elementTpl = new Template( {
+				tag: 'p',
+			} );
+
+			const textTpl = new Template( {
+				text: 'foo'
+			} );
+
+			expect( elementTpl.children ).to.be.instanceof( Collection );
+			expect( elementTpl.children ).to.have.length( 0 );
+			// Text will never have children.
+			expect( textTpl.children ).to.be.undefined;
 		} );
 
 		it( 'does not modify passed definition', () => {
@@ -96,18 +106,19 @@ describe( 'Template', () => {
 			};
 			const tpl = new Template( def );
 
-			expect( def ).to.not.equal( tpl.definition );
-			expect( def.attributes ).to.not.equal( tpl.definition.attributes );
-			expect( def.children ).to.not.equal( tpl.definition.children );
-			expect( def.children[ 0 ] ).to.not.equal( tpl.definition.children[ 0 ] );
-
-			expect( tpl.definition.attributes.a[ 0 ] ).to.equal( 'foo' );
+			expect( def.attributes ).to.not.equal( tpl.attributes );
+			expect( def.children ).to.not.equal( tpl.children );
+			expect( def.children[ 0 ] ).to.not.equal( tpl.children.get( 0 ) );
 			expect( def.attributes.a ).to.equal( 'foo' );
+			expect( def.children[ 0 ].tag ).to.equal( 'span' );
+
+			expect( tpl.attributes.a[ 0 ] ).to.equal( 'foo' );
+			expect( tpl.children.get( 0 ).tag ).to.equal( 'span' );
 		} );
 	} );
 
 	describe( 'render', () => {
-		it( 'throws when wrong template definition', () => {
+		it( 'throws when the template definition is wrong', () => {
 			expect( () => {
 				new Template( {} ).render();
 			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
@@ -127,8 +138,8 @@ describe( 'Template', () => {
 
 			expect( el ).to.be.instanceof( HTMLElement );
 			expect( el.parentNode ).to.be.null;
-			expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<p></p>' );
-			expect( el.namespaceURI ).to.be.equal( 'http://www.w3.org/1999/xhtml' );
+			expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p></p>' );
+			expect( el.namespaceURI ).to.equal( 'http://www.w3.org/1999/xhtml' );
 		} );
 
 		it( 'creates an element in a custom namespace', () => {
@@ -137,7 +148,7 @@ describe( 'Template', () => {
 				ns: 'foo'
 			} ).render();
 
-			expect( el.namespaceURI ).to.be.equal( 'foo' );
+			expect( el.namespaceURI ).to.equal( 'foo' );
 		} );
 
 		it( 'renders HTMLElement attributes', () => {
@@ -152,7 +163,7 @@ describe( 'Template', () => {
 
 			expect( el ).to.be.instanceof( HTMLElement );
 			expect( el.parentNode ).to.be.null;
-			expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<p class="a b" x="bar">foo</p>' );
+			expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p class="a b" x="bar">foo</p>' );
 			expect( el.attributes.getNamedItem( 'class' ).namespaceURI ).to.be.null;
 		} );
 
@@ -166,7 +177,7 @@ describe( 'Template', () => {
 				children: [ 'foo' ]
 			} ).render();
 
-			expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<p>foo</p>' );
+			expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p>foo</p>' );
 		} );
 
 		it( 'renders HTMLElement attributes – falsy values', () => {
@@ -180,7 +191,7 @@ describe( 'Template', () => {
 				children: [ 'foo' ]
 			} ).render();
 
-			expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<p y="foo">foo</p>' );
+			expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p y="foo">foo</p>' );
 		} );
 
 		it( 'renders HTMLElement attributes in a custom namespace', () => {
@@ -199,7 +210,7 @@ describe( 'Template', () => {
 				children: [ 'foo' ]
 			} ).render();
 
-			expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<p class="a b" x="bar">foo</p>' );
+			expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p class="a b" x="bar">foo</p>' );
 			expect( el.attributes.getNamedItem( 'class' ).namespaceURI ).to.equal( 'foo' );
 			expect( el.attributes.getNamedItem( 'x' ).namespaceURI ).to.equal( 'abc' );
 		} );
@@ -228,14 +239,14 @@ describe( 'Template', () => {
 				]
 			} ).render();
 
-			expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<p a="A"><b>B</b><i>C<b>D</b></i></p>' );
+			expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p a="A"><b>B</b><i>C<b>D</b></i></p>' );
 		} );
 
 		it( 'creates a Text node', () => {
 			const node = new Template( { text: 'foo' } ).render();
 
-			expect( node.nodeType ).to.be.equal( 3 );
-			expect( node.textContent ).to.be.equal( 'foo' );
+			expect( node.nodeType ).to.equal( 3 );
+			expect( node.textContent ).to.equal( 'foo' );
 		} );
 
 		it( 'creates a child Text Node (different syntaxes)', () => {
@@ -247,7 +258,7 @@ describe( 'Template', () => {
 				]
 			} ).render();
 
-			expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<p>foobar</p>' );
+			expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p>foobar</p>' );
 		} );
 
 		it( 'creates multiple child Text Nodes', () => {
@@ -263,7 +274,7 @@ describe( 'Template', () => {
 			} ).render();
 
 			expect( el.childNodes ).to.have.length( 5 );
-			expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<p>abcdef</p>' );
+			expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p>abcdef</p>' );
 		} );
 
 		it( 'activates model bindings – root', () => {
@@ -416,11 +427,11 @@ describe( 'Template', () => {
 						}
 					} );
 
-					expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<p style="background-color:yellow;"></p>' );
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="background-color:yellow;"></p>' );
 
 					observable.backgroundColor = '';
 
-					expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<p></p>' );
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p></p>' );
 				} );
 
 				it( 'renders with falsy values', () => {
@@ -435,7 +446,7 @@ describe( 'Template', () => {
 						}
 					} );
 
-					expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<p></p>' );
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p></p>' );
 				} );
 			} );
 		} );
@@ -478,8 +489,8 @@ describe( 'Template', () => {
 			new Template( {} ).apply( el );
 			new Template( {} ).apply( text );
 
-			expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<div></div>' );
-			expect( text.textContent ).to.be.equal( '' );
+			expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div></div>' );
+			expect( text.textContent ).to.equal( '' );
 		} );
 
 		it( 'applies textContent to a Text Node', () => {
@@ -487,7 +498,7 @@ describe( 'Template', () => {
 				text: 'abc'
 			} ).apply( text );
 
-			expect( text.textContent ).to.be.equal( 'abc' );
+			expect( text.textContent ).to.equal( 'abc' );
 		} );
 
 		it( 'applies attributes to an HTMLElement', () => {
@@ -499,7 +510,7 @@ describe( 'Template', () => {
 				}
 			} ).apply( el );
 
-			expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<div class="a b" x="bar"></div>' );
+			expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div class="a b" x="bar"></div>' );
 		} );
 
 		it( 'doesn\'t apply new child to an HTMLElement – Text Node', () => {
@@ -508,7 +519,7 @@ describe( 'Template', () => {
 				children: [ 'foo' ]
 			} ).apply( el );
 
-			expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<div></div>' );
+			expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div></div>' );
 		} );
 
 		it( 'doesn\'t apply new child to an HTMLElement – HTMLElement', () => {
@@ -521,7 +532,7 @@ describe( 'Template', () => {
 				]
 			} ).apply( el );
 
-			expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<div></div>' );
+			expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div></div>' );
 		} );
 
 		it( 'applies new textContent to an existing Text Node of an HTMLElement', () => {
@@ -532,7 +543,7 @@ describe( 'Template', () => {
 				children: [ 'foo' ]
 			} ).apply( el );
 
-			expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<div>foo</div>' );
+			expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div>foo</div>' );
 		} );
 
 		it( 'applies attributes and TextContent to a DOM tree', () => {
@@ -555,7 +566,7 @@ describe( 'Template', () => {
 				]
 			} ).apply( el );
 
-			expect( normalizeHtml( el.outerHTML ) ).to.be.equal( '<div class="parent">Children: <span class="child"></span></div>' );
+			expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div class="parent">Children: <span class="child"></span></div>' );
 		} );
 
 		it( 'should work for deep DOM structure', () => {
@@ -1400,11 +1411,10 @@ describe( 'Template', () => {
 
 			Template.extend( tpl, ext );
 
-			expect( def.attributes.a ).to.equal( 'foo' );
 			expect( ext.attributes.b ).to.equal( 'bar' );
 
-			expect( tpl.definition.attributes.a[ 0 ] ).to.equal( 'foo' );
-			expect( tpl.definition.attributes.b[ 0 ] ).to.equal( 'bar' );
+			expect( tpl.attributes.a[ 0 ] ).to.equal( 'foo' );
+			expect( tpl.attributes.b[ 0 ] ).to.equal( 'bar' );
 		} );
 
 		describe( 'attributes', () => {
@@ -1913,7 +1923,7 @@ describe( 'Template', () => {
 					]
 				} );
 
-				Template.extend( template.definition.children[ 0 ], {
+				Template.extend( template.children.get( 0 ), {
 					attributes: {
 						class: 'bar'
 					}
@@ -1947,7 +1957,7 @@ describe( 'Template', () => {
 					]
 				} );
 
-				Template.extend( template.definition.children[ 0 ], {
+				Template.extend( template.children.get( 0 ), {
 					attributes: {
 						class: 'B',
 					},
@@ -2071,10 +2081,10 @@ function setElement( template ) {
 	document.body.appendChild( el );
 }
 
-function extensionTest( base, extension, expectedHtml ) {
-	const template = new Template( base );
+function extensionTest( baseDefinition, extendedDefinition, expectedHtml ) {
+	const template = new Template( baseDefinition );
 
-	Template.extend( template, extension );
+	Template.extend( template, extendedDefinition );
 
 	const el = template.render();
 
