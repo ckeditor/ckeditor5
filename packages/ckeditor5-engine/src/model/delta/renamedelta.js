@@ -43,10 +43,10 @@ function apply( batch, delta, operation ) {
  *
  * @chainable
  * @method engine.model.Batch#rename
- * @param {String} newName New element name.
  * @param {engine.model.Element} element The element to rename.
+ * @param {String} newName New element name.
  */
-register( 'rename', function( newName, element ) {
+register( 'rename', function( element, newName ) {
 	if ( !( element instanceof Element ) ) {
 		/**
 		 * Trying to rename an object which is not an instance of Element.

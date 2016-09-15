@@ -162,7 +162,7 @@ describe( 'EditingController', () => {
 			expect( getViewData( editing.view ) ).to.equal( '<p>f{}oo</p><p></p><p>bar</p>' );
 
 			model.enqueueChanges( () => {
-				model.batch().rename( 'div', modelRoot.getChild( 0 ) );
+				model.batch().rename( modelRoot.getChild( 0 ), 'div' );
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<div>f{}oo</div><p></p><p>bar</p>' );

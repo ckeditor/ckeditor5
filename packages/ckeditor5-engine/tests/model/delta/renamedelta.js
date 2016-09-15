@@ -24,7 +24,7 @@ describe( 'Batch', () => {
 
 		batch = doc.batch();
 
-		chain = batch.rename( 'h', p );
+		chain = batch.rename( p, 'h' );
 	} );
 
 	describe( 'rename', () => {
@@ -36,7 +36,7 @@ describe( 'Batch', () => {
 
 		it( 'should throw if not an Element instance is passed', () => {
 			expect( () => {
-				batch.rename( 'h', new Text( 'abc' ) );
+				batch.rename( new Text( 'abc' ), 'h' );
 			} ).to.throw( CKEditorError, /^batch-rename-not-element-instance/ );
 		} );
 
@@ -46,7 +46,7 @@ describe( 'Batch', () => {
 
 		it( 'should add delta to batch and operation to delta before applying operation', () => {
 			sinon.spy( doc, 'applyOperation' );
-			batch.rename( 'p', root.getChild( 0 ) );
+			batch.rename( root.getChild( 0 ), 'p' );
 
 			const correctDeltaMatcher = sinon.match( operation => {
 				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
@@ -84,7 +84,7 @@ describe( 'RenameDelta', () => {
 
 			const batch = doc.batch();
 
-			batch.rename( 'h', root.getChild( 0 ) );
+			batch.rename( root.getChild( 0 ), 'h' );
 
 			const reversed = batch.deltas[ 0 ].getReversed();
 
