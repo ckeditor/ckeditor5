@@ -34,19 +34,14 @@ const EmitterMixin = {
 	 * @method utils.EmitterMixin#on
 	 */
 	on( event, callback, options = {} ) {
-		if ( options.priority === undefined ) {
-			options.priority = 'normal';
-		}
-
 		createEventNamespace( this, event );
 		const lists = getCallbacksListsForNamespace( this, event );
-
-		options.priority = priorities.get( options.priority );
+		const priority = priorities.get( options.priority );
 
 		callback = {
 			callback: callback,
 			context: options.context || this,
-			priority: options.priority
+			priority: priority
 		};
 
 		// Add the callback to all callbacks list.
@@ -55,7 +50,7 @@ const EmitterMixin = {
 			let added = false;
 
 			for ( let i = 0; i < callbacks.length; i++ ) {
-				if ( callbacks[ i ].priority < options.priority ) {
+				if ( callbacks[ i ].priority < priority ) {
 					callbacks.splice( i, 0, callback );
 					added = true;
 
