@@ -4,7 +4,7 @@
  */
 
 /* bender-tags: browser-only */
-/* globals window, setTimeout */
+/* globals window */
 
 import XmlDataProcessor from '/ckeditor5/engine/dataprocessor/xmldataprocessor.js';
 import xssTemplates from '/tests/engine/dataprocessor/_utils/xsstemplates.js';
@@ -73,7 +73,7 @@ describe( 'XmlDataProcessor', () => {
 				window.testXss = sinon.spy();
 				dataProcessor.toView( input );
 
-				setTimeout( () => {
+				window.setTimeout( () => {
 					sinon.assert.notCalled( window.testXss );
 					done();
 				}, 10 );
