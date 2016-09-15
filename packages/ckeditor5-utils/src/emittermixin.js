@@ -30,17 +30,12 @@ const EmitterMixin = {
 	 * @param {utils.PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
-	 * @param {Object} [options.ctx] The object that represents `this` in the callback. Defaults to the object firing the
-	 * event.
+	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
 	 * @method utils.EmitterMixin#on
 	 */
 	on( event, callback, options = {} ) {
 		if ( options.priority === undefined ) {
 			options.priority = 'normal';
-		}
-
-		if ( options.ctx === undefined ) {
-			options.ctx = null;
 		}
 
 		createEventNamespace( this, event );
@@ -50,7 +45,7 @@ const EmitterMixin = {
 
 		callback = {
 			callback: callback,
-			ctx: options.ctx || this,
+			context: options.context || this,
 			priority: options.priority
 		};
 
@@ -85,8 +80,7 @@ const EmitterMixin = {
 	 * @param {utils.PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
-	 * @param {Object} [options.ctx] The object that represents `this` in the callback. Defaults to the object firing the
-	 * event.
+	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
 	 * @method utils.EmitterMixin#once
 	 */
 	once( event, callback, options ) {
@@ -107,17 +101,17 @@ const EmitterMixin = {
 	 *
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to stop being called.
-	 * @param {Object} [ctx] The context object to be removed, pared with the given callback. To handle cases where
+	 * @param {Object} [context] The context object to be removed, pared with the given callback. To handle cases where
 	 * the same callback is used several times with different contexts.
 	 * @method utils.EmitterMixin#off
 	 */
-	off( event, callback, ctx ) {
+	off( event, callback, context ) {
 		const lists = getCallbacksListsForNamespace( this, event );
 
 		for ( let callbacks of lists ) {
 			for ( let i = 0; i < callbacks.length; i++ ) {
 				if ( callbacks[ i ].callback == callback ) {
-					if ( !ctx || ctx == callbacks[ i ].ctx ) {
+					if ( !context || context == callbacks[ i ].context ) {
 						// Remove the callback from the list (fixing the next index).
 						callbacks.splice( i, 1 );
 						i--;
@@ -137,8 +131,7 @@ const EmitterMixin = {
 	 * @param {utils.PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
-	 * @param {Object} [options.ctx] The object that represents `this` in the callback. Defaults to the object firing the
-	 * event.
+	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
 	 * @method utils.EmitterMixin#listenTo
 	 */
 	listenTo( emitter, event, callback, options ) {
@@ -267,14 +260,14 @@ const EmitterMixin = {
 			callbacks = Array.from( callbacks );
 
 			for ( let i = 0; i < callbacks.length; i++ ) {
-				callbacks[ i ].callback.apply( callbacks[ i ].ctx, callbackArgs );
+				callbacks[ i ].callback.apply( callbacks[ i ].context, callbackArgs );
 
 				// Remove the callback from future requests if off() has been called.
 				if ( eventInfo.off.called ) {
 					// Remove the called mark for the next calls.
 					delete eventInfo.off.called;
 
-					this.off( event, callbacks[ i ].callback, callbacks[ i ].ctx );
+					this.off( event, callbacks[ i ].callback, callbacks[ i ].context );
 				}
 
 				// Do not execute next callbacks if stop() was called.
