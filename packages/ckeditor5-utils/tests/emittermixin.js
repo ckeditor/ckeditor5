@@ -32,11 +32,11 @@ describe( 'fire', () => {
 		let spy4 = sinon.spy().named( 4 );
 		let spy5 = sinon.spy().named( 5 );
 
-		emitter.on( 'test', spy2, 'high' );
+		emitter.on( 'test', spy2, { priority: 'high' } );
 		emitter.on( 'test', spy3 ); // Defaults to 'normal'.
-		emitter.on( 'test', spy4, 'low' );
-		emitter.on( 'test', spy1, 'highest' );
-		emitter.on( 'test', spy5, 'lowest' );
+		emitter.on( 'test', spy4, { priority: 'low' } );
+		emitter.on( 'test', spy1, { priority: 'highest' } );
+		emitter.on( 'test', spy5, { priority: 'lowest' } );
 
 		emitter.fire( 'test' );
 
@@ -64,8 +64,8 @@ describe( 'fire', () => {
 		let spy2 = sinon.spy();
 		let spy3 = sinon.spy();
 
-		emitter.on( 'test', spy1, 'normal', ctx1 );
-		emitter.on( 'test', spy2, 'normal', ctx2 );
+		emitter.on( 'test', spy1, { context: ctx1 } );
+		emitter.on( 'test', spy2, { context: ctx2 } );
 		emitter.on( 'test', spy3 );
 
 		emitter.fire( 'test' );
@@ -252,7 +252,7 @@ describe( 'once', () => {
 		let spy1 = sinon.spy();
 		let spy2 = sinon.spy();
 
-		emitter.once( 'test', spy1, 'normal', ctx );
+		emitter.once( 'test', spy1, { context: ctx } );
 		emitter.once( 'test', spy2 );
 
 		emitter.fire( 'test' );
@@ -320,11 +320,11 @@ describe( 'off', () => {
 	it( 'should remove the callback for given context only', () => {
 		let spy = sinon.spy().named( 1 );
 
-		let ctx1 = { ctx: 1 };
-		let ctx2 = { ctx: 2 };
+		let ctx1 = { context: 1 };
+		let ctx2 = { context: 2 };
 
-		emitter.on( 'test', spy, 'normal', ctx1 );
-		emitter.on( 'test', spy, 'normal', ctx2 );
+		emitter.on( 'test', spy, { context: ctx1 } );
+		emitter.on( 'test', spy, { context: ctx2 } );
 
 		emitter.fire( 'test' );
 
