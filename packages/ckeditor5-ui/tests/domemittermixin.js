@@ -74,6 +74,36 @@ describe( 'DOMEmitterMixin', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		describe( 'event capturing', () => {
+			beforeEach( () => {
+				document.body.appendChild( node );
+			} );
+
+			afterEach( () => {
+				document.body.removeChild( node );
+			} );
+
+			it( 'should not use capturing at default', () => {
+				const spy = testUtils.sinon.spy();
+
+				domEmitter.listenTo( document, 'test', spy );
+
+				node.dispatchEvent( new Event( 'test', { bubbles: false } ) );
+
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'should optionally use capturing', () => {
+				const spy = testUtils.sinon.spy();
+
+				domEmitter.listenTo( document, 'test', spy, { useCapture: true } );
+
+				node.dispatchEvent( new Event( 'test', { bubbles: false } ) );
+
+				sinon.assert.calledOnce( spy );
+			} );
+		} );
 	} );
 
 	describe( 'stopListening', () => {

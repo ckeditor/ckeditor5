@@ -52,10 +52,12 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
+	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered
+	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
 	 *
 	 * @method ui.ProxyEmitter#on
 	 */
-	on( event ) {
+	on( event, callback, options = {} ) {
 		// Execute parent class method first.
 		EmitterMixin.on.apply( this, arguments );
 
@@ -68,7 +70,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 		const domListener = this._createDomListener( event );
 
 		// Attach the native DOM listener to DOM Node.
-		this._domNode.addEventListener( event, domListener );
+		this._domNode.addEventListener( event, domListener, !!options.useCapture );
 
 		if ( !this._domListeners ) {
 			this._domListeners = {};
@@ -173,6 +175,8 @@ const DOMEmitterMixin = extend( {}, EmitterMixin, {
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
+	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered
+	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
 	 *
 	 * @method ui.DOMEmitterMixin#listenTo
 	 */
