@@ -152,16 +152,6 @@ function renderButton( ui ) {
 		icon: 'bold'
 	} ) );
 
-	const colChangeButton = button( {
-		label: 'Icon follows text color',
-		icon: 'bold'
-	} );
-
-	// TODO: It requires model interface.
-	colChangeButton.view.element.id = 'icon-color-change';
-
-	ui.add( 'button-icon-states', colChangeButton );
-
 	// --- Responsive ------------------------------------------------------------
 
 	for ( let i = 1; i < 4; i++ ) {
