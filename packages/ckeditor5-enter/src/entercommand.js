@@ -70,7 +70,7 @@ export function enterBlock( batch, selection, options = {} ) {
 			const newBlockName = getNewBlockName( doc, startElement, defaultBlockName );
 
 			if ( startElement.name != newBlockName ) {
-				batch.rename( newBlockName, startElement );
+				batch.rename( startElement, newBlockName );
 			}
 
 			selection.collapse( pos );
