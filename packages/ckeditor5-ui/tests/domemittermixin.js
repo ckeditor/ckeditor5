@@ -10,31 +10,15 @@ import testUtils from '/tests/core/_utils/utils.js';
 import DOMEmitterMixin from '/ckeditor5/ui/domemittermixin.js';
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 
-let emitter, domEmitter, node;
-
 testUtils.createSinonSandbox();
 
-const getEmitterInstance = () => Object.create( EmitterMixin );
-const getDOMEmitterInstance = () => Object.create( DOMEmitterMixin );
-const getDOMNodeInstance = () => document.createElement( 'div' );
-
-function updateEmitterInstance() {
-	emitter = getEmitterInstance();
-}
-
-function updateDOMEmitterInstance() {
-	domEmitter = getDOMEmitterInstance();
-}
-
-function updateDOMNodeInstance() {
-	node = getDOMNodeInstance();
-}
-
 describe( 'DOMEmitterMixin', () => {
+	let emitter, domEmitter, node;
+
 	beforeEach( () => {
-		updateEmitterInstance();
-		updateDOMEmitterInstance();
-		updateDOMNodeInstance();
+		emitter = Object.create( EmitterMixin );
+		domEmitter = Object.create( DOMEmitterMixin );
+		node = document.createElement( 'div' );
 	} );
 
 	describe( 'listenTo', () => {
@@ -161,8 +145,8 @@ describe( 'DOMEmitterMixin', () => {
 			const spy1 = testUtils.sinon.spy();
 			const spy2 = testUtils.sinon.spy();
 
-			const node1 = getDOMNodeInstance();
-			const node2 = getDOMNodeInstance();
+			const node1 = document.createElement( 'div' );
+			const node2 = document.createElement( 'div' );
 
 			domEmitter.listenTo( node1, 'event1', spy1 );
 			domEmitter.listenTo( node2, 'event2', spy2 );
@@ -186,8 +170,8 @@ describe( 'DOMEmitterMixin', () => {
 		it( 'should not stop other nodes when a non-listened node is provided', () => {
 			const spy = testUtils.sinon.spy();
 
-			const node1 = getDOMNodeInstance();
-			const node2 = getDOMNodeInstance();
+			const node1 = document.createElement( 'div' );
+			const node2 = document.createElement( 'div' );
 
 			domEmitter.listenTo( node1, 'test', spy );
 
@@ -200,8 +184,6 @@ describe( 'DOMEmitterMixin', () => {
 
 		it( 'should pass DOM Event data to the listener', () => {
 			const spy = testUtils.sinon.spy();
-
-			const node = getDOMNodeInstance();
 
 			domEmitter.listenTo( node, 'click', spy );
 
