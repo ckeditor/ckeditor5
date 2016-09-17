@@ -8,8 +8,8 @@
 import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ 'enter', 'typing', 'headings' ],
-	toolbar: [ 'headings' ]
+	features: [ 'enter', 'typing', 'undo', 'headings' ],
+	toolbar: [ 'headings', 'undo', 'redo' ]
 } )
 .then( editor => {
 	window.editor = editor;

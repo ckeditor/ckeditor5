@@ -1,21 +1,24 @@
 {
   "name": "ckeditor5-headings",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Headings feature for CKEditor 5.",
   "keywords": [],
   "dependencies": {},
   "devDependencies": {
-    "ckeditor5-dev-lint": "github:ckeditor/ckeditor5-dev-lint",
+    "@ckeditor/ckeditor5-dev-lint": "^1.0.1",
     "gulp": "^3.9.0",
     "guppy-pre-commit": "^0.3.0"
   },
   "engines": {
-    "node": ">=5.0.0",
+    "node": ">=6.0.0",
     "npm": ">=3.0.0"
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "See LICENSE.md",
-  "homepage": "",
-  "bugs": "",
-  "repository": ""
+  "homepage": "https://ckeditor5.github.io",
+  "bugs": "https://github.com/ckeditor/ckeditor5-headings/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5-headings.git"
+  }
 }

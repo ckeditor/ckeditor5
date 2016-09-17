@@ -114,12 +114,12 @@ export default class HeadingsCommand extends Command {
 				// When removing applied format.
 				if ( shouldRemove ) {
 					if ( element.name === formatId ) {
-						batch.rename( this.defaultFormat.id, element );
+						batch.rename( element, this.defaultFormat.id );
 					}
 				}
 				// When applying new format.
 				else {
-					batch.rename( formatId, element );
+					batch.rename( element, formatId );
 				}
 			}
 
