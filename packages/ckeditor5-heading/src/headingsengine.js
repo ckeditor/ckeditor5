@@ -71,7 +71,7 @@ export default class HeadingsEngine extends Feature {
 				const isHeading = formats.some( ( format ) => format.id == positionParent.name );
 
 				if ( isHeading && positionParent.name != command.defaultFormat.id && positionParent.childCount === 0 ) {
-					batch.rename( command.defaultFormat.id, positionParent );
+					batch.rename( positionParent, command.defaultFormat.id );
 				}
 			} );
 		}
