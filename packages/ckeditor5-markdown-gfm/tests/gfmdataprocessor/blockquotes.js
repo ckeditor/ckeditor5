@@ -3,177 +3,173 @@
  * For licensing, see LICENSE.md.
  */
 
-import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import { stringify, parse } from '/tests/engine/_utils/view.js';
+import { testDataProcessor as test } from '/tests/markdown-gfm/_utils/utils.js';
 
 describe( 'GFMDataProcessor', () => {
-	let dataProcessor;
-
-	beforeEach( () => {
-		dataProcessor = new MarkdownDataProcessor();
-	} );
-
 	describe( 'blockquotes', () => {
-		describe( 'toView', () => {
-			it( 'should process single blockquotes', () => {
-				const viewFragment = dataProcessor.toView( '> foo bar' );
+		it( 'should process single blockquotes', () => {
+			test(
+				'> foo bar',
 
-				expect( stringify( viewFragment ) ).to.equal( '<blockquote><p>foo bar</p></blockquote>' );
-			} );
-
-			it( 'should process nested blockquotes', () => {
-				const viewFragment = dataProcessor.toView( '> foo\n>\n> > bar\n>\n> foo\n' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<blockquote><p>foo</p><blockquote><p>bar</p></blockquote><p>foo</p></blockquote>' );
-			} );
-
-			it( 'should process list within a blockquote', () => {
-				const viewFragment = dataProcessor.toView(
-					'> A list within a blockquote:\n' +
-					'> \n' +
-					'> *	asterisk 1\n' +
-					'> *	asterisk 2\n' +
-					'> *	asterisk 3\n'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal(
-					'<blockquote>' +
-						'<p>A list within a blockquote:</p>' +
-						'<ul>' +
-							'<li>asterisk 1</li>' +
-							'<li>asterisk 2</li>' +
-							'<li>asterisk 3</li>' +
-						'</ul>' +
-					'</blockquote>'
-				);
-			} );
-
-			it( 'should process blockquotes with code inside', () => {
-				const viewFragment = dataProcessor.toView(
-					'> Example 1:\n' +
-					'>\n' +
-					'>     sub status {\n' +
-					'>         print "working";\n' +
-					'>     }\n' +
-					'>\n' +
-					'> Example 2:\n' +
-					'>\n' +
-					'>     sub status {\n' +
-					'>         return "working";\n' +
-					'>     }\n'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal(
-					'<blockquote>' +
-						'<p>Example 1:</p>' +
-						'<pre>' +
-							'<code>' +
-								'sub status {\n' +
-								'    print "working";\n' +
-								'}' +
-							'</code>' +
-						'</pre>' +
-						'<p>Example 2:</p>' +
-						'<pre>' +
-							'<code>' +
-								'sub status {\n' +
-								'    return "working";\n' +
-								'}' +
-							'</code>' +
-						'</pre>' +
-					'</blockquote>'
-				);
-			} );
+				// GitHub is rendering as:
+				//
+				// <blockquote>
+				// <p>foo bar</p>
+				// </blockquote>
+				'<blockquote><p>foo bar</p></blockquote>'
+			);
 		} );
 
-		describe( 'toData', () => {
-			let viewFragment;
+		it( 'should process nested blockquotes', () => {
+			test(
+				'> foo\n' +
+				'> \n' +
+				'> > bar\n' +
+				'> \n' +
+				'> foo',
 
-			beforeEach( () => {
-				viewFragment = new DocumentFragment();
-			} );
-
-			it( 'should process single blockquotes', () => {
-				viewFragment.appendChildren( parse( '<blockquote><p>foo bar</p></blockquote>' ) );
-
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( '> foo bar' );
-			} );
-
-			it( 'should process nested blockquotes', () => {
-				viewFragment.appendChildren( parse(
+				// GitHub is rendering as:
+				// <blockquote>
+				// <p>foo</p>
+				//
+				// <blockquote>
+				// <p>bar</p>
+				// </blockquote>
+				//
+				// <p>foo</p>
+				// </blockquote>
+				'<blockquote>' +
+					'<p>foo</p>' +
 					'<blockquote>' +
-						'<p>foo</p>' +
-						'<blockquote>' +
-							'<p>bar</p>' +
-						'</blockquote>' +
-						'<p>foo</p>' +
-					'</blockquote>'
-				) );
+						'<p>bar</p>' +
+					'</blockquote>' +
+					'<p>foo</p>' +
+				'</blockquote>'
+			);
+		} );
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal(
-					'> foo\n' +
-					'> \n' +
-					'> > bar\n' +
-					'> \n' +
-					'> foo'
-				);
-			} );
+		it( 'should process list within a blockquote', () => {
+			test(
+				'> A list within a blockquote:\n' +
+				'> \n' +
+				'> *   asterisk 1\n' +
+				'> *   asterisk 2\n' +
+				'> *   asterisk 3',
 
-			it( 'should process list within a blockquote', () => {
-				viewFragment.appendChildren( parse(
-					'<blockquote>' +
-						'<p>A list within a blockquote:</p>' +
-						'<ul>' +
-							'<li>asterisk 1</li>' +
-							'<li>asterisk 2</li>' +
-							'<li>asterisk 3</li>' +
-						'</ul>' +
-					'</blockquote>'
-				) );
+				// GitHub is rendering as:
+				// <blockquote>
+				// <p>A list within a blockquote:</p>
+				//
+				// <ul>
+				// <li>asterisk 1</li>
+				// <li>asterisk 2</li>
+				// <li>asterisk 3</li>
+				// </ul>
+				// </blockquote>
+				'<blockquote>' +
+					'<p>A list within a blockquote:</p>' +
+					'<ul>' +
+						'<li>asterisk 1</li>' +
+						'<li>asterisk 2</li>' +
+						'<li>asterisk 3</li>' +
+					'</ul>' +
+				'</blockquote>'
+			);
+		} );
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal(
-					'> A list within a blockquote:\n' +
-					'> \n' +
-					'> *   asterisk 1\n' +
-					'> *   asterisk 2\n' +
-					'> *   asterisk 3'
-				);
-			} );
+		it( 'should process blockquotes with code inside with ```', () => {
+			test(
+				'> Example 1:\n' +
+				'> \n' +
+				'> ```\n' +
+				'> code 1\n' +
+				'> ```\n' +
+				'> \n' +
+				'> Example 2:\n' +
+				'> \n' +
+				'> ```\n' +
+				'> code 2\n' +
+				'> ```',
 
-			it( 'should process blockquotes with code inside', () => {
-				viewFragment.appendChildren( parse(
-					'<blockquote>' +
-						'<p>Example 1:</p>' +
-						'<pre>' +
-							'<code>' +
-								'code' +
-							'</code>' +
-						'</pre>' +
-						'<p>Example 2:</p>' +
-						'<pre>' +
-							'<code>' +
-								'code' +
-							'</code>' +
-						'</pre>' +
-					'</blockquote>',
-					{ sameSelectionCharacters: true }
-				) );
+				// GitHub is rendering as:
+				// <blockquote>
+				// <p>Example 1:</p>
+				//
+				// <pre><code>code 1
+				// </code></pre>
+				//
+				// <p>Example 2:</p>
+				//
+				// <pre><code>code 2
+				// </code></pre>
+				// </blockquote>
+				'<blockquote>' +
+					'<p>Example 1:</p>' +
+					'<pre>' +
+						'<code>' +
+							'code 1' +
+						'</code>' +
+					'</pre>' +
+					'<p>Example 2:</p>' +
+					'<pre>' +
+						'<code>' +
+							'code 2' +
+						'</code>' +
+					'</pre>' +
+				'</blockquote>'
+			);
+		} );
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal(
-					'> Example 1:\n' +
-					'> \n' +
-					'> ```\n' +
-					'> code\n' +
-					'> ```\n' +
-					'> \n' +
-					'> Example 2:\n' +
-					'> \n' +
-					'> ```\n' +
-					'> code\n' +
-					'> ```'
-				);
-			} );
+		it( 'should process blockquotes with code inside with tabs', () => {
+			test(
+				'> Example 1:\n' +
+				'>\n' +
+				'>     code 1\n' +
+				'>\n' +
+				'> Example 2:\n' +
+				'>\n' +
+				'>     code 2\n',
+
+				// GitHub is rendering as:
+				// <blockquote>
+				// <p>Example 1:</p>
+				//
+				// <pre><code>code 1
+				// </code></pre>
+				//
+				// <p>Example 2:</p>
+				//
+				// <pre><code>code 2
+				// </code></pre>
+				// </blockquote>
+				'<blockquote>' +
+					'<p>Example 1:</p>' +
+					'<pre>' +
+						'<code>' +
+							'code 1' +
+						'</code>' +
+					'</pre>' +
+					'<p>Example 2:</p>' +
+					'<pre>' +
+						'<code>' +
+							'code 2' +
+						'</code>' +
+					'</pre>' +
+				'</blockquote>',
+
+				// When converting back to data, DataProcessor will normalize tabs to ```.
+				'> Example 1:\n' +
+				'> \n' +
+				'> ```\n' +
+				'> code 1\n' +
+				'> ```\n' +
+				'> \n' +
+				'> Example 2:\n' +
+				'> \n' +
+				'> ```\n' +
+				'> code 2\n' +
+				'> ```'
+			);
 		} );
 	} );
 } );

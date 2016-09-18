@@ -3,202 +3,289 @@
  * For licensing, see LICENSE.md.
  */
 
-import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import { stringify, parse } from '/tests/engine/_utils/view.js';
+import { testDataProcessor as test } from '/tests/markdown-gfm/_utils/utils.js';
 
 describe( 'GFMDataProcessor', () => {
-	let dataProcessor;
-
-	beforeEach( () => {
-		dataProcessor = new MarkdownDataProcessor();
-	} );
-
 	describe( 'code', () => {
-		describe( 'toView', () => {
-			it( 'should process inline code', () => {
-				const viewFragment = dataProcessor.toView( 'regular text and `inline code`' );
+		it( 'should process inline code', () => {
+			test(
+				'regular text and `inline code`',
 
-				expect( stringify( viewFragment ) ).to.equal( '<p>regular text and <code>inline code</code></p>' );
-			} );
-
-			it( 'should properly process backticks when combined', () => {
-				const viewFragment = dataProcessor.toView( '`<fake a="` content of attribute `">`' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><code><fake a="</code> content of attribute <code>"></code></p>' );
-			} );
-
-			it( 'should properly process backticks inside code spans', () => {
-				const viewFragment = dataProcessor.toView( '`` `backticks` ``' );
-
-				// This should be checked - why there is a space after `bacticks`.
-				expect( stringify( viewFragment ) ).to.equal( '<p><code>`backticks` </code></p>' );
-			} );
-
-			it( 'should process code blocks indented with tabs', () => {
-				const viewFragment = dataProcessor.toView( '	code block' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<pre><code>code block</code></pre>' );
-			} );
-
-			it( 'should process code blocks indented with spaces', () => {
-				const viewFragment = dataProcessor.toView( '    code block' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<pre><code>code block</code></pre>' );
-			} );
-
-			it( 'should process multi line code blocks indented with tabs', () => {
-				const viewFragment = dataProcessor.toView( '	first line\n	second line' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<pre><code>first line\nsecond line</code></pre>' );
-			} );
-
-			it( 'should process multi line code blocks indented with spaces', () => {
-				const viewFragment = dataProcessor.toView( '    first line\n    second line' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<pre><code>first line\nsecond line</code></pre>' );
-			} );
-
-			it( 'should process multi line code blocks with trailing spaces', () => {
-				const viewFragment = dataProcessor.toView( '	the lines in this block  \n	all contain trailing spaces  ' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<pre><code>the lines in this block  \nall contain trailing spaces  </code></pre>' );
-			} );
-
-			it( 'should process code block with language name', () => {
-				const viewFragment = dataProcessor.toView(
-					'``` js\n' +
-					'var a = \'hello\';\n' +
-					'console.log(a + \' world\');\n' +
-					'```'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal(
-					'<pre>' +
-						'<code class="lang-js">' +
-							'var a = \'hello\';\n' +
-							'console.log(a + \' world\');' +
-						'</code>' +
-					'</pre>' );
-			} );
-
-			it( 'should process code block with language name and using ~~~ as delimiter', () => {
-				const viewFragment = dataProcessor.toView(
-					'~~~ bash\n' +
-					'var a = \'hello\';\n' +
-					'console.log(a + \' world\');\n' +
-					'~~~'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal(
-					'<pre>' +
-					'<code class="lang-bash">' +
-					'var a = \'hello\';\n' +
-					'console.log(a + \' world\');' +
-					'</code>' +
-					'</pre>' );
-			} );
-
-			it( 'should process code block with language name and using ``````` as delimiter', () => {
-				const viewFragment = dataProcessor.toView(
-					'``````` js\n' +
-					'var a = \'hello\';\n' +
-					'console.log(a + \' world\');\n' +
-					'```````'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal(
-					'<pre>' +
-					'<code class="lang-js">' +
-					'var a = \'hello\';\n' +
-					'console.log(a + \' world\');' +
-					'</code>' +
-					'</pre>' );
-			} );
-
-			it( 'should process code block with language name and using ~~~~~~~~~~ as delimiter', () => {
-				const viewFragment = dataProcessor.toView(
-					'~~~~~~~~~~ js\n' +
-					'var a = \'hello\';\n' +
-					'console.log(a + \' world\');\n' +
-					'~~~~~~~~~~'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal(
-					'<pre>' +
-					'<code class="lang-js">' +
-					'var a = \'hello\';\n' +
-					'console.log(a + \' world\');' +
-					'</code>' +
-					'</pre>' );
-			} );
-
-			it( 'should process empty code block', () => {
-				const viewFragment = dataProcessor.toView(
-					'``` js\n' +
-					'```'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal(
-					'<pre>' +
-						'<code class="lang-js">' +
-						'</code>' +
-					'</pre>' );
-			} );
-
-			it( 'should process code block with empty line', () => {
-				const viewFragment = dataProcessor.toView(
-					'``` js\n\n' +
-					'```'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal(
-					'<pre>' +
-					'<code class="lang-js">' +
-					'</code>' +
-					'</pre>'
-				);
-			} );
-
-			it( 'should process nested code', () => {
-				const viewFragment = dataProcessor.toView(
-					'````` code `` code ``` `````'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal(
-					'<p><code>code `` code ``` </code></p>'
-				);
-			} );
+				// GitHub is rendering as:
+				// <p>regular text and <code>inline code</code></p>
+				'<p>regular text and <code>inline code</code></p>'
+			);
 		} );
 
-		describe( 'toData', () => {
-			let viewFragment;
+		it( 'should properly process multiple code', () => {
+			test(
+				'`this is code` and this is `too`',
 
-			beforeEach( () => {
-				viewFragment = new DocumentFragment();
-			} );
+				// GitHub is rendering as:
+				// <p><code>this is code</code> and this is <code>too</code></p>
+				'<p><code>this is code</code> and this is <code>too</code></p>'
+			);
+		} );
 
-			it( 'should process inline code', () => {
-				viewFragment.appendChildren( parse( '<p>regular text and <code>inline code</code></p>' ) );
+		it( 'should process spaces inside inline code', () => {
+			test(
+				'regular text and` inline code`',
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'regular text and `inline code`' );
-			} );
+				// GitHub is rendering as:
+				// <p>regular text and<code>inline code</code></p>
+				'<p>regular text and<code>inline code</code></p>',
 
-			it( 'should properly process code blocks', () => {
-				viewFragment.appendChildren( parse( '<pre><code>code block</code></pre>' ) );
+				// When converting back it will be normalized and spaces
+				// at the beginning of inline code will be removed.
+				'regular text and`inline code`'
+			);
+		} );
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( '```\ncode block\n```' );
-			} );
+		it( 'should properly process backticks inside code spans #1', () => {
+			test(
+				'`` `backticks` ``',
 
-			it( 'should process code block with language name', () => {
-				viewFragment.appendChildren( parse( '<pre><code class="lang-js">code block</code></pre>' ) );
+				// GitHub is rendering as:
+				// <p><code>`backticks`</code></p>
+				'<p><code>`backticks`</code></p>'
+			);
+		} );
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal(
-					'``` js\n' +
-					'code block\n' +
-					'```'
-				);
-			} );
+		it( 'should properly process backticks inside code spans #2', () => {
+			test(
+				'`` some `backticks` inside ``',
+
+				// GitHub is rendering as:
+				// <p><code>some `backticks` inside</code></p>
+				'<p><code>some `backticks` inside</code></p>'
+			);
+		} );
+
+		it( 'should process code blocks indented with tabs', () => {
+			test(
+				'	code block',
+
+				// GitHub is rendering as:
+				// <pre><code>code block
+				// </code></pre>
+				'<pre><code>code block</code></pre>',
+
+				// When converting back tabs are normalized to ```.
+				'```\n' +
+				'code block\n' +
+				'```'
+			);
+		} );
+
+		it( 'should process code blocks indented with spaces', () => {
+			test(
+				'    code block',
+
+				// GitHub is rendering as:
+				// <pre><code>code block
+				// </code></pre>
+
+				'<pre><code>code block</code></pre>',
+
+				// When converting back tabs are normalized to ```.
+
+				'```\n' +
+				'code block\n' +
+				'```'
+			);
+		} );
+
+		it( 'should process multi line code blocks indented with tabs', () => {
+			test(
+				'	first line\n' +
+				'	second line',
+
+				// GitHub is rendering as:
+				// <pre><code>first line
+				// second line
+				// </code></pre>
+
+				'<pre><code>first line\n' +
+				'second line</code></pre>',
+
+				// When converting back tabs are normalized to ```.
+
+				'```\n' +
+				'first line\n' +
+				'second line\n' +
+				'```'
+			);
+		} );
+
+		it( 'should process multi line code blocks indented with spaces', () => {
+			test(
+				'    first line\n' +
+				'    second line',
+
+				// GitHub is rendering as:
+				// <pre><code>first line
+				// second line
+				// </code></pre>
+
+				'<pre><code>first line\n' +
+				'second line</code></pre>',
+
+				// When converting back spaces are normalized to ```.
+
+				'```\n' +
+				'first line\n' +
+				'second line\n' +
+				'```'
+			);
+		} );
+
+		it( 'should process multi line code blocks with trailing spaces', () => {
+			test(
+				'	the lines in this block  \n' +
+				'	all contain trailing spaces  ',
+
+				// GitHub is rendering as:
+				// <pre><code>the lines in this block
+				// all contain trailing spaces
+				// </code></pre>
+
+				'<pre><code>the lines in this block  \n' +
+				'all contain trailing spaces  </code></pre>',
+
+				// When converting back tabs are normalized to ```.
+
+				'```\n' +
+				'the lines in this block  \n' +
+				'all contain trailing spaces  \n' +
+				'```'
+			);
+		} );
+
+		it( 'should process code block with language name', () => {
+			test(
+				'``` js\n' +
+				'var a = \'hello\';\n' +
+				'console.log(a + \' world\');\n' +
+				'```',
+
+				// GitHub is rendering as special html with syntax highlighting.
+				// We will need to handle this separately by some feature.
+
+				'<pre><code class="lang-js">var a = \'hello\';\n' +
+				'console.log(a + \' world\');</code></pre>'
+			);
+		} );
+
+		it( 'should process code block with language name and using ~~~ as delimiter', () => {
+			test(
+				'~~~ bash\n' +
+				'#!/bin/bash\n' +
+				'~~~',
+
+				// GitHub is rendering as special html with syntax highlighting.
+				// We will need to handle this separately by some feature.
+
+				'<pre><code class="lang-bash">#!/bin/bash</code></pre>',
+
+				// When converting back ~~~ are normalized to ```.
+
+				'``` bash\n' +
+				'#!/bin/bash\n' +
+				'```'
+			);
+		} );
+
+		it( 'should process code block with language name and using ``````` as delimiter', () => {
+			test(
+				'``````` js\n' +
+				'var a = \'hello\';\n' +
+				'console.log(a + \' world\');\n' +
+				'```````',
+
+				// GitHub is rendering as special html with syntax highlighting.
+				// We will need to handle this separately by some feature.
+
+				'<pre><code class="lang-js">var a = \'hello\';\n' +
+				'console.log(a + \' world\');</code></pre>',
+
+				// When converting back ``````` are normalized to ```.
+
+				'``` js\n' +
+				'var a = \'hello\';\n' +
+				'console.log(a + \' world\');\n' +
+				'```'
+			);
+		} );
+
+		it( 'should process code block with language name and using ~~~~~~~~~~ as delimiter', () => {
+			test(
+				'~~~~~~~~~~ js\n' +
+				'var a = \'hello\';\n' +
+				'console.log(a + \' world\');\n' +
+				'~~~~~~~~~~',
+
+				// GitHub is rendering as special html with syntax highlighting.
+				// We will need to handle this separately by some feature.
+
+				'<pre><code class="lang-js">var a = \'hello\';\n' +
+				'console.log(a + \' world\');</code></pre>',
+
+				// When converting back ~~~~~~~~~~ are normalized to ```.
+
+				'``` js\n' +
+				'var a = \'hello\';\n' +
+				'console.log(a + \' world\');\n' +
+				'```'
+			);
+		} );
+
+		it( 'should process empty code block', () => {
+			test(
+				'``` js\n' +
+				'```',
+
+				// GitHub is rendering as special html with syntax highlighting.
+				// We will need to handle this separately by some feature.
+
+				'<pre><code class="lang-js"></code></pre>',
+
+				// When converting back, empty code blocks will be removed.
+				// This might be an issue when switching from source to editor
+				// but changing this cannot be done in to-markdown converters.
+				''
+			);
+		} );
+
+		it( 'should process code block with empty line', () => {
+			test(
+				'``` js\n' +
+				'\n' +
+				'```',
+
+				// GitHub is rendering as special html with syntax highlighting.
+				// We will need to handle this separately by some feature.
+
+				'<pre><code class="lang-js"></code></pre>',
+
+				// When converting back, empty code blocks will be removed.
+				// This might be an issue when switching from source to editor
+				// but changing this cannot be done in to-markdown converters.
+				''
+			);
+		} );
+
+		it( 'should process nested code', () => {
+			test(
+				'````` code `` code ``` `````',
+
+				// GitHub is rendering as:
+				// <p><code>code `` code ```</code></p>
+
+				'<p><code>code `` code ```</code></p>',
+
+				// When converting back ````` will be normalized to ``.
+				'`` code `` code ``` ``'
+			);
 		} );
 	} );
 } );

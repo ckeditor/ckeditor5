@@ -3,113 +3,124 @@
  * For licensing, see LICENSE.md.
  */
 
-import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import { stringify, parse } from '/tests/engine/_utils/view.js';
+import { testDataProcessor as test } from '/tests/markdown-gfm/_utils/utils.js';
 
 describe( 'GFMDataProcessor', () => {
-	let dataProcessor;
-
-	beforeEach( () => {
-		dataProcessor = new MarkdownDataProcessor();
-	} );
-
 	describe( 'paragraphs', () => {
-		describe( 'toView', () => {
-			it( 'single line', () => {
-				const viewFragment = dataProcessor.toView( 'single line paragraph' );
+		it( 'single line', () => {
+			test(
+				'single line paragraph',
 
-				expect( stringify( viewFragment ) ).to.equal( '<p>single line paragraph</p>' );
-			} );
-
-			it( 'multiline', () => {
-				const viewFragment = dataProcessor.toView( 'first\nsecond\nthird' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>first<br></br>second<br></br>third</p>' );
-			} );
-
-			it( 'with header after #1', () => {
-				const viewFragment = dataProcessor.toView( 'single line\n# header' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>single line</p><h1 id="header">header</h1>' );
-			} );
-
-			it( 'with header after #2', () => {
-				const viewFragment = dataProcessor.toView( 'single line\nheader\n===' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>single line</p><h1 id="header">header</h1>' );
-			} );
-
-			it( 'with blockquote after', () => {
-				const viewFragment = dataProcessor.toView( 'single line\n> quote' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>single line</p><blockquote><p>quote</p></blockquote>' );
-			} );
-
-			it( 'with list after', () => {
-				const viewFragment = dataProcessor.toView( 'single line\n* item' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>single line</p><ul><li>item</li></ul>' );
-			} );
-
-			it( 'with div element after', () => {
-				const viewFragment = dataProcessor.toView( 'single line\n<div>div element</div>' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>single line</p><div>div element</div>' );
-			} );
+				'<p>single line paragraph</p>'
+			);
 		} );
 
-		describe( 'toData', () => {
-			let viewFragment;
+		it( 'multiline', () => {
+			test(
+				'first\n' +
+				'second\n' +
+				'third',
 
-			beforeEach( () => {
-				viewFragment = new DocumentFragment();
-			} );
+				// GitHub is rendering as:
+				// <p>first<br>
+				// second<br>
+				// third</p>
+				'<p>first<br></br>second<br></br>third</p>'
+			);
+		} );
 
-			it( 'should process single line paragraph', () => {
-				viewFragment.appendChildren( parse( '<p>single line paragraph</p>' ) );
+		it( 'with header after #1', () => {
+			test(
+				'single line\n' +
+				'# header',
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'single line paragraph' );
-			} );
+				// GitHub is rendering as:
+				// <p>single line</p>
+				//
+				//<h1>header</h1>
+				'<p>single line</p><h1 id="header">header</h1>',
 
-			it( 'should process multi line paragraph', () => {
-				viewFragment.appendChildren( parse( '<p>first<br></br>second<br></br>third</p>' ) );
+				// To-markdown always put 2 empty lines after paragraph.
+				'single line\n\n' +
+				'# header'
+			);
+		} );
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'first\nsecond\nthird' );
-			} );
+		it( 'with header after #2', () => {
+			test(
+				'single line\n' +
+				'header\n' +
+				'===',
 
-			it( 'should process multi line paragraph with header after it', () => {
-				viewFragment.appendChildren( parse( '<p>single line</p><h1 id="header">header</h1>' ) );
+				// GitHub is rendering as:
+				// <p>single line</p>
+				//
+				//<h1>header</h1>
+				'<p>single line</p><h1 id="header">header</h1>',
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'single line\n\n# header' );
-			} );
+				// To-markdown always put 2 empty lines after paragraph and normalize header to #.
+				'single line\n' +
+				'\n' +
+				'# header'
+			);
+		} );
 
-			it( 'should process multi line paragraph with blockquote after it', () => {
-				viewFragment.appendChildren( parse( '<p>single line</p><blockquote><p>quote</p></blockquote>' ) );
+		it( 'with blockquote after', () => {
+			test(
+				'single line' +
+				'\n> quote',
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal(
-					'single line\n\n' +
-					'> quote'
-				);
-			} );
+				// GitHub is rendereing as:
+				// <p>single line</p>
+				//
+				// <blockquote>
+				// <p>quote</p>
+				// </blockquote>
+				'<p>single line</p><blockquote><p>quote</p></blockquote>',
 
-			it( 'should process paragraph with list after', () => {
-				viewFragment.appendChildren( parse( '<p>single line</p><ul><li>item</li></ul>' ) );
+				// To-markdown always put 2 empty lines after paragraph.
+				'single line\n' +
+				'\n' +
+				'> quote'
+			);
+		} );
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal(
-					'single line\n\n' +
-					'*   item'
-				);
-			} );
+		it( 'with list after', () => {
+			test(
+				'single line\n' +
+				'* item',
 
-			it( 'should process paragraph with div after', () => {
-				viewFragment.appendChildren( parse( '<p>single line</p><div>div element</div>' ) );
+				// GitHub is rendering as:
+				// <p>single line</p>
+				//
+				// <ul>
+				// <li>item</li>
+				// </ul>
+				'<p>single line</p><ul><li>item</li></ul>',
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal(
-					'single line\n\n' +
-					'<div>div element</div>'
-				);
-			} );
+				// To-markdown always put 2 empty lines after paragraph.
+				'single line\n' +
+				'\n' +
+				'*   item'
+			);
+		} );
+
+		it( 'with div element after', () => {
+			test(
+				'single line\n' +
+				'<div>div element</div>',
+
+				// GitHub is rendering as:
+				// <p>single line</p>
+				//
+				// <div>div element</div>
+				'<p>single line</p><div>div element</div>',
+
+				// To-markdown always put 2 empty lines after paragraph.
+				'single line\n' +
+				'\n' +
+				'<div>div element</div>'
+			);
 		} );
 	} );
 } );

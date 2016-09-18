@@ -92,7 +92,7 @@ Renderer.prototype.em = function( text ) {
 };
 
 Renderer.prototype.codespan = function( text ) {
-	return `<code>${ text }</code>`;
+	return `<code>${ text.trim() }</code>`;
 };
 
 Renderer.prototype.br = function() {

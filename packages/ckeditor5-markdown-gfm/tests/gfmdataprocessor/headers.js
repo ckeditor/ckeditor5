@@ -3,116 +3,109 @@
  * For licensing, see LICENSE.md.
  */
 
-import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import { stringify, parse } from '/tests/engine/_utils/view.js';
+import { testDataProcessor as test } from '/tests/markdown-gfm/_utils/utils.js';
 
 describe( 'GFMDataProcessor', () => {
-	let dataProcessor;
-
-	beforeEach( () => {
-		dataProcessor = new MarkdownDataProcessor();
-	} );
-
 	describe( 'headers', () => {
-		describe( 'toView', () => {
-			it( 'should process level 1 header #1', () => {
-				const viewFragment = dataProcessor.toView( '# Level 1' );
+		it( 'should process level 1 header #1', () => {
+			test(
+				'# Level 1',
 
-				expect( stringify( viewFragment ) ).to.equal( '<h1 id="level-1">Level 1</h1>' );
-			} );
-
-			it( 'should process level 1 header #2', () => {
-				const viewFragment = dataProcessor.toView( 'Level 1\n===' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<h1 id="level-1">Level 1</h1>' );
-			} );
-
-			it( 'should process level 2 header #1', () => {
-				const viewFragment = dataProcessor.toView( '## Level 2' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<h2 id="level-2">Level 2</h2>' );
-			} );
-
-			it( 'should process level 2 header #2', () => {
-				const viewFragment = dataProcessor.toView( 'Level 2\n---' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<h2 id="level-2">Level 2</h2>' );
-			} );
-
-			it( 'should process level 3 header', () => {
-				const viewFragment = dataProcessor.toView( '### Level 3' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<h3 id="level-3">Level 3</h3>' );
-			} );
-
-			it( 'should process level 4 header', () => {
-				const viewFragment = dataProcessor.toView( '#### Level 4' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<h4 id="level-4">Level 4</h4>' );
-			} );
-
-			it( 'should process level 5 header', () => {
-				const viewFragment = dataProcessor.toView( '##### Level 5' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<h5 id="level-5">Level 5</h5>' );
-			} );
-
-			it( 'should process level 6 header', () => {
-				const viewFragment = dataProcessor.toView( '###### Level 6' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<h6 id="level-6">Level 6</h6>' );
-			} );
-
-			it( 'should create header when more spaces before text', () => {
-				const viewFragment = dataProcessor.toView( '#      Level 1' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<h1 id="level-1">Level 1</h1>' );
-			} );
+				// GitHub is rendering as:
+				// <h1>Level 1</h1>
+				'<h1 id="level-1">Level 1</h1>'
+			);
 		} );
 
-		describe( 'toData', () => {
-			let viewFragment;
+		it( 'should process level 1 header #2', () => {
+			test(
+				'Level 1\n' +
+				'===',
 
-			beforeEach( () => {
-				viewFragment = new DocumentFragment();
-			} );
+				// GitHub is rendering as:
+				// <h1>Level 1</h1>
+				'<h1 id="level-1">Level 1</h1>',
 
-			it( 'should process level 1 header', () => {
-				viewFragment.appendChildren( parse( '<h1 id="level-1">Level 1</h1>' ) );
+				// When converting back it will be normalized to # representation.
+				'# Level 1'
+			);
+		} );
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( '# Level 1' );
-			} );
+		it( 'should process level 2 header #1', () => {
+			test(
+				'## Level 2',
 
-			it( 'should process level 2 header', () => {
-				viewFragment.appendChildren( parse( '<h2 id="level-2">Level 2</h2>' ) );
+				// GitHub is rendering as:
+				// <h2>Level 2</h2>
+				'<h2 id="level-2">Level 2</h2>'
+			);
+		} );
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( '## Level 2' );
-			} );
+		it( 'should process level 2 header #2', () => {
+			test(
+				'Level 2\n' +
+				'---',
 
-			it( 'should process level 3 header', () => {
-				viewFragment.appendChildren( parse( '<h3 id="level-3">Level 3</h3>' ) );
+				// GitHub is rendering as:
+				// <h2>Level 2</h2>
+				'<h2 id="level-2">Level 2</h2>',
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( '### Level 3' );
-			} );
+				// When converting back it will be normalized to ## representation.
+				'## Level 2'
+			);
+		} );
 
-			it( 'should process level 4 header', () => {
-				viewFragment.appendChildren( parse( '<h4 id="level-4">Level 4</h4>' ) );
+		it( 'should process level 3 header', () => {
+			test(
+				'### Level 3',
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( '#### Level 4' );
-			} );
+				// GitHub is rendering as:
+				// <h3>Level 3</h3>
+				'<h3 id="level-3">Level 3</h3>'
+			);
+		} );
 
-			it( 'should process level 5 header', () => {
-				viewFragment.appendChildren( parse( '<h5 id="level-5">Level 5</h5>' ) );
+		it( 'should process level 4 header', () => {
+			test(
+				'#### Level 4',
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( '##### Level 5' );
-			} );
+				// GitHub is rendering as:
+				// <h4>Level 4</h4>
+				'<h4 id="level-4">Level 4</h4>'
+			);
+		} );
 
-			it( 'should process level 6 header', () => {
-				viewFragment.appendChildren( parse( '<h6 id="level-6">Level 6</h6>' ) );
+		it( 'should process level 5 header', () => {
+			test(
+				'##### Level 5',
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( '###### Level 6' );
-			} );
+				// GitHub is rendering as:
+				// <h5>Level 5</h5>
+				'<h5 id="level-5">Level 5</h5>'
+			);
+		} );
+
+		it( 'should process level 6 header', () => {
+			test(
+				'###### Level 6',
+
+				// GitHub is rendering as:
+				// <h6>Level 6</h6>
+				'<h6 id="level-6">Level 6</h6>'
+			);
+		} );
+
+		it( 'should create header when more spaces before text', () => {
+			test(
+				'#      Level 1',
+
+				// GitHub is rendering as:
+				// <h1>Level 6</h1>
+				'<h1 id="level-1">Level 1</h1>',
+
+				// When converting back it will be normalized to # Level 1.
+				'# Level 1'
+			);
 		} );
 	} );
 } );

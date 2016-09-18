@@ -3,47 +3,84 @@
  * For licensing, see LICENSE.md.
  */
 
-import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
-import { stringify } from '/tests/engine/_utils/view.js';
+import { testDataProcessor as test } from '/tests/markdown-gfm/_utils/utils.js';
 
 describe( 'GFMDataProcessor', () => {
-	let dataProcessor;
-
-	beforeEach( () => {
-		dataProcessor = new MarkdownDataProcessor();
-	} );
-
 	describe( 'tabs', () => {
-		describe( 'toView', () => {
-			it( 'should process list item with tabs', () => {
-				const viewFragment = dataProcessor.toView( '+	this is a list item indented with tabs' );
+		it( 'should process list item with tabs', () => {
+			test(
+				'+	this is a list item indented with tabs',
 
-				expect( stringify( viewFragment ) ).to.equal( '<ul><li>this is a list item indented with tabs</li></ul>' );
-			} );
+				// GitHub will render it as (notice two spaces at the beginning of the list item):
+				// <ul>
+				// <li>  this is a list item indented with tabs</li>
+				// </ul>
+				'<ul>' +
+				'<li>this is a list item indented with tabs</li>' +
+				'</ul>',
 
-			it( 'should process list item with spaces', () => {
-				const viewFragment = dataProcessor.toView( '+   this is a list item indented with spaces' );
+				// After converting back list will be normalized to *.
+				'*   this is a list item indented with tabs'
+			);
+		} );
 
-				expect( stringify( viewFragment ) ).to.equal( '<ul><li>this is a list item indented with spaces</li></ul>' );
-			} );
+		it( 'should process list item with spaces', () => {
+			test(
+				'+   this is a list item indented with spaces',
 
-			it( 'should process code block indented by tab', () => {
-				const viewFragment = dataProcessor.toView( '	this code block is indented by one tab' );
+				// GitHub will render it as (notice two spaces at the beginning of the list item):
+				// <ul>
+				// <li>  this is a list item indented with spaces</li>
+				// </ul>
+				'<ul>' +
+				'<li>this is a list item indented with spaces</li>' +
+				'</ul>',
 
-				expect( stringify( viewFragment ) ).to.equal( '<pre><code>this code block is indented by one tab</code></pre>' );
-			} );
+				// After converting back list will be normalized to *.
+				'*   this is a list item indented with spaces'
+			);
+		} );
 
-			it( 'should process code block indented by two tabs', () => {
-				const viewFragment = dataProcessor.toView( '		this code block is indented by two tabs' );
+		it( 'should process code block indented by tab', () => {
+			test(
+				'	this code block is indented by one tab',
 
-				expect( stringify( viewFragment ) ).to.equal( '<pre><code>    this code block is indented by two tabs</code></pre>' );
-			} );
+				'<pre><code>this code block is indented by one tab</code></pre>',
 
-			it( 'should process list items indented with tabs - code block', () => {
-				const viewFragment = dataProcessor.toView( '	+	list item\n		next line' );
+				// After converting back code block will be normalized to ``` representation.
+				'```\n' +
+				'this code block is indented by one tab\n' +
+				'```'
+			);
+		} );
 
-				expect( stringify( viewFragment ) ).to.equal( '<pre><code>+    list item\n    next line</code></pre>' );
-			} );
+		it( 'should process code block indented by two tabs', () => {
+			test(
+				'		this code block is indented by two tabs',
+
+				'<pre><code>    this code block is indented by two tabs</code></pre>',
+
+				// After converting back code block will be normalized to ``` representation.
+				'```\n' +
+				'    this code block is indented by two tabs\n' +
+				'```'
+			);
+		} );
+
+		it( 'should process list items indented with tabs as code block', () => {
+			test(
+				'	+	list item\n' +
+				'	next line',
+
+				'<pre><code>+    list item\n' +
+				'next line</code></pre>',
+
+				// After converting back code block will be normalized to ``` representation.
+				'```\n' +
+				'+    list item\n' +
+				'next line\n' +
+				'```'
+			);
 		} );
 	} );
 } );

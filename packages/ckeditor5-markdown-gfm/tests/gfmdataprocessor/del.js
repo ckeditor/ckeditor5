@@ -3,50 +3,28 @@
  * For licensing, see LICENSE.md.
  */
 
-import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import { stringify, parse } from '/tests/engine/_utils/view.js';
+import { testDataProcessor as test } from '/tests/markdown-gfm/_utils/utils.js';
 
 describe( 'GFMDataProcessor', () => {
-	let dataProcessor;
-
-	beforeEach( () => {
-		dataProcessor = new MarkdownDataProcessor();
-	} );
-
 	describe( 'del', () => {
-		describe( 'toView', () => {
-			it( 'should process deleted text', () => {
-				const viewFragment = dataProcessor.toView( '~~deleted~~' );
+		it( 'should process deleted text', () => {
+			test(
+				'~~deleted~~',
 
-				expect( stringify( viewFragment ) ).to.equal( '<p><del>deleted</del></p>' );
-			} );
-
-			it( 'should process deleted inside text', () => {
-				const viewFragment = dataProcessor.toView( 'This is ~~deleted content~~.' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>This is <del>deleted content</del>.</p>' );
-			} );
+				// GitHub is rendering as:
+				// <p><del>deleted</del></p>
+				'<p><del>deleted</del></p>'
+			);
 		} );
 
-		describe( 'toData', () => {
-			let viewFragment;
+		it( 'should process deleted inside text', () => {
+			test(
+				'This is ~~deleted content~~.',
 
-			beforeEach( () => {
-				viewFragment = new DocumentFragment();
-			} );
-
-			it( 'should process deleted text', () => {
-				viewFragment.appendChildren( parse( '<p><del>deleted</del></p>' ) );
-
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( '~~deleted~~' );
-			} );
-
-			it( 'should process deleted inside text', () => {
-				viewFragment.appendChildren( parse( '<p>This is <del>deleted content</del>.</p>' ) );
-
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'This is ~~deleted content~~.' );
-			} );
+				// GitHub is rendering as:
+				// <p>This is <del>deleted content</del>.</p>
+				'<p>This is <del>deleted content</del>.</p>'
+			);
 		} );
 	} );
 } );

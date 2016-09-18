@@ -3,422 +3,426 @@
  * For licensing, see LICENSE.md.
  */
 
-import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import { stringify, parse } from '/tests/engine/_utils/view.js';
+import { testDataProcessor as test } from '/tests/markdown-gfm/_utils/utils.js';
 
 describe( 'GFMDataProcessor', () => {
-	let dataProcessor;
-
-	beforeEach( () => {
-		dataProcessor = new MarkdownDataProcessor();
-	} );
-
 	describe( 'links', () => {
-		describe( 'toView', () => {
-			it( 'should autolink', () => {
-				const viewFragment = dataProcessor.toView( 'Link: <http://example.com/>.' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>Link: <a href="http://example.com/">http://example.com/</a>.</p>' );
-			} );
-
-			it( 'should autolink #2', () => {
-				const viewFragment = dataProcessor.toView( 'Link: http://example.com/.' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>Link: <a href="http://example.com/">http://example.com/</a>.</p>' );
-			} );
-
-			it( 'should autolink with params', () => {
-				const viewFragment = dataProcessor.toView( 'Link: <http://example.com/?foo=1&bar=2>.' );
-
-				expect( stringify( viewFragment ) ).to.equal(
-					'<p>Link: <a href="http://example.com/?foo=1&bar=2">http://example.com/?foo=1&bar=2</a>.</p>'
-				);
-			} );
-
-			it( 'should autolink inside list', () => {
-				const viewFragment = dataProcessor.toView( '* <http://example.com/>' );
-
-				expect( stringify( viewFragment ) ).to.equal(
-					'<ul>' +
-						'<li><a href="http://example.com/">http://example.com/</a></li>' +
-					'</ul>'
-				);
-			} );
-
-			it( 'should autolink inside blockquote', () => {
-				const viewFragment = dataProcessor.toView( '> Blockquoted: <http://example.com/>' );
-
-				expect( stringify( viewFragment ) ).to.equal(
-					'<blockquote>' +
-						'<p>Blockquoted: <a href="http://example.com/">http://example.com/</a></p>' +
-					'</blockquote>'
-				);
-			} );
-
-			it( 'should not autolink inside inline code', () => {
-				const viewFragment = dataProcessor.toView( '`<http://example.com/>`' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><code><http://example.com/></code></p>' );
-			} );
-
-			it( 'should not autolink inside code block', () => {
-				const viewFragment = dataProcessor.toView( '	<http://example.com/>' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<pre><code><http://example.com/></code></pre>' );
-			} );
-
-			it( 'should not process already linked #1', () => {
-				const viewFragment = dataProcessor.toView( 'Already linked: <a href="http://example.com/">http://example.com/</a>' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>Already linked: <a href="http://example.com/">http://example.com/</a></p>' );
-			} );
-
-			it( 'should not process already linked #2', () => {
-				const viewFragment = dataProcessor.toView( 'Already linked: [http://example.com/](http://example.com/)' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>Already linked: <a href="http://example.com/">http://example.com/</a></p>' );
-			} );
-
-			it( 'should not process already linked #3', () => {
-				const viewFragment = dataProcessor.toView( 'Already linked: <a href="http://example.com/">**http://example.com/**</a>' );
-
-				expect( stringify( viewFragment ) ).to.equal(
-					'<p>Already linked: <a href="http://example.com/"><strong>http://example.com/</strong></a></p>'
-				);
-			} );
-
-			it( 'should process inline links', () => {
-				const viewFragment = dataProcessor.toView( '[URL](/url/)' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><a href="/url/">URL</a></p>' );
-			} );
-
-			it( 'should process inline links with title', () => {
-				const viewFragment = dataProcessor.toView( '[URL and title](/url/ "title")' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><a href="/url/" title="title">URL and title</a></p>' );
-			} );
-
-			it( 'should process inline links with title preceded by two spaces', () => {
-				const viewFragment = dataProcessor.toView( '[URL and title](/url/  "title preceded by two spaces")' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><a href="/url/" title="title preceded by two spaces">URL and title</a></p>' );
-			} );
-
-			it( 'should process inline links with title preceded by tab', () => {
-				const viewFragment = dataProcessor.toView( '[URL and title](/url/	"title preceded by tab")' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><a href="/url/" title="title preceded by tab">URL and title</a></p>' );
-			} );
-
-			it( 'should process inline links with title that has spaces afterwards', () => {
-				const viewFragment = dataProcessor.toView( '[URL and title](/url/ "title has spaces afterward"  )' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><a href="/url/" title="title has spaces afterward">URL and title</a></p>' );
-			} );
-
-			it( 'should process inline links with spaces in URL', () => {
-				const viewFragment = dataProcessor.toView( '[URL and title]( /url/has space )' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><a href="/url/has space">URL and title</a></p>' );
-			} );
-
-			it( 'should process inline links with titles and spaces in URL', () => {
-				const viewFragment = dataProcessor.toView( '[URL and title]( /url/has space/ "url has space and title")' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><a href="/url/has space/" title="url has space and title">URL and title</a></p>' );
-			} );
-
-			it( 'should process empty link', () => {
-				const viewFragment = dataProcessor.toView( '[Empty]()' );
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><a href="">Empty</a></p>' );
-			} );
-
-			it( 'should process reference links', () => {
-				const viewFragment = dataProcessor.toView(
-					'Foo [bar] [1].\n' +
-					'[1]: /url/  "Title"'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>Foo <a href="/url/" title="Title">bar</a>.</p>' );
-			} );
-
-			it( 'should process reference links - without space', () => {
-				const viewFragment = dataProcessor.toView(
-					'Foo [bar][1].\n' +
-					'[1]: /url/  "Title"'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>Foo <a href="/url/" title="Title">bar</a>.</p>' );
-			} );
-
-			it( 'should process reference links - with newline', () => {
-				const viewFragment = dataProcessor.toView(
-					'Foo [bar]\n[1].\n' +
-					'[1]: /url/  "Title"'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>Foo <a href="/url/" title="Title">bar</a>.</p>' );
-			} );
-
-			it( 'should process reference links - with embedded brackets', () => {
-				const viewFragment = dataProcessor.toView(
-					'With [embedded [brackets]] [b].\n' +
-					'[b]: /url/'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>With <a href="/url/">embedded [brackets]</a>.</p>' );
-			} );
-
-			it( 'should process reference links - with reference indented once', () => {
-				const viewFragment = dataProcessor.toView(
-					'Indented [once][].\n' +
-					' [once]: /url'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>Indented <a href="/url">once</a>.</p>' );
-			} );
-
-			it( 'should process reference links - with reference indented twice', () => {
-				const viewFragment = dataProcessor.toView(
-					'Indented [twice][].\n' +
-					'  [twice]: /url'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>Indented <a href="/url">twice</a>.</p>' );
-			} );
-
-			it( 'should process reference links - with reference indented trice', () => {
-				const viewFragment = dataProcessor.toView(
-					'Indented [trice][].\n' +
-					'   [trice]: /url'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>Indented <a href="/url">trice</a>.</p>' );
-			} );
-
-			it( 'should NOT process reference links - with reference indented four times', () => {
-				const viewFragment = dataProcessor.toView(
-					'Indented [four][] times.\n' +
-					'    [four]: /url'
-				);
-
-				// GitHub renders it as:
-				// <p>Indented [four][] times.<br>[four]: /url</p>
-				expect( stringify( viewFragment ) ).to.equal( '<p>Indented [four][] times.</p><pre><code>[four]: /url</code></pre>' );
-			} );
-
-			it( 'should process reference links when title and reference are same #1', () => {
-				const viewFragment = dataProcessor.toView(
-					'[this] [this]\n' +
-					'[this]: foo'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><a href="foo">this</a></p>' );
-			} );
-
-			it( 'should process reference links when title and reference are same #2', () => {
-				const viewFragment = dataProcessor.toView(
-					'[this][this]\n' +
-					'[this]: foo'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><a href="foo">this</a></p>' );
-			} );
-
-			it( 'should process reference links when only title is provided and is same as reference #1', () => {
-				const viewFragment = dataProcessor.toView(
-					'[this] []\n' +
-					'[this]: foo'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><a href="foo">this</a></p>' );
-			} );
-
-			it( 'should process reference links when only title is provided and is same as reference #2', () => {
-				const viewFragment = dataProcessor.toView(
-					'[this][]\n' +
-					'[this]: foo'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><a href="foo">this</a></p>' );
-			} );
-
-			it( 'should process reference links when only title is provided and is same as reference #3', () => {
-				const viewFragment = dataProcessor.toView(
-					'[this]\n' +
-					'[this]: foo'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><a href="foo">this</a></p>' );
-			} );
-
-			it( 'should not process reference links when reference is not found #1', () => {
-				const viewFragment = dataProcessor.toView(
-					'[this] []'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>[this] []</p>' );
-			} );
-
-			it( 'should not process reference links when reference is not found #2', () => {
-				const viewFragment = dataProcessor.toView(
-					'[this][]'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>[this][]</p>' );
-			} );
-
-			it( 'should not process reference links when reference is not found #2', () => {
-				const viewFragment = dataProcessor.toView(
-					'[this]'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>[this]</p>' );
-			} );
-
-			it( 'should process reference links nested in brackets #1', () => {
-				const viewFragment = dataProcessor.toView(
-					'[a reference inside [this][]]\n' +
-					'[this]: foo'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>[a reference inside <a href="foo">this</a>]</p>' );
-			} );
-
-			it( 'should process reference links nested in brackets #2', () => {
-				const viewFragment = dataProcessor.toView(
-					'[a reference inside [this]]\n' +
-					'[this]: foo'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>[a reference inside <a href="foo">this</a>]</p>' );
-			} );
-
-			it( 'should not process reference links when title is same as reference but reference is different', () => {
-				const viewFragment = dataProcessor.toView(
-					'[this](/something/else/)\n' +
-					'[this]: foo'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><a href="/something/else/">this</a></p>' );
-			} );
-
-			it( 'should not process reference links suppressed by backslashes', () => {
-				const viewFragment = dataProcessor.toView(
-					'Suppress \\[this] and [this\\].\n' +
-					'[this]: foo'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>Suppress [this] and [this].</p>' );
-			} );
-
-			it( 'should process reference links when used across multiple lines #1', () => {
-				const viewFragment = dataProcessor.toView(
-					'This is [multiline\nreference]\n' +
-					'[multiline reference]: foo'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>This is <a href="foo">multiline<br></br>reference</a></p>' );
-			} );
-
-			it( 'should process reference links when used across multiple lines #2', () => {
-				const viewFragment = dataProcessor.toView(
-					'This is [multiline \nreference]\n' +
-					'[multiline reference]: foo'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p>This is <a href="foo">multiline<br></br>reference</a></p>' );
-			} );
-
-			it( 'should process reference links case-insensitve', () => {
-				const viewFragment = dataProcessor.toView(
-					'[hi]\n' +
-					'[HI]: /url'
-				);
-
-				expect( stringify( viewFragment ) ).to.equal( '<p><a href="/url">hi</a></p>' );
-			} );
+		it( 'should autolink', () => {
+			test(
+				'Link: <http://example.com/>.',
+				'<p>Link: <a href="http://example.com/">http://example.com/</a>.</p>',
+
+				// When converting back it will be represented as standard markdown link.
+				'Link: [http://example.com/](http://example.com/).'
+			);
 		} );
 
-		describe( 'toData', () => {
-			let viewFragment;
+		it( 'should autolink #2', () => {
+			test(
+				'Link: http://example.com/.',
+				'<p>Link: <a href="http://example.com/">http://example.com/</a>.</p>',
 
-			beforeEach( () => {
-				viewFragment = new DocumentFragment();
-			} );
+				// When converting back it will be represented as standard markdown link.
+				'Link: [http://example.com/](http://example.com/).'
+			);
+		} );
 
-			it( 'should process links', () => {
-				viewFragment.appendChildren( parse( '<p>Link: <a href="http://example.com/">http://example.com/</a>.</p>' ) );
+		it( 'should autolink with params', () => {
+			test(
+				'Link: <http://example.com/?foo=1&bar=2>.',
+				'<p>Link: <a href="http://example.com/?foo=1&bar=2">http://example.com/?foo=1&bar=2</a>.</p>',
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'Link: [http://example.com/](http://example.com/).' );
-			} );
+				// When converting back it will be represented as standard markdown link.
+				'Link: [http://example.com/?foo=1&bar=2](http://example.com/?foo=1&bar=2).'
+			);
+		} );
 
-			it( 'should process links with params', () => {
-				viewFragment.appendChildren( parse(
-					'<p>' +
-						'Link: <a href="http://example.com/?foo=1&amp;bar=2">http://example.com/?foo=1&amp;bar=2</a>.' +
-					'</p>'
-				) );
+		it( 'should autolink inside list', () => {
+			test(
+				'* <http://example.com/>',
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'Link: [http://example.com/?foo=1&bar=2](http://example.com/?foo=1&bar=2).' );
-			} );
+				'<ul><li><a href="http://example.com/">http://example.com/</a></li></ul>',
 
-			it( 'should process links with titles', () => {
-				viewFragment.appendChildren( parse(
-					'<p>' +
-					'Link: <a href="http://example.com/" title="Link title">example site</a>.' +
-					'</p>'
-				) );
+				// When converting back it will be represented as standard markdown link.
+				'*   [http://example.com/](http://example.com/)'
+			);
+		} );
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'Link: [example site](http://example.com/ "Link title").' );
-			} );
+		it( 'should autolink inside blockquote', () => {
+			test(
+				'> Blockquoted: <http://example.com/>',
 
-			it( 'should process links with spaces in URL', () => {
-				viewFragment.appendChildren( parse(
-					'<p>' +
-					'Link: <a href="url/has space">example</a>.' +
-					'</p>'
-				) );
+				'<blockquote>' +
+				'<p>Blockquoted: <a href="http://example.com/">http://example.com/</a></p>' +
+				'</blockquote>',
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'Link: [example](url/has space).' );
-			} );
+				// When converting back it will be represented as standard markdown link.
+				'> Blockquoted: [http://example.com/](http://example.com/)'
+			);
+		} );
 
-			it( 'should process links with titles and spaces in URL', () => {
-				viewFragment.appendChildren( parse(
-					'<p>' +
-					'Link: <a href="url/has space" title="Link title">example</a>.' +
-					'</p>'
-				) );
+		it( 'should not autolink inside inline code', () => {
+			test(
+				'`<http://example.com/>`',
+				'<p><code><http://example.com/></code></p>'
+			);
+		} );
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( 'Link: [example](url/has space "Link title").' );
-			} );
+		it( 'should not autolink inside code block', () => {
+			test(
+				'	<http://example.com/>',
+				'<pre><code><http://example.com/></code></pre>',
 
-			it( 'should process empty links #1', () => {
-				viewFragment.appendChildren( parse( '<p><a>Empty</a></p>' ) );
+				// When converting back, code block will be normalized to ```.
+				'```\n' +
+				'<http://example.com/>\n' +
+				'```'
+			);
+		} );
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( '[Empty]()' );
-			} );
+		it( 'should not process already linked #1', () => {
+			test(
+				'Already linked: [http://example.com/](http://example.com/)',
+				'<p>Already linked: <a href="http://example.com/">http://example.com/</a></p>'
+			);
+		} );
 
-			it( 'should process empty links #2', () => {
-				viewFragment.appendChildren( parse( '<p><a></a></p>' ) );
+		it( 'should not process already linked #2', () => {
+			test(
+				'Already linked: [**http://example.com/**](http://example.com/)',
+				'<p>Already linked: <a href="http://example.com/"><strong>http://example.com/</strong></a></p>'
+			);
+		} );
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( '[]()' );
-			} );
+		it( 'should process inline links', () => {
+			test(
+				'[URL](/url/)',
+				'<p><a href="/url/">URL</a></p>'
+			);
+		} );
 
-			it( 'should process empty links with title #1', () => {
-				viewFragment.appendChildren( parse( '<p><a title="Link Title">Empty</a></p>' ) );
+		it( 'should process inline links with title', () => {
+			test(
+				'[URL and title](/url/ "title")',
+				'<p><a href="/url/" title="title">URL and title</a></p>'
+			);
+		} );
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( '[Empty]("Link Title")' );
-			} );
+		it( 'should process inline links with title preceded by two spaces', () => {
+			test(
+				'[URL and title](/url/  "title preceded by two spaces")',
+				'<p><a href="/url/" title="title preceded by two spaces">URL and title</a></p>',
 
-			it( 'should process empty links with title #2', () => {
-				viewFragment.appendChildren( parse( '<p><a title="Link Title"></a></p>' ) );
+				// When converting back spaces will be normalized to one space.
+				'[URL and title](/url/ "title preceded by two spaces")'
+			);
+		} );
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( '[]("Link Title")' );
-			} );
+		it( 'should process inline links with title preceded by tab', () => {
+			test(
+				'[URL and title](/url/	"title preceded by tab")',
+				'<p><a href="/url/" title="title preceded by tab">URL and title</a></p>',
+
+				// When converting back tab will be normalized to one space.
+				'[URL and title](/url/ "title preceded by tab")'
+			);
+		} );
+
+		it( 'should process inline links with title that has spaces afterwards', () => {
+			test(
+				'[URL and title](/url/ "title has spaces afterward"  )',
+				'<p><a href="/url/" title="title has spaces afterward">URL and title</a></p>',
+
+				// When converting back spaces will be removed.
+				'[URL and title](/url/ "title has spaces afterward")'
+			);
+		} );
+
+		it( 'should process inline links with spaces in URL', () => {
+			test(
+				'[URL and title]( /url/has space )',
+				'<p><a href="/url/has space">URL and title</a></p>',
+
+				// When converting back unneeded spaces will be removed.
+				'[URL and title](/url/has space)'
+			);
+		} );
+
+		it( 'should process inline links with titles and spaces in URL', () => {
+			test(
+				'[URL and title]( /url/has space/ "url has space and title")',
+				'<p><a href="/url/has space/" title="url has space and title">URL and title</a></p>',
+
+				// When converting back unneeded spaces will be removed.
+				'[URL and title](/url/has space/ "url has space and title")'
+			);
+		} );
+
+		it( 'should process empty link', () => {
+			test(
+				'[Empty]()',
+
+				'<p><a href="">Empty</a></p>'
+			);
+		} );
+
+		it( 'should process reference links', () => {
+			test(
+				'Foo [bar] [1].\n' +
+				'[1]: /url/  "Title"',
+
+				'<p>Foo <a href="/url/" title="Title">bar</a>.</p>',
+
+				// After converting back reference links will be converted to normal links.
+				// This might be a problem when switching between source and editor.
+				'Foo [bar](/url/ "Title").'
+			);
+		} );
+
+		it( 'should process reference links - without space', () => {
+			test(
+				'Foo [bar][1].\n' +
+				'[1]: /url/  "Title"',
+
+				'<p>Foo <a href="/url/" title="Title">bar</a>.</p>',
+
+				'Foo [bar](/url/ "Title").'
+			);
+		} );
+
+		it( 'should process reference links - with newline', () => {
+			test(
+				'Foo [bar]\n' +
+				'[1].\n' +
+				'[1]: /url/  "Title"',
+
+				'<p>Foo <a href="/url/" title="Title">bar</a>.</p>',
+
+				'Foo [bar](/url/ "Title").'
+			);
+		} );
+
+		it( 'should process reference links - with embedded brackets', () => {
+			test(
+				'With [embedded [brackets]] [b].\n' +
+				'[b]: /url/',
+
+				'<p>With <a href="/url/">embedded [brackets]</a>.</p>',
+
+				'With [embedded [brackets]](/url/).'
+			);
+		} );
+
+		it( 'should process reference links - with reference indented once', () => {
+			test(
+				'Indented [once][].\n' +
+				' [once]: /url',
+
+				'<p>Indented <a href="/url">once</a>.</p>',
+
+				'Indented [once](/url).'
+			);
+		} );
+
+		it( 'should process reference links - with reference indented twice', () => {
+			test(
+				'Indented [twice][].\n' +
+				'  [twice]: /url',
+
+				'<p>Indented <a href="/url">twice</a>.</p>',
+
+				'Indented [twice](/url).'
+			);
+		} );
+
+		it( 'should process reference links - with reference indented three times', () => {
+			test(
+				'Indented [trice][].\n' +
+				'   [trice]: /url',
+
+				'<p>Indented <a href="/url">trice</a>.</p>',
+
+				'Indented [trice](/url).'
+			);
+		} );
+
+		it( 'should NOT process reference links - with reference indented four times', () => {
+			test(
+				'Indented [four][].\n' +
+				'    [four]: /url',
+
+				// GitHub renders it as:
+				// <p>Indented [four][].<br>
+				// [four]: /url</p>
+				// Marked converts it to the code block.
+				'<p>Indented [four][].</p><pre><code>[four]: /url</code></pre>',
+
+				'Indented [four][].\n' +
+				'\n' +
+				'```\n' +
+				'[four]: /url\n' +
+				'```'
+			);
+		} );
+
+		it( 'should process reference links when title and reference are same #1', () => {
+			test(
+				'[this] [this]\n' +
+				'[this]: foo',
+
+				'<p><a href="foo">this</a></p>',
+
+				'[this](foo)'
+			);
+		} );
+
+		it( 'should process reference links when title and reference are same #2', () => {
+			test(
+				'[this][this]\n' +
+				'[this]: foo',
+
+				'<p><a href="foo">this</a></p>',
+
+				'[this](foo)'
+			);
+		} );
+
+		it( 'should process reference links when only title is provided and is same as reference #1', () => {
+			test(
+				'[this] []\n' +
+				'[this]: foo',
+
+				'<p><a href="foo">this</a></p>',
+
+				'[this](foo)'
+			);
+		} );
+
+		it( 'should process reference links when only title is provided and is same as reference #2', () => {
+			test(
+				'[this][]\n' +
+				'[this]: foo',
+
+				'<p><a href="foo">this</a></p>',
+
+				'[this](foo)'
+			);
+		} );
+
+		it( 'should process reference links when only title is provided and is same as reference #3', () => {
+			test(
+				'[this]\n' +
+				'[this]: foo',
+
+				'<p><a href="foo">this</a></p>',
+
+				'[this](foo)'
+			);
+		} );
+
+		it( 'should not process reference links when reference is not found #1', () => {
+			test(
+				'[this] []',
+
+				'<p>[this] []</p>'
+			);
+		} );
+
+		it( 'should not process reference links when reference is not found #2', () => {
+			test(
+				'[this][]',
+
+				'<p>[this][]</p>'
+			);
+		} );
+
+		it( 'should not process reference links when reference is not found #2', () => {
+			test(
+				'[this]',
+
+				'<p>[this]</p>'
+			);
+		} );
+
+		it( 'should process reference links nested in brackets #1', () => {
+			test(
+				'[a reference inside [this][]]\n' +
+				'[this]: foo',
+
+				'<p>[a reference inside <a href="foo">this</a>]</p>',
+
+				'[a reference inside [this](foo)]'
+			);
+		} );
+
+		it( 'should process reference links nested in brackets #2', () => {
+			test(
+				'[a reference inside [this]]\n' +
+				'[this]: foo',
+
+				'<p>[a reference inside <a href="foo">this</a>]</p>',
+
+				'[a reference inside [this](foo)]'
+			);
+		} );
+
+		it( 'should not process reference links when title is same as reference but reference is different', () => {
+			test(
+				'[this](/something/else/)\n' +
+				'[this]: foo',
+
+				'<p><a href="/something/else/">this</a></p>',
+
+				'[this](/something/else/)'
+			);
+		} );
+
+		it( 'should not process reference links suppressed by backslashes', () => {
+			test(
+				'Suppress \\[this] and [this\\].\n' +
+				'[this]: foo',
+
+				'<p>Suppress [this] and [this].</p>',
+
+				'Suppress [this] and [this].'
+			);
+		} );
+
+		it( 'should process reference links when used across multiple lines #1', () => {
+			test(
+				'This is [multiline\n' +
+				'reference]\n' +
+				'[multiline reference]: foo',
+
+				'<p>This is <a href="foo">multiline<br></br>reference</a></p>',
+
+				'This is [multiline\n' +
+				'reference](foo)'
+			);
+		} );
+
+		it( 'should process reference links when used across multiple lines #2', () => {
+			test(
+				'This is [multiline \n' +
+				'reference]\n' +
+				'[multiline reference]: foo',
+
+				'<p>This is <a href="foo">multiline<br></br>reference</a></p>',
+
+				'This is [multiline\n' +
+				'reference](foo)'
+			);
+		} );
+
+		it( 'should process reference links case-insensitive', () => {
+			test(
+				'[hi]\n' +
+				'[HI]: /url',
+
+				'<p><a href="/url">hi</a></p>',
+
+				'[hi](/url)'
+			);
 		} );
 	} );
 } );

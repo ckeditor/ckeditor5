@@ -48,5 +48,24 @@ export default [
 
 			return hPrefix + ' ' + content;
 		}
+	},
+
+	// Inline code - fixing backticks inside code blocks.
+	{
+		filter: function (node) {
+			const hasSiblings = node.previousSibling || node.nextSibling;
+			const isCodeBlock = node.parentNode.nodeName === 'PRE' && !hasSiblings;
+
+			return node.nodeName === 'CODE' && !isCodeBlock;
+		},
+		replacement: function (content) {
+
+			// If content starts or ends with backtick - use double backtick.
+			if ( content.indexOf( '`' ) > -1 ) {
+				return '`` ' + content + ' ``';
+			}
+
+			return '`' + content + '`';
+		}
 	}
 ];

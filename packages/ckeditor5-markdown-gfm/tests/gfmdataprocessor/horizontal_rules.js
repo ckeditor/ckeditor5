@@ -3,218 +3,201 @@
  * For licensing, see LICENSE.md.
  */
 
-import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import { stringify, parse } from '/tests/engine/_utils/view.js';
+import { testDataProcessor as test } from '/tests/markdown-gfm/_utils/utils.js';
 
 describe( 'GFMDataProcessor', () => {
-	let dataProcessor;
-
-	beforeEach( () => {
-		dataProcessor = new MarkdownDataProcessor();
-	} );
-
+	// Horizontal rules are are always rendered by GitHub as <hr> and normalized when converting
+	// back to * * *.
 	describe( 'horizontal rules', () => {
-		describe( 'toView', () => {
-			describe( 'dashes', () => {
-				it( '#1', () => {
-					const viewFragment = dataProcessor.toView( '---' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#2', () => {
-					const viewFragment = dataProcessor.toView( ' ---' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#3', () => {
-					const viewFragment = dataProcessor.toView( '  ---' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#4', () => {
-					const viewFragment = dataProcessor.toView( '   ---' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#5 - code', () => {
-					const viewFragment = dataProcessor.toView( '	---' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<pre><code>---</code></pre>' );
-				} );
+		describe( 'dashes', () => {
+			it( '#1', () => {
+				test( '---', '<hr></hr>', '* * *' );
 			} );
 
-			describe( 'dashes with spaces', () => {
-				it( '#1', () => {
-					const viewFragment = dataProcessor.toView( '- - -' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#2', () => {
-					const viewFragment = dataProcessor.toView( ' - - -' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#3', () => {
-					const viewFragment = dataProcessor.toView( '  - - -' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#4', () => {
-					const viewFragment = dataProcessor.toView( '   - - -' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#5 - code', () => {
-					const viewFragment = dataProcessor.toView( '	- - -' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<pre><code>- - -</code></pre>' );
-				} );
+			it( '#2', () => {
+				test( ' ---', '<hr></hr>', '* * *' );
 			} );
 
-			describe( 'asterisks', () => {
-				it( '#1', () => {
-					const viewFragment = dataProcessor.toView( '***' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#2', () => {
-					const viewFragment = dataProcessor.toView( ' ***' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#3', () => {
-					const viewFragment = dataProcessor.toView( '  ***' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#4', () => {
-					const viewFragment = dataProcessor.toView( '   ***' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#5 - code', () => {
-					const viewFragment = dataProcessor.toView( '	***' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<pre><code>***</code></pre>' );
-				} );
+			it( '#3', () => {
+				test( '  ---', '<hr></hr>', '* * *' );
 			} );
 
-			describe( 'asterisks with spaces', () => {
-				it( '#1', () => {
-					const viewFragment = dataProcessor.toView( '* * *' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#2', () => {
-					const viewFragment = dataProcessor.toView( ' * * *' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#3', () => {
-					const viewFragment = dataProcessor.toView( '  * * *' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#4', () => {
-					const viewFragment = dataProcessor.toView( '   * * *' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#5 - code', () => {
-					const viewFragment = dataProcessor.toView( '	* * *' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<pre><code>* * *</code></pre>' );
-				} );
+			it( '#4', () => {
+				test( '   ---', '<hr></hr>', '* * *' );
 			} );
 
-			describe( 'underscores', () => {
-				it( '#1', () => {
-					const viewFragment = dataProcessor.toView( '___' );
+			it( '#5 - code', () => {
+				test(
+					'    ---',
 
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
+					// Four spaces are interpreted as code block.
+					'<pre><code>---</code></pre>',
 
-				it( '#2', () => {
-					const viewFragment = dataProcessor.toView( ' ___' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#3', () => {
-					const viewFragment = dataProcessor.toView( '  ___' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#4', () => {
-					const viewFragment = dataProcessor.toView( '   ___' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#5 - code', () => {
-					const viewFragment = dataProcessor.toView( '	___' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<pre><code>___</code></pre>' );
-				} );
-			} );
-
-			describe( 'underscores with spaces', () => {
-				it( '#1', () => {
-					const viewFragment = dataProcessor.toView( '_ _ _' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#2', () => {
-					const viewFragment = dataProcessor.toView( ' _ _ _' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#3', () => {
-					const viewFragment = dataProcessor.toView( '  _ _ _' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#4', () => {
-					const viewFragment = dataProcessor.toView( '   _ _ _' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<hr></hr>' );
-				} );
-
-				it( '#5 - code', () => {
-					const viewFragment = dataProcessor.toView( '	_ _ _' );
-
-					expect( stringify( viewFragment ) ).to.equal( '<pre><code>_ _ _</code></pre>' );
-				} );
+					// Code block will be normalized to ``` representation.
+					'```\n' +
+					'---\n' +
+					'```'
+				);
 			} );
 		} );
 
-		describe( 'toData', () => {
-			it( 'should process horizontal rules', () => {
-				const viewFragment = new DocumentFragment();
-				viewFragment.appendChildren( parse( '<hr></hr>' ) );
+		describe( 'dashes with spaces', () => {
+			it( '#1', () => {
+				test( '- - -', '<hr></hr>', '* * *' );
+			} );
 
-				expect( dataProcessor.toData( viewFragment ) ).to.equal( '* * *' );
+			it( '#2', () => {
+				test( ' - - -', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#3', () => {
+				test( '  - - -', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#4', () => {
+				test( '   - - -', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#5 - code', () => {
+				test(
+					'    - - -',
+
+					// Four spaces are interpreted as code block.
+					'<pre><code>- - -</code></pre>',
+
+					// Code block will be normalized to ``` representation.
+					'```\n' +
+					'- - -\n' +
+					'```'
+				);
+			} );
+		} );
+
+		describe( 'asterisks', () => {
+			it( '#1', () => {
+				test( '***', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#2', () => {
+				test( ' ***', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#3', () => {
+				test( '  ***', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#4', () => {
+				test( '   ***', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#5 - code', () => {
+				test(
+					'    ***',
+
+					// Four spaces are interpreted as code block.
+					'<pre><code>***</code></pre>',
+
+					// Code block will be normalized to ``` representation.
+					'```\n' +
+					'***\n' +
+					'```'
+				);
+			} );
+		} );
+
+		describe( 'asterisks with spaces', () => {
+			it( '#1', () => {
+				test( '* * *', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#2', () => {
+				test( ' * * *', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#3', () => {
+				test( '  * * *', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#4', () => {
+				test( '   * * *', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#5 - code', () => {
+				test(
+					'    * * *',
+
+					// Four spaces are interpreted as code block.
+					'<pre><code>* * *</code></pre>',
+
+					// Code block will be normalized to ``` representation.
+					'```\n' +
+					'* * *\n' +
+					'```'
+				);
+			} );
+		} );
+
+		describe( 'underscores', () => {
+			it( '#1', () => {
+				test( '___', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#2', () => {
+				test( ' ___', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#3', () => {
+				test( '  ___', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#4', () => {
+				test( '   ___', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#5 - code', () => {
+				test(
+					'    ___',
+
+					// Four spaces are interpreted as code block.
+					'<pre><code>___</code></pre>',
+
+					// Code block will be normalized to ``` representation.
+					'```\n' +
+					'___\n' +
+					'```'
+				);
+			} );
+		} );
+
+		describe( 'underscores with spaces', () => {
+			it( '#1', () => {
+				test( '_ _ _', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#2', () => {
+				test( ' _ _ _', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#3', () => {
+				test( '  _ _ _', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#4', () => {
+				test( '   _ _ _', '<hr></hr>', '* * *' );
+			} );
+
+			it( '#5 - code', () => {
+				test(
+					'    _ _ _',
+
+					// Four spaces are interpreted as code block.
+					'<pre><code>_ _ _</code></pre>',
+
+					// Code block will be normalized to ``` representation.
+					'```\n' +
+					'_ _ _\n' +
+					'```'
+				);
 			} );
 		} );
 	} );
