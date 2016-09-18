@@ -9,11 +9,19 @@ import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
 import GFMRenderer from './lib/marked/renderer.js';
 import converters from './lib/to-markdown/converters.js';
 
+/**
+ * GFMDataProcessor class.
+ * This data processor implementation uses GitHub flavored markdown as input/output data.
+ *
+ * @extends engine.dataProcessor.HtmlDataProcessor
+ */
 export default class GFMDataProcessor extends HtmlDataProcessor {
-	constructor() {
-		super();
-	}
-
+	/**
+	 * Converts provided markdown string to view tree.
+	 *
+	 * @param {String} data Markdown string.
+	 * @returns {engine.view.DocumentFragment} Converted view element.
+	 */
 	toView( data ) {
 		const html = marked.parse( data, {
 			gfm: true,
@@ -26,6 +34,12 @@ export default class GFMDataProcessor extends HtmlDataProcessor {
 		return super.toView( html );
 	}
 
+	/**
+	 * Converts provided {@link engine.view.DocumentFragment DocumentFragment} to data format - in this case markdown string.
+	 *
+	 * @param {engine.view.DocumentFragment} viewFragment
+	 * @returns {String} Markdown string.
+	 */
 	toData( viewFragment ) {
 		const html = super.toData( viewFragment );
 
