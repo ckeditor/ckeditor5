@@ -147,19 +147,25 @@ export default class Link extends Feature {
 		// which means that form has been submitted.
 		this.listenTo( panelModel, 'executeLink', () => {
 			editor.execute( 'link', balloonPanel.urlInput.value );
-			this._hidePanel( { focusDocument: true } );
+			this._hidePanel( { focusEditable: true } );
 		} );
 
 		// Observe `LinkBalloonPanelMode#executeUnlink` event from within the model of the panel,
 		// which means that the `Unlink` button has been clicked.
 		this.listenTo( panelModel, 'executeUnlink', () => {
 			editor.execute( 'unlink' );
-			this._hidePanel( { focusDocument: true } );
+			this._hidePanel( { focusEditable: true } );
 		} );
 
 		// Observe `LinkBalloonPanelMode#executeCancel` event from within the model of the panel,
 		// which means that the `Cancel` button has been clicked.
-		this.listenTo( panelModel, 'executeCancel', () => this._hidePanel( { focusDocument: true } ) );
+		this.listenTo( panelModel, 'executeCancel', () => this._hidePanel( { focusEditable: true } ) );
+
+		// Handle `Ctrl+L` keystroke and show panel.
+		editor.keystrokes.set( 'CTRL+L', () => {
+			this._attachPanelToElement();
+			balloonPanel.urlInput.view.select();
+		} );
 
 		// Attach close by `Esc` press and click out of panel actions on panel show, on panel hide clean up listeners.
 		this.listenTo( balloonPanel.view.model, 'change:isVisible', ( evt, propertyName, value ) => {
@@ -216,12 +222,6 @@ export default class Link extends Feature {
 			}
 		} );
 
-		// Handle `Ctrl+L` keystroke and show panel.
-		editor.keystrokes.set( 'CTRL+L', () => {
-			this._attachPanelToElement();
-			balloonPanel.urlInput.view.select();
-		} );
-
 		// Append panel element to body.
 		editor.ui.add( 'body', balloonPanel );
 
@@ -264,12 +264,12 @@ export default class Link extends Feature {
 	 *
 	 * @private
 	 * @param {Object} [options={}] Additional options.
-	 * @param {Boolean} [options.focusDocument=false] When `true` then editor focus will be restored after panel hide.
+	 * @param {Boolean} [options.focusEditable=false] When `true` then editable focus will be restored on panel hide.
 	 */
 	_hidePanel( options = {} ) {
 		this.balloonPanel.view.hide();
 
-		if ( options.focusDocument ) {
+		if ( options.focusEditable ) {
 			this.editor.editing.view.focus();
 		}
 	}
@@ -285,7 +285,7 @@ export default class Link extends Feature {
 	 */
 	_closePanelOnClick( evt, domEvt ) {
 		if ( domEvt.keyCode == 27 ) {
-			this._hidePanel( { focusDocument: true } );
+			this._hidePanel( { focusEditable: true } );
 		}
 	}
 }
