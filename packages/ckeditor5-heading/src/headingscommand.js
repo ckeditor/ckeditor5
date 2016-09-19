@@ -64,8 +64,9 @@ export default class HeadingsCommand extends Command {
 	}
 
 	/**
-	 * Executes the command if it is enabled.
+	 * Executes command.
 	 *
+	 * @protected
 	 * @param {String} [formatId] The identifier of the heading format that should be applied. It should be one of the
 	 * {@link headings.HeadingsFormat heading formats} provided to the command constructor. If this parameter is not provided,
 	 * the value from {@link headings.HeadingsCommand#defaultFormat defaultFormat} will be used.
@@ -134,7 +135,7 @@ export default class HeadingsCommand extends Command {
 	 * @returns {headings.HeadingsFormat}
 	 */
 	_getFormatById( id ) {
-		return this.formats.find( item => item.id === id );
+		return this.formats.find( item => item.id === id ) || this.defaultFormat;
 	}
 }
 

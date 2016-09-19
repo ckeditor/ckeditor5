@@ -3,11 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
 import HeadingsEngine from './headingsengine.js';
+
+import Feature from '../core/feature.js';
+
 import Model from '../ui/model.js';
 import ListDropdownController from '../ui/dropdown/list/listdropdown.js';
 import ListDropdownView from '../ui/dropdown/list/listdropdownview.js';
+
 import Collection from '../utils/collection.js';
 
 /**
@@ -65,6 +68,7 @@ export default class Headings extends Feature {
 			editor.editing.view.focus();
 		} );
 
+		// Register UI component.
 		editor.ui.featureComponents.add( 'headings', ListDropdownController, ListDropdownView, dropdownModel );
 	}
 }
