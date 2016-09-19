@@ -29,8 +29,4 @@ export default class LinkBalloonPanelView extends BalloonPanelView {
 			}
 		} );
 	}
-
-	get focusableElements() {
-		return [ this.element ];
-	}
 }
