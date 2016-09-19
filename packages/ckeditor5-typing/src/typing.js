@@ -4,8 +4,8 @@
  */
 
 import Feature from '../core/feature.js';
-import Input from './input';
-import Delete from './delete';
+import Input from './input.js';
+import Delete from './delete.js';
 
 /**
  * The typing feature. Handles typing.
