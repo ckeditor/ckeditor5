@@ -146,6 +146,17 @@ function renderButton( ui ) {
 		isEnabled: false
 	} ) );
 
+	const disabledActionButton = button( {
+		label: 'Disabled action',
+		icon: 'bold',
+		isEnabled: false
+	} );
+
+	// TODO: It requires model interface.
+	disabledActionButton.view.element.classList.add( 'ck-button-action' );
+
+	ui.add( 'button-icon-states', disabledActionButton );
+
 	ui.add( 'button-icon-states', button( {
 		label: 'Bold',
 		withText: false,
