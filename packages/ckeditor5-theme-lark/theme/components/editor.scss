@@ -37,27 +37,28 @@
 
 		.ck-button {
 			border-width: 0;
-		}
 
-		// Make sure the next button does not overlap focused one.
-		.ck-button:focus {
-			z-index: 1;
-		}
+			// Make sure the next button does not overlap focused one.
+			&:focus {
+				z-index: 1;
+			}
 
-		.ck-button:not(:hover):not(:focus):not(.ck-on) {
-			background: ck-color( 'foreground' );
-		}
+			&:not(:hover):not(:focus):not(.ck-on),
+			&.ck-disabled {
+				background: ck-color( 'foreground' );
+			}
 
-		.ck-button.ck-on {
-			@include ck-button-colors( 'foreground', -10 );
+			&.ck-on {
+				@include ck-button-colors( 'foreground', -10 );
+			}
 		}
 
 		.ck-dropdown__button {
 			border-width: 1px;
-		}
 
-		.ck-dropdown__button:not(:hover):not(:focus):not(.ck-on) {
-			background: ck-color( 'background' );
+			&:not(:hover):not(:focus):not(.ck-on) {
+				background: ck-color( 'background' );
+			}
 		}
 	}
 }
