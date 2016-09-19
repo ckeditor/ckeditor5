@@ -70,8 +70,6 @@ export default class HeadingsCommand extends Command {
 	 * @param {String} [formatId] The identifier of the heading format that should be applied. It should be one of the
 	 * {@link headings.HeadingsFormat heading formats} provided to the command constructor. If this parameter is not provided,
 	 * the value from {@link headings.HeadingsCommand#defaultFormat defaultFormat} will be used.
-	 * @returns {Object} data Data object, available in {@link core.Command#event:afterExecute}
-	 * @returns {engine.model.Batch} data.batch Batch created and used by the command.
 	 */
 	_doExecute( formatId = this.defaultFormat.id ) {
 		// TODO: What should happen if format is not found?
