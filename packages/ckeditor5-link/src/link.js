@@ -7,6 +7,7 @@ import Feature from '../core/feature.js';
 import ClickObserver from '../engine/view/observer/clickobserver.js';
 import LinkEngine from './linkengine.js';
 import LinkElement from './linkelement.js';
+import DOMEmitterMixin from '../ui/domemittermixin.js';
 
 import Model from '../ui/model.js';
 
@@ -48,6 +49,8 @@ export default class Link extends Feature {
 		// Create toolbar buttons.
 		this._createToolbarLinkButton();
 		this._createToolbarUnlinkButton();
+
+		this.DOMEmitter = Object.create( DOMEmitterMixin );
 	}
 
 	/**
@@ -81,6 +84,7 @@ export default class Link extends Feature {
 			}
 
 			this._attachPanelToElement();
+			this.balloonPanel.urlInput.view.select();
 		} );
 
 		// Add link button to feature components.
@@ -112,10 +116,6 @@ export default class Link extends Feature {
 		// Execute unlink command and hide panel, if open.
 		this.listenTo( unlinkButtonModel, 'execute', () => {
 			editor.execute( 'unlink' );
-
-			if ( this.balloonPanel.view.isVisible ) {
-				this.balloonPanel.view.hide();
-			}
 		} );
 
 		// Add unlink button to feature components.
@@ -178,39 +178,83 @@ export default class Link extends Feature {
 		const balloonPanel = new LinkBalloonPanel( panelModel, new LinkBalloonPanelView( editor.locale ) );
 
 		// Observe `LinkBalloonPanelMode#executeLink` event from within the model of the panel,
-		// which means that the `Save` button has been clicked.
+		// which means that form has been submitted.
 		this.listenTo( panelModel, 'executeLink', () => {
 			editor.execute( 'link', balloonPanel.urlInput.value );
-			balloonPanel.view.hide();
+			this._hidePanel( { focusDocument: true } );
 		} );
 
 		// Observe `LinkBalloonPanelMode#executeUnlink` event from within the model of the panel,
 		// which means that the `Unlink` button has been clicked.
 		this.listenTo( panelModel, 'executeUnlink', () => {
 			editor.execute( 'unlink' );
-			balloonPanel.view.hide();
+			this._hidePanel( { focusDocument: true } );
 		} );
 
-		// Always focus editor on panel hide.
+		// Observe `LinkBalloonPanelMode#executeCancel` event from within the model of the panel,
+		// which means that the `Cancel` button has been clicked.
+		this.listenTo( panelModel, 'executeCancel', () => this._hidePanel( { focusDocument: true } ) );
+
+		// On panel show attach close by `Esc` press and click out of panel actions, on panel hide clean up listeners.
 		this.listenTo( balloonPanel.view.model, 'change:isVisible', ( evt, propertyName, value ) => {
-			if ( !value ) {
-				viewDocument.focus();
+			if ( value ) {
+				// Handle close by `Esc`.
+				this.DOMEmitter.listenTo( document, 'keydown', ( evt, domEvt ) => {
+					if ( domEvt.keyCode == 27 ) {
+						this._hidePanel( { focusDocument: true } );
+					}
+				} );
+
+				// Handle close by clicking out of the panel.
+				// Note that it is not handled by a `click` event, it is because clicking on link button or directly on link element
+				// was opening and closing panel at the same time.
+				this.DOMEmitter.listenTo( document, 'mouseup', ( evt, domEvt ) => {
+					// Do nothing when the panel was clicked.
+					if ( balloonPanel.view.element.contains( domEvt.target ) ) {
+						return;
+					}
+
+					// When click was out of the panel then hide it.
+					balloonPanel.view.hide();
+
+					// When editor was clicked then restore editor focus.
+					if ( editor.ui.view.element.contains( domEvt.target ) ) {
+						viewDocument.focus();
+					}
+				} );
+			} else {
+				this.DOMEmitter.stopListening( document );
+				this.stopListening( viewDocument );
 			}
 		} );
 
-		// Hide panel on editor focus.
-		// @TODO replace it by some FocusManager.
-		viewDocument.on( 'focus', () => balloonPanel.view.hide() );
-
-		// Handle click on document and show panel when selection is placed in the link element.
+		// Handle click on document and show panel when selection is placed inside the link element.
+		// Keep panel open till selection will be inside the same link element.
 		viewDocument.on( 'click', () => {
-			if ( viewDocument.selection.isCollapsed && linkCommand.value !== undefined ) {
+			const viewSelection = viewDocument.selection;
+			const parentLink = getPositionParentLink( viewSelection.getFirstPosition() );
+
+			if ( viewSelection.isCollapsed && parentLink ) {
 				this._attachPanelToElement();
+
+				this.listenTo( viewDocument, 'render', () => {
+					const position = viewSelection.getFirstPosition();
+
+					if ( !position ) {
+						return;
+					}
+
+					if ( !viewSelection.isCollapsed || parentLink !== getPositionParentLink( position ) ) {
+						this._hidePanel();
+					} else {
+						this._attachPanelToElement();
+					}
+				} );
 			}
 		} );
 
 		// Handle `Ctrl+L` keystroke and show panel.
-		editor.keystrokes.set( 'CTRL+L', () => this._attachPanelToElement() );
+		editor.keystrokes.set( 'CTRL+L', () => this._attachPanelToElement( { focus: true } ) );
 
 		// Append panel element to body.
 		editor.ui.add( 'body', balloonPanel );
@@ -227,18 +271,15 @@ export default class Link extends Feature {
 	 *
 	 * @private
 	 */
-	_attachPanelToElement() {
+	_attachPanelToElement( options = {} ) {
 		const viewDocument = this.editor.editing.view;
 		const domEditableElement = viewDocument.domConverter.getCorrespondingDomElement( viewDocument.selection.editableElement );
-
-		const viewSelectionParent = viewDocument.selection.getFirstPosition().parent;
-		const viewSelectionParentAncestors = viewSelectionParent.getAncestors();
-		const linkElement = viewSelectionParentAncestors.find( ( ancestor ) => ancestor instanceof LinkElement );
+		const parentLink = getPositionParentLink( viewDocument.selection.getFirstPosition() );
 
 		// When selection is inside link element, then attach panel to this element.
-		if ( linkElement ) {
+		if ( parentLink ) {
 			this.balloonPanel.view.attachTo(
-				viewDocument.domConverter.getCorrespondingDomElement( linkElement ),
+				viewDocument.domConverter.getCorrespondingDomElement( parentLink ),
 				domEditableElement
 			);
 		}
@@ -250,7 +291,20 @@ export default class Link extends Feature {
 			);
 		}
 
-		// Set focus to the panel input.
-		this.balloonPanel.urlInput.view.select();
+		if ( options.focus ) {
+			this.balloonPanel.urlInput.view.select();
+		}
 	}
+
+	_hidePanel( options = {} ) {
+		this.balloonPanel.view.hide();
+
+		if ( options.focusDocument ) {
+			this.editor.editing.view.focus();
+		}
+	}
+}
+
+function getPositionParentLink( position ) {
+	return position.parent.getAncestors().find( ( ancestor ) => ancestor instanceof LinkElement );
 }

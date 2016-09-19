@@ -155,7 +155,7 @@ export default class LinkBalloonPanel extends BalloonPanel {
 			withText: true
 		} );
 
-		cancelModel.on( 'execute', () => this.view.hide() );
+		cancelModel.on( 'execute', () => this.model.fire( 'executeCancel' ) );
 
 		return new Button( cancelModel, new ButtonView( this.locale ) );
 	}
