@@ -4,10 +4,10 @@
  */
 
 import ModelTestEditor from '/tests/core/_utils/modeltesteditor.js';
-import { default as EnterCommand, enterBlock } from '/ckeditor5/enter/entercommand.js';
+import EnterCommand from '/ckeditor5/enter/entercommand.js';
 import { getData, setData } from '/tests/engine/_utils/model.js';
 
-let editor, doc, schema;
+let editor, doc, schema, command;
 
 beforeEach( () => {
 	return ModelTestEditor.create()
@@ -15,7 +15,7 @@ beforeEach( () => {
 			editor = newEditor;
 			doc = editor.document;
 
-			const command = new EnterCommand( editor );
+			command = new EnterCommand( editor );
 			editor.commands.set( 'enter', command );
 
 			schema = doc.schema;
@@ -40,87 +40,38 @@ describe( 'EnterCommand', () => {
 		expect( getData( doc, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p></p>' );
 		expect( spy.calledOnce ).to.be.true;
 	} );
-
-	it( 'uses paragraph as default block', () => {
-		schema.registerItem( 'paragraph', '$block' );
-		setData( doc, '<h>foo[]</h>' );
-
-		editor.execute( 'enter' );
-
-		expect( getData( doc, { withoutSelection: true } ) ).to.equal( '<h>foo</h><paragraph></paragraph>' );
-	} );
 } );
 
-describe( 'enterBlock', () => {
+describe( '_doExecute', () => {
 	describe( 'collapsed selection', () => {
 		test(
 			'does nothing in the root',
 			'foo[]bar',
-			'foo[]bar',
-			{ defaultBlockName: 'p' }
+			'foo[]bar'
 		);
 
 		test(
 			'splits block',
 			'<p>x</p><p>foo[]bar</p><p>y</p>',
-			'<p>x</p><p>foo</p><p>[]bar</p><p>y</p>',
-			{ defaultBlockName: 'p' }
-		);
-
-		test(
-			'splits block (other than default)',
-			'<p>x</p><h>foo[]bar</h><p>y</p>',
-			'<p>x</p><h>foo</h><h>[]bar</h><p>y</p>',
-			{ defaultBlockName: 'p' }
+			'<p>x</p><p>foo</p><p>[]bar</p><p>y</p>'
 		);
 
 		test(
 			'splits block at the end',
 			'<p>x</p><p>foo[]</p><p>y</p>',
-			'<p>x</p><p>foo</p><p>[]</p><p>y</p>',
-			{ defaultBlockName: 'p' }
+			'<p>x</p><p>foo</p><p>[]</p><p>y</p>'
 		);
 
 		test(
 			'splits block at the beginning',
 			'<p>x</p><p>[]foo</p><p>y</p>',
-			'<p>x</p><p></p><p>[]foo</p><p>y</p>',
-			{ defaultBlockName: 'p' }
-		);
-
-		test(
-			'splits block at the beginning (other than default)',
-			'<p>x</p><h>[]foo</h><p>y</p>',
-			'<p>x</p><h></h><h>[]foo</h><p>y</p>',
-			{ defaultBlockName: 'p' }
-		);
-
-		test(
-			'creates default block when leaving other block',
-			'<h>foo[]</h><p>x</p>',
-			'<h>foo</h><p>[]</p><p>x</p>',
-			{ defaultBlockName: 'p' }
-		);
-
-		test(
-			'does not rename when default block is not allowed',
-			'<h>foo[]</h><p>x</p>',
-			'<h>foo</h><h>[]</h><p>x</p>',
-			{ defaultBlockName: 'xxx' }
+			'<p>x</p><p></p><p>[]foo</p><p>y</p>'
 		);
 
 		test(
 			'inserts new block after empty one',
 			'<p>x</p><p>[]</p><p>y</p>',
-			'<p>x</p><p></p><p>[]</p><p>y</p>',
-			{ defaultBlockName: 'p' }
-		);
-
-		test(
-			'inserts new block after empty one (other than default)',
-			'<p>x</p><h>[]</h><p>y</p>',
-			'<p>x</p><h></h><p>[]</p><p>y</p>',
-			{ defaultBlockName: 'p' }
+			'<p>x</p><p></p><p>[]</p><p>y</p>'
 		);
 	} );
 
@@ -128,58 +79,39 @@ describe( 'enterBlock', () => {
 		test(
 			'only deletes the content when directly in the root',
 			'fo[ob]ar',
-			'fo[]ar',
-			{ defaultBlockName: 'p' }
+			'fo[]ar'
 		);
 
 		test(
 			'deletes text and splits',
 			'<p>ab[cd]ef</p><p>ghi</p>',
-			'<p>ab</p><p>[]ef</p><p>ghi</p>',
-			{ defaultBlockName: 'p' }
-		);
-
-		test(
-			'deletes text and splits (other than default)',
-			'<h>ab[cd]ef</h>',
-			'<h>ab</h><h>[]ef</h>',
-			{ defaultBlockName: 'p' }
+			'<p>ab</p><p>[]ef</p><p>ghi</p>'
 		);
 
 		test(
 			'places selection in the 2nd element',
 			'<h>ab[c</h><p>d]ef</p><p>ghi</p>',
-			'<h>ab</h><p>[]ef</p><p>ghi</p>',
-			{ defaultBlockName: 'p' }
+			'<h>ab</h><p>[]ef</p><p>ghi</p>'
 		);
 
 		test(
 			'leaves one empty element after one was fully selected',
 			'<p>x</p><p>[abcdef]</p><p>y</p>',
-			'<p>x</p><p>[]</p><p>y</p>',
-			{ defaultBlockName: 'p' }
+			'<p>x</p><p>[]</p><p>y</p>'
 		);
 
 		test(
-			'leaves one (default) empty element after one was fully selected',
-			'<h>[abcdef]</h>',
-			'<p>[]</p>',
-			{ defaultBlockName: 'p' }
+			'leaves one empty element after two were fully selected',
+			'<p>[abc</p><p>def]</p>',
+			'<p>[]</p>'
 		);
 
-		test(
-			'leaves one (default) empty element after two were fully selected',
-			'<h>[abc</h><p>def]</p>',
-			'<p>[]</p>',
-			{ defaultBlockName: 'p' }
-		);
-
-		it( 'leaves one (default) empty element after two were fully selected (backward)', () => {
-			setData( doc, '<h>[abc</h><p>def]</p>' );
+		it( 'leaves one empty element after two were fully selected (backward)', () => {
+			setData( doc, '<p>[abc</p><p>def]</p>' );
 			// @TODO: Add option for setting selection direction to model utils.
 			doc.selection._lastRangeBackward = true;
 
-			enterBlock( doc.batch(), doc.selection, { defaultBlockName: 'p' } );
+			command._doExecute();
 
 			expect( getData( doc ) ).to.equal( '<p>[]</p>' );
 		} );
@@ -191,17 +123,17 @@ describe( 'enterBlock', () => {
 
 			setData( doc, '<p>[x]</p>' );
 
-			enterBlock( doc.batch(), doc.selection, { defaultBlockName: 'p' } );
+			command._doExecute();
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
 	} );
 
-	function test( title, input, output, options ) {
+	function test( title, input, output ) {
 		it( title, () => {
 			setData( doc, input );
 
-			enterBlock( doc.batch(), doc.selection, options );
+			command._doExecute();
 
 			expect( getData( doc ) ).to.equal( output );
 		} );

@@ -4,22 +4,25 @@
  */
 
 import Command from '../core/command/command.js';
-import Element from '../engine/model/element.js';
-import LivePosition from '../engine/model/liveposition.js';
-import Position from '../engine/model/position.js';
 
 /**
- * The Enter command. It is used by the {@link enter.Enter Enter feature} to handle the <kbd>Enter</kbd> key.
+ * Enter command. It is used by the {@link enter.Enter Enter feature} to handle the <kbd>Enter</kbd> key.
  *
  * @member enter
  * @extends core.command.Command
  */
 export default class EnterCommand extends Command {
+	/**
+	 * @inheritDoc
+	 */
 	_doExecute() {
 		const doc = this.editor.document;
+		const batch = doc.batch();
 
 		doc.enqueueChanges( () => {
-			enterBlock( doc.batch(), doc.selection, { defaultBlockName: 'paragraph' } );
+			enterBlock( batch, doc.selection );
+
+			this.fire( 'afterExecute', { batch } );
 		} );
 	}
 }
@@ -28,14 +31,9 @@ export default class EnterCommand extends Command {
  * Creates a new block in the way that the <kbd>Enter</kbd> key is expected to work.
  *
  * @param {engine.model.Batch} batch A batch to which the deltas will be added.
- * @param {engine.model.Selection} selection
- * @param {Object} options
- * @param {Boolean} options.defaultBlockName The name of the block which should be created when Enter leaves
- * another block. Usually set to `'paragraph'`. For example, when creating a block in `<heading>foo^</heading>`,
- * the result will be `<heading>foo</heading><paragraph>^</paragraph>`.
+ * @param {engine.model.Selection} selection Selection on which the action should be performed.
  */
-export function enterBlock( batch, selection, options = {} ) {
-	const defaultBlockName = options.defaultBlockName;
+function enterBlock( batch, selection ) {
 	const doc = batch.document;
 	const isSelectionEmpty = selection.isCollapsed;
 	const range = selection.getFirstRange();
@@ -52,71 +50,31 @@ export function enterBlock( batch, selection, options = {} ) {
 	}
 
 	if ( isSelectionEmpty ) {
-		splitBlock( batch, selection, range.start, defaultBlockName );
+		splitBlock( batch, selection, range.start );
 	} else {
 		const shouldMerge = range.start.isAtStart && range.end.isAtEnd;
 		const isContainedWithinOneElement = ( startElement == endElement );
 
 		doc.composer.deleteContents( batch, selection, { merge: shouldMerge } );
 
-		// Fully selected elements.
-		//
-		// <h>[xx</h><p>yy]<p>	-> <h>^</h>				-> <p>^</p>
-		// <h>[xxyy]</h>		-> <h>^</h>				-> <p>^</p>
-		if ( shouldMerge ) {
-			// We'll lose the ref to the renamed element, so let's keep a position inside it
-			// (offsets won't change, so it will stay in place). See ckeditor5-engine#367.
-			const pos = Position.createFromPosition( selection.focus );
-			const newBlockName = getNewBlockName( doc, startElement, defaultBlockName );
-
-			if ( startElement.name != newBlockName ) {
-				batch.rename( startElement, newBlockName );
+		if ( !shouldMerge ) {
+			// Partially selected elements.
+			//
+			// <h>x[xx]x</h>		-> <h>x^x</h>			-> <h>x</h><h>^x</h>
+			if ( isContainedWithinOneElement ) {
+				splitBlock( batch, selection, selection.focus );
 			}
-
-			selection.collapse( pos );
-		}
-		// Partially selected elements.
-		//
-		// <h>x[xx]x</h>		-> <h>x^x</h>			-> <h>x</h><h>^x</h>
-		else if ( isContainedWithinOneElement ) {
-			splitBlock( batch, selection, selection.focus, defaultBlockName );
-		}
-		// Selection over multilpe elements.
-		//
-		// <h>x[x</h><p>y]y<p>	-> <h>x^</h><p>y</p>	-> <h>x</h><p>^y</p>
-		else {
-			selection.collapse( endElement );
+			// Selection over multiple elements.
+			//
+			// <h>x[x</h><p>y]y<p>	-> <h>x^</h><p>y</p>	-> <h>x</h><p>^y</p>
+			else {
+				selection.collapse( endElement );
+			}
 		}
 	}
 }
 
-function splitBlock( batch, selection, splitPos, defaultBlockName ) {
-	const doc = batch.document;
-	const parent = splitPos.parent;
-
-	if ( splitPos.isAtEnd ) {
-		const newElement = new Element( getNewBlockName( doc, parent, defaultBlockName ) );
-
-		batch.insert( Position.createAfter( parent ), newElement );
-
-		selection.collapse( newElement );
-	} else {
-		// TODO After ckeditor5-engine#340 is fixed we'll be able to base on splitPos's location.
-		const endPos = LivePosition.createFromPosition( splitPos );
-		endPos.stickiness = 'STICKS_TO_NEXT';
-
-		batch.split( splitPos );
-
-		selection.collapse( endPos );
-
-		endPos.detach();
-	}
-}
-
-function getNewBlockName( doc, startElement, defaultBlockName ) {
-	if ( doc.schema.check( { name: defaultBlockName, inside: startElement.parent.name } ) ) {
-		return defaultBlockName;
-	}
-
-	return startElement.name;
+function splitBlock( batch, selection, splitPos ) {
+	batch.split( splitPos );
+	selection.collapse( splitPos.parent.nextSibling );
 }
