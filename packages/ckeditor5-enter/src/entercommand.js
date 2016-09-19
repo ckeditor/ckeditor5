@@ -13,11 +13,7 @@ import Command from '../core/command/command.js';
  */
 export default class EnterCommand extends Command {
 	/**
-	 * Executes command.
-	 *
-	 * @protected
-	 * @returns {Object} data Data object, available in {@link core.Command#event:afterExecute}
-	 * @returns {engine.model.Batch} data.batch Batch created and used by the command.
+	 * @inheritDoc
 	 */
 	_doExecute() {
 		const doc = this.editor.document;
