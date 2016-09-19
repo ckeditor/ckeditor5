@@ -57,7 +57,6 @@ export default [
 			return node.nodeName === 'CODE' && !isCodeBlock;
 		},
 		replacement: ( content ) => {
-
 			// If content starts or ends with backtick - use double backtick.
 			if ( content.indexOf( '`' ) > -1 ) {
 				return '`` ' + content + ' ``';

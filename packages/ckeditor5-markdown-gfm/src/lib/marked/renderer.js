@@ -4,11 +4,12 @@
  */
 
 /**
- * Marked.js library renderer with fixes:
+ * Original marked.js library renderer with fixes:
  * - no formatting for output HTML string - all newlines between tags are removed to create clean output,
  * - changed long string concatenations to ES5 template strings,
  * - changed code style.
  *
+ * @see {@link https://github.com/chjj/marked#renderer} Methods description.
  * @param options
  * @constructor
  */
@@ -115,7 +116,7 @@ Renderer.prototype.link = function( href, title, text ) {
 			return '';
 		}
 
-		if ( prot.indexOf( 'javascript:' ) === 0 || prot.indexOf( 'vbscript:' ) === 0 ) {
+		if ( prot.indexOf( 'javascript:' ) === 0 || prot.indexOf( 'vbscript:' ) === 0 ) { // jshint ignore:line
 			return '';
 		}
 	}
@@ -168,7 +169,7 @@ function unescape( html ) {
 		if ( n.charAt( 0 ) === '#' ) {
 			return n.charAt( 1 ) === 'x' ?
 				String.fromCharCode( parseInt( n.substring( 2 ), 16 ) ) :
-				String.fromCharCode( +n.substring( 1 ) );
+				String.fromCharCode( +n.substring( 1 ) ); // jscs:ignore
 		}
 
 		return '';
