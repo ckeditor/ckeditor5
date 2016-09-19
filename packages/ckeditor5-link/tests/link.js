@@ -80,18 +80,6 @@ describe( 'Link', () => {
 			expect( linkFeature.balloonPanel.view.isVisible ).to.true;
 		} );
 
-		it( 'should select panel input value when panel is opened', () => {
-			const selectSpy = sinon.spy( linkFeature.balloonPanel.urlInput.view, 'select' );
-
-			editor.editing.view.isFocused = true;
-
-			linkButton.model.fire( 'execute' );
-
-			expect( selectSpy.calledOnce ).to.true;
-
-			selectSpy.restore();
-		} );
-
 		it( 'should not open panel on linkButton#model execute event, when editor is not focused', () => {
 			editor.editing.view.isFocused = false;
 
@@ -101,7 +89,7 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should open panel attached to the link element, when collapsed selection is inside link element', () => {
-			const attachToSpy = sinon.spy( balloonPanel.view, 'attachTo' );
+			const attachToSpy = testUtils.sinon.spy( balloonPanel.view, 'attachTo' );
 
 			editor.document.schema.allow( { name: '$text', inside: '$root' } );
 			setModelData( editor.document, '<$text linkHref="url">some[] url</$text>' );
@@ -115,7 +103,7 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should open panel attached to the selection, when there is non-collapsed selection', () => {
-			const attachToSpy = sinon.spy( balloonPanel.view, 'attachTo' );
+			const attachToSpy = testUtils.sinon.spy( balloonPanel.view, 'attachTo' );
 
 			editor.document.schema.allow( { name: '$text', inside: '$root' } );
 			setModelData( editor.document, 'so[me ur]l' );
@@ -126,6 +114,16 @@ describe( 'Link', () => {
 			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
 
 			expect( attachToSpy.calledWithExactly( selectedRange, editorElement ) ).to.true;
+		} );
+
+		it( 'should select panel input value when panel is opened', () => {
+			const selectUrlInputSpy = testUtils.sinon.spy( balloonPanel.urlInput.view, 'select' );
+
+			editor.editing.view.isFocused = true;
+
+			linkButton.model.fire( 'execute' );
+
+			expect( selectUrlInputSpy.calledOnce ).to.true;
 		} );
 	} );
 
@@ -152,114 +150,109 @@ describe( 'Link', () => {
 			expect( executeSpy.calledOnce ).to.true;
 			expect( executeSpy.calledWithExactly( 'unlink' ) ).to.true;
 		} );
-
-		it( 'should hide panel on unlinkButton#model execute event', () => {
-			balloonPanel.view.model.isVisible = true;
-
-			unlinkButton.model.fire( 'execute' );
-
-			expect( balloonPanel.view.model.isVisible ).to.false;
-		} );
 	} );
 
 	describe( 'link balloon panel', () => {
-		it( 'should create LinkBalloonPanel component', () => {
+		let hidePanelSpy, focusEditableSpy;
+
+		beforeEach( () => {
+			hidePanelSpy = testUtils.sinon.spy( balloonPanel.view, 'hide' );
+			focusEditableSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+		} );
+
+		it( 'should be created', () => {
 			expect( balloonPanel ).to.instanceOf( LinkBalloonPanel );
 		} );
 
-		it( 'should bind balloonPanel#model to link command', () => {
-			const model = balloonPanel.model;
-			const command = editor.commands.get( 'link' );
-
-			expect( model.url ).to.undefined;
-
-			command.value = 'http://cksource.com';
-
-			expect( model.url ).to.equal( 'http://cksource.com' );
-		} );
-
-		it( 'should execute link command on balloonPanel#model executeLink event', () => {
-			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
-
-			balloonPanel.model.url = 'http://cksource.com';
-			balloonPanel.model.fire( 'executeLink' );
-
-			expect( executeSpy.calledOnce ).to.true;
-			expect( executeSpy.calledWithExactly( 'link', 'http://cksource.com' ) ).to.true;
-		} );
-
-		it( 'should hide balloon panel on balloonPanel#model execute event', () => {
-			const hideSpy = testUtils.sinon.spy( balloonPanel.view, 'hide' );
-
-			balloonPanel.model.fire( 'executeLink' );
-
-			expect( hideSpy.calledOnce ).to.true;
-		} );
-
-		it( 'should execute unlink command on balloonPanel#model executeUnlink event', () => {
-			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
-
-			balloonPanel.model.fire( 'executeUnlink' );
-
-			expect( executeSpy.calledOnce ).to.true;
-			expect( executeSpy.calledWithExactly( 'unlink' ) ).to.true;
-		} );
-
-		it( 'should hide balloon panel on balloonPanel#model executeUnlink event', () => {
-			const hideSpy = testUtils.sinon.spy( balloonPanel.view, 'hide' );
-
-			balloonPanel.model.fire( 'executeUnlink' );
-
-			expect( hideSpy.calledOnce ).to.true;
-		} );
-
-		it( 'should append panel element to the body', () => {
+		it( 'should be appended to the document body', () => {
 			expect( document.body.contains( balloonPanel.view.element ) );
 		} );
 
-		it( 'should open panel on `CTRL+L` keystroke', () => {
+		it( 'should open with selected url input on `CTRL+L` keystroke', () => {
+			const selectUrlInputSpy = testUtils.sinon.spy( balloonPanel.urlInput.view, 'select' );
+
 			editor.keystrokes.press( { keyCode: keyCodes.l, ctrlKey: true } );
 
 			expect( balloonPanel.view.model.isVisible ).to.true;
+			expect( selectUrlInputSpy.calledOnce ).to.true;
 		} );
 
-		it( 'should focus editor on balloonPanel hide', () => {
-			const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+		describe( 'binding', () => {
+			it( 'should bind balloonPanel#model to link command', () => {
+				const model = balloonPanel.model;
+				const command = editor.commands.get( 'link' );
 
-			balloonPanel.view.model.isVisible = true;
+				expect( model.url ).to.undefined;
 
-			balloonPanel.view.model.isVisible = false;
+				command.value = 'http://cksource.com';
 
-			expect( focusSpy.calledOnce ).to.true;
+				expect( model.url ).to.equal( 'http://cksource.com' );
+			} );
+
+			it( 'should execute link command on balloonPanel#model executeLink event', () => {
+				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+
+				balloonPanel.model.url = 'http://cksource.com';
+				balloonPanel.model.fire( 'executeLink' );
+
+				expect( executeSpy.calledOnce ).to.true;
+				expect( executeSpy.calledWithExactly( 'link', 'http://cksource.com' ) ).to.true;
+			} );
+
+			it( 'should hide and focus editable on balloonPanel#model executeLink event', () => {
+				balloonPanel.model.fire( 'executeLink' );
+
+				expect( hidePanelSpy.calledOnce ).to.true;
+				expect( focusEditableSpy.calledOnce ).to.true;
+			} );
+
+			it( 'should execute unlink command on balloonPanel#model executeUnlink event', () => {
+				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+
+				balloonPanel.model.fire( 'executeUnlink' );
+
+				expect( executeSpy.calledOnce ).to.true;
+				expect( executeSpy.calledWithExactly( 'unlink' ) ).to.true;
+			} );
+
+			it( 'should hide and focus editable on balloonPanel#model executeUnlink event', () => {
+				balloonPanel.model.fire( 'executeUnlink' );
+
+				expect( hidePanelSpy.calledOnce ).to.true;
+				expect( focusEditableSpy.calledOnce ).to.true;
+			} );
+
+			it( 'should hide and focus editable on balloonPanel#model executeCancel event', () => {
+				balloonPanel.model.fire( 'executeCancel' );
+
+				expect( hidePanelSpy.calledOnce ).to.true;
+				expect( focusEditableSpy.calledOnce ).to.true;
+			} );
 		} );
 
-		it( 'should hide panel on editor focus event', () => {
-			balloonPanel.view.model.isVisible = true;
+		describe( 'click on editable', () => {
+			it( 'should open with not selected url input when selection is inside link element', () => {
+				const selectUrlInputSpy = testUtils.sinon.spy( balloonPanel.urlInput.view, 'select' );
+				const observer = editor.editing.view.getObserver( ClickObserver );
 
-			editor.editing.view.fire( 'focus' );
+				editor.document.schema.allow( { name: '$text', inside: '$root' } );
+				setModelData( editor.document, '<$text linkHref="url">some[] url</$text>' );
 
-			expect( balloonPanel.view.model.isVisible ).to.false;
-		} );
+				observer.fire( 'click', { target: document.body } );
 
-		it( 'should open panel on editor click, when selection is inside link element', () => {
-			const observer = editor.editing.view.getObserver( ClickObserver );
+				expect( balloonPanel.view.model.isVisible ).to.true;
+				expect( selectUrlInputSpy.notCalled ).to.true;
+			} );
 
-			editor.document.schema.allow( { name: '$text', inside: '$root' } );
-			setModelData( editor.document, '<$text linkHref="url">some[] url</$text>' );
+			it( 'should not open panel when selection is not inside link element', () => {
+				const observer = editor.editing.view.getObserver( ClickObserver );
 
-			observer.fire( 'click', { target: document.body } );
+				setModelData( editor.document, '[]' );
 
-			expect( balloonPanel.view.model.isVisible ).to.true;
-		} );
+				observer.fire( 'click', { target: document.body } );
 
-		it( 'should not open panel on editor click, when selection is not inside link element', () => {
-			const observer = editor.editing.view.getObserver( ClickObserver );
-
-			setModelData( editor.document, '[]' );
-
-			observer.fire( 'click', { target: document.body } );
-
-			expect( balloonPanel.view.model.isVisible ).to.false;
+				expect( balloonPanel.view.model.isVisible ).to.false;
+			} );
 		} );
 	} );
 } );
