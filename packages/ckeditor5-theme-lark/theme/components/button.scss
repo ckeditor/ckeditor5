@@ -39,16 +39,18 @@
  * @param {String} $color - Background color of the button.
  */
 @mixin ck-button-state-colors( $color, $offset: 0 ) {
-	&:hover,
-	&:focus {
-		background: ck-color( $color, $offset - 10 );
-		border-color: ck-border-color( $color, $offset - 10 );
-	}
+	&:not(.ck-disabled) {
+		&:hover,
+		&:focus {
+			background: ck-color( $color, $offset - 10 );
+			border-color: ck-border-color( $color, $offset - 10 );
+		}
 
-	&:active {
-		background: ck-color( $color, $offset - 15 );
-		border-color: ck-border-color( $color, $offset - 15 );
-		box-shadow: inset 0 2px 2px ck-color( $color, $offset - 25 );
+		&:active {
+			background: ck-color( $color, $offset - 15 );
+			border-color: ck-border-color( $color, $offset - 15 );
+			box-shadow: inset 0 2px 2px ck-color( $color, $offset - 25 );
+		}
 	}
 }
 
