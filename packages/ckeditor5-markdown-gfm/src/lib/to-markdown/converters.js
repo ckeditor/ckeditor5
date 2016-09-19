@@ -34,7 +34,6 @@ export default [
 			return `[${ content }](${ title })`;
 		}
 	},
-
 	// Headers - fixing newline at the beginning.
 	{
 		filter: [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ],
@@ -49,16 +48,15 @@ export default [
 			return hPrefix + ' ' + content;
 		}
 	},
-
 	// Inline code - fixing backticks inside code blocks.
 	{
-		filter: function (node) {
+		filter: ( node ) => {
 			const hasSiblings = node.previousSibling || node.nextSibling;
 			const isCodeBlock = node.parentNode.nodeName === 'PRE' && !hasSiblings;
 
 			return node.nodeName === 'CODE' && !isCodeBlock;
 		},
-		replacement: function (content) {
+		replacement: ( content ) => {
 
 			// If content starts or ends with backtick - use double backtick.
 			if ( content.indexOf( '`' ) > -1 ) {

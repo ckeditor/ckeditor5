@@ -6,8 +6,8 @@
 import { testDataProcessor as test } from '/tests/markdown-gfm/_utils/utils.js';
 
 describe( 'GFMDataProcessor', () => {
-	describe( 'del', () => {
-		it( 'should process deleted text', () => {
+	describe( 'Strikethrough', () => {
+		it( 'should process strikethrough text', () => {
 			test(
 				'~~deleted~~',
 
@@ -17,7 +17,7 @@ describe( 'GFMDataProcessor', () => {
 			);
 		} );
 
-		it( 'should process deleted inside text', () => {
+		it( 'should process strikethrough inside text', () => {
 			test(
 				'This is ~~deleted content~~.',
 
