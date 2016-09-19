@@ -212,13 +212,9 @@ export default class Link extends Feature {
 					} else {
 						this._attachPanelToElement( parentLink );
 					}
-
-					this.listenTo( balloonPanel.view.model, 'change:isVisible', ( evt, propertyName, value ) => {
-						if ( !value ) {
-							this.stopListening( viewDocument );
-						}
-					} );
 				} );
+
+				this.listenTo( balloonPanel.view.model, 'change:isVisible', () => this.stopListening( viewDocument ) );
 			}
 		} );
 

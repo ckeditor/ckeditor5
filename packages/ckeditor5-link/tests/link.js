@@ -15,6 +15,7 @@ import LinkEngine from '/ckeditor5/link/linkengine.js';
 import Button from '/ckeditor5/ui/button/button.js';
 import LinkBalloonPanel from '/ckeditor5/link/ui/linkballoonpanel.js';
 
+import Range from '/ckeditor5/engine/view/range.js';
 import ClickObserver from '/ckeditor5/engine/view/observer/clickobserver.js';
 
 testUtils.createSinonSandbox();
@@ -230,13 +231,79 @@ describe( 'Link', () => {
 			} );
 		} );
 
+		describe( 'close listeners', () => {
+			describe( 'keyboard', () => {
+				it( 'should listen keyboard events when is open', () => {
+					const escCloseSpy = testUtils.sinon.spy( linkFeature, '_closePanelOnClick' );
+
+					balloonPanel.view.model.isVisible = true;
+					document.dispatchEvent( new Event( 'keydown' ) );
+
+					expect( escCloseSpy.calledOnce ).to.true;
+				} );
+
+				it( 'should not listen keyboard events when is closed', () => {
+					const escCloseSpy = testUtils.sinon.spy( linkFeature, '_closePanelOnClick' );
+
+					balloonPanel.view.model.isVisible = false;
+					document.dispatchEvent( new Event( 'keydown' ) );
+
+					expect( escCloseSpy.calledOnce ).to.false;
+				} );
+
+				it( 'should stop listening keyboard events after close', () => {
+					const escCloseSpy = testUtils.sinon.spy( linkFeature, '_closePanelOnClick' );
+
+					balloonPanel.view.model.isVisible = true;
+					balloonPanel.view.model.isVisible = false;
+
+					document.dispatchEvent( new Event( 'keydown' ) );
+
+					expect( escCloseSpy.notCalled ).to.true;
+				} );
+			} );
+
+			describe( 'mouse', () => {
+				it( 'should not close on click inside the panel', () => {
+					balloonPanel.view.model.isVisible = true;
+					balloonPanel.view.element.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+
+					expect( hidePanelSpy.notCalled ).to.true;
+				} );
+
+				it( 'should close and not focus editable on click outside the panel', () => {
+					balloonPanel.view.model.isVisible = true;
+					document.dispatchEvent( new Event( 'mouseup' ) );
+
+					expect( hidePanelSpy.calledOnce ).to.true;
+					expect( focusEditableSpy.notCalled ).to.true;
+				} );
+
+				it( 'should not listen mouse events before open', () => {
+					balloonPanel.view.model.isVisible = false;
+					document.dispatchEvent( new Event( 'mouseup' ) );
+
+					expect( hidePanelSpy.notCalled ).to.true;
+				} );
+
+				it( 'should stop listening mouse events after closed', () => {
+					balloonPanel.view.model.isVisible = true;
+					balloonPanel.view.model.isVisible = false;
+
+					document.dispatchEvent( new Event( 'mouseup' ) );
+
+					expect( hidePanelSpy.notCalled ).to.true;
+				} );
+			} );
+		} );
+
 		describe( 'click on editable', () => {
-			it( 'should open with not selected url input when selection is inside link element', () => {
+			it( 'should open with not selected url input when collapsed selection is inside link element', () => {
 				const selectUrlInputSpy = testUtils.sinon.spy( balloonPanel.urlInput.view, 'select' );
 				const observer = editor.editing.view.getObserver( ClickObserver );
 
 				editor.document.schema.allow( { name: '$text', inside: '$root' } );
-				setModelData( editor.document, '<$text linkHref="url">some[] url</$text>' );
+				setModelData( editor.document, '<$text linkHref="url">fo[]o</$text>' );
 
 				observer.fire( 'click', { target: document.body } );
 
@@ -244,14 +311,139 @@ describe( 'Link', () => {
 				expect( selectUrlInputSpy.notCalled ).to.true;
 			} );
 
-			it( 'should not open panel when selection is not inside link element', () => {
+			it( 'should keep open and update position until collapsed selection stay inside the same link element', () => {
+				const observer = editor.editing.view.getObserver( ClickObserver );
+
+				editor.document.schema.allow( { name: '$text', inside: '$root' } );
+				setModelData( editor.document, '<$text linkHref="url">b[]ar</$text>' );
+
+				const root = editor.editing.view.getRoot();
+				const text = root.getChild( 0 ).getChild( 0 );
+
+				observer.fire( 'click', { target: document.body } );
+
+				expect( balloonPanel.view.model.isVisible ).to.true;
+
+				const attachToSpy = testUtils.sinon.spy( balloonPanel.view, 'attachTo' );
+
+				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
+				editor.editing.view.render();
+
+				expect( balloonPanel.view.model.isVisible ).to.true;
+				expect( attachToSpy.calledOnce ).to.true;
+			} );
+
+			it( 'should close when selection goes outside the link element', () => {
+				const observer = editor.editing.view.getObserver( ClickObserver );
+
+				editor.document.schema.allow( { name: '$text', inside: '$root' } );
+				setModelData( editor.document, 'foo <$text linkHref="url">b[]ar</$text>' );
+
+				const root = editor.editing.view.getRoot();
+				const text = root.getChild( 0 );
+
+				observer.fire( 'click', { target: document.body } );
+
+				expect( balloonPanel.view.model.isVisible ).to.true;
+
+				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
+				editor.editing.view.render();
+
+				expect( balloonPanel.view.model.isVisible ).to.false;
+			} );
+
+			it( 'should close when selection goes to the other link element with the same href', () => {
+				const observer = editor.editing.view.getObserver( ClickObserver );
+
+				editor.document.schema.allow( { name: '$text', inside: '$root' } );
+				setModelData( editor.document, '<$text linkHref="url">f[]oo</$text> bar <$text linkHref="url">biz</$text>' );
+
+				const root = editor.editing.view.getRoot();
+				const text = root.getChild( 2 ).getChild( 0 );
+
+				observer.fire( 'click', { target: document.body } );
+
+				expect( balloonPanel.view.model.isVisible ).to.true;
+
+				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
+				editor.editing.view.render();
+
+				expect( balloonPanel.view.model.isVisible ).to.false;
+			} );
+
+			it( 'should close when selection becomes non-collapsed', () => {
+				const observer = editor.editing.view.getObserver( ClickObserver );
+
+				editor.document.schema.allow( { name: '$text', inside: '$root' } );
+				setModelData( editor.document, '<$text linkHref="url">f[]oo</$text>' );
+
+				const root = editor.editing.view.getRoot();
+				const text = root.getChild( 0 ).getChild( 0 );
+
+				observer.fire( 'click', { target: {} } );
+
+				expect( balloonPanel.view.model.isVisible ).to.true;
+
+				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 2 ) ] );
+				editor.editing.view.render();
+
+				expect( balloonPanel.view.model.isVisible ).to.false;
+			} );
+
+			it( 'should stop updating position after close', () => {
+				const observer = editor.editing.view.getObserver( ClickObserver );
+
+				editor.document.schema.allow( { name: '$text', inside: '$root' } );
+				setModelData( editor.document, '<$text linkHref="url">b[]ar</$text>' );
+
+				const root = editor.editing.view.getRoot();
+				const text = root.getChild( 0 ).getChild( 0 );
+
+				observer.fire( 'click', { target: {} } );
+
+				expect( balloonPanel.view.model.isVisible ).to.true;
+
+				balloonPanel.view.model.isVisible = false;
+
+				const attachToSpy = testUtils.sinon.spy( balloonPanel.view, 'attachTo' );
+
+				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 2, text, 2 ) ], true );
+				editor.editing.view.render();
+
+				expect( attachToSpy.notCalled ).to.true;
+			} );
+
+			it( 'should not open when selection is not inside link element', () => {
 				const observer = editor.editing.view.getObserver( ClickObserver );
 
 				setModelData( editor.document, '[]' );
 
+				observer.fire( 'click', { target: {} } );
+
+				expect( balloonPanel.view.model.isVisible ).to.false;
+			} );
+
+			it( 'should not open when selection is non-collapsed', () => {
+				const observer = editor.editing.view.getObserver( ClickObserver );
+
+				editor.document.schema.allow( { name: '$text', inside: '$root' } );
+				setModelData( editor.document, '<$text linkHref="url">f[o]o</$text>' );
+
 				observer.fire( 'click', { target: document.body } );
 
 				expect( balloonPanel.view.model.isVisible ).to.false;
+			} );
+		} );
+
+		describe( '_closePanelOnClick', () => {
+			it( 'should hide panel and focus editable on ESC press', () => {
+				const eventInfo = {};
+				const domEvent = { keyCode: 27 };
+
+				linkFeature._closePanelOnClick( eventInfo, domEvent );
+
+				expect( hidePanelSpy.calledOnce ).to.true;
+				expect( focusEditableSpy.calledOnce ).to.true;
 			} );
 		} );
 	} );
