@@ -89,7 +89,7 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Create a toolbar unlink button. Clicking this button will unlink
+	 * Creates a toolbar unlink button. Clicking this button will unlink
 	 * the selected link.
 	 *
 	 * @private
@@ -120,41 +120,10 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Creates the {@link link.ui.LinkBalloonPanel LinkBalloonPanel} instance
-	 * and attaches link command to {@link link.LinkBalloonPanelModel#execute} event.
+	 * Creates the {@link link.ui.LinkBalloonPanel LinkBalloonPanel} instance,
+	 * attaches {@link link.LinkBalloonPanelModel} events to the link and unlink commands
+	 * and applies specified for this panel behaviours.
 	 *
-	 *	                       +------------------------------------+
-	 *	                       | <a href="http://foo.com">[foo]</a> |
-	 *	                       +------------------------------------+
-	 *	                                      Document
-	 *	             Value set in doc   ^                   +
-	 *	             if it's correct.   |                   |
-	 *	                                |                   |
-	 *	                      +---------+--------+          |
-	 *	Panel.urlInput#value  | Value validation |          |  User clicked "Link" in
-	 *	       is validated.  +---------+--------+          |  the toolbar. Retrieving
-	 *	                                |                   |  URL from Document and setting
-	 *	             PanelModel fires   |                   |  PanelModel#url.
-	 *	          PanelModel#execute.   +                   v
-	 *
-	 *	                              +-----------------------+
-	 *	                              | url: 'http://foo.com' |
-	 *	                              +-----------------------+
-	 *	                                      PanelModel
-	 *	                                ^                   +
-	 *	                                |                   |  Input field is
-	 *	                  User clicked  |                   |  in sync with
-	 *	                       "Save".  |                   |  PanelModel#url.
-	 *	                                +                   v
-	 *
-	 *	                            +--------------------------+
-	 *	                            | +----------------------+ |
-	 *	                            | |http://foo.com        | |
-	 *	                            | +----------------------+ |
-	 *	                            |                   +----+ |
-	 *	                            |                   |Save| |
-	 *	                            |                   +----+ |
-	 *	                            +--------------------------+
 	 * @private
 	 * @returns {link.ui.LinkBalloonPanel} Link balloon panel instance.
 	 */
@@ -192,16 +161,16 @@ export default class Link extends Feature {
 		// which means that the `Cancel` button has been clicked.
 		this.listenTo( panelModel, 'executeCancel', () => this._hidePanel( { focusDocument: true } ) );
 
-		// On panel show attach close by `Esc` press and click out of panel actions, on panel hide clean up listeners.
+		// Attach close by `Esc` press and click out of panel actions on panel show, on panel hide clean up listeners.
 		this.listenTo( balloonPanel.view.model, 'change:isVisible', ( evt, propertyName, value ) => {
 			if ( value ) {
 				// Handle close by `Esc`.
-				this.balloonPanel.view.listenTo( document, 'keydown', this._closePanelOnClick.bind( this ) );
+				balloonPanel.view.listenTo( document, 'keydown', this._closePanelOnClick.bind( this ) );
 
 				// Handle close by clicking out of the panel.
 				// Note that it is not handled by a `click` event, it is because clicking on link button or directly on link element
 				// was opening and closing panel at the same time.
-				this.balloonPanel.view.listenTo( document, 'mouseup', ( evt, domEvt ) => {
+				balloonPanel.view.listenTo( document, 'mouseup', ( evt, domEvt ) => {
 					// Do nothing when the panel was clicked.
 					if ( balloonPanel.view.element.contains( domEvt.target ) ) {
 						return;
@@ -216,8 +185,7 @@ export default class Link extends Feature {
 					}
 				} );
 			} else {
-				this.balloonPanel.view.stopListening( document );
-				this.stopListening( viewDocument );
+				balloonPanel.view.stopListening( document );
 			}
 		} );
 
@@ -231,17 +199,19 @@ export default class Link extends Feature {
 				this._attachPanelToElement();
 
 				this.listenTo( viewDocument, 'render', () => {
-					const position = viewSelection.getFirstPosition();
+					const currentParentLink = getPositionParentLink( viewSelection.getFirstPosition() );
 
-					if ( !position ) {
-						return;
-					}
-
-					if ( !viewSelection.isCollapsed || parentLink !== getPositionParentLink( position ) ) {
+					if ( !viewSelection.isCollapsed || parentLink !== currentParentLink ) {
 						this._hidePanel();
 					} else {
 						this._attachPanelToElement( parentLink );
 					}
+
+					this.listenTo( balloonPanel.view.model, 'change:isVisible', ( evt, propertyName, value ) => {
+						if ( !value ) {
+							this.stopListening( viewDocument );
+						}
+					} );
 				} );
 			}
 		} );
@@ -249,7 +219,7 @@ export default class Link extends Feature {
 		// Handle `Ctrl+L` keystroke and show panel.
 		editor.keystrokes.set( 'CTRL+L', () => {
 			this._attachPanelToElement();
-			this.balloonPanel.urlInput.view.select();
+			balloonPanel.urlInput.view.select();
 		} );
 
 		// Append panel element to body.
