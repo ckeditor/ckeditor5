@@ -38,7 +38,7 @@ describe( 'GFMDataProcessor', () => {
 				// <p>single line</p>
 				//
 				//<h1>header</h1>
-				'<p>single line</p><h1 id="header">header</h1>',
+				'<p>single line</p><h1>header</h1>',
 
 				// To-markdown always put 2 empty lines after paragraph.
 				'single line\n\n' +
@@ -56,7 +56,7 @@ describe( 'GFMDataProcessor', () => {
 				// <p>single line</p>
 				//
 				//<h1>header</h1>
-				'<p>single line</p><h1 id="header">header</h1>',
+				'<p>single line</p><h1>header</h1>',
 
 				// To-markdown always put 2 empty lines after paragraph and normalize header to #.
 				'single line\n' +

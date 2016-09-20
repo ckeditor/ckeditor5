@@ -11,9 +11,7 @@ describe( 'GFMDataProcessor', () => {
 			test(
 				'# Level 1',
 
-				// GitHub is rendering as:
-				// <h1>Level 1</h1>
-				'<h1 id="level-1">Level 1</h1>'
+				'<h1>Level 1</h1>'
 			);
 		} );
 
@@ -22,9 +20,7 @@ describe( 'GFMDataProcessor', () => {
 				'Level 1\n' +
 				'===',
 
-				// GitHub is rendering as:
-				// <h1>Level 1</h1>
-				'<h1 id="level-1">Level 1</h1>',
+				'<h1>Level 1</h1>',
 
 				// When converting back it will be normalized to # representation.
 				'# Level 1'
@@ -35,9 +31,7 @@ describe( 'GFMDataProcessor', () => {
 			test(
 				'## Level 2',
 
-				// GitHub is rendering as:
-				// <h2>Level 2</h2>
-				'<h2 id="level-2">Level 2</h2>'
+				'<h2>Level 2</h2>'
 			);
 		} );
 
@@ -46,9 +40,7 @@ describe( 'GFMDataProcessor', () => {
 				'Level 2\n' +
 				'---',
 
-				// GitHub is rendering as:
-				// <h2>Level 2</h2>
-				'<h2 id="level-2">Level 2</h2>',
+				'<h2>Level 2</h2>',
 
 				// When converting back it will be normalized to ## representation.
 				'## Level 2'
@@ -59,9 +51,7 @@ describe( 'GFMDataProcessor', () => {
 			test(
 				'### Level 3',
 
-				// GitHub is rendering as:
-				// <h3>Level 3</h3>
-				'<h3 id="level-3">Level 3</h3>'
+				'<h3>Level 3</h3>'
 			);
 		} );
 
@@ -69,9 +59,7 @@ describe( 'GFMDataProcessor', () => {
 			test(
 				'#### Level 4',
 
-				// GitHub is rendering as:
-				// <h4>Level 4</h4>
-				'<h4 id="level-4">Level 4</h4>'
+				'<h4>Level 4</h4>'
 			);
 		} );
 
@@ -79,9 +67,7 @@ describe( 'GFMDataProcessor', () => {
 			test(
 				'##### Level 5',
 
-				// GitHub is rendering as:
-				// <h5>Level 5</h5>
-				'<h5 id="level-5">Level 5</h5>'
+				'<h5>Level 5</h5>'
 			);
 		} );
 
@@ -89,9 +75,7 @@ describe( 'GFMDataProcessor', () => {
 			test(
 				'###### Level 6',
 
-				// GitHub is rendering as:
-				// <h6>Level 6</h6>
-				'<h6 id="level-6">Level 6</h6>'
+				'<h6>Level 6</h6>'
 			);
 		} );
 
@@ -99,9 +83,7 @@ describe( 'GFMDataProcessor', () => {
 			test(
 				'#      Level 1',
 
-				// GitHub is rendering as:
-				// <h1>Level 6</h1>
-				'<h1 id="level-1">Level 1</h1>',
+				'<h1>Level 1</h1>',
 
 				// When converting back it will be normalized to # Level 1.
 				'# Level 1'

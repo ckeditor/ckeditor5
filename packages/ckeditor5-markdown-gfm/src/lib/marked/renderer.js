@@ -45,9 +45,7 @@ Renderer.prototype.html = function( html ) {
 };
 
 Renderer.prototype.heading = function( text, level, raw ) {
-	const id = this.options.headerPrefix + raw.toLowerCase().replace( /[^\w]+/g, '-' );
-
-	return `<h${ level } id="${id}">${ text }</h${ level }>`;
+	return `<h${ level }>${ text }</h${ level }>`;
 };
 
 Renderer.prototype.hr = function() {
