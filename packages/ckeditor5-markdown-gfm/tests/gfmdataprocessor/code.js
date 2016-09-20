@@ -11,8 +11,6 @@ describe( 'GFMDataProcessor', () => {
 			test(
 				'regular text and `inline code`',
 
-				// GitHub is rendering as:
-				// <p>regular text and <code>inline code</code></p>
 				'<p>regular text and <code>inline code</code></p>'
 			);
 		} );
@@ -21,8 +19,6 @@ describe( 'GFMDataProcessor', () => {
 			test(
 				'`this is code` and this is `too`',
 
-				// GitHub is rendering as:
-				// <p><code>this is code</code> and this is <code>too</code></p>
 				'<p><code>this is code</code> and this is <code>too</code></p>'
 			);
 		} );
@@ -31,8 +27,6 @@ describe( 'GFMDataProcessor', () => {
 			test(
 				'regular text and` inline code`',
 
-				// GitHub is rendering as:
-				// <p>regular text and<code>inline code</code></p>
 				'<p>regular text and<code>inline code</code></p>',
 
 				// When converting back it will be normalized and spaces
@@ -45,8 +39,6 @@ describe( 'GFMDataProcessor', () => {
 			test(
 				'`` `backticks` ``',
 
-				// GitHub is rendering as:
-				// <p><code>`backticks`</code></p>
 				'<p><code>`backticks`</code></p>'
 			);
 		} );
@@ -55,8 +47,6 @@ describe( 'GFMDataProcessor', () => {
 			test(
 				'`` some `backticks` inside ``',
 
-				// GitHub is rendering as:
-				// <p><code>some `backticks` inside</code></p>
 				'<p><code>some `backticks` inside</code></p>'
 			);
 		} );
@@ -153,7 +143,6 @@ describe( 'GFMDataProcessor', () => {
 				'all contain trailing spaces  </code></pre>',
 
 				// When converting back tabs are normalized to ```.
-
 				'```\n' +
 				'the lines in this block  \n' +
 				'all contain trailing spaces  \n' +

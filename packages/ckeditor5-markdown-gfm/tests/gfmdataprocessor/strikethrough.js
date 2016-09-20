@@ -11,8 +11,6 @@ describe( 'GFMDataProcessor', () => {
 			test(
 				'~~deleted~~',
 
-				// GitHub is rendering as:
-				// <p><del>deleted</del></p>
 				'<p><del>deleted</del></p>'
 			);
 		} );
@@ -21,8 +19,6 @@ describe( 'GFMDataProcessor', () => {
 			test(
 				'This is ~~deleted content~~.',
 
-				// GitHub is rendering as:
-				// <p>This is <del>deleted content</del>.</p>
 				'<p>This is <del>deleted content</del>.</p>'
 			);
 		} );
