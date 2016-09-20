@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-bundler-rollup": "^2.0.0",
-    "@ckeditor/ckeditor5-dev-compiler": "^2.0.0",
+    "@ckeditor/ckeditor5-dev-compiler": "^2.1.0",
     "@ckeditor/ckeditor5-dev-docs": "^1.0.0",
     "@ckeditor/ckeditor5-dev-env": "^1.0.0",
     "@ckeditor/ckeditor5-dev-lint": "^1.0.1",
