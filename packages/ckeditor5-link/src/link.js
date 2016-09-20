@@ -290,6 +290,7 @@ export default class Link extends Feature {
 //
 // @private
 // @param {engine.view.Position} position
+// @returns {link.LinkElement|null}
 function getPositionParentLink( position ) {
 	return position.parent.getAncestors().find( ( ancestor ) => ancestor instanceof LinkElement );
 }
