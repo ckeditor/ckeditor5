@@ -58,7 +58,6 @@ export default class Link extends Feature {
 	 */
 	_createToolbarLinkButton() {
 		const editor = this.editor;
-		const viewDocument = editor.editing.view;
 		const linkCommand = editor.commands.get( 'link' );
 		const t = editor.t;
 
@@ -76,10 +75,6 @@ export default class Link extends Feature {
 
 		// Show the panel on button click only when editor is focused.
 		this.listenTo( linkButtonModel, 'execute', () => {
-			if ( !viewDocument.isFocused ) {
-				return;
-			}
-
 			this._attachPanelToElement();
 			this.balloonPanel.urlInput.view.select();
 		} );
@@ -184,11 +179,6 @@ export default class Link extends Feature {
 
 					// When click was out of the panel then hide it.
 					balloonPanel.view.hide();
-
-					// When editor was clicked then restore editor focus.
-					if ( editor.ui.view.element.contains( domEvt.target ) ) {
-						viewDocument.focus();
-					}
 				} );
 			} else {
 				balloonPanel.view.stopListening( document );

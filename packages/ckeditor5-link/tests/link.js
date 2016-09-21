@@ -73,20 +73,10 @@ describe( 'Link', () => {
 			expect( model.isEnabled ).to.be.false;
 		} );
 
-		it( 'should open panel on linkButton#model execute event, when editor is focused', () => {
-			editor.editing.view.isFocused = true;
-
+		it( 'should open panel on linkButton#model execute event', () => {
 			linkButton.model.fire( 'execute' );
 
 			expect( linkFeature.balloonPanel.view.isVisible ).to.true;
-		} );
-
-		it( 'should not open panel on linkButton#model execute event, when editor is not focused', () => {
-			editor.editing.view.isFocused = false;
-
-			linkButton.model.fire( 'execute' );
-
-			expect( linkFeature.balloonPanel.view.isVisible ).to.false;
 		} );
 
 		it( 'should open panel attached to the link element, when collapsed selection is inside link element', () => {
