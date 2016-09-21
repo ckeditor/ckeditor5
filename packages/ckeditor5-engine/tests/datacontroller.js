@@ -13,7 +13,6 @@ import buildViewConverter  from '/ckeditor5/engine/conversion/buildviewconverter
 import buildModelConverter  from '/ckeditor5/engine/conversion/buildmodelconverter.js';
 
 import { getData, setData, stringify, parse } from '/tests/engine/_utils/model.js';
-import { stringify as stringifyView } from '/tests/engine/_utils/view.js';
 
 import count from '/ckeditor5/utils/count.js';
 
@@ -230,16 +229,18 @@ describe( 'DataController', () => {
 	} );
 
 	describe( 'toView', () => {
-		it( 'should get paragraph with text', () => {
+		it( 'should get view element P with text', () => {
 			modelDocument.schema.registerItem( 'paragraph', '$block' );
 			modelDocument.schema.registerItem( 'div', '$block' );
 			const modelElement = parse( '<div><paragraph>foo</paragraph></div>', modelDocument.schema );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 
-			const viewElement = data.toView( modelElement );
+			const viewElement = data.toView( modelElement ).getChild( 0 );
 
-			expect( stringifyView( viewElement ) ).to.equal( '<p>foo</p>' );
+			expect( viewElement.name ).to.equal( 'p' );
+			expect( viewElement.childCount ).to.equal( 1 );
+			expect( viewElement.getChild( 0 ).data ).to.equal( 'foo' );
 		} );
 	} );
 

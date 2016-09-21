@@ -188,7 +188,7 @@ export default class DataController {
 	 *
 	 * @see engine.DataController#set
 	 * @param {String} data Data to parse.
-	 * @param {String} [context='$root''] Base context in which view will be converted to the model. See:
+	 * @param {String} [context='$root'] Base context in which view will be converted to the model. See:
 	 * {@link engine.conversion.ViewConversionDispatcher#convert}.
 	 * @returns {engine.model.DocumentFragment} Parsed data.
 	 */
