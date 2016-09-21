@@ -12,7 +12,8 @@ import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor
 import buildViewConverter  from '/ckeditor5/engine/conversion/buildviewconverter.js';
 import buildModelConverter  from '/ckeditor5/engine/conversion/buildmodelconverter.js';
 
-import { getData, setData, stringify } from '/tests/engine/_utils/model.js';
+import { getData, setData, stringify, parse } from '/tests/engine/_utils/model.js';
+import { stringify as stringifyView } from '/tests/engine/_utils/view.js';
 
 import count from '/ckeditor5/utils/count.js';
 
@@ -79,6 +80,18 @@ describe( 'DataController', () => {
 
 			expect( stringify( model ) ).to.equal(
 				'<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
+		} );
+
+		it( 'should parse in the root context by default', () => {
+			const model = data.parse( 'foo' );
+
+			expect( stringify( model ) ).to.equal( '' );
+		} );
+
+		it( 'should accept parsing context', () => {
+			const model = data.parse( 'foo', '$block' );
+
+			expect( stringify( model ) ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -201,6 +214,32 @@ describe( 'DataController', () => {
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 			expect( data.get( 'main' ) ).to.equal( '<p>foo</p>' );
 			expect( data.get( 'title' ) ).to.equal( 'Bar' );
+		} );
+	} );
+
+	describe( 'stringify', () => {
+		it( 'should get paragraph with text', () => {
+			modelDocument.schema.registerItem( 'paragraph', '$block' );
+			modelDocument.schema.registerItem( 'div', '$block' );
+			const modelElement = parse( '<div><paragraph>foo</paragraph></div>', modelDocument.schema );
+
+			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+
+			expect( data.stringify( modelElement ) ).to.equal( '<p>foo</p>' );
+		} );
+	} );
+
+	describe( 'toView', () => {
+		it( 'should get paragraph with text', () => {
+			modelDocument.schema.registerItem( 'paragraph', '$block' );
+			modelDocument.schema.registerItem( 'div', '$block' );
+			const modelElement = parse( '<div><paragraph>foo</paragraph></div>', modelDocument.schema );
+
+			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+
+			const viewElement = data.toView( modelElement );
+
+			expect( stringifyView( viewElement ) ).to.equal( '<p>foo</p>' );
 		} );
 	} );
 

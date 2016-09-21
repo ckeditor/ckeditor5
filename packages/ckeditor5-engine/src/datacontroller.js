@@ -115,19 +115,44 @@ export default class DataController {
 	 */
 	get( rootName = 'main' ) {
 		// Get model range.
-		const modelRoot = this.model.getRoot( rootName );
-		const modelRange = ModelRange.createIn( modelRoot );
+		return this.stringify( this.model.getRoot( rootName ) );
+	}
 
+	/**
+	 * Returns the content of the given {@link engine.model.Element model's element} converted by the
+	 * {@link engine.DataController#modelToView model to view converters} and formatted by the
+	 * {@link engine.DataController#processor data processor}.
+	 *
+	 * @param {engine.model.Element} modelElement Element which content will be stringified.
+	 * @returns {String} Output data.
+	 */
+	stringify( modelElement ) {
 		// model -> view
+		const viewDocumentFragment = this.toView( modelElement );
+
+		// view -> data
+		return this.processor.toData( viewDocumentFragment );
+	}
+
+	/**
+	 * Returns the content of the given {@link engine.model.Element model's element} converted by the
+	 * {@link engine.DataController#modelToView model to view converters} to the
+	 * {@link engine.view.DocumentFragment view DocumentFragment}.
+	 *
+	 * @param {engine.model.Element} modelElement Element which content will be stringified.
+	 * @returns {engine.view.DocumentFragment} Output view DocumentFragment.
+	 */
+	toView( modelElement ) {
+		const modelRange = ModelRange.createIn( modelElement );
+
 		const viewDocumentFragment = new ViewDocumentFragment();
-		this.mapper.bindElements( modelRoot, viewDocumentFragment );
+		this.mapper.bindElements( modelElement, viewDocumentFragment );
 
 		this.modelToView.convertInsertion( modelRange );
 
 		this.mapper.clearBindings();
 
-		// view -> data
-		return this.processor.toData( viewDocumentFragment );
+		return viewDocumentFragment;
 	}
 
 	/**
@@ -163,16 +188,16 @@ export default class DataController {
 	 *
 	 * @see engine.DataController#set
 	 * @param {String} data Data to parse.
+	 * @param {String} [context='$root''] Base context in which view will be converted to the model. See:
+	 * {@link engine.conversion.ViewConversionDispatcher#convert}.
 	 * @returns {engine.model.DocumentFragment} Parsed data.
 	 */
-	parse( data ) {
+	parse( data, context = '$root' ) {
 		// data -> view
 		const viewDocumentFragment = this.processor.toView( data );
 
 		// view -> model
-		const modelDocumentFragment = this.viewToModel.convert( viewDocumentFragment, { context: [ '$root' ] } );
-
-		return modelDocumentFragment;
+		return this.viewToModel.convert( viewDocumentFragment, { context: [ context ] } );
 	}
 
 	/**
