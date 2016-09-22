@@ -20,7 +20,7 @@ import env from './env.js';
  * * `a-z`,
  * * `0-9`,
  * * `arrow(left|up|right|bottom)`,
- * * `backspace`, `delete`, `enter`,
+ * * `backspace`, `delete`, `enter`, `esc`, `tab`,
  * * `ctrl`, `cmd`, `shift`, `alt`.
  *
  * @member {Object} utils.keyboard.keyCodes
@@ -120,6 +120,8 @@ function generateKnownKeyCodes() {
 		backspace: 8,
 		delete: 46,
 		enter: 13,
+		esc: 27,
+		tab: 9,
 
 		// The idea about these numbers is that they do not collide with any real key codes, so we can use them
 		// like bit masks.

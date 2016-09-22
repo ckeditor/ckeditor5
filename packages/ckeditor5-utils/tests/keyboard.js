@@ -23,6 +23,12 @@ describe( 'Keyboard', () => {
 			expect( keyCodes.delete ).to.equal( 46 );
 			expect( keyCodes.ctrl ).to.equal( 0x110000 );
 			expect( keyCodes.cmd ).to.equal( 0x110000 );
+
+			expect( keyCodes ).to.include.keys(
+				'ctrl', 'cmd', 'shift', 'alt',
+				'arrowleft', 'arrowup', 'arrowright', 'arrowdown',
+				'backspace', 'delete', 'enter', 'esc', 'tab'
+			);
 		} );
 	} );
 
