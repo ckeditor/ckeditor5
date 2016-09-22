@@ -10,8 +10,149 @@ import log from '../utils/log.js';
 import isNative from '../utils/lib/lodash/isNative.js';
 
 /**
+ * Mixin that injects the DOM events API into its host. It provides the API
+ * compatible with {@link utils.EmitterMixin}.
+ *
+ * DOM emitter mixin is by default available in the {@link ui.View} class,
+ * but it can also be mixed into any other class:
+ *
+ *		import mix from '../utils/mix.js';
+ *		import DOMEmitterMixin from '../ui/domemittermixin.js';
+ *
+ *		class SomeView {}
+ *		mix( SomeView, DOMEmitterMixin );
+ *
+ *		const view = new SomeView();
+ *		view.listenTo( domElement, ( evt, domEvt ) => {
+ *			console.log( evt, domEvt );
+ *		} );
+ *
+ * @mixin ui.DOMEmitterMixin
+ * @mixes utils.EmitterMixin
+ * @implements ui.DOMEmitter
+ */
+const DOMEmitterMixin = extend( {}, EmitterMixin, {
+	/**
+	 * Registers a callback function to be executed when an event is fired in a specific Emitter or DOM Node.
+	 * It is backwards compatible with {@link utils.EmitterMixin#listenTo}.
+	 *
+	 * @param {utils.Emitter|Node} emitter The object that fires the event.
+	 * @param {String} event The name of the event.
+	 * @param {Function} callback The function to be called on event.
+	 * @param {Object} [options={}] Additional options.
+	 * @param {utils.PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
+	 * order they were added.
+	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
+	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered
+	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
+	 *
+	 * @method ui.DOMEmitterMixin#listenTo
+	 */
+	listenTo() {
+		const args = Array.prototype.slice.call( arguments );
+		const emitter = args[ 0 ];
+
+		// Check if emitter is an instance of DOM Node. If so, replace the argument with
+		// corresponding ProxyEmitter (or create one if not existing).
+		if ( isDomNode( emitter ) ) {
+			args[ 0 ] = this._getProxyEmitter( emitter ) || new ProxyEmitter( emitter );
+		}
+
+		// Execute parent class method with Emitter (or ProxyEmitter) instance.
+		EmitterMixin.listenTo.apply( this, args );
+	},
+
+	/**
+	 * Stops listening for events. It can be used at different levels:
+	 * It is backwards compatible with {@link utils.EmitterMixin#listenTo}.
+	 *
+	 * * To stop listening to a specific callback.
+	 * * To stop listening to a specific event.
+	 * * To stop listening to all events fired by a specific object.
+	 * * To stop listening to all events fired by all object.
+	 *
+	 * @param {utils.Emitter|Node} [emitter] The object to stop listening to. If omitted, stops it for all objects.
+	 * @param {String} [event] (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it
+	 * for all events from `emitter`.
+	 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
+	 * `event`.
+	 *
+	 * @method ui.DOMEmitterMixin#stopListening
+	 */
+	stopListening() {
+		const args = Array.prototype.slice.call( arguments );
+		const emitter = args[ 0 ];
+
+		// Check if emitter is an instance of DOM Node. If so, replace the argument with corresponding ProxyEmitter.
+		if ( isDomNode( emitter ) ) {
+			let proxy = this._getProxyEmitter( emitter );
+
+			if ( proxy ) {
+				args[ 0 ] = proxy;
+			} else {
+				log.error(
+					'domemittermixin-stoplistening: Stopped listening on a DOM Node that has no emitter or emitter is gone.',
+					emitter
+				);
+			}
+		}
+
+		// Execute parent class method with Emitter (or ProxyEmitter) instance.
+		EmitterMixin.stopListening.apply( this, args );
+	},
+
+	/**
+	 * Retrieves ProxyEmitter instance for given DOM Node residing in this Host.
+	 *
+	 * @param {Node} node DOM Node of the ProxyEmitter.
+	 * @method ui.DOMEmitterMixin#_getProxyEmitter
+	 * @return {ProxyEmitter} ProxyEmitter instance or null.
+	 */
+	_getProxyEmitter( node ) {
+		let proxy, emitters, emitterInfo;
+
+		// Get node UID. It allows finding Proxy Emitter for this DOM Node.
+		const uid = getNodeUID( node );
+
+		// Find existing Proxy Emitter for this DOM Node among emitters.
+		if ( ( emitters = this._listeningTo ) ) {
+			if ( ( emitterInfo = emitters[ uid ] ) ) {
+				proxy = emitterInfo.emitter;
+			}
+		}
+
+		return proxy || null;
+	}
+} );
+
+export default DOMEmitterMixin;
+
+/**
  * Creates a ProxyEmitter instance. Such an instance is a bridge between a DOM Node firing events
  * and any Host listening to them. It is backwards compatible with {@link utils.EmitterMixin#on}.
+ *
+ *                                  listenTo( click, ... )
+ *                    +-----------------------------------------+
+ *                    |              stopListening( ... )       |
+ *     +----------------------------+                           |             addEventListener( click, ... )
+ *     | Host                       |                           |   +---------------------------------------------+
+ *     +----------------------------+                           |   |       removeEventListener( click, ... )     |
+ *     | _listeningTo: {            |                +----------v-------------+                                   |
+ *     |   UID: {                   |                | ProxyEmitter           |                                   |
+ *     |     emitter: ProxyEmitter, |                +------------------------+                      +------------v----------+
+ *     |     callbacks: {           |                | events: {              |                      | Node (HTMLElement)    |
+ *     |       click: [ callbacks ] |                |   click: [ callbacks ] |                      +-----------------------+
+ *     |     }                      |                | },                     |                      | data-cke-expando: UID |
+ *     |   }                        |                | _domNode: Node,        |                      +-----------------------+
+ *     | }                          |                | _domListeners: {},     |                                   |
+ *     | +------------------------+ |                | _emitterId: UID        |                                   |
+ *     | | DOMEmitterMixin        | |                +--------------^---------+                                   |
+ *     | +------------------------+ |                           |   |                                             |
+ *     +--------------^-------------+                           |   +---------------------------------------------+
+ *                    |                                         |                  click (DOM Event)
+ *                    +-----------------------------------------+
+ *                                fire( click, DOM Event )
  *
  * @memberOf ui
  * @mixes utils.EmitterMixin
@@ -131,133 +272,6 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 		return domListener;
 	}
 } );
-
-/**
- * Mixin that injects the DOM events API into its host. It provides the API
- * compatible with {@link utils.EmitterMixin}.
- *
- *                                  listenTo( click, ... )
- *                    +-----------------------------------------+
- *                    |              stopListening( ... )       |
- *     +----------------------------+                           |             addEventListener( click, ... )
- *     | Host                       |                           |   +---------------------------------------------+
- *     +----------------------------+                           |   |       removeEventListener( click, ... )     |
- *     | _listeningTo: {            |                +----------v-------------+                                   |
- *     |   UID: {                   |                | ProxyEmitter           |                                   |
- *     |     emitter: ProxyEmitter, |                +------------------------+                      +------------v----------+
- *     |     callbacks: {           |                | events: {              |                      | Node (HTMLElement)    |
- *     |       click: [ callbacks ] |                |   click: [ callbacks ] |                      +-----------------------+
- *     |     }                      |                | },                     |                      | data-cke-expando: UID |
- *     |   }                        |                | _domNode: Node,        |                      +-----------------------+
- *     | }                          |                | _domListeners: {},     |                                   |
- *     | +------------------------+ |                | _emitterId: UID        |                                   |
- *     | | DOMEmitterMixin        | |                +--------------^---------+                                   |
- *     | +------------------------+ |                           |   |                                             |
- *     +--------------^-------------+                           |   +---------------------------------------------+
- *                    |                                         |                  click (DOM Event)
- *                    +-----------------------------------------+
- *                                fire( click, DOM Event )
- *
- * @mixin ui.DOMEmitterMixin
- * @mixes utils.EmitterMixin
- * @implements ui.DOMEmitter
- */
-const DOMEmitterMixin = extend( {}, EmitterMixin, {
-	/**
-	 * Registers a callback function to be executed when an event is fired in a specific Emitter or DOM Node.
-	 * It is backwards compatible with {@link utils.EmitterMixin#listenTo}.
-	 *
-	 * @param {utils.Emitter|Node} emitter The object that fires the event.
-	 * @param {String} event The name of the event.
-	 * @param {Function} callback The function to be called on event.
-	 * @param {Object} [options={}] Additional options.
-	 * @param {utils.PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
-	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
-	 * order they were added.
-	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
-	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered
-	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
-	 *
-	 * @method ui.DOMEmitterMixin#listenTo
-	 */
-	listenTo() {
-		const args = Array.prototype.slice.call( arguments );
-		const emitter = args[ 0 ];
-
-		// Check if emitter is an instance of DOM Node. If so, replace the argument with
-		// corresponding ProxyEmitter (or create one if not existing).
-		if ( isDomNode( emitter ) ) {
-			args[ 0 ] = this._getProxyEmitter( emitter ) || new ProxyEmitter( emitter );
-		}
-
-		// Execute parent class method with Emitter (or ProxyEmitter) instance.
-		EmitterMixin.listenTo.apply( this, args );
-	},
-
-	/**
-	 * Stops listening for events. It can be used at different levels:
-	 * It is backwards compatible with {@link utils.EmitterMixin#listenTo}.
-	 *
-	 * * To stop listening to a specific callback.
-	 * * To stop listening to a specific event.
-	 * * To stop listening to all events fired by a specific object.
-	 * * To stop listening to all events fired by all object.
-	 *
-	 * @param {utils.Emitter|Node} [emitter] The object to stop listening to. If omitted, stops it for all objects.
-	 * @param {String} [event] (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it
-	 * for all events from `emitter`.
-	 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
-	 * `event`.
-	 *
-	 * @method ui.DOMEmitterMixin#stopListening
-	 */
-	stopListening() {
-		const args = Array.prototype.slice.call( arguments );
-		const emitter = args[ 0 ];
-
-		// Check if emitter is an instance of DOM Node. If so, replace the argument with corresponding ProxyEmitter.
-		if ( isDomNode( emitter ) ) {
-			let proxy = this._getProxyEmitter( emitter );
-
-			if ( proxy ) {
-				args[ 0 ] = proxy;
-			} else {
-				log.error(
-					'domemittermixin-stoplistening: Stopped listening on a DOM Node that has no emitter or emitter is gone.',
-					emitter
-				);
-			}
-		}
-
-		// Execute parent class method with Emitter (or ProxyEmitter) instance.
-		EmitterMixin.stopListening.apply( this, args );
-	},
-
-	/**
-	 * Retrieves ProxyEmitter instance for given DOM Node residing in this Host.
-	 *
-	 * @param {Node} node DOM Node of the ProxyEmitter.
-	 * @method ui.DOMEmitterMixin#_getProxyEmitter
-	 * @return {ProxyEmitter} ProxyEmitter instance or null.
-	 */
-	_getProxyEmitter( node ) {
-		let proxy, emitters, emitterInfo;
-
-		// Get node UID. It allows finding Proxy Emitter for this DOM Node.
-		const uid = getNodeUID( node );
-
-		// Find existing Proxy Emitter for this DOM Node among emitters.
-		if ( ( emitters = this._listeningTo ) ) {
-			if ( ( emitterInfo = emitters[ uid ] ) ) {
-				proxy = emitterInfo.emitter;
-			}
-		}
-
-		return proxy || null;
-	}
-} );
-
-export default DOMEmitterMixin;
 
 // Gets an unique DOM Node identifier. The identifier will be set if not defined.
 //
