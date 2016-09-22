@@ -16,6 +16,8 @@ import ButtonView from '../ui/button/buttonview.js';
 import LinkBalloonPanel from './ui/linkballoonpanel.js';
 import LinkBalloonPanelView from './ui/linkballoonpanelview.js';
 
+import { keyCodes } from '../utils/keyboard.js';
+
 /**
  * The link feature. It introduces the Link and Unlink buttons and the <kbd>Ctrl+L</kbd> keystroke.
  *
@@ -115,9 +117,9 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Creates the {@link link.ui.LinkBalloonPanel LinkBalloonPanel} instance,
+	 * Creates the {@link link.ui.LinkBalloonPanel} instance,
 	 * attaches {@link link.LinkBalloonPanelModel} events to the link and unlink commands
-	 * and applies specified for this panel behaviours.
+	 * and applies behaviors specified for this panel.
 	 *
 	 * @private
 	 * @returns {link.ui.LinkBalloonPanel} Link balloon panel instance.
@@ -166,7 +168,7 @@ export default class Link extends Feature {
 		this.listenTo( balloonPanel.view.model, 'change:isVisible', ( evt, propertyName, value ) => {
 			if ( value ) {
 				// Handle close by `Esc`.
-				balloonPanel.view.listenTo( document, 'keydown', this._closePanelOnClick.bind( this ) );
+				balloonPanel.view.listenTo( document, 'keydown', this._closePanelOnEsc.bind( this ) );
 
 				// Handle close by clicking out of the panel.
 				// Note that it is not handled by a `click` event, it is because clicking on link button or directly on link element
@@ -219,8 +221,6 @@ export default class Link extends Feature {
 	 * If selection is collapsed and is placed inside link element, then panel will be attached
 	 * to whole link element, otherwise will be attached to the selection.
 	 *
-	 * Input inside panel will be focused.
-	 *
 	 * @private
 	 * @param {core.view.LinkElement} [parentLink] Target element.
 	 */
@@ -246,7 +246,7 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Hide {@link link#balloonPanel LinkBalloonPanel}.
+	 * Hides {@link link#balloonPanel LinkBalloonPanel}.
 	 *
 	 * @private
 	 * @param {Object} [options={}] Additional options.
@@ -261,7 +261,7 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Hide balloon panel on `ESC` key press event and restore editor focus.
+	 * Hides balloon panel on `ESC` key press event and restores editor focus.
 	 *
 	 * **Note**: this method is `@protected` for testing purposes only.
 	 *
@@ -269,8 +269,8 @@ export default class Link extends Feature {
 	 * @param {utils.EventInfo} evt Information about the event.
 	 * @param {KeyboardEvent} domEvt DOM `keydown` event.
 	 */
-	_closePanelOnClick( evt, domEvt ) {
-		if ( domEvt.keyCode == 27 ) {
+	_closePanelOnEsc( evt, domEvt ) {
+		if ( domEvt.keyCode == keyCodes.esc ) {
 			this._hidePanel( { focusEditable: true } );
 		}
 	}
