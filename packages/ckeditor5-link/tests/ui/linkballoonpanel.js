@@ -109,12 +109,14 @@ describe( 'LinkBalloonPanel', () => {
 					expect( linkBalloonPanel.form.collections.get( 'actions' ).get( 1 ) ).to.deep.equal( linkBalloonPanel.cancelButton );
 				} );
 
-				it( 'should hide LinkBalloonPanel on cancelButton.model#execute event', () => {
-					const hideSpy = sinon.spy( linkBalloonPanel.view, 'hide' );
+				it( 'should fire model#executeCancel event on cancelButton.model#execute event', () => {
+					const executeSpy = sinon.spy();
+
+					model.on( 'executeCancel', executeSpy );
 
 					linkBalloonPanel.cancelButton.model.fire( 'execute' );
 
-					expect( hideSpy.calledOnce ).to.true;
+					expect( executeSpy.calledOnce ).to.true;
 				} );
 			} );
 

@@ -58,7 +58,6 @@ export default class Link extends Feature {
 	 */
 	_createToolbarLinkButton() {
 		const editor = this.editor;
-		const viewDocument = editor.editing.view;
 		const linkCommand = editor.commands.get( 'link' );
 		const t = editor.t;
 
@@ -76,11 +75,8 @@ export default class Link extends Feature {
 
 		// Show the panel on button click only when editor is focused.
 		this.listenTo( linkButtonModel, 'execute', () => {
-			if ( !viewDocument.isFocused ) {
-				return;
-			}
-
 			this._attachPanelToElement();
+			this.balloonPanel.urlInput.view.select();
 		} );
 
 		// Add link button to feature components.
@@ -88,7 +84,7 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Create a toolbar unlink button. Clicking this button will unlink
+	 * Creates a toolbar unlink button. Clicking this button will unlink
 	 * the selected link.
 	 *
 	 * @private
@@ -112,10 +108,6 @@ export default class Link extends Feature {
 		// Execute unlink command and hide panel, if open.
 		this.listenTo( unlinkButtonModel, 'execute', () => {
 			editor.execute( 'unlink' );
-
-			if ( this.balloonPanel.view.isVisible ) {
-				this.balloonPanel.view.hide();
-			}
 		} );
 
 		// Add unlink button to feature components.
@@ -123,41 +115,10 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Creates the {@link link.ui.LinkBalloonPanel LinkBalloonPanel} instance
-	 * and attaches link command to {@link link.LinkBalloonPanelModel#execute} event.
+	 * Creates the {@link link.ui.LinkBalloonPanel LinkBalloonPanel} instance,
+	 * attaches {@link link.LinkBalloonPanelModel} events to the link and unlink commands,
+	 * applies behaviors specified for this panel.
 	 *
-	 *	                       +------------------------------------+
-	 *	                       | <a href="http://foo.com">[foo]</a> |
-	 *	                       +------------------------------------+
-	 *	                                      Document
-	 *	             Value set in doc   ^                   +
-	 *	             if it's correct.   |                   |
-	 *	                                |                   |
-	 *	                      +---------+--------+          |
-	 *	Panel.urlInput#value  | Value validation |          |  User clicked "Link" in
-	 *	       is validated.  +---------+--------+          |  the toolbar. Retrieving
-	 *	                                |                   |  URL from Document and setting
-	 *	             PanelModel fires   |                   |  PanelModel#url.
-	 *	          PanelModel#execute.   +                   v
-	 *
-	 *	                              +-----------------------+
-	 *	                              | url: 'http://foo.com' |
-	 *	                              +-----------------------+
-	 *	                                      PanelModel
-	 *	                                ^                   +
-	 *	                                |                   |  Input field is
-	 *	                  User clicked  |                   |  in sync with
-	 *	                       "Save".  |                   |  PanelModel#url.
-	 *	                                +                   v
-	 *
-	 *	                            +--------------------------+
-	 *	                            | +----------------------+ |
-	 *	                            | |http://foo.com        | |
-	 *	                            | +----------------------+ |
-	 *	                            |                   +----+ |
-	 *	                            |                   |Save| |
-	 *	                            |                   +----+ |
-	 *	                            +--------------------------+
 	 * @private
 	 * @returns {link.ui.LinkBalloonPanel} Link balloon panel instance.
 	 */
@@ -178,39 +139,74 @@ export default class Link extends Feature {
 		const balloonPanel = new LinkBalloonPanel( panelModel, new LinkBalloonPanelView( editor.locale ) );
 
 		// Observe `LinkBalloonPanelMode#executeLink` event from within the model of the panel,
-		// which means that the `Save` button has been clicked.
+		// which means that form has been submitted.
 		this.listenTo( panelModel, 'executeLink', () => {
 			editor.execute( 'link', balloonPanel.urlInput.value );
-			balloonPanel.view.hide();
+			this._hidePanel( { focusEditable: true } );
 		} );
 
 		// Observe `LinkBalloonPanelMode#executeUnlink` event from within the model of the panel,
 		// which means that the `Unlink` button has been clicked.
 		this.listenTo( panelModel, 'executeUnlink', () => {
 			editor.execute( 'unlink' );
-			balloonPanel.view.hide();
+			this._hidePanel( { focusEditable: true } );
 		} );
 
-		// Always focus editor on panel hide.
-		this.listenTo( balloonPanel.view.model, 'change:isVisible', ( evt, propertyName, value ) => {
-			if ( !value ) {
-				viewDocument.focus();
-			}
-		} );
-
-		// Hide panel on editor focus.
-		// @TODO replace it by some FocusManager.
-		viewDocument.on( 'focus', () => balloonPanel.view.hide() );
-
-		// Handle click on document and show panel when selection is placed in the link element.
-		viewDocument.on( 'click', () => {
-			if ( viewDocument.selection.isCollapsed && linkCommand.value !== undefined ) {
-				this._attachPanelToElement();
-			}
-		} );
+		// Observe `LinkBalloonPanelMode#executeCancel` event from within the model of the panel,
+		// which means that the `Cancel` button has been clicked.
+		this.listenTo( panelModel, 'executeCancel', () => this._hidePanel( { focusEditable: true } ) );
 
 		// Handle `Ctrl+L` keystroke and show panel.
-		editor.keystrokes.set( 'CTRL+L', () => this._attachPanelToElement() );
+		editor.keystrokes.set( 'CTRL+L', () => {
+			this._attachPanelToElement();
+			balloonPanel.urlInput.view.select();
+		} );
+
+		// Attach close by `Esc` press and click out of panel actions on panel show, on panel hide clean up listeners.
+		this.listenTo( balloonPanel.view.model, 'change:isVisible', ( evt, propertyName, value ) => {
+			if ( value ) {
+				// Handle close by `Esc`.
+				balloonPanel.view.listenTo( document, 'keydown', this._closePanelOnClick.bind( this ) );
+
+				// Handle close by clicking out of the panel.
+				// Note that it is not handled by a `click` event, this is because clicking on link button or directly on link element
+				// opens and closes panel at the same time.
+				balloonPanel.view.listenTo( document, 'mouseup', ( evt, domEvt ) => {
+					// Do nothing when the panel was clicked.
+					if ( balloonPanel.view.element.contains( domEvt.target ) ) {
+						return;
+					}
+
+					// When click was out of the panel then hide it.
+					balloonPanel.view.hide();
+				} );
+			} else {
+				balloonPanel.view.stopListening( document );
+			}
+		} );
+
+		// Handle click on document and show panel when selection is placed inside the link element.
+		// Keep panel open until selection will be inside the same link element.
+		viewDocument.on( 'click', () => {
+			const viewSelection = viewDocument.selection;
+			const parentLink = getPositionParentLink( viewSelection.getFirstPosition() );
+
+			if ( viewSelection.isCollapsed && parentLink ) {
+				this._attachPanelToElement();
+
+				this.listenTo( viewDocument, 'render', () => {
+					const currentParentLink = getPositionParentLink( viewSelection.getFirstPosition() );
+
+					if ( !viewSelection.isCollapsed || parentLink !== currentParentLink ) {
+						this._hidePanel();
+					} else {
+						this._attachPanelToElement( parentLink );
+					}
+				} );
+
+				this.listenTo( balloonPanel.view.model, 'change:isVisible', () => this.stopListening( viewDocument ) );
+			}
+		} );
 
 		// Append panel element to body.
 		editor.ui.add( 'body', balloonPanel );
@@ -226,19 +222,17 @@ export default class Link extends Feature {
 	 * Input inside panel will be focused.
 	 *
 	 * @private
+	 * @param {core.view.LinkElement} [parentLink] Target element.
 	 */
-	_attachPanelToElement() {
+	_attachPanelToElement( parentLink ) {
 		const viewDocument = this.editor.editing.view;
 		const domEditableElement = viewDocument.domConverter.getCorrespondingDomElement( viewDocument.selection.editableElement );
-
-		const viewSelectionParent = viewDocument.selection.getFirstPosition().parent;
-		const viewSelectionParentAncestors = viewSelectionParent.getAncestors();
-		const linkElement = viewSelectionParentAncestors.find( ( ancestor ) => ancestor instanceof LinkElement );
+		const targetLink = parentLink || getPositionParentLink( viewDocument.selection.getFirstPosition() );
 
 		// When selection is inside link element, then attach panel to this element.
-		if ( linkElement ) {
+		if ( targetLink ) {
 			this.balloonPanel.view.attachTo(
-				viewDocument.domConverter.getCorrespondingDomElement( linkElement ),
+				viewDocument.domConverter.getCorrespondingDomElement( targetLink ),
 				domEditableElement
 			);
 		}
@@ -249,8 +243,44 @@ export default class Link extends Feature {
 				domEditableElement
 			);
 		}
-
-		// Set focus to the panel input.
-		this.balloonPanel.urlInput.view.select();
 	}
+
+	/**
+	 * Hide {@link link#balloonPanel LinkBalloonPanel}.
+	 *
+	 * @private
+	 * @param {Object} [options={}] Additional options.
+	 * @param {Boolean} [options.focusEditable=false] When `true` then editable focus will be restored on panel hide.
+	 */
+	_hidePanel( options = {} ) {
+		this.balloonPanel.view.hide();
+
+		if ( options.focusEditable ) {
+			this.editor.editing.view.focus();
+		}
+	}
+
+	/**
+	 * Hide balloon panel on `ESC` key press event and restore editor focus.
+	 *
+	 * **Note**: this method is `@protected` for testing purposes only.
+	 *
+	 * @protected
+	 * @param {utils.EventInfo} evt Information about the event.
+	 * @param {KeyboardEvent} domEvt DOM `keydown` event.
+	 */
+	_closePanelOnClick( evt, domEvt ) {
+		if ( domEvt.keyCode == 27 ) {
+			this._hidePanel( { focusEditable: true } );
+		}
+	}
+}
+
+// Get position parent LinkElement.
+//
+// @private
+// @param {engine.view.Position} position
+// @returns {link.LinkElement|null}
+function getPositionParentLink( position ) {
+	return position.parent.getAncestors().find( ( ancestor ) => ancestor instanceof LinkElement );
 }
