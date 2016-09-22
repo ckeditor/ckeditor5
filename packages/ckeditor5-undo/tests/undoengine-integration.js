@@ -8,7 +8,7 @@ import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import UndoEngine from '/ckeditor5/undo/undoengine.js';
 
-import { setData, getData } from '/tests/engine/_utils/model.js';
+import { setData, getData } from '/ckeditor5/engine/dev-utils/model.js';
 
 import deleteContents from '/ckeditor5/engine/model/composer/deletecontents.js';
 
