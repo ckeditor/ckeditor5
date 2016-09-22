@@ -5,8 +5,8 @@
 
 import Paragraph from '/ckeditor5/paragraph/paragraph.js';
 import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
-import { getData as getModelData } from '/tests/engine/_utils/model.js';
-import { getData as getViewData } from '/tests/engine/_utils/view.js';
+import { getData as getModelData } from '/ckeditor5/engine/dev-utils/model.js';
+import { getData as getViewData } from '/ckeditor5/engine/dev-utils/view.js';
 
 describe( 'Paragraph feature', () => {
 	let editor, doc;
