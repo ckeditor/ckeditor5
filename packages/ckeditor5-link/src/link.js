@@ -116,8 +116,8 @@ export default class Link extends Feature {
 
 	/**
 	 * Creates the {@link link.ui.LinkBalloonPanel LinkBalloonPanel} instance,
-	 * attaches {@link link.LinkBalloonPanelModel} events to the link and unlink commands
-	 * and applies specified for this panel behaviours.
+	 * attaches {@link link.LinkBalloonPanelModel} events to the link and unlink commands,
+	 * applies behaviors specified for this panel.
 	 *
 	 * @private
 	 * @returns {link.ui.LinkBalloonPanel} Link balloon panel instance.
@@ -169,8 +169,8 @@ export default class Link extends Feature {
 				balloonPanel.view.listenTo( document, 'keydown', this._closePanelOnClick.bind( this ) );
 
 				// Handle close by clicking out of the panel.
-				// Note that it is not handled by a `click` event, it is because clicking on link button or directly on link element
-				// was opening and closing panel at the same time.
+				// Note that it is not handled by a `click` event, this is because clicking on link button or directly on link element
+				// opens and closes panel at the same time.
 				balloonPanel.view.listenTo( document, 'mouseup', ( evt, domEvt ) => {
 					// Do nothing when the panel was clicked.
 					if ( balloonPanel.view.element.contains( domEvt.target ) ) {
@@ -186,7 +186,7 @@ export default class Link extends Feature {
 		} );
 
 		// Handle click on document and show panel when selection is placed inside the link element.
-		// Keep panel open till selection will be inside the same link element.
+		// Keep panel open until selection will be inside the same link element.
 		viewDocument.on( 'click', () => {
 			const viewSelection = viewDocument.selection;
 			const parentLink = getPositionParentLink( viewSelection.getFirstPosition() );
