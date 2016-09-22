@@ -20,18 +20,8 @@ export default class UnlinkCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		/**
-		 * Flag indicating whether command is active. For collapsed selection it means that typed characters will have
-		 * the command's attribute set. For range selection it means that all nodes inside have the attribute applied.
-		 *
-		 * @observable
-		 * @member {Boolean} link.UnlinkCommand#hasValue
-		 */
-		this.set( 'hasValue', undefined );
-
-		this.listenTo( this.editor.document.selection, 'change:attribute', () => {
-			this.hasValue = this.editor.document.selection.hasAttribute( 'linkHref' );
-		} );
+		// Checks when command should be enabled or disabled.
+		this.listenTo( editor.document.selection, 'change:attribute', () => this.refreshState() );
 	}
 
 	/**
@@ -59,5 +49,15 @@ export default class UnlinkCommand extends Command {
 				batch.removeAttribute( range, 'linkHref' );
 			}
 		} );
+	}
+
+	/**
+	 * Checks if selection has `linkHref` attribute.
+	 *
+	 * @protected
+	 * @returns {Boolean}
+	 */
+	_checkEnabled() {
+		return this.editor.document.selection.hasAttribute( 'linkHref' );
 	}
 }

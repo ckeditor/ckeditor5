@@ -129,7 +129,7 @@ describe( 'Link', () => {
 
 			expect( model.isEnabled ).to.false;
 
-			command.hasValue = true;
+			command.isEnabled = true;
 			expect( model.isEnabled ).to.true;
 		} );
 
