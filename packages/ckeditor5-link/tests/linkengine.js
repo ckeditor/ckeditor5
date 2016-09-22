@@ -8,8 +8,8 @@ import LinkCommand from '/ckeditor5/link/linkcommand.js';
 import LinkElement from '/ckeditor5/link/linkelement.js';
 import UnlinkCommand from '/ckeditor5/link/unlinkcommand.js';
 import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
-import { getData as getModelData, setData as setModelData } from '/tests/engine/_utils/model.js';
-import { getData as getViewData } from '/tests/engine/_utils/view.js';
+import { getData as getModelData, setData as setModelData } from '/ckeditor5/engine/dev-utils/model.js';
+import { getData as getViewData } from '/ckeditor5/engine/dev-utils/view.js';
 
 describe( 'LinkEngine', () => {
 	let editor, doc;

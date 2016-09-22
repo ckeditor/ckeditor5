@@ -8,7 +8,7 @@
 import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
 import testUtils from '/tests/core/_utils/utils.js';
 import { keyCodes } from '/ckeditor5/utils/keyboard.js';
-import { setData as setModelData } from '/tests/engine/_utils/model.js';
+import { setData as setModelData } from '/ckeditor5/engine/dev-utils/model.js';
 
 import Link from '/ckeditor5/link/link.js';
 import LinkEngine from '/ckeditor5/link/linkengine.js';

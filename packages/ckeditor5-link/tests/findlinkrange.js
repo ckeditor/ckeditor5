@@ -9,7 +9,7 @@ import findLinkRange from '/ckeditor5/link/findlinkrange.js';
 import Document from '/ckeditor5/engine/model/document.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
-import { setData } from '/tests/engine/_utils/model.js';
+import { setData } from '/ckeditor5/engine/dev-utils/model.js';
 
 describe( 'findLinkRange', () => {
 	let document, root;

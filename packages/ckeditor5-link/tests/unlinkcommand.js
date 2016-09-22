@@ -5,7 +5,7 @@
 
 import ModelTestEditor from '/tests/core/_utils/modeltesteditor.js';
 import UnlinkCommand from '/ckeditor5/link/unlinkcommand.js';
-import { setData, getData } from '/tests/engine/_utils/model.js';
+import { setData, getData } from '/ckeditor5/engine/dev-utils/model.js';
 import testUtils from '/tests/core/_utils/utils.js';
 
 testUtils.createSinonSandbox();
