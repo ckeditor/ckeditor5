@@ -6,7 +6,7 @@
 import Document from '/ckeditor5/engine/model/document.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import getSchemaValidRanges from '/ckeditor5/core/command/helpers/getschemavalidranges.js';
-import { setData } from '/tests/engine/_utils/model.js';
+import { setData } from '/ckeditor5/engine/dev-utils/model.js';
 
 describe( 'getSchemaValidRanges', () => {
 	const attribute = 'bold';

@@ -11,7 +11,7 @@ import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor
 import BoxedEditorUI from '/ckeditor5/ui/editorui/boxed/boxededitorui.js';
 import Feature from '/ckeditor5/core/feature.js';
 
-import { getData } from '/tests/engine/_utils/model.js';
+import { getData } from '/ckeditor5/engine/dev-utils/model.js';
 import testUtils from '/tests/core/_utils/utils.js';
 
 testUtils.createSinonSandbox();

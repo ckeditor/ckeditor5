@@ -8,7 +8,7 @@
 
 import StandardEditor from '/ckeditor5/core/editor/standardeditor.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
-import { getData, setData } from '/tests/engine/_utils/model.js';
+import { getData, setData } from '/ckeditor5/engine/dev-utils/model.js';
 
 import EditingController from '/ckeditor5/engine/editingcontroller.js';
 import KeystrokeHandler from '/ckeditor5/core/keystrokehandler.js';

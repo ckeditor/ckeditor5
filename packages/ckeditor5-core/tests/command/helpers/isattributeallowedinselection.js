@@ -5,7 +5,7 @@
 
 import Document from '/ckeditor5/engine/model/document.js';
 import isAttributeAllowedInSelection from '/ckeditor5/core/command/helpers/isattributeallowedinselection.js';
-import { setData } from '/tests/engine/_utils/model.js';
+import { setData } from '/ckeditor5/engine/dev-utils/model.js';
 
 describe( 'isAttributeAllowedInSelection', () => {
 	const attribute = 'bold';

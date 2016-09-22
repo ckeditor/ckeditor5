@@ -8,7 +8,7 @@ import Document from '/ckeditor5/engine/model/document.js';
 import ToggleAttributeCommand from '/ckeditor5/core/command/toggleattributecommand.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
-import { setData, getData } from '/tests/engine/_utils/model.js';
+import { setData, getData } from '/ckeditor5/engine/dev-utils/model.js';
 
 describe( 'ToggleAttributeCommand', () => {
 	const attrKey = 'bold';
