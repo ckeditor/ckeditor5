@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '/ckeditor5/engine/view/document.js';
-import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import XmlDataProcessor from '/ckeditor5/engine/dataprocessor/xmldataprocessor.js';
-import ViewElement from '/ckeditor5/engine/view/element.js';
-import Selection from '/ckeditor5/engine/view/selection.js';
-import Range from '/ckeditor5/engine/view/range.js';
-import Position from '/ckeditor5/engine/view/position.js';
-import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
-import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
-import ViewText from '/ckeditor5/engine/view/text.js';
+import Document from '../view/document.js';
+import ViewDocumentFragment from '../view/documentfragment.js';
+import XmlDataProcessor from '../dataprocessor/xmldataprocessor.js';
+import ViewElement from '../view/element.js';
+import Selection from '../view/selection.js';
+import Range from '../view/range.js';
+import Position from '../view/position.js';
+import AttributeElement from '../view/attributeelement.js';
+import ContainerElement from '../view/containerelement.js';
+import ViewText from '../view/text.js';
 
 const ELEMENT_RANGE_START_TOKEN = '[';
 const ELEMENT_RANGE_END_TOKEN = ']';
