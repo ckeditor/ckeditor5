@@ -6,17 +6,17 @@
 /* globals document */
 /* bender-tags: browser-only */
 
-import { parse, stringify, getData, setData }from '../../ckeditor5/engine/dev-utils/view.js';
-import DocumentFragment from '../../ckeditor5/engine/view/documentfragment.js';
-import Position from '../../ckeditor5/engine/view/position.js';
-import Element from '../../ckeditor5/engine/view/element.js';
-import AttributeElement from '../../ckeditor5/engine/view/attributeelement.js';
-import ContainerElement from '../../ckeditor5/engine/view/containerelement.js';
-import Text from '../../ckeditor5/engine/view/text.js';
-import Selection from '../../ckeditor5/engine/view/selection.js';
-import Range from '../../ckeditor5/engine/view/range.js';
-import Document from '../../ckeditor5/engine/view/document.js';
-import XmlDataProcessor from '../../ckeditor5/engine/dataprocessor/xmldataprocessor.js';
+import { parse, stringify, getData, setData }from '/ckeditor5/engine/dev-utils/view.js';
+import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
+import Position from '/ckeditor5/engine/view/position.js';
+import Element from '/ckeditor5/engine/view/element.js';
+import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
+import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
+import Text from '/ckeditor5/engine/view/text.js';
+import Selection from '/ckeditor5/engine/view/selection.js';
+import Range from '/ckeditor5/engine/view/range.js';
+import Document from '/ckeditor5/engine/view/document.js';
+import XmlDataProcessor from '/ckeditor5/engine/dataprocessor/xmldataprocessor.js';
 
 describe( 'view test utils', () => {
 	describe( 'getData, setData', () => {

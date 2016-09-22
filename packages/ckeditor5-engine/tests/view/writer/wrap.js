@@ -13,7 +13,7 @@ import Position from '/ckeditor5/engine/view/position.js';
 import Range from '/ckeditor5/engine/view/range.js';
 import Text from '/ckeditor5/engine/view/text.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import { stringify, parse } from '/tests/engine/_utils/view.js';
+import { stringify, parse } from '/ckeditor5/engine/dev-utils/view.js';
 
 describe( 'writer', () => {
 	/**

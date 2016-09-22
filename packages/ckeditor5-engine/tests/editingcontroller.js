@@ -21,8 +21,8 @@ import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 
 import createElement from '/ckeditor5/utils/dom/createelement.js';
 
-import { parse, getData as getModelData } from '/tests/engine/_utils/model.js';
-import { getData as getViewData } from '/tests/engine/_utils/view.js';
+import { parse, getData as getModelData } from '/ckeditor5/engine/dev-utils/model.js';
+import { getData as getViewData } from '/ckeditor5/engine/dev-utils/view.js';
 
 describe( 'EditingController', () => {
 	describe( 'constructor', () => {

@@ -7,7 +7,7 @@
 
 import Document from '/ckeditor5/engine/model/document.js';
 import deleteContents from '/ckeditor5/engine/model/composer/deletecontents.js';
-import { setData, getData } from '/tests/engine/_utils/model.js';
+import { setData, getData } from '/ckeditor5/engine/dev-utils/model.js';
 
 describe( 'Delete utils', () => {
 	let document;

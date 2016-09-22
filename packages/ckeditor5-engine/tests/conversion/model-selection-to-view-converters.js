@@ -30,8 +30,8 @@ import {
 	wrap
 } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
 
-import { stringify as stringifyView } from '/tests/engine/_utils/view.js';
-import { setData as setModelData } from '/tests/engine/_utils/model.js';
+import { stringify as stringifyView } from '/ckeditor5/engine/dev-utils/view.js';
+import { setData as setModelData } from '/ckeditor5/engine/dev-utils/model.js';
 
 let dispatcher, mapper;
 let modelDoc, modelRoot, modelSelection;

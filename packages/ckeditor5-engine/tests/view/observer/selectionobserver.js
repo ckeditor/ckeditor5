@@ -16,7 +16,7 @@ import MutationObserver from '/ckeditor5/engine/view/observer/mutationobserver.j
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 import log from '/ckeditor5/utils/log.js';
 
-import { parse } from '/tests/engine/_utils/view.js';
+import { parse } from '/ckeditor5/engine/dev-utils/view.js';
 
 testUtils.createSinonSandbox();
 

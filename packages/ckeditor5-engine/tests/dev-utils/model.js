@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import { stringify, parse, getData, setData } from '/tests/engine/_utils/model.js';
-import Document from '../../model/document.js';
-import DocumentFragment from '../../model/documentfragment.js';
-import Element from '../../model/element.js';
-import Text from '../../model/text.js';
-import Range from '../../model/range.js';
-import Position from '../../model/position.js';
+import { stringify, parse, getData, setData } from '/ckeditor5/engine/dev-utils/model.js';
+import Document from '/ckeditor5/engine/model/document.js';
+import DocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
+import Element from '/ckeditor5/engine/model/element.js';
+import Text from '/ckeditor5/engine/model/text.js';
+import Range from '/ckeditor5/engine/model/range.js';
+import Position from '/ckeditor5/engine/model/position.js';
 import count from '/ckeditor5/utils/count.js';
 
 describe( 'model test utils', () => {

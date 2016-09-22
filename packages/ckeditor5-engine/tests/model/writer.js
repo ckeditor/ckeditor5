@@ -13,7 +13,7 @@ import TextProxy from '/ckeditor5/engine/model/textproxy.js';
 import Position from '/ckeditor5/engine/model/position.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import writer from '/ckeditor5/engine/model/writer.js';
-import { getData } from '/tests/engine/_utils/model.js';
+import { getData } from '/ckeditor5/engine/dev-utils/model.js';
 
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 

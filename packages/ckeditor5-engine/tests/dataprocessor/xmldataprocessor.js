@@ -9,7 +9,7 @@
 import XmlDataProcessor from '/ckeditor5/engine/dataprocessor/xmldataprocessor.js';
 import xssTemplates from '/tests/engine/dataprocessor/_utils/xsstemplates.js';
 import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import { stringify, parse } from '/tests/engine/_utils/view.js';
+import { stringify, parse } from '/ckeditor5/engine/dev-utils/view.js';
 
 describe( 'XmlDataProcessor', () => {
 	let dataProcessor;
