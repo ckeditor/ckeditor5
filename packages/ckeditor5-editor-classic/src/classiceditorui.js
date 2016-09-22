@@ -98,6 +98,7 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 
 		this.add( 'main', editableUI );
 
+		// @TODO: Do it automatically ckeditor5-core#23
 		editor.focusManager.add( editableUI.view.element );
 
 		return editableUI;
