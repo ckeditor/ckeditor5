@@ -21,7 +21,7 @@ export default class UnlinkCommand extends Command {
 		super( editor );
 
 		// Checks when command should be enabled or disabled.
-		this.listenTo( this.editor.document.selection, 'change:attribute', () => this.refreshState() );
+		this.listenTo( editor.document.selection, 'change:attribute', () => this.refreshState() );
 	}
 
 	/**
