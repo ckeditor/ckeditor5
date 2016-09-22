@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
+/* globals document, Event */
 /* bender-tags: editor, browser-only */
 
 import ClassicEditorUI from '/ckeditor5/editor-classic/classiceditorui.js';
@@ -45,9 +45,28 @@ describe( 'ClassicEditorUI', () => {
 			expect( editorUI.toolbar.view ).to.be.instanceof( StickyToolbarView );
 		} );
 
+		it( 'binds editorUI.toolbar#model to editor.focusManager', () => {
+			expect( editorUI.toolbar.model.isActive ).to.false;
+
+			editor.focusManager.isFocused = true;
+
+			expect( editorUI.toolbar.model.isActive ).to.true;
+		} );
+
 		it( 'creates editable', () => {
 			expect( editorUI.editable ).to.be.instanceof( EditableUI );
 			expect( editorUI.editable.view ).to.be.instanceof( InlineEditableUIView );
+		} );
+
+		it( 'registers editable element in editor Focus Manager', () => {
+			return editorUI.init()
+				.then( () => {
+					editor.focusManager.isFocused = false;
+
+					editorUI.editable.view.element.dispatchEvent( new Event( 'focus' ) );
+
+					expect( editor.focusManager.isFocused ).to.true;
+				} );
 		} );
 	} );
 
