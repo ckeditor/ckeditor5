@@ -6,6 +6,9 @@
 import ModelTestEditor from '/tests/core/_utils/modeltesteditor.js';
 import UnlinkCommand from '/ckeditor5/link/unlinkcommand.js';
 import { setData, getData } from '/tests/engine/_utils/model.js';
+import testUtils from '/tests/core/_utils/utils.js';
+
+testUtils.createSinonSandbox();
 
 describe( 'UnlinkCommand', () => {
 	let editor, document, command;
@@ -28,6 +31,16 @@ describe( 'UnlinkCommand', () => {
 
 	afterEach( () => {
 		command.destroy();
+	} );
+
+	describe( 'constructor', () => {
+		it( 'should listen on selection attribute change and refresh state', () => {
+			const refreshStateSpy = testUtils.sinon.spy( command, 'refreshState' );
+
+			document.selection.fire( 'change:attribute' );
+
+			expect( refreshStateSpy.calledOnce ).to.true;
+		} );
 	} );
 
 	describe( '_doExecute', () => {
@@ -194,6 +207,20 @@ describe( 'UnlinkCommand', () => {
 
 				expect( document.selection.hasAttribute( 'linkHref' ) ).to.false;
 			} );
+		} );
+	} );
+
+	describe( '_checkEnabled', () => {
+		it( 'should return false when selection has `linkHref` attribute', () => {
+			document.selection.setAttribute( 'linkHref', 'value' );
+
+			expect( command._checkEnabled() ).to.true;
+		} );
+
+		it( 'should return false when selection doesn\'t have `linkHref` attribute', () => {
+			document.selection.removeAttribute( 'linkHref' );
+
+			expect( command._checkEnabled() ).to.false;
 		} );
 	} );
 } );

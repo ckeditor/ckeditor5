@@ -107,7 +107,7 @@ export default class Link extends Feature {
 		} );
 
 		// Bind button model to the command.
-		unlinkButtonModel.bind( 'isEnabled' ).to( unlinkCommand, 'hasValue' );
+		unlinkButtonModel.bind( 'isEnabled' ).to( unlinkCommand, 'isEnabled' );
 
 		// Execute unlink command and hide panel, if open.
 		this.listenTo( unlinkButtonModel, 'execute', () => {
