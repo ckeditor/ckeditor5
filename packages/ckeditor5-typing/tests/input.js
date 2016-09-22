@@ -17,8 +17,8 @@ import ViewElement from '/ckeditor5/engine/view/element.js';
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 import { getCode } from '/ckeditor5/utils/keyboard.js';
 
-import { getData as getModelData } from '/tests/engine/_utils/model.js';
-import { getData as getViewData } from '/tests/engine/_utils/view.js';
+import { getData as getModelData } from '/ckeditor5/engine/dev-utils/model.js';
+import { getData as getViewData } from '/ckeditor5/engine/dev-utils/view.js';
 
 describe( 'Input feature', () => {
 	let editor, model, modelRoot, view, viewRoot, listenter;

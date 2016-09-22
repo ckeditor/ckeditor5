@@ -5,7 +5,7 @@
 
 import ModelTestEditor from '/tests/core/_utils/modeltesteditor.js';
 import DeleteCommand from '/ckeditor5/typing/deletecommand.js';
-import { getData, setData } from '/tests/engine/_utils/model.js';
+import { getData, setData } from '/ckeditor5/engine/dev-utils/model.js';
 
 describe( 'DeleteCommand', () => {
 	let editor, doc;
