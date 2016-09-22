@@ -224,7 +224,7 @@ describe( 'Link', () => {
 		describe( 'close listeners', () => {
 			describe( 'keyboard', () => {
 				it( 'should listen keyboard events when is open', () => {
-					const escCloseSpy = testUtils.sinon.spy( linkFeature, '_closePanelOnClick' );
+					const escCloseSpy = testUtils.sinon.spy( linkFeature, '_closePanelOnEsc' );
 
 					balloonPanel.view.model.isVisible = true;
 					document.dispatchEvent( new Event( 'keydown' ) );
@@ -233,7 +233,7 @@ describe( 'Link', () => {
 				} );
 
 				it( 'should not listen keyboard events when is closed', () => {
-					const escCloseSpy = testUtils.sinon.spy( linkFeature, '_closePanelOnClick' );
+					const escCloseSpy = testUtils.sinon.spy( linkFeature, '_closePanelOnEsc' );
 
 					balloonPanel.view.model.isVisible = false;
 					document.dispatchEvent( new Event( 'keydown' ) );
@@ -242,7 +242,7 @@ describe( 'Link', () => {
 				} );
 
 				it( 'should stop listening keyboard events after close', () => {
-					const escCloseSpy = testUtils.sinon.spy( linkFeature, '_closePanelOnClick' );
+					const escCloseSpy = testUtils.sinon.spy( linkFeature, '_closePanelOnEsc' );
 
 					balloonPanel.view.model.isVisible = true;
 					balloonPanel.view.model.isVisible = false;
@@ -425,12 +425,12 @@ describe( 'Link', () => {
 			} );
 		} );
 
-		describe( '_closePanelOnClick', () => {
+		describe( '_closePanelOnEsc', () => {
 			it( 'should hide panel and focus editable on ESC press', () => {
 				const eventInfo = {};
 				const domEvent = { keyCode: 27 };
 
-				linkFeature._closePanelOnClick( eventInfo, domEvent );
+				linkFeature._closePanelOnEsc( eventInfo, domEvent );
 
 				expect( hidePanelSpy.calledOnce ).to.true;
 				expect( focusEditableSpy.calledOnce ).to.true;
