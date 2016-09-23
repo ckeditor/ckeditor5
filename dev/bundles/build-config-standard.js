@@ -15,7 +15,7 @@ module.exports = {
 		'undo',
 		'basic-styles/bold',
 		'basic-styles/italic',
-		'headings',
+		'heading',
 		'paragraph',
 		'enter'
 	],
