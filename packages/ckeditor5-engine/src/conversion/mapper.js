@@ -275,7 +275,7 @@ export default class Mapper {
 		let modelOffset = 0;
 
 		for ( let i = 0; i < viewOffset; i++ ) {
-			modelOffset += this._getModelLength( viewParent.getChild( i ) );
+			modelOffset += this.getModelLength( viewParent.getChild( i ) );
 		}
 
 		return modelOffset;
@@ -309,11 +309,10 @@ export default class Mapper {
 	 *		<b>foo</b>              -> 3 // Length of an element which is not mapped is a length of its children.
 	 *		<div><p>x</p><p>y</p>   -> 2 // Assuming that <div> is not mapped and <p> are mapped.
 	 *
-	 * @private
 	 * @param {engine.view.Element} viewNode View node.
 	 * @returns {Number} Length of the node in the tree model.
 	 */
-	_getModelLength( viewNode ) {
+	getModelLength( viewNode ) {
 		if ( this._viewToModelMapping.has( viewNode ) ) {
 			const callback = this._viewToModelLengthCallbacks.get( viewNode.name );
 
@@ -324,7 +323,7 @@ export default class Mapper {
 			let len = 0;
 
 			for ( let child of viewNode.getChildren() ) {
-				len += this._getModelLength( child );
+				len += this.getModelLength( child );
 			}
 
 			return len;
@@ -375,7 +374,7 @@ export default class Mapper {
 		// If it is smaller we add the length.
 		while ( modelOffset < expectedOffset ) {
 			viewNode = viewParent.getChild( viewOffset );
-			lastLength = this._getModelLength( viewNode );
+			lastLength = this.getModelLength( viewNode );
 			modelOffset += lastLength;
 			viewOffset++;
 		}
