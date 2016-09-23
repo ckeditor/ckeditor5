@@ -32,8 +32,8 @@ import { normalizeNodes } from '../model/writer.js';
  */
 export function convertToModelFragment() {
 	return ( evt, data, consumable, conversionApi ) => {
-		// Second argument in `consumable.test` is discarded for ViewDocumentFragment but is needed for ViewElement.
-		if ( !data.output && consumable.test( data.input, { name: true } ) ) {
+		// Second argument in `consumable.consume` is discarded for ViewDocumentFragment but is needed for ViewElement.
+		if ( !data.output && consumable.consume( data.input, { name: true } ) ) {
 			const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
 
 			data.output = new ModelDocumentFragment( normalizeNodes( convertedChildren ) );
