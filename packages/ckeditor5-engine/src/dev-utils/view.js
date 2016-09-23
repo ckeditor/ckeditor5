@@ -7,6 +7,10 @@
  * @namespace engine.dev-utils.view
  */
 
+/**
+ * Collection of methods for manipulating {@link engine.view engine.view} for testing purposes.
+ */
+
 import Document from '../view/document.js';
 import ViewDocumentFragment from '../view/documentfragment.js';
 import XmlDataProcessor from '../dataprocessor/xmldataprocessor.js';

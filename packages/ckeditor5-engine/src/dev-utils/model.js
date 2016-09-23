@@ -7,6 +7,10 @@
  * @namespace engine.dev-utils.model
  */
 
+/**
+ * Collection of methods for manipulating {@link engine.model engine.model} for testing purposes.
+ */
+
 import RootElement from '../model/rootelement.js';
 import ModelDocument from '../model/document.js';
 import ModelRange from '../model/range.js';

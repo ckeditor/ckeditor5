@@ -6,3 +6,7 @@
 /**
  * @namespace engine.dev-utils
  */
+
+/**
+ * Collection of utilities for manipulating {@link engine.view engine.view} and {@link engine.model engine.model} in testing environment.
+ */
