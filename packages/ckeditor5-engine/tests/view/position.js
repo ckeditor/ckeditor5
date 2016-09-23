@@ -16,7 +16,7 @@ import TextProxy from '/ckeditor5/engine/view/textproxy.js';
 
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 
-import { parse } from '/tests/engine/_utils/view.js';
+import { parse } from '/ckeditor5/engine/dev-utils/view.js';
 
 describe( 'Position', () => {
 	const parentMock = {};

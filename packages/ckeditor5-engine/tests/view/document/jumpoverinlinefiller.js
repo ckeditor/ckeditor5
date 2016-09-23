@@ -12,7 +12,7 @@ import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '/ckedito
 
 import { keyCodes } from '/ckeditor5/utils/keyboard.js';
 
-import { parse, setData } from '/tests/engine/_utils/view.js';
+import { parse, setData } from '/ckeditor5/engine/dev-utils/view.js';
 
 describe( 'Document', () => {
 	let viewDocument;

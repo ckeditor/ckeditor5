@@ -6,7 +6,7 @@
 /* globals document */
 /* bender-tags: browser-only */
 
-import { parse, stringify, getData, setData }from '/tests/engine/_utils/view.js';
+import { parse, stringify, getData, setData }from '/ckeditor5/engine/dev-utils/view.js';
 import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import Position from '/ckeditor5/engine/view/position.js';
 import Element from '/ckeditor5/engine/view/element.js';

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { stringify, parse, getData, setData } from '/tests/engine/_utils/model.js';
+import { stringify, parse, getData, setData } from '/ckeditor5/engine/dev-utils/model.js';
 import Document from '/ckeditor5/engine/model/document.js';
 import DocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import Element from '/ckeditor5/engine/model/element.js';

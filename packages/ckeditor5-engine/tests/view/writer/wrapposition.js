@@ -11,7 +11,7 @@ import Element from '/ckeditor5/engine/view/element.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Position from '/ckeditor5/engine/view/position.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import { stringify, parse } from '/tests/engine/_utils/view.js';
+import { stringify, parse } from '/ckeditor5/engine/dev-utils/view.js';
 
 describe( 'wrapPosition', () => {
 	/**

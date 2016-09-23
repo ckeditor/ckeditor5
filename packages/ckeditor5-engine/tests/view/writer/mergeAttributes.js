@@ -9,7 +9,7 @@ import { mergeAttributes } from '/ckeditor5/engine/view/writer.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Text from '/ckeditor5/engine/view/text.js';
 import Position from '/ckeditor5/engine/view/position.js';
-import { stringify, parse } from '/tests/engine/_utils/view.js';
+import { stringify, parse } from '/ckeditor5/engine/dev-utils/view.js';
 
 describe( 'writer', () => {
 	/**
