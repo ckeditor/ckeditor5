@@ -19,7 +19,7 @@ import LinkBalloonPanelView from './ui/linkballoonpanelview.js';
 import { keyCodes } from '../utils/keyboard.js';
 
 /**
- * The link feature. It introduces the Link and Unlink buttons and the <kbd>Ctrl+L</kbd> keystroke.
+ * The link feature. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
  *
  * It uses the {@link link.LinkEngine link engine feature}.
  *
@@ -69,7 +69,7 @@ export default class Link extends Feature {
 			isOn: false,
 			label: t( 'Link' ),
 			icon: 'link',
-			keystroke: 'CTRL+L'
+			keystroke: 'CTRL+K'
 		} );
 
 		// Bind button model to the command.
@@ -158,8 +158,8 @@ export default class Link extends Feature {
 		// which means that the `Cancel` button has been clicked.
 		this.listenTo( panelModel, 'executeCancel', () => this._hidePanel( { focusEditable: true } ) );
 
-		// Handle `Ctrl+L` keystroke and show panel.
-		editor.keystrokes.set( 'CTRL+L', () => {
+		// Handle `Ctrl+K` keystroke and show panel.
+		editor.keystrokes.set( 'CTRL+K', () => {
 			this._attachPanelToElement();
 			balloonPanel.urlInput.view.select();
 		} );

@@ -159,10 +159,10 @@ describe( 'Link', () => {
 			expect( document.body.contains( balloonPanel.view.element ) );
 		} );
 
-		it( 'should open with selected url input on `CTRL+L` keystroke', () => {
+		it( 'should open with selected url input on `CTRL+K` keystroke', () => {
 			const selectUrlInputSpy = testUtils.sinon.spy( balloonPanel.urlInput.view, 'select' );
 
-			editor.keystrokes.press( { keyCode: keyCodes.l, ctrlKey: true } );
+			editor.keystrokes.press( { keyCode: keyCodes.k, ctrlKey: true } );
 
 			expect( balloonPanel.view.model.isVisible ).to.true;
 			expect( selectUrlInputSpy.calledOnce ).to.true;
