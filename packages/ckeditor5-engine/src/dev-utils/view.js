@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @namespace engine.dev-utils.view
+ */
+
 import Document from '../view/document.js';
 import ViewDocumentFragment from '../view/documentfragment.js';
 import XmlDataProcessor from '../dataprocessor/xmldataprocessor.js';
@@ -22,6 +26,7 @@ const TEXT_RANGE_END_TOKEN = '}';
 /**
  * Writes the contents of the {@link engine.view.Document Document} to an HTML-like string.
  *
+ * @method engine.dev-utils.view.getData
  * @param {engine.view.Document} document
  * @param {Object} [options]
  * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
@@ -59,6 +64,7 @@ getData._stringify = stringify;
 /**
  * Sets the contents of the {@link engine.view.Document Document} provided as HTML-like string.
  *
+ * @method engine.dev-utils.view.setData
  * @param {engine.view.Document} document
  * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
@@ -167,6 +173,7 @@ setData._parse = parse;
  *		attribute.priority = 20;
  *		getData( attribute, null, { showPriority: true } ); // <b view-priority="20"></b>
  *
+ * @method engine.dev-utils.view.stringify
  * @param {engine.view.Text|engine.view.Element|engine.view.DocumentFragment} node Node to stringify.
  * @param {engine.view.Selection|engine.view.Position|engine.view.Range} [selectionOrPositionOrRange = null ]
  * Selection instance which ranges will be included in returned string data. If Range instance is provided - it will be
@@ -254,6 +261,7 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  *		// Returns Element and selection that is placed inside of DocumentFragment containing that element.
  *		const { root, selection } = parse( '[<a></a>]' );
  *
+ * @method engine.dev-utils.view.parse
  * @param {String} data HTML-like string to be parsed.
  * @param {Object} options
  * @param {Array.<Number>} [options.order] Array with order of parsed ranges added to returned

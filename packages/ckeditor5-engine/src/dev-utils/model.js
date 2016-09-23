@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @namespace engine.dev-utils.model
+ */
+
 import RootElement from '../model/rootelement.js';
 import ModelDocument from '../model/document.js';
 import ModelRange from '../model/range.js';
@@ -38,6 +42,7 @@ import isPlainObject from '../../utils/lib/lodash/isplainobject.js';
  *
  *		<$text attribute="value">Text data</$text>
  *
+ * @method engine.dev-utils.model.getData
  * @param {engine.model.Document} document
  * @param {Object} [options]
  * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
@@ -71,6 +76,7 @@ getData._stringify = stringify;
  *
  *		<$text attribute="value">Text data</$text>
  *
+ * @method engine.dev-utils.model.setData
  * @param {engine.model.Document} document
  * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
@@ -153,6 +159,7 @@ setData._parse = parse;
  *
  *		<$text attribute="value">Text data</$text>
  *
+ * @method engine.dev-utils.model.stringify
  * @param {engine.model.RootElement|engine.model.Element|engine.model.Text|
  * engine.model.DocumentFragment} node Node to stringify.
  * @param {engine.model.Selection|engine.model.Position|engine.model.Range} [selectionOrPositionOrRange=null]
@@ -240,6 +247,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  *
  *		<$text attribute="value">Text data</$text>
  *
+ * @method engine.dev-utils.model.parse
  * @param {String} data HTML-like string to be parsed.
  * @param {engine.model.schema} schema Schema instance uses by converters for element validation.
  * @param {Object} options Additional configuration.
