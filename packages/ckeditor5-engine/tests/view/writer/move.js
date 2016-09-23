@@ -7,6 +7,7 @@
 
 import { move } from '/ckeditor5/engine/view/writer.js';
 import { stringify, parse } from '/tests/engine/_utils/view.js';
+import ViewPosition from '/ckeditor5/engine/view/position.js';
 
 describe( 'writer', () => {
 	/**
@@ -101,6 +102,15 @@ describe( 'writer', () => {
 
 		it( 'should move part of the text node in document fragment', () => {
 			test( 'fo{ob}ar', 'fo{}ar', 'foar', 'fo{ob}ar' );
+		} );
+
+		it( 'should correctly move text nodes inside same parent', () => {
+			let { view, selection } = parse( '<container:p>[<attribute:b>a</attribute:b>]b<attribute:b>c</attribute:b></container:p>' );
+
+			const newRange = move( selection.getFirstRange(), ViewPosition.createAt( view, 2 ) );
+
+			const expectedView = '<container:p>b[<attribute:b>a}c</attribute:b></container:p>';
+			expect( stringify( view, newRange, { showType: true } ) ).to.equal( expectedView );
 		} );
 	} );
 } );
