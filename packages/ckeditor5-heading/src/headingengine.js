@@ -7,7 +7,7 @@ import Feature from '../core/feature.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
 import Paragraph from '../paragraph/paragraph.js';
-import HeadingsCommand from './headingscommand.js';
+import HeadingCommand from './headingcommand.js';
 
 const formats = [
 	{ id: 'paragraph', viewElement: 'p', label: 'Paragraph' },
@@ -17,13 +17,13 @@ const formats = [
 ];
 
 /**
- * The headings feature. It handles switching between block formats &mdash; different headings and paragraph.
- * This class represents the engine part of the headings feature.
+ * The headings engine feature. It handles switching between block formats &ndash; headings and paragraph.
+ * This class represents the engine part of the heading feature. See also {@link heading.Heading}.
  *
- * @memberOf headings
+ * @memberOf heading
  * @extends core.Feature
  */
-export default class HeadingsEngine extends Feature {
+export default class HeadingEngine extends Feature {
 	/**
 	 * @inheritDoc
 	 */
@@ -57,9 +57,9 @@ export default class HeadingsEngine extends Feature {
 			}
 		}
 
-		// Register the headings command.
-		const command = new HeadingsCommand( editor, formats );
-		editor.commands.set( 'headings', command );
+		// Register the heading command.
+		const command = new HeadingCommand( editor, formats );
+		editor.commands.set( 'heading', command );
 
 		// If the enter command is added to the editor, alter its behavior.
 		// Enter at the end of a heading element should create a paragraph.

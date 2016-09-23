@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import HeadingsEngine from './headingsengine.js';
+import HeadingEngine from './headingengine.js';
 
 import Feature from '../core/feature.js';
 
@@ -14,18 +14,18 @@ import ListDropdownView from '../ui/dropdown/list/listdropdownview.js';
 import Collection from '../utils/collection.js';
 
 /**
- * The headings feature. It introduces the headings drop-down list and the command that allows
+ * The headings feature. It introduces the `'headings'` drop-down list and the `'heading'` command which allow
  * to convert paragraphs into headings.
  *
- * @memberOf headings
+ * @memberOf heading
  * @extends core.Feature
  */
-export default class Headings extends Feature {
+export default class Heading extends Feature {
 	/**
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ HeadingsEngine ];
+		return [ HeadingEngine ];
 	}
 
 	/**
@@ -33,7 +33,7 @@ export default class Headings extends Feature {
 	 */
 	init() {
 		const editor = this.editor;
-		const command = editor.commands.get( 'headings' );
+		const command = editor.commands.get( 'heading' );
 		const formats = command.formats;
 		const collection = new Collection();
 
@@ -49,7 +49,7 @@ export default class Headings extends Feature {
 		const dropdownModel = new Model( {
 			isEnabled: true,
 			isOn: false,
-			label: 'Headings',
+			label: 'Heading',
 			withText: true,
 
 			// Create item list model.
@@ -64,7 +64,7 @@ export default class Headings extends Feature {
 
 		// Execute command when an item from the dropdown is selected.
 		this.listenTo( dropdownModel, 'execute', ( evt ) => {
-			editor.execute( 'headings', evt.source.id );
+			editor.execute( 'heading', evt.source.id );
 			editor.editing.view.focus();
 		} );
 

@@ -7,17 +7,17 @@ import Command from '../core/command/command.js';
 import RootElement from '../engine/model/rootelement.js';
 
 /**
- * The headings command. It is used by the {@link headings.Headings headings feature}.
+ * The heading command. It is used by the {@link heading.Heading heading feature} to apply headings.
  *
- * @memberOf headings
+ * @memberOf heading
  * @extends core.command.Command
  */
-export default class HeadingsCommand extends Command {
+export default class HeadingCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
 	 * @param {core.editor.Editor} editor Editor instance.
-	 * @param {Array.<headings.HeadingsFormat>} formats Heading formats to be used by the command instance.
+	 * @param {Array.<heading.HeadingFormat>} formats Heading formats to be used by the command instance.
 	 */
 	constructor( editor, formats ) {
 		super( editor );
@@ -26,7 +26,7 @@ export default class HeadingsCommand extends Command {
 		 * Heading formats used by this command.
 		 *
 		 * @readonly
-		 * @member {headings.HeadingsFormat} headings.HeadingsCommand#formats
+		 * @member {heading.HeadingFormat} heading.HeadingCommand#formats
 		 */
 		this.formats = formats;
 
@@ -35,7 +35,7 @@ export default class HeadingsCommand extends Command {
 		 *
 		 * @readonly
 		 * @observable
-		 * @member {headings.HeadingsFormat} headings.HeadingsCommand#value
+		 * @member {heading.HeadingFormat} heading.HeadingCommand#value
 		 */
 		this.set( 'value', this.defaultFormat );
 
@@ -56,7 +56,7 @@ export default class HeadingsCommand extends Command {
 	/**
 	 * The default format.
 	 *
-	 * @type {headings.HeadingsFormat}
+	 * @type {heading.HeadingFormat}
 	 */
 	get defaultFormat() {
 		// See https://github.com/ckeditor/ckeditor5/issues/98.
@@ -68,8 +68,8 @@ export default class HeadingsCommand extends Command {
 	 *
 	 * @protected
 	 * @param {String} [formatId] The identifier of the heading format that should be applied. It should be one of the
-	 * {@link headings.HeadingsFormat heading formats} provided to the command constructor. If this parameter is not provided,
-	 * the value from {@link headings.HeadingsCommand#defaultFormat defaultFormat} will be used.
+	 * {@link heading.HeadingFormat heading formats} provided to the command constructor. If this parameter is not provided,
+	 * the value from {@link heading.HeadingCommand#defaultFormat defaultFormat} will be used.
 	 */
 	_doExecute( formatId = this.defaultFormat.id ) {
 		// TODO: What should happen if format is not found?
@@ -132,7 +132,7 @@ export default class HeadingsCommand extends Command {
 	 *
 	 * @private
 	 * @param {String} id
-	 * @returns {headings.HeadingsFormat}
+	 * @returns {heading.HeadingFormat}
 	 */
 	_getFormatById( id ) {
 		return this.formats.find( item => item.id === id ) || this.defaultFormat;
@@ -167,7 +167,7 @@ function findTopmostBlock( position, nodeAfter = true ) {
 /**
  * Heading format descriptor.
  *
- * @typedef {Object} headings.HeadingsFormat
+ * @typedef {Object} heading.HeadingFormat
  * @property {String} id Format identifier. It will be used as the element's name in the model.
  * @property {String} viewElement The name of the view element that will be used to represent the model element in the view.
  * @property {String} label The display name of the format.
