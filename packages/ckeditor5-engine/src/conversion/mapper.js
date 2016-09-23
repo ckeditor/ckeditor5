@@ -176,7 +176,8 @@ export default class Mapper {
 	toModelPosition( viewPosition ) {
 		const data = {
 			viewPosition: viewPosition,
-			modelPosition: null
+			modelPosition: null,
+			mapper: this
 		};
 
 		this.fire( 'viewToModelPosition', data );
@@ -194,7 +195,8 @@ export default class Mapper {
 	toViewPosition( modelPosition ) {
 		const data = {
 			viewPosition: null,
-			modelPosition: modelPosition
+			modelPosition: modelPosition,
+			mapper: this
 		};
 
 		this.fire( 'modelToViewPosition', data );
@@ -429,7 +431,7 @@ mix( Mapper, EmitterMixin );
  *
  * 		// Assume that "captionedImage" model element is converted to <img> and following <span> elements in view,
  * 		// and the model element is bound to <img> element. Force mapping model positions inside "captionedImage" to that <span> element.
- *		mapper.on( 'modelToViewPosition', ( evt, mapper, modelPosition, data ) => {
+ *		mapper.on( 'modelToViewPosition', ( evt, data ) => {
  *			const positionParent = modelPosition.parent;
  *
  *			if ( positionParent.name == 'captionedImage' ) {
@@ -446,9 +448,10 @@ mix( Mapper, EmitterMixin );
  * the condition that checks if special case scenario happened should be as simple as possible.
  *
  * @event engine.conversion.Mapper.modelToViewPosition
- * @param {engine.model.Position} modelPosition Model position to be mapped.
  * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
  * `viewPosition` value to that object with calculated {@link engine.view.Position view position}.
+ * @param {engine.model.Position} data.modelPosition Model position to be mapped.
+ * @param {engine.conversion.Mapper} data.mapper Mapper instance that fired the event.
  */
 
 /**
@@ -456,7 +459,7 @@ mix( Mapper, EmitterMixin );
  *
  * 		// See example in `modelToViewPosition` event description.
  * 		// This custom mapping will map positions from <span> element next to <img> to the "captionedImage" element.
- *		mapper.on( 'viewToModelPosition', ( evt, mapper, viewPosition, data ) => {
+ *		mapper.on( 'viewToModelPosition', ( evt, data ) => {
  *			const positionParent = viewPosition.parent;
  *
  *			if ( positionParent.hasClass( 'image-caption' ) ) {
@@ -469,7 +472,8 @@ mix( Mapper, EmitterMixin );
  *		} );
  *
  * @event engine.conversion.Mapper.viewToModelPosition
- * @param {engine.view.Position} viewPosition View position to be mapped.
  * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
  * `modelPosition` value to that object with calculated {@link engine.model.Position model position}.
+ * @param {engine.view.Position} data.viewPosition View position to be mapped.
+ * @param {engine.conversion.Mapper} data.mapper Mapper instance that fired the event.
  */
