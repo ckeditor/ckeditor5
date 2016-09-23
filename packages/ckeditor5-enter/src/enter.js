@@ -26,6 +26,6 @@ export default class Enter extends Feature {
 		this.listenTo( editingView, 'enter', ( evt, data ) => {
 			editor.execute( 'enter' );
 			data.preventDefault();
-		}, 'low' );
+		}, { priority: 'low' } );
 	}
 }
