@@ -5,7 +5,6 @@
 
 import Consumable from './modelconsumable.js';
 import Range from '../model/range.js';
-import Position from '../model/position.js';
 import TextProxy from '../model/textproxy.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import mix from '../../utils/mix.js';
@@ -199,17 +198,23 @@ export default class ModelConversionDispatcher {
 	 * @param {engine.model.Range} range Moved range (after move).
 	 */
 	convertMove( sourcePosition, range ) {
+		// Keep in mind that move dispatcher expects flat range.
 		const consumable = this._createConsumableForRange( range, 'move' );
 
-		// Fire a separate event for each top-most node and text fragment contained in the range.
-		const items = Array.from( range.getItems( { shallow: true } ) ).reverse();
+		const items = Array.from( range.getItems( { shallow: true } ) );
+		const rangeSize = range.end.offset - range.start.offset;
+		const inSameParent = sourcePosition.parent == range.start.parent;
+
+		let offset = 0;
 
 		for ( let item of items ) {
 			const data = {
-				sourcePosition: sourcePosition.getShiftedBy( item.startOffset - range.start.offset ),
-				targetPosition: Position.createAt( range.start ),
+				sourcePosition: sourcePosition,
+				targetPosition: inSameParent ? range.start.getShiftedBy( rangeSize ) : range.start.getShiftedBy( offset ),
 				item: item
 			};
+
+			offset += data.item.offsetSize;
 
 			this._testAndFire( 'move', data, consumable );
 		}
@@ -225,12 +230,9 @@ export default class ModelConversionDispatcher {
 	convertRemove( sourcePosition, range ) {
 		const consumable = this._createConsumableForRange( range, 'remove' );
 
-		// Fire a separate event for each top-most node and text fragment contained in the range.
-		const items = Array.from( range.getItems( { shallow: true } ) ).reverse();
-
-		for ( let item of items ) {
+		for ( let item of range.getItems( { shallow: true } ) ) {
 			const data = {
-				sourcePosition: sourcePosition.getShiftedBy( item.startOffset - range.start.offset ),
+				sourcePosition: sourcePosition,
 				item: item
 			};
 
