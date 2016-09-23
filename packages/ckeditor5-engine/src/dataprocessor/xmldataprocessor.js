@@ -89,7 +89,7 @@ export default class XmlDataProcessor {
 		const domFragment = this._toDom( data );
 
 		// Convert DOM DocumentFragment to view DocumentFragment.
-		return this._domConverter.domToView( domFragment );
+		return this._domConverter.domToView( domFragment, { keepOriginalCase: true } );
 	}
 
 	/**
