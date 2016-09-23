@@ -30,7 +30,7 @@
 
 ### Keyboard support
 
-1. Check if above use cases works for keyboard support. For opening Link panel press `Ctrl+L`, for submitting form press `Enter`.
+1. Check if above use cases works for keyboard support. For opening Link panel press `Ctrl+K`, for submitting form press `Enter`.
 
 ### Unlink link fragment
 
