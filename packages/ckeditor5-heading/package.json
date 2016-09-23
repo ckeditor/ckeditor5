@@ -1,5 +1,5 @@
 {
-  "name": "ckeditor5-headings",
+  "name": "ckeditor5-heading",
   "version": "0.2.0",
   "description": "Headings feature for CKEditor 5.",
   "keywords": [],
@@ -16,9 +16,9 @@
   "author": "CKSource (http://cksource.com/)",
   "license": "See LICENSE.md",
   "homepage": "https://ckeditor5.github.io",
-  "bugs": "https://github.com/ckeditor/ckeditor5-headings/issues",
+  "bugs": "https://github.com/ckeditor/ckeditor5-heading/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5-headings.git"
+    "url": "https://github.com/ckeditor/ckeditor5-heading.git"
   }
 }

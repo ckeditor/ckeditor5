@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md.
  */
 
-import HeadingsEngine from '/ckeditor5/headings/headingsengine.js';
+import HeadingEngine from '/ckeditor5/heading/headingengine.js';
 import Paragraph from '/ckeditor5/paragraph/paragraph.js';
 import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
-import HeadingsCommand from '/ckeditor5/headings/headingscommand.js';
+import HeadingCommand from '/ckeditor5/heading/headingcommand.js';
 import Enter from '/ckeditor5/enter/enter.js';
 import { getData } from '/tests/engine/_utils/model.js';
 
-describe( 'HeadingsEngine', () => {
+describe( 'HeadingEngine', () => {
 	let editor, document;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			features: [ Enter, HeadingsEngine ]
+			features: [ Enter, HeadingEngine ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
@@ -24,7 +24,7 @@ describe( 'HeadingsEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( HeadingsEngine ) ).to.be.instanceOf( HeadingsEngine );
+		expect( editor.plugins.get( HeadingEngine ) ).to.be.instanceOf( HeadingEngine );
 	} );
 
 	it( 'should load paragraph feature', () => {
@@ -47,10 +47,10 @@ describe( 'HeadingsEngine', () => {
 	} );
 
 	it( 'should register format command', () => {
-		expect( editor.commands.has( 'headings' ) ).to.be.true;
-		const command = editor.commands.get( 'headings' );
+		expect( editor.commands.has( 'heading' ) ).to.be.true;
+		const command = editor.commands.get( 'heading' );
 
-		expect( command ).to.be.instanceOf( HeadingsCommand );
+		expect( command ).to.be.instanceOf( HeadingCommand );
 	} );
 
 	it( 'should convert heading1', () => {

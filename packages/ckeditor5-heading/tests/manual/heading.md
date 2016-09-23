@@ -1,6 +1,6 @@
 @bender-ui: collapsed
 
-## Headings
+## Heading feature
 
 1. The data should be loaded with three headings and one paragraph.
 2. Put selection inside each block and check if dropdown label is changing properly.

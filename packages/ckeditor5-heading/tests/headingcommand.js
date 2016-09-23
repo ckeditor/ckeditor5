@@ -4,7 +4,7 @@
  */
 
 import ModelTestEditor from '/tests/core/_utils/modeltesteditor.js';
-import HeadingsCommand from '/ckeditor5/headings/headingscommand.js';
+import HeadingCommand from '/ckeditor5/heading/headingcommand.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import { setData, getData } from '/tests/engine/_utils/model.js';
 
@@ -15,7 +15,7 @@ const formats = [
 	{ id: 'heading3', viewElement: 'h4' }
 ];
 
-describe( 'HeadingsCommand', () => {
+describe( 'HeadingCommand', () => {
 	let editor, document, command, root, schema;
 
 	beforeEach( () => {
@@ -23,7 +23,7 @@ describe( 'HeadingsCommand', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				document = editor.document;
-				command = new HeadingsCommand( editor, formats );
+				command = new HeadingCommand( editor, formats );
 				schema = document.schema;
 
 				for ( let format of formats ) {

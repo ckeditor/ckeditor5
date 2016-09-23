@@ -6,14 +6,14 @@
 /* globals document */
 
 import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
-import Headings from '/ckeditor5/headings/headings.js';
-import HeadingsEngine from '/ckeditor5/headings/headingsengine.js';
+import Heading from '/ckeditor5/heading/heading.js';
+import HeadingEngine from '/ckeditor5/heading/headingengine.js';
 import ListDropdown from '/ckeditor5/ui/dropdown/list/listdropdown.js';
 import testUtils from '/tests/core/_utils/utils.js';
 
 testUtils.createSinonSandbox();
 
-describe( 'Headings', () => {
+describe( 'Heading', () => {
 	let editor, controller;
 
 	beforeEach( () => {
@@ -21,8 +21,8 @@ describe( 'Headings', () => {
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-			features: [ Headings ],
-			toolbar: [ 'headings' ]
+			features: [ Heading ],
+			toolbar: [ 'heading' ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
@@ -35,11 +35,11 @@ describe( 'Headings', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( Headings ) ).to.be.instanceOf( Headings );
+		expect( editor.plugins.get( Heading ) ).to.be.instanceOf( Heading );
 	} );
 
 	it( 'should load FormatsEngine', () => {
-		expect( editor.plugins.get( HeadingsEngine ) ).to.be.instanceOf( HeadingsEngine );
+		expect( editor.plugins.get( HeadingEngine ) ).to.be.instanceOf( HeadingEngine );
 	} );
 
 	it( 'should register formats feature component', () => {
@@ -57,7 +57,7 @@ describe( 'Headings', () => {
 		model.fire( 'execute' );
 
 		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'headings', 'foo' );
+		sinon.assert.calledWithExactly( executeSpy, 'heading', 'foo' );
 	} );
 
 	it( 'should focus view after command execution', () => {
@@ -75,7 +75,7 @@ describe( 'Headings', () => {
 
 		beforeEach( () => {
 			model = controller.model;
-			command = editor.commands.get( 'headings' );
+			command = editor.commands.get( 'heading' );
 		} );
 
 		it( 'isEnabled', () => {

@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals console:false, document, window */
+/* globals console, document, window */
 
 import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ 'enter', 'typing', 'undo', 'headings' ],
+	features: [ 'enter', 'typing', 'undo', 'heading' ],
 	toolbar: [ 'headings', 'undo', 'redo' ]
 } )
 .then( editor => {
