@@ -223,64 +223,28 @@ describe( 'Link', () => {
 
 		describe( 'close listeners', () => {
 			describe( 'keyboard', () => {
-				it( 'should listen keyboard events when is open', () => {
-					const escCloseSpy = testUtils.sinon.spy( linkFeature, '_closePanelOnEsc' );
-
+				it( 'should close after `ESC` press', () => {
 					balloonPanel.view.model.isVisible = true;
-					document.dispatchEvent( new Event( 'keydown' ) );
 
-					expect( escCloseSpy.calledOnce ).to.true;
-				} );
+					dispatchKeyboardEvent( document, 'keydown', keyCodes.esc );
 
-				it( 'should not listen keyboard events when is closed', () => {
-					const escCloseSpy = testUtils.sinon.spy( linkFeature, '_closePanelOnEsc' );
-
-					balloonPanel.view.model.isVisible = false;
-					document.dispatchEvent( new Event( 'keydown' ) );
-
-					expect( escCloseSpy.calledOnce ).to.false;
-				} );
-
-				it( 'should stop listening keyboard events after close', () => {
-					const escCloseSpy = testUtils.sinon.spy( linkFeature, '_closePanelOnEsc' );
-
-					balloonPanel.view.model.isVisible = true;
-					balloonPanel.view.model.isVisible = false;
-
-					document.dispatchEvent( new Event( 'keydown' ) );
-
-					expect( escCloseSpy.notCalled ).to.true;
+					expect( hidePanelSpy.calledOnce ).to.true;
+					expect( focusEditableSpy.calledOnce ).to.true;
 				} );
 			} );
 
 			describe( 'mouse', () => {
-				it( 'should not close on click inside the panel', () => {
-					balloonPanel.view.model.isVisible = true;
-					balloonPanel.view.element.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
-
-					expect( hidePanelSpy.notCalled ).to.true;
-				} );
-
 				it( 'should close and not focus editable on click outside the panel', () => {
 					balloonPanel.view.model.isVisible = true;
-					document.dispatchEvent( new Event( 'mouseup' ) );
+					document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 
 					expect( hidePanelSpy.calledOnce ).to.true;
 					expect( focusEditableSpy.notCalled ).to.true;
 				} );
 
-				it( 'should not listen mouse events before open', () => {
-					balloonPanel.view.model.isVisible = false;
-					document.dispatchEvent( new Event( 'mouseup' ) );
-
-					expect( hidePanelSpy.notCalled ).to.true;
-				} );
-
-				it( 'should stop listening mouse events after closed', () => {
+				it( 'should not close on click inside the panel', () => {
 					balloonPanel.view.model.isVisible = true;
-					balloonPanel.view.model.isVisible = false;
-
-					document.dispatchEvent( new Event( 'mouseup' ) );
+					balloonPanel.view.element.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 
 					expect( hidePanelSpy.notCalled ).to.true;
 				} );
@@ -424,17 +388,21 @@ describe( 'Link', () => {
 				expect( balloonPanel.view.model.isVisible ).to.false;
 			} );
 		} );
-
-		describe( '_closePanelOnEsc', () => {
-			it( 'should hide panel and focus editable on ESC press', () => {
-				const eventInfo = {};
-				const domEvent = { keyCode: 27 };
-
-				linkFeature._closePanelOnEsc( eventInfo, domEvent );
-
-				expect( hidePanelSpy.calledOnce ).to.true;
-				expect( focusEditableSpy.calledOnce ).to.true;
-			} );
-		} );
 	} );
 } );
+
+// Creates and dispatches keyboard event with specified keyCode.
+//
+// @private
+// @param {EventTarget} eventTarget
+// @param {String} eventName
+// @param {Number} keyCode
+function dispatchKeyboardEvent( element, eventName, keyCode ) {
+	const event = document.createEvent( 'Events' );
+
+	event.initEvent( eventName, true, true );
+	event.which = keyCode;
+	event.keyCode = keyCode;
+
+	element.dispatchEvent( event );
+}
