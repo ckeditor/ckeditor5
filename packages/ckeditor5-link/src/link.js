@@ -140,22 +140,19 @@ export default class Link extends Feature {
 		// Create the balloon panel instance.
 		const balloonPanel = new LinkBalloonPanel( panelModel, new LinkBalloonPanelView( editor.locale ) );
 
-		// Observe `LinkBalloonPanelMode#executeLink` event from within the model of the panel,
-		// which means that form has been submitted.
+		// Execute link command after clicking on balloon panel `Link` button.
 		this.listenTo( panelModel, 'executeLink', () => {
 			editor.execute( 'link', balloonPanel.urlInput.value );
 			this._hidePanel( { focusEditable: true } );
 		} );
 
-		// Observe `LinkBalloonPanelMode#executeUnlink` event from within the model of the panel,
-		// which means that the `Unlink` button has been clicked.
+		// Execute unlink command after clicking on balloon panel `Unlink` button.
 		this.listenTo( panelModel, 'executeUnlink', () => {
 			editor.execute( 'unlink' );
 			this._hidePanel( { focusEditable: true } );
 		} );
 
-		// Observe `LinkBalloonPanelMode#executeCancel` event from within the model of the panel,
-		// which means that the `Cancel` button has been clicked.
+		// Hide ballon panel after clicking on balloon panel `Cancel` button.
 		this.listenTo( panelModel, 'executeCancel', () => this._hidePanel( { focusEditable: true } ) );
 
 		// Handle `Ctrl+K` keystroke and show panel.
