@@ -36,15 +36,13 @@ export default class List extends Feature {
 		this._addButton( 'numberedList', 'numberedlist', t( 'Numbered List' ) );
 		this._addButton( 'bulletedList', 'bulletedlist', t( 'Bulleted List' ) );
 
-		const doc = this.editor.document;
-		const selection = doc.selection;
-
 		// Overwrite default enter key behavior.
 		// If enter key is pressed with selection collapsed in empty list item, outdent it instead of breaking it.
 		this.listenTo( this.editor.editing.view, 'enter', ( evt, data ) => {
-			const positionParent = selection.getLastPosition().parent;
+			const doc = this.editor.document;
+			const positionParent = doc.selection.getLastPosition().parent;
 
-			if ( selection.isCollapsed && positionParent.name == 'listItem' && positionParent.isEmpty ) {
+			if ( doc.selection.isCollapsed && positionParent.name == 'listItem' && positionParent.isEmpty ) {
 				this.editor.execute( 'outdentList' );
 
 				data.preventDefault();
