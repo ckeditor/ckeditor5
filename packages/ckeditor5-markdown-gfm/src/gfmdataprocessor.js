@@ -18,6 +18,12 @@ import converters from './lib/to-markdown/converters.js';
  */
 export default class GFMDataProcessor {
 	constructor() {
+		/**
+		 * HTML data processor used to process HTML produced by the Markdown to HTML converter and the other way.
+		 *
+		 * @private
+		 * @member {engine.dataProcessor.HtmlDataProcessor} markdown-gfm.GFMDataProcessor#_htmlDP
+		 */
 		this._htmlDP = new HtmlDataProcessor();
 	}
 
