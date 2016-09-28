@@ -4,7 +4,7 @@
  */
 
 import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
-import { stringify } from '/tests/engine/_utils/view.js';
+import { stringify } from '/ckeditor5/engine/dev-utils/view.js';
 
 const testCases = {
 	'backslash': { test: '\\\\', result: '\\' },
