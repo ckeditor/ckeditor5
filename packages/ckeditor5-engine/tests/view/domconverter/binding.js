@@ -11,7 +11,7 @@ import DomConverter from '/ckeditor5/engine/view/domconverter.js';
 import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import { INLINE_FILLER } from '/ckeditor5/engine/view/filler.js';
 
-import { parse } from '/tests/engine/_utils/view.js';
+import { parse } from '/ckeditor5/engine/dev-utils/view.js';
 
 import createElement from '/ckeditor5/utils/dom/createelement.js';
 

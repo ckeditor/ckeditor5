@@ -3,33 +3,41 @@
  * For licensing, see LICENSE.md.
  */
 
-import RootElement from '/ckeditor5/engine/model/rootelement.js';
-import ModelDocument from '/ckeditor5/engine/model/document.js';
-import ModelRange from '/ckeditor5/engine/model/range.js';
-import ModelPosition from '/ckeditor5/engine/model/position.js';
-import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
-import ModelSelection from '/ckeditor5/engine/model/selection.js';
-import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
-import ModelElement from '/ckeditor5/engine/model/element.js';
-import ModelText from '/ckeditor5/engine/model/text.js';
-import ModelTextProxy from '/ckeditor5/engine/model/textproxy.js';
-import modelWriter from '/ckeditor5/engine/model/writer.js';
+/**
+ * @namespace engine.dev-utils.model
+ */
 
-import ViewConversionDispatcher from '/ckeditor5/engine/conversion/viewconversiondispatcher.js';
-import ViewSelection from '/ckeditor5/engine/view/selection.js';
-import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import ViewElement from '/ckeditor5/engine/view/containerelement.js';
-import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
+/**
+ * Collection of methods for manipulating {@link engine.model engine.model} for testing purposes.
+ */
 
-import Mapper from '/ckeditor5/engine/conversion/mapper.js';
-import { parse as viewParse, stringify as viewStringify } from '/tests/engine/_utils/view.js';
+import RootElement from '../model/rootelement.js';
+import ModelDocument from '../model/document.js';
+import ModelRange from '../model/range.js';
+import ModelPosition from '../model/position.js';
+import ModelConversionDispatcher from '../conversion/modelconversiondispatcher.js';
+import ModelSelection from '../model/selection.js';
+import ModelDocumentFragment from '../model/documentfragment.js';
+import ModelElement from '../model/element.js';
+import ModelText from '../model/text.js';
+import ModelTextProxy from '../model/textproxy.js';
+import modelWriter from '../model/writer.js';
+
+import ViewConversionDispatcher from '../conversion/viewconversiondispatcher.js';
+import ViewSelection from '../view/selection.js';
+import ViewDocumentFragment from '../view/documentfragment.js';
+import ViewElement from '../view/containerelement.js';
+import ViewAttributeElement from '../view/attributeelement.js';
+
+import Mapper from '../conversion/mapper.js';
+import { parse as viewParse, stringify as viewStringify } from '../../engine/dev-utils/view.js';
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 	convertSelectionAttribute
-} from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
-import { insertText, insertElement, wrap } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
-import isPlainObject from '/ckeditor5/utils/lib/lodash/isplainobject.js';
+} from '../conversion/model-selection-to-view-converters.js';
+import { insertText, insertElement, wrap } from '../conversion/model-to-view-converters.js';
+import isPlainObject from '../../utils/lib/lodash/isplainobject.js';
 
 /**
  * Writes the contents of the {@link engine.model.Document Document} to an HTML-like string.
@@ -38,6 +46,7 @@ import isPlainObject from '/ckeditor5/utils/lib/lodash/isplainobject.js';
  *
  *		<$text attribute="value">Text data</$text>
  *
+ * @method engine.dev-utils.model.getData
  * @param {engine.model.Document} document
  * @param {Object} [options]
  * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
@@ -71,6 +80,7 @@ getData._stringify = stringify;
  *
  *		<$text attribute="value">Text data</$text>
  *
+ * @method engine.dev-utils.model.setData
  * @param {engine.model.Document} document
  * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
@@ -153,6 +163,7 @@ setData._parse = parse;
  *
  *		<$text attribute="value">Text data</$text>
  *
+ * @method engine.dev-utils.model.stringify
  * @param {engine.model.RootElement|engine.model.Element|engine.model.Text|
  * engine.model.DocumentFragment} node Node to stringify.
  * @param {engine.model.Selection|engine.model.Position|engine.model.Range} [selectionOrPositionOrRange=null]
@@ -240,6 +251,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  *
  *		<$text attribute="value">Text data</$text>
  *
+ * @method engine.dev-utils.model.parse
  * @param {String} data HTML-like string to be parsed.
  * @param {engine.model.schema} schema Schema instance uses by converters for element validation.
  * @param {Object} options Additional configuration.

@@ -11,7 +11,7 @@ import Element from '/ckeditor5/engine/view/element.js';
 import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import Text from '/ckeditor5/engine/view/text.js';
 import TreeWalker from '/ckeditor5/engine/view/treewalker.js';
-import { parse } from '/tests/engine/_utils/view.js';
+import { parse } from '/ckeditor5/engine/dev-utils/view.js';
 
 function getRange( view, options = {} ) {
 	const { selection } = parse( view, options );

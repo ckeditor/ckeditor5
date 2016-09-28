@@ -12,7 +12,7 @@ import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor
 import buildViewConverter  from '/ckeditor5/engine/conversion/buildviewconverter.js';
 import buildModelConverter  from '/ckeditor5/engine/conversion/buildmodelconverter.js';
 
-import { getData, setData, stringify, parse } from '/tests/engine/_utils/model.js';
+import { getData, setData, stringify, parse } from '/ckeditor5/engine/dev-utils/model.js';
 
 import count from '/ckeditor5/utils/count.js';
 

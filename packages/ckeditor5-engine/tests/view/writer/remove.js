@@ -9,7 +9,7 @@ import { remove } from '/ckeditor5/engine/view/writer.js';
 import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import Range from '/ckeditor5/engine/view/range.js';
 import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import { stringify, parse } from '/tests/engine/_utils/view.js';
+import { stringify, parse } from '/ckeditor5/engine/dev-utils/view.js';
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 

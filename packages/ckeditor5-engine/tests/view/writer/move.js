@@ -6,8 +6,8 @@
 /* bender-tags: view, browser-only */
 
 import { move } from '/ckeditor5/engine/view/writer.js';
-import { stringify, parse } from '/tests/engine/_utils/view.js';
 import ViewPosition from '/ckeditor5/engine/view/position.js';
+import { stringify, parse } from '/ckeditor5/engine/dev-utils/view.js';
 
 describe( 'writer', () => {
 	/**

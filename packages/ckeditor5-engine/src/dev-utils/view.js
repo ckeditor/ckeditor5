@@ -3,16 +3,24 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '/ckeditor5/engine/view/document.js';
-import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import XmlDataProcessor from '/ckeditor5/engine/dataprocessor/xmldataprocessor.js';
-import ViewElement from '/ckeditor5/engine/view/element.js';
-import Selection from '/ckeditor5/engine/view/selection.js';
-import Range from '/ckeditor5/engine/view/range.js';
-import Position from '/ckeditor5/engine/view/position.js';
-import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
-import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
-import ViewText from '/ckeditor5/engine/view/text.js';
+/**
+ * @namespace engine.dev-utils.view
+ */
+
+/**
+ * Collection of methods for manipulating {@link engine.view engine.view} for testing purposes.
+ */
+
+import Document from '../view/document.js';
+import ViewDocumentFragment from '../view/documentfragment.js';
+import XmlDataProcessor from '../dataprocessor/xmldataprocessor.js';
+import ViewElement from '../view/element.js';
+import Selection from '../view/selection.js';
+import Range from '../view/range.js';
+import Position from '../view/position.js';
+import AttributeElement from '../view/attributeelement.js';
+import ContainerElement from '../view/containerelement.js';
+import ViewText from '../view/text.js';
 
 const ELEMENT_RANGE_START_TOKEN = '[';
 const ELEMENT_RANGE_END_TOKEN = ']';
@@ -22,6 +30,7 @@ const TEXT_RANGE_END_TOKEN = '}';
 /**
  * Writes the contents of the {@link engine.view.Document Document} to an HTML-like string.
  *
+ * @method engine.dev-utils.view.getData
  * @param {engine.view.Document} document
  * @param {Object} [options]
  * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
@@ -59,6 +68,7 @@ getData._stringify = stringify;
 /**
  * Sets the contents of the {@link engine.view.Document Document} provided as HTML-like string.
  *
+ * @method engine.dev-utils.view.setData
  * @param {engine.view.Document} document
  * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
@@ -167,6 +177,7 @@ setData._parse = parse;
  *		attribute.priority = 20;
  *		getData( attribute, null, { showPriority: true } ); // <b view-priority="20"></b>
  *
+ * @method engine.dev-utils.view.stringify
  * @param {engine.view.Text|engine.view.Element|engine.view.DocumentFragment} node Node to stringify.
  * @param {engine.view.Selection|engine.view.Position|engine.view.Range} [selectionOrPositionOrRange = null ]
  * Selection instance which ranges will be included in returned string data. If Range instance is provided - it will be
@@ -254,6 +265,7 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  *		// Returns Element and selection that is placed inside of DocumentFragment containing that element.
  *		const { root, selection } = parse( '[<a></a>]' );
  *
+ * @method engine.dev-utils.view.parse
  * @param {String} data HTML-like string to be parsed.
  * @param {Object} options
  * @param {Array.<Number>} [options.order] Array with order of parsed ranges added to returned

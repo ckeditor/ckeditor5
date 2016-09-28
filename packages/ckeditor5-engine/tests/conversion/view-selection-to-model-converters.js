@@ -14,8 +14,8 @@ import ModelDocument from '/ckeditor5/engine/model/document.js';
 import Mapper from '/ckeditor5/engine/conversion/mapper.js';
 import { convertSelectionChange } from '/ckeditor5/engine/conversion/view-selection-to-model-converters.js';
 
-import { setData as modelSetData, getData as modelGetData } from '/tests/engine/_utils/model.js';
-import { setData as viewSetData } from '/tests/engine/_utils/view.js';
+import { setData as modelSetData, getData as modelGetData } from '/ckeditor5/engine/dev-utils/model.js';
+import { setData as viewSetData } from '/ckeditor5/engine/dev-utils/view.js';
 
 describe( 'convertSelectionChange', () => {
 	let model, view, mapper, convertSelection, modelRoot, viewRoot;
