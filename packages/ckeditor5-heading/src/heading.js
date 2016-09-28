@@ -14,7 +14,7 @@ import ListDropdownView from '../ui/dropdown/list/listdropdownview.js';
 import Collection from '../utils/collection.js';
 
 /**
- * The headings feature. It introduces the `'headings'` drop-down list and the `'heading'` command which allow
+ * The headings feature. It introduces the `headings` drop-down list and the `heading` command which allow
  * to convert paragraphs into headings.
  *
  * @memberOf heading
