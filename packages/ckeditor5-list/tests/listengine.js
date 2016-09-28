@@ -14,8 +14,8 @@ import ModelRange from '/ckeditor5/engine/model/range.js';
 import ViewPosition from '/ckeditor5/engine/view/position.js';
 
 import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
-import { getData as getModelData, setData as setModelData } from '/tests/engine/_utils/model.js';
-import { getData as getViewData } from '/tests/engine/_utils/view.js';
+import { getData as getModelData, setData as setModelData } from '/ckeditor5/engine/dev-utils/model.js';
+import { getData as getViewData } from '/ckeditor5/engine/dev-utils/view.js';
 
 describe( 'ListEngine', () => {
 	let editor, doc, root;
