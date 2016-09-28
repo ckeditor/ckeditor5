@@ -15,6 +15,7 @@
     "ckeditor5-enter": "ckeditor/ckeditor5-enter",
     "ckeditor5-heading": "ckeditor/ckeditor5-heading",
     "ckeditor5-link": "ckeditor/ckeditor5-link",
+    "ckeditor5-list": "ckeditor/ckeditor5-list",
     "ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm",
     "ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph",
     "ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark",
