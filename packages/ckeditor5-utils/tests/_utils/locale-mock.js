@@ -12,14 +12,4 @@ export default class Locale {
 	constructor() {
 		this.t = ( str ) => `t( ${ str } )`;
 	}
-
-	/**
-	 * Injects instance of this class to the editor.
-	 *
-	 * @param {Editor} editor
-	 */
-	static inject( editor ) {
-		editor.locale = new Locale();
-		editor.t = editor.locale.t;
-	}
 }
