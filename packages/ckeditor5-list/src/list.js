@@ -33,8 +33,8 @@ export default class List extends Feature {
 	init() {
 		// Create two buttons and link them with numberedList and bulletedList commands.
 		const t = this.editor.t;
-		this._addButton( 'numberedList', 'numberedlist', t( 'Numbered List' ) );
-		this._addButton( 'bulletedList', 'bulletedlist', t( 'Bulleted List' ) );
+		this._addButton( 'numberedList', t( 'Numbered List' ) );
+		this._addButton( 'bulletedList', t( 'Bulleted List' ) );
 
 		// Overwrite default enter key behavior.
 		// If enter key is pressed with selection collapsed in empty list item, outdent it instead of breaking it.
@@ -76,14 +76,13 @@ export default class List extends Feature {
 	}
 
 	/**
-	 * Helper method for initializing a button and linking it with appropriate command.
+	 * Helper method for initializing a button and linking it with an appropriate command.
 	 *
 	 * @private
 	 * @param {String} commandName Name of the command.
-	 * @param {String} iconName Name of the icon resource.
 	 * @param {Object} label Button label.
 	 */
-	_addButton( commandName, iconName, label ) {
+	_addButton( commandName, label ) {
 		const editor = this.editor;
 		const command = editor.commands.get( commandName );
 
@@ -92,7 +91,7 @@ export default class List extends Feature {
 			isEnabled: true,
 			isOn: false,
 			label: label,
-			icon: iconName
+			icon: commandName.toLowerCase()
 		} );
 
 		// Bind button model to command.

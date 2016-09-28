@@ -26,9 +26,11 @@ export default class IndentCommand extends Command {
 		/**
 		 * By how much the command will change list item's indent attribute.
 		 *
-		 * @readonly {Number} list.IndentCommand#indentBy
+		 * @readonly
+		 * @private
+		 * @member {Number} list.IndentCommand#_indentBy
 		 */
-		this.indentBy = indentDirection == 'forward' ? 1 : -1;
+		this._indentBy = indentDirection == 'forward' ? 1 : -1;
 
 		// Refresh command state after selection is changed or changes has been done to the document.
 		this.editor.document.selection.on( 'change:range', () => {
@@ -44,11 +46,11 @@ export default class IndentCommand extends Command {
 	 * @inheritDoc
 	 */
 	_doExecute() {
-		const document = this.editor.document;
-		const batch = document.batch();
-		const element = getClosestListItem( document.selection.getFirstPosition() );
+		const doc = this.editor.document;
+		const batch = doc.batch();
+		const element = getClosestListItem( doc.selection.getFirstPosition() );
 
-		document.enqueueChanges( () => {
+		doc.enqueueChanges( () => {
 			const oldIndent = element.getAttribute( 'indent' );
 
 			let itemsToChange = [ element ];
@@ -67,12 +69,12 @@ export default class IndentCommand extends Command {
 			// bases on that state and assumes that model is correct.
 			// Because of that, if the command outdented items, we will outdent them starting from the last item, as
 			// it is safer.
-			if ( this.indentBy < 0 ) {
+			if ( this._indentBy < 0 ) {
 				itemsToChange = itemsToChange.reverse();
 			}
 
 			for ( let item of itemsToChange ) {
-				const indent = item.getAttribute( 'indent' ) + this.indentBy;
+				const indent = item.getAttribute( 'indent' ) + this._indentBy;
 
 				// If indent is lower than 0, it means that the item got outdented when it was not indented.
 				// This means that we need to convert that list item to paragraph.
@@ -102,9 +104,9 @@ export default class IndentCommand extends Command {
 
 		const prev = listItem.previousSibling;
 		const oldIndent = listItem.getAttribute( 'indent' );
-		const newIndent = oldIndent + this.indentBy;
+		const newIndent = oldIndent + this._indentBy;
 
-		if ( this.indentBy > 0 ) {
+		if ( this._indentBy > 0 ) {
 			// If we are indenting, there are some conditions to meet.
 			// Cannot indent first list item.
 			if ( !prev || prev.name != 'listItem' ) {

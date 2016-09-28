@@ -31,20 +31,20 @@ export default class ListCommand extends Command {
 		this.type = type == 'bulleted' ? 'bulleted' : 'numbered';
 
 		/**
-		 * Flag indicating whether command is active, which means that selection starts in a list of same type.
+		 * Flag indicating whether the command is active, which means that selection starts in a list of the same type.
 		 *
 		 * @observable
 		 * @member {Boolean} list.ListCommand#value
 		 */
 		this.set( 'value', false );
 
-		// Listen on selection change and set's current command's value.
+		// Listen on selection change and sets current command's value.
 		this.listenTo( editor.document.selection, 'change:range', () => {
 			this.refreshValue();
 			this.refreshState();
 		} );
 
-		// Listen on changesDone model document and set's current command's value.
+		// Listen on changesDone model document and sets current command's value.
 		this.listenTo( editor.document, 'changesDone', () => {
 			this.refreshValue();
 			this.refreshState();
@@ -52,7 +52,7 @@ export default class ListCommand extends Command {
 	}
 
 	/**
-	 * Set's command's value basing on document selection.
+	 * Sets command's value based on the document selection.
 	 */
 	refreshValue() {
 		const position = this.editor.document.selection.getFirstPosition();
