@@ -58,7 +58,7 @@ export default class List extends Feature {
 
 			if ( data.keystroke == parseKeystroke( 'tab' ) ) {
 				commandName = 'indentList';
-			} else if ( data.keystroke == parseKeystroke( 'shift + tab' ) ) {
+			} else if ( data.keystroke == parseKeystroke( 'Shift+tab' ) ) {
 				commandName = 'outdentList';
 			}
 
