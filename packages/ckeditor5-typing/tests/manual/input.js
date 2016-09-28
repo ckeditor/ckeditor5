@@ -6,7 +6,7 @@
 /* globals console, window, document */
 
 import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
-import { getData } from '/tests/engine/_utils/model.js';
+import { getData } from '/ckeditor5/engine/dev-utils/model.js';
 
 window.setInterval( function() {
 	console.log( getData( window.editor.document ) );
