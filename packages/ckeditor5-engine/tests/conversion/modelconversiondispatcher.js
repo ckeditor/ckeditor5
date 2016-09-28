@@ -287,7 +287,7 @@ describe( 'ModelConversionDispatcher', () => {
 	} );
 
 	describe( 'convertMove', () => {
-		it( 'should fire single event for moved range', () => {
+		it( 'should fire event for moved range', () => {
 			root.appendChildren( new ModelText( 'barfoo' ) );
 
 			const range = ModelRange.createFromParentsAndOffsets( root, 0, root, 3 );
@@ -298,14 +298,14 @@ describe( 'ModelConversionDispatcher', () => {
 				loggedEvents.push( log );
 			} );
 
-			dispatcher.convertMove( ModelPosition.createFromParentAndOffset( root , 3 ), range );
+			dispatcher.convertMove( ModelPosition.createFromParentAndOffset( root , 0 ), range );
 
-			expect( loggedEvents ).to.deep.equal( [ 'move:3:0:3' ] );
+			expect( loggedEvents ).to.deep.equal( [ 'move:0:3:3' ] );
 		} );
 	} );
 
 	describe( 'convertRemove', () => {
-		it( 'should fire single event for removed range', () => {
+		it( 'should fire event for removed range', () => {
 			root.appendChildren( new ModelText( 'foo' ) );
 			doc.graveyard.appendChildren( new ModelText( 'bar' ) );
 

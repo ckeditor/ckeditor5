@@ -7,8 +7,11 @@ import ModelRange from '../model/range.js';
 import ModelPosition from '../model/position.js';
 import ModelElement from '../model/element.js';
 
+import ViewRange from '../view/range.js';
 import ViewElement from '../view/element.js';
 import ViewText from '../view/text.js';
+import ViewTextProxy from '../view/textproxy.js';
+import ViewTreeWalker from '../view/treewalker.js';
 import viewWriter from '../view/writer.js';
 
 /**
@@ -49,7 +52,9 @@ import viewWriter from '../view/writer.js';
  */
 export function insertElement( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		consumable.consume( data.item, 'insert' );
+		if ( !consumable.consume( data.item, 'insert' ) ) {
+			return;
+		}
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 		const viewElement = ( elementCreator instanceof ViewElement ) ?
@@ -58,8 +63,6 @@ export function insertElement( elementCreator ) {
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		viewWriter.insert( viewPosition, viewElement );
-
-		evt.stop();
 	};
 }
 
@@ -77,14 +80,14 @@ export function insertElement( elementCreator ) {
  */
 export function insertText() {
 	return ( evt, data, consumable, conversionApi ) => {
-		consumable.consume( data.item, 'insert' );
+		if ( !consumable.consume( data.item, 'insert' ) ) {
+			return;
+		}
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 		const viewText = new ViewText( data.item.data );
 
 		viewWriter.insert( viewPosition, viewText );
-
-		evt.stop();
 	};
 }
 
@@ -125,12 +128,13 @@ export function setAttribute( attributeCreator ) {
 	attributeCreator = attributeCreator || ( ( value, key ) => ( { value, key } ) );
 
 	return ( evt, data, consumable, conversionApi ) => {
+		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
+			return;
+		}
+
 		const { key, value } = attributeCreator( data.attributeNewValue, data.attributeKey, data, consumable, conversionApi );
 
-		consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 		conversionApi.mapper.toViewElement( data.item ).setAttribute( key, value );
-
-		evt.stop();
 	};
 }
 
@@ -172,12 +176,13 @@ export function removeAttribute( attributeCreator ) {
 	attributeCreator = attributeCreator || ( ( value, key ) => ( { key } ) );
 
 	return ( evt, data, consumable, conversionApi ) => {
+		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
+			return;
+		}
+
 		const { key } = attributeCreator( data.attributeOldValue, data.attributeKey, data, consumable, conversionApi );
 
-		consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 		conversionApi.mapper.toViewElement( data.item ).removeAttribute( key );
-
-		evt.stop();
 	};
 }
 
@@ -218,7 +223,9 @@ export function wrap( elementCreator ) {
 			elementCreator( data.attributeNewValue, data, consumable, conversionApi );
 
 		if ( viewElement ) {
-			consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
+			if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
+				return;
+			}
 
 			// If this is a change event (because old value is not empty) and the creator is a function (so
 			// it may create different view elements basing on attribute value) we have to create
@@ -229,8 +236,6 @@ export function wrap( elementCreator ) {
 			}
 
 			viewWriter.wrap( viewRange, viewElement );
-
-			evt.stop();
 		}
 	};
 }
@@ -261,7 +266,9 @@ export function wrap( elementCreator ) {
  */
 export function unwrap( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
+		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
+			return;
+		}
 
 		const viewRange = conversionApi.mapper.toViewRange( data.range );
 		const viewNode = ( elementCreator instanceof ViewElement ) ?
@@ -269,8 +276,6 @@ export function unwrap( elementCreator ) {
 			elementCreator( data.attributeOldValue, data, consumable, conversionApi );
 
 		viewWriter.unwrap( viewRange, viewNode );
-
-		evt.stop();
 	};
 }
 
@@ -285,14 +290,24 @@ export function unwrap( elementCreator ) {
  */
 export function move() {
 	return ( evt, data, consumable, conversionApi ) => {
-		if ( consumable.consume( data.item, 'move' ) ) {
-			const sourceModelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, data.item.offsetSize );
-			const sourceViewRange = conversionApi.mapper.toViewRange( sourceModelRange );
-
-			const targetViewPosition = conversionApi.mapper.toViewPosition( data.targetPosition );
-
-			viewWriter.move( sourceViewRange, targetViewPosition );
+		if ( !consumable.consume( data.item, 'move' ) ) {
+			return;
 		}
+
+		let sourceViewRange;
+
+		if ( data.item instanceof ModelElement ) {
+			const viewElement = conversionApi.mapper.toViewElement( data.item );
+			sourceViewRange = ViewRange.createOn( viewElement );
+		} else {
+			const viewPosition = conversionApi.mapper.toViewPosition( data.sourcePosition );
+
+			sourceViewRange = findViewTextRange( viewPosition, data.item.offsetSize );
+		}
+
+		const targetViewPosition = conversionApi.mapper.toViewPosition( data.targetPosition );
+
+		viewWriter.move( sourceViewRange, targetViewPosition );
 	};
 }
 
@@ -307,15 +322,44 @@ export function move() {
  */
 export function remove() {
 	return ( evt, data, consumable, conversionApi ) => {
-		if ( consumable.consume( data.item, 'remove' ) ) {
-			const sourceModelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, data.item.offsetSize );
-			const sourceViewRange = conversionApi.mapper.toViewRange( sourceModelRange );
-
-			viewWriter.remove( sourceViewRange );
-
-			conversionApi.mapper.unbindModelElement( data.item );
+		if ( !consumable.consume( data.item, 'remove' ) ) {
+			return;
 		}
+
+		let viewRange = null;
+
+		if ( data.item instanceof ModelElement ) {
+			const viewElement = conversionApi.mapper.toViewElement( data.item );
+			viewRange = ViewRange.createOn( viewElement );
+		} else {
+			const viewPosition = conversionApi.mapper.toViewPosition( data.sourcePosition );
+
+			viewRange = findViewTextRange( viewPosition, data.item.offsetSize );
+		}
+
+		viewWriter.remove( viewRange );
+		conversionApi.mapper.unbindModelElement( data.item );
 	};
+}
+
+// Helper function for `remove` and `move` converters. It returns a ViewRange that starts at ViewPosition `start` and
+// includes `size` characters.
+// This method is used to find a ViewRange basing on ModelPosition and ModelTextProxy item size in `move` and `remove`
+// converters where it is impossible to just map positions because those positions already are invalid in model
+// (because they got moved or removed).
+function findViewTextRange( start, size ) {
+	const walker = new ViewTreeWalker( { startPosition: start, singleCharacters: true, ignoreElementEnd: true } );
+	let offset = 0;
+
+	for ( let value of walker ) {
+		if ( value.item instanceof ViewTextProxy ) {
+			offset++;
+
+			if ( offset == size ) {
+				return new ViewRange( start, walker.position );
+			}
+		}
+	}
 }
 
 /**
@@ -334,38 +378,40 @@ export function remove() {
  */
 export function rename() {
 	return ( evt, data, consumable, conversionApi ) => {
-		if ( consumable.test( data.element, 'rename' ) ) {
-			// Create fake model element that will represent "old version" of renamed element.
-			const fakeElement = new ModelElement( data.oldName, data.element.getAttributes() );
-			// Append the fake element to model document to enable making range on it.
-			data.element.parent.insertChildren( data.element.index, fakeElement );
-
-			// Check what was bound to renamed element.
-			const oldViewElement = conversionApi.mapper.toViewElement( data.element );
-			// Unbind renamed element.
-			conversionApi.mapper.unbindModelElement( data.element );
-			// Bind view element to the fake element.
-			conversionApi.mapper.bindElements( fakeElement, oldViewElement );
-
-			// The range that includes only the renamed element. Will be used to insert an empty element in the view.
-			const insertRange = ModelRange.createFromParentsAndOffsets( data.element.parent, data.element.startOffset, data.element, 0 );
-
-			// Move source position and range of moved nodes. Will be used to move nodes from original view element to renamed one.
-			const moveSourcePosition = ModelPosition.createAt( fakeElement, 0 );
-			const moveRange = ModelRange.createIn( data.element );
-
-			// Remove range containing the fake element. Will be used to remove original view element from the view.
-			const removeRange = ModelRange.createOn( fakeElement );
-
-			// Start the conversion. Use already defined converters by firing insertion, move and remove conversion
-			// on correct ranges / positions.
-			conversionApi.dispatcher.convertInsertion( insertRange );
-			conversionApi.dispatcher.convertMove( moveSourcePosition, moveRange );
-			conversionApi.dispatcher.convertRemove( removeRange.start, removeRange );
-
-			// Cleanup.
-			fakeElement.remove();
+		if ( !consumable.consume( data.element, 'rename' ) ) {
+			return;
 		}
+
+		// Create fake model element that will represent "old version" of renamed element.
+		const fakeElement = new ModelElement( data.oldName, data.element.getAttributes() );
+		// Append the fake element to model document to enable making range on it.
+		data.element.parent.insertChildren( data.element.index, fakeElement );
+
+		// Check what was bound to renamed element.
+		const oldViewElement = conversionApi.mapper.toViewElement( data.element );
+		// Unbind renamed element.
+		conversionApi.mapper.unbindModelElement( data.element );
+		// Bind view element to the fake element.
+		conversionApi.mapper.bindElements( fakeElement, oldViewElement );
+
+		// The range that includes only the renamed element. Will be used to insert an empty element in the view.
+		const insertRange = ModelRange.createFromParentsAndOffsets( data.element.parent, data.element.startOffset, data.element, 0 );
+
+		// Move source position and range of moved nodes. Will be used to move nodes from original view element to renamed one.
+		const moveSourcePosition = ModelPosition.createAt( fakeElement, 0 );
+		const moveRange = ModelRange.createIn( data.element );
+
+		// Remove range containing the fake element. Will be used to remove original view element from the view.
+		const removeRange = ModelRange.createOn( fakeElement );
+
+		// Start the conversion. Use already defined converters by firing insertion, move and remove conversion
+		// on correct ranges / positions.
+		conversionApi.dispatcher.convertInsertion( insertRange );
+		conversionApi.dispatcher.convertMove( moveSourcePosition, moveRange );
+		conversionApi.dispatcher.convertRemove( removeRange.start, removeRange );
+
+		// Cleanup.
+		fakeElement.remove();
 	};
 }
 

@@ -97,6 +97,18 @@ describe( 'insertText', () => {
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div>நிலைக்கு</div>' );
 	} );
+
+	it( 'should be possible to override it', () => {
+		modelRoot.appendChildren( new ModelText( 'foobar' ) );
+		dispatcher.on( 'insert:$text', insertText() );
+		dispatcher.on( 'insert:$text', ( evt, data, consumable ) => {
+			consumable.consume( data.item, 'insert' );
+		}, { priority: 'high' } );
+
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div></div>' );
+	} );
 } );
 
 describe( 'insertElement', () => {
@@ -195,6 +207,48 @@ describe( 'setAttribute/removeAttribute', () => {
 		dispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelParagraph ), 'theme', 'awesome', null );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p><div class="nice"></div></div>' );
+	} );
+
+	it( 'should be possible to override setAttribute', () => {
+		const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
+		const viewElement = new ViewContainerElement( 'p' );
+
+		modelRoot.appendChildren( modelElement );
+		dispatcher.on( 'insert:paragraph', insertElement( viewElement ) );
+		dispatcher.on( 'insert:$text', insertText() );
+		dispatcher.on( 'addAttribute:class', setAttribute() );
+		dispatcher.on( 'addAttribute:class', ( evt, data, consumable ) => {
+			consumable.consume( data.item, 'addAttribute:class' );
+		}, { priority: 'high' } );
+
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+
+		// No attribute set.
+		expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+	} );
+
+	it( 'should be possible to override removeAttribute', () => {
+		const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
+		const viewElement = new ViewContainerElement( 'p' );
+
+		modelRoot.appendChildren( modelElement );
+		dispatcher.on( 'insert:paragraph', insertElement( viewElement ) );
+		dispatcher.on( 'insert:$text', insertText() );
+		dispatcher.on( 'addAttribute:class', setAttribute() );
+		dispatcher.on( 'removeAttribute:class', removeAttribute() );
+		dispatcher.on( 'removeAttribute:class', ( evt, data, consumable ) => {
+			consumable.consume( data.item, 'removeAttribute:class' );
+		}, { priority: 'high' } );
+
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><p class="foo">foobar</p></div>' );
+
+		modelElement.removeAttribute( 'class' );
+		dispatcher.convertAttribute( 'removeAttribute', createRangeOnElementOnly( modelElement ), 'class', 'bar', null );
+
+		// Nothing changed.
+		expect( viewToString( viewRoot ) ).to.equal( '<div><p class="foo">foobar</p></div>' );
 	} );
 } );
 
@@ -304,6 +358,50 @@ describe( 'wrap/unwrap', () => {
 		dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'bold', true, null );
 
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>நிலைக்கு</p></div>' );
+	} );
+
+	it( 'should be possible to override wrap', () => {
+		const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { bold: true } ) );
+		const viewP = new ViewContainerElement( 'p' );
+		const viewB = new ViewAttributeElement( 'b' );
+
+		modelRoot.appendChildren( modelElement );
+		dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
+		dispatcher.on( 'insert:$text', insertText() );
+		dispatcher.on( 'addAttribute:bold', wrap( viewB ) );
+		dispatcher.on( 'addAttribute:bold', ( evt, data, consumable ) => {
+			consumable.consume( data.item, 'addAttribute:bold' );
+		}, { priority: 'high' } );
+
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+	} );
+
+	it( 'should be possible to override unwrap', () => {
+		const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { bold: true } ) );
+		const viewP = new ViewContainerElement( 'p' );
+		const viewB = new ViewAttributeElement( 'b' );
+
+		modelRoot.appendChildren( modelElement );
+		dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
+		dispatcher.on( 'insert:$text', insertText() );
+		dispatcher.on( 'addAttribute:bold', wrap( viewB ) );
+		dispatcher.on( 'removeAttribute:bold', unwrap( viewB ) );
+		dispatcher.on( 'removeAttribute:bold', ( evt, data, consumable ) => {
+			consumable.consume( data.item, 'removeAttribute:bold' );
+		}, { priority: 'high' } );
+
+		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+
+		expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
+
+		modelWriter.removeAttribute( ModelRange.createIn( modelElement ), 'bold' );
+
+		dispatcher.convertAttribute( 'removeAttribute', ModelRange.createIn( modelElement ), 'bold', true, null );
+
+		// Nothing changed.
+		expect( viewToString( viewRoot ) ).to.equal( '<div><p><b>foobar</b></p></div>' );
 	} );
 } );
 
@@ -505,11 +603,12 @@ describe( 'rename', () => {
 	} );
 
 	it( 'should enable default rename conversion, that uses already registered callbacks', () => {
+		const insertCallCount = converters.insert.callCount;
+
 		expect( viewRoot.getChild( 0 ).name ).to.equal( 'oldName' );
 		dispatcher.convertRename( element, oldName );
 
-		// Called twice, first time when renamed element was originally inserted to model and converted to view.
-		expect( converters.insert.calledTwice ).to.be.true;
+		expect( converters.insert.callCount - insertCallCount ).to.equal( 1 );
 		expect( converters.move.calledOnce ).to.be.true;
 		expect( converters.remove.calledOnce ).to.be.true;
 

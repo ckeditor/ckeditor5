@@ -345,6 +345,7 @@ function convertToModelElement() {
 	return ( evt, data, consumable, conversionApi ) => {
 		const schemaQuery = {
 			name: data.input.name,
+			attributes: Array.from( data.input.getAttributeKeys() ),
 			inside: data.context
 		};
 

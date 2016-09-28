@@ -341,21 +341,36 @@ describe( 'View converter builder', () => {
 		expect( modelToString( result ) ).to.equal( '<div class="myClass"><abcd>foo</abcd></div>' );
 	} );
 
-	it( 'should filter out structure that is wrong with schema', () => {
-		buildViewConverter().for( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
+	it( 'should filter out structure that is wrong with schema - elements', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'div' ).toElement( 'div' );
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
-		schema.disallow( { name: '$text', attributes: 'bold', inside: 'paragraph' } );
 		schema.disallow( { name: 'div', inside: '$root' } );
 
-		dispatcher.on( 'element', convertToModelFragment() );
+		dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 
 		let viewElement = new ViewContainerElement( 'div', null,
 			new ViewContainerElement( 'p', null,
-				new ViewAttributeElement( 'strong', null,
-					new ViewText( 'foo' )
-				)
+				new ViewText( 'foo' )
+			)
+		);
+
+		let result = dispatcher.convert( viewElement, objWithContext );
+
+		expect( modelToString( result ) ).to.equal( '<paragraph>foo</paragraph>' );
+	} );
+
+	it( 'should filter out structure that is wrong with schema - attributes', () => {
+		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+		buildViewConverter().for( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
+
+		schema.disallow( { name: '$text', attributes: 'bold', inside: 'paragraph' } );
+
+		dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
+
+		let viewElement = new ViewContainerElement( 'p', null,
+			new ViewAttributeElement( 'strong', null,
+				new ViewText( 'foo' )
 			)
 		);
 

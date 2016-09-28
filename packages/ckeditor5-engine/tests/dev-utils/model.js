@@ -24,8 +24,10 @@ describe( 'model test utils', () => {
 
 		document.schema.registerItem( 'a', '$inline' );
 		document.schema.allow( { name: 'a', inside: '$root' } );
+		document.schema.allow( { name: 'a', inside: '$root', attributes: [ 'bar', 'car', 'foo' ] } );
 		document.schema.registerItem( 'b', '$inline' );
 		document.schema.allow( { name: 'b', inside: '$root' } );
+		document.schema.allow( { name: 'b', inside: '$root', attributes: [ 'barFoo', 'fooBar', 'x' ] } );
 		document.schema.registerItem( 'c', '$inline' );
 		document.schema.allow( { name: 'c', inside: '$root' } );
 		document.schema.registerItem( 'paragraph', '$block' );

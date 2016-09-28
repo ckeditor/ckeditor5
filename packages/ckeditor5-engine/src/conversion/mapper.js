@@ -176,7 +176,8 @@ export default class Mapper {
 	toModelPosition( viewPosition ) {
 		const data = {
 			viewPosition: viewPosition,
-			modelPosition: null
+			modelPosition: null,
+			mapper: this
 		};
 
 		this.fire( 'viewToModelPosition', data );
@@ -194,7 +195,8 @@ export default class Mapper {
 	toViewPosition( modelPosition ) {
 		const data = {
 			viewPosition: null,
-			modelPosition: modelPosition
+			modelPosition: modelPosition,
+			mapper: this
 		};
 
 		this.fire( 'modelToViewPosition', data );
@@ -273,7 +275,7 @@ export default class Mapper {
 		let modelOffset = 0;
 
 		for ( let i = 0; i < viewOffset; i++ ) {
-			modelOffset += this._getModelLength( viewParent.getChild( i ) );
+			modelOffset += this.getModelLength( viewParent.getChild( i ) );
 		}
 
 		return modelOffset;
@@ -307,11 +309,10 @@ export default class Mapper {
 	 *		<b>foo</b>              -> 3 // Length of an element which is not mapped is a length of its children.
 	 *		<div><p>x</p><p>y</p>   -> 2 // Assuming that <div> is not mapped and <p> are mapped.
 	 *
-	 * @private
 	 * @param {engine.view.Element} viewNode View node.
 	 * @returns {Number} Length of the node in the tree model.
 	 */
-	_getModelLength( viewNode ) {
+	getModelLength( viewNode ) {
 		if ( this._viewToModelMapping.has( viewNode ) ) {
 			const callback = this._viewToModelLengthCallbacks.get( viewNode.name );
 
@@ -322,7 +323,7 @@ export default class Mapper {
 			let len = 0;
 
 			for ( let child of viewNode.getChildren() ) {
-				len += this._getModelLength( child );
+				len += this.getModelLength( child );
 			}
 
 			return len;
@@ -373,7 +374,7 @@ export default class Mapper {
 		// If it is smaller we add the length.
 		while ( modelOffset < expectedOffset ) {
 			viewNode = viewParent.getChild( viewOffset );
-			lastLength = this._getModelLength( viewNode );
+			lastLength = this.getModelLength( viewNode );
 			modelOffset += lastLength;
 			viewOffset++;
 		}
@@ -429,7 +430,7 @@ mix( Mapper, EmitterMixin );
  *
  * 		// Assume that "captionedImage" model element is converted to <img> and following <span> elements in view,
  * 		// and the model element is bound to <img> element. Force mapping model positions inside "captionedImage" to that <span> element.
- *		mapper.on( 'modelToViewPosition', ( evt, mapper, modelPosition, data ) => {
+ *		mapper.on( 'modelToViewPosition', ( evt, data ) => {
  *			const positionParent = modelPosition.parent;
  *
  *			if ( positionParent.name == 'captionedImage' ) {
@@ -446,9 +447,10 @@ mix( Mapper, EmitterMixin );
  * the condition that checks if special case scenario happened should be as simple as possible.
  *
  * @event engine.conversion.Mapper.modelToViewPosition
- * @param {engine.model.Position} modelPosition Model position to be mapped.
  * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
  * `viewPosition` value to that object with calculated {@link engine.view.Position view position}.
+ * @param {engine.model.Position} data.modelPosition Model position to be mapped.
+ * @param {engine.conversion.Mapper} data.mapper Mapper instance that fired the event.
  */
 
 /**
@@ -456,7 +458,7 @@ mix( Mapper, EmitterMixin );
  *
  * 		// See example in `modelToViewPosition` event description.
  * 		// This custom mapping will map positions from <span> element next to <img> to the "captionedImage" element.
- *		mapper.on( 'viewToModelPosition', ( evt, mapper, viewPosition, data ) => {
+ *		mapper.on( 'viewToModelPosition', ( evt, data ) => {
  *			const positionParent = viewPosition.parent;
  *
  *			if ( positionParent.hasClass( 'image-caption' ) ) {
@@ -469,7 +471,8 @@ mix( Mapper, EmitterMixin );
  *		} );
  *
  * @event engine.conversion.Mapper.viewToModelPosition
- * @param {engine.view.Position} viewPosition View position to be mapped.
  * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
  * `modelPosition` value to that object with calculated {@link engine.model.Position model position}.
+ * @param {engine.view.Position} data.viewPosition View position to be mapped.
+ * @param {engine.conversion.Mapper} data.mapper Mapper instance that fired the event.
  */

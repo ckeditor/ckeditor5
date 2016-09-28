@@ -28,7 +28,8 @@ export default {
 	move,
 	wrap,
 	wrapPosition,
-	unwrap
+	unwrap,
+	rename
 };
 
 /**
@@ -355,6 +356,10 @@ export function remove( range ) {
  * {@link engine.view.Range#start start} and {@link engine.view.Range#end end} positions.
  */
 export function move( sourceRange, targetPosition ) {
+	if ( sourceRange.start.parent == targetPosition.parent ) {
+		targetPosition.offset -= sourceRange.end.offset - sourceRange.start.offset;
+	}
+
 	const nodes = remove( sourceRange );
 
 	return insert( targetPosition, nodes );
@@ -547,6 +552,28 @@ export function unwrap( range, attribute ) {
 	const end = mergeAttributes( newRange.end );
 
 	return new Range( start, end );
+}
+
+/**
+ * Renames element by creating a copy of renamed element but with changed name and then moving contents of the
+ * old element to the new one. Keep in mind that this will invalidate all {@link engine.view.Position positions} which
+ * has renamed element as {@link engine.view.Position#parent a parent}.
+ *
+ * New element has to be created because `Element#tagName` property in DOM is readonly.
+ *
+ * Since this function creates a new element and removes the given one, the new element is returned to keep reference.
+ *
+ * @param {engine.view.ContainerElement} viewElement Element to be renamed.
+ * @param {String} newName New name for element.
+ */
+export function rename( viewElement, newName ) {
+	const newElement = new ContainerElement( newName, viewElement.getAttributes() );
+
+	insert( Position.createAfter( viewElement ), newElement );
+	move( Range.createIn( viewElement ), Position.createAt( newElement ) );
+	remove( Range.createOn( viewElement ) );
+
+	return newElement;
 }
 
 // Returns first parent container of specified {@link engine.view.Position Position}.

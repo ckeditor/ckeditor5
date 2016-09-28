@@ -252,8 +252,9 @@ export default class DomConverter {
 	 * @param {Node|DocumentFragment} domNode DOM node or document fragment to transform.
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
-	 * @param {Boolean} [options.withChildren=true] It true node's and document fragment's children will be converted too.
-	 * @returns {engine.view.Node|engine.view.DocumentFragment|null} Converted node or document fragment. Null
+	 * @param {Boolean} [options.withChildren=true] If `true`, node's and document fragment's children will be converted too.
+	 * @param {Boolean} [options.keepOriginalCase=false] If `false`, node's tag name will be converter to lower case.
+	 * @returns {engine.view.Node|engine.view.DocumentFragment|null} Converted node or document fragment or `null`
 	 * if DOM node is a {@link engine.view.filler filler}.
 	 */
 	domToView( domNode, options = {} ) {
@@ -283,7 +284,8 @@ export default class DomConverter {
 				}
 			} else {
 				// Create view element.
-				viewElement = new ViewElement( domNode.tagName.toLowerCase() );
+				const viewName = options.keepOriginalCase ? domNode.tagName : domNode.tagName.toLowerCase();
+				viewElement = new ViewElement( viewName );
 
 				if ( options.bind ) {
 					this.bindElements( domNode, viewElement );
