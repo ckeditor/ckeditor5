@@ -13,9 +13,14 @@ import converters from './lib/to-markdown/converters.js';
  * GFMDataProcessor class.
  * This data processor implementation uses GitHub flavored markdown as input/output data.
  *
- * @extends engine.dataProcessor.HtmlDataProcessor
+ * @memberOf markdown-gfm
+ * @implements engine.dataProcessor.DataProcessor
  */
-export default class GFMDataProcessor extends HtmlDataProcessor {
+export default class GFMDataProcessor {
+	constructor() {
+		this._htmlDP = new HtmlDataProcessor();
+	}
+
 	/**
 	 * Converts provided markdown string to view tree.
 	 *
@@ -31,7 +36,7 @@ export default class GFMDataProcessor extends HtmlDataProcessor {
 			renderer: new GFMRenderer()
 		} );
 
-		return super.toView( html );
+		return this._htmlDP.toView( html );
 	}
 
 	/**
@@ -41,7 +46,7 @@ export default class GFMDataProcessor extends HtmlDataProcessor {
 	 * @returns {String} Markdown string.
 	 */
 	toData( viewFragment ) {
-		const html = super.toData( viewFragment );
+		const html = this._htmlDP.toData( viewFragment );
 
 		return toMarkdown( html, { gfm: true, converters } );
 	}
