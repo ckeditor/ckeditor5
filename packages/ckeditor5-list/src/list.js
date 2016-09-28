@@ -31,8 +31,8 @@ export default class List extends Feature {
 	init() {
 		// Create two buttons and link them with numberedList and bulletedList commands.
 		const t = this.editor.t;
-		this._setButton( 'numberedList', 'numberedlist', t( 'Numbered List' ) );
-		this._setButton( 'bulletedList', 'bulletedlist', t( 'Bulleted List' ) );
+		this._addButton( 'numberedList', 'numberedlist', t( 'Numbered List' ) );
+		this._addButton( 'bulletedList', 'bulletedlist', t( 'Bulleted List' ) );
 
 		const doc = this.editor.document;
 		const selection = doc.selection;
@@ -83,7 +83,7 @@ export default class List extends Feature {
 	 * @param {String} iconName Name of the icon resource.
 	 * @param {Object} label Button label.
 	 */
-	_setButton( commandName, iconName, label ) {
+	_addButton( commandName, iconName, label ) {
 		const editor = this.editor;
 		const command = editor.commands.get( commandName );
 
