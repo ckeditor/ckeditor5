@@ -22,7 +22,8 @@ import {
 } from './converters.js';
 
 /**
- * The engine of list feature. It handles making, editing and removing lists and list items.
+ * The engine of the lists feature. It handles creating, editing and removing lists and list items.
+ * It registers the `numberedList`, `bulletedList`, `indentList` and `outdentList` commands.
  *
  * @memberOf list
  * @extends core.Feature

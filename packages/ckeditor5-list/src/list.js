@@ -11,8 +11,10 @@ import Model from '../ui/model.js';
 import { parseKeystroke } from '../utils/keyboard.js';
 
 /**
- * The list feature. It introduces the numbered and bulleted list buttons and the command that allows
- * to convert paragraphs to/from list items and indent/outdent them.
+ * The lists feature. It introduces the `numberedList` and `bulletedList` buttons which
+ * allows to convert paragraphs to/from list items and indent/outdent them.
+ *
+ * See also {@link list.ListEngine}.
  *
  * @memberOf list
  * @extends core.Feature
