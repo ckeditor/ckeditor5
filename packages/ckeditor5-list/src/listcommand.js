@@ -38,17 +38,14 @@ export default class ListCommand extends Command {
 		 */
 		this.set( 'value', false );
 
-		// Listen on selection change and sets current command's value.
-		this.listenTo( editor.document.selection, 'change:range', () => {
+		const changeCallback = () => {
 			this.refreshValue();
 			this.refreshState();
-		} );
+		};
 
-		// Listen on changesDone model document and sets current command's value.
-		this.listenTo( editor.document, 'changesDone', () => {
-			this.refreshValue();
-			this.refreshState();
-		} );
+		// Listen on selection and document changes and set the current command's value.
+		this.listenTo( editor.document.selection, 'change:range', changeCallback );
+		this.listenTo( editor.document, 'changesDone', changeCallback );
 	}
 
 	/**
