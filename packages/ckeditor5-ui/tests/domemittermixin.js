@@ -197,6 +197,50 @@ describe( 'DOMEmitterMixin', () => {
 			expect( domEmitter ).to.not.have.property( '_listeningTo' );
 		} );
 
+		it( 'should stop listening to everything what left', () => {
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
+			const spy3 = testUtils.sinon.spy();
+			const spy4 = testUtils.sinon.spy();
+
+			const node1 = document.createElement( 'div' );
+			const node2 = document.createElement( 'div' );
+
+			domEmitter.listenTo( node1, 'event1', spy1 );
+			domEmitter.listenTo( node1, 'event2', spy2 );
+			domEmitter.listenTo( node2, 'event1', spy3 );
+			domEmitter.listenTo( node2, 'event2', spy4 );
+
+			expect( domEmitter ).to.have.property( '_listeningTo' );
+
+			domEmitter.stopListening( node1, 'event1', spy1 );
+			domEmitter.stopListening( node2, 'event1' );
+
+			node1.dispatchEvent( new Event( 'event1' ) );
+			node1.dispatchEvent( new Event( 'event2' ) );
+			node2.dispatchEvent( new Event( 'event1' ) );
+			node2.dispatchEvent( new Event( 'event2' ) );
+
+			sinon.assert.notCalled( spy1 );
+			sinon.assert.calledOnce( spy2 );
+			sinon.assert.notCalled( spy3 );
+			sinon.assert.calledOnce( spy4 );
+
+			domEmitter.stopListening();
+
+			node1.dispatchEvent( new Event( 'event1' ) );
+			node1.dispatchEvent( new Event( 'event2' ) );
+			node2.dispatchEvent( new Event( 'event1' ) );
+			node2.dispatchEvent( new Event( 'event2' ) );
+
+			sinon.assert.notCalled( spy1 );
+			sinon.assert.calledOnce( spy2 );
+			sinon.assert.notCalled( spy3 );
+			sinon.assert.calledOnce( spy4 );
+
+			expect( domEmitter ).to.not.have.property( '_listeningTo' );
+		} );
+
 		it( 'should not stop other nodes when a non-listened node is provided', () => {
 			const spy = testUtils.sinon.spy();
 
