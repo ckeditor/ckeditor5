@@ -9,14 +9,14 @@ import LinkEngine from './linkengine.js';
 import LinkElement from './linkelement.js';
 
 import Model from '../ui/model.js';
+import clickOutsideHandler from '../ui/bindings/clickoutsidehandler.js';
+import escPressHandler from '../ui/bindings/escpresshandler.js';
 
 import ButtonController from '../ui/button/button.js';
 import ButtonView from '../ui/button/buttonview.js';
 
 import LinkBalloonPanel from './ui/linkballoonpanel.js';
 import LinkBalloonPanelView from './ui/linkballoonpanelview.js';
-
-import { keyCodes } from '../utils/keyboard.js';
 
 /**
  * The link feature. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
@@ -76,13 +76,13 @@ export default class Link extends Feature {
 		linkButtonModel.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
 		// Show the panel on button click only when editor is focused.
-		this.listenTo( linkButtonModel, 'execute', () => {
-			this._attachPanelToElement();
-			this.balloonPanel.urlInput.view.select();
-		} );
+		this.listenTo( linkButtonModel, 'execute', () => this._showPanel() );
 
 		// Add link button to feature components.
 		editor.ui.featureComponents.add( 'link', ButtonController, ButtonView, linkButtonModel );
+
+		// Handle `Ctrl+K` keystroke and show panel.
+		editor.keystrokes.set( 'CTRL+K', () => this._showPanel() );
 	}
 
 	/**
@@ -140,56 +140,24 @@ export default class Link extends Feature {
 		// Create the balloon panel instance.
 		const balloonPanel = new LinkBalloonPanel( panelModel, new LinkBalloonPanelView( editor.locale ) );
 
-		// Observe `LinkBalloonPanelMode#executeLink` event from within the model of the panel,
-		// which means that form has been submitted.
+		// Execute link command after clicking on balloon panel `Link` button.
 		this.listenTo( panelModel, 'executeLink', () => {
 			editor.execute( 'link', balloonPanel.urlInput.value );
-			this._hidePanel( { focusEditable: true } );
+			this._hidePanel( true );
 		} );
 
-		// Observe `LinkBalloonPanelMode#executeUnlink` event from within the model of the panel,
-		// which means that the `Unlink` button has been clicked.
+		// Execute unlink command after clicking on balloon panel `Unlink` button.
 		this.listenTo( panelModel, 'executeUnlink', () => {
 			editor.execute( 'unlink' );
-			this._hidePanel( { focusEditable: true } );
+			this._hidePanel( true );
 		} );
 
-		// Observe `LinkBalloonPanelMode#executeCancel` event from within the model of the panel,
-		// which means that the `Cancel` button has been clicked.
-		this.listenTo( panelModel, 'executeCancel', () => this._hidePanel( { focusEditable: true } ) );
+		// Hide balloon panel after clicking on balloon panel `Cancel` button.
+		this.listenTo( panelModel, 'executeCancel', () => this._hidePanel( true ) );
 
-		// Handle `Ctrl+K` keystroke and show panel.
-		editor.keystrokes.set( 'CTRL+K', () => {
-			this._attachPanelToElement();
-			balloonPanel.urlInput.view.select();
-		} );
-
-		// Attach close by `Esc` press and click out of panel actions on panel show, on panel hide clean up listeners.
-		this.listenTo( balloonPanel.view.model, 'change:isVisible', ( evt, propertyName, value ) => {
-			if ( value ) {
-				// Handle close by `Esc`.
-				balloonPanel.view.listenTo( document, 'keydown', this._closePanelOnEsc.bind( this ) );
-
-				// Handle close by clicking out of the panel.
-				// Note that it is not handled by a `click` event, this is because clicking on link button or directly on link element
-				// opens and closes panel at the same time.
-				balloonPanel.view.listenTo( document, 'mouseup', ( evt, domEvt ) => {
-					// Do nothing when the panel was clicked.
-					if ( balloonPanel.view.element.contains( domEvt.target ) ) {
-						return;
-					}
-
-					// When click was out of the panel then hide it.
-					balloonPanel.view.hide();
-				} );
-			} else {
-				balloonPanel.view.stopListening( document );
-			}
-		} );
-
-		// Handle click on document and show panel when selection is placed inside the link element.
+		// Handle click on view document and show panel when selection is placed inside the link element.
 		// Keep panel open until selection will be inside the same link element.
-		viewDocument.on( 'click', () => {
+		this.listenTo( viewDocument, 'click', () => {
 			const viewSelection = viewDocument.selection;
 			const parentLink = getPositionParentLink( viewSelection.getFirstPosition() );
 
@@ -206,8 +174,25 @@ export default class Link extends Feature {
 					}
 				} );
 
-				this.listenTo( balloonPanel.view.model, 'change:isVisible', () => this.stopListening( viewDocument ) );
+				this.listenTo( balloonPanel.view.model, 'change:isVisible', () => this.stopListening( viewDocument, 'render' ) );
 			}
+		} );
+
+		// Close on `ESC` press.
+		escPressHandler( {
+			controller: balloonPanel.view,
+			model: balloonPanel.view.model,
+			activeIf: 'isVisible',
+			callback: () => this._hidePanel( true )
+		} );
+
+		// Close on click outside of balloon panel element.
+		clickOutsideHandler( {
+			controller: balloonPanel.view,
+			model: balloonPanel.view.model,
+			activeIf: 'isVisible',
+			contextElement: balloonPanel.view.element,
+			callback: () => this._hidePanel()
 		} );
 
 		// Append panel element to body.
@@ -217,12 +202,12 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Shows {@link link#balloonPanel LinkBalloonPanel} and attach to target element.
+	 * Shows {@link link.Link#balloonPanel LinkBalloonPanel} and attach to target element.
 	 * If selection is collapsed and is placed inside link element, then panel will be attached
 	 * to whole link element, otherwise will be attached to the selection.
 	 *
 	 * @private
-	 * @param {core.view.LinkElement} [parentLink] Target element.
+	 * @param {link.LinkElement} [parentLink] Target element.
 	 */
 	_attachPanelToElement( parentLink ) {
 		const viewDocument = this.editor.editing.view;
@@ -246,37 +231,32 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Hides {@link link#balloonPanel LinkBalloonPanel}.
+	 * Hides {@link link.Link#balloonPanel LinkBalloonPanel}.
 	 *
 	 * @private
-	 * @param {Object} [options={}] Additional options.
-	 * @param {Boolean} [options.focusEditable=false] When `true` then editable focus will be restored on panel hide.
+	 * @param {Boolean} [focusEditable=false] When `true` then editable focus will be restored on panel hide.
 	 */
-	_hidePanel( options = {} ) {
+	_hidePanel( focusEditable ) {
 		this.balloonPanel.view.hide();
 
-		if ( options.focusEditable ) {
+		if ( focusEditable ) {
 			this.editor.editing.view.focus();
 		}
 	}
 
 	/**
-	 * Hides balloon panel on `ESC` key press event and restores editor focus.
+	 * Shows {@link link.Link#balloonPanel LinkBalloonPanel}.
 	 *
-	 * **Note**: this method is `@protected` for testing purposes only.
-	 *
-	 * @protected
-	 * @param {utils.EventInfo} evt Information about the event.
-	 * @param {KeyboardEvent} domEvt DOM `keydown` event.
+	 * @private
 	 */
-	_closePanelOnEsc( evt, domEvt ) {
-		if ( domEvt.keyCode == keyCodes.esc ) {
-			this._hidePanel( { focusEditable: true } );
-		}
+	_showPanel() {
+		this._attachPanelToElement();
+		this.balloonPanel.urlInput.view.select();
 	}
 }
 
-// Get position parent LinkElement.
+// Try to find if one of the position parent ancestors is a LinkElement,
+// if yes return this element.
 //
 // @private
 // @param {engine.view.Position} position
