@@ -135,8 +135,6 @@ gulp.task( 'bundle:generate',
 
 // Documentation. -------------------------------------------------------------
 
-// Documentation. -------------------------------------------------------------
-
 const ckeditor5DevDocs = require( '@ckeditor/ckeditor5-dev-docs' );
 const docsBuilder = ckeditor5DevDocs.docs( config );
 
