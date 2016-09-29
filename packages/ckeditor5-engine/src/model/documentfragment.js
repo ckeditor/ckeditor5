@@ -84,6 +84,16 @@ export default class DocumentFragment {
 	}
 
 	/**
+	 * Artificial parent of `DocumentFragment`. Returns `null`. Added for compatibility reasons.
+	 *
+	 * @readonly
+	 * @type {null}
+	 */
+	get parent() {
+		return null;
+	}
+
+	/**
 	 * Gets the child at the given index. Returns `null` if incorrect index was passed.
 	 *
 	 * @param {Number} index Index of child.
