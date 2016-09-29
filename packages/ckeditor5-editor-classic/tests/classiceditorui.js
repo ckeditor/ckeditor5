@@ -45,10 +45,10 @@ describe( 'ClassicEditorUI', () => {
 			expect( editorUI.toolbar.view ).to.be.instanceof( StickyToolbarView );
 		} );
 
-		it( 'binds editorUI.toolbar#model to editor.focusManager', () => {
+		it( 'binds editorUI.toolbar#model to editor.focusTracker', () => {
 			expect( editorUI.toolbar.model.isActive ).to.false;
 
-			editor.focusManager.isFocused = true;
+			editor.focusTracker.isFocused = true;
 
 			expect( editorUI.toolbar.model.isActive ).to.true;
 		} );
@@ -58,14 +58,14 @@ describe( 'ClassicEditorUI', () => {
 			expect( editorUI.editable.view ).to.be.instanceof( InlineEditableUIView );
 		} );
 
-		it( 'registers editable element in editor Focus Manager', () => {
+		it( 'registers editable element in editor Focus Tracker', () => {
 			return editorUI.init()
 				.then( () => {
-					editor.focusManager.isFocused = false;
+					editor.focusTracker.isFocused = false;
 
 					editorUI.editable.view.element.dispatchEvent( new Event( 'focus' ) );
 
-					expect( editor.focusManager.isFocused ).to.true;
+					expect( editor.focusTracker.isFocused ).to.true;
 				} );
 		} );
 	} );

@@ -76,7 +76,7 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 			config: this.editor.config.get( 'toolbar' )
 		} );
 
-		model.bind( 'isActive' ).to( editor.focusManager, 'isFocused' );
+		model.bind( 'isActive' ).to( editor.focusTracker, 'isFocused' );
 
 		const toolbar = new StickyToolbar( model, new StickyToolbarView( editor.locale ), editor );
 		this.add( 'top', toolbar );
@@ -85,7 +85,7 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 	}
 
 	/**
-	 * Creates the main editable of the editor and registers it in {@link core.editor.Editor#focusManager}.
+	 * Creates the main editable of the editor and registers it in {@link core.editor.Editor#focusTracker}.
 	 *
 	 * @protected
 	 * @returns {ui.editableUI.EditableUI}
@@ -99,7 +99,7 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 		this.add( 'main', editableUI );
 
 		// @TODO: Do it automatically ckeditor5-core#23
-		editor.focusManager.add( editableUI.view.element );
+		editor.focusTracker.add( editableUI.view.element );
 
 		return editableUI;
 	}
