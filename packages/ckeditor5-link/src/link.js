@@ -143,17 +143,17 @@ export default class Link extends Feature {
 		// Execute link command after clicking on balloon panel `Link` button.
 		this.listenTo( panelModel, 'executeLink', () => {
 			editor.execute( 'link', balloonPanel.urlInput.value );
-			this._hidePanel( { focusEditable: true } );
+			this._hidePanel( true );
 		} );
 
 		// Execute unlink command after clicking on balloon panel `Unlink` button.
 		this.listenTo( panelModel, 'executeUnlink', () => {
 			editor.execute( 'unlink' );
-			this._hidePanel( { focusEditable: true } );
+			this._hidePanel( true );
 		} );
 
 		// Hide balloon panel after clicking on balloon panel `Cancel` button.
-		this.listenTo( panelModel, 'executeCancel', () => this._hidePanel( { focusEditable: true } ) );
+		this.listenTo( panelModel, 'executeCancel', () => this._hidePanel( true ) );
 
 		// Handle click on view document and show panel when selection is placed inside the link element.
 		// Keep panel open until selection will be inside the same link element.
@@ -183,7 +183,7 @@ export default class Link extends Feature {
 			controller: balloonPanel.view,
 			model: balloonPanel.view.model,
 			activeIf: 'isVisible',
-			callback: () => this._hidePanel( { focusEditable: true } )
+			callback: () => this._hidePanel( true )
 		} );
 
 		// Close on click outside of balloon panel element.
@@ -240,13 +240,12 @@ export default class Link extends Feature {
 	 * Hides {@link link#balloonPanel LinkBalloonPanel}.
 	 *
 	 * @private
-	 * @param {Object} [options={}] Additional options.
-	 * @param {Boolean} [options.focusEditable=false] When `true` then editable focus will be restored on panel hide.
+	 * @param {Boolean} [focusEditable=false] When `true` then editable focus will be restored on panel hide.
 	 */
-	_hidePanel( options = {} ) {
+	_hidePanel( focusEditable ) {
 		this.balloonPanel.view.hide();
 
-		if ( options.focusEditable ) {
+		if ( focusEditable ) {
 			this.editor.editing.view.focus();
 		}
 	}
