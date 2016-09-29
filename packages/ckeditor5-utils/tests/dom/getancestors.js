@@ -26,4 +26,13 @@ describe( 'getParents', () => {
 
 		expect( getAncestors( b ) ).to.deep.equal( [ div, p1, span, b ] );
 	} );
+
+	it( 'should not return document object', () => {
+		const span = createElement( document, 'span' );
+		document.documentElement.appendChild( span );
+
+		const ancestors = getAncestors( span );
+
+		expect( ancestors.includes( document ) ).to.be.false;
+	} );
 } );

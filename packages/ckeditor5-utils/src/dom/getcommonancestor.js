@@ -10,23 +10,18 @@ import getAncestors from './getancestors.js';
  *
  * @param {Node} nodeA First node.
  * @param {Node} nodeB Second node.
- * @returns {Node|null} Lowest common ancestor of both nodes or `null` if nodes do not have a common ancestor.
+ * @returns {Node|DocumentFragment|Document|null} Lowest common ancestor of both nodes or `null` if nodes do not have a common ancestor.
  */
 export default function getCommonAncestor( nodeA, nodeB ) {
-	if ( nodeA == nodeB ) {
-		return nodeA;
-	}
-
 	const ancestorsA = getAncestors( nodeA );
 	const ancestorsB = getAncestors( nodeB );
 
-	const minLength = Math.min( ancestorsA.length, ancestorsB.length );
+	let i = 0;
 
-	for ( let i = minLength - 1; i >= 0; i-- ) {
-		if ( ancestorsA[ i ] == ancestorsB[ i ] ) {
-			return ancestorsA[ i ];
-		}
+	// It does not matter which array is shorter.
+	while ( ancestorsA[ i ] == ancestorsB[ i ] && ancestorsA[ i ] ) {
+		i++;
 	}
 
-	return null;
+	return i === 0 ? null : ancestorsA[ i - 1 ];
 }
