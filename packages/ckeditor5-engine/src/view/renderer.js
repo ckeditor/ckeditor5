@@ -313,9 +313,10 @@ export default class Renderer {
 	 */
 	_updateText( viewText ) {
 		const domText = this.domConverter.getCorrespondingDom( viewText );
+		const newDomText = this.domConverter.viewToDom( viewText, domText.ownerDocument );
 
 		const actualText = domText.data;
-		let expectedText = viewText.data;
+		let expectedText = newDomText.data;
 
 		const filler = this._inlineFillerPosition;
 

@@ -162,6 +162,72 @@ describe( 'DomConverter', () => {
 
 			expect( viewFiller ).to.be.null;
 		} );
+
+		describe( 'it should clear whitespaces', () => {
+			it( 'at the beginning of block element', () => {
+				const domDiv = createElement( document, 'div', {}, [
+					document.createTextNode( ' ' ),
+					createElement( document, 'p', {}, [
+						document.createTextNode( ' foo' )
+					] ),
+					createElement( document, 'p', {}, [
+						document.createTextNode( ' foo' )
+					] )
+				] );
+
+				const viewDiv = converter.domToView( domDiv );
+
+				expect( viewDiv.childCount ).to.equal( 2 );
+				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+				expect( viewDiv.getChild( 1 ).getChild( 0 ).data ).to.equal( 'foo' );
+			} );
+
+			it( 'at the end of block element', () => {
+				const domDiv = createElement( document, 'div', {}, [
+					createElement( document, 'p', {}, [
+						document.createTextNode( 'foo ' )
+					] ),
+					createElement( document, 'p', {}, [
+						document.createTextNode( 'foo ' )
+					] ),
+					document.createTextNode( ' ' )
+				] );
+
+				const viewDiv = converter.domToView( domDiv );
+
+				expect( viewDiv.childCount ).to.equal( 2 );
+				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+				expect( viewDiv.getChild( 1 ).getChild( 0 ).data ).to.equal( 'foo' );
+			} );
+
+			it( 'multiple consecutive whitespaces changed to one', () => {
+				const domDiv = createElement( document, 'div', {}, [
+					createElement( document, 'p', {}, [
+						document.createTextNode( '             f    o  o' )
+					] ),
+					createElement( document, 'p', {}, [
+						document.createTextNode( 'fo  o   ' )
+					] )
+				] );
+
+				const viewDiv = converter.domToView( domDiv );
+
+				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'f o o' );
+				expect( viewDiv.getChild( 1 ).getChild( 0 ).data ).to.equal( 'fo o' );
+			} );
+
+			it( 'not in preformatted blocks', () => {
+				const domDiv = createElement( document, 'div', {}, [
+					createElement( document, 'pre', {}, [
+						document.createTextNode( '   foo\n   foo  ' )
+					] )
+				] );
+
+				const viewDiv = converter.domToView( domDiv );
+
+				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( '   foo\n   foo  ' );
+			} );
+		} );
 	} );
 
 	describe( 'domChildrenToView', () => {

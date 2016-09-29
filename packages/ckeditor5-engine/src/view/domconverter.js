@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals Range, Node */
+/* globals Range, Node, NodeFilter */
 
 import ViewText from './text.js';
 import ViewElement from './element.js';
@@ -11,9 +11,13 @@ import ViewPosition from './position.js';
 import ViewRange from './range.js';
 import ViewSelection from './selection.js';
 import ViewDocumentFragment from './documentfragment.js';
+import ViewContainerElement from './containerelement.js';
+import ViewTreeWalker from './treewalker.js';
 import { BR_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, isInlineFiller, startsWithFiller, getDataWithoutFiller } from './filler.js';
 
 import indexOf from '../../utils/dom/indexof.js';
+import getAncestors from '../../utils/dom/getancestors.js';
+import getCommonAncestor from '../../utils/dom/getcommonancestor.js';
 
 /**
  * DomConverter is a set of tools to do transformations between DOM nodes and view nodes. It also handles
@@ -69,6 +73,20 @@ export default class DomConverter {
 		 * @member {WeakMap} engine.view.DomConverter#_viewToDomMapping
 		 */
 		this._viewToDomMapping = new WeakMap();
+
+		/**
+		 * Tag names of DOM `Element`s which are considered pre-formatted elements.
+		 *
+		 * @type {Array.<String>}
+		 */
+		this.preNodes = [ 'pre' ];
+
+		/**
+		 * Tag names of DOM `Element`s which are considered block elements.
+		 *
+		 * @type {Array.<String>}
+		 */
+		this.blockNodes = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
 	}
 
 	/**
@@ -110,7 +128,9 @@ export default class DomConverter {
 	 */
 	viewToDom( viewNode, domDocument, options = {} ) {
 		if ( viewNode instanceof ViewText ) {
-			return domDocument.createTextNode( viewNode.data );
+			const textData = this._processDataFromViewText( viewNode );
+
+			return domDocument.createTextNode( textData );
 		} else {
 			if ( this.getCorrespondingDom( viewNode ) ) {
 				return this.getCorrespondingDom( viewNode );
@@ -266,7 +286,9 @@ export default class DomConverter {
 			if ( isInlineFiller( domNode ) ) {
 				return null;
 			} else {
-				return new ViewText( getDataWithoutFiller( domNode ) );
+				const textData = this._processDataFromDomText( domNode );
+
+				return textData === '' ? null : new ViewText( textData );
 			}
 		} else {
 			if ( this.getCorrespondingView( domNode ) ) {
@@ -651,4 +673,167 @@ export default class DomConverter {
 	isDocumentFragment( node ) {
 		return node && node.nodeType == Node.DOCUMENT_FRAGMENT_NODE;
 	}
+
+	/**
+	 * Takes text data from given {@link engine.view.Text#data} and processes it so it is correctly displayed in DOM.
+	 *
+	 * Following changes are done:
+	 * * multiple spaces are replaced to a chain of spaces and `&nbsp;`,
+	 * * space at the beginning of the text node is changed to `&nbsp;` if it is a first text node in it's container
+	 * element or if previous text node ends by space character,
+	 * * space at the end of the text node is changed to `&nbsp;` if it is a last text node in it's container.
+	 *
+	 * @private
+	 * @param {engine.view.Text} node View text node to process.
+	 * @returns {String} Processed text data.
+	 */
+	_processDataFromViewText( node ) {
+		let data = node.data;
+
+		const prevNode = this._getTouchingViewTextNode( node, false );
+		const nextNode = this._getTouchingViewTextNode( node, true );
+
+		// If previous text node does not exist or it ends by space character...
+		if ( !prevNode || prevNode.data.charAt( prevNode.data.length - 1 ) == ' ' ) {
+			// Replace space character at the beginning of this string by &nbsp;.
+			data = data.replace( /^ /, '\u00A0' );
+		}
+
+		// If next text node does not exist...
+		if ( !nextNode ) {
+			// Replace space character at the end of this string by &nbsp;.
+			data = data.replace( / $/, '\u00A0' );
+		}
+		// If the text node exist, it will be later processed too.
+
+		// Multiple spaces.
+		data = data.replace( /  /g, ' \u00A0' );
+
+		return data;
+	}
+
+	/**
+	 * Helper function. For given {@link engine.view.Text view text node}, it finds previous or next sibling that is contained
+	 * in the same block element. If there is no such sibling, `null` is returned.
+	 *
+	 * @private
+	 * @param {engine.view.Text} node
+	 * @param {Boolean} getNext
+	 * @returns {engine.view.Text}
+	 */
+	_getTouchingViewTextNode( node, getNext ) {
+		if ( !node.parent ) {
+			return null;
+		}
+
+		const treeWalker = new ViewTreeWalker( {
+			startPosition: getNext ? ViewPosition.createAfter( node ) : ViewPosition.createBefore( node ),
+			direction: getNext ? 'forward' : 'backward'
+		} );
+
+		for ( let value of treeWalker ) {
+			if ( value.item instanceof ViewContainerElement ) {
+				// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
+				// text node in it's container element.
+				return null;
+			} else if ( value.item instanceof ViewText ) {
+				// Found a text node in the same container element.
+				return value.item;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Takes text data from native `Text` node and processes it to a correct {@link engine.view.Text view text node} data.
+	 *
+	 * Following changes are done:
+	 * * multiple whitespaces are replaced to a single space,
+	 * * space at the beginning of the text node is removed, if it is a first text node in it's container
+	 * element or if previous text node ends by space character,
+	 * * space at the end of the text node is removed, if it is a last text node in it's container.
+	 *
+	 * @param {Node} node DOM text node to process.
+	 * @returns {String} Processed data.
+	 * @private
+	 */
+	_processDataFromDomText( node ) {
+		let data = getDataWithoutFiller( node );
+
+		if ( _hasParentOfType( node, this.preNodes ) ) {
+			return data;
+		}
+
+		data = data.replace( /\s{2,}/g, ' ' );
+
+		const prevNode = this._getTouchingDomTextNode( node, false );
+		const nextNode = this._getTouchingDomTextNode( node, true );
+
+		// If previous text node does not exist or it ends by space character...
+		if ( !prevNode || prevNode.data.charAt( prevNode.data.length - 1 ) == ' ' ) {
+			// Remove space character from the beginning of this string.
+			data = data.replace( /^ /, '' );
+		}
+
+		// If next text node does not exist...
+		if ( !nextNode ) {
+			// Remove space character from the end of this string.
+			data = data.replace( / $/, '' );
+		}
+		// If the text node exist, it will be later processed too.
+
+		return data;
+	}
+
+	/**
+	 * Helper function. For given `Text` node, it finds previous or next sibling that is contained in the same block element.
+	 * If there is no such sibling, `null` is returned.
+	 *
+	 * @private
+	 * @param {Text} node
+	 * @param {Boolean} getNext
+	 * @returns {Text|null}
+	 */
+	_getTouchingDomTextNode( node, getNext ) {
+		if ( !node.parentNode ) {
+			return null;
+		}
+
+		const direction = getNext ? 'nextNode' : 'previousNode';
+		const document = node.ownerDocument;
+		const treeWalker = document.createTreeWalker( document.childNodes[ 0 ], NodeFilter.SHOW_TEXT );
+
+		treeWalker.currentNode = node;
+
+		const touchingNode = treeWalker[ direction ]();
+
+		if ( touchingNode !== null ) {
+			const lca = getCommonAncestor( node, touchingNode );
+
+			// If there is common ancestor between the text node and next/prev text node,
+			// and there are no block elements on a way from the text node to that ancestor,
+			// and there are no block elements on a way from next/prev text node to that ancestor...
+			if ( lca && !_hasParentOfType( node, this.blockNodes, lca ) && !_hasParentOfType( touchingNode, this.blockNodes, lca ) ) {
+				// Then they are in the same container element.
+				return touchingNode;
+			}
+		}
+
+		return null;
+	}
+}
+
+// Helper function.
+// Used to check if given native `Element` or `Text` node has parent with tag name from `types` array.
+// Option `boundaryParent` can be given if parents should be checked up to a given element (excluding that element).
+// Returns `true` if such parent exists or `false` if it does not.
+function _hasParentOfType( node, types, boundaryParent ) {
+	let parents = getAncestors( node );
+
+	if ( boundaryParent ) {
+		parents = parents.slice( parents.indexOf( boundaryParent ) + 1 );
+	}
+
+	return parents.some( ( parent ) => parent.tagName && types.includes( parent.tagName.toLowerCase() ) );
 }
