@@ -178,23 +178,22 @@ export default class Link extends Feature {
 			}
 		} );
 
-		// Apply closing actions.
-		const closingActionDefaultConfig = {
+		// Close on `ESC` press.
+		escPressHandler( {
 			controller: balloonPanel.view,
 			model: balloonPanel.view.model,
 			activeIf: 'isVisible',
-		};
-
-		// Close on `ESC` press.
-		escPressHandler( Object.assign( {
 			callback: () => this._hidePanel( { focusEditable: true } )
-		}, closingActionDefaultConfig ) );
+		} );
 
 		// Close on click outside of balloon panel element.
-		clickOutsideHandler( Object.assign( {
+		clickOutsideHandler( {
+			controller: balloonPanel.view,
+			model: balloonPanel.view.model,
+			activeIf: 'isVisible',
 			contextElement: balloonPanel.view.element,
 			callback: () => this._hidePanel()
-		}, closingActionDefaultConfig ) );
+		} );
 
 		// Handle `Ctrl+K` keystroke and show panel.
 		editor.keystrokes.set( 'CTRL+K', () => {
