@@ -76,13 +76,13 @@ export default class Link extends Feature {
 		linkButtonModel.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
 		// Show the panel on button click only when editor is focused.
-		this.listenTo( linkButtonModel, 'execute', () => {
-			this._attachPanelToElement();
-			this.balloonPanel.urlInput.view.select();
-		} );
+		this.listenTo( linkButtonModel, 'execute', () => this._showPanel() );
 
 		// Add link button to feature components.
 		editor.ui.featureComponents.add( 'link', ButtonController, ButtonView, linkButtonModel );
+
+		// Handle `Ctrl+K` keystroke and show panel.
+		editor.keystrokes.set( 'CTRL+K', () => this._showPanel() );
 	}
 
 	/**
@@ -195,12 +195,6 @@ export default class Link extends Feature {
 			callback: () => this._hidePanel()
 		} );
 
-		// Handle `Ctrl+K` keystroke and show panel.
-		editor.keystrokes.set( 'CTRL+K', () => {
-			this._attachPanelToElement();
-			balloonPanel.urlInput.view.select();
-		} );
-
 		// Append panel element to body.
 		editor.ui.add( 'body', balloonPanel );
 
@@ -208,12 +202,12 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Shows {@link link#balloonPanel LinkBalloonPanel} and attach to target element.
+	 * Shows {@link link.Link#balloonPanel LinkBalloonPanel} and attach to target element.
 	 * If selection is collapsed and is placed inside link element, then panel will be attached
 	 * to whole link element, otherwise will be attached to the selection.
 	 *
 	 * @private
-	 * @param {core.view.LinkElement} [parentLink] Target element.
+	 * @param {link.LinkElement} [parentLink] Target element.
 	 */
 	_attachPanelToElement( parentLink ) {
 		const viewDocument = this.editor.editing.view;
@@ -237,7 +231,7 @@ export default class Link extends Feature {
 	}
 
 	/**
-	 * Hides {@link link#balloonPanel LinkBalloonPanel}.
+	 * Hides {@link link.Link#balloonPanel LinkBalloonPanel}.
 	 *
 	 * @private
 	 * @param {Boolean} [focusEditable=false] When `true` then editable focus will be restored on panel hide.
@@ -248,6 +242,16 @@ export default class Link extends Feature {
 		if ( focusEditable ) {
 			this.editor.editing.view.focus();
 		}
+	}
+
+	/**
+	 * Shows {@link link.Link#balloonPanel LinkBalloonPanel}.
+	 *
+	 * @private
+	 */
+	_showPanel() {
+		this._attachPanelToElement();
+		this.balloonPanel.urlInput.view.select();
 	}
 }
 
