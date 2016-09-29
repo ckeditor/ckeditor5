@@ -45,7 +45,7 @@ export default [
 				hPrefix += '#';
 			}
 
-			return hPrefix + ' ' + content;
+			return hPrefix + ' ' + content + '\n';
 		}
 	},
 	// Inline code - fixing backticks inside code blocks.
