@@ -37,7 +37,9 @@ describe( 'getAncestors', () => {
 	} );
 
 	it( 'should not return any non-Node, non-DocumentFragment object if given node is in iframe', () => {
-		const iframe = document.getElementsByTagName( 'iframe' )[ 0 ];
+		const iframe = document.createElement( 'iframe' );
+		document.body.appendChild( iframe );
+
 		const iframeDoc = iframe.contentWindow.document;
 
 		const span = createElement( iframeDoc, 'span' );
@@ -46,5 +48,7 @@ describe( 'getAncestors', () => {
 		const ancestors = getAncestors( span );
 
 		expect( ancestors.includes( iframeDoc ) ).to.be.false;
+
+		document.body.removeChild( iframe );
 	} );
 } );
