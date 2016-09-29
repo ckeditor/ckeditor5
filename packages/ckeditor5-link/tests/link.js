@@ -168,12 +168,12 @@ describe( 'Link', () => {
 			expect( selectUrlInputSpy.calledOnce ).to.true;
 		} );
 
-		it( 'should add balloon panel element to focus manager', () => {
-			editor.focusManager.isFocused = false;
+		it( 'should add balloon panel element to focus tracker', () => {
+			editor.focusTracker.isFocused = false;
 
 			balloonPanel.view.element.dispatchEvent( new Event( 'focus' ) );
 
-			expect( editor.focusManager.isFocused ).to.true;
+			expect( editor.focusTracker.isFocused ).to.true;
 		} );
 
 		describe( 'binding', () => {

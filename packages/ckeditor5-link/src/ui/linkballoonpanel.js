@@ -177,9 +177,7 @@ export default class LinkBalloonPanel extends BalloonPanel {
 
 		unlinkModel.on( 'execute', () => this.model.fire( 'executeUnlink' ) );
 
-		const button = new Button( unlinkModel, new ButtonView( this.locale ) );
-
-		return button;
+		return new Button( unlinkModel, new ButtonView( this.locale ) );
 	}
 }
 
