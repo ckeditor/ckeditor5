@@ -108,5 +108,14 @@ describe( 'GFMDataProcessor', () => {
 				'<h1>header</h1><h2>header</h2><h3>header</h3>'
 			);
 		} );
+
+		it( 'should process headers followed by a paragraph', () => {
+			test(
+				'# header\n\n' +
+				'paragraph',
+
+				'<h1>header</h1><p>paragraph</p>'
+			);
+		} );
 	} );
 } );
