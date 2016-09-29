@@ -690,6 +690,12 @@ export default class DomConverter {
 	_processDataFromViewText( node ) {
 		let data = node.data;
 
+		// If any of node ancestors has a name which is in `preNodes` array, then currently processed
+		// view text node is (will be) in preformatted element. We should not change whitespaces then.
+		if ( node.getAncestors().some( ( parent ) => this.preNodes.includes( parent.name ) ) )  {
+			return data;
+		}
+
 		const prevNode = this._getTouchingViewTextNode( node, false );
 		const nextNode = this._getTouchingViewTextNode( node, true );
 
@@ -761,7 +767,7 @@ export default class DomConverter {
 	_processDataFromDomText( node ) {
 		let data = getDataWithoutFiller( node );
 
-		if ( _hasParentOfType( node, this.preNodes ) ) {
+		if ( _hasDomParentOfType( node, this.preNodes ) ) {
 			return data;
 		}
 
@@ -814,7 +820,7 @@ export default class DomConverter {
 			// If there is common ancestor between the text node and next/prev text node,
 			// and there are no block elements on a way from the text node to that ancestor,
 			// and there are no block elements on a way from next/prev text node to that ancestor...
-			if ( lca && !_hasParentOfType( node, this.blockNodes, lca ) && !_hasParentOfType( touchingNode, this.blockNodes, lca ) ) {
+			if ( lca && !_hasDomParentOfType( node, this.blockNodes, lca ) && !_hasDomParentOfType( touchingNode, this.blockNodes, lca ) ) {
 				// Then they are in the same container element.
 				return touchingNode;
 			}
@@ -828,7 +834,7 @@ export default class DomConverter {
 // Used to check if given native `Element` or `Text` node has parent with tag name from `types` array.
 // Option `boundaryParent` can be given if parents should be checked up to a given element (excluding that element).
 // Returns `true` if such parent exists or `false` if it does not.
-function _hasParentOfType( node, types, boundaryParent ) {
+function _hasDomParentOfType( node, types, boundaryParent ) {
 	let parents = getAncestors( node );
 
 	if ( boundaryParent ) {
