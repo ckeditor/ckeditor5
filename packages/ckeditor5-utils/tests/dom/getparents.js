@@ -6,7 +6,7 @@
 /* globals document */
 /* bender-tags: dom, browser-only */
 
-import getParents from '/ckeditor5/utils/dom/getparents.js';
+import getAncestors from '/ckeditor5/utils/dom/getancestors.js';
 import createElement from '/ckeditor5/utils/dom/createelement.js';
 
 describe( 'getParents', () => {
@@ -24,6 +24,6 @@ describe( 'getParents', () => {
 		const p2 = createElement( document, 'p', {}, [ createElement( document, 'i' ) ] );
 		const div = createElement( document, 'div', {}, [ p1, p2 ] );
 
-		expect( getParents( b ) ).to.deep.equal( [ div, p1, span, b ] );
+		expect( getAncestors( b ) ).to.deep.equal( [ div, p1, span, b ] );
 	} );
 } );

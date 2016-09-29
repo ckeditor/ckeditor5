@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import getParents from './getparents.js';
+import getAncestors from './getancestors.js';
 
 /**
  * Searches and returns the lowest common ancestor of two given nodes.
@@ -17,14 +17,14 @@ export default function getCommonAncestor( nodeA, nodeB ) {
 		return nodeA;
 	}
 
-	const parentsA = getParents( nodeA );
-	const parentsB = getParents( nodeB );
+	const ancestorsA = getAncestors( nodeA );
+	const ancestorsB = getAncestors( nodeB );
 
-	const minLength = Math.min( parentsA.length, parentsB.length );
+	const minLength = Math.min( ancestorsA.length, ancestorsB.length );
 
 	for ( let i = minLength - 1; i >= 0; i-- ) {
-		if ( parentsA[ i ] == parentsB[ i ] ) {
-			return parentsA[ i ];
+		if ( ancestorsA[ i ] == ancestorsB[ i ] ) {
+			return ancestorsA[ i ];
 		}
 	}
 

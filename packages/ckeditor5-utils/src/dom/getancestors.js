@@ -4,12 +4,12 @@
  */
 
 /**
- * Returns all parents of given DOM node, starting from the top-most (root). Includes the node itself.
+ * Returns all ancestors of given DOM node, starting from the top-most (root). Includes the given node itself.
  *
- * @param {Node} node DOM node.
+ * @param {Element|Text} node DOM node.
  * @returns {Array.<Node>} Array of given `node` parents.
  */
-export default function getParents( node ) {
+export default function getAncestors( node ) {
 	const nodes = [];
 
 	while ( node ) {
