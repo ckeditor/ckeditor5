@@ -556,7 +556,7 @@ describe( 'Template', () => {
 					'class': 'parent'
 				},
 				children: [
-					'Children: ',
+					'Children:',
 					{
 						tag: 'span',
 						attributes: {
@@ -566,7 +566,7 @@ describe( 'Template', () => {
 				]
 			} ).apply( el );
 
-			expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div class="parent">Children: <span class="child"></span></div>' );
+			expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div class="parent">Children:<span class="child"></span></div>' );
 		} );
 
 		it( 'should work for deep DOM structure', () => {
