@@ -24,14 +24,14 @@ import mix from './mix.js';
  * @mixes utils.DOMEmitterMixin
  * @mixes utils.ObservableMixin
  */
-export default class FocusManager {
+export default class FocusTracker {
 	constructor() {
 		/**
 		 * True when one of the registered elements is focused.
 		 *
 		 * @readonly
 		 * @observable
-		 * @member {Boolean} utils.FocusManager#isFocused
+		 * @member {Boolean} utils.FocusTracker#isFocused
 		 */
 		this.set( 'isFocused', false );
 
@@ -39,7 +39,7 @@ export default class FocusManager {
 		 * List of registered elements.
 		 *
 		 * @private
-		 * @member {Array<HTMLElement>} utils.FocusManager#_elements
+		 * @member {Array<HTMLElement>} utils.FocusTracker#_elements
 		 */
 		this._elements = [];
 
@@ -47,7 +47,7 @@ export default class FocusManager {
 		 * Event loop timeout.
 		 *
 		 * @private
-		 * @member {Number} utils.FocusManager#_nextEventLoopTimeout
+		 * @member {Number} utils.FocusTracker#_nextEventLoopTimeout
 		 */
 		this._nextEventLoopTimeout = null;
 
@@ -55,7 +55,7 @@ export default class FocusManager {
 		 * Currently focused element.
 		 *
 		 * @private
-		 * @member {HTMLElement} utils.FocusManager#_focusedElement
+		 * @member {HTMLElement} utils.FocusTracker#_focusedElement
 		 */
 		this._focusedElement = null;
 	}
@@ -67,7 +67,7 @@ export default class FocusManager {
 	 */
 	add( element ) {
 		if ( this._elements.indexOf( element ) >= 0 ) {
-			throw new CKEditorError( 'focusManager-add-element-already-exist' );
+			throw new CKEditorError( 'focusTracker-add-element-already-exist' );
 		}
 
 		this.listenTo( element, 'focus', () => this._focus( element ), { useCapture: true } );
@@ -94,7 +94,7 @@ export default class FocusManager {
 	}
 
 	/**
-	 * Stores currently focused element and set {utils.FocusManager#isFocused} as `true`.
+	 * Stores currently focused element and set {utils.FocusTracker#isFocused} as `true`.
 	 *
 	 * @private
 	 * @param {HTMLElement} element Element which has been focused.
@@ -107,11 +107,11 @@ export default class FocusManager {
 	}
 
 	/**
-	 * Clears currently focused element and set {utils.FocusManager#isFocused} as `false`.
+	 * Clears currently focused element and set {utils.FocusTracker#isFocused} as `false`.
 	 * This method uses `setTimeout` to change order of fires `blur` and `focus` events.
 	 *
 	 * @private
-	 * @fires utils.FocusManager#blur
+	 * @fires utils.FocusTracker#blur
 	 */
 	_blur() {
 		this._nextEventLoopTimeout = setTimeout( () => {
@@ -121,5 +121,5 @@ export default class FocusManager {
 	}
 }
 
-mix( FocusManager, DOMEmitterMixin );
-mix( FocusManager, ObservableMixin );
+mix( FocusTracker, DOMEmitterMixin );
+mix( FocusTracker, ObservableMixin );

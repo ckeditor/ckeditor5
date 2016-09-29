@@ -5,14 +5,14 @@
 
 /* global document */
 
-import FocusManager from '/ckeditor5/utils/focusmanager.js';
+import FocusTracker from '/ckeditor5/utils/focustracker.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import testUtils from '/tests/core/_utils/utils.js';
 
 testUtils.createSinonSandbox();
 
-describe( 'FocusManager', () => {
-	let focusManager, container, containerFirstInput, containerSecondInput, inputOuOfContainer;
+describe( 'FocusTracker', () => {
+	let focusTracker, container, containerFirstInput, containerSecondInput, inputOuOfContainer;
 
 	beforeEach( () => {
 		container = document.createElement( 'div' );
@@ -27,7 +27,7 @@ describe( 'FocusManager', () => {
 
 		testUtils.sinon.useFakeTimers();
 
-		focusManager = new FocusManager();
+		focusTracker = new FocusTracker();
 	} );
 
 	afterEach( () => {
@@ -38,15 +38,15 @@ describe( 'FocusManager', () => {
 	describe( 'constructor', () => {
 		describe( 'isFocused', () => {
 			it( 'should be false at default', () => {
-				expect( focusManager.isFocused ).to.false;
+				expect( focusTracker.isFocused ).to.false;
 			} );
 
 			it( 'should be observable', () => {
 				const observableSpy = testUtils.sinon.spy();
 
-				focusManager.listenTo( focusManager, 'change:isFocused', observableSpy );
+				focusTracker.listenTo( focusTracker, 'change:isFocused', observableSpy );
 
-				focusManager.isFocused = true;
+				focusTracker.isFocused = true;
 
 				expect( observableSpy.calledOnce ).to.true;
 			} );
@@ -55,77 +55,77 @@ describe( 'FocusManager', () => {
 
 	describe( 'add', () => {
 		it( 'should throw an error when element has been already added', () => {
-			focusManager.add( containerFirstInput );
+			focusTracker.add( containerFirstInput );
 
 			expect( () => {
-				focusManager.add( containerFirstInput );
-			} ).to.throw( CKEditorError, /focusManager-add-element-already-exist/ );
+				focusTracker.add( containerFirstInput );
+			} ).to.throw( CKEditorError, /focusTracker-add-element-already-exist/ );
 		} );
 
 		describe( 'single element', () => {
 			it( 'should start listening on element focus and update `isFocused` property', () => {
-				focusManager.add( containerFirstInput );
+				focusTracker.add( containerFirstInput );
 
-				expect( focusManager.isFocused ).to.false;
+				expect( focusTracker.isFocused ).to.false;
 
 				containerFirstInput.focus();
 
-				expect( focusManager.isFocused ).to.true;
+				expect( focusTracker.isFocused ).to.true;
 			} );
 
 			it( 'should start listening on element blur and update `isFocused` property', () => {
-				focusManager.add( containerFirstInput );
+				focusTracker.add( containerFirstInput );
 
 				containerFirstInput.focus();
 
-				expect( focusManager.isFocused ).to.true;
+				expect( focusTracker.isFocused ).to.true;
 
 				containerSecondInput.focus();
 				testUtils.sinon.clock.tick( 0 );
 
-				expect( focusManager.isFocused ).to.false;
+				expect( focusTracker.isFocused ).to.false;
 			} );
 		} );
 
 		describe( 'container element', () => {
 			it( 'should start listening on element focus using event capturing and update `isFocused` property', () => {
-				focusManager.add( container );
+				focusTracker.add( container );
 
-				expect( focusManager.isFocused ).to.false;
+				expect( focusTracker.isFocused ).to.false;
 
 				containerFirstInput.focus();
 
-				expect( focusManager.isFocused ).to.true;
+				expect( focusTracker.isFocused ).to.true;
 			} );
 
 			it( 'should start listening on element blur using event capturing and update `isFocused` property', () => {
-				focusManager.add( container );
+				focusTracker.add( container );
 
 				containerFirstInput.focus();
 
-				expect( focusManager.isFocused ).to.true;
+				expect( focusTracker.isFocused ).to.true;
 
 				inputOuOfContainer.focus();
 				testUtils.sinon.clock.tick( 0 );
 
-				expect( focusManager.isFocused ).to.false;
+				expect( focusTracker.isFocused ).to.false;
 			} );
 
 			it( 'should not change `isFocused` property when focus is going between child elements', () => {
 				const changeSpy = testUtils.sinon.spy();
 
-				focusManager.add( container );
+				focusTracker.add( container );
 
 				containerFirstInput.focus();
 
-				focusManager.listenTo( focusManager, 'change:isFocused', changeSpy );
+				focusTracker.listenTo( focusTracker, 'change:isFocused', changeSpy );
 
-				expect( focusManager.isFocused ).to.true;
+				expect( focusTracker.isFocused ).to.true;
 
 				containerSecondInput.focus();
 				testUtils.sinon.clock.tick( 0 );
 
-				expect( focusManager.isFocused ).to.true;
+				expect( focusTracker.isFocused ).to.true;
 				expect( changeSpy.notCalled ).to.true;
 			} );
 		} );
@@ -134,29 +134,29 @@ describe( 'FocusManager', () => {
 	describe( 'remove', () => {
 		it( 'should do nothing when element was not added', () => {
 			expect( () => {
-				focusManager.remove( container );
+				focusTracker.remove( container );
 			} ).to.not.throw();
 		} );
 
 		it( 'should stop listening on element focus and update `isFocused` property', () => {
-			focusManager.add( containerFirstInput );
-			focusManager.remove( containerFirstInput );
+			focusTracker.add( containerFirstInput );
+			focusTracker.remove( containerFirstInput );
 
 			containerFirstInput.focus();
 
-			expect( focusManager.isFocused ).to.false;
+			expect( focusTracker.isFocused ).to.false;
 		} );
 
 		it( 'should blur element before removing when is focused', () => {
-			focusManager.add( containerFirstInput );
+			focusTracker.add( containerFirstInput );
 			containerFirstInput.focus();
 
-			expect( focusManager.isFocused ).to.true;
+			expect( focusTracker.isFocused ).to.true;
 
-			focusManager.remove( containerFirstInput );
+			focusTracker.remove( containerFirstInput );
 			testUtils.sinon.clock.tick( 0 );
 
-			expect( focusManager.isFocused ).to.false;
+			expect( focusTracker.isFocused ).to.false;
 		} );
 	} );
 } );
