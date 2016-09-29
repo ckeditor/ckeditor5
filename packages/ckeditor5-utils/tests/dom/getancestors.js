@@ -35,4 +35,16 @@ describe( 'getAncestors', () => {
 
 		expect( ancestors.includes( document ) ).to.be.false;
 	} );
+
+	it( 'should not return any non-Node, non-DocumentFragment object if given node is in iframe', () => {
+		const iframe = document.getElementsByTagName( 'iframe' )[ 0 ];
+		const iframeDoc = iframe.contentWindow.document;
+
+		const span = createElement( iframeDoc, 'span' );
+		iframeDoc.documentElement.appendChild( span );
+
+		const ancestors = getAncestors( span );
+
+		expect( ancestors.includes( iframeDoc ) ).to.be.false;
+	} );
 } );
