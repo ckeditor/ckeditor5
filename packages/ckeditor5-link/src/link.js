@@ -187,13 +187,13 @@ export default class Link extends Feature {
 
 		// Close on `ESC` press.
 		escPressHandler( Object.assign( {
-			action: () => this._hidePanel( { focusEditable: true } )
+			callback: () => this._hidePanel( { focusEditable: true } )
 		}, closingActionDefaultConfig ) );
 
 		// Close on click outside of balloon panel element.
 		clickOutsideHandler( Object.assign( {
 			contextElement: balloonPanel.view.element,
-			action: () => this._hidePanel()
+			callback: () => this._hidePanel()
 		}, closingActionDefaultConfig ) );
 
 		// Handle `Ctrl+K` keystroke and show panel.
