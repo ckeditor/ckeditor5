@@ -11,15 +11,18 @@ import CKEditorError from './ckeditorerror.js';
 import mix from './mix.js';
 
 /**
- * Observes if registered HTMLElements are focused. It is mainly used for keeping information if at least one of the editor component
- * is currently focused which means that editor is focused.
+ * Allows observing a group of `HTMLElement`s whether at least one of them is focused.
  *
- * **Note** `focus` and `blur` listeners use event capturing, so it is only needed to register wrapper HTMLElement
- * which contain other `focusable` elements. But note that this wrapper element has to be `focusable` too.
+ * Used by the {@link core.Editor} in order to track whether the focus is still within the application,
+ * or were used outside of its UI.
+ *
+ * **Note** `focus` and `blur` listeners use event capturing, so it is only needed to register wrapper `HTMLElement`
+ * which contain other `focusable` elements. But note that this wrapper element has to be focusable too
+ * (have e.g. `tabindex="-1"`).
  *
  * @memberOf utils
- * @mixes DOMEmitterMixin
- * @mixes ObservableMixin
+ * @mixes utils.DOMEmitterMixin
+ * @mixes utils.ObservableMixin
  */
 export default class FocusManager {
 	constructor() {
@@ -58,7 +61,7 @@ export default class FocusManager {
 	}
 
 	/**
-	 * Adds specified element and and start listening `focus` and `blur` events on this element.
+	 * Starts tracking the specified element.
 	 *
 	 * @param {HTMLElement} element
 	 */
@@ -73,8 +76,7 @@ export default class FocusManager {
 	}
 
 	/**
-	 * Removes specified element and stop listening events on this element.
-	 * When element is focused then blur it firs.
+	 * Stops tracking the specified element and stops listening on this element.
 	 *
 	 * @param {HTMLElement} element
 	 */
