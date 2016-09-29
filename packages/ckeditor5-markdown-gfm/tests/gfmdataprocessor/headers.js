@@ -89,5 +89,24 @@ describe( 'GFMDataProcessor', () => {
 				'# Level 1'
 			);
 		} );
+
+		it( 'should process headers placed next to each other #1', () => {
+			test(
+				'# header\n' +
+				'# header',
+
+				'<h1>header</h1><h1>header</h1>'
+			);
+		} );
+
+		it( 'should process headers placed next to each other #2', () => {
+			test(
+				'# header\n' +
+				'## header\n' +
+				'### header',
+
+				'<h1>header</h1><h2>header</h2><h3>header</h3>'
+			);
+		} );
 	} );
 } );
