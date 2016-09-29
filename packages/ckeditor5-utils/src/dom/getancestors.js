@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals Document */
+/* globals Node */
 
 /**
  * Returns all ancestors of given DOM node, starting from the top-most (root). Includes the given node itself. If the
@@ -17,8 +17,8 @@
 export default function getAncestors( node ) {
 	const nodes = [];
 
-	// Do not return Document object since it's not a `Node` and we are interested in `Node`s (and `DocumentFragment`s).
-	while ( node && !( node instanceof Document ) ) {
+	// We are interested in `Node`s `DocumentFragment`s only.
+	while ( node && node.nodeType != Node.DOCUMENT_NODE ) {
 		nodes.unshift( node );
 		node = node.parentNode;
 	}

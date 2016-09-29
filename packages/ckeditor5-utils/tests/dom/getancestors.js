@@ -9,7 +9,7 @@
 import getAncestors from '/ckeditor5/utils/dom/getancestors.js';
 import createElement from '/ckeditor5/utils/dom/createelement.js';
 
-describe( 'getParents', () => {
+describe( 'getAncestors', () => {
 	it( 'should return all parents of given node and the node itself, starting from top-most parent', () => {
 		// DIV
 		//  |- P (1)
