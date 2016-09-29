@@ -239,7 +239,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 		// are awaiting given event, detach native DOM listener from DOM Node.
 		// See: {@link on}.
 
-		if ( !( events = this._events[ event ] ) || !events.callbacks.length ) {
+		if ( this._domListeners[ event ] && ( !( events = this._events[ event ] ) || !events.callbacks.length ) ) {
 			this._domListeners[ event ].removeListener();
 		}
 	},
