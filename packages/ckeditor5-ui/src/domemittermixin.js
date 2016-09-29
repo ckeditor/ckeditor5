@@ -6,7 +6,6 @@
 import EmitterMixin from '../utils/emittermixin.js';
 import uid from '../utils/uid.js';
 import extend from '../utils/lib/lodash/extend.js';
-import log from '../utils/log.js';
 import isNative from '../utils/lib/lodash/isNative.js';
 
 /**
@@ -88,14 +87,12 @@ const DOMEmitterMixin = extend( {}, EmitterMixin, {
 		if ( isDomNode( emitter ) ) {
 			let proxy = this._getProxyEmitter( emitter );
 
-			if ( proxy ) {
-				args[ 0 ] = proxy;
-			} else {
-				log.error(
-					'domemittermixin-stoplistening: Stopped listening on a DOM Node that has no emitter or emitter is gone.',
-					emitter
-				);
+			// Element has no listeners.
+			if ( !proxy ) {
+				return;
 			}
+
+			args[ 0 ] = proxy;
 		}
 
 		// Execute parent class method with Emitter (or ProxyEmitter) instance.
@@ -241,7 +238,8 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 		// Remove native DOM listeners which are orphans. If no callbacks
 		// are awaiting given event, detach native DOM listener from DOM Node.
 		// See: {@link on}.
-		if ( !( events = this._events[ event ] ) || !events.callbacks.length ) {
+
+		if ( this._domListeners[ event ] && ( !( events = this._events[ event ] ) || !events.callbacks.length ) ) {
 			this._domListeners[ event ].removeListener();
 		}
 	},
