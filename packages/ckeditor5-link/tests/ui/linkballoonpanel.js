@@ -4,6 +4,7 @@
  */
 
 /* bender-tags: ui, balloonPanel */
+/* global MouseEvent */
 
 import LinkBalloonPanel from '/ckeditor5/link/ui/linkballoonpanel.js';
 import LinkBalloonPanelView from '/ckeditor5/link/ui/linkballoonpanelview.js';
@@ -88,7 +89,7 @@ describe( 'LinkBalloonPanel', () => {
 					model.on( 'executeLink', executeSpy );
 
 					linkBalloonPanel.init().then( () => {
-						linkBalloonPanel.saveButton.view.element.click();
+						linkBalloonPanel.saveButton.view.element.dispatchEvent( new MouseEvent( 'click' ) );
 
 						expect( executeSpy.calledOnce ).to.true;
 						done();
