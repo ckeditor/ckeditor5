@@ -1,4 +1,5 @@
 @bender-ui: collapsed
+@bender-tags: autoformat
 
 ## Autoformat
 
