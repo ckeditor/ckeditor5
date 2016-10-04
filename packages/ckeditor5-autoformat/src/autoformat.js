@@ -45,12 +45,13 @@ export default class Autoformat extends Feature {
 			// <p>## ^</p> -> <heading2>^</heading2> (two steps: executing heading command + removing the text prefix)
 			//
 			// After ctrl+z: <p>## ^</p> (so undo two steps)
-			new AutoformatEngine( editor, /^(#{1,3}) $/, ( batch, match ) => {
+			new AutoformatEngine( editor, /^(#{1,3}) $/, ( batch, match, range ) => {
 				// TODO The heading command may be reconfigured in the future to support a different number
 				// of headings. That option must be exposed somehow, because we need to know here whether the replacement
 				// can be done or not.
 
 				const headingLevel = match[ 1 ].length;
+				batch.remove( range );
 
 				// This part needs slightly changed HeadingCommand.
 				// TODO Commit change to ckeditor5-heading

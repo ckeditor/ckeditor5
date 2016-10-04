@@ -5,6 +5,8 @@
 
 import TreeWalker from '../engine/model/treewalker.js';
 import Position from '../engine/model/position.js';
+import Range from '../engine/model/range.js';
+import LivePosition from '../engine/model/liveposition.js';
 
 export default class AutoformatEngine {
 	/**
@@ -41,10 +43,19 @@ export default class AutoformatEngine {
 
 				const matched = result;
 
+				let lastPath = _getLastPathPart( currentValue.nextPosition.path );
+				let liveStartPosition = LivePosition.createFromParentAndOffset( currentValue.item.parent, lastPath + result.index );
+
 				editor.document.enqueueChanges( () => {
-					callback( batch, matched  );
+					const range = Range.createFromPositionAndShift( liveStartPosition, matched[ 0 ].length );
+
+					callback( batch, matched, range  );
 				} );
 			}
 		} );
 	}
+}
+
+function _getLastPathPart( path ) {
+	return path[ path.length - 1 ];
 }
