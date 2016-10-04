@@ -15,6 +15,8 @@
     "ckeditor5-enter": "ckeditor/ckeditor5-enter",
     "ckeditor5-heading": "ckeditor/ckeditor5-heading",
     "ckeditor5-link": "ckeditor/ckeditor5-link",
+    "ckeditor5-list": "ckeditor/ckeditor5-list",
+    "ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm",
     "ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph",
     "ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark",
     "ckeditor5-typing": "ckeditor/ckeditor5-typing",
@@ -27,7 +29,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-bundler-rollup": "^2.0.0",
     "@ckeditor/ckeditor5-dev-compiler": "^2.1.0",
-    "@ckeditor/ckeditor5-dev-docs": "^1.0.0",
+    "@ckeditor/ckeditor5-dev-docs": "^2.0.0",
     "@ckeditor/ckeditor5-dev-env": "^1.0.0",
     "@ckeditor/ckeditor5-dev-lint": "^1.0.1",
     "@ckeditor/ckeditor5-dev-utils": "^1.1.0",
