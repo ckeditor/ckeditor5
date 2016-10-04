@@ -10,7 +10,7 @@
     "@ckeditor/ckeditor5-dev-lint": "^1.0.1",
     "del": "^2.2.0",
     "gulp": "^3.9.0",
-    "guppy-pre-commit": "^0.3.0",
+    "guppy-pre-commit": "^0.4.0",
     "lodash-cli": "^4"
   },
   "engines": {
