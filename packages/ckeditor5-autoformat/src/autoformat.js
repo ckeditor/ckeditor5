@@ -6,32 +6,36 @@
 import AutoformatEngine from './autoformatengine.js';
 import HeadingEngine from '../heading/headingengine.js';
 import Feature from '../core/feature.js';
-
+/**
+ * The autoformat feature. Looks for predefined regular expressions and converts inserted text accordingly.
+ *
+ * @memberOf autoformat
+ * @extends core.Feature
+ */
 export default class Autoformat extends Feature {
 	/**
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ AutoformatEngine, HeadingEngine ];
+		return [ HeadingEngine ];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 
-		// I've noticed the commands are set only when they are required.
-		// I guess this is expected behavior, but it makes things harder.
-		// For now I'll require needed commands explicitly.
-
 		if ( editor.commands.has( 'blockquote' ) ) {
-			new AutoformatEngine( /^> $/, 'blockquote' );
+			new AutoformatEngine( editor, /^> $/, 'blockquote' );
 		}
 
 		if ( editor.commands.has( 'bulletedList' ) ) {
-			new AutoformatEngine( /^[\*\-] $/, 'bulletedList' );
+			new AutoformatEngine( editor, /^[\*\-] $/, 'bulletedList' );
 		}
 
 		if ( editor.commands.has( 'numberedList' ) ) {
-			new AutoformatEngine( /^\d+[\.|)]? $/, 'numberedList' ); // "1 A", "1. A", "123 A"
+			new AutoformatEngine( editor, /^\d+[\.|)]? $/, 'numberedList' ); // "1 A", "1. A", "123 A"
 		}
 
 		if ( editor.commands.has( 'heading' ) ) {
@@ -41,13 +45,19 @@ export default class Autoformat extends Feature {
 			// <p>## ^</p> -> <heading2>^</heading2> (two steps: executing heading command + removing the text prefix)
 			//
 			// After ctrl+z: <p>## ^</p> (so undo two steps)
-			new AutoformatEngine( /^(#{1,3}) $/, ( batch, regexpMatch ) => {
+			new AutoformatEngine( editor, /^(#{1,3}) $/, ( batch, match ) => {
 				// TODO The heading command may be reconfigured in the future to support a different number
 				// of headings. That option must be exposed somehow, because we need to know here whether the replacement
 				// can be done or not.
-				const headingLevel = regexpMatch[ 1 ].length;
 
-				editor.execute( 'heading', { batch, format: `heading${ headingLevel }` } );
+				const headingLevel = match[ 1 ].length;
+
+				// This part needs slightly changed HeadingCommand.
+				// TODO Commit change to ckeditor5-heading
+				editor.execute( 'heading', {
+					batch: batch,
+					formatId: `heading${ headingLevel }`
+				} );
 			} ); // "# A", "## A"...
 		}
 	}

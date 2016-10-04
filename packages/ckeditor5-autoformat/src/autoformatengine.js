@@ -3,53 +3,48 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import TreeWalker from '../engine/model/treewalker.js';
+import Position from '../engine/model/position.js';
 
-export default class AutoformatEngine extends Feature {
-	init () {
-		// const editor = this.editor;
-		// const data = editor.data;
-		// const editing = editor.editing;
-
-		/**
-		for ( let format of formats ) {
-			// Skip paragraph - it is defined in required Paragraph feature.
-			if ( format.id !== 'paragraph' ) {
-				// Schema.
-				editor.document.schema.registerItem( format.id, '$block' );
-
-				// Build converter from model to view for data and editing pipelines.
-				buildModelConverter().for( data.modelToView, editing.modelToView )
-					.fromElement( format.id )
-					.toElement( format.viewElement );
-
-				// Build converter from view to model for data pipeline.
-				buildViewConverter().for( data.viewToModel )
-					.fromElement( format.viewElement )
-					.toElement( format.id );
+export default class AutoformatEngine {
+	/**
+	 * Creates listener triggered on `change` event in document. Calls callback when inserted text matches regular expression.
+	 *
+	 * @param {core.editor.Editor} editor Editor instance.
+	 * @param {Regex} regex Regular expression to exec on just inserted text.
+	 * @param {Function} callback Callback to execute when text is matched.
+	 */
+	constructor ( editor, regex, callback ) {
+		editor.document.on( 'change', ( event, type, changes, batch ) => {
+			if ( type != 'insert' ) {
+				return;
 			}
-		}
 
-		// Register the heading command.
-		const command = new HeadingCommand( editor, formats );
-		editor.commands.set( 'heading', command );
+			for ( let value of changes.range.getItems( { singleCharacters: true } ) ) {
+				const walker = new TreeWalker( {
+					direction: 'backward',
+					startPosition: Position.createAfter( value )
+				} );
 
-		// If the enter command is added to the editor, alter its behavior.
-		// Enter at the end of a heading element should create a paragraph.
-		const enterCommand = editor.commands.get( 'enter' );
+				const currentValue = walker.next().value;
+				const text = currentValue.item.data;
 
-		if ( enterCommand ) {
-			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
-				const positionParent = editor.document.selection.getFirstPosition().parent;
-				const batch = data.batch;
-				const isHeading = formats.some( ( format ) => format.id == positionParent.name );
-
-				if ( isHeading && positionParent.name != command.defaultFormat.id && positionParent.childCount === 0 ) {
-					batch.rename( positionParent, command.defaultFormat.id );
+				if ( !text ) {
+					return;
 				}
-			} );
-		}
 
-		**/
+				let result = regex.exec( text );
+
+				if ( !result ) {
+					return;
+				}
+
+				const matched = result;
+
+				editor.document.enqueueChanges( () => {
+					callback( batch, matched  );
+				} );
+			}
+		} );
 	}
 }
