@@ -11,13 +11,15 @@ module.exports = {
 
 	// List of features.
 	features: [
-		'typing',
-		'undo',
 		'basic-styles/bold',
 		'basic-styles/italic',
+		'enter',
 		'heading',
+		'link',
+		'list',
 		'paragraph',
-		'enter'
+		'typing',
+		'undo'
 	],
 
 	// The format of the generated bundle.
