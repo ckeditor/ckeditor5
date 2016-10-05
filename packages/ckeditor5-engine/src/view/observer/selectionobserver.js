@@ -153,6 +153,8 @@ export default class SelectionObserver extends Observer {
 			domSelection: domSelection
 		} );
 
+		// If nothing changes on `selectionChange` event, at this point we have "dirty DOM" (changed) and de-synched
+		// view (which has not been changed). In order to "reset DOM" we render the view again.
 		this.document.render();
 	}
 
