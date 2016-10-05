@@ -63,6 +63,9 @@ gulp.task( 'exec', ckeditor5DevEnv.execOnRepositories );
 // Compilation tasks. ---------------------------------------------------------
 
 const ckeditor5DevCompiler = require( '@ckeditor/ckeditor5-dev-compiler' );
+
+config.PACKAGES = ckeditor5DevCompiler.utils.getPackages( config.ROOT_DIR );
+
 const compiler = ckeditor5DevCompiler.compiler( config );
 
 gulp.task( 'default', [ 'compile' ] );
