@@ -360,12 +360,15 @@ export default class DomConverter {
 	domSelectionToView( domSelection ) {
 		const viewSelection = new ViewSelection();
 
+		const isBackward = this.isDomSelectionBackward( domSelection );
+
 		for ( let i = 0; i < domSelection.rangeCount; i++ ) {
+			// DOM Range have correct start and end, no matter what is the DOM Selection direction. So we don't have to fix anything.
 			const domRange = domSelection.getRangeAt( i );
 			const viewRange = this.domRangeToView( domRange );
 
 			if ( viewRange ) {
-				viewSelection.addRange( viewRange );
+				viewSelection.addRange( viewRange, isBackward );
 			}
 		}
 
@@ -672,6 +675,31 @@ export default class DomConverter {
 	 */
 	isDocumentFragment( node ) {
 		return node && node.nodeType == Node.DOCUMENT_FRAGMENT_NODE;
+	}
+
+	/**
+	 * Returns `true` if given selection is a backward selection, that is, if it's `focus` is before `anchor`.
+	 *
+	 * @param {Selection} DOM Selection instance to check.
+	 * @return {Boolean}
+	 */
+	isDomSelectionBackward( selection ) {
+		if ( selection.isCollapsed ) {
+			return false;
+		}
+
+		// Since it takes multiple lines of code to check whether a "DOM Position" is before/after another "DOM Position",
+		// we will use the fact that range will collapse if it's end is before it's start.
+		const range = new Range();
+
+		range.setStart( selection.anchorNode, selection.anchorOffset );
+		range.setEnd( selection.focusNode, selection.focusOffset );
+
+		const backward = range.collapsed;
+
+		range.detach();
+
+		return backward;
 	}
 
 	/**

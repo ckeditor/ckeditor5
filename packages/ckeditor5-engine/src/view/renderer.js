@@ -422,7 +422,7 @@ export default class Renderer {
 	_updateSelection() {
 		// If there is no selection - remove it from DOM elements that belongs to the editor.
 		if ( this.selection.rangeCount === 0 ) {
-			this._removeDomSelction();
+			this._removeDomSelection();
 
 			return;
 		}
@@ -445,22 +445,19 @@ export default class Renderer {
 			return;
 		}
 
-		domSelection.removeAllRanges();
+		// Multi-range selection is not available in most browsers, and, at least in Chrome, trying to
+		// set such selection, that is not continuous, throws an error. Because of that, we will just use anchor
+		// and focus of view selection.
+		// Since we are not supporting multi-range selection, we also do not need to check if proper editable is
+		// selected. If there is any editable selected, it is okay (editable is taken from selection anchor).
+		const anchor = this.domConverter.viewPositionToDom( this.selection.anchor );
+		const focus = this.domConverter.viewPositionToDom( this.selection.focus );
 
-		for ( let range of this.selection.getRanges() ) {
-			// Update ranges only in currently selected editable.
-			if ( range.start.parent.root == selectedEditable ) {
-				const domRangeStart = this.domConverter.viewPositionToDom( range.start );
-				const domRangeEnd = this.domConverter.viewPositionToDom( range.end );
-				const domRange = new Range();
-				domRange.setStart( domRangeStart.parent, domRangeStart.offset );
-				domRange.setEnd( domRangeEnd.parent, domRangeEnd.offset );
-				domSelection.addRange( domRange );
-			}
-		}
+		domSelection.collapse( anchor.parent, anchor.offset );
+		domSelection.extend( focus.parent, focus.offset );
 	}
 
-	_removeDomSelction() {
+	_removeDomSelection() {
 		for ( let doc of this.domDocuments ) {
 			const domSelection = doc.getSelection();
 

@@ -291,6 +291,8 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should not care about filler if there is no DOM', () => {
+			selectionEditable = null;
+
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
@@ -916,26 +918,6 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domDiv );
 			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 0 );
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.equal( true );
-		} );
-
-		it( 'should not add ranges if different editable is selected', () => {
-			const domHeader = document.createElement( 'h1' );
-			const viewHeader = new ViewElement( 'h1' );
-			document.body.appendChild( domHeader );
-
-			domConverter.bindElements( domHeader, viewHeader );
-
-			selectionEditable = viewHeader;
-
-			const { view: viewP, selection: newSelection } = parse( '<container:p>fo{o}</container:p>' );
-
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
-
-			renderer.render();
-
-			const domSelection = document.getSelection();
-			expect( domSelection.rangeCount ).to.equal( 0 );
 		} );
 
 		it( 'should not add inline filler after text node', () => {
