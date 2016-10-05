@@ -16,7 +16,22 @@ export default class AutoformatEngine {
 	 * @param {Regex} regex Regular expression to exec on just inserted text.
 	 * @param {Function} callback Callback to execute when text is matched.
 	 */
-	constructor ( editor, regex, callback ) {
+	constructor ( editor, regex, callbackOrCommand ) {
+		let callback;
+
+		if ( typeof callbackOrCommand === 'function' ) {
+			callback = callbackOrCommand;
+		} else {
+			const command = callbackOrCommand;
+
+			callback = ( batch, matched, range ) => {
+				batch.remove( range );
+				editor.execute( command, {
+					batch: batch
+				} );
+			};
+		}
+
 		editor.document.on( 'change', ( event, type, changes, batch ) => {
 			if ( type != 'insert' ) {
 				return;

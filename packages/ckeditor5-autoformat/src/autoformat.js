@@ -4,8 +4,10 @@
  */
 
 import AutoformatEngine from './autoformatengine.js';
-import HeadingEngine from '../heading/headingengine.js';
 import Feature from '../core/feature.js';
+import HeadingEngine from '../heading/headingengine.js';
+import ListEngine from '../list/listengine.js';
+
 /**
  * The autoformat feature. Looks for predefined regular expressions and converts inserted text accordingly.
  *
@@ -17,7 +19,7 @@ export default class Autoformat extends Feature {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ HeadingEngine ];
+		return [ HeadingEngine, ListEngine ];
 	}
 
 	/**
@@ -54,7 +56,8 @@ export default class Autoformat extends Feature {
 				batch.remove( range );
 
 				// This part needs slightly changed HeadingCommand.
-				// TODO Commit change to ckeditor5-heading
+				// TODO Commit change to ckeditor5-heading, don't forget to update tests.
+				// TODO Also commit changes to ckeditor5-engine/model/liveposition.js.
 				editor.execute( 'heading', {
 					batch: batch,
 					formatId: `heading${ headingLevel }`
