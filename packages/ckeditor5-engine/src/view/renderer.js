@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals Range */
-
 import ViewText from './text.js';
 import ViewElement from './element.js';
 import ViewPosition from './position.js';
