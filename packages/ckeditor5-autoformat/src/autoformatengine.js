@@ -13,10 +13,10 @@ export default class AutoformatEngine {
 	 * Creates listener triggered on `change` event in document. Calls callback when inserted text matches regular expression.
 	 *
 	 * @param {core.editor.Editor} editor Editor instance.
-	 * @param {Regex} regex Regular expression to exec on just inserted text.
-	 * @param {Function} callback Callback to execute when text is matched.
+	 * @param {Regex} pattern Regular expression to exec on just inserted text.
+	 * @param {Function|String} callbackOrCommand Callback to execute or command to run when text is matched.
 	 */
-	constructor ( editor, regex, callbackOrCommand ) {
+	constructor ( editor, pattern, callbackOrCommand ) {
 		let callback;
 
 		if ( typeof callbackOrCommand === 'function' ) {
@@ -24,10 +24,12 @@ export default class AutoformatEngine {
 		} else {
 			const command = callbackOrCommand;
 
-			callback = ( batch, matched, range ) => {
+			callback = ( context ) => {
+				const { batch, range } = context;
+
 				batch.remove( range );
 				editor.execute( command, {
-					batch: batch
+					batch
 				} );
 			};
 		}
@@ -50,21 +52,21 @@ export default class AutoformatEngine {
 					return;
 				}
 
-				let result = regex.exec( text );
+				const match = pattern.exec( text );
 
-				if ( !result ) {
+				if ( !match ) {
 					return;
 				}
 
-				const matched = result;
-
+				// Get range of recently added text.
 				let lastPath = _getLastPathPart( currentValue.nextPosition.path );
-				let liveStartPosition = LivePosition.createFromParentAndOffset( currentValue.item.parent, lastPath + result.index );
+				let liveStartPosition = LivePosition.createFromParentAndOffset( currentValue.item.parent, lastPath + match.index );
 
 				editor.document.enqueueChanges( () => {
-					const range = Range.createFromPositionAndShift( liveStartPosition, matched[ 0 ].length );
+					const range = Range.createFromPositionAndShift( liveStartPosition, match[ 0 ].length );
+					const element = currentValue.item;
 
-					callback( batch, matched, range  );
+					callback( { batch, match, range, element } );
 				} );
 			}
 		} );
