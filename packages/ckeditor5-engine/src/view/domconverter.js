@@ -77,14 +77,14 @@ export default class DomConverter {
 		/**
 		 * Tag names of DOM `Element`s which are considered pre-formatted elements.
 		 *
-		 * @type {Array.<String>}
+		 * @member {Array.<String>} engine.view.DomConverter#preNodes
 		 */
 		this.preNodes = [ 'pre' ];
 
 		/**
 		 * Tag names of DOM `Element`s which are considered block elements.
 		 *
-		 * @type {Array.<String>}
+		 * @member {Array.<String>} engine.view.DomConverter#blockNodes
 		 */
 		this.blockNodes = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
 	}
@@ -832,8 +832,11 @@ export default class DomConverter {
 
 // Helper function.
 // Used to check if given native `Element` or `Text` node has parent with tag name from `types` array.
-// Option `boundaryParent` can be given if parents should be checked up to a given element (excluding that element).
-// Returns `true` if such parent exists or `false` if it does not.
+//
+// @param {Node} node
+// @param {Array.<String>} types
+// @param {Boolean} [boundaryParent] Can be given if parents should be checked up to a given element (excluding that element).
+// @returns {Boolean} `true` if such parent exists or `false` if it does not.
 function _hasDomParentOfType( node, types, boundaryParent ) {
 	let parents = getAncestors( node );
 
