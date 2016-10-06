@@ -70,26 +70,7 @@ const compiler = ckeditor5DevCompiler.compiler( config );
 
 gulp.task( 'default', [ 'compile' ] );
 
-gulp.task( 'compile', callback => {
-	runSequence( 'compile:clean:all', 'compile:themes', 'compile:js', callback );
-} );
-
-gulp.task( 'compile:bundled-sample-tests', [ 'compile:bundled-sample-tests:build-editors' ],
-	() => compiler.compile.bundledSampleTests() );
-
-// Helpers. ---------------------------
-
-gulp.task( 'compile:clean:all', () => compiler.clean.all() );
-gulp.task( 'compile:clean:themes', () => compiler.clean.themes() );
-gulp.task( 'compile:clean:js', () => compiler.clean.js() );
-
-gulp.task( 'compile:themes', callback => {
-	runSequence( 'compile:clean:themes', 'compile:icons', 'compile:sass', callback );
-} );
-
-gulp.task( 'compile:sass', () => compiler.compile.sass() );
-gulp.task( 'compile:icons', () => compiler.compile.icons() );
-gulp.task( 'compile:js', [ 'compile:clean:js' ], () => compiler.compile.js() );
+gulp.task( 'compile', compiler.compile );
 
 // Tasks specific for preparing compiled output with unmodified source files. Used by `gulp docs` or `gulp build`.
 gulp.task( 'compile:clean:js:esnext', () => compiler.clean.js( { formats: [ 'esnext' ] } ) );
