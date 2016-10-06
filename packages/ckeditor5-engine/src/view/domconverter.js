@@ -59,6 +59,20 @@ export default class DomConverter {
 		this.blockFiller = options.blockFiller || BR_FILLER;
 
 		/**
+		 * Tag names of DOM `Element`s which are considered pre-formatted elements.
+		 *
+		 * @member {Array.<String>} engine.view.DomConverter#preElements
+		 */
+		this.preElements = [ 'pre' ];
+
+		/**
+		 * Tag names of DOM `Element`s which are considered block elements.
+		 *
+		 * @member {Array.<String>} engine.view.DomConverter#blockElements
+		 */
+		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
+
+		/**
 		 * DOM to View mapping.
 		 *
 		 * @private
@@ -73,20 +87,6 @@ export default class DomConverter {
 		 * @member {WeakMap} engine.view.DomConverter#_viewToDomMapping
 		 */
 		this._viewToDomMapping = new WeakMap();
-
-		/**
-		 * Tag names of DOM `Element`s which are considered pre-formatted elements.
-		 *
-		 * @member {Array.<String>} engine.view.DomConverter#preNodes
-		 */
-		this.preNodes = [ 'pre' ];
-
-		/**
-		 * Tag names of DOM `Element`s which are considered block elements.
-		 *
-		 * @member {Array.<String>} engine.view.DomConverter#blockNodes
-		 */
-		this.blockNodes = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
 	}
 
 	/**
@@ -690,9 +690,9 @@ export default class DomConverter {
 	_processDataFromViewText( node ) {
 		let data = node.data;
 
-		// If any of node ancestors has a name which is in `preNodes` array, then currently processed
+		// If any of node ancestors has a name which is in `preElements` array, then currently processed
 		// view text node is (will be) in preformatted element. We should not change whitespaces then.
-		if ( node.getAncestors().some( ( parent ) => this.preNodes.includes( parent.name ) ) )  {
+		if ( node.getAncestors().some( ( parent ) => this.preElements.includes( parent.name ) ) )  {
 			return data;
 		}
 
@@ -767,7 +767,7 @@ export default class DomConverter {
 	_processDataFromDomText( node ) {
 		let data = getDataWithoutFiller( node );
 
-		if ( _hasDomParentOfType( node, this.preNodes ) ) {
+		if ( _hasDomParentOfType( node, this.preElements ) ) {
 			return data;
 		}
 
@@ -820,7 +820,7 @@ export default class DomConverter {
 			// If there is common ancestor between the text node and next/prev text node,
 			// and there are no block elements on a way from the text node to that ancestor,
 			// and there are no block elements on a way from next/prev text node to that ancestor...
-			if ( lca && !_hasDomParentOfType( node, this.blockNodes, lca ) && !_hasDomParentOfType( touchingNode, this.blockNodes, lca ) ) {
+			if ( lca && !_hasDomParentOfType( node, this.blockElements, lca ) && !_hasDomParentOfType( touchingNode, this.blockElements, lca ) ) {
 				// Then they are in the same container element.
 				return touchingNode;
 			}
