@@ -67,12 +67,16 @@ export default class HeadingCommand extends Command {
 	 * Executes command.
 	 *
 	 * @protected
-	 * @param {String} [formatId] The identifier of the heading format that should be applied. It should be one of the
+	 * @param {Object} [options] Options for executed command.
+	 * @param {String} [options.formatId] The identifier of the heading format that should be applied. It should be one of the
 	 * {@link heading.HeadingFormat heading formats} provided to the command constructor. If this parameter is not provided,
 	 * the value from {@link heading.HeadingCommand#defaultFormat defaultFormat} will be used.
+	 * @param {engine.model.Batch} [options.batch] Batch to collect all the change steps.
+	 * New batch will be created if this option is not set.
 	 */
-	_doExecute( formatId = this.defaultFormat.id ) {
+	_doExecute( options = {} ) {
 		// TODO: What should happen if format is not found?
+		const formatId = options.formatId || this.defaultFormat.id;
 		const doc = this.editor.document;
 		const selection = doc.selection;
 		const startPosition = selection.getFirstPosition();
@@ -106,7 +110,7 @@ export default class HeadingCommand extends Command {
 		}
 
 		doc.enqueueChanges( () => {
-			const batch = doc.batch();
+			const batch = options.batch || doc.batch();
 
 			for ( let element of elements ) {
 				// When removing applied format.
