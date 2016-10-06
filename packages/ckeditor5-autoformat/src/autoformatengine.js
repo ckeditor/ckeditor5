@@ -16,25 +16,27 @@ export default class AutoformatEngine {
 	 * @param {Regex} pattern Regular expression to exec on just inserted text.
 	 * @param {Function|String} callbackOrCommand Callback to execute or command to run when text is matched.
 	 */
-	constructor ( editor, pattern, callbackOrCommand ) {
+	constructor( editor, pattern, callbackOrCommand ) {
 		let callback;
 
-		if ( typeof callbackOrCommand === 'function' ) {
+		if ( typeof callbackOrCommand == 'function' ) {
 			callback = callbackOrCommand;
 		} else {
+			// We assume that the actual command name was provided.
 			const command = callbackOrCommand;
 
 			callback = ( context ) => {
 				const { batch, range } = context;
 
+				// Remove matched pattern by default
 				batch.remove( range );
-				editor.execute( command, {
-					batch
-				} );
+
+				// Create new batch for removal and command execution.
+				editor.execute( command, batch );
 			};
 		}
 
-		editor.document.on( 'change', ( event, type, changes, batch ) => {
+		editor.document.on( 'change', ( event, type, changes ) => {
 			if ( type != 'insert' ) {
 				return;
 			}
@@ -44,7 +46,6 @@ export default class AutoformatEngine {
 					direction: 'backward',
 					startPosition: Position.createAfter( value )
 				} );
-
 				const currentValue = walker.next().value;
 				const text = currentValue.item.data;
 
@@ -62,9 +63,12 @@ export default class AutoformatEngine {
 				let lastPath = _getLastPathPart( currentValue.nextPosition.path );
 				let liveStartPosition = LivePosition.createFromParentAndOffset( currentValue.item.parent, lastPath + match.index );
 
-				editor.document.enqueueChanges( () => {
+				editor.document.enqueueChanges( function() {
 					const range = Range.createFromPositionAndShift( liveStartPosition, match[ 0 ].length );
 					const element = currentValue.item;
+
+					// Create new batch to separate typing batch from the Autoformat changes.
+					const batch = editor.document.batch();
 
 					callback( { batch, match, range, element } );
 				} );

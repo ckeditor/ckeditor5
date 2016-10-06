@@ -28,17 +28,42 @@ export default class Autoformat extends Feature {
 	init() {
 		const editor = this.editor;
 
-		if ( editor.commands.has( 'blockquote' ) ) {
-			new AutoformatEngine( editor, /^>\s$/, 'blockquote' );
-		}
-
 		if ( editor.commands.has( 'bulletedList' ) ) {
-			new AutoformatEngine( editor, /^[\*\-]\s$/, 'bulletedList' );
+			new AutoformatEngine( editor, /^[\*\-]\s$/, ( context ) => {
+				const { range, batch, element } = context;
+				const ancestors = element.getAncestors();
+				const command = editor.commands.get( 'bulletedList' );
+
+				const isInList = command.value || ancestors.some( ( element ) => {
+					return element.name === 'listItem';
+				} );
+
+				if ( isInList ) {
+					return;
+				}
+
+				batch.remove( range );
+				editor.execute( 'bulletedList', { batch } );
+			} );
 		}
 
-		// TODO Should I start from custom number?
 		if ( editor.commands.has( 'numberedList' ) ) {
-			new AutoformatEngine( editor, /^\d+[\.|)]?\s$/, 'numberedList' ); // "1 A", "1. A", "123 A"
+			new AutoformatEngine( editor, /^\d+[\.|)]?\s$/, ( context ) => {
+				const { range, batch, element } = context;
+				const ancestors = element.getAncestors();
+				const command = editor.commands.get( 'numberedList' );
+
+				const isInList = command.value || ancestors.some( ( element ) => {
+					return element.name === 'listItem';
+				} );
+
+				if ( isInList ) {
+					return;
+				}
+
+				batch.remove( range );
+				editor.execute( 'numberedList', { batch } );
+			} );
 		}
 
 		if ( editor.commands.has( 'heading' ) ) {
@@ -49,23 +74,19 @@ export default class Autoformat extends Feature {
 			//
 			// After ctrl+z: <p>## ^</p> (so undo two steps)
 			new AutoformatEngine( editor, /^(#{1,3})\s$/, ( context ) => {
-				const { batch, match, range } = context;
+				const { range, batch, match } = context;
 
 				// TODO The heading command may be reconfigured in the future to support a different number
 				// of headings. That option must be exposed somehow, because we need to know here whether the replacement
 				// can be done or not.
-
 				const headingLevel = match[ 1 ].length;
-				batch.remove( range );
 
-				// This part needs slightly changed HeadingCommand.
-				// TODO Commit change to ckeditor5-heading, don't forget to update tests.
-				// TODO Also commit changes to ckeditor5-engine/model/liveposition.js.
+				batch.remove( range );
 				editor.execute( 'heading', {
-					batch: batch,
+					batch,
 					formatId: `heading${ headingLevel }`
 				} );
-			} ); // "# A", "## A"...
+			} );
 		}
 	}
 }
