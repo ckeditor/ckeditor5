@@ -177,10 +177,10 @@ class MutationHandler {
 		// take `newText` and compare it to (cleaned up) view.
 		// It could also be done in mutation observer too, however if any outside plugin would like to
 		// introduce additional events for mutations, they would get already cleaned up version (this may be good or not).
-		mutation.newText = mutation.newText.replace( /\u00A0/g, ' ' );
+		const newText = mutation.newText.replace( /\u00A0/g, ' ' );
 
-		const diffResult = diff( mutation.oldText, mutation.newText );
-		const changes = diffToChanges( diffResult, mutation.newText );
+		const diffResult = diff( mutation.oldText, newText );
+		const changes = diffToChanges( diffResult, newText );
 
 		for ( let change of changes ) {
 			const viewPos = new ViewPosition( mutation.node, change.index );
