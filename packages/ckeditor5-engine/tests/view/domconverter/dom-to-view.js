@@ -570,7 +570,7 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'domSelectionToView', () => {
-		it( 'should converter selection', () => {
+		it( 'should convert selection', () => {
 			const domFoo = document.createTextNode( 'foo' );
 			const domBar = document.createTextNode( 'bar' );
 			const domB = createElement( document, 'b', null, domBar );
@@ -597,13 +597,40 @@ describe( 'DomConverter', () => {
 			expect( stringify( viewP, viewSelection.getFirstRange() ) ).to.equal( '<p>f{oo<b>ba}r</b></p>' );
 		} );
 
-		it( 'should converter empty selection to empty selection', () => {
+		it( 'should convert empty selection to empty selection', () => {
 			const domSelection = document.getSelection();
 			domSelection.removeAllRanges();
 
 			const viewSelection = converter.domSelectionToView( domSelection );
 
 			expect( viewSelection.rangeCount ).to.equal( 0 );
+		} );
+
+		it( 'should handle selection direction', () => {
+			const domFoo = document.createTextNode( 'foo' );
+			const domP = createElement( document, 'p', null, [ domFoo ] );
+
+			const viewP = parse( '<p>foo</p>' );
+
+			converter.bindElements( domP, viewP );
+
+			document.body.appendChild( domP );
+
+			const domRange = new Range();
+			domRange.setStart( domFoo, 2 );
+			domRange.collapse( true );
+
+			const domSelection = document.getSelection();
+			domSelection.removeAllRanges();
+			domSelection.addRange( domRange );
+			domSelection.extend( domFoo, 1 );
+
+			const viewSelection = converter.domSelectionToView( domSelection );
+
+			expect( viewSelection.rangeCount ).to.equal( 1 );
+			expect( viewSelection.anchor.offset ).to.equal( 2 );
+			expect( viewSelection.focus.offset ).to.equal( 1 );
+			expect( viewSelection.isBackward ).to.be.true;
 		} );
 
 		it( 'should not add null ranges', () => {
