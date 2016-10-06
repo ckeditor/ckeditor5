@@ -123,12 +123,16 @@ export default class LivePosition extends Position {
  */
 function bindWithDocument() {
 	/*jshint validthis: true */
+	// Operation types handled by LivePosition (these are operations that change model tree structure).
+	const supportedTypes = new Set( [ 'insert', 'move', 'remove', 'reinsert' ] );
 
 	this.listenTo(
 		this.root.document,
 		'change',
 		( event, type, changes ) => {
-			transform.call( this, type, changes.range, changes.sourcePosition );
+			if ( supportedTypes.has( type ) ) {
+				transform.call( this, type, changes.range, changes.sourcePosition );
+			}
 		}
 	);
 }

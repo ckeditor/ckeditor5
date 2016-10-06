@@ -37,7 +37,7 @@ import {
 	convertSelectionAttribute
 } from '../conversion/model-selection-to-view-converters.js';
 import { insertText, insertElement, wrap } from '../conversion/model-to-view-converters.js';
-import isPlainObject from '../../utils/lib/lodash/isplainobject.js';
+import isPlainObject from '../../utils/lib/lodash/isPlainObject.js';
 
 /**
  * Writes the contents of the {@link engine.model.Document Document} to an HTML-like string.
