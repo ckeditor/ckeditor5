@@ -109,7 +109,7 @@ describe( 'ListCommand', () => {
 	describe( '_doExecute', () => {
 		describe( 'custom options', () => {
 			it( 'should use provided batch', () => {
-				const batch = command.editor.document.batch();
+				const batch = editor.document.batch();
 
 				expect( batch.deltas.length ).to.equal( 0 );
 
