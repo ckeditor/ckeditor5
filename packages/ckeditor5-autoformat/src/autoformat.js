@@ -29,15 +29,16 @@ export default class Autoformat extends Feature {
 		const editor = this.editor;
 
 		if ( editor.commands.has( 'blockquote' ) ) {
-			new AutoformatEngine( editor, /^> $/, 'blockquote' );
+			new AutoformatEngine( editor, /^>\s$/, 'blockquote' );
 		}
 
 		if ( editor.commands.has( 'bulletedList' ) ) {
-			new AutoformatEngine( editor, /^[\*\-] $/, 'bulletedList' );
+			new AutoformatEngine( editor, /^[\*\-]\s$/, 'bulletedList' );
 		}
 
+		// TODO Should I start from custom number?
 		if ( editor.commands.has( 'numberedList' ) ) {
-			new AutoformatEngine( editor, /^\d+[\.|)]? $/, 'numberedList' ); // "1 A", "1. A", "123 A"
+			new AutoformatEngine( editor, /^\d+[\.|)]?\s$/, 'numberedList' ); // "1 A", "1. A", "123 A"
 		}
 
 		if ( editor.commands.has( 'heading' ) ) {
@@ -47,7 +48,9 @@ export default class Autoformat extends Feature {
 			// <p>## ^</p> -> <heading2>^</heading2> (two steps: executing heading command + removing the text prefix)
 			//
 			// After ctrl+z: <p>## ^</p> (so undo two steps)
-			new AutoformatEngine( editor, /^(#{1,3}) $/, ( batch, match, range ) => {
+			new AutoformatEngine( editor, /^(#{1,3})\s$/, ( context ) => {
+				const { batch, match, range } = context;
+
 				// TODO The heading command may be reconfigured in the future to support a different number
 				// of headings. That option must be exposed somehow, because we need to know here whether the replacement
 				// can be done or not.
