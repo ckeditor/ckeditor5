@@ -107,6 +107,18 @@ describe( 'ListCommand', () => {
 	} );
 
 	describe( '_doExecute', () => {
+		describe( 'custom options', () => {
+			it( 'should use provided batch', () => {
+				const batch = command.editor.document.batch();
+
+				expect( batch.deltas.length ).to.equal( 0 );
+
+				command._doExecute( { batch } );
+
+				expect( batch.deltas.length ).to.be.above( 0 );
+			} );
+		} );
+
 		describe( 'collapsed selection', () => {
 			it( 'should rename closest block to listItem and set correct attributes', () => {
 				setData( doc, '<paragraph>fo[]o</paragraph>' );
