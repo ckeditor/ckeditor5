@@ -158,9 +158,14 @@ describe( 'DomConverter', () => {
 
 		it( 'should return null for block filler', () => {
 			const domFiller = converter.blockFiller( document );
-			const viewFiller = converter.domToView( domFiller );
 
-			expect( viewFiller ).to.be.null;
+			expect( converter.domToView( domFiller ) ).to.be.null;
+		} );
+
+		it( 'should return null for empty text node', () => {
+			const textNode = document.createTextNode( '' );
+
+			expect( converter.domToView( textNode ) ).to.be.null;
 		} );
 
 		describe( 'it should clear whitespaces', () => {
