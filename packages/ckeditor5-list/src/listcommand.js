@@ -60,9 +60,14 @@ export default class ListCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Executes command.
+	 *
+	 * @protected
+	 * @param {Object} [options] Options for executed command.
+	 * @param {engine.model.Batch} [options.batch] Batch to collect all the change steps.
+	 * New batch will be created if this option is not set.
 	 */
-	_doExecute() {
+	_doExecute( options = {} ) {
 		const document = this.editor.document;
 		const blocks = getSelectedBlocks( document.selection, document.schema );
 
@@ -71,7 +76,7 @@ export default class ListCommand extends Command {
 		// If we are turning off items, we are going to rename them to paragraphs.
 
 		document.enqueueChanges( () => {
-			const batch = document.batch();
+			const batch = options.batch || document.batch();
 
 			// If part of a list got turned off, we need to handle (outdent) all of sub-items of the last turned-off item.
 			// To be sure that model is all the time in a good state, we first fix items below turned-off item.
