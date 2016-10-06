@@ -275,7 +275,7 @@ export default class DomConverter {
 	 * @param {Boolean} [options.withChildren=true] If `true`, node's and document fragment's children will be converted too.
 	 * @param {Boolean} [options.keepOriginalCase=false] If `false`, node's tag name will be converter to lower case.
 	 * @returns {engine.view.Node|engine.view.DocumentFragment|null} Converted node or document fragment or `null`
-	 * if DOM node is a {@link engine.view.filler filler}.
+	 * if DOM node is a {@link engine.view.filler filler} or the given node is an empty text node.
 	 */
 	domToView( domNode, options = {} ) {
 		if ( isBlockFiller( domNode, this.blockFiller )  ) {
