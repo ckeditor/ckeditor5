@@ -64,7 +64,7 @@ export default class Heading extends Feature {
 
 		// Execute command when an item from the dropdown is selected.
 		this.listenTo( dropdownModel, 'execute', ( evt ) => {
-			editor.execute( 'heading', evt.source.id );
+			editor.execute( 'heading', { formatId: evt.source.id } );
 			editor.editing.view.focus();
 		} );
 

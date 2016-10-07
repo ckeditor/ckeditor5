@@ -57,7 +57,7 @@ describe( 'Heading', () => {
 		model.fire( 'execute' );
 
 		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'heading', 'foo' );
+		sinon.assert.calledWithExactly( executeSpy, 'heading', { formatId: 'foo' } );
 	} );
 
 	it( 'should focus view after command execution', () => {

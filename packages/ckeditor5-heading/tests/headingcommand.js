@@ -65,6 +65,19 @@ describe( 'HeadingCommand', () => {
 	} );
 
 	describe( '_doExecute', () => {
+		describe( 'custom options', () => {
+			it( 'should use provided batch', () => {
+				const batch = editor.document.batch();
+				setData( document, '<paragraph>foo[]bar</paragraph>' );
+
+				expect( batch.deltas.length ).to.equal( 0 );
+
+				command._doExecute( { batch } );
+
+				expect( batch.deltas.length ).to.be.above( 0 );
+			} );
+		} );
+
 		describe( 'collapsed selection', () => {
 			let convertTo = formats[ formats.length - 1 ];
 
@@ -82,14 +95,14 @@ describe( 'HeadingCommand', () => {
 
 			it( 'converts to default format when executed with already applied format', () => {
 				setData( document, '<heading1>foo[]bar</heading1>' );
-				command._doExecute( 'heading1' );
+				command._doExecute( { formatId: 'heading1' } );
 
 				expect( getData( document ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
 
 			it( 'converts topmost blocks', () => {
 				setData( document, '<heading1><b>foo[]</b>bar</heading1>' );
-				command._doExecute( 'heading1' );
+				command._doExecute( { formatId: 'heading1' } );
 
 				expect( getData( document ) ).to.equal( '<paragraph><b>foo[]</b>bar</paragraph>' );
 			} );
@@ -97,7 +110,7 @@ describe( 'HeadingCommand', () => {
 			function test( from, to ) {
 				it( `converts ${ from.id } to ${ to.id } on collapsed selection`, () => {
 					setData( document, `<${ from.id }>foo[]bar</${ from.id }>` );
-					command._doExecute( to.id );
+					command._doExecute( { formatId: to.id } );
 
 					expect( getData( document ) ).to.equal( `<${ to.id }>foo[]bar</${ to.id }>` );
 				} );
@@ -114,7 +127,7 @@ describe( 'HeadingCommand', () => {
 
 			it( 'converts all elements where selection is applied', () => {
 				setData( document, '<heading1>foo[</heading1><heading2>bar</heading2><heading2>]baz</heading2>' );
-				command._doExecute( 'paragraph' );
+				command._doExecute( { formatId: 'paragraph' } );
 
 				expect( getData( document ) ).to.equal(
 					'<paragraph>foo[</paragraph><paragraph>bar</paragraph><paragraph>]baz</paragraph>'
@@ -123,7 +136,7 @@ describe( 'HeadingCommand', () => {
 
 			it( 'resets to default value all elements with same format', () => {
 				setData( document, '<heading1>foo[</heading1><heading1>bar</heading1><heading2>baz</heading2>]' );
-				command._doExecute( 'heading1' );
+				command._doExecute( { formatId: 'heading1' } );
 
 				expect( getData( document ) ).to.equal(
 					'<paragraph>foo[</paragraph><paragraph>bar</paragraph><heading2>baz</heading2>]'
@@ -133,7 +146,7 @@ describe( 'HeadingCommand', () => {
 			function test( from, to ) {
 				it( `converts ${ from.id } to ${ to.id } on non-collapsed selection`, () => {
 					setData( document, `<${ from.id }>foo[bar</${ from.id }><${ from.id }>baz]qux</${ from.id }>` );
-					command._doExecute( to.id );
+					command._doExecute( { formatId: to.id } );
 
 					expect( getData( document ) ).to.equal( `<${ to.id }>foo[bar</${ to.id }><${ to.id }>baz]qux</${ to.id }>` );
 				} );
