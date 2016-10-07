@@ -64,21 +64,57 @@ gulp.task( 'exec', ckeditor5DevEnv.execOnRepositories );
 
 const ckeditor5DevCompiler = require( '@ckeditor/ckeditor5-dev-compiler' );
 
-config.PACKAGES = ckeditor5DevCompiler.utils.getPackages( config.ROOT_DIR );
-
-const compiler = ckeditor5DevCompiler.compiler( config );
-
 gulp.task( 'default', [ 'compile' ] );
 
-gulp.task( 'compile', compiler.compile );
+gulp.task( 'compile', () => {
+	const args = ckeditor5DevCompiler.utils.parseArguments();
+	const formats = {};
+
+	for ( const item of args.formats ) {
+		formats[ item ] = config.MODULE_DIR[ item ];
+	}
+
+	return ckeditor5DevCompiler.compiler.compile( {
+		formats,
+		packages: ckeditor5DevCompiler.utils.getPackages( config.ROOT_DIR ),
+		watch: args.watch,
+		es5: args.es5,
+		samplesGlob: config.DOCUMENTATION.SAMPLES
+	} );
+} );
 
 // Tasks specific for preparing compiled output with unmodified source files. Used by `gulp docs` or `gulp build`.
-gulp.task( 'compile:clean:js:esnext', () => compiler.clean.js( { formats: [ 'esnext' ] } ) );
-gulp.task( 'compile:clean:themes:esnext', () => compiler.clean.themes( { formats: [ 'esnext' ] } ) );
-gulp.task( 'compile:sass:esnext', () => compiler.compile.sass( { formats: [ 'esnext' ] } ) );
-gulp.task( 'compile:icons:esnext', () => compiler.compile.icons( { formats: [ 'esnext' ] } ) );
-gulp.task( 'compile:js:esnext', [ 'compile:clean:js:esnext' ], () => compiler.compile.js( { formats: [ 'esnext' ] } ) );
-gulp.task( 'compile:themes:esnext', callback => {
+// Todo: These tasks should be moved direct to Docs and Bundler.
+gulp.task( 'compile:clean:js:esnext', () => {
+	return ckeditor5DevCompiler.compiler.clean.js( [ config.MODULE_DIR.esnext ] );
+} );
+
+gulp.task( 'compile:clean:themes:esnext', () => {
+	return ckeditor5DevCompiler.compiler.clean.themes( [ config.MODULE_DIR.esnext ] );
+} );
+
+gulp.task( 'compile:sass:esnext', () => {
+	return ckeditor5DevCompiler.compiler.process.sass( {
+		formats: { esnext: config.MODULE_DIR.esnext },
+		packages: ckeditor5DevCompiler.utils.getPackages( config.ROOT_DIR )
+	} );
+} );
+
+gulp.task( 'compile:icons:esnext', () => {
+	return ckeditor5DevCompiler.compiler.process.icons( {
+		formats: { esnext: config.MODULE_DIR.esnext },
+		packages: ckeditor5DevCompiler.utils.getPackages( config.ROOT_DIR )
+	} );
+} );
+
+gulp.task( 'compile:js:esnext', [ 'compile:clean:js:esnext' ], () => {
+	return ckeditor5DevCompiler.compiler.process.js( {
+		formats: { esnext: config.MODULE_DIR.esnext },
+		packages: ckeditor5DevCompiler.utils.getPackages( config.ROOT_DIR )
+	} );
+} );
+
+gulp.task( 'compile:themes:esnext', ( callback ) => {
 	runSequence( 'compile:clean:themes:esnext', 'compile:icons:esnext', 'compile:sass:esnext', callback );
 } );
 
