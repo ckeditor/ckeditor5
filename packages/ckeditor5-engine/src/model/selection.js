@@ -441,7 +441,7 @@ export default class Selection {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.
 			 *
-			 * @error selection-setFocus-no-ranges
+			 * @error model-selection-setFocus-no-ranges
 			 */
 			throw new CKEditorError( 'model-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.' );
 		}
