@@ -512,7 +512,7 @@ function defineItemControllerClass() {
 		constructor( model, view ) {
 			super( model, view );
 
-			view.model.bind( 'uid' ).to( model );
+			view.bind( 'uid' ).to( model );
 		}
 	};
 }
@@ -522,7 +522,7 @@ function defineItemViewClass() {
 		constructor( locale ) {
 			super( locale );
 
-			const bind = this.bind;
+			const bind = this.templateBind;
 
 			this.template = new Template( {
 				tag: 'li',
