@@ -195,15 +195,15 @@ export default class Template {
 			 *
 			 * @static
 			 * @method ui.Template.bind#to
-			 * @param {String} attribute Name of {@link utils.ObservableMixin} used in the binding.
+			 * @param {String} eventNameOrFunctionOrAttribute Name of {@link utils.ObservableMixin} used in the binding.
 			 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
 			 * @return {ui.TemplateBinding}
 			 */
-			to( eventNameOrFuncionOrAttribute, callback ) {
+			to( eventNameOrFunctionOrAttribute, callback ) {
 				return {
 					type: bindToSymbol,
-					eventNameOrFunction: eventNameOrFuncionOrAttribute,
-					attribute: eventNameOrFuncionOrAttribute,
+					eventNameOrFunction: eventNameOrFunctionOrAttribute,
+					attribute: eventNameOrFunctionOrAttribute,
 					observable, emitter, callback
 				};
 			},
