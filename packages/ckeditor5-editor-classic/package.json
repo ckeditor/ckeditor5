@@ -1,13 +1,13 @@
 {
   "name": "ckeditor5-editor-classic",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Classic Editor for CKEditor 5.",
   "keywords": [],
   "dependencies": {},
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-lint": "^1.0.1",
     "gulp": "^3.9.0",
-    "guppy-pre-commit": "^0.3.0"
+    "guppy-pre-commit": "^0.4.0"
   },
   "engines": {
     "node": ">=6.0.0",
