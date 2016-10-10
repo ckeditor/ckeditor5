@@ -921,8 +921,6 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should not add inline filler after text node', () => {
-			const domSelection = document.getSelection();
-
 			const { view: viewP, selection: newSelection } = parse( '<container:p>foo[]</container:p>' );
 
 			viewRoot.appendChildren( viewP );
@@ -933,13 +931,7 @@ describe( 'Renderer', () => {
 
 			const domP = domRoot.childNodes[ 0 ];
 
-			expect( domP.childNodes.length ).to.equal( 1 );
-			expect( domP.childNodes[ 0 ].data ).to.equal( 'foo' );
-
-			expect( domSelection.rangeCount ).to.equal( 1 );
-			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP );
-			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 1 );
-			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
+			expect( domP.innerHTML.indexOf( INLINE_FILLER ) ).to.equal( -1 );
 		} );
 
 		it( 'should throw if there is no filler in expected position', () => {
