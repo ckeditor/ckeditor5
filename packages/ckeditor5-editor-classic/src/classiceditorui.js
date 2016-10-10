@@ -46,6 +46,15 @@ export default class ClassicEditorUI extends BoxedEditorUI {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	init() {
+		this.toolbar.model.set( 'limiterElement', this.editor.ui.view.element );
+
+		return super.init();
+	}
+
+	/**
 	 * The editing host.
 	 *
 	 * @readonly

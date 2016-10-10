@@ -68,6 +68,14 @@ describe( 'ClassicEditorUI', () => {
 
 			expect( editorUI.init() ).to.be.instanceof( Promise );
 		} );
+
+		it( 'sets toolbar.model#limiterElement', ( done ) => {
+			return editorUI.init().then( () => {
+				expect( editorUI.toolbar.model.limiterElement ).to.equal( editorUI.view.element );
+
+				done();
+			} );
+		} );
 	} );
 
 	describe( '_createToolbar', () => {
