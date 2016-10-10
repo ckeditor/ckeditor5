@@ -5,7 +5,6 @@
 
 import Feature from '../core/feature.js';
 import ChangeBuffer from './changebuffer.js';
-import ModelPosition from '../engine/model/position.js';
 import ModelRange from '../engine/model/range.js';
 import ViewPosition from '../engine/view/position.js';
 import ViewText from '../engine/view/text.js';
@@ -41,8 +40,8 @@ export default class Input extends Feature {
 			this._handleKeydown( data );
 		}, { priority: 'lowest' } );
 
-		this.listenTo( editingView, 'mutations', ( evt, mutations ) => {
-			this._handleMutations( mutations );
+		this.listenTo( editingView, 'mutations', ( evt, mutations, viewSelection ) => {
+			this._handleMutations( mutations, viewSelection );
 		} );
 	}
 
@@ -88,11 +87,11 @@ export default class Input extends Feature {
 	 *
 	 * @param {Array.<engine.view.Document~MutatatedText|engine.view.Document~MutatatedChildren>} mutations
 	 */
-	_handleMutations( mutations ) {
+	_handleMutations( mutations, viewSelection ) {
 		const doc = this.editor.document;
 		const handler = new MutationHandler( this.editor.editing, this._buffer );
 
-		doc.enqueueChanges( () => handler.handle( mutations ) );
+		doc.enqueueChanges( () => handler.handle( mutations, viewSelection ) );
 	}
 }
 
@@ -131,17 +130,6 @@ class MutationHandler {
 		 * @member {Number} typing.Input.MutationHandler#insertedCharacterCount
 		 */
 		this.insertedCharacterCount = 0;
-
-		/**
-		 * The position to which the selection should be moved on {@link #commit}.
-		 *
-		 * Note: Currently, the mutation handler will move the selection to the position set by the
-		 * last consumer. Placing the selection right after the last change will work for many cases, but not
-		 * for ones like autocorrect or spell checking. The caret should be placed after the whole piece
-		 * which was corrected (e.g. a word), not after the letter that was replaced.
-		 *
-		 * @member {engine.model.Position} typing.Input.MutationHandler#selectionPosition
-		 */
 	}
 
 	/**
@@ -149,21 +137,17 @@ class MutationHandler {
 	 *
 	 * @param {Array.<engine.view.Document~MutatatedText|engine.view.Document~MutatatedChildren>} mutations
 	 */
-	handle( mutations ) {
+	handle( mutations, viewSelection ) {
 		for ( let mutation of mutations ) {
 			// Fortunately it will never be both.
-			this._handleTextMutation( mutation );
+			this._handleTextMutation( mutation, viewSelection );
 			this._handleTextNodeInsertion( mutation );
 		}
 
 		this.buffer.input( Math.max( this.insertedCharacterCount, 0 ) );
-
-		if ( this.selectionPosition ) {
-			this.editing.model.selection.collapse( this.selectionPosition );
-		}
 	}
 
-	_handleTextMutation( mutation ) {
+	_handleTextMutation( mutation, viewSelection ) {
 		if ( mutation.type != 'text' ) {
 			return;
 		}
@@ -182,23 +166,63 @@ class MutationHandler {
 		const oldText = mutation.oldText.replace( /\u00A0/g, ' ' );
 
 		const diffResult = diff( oldText, newText );
-		const changes = diffToChanges( diffResult, newText );
 
-		for ( let change of changes ) {
-			const viewPos = new ViewPosition( mutation.node, change.index );
-			const modelPos = this.editing.mapper.toModelPosition( viewPos );
+		// Index where the first change happens. Used to set the position from which nodes will be removed and where will be inserted.
+		let firstChangeAt = null;
+		// Index where the last change happens. Used to properly count how many characters have to be removed and inserted.
+		let lastChangeAt = null;
 
-			if ( change.type == 'insert' ) {
-				const insertedText = change.values.join( '' );
+		// Get `firstChangeAt` and `lastChangeAt`.
+		for ( let i = 0; i < diffResult.length; i++ ) {
+			const change = diffResult[ i ];
 
-				this._insert( modelPos, insertedText );
-
-				this.selectionPosition = ModelPosition.createAt( modelPos.parent, modelPos.offset + insertedText.length );
-			} else /* if ( change.type == 'delete' ) */ {
-				this._remove( new ModelRange( modelPos, modelPos.getShiftedBy( change.howMany ) ), change.howMany );
-
-				this.selectionPosition = modelPos;
+			if ( change != 'equal' ) {
+				firstChangeAt = firstChangeAt === null ? i : firstChangeAt;
+				lastChangeAt = i;
 			}
+		}
+
+		// How many characters, starting from `firstChangeAt`, should be removed.
+		let deletions = 0;
+		// How many characters, starting from `firstChangeAt`, should be inserted (basing on mutation.newText).
+		let insertions = 0;
+
+		for ( let i = firstChangeAt; i <= lastChangeAt; i++ ) {
+			// If there is no change (equal) or delete, the character is existing in `oldText`. We count it for removing.
+			if ( diffResult[ i ] != 'insert' ) {
+				deletions++;
+			}
+
+			// If there is no change (equal) or insert, the character is existing in `newText`. We count it for inserting.
+			if ( diffResult[ i ] != 'delete' ) {
+				insertions++;
+			}
+		}
+
+		// Try setting new model selection according to passed view selection.
+		let modelSelectionPosition = null;
+
+		if ( viewSelection ) {
+			modelSelectionPosition = this.editing.mapper.toModelPosition( viewSelection.anchor );
+		}
+
+		// Get the position in view and model where the changes will happen.
+		const viewPos = new ViewPosition( mutation.node, firstChangeAt );
+		const modelPos = this.editing.mapper.toModelPosition( viewPos );
+
+		// Remove appropriate number of characters from the model text node.
+		if ( deletions > 0 ) {
+			const removeRange = ModelRange.createFromPositionAndShift( modelPos, deletions );
+			this._remove( removeRange, deletions );
+		}
+
+		// Insert appropriate characters basing on `mutation.text`.
+		const insertedText = mutation.newText.substr( firstChangeAt, insertions );
+		this._insert( modelPos, insertedText );
+
+		// If there was `viewSelection` and it got correctly mapped, collapse selection at found model position.
+		if ( modelSelectionPosition ) {
+			this.editing.model.selection.collapse( modelSelectionPosition );
 		}
 	}
 
@@ -212,7 +236,8 @@ class MutationHandler {
 			return;
 		}
 
-		const diffResult = diff( mutation.oldChildren, mutation.newChildren, compare );
+		// Which is text.
+		const diffResult = diff( mutation.oldChildren, mutation.newChildren, compareChildNodes );
 		const changes = diffToChanges( diffResult, mutation.newChildren );
 
 		// In case of [ delete, insert, insert ] the previous check will not exit.
@@ -239,15 +264,7 @@ class MutationHandler {
 
 		this._insert( modelPos, insertedText );
 
-		this.selectionPosition = ModelPosition.createAt( modelPos.parent, 'end' );
-
-		function compare( oldChild, newChild ) {
-			if ( oldChild instanceof ViewText && newChild instanceof ViewText ) {
-				return oldChild.data === newChild.data;
-			} else {
-				return oldChild === newChild;
-			}
-		}
+		this.editing.model.selection.collapse( modelPos.parent, 'end' );
 	}
 
 	_insert( position, text ) {
@@ -297,4 +314,14 @@ function isSafeKeystroke( keyData ) {
 	}
 
 	return safeKeycodes.includes( keyData.keyCode );
+}
+
+// Helper function that compares whether two given view nodes are same. It is used in `diff` when it's passed an array
+// with child nodes.
+function compareChildNodes( oldChild, newChild ) {
+	if ( oldChild instanceof ViewText && newChild instanceof ViewText ) {
+		return oldChild.data === newChild.data;
+	} else {
+		return oldChild === newChild;
+	}
 }
