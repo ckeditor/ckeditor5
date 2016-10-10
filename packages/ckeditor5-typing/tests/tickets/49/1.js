@@ -20,7 +20,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 	const editable = editor.ui.editableElement;
 
-	editor.document.on( 'change', () => {
+	editor.document.on( 'changesDone', () => {
 		console.clear();
 
 		const modelData = getModelData( editor.document, { withoutSelection: true } );
@@ -31,7 +31,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 		console.log( 'dom:', editable.innerHTML );
 		console.log( 'editor.getData', editor.getData() );
-	} );
+	}, { priority: 'lowest' } );
 } )
 .catch( err => {
 	console.error( err.stack );
