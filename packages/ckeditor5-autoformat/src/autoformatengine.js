@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import TreeWalker from '../engine/model/treewalker.js';
-import Position from '../engine/model/position.js';
 import Range from '../engine/model/range.js';
 import LivePosition from '../engine/model/liveposition.js';
 
@@ -42,14 +40,14 @@ export default class AutoformatEngine {
 			}
 
 			for ( let value of changes.range.getItems() ) {
-				const walker = new TreeWalker( {
-					direction: 'backward',
-					startPosition: Position.createAfter( value )
-				} );
-				const currentValue = walker.next().value;
-				const text = currentValue.item.data;
+				if ( !value.textNode ) {
+					return;
+				}
 
-				if ( currentValue.item.parent.name !== 'paragraph' || !text ) {
+				const element = value.textNode;
+				const text = element.data;
+
+				if ( element.parent.name !== 'paragraph' || !text ) {
 					return;
 				}
 
@@ -60,12 +58,9 @@ export default class AutoformatEngine {
 				}
 
 				// Get range of recently added text.
-				let lastPath = _getLastPathPart( currentValue.nextPosition.path );
-				let liveStartPosition = LivePosition.createFromParentAndOffset( currentValue.item.parent, lastPath + match.index );
-
 				editor.document.enqueueChanges( function() {
-					const range = Range.createFromPositionAndShift( liveStartPosition, match[ 0 ].length );
-					const element = currentValue.item;
+					const startPosition = LivePosition.createFromParentAndOffset( element.parent, element.startOffset );
+					const range = Range.createFromPositionAndShift( startPosition, match[ 0 ].length );
 
 					// Create new batch to separate typing batch from the Autoformat changes.
 					const batch = editor.document.batch();
@@ -75,8 +70,4 @@ export default class AutoformatEngine {
 			}
 		} );
 	}
-}
-
-function _getLastPathPart( path ) {
-	return path[ path.length - 1 ];
 }
