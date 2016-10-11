@@ -23,13 +23,10 @@ export default class AutoformatEngine {
 			const command = callbackOrCommand;
 
 			callback = ( context ) => {
-				const { batch, range } = context;
-
-				// Remove matched pattern by default
-				batch.remove( range );
+				const { batch } = context;
 
 				// Create new batch for removal and command execution.
-				editor.execute( command, batch );
+				editor.execute( command, { batch } );
 			};
 		}
 
@@ -43,10 +40,11 @@ export default class AutoformatEngine {
 					return;
 				}
 
-				const element = value.textNode;
-				const text = element.data;
+				const textNode = value.textNode;
+				const text = textNode.data;
 
-				if ( element.parent.name !== 'paragraph' || !text ) {
+				// Run matching only on non-empty paragraphs.
+				if ( textNode.parent.name !== 'paragraph' || !text ) {
 					return;
 				}
 
@@ -56,14 +54,17 @@ export default class AutoformatEngine {
 					return;
 				}
 
-				// Get range of recently added text.
 				editor.document.enqueueChanges( function() {
-					const range = Range.createFromParentsAndOffsets( element.parent, 0, element.parent, match[ 0 ].length );
-
 					// Create new batch to separate typing batch from the Autoformat changes.
 					const batch = editor.document.batch();
 
-					callback( { batch, match, range, element } );
+					// Matched range.
+					const range = Range.createFromParentsAndOffsets( textNode.parent, 0, textNode.parent, match[ 0 ].length );
+
+					// Remove matched text.
+					batch.remove( range );
+
+					callback( { batch, match } );
 				} );
 			}
 		} );
