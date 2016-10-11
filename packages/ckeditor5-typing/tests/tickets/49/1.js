@@ -20,6 +20,13 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 	const editable = editor.ui.editableElement;
 
+	document.querySelector( '#nbsp' ).addEventListener( 'click', () => {
+		editor.document.enqueueChanges( () => {
+			editor.document.selection.collapseToStart();
+			editor.document.batch().weakInsert( editor.document.selection.getFirstPosition(), '\u00A0' );
+		} );
+	} );
+
 	editor.document.on( 'changesDone', () => {
 		console.clear();
 
