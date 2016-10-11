@@ -13,6 +13,9 @@ export default class AutoformatEngine {
 	 * @param {core.editor.Editor} editor Editor instance.
 	 * @param {Regex} pattern Regular expression to exec on just inserted text.
 	 * @param {Function|String} callbackOrCommand Callback to execute or command to run when text is matched.
+	 * In case of providing callback it receives following parameters:
+	 * * {engine.model.Batch} batch Newly created batch for autoformat changes.
+	 * * {Object} match RegExp.exec() result of matching pattern to inserted text.
 	 */
 	constructor( editor, pattern, callbackOrCommand ) {
 		let callback;
@@ -36,38 +39,40 @@ export default class AutoformatEngine {
 				return;
 			}
 
-			for ( let value of changes.range.getItems() ) {
-				if ( !( value instanceof TextProxy ) ) {
-					return;
-				}
+			// Take the first element. Typing shouldn't add more than one element at once.
+			// And if it is not typing (e.g. paste), Autoformat should not be fired.
+			const value = changes.range.getItems().next().value;
 
-				const textNode = value.textNode;
-				const text = textNode.data;
-
-				// Run matching only on non-empty paragraphs.
-				if ( textNode.parent.name !== 'paragraph' || !text ) {
-					return;
-				}
-
-				const match = pattern.exec( text );
-
-				if ( !match ) {
-					return;
-				}
-
-				editor.document.enqueueChanges( function() {
-					// Create new batch to separate typing batch from the Autoformat changes.
-					const batch = editor.document.batch();
-
-					// Matched range.
-					const range = Range.createFromParentsAndOffsets( textNode.parent, 0, textNode.parent, match[ 0 ].length );
-
-					// Remove matched text.
-					batch.remove( range );
-
-					callback( { batch, match } );
-				} );
+			if ( !( value instanceof TextProxy ) ) {
+				return;
 			}
+
+			const textNode = value.textNode;
+			const text = textNode.data;
+
+			// Run matching only on non-empty paragraphs.
+			if ( textNode.parent.name !== 'paragraph' || !text ) {
+				return;
+			}
+
+			const match = pattern.exec( text );
+
+			if ( !match ) {
+				return;
+			}
+
+			editor.document.enqueueChanges( function() {
+				// Create new batch to separate typing batch from the Autoformat changes.
+				const batch = editor.document.batch();
+
+				// Matched range.
+				const range = Range.createFromParentsAndOffsets( textNode.parent, 0, textNode.parent, match[ 0 ].length );
+
+				// Remove matched text.
+				batch.remove( range );
+
+				callback( { batch, match } );
+			} );
 		} );
 	}
 }
