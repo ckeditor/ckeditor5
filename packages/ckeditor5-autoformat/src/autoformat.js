@@ -30,17 +30,7 @@ export default class Autoformat extends Feature {
 
 		if ( editor.commands.has( 'bulletedList' ) ) {
 			new AutoformatEngine( editor, /^[\*\-]\s$/, ( context ) => {
-				const { range, batch, element } = context;
-				const ancestors = element.getAncestors();
-				const command = editor.commands.get( 'bulletedList' );
-
-				const isInList = command.value || ancestors.some( ( element ) => {
-					return element.name === 'listItem';
-				} );
-
-				if ( isInList ) {
-					return;
-				}
+				const { range, batch } = context;
 
 				batch.remove( range );
 				editor.execute( 'bulletedList', { batch } );
@@ -49,17 +39,7 @@ export default class Autoformat extends Feature {
 
 		if ( editor.commands.has( 'numberedList' ) ) {
 			new AutoformatEngine( editor, /^\d+[\.|)]?\s$/, ( context ) => {
-				const { range, batch, element } = context;
-				const ancestors = element.getAncestors();
-				const command = editor.commands.get( 'numberedList' );
-
-				const isInList = command.value || ancestors.some( ( element ) => {
-					return element.name === 'listItem';
-				} );
-
-				if ( isInList ) {
-					return;
-				}
+				const { range, batch } = context;
 
 				batch.remove( range );
 				editor.execute( 'numberedList', { batch } );
