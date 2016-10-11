@@ -24,10 +24,10 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		console.clear();
 
 		const modelData = getModelData( editor.document, { withoutSelection: true } );
-		console.log( 'model:', modelData.replace( /\u00A0/g, '_' ) );
+		console.log( 'model:', modelData.replace( /\u00A0/g, '&nbsp;' ) );
 
 		const viewData = getViewData( editor.editing.view, { withoutSelection: true } );
-		console.log( 'view:', viewData.replace( /\u00A0/g, '_' ) );
+		console.log( 'view:', viewData.replace( /\u00A0/g, '&nbsp;' ) );
 
 		console.log( 'dom:', editable.innerHTML );
 		console.log( 'editor.getData', editor.getData() );

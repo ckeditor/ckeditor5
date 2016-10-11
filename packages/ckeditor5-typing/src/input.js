@@ -178,8 +178,10 @@ class MutationHandler {
 		// It could also be done in mutation observer too, however if any outside plugin would like to
 		// introduce additional events for mutations, they would get already cleaned up version (this may be good or not).
 		const newText = mutation.newText.replace( /\u00A0/g, ' ' );
+		// To have correct `diffResult`, we also compare view node text data with &nbsp; replaced by space.
+		const oldText = mutation.oldText.replace( /\u00A0/g, ' ' );
 
-		const diffResult = diff( mutation.oldText, newText );
+		const diffResult = diff( oldText, newText );
 		const changes = diffToChanges( diffResult, newText );
 
 		for ( let change of changes ) {
