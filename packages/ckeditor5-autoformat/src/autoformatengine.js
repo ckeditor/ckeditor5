@@ -4,6 +4,7 @@
  */
 
 import Range from '../engine/model/range.js';
+import TextProxy from '../engine/model/textproxy.js';
 
 export default class AutoformatEngine {
 	/**
@@ -36,7 +37,7 @@ export default class AutoformatEngine {
 			}
 
 			for ( let value of changes.range.getItems() ) {
-				if ( !value.textNode ) {
+				if ( !( value instanceof TextProxy ) ) {
 					return;
 				}
 
