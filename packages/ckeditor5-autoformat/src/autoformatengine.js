@@ -4,7 +4,6 @@
  */
 
 import Range from '../engine/model/range.js';
-import LivePosition from '../engine/model/liveposition.js';
 
 export default class AutoformatEngine {
 	/**
@@ -59,8 +58,7 @@ export default class AutoformatEngine {
 
 				// Get range of recently added text.
 				editor.document.enqueueChanges( function() {
-					const startPosition = LivePosition.createFromParentAndOffset( element.parent, element.startOffset );
-					const range = Range.createFromPositionAndShift( startPosition, match[ 0 ].length );
+					const range = Range.createFromParentsAndOffsets( element.parent, 0, element.parent, match[ 0 ].length );
 
 					// Create new batch to separate typing batch from the Autoformat changes.
 					const batch = editor.document.batch();
