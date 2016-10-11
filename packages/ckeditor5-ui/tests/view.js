@@ -122,10 +122,10 @@ describe( 'View', () => {
 		} );
 
 		it( 'returns a shorthand for Template binding', () => {
-			expect( view.templateBind.to ).to.be.a( 'function' );
-			expect( view.templateBind.if ).to.be.a( 'function' );
+			expect( view.bindTemplate.to ).to.be.a( 'function' );
+			expect( view.bindTemplate.if ).to.be.a( 'function' );
 
-			const binding = view.templateBind.to( 'a' );
+			const binding = view.bindTemplate.to( 'a' );
 
 			expect( binding.observable ).to.equal( view );
 			expect( binding.emitter ).to.equal( view );

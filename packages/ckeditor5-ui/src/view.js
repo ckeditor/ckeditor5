@@ -73,10 +73,10 @@ export default class View {
 
 		/**
 		 * Cached {@link ui.Template} binder object specific for this instance.
-		 * See {@link ui.View#templateBind}.
+		 * See {@link ui.View#bindTemplate}.
 		 *
 		 * @private
-		 * @member {Object} ui.View.#_templateBind
+		 * @member {Object} ui.View.#_bindTemplate
 		 */
 	}
 
@@ -109,16 +109,16 @@ export default class View {
 	/**
 	 * Shorthand for {@link ui.Template#bind}, bound to {@link ui.View} on the first access.
 	 *
-	 * Cached {@link ui.Template#bind} object is stored in {@link ui.View.#_templateBind}.
+	 * Cached {@link ui.Template#bind} object is stored in {@link ui.View.#_bindTemplate}.
 	 *
-	 * @method ui.View#templateBind
+	 * @method ui.View#bindTemplate
 	 */
-	get templateBind() {
-		if ( this._templateBind ) {
-			return this._templateBind;
+	get bindTemplate() {
+		if ( this._bindTemplate ) {
+			return this._bindTemplate;
 		}
 
-		return ( this._templateBind = Template.bind( this, this ) );
+		return ( this._bindTemplate = Template.bind( this, this ) );
 	}
 
 	/**

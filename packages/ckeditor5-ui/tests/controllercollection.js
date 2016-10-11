@@ -522,7 +522,7 @@ function defineItemViewClass() {
 		constructor( locale ) {
 			super( locale );
 
-			const bind = this.templateBind;
+			const bind = this.bindTemplate;
 
 			this.template = new Template( {
 				tag: 'li',
