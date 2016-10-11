@@ -174,14 +174,14 @@ export default class Link extends Feature {
 					}
 				} );
 
-				this.listenTo( balloonPanel.view.model, 'change:isVisible', () => this.stopListening( viewDocument, 'render' ) );
+				this.listenTo( balloonPanel.view, 'change:isVisible', () => this.stopListening( viewDocument, 'render' ) );
 			}
 		} );
 
 		// Close on `ESC` press.
 		escPressHandler( {
 			controller: balloonPanel.view,
-			model: balloonPanel.view.model,
+			model: balloonPanel.view,
 			activeIf: 'isVisible',
 			callback: () => this._hidePanel( true )
 		} );
@@ -189,7 +189,7 @@ export default class Link extends Feature {
 		// Close on click outside of balloon panel element.
 		clickOutsideHandler( {
 			controller: balloonPanel.view,
-			model: balloonPanel.view.model,
+			model: balloonPanel.view,
 			activeIf: 'isVisible',
 			contextElement: balloonPanel.view.element,
 			callback: () => this._hidePanel()

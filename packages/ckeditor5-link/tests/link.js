@@ -164,7 +164,7 @@ describe( 'Link', () => {
 
 			editor.keystrokes.press( { keyCode: keyCodes.k, ctrlKey: true } );
 
-			expect( balloonPanel.view.model.isVisible ).to.true;
+			expect( balloonPanel.view.isVisible ).to.true;
 			expect( selectUrlInputSpy.calledOnce ).to.true;
 		} );
 
@@ -224,7 +224,7 @@ describe( 'Link', () => {
 		describe( 'close listeners', () => {
 			describe( 'keyboard', () => {
 				it( 'should close after `ESC` press', () => {
-					balloonPanel.view.model.isVisible = true;
+					balloonPanel.view.isVisible = true;
 
 					dispatchKeyboardEvent( document, 'keydown', keyCodes.esc );
 
@@ -235,7 +235,7 @@ describe( 'Link', () => {
 
 			describe( 'mouse', () => {
 				it( 'should close and not focus editable on click outside the panel', () => {
-					balloonPanel.view.model.isVisible = true;
+					balloonPanel.view.isVisible = true;
 					document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 
 					expect( hidePanelSpy.calledOnce ).to.true;
@@ -243,7 +243,7 @@ describe( 'Link', () => {
 				} );
 
 				it( 'should not close on click inside the panel', () => {
-					balloonPanel.view.model.isVisible = true;
+					balloonPanel.view.isVisible = true;
 					balloonPanel.view.element.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 
 					expect( hidePanelSpy.notCalled ).to.true;
@@ -261,7 +261,7 @@ describe( 'Link', () => {
 
 				observer.fire( 'click', { target: document.body } );
 
-				expect( balloonPanel.view.model.isVisible ).to.true;
+				expect( balloonPanel.view.isVisible ).to.true;
 				expect( selectUrlInputSpy.notCalled ).to.true;
 			} );
 
@@ -276,14 +276,14 @@ describe( 'Link', () => {
 
 				observer.fire( 'click', { target: document.body } );
 
-				expect( balloonPanel.view.model.isVisible ).to.true;
+				expect( balloonPanel.view.isVisible ).to.true;
 
 				const attachToSpy = testUtils.sinon.spy( balloonPanel.view, 'attachTo' );
 
 				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
 				editor.editing.view.render();
 
-				expect( balloonPanel.view.model.isVisible ).to.true;
+				expect( balloonPanel.view.isVisible ).to.true;
 				expect( attachToSpy.calledOnce ).to.true;
 			} );
 
@@ -298,12 +298,12 @@ describe( 'Link', () => {
 
 				observer.fire( 'click', { target: document.body } );
 
-				expect( balloonPanel.view.model.isVisible ).to.true;
+				expect( balloonPanel.view.isVisible ).to.true;
 
 				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
 				editor.editing.view.render();
 
-				expect( balloonPanel.view.model.isVisible ).to.false;
+				expect( balloonPanel.view.isVisible ).to.false;
 			} );
 
 			it( 'should close when selection goes to the other link element with the same href', () => {
@@ -317,12 +317,12 @@ describe( 'Link', () => {
 
 				observer.fire( 'click', { target: document.body } );
 
-				expect( balloonPanel.view.model.isVisible ).to.true;
+				expect( balloonPanel.view.isVisible ).to.true;
 
 				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
 				editor.editing.view.render();
 
-				expect( balloonPanel.view.model.isVisible ).to.false;
+				expect( balloonPanel.view.isVisible ).to.false;
 			} );
 
 			it( 'should close when selection becomes non-collapsed', () => {
@@ -336,12 +336,12 @@ describe( 'Link', () => {
 
 				observer.fire( 'click', { target: {} } );
 
-				expect( balloonPanel.view.model.isVisible ).to.true;
+				expect( balloonPanel.view.isVisible ).to.true;
 
 				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 2 ) ] );
 				editor.editing.view.render();
 
-				expect( balloonPanel.view.model.isVisible ).to.false;
+				expect( balloonPanel.view.isVisible ).to.false;
 			} );
 
 			it( 'should stop updating position after close', () => {
@@ -355,9 +355,9 @@ describe( 'Link', () => {
 
 				observer.fire( 'click', { target: {} } );
 
-				expect( balloonPanel.view.model.isVisible ).to.true;
+				expect( balloonPanel.view.isVisible ).to.true;
 
-				balloonPanel.view.model.isVisible = false;
+				balloonPanel.view.isVisible = false;
 
 				const attachToSpy = testUtils.sinon.spy( balloonPanel.view, 'attachTo' );
 
@@ -374,7 +374,7 @@ describe( 'Link', () => {
 
 				observer.fire( 'click', { target: {} } );
 
-				expect( balloonPanel.view.model.isVisible ).to.false;
+				expect( balloonPanel.view.isVisible ).to.false;
 			} );
 
 			it( 'should not open when selection is non-collapsed', () => {
@@ -385,7 +385,7 @@ describe( 'Link', () => {
 
 				observer.fire( 'click', { target: document.body } );
 
-				expect( balloonPanel.view.model.isVisible ).to.false;
+				expect( balloonPanel.view.isVisible ).to.false;
 			} );
 		} );
 	} );
