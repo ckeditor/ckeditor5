@@ -29,39 +29,18 @@ export default class Autoformat extends Feature {
 		const editor = this.editor;
 
 		if ( editor.commands.has( 'bulletedList' ) ) {
-			new AutoformatEngine( editor, /^[\*\-]\s$/, ( context ) => {
-				const { range, batch } = context;
-
-				batch.remove( range );
-				editor.execute( 'bulletedList', { batch } );
-			} );
+			new AutoformatEngine( editor, /^[\*\-]\s$/, 'bulletedList' );
 		}
 
 		if ( editor.commands.has( 'numberedList' ) ) {
-			new AutoformatEngine( editor, /^\d+[\.|)]?\s$/, ( context ) => {
-				const { range, batch } = context;
-
-				batch.remove( range );
-				editor.execute( 'numberedList', { batch } );
-			} );
+			new AutoformatEngine( editor, /^\d+[\.|)]?\s$/, 'numberedList' );
 		}
 
 		if ( editor.commands.has( 'heading' ) ) {
-			// The batch must come from the AutoformatEngine, because it should be the same batch which is later
-			// used by the command. E.g.:
-			//
-			// <p>## ^</p> -> <heading2>^</heading2> (two steps: executing heading command + removing the text prefix)
-			//
-			// After ctrl+z: <p>## ^</p> (so undo two steps)
 			new AutoformatEngine( editor, /^(#{1,3})\s$/, ( context ) => {
-				const { range, batch, match } = context;
-
-				// TODO The heading command may be reconfigured in the future to support a different number
-				// of headings. That option must be exposed somehow, because we need to know here whether the replacement
-				// can be done or not.
+				const { batch, match } = context;
 				const headingLevel = match[ 1 ].length;
 
-				batch.remove( range );
 				editor.execute( 'heading', {
 					batch,
 					formatId: `heading${ headingLevel }`
