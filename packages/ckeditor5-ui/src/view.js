@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import Model from './model.js';
 import Collection from '../utils/collection.js';
 import Region from './region.js';
 import Template from './template.js';
 import CKEditorError from '../utils/ckeditorerror.js';
 import DOMEmitterMixin from './domemittermixin.js';
+import ObservableMixin from '../utils/observablemixin.js';
 import mix from '../utils/mix.js';
 
 /**
@@ -16,6 +16,7 @@ import mix from '../utils/mix.js';
  *
  * @memberOf ui
  * @mixes DOMEmitterMixin
+ * @mixes ObservableMixin
  */
 export default class View {
 	/**
@@ -24,13 +25,6 @@ export default class View {
 	 * @param {utils.Locale} [locale] The {@link core.editor.Editor#locale editor's locale} instance.
 	 */
 	constructor( locale ) {
-		/**
-		 * Model of this view.
-		 *
-		 * @member {ui.Model} ui.View#model
-		 */
-		this.model = new Model();
-
 		/**
 		 * @readonly
 		 * @member {utils.Locale} ui.View#locale
@@ -79,10 +73,10 @@ export default class View {
 
 		/**
 		 * Cached {@link ui.Template} binder object specific for this instance.
-		 * See {@link ui.View#bind}.
+		 * See {@link ui.View#bindTemplate}.
 		 *
 		 * @private
-		 * @member {Object} ui.View.#_bind
+		 * @member {Object} ui.View.#_bindTemplate
 		 */
 	}
 
@@ -113,19 +107,18 @@ export default class View {
 	}
 
 	/**
-	 * Shorthand for {@link ui.Template#bind}, bound to {@link ui.View#model}
-	 * and {@link ui.View} on the first access.
+	 * Shorthand for {@link ui.Template#bind}, bound to {@link ui.View} on the first access.
 	 *
-	 * Cached {@link ui.Template#bind} object is stored in {@link ui.View.#_bind}.
+	 * Cached {@link ui.Template#bind} object is stored in {@link ui.View.#_bindTemplate}.
 	 *
-	 * @method ui.View#bind
+	 * @method ui.View#bindTemplate
 	 */
-	get bind() {
-		if ( this._bind ) {
-			return this._bind;
+	get bindTemplate() {
+		if ( this._bindTemplate ) {
+			return this._bindTemplate;
 		}
 
-		return ( this._bind = Template.bind( this.model, this ) );
+		return ( this._bindTemplate = Template.bind( this, this ) );
 	}
 
 	/**
@@ -267,6 +260,7 @@ export default class View {
 }
 
 mix( View, DOMEmitterMixin );
+mix( View, ObservableMixin );
 
 const validSelectorTypes = new Set( [ 'string', 'boolean', 'function' ] );
 

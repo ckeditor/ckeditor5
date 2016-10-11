@@ -177,10 +177,10 @@ export default class Template {
 			 *			on: {
 			 *				click: [
 			 *					// "clicked" event will be fired on `observableInstance` when "click" fires in DOM.
-			 *					bind( 'clicked' ),
+			 *					bind.to( 'clicked' ),
 			 *
 			 *					// A custom callback function will be executed when "click" fires in DOM.
-			 *					bind( () => {
+			 *					bind.to( () => {
 			 *						...
 			 *					} )
 			 *				]
@@ -195,15 +195,16 @@ export default class Template {
 			 *
 			 * @static
 			 * @method ui.Template.bind#to
-			 * @param {String} attribute Name of {@link utils.ObservableMixin} used in the binding.
+			 * @param {String|Function} eventNameOrFunctionOrAttribute An attribute name of {@link utils.ObservableMixin} or a DOM
+			 * event name or an event callback.
 			 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
 			 * @return {ui.TemplateBinding}
 			 */
-			to( eventNameOrFuncionOrAttribute, callback ) {
+			to( eventNameOrFunctionOrAttribute, callback ) {
 				return {
 					type: bindToSymbol,
-					eventNameOrFunction: eventNameOrFuncionOrAttribute,
-					attribute: eventNameOrFuncionOrAttribute,
+					eventNameOrFunction: eventNameOrFunctionOrAttribute,
+					attribute: eventNameOrFunctionOrAttribute,
 					observable, emitter, callback
 				};
 			},

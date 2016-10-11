@@ -122,12 +122,12 @@ describe( 'View', () => {
 		} );
 
 		it( 'returns a shorthand for Template binding', () => {
-			expect( view.bind.to ).to.be.a( 'function' );
-			expect( view.bind.if ).to.be.a( 'function' );
+			expect( view.bindTemplate.to ).to.be.a( 'function' );
+			expect( view.bindTemplate.if ).to.be.a( 'function' );
 
-			const binding = view.bind.to( 'a' );
+			const binding = view.bindTemplate.to( 'a' );
 
-			expect( binding.observable ).to.equal( view.model );
+			expect( binding.observable ).to.equal( view );
 			expect( binding.emitter ).to.equal( view );
 		} );
 	} );
@@ -216,8 +216,6 @@ describe( 'View', () => {
 
 		it( 'invokes out of #template', () => {
 			setTestViewInstance();
-
-			view.model.set( 'a', 1 );
 
 			expect( view.element ).to.be.an.instanceof( HTMLElement );
 			expect( view.element.nodeName ).to.equal( 'A' );
