@@ -16,6 +16,7 @@ import mix from '../utils/mix.js';
  *
  * @memberOf ui
  * @mixes DOMEmitterMixin
+ * @mixes ObservableMixin
  */
 export default class View {
 	/**
