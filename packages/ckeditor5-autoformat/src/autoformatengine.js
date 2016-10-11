@@ -41,7 +41,7 @@ export default class AutoformatEngine {
 				return;
 			}
 
-			for ( let value of changes.range.getItems( { singleCharacters: true } ) ) {
+			for ( let value of changes.range.getItems() ) {
 				const walker = new TreeWalker( {
 					direction: 'backward',
 					startPosition: Position.createAfter( value )
@@ -49,7 +49,7 @@ export default class AutoformatEngine {
 				const currentValue = walker.next().value;
 				const text = currentValue.item.data;
 
-				if ( !text ) {
+				if ( currentValue.item.parent.name !== 'paragraph' || !text ) {
 					return;
 				}
 
