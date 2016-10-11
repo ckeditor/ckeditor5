@@ -15,8 +15,8 @@ import mix from '../utils/mix.js';
  * Basic View class.
  *
  * @memberOf ui
- * @mixes DOMEmitterMixin
  * @mixes ObservableMixin
+ * @mixes DOMEmitterMixin
  */
 export default class View {
 	/**
@@ -259,8 +259,8 @@ export default class View {
 	}
 }
 
-mix( View, DOMEmitterMixin );
 mix( View, ObservableMixin );
+mix( View, DOMEmitterMixin );
 
 const validSelectorTypes = new Set( [ 'string', 'boolean', 'function' ] );
 
