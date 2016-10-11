@@ -771,7 +771,7 @@ export default class DomConverter {
 			return data;
 		}
 
-		data = data.replace( /\s{2,}/g, ' ' );
+		data = data.replace( /[^\S\u00A0]{2,}/g, ' ' );
 
 		const prevNode = this._getTouchingDomTextNode( node, false );
 		const nextNode = this._getTouchingDomTextNode( node, true );
@@ -779,13 +779,13 @@ export default class DomConverter {
 		// If previous text node does not exist or it ends by space character...
 		if ( !prevNode || prevNode.data.charAt( prevNode.data.length - 1 ) == ' ' ) {
 			// Remove space character from the beginning of this string.
-			data = data.replace( /^ /, '' );
+			data = data.replace( /^[^\S\u00A0]/, '' );
 		}
 
 		// If next text node does not exist...
 		if ( !nextNode ) {
 			// Remove space character from the end of this string.
-			data = data.replace( / $/, '' );
+			data = data.replace( /[^\S\u00A0]$/, '' );
 		}
 		// If the text node exist, it will be later processed too.
 
