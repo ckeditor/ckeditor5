@@ -35,7 +35,7 @@ describe( 'AutoformatEngine', () => {
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' a' );
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
 			} );
 
 			sinon.assert.calledOnce( spy );
@@ -48,11 +48,11 @@ describe( 'AutoformatEngine', () => {
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' a' );
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
 			} );
 
 			sinon.assert.calledOnce( spy );
-			expect( getData( doc ) ).to.equal( '<paragraph>a[]</paragraph>' );
+			expect( getData( doc ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 	} );
 
@@ -63,7 +63,7 @@ describe( 'AutoformatEngine', () => {
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' a' );
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
 			} );
 
 			sinon.assert.calledOnce( spy );

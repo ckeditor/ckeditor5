@@ -30,28 +30,28 @@ describe( 'Autoformat', () => {
 		it( 'should replace asterisk with bulleted list item', () => {
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' a' );
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">a[]</listItem>' );
+			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">[]</listItem>' );
 		} );
 
 		it( 'should replace minus character with bulleted list item', () => {
 			setData( doc, '<paragraph>-[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' a' );
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">a[]</listItem>' );
+			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">[]</listItem>' );
 		} );
 
 		it( 'should not replace minus character when inside bulleted list item', () => {
 			setData( doc, '<listItem indent="0" type="bulleted">-[]</listItem>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' a' );
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">- a[]</listItem>' );
+			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">- []</listItem>' );
 		} );
 	} );
 
@@ -59,19 +59,19 @@ describe( 'Autoformat', () => {
 		it( 'should replace digit with numbered list item', () => {
 			setData( doc, '<paragraph>1.[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' a' );
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="numbered">a[]</listItem>' );
+			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="numbered">[]</listItem>' );
 		} );
 
 		it( 'should not replace digit character when inside numbered list item', () => {
 			setData( doc, '<listItem indent="0" type="numbered">1.[]</listItem>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' a' );
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="numbered">1. a[]</listItem>' );
+			expect( getData( doc ) ).to.equal( '<listItem indent="0" type="numbered">1. []</listItem>' );
 		} );
 	} );
 
@@ -79,28 +79,28 @@ describe( 'Autoformat', () => {
 		it( 'should replace hash character with heading', () => {
 			setData( doc, '<paragraph>#[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' a' );
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<heading1>a[]</heading1>' );
+			expect( getData( doc ) ).to.equal( '<heading1>[]</heading1>' );
 		} );
 
 		it( 'should replace two hash characters with heading level 2', () => {
 			setData( doc, '<paragraph>##[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' a' );
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<heading2>a[]</heading2>' );
+			expect( getData( doc ) ).to.equal( '<heading2>[]</heading2>' );
 		} );
 
 		it( 'should not replace minus character when inside heading', () => {
 			setData( doc, '<heading1>#[]</heading1>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' a' );
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<heading1># a[]</heading1>' );
+			expect( getData( doc ) ).to.equal( '<heading1># []</heading1>' );
 		} );
 	} );
 } );
