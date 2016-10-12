@@ -65,7 +65,7 @@ gulp.task( 'exec', ckeditor5DevEnv.execOnRepositories );
 const ckeditor5DevCompiler = require( '@ckeditor/ckeditor5-dev-compiler' );
 
 // Return an array with paths to the CKEditor 5 dependencies.
-function getCKEditorPackagesPaths() {
+function getCKEditor5PackagesPaths() {
 	return ckeditor5DevCompiler.utils.getPackages( config.ROOT_DIR );
 }
 
@@ -81,7 +81,7 @@ gulp.task( 'compile', () => {
 
 	return ckeditor5DevCompiler.compiler.compile( {
 		formats,
-		packages: getCKEditorPackagesPaths(),
+		packages: getCKEditor5PackagesPaths(),
 		watch: args.watch,
 		es5: args.es5,
 		samplesGlob: config.DOCUMENTATION.SAMPLES
@@ -101,21 +101,21 @@ gulp.task( 'compile:clean:themes:esnext', () => {
 gulp.task( 'compile:sass:esnext', () => {
 	return ckeditor5DevCompiler.compiler.process.sass( {
 		formats: { esnext: config.MODULE_DIR.esnext },
-		packages: getCKEditorPackagesPaths()
+		packages: getCKEditor5PackagesPaths()
 	} );
 } );
 
 gulp.task( 'compile:icons:esnext', () => {
 	return ckeditor5DevCompiler.compiler.process.icons( {
 		formats: { esnext: config.MODULE_DIR.esnext },
-		packages: getCKEditorPackagesPaths()
+		packages: getCKEditor5PackagesPaths()
 	} );
 } );
 
 gulp.task( 'compile:js:esnext', [ 'compile:clean:js:esnext' ], () => {
 	return ckeditor5DevCompiler.compiler.process.js( {
 		formats: { esnext: config.MODULE_DIR.esnext },
-		packages: getCKEditorPackagesPaths()
+		packages: getCKEditor5PackagesPaths()
 	} );
 } );
 
@@ -166,4 +166,6 @@ gulp.task( 'docs', [ 'docs:clean', 'compile:js:esnext' ], ( done ) => {
 // Documentation's helpers.
 gulp.task( 'docs:clean', docsBuilder.clean );
 gulp.task( 'docs:build', docsBuilder.buildDocs );
-gulp.task( 'docs:editors', [ 'compile:js:esnext', 'compile:themes:esnext' ], docsBuilder.buildEditorsForSamples );
+gulp.task( 'docs:editors', [ 'compile:js:esnext', 'compile:themes:esnext' ], () => {
+	return docsBuilder.buildEditorsForSamples( getCKEditor5PackagesPaths(), config.DOCUMENTATION.SAMPLES );
+} );
