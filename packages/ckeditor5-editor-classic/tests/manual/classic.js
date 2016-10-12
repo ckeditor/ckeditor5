@@ -12,8 +12,8 @@ let editor, editable, observer;
 
 function initEditor() {
 	ClassicEditor.create( document.querySelector( '#editor' ), {
-		features: [ 'enter', 'typing', 'paragraph', 'undo', 'heading', 'basic-styles/bold', 'basic-styles/italic', 'link' ],
-		toolbar: [ 'headings', 'bold', 'italic', 'link', 'undo', 'redo' ]
+		features: [ 'enter', 'typing', 'paragraph', 'undo', 'heading', 'basic-styles/bold', 'basic-styles/italic' ],
+		toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo' ]
 	} )
 	.then( newEditor => {
 		console.log( 'Editor was initialized', newEditor );
