@@ -10,9 +10,9 @@ import ListEngine from '../list/listengine.js';
 
 /**
  * Includes set of predefined Autoformatting actions:
- * * bulleted list
- * * numbered list
- * * headings
+ * * Bulleted list,
+ * * Numbered list,
+ * * Headings.
  *
  * @memberOf autoformat
  * @extends core.Feature
@@ -29,29 +29,47 @@ export default class Autoformat extends Feature {
 	 * @inheritDoc
 	 */
 	init() {
-		const editor = this.editor;
+		this._addListAutoformats();
+		this._addHeadingAutoformats();
+	}
 
-		// When `* ` or `- ` is typed, paragraph will be changed to a bulleted list.
-		if ( editor.commands.has( 'bulletedList' ) ) {
-			new AutoformatEngine( editor, /^[\*\-]\s$/, 'bulletedList' );
-		}
+	/**
+	 * Add autoformats related to ListEngine commands.
+	 *
+	 * When typed:
+	 *
+	 * 	`* ` or `- `
+	 *		Paragraph will be changed to a bulleted list.
+	 *
+	 * 	`1. ` or `1) `
+	 *		Paragraph will be changed to a numbered list (1 can be any digit or list of digits).
+	 *
+	 * @private
+	 */
+	_addListAutoformats() {
+		new AutoformatEngine( this.editor, /^[\*\-]\s$/, 'bulletedList' );
+		new AutoformatEngine( this.editor, /^\d+[\.|)]?\s$/, 'numberedList' );
+	}
 
-		// When `1. ` or `1) ` (1 can be any digit or list of digits) is typed, paragraph will be changed to a numbered list.
-		if ( editor.commands.has( 'numberedList' ) ) {
-			new AutoformatEngine( editor, /^\d+[\.|)]?\s$/, 'numberedList' );
-		}
+	/**
+	 * Add autoformats related to HeadingEngine commands.
+	 *
+	 * When typed:
+	 *
+	 * 	`#` or `##` or `###`
+	 *		Paragraph will be changed to a corresponding heading level.
+	 *
+	 * @private
+	 */
+	_addHeadingAutoformats() {
+		new AutoformatEngine( this.editor, /^(#{1,3})\s$/, ( context ) => {
+			const { batch, match } = context;
+			const headingLevel = match[ 1 ].length;
 
-		// When `#`, `##` or `###` is typed, paragraph will be changed to a corresponding heading level.
-		if ( editor.commands.has( 'heading' ) ) {
-			new AutoformatEngine( editor, /^(#{1,3})\s$/, ( context ) => {
-				const { batch, match } = context;
-				const headingLevel = match[ 1 ].length;
-
-				editor.execute( 'heading', {
-					batch,
-					formatId: `heading${ headingLevel }`
-				} );
+			this.editor.execute( 'heading', {
+				batch,
+				formatId: `heading${ headingLevel }`
 			} );
-		}
+		} );
 	}
 }
