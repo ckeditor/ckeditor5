@@ -8,7 +8,27 @@ import TextProxy from '../engine/model/textproxy.js';
 
 export default class AutoformatEngine {
 	/**
-	 * Creates listener triggered on `change` event in document. Calls callback when inserted text matches regular expression.
+	 * Creates listener triggered on `change` event in document.
+	 * Calls callback when inserted text matches regular expression or command name
+	 * if provided instead of callback.
+	 *
+	 * Examples of usage:
+	 *
+	 * To convert paragraph to heading1 when `- ` is typed, using just commmand name:
+	 *
+	 *		createAutoformat( editor, /^\- $/, 'heading1');
+	 *
+	 * To convert paragraph to heading1 when `- ` is typed, using just callback:
+	 *
+	 *		createAutoformat( editor, /^\- $/, ( context ) => {
+	 *			const { batch, match } = context;
+	 *			const headingLevel = match[ 1 ].length;
+	 *
+	 *			editor.execute( 'heading', {
+	 *				batch,
+	 *				formatId: `heading${ headingLevel }`
+	 *			} );
+	 * 		} );
 	 *
 	 * @param {core.editor.Editor} editor Editor instance.
 	 * @param {Regex} pattern Regular expression to exec on just inserted text.
