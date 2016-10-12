@@ -11,6 +11,7 @@ import Editor from '/ckeditor5/core/editor/editor.js';
 import Plugin from '/ckeditor5/core/plugin.js';
 import Config from '/ckeditor5/utils/config.js';
 import PluginCollection from '/ckeditor5/core/plugincollection.js';
+import FocusTracker from '/ckeditor5/utils/focustracker.js';
 
 const pluginClasses = {};
 
@@ -28,6 +29,7 @@ describe( 'Editor', () => {
 
 			expect( editor.config ).to.be.an.instanceof( Config );
 			expect( editor.commands ).to.be.an.instanceof( Map );
+			expect( editor.focusTracker ).to.instanceOf( FocusTracker );
 
 			expect( editor.plugins ).to.be.an.instanceof( PluginCollection );
 			expect( getPlugins( editor ) ).to.be.empty;
