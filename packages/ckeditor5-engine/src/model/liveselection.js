@@ -288,11 +288,11 @@ export default class LiveSelection extends Selection {
 			const nodeAfter = position.textNode ? position.textNode : position.nodeAfter;
 
 			// ...look at the node before caret and take attributes from it if it is a character node.
-			attrs = getAttrsIfCharacter( nodeBefore );
+			attrs = _getAttrsIfCharacter( nodeBefore );
 
 			// 3. If not, look at the node after caret...
 			if ( !attrs ) {
-				attrs = getAttrsIfCharacter( nodeAfter );
+				attrs = _getAttrsIfCharacter( nodeAfter );
 			}
 
 			// 4. If not, try to find the first character on the left, that is in the same node.
@@ -301,7 +301,7 @@ export default class LiveSelection extends Selection {
 
 				while ( node && !attrs ) {
 					node = node.previousSibling;
-					attrs = getAttrsIfCharacter( node );
+					attrs = _getAttrsIfCharacter( node );
 				}
 			}
 
@@ -311,7 +311,7 @@ export default class LiveSelection extends Selection {
 
 				while ( node && !attrs ) {
 					node = node.nextSibling;
-					attrs = getAttrsIfCharacter( node );
+					attrs = _getAttrsIfCharacter( node );
 				}
 			}
 
@@ -327,14 +327,6 @@ export default class LiveSelection extends Selection {
 			this.clearAttributes();
 		}
 
-		function getAttrsIfCharacter( node ) {
-			if ( node instanceof TextProxy || node instanceof Text ) {
-				return node.getAttributes();
-			}
-
-			return null;
-		}
-
 		this.fire( 'change:attribute' );
 	}
 
@@ -347,4 +339,17 @@ export default class LiveSelection extends Selection {
 	static _getStoreAttributeKey( key ) {
 		return storePrefix + key;
 	}
+}
+
+// Helper function for {@link engine.model.LiveSelection#_updateAttributes}. It takes model item, checks whether
+// it is a text node (or text proxy) and if so, returns it's attributes. If not, returns `null`.
+//
+// @param {engine.model.Item}  node
+// @returns {Boolean}
+function _getAttrsIfCharacter( node ) {
+	if ( node instanceof TextProxy || node instanceof Text ) {
+		return node.getAttributes();
+	}
+
+	return null;
 }
