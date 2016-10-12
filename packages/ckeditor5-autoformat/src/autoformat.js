@@ -9,7 +9,10 @@ import HeadingEngine from '../heading/headingengine.js';
 import ListEngine from '../list/listengine.js';
 
 /**
- * The autoformat feature. Looks for predefined regular expressions and converts inserted text accordingly.
+ * Includes set of predefined Autoformatting actions:
+ * * bulleted list
+ * * numbered list
+ * * headings
  *
  * @memberOf autoformat
  * @extends core.Feature
@@ -28,14 +31,17 @@ export default class Autoformat extends Feature {
 	init() {
 		const editor = this.editor;
 
+		// When `* ` or `- ` is typed, paragraph will be changed to a bulleted list.
 		if ( editor.commands.has( 'bulletedList' ) ) {
 			new AutoformatEngine( editor, /^[\*\-]\s$/, 'bulletedList' );
 		}
 
+		// When `1. ` or `1) ` (1 can be any digit or list of digits) is typed, paragraph will be changed to a numbered list.
 		if ( editor.commands.has( 'numberedList' ) ) {
 			new AutoformatEngine( editor, /^\d+[\.|)]?\s$/, 'numberedList' );
 		}
 
+		// When `#`, `##` or `###` is typed, paragraph will be changed to a corresponding heading level.
 		if ( editor.commands.has( 'heading' ) ) {
 			new AutoformatEngine( editor, /^(#{1,3})\s$/, ( context ) => {
 				const { batch, match } = context;
