@@ -105,15 +105,6 @@ export default class Document {
 		 */
 		this._roots = new Map();
 
-		// Add events that will update selection attributes.
-		this.selection.on( 'change:range', () => {
-			this.selection._updateAttributes();
-		} );
-
-		this.on( 'changesDone', () => {
-			this.selection._updateAttributes();
-		} );
-
 		// Add events that will ensure selection correctness.
 		this.selection.on( 'change:range', () => {
 			for ( let range of this.selection.getRanges() ) {
