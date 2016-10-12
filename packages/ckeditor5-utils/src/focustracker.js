@@ -39,9 +39,9 @@ export default class FocusTracker {
 		 * List of registered elements.
 		 *
 		 * @private
-		 * @member {Array<HTMLElement>} utils.FocusTracker#_elements
+		 * @member {Set<HTMLElement>} utils.FocusTracker#_elements
 		 */
-		this._elements = [];
+		this._elements = new Set();
 
 		/**
 		 * Event loop timeout.
@@ -66,13 +66,13 @@ export default class FocusTracker {
 	 * @param {HTMLElement} element
 	 */
 	add( element ) {
-		if ( this._elements.indexOf( element ) >= 0 ) {
+		if ( this._elements.has( element ) ) {
 			throw new CKEditorError( 'focusTracker-add-element-already-exist' );
 		}
 
 		this.listenTo( element, 'focus', () => this._focus( element ), { useCapture: true } );
 		this.listenTo( element, 'blur', () => this._blur(), { useCapture: true } );
-		this._elements.push( element );
+		this._elements.add( element );
 	}
 
 	/**
@@ -85,11 +85,9 @@ export default class FocusTracker {
 			this._blur( element );
 		}
 
-		const elementIndex = this._elements.indexOf( element );
-
-		if ( elementIndex > -1 ) {
+		if ( this._elements.has( element ) ) {
 			this.stopListening( element );
-			this._elements.slice( elementIndex, 1 );
+			this._elements.delete( element );
 		}
 	}
 
