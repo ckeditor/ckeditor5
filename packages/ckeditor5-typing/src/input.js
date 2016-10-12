@@ -168,8 +168,21 @@ class MutationHandler {
 			return;
 		}
 
-		const diffResult = diff( mutation.oldText, mutation.newText );
-		const changes = diffToChanges( diffResult, mutation.newText );
+		// Replace &nbsp; inserted by the browser with normal space.
+		// We want only normal spaces in the model and in the view. Renderer and DOM Converter will be then responsible
+		// for rendering consecutive spaces using &nbsp;, but the model and the view has to be clear.
+		// Other feature may introduce inserting non-breakable space on specific key stroke (for example shift + space).
+		// However then it will be handled outside of mutations, like enter key is.
+		// The replacing is here because it has to be done before `diff` and `diffToChanges` functions, as they
+		// take `newText` and compare it to (cleaned up) view.
+		// It could also be done in mutation observer too, however if any outside plugin would like to
+		// introduce additional events for mutations, they would get already cleaned up version (this may be good or not).
+		const newText = mutation.newText.replace( /\u00A0/g, ' ' );
+		// To have correct `diffResult`, we also compare view node text data with &nbsp; replaced by space.
+		const oldText = mutation.oldText.replace( /\u00A0/g, ' ' );
+
+		const diffResult = diff( oldText, newText );
+		const changes = diffToChanges( diffResult, newText );
 
 		for ( let change of changes ) {
 			const viewPos = new ViewPosition( mutation.node, change.index );
@@ -199,7 +212,6 @@ class MutationHandler {
 			return;
 		}
 
-		// Which is text.
 		const diffResult = diff( mutation.oldChildren, mutation.newChildren, compare );
 		const changes = diffToChanges( diffResult, mutation.newChildren );
 
@@ -210,13 +222,20 @@ class MutationHandler {
 
 		const change = changes[ 0 ];
 
+		// Which is text.
 		if ( !( change.values[ 0 ] instanceof ViewText ) ) {
 			return;
 		}
 
 		const viewPos = new ViewPosition( mutation.node, change.index );
 		const modelPos = this.editing.mapper.toModelPosition( viewPos );
-		const insertedText = change.values[ 0 ].data;
+		let insertedText = change.values[ 0 ].data;
+
+		// Replace &nbsp; inserted by the browser with normal space.
+		// See comment in `_handleTextMutation`.
+		// In this case we don't need to do this before `diff` because we diff whole nodes.
+		// Just change &nbsp; in case there are some.
+		insertedText = insertedText.replace( /\u00A0/g, ' ' );
 
 		this._insert( modelPos, insertedText );
 
