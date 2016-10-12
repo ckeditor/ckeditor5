@@ -13,23 +13,23 @@ const runSequence = require( 'run-sequence' );
 const config = {
 	ROOT_DIR: '.',
 	MODULE_DIR: {
-		amd: 'build/modules/amd',
-		cjs: 'build/modules/cjs',
-		esnext: 'build/modules/esnext'
+		amd: './build/modules/amd',
+		cjs: './build/modules/cjs',
+		esnext: './build/modules/esnext'
 	},
-	BUNDLE_DIR: 'build/dist',
+	BUNDLE_DIR: './build/dist',
 	WORKSPACE_DIR: '..',
 
 	// Path to the default configuration file for bundler.
-	BUNDLE_DEFAULT_CONFIG: 'dev/bundles/build-config-standard.js',
+	BUNDLE_DEFAULT_CONFIG: './dev/bundles/build-config-standard.js',
 
 	DOCUMENTATION: {
 		// Path to the built editors.
-		BUNDLE_DIR: 'build/docs/assets/scripts/samples',
+		BUNDLE_DIR: './build/docs/assets/scripts/samples',
 		// Path to the built documentation.
-		DESTINATION_DIR: 'build/docs',
+		DESTINATION_DIR: './build/docs',
 		// Glob pattern with samples.
-		SAMPLES: 'docs/samples/**/*.@(md|html|js)'
+		SAMPLES: './docs/samples/**/*.@(md|html|js)'
 	},
 
 	// Files ignored by jshint and jscs tasks. Files from .gitignore will be added automatically during tasks execution.
