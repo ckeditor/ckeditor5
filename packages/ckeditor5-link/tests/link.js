@@ -168,6 +168,14 @@ describe( 'Link', () => {
 			expect( selectUrlInputSpy.calledOnce ).to.true;
 		} );
 
+		it( 'should add balloon panel element to focus tracker', () => {
+			editor.focusTracker.isFocused = false;
+
+			balloonPanel.view.element.dispatchEvent( new Event( 'focus' ) );
+
+			expect( editor.focusTracker.isFocused ).to.true;
+		} );
+
 		describe( 'binding', () => {
 			it( 'should bind balloonPanel#model to link command', () => {
 				const model = balloonPanel.model;

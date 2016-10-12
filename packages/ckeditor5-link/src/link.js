@@ -140,6 +140,10 @@ export default class Link extends Feature {
 		// Create the balloon panel instance.
 		const balloonPanel = new LinkBalloonPanel( panelModel, new LinkBalloonPanelView( editor.locale ) );
 
+		// Add balloonPanel.view#element to FocusTracker.
+		// @TODO: Do it automatically ckeditor5-core#23
+		editor.focusTracker.add( balloonPanel.view.element );
+
 		// Execute link command after clicking on balloon panel `Link` button.
 		this.listenTo( panelModel, 'executeLink', () => {
 			editor.execute( 'link', balloonPanel.urlInput.value );
