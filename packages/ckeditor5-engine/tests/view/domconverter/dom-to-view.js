@@ -221,6 +221,106 @@ describe( 'DomConverter', () => {
 				expect( viewDiv.getChild( 1 ).getChild( 0 ).data ).to.equal( 'fo o' );
 			} );
 
+			it( 'spaces in a text node', () => {
+				function test( inputTexts, output ) {
+					const domElement = createElement( document, 'div', {}, [] );
+
+					if ( typeof inputTexts == 'string' ) {
+						inputTexts = [ inputTexts ];
+					}
+
+					for ( let text of inputTexts ) {
+						domElement.appendChild( document.createTextNode( text.replace( /_/g, '\u00A0' ) ) );
+					}
+
+					const viewElement = converter.domToView( domElement );
+
+					let data = '';
+
+					for ( let child of viewElement.getChildren() ) {
+						data += child.data.replace( /\u00A0/g, '_' );
+					}
+
+					expect( data ).to.equal( output );
+				}
+
+				// At the beginning.
+				test( '_x', ' x' );
+				test( '_ x', '  x' );
+				test( '_ _x', '   x' );
+				test( '_ _ x', '    x' );
+
+				// At the end.
+				test( 'x_', 'x ' );
+				test( 'x _', 'x  ' );
+				test( 'x_ _', 'x   ' );
+				test( 'x _ _', 'x    ' );
+
+				// In the middle.
+				test( 'x x', 'x x' );
+				test( 'x _x', 'x  x' );
+				test( 'x _ x', 'x   x' );
+				test( 'x _ _x', 'x    x' );
+
+				// Complex.
+				test( '_x_', ' x ' );
+				test( '_ x _x _', '  x  x  ' );
+				test( '_ _x x _', '   x x  ' );
+				test( '_ _x x_ _', '   x x   ' );
+				test( '_ _x _ _x_', '   x    x ' );
+				test( '_', ' ' );
+
+				// With hard &nbsp;
+				test( '_x', ' x' );
+				test( '__x', ' _x' );
+				test( '___x', ' __x' );
+				test( '__ x', ' _ x' );
+
+				test( 'x_', 'x ' );
+				test( 'x__', 'x_ ' );
+				test( 'x___', 'x__ ' );
+				// This is an edge case, but it's impossible to write elegant and compact algorithm that is also
+				// 100% correct. We might assume that expected result is `x  _` but it will be converted to `x   `
+				// by the algorithm. This is acceptable, though.
+				test( 'x __', 'x   ' );
+
+				test( 'x_x', 'x_x' );
+				test( 'x___x', 'x___x' );
+				test( 'x____x', 'x____x' );
+				test( 'x__ x', 'x__ x' );
+				test( 'x___ x', 'x___ x' );
+				test( 'x_ _x', 'x_  x' );
+				test( 'x __x', 'x  _x' );
+				test( 'x _ x', 'x   x' );
+				test( 'x __ _x', 'x  _  x' );
+
+				// Two text nodes.
+				test( [ 'x', 'y' ], 'xy' );
+				test( [ 'x ', 'y' ], 'x y' );
+				test( [ 'x _', 'y' ], 'x  y' );
+				test( [ 'x _ ', 'y' ], 'x   y' );
+				test( [ 'x _  _', 'y' ], 'x    y' );
+
+				test( [ 'x', ' y' ], 'x y' );
+				test( [ 'x ', '_y' ], 'x  y' );
+				test( [ 'x_ ', '_y' ], 'x   y' );
+				test( [ 'x _ ', '_y' ], 'x    y' );
+				test( [ 'x_ _ ', '_y' ], 'x     y' );
+
+				test( [ 'x', ' _y' ], 'x  y' );
+				test( [ 'x ', '_ y' ], 'x   y' );
+				test( [ 'x_ ', '_ y' ], 'x    y' );
+				test( [ 'x _ ', '_ y' ], 'x     y' );
+				test( [ 'x_ _ ', '_ y' ], 'x      y' );
+
+				// Some tests with hard &nbsp;
+				test( [ 'x', '_y' ], 'x_y' );
+				test( [ 'x_', 'y' ], 'x_y' );
+				test( [ 'x_', ' y' ], 'x_ y' );
+				test( [ 'x__', ' y' ], 'x__ y' );
+				test( [ 'x_ _', ' y' ], 'x_   y' );
+			} );
+
 			it( 'not in preformatted blocks', () => {
 				const domDiv = createElement( document, 'div', {}, [
 					createElement( document, 'pre', {}, [

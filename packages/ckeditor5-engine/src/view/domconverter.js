@@ -699,23 +699,69 @@ export default class DomConverter {
 		const prevNode = this._getTouchingViewTextNode( node, false );
 		const nextNode = this._getTouchingViewTextNode( node, true );
 
-		// If previous text node does not exist or it ends by space character...
+		// Second part of text data, from the space after the last non-space character to the end.
+		// We separate `textEnd` and `textStart` because `textEnd` needs some special handling.
+		let textEnd = data.match( / *$/ )[ 0 ];
+		// First part of data, between first and last part of data.
+		let textStart = data.substr( 0, data.length - textEnd.length );
+
+		// If previous text node does not exist or it ends by space character, replace space character at the beginning of text.
+		// ` x`			-> `_x`
+		// `  x`		-> `_ x`
+		// `   x`		-> `_  x`
 		if ( !prevNode || prevNode.data.charAt( prevNode.data.length - 1 ) == ' ' ) {
-			// Replace space character at the beginning of this string by &nbsp;.
-			data = data.replace( /^ /, '\u00A0' );
+			textStart = textStart.replace( /^ /, '\u00A0' );
 		}
 
-		// If next text node does not exist...
-		if ( !nextNode ) {
-			// Replace space character at the end of this string by &nbsp;.
-			data = data.replace( / $/, '\u00A0' );
+		// Multiple consecutive spaces. Change them to ` &nbsp;` pairs.
+		// `_x  x`		-> `_x _x`
+		// `_ x  x`		-> `_ x _x`
+		// `_  x  x`	-> `_ _x _x`
+		// `_  x   x`	-> `_ _x _ x`
+		// `_  x    x`	-> `_ _x _ _x`
+		// `_   x    x` -> `_ _ x _ _x`
+		textStart = textStart.replace( /  /g, ' \u00A0' );
+
+		// Process `textEnd` only if there is anything to process.
+		if ( textEnd.length > 0 ) {
+			// (1) We need special treatment for the last part of text node, it has to end on `&nbsp;`, not space:
+			// `x `		-> `x_`
+			// `x  `	-> `x _`
+			// `x   `	-> `x_ _`
+			// `x    `	-> `x _ _`
+			// (2) Different case when there is a node after:
+			// `x <b>b</b>`		-> `x <b>b</b>`
+			// `x  <b>b</b>`	-> `x _<b>b</b>`
+			// `x   <b>b</b>`	-> `x _ <b>b</b>`
+			// `x    <b>b</b>`	-> `x _ _<b>b</b>`
+			// (3) But different, when that node starts by &nbsp; (or space that will be converted to &nbsp;):
+			// `x <b>_b</b>`	-> `x <b>_b</b>`
+			// `x  <b>_b</b>`	-> `x_ <b>_b</b>`
+			// `x   <b>_b</b>`	-> `x _ <b>_b</b>`
+			// `x    <b>_b</b>`	-> `x_ _ <b>_b</b>`
+			// Let's assume that starting from space is normal behavior, because starting from &nbsp; is a less frequent case.
+			let textEndStartsFromNbsp = false;
+
+			if ( !nextNode ) {
+				// (1)
+				if ( textEnd.length % 2 ) {
+					textEndStartsFromNbsp = true;
+				}
+			} else if ( nextNode.data.charAt( 0 ) == ' ' || nextNode.data.charAt( 0 ) == '\u00A0' ) {
+				// (3)
+				if ( textEnd.length % 2 === 0 ) {
+					textEndStartsFromNbsp = true;
+				}
+			}
+
+			if ( textEndStartsFromNbsp ) {
+				textEnd = '\u00A0' + textEnd.substr( 0, textEnd.length - 1 );
+			}
+
+			textEnd = textEnd.replace( /  /g, ' \u00A0' );
 		}
-		// If the text node exist, it will be later processed too.
 
-		// Multiple spaces.
-		data = data.replace( /  /g, ' \u00A0' );
-
-		return data;
+		return textStart + textEnd;
 	}
 
 	/**
@@ -771,24 +817,47 @@ export default class DomConverter {
 			return data;
 		}
 
+		// Change all consecutive whitespace characters to a single space character. That's how multiple whitespaces
+		// are treated when rendered, so we normalize those whitespaces.
+		// Note that &nbsp; (`\u00A0`) should not be treated as a whitespace because it is rendered.
 		data = data.replace( /[^\S\u00A0]{2,}/g, ' ' );
 
 		const prevNode = this._getTouchingDomTextNode( node, false );
 		const nextNode = this._getTouchingDomTextNode( node, true );
 
-		// If previous text node does not exist or it ends by space character...
-		if ( !prevNode || prevNode.data.charAt( prevNode.data.length - 1 ) == ' ' ) {
-			// Remove space character from the beginning of this string.
-			data = data.replace( /^[^\S\u00A0]/, '' );
+		// If previous dom text node does not exist or it ends by whitespace character, remove space character from the beginning
+		// of this text node. Such space character is treated as a whitespace.
+		if ( !prevNode || /[^\S\u00A0]/.test( prevNode.data.charAt( prevNode.data.length - 1 ) ) ) {
+			data = data.replace( /^ /, '' );
 		}
 
-		// If next text node does not exist...
+		// If next text node does not exist remove space character from the end of this text node.
 		if ( !nextNode ) {
-			// Remove space character from the end of this string.
-			data = data.replace( /[^\S\u00A0]$/, '' );
+			data = data.replace( / $/, '' );
 		}
-		// If the text node exist, it will be later processed too.
+		// At this point we should have removed all whitespaces from DOM text data.
 
+		// Now we have to change &nbsp; chars, that were in DOM text data because of rendering reasons, to spaces.
+		// First, change all ` \u00A0` pairs (space + &nbsp;) to two spaces. DOM converter changes two spaces from model/view as
+		// ` \u00A0` to ensure proper rendering. Since here we convert back, we recognize those pairs and change them
+		// to `  ` which is what we expect to have in model/view.
+		data = data.replace( / \u00A0/g, '  ' );
+		// Then, change &nbsp; character that is at the beginning of the text node to space character.
+		// As above, that &nbsp; was created for rendering reasons but it's real meaning is just a space character.
+		// We do that replacement only if this is the first node or the previous node ends on whitespace character.
+		if ( !prevNode || /[^\S\u00A0]/.test( prevNode.data.charAt( prevNode.data.length - 1 ) ) ) {
+			data = data.replace( /^\u00A0/, ' ' );
+		}
+		// Since input text data could be: `x_ _`, we would not replace the first &nbsp; after `x` character.
+		// We have to fix it. Since we already change all ` &nbsp;`, we will have something like this at the end of text data:
+		// `x_ _ _` -> `x_    `. Find &nbsp; at the end of string (can be followed only by spaces).
+		// We do that replacement only if this is the last node or the next node starts by &nbsp;.
+		if ( !nextNode || nextNode.data.charAt( 0 ) == '\u00A0' ) {
+			data = data.replace( /\u00A0( *)$/, ' $1' );
+		}
+
+		// At this point, all whitespaces should be removed and all &nbsp; created for rendering reasons should be
+		// changed to normal space. All left &nbsp; are &nbsp; inserted intentionally.
 		return data;
 	}
 
