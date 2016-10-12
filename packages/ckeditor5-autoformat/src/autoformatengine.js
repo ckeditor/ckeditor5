@@ -81,7 +81,7 @@ export default class AutoformatEngine {
 				return;
 			}
 
-			editor.document.enqueueChanges( function() {
+			editor.document.enqueueChanges( () => {
 				// Create new batch to separate typing batch from the Autoformat changes.
 				const batch = editor.document.batch();
 
