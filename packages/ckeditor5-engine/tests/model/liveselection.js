@@ -284,7 +284,7 @@ describe( 'LiveSelection', () => {
 
 	// LiveSelection uses LiveRanges so here are only simple test to see if integration is
 	// working well, without getting into complicated corner cases.
-	describe( 'after applying an operation should get updated and not fire update event', () => {
+	describe( 'after applying an operation should get updated and not fire change:range event', () => {
 		let spy;
 
 		beforeEach( () => {

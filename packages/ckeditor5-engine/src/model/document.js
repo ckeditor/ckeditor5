@@ -7,6 +7,8 @@
 import deltas from './delta/basic-deltas.js'; // jshint ignore:line
 import transformations from './delta/basic-transformations.js'; // jshint ignore:line
 
+import Range from './range.js';
+import Position from './position.js';
 import RootElement from './rootelement.js';
 import Batch from './batch.js';
 import History from './history.js';
@@ -313,7 +315,7 @@ export default class Document {
 	 * @protected
 	 * @returns {engine.model.RootElement} The default root for this document.
 	 */
-	_getDefaultRoot() {
+	getDefaultRoot() {
 		for ( let root of this._roots.values() ) {
 			if ( root !== this.graveyard ) {
 				return root;
@@ -321,6 +323,28 @@ export default class Document {
 		}
 
 		return this.graveyard;
+	}
+
+	/**
+	 * Returns a default range for this selection. The default range is a collapsed range that starts and ends
+	 * at the beginning of this selection's document's {@link engine.model.Document#_getDefaultRoot default root}.
+	 *
+	 * @protected
+	 * @returns {engine.model.Range}
+	 */
+	getDefaultRange() {
+		const defaultRoot = this.getDefaultRoot();
+
+		// Find the first position where the selection can be put.
+		for ( let position of Range.createIn( defaultRoot ).getPositions() ) {
+			if ( this.schema.check( { name: '$text', inside: position } ) ) {
+				return new Range( position, position );
+			}
+		}
+
+		const position = new Position( defaultRoot, [ 0 ] );
+
+		return new Range( position, position );
 	}
 
 	/**

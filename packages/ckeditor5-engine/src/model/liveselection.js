@@ -4,8 +4,6 @@
  */
 
 import LiveRange from './liverange.js';
-import Range from './range.js';
-import Position from './position.js';
 import Text from './text.js';
 import TextProxy from './textproxy.js';
 import toMap from '../../utils/tomap.js';
@@ -43,7 +41,7 @@ export default class LiveSelection extends Selection {
 		 * Document which owns this selection.
 		 *
 		 * @private
-		 * @member {engine.model.Document} engine.model.Selection#_document
+		 * @member {engine.model.Document} engine.model.LiveSelection#_document
 		 */
 		this._document = document;
 	}
@@ -61,14 +59,14 @@ export default class LiveSelection extends Selection {
 	 * @inheritDoc
 	 */
 	get anchor() {
-		return super.anchor || this._getDefaultRange().start;
+		return super.anchor || this._document.getDefaultRange().start;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	get focus() {
-		return super.focus || this._getDefaultRange().start;
+		return super.focus || this._document.getDefaultRange().start;
 	}
 
 	/**
@@ -94,7 +92,7 @@ export default class LiveSelection extends Selection {
 		if ( this._ranges.length ) {
 			yield *super.getRanges();
 		} else {
-			yield this._getDefaultRange();
+			yield this._document.getDefaultRange();
 		}
 	}
 
@@ -102,14 +100,14 @@ export default class LiveSelection extends Selection {
 	 * @inheritDoc
 	 */
 	getFirstRange() {
-		return super.getFirstRange() || this._getDefaultRange();
+		return super.getFirstRange() || this._document.getDefaultRange();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	getLastRange() {
-		return super.getLastRange() || this._getDefaultRange();
+		return super.getLastRange() || this._document.getDefaultRange();
 	}
 
 	/**
@@ -173,30 +171,6 @@ export default class LiveSelection extends Selection {
 	_pushRange( range ) {
 		this._checkRange( range );
 		this._ranges.push( LiveRange.createFromRange( range ) );
-	}
-
-	/**
-	 * Returns a default range for this selection. The default range is a collapsed range that starts and ends
-	 * at the beginning of this selection's document's {@link engine.model.Document#_getDefaultRoot default root}.
-	 * This "artificial" range is important for algorithms that base on selection, so they won't break or need
-	 * special logic if there are no real ranges in the selection.
-	 *
-	 * @private
-	 * @returns {engine.model.Range}
-	 */
-	_getDefaultRange() {
-		const defaultRoot = this._document._getDefaultRoot();
-
-		// Find the first position where the selection can be put.
-		for ( let position of Range.createIn( defaultRoot ).getPositions() ) {
-			if ( this._document.schema.check( { name: '$text', inside: position } ) ) {
-				return new Range( position, position );
-			}
-		}
-
-		const position = new Position( defaultRoot, [ 0 ] );
-
-		return new Range( position, position );
 	}
 
 	/**
