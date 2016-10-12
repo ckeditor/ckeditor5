@@ -3,11 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals Range, DocumentFragment, HTMLElement, document */
+/* globals Range, DocumentFragment, HTMLElement, document, Text */
 /* bender-tags: view, domconverter, browser-only */
 
 import ViewText from '/ckeditor5/engine/view/text.js';
 import ViewElement from '/ckeditor5/engine/view/element.js';
+import ViewContainerElement from '/ckeditor5/engine/view/containerelement.js';
+import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 import DomConverter from '/ckeditor5/engine/view/domconverter.js';
 import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller } from '/ckeditor5/engine/view/filler.js';
@@ -164,9 +166,191 @@ describe( 'DomConverter', () => {
 
 			converter.bindDocumentFragments( domFragment, viewFragment );
 
-			const domFragment2 = converter.viewToDom( viewFragment );
+			const domFragment2 = converter.viewToDom( viewFragment, document );
 
 			expect( domFragment2 ).to.equal( domFragment );
+		} );
+
+		it( 'should create DOM text node from view text node', () => {
+			const viewTextNode = new ViewText( 'foo' );
+			const domTextNode = converter.viewToDom( viewTextNode, document );
+
+			expect( domTextNode ).to.be.instanceof( Text );
+			expect( domTextNode.data ).to.equal( 'foo' );
+		} );
+
+		describe( 'it should convert spaces to &nbsp;', () => {
+			it( 'at the beginning of each container element', () => {
+				const viewDiv = new ViewContainerElement( 'div', null, [
+					new ViewContainerElement( 'p', null, new ViewText( ' foo' ) ),
+					new ViewContainerElement( 'p', null, new ViewText( 'bar' ) ),
+					new ViewContainerElement( 'p', null, new ViewText( ' xxx' ) )
+				] );
+
+				const domDiv = converter.viewToDom( viewDiv, document );
+
+				expect( domDiv.innerHTML ).to.equal( '<p>&nbsp;foo</p><p>bar</p><p>&nbsp;xxx</p>' );
+			} );
+
+			it( 'at the end of each container element', () => {
+				const viewDiv = new ViewContainerElement( 'div', null, [
+					new ViewContainerElement( 'p', null, new ViewText( 'foo ' ) ),
+					new ViewContainerElement( 'p', null, new ViewText( 'bar' ) ),
+					new ViewContainerElement( 'p', null, new ViewText( 'xxx ' ) )
+				] );
+
+				const domDiv = converter.viewToDom( viewDiv, document );
+
+				expect( domDiv.innerHTML ).to.equal( '<p>foo&nbsp;</p><p>bar</p><p>xxx&nbsp;</p>' );
+			} );
+
+			it( 'when there are multiple spaces next to each other or between attribute elements', () => {
+				const viewDiv = new ViewContainerElement( 'div', null, [
+					new ViewText( 'x  x   x x ' ),
+					new ViewAttributeElement( 'b', null, new ViewText( ' x ' ) ),
+					new ViewAttributeElement( 'i', null,
+						new ViewAttributeElement( 'b', null,
+							new ViewAttributeElement( 'u' , null, new ViewText( ' x' ) )
+						)
+					)
+				] );
+
+				const domDiv = converter.viewToDom( viewDiv, document );
+
+				expect( domDiv.innerHTML ).to.equal( 'x &nbsp;x &nbsp; x x <b>&nbsp;x </b><i><b><u>&nbsp;x</u></b></i>' );
+			} );
+
+			it( 'all together', () => {
+				const viewDiv = new ViewContainerElement( 'div', null, [
+					new ViewContainerElement( 'p', null, [
+						new ViewText( ' x  x   x x ' ),
+						new ViewAttributeElement( 'b', null, new ViewText( ' x ' ) ),
+						new ViewAttributeElement( 'i', null,
+							new ViewAttributeElement( 'b', null,
+								new ViewAttributeElement( 'u' , null, new ViewText( ' x ' ) )
+							)
+						)
+					] ),
+					new ViewContainerElement( 'p', null, new ViewText( '  x  ' ) )
+				] );
+
+				const domDiv = converter.viewToDom( viewDiv, document );
+
+				expect( domDiv.innerHTML ).to.equal(
+					'<p>&nbsp;x &nbsp;x &nbsp; x x <b>&nbsp;x </b><i><b><u>&nbsp;x&nbsp;</u></b></i></p><p>&nbsp; x &nbsp;</p>'
+				);
+			} );
+
+			function test( inputTexts, output ) {
+				if ( typeof inputTexts == 'string' ) {
+					inputTexts = [ inputTexts ];
+				}
+
+				it( 'spaces in a text node: ' + inputTexts.join( '|' ) + ' -> ' + output, () => {
+					const viewElement = new ViewContainerElement( 'p' );
+
+					for ( let text of inputTexts ) {
+						viewElement.appendChildren( new ViewText( text.replace( /_/g, '\u00A0' ) ) );
+					}
+
+					const domElement = converter.viewToDom( viewElement, document );
+					const data = domElement.innerHTML.replace( /&nbsp;/g, '_' );
+
+					expect( data ).to.equal( output );
+				} );
+			}
+
+			// At the beginning.
+			test( ' x', '_x' );
+			test( '  x', '_ x' );
+			test( '   x', '_ _x' );
+			test( '    x', '_ _ x' );
+
+			// At the end.
+			test( 'x ', 'x_' );
+			test( 'x  ', 'x _' );
+			test( 'x   ', 'x_ _' );
+			test( 'x    ', 'x _ _' );
+
+			// In the middle.
+			test( 'x x', 'x x' );
+			test( 'x  x', 'x _x' );
+			test( 'x   x', 'x _ x' );
+			test( 'x    x', 'x _ _x' );
+
+			// Complex.
+			test( ' x ', '_x_' );
+			test( '  x  x  ', '_ x _x _' );
+			test( '   x x  ', '_ _x x _' );
+			test( '   x x   ', '_ _x x_ _' );
+			test( '   x    x ', '_ _x _ _x_' );
+			test( ' ', '_' );
+
+			// With hard &nbsp;
+			test( '_x', '_x' );
+			test( ' _x', '__x' );
+			test( '  _x', '_ _x' );
+			test( ' __x', '___x' );
+			test( '___x', '___x' );
+			test( '_ _x', '_ _x' );
+			test( ' _ x', '__ x' );
+			test( '  _x', '_ _x' );
+
+			test( 'x_', 'x_' );
+			test( 'x_ ', 'x__' );
+			test( 'x_  ', 'x_ _' );
+			test( 'x__ ', 'x___' );
+			test( 'x___', 'x___' );
+			test( 'x_ _', 'x_ _' );
+			test( 'x _ ', 'x __' );
+			test( 'x  _', 'x __' );
+
+			test( 'x_x', 'x_x' );
+			test( 'x___x', 'x___x' );
+			test( 'x__ x', 'x__ x' );
+			test( 'x_  x', 'x_ _x' );
+			test( 'x  _x', 'x __x' );
+			test( 'x __x', 'x __x' );
+			test( 'x _ x', 'x _ x' );
+			test( 'x  _  x', 'x __ _x' );
+
+			// Two text nodes.
+			test( [ 'x', 'y' ], 'xy' );
+			test( [ 'x ', 'y' ], 'x y' );
+			test( [ 'x  ', 'y' ], 'x _y' );
+			test( [ 'x   ', 'y' ], 'x _ y' );
+			test( [ 'x    ', 'y' ], 'x _ _y' );
+
+			test( [ 'x', ' y' ], 'x y' );
+			test( [ 'x ', ' y' ], 'x _y' );
+			test( [ 'x  ', ' y' ], 'x_ _y' );
+			test( [ 'x   ', ' y' ], 'x _ _y' );
+			test( [ 'x    ', ' y' ], 'x_ _ _y' );
+
+			test( [ 'x', '_y' ], 'x_y' );
+			test( [ 'x ', '_y' ], 'x _y' );
+			test( [ 'x  ', '_y' ], 'x_ _y' );
+			test( [ 'x   ', '_y' ], 'x _ _y' );
+			test( [ 'x    ', '_y' ], 'x_ _ _y' );
+
+			test( [ 'x', '  y' ], 'x _y' );
+			test( [ 'x ', '  y' ], 'x _ y' );
+			test( [ 'x  ', '  y' ], 'x_ _ y' );
+			test( [ 'x   ', '  y' ], 'x _ _ y' );
+			test( [ 'x    ', '  y' ], 'x_ _ _ y' );
+
+			test( [ 'x', '   y' ], 'x _ y' );
+			test( [ 'x ', '   y' ], 'x _ _y' );
+			test( [ 'x  ', '   y' ], 'x_ _ _y' );
+			test( [ 'x   ', '   y' ], 'x _ _ _y' );
+			test( [ 'x    ', '   y' ], 'x_ _ _ _y' );
+
+			it( 'not in preformatted blocks', () => {
+				const viewDiv = new ViewContainerElement( 'pre', null, new ViewText( '   foo   ' ) );
+				const domDiv = converter.viewToDom( viewDiv, document );
+
+				expect( domDiv.innerHTML ).to.equal( '   foo   ' );
+			} );
 		} );
 	} );
 

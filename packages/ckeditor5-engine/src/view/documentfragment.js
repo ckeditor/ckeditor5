@@ -72,6 +72,16 @@ export default class DocumentFragment {
 	}
 
 	/**
+	 * Artificial parent of `DocumentFragment`. Returns `null`. Added for compatibility reasons.
+	 *
+	 * @readonly
+	 * @type {null}
+	 */
+	get parent() {
+		return null;
+	}
+
+	/**
 	 * Returns ancestor elements of `DocumentFragment`, which is an empty array. Added for compatibility reasons.
 	 *
 	 * @returns {Array}
