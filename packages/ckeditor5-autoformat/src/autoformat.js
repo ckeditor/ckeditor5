@@ -4,9 +4,11 @@
  */
 
 import AutoformatEngine from './autoformatengine.js';
+import InlineEngine from './inlineengine.js';
 import Feature from '../core/feature.js';
 import HeadingEngine from '../heading/headingengine.js';
 import ListEngine from '../list/listengine.js';
+import BoldEngine from '../basic-styles/boldengine.js';
 
 /**
  * Includes set of predefined Autoformatting actions:
@@ -22,7 +24,7 @@ export default class Autoformat extends Feature {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ HeadingEngine, ListEngine ];
+		return [ HeadingEngine, ListEngine, BoldEngine ];
 	}
 
 	/**
@@ -31,6 +33,7 @@ export default class Autoformat extends Feature {
 	init() {
 		this._addListAutoformats();
 		this._addHeadingAutoformats();
+		this._addInlineBold();
 	}
 
 	/**
@@ -70,6 +73,15 @@ export default class Autoformat extends Feature {
 				batch,
 				formatId: `heading${ headingLevel }`
 			} );
+		} );
+	}
+
+	_addInlineBold() {
+		new InlineEngine( this.editor, /\*\*/, ( context ) => {
+			const { batch, range } = context;
+
+			batch.remove( range );
+			this.editor.execute( 'bold' );
 		} );
 	}
 }
