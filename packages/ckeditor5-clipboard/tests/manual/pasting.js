@@ -24,6 +24,18 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 } )
 .then( editor => {
 	window.editor = editor;
+
+	editor.editing.view.on( 'paste', ( evt, data ) => {
+		console.log( '----- paste -----' );
+		console.log( data );
+		console.log( 'text/html', data.dataTransfer.getData( 'text/html' ) );
+		console.log( 'text/plain', data.dataTransfer.getData( 'text/plain' ) );
+	} );
+
+	editor.editing.view.on( 'clipboardInput', ( evt, data ) => {
+		console.log( '----- clipboardInput -----' );
+		console.log( data.dataValue );
+	} );
 } )
 .catch( err => {
 	console.error( err.stack );
