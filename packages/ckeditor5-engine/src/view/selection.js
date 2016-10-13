@@ -117,8 +117,8 @@ export default class Selection {
 	 * @type {engine.view.EditableElement|null}
 	 */
 	get editableElement() {
-		if ( this.rangeCount ) {
-			return this.getFirstPosition().editableElement;
+		if ( this.anchor ) {
+			return this.anchor.editableElement;
 		}
 
 		return null;

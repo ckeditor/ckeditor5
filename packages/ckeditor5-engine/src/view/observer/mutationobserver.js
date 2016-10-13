@@ -216,6 +216,9 @@ export default class MutationObserver extends Observer {
 		}
 
 		this.document.fire( 'mutations', viewMutations, viewSelection );
+
+		// If nothing changes on `mutations` event, at this point we have "dirty DOM" (changed) and de-synched
+		// view (which has not been changed). In order to "reset DOM" we render the view again.
 		this.document.render();
 	}
 }
