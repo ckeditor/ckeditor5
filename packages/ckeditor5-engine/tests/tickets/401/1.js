@@ -3,12 +3,17 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
+/* globals console, document, window */
 
 import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
-import Bold from '/ckeditor5/basic-styles/bold.js';
 
 ClassicEditor.create( document.getElementById( 'editor' ), {
-	features: [ 'enter', 'typing', 'paragraph', Bold ],
+	features: [ 'enter', 'typing', 'paragraph', 'basic-styles/bold' ],
 	toolbar: [ 'bold' ]
+} )
+.then( editor => {
+	window.editor = editor;
+} )
+.catch( err => {
+	console.error( err.stack );
 } );
