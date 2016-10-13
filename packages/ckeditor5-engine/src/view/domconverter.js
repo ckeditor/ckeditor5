@@ -681,7 +681,7 @@ export default class DomConverter {
 	 * Returns `true` if given selection is a backward selection, that is, if it's `focus` is before `anchor`.
 	 *
 	 * @param {Selection} DOM Selection instance to check.
-	 * @return {Boolean}
+	 * @returns {Boolean}
 	 */
 	isDomSelectionBackward( selection ) {
 		if ( selection.isCollapsed ) {
