@@ -8,6 +8,7 @@
 
 import testUtils from '/tests/core/_utils/utils.js';
 import Template from '/ckeditor5/ui/template.js';
+import { TemplateToBinding, TemplateIfBinding } from '/ckeditor5/ui/template.js';
 import View from '/ckeditor5/ui/view.js';
 import Model from '/ckeditor5/ui/model.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
@@ -59,19 +60,19 @@ describe( 'Template', () => {
 			expect( tpl.attributes.a[ 0 ] ).to.equal( 'foo' );
 			expect( tpl.attributes.b[ 0 ] ).to.equal( 'bar' );
 			expect( tpl.attributes.b[ 1 ] ).to.equal( 'baz' );
-			expect( tpl.attributes.c[ 0 ].value[ 0 ].type ).to.be.a( 'symbol' );
+			expect( tpl.attributes.c[ 0 ].value[ 0 ] ).to.be.instanceof( TemplateToBinding );
 
 			expect( tpl.children ).to.have.length( 4 );
 			expect( tpl.children.get( 0 ).text[ 0 ] ).to.equal( 'content' );
-			expect( tpl.children.get( 1 ).text[ 0 ].type ).to.be.a( 'symbol' );
+			expect( tpl.children.get( 1 ).text[ 0 ] ).to.be.instanceof( TemplateToBinding );
 			expect( tpl.children.get( 2 ).text[ 0 ] ).to.equal( 'abc' );
 			expect( tpl.children.get( 3 ).text[ 0 ] ).to.equal( 'a' );
 			expect( tpl.children.get( 3 ).text[ 1 ] ).to.equal( 'b' );
 
-			expect( tpl.eventListeners[ 'a@span' ][ 0 ].type ).to.be.a( 'symbol' );
-			expect( tpl.eventListeners[ 'b@span' ][ 0 ].type ).to.be.a( 'symbol' );
-			expect( tpl.eventListeners[ 'c@span' ][ 0 ].type ).to.be.a( 'symbol' );
-			expect( tpl.eventListeners[ 'c@span' ][ 1 ].type ).to.be.a( 'symbol' );
+			expect( tpl.eventListeners[ 'a@span' ][ 0 ] ).to.be.instanceof( TemplateToBinding );
+			expect( tpl.eventListeners[ 'b@span' ][ 0 ] ).to.be.instanceof( TemplateToBinding );
+			expect( tpl.eventListeners[ 'c@span' ][ 0 ] ).to.be.instanceof( TemplateToBinding );
+			expect( tpl.eventListeners[ 'c@span' ][ 1 ] ).to.be.instanceof( TemplateToBinding );
 
 			// Note that Template mixes EmitterMixin.
 			expect( tpl.on ).to.be.a( 'function' );
@@ -961,12 +962,13 @@ describe( 'Template', () => {
 			} );
 
 			describe( 'to', () => {
-				it( 'returns an object which describes the binding', () => {
+				it( 'returns an instance of TemplateToBinding', () => {
 					const spy = testUtils.sinon.spy();
 					const binding = bind.to( 'foo', spy );
 
+					expect( binding ).to.be.instanceof( TemplateToBinding );
 					expect( spy.called ).to.be.false;
-					expect( binding ).to.have.keys( [ 'type', 'observable', 'eventNameOrFunction', 'emitter', 'attribute', 'callback' ] );
+					expect( binding ).to.have.keys( [ 'observable', 'eventNameOrFunction', 'emitter', 'attribute', 'callback' ] );
 					expect( binding.observable ).to.equal( observable );
 					expect( binding.callback ).to.equal( spy );
 					expect( binding.attribute ).to.equal( 'foo' );
@@ -1186,8 +1188,9 @@ describe( 'Template', () => {
 					const spy = testUtils.sinon.spy();
 					const binding = bind.if( 'foo', 'whenTrue', spy );
 
+					expect( binding ).to.be.instanceof( TemplateIfBinding );
 					expect( spy.called ).to.be.false;
-					expect( binding ).to.have.keys( [ 'type', 'observable', 'emitter', 'attribute', 'callback', 'valueIfTrue' ] );
+					expect( binding ).to.have.keys( [ 'observable', 'emitter', 'attribute', 'callback', 'valueIfTrue' ] );
 					expect( binding.observable ).to.equal( observable );
 					expect( binding.callback ).to.equal( spy );
 					expect( binding.attribute ).to.equal( 'foo' );
