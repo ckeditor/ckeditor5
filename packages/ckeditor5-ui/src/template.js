@@ -9,6 +9,7 @@ import CKEditorError from '../utils/ckeditorerror.js';
 import mix from '../utils/mix.js';
 import EmitterMixin from '../utils/emittermixin.js';
 import Collection from '../utils/collection.js';
+import View from './view.js';
 import cloneDeepWith from '../utils/lib/lodash/cloneDeepWith.js';
 import isObject from '../utils/lib/lodash/isObject.js';
 
@@ -731,7 +732,11 @@ function clone( def ) {
 		// and DOMEmitterMixin instances inside, which would also be traversed and cloned by greedy
 		// cloneDeepWith algorithm. There's no point in cloning Observable/DOMEmitterMixins
 		// along with the definition.
-		if ( value && value.type ) {
+		//
+		// Also don't clone View instances if provided as a child of the Template. The template
+		// instance will be extracted from the View during the normalization and there's no need
+		// to clone it.
+		if ( value && ( value.type || value instanceof View ) ) {
 			return value;
 		}
 	} );
@@ -772,7 +777,11 @@ function normalize( def ) {
 
 		if ( def.children ) {
 			for ( let child of def.children ) {
-				children.add( new Template( child ) );
+				if ( child instanceof View ) {
+					children.add( child.template );
+				} else {
+					children.add( new Template( child ) );
+				}
 			}
 		}
 
@@ -1007,6 +1016,7 @@ function isFalsy( value ) {
  *					text: 'static–text'
  *				},
  *				'also-static–text',
+ *				<{@link ui.View} instance>
  *				...
  *			],
  *			attributes: {
