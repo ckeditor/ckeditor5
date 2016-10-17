@@ -96,14 +96,14 @@ export default class LiveSelection extends Selection {
 	 * @inheritDoc
 	 */
 	get anchor() {
-		return super.anchor || this._document.getDefaultRange().start;
+		return super.anchor || this._document._getDefaultRange().start;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	get focus() {
-		return super.focus || this._document.getDefaultRange().start;
+		return super.focus || this._document._getDefaultRange().start;
 	}
 
 	/**
@@ -131,7 +131,7 @@ export default class LiveSelection extends Selection {
 		if ( this._ranges.length ) {
 			yield *super.getRanges();
 		} else {
-			yield this._document.getDefaultRange();
+			yield this._document._getDefaultRange();
 		}
 	}
 
@@ -139,14 +139,14 @@ export default class LiveSelection extends Selection {
 	 * @inheritDoc
 	 */
 	getFirstRange() {
-		return super.getFirstRange() || this._document.getDefaultRange();
+		return super.getFirstRange() || this._document._getDefaultRange();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	getLastRange() {
-		return super.getLastRange() || this._document.getDefaultRange();
+		return super.getLastRange() || this._document._getDefaultRange();
 	}
 
 	/**

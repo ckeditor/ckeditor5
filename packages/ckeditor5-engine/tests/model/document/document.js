@@ -284,9 +284,9 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'getDefaultRoot', () => {
+	describe( '_getDefaultRoot', () => {
 		it( 'should return graveyard root if there are no other roots in the document', () => {
-			expect( doc.getDefaultRoot() ).to.equal( doc.graveyard );
+			expect( doc._getDefaultRoot() ).to.equal( doc.graveyard );
 		} );
 
 		it( 'should return the first root added to the document', () => {
@@ -294,7 +294,7 @@ describe( 'Document', () => {
 			doc.createRoot( '$root', 'rootB' );
 			doc.createRoot( '$root', 'rootC' );
 
-			expect( doc.getDefaultRoot() ).to.equal( rootA );
+			expect( doc._getDefaultRoot() ).to.equal( rootA );
 		} );
 	} );
 

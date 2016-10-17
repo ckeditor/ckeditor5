@@ -306,7 +306,7 @@ export default class Document {
 	 * @protected
 	 * @returns {engine.model.RootElement} The default root for this document.
 	 */
-	getDefaultRoot() {
+	_getDefaultRoot() {
 		for ( let root of this._roots.values() ) {
 			if ( root !== this.graveyard ) {
 				return root;
@@ -323,8 +323,8 @@ export default class Document {
 	 * @protected
 	 * @returns {engine.model.Range}
 	 */
-	getDefaultRange() {
-		const defaultRoot = this.getDefaultRoot();
+	_getDefaultRange() {
+		const defaultRoot = this._getDefaultRoot();
 
 		// Find the first position where the selection can be put.
 		for ( let position of Range.createIn( defaultRoot ).getPositions() ) {
