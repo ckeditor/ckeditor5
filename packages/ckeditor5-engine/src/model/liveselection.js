@@ -14,6 +14,10 @@ import Selection from './selection.js';
 
 const storePrefix = 'selection:';
 
+const attrOpTypes = new Set(
+	[ 'addAttribute', 'removeAttribute', 'changeAttribute', 'addRootAttribute', 'removeRootAttribute', 'changeRootAttribute' ]
+);
+
 /**
  * `LiveSelection` is a type of {@link engine.model.Selection selection} that listens to changes on a
  * {@link engine.model.Document document} and has it ranges updated accordingly. Internal implementation of this
@@ -556,7 +560,3 @@ function _getAttrsIfCharacter( node ) {
 
 	return null;
 }
-
-const attrOpTypes = new Set(
-	[ 'addAttribute', 'removeAttribute', 'changeAttribute', 'addRootAttribute', 'removeRootAttribute', 'changeRootAttribute' ]
-);
