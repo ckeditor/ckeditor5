@@ -72,6 +72,12 @@ export default class LiveRange extends Range {
 	 * @param {engine.model.Range} range
 	 * @returns {engine.model.LiveRange}
 	 */
+
+	/**
+	 * Fired when `LiveRange` instance is changed due to changes on {@link engine.model.Document}.
+	 *
+	 * @event engine.model.LiveRange#change
+	 */
 }
 
 /**
@@ -150,8 +156,13 @@ function transform( type, range, position ) {
 			break;
 	}
 
-	this.start = updated.start;
-	this.end = updated.end;
+	// If anything changed, update the range and fire an event.
+	if ( !updated.start.isEqual( this.start ) || !updated.end.isEqual( this.end ) ) {
+		this.start = updated.start;
+		this.end = updated.end;
+
+		this.fire( 'change' );
+	}
 }
 
 mix( LiveRange, EmitterMixin );
