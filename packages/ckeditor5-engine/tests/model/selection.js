@@ -457,40 +457,48 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'removeAllRanges', () => {
-		let spy, ranges;
+		let spy;
 
-		beforeEach( () => {
+		it( 'should remove all stored ranges', () => {
+			selection.addRange( liveRange );
+			selection.addRange( range );
+
+			selection.removeAllRanges();
+
+			expect( Array.from( selection.getRanges() ).length ).to.equal( 0 );
+		} );
+
+		it( 'should fire exactly one change:range event', () => {
 			selection.addRange( liveRange );
 			selection.addRange( range );
 
 			spy = sinon.spy();
 			selection.on( 'change:range', spy );
 
-			ranges = selection._ranges;
+			selection.removeAllRanges();
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not fire change:range event if there were no ranges', () => {
+			spy = sinon.spy();
+			selection.on( 'change:range', spy );
 
 			selection.removeAllRanges();
-		} );
 
-		it( 'should remove all stored ranges', () => {
-			expect( Array.from( selection.getRanges() ).length ).to.equal( 0 );
-		} );
-
-		it( 'should fire exactly one update event', () => {
-			expect( spy.calledOnce ).to.be.true;
+			expect( spy.called ).to.be.false;
 		} );
 	} );
 
 	describe( 'setRanges', () => {
 		let newRanges, spy, oldRanges;
 
-		before( () => {
+		beforeEach( () => {
 			newRanges = [
 				new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ),
 				new Range( new Position( root, [ 5, 0 ] ), new Position( root, [ 6, 0 ] ) )
 			];
-		} );
 
-		beforeEach( () => {
 			selection.addRange( liveRange );
 			selection.addRange( range );
 
@@ -500,20 +508,11 @@ describe( 'Selection', () => {
 			oldRanges = selection._ranges;
 		} );
 
-		it( 'should throw an error when range is invalid', () => {
-			expect( () => {
-				selection.setRanges( [ { invalid: 'range' } ] );
-			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
-		} );
-
 		it( 'should remove all ranges and add given ranges', () => {
 			selection.setRanges( newRanges );
 
-			let ranges = selection._ranges;
-
-			expect( ranges.length ).to.equal( 2 );
-			expect( ranges[ 0 ].isEqual( newRanges[ 0 ] ) ).to.be.true;
-			expect( ranges[ 1 ].isEqual( newRanges[ 1 ] ) ).to.be.true;
+			let ranges = Array.from( selection.getRanges() );
+			expect( ranges ).to.deep.equal( newRanges );
 		} );
 
 		it( 'should use last range from given array to get anchor and focus position', () => {
@@ -528,15 +527,28 @@ describe( 'Selection', () => {
 			expect( selection.focus.path ).to.deep.equal( [ 5, 0 ] );
 		} );
 
-		it( 'should fire exactly one update event', () => {
+		it( 'should fire exactly one change:range event', () => {
 			selection.setRanges( newRanges );
 			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should fire change:range event with correct parameters', () => {
+			selection.on( 'change:range', ( evt, data ) => {
+				expect( data.directChange ).to.be.true;
+			} );
+
+			selection.setRanges( newRanges );
+		} );
+
+		it( 'should not fire change:range event if given ranges are the same', () => {
+			selection.setRanges( [ liveRange, range ] );
+			expect( spy.calledOnce ).to.be.false;
 		} );
 	} );
 
 	describe( 'setTo', () => {
 		it( 'should set selection to be same as given selection, using setRanges method', () => {
-			sinon.spy( selection, 'setRanges' );
+			const spy = sinon.spy( selection, 'setRanges' );
 
 			const otherSelection = new Selection();
 			otherSelection.addRange( range1 );
@@ -547,6 +559,7 @@ describe( 'Selection', () => {
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2 ] );
 			expect( selection.isBackward ).to.be.true;
 			expect( selection.setRanges.calledOnce ).to.be.true;
+			spy.restore();
 		} );
 	} );
 
@@ -679,11 +692,27 @@ describe( 'Selection', () => {
 	describe( 'collapseToStart', () => {
 		it( 'should collapse to start position and fire change event', () => {
 			selection.setRanges( [ range2, range1, range3 ] );
+
+			const spy = sinon.spy();
+			selection.on( 'change:range', spy );
+
 			selection.collapseToStart();
 
 			expect( selection.rangeCount ).to.equal( 1 );
 			expect( selection.isCollapsed ).to.be.true;
 			expect( selection.getFirstPosition().isEqual( range1.start ) ).to.be.true;
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should do nothing if selection was already collapsed', () => {
+			selection.collapse( range1.start );
+
+			const spy = sinon.spy( selection, 'fire' );
+
+			selection.collapseToStart();
+
+			expect( spy.notCalled ).to.be.true;
+			spy.restore();
 		} );
 
 		it( 'should do nothing if no ranges present', () => {
@@ -697,22 +726,38 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'collapseToEnd', () => {
-		it( 'should collapse to start position and fire change event', () => {
+		it( 'should collapse to start position and fire change:range event', () => {
 			selection.setRanges( [ range2, range3, range1 ] );
+
+			const spy = sinon.spy();
+			selection.on( 'change:range', spy );
+
 			selection.collapseToEnd();
 
 			expect( selection.rangeCount ).to.equal( 1 );
 			expect( selection.isCollapsed ).to.be.true;
 			expect( selection.getLastPosition().isEqual( range3.end ) ).to.be.true;
+			expect( spy.calledOnce ).to.be.true;
 		} );
 
-		it( 'should do nothing if no ranges present', () => {
+		it( 'should do nothing if selection was already collapsed', () => {
+			selection.collapse( range1.start );
+
 			const spy = sinon.spy( selection, 'fire' );
 
 			selection.collapseToEnd();
 
-			spy.restore();
 			expect( spy.notCalled ).to.be.true;
+			spy.restore();
+		} );
+
+		it( 'should do nothing if selection has no ranges', () => {
+			const spy = sinon.spy( selection, 'fire' );
+
+			selection.collapseToEnd();
+
+			expect( spy.notCalled ).to.be.true;
+			spy.restore();
 		} );
 	} );
 
@@ -756,13 +801,24 @@ describe( 'Selection', () => {
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 			} );
 
-			it( 'should fire change:attribute event', () => {
+			it( 'should fire change:attribute event with correct parameters', () => {
+				selection.on( 'change:attribute', ( evt, data ) => {
+					expect( data.directChange ).to.be.true;
+					expect( data.attributeKeys ).to.deep.equal( [ 'foo' ] );
+				} );
+
+				selection.setAttribute( 'foo', 'bar' );
+			} );
+
+			it( 'should not fire change:attribute event if attribute with same key and value was already set', () => {
+				selection.setAttribute( 'foo', 'bar' );
+
 				let spy = sinon.spy();
 				selection.on( 'change:attribute', spy );
 
 				selection.setAttribute( 'foo', 'bar' );
 
-				expect( spy.called ).to.be.true;
+				expect( spy.called ).to.be.false;
 			} );
 		} );
 
@@ -821,13 +877,24 @@ describe( 'Selection', () => {
 				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
 			} );
 
-			it( 'should fire change:attribute event', () => {
+			it( 'should fire change:attribute event with correct parameters', () => {
+				selection.setAttribute( 'foo', 'bar' );
+
+				selection.on( 'change:attribute', ( evt, data ) => {
+					expect( data.directChange ).to.be.true;
+					expect( data.attributeKeys ).to.deep.equal( [ 'foo' ] );
+				} );
+
+				selection.clearAttributes();
+			} );
+
+			it( 'should not fire change:attribute event if there were no attributes', () => {
 				let spy = sinon.spy();
 				selection.on( 'change:attribute', spy );
 
 				selection.clearAttributes();
 
-				expect( spy.called ).to.be.true;
+				expect( spy.called ).to.be.false;
 			} );
 		} );
 
@@ -840,24 +907,68 @@ describe( 'Selection', () => {
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 			} );
 
-			it( 'should fire change:attribute event', () => {
+			it( 'should fire change:attribute event with correct parameters', () => {
+				selection.setAttribute( 'foo', 'bar' );
+
+				selection.on( 'change:attribute', ( evt, data ) => {
+					expect( data.directChange ).to.be.true;
+					expect( data.attributeKeys ).to.deep.equal( [ 'foo' ] );
+				} );
+
+				selection.removeAttribute( 'foo' );
+			} );
+
+			it( 'should not fire change:attribute event if such attribute did not exist', () => {
 				let spy = sinon.spy();
 				selection.on( 'change:attribute', spy );
 
 				selection.removeAttribute( 'foo' );
 
-				expect( spy.called ).to.be.true;
+				expect( spy.called ).to.be.false;
 			} );
 		} );
 
 		describe( 'setAttributesTo', () => {
 			it( 'should remove all attributes set on element and set the given ones', () => {
-				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'abc', 'xyz' );
 				selection.setAttributesTo( { foo: 'bar' } );
 
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
+			} );
+
+			it( 'should fire only one change:attribute event', () => {
+				selection.setAttributesTo( { foo: 'bar', xxx: 'yyy' } );
+
+				let spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection.setAttributesTo( { foo: 'bar', abc: 'def' } );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'should fire change:attribute event with correct parameters', () => {
+				selection.setAttributesTo( { foo: 'bar', xxx: 'yyy' } );
+
+				selection.on( 'change:attribute', ( evt, data ) => {
+					expect( data.directChange ).to.be.true;
+					expect( data.attributeKeys ).to.deep.equal( [ 'abc', 'xxx' ] );
+				} );
+
+				selection.setAttributesTo( { foo: 'bar', abc: 'def' } );
+			} );
+
+			it( 'should not fire change:attribute event if attributes had not changed', () => {
+				selection.setRanges( [ rangeInFullP ] );
+				selection.setAttributesTo( { foo: 'bar', xxx: 'yyy' } );
+
+				let spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection.setAttributesTo( { xxx: 'yyy', foo: 'bar' } );
+
+				expect( spy.called ).to.be.false;
 			} );
 		} );
 	} );
