@@ -7,12 +7,14 @@ import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
 import Input from '/ckeditor5/typing/input.js';
 import Paragraph from '/ckeditor5/paragraph/paragraph.js';
 
+import Batch from '/ckeditor5/engine/model/batch.js';
 import ModelRange from '/ckeditor5/engine/model/range.js';
 import buildModelConverter from '/ckeditor5/engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '/ckeditor5/engine/conversion/buildviewconverter.js';
 
 import ViewText from '/ckeditor5/engine/view/text.js';
 import ViewElement from '/ckeditor5/engine/view/element.js';
+import ViewSelection from '/ckeditor5/engine/view/selection.js';
 
 import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
 import { getCode } from '/ckeditor5/utils/keyboard.js';
@@ -54,7 +56,8 @@ describe( 'Input feature', () => {
 
 		model.enqueueChanges( () => {
 			model.selection.setRanges( [
-				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 3, modelRoot.getChild( 0 ), 3 ) ] );
+				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 3, modelRoot.getChild( 0 ), 3 )
+			] );
 		} );
 	} );
 
@@ -197,6 +200,49 @@ describe( 'Input feature', () => {
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>[]</p>' );
+		} );
+
+		it( 'should set model selection appropriately to view selection passed in mutations event', () => {
+			// This test case emulates spellchecker correction.
+
+			const viewSelection = new ViewSelection();
+			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
+
+			view.fire( 'mutations',
+				[ {
+					type: 'text',
+					oldText: 'foobar',
+					newText: 'foodar',
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				} ],
+				viewSelection
+			);
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foodar[]</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>foodar{}</p>' );
+		} );
+
+		it( 'should use up to one insert and remove operations', () => {
+			// This test case emulates spellchecker correction.
+
+			const viewSelection = new ViewSelection();
+			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
+
+			sinon.spy( Batch.prototype, 'weakInsert' );
+			sinon.spy( Batch.prototype, 'remove' );
+
+			view.fire( 'mutations',
+				[ {
+					type: 'text',
+					oldText: 'foobar',
+					newText: 'fxobxr',
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				} ],
+				viewSelection
+			);
+
+			expect( Batch.prototype.weakInsert.calledOnce ).to.be.true;
+			expect( Batch.prototype.remove.calledOnce ).to.be.true;
 		} );
 	} );
 
