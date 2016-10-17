@@ -551,8 +551,8 @@ export default class Selection {
 	/**
 	 * Checks if given range intersects with ranges that are already in the selection. Throws an error if it does.
 	 *
-	 * @param {engine.model.Range} range Range to check.
 	 * @protected
+	 * @param {engine.model.Range} range Range to check.
 	 */
 	_checkRange( range ) {
 		for ( let i = 0; i < this._ranges.length; i++ ) {

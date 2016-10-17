@@ -247,6 +247,68 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
+	 * Updates this selection attributes according to it's ranges and the {@link engine.model.Document model document}.
+	 *
+	 * @protected
+	 * @param {Boolean} clearAll
+	 * @fires engine.model.LiveSelection#change:attribute
+	 */
+	_updateAttributes( clearAll ) {
+		const newAttributes = toMap( this._getSurroundingAttributes() );
+		const oldAttributes = toMap( this.getAttributes() );
+
+		if ( clearAll ) {
+			// If `clearAll` remove all attributes and reset priorities.
+			this._attributePriority = new Map();
+			this._attrs = new Map();
+		} else {
+			// If not, remove only attributes added with `low` priority.
+			for ( let [ key, priority ] of this._attributePriority ) {
+				if ( priority == 'low' ) {
+					this._attrs.delete( key );
+					this._attributePriority.delete( key );
+				}
+			}
+		}
+
+		this._setAttributesTo( newAttributes, false );
+
+		// Let's evaluate which attributes really changed.
+		const changed = [];
+
+		// First, loop through all attributes that are set on selection right now.
+		// Check which of them are different than old attributes.
+		for ( let [ newKey, newValue ] of this.getAttributes() ) {
+			if ( !oldAttributes.has( newKey ) || oldAttributes.get( newKey ) !== newValue ) {
+				changed.push( newKey );
+			}
+		}
+
+		// Then, check which of old attributes got removed.
+		for ( let [ oldKey ] of oldAttributes ) {
+			if ( !this.hasAttribute( oldKey ) ) {
+				changed.push( oldKey );
+			}
+		}
+
+		// Fire event with exact data (fire only if anything changed).
+		if ( changed.length > 0 ) {
+			this.fire( 'change:attribute', { attributeKeys: changed, directChange: false } );
+		}
+	}
+
+	/**
+	 * Generates and returns an attribute key for selection attributes store, basing on original attribute key.
+	 *
+	 * @protected
+	 * @param {String} key Attribute key to convert.
+	 * @returns {String} Converted attribute key, applicable for selection store.
+	 */
+	static _getStoreAttributeKey( key ) {
+		return storePrefix + key;
+	}
+
+	/**
 	 * Internal method for setting `LiveSelection` attribute. Supports attribute priorities (through `directChange`
 	 * parameter).
 	 *
@@ -352,6 +414,7 @@ export default class LiveSelection extends Selection {
 	/**
 	 * Returns an iterator that iterates through all selection attributes stored in current selection's parent.
 	 *
+	 * @private
 	 * @returns {Iterable.<*>}
 	 */
 	*_getStoredAttributes() {
@@ -482,67 +545,6 @@ export default class LiveSelection extends Selection {
 		}
 
 		return attrs;
-	}
-
-	/**
-	 * Updates this selection attributes according to it's ranges and the {@link engine.model.Document model document}.
-	 *
-	 * @fires engine.model.LiveSelection#change:attribute
-	 * @param {Boolean} clear
-	 * @protected
-	 */
-	_updateAttributes( clearAll ) {
-		const newAttributes = toMap( this._getSurroundingAttributes() );
-		const oldAttributes = toMap( this.getAttributes() );
-
-		if ( clearAll ) {
-			// If `clearAll` remove all attributes and reset priorities.
-			this._attributePriority = new Map();
-			this._attrs = new Map();
-		} else {
-			// If not, remove only attributes added with `low` priority.
-			for ( let [ key, priority ] of this._attributePriority ) {
-				if ( priority == 'low' ) {
-					this._attrs.delete( key );
-					this._attributePriority.delete( key );
-				}
-			}
-		}
-
-		this._setAttributesTo( newAttributes, false );
-
-		// Let's evaluate which attributes really changed.
-		const changed = [];
-
-		// First, loop through all attributes that are set on selection right now.
-		// Check which of them are different than old attributes.
-		for ( let [ newKey, newValue ] of this.getAttributes() ) {
-			if ( !oldAttributes.has( newKey ) || oldAttributes.get( newKey ) !== newValue ) {
-				changed.push( newKey );
-			}
-		}
-
-		// Then, check which of old attributes got removed.
-		for ( let [ oldKey ] of oldAttributes ) {
-			if ( !this.hasAttribute( oldKey ) ) {
-				changed.push( oldKey );
-			}
-		}
-
-		// Fire event with exact data (fire only if anything changed).
-		if ( changed.length > 0 ) {
-			this.fire( 'change:attribute', { attributeKeys: changed, directChange: false } );
-		}
-	}
-
-	/**
-	 * Generates and returns an attribute key for selection attributes store, basing on original attribute key.
-	 *
-	 * @param {String} key Attribute key to convert.
-	 * @returns {String} Converted attribute key, applicable for selection store.
-	 */
-	static _getStoreAttributeKey( key ) {
-		return storePrefix + key;
 	}
 }
 
