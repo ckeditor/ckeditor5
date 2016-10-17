@@ -14,6 +14,7 @@ import LiveRange from '/ckeditor5/engine/model/liverange.js';
 import LiveSelection from '/ckeditor5/engine/model/liveselection.js';
 import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
+import AttributeOperation from '/ckeditor5/engine/model/operation/attributeoperation.js';
 import count from '/ckeditor5/utils/count.js';
 import testUtils from '/tests/core/_utils/utils.js';
 import { wrapInDelta } from '/tests/engine/model/_utils/utils.js';
@@ -196,7 +197,7 @@ describe( 'LiveSelection', () => {
 			spy = sinon.spy();
 			selection.on( 'change:range', spy );
 
-			ranges = selection._ranges;
+			ranges = Array.from( selection._ranges );
 
 			sinon.spy( ranges[ 0 ], 'detach' );
 			sinon.spy( ranges[ 1 ], 'detach' );
@@ -238,7 +239,7 @@ describe( 'LiveSelection', () => {
 			spy = sinon.spy();
 			selection.on( 'change:range', spy );
 
-			oldRanges = selection._ranges;
+			oldRanges = Array.from( selection._ranges );
 
 			sinon.spy( oldRanges[ 0 ], 'detach' );
 			sinon.spy( oldRanges[ 1 ], 'detach' );
@@ -284,8 +285,8 @@ describe( 'LiveSelection', () => {
 
 	// LiveSelection uses LiveRanges so here are only simple test to see if integration is
 	// working well, without getting into complicated corner cases.
-	describe( 'after applying an operation should get updated and not fire change:range event', () => {
-		let spy;
+	describe( 'after applying an operation should get updated and fire events', () => {
+		let spyRange;
 
 		beforeEach( () => {
 			root.insertChildren( 0, [
@@ -296,12 +297,16 @@ describe( 'LiveSelection', () => {
 
 			selection.addRange( new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 1, 4 ] ) ) );
 
-			spy = sinon.spy();
-			selection.on( 'change:range', spy );
+			spyRange = sinon.spy();
+			selection.on( 'change:range', spyRange );
 		} );
 
 		describe( 'InsertOperation', () => {
 			it( 'before selection', () => {
+				selection.on( 'change:range', ( evt, data ) => {
+					expect( data.directChange ).to.be.false;
+				} );
+
 				doc.applyOperation( wrapInDelta(
 					new InsertOperation(
 						new Position( root, [ 0, 1 ] ),
@@ -310,14 +315,18 @@ describe( 'LiveSelection', () => {
 					)
 				) );
 
-				let range = selection._ranges[ 0 ];
+				let range = selection.getFirstRange();
 
 				expect( range.start.path ).to.deep.equal( [ 0, 5 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 4 ] );
-				expect( spy.called ).to.be.false;
+				expect( spyRange.calledOnce ).to.be.true;
 			} );
 
 			it( 'inside selection', () => {
+				selection.on( 'change:range', ( evt, data ) => {
+					expect( data.directChange ).to.be.false;
+				} );
+
 				doc.applyOperation( wrapInDelta(
 					new InsertOperation(
 						new Position( root, [ 1, 0 ] ),
@@ -326,16 +335,20 @@ describe( 'LiveSelection', () => {
 					)
 				) );
 
-				let range = selection._ranges[ 0 ];
+				let range = selection.getFirstRange();
 
 				expect( range.start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 7 ] );
-				expect( spy.called ).to.be.false;
+				expect( spyRange.calledOnce ).to.be.true;
 			} );
 		} );
 
 		describe( 'MoveOperation', () => {
 			it( 'move range from before a selection', () => {
+				selection.on( 'change:range', ( evt, data ) => {
+					expect( data.directChange ).to.be.false;
+				} );
+
 				doc.applyOperation( wrapInDelta(
 					new MoveOperation(
 						new Position( root, [ 0, 0 ] ),
@@ -345,14 +358,18 @@ describe( 'LiveSelection', () => {
 					)
 				) );
 
-				let range = selection._ranges[ 0 ];
+				let range = selection.getFirstRange();
 
 				expect( range.start.path ).to.deep.equal( [ 0, 0 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 4 ] );
-				expect( spy.called ).to.be.false;
+				expect( spyRange.calledOnce ).to.be.true;
 			} );
 
 			it( 'moved into before a selection', () => {
+				selection.on( 'change:range', ( evt, data ) => {
+					expect( data.directChange ).to.be.false;
+				} );
+
 				doc.applyOperation( wrapInDelta(
 					new MoveOperation(
 						new Position( root, [ 2 ] ),
@@ -362,14 +379,18 @@ describe( 'LiveSelection', () => {
 					)
 				) );
 
-				let range = selection._ranges[ 0 ];
+				let range = selection.getFirstRange();
 
 				expect( range.start.path ).to.deep.equal( [ 0, 4 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 4 ] );
-				expect( spy.called ).to.be.false;
+				expect( spyRange.calledOnce ).to.be.true;
 			} );
 
 			it( 'move range from inside of selection', () => {
+				selection.on( 'change:range', ( evt, data ) => {
+					expect( data.directChange ).to.be.false;
+				} );
+
 				doc.applyOperation( wrapInDelta(
 					new MoveOperation(
 						new Position( root, [ 1, 0 ] ),
@@ -379,14 +400,18 @@ describe( 'LiveSelection', () => {
 					)
 				) );
 
-				let range = selection._ranges[ 0 ];
+				let range = selection.getFirstRange();
 
 				expect( range.start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 2 ] );
-				expect( spy.called ).to.be.false;
+				expect( spyRange.calledOnce ).to.be.true;
 			} );
 
 			it( 'moved range intersects with selection', () => {
+				selection.on( 'change:range', ( evt, data ) => {
+					expect( data.directChange ).to.be.false;
+				} );
+
 				doc.applyOperation( wrapInDelta(
 					new MoveOperation(
 						new Position( root, [ 1, 3 ] ),
@@ -396,14 +421,18 @@ describe( 'LiveSelection', () => {
 					)
 				) );
 
-				let range = selection._ranges[ 0 ];
+				let range = selection.getFirstRange();
 
 				expect( range.start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( range.end.path ).to.deep.equal( [ 1, 3 ] );
-				expect( spy.called ).to.be.false;
+				expect( spyRange.calledOnce ).to.be.true;
 			} );
 
 			it( 'split inside selection (do not break selection)', () => {
+				selection.on( 'change:range', ( evt, data ) => {
+					expect( data.directChange ).to.be.false;
+				} );
+
 				doc.applyOperation( wrapInDelta(
 					new InsertOperation(
 						new Position( root, [ 2 ] ),
@@ -421,11 +450,77 @@ describe( 'LiveSelection', () => {
 					)
 				) );
 
-				let range = selection._ranges[ 0 ];
+				let range = selection.getFirstRange();
 
 				expect( range.start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( range.end.path ).to.deep.equal( [ 2, 2 ] );
-				expect( spy.called ).to.be.false;
+				expect( spyRange.calledOnce ).to.be.true;
+			} );
+		} );
+
+		describe( 'AttributeOperation', () => {
+			it( 'changed range includes selection anchor', () => {
+				const spyAttribute = sinon.spy();
+				selection.on( 'change:attribute', spyAttribute );
+
+				selection.on( 'change:attribute', ( evt, data ) => {
+					expect( data.directChange ).to.be.false;
+					expect( data.attributeKeys ).to.deep.equal( [ 'foo' ] );
+				} );
+
+				doc.applyOperation( wrapInDelta(
+					new AttributeOperation(
+						new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ),
+						'foo',
+						null,
+						'bar',
+						doc.version
+					)
+				) );
+
+				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
+				expect( spyAttribute.calledOnce ).to.be.true;
+			} );
+
+			it( 'should not overwrite previously set attributes', () => {
+				selection.setAttribute( 'foo', 'xyz' );
+
+				const spyAttribute = sinon.spy();
+				selection.on( 'change:attribute', spyAttribute );
+
+				doc.applyOperation( wrapInDelta(
+					new AttributeOperation(
+						new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ),
+						'foo',
+						null,
+						'bar',
+						doc.version
+					)
+				) );
+
+				expect( selection.getAttribute( 'foo' ) ).to.equal( 'xyz' );
+				expect( spyAttribute.called ).to.be.false;
+			} );
+
+			it( 'should not overwrite previously removed attributes', () => {
+				selection.setAttribute( 'foo', 'xyz' );
+				selection.removeAttribute( 'foo' );
+
+				const spyAttribute = sinon.spy();
+				selection.on( 'change:attribute', spyAttribute );
+
+				doc.applyOperation( wrapInDelta(
+					new AttributeOperation(
+						new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ),
+						'foo',
+						null,
+						'bar',
+						doc.version
+					)
+				) );
+
+				expect( selection.hasAttribute( 'foo' ) ).to.be.false;
+				expect( spyAttribute.called ).to.be.false;
 			} );
 		} );
 	} );
@@ -458,6 +553,30 @@ describe( 'LiveSelection', () => {
 		} );
 
 		describe( 'setAttributesTo', () => {
+			it( 'should fire change:attribute event with correct parameters', ( done ) => {
+				selection.setAttributesTo( { foo: 'bar', abc: 'def' } );
+
+				selection.on( 'change:attribute', ( evt, data ) => {
+					expect( data.directChange ).to.be.true;
+					expect( data.attributeKeys ).to.deep.equal( [ 'abc', 'xxx' ] );
+
+					done();
+				} );
+
+				selection.setAttributesTo( { foo: 'bar', xxx: 'yyy' } );
+			} );
+
+			it( 'should not fire change:attribute event if same attributes are set', () => {
+				selection.setAttributesTo( { foo: 'bar', abc: 'def' } );
+
+				const spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection.setAttributesTo( { foo: 'bar', abc: 'def' } );
+
+				expect( spy.called ).to.be.false;
+			} );
+
 			it( 'should remove all stored attributes and store the given ones if the selection is in empty node', () => {
 				selection.setRanges( [ rangeInEmptyP ] );
 				selection.setAttribute( 'abc', 'xyz' );
@@ -510,7 +629,7 @@ describe( 'LiveSelection', () => {
 		} );
 	} );
 
-	describe( '_updateAttributes', () => {
+	describe( 'update attributes on direct range change', () => {
 		beforeEach( () => {
 			root.insertChildren( 0, [
 				new Element( 'p', { p: true } ),
@@ -562,13 +681,40 @@ describe( 'LiveSelection', () => {
 			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [] );
 		} );
 
+		it( 'should overwrite any previously set attributes', () => {
+			selection.collapse( new Position( root, [ 5, 0 ] ) );
+
+			selection.setAttribute( 'x', true );
+			selection.setAttribute( 'y', true );
+
+			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ], [ 'x', true ], [ 'y', true ] ] );
+
+			selection.collapse( new Position( root, [ 1 ] ) );
+
+			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
+		} );
+
 		it( 'should fire change:attribute event', () => {
 			let spy = sinon.spy();
 			selection.on( 'change:attribute', spy );
 
 			selection.setRanges( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ) ) ] );
 
-			expect( spy.called ).to.be.true;
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not fire change:attribute event if attributes did not change', () => {
+			selection.collapse( new Position( root, [ 5, 0 ] ) );
+
+			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
+
+			let spy = sinon.spy();
+			selection.on( 'change:attribute', spy );
+
+			selection.collapse( new Position( root, [ 5, 1 ] ) );
+
+			expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
+			expect( spy.called ).to.be.false;
 		} );
 	} );
 

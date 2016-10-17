@@ -106,12 +106,6 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'addRange', () => {
-		it( 'should throw an error when range is invalid', () => {
-			expect( () => {
-				selection.addRange( { invalid: 'Range' } );
-			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
-		} );
-
 		it( 'should copy added ranges and store multiple ranges', () => {
 			selection.addRange( liveRange );
 			selection.addRange( range );
