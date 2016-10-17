@@ -276,6 +276,10 @@ export default class Selection {
 
 		// Check whether there is any range in new ranges set that is different than all already added ranges.
 		const anyNewRange = newRanges.some( ( newRange ) => {
+			if ( !( newRange instanceof Range ) ) {
+				throw new CKEditorError( 'model-selection-added-not-range: Trying to add an object that is not an instance of Range.' );
+			}
+
 			return this._ranges.every( ( oldRange ) => {
 				return !oldRange.isEqual( newRange );
 			} );
