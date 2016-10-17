@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals console:false, window, document */
+/* globals console, window, document, setInterval */
 
 import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 
@@ -13,6 +13,15 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 } )
 .then( editor => {
 	window.editor = editor;
+
+	setInterval( () => {
+		console.clear();
+
+		console.log( editor.editing.view.getDomRoot().innerHTML.replace( /\u200b/g, '@' ) );
+		console.log( 'selection.hasAttribute( italic )', editor.document.selection.hasAttribute( 'italic' ) );
+		console.log( 'selection.hasAttribute( bold )', editor.document.selection.hasAttribute( 'bold' ) );
+		console.log( 'selection anchor\'s parentNode', document.getSelection().anchorNode.parentNode );
+	}, 2000 );
 } )
 .catch( err => {
 	console.error( err.stack );
