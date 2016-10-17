@@ -158,8 +158,6 @@ export default class LiveSelection extends Selection {
 			this._storeAttribute( key, value );
 		}
 
-		// This uses private internal `_setAttribute` method which uses `directChange`.
-		// It's done like that to not document `directChange` in documentation because it's internal `LiveSelection` stuff.
 		if ( this._setAttribute( key, value ) ) {
 			// Fire event with exact data.
 			const attributeKeys = [ key ];
@@ -176,8 +174,6 @@ export default class LiveSelection extends Selection {
 			this._removeStoredAttribute( key );
 		}
 
-		// This uses private internal `_removeAttribute` method which uses `directChange`.
-		// It's done like that to not document `directChange` in documentation because it's internal `LiveSelection` stuff.
 		if ( this._removeAttribute( key ) ) {
 			// Fire event with exact data.
 			const attributeKeys = [ key ];
@@ -195,8 +191,6 @@ export default class LiveSelection extends Selection {
 			this._setStoredAttributesTo( attrs );
 		}
 
-		// This uses private internal `_setAttributesTo` method which uses `directChange`.
-		// It's done like that to not document `directChange` in documentation because it's internal `LiveSelection` stuff.
 		const changed = this._setAttributesTo( attrs );
 
 		if ( changed.size > 0 ) {
@@ -253,7 +247,7 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Internal method for setting `LiveSelection` attribute. Supports attributes priorities (through `directChange`
+	 * Internal method for setting `LiveSelection` attribute. Supports attribute priorities (through `directChange`
 	 * parameter).
 	 *
 	 * @private
@@ -261,6 +255,7 @@ export default class LiveSelection extends Selection {
 	 * @param {*} value Attribute value.
 	 * @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
 	 * is caused by `Batch` API.
+	 * @returns {Boolean} Whether value has changed.
 	 */
 	_setAttribute( key, value, directChange = true ) {
 		const priority = directChange ? 'normal' : 'low';
@@ -286,13 +281,15 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Internal method for removing `LiveSelection` attribute. Supports attributes priorities (through `directChange`
+	 * Internal method for removing `LiveSelection` attribute. Supports attribute priorities (through `directChange`
 	 * parameter).
 	 *
 	 * @private
 	 * @param {String} key Attribute key.
 	 * @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
 	 * is caused by `Batch` API.
+	 * @returns {Boolean} Whether attribute was removed. May not be true if such attributes didn't exist or the
+	 * existing attribute had higher priority.
 	 */
 	_removeAttribute( key, directChange = true ) {
 		const priority = directChange ? 'normal' : 'low';
@@ -316,13 +313,14 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Internal method for setting multiple `LiveSelection` attributes. Supports attributes priorities (through
+	 * Internal method for setting multiple `LiveSelection` attributes. Supports attribute priorities (through
 	 * `directChange` parameter).
 	 *
 	 * @private
 	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
 	 * @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
 	 * is caused by `Batch` API.
+	 * @returns {Set.<String>} Changed attribute keys.
 	 */
 	_setAttributesTo( attrs, directChange = true ) {
 		const changed = new Set();
