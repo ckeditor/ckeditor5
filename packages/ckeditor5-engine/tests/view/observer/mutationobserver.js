@@ -113,6 +113,42 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].node ).to.equal( viewRoot );
 	} );
 
+	it( 'should fire mutations event with view selection instance, if dom selection can be mapped to view', ( done ) => {
+		const textNode = domEditor.childNodes[ 0 ].childNodes[ 0 ];
+		textNode.data = 'foom';
+
+		const domSelection = document.getSelection();
+		domSelection.collapse( textNode, 4 );
+
+		viewDocument.on( 'mutations', ( evt, viewMutations, viewSelection ) => {
+			expect( viewSelection.anchor.parent ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
+			expect( viewSelection.anchor.offset ).to.equal( 4 );
+
+			done();
+		} );
+
+		mutationObserver.flush();
+
+		expectDomEditorNotToChange();
+	} );
+
+	it( 'should fire mutations event with viewSelection param set to null, if dom selection cannot be mapped to view', ( done ) => {
+		const textNode = domEditor.ownerDocument.createTextNode( 'foo' );
+		domEditor.childNodes[ 0 ].appendChild( textNode );
+
+		const domSelection = document.getSelection();
+		domSelection.collapse( textNode, 3 );
+
+		viewDocument.on( 'mutations', ( evt, viewMutations, viewSelection ) => {
+			expect( viewSelection ).to.be.null;
+			done();
+		} );
+
+		mutationObserver.flush();
+
+		expectDomEditorNotToChange();
+	} );
+
 	it( 'should be able to observe multiple roots', () => {
 		const domAdditionalEditor = document.getElementById( 'additional' );
 
