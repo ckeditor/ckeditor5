@@ -511,11 +511,11 @@ export default class LiveSelection extends Selection {
 			const nodeAfter = position.textNode ? position.textNode : position.nodeAfter;
 
 			// ...look at the node before caret and take attributes from it if it is a character node.
-			attrs = _getAttrsIfCharacter( nodeBefore );
+			attrs = getAttrsIfCharacter( nodeBefore );
 
 			// 3. If not, look at the node after caret...
 			if ( !attrs ) {
-				attrs = _getAttrsIfCharacter( nodeAfter );
+				attrs = getAttrsIfCharacter( nodeAfter );
 			}
 
 			// 4. If not, try to find the first character on the left, that is in the same node.
@@ -524,7 +524,7 @@ export default class LiveSelection extends Selection {
 
 				while ( node && !attrs ) {
 					node = node.previousSibling;
-					attrs = _getAttrsIfCharacter( node );
+					attrs = getAttrsIfCharacter( node );
 				}
 			}
 
@@ -534,7 +534,7 @@ export default class LiveSelection extends Selection {
 
 				while ( node && !attrs ) {
 					node = node.nextSibling;
-					attrs = _getAttrsIfCharacter( node );
+					attrs = getAttrsIfCharacter( node );
 				}
 			}
 
@@ -553,7 +553,7 @@ export default class LiveSelection extends Selection {
 //
 // @param {engine.model.Item}  node
 // @returns {Boolean}
-function _getAttrsIfCharacter( node ) {
+function getAttrsIfCharacter( node ) {
 	if ( node instanceof TextProxy || node instanceof Text ) {
 		return node.getAttributes();
 	}
