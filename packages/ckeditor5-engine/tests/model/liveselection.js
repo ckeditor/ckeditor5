@@ -15,6 +15,7 @@ import LiveSelection from '/ckeditor5/engine/model/liveselection.js';
 import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
 import AttributeOperation from '/ckeditor5/engine/model/operation/attributeoperation.js';
+import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import count from '/ckeditor5/utils/count.js';
 import testUtils from '/tests/core/_utils/utils.js';
 import { wrapInDelta } from '/tests/engine/model/_utils/utils.js';
@@ -128,6 +129,12 @@ describe( 'LiveSelection', () => {
 
 			expect( ranges[ 0 ] ).to.be.instanceof( LiveRange );
 		} );
+
+		it( 'should throw an error when range is invalid', () => {
+			expect( () => {
+				selection.addRange( { invalid: 'range' } );
+			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
+		} );
 	} );
 
 	describe( 'collapse', () => {
@@ -223,35 +230,23 @@ describe( 'LiveSelection', () => {
 	} );
 
 	describe( 'setRanges', () => {
-		let newRanges, spy, oldRanges;
-
-		before( () => {
-			newRanges = [
-				new Range( new Position( root, [ 4 ] ), new Position( root, [ 5 ] ) ),
-				new Range( new Position( root, [ 5, 0 ] ), new Position( root, [ 6, 0 ] ) )
-			];
-		} );
-
-		beforeEach( () => {
-			selection.addRange( liveRange );
-			selection.addRange( range );
-
-			spy = sinon.spy();
-			selection.on( 'change:range', spy );
-
-			oldRanges = Array.from( selection._ranges );
-
-			sinon.spy( oldRanges[ 0 ], 'detach' );
-			sinon.spy( oldRanges[ 1 ], 'detach' );
-		} );
-
-		afterEach( () => {
-			oldRanges[ 0 ].detach.restore();
-			oldRanges[ 1 ].detach.restore();
+		it( 'should throw an error when range is invalid', () => {
+			expect( () => {
+				selection.setRanges( [ { invalid: 'range' } ] );
+			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
 		} );
 
 		it( 'should detach removed ranges', () => {
-			selection.setRanges( newRanges );
+			selection.addRange( liveRange );
+			selection.addRange( range );
+
+			const oldRanges = Array.from( selection._ranges );
+
+			sinon.spy( oldRanges[ 0 ], 'detach' );
+			sinon.spy( oldRanges[ 1 ], 'detach' );
+
+			selection.setRanges( [] );
+
 			expect( oldRanges[ 0 ].detach.called ).to.be.true;
 			expect( oldRanges[ 1 ].detach.called ).to.be.true;
 		} );
