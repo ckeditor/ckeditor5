@@ -132,6 +132,23 @@ describe( 'MutationObserver', () => {
 		expectDomEditorNotToChange();
 	} );
 
+	it( 'should fire mutations event with viewSelection param set to null, if dom selection cannot be mapped to view', ( done ) => {
+		const textNode = domEditor.ownerDocument.createTextNode( 'foo' );
+		domEditor.childNodes[ 0 ].appendChild( textNode );
+
+		const domSelection = document.getSelection();
+		domSelection.collapse( textNode, 3 );
+
+		viewDocument.on( 'mutations', ( evt, viewMutations, viewSelection ) => {
+			expect( viewSelection ).to.be.null;
+			done();
+		} );
+
+		mutationObserver.flush();
+
+		expectDomEditorNotToChange();
+	} );
+
 	it( 'should be able to observe multiple roots', () => {
 		const domAdditionalEditor = document.getElementById( 'additional' );
 

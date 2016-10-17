@@ -238,6 +238,8 @@ export default class MutationObserver extends Observer {
  * Array of mutations.
  * For mutated texts it will be {@link engine.view.Document~MutatatedText} and for mutated elements it will be
  * {@link engine.view.Document~MutatatedElement}. You can recognize the type based on the `type` property.
+ * @param {engine.view.Selection|null} View selection that is a result of converting DOM selection to view. Keep in
+ * mind that the DOM selection is already "updated", meaning that it already acknowledges changes done in mutation.
  */
 
 /**
