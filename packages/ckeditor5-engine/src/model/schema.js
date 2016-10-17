@@ -178,6 +178,11 @@ export class SchemaItem {
 
 			// Now we have to check every item name from the path to check.
 			for ( let checkName of checkPath ) {
+				// Don't check items that are not registered in schema.
+				if ( !this._schema.hasItem( checkName ) ) {
+					continue;
+				}
+
 				// Every item name is expanded to all names of items that item is extending.
 				// So, if on item path, there is an item that is extended by item from checked path, it will
 				// also be treated as matching.
