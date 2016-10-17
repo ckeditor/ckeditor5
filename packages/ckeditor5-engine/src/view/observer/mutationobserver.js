@@ -6,6 +6,7 @@
 /* globals window */
 
 import Observer from './observer.js';
+import ViewSelection from '../selection.js';
 import { startsWithFiller, getDataWithoutFiller } from '../filler.js';
 
 /**
@@ -191,7 +192,30 @@ export default class MutationObserver extends Observer {
 			} );
 		}
 
-		this.document.fire( 'mutations', viewMutations );
+		// Retrieve `domSelection` using `ownerDocument` of one of mutated nodes.
+		// There should not be simultaneous mutation in multiple documents, so it's fine.
+		const domSelection = domMutations[ 0 ].target.ownerDocument.getSelection();
+
+		let viewSelection = null;
+
+		if ( domSelection && domSelection.anchorNode ) {
+			// If `domSelection` is inside a dom node that is already bound to a view node from view tree, get
+			// corresponding selection in the view and pass it together with `viewMutations`. The `viewSelection` may
+			// be used by features handling mutations.
+			// Only one range is supported.
+
+			const viewSelectionAnchor = domConverter.domPositionToView( domSelection.anchorNode, domSelection.anchorOffset );
+			const viewSelectionFocus = domConverter.domPositionToView( domSelection.focusNode, domSelection.focusOffset );
+
+			// Anchor and focus has to be properly mapped to view.
+			if ( viewSelectionAnchor && viewSelectionFocus ) {
+				viewSelection = new ViewSelection();
+				viewSelection.collapse( viewSelectionAnchor );
+				viewSelection.setFocus( viewSelectionFocus );
+			}
+		}
+
+		this.document.fire( 'mutations', viewMutations, viewSelection );
 
 		// If nothing changes on `mutations` event, at this point we have "dirty DOM" (changed) and de-synched
 		// view (which has not been changed). In order to "reset DOM" we render the view again.
@@ -214,6 +238,8 @@ export default class MutationObserver extends Observer {
  * Array of mutations.
  * For mutated texts it will be {@link engine.view.Document~MutatatedText} and for mutated elements it will be
  * {@link engine.view.Document~MutatatedElement}. You can recognize the type based on the `type` property.
+ * @param {engine.view.Selection|null} viewSelection View selection that is a result of converting DOM selection to view. Keep in
+ * mind that the DOM selection is already "updated", meaning that it already acknowledges changes done in mutation.
  */
 
 /**

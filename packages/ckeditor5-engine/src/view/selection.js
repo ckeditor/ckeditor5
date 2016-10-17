@@ -343,6 +343,43 @@ export default class Selection {
 	}
 
 	/**
+	 * Sets {@link engine.view.Selection#focus} to the specified location.
+	 *
+	 * The location can be specified in the same form as {@link engine.view.Position.createAt} parameters.
+	 *
+	 * @fires engine.view.Selection#change:range
+	 * @param {engine.view.Item|engine.view.Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * first parameter is a {@link engine.view.Item view item}.
+	 */
+	setFocus( itemOrPosition, offset ) {
+		if ( this.anchor === null ) {
+			/**
+			 * Cannot set selection focus if there are no ranges in selection.
+			 *
+			 * @error view-selection-setFocus-no-ranges
+			 */
+			throw new CKEditorError( 'view-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.' );
+		}
+
+		const newFocus = Position.createAt( itemOrPosition, offset );
+
+		if ( newFocus.compareWith( this.focus ) == 'same' ) {
+			return;
+		}
+
+		const anchor = this.anchor;
+
+		this._ranges.pop();
+
+		if ( newFocus.compareWith( anchor ) == 'before' ) {
+			this.addRange( new Range( newFocus, anchor ), true );
+		} else {
+			this.addRange( new Range( anchor, newFocus ) );
+		}
+	}
+
+	/**
 	 * Creates and returns an instance of `Selection` that is a clone of given selection, meaning that it has same
 	 * ranges and same direction as this selection.
 	 *
