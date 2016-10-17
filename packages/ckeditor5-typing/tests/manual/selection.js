@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals console:false, document, window */
+/* globals console, document, window */
 
 import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
 
@@ -11,9 +11,9 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	features: [ 'enter', 'typing', 'paragraph' ],
 	toolbar: []
 } )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+.then( editor => {
+	window.editor = editor;
+} )
+.catch( err => {
+	console.error( err.stack );
+} );
