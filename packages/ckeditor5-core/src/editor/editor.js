@@ -9,6 +9,7 @@ import PluginCollection from '../plugincollection.js';
 import Locale from '../../utils/locale.js';
 import DataController from '../../engine/datacontroller.js';
 import Document from '../../engine/model/document.js';
+import FocusTracker from '../../utils/focustracker.js';
 
 import CKEditorError from '../../utils/ckeditorerror.js';
 import isArray from '../../utils/lib/lodash/isArray.js';
@@ -82,6 +83,13 @@ export default class Editor {
 		 * @member {engine.DataController} core.editor.Editor#data
 		 */
 		this.data = new DataController( this.document );
+
+		/**
+		 * Keeps information about editor focus.
+		 *
+		 * @member {utils.FocusTracker} core.editor.Editor#focusTracker
+		 */
+		this.focusTracker = new FocusTracker();
 
 		/**
 		 * Instance of the {@link engine.EditingController editing controller}.
