@@ -440,7 +440,7 @@ export default class Selection {
 	/**
 	 * Removes all attributes from the selection.
 	 *
-	 * If there were any attributes in selection, fires {@link engine.model.Selection#event:change change event} with
+	 * If there were any attributes in selection, fires the {@link engine.model.Selection#change} event with
 	 * removed attributes' keys.
 	 *
 	 * @fires engine.model.Selection#change:attribute
@@ -457,7 +457,7 @@ export default class Selection {
 	/**
 	 * Removes an attribute with given key from the selection.
 	 *
-	 * If given attribute was set on the selection, fires {@link engine.model.Selection#event:change change event} with
+	 * If given attribute was set on the selection, fires the {@link engine.model.Selection#change} event with
 	 * removed attribute key.
 	 *
 	 * @fires engine.model.Selection#change:attribute
@@ -474,7 +474,7 @@ export default class Selection {
 	/**
 	 * Sets attribute on the selection. If attribute with the same key already is set, it's value is overwritten.
 	 *
-	 * If the attribute value has changed, fires {@link engine.model.Selection#event:change change event} with
+	 * If the attribute value has changed, fires the {@link engine.model.Selection#change} event with
 	 * the attribute key.
 	 *
 	 * @fires engine.model.Selection#change:attribute
@@ -493,7 +493,7 @@ export default class Selection {
 	 * Removes all attributes from the selection and sets given attributes.
 	 *
 	 * If given set of attributes is different than set of attributes already added to selection, fires
-	 * {@link engine.model.Selection#event:change change event} with keys of attributes that changed.
+	 * {@link engine.model.Selection#change change event} with keys of attributes that changed.
 	 *
 	 * @fires engine.model.Selection#change:attribute
 	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
@@ -605,8 +605,8 @@ export default class Selection {
 	 * Fired whenever selection attributes are changed.
 	 *
 	 * @event engine.model.Selection#change:attribute
-	 * @param {Boolean} directChange Specifies whether the attributes changed by direct usage of `Selection` API (`true`)
-	 * or by changes done to {@link engine.model.Document model document} using {@link engine.model.Batch Batch} API (`false`).
+	 * @param {Boolean} directChange Specifies whether the attributes changed by direct usage of the Selection API (`true`)
+	 * or by changes done to the {@link engine.model.Document model document} using the {@link engine.model.Batch Batch} API (`false`).
 	 * @param {Array.<String>} attributeKeys Array containing keys of attributes that changed.
 	 */
 }
