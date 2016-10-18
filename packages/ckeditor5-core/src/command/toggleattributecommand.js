@@ -84,15 +84,15 @@ export default class ToggleAttributeCommand extends Command {
 		const selection = document.selection;
 		const value = ( forceValue === undefined ) ? !this.value : forceValue;
 
-		if ( selection.isCollapsed ) {
-			if ( value ) {
-				selection.setAttribute( this.attributeKey, true );
+		// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges.
+		document.enqueueChanges( () => {
+			if ( selection.isCollapsed ) {
+				if ( value ) {
+					selection.setAttribute( this.attributeKey, true );
+				} else {
+					selection.removeAttribute( this.attributeKey );
+				}
 			} else {
-				selection.removeAttribute( this.attributeKey );
-			}
-		} else {
-			// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges.
-			document.enqueueChanges( () => {
 				const ranges = getSchemaValidRanges( this.attributeKey, selection.getRanges(), document.schema );
 
 				// Keep it as one undo step.
@@ -105,7 +105,7 @@ export default class ToggleAttributeCommand extends Command {
 						batch.removeAttribute( range, this.attributeKey );
 					}
 				}
-			} );
-		}
+			}
+		} );
 	}
 }

@@ -166,6 +166,44 @@ describe( 'ToggleAttributeCommand', () => {
 			expect( getData( modelDoc ) )
 				.to.equal( '<p>ab[<$text bold="true">c</$text><image></image><$text bold="true">foobarxy</$text><image></image>]z</p>' );
 		} );
+
+		describe( 'should cause firing model document changesDone event', () => {
+			let spy;
+
+			beforeEach( () => {
+				spy = sinon.spy();
+			} );
+
+			it( 'collapsed selection in non-empty parent', () => {
+				setData( modelDoc, '<p>x[]y</p>' );
+
+				modelDoc.on( 'changesDone', spy );
+
+				command._doExecute();
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'non-collapsed selection', () => {
+				setData( modelDoc, '<p>[xy]</p>' );
+
+				modelDoc.on( 'changesDone', spy );
+
+				command._doExecute();
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'in empty parent', () => {
+				setData( modelDoc, '<p>[]</p>' );
+
+				modelDoc.on( 'changesDone', spy );
+
+				command._doExecute();
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+		} );
 	} );
 
 	describe( '_checkEnabled', () => {
