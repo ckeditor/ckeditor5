@@ -208,6 +208,10 @@ describe( 'check', () => {
 			// Even if image has src and alt, it can't have attributes that weren't allowed
 			expect( schema.check( { name: 'img', inside: '$block', attributes: [ 'alt', 'src', 'attr' ] } ) ).to.be.false;
 		} );
+
+		it( 'should omit path elements that are added to schema', () => {
+			expect( schema.check( { name: '$inline', inside: '$block new $block' } ) ).to.be.true;
+		} );
 	} );
 
 	describe( 'array of elements as inside', () => {

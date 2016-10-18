@@ -148,7 +148,10 @@ export function setData( document, data, options = {} ) {
 			}
 
 			document.selection.setRanges( ranges, selection.isBackward );
-			document.selection.setAttributesTo( selection.getAttributes() );
+
+			if ( options.selectionAttributes ) {
+				document.selection.setAttributesTo( selection.getAttributes() );
+			}
 		}
 	} );
 }

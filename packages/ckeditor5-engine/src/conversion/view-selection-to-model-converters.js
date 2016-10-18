@@ -28,13 +28,13 @@ export function convertSelectionChange( modelDocument, mapper ) {
 	return ( evt, data ) => {
 		modelDocument.enqueueChanges( () => {
 			const viewSelection = data.newSelection;
-
-			modelDocument.selection.removeAllRanges();
+			const ranges = [];
 
 			for ( let viewRange of viewSelection.getRanges() ) {
-				const modelRange = mapper.toModelRange( viewRange );
-				modelDocument.selection.addRange( modelRange, viewSelection.isBackward );
+				ranges.push( mapper.toModelRange( viewRange ) );
 			}
+
+			modelDocument.selection.setRanges( ranges, viewSelection.isBackward );
 		} );
 	};
 }

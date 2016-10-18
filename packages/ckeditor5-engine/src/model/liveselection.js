@@ -3,16 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
-import LiveRange from './liverange.js';
 import Range from './range.js';
-import Position from './position.js';
+import LiveRange from './liverange.js';
 import Text from './text.js';
 import TextProxy from './textproxy.js';
 import toMap from '../../utils/tomap.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 import Selection from './selection.js';
 
 const storePrefix = 'selection:';
+
+const attrOpTypes = new Set(
+	[ 'addAttribute', 'removeAttribute', 'changeAttribute', 'addRootAttribute', 'removeRootAttribute', 'changeRootAttribute' ]
+);
 
 /**
  * `LiveSelection` is a type of {@link engine.model.Selection selection} that listens to changes on a
@@ -42,10 +46,39 @@ export default class LiveSelection extends Selection {
 		/**
 		 * Document which owns this selection.
 		 *
-		 * @private
-		 * @member {engine.model.Document} engine.model.Selection#_document
+		 * @protected
+		 * @member {engine.model.Document} engine.model.LiveSelection#_document
 		 */
 		this._document = document;
+
+		/**
+		 * Keeps mapping of attribute name to priority with which the attribute got modified (added/changed/removed)
+		 * last time. Possible values of priority are: `'low'` and `'normal'`.
+		 *
+		 * Priorities are used by internal `LiveSelection` mechanisms. All attributes set using `LiveSelection`
+		 * attributes API are set with `'normal'` priority.
+		 *
+		 * @private
+		 * @member {Map} engine.model.LiveSelection#_attributePriority
+		 */
+		this._attributePriority = new Map();
+
+		// Whenever selection range changes, if the change comes directly from selection API (direct user change).
+		this.on( 'change:range', ( evt, data ) => {
+			if ( data.directChange ) {
+				// Reset attributes on selection (clear attributes and priorities) and get attributes from surrounding nodes.
+				this._updateAttributes( true );
+			}
+		}, { priority: 'high' } );
+
+		// Whenever attribute operation is performed on document, update attributes. This is not the most efficient
+		// way to update selection attributes, but should be okay for now. `_updateAttributes` will be fired too often,
+		// but it won't change attributes or fire `change:attribute` event if not needed.
+		this.listenTo( this._document, 'change', ( evt, type ) => {
+			if ( attrOpTypes.has( type ) ) {
+				this._updateAttributes( false );
+			}
+		} );
 	}
 
 	/**
@@ -61,14 +94,14 @@ export default class LiveSelection extends Selection {
 	 * @inheritDoc
 	 */
 	get anchor() {
-		return super.anchor || this._getDefaultRange().start;
+		return super.anchor || this._document._getDefaultRange().start;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	get focus() {
-		return super.focus || this._getDefaultRange().start;
+		return super.focus || this._document._getDefaultRange().start;
 	}
 
 	/**
@@ -85,6 +118,8 @@ export default class LiveSelection extends Selection {
 		for ( let i = 0; i < this._ranges.length; i++ ) {
 			this._ranges[ i ].detach();
 		}
+
+		this.stopListening();
 	}
 
 	/**
@@ -94,7 +129,7 @@ export default class LiveSelection extends Selection {
 		if ( this._ranges.length ) {
 			yield *super.getRanges();
 		} else {
-			yield this._getDefaultRange();
+			yield this._document._getDefaultRange();
 		}
 	}
 
@@ -102,62 +137,86 @@ export default class LiveSelection extends Selection {
 	 * @inheritDoc
 	 */
 	getFirstRange() {
-		return super.getFirstRange() || this._getDefaultRange();
+		return super.getFirstRange() || this._document._getDefaultRange();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	getLastRange() {
-		return super.getLastRange() || this._getDefaultRange();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	removeAllRanges() {
-		this.destroy();
-		super.removeAllRanges();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	setRanges( newRanges, isLastBackward ) {
-		this.destroy();
-		super.setRanges( newRanges, isLastBackward );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	clearAttributes() {
-		this._setStoredAttributesTo( new Map() );
-		super.clearAttributes();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	removeAttribute( key ) {
-		this._removeStoredAttribute( key );
-		super.removeAttribute( key );
+		return super.getLastRange() || this._document._getDefaultRange();
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	setAttribute( key, value ) {
-		this._storeAttribute( key, value );
-		super.setAttribute( key, value );
+		// Store attribute in parent element if the selection is collapsed in an empty node.
+		if ( this.isCollapsed && this.anchor.parent.childCount === 0 ) {
+			this._storeAttribute( key, value );
+		}
+
+		if ( this._setAttribute( key, value ) ) {
+			// Fire event with exact data.
+			const attributeKeys = [ key ];
+			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	removeAttribute( key ) {
+		// Remove stored attribute from parent element if the selection is collapsed in an empty node.
+		if ( this.isCollapsed && this.anchor.parent.childCount === 0 ) {
+			this._removeStoredAttribute( key );
+		}
+
+		if ( this._removeAttribute( key ) ) {
+			// Fire event with exact data.
+			const attributeKeys = [ key ];
+			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
+		}
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	setAttributesTo( attrs ) {
-		this._setStoredAttributesTo( toMap( attrs ) );
-		super.setAttributesTo( attrs );
+		attrs = toMap( attrs );
+
+		if ( this.isCollapsed && this.anchor.parent.childCount === 0 ) {
+			this._setStoredAttributesTo( attrs );
+		}
+
+		const changed = this._setAttributesTo( attrs );
+
+		if ( changed.size > 0 ) {
+			// Fire event with exact data (fire only if anything changed).
+			const attributeKeys = Array.from( changed );
+			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	clearAttributes() {
+		this.setAttributesTo( [] );
+	}
+
+	/**
+	 * Creates and returns an instance of `LiveSelection` that is a clone of given selection, meaning that it has same
+	 * ranges and same direction as this selection.
+	 *
+	 * @params {engine.model.Selection} otherSelection Selection to be cloned.
+	 * @returns {engine.model.LiveSelection} `Selection` instance that is a clone of given selection.
+	 */
+	static createFromSelection( otherSelection ) {
+		const selection = new this( otherSelection._document );
+		selection.setTo( otherSelection );
+
+		return selection;
 	}
 
 	/**
@@ -171,37 +230,189 @@ export default class LiveSelection extends Selection {
 	 * @inheritDoc
 	 */
 	_pushRange( range ) {
+		if ( !( range instanceof Range ) ) {
+			throw new CKEditorError( 'model-selection-added-not-range: Trying to add an object that is not an instance of Range.' );
+		}
+
 		this._checkRange( range );
-		this._ranges.push( LiveRange.createFromRange( range ) );
+
+		const liveRange = LiveRange.createFromRange( range );
+		this.listenTo( liveRange, 'change', () => {
+			this.fire( 'change:range', { directChange: false } );
+		} );
+
+		this._ranges.push( liveRange );
 	}
 
 	/**
-	 * Returns a default range for this selection. The default range is a collapsed range that starts and ends
-	 * at the beginning of this selection's document's {@link engine.model.Document#_getDefaultRoot default root}.
-	 * This "artificial" range is important for algorithms that base on selection, so they won't break or need
-	 * special logic if there are no real ranges in the selection.
+	 * Updates this selection attributes according to it's ranges and the {@link engine.model.Document model document}.
 	 *
-	 * @private
-	 * @returns {engine.model.Range}
+	 * @protected
+	 * @param {Boolean} clearAll
+	 * @fires engine.model.LiveSelection#change:attribute
 	 */
-	_getDefaultRange() {
-		const defaultRoot = this._document._getDefaultRoot();
+	_updateAttributes( clearAll ) {
+		const newAttributes = toMap( this._getSurroundingAttributes() );
+		const oldAttributes = toMap( this.getAttributes() );
 
-		// Find the first position where the selection can be put.
-		for ( let position of Range.createIn( defaultRoot ).getPositions() ) {
-			if ( this._document.schema.check( { name: '$text', inside: position } ) ) {
-				return new Range( position, position );
+		if ( clearAll ) {
+			// If `clearAll` remove all attributes and reset priorities.
+			this._attributePriority = new Map();
+			this._attrs = new Map();
+		} else {
+			// If not, remove only attributes added with `low` priority.
+			for ( let [ key, priority ] of this._attributePriority ) {
+				if ( priority == 'low' ) {
+					this._attrs.delete( key );
+					this._attributePriority.delete( key );
+				}
 			}
 		}
 
-		const position = new Position( defaultRoot, [ 0 ] );
+		this._setAttributesTo( newAttributes, false );
 
-		return new Range( position, position );
+		// Let's evaluate which attributes really changed.
+		const changed = [];
+
+		// First, loop through all attributes that are set on selection right now.
+		// Check which of them are different than old attributes.
+		for ( let [ newKey, newValue ] of this.getAttributes() ) {
+			if ( !oldAttributes.has( newKey ) || oldAttributes.get( newKey ) !== newValue ) {
+				changed.push( newKey );
+			}
+		}
+
+		// Then, check which of old attributes got removed.
+		for ( let [ oldKey ] of oldAttributes ) {
+			if ( !this.hasAttribute( oldKey ) ) {
+				changed.push( oldKey );
+			}
+		}
+
+		// Fire event with exact data (fire only if anything changed).
+		if ( changed.length > 0 ) {
+			this.fire( 'change:attribute', { attributeKeys: changed, directChange: false } );
+		}
 	}
 
 	/**
-	 * Iterates through all attributes stored in current selection's parent.
+	 * Generates and returns an attribute key for selection attributes store, basing on original attribute key.
 	 *
+	 * @protected
+	 * @param {String} key Attribute key to convert.
+	 * @returns {String} Converted attribute key, applicable for selection store.
+	 */
+	static _getStoreAttributeKey( key ) {
+		return storePrefix + key;
+	}
+
+	/**
+	 * Internal method for setting `LiveSelection` attribute. Supports attribute priorities (through `directChange`
+	 * parameter).
+	 *
+	 * @private
+	 * @param {String} key Attribute key.
+	 * @param {*} value Attribute value.
+	 * @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
+	 * is caused by `Batch` API.
+	 * @returns {Boolean} Whether value has changed.
+	 */
+	_setAttribute( key, value, directChange = true ) {
+		const priority = directChange ? 'normal' : 'low';
+
+		if ( priority == 'low' && this._attributePriority.get( key ) == 'normal' ) {
+			// Priority too low.
+			return false;
+		}
+
+		const oldValue = super.getAttribute( key );
+
+		// Don't do anything if value has not changed.
+		if ( oldValue === value ) {
+			return false;
+		}
+
+		this._attrs.set( key, value );
+
+		// Update priorities map.
+		this._attributePriority.set( key, priority );
+
+		return true;
+	}
+
+	/**
+	 * Internal method for removing `LiveSelection` attribute. Supports attribute priorities (through `directChange`
+	 * parameter).
+	 *
+	 * @private
+	 * @param {String} key Attribute key.
+	 * @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
+	 * is caused by `Batch` API.
+	 * @returns {Boolean} Whether attribute was removed. May not be true if such attributes didn't exist or the
+	 * existing attribute had higher priority.
+	 */
+	_removeAttribute( key, directChange = true ) {
+		const priority = directChange ? 'normal' : 'low';
+
+		if ( priority == 'low' && this._attributePriority.get( key ) == 'normal' ) {
+			// Priority too low.
+			return false;
+		}
+
+		// Don't do anything if value has not changed.
+		if ( !super.hasAttribute( key ) ) {
+			return false;
+		}
+
+		this._attrs.delete( key );
+
+		// Update priorities map.
+		this._attributePriority.set( key, priority );
+
+		return true;
+	}
+
+	/**
+	 * Internal method for setting multiple `LiveSelection` attributes. Supports attribute priorities (through
+	 * `directChange` parameter).
+	 *
+	 * @private
+	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
+	 * @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
+	 * is caused by `Batch` API.
+	 * @returns {Set.<String>} Changed attribute keys.
+	 */
+	_setAttributesTo( attrs, directChange = true ) {
+		const changed = new Set();
+
+		for ( let [ oldKey, oldValue ] of this.getAttributes() ) {
+			// Do not remove attribute if attribute with same key and value is about to be set.
+			if ( attrs.get( oldKey ) === oldValue ) {
+				continue;
+			}
+
+			// Attribute still might not get removed because of priorities.
+			if ( this._removeAttribute( oldKey, directChange ) ) {
+				changed.add( oldKey );
+			}
+		}
+
+		for ( let [ key, value ] of attrs ) {
+			// Attribute may not be set because of attributes or because same key/value is already added.
+			const gotAdded = this._setAttribute( key, value, directChange );
+
+			if ( gotAdded ) {
+				changed.add( key );
+			}
+		}
+
+		return changed;
+	}
+
+	/**
+	 * Returns an iterator that iterates through all selection attributes stored in current selection's parent.
+	 *
+	 * @private
 	 * @returns {Iterable.<*>}
 	 */
 	*_getStoredAttributes() {
@@ -225,72 +436,56 @@ export default class LiveSelection extends Selection {
 	 * @param {String} key Key of attribute to remove.
 	 */
 	_removeStoredAttribute( key ) {
-		const selectionParent = this.getFirstPosition().parent;
+		const storeKey = LiveSelection._getStoreAttributeKey( key );
 
-		if ( this.isCollapsed && selectionParent.childCount === 0 ) {
-			const storeKey = LiveSelection._getStoreAttributeKey( key );
-
-			this._document.enqueueChanges( () => {
-				this._document.batch().removeAttribute( selectionParent, storeKey );
-			} );
-		}
+		this._document.batch().removeAttribute( this.anchor.parent, storeKey );
 	}
 
 	/**
-	 * Stores given attribute key and value in current selection's parent node if the selection is collapsed and
-	 * the parent node is empty.
+	 * Stores given attribute key and value in current selection's parent node.
 	 *
 	 * @private
 	 * @param {String} key Key of attribute to set.
 	 * @param {*} value Attribute value.
 	 */
 	_storeAttribute( key, value ) {
-		const selectionParent = this.getFirstPosition().parent;
+		const storeKey = LiveSelection._getStoreAttributeKey( key );
 
-		if ( this.isCollapsed && selectionParent.childCount === 0 ) {
-			const storeKey = LiveSelection._getStoreAttributeKey( key );
-
-			this._document.enqueueChanges( () => {
-				this._document.batch().setAttribute( selectionParent, storeKey, value );
-			} );
-		}
+		this._document.batch().setAttribute( this.anchor.parent, storeKey, value );
 	}
 
 	/**
 	 * Sets selection attributes stored in current selection's parent node to given set of attributes.
 	 *
-	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
 	 * @private
+	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
 	 */
 	_setStoredAttributesTo( attrs ) {
-		const selectionParent = this.getFirstPosition().parent;
+		const selectionParent = this.anchor.parent;
+		const batch = this._document.batch();
 
-		if ( this.isCollapsed && selectionParent.childCount === 0 ) {
-			this._document.enqueueChanges( () => {
-				const batch = this._document.batch();
+		for ( let [ oldKey ] of this._getStoredAttributes() ) {
+			const storeKey = LiveSelection._getStoreAttributeKey( oldKey );
 
-				for ( let attr of this._getStoredAttributes() ) {
-					const storeKey = LiveSelection._getStoreAttributeKey( attr[ 0 ] );
+			batch.removeAttribute( selectionParent, storeKey );
+		}
 
-					batch.removeAttribute( selectionParent, storeKey );
-				}
+		for ( let [ key, value ] of attrs ) {
+			const storeKey = LiveSelection._getStoreAttributeKey( key );
 
-				for ( let attr of attrs ) {
-					const storeKey = LiveSelection._getStoreAttributeKey( attr[ 0 ] );
-
-					batch.setAttribute( selectionParent, storeKey, attr[ 1 ] );
-				}
-			} );
+			batch.setAttribute( selectionParent, storeKey, value );
 		}
 	}
 
 	/**
-	 * Updates this selection attributes according to it's ranges and the document.
+	 * Checks model text nodes that are closest to the selection's first position and returns attributes of first
+	 * found element. If there are no text nodes in selection's first position parent, it returns selection
+	 * attributes stored in that parent.
 	 *
-	 * @fires engine.model.LiveSelection#change:attribute
-	 * @protected
+	 * @private
+	 * @returns {Iterable.<*>} Collection of attributes.
 	 */
-	_updateAttributes() {
+	_getSurroundingAttributes() {
 		const position = this.getFirstPosition();
 
 		let attrs = null;
@@ -347,30 +542,19 @@ export default class LiveSelection extends Selection {
 			}
 		}
 
-		if ( attrs ) {
-			this._attrs = new Map( attrs );
-		} else {
-			this.clearAttributes();
-		}
+		return attrs;
+	}
+}
 
-		function getAttrsIfCharacter( node ) {
-			if ( node instanceof TextProxy || node instanceof Text ) {
-				return node.getAttributes();
-			}
-
-			return null;
-		}
-
-		this.fire( 'change:attribute' );
+// Helper function for {@link engine.model.LiveSelection#_updateAttributes}. It takes model item, checks whether
+// it is a text node (or text proxy) and if so, returns it's attributes. If not, returns `null`.
+//
+// @param {engine.model.Item}  node
+// @returns {Boolean}
+function getAttrsIfCharacter( node ) {
+	if ( node instanceof TextProxy || node instanceof Text ) {
+		return node.getAttributes();
 	}
 
-	/**
-	 * Generates and returns an attribute key for selection attributes store, basing on original attribute key.
-	 *
-	 * @param {String} key Attribute key to convert.
-	 * @returns {String} Converted attribute key, applicable for selection store.
-	 */
-	static _getStoreAttributeKey( key ) {
-		return storePrefix + key;
-	}
+	return null;
 }

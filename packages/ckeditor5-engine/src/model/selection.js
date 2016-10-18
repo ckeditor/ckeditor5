@@ -9,6 +9,7 @@ import EmitterMixin from '../../utils/emittermixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 import mix from '../../utils/mix.js';
 import toMap from '../../utils/tomap.js';
+import mapsEqual from '../../utils/mapsequal.js';
 
 /**
  * `Selection` is a group of {@link engine.model.Range ranges} which has a direction specified by
@@ -244,7 +245,7 @@ export default class Selection {
 		this._pushRange( range );
 		this._lastRangeBackward = !!isBackward;
 
-		this.fire( 'change:range' );
+		this.fire( 'change:range', { directChange: true } );
 	}
 
 	/**
@@ -253,9 +254,10 @@ export default class Selection {
 	 * @fires engine.model.Selection#change:range
 	 */
 	removeAllRanges() {
-		this._ranges = [];
-
-		this.fire( 'change:range' );
+		if ( this._ranges.length > 0 ) {
+			this._removeAllRanges();
+			this.fire( 'change:range', { directChange: true } );
+		}
 	}
 
 	/**
@@ -269,8 +271,26 @@ export default class Selection {
 	 * @param {Boolean} [isLastBackward=false] Flag describing if last added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`).
 	 */
-	setRanges( newRanges, isLastBackward ) {
-		this._ranges = [];
+	setRanges( newRanges, isLastBackward = false ) {
+		newRanges = Array.from( newRanges );
+
+		// Check whether there is any range in new ranges set that is different than all already added ranges.
+		const anyNewRange = newRanges.some( ( newRange ) => {
+			if ( !( newRange instanceof Range ) ) {
+				throw new CKEditorError( 'model-selection-added-not-range: Trying to add an object that is not an instance of Range.' );
+			}
+
+			return this._ranges.every( ( oldRange ) => {
+				return !oldRange.isEqual( newRange );
+			} );
+		} );
+
+		// Don't do anything if nothing changed.
+		if ( newRanges.length === this._ranges.length && !anyNewRange ) {
+			return;
+		}
+
+		this._removeAllRanges();
 
 		for ( let range of newRanges ) {
 			this._pushRange( range );
@@ -278,7 +298,7 @@ export default class Selection {
 
 		this._lastRangeBackward = !!isLastBackward;
 
-		this.fire( 'change:range' );
+		this.fire( 'change:range', { directChange: true } );
 	}
 
 	/**
@@ -338,6 +358,45 @@ export default class Selection {
 	}
 
 	/**
+	 * Sets {@link engine.model.Selection#focus} to the specified location.
+	 *
+	 * The location can be specified in the same form as {@link engine.model.Position.createAt} parameters.
+	 *
+	 * @fires engine.model.Selection#change:range
+	 * @param {engine.model.Item|engine.model.Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * first parameter is a {@link engine.model.Item model item}.
+	 */
+	setFocus( itemOrPosition, offset ) {
+		if ( this.anchor === null ) {
+			/**
+			 * Cannot set selection focus if there are no ranges in selection.
+			 *
+			 * @error model-selection-setFocus-no-ranges
+			 */
+			throw new CKEditorError( 'model-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.' );
+		}
+
+		const newFocus = Position.createAt( itemOrPosition, offset );
+
+		if ( newFocus.compareWith( this.focus ) == 'same' ) {
+			return;
+		}
+
+		const anchor = this.anchor;
+
+		if ( this._ranges.length ) {
+			this._popRange();
+		}
+
+		if ( newFocus.compareWith( anchor ) == 'before' ) {
+			this.addRange( new Range( newFocus, anchor ), true );
+		} else {
+			this.addRange( new Range( anchor, newFocus ) );
+		}
+	}
+
+	/**
 	 * Gets an attribute value for given key or `undefined` if that attribute is not set on the selection.
 	 *
 	 * @param {String} key Key of attribute to look for.
@@ -381,87 +440,81 @@ export default class Selection {
 	/**
 	 * Removes all attributes from the selection.
 	 *
+	 * If there were any attributes in selection, fires the {@link engine.model.Selection#change} event with
+	 * removed attributes' keys.
+	 *
 	 * @fires engine.model.Selection#change:attribute
 	 */
 	clearAttributes() {
-		this._attrs.clear();
+		if ( this._attrs.size > 0 ) {
+			const attributeKeys = Array.from( this._attrs.keys() );
+			this._attrs.clear();
 
-		this.fire( 'change:attribute' );
+			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
+		}
 	}
 
 	/**
 	 * Removes an attribute with given key from the selection.
 	 *
+	 * If given attribute was set on the selection, fires the {@link engine.model.Selection#change} event with
+	 * removed attribute key.
+	 *
 	 * @fires engine.model.Selection#change:attribute
 	 * @param {String} key Key of attribute to remove.
 	 */
 	removeAttribute( key ) {
-		this._attrs.delete( key );
+		if ( this.hasAttribute( key ) ) {
+			this._attrs.delete( key );
 
-		this.fire( 'change:attribute' );
+			this.fire( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
+		}
 	}
 
 	/**
 	 * Sets attribute on the selection. If attribute with the same key already is set, it's value is overwritten.
+	 *
+	 * If the attribute value has changed, fires the {@link engine.model.Selection#change} event with
+	 * the attribute key.
 	 *
 	 * @fires engine.model.Selection#change:attribute
 	 * @param {String} key Key of attribute to set.
 	 * @param {*} value Attribute value.
 	 */
 	setAttribute( key, value ) {
-		this._attrs.set( key, value );
+		if ( this.getAttribute( key ) !== value ) {
+			this._attrs.set( key, value );
 
-		this.fire( 'change:attribute' );
+			this.fire( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
+		}
 	}
 
 	/**
 	 * Removes all attributes from the selection and sets given attributes.
 	 *
+	 * If given set of attributes is different than set of attributes already added to selection, fires
+	 * {@link engine.model.Selection#change change event} with keys of attributes that changed.
+	 *
 	 * @fires engine.model.Selection#change:attribute
 	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
 	 */
 	setAttributesTo( attrs ) {
-		this._attrs = toMap( attrs );
+		attrs = toMap( attrs );
 
-		this.fire( 'change:attribute' );
-	}
+		if ( !mapsEqual( attrs, this._attrs ) ) {
+			// Create a set from keys of old and new attributes.
+			const changed = new Set( Array.from( attrs.keys() ).concat( Array.from( this._attrs.keys() ) ) );
 
-	/**
-	 * Sets {@link engine.model.Selection#focus} to the specified location.
-	 *
-	 * The location can be specified in the same form as {@link engine.model.Position.createAt} parameters.
-	 *
-	 * @fires engine.model.Selection#change:range
-	 * @param {engine.model.Item|engine.model.Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
-	 * first parameter is a {@link engine.model.Item model item}.
-	 */
-	setFocus( itemOrPosition, offset ) {
-		if ( this.anchor === null ) {
-			/**
-			 * Cannot set selection focus if there are no ranges in selection.
-			 *
-			 * @error model-selection-setFocus-no-ranges
-			 */
-			throw new CKEditorError( 'model-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.' );
-		}
+			for ( let [ key, value ] of attrs ) {
+				// If the attribute remains unchanged, remove it from changed set.
+				if ( this._attrs.get( key ) === value ) {
+					changed.delete( key );
+				}
+			}
 
-		const newFocus = Position.createAt( itemOrPosition, offset );
+			this._attrs = attrs;
 
-		if ( newFocus.compareWith( this.focus ) == 'same' ) {
-			return;
-		}
-
-		const anchor = this.anchor;
-
-		if ( this._ranges.length ) {
-			this._popRange();
-		}
-
-		if ( newFocus.compareWith( anchor ) == 'before' ) {
-			this.addRange( new Range( newFocus, anchor ), true );
-		} else {
-			this.addRange( new Range( anchor, newFocus ) );
+			this.fire( 'change:attribute', { attributeKeys: Array.from( changed ), directChange: true } );
 		}
 	}
 
@@ -498,8 +551,8 @@ export default class Selection {
 	/**
 	 * Checks if given range intersects with ranges that are already in the selection. Throws an error if it does.
 	 *
-	 * @param {engine.model.Range} range Range to check.
 	 * @protected
+	 * @param {engine.model.Range} range Range to check.
 	 */
 	_checkRange( range ) {
 		for ( let i = 0; i < this._ranges.length; i++ ) {
@@ -527,18 +580,35 @@ export default class Selection {
 	_popRange() {
 		this._ranges.pop();
 	}
+
+	/**
+	 * Deletes ranges from internal range array. Uses {@link engine.model.Selection#_popRange _popRange} to
+	 * ensure proper ranges removal.
+	 *
+	 * @private
+	 */
+	_removeAllRanges() {
+		while ( this._ranges.length > 0 ) {
+			this._popRange();
+		}
+	}
+
+	/**
+	 * Fired whenever selection ranges are changed.
+	 *
+	 * @event engine.model.Selection#change:range
+	 * @param {Boolean} directChange Specifies whether the range change was caused by direct usage of `Selection` API (`true`)
+	 * or by changes done to {@link engine.model.Document model document} using {@link engine.model.Batch Batch} API (`false`).
+	 */
+
+	/**
+	 * Fired whenever selection attributes are changed.
+	 *
+	 * @event engine.model.Selection#change:attribute
+	 * @param {Boolean} directChange Specifies whether the attributes changed by direct usage of the Selection API (`true`)
+	 * or by changes done to the {@link engine.model.Document model document} using the {@link engine.model.Batch Batch} API (`false`).
+	 * @param {Array.<String>} attributeKeys Array containing keys of attributes that changed.
+	 */
 }
 
 mix( Selection, EmitterMixin );
-
-/**
- * Fired whenever selection ranges are changed through {@link engine.model.Selection Selection API}.
- *
- * @event engine.model.Selection#change:range
- */
-
-/**
- * Fired whenever selection attributes are changed.
- *
- * @event engine.model.Selection#change:attribute
- */
