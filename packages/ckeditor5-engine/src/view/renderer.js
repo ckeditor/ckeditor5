@@ -101,6 +101,14 @@ export default class Renderer {
 		 * @member {Boolean} engine.view.Renderer#isFocused
 		 */
 		this.isFocused = false;
+
+		/**
+		 * DOM element containing fake selection.
+		 *
+		 * @private
+		 * @type {null|HTMLElement}
+		 */
+		this._fakeSelectionContainer = null;
 	}
 
 	/**
@@ -418,24 +426,59 @@ export default class Renderer {
 	 * @private
 	 */
 	_updateSelection() {
-		// If there is no selection - remove it from DOM elements that belongs to the editor.
+		// If there is no selection - remove DOM and fake selections.
 		if ( this.selection.rangeCount === 0 ) {
 			this._removeDomSelection();
+			this._removeFakeSelection();
 
 			return;
 		}
 
-		if ( !this.isFocused ) {
+		const domRoot = this.domConverter.getCorrespondingDomElement( this.selection.editableElement );
+
+		// Do nothing if there is no focus, or there is no DOM element corresponding to selection's editable element.
+		if ( !this.isFocused || !domRoot ) {
 			return;
 		}
 
-		const selectedEditable = this.selection.editableElement;
-		const domRoot = this.domConverter.getCorrespondingDomElement( selectedEditable );
+		// Render selection.
+		if ( this.selection.isFake ) {
+			this._updateFakeSelection( domRoot );
+		} else {
+			this._removeFakeSelection();
+			this._updateDomSelection( domRoot );
+		}
+	}
 
-		if ( !domRoot ) {
-			return;
+	_updateFakeSelection( domRoot ) {
+		const domDocument = domRoot.ownerDocument;
+
+		// Create fake selection container if one does not exist.
+		if ( this._fakeSelectionContainer === null ) {
+			this._fakeSelectionContainer = domDocument.createElement( 'div' );
 		}
 
+		// Add fake container if not already added.
+		if (  this._fakeSelectionContainer.parentElement === null ) {
+			domRoot.appendChild( this._fakeSelectionContainer );
+		}
+
+		// Update contents.
+		const content = this.selection.fakeSelectionLabel || '&nbsp;';
+
+		if ( content !== this._fakeSelectionContainer.textContent ) {
+			this._fakeSelectionContainer.textContent = content;
+		}
+
+		// Update selection.
+		const domSelection = domDocument.getSelection();
+		domSelection.removeAllRanges();
+		const domRange = new Range();
+		domRange.selectNodeContents( this._fakeSelectionContainer );
+		domSelection.addRange( domRange );
+	}
+
+	_updateDomSelection( domRoot ) {
 		const domSelection = domRoot.ownerDocument.defaultView.getSelection();
 		const oldViewSelection = domSelection && this.domConverter.domSelectionToView( domSelection );
 
@@ -467,6 +510,15 @@ export default class Renderer {
 					doc.getSelection().removeAllRanges();
 				}
 			}
+		}
+	}
+
+	_removeFakeSelection() {
+		const container = this._fakeSelectionContainer;
+
+		if ( container !== null ) {
+			container.remove();
+			container.textContent = '';
 		}
 	}
 

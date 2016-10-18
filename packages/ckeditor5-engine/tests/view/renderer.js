@@ -117,6 +117,7 @@ describe( 'Renderer', () => {
 			renderer.markedChildren.clear();
 
 			selection.removeAllRanges();
+			selection.setFake( false );
 
 			selectionEditable = viewRoot;
 
@@ -987,6 +988,71 @@ describe( 'Renderer', () => {
 			renderer.render();
 
 			expect( domFocusSpy.called ).to.be.false;
+		} );
+
+		describe( 'fake selection', () => {
+			beforeEach( () => {
+				const { view: viewP, selection: newSelection } = parse(
+					'<container:p>[foo bar]</container:p>'
+				);
+				viewRoot.appendChildren( viewP );
+				selection.setTo( newSelection );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+			} );
+
+			it( 'should render fake selection', () => {
+				const label = 'fake selection label';
+				selection.setFake( true, { label } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const container = domRoot.childNodes[ 1 ];
+				expect( domConverter.getCorrespondingViewElement( container ) ).to.be.undefined;
+				expect( container.textContent ).to.equal( label );
+				const domSelection = domRoot.ownerDocument.getSelection();
+				expect( domSelection.rangeCount ).to.equal( 1 );
+				const domRange = domSelection.getRangeAt( 0 );
+				expect( domRange.startContainer ).to.equal( container );
+				expect( domRange.startOffset ).to.equal( 0 );
+				expect( domRange.endContainer ).to.equal( container );
+				expect( domRange.endOffset ).to.equal( 1 );
+			} );
+
+			it( 'should render &nbsp; if no selection label is provided', () => {
+				selection.setFake( true );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const container = domRoot.childNodes[ 1 ];
+				expect( container.textContent ).to.equal( '&nbsp;' );
+				const domSelection = domRoot.ownerDocument.getSelection();
+				expect( domSelection.rangeCount ).to.equal( 1 );
+				const domRange = domSelection.getRangeAt( 0 );
+				expect( domRange.startContainer ).to.equal( container );
+				expect( domRange.startOffset ).to.equal( 0 );
+				expect( domRange.endContainer ).to.equal( container );
+				expect( domRange.endOffset ).to.equal( 1 );
+			} );
+
+			it( 'should remove fake selection container when selection is no longer fake', () => {
+				selection.setFake( true );
+				renderer.render();
+
+				selection.setFake( false );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 1 );
+				const domParagraph = domRoot.childNodes[ 0 ];
+				expect( domParagraph.tagName.toLowerCase() ).to.equal( 'p' );
+				const domSelection = domRoot.ownerDocument.getSelection();
+				expect( domSelection.rangeCount ).to.equal( 1 );
+				const domRange = domSelection.getRangeAt( 0 );
+				expect( domRange.startContainer ).to.equal( domParagraph );
+				expect( domRange.startOffset ).to.equal( 0 );
+				expect( domRange.endContainer ).to.equal( domParagraph );
+				expect( domRange.endOffset ).to.equal( 1 );
+			} );
 		} );
 	} );
 } );
