@@ -460,6 +460,33 @@ describe( 'Selection', () => {
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
+
+		it( 'should return false if one selection is fake', () => {
+			const otherSelection = new Selection();
+			otherSelection.setFake( true );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.false;
+		} );
+
+		it( 'should return true if both selection are fake', () => {
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1 );
+			otherSelection.setFake( true );
+			selection.setFake( true );
+			selection.addRange( range1 );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.true;
+		} );
+
+		it( 'should return false if both selection are fake but have different label', () => {
+			const otherSelection = new Selection();
+			otherSelection.addRange( range1 );
+			otherSelection.setFake( true , { label: 'foo bar baz' } );
+			selection.setFake( true );
+			selection.addRange( range1 );
+
+			expect( selection.isEqual( otherSelection ) ).to.be.false;
+		} );
 	} );
 
 	describe( 'removeAllRanges', () => {
@@ -537,6 +564,16 @@ describe( 'Selection', () => {
 			otherSelection.addRange( range1 );
 
 			selection.setTo( otherSelection );
+		} );
+
+		it( 'should set fake state and label', () => {
+			const otherSelection = new Selection();
+			const label = 'foo bar baz';
+			otherSelection.setFake( true, { label } );
+			selection.setTo( otherSelection );
+
+			expect( selection.isFake ).to.be.true;
+			expect( selection.fakeSelectionLabel ).to.equal( label );
 		} );
 	} );
 
@@ -688,6 +725,42 @@ describe( 'Selection', () => {
 			for ( let i = 0; i < selectionRanges.length; i++ ) {
 				expect( selectionRanges[ i ].isEqual( snapshotRanges[ i ] ) ).to.be.true;
 			}
+		} );
+	} );
+
+	describe( 'isFake', () => {
+		it( 'should be false for newly created instance', () => {
+			expect( selection.isFake ).to.be.false;
+		} );
+	} );
+
+	describe( 'setFake', () => {
+		it( 'should allow to set selection to fake', () => {
+			selection.setFake( true );
+
+			expect( selection.isFake ).to.be.true;
+		} );
+
+		it( 'should allow to set fake selection label', () => {
+			const label = 'foo bar baz';
+			selection.setFake( true, { label } );
+
+			expect( selection.fakeSelectionLabel ).to.equal( label );
+		} );
+
+		it( 'should not set label when set to false', () => {
+			const label = 'foo bar baz';
+			selection.setFake( false, { label } );
+
+			expect( selection.fakeSelectionLabel ).to.equal( '' );
+		} );
+
+		it( 'should reset label when set to false', () => {
+			const label = 'foo bar baz';
+			selection.setFake( true, { label } );
+			selection.setFake( false );
+
+			expect( selection.fakeSelectionLabel ).to.equal( '' );
 		} );
 	} );
 } );
