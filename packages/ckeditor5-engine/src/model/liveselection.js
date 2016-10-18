@@ -66,9 +66,7 @@ export default class LiveSelection extends Selection {
 		// Whenever selection range changes, if the change comes directly from selection API (direct user change).
 		this.on( 'change:range', ( evt, data ) => {
 			if ( data.directChange ) {
-				// Reset attributes on selection (clear attributes and priorities).
-				//this._resetAttributes();
-				// And get attributes from surrounding nodes.
+				// Reset attributes on selection (clear attributes and priorities) and get attributes from surrounding nodes.
 				this._updateAttributes( true );
 			}
 		}, { priority: 'high' } );
