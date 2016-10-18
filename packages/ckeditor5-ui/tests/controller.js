@@ -99,10 +99,47 @@ describe( 'Controller', () => {
 				sinon.assert.calledOnce( spy2 );
 			} );
 		} );
+
+		it( 'should initialize child controllers in anonymous collection', () => {
+			const parentController = new Controller( null, new View() );
+			const child1 = new Controller( null, new View() );
+			const child2 = new Controller( null, new View() );
+
+			const spy1 = testUtils.sinon.spy( child1, 'init' );
+			const spy2 = testUtils.sinon.spy( child2, 'init' );
+
+			let collection = parentController.collections.get( '_anonymous' );
+
+			expect( collection ).to.be.null;
+
+			parentController.add( child1 );
+			parentController.add( child2 );
+
+			collection = parentController.collections.get( '_anonymous' );
+
+			expect( collection ).to.be.instanceOf( ControllerCollection );
+			expect( collection ).to.have.length( 2 );
+			expect( collection.get( 0 ) ).to.be.equal( child1 );
+			expect( collection.get( 1 ) ).to.be.equal( child2 );
+
+			return parentController.init().then( () => {
+				expect( collection.get( 0 ) ).to.be.equal( child1 );
+				expect( collection.get( 1 ) ).to.be.equal( child2 );
+
+				sinon.assert.calledOnce( spy1 );
+				sinon.assert.calledOnce( spy2 );
+			} );
+		} );
 	} );
 
 	describe( 'add', () => {
 		beforeEach( defineParentControllerClass );
+
+		it( 'should return a promise', () => {
+			const parentController = new ParentController();
+
+			expect( parentController.add( 'x', new Controller() ) ).to.be.an.instanceof( Promise );
+		} );
 
 		it( 'should add a controller to specific collection', () => {
 			const parentController = new ParentController();
@@ -130,6 +167,26 @@ describe( 'Controller', () => {
 			expect( collection ).to.have.length( 2 );
 			expect( collection.get( 0 ) ).to.be.equal( child2 );
 			expect( collection.get( 1 ) ).to.be.equal( child1 );
+		} );
+
+		it( 'should add a controller to the anonymous collection', () => {
+			const parentController = new ParentController( null, new View() );
+			const child1 = new Controller( null, new View() );
+			const child2 = new Controller( null, new View() );
+
+			let collection = parentController.collections.get( '_anonymous' );
+
+			expect( collection ).to.be.null;
+
+			parentController.add( child1 );
+			parentController.add( child2 );
+
+			collection = parentController.collections.get( '_anonymous' );
+
+			expect( collection ).to.be.instanceOf( ControllerCollection );
+			expect( collection ).to.have.length( 2 );
+			expect( collection.get( 0 ) ).to.be.equal( child1 );
+			expect( collection.get( 1 ) ).to.be.equal( child2 );
 		} );
 	} );
 
@@ -167,6 +224,25 @@ describe( 'Controller', () => {
 			parentController.add( 'x', child3 );
 
 			const removed = parentController.remove( 'x', 1 );
+
+			expect( collection ).to.have.length( 2 );
+			expect( collection.get( 0 ) ).to.be.equal( child1 );
+			expect( collection.get( 1 ) ).to.be.equal( child3 );
+			expect( removed ).to.be.equal( child2 );
+		} );
+
+		it( 'should remove a controller from the anonymous collection', () => {
+			const parentController = new ParentController();
+			const child1 = new Controller();
+			const child2 = new Controller();
+			const child3 = new Controller();
+
+			parentController.add( child1 );
+			parentController.add( child2 );
+			parentController.add( child3 );
+
+			const collection = parentController.collections.get( '_anonymous' );
+			const removed = parentController.remove( child2 );
 
 			expect( collection ).to.have.length( 2 );
 			expect( collection.get( 0 ) ).to.be.equal( child1 );
@@ -240,6 +316,27 @@ describe( 'Controller', () => {
 
 						expect( region.views.get( 0 ) ).to.be.equal( childView2 );
 						expect( region.views.get( 1 ) ).to.be.equal( childView1 );
+					} );
+			} );
+
+			it( 'should not handle views of anonymous collection children', () => {
+				const parentController = new ParentController( null, new ParentView() );
+
+				const childView1 = new View();
+				const childController1 = new Controller( null, childView1 );
+				const childView2 = new View();
+				const childController2 = new Controller( null, childView2 );
+
+				return parentController.init()
+					.then( () => {
+						return parentController.add( childController1 ).then( () => {
+							return parentController.add( childController2 );
+						} );
+					} )
+					.then( () => {
+						const region = parentController.view.regions.get( 'x' );
+
+						expect( region.views ).to.have.length( 0 );
 					} );
 			} );
 		} );

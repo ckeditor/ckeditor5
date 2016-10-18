@@ -9,6 +9,8 @@ import CKEditorError from '../utils/ckeditorerror.js';
 import EmitterMixin from '../utils/emittermixin.js';
 import mix from '../utils/mix.js';
 
+const anon = '_anonymous';
+
 /**
  * Basic Controller class.
  *
@@ -58,6 +60,10 @@ export default class Controller {
 		// of newly added Collection to synchronize this controller's view and children
 		// controllers' views in the future.
 		this.collections.on( 'add', ( evt, collection ) => {
+			if ( isAnonymous( collection ) ) {
+				return;
+			}
+
 			// Set the {@link ControllerCollection#parent} to this controller.
 			// It allows the collection to determine the {@link #ready} state of this controller
 			// and accordingly initialize a child controller when added.
@@ -169,23 +175,50 @@ export default class Controller {
 	/**
 	 * Adds a child {@link Controller} instance to {@link #collections} at given index.
 	 *
-	 * @param {String} collectionName Name of the Controller Collection.
-	 * @param {ui.Controller} controller A controller instance to be added.
+	 *		// Adds child to the specified collection. The collection name
+	 *		// must correspond with the region name in parent.view#regions.
+	 *		parent.add( 'collection-name', child );
+	 *
+	 *		// Adds child to the specified collection at specific index.
+	 *		// The collection name must correspond with the region name in parent.view#regions.
+	 *		parent.add( 'collection-name', child, 3 );
+	 *
+	 *		// Adds child to the {@link ui.Controller#_anonymousCollection} in the parent. In such case,
+	 *		// parent#view must put the child#view in the correct place in parent.view#template
+	 *		// because there's no association between the {@link ui.Controller#_anonymousCollection}
+	 *		// and any of the regions.
+	 *		parent.add( child );
+	 *
+	 * @param {String|ui.Controller} collectionNameOrController Name of the collection or the controller instance.
+	 * @param {ui.Controller} [controller] A controller instance to be added.
 	 * @param {Number} [index] An index in the collection.
+	 * @returns {Promise} A Promise resolved when the child {@link ui.Controller#init} is done.
 	 */
-	add( collectionName, controller, index ) {
-		this.collections.get( collectionName ).add( controller, index );
+	add( ...args ) {
+		if ( args[ 0 ] instanceof Controller ) {
+			return this._anonymousCollection.add( ...args );
+		} else {
+			return this.collections.get( args[ 0 ] ).add( args[ 1 ], args[ 2 ] );
+		}
 	}
 
 	/**
 	 * Removes a child {@link ui.Controller} instance from one of {@link ui.Controller#collections}.
 	 *
-	 * @param {String} collectionName Name of the Controller Collection.
-	 * @param {ui.Controller|Number} toRemove A Controller instance or index to be removed.
+	 * **Note**: To remove children from {@link ui.Controller#_anonymousCollection}, use the following syntax
+	 *
+	 *		parent.remove( child );
+	 *
+	 * @param {String|ui.Controller} collectionNameOrController Name of the collection or the controller instance.
+	 * @param {ui.Controller|Number} [toRemove] A Controller instance or index to be removed.
 	 * @returns {Object} The removed item.
 	 */
-	remove( collectionName, toRemove ) {
-		return this.collections.get( collectionName ).remove( toRemove );
+	remove( collectionNameOrController, toRemove ) {
+		if ( collectionNameOrController instanceof Controller ) {
+			return this._anonymousCollection.remove( collectionNameOrController );
+		} else {
+			return this.collections.get( collectionNameOrController ).remove( toRemove );
+		}
 	}
 
 	/**
@@ -216,7 +249,7 @@ export default class Controller {
 
 		for ( collection of this.collections ) {
 			for ( childController of collection ) {
-				if ( this.view && childController.view ) {
+				if ( !isAnonymous( collection ) && this.view && childController.view ) {
 					this.view.regions.get( collection.name ).views.add( childController.view );
 				}
 
@@ -226,9 +259,38 @@ export default class Controller {
 
 		return Promise.all( promises );
 	}
+
+	/**
+	 * Anonymous collection of this controller instance. It groups child controllers
+	 * which are not to be handled by `Controller#collections`–to–`View#region`
+	 * automation. It also means their views must be handled individually
+	 * by the view, i.e. passed as members of {@link ui.TemplateDefinition#children}.
+	 *
+	 * @protected
+	 * @type {ui.ControllerCollection}
+	 */
+	get _anonymousCollection() {
+		let collection = this.collections.get( anon );
+
+		if ( !collection ) {
+			collection = new ControllerCollection( anon );
+			this.collections.add( collection );
+		}
+
+		return collection;
+	}
 }
 
 mix( Controller, EmitterMixin );
+
+// Checks whether the collection is anonymous.
+//
+// @private
+// @param {ui.ControllerCollection} collection
+// @returns {Boolean}
+function isAnonymous( collection ) {
+	return collection.name == anon;
+}
 
 /**
  * Fired when the controller is fully initialized.
