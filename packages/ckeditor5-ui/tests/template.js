@@ -432,9 +432,17 @@ describe( 'Template', () => {
 					children: [ v1, v2 ]
 				} );
 
-				expect( tpl.children.get( 0 ) ).to.equal( v1.template );
-				expect( tpl.children.get( 1 ) ).to.equal( v2.template );
-				expect( normalizeHtml( tpl.render().outerHTML ) ).to.equal( '<p><span class="v1"></span><span class="v2"></span></p>' );
+				expect( tpl.children.get( 0 ) ).to.equal( v1 );
+				expect( tpl.children.get( 1 ) ).to.equal( v2 );
+
+				const rendered = tpl.render();
+
+				expect( normalizeHtml( rendered.outerHTML ) ).to.equal( '<p><span class="v1"></span><span class="v2"></span></p>' );
+
+				// Make sure the child views will not re–render their elements but
+				// use ones rendered by the template instance above.
+				expect( v1.element ).to.equal( rendered.firstChild );
+				expect( v2.element ).to.equal( rendered.lastChild );
 			} );
 		} );
 

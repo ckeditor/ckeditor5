@@ -510,12 +510,21 @@ export default class Template {
 	 */
 	_renderElementChildren( elOrDocFragment, shouldApply ) {
 		let childIndex = 0;
+		let tpl, rendered;
 
-		for ( let template of this.children ) {
+		for ( let child of this.children ) {
+			tpl = isView( child ) ? child.template : child;
+
 			if ( shouldApply ) {
-				template._renderNode( elOrDocFragment.childNodes[ childIndex++ ] );
+				rendered = tpl._renderNode( elOrDocFragment.childNodes[ childIndex++ ] );
 			} else {
-				elOrDocFragment.appendChild( template.render() );
+				elOrDocFragment.appendChild( ( rendered = tpl.render() ) );
+			}
+
+			// Set the element of the view the template belongs to to avoid re–rendering
+			// when the element later on by the view.
+			if ( isView( child ) ) {
+				child.element = rendered;
 			}
 		}
 	}
@@ -842,7 +851,7 @@ function clone( def ) {
 		// Also don't clone View instances if provided as a child of the Template. The template
 		// instance will be extracted from the View during the normalization and there's no need
 		// to clone it.
-		if ( value && ( value instanceof TemplateBinding || value instanceof View ) ) {
+		if ( value && ( value instanceof TemplateBinding || isView( value ) ) ) {
 			return value;
 		}
 	} );
@@ -883,11 +892,7 @@ function normalize( def ) {
 
 		if ( def.children ) {
 			for ( let child of def.children ) {
-				if ( child instanceof View ) {
-					children.add( child.template );
-				} else {
-					children.add( new Template( child ) );
-				}
+				children.add( isView( child ) ? child : new Template( child ) );
 			}
 		}
 
@@ -1100,9 +1105,18 @@ function extendTemplate( template, def ) {
 // Checks if value is "falsy".
 // Note: 0 (Number) is not "falsy" in this context.
 //
+// @private
 // @param {*} value Value to be checked.
 function isFalsy( value ) {
 	return !value && value !== 0;
+}
+
+// Checks if the item is an instance of {@link ui.View}
+//
+// @private
+// @param {*} value Value to be checked.
+function isView( item ) {
+	return item instanceof View;
 }
 
 /**
