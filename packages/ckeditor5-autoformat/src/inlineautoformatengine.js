@@ -26,7 +26,7 @@ export default class InlineAutoformatEngine {
 			const block = editor.document.selection.focus.parent;
 			const text = getText( block );
 
-			if ( block.name !== 'paragraph' ) {
+			if ( block.name !== 'paragraph' || !text ) {
 				return;
 			}
 

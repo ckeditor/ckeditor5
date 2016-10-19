@@ -77,7 +77,7 @@ export default class Autoformat extends Feature {
 	}
 
 	_addBoldAutoformats() {
-		// `Bold` autoformat.
+		// Bold autoformat.
 		new InlineAutoformatEngine(
 			this.editor,
 			( text ) => {
@@ -112,7 +112,7 @@ export default class Autoformat extends Feature {
 			}
 		);
 
-		// `Italic` autoformat.
+		// Italic autoformat.
 		new InlineAutoformatEngine(
 			this.editor,
 			( text ) => {
@@ -123,9 +123,9 @@ export default class Autoformat extends Feature {
 				// 	[2]: '*fox*',
 				// 	[index]: 5
 				//
-				// Value at index 1 is a "prefix". It can be empty, if the matched word is at the beginning of the line.
-				// Length of this match is used to calculate `start` index.
-				const pattern = /([^\*]|^)(\*[^\*].+?[^\*]\*)(?![^\*]|$)/g;
+				// Value at index 1 is a "prefix". It can be empty, if the matched word is at the
+				// beginning of the line. Length of the prefix is used to calculate `start` index.
+				const pattern = /([^\*]|^)(\*[^\*].+?[^\*]\*)(?:[^\*]|$)/g;
 
 				let result;
 				let remove = [];
