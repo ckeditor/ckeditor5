@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
 import Range from '../engine/model/range.js';
 import RootElement from '../engine/model/rootelement.js';
 
@@ -14,68 +13,43 @@ import RootElement from '../engine/model/rootelement.js';
  * @memberOf paragraph
  * @extends ckeditor5.Feature
  */
-export default class Inline extends Feature {
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-		const editor = this.editor;
+export default class InlineAutoformatEngine {
+
+	constructor( editor, delimiter, command ) {
+		this.editor = editor;
+		const pattern = new RegExp( `(\\${ delimiter }.+?\\${ delimiter })`, 'g' );
 		const doc = editor.document;
-		let blockEvents = false;
 
 		// Listen to model changes and add attributes.
-		this.listenTo( doc, 'change', ( evt, type, data ) => {
-			if ( type === 'insert' && !blockEvents ) {
+		editor.document.on( 'change', ( evt, type, data ) => {
+			if ( type === 'insert' ) {
 				const insertPosition = data.range.start;
 				const insertBlock = findTopmostBlock( insertPosition );
 
 				applyAttributes( insertBlock );
 			} else
-			if ( type === 'remove' && !blockEvents ) {
+			if ( type === 'remove' ) {
 				const removePosition = data.sourcePosition;
 				const removeBlock = findTopmostBlock( removePosition );
 
 				if ( removeBlock !== null ) {
 					applyAttributes( removeBlock );
 				}
-			} else
-			if ( type === 'move' ) {
-				const movePosition = data.sourcePosition;
-				const moveBlock = findTopmostBlock( movePosition );
-
-				applyAttributes( moveBlock );
-
-				const destPosition = data.range.start;
-				const destBlock = findTopmostBlock( destPosition );
-
-				applyAttributes( destBlock );
 			}
 		} );
 
 		function applyAttributes( block ) {
 			const text = getText( block );
-			const regexp = new RegExp( /(\*\*.+?\*\*)|(\*.+?\*)/g );
-
-			let delimiterLen;
 			let result;
 
-			while ( ( result = regexp.exec( text ) ) !== null ) {
+			while ( ( result = pattern.exec( text ) ) !== null ) {
 				let matched;
-				let attr;
 
 				if ( result[ 1 ] ) {
 					matched = result[ 1 ];
-					attr = 'bold';
-					delimiterLen = 2;
 				} else {
 					return;
 				}
-
-				// if ( result[ 2 ] ) {
-				// 	matched = result[ 2 ];
-				// 	attr = 'italic';
-				// 	delimiterLen = 1;
-				// }
 
 				const index = result.index;
 
@@ -83,10 +57,10 @@ export default class Inline extends Feature {
 					const batch = doc.batch();
 					const rangeToDeleteStart = Range.createFromParentsAndOffsets(
 						block, index,
-						block, index + delimiterLen
+						block, index + delimiter.length
 					);
 					const rangeToDeleteEnd = Range.createFromParentsAndOffsets(
-						block, index + matched.length - delimiterLen,
+						block, index + matched.length - delimiter.length,
 						block, index + matched.length
 					);
 
@@ -95,10 +69,10 @@ export default class Inline extends Feature {
 
 					const range = Range.createFromParentsAndOffsets(
 						block, index,
-						block, index + matched.length - delimiterLen * 2
+						block, index + matched.length - delimiter.length * 2
 					);
 
-					batch.setAttribute( range, attr, true );
+					batch.setAttribute( range, command, true );
 				} );
 			}
 		}
