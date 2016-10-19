@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Form from '../../ui/form/form.js';
+import Controller from '../../ui/controller.js';
 
 /**
  * The link form class.
@@ -15,7 +15,7 @@ import Form from '../../ui/form/form.js';
  * @memberOf link.ui
  * @extends ui.form.Form
  */
-export default class LinkForm extends Form {
+export default class LinkForm extends Controller {
 	/**
 	 * Creates an instance of {@link link.ui.LinkForm} class.
 	 *
@@ -25,7 +25,7 @@ export default class LinkForm extends Form {
 	constructor( model, view ) {
 		super( model, view );
 
-		this.addCollection( 'actions' );
+		view.delegate( 'submit' ).to( model );
 	}
 }
 

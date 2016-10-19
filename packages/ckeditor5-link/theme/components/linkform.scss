@@ -2,26 +2,27 @@
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
 .ck-link {
-	&-balloon-panel {
+	&-form {
 		padding: ck-spacing( 'large' );
+		overflow: hidden;
 
 		.ck-label {
 			margin-bottom: ck-spacing( 'small' );
 		}
-	}
 
-	&-form__actions {
-		clear: both;
-		padding-top: ck-spacing( 'large' );
+		&__actions {
+			clear: both;
+			padding-top: ck-spacing( 'large' );
 
-		.ck-button {
-			float: right;
-
-			& + .ck-button {
-				margin-right: ck-spacing( 'medium' );
+			.ck-button {
+				float: right;
 
 				& + .ck-button {
-					float: left;
+					margin-right: ck-spacing( 'medium' );
+
+					& + .ck-button {
+						float: left;
+					}
 				}
 			}
 		}

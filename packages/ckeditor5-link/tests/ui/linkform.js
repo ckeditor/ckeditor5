@@ -7,24 +7,25 @@
 
 import LinkForm from '/ckeditor5/link/ui/linkform.js';
 import LinkFormView from '/ckeditor5/link/ui/linkformview.js';
-import Form from '/ckeditor5/ui/form/form.js';
 import Model from '/ckeditor5/ui/model.js';
 
 describe( 'LinkForm', () => {
-	let linkForm, view;
+	let linkForm, view, model;
 
 	beforeEach( () => {
 		view = new LinkFormView();
-		linkForm = new LinkForm( new Model(), view );
+		model = new Model();
+		linkForm = new LinkForm( model, view );
 	} );
 
 	describe( 'constructor', () => {
-		it( 'should extend Form class', () => {
-			expect( linkForm ).to.instanceof( Form );
-		} );
+		it( 'creates view#submit -> model#submit binding', () => {
+			const spy = sinon.spy();
 
-		it( 'should create empty "actions" collection', () => {
-			expect( linkForm.collections.get( 'actions' ) ).to.have.length( 0 );
+			model.on( 'submit', spy );
+
+			view.fire( 'submit' );
+			expect( spy.calledOnce ).to.be.true;
 		} );
 	} );
 } );
