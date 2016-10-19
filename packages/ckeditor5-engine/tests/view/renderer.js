@@ -1009,14 +1009,14 @@ describe( 'Renderer', () => {
 				expect( domRoot.childNodes.length ).to.equal( 2 );
 				const container = domRoot.childNodes[ 1 ];
 				expect( domConverter.getCorrespondingViewElement( container ) ).to.be.undefined;
-				expect( container.textContent ).to.equal( label );
+				expect( container.childNodes.length ).to.equal( 1 );
+				const textNode = container.childNodes[ 0 ];
+				expect( textNode.textContent ).to.equal( label );
 				const domSelection = domRoot.ownerDocument.getSelection();
-				expect( domSelection.rangeCount ).to.equal( 1 );
-				const domRange = domSelection.getRangeAt( 0 );
-				expect( domRange.startContainer ).to.equal( container );
-				expect( domRange.startOffset ).to.equal( 0 );
-				expect( domRange.endContainer ).to.equal( container );
-				expect( domRange.endOffset ).to.equal( 1 );
+				expect( domSelection.anchorNode ).to.equal( textNode );
+				expect( domSelection.anchorOffset ).to.equal( 0 );
+				expect( domSelection.focusNode ).to.equal( textNode );
+				expect( domSelection.focusOffset ).to.equal( label.length );
 			} );
 
 			it( 'should render &nbsp; if no selection label is provided', () => {
@@ -1025,14 +1025,14 @@ describe( 'Renderer', () => {
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
 				const container = domRoot.childNodes[ 1 ];
-				expect( container.textContent ).to.equal( '&nbsp;' );
+				expect( container.childNodes.length ).to.equal( 1 );
+				const textNode = container.childNodes[ 0 ];
+				expect( container.innerHTML ).to.equal( '&nbsp;' );
 				const domSelection = domRoot.ownerDocument.getSelection();
-				expect( domSelection.rangeCount ).to.equal( 1 );
-				const domRange = domSelection.getRangeAt( 0 );
-				expect( domRange.startContainer ).to.equal( container );
-				expect( domRange.startOffset ).to.equal( 0 );
-				expect( domRange.endContainer ).to.equal( container );
-				expect( domRange.endOffset ).to.equal( 1 );
+				expect( domSelection.anchorNode ).to.equal( textNode );
+				expect( domSelection.anchorOffset ).to.equal( 0 );
+				expect( domSelection.focusNode ).to.equal( textNode );
+				expect( domSelection.focusOffset ).to.equal( 1 );
 			} );
 
 			it( 'should remove fake selection container when selection is no longer fake', () => {
@@ -1044,14 +1044,15 @@ describe( 'Renderer', () => {
 
 				expect( domRoot.childNodes.length ).to.equal( 1 );
 				const domParagraph = domRoot.childNodes[ 0 ];
+				expect( domParagraph.childNodes.length ).to.equal( 1 );
+				const textNode = domParagraph.childNodes[ 0 ];
 				expect( domParagraph.tagName.toLowerCase() ).to.equal( 'p' );
 				const domSelection = domRoot.ownerDocument.getSelection();
-				expect( domSelection.rangeCount ).to.equal( 1 );
-				const domRange = domSelection.getRangeAt( 0 );
-				expect( domRange.startContainer ).to.equal( domParagraph );
-				expect( domRange.startOffset ).to.equal( 0 );
-				expect( domRange.endContainer ).to.equal( domParagraph );
-				expect( domRange.endOffset ).to.equal( 1 );
+
+				expect( domSelection.anchorNode ).to.equal( textNode );
+				expect( domSelection.anchorOffset ).to.equal( 0 );
+				expect( domSelection.focusNode ).to.equal( textNode );
+				expect( domSelection.focusOffset ).to.equal( 7 );
 			} );
 
 			it( 'should reuse fake selection container #1', () => {

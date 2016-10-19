@@ -15,6 +15,8 @@ import remove from '../../utils/dom/remove.js';
 import ObservableMixin from '../../utils/observablemixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
+/* global Range */
+
 /**
  * Renderer updates DOM structure and selection, to make them a reflection of the view structure and selection.
  *
@@ -472,8 +474,8 @@ export default class Renderer {
 		// Update contents.
 		const content = this.selection.fakeSelectionLabel || '&nbsp;';
 
-		if ( content !== this._fakeSelectionContainer.textContent ) {
-			this._fakeSelectionContainer.textContent = content;
+		if ( content !== this._fakeSelectionContainer.innerHTML ) {
+			this._fakeSelectionContainer.innerHTML = content;
 		}
 
 		// Update selection.
