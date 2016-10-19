@@ -450,6 +450,12 @@ export default class Renderer {
 		}
 	}
 
+	/**
+	 * Updates fake selection.
+	 *
+	 * @private
+	 * @param {HTMLElement} domRoot Valid DOM root where fake selection container should be added.
+	 */
 	_updateFakeSelection( domRoot ) {
 		const domDocument = domRoot.ownerDocument;
 
@@ -478,6 +484,12 @@ export default class Renderer {
 		domSelection.addRange( domRange );
 	}
 
+	/**
+	 * Updates DOM selection.
+	 *
+	 * @private
+	 * @param {HTMLElement} domRoot Valid DOM root where DOM selection should be rendered.
+	 */
 	_updateDomSelection( domRoot ) {
 		const domSelection = domRoot.ownerDocument.defaultView.getSelection();
 		const oldViewSelection = domSelection && this.domConverter.domSelectionToView( domSelection );
@@ -498,6 +510,11 @@ export default class Renderer {
 		domSelection.extend( focus.parent, focus.offset );
 	}
 
+	/**
+	 * Removes DOM selection.
+	 *
+	 * @private
+	 */
 	_removeDomSelection() {
 		for ( let doc of this.domDocuments ) {
 			const domSelection = doc.getSelection();
@@ -513,6 +530,11 @@ export default class Renderer {
 		}
 	}
 
+	/**
+	 * Removes fake selection.
+	 *
+	 * @private
+	 */
 	_removeFakeSelection() {
 		const container = this._fakeSelectionContainer;
 

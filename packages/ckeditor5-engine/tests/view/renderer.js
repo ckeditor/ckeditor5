@@ -1053,6 +1053,45 @@ describe( 'Renderer', () => {
 				expect( domRange.endContainer ).to.equal( domParagraph );
 				expect( domRange.endOffset ).to.equal( 1 );
 			} );
+
+			it( 'should reuse fake selection container #1', () => {
+				const label = 'fake selection label';
+
+				selection.setFake( true, { label } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const container = domRoot.childNodes[ 1 ];
+
+				selection.setFake( true, { label } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const newContainer = domRoot.childNodes[ 1 ];
+				expect( newContainer ).equals( container );
+				expect( newContainer.innerText ).to.equal( label );
+			} );
+
+			it( 'should reuse fake selection container #2', () => {
+				selection.setFake( true, { label: 'label 1' } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const container = domRoot.childNodes[ 1 ];
+
+				selection.setFake( false );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 1 );
+
+				selection.setFake( true, { label: 'label 2' } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const newContainer = domRoot.childNodes[ 1 ];
+				expect( newContainer ).equals( container );
+				expect( newContainer.innerText ).to.equal( 'label 2' );
+			} );
 		} );
 	} );
 } );
