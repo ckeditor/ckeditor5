@@ -15,9 +15,8 @@ import RootElement from '../engine/model/rootelement.js';
  */
 export default class InlineAutoformatEngine {
 
-	constructor( editor, delimiter, command ) {
+	constructor( editor, pattern, command, delimiterLen ) {
 		this.editor = editor;
-		const pattern = new RegExp( `(\\${ delimiter }.+?\\${ delimiter })`, 'g' );
 		const doc = editor.document;
 
 		// Listen to model changes and add attributes.
@@ -41,6 +40,7 @@ export default class InlineAutoformatEngine {
 		function applyAttributes( block ) {
 			const text = getText( block );
 			let result;
+			let index = 0;
 
 			while ( ( result = pattern.exec( text ) ) !== null ) {
 				let matched;
@@ -51,25 +51,26 @@ export default class InlineAutoformatEngine {
 					return;
 				}
 
-				const index = result.index;
+				index = text.indexOf( matched, index )
 
 				doc.enqueueChanges( () => {
 					const batch = doc.batch();
 					const rangeToDeleteStart = Range.createFromParentsAndOffsets(
 						block, index,
-						block, index + delimiter.length
+						block, index + delimiterLen
 					);
 					const rangeToDeleteEnd = Range.createFromParentsAndOffsets(
-						block, index + matched.length - delimiter.length,
+						block, index + matched.length - delimiterLen,
 						block, index + matched.length
 					);
 
+					// Delete from the end to not change indices.
 					batch.remove( rangeToDeleteEnd );
 					batch.remove( rangeToDeleteStart );
 
 					const range = Range.createFromParentsAndOffsets(
 						block, index,
-						block, index + matched.length - delimiter.length * 2
+						block, index + matched.length - delimiterLen * 2
 					);
 
 					batch.setAttribute( range, command, true );
