@@ -77,7 +77,87 @@ export default class Autoformat extends Feature {
 	}
 
 	_addBoldAutoformats() {
-		// new InlineAutoformatEngine( this.editor, new RegExp( /(\*\*.+?\*\*)/g ), 'bold' );
-		new InlineAutoformatEngine( this.editor, '*', 'italic' );
+		// `Bold` autoformat.
+		new InlineAutoformatEngine(
+			this.editor,
+			( text ) => {
+				const pattern = /\*\*(.+?)\*\*/g;
+
+				let result;
+				let remove = [];
+				let format = [];
+
+				while ( ( result = pattern.exec( text ) ) !== null ) {
+					const start = result.index;
+					const fullMatchLen = result[ 0 ].length;
+					const delimiterLen = 2; // Length of '**'.
+
+					const delStart = [ start,                               start + delimiterLen ];
+					const delEnd =   [ start + fullMatchLen - delimiterLen, start + fullMatchLen ];
+
+					remove.push( delStart );
+					remove.push( delEnd );
+
+					// Calculation of offsets after text deletion is not needed.
+					format.push( [ start, start + fullMatchLen - delimiterLen ] );
+				}
+
+				return {
+					remove,
+					format
+				};
+			},
+			( editor, range, batch ) => {
+				this.editor.execute( 'bold', { ranges: [ range ], batch } );
+			}
+		);
+
+		// `Italic` autoformat.
+		new InlineAutoformatEngine(
+			this.editor,
+			( text ) => {
+				// For a text: 'Brown *fox* jumps over the lazy dog' the expression below will return following values:
+				//
+				// 	[0]: ' *fox* ',
+				// 	[1]: ' ',
+				// 	[2]: '*fox*',
+				// 	[index]: 5
+				//
+				// Value at index 1 is a "prefix". It can be empty, if the matched word is at the beginning of the line.
+				// Length of this match is used to calculate `start` index.
+				const pattern = /([^\*]|^)(\*[^\*].+?[^\*]\*)(?![^\*]|$)/g;
+
+				let result;
+				let remove = [];
+				let format = [];
+
+				while ( ( result = pattern.exec( text ) ) !== null ) {
+					// Add "prefix" match length.
+					const start = result.index + result[ 1 ].length;
+					const fullMatchLen = result[ 2 ].length;
+					const delimiterLen = 1; // Length of '*'.
+
+					const delStart = [ start,                               start + delimiterLen ];
+					const delEnd =   [ start + fullMatchLen - delimiterLen, start + fullMatchLen ];
+
+					remove.push( delStart );
+					remove.push( delEnd );
+
+					// Calculation of offsets after deletion is not needed.
+					format.push( [ start, start + fullMatchLen - delimiterLen ] );
+				}
+
+				return {
+					remove,
+					format
+				};
+			},
+			( editor, range, batch ) => {
+				this.editor.execute( 'italic', { ranges: [ range ], batch } );
+			}
+		);
+
+		// 3 capture groups: (remove)(format)(remove).
+		// new InlineAutoformatEngine( this.editor, /(\*\*.+?\*\*)/g, 'bold' );
 	}
 }
