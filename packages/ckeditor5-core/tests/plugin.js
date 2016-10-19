@@ -19,3 +19,23 @@ describe( 'constructor', () => {
 		expect( plugin ).to.have.property( 'editor' ).to.equal( editor );
 	} );
 } );
+
+describe( 'init', () => {
+	it( 'should exist and do nothing', () => {
+		let plugin = new Plugin( editor );
+
+		expect( plugin.init ).to.be.a( 'function' );
+
+		plugin.init();
+	} );
+} );
+
+describe( 'destroy', () => {
+	it( 'should exist and do nothing', () => {
+		let plugin = new Plugin( editor );
+
+		expect( plugin.destroy ).to.be.a( 'function' );
+
+		plugin.destroy();
+	} );
+} );
