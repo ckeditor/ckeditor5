@@ -76,33 +76,37 @@ export default class ToggleAttributeCommand extends Command {
 	 * If the command is disabled (`isEnabled == false`) when it is executed, nothing will happen.
 	 *
 	 * @private
-	 * @param {Boolean} [forceValue] If set it will force command behavior. If `true`, command will apply attribute,
+	 * @param {Object} [options] Options of command.
+	 * @param {Boolean} [options.forceValue] If set it will force command behavior. If `true`, command will apply attribute,
 	 * otherwise command will remove attribute. If not set, command will look for it's current value to decide what it should do.
+	 * @param {engine.model.Batch} [options.batch] Batch to group undo steps.
+	 * @param {Array.<engine.model.Range>} [options.ranges] The list of ranges to apply command to.
 	 */
-	_doExecute( forceValue ) {
+	_doExecute( options = {} ) {
+		const { forceValue, batch, ranges } = options;
 		const document = this.editor.document;
 		const selection = document.selection;
 		const value = ( forceValue === undefined ) ? !this.value : forceValue;
 
 		// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges.
 		document.enqueueChanges( () => {
-			if ( selection.isCollapsed ) {
+			if ( !ranges && selection.isCollapsed ) {
 				if ( value ) {
 					selection.setAttribute( this.attributeKey, true );
 				} else {
 					selection.removeAttribute( this.attributeKey );
 				}
 			} else {
-				const ranges = getSchemaValidRanges( this.attributeKey, selection.getRanges(), document.schema );
+				const workRanges = getSchemaValidRanges( this.attributeKey, ranges || selection.getRanges(), document.schema );
 
 				// Keep it as one undo step.
-				const batch = document.batch();
+				const workBatch = batch || document.batch();
 
-				for ( let range of ranges ) {
+				for ( let range of workRanges ) {
 					if ( value ) {
-						batch.setAttribute( range, this.attributeKey, value );
+						workBatch.setAttribute( range, this.attributeKey, value );
 					} else {
-						batch.removeAttribute( range, this.attributeKey );
+						workBatch.removeAttribute( range, this.attributeKey );
 					}
 				}
 			}
