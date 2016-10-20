@@ -12,6 +12,8 @@ import BoxedEditorUIView from '/ckeditor5/ui/editorui/boxed/boxededitoruiview.js
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
 import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
+import Paragraph from '/ckeditor5/paragraph/paragraph.js';
+import Bold from '/ckeditor5/basic-styles/bold.js';
 
 import testUtils from '/tests/core/_utils/utils.js';
 import count from '/ckeditor5/utils/count.js';
@@ -59,7 +61,7 @@ describe( 'ClassicEditor', () => {
 	describe( 'create', () => {
 		beforeEach( function() {
 			return ClassicEditor.create( editorElement, {
-					features: [ 'paragraph', 'basic-styles/bold' ]
+					features: [ Paragraph, Bold ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -85,7 +87,7 @@ describe( 'ClassicEditor', () => {
 
 	describe( 'destroy', () => {
 		beforeEach( function() {
-			return ClassicEditor.create( editorElement, { features: [ 'paragraph' ] } )
+			return ClassicEditor.create( editorElement, { features: [ Paragraph ] } )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
