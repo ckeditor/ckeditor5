@@ -12,7 +12,6 @@ import Document from '../../engine/model/document.js';
 import FocusTracker from '../../utils/focustracker.js';
 
 import CKEditorError from '../../utils/ckeditorerror.js';
-import isArray from '../../utils/lib/lodash/isArray.js';
 import mix from '../../utils/mix.js';
 
 /**
@@ -119,11 +118,6 @@ export default class Editor {
 
 		function loadPlugins() {
 			let plugins = config.get( 'features' ) || [];
-
-			// Handle features passed as a string.
-			if ( !isArray( plugins ) ) {
-				plugins = plugins.split( ',' );
-			}
 
 			return that.plugins.load( plugins );
 		}
