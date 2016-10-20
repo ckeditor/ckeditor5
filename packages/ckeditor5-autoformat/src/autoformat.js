@@ -33,7 +33,7 @@ export default class Autoformat extends Feature {
 	init() {
 		this._addListAutoformats();
 		this._addHeadingAutoformats();
-		this._addBoldAutoformats();
+		this._addInlineAutoformats();
 	}
 
 	/**
@@ -76,7 +76,7 @@ export default class Autoformat extends Feature {
 		} );
 	}
 
-	_addBoldAutoformats() {
+	_addInlineAutoformats() {
 		// Bold autoformat.
 		new InlineAutoformatEngine(
 			this.editor,
