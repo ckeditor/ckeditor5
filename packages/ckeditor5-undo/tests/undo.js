@@ -21,7 +21,7 @@ describe( 'Undo', () => {
 		const editorElement = document.createElement( 'div' );
 
 		return ClassicTestEditor.create( editorElement, {
-				features: [ 'undo' ]
+				features: [ Undo ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
