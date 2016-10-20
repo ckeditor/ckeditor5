@@ -110,14 +110,6 @@ describe( 'Editor', () => {
 			} );
 
 			return editor.initPlugins().then( () => {
-				editor.plugins.get( PluginA ).init;
-
-				editor.plugins.get( PluginB ).init;
-
-				editor.plugins.get( PluginC ).init;
-
-				editor.plugins.get( PluginD ).init;
-
 				sinon.assert.callOrder(
 					editor.plugins.get( PluginA ).init,
 					editor.plugins.get( PluginB ).init,
