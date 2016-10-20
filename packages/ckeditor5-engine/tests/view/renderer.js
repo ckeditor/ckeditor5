@@ -1093,6 +1093,30 @@ describe( 'Renderer', () => {
 				expect( newContainer ).equals( container );
 				expect( newContainer.innerText ).to.equal( 'label 2' );
 			} );
+
+			it( 'should style fake selection container properly', () => {
+				selection.setFake( true, { label: 'fake selection' } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const container = domRoot.childNodes[ 1 ];
+
+				expect( container.style.position ).to.equal( 'fixed' );
+				expect( container.style.top ).to.equal( '0px' );
+				expect( container.style.left ).to.equal( '-1000px' );
+			} );
+
+			it( 'should bind fake selection container to view selection', () => {
+				selection.setFake( true, { label: 'fake selection' } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const container = domRoot.childNodes[ 1 ];
+
+				const bindSelection = renderer.domConverter.fakeSelectionToView( container );
+				expect( bindSelection ).to.be.defined;
+				expect( bindSelection.isEqual( selection ) ).to.be.true;
+			} );
 		} );
 	} );
 } );
