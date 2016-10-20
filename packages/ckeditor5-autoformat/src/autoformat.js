@@ -9,6 +9,7 @@ import Feature from '../core/feature.js';
 import HeadingEngine from '../heading/headingengine.js';
 import ListEngine from '../list/listengine.js';
 import BoldEngine from '../basic-styles/boldengine.js';
+import ItalicEngine from '../basic-styles/italicengine.js';
 
 /**
  * Includes set of predefined Autoformatting actions:
@@ -24,7 +25,7 @@ export default class Autoformat extends Feature {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ HeadingEngine, ListEngine, BoldEngine ];
+		return [ HeadingEngine, ListEngine, BoldEngine, ItalicEngine ];
 	}
 
 	/**

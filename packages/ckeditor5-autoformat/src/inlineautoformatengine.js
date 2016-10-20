@@ -34,7 +34,7 @@ export default class InlineAutoformatEngine {
 
 			// Apply format before deleting text.
 			ranges.format.forEach( ( range ) => {
-				if ( !range || range[ 0 ] === undefined || range[ 1 ] === undefined ) {
+				if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
 					return;
 				}
 
@@ -50,7 +50,7 @@ export default class InlineAutoformatEngine {
 
 			// Reverse order of deleted ranges to not mix the positions.
 			ranges.remove.slice().reverse().forEach( ( range ) => {
-				if ( !range || range[ 0 ] === undefined || range[ 1 ] === undefined ) {
+				if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
 					return;
 				}
 
