@@ -80,7 +80,7 @@ describe( 'ToggleAttributeCommand', () => {
 
 			expect( command.value ).to.be.true;
 
-			command._doExecute( true );
+			command._doExecute( { forceValue: true } );
 
 			expect( command.value ).to.be.true;
 			expect( getData( modelDoc ) ).to.equal( '<p>abc<$text bold="true">foob[arx</$text>]yz</p>' );
@@ -89,7 +89,7 @@ describe( 'ToggleAttributeCommand', () => {
 		it( 'should remove attribute on selected nodes if execute parameter was set to false', () => {
 			setData( modelDoc, '<p>a[bc<$text bold="true">fo]obar</$text>xyz</p>' );
 
-			command._doExecute( false );
+			command._doExecute( { forceValue: false } );
 
 			expect( command.value ).to.be.false;
 			expect( getData( modelDoc ) ).to.equal( '<p>a[bcfo]<$text bold="true">obar</$text>xyz</p>' );
