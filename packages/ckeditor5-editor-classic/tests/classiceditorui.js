@@ -89,7 +89,7 @@ describe( 'ClassicEditorUI', () => {
 		} );
 
 		it( 'sets toolbar.model#limiterElement', ( done ) => {
-			return editorUI.init().then( () => {
+			editorUI.init().then( () => {
 				expect( editorUI.toolbar.model.limiterElement ).to.equal( editorUI.view.element );
 
 				done();
