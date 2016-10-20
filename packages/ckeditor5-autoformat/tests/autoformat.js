@@ -103,4 +103,33 @@ describe( 'Autoformat', () => {
 			expect( getData( doc ) ).to.equal( '<heading1># []</heading1>' );
 		} );
 	} );
+
+	describe( 'Inline autoformat', () => {
+		it( 'should replace both `**` with bold', () => {
+			setData( doc, '<paragraph>**foobar*[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), '*' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph><$text bold="true">foobar[]</$text></paragraph>' );
+		} );
+
+		it( 'should replace both `*` with italic', () => {
+			setData( doc, '<paragraph>*foobar[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), '*' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph><$text italic="true">foobar[]</$text></paragraph>' );
+		} );
+
+		it( 'nothing should be replaces when typing `*`', () => {
+			setData( doc, '<paragraph>foobar[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), '*' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph>foobar*[]</paragraph>' );
+		} );
+	} );
 } );
