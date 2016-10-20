@@ -464,10 +464,13 @@ export default class Renderer {
 		// Create fake selection container if one does not exist.
 		if ( this._fakeSelectionContainer === null ) {
 			this._fakeSelectionContainer = domDocument.createElement( 'div' );
+			this._fakeSelectionContainer.style.position = 'fixed';
+			this._fakeSelectionContainer.style.top = 0;
+			this._fakeSelectionContainer.style.left = '-1000px';
 		}
 
 		// Add fake container if not already added.
-		if (  this._fakeSelectionContainer.parentElement === null ) {
+		if ( this._fakeSelectionContainer.parentElement === null ) {
 			domRoot.appendChild( this._fakeSelectionContainer );
 		}
 
@@ -484,6 +487,9 @@ export default class Renderer {
 		const domRange = new Range();
 		domRange.selectNodeContents( this._fakeSelectionContainer );
 		domSelection.addRange( domRange );
+
+		// Bind fake selection container with current selection.
+		this.domConverter.bindFakeSelection( this._fakeSelectionContainer, this.selection );
 	}
 
 	/**
