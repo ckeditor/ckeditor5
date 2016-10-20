@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import AutoformatEngine from '/ckeditor5/autoformat/autoformatengine.js';
+import BlockAutoformatEngine from '/ckeditor5/autoformat/blockautoformatengine.js';
 import Paragraph from '/ckeditor5/paragraph/paragraph.js';
 import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
 import Enter from '/ckeditor5/enter/enter.js';
@@ -13,7 +13,7 @@ import Command from '/ckeditor5/core/command/command.js';
 
 testUtils.createSinonSandbox();
 
-describe( 'AutoformatEngine', () => {
+describe( 'BlockAutoformatEngine', () => {
 	let editor, doc, batch;
 
 	beforeEach( () => {
@@ -31,7 +31,7 @@ describe( 'AutoformatEngine', () => {
 		it( 'should run a command when the pattern is matched', () => {
 			const spy = testUtils.sinon.spy();
 			editor.commands.set( 'testCommand', new TestCommand( editor, spy ) );
-			new AutoformatEngine( editor, /^[\*]\s$/, 'testCommand' );
+			new BlockAutoformatEngine( editor, /^[\*]\s$/, 'testCommand' );
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
@@ -44,7 +44,7 @@ describe( 'AutoformatEngine', () => {
 		it( 'should remove found pattern', () => {
 			const spy = testUtils.sinon.spy();
 			editor.commands.set( 'testCommand', new TestCommand( editor, spy ) );
-			new AutoformatEngine( editor, /^[\*]\s$/, 'testCommand' );
+			new BlockAutoformatEngine( editor, /^[\*]\s$/, 'testCommand' );
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
@@ -59,7 +59,7 @@ describe( 'AutoformatEngine', () => {
 	describe( 'Callback', () => {
 		it( 'should run callback when the pattern is matched', () => {
 			const spy = testUtils.sinon.spy();
-			new AutoformatEngine( editor, /^[\*]\s$/, spy );
+			new BlockAutoformatEngine( editor, /^[\*]\s$/, spy );
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
@@ -71,7 +71,7 @@ describe( 'AutoformatEngine', () => {
 
 		it( 'should ignore other delta operations', () => {
 			const spy = testUtils.sinon.spy();
-			new AutoformatEngine( editor, /^[\*]\s/, spy );
+			new BlockAutoformatEngine( editor, /^[\*]\s/, spy );
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
 			doc.enqueueChanges( () => {
@@ -83,7 +83,7 @@ describe( 'AutoformatEngine', () => {
 
 		it( 'should stop if there is no text to run matching on', () => {
 			const spy = testUtils.sinon.spy();
-			new AutoformatEngine( editor, /^[\*]\s/, spy );
+			new BlockAutoformatEngine( editor, /^[\*]\s/, spy );
 
 			setData( doc, '<paragraph>[]</paragraph>' );
 			doc.enqueueChanges( () => {
