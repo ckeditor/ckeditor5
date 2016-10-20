@@ -98,8 +98,8 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Binds given DOM element that represents fake selection to {engine.view.Selection view selection}.
-	 * View selection copy is stored and can be retrieved by {engine.view.DomConverter#fakeSelectionToView} method.
+	 * Binds given DOM element that represents fake selection to {@link engine.view.Selection view selection}.
+	 * View selection copy is stored and can be retrieved by {@link engine.view.DomConverter#fakeSelectionToView} method.
 	 *
 	 * @param {HTMLElement} domElement
 	 * @param {engine.view.Selection} viewSelection
@@ -109,7 +109,7 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Returns {engine.view.Selection view selection} instance corresponding to given DOM element that represents fake
+	 * Returns {@link engine.view.Selection view selection} instance corresponding to given DOM element that represents fake
 	 * selection. Returns `undefined` if binding to given DOM element does not exists.
 	 *
 	 * @param {HTMLElement} domElement
