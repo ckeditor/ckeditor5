@@ -12,6 +12,7 @@ import ModelPosition from '/ckeditor5/engine/model/position.js';
 import ModelRange from '/ckeditor5/engine/model/range.js';
 
 import ViewPosition from '/ckeditor5/engine/view/position.js';
+import Paragraph from '/ckeditor5/paragraph/paragraph.js';
 
 import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
 import { getData as getModelData, setData as setModelData } from '/ckeditor5/engine/dev-utils/model.js';
@@ -22,7 +23,7 @@ describe( 'ListEngine', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			features: [ 'paragraph', ListEngine ]
+			features: [ Paragraph, ListEngine ]
 		} )
 			.then( newEditor => {
 				editor = newEditor;
