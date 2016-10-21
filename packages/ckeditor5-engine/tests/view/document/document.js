@@ -6,6 +6,7 @@
 /* globals document */
 /* bender-tags: view, browser-only */
 
+import createElement from '/ckeditor5/utils/dom/createelement.js';
 import Document from '/ckeditor5/engine/view/document.js';
 import Observer from '/ckeditor5/engine/view/observer/observer.js';
 import MutationObserver from '/ckeditor5/engine/view/observer/mutationobserver.js';
@@ -24,7 +25,19 @@ testUtils.createSinonSandbox();
 
 describe( 'Document', () => {
 	const DEFAULT_OBSERVERS_COUNT = 5;
-	let ObserverMock, ObserverMockGlobalCount, instantiated, enabled;
+	let ObserverMock, ObserverMockGlobalCount, instantiated, enabled, domRoot;
+
+	before( () => {
+		domRoot = createElement( document, 'div', {
+			id: 'editor',
+			contenteditable: 'true'
+		} );
+		document.body.appendChild( domRoot );
+	} );
+
+	after( () => {
+		domRoot.parentElement.removeChild( domRoot );
+	} );
 
 	beforeEach( () => {
 		instantiated = 0;

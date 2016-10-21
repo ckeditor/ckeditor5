@@ -11,19 +11,30 @@ import ViewDocument from '/ckeditor5/engine/view/document.js';
 import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '/ckeditor5/engine/view/filler.js';
 
 import { keyCodes } from '/ckeditor5/utils/keyboard.js';
+import createElement from '/ckeditor5/utils/dom/createelement.js';
 
 import { parse, setData } from '/ckeditor5/engine/dev-utils/view.js';
 
 describe( 'Document', () => {
-	let viewDocument;
+	let viewDocument, domRoot;
 
 	before( () => {
+		domRoot = createElement( document, 'div', {
+			id: 'editor',
+			contenteditable: 'true'
+		} );
+		document.body.appendChild( domRoot );
+
 		viewDocument = new ViewDocument();
-		viewDocument.createRoot( document.getElementById( 'editor' ) ) ;
+		viewDocument.createRoot( domRoot );
 
 		document.getSelection().removeAllRanges();
 
 		viewDocument.isFocused = true;
+	} );
+
+	after( () => {
+		domRoot.parentElement.removeChild( domRoot );
 	} );
 
 	describe( 'jump over inline filler hack', () => {
