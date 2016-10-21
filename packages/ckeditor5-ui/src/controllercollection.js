@@ -120,7 +120,9 @@ export default class ControllerCollection extends Collection {
 	 *
 	 *		// Activate the binding – the **factory** is driven by a custom callback.
 	 *		controllers.bind( data ).as( ( item, locale ) => {
-	 *			if ( item.foo == 'bar' ) {
+	 *			if ( !item.foo ) {
+	 *				return null;
+	 *			} else if ( item.foo == 'bar' ) {
 	 *				return new BarController( ..., BarView( locale ) );
 	 *			} else {
 	 *				return new DifferentController( ..., DifferentView( locale ) );
@@ -133,6 +135,9 @@ export default class ControllerCollection extends Collection {
 	 *
 	 *		// And this one will become DifferentController.
 	 *		data.add( { foo: 'baz' } );
+	 *
+	 *		// Also there will be no controller for data without property `foo`.
+	 *		data.add( {} );
 	 *
 	 *		console.log( controllers.length == 2 );
 	 *
@@ -151,29 +156,74 @@ export default class ControllerCollection extends Collection {
 	 */
 	bind( collection ) {
 		const controllerMap = new Map();
+		const that = this;
 
 		return {
 			as: ( ControllerClassOrFunction, ViewClass ) => {
-				const factory = ViewClass ?
-						defaultControllerFactory( ControllerClassOrFunction, ViewClass, controllerMap )
+				const handler = ViewClass ?
+						defaultControllerHandler( ControllerClassOrFunction, ViewClass )
 					:
-						genericControllerFactory( ControllerClassOrFunction, controllerMap );
+						genericControllerHandler( ControllerClassOrFunction );
 
 				for ( let item of collection ) {
-					this.add( factory.create( item, this.locale ) );
+					handler.add( item );
 				}
 
 				// Updated controller collection when a new item is added.
 				collection.on( 'add', ( evt, item, index ) => {
-					this.add( factory.create( item, this.locale ), index );
+					handler.add( item, index );
 				} );
 
 				// Update controller collection when a item is removed.
 				collection.on( 'remove', ( evt, item ) => {
-					this.remove( factory.delete( item ) );
+					handler.remove( item );
 				} );
 			}
 		};
+
+		function genericControllerHandler( createController ) {
+			return {
+				add( data, index ) {
+					const controller = createController( data, that.locale );
+
+					controllerMap.set( data, controller );
+
+					if ( controller ) {
+						that.add( controller, index ? recalculateIndex( index ) : undefined );
+					}
+				},
+
+				remove( data ) {
+					const controller = controllerMap.get( data );
+
+					controllerMap.delete( controller );
+
+					if ( controller ) {
+						that.remove( controller );
+					}
+				}
+			};
+		}
+
+		// Decrement index for each item which has no corresponding controller.
+		function recalculateIndex( index ) {
+			let outputIndex = index;
+
+			for ( let i = 0; i < index; i++ ) {
+				// index -> data -> controller
+				if ( !controllerMap.get( collection.get( i ) ) ) {
+					outputIndex--;
+				}
+			}
+
+			return outputIndex;
+		}
+
+		function defaultControllerHandler( ControllerClass, ViewClass ) {
+			return genericControllerHandler( ( model ) => {
+				return new ControllerClass( model, new ViewClass( that.locale ) );
+			}, controllerMap );
+		}
 	}
 
 	/**
@@ -245,53 +295,6 @@ export default class ControllerCollection extends Collection {
 			}
 		};
 	}
-}
-
-// Initializes a generic controller factory.
-//
-// @param {Function} createController A function which returns controller instance if provided with data and locale.
-// @param {Map} controllerMap A Map used to associate data in the collection with corresponding controller instance.
-// @returns {Object}
-function genericControllerFactory( createController, controllerMap ) {
-	return {
-		// Returns a controller instance (and its view) for given data (i.e. Model) and locale.
-		//
-		// @param {Object} data A data to creates the controller, usually {@link ui.Model}.
-		// @param {utils.Locale} [locale] The {@link ckeditor5.Editor#locale editor's locale} instance.
-		// @returns {ui.Controller}
-		create( data, locale ) {
-			const controller = createController( data, locale );
-
-			controllerMap.set( data, controller );
-
-			return controller;
-		},
-
-		// Deletes controller instance in the factory by associated data and returns
-		// the controller instance.
-		//
-		// @param {Object} data A data associated with the controller, usually {@link ui.Model}.
-		// @returns {ui.Controller}
-		delete( data ) {
-			const controller = controllerMap.get( data );
-
-			controllerMap.delete( controller );
-
-			return controller;
-		}
-	};
-}
-
-// Initializes controller factory with controller and view classes.
-//
-// @param {Function} ControllerClass Specifies the constructor of the controller to be used.
-// @param {Function} ViewClass Specifies constructor of the view.
-// @param {Map} controllerMap A Map used to associate data in the collection with corresponding controller instance.
-// @returns {Object}
-function defaultControllerFactory( ControllerClass, ViewClass, controllerMap ) {
-	return genericControllerFactory( ( model, locale ) => {
-		return new ControllerClass( model, new ViewClass( locale ) );
-	}, controllerMap );
 }
 
 // Check if all entries of the array are of `String` type.
