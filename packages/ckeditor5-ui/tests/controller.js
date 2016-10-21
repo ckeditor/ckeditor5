@@ -443,6 +443,26 @@ describe( 'Controller', () => {
 				} );
 		} );
 
+		it( 'should destroy child controllers in anonymous collection along with their views', () => {
+			const parentController = new ParentController( null, new ParentView() );
+			const childView = new View();
+			const childController = new Controller( null, childView );
+			const spy = testUtils.sinon.spy( childView, 'destroy' );
+
+			parentController.add( childController );
+
+			return parentController.init()
+				.then( () => {
+					return parentController.destroy();
+				} )
+				.then( () => {
+					sinon.assert.calledOnce( spy );
+					expect( childController.model ).to.be.null;
+					expect( childController.view ).to.be.null;
+					expect( childController.collections ).to.be.null;
+				} );
+		} );
+
 		// See #11
 		it( 'should correctly destroy multiple controller collections', () => {
 			const parentController = new Controller();
