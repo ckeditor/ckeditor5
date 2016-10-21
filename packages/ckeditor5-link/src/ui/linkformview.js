@@ -10,6 +10,8 @@ import ButtonView from '../../ui/button/buttonview.js';
 import LabeledInputView from '../../ui/labeledinput/labeledinputview.js';
 import InputTextView from '../../ui/inputtext/inputtextview.js';
 
+import submitHandler from '../../ui/bindings/submithandler.js';
+
 /**
  * The link form view controller class.
  *
@@ -24,8 +26,6 @@ export default class LinkFormView extends View {
 	 */
 	constructor( locale ) {
 		super( locale );
-
-		const bind = this.bindTemplate;
 
 		/**
 		 * The url input view.
@@ -89,14 +89,11 @@ export default class LinkFormView extends View {
 						this.unlinkButtonView
 					]
 				}
-			],
+			]
+		} );
 
-			on: {
-				submit: bind.to( evt => {
-					evt.preventDefault();
-					this.fire( 'submit' );
-				} )
-			}
+		submitHandler( {
+			view: this
 		} );
 	}
 }
