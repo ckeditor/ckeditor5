@@ -26,9 +26,32 @@ export default class LinkFormView extends View {
 
 		const bind = this.bindTemplate;
 
+		/**
+		 * The url input view.
+		 *
+		 * @member {ui.input.labeled.LabeledInputView} link.ui.LinkFormView#urlInputView
+		 */
 		this.urlInputView = new LabeledInputView( locale );
+
+		/**
+		 * The save button view.
+		 *
+		 * @member {ui.button.ButtonView} link.ui.LinkFormView#saveButtonView
+		 */
 		this.saveButtonView = new ButtonView( locale );
+
+		/**
+		 * The cancel button view.
+		 *
+		 * @member {ui.button.ButtonView} link.ui.LinkFormView#cancelButtonView
+		 */
 		this.cancelButtonView = new ButtonView( locale );
+
+		/**
+		 * The unlink button view.
+		 *
+		 * @member {ui.button.ButtonView} link.ui.LinkFormView#unlinkButtonView
+		 */
 		this.unlinkButtonView = new ButtonView( locale );
 
 		Template.extend( this.saveButtonView.template, {
@@ -76,3 +99,10 @@ export default class LinkFormView extends View {
 		} );
 	}
 }
+
+/**
+ * Fired when the form view is submitted (when one of the child triggered submit event).
+ * E.g. click on {@link link.ui.LinkFormView#saveButtonView}.
+ *
+ * @event link.ui.LinkFormView#submit
+ */

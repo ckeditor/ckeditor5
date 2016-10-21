@@ -32,6 +32,11 @@ export default class LinkForm extends Controller {
 /**
  * The link form component {@link ui.Model model} interface.
  *
- * @extends ui.form.FormModel
  * @interface link.ui.LinkFormModel
+ */
+
+/**
+ * Fired when the view is submitted by the user.
+ *
+ * @event link.ui.LinkFormModel#submit
  */
