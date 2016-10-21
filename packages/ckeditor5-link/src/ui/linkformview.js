@@ -8,6 +8,7 @@ import Template from '../../ui/template.js';
 
 import ButtonView from '../../ui/button/buttonview.js';
 import LabeledInputView from '../../ui/labeledinput/labeledinputview.js';
+import InputTextView from '../../ui/inputtext/inputtextview.js';
 
 /**
  * The link form view controller class.
@@ -31,7 +32,7 @@ export default class LinkFormView extends View {
 		 *
 		 * @member {ui.input.labeled.LabeledInputView} link.ui.LinkFormView#urlInputView
 		 */
-		this.urlInputView = new LabeledInputView( locale );
+		this.urlInputView = new LabeledInputView( InputTextView, locale );
 
 		/**
 		 * The save button view.

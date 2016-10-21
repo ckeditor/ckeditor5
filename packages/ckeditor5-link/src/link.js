@@ -23,7 +23,6 @@ import LinkFormView from './ui/linkformview.js';
 
 import LabeledInput from '../ui/labeledinput/labeledinput.js';
 import InputText from '../ui/inputtext/inputtext.js';
-import InputTextView from '../ui/inputtext/inputtextview.js';
 
 /**
  * The link feature. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
@@ -248,7 +247,7 @@ export default class Link extends Feature {
 		} );
 
 		// Add components to the form.
-		form.add( this._urlInput = new LabeledInput( urlInputModel, formView.urlInputView, InputText, InputTextView, new Model() ) );
+		form.add( this._urlInput = new LabeledInput( urlInputModel, formView.urlInputView, InputText, new Model() ) );
 		form.add( this._saveButton = new Button( saveButtonModel, formView.saveButtonView ) );
 		form.add( this._cancelButton = new Button( cancelButtonModel, formView.cancelButtonView ) );
 		form.add( this._unlinkButton = new Button( unlinkButtonModel, formView.unlinkButtonView ) );
