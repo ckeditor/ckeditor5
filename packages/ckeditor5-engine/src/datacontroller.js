@@ -3,6 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
+import mix from '../utils/mix.js';
+import EmitterMixin from '../utils/emittermixin.js';
+
 import Mapper from './conversion/mapper.js';
 
 import ModelConversionDispatcher from './conversion/modelconversiondispatcher.js';
@@ -16,6 +19,8 @@ import ViewDocumentFragment from './view/documentfragment.js';
 import ModelRange from './model/range.js';
 import ModelPosition from './model/position.js';
 
+import { stringify as stringifyModel } from '../engine/dev-utils/model.js';
+
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
  * and set inside it. Hence, the controller features two methods which allow to {@link engine.DataController#get get}
@@ -27,6 +32,7 @@ import ModelPosition from './model/position.js';
  * * {@link engine.conversion.ViewConversionDispatcher view to model} converters.
  *
  * @memberOf engine
+ * @mixes utils.EmitterMixin
  */
 export default class DataController {
 	/**
@@ -104,6 +110,17 @@ export default class DataController {
 		this.viewToModel.on( 'text', convertText(), { priority: 'lowest' } );
 		this.viewToModel.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		this.viewToModel.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
+
+		this.on( 'insertContent', ( evt, data ) => insertContent.call( this, data.batch, data.selection, data.content ) );
+
+		// TMP!
+		// Create an "all allowed" context in the schema for processing the pasted content.
+		// Read: https://github.com/ckeditor/ckeditor5-engine/issues/638#issuecomment-255086588
+
+		const schema = model.schema;
+
+		schema.registerItem( '$clipboardHolder', '$root' );
+		schema.allow( { name: '$text', inside: '$clipboardHolder' } );
 	}
 
 	/**
@@ -204,4 +221,50 @@ export default class DataController {
 	 * Removes all event listeners set by the DataController.
 	 */
 	destroy() {}
+
+	/**
+	 * See {@link engine.model.composer.insertContent}.
+	 *
+	 * @fires engine.DataController#insertContent
+	 * @param {engine.model.Batch} batch Batch to which deltas will be added.
+	 * @param {engine.model.Selection} selection Selection into which the content should be inserted.
+	 * @param {engine.view.DocumentFragment} content The content to insert.
+	 */
+	insertContent( batch, selection, content ) {
+		this.fire( 'insertContent', { batch, selection, content } );
+	}
+}
+
+mix( DataController, EmitterMixin );
+
+/**
+ * TODO
+ *
+ * @method engine.dataController.insertContent
+ * @context engine.DataController
+ * @param {engine.model.Batch} batch Batch to which deltas will be added.
+ * @param {engine.model.Selection} selection Selection into which the content should be inserted.
+ * The selection should be collapsed.
+ * @param {engine.model.DocumentFragment} content The content to insert.
+ */
+export default function insertContent( batch, selection, content ) {
+	if ( !selection.isCollapsed ) {
+		this.model.composer.deleteContents( batch, selection );
+	}
+
+	// Convert the pasted content to a model document fragment.
+	// Convertion is contextual, but in this case we need an "all allowed" context and for that
+	// we use the $clipboardHolder item. See the comment in the constructor.
+	const modelFragment = this.viewToModel.convert( content, {
+		context: [ '$clipboardHolder' ]
+	} );
+
+	console.log( 'insert (model):' ); // jshint ignore:line
+	console.log( stringifyModel( modelFragment ) ); // jshint ignore:line
+
+	for ( const node of modelFragment ) {
+		const clonedNode = node.clone();
+
+		batch.insert( selection.anchor, clonedNode );
+	}
 }
