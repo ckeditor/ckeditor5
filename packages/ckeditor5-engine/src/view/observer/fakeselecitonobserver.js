@@ -5,6 +5,7 @@
 
 import Observer from './observer.js';
 import ViewSelection from '../selection.js';
+import RootEditableElement from '../rooteditableelement.js';
 import { keyCodes } from '../../../utils/keyboard.js';
 
 /**
@@ -29,24 +30,26 @@ export default class FakeSelectionObserver extends Observer {
 				// Prevents default keydown handling - no selection change will occur.
 				data.preventDefault();
 
-				const newSelection = ViewSelection.createFromSelection( selection );
-				newSelection.setFake( false );
+				// Find selected widget element in selection.
+				const range = selection.getFirstRange();
+				let widget;
 
-				// Left or up arrow pressed - move selection to start.
-				if ( data.keyCode == keyCodes.arrowleft || data.keyCode == keyCodes.arrowup ) {
-					newSelection.collapseToStart();
+				for ( let element of range.getItems() ) {
+					if ( element.isWidget ) {
+						widget = element;
+					}
 				}
 
-				// Right or down arro pressed - move selection to end.
-				if ( data.keyCode == keyCodes.arrowright || data.keyCode == keyCodes.arrowdown ) {
-					newSelection.collapseToEnd();
+				if ( !widget ) {
+					return;
 				}
 
-				document.fire( 'selectionChange', {
-					oldSelection: selection,
-					newSelection: newSelection,
-					domSelection: null
-				} );
+				// Determine if widget is block.
+				if ( widget.parent instanceof RootEditableElement ) {
+					// TODO: handle moving with block widgets.
+				} else {
+					this._handleInlineWidget( widget, data.keyCode );
+				}
 			}
 		}, { priority: 'lowest' } );
 	}
@@ -55,6 +58,37 @@ export default class FakeSelectionObserver extends Observer {
 	 * @inheritDoc
 	 */
 	observe() {}
+
+	_handleInlineWidget( widgetElement, keyCode ) {
+		const selection = this.document.selection;
+		const newSelection = ViewSelection.createFromSelection( selection );
+		newSelection.setFake( false );
+
+		// Left or up arrow pressed - move selection to start.
+		if ( keyCode == keyCodes.arrowleft || keyCode == keyCodes.arrowup ) {
+			newSelection.collapseToStart();
+		}
+
+		// Right or down arrow pressed - move selection to end.
+		if ( keyCode == keyCodes.arrowright || keyCode == keyCodes.arrowdown ) {
+			newSelection.collapseToEnd();
+		}
+
+		// Check if another inline widget is next or before.
+		// const anchor = newSelection.anchor;
+		//
+		// if ( anchor.nodeAfter && anchor.nodeAfter !== widgetElement && anchor.nodeAfter.isWidget ) {
+		// 	newSelection.setRanges( [ ViewRange.createOn( anchor.nodeAfter ) ] );
+		// } else if ( anchor.nodeBefore && anchor.nodeBefore !== widgetElement && anchor.nodeBefore.isWidget ) {
+		// 	newSelection.setRanges( [ ViewRange.createOn( anchor.nodeBefore ) ] );
+		// }
+
+		this.document.fire( 'selectionChange', {
+			oldSelection: selection,
+			newSelection: newSelection,
+			domSelection: null
+		} );
+	}
 }
 
 // Checks if one of the arrow keys is pressed.
@@ -68,3 +102,4 @@ function _isArrowKeyCode( keyCode ) {
 		keyCode == keyCodes.arrowup ||
 		keyCode == keyCodes.arrowdown;
 }
+
