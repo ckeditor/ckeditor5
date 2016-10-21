@@ -120,7 +120,9 @@ export default class ControllerCollection extends Collection {
 	 *
 	 *		// Activate the binding – the **factory** is driven by a custom callback.
 	 *		controllers.bind( data ).as( ( item, locale ) => {
-	 *			if ( item.foo == 'bar' ) {
+	 *			if ( !item.foo ) {
+	 *				return null;
+	 *			} else if ( item.foo == 'bar' ) {
 	 *				return new BarController( ..., BarView( locale ) );
 	 *			} else {
 	 *				return new DifferentController( ..., DifferentView( locale ) );
@@ -133,6 +135,9 @@ export default class ControllerCollection extends Collection {
 	 *
 	 *		// And this one will become DifferentController.
 	 *		data.add( { foo: 'baz' } );
+	 *
+	 *		// Also there will be no controller for data without property `foo`.
+	 *		data.add( {} );
 	 *
 	 *		console.log( controllers.length == 2 );
 	 *
@@ -179,11 +184,13 @@ export default class ControllerCollection extends Collection {
 		function genericControllerHandler( createController ) {
 			return {
 				add( data, index ) {
-					const controller = createController( data );
+					const controller = createController( data, that.locale );
 
 					controllerMap.set( data, controller );
 
-					that.add( controller, index );
+					if ( controller ) {
+						that.add( controller, index ? recalculateIndex( index ) : undefined );
+					}
 				},
 
 				remove( data ) {
@@ -191,9 +198,25 @@ export default class ControllerCollection extends Collection {
 
 					controllerMap.delete( controller );
 
-					this.remove( controller );
+					if ( controller ) {
+						that.remove( controller );
+					}
 				}
 			};
+		}
+
+		// Decrement index for each item which has no corresponding controller.
+		function recalculateIndex( index ) {
+			let outputIndex = index;
+
+			for ( let i = 0; i < index; i++ ) {
+				// index -> data -> controller
+				if ( !controllerMap.get( collection.get( i ) ) ) {
+					outputIndex--;
+				}
+			}
+
+			return outputIndex;
 		}
 
 		function defaultControllerHandler( ControllerClass, ViewClass ) {

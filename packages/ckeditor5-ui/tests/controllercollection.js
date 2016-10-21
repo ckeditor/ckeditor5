@@ -127,7 +127,7 @@ describe( 'ControllerCollection', () => {
 				expect( returned ).to.be.undefined;
 			} );
 
-			describe( 'standard factory', () => {
+			describe( 'standard handler', () => {
 				it( 'expands the initial collection of the models', () => {
 					const controllers = new ControllerCollection( 'synced' );
 
@@ -181,7 +181,7 @@ describe( 'ControllerCollection', () => {
 				} );
 			} );
 
-			describe( 'custom factory', () => {
+			describe( 'custom handler', () => {
 				it( 'expands the initial collection of the models', () => {
 					const controllers = new ControllerCollection( 'synced' );
 
@@ -233,6 +233,70 @@ describe( 'ControllerCollection', () => {
 					expect( controllers.map( c => c.model.uid ) ).to.have.members( [ '0', '1', '3' ] );
 				} );
 
+				it( 'supports returning null', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ( model, locale ) => {
+						if ( model.uid == 2 ) {
+							return null;
+						} else {
+							return new ItemController( model, new ItemView( locale ) );
+						}
+					} );
+
+					expect( controllers.map( c => c.model.uid ) ).to.have.members( [ '0', '1', '3', '4' ] );
+				} );
+
+				it( 'supports adding to structure with missing controller', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ( model, locale ) => {
+						if ( model.uid == 2 ) {
+							return null;
+						} else {
+							return new ItemController( model, new ItemView( locale ) );
+						}
+					} );
+
+					models.add( new Model( { uid: '0.5' } ), 1 );
+					models.add( new Model( { uid: '3.5' } ), 5 );
+
+					expect( models.map( c => c.uid ) ).to.have.members( [ '0', '0.5', '1', '2', '3', '3.5', '4' ] );
+					expect( controllers.map( c => c.model.uid ) ).to.have.members( [ '0', '0.5', '1', '3', '3.5', '4' ] );
+				} );
+
+				it( 'supports removing to structure with missing controller', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ( model, locale ) => {
+						if ( model.uid == 2 ) {
+							return null;
+						} else {
+							return new ItemController( model, new ItemView( locale ) );
+						}
+					} );
+
+					models.remove( 3 );
+
+					expect( controllers.map( c => c.model.uid ) ).to.have.members( [ '0', '1', '4' ] );
+				} );
+
+				it( 'supports removing model with missing controller', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ( model, locale ) => {
+						if ( model.uid == 2 ) {
+							return null;
+						} else {
+							return new ItemController( model, new ItemView( locale ) );
+						}
+					} );
+
+					models.remove( 2 );
+
+					expect( controllers.map( c => c.model.uid ) ).to.have.members( [ '0', '1', '3', '4' ] );
+				} );
+
 				it( 'passes controller collection\'s locale to the views', () => {
 					const locale = {};
 					const controllers = new ControllerCollection( 'synced', locale );
@@ -245,7 +309,7 @@ describe( 'ControllerCollection', () => {
 				} );
 			} );
 
-			describe( 'custom data format with custom factory', () => {
+			describe( 'custom data format with custom handler', () => {
 				it( 'expands the initial collection of the models', () => {
 					const controllers = new ControllerCollection( 'synced' );
 					const data = new Collection();
