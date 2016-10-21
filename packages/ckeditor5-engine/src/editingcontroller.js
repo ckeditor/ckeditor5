@@ -11,7 +11,8 @@ import { convertSelectionChange } from './conversion/view-selection-to-model-con
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
-	clearAttributes
+	clearAttributes,
+	clearFakeSelection
 } from './conversion/model-selection-to-view-converters.js';
 
 import EmitterMixin from '../utils/emittermixin.js';
@@ -105,6 +106,7 @@ export default class EditingController {
 
 		// Attach default selection converters.
 		this.modelToView.on( 'selection', clearAttributes(), { priority: 'low' } );
+		this.modelToView.on( 'selection', clearFakeSelection(), { priority: 'low' } );
 		this.modelToView.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.modelToView.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 	}
