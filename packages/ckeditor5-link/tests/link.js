@@ -68,6 +68,7 @@ describe( 'Link', () => {
 			const model = linkButton.model;
 			const command = editor.commands.get( 'link' );
 
+			command.isEnabled = true;
 			expect( model.isEnabled ).to.be.true;
 
 			command.isEnabled = false;
@@ -128,10 +129,11 @@ describe( 'Link', () => {
 			const model = unlinkButton.model;
 			const command = editor.commands.get( 'unlink' );
 
-			expect( model.isEnabled ).to.false;
-
 			command.isEnabled = true;
-			expect( model.isEnabled ).to.true;
+			expect( model.isEnabled ).to.be.true;
+
+			command.isEnabled = false;
+			expect( model.isEnabled ).to.be.false;
 		} );
 
 		it( 'should execute unlink command on unlinkButton#model execute event', () => {
