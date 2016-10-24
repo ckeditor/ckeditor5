@@ -5,7 +5,6 @@
 
 import Observer from './observer.js';
 import ViewSelection from '../selection.js';
-import RootEditableElement from '../rooteditableelement.js';
 import { keyCodes } from '../../../utils/keyboard.js';
 
 /**
@@ -17,9 +16,13 @@ import { keyCodes } from '../../../utils/keyboard.js';
  *
  * @memberOf engine.view.observer
  * @extends engine.view.observer.Observer
- * @fires engine.view.Document#selectionChage
  */
 export default class FakeSelectionObserver extends Observer {
+	/**
+	 * Creates new FakeSelectionObserver instance.
+	 *
+	 * @param {engine.view.Document} document
+	 */
 	constructor( document ) {
 		super( document );
 
@@ -27,29 +30,10 @@ export default class FakeSelectionObserver extends Observer {
 			const selection = document.selection;
 
 			if ( selection.isFake && _isArrowKeyCode( data.keyCode ) ) {
-				// Prevents default keydown handling - no selection change will occur.
+				// Prevents default key down handling - no selection change will occur.
 				data.preventDefault();
 
-				// Find selected widget element in selection.
-				const range = selection.getFirstRange();
-				let widget;
-
-				for ( let element of range.getItems() ) {
-					if ( element.isWidget ) {
-						widget = element;
-					}
-				}
-
-				if ( !widget ) {
-					return;
-				}
-
-				// Determine if widget is block.
-				if ( widget.parent instanceof RootEditableElement ) {
-					// TODO: handle moving with block widgets.
-				} else {
-					this._handleInlineWidget( widget, data.keyCode );
-				}
+				this._handleSelectionMove( data.keyCode );
 			}
 		}, { priority: 'lowest' } );
 	}
@@ -59,7 +43,18 @@ export default class FakeSelectionObserver extends Observer {
 	 */
 	observe() {}
 
-	_handleInlineWidget( widgetElement, keyCode ) {
+	/**
+	 * Handles collapsing view selection according to given key code. If left or up key is provided - new selection will be
+	 * collapsed to left. If right or down key is pressed - new selection will be collapsed to right.
+	 *
+	 * This method fires {@link engine.view.Document#selectionChange} event imitating behaviour of
+	 * {@link engine.view.observer.SelectionObserver}.
+	 *
+	 * @private
+	 * @param {Number} keyCode
+	 * @fires engine.view.Document#selectionChage
+	 */
+	_handleSelectionMove( keyCode ) {
 		const selection = this.document.selection;
 		const newSelection = ViewSelection.createFromSelection( selection );
 		newSelection.setFake( false );
@@ -74,15 +69,7 @@ export default class FakeSelectionObserver extends Observer {
 			newSelection.collapseToEnd();
 		}
 
-		// Check if another inline widget is next or before.
-		// const anchor = newSelection.anchor;
-		//
-		// if ( anchor.nodeAfter && anchor.nodeAfter !== widgetElement && anchor.nodeAfter.isWidget ) {
-		// 	newSelection.setRanges( [ ViewRange.createOn( anchor.nodeAfter ) ] );
-		// } else if ( anchor.nodeBefore && anchor.nodeBefore !== widgetElement && anchor.nodeBefore.isWidget ) {
-		// 	newSelection.setRanges( [ ViewRange.createOn( anchor.nodeBefore ) ] );
-		// }
-
+		// Fire dummy selection change event.
 		this.document.fire( 'selectionChange', {
 			oldSelection: selection,
 			newSelection: newSelection,
