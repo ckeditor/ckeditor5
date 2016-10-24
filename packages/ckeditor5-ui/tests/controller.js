@@ -26,7 +26,9 @@ describe( 'Controller', () => {
 			expect( controller.model ).to.be.null;
 			expect( controller.ready ).to.be.false;
 			expect( controller.view ).to.be.null;
-			expect( controller.collections.length ).to.be.equal( 0 );
+
+			expect( controller.collections.length ).to.equal( 1 );
+			expect( controller.collections.get( '$anonymous' ) ).to.be.instanceOf( ControllerCollection );
 		} );
 
 		it( 'should accept model and view', () => {
@@ -34,8 +36,8 @@ describe( 'Controller', () => {
 			const view = new View();
 			const controller = new Controller( model, view );
 
-			expect( controller.model ).to.be.equal( model );
-			expect( controller.view ).to.be.equal( view );
+			expect( controller.model ).to.equal( model );
+			expect( controller.view ).to.equal( view );
 		} );
 	} );
 
@@ -92,8 +94,8 @@ describe( 'Controller', () => {
 			buttonCollection.add( childController2 );
 
 			return parentController.init().then( () => {
-				expect( buttonCollection.get( 0 ) ).to.be.equal( childController1 );
-				expect( buttonCollection.get( 1 ) ).to.be.equal( childController2 );
+				expect( buttonCollection.get( 0 ) ).to.equal( childController1 );
+				expect( buttonCollection.get( 1 ) ).to.equal( childController2 );
 
 				sinon.assert.calledOnce( spy1 );
 				sinon.assert.calledOnce( spy2 );
@@ -108,23 +110,18 @@ describe( 'Controller', () => {
 			const spy1 = testUtils.sinon.spy( child1, 'init' );
 			const spy2 = testUtils.sinon.spy( child2, 'init' );
 
-			let collection = parentController.collections.get( '_anonymous' );
-
-			expect( collection ).to.be.null;
+			const collection = parentController.collections.get( '$anonymous' );
 
 			parentController.add( child1 );
 			parentController.add( child2 );
 
-			collection = parentController.collections.get( '_anonymous' );
-
-			expect( collection ).to.be.instanceOf( ControllerCollection );
 			expect( collection ).to.have.length( 2 );
-			expect( collection.get( 0 ) ).to.be.equal( child1 );
-			expect( collection.get( 1 ) ).to.be.equal( child2 );
+			expect( collection.get( 0 ) ).to.equal( child1 );
+			expect( collection.get( 1 ) ).to.equal( child2 );
 
 			return parentController.init().then( () => {
-				expect( collection.get( 0 ) ).to.be.equal( child1 );
-				expect( collection.get( 1 ) ).to.be.equal( child2 );
+				expect( collection.get( 0 ) ).to.equal( child1 );
+				expect( collection.get( 1 ) ).to.equal( child2 );
 
 				sinon.assert.calledOnce( spy1 );
 				sinon.assert.calledOnce( spy2 );
@@ -151,8 +148,8 @@ describe( 'Controller', () => {
 			parentController.add( 'x', child2 );
 
 			expect( collection ).to.have.length( 2 );
-			expect( collection.get( 0 ) ).to.be.equal( child1 );
-			expect( collection.get( 1 ) ).to.be.equal( child2 );
+			expect( collection.get( 0 ) ).to.equal( child1 );
+			expect( collection.get( 1 ) ).to.equal( child2 );
 		} );
 
 		it( 'should add a controller at specific index', () => {
@@ -165,8 +162,8 @@ describe( 'Controller', () => {
 			parentController.add( 'x', child2, 0 );
 
 			expect( collection ).to.have.length( 2 );
-			expect( collection.get( 0 ) ).to.be.equal( child2 );
-			expect( collection.get( 1 ) ).to.be.equal( child1 );
+			expect( collection.get( 0 ) ).to.equal( child2 );
+			expect( collection.get( 1 ) ).to.equal( child1 );
 		} );
 
 		it( 'should add a controller to the anonymous collection', () => {
@@ -174,19 +171,14 @@ describe( 'Controller', () => {
 			const child1 = new Controller( null, new View() );
 			const child2 = new Controller( null, new View() );
 
-			let collection = parentController.collections.get( '_anonymous' );
-
-			expect( collection ).to.be.null;
+			const collection = parentController.collections.get( '$anonymous' );
 
 			parentController.add( child1 );
 			parentController.add( child2 );
 
-			collection = parentController.collections.get( '_anonymous' );
-
-			expect( collection ).to.be.instanceOf( ControllerCollection );
 			expect( collection ).to.have.length( 2 );
-			expect( collection.get( 0 ) ).to.be.equal( child1 );
-			expect( collection.get( 1 ) ).to.be.equal( child2 );
+			expect( collection.get( 0 ) ).to.equal( child1 );
+			expect( collection.get( 1 ) ).to.equal( child2 );
 		} );
 	} );
 
@@ -207,9 +199,9 @@ describe( 'Controller', () => {
 			const removed = parentController.remove( 'x', child2 );
 
 			expect( collection ).to.have.length( 2 );
-			expect( collection.get( 0 ) ).to.be.equal( child1 );
-			expect( collection.get( 1 ) ).to.be.equal( child3 );
-			expect( removed ).to.be.equal( child2 );
+			expect( collection.get( 0 ) ).to.equal( child1 );
+			expect( collection.get( 1 ) ).to.equal( child3 );
+			expect( removed ).to.equal( child2 );
 		} );
 
 		it( 'should remove a controller from specific collection – by index', () => {
@@ -226,9 +218,9 @@ describe( 'Controller', () => {
 			const removed = parentController.remove( 'x', 1 );
 
 			expect( collection ).to.have.length( 2 );
-			expect( collection.get( 0 ) ).to.be.equal( child1 );
-			expect( collection.get( 1 ) ).to.be.equal( child3 );
-			expect( removed ).to.be.equal( child2 );
+			expect( collection.get( 0 ) ).to.equal( child1 );
+			expect( collection.get( 1 ) ).to.equal( child3 );
+			expect( removed ).to.equal( child2 );
 		} );
 
 		it( 'should remove a controller from the anonymous collection', () => {
@@ -241,13 +233,13 @@ describe( 'Controller', () => {
 			parentController.add( child2 );
 			parentController.add( child3 );
 
-			const collection = parentController.collections.get( '_anonymous' );
+			const collection = parentController.collections.get( '$anonymous' );
 			const removed = parentController.remove( child2 );
 
 			expect( collection ).to.have.length( 2 );
-			expect( collection.get( 0 ) ).to.be.equal( child1 );
-			expect( collection.get( 1 ) ).to.be.equal( child3 );
-			expect( removed ).to.be.equal( child2 );
+			expect( collection.get( 0 ) ).to.equal( child1 );
+			expect( collection.get( 1 ) ).to.equal( child3 );
+			expect( removed ).to.equal( child2 );
 		} );
 	} );
 
@@ -266,7 +258,7 @@ describe( 'Controller', () => {
 						return collection.add( childController );
 					} )
 					.then( () => {
-						expect( collection.get( 0 ) ).to.be.equal( childController );
+						expect( collection.get( 0 ) ).to.equal( childController );
 					} );
 			} );
 
@@ -314,8 +306,8 @@ describe( 'Controller', () => {
 					.then( () => {
 						const region = parentController.view.regions.get( 'x' );
 
-						expect( region.views.get( 0 ) ).to.be.equal( childView2 );
-						expect( region.views.get( 1 ) ).to.be.equal( childView1 );
+						expect( region.views.get( 0 ) ).to.equal( childView2 );
+						expect( region.views.get( 1 ) ).to.equal( childView1 );
 					} );
 			} );
 
@@ -531,7 +523,7 @@ describe( 'Controller', () => {
 
 			controller.addCollection( 'foo' );
 
-			expect( controller.collections ).to.have.length( 1 );
+			expect( controller.collections ).to.have.length( 2 );
 			expect( controller.collections.get( 'foo' ).name ).to.equal( 'foo' );
 		} );
 

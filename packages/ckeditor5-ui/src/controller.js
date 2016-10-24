@@ -9,7 +9,7 @@ import CKEditorError from '../utils/ckeditorerror.js';
 import EmitterMixin from '../utils/emittermixin.js';
 import mix from '../utils/mix.js';
 
-const anon = '_anonymous';
+const anon = '$anonymous';
 
 /**
  * Basic Controller class.
@@ -56,14 +56,21 @@ export default class Controller {
 			idProperty: 'name'
 		} );
 
+		/**
+		 * Anonymous collection of this controller instance. It groups child controllers
+		 * which are not to be handled by `Controller#collections`–to–`View#region`
+		 * automation. It also means their views must be handled individually
+		 * by the view, i.e. passed as members of {@link ui.TemplateDefinition#children}.
+		 *
+		 * @protected
+		 * @member {ui.ControllerCollection} ui.Controller#_anonymousCollection
+		 */
+		this.collections.add( this._anonymousCollection = new ControllerCollection( anon ) );
+
 		// Listen to {@link ControllerCollection#add} and {@link ControllerCollection#remove}
 		// of newly added Collection to synchronize this controller's view and children
 		// controllers' views in the future.
 		this.collections.on( 'add', ( evt, collection ) => {
-			if ( isAnonymous( collection ) ) {
-				return;
-			}
-
 			// Set the {@link ControllerCollection#parent} to this controller.
 			// It allows the collection to determine the {@link #ready} state of this controller
 			// and accordingly initialize a child controller when added.
@@ -249,6 +256,9 @@ export default class Controller {
 
 		for ( collection of this.collections ) {
 			for ( childController of collection ) {
+				// Anonymous collection {@link ui.Controller#_anonymousCollection} does not allow
+				// automated controller-to-view binding, because there's no such thing as
+				// anonymous Region in the View instance.
 				if ( !isAnonymous( collection ) && this.view && childController.view ) {
 					this.view.regions.get( collection.name ).views.add( childController.view );
 				}
@@ -258,26 +268,6 @@ export default class Controller {
 		}
 
 		return Promise.all( promises );
-	}
-
-	/**
-	 * Anonymous collection of this controller instance. It groups child controllers
-	 * which are not to be handled by `Controller#collections`–to–`View#region`
-	 * automation. It also means their views must be handled individually
-	 * by the view, i.e. passed as members of {@link ui.TemplateDefinition#children}.
-	 *
-	 * @protected
-	 * @type {ui.ControllerCollection}
-	 */
-	get _anonymousCollection() {
-		let collection = this.collections.get( anon );
-
-		if ( !collection ) {
-			collection = new ControllerCollection( anon );
-			this.collections.add( collection );
-		}
-
-		return collection;
 	}
 }
 
