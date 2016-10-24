@@ -13,7 +13,7 @@ import { setData as setModelData } from '/ckeditor5/engine/dev-utils/model.js';
 import Link from '/ckeditor5/link/link.js';
 import LinkEngine from '/ckeditor5/link/linkengine.js';
 import Button from '/ckeditor5/ui/button/button.js';
-import LinkBalloonPanel from '/ckeditor5/link/ui/linkballoonpanel.js';
+import BalloonPanel from '/ckeditor5/ui/balloonpanel/balloonpanel.js';
 
 import Range from '/ckeditor5/engine/view/range.js';
 import ClickObserver from '/ckeditor5/engine/view/observer/clickobserver.js';
@@ -21,7 +21,7 @@ import ClickObserver from '/ckeditor5/engine/view/observer/clickobserver.js';
 testUtils.createSinonSandbox();
 
 describe( 'Link', () => {
-	let editor, linkFeature, linkButton, unlinkButton, balloonPanel, editorElement;
+	let editor, linkFeature, linkButton, unlinkButton, balloonPanel, form, editorElement;
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -39,6 +39,7 @@ describe( 'Link', () => {
 			linkButton = editor.ui.featureComponents.create( 'link' );
 			unlinkButton = editor.ui.featureComponents.create( 'unlink' );
 			balloonPanel = linkFeature.balloonPanel;
+			form = linkFeature.form;
 		} );
 	} );
 
@@ -109,7 +110,7 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should select panel input value when panel is opened', () => {
-			const selectUrlInputSpy = testUtils.sinon.spy( balloonPanel.urlInput.view, 'select' );
+			const selectUrlInputSpy = testUtils.sinon.spy( linkFeature.form.urlInput.view, 'select' );
 
 			editor.editing.view.isFocused = true;
 
@@ -154,7 +155,7 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should be created', () => {
-			expect( balloonPanel ).to.instanceOf( LinkBalloonPanel );
+			expect( balloonPanel ).to.instanceOf( BalloonPanel );
 		} );
 
 		it( 'should be appended to the document body', () => {
@@ -162,7 +163,7 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should open with selected url input on `CTRL+K` keystroke', () => {
-			const selectUrlInputSpy = testUtils.sinon.spy( balloonPanel.urlInput.view, 'select' );
+			const selectUrlInputSpy = testUtils.sinon.spy( linkFeature.form.urlInput.view, 'select' );
 
 			editor.keystrokes.press( { keyCode: keyCodes.k, ctrlKey: true } );
 
@@ -176,59 +177,6 @@ describe( 'Link', () => {
 			balloonPanel.view.element.dispatchEvent( new Event( 'focus' ) );
 
 			expect( editor.focusTracker.isFocused ).to.true;
-		} );
-
-		describe( 'binding', () => {
-			it( 'should bind balloonPanel#model to link command', () => {
-				const model = balloonPanel.model;
-				const command = editor.commands.get( 'link' );
-
-				expect( model.url ).to.undefined;
-
-				command.value = 'http://cksource.com';
-
-				expect( model.url ).to.equal( 'http://cksource.com' );
-			} );
-
-			it( 'should execute link command on balloonPanel#model executeLink event', () => {
-				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
-
-				balloonPanel.model.url = 'http://cksource.com';
-				balloonPanel.model.fire( 'executeLink' );
-
-				expect( executeSpy.calledOnce ).to.true;
-				expect( executeSpy.calledWithExactly( 'link', 'http://cksource.com' ) ).to.true;
-			} );
-
-			it( 'should hide and focus editable on balloonPanel#model executeLink event', () => {
-				balloonPanel.model.fire( 'executeLink' );
-
-				expect( hidePanelSpy.calledOnce ).to.true;
-				expect( focusEditableSpy.calledOnce ).to.true;
-			} );
-
-			it( 'should execute unlink command on balloonPanel#model executeUnlink event', () => {
-				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
-
-				balloonPanel.model.fire( 'executeUnlink' );
-
-				expect( executeSpy.calledOnce ).to.true;
-				expect( executeSpy.calledWithExactly( 'unlink' ) ).to.true;
-			} );
-
-			it( 'should hide and focus editable on balloonPanel#model executeUnlink event', () => {
-				balloonPanel.model.fire( 'executeUnlink' );
-
-				expect( hidePanelSpy.calledOnce ).to.true;
-				expect( focusEditableSpy.calledOnce ).to.true;
-			} );
-
-			it( 'should hide and focus editable on balloonPanel#model executeCancel event', () => {
-				balloonPanel.model.fire( 'executeCancel' );
-
-				expect( hidePanelSpy.calledOnce ).to.true;
-				expect( focusEditableSpy.calledOnce ).to.true;
-			} );
 		} );
 
 		describe( 'close listeners', () => {
@@ -263,7 +211,7 @@ describe( 'Link', () => {
 
 		describe( 'click on editable', () => {
 			it( 'should open with not selected url input when collapsed selection is inside link element', () => {
-				const selectUrlInputSpy = testUtils.sinon.spy( balloonPanel.urlInput.view, 'select' );
+				const selectUrlInputSpy = testUtils.sinon.spy( linkFeature.form.urlInput.view, 'select' );
 				const observer = editor.editing.view.getObserver( ClickObserver );
 
 				editor.document.schema.allow( { name: '$text', inside: '$root' } );
@@ -396,6 +344,67 @@ describe( 'Link', () => {
 				observer.fire( 'click', { target: document.body } );
 
 				expect( balloonPanel.view.isVisible ).to.false;
+			} );
+		} );
+	} );
+
+	describe( 'link form', () => {
+		let hidePanelSpy, focusEditableSpy;
+
+		beforeEach( () => {
+			hidePanelSpy = testUtils.sinon.spy( balloonPanel.view, 'hide' );
+			focusEditableSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+		} );
+
+		describe( 'binding', () => {
+			it( 'should bind form.model#url to link command value', () => {
+				const model = linkFeature.form.model;
+				const command = editor.commands.get( 'link' );
+
+				expect( model.value ).to.undefined;
+
+				command.value = 'http://cksource.com';
+				expect( model.url ).to.equal( 'http://cksource.com' );
+			} );
+
+			it( 'should execute link command on form.model#submit event', () => {
+				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+
+				form.model.url = 'http://cksource.com';
+				form.model.fire( 'submit' );
+
+				expect( executeSpy.calledOnce ).to.true;
+				expect( executeSpy.calledWithExactly( 'link', 'http://cksource.com' ) ).to.true;
+			} );
+
+			it( 'should hide and focus editable on form.model#submit event', () => {
+				form.model.fire( 'submit' );
+
+				expect( hidePanelSpy.calledOnce ).to.true;
+				expect( focusEditableSpy.calledOnce ).to.true;
+			} );
+
+			it( 'should execute unlink command on form.model#unlink event', () => {
+				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+
+				form.model.fire( 'unlink' );
+
+				expect( executeSpy.calledOnce ).to.true;
+				expect( executeSpy.calledWithExactly( 'unlink' ) ).to.true;
+			} );
+
+			it( 'should hide and focus editable on form.model#unlink event', () => {
+				form.model.fire( 'unlink' );
+
+				expect( hidePanelSpy.calledOnce ).to.true;
+				expect( focusEditableSpy.calledOnce ).to.true;
+			} );
+
+			it( 'should hide and focus editable on form.model#cancel event', () => {
+				form.model.fire( 'cancel' );
+
+				expect( hidePanelSpy.calledOnce ).to.true;
+				expect( focusEditableSpy.calledOnce ).to.true;
 			} );
 		} );
 	} );

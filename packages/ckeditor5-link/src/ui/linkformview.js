@@ -3,8 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
+import View from '../../ui/view.js';
 import Template from '../../ui/template.js';
-import FormView from '../../ui/form/formview.js';
+
+import ButtonView from '../../ui/button/buttonview.js';
+import LabeledInputView from '../../ui/labeledinput/labeledinputview.js';
+import InputTextView from '../../ui/inputtext/inputtextview.js';
+
+import submitHandler from '../../ui/bindings/submithandler.js';
 
 /**
  * The link form view controller class.
@@ -12,30 +18,89 @@ import FormView from '../../ui/form/formview.js';
  * See {@link link.ui.LinkForm}.
  *
  * @memberOf link.ui
- * @extends ui.form.FormView
+ * @extends ui.View
  */
-export default class LinkFormView extends FormView {
+export default class LinkFormView extends View {
 	/**
 	 * @inheritDoc
 	 */
 	constructor( locale ) {
 		super( locale );
 
-		Template.extend( this.template, {
+		/**
+		 * The url input view.
+		 *
+		 * @member {ui.input.labeled.LabeledInputView} link.ui.LinkFormView#urlInputView
+		 */
+		this.urlInputView = new LabeledInputView( InputTextView, locale );
+
+		/**
+		 * The save button view.
+		 *
+		 * @member {ui.button.ButtonView} link.ui.LinkFormView#saveButtonView
+		 */
+		this.saveButtonView = new ButtonView( locale );
+
+		/**
+		 * The cancel button view.
+		 *
+		 * @member {ui.button.ButtonView} link.ui.LinkFormView#cancelButtonView
+		 */
+		this.cancelButtonView = new ButtonView( locale );
+
+		/**
+		 * The unlink button view.
+		 *
+		 * @member {ui.button.ButtonView} link.ui.LinkFormView#unlinkButtonView
+		 */
+		this.unlinkButtonView = new ButtonView( locale );
+
+		Template.extend( this.saveButtonView.template, {
 			attributes: {
 				class: [
-					'ck-link-form',
+					'ck-button-action'
 				]
 			}
 		} );
 
-		this.template.children.add( new Template( {
-			tag: 'div',
-			attributes: {
-				class: 'ck-link-form__actions'
-			}
-		} ) );
+		this.template = new Template( {
+			tag: 'form',
 
-		this.register( 'actions', 'div.ck-link-form__actions' );
+			attributes: {
+				class: [
+					'ck-link-form',
+				]
+			},
+
+			children: [
+				this.urlInputView,
+				{
+					tag: 'div',
+
+					attributes: {
+						class: [
+							'ck-link-form__actions'
+						]
+					},
+
+					children: [
+						this.saveButtonView,
+						this.cancelButtonView,
+						this.unlinkButtonView
+					]
+				}
+			]
+		} );
+
+		submitHandler( {
+			view: this
+		} );
 	}
 }
+
+/**
+ * Fired when the form view is submitted (when one of the child triggered submit event).
+ * E.g. click on {@link link.ui.LinkFormView#saveButtonView}.
+ *
+ * @event link.ui.LinkFormView#submit
+ */
