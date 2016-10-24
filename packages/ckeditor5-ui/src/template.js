@@ -510,21 +510,18 @@ export default class Template {
 	 */
 	_renderElementChildren( elOrDocFragment, shouldApply ) {
 		let childIndex = 0;
-		let tpl, rendered;
 
 		for ( let child of this.children ) {
-			tpl = isView( child ) ? child.template : child;
-
-			if ( shouldApply ) {
-				rendered = tpl._renderNode( elOrDocFragment.childNodes[ childIndex++ ] );
-			} else {
-				elOrDocFragment.appendChild( ( rendered = tpl.render() ) );
-			}
-
-			// Set the element of the view the template belongs to to avoid re–rendering
-			// when the element later on by the view.
 			if ( isView( child ) ) {
-				child.element = rendered;
+				if ( !shouldApply ) {
+					elOrDocFragment.appendChild( child.element );
+				}
+			} else {
+				if ( shouldApply ) {
+					child._renderNode( elOrDocFragment.childNodes[ childIndex++ ] );
+				} else {
+					elOrDocFragment.appendChild( child.render() );
+				}
 			}
 		}
 	}
