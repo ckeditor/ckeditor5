@@ -4,7 +4,7 @@
  */
 
 import Range from '../engine/model/range.js';
-
+import CKEditorError from '../utils/ckeditorerror.js';
 /**
  * A paragraph feature for editor.
  * Introduces `<paragraph>` element in the model which renders as `<p>` in the DOM and data.
@@ -14,8 +14,62 @@ import Range from '../engine/model/range.js';
  */
 export default class InlineAutoformatEngine {
 
-	constructor( editor, testCallback, formatCallback ) {
+	constructor( editor, testCallbackOrPattern, formatCallbackOrCommand ) {
 		this.editor = editor;
+
+		let pattern;
+		let command;
+		let testClb;
+		let formatClb;
+
+		if ( typeof testCallbackOrPattern == 'string' ) {
+			pattern = new RegExp( testCallbackOrPattern );
+		} else if ( testCallbackOrPattern instanceof RegExp ) {
+			pattern = testCallbackOrPattern;
+		} else {
+			testClb = testCallbackOrPattern;
+		}
+
+		if ( typeof formatCallbackOrCommand == 'string' ) {
+			command = formatCallbackOrCommand;
+		} else {
+			formatClb = formatCallbackOrCommand;
+		}
+
+		testClb = testClb || ( ( text ) => {
+			let result;
+			let remove = [];
+			let format = [];
+
+			// First run.
+			result = pattern.exec( text );
+
+			// There should be full match and 3 capture groups.
+			if ( result.length < 4 ) {
+				throw new CKEditorError( 'inlineautoformat-missing-capture-groups: Less than 3 capture groups in regular expression.' );
+			}
+
+			do {
+				const {
+					index: start,
+					'1': leftDelimiter,
+					'2': content,
+					'3': rightDelimiter
+				} = result;
+
+				const delStart = [ start,           start + leftDelimiter.length ];
+				const delEnd =   [ start + content, start + content.length + rightDelimiter.length ];
+
+				remove.push( delStart );
+				remove.push( delEnd );
+
+				format.push( [ start + leftDelimiter.length, start + leftDelimiter.length + content.length ] );
+			} while ( ( result = pattern.exec( text ) ) !== null );
+		} );
+
+		formatClb = formatClb || ( ( editor, range, batch ) => {
+			editor.execute( command, { batch: batch } );
+		} );
 
 		editor.document.on( 'change', ( evt, type ) => {
 			if ( type !== 'insert' ) {
@@ -30,7 +84,7 @@ export default class InlineAutoformatEngine {
 				return;
 			}
 
-			const ranges = testCallback( text );
+			const ranges = testClb( text );
 
 			// Apply format before deleting text.
 			ranges.format.forEach( ( range ) => {
@@ -43,8 +97,15 @@ export default class InlineAutoformatEngine {
 					block, range[ 1 ]
 				);
 
+				const selection = this.editor.document.selection;
+				const originalRanges = [ ...selection.getRanges() ];
+
 				editor.document.enqueueChanges( () => {
-					formatCallback( this.editor, rangeToFormat, batch );
+					selection.setRanges( [ rangeToFormat ] );
+
+					formatClb( this.editor, rangeToFormat, batch );
+
+					selection.setRanges( originalRanges );
 				} );
 			} );
 
