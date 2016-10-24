@@ -17,6 +17,8 @@ import Heading from '/ckeditor5/heading/heading.js';
 import Bold from '/ckeditor5/basic-styles/bold.js';
 import Italic from '/ckeditor5/basic-styles/italic.js';
 
+import { stringify as stringifyView } from '/ckeditor5/engine/dev-utils/view.js';
+
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	features: [
 		Typing,
@@ -38,13 +40,14 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	editor.editing.view.on( 'paste', ( evt, data ) => {
 		console.log( '----- paste -----' );
 		console.log( data );
-		console.log( 'text/html', data.dataTransfer.getData( 'text/html' ) );
-		console.log( 'text/plain', data.dataTransfer.getData( 'text/plain' ) );
+		console.log( 'text/html\n', data.dataTransfer.getData( 'text/html' ) );
+		console.log( 'text/plain\n', data.dataTransfer.getData( 'text/plain' ) );
 	} );
 
 	editor.editing.view.on( 'clipboardInput', ( evt, data ) => {
 		console.log( '----- clipboardInput -----' );
-		console.log( data.dataValue );
+		console.log( 'data.content\n', data.content );
+		console.log( 'stringify( data.content )\n', stringifyView( data.content ) );
 	} );
 } )
 .catch( err => {
