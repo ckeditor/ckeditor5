@@ -21,9 +21,6 @@ import BalloonPanelView from '../ui/balloonpanel/balloonpanelview.js';
 import LinkForm from './ui/linkform.js';
 import LinkFormView from './ui/linkformview.js';
 
-import LabeledInput from '../ui/labeledinput/labeledinput.js';
-import InputText from '../ui/inputtext/inputtext.js';
-
 /**
  * The link feature. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
  *
@@ -63,13 +60,6 @@ export default class Link extends Feature {
 		// Create toolbar buttons.
 		this._createToolbarLinkButton();
 		this._createToolbarUnlinkButton();
-
-		/**
-		 * The URL input inside {@link link.Link#form}.
-		 *
-		 * @protected
-		 * @member {ui.input.labeled.LabeledInput} think.Link#_urlInput
-		 */
 	}
 
 	/**
@@ -211,61 +201,26 @@ export default class Link extends Feature {
 	 */
 	_createForm() {
 		const editor = this.editor;
-		const t = this.editor.t;
-		const linkCommand = editor.commands.get( 'link' );
+		const formModel = new Model();
 
-		const formView = new LinkFormView( editor.locale );
-		const form = new LinkForm( new Model(), formView );
+		formModel.bind( 'url' ).to( editor.commands.get( 'link' ), 'value' );
 
-		// Create component models.
-		const urlInputModel = new Model( {
-			label: t( 'Link URL' )
-		} );
-
-		urlInputModel.bind( 'value' ).to( linkCommand, 'value' );
-
-		const saveButtonModel = new Model( {
-			isEnabled: true,
-			isOn: false,
-			label: t( 'Save' ),
-			withText: true,
-			type: 'submit'
-		} );
-
-		const cancelButtonModel = new Model( {
-			isEnabled: true,
-			isOn: false,
-			label: t( 'Cancel' ),
-			withText: true
-		} );
-
-		const unlinkButtonModel = new Model( {
-			isEnabled: true,
-			isOn: false,
-			label: t( 'Unlink' ),
-			icon: 'unlink'
-		} );
-
-		// Add components to the form.
-		form.add( this._urlInput = new LabeledInput( urlInputModel, formView.urlInputView, InputText, new Model() ) );
-		form.add( this._saveButton = new Button( saveButtonModel, formView.saveButtonView ) );
-		form.add( this._cancelButton = new Button( cancelButtonModel, formView.cancelButtonView ) );
-		form.add( this._unlinkButton = new Button( unlinkButtonModel, formView.unlinkButtonView ) );
+		const form = new LinkForm( formModel, new LinkFormView( editor.locale ) );
 
 		// Execute link command after clicking on balloon panel `Link` button.
-		this.listenTo( form.model, 'submit', () => {
-			editor.execute( 'link', this._urlInput.value );
+		this.listenTo( formModel, 'submit', () => {
+			editor.execute( 'link', this.form.urlInput.value );
 			this._hidePanel( true );
 		} );
 
 		// Execute unlink command after clicking on balloon panel `Unlink` button.
-		this.listenTo( unlinkButtonModel, 'execute', () => {
+		this.listenTo( formModel, 'unlink', () => {
 			editor.execute( 'unlink' );
 			this._hidePanel( true );
 		} );
 
 		// Hide balloon panel after clicking on balloon panel `Cancel` button.
-		this.listenTo( cancelButtonModel, 'execute', () => this._hidePanel( true ) );
+		this.listenTo( formModel, 'cancel', () => this._hidePanel( true ) );
 
 		this.balloonPanel.add( 'content', form );
 
@@ -322,7 +277,7 @@ export default class Link extends Feature {
 	 */
 	_showPanel() {
 		this._attachPanelToElement();
-		this._urlInput.view.select();
+		this.form.urlInput.view.select();
 	}
 }
 

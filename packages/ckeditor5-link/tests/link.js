@@ -110,7 +110,7 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should select panel input value when panel is opened', () => {
-			const selectUrlInputSpy = testUtils.sinon.spy( linkFeature._urlInput.view, 'select' );
+			const selectUrlInputSpy = testUtils.sinon.spy( linkFeature.form.urlInput.view, 'select' );
 
 			editor.editing.view.isFocused = true;
 
@@ -163,7 +163,7 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should open with selected url input on `CTRL+K` keystroke', () => {
-			const selectUrlInputSpy = testUtils.sinon.spy( linkFeature._urlInput.view, 'select' );
+			const selectUrlInputSpy = testUtils.sinon.spy( linkFeature.form.urlInput.view, 'select' );
 
 			editor.keystrokes.press( { keyCode: keyCodes.k, ctrlKey: true } );
 
@@ -211,7 +211,7 @@ describe( 'Link', () => {
 
 		describe( 'click on editable', () => {
 			it( 'should open with not selected url input when collapsed selection is inside link element', () => {
-				const selectUrlInputSpy = testUtils.sinon.spy( linkFeature._urlInput.view, 'select' );
+				const selectUrlInputSpy = testUtils.sinon.spy( linkFeature.form.urlInput.view, 'select' );
 				const observer = editor.editing.view.getObserver( ClickObserver );
 
 				editor.document.schema.allow( { name: '$text', inside: '$root' } );
@@ -357,52 +357,51 @@ describe( 'Link', () => {
 		} );
 
 		describe( 'binding', () => {
-			it( 'should bind _urlInput#model to link command', () => {
-				const model = linkFeature._urlInput.model;
+			it( 'should bind form.model#url to link command value', () => {
+				const model = linkFeature.form.model;
 				const command = editor.commands.get( 'link' );
 
 				expect( model.value ).to.undefined;
 
 				command.value = 'http://cksource.com';
-
-				expect( model.value ).to.equal( 'http://cksource.com' );
+				expect( model.url ).to.equal( 'http://cksource.com' );
 			} );
 
-			it( 'should execute link command on _saveButton#model submit event', () => {
+			it( 'should execute link command on form.model#submit event', () => {
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-				linkFeature._urlInput.model.value = 'http://cksource.com';
+				form.model.url = 'http://cksource.com';
 				form.model.fire( 'submit' );
 
 				expect( executeSpy.calledOnce ).to.true;
 				expect( executeSpy.calledWithExactly( 'link', 'http://cksource.com' ) ).to.true;
 			} );
 
-			it( 'should hide and focus editable on form#model submit event', () => {
+			it( 'should hide and focus editable on form.model#submit event', () => {
 				form.model.fire( 'submit' );
 
 				expect( hidePanelSpy.calledOnce ).to.true;
 				expect( focusEditableSpy.calledOnce ).to.true;
 			} );
 
-			it( 'should execute unlink command on _unlinkButton#model execute event', () => {
+			it( 'should execute unlink command on form.model#unlink event', () => {
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-				linkFeature._unlinkButton.model.fire( 'execute' );
+				form.model.fire( 'unlink' );
 
 				expect( executeSpy.calledOnce ).to.true;
 				expect( executeSpy.calledWithExactly( 'unlink' ) ).to.true;
 			} );
 
-			it( 'should hide and focus editable on _unlinkButton#model execute event', () => {
-				linkFeature._unlinkButton.model.fire( 'execute' );
+			it( 'should hide and focus editable on form.model#unlink event', () => {
+				form.model.fire( 'unlink' );
 
 				expect( hidePanelSpy.calledOnce ).to.true;
 				expect( focusEditableSpy.calledOnce ).to.true;
 			} );
 
-			it( 'should hide and focus editable on _cancelButton#model cancel event', () => {
-				linkFeature._cancelButton.model.fire( 'execute' );
+			it( 'should hide and focus editable on form.model#cancel event', () => {
+				form.model.fire( 'cancel' );
 
 				expect( hidePanelSpy.calledOnce ).to.true;
 				expect( focusEditableSpy.calledOnce ).to.true;

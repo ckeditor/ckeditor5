@@ -18,7 +18,7 @@ import submitHandler from '../../ui/bindings/submithandler.js';
  * See {@link link.ui.LinkForm}.
  *
  * @memberOf link.ui
- * @extends ui.form.FormView
+ * @extends ui.View
  */
 export default class LinkFormView extends View {
 	/**
