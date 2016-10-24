@@ -154,7 +154,7 @@ export default class Autoformat extends Feature {
 				};
 			},
 			( editor, range, batch ) => {
-				this.editor.execute( 'italic', { ranges: [ range ], batch } );
+				this.editor.execute( 'italic', { batch } );
 			}
 		);
 
