@@ -13,16 +13,15 @@ import normalizeClipboardHtml from './utils/normalizeclipboarddata.js';
 
 import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
 
-import { stringify as stringifyView } from '../engine/dev-utils/view.js';
-
 /**
- * The clipboard feature. Currently, it's only responsible for intercepting the paste event and
- * passing the pasted content through a paste pipeline.
+ * The clipboard feature. Currently, it's only responsible for intercepting the `paste` event and
+ * passing the pasted content through the clipboard pipeline.
  *
  * ## Clipboard Pipeline
  *
- * The feature creates the clipboard pipeline which allows processing clipboard contents
- * and finally inserts the data to the editor/
+ * The feature creates the clipboard pipeline which allows processing clipboard content
+ * before it gets inserted into the editor. The pipeline consists of two events on which
+ * the features can listen to modify or totally override the default behavior.
  *
  * ### On {@link engine.view.Document#paste}
  *
@@ -31,13 +30,34 @@ import { stringify as stringifyView } from '../engine/dev-utils/view.js';
  * a {@link engine.view.DocumentFragment view document fragment}.
  * 3. Prevent default action of the native `paste` event.
  *
- * This action is performed by a low priority listener, so it can be overriden by a normal one.
+ * This action is performed by a low priority listener, so it can be overridden by a normal one.
+ * You'd only need to do this when a deeper change in pasting behavior was needed. For example,
+ * a feature which wants to differently read data from the clipboard (the {@link clipboard.DataTransfer `DataTransfer`}).
+ * should plug a listener at this stage.
  *
  * ### On {@link engine.view.Document#clipboardInput}
  *
- * If the data is not empty insert it to the editor using the `clipboardInput` command.
+ * If the content being processed (`data.content` represented by a {@link engine.view.DocumentFragment})
+ * is not empty insert it to the editor using the {@link clipboard.ClipboardInput `clipboardInput` command}.
  *
- * This action is performed by a low priority listener, so it can be overriden by a normal one.
+ * This action is performed by a low priority listener, so it can be overridden by a normal one.
+ *
+ * At this stage the pasted content can be processed by the features. E.g. a feature which wants to transform
+ * a pasted text into a link can be implemented in this way:
+ *
+ *		this.listenTo( editor.editing.view, 'clipboardInput', ( evt, data ) => {
+ *			if ( data.content.childCount == 1 && isUrlText( data.content.getChild( 0 ) ) ) {
+ *				const linkUrl = data.content.getChild( 0 ).data;
+ *
+ *				data.content = new ViewDocumentFragment(
+ *					ViewElement(
+ *						'a',
+ *						{ href: linkUrl },
+ *						[ new ViewText( linkUrl ) ]
+ *					)
+ *				);
+ *			}
+ *		} );
  *
  * @memberOf clipboard
  * @extends core.Feature
@@ -76,30 +96,40 @@ export default class Clipboard extends Feature {
 		}, { priority: 'low' } );
 
 		this.listenTo( editingView, 'clipboardInput', ( evt, data ) => {
-			if ( data.content.childCount ) {
-				console.log( 'pasted (view):' ); // jshint ignore:line
-				console.log( stringifyView( data.content ) ); // jshint ignore:line
-
+			if ( !data.content.isEmpty ) {
 				editor.execute( 'clipboardInput', { content: data.content } );
 			}
 		}, { priority: 'low' } );
-
-		// TMP!
-		// Create a context in the schema for processing the pasted content.
-		// Read: https://github.com/ckeditor/ckeditor5-engine/issues/638#issuecomment-255086588
-
-		const schema = editor.document.schema;
-
-		schema.registerItem( '$clipboardHolder', '$root' );
-		schema.allow( { name: '$text', inside: '$clipboardHolder' } );
 	}
 }
 
 /**
  * Fired with a content which comes from the clipboard (was pasted or dropped) and
- * should be processed in order to be inserted into the editor. It's part of the "clipboard pipeline".
+ * should be processed in order to be inserted into the editor. It's part of the {@link clipboard.Clipboard "clipboard pipeline"}.
  *
  * @see clipboard.ClipboardObserver
+ * @see clipboard.Clipboard
  * @event engine.view.Document#clipboardInput
  * @param {engine.view.observer.ClipboardInputEventData} data Event data.
+ */
+
+/**
+ * The value of the {@link engine.view.Document#clipboardInput} event.
+ *
+ * @class engine.view.observer.ClipboardInputEventData
+ * @extends engine.view.observer.DomEventData
+ */
+
+/**
+ * Data transfer instance.
+ *
+ * @readonly
+ * @member {clipboard.DataTransfer} engine.view.observer.ClipboardEventData#dataTransfer
+ */
+
+/**
+ * Content to be inserted into the editor.
+ *
+ * @readonly
+ * @member {engine.view.DocumentFragment} engine.view.observer.ClipboardEventData#content
  */
