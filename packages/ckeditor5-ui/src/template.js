@@ -17,7 +17,7 @@ const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 
 /**
  * A basic Template class. It renders DOM HTMLElement or Text from {@link ui.TemplateDefinition} and supports
- * element attributes, children, bindings to {@link utils.ObservableMixin} instances and DOM events
+ * element attributes, children, bindings to {@link utils.Observable} instances and DOM events
  * propagation. For example:
  *
  *		new Template( {
@@ -140,24 +140,24 @@ export default class Template {
 	}
 
 	/**
-	 * An entry point to the interface which allows binding DOM nodes to {@link utils.ObservableMixin}.
+	 * An entry point to the interface which allows binding DOM nodes to {@link utils.Observable}.
 	 * There are two types of bindings:
 	 *
-	 * * `HTMLElement` attributes or Text Node `textContent` can be synchronized with {@link utils.ObservableMixin}
+	 * * `HTMLElement` attributes or Text Node `textContent` can be synchronized with {@link utils.Observable}
 	 * instance attributes. See {@link ui.Template.bind#to} and {@link ui.Template.bind#if}.
 	 *
-	 * * DOM events fired on `HTMLElement` can be propagated through {@link utils.ObservableMixin}.
+	 * * DOM events fired on `HTMLElement` can be propagated through {@link utils.Observable}.
 	 * See {@link ui.Template.bind#to}.
 	 *
-	 * @param {utils.ObservableMixin} observable An instance of ObservableMixin class.
-	 * @param {utils.EmitterMixin} emitter An instance of `EmitterMixin` class. It listens
+	 * @param {utils.Observable} observable An instance of ObservableMixin class.
+	 * @param {utils.Emitter} emitter An instance of `Emitter` class. It listens
 	 * to `observable` attribute changes and DOM Events, depending on the binding. Usually {@link ui.View} instance.
 	 * @returns {Object}
 	 */
 	static bind( observable, emitter ) {
 		return {
 			/**
-			 * Binds {@link utils.ObservableMixin} instance to:
+			 * Binds {@link utils.Observable} instance to:
 			 *  * HTMLElement attribute or Text Node `textContent` so remains in sync with the Observable when it changes:
 			 *  * HTMLElement DOM event, so the DOM events are propagated through Observable.
 			 *
@@ -194,7 +194,7 @@ export default class Template {
 			 *
 			 * @static
 			 * @method ui.Template.bind#to
-			 * @param {String|Function} eventNameOrFunctionOrAttribute An attribute name of {@link utils.ObservableMixin} or a DOM
+			 * @param {String|Function} eventNameOrFunctionOrAttribute An attribute name of {@link utils.Observable} or a DOM
 			 * event name or an event callback.
 			 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
 			 * @return {ui.TemplateBinding}
@@ -208,10 +208,10 @@ export default class Template {
 			},
 
 			/**
-			 * Binds {@link utils.ObservableMixin} to HTMLElement attribute or Text Node `textContent`
+			 * Binds {@link utils.Observable} to HTMLElement attribute or Text Node `textContent`
 			 * so remains in sync with the Model when it changes. Unlike {@link ui.Template.bind#to},
 			 * it controls the presence of the attribute/`textContent` depending on the "falseness" of
-			 * {@link utils.ObservableMixin} attribute.
+			 * {@link utils.Observable} attribute.
 			 *
 			 *		const bind = Template.bind( observableInstance, emitterInstance );
 			 *
@@ -233,8 +233,8 @@ export default class Template {
 			 *
 			 * @static
 			 * @method ui.Template.bind#if
-			 * @param {String} attribute An attribute name of {@link utils.ObservableMixin} used in the binding.
-			 * @param {String} [valueIfTrue] Value set when {@link utils.ObservableMixin} attribute is not undefined/null/false/''.
+			 * @param {String} attribute An attribute name of {@link utils.Observable} used in the binding.
+			 * @param {String} [valueIfTrue] Value set when {@link utils.Observable} attribute is not undefined/null/false/''.
 			 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
 			 * @return {ui.TemplateBinding}
 			 */
@@ -557,7 +557,7 @@ export default class Template {
 	 *
 	 * @protected
 	 * @param {ui.TemplateValueSchema} valueSchema
-	 * @param {Node} node DOM Node to be updated when {@link utils.ObservableMixin} changes.
+	 * @param {Node} node DOM Node to be updated when {@link utils.Observable} changes.
 	 * @param {Function} domUpdater A function which updates DOM (like attribute or text).
 	 */
 	_bindToObservable( valueSchema ) {
@@ -597,17 +597,17 @@ export class TemplateBinding {
 		 * An observable instance of the binding. It provides the attribute
 		 * with the value or passes the event when a corresponding DOM event is fired.
 		 *
-		 * @member {utils.ObservableMixin} ui.TemplateBinding#observable
+		 * @member {utils.Observable} ui.TemplateBinding#observable
 		 */
 
 		/**
-		 * An {@link utils.EmitterMixin} instance used by the binding
+		 * An {@link utils.Emitter} instance used by the binding
 		 * to (either):
 		 *
-		 * * Listen to the attribute change in the {@link ui.TemplateBinding#observable}.
-		 * * Listen to the event in the DOM.
+		 * * listen to the attribute change in the {@link ui.TemplateBinding#observable},
+		 * * listen to the event in the DOM.
 		 *
-		 * @member {utils.EmitterMixin} ui.TemplateBinding#emitter
+		 * @member {utils.Emitter} ui.TemplateBinding#emitter
 		 */
 
 		/**
@@ -658,8 +658,8 @@ export class TemplateBinding {
 /**
  * Describes either
  *
- * * A binding to {@link utils.ObservableMixin},
- * * A native DOM event binding,
+ * * a binding to {@link utils.Observable}
+ * * or a native DOM event binding
  *
  * created by {@link ui.Template.bind#to} method.
  *
@@ -689,7 +689,7 @@ export class TemplateToBinding extends TemplateBinding {
 }
 
 /**
- * Describes a binding to {@link utils.ObservableMixin} created by {@link ui.Template.bind#if} method.
+ * Describes a binding to {@link utils.Observable} created by {@link ui.Template.bind#if} method.
  *
  * @protected
  * @memberOf ui
@@ -742,7 +742,7 @@ function hasTemplateBinding( valueSchema ) {
 // items.
 //
 // @param {ui.TemplateValueSchema} valueSchema
-// @param {Node} node DOM Node updated when {@link utils.ObservableMixin} changes.
+// @param {Node} node DOM Node updated when {@link utils.Observable} changes.
 // @return {Array}
 function getValueSchemaValue( valueSchema, domNode ) {
 	return valueSchema.map( schemaItem => {
@@ -760,7 +760,7 @@ function getValueSchemaValue( valueSchema, domNode ) {
 // constructed from {@link ui.TemplateValueSchema}.
 //
 // @param {ui.TemplateValueSchema} valueSchema
-// @param {Node} node DOM Node updated when {@link utils.ObservableMixin} changes.
+// @param {Node} node DOM Node updated when {@link utils.Observable} changes.
 // @param {Function} domUpdater A function which updates DOM (like attribute or text).
 function syncValueSchemaValue( valueSchema, domNode, domUpdater ) {
 	let value = getValueSchemaValue( valueSchema, domNode );
