@@ -43,7 +43,7 @@ describe( 'LinkForm', () => {
 			} );
 
 			it( 'belongs to anonymous collection', () => {
-				expect( linkForm.collections.get( '_anonymous' ).find( ( item ) => {
+				expect( linkForm.collections.get( '$anonymous' ).find( ( item ) => {
 					return item === linkForm.urlInput;
 				} ) ).to.be.not.undefined;
 			} );
@@ -52,7 +52,6 @@ describe( 'LinkForm', () => {
 				expect( linkForm.urlInput.model.value ).to.equal( 'foo' );
 
 				model.url = 'bar';
-
 				expect( linkForm.urlInput.model.value ).to.equal( 'bar' );
 			} );
 		} );
@@ -63,7 +62,7 @@ describe( 'LinkForm', () => {
 			} );
 
 			it( 'belongs to anonymous collection', () => {
-				expect( linkForm.collections.get( '_anonymous' ).find( ( item ) => {
+				expect( linkForm.collections.get( '$anonymous' ).find( ( item ) => {
 					return item === linkForm.saveButton;
 				} ) ).to.be.not.undefined;
 			} );
@@ -75,7 +74,7 @@ describe( 'LinkForm', () => {
 			} );
 
 			it( 'belongs to anonymous collection', () => {
-				expect( linkForm.collections.get( '_anonymous' ).find( ( item ) => {
+				expect( linkForm.collections.get( '$anonymous' ).find( ( item ) => {
 					return item === linkForm.cancelButton;
 				} ) ).to.be.not.undefined;
 			} );
@@ -95,7 +94,7 @@ describe( 'LinkForm', () => {
 			} );
 
 			it( 'belongs to anonymous collection', () => {
-				expect( linkForm.collections.get( '_anonymous' ).find( ( item ) => {
+				expect( linkForm.collections.get( '$anonymous' ).find( ( item ) => {
 					return item === linkForm.unlinkButton;
 				} ) ).to.be.not.undefined;
 			} );
