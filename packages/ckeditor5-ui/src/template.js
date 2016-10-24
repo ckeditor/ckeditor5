@@ -9,16 +9,15 @@ import CKEditorError from '../utils/ckeditorerror.js';
 import mix from '../utils/mix.js';
 import EmitterMixin from '../utils/emittermixin.js';
 import Collection from '../utils/collection.js';
+import View from './view.js';
 import cloneDeepWith from '../utils/lib/lodash/cloneDeepWith.js';
 import isObject from '../utils/lib/lodash/isObject.js';
 
-const bindToSymbol = Symbol( 'bindTo' );
-const bindIfSymbol = Symbol( 'bindIf' );
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 
 /**
  * A basic Template class. It renders DOM HTMLElement or Text from {@link ui.TemplateDefinition} and supports
- * element attributes, children, bindings to {@link utils.ObservableMixin} instances and DOM events
+ * element attributes, children, bindings to {@link utils.Observable} instances and DOM events
  * propagation. For example:
  *
  *		new Template( {
@@ -141,24 +140,24 @@ export default class Template {
 	}
 
 	/**
-	 * An entry point to the interface which allows binding DOM nodes to {@link utils.ObservableMixin}.
+	 * An entry point to the interface which allows binding DOM nodes to {@link utils.Observable}.
 	 * There are two types of bindings:
 	 *
-	 * * `HTMLElement` attributes or Text Node `textContent` can be synchronized with {@link utils.ObservableMixin}
+	 * * `HTMLElement` attributes or Text Node `textContent` can be synchronized with {@link utils.Observable}
 	 * instance attributes. See {@link ui.Template.bind#to} and {@link ui.Template.bind#if}.
 	 *
-	 * * DOM events fired on `HTMLElement` can be propagated through {@link utils.ObservableMixin}.
+	 * * DOM events fired on `HTMLElement` can be propagated through {@link utils.Observable}.
 	 * See {@link ui.Template.bind#to}.
 	 *
-	 * @param {utils.ObservableMixin} observable An instance of ObservableMixin class.
-	 * @param {utils.EmitterMixin} emitter An instance of `EmitterMixin` class. It listens
+	 * @param {utils.Observable} observable An instance of ObservableMixin class.
+	 * @param {utils.Emitter} emitter An instance of `Emitter` class. It listens
 	 * to `observable` attribute changes and DOM Events, depending on the binding. Usually {@link ui.View} instance.
 	 * @returns {Object}
 	 */
 	static bind( observable, emitter ) {
 		return {
 			/**
-			 * Binds {@link utils.ObservableMixin} instance to:
+			 * Binds {@link utils.Observable} instance to:
 			 *  * HTMLElement attribute or Text Node `textContent` so remains in sync with the Observable when it changes:
 			 *  * HTMLElement DOM event, so the DOM events are propagated through Observable.
 			 *
@@ -195,25 +194,24 @@ export default class Template {
 			 *
 			 * @static
 			 * @method ui.Template.bind#to
-			 * @param {String|Function} eventNameOrFunctionOrAttribute An attribute name of {@link utils.ObservableMixin} or a DOM
+			 * @param {String|Function} eventNameOrFunctionOrAttribute An attribute name of {@link utils.Observable} or a DOM
 			 * event name or an event callback.
 			 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
 			 * @return {ui.TemplateBinding}
 			 */
 			to( eventNameOrFunctionOrAttribute, callback ) {
-				return {
-					type: bindToSymbol,
+				return new TemplateToBinding( {
 					eventNameOrFunction: eventNameOrFunctionOrAttribute,
 					attribute: eventNameOrFunctionOrAttribute,
 					observable, emitter, callback
-				};
+				} );
 			},
 
 			/**
-			 * Binds {@link utils.ObservableMixin} to HTMLElement attribute or Text Node `textContent`
+			 * Binds {@link utils.Observable} to HTMLElement attribute or Text Node `textContent`
 			 * so remains in sync with the Model when it changes. Unlike {@link ui.Template.bind#to},
 			 * it controls the presence of the attribute/`textContent` depending on the "falseness" of
-			 * {@link utils.ObservableMixin} attribute.
+			 * {@link utils.Observable} attribute.
 			 *
 			 *		const bind = Template.bind( observableInstance, emitterInstance );
 			 *
@@ -235,16 +233,15 @@ export default class Template {
 			 *
 			 * @static
 			 * @method ui.Template.bind#if
-			 * @param {String} attribute An attribute name of {@link utils.ObservableMixin} used in the binding.
-			 * @param {String} [valueIfTrue] Value set when {@link utils.ObservableMixin} attribute is not undefined/null/false/''.
+			 * @param {String} attribute An attribute name of {@link utils.Observable} used in the binding.
+			 * @param {String} [valueIfTrue] Value set when {@link utils.Observable} attribute is not undefined/null/false/''.
 			 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
 			 * @return {ui.TemplateBinding}
 			 */
 			if( attribute, valueIfTrue, callback ) {
-				return {
-					type: bindIfSymbol,
+				return new TemplateIfBinding( {
 					observable, emitter, attribute, valueIfTrue, callback
-				};
+				} );
 			}
 		};
 	}
@@ -381,7 +378,7 @@ export default class Template {
 		// Check if this Text Node is bound to Observable. Cases:
 		//		{ text: [ Template.bind( ... ).to( ... ) ] }
 		//		{ text: [ 'foo', Template.bind( ... ).to( ... ), ... ] }
-		if ( hasBinding( this.text ) ) {
+		if ( hasTemplateBinding( this.text ) ) {
 			this._bindToObservable( this.text, textNode, getTextUpdater( textNode ) );
 		}
 
@@ -419,7 +416,7 @@ export default class Template {
 			// 		{ class: [ Template.bind( ... ).to( ... ) ] }
 			// 		{ class: [ 'bar', Template.bind( ... ).to( ... ), 'baz' ] }
 			// 		{ class: { ns: 'abc', value: Template.bind( ... ).to( ... ) } }
-			if ( hasBinding( attrValue ) ) {
+			if ( hasTemplateBinding( attrValue ) ) {
 				this._bindToObservable(
 					// Normalize attributes with additional data like namespace:
 					//		{ class: { ns: 'abc', value: [ ... ] } }
@@ -491,7 +488,7 @@ export default class Template {
 			// style: {
 			//	color: bind.to( 'attribute' )
 			// }
-			if ( hasBinding( styleValue ) ) {
+			if ( hasTemplateBinding( styleValue ) ) {
 				this._bindToObservable( [ styleValue ], el, getStyleUpdater( el, styleName ) );
 			}
 
@@ -514,11 +511,17 @@ export default class Template {
 	_renderElementChildren( elOrDocFragment, shouldApply ) {
 		let childIndex = 0;
 
-		for ( let template of this.children ) {
-			if ( shouldApply ) {
-				template._renderNode( elOrDocFragment.childNodes[ childIndex++ ] );
+		for ( let child of this.children ) {
+			if ( isView( child ) ) {
+				if ( !shouldApply ) {
+					elOrDocFragment.appendChild( child.element );
+				}
 			} else {
-				elOrDocFragment.appendChild( template.render() );
+				if ( shouldApply ) {
+					child._renderNode( elOrDocFragment.childNodes[ childIndex++ ] );
+				} else {
+					elOrDocFragment.appendChild( child.render() );
+				}
 			}
 		}
 	}
@@ -537,17 +540,9 @@ export default class Template {
 		for ( let key in this.eventListeners ) {
 			const [ domEvtName, domSelector ] = key.split( '@' );
 
-			for ( let schemaItem of this.eventListeners[ key ] ) {
-				schemaItem.emitter.listenTo( el, domEvtName, ( evt, domEvt ) => {
-					if ( !domSelector || domEvt.target.matches( domSelector ) ) {
-						if ( typeof schemaItem.eventNameOrFunction == 'function' ) {
-							schemaItem.eventNameOrFunction( domEvt );
-						} else {
-							schemaItem.observable.fire( schemaItem.eventNameOrFunction, domEvt );
-						}
-					}
-				} );
-			}
+			this.eventListeners[ key ].forEach( schemaItem => {
+				schemaItem.activateDomEventListener( el, domEvtName, domSelector );
+			} );
 		}
 	}
 
@@ -559,7 +554,7 @@ export default class Template {
 	 *
 	 * @protected
 	 * @param {ui.TemplateValueSchema} valueSchema
-	 * @param {Node} node DOM Node to be updated when {@link utils.ObservableMixin} changes.
+	 * @param {Node} node DOM Node to be updated when {@link utils.Observable} changes.
 	 * @param {Function} domUpdater A function which updates DOM (like attribute or text).
 	 */
 	_bindToObservable( valueSchema ) {
@@ -571,25 +566,155 @@ export default class Template {
 			// Once only the actual binding are left, let the emitter listen to observable change:attribute event.
 			// TODO: Reduce the number of listeners attached as many bindings may listen
 			// to the same observable attribute.
-			.forEach( ( { emitter, observable, attribute } ) => {
-				emitter.listenTo( observable, 'change:' + attribute, () => {
-					syncBinding( ...arguments );
-				} );
-			} );
+			.forEach( templateBinding => templateBinding.activateAttributeListener( ...arguments ) );
 
 		// Set initial values.
-		syncBinding( ...arguments );
+		syncValueSchemaValue( ...arguments );
 	}
 }
 
 mix( Template, EmitterMixin );
+
+/**
+ * Describes a binding created by {@link ui.Template#bind} interface.
+ *
+ * @protected
+ * @memberOf ui
+ */
+export class TemplateBinding {
+	/**
+	 * Creates an instance of the {@link ui.TemplateBinding} class.
+	 *
+	 * @param {ui.TemplateBindingDefinition} def The definition of the binding.
+	 */
+	constructor( def ) {
+		Object.assign( this, def );
+
+		/**
+		 * An observable instance of the binding. It provides the attribute
+		 * with the value or passes the event when a corresponding DOM event is fired.
+		 *
+		 * @member {utils.Observable} ui.TemplateBinding#observable
+		 */
+
+		/**
+		 * An {@link utils.Emitter} instance used by the binding
+		 * to (either):
+		 *
+		 * * listen to the attribute change in the {@link ui.TemplateBinding#observable},
+		 * * listen to the event in the DOM.
+		 *
+		 * @member {utils.Emitter} ui.TemplateBinding#emitter
+		 */
+
+		/**
+		 * The name of the attribute of {@link ui.TemplateBinding#observable} which is observed.
+		 *
+		 * @member {String} ui.TemplateBinding#attribute
+		 */
+
+		/**
+		 * A custom function to process the value of {@link ui.TemplateBinding#attribute}.
+		 *
+		 * @member {Function} [ui.TemplateBinding#callback]
+		 */
+	}
+
+	/**
+	 * Returns the value of the binding, which is the value of {@link ui.TemplateBinding#attribute} in
+	 * {@link ui.TemplateBinding#observable}.
+	 *
+	 * @param {Node} [node] A native DOM node, passed to the custom {@link ui.TemplateBinding#callback}.
+	 * @returns {*} The value of {@link ui.TemplateBinding#attribute} in {@link ui.TemplateBinding#observable}.
+	 */
+	getValue( domNode ) {
+		const value = this.observable[ this.attribute ];
+
+		return this.callback ? this.callback( value, domNode ) : value;
+	}
+
+	/**
+	 * Activates the listener for the changes of {@link ui.TemplateBinding#attribute} in
+	 * {@link ui.TemplateBinding#observable}, which then updates the DOM with the aggregated
+	 * value of {@link ui.TemplateValueSchema}.
+	 *
+	 * For instance, the `class` attribute of the `Template` element can be be bound to
+	 * the observable `foo` attribute in `ObservableMixin` instance.
+	 *
+	 * @param {ui.TemplateValueSchema} valueSchema A full schema to generate an attribute or text in DOM.
+	 * @param {Node} node A native DOM node, which attribute or text is to be updated.
+	 * @param {Function} updater A DOM updater function used to update native DOM attribute or text.
+	 */
+	activateAttributeListener( valueSchema, node, updater ) {
+		this.emitter.listenTo( this.observable, 'change:' + this.attribute, () => {
+			syncValueSchemaValue( valueSchema, node, updater );
+		} );
+	}
+}
+
+/**
+ * Describes either
+ *
+ * * a binding to {@link utils.Observable}
+ * * or a native DOM event binding
+ *
+ * created by {@link ui.Template.bind#to} method.
+ *
+ * @protected
+ * @memberOf ui
+ */
+export class TemplateToBinding extends TemplateBinding {
+	/**
+	 * Activates the listener for the native DOM event, which when fired, is propagated by
+	 * the {@link ui.TemplateBinding#emitter}.
+	 *
+	 * @param {HTMLElement} element An element on which listening to the native DOM event.
+	 * @param {String} domEvtName A name of the native DOM event.
+	 * @param {String} [domSelector] A selector in DOM to filter delegated events.
+	 */
+	activateDomEventListener( el, domEvtName, domSelector ) {
+		this.emitter.listenTo( el, domEvtName, ( evt, domEvt ) => {
+			if ( !domSelector || domEvt.target.matches( domSelector ) ) {
+				if ( typeof this.eventNameOrFunction == 'function' ) {
+					this.eventNameOrFunction( domEvt );
+				} else {
+					this.observable.fire( this.eventNameOrFunction, domEvt );
+				}
+			}
+		} );
+	}
+}
+
+/**
+ * Describes a binding to {@link utils.Observable} created by {@link ui.Template.bind#if} method.
+ *
+ * @protected
+ * @memberOf ui
+ */
+export class TemplateIfBinding extends TemplateBinding {
+	/**
+	 * @inheritDoc
+	 */
+	getValue( domNode ) {
+		const value = super.getValue( domNode );
+
+		return isFalsy( value ) ? false : ( this.valueIfTrue || true );
+	}
+
+	/**
+	 * The value of the DOM attribute/text to be set if the {@link ui.TemplateBinding#attribute} in
+	 * {@link ui.TemplateBinding#observable} is `true`.
+	 *
+	 * @member {String} [ui.TemplateIfBinding#valueIfTrue]
+	 */
+}
 
 // Checks whether given {@link ui.TemplateValueSchema} contains a
 // {@link ui.TemplateBinding}.
 //
 // @param {ui.TemplateValueSchema} valueSchema
 // @returns {Boolean}
-function hasBinding( valueSchema ) {
+function hasTemplateBinding( valueSchema ) {
 	if ( !valueSchema ) {
 		return false;
 	}
@@ -601,8 +726,8 @@ function hasBinding( valueSchema ) {
 	}
 
 	if ( Array.isArray( valueSchema ) ) {
-		return valueSchema.some( hasBinding );
-	} else if ( valueSchema.observable ) {
+		return valueSchema.some( hasTemplateBinding );
+	} else if ( valueSchema instanceof TemplateBinding ) {
 		return true;
 	}
 
@@ -614,25 +739,13 @@ function hasBinding( valueSchema ) {
 // items.
 //
 // @param {ui.TemplateValueSchema} valueSchema
-// @param {Node} node DOM Node updated when {@link utils.ObservableMixin} changes.
+// @param {Node} node DOM Node updated when {@link utils.Observable} changes.
 // @return {Array}
-function getBindingValue( valueSchema, domNode ) {
+function getValueSchemaValue( valueSchema, domNode ) {
 	return valueSchema.map( schemaItem => {
 		// Process {@link ui.TemplateBinding} bindings.
-		if ( isObject( schemaItem ) ) {
-			let { observable, callback, type } = schemaItem;
-			let modelValue = observable[ schemaItem.attribute ];
-
-			// Process the value with the callback.
-			if ( callback ) {
-				modelValue = callback( modelValue, domNode );
-			}
-
-			if ( type === bindIfSymbol ) {
-				return isFalsy( modelValue ) ? false : ( schemaItem.valueIfTrue || true );
-			} else {
-				return modelValue;
-			}
+		if ( schemaItem instanceof TemplateBinding ) {
+			return schemaItem.getValue( domNode );
 		}
 
 		// All static values like strings, numbers, and "falsy" values (false, null, undefined, '', etc.) just pass.
@@ -644,14 +757,14 @@ function getBindingValue( valueSchema, domNode ) {
 // constructed from {@link ui.TemplateValueSchema}.
 //
 // @param {ui.TemplateValueSchema} valueSchema
-// @param {Node} node DOM Node updated when {@link utils.ObservableMixin} changes.
+// @param {Node} node DOM Node updated when {@link utils.Observable} changes.
 // @param {Function} domUpdater A function which updates DOM (like attribute or text).
-function syncBinding( valueSchema, domNode, domUpdater ) {
-	let value = getBindingValue( valueSchema, domNode );
+function syncValueSchemaValue( valueSchema, domNode, domUpdater ) {
+	let value = getValueSchemaValue( valueSchema, domNode );
 
 	// Check if valueSchema is a single Template.bind.if, like:
 	//		{ class: Template.bind.if( 'foo' ) }
-	if ( valueSchema.length == 1 && valueSchema[ 0 ].type == bindIfSymbol ) {
+	if ( valueSchema.length == 1 && valueSchema[ 0 ] instanceof TemplateIfBinding ) {
 		value = value[ 0 ];
 	} else {
 		value = value.reduce( arrayValueReducer, '' );
@@ -731,7 +844,11 @@ function clone( def ) {
 		// and DOMEmitterMixin instances inside, which would also be traversed and cloned by greedy
 		// cloneDeepWith algorithm. There's no point in cloning Observable/DOMEmitterMixins
 		// along with the definition.
-		if ( value && value.type ) {
+		//
+		// Also don't clone View instances if provided as a child of the Template. The template
+		// instance will be extracted from the View during the normalization and there's no need
+		// to clone it.
+		if ( value && ( value instanceof TemplateBinding || isView( value ) ) ) {
 			return value;
 		}
 	} );
@@ -772,7 +889,7 @@ function normalize( def ) {
 
 		if ( def.children ) {
 			for ( let child of def.children ) {
-				children.add( new Template( child ) );
+				children.add( isView( child ) ? child : new Template( child ) );
 			}
 		}
 
@@ -985,9 +1102,18 @@ function extendTemplate( template, def ) {
 // Checks if value is "falsy".
 // Note: 0 (Number) is not "falsy" in this context.
 //
+// @private
 // @param {*} value Value to be checked.
 function isFalsy( value ) {
 	return !value && value !== 0;
+}
+
+// Checks if the item is an instance of {@link ui.View}
+//
+// @private
+// @param {*} value Value to be checked.
+function isView( item ) {
+	return item instanceof View;
 }
 
 /**
@@ -1007,6 +1133,7 @@ function isFalsy( value ) {
  *					text: 'static–text'
  *				},
  *				'also-static–text',
+ *				<{@link ui.View} instance>
  *				...
  *			],
  *			attributes: {
@@ -1104,17 +1231,4 @@ function isFalsy( value ) {
  *
  * @typedef ui.TemplateListenerSchema
  * @type {Object|String|Array}
- */
-
-/**
- * Describes Model binding created via {@link ui.Template#bind}.
- *
- * @typedef ui.TemplateBinding
- * @type Object
- * @property {utils.ObservableMixin} observable
- * @property {utils.EmitterMixin} emitter
- * @property {Symbol} type
- * @property {String} attribute
- * @property {String} [valueIfTrue]
- * @property {Function} [callback]
  */
