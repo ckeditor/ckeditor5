@@ -11,7 +11,7 @@ import { keyCodes } from '../../../utils/keyboard.js';
  * Fake selection observer class. If view selection is fake it is placed in dummy DOM container. This observer listens
  * on {@link engine.view.Document#keydown keydown} events and handles moving fake view selection to the correct place
  * if arrow keys are pressed.
- * Fires {@link engine.view.Document#selectionChage selectionChage event} simulating natural behaviour of
+ * Fires {@link engine.view.Document#selectionChage selectionChange event} simulating natural behaviour of
  * {@link engine.view.observer.SelectionObserver SelectionObserver}.
  *
  * @memberOf engine.view.observer
@@ -25,11 +25,18 @@ export default class FakeSelectionObserver extends Observer {
 	 */
 	constructor( document ) {
 		super( document );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	observe() {
+		const document = this.document;
 
 		document.on( 'keydown', ( eventInfo, data ) => {
 			const selection = document.selection;
 
-			if ( selection.isFake && _isArrowKeyCode( data.keyCode ) ) {
+			if ( selection.isFake && _isArrowKeyCode( data.keyCode ) && this.isEnabled ) {
 				// Prevents default key down handling - no selection change will occur.
 				data.preventDefault();
 
@@ -37,11 +44,6 @@ export default class FakeSelectionObserver extends Observer {
 			}
 		}, { priority: 'lowest' } );
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	observe() {}
 
 	/**
 	 * Handles collapsing view selection according to given key code. If left or up key is provided - new selection will be

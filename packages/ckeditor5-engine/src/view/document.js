@@ -13,7 +13,7 @@ import MutationObserver from './observer/mutationobserver.js';
 import SelectionObserver from './observer/selectionobserver.js';
 import FocusObserver from './observer/focusobserver.js';
 import KeyObserver from './observer/keyobserver.js';
-import FakeSelectionObserver from './observer/fakeselecitonobserver.js';
+import FakeSelectionObserver from './observer/fakeselectionobserver.js';
 import mix from '../../utils/mix.js';
 import ObservableMixin from '../../utils/observablemixin.js';
 
