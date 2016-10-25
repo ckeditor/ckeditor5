@@ -160,6 +160,16 @@ describe( 'ControllerCollection', () => {
 					expect( controllers ).to.have.length( 7 );
 				} );
 
+				it( 'supports adding to the beginning of the collection', () => {
+					const controllers = new ControllerCollection( 'synced' );
+
+					controllers.bind( models ).as( ItemController, ItemView );
+
+					models.add( new Model( { uid: 'x' } ), 0 );
+
+					expect( controllers.map( c => c.model.uid ) ).to.deep.equal( [ 'x', '0', '1', '2', '3', '4' ] );
+				} );
+
 				it( 'supports removing models from the collection', () => {
 					const controllers = new ControllerCollection( 'synced' );
 

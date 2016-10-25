@@ -189,7 +189,7 @@ export default class ControllerCollection extends Collection {
 					controllerMap.set( data, controller );
 
 					if ( controller ) {
-						that.add( controller, index ? recalculateIndex( index ) : undefined );
+						that.add( controller, typeof index == 'number' ? recalculateIndex( index ) : undefined );
 					}
 				},
 
