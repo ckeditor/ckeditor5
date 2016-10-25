@@ -88,9 +88,7 @@ describe( 'Delete utils', () => {
 
 		describe( 'with text attributes', () => {
 			it( 'deletes characters (first half has attrs)', () => {
-				setData( document, '<$text bold="true">fo[o</$text>b]ar', { selectionAttributes: {
-					bold: true
-				} } );
+				setData( document, '<$text bold="true">fo[o</$text>b]ar' );
 
 				deleteContents( document.batch(), document.selection );
 
@@ -99,9 +97,7 @@ describe( 'Delete utils', () => {
 			} );
 
 			it( 'deletes characters (2nd half has attrs)', () => {
-				setData( document, 'fo[o<$text bold="true">b]ar</$text>', { selectionAttributes: {
-					bold: true
-				} } );
+				setData( document, 'fo[o<$text bold="true">b]ar</$text>' );
 
 				deleteContents( document.batch(), document.selection );
 
@@ -109,21 +105,17 @@ describe( 'Delete utils', () => {
 				expect( document.selection.getAttribute( 'bold' ) ).to.undefined;
 			} );
 
-			it( 'clears selection attrs when emptied content', () => {
-				setData( document, '<p>x</p><p>[<$text bold="true">foo</$text>]</p><p>y</p>', { selectionAttributes: {
-					bold: true
-				} } );
-
-				deleteContents( document.batch(), document.selection );
-
-				expect( getData( document ) ).to.equal( '<p>x</p><p>[]</p><p>y</p>' );
-				expect( document.selection.getAttribute( 'bold' ) ).to.undefined;
-			} );
+			//it( 'clears selection attrs when emptied content', () => {
+			//	setData( document, '<p>x</p><p>[<$text bold="true">foo</$text>]</p><p>y</p>' );
+			//
+			//	deleteContents( document.batch(), document.selection );
+			//
+			//	expect( getData( document ) ).to.equal( '<p>x</p><p>[]</p><p>y</p>' );
+			//	expect( document.selection.getAttribute( 'bold' ) ).to.undefined;
+			//} );
 
 			it( 'leaves selection attributes when text contains them', () => {
-				setData( document, '<p>x<$text bold="true">a[foo]b</$text>y</p>', { selectionAttributes: {
-					bold: true
-				} } );
+				setData( document, '<p>x<$text bold="true">a[foo]b</$text>y</p>' );
 
 				deleteContents( document.batch(), document.selection );
 
