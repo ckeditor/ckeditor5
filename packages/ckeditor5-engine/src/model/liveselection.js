@@ -3,12 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
+import Position from './position.js';
 import Range from './range.js';
 import LiveRange from './liverange.js';
 import Text from './text.js';
 import TextProxy from './textproxy.js';
 import toMap from '../../utils/tomap.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
+import log from '../../utils/log.js';
 
 import Selection from './selection.js';
 
@@ -66,8 +68,7 @@ export default class LiveSelection extends Selection {
 		// Whenever selection range changes, if the change comes directly from selection API (direct user change).
 		this.on( 'change:range', ( evt, data ) => {
 			if ( data.directChange ) {
-				// Reset attributes on selection (clear attributes and priorities) and get attributes from surrounding nodes.
-				this._updateAttributes( true );
+				this.refreshAttributes();
 			}
 		}, { priority: 'high' } );
 
@@ -206,6 +207,13 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
+	 * Removes all attributes from selection and set attributes according to surrounding nodes.
+	 */
+	refreshAttributes() {
+		this._updateAttributes( true );
+	}
+
+	/**
 	 * Creates and returns an instance of `LiveSelection` that is a clone of given selection, meaning that it has same
 	 * ranges and same direction as this selection.
 	 *
@@ -230,18 +238,54 @@ export default class LiveSelection extends Selection {
 	 * @inheritDoc
 	 */
 	_pushRange( range ) {
+		const liveRange = this._prepareRange( range );
+
+		// `undefined` is returned when given `range` is in graveyard root.
+		if ( liveRange ) {
+			this._ranges.push( liveRange );
+		}
+	}
+
+	/**
+	 * Prepares given range to be added to selection. Checks if it is corret,  converts it to {@link engine.model.LiveRange LiveRange}
+	 * and sets listeners listening to the range's change event.
+	 *
+	 * @private
+	 * @param {engine.model.Range} range
+	 */
+	_prepareRange( range ) {
 		if ( !( range instanceof Range ) ) {
+			/**
+			 * Trying to add an object that is not an instance of Range.
+			 *
+			 * @error model-selection-added-not-range
+			 */
 			throw new CKEditorError( 'model-selection-added-not-range: Trying to add an object that is not an instance of Range.' );
+		}
+
+		if ( range.root == this._document.graveyard ) {
+			/**
+			 * Trying to add a Range that is in the graveyard root. Range rejected.
+			 *
+			 * @warning model-selection-range-in-graveyard
+			 */
+			log.warn( 'model-selection-range-in-graveyard: Trying to add a Range that is in the graveyard root. Range rejected.' );
+
+			return;
 		}
 
 		this._checkRange( range );
 
 		const liveRange = LiveRange.createFromRange( range );
-		this.listenTo( liveRange, 'change', () => {
+		this.listenTo( liveRange, 'change', ( evt, oldRange ) => {
+			if ( liveRange.root == this._document.graveyard ) {
+				this._fixGraveyardSelection( liveRange, oldRange );
+			}
+
 			this.fire( 'change:range', { directChange: false } );
 		} );
 
-		this._ranges.push( liveRange );
+		return liveRange;
 	}
 
 	/**
@@ -543,6 +587,29 @@ export default class LiveSelection extends Selection {
 		}
 
 		return attrs;
+	}
+
+	/**
+	 * Fixes a selection range after it ends up in graveyard root.
+	 *
+	 * @private
+	 * @param {engine.model.Range} gyRange The range added in selection, that ended up in graveyard root.
+	 * @param {engine.model.Range} oldRange The state of that range before it was added to graveyard root.
+	 */
+	_fixGraveyardSelection( gyRange, oldRange ) {
+		const gyPath = gyRange.start.path;
+
+		const newPathLength = oldRange.start.path.length - ( gyPath.length - 2 );
+		const newPath = oldRange.start.path.slice( 0, newPathLength );
+		newPath[ newPath.length - 1 ] -= gyPath[ 1 ];
+
+		const newPosition = new Position( oldRange.root, newPath );
+		const newRange = this._prepareRange( new Range( newPosition, newPosition ) );
+
+		const index = this._ranges.indexOf( gyRange );
+		this._ranges.splice( index, 1, newRange );
+
+		gyRange.detach();
 	}
 }
 

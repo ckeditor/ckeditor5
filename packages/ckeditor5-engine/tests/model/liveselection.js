@@ -14,6 +14,7 @@ import LiveRange from '/ckeditor5/engine/model/liverange.js';
 import LiveSelection from '/ckeditor5/engine/model/liveselection.js';
 import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
 import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
+import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
 import AttributeOperation from '/ckeditor5/engine/model/operation/attributeoperation.js';
 import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import count from '/ckeditor5/utils/count.js';
@@ -125,15 +126,19 @@ describe( 'LiveSelection', () => {
 		it( 'should convert added Range to LiveRange', () => {
 			selection.addRange( range );
 
-			const ranges = selection._ranges;
-
-			expect( ranges[ 0 ] ).to.be.instanceof( LiveRange );
+			expect( selection._ranges[ 0 ] ).to.be.instanceof( LiveRange );
 		} );
 
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.addRange( { invalid: 'range' } );
 			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
+		} );
+
+		it( 'should not add a range that is in graveyard', () => {
+			selection.addRange( Range.createIn( doc.graveyard ) );
+
+			expect( selection._ranges.length ).to.equal( 0 );
 		} );
 	} );
 
@@ -284,6 +289,7 @@ describe( 'LiveSelection', () => {
 		let spyRange;
 
 		beforeEach( () => {
+			root.removeChildren( 0, root.childCount );
 			root.insertChildren( 0, [
 				new Element( 'ul', [], new Text( 'abcdef' ) ),
 				new Element( 'p', [], new Text( 'foobar' ) ),
@@ -516,6 +522,50 @@ describe( 'LiveSelection', () => {
 
 				expect( selection.hasAttribute( 'foo' ) ).to.be.false;
 				expect( spyAttribute.called ).to.be.false;
+			} );
+		} );
+
+		describe( 'RemoveOperation', () => {
+			it( 'fix selection range if it ends up in graveyard #1', () => {
+				selection.collapse( new Position( root, [ 1, 3 ] ) );
+
+				doc.applyOperation( wrapInDelta(
+					new RemoveOperation(
+						new Position( root, [ 1, 2 ] ),
+						2,
+						doc.version
+					)
+				) );
+
+				expect( selection.getFirstPosition().path ).to.deep.equal( [ 1, 2 ] );
+			} );
+
+			it( 'fix selection range if it ends up in graveyard #2', () => {
+				selection.setRanges( [ new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 1, 4 ] ) ) ] );
+
+				doc.applyOperation( wrapInDelta(
+					new RemoveOperation(
+						new Position( root, [ 1, 2 ] ),
+						2,
+						doc.version
+					)
+				) );
+
+				expect( selection.getFirstPosition().path ).to.deep.equal( [ 1, 2 ] );
+			} );
+
+			it( 'fix selection range if it ends up in graveyard #3', () => {
+				selection.setRanges( [ new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 1, 4 ] ) ) ] );
+
+				doc.applyOperation( wrapInDelta(
+					new RemoveOperation(
+						new Position( root, [ 0 ] ),
+						3,
+						doc.version
+					)
+				) );
+
+				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0 ] );
 			} );
 		} );
 	} );
