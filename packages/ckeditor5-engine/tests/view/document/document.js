@@ -12,6 +12,7 @@ import MutationObserver from '/ckeditor5/engine/view/observer/mutationobserver.j
 import SelectionObserver from '/ckeditor5/engine/view/observer/selectionobserver.js';
 import FocusObserver from '/ckeditor5/engine/view/observer/focusobserver.js';
 import KeyObserver from '/ckeditor5/engine/view/observer/keyobserver.js';
+import FakeSelectionObserver from '/ckeditor5/engine/view/observer/fakeselectionobserver.js';
 import Renderer from '/ckeditor5/engine/view/renderer.js';
 import ViewRange from '/ckeditor5/engine/view/range.js';
 import DomConverter from '/ckeditor5/engine/view/domconverter.js';
@@ -22,7 +23,7 @@ import log from '/ckeditor5/utils/log.js';
 testUtils.createSinonSandbox();
 
 describe( 'Document', () => {
-	const DEFAULT_OBSERVERS_COUNT = 4;
+	const DEFAULT_OBSERVERS_COUNT = 5;
 	let ObserverMock, ObserverMockGlobalCount, instantiated, enabled;
 
 	beforeEach( () => {
@@ -72,6 +73,7 @@ describe( 'Document', () => {
 			expect( viewDocument.getObserver( SelectionObserver ) ).to.be.instanceof( SelectionObserver );
 			expect( viewDocument.getObserver( FocusObserver ) ).to.be.instanceof( FocusObserver );
 			expect( viewDocument.getObserver( KeyObserver ) ).to.be.instanceof( KeyObserver );
+			expect( viewDocument.getObserver( FakeSelectionObserver ) ).to.be.instanceof( FakeSelectionObserver );
 		} );
 	} );
 
