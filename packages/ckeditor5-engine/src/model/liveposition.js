@@ -30,7 +30,7 @@ export default class LivePosition extends Position {
 	 * @see engine.model.Position
 	 * @param {engine.model.RootElement} root
 	 * @param {Array.<Number>} path
-	 * @param {engine.model.PositionStickiness} [stickiness] Defaults to `'STICKS_TO_NEXT'`.
+	 * @param {engine.model.PositionStickiness} [stickiness] Defaults to `'sticksToNext'`.
 	 * See {@link engine.model.LivePosition#stickiness}.
 	 */
 	constructor( root, path, stickiness ) {
@@ -65,7 +65,7 @@ export default class LivePosition extends Position {
 		 *
 		 * @member {engine.model.PositionStickiness} engine.model.LivePosition#stickiness
 		 */
-		this.stickiness = stickiness || 'STICKS_TO_NEXT';
+		this.stickiness = stickiness || 'sticksToNext';
 
 		bindWithDocument.call( this );
 	}
@@ -155,7 +155,7 @@ function transform( type, range, position ) {
 
 	switch ( type ) {
 		case 'insert':
-			let insertBefore = this.stickiness == 'STICKS_TO_NEXT';
+			let insertBefore = this.stickiness == 'sticksToNext';
 			transformed = this._getTransformedByInsertion( range.start, howMany, insertBefore );
 			break;
 
@@ -165,14 +165,14 @@ function transform( type, range, position ) {
 			let originalRange = Range.createFromPositionAndShift( position, howMany );
 
 			let gotMoved = originalRange.containsPosition( this ) ||
-				( originalRange.start.isEqual( this ) && this.stickiness == 'STICKS_TO_NEXT' ) ||
-				( originalRange.end.isEqual( this ) && this.stickiness == 'STICKS_TO_PREVIOUS' );
+				( originalRange.start.isEqual( this ) && this.stickiness == 'sticksToNext' ) ||
+				( originalRange.end.isEqual( this ) && this.stickiness == 'sticksToPrevious' );
 
 			// We can't use ._getTransformedByMove() because we have a different if-condition.
 			if ( gotMoved ) {
 				transformed = this._getCombined( position, range.start );
 			} else {
-				let insertBefore = this.stickiness == 'STICKS_TO_NEXT';
+				let insertBefore = this.stickiness == 'sticksToNext';
 				transformed = this._getTransformedByMove( position, range.start, howMany, insertBefore );
 			}
 			break;
@@ -186,7 +186,7 @@ mix( LivePosition, EmitterMixin );
 
 /**
  * Enum representing how position is "sticking" with their neighbour nodes.
- * Possible values: `'STICKS_TO_NEXT'`, `'STICKS_TO_PREVIOUS'`.
+ * Possible values: `'sticksToNext'`, `'sticksToPrevious'`.
  *
  * @typedef {String} engine.model.PositionStickiness
  */
