@@ -99,7 +99,8 @@ function bindWithDocument() {
 			if ( supportedTypes.has( type ) ) {
 				transform.call( this, type, changes.range, changes.sourcePosition );
 			}
-		}
+		},
+		{ priority: 'high' }
 	);
 }
 
