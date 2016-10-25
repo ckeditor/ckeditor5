@@ -264,13 +264,18 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is at the same position and live position is sticking to left side', () => {
-				let live = new LivePosition( root, path, 'sticksToPrevious' );
+				let newLive = new LivePosition( root, path, 'sticksToPrevious' );
+				spy = sinon.spy();
+				newLive.on( 'change', spy );
+
 				let insertRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
-				expect( live.path ).to.deep.equal( path );
+				expect( newLive.path ).to.deep.equal( path );
 				expect( spy.called ).to.be.false;
+
+				newLive.detach();
 			} );
 
 			it( 'is after a node from the position path', () => {
@@ -308,7 +313,10 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is at the same position and live position is sticking to left side', () => {
-				let live = new LivePosition( root, path, 'sticksToPrevious' );
+				let newLive = new LivePosition( root, path, 'sticksToPrevious' );
+				spy = sinon.spy();
+				newLive.on( 'change', spy );
+
 				let moveSource = new Position( root, [ 2 ] );
 				let moveRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
@@ -318,8 +326,10 @@ describe( 'LivePosition', () => {
 				};
 				doc.fire( 'change', 'move', changes, null );
 
-				expect( live.path ).to.deep.equal( path );
+				expect( newLive.path ).to.deep.equal( path );
 				expect( spy.called ).to.be.false;
+
+				newLive.detach();
 			} );
 
 			it( 'is at a position after a node from the live position path', () => {

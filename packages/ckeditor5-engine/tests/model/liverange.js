@@ -363,23 +363,6 @@ describe( 'LiveRange', () => {
 				expect( spy.calledOnce ).to.be.true;
 			} );
 
-			it( 'is inside live range and points to live range', () => {
-				live.end.path = [ 0, 1, 12 ];
-
-				let moveSource = new Position( root, [ 0, 1, 6 ] );
-				let moveRange = new Range( new Position( root, [ 0, 1, 8 ] ), new Position( root, [ 0, 1, 10 ] ) );
-
-				let changes = {
-					range: moveRange,
-					sourcePosition: moveSource
-				};
-				doc.fire( 'change', 'move', changes, null );
-
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 1, 12 ] );
-				expect( spy.calledOnce ).to.be.true;
-			} );
-
 			it( 'is intersecting with live range and points to live range', () => {
 				live.end.path = [ 0, 1, 12 ];
 
@@ -569,6 +552,23 @@ describe( 'LiveRange', () => {
 
 				expect( live.isEqual( clone ) ).to.be.true;
 				expect( spy.called ).to.be.false;
+			} );
+
+			it( 'is inside live range and points to live range', () => {
+				live.end.path = [ 0, 1, 12 ];
+
+				let moveSource = new Position( root, [ 0, 1, 6 ] );
+				let moveRange = new Range( new Position( root, [ 0, 1, 8 ] ), new Position( root, [ 0, 1, 10 ] ) );
+
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
+
+				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
+				expect( live.end.path ).to.deep.equal( [ 0, 1, 12 ] );
+				expect( spy.calledOnce ).to.be.false;
 			} );
 		} );
 	} );
