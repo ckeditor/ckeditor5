@@ -12,26 +12,20 @@ import { setData, getData } from '/ckeditor5/engine/dev-utils/model.js';
 describe( 'Delete utils', () => {
 	let doc;
 
-	beforeEach( () => {
-		doc = new Document();
-		doc.createRoot();
-
-		const schema = doc.schema;
-
-		schema.registerItem( 'image', '$inline' );
-		schema.registerItem( 'paragraph', '$block' );
-		schema.registerItem( 'heading1', '$block' );
-		schema.registerItem( 'pchild' );
-
-		schema.allow( { name: 'pchild', inside: 'paragraph' } );
-		schema.allow( { name: '$text', inside: '$root' } );
-		schema.allow( { name: 'image', inside: '$root' } );
-		schema.allow( { name: '$text', attributes: [ 'bold', 'italic' ] } );
-		schema.allow( { name: 'paragraph', attributes: [ 'align' ] } );
-	} );
-
 	describe( 'deleteContents', () => {
 		describe( 'in simple scenarios', () => {
+			beforeEach( () => {
+				doc = new Document();
+				doc.createRoot();
+
+				const schema = doc.schema;
+
+				schema.registerItem( 'image', '$inline' );
+
+				schema.allow( { name: '$text', inside: '$root' } );
+				schema.allow( { name: 'image', inside: '$root' } );
+			} );
+
 			test(
 				'does nothing on collapsed selection',
 				'f[]oo',
@@ -85,6 +79,19 @@ describe( 'Delete utils', () => {
 		} );
 
 		describe( 'with text attributes', () => {
+			beforeEach( () => {
+				doc = new Document();
+				doc.createRoot();
+
+				const schema = doc.schema;
+
+				schema.registerItem( 'image', '$inline' );
+				schema.registerItem( 'paragraph', '$block' );
+
+				schema.allow( { name: '$text', inside: '$root' } );
+				schema.allow( { name: '$text', attributes: [ 'bold', 'italic' ] } );
+			} );
+
 			it( 'deletes characters (first half has attrs)', () => {
 				setData( doc, '<$text bold="true">fo[o</$text>b]ar', { selectionAttributes: {
 					bold: true
@@ -146,6 +153,21 @@ describe( 'Delete utils', () => {
 		// like – multiple editing hosts (cE=true/false in use) or block limit elements like <td>.
 		// Those case should, again, be handled by their specific implementations.
 		describe( 'in multi-element scenarios', () => {
+			beforeEach( () => {
+				doc = new Document();
+				doc.createRoot();
+
+				const schema = doc.schema;
+
+				schema.registerItem( 'paragraph', '$block' );
+				schema.registerItem( 'heading1', '$block' );
+				schema.registerItem( 'pchild' );
+				schema.registerItem( 'image', '$inline' );
+
+				schema.allow( { name: 'pchild', inside: 'paragraph' } );
+				schema.allow( { name: 'paragraph', attributes: [ 'align' ] } );
+			} );
+
 			test(
 				'do not merge when no need to',
 				'<paragraph>x</paragraph><paragraph>[foo]</paragraph><paragraph>y</paragraph>',
@@ -250,6 +272,124 @@ describe( 'Delete utils', () => {
 				'<heading1>[]</heading1>',
 				{ merge: true }
 			);
+		} );
+
+		describe( 'in element selections scenarios', () => {
+			beforeEach( () => {
+				doc = new Document();
+				// <p> like root.
+				doc.createRoot( 'paragraph', 'paragraphRoot' );
+				// <body> like root.
+				doc.createRoot( '$root', 'bodyRoot' );
+				// Special root which allows only blockWidgets inside itself.
+				doc.createRoot( 'restrictedRoot', 'restrictedRoot' );
+
+				const schema = doc.schema;
+
+				schema.registerItem( 'image', '$inline' );
+				schema.registerItem( 'paragraph', '$block' );
+				schema.registerItem( 'heading1', '$block' );
+				schema.registerItem( 'blockWidget' );
+				schema.registerItem( 'restrictedRoot' );
+
+				schema.allow( { name: '$block', inside: '$root' } );
+				schema.allow( { name: 'blockWidget', inside: '$root' } );
+
+				schema.allow( { name: 'blockWidget', inside: 'restrictedRoot' } );
+			} );
+
+			// See also "in simple scenarios => deletes an element".
+
+			it( 'deletes two inline elements', () => {
+				setData(
+					doc,
+					'<paragraph>x[<image></image><image></image>]z</paragraph>',
+					{ rootName: 'paragraphRoot' }
+				);
+
+				deleteContents( doc.batch(), doc.selection );
+
+				expect( getData( doc, { rootName: 'paragraphRoot' } ) )
+					.to.equal( '<paragraph>x[]z</paragraph>' );
+			} );
+
+			it( 'creates a paragraph when text is not allowed (paragraph selected)', () => {
+				setData(
+					doc,
+					'<paragraph>x</paragraph>[<paragraph>yyy</paragraph>]<paragraph>z</paragraph>',
+					{ rootName: 'bodyRoot' }
+				);
+
+				deleteContents( doc.batch(), doc.selection );
+
+				expect( getData( doc, { rootName: 'bodyRoot' } ) )
+					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
+			} );
+
+			it( 'creates a paragraph when text is not allowed (block widget selected)', () => {
+				setData(
+					doc,
+					'<paragraph>x</paragraph>[<blockWidget></blockWidget>]<paragraph>z</paragraph>',
+					{ rootName: 'bodyRoot' }
+				);
+
+				deleteContents( doc.batch(), doc.selection );
+
+				expect( getData( doc, { rootName: 'bodyRoot' } ) )
+					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
+			} );
+
+			it( 'creates paragraph when text is not allowed (heading selected)', () => {
+				setData(
+					doc,
+					'<paragraph>x</paragraph>[<heading1>yyy</heading1>]<paragraph>z</paragraph>',
+					{ rootName: 'bodyRoot' }
+				);
+
+				deleteContents( doc.batch(), doc.selection );
+
+				expect( getData( doc, { rootName: 'bodyRoot' } ) )
+					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
+			} );
+
+			it( 'creates paragraph when text is not allowed (two blocks selected)', () => {
+				setData(
+					doc,
+					'<paragraph>x</paragraph>[<heading1>yyy</heading1><paragraph>yyy</paragraph>]<paragraph>z</paragraph>',
+					{ rootName: 'bodyRoot' }
+				);
+
+				deleteContents( doc.batch(), doc.selection );
+
+				expect( getData( doc, { rootName: 'bodyRoot' } ) )
+					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
+			} );
+
+			it( 'creates paragraph when text is not allowed (all content selected)', () => {
+				setData(
+					doc,
+					'[<heading1>x</heading1><paragraph>z</paragraph>]',
+					{ rootName: 'bodyRoot' }
+				);
+
+				deleteContents( doc.batch(), doc.selection );
+
+				expect( getData( doc, { rootName: 'bodyRoot' } ) )
+					.to.equal( '<paragraph>[]</paragraph>' );
+			} );
+
+			it( 'does not create a paragraph when it is not allowed', () => {
+				setData(
+					doc,
+					'<blockWidget></blockWidget>[<blockWidget></blockWidget>]<blockWidget></blockWidget>',
+					{ rootName: 'restrictedRoot' }
+				);
+
+				deleteContents( doc.batch(), doc.selection );
+
+				expect( getData( doc, { rootName: 'restrictedRoot' } ) )
+					.to.equal( '<blockWidget></blockWidget>[]<blockWidget></blockWidget>' );
+			} );
 		} );
 
 		function test( title, input, output, options ) {
