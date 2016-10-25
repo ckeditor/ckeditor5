@@ -111,16 +111,7 @@ export default class DataController {
 		this.viewToModel.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		this.viewToModel.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
-		this.on( 'insertContent', ( evt, data ) => insertContent.call( this, data.batch, data.selection, data.content ) );
-
-		// TMP!
-		// Create an "all allowed" context in the schema for processing the pasted content.
-		// Read: https://github.com/ckeditor/ckeditor5-engine/issues/638#issuecomment-255086588
-
-		const schema = model.schema;
-
-		schema.registerItem( '$clipboardHolder', '$root' );
-		schema.allow( { name: '$text', inside: '$clipboardHolder' } );
+		this.on( 'insertContent', ( evt, data ) => insertContent( this, data.batch, data.selection, data.content ) );
 	}
 
 	/**
@@ -241,21 +232,23 @@ mix( DataController, EmitterMixin );
  * TODO
  *
  * @method engine.dataController.insertContent
- * @context engine.DataController
+ * @param {engine.DataController} dataController
  * @param {engine.model.Batch} batch Batch to which deltas will be added.
  * @param {engine.model.Selection} selection Selection into which the content should be inserted.
  * The selection should be collapsed.
  * @param {engine.model.DocumentFragment} content The content to insert.
  */
-export default function insertContent( batch, selection, content ) {
+export function insertContent( dataController, batch, selection, content ) {
 	if ( !selection.isCollapsed ) {
-		this.model.composer.deleteContents( batch, selection );
+		dataController.model.composer.deleteContents( batch, selection, {
+			merge: true
+		} );
 	}
 
 	// Convert the pasted content to a model document fragment.
 	// Convertion is contextual, but in this case we need an "all allowed" context and for that
-	// we use the $clipboardHolder item. See the comment in the constructor.
-	const modelFragment = this.viewToModel.convert( content, {
+	// we use the $clipboardHolder item.
+	const modelFragment = dataController.viewToModel.convert( content, {
 		context: [ '$clipboardHolder' ]
 	} );
 

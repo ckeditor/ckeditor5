@@ -12,6 +12,9 @@ import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor
 import buildViewConverter  from '/ckeditor5/engine/conversion/buildviewconverter.js';
 import buildModelConverter  from '/ckeditor5/engine/conversion/buildmodelconverter.js';
 
+import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
+import ViewText from '/ckeditor5/engine/view/text.js';
+
 import { getData, setData, stringify, parse } from '/ckeditor5/engine/dev-utils/model.js';
 
 import count from '/ckeditor5/utils/count.js';
@@ -36,6 +39,19 @@ describe( 'DataController', () => {
 			const data = new DataController( modelDocument );
 
 			expect( data.processor ).to.be.undefined;
+		} );
+
+		it( 'should add insertContent listener', () => {
+			const batch = modelDocument.batch();
+			const content = new ViewDocumentFragment( [ new ViewText( 'x' ) ] );
+
+			schema.registerItem( 'paragraph', '$block' );
+
+			setData( modelDocument, '<paragraph>a[]b</paragraph>' );
+
+			data.fire( 'insertContent', { batch, content, selection: modelDocument.selection } );
+
+			expect( getData( modelDocument ) ).to.equal( '<paragraph>ax[]b</paragraph>' );
 		} );
 	} );
 
@@ -250,6 +266,24 @@ describe( 'DataController', () => {
 			data.destroy();
 
 			expect( data ).to.respondTo( 'destroy' );
+		} );
+	} );
+
+	describe( 'insertContent', () => {
+		it( 'should fire the insertContent event', () => {
+			const spy = sinon.spy();
+			const batch = modelDocument.batch();
+			const content = new ViewDocumentFragment( [ new ViewText( 'x' ) ] );
+
+			data.on( 'insertContent', spy );
+
+			data.insertContent( batch, modelDocument.selection, content );
+
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( {
+				batch: batch,
+				selection: modelDocument.selection,
+				content: content
+			} );
 		} );
 	} );
 } );

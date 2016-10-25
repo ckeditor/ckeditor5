@@ -251,6 +251,11 @@ export default class Schema {
 	 */
 	constructor() {
 		/**
+		 * TODO
+		 */
+		this.objects = new Set();
+
+		/**
 		 * Schema items registered in the schema.
 		 *
 		 * @private
@@ -274,6 +279,15 @@ export default class Schema {
 
 		this.allow( { name: '$block', inside: '$root' } );
 		this.allow( { name: '$inline', inside: '$block' } );
+
+		// TMP!
+		// Create an "all allowed" context in the schema for processing the pasted content.
+		// Read: https://github.com/ckeditor/ckeditor5-engine/issues/638#issuecomment-255086588
+
+		if ( !this.hasItem( '$clipboardHolder' ) ) {
+			this.registerItem( '$clipboardHolder', '$root' );
+			this.allow( { name: '$text', inside: '$clipboardHolder' } );
+		}
 	}
 
 	/**
