@@ -5,6 +5,7 @@
 
 import Range from '../engine/model/range.js';
 import CKEditorError from '../utils/ckeditorerror.js';
+
 /**
  * A paragraph feature for editor.
  * Introduces `<paragraph>` element in the model which renders as `<p>` in the DOM and data.
@@ -14,6 +15,34 @@ import CKEditorError from '../utils/ckeditorerror.js';
  */
 export default class InlineAutoformatEngine {
 
+	/**
+	 * Assigns to `editor` to watch for pattern (either by executing that pattern or passing the text to `testCallbackOrPattern` callback).
+	 * It formats found text by executing command `formatCallbackOrCommand` or by running `formatCallbackOrCommand` format callback.
+	 *
+	 * @param {core.editor.Editor} editor Editor instance.
+	 * @param {Function|RegExp} testCallbackOrPattern RegExp literal to execute on text or test callback returning Object with offsets to
+	 * remove and offsets to format.
+	 *  * Format is applied before deletion,
+	 *	* RegExp literal *must* have 3 capture groups.
+	 *
+	 * Example of object that should be returned from test callback.
+	 *
+	 *	{
+	 *		remove: [
+	 *			[ 0, 1 ],
+	 *			[ 5, 6 ]
+	 *		],
+	 *		format: [
+	 *			[ 1, 5 ]
+	 *		],
+	 *	}
+	 *
+	 * @param {Function|String} formatCallbackOrCommand Name of command to execute on matched text or format callback.
+	 * Format callback gets following parameters:
+	 *  * {core.editor.Editor} Editor instance,
+	 *  * {engine.model.Range} Range of matched text to format,
+	 *  * {engine.model.Batch} Batch to group format operations.
+	 */
 	constructor( editor, testCallbackOrPattern, formatCallbackOrCommand ) {
 		this.editor = editor;
 
@@ -36,37 +65,57 @@ export default class InlineAutoformatEngine {
 			formatClb = formatCallbackOrCommand;
 		}
 
+		// Callback to run on changed text.
 		testClb = testClb || ( ( text ) => {
 			let result;
 			let remove = [];
 			let format = [];
 
-			// First run.
-			result = pattern.exec( text );
-
-			// There should be full match and 3 capture groups.
-			if ( result.length < 4 ) {
-				throw new CKEditorError( 'inlineautoformat-missing-capture-groups: Less than 3 capture groups in regular expression.' );
+			if ( !text ) {
+				return;
 			}
 
-			do {
+			while ( ( result = pattern.exec( text ) ) !== null ) {
+				// If nothing matched, stop early.
+				if ( !result ) {
+					return;
+				}
+
+				// There should be full match and 3 capture groups.
+				if ( result && result.length < 4 ) {
+					throw new CKEditorError( 'inlineautoformat-missing-capture-groups: Less than 3 capture groups in regular expression.' );
+				}
+
 				const {
-					index: start,
-					'1': leftDelimiter,
+					index,
+					'1': leftDel,
 					'2': content,
-					'3': rightDelimiter
+					'3': rightDel
 				} = result;
 
-				const delStart = [ start,           start + leftDelimiter.length ];
-				const delEnd =   [ start + content, start + content.length + rightDelimiter.length ];
+				// Start and End offsets of delimiters to remove.
+				const delStart = [
+					index,
+					index + leftDel.length
+				];
+				const delEnd = [
+					index + leftDel.length + content.length,
+					index + leftDel.length + content.length + rightDel.length
+				];
 
 				remove.push( delStart );
 				remove.push( delEnd );
 
-				format.push( [ start + leftDelimiter.length, start + leftDelimiter.length + content.length ] );
-			} while ( ( result = pattern.exec( text ) ) !== null );
+				format.push( [ index + leftDel.length, index + leftDel.length + content.length ] );
+			}
+
+			return {
+				remove,
+				format
+			};
 		} );
 
+		// Format callback to run on matched text.
 		formatClb = formatClb || ( ( editor, range, batch ) => {
 			editor.execute( command, { batch: batch } );
 		} );
@@ -77,7 +126,8 @@ export default class InlineAutoformatEngine {
 			}
 
 			const batch = editor.document.batch();
-			const block = editor.document.selection.focus.parent;
+			const selection = this.editor.document.selection;
+			const block = selection.focus.parent;
 			const text = getText( block );
 
 			if ( block.name !== 'paragraph' || !text ) {
@@ -85,6 +135,10 @@ export default class InlineAutoformatEngine {
 			}
 
 			const ranges = testClb( text );
+
+			if ( !ranges ) {
+				return;
+			}
 
 			// Apply format before deleting text.
 			ranges.format.forEach( ( range ) => {
@@ -97,19 +151,17 @@ export default class InlineAutoformatEngine {
 					block, range[ 1 ]
 				);
 
-				const selection = this.editor.document.selection;
-				const originalRanges = [ ...selection.getRanges() ];
-
 				editor.document.enqueueChanges( () => {
 					selection.setRanges( [ rangeToFormat ] );
 
 					formatClb( this.editor, rangeToFormat, batch );
 
-					selection.setRanges( originalRanges );
+					// FIXME: Problematic part. Changing selection after formatting breaks the formatting.
+					// selection.collapseToEnd();
 				} );
 			} );
 
-			// Reverse order of deleted ranges to not mix the positions.
+			// Reverse order to not mix the offsets while removing.
 			ranges.remove.slice().reverse().forEach( ( range ) => {
 				if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
 					return;

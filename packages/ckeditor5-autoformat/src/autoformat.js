@@ -38,7 +38,7 @@ export default class Autoformat extends Feature {
 	}
 
 	/**
-	 * Add autoformats related to ListEngine commands.
+	 * Adds autoformats related to ListEngine commands.
 	 *
 	 * When typed:
 	 *
@@ -56,7 +56,7 @@ export default class Autoformat extends Feature {
 	}
 
 	/**
-	 * Add autoformats related to HeadingEngine commands.
+	 * Adds autoformats related to HeadingEngine commands.
 	 *
 	 * When typed:
 	 *
@@ -77,43 +77,25 @@ export default class Autoformat extends Feature {
 		} );
 	}
 
+	/**
+	 * Adds inline autoformatting capabilities to the editor.
+	 *
+	 * When typed:
+	 *
+	 *	`**foobar**`
+	 *		The `**` characters are removed, and `foobar` is set to bold.
+	 *	`*foobar*`
+	 *		The `*` characters are removed, and `foobar` is set to italic.
+	 *
+	 * @private
+	 */
 	_addInlineAutoformats() {
-		// Bold autoformat.
-		new InlineAutoformatEngine(
-			this.editor,
-			( text ) => {
-				const pattern = /\*\*(.+?)\*\*/g;
+		// Bold text between `**`, e.g. `**text to bold**`.
+		new InlineAutoformatEngine( this.editor, /(\*\*)(.+?)(\*\*)/g, 'bold' );
 
-				let result;
-				let remove = [];
-				let format = [];
-
-				while ( ( result = pattern.exec( text ) ) !== null ) {
-					const start = result.index;
-					const fullMatchLen = result[ 0 ].length;
-					const delimiterLen = 2; // Length of '**'.
-
-					const delStart = [ start,                               start + delimiterLen ];
-					const delEnd =   [ start + fullMatchLen - delimiterLen, start + fullMatchLen ];
-
-					remove.push( delStart );
-					remove.push( delEnd );
-
-					// Calculation of offsets after text deletion is not needed.
-					format.push( [ start, start + fullMatchLen - delimiterLen ] );
-				}
-
-				return {
-					remove,
-					format
-				};
-			},
-			( editor, range, batch ) => {
-				this.editor.execute( 'bold', { ranges: [ range ], batch } );
-			}
-		);
-
-		// Italic autoformat.
+		// Italicize text between `*`, e.g. `*text to italicize*`.
+		// Slightly more complicated because if the clashing with the Bold autoformat.
+		// Won't work for text shorter than 3 characters.
 		new InlineAutoformatEngine(
 			this.editor,
 			( text ) => {
@@ -138,14 +120,20 @@ export default class Autoformat extends Feature {
 					const fullMatchLen = result[ 2 ].length;
 					const delimiterLen = 1; // Length of '*'.
 
-					const delStart = [ start,                               start + delimiterLen ];
-					const delEnd =   [ start + fullMatchLen - delimiterLen, start + fullMatchLen ];
+					const delStart = [
+						start,
+						start + delimiterLen
+					];
+					const delEnd = [
+						start + fullMatchLen - delimiterLen,
+						start + fullMatchLen
+					];
 
 					remove.push( delStart );
 					remove.push( delEnd );
 
 					// Calculation of offsets after deletion is not needed.
-					format.push( [ start, start + fullMatchLen - delimiterLen ] );
+					format.push( [ start + delimiterLen, start + fullMatchLen - delimiterLen ] );
 				}
 
 				return {
@@ -154,11 +142,8 @@ export default class Autoformat extends Feature {
 				};
 			},
 			( editor, range, batch ) => {
-				this.editor.execute( 'italic', { batch } );
+				this.editor.execute( 'italic', { batch, forceValue: true } );
 			}
 		);
-
-		// 3 capture groups: (remove)(format)(remove).
-		// new InlineAutoformatEngine( this.editor, /(\*\*.+?\*\*)/g, 'bold' );
 	}
 }
