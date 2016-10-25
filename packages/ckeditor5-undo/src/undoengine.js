@@ -78,7 +78,7 @@ export default class UndoEngine extends Feature {
 
 			// Add the batch to the registry so it will not be processed again.
 			this._batchRegistry.add( batch );
-		} );
+		}, { priority: 'highest' } );
 
 		this.listenTo( this._undoCommand, 'revert', ( evt, undoneBatch, undoingBatch ) => {
 			this._redoCommand.addBatch( undoingBatch );
