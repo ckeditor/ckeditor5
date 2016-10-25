@@ -111,6 +111,13 @@ export default class LivePosition extends Position {
 	 * @param {engine.model.Position} position
 	 * @returns {engine.model.LivePosition}
 	 */
+
+	/**
+	 * Fired when `LivePosition` instance is changed due to changes on {@link engine.model.Document}.
+	 *
+	 * @event engine.model.LivePosition#change
+	 * @param {Position} oldPosition Position equal to this live position before it got changed.
+	 */
 }
 
 /**
@@ -178,8 +185,14 @@ function transform( type, range, position ) {
 			break;
 	}
 
-	this.path = transformed.path;
-	this.root = transformed.root;
+	if ( !this.isEqual( transformed ) ) {
+		const oldPosition = Position.createFromPosition( this );
+
+		this.path = transformed.path;
+		this.root = transformed.root;
+
+		this.fire( 'change', oldPosition );
+	}
 }
 
 mix( LivePosition, EmitterMixin );
