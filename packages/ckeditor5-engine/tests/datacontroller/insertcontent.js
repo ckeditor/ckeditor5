@@ -6,7 +6,8 @@
 /* bender-tags: model */
 
 import Document from '/ckeditor5/engine/model/document.js';
-import { default as DataController, insertContent } from '/ckeditor5/engine/datacontroller.js';
+import DataController from '/ckeditor5/engine/datacontroller.js';
+import insertContent from '/ckeditor5/engine/datacontroller/insertcontent.js';
 
 import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
@@ -210,28 +211,28 @@ describe( 'DataController', () => {
 					'inserts one paragraph into an empty paragraph',
 					'<paragraph>xyz</paragraph>',
 					'<paragraph>[]</paragraph>',
-					'<paragraph>xyz</paragraph>'
+					'<paragraph>xyz[]</paragraph>'
 				);
 
 				test(
 					'inserts one block into a fully selected content',
 					'<heading2>xyz</heading2>',
 					'<heading1>[foo</heading1><paragraph>bar]</paragraph>',
-					'<heading2>xyz</heading2>'
+					'<heading2>xyz[]</heading2>'
 				);
 
 				test(
 					'inserts one heading',
 					'<heading1>xyz</heading1>',
 					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>f</paragraph><heading1>xyz</heading1><paragraph>[]oo</paragraph>'
+					'<paragraph>fxyz[]oo</paragraph>'
 				);
 
 				test(
 					'inserts two headings',
-					'<heading1>xyz1</heading1><heading1>xyz2</heading1>',
+					'<heading1>xxx</heading1><heading1>yyy</heading1>',
 					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>f</paragraph><heading1>xyz1</heading1><heading1>xyz2</heading1><paragraph>[]oo</paragraph>'
+					'<paragraph>fxxx</paragraph><heading1>yyy[]oo</heading1>'
 				);
 
 				test(
@@ -261,49 +262,56 @@ describe( 'DataController', () => {
 					'inserts text + paragraph',
 					'xxx<paragraph>yyy</paragraph>',
 					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>fxxx</paragraph><paragraph>yyy</paragraph><paragraph>[]oo</paragraph>'
+					'<paragraph>fxxx</paragraph><paragraph>yyy[]oo</paragraph>'
 				);
 
 				test(
 					'inserts text + paragraph (at the beginning)',
 					'xxx<paragraph>yyy</paragraph>',
 					'<paragraph>[]foo</paragraph>',
-					'<paragraph>xxx</paragraph><paragraph>yyy</paragraph><paragraph>[]foo</paragraph>'
+					'<paragraph>xxx</paragraph><paragraph>yyy[]foo</paragraph>'
 				);
 
 				test(
 					'inserts text + paragraph (at the end)',
 					'xxx<paragraph>yyy</paragraph>',
 					'<paragraph>foo[]</paragraph>',
-					'<paragraph>fooxxx</paragraph><paragraph>yyy</paragraph><paragraph>[]</paragraph>'
+					'<paragraph>fooxxx</paragraph><paragraph>yyy[]</paragraph>'
 				);
 
 				test(
 					'inserts paragraph + text',
 					'<paragraph>yyy</paragraph>xxx',
 					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>f</paragraph><paragraph>xyz</paragraph><paragraph>[]oo</paragraph>'
+					'<paragraph>fyyy</paragraph><paragraph>xxx[]oo</paragraph>'
+				);
+
+				test(
+					'inserts paragraph + text + inlineWidget + text',
+					'<paragraph>yyy</paragraph>xxx<inlineWidget></inlineWidget>zzz',
+					'<paragraph>f[]oo</paragraph>',
+					'<paragraph>fyyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz[]oo</paragraph>'
 				);
 
 				test(
 					'inserts paragraph + text (at the beginning)',
 					'<paragraph>yyy</paragraph>xxx',
-					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>f</paragraph><paragraph>xyz</paragraph><paragraph>[]oo</paragraph>'
+					'<paragraph>[]foo</paragraph>',
+					'<paragraph>yyy</paragraph><paragraph>xxx[]foo</paragraph>'
 				);
 
 				test(
 					'inserts paragraph + text (at the end)',
 					'<paragraph>yyy</paragraph>xxx',
-					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>f</paragraph><paragraph>xyz</paragraph><paragraph>[]oo</paragraph>'
+					'<paragraph>foo[]</paragraph>',
+					'<paragraph>fooyyy</paragraph><paragraph>xxx[]</paragraph>'
 				);
 
 				test(
 					'inserts text + heading',
 					'xxx<heading1>yyy</heading1>',
 					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>fxxx</paragraph><heading1>yyy</heading1><paragraph>[]oo</paragraph>'
+					'<paragraph>fxxx</paragraph><heading1>yyy[]oo</heading1>'
 				);
 
 				test(
@@ -361,7 +369,7 @@ describe( 'DataController', () => {
 					'inserts inline object',
 					'<inlineWidget></inlineWidget>',
 					'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>',
-					'<paragraph>foo</paragraph><paragraph>[<inlineWidget></inlineWidget>]</paragraph><paragraph>bar</paragraph>'
+					'<paragraph>foo</paragraph><paragraph><inlineWidget></inlineWidget>[]</paragraph><paragraph>bar</paragraph>'
 				);
 			} );
 
@@ -398,7 +406,7 @@ describe( 'DataController', () => {
 					'inserts inline object',
 					'<inlineWidget></inlineWidget>',
 					'<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>',
-					'<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>'
+					'<paragraph>foo<inlineWidget></inlineWidget>[]bar</paragraph>'
 				);
 
 				test(
@@ -424,11 +432,16 @@ describe( 'DataController', () => {
 				// Let's use table as an example of content which needs to be filtered out.
 				schema.registerItem( 'table' );
 				schema.registerItem( 'td' );
+				schema.registerItem( 'disallowedWidget' );
 
 				schema.allow( { name: 'table', inside: '$clipboardHolder' } );
 				schema.allow( { name: 'td', inside: '$clipboardHolder' } );
 				schema.allow( { name: '$block', inside: 'td' } );
 				schema.allow( { name: '$text', inside: 'td' } );
+
+				schema.allow( { name: 'disallowedWidget', inside: '$clipboardHolder' } );
+				schema.allow( { name: '$text', inside: 'disallowedWidget' } );
+				schema.objects.add( 'disallowedWidget' );
 			} );
 
 			test(
@@ -443,6 +456,13 @@ describe( 'DataController', () => {
 				'<table><td><paragraph>xxx</paragraph><paragraph>yyy</paragraph><paragraph>zzz</paragraph></td></table>',
 				'<paragraph>f[]oo</paragraph>',
 				'<paragraph>fxxx</paragraph><paragraph>yyy</paragraph><paragraph>zzz[]oo</paragraph>'
+			);
+
+			test(
+				'filters out disallowed objects',
+				'<disallowedWidget>xxx</disallowedWidget>',
+				'<paragraph>f[]oo</paragraph>',
+				'<paragraph>f[]oo</paragraph>'
 			);
 		} );
 	} );
