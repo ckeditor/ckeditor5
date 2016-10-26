@@ -475,10 +475,16 @@ export default class Renderer {
 		}
 
 		// Update contents.
-		const content = this.selection.fakeSelectionLabel || '&nbsp;';
+		const content = this.selection.fakeSelectionLabel || '\u00A0';
+		const textNode = this._fakeSelectionContainer.firstChild;
 
-		if ( content !== this._fakeSelectionContainer.innerHTML ) {
-			this._fakeSelectionContainer.innerHTML = content;
+		if ( !textNode || content !== textNode.textContent ) {
+			if ( textNode ) {
+				this._fakeSelectionContainer.removeChild( textNode );
+			}
+
+			const newTextNode = domDocument.createTextNode( content );
+			this._fakeSelectionContainer.appendChild( newTextNode );
 		}
 
 		// Update selection.

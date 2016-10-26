@@ -1027,7 +1027,7 @@ describe( 'Renderer', () => {
 				const container = domRoot.childNodes[ 1 ];
 				expect( container.childNodes.length ).to.equal( 1 );
 				const textNode = container.childNodes[ 0 ];
-				expect( container.innerHTML ).to.equal( '&nbsp;' );
+				expect( textNode.textContent ).to.equal( '\u00A0' );
 				const domSelection = domRoot.ownerDocument.getSelection();
 				expect( domSelection.anchorNode ).to.equal( textNode );
 				expect( domSelection.anchorOffset ).to.equal( 0 );
@@ -1070,7 +1070,9 @@ describe( 'Renderer', () => {
 				expect( domRoot.childNodes.length ).to.equal( 2 );
 				const newContainer = domRoot.childNodes[ 1 ];
 				expect( newContainer ).equals( container );
-				expect( newContainer.innerText ).to.equal( label );
+				expect( newContainer.childNodes.length ).to.equal( 1 );
+				const textNode = newContainer.childNodes[ 0 ];
+				expect( textNode.textContent ).to.equal( label );
 			} );
 
 			it( 'should reuse fake selection container #2', () => {
@@ -1091,7 +1093,27 @@ describe( 'Renderer', () => {
 				expect( domRoot.childNodes.length ).to.equal( 2 );
 				const newContainer = domRoot.childNodes[ 1 ];
 				expect( newContainer ).equals( container );
-				expect( newContainer.innerText ).to.equal( 'label 2' );
+				expect( newContainer.childNodes.length ).to.equal( 1 );
+				const textNode = newContainer.childNodes[ 0 ];
+				expect( textNode.textContent ).to.equal( 'label 2' );
+			} );
+
+			it( 'should reuse fake selection container #3', () => {
+				selection.setFake( true, { label: 'label 1' } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const container = domRoot.childNodes[ 1 ];
+
+				selection.setFake( true, { label: 'label 2' } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const newContainer = domRoot.childNodes[ 1 ];
+				expect( newContainer ).equals( container );
+				expect( newContainer.childNodes.length ).to.equal( 1 );
+				const textNode = newContainer.childNodes[ 0 ];
+				expect( textNode.textContent ).to.equal( 'label 2' );
 			} );
 
 			it( 'should style fake selection container properly', () => {
