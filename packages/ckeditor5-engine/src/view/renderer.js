@@ -466,7 +466,7 @@ export default class Renderer {
 			this._fakeSelectionContainer = domDocument.createElement( 'div' );
 			this._fakeSelectionContainer.style.position = 'fixed';
 			this._fakeSelectionContainer.style.top = 0;
-			this._fakeSelectionContainer.style.left = '-1000px';
+			this._fakeSelectionContainer.style.left = '-9999px';
 		}
 
 		// Add fake container if not already added.
