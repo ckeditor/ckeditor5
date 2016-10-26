@@ -136,10 +136,17 @@ describe( 'DataController', () => {
 				schema.registerItem( 'heading2', '$block' );
 				schema.registerItem( 'blockWidget' );
 				schema.registerItem( 'inlineWidget' );
+				schema.registerItem( 'listItem', '$block' );
 
 				schema.allow( { name: 'blockWidget', inside: '$root' } );
 				schema.allow( { name: 'inlineWidget', inside: '$block' } );
 				schema.allow( { name: 'inlineWidget', inside: '$clipboardHolder' } );
+				schema.allow( {
+					name: 'listItem',
+					inside: '$root',
+					attributes: [ 'type', 'indent' ]
+				} );
+				schema.requireAttributes( 'listItem', [ 'type', 'indent' ] );
 
 				schema.objects.add( 'blockWidget' );
 				schema.objects.add( 'inlineWidget' );
@@ -190,9 +197,6 @@ describe( 'DataController', () => {
 			);
 
 			describe( 'block to block handling', () => {
-				// Note: This is temporary implementation which gives a quite poor UX.
-				// See https://github.com/ckeditor/ckeditor5-engine/issues/652
-
 				test(
 					'inserts one paragraph',
 					'<paragraph>xyz</paragraph>',
@@ -254,6 +258,50 @@ describe( 'DataController', () => {
 					'<blockWidget></blockWidget>',
 					'<paragraph>[]bar</paragraph>',
 					'[<blockWidget></blockWidget>]<paragraph>bar</paragraph>'
+				);
+
+				test(
+					'inserts one list item',
+					'<listItem indent="0" type="bulleted">xyz</listItem>',
+					'<paragraph>f[]oo</paragraph>',
+					'<paragraph>fxyz[]oo</paragraph>'
+				);
+
+				test(
+					'inserts list item to empty element',
+					'<listItem indent="0" type="bulleted">xyz</listItem>',
+					'<paragraph>[]</paragraph>',
+					'<listItem indent="0" type="bulleted">xyz[]</listItem>'
+				);
+
+				test(
+					'inserts three list items at the end of paragraph',
+					(
+						'<listItem indent="0" type="bulleted">xxx</listItem>' +
+						'<listItem indent="0" type="bulleted">yyy</listItem>' +
+						'<listItem indent="0" type="bulleted">zzz</listItem>'
+					),
+					'<paragraph>foo[]</paragraph>',
+					(
+						'<paragraph>fooxxx</paragraph>' +
+						'<listItem indent="0" type="bulleted">yyy</listItem>' +
+						'<listItem indent="0" type="bulleted">zzz[]</listItem>'
+					)
+				);
+
+				test(
+					'inserts two list items to an empty paragraph',
+					(
+						'<listItem indent="0" type="bulleted">xxx</listItem>' +
+						'<listItem indent="0" type="bulleted">yyy</listItem>'
+					),
+					'<paragraph>a</paragraph><paragraph>[]</paragraph><paragraph>b</paragraph>',
+					(
+						'<paragraph>a</paragraph>' +
+						'<listItem indent="0" type="bulleted">xxx</listItem>' +
+						'<listItem indent="0" type="bulleted">yyy[]</listItem>' +
+						'<paragraph>b</paragraph>'
+					)
 				);
 			} );
 

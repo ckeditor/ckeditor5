@@ -3,17 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-import { stringify as stringifyModel } from '../dev-utils/model.js';
+// import { stringify as stringifyModel } from '../dev-utils/model.js';
 
 import Position from '../model/position.js';
 import LivePosition from '../model/liveposition.js';
 import Text from '../model/text.js';
 import Element from '../model/element.js';
-// import RootElement from '../model/rootelement.js';
 import Range from '../model/range.js';
 import log from '../../utils/log.js';
-
-window.stringify = stringifyModel; // jshint ignore:line
 
 /**
  * TODO
@@ -38,6 +35,8 @@ export default function insertContent( dataController, batch, selection, content
 	const modelFragment = dataController.viewToModel.convert( content, {
 		context: [ '$clipboardHolder' ]
 	} );
+
+	// console.log( stringifyModel( modelFragment ) );
 
 	const insertion = new Insertion( dataController, batch, selection.anchor );
 
@@ -271,7 +270,11 @@ class Insertion {
 	 * @param {engine.model.SchemaPath} path
 	 */
 	_checkIsAllowed( node, path ) {
-		return this.schema.check( { name: this._getNodeSchemaName( node ), inside: path } );
+		return this.schema.check( {
+			name: this._getNodeSchemaName( node ),
+			attributes: Array.from( node.getAttributeKeys() ),
+			inside: path
+		} );
 	}
 
 	_checkIsObject( node ) {
