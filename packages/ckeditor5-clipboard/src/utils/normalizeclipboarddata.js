@@ -11,5 +11,5 @@
  */
 export default function normalizeClipboardData( data ) {
 	return data
-		.replace( /<span class="Apple-converted-space">(\s+)<\/span>/, '$1' );
+		.replace( /<span class="Apple-converted-space">(\s+)<\/span>/g, '$1' );
 }
