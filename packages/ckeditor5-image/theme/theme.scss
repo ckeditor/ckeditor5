@@ -1,0 +1,22 @@
+//.ck-image {
+//	border: 1px solid transparent;
+//	&__selected {
+//		border: 1px solid ck-border-color();
+//	}
+//}
+
+figure {
+	&.image {
+		text-align: center;
+		cursor: pointer;
+		overflow: hidden;
+
+		img {
+			pointer-events: none;
+		}
+
+		&.selected {
+			background-color: #dedede;
+		}
+	}
+}
