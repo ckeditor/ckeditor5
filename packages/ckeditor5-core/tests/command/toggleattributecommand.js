@@ -5,6 +5,7 @@
 
 import Editor from '/ckeditor5/core/editor/editor.js';
 import Document from '/ckeditor5/engine/model/document.js';
+import Batch from '/ckeditor5/engine/model/batch.js';
 import ToggleAttributeCommand from '/ckeditor5/core/command/toggleattributecommand.js';
 import Range from '/ckeditor5/engine/model/range.js';
 import Position from '/ckeditor5/engine/model/position.js';
@@ -165,6 +166,18 @@ describe( 'ToggleAttributeCommand', () => {
 
 			expect( getData( modelDoc ) )
 				.to.equal( '<p>ab[<$text bold="true">c</$text><image></image><$text bold="true">foobarxy</$text><image></image>]z</p>' );
+		} );
+
+		it( 'should use provided batch for storing undo steps', () => {
+			const batch = new Batch( new Document() );
+			setData( modelDoc, '<p>a[bc<$text bold="true">fo]obar</$text>xyz</p>' );
+
+			expect( batch.deltas.length ).to.equal( 0 );
+
+			command._doExecute( { batch } );
+
+			expect( batch.deltas.length ).to.equal( 1 );
+			expect( getData( modelDoc ) ).to.equal( '<p>a[<$text bold="true">bcfo]obar</$text>xyz</p>' );
 		} );
 
 		describe( 'should cause firing model document changesDone event', () => {
