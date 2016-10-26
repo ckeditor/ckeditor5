@@ -251,7 +251,11 @@ export default class Schema {
 	 */
 	constructor() {
 		/**
-		 * TODO
+		 * Names of elements which have "object" nature. This means that these
+		 * elements should be treated as whole, never merged, can be selected from outside, etc.
+		 * Just like images, placeholder widgets, etc.
+		 *
+		 * @member {Set.<String>} engine.model.Schema#objects
 		 */
 		this.objects = new Set();
 
@@ -284,10 +288,8 @@ export default class Schema {
 		// Create an "all allowed" context in the schema for processing the pasted content.
 		// Read: https://github.com/ckeditor/ckeditor5-engine/issues/638#issuecomment-255086588
 
-		if ( !this.hasItem( '$clipboardHolder' ) ) {
-			this.registerItem( '$clipboardHolder', '$root' );
-			this.allow( { name: '$text', inside: '$clipboardHolder' } );
-		}
+		this.registerItem( '$clipboardHolder', '$root' );
+		this.allow( { name: '$inline', inside: '$clipboardHolder' } );
 	}
 
 	/**
