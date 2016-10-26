@@ -28,14 +28,40 @@ describe( 'InlineAutoformatEngine', () => {
 	} );
 
 	describe( 'Command name', () => {
+		it( 'should accept a string pattern', () => {
+			const spy = testUtils.sinon.spy();
+			editor.commands.set( 'testCommand', new TestCommand( editor, spy ) );
+			new InlineAutoformatEngine( editor, '(\\*)(.+?)(\\*)', 'testCommand' );
+
+			setData( doc, '<paragraph>*foobar[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), '*' );
+			} );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should stop early if there are less than 3 capture groups', () => {
+			const spy = testUtils.sinon.spy();
+			editor.commands.set( 'testCommand', new TestCommand( editor, spy ) );
+			new InlineAutoformatEngine( editor, /(\*)(.+?)\*/g, 'testCommand' );
+
+			setData( doc, '<paragraph>*foobar[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), '*' );
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
 		it( 'should run a command when the pattern is matched', () => {
 			const spy = testUtils.sinon.spy();
 			editor.commands.set( 'testCommand', new TestCommand( editor, spy ) );
-			new InlineAutoformatEngine( editor, /^[\*]\s$/, 'testCommand' );
+			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, 'testCommand' );
 
-			setData( doc, '<paragraph>*[]</paragraph>' );
+			setData( doc, '<paragraph>*foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insert( doc.selection.getFirstPosition(), '*' );
 			} );
 
 			sinon.assert.calledOnce( spy );
@@ -44,15 +70,15 @@ describe( 'InlineAutoformatEngine', () => {
 		it( 'should remove found pattern', () => {
 			const spy = testUtils.sinon.spy();
 			editor.commands.set( 'testCommand', new TestCommand( editor, spy ) );
-			new InlineAutoformatEngine( editor, /^[\*]\s$/, 'testCommand' );
+			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, 'testCommand' );
 
-			setData( doc, '<paragraph>*[]</paragraph>' );
+			setData( doc, '<paragraph>*foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
+				batch.insert( doc.selection.getFirstPosition(), '*' );
 			} );
 
 			sinon.assert.calledOnce( spy );
-			expect( getData( doc ) ).to.equal( '<paragraph>[]</paragraph>' );
+			expect( getData( doc ) ).to.equal( '<paragraph>foobar[]</paragraph>' );
 		} );
 	} );
 
@@ -84,6 +110,23 @@ describe( 'InlineAutoformatEngine', () => {
 			new InlineAutoformatEngine( editor, testStub, formatSpy );
 
 			setData( doc, '<paragraph>*[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), ' ' );
+			} );
+
+			sinon.assert.notCalled( formatSpy );
+		} );
+
+		it( 'should stop early when there is no text', () => {
+			const formatSpy = testUtils.sinon.spy();
+			const testStub = testUtils.sinon.stub().returns( {
+				format: [],
+				remove: [ [] ]
+			} );
+
+			new InlineAutoformatEngine( editor, testStub, formatSpy );
+
+			setData( doc, '<paragraph>[]</paragraph>' );
 			doc.enqueueChanges( () => {
 				batch.insert( doc.selection.getFirstPosition(), ' ' );
 			} );

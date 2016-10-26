@@ -4,7 +4,6 @@
  */
 
 import Range from '../engine/model/range.js';
-import CKEditorError from '../utils/ckeditorerror.js';
 
 /**
  * A paragraph feature for editor.
@@ -52,7 +51,7 @@ export default class InlineAutoformatEngine {
 		let formatClb;
 
 		if ( typeof testCallbackOrPattern == 'string' ) {
-			pattern = new RegExp( testCallbackOrPattern );
+			pattern = new RegExp( testCallbackOrPattern, 'g' );
 		} else if ( testCallbackOrPattern instanceof RegExp ) {
 			pattern = testCallbackOrPattern;
 		} else {
@@ -71,19 +70,10 @@ export default class InlineAutoformatEngine {
 			let remove = [];
 			let format = [];
 
-			if ( !text ) {
-				return;
-			}
-
 			while ( ( result = pattern.exec( text ) ) !== null ) {
-				// If nothing matched, stop early.
-				if ( !result ) {
-					return;
-				}
-
 				// There should be full match and 3 capture groups.
 				if ( result && result.length < 4 ) {
-					throw new CKEditorError( 'inlineautoformat-missing-capture-groups: Less than 3 capture groups in regular expression.' );
+					break;
 				}
 
 				const {
@@ -135,10 +125,6 @@ export default class InlineAutoformatEngine {
 			}
 
 			const ranges = testClb( text );
-
-			if ( !ranges ) {
-				return;
-			}
 
 			// Apply format before deleting text.
 			ranges.format.forEach( ( range ) => {

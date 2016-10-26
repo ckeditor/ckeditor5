@@ -94,7 +94,7 @@ export default class Autoformat extends Feature {
 		new InlineAutoformatEngine( this.editor, /(\*\*)(.+?)(\*\*)/g, 'bold' );
 
 		// Italicize text between `*`, e.g. `*text to italicize*`.
-		// Slightly more complicated because if the clashing with the Bold autoformat.
+		// Slightly more complicated because of the clashing with the Bold autoformat.
 		// Won't work for text shorter than 3 characters.
 		new InlineAutoformatEngine(
 			this.editor,
