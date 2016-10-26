@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
+/* globals document, console */
 
 import ViewDocument from '/ckeditor5/engine/view/document.js';
 import ViewRange from '/ckeditor5/engine/view/range.js';
@@ -14,14 +14,19 @@ const domEditable = document.getElementById( 'editor' );
 const viewRoot = viewDocument.createRoot( domEditable );
 let viewStrong;
 
+// Prevent focus stealing. Simulates how editor buttons work.
+document.getElementById( 'create-fake' ).addEventListener( 'mousedown', ( evt ) => {
+	evt.preventDefault();
+} );
+
 document.getElementById( 'create-fake' ).addEventListener( 'click', () => {
 	const viewP = viewRoot.getChild( 0 );
 	viewStrong = viewP.getChild( 1 );
+
 	const range = ViewRange.createOn( viewStrong );
 	viewDocument.selection.setRanges( [ range ] );
 	viewDocument.selection.setFake( true, { label: 'fake selection over bar' } );
 	viewStrong.setStyle( 'background-color', 'yellow' );
-	viewDocument.focus();
 } );
 
 viewDocument.on( 'selectionChange', ( evt, data ) => {
@@ -33,6 +38,14 @@ viewDocument.selection.on( 'change', () => {
 	if ( viewStrong && !viewDocument.selection.isFake ) {
 		viewStrong.removeStyle( 'background-color' );
 	}
+} );
+
+viewDocument.on( 'focus', () => {
+	console.log( 'The document was focused' );
+} );
+
+viewDocument.on( 'blur', () => {
+	console.log( 'The document was blurred' );
 } );
 
 setData( viewDocument, '<container:p>{}foo<strong>bar</strong>baz</container:p>' );
