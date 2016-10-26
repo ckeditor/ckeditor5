@@ -6,14 +6,17 @@
 /* globals console, window, document */
 
 import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
+import Enter from '/ckeditor5/enter/enter.js';
+import Typing from '/ckeditor5/typing/typing.js';
+import Paragraph from '/ckeditor5/paragraph/paragraph.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ 'enter', 'typing', 'paragraph' ],
+	features: [ Enter, Typing, Paragraph ],
 	toolbar: []
 } )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+.then( editor => {
+	window.editor = editor;
+} )
+.catch( err => {
+	console.error( err.stack );
+} );
