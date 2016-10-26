@@ -64,8 +64,10 @@ export default class Selection {
 	}
 
 	/**
-	 * Sets this selection instance to be marked as `fake`. This means only that selection will not be rendered
-	 * as real selection.
+	 * Sets this selection instance to be marked as `fake`. A fake selection does not render as browser native selection
+	 * over selected elements and is hidden to the user. This way, no native selection UI artifacts are displayed to
+	 * the user and selection over elements can be represented in other way, for example by applying proper CSS class.
+	 *
 	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
 	 * properly handled by screen readers).
 	 *
@@ -81,6 +83,7 @@ export default class Selection {
 	/**
 	 * Returns true if selection instance is marked as `fake`.
 	 *
+	 * @see {@link engine.view.Selection#setFake}
 	 * @returns {Boolean}
 	 */
 	get isFake() {
@@ -90,6 +93,7 @@ export default class Selection {
 	/**
 	 * Returns fake selection label.
 	 *
+	 * @see {@link engine.view.Selection#setFake}
 	 * @returns {String}
 	 */
 	get fakeSelectionLabel() {
