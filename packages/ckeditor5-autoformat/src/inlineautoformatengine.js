@@ -153,11 +153,13 @@ export default class InlineAutoformatEngine {
 
 				editor.document.enqueueChanges( () => {
 					selection.setRanges( [ rangeToFormat ] );
+				} );
 
-					formatClb( this.editor, rangeToFormat, batch );
+				// formatClb executes command that has its own enqueueChanges block.
+				formatClb( this.editor, rangeToFormat, batch );
 
-					// FIXME: Problematic part. Changing selection after formatting breaks the formatting.
-					// selection.collapseToEnd();
+				editor.document.enqueueChanges( () => {
+					selection.collapseToEnd();
 				} );
 			} );
 
