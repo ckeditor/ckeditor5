@@ -19,6 +19,11 @@ import buildViewConverter from '/ckeditor5/engine/conversion/buildviewconverter.
 
 import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 
+import Enter from '/ckeditor5/enter/enter.js';
+import Typing from '/ckeditor5/typing/typing.js';
+import Paragraph from '/ckeditor5/paragraph/paragraph.js';
+import Undo from '/ckeditor5/undo/undo.js';
+
 class Link extends Feature {
 	init() {
 		const editor = this.editor;
@@ -87,6 +92,6 @@ function _getLastPathPart( path ) {
 }
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ 'enter', 'typing', 'paragraph', 'undo', Link, AutoLinker ],
+	features: [ Enter, Typing, Paragraph, Undo, Link, AutoLinker ],
 	toolbar: [ 'undo', 'redo' ]
 } );
