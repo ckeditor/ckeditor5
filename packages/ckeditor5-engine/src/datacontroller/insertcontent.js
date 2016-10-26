@@ -186,20 +186,18 @@ class Insertion {
 		this._mergeSiblingsOf( node, context );
 	}
 
+	/**
+	 * @param {engine.model.Element} node The object element.
+	 * @param {Object} context
+	 */
 	_handleObject( node, context ) {
+		// Try finding it a place in the tree.
 		if ( this._checkAndSplitToAllowedPosition( node ) ) {
 			this._insert( node );
-		} else {
-			const paragraph = new Element( 'paragraph' );
-
-			// Do not autoparagraph if the paragraph won't be allowed there,
-			// cause that would lead to an infinite loop. The paragraph would be rejected in
-			// the next _handleNode() call and we'd be here again.
-			if ( this._getAllowedIn( paragraph, this.position.parent ) && this._checkIsAllowed( node, [ paragraph ] ) ) {
-				paragraph.appendChildren( node );
-
-				this._handleNode( paragraph, context );
-			}
+		}
+		// Try autoparagraphing.
+		else {
+			this._tryAutoparagraphing( node, context );
 		}
 	}
 
@@ -214,16 +212,7 @@ class Insertion {
 		}
 		// Try autoparagraphing.
 		else {
-			const paragraph = new Element( 'paragraph' );
-
-			// Do not autoparagraph if the paragraph won't be allowed there,
-			// cause that would lead to an infinite loop. The paragraph would be rejected in
-			// the next handleNode() call and we'd be here again.
-			if ( this._getAllowedIn( paragraph, this.position.parent ) ) {
-				paragraph.appendChildren( node );
-
-				this._handleNode( paragraph, context );
-			}
+			this._tryAutoparagraphing( node, context );
 		}
 	}
 
@@ -308,6 +297,25 @@ class Insertion {
 
 		mergePosLeft.detach();
 		mergePosRight.detach();
+	}
+
+	/**
+	 * Tries wrapping the node in a new paragraph and inserting it this way.
+	 *
+	 * @param {engine.model.Node} node The node which needs to be autoparagraphed.
+	 * @param {Object} context
+	 */
+	_tryAutoparagraphing( node, context ) {
+		const paragraph = new Element( 'paragraph' );
+
+		// Do not autoparagraph if the paragraph won't be allowed there,
+		// cause that would lead to an infinite loop. The paragraph would be rejected in
+		// the next _handleNode() call and we'd be here again.
+		if ( this._getAllowedIn( paragraph, this.position.parent ) && this._checkIsAllowed( node, [ paragraph ] ) ) {
+			paragraph.appendChildren( node );
+
+			this._handleNode( paragraph, context );
+		}
 	}
 
 	/**
