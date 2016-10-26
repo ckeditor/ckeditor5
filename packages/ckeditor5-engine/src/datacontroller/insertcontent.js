@@ -89,6 +89,7 @@ class Insertion {
 		const isAllowed = this._splitToAllowedPosition( node, context );
 
 		if ( !isAllowed ) {
+			// Try inserting its children (strip the parent).
 			if ( context.isElement ) {
 				this.handleNodes( node.getChildren(), context );
 			}
