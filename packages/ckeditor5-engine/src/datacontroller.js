@@ -227,3 +227,16 @@ export default class DataController {
 }
 
 mix( DataController, EmitterMixin );
+
+/**
+ * Event fired when {@link engine.DataController#insertContent} method is called.
+ * The {@link engine.dataController.insertContent default action of the composer} is implemented as a
+ * listener to that event so it can be fully customized by the features.
+ *
+ * @event engine.DataController#insertContent
+ * @param {Object} data
+ * @param {engine.model.Batch} data.batch Batch to which deltas will be added.
+ * @param {engine.model.Selection} data.selection Selection into which the content should be inserted.
+ * @param {engine.view.DocumentFragment} data.content The content to insert.
+ */
+
