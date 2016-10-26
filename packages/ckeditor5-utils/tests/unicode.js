@@ -3,27 +3,65 @@
  * For licensing, see LICENSE.md.
  */
 
-import { isSurrogateHalf, isCombiningMark, isInsideSurrogatePair, isInsideCombinedSymbol } from '/ckeditor5/utils/unicode.js';
+import {
+	isLowSurrogateHalf,
+	isHighSurrogateHalf,
+	isCombiningMark,
+	isInsideSurrogatePair,
+	isInsideCombinedSymbol
+} from '/ckeditor5/utils/unicode.js';
 
 describe( 'utils', () => {
 	describe( 'unicode', () => {
-		describe( 'isSurrogateHalf', () => {
-			it( 'should return true if given character is a surrogate half', () => {
-				// Half of pile of poo - U+D83D
-				// It is not string because of problem with Babel replacing half of the surrogate with actual (wrong) character.
-				expect( isSurrogateHalf( String.fromCharCode( 0xD83D ) ) ).to.be.true;
+		describe( 'isHighSurrogateHalf', () => {
+			it( 'should return true if given character is a high surrogate half', () => {
+				// '𨭎'.charCodeAt( 0 ); // 55394 --> high surrogate half.
+				// '𨭎'.charCodeAt( 1 ); // 57166 --> low surrogate half.
+				expect( isHighSurrogateHalf( String.fromCharCode( 55394 ) ) ).to.be.true;
+			} );
+
+			it( 'should return false if given character is a low surrogate half', () => {
+				// '𨭎'.charCodeAt( 0 ); // 55394 --> high surrogate half.
+				// '𨭎'.charCodeAt( 1 ); // 57166 --> low surrogate half.
+				expect( isHighSurrogateHalf( String.fromCharCode( 57166 ) ) ).to.be.false;
 			} );
 
 			it( 'should return false if given character is not a surrogate half', () => {
-				expect( isSurrogateHalf( 'a' ) ).to.be.false;
-				expect( isSurrogateHalf( '𨭎' ) ).to.be.false;
+				expect( isHighSurrogateHalf( 'a' ) ).to.be.false;
+				expect( isHighSurrogateHalf( '𨭎' ) ).to.be.false;
 			} );
 
 			it( 'should return false for falsy values', () => {
-				expect( isSurrogateHalf( null ) ).to.be.false;
-				expect( isSurrogateHalf( undefined ) ).to.be.false;
-				expect( isSurrogateHalf( false ) ).to.be.false;
-				expect( isSurrogateHalf( 0 ) ).to.be.false;
+				expect( isHighSurrogateHalf( null ) ).to.be.false;
+				expect( isHighSurrogateHalf( undefined ) ).to.be.false;
+				expect( isHighSurrogateHalf( false ) ).to.be.false;
+				expect( isHighSurrogateHalf( 0 ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'isLowSurrogateHalf', () => {
+			it( 'should return true if given character is a low surrogate half', () => {
+				// '𨭎'.charCodeAt( 0 ); // 55394 --> high surrogate half.
+				// '𨭎'.charCodeAt( 1 ); // 57166 --> low surrogate half.
+				expect( isLowSurrogateHalf( String.fromCharCode( 57166 ) ) ).to.be.true;
+			} );
+
+			it( 'should return false if given character is a high surrogate half', () => {
+				// '𨭎'.charCodeAt( 0 ); // 55394 --> high surrogate half.
+				// '𨭎'.charCodeAt( 1 ); // 57166 --> low surrogate half.
+				expect( isLowSurrogateHalf( String.fromCharCode( 55394 ) ) ).to.be.false;
+			} );
+
+			it( 'should return false if given character is not a surrogate half', () => {
+				expect( isLowSurrogateHalf( 'a' ) ).to.be.false;
+				expect( isLowSurrogateHalf( '𨭎' ) ).to.be.false;
+			} );
+
+			it( 'should return false for falsy values', () => {
+				expect( isLowSurrogateHalf( null ) ).to.be.false;
+				expect( isLowSurrogateHalf( undefined ) ).to.be.false;
+				expect( isLowSurrogateHalf( false ) ).to.be.false;
+				expect( isLowSurrogateHalf( 0 ) ).to.be.false;
 			} );
 		} );
 
@@ -60,6 +98,10 @@ describe( 'utils', () => {
 			it( 'should return false if given offset in a string is at the string beginning or end', () => {
 				expect( isInsideSurrogatePair( testString, 0 ) ).to.be.false;
 				expect( isInsideSurrogatePair( testString, 4 ) ).to.be.false;
+			} );
+
+			it( 'should return false if given offset is between two surrogate pairs', () => {
+				expect( isInsideSurrogatePair( '𨭎𨭎', 2 ) ).to.be.false;
 			} );
 		} );
 

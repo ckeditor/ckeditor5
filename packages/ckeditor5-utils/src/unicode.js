@@ -20,13 +20,29 @@ export function isCombiningMark( character ) {
 }
 
 /**
- * Checks whether given `character` is a half of surrogate pair.
+ * Checks whether given `character` is a high half of surrogate pair.
+ *
+ * Using UTF-16 terminology, a surrogate pair denotes UTF-16 character using two UTF-8 characters. The surrogate pair
+ * consist of high surrogate pair character followed by low surrogate pair character.
  *
  * @param {String} character Character to check.
  * @returns {Boolean}
  */
-export function isSurrogateHalf( character ) {
-	return !!character && character.length == 1 && /[\ud800-\udfff]/.test( character );
+export function isHighSurrogateHalf( character ) {
+	return !!character && character.length == 1 && /[\ud800-\udbff]/.test( character );
+}
+
+/**
+ * Checks whether given `character` is a low half of surrogate pair.
+ *
+ * Using UTF-16 terminology, a surrogate pair denotes UTF-16 character using two UTF-8 characters. The surrogate pair
+ * consist of high surrogate pair character followed by low surrogate pair character.
+ *
+ * @param {String} character Character to check.
+ * @returns {Boolean}
+ */
+export function isLowSurrogateHalf( character ) {
+	return !!character && character.length == 1 && /[\udc00-\udfff]/.test( character );
 }
 
 /**
@@ -37,10 +53,7 @@ export function isSurrogateHalf( character ) {
  * @returns {Boolean}
  */
 export function isInsideSurrogatePair( string, offset ) {
-	const charAfter = string.charAt( offset );
-	const charBefore = string.charAt( offset - 1 );
-
-	return isSurrogateHalf( charAfter ) && isSurrogateHalf( charBefore );
+	return isHighSurrogateHalf( string.charAt( offset - 1 ) ) && isLowSurrogateHalf( string.charAt( offset ) );
 }
 
 /**
