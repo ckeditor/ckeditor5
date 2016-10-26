@@ -6,6 +6,7 @@
 /* globals document, console */
 
 import ViewDocument from '/ckeditor5/engine/view/document.js';
+import ClickObserver from '/ckeditor5/engine/view/observer/clickobserver.js';
 import ViewRange from '/ckeditor5/engine/view/range.js';
 import { setData } from '/ckeditor5/engine/dev-utils/view.js';
 
@@ -14,20 +15,7 @@ const domEditable = document.getElementById( 'editor' );
 const viewRoot = viewDocument.createRoot( domEditable );
 let viewStrong;
 
-// Prevent focus stealing. Simulates how editor buttons work.
-document.getElementById( 'create-fake' ).addEventListener( 'mousedown', ( evt ) => {
-	evt.preventDefault();
-} );
-
-document.getElementById( 'create-fake' ).addEventListener( 'click', () => {
-	const viewP = viewRoot.getChild( 0 );
-	viewStrong = viewP.getChild( 1 );
-
-	const range = ViewRange.createOn( viewStrong );
-	viewDocument.selection.setRanges( [ range ] );
-	viewDocument.selection.setFake( true, { label: 'fake selection over bar' } );
-	viewStrong.setStyle( 'background-color', 'yellow' );
-} );
+viewDocument.addObserver( ClickObserver );
 
 viewDocument.on( 'selectionChange', ( evt, data ) => {
 	viewDocument.selection.setTo( data.newSelection );
@@ -40,6 +28,17 @@ viewDocument.selection.on( 'change', () => {
 	}
 } );
 
+viewDocument.on( 'click', ( info, domEvent ) => {
+	if ( domEvent.target == viewStrong ) {
+		const range = ViewRange.createOn( viewStrong );
+		viewDocument.selection.setRanges( [ range ] );
+		viewDocument.selection.setFake( true, { label: 'fake selection over bar' } );
+		viewStrong.setStyle( 'background-color', 'yellow' );
+
+		viewDocument.render();
+	}
+} );
+
 viewDocument.on( 'focus', () => {
 	console.log( 'The document was focused' );
 } );
@@ -48,5 +47,8 @@ viewDocument.on( 'blur', () => {
 	console.log( 'The document was blurred' );
 } );
 
-setData( viewDocument, '<container:p>{}foo<strong>bar</strong>baz</container:p>' );
+setData( viewDocument, '<container:p>{}foo<strong contenteditable="false">bar</strong>baz</container:p>' );
+const viewP = viewRoot.getChild( 0 );
+viewStrong = viewP.getChild( 1 );
+
 viewDocument.focus();
