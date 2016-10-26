@@ -38,9 +38,9 @@ export default class InlineAutoformatEngine {
 	 *
 	 * @param {Function|String} formatCallbackOrCommand Name of command to execute on matched text or format callback.
 	 * Format callback gets following parameters:
-	 *  * {core.editor.Editor} Editor instance,
-	 *  * {engine.model.Range} Range of matched text to format,
-	 *  * {engine.model.Batch} Batch to group format operations.
+	 *  1. {core.editor.Editor} Editor instance,
+	 *  2. {engine.model.Range} Range of matched text to format,
+	 *  3. {engine.model.Batch} Batch to group format operations.
 	 */
 	constructor( editor, testCallbackOrPattern, formatCallbackOrCommand ) {
 		this.editor = editor;
@@ -64,7 +64,7 @@ export default class InlineAutoformatEngine {
 			formatClb = formatCallbackOrCommand;
 		}
 
-		// Callback to run on changed text.
+		// A test callback run on changed text.
 		testClb = testClb || ( ( text ) => {
 			let result;
 			let remove = [];
@@ -105,7 +105,7 @@ export default class InlineAutoformatEngine {
 			};
 		} );
 
-		// Format callback to run on matched text.
+		// A format callback run on matched text.
 		formatClb = formatClb || ( ( editor, range, batch ) => {
 			editor.execute( command, { batch: batch } );
 		} );
@@ -141,7 +141,7 @@ export default class InlineAutoformatEngine {
 					selection.setRanges( [ rangeToFormat ] );
 				} );
 
-				// formatClb executes command that has its own enqueueChanges block.
+				// No `enqueueChanges()` here. The formatClb executes command that has its own enqueueChanges block.
 				formatClb( this.editor, rangeToFormat, batch );
 
 				editor.document.enqueueChanges( () => {

@@ -115,7 +115,7 @@ export default class Autoformat extends Feature {
 				let format = [];
 
 				while ( ( result = pattern.exec( text ) ) !== null ) {
-					// Add "prefix" match length.
+					// Add "prefix" length.
 					const start = result.index + result[ 1 ].length;
 					const fullMatchLen = result[ 2 ].length;
 					const delimiterLen = 1; // Length of '*'.
