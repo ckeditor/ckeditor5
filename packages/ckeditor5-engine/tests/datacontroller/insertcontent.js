@@ -266,6 +266,13 @@ describe( 'DataController', () => {
 				);
 
 				test(
+					'inserts text + inlineWidget + text + paragraph',
+					'xxx<inlineWidget></inlineWidget>yyy<paragraph>zzz</paragraph>',
+					'<paragraph>f[]oo</paragraph>',
+					'<paragraph>fxxx<inlineWidget></inlineWidget>yyy</paragraph><paragraph>zzz[]oo</paragraph>'
+				);
+
+				test(
 					'inserts text + paragraph (at the beginning)',
 					'xxx<paragraph>yyy</paragraph>',
 					'<paragraph>[]foo</paragraph>',
@@ -291,6 +298,13 @@ describe( 'DataController', () => {
 					'<paragraph>yyy</paragraph>xxx<inlineWidget></inlineWidget>zzz',
 					'<paragraph>f[]oo</paragraph>',
 					'<paragraph>fyyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz[]oo</paragraph>'
+				);
+
+				test(
+					'inserts paragraph + text + paragraph',
+					'<paragraph>yyy</paragraph>xxx<paragraph>zzz</paragraph>',
+					'<paragraph>f[]oo</paragraph>',
+					'<paragraph>fyyy</paragraph><paragraph>xxx</paragraph><paragraph>zzz[]oo</paragraph>'
 				);
 
 				test(

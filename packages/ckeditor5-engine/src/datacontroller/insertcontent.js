@@ -81,28 +81,29 @@ class Insertion {
 		context.isObject = this._checkIsObject( node );
 
 		if ( context.isObject ) {
-			this._handleObject( node );
+			this._handleObject( node, context );
 
 			return;
 		}
-
-		// if ( this._checkShouldReplaceParent( node, context ) ) {
-		// 	const parentNode = this.position.parent;
-
-		// 	this.position = Position.createBefore( parentNode );
-		// 	this.batch.remove( parentNode );
-		// }
 
 		const isAllowed = this._splitToAllowedPosition( node, context );
 
 		if ( !isAllowed ) {
 			if ( context.isElement ) {
 				this.handleNodes( node.getChildren(), context );
-			} else {
-				const container = new Element( 'paragraph' );
-				container.appendChildren( node );
+			}
+			// Try autoparagraphing.
+			else {
+				const paragraph = new Element( 'paragraph' );
 
-				this.handleNode( container, context );
+				// Do not autoparagraph if the paragraph won't be allowed there,
+				// cause that would lead to an infinite loop. The paragraph would be rejected in
+				// the next handleNode() call and we'd be here again.
+				if ( this._getAllowedIn( paragraph, this.position.parent ) ) {
+					paragraph.appendChildren( node );
+
+					this.handleNode( paragraph, context );
+				}
 			}
 
 			return;
@@ -167,9 +168,20 @@ class Insertion {
 		}
 	}
 
-	_handleObject( node ) {
+	_handleObject( node, context ) {
 		if ( this._splitToAllowedPosition( node ) ) {
 			this._insert( node );
+		} else {
+			const paragraph = new Element( 'paragraph' );
+
+			// Do not autoparagraph if the paragraph won't be allowed there,
+			// cause that would lead to an infinite loop. The paragraph would be rejected in
+			// the next handleNode() call and we'd be here again.
+			if ( this._getAllowedIn( paragraph, this.position.parent ) && this._checkIsAllowed( node, [ paragraph ] ) ) {
+				paragraph.appendChildren( node );
+
+				this.handleNode( paragraph, context );
+			}
 		}
 	}
 
@@ -264,15 +276,6 @@ class Insertion {
 	_checkIsObject( node ) {
 		return this.schema.objects.has( this._getNodeSchemaName( node ) );
 	}
-
-	// _checkShouldReplaceParent( node, context ) {
-	// 	const parentNode = this.position.parent;
-
-	// 	return context.isElement &&
-	// 		( parentNode instanceof Element ) &&
-	// 		parentNode.isEmpty &&
-	// 		!this._checkIsAllowed( node, [ parentNode ] );
-	// }
 
 	_getNodeSchemaName( node ) {
 		if ( node instanceof Text ) {
