@@ -541,12 +541,45 @@ describe( 'DataController', () => {
 				'<paragraph>f[]oo</paragraph>'
 			);
 		} );
+
+		describe( 'special schema configurations', () => {
+			beforeEach( () => {
+				doc = new Document();
+				doc.createRoot();
+
+				dataController = new DataController( doc );
+			} );
+
+			test(
+				'should not break when autoparagraphing of text is not possible',
+				'foo',
+				'<noTextAllowed>[<object></object>]</noTextAllowed>',
+				'<noTextAllowed>[]</noTextAllowed>',
+				{
+					beforeCallback() {
+						const schema = doc.schema;
+
+						schema.registerItem( 'noTextAllowed' );
+						schema.registerItem( 'object' );
+
+						schema.allow( { name: 'noTextAllowed', inside: '$root' } );
+						schema.allow( { name: 'object', inside: 'noTextAllowed' } );
+
+						schema.objects.add( 'object' );
+					}
+				}
+			);
+		} );
 	} );
 
 	// @param {String} title
 	// @param {engine.model.Item|String} content
-	function test( title, content, initialData, expectedData ) {
+	function test( title, content, initialData, expectedData, options = {} ) {
 		it( title, () => {
+			if ( options.beforeCallback ) {
+				options.beforeCallback();
+			}
+
 			setData( doc, initialData );
 
 			if ( typeof content == 'string' ) {

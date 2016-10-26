@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-// import { stringify as stringifyModel } from '../dev-utils/model.js';
-
 import Position from '../model/position.js';
 import LivePosition from '../model/liveposition.js';
 import Text from '../model/text.js';
@@ -12,15 +10,23 @@ import Element from '../model/element.js';
 import Range from '../model/range.js';
 import log from '../../utils/log.js';
 
+// import { stringify as stringifyModel } from '../dev-utils/model.js';
+
 /**
- * TODO
+ * Inserts content into the editor (specified selection) as one would expect the paste
+ * functionality to work.
+ *
+ * **Note:** Use {@link engine.DataController#insertContent} instead of this function.
+ * This function is only exposed to be reusable in algorithms which change the {@link engine.DataController#insertContent}
+ * method's behavior.
  *
  * @method engine.dataController.insertContent
- * @param {engine.DataController} dataController
+ * @param {engine.DataController} dataController The data controller in context of which the insertion
+ * should be performed.
  * @param {engine.model.Batch} batch Batch to which deltas will be added.
  * @param {engine.model.Selection} selection Selection into which the content should be inserted.
  * The selection should be collapsed.
- * @param {engine.model.DocumentFragment} content The content to insert.
+ * @param {engine.view.DocumentFragment} content The content to insert.
  */
 export default function insertContent( dataController, batch, selection, content ) {
 	if ( !selection.isCollapsed ) {
@@ -36,120 +42,85 @@ export default function insertContent( dataController, batch, selection, content
 		context: [ '$clipboardHolder' ]
 	} );
 
+	// We'll be debugging this dozens of times still.
 	// console.log( stringifyModel( modelFragment ) );
 
 	const insertion = new Insertion( dataController, batch, selection.anchor );
 
-	insertion.handleNodes( modelFragment.getChildren() );
+	insertion.handleNodes( modelFragment.getChildren(), {
+		// The set of children being inserted is the only set in this context
+		// so it's the first and last (it's a hack ;)).
+		isFirst: true,
+		isLast: true
+	} );
 
 	selection.setRanges( insertion.getSelectionRanges() );
 }
 
+/**
+ * Utility class for performing content insertion.
+ *
+ * @private
+ * @memberOf engine.dataController.insertContent
+ */
 class Insertion {
 	constructor( dataController, batch, position ) {
+		/**
+		 * The data controller in context of which the insertion should be performed.
+		 */
 		this.dataController = dataController;
+
+		/**
+		 * Batch to which deltas will be added.
+		 */
 		this.batch = batch;
+
+		/**
+		 * The position at which (or near which) the next node will be inserted.
+		 */
 		this.position = position;
+
+		/**
+		 * Elements with which the inserted elements can be merged.
+		 *
+		 *		<p>x^</p><p>y</p> + <p>z</p> (can merge to <p>x</p>)
+		 *		<p>x</p><p>^y</p> + <p>z</p> (can merge to <p>y</p>)
+		 *		<p>x^y</p> + <p>z</p> (can merge to <p>xy</p> which will be split during the action,
+		 *								so both its pieces will be added to this set)
+		 */
 		this.canMergeWith = new Set( [ this.position.parent ] );
 
+		/**
+		 * Schema of the model.
+		 */
 		this.schema = dataController.model.schema;
 	}
 
+	/**
+	 * Handles insertion of a set of nodes.
+	 *
+	 * @param {Iterable.<engine.model.Node>} nodes Nodes to insert.
+	 * @param {Object} parentContext Context in which parent of these nodes was supposed to be inserted.
+	 * If the parent context is passed it means that the parent element was stripped (was not allowed).
+	 */
 	handleNodes( nodes, parentContext ) {
 		nodes = Array.from( nodes );
-
-		if ( !parentContext ) {
-			parentContext = {
-				isFirst: true,
-				isLast: true
-			};
-		}
 
 		for ( let i = 0; i < nodes.length; i++ ) {
 			const node = nodes[ i ].clone();
 
-			this.handleNode( node, {
+			this._handleNode( node, {
 				isFirst: i === 0 && parentContext.isFirst,
 				isLast: ( i === ( nodes.length - 1 ) ) && parentContext.isLast
 			} );
 		}
 	}
 
-	handleNode( node, context = {} ) {
-		context.isElement = ( node instanceof Element );
-		context.isObject = this._checkIsObject( node );
-
-		if ( context.isObject ) {
-			this._handleObject( node, context );
-
-			return;
-		}
-
-		const isAllowed = this._splitToAllowedPosition( node, context );
-
-		if ( !isAllowed ) {
-			// Try inserting its children (strip the parent).
-			if ( context.isElement ) {
-				this.handleNodes( node.getChildren(), context );
-			}
-			// Try autoparagraphing.
-			else {
-				const paragraph = new Element( 'paragraph' );
-
-				// Do not autoparagraph if the paragraph won't be allowed there,
-				// cause that would lead to an infinite loop. The paragraph would be rejected in
-				// the next handleNode() call and we'd be here again.
-				if ( this._getAllowedIn( paragraph, this.position.parent ) ) {
-					paragraph.appendChildren( node );
-
-					this.handleNode( paragraph, context );
-				}
-			}
-
-			return;
-		}
-
-		this._insert( node );
-
-		if ( context.isElement ) {
-			const mergeLeft = context.isFirst && ( node.previousSibling instanceof Element ) && this.canMergeWith.has( node.previousSibling );
-			const mergeRight = context.isLast && ( node.nextSibling instanceof Element ) && this.canMergeWith.has( node.nextSibling );
-			const mergePosLeft = LivePosition.createBefore( node );
-			const mergePosRight = LivePosition.createAfter( node );
-
-			if ( mergeLeft ) {
-				const position = LivePosition.createFromPosition( this.position );
-
-				this.batch.merge( mergePosLeft );
-
-				this.position = Position.createFromPosition( position );
-				position.detach();
-			}
-
-			if ( mergeRight ) {
-				let position;
-
-				if ( this.position.isEqual( mergePosRight ) ) {
-					this.position = Position.createAt( mergePosRight.nodeBefore, 'end' );
-
-					// <p>xx[]</p> + <p>yy</p> => <p>xx[]yy</p> (when stick to previous)
-					// <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
-					position = new LivePosition( this.position.root, this.position.path, 'STICKS_TO_PREVIOUS' );
-				} else {
-					position = LivePosition.createFromPosition( this.position );
-				}
-
-				this.batch.merge( mergePosRight );
-
-				this.position = Position.createFromPosition( position );
-				position.detach();
-			}
-
-			mergePosLeft.detach();
-			mergePosRight.detach();
-		}
-	}
-
+	/**
+	 * Returns a range to be selected after insertion.
+	 *
+	 * @returns {engine.model.Range}
+	 */
 	getSelectionRanges() {
 		if ( this.nodeToSelect ) {
 			return [ Range.createOn( this.nodeToSelect ) ];
@@ -162,33 +133,108 @@ class Insertion {
 				}
 			}
 
-			log.error( 'insertcontent-no-selection-position: It was not possible to find a position for the resulting selection.' );
-
+			// As a last resort, simply return the current position.
+			// See the "should not break when autoparagraphing of text is not possible" test for
+			// a case which triggers this condition.
 			return [ new Range( this.position ) ];
 		}
 	}
 
+	/**
+	 * Handles insertion of a single node.
+	 *
+	 * @param {engine.model.Node} node
+	 * @param {Object} context
+	 * @param {Boolean} context.isFirst Whether the given node is the first one in the content to be inserted.
+	 * @param {Boolean} context.isLast Whether the given node is the last one in the content to be inserted.
+	 */
+	_handleNode( node, context = {} ) {
+		// Let's handle object in a special way.
+		// * They should never be merged with other elements.
+		// * If they are not allowed in any of the selection ancestors, they could be either autoparagraphed or totally removed.
+		if ( this._checkIsObject( node ) ) {
+			this._handleObject( node, context );
+
+			return;
+		}
+
+		// Try to find a place for the given node.
+		// Split the position.parent's branch up to a point where the node can be inserted.
+		// If it isn't allowed in the whole branch, then of course don't split anything.
+		const isAllowed = this._checkAndSplitToAllowedPosition( node, context );
+
+		if ( !isAllowed ) {
+			this._handleDisallowedNode( node, context );
+
+			return;
+		}
+
+		this._insert( node );
+
+		// After the node was inserted we may try to merge it with its siblings.
+		// This should happen only if it was the first and/or last of the nodes (so only with boundary nodes)
+		// and only if the selection was in those elements initially.
+		//
+		// E.g.:
+		// <p>x^</p> + <p>y</p> => <p>x</p><p>y</p> => <p>xy[]</p>
+		// and:
+		// <p>x^y</p> + <p>z</p> => <p>x</p>^<p>y</p> + <p>z</p> => <p>x</p><p>y</p><p>z</p> => <p>xy[]z</p>
+		// but:
+		// <p>x</p><p>^</p><p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging)
+		// <p>x</p>[<img>]<p>z</p> + <p>y</p> => <p>x</p><p>y</p><p>z</p> (no merging, note: after running deletetContents
+		//																	 it's exactly the same case as above)
+		this._mergeSiblingsOf( node, context );
+	}
+
 	_handleObject( node, context ) {
-		if ( this._splitToAllowedPosition( node ) ) {
+		if ( this._checkAndSplitToAllowedPosition( node ) ) {
 			this._insert( node );
 		} else {
 			const paragraph = new Element( 'paragraph' );
 
 			// Do not autoparagraph if the paragraph won't be allowed there,
 			// cause that would lead to an infinite loop. The paragraph would be rejected in
-			// the next handleNode() call and we'd be here again.
+			// the next _handleNode() call and we'd be here again.
 			if ( this._getAllowedIn( paragraph, this.position.parent ) && this._checkIsAllowed( node, [ paragraph ] ) ) {
 				paragraph.appendChildren( node );
 
-				this.handleNode( paragraph, context );
+				this._handleNode( paragraph, context );
 			}
 		}
 	}
 
+	/**
+	 * @param {engine.model.Node} node The disallowed node which needs to be handled.
+	 * @param {Object} context
+	 */
+	_handleDisallowedNode( node, context ) {
+		// Try inserting its children (strip the parent).
+		if ( node instanceof Element ) {
+			this.handleNodes( node.getChildren(), context );
+		}
+		// Try autoparagraphing.
+		else {
+			const paragraph = new Element( 'paragraph' );
+
+			// Do not autoparagraph if the paragraph won't be allowed there,
+			// cause that would lead to an infinite loop. The paragraph would be rejected in
+			// the next handleNode() call and we'd be here again.
+			if ( this._getAllowedIn( paragraph, this.position.parent ) ) {
+				paragraph.appendChildren( node );
+
+				this._handleNode( paragraph, context );
+			}
+		}
+	}
+
+	/**
+	 * @param {engine.model.Node} node The node to insert.
+	 */
 	_insert( node ) {
+		/* istanbul ignore if */
 		if ( !this._checkIsAllowed( node, [ this.position.parent ] ) ) {
-			// The code should never get here. If it does, it means that we have a bug which
-			// may be silent if we don't log this (the model may still work after insertion).
+			// Algorithm's correctness check. We should never end up here but it's good to know that we did.
+			// Note that it would often be a silent issue if we insert node in a place where it's not allowed.
 			log.error(
 				'insertcontent-wrong-position: The node cannot be inserted on the given position.',
 				{ node, position: this.position }
@@ -204,8 +250,7 @@ class Insertion {
 		this.position = Position.createFromPosition( livePos );
 		livePos.detach();
 
-		// The last inserted "block" object should be selected
-		// because we can't put a collapsed selection after it.
+		// The last inserted object should be selected because we can't put a collapsed selection after it.
 		if ( this._checkIsObject( node ) && !this.schema.check( { name: '$text', inside: [ this.position.parent ] } ) ) {
 			this.nodeToSelect = node;
 		} else {
@@ -213,7 +258,62 @@ class Insertion {
 		}
 	}
 
-	_splitToAllowedPosition( node ) {
+	/**
+	 * @param {engine.model.Node} node The node which could potentially be merged.
+	 * @param {Object} context
+	 */
+	_mergeSiblingsOf( node, context ) {
+		if ( !( node instanceof Element ) ) {
+			return;
+		}
+
+		const mergeLeft = context.isFirst && ( node.previousSibling instanceof Element ) && this.canMergeWith.has( node.previousSibling );
+		const mergeRight = context.isLast && ( node.nextSibling instanceof Element ) && this.canMergeWith.has( node.nextSibling );
+		const mergePosLeft = LivePosition.createBefore( node );
+		const mergePosRight = LivePosition.createAfter( node );
+
+		if ( mergeLeft ) {
+			const position = LivePosition.createFromPosition( this.position );
+
+			this.batch.merge( mergePosLeft );
+
+			this.position = Position.createFromPosition( position );
+			position.detach();
+		}
+
+		if ( mergeRight ) {
+			let position;
+
+			/* istanbul ignore next */
+			if ( !this.position.isEqual( mergePosRight ) ) {
+				// Algorithm's correctness check. We should never end up here but it's good to know that we did.
+				// At this point the insertion position should be after the node we'll merge. If it isn't,
+				// it should need to be secured as in the left merge case.
+				log.error( 'insertcontent-wrong-position-on-merge: The insertion position should equal the merge position' );
+			}
+
+			// Move the position to the previous node, so it isn't moved to the graveyard on merge.
+			// <p>x</p>[]<p>y</p> => <p>x[]</p><p>y</p>
+			this.position = Position.createAt( mergePosRight.nodeBefore, 'end' );
+
+			// OK:  <p>xx[]</p> + <p>yy</p> => <p>xx[]yy</p> (when sticks to previous)
+			// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
+			position = new LivePosition( this.position.root, this.position.path, 'STICKS_TO_PREVIOUS' );
+
+			this.batch.merge( mergePosRight );
+
+			this.position = Position.createFromPosition( position );
+			position.detach();
+		}
+
+		mergePosLeft.detach();
+		mergePosRight.detach();
+	}
+
+	/**
+	 * @param {engine.model.Node} node
+	 */
+	_checkAndSplitToAllowedPosition( node ) {
 		const allowedIn = this._getAllowedIn( node, this.position.parent );
 
 		if ( !allowedIn ) {
@@ -247,10 +347,10 @@ class Insertion {
 	}
 
 	/**
-	 * Get the element or the first of its ancestors in which the given node is allowed.
+	 * Gets the element in which the given node is allowed. It checks the passed element and all its ancestors.
 	 *
-	 * @param {engine.model.Node}
-	 * @param {engine.model.Element} element
+	 * @param {engine.model.Node} node The node to check.
+	 * @param {engine.model.Element} element The element in which the node's correctness should be checked.
 	 * @returns {engine.model.Element|null}
 	 */
 	_getAllowedIn( node, element ) {
@@ -266,7 +366,9 @@ class Insertion {
 	}
 
 	/**
-	 * @param {engine.model.Node}
+	 * Check whether the given node is allowed in the specified schema path.
+	 *
+	 * @param {engine.model.Node} node
 	 * @param {engine.model.SchemaPath} path
 	 */
 	_checkIsAllowed( node, path ) {
@@ -277,10 +379,20 @@ class Insertion {
 		} );
 	}
 
+	/**
+	 * Checks wether according to the schema this is an object type element.
+	 *
+	 * @param {engine.model.Node} node The node to check.
+	 */
 	_checkIsObject( node ) {
 		return this.schema.objects.has( this._getNodeSchemaName( node ) );
 	}
 
+	/**
+	 * Gets a name under which we should check this node in the schema.
+	 *
+	 * @param {engine.model.Node} node The node.
+	 */
 	_getNodeSchemaName( node ) {
 		if ( node instanceof Text ) {
 			return '$text';
