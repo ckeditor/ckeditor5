@@ -92,7 +92,7 @@ export default class DomConverter {
 		 * Holds mapping between fake selection containers and corresponding view selections.
 		 *
 		 * @private
-		 * @type {WeakMap} engine.view.DomConverter#_fakeSelectionMapping
+		 * @member {WeakMap} engine.view.DomConverter#_fakeSelectionMapping
 		 */
 		this._fakeSelectionMapping = new WeakMap();
 	}
