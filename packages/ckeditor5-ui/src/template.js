@@ -10,6 +10,7 @@ import mix from '../utils/mix.js';
 import EmitterMixin from '../utils/emittermixin.js';
 import Collection from '../utils/collection.js';
 import View from './view.js';
+import ViewCollection from './viewcollection.js';
 import cloneDeepWith from '../utils/lib/lodash/cloneDeepWith.js';
 import isObject from '../utils/lib/lodash/isObject.js';
 
@@ -354,11 +355,11 @@ export default class Template {
 		if ( intoFragment ) {
 			const docFragment = document.createDocumentFragment();
 
-			this._renderElementChildren( docFragment );
+			this._renderElementChildren( el, docFragment );
 
 			el.appendChild( docFragment );
 		} else {
-			this._renderElementChildren( el, !!applyElement );
+			this._renderElementChildren( el, el, !!applyElement );
 		}
 
 		// Setup DOM bindings event listeners.
@@ -505,22 +506,32 @@ export default class Template {
 	 * Recursively renders `HTMLElement` children from {@link ui.Template#children}.
 	 *
 	 * @protected
-	 * @param {HTMLElement} elOrDocFragment `HTMLElement` or `DocumentFragment` which is being rendered.
+	 * @param {HTMLElement} element The element which is being rendered.
+	 * @param {HTMLElement|DocumentFragment} container `HTMLElement` or `DocumentFragment`
+	 * into which children are being rendered. If `shouldApply == true`, then `container === element`.
 	 * @param {Boolean} shouldApply Traverse existing DOM structure only, don't modify DOM.
 	 */
-	_renderElementChildren( elOrDocFragment, shouldApply ) {
+	_renderElementChildren( element, container, shouldApply ) {
 		let childIndex = 0;
 
 		for ( let child of this.children ) {
-			if ( isView( child ) ) {
+			if ( isViewCollection( child ) ) {
 				if ( !shouldApply ) {
-					elOrDocFragment.appendChild( child.element );
+					child.setParent( element );
+
+					for ( let view of child ) {
+						container.appendChild( view.element );
+					}
+				}
+			} else if ( isView( child ) ) {
+				if ( !shouldApply ) {
+					container.appendChild( child.element );
 				}
 			} else {
 				if ( shouldApply ) {
-					child._renderNode( elOrDocFragment.childNodes[ childIndex++ ] );
+					child._renderNode( container.childNodes[ childIndex++ ] );
 				} else {
-					elOrDocFragment.appendChild( child.render() );
+					container.appendChild( child.render() );
 				}
 			}
 		}
@@ -848,7 +859,7 @@ function clone( def ) {
 		// Also don't clone View instances if provided as a child of the Template. The template
 		// instance will be extracted from the View during the normalization and there's no need
 		// to clone it.
-		if ( value && ( value instanceof TemplateBinding || isView( value ) ) ) {
+		if ( value && ( value instanceof TemplateBinding || isView( value ) || isViewCollection( value ) ) ) {
 			return value;
 		}
 	} );
@@ -888,8 +899,16 @@ function normalize( def ) {
 		const children = new Collection();
 
 		if ( def.children ) {
-			for ( let child of def.children ) {
-				children.add( isView( child ) ? child : new Template( child ) );
+			if ( isViewCollection( def.children ) ) {
+				children.add( def.children );
+			} else {
+				for ( let child of def.children ) {
+					if ( isView( child ) ) {
+						children.add( child );
+					} else {
+						children.add( new Template( child ) );
+					}
+				}
 			}
 		}
 
@@ -1116,6 +1135,14 @@ function isView( item ) {
 	return item instanceof View;
 }
 
+// Checks if the item is an instance of {@link ui.ViewCollection}
+//
+// @private
+// @param {*} value Value to be checked.
+function isViewCollection( item ) {
+	return item instanceof ViewCollection;
+}
+
 /**
  * A definition of {@link ui.Template}.
  * See: {@link ui.TemplateValueSchema}.
@@ -1147,6 +1174,12 @@ function isView( item ) {
  *				'keyup@.some-class': {@link ui.TemplateListenerSchema},
  *				...
  *			}
+ *		} );
+ *
+ *		// An entire view collection can be used as a child in the definition.
+ *		new Template( {
+ *			tag: 'p',
+ *			children: <{@link ui.ViewCollection} instance>
  *		} );
  *
  * @typedef ui.TemplateDefinition
