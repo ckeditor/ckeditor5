@@ -482,7 +482,7 @@ describe( 'Template', () => {
 				expect( v1.element ).to.equal( rendered.firstChild );
 				expect( v2.element ).to.equal( rendered.lastChild );
 
-				expect( collection.parent ).to.equal( rendered );
+				expect( collection._parentElement ).to.equal( rendered );
 			} );
 		} );
 
@@ -697,7 +697,7 @@ describe( 'Template', () => {
 				} ).apply( el );
 
 				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div></div>' );
-				expect( collection.parent ).to.be.null;
+				expect( collection._parentElement ).to.be.null;
 			} );
 
 			it( 'should work for deep DOM structure', () => {
