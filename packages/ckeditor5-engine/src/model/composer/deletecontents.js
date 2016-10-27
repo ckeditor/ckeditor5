@@ -57,6 +57,7 @@ export default function deleteContents( batch, selection, options = {} ) {
 	}
 
 	selection.collapse( startPos );
+	selection.refreshAttributes();
 
 	endPos.detach();
 }

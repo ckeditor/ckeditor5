@@ -105,14 +105,14 @@ describe( 'Delete utils', () => {
 				expect( document.selection.getAttribute( 'bold' ) ).to.undefined;
 			} );
 
-			//it( 'clears selection attrs when emptied content', () => {
-			//	setData( document, '<p>x</p><p>[<$text bold="true">foo</$text>]</p><p>y</p>' );
-			//
-			//	deleteContents( document.batch(), document.selection );
-			//
-			//	expect( getData( document ) ).to.equal( '<p>x</p><p>[]</p><p>y</p>' );
-			//	expect( document.selection.getAttribute( 'bold' ) ).to.undefined;
-			//} );
+			it( 'clears selection attrs when emptied content', () => {
+				setData( document, '<p>x</p><p>[<$text bold="true">foo</$text>]</p><p>y</p>' );
+
+				deleteContents( document.batch(), document.selection );
+
+				expect( getData( document ) ).to.equal( '<p>x</p><p>[]</p><p>y</p>' );
+				expect( document.selection.getAttribute( 'bold' ) ).to.undefined;
+			} );
 
 			it( 'leaves selection attributes when text contains them', () => {
 				setData( document, '<p>x<$text bold="true">a[foo]b</$text>y</p>' );
