@@ -82,10 +82,9 @@ export default class ToggleAttributeCommand extends Command {
 	 * @param {engine.model.Batch} [options.batch] Batch to group undo steps.
 	 */
 	_doExecute( options = {} ) {
-		const { forceValue, batch } = options;
 		const document = this.editor.document;
 		const selection = document.selection;
-		const value = ( forceValue === undefined ) ? !this.value : forceValue;
+		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
 
 		// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges.
 		document.enqueueChanges( () => {
@@ -96,16 +95,16 @@ export default class ToggleAttributeCommand extends Command {
 					selection.removeAttribute( this.attributeKey );
 				}
 			} else {
-				const workRanges = getSchemaValidRanges( this.attributeKey, selection.getRanges(), document.schema );
+				const ranges = getSchemaValidRanges( this.attributeKey, selection.getRanges(), document.schema );
 
 				// Keep it as one undo step.
-				const workBatch = batch || document.batch();
+				const batch = options.batch || document.batch();
 
-				for ( let range of workRanges ) {
+				for ( let range of ranges ) {
 					if ( value ) {
-						workBatch.setAttribute( range, this.attributeKey, value );
+						batch.setAttribute( range, this.attributeKey, value );
 					} else {
-						workBatch.removeAttribute( range, this.attributeKey );
+						batch.removeAttribute( range, this.attributeKey );
 					}
 				}
 			}
