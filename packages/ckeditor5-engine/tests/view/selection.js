@@ -762,5 +762,16 @@ describe( 'Selection', () => {
 
 			expect( selection.fakeSelectionLabel ).to.equal( '' );
 		} );
+
+		it( 'should fire change event', ( done ) => {
+			selection.once( 'change', () => {
+				expect( selection.isFake ).to.be.true;
+				expect( selection.fakeSelectionLabel ).to.equal( 'foo bar baz' );
+
+				done();
+			} );
+
+			selection.setFake( true, { label: 'foo bar baz' } );
+		} );
 	} );
 } );

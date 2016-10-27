@@ -71,6 +71,7 @@ export default class Selection {
 	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
 	 * properly handled by screen readers).
 	 *
+	 * @fires engine.view.Selection#change
 	 * @param {Boolean} [value=true] If set to true selection will be marked as `fake`.
 	 * @param {Object} [options] Additional options.
 	 * @param {String} [options.label=''] Fake selection label.
