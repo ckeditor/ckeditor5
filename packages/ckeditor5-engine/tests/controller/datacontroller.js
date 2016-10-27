@@ -49,9 +49,10 @@ describe( 'DataController', () => {
 
 			setData( modelDocument, '<paragraph>a[]b</paragraph>' );
 
-			data.fire( 'insertContent', { batch, content, selection: modelDocument.selection } );
+			data.fire( 'insert', { content, selection: modelDocument.selection, batch } );
 
 			expect( getData( modelDocument ) ).to.equal( '<paragraph>ax[]b</paragraph>' );
+			expect( batch.deltas.length ).to.be.above( 0 );
 		} );
 	} );
 
@@ -269,15 +270,15 @@ describe( 'DataController', () => {
 		} );
 	} );
 
-	describe( 'insertContent', () => {
-		it( 'should fire the insertContent event', () => {
+	describe( 'insert', () => {
+		it( 'should fire the insert event', () => {
 			const spy = sinon.spy();
-			const batch = modelDocument.batch();
 			const content = new ViewDocumentFragment( [ new ViewText( 'x' ) ] );
+			const batch = modelDocument.batch();
 
-			data.on( 'insertContent', spy );
+			data.on( 'insert', spy );
 
-			data.insertContent( batch, modelDocument.selection, content );
+			data.insert( content, modelDocument.selection, batch );
 
 			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( {
 				batch: batch,

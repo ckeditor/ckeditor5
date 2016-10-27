@@ -7,9 +7,10 @@
 
 import Document from '/ckeditor5/engine/model/document.js';
 import DataController from '/ckeditor5/engine/controller/datacontroller.js';
-import insert from '/ckeditor5/engine/datacontroller/insert.js';
+import insert from '/ckeditor5/engine/controller/insert.js';
 
 import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
+import ViewText from '/ckeditor5/engine/view/text.js';
 import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
 import Text from '/ckeditor5/engine/model/text.js';
 
@@ -19,6 +20,22 @@ describe( 'DataController', () => {
 	let doc, dataController;
 
 	describe( 'insert', () => {
+		it( 'uses the passed batch', () => {
+			doc = new Document();
+			doc.createRoot();
+			doc.schema.allow( { name: '$text', inside: '$root' } );
+
+			dataController = new DataController( doc );
+
+			const batch = doc.batch();
+
+			setData( doc, 'x[]x' );
+
+			insert( dataController, new ViewDocumentFragment( [ new ViewText( 'a' ) ] ), doc.selection, batch );
+
+			expect( batch.deltas.length ).to.be.above( 0 );
+		} );
+
 		describe( 'in simple scenarios', () => {
 			beforeEach( () => {
 				doc = new Document();
@@ -598,7 +615,7 @@ describe( 'DataController', () => {
 				return content;
 			};
 
-			insert( dataController, doc.batch(), doc.selection, new ViewDocumentFragment() );
+			insert( dataController, new ViewDocumentFragment(), doc.selection );
 
 			expect( getData( doc ) ).to.equal( expectedData );
 		} );

@@ -6,6 +6,8 @@
 /* globals setTimeout, Range, document */
 /* bender-tags: view */
 
+import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
+
 import EditingController from '/ckeditor5/engine/controller/editingcontroller.js';
 
 import ViewDocument from '/ckeditor5/engine/view/document.js';
@@ -103,21 +105,29 @@ describe( 'EditingController', () => {
 	} );
 
 	describe( 'conversion', () => {
-		let model, modelRoot, viewRoot, domRoot, editing;
+		let model, modelRoot, viewRoot, domRoot, editing, listener;
 
 		before( () => {
+			listener = Object.create( EmitterMixin );
+
 			model = new ModelDocument();
 			modelRoot = model.createRoot();
 
 			editing = new EditingController( model );
 
-			domRoot = document.getElementById( 'editor' );
+			domRoot = document.createElement( 'div' );
+			document.body.appendChild( domRoot );
 			viewRoot = editing.createRoot( domRoot );
 
 			model.schema.registerItem( 'paragraph', '$block' );
 			model.schema.registerItem( 'div', '$block' );
 			buildModelConverter().for( editing.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 			buildModelConverter().for( editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
+		} );
+
+		after( () => {
+			document.body.removeChild( domRoot );
+			listener.stopListening();
 		} );
 
 		beforeEach( () => {
@@ -182,7 +192,7 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should convert selection from view to model', ( done ) => {
-			editing.view.on( 'selectionChange', () => {
+			listener.listenTo( editing.view, 'selectionChange', () => {
 				setTimeout( () => {
 					expect( getModelData( model ) ).to.equal(
 						'<paragraph>foo</paragraph>' +

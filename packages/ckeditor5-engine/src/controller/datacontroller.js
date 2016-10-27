@@ -111,7 +111,7 @@ export default class DataController {
 		this.viewToModel.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		this.viewToModel.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
-		this.on( 'insert', ( evt, data ) => insert( this, data.batch, data.selection, data.content ) );
+		this.on( 'insert', ( evt, data ) => insert( this, data.content, data.selection, data.batch ) );
 	}
 
 	/**
@@ -217,12 +217,13 @@ export default class DataController {
 	 * See {@link engine.controller.insert}.
 	 *
 	 * @fires engine.controller.DataController#insert
-	 * @param {engine.model.Batch} batch Batch to which deltas will be added.
-	 * @param {engine.model.Selection} selection Selection into which the content should be inserted.
 	 * @param {engine.view.DocumentFragment} content The content to insert.
+	 * @param {engine.model.Selection} selection Selection into which the content should be inserted.
+	 * @param {engine.model.Batch} [batch] Batch to which deltas will be added. If not specified, then
+	 * changes will be added to a new batch.
 	 */
-	insert( batch, selection, content ) {
-		this.fire( 'insert', { batch, selection, content } );
+	insert( content, selection, batch ) {
+		this.fire( 'insert', { content, selection, batch } );
 	}
 }
 
@@ -235,8 +236,8 @@ mix( DataController, EmitterMixin );
  *
  * @event engine.controller.DataController#insert
  * @param {Object} data
- * @param {engine.model.Batch} data.batch Batch to which deltas will be added.
- * @param {engine.model.Selection} data.selection Selection into which the content should be inserted.
  * @param {engine.view.DocumentFragment} data.content The content to insert.
+ * @param {engine.model.Selection} data.selection Selection into which the content should be inserted.
+ * @param {engine.model.Batch} [data.batch] Batch to which deltas will be added.
  */
 

@@ -23,12 +23,16 @@ import log from '../../utils/log.js';
  * @method engine.controller.insert
  * @param {engine.controller.DataController} dataController The data controller in context of which the insertion
  * should be performed.
- * @param {engine.model.Batch} batch Batch to which deltas will be added.
- * @param {engine.model.Selection} selection Selection into which the content should be inserted.
- * The selection should be collapsed.
  * @param {engine.view.DocumentFragment} content The content to insert.
+ * @param {engine.model.Selection} selection Selection into which the content should be inserted.
+ * @param {engine.model.Batch} [batch] Batch to which deltas will be added. If not specified, then
+ * changes will be added to a new batch.
  */
-export default function insert( dataController, batch, selection, content ) {
+export default function insert( dataController, content, selection, batch ) {
+	if ( !batch ) {
+		batch = dataController.model.batch();
+	}
+
 	if ( !selection.isCollapsed ) {
 		dataController.model.composer.deleteContents( batch, selection, {
 			merge: true
