@@ -675,5 +675,25 @@ describe( 'DomConverter', () => {
 
 			expect( bindViewSelection.isEqual( viewSelection ) ).to.be.true;
 		} );
+
+		it( 'should return fake selection if selection is placed inside text node', () => {
+			const domContainer = document.createElement( 'div' );
+			const domSelection = document.getSelection();
+			domContainer.innerHTML = 'fake selection container';
+			document.body.appendChild( domContainer );
+
+			const viewSelection = new ViewSelection();
+			viewSelection.addRange( ViewRange.createIn( new ViewElement() ) );
+			converter.bindFakeSelection( domContainer, viewSelection );
+
+			const domRange = new Range();
+			domRange.selectNodeContents( domContainer.firstChild );
+			domSelection.removeAllRanges();
+			domSelection.addRange( domRange );
+
+			const bindViewSelection = converter.domSelectionToView( domSelection );
+
+			expect( bindViewSelection.isEqual( viewSelection ) ).to.be.true;
+		} );
 	} );
 } );
