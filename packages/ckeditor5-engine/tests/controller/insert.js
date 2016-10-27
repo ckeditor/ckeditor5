@@ -56,86 +56,75 @@ describe( 'DataController', () => {
 				schema.objects.add( 'image' );
 			} );
 
-			test(
-				'inserts one text node',
-				'xyz',
-				'f[]oo',
-				'fxyz[]oo'
-			);
+			it( 'inserts one text node', () => {
+				setData( doc, 'f[]oo' );
+				insertHelper( 'xyz' );
+				expect( getData( doc ) ).to.equal( 'fxyz[]oo' );
+			} );
 
-			test(
-				'inserts one text node (at the end)',
-				'xyz',
-				'foo[]',
-				'fooxyz[]'
-			);
+			it( 'inserts one text node (at the end)', () => {
+				setData( doc, 'foo[]' );
+				insertHelper( 'xyz' );
+				expect( getData( doc ) ).to.equal( 'fooxyz[]' );
+			} );
 
-			test(
-				'inserts an element',
-				'<image></image>',
-				'f[]oo',
-				'f<image></image>[]oo'
-			);
+			it( 'inserts an element', () => {
+				setData( doc, 'f[]oo' );
+				insertHelper( '<image></image>' );
+				expect( getData( doc ) ).to.equal( 'f<image></image>[]oo' );
+			} );
 
-			test(
-				'inserts a text and an element',
-				'xyz<image></image>',
-				'f[]oo',
-				'fxyz<image></image>[]oo'
-			);
+			it( 'inserts a text and an element', () => {
+				setData( doc, 'f[]oo' );
+				insertHelper( 'xyz<image></image>' );
+				expect( getData( doc ) ).to.equal( 'fxyz<image></image>[]oo' );
+			} );
 
-			test(
-				'strips a disallowed element',
-				'<disallowedElement>xyz</disallowedElement>',
-				'f[]oo',
-				'fxyz[]oo'
-			);
+			it( 'strips a disallowed element', () => {
+				setData( doc, 'f[]oo' );
+				insertHelper( '<disallowedElement>xyz</disallowedElement>' );
+				expect( getData( doc ) ).to.equal( 'fxyz[]oo' );
+			} );
 
-			test(
-				'deletes selection before inserting the content',
-				'x',
-				'f[abc]oo',
-				'fx[]oo'
-			);
+			it( 'deletes selection before inserting the content', () => {
+				setData( doc, 'f[abc]oo' );
+				insertHelper( 'x' );
+				expect( getData( doc ) ).to.equal( 'fx[]oo' );
+			} );
 
 			describe( 'spaces handling', () => {
 				// Note: spaces in the view are not encoded like in the DOM, so subsequent spaces must be
 				// inserted into the model as is. The conversion to nbsps happen on view<=>DOM conversion.
 
-				test(
-					'inserts one space',
-					new Text( ' ' ),
-					'f[]oo',
-					'f []oo'
-				);
+				it( 'inserts one space', () => {
+					setData( doc, 'f[]oo' );
+					insertHelper( new Text( ' ' ) );
+					expect( getData( doc ) ).to.equal( 'f []oo' );
+				} );
 
-				test(
-					'inserts three spaces',
-					new Text( '   ' ),
-					'f[]oo',
-					'f   []oo'
-				);
+				it( 'inserts three spaces', () => {
+					setData( doc, 'f[]oo' );
+					insertHelper( new Text( '   ' ) );
+					expect( getData( doc ) ).to.equal( 'f   []oo' );
+				} );
 
-				test(
-					'inserts spaces at the end',
-					new Text( '   ' ),
-					'foo[]',
-					'foo   []'
-				);
+				it( 'inserts spaces at the end', () => {
+					setData( doc, 'foo[]' );
+					insertHelper( new Text( '   ' ) );
+					expect( getData( doc ) ).to.equal( 'foo   []' );
+				} );
 
-				test(
-					'inserts one nbsp',
-					new Text( '\u200a' ),
-					'f[]oo',
-					'f\u200a[]oo'
-				);
+				it( 'inserts one nbsp', () => {
+					setData( doc, 'f[]oo' );
+					insertHelper( new Text( '\u200a' ) );
+					expect( getData( doc ) ).to.equal( 'f\u200a[]oo' );
+				} );
 
-				test(
-					'inserts word surrounded by spaces',
-					new Text( ' xyz  ' ),
-					'f[]oo',
-					'f xyz  []oo'
-				);
+				it( 'inserts word surrounded by spaces', () => {
+					setData( doc, 'f[]oo' );
+					insertHelper( new Text( ' xyz  ' ) );
+					expect( getData( doc ) ).to.equal( 'f xyz  []oo' );
+				} );
 			} );
 		} );
 
@@ -169,345 +158,306 @@ describe( 'DataController', () => {
 				schema.objects.add( 'inlineWidget' );
 			} );
 
-			test(
-				'inserts one text node',
-				'xyz',
-				'<paragraph>f[]oo</paragraph>',
-				'<paragraph>fxyz[]oo</paragraph>'
-			);
+			it( 'inserts one text node', () => {
+				setData( doc, '<paragraph>f[]oo</paragraph>' );
+				insertHelper( 'xyz' );
+				expect( getData( doc ) ).to.equal( '<paragraph>fxyz[]oo</paragraph>' );
+			} );
 
-			test(
-				'inserts one text node to fully selected paragraph',
-				'xyz',
-				'<paragraph>[foo]</paragraph>',
-				'<paragraph>xyz[]</paragraph>'
-			);
+			it( 'inserts one text node to fully selected paragraph', () => {
+				setData( doc, '<paragraph>[foo]</paragraph>' );
+				insertHelper( 'xyz' );
+				expect( getData( doc ) ).to.equal( '<paragraph>xyz[]</paragraph>' );
+			} );
 
-			test(
-				'inserts one text node to fully selected paragraphs (from outside)',
-				'xyz',
-				'[<paragraph>foo</paragraph><paragraph>bar</paragraph>]',
-				'<paragraph>xyz[]</paragraph>'
-			);
+			it( 'inserts one text node to fully selected paragraphs (from outside)', () => {
+				setData( doc, '[<paragraph>foo</paragraph><paragraph>bar</paragraph>]' );
+				insertHelper( 'xyz' );
+				expect( getData( doc ) ).to.equal( '<paragraph>xyz[]</paragraph>' );
+			} );
 
-			test(
-				'merges two blocks before inserting content (p+p)',
-				'xyz',
-				'<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>',
-				'<paragraph>foxyz[]ar</paragraph>'
-			);
+			it( 'merges two blocks before inserting content (p+p)', () => {
+				setData( doc, '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
+				insertHelper( 'xyz' );
+				expect( getData( doc ) ).to.equal( '<paragraph>foxyz[]ar</paragraph>' );
+			} );
 
-			test(
-				'inserts inline widget and text',
-				'xyz<inlineWidget></inlineWidget>',
-				'<paragraph>f[]oo</paragraph>',
-				'<paragraph>fxyz<inlineWidget></inlineWidget>[]oo</paragraph>'
-			);
+			it( 'inserts inline widget and text', () => {
+				setData( doc, '<paragraph>f[]oo</paragraph>' );
+				insertHelper( 'xyz<inlineWidget></inlineWidget>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>fxyz<inlineWidget></inlineWidget>[]oo</paragraph>' );
+			} );
 
 			// Note: In CKEditor 4 the blocks are not merged, but to KISS we're merging here
 			// because that's what deleteContent() does.
-			test(
-				'merges two blocks before inserting content (h+p)',
-				'xyz',
-				'<heading1>fo[o</heading1><paragraph>b]ar</paragraph>',
-				'<heading1>foxyz[]ar</heading1>'
-			);
+			it( 'merges two blocks before inserting content (h+p)', () => {
+				setData( doc, '<heading1>fo[o</heading1><paragraph>b]ar</paragraph>' );
+				insertHelper( 'xyz' );
+				expect( getData( doc ) ).to.equal( '<heading1>foxyz[]ar</heading1>' );
+			} );
 
 			describe( 'block to block handling', () => {
-				test(
-					'inserts one paragraph',
-					'<paragraph>xyz</paragraph>',
-					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>fxyz[]oo</paragraph>'
-				);
+				it( 'inserts one paragraph', () => {
+					setData( doc, '<paragraph>f[]oo</paragraph>' );
+					insertHelper( '<paragraph>xyz</paragraph>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fxyz[]oo</paragraph>' );
+				} );
 
-				test(
-					'inserts one paragraph (at the end)',
-					'<paragraph>xyz</paragraph>',
-					'<paragraph>foo[]</paragraph>',
-					'<paragraph>fooxyz[]</paragraph>'
-				);
+				it( 'inserts one paragraph (at the end)', () => {
+					setData( doc, '<paragraph>foo[]</paragraph>' );
+					insertHelper( '<paragraph>xyz</paragraph>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fooxyz[]</paragraph>' );
+				} );
 
-				test(
-					'inserts one paragraph into an empty paragraph',
-					'<paragraph>xyz</paragraph>',
-					'<paragraph>[]</paragraph>',
-					'<paragraph>xyz[]</paragraph>'
-				);
+				it( 'inserts one paragraph into an empty paragraph', () => {
+					setData( doc, '<paragraph>[]</paragraph>' );
+					insertHelper( '<paragraph>xyz</paragraph>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>xyz[]</paragraph>' );
+				} );
 
-				test(
-					'inserts one block into a fully selected content',
-					'<heading2>xyz</heading2>',
-					'<heading1>[foo</heading1><paragraph>bar]</paragraph>',
-					'<heading2>xyz[]</heading2>'
-				);
+				it( 'inserts one block into a fully selected content', () => {
+					setData( doc, '<heading1>[foo</heading1><paragraph>bar]</paragraph>' );
+					insertHelper( '<heading2>xyz</heading2>' );
+					expect( getData( doc ) ).to.equal( '<heading2>xyz[]</heading2>' );
+				} );
 
-				test(
-					'inserts one heading',
-					'<heading1>xyz</heading1>',
-					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>fxyz[]oo</paragraph>'
-				);
+				it( 'inserts one heading', () => {
+					setData( doc, '<paragraph>f[]oo</paragraph>' );
+					insertHelper( '<heading1>xyz</heading1>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fxyz[]oo</paragraph>' );
+				} );
 
-				test(
-					'inserts two headings',
-					'<heading1>xxx</heading1><heading1>yyy</heading1>',
-					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>fxxx</paragraph><heading1>yyy[]oo</heading1>'
-				);
+				it( 'inserts two headings', () => {
+					setData( doc, '<paragraph>f[]oo</paragraph>' );
+					insertHelper( '<heading1>xxx</heading1><heading1>yyy</heading1>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fxxx</paragraph><heading1>yyy[]oo</heading1>' );
+				} );
 
-				test(
-					'inserts one object',
-					'<blockWidget></blockWidget>',
-					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>f</paragraph>[<blockWidget></blockWidget>]<paragraph>oo</paragraph>'
-				);
+				it( 'inserts one object', () => {
+					setData( doc, '<paragraph>f[]oo</paragraph>' );
+					insertHelper( '<blockWidget></blockWidget>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>f</paragraph>[<blockWidget></blockWidget>]<paragraph>oo</paragraph>' );
+				} );
 
-				test(
-					'inserts one object (at the end)',
-					'<blockWidget></blockWidget>',
-					'<paragraph>foo[]</paragraph>',
-					'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]'
-				);
+				it( 'inserts one object (at the end)', () => {
+					setData( doc, '<paragraph>foo[]</paragraph>' );
+					insertHelper( '<blockWidget></blockWidget>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
+				} );
 
-				test(
-					'inserts one object (at the beginning)',
-					'<blockWidget></blockWidget>',
-					'<paragraph>[]bar</paragraph>',
-					'[<blockWidget></blockWidget>]<paragraph>bar</paragraph>'
-				);
+				it( 'inserts one object (at the beginning)', () => {
+					setData( doc, '<paragraph>[]bar</paragraph>' );
+					insertHelper( '<blockWidget></blockWidget>' );
+					expect( getData( doc ) ).to.equal( '[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+				} );
 
-				test(
-					'inserts one list item',
-					'<listItem indent="0" type="bulleted">xyz</listItem>',
-					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>fxyz[]oo</paragraph>'
-				);
+				it( 'inserts one list item', () => {
+					setData( doc, '<paragraph>f[]oo</paragraph>' );
+					insertHelper( '<listItem indent="0" type="bulleted">xyz</listItem>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fxyz[]oo</paragraph>' );
+				} );
 
-				test(
-					'inserts list item to empty element',
-					'<listItem indent="0" type="bulleted">xyz</listItem>',
-					'<paragraph>[]</paragraph>',
-					'<listItem indent="0" type="bulleted">xyz[]</listItem>'
-				);
+				it( 'inserts list item to empty element', () => {
+					setData( doc, '<paragraph>[]</paragraph>' );
+					insertHelper( '<listItem indent="0" type="bulleted">xyz</listItem>' );
+					expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">xyz[]</listItem>' );
+				} );
 
-				test(
-					'inserts three list items at the end of paragraph',
-					(
+				it( 'inserts three list items at the end of paragraph', () => {
+					setData( doc, '<paragraph>foo[]</paragraph>' );
+					insertHelper(
 						'<listItem indent="0" type="bulleted">xxx</listItem>' +
 						'<listItem indent="0" type="bulleted">yyy</listItem>' +
 						'<listItem indent="0" type="bulleted">zzz</listItem>'
-					),
-					'<paragraph>foo[]</paragraph>',
-					(
+					);
+					expect( getData( doc ) ).to.equal(
 						'<paragraph>fooxxx</paragraph>' +
 						'<listItem indent="0" type="bulleted">yyy</listItem>' +
 						'<listItem indent="0" type="bulleted">zzz[]</listItem>'
-					)
-				);
+					);
+				} );
 
-				test(
-					'inserts two list items to an empty paragraph',
-					(
+				it( 'inserts two list items to an empty paragraph', () => {
+					setData( doc, '<paragraph>a</paragraph><paragraph>[]</paragraph><paragraph>b</paragraph>' );
+					insertHelper(
 						'<listItem indent="0" type="bulleted">xxx</listItem>' +
 						'<listItem indent="0" type="bulleted">yyy</listItem>'
-					),
-					'<paragraph>a</paragraph><paragraph>[]</paragraph><paragraph>b</paragraph>',
-					(
+					);
+					expect( getData( doc ) ).to.equal(
 						'<paragraph>a</paragraph>' +
 						'<listItem indent="0" type="bulleted">xxx</listItem>' +
 						'<listItem indent="0" type="bulleted">yyy[]</listItem>' +
 						'<paragraph>b</paragraph>'
-					)
-				);
+					);
+				} );
 			} );
 
 			describe( 'mixed content to block', () => {
-				test(
-					'inserts text + paragraph',
-					'xxx<paragraph>yyy</paragraph>',
-					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>fxxx</paragraph><paragraph>yyy[]oo</paragraph>'
-				);
+				it( 'inserts text + paragraph', () => {
+					setData( doc, '<paragraph>f[]oo</paragraph>' );
+					insertHelper( 'xxx<paragraph>yyy</paragraph>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fxxx</paragraph><paragraph>yyy[]oo</paragraph>' );
+				} );
 
-				test(
-					'inserts text + inlineWidget + text + paragraph',
-					'xxx<inlineWidget></inlineWidget>yyy<paragraph>zzz</paragraph>',
-					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>fxxx<inlineWidget></inlineWidget>yyy</paragraph><paragraph>zzz[]oo</paragraph>'
-				);
+				it( 'inserts text + inlineWidget + text + paragraph', () => {
+					setData( doc, '<paragraph>f[]oo</paragraph>' );
+					insertHelper( 'xxx<inlineWidget></inlineWidget>yyy<paragraph>zzz</paragraph>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fxxx<inlineWidget></inlineWidget>yyy</paragraph><paragraph>zzz[]oo</paragraph>' );
+				} );
 
-				test(
-					'inserts text + paragraph (at the beginning)',
-					'xxx<paragraph>yyy</paragraph>',
-					'<paragraph>[]foo</paragraph>',
-					'<paragraph>xxx</paragraph><paragraph>yyy[]foo</paragraph>'
-				);
+				it( 'inserts text + paragraph (at the beginning)', () => {
+					setData( doc, '<paragraph>[]foo</paragraph>' );
+					insertHelper( 'xxx<paragraph>yyy</paragraph>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>xxx</paragraph><paragraph>yyy[]foo</paragraph>' );
+				} );
 
-				test(
-					'inserts text + paragraph (at the end)',
-					'xxx<paragraph>yyy</paragraph>',
-					'<paragraph>foo[]</paragraph>',
-					'<paragraph>fooxxx</paragraph><paragraph>yyy[]</paragraph>'
-				);
+				it( 'inserts text + paragraph (at the end)', () => {
+					setData( doc, '<paragraph>foo[]</paragraph>' );
+					insertHelper( 'xxx<paragraph>yyy</paragraph>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fooxxx</paragraph><paragraph>yyy[]</paragraph>' );
+				} );
 
-				test(
-					'inserts paragraph + text',
-					'<paragraph>yyy</paragraph>xxx',
-					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>fyyy</paragraph><paragraph>xxx[]oo</paragraph>'
-				);
+				it( 'inserts paragraph + text', () => {
+					setData( doc, '<paragraph>f[]oo</paragraph>' );
+					insertHelper( '<paragraph>yyy</paragraph>xxx' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fyyy</paragraph><paragraph>xxx[]oo</paragraph>' );
+				} );
 
 				// This is the expected result, but it was so hard to achieve at this stage that I
 				// decided to go with the what the next test represents.
-				// test(
-				// 	'inserts paragraph + text + inlineWidget + text',
-				// 	'<paragraph>yyy</paragraph>xxx<inlineWidget></inlineWidget>zzz',
-				// 	'<paragraph>f[]oo</paragraph>',
-				// 	'<paragraph>fyyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz[]oo</paragraph>'
-				// );
+				// it( 'inserts paragraph + text + inlineWidget + text', () => {
+				// 	setData( doc, '<paragraph>f[]oo</paragraph>' );
+				// 	insertHelper( '<paragraph>yyy</paragraph>xxx<inlineWidget></inlineWidget>zzz' );
+				// 	expect( getData( doc ) )
+				// 		.to.equal( '<paragraph>fyyy</paragraph><paragraph>xxx<inlineWidget></inlineWidget>zzz[]oo</paragraph>' );
+				// } );
 
 				// See the comment above.
-				test(
-					'inserts paragraph + text + inlineWidget + text',
-					'<paragraph>yyy</paragraph>xxx<inlineWidget></inlineWidget>zzz',
-					'<paragraph>f[]oo</paragraph>',
-					(
+				it( 'inserts paragraph + text + inlineWidget + text', () => {
+					setData( doc, '<paragraph>f[]oo</paragraph>' );
+					insertHelper( '<paragraph>yyy</paragraph>xxx<inlineWidget></inlineWidget>zzz' );
+					expect( getData( doc ) ).to.equal(
 						'<paragraph>fyyy</paragraph><paragraph>xxx</paragraph>' +
 						'<paragraph><inlineWidget></inlineWidget></paragraph>' +
 						'<paragraph>zzz[]oo</paragraph>'
-					)
-				);
+					);
+				} );
 
-				test(
-					'inserts paragraph + text + paragraph',
-					'<paragraph>yyy</paragraph>xxx<paragraph>zzz</paragraph>',
-					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>fyyy</paragraph><paragraph>xxx</paragraph><paragraph>zzz[]oo</paragraph>'
-				);
+				it( 'inserts paragraph + text + paragraph', () => {
+					setData( doc, '<paragraph>f[]oo</paragraph>' );
+					insertHelper( '<paragraph>yyy</paragraph>xxx<paragraph>zzz</paragraph>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fyyy</paragraph><paragraph>xxx</paragraph><paragraph>zzz[]oo</paragraph>' );
+				} );
 
-				test(
-					'inserts paragraph + text (at the beginning)',
-					'<paragraph>yyy</paragraph>xxx',
-					'<paragraph>[]foo</paragraph>',
-					'<paragraph>yyy</paragraph><paragraph>xxx[]foo</paragraph>'
-				);
+				it( 'inserts paragraph + text (at the beginning)', () => {
+					setData( doc, '<paragraph>[]foo</paragraph>' );
+					insertHelper( '<paragraph>yyy</paragraph>xxx' );
+					expect( getData( doc ) ).to.equal( '<paragraph>yyy</paragraph><paragraph>xxx[]foo</paragraph>' );
+				} );
 
-				test(
-					'inserts paragraph + text (at the end)',
-					'<paragraph>yyy</paragraph>xxx',
-					'<paragraph>foo[]</paragraph>',
-					'<paragraph>fooyyy</paragraph><paragraph>xxx[]</paragraph>'
-				);
+				it( 'inserts paragraph + text (at the end)', () => {
+					setData( doc, '<paragraph>foo[]</paragraph>' );
+					insertHelper( '<paragraph>yyy</paragraph>xxx' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fooyyy</paragraph><paragraph>xxx[]</paragraph>' );
+				} );
 
-				test(
-					'inserts text + heading',
-					'xxx<heading1>yyy</heading1>',
-					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>fxxx</paragraph><heading1>yyy[]oo</heading1>'
-				);
+				it( 'inserts text + heading', () => {
+					setData( doc, '<paragraph>f[]oo</paragraph>' );
+					insertHelper( 'xxx<heading1>yyy</heading1>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fxxx</paragraph><heading1>yyy[]oo</heading1>' );
+				} );
 
-				test(
-					'inserts paragraph + object',
-					'<paragraph>xxx</paragraph><blockWidget></blockWidget>',
-					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>fxxx</paragraph>[<blockWidget></blockWidget>]<paragraph>oo</paragraph>'
-				);
+				it( 'inserts paragraph + object', () => {
+					setData( doc, '<paragraph>f[]oo</paragraph>' );
+					insertHelper( '<paragraph>xxx</paragraph><blockWidget></blockWidget>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fxxx</paragraph>[<blockWidget></blockWidget>]<paragraph>oo</paragraph>' );
+				} );
 
-				test(
-					'inserts object + paragraph',
-					'<blockWidget></blockWidget><paragraph>xxx</paragraph>',
-					'<paragraph>f[]oo</paragraph>',
-					'<paragraph>f</paragraph><blockWidget></blockWidget><paragraph>xxx[]oo</paragraph>'
-				);
+				it( 'inserts object + paragraph', () => {
+					setData( doc, '<paragraph>f[]oo</paragraph>' );
+					insertHelper( '<blockWidget></blockWidget><paragraph>xxx</paragraph>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>f</paragraph><blockWidget></blockWidget><paragraph>xxx[]oo</paragraph>' );
+				} );
 			} );
 
 			describe( 'content over a block object', () => {
-				test(
-					'inserts text',
-					'xxx',
-					'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>',
-					'<paragraph>foo</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>'
-				);
+				it( 'inserts text', () => {
+					setData( doc, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+					insertHelper( 'xxx' );
+					expect( getData( doc ) ).to.equal( '<paragraph>foo</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>' );
+				} );
 
-				test(
-					'inserts paragraph',
-					'<paragraph>xxx</paragraph>',
-					'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>',
-					'<paragraph>foo</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>'
-				);
+				it( 'inserts paragraph', () => {
+					setData( doc, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+					insertHelper( '<paragraph>xxx</paragraph>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>foo</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>' );
+				} );
 
-				test(
-					'inserts text + paragraph',
-					'yyy<paragraph>xxx</paragraph>',
-					'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>',
-					'<paragraph>foo</paragraph><paragraph>yyy</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>'
-				);
+				it( 'inserts text + paragraph', () => {
+					setData( doc, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+					insertHelper( 'yyy<paragraph>xxx</paragraph>' );
+					expect( getData( doc ) )
+						.to.equal( '<paragraph>foo</paragraph><paragraph>yyy</paragraph><paragraph>xxx[]</paragraph><paragraph>bar</paragraph>' );
+				} );
 
-				test(
-					'inserts two blocks',
-					'<heading1>xxx</heading1><paragraph>yyy</paragraph>',
-					'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>',
-					'<paragraph>foo</paragraph><heading1>xxx</heading1><paragraph>yyy[]</paragraph><paragraph>bar</paragraph>'
-				);
+				it( 'inserts two blocks', () => {
+					setData( doc, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+					insertHelper( '<heading1>xxx</heading1><paragraph>yyy</paragraph>' );
+					expect( getData( doc ) )
+						.to.equal( '<paragraph>foo</paragraph><heading1>xxx</heading1><paragraph>yyy[]</paragraph><paragraph>bar</paragraph>' );
+				} );
 
-				test(
-					'inserts block object',
-					'<blockWidget></blockWidget>',
-					'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>',
-					'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' // It's enough, don't worry.
-				);
+				it( 'inserts block object', () => {
+					setData( doc, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+					insertHelper( '<blockWidget></blockWidget>' );
+					// It's enough, don't worry.
+					expect( getData( doc ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+				} );
 
-				test(
-					'inserts inline object',
-					'<inlineWidget></inlineWidget>',
-					'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>',
-					'<paragraph>foo</paragraph><paragraph><inlineWidget></inlineWidget>[]</paragraph><paragraph>bar</paragraph>'
-				);
+				it( 'inserts inline object', () => {
+					setData( doc, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+					insertHelper( '<inlineWidget></inlineWidget>' );
+					expect( getData( doc ) )
+						.to.equal( '<paragraph>foo</paragraph><paragraph><inlineWidget></inlineWidget>[]</paragraph><paragraph>bar</paragraph>' );
+				} );
 			} );
 
 			describe( 'content over an inline object', () => {
-				test(
-					'inserts text',
-					'xxx',
-					'<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>',
-					'<paragraph>fooxxx[]bar</paragraph>'
-				);
+				it( 'inserts text', () => {
+					setData( doc, '<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>' );
+					insertHelper( 'xxx' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fooxxx[]bar</paragraph>' );
+				} );
 
-				test(
-					'inserts paragraph',
-					'<paragraph>xxx</paragraph>',
-					'<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>',
-					'<paragraph>fooxxx[]bar</paragraph>'
-				);
+				it( 'inserts paragraph', () => {
+					setData( doc, '<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>' );
+					insertHelper( '<paragraph>xxx</paragraph>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fooxxx[]bar</paragraph>' );
+				} );
 
-				test(
-					'inserts text + paragraph',
-					'yyy<paragraph>xxx</paragraph>',
-					'<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>',
-					'<paragraph>fooyyy</paragraph><paragraph>xxx[]bar</paragraph>'
-				);
+				it( 'inserts text + paragraph', () => {
+					setData( doc, '<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>' );
+					insertHelper( 'yyy<paragraph>xxx</paragraph>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fooyyy</paragraph><paragraph>xxx[]bar</paragraph>' );
+				} );
 
-				test(
-					'inserts two blocks',
-					'<heading1>xxx</heading1><paragraph>yyy</paragraph>',
-					'<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>',
-					'<paragraph>fooxxx</paragraph><paragraph>yyy[]bar</paragraph>'
-				);
+				it( 'inserts two blocks', () => {
+					setData( doc, '<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>' );
+					insertHelper( '<heading1>xxx</heading1><paragraph>yyy</paragraph>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>fooxxx</paragraph><paragraph>yyy[]bar</paragraph>' );
+				} );
 
-				test(
-					'inserts inline object',
-					'<inlineWidget></inlineWidget>',
-					'<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>',
-					'<paragraph>foo<inlineWidget></inlineWidget>[]bar</paragraph>'
-				);
+				it( 'inserts inline object', () => {
+					setData( doc, '<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>' );
+					insertHelper( '<inlineWidget></inlineWidget>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>foo<inlineWidget></inlineWidget>[]bar</paragraph>' );
+				} );
 
-				test(
-					'inserts block object',
-					'<blockWidget></blockWidget>',
-					'<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>',
-					'<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>'
-				);
+				it( 'inserts block object', () => {
+					setData( doc, '<paragraph>foo[<inlineWidget></inlineWidget>]bar</paragraph>' );
+					insertHelper( '<blockWidget></blockWidget>' );
+					expect( getData( doc ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>bar</paragraph>' );
+				} );
 			} );
 		} );
 
@@ -537,26 +487,23 @@ describe( 'DataController', () => {
 				schema.objects.add( 'disallowedWidget' );
 			} );
 
-			test(
-				'filters out disallowed elements and leaves out the text',
-				'<table><td>xxx</td><td>yyy</td></table>',
-				'<paragraph>f[]oo</paragraph>',
-				'<paragraph>fxxxyyy[]oo</paragraph>'
-			);
+			it( 'filters out disallowed elements and leaves out the text', () => {
+				setData( doc, '<paragraph>f[]oo</paragraph>' );
+				insertHelper( '<table><td>xxx</td><td>yyy</td></table>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>fxxxyyy[]oo</paragraph>' );
+			} );
 
-			test(
-				'filters out disallowed elements and leaves out the paragraphs',
-				'<table><td><paragraph>xxx</paragraph><paragraph>yyy</paragraph><paragraph>zzz</paragraph></td></table>',
-				'<paragraph>f[]oo</paragraph>',
-				'<paragraph>fxxx</paragraph><paragraph>yyy</paragraph><paragraph>zzz[]oo</paragraph>'
-			);
+			it( 'filters out disallowed elements and leaves out the paragraphs', () => {
+				setData( doc, '<paragraph>f[]oo</paragraph>' );
+				insertHelper( '<table><td><paragraph>xxx</paragraph><paragraph>yyy</paragraph><paragraph>zzz</paragraph></td></table>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>fxxx</paragraph><paragraph>yyy</paragraph><paragraph>zzz[]oo</paragraph>' );
+			} );
 
-			test(
-				'filters out disallowed objects',
-				'<disallowedWidget>xxx</disallowedWidget>',
-				'<paragraph>f[]oo</paragraph>',
-				'<paragraph>f[]oo</paragraph>'
-			);
+			it( 'filters out disallowed objects', () => {
+				setData( doc, '<paragraph>f[]oo</paragraph>' );
+				insertHelper( '<disallowedWidget>xxx</disallowedWidget>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
+			} );
 		} );
 
 		describe( 'special schema configurations', () => {
@@ -567,57 +514,42 @@ describe( 'DataController', () => {
 				dataController = new DataController( doc );
 			} );
 
-			test(
-				'should not break when autoparagraphing of text is not possible',
-				'foo',
-				'<noTextAllowed>[<object></object>]</noTextAllowed>',
-				'<noTextAllowed>[]</noTextAllowed>',
-				{
-					beforeCallback() {
-						const schema = doc.schema;
+			it( 'should not break when autoparagraphing of text is not possible', () => {
+				const schema = doc.schema;
 
-						schema.registerItem( 'noTextAllowed' );
-						schema.registerItem( 'object' );
+				schema.registerItem( 'noTextAllowed' );
+				schema.registerItem( 'object' );
 
-						schema.allow( { name: 'noTextAllowed', inside: '$root' } );
-						schema.allow( { name: 'object', inside: 'noTextAllowed' } );
+				schema.allow( { name: 'noTextAllowed', inside: '$root' } );
+				schema.allow( { name: 'object', inside: 'noTextAllowed' } );
 
-						schema.objects.add( 'object' );
-					}
-				}
-			);
+				schema.objects.add( 'object' );
+
+				setData( doc, '<noTextAllowed>[<object></object>]</noTextAllowed>' );
+				insertHelper( 'foo' );
+				expect( getData( doc ) ).to.equal( '<noTextAllowed>[]</noTextAllowed>' );
+			} );
 		} );
 	} );
 
-	// @param {String} title
 	// @param {engine.model.Item|String} content
-	function test( title, content, initialData, expectedData, options = {} ) {
-		it( title, () => {
-			if ( options.beforeCallback ) {
-				options.beforeCallback();
-			}
+	function insertHelper( content ) {
+		if ( typeof content == 'string' ) {
+			content = parse( content, doc.schema, {
+				context: [ '$clipboardHolder' ]
+			} );
+		}
 
-			setData( doc, initialData );
+		if ( !( content instanceof ModelDocumentFragment ) ) {
+			content = new ModelDocumentFragment( [ content ] );
+		}
 
-			if ( typeof content == 'string' ) {
-				content = parse( content, doc.schema, {
-					context: [ '$clipboardHolder' ]
-				} );
-			}
+		// Override the convertion so we get exactly the model that we defined in the content param.
+		// This way we avoid the need to write converters for everything we want to test.
+		dataController.viewToModel.convert = () => {
+			return content;
+		};
 
-			if ( !( content instanceof ModelDocumentFragment ) ) {
-				content = new ModelDocumentFragment( [ content ] );
-			}
-
-			// Override the convertion so we get exactly the model that we defined in the content param.
-			// This way we avoid the need to write converters for everything we want to test.
-			dataController.viewToModel.convert = () => {
-				return content;
-			};
-
-			insert( dataController, new ViewDocumentFragment(), doc.selection );
-
-			expect( getData( doc ) ).to.equal( expectedData );
-		} );
+		insert( dataController, new ViewDocumentFragment(), doc.selection );
 	}
 } );
