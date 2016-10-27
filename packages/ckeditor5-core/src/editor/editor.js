@@ -7,7 +7,7 @@ import EmitterMixin from '../../utils/emittermixin.js';
 import Config from '../../utils/config.js';
 import PluginCollection from '../plugincollection.js';
 import Locale from '../../utils/locale.js';
-import DataController from '../../engine/datacontroller.js';
+import DataController from '../../engine/controller/datacontroller.js';
 import Document from '../../engine/model/document.js';
 import FocusTracker from '../../utils/focustracker.js';
 
@@ -76,10 +76,10 @@ export default class Editor {
 		this.document = new Document();
 
 		/**
-		 * Instance of the {@link engine.DataController data controller}.
+		 * Instance of the {@link engine.controller.DataController data controller}.
 		 *
 		 * @readonly
-		 * @member {engine.DataController} core.editor.Editor#data
+		 * @member {engine.controller.DataController} core.editor.Editor#data
 		 */
 		this.data = new DataController( this.document );
 
@@ -91,7 +91,7 @@ export default class Editor {
 		this.focusTracker = new FocusTracker();
 
 		/**
-		 * Instance of the {@link engine.EditingController editing controller}.
+		 * Instance of the {@link engine.controller.EditingController editing controller}.
 		 *
 		 * This property is set by more specialized editor classes (such as {@link core.editor.StandardEditor}),
 		 * however, it's required for features to work as their engine-related parts will try to connect converters.
@@ -100,7 +100,7 @@ export default class Editor {
 		 * editing controller which only instantiates necessary properties, but without any observers and listeners.
 		 *
 		 * @readonly
-		 * @member {engine.EditingController} core.editor.Editor#editing
+		 * @member {engine.controller.EditingController} core.editor.Editor#editing
 		 */
 	}
 
