@@ -5,14 +5,14 @@
 
 import Editor from './editor.js';
 import KeystrokeHandler from '../keystrokehandler.js';
-import EditingController from '../../engine/editingcontroller.js';
+import EditingController from '../../engine/controller/editingcontroller.js';
 
 import getDataFromElement from '../../utils/dom/getdatafromelement.js';
 import setDataInElement from '../../utils/dom/setdatainelement.js';
 
 /**
  * Class representing a typical browser-based editor. It handles a single source element and
- * uses {@link engine.EditingController}.
+ * uses {@link engine.controller.EditingController}.
  *
  * @memberOf core.editor
  */
