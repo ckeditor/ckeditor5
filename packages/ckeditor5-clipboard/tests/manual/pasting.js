@@ -38,6 +38,8 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	window.editor = editor;
 
 	editor.editing.view.on( 'paste', ( evt, data ) => {
+		console.clear();
+
 		console.log( '----- paste -----' );
 		console.log( data );
 		console.log( 'text/html\n', data.dataTransfer.getData( 'text/html' ) );
@@ -46,7 +48,6 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 	editor.editing.view.on( 'clipboardInput', ( evt, data ) => {
 		console.log( '----- clipboardInput -----' );
-		console.log( 'data.content\n', data.content );
 		console.log( 'stringify( data.content )\n', stringifyView( data.content ) );
 	} );
 } )

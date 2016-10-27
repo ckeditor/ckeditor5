@@ -6,6 +6,7 @@
 /**
  * Removes some popular browser quirks out of the clipboard data (HTML).
  *
+ * @function clipboard.utils.normalizeClipboardData
  * @param {String} data The HTML data to normalize.
  * @returns {String} Normalized HTML.
  */

@@ -6,7 +6,6 @@
 import Feature from '../core/feature.js';
 
 import ClipboardObserver from './clipboardobserver.js';
-import ClipboardInputCommand from './clipboardinputcommand.js';
 
 import plainTextToHtml from './utils/plaintexttohtml.js';
 import normalizeClipboardHtml from './utils/normalizeclipboarddata.js';
@@ -19,16 +18,18 @@ import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
  *
  * ## Clipboard Pipeline
  *
- * The feature creates the clipboard pipeline which allows processing clipboard content
+ * The feature creates the clipboard pipeline which allows for processing clipboard content
  * before it gets inserted into the editor. The pipeline consists of two events on which
- * the features can listen to modify or totally override the default behavior.
+ * the features can listen in order to modify or totally override the default behavior.
  *
  * ### On {@link engine.view.Document#paste}
  *
- * 1. Get HTML or plain text from the clipboard,
- * 2. Fire {@link engine.view.Document#clipboardInput} with the clipboard data parsed to
- * a {@link engine.view.DocumentFragment view document fragment}.
- * 3. Prevent default action of the native `paste` event.
+ * The default action is to:
+ *
+ * 1. get HTML or plain text from the clipboard,
+ * 2. fire {@link engine.view.Document#clipboardInput} with the clipboard data parsed to
+ * a {@link engine.view.DocumentFragment view document fragment},
+ * 3. prevent the default action of the native `paste` event.
  *
  * This action is performed by a low priority listener, so it can be overridden by a normal one.
  * You'd only need to do this when a deeper change in pasting behavior was needed. For example,
@@ -37,8 +38,8 @@ import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
  *
  * ### On {@link engine.view.Document#clipboardInput}
  *
- * If the content being processed (`data.content` represented by a {@link engine.view.DocumentFragment})
- * is not empty insert it to the editor using the {@link clipboard.ClipboardInput `clipboardInput` command}.
+ * The default action is to insert the content (`data.content`, represented by a {@link engine.view.DocumentFragment})
+ * to an editor if the data is not empty.
  *
  * This action is performed by a low priority listener, so it can be overridden by a normal one.
  *
@@ -49,13 +50,13 @@ import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
  *			if ( data.content.childCount == 1 && isUrlText( data.content.getChild( 0 ) ) ) {
  *				const linkUrl = data.content.getChild( 0 ).data;
  *
- *				data.content = new ViewDocumentFragment(
+ *				data.content = new ViewDocumentFragment( [
  *					ViewElement(
  *						'a',
  *						{ href: linkUrl },
  *						[ new ViewText( linkUrl ) ]
  *					)
- *				);
+ *				] );
  *			}
  *		} );
  *
@@ -70,9 +71,13 @@ export default class Clipboard extends Feature {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
+		/**
+		 * Data processor used to convert pasted HTML to a view structure.
+		 *
+		 * @private
+		 * @member {engine.dataProcessor.HtmlDataProcessor} clipboard.Clipboard#_htmlDataProcessor
+		 */
 		this._htmlDataProcessor = new HtmlDataProcessor();
-
-		editor.commands.set( 'clipboardInput', new ClipboardInputCommand( editor ) );
 
 		editingView.addObserver( ClipboardObserver );
 
@@ -97,7 +102,11 @@ export default class Clipboard extends Feature {
 
 		this.listenTo( editingView, 'clipboardInput', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
-				editor.execute( 'clipboardInput', { content: data.content } );
+				const doc = editor.document;
+
+				doc.enqueueChanges( () => {
+					this.editor.data.insert( data.content, doc.selection );
+				} );
 			}
 		}, { priority: 'low' } );
 	}
@@ -105,7 +114,8 @@ export default class Clipboard extends Feature {
 
 /**
  * Fired with a content which comes from the clipboard (was pasted or dropped) and
- * should be processed in order to be inserted into the editor. It's part of the {@link clipboard.Clipboard "clipboard pipeline"}.
+ * should be processed in order to be inserted into the editor.
+ * It's part of the {@link clipboard.Clipboard "clipboard pipeline"}.
  *
  * @see clipboard.ClipboardObserver
  * @see clipboard.Clipboard
@@ -128,8 +138,8 @@ export default class Clipboard extends Feature {
  */
 
 /**
- * Content to be inserted into the editor.
+ * Content to be inserted into the editor. It can be modified by the event listeners.
+ * Read more about the clipboard pipeline in {@link clipboard.Clipboard}.
  *
- * @readonly
  * @member {engine.view.DocumentFragment} engine.view.observer.ClipboardEventData#content
  */

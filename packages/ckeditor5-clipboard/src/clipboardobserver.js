@@ -12,7 +12,7 @@ import DataTransfer from './datatransfer.js';
  * Note that this observer is not available by default. To make it available it needs to be added to {@link engine.view.Document}
  * by the {@link engine.view.Document#addObserver} method.
  *
- * @memberOf engine.view.observer
+ * @memberOf clipboard
  * @extends engine.view.observer.DomEventObserver
  */
 export default class ClipboardObserver extends DomEventObserver {
@@ -36,6 +36,7 @@ export default class ClipboardObserver extends DomEventObserver {
  *
  * Note that this event is not available by default. To make it available {@link clipboard.ClipboardObserver} needs to be added
  * to {@link engine.view.Document} by the {@link engine.view.Document#addObserver} method.
+ * It's done by the {@link clipboard.Clipboard} feature. If it's not loaded, it must be done manually.
  *
  * @see clipboard.ClipboardObserver
  * @event engine.view.Document#paste

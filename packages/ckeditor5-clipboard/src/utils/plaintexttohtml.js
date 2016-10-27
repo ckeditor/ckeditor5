@@ -6,6 +6,7 @@
 /**
  * Converts plain text to its HTML-ized version.
  *
+ * @function clipboard.utils.plainTextToHtml
  * @param {String} text The plain text to convert.
  * @returns {String} HTML generated from the plain text.
  */
