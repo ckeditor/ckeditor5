@@ -76,13 +76,15 @@ export default class ToggleAttributeCommand extends Command {
 	 * If the command is disabled (`isEnabled == false`) when it is executed, nothing will happen.
 	 *
 	 * @private
-	 * @param {Boolean} [forceValue] If set it will force command behavior. If `true`, command will apply attribute,
+	 * @param {Object} [options] Options of command.
+	 * @param {Boolean} [options.forceValue] If set it will force command behavior. If `true`, command will apply attribute,
 	 * otherwise command will remove attribute. If not set, command will look for it's current value to decide what it should do.
+	 * @param {engine.model.Batch} [options.batch] Batch to group undo steps.
 	 */
-	_doExecute( forceValue ) {
+	_doExecute( options = {} ) {
 		const document = this.editor.document;
 		const selection = document.selection;
-		const value = ( forceValue === undefined ) ? !this.value : forceValue;
+		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
 
 		// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges.
 		document.enqueueChanges( () => {
@@ -96,7 +98,7 @@ export default class ToggleAttributeCommand extends Command {
 				const ranges = getSchemaValidRanges( this.attributeKey, selection.getRanges(), document.schema );
 
 				// Keep it as one undo step.
-				const batch = document.batch();
+				const batch = options.batch || document.batch();
 
 				for ( let range of ranges ) {
 					if ( value ) {
