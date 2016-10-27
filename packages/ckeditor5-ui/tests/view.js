@@ -44,36 +44,38 @@ describe( 'View', () => {
 			expect( view.t ).to.equal( locale.t );
 		} );
 
-		it( 'handles #ready binding of instances in #_viewCollections', () => {
-			const collection = new ViewCollection();
+		describe( '_viewCollections', () => {
+			it( 'manages #ready attribute binding', () => {
+				const collection = new ViewCollection();
 
-			expect( collection.ready ).to.be.false;
+				expect( collection.ready ).to.be.false;
 
-			view._viewCollections.add( collection );
-			expect( collection.ready ).to.be.false;
+				view._viewCollections.add( collection );
+				expect( collection.ready ).to.be.false;
 
-			view.ready = true;
-			expect( collection.ready ).to.be.true;
+				view.ready = true;
+				expect( collection.ready ).to.be.true;
 
-			view._viewCollections.remove( collection );
+				view._viewCollections.remove( collection );
 
-			view.ready = false;
-			expect( collection.ready ).to.be.true;
-		} );
+				view.ready = false;
+				expect( collection.ready ).to.be.true;
+			} );
 
-		it( 'handles #locale of instances in #_viewCollections', () => {
-			const locale = {
-				t() {}
-			};
+			it( 'manages #locale property', () => {
+				const locale = {
+					t() {}
+				};
 
-			const view = new View( locale );
-			const collection = new ViewCollection();
+				const view = new View( locale );
+				const collection = new ViewCollection();
 
-			expect( view.locale ).to.equal( locale );
-			expect( collection.locale ).to.be.undefined;
+				expect( view.locale ).to.equal( locale );
+				expect( collection.locale ).to.be.undefined;
 
-			view._viewCollections.add( collection );
-			expect( collection.locale ).to.equal( view.locale );
+				view._viewCollections.add( collection );
+				expect( collection.locale ).to.equal( view.locale );
+			} );
 		} );
 	} );
 
