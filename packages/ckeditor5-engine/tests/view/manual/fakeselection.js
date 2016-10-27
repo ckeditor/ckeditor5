@@ -28,8 +28,8 @@ viewDocument.selection.on( 'change', () => {
 	}
 } );
 
-viewDocument.on( 'click', ( info, domEvent ) => {
-	if ( domEvent.target == viewStrong ) {
+viewDocument.on( 'click', ( evt, data ) => {
+	if ( data.target == viewStrong ) {
 		const range = ViewRange.createOn( viewStrong );
 		viewDocument.selection.setRanges( [ range ] );
 		viewDocument.selection.setFake( true, { label: 'fake selection over bar' } );
