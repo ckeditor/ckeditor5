@@ -491,6 +491,16 @@ describe( 'model test utils', () => {
 			} ).to.throw( Error, `Element '$text' not allowed in context.` );
 		} );
 
+		it( 'converts data in the specified context', () => {
+			const doc = new Document();
+			doc.schema.registerItem( 'foo' );
+			doc.schema.allow( { name: '$text', inside: 'foo' } );
+
+			expect( () => {
+				parse( 'text', doc.schema, { context: [ 'foo' ] } );
+			} ).to.not.throw();
+		} );
+
 		describe( 'selection', () => {
 			test( 'sets collapsed selection in an element', {
 				data: '<a>[]</a>',

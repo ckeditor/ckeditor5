@@ -39,6 +39,24 @@ describe( 'constructor', () => {
 	it( 'should allow inline in block', () => {
 		expect( schema.check( { name: '$inline', inside: [ '$block' ] } ) ).to.be.true;
 	} );
+
+	it( 'should create the objects set', () => {
+		expect( schema.objects ).to.be.instanceOf( Set );
+	} );
+
+	describe( '$clipboardHolder', () => {
+		it( 'should allow $block', () => {
+			expect( schema.check( { name: '$block', inside: [ '$clipboardHolder' ] } ) ).to.be.true;
+		} );
+
+		it( 'should allow $inline', () => {
+			expect( schema.check( { name: '$inline', inside: [ '$clipboardHolder' ] } ) ).to.be.true;
+		} );
+
+		it( 'should allow $text', () => {
+			expect( schema.check( { name: '$text', inside: [ '$clipboardHolder' ] } ) ).to.be.true;
+		} );
+	} );
 } );
 
 describe( 'registerItem', () => {
