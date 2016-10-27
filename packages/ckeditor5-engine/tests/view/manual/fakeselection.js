@@ -54,17 +54,23 @@ viewDocument.selection.on( 'change', () => {
 	const lastPos = viewDocument.selection.getLastPosition();
 
 	if ( firstPos && lastPos && firstPos.nodeAfter == viewStrong && lastPos.nodeBefore == viewStrong ) {
-		viewStrong.setStyle( 'background-color', 'yellow' );
+		viewStrong.addClass( 'selected' );
 	} else {
-		viewStrong.removeStyle( 'background-color' );
+		viewStrong.removeClass( 'selected' );
 	}
 } );
 
 viewDocument.on( 'focus', () => {
+	viewStrong.addClass( 'focused' );
+	viewDocument.render();
+
 	console.log( 'The document was focused.' );
 } );
 
 viewDocument.on( 'blur', () => {
+	viewStrong.removeClass( 'focused' );
+	viewDocument.render();
+
 	console.log( 'The document was blurred.' );
 } );
 
