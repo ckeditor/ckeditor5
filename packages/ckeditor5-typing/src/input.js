@@ -105,21 +105,21 @@ class MutationHandler {
 	/**
 	 * Creates an instance of the mutation handler.
 	 *
-	 * @param {engine.EditingController} editing
+	 * @param {engine.controller.EditingController} editing
 	 * @param {typing.ChangeBuffer} buffer
 	 */
 	constructor( editing, buffer ) {
 		/**
 		 * The editing controller.
 		 *
-		 * @member {engine.EditingController} typing.Input.MutationHandler#editing
+		 * @member {engine.controller.EditingController} typing.Input.MutationHandler#editing
 		 */
 		this.editing = editing;
 
 		/**
 		 * The change buffer.
 		 *
-		 * @member {engine.EditingController} typing.Input.MutationHandler#buffer
+		 * @member {engine.controller.EditingController} typing.Input.MutationHandler#buffer
 		 */
 		this.buffer = buffer;
 
