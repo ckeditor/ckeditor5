@@ -6,21 +6,44 @@
 /* globals setTimeout */
 /* bender-tags: editor, browser-only */
 
-import moduleUtils from '/tests/core/_utils/module.js';
 import Editor from '/ckeditor5/core/editor/editor.js';
 import Plugin from '/ckeditor5/core/plugin.js';
 import Config from '/ckeditor5/utils/config.js';
 import PluginCollection from '/ckeditor5/core/plugincollection.js';
 import FocusTracker from '/ckeditor5/utils/focustracker.js';
 
-const pluginClasses = {};
+class PluginA extends Plugin {
+	constructor( editor ) {
+		super( editor );
+		this.init = sinon.spy().named( 'A' );
+	}
+}
+class PluginB extends Plugin {
+	constructor( editor ) {
+		super( editor );
+		this.init = sinon.spy().named( 'B' );
+	}
+}
+class PluginC extends Plugin {
+	constructor( editor ) {
+		super( editor );
+		this.init = sinon.spy().named( 'C' );
+	}
 
-before( () => {
-	pluginDefinition( 'A/A' );
-	pluginDefinition( 'B/B' );
-	pluginDefinition( 'C/C', [ 'B/B' ] );
-	pluginDefinition( 'D/D', [ 'C/C' ] );
-} );
+	static get requires() {
+		return [ PluginB ];
+	}
+}
+class PluginD extends Plugin {
+	constructor( editor ) {
+		super( editor );
+		this.init = sinon.spy().named( 'D' );
+	}
+
+	static get requires() {
+		return [ PluginC ];
+	}
+}
 
 describe( 'Editor', () => {
 	describe( 'constructor', () => {
@@ -55,12 +78,12 @@ describe( 'Editor', () => {
 
 		it( 'loads plugins', () => {
 			return Editor.create( {
-					features: [ 'A' ]
+					features: [ PluginA ]
 				} )
 				.then( editor => {
 					expect( getPlugins( editor ).length ).to.equal( 1 );
 
-					expect( editor.plugins.get( 'A' ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
 				} );
 		} );
 	} );
@@ -68,7 +91,7 @@ describe( 'Editor', () => {
 	describe( 'initPlugins', () => {
 		it( 'should load features', () => {
 			const editor = new Editor( {
-				features: [ 'A', 'B' ]
+				features: [ PluginA, PluginB ]
 			} );
 
 			expect( getPlugins( editor ) ).to.be.empty;
@@ -76,103 +99,74 @@ describe( 'Editor', () => {
 			return editor.initPlugins().then( () => {
 				expect( getPlugins( editor ).length ).to.equal( 2 );
 
-				expect( editor.plugins.get( 'A' ) ).to.be.an.instanceof( Plugin );
-				expect( editor.plugins.get( 'B' ) ).to.be.an.instanceof( Plugin );
-			} );
-		} );
-
-		it( 'should load features passed as a string', () => {
-			const editor = new Editor( {
-				features: 'A,B'
-			} );
-
-			expect( getPlugins( editor ) ).to.be.empty;
-
-			return editor.initPlugins().then( () => {
-				expect( getPlugins( editor ).length ).to.equal( 2 );
-
-				expect( editor.plugins.get( 'A' ) ).to.be.an.instanceof( Plugin );
-				expect( editor.plugins.get( 'B' ) ).to.be.an.instanceof( Plugin );
+				expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+				expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
 			} );
 		} );
 
 		it( 'should initialize plugins in the right order', () => {
 			const editor = new Editor( {
-				features: [ 'A', 'D' ]
+				features: [ PluginA, PluginD ]
 			} );
 
 			return editor.initPlugins().then( () => {
 				sinon.assert.callOrder(
-					editor.plugins.get( pluginClasses[ 'A/A' ] ).init,
-					editor.plugins.get( pluginClasses[ 'B/B' ] ).init,
-					editor.plugins.get( pluginClasses[ 'C/C' ] ).init,
-					editor.plugins.get( pluginClasses[ 'D/D' ] ).init
+					editor.plugins.get( PluginA ).init,
+					editor.plugins.get( PluginB ).init,
+					editor.plugins.get( PluginC ).init,
+					editor.plugins.get( PluginD ).init
 				);
 			} );
 		} );
 
 		it( 'should initialize plugins in the right order, waiting for asynchronous ones', () => {
-			class PluginAsync extends Plugin {}
 			const asyncSpy = sinon.spy().named( 'async-call-spy' );
 
 			// Synchronous plugin that depends on an asynchronous one.
-			pluginDefinition( 'sync/sync', [ 'async/async' ] );
+			class PluginSync extends Plugin {
+				constructor( editor ) {
+					super( editor );
+					this.init = sinon.spy().named( 'sync' );
+				}
 
-			moduleUtils.define( 'async/async', () => {
-				PluginAsync.prototype.init = sinon.spy( () => {
-					return new Promise( ( resolve ) => {
-						setTimeout( () => {
-							asyncSpy();
-							resolve();
-						}, 0 );
+				static get requires() {
+					return [ PluginAsync ];
+				}
+			}
+
+			class PluginAsync extends Plugin {
+				constructor( editor ) {
+					super( editor );
+
+					this.init = sinon.spy( () => {
+						return new Promise( ( resolve ) => {
+							setTimeout( () => {
+								asyncSpy();
+								resolve();
+							}, 0 );
+						} );
 					} );
-				} );
-
-				return PluginAsync;
-			} );
+				}
+			}
 
 			const editor = new Editor( {
-				features: [ 'A', 'sync' ]
+				features: [ PluginA, PluginSync ]
 			} );
 
 			return editor.initPlugins().then( () => {
 				sinon.assert.callOrder(
-					editor.plugins.get( pluginClasses[ 'A/A' ] ).init,
+					editor.plugins.get( PluginA ).init,
 					editor.plugins.get( PluginAsync ).init,
 					// This one is called with delay by the async init.
 					asyncSpy,
-					editor.plugins.get( pluginClasses[ 'sync/sync' ] ).init
+					editor.plugins.get( PluginSync ).init
 				);
 			} );
 		} );
 	} );
 } );
 
-// @param {String} name Name of the plugin.
-// @param {String[]} deps Dependencies of the plugin (only other plugins).
-function pluginDefinition( name, deps ) {
-	moduleUtils.define( name, deps || [], function() {
-		class NewPlugin extends Plugin {}
-
-		NewPlugin.prototype.init = sinon.spy().named( name );
-		NewPlugin.requires = Array.from( arguments );
-
-		pluginClasses[ name ] = NewPlugin;
-
-		return NewPlugin;
-	} );
-}
-
-// Returns an array of loaded plugins.
 function getPlugins( editor ) {
-	const plugins = [];
-
-	for ( let entry of editor.plugins ) {
-		// Keep only plugins kept under their classes.
-		if ( typeof entry[ 0 ] == 'function' ) {
-			plugins.push( entry[ 1 ] );
-		}
-	}
-
-	return plugins;
+	return Array.from( editor.plugins )
+		.map( entry => entry[ 1 ] ); // Get instances.
 }

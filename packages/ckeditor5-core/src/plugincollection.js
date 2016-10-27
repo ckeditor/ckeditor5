@@ -6,7 +6,6 @@
 import Plugin from './plugin.js';
 import CKEditorError from '../utils/ckeditorerror.js';
 import log from '../utils/log.js';
-import load from './load.js';
 
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
@@ -34,17 +33,16 @@ export default class PluginCollection {
 	}
 
 	/**
-	 * Collection iterator. Returns `[ key, plugin ]` pairs. Plugins which are
-	 * kept in the collection twice (under their name and class) will be returned twice.
+	 * Collection iterator. Returns `[ PluginConstructor, pluginInstance ]` pairs.
 	 */
 	[ Symbol.iterator ]() {
 		return this._plugins[ Symbol.iterator ]();
 	}
 
 	/**
-	 * Gets the plugin instance by its name or class.
+	 * Gets the plugin instance by its constructor.
 	 *
-	 * @param {String/Function} key The name of the plugin or the class.
+	 * @param {Function} key The plugin constructor.
 	 * @returns {core.Plugin}
 	 */
 	get( key ) {
@@ -54,7 +52,7 @@ export default class PluginCollection {
 	/**
 	 * Loads a set of plugins and add them to the collection.
 	 *
-	 * @param {String[]} plugins An array of plugins to load.
+	 * @param {Function[]} plugins An array of {@link core.Plugin plugin constructors}.
 	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
 	 * collection.
 	 * @param {core.Plugin[]} returns.loadedPlugins The array of loaded plugins.
@@ -68,17 +66,13 @@ export default class PluginCollection {
 		return Promise.all( plugins.map( loadPlugin ) )
 			.then( () => loaded );
 
-		function loadPlugin( pluginClassOrName ) {
+		function loadPlugin( PluginConstructor ) {
 			// The plugin is already loaded or being loaded - do nothing.
-			if ( that.get( pluginClassOrName ) || loading.has( pluginClassOrName ) ) {
+			if ( that.get( PluginConstructor ) || loading.has( PluginConstructor ) ) {
 				return;
 			}
 
-			let promise = ( typeof pluginClassOrName == 'string' ) ?
-				loadPluginByName( pluginClassOrName ) :
-				loadPluginByClass( pluginClassOrName );
-
-			return promise
+			return instantiatePlugin( PluginConstructor )
 				.catch( ( err ) => {
 					/**
 					 * It was not possible to load the plugin.
@@ -86,85 +80,51 @@ export default class PluginCollection {
 					 * @error plugincollection-load
 					 * @param {String} plugin The name of the plugin that could not be loaded.
 					 */
-					log.error( 'plugincollection-load: It was not possible to load the plugin.', { plugin: pluginClassOrName } );
+					log.error( 'plugincollection-load: It was not possible to load the plugin.', { plugin: PluginConstructor } );
 
 					throw err;
 				} );
 		}
 
-		function loadPluginByName( pluginName ) {
-			return load( PluginCollection.getPluginPath( pluginName ) )
-				.then( ( PluginModule ) => {
-					return loadPluginByClass( PluginModule.default, pluginName );
-				} );
-		}
-
-		function loadPluginByClass( PluginClass, pluginName ) {
+		function instantiatePlugin( PluginConstructor ) {
 			return new Promise( ( resolve ) => {
-				loading.add( PluginClass );
+				loading.add( PluginConstructor );
 
-				assertIsPlugin( PluginClass );
+				assertIsPlugin( PluginConstructor );
 
-				if ( PluginClass.requires ) {
-					PluginClass.requires.forEach( loadPlugin );
+				if ( PluginConstructor.requires ) {
+					PluginConstructor.requires.forEach( loadPlugin );
 				}
 
-				const plugin = new PluginClass( editor );
-				that._add( PluginClass, plugin );
+				const plugin = new PluginConstructor( editor );
+				that._add( PluginConstructor, plugin );
 				loaded.push( plugin );
-
-				// Expose the plugin also by its name if loaded through load() by name.
-				if ( pluginName ) {
-					that._add( pluginName, plugin );
-				}
 
 				resolve();
 			} );
 		}
 
-		function assertIsPlugin( LoadedPlugin ) {
-			if ( !( LoadedPlugin.prototype instanceof Plugin ) ) {
+		function assertIsPlugin( PluginConstructor ) {
+			if ( !( PluginConstructor.prototype instanceof Plugin ) ) {
 				/**
 				 * The loaded plugin module is not an instance of Plugin.
 				 *
 				 * @error plugincollection-instance
-				 * @param {LoadedPlugin} plugin The class which is meant to be loaded as a plugin.
+				 * @param {*} plugin The constructor which is meant to be loaded as a plugin.
 				 */
 				throw new CKEditorError(
 					'plugincollection-instance: The loaded plugin module is not an instance of Plugin.',
-					{ plugin: LoadedPlugin }
+					{ plugin: PluginConstructor }
 				);
 			}
 		}
 	}
 
 	/**
-	 * Resolves a simplified plugin name to a real path. The returned
-	 * paths are relative to the main `ckeditor.js` file, but they do not start with `./`.
-	 *
-	 * For instance:
-	 *
-	 * * `foo` will be transformed to `ckeditor5/foo/foo.js`,
-	 * * `ui/controller` to `ckeditor5/ui/controller.js` and
-	 * * `foo/bar/bom` to `ckeditor5/foo/bar/bom.js`.
-	 *
-	 * @param {String} name
-	 * @returns {String} Path to the module.
-	 */
-	static getPluginPath( name ) {
-		// Resolve shortened feature names to `featureName/featureName`.
-		if ( name.indexOf( '/' ) < 0 ) {
-			name = name + '/' + name;
-		}
-
-		return 'ckeditor5/' + name + '.js';
-	}
-
-	/**
 	 * Adds the plugin to the collection. Exposed mainly for testing purposes.
 	 *
 	 * @protected
-	 * @param {String/Function} key The name or the plugin class.
+	 * @param {Function} key The plugin constructor.
 	 * @param {core.Plugin} plugin The instance of the plugin.
 	 */
 	_add( key, plugin ) {

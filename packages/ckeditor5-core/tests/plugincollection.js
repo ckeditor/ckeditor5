@@ -5,7 +5,6 @@
 
 /* bender-tags: browser-only */
 
-import moduleUtils from '/tests/core/_utils/module.js';
 import testUtils from '/tests/core/_utils/utils.js';
 import Editor from '/ckeditor5/core/editor/editor.js';
 import PluginCollection from '/ckeditor5/core/plugincollection.js';
@@ -15,7 +14,7 @@ import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
 import log from '/ckeditor5/utils/log.js';
 
 let editor;
-let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI;
+let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI, PluginX;
 class TestError extends Error {}
 class GrandPlugin extends Feature {}
 
@@ -31,6 +30,13 @@ before( () => {
 	PluginG = createPlugin( 'G', GrandPlugin );
 	PluginH = createPlugin( 'H' );
 	PluginI = createPlugin( 'I' );
+	PluginX = class extends Plugin {
+		constructor( editor ) {
+			super( editor );
+
+			throw new TestError( 'Some error inside a plugin' );
+		}
+	};
 
 	PluginC.requires = [ PluginB ];
 	PluginD.requires = [ PluginA, PluginC ];
@@ -40,56 +46,6 @@ before( () => {
 
 	editor = new Editor();
 } );
-
-// Create fake plugins that will be used on tests.
-
-moduleUtils.define( 'A/A', () => {
-	return PluginA;
-} );
-
-moduleUtils.define( 'B/B', () => {
-	return PluginB;
-} );
-
-moduleUtils.define( 'C/C', [ 'core/editor/editor', 'B/B' ], () => {
-	return PluginC;
-} );
-
-moduleUtils.define( 'D/D', [ 'core/editor/editor', 'A/A', 'C/C' ], () => {
-	return PluginD;
-} );
-
-moduleUtils.define( 'E/E', [ 'core/editor/editor', 'F/F' ], () => {
-	return PluginE;
-} );
-
-moduleUtils.define( 'F/F', [ 'core/editor/editor', 'E/E' ], () => {
-	return PluginF;
-} );
-
-moduleUtils.define( 'G/G', () => {
-	return PluginG;
-} );
-
-moduleUtils.define( 'H/H', () => {
-	return PluginH;
-} );
-
-moduleUtils.define( 'I/I', () => {
-	return PluginI;
-} );
-
-// Erroneous cases.
-
-moduleUtils.define( 'X/X', () => {
-	throw new TestError( 'Some error inside a plugin' );
-} );
-
-moduleUtils.define( 'Y/Y', () => {
-	return class {};
-} );
-
-/////////////
 
 describe( 'load', () => {
 	it( 'should not fail when trying to load 0 plugins (empty array)', () => {
@@ -104,15 +60,12 @@ describe( 'load', () => {
 	it( 'should add collection items for loaded plugins', () => {
 		let plugins = new PluginCollection( editor );
 
-		return plugins.load( [ 'A', 'B' ] )
+		return plugins.load( [ PluginA, PluginB ] )
 			.then( () => {
 				expect( getPlugins( plugins ).length ).to.equal( 2 );
 
 				expect( plugins.get( PluginA ) ).to.be.an.instanceof( PluginA );
 				expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
-
-				expect( plugins.get( 'A' ) ).to.be.an.instanceof( PluginA );
-				expect( plugins.get( 'B' ) ).to.be.an.instanceof( PluginB );
 			} );
 	} );
 
@@ -120,7 +73,7 @@ describe( 'load', () => {
 		let plugins = new PluginCollection( editor );
 		let spy = sinon.spy( plugins, '_add' );
 
-		return plugins.load( [ 'A', 'C' ] )
+		return plugins.load( [ PluginA, PluginC ] )
 			.then( ( loadedPlugins ) => {
 				expect( getPlugins( plugins ).length ).to.equal( 3 );
 
@@ -135,7 +88,7 @@ describe( 'load', () => {
 		let plugins = new PluginCollection( editor );
 		let spy = sinon.spy( plugins, '_add' );
 
-		return plugins.load( [ 'A', 'B', 'C' ] )
+		return plugins.load( [ PluginA, PluginB, PluginC ] )
 			.then( ( loadedPlugins ) => {
 				expect( getPlugins( plugins ).length ).to.equal( 3 );
 
@@ -150,7 +103,7 @@ describe( 'load', () => {
 		let plugins = new PluginCollection( editor );
 		let spy = sinon.spy( plugins, '_add' );
 
-		return plugins.load( [ 'D' ] )
+		return plugins.load( [ PluginD ] )
 			.then( ( loadedPlugins ) => {
 				expect( getPlugins( plugins ).length ).to.equal( 4 );
 
@@ -166,7 +119,7 @@ describe( 'load', () => {
 		let plugins = new PluginCollection( editor );
 		let spy = sinon.spy( plugins, '_add' );
 
-		return plugins.load( [ 'A', 'E' ] )
+		return plugins.load( [ PluginA, PluginE ] )
 			.then( ( loadedPlugins ) => {
 				expect( getPlugins( plugins ).length ).to.equal( 3 );
 
@@ -181,48 +134,19 @@ describe( 'load', () => {
 	it( 'should load grand child classes', () => {
 		let plugins = new PluginCollection( editor );
 
-		return plugins.load( [ 'G' ] )
+		return plugins.load( [ PluginG ] )
 			.then( () => {
 				expect( getPlugins( plugins ).length ).to.equal( 1 );
-			} );
-	} );
-
-	it( 'should make plugin available to get by name when plugin was loaded as dependency first', () => {
-		let plugins = new PluginCollection( editor );
-
-		return plugins.load( [ 'H', 'I' ] )
-			.then( () => {
-				expect( plugins.get( 'I' ) ).to.be.instanceof( PluginI );
 			} );
 	} );
 
 	it( 'should set the `editor` property on loaded plugins', () => {
 		let plugins = new PluginCollection( editor );
 
-		return plugins.load( [ 'A', 'B' ] )
+		return plugins.load( [ PluginA, PluginB ] )
 			.then( () => {
-				expect( plugins.get( 'A' ).editor ).to.equal( editor );
-				expect( plugins.get( 'B' ).editor ).to.equal( editor );
-			} );
-	} );
-
-	it( 'should reject on invalid plugin names (forward require.js loading error)', () => {
-		let logSpy = testUtils.sinon.stub( log, 'error' );
-
-		let plugins = new PluginCollection( editor );
-
-		return plugins.load( [ 'A', 'BAD', 'B' ] )
-			// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
-			.then( () => {
-				throw new Error( 'Test error: this promise should not be resolved successfully' );
-			} )
-			.catch( ( err ) => {
-				expect( err ).to.be.an.instanceof( Error );
-				// Make sure it's the Require.JS error, not the one thrown above.
-				expect( err.message ).to.match( /^Script error for/ );
-
-				sinon.assert.calledOnce( logSpy );
-				expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
+				expect( plugins.get( PluginA ).editor ).to.equal( editor );
+				expect( plugins.get( PluginB ).editor ).to.equal( editor );
 			} );
 	} );
 
@@ -231,7 +155,7 @@ describe( 'load', () => {
 
 		let plugins = new PluginCollection( editor );
 
-		return plugins.load( [ 'A', 'X', 'B' ] )
+		return plugins.load( [ PluginA, PluginX, PluginB ] )
 			// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
 			.then( () => {
 				throw new Error( 'Test error: this promise should not be resolved successfully' );
@@ -250,7 +174,9 @@ describe( 'load', () => {
 
 		let plugins = new PluginCollection( editor );
 
-		return plugins.load( [ 'Y' ] )
+		class Y {}
+
+		return plugins.load( [ Y ] )
 			// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
 			.then( () => {
 				throw new Error( 'Test error: this promise should not be resolved successfully' );
@@ -262,20 +188,6 @@ describe( 'load', () => {
 				sinon.assert.calledOnce( logSpy );
 				expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
 			} );
-	} );
-} );
-
-describe( 'getPluginPath()', () => {
-	it( 'generates path for modules within some package', () => {
-		const p = PluginCollection.getPluginPath( 'some/ba' );
-
-		expect( p ).to.equal( 'ckeditor5/some/ba.js' );
-	} );
-
-	it( 'generates path from simplified feature name', () => {
-		const p = PluginCollection.getPluginPath( 'foo' );
-
-		expect( p ).to.equal( 'ckeditor5/foo/foo.js' );
 	} );
 } );
 
@@ -295,16 +207,8 @@ function createPlugin( name, baseClass ) {
 }
 
 function getPlugins( pluginCollection ) {
-	const plugins = [];
-
-	for ( let entry of pluginCollection ) {
-		// Keep only plugins kept under their classes.
-		if ( typeof entry[ 0 ] == 'function' ) {
-			plugins.push( entry[ 1 ] );
-		}
-	}
-
-	return plugins;
+	return Array.from( pluginCollection )
+		.map( entry => entry[ 1 ] ); // Get instances.
 }
 
 function getPluginsFromSpy( addSpy ) {
