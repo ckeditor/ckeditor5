@@ -43,6 +43,38 @@ describe( 'View', () => {
 			expect( view.locale ).to.equal( locale );
 			expect( view.t ).to.equal( locale.t );
 		} );
+
+		it( 'handles #ready binding of instances in #_viewCollections', () => {
+			const collection = new ViewCollection();
+
+			expect( collection.ready ).to.be.false;
+
+			view._viewCollections.add( collection );
+			expect( collection.ready ).to.be.false;
+
+			view.ready = true;
+			expect( collection.ready ).to.be.true;
+
+			view._viewCollections.remove( collection );
+
+			view.ready = false;
+			expect( collection.ready ).to.be.true;
+		} );
+
+		it( 'handles #locale of instances in #_viewCollections', () => {
+			const locale = {
+				t() {}
+			};
+
+			const view = new View( locale );
+			const collection = new ViewCollection();
+
+			expect( view.locale ).to.equal( locale );
+			expect( collection.locale ).to.be.undefined;
+
+			view._viewCollections.add( collection );
+			expect( collection.locale ).to.equal( view.locale );
+		} );
 	} );
 
 	describe( 'createCollection', () => {

@@ -66,6 +66,7 @@ export default class View {
 		// accordingly, initialize (or not) children views as they are added in the future.
 		this._viewCollections.on( 'add', ( evt, collection ) => {
 			collection.bind( 'ready' ).to( this );
+			collection.locale = locale;
 		} );
 
 		// Once the collection is removed from the view, the {@link ui.View#ready} binding
