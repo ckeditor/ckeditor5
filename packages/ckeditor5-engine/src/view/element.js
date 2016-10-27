@@ -17,7 +17,7 @@ import isPlainObject from '../../utils/lib/lodash/isPlainObject.js';
  * class or {@link engine.view.AttributeElement}.
  *
  * Note that for view elements which are not created from model, like elements from mutations, paste or
- * {@link engine.DataController#set data.set} it is not possible to define the type of the element, so
+ * {@link engine.controller.DataController#set data.set} it is not possible to define the type of the element, so
  * these will be instances of the {@link engine.view.Element}.
  *
  * @memberOf engine.view

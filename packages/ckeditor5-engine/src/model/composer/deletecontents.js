@@ -5,6 +5,7 @@
 
 import LivePosition from '../liveposition.js';
 import Position from '../position.js';
+import Element from '../element.js';
 import compareArrays from '../../../utils/comparearrays.js';
 
 /**
@@ -58,5 +59,21 @@ export default function deleteContents( batch, selection, options = {} ) {
 
 	selection.collapse( startPos );
 
+	// 3. Autoparagraphing.
+	// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
+	if ( shouldAutoparagraph( batch.document, startPos ) ) {
+		const paragraph = new Element( 'paragraph' );
+		batch.insert( startPos, paragraph );
+
+		selection.collapse( paragraph );
+	}
+
 	endPos.detach();
+}
+
+function shouldAutoparagraph( doc, position ) {
+	const isTextAllowed = doc.schema.check( { name: '$text', inside: position } );
+	const isParagraphAllowed = doc.schema.check( { name: 'paragraph', inside: position } );
+
+	return !isTextAllowed && isParagraphAllowed;
 }

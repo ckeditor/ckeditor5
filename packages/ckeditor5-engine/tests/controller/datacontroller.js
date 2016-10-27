@@ -6,11 +6,14 @@
 /* bender-tags: view */
 
 import ModelDocument from '/ckeditor5/engine/model/document.js';
-import DataController from '/ckeditor5/engine/datacontroller.js';
+import DataController from '/ckeditor5/engine/controller/datacontroller.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
 import buildViewConverter  from '/ckeditor5/engine/conversion/buildviewconverter.js';
 import buildModelConverter  from '/ckeditor5/engine/conversion/buildmodelconverter.js';
+
+import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
+import ViewText from '/ckeditor5/engine/view/text.js';
 
 import { getData, setData, stringify, parse } from '/ckeditor5/engine/dev-utils/model.js';
 
@@ -36,6 +39,20 @@ describe( 'DataController', () => {
 			const data = new DataController( modelDocument );
 
 			expect( data.processor ).to.be.undefined;
+		} );
+
+		it( 'should add insertContent listener', () => {
+			const batch = modelDocument.batch();
+			const content = new ViewDocumentFragment( [ new ViewText( 'x' ) ] );
+
+			schema.registerItem( 'paragraph', '$block' );
+
+			setData( modelDocument, '<paragraph>a[]b</paragraph>' );
+
+			data.fire( 'insert', { content, selection: modelDocument.selection, batch } );
+
+			expect( getData( modelDocument ) ).to.equal( '<paragraph>ax[]b</paragraph>' );
+			expect( batch.deltas.length ).to.be.above( 0 );
 		} );
 	} );
 
@@ -250,6 +267,24 @@ describe( 'DataController', () => {
 			data.destroy();
 
 			expect( data ).to.respondTo( 'destroy' );
+		} );
+	} );
+
+	describe( 'insert', () => {
+		it( 'should fire the insert event', () => {
+			const spy = sinon.spy();
+			const content = new ViewDocumentFragment( [ new ViewText( 'x' ) ] );
+			const batch = modelDocument.batch();
+
+			data.on( 'insert', spy );
+
+			data.insert( content, modelDocument.selection, batch );
+
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( {
+				batch: batch,
+				selection: modelDocument.selection,
+				content: content
+			} );
 		} );
 	} );
 } );
