@@ -87,6 +87,36 @@ export default class DomConverter {
 		 * @member {WeakMap} engine.view.DomConverter#_viewToDomMapping
 		 */
 		this._viewToDomMapping = new WeakMap();
+
+		/**
+		 * Holds mapping between fake selection containers and corresponding view selections.
+		 *
+		 * @private
+		 * @member {WeakMap} engine.view.DomConverter#_fakeSelectionMapping
+		 */
+		this._fakeSelectionMapping = new WeakMap();
+	}
+
+	/**
+	 * Binds given DOM element that represents fake selection to {@link engine.view.Selection view selection}.
+	 * View selection copy is stored and can be retrieved by {@link engine.view.DomConverter#fakeSelectionToView} method.
+	 *
+	 * @param {HTMLElement} domElement
+	 * @param {engine.view.Selection} viewSelection
+	 */
+	bindFakeSelection( domElement, viewSelection ) {
+		this._fakeSelectionMapping.set( domElement, ViewSelection.createFromSelection( viewSelection ) );
+	}
+
+	/**
+	 * Returns {@link engine.view.Selection view selection} instance corresponding to given DOM element that represents fake
+	 * selection. Returns `undefined` if binding to given DOM element does not exists.
+	 *
+	 * @param {HTMLElement} domElement
+	 * @returns {engine.view.Selection|undefined}
+	 */
+	fakeSelectionToView( domElement ) {
+		return this._fakeSelectionMapping.get( domElement );
 	}
 
 	/**
@@ -358,8 +388,24 @@ export default class DomConverter {
 	 * @returns {engine.view.Selection} View selection.
 	 */
 	domSelectionToView( domSelection ) {
-		const viewSelection = new ViewSelection();
+		// DOM selection might be placed in fake selection container.
+		// If container contains fake selection - return corresponding view selection.
+		if ( domSelection.rangeCount === 1 ) {
+			let container = domSelection.getRangeAt( 0 ).startContainer;
 
+			// The DOM selection might be moved to the text node inside the fake selection container.
+			if ( this.isText( container ) ) {
+				container = container.parentNode;
+			}
+
+			const viewSelection = this.fakeSelectionToView( container );
+
+			if ( viewSelection ) {
+				return viewSelection;
+			}
+		}
+
+		const viewSelection = new ViewSelection();
 		const isBackward = this.isDomSelectionBackward( domSelection );
 
 		for ( let i = 0; i < domSelection.rangeCount; i++ ) {

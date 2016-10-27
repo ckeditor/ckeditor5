@@ -21,7 +21,8 @@ import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 	convertSelectionAttribute,
-	clearAttributes
+	clearAttributes,
+	clearFakeSelection
 } from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
 
 import {
@@ -307,6 +308,17 @@ describe( 'clean-up', () => {
 
 			const viewString = stringifyView( viewRoot, viewSelection, { showType: false } );
 			expect( viewString ).to.equal( '<div>f{}oobar</div>' );
+		} );
+	} );
+
+	describe( 'clearFakeSelection', () => {
+		it( 'should clear fake selection', () => {
+			dispatcher.on( 'selection', clearFakeSelection() );
+			viewSelection.setFake( true );
+
+			dispatcher.convertSelection( modelSelection );
+
+			expect( viewSelection.isFake ).to.be.false;
 		} );
 	} );
 } );

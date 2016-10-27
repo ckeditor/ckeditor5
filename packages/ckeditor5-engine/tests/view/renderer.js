@@ -117,6 +117,7 @@ describe( 'Renderer', () => {
 			renderer.markedChildren.clear();
 
 			selection.removeAllRanges();
+			selection.setFake( false );
 
 			selectionEditable = viewRoot;
 
@@ -987,6 +988,157 @@ describe( 'Renderer', () => {
 			renderer.render();
 
 			expect( domFocusSpy.called ).to.be.false;
+		} );
+
+		describe( 'fake selection', () => {
+			beforeEach( () => {
+				const { view: viewP, selection: newSelection } = parse(
+					'<container:p>[foo bar]</container:p>'
+				);
+				viewRoot.appendChildren( viewP );
+				selection.setTo( newSelection );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+			} );
+
+			it( 'should render fake selection', () => {
+				const label = 'fake selection label';
+				selection.setFake( true, { label } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const container = domRoot.childNodes[ 1 ];
+				expect( domConverter.getCorrespondingViewElement( container ) ).to.be.undefined;
+				expect( container.childNodes.length ).to.equal( 1 );
+				const textNode = container.childNodes[ 0 ];
+				expect( textNode.textContent ).to.equal( label );
+				const domSelection = domRoot.ownerDocument.getSelection();
+				expect( domSelection.anchorNode ).to.equal( textNode );
+				expect( domSelection.anchorOffset ).to.equal( 0 );
+				expect( domSelection.focusNode ).to.equal( textNode );
+				expect( domSelection.focusOffset ).to.equal( label.length );
+			} );
+
+			it( 'should render &nbsp; if no selection label is provided', () => {
+				selection.setFake( true );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const container = domRoot.childNodes[ 1 ];
+				expect( container.childNodes.length ).to.equal( 1 );
+				const textNode = container.childNodes[ 0 ];
+				expect( textNode.textContent ).to.equal( '\u00A0' );
+				const domSelection = domRoot.ownerDocument.getSelection();
+				expect( domSelection.anchorNode ).to.equal( textNode );
+				expect( domSelection.anchorOffset ).to.equal( 0 );
+				expect( domSelection.focusNode ).to.equal( textNode );
+				expect( domSelection.focusOffset ).to.equal( 1 );
+			} );
+
+			it( 'should remove fake selection container when selection is no longer fake', () => {
+				selection.setFake( true );
+				renderer.render();
+
+				selection.setFake( false );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 1 );
+				const domParagraph = domRoot.childNodes[ 0 ];
+				expect( domParagraph.childNodes.length ).to.equal( 1 );
+				const textNode = domParagraph.childNodes[ 0 ];
+				expect( domParagraph.tagName.toLowerCase() ).to.equal( 'p' );
+				const domSelection = domRoot.ownerDocument.getSelection();
+
+				expect( domSelection.anchorNode ).to.equal( textNode );
+				expect( domSelection.anchorOffset ).to.equal( 0 );
+				expect( domSelection.focusNode ).to.equal( textNode );
+				expect( domSelection.focusOffset ).to.equal( 7 );
+			} );
+
+			it( 'should reuse fake selection container #1', () => {
+				const label = 'fake selection label';
+
+				selection.setFake( true, { label } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const container = domRoot.childNodes[ 1 ];
+
+				selection.setFake( true, { label } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const newContainer = domRoot.childNodes[ 1 ];
+				expect( newContainer ).equals( container );
+				expect( newContainer.childNodes.length ).to.equal( 1 );
+				const textNode = newContainer.childNodes[ 0 ];
+				expect( textNode.textContent ).to.equal( label );
+			} );
+
+			it( 'should reuse fake selection container #2', () => {
+				selection.setFake( true, { label: 'label 1' } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const container = domRoot.childNodes[ 1 ];
+
+				selection.setFake( false );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 1 );
+
+				selection.setFake( true, { label: 'label 2' } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const newContainer = domRoot.childNodes[ 1 ];
+				expect( newContainer ).equals( container );
+				expect( newContainer.childNodes.length ).to.equal( 1 );
+				const textNode = newContainer.childNodes[ 0 ];
+				expect( textNode.textContent ).to.equal( 'label 2' );
+			} );
+
+			it( 'should reuse fake selection container #3', () => {
+				selection.setFake( true, { label: 'label 1' } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const container = domRoot.childNodes[ 1 ];
+
+				selection.setFake( true, { label: 'label 2' } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const newContainer = domRoot.childNodes[ 1 ];
+				expect( newContainer ).equals( container );
+				expect( newContainer.childNodes.length ).to.equal( 1 );
+				const textNode = newContainer.childNodes[ 0 ];
+				expect( textNode.textContent ).to.equal( 'label 2' );
+			} );
+
+			it( 'should style fake selection container properly', () => {
+				selection.setFake( true, { label: 'fake selection' } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const container = domRoot.childNodes[ 1 ];
+
+				expect( container.style.position ).to.equal( 'fixed' );
+				expect( container.style.top ).to.equal( '0px' );
+				expect( container.style.left ).to.equal( '-9999px' );
+			} );
+
+			it( 'should bind fake selection container to view selection', () => {
+				selection.setFake( true, { label: 'fake selection' } );
+				renderer.render();
+
+				expect( domRoot.childNodes.length ).to.equal( 2 );
+				const container = domRoot.childNodes[ 1 ];
+
+				const bindSelection = renderer.domConverter.fakeSelectionToView( container );
+				expect( bindSelection ).to.be.defined;
+				expect( bindSelection.isEqual( selection ) ).to.be.true;
+			} );
 		} );
 	} );
 } );

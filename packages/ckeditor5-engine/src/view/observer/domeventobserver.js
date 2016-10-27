@@ -23,8 +23,8 @@ import DomEventData from './domeventdata.js';
  *				return 'click';
  *			}
  *
- *			onDomEvent( domEvt ) {
- *				this.fire( 'click' );
+ *			onDomEvent( domEvent ) {
+ *				this.fire( 'click', domEvent );
  *			}
  *		}
  *
