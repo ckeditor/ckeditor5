@@ -78,6 +78,8 @@ export default class Selection {
 	setFake( value = true, options = {} ) {
 		this._isFake = value;
 		this._fakeSelectionLabel = value ? options.label || '' : '';
+
+		this.fire( 'change' );
 	}
 
 	/**

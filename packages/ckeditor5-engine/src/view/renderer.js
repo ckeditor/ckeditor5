@@ -462,30 +462,22 @@ export default class Renderer {
 		const domDocument = domRoot.ownerDocument;
 
 		// Create fake selection container if one does not exist.
-		if ( this._fakeSelectionContainer === null ) {
+		if ( !this._fakeSelectionContainer ) {
 			this._fakeSelectionContainer = domDocument.createElement( 'div' );
 			this._fakeSelectionContainer.style.position = 'fixed';
 			this._fakeSelectionContainer.style.top = 0;
 			this._fakeSelectionContainer.style.left = '-9999px';
+			this._fakeSelectionContainer.appendChild( domDocument.createTextNode( '\u00A0' ) );
 		}
 
 		// Add fake container if not already added.
-		if ( this._fakeSelectionContainer.parentElement === null ) {
+		if ( !this._fakeSelectionContainer.parentElement ) {
 			domRoot.appendChild( this._fakeSelectionContainer );
 		}
 
 		// Update contents.
 		const content = this.selection.fakeSelectionLabel || '\u00A0';
-		const textNode = this._fakeSelectionContainer.firstChild;
-
-		if ( !textNode || content !== textNode.textContent ) {
-			if ( textNode ) {
-				this._fakeSelectionContainer.removeChild( textNode );
-			}
-
-			const newTextNode = domDocument.createTextNode( content );
-			this._fakeSelectionContainer.appendChild( newTextNode );
-		}
+		this._fakeSelectionContainer.firstChild.data = content;
 
 		// Update selection.
 		const domSelection = domDocument.getSelection();
@@ -552,9 +544,8 @@ export default class Renderer {
 	_removeFakeSelection() {
 		const container = this._fakeSelectionContainer;
 
-		if ( container !== null ) {
+		if ( container ) {
 			container.remove();
-			container.textContent = '';
 		}
 	}
 

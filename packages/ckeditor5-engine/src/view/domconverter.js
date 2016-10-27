@@ -391,7 +391,13 @@ export default class DomConverter {
 		// DOM selection might be placed in fake selection container.
 		// If container contains fake selection - return corresponding view selection.
 		if ( domSelection.rangeCount === 1 ) {
-			const container = domSelection.getRangeAt( 0 ).startContainer;
+			let container = domSelection.getRangeAt( 0 ).startContainer;
+
+			// The DOM selection might be moved to the text node inside the fake selection container.
+			if ( this.isText( container ) ) {
+				container = container.parentNode;
+			}
+
 			const viewSelection = this.fakeSelectionToView( container );
 
 			if ( viewSelection ) {
