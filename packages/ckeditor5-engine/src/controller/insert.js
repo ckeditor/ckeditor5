@@ -277,7 +277,7 @@ class Insertion {
 		if ( mergeRight ) {
 			let position;
 
-			/* istanbul ignore next */
+			/* istanbul ignore if */
 			if ( !this.position.isEqual( mergePosRight ) ) {
 				// Algorithm's correctness check. We should never end up here but it's good to know that we did.
 				// At this point the insertion position should be after the node we'll merge. If it isn't,
