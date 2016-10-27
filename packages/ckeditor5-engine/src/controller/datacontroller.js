@@ -3,35 +3,35 @@
  * For licensing, see LICENSE.md.
  */
 
-import mix from '../utils/mix.js';
-import EmitterMixin from '../utils/emittermixin.js';
+import mix from '../../utils/mix.js';
+import EmitterMixin from '../../utils/emittermixin.js';
 
-import Mapper from './conversion/mapper.js';
+import Mapper from '../conversion/mapper.js';
 
-import ModelConversionDispatcher from './conversion/modelconversiondispatcher.js';
-import { insertText } from './conversion/model-to-view-converters.js';
+import ModelConversionDispatcher from '../conversion/modelconversiondispatcher.js';
+import { insertText } from '../conversion/model-to-view-converters.js';
 
-import ViewConversionDispatcher from './conversion/viewconversiondispatcher.js';
-import { convertText, convertToModelFragment } from './conversion/view-to-model-converters.js';
+import ViewConversionDispatcher from '../conversion/viewconversiondispatcher.js';
+import { convertText, convertToModelFragment } from '../conversion/view-to-model-converters.js';
 
-import ViewDocumentFragment from './view/documentfragment.js';
+import ViewDocumentFragment from '../view/documentfragment.js';
 
-import ModelRange from './model/range.js';
-import ModelPosition from './model/position.js';
+import ModelRange from '../model/range.js';
+import ModelPosition from '../model/position.js';
 
-import insertContent from './datacontroller/insertcontent.js';
+import insert from './insert.js';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
- * and set inside it. Hence, the controller features two methods which allow to {@link engine.DataController#get get}
- * and {@link engine.DataController#set set} data of the {@link engine.DataController#model model}
+ * and set inside it. Hence, the controller features two methods which allow to {@link engine.controller.DataController#get get}
+ * and {@link engine.controller.DataController#set set} data of the {@link engine.controller.DataController#model model}
  * using given:
  *
  * * {@link engine.dataProcessor.DataProcessor data processor},
  * * {@link engine.conversion.ModelConversionDispatcher model to view} and
  * * {@link engine.conversion.ViewConversionDispatcher view to model} converters.
  *
- * @memberOf engine
+ * @memberOf engine.controller
  * @mixes utils.EmitterMixin
  */
 export default class DataController {
@@ -46,7 +46,7 @@ export default class DataController {
 		 * Document model.
 		 *
 		 * @readonly
-		 * @member {engine.model.document} engine.DataController#model
+		 * @member {engine.model.document} engine.controller.DataController#model
 		 */
 		this.model = model;
 
@@ -54,7 +54,7 @@ export default class DataController {
 		 * Data processor used during the conversion.
 		 *
 		 * @readonly
-		 * @member {engine.dataProcessor.DataProcessor} engine.DataController#processor
+		 * @member {engine.dataProcessor.DataProcessor} engine.controller.DataController#processor
 		 */
 		this.processor = dataProcessor;
 
@@ -63,12 +63,12 @@ export default class DataController {
 		 * cleared directly after data are converted. However, the mapper is defined as class property, because
 		 * it needs to be passed to the `ModelConversionDispatcher` as a conversion API.
 		 *
-		 * @member {engine.conversion.Mapper} engine.DataController#_mapper
+		 * @member {engine.conversion.Mapper} engine.controller.DataController#_mapper
 		 */
 		this.mapper = new Mapper();
 
 		/**
-		 * Model to view conversion dispatcher used by the {@link engine.DataController#get get method}.
+		 * Model to view conversion dispatcher used by the {@link engine.controller.DataController#get get method}.
 		 * To attach model to view converter to the data pipeline you need to add lister to this property:
 		 *
 		 *		data.modelToView( 'insert:$element', customInsertConverter );
@@ -78,7 +78,7 @@ export default class DataController {
 		 *		buildModelConverter().for( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
 		 *
 		 * @readonly
-		 * @member {engine.conversion.ModelConversionDispatcher} engine.DataController#modelToView
+		 * @member {engine.conversion.ModelConversionDispatcher} engine.controller.DataController#modelToView
 		 */
 		this.modelToView = new ModelConversionDispatcher( {
 			mapper: this.mapper
@@ -86,7 +86,7 @@ export default class DataController {
 		this.modelToView.on( 'insert:$text', insertText(), { priority: 'lowest' } );
 
 		/**
-		 * View to model conversion dispatcher used by the {@link engine.DataController#set set method}.
+		 * View to model conversion dispatcher used by the {@link engine.controller.DataController#set set method}.
 		 * To attach view to model converter to the data pipeline you need to add lister to this property:
 		 *
 		 *		data.viewToModel( 'element', customElementConverter );
@@ -96,7 +96,7 @@ export default class DataController {
 		 *		buildViewConverter().for( data.viewToModel ).fromElement( 'b' ).toAttribute( 'bold', 'true' );
 		 *
 		 * @readonly
-		 * @member {engine.conversion.ViewConversionDispatcher} engine.DataController#viewToModel
+		 * @member {engine.conversion.ViewConversionDispatcher} engine.controller.DataController#viewToModel
 		 */
 		this.viewToModel = new ViewConversionDispatcher( {
 			schema: model.schema
@@ -111,12 +111,12 @@ export default class DataController {
 		this.viewToModel.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		this.viewToModel.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
-		this.on( 'insertContent', ( evt, data ) => insertContent( this, data.batch, data.selection, data.content ) );
+		this.on( 'insert', ( evt, data ) => insert( this, data.batch, data.selection, data.content ) );
 	}
 
 	/**
-	 * Returns model's data converted by the {@link engine.DataController#modelToView model to view converters} and
-	 * formatted by the {@link engine.DataController#processor data processor}.
+	 * Returns model's data converted by the {@link engine.controller.DataController#modelToView model to view converters} and
+	 * formatted by the {@link engine.controller.DataController#processor data processor}.
 	 *
 	 * @param {String} [rootName='main'] Root name.
 	 * @returns {String} Output data.
@@ -128,8 +128,8 @@ export default class DataController {
 
 	/**
 	 * Returns the content of the given {@link engine.model.Element model's element} converted by the
-	 * {@link engine.DataController#modelToView model to view converters} and formatted by the
-	 * {@link engine.DataController#processor data processor}.
+	 * {@link engine.controller.DataController#modelToView model to view converters} and formatted by the
+	 * {@link engine.controller.DataController#processor data processor}.
 	 *
 	 * @param {engine.model.Element} modelElement Element which content will be stringified.
 	 * @returns {String} Output data.
@@ -144,7 +144,7 @@ export default class DataController {
 
 	/**
 	 * Returns the content of the given {@link engine.model.Element model's element} converted by the
-	 * {@link engine.DataController#modelToView model to view converters} to the
+	 * {@link engine.controller.DataController#modelToView model to view converters} to the
 	 * {@link engine.view.DocumentFragment view DocumentFragment}.
 	 *
 	 * @param {engine.model.Element} modelElement Element which content will be stringified.
@@ -164,11 +164,11 @@ export default class DataController {
 	}
 
 	/**
-	 * Sets input data parsed by the {@link engine.DataController#processor data processor} and
-	 * converted by the {@link engine.DataController#viewToModel view to model converters}.
+	 * Sets input data parsed by the {@link engine.controller.DataController#processor data processor} and
+	 * converted by the {@link engine.controller.DataController#viewToModel view to model converters}.
 	 *
 	 * This method also creates a batch with all the changes applied. If all you need is to parse data use
-	 * the {@link engine.dataController#parse} method.
+	 * the {@link engine.controller.DataController#parse} method.
 	 *
 	 * @param {String} data Input data.
 	 * @param {String} [rootName='main'] Root name.
@@ -191,10 +191,10 @@ export default class DataController {
 	}
 
 	/**
-	 * Returns data parsed by the {@link engine.DataController#processor data processor} and then
-	 * converted by the {@link engine.DataController#viewToModel view to model converters}.
+	 * Returns data parsed by the {@link engine.controller.DataController#processor data processor} and then
+	 * converted by the {@link engine.controller.DataController#viewToModel view to model converters}.
 	 *
-	 * @see engine.DataController#set
+	 * @see engine.controller.DataController#set
 	 * @param {String} data Data to parse.
 	 * @param {String} [context='$root'] Base context in which view will be converted to the model. See:
 	 * {@link engine.conversion.ViewConversionDispatcher#convert}.
@@ -214,26 +214,26 @@ export default class DataController {
 	destroy() {}
 
 	/**
-	 * See {@link engine.model.composer.insertContent}.
+	 * See {@link engine.controller.insert}.
 	 *
-	 * @fires engine.DataController#insertContent
+	 * @fires engine.controller.DataController#insert
 	 * @param {engine.model.Batch} batch Batch to which deltas will be added.
 	 * @param {engine.model.Selection} selection Selection into which the content should be inserted.
 	 * @param {engine.view.DocumentFragment} content The content to insert.
 	 */
-	insertContent( batch, selection, content ) {
-		this.fire( 'insertContent', { batch, selection, content } );
+	insert( batch, selection, content ) {
+		this.fire( 'insert', { batch, selection, content } );
 	}
 }
 
 mix( DataController, EmitterMixin );
 
 /**
- * Event fired when {@link engine.DataController#insertContent} method is called.
- * The {@link engine.dataController.insertContent default action of the composer} is implemented as a
+ * Event fired when {@link engine.controller.DataController#insert} method is called.
+ * The {@link engine.controller.dataController.insert default action of the composer} is implemented as a
  * listener to that event so it can be fully customized by the features.
  *
- * @event engine.DataController#insertContent
+ * @event engine.controller.DataController#insert
  * @param {Object} data
  * @param {engine.model.Batch} data.batch Batch to which deltas will be added.
  * @param {engine.model.Selection} data.selection Selection into which the content should be inserted.

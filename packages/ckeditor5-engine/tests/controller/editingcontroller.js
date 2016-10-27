@@ -6,7 +6,7 @@
 /* globals setTimeout, Range, document */
 /* bender-tags: view */
 
-import EditingController from '/ckeditor5/engine/editingcontroller.js';
+import EditingController from '/ckeditor5/engine/controller/editingcontroller.js';
 
 import ViewDocument from '/ckeditor5/engine/view/document.js';
 

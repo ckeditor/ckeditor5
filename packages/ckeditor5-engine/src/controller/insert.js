@@ -16,19 +16,19 @@ import log from '../../utils/log.js';
  * Inserts content into the editor (specified selection) as one would expect the paste
  * functionality to work.
  *
- * **Note:** Use {@link engine.DataController#insertContent} instead of this function.
- * This function is only exposed to be reusable in algorithms which change the {@link engine.DataController#insertContent}
+ * **Note:** Use {@link engine.controller.DataController#insert} instead of this function.
+ * This function is only exposed to be reusable in algorithms which change the {@link engine.controller.DataController#insert}
  * method's behavior.
  *
- * @method engine.dataController.insertContent
- * @param {engine.DataController} dataController The data controller in context of which the insertion
+ * @method engine.controller.insert
+ * @param {engine.controller.DataController} dataController The data controller in context of which the insertion
  * should be performed.
  * @param {engine.model.Batch} batch Batch to which deltas will be added.
  * @param {engine.model.Selection} selection Selection into which the content should be inserted.
  * The selection should be collapsed.
  * @param {engine.view.DocumentFragment} content The content to insert.
  */
-export default function insertContent( dataController, batch, selection, content ) {
+export default function insert( dataController, batch, selection, content ) {
 	if ( !selection.isCollapsed ) {
 		dataController.model.composer.deleteContents( batch, selection, {
 			merge: true
@@ -61,7 +61,7 @@ export default function insertContent( dataController, batch, selection, content
  * Utility class for performing content insertion.
  *
  * @private
- * @memberOf engine.dataController.insertContent
+ * @memberOf engine.dataController.insert
  */
 class Insertion {
 	constructor( dataController, batch, position ) {

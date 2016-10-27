@@ -6,7 +6,7 @@
 /* bender-tags: view */
 
 import ModelDocument from '/ckeditor5/engine/model/document.js';
-import DataController from '/ckeditor5/engine/datacontroller.js';
+import DataController from '/ckeditor5/engine/controller/datacontroller.js';
 import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
 import buildViewConverter  from '/ckeditor5/engine/conversion/buildviewconverter.js';

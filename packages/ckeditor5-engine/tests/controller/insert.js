@@ -6,8 +6,8 @@
 /* bender-tags: model */
 
 import Document from '/ckeditor5/engine/model/document.js';
-import DataController from '/ckeditor5/engine/datacontroller.js';
-import insertContent from '/ckeditor5/engine/datacontroller/insertcontent.js';
+import DataController from '/ckeditor5/engine/controller/datacontroller.js';
+import insert from '/ckeditor5/engine/datacontroller/insert.js';
 
 import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
@@ -18,7 +18,7 @@ import { setData, getData, parse } from '/ckeditor5/engine/dev-utils/model.js';
 describe( 'DataController', () => {
 	let doc, dataController;
 
-	describe( 'insertContent', () => {
+	describe( 'insert', () => {
 		describe( 'in simple scenarios', () => {
 			beforeEach( () => {
 				doc = new Document();
@@ -33,7 +33,7 @@ describe( 'DataController', () => {
 
 				schema.allow( { name: '$text', inside: '$root' } );
 				schema.allow( { name: 'image', inside: '$root' } );
-				// Otherwise it won't be passed to the temporary model fragment used inside insertContent().
+				// Otherwise it won't be passed to the temporary model fragment used inside insert().
 				schema.allow( { name: 'disallowedElement', inside: '$clipboardHolder' } );
 
 				schema.objects.add( 'image' );
@@ -598,7 +598,7 @@ describe( 'DataController', () => {
 				return content;
 			};
 
-			insertContent( dataController, doc.batch(), doc.selection, new ViewDocumentFragment() );
+			insert( dataController, doc.batch(), doc.selection, new ViewDocumentFragment() );
 
 			expect( getData( doc ) ).to.equal( expectedData );
 		} );
