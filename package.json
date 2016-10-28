@@ -10,6 +10,7 @@
   "dependencies": {
     "ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat",
     "ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles",
+    "ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard",
     "ckeditor5-core": "ckeditor/ckeditor5-core",
     "ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic",
     "ckeditor5-engine": "ckeditor/ckeditor5-engine",

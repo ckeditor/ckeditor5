@@ -11,8 +11,10 @@ module.exports = {
 
 	// List of features.
 	features: [
+		'autoformat',
 		'basic-styles/bold',
 		'basic-styles/italic',
+		'clipboard',
 		'enter',
 		'heading',
 		'link',
