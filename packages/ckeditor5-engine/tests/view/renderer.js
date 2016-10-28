@@ -637,6 +637,7 @@ describe( 'Renderer', () => {
 			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
 
 			renderer.markToSync( 'children', viewP );
+			renderer.markToSync( 'children', viewP2 );
 			renderer.render();
 
 			// Step 3: Check whether in the first paragrpah there's a <br> filler and that
@@ -771,6 +772,8 @@ describe( 'Renderer', () => {
 		it( 'should handle typing in empty attribute, do nothing if changes are already applied', () => {
 			const domSelection = document.getSelection();
 
+			// 1. Render <p><b>FILLER{}</b>foo</p>.
+
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
 
@@ -779,6 +782,8 @@ describe( 'Renderer', () => {
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
+
+			// 2. Check the DOM.
 
 			const domP = domRoot.childNodes[ 0 ];
 
@@ -797,7 +802,8 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
-			// Add text node to both DOM and View <p><b>x</b>foo</p>
+			// 3. Add text node to both the DOM and the view: <p><b>FILLERx</b>foo</p>.
+
 			domB.childNodes[ 0 ].data += 'x';
 
 			domSelection.removeAllRanges();
@@ -818,6 +824,8 @@ describe( 'Renderer', () => {
 		it( 'should handle typing in empty attribute as a children change, render if needed', () => {
 			const domSelection = document.getSelection();
 
+			// 1. Render <p><b>FILLER{}</b>foo</p>.
+
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
 
@@ -826,6 +834,8 @@ describe( 'Renderer', () => {
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
+
+			// 2. Check the DOM.
 
 			const domP = domRoot.childNodes[ 0 ];
 
@@ -844,7 +854,8 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
-			// Add text node only to View <p><b>x</b>foo</p>
+			// 3. Add text node only to the view: <p><b>x{}</b>foo</p>.
+
 			const viewText = new ViewText( 'x' );
 			viewB.appendChildren( viewText );
 			selection.removeAllRanges();
@@ -865,6 +876,8 @@ describe( 'Renderer', () => {
 		it( 'should handle typing in empty attribute as a text change, render if needed', () => {
 			const domSelection = document.getSelection();
 
+			// 1. Render <p><b>FILLER{}</b>foo</p>.
+
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
 
@@ -873,6 +886,8 @@ describe( 'Renderer', () => {
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
+
+			// 2. Check the DOM.
 
 			const domP = domRoot.childNodes[ 0 ];
 
@@ -891,7 +906,8 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
-			// Add text node only to View <p><b>x</b>foo</p>
+			// 3. Add text node only to the view: <p><b>x{}</b>foo</p>.
+
 			const viewText = new ViewText( 'x' );
 			viewB.appendChildren( viewText );
 			selection.removeAllRanges();
@@ -899,6 +915,8 @@ describe( 'Renderer', () => {
 
 			renderer.markToSync( 'text', viewText );
 			renderer.render();
+
+			// 4. Check the DOM.
 
 			expect( domB.childNodes.length ).to.equal( 1 );
 			expect( domB.childNodes[ 0 ].data ).to.equal( INLINE_FILLER + 'x' );
