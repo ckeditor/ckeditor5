@@ -289,7 +289,7 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Updates this selection attributes according to it's ranges and the {@link engine.model.Document model document}.
+	 * Updates this selection attributes according to its ranges and the {@link engine.model.Document model document}.
 	 *
 	 * @protected
 	 * @param {Boolean} clearAll

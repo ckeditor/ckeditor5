@@ -115,14 +115,14 @@ describe( 'Delete utils', () => {
 
 				deleteContents( doc.batch(), doc.selection );
 
-				expect( getData( doc ) ).to.equal( '<p>x</p><p>[]</p><p>y</p>' );
+				expect( getData( doc ) ).to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>y</paragraph>' );
 				expect( doc.selection.getAttribute( 'bold' ) ).to.undefined;
 			} );
 
 			it( 'leaves selection attributes when text contains them', () => {
 				setData(
 					doc,
-					'<paragraph>x</paragraph><paragraph>[<$text bold="true">foo</$text>]</paragraph><paragraph>y</paragraph>',
+					'<paragraph>x<$text bold="true">a[foo]b</$text>y</paragraph>',
 					{
 						selectionAttributes: {
 							bold: true
