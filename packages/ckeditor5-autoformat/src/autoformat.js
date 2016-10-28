@@ -91,7 +91,7 @@ export default class Autoformat extends Feature {
 	 */
 	_addInlineAutoformats() {
 		// Bold text between `**`, e.g. `**text to bold**`.
-		new InlineAutoformatEngine( this.editor, /(\*\*)(.+?)(\*\*)/g, 'bold' );
+		new InlineAutoformatEngine( this.editor, /(\*\*)(.+?)(\*\*)$/g, 'bold' );
 
 		// Italicize text between `*`, e.g. `*text to italicize*`.
 		// Slightly more complicated because of the clashing with the Bold autoformat.

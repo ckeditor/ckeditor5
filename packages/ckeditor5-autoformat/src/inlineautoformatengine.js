@@ -4,7 +4,6 @@
  */
 
 import Range from '../engine/model/range.js';
-import TreeWalker from '../engine/model/treewalker.js';
 
 /**
  * A paragraph feature for editor.
@@ -107,8 +106,8 @@ export default class InlineAutoformatEngine {
 		} );
 
 		// A format callback run on matched text.
-		formatCallback = formatCallback || ( ( editor, range, batch ) => {
-			editor.execute( command, { batch: batch } );
+		formatCallback = formatCallback || ( ( editor, options ) => {
+			editor.execute( command, options );
 		} );
 
 		editor.document.on( 'change', ( evt, type ) => {
@@ -116,38 +115,43 @@ export default class InlineAutoformatEngine {
 				return;
 			}
 
-			const batch = editor.document.batch();
 			const selection = this.editor.document.selection;
-			const block = selection.focus.parent;
-			const text = getText( block );
 
-			if ( block.name !== 'paragraph' || !text ) {
+			if ( !selection.isCollapsed || !selection.focus || !selection.focus.textNode ) {
 				return;
 			}
 
+			const textNode = selection.focus.textNode;
+			const text = textNode.data.slice( 0, selection.focus.offset + 1 );
+			const block = textNode.parent;
+
 			const ranges = testCallback( text );
+			const rangesToFormat = [];
 
 			// Apply format before deleting text.
 			ranges.format.forEach( ( range ) => {
 				if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
 					return;
 				}
-
-				const rangeToFormat = Range.createFromParentsAndOffsets(
+				rangesToFormat.push( Range.createFromParentsAndOffsets(
 					block, range[ 0 ],
 					block, range[ 1 ]
-				);
+				) );
+			} );
 
-				editor.document.enqueueChanges( () => {
-					selection.setRanges( [ rangeToFormat ] );
-				} );
+			if ( rangesToFormat.length === 0 ) {
+				return;
+			}
 
-				// No `enqueueChanges()` here. The formatCallback executes command that has its own enqueueChanges block.
-				formatCallback( this.editor, rangeToFormat, batch );
+			const batch = editor.document.batch();
+			editor.document.enqueueChanges( () => {
+				selection.setRanges( rangesToFormat );
+			} );
 
-				editor.document.enqueueChanges( () => {
-					selection.collapseToEnd();
-				} );
+			formatCallback( this.editor, { batch } );
+
+			editor.document.enqueueChanges( () => {
+				selection.collapseToEnd();
 			} );
 
 			// Reverse order to not mix the offsets while removing.
@@ -167,22 +171,4 @@ export default class InlineAutoformatEngine {
 			} );
 		} );
 	}
-}
-
-// Gets whole text from provided element.
-//
-// @private
-// @param {engine.model.Element} element
-// @returns {String}
-function getText( element ) {
-	let text = '';
-	const walker = new TreeWalker( {
-		boundaries: Range.createIn( element )
-	} );
-
-	for ( let value of walker ) {
-		text += value.type == 'text' ? value.item.data : '';
-	}
-
-	return text;
 }
