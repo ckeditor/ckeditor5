@@ -19,7 +19,7 @@ export default class ClipboardObserver extends DomEventObserver {
 	constructor( doc ) {
 		super( doc );
 
-		this.domEventType = [ 'paste' ];
+		this.domEventType = 'paste';
 	}
 
 	onDomEvent( domEvent ) {

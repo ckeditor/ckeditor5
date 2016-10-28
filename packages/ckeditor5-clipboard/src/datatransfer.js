@@ -25,6 +25,7 @@ export default class DataTransfer {
 	 *		dataTransfer.getData( 'text/plain' );
 	 *
 	 * @param {String} type The mime type. E.g. `text/html` or `text/plain`.
+	 * @returns {String}
 	 */
 	getData( type ) {
 		return this._native.getData( type );

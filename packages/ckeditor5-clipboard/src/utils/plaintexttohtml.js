@@ -17,12 +17,12 @@ export default function plainTextToHtml( text ) {
 		.replace( />/g, '&gt;' )
 		// Creates paragraphs for double line breaks and change single line breaks to spaces.
 		// In the future single line breaks may be converted into <br>s.
-		.replace( /\n\n/, '</p><p>' )
-		.replace( /\n/, ' ' )
+		.replace( /\n\n/g, '</p><p>' )
+		.replace( /\n/g, ' ' )
 		// Preserve trailing spaces (only the first and last one – the rest is handled below).
 		.replace( /^\s/, '&nbsp;' )
 		.replace( /\s$/, '&nbsp;' )
-		// Presever other subsequent spaces now.
+		// Preserve other subsequent spaces now.
 		.replace( /\s\s/g, ' &nbsp;' );
 
 	if ( text.indexOf( '</p><p>' ) > -1 ) {

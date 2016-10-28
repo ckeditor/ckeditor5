@@ -95,9 +95,9 @@ export default class Clipboard extends Feature {
 
 			content = this._htmlDataProcessor.toView( content );
 
-			editingView.fire( 'clipboardInput', { dataTransfer, content } );
-
 			data.preventDefault();
+
+			editingView.fire( 'clipboardInput', { dataTransfer, content } );
 		}, { priority: 'low' } );
 
 		this.listenTo( editingView, 'clipboardInput', ( evt, data ) => {
@@ -127,7 +127,6 @@ export default class Clipboard extends Feature {
  * The value of the {@link engine.view.Document#clipboardInput} event.
  *
  * @class engine.view.observer.ClipboardInputEventData
- * @extends engine.view.observer.DomEventData
  */
 
 /**
