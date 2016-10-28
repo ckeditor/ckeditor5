@@ -7,6 +7,8 @@
 /* bender-tags: view, domconverter, browser-only */
 
 import ViewElement from '/ckeditor5/engine/view/element.js';
+import ViewSelection from '/ckeditor5/engine/view/selection.js';
+import ViewRange from '/ckeditor5/engine/view/range.js';
 import DomConverter from '/ckeditor5/engine/view/domconverter.js';
 import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
 import { INLINE_FILLER } from '/ckeditor5/engine/view/filler.js';
@@ -332,6 +334,36 @@ describe( 'DomConverter', () => {
 			const viewText = converter.domToView( domText );
 
 			expect( converter.getCorrespondingDomText( viewText ) ).to.be.null;
+		} );
+	} );
+
+	describe( 'bindFakeSelection', () => {
+		let domEl, selection, viewElement;
+
+		beforeEach( () => {
+			viewElement = new ViewElement();
+			domEl = document.createElement( 'div' );
+			selection = new ViewSelection();
+			selection.addRange( ViewRange.createIn( viewElement ) );
+			converter.bindFakeSelection( domEl, selection );
+		} );
+
+		it( 'should bind DOM element to selection', () => {
+			const bindSelection = converter.fakeSelectionToView( domEl );
+			expect( bindSelection ).to.be.defined;
+			expect( bindSelection.isEqual( selection ) ).to.be.true;
+		} );
+
+		it( 'should keep a copy of selection', () => {
+			const selectionCopy = ViewSelection.createFromSelection( selection );
+
+			selection.addRange( ViewRange.createIn( new ViewElement() ), true );
+			const bindSelection = converter.fakeSelectionToView( domEl );
+
+			expect( bindSelection ).to.be.defined;
+			expect( bindSelection ).to.not.equal( selection );
+			expect( bindSelection.isEqual( selection ) ).to.be.false;
+			expect( bindSelection.isEqual( selectionCopy ) ).to.be.true;
 		} );
 	} );
 } );

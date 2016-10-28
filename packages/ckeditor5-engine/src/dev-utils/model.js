@@ -260,6 +260,8 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  * @param {Object} options Additional configuration.
  * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to the selection.
  * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward.
+ * @param {engine.model.SchemaPath} [options.context=[ '$root' ]] The conversion context.
+ * If not provided default `[ '$root' ]` will be used.
  * @returns {engine.model.Element|engine.model.Text|engine.model.DocumentFragment|Object} Returns parsed model node or
  * object with two fields `model` and `selection` when selection ranges were included in data to parse.
  */
@@ -294,7 +296,7 @@ export function parse( data, schema, options = {} ) {
 	viewToModel.on( 'text', convertToModelText() );
 
 	// Convert view to model.
-	let model = viewToModel.convert( viewDocumentFragment.root, { context: [ '$root' ] } );
+	let model = viewToModel.convert( viewDocumentFragment.root, { context: options.context || [ '$root' ] } );
 
 	// If root DocumentFragment contains only one element - return that element.
 	if ( model instanceof ModelDocumentFragment && model.childCount == 1 ) {

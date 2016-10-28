@@ -209,3 +209,11 @@ export function clearAttributes() {
 		conversionApi.viewSelection.removeAllRanges();
 	};
 }
+
+/**
+ * Function factory, creates a converter that clears fake selection marking after the previous
+ * {@link engine.model.Selection model selection} conversion.
+ */
+export function clearFakeSelection() {
+	return ( evt, data, consumable, conversionApi ) => conversionApi.viewSelection.setFake( false );
+}

@@ -13,6 +13,7 @@ import MutationObserver from './observer/mutationobserver.js';
 import SelectionObserver from './observer/selectionobserver.js';
 import FocusObserver from './observer/focusobserver.js';
 import KeyObserver from './observer/keyobserver.js';
+import FakeSelectionObserver from './observer/fakeselectionobserver.js';
 import mix from '../../utils/mix.js';
 import ObservableMixin from '../../utils/observablemixin.js';
 
@@ -30,7 +31,8 @@ import ObservableMixin from '../../utils/observablemixin.js';
  * * {@link view.observer.MutationObserver},
  * * {@link view.observer.SelectionObserver},
  * * {@link view.observer.FocusObserver},
- * * {@link view.observer.KeyObserver}.
+ * * {@link view.observer.KeyObserver},
+ * * {@link view.observer.FakeSelectionObserver}.
  *
  * @memberOf engine.view
  * @mixes utils.EmitterMixin
@@ -107,6 +109,7 @@ export default class Document {
 		this.addObserver( SelectionObserver );
 		this.addObserver( FocusObserver );
 		this.addObserver( KeyObserver );
+		this.addObserver( FakeSelectionObserver );
 
 		injectQuirksHandling( this );
 

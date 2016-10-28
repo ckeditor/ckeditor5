@@ -45,6 +45,62 @@ export default class Selection {
 		 * @member {Boolean} engine.view.Selection#_lastRangeBackward
 		 */
 		this._lastRangeBackward = false;
+
+		/**
+		 * Specifies whether selection instance is fake.
+		 *
+		 * @private
+		 * @member {Boolean} engine.view.Selection#_isFake
+		 */
+		this._isFake = false;
+
+		/**
+		 * Fake selection's label.
+		 *
+		 * @private
+		 * @member {String} engine.view.Selection#_fakeSelectionLabel
+		 */
+		this._fakeSelectionLabel = '';
+	}
+
+	/**
+	 * Sets this selection instance to be marked as `fake`. A fake selection does not render as browser native selection
+	 * over selected elements and is hidden to the user. This way, no native selection UI artifacts are displayed to
+	 * the user and selection over elements can be represented in other way, for example by applying proper CSS class.
+	 *
+	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
+	 * properly handled by screen readers).
+	 *
+	 * @fires engine.view.Selection#change
+	 * @param {Boolean} [value=true] If set to true selection will be marked as `fake`.
+	 * @param {Object} [options] Additional options.
+	 * @param {String} [options.label=''] Fake selection label.
+	 */
+	setFake( value = true, options = {} ) {
+		this._isFake = value;
+		this._fakeSelectionLabel = value ? options.label || '' : '';
+
+		this.fire( 'change' );
+	}
+
+	/**
+	 * Returns true if selection instance is marked as `fake`.
+	 *
+	 * @see {@link engine.view.Selection#setFake}
+	 * @returns {Boolean}
+	 */
+	get isFake() {
+		return this._isFake;
+	}
+
+	/**
+	 * Returns fake selection label.
+	 *
+	 * @see {@link engine.view.Selection#setFake}
+	 * @returns {String}
+	 */
+	get fakeSelectionLabel() {
+		return this._fakeSelectionLabel;
 	}
 
 	/**
@@ -239,6 +295,14 @@ export default class Selection {
 			return false;
 		}
 
+		if ( this.isFake != otherSelection.isFake ) {
+			return false;
+		}
+
+		if ( this.isFake && this.fakeSelectionLabel != otherSelection.fakeSelectionLabel ) {
+			return false;
+		}
+
 		for ( let i = 0; i < this.rangeCount; i++ ) {
 			if ( !this._ranges[ i ].isEqual( otherSelection._ranges[ i ] ) ) {
 				return false;
@@ -292,6 +356,9 @@ export default class Selection {
 	 * @param {engine.view.Selection} otherSelection
 	 */
 	setTo( otherSelection ) {
+		this._isFake = otherSelection._isFake;
+		this._fakeSelectionLabel = otherSelection._fakeSelectionLabel;
+
 		this.setRanges( otherSelection.getRanges(), otherSelection.isBackward );
 	}
 

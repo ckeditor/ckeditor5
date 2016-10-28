@@ -3,25 +3,26 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewDocument from './view/document.js';
-import Mapper from './conversion/mapper.js';
-import ModelConversionDispatcher from './conversion/modelconversiondispatcher.js';
-import { insertText, remove, move, rename } from './conversion/model-to-view-converters.js';
-import { convertSelectionChange } from './conversion/view-selection-to-model-converters.js';
+import ViewDocument from '../view/document.js';
+import Mapper from '../conversion/mapper.js';
+import ModelConversionDispatcher from '../conversion/modelconversiondispatcher.js';
+import { insertText, remove, move, rename } from '../conversion/model-to-view-converters.js';
+import { convertSelectionChange } from '../conversion/view-selection-to-model-converters.js';
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
-	clearAttributes
-} from './conversion/model-selection-to-view-converters.js';
+	clearAttributes,
+	clearFakeSelection
+} from '../conversion/model-selection-to-view-converters.js';
 
-import EmitterMixin from '../utils/emittermixin.js';
+import EmitterMixin from '../../utils/emittermixin.js';
 
 /**
- * Controller for the editing pipeline. The editing pipeline controls {@link engine.EditingController#model model} rendering,
- * including selection handling. It also creates {@link engine.EditingController#view view document} which build a
+ * Controller for the editing pipeline. The editing pipeline controls {@link engine.controller.EditingController#model model} rendering,
+ * including selection handling. It also creates {@link engine.controller.EditingController#view view document} which build a
  * browser-independent virtualization over the DOM elements. Editing controller also attach default converters.
  *
- * @memberOf engine
+ * @memberOf engine.controller
  */
 export default class EditingController {
 	/**
@@ -34,7 +35,7 @@ export default class EditingController {
 		 * Document model.
 		 *
 		 * @readonly
-		 * @member {engine.model.document} engine.EditingController#model
+		 * @member {engine.model.document} engine.controller.EditingController#model
 		 */
 		this.model = model;
 
@@ -42,7 +43,7 @@ export default class EditingController {
 		 * View document.
 		 *
 		 * @readonly
-		 * @member {engine.view.document} engine.EditingController#view
+		 * @member {engine.view.document} engine.controller.EditingController#view
 		 */
 		this.view = new ViewDocument();
 
@@ -50,13 +51,13 @@ export default class EditingController {
 		 * Mapper which describes model-view binding.
 		 *
 		 * @readonly
-		 * @member {engine.conversion.Mapper} engine.EditingController#mapper
+		 * @member {engine.conversion.Mapper} engine.controller.EditingController#mapper
 		 */
 		this.mapper = new Mapper();
 
 		/**
 		 * Model to view conversion dispatcher, which converts changes from the model to
-		 * {@link engine.EditingController#view editing view}.
+		 * {@link engine.controller.EditingController#view editing view}.
 		 *
 		 * To attach model to view converter to the editing pipeline you need to add lister to this property:
 		 *
@@ -67,7 +68,7 @@ export default class EditingController {
 		 *		buildModelConverter().for( editing.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
 		 *
 		 * @readonly
-		 * @member {engine.conversion.ModelConversionDispatcher} engine.EditingController#modelToView
+		 * @member {engine.conversion.ModelConversionDispatcher} engine.controller.EditingController#modelToView
 		 */
 		this.modelToView = new ModelConversionDispatcher( {
 			mapper: this.mapper,
@@ -76,10 +77,10 @@ export default class EditingController {
 
 		/**
 		 * Property keeping all listenters attached by controller on other objects, so it can
-		 * stop listening on {@link engine.EditingController#destroy}.
+		 * stop listening on {@link engine.controller.EditingController#destroy}.
 		 *
 		 * @private
-		 * @member {utils.EmitterMixin} engine.EditingController#_listenter
+		 * @member {utils.EmitterMixin} engine.controller.EditingController#_listenter
 		 */
 		this._listenter = Object.create( EmitterMixin );
 
@@ -105,6 +106,7 @@ export default class EditingController {
 
 		// Attach default selection converters.
 		this.modelToView.on( 'selection', clearAttributes(), { priority: 'low' } );
+		this.modelToView.on( 'selection', clearFakeSelection(), { priority: 'low' } );
 		this.modelToView.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.modelToView.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 	}
