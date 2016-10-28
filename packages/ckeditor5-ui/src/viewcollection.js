@@ -149,12 +149,12 @@ export default class ViewCollection extends Collection {
 				}
 
 				// Synchronize views as new items are added to the collection.
-				collection.on( 'add', ( evt, item, index ) => {
+				this.listenTo( collection, 'add', ( evt, item, index ) => {
 					this.add( createView( item ), index );
 				} );
 
 				// Synchronize views as items are removed from the collection.
-				collection.on( 'remove', ( evt, item ) => {
+				this.listenTo( collection, 'remove', ( evt, item ) => {
 					this.remove( this._boundItemsToViewsMap.get( item ) );
 
 					this._boundItemsToViewsMap.delete( item );
