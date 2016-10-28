@@ -4,6 +4,7 @@
  */
 
 import Range from '../engine/model/range.js';
+import TreeWalker from '../engine/model/treewalker.js';
 
 /**
  * A paragraph feature for editor.
@@ -47,25 +48,25 @@ export default class InlineAutoformatEngine {
 
 		let pattern;
 		let command;
-		let testClb;
-		let formatClb;
+		let testCallback;
+		let formatCallback;
 
 		if ( typeof testCallbackOrPattern == 'string' ) {
 			pattern = new RegExp( testCallbackOrPattern, 'g' );
 		} else if ( testCallbackOrPattern instanceof RegExp ) {
 			pattern = testCallbackOrPattern;
 		} else {
-			testClb = testCallbackOrPattern;
+			testCallback = testCallbackOrPattern;
 		}
 
 		if ( typeof formatCallbackOrCommand == 'string' ) {
 			command = formatCallbackOrCommand;
 		} else {
-			formatClb = formatCallbackOrCommand;
+			formatCallback = formatCallbackOrCommand;
 		}
 
 		// A test callback run on changed text.
-		testClb = testClb || ( ( text ) => {
+		testCallback = testCallback || ( ( text ) => {
 			let result;
 			let remove = [];
 			let format = [];
@@ -106,7 +107,7 @@ export default class InlineAutoformatEngine {
 		} );
 
 		// A format callback run on matched text.
-		formatClb = formatClb || ( ( editor, range, batch ) => {
+		formatCallback = formatCallback || ( ( editor, range, batch ) => {
 			editor.execute( command, { batch: batch } );
 		} );
 
@@ -124,7 +125,7 @@ export default class InlineAutoformatEngine {
 				return;
 			}
 
-			const ranges = testClb( text );
+			const ranges = testCallback( text );
 
 			// Apply format before deleting text.
 			ranges.format.forEach( ( range ) => {
@@ -141,8 +142,8 @@ export default class InlineAutoformatEngine {
 					selection.setRanges( [ rangeToFormat ] );
 				} );
 
-				// No `enqueueChanges()` here. The formatClb executes command that has its own enqueueChanges block.
-				formatClb( this.editor, rangeToFormat, batch );
+				// No `enqueueChanges()` here. The formatCallback executes command that has its own enqueueChanges block.
+				formatCallback( this.editor, rangeToFormat, batch );
 
 				editor.document.enqueueChanges( () => {
 					selection.collapseToEnd();
@@ -168,15 +169,19 @@ export default class InlineAutoformatEngine {
 	}
 }
 
+// Gets whole text from provided element.
+//
+// @private
+// @param {engine.model.Element} element
+// @returns {String}
 function getText( element ) {
 	let text = '';
+	const walker = new TreeWalker( {
+		boundaries: Range.createIn( element )
+	} );
 
-	for ( let child of element.getChildren() ) {
-		if ( child.data ) {
-			text += child.data;
-		} else if ( child.name ) {
-			text += getText( child );
-		}
+	for ( let value of walker ) {
+		text += value.type == 'text' ? value.item.data : '';
 	}
 
 	return text;
