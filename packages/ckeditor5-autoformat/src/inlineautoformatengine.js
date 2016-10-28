@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import Range from '../engine/model/range.js';
+import Range from '../engine/model/liverange.js';
+import getSchemaValidRanges from '../core/command/helpers/getschemavalidranges.js';
 
 /**
  * A paragraph feature for editor.
@@ -13,13 +14,12 @@ import Range from '../engine/model/range.js';
  * @extends ckeditor5.Feature
  */
 export default class InlineAutoformatEngine {
-
 	/**
 	 * Assigns to `editor` to watch for pattern (either by executing that pattern or passing the text to `testCallbackOrPattern` callback).
 	 * It formats found text by executing command `formatCallbackOrCommand` or by running `formatCallbackOrCommand` format callback.
 	 *
 	 * @param {core.editor.Editor} editor Editor instance.
-	 * @param {Function|RegExp} testCallbackOrPattern RegExp literal to execute on text or test callback returning Object with offsets to
+	 * @param {Function|RegExp} testRegexpOrCallback RegExp to execute on text or test callback returning Object with offsets to
 	 * remove and offsets to format.
 	 *  * Format is applied before deletion,
 	 *	* RegExp literal *must* have 3 capture groups.
@@ -42,7 +42,7 @@ export default class InlineAutoformatEngine {
 	 *  2. {engine.model.Range} Range of matched text to format,
 	 *  3. {engine.model.Batch} Batch to group format operations.
 	 */
-	constructor( editor, testCallbackOrPattern, formatCallbackOrCommand ) {
+	constructor( editor, testRegexpOrCallback, formatCallbackOrCommand ) {
 		this.editor = editor;
 
 		let pattern;
@@ -50,12 +50,10 @@ export default class InlineAutoformatEngine {
 		let testCallback;
 		let formatCallback;
 
-		if ( typeof testCallbackOrPattern == 'string' ) {
-			pattern = new RegExp( testCallbackOrPattern, 'g' );
-		} else if ( testCallbackOrPattern instanceof RegExp ) {
-			pattern = testCallbackOrPattern;
+		if ( testRegexpOrCallback instanceof RegExp ) {
+			pattern = testRegexpOrCallback;
 		} else {
-			testCallback = testCallbackOrPattern;
+			testCallback = testRegexpOrCallback;
 		}
 
 		if ( typeof formatCallbackOrCommand == 'string' ) {
@@ -76,6 +74,7 @@ export default class InlineAutoformatEngine {
 					break;
 				}
 
+				console.log( result );
 				const {
 					index,
 					'1': leftDel,
@@ -106,8 +105,10 @@ export default class InlineAutoformatEngine {
 		} );
 
 		// A format callback run on matched text.
-		formatCallback = formatCallback || ( ( editor, options ) => {
-			editor.execute( command, options );
+		formatCallback = formatCallback || ( ( batch, validRanges ) => {
+			for ( let range of validRanges ) {
+				batch.setAttribute( range, command, true );
+			}
 		} );
 
 		editor.document.on( 'change', ( evt, type ) => {
@@ -139,35 +140,34 @@ export default class InlineAutoformatEngine {
 				) );
 			} );
 
-			if ( rangesToFormat.length === 0 ) {
-				return;
-			}
-
-			const batch = editor.document.batch();
-			editor.document.enqueueChanges( () => {
-				selection.setRanges( rangesToFormat );
-			} );
-
-			formatCallback( this.editor, { batch } );
-
-			editor.document.enqueueChanges( () => {
-				selection.collapseToEnd();
-			} );
-
+			const rangesToRemove = [];
 			// Reverse order to not mix the offsets while removing.
 			ranges.remove.slice().reverse().forEach( ( range ) => {
 				if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
 					return;
 				}
 
-				const rangeToDelete = Range.createFromParentsAndOffsets(
+				rangesToRemove.push( Range.createFromParentsAndOffsets(
 					block, range[ 0 ],
 					block, range[ 1 ]
-				);
+				) );
+			} );
 
-				editor.document.enqueueChanges( () => {
-					batch.remove( rangeToDelete );
-				} );
+			if ( !( rangesToFormat.length && rangesToRemove.length ) ) {
+				return;
+			}
+
+			const batch = editor.document.batch();
+			editor.document.enqueueChanges( () => {
+				const validRanges = getSchemaValidRanges( command, rangesToFormat, editor.document.schema );
+
+				// Apply format.
+				formatCallback( batch, validRanges );
+
+				// Remove delimiters.
+				for ( let range of rangesToRemove ) {
+					batch.remove( range );
+				}
 			} );
 		} );
 	}
