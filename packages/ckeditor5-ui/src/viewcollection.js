@@ -111,11 +111,17 @@ export default class ViewCollection extends Collection {
 	 * TODO: Example and longer explanation. Probably imported from ControllerCollection#bind.
 	 *
 	 * @param {utils.Collection} collection A collection to be bound.
-	 * @returns {Function} return.CallbackOrViewClass Specifies the constructor of the view to be used or
-	 * a custom callback function which produces views.
+	 * @returns {ui.ViewCollection.bindTo#as}
 	 */
 	bindTo( collection ) {
 		return {
+			/**
+			 * Determines the output view of the binding.
+			 *
+			 * @method ui.ViewCollection.bindTo#as
+			 * @param {Function|ui.View} CallbackOrViewClass Specifies the constructor of the view to be used or
+			 * a custom callback function which produces views.
+			 */
 			as: ( CallbackOrViewClass ) => {
 				let createView;
 
@@ -166,7 +172,7 @@ export default class ViewCollection extends Collection {
 	 *		const viewB = new View();
 	 *		const viewC = new View();
 	 *
-	 *		const views = new ViewCollection( 'name' );
+	 *		const views = parentView.createCollection();
 	 *
 	 *		views.delegate( 'eventX' ).to( viewB );
 	 *		views.delegate( 'eventX', 'eventY' ).to( viewC );
