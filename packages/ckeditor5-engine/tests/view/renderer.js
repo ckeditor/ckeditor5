@@ -577,6 +577,78 @@ describe( 'Renderer', () => {
 			expect( domP.childNodes[ 1 ].childNodes[ 0 ].data ).to.equal( 'x' );
 		} );
 
+		// #659
+		// The element before the filler is removed so the position of the filler
+		// cannot be remembered as parent+offset.
+		it( 'should remove filler from a modified DOM in case <p>bar<b>foo</b>[]</p>', () => {
+			// Step 1: <p>bar<b>foo</b>"FILLER{}"</p>
+			const { view: viewP, selection: newSelection } = parse( '<container:p>bar<attribute:b>foo</attribute:b>[]</container:p>' );
+			viewRoot.appendChildren( viewP );
+			selection.setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			expect( domP.childNodes.length ).to.equal( 3 );
+			expect( domP.childNodes[ 2 ].data ).to.equal( INLINE_FILLER );
+
+			// Step 2: Remove the <b> and update the selection (<p>bar[]</p>).
+			viewP.removeChildren( 1 );
+
+			selection.removeAllRanges();
+			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP, 1, viewP, 1 ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			// Step 3: Check whether there's no filler in the DOM.
+			expect( domP.childNodes.length ).to.equal( 1 );
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'bar' );
+		} );
+
+		// #659
+		it( 'should remove filler from a modified DOM when children moved', () => {
+			// Step 1: <p><b>foo</b>"FILLER{}"<b>bar</b></p><p></p>
+			const { view: viewFragment, selection: newSelection }
+				= parse( '<container:p><attribute:b>foo</attribute:b>[]<attribute:b>bar</attribute:b></container:p><container:p></container:p>' );
+			viewRoot.appendChildren( viewFragment );
+			selection.setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 2 );
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domP2 = domRoot.childNodes[ 1 ];
+			expect( domP.childNodes.length ).to.equal( 3 );
+			expect( domP.childNodes[ 1 ].data ).to.equal( INLINE_FILLER );
+
+			// Step 2: Move <b>foo</b><b>bar</b> to the second paragraph and leave collapsed selection in the first one.
+			// <p>[]</p><p><b>foo</b><b>bar</b></p>
+			const viewP = viewRoot.getChild( 0 );
+			const viewP2 = viewRoot.getChild( 1 );
+			const removedChildren = viewP.removeChildren( 0, 2 );
+
+			viewP2.appendChildren( removedChildren );
+
+			selection.removeAllRanges();
+			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			// Step 3: Check whether in the first paragrpah there's a <br> filler and that
+			// in the second one there are two <b> tags.
+			expect( domP.childNodes.length ).to.equal( 1 );
+			expect( isBlockFiller( domP.childNodes[ 0 ], BR_FILLER ) ).to.be.true;
+
+			expect( domP2.childNodes.length ).to.equal( 2 );
+			expect( domP2.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'b' );
+			expect( domP2.childNodes[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
+		} );
+
 		it( 'should handle typing in empty block, do nothing if changes are already applied', () => {
 			const domSelection = document.getSelection();
 
