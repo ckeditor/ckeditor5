@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5-editor-classic",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Classic Editor for CKEditor 5.",
   "keywords": [],
   "dependencies": {},
