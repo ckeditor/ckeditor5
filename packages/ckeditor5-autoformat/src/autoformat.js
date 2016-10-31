@@ -38,31 +38,22 @@ export default class Autoformat extends Feature {
 	}
 
 	/**
-	 * Adds autoformats related to ListEngine commands.
+	 * Adds autoformatting related to ListEngine commands.
 	 *
 	 * When typed:
-	 *
-	 * 	`* ` or `- `
-	 *		Paragraph will be changed to a bulleted list.
-	 *
-	 * 	`1. ` or `1) `
-	 *		Paragraph will be changed to a numbered list (1 can be any digit or list of digits).
+	 * - `* ` or `- ` - paragraph will be changed to a bulleted list,
+	 * - `1. ` or `1) ` - paragraph will be changed to a numbered list (1 can be any digit or list of digits).
 	 *
 	 * @private
 	 */
 	_addListAutoformats() {
-		// Add support for __foo__ and _foo_
 		new BlockAutoformatEngine( this.editor, /^[\*\-]\s$/, 'bulletedList' );
 		new BlockAutoformatEngine( this.editor, /^\d+[\.|)]?\s$/, 'numberedList' );
 	}
 
 	/**
-	 * Adds autoformats related to HeadingEngine commands.
-	 *
-	 * When typed:
-	 *
-	 * 	`#` or `##` or `###`
-	 *		Paragraph will be changed to a corresponding heading level.
+	 * Adds autoformatting related to HeadingEngine commands.
+	 * When typed `# ` or `## ` or `### ` paragraph will be changed to a corresponding heading level.
 	 *
 	 * @private
 	 */
@@ -82,16 +73,14 @@ export default class Autoformat extends Feature {
 	 * Adds inline autoformatting capabilities to the editor.
 	 *
 	 * When typed:
-	 *
-	 *	`**foobar**`
-	 *		The `**` characters are removed, and `foobar` is set to bold.
-	 *	`*foobar*`
-	 *		The `*` characters are removed, and `foobar` is set to italic.
+	 * - `**foobar**`: `**` characters are removed, and `foobar` is set to bold,
+	 * - `__foobar__`: `__` characters are removed, and `foobar` is set to bold,
+	 * - `*foobar*`: `*` characters are removed, and `foobar` is set to italic,
+	 * - `_foobar_`: `_` characters are removed, and `foobar` is set to italic.
 	 *
 	 * @private
 	 */
 	_addInlineAutoformats() {
-		// Bold text between `**`, e.g. `**text to bold**`.
 		new InlineAutoformatEngine( this.editor, /(\*\*|__)([^\*_]+?)(\*\*|__)$/g, 'bold' );
 		new InlineAutoformatEngine( this.editor, /(?:^|[^\*_])(\*|_)([^\*_]+?)(\*|_)$/g, 'italic' );
 	}
