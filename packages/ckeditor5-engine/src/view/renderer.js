@@ -184,15 +184,16 @@ export default class Renderer {
 			this._removeInlineFiller();
 		}
 
-		if ( this._needsInlineFillerAtSelection() ) {
+		// If we've got the filler, let's try to guess its position in the view.
+		if ( this._inlineFiller ) {
+			inlineFillerPosition = this._getInlineFillerPosition();
+		}
+		// Othewise, if it's needed, set it at the selection position.
+		else if ( this._needsInlineFillerAtSelection() ) {
 			inlineFillerPosition = this.selection.getFirstPosition();
 
 			// Do not use `markToSync` so it will be added even if the parent is already added.
 			this.markedChildren.add( inlineFillerPosition.parent );
-		} else if ( this._inlineFiller ) {
-			if ( this.selection.getFirstPosition().parent instanceof ViewText ) {
-				inlineFillerPosition = ViewPosition.createBefore( this.selection.getFirstPosition().parent );
-			}
 		}
 
 		for ( let node of this.markedTexts ) {
@@ -216,10 +217,10 @@ export default class Renderer {
 		this.markedAttributes.clear();
 		this.markedChildren.clear();
 
-		this._storeInlineFiller( inlineFillerPosition );
+		this._setInlineFillerPosition( inlineFillerPosition );
 	}
 
-	_storeInlineFiller( fillerPosition ) {
+	_setInlineFillerPosition( fillerPosition ) {
 		if ( !fillerPosition ) {
 			this._inlineFiller = null;
 
@@ -229,10 +230,20 @@ export default class Renderer {
 		const domPosition = this.domConverter.viewPositionToDom( fillerPosition );
 
 		if ( !domPosition || !startsWithFiller( domPosition.parent ) ) {
-			throw new CKEditorError( 'filler-cannot-find-node' );
+			throw new CKEditorError( 'view-renderer-cannot-find-filler' );
 		}
 
 		this._inlineFiller = domPosition.parent;
+	}
+
+	_getInlineFillerPosition() {
+		const firstPos = this.selection.getFirstPosition();
+
+		if ( firstPos.parent  instanceof ViewText ) {
+			return ViewPosition.createBefore( this.selection.getFirstPosition().parent );
+		} else {
+			return firstPos;
+		}
 	}
 
 	/**
