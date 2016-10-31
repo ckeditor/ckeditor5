@@ -577,6 +577,112 @@ describe( 'Renderer', () => {
 			expect( domP.childNodes[ 1 ].childNodes[ 0 ].data ).to.equal( 'x' );
 		} );
 
+		// #659
+		// The element before the filler is removed so the position of the filler
+		// cannot be remembered as parent+offset.
+		it( 'should remove filler from a modified DOM in case <p>bar<b>foo</b>[]</p>', () => {
+			// Step 1: <p>bar<b>foo</b>"FILLER{}"</p>
+			const { view: viewP, selection: newSelection } = parse( '<container:p>bar<attribute:b>foo</attribute:b>[]</container:p>' );
+			viewRoot.appendChildren( viewP );
+			selection.setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			expect( domP.childNodes.length ).to.equal( 3 );
+			expect( domP.childNodes[ 2 ].data ).to.equal( INLINE_FILLER );
+
+			// Step 2: Remove the <b> and update the selection (<p>bar[]</p>).
+			viewP.removeChildren( 1 );
+
+			selection.removeAllRanges();
+			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP, 1, viewP, 1 ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			// Step 3: Check whether there's no filler in the DOM.
+			expect( domP.childNodes.length ).to.equal( 1 );
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'bar' );
+		} );
+
+		// #659
+		it( 'should remove filler from a modified DOM when children moved', () => {
+			// Step 1: <p><b>foo</b>"FILLER{}"<b>bar</b></p><p></p>
+			const { view: viewFragment, selection: newSelection }
+				= parse( '<container:p><attribute:b>foo</attribute:b>[]<attribute:b>bar</attribute:b></container:p><container:p></container:p>' );
+			viewRoot.appendChildren( viewFragment );
+			selection.setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 2 );
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domP2 = domRoot.childNodes[ 1 ];
+			expect( domP.childNodes.length ).to.equal( 3 );
+			expect( domP.childNodes[ 1 ].data ).to.equal( INLINE_FILLER );
+
+			// Step 2: Move <b>foo</b><b>bar</b> to the second paragraph and leave collapsed selection in the first one.
+			// <p>[]</p><p><b>foo</b><b>bar</b></p>
+			const viewP = viewRoot.getChild( 0 );
+			const viewP2 = viewRoot.getChild( 1 );
+			const removedChildren = viewP.removeChildren( 0, 2 );
+
+			viewP2.appendChildren( removedChildren );
+
+			selection.removeAllRanges();
+			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.markToSync( 'children', viewP2 );
+			renderer.render();
+
+			// Step 3: Check whether in the first paragraph there's a <br> filler and that
+			// in the second one there are two <b> tags.
+			expect( domP.childNodes.length ).to.equal( 1 );
+			expect( isBlockFiller( domP.childNodes[ 0 ], BR_FILLER ) ).to.be.true;
+
+			expect( domP2.childNodes.length ).to.equal( 2 );
+			expect( domP2.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'b' );
+			expect( domP2.childNodes[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
+		} );
+
+		// Test for an edge case in the _isSelectionInInlineFiller which can be triggered like
+		// in one of ckeditor/ckeditor5-typing#59 automated tests.
+		it( 'should not break when selection is moved to a new element, when filler exists', () => {
+			// Step 1: <p>bar<b>"FILLER{}"</b></p>
+			const { view: viewP, selection: newSelection } = parse( '<container:p>bar<attribute:b>[]</attribute:b></container:p>' );
+			viewRoot.appendChildren( viewP );
+			selection.setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			expect( domP.childNodes.length ).to.equal( 2 );
+			expect( domP.childNodes[ 1 ].childNodes[ 0 ].data ).to.equal( INLINE_FILLER );
+
+			// Step 2: Move selection to a new attribute element and remove the previous one
+			viewP.removeChildren( 1 ); // Remove <b>.
+
+			const viewI = parse( '<attribute:i></attribute:i>' );
+			viewP.appendChildren( viewI );
+
+			selection.removeAllRanges();
+			selection.addRange( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			// Step 3: Check whether new filler was created in the <i> element.
+			expect( domP.childNodes.length ).to.equal( 2 );
+			expect( domP.childNodes[ 1 ].tagName.toLowerCase() ).to.equal( 'i' );
+			expect( domP.childNodes[ 1 ].childNodes[ 0 ].data ).to.equal( INLINE_FILLER );
+		} );
+
 		it( 'should handle typing in empty block, do nothing if changes are already applied', () => {
 			const domSelection = document.getSelection();
 
@@ -699,6 +805,8 @@ describe( 'Renderer', () => {
 		it( 'should handle typing in empty attribute, do nothing if changes are already applied', () => {
 			const domSelection = document.getSelection();
 
+			// 1. Render <p><b>FILLER{}</b>foo</p>.
+
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
 
@@ -707,6 +815,8 @@ describe( 'Renderer', () => {
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
+
+			// 2. Check the DOM.
 
 			const domP = domRoot.childNodes[ 0 ];
 
@@ -725,7 +835,8 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
-			// Add text node to both DOM and View <p><b>x</b>foo</p>
+			// 3. Add text node to both the DOM and the view: <p><b>FILLERx</b>foo</p>.
+
 			domB.childNodes[ 0 ].data += 'x';
 
 			domSelection.removeAllRanges();
@@ -746,6 +857,8 @@ describe( 'Renderer', () => {
 		it( 'should handle typing in empty attribute as a children change, render if needed', () => {
 			const domSelection = document.getSelection();
 
+			// 1. Render <p><b>FILLER{}</b>foo</p>.
+
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
 
@@ -754,6 +867,8 @@ describe( 'Renderer', () => {
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
+
+			// 2. Check the DOM.
 
 			const domP = domRoot.childNodes[ 0 ];
 
@@ -772,7 +887,8 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
-			// Add text node only to View <p><b>x</b>foo</p>
+			// 3. Add text node only to the view: <p><b>x{}</b>foo</p>.
+
 			const viewText = new ViewText( 'x' );
 			viewB.appendChildren( viewText );
 			selection.removeAllRanges();
@@ -793,6 +909,8 @@ describe( 'Renderer', () => {
 		it( 'should handle typing in empty attribute as a text change, render if needed', () => {
 			const domSelection = document.getSelection();
 
+			// 1. Render <p><b>FILLER{}</b>foo</p>.
+
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
 
@@ -801,6 +919,8 @@ describe( 'Renderer', () => {
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
+
+			// 2. Check the DOM.
 
 			const domP = domRoot.childNodes[ 0 ];
 
@@ -819,7 +939,8 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
-			// Add text node only to View <p><b>x</b>foo</p>
+			// 3. Add text node only to the view: <p><b>x{}</b>foo</p>.
+
 			const viewText = new ViewText( 'x' );
 			viewB.appendChildren( viewText );
 			selection.removeAllRanges();
@@ -827,6 +948,8 @@ describe( 'Renderer', () => {
 
 			renderer.markToSync( 'text', viewText );
 			renderer.render();
+
+			// 4. Check the DOM.
 
 			expect( domB.childNodes.length ).to.equal( 1 );
 			expect( domB.childNodes[ 0 ].data ).to.equal( INLINE_FILLER + 'x' );
@@ -958,7 +1081,7 @@ describe( 'Renderer', () => {
 
 			expect( () => {
 				renderer.render();
-			} ).to.throw();
+			} ).to.throw( CKEditorError, /^view-renderer-filler-was-lost/ );
 		} );
 
 		it( 'should handle focusing element', () => {
