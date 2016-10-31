@@ -1048,7 +1048,7 @@ describe( 'Renderer', () => {
 
 			expect( () => {
 				renderer.render();
-			} ).to.throw();
+			} ).to.throw( CKEditorError, /^view-renderer-filler-was-lost/ );
 		} );
 
 		it( 'should handle focusing element', () => {

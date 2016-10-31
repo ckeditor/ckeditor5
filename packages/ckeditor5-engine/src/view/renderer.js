@@ -15,8 +15,6 @@ import remove from '../../utils/dom/remove.js';
 import ObservableMixin from '../../utils/observablemixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
-import log from '../../utils/log.js';
-
 /* global Range */
 
 /**
@@ -90,7 +88,7 @@ export default class Renderer {
 		this.selection = selection;
 
 		/**
-		 * TODO
+		 * The text node in which the inline filler was rendered.
 		 *
 		 * @private
 		 * @member {Text} engine.view.Renderer#_inlineFiller
@@ -219,10 +217,18 @@ export default class Renderer {
 		this.markedAttributes.clear();
 		this.markedChildren.clear();
 
-		this._setInlineFillerPosition( inlineFillerPosition );
+		// Remember the filler by its node.
+		this._inlineFiller = this._getInlineFillerNode( inlineFillerPosition );
 	}
 
-	_setInlineFillerPosition( fillerPosition ) {
+	/**
+	 * Gets the text node in which the inline filler is kept.
+	 *
+	 * @private
+	 * @param {engine.view.Position} fillerPosition The position on which the filler is needed in the view.
+	 * @returns {Text} The text node with the filler.
+	 */
+	_getInlineFillerNode( fillerPosition ) {
 		if ( !fillerPosition ) {
 			this._inlineFiller = null;
 
@@ -238,12 +244,25 @@ export default class Renderer {
 			 *
 			 * @error view-renderer-cannot-find-filler
 			 */
-			log.error( 'view-renderer-cannot-find-filler: Cannot find filler node by its position.' );
+			throw new CKEditorError( 'view-renderer-cannot-find-filler: Cannot find filler node by its position.' );
 		}
 
-		this._inlineFiller = domPosition.parent;
+		return domPosition.parent;
 	}
 
+	/**
+	 * Gets the position of the inline filler based on the current selection.
+	 * Here, we assume that we know that the filler is needed and
+	 * {@link #_isSelectionInInlineFiller is at the selection position}, and, since it's needed,
+	 * it's somewhere at the selection postion.
+	 *
+	 * Note: we cannot restore the filler position based on the filler's DOM text node, because
+	 * when this method is called (before rendering) the bindings will often be broken. View to DOM
+	 * bindings are only dependable after rendering.
+	 *
+	 * @private
+	 * @returns {engine.view.Position}
+	 */
 	_getInlineFillerPosition() {
 		const firstPos = this.selection.getFirstPosition();
 
@@ -297,9 +316,12 @@ export default class Renderer {
 		// Something weird happened and the stored node doesn't contain the filler's text.
 		if ( !startsWithFiller( domFillerNode ) ) {
 			/**
-			 * TODO
+			 * The inline filler node was lost. Most likely, something overwrote the filler text node
+			 * in the DOM.
+			 *
+			 * @error view-renderer-filler-was-lost
 			 */
-			throw new CKEditorError( 'todo: TODO' );
+			throw new CKEditorError( 'view-renderer-filler-was-lost: The inline filler node was lost.' );
 		}
 
 		if ( isInlineFiller( domFillerNode ) ) {
@@ -355,6 +377,9 @@ export default class Renderer {
 	 *
 	 * @private
 	 * @param {engine.view.Text} viewText View text to update.
+	 * @param {Object} options
+	 * @param {engine.view.Position} options.inlineFillerPosition The position on which the inline
+	 * filler should be rendered.
 	 */
 	_updateText( viewText, options ) {
 		const domText = this.domConverter.getCorrespondingDom( viewText );
@@ -403,6 +428,9 @@ export default class Renderer {
 	 *
 	 * @private
 	 * @param {engine.view.Element} viewElement View element to update.
+	 * @param {Object} options
+	 * @param {engine.view.Position} options.inlineFillerPosition The position on which the inline
+	 * filler should be rendered.
 	 */
 	_updateChildren( viewElement, options ) {
 		const domConverter = this.domConverter;
