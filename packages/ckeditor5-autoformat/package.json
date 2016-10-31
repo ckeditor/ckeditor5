@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5-autoformat",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Replaces predefined characters with corresponding structures.",
   "keywords": [],
   "dependencies": {},
