@@ -225,14 +225,6 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'selection', () => {
-		it( 'should get updated attributes whenever selection gets updated', () => {
-			sinon.spy( doc.selection, '_updateAttributes' );
-
-			doc.selection.fire( 'change:range', { directChange: true } );
-
-			expect( doc.selection._updateAttributes.called ).to.be.true;
-		} );
-
 		it( 'should get updated attributes whenever attribute operation is applied', () => {
 			sinon.spy( doc.selection, '_updateAttributes' );
 

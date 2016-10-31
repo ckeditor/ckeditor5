@@ -65,13 +65,6 @@ export default class LiveSelection extends Selection {
 		 */
 		this._attributePriority = new Map();
 
-		// Whenever selection range changes, if the change comes directly from selection API (direct user change).
-		this.on( 'change:range', ( evt, data ) => {
-			if ( data.directChange ) {
-				this.refreshAttributes();
-			}
-		}, { priority: 'high' } );
-
 		// Whenever attribute operation is performed on document, update attributes. This is not the most efficient
 		// way to update selection attributes, but should be okay for now. `_updateAttributes` will be fired too often,
 		// but it won't change attributes or fire `change:attribute` event if not needed.
@@ -146,6 +139,30 @@ export default class LiveSelection extends Selection {
 	 */
 	getLastRange() {
 		return super.getLastRange() || this._document._getDefaultRange();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	addRange( range, isBackward = false ) {
+		super.addRange( range, isBackward );
+		this.refreshAttributes();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	removeAllRanges() {
+		super.removeAllRanges();
+		this.refreshAttributes();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	setRanges( newRanges, isLastBackward = false ) {
+		super.setRanges( newRanges, isLastBackward );
+		this.refreshAttributes();
 	}
 
 	/**

@@ -58,7 +58,6 @@ export default function deleteContents( batch, selection, options = {} ) {
 	}
 
 	selection.collapse( startPos );
-	selection.refreshAttributes();
 
 	// 3. Autoparagraphing.
 	// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).

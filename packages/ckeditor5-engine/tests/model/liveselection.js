@@ -140,6 +140,14 @@ describe( 'LiveSelection', () => {
 
 			expect( selection._ranges.length ).to.equal( 0 );
 		} );
+
+		it( 'should refresh attributes', () => {
+			const spy = sinon.spy( selection, '_updateAttributes' );
+
+			selection.addRange( range );
+
+			expect( spy.called ).to.be.true;
+		} );
 	} );
 
 	describe( 'collapse', () => {
@@ -232,6 +240,14 @@ describe( 'LiveSelection', () => {
 			expect( ranges[ 0 ].detach.called ).to.be.true;
 			expect( ranges[ 1 ].detach.called ).to.be.true;
 		} );
+
+		it( 'should refresh attributes', () => {
+			const spy = sinon.spy( selection, '_updateAttributes' );
+
+			selection.removeAllRanges();
+
+			expect( spy.called ).to.be.true;
+		} );
 	} );
 
 	describe( 'setRanges', () => {
@@ -254,6 +270,14 @@ describe( 'LiveSelection', () => {
 
 			expect( oldRanges[ 0 ].detach.called ).to.be.true;
 			expect( oldRanges[ 1 ].detach.called ).to.be.true;
+		} );
+
+		it( 'should refresh attributes', () => {
+			const spy = sinon.spy( selection, '_updateAttributes' );
+
+			selection.setRanges( [ range ] );
+
+			expect( spy.called ).to.be.true;
 		} );
 	} );
 
