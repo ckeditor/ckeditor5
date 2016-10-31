@@ -6,7 +6,19 @@
 import Range from '../engine/model/range.js';
 import TextProxy from '../engine/model/textproxy.js';
 
-export default class AutoformatEngine {
+/**
+ * The block autoformatting engine. Allows to format various block patterns. For example,
+ * it can be configured to make a paragraph starting with "* " a list item.
+ *
+ * The autoformatting operation is integrated with the undo manager,
+ * so the autoformatting step can be undone, if the user's intention wasn't to format the text.
+ *
+ * See the constructors documentation to learn how to create custom inline autoformatters. You can also use
+ * the {@link autoformat.Autoformat} feature which enables a set of default autoformatters (lists, headings, bold and italic).
+ *
+ * @memberOf autoformat
+ */
+export default class BlockAutoformatEngine {
 	/**
 	 * Creates listener triggered on `change` event in document.
 	 * Calls callback when inserted text matches regular expression or command name
@@ -16,11 +28,11 @@ export default class AutoformatEngine {
 	 *
 	 * To convert paragraph to heading1 when `- ` is typed, using just commmand name:
 	 *
-	 *		createAutoformat( editor, /^\- $/, 'heading1');
+	 *		new BlockAutoformatEngine( editor, /^\- $/, 'heading1' );
 	 *
 	 * To convert paragraph to heading1 when `- ` is typed, using just callback:
 	 *
-	 *		createAutoformat( editor, /^\- $/, ( context ) => {
+	 *		new BlockAutoformatEngine( editor, /^\- $/, ( context ) => {
 	 *			const { batch, match } = context;
 	 *			const headingLevel = match[ 1 ].length;
 	 *
@@ -31,7 +43,7 @@ export default class AutoformatEngine {
 	 * 		} );
 	 *
 	 * @param {core.editor.Editor} editor Editor instance.
-	 * @param {Regex} pattern Regular expression to exec on just inserted text.
+	 * @param {RegExp} pattern Regular expression to exec on just inserted text.
 	 * @param {Function|String} callbackOrCommand Callback to execute or command to run when text is matched.
 	 * In case of providing callback it receives following parameters:
 	 * * {engine.model.Batch} batch Newly created batch for autoformat changes.

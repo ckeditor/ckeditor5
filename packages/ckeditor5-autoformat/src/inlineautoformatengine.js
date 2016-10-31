@@ -7,18 +7,22 @@ import LiveRange from '../engine/model/liverange.js';
 import getSchemaValidRanges from '../core/command/helpers/getschemavalidranges.js';
 
 /**
- * A paragraph feature for editor.
- * Introduces `<paragraph>` element in the model which renders as `<p>` in the DOM and data.
+ * The inline autoformatting engine. Allows to format various inline patterns. For example,
+ * it can be configured to make "foo" bold when typed `**foo**` (the `**` markers will be removed).
  *
- * @memberOf paragraph
- * @extends ckeditor5.Feature
+ * The autoformatting operation is integrated with the undo manager,
+ * so the autoformatting step can be undone, if the user's intention wasn't to format the text.
+ *
+ * See the constructors documentation to learn how to create custom inline autoformatters. You can also use
+ * the {@link autoformat.Autoformat} feature which enables a set of default autoformatters (lists, headings, bold and italic).
+ *
+ * @memberOf autoformat
  */
 export default class InlineAutoformatEngine {
 	/**
+	 * Enables autoformatting mechanism on a given {@link core.editor.Editor}.
 	 *
-	 * Enables mechanism on given {@link core.editor.Editor} instance to watch for specified pattern (either by executing
-	 * given RegExp or by passing the text to provided callback).
-	 * It formats found text by applying proper attribute or by running provided formatting callback.
+	 * It formats the matched text by applying given model attribute or by running the provided formatting callback.
 	 * Each time data model changes text from given node (from the beginning of the current node to the collapsed
 	 * selection location) will be tested.
 	 *
@@ -28,7 +32,7 @@ export default class InlineAutoformatEngine {
 	 * should match opening/closing delimiters. Second capture group should match text to format.
 	 *
 	 *		// Matches `**bold text**` pattern.
-	 *		// There are three matching groups:
+	 *		// There are three capturing groups:
 	 *		// - first to match starting `**` delimiter,
 	 *		// - second to match text to format,
 	 *		// - third to match ending `**` delimiter.
@@ -39,8 +43,8 @@ export default class InlineAutoformatEngine {
 	 *
 	 *		{
 	 *			remove: [
-	 *				[ 0, 1 ],	// Remove first letter from given text.
-	 *				[ 5, 6 ]	// Remove 6th letter from given text.
+	 *				[ 0, 1 ],	// Remove first letter from the given text.
+	 *				[ 5, 6 ]	// Remove 6th letter from the given text.
 	 *			],
 	 *			format: [
 	 *				[ 1, 5 ]	// Format all letters from 2nd to 5th.
@@ -153,6 +157,7 @@ export default class InlineAutoformatEngine {
 				if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
 					return;
 				}
+
 				rangesToFormat.push( LiveRange.createFromParentsAndOffsets(
 					block, range[ 0 ],
 					block, range[ 1 ]
@@ -160,6 +165,7 @@ export default class InlineAutoformatEngine {
 			} );
 
 			const rangesToRemove = [];
+
 			// Reverse order to not mix the offsets while removing.
 			ranges.remove.slice().reverse().forEach( ( range ) => {
 				if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
@@ -177,6 +183,7 @@ export default class InlineAutoformatEngine {
 			}
 
 			const batch = editor.document.batch();
+
 			editor.document.enqueueChanges( () => {
 				const validRanges = getSchemaValidRanges( command, rangesToFormat, editor.document.schema );
 

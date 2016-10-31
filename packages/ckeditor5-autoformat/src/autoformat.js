@@ -12,10 +12,36 @@ import BoldEngine from '../basic-styles/boldengine.js';
 import ItalicEngine from '../basic-styles/italicengine.js';
 
 /**
- * Includes set of predefined Autoformatting actions:
- * * Bulleted list,
- * * Numbered list,
- * * Headings.
+ * Includes a set of predefined autoformatting actions.
+ *
+ * ## Bulleted list
+ *
+ * You can create a bulleted list by staring a line with:
+ *
+ * * `* `
+ * * `- `
+ *
+ * ## Numbered list
+ *
+ * You can create a numbered list by staring a line with:
+ *
+ * * `1. `
+ * * `1) `
+ *
+ * ## Headings
+ *
+ * You can create a heading by starting a line with:
+ *
+ * `# ` – will create Heading 1,
+ * `## ` – will create Heading 2,
+ * `### ` – will create Heading 3.
+ *
+ * ## Bold and italic
+ *
+ * You can apply bold or italic to a text by typing Markdown formatting:
+ *
+ * * `**foo bar**` or `__foo bar__` – will bold the text,
+ * * `*foo bar*` or `_foo bar_` – will italicize the text,
  *
  * @memberOf autoformat
  * @extends core.Feature
@@ -83,6 +109,9 @@ export default class Autoformat extends Feature {
 	_addInlineAutoformats() {
 		new InlineAutoformatEngine( this.editor, /(\*\*)([^\*]+)(\*\*)$/g, 'bold' );
 		new InlineAutoformatEngine( this.editor, /(__)([^_]+)(__)$/g, 'bold' );
+
+		// The italic autoformatter cannot be triggered by the bold markers, so we need to check the
+		// text before the pattern (e.g. `(?:^|[^\*])`).
 		new InlineAutoformatEngine( this.editor, /(?:^|[^\*])(\*)([^\*_]+)(\*)$/g, 'italic' );
 		new InlineAutoformatEngine( this.editor, /(?:^|[^_])(_)([^_]+)(_)$/g, 'italic' );
 	}
