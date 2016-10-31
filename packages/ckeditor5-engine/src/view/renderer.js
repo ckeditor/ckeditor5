@@ -15,6 +15,8 @@ import remove from '../../utils/dom/remove.js';
 import ObservableMixin from '../../utils/observablemixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
+import log from '../../utils/log.js';
+
 /* global Range */
 
 /**
@@ -188,7 +190,7 @@ export default class Renderer {
 		if ( this._inlineFiller ) {
 			inlineFillerPosition = this._getInlineFillerPosition();
 		}
-		// Othewise, if it's needed, set it at the selection position.
+		// Othewise, if it's needed, create it at the selection position.
 		else if ( this._needsInlineFillerAtSelection() ) {
 			inlineFillerPosition = this.selection.getFirstPosition();
 
@@ -229,8 +231,14 @@ export default class Renderer {
 
 		const domPosition = this.domConverter.viewPositionToDom( fillerPosition );
 
+		/* istanbul ignore if */
 		if ( !domPosition || !startsWithFiller( domPosition.parent ) ) {
-			throw new CKEditorError( 'view-renderer-cannot-find-filler' );
+			/**
+			 * Cannot find filler node by its position.
+			 *
+			 * @error view-renderer-cannot-find-filler
+			 */
+			log.error( 'view-renderer-cannot-find-filler: Cannot find filler node by its position.' );
 		}
 
 		this._inlineFiller = domPosition.parent;
