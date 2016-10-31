@@ -77,7 +77,7 @@ export default class LiveRange extends Range {
 	 * Fired when `LiveRange` instance is changed due to changes on {@link engine.model.Document}.
 	 *
 	 * @event engine.model.LiveRange#change
-	 * @param {Range} oldRange Range with start and end position equal to start and end position of this live range
+	 * @param {engine.model.Range} oldRange Range with start and end position equal to start and end position of this live range
 	 * before it got changed.
 	 */
 }

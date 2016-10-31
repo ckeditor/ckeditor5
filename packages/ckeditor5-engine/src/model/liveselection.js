@@ -207,7 +207,7 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Removes all attributes from selection and set attributes according to surrounding nodes.
+	 * Removes all attributes from the selection and sets attributes according to the surrounding nodes.
 	 */
 	refreshAttributes() {
 		this._updateAttributes( true );
@@ -247,7 +247,7 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Prepares given range to be added to selection. Checks if it is corret,  converts it to {@link engine.model.LiveRange LiveRange}
+	 * Prepares given range to be added to selection. Checks if it is correct, converts it to {@link engine.model.LiveRange LiveRange}
 	 * and sets listeners listening to the range's change event.
 	 *
 	 * @private
@@ -593,7 +593,7 @@ export default class LiveSelection extends Selection {
 	 * Fixes a selection range after it ends up in graveyard root.
 	 *
 	 * @private
-	 * @param {engine.model.Range} gyRange The range added in selection, that ended up in graveyard root.
+	 * @param {engine.model.LiveRange} gyRange The range added in selection, that ended up in graveyard root.
 	 * @param {engine.model.Range} oldRange The state of that range before it was added to graveyard root.
 	 */
 	_fixGraveyardSelection( gyRange, oldRange ) {

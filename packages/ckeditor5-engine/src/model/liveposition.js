@@ -116,7 +116,7 @@ export default class LivePosition extends Position {
 	 * Fired when `LivePosition` instance is changed due to changes on {@link engine.model.Document}.
 	 *
 	 * @event engine.model.LivePosition#change
-	 * @param {Position} oldPosition Position equal to this live position before it got changed.
+	 * @param {engine.model.Position} oldPosition Position equal to this live position before it got changed.
 	 */
 }
 
