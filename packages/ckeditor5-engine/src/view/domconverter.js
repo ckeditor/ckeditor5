@@ -486,7 +486,8 @@ export default class DomConverter {
 			} else {
 				const viewBefore = this.getCorrespondingView( domParent.childNodes[ domOffset - 1 ] );
 
-				if ( viewBefore ) {
+				// TODO #663
+				if ( viewBefore && viewBefore.parent ) {
 					return new ViewPosition( viewBefore.parent, viewBefore.index + 1 );
 				}
 			}
