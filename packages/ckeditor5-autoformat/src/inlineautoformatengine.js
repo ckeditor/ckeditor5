@@ -3,7 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import Range from '../engine/model/liverange.js';
+import LiveRange from '../engine/model/liverange.js';
+import Text from '../engine/model/text.js';
 import getSchemaValidRanges from '../core/command/helpers/getschemavalidranges.js';
 
 /**
@@ -15,51 +16,69 @@ import getSchemaValidRanges from '../core/command/helpers/getschemavalidranges.j
  */
 export default class InlineAutoformatEngine {
 	/**
-	 * Assigns to `editor` to watch for pattern (either by executing that pattern or passing the text to `testCallbackOrPattern` callback).
-	 * It formats found text by executing command `formatCallbackOrCommand` or by running `formatCallbackOrCommand` format callback.
+	 *
+	 * Enables mechanism on given {@link core.editor.Editor} instance to watch for specified pattern (either by executing
+	 * given RegExp or by passing the text to provided callback).
+	 * It formats found text by applying proper attribute or by running provided formatting callback.
+	 * Each time data model changes text from given node (from the beginning of the current node to the collapsed
+	 * selection location) will be tested.
 	 *
 	 * @param {core.editor.Editor} editor Editor instance.
-	 * @param {Function|RegExp} testRegexpOrCallback RegExp to execute on text or test callback returning Object with offsets to
-	 * remove and offsets to format.
-	 *  * Format is applied before deletion,
-	 *	* RegExp literal *must* have 3 capture groups.
+	 * @param {Function|RegExp} testRegexpOrCallback RegExp or callback to execute on text.
+	 * Provided RegExp *must* have three capture groups. First and third capture groups
+	 * should match opening/closing delimiters. Second capture group should match text to format.
 	 *
-	 * Example of object that should be returned from test callback.
+	 *		// Matches `**bold text**` pattern.
+	 *		// There are three matching groups:
+	 *		// - first to match starting `**` delimiter,
+	 *		// - second to match text to format,
+	 *		// - third to match ending `**` delimiter.
+	 *		new InlineAutoformatEngine( this.editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
 	 *
-	 *	{
-	 *		remove: [
-	 *			[ 0, 1 ],
-	 *			[ 5, 6 ]
-	 *		],
-	 *		format: [
-	 *			[ 1, 5 ]
-	 *		],
-	 *	}
+	 * When function is provided instead of RegExp, it will be executed with text to match as a parameter. Function
+	 * should return proper "ranges" to delete and format.
 	 *
-	 * @param {Function|String} formatCallbackOrCommand Name of command to execute on matched text or format callback.
-	 * Format callback gets following parameters:
-	 *  1. {core.editor.Editor} Editor instance,
-	 *  2. {engine.model.Range} Range of matched text to format,
-	 *  3. {engine.model.Batch} Batch to group format operations.
+	 *		{
+	 *			remove: [
+	 *				[ 0, 1 ],	// Remove first letter from given text.
+	 *				[ 5, 6 ]	// Remove 6th letter from given text.
+	 *			],
+	 *			format: [
+	 *				[ 1, 5 ]	// Format all letters from 2nd to 5th.
+	 *			]
+	 *		}
+	 *
+	 * @param {Function|String} attributeOrCallback Name of attribute to apply on matching text or callback for manual
+	 * formatting.
+	 *
+	 *		// Use attribute name:
+	 *		new InlineAutoformatEngine( this.editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
+	 *
+	 *		// Use formatting callback:
+	 *		new InlineAutoformatEngine( this.editor, /(\*\*)([^\*]+?)(\*\*)$/g, ( batch, validRanges ) => {
+	 *			for ( let range of validRanges ) {
+	 *				batch.setAttribute( range, command, true );
+	 *			}
+	 *		} );
 	 */
-	constructor( editor, testRegexpOrCallback, formatCallbackOrCommand ) {
+	constructor( editor, testRegexpOrCallback, attributeOrCallback ) {
 		this.editor = editor;
 
-		let pattern;
+		let regExp;
 		let command;
 		let testCallback;
 		let formatCallback;
 
 		if ( testRegexpOrCallback instanceof RegExp ) {
-			pattern = testRegexpOrCallback;
+			regExp = testRegexpOrCallback;
 		} else {
 			testCallback = testRegexpOrCallback;
 		}
 
-		if ( typeof formatCallbackOrCommand == 'string' ) {
-			command = formatCallbackOrCommand;
+		if ( typeof attributeOrCallback == 'string' ) {
+			command = attributeOrCallback;
 		} else {
-			formatCallback = formatCallbackOrCommand;
+			formatCallback = attributeOrCallback;
 		}
 
 		// A test callback run on changed text.
@@ -68,19 +87,22 @@ export default class InlineAutoformatEngine {
 			let remove = [];
 			let format = [];
 
-			while ( ( result = pattern.exec( text ) ) !== null ) {
+			while ( ( result = regExp.exec( text ) ) !== null ) {
 				// There should be full match and 3 capture groups.
 				if ( result && result.length < 4 ) {
 					break;
 				}
 
-				console.log( result );
-				const {
+				let {
 					index,
 					'1': leftDel,
 					'2': content,
 					'3': rightDel
 				} = result;
+
+				// Real matched string - there might be some non-capturing groups so we need to recalculate starting index.
+				const found = leftDel + content + rightDel;
+				index += result[ 0 ].length - found.length;
 
 				// Start and End offsets of delimiters to remove.
 				const delStart = [
@@ -118,14 +140,12 @@ export default class InlineAutoformatEngine {
 
 			const selection = this.editor.document.selection;
 
-			if ( !selection.isCollapsed || !selection.focus || !selection.focus.textNode ) {
+			if ( !selection.isCollapsed || !selection.focus || !selection.focus.parent ) {
 				return;
 			}
 
-			const textNode = selection.focus.textNode;
-			const text = textNode.data.slice( 0, selection.focus.offset + 1 );
-			const block = textNode.parent;
-
+			const block = selection.focus.parent;
+			const text = getText( block ).slice( 0, selection.focus.offset + 1 );
 			const ranges = testCallback( text );
 			const rangesToFormat = [];
 
@@ -134,7 +154,7 @@ export default class InlineAutoformatEngine {
 				if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
 					return;
 				}
-				rangesToFormat.push( Range.createFromParentsAndOffsets(
+				rangesToFormat.push( LiveRange.createFromParentsAndOffsets(
 					block, range[ 0 ],
 					block, range[ 1 ]
 				) );
@@ -147,7 +167,7 @@ export default class InlineAutoformatEngine {
 					return;
 				}
 
-				rangesToRemove.push( Range.createFromParentsAndOffsets(
+				rangesToRemove.push( LiveRange.createFromParentsAndOffsets(
 					block, range[ 0 ],
 					block, range[ 1 ]
 				) );
@@ -171,4 +191,24 @@ export default class InlineAutoformatEngine {
 			} );
 		} );
 	}
+}
+
+// Returns whole text from parent element by adding all data from text nodes together. If one of the children is not
+// an instance of {@link engine.model.Text} function will return an empty string.
+//
+// @private
+// @param {engine.model.Element} element
+// @returns {String}
+function getText( element ) {
+	let text = '';
+
+	for ( let child of element.getChildren() ) {
+		if ( child instanceof Text ) {
+			text += child.data;
+		} else {
+			return '';
+		}
+	}
+
+	return text;
 }

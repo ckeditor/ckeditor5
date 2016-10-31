@@ -92,57 +92,7 @@ export default class Autoformat extends Feature {
 	 */
 	_addInlineAutoformats() {
 		// Bold text between `**`, e.g. `**text to bold**`.
-		new InlineAutoformatEngine( this.editor, /(\*\*)(.+?)(\*\*)$/g, 'bold' );
-		new InlineAutoformatEngine( this.editor, /(?:[^\*])+(\*)([^\*]+)(\*)$/g, 'italic' );
-		// Italicize text between `*`, e.g. `*text to italicize*`.
-		// Slightly more complicated because of the clashing with the Bold autoformat.
-		// Won't work for text shorter than 3 characters.
-		// new InlineAutoformatEngine(
-		// 	this.editor,
-		// 	( text ) => {
-		// 		// For a text: 'Brown *fox* jumps over the lazy dog' the expression below will return following values:
-		// 		//
-		// 		// 	[0]: ' *fox* ',
-		// 		// 	[1]: ' ',
-		// 		// 	[2]: '*fox*',
-		// 		// 	[index]: 5
-		// 		//
-		// 		// Value at index 1 is a "prefix". It can be empty, if the matched word is at the
-		// 		// beginning of the line. Length of the prefix is used to calculate `start` index.
-		// 		const pattern = /(?:[^\*]|^)(\*[^\*].+?[^\*]\*)(?:[^\*]|$)/g;
-		//
-		// 		let result;
-		// 		let remove = [];
-		// 		let format = [];
-		//
-		// 		while ( ( result = pattern.exec( text ) ) !== null ) {
-		// 			// Add "prefix" length.
-		// 			const start = result.index + result[ 1 ].length;
-		// 			const fullMatchLen = result[ 2 ].length;
-		// 			const delimiterLen = 1; // Length of '*'.
-		//
-		// 			const delStart = [
-		// 				start,
-		// 				start + delimiterLen
-		// 			];
-		// 			const delEnd = [
-		// 				start + fullMatchLen - delimiterLen,
-		// 				start + fullMatchLen
-		// 			];
-		//
-		// 			remove.push( delStart );
-		// 			remove.push( delEnd );
-		//
-		// 			// Calculation of offsets after deletion is not needed.
-		// 			format.push( [ start + delimiterLen, start + fullMatchLen - delimiterLen ] );
-		// 		}
-		//
-		// 		return {
-		// 			remove,
-		// 			format
-		// 		};
-		// 	},
-		// 	'italic'
-		// );
+		new InlineAutoformatEngine( this.editor, /(\*\*|__)([^\*_]+?)(\*\*|__)$/g, 'bold' );
+		new InlineAutoformatEngine( this.editor, /(?:^|[^\*_])(\*|_)([^\*_]+?)(\*|_)$/g, 'italic' );
 	}
 }

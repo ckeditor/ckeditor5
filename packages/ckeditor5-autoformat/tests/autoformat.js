@@ -111,7 +111,7 @@ describe( 'Autoformat', () => {
 				batch.insert( doc.selection.getFirstPosition(), '*' );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph><$text bold="true">foobar[]</$text></paragraph>' );
+			expect( getData( doc ) ).to.equal( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
 		} );
 
 		it( 'should replace both `*` with italic', () => {
@@ -120,7 +120,7 @@ describe( 'Autoformat', () => {
 				batch.insert( doc.selection.getFirstPosition(), '*' );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph><$text italic="true">foobar[]</$text></paragraph>' );
+			expect( getData( doc ) ).to.equal( '<paragraph><$text italic="true">foobar</$text>[]</paragraph>' );
 		} );
 
 		it( 'nothing should be replaces when typing `*`', () => {

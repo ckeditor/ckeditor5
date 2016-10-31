@@ -9,7 +9,6 @@ import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
 import Enter from '/ckeditor5/enter/enter.js';
 import { setData, getData } from '/ckeditor5/engine/dev-utils/model.js';
 import testUtils from '/tests/core/_utils/utils.js';
-import Command from '/ckeditor5/core/command/command.js';
 
 testUtils.createSinonSandbox();
 
@@ -24,61 +23,54 @@ describe( 'InlineAutoformatEngine', () => {
 			editor = newEditor;
 			doc = editor.document;
 			batch = doc.batch();
+			doc.schema.allow( { name: '$inline', attributes: [ 'testAttribute' ] } );
 		} );
 	} );
 
-	describe( 'Command name', () => {
-		it( 'should accept a string pattern', () => {
-			const spy = testUtils.sinon.spy();
-			editor.commands.set( 'testCommand', new TestCommand( editor, spy ) );
-			new InlineAutoformatEngine( editor, '(\\*)(.+?)(\\*)', 'testCommand' );
-
-			setData( doc, '<paragraph>*foobar[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), '*' );
-			} );
-
-			sinon.assert.calledOnce( spy );
-		} );
-
+	describe( 'attribute', () => {
 		it( 'should stop early if there are less than 3 capture groups', () => {
-			const spy = testUtils.sinon.spy();
-			editor.commands.set( 'testCommand', new TestCommand( editor, spy ) );
-			new InlineAutoformatEngine( editor, /(\*)(.+?)\*/g, 'testCommand' );
+			new InlineAutoformatEngine( editor, /(\*)(.+?)\*/g, 'testAttribute' );
 
 			setData( doc, '<paragraph>*foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
 				batch.insert( doc.selection.getFirstPosition(), '*' );
 			} );
 
-			sinon.assert.notCalled( spy );
+			expect( getData( doc ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
 		} );
 
-		it( 'should run a command when the pattern is matched', () => {
-			const spy = testUtils.sinon.spy();
-			editor.commands.set( 'testCommand', new TestCommand( editor, spy ) );
-			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, 'testCommand' );
+		it( 'should apply an attribute when the pattern is matched', () => {
+			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, 'testAttribute' );
 
 			setData( doc, '<paragraph>*foobar[]</paragraph>' );
 			doc.enqueueChanges( () => {
 				batch.insert( doc.selection.getFirstPosition(), '*' );
 			} );
 
-			sinon.assert.calledOnce( spy );
+			expect( getData( doc ) ).to.equal( '<paragraph><$text testAttribute="true">foobar</$text>[]</paragraph>' );
 		} );
 
-		it( 'should remove found pattern', () => {
-			const spy = testUtils.sinon.spy();
-			editor.commands.set( 'testCommand', new TestCommand( editor, spy ) );
-			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, 'testCommand' );
+		it( 'should stop early if selection is not collapsed', () => {
+			new InlineAutoformatEngine( editor, /(\*)(.+?)\*/g, 'testAttribute' );
 
-			setData( doc, '<paragraph>*foobar[]</paragraph>' );
+			setData( doc, '<paragraph>*foob[ar]</paragraph>' );
 			doc.enqueueChanges( () => {
 				batch.insert( doc.selection.getFirstPosition(), '*' );
 			} );
 
-			sinon.assert.calledOnce( spy );
-			expect( getData( doc ) ).to.equal( '<paragraph>foobar[]</paragraph>' );
+			expect( getData( doc ) ).to.equal( '<paragraph>*foob[*ar]</paragraph>' );
+		} );
+
+		it( 'should stop early if there are block elements in the way', () => {
+			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, 'testAttribute' );
+			doc.schema.registerItem( 'widget', '$block' );
+
+			setData( doc, '<paragraph>*foo<paragraph>baz</paragraph>bar[]</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), '*' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph>*foo<paragraph>baz</paragraph>bar*[]</paragraph>' );
 		} );
 	} );
 
@@ -133,50 +125,5 @@ describe( 'InlineAutoformatEngine', () => {
 
 			sinon.assert.notCalled( formatSpy );
 		} );
-
-		it( 'takes text from nested elements', () => {
-			const formatSpy = testUtils.sinon.spy();
-			const testStub = testUtils.sinon.stub().returns( {
-				format: [],
-				remove: []
-			} );
-
-			new InlineAutoformatEngine( editor, testStub, formatSpy );
-
-			setData( doc, '<paragraph><paragraph>foobar[]</paragraph></paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), ' ' );
-			} );
-
-			sinon.assert.called( testStub );
-			sinon.assert.notCalled( formatSpy );
-			sinon.assert.calledWith( testStub, 'foobar' );
-		} );
 	} );
 } );
-
-/**
- * Dummy command to execute.
- */
-class TestCommand extends Command {
-	/**
-	 * Creates an instance of the command.
-	 *
-	 * @param {core.editor.Editor} editor Editor instance.
-	 * @param {Function} onExecuteCallback _doExecute call hook
-	 */
-	constructor( editor, onExecuteCallback ) {
-		super( editor );
-
-		this.onExecute = onExecuteCallback;
-	}
-
-	/**
-	 * Executes command.
-	 *
-	 * @protected
-	 */
-	_doExecute() {
-		this.onExecute();
-	}
-}
