@@ -296,7 +296,15 @@ export default class Renderer {
 		// "FILLER{}"
 		// "FILLERadded-text{}"
 
-		const { parent: domParent } = this.domConverter.viewPositionToDom( this.selection.getFirstPosition() );
+		const selectionPosition = this.selection.getFirstPosition();
+
+		// If we cannot convert this position's parent it means that selection is in not yet rendered
+		// node, which means that the filler can't be there.
+		if ( !this.domConverter.getCorrespondingDom( selectionPosition.parent ) ) {
+			return false;
+		}
+
+		const { parent: domParent } = this.domConverter.viewPositionToDom( selectionPosition );
 
 		if ( this.domConverter.isText( domParent ) && startsWithFiller( domParent ) ) {
 			return true;
