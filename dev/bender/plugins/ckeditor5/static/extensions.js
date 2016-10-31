@@ -16,6 +16,8 @@
 
 		if ( moduleId[ 0 ] == '/' ) {
 			url = basePath + url;
+		} else if ( moduleId.startsWith( 'ckeditor5' ) || moduleId.startsWith( 'tests' ) || moduleId.startsWith( 'theme' ) ) {
+			url = basePath + '/' + url;
 		}
 
 		return load( context, moduleId, url );

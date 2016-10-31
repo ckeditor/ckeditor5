@@ -7,6 +7,7 @@
 
 'use strict';
 
+const path = require( 'path' );
 const gulp = require( 'gulp' );
 const runSequence = require( 'run-sequence' );
 
@@ -168,4 +169,20 @@ gulp.task( 'docs:clean', docsBuilder.clean );
 gulp.task( 'docs:build', docsBuilder.buildDocs );
 gulp.task( 'docs:editors', [ 'compile:js:esnext', 'compile:themes:esnext' ], () => {
 	return docsBuilder.buildEditorsForSamples( getCKEditor5PackagesPaths(), config.DOCUMENTATION.SAMPLES );
+} );
+
+// Tests. ---------------------------------------------------------------------
+
+gulp.task( 'test', () => {
+	const ckeditor5DevTests = require( '@ckeditor/ckeditor5-dev-tests' );
+	const options = ckeditor5DevTests.utils.parseArguments();
+
+	options.rootPath = path.resolve( config.MODULE_DIR.esnext );
+
+	if ( !options.paths ) {
+		options.paths = ckeditor5DevCompiler.utils.getPackages( '.' )
+			.map( ( packagePath ) => ckeditor5DevTests.utils.getPackageName( path.resolve( packagePath ) ) );
+	}
+
+	return ckeditor5DevTests.tests.test( options );
 } );
