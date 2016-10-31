@@ -291,7 +291,7 @@ class Insertion {
 
 			// OK:  <p>xx[]</p> + <p>yy</p> => <p>xx[]yy</p> (when sticks to previous)
 			// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
-			position = new LivePosition( this.position.root, this.position.path, 'STICKS_TO_PREVIOUS' );
+			position = new LivePosition( this.position.root, this.position.path, 'sticksToPrevious' );
 
 			this.batch.merge( mergePosRight );
 

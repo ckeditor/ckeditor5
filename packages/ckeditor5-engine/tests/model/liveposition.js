@@ -89,10 +89,13 @@ describe( 'LivePosition', () => {
 	} );
 
 	describe( 'should get transformed if', () => {
-		let live;
+		let live, spy;
 
 		beforeEach( () => {
 			live = new LivePosition( root, [ 1, 4, 6 ] );
+
+			spy = sinon.spy();
+			live.on( 'change', spy );
 		} );
 
 		afterEach( () => {
@@ -106,6 +109,7 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.path ).to.deep.equal( [ 1, 4, 9 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is at the same position and live position is sticking to right side', () => {
@@ -114,6 +118,7 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.path ).to.deep.equal( [ 1, 4, 9 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is before a node from the live position path', () => {
@@ -122,6 +127,7 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.path ).to.deep.equal( [ 1, 6, 6 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 		} );
 
@@ -137,6 +143,7 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( [ 1, 4, 9 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is at the same position and live position is sticking to right side', () => {
@@ -150,6 +157,7 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( [ 1, 4, 9 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is at a position before a node from the live position path', () => {
@@ -163,6 +171,7 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( [ 1, 6, 6 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is from the same parent and closer offset', () => {
@@ -176,6 +185,7 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( [ 1, 4, 2 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is from a position before a node from the live position path', () => {
@@ -189,6 +199,7 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( [ 1, 0, 6 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'contains live position (same level)', () => {
@@ -202,6 +213,7 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( [ 2, 2 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'contains live position (deep)', () => {
@@ -215,12 +227,13 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( [ 2, 1, 6 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 		} );
 	} );
 
 	describe( 'should not get transformed if', () => {
-		let path, otherRoot;
+		let path, otherRoot, spy;
 
 		before( () => {
 			path = [ 1, 4, 6 ];
@@ -231,6 +244,9 @@ describe( 'LivePosition', () => {
 
 		beforeEach( () => {
 			live = new LivePosition( root, path );
+
+			spy = sinon.spy();
+			live.on( 'change', spy );
 		} );
 
 		afterEach( () => {
@@ -244,17 +260,22 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.path ).to.deep.equal( path );
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is at the same position and live position is sticking to left side', () => {
-				let live = new LivePosition( root, path, 'STICKS_TO_PREVIOUS' );
+				let newLive = new LivePosition( root, path, 'sticksToPrevious' );
+				spy = sinon.spy();
+				newLive.on( 'change', spy );
+
 				let insertRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
-				expect( live.path ).to.deep.equal( path );
+				expect( newLive.path ).to.deep.equal( path );
+				expect( spy.called ).to.be.false;
 
-				live.detach();
+				newLive.detach();
 			} );
 
 			it( 'is after a node from the position path', () => {
@@ -263,6 +284,7 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.path ).to.deep.equal( path );
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is in different root', () => {
@@ -271,6 +293,7 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.path ).to.deep.equal( path );
+				expect( spy.called ).to.be.false;
 			} );
 		} );
 
@@ -286,10 +309,14 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( path );
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is at the same position and live position is sticking to left side', () => {
-				let live = new LivePosition( root, path, 'STICKS_TO_PREVIOUS' );
+				let newLive = new LivePosition( root, path, 'sticksToPrevious' );
+				spy = sinon.spy();
+				newLive.on( 'change', spy );
+
 				let moveSource = new Position( root, [ 2 ] );
 				let moveRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
@@ -299,9 +326,10 @@ describe( 'LivePosition', () => {
 				};
 				doc.fire( 'change', 'move', changes, null );
 
-				expect( live.path ).to.deep.equal( path );
+				expect( newLive.path ).to.deep.equal( path );
+				expect( spy.called ).to.be.false;
 
-				live.detach();
+				newLive.detach();
 			} );
 
 			it( 'is at a position after a node from the live position path', () => {
@@ -315,6 +343,7 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( path );
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is from the same parent and further offset', () => {
@@ -328,6 +357,7 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( path );
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is from a position after a node from the live position path', () => {
@@ -341,6 +371,7 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( path );
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is to different root', () => {
@@ -354,6 +385,7 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( path );
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is from different root', () => {
@@ -367,6 +399,7 @@ describe( 'LivePosition', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.path ).to.deep.equal( path );
+				expect( spy.called ).to.be.false;
 			} );
 		} );
 
@@ -381,6 +414,7 @@ describe( 'LivePosition', () => {
 			doc.fire( 'change', 'setAttribute', changes, null );
 
 			expect( live.path ).to.deep.equal( path );
+			expect( spy.called ).to.be.false;
 		} );
 	} );
 } );
