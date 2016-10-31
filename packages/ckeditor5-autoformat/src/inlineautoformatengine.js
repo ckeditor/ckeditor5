@@ -4,7 +4,6 @@
  */
 
 import LiveRange from '../engine/model/liverange.js';
-import Text from '../engine/model/text.js';
 import getSchemaValidRanges from '../core/command/helpers/getschemavalidranges.js';
 
 /**
@@ -193,22 +192,11 @@ export default class InlineAutoformatEngine {
 	}
 }
 
-// Returns whole text from parent element by adding all data from text nodes together. If one of the children is not
-// an instance of {@link engine.model.Text} function will return an empty string.
+// Returns whole text from parent element by adding all data from text nodes together.
 //
 // @private
 // @param {engine.model.Element} element
 // @returns {String}
 function getText( element ) {
-	let text = '';
-
-	for ( let child of element.getChildren() ) {
-		if ( child instanceof Text ) {
-			text += child.data;
-		} else {
-			return '';
-		}
-	}
-
-	return text;
+	return Array.from( element.getChildren() ).reduce( ( a, b ) => a + b.data, '' );
 }

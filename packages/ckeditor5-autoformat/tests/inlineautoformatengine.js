@@ -60,18 +60,6 @@ describe( 'InlineAutoformatEngine', () => {
 
 			expect( getData( doc ) ).to.equal( '<paragraph>*foob[*ar]</paragraph>' );
 		} );
-
-		it( 'should stop early if there are block elements in the way', () => {
-			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, 'testAttribute' );
-			doc.schema.registerItem( 'widget', '$block' );
-
-			setData( doc, '<paragraph>*foo<paragraph>baz</paragraph>bar[]</paragraph>' );
-			doc.enqueueChanges( () => {
-				batch.insert( doc.selection.getFirstPosition(), '*' );
-			} );
-
-			expect( getData( doc ) ).to.equal( '<paragraph>*foo<paragraph>baz</paragraph>bar*[]</paragraph>' );
-		} );
 	} );
 
 	describe( 'Callback', () => {

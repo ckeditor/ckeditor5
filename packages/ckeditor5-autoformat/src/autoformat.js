@@ -81,9 +81,9 @@ export default class Autoformat extends Feature {
 	 * @private
 	 */
 	_addInlineAutoformats() {
-		new InlineAutoformatEngine( this.editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
-		new InlineAutoformatEngine( this.editor, /(__)([^_]+?)(__)$/g, 'bold' );
-		new InlineAutoformatEngine( this.editor, /(?:^|[^\*])(\*)([^\*_]+?)(\*)$/g, 'italic' );
-		new InlineAutoformatEngine( this.editor, /(?:^|[^_])(_)([^_]+?)(_)$/g, 'italic' );
+		new InlineAutoformatEngine( this.editor, /(\*\*)([^\*]+)(\*\*)$/g, 'bold' );
+		new InlineAutoformatEngine( this.editor, /(__)([^_]+)(__)$/g, 'bold' );
+		new InlineAutoformatEngine( this.editor, /(?:^|[^\*])(\*)([^\*_]+)(\*)$/g, 'italic' );
+		new InlineAutoformatEngine( this.editor, /(?:^|[^_])(_)([^_]+)(_)$/g, 'italic' );
 	}
 }
