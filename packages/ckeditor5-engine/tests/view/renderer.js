@@ -640,7 +640,7 @@ describe( 'Renderer', () => {
 			renderer.markToSync( 'children', viewP2 );
 			renderer.render();
 
-			// Step 3: Check whether in the first paragrpah there's a <br> filler and that
+			// Step 3: Check whether in the first paragraph there's a <br> filler and that
 			// in the second one there are two <b> tags.
 			expect( domP.childNodes.length ).to.equal( 1 );
 			expect( isBlockFiller( domP.childNodes[ 0 ], BR_FILLER ) ).to.be.true;
@@ -648,6 +648,39 @@ describe( 'Renderer', () => {
 			expect( domP2.childNodes.length ).to.equal( 2 );
 			expect( domP2.childNodes[ 0 ].tagName.toLowerCase() ).to.equal( 'b' );
 			expect( domP2.childNodes[ 1 ].tagName.toLowerCase() ).to.equal( 'b' );
+		} );
+
+		// Test for an edge case in the _isSelectionInInlineFiller which can be triggered like
+		// in one of ckeditor/ckeditor5-typing#59 automated tests.
+		it( 'should not break when selection is moved to a new element, when filler exists', () => {
+			// Step 1: <p>bar<b>"FILLER{}"</b></p>
+			const { view: viewP, selection: newSelection } = parse( '<container:p>bar<attribute:b>[]</attribute:b></container:p>' );
+			viewRoot.appendChildren( viewP );
+			selection.setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			expect( domP.childNodes.length ).to.equal( 2 );
+			expect( domP.childNodes[ 1 ].childNodes[ 0 ].data ).to.equal( INLINE_FILLER );
+
+			// Step 2: Move selection to a new attribute element and remove the previous one
+			viewP.removeChildren( 1 ); // Remove <b>.
+
+			const viewI = parse( '<attribute:i></attribute:i>' );
+			viewP.appendChildren( viewI );
+
+			selection.removeAllRanges();
+			selection.addRange( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			// Step 3: Check whether new filler was created in the <i> element.
+			expect( domP.childNodes.length ).to.equal( 2 );
+			expect( domP.childNodes[ 1 ].tagName.toLowerCase() ).to.equal( 'i' );
+			expect( domP.childNodes[ 1 ].childNodes[ 0 ].data ).to.equal( INLINE_FILLER );
 		} );
 
 		it( 'should handle typing in empty block, do nothing if changes are already applied', () => {
