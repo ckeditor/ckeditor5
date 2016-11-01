@@ -21,13 +21,16 @@ import { parse } from '/ckeditor5/engine/dev-utils/view.js';
 testUtils.createSinonSandbox();
 
 describe( 'SelectionObserver', () => {
-	let viewDocument, viewRoot, mutationObserver, selectionObserver, listenter;
+	let viewDocument, viewRoot, mutationObserver, selectionObserver, listenter, domRoot;
 
 	before( () => {
+		domRoot = document.createElement( 'div' );
+		domRoot.innerHTML = `<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>`;
+		document.body.appendChild( domRoot );
+
 		listenter = Object.create( EmitterMixin );
 
 		viewDocument = new ViewDocument();
-
 		viewDocument.createRoot( document.getElementById( 'main' ) );
 
 		mutationObserver = viewDocument.getObserver( MutationObserver );
@@ -40,6 +43,10 @@ describe( 'SelectionObserver', () => {
 			'<container:p>yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy</container:p>' ) );
 
 		viewDocument.render();
+	} );
+
+	after( () => {
+		domRoot.parentElement.removeChild( domRoot );
 	} );
 
 	beforeEach( ( done ) => {
