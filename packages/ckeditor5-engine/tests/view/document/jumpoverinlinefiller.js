@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
+/* globals document, Range */
 /* bender-tags: view, browser-only */
 
 import ViewRange from '/ckeditor5/engine/view/range.js';
@@ -18,9 +18,8 @@ import { parse, setData } from '/ckeditor5/engine/dev-utils/view.js';
 describe( 'Document', () => {
 	let viewDocument, domRoot;
 
-	before( () => {
+	beforeEach( () => {
 		domRoot = createElement( document, 'div', {
-			id: 'editor',
 			contenteditable: 'true'
 		} );
 		document.body.appendChild( domRoot );
@@ -33,7 +32,10 @@ describe( 'Document', () => {
 		viewDocument.isFocused = true;
 	} );
 
-	after( () => {
+	afterEach( () => {
+		// There's no destroy() method yet, so let's at least kill the observers.
+		viewDocument.disableObservers();
+
 		domRoot.parentElement.removeChild( domRoot );
 	} );
 
@@ -44,10 +46,11 @@ describe( 'Document', () => {
 
 			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: viewDocument.domRoots.get( 'main' ) } );
 
-			const domRange = document.getSelection().getRangeAt( 0 );
-			expect( isInlineFiller( domRange.startContainer ) ).to.be.true;
-			expect( domRange.startOffset ).to.equal( 0 );
-			expect( domRange.collapsed ).to.be.true;
+			const domSelection = document.getSelection();
+
+			expect( domSelection.anchorNode.data ).to.equal( 'foo' );
+			expect( domSelection.anchorOffset ).to.equal( 3 );
+			expect( domSelection.isCollapsed ).to.be.true;
 		} );
 
 		it( 'should do nothing when another key is pressed', () => {
@@ -56,10 +59,11 @@ describe( 'Document', () => {
 
 			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowright, domTarget: viewDocument.domRoots.get( 'main' ) } );
 
-			const domRange = document.getSelection().getRangeAt( 0 );
-			expect( isInlineFiller( domRange.startContainer ) ).to.be.true;
-			expect( domRange.startOffset ).to.equal( INLINE_FILLER_LENGTH );
-			expect( domRange.collapsed ).to.be.true;
+			const domSelection = document.getSelection();
+
+			expect( isInlineFiller( domSelection.anchorNode ) ).to.be.true;
+			expect( domSelection.anchorOffset ).to.equal( INLINE_FILLER_LENGTH );
+			expect( domSelection.isCollapsed ).to.be.true;
 		} );
 
 		it( 'should do nothing if range is not collapsed', () => {
@@ -68,43 +72,57 @@ describe( 'Document', () => {
 
 			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: viewDocument.domRoots.get( 'main' ) } );
 
-			const domRange = document.getSelection().getRangeAt( 0 );
-			expect( domRange.startContainer.data ).to.equal( 'x' );
-			expect( domRange.startOffset ).to.equal( 0 );
-			expect( domRange.endContainer.data ).to.equal( 'x' );
-			expect( domRange.endOffset ).to.equal( 1 );
+			const domSelection = document.getSelection();
+
+			expect( domSelection.anchorNode.data ).to.equal( 'x' );
+			expect( domSelection.anchorOffset ).to.equal( 0 );
+			expect( domSelection.focusNode.data ).to.equal( 'x' );
+			expect( domSelection.focusOffset ).to.equal( 1 );
 		} );
 
-		it( 'should do nothing if node does not start with filler', () => {
-			setData( viewDocument, '<container:p>foo<attribute:b>{}x</attribute:b>bar</container:p>' );
-			viewDocument.render();
+		// See #664
+		// it( 'should do nothing if node does not start with the filler', () => {
+		// 	setData( viewDocument, '<container:p>foo<attribute:b>{}x</attribute:b>bar</container:p>' );
+		// 	viewDocument.render();
 
-			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: viewDocument.domRoots.get( 'main' ) } );
+		// 	viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: viewDocument.domRoots.get( 'main' ) } );
 
-			const domRange = document.getSelection().getRangeAt( 0 );
-			expect( domRange.startContainer.data ).to.equal( 'x' );
-			expect( domRange.startOffset ).to.equal( 0 );
-			expect( domRange.collapsed ).to.be.true;
-		} );
+		// 	const domSelection = document.getSelection();
 
-		it( 'should do nothing if caret is not directly before filler', () => {
+		// 	expect( domSelection.anchorNode.data ).to.equal( 'x' );
+		// 	expect( domSelection.anchorOffset ).to.equal( INLINE_FILLER_LENGTH );
+		// 	expect( domSelection.isCollapsed ).to.be.true;
+		// } );
+
+		it( 'should do nothing if caret is not directly before the filler', () => {
 			setData( viewDocument, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 			viewDocument.render();
 
-			// '<container:p>foo<attribute:b>x{}</attribute:b>bar</container:p>'
+			// Insert a letter to the <b>: '<container:p>foo<attribute:b>x{}</attribute:b>bar</container:p>'
+			// Do this both in the view and in the DOM to simulate typing and to avoid rendering (which would remove the filler).
 			const viewB = viewDocument.selection.getFirstPosition().parent;
 			const viewTextX = parse( 'x' );
 			viewB.appendChildren( viewTextX );
 			viewDocument.selection.removeAllRanges();
 			viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewTextX, 1, viewTextX, 1 ) );
+
+			const domB = viewDocument.getDomRoot( 'main' ).querySelector( 'b' );
+			const domSelection = document.getSelection();
+			domB.childNodes[ 0 ].data += 'x';
+
+			const domRange = new Range();
+			domSelection.removeAllRanges();
+			domRange.setStart( domB.childNodes[ 0 ], INLINE_FILLER_LENGTH + 1 );
+			domRange.collapse( true );
+			domSelection.addRange( domRange );
+
 			viewDocument.render();
 
 			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: viewDocument.domRoots.get( 'main' ) } );
 
-			const domRange = document.getSelection().getRangeAt( 0 );
-			expect( startsWithFiller( domRange.startContainer ) ).to.be.true;
-			expect( domRange.startOffset ).to.equal( INLINE_FILLER_LENGTH + 1 );
-			expect( domRange.collapsed ).to.be.true;
+			expect( startsWithFiller( domSelection.anchorNode ) ).to.be.true;
+			expect( domSelection.anchorOffset ).to.equal( INLINE_FILLER_LENGTH + 1 );
+			expect( domSelection.isCollapsed ).to.be.true;
 		} );
 	} );
 } );

@@ -93,9 +93,7 @@ describe( 'Delete utils', () => {
 			} );
 
 			it( 'deletes characters (first half has attrs)', () => {
-				setData( doc, '<$text bold="true">fo[o</$text>b]ar', { selectionAttributes: {
-					bold: true
-				} } );
+				setData( doc, '<$text bold="true">fo[o</$text>b]ar' );
 
 				deleteContents( doc.batch(), doc.selection );
 
@@ -104,9 +102,7 @@ describe( 'Delete utils', () => {
 			} );
 
 			it( 'deletes characters (2nd half has attrs)', () => {
-				setData( doc, 'fo[o<$text bold="true">b]ar</$text>', { selectionAttributes: {
-					bold: true
-				} } );
+				setData( doc, 'fo[o<$text bold="true">b]ar</$text>' );
 
 				deleteContents( doc.batch(), doc.selection );
 
@@ -115,15 +111,7 @@ describe( 'Delete utils', () => {
 			} );
 
 			it( 'clears selection attrs when emptied content', () => {
-				setData(
-					doc,
-					'<paragraph>x</paragraph><paragraph>[<$text bold="true">foo</$text>]</paragraph><paragraph>y</paragraph>',
-					{
-						selectionAttributes: {
-							bold: true
-						}
-					}
-				);
+				setData( doc, '<paragraph>x</paragraph><paragraph>[<$text bold="true">foo</$text>]</paragraph><paragraph>y</paragraph>' );
 
 				deleteContents( doc.batch(), doc.selection );
 
@@ -132,9 +120,15 @@ describe( 'Delete utils', () => {
 			} );
 
 			it( 'leaves selection attributes when text contains them', () => {
-				setData( doc, '<paragraph>x<$text bold="true">a[foo]b</$text>y</paragraph>', { selectionAttributes: {
-					bold: true
-				} } );
+				setData(
+					doc,
+					'<paragraph>x<$text bold="true">a[foo]b</$text>y</paragraph>',
+					{
+						selectionAttributes: {
+							bold: true
+						}
+					}
+				);
 
 				deleteContents( doc.batch(), doc.selection );
 
