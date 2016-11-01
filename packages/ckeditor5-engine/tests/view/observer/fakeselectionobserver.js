@@ -5,6 +5,7 @@
 
 /* globals document */
 
+import createElement from '/ckeditor5/utils/dom/createelement.js';
 import FakeSelectionObserver from '/ckeditor5/engine/view/observer/fakeselectionobserver.js';
 import ViewDocument from '/ckeditor5/engine/view/document.js';
 import DomEventData from '/ckeditor5/engine/view/observer/domeventdata.js';
@@ -15,10 +16,22 @@ describe( 'FakeSelectionObserver', () => {
 	let observer;
 	let viewDocument;
 	let root;
+	let domRoot;
+
+	before( () => {
+		domRoot = createElement( document, 'div', {
+			contenteditable: 'true'
+		} );
+		document.body.appendChild( domRoot );
+	} );
+
+	after( () => {
+		domRoot.parentElement.removeChild( domRoot );
+	} );
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument();
-		root = viewDocument.createRoot( document.getElementById( 'main' ) );
+		root = viewDocument.createRoot( domRoot );
 		observer = viewDocument.getObserver( FakeSelectionObserver );
 		viewDocument.selection.setFake();
 	} );
