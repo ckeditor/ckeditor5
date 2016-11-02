@@ -20,3 +20,10 @@
 1. Focus somewhere in the middle of text.
 2. Write "emd" and press <kbd>space</kbd>.
 3. Safari autocorrect should change "emd" to "end" and selection should be placed after space character.
+
+#### Empty inline attributes
+
+1. Focus selection at "ins^tance".
+2. Use "Bold" feature.
+3. Type a letter.
+4. Selection should be placed after typed letter, "Bold" button should be on, next typed letters should be bold.
