@@ -178,7 +178,7 @@ gulp.task( 'test', () => {
 	return tests.tasks.test( getTestOptions() );
 } );
 
-// Requires compiled sources. Task should be used parallel with `gulp compile --formats=esnext --watch`.
+// Requires compiled sources. Task should be used in parallel with `gulp compile --formats=esnext --watch`.
 gulp.task( 'test:server', () => {
 	const options = getTestOptions();
 	options.sourcePath = path.resolve( config.MODULE_DIR.esnext );
