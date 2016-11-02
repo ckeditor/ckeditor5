@@ -14,7 +14,7 @@ import isPlainObject from '../../utils/lib/lodash/isPlainObject.js';
  *
  * Editing engine does not define fixed HTML DTD. This is why the type of the {@link engine.view.Element} need to
  * be defined by the feature developer. Creating an element you should use {@link engine.view.ContainerElement}
- * class or {@link engine.view.AttributeElement}.
+ * class, {@link engine.view.AttributeElement} class or {@link engine.view.EmptyElement} class.
  *
  * Note that for view elements which are not created from model, like elements from mutations, paste or
  * {@link engine.controller.DataController#set data.set} it is not possible to define the type of the element, so
@@ -138,7 +138,7 @@ export default class Element extends Node {
 			}
 		}
 
-		// ContainerElement and AttributeElement should be also cloned properly.
+		// ContainerElement, AttributeElement and EmptyElement should be also cloned properly.
 		const cloned = new this.constructor( this.name, this._attrs, childrenClone );
 
 		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
