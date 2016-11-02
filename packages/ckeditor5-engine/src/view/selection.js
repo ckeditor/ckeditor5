@@ -290,6 +290,14 @@ export default class Selection {
 	 * @returns {Boolean} `true` if selections are equal, `false` otherwise.
 	 */
 	isEqual( otherSelection ) {
+		if ( this.isFake != otherSelection.isFake ) {
+			return false;
+		}
+
+		if ( this.isFake && this.fakeSelectionLabel != otherSelection.fakeSelectionLabel ) {
+			return false;
+		}
+
 		if ( this.rangeCount != otherSelection.rangeCount ) {
 			return false;
 		} else if ( this.rangeCount === 0 ) {
@@ -297,14 +305,6 @@ export default class Selection {
 		}
 
 		if ( !this.anchor.isEqual( otherSelection.anchor ) || !this.focus.isEqual( otherSelection.focus ) ) {
-			return false;
-		}
-
-		if ( this.isFake != otherSelection.isFake ) {
-			return false;
-		}
-
-		if ( this.isFake && this.fakeSelectionLabel != otherSelection.fakeSelectionLabel ) {
 			return false;
 		}
 
