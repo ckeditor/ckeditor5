@@ -10,6 +10,8 @@
  * @namespace engine.conversion.viewSelectionToModel
  */
 
+import ModelSelection from '../model/selection.js';
+
 /**
  * Function factory, creates a callback function which converts a {@link engine.view.Selection view selection} taken
  * from the {@link engine.view.Document#selectionChange} event and sets in on the {@link engine.model.Document#selection model}.
@@ -26,15 +28,21 @@
  */
 export function convertSelectionChange( modelDocument, mapper ) {
 	return ( evt, data ) => {
-		modelDocument.enqueueChanges( () => {
-			const viewSelection = data.newSelection;
-			const ranges = [];
+		const viewSelection = data.newSelection;
+		const modelSelection = new ModelSelection();
 
-			for ( let viewRange of viewSelection.getRanges() ) {
-				ranges.push( mapper.toModelRange( viewRange ) );
-			}
+		const ranges = [];
 
-			modelDocument.selection.setRanges( ranges, viewSelection.isBackward );
-		} );
+		for ( let viewRange of viewSelection.getRanges() ) {
+			ranges.push( mapper.toModelRange( viewRange ) );
+		}
+
+		modelSelection.setRanges( ranges, viewSelection.isBackward );
+
+		if ( !modelSelection.isEqual( modelDocument.selection ) ) {
+			modelDocument.enqueueChanges( () => {
+				modelDocument.selection.setTo( modelSelection );
+			} );
+		}
 	};
 }
