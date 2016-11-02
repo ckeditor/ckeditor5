@@ -102,6 +102,9 @@ export default class SelectionObserver extends Observer {
 		}
 
 		domDocument.addEventListener( 'selectionchange', () => this._handleSelectionChange( domDocument ) );
+		domDocument.addEventListener( 'keydown', () => this._clearInfiniteLoop() );
+		domDocument.addEventListener( 'mousemove', () => this._clearInfiniteLoop() );
+		domDocument.addEventListener( 'mousedown', () => this._clearInfiniteLoop() );
 
 		this._documents.add( domDocument );
 	}
@@ -180,6 +183,17 @@ export default class SelectionObserver extends Observer {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Clears `SelectionObserver` internal properties connected with preventing infinite loop.
+	 *
+	 * @private
+	 */
+	_clearInfiniteLoop() {
+		this._lastSelection = null;
+		this._lastButOneSelection = null;
+		this._loopbackCounter = 0;
 	}
 }
 
