@@ -19,7 +19,7 @@ import ViewElement from '/ckeditor5/engine/view/element.js';
 import ViewContainerElement from '/ckeditor5/engine/view/containerelement.js';
 import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
 import ViewText from '/ckeditor5/engine/view/text.js';
-import viewWriter from  '/ckeditor5/engine/view/writer.js';
+import viewWriter from '/ckeditor5/engine/view/writer.js';
 import ViewPosition from '/ckeditor5/engine/view/position.js';
 import ViewRange from '/ckeditor5/engine/view/range.js';
 
