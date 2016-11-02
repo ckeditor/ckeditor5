@@ -264,7 +264,7 @@ class MutationHandler {
 
 		this._insert( modelPos, insertedText );
 
-		this.editing.model.selection.collapse( modelPos.parent, 'end' );
+		this.editing.model.selection.collapse( modelPos.getShiftedBy( insertedText.length ) );
 	}
 
 	_insert( position, text ) {
