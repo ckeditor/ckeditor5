@@ -671,7 +671,7 @@ describe( 'Selection', () => {
 			selection.addRange( range2 );
 
 			const otherSelection = new Selection();
-			otherSelection.addRange( range1 );
+			otherSelection.addRange( range2 );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );

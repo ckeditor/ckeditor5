@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals setTimeout, Range, document */
+/* globals setTimeout, Range, document, KeyboardEvent, MouseEvent */
 /* bender-tags: view, browser-only */
 
 import ViewRange from '/ckeditor5/engine/view/range.js';
@@ -162,71 +162,90 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should not be treated as an infinite loop if the position is different', ( done ) => {
-		let counter = 30;
-
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
 
-		listenter.listenTo( viewDocument, 'selectionChange', () => {
-			counter--;
+		let counter = 0;
 
-			if ( counter > 0 ) {
-				setTimeout( () => changeCollapsedDomSelection( counter ) );
-			} else {
-				done();
+		const spy = testUtils.sinon.spy( log, 'warn' );
+
+		listenter.listenTo( viewDocument, 'selectionChange', () => {
+			counter++;
+
+			if ( counter < 15 ) {
+				setTimeout( changeCollapsedDomSelection, 100 );
 			}
 		} );
 
-		changeCollapsedDomSelection( counter );
+		changeCollapsedDomSelection();
+
+		setTimeout( () => {
+			expect( spy.called ).to.be.false;
+			done();
+		}, 1500 );
 	} );
 
-	it( 'should not be treated as an infinite loop if it is less then 3 times', ( done ) => {
-		let counter = 3;
-
+	it( 'should not be treated as an infinite loop if selection is changed only few times', ( done ) => {
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
 
-		listenter.listenTo( viewDocument, 'selectionChange', () => {
-			counter--;
+		const spy = testUtils.sinon.spy( log, 'warn' );
 
-			if ( counter > 0 ) {
-				setTimeout( () => changeDomSelection() );
-			} else {
-				done();
-			}
-		} );
+		for ( let i = 0; i < 4; i++ ) {
+			changeDomSelection();
+		}
 
-		changeDomSelection();
+		setTimeout( () => {
+			expect( spy.called ).to.be.false;
+			done();
+		}, 1500 );
 	} );
 
-	it( 'should call render after selection change which reset selection if it was not changed', ( done ) => {
-		const viewBar = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
-		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewBar, 0, viewBar, 1 ) );
+	const events = {
+		keydown: KeyboardEvent,
+		mousedown: MouseEvent,
+		mousemove: MouseEvent
+	};
 
-		listenter.listenTo( viewDocument, 'selectionChange', () => {
-			setTimeout( () => {
-				const domSelection = document.getSelection();
+	for ( let event in events ) {
+		it( 'should not be treated as an infinite loop if change is triggered by ' + event + ' event', ( done ) => {
+			let counter = 0;
 
-				expect( domSelection.rangeCount ).to.equal( 1 );
+			const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+			viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
 
-				const domRange = domSelection.getRangeAt( 0 );
-				const domBar = document.getElementById( 'main' ).childNodes[ 1 ].childNodes[ 0 ];
+			const spy = testUtils.sinon.spy( log, 'warn' );
 
-				expect( domRange.startContainer ).to.equal( domBar );
-				expect( domRange.startOffset ).to.equal( 0 );
-				expect( domRange.endContainer ).to.equal( domBar );
-				expect( domRange.endOffset ).to.equal( 1 );
+			listenter.listenTo( viewDocument, 'selectionChange', () => {
+				counter++;
 
-				done();
+				if ( counter < 15 ) {
+					setTimeout( () => {
+						document.dispatchEvent( new events[ event ]( event ) );
+						changeDomSelection();
+					}, 100 );
+				}
 			} );
-		} );
 
-		changeDomSelection();
-	} );
+			setTimeout( () => {
+				expect( spy.called ).to.be.false;
+				done();
+			}, 1000 );
+
+			document.dispatchEvent( new events[ event ]( event ) );
+			changeDomSelection();
+		} );
+	}
 } );
 
-function changeCollapsedDomSelection( pos = 1 ) {
+function changeCollapsedDomSelection() {
 	const domSelection = document.getSelection();
+	const pos = domSelection.anchorOffset + 1;
+
+	if ( pos > 20 ) {
+		return;
+	}
+
 	domSelection.removeAllRanges();
 	const domFoo = document.getElementById( 'main' ).childNodes[ 0 ].childNodes[ 0 ];
 	const domRange = new Range();

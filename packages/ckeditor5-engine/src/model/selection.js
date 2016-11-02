@@ -125,7 +125,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Checks whether, this selection is equal to given selection. Selections are equal if they have same directions,
+	 * Checks whether this selection is equal to given selection. Selections are equal if they have same directions,
 	 * same number of ranges and all ranges from one selection equal to a range from other selection.
 	 *
 	 * @param {engine.model.Selection} otherSelection Selection to compare with.

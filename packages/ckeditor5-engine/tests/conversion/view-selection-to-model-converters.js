@@ -106,4 +106,20 @@ describe( 'convertSelectionChange', () => {
 		expect( modelGetData( model ) ).to.equal( '<paragraph>f[o]o</paragraph><paragraph>b[a]r</paragraph>' );
 		expect( model.selection.isBackward ).to.true;
 	} );
+
+	it( 'should not enqueue changes if selection has not changed', () => {
+		const viewSelection = new ViewSelection();
+		viewSelection.addRange( ViewRange.createFromParentsAndOffsets(
+			viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 1 ) );
+
+		convertSelection( null, { newSelection: viewSelection } );
+
+		const spy = sinon.spy();
+
+		model.on( 'changesDone', spy );
+
+		convertSelection( null, { newSelection: viewSelection } );
+
+		expect( spy.called ).to.be.false;
+	} );
 } );
