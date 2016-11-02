@@ -175,18 +175,18 @@ gulp.task( 'docs:editors', [ 'compile:js:esnext', 'compile:themes:esnext' ], () 
 const tests = require( '@ckeditor/ckeditor5-dev-tests' );
 
 gulp.task( 'test', () => {
-	return tests.tasks.test( getKarmaOptions() );
+	return tests.tasks.test( getTestOptions() );
 } );
 
 // Requires compiled sources. Task should be used parallel with `gulp compile --formats=esnext --watch`.
 gulp.task( 'test:server', () => {
-	const options = getKarmaOptions();
+	const options = getTestOptions();
 	options.sourcePath = path.resolve( config.MODULE_DIR.esnext );
 
 	return tests.tasks.runTests( options );
 } );
 
-function getKarmaOptions() {
+function getTestOptions() {
 	const options = tests.utils.parseArguments();
 
 	options.packages = getCKEditor5PackagesPaths();
