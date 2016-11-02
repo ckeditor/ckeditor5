@@ -175,5 +175,13 @@ describe( 'writer', () => {
 				insert( position, attributeElement );
 			} ).to.throw( CKEditorError, 'view-writer-invalid-position-container' );
 		} );
+
+		it( 'should allow to insert EmptyElement into container', () => {
+			test(
+				'<container:p>[]</container:p>',
+				[ '<empty:img></empty:img>' ],
+				'<container:p>[<empty:img></empty:img>]</container:p>'
+			);
+		} );
 	} );
 } );

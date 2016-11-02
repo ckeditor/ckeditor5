@@ -9,7 +9,9 @@ import { breakAttributes } from 'ckeditor5/engine/view/writer.js';
 import { stringify, parse } from 'ckeditor5/engine/dev-utils/view.js';
 import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
 import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
+import EmptyElement from 'ckeditor5/engine/view/emptyelement.js';
 import Range from 'ckeditor5/engine/view/range.js';
+import Position from 'ckeditor5/engine/view/position.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
 describe( 'writer', () => {
@@ -226,6 +228,18 @@ describe( 'writer', () => {
 					'foo{}bar',
 					'foo{}bar'
 				);
+			} );
+
+			it( 'should not break EmptyElements', () => {
+				const img = new EmptyElement( 'img' );
+				const container = new ContainerElement( 'p', null, [ img ] );
+				const position = new Position( img, 0 );
+
+				const newPosition = breakAttributes( position );
+				expect( stringify( container, newPosition, {
+					showType: true,
+					showPriority: true
+				} ) ).to.equal( '<container:p><empty:img>[]</empty:img></container:p>' );
 			} );
 		} );
 	} );

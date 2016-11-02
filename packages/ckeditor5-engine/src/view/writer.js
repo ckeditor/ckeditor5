@@ -6,6 +6,7 @@
 import Position from './position.js';
 import ContainerElement from './containerelement.js';
 import AttributeElement from './attributeelement.js';
+import EmptyElement from './emptyelement.js';
 import Text from './text.js';
 import Range from './range.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
@@ -137,8 +138,8 @@ export function breakContainer( position ) {
  * In following examples `<p>` is a container and `<b>` is an attribute element:
  *
  *		<p>foo[]bar</p> -> <p>foo{}bar</p>
- *		<p><b>foo</b>[]<b>bar</b> -> <p><b>foo{}bar</b></b>
- *		<p><b foo="bar">a</b>[]<b foo="baz">b</b> -> <p><b foo="bar">a</b>[]<b foo="baz">b</b>
+ *		<p><b>foo</b>[]<b>bar</b></p> -> <p><b>foo{}bar</b></p>
+ *		<p><b foo="bar">a</b>[]<b foo="baz">b</b></p> -> <p><b foo="bar">a</b>[]<b foo="baz">b</b></p>
  *
  * It will also take care about empty attributes when merging:
  *
@@ -185,6 +186,11 @@ export function mergeAttributes( position ) {
 
 	// When one or both nodes are containers - no attributes to merge.
 	if ( ( nodeBefore instanceof ContainerElement ) || ( nodeAfter instanceof ContainerElement ) ) {
+		return position;
+	}
+
+	// When one or both nodes are EmptyElements - no attributes to merge.
+	if ( ( nodeBefore instanceof EmptyElement ) || ( nodeAfter instanceof EmptyElement ) ) {
 		return position;
 	}
 
@@ -256,20 +262,20 @@ export function mergeContainers( position ) {
  *
  * Throws {@link utils.CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
  * contains instances that are not {@link engine.view.Text Texts},
- * {@link engine.view.AttributeElement AttributeElements} or
- * {@link engine.view.ContainerElement ContainerElements}.
+ * {@link engine.view.AttributeElement AttributeElements},
+ * {@link engine.view.ContainerElement ContainerElements} or {@link engine.view.EmptyElement EmptyElements}.
  *
  * @function engine.view.writer.insert
  * @param {engine.view.Position} position Insertion position.
- * @param {engine.view.Text|engine.view.AttributeElement|engine.view.ContainerElement
- * |Iterable.<engine.view.Text|engine.view.AttributeElement|engine.view.ContainerElement>} nodes Node or
+ * @param {engine.view.Text|engine.view.AttributeElement|engine.view.ContainerElement|engine.view.EmptyElement
+ * |Iterable.<engine.view.Text|engine.view.AttributeElement|engine.view.ContainerElement|engine.view.EmptyElement>} nodes Node or
  * nodes to insert.
  * @returns {engine.view.Range} Range around inserted nodes.
  */
 export function insert( position, nodes ) {
 	nodes = isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
 
-	// Check if nodes to insert are instances of AttributeElements, ContainerElements or Text.
+	// Check if nodes to insert are instances of AttributeElements, ContainerElements, EmptyElements or Text.
 	validateNodesToInsert( nodes );
 
 	const container = getParentContainer( position );
@@ -638,6 +644,11 @@ function _breakAttributesRange( range, forceSplitText = false ) {
 function _breakAttributes( position, forceSplitText = false ) {
 	const positionOffset = position.offset;
 	const positionParent = position.parent;
+
+	// If position is placed inside EmptyElement - return same position, cannot break EmptyElement.
+	if ( positionParent instanceof EmptyElement ) {
+		return Position.createFromPosition( position );
+	}
 
 	// There are no attributes to break and text nodes breaking is not forced.
 	if ( !forceSplitText && positionParent instanceof Text && isContainerOrFragment( positionParent.parent ) ) {
@@ -1025,8 +1036,8 @@ function rangeSpansOnAllChildren( range ) {
 }
 
 // Checks if provided nodes are valid to insert. Checks if each node is an instance of
-// {@link engine.view.Text Text} or {@link engine.view.AttributeElement AttributeElement} or
-// {@link engine.view.ContainerElement ContainerElement}.
+// {@link engine.view.Text Text} or {@link engine.view.AttributeElement AttributeElement},
+// {@link engine.view.ContainerElement ContainerElement} or {@link engine.view.EmptyElement EmptyElement}.
 //
 // Throws {@link utils.CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
 // contains instances that are not {@link engine.view.Text Texts},
@@ -1036,7 +1047,7 @@ function rangeSpansOnAllChildren( range ) {
 // @param Iterable.<engine.view.Text|engine.view.AttributeElement|engine.view.ContainerElement> nodes
 function validateNodesToInsert( nodes ) {
 	for ( let node of nodes ) {
-		if ( !( node instanceof Text || node instanceof AttributeElement || node instanceof ContainerElement ) ) {
+		if ( !( node instanceof Text || node instanceof AttributeElement || node instanceof ContainerElement || node instanceof EmptyElement ) ) {
 			/**
 			 * Inserted nodes should be instance of {@link engine.view.AttributeElement AttributeElement},
 			 * {@link engine.view.ContainerElement ContainerElement} or {@link engine.view.Text Text}.
