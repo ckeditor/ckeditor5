@@ -6,8 +6,8 @@
 /* globals document */
 /* bender-tags: view, browser-only */
 
-import DomEventData from '/ckeditor5/engine/view/observer/domeventdata.js';
-import ViewDocument from '/ckeditor5/engine/view/document.js';
+import DomEventData from 'ckeditor5/engine/view/observer/domeventdata.js';
+import ViewDocument from 'ckeditor5/engine/view/document.js';
 
 describe( 'DomEventData', () => {
 	let viewDocument, viewBody, domRoot;

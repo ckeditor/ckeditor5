@@ -5,13 +5,13 @@
 
 /* bender-tags: view, browser-only */
 
-import { insert } from '/ckeditor5/engine/view/writer.js';
-import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
-import Element from '/ckeditor5/engine/view/element.js';
-import Position from '/ckeditor5/engine/view/position.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import { stringify, parse } from '/ckeditor5/engine/dev-utils/view.js';
-import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
+import { insert } from 'ckeditor5/engine/view/writer.js';
+import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
+import Element from 'ckeditor5/engine/view/element.js';
+import Position from 'ckeditor5/engine/view/position.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import { stringify, parse } from 'ckeditor5/engine/dev-utils/view.js';
+import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
 
 describe( 'writer', () => {
 	/**

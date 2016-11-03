@@ -5,27 +5,27 @@
 
 /* bender-tags: model, operation */
 
-import Document from '/ckeditor5/engine/model/document.js';
-import Element from '/ckeditor5/engine/model/element.js';
-import Text from '/ckeditor5/engine/model/text.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import Element from 'ckeditor5/engine/model/element.js';
+import Text from 'ckeditor5/engine/model/text.js';
 
-import Position from '/ckeditor5/engine/model/position.js';
-import Range from '/ckeditor5/engine/model/range.js';
+import Position from 'ckeditor5/engine/model/position.js';
+import Range from 'ckeditor5/engine/model/range.js';
 
-import AttributeDelta from '/ckeditor5/engine/model/delta/attributedelta.js';
-import InsertDelta from '/ckeditor5/engine/model/delta/insertdelta.js';
-import WeakInsertDelta from '/ckeditor5/engine/model/delta/weakinsertdelta.js';
-import RemoveDelta from '/ckeditor5/engine/model/delta/removedelta.js';
-import MoveDelta from '/ckeditor5/engine/model/delta/movedelta.js';
-import MergeDelta from '/ckeditor5/engine/model/delta/mergedelta.js';
-import SplitDelta from '/ckeditor5/engine/model/delta/splitdelta.js';
-import WrapDelta from '/ckeditor5/engine/model/delta/wrapdelta.js';
-import UnwrapDelta from '/ckeditor5/engine/model/delta/unwrapdelta.js';
+import AttributeDelta from 'ckeditor5/engine/model/delta/attributedelta.js';
+import InsertDelta from 'ckeditor5/engine/model/delta/insertdelta.js';
+import WeakInsertDelta from 'ckeditor5/engine/model/delta/weakinsertdelta.js';
+import RemoveDelta from 'ckeditor5/engine/model/delta/removedelta.js';
+import MoveDelta from 'ckeditor5/engine/model/delta/movedelta.js';
+import MergeDelta from 'ckeditor5/engine/model/delta/mergedelta.js';
+import SplitDelta from 'ckeditor5/engine/model/delta/splitdelta.js';
+import WrapDelta from 'ckeditor5/engine/model/delta/wrapdelta.js';
+import UnwrapDelta from 'ckeditor5/engine/model/delta/unwrapdelta.js';
 
-import AttributeOperation from '/ckeditor5/engine/model/operation/attributeoperation.js';
-import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
-import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
-import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
+import AttributeOperation from 'ckeditor5/engine/model/operation/attributeoperation.js';
+import InsertOperation from 'ckeditor5/engine/model/operation/insertoperation.js';
+import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
+import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
 
 export function getAttributeDelta( range, key, oldValue, newValue, version ) {
 	let delta = new AttributeDelta();

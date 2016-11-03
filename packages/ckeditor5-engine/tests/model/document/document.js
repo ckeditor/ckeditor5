@@ -5,16 +5,16 @@
 
 /* bender-tags: model */
 
-import Document from '/ckeditor5/engine/model/document.js';
-import Schema from '/ckeditor5/engine/model/schema.js';
-import Composer from '/ckeditor5/engine/model/composer/composer.js';
-import RootElement from '/ckeditor5/engine/model/rootelement.js';
-import Batch from '/ckeditor5/engine/model/batch.js';
-import Delta from '/ckeditor5/engine/model/delta/delta.js';
-import Range from '/ckeditor5/engine/model/range.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import count from '/ckeditor5/utils/count.js';
-import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import Schema from 'ckeditor5/engine/model/schema.js';
+import Composer from 'ckeditor5/engine/model/composer/composer.js';
+import RootElement from 'ckeditor5/engine/model/rootelement.js';
+import Batch from 'ckeditor5/engine/model/batch.js';
+import Delta from 'ckeditor5/engine/model/delta/delta.js';
+import Range from 'ckeditor5/engine/model/range.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import count from 'ckeditor5/utils/count.js';
+import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
 
 describe( 'Document', () => {
 	let doc;

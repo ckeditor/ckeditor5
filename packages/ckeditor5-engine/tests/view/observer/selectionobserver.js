@@ -6,17 +6,17 @@
 /* globals setTimeout, Range, document */
 /* bender-tags: view, browser-only */
 
-import ViewRange from '/ckeditor5/engine/view/range.js';
-import testUtils from '/tests/core/_utils/utils.js';
-import ViewSelection from '/ckeditor5/engine/view/selection.js';
-import ViewDocument from '/ckeditor5/engine/view/document.js';
-import SelectionObserver from '/ckeditor5/engine/view/observer/selectionobserver.js';
-import MutationObserver from '/ckeditor5/engine/view/observer/mutationobserver.js';
+import ViewRange from 'ckeditor5/engine/view/range.js';
+import testUtils from 'tests/core/_utils/utils.js';
+import ViewSelection from 'ckeditor5/engine/view/selection.js';
+import ViewDocument from 'ckeditor5/engine/view/document.js';
+import SelectionObserver from 'ckeditor5/engine/view/observer/selectionobserver.js';
+import MutationObserver from 'ckeditor5/engine/view/observer/mutationobserver.js';
 
-import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
-import log from '/ckeditor5/utils/log.js';
+import EmitterMixin from 'ckeditor5/utils/emittermixin.js';
+import log from 'ckeditor5/utils/log.js';
 
-import { parse } from '/ckeditor5/engine/dev-utils/view.js';
+import { parse } from 'ckeditor5/engine/dev-utils/view.js';
 
 testUtils.createSinonSandbox();
 

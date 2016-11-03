@@ -5,9 +5,9 @@
 
 /* bender-tags: view */
 
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import Element from '/ckeditor5/engine/view/element.js';
-import Node from '/ckeditor5/engine/view/node.js';
+import DocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
+import Element from 'ckeditor5/engine/view/element.js';
+import Node from 'ckeditor5/engine/view/node.js';
 
 describe( 'DocumentFragment', () => {
 	describe( 'constructor', () => {

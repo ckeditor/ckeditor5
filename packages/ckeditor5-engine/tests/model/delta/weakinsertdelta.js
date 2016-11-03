@@ -5,10 +5,10 @@
 
 /* bender-tags: model, delta */
 
-import Document from '/ckeditor5/engine/model/document.js';
-import Position from '/ckeditor5/engine/model/position.js';
-import Text from '/ckeditor5/engine/model/text.js';
-import WeakInsertDelta from '/ckeditor5/engine/model/delta/weakinsertdelta.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import Position from 'ckeditor5/engine/model/position.js';
+import Text from 'ckeditor5/engine/model/text.js';
+import WeakInsertDelta from 'ckeditor5/engine/model/delta/weakinsertdelta.js';
 
 describe( 'Batch', () => {
 	let doc, root, batch, chain, attrs;

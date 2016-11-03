@@ -6,9 +6,9 @@
 /* globals document */
 /* bender-tags: view, browser-only */
 
-import KeyObserver from '/ckeditor5/engine/view/observer/keyobserver.js';
-import ViewDocument from '/ckeditor5/engine/view/document.js';
-import { getCode } from '/ckeditor5/utils/keyboard.js';
+import KeyObserver from 'ckeditor5/engine/view/observer/keyobserver.js';
+import ViewDocument from 'ckeditor5/engine/view/document.js';
+import { getCode } from 'ckeditor5/utils/keyboard.js';
 
 describe( 'KeyObserver', () => {
 	let viewDocument, observer;

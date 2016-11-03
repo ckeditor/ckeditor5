@@ -5,20 +5,20 @@
 
 /* bender-tags: conversion */
 
-import ModelDocument from '/ckeditor5/engine/model/document.js';
-import ModelElement from '/ckeditor5/engine/model/element.js';
-import ModelText from '/ckeditor5/engine/model/text.js';
-import ModelRange from '/ckeditor5/engine/model/range.js';
-import ModelPosition from '/ckeditor5/engine/model/position.js';
-import modelWriter from '/ckeditor5/engine/model/writer.js';
+import ModelDocument from 'ckeditor5/engine/model/document.js';
+import ModelElement from 'ckeditor5/engine/model/element.js';
+import ModelText from 'ckeditor5/engine/model/text.js';
+import ModelRange from 'ckeditor5/engine/model/range.js';
+import ModelPosition from 'ckeditor5/engine/model/position.js';
+import modelWriter from 'ckeditor5/engine/model/writer.js';
 
-import ViewElement from '/ckeditor5/engine/view/element.js';
-import ViewContainerElement from '/ckeditor5/engine/view/containerelement.js';
-import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
-import ViewText from '/ckeditor5/engine/view/text.js';
+import ViewElement from 'ckeditor5/engine/view/element.js';
+import ViewContainerElement from 'ckeditor5/engine/view/containerelement.js';
+import ViewAttributeElement from 'ckeditor5/engine/view/attributeelement.js';
+import ViewText from 'ckeditor5/engine/view/text.js';
 
-import Mapper from '/ckeditor5/engine/conversion/mapper.js';
-import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
+import Mapper from 'ckeditor5/engine/conversion/mapper.js';
+import ModelConversionDispatcher from 'ckeditor5/engine/conversion/modelconversiondispatcher.js';
 import {
 	insertElement,
 	insertText,
@@ -29,9 +29,9 @@ import {
 	move,
 	remove,
 	rename
-} from '/ckeditor5/engine/conversion/model-to-view-converters.js';
+} from 'ckeditor5/engine/conversion/model-to-view-converters.js';
 
-import { createRangeOnElementOnly } from '/tests/engine/model/_utils/utils.js';
+import { createRangeOnElementOnly } from 'tests/engine/model/_utils/utils.js';
 
 let dispatcher, modelDoc, modelRoot, mapper, viewRoot;
 

@@ -5,10 +5,10 @@
 
 /* bender-tags: model, operation */
 
-import Document from '/ckeditor5/engine/model/document.js';
-import RootAttributeOperation from '/ckeditor5/engine/model/operation/rootattributeoperation.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import { jsonParseStringify, wrapInDelta } from '/tests/engine/model/_utils/utils.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import RootAttributeOperation from 'ckeditor5/engine/model/operation/rootattributeoperation.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import { jsonParseStringify, wrapInDelta } from 'tests/engine/model/_utils/utils.js';
 
 describe( 'RootAttributeOperation', () => {
 	let doc, root;

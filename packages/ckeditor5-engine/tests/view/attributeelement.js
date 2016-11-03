@@ -5,9 +5,9 @@
 
 /* bender-tags: view, browser-only */
 
-import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
-import Element from '/ckeditor5/engine/view/element.js';
-import { parse } from '/ckeditor5/engine/dev-utils/view.js';
+import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
+import Element from 'ckeditor5/engine/view/element.js';
+import { parse } from 'ckeditor5/engine/dev-utils/view.js';
 
 describe( 'AttributeElement', () => {
 	describe( 'constructor', () => {

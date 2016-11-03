@@ -6,11 +6,11 @@
 /* globals document */
 /* bender-tags: view, browser-only */
 
-import Document from '/ckeditor5/engine/view/document.js';
-import ViewElement from '/ckeditor5/engine/view/element.js';
-import { isBlockFiller, BR_FILLER } from '/ckeditor5/engine/view/filler.js';
+import Document from 'ckeditor5/engine/view/document.js';
+import ViewElement from 'ckeditor5/engine/view/element.js';
+import { isBlockFiller, BR_FILLER } from 'ckeditor5/engine/view/filler.js';
 
-import createElement from '/ckeditor5/utils/dom/createelement.js';
+import createElement from 'ckeditor5/utils/dom/createelement.js';
 
 describe( 'Document integration', () => {
 	it( 'should remove content of the DOM', () => {

@@ -5,20 +5,20 @@
 
 /* bender-tags: model, delta */
 
-import Document from '/ckeditor5/engine/model/document.js';
-import Position from '/ckeditor5/engine/model/position.js';
-import Element from '/ckeditor5/engine/model/element.js';
-import Text from '/ckeditor5/engine/model/text.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import Position from 'ckeditor5/engine/model/position.js';
+import Element from 'ckeditor5/engine/model/element.js';
+import Text from 'ckeditor5/engine/model/text.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
-import MergeDelta from '/ckeditor5/engine/model/delta/mergedelta.js';
-import SplitDelta from '/ckeditor5/engine/model/delta/splitdelta.js';
+import MergeDelta from 'ckeditor5/engine/model/delta/mergedelta.js';
+import SplitDelta from 'ckeditor5/engine/model/delta/splitdelta.js';
 
-import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
-import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
-import ReinsertOperation from '/ckeditor5/engine/model/operation/reinsertoperation.js';
+import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
+import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
+import ReinsertOperation from 'ckeditor5/engine/model/operation/reinsertoperation.js';
 
-import count from '/ckeditor5/utils/count.js';
+import count from 'ckeditor5/utils/count.js';
 
 describe( 'Batch', () => {
 	let doc, root, p1, p2, batch;

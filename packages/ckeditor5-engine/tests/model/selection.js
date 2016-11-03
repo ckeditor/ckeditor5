@@ -5,16 +5,16 @@
 
 /* bender-tags: model */
 
-import Document from '/ckeditor5/engine/model/document.js';
-import Element from '/ckeditor5/engine/model/element.js';
-import Text from '/ckeditor5/engine/model/text.js';
-import Range from '/ckeditor5/engine/model/range.js';
-import Position from '/ckeditor5/engine/model/position.js';
-import LiveRange from '/ckeditor5/engine/model/liverange.js';
-import Selection from '/ckeditor5/engine/model/selection.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import testUtils from '/tests/core/_utils/utils.js';
-import count from '/ckeditor5/utils/count.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import Element from 'ckeditor5/engine/model/element.js';
+import Text from 'ckeditor5/engine/model/text.js';
+import Range from 'ckeditor5/engine/model/range.js';
+import Position from 'ckeditor5/engine/model/position.js';
+import LiveRange from 'ckeditor5/engine/model/liverange.js';
+import Selection from 'ckeditor5/engine/model/selection.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import testUtils from 'tests/core/_utils/utils.js';
+import count from 'ckeditor5/utils/count.js';
 
 testUtils.createSinonSandbox();
 
