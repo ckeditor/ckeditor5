@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import count from '/ckeditor5/utils/count.js';
+import count from 'ckeditor5/utils/count.js';
 
 describe( 'utils', () => {
 	describe( 'count', () => {

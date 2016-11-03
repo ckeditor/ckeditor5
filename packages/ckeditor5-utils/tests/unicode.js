@@ -9,7 +9,7 @@ import {
 	isCombiningMark,
 	isInsideSurrogatePair,
 	isInsideCombinedSymbol
-} from '/ckeditor5/utils/unicode.js';
+} from 'ckeditor5/utils/unicode.js';
 
 describe( 'utils', () => {
 	describe( 'unicode', () => {

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import mapsEqual from '/ckeditor5/utils/mapsequal.js';
+import mapsEqual from 'ckeditor5/utils/mapsequal.js';
 
 describe( 'utils', () => {
 	describe( 'mapsEqual', () => {

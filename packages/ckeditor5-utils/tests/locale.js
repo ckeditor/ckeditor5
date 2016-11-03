@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Locale from '/ckeditor5/utils/locale.js';
+import Locale from 'ckeditor5/utils/locale.js';
 
 describe( 'Locale', () => {
 	let locale;

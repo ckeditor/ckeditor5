@@ -6,7 +6,7 @@
 /* globals document */
 /* bender-tags: dom, browser-only */
 
-import indexOf from '/ckeditor5/utils/dom/indexof.js';
+import indexOf from 'ckeditor5/utils/dom/indexof.js';
 
 describe( 'indexOf', () => {
 	it( 'should return 0 if element has no parent', () => {
