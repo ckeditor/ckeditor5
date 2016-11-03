@@ -10,7 +10,7 @@ import Node from 'ckeditor5/engine/model/node.js';
 import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
 
 describe( 'Text', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create text node without attributes', () => {
 			let text = new Text( 'bar', { bold: true } );
 

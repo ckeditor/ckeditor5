@@ -34,7 +34,7 @@ describe( 'DataController', () => {
 		schema = modelDocument.schema;
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'works without data processor', () => {
 			const data = new DataController( modelDocument );
 

@@ -67,7 +67,7 @@ describe( 'Document', () => {
 		};
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create Document with all properties', () => {
 			const viewDocument = new Document();
 
@@ -329,7 +329,7 @@ describe( 'Document', () => {
 			const viewDocument = new Document();
 			const getObserverMock = viewDocument.getObserver( ObserverMock );
 
-			expect( getObserverMock ).to.be.undefined();
+			expect( getObserverMock ).to.be.undefined;
 		} );
 	} );
 

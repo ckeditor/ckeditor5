@@ -21,7 +21,7 @@ describe( 'DomConverter', () => {
 		converter = new DomConverter();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create converter with BR block filler by default', () => {
 			expect( converter.blockFiller ).to.equal( BR_FILLER );
 		} );

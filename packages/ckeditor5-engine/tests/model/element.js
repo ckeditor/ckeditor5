@@ -13,7 +13,7 @@ import count from 'ckeditor5/utils/count.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Element', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create empty element', () => {
 			let element = new Element( 'elem' );
 

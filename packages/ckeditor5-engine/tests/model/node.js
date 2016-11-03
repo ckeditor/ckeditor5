@@ -96,7 +96,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create empty attribute list if no parameters were passed', () => {
 			expect( count( node.getAttributes() ) ).to.equal( 0 );
 		} );

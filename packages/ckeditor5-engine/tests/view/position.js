@@ -21,7 +21,7 @@ import { parse } from 'ckeditor5/engine/dev-utils/view.js';
 describe( 'Position', () => {
 	const parentMock = {};
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create element without attributes', () => {
 			const elem = new Position( parentMock, 5 );
 

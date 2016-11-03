@@ -66,7 +66,7 @@ describe( 'RenameDelta', () => {
 		renameDelta = new RenameDelta();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create rename delta with no operations added', () => {
 			expect( renameDelta.operations.length ).to.equal( 0 );
 		} );

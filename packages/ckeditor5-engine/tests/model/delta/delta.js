@@ -48,7 +48,7 @@ class FooDelta extends Delta {
 }
 
 describe( 'Delta', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create an delta with empty properties', () => {
 			const delta = new Delta();
 

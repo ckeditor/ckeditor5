@@ -66,7 +66,7 @@ describe( 'InsertDelta', () => {
 		insertDelta = new InsertDelta();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create insert delta with no operations added', () => {
 			expect( insertDelta.operations.length ).to.equal( 0 );
 		} );

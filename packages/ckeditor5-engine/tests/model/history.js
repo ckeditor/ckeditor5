@@ -16,7 +16,7 @@ describe( 'History', () => {
 		history = new History();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create an empty History instance', () => {
 			expect( Array.from( history.getDeltas() ).length ).to.equal( 0 );
 		} );

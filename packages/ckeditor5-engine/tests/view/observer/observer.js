@@ -8,7 +8,7 @@
 import Observer from 'ckeditor5/engine/view/observer/observer.js';
 
 describe( 'Observer', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create Observer with properties', () => {
 			const viewDocument = {};
 			const observer = new Observer( viewDocument );

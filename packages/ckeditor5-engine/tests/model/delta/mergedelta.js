@@ -86,7 +86,7 @@ describe( 'MergeDelta', () => {
 		mergeDelta = new MergeDelta();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create merge delta with no operations added', () => {
 			expect( mergeDelta.operations.length ).to.equal( 0 );
 		} );

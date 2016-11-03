@@ -27,7 +27,7 @@ describe( 'Range', () => {
 		range = new Range( start, end );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create a range with given positions', () => {
 			expect( range.start.isEqual( start ) ).to.be.true;
 			expect( range.end.isEqual( end ) ).to.be.true;

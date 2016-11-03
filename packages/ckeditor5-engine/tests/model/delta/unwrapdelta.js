@@ -74,7 +74,7 @@ describe( 'UnwrapDelta', () => {
 		unwrapDelta = new UnwrapDelta();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create unwrap delta with no operations added', () => {
 			expect( unwrapDelta.operations.length ).to.equal( 0 );
 		} );

@@ -21,7 +21,7 @@ beforeEach( () => {
 	schema = new Schema();
 } );
 
-describe( 'constructor', () => {
+describe( 'constructor()', () => {
 	it( 'should register base items: inline, block, root', () => {
 		testUtils.sinon.spy( Schema.prototype, 'registerItem' );
 

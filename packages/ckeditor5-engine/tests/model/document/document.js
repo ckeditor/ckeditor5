@@ -23,7 +23,7 @@ describe( 'Document', () => {
 		doc = new Document();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create Document with no data, empty graveyard and selection set to default range', () => {
 			expect( doc ).to.have.property( '_roots' ).that.is.instanceof( Map );
 			expect( doc._roots.size ).to.equal( 1 );

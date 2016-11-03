@@ -46,7 +46,7 @@ describe( 'TreeWalker', () => {
 		rootEnding = new Position( root, [ 2 ] );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should throw if neither boundaries nor starting position is set', () => {
 			expect( () => {
 				new TreeWalker();
