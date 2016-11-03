@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import InlineAutoformatEngine from '/ckeditor5/autoformat/inlineautoformatengine.js';
-import Paragraph from '/ckeditor5/paragraph/paragraph.js';
-import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
-import Enter from '/ckeditor5/enter/enter.js';
-import { setData, getData } from '/ckeditor5/engine/dev-utils/model.js';
-import testUtils from '/tests/core/_utils/utils.js';
+import InlineAutoformatEngine from 'ckeditor5/autoformat/inlineautoformatengine.js';
+import Paragraph from 'ckeditor5/paragraph/paragraph.js';
+import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
+import Enter from 'ckeditor5/enter/enter.js';
+import { setData, getData } from 'ckeditor5/engine/dev-utils/model.js';
+import testUtils from 'tests/core/_utils/utils.js';
 
 testUtils.createSinonSandbox();
 
