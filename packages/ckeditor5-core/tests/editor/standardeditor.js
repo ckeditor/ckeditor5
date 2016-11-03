@@ -6,13 +6,13 @@
 /* globals document */
 /* bender-tags: editor, browser-only */
 
-import StandardEditor from '/ckeditor5/core/editor/standardeditor.js';
-import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
-import { getData, setData } from '/ckeditor5/engine/dev-utils/model.js';
+import StandardEditor from 'ckeditor5/core/editor/standardeditor.js';
+import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+import { getData, setData } from 'ckeditor5/engine/dev-utils/model.js';
 
-import EditingController from '/ckeditor5/engine/controller/editingcontroller.js';
-import KeystrokeHandler from '/ckeditor5/core/keystrokehandler.js';
-import Feature from '/ckeditor5/core/feature.js';
+import EditingController from 'ckeditor5/engine/controller/editingcontroller.js';
+import KeystrokeHandler from 'ckeditor5/core/keystrokehandler.js';
+import Feature from 'ckeditor5/core/feature.js';
 
 describe( 'StandardEditor', () => {
 	let editorElement;

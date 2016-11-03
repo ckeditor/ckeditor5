@@ -5,14 +5,14 @@
 
 /* globals document */
 
-import StandardEditor from '/ckeditor5/core/editor/standardeditor.js';
-import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
-import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
-import BoxedEditorUI from '/ckeditor5/ui/editorui/boxed/boxededitorui.js';
-import Feature from '/ckeditor5/core/feature.js';
+import StandardEditor from 'ckeditor5/core/editor/standardeditor.js';
+import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
+import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+import BoxedEditorUI from 'ckeditor5/ui/editorui/boxed/boxededitorui.js';
+import Feature from 'ckeditor5/core/feature.js';
 
-import { getData } from '/ckeditor5/engine/dev-utils/model.js';
-import testUtils from '/tests/core/_utils/utils.js';
+import { getData } from 'ckeditor5/engine/dev-utils/model.js';
+import testUtils from 'tests/core/_utils/utils.js';
 
 testUtils.createSinonSandbox();
 
