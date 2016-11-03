@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from '/tests/core/_utils/modeltesteditor.js';
-import LinkCommand from '/ckeditor5/link/linkcommand.js';
-import { setData, getData } from '/ckeditor5/engine/dev-utils/model.js';
+import ModelTestEditor from 'tests/core/_utils/modeltesteditor.js';
+import LinkCommand from 'ckeditor5/link/linkcommand.js';
+import { setData, getData } from 'ckeditor5/engine/dev-utils/model.js';
 
 describe( 'LinkCommand', () => {
 	let editor, document, command;

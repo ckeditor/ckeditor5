@@ -5,12 +5,12 @@
 
 /* bender-tags: ui, form */
 
-import LinkForm from '/ckeditor5/link/ui/linkform.js';
-import LinkFormView from '/ckeditor5/link/ui/linkformview.js';
-import Model from '/ckeditor5/ui/model.js';
+import LinkForm from 'ckeditor5/link/ui/linkform.js';
+import LinkFormView from 'ckeditor5/link/ui/linkformview.js';
+import Model from 'ckeditor5/ui/model.js';
 
-import Button from '/ckeditor5/ui/button/button.js';
-import LabeledInput from '/ckeditor5/ui/labeledinput/labeledinput.js';
+import Button from 'ckeditor5/ui/button/button.js';
+import LabeledInput from 'ckeditor5/ui/labeledinput/labeledinput.js';
 
 describe( 'LinkForm', () => {
 	let linkForm, view, model;
