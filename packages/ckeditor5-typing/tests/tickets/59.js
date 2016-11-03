@@ -5,11 +5,11 @@
 
 /* globals document */
 
-import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
-import Typing from '/ckeditor5/typing/typing.js';
-import Paragraph from '/ckeditor5/paragraph/paragraph.js';
-import Bold from '/ckeditor5/basic-styles/bold.js';
-import { setData } from '/ckeditor5/engine/dev-utils/model.js';
+import ClassicEditor from 'ckeditor5/editor-classic/classic.js';
+import Typing from 'ckeditor5/typing/typing.js';
+import Paragraph from 'ckeditor5/paragraph/paragraph.js';
+import Bold from 'ckeditor5/basic-styles/bold.js';
+import { setData } from 'ckeditor5/engine/dev-utils/model.js';
 
 describe( 'Bug #59', () => {
 	let editor;

@@ -3,24 +3,24 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
-import Input from '/ckeditor5/typing/input.js';
-import Paragraph from '/ckeditor5/paragraph/paragraph.js';
+import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
+import Input from 'ckeditor5/typing/input.js';
+import Paragraph from 'ckeditor5/paragraph/paragraph.js';
 
-import Batch from '/ckeditor5/engine/model/batch.js';
-import ModelRange from '/ckeditor5/engine/model/range.js';
-import buildModelConverter from '/ckeditor5/engine/conversion/buildmodelconverter.js';
-import buildViewConverter from '/ckeditor5/engine/conversion/buildviewconverter.js';
+import Batch from 'ckeditor5/engine/model/batch.js';
+import ModelRange from 'ckeditor5/engine/model/range.js';
+import buildModelConverter from 'ckeditor5/engine/conversion/buildmodelconverter.js';
+import buildViewConverter from 'ckeditor5/engine/conversion/buildviewconverter.js';
 
-import ViewText from '/ckeditor5/engine/view/text.js';
-import ViewElement from '/ckeditor5/engine/view/element.js';
-import ViewSelection from '/ckeditor5/engine/view/selection.js';
+import ViewText from 'ckeditor5/engine/view/text.js';
+import ViewElement from 'ckeditor5/engine/view/element.js';
+import ViewSelection from 'ckeditor5/engine/view/selection.js';
 
-import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
-import { getCode } from '/ckeditor5/utils/keyboard.js';
+import EmitterMixin from 'ckeditor5/utils/emittermixin.js';
+import { getCode } from 'ckeditor5/utils/keyboard.js';
 
-import { getData as getModelData } from '/ckeditor5/engine/dev-utils/model.js';
-import { getData as getViewData } from '/ckeditor5/engine/dev-utils/view.js';
+import { getData as getModelData } from 'ckeditor5/engine/dev-utils/model.js';
+import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
 
 describe( 'Input feature', () => {
 	let editor, model, modelRoot, view, viewRoot, listenter;
