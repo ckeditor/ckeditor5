@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import plainTextToHtml from '/ckeditor5/clipboard/utils/plaintexttohtml.js';
+import plainTextToHtml from 'ckeditor5/clipboard/utils/plaintexttohtml.js';
 
 describe( 'plainTextToHtml', () => {
 	it( 'encodes < and >', () => {
