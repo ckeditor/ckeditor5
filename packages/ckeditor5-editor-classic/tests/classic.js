@@ -6,17 +6,17 @@
 /* globals document */
 /* bender-tags: editor, browser-only */
 
-import ClassicEditorUI from '/ckeditor5/editor-classic/classiceditorui.js';
-import BoxedEditorUIView from '/ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
+import ClassicEditorUI from 'ckeditor5/editor-classic/classiceditorui.js';
+import BoxedEditorUIView from 'ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
 
-import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
-import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
-import Paragraph from '/ckeditor5/paragraph/paragraph.js';
-import Bold from '/ckeditor5/basic-styles/bold.js';
+import ClassicEditor from 'ckeditor5/editor-classic/classic.js';
+import Paragraph from 'ckeditor5/paragraph/paragraph.js';
+import Bold from 'ckeditor5/basic-styles/bold.js';
 
-import testUtils from '/tests/core/_utils/utils.js';
-import count from '/ckeditor5/utils/count.js';
+import testUtils from 'tests/core/_utils/utils.js';
+import count from 'ckeditor5/utils/count.js';
 
 testUtils.createSinonSandbox();
 
