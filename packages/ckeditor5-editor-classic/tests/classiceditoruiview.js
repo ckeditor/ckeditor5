@@ -29,8 +29,12 @@ describe( 'ClassicEditorUI', () => {
 		editable = editor.editing.view.createRoot( document.createElement( 'div' ) );
 		editor.ui = view = new ClassicEditorUIView( editor, editor.locale );
 
-		view.featureComponents.add( 'foo', ButtonView, () => {} );
-		view.featureComponents.add( 'bar', ButtonView, () => {} );
+		function createButton( locale ) {
+			return new ButtonView( locale );
+		}
+
+		view.featureComponents.add( 'foo', createButton );
+		view.featureComponents.add( 'bar', createButton );
 	} );
 
 	describe( 'constructor', () => {
@@ -115,12 +119,6 @@ describe( 'ClassicEditorUI', () => {
 
 				done();
 			} );
-		} );
-	} );
-
-	describe( '_createToolbar', () => {
-		it( 'passes editor#config to view.toolbar#config', () => {
-			expect( view.toolbar.config ).to.have.members( [ 'foo', 'bar' ] );
 		} );
 	} );
 } );

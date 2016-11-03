@@ -44,6 +44,10 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	 * @inheritDoc
 	 */
 	init() {
+		for ( let name of this.editor.config.get( 'toolbar' ) ) {
+			this.toolbar.items.add( this.featureComponents.create( name ) );
+		}
+
 		this.toolbar.limiterElement = this.element;
 
 		return super.init();
@@ -70,8 +74,6 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 		const toolbar = new StickyToolbarView( editor.locale );
 
 		toolbar.bind( 'isActive' ).to( editor.focusTracker, 'isFocused' );
-		toolbar.config = this.editor.config.get( 'toolbar' );
-
 		this.top.add( toolbar );
 
 		return toolbar;
