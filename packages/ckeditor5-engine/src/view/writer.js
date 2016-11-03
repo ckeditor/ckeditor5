@@ -1053,6 +1053,7 @@ function rangeSpansOnAllChildren( range ) {
 //
 // Throws {@link utils.CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
 // contains instances that are not {@link engine.view.Text Texts},
+// {@link engine.view.EmptyElement EmptyElements},
 // {@link engine.view.AttributeElement AttributeElements} or
 // {@link engine.view.ContainerElement ContainerElements}.
 //
