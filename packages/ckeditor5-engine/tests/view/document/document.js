@@ -329,7 +329,7 @@ describe( 'Document', () => {
 			const viewDocument = new Document();
 			const getObserverMock = viewDocument.getObserver( ObserverMock );
 
-			expect( getObserverMock ).to.be.undefined();
+			expect( getObserverMock ).to.be.undefined;
 		} );
 	} );
 
