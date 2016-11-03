@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { testDataProcessor as test } from '/tests/markdown-gfm/_utils/utils.js';
+import { testDataProcessor as test } from 'tests/markdown-gfm/_utils/utils.js';
 
 describe( 'GFMDataProcessor', () => {
 	describe( 'lists', () => {

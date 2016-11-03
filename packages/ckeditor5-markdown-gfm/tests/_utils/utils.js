@@ -1,5 +1,5 @@
-import { stringify } from '/ckeditor5/engine/dev-utils/view.js';
-import MarkdownDataProcessor from '/ckeditor5/markdown-gfm/gfmdataprocessor.js';
+import { stringify } from 'ckeditor5/engine/dev-utils/view.js';
+import MarkdownDataProcessor from 'ckeditor5/markdown-gfm/gfmdataprocessor.js';
 
 /**
  * Tests MarkdownDataProcessor.
