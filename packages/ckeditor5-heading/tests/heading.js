@@ -5,11 +5,11 @@
 
 /* globals document */
 
-import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
-import Heading from '/ckeditor5/heading/heading.js';
-import HeadingEngine from '/ckeditor5/heading/headingengine.js';
-import ListDropdown from '/ckeditor5/ui/dropdown/list/listdropdown.js';
-import testUtils from '/tests/core/_utils/utils.js';
+import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
+import Heading from 'ckeditor5/heading/heading.js';
+import HeadingEngine from 'ckeditor5/heading/headingengine.js';
+import ListDropdown from 'ckeditor5/ui/dropdown/list/listdropdown.js';
+import testUtils from 'tests/core/_utils/utils.js';
 
 testUtils.createSinonSandbox();
 
