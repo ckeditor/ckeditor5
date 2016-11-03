@@ -46,7 +46,7 @@ class PluginD extends Plugin {
 }
 
 describe( 'Editor', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create a new editor instance', () => {
 			const editor = new Editor();
 

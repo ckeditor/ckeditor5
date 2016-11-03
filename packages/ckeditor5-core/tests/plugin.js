@@ -12,7 +12,7 @@ before( () => {
 	editor = new Editor();
 } );
 
-describe( 'constructor', () => {
+describe( 'constructor()', () => {
 	it( 'should set the `editor` property', () => {
 		let plugin = new Plugin( editor );
 

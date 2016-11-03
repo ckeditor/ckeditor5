@@ -24,7 +24,7 @@ describe( 'ClassicTestEditor', () => {
 		document.body.appendChild( editorElement );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'creates an instance of editor', () => {
 			const editor = new ClassicTestEditor( editorElement, { foo: 1 } );
 

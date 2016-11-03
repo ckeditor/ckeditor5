@@ -13,7 +13,7 @@ import testUtils from 'tests/core/_utils/utils.js';
 testUtils.createSinonSandbox();
 
 describe( 'ModelTestEditor', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'creates an instance of editor', () => {
 			const editor = new ModelTestEditor( { foo: 1 } );
 

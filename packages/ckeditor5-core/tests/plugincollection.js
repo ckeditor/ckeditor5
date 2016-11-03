@@ -53,7 +53,7 @@ describe( 'load', () => {
 
 		return plugins.load( [] )
 			.then( () => {
-				expect( getPlugins( plugins ) ).to.be.empty();
+				expect( getPlugins( plugins ) ).to.be.empty;
 			} );
 	} );
 

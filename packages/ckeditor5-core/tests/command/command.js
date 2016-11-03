@@ -31,7 +31,7 @@ afterEach( () => {
 	editor.destroy();
 } );
 
-describe( 'constructor', () => {
+describe( 'constructor()', () => {
 	it( 'should create a new command instance, that is enabled and bound to given editor', () => {
 		expect( command ).to.have.property( 'editor' ).equal( editor );
 		expect( command.isEnabled ).to.be.true;

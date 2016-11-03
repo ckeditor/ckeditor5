@@ -20,7 +20,7 @@ describe( 'KeystrokeHandler', () => {
 			} );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'triggers #press on #keydown', () => {
 			const spy = sinon.spy( editor.keystrokes, 'press' );
 			const keyEvtData = { keyCode: 1 };

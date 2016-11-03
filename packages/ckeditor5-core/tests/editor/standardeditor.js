@@ -22,7 +22,7 @@ describe( 'StandardEditor', () => {
 		document.body.appendChild( editorElement );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'sets all properties', () => {
 			const editor = new StandardEditor( editorElement, { foo: 1 } );
 

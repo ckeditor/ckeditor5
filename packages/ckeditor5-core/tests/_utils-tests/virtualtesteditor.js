@@ -12,7 +12,7 @@ import testUtils from 'tests/core/_utils/utils.js';
 testUtils.createSinonSandbox();
 
 describe( 'VirtualTestEditor', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'creates an instance of editor', () => {
 			const editor = new VirtualTestEditor( { foo: 1 } );
 
