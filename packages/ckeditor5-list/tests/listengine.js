@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
-import ListEngine from '/ckeditor5/list/listengine.js';
-import ListCommand from '/ckeditor5/list/listcommand.js';
+import ListEngine from 'ckeditor5/list/listengine.js';
+import ListCommand from 'ckeditor5/list/listcommand.js';
 
-import ModelElement from '/ckeditor5/engine/model/element.js';
-import ModelText from '/ckeditor5/engine/model/text.js';
-import ModelPosition from '/ckeditor5/engine/model/position.js';
-import ModelRange from '/ckeditor5/engine/model/range.js';
+import ModelElement from 'ckeditor5/engine/model/element.js';
+import ModelText from 'ckeditor5/engine/model/text.js';
+import ModelPosition from 'ckeditor5/engine/model/position.js';
+import ModelRange from 'ckeditor5/engine/model/range.js';
 
-import ViewPosition from '/ckeditor5/engine/view/position.js';
-import Paragraph from '/ckeditor5/paragraph/paragraph.js';
+import ViewPosition from 'ckeditor5/engine/view/position.js';
+import Paragraph from 'ckeditor5/paragraph/paragraph.js';
 
-import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
-import { getData as getModelData, setData as setModelData } from '/ckeditor5/engine/dev-utils/model.js';
-import { getData as getViewData } from '/ckeditor5/engine/dev-utils/view.js';
+import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
+import { getData as getModelData, setData as setModelData } from 'ckeditor5/engine/dev-utils/model.js';
+import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
 
 describe( 'ListEngine', () => {
 	let editor, doc, root;
