@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import { getClosestListItem, getSelectedBlocks, getPositionBeforeBlock } from '/ckeditor5/list/utils.js';
+import { getClosestListItem, getSelectedBlocks, getPositionBeforeBlock } from 'ckeditor5/list/utils.js';
 
-import Element from '/ckeditor5/engine/model/element.js';
-import Text from '/ckeditor5/engine/model/text.js';
-import Position from '/ckeditor5/engine/model/position.js';
-import Schema from '/ckeditor5/engine/model/schema.js';
-import Selection from '/ckeditor5/engine/model/selection.js';
+import Element from 'ckeditor5/engine/model/element.js';
+import Text from 'ckeditor5/engine/model/text.js';
+import Position from 'ckeditor5/engine/model/position.js';
+import Schema from 'ckeditor5/engine/model/schema.js';
+import Selection from 'ckeditor5/engine/model/selection.js';
 
 describe( 'getClosestListItem', () => {
 	const item = new Element( 'listItem', null, 'foobar' );
