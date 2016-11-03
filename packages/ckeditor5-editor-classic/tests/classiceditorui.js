@@ -39,7 +39,7 @@ describe( 'ClassicEditorUI', () => {
 		editorUI.featureComponents.add( 'bar', Button, ButtonView, new Model( {} ) );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'creates toolbar', () => {
 			expect( editorUI.toolbar ).to.be.instanceof( Toolbar );
 			expect( editorUI.toolbar.view ).to.be.instanceof( StickyToolbarView );

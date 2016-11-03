@@ -34,7 +34,7 @@ describe( 'ClassicEditor', () => {
 		editorElement.remove();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		beforeEach( () => {
 			editor = new ClassicEditor( editorElement );
 		} );
