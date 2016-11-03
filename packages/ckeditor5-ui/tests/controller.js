@@ -19,7 +19,7 @@ let ParentController, ParentView;
 testUtils.createSinonSandbox();
 
 describe( 'Controller', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'defines basic properties', () => {
 			const controller = new Controller();
 

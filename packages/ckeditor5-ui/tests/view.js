@@ -17,7 +17,7 @@ let TestView, view;
 testUtils.createSinonSandbox();
 
 describe( 'View', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		beforeEach( () => {
 			setTestViewClass();
 			setTestViewInstance();

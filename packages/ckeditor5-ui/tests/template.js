@@ -22,7 +22,7 @@ testUtils.createSinonSandbox();
 let el, text;
 
 describe( 'Template', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'accepts and normalizes the definition', () => {
 			const bind = Template.bind( new Model( {} ), Object.create( DOMEmitterMixin ) );
 			const tpl = new Template( {

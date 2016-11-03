@@ -28,7 +28,7 @@ describe( 'ControllerCollection', () => {
 		createModelCollection();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should throw when no name is passed', () => {
 			expect( () => {
 				new ControllerCollection();

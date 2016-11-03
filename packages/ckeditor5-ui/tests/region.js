@@ -16,7 +16,7 @@ let region, el;
 describe( 'View', () => {
 	beforeEach( createRegionInstance );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'accepts name', () => {
 			expect( region.name ).to.be.equal( 'foo' );
 			expect( region.element ).to.be.null;

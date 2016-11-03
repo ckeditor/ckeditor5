@@ -17,7 +17,7 @@ describe( 'ComponentFactory', () => {
 		factory = new ComponentFactory( editor );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'sets all the properties', () => {
 			expect( factory ).to.have.property( 'editor', editor );
 		} );
