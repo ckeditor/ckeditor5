@@ -22,7 +22,7 @@ afterEach( () => {
 } );
 
 describe( 'BaseCommand', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create command with empty batch stack', () => {
 			expect( base._checkEnabled() ).to.be.false;
 		} );
