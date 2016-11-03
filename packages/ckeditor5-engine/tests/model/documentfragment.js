@@ -12,7 +12,7 @@ import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
 describe( 'DocumentFragment', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create empty document fragment', () => {
 			let frag = new DocumentFragment();
 

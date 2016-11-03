@@ -108,7 +108,7 @@ describe( 'WrapDelta', () => {
 		wrapDelta = new WrapDelta();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create wrap delta with no operations added', () => {
 			expect( wrapDelta.operations.length ).to.equal( 0 );
 		} );

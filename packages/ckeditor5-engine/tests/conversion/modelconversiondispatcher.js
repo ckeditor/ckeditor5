@@ -23,7 +23,7 @@ describe( 'ModelConversionDispatcher', () => {
 		root = doc.createRoot();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create ModelConversionDispatcher with given api', () => {
 			const apiObj = {};
 			const dispatcher = new ModelConversionDispatcher( { apiObj } );

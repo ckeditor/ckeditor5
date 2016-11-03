@@ -87,7 +87,7 @@ describe( 'MoveDelta', () => {
 		moveDelta = new MoveDelta();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create move delta with no operations added', () => {
 			expect( moveDelta.operations.length ).to.equal( 0 );
 		} );

@@ -20,7 +20,7 @@ describe( 'Composer', () => {
 		composer = new Composer();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'attaches deleteContents default listener', () => {
 			setData( document, '<p>f[oo</p><p>ba]r</p>' );
 

@@ -21,7 +21,7 @@ describe( 'NodeList', () => {
 		nodes = new NodeList( [ p, foo, img ] );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create empty node list', () => {
 			expect( new NodeList().length ).to.equal( 0 );
 		} );

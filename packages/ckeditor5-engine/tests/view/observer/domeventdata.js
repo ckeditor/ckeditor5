@@ -37,7 +37,7 @@ describe( 'DomEventData', () => {
 		domRoot.parentElement.removeChild( domRoot );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'sets properties', () => {
 			const domEvt = { target: document.body };
 			const data = new DomEventData( viewDocument, domEvt, { foo: 1, bar: true } );

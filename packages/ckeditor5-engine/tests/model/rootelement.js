@@ -11,7 +11,7 @@ import RootElement from 'ckeditor5/engine/model/rootelement.js';
 import count from 'ckeditor5/utils/count.js';
 
 describe( 'Element', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create root element without attributes', () => {
 			let doc = new Document();
 			let root = new RootElement( doc );

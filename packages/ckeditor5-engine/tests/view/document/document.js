@@ -67,7 +67,7 @@ describe( 'Document', () => {
 		};
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create Document with all properties', () => {
 			const viewDocument = new Document();
 

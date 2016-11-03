@@ -12,7 +12,7 @@ import RootEditableElement from 'ckeditor5/engine/view/rooteditableelement.js';
 import createDocumentMock from 'tests/engine/view/_utils/createdocumentmock.js';
 
 describe( 'RootEditableElement', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create an element with default root name', () => {
 			const root = new RootEditableElement( createDocumentMock(), 'div' );
 

@@ -103,7 +103,7 @@ describe( 'SplitDelta', () => {
 		splitDelta = new SplitDelta();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create split delta with no operations added', () => {
 			expect( splitDelta.operations.length ).to.equal( 0 );
 		} );

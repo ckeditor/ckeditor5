@@ -25,7 +25,7 @@ describe( 'TextProxy', () => {
 		textProxy = new TextProxy( text, 2, 3 );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create TextProxy instance with specified properties', () => {
 			expect( textProxy ).to.have.property( 'parent' ).to.equal( parent );
 			expect( textProxy ).to.have.property( 'data' ).to.equal( 'cde' );

@@ -23,7 +23,7 @@ beforeEach( () => {
 	item = new SchemaItem( schema );
 } );
 
-describe( 'constructor', () => {
+describe( 'constructor()', () => {
 	it( 'should create empty schema item', () => {
 		let item = new SchemaItem( schema );
 

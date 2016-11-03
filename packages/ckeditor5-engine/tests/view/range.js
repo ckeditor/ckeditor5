@@ -20,7 +20,7 @@ function getRange( view, options = {} ) {
 }
 
 describe( 'Range', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'creates range from provided positions', () => {
 			const start = new Position( {}, 1 );
 			const end = new Position( {}, 2 );

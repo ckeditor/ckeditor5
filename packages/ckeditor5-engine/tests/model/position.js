@@ -60,7 +60,7 @@ describe( 'position', () => {
 		root.insertChildren( 0, [ p, ul ] );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create a position with path and document', () => {
 			let position = new Position( root, [ 0 ] );
 

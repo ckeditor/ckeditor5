@@ -27,7 +27,7 @@ import { parse, getData as getModelData } from 'ckeditor5/engine/dev-utils/model
 import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
 
 describe( 'EditingController', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		let model, editing;
 
 		beforeEach( () => {

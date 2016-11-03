@@ -41,7 +41,7 @@ describe( 'DomEventObserver', () => {
 		viewDocument = new ViewDocument();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create Observer with properties', () => {
 			const observer = new DomEventObserver( viewDocument );
 
