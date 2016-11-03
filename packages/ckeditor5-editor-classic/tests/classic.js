@@ -6,8 +6,7 @@
 /* globals document */
 /* bender-tags: editor, browser-only */
 
-import ClassicEditorUI from 'ckeditor5/editor-classic/classiceditorui.js';
-import BoxedEditorUIView from 'ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
+import ClassicEditorUIView from 'ckeditor5/editor-classic/classiceditoruiview.js';
 
 import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
@@ -49,8 +48,7 @@ describe( 'ClassicEditor', () => {
 		} );
 
 		it( 'creates the UI using BoxedEditorUI classes', () => {
-			expect( editor.ui ).to.be.instanceof( ClassicEditorUI );
-			expect( editor.ui.view ).to.be.instanceof( BoxedEditorUIView );
+			expect( editor.ui ).to.be.instanceof( ClassicEditorUIView );
 		} );
 
 		it( 'uses HTMLDataProcessor', () => {
