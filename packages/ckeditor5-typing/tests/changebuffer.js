@@ -18,7 +18,7 @@ describe( 'ChangeBuffer', () => {
 		buffer = new ChangeBuffer( doc, CHANGE_LIMIT );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'sets all properties', () => {
 			expect( buffer ).to.have.property( 'document', doc );
 			expect( buffer ).to.have.property( 'limit', CHANGE_LIMIT );
