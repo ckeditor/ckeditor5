@@ -6,11 +6,11 @@
 /* globals setTimeout */
 /* bender-tags: editor, browser-only */
 
-import Editor from '/ckeditor5/core/editor/editor.js';
-import Plugin from '/ckeditor5/core/plugin.js';
-import Config from '/ckeditor5/utils/config.js';
-import PluginCollection from '/ckeditor5/core/plugincollection.js';
-import FocusTracker from '/ckeditor5/utils/focustracker.js';
+import Editor from 'ckeditor5/core/editor/editor.js';
+import Plugin from 'ckeditor5/core/plugin.js';
+import Config from 'ckeditor5/utils/config.js';
+import PluginCollection from 'ckeditor5/core/plugincollection.js';
+import FocusTracker from 'ckeditor5/utils/focustracker.js';
 
 class PluginA extends Plugin {
 	constructor( editor ) {

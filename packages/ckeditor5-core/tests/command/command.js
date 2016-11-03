@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import Editor from '/ckeditor5/core/editor/editor.js';
-import Command from '/ckeditor5/core/command/command.js';
+import Editor from 'ckeditor5/core/editor/editor.js';
+import Command from 'ckeditor5/core/command/command.js';
 
 let editor, command;
 

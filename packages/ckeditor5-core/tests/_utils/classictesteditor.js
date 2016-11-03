@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import StandardEditor from '/ckeditor5/core/editor/standardeditor.js';
+import StandardEditor from 'ckeditor5/core/editor/standardeditor.js';
 
-import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
-import BoxedEditorUI from '/ckeditor5/ui/editorui/boxed/boxededitorui.js';
-import BoxedEditorUIView from '/ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
+import BoxedEditorUI from 'ckeditor5/ui/editorui/boxed/boxededitorui.js';
+import BoxedEditorUIView from 'ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
 
 /**
  * A simplified classic editor. Useful for testing features.

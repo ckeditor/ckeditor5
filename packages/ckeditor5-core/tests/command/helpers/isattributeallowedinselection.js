@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from '/ckeditor5/engine/model/document.js';
-import isAttributeAllowedInSelection from '/ckeditor5/core/command/helpers/isattributeallowedinselection.js';
-import { setData } from '/ckeditor5/engine/dev-utils/model.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import isAttributeAllowedInSelection from 'ckeditor5/core/command/helpers/isattributeallowedinselection.js';
+import { setData } from 'ckeditor5/engine/dev-utils/model.js';
 
 describe( 'isAttributeAllowedInSelection', () => {
 	const attribute = 'bold';

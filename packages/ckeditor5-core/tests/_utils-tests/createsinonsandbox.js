@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import testUtils from '/tests/core/_utils/utils.js';
+import testUtils from 'tests/core/_utils/utils.js';
 
 const obj = {
 	method() {}

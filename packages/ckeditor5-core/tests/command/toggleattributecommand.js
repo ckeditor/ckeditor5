@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import Editor from '/ckeditor5/core/editor/editor.js';
-import Document from '/ckeditor5/engine/model/document.js';
-import Batch from '/ckeditor5/engine/model/batch.js';
-import ToggleAttributeCommand from '/ckeditor5/core/command/toggleattributecommand.js';
-import Range from '/ckeditor5/engine/model/range.js';
-import Position from '/ckeditor5/engine/model/position.js';
-import { setData, getData } from '/ckeditor5/engine/dev-utils/model.js';
+import Editor from 'ckeditor5/core/editor/editor.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import Batch from 'ckeditor5/engine/model/batch.js';
+import ToggleAttributeCommand from 'ckeditor5/core/command/toggleattributecommand.js';
+import Range from 'ckeditor5/engine/model/range.js';
+import Position from 'ckeditor5/engine/model/position.js';
+import { setData, getData } from 'ckeditor5/engine/dev-utils/model.js';
 
 describe( 'ToggleAttributeCommand', () => {
 	const attrKey = 'bold';
