@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import testUtils from '/tests/ui/_utils/utils.js';
+import testUtils from 'tests/ui/_utils/utils.js';
 
 describe( 'utils', () => {
 	describe( 'createTestUIController', () => {

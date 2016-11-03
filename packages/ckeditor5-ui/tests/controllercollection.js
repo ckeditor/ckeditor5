@@ -6,14 +6,14 @@
 /* globals document */
 /* bender-tags: ui */
 
-import testUtils from '/tests/core/_utils/utils.js';
-import ControllerCollection from '/ckeditor5/ui/controllercollection.js';
-import Controller from '/ckeditor5/ui/controller.js';
-import Collection from '/ckeditor5/utils/collection.js';
-import Model from '/ckeditor5/ui/model.js';
-import View from '/ckeditor5/ui/view.js';
-import Template from '/ckeditor5/ui/template.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import testUtils from 'tests/core/_utils/utils.js';
+import ControllerCollection from 'ckeditor5/ui/controllercollection.js';
+import Controller from 'ckeditor5/ui/controller.js';
+import Collection from 'ckeditor5/utils/collection.js';
+import Model from 'ckeditor5/ui/model.js';
+import View from 'ckeditor5/ui/view.js';
+import Template from 'ckeditor5/ui/template.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
 testUtils.createSinonSandbox();
 
