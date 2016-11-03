@@ -8,6 +8,7 @@
 import { insert } from 'ckeditor5/engine/view/writer.js';
 import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
 import Element from 'ckeditor5/engine/view/element.js';
+import EmptyElement from 'ckeditor5/engine/view/emptyelement.js';
 import Position from 'ckeditor5/engine/view/position.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 import { stringify, parse } from 'ckeditor5/engine/dev-utils/view.js';
@@ -182,6 +183,17 @@ describe( 'writer', () => {
 				[ '<empty:img></empty:img>' ],
 				'<container:p>[<empty:img></empty:img>]</container:p>'
 			);
+		} );
+
+		it( 'should throw if trying to insert inside EmptyElement', () => {
+			const emptyElement = new EmptyElement( 'img' );
+			new ContainerElement( 'p', null, emptyElement );
+			const position = new Position( emptyElement, 0 );
+			const attributeElement = new AttributeElement( 'i' );
+
+			expect( () => {
+				insert( position, attributeElement );
+			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 		} );
 	} );
 } );

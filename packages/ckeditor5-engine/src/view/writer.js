@@ -55,6 +55,9 @@ export default {
  * Throws {@link utils.CKEditorError CKEditorError} `view-writer-invalid-range-container` when {@link engine.view.Range#start start}
  * and {@link engine.view.Range#end end} positions of a passed range are not placed inside same parent container.
  *
+ * Throws {@link utils.CKEditorError CKEditorError} `view-writer-cannot-break-empty-element` when trying to break attributes
+ * inside {@link engine.view.EmptyElement EmptyElement}.
+ *
  * @see engine.view.AttributeElement
  * @see engine.view.ContainerElement
  * @see engine.view.writer.breakContainer
@@ -636,6 +639,9 @@ function _breakAttributesRange( range, forceSplitText = false ) {
 // Function used by public breakAttributes (without splitting text nodes) and by other methods (with
 // splitting text nodes).
 //
+// Throws {@link utils.CKEditorError CKEditorError} `view-writer-cannot-break-empty-element` break position is placed
+// inside {@link engine.view.EmptyElement EmptyElement}.
+//
 // @param {engine.view.Position} position Position where to break attributes.
 // @param {Boolean} [forceSplitText = false] If set to `true`, will break text nodes even if they are directly in
 // container element. This behavior will result in incorrect view state, but is needed by other view writing methods
@@ -645,9 +651,14 @@ function _breakAttributes( position, forceSplitText = false ) {
 	const positionOffset = position.offset;
 	const positionParent = position.parent;
 
-	// If position is placed inside EmptyElement - return same position, cannot break EmptyElement.
-	if ( positionParent instanceof EmptyElement ) {
-		return Position.createFromPosition( position );
+	// If position is placed inside EmptyElement - throw an exception as we cannot break inside.
+	if ( position.parent instanceof EmptyElement ) {
+		/**
+		 * Cannot break inside EmptyElement instance.
+		 *
+		 * @error view-writer-cannot-break-empty-element
+		 */
+		throw new CKEditorError( 'view-writer-cannot-break-empty-element' );
 	}
 
 	// There are no attributes to break and text nodes breaking is not forced.
@@ -792,9 +803,10 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 		const child = parent.getChild( i );
 		const isText = child instanceof Text;
 		const isAttribute = child instanceof AttributeElement;
+		const isEmpty = child instanceof EmptyElement;
 
-		// Wrap text or attributes with higher or equal priority.
-		if ( isText || ( isAttribute && attribute.priority <= child.priority ) ) {
+		// Wrap text, empty elements or attributes with higher or equal priority.
+		if ( isText || isEmpty || ( isAttribute && attribute.priority <= child.priority ) ) {
 			// Clone attribute.
 			const newAttribute = attribute.clone();
 

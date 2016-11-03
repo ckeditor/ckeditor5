@@ -230,16 +230,25 @@ describe( 'writer', () => {
 				);
 			} );
 
-			it( 'should not break EmptyElements', () => {
+			it( 'should throw if breaking inside EmptyElement #1', () => {
 				const img = new EmptyElement( 'img' );
-				const container = new ContainerElement( 'p', null, [ img ] );
+				new ContainerElement( 'p', null, img );
 				const position = new Position( img, 0 );
 
-				const newPosition = breakAttributes( position );
-				expect( stringify( container, newPosition, {
-					showType: true,
-					showPriority: true
-				} ) ).to.equal( '<container:p><empty:img>[]</empty:img></container:p>' );
+				expect( () => {
+					breakAttributes( position );
+				} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
+			} );
+
+			it( 'should throw if breaking inside EmptyElement #2', () => {
+				const img = new EmptyElement( 'img' );
+				const b = new AttributeElement( 'b' );
+				new ContainerElement( 'p', null, [ img, b ] );
+				const range = Range.createFromParentsAndOffsets( img, 0, b, 0 );
+
+				expect( () => {
+					breakAttributes( range );
+				} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 			} );
 		} );
 	} );

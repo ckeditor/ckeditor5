@@ -9,6 +9,8 @@ import { wrapPosition } from 'ckeditor5/engine/view/writer.js';
 import Text from 'ckeditor5/engine/view/text.js';
 import Element from 'ckeditor5/engine/view/element.js';
 import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
+import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
+import EmptyElement from 'ckeditor5/engine/view/emptyelement.js';
 import Position from 'ckeditor5/engine/view/position.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 import { stringify, parse } from 'ckeditor5/engine/dev-utils/view.js';
@@ -121,5 +123,16 @@ describe( 'wrapPosition', () => {
 			'<attribute:b view-priority="1"></attribute:b>',
 			'<container:p><attribute:b view-priority="1">foobar{}</attribute:b></container:p>'
 		);
+	} );
+
+	it( 'should throw if position is set inside EmptyElement', () => {
+		const emptyElement = new EmptyElement( 'img' );
+		new ContainerElement( 'p', null, emptyElement );
+		const attributeElement = new AttributeElement( 'b' );
+		const position = new Position( emptyElement, 0 );
+
+		expect( () => {
+			wrapPosition( position, attributeElement );
+		} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add' );
 	} );
 } );
