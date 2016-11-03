@@ -48,7 +48,7 @@ afterEach( () => {
 } );
 
 describe( 'ListCommand', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create list command with given type and value set to false', () => {
 			expect( command.type ).to.equal( 'bulleted' );
 			expect( command.value ).to.be.false;
