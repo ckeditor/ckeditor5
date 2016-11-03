@@ -6,14 +6,14 @@
 /* globals document */
 /* bender-tags: view */
 
-import Document from '/ckeditor5/engine/view/document.js';
-import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
-import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
-import Text from '/ckeditor5/engine/view/text.js';
-import TreeWalker from '/ckeditor5/engine/view/treewalker.js';
-import Position from '/ckeditor5/engine/view/position.js';
-import Range from '/ckeditor5/engine/view/range.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import Document from 'ckeditor5/engine/view/document.js';
+import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
+import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
+import Text from 'ckeditor5/engine/view/text.js';
+import TreeWalker from 'ckeditor5/engine/view/treewalker.js';
+import Position from 'ckeditor5/engine/view/position.js';
+import Range from 'ckeditor5/engine/view/range.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
 describe( 'TreeWalker', () => {
 	let doc, root, img1, paragraph, bold, textAbcd, charY, img2, charX;

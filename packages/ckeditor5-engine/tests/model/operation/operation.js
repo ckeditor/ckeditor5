@@ -5,9 +5,9 @@
 
 /* bender-tags: model, delta */
 
-import Delta from '/ckeditor5/engine/model/delta/delta.js';
-import Operation from '/ckeditor5/engine/model/operation/operation.js';
-import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
+import Delta from 'ckeditor5/engine/model/delta/delta.js';
+import Operation from 'ckeditor5/engine/model/operation/operation.js';
+import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
 
 describe( 'Operation', () => {
 	it( 'should save its base version', () => {

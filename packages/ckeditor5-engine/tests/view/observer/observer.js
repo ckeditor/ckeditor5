@@ -5,7 +5,7 @@
 
 /* bender-tags: view */
 
-import Observer from '/ckeditor5/engine/view/observer/observer.js';
+import Observer from 'ckeditor5/engine/view/observer/observer.js';
 
 describe( 'Observer', () => {
 	describe( 'constructor', () => {

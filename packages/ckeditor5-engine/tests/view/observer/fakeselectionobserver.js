@@ -5,12 +5,12 @@
 
 /* globals document */
 
-import createElement from '/ckeditor5/utils/dom/createelement.js';
-import FakeSelectionObserver from '/ckeditor5/engine/view/observer/fakeselectionobserver.js';
-import ViewDocument from '/ckeditor5/engine/view/document.js';
-import DomEventData from '/ckeditor5/engine/view/observer/domeventdata.js';
-import { keyCodes } from '/ckeditor5/utils/keyboard.js';
-import { setData, stringify } from '/ckeditor5/engine/dev-utils/view.js';
+import createElement from 'ckeditor5/utils/dom/createelement.js';
+import FakeSelectionObserver from 'ckeditor5/engine/view/observer/fakeselectionobserver.js';
+import ViewDocument from 'ckeditor5/engine/view/document.js';
+import DomEventData from 'ckeditor5/engine/view/observer/domeventdata.js';
+import { keyCodes } from 'ckeditor5/utils/keyboard.js';
+import { setData, stringify } from 'ckeditor5/engine/dev-utils/view.js';
 
 describe( 'FakeSelectionObserver', () => {
 	let observer;

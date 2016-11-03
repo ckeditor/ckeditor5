@@ -6,8 +6,8 @@
 /* globals document */
 /* bender-tags: view, browser-only */
 
-import ClickObserver from '/ckeditor5/engine/view/observer/clickobserver.js';
-import ViewDocument from '/ckeditor5/engine/view/document.js';
+import ClickObserver from 'ckeditor5/engine/view/observer/clickobserver.js';
+import ViewDocument from 'ckeditor5/engine/view/document.js';
 
 describe( 'ClickObserver', () => {
 	let viewDocument, observer;
