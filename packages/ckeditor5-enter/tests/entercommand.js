@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from '/tests/core/_utils/modeltesteditor.js';
-import EnterCommand from '/ckeditor5/enter/entercommand.js';
-import { getData, setData } from '/ckeditor5/engine/dev-utils/model.js';
+import ModelTestEditor from 'tests/core/_utils/modeltesteditor.js';
+import EnterCommand from 'ckeditor5/enter/entercommand.js';
+import { getData, setData } from 'ckeditor5/engine/dev-utils/model.js';
 
 let editor, doc, schema, command;
 

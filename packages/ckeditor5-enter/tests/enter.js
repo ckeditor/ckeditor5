@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualTestEditor from '/tests/core/_utils/virtualtesteditor.js';
-import Enter from '/ckeditor5/enter/enter.js';
-import EnterCommand from '/ckeditor5/enter/entercommand.js';
-import DomEventData from '/ckeditor5/engine/view/observer/domeventdata.js';
+import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
+import Enter from 'ckeditor5/enter/enter.js';
+import EnterCommand from 'ckeditor5/enter/entercommand.js';
+import DomEventData from 'ckeditor5/engine/view/observer/domeventdata.js';
 
 describe( 'Enter feature', () => {
 	let editor, editingView;
