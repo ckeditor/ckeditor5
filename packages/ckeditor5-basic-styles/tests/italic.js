@@ -5,12 +5,12 @@
 
 /* globals document */
 
-import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
-import Italic from '/ckeditor5/basic-styles/italic.js';
-import ItalicEngine from '/ckeditor5/basic-styles/italicengine.js';
-import ButtonController from '/ckeditor5/ui/button/button.js';
-import testUtils from '/tests/core/_utils/utils.js';
-import { keyCodes } from '/ckeditor5/utils/keyboard.js';
+import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
+import Italic from 'ckeditor5/basic-styles/italic.js';
+import ItalicEngine from 'ckeditor5/basic-styles/italicengine.js';
+import ButtonController from 'ckeditor5/ui/button/button.js';
+import testUtils from 'tests/core/_utils/utils.js';
+import { keyCodes } from 'ckeditor5/utils/keyboard.js';
 
 testUtils.createSinonSandbox();
 
