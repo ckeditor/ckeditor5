@@ -6,6 +6,7 @@
 import Position from './position.js';
 import ContainerElement from './containerelement.js';
 import AttributeElement from './attributeelement.js';
+import WidgetElement from './widgetelement.js';
 import EmptyElement from './emptyelement.js';
 import Text from './text.js';
 import Range from './range.js';
@@ -44,7 +45,8 @@ export default {
  *		<p>foo<b><u>b{}ar</u></b></p> -> <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
  *		<p><b>fo{o</b><u>ba}r</u></p> -> <p><b>fo</b><b>o</b><u>ba</u><u>r</u></b></p>
  *
- * **Note:** {@link engine.view.DocumentFragment DocumentFragment} is treated like a container.
+ * **Note:** {@link engine.view.DocumentFragment DocumentFragment} and {@link engine.view.WidgetElement WidgetElement}
+ * are treated like a container.
  *
  * **Note:** Difference between {@link engine.view.writer.breakAttributes breakAttributes} and
  * {@link engine.view.writer.breakContainer breakContainer} is that `breakAttributes` breaks all
@@ -187,8 +189,8 @@ export function mergeAttributes( position ) {
 		return position;
 	}
 
-	// When one or both nodes are containers - no attributes to merge.
-	if ( ( nodeBefore instanceof ContainerElement ) || ( nodeAfter instanceof ContainerElement ) ) {
+	// When one or both nodes are top-level nodes - no attributes to merge.
+	if ( isTopLevelNode( nodeBefore ) || isTopLevelNode( nodeAfter ) ) {
 		return position;
 	}
 
@@ -265,20 +267,20 @@ export function mergeContainers( position ) {
  *
  * Throws {@link utils.CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
  * contains instances that are not {@link engine.view.Text Texts},
- * {@link engine.view.AttributeElement AttributeElements},
- * {@link engine.view.ContainerElement ContainerElements} or {@link engine.view.EmptyElement EmptyElements}.
+ * {@link engine.view.AttributeElement AttributeElements}, {@link engine.view.ContainerElement ContainerElements},
+ * {@link engine.view.WidgetElement WidgetElements} or {@link engine.view.EmptyElement EmptyElements}.
  *
  * @function engine.view.writer.insert
  * @param {engine.view.Position} position Insertion position.
- * @param {engine.view.Text|engine.view.AttributeElement|engine.view.ContainerElement|engine.view.EmptyElement
- * |Iterable.<engine.view.Text|engine.view.AttributeElement|engine.view.ContainerElement|engine.view.EmptyElement>} nodes Node or
- * nodes to insert.
+ * @param {engine.view.Text|engine.view.AttributeElement|engine.view.ContainerElement|engine.view.EmptyElement|
+ * engine.view.WidgetElement|Iterable.<engine.view.Text|engine.view.AttributeElement|engine.view.ContainerElement|
+ * engine.view.EmptyElement|engine.view.WidgetElement>} nodes Node or nodes to insert.
  * @returns {engine.view.Range} Range around inserted nodes.
  */
 export function insert( position, nodes ) {
 	nodes = isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
 
-	// Check if nodes to insert are instances of AttributeElements, ContainerElements, EmptyElements or Text.
+	// Check if nodes to insert are instances of AttributeElements, ContainerElements, WidgetElements, EmptyElements or Text.
 	validateNodesToInsert( nodes );
 
 	const container = getParentContainer( position );
@@ -587,15 +589,16 @@ export function rename( viewElement, newName ) {
 
 // Returns first parent container of specified {@link engine.view.Position Position}.
 // Position's parent node is checked as first, then next parents are checked.
-// Note that {@link engine.view.DocumentFragment DocumentFragment} is treated like a container.
+// Note that {@link engine.view.DocumentFragment DocumentFragment} and {@link engine.view.WidgetElement WidgetElement}
+// are treated like a containers.
 //
 // @param {engine.view.Position} position Position used as a start point to locate parent container.
-// @returns {engine.view.ContainerElement|engine.view.DocumentFragment|undefined} Parent container element or
-// `undefined` if container is not found.
+// @returns {engine.view.ContainerElement|engine.view.DocumentFragment|engine.view.WidgetElement|undefined} Parent container
+// element or `undefined` if container is not found.
 function getParentContainer( position ) {
 	let parent = position.parent;
 
-	while ( !isContainerOrFragment( parent ) ) {
+	while ( !isTopLevelNode( parent ) ) {
 		if ( !parent ) {
 			return undefined;
 		}
@@ -662,12 +665,12 @@ function _breakAttributes( position, forceSplitText = false ) {
 	}
 
 	// There are no attributes to break and text nodes breaking is not forced.
-	if ( !forceSplitText && positionParent instanceof Text && isContainerOrFragment( positionParent.parent ) ) {
+	if ( !forceSplitText && positionParent instanceof Text && isTopLevelNode( positionParent.parent ) ) {
 		return Position.createFromPosition( position );
 	}
 
 	// Position's parent is container, so no attributes to break.
-	if ( isContainerOrFragment( positionParent ) ) {
+	if ( isTopLevelNode( positionParent ) ) {
 		return Position.createFromPosition( position );
 	}
 
@@ -1049,18 +1052,22 @@ function rangeSpansOnAllChildren( range ) {
 
 // Checks if provided nodes are valid to insert. Checks if each node is an instance of
 // {@link engine.view.Text Text} or {@link engine.view.AttributeElement AttributeElement},
-// {@link engine.view.ContainerElement ContainerElement} or {@link engine.view.EmptyElement EmptyElement}.
+// {@link engine.view.ContainerElement ContainerElement}, {@link engine.view.WidgetElement WidgetElement} or
+// {@link engine.view.EmptyElement EmptyElement}.
 //
 // Throws {@link utils.CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
 // contains instances that are not {@link engine.view.Text Texts},
 // {@link engine.view.EmptyElement EmptyElements},
-// {@link engine.view.AttributeElement AttributeElements} or
+// {@link engine.view.AttributeElement AttributeElements},
+// {@link engine.view.WidgetElement WidgetElements} or
 // {@link engine.view.ContainerElement ContainerElements}.
 //
-// @param Iterable.<engine.view.Text|engine.view.AttributeElement|engine.view.ContainerElement> nodes
+// @param Iterable.<engine.view.Text|engine.view.AttributeElement|engine.view.ContainerElement|engine.view.EmptyElement|
+// engine.view.WidgetElement> nodes
 function validateNodesToInsert( nodes ) {
 	for ( let node of nodes ) {
-		if ( !( node instanceof Text || node instanceof AttributeElement || node instanceof ContainerElement || node instanceof EmptyElement ) ) {
+		if ( !( node instanceof Text || node instanceof AttributeElement ||
+			node instanceof ContainerElement || node instanceof EmptyElement || node instanceof WidgetElement ) ) {
 			/**
 			 * Inserted nodes should be instance of {@link engine.view.AttributeElement AttributeElement},
 			 * {@link engine.view.ContainerElement ContainerElement} or {@link engine.view.Text Text}.
@@ -1076,12 +1083,13 @@ function validateNodesToInsert( nodes ) {
 	}
 }
 
-// Checks if node is ContainerElement or DocumentFragment, because in most cases they should be treated the same way.
+// Checks if node is top-level node. It might be ContainerElement, DocumentFragment or WidgetElement,
+// because in most cases they should be treated the same way.
 //
 // @param {engine.view.Node} node
-// @returns {Boolean} Returns `true` if node is instance of ContainerElement or DocumentFragment.
-function isContainerOrFragment( node ) {
-	return node instanceof ContainerElement || node instanceof DocumentFragment;
+// @returns {Boolean} Returns `true` if node is instance of ContainerElement, DocumentFragment or WidgetElement.
+function isTopLevelNode( node ) {
+	return node instanceof ContainerElement || node instanceof DocumentFragment || node instanceof WidgetElement;
 }
 
 // Checks if {@link engine.view.Range#start range start} and {@link engine.view.Range#end range end} are placed
