@@ -25,7 +25,7 @@ describe( 'LinkForm', () => {
 		linkForm = new LinkForm( model, view );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'creates view#submit -> model#submit binding', () => {
 			const spy = sinon.spy();
 

@@ -17,7 +17,7 @@ describe( 'LinkFormView', () => {
 		view.init();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'ck-link-form' ) ).to.true;
 		} );

@@ -33,7 +33,7 @@ describe( 'UnlinkCommand', () => {
 		command.destroy();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should listen on selection attribute change and refresh state', () => {
 			const refreshStateSpy = testUtils.sinon.spy( command, 'refreshState' );
 
