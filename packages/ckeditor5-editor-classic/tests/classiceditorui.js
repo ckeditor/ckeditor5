@@ -6,20 +6,20 @@
 /* globals document, Event */
 /* bender-tags: editor, browser-only */
 
-import ClassicEditorUI from '/ckeditor5/editor-classic/classiceditorui.js';
-import BoxedEditorUIView from '/ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
+import ClassicEditorUI from 'ckeditor5/editor-classic/classiceditorui.js';
+import BoxedEditorUIView from 'ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
 
-import Model from '/ckeditor5/ui/model.js';
-import Button from '/ckeditor5/ui/button/button.js';
-import ButtonView from '/ckeditor5/ui/button/buttonview.js';
+import Model from 'ckeditor5/ui/model.js';
+import Button from 'ckeditor5/ui/button/button.js';
+import ButtonView from 'ckeditor5/ui/button/buttonview.js';
 
-import Toolbar from '/ckeditor5/ui/toolbar/toolbar.js';
-import StickyToolbarView from '/ckeditor5/ui/toolbar/sticky/stickytoolbarview.js';
+import Toolbar from 'ckeditor5/ui/toolbar/toolbar.js';
+import StickyToolbarView from 'ckeditor5/ui/toolbar/sticky/stickytoolbarview.js';
 
-import EditableUI from '/ckeditor5/ui/editableui/editableui.js';
-import InlineEditableUIView from '/ckeditor5/ui/editableui/inline/inlineeditableuiview.js';
+import EditableUI from 'ckeditor5/ui/editableui/editableui.js';
+import InlineEditableUIView from 'ckeditor5/ui/editableui/inline/inlineeditableuiview.js';
 
-import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
+import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
 
 describe( 'ClassicEditorUI', () => {
 	let editorElement, editor, editorUI;
