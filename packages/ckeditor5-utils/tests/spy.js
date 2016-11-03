@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import spy from '/ckeditor5/utils/spy.js';
+import spy from 'ckeditor5/utils/spy.js';
 
 describe( 'utils', () => {
 	describe( 'spy', () => {

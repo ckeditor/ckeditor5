@@ -6,7 +6,7 @@
 /* globals document */
 /* bender-tags: dom, browser-only */
 
-import insertAt from '/ckeditor5/utils/dom/insertat.js';
+import insertAt from 'ckeditor5/utils/dom/insertat.js';
 
 describe( 'insertAt', () => {
 	it( 'should insert at given position', () => {

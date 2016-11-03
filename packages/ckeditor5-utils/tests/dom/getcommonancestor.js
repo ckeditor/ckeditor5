@@ -6,8 +6,8 @@
 /* globals document */
 /* bender-tags: dom, browser-only */
 
-import getCommonAncestor from '/ckeditor5/utils/dom/getcommonancestor.js';
-import createElement from '/ckeditor5/utils/dom/createelement.js';
+import getCommonAncestor from 'ckeditor5/utils/dom/getcommonancestor.js';
+import createElement from 'ckeditor5/utils/dom/createelement.js';
 
 describe( 'getParents', () => {
 	let b, span1, span2, p1, p2, i, div;

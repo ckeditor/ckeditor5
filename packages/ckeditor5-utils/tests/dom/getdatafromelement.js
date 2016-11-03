@@ -6,7 +6,7 @@
 /* globals document */
 /* bender-tags: dom, browser-only */
 
-import getDataFromElement from '/ckeditor5/utils/dom/getdatafromelement.js';
+import getDataFromElement from 'ckeditor5/utils/dom/getdatafromelement.js';
 
 describe( 'getDataFromElement', () => {
 	let divEl;

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
 describe( 'CKEditorError', () => {
 	it( 'inherits from Error', () => {

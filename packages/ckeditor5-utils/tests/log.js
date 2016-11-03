@@ -5,7 +5,7 @@
 
 /* globals console */
 
-import log from '/ckeditor5/utils/log.js';
+import log from 'ckeditor5/utils/log.js';
 
 let spy;
 

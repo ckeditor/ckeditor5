@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Config from '/ckeditor5/utils/config.js';
+import Config from 'ckeditor5/utils/config.js';
 
 let config;
 

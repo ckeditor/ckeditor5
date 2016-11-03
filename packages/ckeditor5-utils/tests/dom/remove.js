@@ -6,7 +6,7 @@
 /* globals document */
 /* bender-tags: dom, browser-only */
 
-import remove from '/ckeditor5/utils/dom/remove.js';
+import remove from 'ckeditor5/utils/dom/remove.js';
 
 describe( 'remove', () => {
 	it( 'should remove element form parent', () => {
