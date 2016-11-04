@@ -190,7 +190,7 @@ export function mergeAttributes( position ) {
 	}
 
 	// When one or both nodes are top-level nodes - no attributes to merge.
-	if ( isTopLevelNode( nodeBefore ) || isTopLevelNode( nodeAfter ) ) {
+	if ( isContainerLikeNode( nodeBefore ) || isContainerLikeNode( nodeAfter ) ) {
 		return position;
 	}
 
@@ -598,7 +598,7 @@ export function rename( viewElement, newName ) {
 function getParentContainer( position ) {
 	let parent = position.parent;
 
-	while ( !isTopLevelNode( parent ) ) {
+	while ( !isContainerLikeNode( parent ) ) {
 		if ( !parent ) {
 			return undefined;
 		}
@@ -665,12 +665,12 @@ function _breakAttributes( position, forceSplitText = false ) {
 	}
 
 	// There are no attributes to break and text nodes breaking is not forced.
-	if ( !forceSplitText && positionParent instanceof Text && isTopLevelNode( positionParent.parent ) ) {
+	if ( !forceSplitText && positionParent instanceof Text && isContainerLikeNode( positionParent.parent ) ) {
 		return Position.createFromPosition( position );
 	}
 
 	// Position's parent is container, so no attributes to break.
-	if ( isTopLevelNode( positionParent ) ) {
+	if ( isContainerLikeNode( positionParent ) ) {
 		return Position.createFromPosition( position );
 	}
 
@@ -1083,12 +1083,12 @@ function validateNodesToInsert( nodes ) {
 	}
 }
 
-// Checks if node is top-level node. It might be ContainerElement, DocumentFragment or WidgetElement,
+// Checks if node is container-like. It might be ContainerElement, DocumentFragment or WidgetElement,
 // because in most cases they should be treated the same way.
 //
 // @param {engine.view.Node} node
 // @returns {Boolean} Returns `true` if node is instance of ContainerElement, DocumentFragment or WidgetElement.
-function isTopLevelNode( node ) {
+function isContainerLikeNode( node ) {
 	return node instanceof ContainerElement || node instanceof DocumentFragment || node instanceof WidgetElement;
 }
 
