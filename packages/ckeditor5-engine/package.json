@@ -6,11 +6,11 @@
     "CKEditor"
   ],
   "dependencies": {
-    "ckeditor5-core": "ckeditor/ckeditor5-core",
     "ckeditor5-utils": "ckeditor/ckeditor5-utils"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-lint": "^1.0.1",
+    "ckeditor5-core": "ckeditor/ckeditor5-core",
     "gulp": "^3.9.0",
     "guppy-pre-commit": "^0.4.0"
   },
