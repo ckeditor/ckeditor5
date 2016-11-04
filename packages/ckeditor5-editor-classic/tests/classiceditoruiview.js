@@ -6,14 +6,14 @@
 /* globals document, Event */
 /* bender-tags: editor, browser-only */
 
-import ClassicEditorUIView from '/ckeditor5/editor-classic/classiceditoruiview.js';
-import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
+import ClassicEditorUIView from 'ckeditor5/editor-classic/classiceditoruiview.js';
+import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
 
-import View from '/ckeditor5/ui/view.js';
-import StickyToolbarView from '/ckeditor5/ui/toolbar/sticky/stickytoolbarview.js';
-import InlineEditableUIView from '/ckeditor5/ui/editableui/inline/inlineeditableuiview.js';
+import View from 'ckeditor5/ui/view.js';
+import StickyToolbarView from 'ckeditor5/ui/toolbar/sticky/stickytoolbarview.js';
+import InlineEditableUIView from 'ckeditor5/ui/editableui/inline/inlineeditableuiview.js';
 
-import testUtils from '/tests/utils/_utils/utils.js';
+import testUtils from 'tests/utils/_utils/utils.js';
 
 describe( 'ClassicEditorUIView', () => {
 	let editorElement, editor, editable, view;
