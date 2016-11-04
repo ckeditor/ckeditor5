@@ -25,14 +25,14 @@ export default class ViewCollection extends Collection {
 
 		// Handle {@link ui.View#element} in DOM when a new view is added to the collection.
 		this.on( 'add', ( evt, view, index ) => {
-			if ( this.ready && view.element ) {
+			if ( this.ready && view.element && this._parentElement ) {
 				this._parentElement.insertBefore( view.element, this._parentElement.children[ index ] );
 			}
 		} );
 
 		// Handle {@link ui.View#element} in DOM when a view is removed from the collection.
 		this.on( 'remove', ( evt, view ) => {
-			if ( this.ready && view.element ) {
+			if ( this.ready && view.element && this._parentElement ) {
 				view.element.remove();
 			}
 		} );
