@@ -12,7 +12,7 @@ describe( 'LinkFormView', () => {
 	let view;
 
 	beforeEach( () => {
-		view = new LinkFormView();
+		view = new LinkFormView( { t: () => {} } );
 
 		view.init();
 	} );
