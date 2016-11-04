@@ -5,9 +5,7 @@
 
 import Feature from '../core/feature.js';
 import ListEngine from './listengine.js';
-import ButtonController from '../ui/button/button.js';
 import ButtonView from '../ui/button/buttonview.js';
-import Model from '../ui/model.js';
 import { parseKeystroke } from '../utils/keyboard.js';
 
 /**
@@ -86,21 +84,22 @@ export default class List extends Feature {
 		const editor = this.editor;
 		const command = editor.commands.get( commandName );
 
-		// Create button model.
-		const buttonModel = new Model( {
-			isEnabled: true,
-			isOn: false,
-			label: label,
-			icon: commandName.toLowerCase()
-		} );
-
-		// Bind button model to command.
-		buttonModel.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
-
-		// Execute command.
-		this.listenTo( buttonModel, 'execute', () => editor.execute( commandName ) );
-
 		// Add button to feature components.
-		editor.ui.featureComponents.add( commandName, ButtonController, ButtonView, buttonModel );
+		editor.ui.featureComponents.add( commandName, ( locale ) => {
+			const buttonView = new ButtonView( locale );
+
+			buttonView.set( {
+				label: label,
+				icon: commandName.toLowerCase()
+			} );
+
+			// Bind button model to command.
+			buttonView.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+
+			// Execute command.
+			this.listenTo( buttonView, 'execute', () => editor.execute( commandName ) );
+
+			return buttonView;
+		} );
 	}
 }
