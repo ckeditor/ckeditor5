@@ -23,6 +23,8 @@ export default class ClassicTestEditor extends StandardEditor {
 		this.document.createRoot();
 		this.editing.createRoot( 'div' );
 		this.data.processor = new HtmlDataProcessor();
+
+		this.ui = new BoxedEditorUIView( this, this.locale );
 	}
 
 	/**
@@ -42,9 +44,7 @@ export default class ClassicTestEditor extends StandardEditor {
 
 			resolve(
 				editor.initPlugins()
-					.then( () => {
-						return ( editor.ui = new BoxedEditorUIView( editor, editor.locale ) ).init();
-					} )
+					.then( () => editor.ui.init() )
 					.then( () => editor.loadDataFromEditorElement() )
 					.then( () => editor )
 			);

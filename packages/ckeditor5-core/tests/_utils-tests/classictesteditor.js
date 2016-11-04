@@ -32,6 +32,7 @@ describe( 'ClassicTestEditor', () => {
 
 			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
 			expect( editor ).to.have.property( 'element', editorElement );
+			expect( editor ).to.have.property( 'ui' ).to.instanceOf( BoxedEditorUIView );
 		} );
 
 		it( 'creates model and view roots', () => {
