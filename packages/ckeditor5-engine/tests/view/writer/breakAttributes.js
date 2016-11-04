@@ -250,6 +250,30 @@ describe( 'writer', () => {
 					breakAttributes( range );
 				} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 			} );
+
+			it( 'should break inside WidgetElement', () => {
+				test(
+					'<widget:figure><attribute:b>foo{}bar</attribute:b></widget:figure>',
+					'<widget:figure contenteditable="false">' +
+						'<attribute:b>foo</attribute:b>' +
+						'[]' +
+						'<attribute:b>bar</attribute:b>' +
+					'</widget:figure>'
+				);
+			} );
+
+			it( 'should stop breaking at WidgetElement', () => {
+				test(
+					'<container:p><widget:figure><attribute:b>foo{}bar</attribute:b></widget:figure></container:p>',
+					'<container:p>' +
+						'<widget:figure contenteditable="false">' +
+							'<attribute:b>foo</attribute:b>' +
+							'[]' +
+							'<attribute:b>bar</attribute:b>' +
+						'</widget:figure>' +
+					'</container:p>'
+				);
+			} );
 		} );
 	} );
 } );

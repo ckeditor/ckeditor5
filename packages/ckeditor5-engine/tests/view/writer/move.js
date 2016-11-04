@@ -141,5 +141,23 @@ describe( 'writer', () => {
 				move( srcRange, dstPosition );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 		} );
+
+		it( 'should move WidgetElements', () => {
+			test(
+				'<container:p>foo[<widget:foo></widget:foo>]bar</container:p>',
+				'<container:div>[]</container:div>',
+				'<container:p>foobar</container:p>',
+				'<container:div>[<widget:foo contenteditable="false"></widget:foo>]</container:div>'
+			);
+		} );
+
+		it( 'should move into WidgetElements', () => {
+			test(
+				'<container:p>[foo bar]</container:p>',
+				'<widget:fig>this is {} moved</widget:fig>',
+				'<container:p></container:p>',
+				'<widget:fig contenteditable="false">this is {foo bar} moved</widget:fig>'
+			);
+		} );
 	} );
 } );

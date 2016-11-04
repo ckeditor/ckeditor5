@@ -195,5 +195,13 @@ describe( 'writer', () => {
 				insert( position, attributeElement );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 		} );
+
+		it( 'should allow to insert to the WidgetElement', () => {
+			test(
+				'<widget:figure>[]</widget:figure>',
+				[ '<attribute:b>foo bar</attribute:b>' ],
+				'<widget:figure contenteditable="false">[<attribute:b view-priority="10">foo bar</attribute:b>]</widget:figure>'
+			);
+		} );
 	} );
 } );

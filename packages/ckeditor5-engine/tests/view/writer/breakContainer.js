@@ -9,6 +9,7 @@ import { breakContainer } from 'ckeditor5/engine/view/writer.js';
 import { stringify, parse } from 'ckeditor5/engine/dev-utils/view.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
+import WidgetElement from 'ckeditor5/engine/view/widgetelement.js';
 import Position from 'ckeditor5/engine/view/position.js';
 
 describe( 'writer', () => {
@@ -75,6 +76,14 @@ describe( 'writer', () => {
 			expect( () => {
 				breakContainer( position );
 			} ).to.throw( CKEditorError, /view-writer-break-root/ );
+		} );
+
+		it( 'should not allow to break WidgetElement', () => {
+			const widget = new WidgetElement( 'figure' );
+			const position = new Position( widget, 0 );
+			expect( () => {
+				breakContainer( position );
+			} ).to.throw( CKEditorError, 'view-writer-break-non-container-element' );
 		} );
 	} );
 } );

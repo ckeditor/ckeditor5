@@ -136,5 +136,23 @@ describe( 'writer', () => {
 				'<container:p><empty:img></empty:img>[]<empty:img></empty:img></container:p>'
 			);
 		} );
+
+		it( 'should merge inside WidgetElement', () => {
+			test(
+				'<widget:figure><attribute:b>foo</attribute:b>[]<attribute:b>bar</attribute:b></widget:figure>',
+				'<widget:figure contenteditable="false">' +
+					'<attribute:b view-priority="10">foo{}bar</attribute:b>' +
+				'</widget:figure>'
+			);
+		} );
+
+		it( 'should not merge WidgetElements', () => {
+			test(
+				'<widget:figure>foo</widget:figure>[]<widget:figure>bar</widget:figure>',
+				'<widget:figure contenteditable="false">foo</widget:figure>' +
+				'[]' +
+				'<widget:figure contenteditable="false">bar</widget:figure>'
+			);
+		} );
 	} );
 } );

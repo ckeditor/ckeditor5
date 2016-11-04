@@ -289,5 +289,13 @@ describe( 'writer', () => {
 				wrap( range, new AttributeElement( 'b' ) );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 		} );
+
+		it( 'should wrap inside WidgetElements', () => {
+			test(
+				'<widget:foo>[foo bar]</widget:foo>',
+				'<attribute:b></attribute:b>',
+				'<widget:foo contenteditable="false">[<attribute:b view-priority="10">foo bar</attribute:b>]</widget:foo>'
+			);
+		} );
 	} );
 } );

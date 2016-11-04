@@ -83,5 +83,14 @@ describe( 'writer', () => {
 				mergeContainers( selection.getFirstPosition() );
 			} ).to.throw( CKEditorError, /view-writer-merge-containers-invalid-position/ );
 		} );
+
+		it( 'should throw if trying to merge WidgetElements', () => {
+			const input = '<widget:figure></widget:figure>[]<widget:figure></widget:figure>';
+			const { selection } = parse( input );
+
+			expect( () => {
+				mergeContainers( selection.getFirstPosition() );
+			} ).to.throw( CKEditorError, 'view-writer-merge-containers-invalid-position' );
+		} );
 	} );
 } );

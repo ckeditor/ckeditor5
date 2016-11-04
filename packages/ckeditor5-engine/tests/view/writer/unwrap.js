@@ -318,5 +318,13 @@ describe( 'writer', () => {
 				unwrap( range, attribute );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 		} );
+
+		it( 'should unwrap inside widget element', () => {
+			test(
+				'<widget:foo>[<attribute:b>bar</attribute:b>]</widget:foo>',
+				'<attribute:b></attribute:b>',
+				'<widget:foo contenteditable="false">[bar]</widget:foo>'
+			);
+		} );
 	} );
 } );
