@@ -43,7 +43,7 @@ describe( 'ClassicEditorUIView', () => {
 		view.featureComponents.add( 'bar', viewCreator( 'bar' ) );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		describe( 'toolbar', () => {
 			it( 'creates toolbar', () => {
 				expect( view.toolbar ).to.be.instanceof( StickyToolbarView );
