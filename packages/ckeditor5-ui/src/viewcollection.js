@@ -88,16 +88,15 @@ export default class ViewCollection extends Collection {
 			throw new CKEditorError( 'ui-viewviewcollection-init-reinit: This ViewCollection has already been initialized.' );
 		}
 
-		// Do not render unbound children. They're already in DOM by explicit declaration
-		// in Template definition.
-		if ( !this._parentElement ) {
-			return Promise.resolve();
-		}
-
 		const promises = [];
 
 		for ( let view of this ) {
-			this._parentElement.appendChild( view.element );
+			// Do not render unbound children. They're already in DOM by explicit declaration
+			// in Template definition.
+			if ( this._parentElement && view.element ) {
+				this._parentElement.appendChild( view.element );
+			}
+
 			promises.push( view.init() );
 		}
 
