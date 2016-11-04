@@ -1,6 +1,11 @@
 CKEditor 5 UI Framework
 ========================================
 
+[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-ui.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui)
+[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-ui.svg)](https://travis-ci.org/ckeditor/ckeditor5-ui)
+[![Test Coverage](https://codeclimate.com/github/ckeditor/ckeditor5-ui/badges/coverage.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-ui/coverage)
+[![Code Climate](https://codeclimate.com/github/ckeditor/ckeditor5-ui/badges/gpa.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-ui)
+[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-ui/status.svg)](https://david-dm.org/ckeditor/ckeditor5-ui#info=dependencies)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-ui/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-ui#info=devDependencies)
 
 The UI framework of CKEditor 5. More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5>.

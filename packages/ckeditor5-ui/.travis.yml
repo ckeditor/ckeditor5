@@ -19,6 +19,6 @@ install:
   - npm install
   - npm install @ckeditor/ckeditor5-dev-tests
 script:
-  - node_modules/.bin/ckeditor5-dev-tests
+  - node_modules/.bin/ckeditor5-dev-tests --coverage
 after_success:
   - node_modules/.bin/codeclimate-test-reporter < .build/coverage/lcov.info
