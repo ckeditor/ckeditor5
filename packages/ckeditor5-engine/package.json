@@ -5,7 +5,10 @@
   "keywords": [
     "CKEditor"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "ckeditor5-core": "ckeditor/ckeditor5-core",
+    "ckeditor5-utils": "ckeditor/ckeditor5-utils"
+  },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-lint": "^1.0.1",
     "gulp": "^3.9.0",
