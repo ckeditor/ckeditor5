@@ -8,8 +8,7 @@ import HeadingEngine from './headingengine.js';
 import Feature from '../core/feature.js';
 
 import Model from '../ui/model.js';
-import ListDropdownController from '../ui/dropdown/list/listdropdown.js';
-import ListDropdownView from '../ui/dropdown/list/listdropdownview.js';
+import createListDropdown from '../ui/dropdown/list/createlistdropdown.js';
 
 import Collection from '../utils/collection.js';
 
@@ -40,7 +39,7 @@ export default class Heading extends Feature {
 		// Add formats to collection.
 		for ( let format of formats ) {
 			collection.add( new Model( {
-				id: format.id,
+				formatId: format.id,
 				label: format.label
 			} ) );
 		}
@@ -51,24 +50,24 @@ export default class Heading extends Feature {
 			isOn: false,
 			label: 'Heading',
 			withText: true,
-
-			// Create item list model.
-			content: new Model( {
-				items: collection
-			} )
+			items: collection
 		} );
 
 		// Bind dropdown model to command.
 		dropdownModel.bind( 'isEnabled' ).to( command, 'isEnabled' );
 		dropdownModel.bind( 'label' ).to( command, 'value', format => format.label );
 
-		// Execute command when an item from the dropdown is selected.
-		this.listenTo( dropdownModel, 'execute', ( evt ) => {
-			editor.execute( 'heading', { formatId: evt.source.id } );
-			editor.editing.view.focus();
-		} );
-
 		// Register UI component.
-		editor.ui.featureComponents.add( 'headings', ListDropdownController, ListDropdownView, dropdownModel );
+		editor.ui.featureComponents.add( 'headings', ( locale ) => {
+			const dropdown = createListDropdown( dropdownModel, locale );
+
+			// Execute command when an item from the dropdown is selected.
+			this.listenTo( dropdown, 'execute', ( { source: { formatId } } ) => {
+				editor.execute( 'heading', { formatId } );
+				editor.editing.view.focus();
+			} );
+
+			return dropdown;
+		} );
 	}
 }
