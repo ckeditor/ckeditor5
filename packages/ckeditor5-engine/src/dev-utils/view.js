@@ -21,6 +21,7 @@ import Position from '../view/position.js';
 import AttributeElement from '../view/attributeelement.js';
 import ContainerElement from '../view/containerelement.js';
 import EmptyElement from '../view/emptyelement.js';
+import WidgetElement from '../view/widgetelement.js';
 import ViewText from '../view/text.js';
 
 const ELEMENT_RANGE_START_TOKEN = '[';
@@ -38,8 +39,11 @@ const TEXT_RANGE_END_TOKEN = '}';
  * be not included in returned string.
  * @param {Boolean} [options.rootName='main'] Name of the root from which data should be stringified. If not provided
  * default `main` name will be used.
- * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed (`<container:p>`
- * instead of `<p>`, `<attribute:b>` instead of `<b>` and `<empty:img>` instead of `<img>`).
+ * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed:
+ * - `<container:p>` instead of `<p>`,
+ * - `<attribute:b>` instead of `<b>`,
+ * - `<empty:img>` instead of `<img>`,
+ * - `<widget:figure>` instead of `<widget>`.
  * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed
  * (`<span view-priority="12">`, `<b view-priority="10">`).
  * @returns {String} The stringified data.
@@ -163,15 +167,16 @@ setData._parse = parse;
  *
  * Additional options object can be provided.
  * If `options.showType` is set to `true`, element's types will be
- * presented for {@link engine.view.AttributeElement AttributeElements}, {@link engine.view.ContainerElement
- * ContainerElements} and {@link engine.view.EmptyElement EmptyElements}:
+ * presented:
  *
  *		const attribute = new AttributeElement( 'b' );
  *		const container = new ContainerElement( 'p' );
  *		const empty = new EmptyElement( 'img' );
+ *		const figure = new WidgetElement( 'figure' );
  *		getData( attribute, null, { showType: true } ); // '<attribute:b></attribute:b>'
  *		getData( container, null, { showType: true } ); // '<container:p></container:p>'
  *		getData( empty, null, { showType: true } ); // '<empty:img></empty:img>'
+ *		getData( figure, null, { showType: true } ); // '<widget:figure></widget:figure>'
  *
  * If `options.showPriority` is set to `true`, priority will be displayed for all
  * {@link engine.view.AttributeElement AttributeElements}.
@@ -187,8 +192,11 @@ setData._parse = parse;
  * converted to selection containing this range. If Position instance is provided - it will be converted to selection
  * containing one range collapsed at this position.
  * @param {Object} [options] Object with additional options.
- * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed (`<container:p>`
- * instead of `<p>`, `<attribute:b>` instead of `<b>` and `<empty:img>` instead of `<img>`).
+ * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed:
+ * - `<container:p>` instead of `<p>`,
+ * - `<attribute:b>` instead of `<b>`,
+ * - `<empty:img>` instead of `<img>`,
+ * - `<widget:figure>` instead of `<widget>`.
  * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed
  * (`<span view-priority="12">`, `<b view-priority="10">`).
  * @param {Boolean} [options.ignoreRoot=false] When set to `true` root's element opening and closing will not be printed.
@@ -291,7 +299,7 @@ export function parse( data, options = {} ) {
 		sameSelectionCharacters: options.sameSelectionCharacters
 	} );
 	const processor = new XmlDataProcessor( {
-		namespaces: [ 'attribute', 'container', 'empty' ]
+		namespaces: [ 'attribute', 'container', 'empty', 'widget' ]
 	} );
 
 	// Convert data to view.
@@ -563,8 +571,11 @@ class ViewStringify {
 	 * @param root
 	 * @param {engine.view.Selection} [selection=null] Selection which ranges should be also converted to string.
 	 * @param {Object} [options] Options object.
-	 * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed (`<container:p>`
-	 * instead of `<p>`, `<attribute:b>` instead of `<b>` and `<empty:img>` instead of `<img>`).
+	 * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed:
+	 * - `<container:p>` instead of `<p>`,
+	 * - `<attribute:b>` instead of `<b>`,
+	 * - `<empty:img>` instead of `<img>`,
+	 * - `<widget:figure>` instead of `<widget>`.
 	 * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed.
 	 * @param {Boolean} [options.ignoreRoot=false] When set to `true` root's element opening and closing tag will not
 	 * be outputted.
@@ -723,7 +734,7 @@ class ViewStringify {
 	/**
 	 * Converts passed {@link engine.view.Element Element} to opening tag.
 	 * Depending on current configuration opening tag can be simple (`<a>`), contain type prefix (`<container:p>`,
-	 * `<attribute:a>` or `<empty:img>`), contain priority information ( `<attribute:a view-priority="20">` ).
+	 * `<attribute:a>`, `<empty:img>` or `<widget:figure>`), contain priority information ( `<attribute:a view-priority="20">` ).
 	 * Element's attributes also will be included (`<a href="http://ckeditor.com" name="foobar">`).
 	 *
 	 * @private
@@ -744,7 +755,7 @@ class ViewStringify {
 	/**
 	 * Converts passed {@link engine.view.Element Element} to closing tag.
 	 * Depending on current configuration closing tag can be simple (`</a>`) or contain type prefix (`</container:p>`,
-	 * `</attribute:a>` or `</empty:img>`).
+	 * `</attribute:a>`, `</empty:img>` `</widget:figure>`).
 	 *
 	 * @private
 	 * @param {engine.view.Element} element
@@ -759,10 +770,12 @@ class ViewStringify {
 
 	/**
 	 * Converts passed {@link engine.view.Element Element's} type to its string representation
-	 * Returns 'attribute' for {@link engine.view.AttributeElement AttributeElements},
-	 * 'container' for {@link engine.view.ContainerElement ContainerElements} and 'empty' for
-	 * {@link engine.view.EmptyElement EmptyElements}. Returns empty string when current configuration is preventing
-	 * showing elements' types.
+	 * Returns:
+	 * - 'attribute' for {@link engine.view.AttributeElement AttributeElements},
+	 * - 'container' for {@link engine.view.ContainerElement ContainerElements},
+	 * - 'empty' for {@link engine.view.EmptyElement EmptyElements},
+	 * - 'widget' for {@link engine.view.WidgetElement WidgetElements},
+	 * - empty string when current configuration is preventing showing elements' types.
 	 *
 	 * @private
 	 * @param {engine.view.Element} element
@@ -780,6 +793,10 @@ class ViewStringify {
 
 			if ( element instanceof EmptyElement ) {
 				return 'empty';
+			}
+
+			if ( element instanceof WidgetElement ) {
+				return 'widget';
 			}
 		}
 
@@ -855,13 +872,13 @@ function _convertViewElements( rootNode ) {
 }
 
 // Converts {@link engine.view.Element Element} to {@link engine.view.AttributeElement AttributeElement},
-// {@link engine.view.ContainerElement ContainerElement} or {@link engine.view.EmptyElement EmptyElement}.
+// {@link engine.view.ContainerElement ContainerElement}, {@link engine.view.EmptyElement EmptyElement} or
+// {@link engine.view.WidgetElement WidgetElement}.
 // If element's name is in format `attribute:b` with `view-priority="11"` attribute it will be converted to
 // {@link engine.view.AttributeElement AttributeElement} with priority 11.
-// If element's name is in format `container:p` - it will be converted to
-// {@link engine.view.ContainerElement ContainerElement}.
-// If element's name is in format `empty:img` - it will be converted to
-// {@link engine.view.EmptyElement EmptyElement}.
+// If element's name is in format `container:p` - it will be converted to {@link engine.view.ContainerElement ContainerElement}.
+// If element's name is in format `empty:img` - it will be converted to {@link engine.view.EmptyElement EmptyElement}.
+// If element's name is in format `widget:figure` - it will be converted to {@link engine.view.WidgetElement WidgetElement}.
 // If element's name will not contain any additional information - {@link engine.view.Element view Element} will be
 // returned.
 //
@@ -882,6 +899,8 @@ function _convertElement( viewElement ) {
 		newElement = new ContainerElement( info.name );
 	} else if ( info.type == 'empty' ) {
 		newElement = new EmptyElement( info.name );
+	} else if ( info.type == 'widget' ) {
+		newElement = new WidgetElement( info.name );
 	} else {
 		newElement = new ViewElement( info.name );
 	}
@@ -898,12 +917,12 @@ function _convertElement( viewElement ) {
 // {@link engine.view.AttributeElement AttributeElement}, {@link engine.view.ContainerElement ContainerElement} or
 // {@link engine.view.EmptyElement EmptyElement} instance.
 // Name can be provided in two formats: as a simple element's name (`div`), or as a type and name (`container:div`,
-// `attribute:span`, `empty:img`);
+// `attribute:span`, `empty:img`, `widget:figure`);
 //
 // @param {engine.view.Element} element Element which name should be converted.
 // @returns {Object} info Object with parsed information.
 // @returns {String} info.name Parsed name of the element.
-// @returns {String|null} info.type Parsed type of the element, can be `attribute`, `container` or `empty`.
+// @returns {String|null} info.type Parsed type of the element, can be `attribute`, `container`, `empty` or `widget`.
 // returns {Number|null} info.priority Parsed priority of the element.
 function _convertElementNameAndPriority( viewElement ) {
 	const parts = viewElement.name.split( ':' );
@@ -932,12 +951,12 @@ function _convertElementNameAndPriority( viewElement ) {
 	throw new Error( `Parse error - cannot parse element's name: ${ viewElement.name }.` );
 }
 
-// Checks if element's type is allowed. Returns `attribute`, `container`, `empty` or `null`.
+// Checks if element's type is allowed. Returns `attribute`, `container`, `empty`, `widget` or `null`.
 //
 // @param {String} type
 // @returns {String|null}
 function _convertType( type ) {
-	if ( type == 'container' || type == 'attribute' || type == 'empty' ) {
+	if ( type == 'container' || type == 'attribute' || type == 'empty' || type == 'widget' ) {
 		return type;
 	}
 
