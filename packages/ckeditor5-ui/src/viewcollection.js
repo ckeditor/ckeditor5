@@ -73,6 +73,53 @@ export default class ViewCollection extends Collection {
 	}
 
 	/**
+	 * Initializes child views by injecting {@link ui.View#element} into DOM
+	 * and calling {@link ui.View#init}.
+	 *
+	 * @returns {Promise} A Promise resolved when the initialization process is finished.
+	 */
+	init() {
+		if ( this.ready ) {
+			/**
+			 * This ViewCollection has already been initialized.
+			 *
+			 * @error ui-viewcollection-init-reinit
+			 */
+			throw new CKEditorError( 'ui-viewviewcollection-init-reinit: This ViewCollection has already been initialized.' );
+		}
+
+		// Do not render unbound children. They're already in DOM by explicit declaration
+		// in Template definition.
+		if ( !this._parentElement ) {
+			return Promise.resolve();
+		}
+
+		const promises = [];
+
+		for ( let view of this ) {
+			this._parentElement.appendChild( view.element );
+			promises.push( view.init() );
+		}
+
+		return Promise.all( promises );
+	}
+
+	/**
+	 * Destroys the view collection along with child views.
+	 *
+	 * @returns {Promise} A Promise resolved when the destruction process is finished.
+	 */
+	destroy() {
+		let promises = [];
+
+		for ( let view of this ) {
+			promises.push( view.destroy() );
+		}
+
+		return Promise.all( promises );
+	}
+
+	/**
 	 * Adds a child view to the collection. If {@link ui.ViewCollection#ready}, the child view
 	 * is also initialized when added.
 	 *

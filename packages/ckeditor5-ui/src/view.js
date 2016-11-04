@@ -192,17 +192,9 @@ export default class View {
 		}
 
 		return Promise.resolve()
-			// Initialize child views in #_viewCollections.
+			// Initialize collections in #_viewCollections.
 			.then( () => {
-				const promises = [];
-
-				for ( let collection of this._viewCollections ) {
-					for ( let view of collection ) {
-						promises.push( view.init() );
-					}
-				}
-
-				return Promise.all( promises );
+				return Promise.all( this._viewCollections.map( c => c.init() ) );
 			} )
 			// Spread the word that this view is ready!
 			.then( () => {
@@ -218,13 +210,7 @@ export default class View {
 	destroy() {
 		this.stopListening();
 
-		let promises = [];
-
-		for ( let collection of this._viewCollections ) {
-			for ( let view of collection ) {
-				promises.push( view.destroy() );
-			}
-		}
+		const promises = this._viewCollections.map( c => c.destroy() );
 
 		this._unboundChildren.clear();
 		this._viewCollections.clear();

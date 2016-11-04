@@ -153,21 +153,17 @@ describe( 'View', () => {
 			} );
 		} );
 
-		it( 'calls init() on all views in #_viewCollections', () => {
-			const spy = testUtils.sinon.spy( view, 'init' );
-			const spyA = testUtils.sinon.spy( childA, 'init' );
-			const spyB = testUtils.sinon.spy( childB, 'init' );
+		it( 'calls init() on all view#_viewCollections', () => {
+			const collectionA = view.createCollection();
+			const collectionB = view.createCollection();
 
-			expect( childA.ready ).to.be.false;
-			expect( childB.ready ).to.be.false;
+			const spyA = testUtils.sinon.spy( collectionA, 'init' );
+			const spyB = testUtils.sinon.spy( collectionB, 'init' );
 
 			return view.init().then( () => {
-				expect( childA.ready ).to.be.true;
-				expect( childB.ready ).to.be.true;
-
 				sinon.assert.calledOnce( spyA );
 				sinon.assert.calledOnce( spyB );
-				sinon.assert.callOrder( spy, spyA, spyB );
+				sinon.assert.callOrder( spyA, spyB );
 			} );
 		} );
 	} );
@@ -269,21 +265,17 @@ describe( 'View', () => {
 			} );
 		} );
 
-		it( 'calls destroy() on all views in #_viewCollections', () => {
-			const spy = testUtils.sinon.spy( view, 'destroy' );
-			const spyA = testUtils.sinon.spy( childA, 'destroy' );
-			const spyB = testUtils.sinon.spy( childB, 'destroy' );
+		it( 'calls destroy() on all view#_viewCollections', () => {
+			const collectionA = view.createCollection();
+			const collectionB = view.createCollection();
 
-			return view.init().then( () => {
-				expect( view.ready ).to.be.true;
-				expect( childA.ready ).to.be.true;
-				expect( childB.ready ).to.be.true;
+			const spyA = testUtils.sinon.spy( collectionA, 'destroy' );
+			const spyB = testUtils.sinon.spy( collectionB, 'destroy' );
 
-				return view.destroy().then( () => {
-					sinon.assert.calledOnce( spyA );
-					sinon.assert.calledOnce( spyB );
-					sinon.assert.callOrder( spy, spyA, spyB );
-				} );
+			return view.destroy().then( () => {
+				sinon.assert.calledOnce( spyA );
+				sinon.assert.calledOnce( spyB );
+				sinon.assert.callOrder( spyA, spyB );
 			} );
 		} );
 

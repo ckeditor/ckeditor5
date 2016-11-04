@@ -71,6 +71,60 @@ describe( 'ViewCollection', () => {
 		} );
 	} );
 
+	describe( 'init', () => {
+		it( 'should return a promise', () => {
+			expect( collection.init() ).to.be.instanceof( Promise );
+		} );
+
+		it( 'calls #init on all views in the collection', () => {
+			const viewA = new View();
+			const viewB = new View();
+
+			viewA.element = document.createElement( 'a' );
+			viewB.element = document.createElement( 'b' );
+
+			const spyA = testUtils.sinon.spy( viewA, 'init' );
+			const spyB = testUtils.sinon.spy( viewB, 'init' );
+
+			collection.setParent( document.body );
+
+			collection.add( viewA );
+			collection.add( viewB );
+
+			return collection.init().then( () => {
+				sinon.assert.calledOnce( spyA );
+				sinon.assert.calledOnce( spyB );
+				sinon.assert.callOrder( spyA, spyB );
+
+				expect( viewA.element.parentNode ).to.equal( collection._parentElement );
+				expect( viewA.element.nextSibling ).to.equal( viewB.element );
+			} );
+		} );
+	} );
+
+	describe( 'destroy', () => {
+		it( 'should return a promise', () => {
+			expect( collection.destroy() ).to.be.instanceof( Promise );
+		} );
+
+		it( 'calls #destroy on all views in the collection', () => {
+			const viewA = new View();
+			const viewB = new View();
+
+			const spyA = testUtils.sinon.spy( viewA, 'destroy' );
+			const spyB = testUtils.sinon.spy( viewB, 'destroy' );
+
+			collection.add( viewA );
+			collection.add( viewB );
+
+			return collection.destroy().then( () => {
+				sinon.assert.calledOnce( spyA );
+				sinon.assert.calledOnce( spyB );
+				sinon.assert.callOrder( spyA, spyB );
+			} );
+		} );
+	} );
+
 	describe( 'add', () => {
 		it( 'returns a promise', () => {
 			expect( collection.add( {} ) ).to.be.instanceof( Promise );
