@@ -29,6 +29,26 @@ describe( 'LinkFormView', () => {
 			expect( view.unlinkButtonView ).to.be.instanceOf( View );
 		} );
 
+		it( 'should fire `cancel` event on cancelButtonView#execute', () => {
+			const spy = sinon.spy();
+
+			view.on( 'cancel', spy );
+
+			view.cancelButtonView.fire( 'execute' );
+
+			expect( spy.calledOnce ).to.true;
+		} );
+
+		it( 'should fire `unlink` event on unlinkButtonView#execute', () => {
+			const spy = sinon.spy();
+
+			view.on( 'unlink', spy );
+
+			view.unlinkButtonView.fire( 'execute' );
+
+			expect( spy.calledOnce ).to.true;
+		} );
+
 		describe( 'template', () => {
 			it( 'has url input view', () => {
 				expect( view.template.children.get( 0 ) ).to.equal( view.urlInputView );
