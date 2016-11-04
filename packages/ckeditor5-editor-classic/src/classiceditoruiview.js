@@ -46,8 +46,12 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	init() {
 		this.toolbar.limiterElement = this.element;
 
-		for ( let name of this.editor.config.get( 'toolbar' ) ) {
-			this.toolbar.items.add( this.featureComponents.create( name ) );
+		const toolbarConfig = this.editor.config.get( 'toolbar' );
+
+		if ( toolbarConfig ) {
+			for ( let name of toolbarConfig ) {
+				this.toolbar.items.add( this.featureComponents.create( name ) );
+			}
 		}
 
 		return super.init();
