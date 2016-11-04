@@ -4,6 +4,7 @@
  */
 
 import Command from '../core/command/command.js';
+import Position from '../engine/model/position.js';
 
 /**
  * Enter command. It is used by the {@link enter.Enter Enter feature} to handle the <kbd>Enter</kbd> key.
@@ -75,6 +76,17 @@ function enterBlock( batch, selection ) {
 }
 
 function splitBlock( batch, selection, splitPos ) {
-	batch.split( splitPos );
+	if ( splitPos.isAtEnd ) {
+		// If the split is at the end of element, instead of splitting, just create a clone of position's parent
+		// element and insert it after cloned element. The result is the same but less operations are taken
+		// and it's more semantically correct (when it comes to operational transformation).
+		const oldElement = splitPos.parent;
+		const newElement = new oldElement.constructor( oldElement.name, oldElement.getAttributes() );
+
+		batch.insert( Position.createAfter( splitPos.parent ), newElement );
+	} else {
+		batch.split( splitPos );
+	}
+
 	selection.collapse( splitPos.parent.nextSibling );
 }
