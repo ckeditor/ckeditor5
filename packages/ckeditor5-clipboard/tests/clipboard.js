@@ -22,7 +22,7 @@ describe( 'Clipboard feature', () => {
 			} );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'registers ClipboardObserver', () => {
 			expect( editingView.getObserver( ClipboardObserver ) ).to.be.instanceOf( ClipboardObserver );
 		} );
