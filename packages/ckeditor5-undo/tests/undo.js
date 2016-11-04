@@ -8,7 +8,7 @@
 import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
 import Undo from 'ckeditor5/undo/undo.js';
 import UndoEngine from 'ckeditor5/undo/undoengine.js';
-import ButtonController from 'ckeditor5/ui/button/button.js';
+import ButtonView from 'ckeditor5/ui/button/buttonview.js';
 import testUtils from 'tests/core/_utils/utils.js';
 import { keyCodes } from 'ckeditor5/utils/keyboard.js';
 
@@ -68,41 +68,39 @@ describe( 'Undo', () => {
 
 	function testButton( featureName, featureKeystroke ) {
 		describe( `${ featureName } button`, () => {
-			let buttonController;
+			let button;
 
 			beforeEach( () => {
-				buttonController = editor.ui.featureComponents.create( featureName );
+				button = editor.ui.featureComponents.create( featureName );
 			} );
 
 			it( 'should register feature component', () => {
-				expect( buttonController ).to.be.instanceOf( ButtonController );
+				expect( button ).to.be.instanceOf( ButtonView );
 			} );
 
 			it( `should execute ${ featureName } command on model execute event`, () => {
 				const executeSpy = testUtils.sinon.stub( editor, 'execute' );
-				const model = buttonController.model;
 
-				model.fire( 'execute' );
+				button.fire( 'execute' );
 
 				sinon.assert.calledOnce( executeSpy );
 				sinon.assert.calledWithExactly( executeSpy, featureName );
 			} );
 
 			it( `should bind model to ${ featureName } command`, () => {
-				const model = buttonController.model;
 				const command = editor.commands.get( featureName );
 
-				expect( model.isOn ).to.be.false;
+				expect( button.isOn ).to.be.false;
 
 				const initState = command.isEnabled;
-				expect( model.isEnabled ).to.equal( initState );
+				expect( button.isEnabled ).to.equal( initState );
 
 				command.isEnabled = !initState;
-				expect( model.isEnabled ).to.equal( !initState );
+				expect( button.isEnabled ).to.equal( !initState );
 			} );
 
 			it( 'should set keystroke in the model', () => {
-				expect( buttonController.model.keystroke ).to.equal( featureKeystroke );
+				expect( button.keystroke ).to.equal( featureKeystroke );
 			} );
 		} );
 	}

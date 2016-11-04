@@ -5,8 +5,6 @@
 
 import Feature from '../core/feature.js';
 import UndoEngine from './undoengine.js';
-import Model from '../ui/model.js';
-import Button from '../ui/button/button.js';
 import ButtonView from '../ui/button/buttonview.js';
 
 /**
@@ -154,20 +152,23 @@ export default class Undo extends Feature {
 	 */
 	_addButton( name, label, keystroke ) {
 		const editor = this.editor;
-
 		const command = editor.commands.get( name );
 
-		const model = new Model( {
-			isOn: false,
-			label: label,
-			icon: name,
-			keystroke
+		editor.ui.featureComponents.add( name, ( locale ) => {
+			const view = new ButtonView( locale );
+
+			view.set( {
+				isOn: false,
+				label: label,
+				icon: name,
+				keystroke
+			} );
+
+			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+
+			this.listenTo( view, 'execute', () => editor.execute( name ) );
+
+			return view;
 		} );
-
-		model.bind( 'isEnabled' ).to( command, 'isEnabled' );
-
-		this.listenTo( model, 'execute', () => editor.execute( name ) );
-
-		editor.ui.featureComponents.add( name, Button, ButtonView, model );
 	}
 }
