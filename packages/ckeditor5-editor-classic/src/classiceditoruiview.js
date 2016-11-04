@@ -44,11 +44,11 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	 * @inheritDoc
 	 */
 	init() {
+		this.toolbar.limiterElement = this.element;
+
 		for ( let name of this.editor.config.get( 'toolbar' ) ) {
 			this.toolbar.items.add( this.featureComponents.create( name ) );
 		}
-
-		this.toolbar.limiterElement = this.element;
 
 		return super.init();
 	}

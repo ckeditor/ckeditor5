@@ -9,13 +9,13 @@
 import ClassicEditorUIView from '/ckeditor5/editor-classic/classiceditoruiview.js';
 import ClassicTestEditor from '/tests/core/_utils/classictesteditor.js';
 
-import ButtonView from '/ckeditor5/ui/button/buttonview.js';
+import View from '/ckeditor5/ui/view.js';
 import StickyToolbarView from '/ckeditor5/ui/toolbar/sticky/stickytoolbarview.js';
 import InlineEditableUIView from '/ckeditor5/ui/editableui/inline/inlineeditableuiview.js';
 
 import testUtils from '/tests/utils/_utils/utils.js';
 
-describe( 'ClassicEditorUI', () => {
+describe( 'ClassicEditorUIView', () => {
 	let editorElement, editor, editable, view;
 
 	beforeEach( () => {
@@ -29,12 +29,18 @@ describe( 'ClassicEditorUI', () => {
 		editable = editor.editing.view.createRoot( document.createElement( 'div' ) );
 		editor.ui = view = new ClassicEditorUIView( editor, editor.locale );
 
-		function createButton( locale ) {
-			return new ButtonView( locale );
+		function viewCreator( name ) {
+			return ( locale ) => {
+				const view = new View( locale );
+
+				view.name = name;
+
+				return view;
+			};
 		}
 
-		view.featureComponents.add( 'foo', createButton );
-		view.featureComponents.add( 'bar', createButton );
+		view.featureComponents.add( 'foo', viewCreator( 'foo' ) );
+		view.featureComponents.add( 'bar', viewCreator( 'bar' ) );
 	} );
 
 	describe( 'constructor', () => {
@@ -113,11 +119,17 @@ describe( 'ClassicEditorUI', () => {
 			expect( view.init() ).to.be.instanceof( Promise );
 		} );
 
-		it( 'sets view.toolbar#limiterElement', ( done ) => {
-			view.init().then( () => {
+		it( 'sets view.toolbar#limiterElement', () => {
+			return view.init().then( () => {
 				expect( view.toolbar.limiterElement ).to.equal( view.element );
+			} );
+		} );
 
-				done();
+		it( 'fills view.toolbar#items with editor config', () => {
+			return view.init().then( () => {
+				expect( view.toolbar.items ).to.have.length( 2 );
+				expect( view.toolbar.items.get( 0 ).name ).to.equal( 'foo' );
+				expect( view.toolbar.items.get( 1 ).name ).to.equal( 'bar' );
 			} );
 		} );
 	} );
