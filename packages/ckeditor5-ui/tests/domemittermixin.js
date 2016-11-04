@@ -21,6 +21,10 @@ describe( 'DOMEmitterMixin', () => {
 		node = document.createElement( 'div' );
 	} );
 
+	afterEach( () => {
+		domEmitter.stopListening();
+	} );
+
 	describe( 'listenTo', () => {
 		it( 'should listen to EmitterMixin events', () => {
 			const spy = testUtils.sinon.spy();
