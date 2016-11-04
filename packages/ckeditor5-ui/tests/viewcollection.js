@@ -6,13 +6,13 @@
 /* global document */
 /* bender-tags: ui */
 
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import Collection from '/ckeditor5/utils/collection.js';
-import testUtils from '/tests/core/_utils/utils.js';
-import View from '/ckeditor5/ui/view.js';
-import ViewCollection from '/ckeditor5/ui/viewcollection.js';
-import Template from '/ckeditor5/ui/template.js';
-import normalizeHtml from '/tests/utils/_utils/normalizehtml.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import Collection from 'ckeditor5/utils/collection.js';
+import testUtils from 'tests/core/_utils/utils.js';
+import View from 'ckeditor5/ui/view.js';
+import ViewCollection from 'ckeditor5/ui/viewcollection.js';
+import Template from 'ckeditor5/ui/template.js';
+import normalizeHtml from 'tests/utils/_utils/normalizehtml.js';
 
 let collection;
 
@@ -21,7 +21,7 @@ testUtils.createSinonSandbox();
 describe( 'ViewCollection', () => {
 	beforeEach( createTestCollection );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'sets basic properties and attributes', () => {
 			expect( collection.locale ).to.be.undefined;
 			expect( collection.ready ).to.be.false;
@@ -71,7 +71,7 @@ describe( 'ViewCollection', () => {
 		} );
 	} );
 
-	describe( 'init', () => {
+	describe( 'init()', () => {
 		it( 'should return a promise', () => {
 			expect( collection.init() ).to.be.instanceof( Promise );
 		} );
@@ -102,7 +102,7 @@ describe( 'ViewCollection', () => {
 		} );
 	} );
 
-	describe( 'destroy', () => {
+	describe( 'destroy()', () => {
 		it( 'should return a promise', () => {
 			expect( collection.destroy() ).to.be.instanceof( Promise );
 		} );

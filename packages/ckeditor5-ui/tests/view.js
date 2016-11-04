@@ -125,7 +125,7 @@ describe( 'View', () => {
 		} );
 	} );
 
-	describe( 'init', () => {
+	describe( 'init()', () => {
 		beforeEach( createViewWithChildren );
 
 		it( 'should throw if already initialized', () => {
@@ -214,7 +214,7 @@ describe( 'View', () => {
 		} );
 	} );
 
-	describe( 'destroy', () => {
+	describe( 'destroy()', () => {
 		beforeEach( createViewWithChildren );
 
 		it( 'should return a promise', () => {

@@ -24,7 +24,7 @@ describe( 'View', () => {
 		} );
 	} );
 
-	describe( 'init', () => {
+	describe( 'init()', () => {
 		it( 'accepts region element', () => {
 			region.init( el );
 
@@ -89,7 +89,7 @@ describe( 'View', () => {
 		} );
 	} );
 
-	describe( 'destroy', () => {
+	describe( 'destroy()', () => {
 		it( 'destroys the region', () => {
 			region.init( el );
 			region.views.add( new TestViewA() );
