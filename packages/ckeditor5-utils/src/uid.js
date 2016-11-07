@@ -9,12 +9,14 @@
  *
  * @function
  * @memberOf utils
- * @returns {Number} A number representing the id.
+ * @returns {String} A string representing the id.
  */
-export default ( () => {
-	let next = 1;
+export default () => {
+	let uuid = 'e'; // Make sure that id does not start with number.
 
-	return () => {
-		return next++;
-	};
-} )();
+	for ( let i = 0; i < 8; i++ ) {
+		uuid += Math.floor( ( 1 + Math.random() ) * 0x10000 ).toString( 16 ).substring( 1 );
+	}
+
+	return uuid;
+};
