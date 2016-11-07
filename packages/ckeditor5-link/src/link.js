@@ -163,7 +163,7 @@ export default class Link extends Feature {
 
 		// Close on `ESC` press.
 		escPressHandler( {
-			controller: balloonPanelView,
+			emitter: balloonPanelView,
 			model: balloonPanelView,
 			activeIf: 'isVisible',
 			callback: () => this._hidePanel( true )
@@ -171,7 +171,7 @@ export default class Link extends Feature {
 
 		// Close on click outside of balloon panel element.
 		clickOutsideHandler( {
-			controller: balloonPanelView,
+			emitter: balloonPanelView,
 			model: balloonPanelView,
 			activeIf: 'isVisible',
 			contextElement: balloonPanelView.element,
