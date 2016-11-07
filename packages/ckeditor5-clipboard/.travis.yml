@@ -18,6 +18,7 @@ before_install:
 install:
   - npm install
   - npm install @ckeditor/ckeditor5-dev-tests
+  - npm install codeclimate-test-reporter
 script:
   - node_modules/.bin/ckeditor5-dev-tests --coverage
 after_success:
