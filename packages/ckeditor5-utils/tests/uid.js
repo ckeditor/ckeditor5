@@ -12,9 +12,17 @@ describe( 'utils', () => {
 			let id2 = uid();
 			let id3 = uid();
 
-			expect( id1 ).to.be.a( 'number' );
-			expect( id2 ).to.be.a( 'number' ).to.not.equal( id1 ).to.not.equal( id3 );
-			expect( id3 ).to.be.a( 'number' ).to.not.equal( id1 ).to.not.equal( id2 );
+			expect( id1 ).to.be.a( 'string' );
+			expect( id2 ).to.be.a( 'string' ).to.not.equal( id1 ).to.not.equal( id3 );
+			expect( id3 ).to.be.a( 'string' ).to.not.equal( id1 ).to.not.equal( id2 );
+
+			expect( id1[ 0 ] ).to.match( /[a-z]/ );
+			expect( id2[ 0 ] ).to.match( /[a-z]/ );
+			expect( id3[ 0 ] ).to.match( /[a-z]/ );
+
+			expect( id1 ).to.have.length( 33 );
+			expect( id2 ).to.have.length( 33 );
+			expect( id3 ).to.have.length( 33 );
 		} );
 	} );
 } );

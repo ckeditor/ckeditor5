@@ -100,8 +100,7 @@ export default class Collection {
 				throw new CKEditorError( 'collection-add-item-already-exists' );
 			}
 		} else {
-			itemId = this._getNextId();
-			item[ idProperty ] = itemId;
+			item[ idProperty ] = itemId = uid();
 		}
 
 		// TODO: Use ES6 default function argument.
@@ -255,22 +254,6 @@ export default class Collection {
 	 */
 	[ Symbol.iterator ]() {
 		return this._items[ Symbol.iterator ]();
-	}
-
-	/**
-	 * Generates next (not yet used) id for unidentified item being add to the collection.
-	 *
-	 * @private
-	 * @returns {String} The next id.
-	 */
-	_getNextId() {
-		let id;
-
-		do {
-			id = String( uid() );
-		} while ( this._itemMap.has( id ) );
-
-		return id;
 	}
 }
 
