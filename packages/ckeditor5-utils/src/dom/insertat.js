@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module utils/dom/insertat
+ */
+
+/**
  * Inserts node to the parent at given index.
  *
  * @method utils.dom.insertAt

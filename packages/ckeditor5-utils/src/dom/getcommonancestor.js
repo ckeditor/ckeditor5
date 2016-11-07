@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module utils/dom/getcommonancestor
+ */
+
 import getAncestors from './getancestors.js';
 
 /**

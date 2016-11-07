@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module utils/collection
+ */
+
 import EmitterMixin from './emittermixin.js';
 import CKEditorError from './ckeditorerror.js';
 import uid from './uid.js';
@@ -18,7 +22,6 @@ import mix from './mix.js';
  * By default an item in the collection is identified by its `id` property. The name of the identifier can be
  * configured through the constructor of the collection.
  *
- * @memberOf utils
  * @mixes EventEmitter
  */
 export default class Collection {
@@ -73,7 +76,7 @@ export default class Collection {
 	 * @param {Object} item
 	 * @param {Number} [index] The position of the item in the collection. The item
 	 * is pushed to the collection when `index` not specified.
-	 * @fires utils.Collection#add
+	 * @fires #add
 	 */
 	add( item, index ) {
 		let itemId;
@@ -155,7 +158,7 @@ export default class Collection {
 	 *
 	 * @param {Object|Number|String} subject The item to remove, its id or index in the collection.
 	 * @returns {Object} The removed item.
-	 * @fires utils.Collection#remove
+	 * @fires #remove
 	 */
 	remove( subject ) {
 		let index, id, item;
@@ -279,13 +282,13 @@ mix( Collection, EmitterMixin );
 /**
  * Fired when an item is added to the collection.
  *
- * @event utils.Collection#add
+ * @event module:utils/collection~Collection#add
  * @param {Object} item The added item.
  */
 
 /**
  * Fired when an item is removed from the collection.
  *
- * @event utils.Collection#remove
+ * @event module:utils/collection~Collection#remove
  * @param {Object} item The removed item.
  */

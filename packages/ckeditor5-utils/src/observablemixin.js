@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module module:observablemixin
+ */
+
 import EmitterMixin from './emittermixin.js';
 import CKEditorError from './ckeditorerror.js';
 import extend from './lib/lodash/extend.js';
@@ -16,8 +20,8 @@ const boundAttributesSymbol = Symbol( 'boundAttributes' );
  * Mixin that injects the "observable attributes" and data binding functionality.
  * Used mainly in the {@link ui.Model} class.
  *
- * @mixin utils.ObservableMixin
- * @mixes utils.EmitterMixin
+ * @mixin ObservableMixin
+ * @mixes module:utils/emittermixin~EmitterMixin
  * @implements utils.Observable
  */
 const ObservableMixin = {
@@ -31,7 +35,7 @@ const ObservableMixin = {
 	 * have a property with a given attribute name. This prevents from mistakenly overriding existing
 	 * properties and methods, but means that `foo.set( 'bar', 1 )` may be slightly slower than `foo.bar = 1`.
 	 *
-	 * @method utils.ObservableMixin#set
+	 * @method #set
 	 * @param {String} name The attributes name.
 	 * @param {*} value The attributes value.
 	 */
@@ -99,14 +103,14 @@ const ObservableMixin = {
 	 * of the observable it is bound to and react to the changes to these attributes
 	 * in the future.
 	 *
-	 * **Note**: To release the binding use {@link utils.ObservableMixin#unbind}.
+	 * **Note**: To release the binding use {@link #unbind}.
 	 *
 	 *		A.bind( 'a' ).to( B );
 	 *		A.bind( 'a' ).to( B, 'b' );
 	 *		A.bind( 'a', 'b' ).to( B, 'c', 'd' );
 	 *		A.bind( 'a' ).to( B, 'b', C, 'd', ( b, d ) => b + d );
 	 *
-	 * @method utils.ObservableMixin#bind
+	 * @method #bind
 	 * @param {...String} bindAttrs Observable attributes that will be bound to another observable(s).
 	 * @returns {utils.BindChain}
 	 */

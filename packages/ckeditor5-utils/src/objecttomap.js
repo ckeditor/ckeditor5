@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module utils/objecttomap
+ */
+
+/**
  * Transforms object to map.
  *
  *		const map = objectToMap( { 'foo': 1, 'bar': 2 } );

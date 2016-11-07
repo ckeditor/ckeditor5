@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module utils/dom/getdatafromelement
+ */
+
 /* globals HTMLTextAreaElement */
 
 /**

@@ -5,6 +5,10 @@
 
 /* global setTimeout, clearTimeout */
 
+/**
+ * @module utils/focustracker
+ */
+
 import DOMEmitterMixin from '../ui/domemittermixin.js';
 import ObservableMixin from './observablemixin.js';
 import CKEditorError from './ckeditorerror.js';
@@ -20,7 +24,6 @@ import mix from './mix.js';
  * which contain other `focusable` elements. But note that this wrapper element has to be focusable too
  * (have e.g. `tabindex="-1"`).
  *
- * @memberOf utils
  * @mixes utils.DOMEmitterMixin
  * @mixes utils.ObservableMixin
  */

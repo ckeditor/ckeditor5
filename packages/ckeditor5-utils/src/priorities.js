@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module utils/priorites
+ */
+
+/**
  * String representing a priority value.
  *
  * @typedef {'highest'|'high'|'normal'|'low'|'lowest'} utils.PriorityString
@@ -11,8 +15,6 @@
 
 /**
  * Provides group of constants to use instead of hardcoding numeric priority values.
- *
- * @memberOf utils
  */
 const priorities = {
 	/**

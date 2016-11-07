@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module utils/mix
+ */
+
+/**
  * Copies enumerable properties and symbols from the objects given as 2nd+ parameters to the
  * prototype of first object (a constructor).
  *

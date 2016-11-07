@@ -3,12 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module utils/config
+ */
+
 import isPlainObject from './lib/lodash/isPlainObject.js';
 
 /**
  * Handles a configuration dictionary.
- *
- * @memberOf utils
  */
 export default class Config {
 	/**

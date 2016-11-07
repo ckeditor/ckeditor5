@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module utils/dom/indexof
+ */
+
+/**
  * Returns index of the node in the parent element.
  *
  * @method utils.dom.indexOf

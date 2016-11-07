@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module utils/dom/remove
+ */
+
+/**
  * Removes given node from parent.
  *
  * @method utils.dom.remove

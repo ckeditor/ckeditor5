@@ -6,6 +6,10 @@
 /* global console */
 
 /**
+ * @module utils/log
+ */
+
+/**
  * The logging module.
  *
  * This object features two functions that should be used across CKEditor code base to log errors and warnings.

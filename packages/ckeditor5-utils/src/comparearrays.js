@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module utils/comparearrays
+ */
+
+/**
  * Compares how given arrays relate to each other. One array can be: same as another array, prefix of another array
  * or completely different. If arrays are different, first index at which they differ is returned. Otherwise,
  * a flag specifying the relation is returned. Flags are negative numbers, so whenever a number >= 0 is returned

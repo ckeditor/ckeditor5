@@ -6,7 +6,7 @@
 /**
  * Set of utils to handle unicode characters.
  *
- * @namespace utils.unicode
+ * @module utils/unicode
  */
 
 /**

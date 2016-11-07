@@ -4,9 +4,11 @@
  */
 
 /**
+ * @module utils/locale
+ */
+
+/**
  * Represents the localization services.
- *
- * @memberOf utils
  */
 export default class Locale {
 	/**

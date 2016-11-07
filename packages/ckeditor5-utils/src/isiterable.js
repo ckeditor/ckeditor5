@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module utils/isiterable
+ */
+
+/**
  * Checks if value implements iterator interface.
  *
  * @memberOf utils

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module utils/emittermixin
+ */
+
 import EventInfo from './eventinfo.js';
 import uid from './uid.js';
 import priorities from './priorities.js';

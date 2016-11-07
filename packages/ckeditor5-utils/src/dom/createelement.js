@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module utils/dom/createelement
+ */
+
 import isString from '../lib/lodash/isString.js';
 import isIterable from '../isiterable.js';
 

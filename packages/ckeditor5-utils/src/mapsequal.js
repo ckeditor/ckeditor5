@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module utils/mapsequal
+ */
+
+/**
  * Checks whether given {Map}s are equal, that is has same size and same key-value pairs.
  *
  * @memberOf utils
