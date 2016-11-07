@@ -27,6 +27,11 @@ describe( 'LinkFormView', () => {
 			expect( view.saveButtonView ).to.be.instanceOf( View );
 			expect( view.cancelButtonView ).to.be.instanceOf( View );
 			expect( view.unlinkButtonView ).to.be.instanceOf( View );
+
+			expect( view._unboundChildren.get( 0 ) ).to.equal( view.urlInputView );
+			expect( view._unboundChildren.get( 1 ) ).to.equal( view.saveButtonView );
+			expect( view._unboundChildren.get( 2 ) ).to.equal( view.cancelButtonView );
+			expect( view._unboundChildren.get( 3 ) ).to.equal( view.unlinkButtonView );
 		} );
 
 		it( 'should fire `cancel` event on cancelButtonView#execute', () => {
