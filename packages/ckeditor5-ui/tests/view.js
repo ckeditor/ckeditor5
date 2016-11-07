@@ -45,23 +45,6 @@ describe( 'View', () => {
 		} );
 
 		describe( '_viewCollections', () => {
-			it( 'manages #ready attribute binding', () => {
-				const collection = new ViewCollection();
-
-				expect( collection.ready ).to.be.false;
-
-				view._viewCollections.add( collection );
-				expect( collection.ready ).to.be.false;
-
-				view.ready = true;
-				expect( collection.ready ).to.be.true;
-
-				view._viewCollections.remove( collection );
-
-				view.ready = false;
-				expect( collection.ready ).to.be.true;
-			} );
-
 			it( 'manages #locale property', () => {
 				const locale = {
 					t() {}

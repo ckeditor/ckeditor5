@@ -85,7 +85,7 @@ export default class ViewCollection extends Collection {
 			 *
 			 * @error ui-viewcollection-init-reinit
 			 */
-			throw new CKEditorError( 'ui-viewviewcollection-init-reinit: This ViewCollection has already been initialized.' );
+			throw new CKEditorError( 'ui-viewcollection-init-reinit: This ViewCollection has already been initialized.' );
 		}
 
 		const promises = [];
@@ -100,7 +100,9 @@ export default class ViewCollection extends Collection {
 			promises.push( view.init() );
 		}
 
-		return Promise.all( promises );
+		return Promise.all( promises ).then( () => {
+			this.ready = true;
+		} );
 	}
 
 	/**

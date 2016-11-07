@@ -76,6 +76,19 @@ describe( 'ViewCollection', () => {
 			expect( collection.init() ).to.be.instanceof( Promise );
 		} );
 
+		it( 'should throw if already initialized', () => {
+			return collection.init()
+				.then( () => {
+					collection.init();
+
+					throw new Error( 'This should not be executed.' );
+				} )
+				.catch( err => {
+					expect( err ).to.be.instanceof( CKEditorError );
+					expect( err.message ).to.match( /ui-viewcollection-init-reinit/ );
+				} );
+		} );
+
 		it( 'calls #init on all views in the collection', () => {
 			const viewA = new View();
 			const viewB = new View();
@@ -98,6 +111,7 @@ describe( 'ViewCollection', () => {
 
 				expect( viewA.element.parentNode ).to.equal( collection._parentElement );
 				expect( viewA.element.nextSibling ).to.equal( viewB.element );
+				expect( collection.ready ).to.be.true;
 			} );
 		} );
 	} );
