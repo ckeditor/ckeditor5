@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "description": "GitHub Flavored Markdown data processor for CKEditor 5.",
   "keywords": [],
-  "dependencies": {},
+  "dependencies": {
+    "ckeditor5-engine": "ckeditor/ckeditor5-engine"
+  },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-lint": "^1.0.1",
     "gulp": "^3.9.0",
