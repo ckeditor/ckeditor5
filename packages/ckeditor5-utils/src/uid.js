@@ -9,7 +9,7 @@
  *
  * @function
  * @memberOf utils
- * @returns {Number} A number representing the id.
+ * @returns {String} A string representing the id.
  */
 export default () => {
 	let uuid = 'e'; // Make sure that id does not start with number.
