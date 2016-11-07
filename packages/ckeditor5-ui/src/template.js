@@ -814,7 +814,7 @@ function getTextUpdater( node ) {
 // @param {String} attrName Name of the attribute to be modified.
 // @param {String} [ns=null] Namespace to use.
 // @returns {Object}
-function getAttributeUpdater( el, attrName, ns = null ) {
+function getAttributeUpdater( el, attrName, ns ) {
 	return {
 		set( value ) {
 			el.setAttributeNS( ns, attrName, value );
