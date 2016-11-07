@@ -22,7 +22,34 @@ export default class View {
 	/**
 	 * Creates an instance of the {@link ui.View} class.
 	 *
-	 * TODO: A simple example how to create one.
+	 *		class SampleView extends View {
+	 *			constructor( locale ) {
+	 *				super( locale );
+	 *
+	 *				this.template = new Template( {
+	 *					tag: 'p',
+	 *					children: [
+	 *						'Hello',
+	 *						{
+	 *							tag: 'b',
+	 *							children: [
+	 *								'world!'
+	 *							]
+	 *						}
+	 *					],
+	 *					attributes: {
+	 *						class: 'foo'
+	 *					}
+	 *				} );
+	 *			}
+	 *		}
+	 *
+	 *		const view = new SampleView( locale )
+	 *
+	 *		view.init().then( () => {
+	 *			// Will append <p class="foo">Hello<b>world</b></p>
+	 *			document.body.appendChild( view.element );
+	 *		} );
 	 *
 	 * @param {utils.Locale} [locale] The {@link core.editor.Editor#locale editor's locale} instance.
 	 */
@@ -144,7 +171,32 @@ export default class View {
 	 * Creates a new collection of views, which can be used in this view instance
 	 * i.e. as a member of {@link ui.TemplateDefinition#children}.
 	 *
-	 * TODO: An example how to use created collection in a template definition.
+	 *		class SampleView extends View {
+	 *			constructor( locale ) {
+	 *				super( locale );
+	 *
+	 *				this.items = this.createCollection();
+ 	 *
+	 *				this.template = new Template( {
+	 *					tag: 'p',
+	 *
+	 *					// `items` collection will render here.
+	 *					children: this.items
+	 *				} );
+	 *			}
+	 *		}
+	 *
+	 *		const view = new SampleView( locale )
+	 *		const anotherView = new AnotherSampleView( locale )
+	 *
+	 *		view.init().then( () => {
+	 *			// Will append <p></p>
+	 *			document.body.appendChild( view.element );
+	 *
+	 *			// `anotherView` becomes a child of the view, which is reflected in DOM
+	 *			// <p><anotherView#element></p>
+	 *			view.items.add( anotherView );
+	 *		} );
 	 *
 	 * @returns {ui.ViewCollection} A new collection of view instances.
 	 */
@@ -160,6 +212,34 @@ export default class View {
 	 * Registers a new child view under this view instance. Once registered, a child
 	 * view is managed by its parent, including initialization ({@link ui.view#init})
 	 * and destruction ({@link ui.view#destroy}).
+	 *
+	 *		class SampleView extends View {
+	 *			constructor( locale ) {
+	 *				super( locale );
+	 *
+	 *				this.childView = new SomeChildView( locale );
+	 *
+	 *				// Register a new child view.
+	 *				this.addChild( this.childView );
+	 *
+	 *				this.template = new Template( {
+	 *					tag: 'p',
+	 *
+	 *					children: [
+	 *						{ tag: 'b' },
+	 *						// This is where the `childView` will render.
+	 *						this.childView
+	 *					]
+	 *				} );
+	 *			}
+	 *		}
+	 *
+	 *		const view = new SampleView( locale )
+	 *
+	 *		view.init().then( () => {
+	 *			// Will append <p><b></b><childView#element></p>
+	 *			document.body.appendChild( view.element );
+	 *		} );
 	 *
 	 * @param {...ui.View} children Children views to be registered.
 	 */

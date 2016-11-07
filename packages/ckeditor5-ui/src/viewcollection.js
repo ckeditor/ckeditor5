@@ -153,10 +153,66 @@ export default class ViewCollection extends Collection {
 	}
 
 	/**
-	 * Binds a view collection to {@link utils.Collection} of items to create
-	 * a factory of view instances.
+	 * Binds a view collection to {@link utils.Collection} of items to create a factory of
+	 * view instances.
 	 *
-	 * TODO: Example and longer explanation. Probably imported from ControllerCollection#bind.
+	 * The process can be automatic:
+	 *
+	 *		// This collection stores items.
+	 *		const items = new Collection( { idProperty: 'label' } );
+	 *
+	 *		// This view collection will become a factory out of the collection of items.
+	 *		const views = new ViewCollection( locale );
+	 *
+	 *		// Activate the binding – since now, this view collection works like a **factory**.
+	 *		// Each new item is passed to the FooView constructor like new FooView( locale, item ).
+	 *		views.bindTo( items ).as( FooView );
+	 *
+	 *		// As new items arrive to the collection, each becomes an instance of FooView
+	 *		// in the view collection.
+	 *		items.add( new Model( { label: 'foo' } ) );
+	 *		items.add( new Model( { label: 'bar' } ) );
+	 *
+	 *		console.log( views.length == 2 );
+	 *
+	 *		// View collection is updated as the model is removed.
+	 *		items.remove( 0 );
+	 *		console.log( views.length == 1 );
+	 *
+	 * or the factory can be driven by a custom callback:
+	 *
+	 *		// This collection stores any kind of data.
+	 *		const data = new Collection();
+	 *
+	 *		// This view collection will become a custom factory for the data.
+	 *		const views = new ViewCollection( locale );
+	 *
+	 *		// Activate the binding – the **factory** is driven by a custom callback.
+	 *		views.bind( data ).as( item => {
+	 *			if ( !item.foo ) {
+	 *				return null;
+	 *			} else if ( item.foo == 'bar' ) {
+	 *				return new BarView();
+	 *			} else {
+	 *				return new DifferentView();
+	 *			}
+	 *		} );
+	 *
+	 *		// As new data arrive to the collection, each is handled individually by the callback.
+	 *		// This will produce BarView.
+	 *		data.add( { foo: 'bar' } );
+	 *
+	 *		// And this one will become DifferentView.
+	 *		data.add( { foo: 'baz' } );
+	 *
+	 *		// Also there will be no view for data lacking the `foo` property.
+	 *		data.add( {} );
+	 *
+	 *		console.log( controllers.length == 2 );
+	 *
+	 *		// View collection is also updated as the data is removed.
+	 *		data.remove( 0 );
+	 *		console.log( controllers.length == 1 );
 	 *
 	 * @param {utils.Collection} collection A collection to be bound.
 	 * @returns {ui.ViewCollection.bindTo#as}
