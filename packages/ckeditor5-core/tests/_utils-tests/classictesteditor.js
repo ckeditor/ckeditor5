@@ -8,7 +8,7 @@
 import StandardEditor from 'ckeditor5/core/editor/standardeditor.js';
 import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
 import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
-import BoxedEditorUI from 'ckeditor5/ui/editorui/boxed/boxededitorui.js';
+import BoxedEditorUIView from 'ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
 import Feature from 'ckeditor5/core/feature.js';
 
 import { getData } from 'ckeditor5/engine/dev-utils/model.js';
@@ -32,6 +32,7 @@ describe( 'ClassicTestEditor', () => {
 
 			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
 			expect( editor ).to.have.property( 'element', editorElement );
+			expect( editor ).to.have.property( 'ui' ).to.instanceOf( BoxedEditorUIView );
 		} );
 
 		it( 'creates model and view roots', () => {
@@ -57,7 +58,7 @@ describe( 'ClassicTestEditor', () => {
 		it( 'creates and initilizes the UI', () => {
 			return ClassicTestEditor.create( editorElement, { foo: 1 } )
 				.then( editor => {
-					expect( editor.ui ).to.be.instanceof( BoxedEditorUI );
+					expect( editor.ui ).to.be.instanceof( BoxedEditorUIView );
 				} );
 		} );
 
