@@ -2,7 +2,7 @@ CKEditor 5 Enter Feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-enter.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-enter.svg)](https://travis-ci.org/ckeditor/ckeditor5-enter)
+[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-enter.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-enter)
 [![Test Coverage](https://codeclimate.com/github/ckeditor/ckeditor5-enter/badges/coverage.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-enter/coverage)
 [![Code Climate](https://codeclimate.com/github/ckeditor/ckeditor5-enter/badges/gpa.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-enter)
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-enter/status.svg)](https://david-dm.org/ckeditor/ckeditor5-enter#info=dependencies)
