@@ -28,6 +28,12 @@ const ELEMENT_RANGE_START_TOKEN = '[';
 const ELEMENT_RANGE_END_TOKEN = ']';
 const TEXT_RANGE_START_TOKEN = '{';
 const TEXT_RANGE_END_TOKEN = '}';
+const allowedTypes = {
+	'container': ContainerElement,
+	'attribute': AttributeElement,
+	'empty': EmptyElement,
+	'widget': WidgetElement,
+};
 
 /**
  * Writes the contents of the {@link engine.view.Document Document} to an HTML-like string.
@@ -783,20 +789,10 @@ class ViewStringify {
 	 */
 	_stringifyElementType( element ) {
 		if ( this.showType ) {
-			if ( element instanceof AttributeElement ) {
-				return 'attribute';
-			}
-
-			if ( element instanceof ContainerElement ) {
-				return 'container';
-			}
-
-			if ( element instanceof EmptyElement ) {
-				return 'empty';
-			}
-
-			if ( element instanceof WidgetElement ) {
-				return 'widget';
+			for ( let type in allowedTypes ) {
+				if ( element instanceof allowedTypes[ type ] ) {
+					return type;
+				}
 			}
 		}
 
@@ -886,23 +882,14 @@ function _convertViewElements( rootNode ) {
 // @returns {engine.view.Element|engine.view.AttributeElement|engine.view.ContainerElement} Tree view
 // element converted according to it's name.
 function _convertElement( viewElement ) {
-	let newElement;
 	const info = _convertElementNameAndPriority( viewElement );
+	const ElementConstructor = allowedTypes[ info.type ];
+	const newElement = ElementConstructor ? new ElementConstructor( info.name ) : new ViewElement( info.name );
 
-	if ( info.type == 'attribute' ) {
-		newElement = new AttributeElement( info.name );
-
+	if ( newElement instanceof AttributeElement ) {
 		if ( info.priority !== null ) {
 			newElement.priority = info.priority;
 		}
-	} else if ( info.type == 'container' ) {
-		newElement = new ContainerElement( info.name );
-	} else if ( info.type == 'empty' ) {
-		newElement = new EmptyElement( info.name );
-	} else if ( info.type == 'widget' ) {
-		newElement = new WidgetElement( info.name );
-	} else {
-		newElement = new ViewElement( info.name );
 	}
 
 	// Move attributes.
@@ -956,11 +943,7 @@ function _convertElementNameAndPriority( viewElement ) {
 // @param {String} type
 // @returns {String|null}
 function _convertType( type ) {
-	if ( type == 'container' || type == 'attribute' || type == 'empty' || type == 'widget' ) {
-		return type;
-	}
-
-	return null;
+	return allowedTypes[ type ] ? type : null;
 }
 
 // Checks if given priority is allowed. Returns null if priority cannot be converted.
