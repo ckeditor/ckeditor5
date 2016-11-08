@@ -130,21 +130,5 @@ describe( 'writer', () => {
 				remove( range );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 		} );
-
-		it( 'should remove WidgetElements', () => {
-			test(
-				'<container:p>[<widget:baz>foo bar</widget:baz>]</container:p>',
-				'<container:p>[]</container:p>',
-				'<widget:baz contenteditable="false">foo bar</widget:baz>'
-			);
-		} );
-
-		it( 'should remove inside WidgetElement', () => {
-			test(
-				'<widget:foo>foo {bar <attribute:b>baz</attribute:b>]bat</widget:foo>',
-				'<widget:foo contenteditable="false">foo {}bat</widget:foo>',
-				'bar <attribute:b view-priority="10">baz</attribute:b>'
-			);
-		} );
 	} );
 } );
