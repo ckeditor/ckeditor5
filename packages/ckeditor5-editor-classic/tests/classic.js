@@ -6,8 +6,7 @@
 /* globals document */
 /* bender-tags: editor, browser-only */
 
-import ClassicEditorUI from 'ckeditor5/editor-classic/classiceditorui.js';
-import BoxedEditorUIView from 'ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
+import ClassicEditorUIView from 'ckeditor5/editor-classic/classiceditoruiview.js';
 
 import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
@@ -49,8 +48,7 @@ describe( 'ClassicEditor', () => {
 		} );
 
 		it( 'creates the UI using BoxedEditorUI classes', () => {
-			expect( editor.ui ).to.be.instanceof( ClassicEditorUI );
-			expect( editor.ui.view ).to.be.instanceof( BoxedEditorUIView );
+			expect( editor.ui ).to.be.instanceof( ClassicEditorUIView );
 		} );
 
 		it( 'uses HTMLDataProcessor', () => {
@@ -73,11 +71,11 @@ describe( 'ClassicEditor', () => {
 		} );
 
 		it( 'inserts editor UI next to editor element', () => {
-			expect( editor.ui.view.element.previousSibling ).to.equal( editorElement );
+			expect( editor.ui.element.previousSibling ).to.equal( editorElement );
 		} );
 
 		it( 'attaches editable UI as view\'s DOM root', () => {
-			expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.editable.view.element );
+			expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.editable.element );
 		} );
 
 		it( 'loads data from the editor element', () => {

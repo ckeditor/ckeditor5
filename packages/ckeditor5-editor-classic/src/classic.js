@@ -4,12 +4,8 @@
  */
 
 import StandardEditor from '../core/editor/standardeditor.js';
-
 import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
-
-import ClassicEditorUI from './classiceditorui.js';
-import BoxedEditorUIView from '../ui/editorui/boxed/boxededitoruiview.js';
-
+import ClassicEditorUIView from './classiceditoruiview.js';
 import ElementReplacer from '../utils/elementreplacer.js';
 
 /**
@@ -36,8 +32,7 @@ export default class ClassicEditor extends StandardEditor {
 
 		this.data.processor = new HtmlDataProcessor();
 
-		this.ui = new ClassicEditorUI( this );
-		this.ui.view = new BoxedEditorUIView( this.locale );
+		this.ui = new ClassicEditorUIView( this, this.locale );
 
 		/**
 		 * The element replacer instance used to hide the editor element.
@@ -88,7 +83,7 @@ export default class ClassicEditor extends StandardEditor {
 
 			resolve(
 				editor.initPlugins()
-					.then( () => editor._elementReplacer.replace( element, editor.ui.view.element ) )
+					.then( () => editor._elementReplacer.replace( element, editor.ui.element ) )
 					.then( () => editor.ui.init() )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.editableElement ) )
 					.then( () => editor.loadDataFromEditorElement() )
