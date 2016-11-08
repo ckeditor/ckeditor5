@@ -22,4 +22,5 @@ install:
 script:
   - node_modules/.bin/ckeditor5-dev-tests --coverage
 after_success:
+  - sed -i.backup 's/\.build\/ckeditor5\/[^\/]*/src/g' .build/coverage/lcov.info
   - node_modules/.bin/codeclimate-test-reporter < .build/coverage/lcov.info
