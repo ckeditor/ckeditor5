@@ -2,7 +2,7 @@ CKEditor 5 Clipboard Feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-clipboard.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-clipboard.svg)](https://travis-ci.org/ckeditor/ckeditor5-clipboard)
+[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-clipboard.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-clipboard)
 [![Test Coverage](https://codeclimate.com/github/ckeditor/ckeditor5-clipboard/badges/coverage.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-clipboard/coverage)
 [![Code Climate](https://codeclimate.com/github/ckeditor/ckeditor5-clipboard/badges/gpa.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-clipboard)
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-clipboard/status.svg)](https://david-dm.org/ckeditor/ckeditor5-clipboard#info=dependencies)
