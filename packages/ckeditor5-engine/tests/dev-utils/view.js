@@ -12,7 +12,6 @@ import Position from 'ckeditor5/engine/view/position.js';
 import Element from 'ckeditor5/engine/view/element.js';
 import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
 import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
-import WidgetElement from 'ckeditor5/engine/view/widgetelement.js';
 import EmptyElement from 'ckeditor5/engine/view/emptyelement.js';
 import Text from 'ckeditor5/engine/view/text.js';
 import Selection from 'ckeditor5/engine/view/selection.js';
@@ -341,30 +340,6 @@ describe( 'view test utils', () => {
 			expect( stringify( p, null, { showType: true } ) )
 				.to.equal( '<container:p><empty:img></empty:img></container:p>' );
 		} );
-
-		it( 'should stringify single WidgetElement', () => {
-			const figure = new WidgetElement( 'figure' );
-
-			expect( stringify( figure , null, { showType: true } ) )
-				.to.equal( '<widget:figure contenteditable="false"></widget:figure>' );
-		} );
-
-		it( 'should stringify single WidgetElement inside ContainerElement', () => {
-			const figure = new WidgetElement( 'figure' );
-			const container = new ContainerElement( 'p', null, figure );
-
-			expect( stringify( container , null, { showType: true } ) )
-				.to.equal( '<container:p><widget:figure contenteditable="false"></widget:figure></container:p>' );
-		} );
-
-		it( 'should stringify single WidgetElement with children', () => {
-			const text = new Text( 'foo bar' );
-			const b = new AttributeElement( 'b', null, text );
-			const figure = new WidgetElement( 'figure', null, b );
-
-			expect( stringify( figure , null, { showType: true } ) )
-				.to.equal( '<widget:figure contenteditable="false"><attribute:b>foo bar</attribute:b></widget:figure>' );
-		} );
 	} );
 
 	describe( 'parse', () => {
@@ -656,20 +631,6 @@ describe( 'view test utils', () => {
 			expect( () => {
 				parse( '<empty:img>foo bar</empty:img>' );
 			} ).to.throw( Error, 'Parse error - cannot parse inside EmptyElement.' );
-		} );
-
-		it( 'should parse WidgetElement', () => {
-			const data = parse( '<widget:figure></widget:figure>' );
-
-			expect( stringify( data, null, { showType: true } ) )
-				.to.equal( '<widget:figure contenteditable="false"></widget:figure>' );
-		} );
-
-		it( 'should parse WidgetElement with children', () => {
-			const data = parse( '<widget:figure><attribute:b>foo bar</attribute:b></widget:figure>' );
-
-			expect( stringify( data, null, { showType: true } ) )
-				.to.equal( '<widget:figure contenteditable="false"><attribute:b>foo bar</attribute:b></widget:figure>' );
 		} );
 	} );
 } );
