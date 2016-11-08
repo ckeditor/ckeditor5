@@ -131,5 +131,14 @@ describe( 'Autoformat', () => {
 
 			expect( getData( doc ) ).to.equal( '<paragraph>foobar*[]</paragraph>' );
 		} );
+
+		it( 'should format inside the text', () => {
+			setData( doc, '<paragraph>foo **bar*[] baz</paragraph>' );
+			doc.enqueueChanges( () => {
+				batch.insert( doc.selection.getFirstPosition(), '*' );
+			} );
+
+			expect( getData( doc ) ).to.equal( '<paragraph>foo <$text bold="true">bar</$text>[] baz</paragraph>' );
+		} );
 	} );
 } );

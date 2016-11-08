@@ -148,7 +148,7 @@ export default class InlineAutoformatEngine {
 			}
 
 			const block = selection.focus.parent;
-			const text = getText( block ).slice( 0, selection.focus.offset + 1 );
+			const text = getText( block ).slice( 0, selection.focus.offset );
 			const ranges = testCallback( text );
 			const rangesToFormat = [];
 
