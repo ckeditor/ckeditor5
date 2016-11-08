@@ -9,7 +9,7 @@ import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
 import List from 'ckeditor5/list/list.js';
 import Paragraph from 'ckeditor5/paragraph/paragraph.js';
 import ListEngine from 'ckeditor5/list/listengine.js';
-import ButtonController from 'ckeditor5/ui/button/button.js';
+import ButtonView from 'ckeditor5/ui/button/buttonview.js';
 import { getCode } from 'ckeditor5/utils/keyboard.js';
 
 describe( 'List', () => {
@@ -44,17 +44,17 @@ describe( 'List', () => {
 	} );
 
 	it( 'should set up keys for bulleted list and numbered list', () => {
-		expect( bulletedListButton ).to.be.instanceOf( ButtonController );
-		expect( numberedListButton ).to.be.instanceOf( ButtonController );
+		expect( bulletedListButton ).to.be.instanceOf( ButtonView );
+		expect( numberedListButton ).to.be.instanceOf( ButtonView );
 	} );
 
 	it( 'should execute proper commands when buttons are used', () => {
 		sinon.spy( editor, 'execute' );
 
-		bulletedListButton.model.fire( 'execute' );
+		bulletedListButton.fire( 'execute' );
 		expect( editor.execute.calledWithExactly( 'bulletedList' ) );
 
-		numberedListButton.model.fire( 'execute' );
+		numberedListButton.fire( 'execute' );
 		expect( editor.execute.calledWithExactly( 'numberedList' ) );
 	} );
 
@@ -63,17 +63,16 @@ describe( 'List', () => {
 		// Collapsing selection in model, which has just flat listItems.
 		editor.document.selection.collapse( editor.document.getRoot().getChild( 0 ) );
 
-		const model = bulletedListButton.model;
 		const command = editor.commands.get( 'bulletedList' );
 
-		expect( model.isOn ).to.be.true;
-		expect( model.isEnabled ).to.be.true;
+		expect( bulletedListButton.isOn ).to.be.true;
+		expect( bulletedListButton.isEnabled ).to.be.true;
 
 		command.value = false;
-		expect( model.isOn ).to.be.false;
+		expect( bulletedListButton.isOn ).to.be.false;
 
 		command.isEnabled = false;
-		expect( model.isEnabled ).to.be.false;
+		expect( bulletedListButton.isEnabled ).to.be.false;
 	} );
 
 	it( 'should bind numbered list button model to numberedList command', () => {
@@ -81,18 +80,17 @@ describe( 'List', () => {
 		// Collapsing selection in model, which has just flat listItems.
 		editor.document.selection.collapse( editor.document.getRoot().getChild( 0 ) );
 
-		const model = numberedListButton.model;
 		const command = editor.commands.get( 'numberedList' );
 
 		// We are in UL, so numbered list is off.
-		expect( model.isOn ).to.be.false;
-		expect( model.isEnabled ).to.be.true;
+		expect( numberedListButton.isOn ).to.be.false;
+		expect( numberedListButton.isEnabled ).to.be.true;
 
 		command.value = true;
-		expect( model.isOn ).to.be.true;
+		expect( numberedListButton.isOn ).to.be.true;
 
 		command.isEnabled = false;
-		expect( model.isEnabled ).to.be.false;
+		expect( numberedListButton.isEnabled ).to.be.false;
 	} );
 
 	describe( 'enter key handling callback', () => {
