@@ -8,14 +8,14 @@
 import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
 import Italic from 'ckeditor5/basic-styles/italic.js';
 import ItalicEngine from 'ckeditor5/basic-styles/italicengine.js';
-import ButtonController from 'ckeditor5/ui/button/button.js';
+import ButtonView from 'ckeditor5/ui/button/buttonview.js';
 import testUtils from 'tests/core/_utils/utils.js';
 import { keyCodes } from 'ckeditor5/utils/keyboard.js';
 
 testUtils.createSinonSandbox();
 
 describe( 'Italic', () => {
-	let editor, italicController;
+	let editor, italicView;
 
 	beforeEach( () => {
 		const editorElement = document.createElement( 'div' );
@@ -27,7 +27,7 @@ describe( 'Italic', () => {
 			.then( newEditor => {
 				editor = newEditor;
 
-				italicController = editor.ui.featureComponents.create( 'italic' );
+				italicView = editor.ui.featureComponents.create( 'italic' );
 			} );
 	} );
 
@@ -44,36 +44,34 @@ describe( 'Italic', () => {
 	} );
 
 	it( 'should register italic feature component', () => {
-		expect( italicController ).to.be.instanceOf( ButtonController );
+		expect( italicView ).to.be.instanceOf( ButtonView );
 	} );
 
 	it( 'should execute italic command on model execute event', () => {
 		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
-		const model = italicController.model;
 
-		model.fire( 'execute' );
+		italicView.fire( 'execute' );
 
 		sinon.assert.calledOnce( executeSpy );
 		sinon.assert.calledWithExactly( executeSpy, 'italic' );
 	} );
 
 	it( 'should bind model to italic command', () => {
-		const model = italicController.model;
 		const command = editor.commands.get( 'italic' );
 
-		expect( model.isOn ).to.be.false;
+		expect( italicView.isOn ).to.be.false;
 
-		expect( model.isEnabled ).to.be.true;
+		expect( italicView.isEnabled ).to.be.true;
 
 		command.value = true;
-		expect( model.isOn ).to.be.true;
+		expect( italicView.isOn ).to.be.true;
 
 		command.isEnabled = false;
-		expect( model.isEnabled ).to.be.false;
+		expect( italicView.isEnabled ).to.be.false;
 	} );
 
 	it( 'should set keystroke in the model', () => {
-		expect( italicController.model.keystroke ).to.equal( 'CTRL+I' );
+		expect( italicView.keystroke ).to.equal( 'CTRL+I' );
 	} );
 
 	it( 'should set editor keystroke', () => {

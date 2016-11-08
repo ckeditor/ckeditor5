@@ -5,9 +5,7 @@
 
 import Feature from '../core/feature.js';
 import ItalicEngine from './italicengine.js';
-import ButtonController from '../ui/button/button.js';
 import ButtonView from '../ui/button/buttonview.js';
-import Model from '../ui/model.js';
 
 /**
  * The italic feature. It introduces the Italic button and the <kbd>Ctrl+I</kbd> keystroke.
@@ -34,23 +32,25 @@ export default class Italic extends Feature {
 		const command = editor.commands.get( 'italic' );
 		const keystroke = 'CTRL+I';
 
-		// Create button model.
-		const buttonModel = new Model( {
-			isEnabled: true,
-			isOn: false,
-			label: t( 'Italic' ),
-			icon: 'italic',
-			keystroke
-		} );
-
-		// Bind button model to command.
-		buttonModel.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
-
-		// Execute command.
-		this.listenTo( buttonModel, 'execute', () => editor.execute( 'italic' ) );
-
 		// Add bold button to feature components.
-		editor.ui.featureComponents.add( 'italic', ButtonController, ButtonView, buttonModel );
+		editor.ui.featureComponents.add( 'italic', ( locale ) => {
+			const view = new ButtonView( locale );
+
+			view.set( {
+				isEnabled: true,
+				isOn: false,
+				label: t( 'Italic' ),
+				icon: 'italic',
+				keystroke
+			} );
+
+			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+
+			// Execute command.
+			this.listenTo( view, 'execute', () => editor.execute( 'italic' ) );
+
+			return view;
+		} );
 
 		// Set the Ctrl+I keystroke.
 		editor.keystrokes.set( keystroke, 'italic' );

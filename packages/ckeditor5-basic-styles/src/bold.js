@@ -5,9 +5,7 @@
 
 import Feature from '../core/feature.js';
 import BoldEngine from './boldengine.js';
-import ButtonController from '../ui/button/button.js';
 import ButtonView from '../ui/button/buttonview.js';
-import Model from '../ui/model.js';
 
 /**
  * The bold feature. It introduces the Bold button and the <kbd>Ctrl+B</kbd> keystroke.
@@ -34,23 +32,25 @@ export default class Bold extends Feature {
 		const command = editor.commands.get( 'bold' );
 		const keystroke = 'CTRL+B';
 
-		// Create button model.
-		const buttonModel = new Model( {
-			isEnabled: true,
-			isOn: false,
-			label: t( 'Bold' ),
-			icon: 'bold',
-			keystroke
-		} );
-
-		// Bind button model to command.
-		buttonModel.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
-
-		// Execute command.
-		this.listenTo( buttonModel, 'execute', () => editor.execute( 'bold' ) );
-
 		// Add bold button to feature components.
-		editor.ui.featureComponents.add( 'bold', ButtonController, ButtonView, buttonModel );
+		editor.ui.featureComponents.add( 'bold', ( locale ) => {
+			const view = new ButtonView( locale );
+
+			view.set( {
+				isEnabled: true,
+				isOn: false,
+				label: t( 'Bold' ),
+				icon: 'bold',
+				keystroke
+			} );
+
+			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+
+			// Execute command.
+			this.listenTo( view, 'execute', () => editor.execute( 'bold' ) );
+
+			return view;
+		} );
 
 		// Set the Ctrl+B keystroke.
 		editor.keystrokes.set( keystroke, 'bold' );

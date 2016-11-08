@@ -8,14 +8,14 @@
 import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
 import Bold from 'ckeditor5/basic-styles/bold.js';
 import BoldEngine from 'ckeditor5/basic-styles/boldengine.js';
-import ButtonController from 'ckeditor5/ui/button/button.js';
+import ButtonView from 'ckeditor5/ui/button/buttonview.js';
 import testUtils from 'tests/core/_utils/utils.js';
 import { keyCodes } from 'ckeditor5/utils/keyboard.js';
 
 testUtils.createSinonSandbox();
 
 describe( 'Bold', () => {
-	let editor, boldController;
+	let editor, boldView;
 
 	beforeEach( () => {
 		const editorElement = document.createElement( 'div' );
@@ -27,7 +27,7 @@ describe( 'Bold', () => {
 			.then( newEditor => {
 				editor = newEditor;
 
-				boldController = editor.ui.featureComponents.create( 'bold' );
+				boldView = editor.ui.featureComponents.create( 'bold' );
 			} );
 	} );
 
@@ -44,36 +44,34 @@ describe( 'Bold', () => {
 	} );
 
 	it( 'should register bold feature component', () => {
-		expect( boldController ).to.be.instanceOf( ButtonController );
+		expect( boldView ).to.be.instanceOf( ButtonView );
 	} );
 
 	it( 'should execute bold command on model execute event', () => {
 		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
-		const model = boldController.model;
 
-		model.fire( 'execute' );
+		boldView.fire( 'execute' );
 
 		sinon.assert.calledOnce( executeSpy );
 		sinon.assert.calledWithExactly( executeSpy, 'bold' );
 	} );
 
 	it( 'should bind model to bold command', () => {
-		const model = boldController.model;
 		const command = editor.commands.get( 'bold' );
 
-		expect( model.isOn ).to.be.false;
+		expect( boldView.isOn ).to.be.false;
 
-		expect( model.isEnabled ).to.be.true;
+		expect( boldView.isEnabled ).to.be.true;
 
 		command.value = true;
-		expect( model.isOn ).to.be.true;
+		expect( boldView.isOn ).to.be.true;
 
 		command.isEnabled = false;
-		expect( model.isEnabled ).to.be.false;
+		expect( boldView.isEnabled ).to.be.false;
 	} );
 
 	it( 'should set keystroke in the model', () => {
-		expect( boldController.model.keystroke ).to.equal( 'CTRL+B' );
+		expect( boldView.keystroke ).to.equal( 'CTRL+B' );
 	} );
 
 	it( 'should set editor keystroke', () => {
