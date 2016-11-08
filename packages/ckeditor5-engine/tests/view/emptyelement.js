@@ -21,6 +21,12 @@ describe( 'EmptyElement', () => {
 		} );
 	} );
 
+	it( 'should throw if child elements are passed to constructor', () => {
+		expect( () => {
+			new EmptyElement( 'img', null, [ new Element( 'i' ) ] );
+		} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
+	} );
+
 	describe( 'appendChildren', () => {
 		it( 'should throw when try to append new child element', () => {
 			expect( () => {
