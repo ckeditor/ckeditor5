@@ -2,7 +2,7 @@ CKEditor 5 Undo Manager
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-undo.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-undo)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-undo.svg)](https://travis-ci.org/ckeditor/ckeditor5-undo)
+[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-undo.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-undo)
 [![Test Coverage](https://codeclimate.com/github/ckeditor/ckeditor5-undo/badges/coverage.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-undo/coverage)
 [![Code Climate](https://codeclimate.com/github/ckeditor/ckeditor5-undo/badges/gpa.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-undo)
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-undo/status.svg)](https://david-dm.org/ckeditor/ckeditor5-undo#info=dependencies)
