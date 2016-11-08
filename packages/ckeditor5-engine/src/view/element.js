@@ -139,7 +139,7 @@ export default class Element extends Node {
 			}
 		}
 
-		// ContainerElement, AttributeElement, WidgetElement and EmptyElement should be also cloned properly.
+		// ContainerElement, AttributeElement and EmptyElement should be also cloned properly.
 		const cloned = new this.constructor( this.name, this._attrs, childrenClone );
 
 		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
