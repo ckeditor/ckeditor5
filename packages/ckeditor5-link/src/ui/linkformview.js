@@ -32,28 +32,37 @@ export default class LinkFormView extends View {
 		 *
 		 * @member {ui.input.labeled.LabeledInputView} link.ui.LinkFormView#urlInputView
 		 */
-		this.urlInputView = new LabeledInputView( InputTextView, locale );
+		this.urlInputView = this._createUrlInput();
 
 		/**
 		 * The save button view.
 		 *
 		 * @member {ui.button.ButtonView} link.ui.LinkFormView#saveButtonView
 		 */
-		this.saveButtonView = new ButtonView( locale );
+		this.saveButtonView = this._createButton( 'Save' );
+		this.saveButtonView.type = 'submit';
 
 		/**
 		 * The cancel button view.
 		 *
 		 * @member {ui.button.ButtonView} link.ui.LinkFormView#cancelButtonView
 		 */
-		this.cancelButtonView = new ButtonView( locale );
+		this.cancelButtonView = this._createButton( 'Cancel', 'cancel' );
 
 		/**
 		 * The unlink button view.
 		 *
 		 * @member {ui.button.ButtonView} link.ui.LinkFormView#unlinkButtonView
 		 */
-		this.unlinkButtonView = new ButtonView( locale );
+		this.unlinkButtonView = this._createButton( 'Unlink', 'unlink' );
+
+		// Register child views.
+		this.addChild(
+			this.urlInputView,
+			this.saveButtonView,
+			this.cancelButtonView,
+			this.unlinkButtonView
+		);
 
 		Template.extend( this.saveButtonView.template, {
 			attributes: {
@@ -95,6 +104,44 @@ export default class LinkFormView extends View {
 		submitHandler( {
 			view: this
 		} );
+	}
+
+	/**
+	 * Create labeled input view.
+	 *
+	 * @private
+	 * @returns {ui.labeled.LabeledInputView} Labeled input view instance.
+	 */
+	_createUrlInput() {
+		const t = this.locale.t;
+
+		const labeledInput = new LabeledInputView( this.locale, InputTextView );
+
+		labeledInput.label = t( 'Link URL' );
+
+		return labeledInput;
+	}
+
+	/**
+	 * Creates button View.
+	 *
+	 * @private
+	 * @param {String} label Button label
+	 * @param {String} [event] Event name which ButtonView#execute event will be delegated to.
+	 * @returns {ui.button.ButtonView} Button view instance.
+	 */
+	_createButton( label, event ) {
+		const t = this.locale.t;
+		const button = new ButtonView( this.locale );
+
+		button.label = t( label );
+		button.withText = true;
+
+		if ( event ) {
+			this.listenTo( button, 'execute', () => this.fire( event ) );
+		}
+
+		return button;
 	}
 }
 

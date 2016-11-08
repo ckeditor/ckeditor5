@@ -8,17 +8,12 @@ import ClickObserver from '../engine/view/observer/clickobserver.js';
 import LinkEngine from './linkengine.js';
 import LinkElement from './linkelement.js';
 
-import Model from '../ui/model.js';
 import clickOutsideHandler from '../ui/bindings/clickoutsidehandler.js';
 import escPressHandler from '../ui/bindings/escpresshandler.js';
 
-import Button from '../ui/button/button.js';
 import ButtonView from '../ui/button/buttonview.js';
-
-import BalloonPanel from '../ui/balloonpanel/balloonpanel.js';
 import BalloonPanelView from '../ui/balloonpanel/balloonpanelview.js';
 
-import LinkForm from './ui/linkform.js';
 import LinkFormView from './ui/linkformview.js';
 
 /**
@@ -44,18 +39,18 @@ export default class Link extends Feature {
 		this.editor.editing.view.addObserver( ClickObserver );
 
 		/**
-		 * Balloon panel component to display the main UI.
+		 * Balloon panel view to display the main UI.
 		 *
-		 * @member {link.ui.LinkBalloonPanel} link.Link#balloonPanel
+		 * @member {link.ui.LinkBalloonPanelView} link.Link#balloonPanelView
 		 */
-		this.balloonPanel = this._createBalloonPanel();
+		this.balloonPanelView = this._createBalloonPanel();
 
 		/**
-		 * The form component inside {@link link.Link#balloonPanel}.
+		 * The form view inside {@link link.Link#balloonPanelView}.
 		 *
-		 * @member {link.ui.LinkForm} link.Link#form
+		 * @member {link.ui.LinkFormView} link.Link#formView
 		 */
-		this.form = this._createForm();
+		this.formView = this._createForm();
 
 		// Create toolbar buttons.
 		this._createToolbarLinkButton();
@@ -73,26 +68,26 @@ export default class Link extends Feature {
 		const linkCommand = editor.commands.get( 'link' );
 		const t = editor.t;
 
-		// Create button model.
-		const linkButtonModel = new Model( {
-			isEnabled: true,
-			isOn: false,
-			label: t( 'Link' ),
-			icon: 'link',
-			keystroke: 'CTRL+K'
-		} );
-
-		// Bind button model to the command.
-		linkButtonModel.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
-
-		// Show the panel on button click only when editor is focused.
-		this.listenTo( linkButtonModel, 'execute', () => this._showPanel() );
-
-		// Add link button to feature components.
-		editor.ui.featureComponents.add( 'link', Button, ButtonView, linkButtonModel );
-
 		// Handle `Ctrl+K` keystroke and show panel.
 		editor.keystrokes.set( 'CTRL+K', () => this._showPanel() );
+
+		// Add link button to feature components.
+		editor.ui.featureComponents.add( 'link', ( locale ) => {
+			const button = new ButtonView( locale );
+
+			button.isEnabled = true;
+			button.label = t( 'Link' );
+			button.icon = 'link';
+			button.keystroke = 'CTRL+K';
+
+			// Bind button to the command.
+			button.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
+
+			// Show the panel on button click.
+			this.listenTo( button, 'execute', () => this._showPanel() );
+
+			return button;
+		} );
 	}
 
 	/**
@@ -106,24 +101,22 @@ export default class Link extends Feature {
 		const t = editor.t;
 		const unlinkCommand = editor.commands.get( 'unlink' );
 
-		// Create the button model.
-		const unlinkButtonModel = new Model( {
-			isEnabled: false,
-			isOn: false,
-			label: t( 'Unlink' ),
-			icon: 'unlink'
-		} );
-
-		// Bind button model to the command.
-		unlinkButtonModel.bind( 'isEnabled' ).to( unlinkCommand, 'isEnabled' );
-
-		// Execute unlink command and hide panel, if open.
-		this.listenTo( unlinkButtonModel, 'execute', () => {
-			editor.execute( 'unlink' );
-		} );
-
 		// Add unlink button to feature components.
-		editor.ui.featureComponents.add( 'unlink', Button, ButtonView, unlinkButtonModel );
+		editor.ui.featureComponents.add( 'unlink', ( locale ) => {
+			const button = new ButtonView( locale );
+
+			button.isEnabled = false;
+			button.label = t( 'Unlink' );
+			button.icon = 'unlink';
+
+			// Bind button to the command.
+			button.bind( 'isEnabled' ).to( unlinkCommand, 'isEnabled' );
+
+			// Execute unlink command and hide panel, if open on button click.
+			this.listenTo( button, 'execute', () => editor.execute( 'unlink' ) );
+
+			return button;
+		} );
 	}
 
 	/**
@@ -137,16 +130,13 @@ export default class Link extends Feature {
 		const viewDocument = editor.editing.view;
 
 		// Create the balloon panel instance.
-		const balloonPanel = new BalloonPanel(
-			new Model( {
-				maxWidth: 300
-			} ),
-			new BalloonPanelView( editor.locale )
-		);
+		const balloonPanelView = new BalloonPanelView( editor.locale );
+
+		balloonPanelView.maxWidth = 300;
 
 		// Add balloonPanel.view#element to FocusTracker.
 		// @TODO: Do it automatically ckeditor5-core#23
-		editor.focusTracker.add( balloonPanel.view.element );
+		editor.focusTracker.add( balloonPanelView.element );
 
 		// Handle click on view document and show panel when selection is placed inside the link element.
 		// Keep panel open until selection will be inside the same link element.
@@ -167,30 +157,30 @@ export default class Link extends Feature {
 					}
 				} );
 
-				this.listenTo( balloonPanel.view, 'change:isVisible', () => this.stopListening( viewDocument, 'render' ) );
+				this.listenTo( balloonPanelView, 'change:isVisible', () => this.stopListening( viewDocument, 'render' ) );
 			}
 		} );
 
 		// Close on `ESC` press.
 		escPressHandler( {
-			controller: balloonPanel.view,
-			model: balloonPanel.view,
+			emitter: balloonPanelView,
+			model: balloonPanelView,
 			activeIf: 'isVisible',
 			callback: () => this._hidePanel( true )
 		} );
 
 		// Close on click outside of balloon panel element.
 		clickOutsideHandler( {
-			controller: balloonPanel.view,
-			model: balloonPanel.view,
+			emitter: balloonPanelView,
+			model: balloonPanelView,
 			activeIf: 'isVisible',
-			contextElement: balloonPanel.view.element,
+			contextElement: balloonPanelView.element,
 			callback: () => this._hidePanel()
 		} );
 
-		editor.ui.add( 'body', balloonPanel );
+		editor.ui.body.add( balloonPanelView );
 
-		return balloonPanel;
+		return balloonPanelView;
 	}
 
 	/**
@@ -201,30 +191,28 @@ export default class Link extends Feature {
 	 */
 	_createForm() {
 		const editor = this.editor;
-		const formModel = new Model();
+		const formView = new LinkFormView( editor.locale );
 
-		formModel.bind( 'url' ).to( editor.commands.get( 'link' ), 'value' );
+		formView.urlInputView.bind( 'value' ).to( editor.commands.get( 'link' ), 'value' );
 
-		const form = new LinkForm( formModel, new LinkFormView( editor.locale ) );
-
-		// Execute link command after clicking on balloon panel `Link` button.
-		this.listenTo( formModel, 'submit', () => {
-			editor.execute( 'link', this.form.urlInput.value );
+		// Execute link command after clicking on formView `Save` button.
+		this.listenTo( formView, 'submit', () => {
+			editor.execute( 'link', formView.urlInputView.value );
 			this._hidePanel( true );
 		} );
 
-		// Execute unlink command after clicking on balloon panel `Unlink` button.
-		this.listenTo( formModel, 'unlink', () => {
+		// Execute unlink command after clicking on formView `Unlink` button.
+		this.listenTo( formView, 'unlink', () => {
 			editor.execute( 'unlink' );
 			this._hidePanel( true );
 		} );
 
-		// Hide balloon panel after clicking on balloon panel `Cancel` button.
-		this.listenTo( formModel, 'cancel', () => this._hidePanel( true ) );
+		// Hide balloon panel after clicking on formView `Cancel` button.
+		this.listenTo( formView, 'cancel', () => this._hidePanel( true ) );
 
-		this.balloonPanel.add( 'content', form );
+		this.balloonPanelView.content.add( formView );
 
-		return form;
+		return formView;
 	}
 
 	/**
@@ -242,14 +230,14 @@ export default class Link extends Feature {
 
 		// When selection is inside link element, then attach panel to this element.
 		if ( targetLink ) {
-			this.balloonPanel.view.attachTo(
+			this.balloonPanelView.attachTo(
 				viewDocument.domConverter.getCorrespondingDomElement( targetLink ),
 				domEditableElement
 			);
 		}
 		// Otherwise attach panel to the selection.
 		else {
-			this.balloonPanel.view.attachTo(
+			this.balloonPanelView.attachTo(
 				viewDocument.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() ),
 				domEditableElement
 			);
@@ -263,7 +251,7 @@ export default class Link extends Feature {
 	 * @param {Boolean} [focusEditable=false] When `true` then editable focus will be restored on panel hide.
 	 */
 	_hidePanel( focusEditable ) {
-		this.balloonPanel.view.hide();
+		this.balloonPanelView.hide();
 
 		if ( focusEditable ) {
 			this.editor.editing.view.focus();
@@ -277,7 +265,7 @@ export default class Link extends Feature {
 	 */
 	_showPanel() {
 		this._attachPanelToElement();
-		this.form.urlInput.view.select();
+		this.formView.urlInputView.select();
 	}
 }
 
