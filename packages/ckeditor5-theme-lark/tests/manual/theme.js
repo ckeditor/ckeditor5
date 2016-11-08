@@ -9,52 +9,43 @@ import testUtils from '/tests/ui/_utils/utils.js';
 
 import Collection from '/ckeditor5/utils/collection.js';
 import Model from '/ckeditor5/ui/model.js';
-import Controller from '/ckeditor5/ui/controller.js';
 import View from '/ckeditor5/ui/view.js';
 import Template from '/ckeditor5/ui/template.js';
 
 import iconManagerModel from '/theme/iconmanagermodel.js';
-import IconManager from '/ckeditor5/ui/iconmanager/iconmanager.js';
 import IconManagerView from '/ckeditor5/ui/iconmanager/iconmanagerview.js';
 
-import Icon from '/ckeditor5/ui/icon/icon.js';
 import IconView from '/ckeditor5/ui/icon/iconview.js';
-
-import Button from '/ckeditor5/ui/button/button.js';
 import ButtonView from '/ckeditor5/ui/button/buttonview.js';
-
-import ListDropdown from '/ckeditor5/ui/dropdown/list/listdropdown.js';
-import ListDropdownView from '/ckeditor5/ui/dropdown/list/listdropdownview.js';
-
-import Toolbar from '/ckeditor5/ui/toolbar/toolbar.js';
+import createListDropdown from '/ckeditor5/ui/dropdown/list/createlistdropdown.js';
 import ToolbarView from '/ckeditor5/ui/toolbar/toolbarview.js';
 
-testUtils.createTestUIController( {
-	'icon-plain-1':					'#icon-plain-1',
-	'icon-plain-2':					'#icon-plain-2',
-	'icon-color-1':					'#icon-color-1',
-	'icon-color-2':					'#icon-color-2',
-	'icon-availability':			'#icon-availability',
-	'icon-availability-color':		'#icon-availability-color',
+testUtils.createTestUIView( {
+	'iconPlain1':					'#icon-plain-1',
+	'iconPlain2':					'#icon-plain-2',
+	'iconColor1':					'#icon-color-1',
+	'iconColor2':					'#icon-color-2',
+	'iconAvailability':				'#icon-availability',
+	'iconAvailabilityColor':		'#icon-availability-color',
 
-	'button-states':				'#button-states',
-	'button-types':					'#button-types',
-	'button-icon':					'#button-icon',
-	'button-custom':				'#button-custom',
-	'button-icon-custom':			'#button-icon-custom',
-	'button-icon-states':			'#button-icon-states',
-	'button-responsive-1':			'#button-responsive-1',
-	'button-responsive-2':			'#button-responsive-2',
-	'button-responsive-3':			'#button-responsive-3',
+	'buttonStates':					'#button-states',
+	'buttonTypes':					'#button-types',
+	'buttonIcon':					'#button-icon',
+	'buttonCustom':					'#button-custom',
+	'buttonIconCustom':				'#button-icon-custom',
+	'buttonIconStates':				'#button-icon-states',
+	'buttonResponsive1':			'#button-responsive-1',
+	'buttonResponsive2':			'#button-responsive-2',
+	'buttonResponsive3':			'#button-responsive-3',
 
 	dropdown:						'#dropdown',
 
-	'toolbar-text':					'#toolbar-text',
-	'toolbar-button':				'#toolbar-button',
-	'toolbar-rounded':				'#toolbar-rounded',
-	'toolbar-wrap':					'#toolbar-wrap',
-	'toolbar-separator':			'#toolbar-separator',
-	'toolbar-multi-row':			'#toolbar-multi-row',
+	'toolbarText':					'#toolbar-text',
+	'toolbarButton':				'#toolbar-button',
+	'toolbarRounded':				'#toolbar-rounded',
+	'toolbarWrap':					'#toolbar-wrap',
+	'toolbarSeparator':				'#toolbar-separator',
+	'toolbarMultiRow':				'#toolbar-multi-row',
 
 	body:							'div#body'
 } ).then( ui => {
@@ -67,37 +58,40 @@ testUtils.createTestUIController( {
 function renderIcon( ui ) {
 	// --- IconManager ------------------------------------------------------------
 
-	ui.add( 'body', new IconManager( iconManagerModel, new IconManagerView() ) );
+	const iconManager =  new IconManagerView();
+
+	iconManager.set( 'sprite', iconManagerModel.sprite );
+
+	ui.body.add( iconManager );
 
 	// --- In-text ------------------------------------------------------------
 
-	ui.add( 'icon-plain-1', icon( 'bold' ) );
-	ui.add( 'icon-plain-2', icon( 'quote' ) );
-
-	ui.add( 'icon-color-1', icon( 'bold' ) );
-	ui.add( 'icon-color-2', icon( 'quote' ) );
+	ui.iconPlain1.add( icon( 'bold' ) );
+	ui.iconPlain2.add( icon( 'quote' ) );
+	ui.iconColor1.add( icon( 'bold' ) );
+	ui.iconColor2.add( icon( 'quote' ) );
 
 	// --- Availability ------------------------------------------------------------
 
 	iconManagerModel.icons.forEach( i => {
-		ui.add( 'icon-availability', icon( i ) );
-		ui.add( 'icon-availability-color', icon( i ) );
+		ui.iconAvailability.add( icon( i ) );
+		ui.iconAvailabilityColor.add( icon( i ) );
 	} );
 }
 
 function renderButton( ui ) {
 	// --- States ------------------------------------------------------------
 
-	ui.add( 'button-states', button( {
+	ui.buttonStates.add( button( {
 		label: 'State: normal (none)',
 	} ) );
 
-	ui.add( 'button-states', button( {
+	ui.buttonStates.add( button( {
 		label: 'State: disabled',
 		isEnabled: false
 	} ) );
 
-	ui.add( 'button-states', button( {
+	ui.buttonStates.add( button( {
 		label: 'State: on',
 		isOn: true
 	} ) );
@@ -109,22 +103,22 @@ function renderButton( ui ) {
 	const boldButton = button( { label: 'Bold text' } );
 
 	// TODO: It requires model interface.
-	actionButton.view.element.classList.add( 'ck-button-action' );
+	actionButton.element.classList.add( 'ck-button-action' );
 
 	// TODO: It requires model interface.
-	roundedButton.view.element.classList.add( 'ck-rounded-corners' );
+	roundedButton.element.classList.add( 'ck-rounded-corners' );
 
 	// TODO: It requires model interface.
-	boldButton.view.element.classList.add( 'ck-button-bold' );
+	boldButton.element.classList.add( 'ck-button-bold' );
 
-	ui.add( 'button-types', actionButton );
-	ui.add( 'button-types', roundedButton );
-	ui.add( 'button-types', boldButton );
+	ui.buttonTypes.add( actionButton );
+	ui.buttonTypes.add( roundedButton );
+	ui.buttonTypes.add( boldButton );
 
 	// --- Icon ------------------------------------------------------------
 
 	iconManagerModel.icons.forEach( i => {
-		ui.add( 'button-icon', button( {
+		ui.buttonIcon.add( button( {
 			label: i,
 			icon: i
 		} ) );
@@ -136,11 +130,11 @@ function renderButton( ui ) {
 	} );
 
 	// TODO: It probably requires model interface.
-	styledButton.view.element.setAttribute( 'style', 'border-radius: 100px; border: 0' );
+	styledButton.element.setAttribute( 'style', 'border-radius: 100px; border: 0' );
 
-	ui.add( 'button-icon-custom', styledButton );
+	ui.buttonIconCustom.add( styledButton );
 
-	ui.add( 'button-icon-states', button( {
+	ui.buttonIconStates.add( button( {
 		label: 'Disabled',
 		icon: 'bold',
 		isEnabled: false
@@ -153,11 +147,11 @@ function renderButton( ui ) {
 	} );
 
 	// TODO: It requires model interface.
-	disabledActionButton.view.element.classList.add( 'ck-button-action' );
+	disabledActionButton.element.classList.add( 'ck-button-action' );
 
-	ui.add( 'button-icon-states', disabledActionButton );
+	ui.buttonIconStates.add( disabledActionButton );
 
-	ui.add( 'button-icon-states', button( {
+	ui.buttonIconStates.add( button( {
 		label: 'Bold',
 		withText: false,
 		icon: 'bold'
@@ -166,12 +160,12 @@ function renderButton( ui ) {
 	// --- Responsive ------------------------------------------------------------
 
 	for ( let i = 1; i < 4; i++ ) {
-		ui.add( `button-responsive-${ i }`, button( {
+		ui[ `buttonResponsive${ i }` ].add( button( {
 			label: 'A button',
 			isEnabled: true
 		} ) );
 
-		ui.add( `button-responsive-${ i }`, button( {
+		ui[ `buttonResponsive${ i }` ].add( button( {
 			label: 'Bold',
 			icon: 'bold',
 			isEnabled: true
@@ -184,9 +178,9 @@ function renderButton( ui ) {
 		} );
 
 		// TODO: It requires model interface.
-		notextButton.view.element.classList.add( 'ck-button-action' );
+		notextButton.element.classList.add( 'ck-button-action' );
 
-		ui.add( `button-responsive-${ i }`, notextButton );
+		ui[ `buttonResponsive${ i }` ].add( notextButton );
 	}
 }
 
@@ -206,13 +200,13 @@ function renderDropdown( ui ) {
 		items: collection
 	} );
 
-	ui.add( 'dropdown', dropdown( {
+	ui.dropdown.add( dropdown( {
 		label: 'Normal state',
 		isEnabled: true,
 		content: itemListModel
 	} ) );
 
-	ui.add( 'dropdown', dropdown( {
+	ui.dropdown.add( dropdown( {
 		label: 'Disabled',
 		isEnabled: false,
 		content: itemListModel
@@ -222,14 +216,14 @@ function renderDropdown( ui ) {
 function renderToolbar( ui ) {
 	// --- Text ------------------------------------------------------------
 
-	ui.add( 'toolbar-text', toolbar( [
+	ui.toolbarText.add( toolbar( [
 		icon( 'bold' ),
 		text()
 	] ) );
 
 	// --- Button ------------------------------------------------------------
 
-	ui.add( 'toolbar-button', toolbar( [
+	ui.toolbarButton.add( toolbar( [
 		button(),
 		text(),
 		button( {
@@ -242,7 +236,7 @@ function renderToolbar( ui ) {
 
 	// --- Rounded ------------------------------------------------------------
 
-	ui.add( 'toolbar-rounded', toolbar( [
+	ui.toolbarRounded.add( toolbar( [
 		button( {
 			label: 'A button which corners are also rounded because of toolbar class'
 		} ),
@@ -260,13 +254,13 @@ function renderToolbar( ui ) {
 		button()
 	] );
 
-	wrapToolbar.view.element.style.width = '150px';
+	wrapToolbar.element.style.width = '150px';
 
-	ui.add( 'toolbar-wrap', wrapToolbar );
+	ui.toolbarWrap.add( wrapToolbar );
 
 	// --- Separator ------------------------------------------------------------
 
-	ui.add( 'toolbar-separator', toolbar( [
+	ui.toolbarSeparator.add( toolbar( [
 		button(),
 		button(),
 		toolbarSeparator(),
@@ -283,7 +277,7 @@ function renderToolbar( ui ) {
 
 	// --- Multi row ------------------------------------------------------------
 
-	ui.add( 'toolbar-multi-row', toolbar( [
+	ui.toolbarMultiRow.add( toolbar( [
 		button(),
 		button(),
 		toolbarNewLine(),
@@ -311,15 +305,14 @@ const TextView = class extends View {
 };
 
 function text() {
-	return new Controller( null, new TextView() );
+	return new TextView();
 }
 
 function icon( name ) {
-	const model = new Model( {
-		name: name
-	} );
+	const icon = new IconView();
+	icon.name = name;
 
-	return new Icon( model, new IconView() );
+	return icon;
 }
 
 function button( {
@@ -329,17 +322,17 @@ function button( {
 	withText = true,
 	icon
 } = {} ) {
-	const model = new Model( { label, isEnabled, isOn, withText, icon } );
+	const button = new ButtonView();
 
-	return new Button( model, new ButtonView() );
+	button.set( { label, isEnabled, isOn, withText, icon } );
+
+	return button;
 }
 
 function toolbar( children = [] ) {
-	const toolbar = new Toolbar( null, new ToolbarView() );
+	const toolbar = new ToolbarView();
 
-	children.forEach( c => {
-		toolbar.add( 'items', c );
-	} );
+	children.forEach( c => toolbar.items.add( c ) );
 
 	return toolbar;
 }
@@ -349,10 +342,10 @@ function dropdown( {
 	isEnabled = true,
 	isOn = false,
 	withText = true,
-	content = new Model( { items: new Collection( { idProperty: 'label' } ) } )
+	items = new Collection( { idProperty: 'label' } )
 } = {} ) {
-	const model = new Model( { label, isEnabled, content, isOn, withText } );
-	const dropdown = new ListDropdown( model, new ListDropdownView() );
+	const model = new Model( { label, isEnabled, items, isOn, withText } );
+	const dropdown = createListDropdown( model, {} );
 
 	return dropdown;
 }
@@ -371,7 +364,7 @@ const ToolbarSeparatorView = class extends View {
 };
 
 function toolbarSeparator() {
-	return new Controller( null, new ToolbarSeparatorView() );
+	return new ToolbarSeparatorView();
 }
 
 const ToolbarNewlineView = class extends View {
@@ -388,5 +381,5 @@ const ToolbarNewlineView = class extends View {
 };
 
 function toolbarNewLine() {
-	return new Controller( null, new ToolbarNewlineView() );
+	return new ToolbarNewlineView();
 }
