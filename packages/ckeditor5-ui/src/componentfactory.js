@@ -9,8 +9,7 @@ import CKEditorError from '../utils/ckeditorerror.js';
  * Class implementing the UI component factory.
  *
  * Factories of specific UI components can be registered under their unique names. Registered
- * components can be later instantiated by providing the name of the component. The model is shared between all
- * instances of that component and has to be provided upon registering its factory.
+ * components can be later instantiated by providing the name of the component.
  *
  * The main use case for the component factory is the {@link ui.editorUI.EditorUI#featureComponents} factory.
  *
@@ -25,6 +24,8 @@ export default class ComponentFactory {
 	 */
 	constructor( editor ) {
 		/**
+		 * The editor instance.
+		 *
 		 * @readonly
 		 * @member {core.editor.Editor} ui.ComponentFactory#editor
 		 */

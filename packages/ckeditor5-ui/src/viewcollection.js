@@ -45,7 +45,7 @@ export default class ViewCollection extends Collection {
 		this.locale = locale;
 
 		/**
-		 * Set `true` once parent {@link ui.View#ready} is true, which means
+		 * Set to `true` once the parent's {@link ui.View#ready} is true, which means
 		 * that all the views in the collection are also ready (which can be asynchronous).
 		 *
 		 * @readonly
@@ -153,8 +153,8 @@ export default class ViewCollection extends Collection {
 	}
 
 	/**
-	 * Binds a view collection to {@link utils.Collection} of items to create a factory of
-	 * view instances.
+	 * Binds this collection to {@link utils.Collection another collection}. For each item in the
+	 * second collection there will be one view instance added to this collection.
 	 *
 	 * The process can be automatic:
 	 *
@@ -188,7 +188,7 @@ export default class ViewCollection extends Collection {
 	 *		const views = new ViewCollection( locale );
 	 *
 	 *		// Activate the binding – the **factory** is driven by a custom callback.
-	 *		views.bind( data ).as( item => {
+	 *		views.bindTo( data ).as( item => {
 	 *			if ( !item.foo ) {
 	 *				return null;
 	 *			} else if ( item.foo == 'bar' ) {
@@ -294,7 +294,7 @@ export default class ViewCollection extends Collection {
 	 * See {@link utils.EmitterMixin#delegate}.
 	 *
 	 * @param {...String} events {@link ui.View} event names to be delegated to another {@link utils.Emitter}.
-	 * @returns {ui.ViewCollection#delegate#to}
+	 * @returns {ui.ViewCollection.delegate#to}
 	 */
 	delegate( ...events ) {
 		if ( !events.length || !isStringArray( events ) ) {

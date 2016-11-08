@@ -11,7 +11,7 @@ import ObservableMixin from '../utils/observablemixin.js';
  * The base MVC model class.
  *
  * @memberOf ui
- * @mixes utils.ObservaleMixin
+ * @mixes utils.ObservableMixin
  */
 export default class Model {
 	/**

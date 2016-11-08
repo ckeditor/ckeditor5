@@ -14,6 +14,35 @@ import mix from '../utils/mix.js';
 /**
  * Basic View class.
  *
+ *		class SampleView extends View {
+ *			constructor( locale ) {
+ *				super( locale );
+ *
+ *				this.template = new Template( {
+ *					tag: 'p',
+ *					children: [
+ *						'Hello',
+ *						{
+ *							tag: 'b',
+ *							children: [
+ *								'world!'
+ *							]
+ *						}
+ *					],
+ *					attributes: {
+ *						class: 'foo'
+ *					}
+ *				} );
+ *			}
+ *		}
+ *
+ *		const view = new SampleView( locale );
+ *
+ *		view.init().then( () => {
+ *			// Will append <p class="foo">Hello<b>world</b></p>
+ *			document.body.appendChild( view.element );
+ *		} );
+ *
  * @memberOf ui
  * @mixes DOMEmitterMixin
  * @mixes ObservableMixin
@@ -21,35 +50,6 @@ import mix from '../utils/mix.js';
 export default class View {
 	/**
 	 * Creates an instance of the {@link ui.View} class.
-	 *
-	 *		class SampleView extends View {
-	 *			constructor( locale ) {
-	 *				super( locale );
-	 *
-	 *				this.template = new Template( {
-	 *					tag: 'p',
-	 *					children: [
-	 *						'Hello',
-	 *						{
-	 *							tag: 'b',
-	 *							children: [
-	 *								'world!'
-	 *							]
-	 *						}
-	 *					],
-	 *					attributes: {
-	 *						class: 'foo'
-	 *					}
-	 *				} );
-	 *			}
-	 *		}
-	 *
-	 *		const view = new SampleView( locale )
-	 *
-	 *		view.init().then( () => {
-	 *			// Will append <p class="foo">Hello<b>world</b></p>
-	 *			document.body.appendChild( view.element );
-	 *		} );
 	 *
 	 * @param {utils.Locale} [locale] The {@link core.editor.Editor#locale editor's locale} instance.
 	 */
@@ -65,7 +65,7 @@ export default class View {
 		/**
 		 * Shorthand for {@link utils.Locale#t}.
 		 *
-		 * Note: If locale instance hasn't been 	passed to the view this method may not be available.
+		 * Note: If locale instance hasn't been passed to the view this method may not be available.
 		 *
 		 * @see utils.Locale#t
 		 * @method ui.View#t
@@ -85,15 +85,9 @@ export default class View {
 		 * Collections registered with {@link ui.View#createCollection}.
 		 *
 		 * @protected
-		 * @member {Set.<ui.ViewCollection>} ui.view#_viewCollections
+		 * @member {Set.<ui.ViewCollection>} ui.View#_viewCollections
 		 */
 		this._viewCollections = new Collection();
-
-		// Let the new collection determine the {@link ui.View#ready} state of this view and,
-		// accordingly, initialize (or not) children views as they are added in the future.
-		this._viewCollections.on( 'add', ( evt, collection ) => {
-			collection.locale = locale;
-		} );
 
 		/**
 		 * A collection of view instances, which have been added directly
@@ -103,6 +97,11 @@ export default class View {
 		 * @member {ui.ViewCollection} ui.view#_unboundChildren
 		 */
 		this._unboundChildren = this.createCollection();
+
+		// Pass parent locale to its children.
+		this._viewCollections.on( 'add', ( evt, collection ) => {
+			collection.locale = locale;
+		} );
 
 		/**
 		 * Template of this view.
@@ -168,8 +167,8 @@ export default class View {
 	}
 
 	/**
-	 * Creates a new collection of views, which can be used in this view instance
-	 * i.e. as a member of {@link ui.TemplateDefinition#children}.
+	 * Creates a new collection of views, which can be used in this view instance,
+	 * e.g. as a member of {@link ui.TemplateDefinition#children}.
 	 *
 	 *		class SampleView extends View {
 	 *			constructor( locale ) {
@@ -186,8 +185,8 @@ export default class View {
 	 *			}
 	 *		}
 	 *
-	 *		const view = new SampleView( locale )
-	 *		const anotherView = new AnotherSampleView( locale )
+	 *		const view = new SampleView( locale );
+	 *		const anotherView = new AnotherSampleView( locale );
 	 *
 	 *		view.init().then( () => {
 	 *			// Will append <p></p>
@@ -234,7 +233,7 @@ export default class View {
 	 *			}
 	 *		}
 	 *
-	 *		const view = new SampleView( locale )
+	 *		const view = new SampleView( locale );
 	 *
 	 *		view.init().then( () => {
 	 *			// Will append <p><b></b><childView#element></p>
