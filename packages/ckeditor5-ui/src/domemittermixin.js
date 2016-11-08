@@ -48,8 +48,7 @@ const DOMEmitterMixin = extend( {}, EmitterMixin, {
 	 *
 	 * @method ui.DOMEmitterMixin#listenTo
 	 */
-	listenTo() {
-		const args = Array.prototype.slice.call( arguments );
+	listenTo( ...args ) {
 		const emitter = args[ 0 ];
 
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with
@@ -79,8 +78,7 @@ const DOMEmitterMixin = extend( {}, EmitterMixin, {
 	 *
 	 * @method ui.DOMEmitterMixin#stopListening
 	 */
-	stopListening() {
-		const args = Array.prototype.slice.call( arguments );
+	stopListening( ...args ) {
 		const emitter = args[ 0 ];
 
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with corresponding ProxyEmitter.
@@ -275,7 +273,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 //
 // @private
 // @param {Node} node
-// @return {Number} UID for given DOM Node.
+// @return {String} UID for given DOM Node.
 function getNodeUID( node ) {
 	return node[ 'data-ck-expando' ] || ( node[ 'data-ck-expando' ] = uid() );
 }

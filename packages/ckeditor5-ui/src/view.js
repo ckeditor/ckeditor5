@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import Collection from '../utils/collection.js';
-import Region from './region.js';
-import Template from './template.js';
 import CKEditorError from '../utils/ckeditorerror.js';
+import ViewCollection from './viewcollection.js';
+import Template from './template.js';
 import DOMEmitterMixin from './domemittermixin.js';
 import ObservableMixin from '../utils/observablemixin.js';
+import Collection from '../utils/collection.js';
 import mix from '../utils/mix.js';
 
 /**
@@ -22,10 +22,41 @@ export default class View {
 	/**
 	 * Creates an instance of the {@link ui.View} class.
 	 *
+	 *		class SampleView extends View {
+	 *			constructor( locale ) {
+	 *				super( locale );
+	 *
+	 *				this.template = new Template( {
+	 *					tag: 'p',
+	 *					children: [
+	 *						'Hello',
+	 *						{
+	 *							tag: 'b',
+	 *							children: [
+	 *								'world!'
+	 *							]
+	 *						}
+	 *					],
+	 *					attributes: {
+	 *						class: 'foo'
+	 *					}
+	 *				} );
+	 *			}
+	 *		}
+	 *
+	 *		const view = new SampleView( locale )
+	 *
+	 *		view.init().then( () => {
+	 *			// Will append <p class="foo">Hello<b>world</b></p>
+	 *			document.body.appendChild( view.element );
+	 *		} );
+	 *
 	 * @param {utils.Locale} [locale] The {@link core.editor.Editor#locale editor's locale} instance.
 	 */
 	constructor( locale ) {
 		/**
+		 * A set of tools to localize the user interface. See {@link core.editor.Editor#locale}.
+		 *
 		 * @readonly
 		 * @member {utils.Locale} ui.View#locale
 		 */
@@ -34,7 +65,7 @@ export default class View {
 		/**
 		 * Shorthand for {@link utils.Locale#t}.
 		 *
-		 * Note: If locale instance hasn't been passed to the view this method may not be available.
+		 * Note: If locale instance hasn't been 	passed to the view this method may not be available.
 		 *
 		 * @see utils.Locale#t
 		 * @method ui.View#t
@@ -42,27 +73,42 @@ export default class View {
 		this.t = locale && locale.t;
 
 		/**
-		 * Regions of this view. See {@link ui.View#register}.
+		 * Set `true` after {@link ui.View#init}, which can be asynchronous.
 		 *
-		 * @member {utils.Collection} ui.View#regions
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} ui.View#ready
 		 */
-		this.regions = new Collection( {
-			idProperty: 'name'
+		this.set( 'ready', false );
+
+		/**
+		 * Collections registered with {@link ui.View#createCollection}.
+		 *
+		 * @protected
+		 * @member {Set.<ui.ViewCollection>} ui.view#_viewCollections
+		 */
+		this._viewCollections = new Collection();
+
+		// Let the new collection determine the {@link ui.View#ready} state of this view and,
+		// accordingly, initialize (or not) children views as they are added in the future.
+		this._viewCollections.on( 'add', ( evt, collection ) => {
+			collection.locale = locale;
 		} );
+
+		/**
+		 * A collection of view instances, which have been added directly
+		 * into the {@link ui.View.template#children}.
+		 *
+		 * @protected
+		 * @member {ui.ViewCollection} ui.view#_unboundChildren
+		 */
+		this._unboundChildren = this.createCollection();
 
 		/**
 		 * Template of this view.
 		 *
 		 * @member {ui.Template} ui.View#template
 		 */
-
-		/**
-		 * Region selectors of this view. See {@link ui.View#register}.
-		 *
-		 * @private
-		 * @member {Object} ui.View#_regionSelectors
-		 */
-		this._regionSelectors = {};
 
 		/**
 		 * Element of this view.
@@ -122,156 +168,136 @@ export default class View {
 	}
 
 	/**
-	 * Initializes the view.
+	 * Creates a new collection of views, which can be used in this view instance
+	 * i.e. as a member of {@link ui.TemplateDefinition#children}.
 	 *
-	 * Note: {@link ui.Controller} supports if a promise is returned by this method,
-	 * what means that view initialization may be asynchronous.
+	 *		class SampleView extends View {
+	 *			constructor( locale ) {
+	 *				super( locale );
+	 *
+	 *				this.items = this.createCollection();
+ 	 *
+	 *				this.template = new Template( {
+	 *					tag: 'p',
+	 *
+	 *					// `items` collection will render here.
+	 *					children: this.items
+	 *				} );
+	 *			}
+	 *		}
+	 *
+	 *		const view = new SampleView( locale )
+	 *		const anotherView = new AnotherSampleView( locale )
+	 *
+	 *		view.init().then( () => {
+	 *			// Will append <p></p>
+	 *			document.body.appendChild( view.element );
+	 *
+	 *			// `anotherView` becomes a child of the view, which is reflected in DOM
+	 *			// <p><anotherView#element></p>
+	 *			view.items.add( anotherView );
+	 *		} );
+	 *
+	 * @returns {ui.ViewCollection} A new collection of view instances.
+	 */
+	createCollection() {
+		const collection = new ViewCollection();
+
+		this._viewCollections.add( collection );
+
+		return collection;
+	}
+
+	/**
+	 * Registers a new child view under this view instance. Once registered, a child
+	 * view is managed by its parent, including initialization ({@link ui.view#init})
+	 * and destruction ({@link ui.view#destroy}).
+	 *
+	 *		class SampleView extends View {
+	 *			constructor( locale ) {
+	 *				super( locale );
+	 *
+	 *				this.childView = new SomeChildView( locale );
+	 *
+	 *				// Register a new child view.
+	 *				this.addChild( this.childView );
+	 *
+	 *				this.template = new Template( {
+	 *					tag: 'p',
+	 *
+	 *					children: [
+	 *						{ tag: 'b' },
+	 *						// This is where the `childView` will render.
+	 *						this.childView
+	 *					]
+	 *				} );
+	 *			}
+	 *		}
+	 *
+	 *		const view = new SampleView( locale )
+	 *
+	 *		view.init().then( () => {
+	 *			// Will append <p><b></b><childView#element></p>
+	 *			document.body.appendChild( view.element );
+	 *		} );
+	 *
+	 * @param {...ui.View} children Children views to be registered.
+	 */
+	addChild( ...children ) {
+		for ( let child of children ) {
+			this._unboundChildren.add( child );
+		}
+	}
+
+	/**
+	 * Initializes the view and child views located in {@link ui.View#_viewCollections}.
+	 *
+	 * @returns {Promise} A Promise resolved when the initialization process is finished.
 	 */
 	init() {
-		this._initRegions();
+		if ( this.ready ) {
+			/**
+			 * This View has already been initialized.
+			 *
+			 * @error ui-view-init-reinit
+			 */
+			throw new CKEditorError( 'ui-view-init-reinit: This View has already been initialized.' );
+		}
+
+		return Promise.resolve()
+			// Initialize collections in #_viewCollections.
+			.then( () => {
+				return Promise.all( this._viewCollections.map( c => c.init() ) );
+			} )
+			// Spread the word that this view is ready!
+			.then( () => {
+				this.ready = true;
+			} );
 	}
 
 	/**
-	 * Registers a region in {@link ui.View#regions}.
+	 * Destroys the view instance and child views located in {@link ui.View#_viewCollections}.
 	 *
-	 *		let view = new View();
-	 *
-	 *		// region.name == "foo", region.element == view.element.firstChild
-	 *		view.register( 'foo', el => el.firstChild );
-	 *
-	 *		// region.name == "bar", region.element == view.element.querySelector( 'span' )
-	 *		view.register( new Region( 'bar' ), 'span' );
-	 *
-	 *		// region.name == "bar", region.element == view.element.querySelector( '#div#id' )
-	 *		view.register( 'bar', 'div#id', true );
-	 *
-	 *		// region.name == "baz", region.element == null
-	 *		view.register( 'baz', true );
-	 *
-	 * @param {String|Region} stringOrRegion The name or an instance of the Region
-	 * to be registered. If `String`, the region will be created on the fly.
-	 * @param {String|Function|true} regionSelector The selector to retrieve region's element
-	 * in DOM when the region instance is initialized (see {@link Region#init}, {@link ui.View#init}).
-	 * @param {Boolean} [override] When set `true` it will allow overriding of registered regions.
-	 */
-	register( ...args ) {
-		let region, regionName;
-
-		if ( typeof args[ 0 ] === 'string' ) {
-			regionName = args[ 0 ];
-			region = this.regions.get( regionName ) || new Region( regionName );
-		} else if ( args[ 0 ] instanceof Region ) {
-			regionName = args[ 0 ].name;
-			region = args[ 0 ];
-		} else {
-			/**
-			 * A name of the region or an instance of Region is required.
-			 *
-			 * @error ui-view-register-wrongtype
-			 */
-			throw new CKEditorError( 'ui-view-register-wrongtype' );
-		}
-
-		const regionSelector = args[ 1 ];
-
-		if ( !regionSelector || !isValidRegionSelector( regionSelector ) ) {
-			/**
-			 * The selector must be String, Function or `true`.
-			 *
-			 * @error ui-view-register-badselector
-			 */
-			throw new CKEditorError( 'ui-view-register-badselector' );
-		}
-
-		const registered = this.regions.get( regionName );
-
-		if ( !registered ) {
-			this.regions.add( region );
-		} else {
-			if ( registered !== region ) {
-				if ( !args[ 2 ] ) {
-					/**
-					 * Overriding is possible only when `override` flag is set.
-					 *
-					 * @error ui-view-register-override
-					 */
-					throw new CKEditorError( 'ui-view-register-override' );
-				}
-
-				this.regions.remove( registered );
-				this.regions.add( region );
-			}
-		}
-
-		this._regionSelectors[ regionName ] = regionSelector;
-	}
-
-	/**
-	 * Destroys the view instance. The process includes:
-	 *
-	 * 1. Removal of child views from {@link ui.View#regions}.
-	 * 2. Destruction of the {@link ui.View#regions}.
-	 * 3. Removal of {@link #_el} from DOM.
+	 * @returns {Promise} A Promise resolved when the destruction process is finished.
 	 */
 	destroy() {
-		let childView;
-
 		this.stopListening();
 
-		for ( let region of this.regions ) {
-			while ( ( childView = region.views.get( 0 ) ) ) {
-				region.views.remove( childView );
-			}
+		const promises = this._viewCollections.map( c => c.destroy() );
 
-			this.regions.remove( region ).destroy();
-		}
+		this._unboundChildren.clear();
+		this._viewCollections.clear();
 
-		if ( this.template ) {
+		if ( this.element ) {
 			this.element.remove();
 		}
 
-		this.model = this.regions = this.template = this.locale = this.t = null;
-		this._regionSelectors = this._element = null;
-	}
+		this.element = this.template = this.locale = this.t =
+			this._viewCollections = this._unboundChildren = null;
 
-	/**
-	 * Initializes {@link ui.View#regions} of this view by passing a DOM element
-	 * generated from {@link ui.View#_regionSelectors} into {@link Region#init}.
-	 *
-	 * @protected
-	 */
-	_initRegions() {
-		let region, regionEl, regionSelector;
-
-		for ( region of this.regions ) {
-			regionSelector = this._regionSelectors[ region.name ];
-
-			if ( typeof regionSelector == 'string' ) {
-				regionEl = this.element.querySelector( regionSelector );
-			} else if ( typeof regionSelector == 'function' ) {
-				regionEl = regionSelector( this.element );
-			} else {
-				regionEl = null;
-			}
-
-			region.init( regionEl );
-		}
+		return Promise.all( promises );
 	}
 }
 
 mix( View, DOMEmitterMixin );
 mix( View, ObservableMixin );
-
-const validSelectorTypes = new Set( [ 'string', 'boolean', 'function' ] );
-
-/**
- * Check whether region selector is valid.
- *
- * @ignore
- * @private
- * @param {*} selector Selector to be checked.
- * @returns {Boolean}
- */
-function isValidRegionSelector( selector ) {
-	return validSelectorTypes.has( typeof selector ) && selector !== false;
-}

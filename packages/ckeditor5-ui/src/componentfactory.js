@@ -45,35 +45,26 @@ export default class ComponentFactory {
 	 * @param {String} name The name of the component.
 	 * @param {Function} ControllerClass The component controller constructor.
 	 * @param {Function} ViewClass The component view constructor.
-	 * @param {ui.Model} model The model of the component.
+	 * @param {Function} [callback] The callback to process the view instance,
+	 * i.e. to set attribute values, create attribute bindings, etc.
 	 */
-	add( name, ControllerClass, ViewClass, model ) {
+	add( name, callback ) {
 		if ( this._components.get( name ) ) {
 			throw new CKEditorError(
 				'componentfactory-item-exists: The item already exists in the component factory.', { name }
 			);
 		}
 
-		this._components.set( name, {
-			ControllerClass,
-			ViewClass,
-			model
-		} );
+		this._components.set( name, callback );
 	}
 
 	/**
-	 * Creates a component instance.
+	 * Creates a component view instance.
 	 *
 	 * @param {String} name The name of the component.
-	 * @returns {ui.Controller} The instantiated component.
+	 * @returns {ui.View} The instantiated component view.
 	 */
 	create( name ) {
-		const component = this._components.get( name );
-
-		const model = component.model;
-		const view = new component.ViewClass( model, this.editor.locale );
-		const controller = new component.ControllerClass( model, view, this.editor );
-
-		return controller;
+		return this._components.get( name )( this.editor.locale );
 	}
 }

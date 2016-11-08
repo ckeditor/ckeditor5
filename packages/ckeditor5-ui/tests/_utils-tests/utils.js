@@ -8,43 +8,40 @@
 import testUtils from 'tests/ui/_utils/utils.js';
 
 describe( 'utils', () => {
-	describe( 'createTestUIController', () => {
+	describe( 'createTestUIView', () => {
 		it( 'returns a promise', () => {
-			expect( testUtils.createTestUIController() ).to.be.instanceof( Promise );
+			expect( testUtils.createTestUIView() ).to.be.instanceof( Promise );
 		} );
 
-		describe( 'controller instance', () => {
+		describe( 'view instance', () => {
 			it( 'comes with a view', () => {
-				const promise = testUtils.createTestUIController();
+				const promise = testUtils.createTestUIView();
 
-				return promise.then( controller => {
-					expect( controller.view.element ).to.equal( document.body );
+				return promise.then( view => {
+					expect( view.element ).to.equal( document.body );
 				} );
 			} );
 
 			it( 'creates collections and regions', () => {
-				const promise = testUtils.createTestUIController( {
+				const promise = testUtils.createTestUIView( {
 					foo: el => el.firstChild,
 					bar: el => el.lastChild,
 				} );
 
-				promise.then( controller => {
-					expect( controller.collections.get( 'foo' ) ).to.be.not.undefined;
-					expect( controller.collections.get( 'bar' ) ).to.be.not.undefined;
-
-					expect( controller.view.regions.get( 'foo' ).element ).to.equal( document.body.firstChild );
-					expect( controller.view.regions.get( 'bar' ).element ).to.equal( document.body.lastChild );
+				return promise.then( view => {
+					expect( view.foo._parentElement ).to.equal( document.body.firstChild );
+					expect( view.bar._parentElement ).to.equal( document.body.lastChild );
 				} );
 			} );
 
 			it( 'is ready', () => {
-				const promise = testUtils.createTestUIController( {
+				const promise = testUtils.createTestUIView( {
 					foo: el => el.firstChild,
 					bar: el => el.lastChild,
 				} );
 
-				promise.then( controller => {
-					expect( controller.ready ).to.be.true;
+				return promise.then( view => {
+					expect( view.ready ).to.be.true;
 				} );
 			} );
 		} );

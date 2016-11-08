@@ -10,6 +10,7 @@ import testUtils from 'tests/core/_utils/utils.js';
 import Template from 'ckeditor5/ui/template.js';
 import { TemplateToBinding, TemplateIfBinding } from 'ckeditor5/ui/template.js';
 import View from 'ckeditor5/ui/view.js';
+import ViewCollection from 'ckeditor5/ui/viewcollection.js';
 import Model from 'ckeditor5/ui/model.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 import EmitterMixin from 'ckeditor5/utils/emittermixin.js';
@@ -444,6 +445,45 @@ describe( 'Template', () => {
 				expect( v1.element ).to.equal( rendered.firstChild );
 				expect( v2.element ).to.equal( rendered.lastChild );
 			} );
+
+			it( 'renders view collection', () => {
+				const collection = new ViewCollection();
+
+				const v1 = getView( {
+					tag: 'span',
+					attributes: {
+						class: [
+							'v1'
+						]
+					}
+				} );
+
+				const v2 = getView( {
+					tag: 'span',
+					attributes: {
+						class: [
+							'v2'
+						]
+					}
+				} );
+
+				collection.add( v1 );
+				collection.add( v2 );
+
+				const rendered = new Template( {
+					tag: 'p',
+					children: collection
+				} ).render();
+
+				expect( normalizeHtml( rendered.outerHTML ) ).to.equal( '<p><span class="v1"></span><span class="v2"></span></p>' );
+
+				// Make sure the child views will not re–render their elements but
+				// use ones rendered by the template instance above.
+				expect( v1.element ).to.equal( rendered.firstChild );
+				expect( v2.element ).to.equal( rendered.lastChild );
+
+				expect( collection._parentElement ).to.equal( rendered );
+			} );
 		} );
 
 		describe( 'bindings', () => {
@@ -637,6 +677,27 @@ describe( 'Template', () => {
 				} ).apply( el );
 
 				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div></div>' );
+			} );
+
+			it( 'doesn\'t apply new child to an HTMLElement – view collection', () => {
+				const collection = new ViewCollection();
+
+				collection.add( getView( {
+					tag: 'span',
+					attributes: {
+						class: [
+							'v1'
+						]
+					}
+				} ) );
+
+				new Template( {
+					tag: 'p',
+					children: collection
+				} ).apply( el );
+
+				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div></div>' );
+				expect( collection._parentElement ).to.be.null;
 			} );
 
 			it( 'should work for deep DOM structure', () => {

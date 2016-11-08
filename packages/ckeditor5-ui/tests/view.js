@@ -3,16 +3,17 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document, HTMLElement */
+/* global document, setTimeout, HTMLElement */
 /* bender-tags: ui */
 
 import testUtils from 'tests/core/_utils/utils.js';
 import View from 'ckeditor5/ui/view.js';
 import Template from 'ckeditor5/ui/template.js';
-import Region from 'ckeditor5/ui/region.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import Collection from 'ckeditor5/utils/collection.js';
+import ViewCollection from 'ckeditor5/ui/viewcollection.js';
 
-let TestView, view;
+let TestView, view, childA, childB;
 
 testUtils.createSinonSandbox();
 
@@ -27,7 +28,11 @@ describe( 'View', () => {
 			view = new View();
 
 			expect( view.t ).to.be.undefined;
-			expect( view.regions.length ).to.equal( 0 );
+			expect( view.locale ).to.be.undefined;
+			expect( view.ready ).to.be.false;
+			expect( view.template ).to.be.undefined;
+			expect( view._viewCollections ).to.be.instanceOf( Collection );
+			expect( view._unboundChildren ).to.be.instanceOf( ViewCollection );
 		} );
 
 		it( 'defines the locale property and the "t" function', () => {
@@ -38,80 +43,111 @@ describe( 'View', () => {
 			expect( view.locale ).to.equal( locale );
 			expect( view.t ).to.equal( locale.t );
 		} );
+
+		describe( '_viewCollections', () => {
+			it( 'manages #locale property', () => {
+				const locale = {
+					t() {}
+				};
+
+				const view = new View( locale );
+				const collection = new ViewCollection();
+
+				expect( view.locale ).to.equal( locale );
+				expect( collection.locale ).to.be.undefined;
+
+				view._viewCollections.add( collection );
+				expect( collection.locale ).to.equal( view.locale );
+			} );
+		} );
 	} );
 
-	describe( 'init', () => {
+	describe( 'createCollection', () => {
 		beforeEach( () => {
-			setTestViewClass( {
-				tag: 'p',
-				children: [
-					{ tag: 'span' },
-					{ tag: 'strong' }
-				]
+			setTestViewClass();
+			setTestViewInstance();
+		} );
+
+		it( 'returns an instance of view collection', () => {
+			expect( view.createCollection() ).to.be.instanceOf( ViewCollection );
+		} );
+
+		it( 'adds a new collection to the #_viewCollections', () => {
+			expect( view._viewCollections ).to.have.length( 1 );
+
+			const collection = view.createCollection();
+
+			expect( view._viewCollections ).to.have.length( 2 );
+			expect( view._viewCollections.get( 1 ) ).to.equal( collection );
+		} );
+	} );
+
+	describe( 'addChild', () => {
+		beforeEach( () => {
+			setTestViewClass();
+			setTestViewInstance();
+		} );
+
+		it( 'should add a view to #_unboundChildren', () => {
+			expect( view._unboundChildren ).to.have.length( 0 );
+
+			const child = {};
+
+			view.addChild( child );
+			expect( view._unboundChildren ).to.have.length( 1 );
+			expect( view._unboundChildren.get( 0 ) ).to.equal( child );
+		} );
+
+		it( 'should support multiple ...arguments', () => {
+			expect( view._unboundChildren ).to.have.length( 0 );
+
+			const children = [ {}, {}, {} ];
+
+			view.addChild( ...children );
+			expect( view._unboundChildren ).to.have.length( 3 );
+		} );
+	} );
+
+	describe( 'init()', () => {
+		beforeEach( createViewWithChildren );
+
+		it( 'should throw if already initialized', () => {
+			return view.init()
+				.then( () => {
+					view.init();
+
+					throw new Error( 'This should not be executed.' );
+				} )
+				.catch( ( err ) => {
+					expect( err ).to.be.instanceof( CKEditorError );
+					expect( err.message ).to.match( /ui-view-init-re/ );
+				} );
+		} );
+
+		it( 'returns a promise', () => {
+			expect( view.init() ).to.be.instanceof( Promise );
+		} );
+
+		it( 'should set view#ready', () => {
+			expect( view.ready ).to.be.false;
+
+			return view.init().then( () => {
+				expect( view.ready ).to.be.true;
 			} );
 		} );
 
-		it( 'calls child regions #init', () => {
-			setTestViewInstance();
+		it( 'calls init() on all view#_viewCollections', () => {
+			const collectionA = view.createCollection();
+			const collectionB = view.createCollection();
 
-			const region1 = new Region( 'x' );
-			const region2 = new Region( 'y' );
+			const spyA = testUtils.sinon.spy( collectionA, 'init' );
+			const spyB = testUtils.sinon.spy( collectionB, 'init' );
 
-			view.register( region1, el => el );
-			view.register( region2, el => el );
-
-			const spy1 = testUtils.sinon.spy( region1, 'init' );
-			const spy2 = testUtils.sinon.spy( region2, 'init' );
-
-			view.init();
-
-			sinon.assert.calledOnce( spy1 );
-			sinon.assert.calledOnce( spy2 );
-		} );
-
-		it( 'initializes view regions with string selector', () => {
-			setTestViewInstance();
-
-			const region1 = new Region( 'x' );
-			const region2 = new Region( 'y' );
-
-			view.register( region1, 'span' );
-			view.register( region2, 'strong' );
-
-			view.init();
-
-			expect( region1.element ).to.equal( view.element.firstChild );
-			expect( region2.element ).to.equal( view.element.lastChild );
-		} );
-
-		it( 'initializes view regions with function selector', () => {
-			setTestViewInstance();
-
-			const region1 = new Region( 'x' );
-			const region2 = new Region( 'y' );
-
-			view.register( region1, el => el.firstChild );
-			view.register( region2, el => el.lastChild );
-
-			view.init();
-
-			expect( region1.element ).to.equal( view.element.firstChild );
-			expect( region2.element ).to.equal( view.element.lastChild );
-		} );
-
-		it( 'initializes view regions with boolean selector', () => {
-			setTestViewInstance();
-
-			const region1 = new Region( 'x' );
-			const region2 = new Region( 'y' );
-
-			view.register( region1, true );
-			view.register( region2, true );
-
-			view.init();
-
-			expect( region1.element ).to.be.null;
-			expect( region2.element ).to.be.null;
+			return view.init().then( () => {
+				sinon.assert.calledOnce( spyA );
+				sinon.assert.calledOnce( spyB );
+				sinon.assert.callOrder( spyA, spyB );
+			} );
 		} );
 	} );
 
@@ -129,85 +165,6 @@ describe( 'View', () => {
 
 			expect( binding.observable ).to.equal( view );
 			expect( binding.emitter ).to.equal( view );
-		} );
-	} );
-
-	describe( 'register', () => {
-		beforeEach( () => {
-			setTestViewClass();
-			setTestViewInstance();
-		} );
-
-		it( 'should throw when first argument is neither Region instance nor string', () => {
-			expect( () => {
-				view.register( new Date() );
-			} ).to.throw( CKEditorError, /ui-view-register-wrongtype/ );
-		} );
-
-		it( 'should throw when missing the selector argument', () => {
-			expect( () => {
-				view.register( 'x' );
-			} ).to.throw( CKEditorError, /ui-view-register-badselector/ );
-		} );
-
-		it( 'should throw when selector argument is of a wrong type', () => {
-			expect( () => {
-				view.register( 'x', new Date() );
-			} ).to.throw( CKEditorError, /ui-view-register-badselector/ );
-
-			expect( () => {
-				view.register( 'x', false );
-			} ).to.throw( CKEditorError, /ui-view-register-badselector/ );
-		} );
-
-		it( 'should throw when overriding an existing region but without override flag set', () => {
-			expect( () => {
-				view.register( 'x', true );
-				view.register( new Region( 'x' ), true );
-			} ).to.throw( CKEditorError, /ui-view-register-override/ );
-		} );
-
-		it( 'should register a new region with region name as a first argument', () => {
-			view.register( 'x', true );
-
-			expect( view.regions.get( 'x' ) ).to.be.an.instanceof( Region );
-		} );
-
-		it( 'should register a new region with Region instance as a first argument', () => {
-			view.register( new Region( 'y' ), true );
-
-			expect( view.regions.get( 'y' ) ).to.be.an.instanceof( Region );
-		} );
-
-		it( 'should override an existing region with override flag', () => {
-			view.template = new Template( {
-				tag: 'div',
-				children: [
-					{ tag: 'span' }
-				]
-			} );
-
-			const region1 = new Region( 'x' );
-			const region2 = new Region( 'x' );
-
-			view.register( region1, true );
-			view.register( region2, true, true );
-			view.register( 'x', 'span', true );
-
-			view.init();
-
-			expect( view.regions.get( 'x' ) ).to.equal( region2 );
-			expect( view.regions.get( 'x' ).element ).to.equal( view.element.firstChild );
-		} );
-
-		it( 'should not override an existing region with the same region with override flag', () => {
-			const region = new Region( 'x' );
-			const spy = testUtils.sinon.spy( view.regions, 'remove' );
-
-			view.register( region, true );
-			view.register( region, true, true );
-
-			sinon.assert.notCalled( spy );
 		} );
 	} );
 
@@ -240,42 +197,69 @@ describe( 'View', () => {
 		} );
 	} );
 
-	describe( 'destroy', () => {
-		beforeEach( createViewInstanceWithTemplate );
+	describe( 'destroy()', () => {
+		beforeEach( createViewWithChildren );
 
-		it( 'should destroy the view', () => {
-			view.destroy();
+		it( 'should return a promise', () => {
+			expect( view.destroy() ).to.be.instanceof( Promise );
+		} );
 
-			expect( view.model ).to.be.null;
-			expect( view.regions ).to.be.null;
-			expect( view.template ).to.be.null;
-			expect( view.locale ).to.be.null;
-			expect( view.t ).to.be.null;
+		it( 'should set basic properties null', () => {
+			return view.destroy().then( () => {
+				expect( view.element ).to.be.null;
+				expect( view.template ).to.be.null;
+				expect( view.locale ).to.be.null;
+				expect( view.t ).to.be.null;
+
+				expect( view._unboundChildren ).to.be.null;
+				expect( view._viewCollections ).to.be.null;
+			} );
+		} );
+
+		it( 'clears #_unboundChildren', () => {
+			const cached = view._unboundChildren;
+
+			view.addChild( new View(), new View() );
+			expect( cached ).to.have.length.above( 1 );
+
+			return view.destroy().then( () => {
+				expect( cached ).to.have.length( 0 );
+			} );
+		} );
+
+		it( 'clears #_viewCollections', () => {
+			const cached = view._viewCollections;
+
+			expect( cached ).to.have.length( 1 );
+
+			return view.destroy().then( () => {
+				expect( cached ).to.have.length( 0 );
+			} );
 		} );
 
 		it( 'detaches the element from DOM', () => {
 			const elRef = view.element;
 
 			document.createElement( 'div' ).appendChild( view.element );
+			expect( elRef.parentNode ).to.be.not.null;
 
-			view.destroy();
-
-			expect( elRef.parentNode ).to.be.null;
+			return view.destroy().then( () => {
+				expect( elRef.parentNode ).to.be.null;
+			} );
 		} );
 
-		it( 'destroys child regions', () => {
-			const region = new Region( 'x' );
-			const spy = testUtils.sinon.spy( region, 'destroy' );
-			const regionsRef = view.regions;
-			const regionViewsRef = region.views;
+		it( 'calls destroy() on all view#_viewCollections', () => {
+			const collectionA = view.createCollection();
+			const collectionB = view.createCollection();
 
-			view.register( region, true );
-			view.regions.get( 'x' ).views.add( new View() );
-			view.destroy();
+			const spyA = testUtils.sinon.spy( collectionA, 'destroy' );
+			const spyB = testUtils.sinon.spy( collectionB, 'destroy' );
 
-			expect( regionsRef.length ).to.equal( 0 );
-			expect( regionViewsRef.length ).to.equal( 0 );
-			expect( spy.calledOnce ).to.be.true;
+			return view.destroy().then( () => {
+				sinon.assert.calledOnce( spyA );
+				sinon.assert.calledOnce( spyB );
+				sinon.assert.callOrder( spyA, spyB );
+			} );
 		} );
 
 		it( 'destroy a template–less view', () => {
@@ -293,17 +277,13 @@ function createViewInstanceWithTemplate() {
 	setTestViewInstance();
 }
 
-function setTestViewClass( templateDef, regionsFn ) {
+function setTestViewClass( templateDef ) {
 	TestView = class V extends View {
 		constructor() {
 			super();
 
 			if ( templateDef ) {
 				this.template = new Template( templateDef );
-			}
-
-			if ( templateDef && regionsFn ) {
-				regionsFn.call( this );
 			}
 		}
 	};
@@ -315,4 +295,64 @@ function setTestViewInstance() {
 	if ( view.template ) {
 		document.body.appendChild( view.element );
 	}
+}
+
+function createViewWithChildren() {
+	class ChildView extends View {
+		constructor() {
+			super();
+
+			this.template = new Template( {
+				tag: 'span'
+			} );
+		}
+	}
+
+	class ChildViewA extends ChildView {
+		init() {
+			const promise = new Promise( resolve => {
+				setTimeout( resolve, 50 );
+			} );
+
+			return super.init().then( promise );
+		}
+
+		destroy() {
+			const promise = new Promise( resolve => {
+				setTimeout( resolve, 10 );
+			} );
+
+			return super.destroy().then( promise );
+		}
+	}
+
+	class ChildViewB extends ChildView {
+		init() {
+			const promise = new Promise( resolve => {
+				setTimeout( resolve, 10 );
+			} );
+
+			return super.init().then( promise );
+		}
+
+		destroy() {
+			const promise = new Promise( resolve => {
+				setTimeout( resolve, 50 );
+			} );
+
+			return super.destroy().then( promise );
+		}
+	}
+
+	childA = new ChildViewA();
+	childB = new ChildViewB();
+
+	setTestViewClass( {
+		tag: 'p',
+		children: [ childA, childB ]
+	} );
+
+	setTestViewInstance();
+
+	view.addChild( childA, childB );
 }

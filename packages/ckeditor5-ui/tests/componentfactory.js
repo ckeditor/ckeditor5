@@ -25,33 +25,30 @@ describe( 'ComponentFactory', () => {
 
 	describe( 'add', () => {
 		it( 'throws when trying to override already registered component', () => {
-			factory.add( 'foo', class {}, class {}, {} );
+			factory.add( 'foo', () => {} );
 
 			expect( () => {
-				factory.add( 'foo', class {}, class {}, {} );
+				factory.add( 'foo', () => {} );
 			} ).to.throw( CKEditorError, /^componentfactory-item-exists/ );
 		} );
 	} );
 
 	describe( 'create', () => {
 		it( 'creates an instance', () => {
-			class View {}
-
-			class Controller {
-				constructor( model, view, ed ) {
-					expect( model ).to.equal( model );
-					expect( view ).to.be.instanceof( View );
-					expect( ed ).to.equal( editor );
+			class View {
+				constructor( locale ) {
+					this.locale = locale;
 				}
 			}
 
-			const model = {};
+			const locale = editor.locale = {};
 
-			factory.add( 'foo', Controller, View, model );
+			factory.add( 'foo', locale => new View( locale ) );
 
 			const instance = factory.create( 'foo' );
 
-			expect( instance ).to.be.instanceof( Controller );
+			expect( instance ).to.be.instanceof( View );
+			expect( instance.locale ).to.equal( locale );
 		} );
 	} );
 } );
