@@ -11,7 +11,7 @@
  * The CKEditor error class.
  *
  * All errors will be shortened during the minification process in order to reduce the code size.
- * Therefore, all error messages should be documented in the same way as those in {@link @module:utils/log}.
+ * Therefore, all error messages should be documented in the same way as those in {@link module:utils/log}.
  *
  * Read more in the {@link module:utils/log} module.
  * @extends Error
@@ -20,7 +20,7 @@ export default class CKEditorError extends Error {
 	/**
 	 * Creates an instance of the CKEditorError class.
 	 *
-	 * Read more about error logging in the {@link @module:utils/log} module.
+	 * Read more about error logging in the {@link module:utils/log} module.
 	 *
 	 * @param {String} message The error message in an `error-name: Error message.` format.
 	 * During the minification process the "Error message" part will be removed to limit the code size

@@ -19,10 +19,9 @@
  *		compareArrays( [ 0, 2 ], [ 1, 2 ] );		// 0
  *		compareArrays( [ 0, 2 ], [ 0, 1 ] );		// 1
  *
- * @memberOf utils
  * @param {Array} a Array that is compared.
  * @param {Array} b Array to compare with.
- * @returns {utils.ArrayRelation} How array `a` is related to `b`.
+ * @returns {ArrayRelation} How array `a` is related to `b`.
  */
 export default function compareArrays( a, b ) {
 	const minLen = Math.min( a.length, b.length );

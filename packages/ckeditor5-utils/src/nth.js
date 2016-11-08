@@ -10,7 +10,6 @@
 /**
  * Returns `nth` (starts from `0` of course) item of an `iterable`.
  *
- * @memberOf utils
  * @param {Number} index
  * @param {Iterable.<*>} iterable
  * @returns {*}

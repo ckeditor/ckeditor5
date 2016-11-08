@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals Node */
+
 /**
  * @module utils/dom/getancestors
  */
-
-/* globals Node */
 
 /**
  * Returns all ancestors of given DOM node, starting from the top-most (root). Includes the given node itself. If the

@@ -12,7 +12,7 @@
 /**
  * Sets data in a given element.
  *
- * @method utils.dom.setDataInElement
+ * @method setDataInElement
  * @param {HTMLElement} el The element in which the data will be set.
  * @param {String} data The data string.
  */

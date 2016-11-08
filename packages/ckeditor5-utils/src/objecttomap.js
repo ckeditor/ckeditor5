@@ -13,7 +13,6 @@
  *		const map = objectToMap( { 'foo': 1, 'bar': 2 } );
  *		map.get( 'foo' ); // 1
  *
- * @memberOf utils
  * @param {Object} obj Object to transform.
  * @returns {Map} Map created from object.
  */

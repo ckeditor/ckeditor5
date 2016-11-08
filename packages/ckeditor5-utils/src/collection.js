@@ -76,7 +76,7 @@ export default class Collection {
 	 * @param {Object} item
 	 * @param {Number} [index] The position of the item in the collection. The item
 	 * is pushed to the collection when `index` not specified.
-	 * @fires #add
+	 * @fires add
 	 */
 	add( item, index ) {
 		let itemId;

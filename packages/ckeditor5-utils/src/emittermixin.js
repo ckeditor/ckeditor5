@@ -14,8 +14,8 @@ import priorities from './priorities.js';
 /**
  * Mixin that injects the events API into its host.
  *
- * @mixin utils.EmitterMixin
- * @implements utils.Emitter
+ * @mixin EmitterMixin
+ * @implements  module:utils/emittermixin~Emitter
  */
 const EmitterMixin = {
 	/**
@@ -31,11 +31,12 @@ const EmitterMixin = {
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
 	 * @param {Object} [options={}] Additional options.
-	 * @param {utils.PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
+	 * -+
 	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
-	 * @method utils.EmitterMixin#on
+	 * @method #on
 	 */
 	on( event, callback, options = {} ) {
 		createEventNamespace( this, event );
@@ -76,11 +77,11 @@ const EmitterMixin = {
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
 	 * @param {Object} [options={}] Additional options.
-	 * @param {utils.PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
-	 * @method utils.EmitterMixin#once
+	 * @method #once
 	 */
 	once( event, callback, options ) {
 		const onceCallback = function( event ) {
@@ -102,7 +103,7 @@ const EmitterMixin = {
 	 * @param {Function} callback The function to stop being called.
 	 * @param {Object} [context] The context object to be removed, pared with the given callback. To handle cases where
 	 * the same callback is used several times with different contexts.
-	 * @method utils.EmitterMixin#off
+	 * @method #off
 	 */
 	off( event, callback, context ) {
 		const lists = getCallbacksListsForNamespace( this, event );
@@ -123,15 +124,15 @@ const EmitterMixin = {
 	/**
 	 * Registers a callback function to be executed when an event is fired in a specific (emitter) object.
 	 *
-	 * @param {utils.Emitter} emitter The object that fires the event.
+	 * @param {module:utils/emittermixin~Emitter} emitter The object that fires the event.
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
 	 * @param {Object} [options={}] Additional options.
-	 * @param {utils.PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
-	 * @method utils.EmitterMixin#listenTo
+	 * @method #listenTo
 	 */
 	listenTo( emitter, event, callback, options ) {
 		let emitters, emitterId, emitterInfo, eventCallbacks;
@@ -183,12 +184,12 @@ const EmitterMixin = {
 	 * * To stop listening to all events fired by a specific object.
 	 * * To stop listening to all events fired by all object.
 	 *
-	 * @param {utils.Emitter} [emitter] The object to stop listening to. If omitted, stops it for all objects.
+	 * @param {module:utils/emittermixin~Emitter} [emitter] The object to stop listening to. If omitted, stops it for all objects.
 	 * @param {String} [event] (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it
 	 * for all events from `emitter`.
 	 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
 	 * `event`.
-	 * @method utils.EmitterMixin#stopListening
+	 * @method #stopListening
 	 */
 	stopListening( emitter, event, callback ) {
 		let emitters = this._listeningTo;
@@ -231,12 +232,12 @@ const EmitterMixin = {
 	/**
 	 * Fires an event, executing all callbacks registered for it.
 	 *
-	 * The first parameter passed to callbacks is an {@link EventInfo} object, followed by the optional `args` provided in
-	 * the `fire()` method call.
+	 * The first parameter passed to callbacks is an {@link module:utils/eventinfo~EventInfo} object,
+	 * followed by the optional `args` provided in the `fire()` method call.
 	 *
-	 * @param {String|utils.EventInfo} eventOrInfo The name of the event or `EventInfo` object if event is delegated.
+	 * @param {String|module:utils/eventinfo~EventInfo} eventOrInfo The name of the event or `EventInfo` object if event is delegated.
 	 * @param {...*} [args] Additional arguments to be passed to the callbacks.
-	 * @method utils.EmitterMixin#fire
+	 * @method #fire
 	 */
 	fire( eventOrInfo, ...args ) {
 		const eventInfo = eventOrInfo instanceof EventInfo ? eventOrInfo : new EventInfo( this, eventOrInfo );
@@ -289,7 +290,7 @@ const EmitterMixin = {
 	},
 
 	/**
-	 * Delegates selected events to another {@link utils.Emitter}. For instance:
+	 * Delegates selected events to another {@link module:utils/emittermixin~Emitter}. For instance:
 	 *
 	 *		emitterA.delegate( 'eventX' ).to( emitterB );
 	 *		emitterA.delegate( 'eventX', 'eventY' ).to( emitterC );
@@ -302,17 +303,17 @@ const EmitterMixin = {
 	 *
 	 *		emitterA.fire( 'eventY', data );
 	 *
-	 * @method utils.EmitterMixin#delegate
+	 * @method #delegate
 	 * @param {...String} events Event names that will be delegated to another emitter.
-	 * @returns {utils.EmitterMixin.delegate#to}
+	 * @returns {module:utils/emittermixin~EmitterMixin.delegate#to}
 	 */
 	delegate( ...events ) {
 		return {
 			/**
-			 * Selects destination for {@link utils.EmitterMixin#delegate} events.
+			 * Selects destination for {@link module:utils/emittermixin~EmitterMixin#delegate} events.
 			 *
-			 * @method utils.EmitterMixin.delegate#to
-			 * @param {utils.Emitter} emitter An `EmitterMixin` instance which is the destination for delegated events.
+			 * @method module:utils/emittermixin~EmitterMixin.delegate#to
+			 * @param {module:utils/emittermixin~Emitter} emitter An `EmitterMixin` instance which is the destination for delegated events.
 			 */
 			to: ( emitter ) => {
 				if ( !this._delegations ) {
@@ -340,9 +341,9 @@ const EmitterMixin = {
 	 * * To stop delegating a specific event to a specific emitter.
 	 *
 	 * @param {String} [event] The name of the event to stop delegating. If omitted, stops it all delegations.
-	 * @param {utils.Emitter} [emitter] (requires `event`) The object to stop delegating a particular event to. If omitted,
-	 * stops delegation of `event` to all emitters.
-	 * @method utils.EmitterMixin#stopDelegating
+	 * @param {module:utils/emittermixin~Emitter} [emitter] (requires `event`) The object to stop delegating a particular event to.
+	 * If omitted, stops delegation of `event` to all emitters.
+	 * @method #stopDelegating
 	 */
 	stopDelegating( event, emitter ) {
 		if ( !this._delegations ) {
@@ -498,7 +499,7 @@ function getCallbacksForEvent( source, eventName ) {
 }
 
 /**
- * Interface representing classes which mix in {@link utils.EmitterMixin}.
+ * Interface representing classes which mix in {@link module:utils/emittermixin~EmitterMixin}.
  *
- * @interface utils.Emitter
+ * @interface Emitter
  */

@@ -30,7 +30,7 @@ export default class EventInfo {
 		this.name = name;
 
 		/**
-		 * Path this event has followed. See {@link utils.EmitterMixin#delegate}.
+		 * Path this event has followed. See {@link module:utils/emittermixin~EmitterMixin#delegate}.
 		 *
 		 * @member #path
 		 */

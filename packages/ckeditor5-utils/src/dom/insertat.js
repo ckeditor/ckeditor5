@@ -10,7 +10,7 @@
 /**
  * Inserts node to the parent at given index.
  *
- * @method utils.dom.insertAt
+ * @method insertAt
  * @param {Element} parentElement Parent element.
  * @param {Number} index Insertions index.
  * @param {Node} nodeToInsert Node to insert.

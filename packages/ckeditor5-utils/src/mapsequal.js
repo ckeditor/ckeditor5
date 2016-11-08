@@ -10,7 +10,6 @@
 /**
  * Checks whether given {Map}s are equal, that is has same size and same key-value pairs.
  *
- * @memberOf utils
  * @returns {Boolean} `true` if given maps are equal, `false` otherwise.
  */
 export default function mapsEqual( mapA, mapB ) {

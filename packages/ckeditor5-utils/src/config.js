@@ -14,7 +14,7 @@ import isPlainObject from './lib/lodash/isPlainObject.js';
  */
 export default class Config {
 	/**
-	 * Creates an instance of the {@link Config} class.
+	 * Creates an instance of the {@link ~Config} class.
 	 *
 	 * @param {Object} [configurations] The initial configurations to be set.
 	 */
@@ -23,7 +23,7 @@ export default class Config {
 		 * Store for the whole configuration.
 		 *
 		 * @private
-		 * @member {Object} utils.config#_config
+		 * @member {Object} #_config
 		 */
 		this._config = {};
 

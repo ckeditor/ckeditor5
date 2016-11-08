@@ -17,7 +17,7 @@ export default class ElementReplacer {
 		 * The elements replaced by {@link #replace} and their replacements.
 		 *
 		 * @private
-		 * @member {Array.<Object>} utils.ElementReplacer#_replacedElements
+		 * @member {Array.<Object>} ~ElementReplacer#_replacedElements
 		 */
 		this._replacedElements = [];
 	}
@@ -29,6 +29,7 @@ export default class ElementReplacer {
 	 *
 	 * @param {HTMLElement} element The element to replace.
 	 * @param {HTMLElement} [newElement] The replacement element. If not passed, then the `element` will just be hidden.
+
 	 */
 	replace( element, newElement ) {
 		this._replacedElements.push( { element, newElement } );

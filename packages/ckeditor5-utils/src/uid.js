@@ -11,7 +11,7 @@
  * Returns a unique id. This id is a number (starting from 1) which will never get repeated on successive calls
  * to this method.
  *
- * @function
+ * @method uid
  * @returns {Number} A number representing the id.
  */
 export default ( () => {

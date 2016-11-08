@@ -27,7 +27,6 @@
  *
  * Note: Properties which already exist in the base class will not be overriden.
  *
- * @memberOf utils
  * @param {Function} [baseClass] Class which prototype will be extended.
  * @param {Object} [...mixins] Objects from which to get properties.
  */

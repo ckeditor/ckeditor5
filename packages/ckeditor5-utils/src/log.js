@@ -37,21 +37,19 @@
  * log a warning.
  * * Whenever an incorrect situation occurs, but the app may continue working (although perhaps incorrectly),
  * log an error.
- * * Whenever it's really bad and it does not make sense to continue working, throw a {@link utils.CKEditorError}.
- *
- * @namespace utils.log
+ * * Whenever it's really bad and it does not make sense to continue working, throw a {@link module:utils/ckeditorerror~CKEditorError}.
  */
 const log = {
 	/**
 	 * Logs an error to the console.
 	 *
-	 * Read more about error logging in the {@link utils.log} module.
+	 * Read more about error logging in the {@link module:utils/log} module.
 	 *
 	 * @param {String} message The error message in an `error-name: Error message.` format.
 	 * During the minification process the "Error message" part will be removed to limit the code size
 	 * and a link to this error documentation will be logged to the console.
 	 * @param {Object} [data] Additional data describing the error.
-	 * @method utils.log.error
+	 * @method #error
 	 */
 	error( message, data ) {
 		console.error( message, data );
@@ -60,13 +58,13 @@ const log = {
 	/**
 	 * Logs a warning to the console.
 	 *
-	 * Read more about error logging in the {@link utils.log} module.
+	 * Read more about error logging in the {@link module:utils/log} module.
 	 *
 	 * @param {String} message The warning message in a `warning-name: Warning message.` format.
 	 * During the minification process the "Warning message" part will be removed to limit the code size
 	 * and a link to this error documentation will be logged to the console.
 	 * @param {Object} [data] Additional data describing the warning.
-	 * @method utils.log.warn
+	 * @method #warn
 	 */
 	warn( message, data ) {
 		console.warn( message, data );

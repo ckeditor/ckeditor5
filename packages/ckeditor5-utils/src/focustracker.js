@@ -17,15 +17,15 @@ import mix from './mix.js';
 /**
  * Allows observing a group of `HTMLElement`s whether at least one of them is focused.
  *
- * Used by the {@link core.Editor} in order to track whether the focus is still within the application,
+ * Used by the {@link module:core/editor~Editor} in order to track whether the focus is still within the application,
  * or were used outside of its UI.
  *
  * **Note** `focus` and `blur` listeners use event capturing, so it is only needed to register wrapper `HTMLElement`
  * which contain other `focusable` elements. But note that this wrapper element has to be focusable too
  * (have e.g. `tabindex="-1"`).
  *
- * @mixes utils.DOMEmitterMixin
- * @mixes utils.ObservableMixin
+ * @mixes module:utils/emittermixin/~DOMEmitterMixin
+ * @mixes module:utils/observablemixin/~ObservableMixin
  */
 export default class FocusTracker {
 	constructor() {
@@ -34,7 +34,7 @@ export default class FocusTracker {
 		 *
 		 * @readonly
 		 * @observable
-		 * @member {Boolean} utils.FocusTracker#isFocused
+		 * @member {Boolean} #isFocused
 		 */
 		this.set( 'isFocused', false );
 
@@ -42,7 +42,7 @@ export default class FocusTracker {
 		 * List of registered elements.
 		 *
 		 * @private
-		 * @member {Set<HTMLElement>} utils.FocusTracker#_elements
+		 * @member {Set<HTMLElement>} #_elements
 		 */
 		this._elements = new Set();
 
@@ -50,7 +50,7 @@ export default class FocusTracker {
 		 * Event loop timeout.
 		 *
 		 * @private
-		 * @member {Number} utils.FocusTracker#_nextEventLoopTimeout
+		 * @member {Number} #_nextEventLoopTimeout
 		 */
 		this._nextEventLoopTimeout = null;
 
@@ -58,7 +58,7 @@ export default class FocusTracker {
 		 * Currently focused element.
 		 *
 		 * @private
-		 * @member {HTMLElement} utils.FocusTracker#_focusedElement
+		 * @member {HTMLElement} #_focusedElement
 		 */
 		this._focusedElement = null;
 	}
@@ -95,7 +95,7 @@ export default class FocusTracker {
 	}
 
 	/**
-	 * Stores currently focused element and set {utils.FocusTracker#isFocused} as `true`.
+	 * Stores currently focused element and set {#isFocused} as `true`.
 	 *
 	 * @private
 	 * @param {HTMLElement} element Element which has been focused.
@@ -108,11 +108,11 @@ export default class FocusTracker {
 	}
 
 	/**
-	 * Clears currently focused element and set {utils.FocusTracker#isFocused} as `false`.
+	 * Clears currently focused element and set {#isFocused} as `false`.
 	 * This method uses `setTimeout` to change order of fires `blur` and `focus` events.
 	 *
 	 * @private
-	 * @fires utils.FocusTracker#blur
+	 * @fires blur
 	 */
 	_blur() {
 		this._nextEventLoopTimeout = setTimeout( () => {

@@ -10,7 +10,6 @@
 /**
  * Checks if value implements iterator interface.
  *
- * @memberOf utils
  * @param {*} value The value to check.
  * @returns {Boolean} True if value implements iterator interface.
  */
