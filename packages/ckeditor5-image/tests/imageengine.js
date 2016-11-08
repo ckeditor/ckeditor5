@@ -6,6 +6,7 @@
 import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
 import ImageEngine from 'ckeditor5/image/imageengine.js';
 import { getData as getModelData, setData as setModelData } from 'ckeditor5/engine/dev-utils/model.js';
+import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
 import buildViewConverter from 'ckeditor5/engine/conversion/buildviewconverter.js';
 import buildModelConverter from 'ckeditor5/engine/conversion/buildmodelconverter.js';
 
@@ -131,6 +132,31 @@ describe( `ImageEngine`, () => {
 
 				expect( getModelData( document, { withoutSelection: true } ) )
 					.to.equal( '' );
+			} );
+		} );
+	} );
+
+	describe( 'conversion in editing pipeline', () => {
+		describe( 'model to view', () => {
+			it( 'should convert', () => {
+				setModelData( document, '<image src="foo.png" alt="alt text"></image>' );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+					.to.equal( '<figure class="image" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>' );
+			} );
+
+			it( 'should convert without alt attribute', () => {
+				setModelData( document, '<image src="foo.png"></image>' );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+					.to.equal( '<figure class="image" contenteditable="false"><img src="foo.png"></img></figure>' );
+			} );
+
+			it( 'should convert without src attribute', () => {
+				setModelData( document, '<image alt="alt text"></image>' );
+
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+					.to.equal( '<figure class="image" contenteditable="false"><img alt="alt text"></img></figure>' );
 			} );
 		} );
 	} );
