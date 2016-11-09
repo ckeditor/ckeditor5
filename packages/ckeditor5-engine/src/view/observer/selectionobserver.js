@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global setInterval */
+
 import Observer from './observer.js';
 import MutationObserver from './mutationobserver.js';
 
@@ -102,9 +104,8 @@ export default class SelectionObserver extends Observer {
 		}
 
 		domDocument.addEventListener( 'selectionchange', () => this._handleSelectionChange( domDocument ) );
-		domDocument.addEventListener( 'keydown', () => this._clearInfiniteLoop() );
-		domDocument.addEventListener( 'mousemove', () => this._clearInfiniteLoop() );
-		domDocument.addEventListener( 'mousedown', () => this._clearInfiniteLoop() );
+
+		setInterval( () => this._clearInfiniteLoop(), 2000 );
 
 		this._documents.add( domDocument );
 	}
@@ -178,7 +179,7 @@ export default class SelectionObserver extends Observer {
 			this._loopbackCounter = 0;
 		}
 
-		if ( this._loopbackCounter > 10 ) {
+		if ( this._loopbackCounter > 50 ) {
 			return true;
 		}
 
@@ -188,7 +189,7 @@ export default class SelectionObserver extends Observer {
 	/**
 	 * Clears `SelectionObserver` internal properties connected with preventing infinite loop.
 	 *
-	 * @private
+	 * @protected
 	 */
 	_clearInfiniteLoop() {
 		this._lastSelection = null;
