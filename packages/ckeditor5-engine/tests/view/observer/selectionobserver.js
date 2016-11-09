@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals setTimeout, Range, document, KeyboardEvent, MouseEvent */
+/* globals setTimeout, Range, document */
 /* bender-tags: view, browser-only */
 
 import ViewRange from '/ckeditor5/engine/view/range.js';
@@ -130,7 +130,10 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should warn and not enter infinite loop', ( done ) => {
-		let counter = 30;
+		// Reset infinite loop counters so other tests won't mess up with this test.
+		selectionObserver._clearInfiniteLoop();
+
+		let counter = 100;
 
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
@@ -161,98 +164,26 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
-	it( 'should not be treated as an infinite loop if the position is different', ( done ) => {
-		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
-		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
-
-		let counter = 0;
-
-		const spy = testUtils.sinon.spy( log, 'warn' );
-
-		listenter.listenTo( viewDocument, 'selectionChange', () => {
-			counter++;
-
-			if ( counter < 15 ) {
-				setTimeout( changeCollapsedDomSelection, 100 );
-			}
-		} );
-
-		changeCollapsedDomSelection();
-
-		setTimeout( () => {
-			expect( spy.called ).to.be.false;
-			done();
-		}, 1500 );
-	} );
-
 	it( 'should not be treated as an infinite loop if selection is changed only few times', ( done ) => {
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+
+		// Reset infinite loop counters so other tests won't mess up with this test.
+		selectionObserver._clearInfiniteLoop();
+
 		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
 
 		const spy = testUtils.sinon.spy( log, 'warn' );
 
-		for ( let i = 0; i < 4; i++ ) {
+		for ( let i = 0; i < 10; i++ ) {
 			changeDomSelection();
 		}
 
 		setTimeout( () => {
 			expect( spy.called ).to.be.false;
 			done();
-		}, 1500 );
+		}, 400 );
 	} );
-
-	const events = {
-		keydown: KeyboardEvent,
-		mousedown: MouseEvent,
-		mousemove: MouseEvent
-	};
-
-	for ( let event in events ) {
-		it( 'should not be treated as an infinite loop if change is triggered by ' + event + ' event', ( done ) => {
-			let counter = 0;
-
-			const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
-			viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
-
-			const spy = testUtils.sinon.spy( log, 'warn' );
-
-			listenter.listenTo( viewDocument, 'selectionChange', () => {
-				counter++;
-
-				if ( counter < 15 ) {
-					setTimeout( () => {
-						document.dispatchEvent( new events[ event ]( event ) );
-						changeDomSelection();
-					}, 100 );
-				}
-			} );
-
-			setTimeout( () => {
-				expect( spy.called ).to.be.false;
-				done();
-			}, 1000 );
-
-			document.dispatchEvent( new events[ event ]( event ) );
-			changeDomSelection();
-		} );
-	}
 } );
-
-function changeCollapsedDomSelection() {
-	const domSelection = document.getSelection();
-	const pos = domSelection.anchorOffset + 1;
-
-	if ( pos > 20 ) {
-		return;
-	}
-
-	domSelection.removeAllRanges();
-	const domFoo = document.getElementById( 'main' ).childNodes[ 0 ].childNodes[ 0 ];
-	const domRange = new Range();
-	domRange.setStart( domFoo, pos );
-	domRange.setEnd( domFoo, pos );
-	domSelection.addRange( domRange );
-}
 
 function changeDomSelection() {
 	const domSelection = document.getSelection();
