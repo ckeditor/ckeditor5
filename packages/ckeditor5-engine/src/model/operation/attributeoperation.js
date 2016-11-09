@@ -7,6 +7,7 @@ import Operation from './operation.js';
 import Range from '../range.js';
 import CKEditorError from '../../../utils/ckeditorerror.js';
 import writer from '../writer.js';
+import isEqual from '../../../utils/lib/lodash/isEqual.js';
 
 /**
  * Operation to change nodes' attribute.
@@ -132,6 +133,14 @@ export default class AttributeOperation extends Operation {
 					'attribute-operation-attribute-exists: The attribute with given key already exists.',
 					{ node: item, key: this.key }
 				);
+			}
+
+			// If value to set is same as old value, don't do anything.
+			// By not returning `undefined`, this operation will be seen as `NoOperation` - that means
+			// that it won't generate any events, etc. `AttributeOperation` with such parameters may be
+			// a result of Operational Transformation.
+			if ( isEqual( this.oldValue, this.newValue ) ) {
+				return;
 			}
 		}
 
