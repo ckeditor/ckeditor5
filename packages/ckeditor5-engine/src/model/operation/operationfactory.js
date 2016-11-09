@@ -10,6 +10,7 @@ import NoOperation from '../operation/nooperation.js';
 import Operation from '../operation/operation.js';
 import ReinsertOperation from '../operation/reinsertoperation.js';
 import RemoveOperation from '../operation/removeoperation.js';
+import RenameOperation from '../operation/renameoperation.js';
 import RootAttributeOperation from '../operation/rootattributeoperation.js';
 
 const operations = {};
@@ -20,6 +21,7 @@ operations[ NoOperation.className ] = NoOperation;
 operations[ Operation.className ] = Operation;
 operations[ ReinsertOperation.className ] = ReinsertOperation;
 operations[ RemoveOperation.className ] = RemoveOperation;
+operations[ RenameOperation.className ] = RenameOperation;
 operations[ RootAttributeOperation.className ] = RootAttributeOperation;
 
 /**
