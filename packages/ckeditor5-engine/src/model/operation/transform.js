@@ -279,6 +279,7 @@ const ot = {
 			);
 
 			result.isSticky = a.isSticky;
+			result._holderElementOffset = a._holderElementOffset;
 
 			return [ result ];
 		},
@@ -305,11 +306,11 @@ const ot = {
 			// (usually) creates a "holder" element for them in graveyard. Each RemoveOperation should move nodes to different
 			// "holder" element. If `a` operation points after `b` operation, we move `a` offset to acknowledge
 			// "holder" element insertion.
-			if ( a instanceof RemoveOperation && b instanceof RemoveOperation && b._needsHolderElement ) {
+			if ( a instanceof RemoveOperation && b instanceof RemoveOperation ) {
 				const aTarget = a.targetPosition.path[ 0 ];
 				const bTarget = b.targetPosition.path[ 0 ];
 
-				if ( aTarget > bTarget || ( aTarget == bTarget && isStrong ) ) {
+				if ( aTarget >= bTarget && isStrong ) {
 					// Do not change original operation!
 					a = a.clone();
 					a.targetPosition.path[ 0 ]++;
@@ -376,7 +377,7 @@ const ot = {
 				common.end = common.end._getCombined( b.sourcePosition, b.getMovedRangeStart() );
 
 				// We have to take care of proper range order.
-				if ( difference && difference.start.isBefore( common.start ) ) {
+				if ( difference && rangeA.start.isBefore( rangeB.start ) ) {
 					ranges.push( common );
 				} else {
 					ranges.unshift( common );
@@ -386,7 +387,21 @@ const ot = {
 			// At this point we transformed this operation's source ranges it means that nothing should be changed.
 			// But since we need to return an instance of Operation we return an array with NoOperation.
 			if ( ranges.length === 0 ) {
-				return [ new NoOperation( a.baseVersion ) ];
+				if ( a instanceof RemoveOperation ) {
+					// If `a` operation was RemoveOperation, we cannot convert it to NoOperation.
+					// This is because RemoveOperation creates a holder in graveyard.
+					// Even if we "remove nothing" we need a RemoveOperation to create holder element
+					// so that the tree structure is synchronised between clients.
+					// Note that this can happen only if both operations are remove operations, because in
+					// other case RemoveOperation would be forced to be stronger and there would be a common range to move.
+					a = a.clone();
+					a.howMany = 0;
+					a.sourcePosition = b.targetPosition;
+
+					return [ a ];
+				} else {
+					return [ new NoOperation( a.baseVersion ) ];
+				}
 			}
 
 			// Target position also could be affected by the other MoveOperation. We will transform it.

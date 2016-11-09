@@ -2709,6 +2709,44 @@ describe( 'transform', () => {
 		} );
 	} );
 
+	describe( 'RemoveOperation', () => {
+		describe( 'by RemoveOperation', () => {
+			it( 'removes same nodes and transformed is weak: change howMany to 0', () => {
+				let position = new Position( root, [ 2, 1 ] );
+				let op = new RemoveOperation( position, 3, baseVersion );
+				let transformBy = new RemoveOperation( position, 3, baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], {
+					type: RemoveOperation,
+					howMany: 0,
+					sourcePosition: new Position( doc.graveyard, [ 0, 0 ] ),
+					targetPosition: new Position( doc.graveyard, [ 0, 0 ] ),
+					baseVersion: baseVersion + 1
+				} );
+			} );
+
+			it( 'removes same nodes and transformed is strong: change source position', () => {
+				let position = new Position( root, [ 2, 1 ] );
+				let op = new RemoveOperation( position, 3, baseVersion );
+				let transformBy = new RemoveOperation( position, 3, baseVersion );
+
+				let transOp = transform( op, transformBy, true );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], {
+					type: RemoveOperation,
+					howMany: 3,
+					sourcePosition: new Position( doc.graveyard, [ 0, 0 ] ),
+					targetPosition: new Position( doc.graveyard, [ 1, 0 ] ),
+					baseVersion: baseVersion + 1
+				} );
+			} );
+		} );
+	} );
+
 	describe( 'NoOperation', () => {
 		beforeEach( () => {
 			op = new NoOperation( baseVersion );
