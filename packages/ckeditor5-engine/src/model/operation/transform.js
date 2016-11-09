@@ -180,15 +180,15 @@ const ot = {
 				// previously transformed target position.
 				// Note that we do not use Position._getTransformedByMove on range boundaries because we need to
 				// transform by insertion a range as a whole, since newTargetPosition might be inside that range.
-				ranges = difference._getTransformedByInsertion( b.movedRangeStart, b.howMany, true, false ).reverse();
+				ranges = difference._getTransformedByInsertion( b.getMovedRangeStart(), b.howMany, true, false ).reverse();
 			}
 
 			if ( common !== null ) {
 				// Here we do not need to worry that newTargetPosition is inside moved range, because that
 				// would mean that the MoveOperation targets into itself, and that is incorrect operation.
 				// Instead, we calculate the new position of that part of original range.
-				common.start = common.start._getCombined( b.sourcePosition, b.movedRangeStart );
-				common.end = common.end._getCombined( b.sourcePosition, b.movedRangeStart );
+				common.start = common.start._getCombined( b.sourcePosition, b.getMovedRangeStart() );
+				common.end = common.end._getCombined( b.sourcePosition, b.getMovedRangeStart() );
 
 				ranges.push( common );
 			}
@@ -373,8 +373,8 @@ const ot = {
 				// Here we do not need to worry that newTargetPosition is inside moved range, because that
 				// would mean that the MoveOperation targets into itself, and that is incorrect operation.
 				// Instead, we calculate the new position of that part of original range.
-				common.start = common.start._getCombined( b.sourcePosition, b.movedRangeStart );
-				common.end = common.end._getCombined( b.sourcePosition, b.movedRangeStart );
+				common.start = common.start._getCombined( b.sourcePosition, b.getMovedRangeStart() );
+				common.end = common.end._getCombined( b.sourcePosition, b.getMovedRangeStart() );
 
 				// We have to take care of proper range order.
 				if ( difference && difference.start.isBefore( common.start ) ) {

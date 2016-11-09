@@ -102,7 +102,6 @@ describe( 'ReinsertOperation', () => {
 				baseVersion: 0,
 				howMany: 2,
 				isSticky: false,
-				movedRangeStart: jsonParseStringify( operation.movedRangeStart ),
 				sourcePosition: jsonParseStringify( operation.sourcePosition ),
 				targetPosition: jsonParseStringify( operation.targetPosition )
 			} );

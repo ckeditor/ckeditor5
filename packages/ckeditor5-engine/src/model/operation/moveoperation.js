@@ -50,22 +50,6 @@ export default class MoveOperation extends Operation {
 		this.targetPosition = Position.createFromPosition( targetPosition );
 
 		/**
-		 * Position of the start of the moved range after it got moved. This may be different than
-		 * {@link engine.model.operation.MoveOperation#targetPosition} in some cases, i.e. when a range is moved
-		 * inside the same parent but {@link engine.model.operation.MoveOperation#targetPosition targetPosition}
-		 * is after {@link engine.model.operation.MoveOperation#sourcePosition sourcePosition}.
-		 *
-		 *		 vv              vv
-		 *		abcdefg ===> adefbcg
-		 *		     ^          ^
-		 *		     targetPos	movedRangeStart
-		 *		     offset 6	offset 4
-		 *
-		 * @member {engine.model.Position} engine.model.operation.MoveOperation#movedRangeStart
-		 */
-		this.movedRangeStart = this.targetPosition._getTransformedByDeletion( this.sourcePosition, this.howMany );
-
-		/**
 		 * Defines whether `MoveOperation` is sticky. If `MoveOperation` is sticky, during
 		 * {@link engine.model.operation.transform operational transformation} if there will be an operation that
 		 * inserts some nodes at the position equal to the boundary of this `MoveOperation`, that operation will
@@ -95,13 +79,31 @@ export default class MoveOperation extends Operation {
 	}
 
 	/**
+	 * Position of the start of the moved range after it got moved. This may be different than
+	 * {@link engine.model.operation.MoveOperation#targetPosition} in some cases, i.e. when a range is moved
+	 * inside the same parent but {@link engine.model.operation.MoveOperation#targetPosition targetPosition}
+	 * is after {@link engine.model.operation.MoveOperation#sourcePosition sourcePosition}.
+	 *
+	 *		 vv              vv
+	 *		abcdefg ===> adefbcg
+	 *		     ^          ^
+	 *		     targetPos	movedRangeStart
+	 *		     offset 6	offset 4
+	 *
+	 * @type {engine.model.Position}
+	 */
+	getMovedRangeStart() {
+		return this.targetPosition._getTransformedByDeletion( this.sourcePosition, this.howMany );
+	}
+
+	/**
 	 * @inheritDoc
 	 * @returns {engine.model.operation.MoveOperation}
 	 */
 	getReversed() {
 		let newTargetPosition = this.sourcePosition._getTransformedByInsertion( this.targetPosition, this.howMany );
 
-		const op = new this.constructor( this.movedRangeStart, this.howMany, newTargetPosition, this.baseVersion + 1 );
+		const op = new this.constructor( this.getMovedRangeStart(), this.howMany, newTargetPosition, this.baseVersion + 1 );
 		op.isSticky = this.isSticky;
 
 		return op;

@@ -190,7 +190,6 @@ describe( 'RemoveOperation', () => {
 				baseVersion: 0,
 				howMany: 2,
 				isSticky: false,
-				movedRangeStart: jsonParseStringify( op.movedRangeStart ),
 				sourcePosition: jsonParseStringify( op.sourcePosition ),
 				targetPosition: jsonParseStringify( op.targetPosition )
 			} );

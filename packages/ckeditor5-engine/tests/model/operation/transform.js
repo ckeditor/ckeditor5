@@ -1377,7 +1377,6 @@ describe( 'transform', () => {
 				);
 
 				transformBy.targetPosition.path = [ 0, 0 ];
-				transformBy.movedRangeStart.path = [ 0, 0 ];
 
 				let transOp = transform( op, transformBy );
 
@@ -1397,7 +1396,6 @@ describe( 'transform', () => {
 				);
 
 				transformBy.targetPosition.path = [ 4, 0 ];
-				transformBy.movedRangeStart.path = [ 4, 0 ];
 
 				let transOp = transform( op, transformBy );
 

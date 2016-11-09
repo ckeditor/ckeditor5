@@ -104,7 +104,6 @@ export default class RemoveOperation extends MoveOperation {
 	clone() {
 		let removeOperation = new RemoveOperation( this.sourcePosition, this.howMany, this.baseVersion );
 		removeOperation.targetPosition = Position.createFromPosition( this.targetPosition );
-		removeOperation.movedRangeStart = Position.createFromPosition( this.movedRangeStart );
 
 		return removeOperation;
 	}
