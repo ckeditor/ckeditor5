@@ -191,6 +191,12 @@ export default class MoveOperation extends Operation {
 		let sourcePosition = Position.fromJSON( json.sourcePosition, document );
 		let targetPosition = Position.fromJSON( json.targetPosition, document );
 
-		return new MoveOperation( sourcePosition, json.howMany, targetPosition, json.baseVersion );
+		const move = new this( sourcePosition, json.howMany, targetPosition, json.baseVersion );
+
+		if ( json.isSticky ) {
+			move.isSticky = true;
+		}
+
+		return move;
 	}
 }

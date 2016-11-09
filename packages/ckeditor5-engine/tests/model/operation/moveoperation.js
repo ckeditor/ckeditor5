@@ -312,5 +312,17 @@ describe( 'MoveOperation', () => {
 
 			expect( deserialized ).to.deep.equal( op );
 		} );
+
+		it( 'should create proper MoveOperation from json object - sticky', () => {
+			const sourcePosition = new Position( root, [ 0, 0 ] );
+			const targetPosition = new Position( root, [ 1, 0 ] );
+			const op = new MoveOperation( sourcePosition, 1, targetPosition, doc.version );
+			op.isSticky = true;
+
+			const serialized = jsonParseStringify( op );
+			const deserialized = MoveOperation.fromJSON( serialized, doc );
+
+			expect( deserialized ).to.deep.equal( op );
+		} );
 	} );
 } );
