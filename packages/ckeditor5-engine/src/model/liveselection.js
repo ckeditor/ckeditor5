@@ -8,6 +8,7 @@ import Range from './range.js';
 import LiveRange from './liverange.js';
 import Text from './text.js';
 import TextProxy from './textproxy.js';
+import TreeWalker from './treewalker.js';
 import toMap from '../../utils/tomap.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 import log from '../../utils/log.js';
@@ -621,10 +622,23 @@ export default class LiveSelection extends Selection {
 		newPath[ newPath.length - 1 ] -= gyPath[ 1 ];
 
 		const newPosition = new Position( oldRange.root, newPath );
-		const newRange = this._prepareRange( new Range( newPosition, newPosition ) );
+
+		const walker = new TreeWalker( { startPosition: newPosition, direction: 'backward' } );
+		let newRange = null;
+
+		for ( let value of walker ) {
+			if ( this._document.schema.check( { name: '$text', inside: value.previousPosition } ) ) {
+				newRange = new Range( value.previousPosition, value.previousPosition );
+				break;
+			}
+		}
+
+		if ( !newRange ) {
+			newRange = this._document._getDefaultRange();
+		}
 
 		const index = this._ranges.indexOf( gyRange );
-		this._ranges.splice( index, 1, newRange );
+		this._ranges.splice( index, 1, this._prepareRange( newRange ) );
 
 		gyRange.detach();
 	}
