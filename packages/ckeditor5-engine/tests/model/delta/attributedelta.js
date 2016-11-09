@@ -440,12 +440,9 @@ describe( 'AttributeDelta', () => {
 			expect( delta.range ).to.be.null;
 		} );
 
-		it( 'should be equal to the range on which delta operates', () => {
-			// Delta operates on range [ 1 ] to [ 6 ] but omits [ 4 ] - [ 5 ] for "a reason".
-			// Still the range should be from [ 1 ] to [ 6 ]. Delta may not apply anything on [ 4 ] - [ 5 ]
-			// because it already has proper attribute.
-			let rangeA = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
-			let rangeB = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
+		it( 'start and end should be equal to first and last changed position', () => {
+			let rangeA = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
+			let rangeB = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
 			let rangeC = new Range( new Position( root, [ 5 ] ), new Position( root, [ 6 ] ) );
 
 			delta.addOperation( new AttributeOperation( rangeA, 'key', 'oldA', 'new', 0 ) );
