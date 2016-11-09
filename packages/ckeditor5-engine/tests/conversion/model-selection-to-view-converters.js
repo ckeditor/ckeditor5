@@ -5,34 +5,34 @@
 
 /* bender-tags: conversion */
 
-import ModelDocument from '/ckeditor5/engine/model/document.js';
-import ModelElement from '/ckeditor5/engine/model/element.js';
-import ModelRange from '/ckeditor5/engine/model/range.js';
-import ModelPosition from '/ckeditor5/engine/model/position.js';
+import ModelDocument from 'ckeditor5/engine/model/document.js';
+import ModelElement from 'ckeditor5/engine/model/element.js';
+import ModelRange from 'ckeditor5/engine/model/range.js';
+import ModelPosition from 'ckeditor5/engine/model/position.js';
 
-import ViewDocument from '/ckeditor5/engine/view/document.js';
-import ViewContainerElement from '/ckeditor5/engine/view/containerelement.js';
-import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
-import { mergeAttributes } from '/ckeditor5/engine/view/writer.js';
+import ViewDocument from 'ckeditor5/engine/view/document.js';
+import ViewContainerElement from 'ckeditor5/engine/view/containerelement.js';
+import ViewAttributeElement from 'ckeditor5/engine/view/attributeelement.js';
+import { mergeAttributes } from 'ckeditor5/engine/view/writer.js';
 
-import Mapper from '/ckeditor5/engine/conversion/mapper.js';
-import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
+import Mapper from 'ckeditor5/engine/conversion/mapper.js';
+import ModelConversionDispatcher from 'ckeditor5/engine/conversion/modelconversiondispatcher.js';
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 	convertSelectionAttribute,
 	clearAttributes,
 	clearFakeSelection
-} from '/ckeditor5/engine/conversion/model-selection-to-view-converters.js';
+} from 'ckeditor5/engine/conversion/model-selection-to-view-converters.js';
 
 import {
 	insertElement,
 	insertText,
 	wrap
-} from '/ckeditor5/engine/conversion/model-to-view-converters.js';
+} from 'ckeditor5/engine/conversion/model-to-view-converters.js';
 
-import { stringify as stringifyView } from '/ckeditor5/engine/dev-utils/view.js';
-import { setData as setModelData } from '/ckeditor5/engine/dev-utils/model.js';
+import { stringify as stringifyView } from 'ckeditor5/engine/dev-utils/view.js';
+import { setData as setModelData } from 'ckeditor5/engine/dev-utils/model.js';
 
 let dispatcher, mapper;
 let modelDoc, modelRoot, modelSelection;

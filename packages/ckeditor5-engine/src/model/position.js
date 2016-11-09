@@ -104,7 +104,7 @@ export default class Position {
 	}
 
 	/**
-	 * Offset at which this position is located in it's {@link engine.model.Position#parent parent}. It is equal
+	 * Offset at which this position is located in its {@link engine.model.Position#parent parent}. It is equal
 	 * to the last item in position {@link engine.model.Position#path path}.
 	 *
 	 * @type {Number}

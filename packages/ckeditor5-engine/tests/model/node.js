@@ -5,13 +5,13 @@
 
 /* bender-tags: model */
 
-import Document from '/ckeditor5/engine/model/document.js';
-import DocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
-import Node from '/ckeditor5/engine/model/node.js';
-import Element from '/ckeditor5/engine/model/element.js';
-import Text from '/ckeditor5/engine/model/text.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import count from '/ckeditor5/utils/count.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import DocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
+import Node from 'ckeditor5/engine/model/node.js';
+import Element from 'ckeditor5/engine/model/element.js';
+import Text from 'ckeditor5/engine/model/text.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import count from 'ckeditor5/utils/count.js';
 
 describe( 'Node', () => {
 	let doc, root, node;
@@ -96,7 +96,7 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create empty attribute list if no parameters were passed', () => {
 			expect( count( node.getAttributes() ) ).to.equal( 0 );
 		} );

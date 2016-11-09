@@ -5,13 +5,13 @@
 
 /* bender-tags: model */
 
-import Range from '/ckeditor5/engine/model/range.js';
-import Position from '/ckeditor5/engine/model/position.js';
-import Element from '/ckeditor5/engine/model/element.js';
-import Text from '/ckeditor5/engine/model/text.js';
-import Document from '/ckeditor5/engine/model/document.js';
-import TreeWalker from '/ckeditor5/engine/model/treewalker.js';
-import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
+import Range from 'ckeditor5/engine/model/range.js';
+import Position from 'ckeditor5/engine/model/position.js';
+import Element from 'ckeditor5/engine/model/element.js';
+import Text from 'ckeditor5/engine/model/text.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import TreeWalker from 'ckeditor5/engine/model/treewalker.js';
+import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
 
 describe( 'Range', () => {
 	let doc, range, start, end, root, otherRoot;
@@ -27,7 +27,7 @@ describe( 'Range', () => {
 		range = new Range( start, end );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create a range with given positions', () => {
 			expect( range.start.isEqual( start ) ).to.be.true;
 			expect( range.end.isEqual( end ) ).to.be.true;

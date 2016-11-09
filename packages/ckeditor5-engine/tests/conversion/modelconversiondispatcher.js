@@ -5,14 +5,14 @@
 
 /* bender-tags: conversion */
 
-import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
-import ModelDocument from '/ckeditor5/engine/model/document.js';
-import ModelText from '/ckeditor5/engine/model/text.js';
-import ModelElement from '/ckeditor5/engine/model/element.js';
-import ModelRange from '/ckeditor5/engine/model/range.js';
-import ModelPosition from '/ckeditor5/engine/model/position.js';
-import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
-import { wrapInDelta } from '/tests/engine/model/_utils/utils.js';
+import ModelConversionDispatcher from 'ckeditor5/engine/conversion/modelconversiondispatcher.js';
+import ModelDocument from 'ckeditor5/engine/model/document.js';
+import ModelText from 'ckeditor5/engine/model/text.js';
+import ModelElement from 'ckeditor5/engine/model/element.js';
+import ModelRange from 'ckeditor5/engine/model/range.js';
+import ModelPosition from 'ckeditor5/engine/model/position.js';
+import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
+import { wrapInDelta } from 'tests/engine/model/_utils/utils.js';
 
 describe( 'ModelConversionDispatcher', () => {
 	let dispatcher, doc, root;
@@ -23,7 +23,7 @@ describe( 'ModelConversionDispatcher', () => {
 		root = doc.createRoot();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create ModelConversionDispatcher with given api', () => {
 			const apiObj = {};
 			const dispatcher = new ModelConversionDispatcher( { apiObj } );

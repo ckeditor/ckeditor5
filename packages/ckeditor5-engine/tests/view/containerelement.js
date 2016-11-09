@@ -5,12 +5,12 @@
 
 /* bender-tags: view, browser-only */
 
-import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
-import Element from '/ckeditor5/engine/view/element.js';
-import { parse } from '/ckeditor5/engine/dev-utils/view.js';
+import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
+import Element from 'ckeditor5/engine/view/element.js';
+import { parse } from 'ckeditor5/engine/dev-utils/view.js';
 
 describe( 'ContainerElement', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create element with default priority', () => {
 			const el = new ContainerElement( 'p' );
 

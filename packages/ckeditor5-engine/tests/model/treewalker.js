@@ -5,13 +5,13 @@
 
 /* bender-tags: model */
 
-import Document from '/ckeditor5/engine/model/document.js';
-import Element from '/ckeditor5/engine/model/element.js';
-import Text from '/ckeditor5/engine/model/text.js';
-import TreeWalker from '/ckeditor5/engine/model/treewalker.js';
-import Position from '/ckeditor5/engine/model/position.js';
-import Range from '/ckeditor5/engine/model/range.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import Element from 'ckeditor5/engine/model/element.js';
+import Text from 'ckeditor5/engine/model/text.js';
+import TreeWalker from 'ckeditor5/engine/model/treewalker.js';
+import Position from 'ckeditor5/engine/model/position.js';
+import Range from 'ckeditor5/engine/model/range.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
 describe( 'TreeWalker', () => {
 	let doc, root, img1, paragraph, ba, r, img2, x;
@@ -46,7 +46,7 @@ describe( 'TreeWalker', () => {
 		rootEnding = new Position( root, [ 2 ] );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should throw if neither boundaries nor starting position is set', () => {
 			expect( () => {
 				new TreeWalker();

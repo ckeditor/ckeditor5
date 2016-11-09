@@ -5,21 +5,21 @@
 
 /* bender-tags: model, delta */
 
-import count from '/ckeditor5/utils/count.js';
-import Delta from '/ckeditor5/engine/model/delta/delta.js';
-import Operation from '/ckeditor5/engine/model/operation/operation.js';
-import AttributeOperation from '/ckeditor5/engine/model/operation/attributeoperation.js';
-import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
-import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
-import NoOperation from '/ckeditor5/engine/model/operation/nooperation.js';
-import ReinsertOperation from '/ckeditor5/engine/model/operation/reinsertoperation.js';
-import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
-import RootAttributeOperation from '/ckeditor5/engine/model/operation/rootattributeoperation.js';
-import DeltaFactory from '/ckeditor5/engine/model/delta/deltafactory.js';
-import Document from '/ckeditor5/engine/model/document.js';
-import Position from '/ckeditor5/engine/model/position.js';
-import Range from '/ckeditor5/engine/model/range.js';
-import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
+import count from 'ckeditor5/utils/count.js';
+import Delta from 'ckeditor5/engine/model/delta/delta.js';
+import Operation from 'ckeditor5/engine/model/operation/operation.js';
+import AttributeOperation from 'ckeditor5/engine/model/operation/attributeoperation.js';
+import InsertOperation from 'ckeditor5/engine/model/operation/insertoperation.js';
+import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
+import NoOperation from 'ckeditor5/engine/model/operation/nooperation.js';
+import ReinsertOperation from 'ckeditor5/engine/model/operation/reinsertoperation.js';
+import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
+import RootAttributeOperation from 'ckeditor5/engine/model/operation/rootattributeoperation.js';
+import DeltaFactory from 'ckeditor5/engine/model/delta/deltafactory.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import Position from 'ckeditor5/engine/model/position.js';
+import Range from 'ckeditor5/engine/model/range.js';
+import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
 
 // Some test examples of operations.
 class FooOperation extends Operation {
@@ -48,7 +48,7 @@ class FooDelta extends Delta {
 }
 
 describe( 'Delta', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create an delta with empty properties', () => {
 			const delta = new Delta();
 

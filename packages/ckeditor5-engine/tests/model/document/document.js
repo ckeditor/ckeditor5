@@ -5,16 +5,16 @@
 
 /* bender-tags: model */
 
-import Document from '/ckeditor5/engine/model/document.js';
-import Schema from '/ckeditor5/engine/model/schema.js';
-import Composer from '/ckeditor5/engine/model/composer/composer.js';
-import RootElement from '/ckeditor5/engine/model/rootelement.js';
-import Batch from '/ckeditor5/engine/model/batch.js';
-import Delta from '/ckeditor5/engine/model/delta/delta.js';
-import Range from '/ckeditor5/engine/model/range.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import count from '/ckeditor5/utils/count.js';
-import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import Schema from 'ckeditor5/engine/model/schema.js';
+import Composer from 'ckeditor5/engine/model/composer/composer.js';
+import RootElement from 'ckeditor5/engine/model/rootelement.js';
+import Batch from 'ckeditor5/engine/model/batch.js';
+import Delta from 'ckeditor5/engine/model/delta/delta.js';
+import Range from 'ckeditor5/engine/model/range.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import count from 'ckeditor5/utils/count.js';
+import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
 
 describe( 'Document', () => {
 	let doc;
@@ -23,7 +23,7 @@ describe( 'Document', () => {
 		doc = new Document();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create Document with no data, empty graveyard and selection set to default range', () => {
 			expect( doc ).to.have.property( '_roots' ).that.is.instanceof( Map );
 			expect( doc._roots.size ).to.equal( 1 );
@@ -225,14 +225,6 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'selection', () => {
-		it( 'should get updated attributes whenever selection gets updated', () => {
-			sinon.spy( doc.selection, '_updateAttributes' );
-
-			doc.selection.fire( 'change:range', { directChange: true } );
-
-			expect( doc.selection._updateAttributes.called ).to.be.true;
-		} );
-
 		it( 'should get updated attributes whenever attribute operation is applied', () => {
 			sinon.spy( doc.selection, '_updateAttributes' );
 

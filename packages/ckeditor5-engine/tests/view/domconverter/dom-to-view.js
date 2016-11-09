@@ -6,17 +6,17 @@
 /* globals Range, document */
 /* bender-tags: view, domconverter, browser-only */
 
-import ViewElement from '/ckeditor5/engine/view/element.js';
-import ViewRange from '/ckeditor5/engine/view/range.js';
-import ViewSelection from '/ckeditor5/engine/view/selection.js';
-import DomConverter from '/ckeditor5/engine/view/domconverter.js';
-import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import { INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '/ckeditor5/engine/view/filler.js';
+import ViewElement from 'ckeditor5/engine/view/element.js';
+import ViewRange from 'ckeditor5/engine/view/range.js';
+import ViewSelection from 'ckeditor5/engine/view/selection.js';
+import DomConverter from 'ckeditor5/engine/view/domconverter.js';
+import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
+import { INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from 'ckeditor5/engine/view/filler.js';
 
-import { parse, stringify } from '/ckeditor5/engine/dev-utils/view.js';
+import { parse, stringify } from 'ckeditor5/engine/dev-utils/view.js';
 
-import count from '/ckeditor5/utils/count.js';
-import createElement from '/ckeditor5/utils/dom/createelement.js';
+import count from 'ckeditor5/utils/count.js';
+import createElement from 'ckeditor5/utils/dom/createelement.js';
 
 describe( 'DomConverter', () => {
 	let converter;

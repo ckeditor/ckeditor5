@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import History from '/ckeditor5/engine/model/history.js';
-import Delta from '/ckeditor5/engine/model/delta/delta.js';
-import Operation from '/ckeditor5/engine/model/operation/operation.js';
+import History from 'ckeditor5/engine/model/history.js';
+import Delta from 'ckeditor5/engine/model/delta/delta.js';
+import Operation from 'ckeditor5/engine/model/operation/operation.js';
 
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
 describe( 'History', () => {
 	let history;
@@ -16,7 +16,7 @@ describe( 'History', () => {
 		history = new History();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create an empty History instance', () => {
 			expect( Array.from( history.getDeltas() ).length ).to.equal( 0 );
 		} );

@@ -6,25 +6,38 @@
 /* globals document */
 /* bender-tags: view, browser-only */
 
-import Document from '/ckeditor5/engine/view/document.js';
-import Observer from '/ckeditor5/engine/view/observer/observer.js';
-import MutationObserver from '/ckeditor5/engine/view/observer/mutationobserver.js';
-import SelectionObserver from '/ckeditor5/engine/view/observer/selectionobserver.js';
-import FocusObserver from '/ckeditor5/engine/view/observer/focusobserver.js';
-import KeyObserver from '/ckeditor5/engine/view/observer/keyobserver.js';
-import FakeSelectionObserver from '/ckeditor5/engine/view/observer/fakeselectionobserver.js';
-import Renderer from '/ckeditor5/engine/view/renderer.js';
-import ViewRange from '/ckeditor5/engine/view/range.js';
-import DomConverter from '/ckeditor5/engine/view/domconverter.js';
-import testUtils from '/tests/core/_utils/utils.js';
-import count from '/ckeditor5/utils/count.js';
-import log from '/ckeditor5/utils/log.js';
+import createElement from 'ckeditor5/utils/dom/createelement.js';
+import Document from 'ckeditor5/engine/view/document.js';
+import Observer from 'ckeditor5/engine/view/observer/observer.js';
+import MutationObserver from 'ckeditor5/engine/view/observer/mutationobserver.js';
+import SelectionObserver from 'ckeditor5/engine/view/observer/selectionobserver.js';
+import FocusObserver from 'ckeditor5/engine/view/observer/focusobserver.js';
+import KeyObserver from 'ckeditor5/engine/view/observer/keyobserver.js';
+import FakeSelectionObserver from 'ckeditor5/engine/view/observer/fakeselectionobserver.js';
+import Renderer from 'ckeditor5/engine/view/renderer.js';
+import ViewRange from 'ckeditor5/engine/view/range.js';
+import DomConverter from 'ckeditor5/engine/view/domconverter.js';
+import testUtils from 'tests/core/_utils/utils.js';
+import count from 'ckeditor5/utils/count.js';
+import log from 'ckeditor5/utils/log.js';
 
 testUtils.createSinonSandbox();
 
 describe( 'Document', () => {
 	const DEFAULT_OBSERVERS_COUNT = 5;
-	let ObserverMock, ObserverMockGlobalCount, instantiated, enabled;
+	let ObserverMock, ObserverMockGlobalCount, instantiated, enabled, domRoot;
+
+	before( () => {
+		domRoot = createElement( document, 'div', {
+			id: 'editor',
+			contenteditable: 'true'
+		} );
+		document.body.appendChild( domRoot );
+	} );
+
+	after( () => {
+		domRoot.parentElement.removeChild( domRoot );
+	} );
 
 	beforeEach( () => {
 		instantiated = 0;
@@ -54,7 +67,7 @@ describe( 'Document', () => {
 		};
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create Document with all properties', () => {
 			const viewDocument = new Document();
 
@@ -316,7 +329,7 @@ describe( 'Document', () => {
 			const viewDocument = new Document();
 			const getObserverMock = viewDocument.getObserver( ObserverMock );
 
-			expect( getObserverMock ).to.be.undefined();
+			expect( getObserverMock ).to.be.undefined;
 		} );
 	} );
 

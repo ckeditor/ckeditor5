@@ -77,6 +77,8 @@ export default class LiveRange extends Range {
 	 * Fired when `LiveRange` instance is changed due to changes on {@link engine.model.Document}.
 	 *
 	 * @event engine.model.LiveRange#change
+	 * @param {engine.model.Range} oldRange Range with start and end position equal to start and end position of this live range
+	 * before it got changed.
 	 */
 }
 
@@ -99,7 +101,8 @@ function bindWithDocument() {
 			if ( supportedTypes.has( type ) ) {
 				transform.call( this, type, changes.range, changes.sourcePosition );
 			}
-		}
+		},
+		{ priority: 'high' }
 	);
 }
 
@@ -158,10 +161,12 @@ function transform( type, range, position ) {
 
 	// If anything changed, update the range and fire an event.
 	if ( !updated.start.isEqual( this.start ) || !updated.end.isEqual( this.end ) ) {
+		const oldRange = Range.createFromRange( this );
+
 		this.start = updated.start;
 		this.end = updated.end;
 
-		this.fire( 'change' );
+		this.fire( 'change', oldRange );
 	}
 }
 

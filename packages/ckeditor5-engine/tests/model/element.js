@@ -5,15 +5,15 @@
 
 /* bender-tags: model */
 
-import Node from '/ckeditor5/engine/model/node.js';
-import Element from '/ckeditor5/engine/model/element.js';
-import Text from '/ckeditor5/engine/model/text.js';
-import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
-import count from '/ckeditor5/utils/count.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import Node from 'ckeditor5/engine/model/node.js';
+import Element from 'ckeditor5/engine/model/element.js';
+import Text from 'ckeditor5/engine/model/text.js';
+import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
+import count from 'ckeditor5/utils/count.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Element', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create empty element', () => {
 			let element = new Element( 'elem' );
 

@@ -5,23 +5,23 @@
 
 /* bender-tags: view, browser-only */
 
-import Position from '/ckeditor5/engine/view/position.js';
-import Node from '/ckeditor5/engine/view/node.js';
-import Element from '/ckeditor5/engine/view/element.js';
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import EditableElement from '/ckeditor5/engine/view/editableelement.js';
-import Document from '/ckeditor5/engine/view/document.js';
-import Text from '/ckeditor5/engine/view/text.js';
-import TextProxy from '/ckeditor5/engine/view/textproxy.js';
+import Position from 'ckeditor5/engine/view/position.js';
+import Node from 'ckeditor5/engine/view/node.js';
+import Element from 'ckeditor5/engine/view/element.js';
+import DocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
+import EditableElement from 'ckeditor5/engine/view/editableelement.js';
+import Document from 'ckeditor5/engine/view/document.js';
+import Text from 'ckeditor5/engine/view/text.js';
+import TextProxy from 'ckeditor5/engine/view/textproxy.js';
 
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
-import { parse } from '/ckeditor5/engine/dev-utils/view.js';
+import { parse } from 'ckeditor5/engine/dev-utils/view.js';
 
 describe( 'Position', () => {
 	const parentMock = {};
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create element without attributes', () => {
 			const elem = new Position( parentMock, 5 );
 

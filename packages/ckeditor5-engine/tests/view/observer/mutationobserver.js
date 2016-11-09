@@ -6,14 +6,18 @@
 /* globals document */
 /* bender-tags: view, browser-only */
 
-import ViewDocument from '/ckeditor5/engine/view/document.js';
-import MutationObserver from '/ckeditor5/engine/view/observer/mutationobserver.js';
-import { parse } from '/ckeditor5/engine/dev-utils/view.js';
+import ViewDocument from 'ckeditor5/engine/view/document.js';
+import MutationObserver from 'ckeditor5/engine/view/observer/mutationobserver.js';
+import { parse } from 'ckeditor5/engine/dev-utils/view.js';
 
 describe( 'MutationObserver', () => {
-	let domEditor, viewDocument, viewRoot, mutationObserver, lastMutations;
+	let domEditor, viewDocument, viewRoot, mutationObserver, lastMutations, domRoot;
 
 	beforeEach( () => {
+		domRoot = document.createElement( 'div' );
+		domRoot.innerHTML = `<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>`;
+		document.body.appendChild( domRoot );
+
 		viewDocument = new ViewDocument();
 		domEditor = document.getElementById( 'main' );
 		lastMutations = null;
@@ -35,6 +39,8 @@ describe( 'MutationObserver', () => {
 
 	afterEach( () => {
 		mutationObserver.disable();
+
+		domRoot.parentElement.removeChild( domRoot );
 	} );
 
 	it( 'should handle typing', () => {

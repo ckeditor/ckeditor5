@@ -5,12 +5,12 @@
 
 /* bender-tags: model, delta */
 
-import Document from '/ckeditor5/engine/model/document.js';
-import Element from '/ckeditor5/engine/model/element.js';
-import Text from '/ckeditor5/engine/model/text.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import Element from 'ckeditor5/engine/model/element.js';
+import Text from 'ckeditor5/engine/model/text.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
-import RenameDelta from '/ckeditor5/engine/model/delta/renamedelta.js';
+import RenameDelta from 'ckeditor5/engine/model/delta/renamedelta.js';
 
 describe( 'Batch', () => {
 	let doc, root, batch, chain;
@@ -66,7 +66,7 @@ describe( 'RenameDelta', () => {
 		renameDelta = new RenameDelta();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create rename delta with no operations added', () => {
 			expect( renameDelta.operations.length ).to.equal( 0 );
 		} );

@@ -88,13 +88,12 @@ export default class Renderer {
 		this.selection = selection;
 
 		/**
-		 * Position of the inline {@link engine.view.filler filler}.
-		 * It should always be put before the text which contains filler.
+		 * The text node in which the inline filler was rendered.
 		 *
 		 * @private
-		 * @member {engine.view.Position} engine.view.Renderer#_inlineFillerPosition
+		 * @member {Text} engine.view.Renderer#_inlineFiller
 		 */
-		this._inlineFillerPosition = null;
+		this._inlineFiller = null;
 
 		/**
 		 * Indicates if view document is focused and selection can be rendered. Selection will not be rendered if
@@ -176,21 +175,30 @@ export default class Renderer {
 	 * removed as long selection is in the text node which needed it at first.
 	 */
 	render() {
-		if ( !this._isInlineFillerAtSelection() ) {
-			this._removeInlineFiller();
+		let inlineFillerPosition;
 
-			if ( this._needAddInlineFiller() ) {
-				this._inlineFillerPosition = this.selection.getFirstPosition();
-				// Do not use `markToSync` so it will be added even if the parent is already added.
-				this.markedChildren.add( this._inlineFillerPosition.parent );
-			} else {
-				this._inlineFillerPosition = null;
-			}
+		// There was inline filler rendered in the DOM but it's not
+		// at the selection position any more, so we can remove it
+		// (cause even if it's needed, it must be placed in another location).
+		if ( this._inlineFiller && !this._isSelectionInInlineFiller() ) {
+			this._removeInlineFiller();
+		}
+
+		// If we've got the filler, let's try to guess its position in the view.
+		if ( this._inlineFiller ) {
+			inlineFillerPosition = this._getInlineFillerPosition();
+		}
+		// Othewise, if it's needed, create it at the selection position.
+		else if ( this._needsInlineFillerAtSelection() ) {
+			inlineFillerPosition = this.selection.getFirstPosition();
+
+			// Do not use `markToSync` so it will be added even if the parent is already added.
+			this.markedChildren.add( inlineFillerPosition.parent );
 		}
 
 		for ( let node of this.markedTexts ) {
 			if ( !this.markedChildren.has( node.parent ) && this.domConverter.getCorrespondingDom( node.parent ) ) {
-				this._updateText( node );
+				this._updateText( node, { inlineFillerPosition } );
 			}
 		}
 
@@ -199,7 +207,7 @@ export default class Renderer {
 		}
 
 		for ( let element of this.markedChildren ) {
-			this._updateChildren( element );
+			this._updateChildren( element, { inlineFillerPosition } );
 		}
 
 		this._updateSelection();
@@ -208,63 +216,120 @@ export default class Renderer {
 		this.markedTexts.clear();
 		this.markedAttributes.clear();
 		this.markedChildren.clear();
+
+		// Remember the filler by its node.
+		this._inlineFiller = this._getInlineFillerNode( inlineFillerPosition );
 	}
 
 	/**
-	 * Returns `true` if the inline filler and selection are in the same place.
-	 * If it is true it means filler had been added for a reason and selection does not
-	 * left text node, user can be in the middle of the composition so it should not be touched.
+	 * Gets the text node in which the inline filler is kept.
+	 *
+	 * @private
+	 * @param {engine.view.Position} fillerPosition The position on which the filler is needed in the view.
+	 * @returns {Text} The text node with the filler.
+	 */
+	_getInlineFillerNode( fillerPosition ) {
+		if ( !fillerPosition ) {
+			this._inlineFiller = null;
+
+			return;
+		}
+
+		const domPosition = this.domConverter.viewPositionToDom( fillerPosition );
+
+		/* istanbul ignore if */
+		if ( !domPosition || !startsWithFiller( domPosition.parent ) ) {
+			/**
+			 * Cannot find filler node by its position.
+			 *
+			 * @error view-renderer-cannot-find-filler
+			 */
+			throw new CKEditorError( 'view-renderer-cannot-find-filler: Cannot find filler node by its position.' );
+		}
+
+		return domPosition.parent;
+	}
+
+	/**
+	 * Gets the position of the inline filler based on the current selection.
+	 * Here, we assume that we know that the filler is needed and
+	 * {@link #_isSelectionInInlineFiller is at the selection position}, and, since it's needed,
+	 * it's somewhere at the selection postion.
+	 *
+	 * Note: we cannot restore the filler position based on the filler's DOM text node, because
+	 * when this method is called (before rendering) the bindings will often be broken. View to DOM
+	 * bindings are only dependable after rendering.
+	 *
+	 * @private
+	 * @returns {engine.view.Position}
+	 */
+	_getInlineFillerPosition() {
+		const firstPos = this.selection.getFirstPosition();
+
+		if ( firstPos.parent  instanceof ViewText ) {
+			return ViewPosition.createBefore( this.selection.getFirstPosition().parent );
+		} else {
+			return firstPos;
+		}
+	}
+
+	/**
+	 * Returns `true` if the selection hasn't left the inline filler's text node.
+	 * If it is `true` it means that the filler had been added for a reason and the selection does not
+	 * left the filler's text node. E.g. the user can be in the middle of a composition so it should not be touched.
 	 *
 	 * @private
 	 * @returns {Boolean} True if the inline filler and selection are in the same place.
 	 */
-	_isInlineFillerAtSelection() {
+	_isSelectionInInlineFiller() {
 		if ( this.selection.rangeCount != 1 || !this.selection.isCollapsed ) {
 			return false;
 		}
 
-		const selectionPosition = this.selection.getFirstPosition();
-		const fillerPosition = this._inlineFillerPosition;
+		// Note, we can't check if selection's position equals position of the
+		// this._inlineFiller node, because of #663. We may not be able to calculate
+		// the filler's position in the view at this stage.
+		// Instead, we check it the other way – whether selection is anchored in
+		// that text node or next to it.
 
-		if ( !fillerPosition ) {
+		// Possible options are:
+		// "FILLER{}"
+		// "FILLERadded-text{}"
+
+		const selectionPosition = this.selection.getFirstPosition();
+
+		// If we cannot convert this position's parent it means that selection is in not yet rendered
+		// node, which means that the filler can't be there.
+		if ( !this.domConverter.getCorrespondingDom( selectionPosition.parent ) ) {
 			return false;
 		}
 
-		if ( fillerPosition.isEqual( selectionPosition )  ) {
-			return true;
-		}
+		const { parent: domParent } = this.domConverter.viewPositionToDom( selectionPosition );
 
-		if ( selectionPosition.parent instanceof ViewText ) {
-			if ( fillerPosition.isEqual( ViewPosition.createBefore( selectionPosition.parent ) ) ) {
-				return true;
-			}
+		if ( this.domConverter.isText( domParent ) && startsWithFiller( domParent ) ) {
+			return true;
 		}
 
 		return false;
 	}
 
 	/**
-	 * Removes inline filler.
+	 * Removes the inline filler.
 	 *
 	 * @private
 	 */
 	_removeInlineFiller() {
-		if ( !this._inlineFillerPosition ) {
-			// Nothing to remove.
-			return;
-		}
+		const domFillerNode = this._inlineFiller;
 
-		const domFillerPosition = this.domConverter.viewPositionToDom( this._inlineFillerPosition );
-		const domFillerNode = domFillerPosition.parent;
-
-		// If there is no filler viewPositionToDom will return parent node, so domFillerNode will be an element.
-		if ( !( this.domConverter.isText( domFillerNode ) ) || !startsWithFiller( domFillerNode ) ) {
+		// Something weird happened and the stored node doesn't contain the filler's text.
+		if ( !startsWithFiller( domFillerNode ) ) {
 			/**
-			 * No inline filler on expected position.
+			 * The inline filler node was lost. Most likely, something overwrote the filler text node
+			 * in the DOM.
 			 *
-			 * @error renderer-render-no-inline-filler.
+			 * @error view-renderer-filler-was-lost
 			 */
-			throw new CKEditorError( 'view-renderer-render-no-inline-filler: No inline filler on expected position.' );
+			throw new CKEditorError( 'view-renderer-filler-was-lost: The inline filler node was lost.' );
 		}
 
 		if ( isInlineFiller( domFillerNode ) ) {
@@ -272,15 +337,17 @@ export default class Renderer {
 		} else {
 			domFillerNode.data = domFillerNode.data.substr( INLINE_FILLER_LENGTH );
 		}
+
+		this._inlineFiller = null;
 	}
 
 	/**
-	 * Checks if the inline {@link engine.view.filler fillers} should be added.
+	 * Checks if the inline {@link engine.view.filler filler} should be added.
 	 *
 	 * @private
 	 * @returns {Boolean} True if the inline fillers should be added.
 	 */
-	_needAddInlineFiller() {
+	_needsInlineFillerAtSelection() {
 		if ( this.selection.rangeCount != 1 || !this.selection.isCollapsed ) {
 			return false;
 		}
@@ -318,15 +385,18 @@ export default class Renderer {
 	 *
 	 * @private
 	 * @param {engine.view.Text} viewText View text to update.
+	 * @param {Object} options
+	 * @param {engine.view.Position} options.inlineFillerPosition The position on which the inline
+	 * filler should be rendered.
 	 */
-	_updateText( viewText ) {
+	_updateText( viewText, options ) {
 		const domText = this.domConverter.getCorrespondingDom( viewText );
 		const newDomText = this.domConverter.viewToDom( viewText, domText.ownerDocument );
 
 		const actualText = domText.data;
 		let expectedText = newDomText.data;
 
-		const filler = this._inlineFillerPosition;
+		const filler = options.inlineFillerPosition;
 
 		if ( filler && filler.parent == viewText.parent && filler.offset == viewText.index ) {
 			expectedText = INLINE_FILLER + expectedText;
@@ -366,13 +436,16 @@ export default class Renderer {
 	 *
 	 * @private
 	 * @param {engine.view.Element} viewElement View element to update.
+	 * @param {Object} options
+	 * @param {engine.view.Position} options.inlineFillerPosition The position on which the inline
+	 * filler should be rendered.
 	 */
-	_updateChildren( viewElement ) {
+	_updateChildren( viewElement, options ) {
 		const domConverter = this.domConverter;
 		const domElement = domConverter.getCorrespondingDom( viewElement );
 		const domDocument = domElement.ownerDocument;
 
-		const filler = this._inlineFillerPosition;
+		const filler = options.inlineFillerPosition;
 
 		const actualDomChildren = domElement.childNodes;
 		const expectedDomChildren = Array.from( domConverter.viewChildrenToDom( viewElement, domDocument, { bind: true } ) );

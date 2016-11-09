@@ -5,14 +5,14 @@
 
 /* bender-tags: model */
 
-import Element from '/ckeditor5/engine/model/element.js';
-import Text from '/ckeditor5/engine/model/text.js';
-import DocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
-import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import Element from 'ckeditor5/engine/model/element.js';
+import Text from 'ckeditor5/engine/model/text.js';
+import DocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
+import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
 describe( 'DocumentFragment', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create empty document fragment', () => {
 			let frag = new DocumentFragment();
 

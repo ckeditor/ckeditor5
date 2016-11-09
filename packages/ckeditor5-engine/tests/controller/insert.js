@@ -5,16 +5,16 @@
 
 /* bender-tags: model */
 
-import Document from '/ckeditor5/engine/model/document.js';
-import DataController from '/ckeditor5/engine/controller/datacontroller.js';
-import insert from '/ckeditor5/engine/controller/insert.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import DataController from 'ckeditor5/engine/controller/datacontroller.js';
+import insert from 'ckeditor5/engine/controller/insert.js';
 
-import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import ViewText from '/ckeditor5/engine/view/text.js';
-import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
-import Text from '/ckeditor5/engine/model/text.js';
+import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
+import ViewText from 'ckeditor5/engine/view/text.js';
+import ModelDocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
+import Text from 'ckeditor5/engine/model/text.js';
 
-import { setData, getData, parse } from '/ckeditor5/engine/dev-utils/model.js';
+import { setData, getData, parse } from 'ckeditor5/engine/dev-utils/model.js';
 
 describe( 'DataController', () => {
 	let doc, dataController;

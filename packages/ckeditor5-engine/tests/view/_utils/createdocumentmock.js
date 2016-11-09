@@ -5,8 +5,8 @@
 
 /* bender-tags: view */
 
-import ObservableMixin from '/ckeditor5/utils/observablemixin.js';
-import Selection from '/ckeditor5/engine/view/selection.js';
+import ObservableMixin from 'ckeditor5/utils/observablemixin.js';
+import Selection from 'ckeditor5/engine/view/selection.js';
 
 /**
  * Creates {@link engine.view.Document view Document} mock.

@@ -5,8 +5,8 @@
 
 /* bender-tags: view */
 
-import Matcher from '/ckeditor5/engine/view/matcher.js';
-import Element from '/ckeditor5/engine/view/element.js';
+import Matcher from 'ckeditor5/engine/view/matcher.js';
+import Element from 'ckeditor5/engine/view/element.js';
 
 describe( 'Matcher', () => {
 	describe( 'add', () => {

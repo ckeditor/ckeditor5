@@ -5,13 +5,13 @@
 
 /* bender-tags: view */
 
-import Range from '/ckeditor5/engine/view/range.js';
-import Position from '/ckeditor5/engine/view/position.js';
-import Element from '/ckeditor5/engine/view/element.js';
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import Text from '/ckeditor5/engine/view/text.js';
-import TreeWalker from '/ckeditor5/engine/view/treewalker.js';
-import { parse } from '/ckeditor5/engine/dev-utils/view.js';
+import Range from 'ckeditor5/engine/view/range.js';
+import Position from 'ckeditor5/engine/view/position.js';
+import Element from 'ckeditor5/engine/view/element.js';
+import DocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
+import Text from 'ckeditor5/engine/view/text.js';
+import TreeWalker from 'ckeditor5/engine/view/treewalker.js';
+import { parse } from 'ckeditor5/engine/dev-utils/view.js';
 
 function getRange( view, options = {} ) {
 	const { selection } = parse( view, options );
@@ -20,7 +20,7 @@ function getRange( view, options = {} ) {
 }
 
 describe( 'Range', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'creates range from provided positions', () => {
 			const start = new Position( {}, 1 );
 			const end = new Position( {}, 2 );

@@ -6,7 +6,7 @@
 /* globals document */
 /* bender-tags: browser-only */
 
-import BasicHtmlWriter from '/ckeditor5/engine/dataprocessor/basichtmlwriter.js';
+import BasicHtmlWriter from 'ckeditor5/engine/dataprocessor/basichtmlwriter.js';
 
 describe( 'BasicHtmlWriter', () => {
 	const basicHtmlWriter = new BasicHtmlWriter();

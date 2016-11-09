@@ -5,16 +5,16 @@
 
 /* bender-tags: model */
 
-import Document from '/ckeditor5/engine/model/document.js';
-import Element from '/ckeditor5/engine/model/element.js';
-import Text from '/ckeditor5/engine/model/text.js';
-import Position from '/ckeditor5/engine/model/position.js';
-import Range from '/ckeditor5/engine/model/range.js';
-import AttributeOperation from '/ckeditor5/engine/model/operation/attributeoperation.js';
-import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
-import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
-import RemoveOperation from '/ckeditor5/engine/model/operation/removeoperation.js';
-import { wrapInDelta } from '/tests/engine/model/_utils/utils.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import Element from 'ckeditor5/engine/model/element.js';
+import Text from 'ckeditor5/engine/model/text.js';
+import Position from 'ckeditor5/engine/model/position.js';
+import Range from 'ckeditor5/engine/model/range.js';
+import AttributeOperation from 'ckeditor5/engine/model/operation/attributeoperation.js';
+import InsertOperation from 'ckeditor5/engine/model/operation/insertoperation.js';
+import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
+import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
+import { wrapInDelta } from 'tests/engine/model/_utils/utils.js';
 
 describe( 'Document change event', () => {
 	let doc, root, graveyard, types, changes;

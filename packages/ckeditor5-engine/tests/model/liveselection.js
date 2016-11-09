@@ -5,20 +5,21 @@
 
 /* bender-tags: model */
 
-import Document from '/ckeditor5/engine/model/document.js';
-import Element from '/ckeditor5/engine/model/element.js';
-import Text from '/ckeditor5/engine/model/text.js';
-import Range from '/ckeditor5/engine/model/range.js';
-import Position from '/ckeditor5/engine/model/position.js';
-import LiveRange from '/ckeditor5/engine/model/liverange.js';
-import LiveSelection from '/ckeditor5/engine/model/liveselection.js';
-import InsertOperation from '/ckeditor5/engine/model/operation/insertoperation.js';
-import MoveOperation from '/ckeditor5/engine/model/operation/moveoperation.js';
-import AttributeOperation from '/ckeditor5/engine/model/operation/attributeoperation.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import count from '/ckeditor5/utils/count.js';
-import testUtils from '/tests/core/_utils/utils.js';
-import { wrapInDelta } from '/tests/engine/model/_utils/utils.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import Element from 'ckeditor5/engine/model/element.js';
+import Text from 'ckeditor5/engine/model/text.js';
+import Range from 'ckeditor5/engine/model/range.js';
+import Position from 'ckeditor5/engine/model/position.js';
+import LiveRange from 'ckeditor5/engine/model/liverange.js';
+import LiveSelection from 'ckeditor5/engine/model/liveselection.js';
+import InsertOperation from 'ckeditor5/engine/model/operation/insertoperation.js';
+import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
+import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
+import AttributeOperation from 'ckeditor5/engine/model/operation/attributeoperation.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import count from 'ckeditor5/utils/count.js';
+import testUtils from 'tests/core/_utils/utils.js';
+import { wrapInDelta } from 'tests/engine/model/_utils/utils.js';
 
 testUtils.createSinonSandbox();
 
@@ -125,15 +126,27 @@ describe( 'LiveSelection', () => {
 		it( 'should convert added Range to LiveRange', () => {
 			selection.addRange( range );
 
-			const ranges = selection._ranges;
-
-			expect( ranges[ 0 ] ).to.be.instanceof( LiveRange );
+			expect( selection._ranges[ 0 ] ).to.be.instanceof( LiveRange );
 		} );
 
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection.addRange( { invalid: 'range' } );
 			} ).to.throw( CKEditorError, /model-selection-added-not-range/ );
+		} );
+
+		it( 'should not add a range that is in graveyard', () => {
+			selection.addRange( Range.createIn( doc.graveyard ) );
+
+			expect( selection._ranges.length ).to.equal( 0 );
+		} );
+
+		it( 'should refresh attributes', () => {
+			const spy = sinon.spy( selection, '_updateAttributes' );
+
+			selection.addRange( range );
+
+			expect( spy.called ).to.be.true;
 		} );
 	} );
 
@@ -227,6 +240,14 @@ describe( 'LiveSelection', () => {
 			expect( ranges[ 0 ].detach.called ).to.be.true;
 			expect( ranges[ 1 ].detach.called ).to.be.true;
 		} );
+
+		it( 'should refresh attributes', () => {
+			const spy = sinon.spy( selection, '_updateAttributes' );
+
+			selection.removeAllRanges();
+
+			expect( spy.called ).to.be.true;
+		} );
 	} );
 
 	describe( 'setRanges', () => {
@@ -249,6 +270,14 @@ describe( 'LiveSelection', () => {
 
 			expect( oldRanges[ 0 ].detach.called ).to.be.true;
 			expect( oldRanges[ 1 ].detach.called ).to.be.true;
+		} );
+
+		it( 'should refresh attributes', () => {
+			const spy = sinon.spy( selection, '_updateAttributes' );
+
+			selection.setRanges( [ range ] );
+
+			expect( spy.called ).to.be.true;
 		} );
 	} );
 
@@ -284,6 +313,7 @@ describe( 'LiveSelection', () => {
 		let spyRange;
 
 		beforeEach( () => {
+			root.removeChildren( 0, root.childCount );
 			root.insertChildren( 0, [
 				new Element( 'ul', [], new Text( 'abcdef' ) ),
 				new Element( 'p', [], new Text( 'foobar' ) ),
@@ -516,6 +546,50 @@ describe( 'LiveSelection', () => {
 
 				expect( selection.hasAttribute( 'foo' ) ).to.be.false;
 				expect( spyAttribute.called ).to.be.false;
+			} );
+		} );
+
+		describe( 'RemoveOperation', () => {
+			it( 'fix selection range if it ends up in graveyard #1', () => {
+				selection.collapse( new Position( root, [ 1, 3 ] ) );
+
+				doc.applyOperation( wrapInDelta(
+					new RemoveOperation(
+						new Position( root, [ 1, 2 ] ),
+						2,
+						doc.version
+					)
+				) );
+
+				expect( selection.getFirstPosition().path ).to.deep.equal( [ 1, 2 ] );
+			} );
+
+			it( 'fix selection range if it ends up in graveyard #2', () => {
+				selection.setRanges( [ new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 1, 4 ] ) ) ] );
+
+				doc.applyOperation( wrapInDelta(
+					new RemoveOperation(
+						new Position( root, [ 1, 2 ] ),
+						2,
+						doc.version
+					)
+				) );
+
+				expect( selection.getFirstPosition().path ).to.deep.equal( [ 1, 2 ] );
+			} );
+
+			it( 'fix selection range if it ends up in graveyard #3', () => {
+				selection.setRanges( [ new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 1, 4 ] ) ) ] );
+
+				doc.applyOperation( wrapInDelta(
+					new RemoveOperation(
+						new Position( root, [ 0 ] ),
+						3,
+						doc.version
+					)
+				) );
+
+				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0 ] );
 			} );
 		} );
 	} );

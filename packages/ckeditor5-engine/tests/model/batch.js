@@ -5,14 +5,14 @@
 
 /* bender-tags: model, delta */
 
-import deltas from '/ckeditor5/engine/model/delta/basic-deltas.js'; // jshint ignore:line
+import deltas from 'ckeditor5/engine/model/delta/basic-deltas.js'; // jshint ignore:line
 
-import Document from '/ckeditor5/engine/model/document.js';
-import Batch from '/ckeditor5/engine/model/batch.js';
-import { register } from '/ckeditor5/engine/model/batch.js';
-import Delta from '/ckeditor5/engine/model/delta/delta.js';
-import Operation from '/ckeditor5/engine/model/operation/operation.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import Batch from 'ckeditor5/engine/model/batch.js';
+import { register } from 'ckeditor5/engine/model/batch.js';
+import Delta from 'ckeditor5/engine/model/delta/delta.js';
+import Operation from 'ckeditor5/engine/model/operation/operation.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
 describe( 'Batch', () => {
 	it( 'should have registered basic methods', () => {

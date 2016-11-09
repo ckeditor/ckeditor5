@@ -5,14 +5,14 @@
 
 /* bender-tags: view */
 
-import TextProxy from '/ckeditor5/engine/view/textproxy.js';
-import Text from '/ckeditor5/engine/view/text.js';
-import ContainerElement from '/ckeditor5/engine/view/containerelement.js';
-import DocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import RootEditableElement from '/ckeditor5/engine/view/rooteditableelement.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import TextProxy from 'ckeditor5/engine/view/textproxy.js';
+import Text from 'ckeditor5/engine/view/text.js';
+import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
+import DocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
+import RootEditableElement from 'ckeditor5/engine/view/rooteditableelement.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
-import createDocumentMock from '/tests/engine/view/_utils/createdocumentmock.js';
+import createDocumentMock from 'tests/engine/view/_utils/createdocumentmock.js';
 
 describe( 'TextProxy', () => {
 	let text, parent, wrapper, textProxy;
@@ -25,7 +25,7 @@ describe( 'TextProxy', () => {
 		textProxy = new TextProxy( text, 2, 3 );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create TextProxy instance with specified properties', () => {
 			expect( textProxy ).to.have.property( 'parent' ).to.equal( parent );
 			expect( textProxy ).to.have.property( 'data' ).to.equal( 'cde' );

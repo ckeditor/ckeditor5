@@ -5,19 +5,19 @@
 
 /* bender-tags: view */
 
-import ModelDocument from '/ckeditor5/engine/model/document.js';
-import DataController from '/ckeditor5/engine/controller/datacontroller.js';
-import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+import ModelDocument from 'ckeditor5/engine/model/document.js';
+import DataController from 'ckeditor5/engine/controller/datacontroller.js';
+import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
-import buildViewConverter  from '/ckeditor5/engine/conversion/buildviewconverter.js';
-import buildModelConverter  from '/ckeditor5/engine/conversion/buildmodelconverter.js';
+import buildViewConverter  from 'ckeditor5/engine/conversion/buildviewconverter.js';
+import buildModelConverter  from 'ckeditor5/engine/conversion/buildmodelconverter.js';
 
-import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import ViewText from '/ckeditor5/engine/view/text.js';
+import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
+import ViewText from 'ckeditor5/engine/view/text.js';
 
-import { getData, setData, stringify, parse } from '/ckeditor5/engine/dev-utils/model.js';
+import { getData, setData, stringify, parse } from 'ckeditor5/engine/dev-utils/model.js';
 
-import count from '/ckeditor5/utils/count.js';
+import count from 'ckeditor5/utils/count.js';
 
 describe( 'DataController', () => {
 	let modelDocument, htmlDataProcessor, data, schema;
@@ -34,7 +34,7 @@ describe( 'DataController', () => {
 		schema = modelDocument.schema;
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'works without data processor', () => {
 			const data = new DataController( modelDocument );
 

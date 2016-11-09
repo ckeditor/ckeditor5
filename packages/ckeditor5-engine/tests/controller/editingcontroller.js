@@ -6,28 +6,28 @@
 /* globals setTimeout, Range, document */
 /* bender-tags: view */
 
-import EmitterMixin from '/ckeditor5/utils/emittermixin.js';
+import EmitterMixin from 'ckeditor5/utils/emittermixin.js';
 
-import EditingController from '/ckeditor5/engine/controller/editingcontroller.js';
+import EditingController from 'ckeditor5/engine/controller/editingcontroller.js';
 
-import ViewDocument from '/ckeditor5/engine/view/document.js';
+import ViewDocument from 'ckeditor5/engine/view/document.js';
 
-import Mapper from '/ckeditor5/engine/conversion/mapper.js';
-import ModelConversionDispatcher from '/ckeditor5/engine/conversion/modelconversiondispatcher.js';
-import buildModelConverter from '/ckeditor5/engine/conversion/buildmodelconverter.js';
+import Mapper from 'ckeditor5/engine/conversion/mapper.js';
+import ModelConversionDispatcher from 'ckeditor5/engine/conversion/modelconversiondispatcher.js';
+import buildModelConverter from 'ckeditor5/engine/conversion/buildmodelconverter.js';
 
-import ModelDocument from '/ckeditor5/engine/model/document.js';
-import ModelPosition from '/ckeditor5/engine/model/position.js';
-import ModelRange from '/ckeditor5/engine/model/range.js';
-import ModelDocumentFragment from '/ckeditor5/engine/model/documentfragment.js';
+import ModelDocument from 'ckeditor5/engine/model/document.js';
+import ModelPosition from 'ckeditor5/engine/model/position.js';
+import ModelRange from 'ckeditor5/engine/model/range.js';
+import ModelDocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
 
-import createElement from '/ckeditor5/utils/dom/createelement.js';
+import createElement from 'ckeditor5/utils/dom/createelement.js';
 
-import { parse, getData as getModelData } from '/ckeditor5/engine/dev-utils/model.js';
-import { getData as getViewData } from '/ckeditor5/engine/dev-utils/view.js';
+import { parse, getData as getModelData } from 'ckeditor5/engine/dev-utils/model.js';
+import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
 
 describe( 'EditingController', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		let model, editing;
 
 		beforeEach( () => {

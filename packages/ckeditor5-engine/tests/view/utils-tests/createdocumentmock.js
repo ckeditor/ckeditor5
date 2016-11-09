@@ -5,7 +5,7 @@
 
 /* bender-tags: view */
 
-import createDocumentMock from '/tests/engine/view/_utils/createdocumentmock.js';
+import createDocumentMock from 'tests/engine/view/_utils/createdocumentmock.js';
 
 describe( 'createDocumentMock', () => {
 	it( 'should create document mock', ( done ) => {

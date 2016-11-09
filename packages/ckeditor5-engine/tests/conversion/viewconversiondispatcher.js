@@ -5,14 +5,14 @@
 
 /* bender-tags: conversion */
 
-import ViewConversionDispatcher from '/ckeditor5/engine/conversion/viewconversiondispatcher.js';
-import ViewContainerElement from '/ckeditor5/engine/view/containerelement.js';
-import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
-import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import ViewText from '/ckeditor5/engine/view/text.js';
+import ViewConversionDispatcher from 'ckeditor5/engine/conversion/viewconversiondispatcher.js';
+import ViewContainerElement from 'ckeditor5/engine/view/containerelement.js';
+import ViewAttributeElement from 'ckeditor5/engine/view/attributeelement.js';
+import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
+import ViewText from 'ckeditor5/engine/view/text.js';
 
 describe( 'ViewConversionDispatcher', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create ViewConversionDispatcher with passed api', () => {
 			const apiObj = {};
 			const dispatcher = new ViewConversionDispatcher( { apiObj } );

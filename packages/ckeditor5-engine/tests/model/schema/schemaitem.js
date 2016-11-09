@@ -5,8 +5,8 @@
 
 /* bender-tags: model */
 
-import Schema from '/ckeditor5/engine/model/schema.js';
-import { SchemaItem as SchemaItem } from '/ckeditor5/engine/model/schema.js';
+import Schema from 'ckeditor5/engine/model/schema.js';
+import { SchemaItem as SchemaItem } from 'ckeditor5/engine/model/schema.js';
 
 let schema, item;
 
@@ -23,7 +23,7 @@ beforeEach( () => {
 	item = new SchemaItem( schema );
 } );
 
-describe( 'constructor', () => {
+describe( 'constructor()', () => {
 	it( 'should create empty schema item', () => {
 		let item = new SchemaItem( schema );
 

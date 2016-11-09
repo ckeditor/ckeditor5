@@ -5,8 +5,8 @@
 
 /* bender-tags: view, browser-only */
 
-import { rename } from '/ckeditor5/engine/view/writer.js';
-import { parse } from '/ckeditor5/engine/dev-utils/view.js';
+import { rename } from 'ckeditor5/engine/view/writer.js';
+import { parse } from 'ckeditor5/engine/dev-utils/view.js';
 
 describe( 'writer', () => {
 	describe( 'rename', () => {

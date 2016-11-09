@@ -5,14 +5,14 @@
 
 /* bender-tags: view */
 
-import Selection from '/ckeditor5/engine/view/selection.js';
-import Range from '/ckeditor5/engine/view/range.js';
-import Document from '/ckeditor5/engine/view/document.js';
-import Element from '/ckeditor5/engine/view/element.js';
-import Text from '/ckeditor5/engine/view/text.js';
-import Position from '/ckeditor5/engine/view/position.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
-import count from '/ckeditor5/utils/count.js';
+import Selection from 'ckeditor5/engine/view/selection.js';
+import Range from 'ckeditor5/engine/view/range.js';
+import Document from 'ckeditor5/engine/view/document.js';
+import Element from 'ckeditor5/engine/view/element.js';
+import Text from 'ckeditor5/engine/view/text.js';
+import Position from 'ckeditor5/engine/view/position.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import count from 'ckeditor5/utils/count.js';
 
 describe( 'Selection', () => {
 	let selection;

@@ -5,12 +5,12 @@
 
 /* bender-tags: model */
 
-import Document from '/ckeditor5/engine/model/document.js';
-import Element from '/ckeditor5/engine/model/element.js';
-import Position from '/ckeditor5/engine/model/position.js';
-import LiveRange from '/ckeditor5/engine/model/liverange.js';
-import Range from '/ckeditor5/engine/model/range.js';
-import Text from '/ckeditor5/engine/model/text.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import Element from 'ckeditor5/engine/model/element.js';
+import Position from 'ckeditor5/engine/model/position.js';
+import LiveRange from 'ckeditor5/engine/model/liverange.js';
+import Range from 'ckeditor5/engine/model/range.js';
+import Text from 'ckeditor5/engine/model/text.js';
 
 describe( 'LiveRange', () => {
 	let doc, root, ul, p;
@@ -94,10 +94,13 @@ describe( 'LiveRange', () => {
 	// structure is representing what is _after_ operation is executed. So live LiveRange properties are describing
 	// virtual tree that is not existing anymore and event ranges are operating on the tree generated above.
 	describe( 'should get transformed if', () => {
-		let live;
+		let live, spy;
 
 		beforeEach( () => {
 			live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
+
+			spy = sinon.spy();
+			live.on( 'change', spy );
 		} );
 
 		afterEach( () => {
@@ -112,6 +115,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 8 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 2, 2 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is in the same parent as range end and before it', () => {
@@ -121,6 +125,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 2, 5 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is at a position before a node from range start path', () => {
@@ -130,6 +135,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 3, 4 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 4, 2 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is at a position before a node from range end path', () => {
@@ -139,6 +145,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 3, 2 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is at the live range start position and live range is collapsed', () => {
@@ -150,6 +157,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 8 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 1, 8 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 		} );
 
@@ -166,6 +174,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 8 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 2, 2 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is to the same parent as range end and before it', () => {
@@ -180,6 +189,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 2, 6 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is to a position before a node from range start path', () => {
@@ -194,6 +204,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 3, 4 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 4, 2 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is to a position before a node from range end path', () => {
@@ -208,6 +219,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 3, 2 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is from the same parent as range start and before it', () => {
@@ -222,6 +234,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 1 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 2, 2 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is from the same parent as range end and before it', () => {
@@ -236,6 +249,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 2, 0 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is from a position before a node from range start path', () => {
@@ -250,6 +264,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 0, 4 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 1, 2 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'intersects on live range left side', () => {
@@ -264,6 +279,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 2 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 2, 2 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'intersects on live range right side', () => {
@@ -278,6 +294,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 2, 1 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'intersects on live range left side and live range new start is touching moved range end', () => {
@@ -292,6 +309,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 5 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 7, 2 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'intersects on live range right side and live range new end is touching moved range start', () => {
@@ -308,6 +326,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 3, 2 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is equal to live range', () => {
@@ -324,6 +343,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 3, 0 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 3, 3 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'contains live range', () => {
@@ -340,22 +360,7 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 3, 1 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 3, 4 ] );
-			} );
-
-			it( 'is inside live range and points to live range', () => {
-				live.end.path = [ 0, 1, 12 ];
-
-				let moveSource = new Position( root, [ 0, 1, 6 ] );
-				let moveRange = new Range( new Position( root, [ 0, 1, 8 ] ), new Position( root, [ 0, 1, 10 ] ) );
-
-				let changes = {
-					range: moveRange,
-					sourcePosition: moveSource
-				};
-				doc.fire( 'change', 'move', changes, null );
-
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 1, 12 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'is intersecting with live range and points to live range', () => {
@@ -372,12 +377,13 @@ describe( 'LiveRange', () => {
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 2 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 1, 12 ] );
+				expect( spy.calledOnce ).to.be.true;
 			} );
 		} );
 	} );
 
 	describe( 'should not get transformed if', () => {
-		let otherRoot;
+		let otherRoot, spy;
 
 		before( () => {
 			otherRoot = doc.createRoot( '$root', 'otherRoot' );
@@ -388,6 +394,9 @@ describe( 'LiveRange', () => {
 		beforeEach( () => {
 			live = new LiveRange( new Position( root, [ 0, 1, 4 ] ), new Position( root, [ 0, 2, 2 ] ) );
 			clone = Range.createFromRange( live );
+
+			spy = sinon.spy();
+			live.on( 'change', spy );
 		} );
 
 		afterEach( () => {
@@ -401,6 +410,7 @@ describe( 'LiveRange', () => {
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is in the same parent as range end and after it', () => {
@@ -409,6 +419,7 @@ describe( 'LiveRange', () => {
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is to a position after a node from range end path', () => {
@@ -417,6 +428,7 @@ describe( 'LiveRange', () => {
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is in different root', () => {
@@ -425,6 +437,7 @@ describe( 'LiveRange', () => {
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
 				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.called ).to.be.false;
 			} );
 		} );
 
@@ -440,6 +453,7 @@ describe( 'LiveRange', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is to the same parent as range end and after it', () => {
@@ -453,6 +467,7 @@ describe( 'LiveRange', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is to a position after a node from range end path', () => {
@@ -466,6 +481,7 @@ describe( 'LiveRange', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is from the same parent as range start and after it', () => {
@@ -479,6 +495,7 @@ describe( 'LiveRange', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is from the same parent as range end and after it', () => {
@@ -492,6 +509,7 @@ describe( 'LiveRange', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is from a position after a node from range end path', () => {
@@ -505,6 +523,7 @@ describe( 'LiveRange', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is to different root', () => {
@@ -518,6 +537,7 @@ describe( 'LiveRange', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.called ).to.be.false;
 			} );
 
 			it( 'is from different root', () => {
@@ -531,6 +551,24 @@ describe( 'LiveRange', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.isEqual( clone ) ).to.be.true;
+				expect( spy.called ).to.be.false;
+			} );
+
+			it( 'is inside live range and points to live range', () => {
+				live.end.path = [ 0, 1, 12 ];
+
+				let moveSource = new Position( root, [ 0, 1, 6 ] );
+				let moveRange = new Range( new Position( root, [ 0, 1, 8 ] ), new Position( root, [ 0, 1, 10 ] ) );
+
+				let changes = {
+					range: moveRange,
+					sourcePosition: moveSource
+				};
+				doc.fire( 'change', 'move', changes, null );
+
+				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
+				expect( live.end.path ).to.deep.equal( [ 0, 1, 12 ] );
+				expect( spy.calledOnce ).to.be.false;
 			} );
 		} );
 	} );

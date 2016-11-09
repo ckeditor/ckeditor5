@@ -6,10 +6,10 @@
 /* globals setTimeout, window */
 /* bender-tags: browser-only */
 
-import HtmlDataProcessor from '/ckeditor5/engine/dataprocessor/htmldataprocessor.js';
-import xssTemplates from '/tests/engine/dataprocessor/_utils/xsstemplates.js';
-import ViewDocumentFragment from '/ckeditor5/engine/view/documentfragment.js';
-import { stringify, parse } from '/ckeditor5/engine/dev-utils/view.js';
+import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+import xssTemplates from 'tests/engine/dataprocessor/_utils/xsstemplates.js';
+import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
+import { stringify, parse } from 'ckeditor5/engine/dev-utils/view.js';
 
 describe( 'HtmlDataProcessor', () => {
 	const dataProcessor = new HtmlDataProcessor();

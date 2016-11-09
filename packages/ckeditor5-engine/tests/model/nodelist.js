@@ -5,11 +5,11 @@
 
 /* bender-tags: model */
 
-import NodeList from '/ckeditor5/engine/model/nodelist.js';
-import Element from '/ckeditor5/engine/model/element.js';
-import Text from '/ckeditor5/engine/model/text.js';
-import { jsonParseStringify } from '/tests/engine/model/_utils/utils.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import NodeList from 'ckeditor5/engine/model/nodelist.js';
+import Element from 'ckeditor5/engine/model/element.js';
+import Text from 'ckeditor5/engine/model/text.js';
+import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
 describe( 'NodeList', () => {
 	let nodes, p, foo, img;
@@ -21,7 +21,7 @@ describe( 'NodeList', () => {
 		nodes = new NodeList( [ p, foo, img ] );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create empty node list', () => {
 			expect( new NodeList().length ).to.equal( 0 );
 		} );

@@ -5,11 +5,11 @@
 
 /* bender-tags: model */
 
-import Element from '/ckeditor5/engine/model/element.js';
-import Text from '/ckeditor5/engine/model/text.js';
-import TextProxy from '/ckeditor5/engine/model/textproxy.js';
-import Document from '/ckeditor5/engine/model/document.js';
-import CKEditorError from '/ckeditor5/utils/ckeditorerror.js';
+import Element from 'ckeditor5/engine/model/element.js';
+import Text from 'ckeditor5/engine/model/text.js';
+import TextProxy from 'ckeditor5/engine/model/textproxy.js';
+import Document from 'ckeditor5/engine/model/document.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
 describe( 'TextProxy', () => {
 	let doc, element, textProxy, root, textProxyNoParent, text, textNoParent;

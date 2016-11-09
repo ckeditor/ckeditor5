@@ -5,11 +5,11 @@
 
 /* bender-tags: view */
 
-import Node from '/ckeditor5/engine/view/node.js';
-import Text from '/ckeditor5/engine/view/text.js';
+import Node from 'ckeditor5/engine/view/node.js';
+import Text from 'ckeditor5/engine/view/text.js';
 
 describe( 'Element', () => {
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should create element without attributes', () => {
 			const text = new Text( 'foo' );
 
