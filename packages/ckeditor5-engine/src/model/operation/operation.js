@@ -106,6 +106,6 @@ export default class Operation {
 	 * @returns {engine.model.operation.Operation}
 	 */
 	static fromJSON( json ) {
-		return new Operation( json.baseVersion );
+		return new this( json.baseVersion );
 	}
 }
