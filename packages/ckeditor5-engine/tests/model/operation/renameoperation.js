@@ -94,6 +94,13 @@ describe( 'RenameOperation', () => {
 		expect( clone.newName ).to.equal( newName );
 	} );
 
+	it( 'should return undefined on execution if old name and new name is same', () => {
+		const op = new RenameOperation( Position.createAt( root, 0 ), oldName, oldName, doc.version );
+		const result = op._execute();
+
+		expect( result ).to.be.undefined;
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
 			const op = new RenameOperation( Position.createAt( root, 'end' ), oldName, newName, doc.version );
