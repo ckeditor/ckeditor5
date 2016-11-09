@@ -191,13 +191,37 @@ describe( 'ModelConversionDispatcher', () => {
 			expect( dispatcher.fire.called ).to.be.false;
 		} );
 
-		it( 'should not fire any event if change was in graveyard root and change type is different than remove', () => {
+		it( 'should not fire any event if changed range in graveyard root and change type is different than remove', () => {
 			sinon.spy( dispatcher, 'fire' );
 
 			let gyNode = new ModelElement( 'image' );
 			doc.graveyard.appendChildren( gyNode );
 
 			doc.batch().setAttribute( gyNode, 'key', 'value' );
+
+			expect( dispatcher.fire.called ).to.be.false;
+		} );
+
+		it( 'should not fire any event if remove operation moves nodes between graveyard holders', () => {
+			// This may happen during OT.
+			sinon.spy( dispatcher, 'fire' );
+
+			let gyNode = new ModelElement( 'image' );
+			doc.graveyard.appendChildren( gyNode );
+
+			doc.batch().remove( gyNode );
+
+			expect( dispatcher.fire.called ).to.be.false;
+		} );
+
+		it( 'should not fire any event if element in graveyard was removed', () => {
+			// This may happen during OT.
+			sinon.spy( dispatcher, 'fire' );
+
+			let gyNode = new ModelElement( 'image' );
+			doc.graveyard.appendChildren( gyNode );
+
+			doc.batch().rename( gyNode, 'p' );
 
 			expect( dispatcher.fire.called ).to.be.false;
 		} );
