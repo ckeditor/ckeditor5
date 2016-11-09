@@ -2936,7 +2936,7 @@ describe( 'transform', () => {
 				} );
 			} );
 
-			it( 'same element and is not important: no change', () => {
+			it( 'same element and is not important: change old name to new name', () => {
 				let transformBy = new RenameOperation(
 					new Position( root, [ 0, 2, 2 ] ),
 					'oldName',
@@ -2947,6 +2947,8 @@ describe( 'transform', () => {
 				let transOp = transform( op, transformBy, true );
 
 				expect( transOp.length ).to.equal( 1 );
+
+				expected.oldName = 'otherName';
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );

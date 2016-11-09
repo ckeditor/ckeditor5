@@ -244,8 +244,12 @@ const ot = {
 			// Clone the operation, we don't want to alter the original operation.
 			const clone = a.clone();
 
-			if ( a.position.isEqual( b.position ) && !isStrong ) {
-				return [ new NoOperation( a.baseVersion ) ];
+			if ( a.position.isEqual( b.position ) ) {
+				if ( isStrong ) {
+					clone.oldName = b.newName;
+				} else {
+					return [ new NoOperation( a.baseVersion ) ];
+				}
 			}
 
 			return [ clone ];
