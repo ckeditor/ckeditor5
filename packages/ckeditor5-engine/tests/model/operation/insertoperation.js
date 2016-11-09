@@ -177,8 +177,13 @@ describe( 'InsertOperation', () => {
 
 		expect( clone ).to.be.instanceof( InsertOperation );
 		expect( clone.position.isEqual( position ) ).to.be.true;
-		expect( clone.nodes.getNode( 0 ) ).to.equal( nodeA );
-		expect( clone.nodes.getNode( 1 ) ).to.equal( nodeB );
+
+		// New node, not pointer to the old instance.
+		expect( clone.nodes.getNode( 0 ) ).not.to.equal( nodeA );
+		expect( clone.nodes.getNode( 1 ) ).not.to.equal( nodeB );
+		expect( clone.nodes.getNode( 0 ) ).to.deep.equal( nodeA );
+		expect( clone.nodes.getNode( 1 ) ).to.deep.equal( nodeB );
+
 		expect( clone.nodes.length ).to.equal( 2 );
 		expect( clone.baseVersion ).to.equal( baseVersion );
 	} );
