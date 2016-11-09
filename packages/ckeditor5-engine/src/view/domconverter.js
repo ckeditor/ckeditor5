@@ -278,6 +278,12 @@ export default class DomConverter {
 				domAfter = domParent.childNodes[ 0 ];
 			} else {
 				domBefore = this.getCorrespondingDom( viewPosition.nodeBefore );
+
+				if ( !domBefore ) {
+					// Position is after a view element that has not been rendered to DOM yet.
+					return null;
+				}
+
 				domParent = domBefore.parentNode;
 				domAfter = domBefore.nextSibling;
 			}

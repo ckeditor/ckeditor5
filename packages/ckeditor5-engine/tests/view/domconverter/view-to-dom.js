@@ -508,6 +508,18 @@ describe( 'DomConverter', () => {
 			expect( domPosition.offset ).to.equal( INLINE_FILLER_LENGTH );
 			expect( domPosition.parent ).to.equal( domFiller );
 		} );
+
+		it( 'should return null if view position is after a view element that has not been rendered to DOM', () => {
+			const domP = createElement( document, 'p', null );
+			const { view: viewP, selection } = parse( '<container:p><attribute:b>foo</attribute:b>[]</container:p>' );
+
+			converter.bindElements( domP, viewP );
+
+			const viewPosition = selection.getFirstPosition();
+			const domPosition = converter.viewPositionToDom( viewPosition );
+
+			expect( domPosition ).to.equal( null );
+		} );
 	} );
 
 	describe( 'viewRangeToDom', () => {
