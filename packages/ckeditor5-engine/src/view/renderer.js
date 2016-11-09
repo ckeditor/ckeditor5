@@ -304,10 +304,12 @@ export default class Renderer {
 			return false;
 		}
 
-		const { parent: domParent } = this.domConverter.viewPositionToDom( selectionPosition );
+		const position = this.domConverter.viewPositionToDom( selectionPosition );
 
-		if ( this.domConverter.isText( domParent ) && startsWithFiller( domParent ) ) {
-			return true;
+		if ( position ) {
+			if ( this.domConverter.isText( position.parent ) && startsWithFiller( position.parent ) ) {
+				return true;
+			}
 		}
 
 		return false;
