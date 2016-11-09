@@ -16,11 +16,15 @@ import Range from 'ckeditor5/engine/model/range.js';
 
 import Delta from 'ckeditor5/engine/model/delta/delta.js';
 import SplitDelta from 'ckeditor5/engine/model/delta/splitdelta.js';
+import AttributeDelta from 'ckeditor5/engine/model/delta/attributedelta.js';
+import RenameDelta from 'ckeditor5/engine/model/delta/renamedelta.js';
 
 import InsertOperation from 'ckeditor5/engine/model/operation/insertoperation.js';
+import AttributeOperation from 'ckeditor5/engine/model/operation/attributeoperation.js';
 import ReinsertOperation from 'ckeditor5/engine/model/operation/reinsertoperation.js';
 import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
 import NoOperation from 'ckeditor5/engine/model/operation/nooperation.js';
+import RenameOperation from 'ckeditor5/engine/model/operation/renameoperation.js';
 
 import { getNodesAndText, jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
 
@@ -459,6 +463,231 @@ describe( 'transform', () => {
 
 				// WrapDelta and SplitDelta are correctly applied.
 				expect( nodesAndText ).to.equal( 'EXabcdXPabcPPfoobarxyzPE' );
+			} );
+		} );
+
+		describe( 'AttributeDelta', () => {
+			it( 'attribute changed on split element', () => {
+				let attributeDelta = new AttributeDelta();
+
+				attributeDelta.addOperation( new AttributeOperation(
+					Range.createFromParentsAndOffsets( root, 0, root, 2 ), 'key', 'oldValue', 'newValue', baseVersion
+				) );
+
+				attributeDelta.addOperation( new AttributeOperation(
+					Range.createFromPositionAndShift( new Position( root, [ 3, 3, 2 ] ), 3 ), 'key', null, 'newValue', baseVersion + 1
+				) );
+
+				let transformed = transform( splitDelta, attributeDelta );
+
+				baseVersion = attributeDelta.operations.length;
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: new Position( root, [ 3, 3, 4 ] ),
+							baseVersion: baseVersion
+						},
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 3, 3 ] ),
+							howMany: 9,
+							targetPosition: new Position( root, [ 3, 3, 4, 0 ] ),
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+
+				expect( transformed[ 0 ].operations[ 0 ].nodes.getNode( 0 ).getAttribute( 'key' ) ).to.equal( 'newValue' );
+			} );
+
+			it( 'attribute removed from split element', () => {
+				splitDelta.operations[ 0 ].nodes.getNode( 0 ).setAttribute( 'key', 'oldValue' );
+				let attributeDelta = new AttributeDelta();
+
+				attributeDelta.addOperation( new AttributeOperation(
+					Range.createFromParentsAndOffsets( root, 0, root, 2 ), 'key', 'otherValue', null, baseVersion
+				) );
+
+				attributeDelta.addOperation( new AttributeOperation(
+					Range.createFromPositionAndShift( new Position( root, [ 3, 3, 2 ] ), 3 ), 'key', 'oldValue', null, baseVersion + 1
+				) );
+
+				let transformed = transform( splitDelta, attributeDelta );
+
+				baseVersion = attributeDelta.operations.length;
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: new Position( root, [ 3, 3, 4 ] ),
+							baseVersion: baseVersion
+						},
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 3, 3 ] ),
+							howMany: 9,
+							targetPosition: new Position( root, [ 3, 3, 4, 0 ] ),
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+
+				expect( transformed[ 0 ].operations[ 0 ].nodes.getNode( 0 ).hasAttribute( 'key' ) ).to.be.false;
+			} );
+
+			it( 'attribute changed on split element that is reinserted from graveyard', () => {
+				splitDelta.operations[ 0 ] = new ReinsertOperation(
+					new Position( gy, [ 1 ] ),
+					1,
+					new Position( root, [ 3, 3, 4 ] ),
+					baseVersion
+				);
+
+				let attributeDelta = new AttributeDelta();
+
+				attributeDelta.addOperation( new AttributeOperation(
+					Range.createFromParentsAndOffsets( root, 0, root, 4 ), 'key', 'oldValue', 'newValue', baseVersion
+				) );
+
+				let transformed = transform( splitDelta, attributeDelta );
+
+				baseVersion = attributeDelta.operations.length;
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: ReinsertOperation,
+							sourcePosition: new Position( gy, [ 1 ] ),
+							howMany: 1,
+							targetPosition: new Position( root, [ 3, 3, 4 ] ),
+							baseVersion: baseVersion
+						},
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 3, 3 ] ),
+							howMany: 9,
+							targetPosition: new Position( root, [ 3, 3, 4, 0 ] ),
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+			} );
+		} );
+
+		describe( 'RenameDelta', () => {
+			it( 'renamed split element', () => {
+				const renameDelta = new RenameDelta();
+				renameDelta.addOperation( new RenameOperation(
+					new Position( root, [ 3, 3, 3 ] ), 'p', 'li', baseVersion
+				) );
+
+				let transformed = transform( splitDelta, renameDelta );
+
+				baseVersion = renameDelta.operations.length;
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: new Position( root, [ 3, 3, 4 ] ),
+							baseVersion: baseVersion
+						},
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 3, 3 ] ),
+							howMany: 9,
+							targetPosition: new Position( root, [ 3, 3, 4, 0 ] ),
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+
+				expect( transformed[ 0 ].operations[ 0 ].nodes.getNode( 0 ).name ).to.equal( 'li' );
+			} );
+
+			it( 'split element is different than renamed element', () => {
+				const renameDelta = new RenameDelta();
+				renameDelta.addOperation( new RenameOperation(
+					new Position( root, [ 4 ] ), 'p', 'li', baseVersion
+				) );
+
+				let transformed = transform( splitDelta, renameDelta );
+
+				baseVersion = renameDelta.operations.length;
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: new Position( root, [ 3, 3, 4 ] ),
+							baseVersion: baseVersion
+						},
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 3, 3 ] ),
+							howMany: 9,
+							targetPosition: new Position( root, [ 3, 3, 4, 0 ] ),
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+			} );
+
+			it( 'renamed split element that is reinserted from graveyard', () => {
+				splitDelta.operations[ 0 ] = new ReinsertOperation(
+					new Position( gy, [ 1 ] ),
+					1,
+					new Position( root, [ 3, 3, 4 ] ),
+					baseVersion
+				);
+
+				const renameDelta = new RenameDelta();
+				renameDelta.addOperation( new RenameOperation(
+					new Position( root, [ 3, 3, 3 ] ), 'p', 'li', baseVersion
+				) );
+
+				let transformed = transform( splitDelta, renameDelta );
+
+				baseVersion = renameDelta.operations.length;
+
+				expect( transformed.length ).to.equal( 1 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: ReinsertOperation,
+							sourcePosition: new Position( gy, [ 1 ] ),
+							howMany: 1,
+							targetPosition: new Position( root, [ 3, 3, 4 ] ),
+							baseVersion: baseVersion
+						},
+						{
+							type: MoveOperation,
+							sourcePosition: new Position( root, [ 3, 3, 3, 3 ] ),
+							howMany: 9,
+							targetPosition: new Position( root, [ 3, 3, 4, 0 ] ),
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
 			} );
 		} );
 	} );
