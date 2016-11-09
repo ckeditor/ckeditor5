@@ -59,7 +59,7 @@ export default class Link extends Feature {
 
 	/**
 	 * Creates a toolbar link button. Clicking this button will show
-	 * {@link link.Link#balloonPanel} attached to the selection.
+	 * {@link link.Link#balloonPanelView} attached to the selection.
 	 *
 	 * @private
 	 */
