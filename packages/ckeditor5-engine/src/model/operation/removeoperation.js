@@ -130,4 +130,20 @@ export default class RemoveOperation extends MoveOperation {
 	static get className() {
 		return 'engine.model.operation.RemoveOperation';
 	}
+
+	/**
+	 * Creates `RemoveOperation` object from deserilized object, i.e. from parsed JSON string.
+	 *
+	 * @param {Object} json Deserialized JSON object.
+	 * @param {engine.model.Document} document Document on which this operation will be applied.
+	 * @returns {engine.model.operation.RemoveOperation}
+	 */
+	static fromJSON( json, document ) {
+		let sourcePosition = Position.fromJSON( json.sourcePosition, document );
+
+		const removeOp = new RemoveOperation( sourcePosition, json.howMany, json.baseVersion );
+		removeOp.targetPosition = Position.fromJSON( json.targetPosition, document );
+
+		return removeOp;
+	}
 }

@@ -11,6 +11,7 @@ import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js
 import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
 import Position from 'ckeditor5/engine/model/position.js';
 import Text from 'ckeditor5/engine/model/text.js';
+import Element from 'ckeditor5/engine/model/element.js';
 import Delta from 'ckeditor5/engine/model/delta/delta.js';
 import { jsonParseStringify, wrapInDelta } from 'tests/engine/model/_utils/utils.js';
 
@@ -203,6 +204,8 @@ describe( 'RemoveOperation', () => {
 				2,
 				doc.version
 			);
+
+			doc.graveyard.appendChildren( [ new Element( '$graveyardHolder' ), new Element( '$graveyardHolder' ) ] );
 
 			const serialized = jsonParseStringify( op );
 			const deserialized = RemoveOperation.fromJSON( serialized, doc );
