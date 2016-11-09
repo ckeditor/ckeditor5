@@ -11,7 +11,6 @@ import MoveOperation from './moveoperation.js';
 import RemoveOperation from './removeoperation.js';
 import NoOperation from './nooperation.js';
 import Range from '../range.js';
-import isEqual from '../../../utils/lib/lodash/isEqual.js';
 import compareArrays from '../../../utils/comparearrays.js';
 
 /**
@@ -110,22 +109,18 @@ const ot = {
 					return new AttributeOperation( range, a.key, a.oldValue, a.newValue, a.baseVersion );
 				} );
 
-				// Then we take care of the common part of ranges, but only if operations has different `newValue`.
-				if ( isStrong && !isEqual( a.newValue, b.newValue ) ) {
+				// Then we take care of the common part of ranges.
+				const common = a.range.getIntersection( b.range );
+
+				if ( common ) {
 					// If this operation is more important, we also want to apply change to the part of the
 					// original range that has already been changed by the other operation. Since that range
 					// got changed we also have to update `oldValue`.
-					const common = a.range.getIntersection( b.range );
-
-					if ( common !== null ) {
-						operations.push( new AttributeOperation( common, b.key, b.oldValue, a.newValue, a.baseVersion ) );
+					if ( isStrong ) {
+						operations.push( new AttributeOperation( common, b.key, b.newValue, a.newValue, a.baseVersion ) );
+					} else if ( operations.length === 0 ) {
+						operations.push( new NoOperation( 0 ) );
 					}
-				}
-
-				// If no operations has been added nothing should get updated, but since we need to return
-				// an instance of Operation we add NoOperation to the array.
-				if ( operations.length === 0 ) {
-					operations.push( new NoOperation( a.baseVersion ) );
 				}
 
 				return operations;
