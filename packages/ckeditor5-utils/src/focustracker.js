@@ -5,7 +5,7 @@
 
 /* global setTimeout, clearTimeout */
 
-import DOMEmitterMixin from '../ui/domemittermixin.js';
+import DomEmitterMixin from './dom/emittermixin.js';
 import ObservableMixin from './observablemixin.js';
 import CKEditorError from './ckeditorerror.js';
 import mix from './mix.js';
@@ -21,7 +21,7 @@ import mix from './mix.js';
  * (have e.g. `tabindex="-1"`).
  *
  * @memberOf utils
- * @mixes utils.DOMEmitterMixin
+ * @mixes utils.dom.EmitterMixin
  * @mixes utils.ObservableMixin
  */
 export default class FocusTracker {
@@ -119,5 +119,5 @@ export default class FocusTracker {
 	}
 }
 
-mix( FocusTracker, DOMEmitterMixin );
+mix( FocusTracker, DomEmitterMixin );
 mix( FocusTracker, ObservableMixin );
