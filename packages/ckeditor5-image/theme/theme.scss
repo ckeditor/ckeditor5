@@ -1,22 +1,17 @@
-//.ck-image {
-//	border: 1px solid transparent;
-//	&__selected {
-//		border: 1px solid ck-border-color();
-//	}
-//}
-
 figure {
-	&.image {
+	&.ck-widget.image {
 		text-align: center;
-		cursor: pointer;
-		overflow: hidden;
 
 		img {
 			pointer-events: none;
 		}
 
-		&.selected {
-			background-color: #dedede;
+		&.ck-widget_selected img, &.ck-widget_selected:hover img{
+			outline: 2px solid #ace;
+		}
+
+		&:hover img {
+			outline: 2px solid yellow;
 		}
 	}
 }
