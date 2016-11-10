@@ -8,6 +8,14 @@ import ImageEngine from './imageengine.js';
 import ModelRange from '../engine/model/range.js';
 import MouseDownObserver from './mousedownobserver.js';
 
+/**
+ * The image feature.
+ *
+ * Uses {@link image.ImageEngine}.
+ *
+ * @memberOf image
+ * @extends core.Feature
+ */
 export default class Image extends Feature {
 	/**
 	 * @inheritDoc
@@ -16,6 +24,9 @@ export default class Image extends Feature {
 		return [ ImageEngine ];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const viewDocument = this.editor.editing.view;
 
