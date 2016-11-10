@@ -120,7 +120,14 @@ describe( 'SelectionObserver', () => {
 	it( 'should not fired if there is no focus', ( done ) => {
 		viewDocument.isFocused = false;
 
+		// changeDomSelection() may focus the editable element (happens on Chrome)
+		// so cancel this because it sets the isFocused flag.
+		viewDocument.on( 'focus', ( evt ) => evt.stop(), { priority: 'highest' } );
+
 		viewDocument.on( 'selectionChange', () => {
+			// Validate the correctness of the test. May help tracking issue with this test.
+			expect( viewDocument.isFocused ).to.be.false;
+
 			throw 'selectionChange on render';
 		} );
 
