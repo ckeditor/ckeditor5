@@ -9,9 +9,10 @@ import { getData as getModelData, setData as setModelData } from 'ckeditor5/engi
 import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
 import buildViewConverter from 'ckeditor5/engine/conversion/buildviewconverter.js';
 import buildModelConverter from 'ckeditor5/engine/conversion/buildmodelconverter.js';
+import ModelRange from 'ckeditor5/engine/model/range.js';
 
 describe( `ImageEngine`, () => {
-	let editor, document;
+	let editor, document, viewDocument;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
@@ -20,6 +21,7 @@ describe( `ImageEngine`, () => {
 		.then( newEditor => {
 			editor = newEditor;
 			document = editor.document;
+			viewDocument = editor.editing.view;
 		} );
 	} );
 
@@ -141,23 +143,91 @@ describe( `ImageEngine`, () => {
 			it( 'should convert', () => {
 				setModelData( document, '<image src="foo.png" alt="alt text"></image>' );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
-					.to.equal( '<figure class="image" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>' );
+				expect( getViewData( viewDocument, { withoutSelection: true } ) )
+					.to.equal( '<figure class="image ck-widget" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>' );
 			} );
 
 			it( 'should convert without alt attribute', () => {
 				setModelData( document, '<image src="foo.png"></image>' );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
-					.to.equal( '<figure class="image" contenteditable="false"><img src="foo.png"></img></figure>' );
+				expect( getViewData( viewDocument, { withoutSelection: true } ) )
+					.to.equal( '<figure class="image ck-widget" contenteditable="false"><img src="foo.png"></img></figure>' );
 			} );
 
 			it( 'should convert without src attribute', () => {
 				setModelData( document, '<image alt="alt text"></image>' );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
-					.to.equal( '<figure class="image" contenteditable="false"><img alt="alt text"></img></figure>' );
+				expect( getViewData( viewDocument, { withoutSelection: true } ) )
+					.to.equal( '<figure class="image ck-widget" contenteditable="false"><img alt="alt text"></img></figure>' );
 			} );
+
+			it( 'should widgetize element', () => {
+				setModelData( document, '<image src="foo.png" alt="alt text"></image>' );
+				const figure = viewDocument.getRoot().getChild( 0 );
+
+				expect( figure.name ).to.equal( 'figure' );
+				expect( figure.isWidget ).to.be.true;
+				expect( figure.getFillerOffset() ).to.be.null;
+				expect( figure.hasClass( 'ck-widget' ) ).to.be.true;
+			} );
+		} );
+	} );
+
+	describe( 'selection conversion', () => {
+		it( 'should convert selection', () => {
+			setModelData( document, '[<image alt="alt text" src="foo.png"></image>]' );
+
+			expect( getViewData( viewDocument ) ).to.equal(
+				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
+					'<img alt="alt text" src="foo.png"></img>' +
+				'</figure>]'
+			);
+
+			expect( viewDocument.selection.isFake ).to.be.true;
+			expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'alt text image widget' );
+		} );
+
+		it( 'should create proper fake selection label when alt attribute is not present', () => {
+			setModelData( document, '[<image src="foo.png"></image>]' );
+
+			expect( getViewData( viewDocument ) ).to.equal(
+				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
+					'<img src="foo.png"></img>' +
+				'</figure>]'
+			);
+
+			expect( viewDocument.selection.isFake ).to.be.true;
+			expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'image widget' );
+		} );
+
+		it( 'should remove selected class from previously selected element', () => {
+			setModelData( document,
+				'[<image src="foo.png" alt="alt text"></image>]' +
+				'<image src="foo.png" alt="alt text"></image>'
+			);
+
+			expect( getViewData( viewDocument ) ).to.equal(
+				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
+					'<img alt="alt text" src="foo.png"></img>' +
+				'</figure>]' +
+				'<figure class="image ck-widget" contenteditable="false">' +
+					'<img alt="alt text" src="foo.png"></img>' +
+				'</figure>'
+			);
+
+			document.enqueueChanges( () => {
+				const secondImage = document.getRoot().getChild( 1 );
+				document.selection.setRanges( [ ModelRange.createOn( secondImage ) ] );
+			} );
+
+			expect( getViewData( viewDocument ) ).to.equal(
+				'<figure class="image ck-widget" contenteditable="false">' +
+					'<img alt="alt text" src="foo.png"></img>' +
+				'</figure>' +
+				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
+					'<img alt="alt text" src="foo.png"></img>' +
+				'</figure>]'
+			);
 		} );
 	} );
 } );

@@ -95,12 +95,12 @@ export function viewToModelImage() {
 		const modelImage = new ModelElement( 'image' );
 
 		// Add src if one is present.
-		if ( consumable.consume( viewImg, { attributes: [ 'src' ] } ) ) {
+		if ( viewImg.hasAttribute( 'src' ) && consumable.consume( viewImg, { attributes: [ 'src' ] } ) ) {
 			modelImage.setAttribute( 'src', viewImg.getAttribute( 'src' ) );
 		}
 
 		// Add alt if one is present.
-		if ( consumable.consume( viewImg, { attributes: [ 'alt' ] } ) ) {
+		if ( viewImg.hasAttribute( 'alt' ) && consumable.consume( viewImg, { attributes: [ 'alt' ] } ) ) {
 			modelImage.setAttribute( 'alt', viewImg.getAttribute( 'alt' ) );
 		}
 
