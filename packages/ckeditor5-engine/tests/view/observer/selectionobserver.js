@@ -21,14 +21,14 @@ import { parse } from 'ckeditor5/engine/dev-utils/view.js';
 testUtils.createSinonSandbox();
 
 describe( 'SelectionObserver', () => {
-	let viewDocument, viewRoot, mutationObserver, selectionObserver, listenter, domRoot;
+	let viewDocument, viewRoot, mutationObserver, selectionObserver, listener, domRoot;
 
-	before( () => {
+	beforeEach( ( done ) => {
 		domRoot = document.createElement( 'div' );
 		domRoot.innerHTML = `<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>`;
 		document.body.appendChild( domRoot );
 
-		listenter = Object.create( EmitterMixin );
+		listener = Object.create( EmitterMixin );
 
 		viewDocument = new ViewDocument();
 		viewDocument.createRoot( document.getElementById( 'main' ) );
@@ -43,30 +43,27 @@ describe( 'SelectionObserver', () => {
 			'<container:p>yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy</container:p>' ) );
 
 		viewDocument.render();
-	} );
 
-	after( () => {
-		domRoot.parentElement.removeChild( domRoot );
-	} );
-
-	beforeEach( ( done ) => {
 		viewDocument.selection.removeAllRanges();
 		document.getSelection().removeAllRanges();
 
 		viewDocument.isFocused = true;
 
-		viewDocument.getObserver( SelectionObserver ).enable();
+		selectionObserver.enable();
 
 		// Ensure selectionchange will not be fired.
 		setTimeout( () => done(), 100 );
 	} );
 
 	afterEach( () => {
-		listenter.stopListening();
+		domRoot.parentElement.removeChild( domRoot );
+
+		listener.stopListening();
+		selectionObserver.disable();
 	} );
 
 	it( 'should fire selectionChange when it is the only change', ( done ) => {
-		listenter.listenTo( viewDocument, 'selectionChange', ( evt, data ) => {
+		listener.listenTo( viewDocument, 'selectionChange', ( evt, data ) => {
 			expect( data ).to.have.property( 'domSelection' ).that.equals( document.getSelection() );
 
 			expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( ViewSelection );
@@ -93,7 +90,7 @@ describe( 'SelectionObserver', () => {
 		// Add second roots to ensure that listener is added once.
 		viewDocument.createRoot( document.getElementById( 'additional' ), 'additional' );
 
-		listenter.listenTo( viewDocument, 'selectionChange', () => {
+		listener.listenTo( viewDocument, 'selectionChange', () => {
 			done();
 		} );
 
@@ -101,11 +98,11 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should not fire selectionChange on render', ( done ) => {
-		listenter.listenTo( viewDocument, 'selectionChange', () => {
+		listener.listenTo( viewDocument, 'selectionChange', () => {
 			throw 'selectionChange on render';
 		} );
 
-		setTimeout( () => done(), 70 );
+		setTimeout( done, 70 );
 
 		const viewBar = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
 		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewBar, 1, viewBar, 2 ) );
@@ -115,11 +112,11 @@ describe( 'SelectionObserver', () => {
 	it( 'should not fired if observer is disabled', ( done ) => {
 		viewDocument.getObserver( SelectionObserver ).disable();
 
-		listenter.listenTo( viewDocument, 'selectionChange', () => {
+		listener.listenTo( viewDocument, 'selectionChange', () => {
 			throw 'selectionChange on render';
 		} );
 
-		setTimeout( () => done(), 70 );
+		setTimeout( done, 70 );
 
 		changeDomSelection();
 	} );
@@ -127,11 +124,11 @@ describe( 'SelectionObserver', () => {
 	it( 'should not fired if there is no focus', ( done ) => {
 		viewDocument.isFocused = false;
 
-		listenter.listenTo( viewDocument, 'selectionChange', () => {
+		listener.listenTo( viewDocument, 'selectionChange', () => {
 			throw 'selectionChange on render';
 		} );
 
-		setTimeout( () => done(), 70 );
+		setTimeout( done, 70 );
 
 		changeDomSelection();
 	} );
@@ -145,13 +142,13 @@ describe( 'SelectionObserver', () => {
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
 
-		listenter.listenTo( viewDocument, 'selectionChange', () => {
+		listener.listenTo( viewDocument, 'selectionChange', () => {
 			counter--;
 
 			if ( counter > 0 ) {
 				setTimeout( changeDomSelection );
 			} else {
-				throw( 'Infinite loop!' );
+				throw 'Infinite loop!';
 			}
 		} );
 
