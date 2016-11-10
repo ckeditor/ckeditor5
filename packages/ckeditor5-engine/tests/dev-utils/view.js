@@ -12,6 +12,7 @@ import Position from 'ckeditor5/engine/view/position.js';
 import Element from 'ckeditor5/engine/view/element.js';
 import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
 import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
+import EmptyElement from 'ckeditor5/engine/view/emptyelement.js';
 import Text from 'ckeditor5/engine/view/text.js';
 import Selection from 'ckeditor5/engine/view/selection.js';
 import Range from 'ckeditor5/engine/view/range.js';
@@ -332,6 +333,13 @@ describe( 'view test utils', () => {
 			const string = stringify( text, range );
 			expect( string ).to.equal( 'foo{b}ar' );
 		} );
+
+		it( 'should stringify EmptyElement', () => {
+			const img = new EmptyElement( 'img' );
+			const p = new ContainerElement( 'p', null, img );
+			expect( stringify( p, null, { showType: true } ) )
+				.to.equal( '<container:p><empty:img></empty:img></container:p>' );
+		} );
 	} );
 
 	describe( 'parse', () => {
@@ -611,6 +619,18 @@ describe( 'view test utils', () => {
 			const data = parse( '<span>text</span><b>test</b>', { rootElement: root } );
 
 			expect( stringify( data ) ).to.equal( '<p><span>text</span><b>test</b></p>' );
+		} );
+
+		it( 'should parse EmptyElement', () => {
+			const parsed = parse( '<empty:img></empty:img>' );
+
+			expect( parsed ).to.be.instanceof( EmptyElement );
+		} );
+
+		it( 'should throw an error if EmptyElement is not empty', () => {
+			expect( () => {
+				parse( '<empty:img>foo bar</empty:img>' );
+			} ).to.throw( Error, 'Parse error - cannot parse inside EmptyElement.' );
 		} );
 	} );
 } );

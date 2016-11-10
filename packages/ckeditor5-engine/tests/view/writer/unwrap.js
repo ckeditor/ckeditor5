@@ -9,6 +9,7 @@ import { unwrap } from 'ckeditor5/engine/view/writer.js';
 import Element from 'ckeditor5/engine/view/element.js';
 import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
 import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
+import EmptyElement from 'ckeditor5/engine/view/emptyelement.js';
 import Position from 'ckeditor5/engine/view/position.js';
 import Range from 'ckeditor5/engine/view/range.js';
 import Text from 'ckeditor5/engine/view/text.js';
@@ -297,6 +298,25 @@ describe( 'writer', () => {
 				'<attribute:b view-priority="1"></attribute:b>',
 				'<container:p>[foobar]</container:p>'
 			);
+		} );
+
+		it( 'should unwrap EmptyElement', () => {
+			test(
+				'<container:p>[<attribute:b><empty:img></empty:img></attribute:b>]</container:p>',
+				'<attribute:b></attribute:b>',
+				'<container:p>[<empty:img></empty:img>]</container:p>'
+			);
+		} );
+
+		it( 'should throw if range is inside EmptyElement', () => {
+			const empty = new EmptyElement( 'img' );
+			const attribute = new AttributeElement( 'b' );
+			const container = new ContainerElement( 'p', null, [ empty, attribute ] );
+			const range = Range.createFromParentsAndOffsets( empty, 0, container, 2 );
+
+			expect( () => {
+				unwrap( range, attribute );
+			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 		} );
 	} );
 } );
