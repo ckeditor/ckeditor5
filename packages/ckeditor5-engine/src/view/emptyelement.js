@@ -23,12 +23,7 @@ export default class EmptyElement extends Element {
 		super( name, attributes );
 
 		if ( arguments.length > 2 ) {
-			/**
-			 * Cannot add children to {@link engine.view.EmptyElement}.
-			 *
-			 * @error view-emptyelement-cannot-add
-			 */
-			throw new CKEditorError( 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
+			throwCannotAdd();
 		}
 	}
 
@@ -55,7 +50,7 @@ export default class EmptyElement extends Element {
 	 * to EmptyElement.
 	 */
 	appendChildren() {
-		throw new CKEditorError( 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
+		throwCannotAdd();
 	}
 
 	/**
@@ -64,7 +59,7 @@ export default class EmptyElement extends Element {
 	 * to EmptyElement.
 	 */
 	insertChildren() {
-		throw new CKEditorError( 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
+		throwCannotAdd();
 	}
 
 	/**
@@ -75,4 +70,13 @@ export default class EmptyElement extends Element {
 	getFillerOffset() {
 		return null;
 	}
+}
+
+function throwCannotAdd() {
+	/**
+	 * Cannot add children to {@link engine.view.EmptyElement}.
+	 *
+	 * @error view-emptyelement-cannot-add
+	 */
+	throw new CKEditorError( 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
 }
