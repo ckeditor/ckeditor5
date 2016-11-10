@@ -6,7 +6,7 @@
 import CKEditorError from '../utils/ckeditorerror.js';
 import ViewCollection from './viewcollection.js';
 import Template from './template.js';
-import DOMEmitterMixin from './domemittermixin.js';
+import DomEmmiterMixin from '../utils/dom/emittermixin.js';
 import ObservableMixin from '../utils/observablemixin.js';
 import Collection from '../utils/collection.js';
 import mix from '../utils/mix.js';
@@ -44,8 +44,8 @@ import mix from '../utils/mix.js';
  *		} );
  *
  * @memberOf ui
- * @mixes DOMEmitterMixin
- * @mixes ObservableMixin
+ * @mixes utils.dom.EmmiterMixin
+ * @mixes utils.ObservableMixin
  */
 export default class View {
 	/**
@@ -298,5 +298,5 @@ export default class View {
 	}
 }
 
-mix( View, DOMEmitterMixin );
+mix( View, DomEmmiterMixin );
 mix( View, ObservableMixin );

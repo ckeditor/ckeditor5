@@ -852,8 +852,8 @@ function getStyleUpdater( el, styleName ) {
 function clone( def ) {
 	const clone = cloneDeepWith( def, value => {
 		// Don't clone the `Template.bind`* bindings because of the references to Observable
-		// and DOMEmitterMixin instances inside, which would also be traversed and cloned by greedy
-		// cloneDeepWith algorithm. There's no point in cloning Observable/DOMEmitterMixins
+		// and DomEmitterMixin instances inside, which would also be traversed and cloned by greedy
+		// cloneDeepWith algorithm. There's no point in cloning Observable/DomEmitterMixins
 		// along with the definition.
 		//
 		// Also don't clone View instances if provided as a child of the Template. The template
