@@ -14,7 +14,7 @@ import ViewCollection from 'ckeditor5/ui/viewcollection.js';
 import Model from 'ckeditor5/ui/model.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 import EmitterMixin from 'ckeditor5/utils/emittermixin.js';
-import DOMEmitterMixin from 'ckeditor5/ui/domemittermixin.js';
+import DomEmitterMixin from 'ckeditor5/utils/dom/emittermixin.js';
 import Collection from 'ckeditor5/utils/collection.js';
 import normalizeHtml from 'tests/utils/_utils/normalizehtml.js';
 
@@ -25,7 +25,7 @@ let el, text;
 describe( 'Template', () => {
 	describe( 'constructor()', () => {
 		it( 'accepts and normalizes the definition', () => {
-			const bind = Template.bind( new Model( {} ), Object.create( DOMEmitterMixin ) );
+			const bind = Template.bind( new Model( {} ), Object.create( DomEmitterMixin ) );
 			const tpl = new Template( {
 				tag: 'p',
 				attributes: {
@@ -551,7 +551,7 @@ describe( 'Template', () => {
 				baz: 'qux'
 			} );
 
-			domEmitter = Object.create( DOMEmitterMixin );
+			domEmitter = Object.create( DomEmitterMixin );
 			bind = Template.bind( observable, domEmitter );
 		} );
 
@@ -809,7 +809,7 @@ describe( 'Template', () => {
 					baz: 'qux'
 				} );
 
-				domEmitter = Object.create( DOMEmitterMixin );
+				domEmitter = Object.create( DomEmitterMixin );
 				bind = Template.bind( observable, domEmitter );
 			} );
 
@@ -1525,7 +1525,7 @@ describe( 'Template', () => {
 				baz: 'qux'
 			} );
 
-			emitter = Object.create( DOMEmitterMixin );
+			emitter = Object.create( DomEmitterMixin );
 			bind = Template.bind( observable, emitter );
 		} );
 
