@@ -13,7 +13,6 @@ import ViewDocument from 'ckeditor5/engine/view/document.js';
 import SelectionObserver from 'ckeditor5/engine/view/observer/selectionobserver.js';
 import MutationObserver from 'ckeditor5/engine/view/observer/mutationobserver.js';
 
-import EmitterMixin from 'ckeditor5/utils/emittermixin.js';
 import log from 'ckeditor5/utils/log.js';
 
 import { parse } from 'ckeditor5/engine/dev-utils/view.js';
@@ -21,14 +20,12 @@ import { parse } from 'ckeditor5/engine/dev-utils/view.js';
 testUtils.createSinonSandbox();
 
 describe( 'SelectionObserver', () => {
-	let viewDocument, viewRoot, mutationObserver, selectionObserver, listener, domRoot;
+	let viewDocument, viewRoot, mutationObserver, selectionObserver, domRoot;
 
 	beforeEach( ( done ) => {
 		domRoot = document.createElement( 'div' );
 		domRoot.innerHTML = `<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>`;
 		document.body.appendChild( domRoot );
-
-		listener = Object.create( EmitterMixin );
 
 		viewDocument = new ViewDocument();
 		viewDocument.createRoot( document.getElementById( 'main' ) );
@@ -58,12 +55,11 @@ describe( 'SelectionObserver', () => {
 	afterEach( () => {
 		domRoot.parentElement.removeChild( domRoot );
 
-		listener.stopListening();
 		selectionObserver.disable();
 	} );
 
 	it( 'should fire selectionChange when it is the only change', ( done ) => {
-		listener.listenTo( viewDocument, 'selectionChange', ( evt, data ) => {
+		viewDocument.on( 'selectionChange', ( evt, data ) => {
 			expect( data ).to.have.property( 'domSelection' ).that.equals( document.getSelection() );
 
 			expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( ViewSelection );
@@ -90,7 +86,7 @@ describe( 'SelectionObserver', () => {
 		// Add second roots to ensure that listener is added once.
 		viewDocument.createRoot( document.getElementById( 'additional' ), 'additional' );
 
-		listener.listenTo( viewDocument, 'selectionChange', () => {
+		viewDocument.on( 'selectionChange', () => {
 			done();
 		} );
 
@@ -98,7 +94,7 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should not fire selectionChange on render', ( done ) => {
-		listener.listenTo( viewDocument, 'selectionChange', () => {
+		viewDocument.on( 'selectionChange', () => {
 			throw 'selectionChange on render';
 		} );
 
@@ -112,7 +108,7 @@ describe( 'SelectionObserver', () => {
 	it( 'should not fired if observer is disabled', ( done ) => {
 		viewDocument.getObserver( SelectionObserver ).disable();
 
-		listener.listenTo( viewDocument, 'selectionChange', () => {
+		viewDocument.on( 'selectionChange', () => {
 			throw 'selectionChange on render';
 		} );
 
@@ -124,7 +120,7 @@ describe( 'SelectionObserver', () => {
 	it( 'should not fired if there is no focus', ( done ) => {
 		viewDocument.isFocused = false;
 
-		listener.listenTo( viewDocument, 'selectionChange', () => {
+		viewDocument.on( 'selectionChange', () => {
 			throw 'selectionChange on render';
 		} );
 
@@ -142,7 +138,7 @@ describe( 'SelectionObserver', () => {
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
 
-		listener.listenTo( viewDocument, 'selectionChange', () => {
+		viewDocument.on( 'selectionChange', () => {
 			counter--;
 
 			if ( counter > 0 ) {
