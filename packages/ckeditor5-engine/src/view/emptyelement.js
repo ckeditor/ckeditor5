@@ -55,11 +55,6 @@ export default class EmptyElement extends Element {
 	 * to EmptyElement.
 	 */
 	appendChildren() {
-		/**
-		 * Cannot add children to {@link engine.view.EmptyElement}.
-		 *
-		 * @error view-emptyelement-cannot-add
-		 */
 		throw new CKEditorError( 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
 	}
 
@@ -69,11 +64,6 @@ export default class EmptyElement extends Element {
 	 * to EmptyElement.
 	 */
 	insertChildren() {
-		/**
-		 * Cannot add children to {@link engine.view.EmptyElement}.
-		 *
-		 * @error view-emptyelement-cannot-add
-		 */
 		throw new CKEditorError( 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
 	}
 
