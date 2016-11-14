@@ -723,12 +723,12 @@ describe( 'delegate', () => {
 			const spyDFoo = sinon.spy();
 
 			emitterB.delegate( 'foo' ).to( emitterA, 'bar' );
-			emitterB.delegate( 'foo' ).to( emitterC, 'baz' );
+			emitterB.delegate( 'foo' ).to( emitterC, name => name + '-baz' );
 			emitterB.delegate( 'foo' ).to( emitterD );
 
 			emitterA.on( 'foo', spyAFoo );
 			emitterA.on( 'bar', spyABar );
-			emitterC.on( 'baz', spyCBaz );
+			emitterC.on( 'foo-baz', spyCBaz );
 			emitterD.on( 'foo', spyDFoo );
 
 			emitterB.fire( 'foo' );
@@ -737,6 +737,67 @@ describe( 'delegate', () => {
 			sinon.assert.calledOnce( spyCBaz );
 			sinon.assert.calledOnce( spyDFoo );
 			sinon.assert.notCalled( spyAFoo );
+		} );
+
+		it( 'supports delegation under a different name with multiple events', () => {
+			const emitterA = getEmitterInstance();
+			const emitterB = getEmitterInstance();
+			const spyAFoo = sinon.spy();
+			const spyABar = sinon.spy();
+			const spyABaz = sinon.spy();
+			const spyAQux = sinon.spy();
+
+			emitterB.delegate( 'foo', 'bar', 'baz' ).to( emitterA, 'qux' );
+
+			emitterA.on( 'foo', spyAFoo );
+			emitterA.on( 'bar', spyABar );
+			emitterA.on( 'baz', spyABaz );
+			emitterA.on( 'qux', spyAQux );
+
+			emitterB.fire( 'foo' );
+			emitterB.fire( 'baz' );
+			emitterB.fire( 'bar' );
+
+			sinon.assert.notCalled( spyAFoo );
+			sinon.assert.notCalled( spyABar );
+			sinon.assert.notCalled( spyABaz );
+
+			sinon.assert.calledThrice( spyAQux );
+		} );
+
+		it( 'supports delegation with multiple events, each under a different name', () => {
+			const emitterA = getEmitterInstance();
+			const emitterB = getEmitterInstance();
+			const spyAFoo = sinon.spy();
+			const spyABar = sinon.spy();
+			const spyABaz = sinon.spy();
+			const spyAFooQux = sinon.spy();
+			const spyABarQux = sinon.spy();
+			const spyABazQux = sinon.spy();
+
+			emitterB.delegate( 'foo', 'bar', 'baz' ).to( emitterA, name => name + '-qux' );
+
+			emitterA.on( 'foo', spyAFoo );
+			emitterA.on( 'bar', spyABar );
+			emitterA.on( 'baz', spyABaz );
+
+			emitterA.on( 'foo-qux', spyAFooQux );
+			emitterA.on( 'bar-qux', spyABarQux );
+			emitterA.on( 'baz-qux', spyABazQux );
+
+			emitterB.fire( 'foo' );
+			emitterB.fire( 'baz' );
+			emitterB.fire( 'bar' );
+
+			sinon.assert.notCalled( spyAFoo );
+			sinon.assert.notCalled( spyABar );
+			sinon.assert.notCalled( spyABaz );
+
+			sinon.assert.calledOnce( spyAFooQux );
+			sinon.assert.calledOnce( spyABarQux );
+			sinon.assert.calledOnce( spyABazQux );
+
+			sinon.assert.callOrder( spyAFooQux, spyABazQux, spyABarQux );
 		} );
 
 		it( 'preserves path in delegation under a different name', ( done ) => {
@@ -762,6 +823,57 @@ describe( 'delegate', () => {
 			} );
 
 			emitterB.fire( 'foo', data );
+		} );
+
+		it( 'supports delegation of all events', () => {
+			const emitterA = getEmitterInstance();
+			const emitterB = getEmitterInstance();
+			const spyAFoo = sinon.spy();
+			const spyABar = sinon.spy();
+			const spyABaz = sinon.spy();
+
+			emitterB.delegate().to( emitterA );
+
+			emitterA.on( 'foo', spyAFoo );
+			emitterA.on( 'bar', spyABar );
+			emitterA.on( 'baz', spyABaz );
+
+			emitterB.fire( 'foo' );
+			emitterB.fire( 'baz' );
+			emitterB.fire( 'bar' );
+
+			sinon.assert.callOrder( spyAFoo, spyABaz, spyABar );
+		} );
+
+		it( 'supports delegation of all events under different names', () => {
+			const emitterA = getEmitterInstance();
+			const emitterB = getEmitterInstance();
+			const spyAFoo = sinon.spy();
+			const spyABar = sinon.spy();
+			const spyABaz = sinon.spy();
+			const spyAFooDel = sinon.spy();
+			const spyABarDel = sinon.spy();
+			const spyABazDel = sinon.spy();
+
+			emitterB.delegate().to( emitterA, name => name + '-delegated' );
+
+			emitterA.on( 'foo', spyAFoo );
+			emitterA.on( 'bar', spyABar );
+			emitterA.on( 'baz', spyABaz );
+
+			emitterA.on( 'foo-delegated', spyAFooDel );
+			emitterA.on( 'bar-delegated', spyABarDel );
+			emitterA.on( 'baz-delegated', spyABazDel );
+
+			emitterB.fire( 'foo' );
+			emitterB.fire( 'baz' );
+			emitterB.fire( 'bar' );
+
+			sinon.assert.notCalled( spyAFoo );
+			sinon.assert.notCalled( spyABar );
+			sinon.assert.notCalled( spyABaz );
+
+			sinon.assert.callOrder( spyAFooDel, spyABazDel, spyABarDel );
 		} );
 	} );
 } );
