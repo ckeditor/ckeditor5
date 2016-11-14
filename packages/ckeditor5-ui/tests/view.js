@@ -82,28 +82,26 @@ describe( 'View', () => {
 		} );
 	} );
 
-	describe( 'addChild', () => {
+	describe( 'addChildren', () => {
 		beforeEach( () => {
 			setTestViewClass();
 			setTestViewInstance();
 		} );
 
-		it( 'should add a view to #_unboundChildren', () => {
+		it( 'should add a single view to #_unboundChildren', () => {
 			expect( view._unboundChildren ).to.have.length( 0 );
 
 			const child = {};
 
-			view.addChild( child );
+			view.addChildren( child );
 			expect( view._unboundChildren ).to.have.length( 1 );
 			expect( view._unboundChildren.get( 0 ) ).to.equal( child );
 		} );
 
-		it( 'should support multiple ...arguments', () => {
+		it( 'should support iterables', () => {
 			expect( view._unboundChildren ).to.have.length( 0 );
 
-			const children = [ {}, {}, {} ];
-
-			view.addChild( ...children );
+			view.addChildren( [ {}, {}, {} ] );
 			expect( view._unboundChildren ).to.have.length( 3 );
 		} );
 	} );
@@ -219,7 +217,7 @@ describe( 'View', () => {
 		it( 'clears #_unboundChildren', () => {
 			const cached = view._unboundChildren;
 
-			view.addChild( new View(), new View() );
+			view.addChildren( new View(), new View() );
 			expect( cached ).to.have.length.above( 1 );
 
 			return view.destroy().then( () => {
@@ -354,5 +352,5 @@ function createViewWithChildren() {
 
 	setTestViewInstance();
 
-	view.addChild( childA, childB );
+	view.addChildren( childA, childB );
 }
