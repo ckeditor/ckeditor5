@@ -57,12 +57,7 @@ export default class LinkFormView extends View {
 		this.unlinkButtonView = this._createButton( 'Unlink', 'unlink' );
 
 		// Register child views.
-		this.addChild(
-			this.urlInputView,
-			this.saveButtonView,
-			this.cancelButtonView,
-			this.unlinkButtonView
-		);
+		this.addChildren( [ this.urlInputView, this.saveButtonView, this.cancelButtonView, this.unlinkButtonView ] );
 
 		Template.extend( this.saveButtonView.template, {
 			attributes: {
