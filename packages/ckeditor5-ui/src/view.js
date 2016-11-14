@@ -229,9 +229,11 @@ export default class View {
 	 *					children: [
 	 *						// This is where the `childA` will render.
 	 *						this.childA,
+	 *
 	 *						{ tag: 'b' },
-	 *					 	// This is where the `childB` will render.
-	 *						this.childB,
+	 *
+	 *						// This is where the `childB` will render.
+	 *						this.childB
 	 *					]
 	 *				} );
 	 *			}
