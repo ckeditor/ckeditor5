@@ -10,6 +10,7 @@ import DomEmmiterMixin from '../utils/dom/emittermixin.js';
 import ObservableMixin from '../utils/observablemixin.js';
 import Collection from '../utils/collection.js';
 import mix from '../utils/mix.js';
+import isIterable from '../utils/isiterable.js';
 
 /**
  * Basic View class.
@@ -216,18 +217,21 @@ export default class View {
 	 *			constructor( locale ) {
 	 *				super( locale );
 	 *
-	 *				this.childView = new SomeChildView( locale );
+	 *				this.childA = new SomeChildView( locale );
+	 *				this.childB = new SomeChildView( locale );
 	 *
-	 *				// Register a new child view.
-	 *				this.addChild( this.childView );
+	 *				// Register children.
+	 *				this.addChildren( [ this.childA, this.childB ] );
 	 *
 	 *				this.template = new Template( {
 	 *					tag: 'p',
 	 *
 	 *					children: [
+	 *						// This is where the `childA` will render.
+	 *						this.childA,
 	 *						{ tag: 'b' },
-	 *						// This is where the `childView` will render.
-	 *						this.childView
+	 *					 	// This is where the `childB` will render.
+	 *						this.childB,
 	 *					]
 	 *				} );
 	 *			}
@@ -236,13 +240,17 @@ export default class View {
 	 *		const view = new SampleView( locale );
 	 *
 	 *		view.init().then( () => {
-	 *			// Will append <p><b></b><childView#element></p>
+	 *			// Will append <p><childA#element><b></b><childB#element></p>
 	 *			document.body.appendChild( view.element );
 	 *		} );
 	 *
-	 * @param {...ui.View} children Children views to be registered.
+	 * @param {ui.View|Iterable.<ui.View>} children Children views to be registered.
 	 */
-	addChild( ...children ) {
+	addChildren( children ) {
+		if ( !isIterable( children ) ) {
+			children = [ children ];
+		}
+
 		for ( let child of children ) {
 			this._unboundChildren.add( child );
 		}
