@@ -8,8 +8,7 @@
 /**
  * @module utils/focustracker
  */
-
-import DOMEmitterMixin from '../ui/domemittermixin.js';
+import DomEmitterMixin from './dom/emittermixin.js';
 import ObservableMixin from './observablemixin.js';
 import CKEditorError from './ckeditorerror.js';
 import mix from './mix.js';
@@ -24,7 +23,7 @@ import mix from './mix.js';
  * which contain other `focusable` elements. But note that this wrapper element has to be focusable too
  * (have e.g. `tabindex="-1"`).
  *
- * @mixes module:utils/emittermixin/~DOMEmitterMixin
+ * @mixes module:utils/dom/emittermixin/~DOMEmitterMixin
  * @mixes module:utils/observablemixin/~ObservableMixin
  */
 export default class FocusTracker {
@@ -122,5 +121,5 @@ export default class FocusTracker {
 	}
 }
 
-mix( FocusTracker, DOMEmitterMixin );
+mix( FocusTracker, DomEmitterMixin );
 mix( FocusTracker, ObservableMixin );
