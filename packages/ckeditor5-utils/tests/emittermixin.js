@@ -670,6 +670,32 @@ describe( 'delegate', () => {
 			emitterC.fire( 'foo', data );
 		} );
 
+		it( 'preserves path in event delegation', ( done ) => {
+			const data = {};
+			const emitterA = getEmitterInstance();
+			const emitterB = getEmitterInstance();
+			const emitterC = getEmitterInstance();
+			const emitterD = getEmitterInstance();
+
+			emitterB.delegate( 'foo' ).to( emitterA );
+			emitterB.delegate( 'foo' ).to( emitterC );
+			emitterB.delegate( 'foo' ).to( emitterD );
+
+			emitterD.on( 'foo', ( ...args ) => {
+				assertDelegated( args, {
+					expectedSource: emitterB,
+					expectedName: 'foo',
+					expectedPath: [ emitterB, emitterD ],
+					expectedData: [ data ]
+				} );
+
+				done();
+			} );
+
+			emitterB.fire( 'foo', data );
+			emitterC.fire( 'foo', data );
+		} );
+
 		it( 'executes callbacks first, then delegates further', () => {
 			const emitterA = getEmitterInstance();
 			const emitterB = getEmitterInstance();
@@ -684,6 +710,58 @@ describe( 'delegate', () => {
 			emitterB.fire( 'foo' );
 
 			sinon.assert.callOrder( spyB, spyA );
+		} );
+
+		it( 'supports delegation under a different name', () => {
+			const emitterA = getEmitterInstance();
+			const emitterB = getEmitterInstance();
+			const emitterC = getEmitterInstance();
+			const emitterD = getEmitterInstance();
+			const spyAFoo = sinon.spy();
+			const spyABar = sinon.spy();
+			const spyCBaz = sinon.spy();
+			const spyDFoo = sinon.spy();
+
+			emitterB.delegate( 'foo' ).to( emitterA, 'bar' );
+			emitterB.delegate( 'foo' ).to( emitterC, 'baz' );
+			emitterB.delegate( 'foo' ).to( emitterD );
+
+			emitterA.on( 'foo', spyAFoo );
+			emitterA.on( 'bar', spyABar );
+			emitterC.on( 'baz', spyCBaz );
+			emitterD.on( 'foo', spyDFoo );
+
+			emitterB.fire( 'foo' );
+
+			sinon.assert.calledOnce( spyABar );
+			sinon.assert.calledOnce( spyCBaz );
+			sinon.assert.calledOnce( spyDFoo );
+			sinon.assert.notCalled( spyAFoo );
+		} );
+
+		it( 'preserves path in delegation under a different name', ( done ) => {
+			const data = {};
+			const emitterA = getEmitterInstance();
+			const emitterB = getEmitterInstance();
+			const emitterC = getEmitterInstance();
+			const emitterD = getEmitterInstance();
+
+			emitterB.delegate( 'foo' ).to( emitterA, 'bar' );
+			emitterB.delegate( 'foo' ).to( emitterC, 'baz' );
+			emitterB.delegate( 'foo' ).to( emitterD );
+
+			emitterD.on( 'foo', ( ...args ) => {
+				assertDelegated( args, {
+					expectedSource: emitterB,
+					expectedName: 'foo',
+					expectedPath: [ emitterB, emitterD ],
+					expectedData: [ data ]
+				} );
+
+				done();
+			} );
+
+			emitterB.fire( 'foo', data );
 		} );
 	} );
 } );
@@ -773,6 +851,39 @@ describe( 'stopDelegating', () => {
 		sinon.assert.callOrder( spyFooB, spyFooC, spyFooB );
 	} );
 
+	it( 'stops delegating a specific event under a different name to a specific emitter', () => {
+		const emitterA = getEmitterInstance();
+		const emitterB = getEmitterInstance();
+		const emitterC = getEmitterInstance();
+		const spyFooB = sinon.spy();
+		const spyFooC = sinon.spy();
+
+		emitterA.delegate( 'foo' ).to( emitterB );
+		emitterA.delegate( 'foo' ).to( emitterC, 'bar' );
+
+		emitterB.on( 'foo', spyFooB );
+		emitterC.on( 'bar', spyFooC );
+
+		emitterA.fire( 'foo' );
+
+		sinon.assert.callOrder( spyFooB, spyFooC );
+
+		emitterA.stopDelegating( 'foo', emitterC );
+		emitterA.fire( 'foo' );
+
+		sinon.assert.callOrder( spyFooB, spyFooC, spyFooB );
+	} );
+
+	it( 'passes when stopping delegation of a specific event which has never been delegated', () => {
+		const emitterA = getEmitterInstance();
+		const emitterB = getEmitterInstance();
+
+		expect( () => {
+			emitterA.stopDelegating( 'bar' );
+			emitterA.stopDelegating( 'bar', emitterB );
+		} ).to.not.throw();
+	} );
+
 	it( 'passes when stopping delegation of a specific event to an emitter which wasn\'t a destination', () => {
 		const emitterA = getEmitterInstance();
 		const emitterB = getEmitterInstance();
@@ -782,6 +893,18 @@ describe( 'stopDelegating', () => {
 
 		expect( () => {
 			emitterA.stopDelegating( 'foo', emitterC );
+		} ).to.not.throw();
+	} );
+
+	it( 'passes when stopping delegation of a specific event to a specific emitter which has never been delegated', () => {
+		const emitterA = getEmitterInstance();
+		const emitterB = getEmitterInstance();
+		const emitterC = getEmitterInstance();
+
+		emitterA.delegate( 'foo' ).to( emitterB );
+
+		expect( () => {
+			emitterA.stopDelegating( 'bar', emitterC );
 		} ).to.not.throw();
 	} );
 } );

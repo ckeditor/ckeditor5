@@ -16,6 +16,7 @@ export default class EventInfo {
 		/**
 		 * The object that fired the event.
 		 *
+		 * @readonly
 		 * @member utils.EventInfo#source
 		 */
 		this.source = source;
@@ -23,6 +24,7 @@ export default class EventInfo {
 		/**
 		 * The event name.
 		 *
+		 * @readonly
 		 * @member utils.EventInfo#name
 		 */
 		this.name = name;
@@ -30,6 +32,7 @@ export default class EventInfo {
 		/**
 		 * Path this event has followed. See {@link utils.EmitterMixin#delegate}.
 		 *
+		 * @readonly
 		 * @member utils.EventInfo#path
 		 */
 		this.path = [];

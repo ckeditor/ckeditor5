@@ -277,8 +277,12 @@ const EmitterMixin = {
 			const destinations = this._delegations.get( event );
 
 			if ( destinations ) {
-				for ( let dest of destinations ) {
-					dest.fire( eventInfo, ...args );
+				for ( let [ emitter, name ] of destinations ) {
+					const passedEventInfo = new EventInfo( eventInfo.source, name || eventInfo.name );
+
+					passedEventInfo.path = [ ...eventInfo.path ];
+
+					emitter.fire( passedEventInfo, ...args );
 				}
 			}
 		}
@@ -310,7 +314,7 @@ const EmitterMixin = {
 			 * @method utils.EmitterMixin.delegate#to
 			 * @param {utils.Emitter} emitter An `EmitterMixin` instance which is the destination for delegated events.
 			 */
-			to: ( emitter ) => {
+			to: ( emitter, name ) => {
 				if ( !this._delegations ) {
 					this._delegations = new Map();
 				}
@@ -319,9 +323,9 @@ const EmitterMixin = {
 					let destinations = this._delegations.get( eventName );
 
 					if ( !destinations ) {
-						this._delegations.set( eventName, [ emitter ] );
+						this._delegations.set( eventName, new Map( [ [ emitter, name ] ] ) );
 					} else {
-						destinations.push( emitter );
+						destinations.set( emitter, name );
 					}
 				}
 			}
@@ -351,10 +355,9 @@ const EmitterMixin = {
 			this._delegations.delete( event );
 		} else {
 			const destinations = this._delegations.get( event );
-			const index = destinations.indexOf( emitter );
 
-			if ( index !== -1 ) {
-				destinations.splice( index, 1 );
+			if ( destinations ) {
+				destinations.delete( emitter );
 			}
 		}
 	}
