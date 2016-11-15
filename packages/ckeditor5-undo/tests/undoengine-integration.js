@@ -10,8 +10,6 @@ import UndoEngine from 'ckeditor5/undo/undoengine.js';
 
 import { setData, getData } from 'ckeditor5/engine/dev-utils/model.js';
 
-import deleteContents from 'ckeditor5/engine/model/composer/deletecontents.js';
-
 let editor, doc, root;
 
 beforeEach( () => {
@@ -301,10 +299,10 @@ describe( 'UndoEngine integration', () => {
 	} );
 
 	describe( 'other edge cases', () => {
-		it( 'deleteContents between two nodes', () => {
+		it( 'deleteContent between two nodes', () => {
 			input( '<p>fo[o</p><p>b]ar</p>' );
 
-			deleteContents( doc.batch(), doc.selection, { merge: true } );
+			editor.data.deleteContent( doc.selection, doc.batch(), { merge: true } );
 			output( '<p>fo[]ar</p>' );
 
 			editor.execute( 'undo' );
