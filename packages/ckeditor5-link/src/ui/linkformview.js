@@ -122,18 +122,18 @@ export default class LinkFormView extends View {
 	 *
 	 * @private
 	 * @param {String} label Button label
-	 * @param {String} [event] Event name which ButtonView#execute event will be delegated to.
+	 * @param {String} [eventName] Event name which ButtonView#execute event will be delegated to.
 	 * @returns {ui.button.ButtonView} Button view instance.
 	 */
-	_createButton( label, event ) {
+	_createButton( label, eventName ) {
 		const t = this.locale.t;
 		const button = new ButtonView( this.locale );
 
 		button.label = t( label );
 		button.withText = true;
 
-		if ( event ) {
-			this.listenTo( button, 'execute', () => this.fire( event ) );
+		if ( eventName ) {
+			button.delegate( 'execute' ).to( this, eventName );
 		}
 
 		return button;
