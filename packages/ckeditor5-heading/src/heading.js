@@ -46,8 +46,6 @@ export default class Heading extends Feature {
 
 		// Create dropdown model.
 		const dropdownModel = new Model( {
-			isEnabled: true,
-			isOn: false,
 			label: 'Heading',
 			withText: true,
 			items: collection
