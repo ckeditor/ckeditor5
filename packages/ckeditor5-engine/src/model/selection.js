@@ -132,11 +132,13 @@ export default class Selection {
 	 * @returns {Boolean} `true` if selections are equal, `false` otherwise.
 	 */
 	isEqual( otherSelection ) {
-		if ( !this.anchor.isEqual( otherSelection.anchor ) || !this.focus.isEqual( otherSelection.focus ) ) {
+		if ( this.rangeCount != otherSelection.rangeCount ) {
 			return false;
+		} else if ( this.rangeCount === 0 ) {
+			return true;
 		}
 
-		if ( this.rangeCount != otherSelection.rangeCount ) {
+		if ( !this.anchor.isEqual( otherSelection.anchor ) || !this.focus.isEqual( otherSelection.focus ) ) {
 			return false;
 		}
 
