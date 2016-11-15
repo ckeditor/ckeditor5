@@ -136,9 +136,9 @@ export default class AttributeOperation extends Operation {
 			}
 
 			// If value to set is same as old value, don't do anything.
-			// By not returning `undefined`, this operation will be seen as `NoOperation` - that means
+			// By returning `undefined`, this operation will be seen as `NoOperation` - that means
 			// that it won't generate any events, etc. `AttributeOperation` with such parameters may be
-			// a result of Operational Transformation.
+			// a result of operational transformation.
 			if ( isEqual( this.oldValue, this.newValue ) ) {
 				return;
 			}

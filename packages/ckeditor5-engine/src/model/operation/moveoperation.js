@@ -79,7 +79,7 @@ export default class MoveOperation extends Operation {
 	}
 
 	/**
-	 * Position of the start of the moved range after it got moved. This may be different than
+	 * Returns the start position of the moved range after it got moved. This may be different than
 	 * {@link engine.model.operation.MoveOperation#targetPosition} in some cases, i.e. when a range is moved
 	 * inside the same parent but {@link engine.model.operation.MoveOperation#targetPosition targetPosition}
 	 * is after {@link engine.model.operation.MoveOperation#sourcePosition sourcePosition}.
@@ -90,7 +90,7 @@ export default class MoveOperation extends Operation {
 	 *		     targetPos	movedRangeStart
 	 *		     offset 6	offset 4
 	 *
-	 * @type {engine.model.Position}
+	 * @returns {engine.model.Position}
 	 */
 	getMovedRangeStart() {
 		return this.targetPosition._getTransformedByDeletion( this.sourcePosition, this.howMany );
