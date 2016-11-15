@@ -251,6 +251,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * is fired it will fire corresponding event on this ProxyEmitter.
 	 * Note: A native DOM Event is passed as an argument.
 	 *
+	 * @private
 	 * @param {String} event
 	 *
 	 * @method module:utils/dom/emittermixin~ProxyEmitter#_createDomListener
