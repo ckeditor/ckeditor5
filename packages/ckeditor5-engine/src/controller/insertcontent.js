@@ -32,7 +32,7 @@ export default function insertContent( dataController, content, selection, batch
 	}
 
 	if ( !selection.isCollapsed ) {
-		dataController.model.composer.deleteContents( batch, selection, {
+		dataController.deleteContent( selection, batch, {
 			merge: true
 		} );
 	}

@@ -3,23 +3,23 @@
  * For licensing, see LICENSE.md.
  */
 
-import LivePosition from '../liveposition.js';
-import Position from '../position.js';
-import Element from '../element.js';
-import compareArrays from '../../../utils/comparearrays.js';
+import LivePosition from '../model/liveposition.js';
+import Position from '../model/position.js';
+import Element from '../model/element.js';
+import compareArrays from '../../utils/comparearrays.js';
 
 /**
- * Delete contents of the selection and merge siblings. The resulting selection is always collapsed.
+ * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.
  *
- * @method engine.model.composer.deleteContents
- * @param {engine.model.Batch} batch Batch to which the deltas will be added.
+ * @method engine.controller.deleteContent
  * @param {engine.model.Selection} selection Selection of which the content should be deleted.
+ * @param {engine.model.Batch} batch Batch to which the deltas will be added.
  * @param {Object} [options]
  * @param {Boolean} [options.merge=false] Merge elements after removing the contents of the selection.
  * For example, `<h>x[x</h><p>y]y</p>` will become: `<h>x^y</h>` with the option enabled
  * and: `<h>x^</h><p>y</p>` without it.
  */
-export default function deleteContents( batch, selection, options = {} ) {
+export default function deleteContent( selection, batch, options = {} ) {
 	if ( selection.isCollapsed ) {
 		return;
 	}

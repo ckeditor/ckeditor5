@@ -20,6 +20,8 @@ import ModelRange from '../model/range.js';
 import ModelPosition from '../model/position.js';
 
 import insertContent from './insertcontent.js';
+import deleteContent from './deletecontent.js';
+import modifySelection from './modifyselection.js';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
@@ -112,6 +114,8 @@ export default class DataController {
 		this.viewToModel.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 		this.on( 'insertContent', ( evt, data ) => insertContent( this, data.content, data.selection, data.batch ) );
+		this.on( 'deleteContent', ( evt, data ) => deleteContent( data.selection, data.batch, data.options ) );
+		this.on( 'modifySelection', ( evt, data ) => modifySelection( data.selection, data.options ) );
 	}
 
 	/**
@@ -225,19 +229,72 @@ export default class DataController {
 	insertContent( content, selection, batch ) {
 		this.fire( 'insertContent', { content, selection, batch } );
 	}
+
+	/**
+	 * See {@link engine.controller.deleteContent}.
+	 *
+	 * Note: For the sake of predictability, the resulting selection should always be collapsed.
+	 * In cases where a feature wants to modify deleting behavior so selection isn't collapsed
+	 * (e.g. a table feature may want to keep row selection after pressing <kbd>Backspace</kbd>),
+	 * then that behavior should be implemented in the view's listener. At the same time, the table feature
+	 * will need to modify this method's behavior too, e.g. to "delete contents and then collapse
+	 * the selection inside the last selected cell" or "delete the row and collapse selection somewhere near".
+	 * That needs to be done in order to ensure that other features which use `deleteContent()` will work well with tables.
+	 *
+	 * @fires engine.controller.DataController#deleteContent
+	 * @param {engine.model.Selection} selection Selection of which the content should be deleted.
+	 * @param {engine.model.Batch} batch Batch to which deltas will be added.
+	 * @param {Object} options See {@link engine.controller.deleteContent}'s options.
+	 */
+	deleteContent( selection, batch, options ) {
+		this.fire( 'deleteContent', { batch, selection, options } );
+	}
+
+	/**
+	 * See {@link engine.controller.modifySelection}.
+	 *
+	 * @fires engine.controller.DataController#modifySelection
+	 * @param {engine.model.Selection} The selection to modify.
+	 * @param {Object} options See {@link engine.controller.modifySelection}'s options.
+	 */
+	modifySelection( selection, options ) {
+		this.fire( 'modifySelection', { selection, options } );
+	}
 }
 
 mix( DataController, EmitterMixin );
 
 /**
- * Event fired when {@link engine.controller.DataController#insert} method is called.
- * The {@link engine.controller.dataController.insert default action of the composer} is implemented as a
- * listener to that event so it can be fully customized by the features.
+ * Event fired when {@link engine.controller.DataController#insertContent} method is called.
+ * The {@link engine.controller.dataController.insertContent default action of that method} is implemented as a
+ * listener to this event so it can be fully customized by the features.
  *
- * @event engine.controller.DataController#insert
+ * @event engine.controller.DataController#insertContent
  * @param {Object} data
  * @param {engine.view.DocumentFragment} data.content The content to insert.
  * @param {engine.model.Selection} data.selection Selection into which the content should be inserted.
  * @param {engine.model.Batch} [data.batch] Batch to which deltas will be added.
  */
 
+/**
+ * Event fired when {@link engine.controller.DataController#deleteContent} method is called.
+ * The {@link engine.controller.deleteContent default action of that method} is implemented as a
+ * listener to this event so it can be fully customized by the features.
+ *
+ * @event engine.controller.DataController#deleteContent
+ * @param {Object} data
+ * @param {engine.model.Batch} data.batch
+ * @param {engine.model.Selection} data.selection
+ * @param {Object} data.options See {@link engine.controller.deleteContent}'s options.
+ */
+
+/**
+ * Event fired when {@link engine.controller.DataController#modifySelection} method is called.
+ * The {@link engine.controller.modifySelection default action of that method} is implemented as a
+ * listener to this event so it can be fully customized by the features.
+ *
+ * @event engine.controller.DataController#modifySelection
+ * @param {Object} data
+ * @param {engine.model.Selection} data.selection
+ * @param {Object} data.options See {@link engine.controller.modifySelection}'s options.
+ */

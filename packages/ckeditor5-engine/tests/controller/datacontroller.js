@@ -52,6 +52,52 @@ describe( 'DataController', () => {
 			expect( getData( modelDocument ) ).to.equal( '<paragraph>ax[]b</paragraph>' );
 			expect( batch.deltas.length ).to.be.above( 0 );
 		} );
+
+		it( 'should add deleteContent listener', () => {
+			schema.registerItem( 'paragraph', '$block' );
+
+			setData( modelDocument, '<paragraph>f[oo</paragraph><paragraph>ba]r</paragraph>' );
+
+			const batch = modelDocument.batch();
+
+			data.fire( 'deleteContent', { batch, selection: modelDocument.selection } );
+
+			expect( getData( modelDocument ) ).to.equal( '<paragraph>f[]</paragraph><paragraph>r</paragraph>' );
+			expect( batch.deltas ).to.not.be.empty;
+		} );
+
+		it( 'should add deleteContent listener which passes ', () => {
+			schema.registerItem( 'paragraph', '$block' );
+
+			setData( modelDocument, '<paragraph>f[oo</paragraph><paragraph>ba]r</paragraph>' );
+
+			const batch = modelDocument.batch();
+
+			data.fire( 'deleteContent', {
+				batch,
+				selection: modelDocument.selection,
+				options: { merge: true }
+			} );
+
+			expect( getData( modelDocument ) ).to.equal( '<paragraph>f[]r</paragraph>' );
+		} );
+
+		it( 'should add modifySelection listener', () => {
+			schema.registerItem( 'paragraph', '$block' );
+
+			setData( modelDocument, '<paragraph>foo[]bar</paragraph>' );
+
+			data.fire( 'modifySelection', {
+				selection: modelDocument.selection,
+				options: {
+					direction: 'backward'
+				}
+			} );
+
+			expect( getData( modelDocument ) )
+				.to.equal( '<paragraph>fo[o]bar</paragraph>' );
+			expect( modelDocument.selection.isBackward ).to.true;
+		} );
 	} );
 
 	describe( 'parse', () => {
@@ -283,6 +329,38 @@ describe( 'DataController', () => {
 				selection: modelDocument.selection,
 				content: content
 			} );
+		} );
+	} );
+
+	describe( 'deleteContent', () => {
+		it( 'should fire the deleteContent event', () => {
+			const spy = sinon.spy();
+			const batch = modelDocument.batch();
+
+			data.on( 'deleteContent', spy );
+
+			data.deleteContent( modelDocument.selection, batch );
+
+			const evtData = spy.args[ 0 ][ 1 ];
+
+			expect( evtData.batch ).to.equal( batch );
+			expect( evtData.selection ).to.equal( modelDocument.selection );
+		} );
+	} );
+
+	describe( 'modifySelection', () => {
+		it( 'should fire the deleteContent event', () => {
+			const spy = sinon.spy();
+			const opts = { direction: 'backward' };
+
+			data.on( 'modifySelection', spy );
+
+			data.modifySelection( modelDocument.selection, opts );
+
+			const evtData = spy.args[ 0 ][ 1 ];
+
+			expect( evtData.selection ).to.equal( modelDocument.selection );
+			expect( evtData.options ).to.equal( opts );
 		} );
 	} );
 } );

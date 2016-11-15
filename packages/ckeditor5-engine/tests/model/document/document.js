@@ -7,7 +7,6 @@
 
 import Document from 'ckeditor5/engine/model/document.js';
 import Schema from 'ckeditor5/engine/model/schema.js';
-import Composer from 'ckeditor5/engine/model/composer/composer.js';
 import RootElement from 'ckeditor5/engine/model/rootelement.js';
 import Batch from 'ckeditor5/engine/model/batch.js';
 import Delta from 'ckeditor5/engine/model/delta/delta.js';
@@ -31,7 +30,6 @@ describe( 'Document', () => {
 			expect( doc.graveyard.maxOffset ).to.equal( 0 );
 			expect( count( doc.selection.getRanges() ) ).to.equal( 1 );
 
-			expect( doc.composer ).to.be.instanceof( Composer );
 			expect( doc.schema ).to.be.instanceof( Schema );
 		} );
 	} );
