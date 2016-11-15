@@ -8,6 +8,7 @@
 
 import ViewText from 'ckeditor5/engine/view/text.js';
 import ViewElement from 'ckeditor5/engine/view/element.js';
+import ViewPosition from 'ckeditor5/engine/view/position.js';
 import ViewContainerElement from 'ckeditor5/engine/view/containerelement.js';
 import ViewAttributeElement from 'ckeditor5/engine/view/attributeelement.js';
 import DomConverter from 'ckeditor5/engine/view/domconverter.js';
@@ -516,6 +517,22 @@ describe( 'DomConverter', () => {
 			converter.bindElements( domP, viewP );
 
 			const viewPosition = selection.getFirstPosition();
+			const domPosition = converter.viewPositionToDom( viewPosition );
+
+			expect( domPosition ).to.equal( null );
+		} );
+
+		it( 'should return null if view position is in a view text node that has not been rendered to DOM', () => {
+			const viewText = new ViewText( 'foo' );
+			const viewPosition = new ViewPosition( viewText, 1 );
+			const domPosition = converter.viewPositionToDom( viewPosition );
+
+			expect( domPosition ).to.equal( null );
+		} );
+
+		it( 'should return null if view position is in a view element that has not been rendered to DOM', () => {
+			const viewElement = new ViewContainerElement( 'div' );
+			const viewPosition = new ViewPosition( viewElement, 0 );
 			const domPosition = converter.viewPositionToDom( viewPosition );
 
 			expect( domPosition ).to.equal( null );
