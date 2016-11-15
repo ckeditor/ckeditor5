@@ -15,6 +15,8 @@
 
 /**
  * Provides group of constants to use instead of hardcoding numeric priority values.
+ *
+ * @namespace
  */
 const priorities = {
 	/**
