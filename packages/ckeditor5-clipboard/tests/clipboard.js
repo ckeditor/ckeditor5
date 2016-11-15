@@ -5,8 +5,13 @@
 
 import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
 import Clipboard from 'ckeditor5/clipboard/clipboard.js';
+import Paragraph from 'ckeditor5/paragraph/paragraph.js';
+
 import ClipboardObserver from 'ckeditor5/clipboard/clipboardobserver.js';
+
 import { stringify as stringifyView } from 'ckeditor5/engine/dev-utils/view.js';
+import { stringify as stringifyModel } from 'ckeditor5/engine/dev-utils/model.js';
+
 import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
 
 describe( 'Clipboard feature', () => {
@@ -14,7 +19,7 @@ describe( 'Clipboard feature', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-				features: [ Clipboard ]
+				features: [ Clipboard, Paragraph ]
 			} )
 			.then( ( newEditor ) => {
 				editor = newEditor;
@@ -112,7 +117,7 @@ describe( 'Clipboard feature', () => {
 
 		it( 'inserts content to the editor', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
-			const spy = sinon.stub( editor.data, 'insert' );
+			const spy = sinon.stub( editor.data, 'insertContent' );
 
 			editingView.fire( 'paste', {
 				dataTransfer: dataTransferMock,
@@ -120,12 +125,27 @@ describe( 'Clipboard feature', () => {
 			} );
 
 			expect( spy.calledOnce ).to.be.true;
-			expect( stringifyView( spy.args[ 0 ][ 0 ] ) ).to.equal( '<p>x</p>' );
+			expect( stringifyModel( spy.args[ 0 ][ 0 ] ) ).to.equal( '<paragraph>x</paragraph>' );
+		} );
+
+		it( 'converts content in an "all allowed" context', () => {
+			// It's enough if we check this here with a text node and paragraph because if the conversion was made
+			// in a normal root, then text or paragraph wouldn't be allowed here.
+			const dataTransferMock = createDataTransfer( { 'text/html': 'x<p>y</p>', 'text/plain': 'z' } );
+			const spy = sinon.stub( editor.data, 'insertContent' );
+
+			editingView.fire( 'paste', {
+				dataTransfer: dataTransferMock,
+				preventDefault() {}
+			} );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( stringifyModel( spy.args[ 0 ][ 0 ] ) ).to.equal( 'x<paragraph>y</paragraph>' );
 		} );
 
 		it( 'does nothing when pasted content is empty', () => {
 			const dataTransferMock = createDataTransfer( { 'text/plain': '' } );
-			const spy = sinon.stub( editor.data, 'insert' );
+			const spy = sinon.stub( editor.data, 'insertContent' );
 
 			editingView.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock,
@@ -137,7 +157,7 @@ describe( 'Clipboard feature', () => {
 
 		it( 'uses low priority observer for the clipboardInput event', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': 'x' } );
-			const spy = sinon.stub( editor.data, 'insert' );
+			const spy = sinon.stub( editor.data, 'insertContent' );
 
 			editingView.on( 'clipboardInput', ( evt ) => {
 				evt.stop();

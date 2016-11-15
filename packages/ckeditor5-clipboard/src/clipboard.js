@@ -103,9 +103,17 @@ export default class Clipboard extends Feature {
 		this.listenTo( editingView, 'clipboardInput', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
 				const doc = editor.document;
+				const dataController = this.editor.data;
+
+				// Convert the pasted content to a model document fragment.
+				// Convertion is contextual, but in this case we need an "all allowed" context and for that
+				// we use the $clipboardHolder item.
+				const modelFragment = dataController.viewToModel.convert( data.content, {
+					context: [ '$clipboardHolder' ]
+				} );
 
 				doc.enqueueChanges( () => {
-					this.editor.data.insert( data.content, doc.selection );
+					dataController.insertContent( modelFragment, doc.selection );
 				} );
 			}
 		}, { priority: 'low' } );
