@@ -110,7 +110,7 @@ export default class BaseCommand extends Command {
 
 // Performs a transformation of delta set `setToTransform` by given delta set `setToTransformBy`.
 // If `setToTransform` deltas are more important than `setToTransformBy` deltas, `isStrong` should be true.
-export function transformDelta( setToTransform, setToTransformBy, isStrong = false ) {
+export function transformDelta( setToTransform, setToTransformBy, isStrong ) {
 	let results = [];
 
 	for ( let toTransform of setToTransform ) {
