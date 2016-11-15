@@ -63,6 +63,10 @@ beforeEach( () => {
 	dispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 } );
 
+afterEach( () => {
+	viewDoc.destroy();
+} );
+
 describe( 'default converters', () => {
 	beforeEach( () => {
 		// Selection converters for selection attributes.

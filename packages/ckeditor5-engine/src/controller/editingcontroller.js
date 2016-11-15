@@ -141,6 +141,7 @@ export default class EditingController {
 	 * Removes all event listeners attached by the EditingController.
 	 */
 	destroy() {
+		this.view.destroy();
 		this._listenter.stopListening();
 	}
 }

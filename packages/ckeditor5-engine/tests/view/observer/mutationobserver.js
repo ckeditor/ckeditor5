@@ -41,6 +41,7 @@ describe( 'MutationObserver', () => {
 		mutationObserver.disable();
 
 		domRoot.parentElement.removeChild( domRoot );
+		viewDocument.destroy();
 	} );
 
 	it( 'should handle typing', () => {

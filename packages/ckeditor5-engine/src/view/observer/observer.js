@@ -3,6 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
+import DomEmitterMixin from '../../../utils/dom/emittermixin.js';
+import mix from '../../../utils/mix.js';
+
 /**
  * Abstract base observer class. Observers are classes which observe changes on DOM elements, do the preliminary
  * processing and fire events on the {@link engine.view.Document} objects. Observers can also add features to the view,
@@ -59,6 +62,11 @@ export default class Observer {
 		this.isEnabled = false;
 	}
 
+	destroy() {
+		this.disable();
+		this.stopListening();
+	}
+
 	/**
 	 * Starts observing the given root element.
 	 *
@@ -67,3 +75,5 @@ export default class Observer {
 	 * @param {String} name The name of the root element.
 	 */
 }
+
+mix( Observer, DomEmitterMixin );

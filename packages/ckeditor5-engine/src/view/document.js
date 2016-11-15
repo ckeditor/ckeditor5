@@ -303,6 +303,12 @@ export default class Document {
 			observer.enable();
 		}
 	}
+
+	destroy() {
+		for ( let observer of this._observers.values() ) {
+			observer.destroy();
+		}
+	}
 }
 
 mix( Document, ObservableMixin );

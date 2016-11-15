@@ -706,6 +706,8 @@ describe( 'Selection', () => {
 			selection.addRange( Range.createFromParentsAndOffsets( element, 0, element, 0 ) );
 
 			expect( selection.editableElement ).to.equal( root );
+
+			viewDocument.destroy();
 		} );
 	} );
 

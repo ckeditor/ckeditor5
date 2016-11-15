@@ -3,11 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global setInterval */
+/* global setInterval, clearInterval */
 
 import Observer from './observer.js';
 import MutationObserver from './mutationobserver.js';
-
 import log from '../../../utils/log.js';
 
 /**
@@ -70,6 +69,8 @@ export default class SelectionObserver extends Observer {
 		 */
 		this._documents = new WeakSet();
 
+		this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 2000 );
+
 		/**
 		 * Private property to store the last selection, to check if the code does not enter infinite loop.
 		 *
@@ -103,11 +104,17 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		domDocument.addEventListener( 'selectionchange', () => this._handleSelectionChange( domDocument ) );
-
-		setInterval( () => this._clearInfiniteLoop(), 2000 );
+		this.listenTo( domDocument, 'selectionchange', () => {
+			this._handleSelectionChange( domDocument );
+		} );
 
 		this._documents.add( domDocument );
+	}
+
+	destroy() {
+		super.destroy();
+
+		clearInterval( this._clearInfiniteLoopInterval );
 	}
 
 	/**

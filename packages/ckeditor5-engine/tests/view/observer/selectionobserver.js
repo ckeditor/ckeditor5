@@ -56,6 +56,7 @@ describe( 'SelectionObserver', () => {
 		domRoot.parentElement.removeChild( domRoot );
 
 		selectionObserver.disable();
+		viewDocument.destroy();
 	} );
 
 	it( 'should fire selectionChange when it is the only change', ( done ) => {

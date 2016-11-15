@@ -47,6 +47,8 @@ describe( 'view test utils', () => {
 				expect( stringifyOptions ).to.have.property( 'showType' ).that.equals( false );
 				expect( stringifyOptions ).to.have.property( 'showPriority' ).that.equals( false );
 				expect( stringifyOptions ).to.have.property( 'ignoreRoot' ).that.equals( true );
+
+				viewDocument.destroy();
 			} );
 
 			it( 'should use stringify method with selection', () => {
@@ -67,6 +69,8 @@ describe( 'view test utils', () => {
 				expect( stringifyOptions ).to.have.property( 'showType' ).that.equals( false );
 				expect( stringifyOptions ).to.have.property( 'showPriority' ).that.equals( false );
 				expect( stringifyOptions ).to.have.property( 'ignoreRoot' ).that.equals( true );
+
+				viewDocument.destroy();
 			} );
 
 			it( 'should throw an error when passing invalid document', () => {
@@ -91,6 +95,8 @@ describe( 'view test utils', () => {
 				expect( args[ 0 ] ).to.equal( data );
 				expect( args[ 1 ] ).to.be.an( 'object' );
 				expect( args[ 1 ].rootElement ).to.equal( viewDocument.getRoot() );
+
+				viewDocument.destroy();
 			} );
 
 			it( 'should use parse method with selection', () => {
@@ -106,6 +112,8 @@ describe( 'view test utils', () => {
 				expect( args[ 0 ] ).to.equal( data );
 				expect( args[ 1 ] ).to.be.an( 'object' );
 				expect( args[ 1 ].rootElement ).to.equal( viewDocument.getRoot() );
+
+				viewDocument.destroy();
 			} );
 
 			it( 'should throw an error when passing invalid document', () => {

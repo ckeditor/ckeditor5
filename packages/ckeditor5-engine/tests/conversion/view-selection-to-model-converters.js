@@ -40,6 +40,10 @@ describe( 'convertSelectionChange', () => {
 		convertSelection = convertSelectionChange( model, mapper );
 	} );
 
+	afterEach( () => {
+		view.destroy();
+	} );
+
 	it( 'should convert collapsed selection', () => {
 		const viewSelection = new ViewSelection();
 		viewSelection.addRange( ViewRange.createFromParentsAndOffsets(

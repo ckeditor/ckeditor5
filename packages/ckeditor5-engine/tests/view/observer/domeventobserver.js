@@ -41,6 +41,10 @@ describe( 'DomEventObserver', () => {
 		viewDocument = new ViewDocument();
 	} );
 
+	afterEach( () => {
+		viewDocument.destroy();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should create Observer with properties', () => {
 			const observer = new DomEventObserver( viewDocument );
@@ -107,7 +111,6 @@ describe( 'DomEventObserver', () => {
 	it( 'should fire event if observer is disabled and re-enabled', () => {
 		const domElement = document.createElement( 'p' );
 		const domEvent = new MouseEvent( 'click' );
-		const viewDocument = new ViewDocument();
 		const evtSpy = sinon.spy();
 
 		viewDocument.createRoot( domElement, 'root' );

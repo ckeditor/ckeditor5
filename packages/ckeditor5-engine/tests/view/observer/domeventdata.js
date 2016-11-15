@@ -35,6 +35,7 @@ describe( 'DomEventData', () => {
 
 	afterEach( () => {
 		domRoot.parentElement.removeChild( domRoot );
+		viewDocument.destroy();
 	} );
 
 	describe( 'constructor()', () => {
