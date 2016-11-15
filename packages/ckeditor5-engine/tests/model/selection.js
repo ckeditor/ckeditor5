@@ -666,6 +666,12 @@ describe( 'Selection', () => {
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
 
+		it( 'should return true if both selections have no ranges', () => {
+			const otherSelection = new Selection();
+
+			expect( selection.isEqual( otherSelection ) ).to.be.true;
+		} );
+
 		it( 'should return false if ranges count does not equal', () => {
 			selection.addRange( range1 );
 			selection.addRange( range2 );

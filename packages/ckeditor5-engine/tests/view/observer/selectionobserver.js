@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals setTimeout, Range, document */
+/* globals setTimeout, document */
 /* bender-tags: view, browser-only */
 
 import ViewRange from 'ckeditor5/engine/view/range.js';
@@ -55,7 +55,6 @@ describe( 'SelectionObserver', () => {
 	afterEach( () => {
 		domRoot.parentElement.removeChild( domRoot );
 
-		selectionObserver.disable();
 		viewDocument.destroy();
 	} );
 
@@ -73,7 +72,7 @@ describe( 'SelectionObserver', () => {
 			const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 
 			expect( newViewRange.start.parent ).to.equal( viewFoo );
-			expect( newViewRange.start.offset ).to.equal( 1 );
+			expect( newViewRange.start.offset ).to.equal( 2 );
 			expect( newViewRange.end.parent ).to.equal( viewFoo );
 			expect( newViewRange.end.offset ).to.equal( 2 );
 
@@ -191,14 +190,50 @@ describe( 'SelectionObserver', () => {
 			done();
 		}, 400 );
 	} );
+
+	it( 'should not be treated as an infinite loop if changes are not often', ( done ) => {
+		const clock = testUtils.sinon.useFakeTimers( 'setInterval', 'clearInterval' );
+		const spy = testUtils.sinon.spy( log, 'warn' );
+
+		// We need to recreate SelectionObserver, so it will use mocked setInterval.
+		selectionObserver.disable();
+		selectionObserver.destroy();
+		viewDocument._observers.delete( SelectionObserver );
+		viewDocument.addObserver( SelectionObserver );
+
+		// Inf-loop kicks in after 50th time the selection is changed in 2s.
+		// We will test 30 times, tick sinon clock to clean counter and then test 30 times again.
+		// Note that `changeDomSelection` fires two events.
+		let changeCount = 15;
+
+		for ( let i = 0; i < changeCount; i++ ) {
+			setTimeout( () => {
+				changeDomSelection();
+			}, i * 20 );
+		}
+
+		setTimeout( () => {
+			// Move the clock by 2100ms which will trigger callback added to `setInterval` and reset the inf-loop counter.
+			clock.tick( 2100 );
+
+			for ( let i = 0; i < changeCount; i++ ) {
+				changeDomSelection();
+			}
+
+			setTimeout( () => {
+				expect( spy.called ).to.be.false;
+				clock.restore();
+				done();
+			}, 200 );
+		}, 400 );
+	} );
 } );
 
 function changeDomSelection() {
 	const domSelection = document.getSelection();
-	domSelection.removeAllRanges();
 	const domFoo = document.getElementById( 'main' ).childNodes[ 0 ].childNodes[ 0 ];
-	const domRange = new Range();
-	domRange.setStart( domFoo, 1 );
-	domRange.setEnd( domFoo, 2 );
-	domSelection.addRange( domRange );
+	const offset = domSelection.anchorOffset;
+
+	domSelection.removeAllRanges();
+	domSelection.collapse( domFoo, offset == 2 ? 3 : 2 );
 }
