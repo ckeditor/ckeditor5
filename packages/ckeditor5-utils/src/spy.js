@@ -16,8 +16,10 @@
  *
  * @returns {Function} The spy function.
  */
-export default function spy() {
+function spy() {
 	return function spy() {
 		spy.called = true;
 	};
 }
+
+export default spy;

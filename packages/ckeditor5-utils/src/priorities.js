@@ -23,6 +23,7 @@ const priorities = {
 	 * Converts a string with priority name to it's numeric value. If `Number` is given, it just returns it.
 	 *
 	 * @param {module:utils/priorities~PriorityString|Number} priority Priority to convert.
+	 * @static
 	 * @returns {Number} Converted priority.
 	 */
 	get( priority ) {
