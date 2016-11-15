@@ -275,11 +275,14 @@ const EmitterMixin = {
 		// Delegate event to other emitters if needed.
 		if ( this._delegations ) {
 			const destinations = this._delegations.get( event );
+			const passAllDestinations = this._delegations.get( '*' );
 
 			if ( destinations ) {
-				for ( let dest of destinations ) {
-					dest.fire( eventInfo, ...args );
-				}
+				fireDelegatedEvents( destinations, eventInfo, args );
+			}
+
+			if ( passAllDestinations ) {
+				fireDelegatedEvents( passAllDestinations, eventInfo, args );
 			}
 		}
 	},
@@ -309,8 +312,9 @@ const EmitterMixin = {
 			 *
 			 * @method utils.EmitterMixin.delegate#to
 			 * @param {utils.Emitter} emitter An `EmitterMixin` instance which is the destination for delegated events.
+			 * @param {String|Function} nameOrFunction A custom event name or function which converts the original name string.
 			 */
-			to: ( emitter ) => {
+			to: ( emitter, nameOrFunction ) => {
 				if ( !this._delegations ) {
 					this._delegations = new Map();
 				}
@@ -319,9 +323,9 @@ const EmitterMixin = {
 					let destinations = this._delegations.get( eventName );
 
 					if ( !destinations ) {
-						this._delegations.set( eventName, [ emitter ] );
+						this._delegations.set( eventName, new Map( [ [ emitter, nameOrFunction ] ] ) );
 					} else {
-						destinations.push( emitter );
+						destinations.set( emitter, nameOrFunction );
 					}
 				}
 			}
@@ -351,10 +355,9 @@ const EmitterMixin = {
 			this._delegations.delete( event );
 		} else {
 			const destinations = this._delegations.get( event );
-			const index = destinations.indexOf( emitter );
 
-			if ( index !== -1 ) {
-				destinations.splice( index, 1 );
+			if ( destinations ) {
+				destinations.delete( emitter );
 			}
 		}
 	}
@@ -491,6 +494,28 @@ function getCallbacksForEvent( source, eventName ) {
 	}
 
 	return event.callbacks;
+}
+
+// Fires delegated events for given map of destinations.
+//
+// @private
+// * @param {Map.<utils.Emitter>} destinations A map containing `[ {@link utils.Emitter}, "event name" ]` pair destinations.
+// * @param {utils.EventInfo} eventInfo The original event info object.
+// * @param {Array.<*>} fireArgs Arguments the original event was fired with.
+function fireDelegatedEvents( destinations, eventInfo, fireArgs ) {
+	for ( let [ emitter, name ] of destinations ) {
+		if ( !name ) {
+			name = eventInfo.name;
+		} else if ( typeof name == 'function' ) {
+			name = name( eventInfo.name );
+		}
+
+		const delegatedInfo = new EventInfo( eventInfo.source, name );
+
+		delegatedInfo.path = [ ...eventInfo.path ];
+
+		emitter.fire( delegatedInfo, ...fireArgs );
+	}
 }
 
 /**
