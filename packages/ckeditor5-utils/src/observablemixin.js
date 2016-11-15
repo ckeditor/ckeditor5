@@ -31,7 +31,7 @@ const ObservableMixin = {
 	 *
 	 * It accepts also a single object literal containing key/value pairs with attributes to be set.
 	 *
-	 * This method throws the {@link observable-set-cannot-override} error if the observable instance already
+	 * This method throws the observable-set-cannot-override error if the observable instance already
 	 * have a property with a given attribute name. This prevents from mistakenly overriding existing
 	 * properties and methods, but means that `foo.set( 'bar', 1 )` may be slightly slower than `foo.bar = 1`.
 	 *

@@ -26,7 +26,7 @@ export default class Locale {
 		this.lang = lang || 'en';
 
 		/**
-		 * Translates the given string to the {@link #lang}. This method is also availble in {@link Editor#t} and
+		 * Translates the given string to the {@link #lang}. This method is also availble in {@link module:core/editor~Editor#t} and
 		 * {@link module:ui/view~View#t}.
 		 *
 		 * The strings may contain placeholders (`%<index>`) for values which are passed as the second argument.

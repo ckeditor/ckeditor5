@@ -208,7 +208,7 @@ export default class Collection {
 	 * Executes the callback for each item in the collection and composes an array or values returned by this callback.
 	 *
 	 * @param {Function} callback
-	 * @param {Item} callback.item
+	 * @param {Object} callback.item
 	 * @param {Number} callback.index
 	 * @params {Object} ctx Context in which the `callback` will be called.
 	 * @returns {Array} The result of mapping.
