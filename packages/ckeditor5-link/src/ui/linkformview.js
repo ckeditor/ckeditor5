@@ -146,3 +146,15 @@ export default class LinkFormView extends View {
  *
  * @event link.ui.LinkFormView#submit
  */
+
+/**
+ * Fired when the form view is canceled, e.g. click on {@link link.ui.LinkFormView#cancelButtonView}.
+ *
+ * @event link.ui.LinkFormView#cancel
+ */
+
+/**
+ * Fired when the {@link link.ui.LinkFormView#unlinkButtonView} is clicked.
+ *
+ * @event link.ui.LinkFormView#unlink
+ */
