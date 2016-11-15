@@ -116,10 +116,10 @@ describe( '_doExecute', () => {
 			expect( getData( doc ) ).to.equal( '<p>[]</p>' );
 		} );
 
-		it( 'uses composer.deleteContents', () => {
+		it( 'uses DataController.deleteContent', () => {
 			const spy = sinon.spy();
 
-			doc.composer.on( 'deleteContents', spy );
+			editor.data.on( 'deleteContent', spy );
 
 			setData( doc, '<p>[x]</p>' );
 
