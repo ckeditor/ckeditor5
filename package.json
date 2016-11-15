@@ -30,11 +30,10 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-bundler-rollup": "^2.0.0",
-    "@ckeditor/ckeditor5-dev-compiler": "^5.0.0",
+    "@ckeditor/ckeditor5-dev-compiler": "^5.1.0",
     "@ckeditor/ckeditor5-dev-docs": "^3.0.0",
     "@ckeditor/ckeditor5-dev-env": "^1.0.0",
     "@ckeditor/ckeditor5-dev-lint": "^1.0.1",
-    "@ckeditor/ckeditor5-dev-utils": "^1.1.0",
     "@ckeditor/ckeditor5-dev-tests": "^2.0.0",
     "babel-polyfill": "^6.13.0",
     "benderjs": "^0.4.1",

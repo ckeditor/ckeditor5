@@ -84,7 +84,8 @@ gulp.task( 'compile', () => {
 		packages: getCKEditor5PackagesPaths(),
 		watch: args.watch,
 		es5: args.es5,
-		samplesGlob: config.DOCUMENTATION.SAMPLES
+		samplesGlob: config.DOCUMENTATION.SAMPLES,
+		verbosity: args.verbosity
 	} );
 } );
 
