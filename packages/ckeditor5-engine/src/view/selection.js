@@ -310,9 +310,9 @@ export default class Selection {
 
 		// Every range from this selection...
 		return Array.from( this.getRanges() ).every( ( rangeA ) => {
-			// ...Has a range in other selection...
+			// ... has a range in other selection...
 			return Array.from( otherSelection.getRanges() ).some( ( rangeB ) => {
-				// That it is equal to.
+				// ... which it is equal to.
 				return rangeA.isEqual( rangeB );
 			} );
 		} );

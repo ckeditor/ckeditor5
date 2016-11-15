@@ -186,6 +186,8 @@ export default class SelectionObserver extends Observer {
 			this._loopbackCounter = 0;
 		}
 
+		// This counter is reset every 2 seconds. 50 selection changes in 2 seconds is enough high number
+		// to be very difficult (impossible) to achieve using just keyboard keys (during normal editor use).
 		if ( this._loopbackCounter > 50 ) {
 			return true;
 		}
