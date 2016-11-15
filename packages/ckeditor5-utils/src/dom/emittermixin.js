@@ -32,7 +32,7 @@ import isNative from '../lib/lodash/isNative.js';
  *
  * @mixin module:utils/dom/emittermixin~EmitterMixin
  * @mixes module:utils/emittermixin~EmitterMixin
- * @implements ui.DomEmitter
+ * @implements module:utils/dom/emittermixin~Emitter
  */
 const DomEmitterMixin = extend( {}, EmitterMixin, {
 	/**
@@ -292,7 +292,7 @@ function isDomNode( node ) {
 }
 
 /**
- * Interface representing classes which mix in {@link module:utils/dom/emittermixin~Emitter}.
+ * Interface representing classes which mix in {@link module:utils/dom/emittermixin~EmitterMixin}.
  *
  * @interface Emitter
  */
