@@ -275,14 +275,14 @@ const EmitterMixin = {
 		// Delegate event to other emitters if needed.
 		if ( this._delegations ) {
 			const destinations = this._delegations.get( event );
-			const passThruDestinations = this._delegations.get( '*' );
+			const passAllDestinations = this._delegations.get( '*' );
 
 			if ( destinations ) {
 				fireDelegatedEvents( destinations, eventInfo, args );
 			}
 
-			if ( passThruDestinations ) {
-				fireDelegatedEvents( passThruDestinations, eventInfo, args );
+			if ( passAllDestinations ) {
+				fireDelegatedEvents( passAllDestinations, eventInfo, args );
 			}
 		}
 	},
@@ -319,18 +319,14 @@ const EmitterMixin = {
 					this._delegations = new Map();
 				}
 
-				if ( events.length ) {
-					for ( let eventName of events ) {
-						let destinations = this._delegations.get( eventName );
+				for ( let eventName of events ) {
+					let destinations = this._delegations.get( eventName );
 
-						if ( !destinations ) {
-							this._delegations.set( eventName, new Map( [ [ emitter, nameOrFunction ] ] ) );
-						} else {
-							destinations.set( emitter, nameOrFunction );
-						}
+					if ( !destinations ) {
+						this._delegations.set( eventName, new Map( [ [ emitter, nameOrFunction ] ] ) );
+					} else {
+						destinations.set( emitter, nameOrFunction );
 					}
-				} else {
-					this._delegations.set( '*', new Map( [ [ emitter, nameOrFunction ] ] ) );
 				}
 			}
 		};
@@ -503,7 +499,7 @@ function getCallbacksForEvent( source, eventName ) {
 // Fires delegated events for given map of destinations.
 //
 // @private
-// * @param {Map.<utils.Emitter>} destinations A map containing {@link utils.Emitter}–event name pair destinations.
+// * @param {Map.<utils.Emitter>} destinations A map containing `[ {@link utils.Emitter}, "event name" ]` pair destinations.
 // * @param {utils.EventInfo} eventInfo The original event info object.
 // * @param {Array.<*>} fireArgs Arguments the original event was fired with.
 function fireDelegatedEvents( destinations, eventInfo, fireArgs ) {

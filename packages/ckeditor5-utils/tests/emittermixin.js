@@ -832,7 +832,7 @@ describe( 'delegate', () => {
 			const spyABar = sinon.spy();
 			const spyABaz = sinon.spy();
 
-			emitterB.delegate().to( emitterA );
+			emitterB.delegate( '*' ).to( emitterA );
 
 			emitterA.on( 'foo', spyAFoo );
 			emitterA.on( 'bar', spyABar );
@@ -855,7 +855,7 @@ describe( 'delegate', () => {
 			const spyABarDel = sinon.spy();
 			const spyABazDel = sinon.spy();
 
-			emitterB.delegate().to( emitterA, name => name + '-delegated' );
+			emitterB.delegate( '*' ).to( emitterA, name => name + '-delegated' );
 
 			emitterA.on( 'foo', spyAFoo );
 			emitterA.on( 'bar', spyABar );
@@ -984,6 +984,78 @@ describe( 'stopDelegating', () => {
 		emitterA.fire( 'foo' );
 
 		sinon.assert.callOrder( spyFooB, spyFooC, spyFooB );
+	} );
+
+	it( 'stops delegating all ("*")', () => {
+		const emitterA = getEmitterInstance();
+		const emitterB = getEmitterInstance();
+		const emitterC = getEmitterInstance();
+		const spyAFoo = sinon.spy();
+		const spyABar = sinon.spy();
+		const spyCFoo = sinon.spy();
+		const spyCBar = sinon.spy();
+
+		emitterB.delegate( '*' ).to( emitterA );
+		emitterB.delegate( '*' ).to( emitterC );
+
+		emitterA.on( 'foo', spyAFoo );
+		emitterA.on( 'bar', spyABar );
+		emitterC.on( 'foo', spyCFoo );
+		emitterC.on( 'bar', spyCBar );
+
+		emitterB.fire( 'foo' );
+		emitterB.fire( 'bar' );
+
+		sinon.assert.calledOnce( spyAFoo );
+		sinon.assert.calledOnce( spyABar );
+		sinon.assert.calledOnce( spyCFoo );
+		sinon.assert.calledOnce( spyCBar );
+
+		emitterB.stopDelegating( '*' );
+
+		emitterB.fire( 'foo' );
+		emitterB.fire( 'bar' );
+
+		sinon.assert.calledOnce( spyAFoo );
+		sinon.assert.calledOnce( spyABar );
+		sinon.assert.calledOnce( spyCFoo );
+		sinon.assert.calledOnce( spyCBar );
+	} );
+
+	it( 'stops delegating all ("*") to a specific emitter', () => {
+		const emitterA = getEmitterInstance();
+		const emitterB = getEmitterInstance();
+		const emitterC = getEmitterInstance();
+		const spyAFoo = sinon.spy();
+		const spyABar = sinon.spy();
+		const spyCFoo = sinon.spy();
+		const spyCBar = sinon.spy();
+
+		emitterB.delegate( '*' ).to( emitterA );
+		emitterB.delegate( 'foo' ).to( emitterC );
+
+		emitterA.on( 'foo', spyAFoo );
+		emitterA.on( 'bar', spyABar );
+		emitterC.on( 'foo', spyCFoo );
+		emitterC.on( 'bar', spyCBar );
+
+		emitterB.fire( 'foo' );
+		emitterB.fire( 'bar' );
+
+		sinon.assert.calledOnce( spyAFoo );
+		sinon.assert.calledOnce( spyABar );
+		sinon.assert.calledOnce( spyCFoo );
+		sinon.assert.notCalled( spyCBar );
+
+		emitterB.stopDelegating( '*', emitterA );
+
+		emitterB.fire( 'foo' );
+		emitterB.fire( 'bar' );
+
+		sinon.assert.calledOnce( spyAFoo );
+		sinon.assert.calledOnce( spyABar );
+		sinon.assert.calledTwice( spyCFoo );
+		sinon.assert.notCalled( spyCBar );
 	} );
 
 	it( 'passes when stopping delegation of a specific event which has never been delegated', () => {
