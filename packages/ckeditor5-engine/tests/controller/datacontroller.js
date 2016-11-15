@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view */
-
 import ModelDocument from 'ckeditor5/engine/model/document.js';
 import DataController from 'ckeditor5/engine/controller/datacontroller.js';
 import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
@@ -12,8 +10,8 @@ import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.
 import buildViewConverter  from 'ckeditor5/engine/conversion/buildviewconverter.js';
 import buildModelConverter  from 'ckeditor5/engine/conversion/buildmodelconverter.js';
 
-import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
-import ViewText from 'ckeditor5/engine/view/text.js';
+import ModelDocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
+import ModelText from 'ckeditor5/engine/model/text.js';
 
 import { getData, setData, stringify, parse } from 'ckeditor5/engine/dev-utils/model.js';
 
@@ -43,13 +41,13 @@ describe( 'DataController', () => {
 
 		it( 'should add insertContent listener', () => {
 			const batch = modelDocument.batch();
-			const content = new ViewDocumentFragment( [ new ViewText( 'x' ) ] );
+			const content = new ModelDocumentFragment( [ new ModelText( 'x' ) ] );
 
 			schema.registerItem( 'paragraph', '$block' );
 
 			setData( modelDocument, '<paragraph>a[]b</paragraph>' );
 
-			data.fire( 'insert', { content, selection: modelDocument.selection, batch } );
+			data.fire( 'insertContent', { content, selection: modelDocument.selection, batch } );
 
 			expect( getData( modelDocument ) ).to.equal( '<paragraph>ax[]b</paragraph>' );
 			expect( batch.deltas.length ).to.be.above( 0 );
@@ -270,15 +268,15 @@ describe( 'DataController', () => {
 		} );
 	} );
 
-	describe( 'insert', () => {
-		it( 'should fire the insert event', () => {
+	describe( 'insertContent', () => {
+		it( 'should fire the insertContent event', () => {
 			const spy = sinon.spy();
-			const content = new ViewDocumentFragment( [ new ViewText( 'x' ) ] );
+			const content = new ModelDocumentFragment( [ new ModelText( 'x' ) ] );
 			const batch = modelDocument.batch();
 
-			data.on( 'insert', spy );
+			data.on( 'insertContent', spy );
 
-			data.insert( content, modelDocument.selection, batch );
+			data.insertContent( content, modelDocument.selection, batch );
 
 			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( {
 				batch: batch,

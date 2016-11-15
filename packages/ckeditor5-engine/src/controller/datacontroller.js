@@ -19,7 +19,7 @@ import ViewDocumentFragment from '../view/documentfragment.js';
 import ModelRange from '../model/range.js';
 import ModelPosition from '../model/position.js';
 
-import insert from './insert.js';
+import insertContent from './insertcontent.js';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
@@ -111,7 +111,7 @@ export default class DataController {
 		this.viewToModel.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		this.viewToModel.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
-		this.on( 'insert', ( evt, data ) => insert( this, data.content, data.selection, data.batch ) );
+		this.on( 'insertContent', ( evt, data ) => insertContent( this, data.content, data.selection, data.batch ) );
 	}
 
 	/**
@@ -214,16 +214,16 @@ export default class DataController {
 	destroy() {}
 
 	/**
-	 * See {@link engine.controller.insert}.
+	 * See {@link engine.controller.insertContent}.
 	 *
-	 * @fires engine.controller.DataController#insert
-	 * @param {engine.view.DocumentFragment} content The content to insert.
+	 * @fires engine.controller.DataController#insertContent
+	 * @param {engine.model.DocumentFragment} content The content to insert.
 	 * @param {engine.model.Selection} selection Selection into which the content should be inserted.
 	 * @param {engine.model.Batch} [batch] Batch to which deltas will be added. If not specified, then
 	 * changes will be added to a new batch.
 	 */
-	insert( content, selection, batch ) {
-		this.fire( 'insert', { content, selection, batch } );
+	insertContent( content, selection, batch ) {
+		this.fire( 'insertContent', { content, selection, batch } );
 	}
 }
 
