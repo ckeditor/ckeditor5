@@ -9,6 +9,7 @@ import { wrap } from 'ckeditor5/engine/view/writer.js';
 import Element from 'ckeditor5/engine/view/element.js';
 import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
 import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
+import EmptyElement from 'ckeditor5/engine/view/emptyelement.js';
 import Position from 'ckeditor5/engine/view/position.js';
 import Range from 'ckeditor5/engine/view/range.js';
 import Text from 'ckeditor5/engine/view/text.js';
@@ -269,6 +270,24 @@ describe( 'writer', () => {
 				']' +
 				'</container:p>'
 			);
+		} );
+
+		it( 'should wrap EmptyElement', () => {
+			test(
+				'<container:p>[<empty:img></empty:img>]</container:p>',
+				'<attribute:b></attribute:b>',
+				'<container:p>[<attribute:b view-priority="10"><empty:img></empty:img></attribute:b>]</container:p>'
+			);
+		} );
+
+		it( 'should throw if range is inside EmptyElement', () => {
+			const emptyElement = new EmptyElement( 'img' );
+			const container = new ContainerElement( 'p', null, emptyElement );
+			const range = Range.createFromParentsAndOffsets( emptyElement, 0, container, 1 );
+
+			expect( () => {
+				wrap( range, new AttributeElement( 'b' ) );
+			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 		} );
 	} );
 } );

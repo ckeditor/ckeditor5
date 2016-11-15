@@ -8,6 +8,12 @@
 import { move } from 'ckeditor5/engine/view/writer.js';
 import ViewPosition from 'ckeditor5/engine/view/position.js';
 import { stringify, parse } from 'ckeditor5/engine/dev-utils/view.js';
+import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
+import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
+import EmptyElement from 'ckeditor5/engine/view/emptyelement.js';
+import Range from 'ckeditor5/engine/view/range.js';
+import Position from 'ckeditor5/engine/view/position.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
 describe( 'writer', () => {
 	/**
@@ -111,6 +117,29 @@ describe( 'writer', () => {
 
 			const expectedView = '<container:p>b[<attribute:b>a}c</attribute:b></container:p>';
 			expect( stringify( view, newRange, { showType: true } ) ).to.equal( expectedView );
+		} );
+
+		it( 'should move EmptyElement', () => {
+			test(
+				'<container:p>foo[<empty:img></empty:img>]bar</container:p>',
+				'<container:div>baz{}quix</container:div>',
+				'<container:p>foobar</container:p>',
+				'<container:div>baz[<empty:img></empty:img>]quix</container:div>'
+			);
+		} );
+
+		it( 'should throw if trying to move to EmptyElement', () => {
+			const srcAttribute = new AttributeElement( 'b' );
+			const srcContainer = new ContainerElement( 'p', null, srcAttribute );
+			const srcRange = Range.createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
+
+			const dstEmpty = new EmptyElement( 'img' );
+			new ContainerElement( 'p', null, dstEmpty );
+			const dstPosition = new Position( dstEmpty, 0 );
+
+			expect( () => {
+				move( srcRange, dstPosition );
+			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 		} );
 	} );
 } );
