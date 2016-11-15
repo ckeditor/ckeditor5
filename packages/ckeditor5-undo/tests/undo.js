@@ -36,8 +36,8 @@ describe( 'Undo', () => {
 		expect( editor.plugins.get( UndoEngine ) ).to.be.instanceOf( UndoEngine );
 	} );
 
-	testButton( 'undo', 'CTRL+Z' );
-	testButton( 'redo', 'CTRL+Y' );
+	testButton( 'undo', 'Undo', 'CTRL+Z' );
+	testButton( 'redo', 'Redo', 'CTRL+Y' );
 
 	it( 'should set CTRL+Z keystroke', () => {
 		const spy = sinon.stub( editor, 'execute' );
@@ -66,7 +66,7 @@ describe( 'Undo', () => {
 		expect( spy.calledWithExactly( 'redo' ) ).to.be.true;
 	} );
 
-	function testButton( featureName, featureKeystroke ) {
+	function testButton( featureName, label, featureKeystroke ) {
 		describe( `${ featureName } button`, () => {
 			let button;
 
@@ -76,6 +76,13 @@ describe( 'Undo', () => {
 
 			it( 'should register feature component', () => {
 				expect( button ).to.be.instanceOf( ButtonView );
+			} );
+
+			it( 'should create UI component with correct attribute values', () => {
+				expect( button.isOn ).to.be.false;
+				expect( button.label ).to.equal( label );
+				expect( button.icon ).to.equal( featureName );
+				expect( button.keystroke ).to.equal( featureKeystroke );
 			} );
 
 			it( `should execute ${ featureName } command on model execute event`, () => {

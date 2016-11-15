@@ -158,7 +158,6 @@ export default class Undo extends Feature {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				isOn: false,
 				label: label,
 				icon: name,
 				keystroke
