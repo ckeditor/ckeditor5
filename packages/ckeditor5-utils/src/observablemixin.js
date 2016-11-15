@@ -18,7 +18,7 @@ const boundAttributesSymbol = Symbol( 'boundAttributes' );
 
 /**
  * Mixin that injects the "observable attributes" and data binding functionality.
- * Used mainly in the {@link ui.Model} class.
+ * Used mainly in the {@link module:ui/model~Model} class.
  *
  * @mixin ObservableMixin
  * @mixes module:utils/emittermixin~EmitterMixin
@@ -97,7 +97,7 @@ const ObservableMixin = {
 
 	/**
 	 * Binds observable attributes to another objects implementing {@link ~ObservableMixin}
-	 * interface (like {@link ui.Model}).
+	 * interface (like {@link module:ui/model~Model}).
 	 *
 	 * Once bound, the observable will immediately share the current state of attributes
 	 * of the observable it is bound to and react to the changes to these attributes
@@ -248,6 +248,20 @@ const ObservableMixin = {
 			boundAttributes.clear();
 		}
 	}
+	/**
+	 * @private
+	 * @method ~ObservableMixin#_boundAttributes
+	 */
+
+	/**
+	 * @private
+	 * @method ~ObservableMixin#_boundObservables
+	 */
+
+	/**
+	 * @private
+	 * @method ~ObservableMixin#_bindTo
+	 */
 };
 
 export default ObservableMixin;

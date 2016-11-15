@@ -14,6 +14,7 @@
  * Therefore, all error messages should be documented in the same way as those in {@link module:utils/log}.
  *
  * Read more in the {@link module:utils/log} module.
+ *
  * @extends Error
  */
 export default class CKEditorError extends Error {
@@ -26,7 +27,7 @@ export default class CKEditorError extends Error {
 	 * During the minification process the "Error message" part will be removed to limit the code size
 	 * and a link to this error documentation will be added to the `message`.
 	 * @param {Object} [data] Additional data describing the error. A stringified version of this object
-	 * will be appended to the error {@link #message}, so the data are quickly visible in the console. The original
+	 * will be appended to the error message, so the data are quickly visible in the console. The original
 	 * data object will also be later available under the {@link #data} property.
 	 */
 	constructor( message, data ) {
@@ -37,14 +38,14 @@ export default class CKEditorError extends Error {
 		super( message );
 
 		/**
-		 * @member {String} name
+		 * @member {String}
 		 */
 		this.name = 'CKEditorError';
 
 		/**
 		 * The additional error data passed to the constructor.
 		 *
-		 * @member {Object} data
+		 * @member {Object}
 		 */
 		this.data = data;
 	}

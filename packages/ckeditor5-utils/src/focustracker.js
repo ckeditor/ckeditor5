@@ -111,7 +111,7 @@ export default class FocusTracker {
 	 * This method uses `setTimeout` to change order of fires `blur` and `focus` events.
 	 *
 	 * @private
-	 * @fires blur
+	 * @fires #_blur
 	 */
 	_blur() {
 		this._nextEventLoopTimeout = setTimeout( () => {

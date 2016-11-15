@@ -23,7 +23,7 @@ import env from './env.js';
  * * `backspace`, `delete`, `enter`, `esc`, `tab`,
  * * `ctrl`, `cmd`, `shift`, `alt`.
  *
- * @member {Object} module:utils/keyboard~keyCodes
+ * @constant {Object} module:utils/keyboard~keyCodes
  */
 export const keyCodes = generateKnownKeyCodes();
 
