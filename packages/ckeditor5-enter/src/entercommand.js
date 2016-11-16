@@ -21,21 +21,19 @@ export default class EnterCommand extends Command {
 		const batch = doc.batch();
 
 		doc.enqueueChanges( () => {
-			enterBlock( batch, doc.selection );
+			enterBlock( this.editor.data, batch, doc.selection );
 
 			this.fire( 'afterExecute', { batch } );
 		} );
 	}
 }
 
-/**
- * Creates a new block in the way that the <kbd>Enter</kbd> key is expected to work.
- *
- * @param {engine.model.Batch} batch A batch to which the deltas will be added.
- * @param {engine.model.Selection} selection Selection on which the action should be performed.
- */
-function enterBlock( batch, selection ) {
-	const doc = batch.document;
+// Creates a new block in the way that the <kbd>Enter</kbd> key is expected to work.
+//
+// @param {engine.controller.DataController} dataController
+// @param {engine.model.Batch} batch A batch to which the deltas will be added.
+// @param {engine.model.Selection} selection Selection on which the action should be performed.
+function enterBlock( dataController, batch, selection ) {
 	const isSelectionEmpty = selection.isCollapsed;
 	const range = selection.getFirstRange();
 	const startElement = range.start.parent;
@@ -44,7 +42,7 @@ function enterBlock( batch, selection ) {
 	// Don't touch the root.
 	if ( startElement.root == startElement ) {
 		if ( !isSelectionEmpty ) {
-			doc.composer.deleteContents( batch, selection );
+			dataController.deleteContent( selection, batch );
 		}
 
 		return;
@@ -56,7 +54,7 @@ function enterBlock( batch, selection ) {
 		const shouldMerge = range.start.isAtStart && range.end.isAtEnd;
 		const isContainedWithinOneElement = ( startElement == endElement );
 
-		doc.composer.deleteContents( batch, selection, { merge: shouldMerge } );
+		dataController.deleteContent( selection, batch, { merge: shouldMerge } );
 
 		if ( !shouldMerge ) {
 			// Partially selected elements.
