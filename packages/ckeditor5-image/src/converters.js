@@ -87,6 +87,16 @@ export function viewToModelImage() {
 			return;
 		}
 
+		// Check if 'src' attribute can be converted.
+		if ( !viewImg.hasAttribute( 'src' ) || !consumable.consume( viewImg, { attributes: [ 'src' ] } ) ) {
+			return;
+		}
+
+		// Check if 'alt' attribute can be converted.
+		if ( !viewImg.hasAttribute( 'alt' ) || !consumable.consume( viewImg, { attributes: [ 'alt' ] } ) ) {
+			return;
+		}
+
 		// Consume img element.
 		if ( !consumable.consume( viewImg, { name: true } ) ) {
 			return;
@@ -95,15 +105,8 @@ export function viewToModelImage() {
 		// Create model element.
 		const modelImage = new ModelElement( 'image' );
 
-		// Add src if one is present.
-		if ( viewImg.hasAttribute( 'src' ) && consumable.consume( viewImg, { attributes: [ 'src' ] } ) ) {
-			modelImage.setAttribute( 'src', viewImg.getAttribute( 'src' ) );
-		}
-
-		// Add alt if one is present.
-		if ( viewImg.hasAttribute( 'alt' ) && consumable.consume( viewImg, { attributes: [ 'alt' ] } ) ) {
-			modelImage.setAttribute( 'alt', viewImg.getAttribute( 'alt' ) );
-		}
+		modelImage.setAttribute( 'src', viewImg.getAttribute( 'src' ) );
+		modelImage.setAttribute( 'alt', viewImg.getAttribute( 'alt' ) );
 
 		data.output = modelImage;
 	};
@@ -126,15 +129,10 @@ export function viewToModelImage() {
 export function modelToViewImage( isDataPipeline = false ) {
 	return ( data ) => {
 		const modelElement = data.item;
-		const viewImg = new ViewEmptyElement( 'img' );
-
-		if ( modelElement.hasAttribute( 'src' ) ) {
-			viewImg.setAttribute( 'src', modelElement.getAttribute( 'src' ) );
-		}
-
-		if ( modelElement.hasAttribute( 'alt' ) ) {
-			viewImg.setAttribute( 'alt', modelElement.getAttribute( 'alt' ) );
-		}
+		const viewImg = new ViewEmptyElement( 'img', {
+			src: modelElement.getAttribute( 'src' ),
+			alt: modelElement.getAttribute( 'alt' )
+		} );
 
 		return isDataPipeline ?
 			new ViewContainerElement( 'figure', { class: 'image' }, viewImg ) :

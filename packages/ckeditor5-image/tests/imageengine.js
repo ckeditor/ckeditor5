@@ -40,18 +40,6 @@ describe( `ImageEngine`, () => {
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png" alt="alt text"></figure>' );
 			} );
-
-			it( 'should convert without alt attribute', () => {
-				setModelData( document, '<image src="foo.png"></image>' );
-
-				expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
-			} );
-
-			it( 'should convert without src attribute', () => {
-				setModelData( document, '<image alt="alt text"></image>' );
-
-				expect( editor.getData() ).to.equal( '<figure class="image"><img alt="alt text"></figure>' );
-			} );
 		} );
 
 		describe( 'view to model', () => {
@@ -83,18 +71,18 @@ describe( `ImageEngine`, () => {
 					.to.equal( '' );
 			} );
 
-			it( 'should convert without alt attribute', () => {
+			it( 'should not convert without alt attribute', () => {
 				editor.setData( '<figure class="image"><img src="foo.png" /></figure>' );
 
 				expect( getModelData( document, { withoutSelection: true } ) )
-					.to.equal( '<image src="foo.png"></image>' );
+					.to.equal( '' );
 			} );
 
-			it( 'should convert without src attribute', () => {
+			it( 'should not convert without src attribute', () => {
 				editor.setData( '<figure class="image"><img alt="alt text" /></figure>' );
 
 				expect( getModelData( document, { withoutSelection: true } ) )
-					.to.equal( '<image alt="alt text"></image>' );
+					.to.equal( '' );
 			} );
 
 			it( 'should not convert in wrong context', () => {
@@ -147,20 +135,6 @@ describe( `ImageEngine`, () => {
 					.to.equal( '<figure class="image ck-widget" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>' );
 			} );
 
-			it( 'should convert without alt attribute', () => {
-				setModelData( document, '<image src="foo.png"></image>' );
-
-				expect( getViewData( viewDocument, { withoutSelection: true } ) )
-					.to.equal( '<figure class="image ck-widget" contenteditable="false"><img src="foo.png"></img></figure>' );
-			} );
-
-			it( 'should convert without src attribute', () => {
-				setModelData( document, '<image alt="alt text"></image>' );
-
-				expect( getViewData( viewDocument, { withoutSelection: true } ) )
-					.to.equal( '<figure class="image ck-widget" contenteditable="false"><img alt="alt text"></img></figure>' );
-			} );
-
 			it( 'should widgetize element', () => {
 				setModelData( document, '<image src="foo.png" alt="alt text"></image>' );
 				const figure = viewDocument.getRoot().getChild( 0 );
@@ -187,12 +161,12 @@ describe( `ImageEngine`, () => {
 			expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'alt text image widget' );
 		} );
 
-		it( 'should create proper fake selection label when alt attribute is not present', () => {
-			setModelData( document, '[<image src="foo.png"></image>]' );
+		it( 'should create proper fake selection label when alt attribute is empty', () => {
+			setModelData( document, '[<image src="foo.png" alt=""></image>]' );
 
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
-					'<img src="foo.png"></img>' +
+					'<img alt="" src="foo.png"></img>' +
 				'</figure>]'
 			);
 
