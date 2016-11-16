@@ -7,7 +7,6 @@ import ViewContainerElement from '../engine/view/containerelement.js';
 import ViewEmptyElement from '../engine/view/emptyelement.js';
 import ModelElement from '../engine/model/element.js';
 
-const WIDGET_CLASS_NAME = 'ck-widget';
 const WIDGET_SELECTED_CLASS_NAME = 'ck-widget_selected';
 
 /**
@@ -113,48 +112,18 @@ export function viewToModelImage() {
 }
 
 /**
- * Returns function that converts model `image` element to view representation.
- * For data pipeline model image will be converted to:
+ * Converts model `image` element to view representation:
  *
  *		<figure class="image"><img src="..." alt="..."></img></figure>
  *
- * For editing pipeline image will be "widgetized" and it will be converted to:
- *
- *		<figure class="image ck-widget" contenteditable="false"><img src="..." alt="..."></img></figure>
- *
- * @param {Boolean} [isDataPipeline=false] If true, figure element will not be "widgetized" as conversion is taking place
- * in data pipeline.
- * @returns {Function}
- */
-export function modelToViewImage( isDataPipeline = false ) {
-	return ( data ) => {
-		const modelElement = data.item;
-		const viewImg = new ViewEmptyElement( 'img', {
-			src: modelElement.getAttribute( 'src' ),
-			alt: modelElement.getAttribute( 'alt' )
-		} );
-
-		return isDataPipeline ?
-			new ViewContainerElement( 'figure', { class: 'image' }, viewImg ) :
-			widgetize( new ViewContainerElement( 'figure', { class: 'image' }, viewImg ) );
-	};
-}
-
-/**
- * "Widgetizes" provided {@link engie.view.ContainerElement} by:
- * - changing return value of {@link engine.view.ContainerElement#getFillerOffset} to `null`,
- * - adding `contenteditable="false"` attribute,
- * - adding `ck-widget` class,
- * - setting `element.isWidget` to true.
- *
- * @param {engine.view.ContainerElement} viewContainer
+ * @param {engine.model.Element} modelElement
  * @returns {engine.view.ContainerElement}
  */
-function widgetize( viewContainer ) {
-	viewContainer.getFillerOffset = () => null;
-	viewContainer.setAttribute( 'contenteditable', false );
-	viewContainer.addClass( WIDGET_CLASS_NAME );
-	viewContainer.isWidget = true;
+export function modelToViewImage( modelElement ) {
+	const viewImg = new ViewEmptyElement( 'img', {
+		src: modelElement.getAttribute( 'src' ),
+		alt: modelElement.getAttribute( 'alt' )
+	} );
 
-	return viewContainer;
+	return new ViewContainerElement( 'figure', { class: 'image' }, viewImg );
 }
