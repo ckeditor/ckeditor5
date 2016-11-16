@@ -283,18 +283,13 @@ export default class Selection {
 	}
 
 	/**
-	 * Checks whether, this selection is equal to given selection. Selections equal if they have the same ranges and directions.
+	 * Checks whether, this selection is equal to given selection. Selections are equal if they have same directions,
+	 * same number of ranges and all ranges from one selection equal to a range from other selection.
 	 *
 	 * @param {engine.view.Selection} otherSelection Selection to compare with.
 	 * @returns {Boolean} `true` if selections are equal, `false` otherwise.
 	 */
 	isEqual( otherSelection ) {
-		const rangeCount = this.rangeCount;
-
-		if ( rangeCount != otherSelection.rangeCount ) {
-			return false;
-		}
-
 		if ( this.isFake != otherSelection.isFake ) {
 			return false;
 		}
@@ -303,13 +298,32 @@ export default class Selection {
 			return false;
 		}
 
-		for ( let i = 0; i < this.rangeCount; i++ ) {
-			if ( !this._ranges[ i ].isEqual( otherSelection._ranges[ i ] ) ) {
+		if ( this.rangeCount != otherSelection.rangeCount ) {
+			return false;
+		} else if ( this.rangeCount === 0 ) {
+			return true;
+		}
+
+		if ( !this.anchor.isEqual( otherSelection.anchor ) || !this.focus.isEqual( otherSelection.focus ) ) {
+			return false;
+		}
+
+		for ( let thisRange of this._ranges ) {
+			let found = false;
+
+			for ( let otherRange of otherSelection._ranges ) {
+				if ( thisRange.isEqual( otherRange ) ) {
+					found = true;
+					break;
+				}
+			}
+
+			if ( !found ) {
 				return false;
 			}
 		}
 
-		return this._lastRangeBackward === otherSelection._lastRangeBackward;
+		return true;
 	}
 
 	/**

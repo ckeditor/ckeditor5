@@ -17,6 +17,10 @@ describe( 'ClickObserver', () => {
 		observer = viewDocument.addObserver( ClickObserver );
 	} );
 
+	afterEach( () => {
+		viewDocument.destroy();
+	} );
+
 	it( 'should define domEventType', () => {
 		expect( observer.domEventType ).to.equal( 'click' );
 	} );

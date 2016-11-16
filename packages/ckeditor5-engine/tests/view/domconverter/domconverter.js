@@ -33,10 +33,11 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'focus', () => {
-		let viewEditable, domEditable;
+		let viewEditable, domEditable, viewDocument;
 
 		beforeEach( () => {
-			viewEditable = new ViewEditable( new ViewDocument(), 'div' );
+			viewDocument = new ViewDocument();
+			viewEditable = new ViewEditable( viewDocument, 'div' );
 			domEditable = document.createElement( 'div' );
 			converter.bindElements( domEditable, viewEditable );
 			domEditable.setAttribute( 'contenteditable', 'true' );
@@ -45,6 +46,7 @@ describe( 'DomConverter', () => {
 
 		afterEach( () => {
 			document.body.removeChild( domEditable );
+			viewDocument.destroy();
 		} );
 
 		it( 'should call focus on corresponding DOM editable', () => {

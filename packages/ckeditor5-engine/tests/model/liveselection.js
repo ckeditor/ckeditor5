@@ -21,6 +21,8 @@ import count from 'ckeditor5/utils/count.js';
 import testUtils from 'tests/core/_utils/utils.js';
 import { wrapInDelta } from 'tests/engine/model/_utils/utils.js';
 
+import log from 'ckeditor5/utils/log.js';
+
 testUtils.createSinonSandbox();
 
 describe( 'LiveSelection', () => {
@@ -136,13 +138,16 @@ describe( 'LiveSelection', () => {
 		} );
 
 		it( 'should not add a range that is in graveyard', () => {
+			const spy = testUtils.sinon.stub( log, 'warn' );
+
 			selection.addRange( Range.createIn( doc.graveyard ) );
 
 			expect( selection._ranges.length ).to.equal( 0 );
+			expect( spy.calledOnce ).to.be.true;
 		} );
 
 		it( 'should refresh attributes', () => {
-			const spy = sinon.spy( selection, '_updateAttributes' );
+			const spy = testUtils.sinon.spy( selection, '_updateAttributes' );
 
 			selection.addRange( range );
 

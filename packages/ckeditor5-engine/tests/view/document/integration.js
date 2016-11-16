@@ -25,6 +25,8 @@ describe( 'Document integration', () => {
 
 		expect( domDiv.childNodes.length ).to.equal( 1 );
 		expect( isBlockFiller( domDiv.childNodes[ 0 ], BR_FILLER ) ).to.be.true;
+
+		viewDocument.destroy();
 	} );
 
 	it( 'should render changes in the Document', () => {
@@ -38,6 +40,8 @@ describe( 'Document integration', () => {
 
 		expect( domDiv.childNodes.length ).to.equal( 1 );
 		expect( domDiv.childNodes[ 0 ].tagName ).to.equal( 'P' );
+
+		viewDocument.destroy();
 	} );
 
 	it( 'should render attribute changes', () => {
@@ -58,5 +62,7 @@ describe( 'Document integration', () => {
 
 		expect( domRoot.childNodes.length ).to.equal( 1 );
 		expect( domRoot.childNodes[ 0 ].getAttribute( 'class' ) ).to.equal( 'bar' );
+
+		viewDocument.destroy();
 	} );
 } );

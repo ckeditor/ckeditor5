@@ -33,8 +33,7 @@ describe( 'Document', () => {
 	} );
 
 	afterEach( () => {
-		// There's no destroy() method yet, so let's at least kill the observers.
-		viewDocument.disableObservers();
+		viewDocument.destroy();
 
 		domRoot.parentElement.removeChild( domRoot );
 	} );

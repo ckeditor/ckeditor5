@@ -303,6 +303,15 @@ export default class Document {
 			observer.enable();
 		}
 	}
+
+	/**
+	 * Destroys all observers created by view `Document`.
+	 */
+	destroy() {
+		for ( let observer of this._observers.values() ) {
+			observer.destroy();
+		}
+	}
 }
 
 mix( Document, ObservableMixin );

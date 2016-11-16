@@ -25,7 +25,7 @@ testUtils.createSinonSandbox();
 
 describe( 'Document', () => {
 	const DEFAULT_OBSERVERS_COUNT = 5;
-	let ObserverMock, ObserverMockGlobalCount, instantiated, enabled, domRoot;
+	let ObserverMock, ObserverMockGlobalCount, instantiated, enabled, domRoot, viewDocument;
 
 	before( () => {
 		domRoot = createElement( document, 'div', {
@@ -65,12 +65,16 @@ describe( 'Document', () => {
 				enabled++;
 			}
 		};
+
+		viewDocument = new Document();
+	} );
+
+	afterEach( () => {
+		viewDocument.destroy();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should create Document with all properties', () => {
-			const viewDocument = new Document();
-
 			expect( count( viewDocument.domRoots ) ).to.equal( 0 );
 			expect( count( viewDocument.roots ) ).to.equal( 0 );
 			expect( viewDocument ).to.have.property( 'renderer' ).that.is.instanceOf( Renderer );
@@ -79,8 +83,6 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should add default observers', () => {
-			const viewDocument = new Document();
-
 			expect( count( viewDocument._observers ) ).to.equal( DEFAULT_OBSERVERS_COUNT );
 			expect( viewDocument.getObserver( MutationObserver ) ).to.be.instanceof( MutationObserver );
 			expect( viewDocument.getObserver( SelectionObserver ) ).to.be.instanceof( SelectionObserver );
@@ -96,7 +98,6 @@ describe( 'Document', () => {
 			const domDiv = document.createElement( 'div' );
 			domDiv.appendChild( domP );
 
-			const viewDocument = new Document();
 			const ret = viewDocument.createRoot( domDiv );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 1 );
@@ -115,7 +116,10 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should call observe on each observer', () => {
-			const viewDocument = new Document( document.createElement( 'div' ) );
+			// The variable will be overwritten.
+			viewDocument.destroy();
+
+			viewDocument = new Document( document.createElement( 'div' ) );
 			viewDocument.renderer.render = sinon.spy();
 
 			const domDiv1 = document.createElement( 'div' );
@@ -135,8 +139,6 @@ describe( 'Document', () => {
 
 		it( 'should create "main" root by default', () => {
 			const domDiv = document.createElement( 'div' );
-
-			const viewDocument = new Document();
 			const ret = viewDocument.createRoot( domDiv );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 1 );
@@ -152,8 +154,6 @@ describe( 'Document', () => {
 
 		it( 'should create root with given name', () => {
 			const domDiv = document.createElement( 'div' );
-
-			const viewDocument = new Document();
 			const ret = viewDocument.createRoot( domDiv, 'header' );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 1 );
@@ -168,7 +168,6 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should create root without attaching DOM element', () => {
-			const viewDocument = new Document();
 			const ret = viewDocument.createRoot( 'div' );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 0 );
@@ -180,8 +179,6 @@ describe( 'Document', () => {
 	describe( 'attachDomRoot', () => {
 		it( 'should create root without attach DOM element to the view element', () => {
 			const domDiv = document.createElement( 'div' );
-
-			const viewDocument = new Document();
 			const viewRoot = viewDocument.createRoot( 'div' );
 
 			expect( count( viewDocument.domRoots ) ).to.equal( 0 );
@@ -201,8 +198,6 @@ describe( 'Document', () => {
 
 		it( 'should create root without attach DOM element to the view element with given name', () => {
 			const domH1 = document.createElement( 'h1' );
-
-			const viewDocument = new Document();
 			viewDocument.createRoot( 'DIV' );
 			const viewH1 = viewDocument.createRoot( 'h1', 'header' );
 
@@ -225,7 +220,6 @@ describe( 'Document', () => {
 
 	describe( 'getRoot', () => {
 		it( 'should return "main" root', () => {
-			const viewDocument = new Document();
 			viewDocument.createRoot( document.createElement( 'div' ) );
 
 			expect( count( viewDocument.roots ) ).to.equal( 1 );
@@ -234,7 +228,6 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should return named root', () => {
-			const viewDocument = new Document();
 			viewDocument.createRoot( document.createElement( 'h1' ), 'header' );
 
 			expect( count( viewDocument.roots ) ).to.equal( 1 );
@@ -244,11 +237,16 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'addObserver', () => {
-		let viewDocument;
-
 		beforeEach( () => {
+			// The variable will be overwritten.
+			viewDocument.destroy();
+
 			viewDocument = new Document( document.createElement( 'div' ) );
 			viewDocument.renderer.render = sinon.spy();
+		} );
+
+		afterEach( () => {
+			viewDocument.destroy();
 		} );
 
 		it( 'should be instantiated and enabled on adding', () => {
@@ -316,8 +314,6 @@ describe( 'Document', () => {
 
 	describe( 'getObserver', () => {
 		it( 'should return observer it it is added', () => {
-			const viewDocument = new Document();
-
 			const addedObserverMock = viewDocument.addObserver( ObserverMock );
 			const getObserverMock = viewDocument.getObserver( ObserverMock );
 
@@ -326,7 +322,6 @@ describe( 'Document', () => {
 		} );
 
 		it( 'should return undefined if observer is not added', () => {
-			const viewDocument = new Document();
 			const getObserverMock = viewDocument.getObserver( ObserverMock );
 
 			expect( getObserverMock ).to.be.undefined;
@@ -335,8 +330,6 @@ describe( 'Document', () => {
 
 	describe( 'disableObservers', () => {
 		it( 'should disable observers', () => {
-			const viewDocument = new Document();
-
 			const addedObserverMock = viewDocument.addObserver( ObserverMock );
 
 			expect( addedObserverMock.enable.calledOnce ).to.be.true;
@@ -351,8 +344,6 @@ describe( 'Document', () => {
 
 	describe( 'enableObservers', () => {
 		it( 'should enable observers', () => {
-			const viewDocument = new Document();
-
 			const addedObserverMock = viewDocument.addObserver( ObserverMock );
 
 			viewDocument.disableObservers();
@@ -369,8 +360,6 @@ describe( 'Document', () => {
 
 	describe( 'isFocused', () => {
 		it( 'should change renderer.isFocused too', () => {
-			const viewDocument = new Document();
-
 			expect( viewDocument.isFocused ).to.equal( false );
 			expect( viewDocument.renderer.isFocused ).to.equal( false );
 
@@ -382,10 +371,9 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'focus', () => {
-		let viewDocument, domEditable, viewEditable;
+		let domEditable, viewEditable;
 
 		beforeEach( () => {
-			viewDocument = new Document();
 			domEditable = document.createElement( 'div' );
 			domEditable.setAttribute( 'contenteditable', 'true' );
 			document.body.appendChild( domEditable );

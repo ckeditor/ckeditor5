@@ -27,18 +27,16 @@ import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
 
 describe( 'EditingController', () => {
 	describe( 'constructor()', () => {
-		let model, editing;
-
-		beforeEach( () => {
-			model = new ModelDocument();
-			editing = new EditingController( model );
-		} );
-
 		it( 'should create controller with properties', () => {
+			const model = new ModelDocument();
+			const editing = new EditingController( model );
+
 			expect( editing ).to.have.property( 'model' ).that.equals( model );
 			expect( editing ).to.have.property( 'view' ).that.is.instanceof( ViewDocument );
 			expect( editing ).to.have.property( 'mapper' ).that.is.instanceof( Mapper );
 			expect( editing ).to.have.property( 'modelToView' ).that.is.instanceof( ModelConversionDispatcher );
+
+			editing.destroy();
 		} );
 	} );
 
@@ -51,6 +49,10 @@ describe( 'EditingController', () => {
 			model.createRoot( '$root', 'header' );
 
 			editing = new EditingController( model );
+		} );
+
+		afterEach( () => {
+			editing.destroy();
 		} );
 
 		it( 'should create root', () => {
@@ -127,6 +129,7 @@ describe( 'EditingController', () => {
 		after( () => {
 			document.body.removeChild( domRoot );
 			listener.stopListening();
+			editing.destroy();
 		} );
 
 		beforeEach( () => {
@@ -273,6 +276,24 @@ describe( 'EditingController', () => {
 			} );
 
 			expect( spy.called ).to.be.false;
+
+			editing.destroy();
+		} );
+
+		it( 'should destroy view', () => {
+			let model, editing;
+
+			model = new ModelDocument();
+			model.createRoot();
+			model.schema.registerItem( 'paragraph', '$block' );
+
+			editing = new EditingController( model );
+
+			const spy = sinon.spy( editing.view, 'destroy' );
+
+			editing.destroy();
+
+			expect( spy.called ).to.be.true;
 		} );
 	} );
 } );
