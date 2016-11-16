@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module engine/dataprocessor/htmlwriter
+ */
+
+/**
  * HTML writer interface.
  *
  * @interface engine.dataProcessor.HtmlWriter

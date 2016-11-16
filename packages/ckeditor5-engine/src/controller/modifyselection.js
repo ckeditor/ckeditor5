@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/controller/modifyselection
+ */
+
 import Position from '../model/position.js';
 import TreeWalker from '../model/treewalker.js';
 import Range from '../model/range.js';

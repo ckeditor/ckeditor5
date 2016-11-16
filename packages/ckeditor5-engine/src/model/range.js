@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/range
+ */
+
 import Position from './position.js';
 import TreeWalker from './treewalker.js';
 import compareArrays from '../../utils/comparearrays.js';

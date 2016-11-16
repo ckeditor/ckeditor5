@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/filler
+ */
+
 /* globals window, Range, Text */
 
 import { keyCodes } from '../../utils/keyboard.js';

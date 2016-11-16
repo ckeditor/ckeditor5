@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/conversion/buildmodelconverter
+ */
+
 import {
 	insertElement,
 	setAttribute,

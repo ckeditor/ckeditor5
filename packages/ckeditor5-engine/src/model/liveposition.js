@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/liveposition
+ */
+
 import RootElement from './rootelement.js';
 import Position from './position.js';
 import Range from './range.js';

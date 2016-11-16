@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module engine/conversion/view-selection-to-model-converters
+ */
+
+/**
  * Contains {@link engine.view.Selection view selection} to {@link engine.model.Selection model selection} conversion
  * helper.
  *

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/position
+ */
+
 import Text from './text.js';
 import TextProxy from './textproxy.js';
 

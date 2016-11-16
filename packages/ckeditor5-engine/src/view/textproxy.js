@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/textproxy
+ */
+
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**

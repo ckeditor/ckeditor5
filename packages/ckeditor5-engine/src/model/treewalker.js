@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/treewalker
+ */
+
 import Text from './text.js';
 import TextProxy from './textproxy.js';
 import Element from './element.js';

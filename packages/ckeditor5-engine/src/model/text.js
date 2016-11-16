@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/text
+ */
+
 import Node from './node.js';
 
 /**

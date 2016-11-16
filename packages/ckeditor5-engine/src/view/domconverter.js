@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/domconverter
+ */
+
 /* globals Range, Node, NodeFilter */
 
 import ViewText from './text.js';

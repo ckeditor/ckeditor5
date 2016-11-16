@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/writer
+ */
+
 import Position from './position.js';
 import ContainerElement from './containerelement.js';
 import AttributeElement from './attributeelement.js';

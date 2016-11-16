@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/conversion/modelconversiondispatcher
+ */
+
 import Consumable from './modelconsumable.js';
 import Range from '../model/range.js';
 import TextProxy from '../model/textproxy.js';

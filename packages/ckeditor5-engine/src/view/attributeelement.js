@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/attributeelement
+ */
+
 import Element from './element.js';
 
 // Default attribute priority.

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/controller/insertcontent
+ */
+
 import Position from '../model/position.js';
 import LivePosition from '../model/liveposition.js';
 import Text from '../model/text.js';
@@ -14,16 +18,15 @@ import log from '../../utils/log.js';
  * Inserts content into the editor (specified selection) as one would expect the paste
  * functionality to work.
  *
- * **Note:** Use {@link engine.controller.DataController#insertContent} instead of this function.
+ * **Note:** Use {@link module:engine/controller/datacontroller~DataController#insertContent} instead of this function.
  * This function is only exposed to be reusable in algorithms which change the {@link engine.controller.DataController#insertContent}
  * method's behavior.
  *
- * @method engine.controller.insertContent
- * @param {engine.controller.DataController} dataController The data controller in context of which the insertion
+ * @param {module:engine/controller/datacontroller~DataController} dataController The data controller in context of which the insertion
  * should be performed.
- * @param {engine.model.DocumentFragment} content The content to insert.
- * @param {engine.model.Selection} selection Selection into which the content should be inserted.
- * @param {engine.model.Batch} [batch] Batch to which deltas will be added. If not specified, then
+ * @param {module:engine/model/documentfragment~DocumentFragment} content The content to insert.
+ * @param {module:engine/model/selection~Selection} selection Selection into which the content should be inserted.
+ * @param {module:engine/model/batch~Batch} [batch] Batch to which deltas will be added. If not specified, then
  * changes will be added to a new batch.
  */
 export default function insertContent( dataController, content, selection, batch ) {
@@ -53,28 +56,27 @@ export default function insertContent( dataController, content, selection, batch
  * Utility class for performing content insertion.
  *
  * @private
- * @memberOf engine.dataController.insert
  */
 class Insertion {
 	constructor( dataController, batch, position ) {
 		/**
 		 * The data controller in context of which the insertion should be performed.
 		 *
-		 * @member {engine.controller.DataController} #dataController
+		 * @member {module:engine/controller/datacontroller~DataController} #dataController
 		 */
 		this.dataController = dataController;
 
 		/**
 		 * Batch to which deltas will be added.
 		 *
-		 * @member {engine.model.Batch} #batch
+		 * @member {module:engine/controller/batch~Batch} #batch
 		 */
 		this.batch = batch;
 
 		/**
 		 * The position at which (or near which) the next node will be inserted.
 		 *
-		 * @member {engine.model.Position} #position
+		 * @member {module:engine/model/position~Position} #position
 		 */
 		this.position = position;
 
@@ -94,7 +96,7 @@ class Insertion {
 		/**
 		 * Schema of the model.
 		 *
-		 * @member {engine.model.Schema} #schema
+		 * @member {module:engine/model/schema~Schema} #schema
 		 */
 		this.schema = dataController.model.schema;
 	}
@@ -102,7 +104,7 @@ class Insertion {
 	/**
 	 * Handles insertion of a set of nodes.
 	 *
-	 * @param {Iterable.<engine.model.Node>} nodes Nodes to insert.
+	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes to insert.
 	 * @param {Object} parentContext Context in which parent of these nodes was supposed to be inserted.
 	 * If the parent context is passed it means that the parent element was stripped (was not allowed).
 	 */
@@ -122,7 +124,7 @@ class Insertion {
 	/**
 	 * Returns a range to be selected after insertion.
 	 *
-	 * @returns {engine.model.Range}
+	 * @returns {module:engine/model/range~Range}
 	 */
 	getSelectionRanges() {
 		if ( this.nodeToSelect ) {
@@ -138,7 +140,7 @@ class Insertion {
 	/**
 	 * Handles insertion of a single node.
 	 *
-	 * @param {engine.model.Node} node
+	 * @param {module:engine/model/node~Node} node
 	 * @param {Object} context
 	 * @param {Boolean} context.isFirst Whether the given node is the first one in the content to be inserted.
 	 * @param {Boolean} context.isLast Whether the given node is the last one in the content to be inserted.
@@ -182,7 +184,7 @@ class Insertion {
 	}
 
 	/**
-	 * @param {engine.model.Element} node The object element.
+	 * @param {module:engine/model/element~Element} node The object element.
 	 * @param {Object} context
 	 */
 	_handleObject( node, context ) {
@@ -197,7 +199,7 @@ class Insertion {
 	}
 
 	/**
-	 * @param {engine.model.Node} node The disallowed node which needs to be handled.
+	 * @param {module:engine/model/node~Node} node The disallowed node which needs to be handled.
 	 * @param {Object} context
 	 */
 	_handleDisallowedNode( node, context ) {
@@ -212,7 +214,7 @@ class Insertion {
 	}
 
 	/**
-	 * @param {engine.model.Node} node The node to insert.
+	 * @param {module:engine/model/node~Node} node The node to insert.
 	 */
 	_insert( node ) {
 		/* istanbul ignore if */
@@ -243,7 +245,7 @@ class Insertion {
 	}
 
 	/**
-	 * @param {engine.model.Node} node The node which could potentially be merged.
+	 * @param {module:engine/model/node~Node} node The node which could potentially be merged.
 	 * @param {Object} context
 	 */
 	_mergeSiblingsOf( node, context ) {
@@ -297,7 +299,7 @@ class Insertion {
 	/**
 	 * Tries wrapping the node in a new paragraph and inserting it this way.
 	 *
-	 * @param {engine.model.Node} node The node which needs to be autoparagraphed.
+	 * @param {module:engine/model/node~Node} node The node which needs to be autoparagraphed.
 	 * @param {Object} context
 	 */
 	_tryAutoparagraphing( node, context ) {
@@ -314,7 +316,7 @@ class Insertion {
 	}
 
 	/**
-	 * @param {engine.model.Node} node
+	 * @param {module:engine/model/node~Node} node
 	 */
 	_checkAndSplitToAllowedPosition( node ) {
 		const allowedIn = this._getAllowedIn( node, this.position.parent );
@@ -352,9 +354,9 @@ class Insertion {
 	/**
 	 * Gets the element in which the given node is allowed. It checks the passed element and all its ancestors.
 	 *
-	 * @param {engine.model.Node} node The node to check.
-	 * @param {engine.model.Element} element The element in which the node's correctness should be checked.
-	 * @returns {engine.model.Element|null}
+	 * @param {module:engine/model/node~Node} node The node to check.
+	 * @param {module:engine/model/element~Element} element The element in which the node's correctness should be checked.
+	 * @returns {module:engine/model/element~Element|null}
 	 */
 	_getAllowedIn( node, element ) {
 		if ( this._checkIsAllowed( node, [ element ] ) ) {
@@ -371,8 +373,8 @@ class Insertion {
 	/**
 	 * Check whether the given node is allowed in the specified schema path.
 	 *
-	 * @param {engine.model.Node} node
-	 * @param {engine.model.SchemaPath} path
+	 * @param {module:engine/model/node~Node} node
+	 * @param {module:engine/model/schemapath~SchemaPath} path
 	 */
 	_checkIsAllowed( node, path ) {
 		return this.schema.check( {
@@ -385,7 +387,7 @@ class Insertion {
 	/**
 	 * Checks wether according to the schema this is an object type element.
 	 *
-	 * @param {engine.model.Node} node The node to check.
+	 * @param {module:engine/model/node~Node} node The node to check.
 	 */
 	_checkIsObject( node ) {
 		return this.schema.objects.has( this._getNodeSchemaName( node ) );
@@ -394,7 +396,7 @@ class Insertion {
 	/**
 	 * Gets a name under which we should check this node in the schema.
 	 *
-	 * @param {engine.model.Node} node The node.
+	 * @param {module:engine/model/node~Node} node The node.
 	 */
 	_getNodeSchemaName( node ) {
 		if ( node instanceof Text ) {

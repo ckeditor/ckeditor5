@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/history
+ */
+
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**

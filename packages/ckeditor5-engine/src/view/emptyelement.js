@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/emptyelement
+ */
+
 import Element from './element.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 

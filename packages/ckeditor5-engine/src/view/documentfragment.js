@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/documentfragment
+ */
+
 import Text from './text.js';
 import mix from '../../utils/mix.js';
 import isIterable from '../../utils/isiterable.js';

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/documentfragment
+ */
+
 import NodeList from './nodelist.js';
 import Element from './element.js';
 import Text from './text.js';

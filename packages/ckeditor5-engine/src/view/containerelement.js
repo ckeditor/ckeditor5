@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/containerelement
+ */
+
 import Element from './element.js';
 
 /**

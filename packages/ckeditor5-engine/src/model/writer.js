@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/writer
+ */
+
 import Node from './node.js';
 import Text from './text.js';
 import TextProxy from './textproxy.js';

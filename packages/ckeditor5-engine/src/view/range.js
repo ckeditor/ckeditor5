@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/range
+ */
+
 import Position from './position.js';
 import TreeWalker from './treewalker.js';
 

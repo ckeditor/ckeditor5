@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/rooteditableelement
+ */
+
 import EditableElement from './editableelement.js';
 
 /**

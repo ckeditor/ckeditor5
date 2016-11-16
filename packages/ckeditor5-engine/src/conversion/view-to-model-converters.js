@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/conversion/view-to-model-converters
+ */
+
 import ModelDocumentFragment from '../model/documentfragment.js';
 import ModelText from '../model/text.js';
 import { normalizeNodes } from '../model/writer.js';

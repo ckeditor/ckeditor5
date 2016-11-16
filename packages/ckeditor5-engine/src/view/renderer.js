@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/renderer
+ */
+
 import ViewText from './text.js';
 import ViewElement from './element.js';
 import ViewPosition from './position.js';

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/selection
+ */
+
 import Position from './position.js';
 import Range from './range.js';
 import EmitterMixin from '../../utils/emittermixin.js';

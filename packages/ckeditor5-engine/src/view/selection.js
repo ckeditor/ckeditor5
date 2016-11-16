@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/selection
+ */
+
 import CKEditorError from '../../utils/ckeditorerror.js';
 import Range from './range.js';
 import Position from './position.js';

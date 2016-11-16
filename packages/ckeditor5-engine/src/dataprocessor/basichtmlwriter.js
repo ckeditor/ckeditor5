@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/dataprocessor/basichtmlwriter
+ */
+
 /* globals document */
 
 /**

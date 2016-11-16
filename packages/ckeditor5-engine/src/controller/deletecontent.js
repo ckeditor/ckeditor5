@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/controller/deletecontent
+ */
+
 import LivePosition from '../model/liveposition.js';
 import Position from '../model/position.js';
 import Element from '../model/element.js';

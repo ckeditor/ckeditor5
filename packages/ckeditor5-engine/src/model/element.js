@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/element
+ */
+
 import Node from './node.js';
 import NodeList from './nodelist.js';
 import Text from './text.js';

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/conversion/viewconsumable
+ */
+
 import isArray from '../../utils/lib/lodash/isArray.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 import ViewElement from '../view/element.js';

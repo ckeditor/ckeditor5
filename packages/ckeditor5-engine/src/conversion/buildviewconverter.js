@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/conversion/buildviewconverter
+ */
+
 import Matcher from '../view/matcher.js';
 import ModelElement from '../model/element.js';
 import ModelPosition from '../model/position.js';

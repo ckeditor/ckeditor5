@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/conversion/viewconversiondispatcher
+ */
+
 import ViewConsumable from './viewconsumable.js';
 import ViewElement from '../view/element.js';
 import ViewText from '../view/text.js';

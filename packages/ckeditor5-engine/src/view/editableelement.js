@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/editableelement
+ */
+
 import ContainerElement from './containerelement.js';
 
 import mix from '../../utils/mix.js';

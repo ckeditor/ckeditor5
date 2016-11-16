@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/controller/editingcontroller
+ */
+
 import ViewDocument from '../view/document.js';
 import Mapper from '../conversion/mapper.js';
 import ModelConversionDispatcher from '../conversion/modelconversiondispatcher.js';
@@ -21,21 +25,19 @@ import EmitterMixin from '../../utils/emittermixin.js';
  * Controller for the editing pipeline. The editing pipeline controls {@link engine.controller.EditingController#model model} rendering,
  * including selection handling. It also creates {@link engine.controller.EditingController#view view document} which build a
  * browser-independent virtualization over the DOM elements. Editing controller also attach default converters.
- *
- * @memberOf engine.controller
  */
 export default class EditingController {
 	/**
 	 * Creates editing controller instance.
 	 *
-	 * @param {engine.model.Document} model Document model.
+	 * @param {module:engine/model/document~Document} model Document model.
 	 */
 	constructor( model ) {
 		/**
 		 * Document model.
 		 *
 		 * @readonly
-		 * @member {engine.model.document} engine.controller.EditingController#model
+		 * @member {engine.model.document}
 		 */
 		this.model = model;
 
@@ -43,7 +45,7 @@ export default class EditingController {
 		 * View document.
 		 *
 		 * @readonly
-		 * @member {engine.view.document} engine.controller.EditingController#view
+		 * @member {engine.view.document}
 		 */
 		this.view = new ViewDocument();
 
@@ -51,13 +53,13 @@ export default class EditingController {
 		 * Mapper which describes model-view binding.
 		 *
 		 * @readonly
-		 * @member {engine.conversion.Mapper} engine.controller.EditingController#mapper
+		 * @member {engine.conversion.Mapper}
 		 */
 		this.mapper = new Mapper();
 
 		/**
 		 * Model to view conversion dispatcher, which converts changes from the model to
-		 * {@link engine.controller.EditingController#view editing view}.
+		 * {@link #view editing view}.
 		 *
 		 * To attach model to view converter to the editing pipeline you need to add lister to this property:
 		 *
@@ -68,7 +70,7 @@ export default class EditingController {
 		 *		buildModelConverter().for( editing.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
 		 *
 		 * @readonly
-		 * @member {engine.conversion.ModelConversionDispatcher} engine.controller.EditingController#modelToView
+		 * @member {engine.conversion.ModelConversionDispatcher} #modelToView
 		 */
 		this.modelToView = new ModelConversionDispatcher( {
 			mapper: this.mapper,
@@ -77,10 +79,10 @@ export default class EditingController {
 
 		/**
 		 * Property keeping all listenters attached by controller on other objects, so it can
-		 * stop listening on {@link engine.controller.EditingController#destroy}.
+		 * stop listening on {@link #destroy}.
 		 *
 		 * @private
-		 * @member {utils.EmitterMixin} engine.controller.EditingController#_listenter
+		 * @member {utils.EmitterMixin} #_listenter
 		 */
 		this._listenter = Object.create( EmitterMixin );
 

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/dataprocessor/htmldataprocessor
+ */
+
 /* globals document, DOMParser */
 
 import BasicHtmlWriter from './basichtmlwriter.js';

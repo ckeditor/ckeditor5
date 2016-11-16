@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module engine/dev-utils/view
+ */
+
+/**
  * @namespace engine.dev-utils.view
  */
 

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/conversion/model-selection-to-view-converters
+ */
+
 import ViewElement from '../view/element.js';
 import ViewRange from '../view/range.js';
 import viewWriter from '../view/writer.js';

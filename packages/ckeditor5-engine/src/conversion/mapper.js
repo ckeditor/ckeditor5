@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/conversion/mapper
+ */
+
 import ModelPosition from '../model/position.js';
 import ModelRange from '../model/range.js';
 

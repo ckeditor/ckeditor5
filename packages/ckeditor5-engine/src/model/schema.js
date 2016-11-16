@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/schema
+ */
+
 import Position from './position.js';
 import Element from './element.js';
 import clone from '../../utils/lib/lodash/clone.js';

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/element
+ */
+
 import Node from './node.js';
 import Text from './text.js';
 import objectToMap from '../../utils/objecttomap.js';

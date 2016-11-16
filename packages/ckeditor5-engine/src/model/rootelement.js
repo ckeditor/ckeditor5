@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/rootelement
+ */
+
 import Element from './element.js';
 
 /**

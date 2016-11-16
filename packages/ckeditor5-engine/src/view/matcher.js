@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module engine/view/matcher
+ */
+
+/**
  * View matcher class.
  * Instance of this class can be used to find {@link engine.view.Element elements} that match given pattern.
  *

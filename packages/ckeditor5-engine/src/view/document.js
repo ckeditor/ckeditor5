@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/document
+ */
+
 import Selection from './selection.js';
 import Renderer from './renderer.js';
 import DomConverter from './domconverter.js';

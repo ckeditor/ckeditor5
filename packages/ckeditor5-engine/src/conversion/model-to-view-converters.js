@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/conversion/model-to-view-converters
+ */
+
 import ModelRange from '../model/range.js';
 import ModelPosition from '../model/position.js';
 import ModelElement from '../model/element.js';

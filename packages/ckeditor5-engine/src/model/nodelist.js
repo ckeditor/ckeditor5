@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/nodelist
+ */
+
 import Node from './node.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 

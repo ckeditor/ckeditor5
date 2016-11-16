@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module engine/dev-utils/model
+ */
+
+/**
  * @namespace engine.dev-utils.model
  */
 

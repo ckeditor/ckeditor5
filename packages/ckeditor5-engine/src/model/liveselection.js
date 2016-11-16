@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/liveselection
+ */
+
 import Position from './position.js';
 import Range from './range.js';
 import LiveRange from './liverange.js';
