@@ -106,7 +106,7 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 *
 	 * @param {Node} node DOM Node of the ProxyEmitter.
 	 * @method module:utils/dom/emittermixin~EmitterMixin#_getProxyEmitter
-	 * @return {ProxyEmitter} ProxyEmitter instance or null.
+	 * @return {module:utils/dom/emittermixin~ProxyEmitter} ProxyEmitter instance or null.
 	 */
 	_getProxyEmitter( node ) {
 		let proxy, emitters, emitterInfo;

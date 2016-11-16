@@ -21,7 +21,7 @@
  *
  * @param {Array} a Array that is compared.
  * @param {Array} b Array to compare with.
- * @returns {ArrayRelation} How array `a` is related to `b`.
+ * @returns {module:utils/arrayrelation~ArrayRelation} How array `a` is related to `b`.
  */
 export default function compareArrays( a, b ) {
 	const minLen = Math.min( a.length, b.length );
@@ -45,3 +45,7 @@ export default function compareArrays( a, b ) {
 		return 'extension';
 	}
 }
+
+/**
+ * @typedef {'extension'|'same'|'prefix'} module:utils/arrayrelation~ArrayRelation
+ */

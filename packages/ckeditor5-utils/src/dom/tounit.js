@@ -11,9 +11,8 @@
  * Returns a helper function, which adds a desired trailing
  * `unit` to the passed value.
  *
- * @method toUnit
  * @param {String} unit An unit like "px" or "em".
- * @returns {toUnit.helper}
+ * @returns {module:utils/dom/tounit~helper}
  */
 export default function toUnit( unit ) {
 	/**

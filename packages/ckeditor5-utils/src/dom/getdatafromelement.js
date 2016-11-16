@@ -12,7 +12,6 @@
 /**
  * Gets data from a given source element.
  *
- * @method getDataFromElement
  * @param {HTMLElement} el The element from which the data will be retrieved.
  * @returns {String} The data string.
  */

@@ -10,7 +10,6 @@
 /**
  * Removes given node from parent.
  *
- * @method remove
  * @param {Node} node Node to remove.
  */
 export default function remove( node ) {

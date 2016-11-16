@@ -112,7 +112,7 @@ const ObservableMixin = {
 	 *
 	 * @method #bind
 	 * @param {...String} bindAttrs Observable attributes that will be bound to another observable(s).
-	 * @returns {BindChain}
+	 * @returns {module:utils/observablemixin~BindChain}
 	 */
 	bind( ...bindAttrs ) {
 		if ( !bindAttrs.length || !isStringArray( bindAttrs ) ) {
