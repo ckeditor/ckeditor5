@@ -355,6 +355,22 @@ describe( 'AttributeOperation', () => {
 		expect( root.getChild( 1 ).data ).to.equal( 'bcxyz' );
 	} );
 
+	it( 'should return undefined upon execution if new value is same as old value', () => {
+		root.insertChildren( 0, new Text( 'bar', { foo: true } ) );
+
+		let operation = new AttributeOperation(
+			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
+			'foo',
+			true,
+			true,
+			doc.version
+		);
+
+		const result = operation._execute();
+
+		expect( result ).to.be.undefined;
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
 			const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) );

@@ -320,7 +320,7 @@ describe( 'LiveSelection', () => {
 		beforeEach( () => {
 			root.removeChildren( 0, root.childCount );
 			root.insertChildren( 0, [
-				new Element( 'ul', [], new Text( 'abcdef' ) ),
+				new Element( 'p', [], new Text( 'abcdef' ) ),
 				new Element( 'p', [], new Text( 'foobar' ) ),
 				new Text( 'xyz' )
 			] );
@@ -584,17 +584,17 @@ describe( 'LiveSelection', () => {
 			} );
 
 			it( 'fix selection range if it ends up in graveyard #3', () => {
-				selection.setRanges( [ new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 1, 4 ] ) ) ] );
+				selection.setRanges( [ new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 2 ] ) ) ] );
 
 				doc.applyOperation( wrapInDelta(
 					new RemoveOperation(
-						new Position( root, [ 0 ] ),
-						3,
+						new Position( root, [ 1 ] ),
+						2,
 						doc.version
 					)
 				) );
 
-				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0 ] );
+				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0, 6 ] );
 			} );
 		} );
 	} );

@@ -58,7 +58,9 @@ export default class InsertOperation extends Operation {
 	 * @returns {engine.model.operation.InsertOperation}
 	 */
 	clone() {
-		return new InsertOperation( this.position, this.nodes, this.baseVersion );
+		const nodes = new NodeList( [ ...this.nodes ].map( ( node ) => node.clone( true ) ) );
+
+		return new InsertOperation( this.position, nodes, this.baseVersion );
 	}
 
 	/**

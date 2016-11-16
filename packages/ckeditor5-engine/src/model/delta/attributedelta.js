@@ -54,12 +54,21 @@ export default class AttributeDelta extends Delta {
 			return this._range;
 		}
 
-		// If it is not cached we will evaluate it and cache it.
-		let firstOperation = this.operations[ 0 ];
-		let lastOperation = this.operations[ this.operations.length - 1 ];
+		let start = null;
+		let end = null;
 
-		if ( firstOperation ) {
-			this._range = new Range( firstOperation.range.start, lastOperation.range.end );
+		for ( let operation of this.operations ) {
+			if ( start === null || start.isAfter( operation.range.start ) ) {
+				start = operation.range.start;
+			}
+
+			if ( end === null || end.isBefore( operation.range.end ) ) {
+				end = operation.range.end;
+			}
+		}
+
+		if ( start && end ) {
+			this._range = new Range( start, end );
 
 			return this._range;
 		}

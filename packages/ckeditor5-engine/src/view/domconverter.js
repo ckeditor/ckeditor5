@@ -252,7 +252,7 @@ export default class DomConverter {
 	 * If the converted position is directly before inline filler it is moved inside the filler.
 	 *
 	 * @param {engine.view.position} viewPosition View position.
-	 * @returns {Object} position
+	 * @returns {Object|null} position DOM position or `null` if view position could not be converted to DOM.
 	 * @returns {Node} position.parent DOM position parent.
 	 * @returns {Number} position.offset DOM position offset.
 	 */
@@ -261,6 +261,12 @@ export default class DomConverter {
 
 		if ( viewParent instanceof ViewText ) {
 			const domParent = this.getCorrespondingDomText( viewParent );
+
+			if ( !domParent ) {
+				// Position is in a view text node that has not been rendered to DOM yet.
+				return null;
+			}
+
 			let offset = viewPosition.offset;
 
 			if ( startsWithFiller( domParent ) ) {
@@ -268,16 +274,27 @@ export default class DomConverter {
 			}
 
 			return { parent: domParent, offset: offset };
-		}
-		// viewParent instance of ViewElement.
-		else {
+		} else {
+			// viewParent is instance of ViewElement.
 			let domParent, domBefore, domAfter;
 
 			if ( viewPosition.offset === 0 ) {
 				domParent = this.getCorrespondingDom( viewPosition.parent );
+
+				if ( !domParent ) {
+					// Position is in a view element that has not been rendered to DOM yet.
+					return null;
+				}
+
 				domAfter = domParent.childNodes[ 0 ];
 			} else {
 				domBefore = this.getCorrespondingDom( viewPosition.nodeBefore );
+
+				if ( !domBefore ) {
+					// Position is after a view element that has not been rendered to DOM yet.
+					return null;
+				}
+
 				domParent = domBefore.parentNode;
 				domAfter = domBefore.nextSibling;
 			}

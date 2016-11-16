@@ -51,5 +51,4 @@ export default class ReinsertOperation extends MoveOperation {
 	static get className() {
 		return 'engine.model.operation.ReinsertOperation';
 	}
-
 }

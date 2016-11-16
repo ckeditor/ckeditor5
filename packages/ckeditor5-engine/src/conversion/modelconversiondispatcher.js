@@ -139,6 +139,15 @@ export default class ModelConversionDispatcher {
 			return;
 		}
 
+		if ( type == 'remove' && data.sourcePosition.root.rootName == '$graveyard' ) {
+			return;
+		}
+
+		if ( type == 'rename' && data.element.root.rootName == '$graveyard' ) {
+			return;
+		}
+
+		// We can safely dispatch changes.
 		if ( type == 'insert' || type == 'reinsert' ) {
 			this.convertInsertion( data.range );
 		} else if ( type == 'move' ) {

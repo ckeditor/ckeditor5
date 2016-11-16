@@ -264,6 +264,21 @@ describe( 'Delete utils', () => {
 				'<heading1>[]</heading1>',
 				{ merge: true }
 			);
+
+			it( 'uses remove delta instead of merge delta if merged element is empty', () => {
+				setData( doc, '<paragraph>ab[cd</paragraph><paragraph>efgh]</paragraph>' );
+
+				const batch = doc.batch();
+				const spyMerge = sinon.spy( batch, 'merge' );
+				const spyRemove = sinon.spy( batch, 'remove' );
+
+				deleteContent( doc.selection, batch, { merge: true } );
+
+				expect( getData( doc ) ).to.equal( '<paragraph>ab[]</paragraph>' );
+
+				expect( spyMerge.called ).to.be.false;
+				expect( spyRemove.called ).to.be.true;
+			} );
 		} );
 
 		describe( 'in element selections scenarios', () => {

@@ -10,6 +10,7 @@ import Position from '../position.js';
 
 import NoOperation from '../operation/nooperation.js';
 import AttributeOperation from '../operation/attributeoperation.js';
+import InsertOperation from '../operation/insertoperation.js';
 import ReinsertOperation from '../operation/reinsertoperation.js';
 
 import Delta from './delta.js';
@@ -21,6 +22,7 @@ import SplitDelta from './splitdelta.js';
 import WeakInsertDelta from './weakinsertdelta.js';
 import WrapDelta from './wrapdelta.js';
 import UnwrapDelta from './unwrapdelta.js';
+import RenameDelta from './renamedelta.js';
 
 import compareArrays from '../../../utils/comparearrays.js';
 
@@ -34,6 +36,41 @@ addTransformationCase( AttributeDelta, WeakInsertDelta, ( a, b, isStrong ) => {
 
 	if ( a.range.containsPosition( b.position ) ) {
 		deltas.push( _getComplementaryAttrDelta( b, a ) );
+	}
+
+	return deltas;
+} );
+
+// Add special case for AttributeDelta x SplitDelta transformation.
+addTransformationCase( AttributeDelta, SplitDelta, ( a, b, isStrong ) => {
+	const splitPosition = new Position( b.position.root, b.position.path.slice( 0, -1 ) );
+
+	const deltas = defaultTransform( a, b, isStrong );
+
+	for ( let operation of a.operations ) {
+		// If a node that has been split has it's attribute updated, we should also update attribute of
+		// the node created during splitting.
+		if ( operation.range.containsPosition( splitPosition ) || operation.range.start.isEqual( splitPosition ) ) {
+			const additionalAttributeDelta = new AttributeDelta();
+
+			const rangeStart = splitPosition.getShiftedBy( 1 );
+			const rangeEnd = Position.createFromPosition( rangeStart );
+			rangeEnd.path.push( 0 );
+
+			const oldValue = b._cloneOperation.nodes.getNode( 0 ).getAttribute( operation.key );
+
+			additionalAttributeDelta.addOperation( new AttributeOperation(
+				new Range( rangeStart, rangeEnd ),
+				operation.key,
+				oldValue === undefined ? null : oldValue,
+				operation.newValue,
+				0
+			) );
+
+			deltas.push( additionalAttributeDelta );
+
+			break;
+		}
 	}
 
 	return deltas;
@@ -223,6 +260,31 @@ addTransformationCase( SplitDelta, WrapDelta, ( a, b, isStrong ) => {
 	return defaultTransform( a, b, isStrong );
 } );
 
+// Add special case for SplitDelta x WrapDelta transformation.
+addTransformationCase( SplitDelta, AttributeDelta, ( a, b ) => {
+	a = a.clone();
+
+	const splitPosition = new Position( a.position.root, a.position.path.slice( 0, -1 ) );
+
+	if ( a._cloneOperation instanceof InsertOperation ) {
+		// If element to split had it's attribute changed, we have to reflect this change in an element
+		// that is in SplitDelta's InsertOperation.
+		for ( let operation of b.operations ) {
+			if ( operation.range.containsPosition( splitPosition ) || operation.range.start.isEqual( splitPosition ) ) {
+				if ( operation.newValue !== null ) {
+					a._cloneOperation.nodes.getNode( 0 ).setAttribute( operation.key, operation.newValue );
+				} else {
+					a._cloneOperation.nodes.getNode( 0 ).removeAttribute( operation.key );
+				}
+
+				break;
+			}
+		}
+	}
+
+	return [ a ];
+} );
+
 // Add special case for UnwrapDelta x SplitDelta transformation.
 addTransformationCase( UnwrapDelta, SplitDelta, ( a, b, isStrong ) => {
 	// If incoming unwrap delta tries to unwrap node that got split we should unwrap the original node and the split copy.
@@ -247,10 +309,9 @@ addTransformationCase( UnwrapDelta, SplitDelta, ( a, b, isStrong ) => {
 } );
 
 // Add special case for WeakInsertDelta x AttributeDelta transformation.
-addTransformationCase( WeakInsertDelta, AttributeDelta, ( a, b, isStrong ) => {
+addTransformationCase( WeakInsertDelta, AttributeDelta, ( a, b ) => {
 	// If nodes are weak-inserted into attribute delta range, we need to apply changes from attribute delta on them.
-	// So first we do the normal transformation and if this special cases happens, we will add an extra delta.
-	const deltas = defaultTransform( a, b, isStrong );
+	const deltas = [ a.clone() ];
 
 	if ( b.range.containsPosition( a.position ) ) {
 		deltas.push( _getComplementaryAttrDelta( a, b ) );
@@ -288,6 +349,41 @@ addTransformationCase( WrapDelta, SplitDelta, ( a, b, isStrong ) => {
 	}
 
 	return defaultTransform( a, b, isStrong );
+} );
+
+// Add special case for RenameDelta x SplitDelta transformation.
+addTransformationCase( RenameDelta, SplitDelta, ( a, b, isStrong ) => {
+	const splitPosition = new Position( b.position.root, b.position.path.slice( 0, -1 ) );
+
+	const deltas = defaultTransform( a, b, isStrong );
+
+	if ( a.operations[ 0 ].position.isEqual( splitPosition ) ) {
+		// If a node that has been split has it's name changed, we should also change name of
+		// the node created during splitting.
+		const additionalRenameDelta = a.clone();
+		additionalRenameDelta.operations[ 0 ].position = a.operations[ 0 ].position.getShiftedBy( 1 );
+
+		deltas.push( additionalRenameDelta );
+	}
+
+	return deltas;
+} );
+
+// Add special case for SplitDelta x RenameDelta transformation.
+addTransformationCase( SplitDelta, RenameDelta, ( a, b ) => {
+	a = a.clone();
+
+	const splitPosition = new Position( a.position.root, a.position.path.slice( 0, -1 ) );
+
+	if ( a._cloneOperation instanceof InsertOperation ) {
+		// If element to split had it's name changed, we have to reflect this change in an element
+		// that is in SplitDelta's InsertOperation.
+		if ( b.operations[ 0 ].position.isEqual( splitPosition ) ) {
+			a._cloneOperation.nodes.getNode( 0 ).name = b.operations[ 0 ].newName;
+		}
+	}
+
+	return [ a ];
 } );
 
 // Helper function for `AttributeDelta` class transformations.

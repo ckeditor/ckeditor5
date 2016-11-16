@@ -683,6 +683,36 @@ describe( 'Renderer', () => {
 			expect( domP.childNodes[ 1 ].childNodes[ 0 ].data ).to.equal( INLINE_FILLER );
 		} );
 
+		// Test for an edge case in the _isSelectionInInlineFiller, when selection is before a view element
+		// that has not been yet rendered/bound to DOM.
+		it( 'should remove inline filler if selection is before a view element not bound to dom', () => {
+			// Step 1: <p>bar<b>abc</b>"FILLER"{}</p>
+			const { view: viewP, selection: newSelection } = parse( '<container:p>bar<attribute:b>abc</attribute:b>[]</container:p>' );
+			viewRoot.appendChildren( viewP );
+			selection.setTo( newSelection );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			expect( domP.childNodes.length ).to.equal( 3 );
+			expect( domP.childNodes[ 2 ].data ).to.equal( INLINE_FILLER );
+
+			// Step 2: Move selection to a new attribute element.
+			const viewAbc = parse( 'abc' );
+			viewP.appendChildren( viewAbc );
+
+			selection.removeAllRanges();
+			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP, 3, viewP, 3 ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			// Step 3: Check whether old filler was removed.
+			expect( domP.childNodes.length ).to.equal( 3 );
+			expect( domP.textContent.indexOf( INLINE_FILLER ) ).to.equal( -1 );
+		} );
+
 		it( 'should handle typing in empty block, do nothing if changes are already applied', () => {
 			const domSelection = document.getSelection();
 

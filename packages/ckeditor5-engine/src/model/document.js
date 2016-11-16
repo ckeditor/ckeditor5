@@ -14,6 +14,7 @@ import Batch from './batch.js';
 import History from './history.js';
 import LiveSelection from './liveselection.js';
 import Schema from './schema.js';
+import TreeWalker from './treewalker.js';
 import clone from '../../utils/lib/lodash/clone.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
@@ -275,6 +276,54 @@ export default class Document {
 	}
 
 	/**
+	 * Basing on given `position`, finds and returns a {@link engine.model.Position Position} instance that is nearest
+	 * to that `position` and is a correct position for selection. A position is correct for selection if
+	 * text node can be placed at that position.
+	 *
+	 * If no correct position is found, the first position in given `position` root is returned. This can happen if no node
+	 * has been added to the root or it may mean incorrect model document state.
+	 *
+	 * @param {engine.model.Position} position Reference position where selection position should be looked for.
+	 * @returns {engine.model.Position|null} Nearest selection position.
+	 */
+	getNearestSelectionPosition( position ) {
+		if ( this.schema.check( { name: '$text', inside: position } ) ) {
+			return Position.createFromPosition( position );
+		}
+
+		const backwardWalker = new TreeWalker( { startPosition: position, direction: 'backward' } );
+		const forwardWalker = new TreeWalker( { startPosition: position } );
+
+		let done = false;
+
+		while ( !done ) {
+			done = true;
+
+			let step = backwardWalker.next();
+
+			if ( !step.done ) {
+				if ( this.schema.check( { name: '$text', inside: step.value.nextPosition } ) ) {
+					return step.value.nextPosition;
+				}
+
+				done = false;
+			}
+
+			step = forwardWalker.next();
+
+			if ( !step.done ) {
+				if ( this.schema.check( { name: '$text', inside: step.value.nextPosition } ) ) {
+					return step.value.nextPosition;
+				}
+
+				done = false;
+			}
+		}
+
+		return new Position( position.root, [ 0 ] );
+	}
+
+	/**
 	 * Custom toJSON method to solve child-parent circular dependencies.
 	 *
 	 * @returns {Object} Clone of this object with the document property changed to string.
@@ -317,15 +366,10 @@ export default class Document {
 		const defaultRoot = this._getDefaultRoot();
 
 		// Find the first position where the selection can be put.
-		for ( let position of Range.createIn( defaultRoot ).getPositions() ) {
-			if ( this.schema.check( { name: '$text', inside: position } ) ) {
-				return new Range( position, position );
-			}
-		}
-
 		const position = new Position( defaultRoot, [ 0 ] );
+		const selectionPosition = this.getNearestSelectionPosition( position );
 
-		return new Range( position, position );
+		return new Range( selectionPosition );
 	}
 
 	/**

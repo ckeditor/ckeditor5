@@ -555,7 +555,7 @@ describe( 'transform', () => {
 				it( 'attributes have different key: no operation update', () => {
 					let transformBy = new AttributeOperation(
 						Range.createFromRange( range ),
-						'abc',
+						'differentKey',
 						true,
 						false,
 						baseVersion
@@ -585,34 +585,31 @@ describe( 'transform', () => {
 					} );
 				} );
 
-				it( 'both operations removes same attribute: convert to NoOperation', () => {
-					op.newValue = null;
-
-					let transformBy = new AttributeOperation(
-						new Range( new Position( root, [ 1, 1, 4 ] ), new Position( root, [ 3 ] ) ),
-						'foo',
-						'another',
-						null,
-						baseVersion
-					);
-
-					let transOp = transform( op, transformBy, true );
-
-					expected.newValue = null;
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], {
-						type: NoOperation,
-						baseVersion: baseVersion + 1
-					} );
-				} );
-
 				describe( 'that is less important and', () => {
+					it( 'both operations removes same attribute: change old value to null', () => {
+						op.newValue = null;
+						expected.newValue = null;
+
+						let transformBy = new AttributeOperation(
+							new Range( new Position( root, [ 1, 1, 4 ] ), new Position( root, [ 3 ] ) ),
+							'foo',
+							'another',
+							null,
+							baseVersion
+						);
+
+						let transOp = transform( op, transformBy, true );
+
+						expected.oldValue = null;
+
+						expect( transOp.length ).to.equal( 1 );
+					} );
+
 					it( 'range does not intersect original range: no operation update', () => {
 						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 3, 0 ] ), new Position( root, [ 4 ] ) ),
 							'foo',
-							'another',
+							'abc',
 							null,
 							baseVersion
 						);
@@ -627,14 +624,14 @@ describe( 'transform', () => {
 						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1, 1, 4 ] ), new Position( root, [ 3 ] ) ),
 							'foo',
-							'another',
+							'abc',
 							null,
 							baseVersion
 						);
 
 						let transOp = transform( op, transformBy, true );
 
-						expected.oldValue = 'another';
+						expected.oldValue = null;
 
 						expect( transOp.length ).to.equal( 1 );
 						expectOperation( transOp[ 0 ], expected );
@@ -644,21 +641,20 @@ describe( 'transform', () => {
 					it( 'range intersects on left: split into two operations, update oldValue', () => {
 						// Get more test cases and better code coverage
 						op.newValue = null;
+						expected.newValue = null;
 
 						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1, 4, 2 ] ), new Position( root, [ 3 ] ) ),
 							'foo',
-							'another',
+							null,
 							// Get more test cases and better code coverage
-							'anothernew',
+							'another',
 							baseVersion
 						);
 
 						let transOp = transform( op, transformBy, true );
 
 						expect( transOp.length ).to.equal( 2 );
-
-						expected.newValue = null;
 
 						expected.range.end.path = [ 1, 4, 2 ];
 
@@ -677,7 +673,7 @@ describe( 'transform', () => {
 						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1 ] ), new Position( root, [ 2, 1 ] ) ),
 							'foo',
-							'another',
+							'abc',
 							null,
 							baseVersion
 						);
@@ -692,7 +688,7 @@ describe( 'transform', () => {
 
 						expected.range.start = op.range.start;
 						expected.range.end.path = [ 2, 1 ];
-						expected.oldValue = 'another';
+						expected.oldValue = null;
 						expected.baseVersion++;
 
 						expectOperation( transOp[ 1 ], expected );
@@ -702,7 +698,7 @@ describe( 'transform', () => {
 						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 1, 4, 1 ] ), new Position( root, [ 2, 1 ] ) ),
 							'foo',
-							'another',
+							'abc',
 							null,
 							baseVersion
 						);
@@ -723,7 +719,7 @@ describe( 'transform', () => {
 
 						expected.range.start.path = [ 1, 4, 1 ];
 						expected.range.end.path = [ 2, 1 ];
-						expected.oldValue = 'another';
+						expected.oldValue = null;
 						expected.baseVersion++;
 
 						expectOperation( transOp[ 2 ], expected );
@@ -731,6 +727,27 @@ describe( 'transform', () => {
 				} );
 
 				describe( 'that is more important and', () => {
+					it( 'both operations removes same attribute: convert to NoOperation', () => {
+						op.newValue = null;
+						expected.newValue = null;
+
+						let transformBy = new AttributeOperation(
+							new Range( new Position( root, [ 1, 1, 4 ] ), new Position( root, [ 3 ] ) ),
+							'foo',
+							'another',
+							null,
+							baseVersion
+						);
+
+						let transOp = transform( op, transformBy );
+
+						expect( transOp.length ).to.equal( 1 );
+						expectOperation( transOp[ 0 ], {
+							type: NoOperation,
+							baseVersion: baseVersion + 1
+						} );
+					} );
+
 					it( 'range does not intersect original range: no operation update', () => {
 						let transformBy = new AttributeOperation(
 							new Range( new Position( root, [ 3, 0 ] ), new Position( root, [ 4 ] ) ),
@@ -1377,7 +1394,6 @@ describe( 'transform', () => {
 				);
 
 				transformBy.targetPosition.path = [ 0, 0 ];
-				transformBy.movedRangeStart.path = [ 0, 0 ];
 
 				let transOp = transform( op, transformBy );
 
@@ -1397,7 +1413,6 @@ describe( 'transform', () => {
 				);
 
 				transformBy.targetPosition.path = [ 4, 0 ];
-				transformBy.movedRangeStart.path = [ 4, 0 ];
 
 				let transOp = transform( op, transformBy );
 
@@ -2694,6 +2709,44 @@ describe( 'transform', () => {
 		} );
 	} );
 
+	describe( 'RemoveOperation', () => {
+		describe( 'by RemoveOperation', () => {
+			it( 'removes same nodes and transformed is weak: change howMany to 0', () => {
+				let position = new Position( root, [ 2, 1 ] );
+				let op = new RemoveOperation( position, 3, baseVersion );
+				let transformBy = new RemoveOperation( position, 3, baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], {
+					type: RemoveOperation,
+					howMany: 0,
+					sourcePosition: new Position( doc.graveyard, [ 0, 0 ] ),
+					targetPosition: new Position( doc.graveyard, [ 0, 0 ] ),
+					baseVersion: baseVersion + 1
+				} );
+			} );
+
+			it( 'removes same nodes and transformed is strong: change source position', () => {
+				let position = new Position( root, [ 2, 1 ] );
+				let op = new RemoveOperation( position, 3, baseVersion );
+				let transformBy = new RemoveOperation( position, 3, baseVersion );
+
+				let transOp = transform( op, transformBy, true );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], {
+					type: RemoveOperation,
+					howMany: 3,
+					sourcePosition: new Position( doc.graveyard, [ 0, 0 ] ),
+					targetPosition: new Position( doc.graveyard, [ 1, 0 ] ),
+					baseVersion: baseVersion + 1
+				} );
+			} );
+		} );
+	} );
+
 	describe( 'NoOperation', () => {
 		beforeEach( () => {
 			op = new NoOperation( baseVersion );
@@ -2938,7 +2991,7 @@ describe( 'transform', () => {
 				} );
 			} );
 
-			it( 'same element and is not important: no change', () => {
+			it( 'same element and is not important: change old name to new name', () => {
 				let transformBy = new RenameOperation(
 					new Position( root, [ 0, 2, 2 ] ),
 					'oldName',
@@ -2949,6 +3002,8 @@ describe( 'transform', () => {
 				let transOp = transform( op, transformBy, true );
 
 				expect( transOp.length ).to.equal( 1 );
+
+				expected.oldName = 'otherName';
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );

@@ -52,7 +52,14 @@ export default function deleteContent( selection, batch, options = {} ) {
 				const mergePath = startPos.path.slice( 0, mergeDepth );
 				mergePath.push( startPos.path[ mergeDepth ] + 1 );
 
-				batch.merge( new Position( endPos.root, mergePath ) );
+				const mergePos = new Position( endPos.root, mergePath );
+				const nextNode = mergePos.nodeAfter;
+
+				if ( nextNode.childCount > 0 ) {
+					batch.merge( mergePos );
+				} else {
+					batch.remove( nextNode );
+				}
 			}
 		}
 	}

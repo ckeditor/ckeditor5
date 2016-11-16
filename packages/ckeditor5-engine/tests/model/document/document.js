@@ -8,8 +8,10 @@
 import Document from 'ckeditor5/engine/model/document.js';
 import Schema from 'ckeditor5/engine/model/schema.js';
 import RootElement from 'ckeditor5/engine/model/rootelement.js';
+import Element from 'ckeditor5/engine/model/element.js';
 import Batch from 'ckeditor5/engine/model/batch.js';
 import Delta from 'ckeditor5/engine/model/delta/delta.js';
+import Position from 'ckeditor5/engine/model/position.js';
 import Range from 'ckeditor5/engine/model/range.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 import count from 'ckeditor5/utils/count.js';
@@ -271,6 +273,51 @@ describe( 'Document', () => {
 			expect( () => {
 				doc.selection.setRanges( [ Range.createFromParentsAndOffsets( root, 1, root, 5 ) ] );
 			} ).to.throw( CKEditorError, /document-selection-wrong-position/ );
+		} );
+	} );
+
+	describe( 'getNearestSelectionPosition', () => {
+		let root;
+
+		beforeEach( () => {
+			doc.schema.registerItem( 'paragraph', '$block' );
+			root = doc.createRoot();
+		} );
+
+		it( 'should return equal position if text node can be placed at that position', () => {
+			root.appendChildren( new Element( 'paragraph' ) );
+
+			const position = new Position( root, [ 0, 0 ] );
+			const selectionPosition = doc.getNearestSelectionPosition( position );
+
+			expect( position.isEqual( selectionPosition ) ).to.be.true;
+		} );
+
+		it( 'should return a position before if it is a closer position at which text node can be placed', () => {
+			root.appendChildren( [ new Element( 'paragraph' ), new Element( 'paragraph' ) ] );
+
+			const position = new Position( root, [ 1 ] );
+			const selectionPosition = doc.getNearestSelectionPosition( position );
+
+			expect( selectionPosition.path ).to.deep.equal( [ 0, 0 ] );
+		} );
+
+		it( 'should return a position after if it is a closer position at which text node can be placed', () => {
+			root.appendChildren( [ new Element( 'paragraph' ), new Element( 'image' ), new Element( 'paragraph' ) ] );
+
+			const position = new Position( root, [ 2 ] );
+			const selectionPosition = doc.getNearestSelectionPosition( position );
+
+			expect( selectionPosition.path ).to.deep.equal( [ 2, 0 ] );
+		} );
+
+		it( 'should return first position in root if there is no position where text node can be placed', () => {
+			root.appendChildren( new Element( 'table' ) );
+
+			const position = new Position( root, [ 0, 0 ] );
+			const selectionPosition = doc.getNearestSelectionPosition( position );
+
+			expect( selectionPosition.path ).to.deep.equal( [ 0 ] );
 		} );
 	} );
 

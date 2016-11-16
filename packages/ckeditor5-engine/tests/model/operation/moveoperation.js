@@ -269,6 +269,19 @@ describe( 'MoveOperation', () => {
 		expect( clone.baseVersion ).to.equal( baseVersion );
 	} );
 
+	describe( 'getMovedRangeStart', () => {
+		it( 'should return move operation target position transformed by removing move operation source range', () => {
+			let sourcePosition = new Position( root, [ 0, 2 ] );
+			let targetPosition = new Position( root, [ 0, 6 ] );
+			let howMany = 3;
+			let baseVersion = doc.version;
+
+			let op = new MoveOperation( sourcePosition, howMany, targetPosition, baseVersion );
+
+			expect( op.getMovedRangeStart().path ).to.deep.equal( [ 0, 3 ] );
+		} );
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
 			const sourcePosition = new Position( root, [ 0, 0 ] );
@@ -282,7 +295,6 @@ describe( 'MoveOperation', () => {
 				baseVersion: 0,
 				howMany: 1,
 				isSticky: false,
-				movedRangeStart: jsonParseStringify( op.movedRangeStart ),
 				sourcePosition: jsonParseStringify( sourcePosition ),
 				targetPosition: jsonParseStringify( targetPosition )
 			} );
@@ -294,6 +306,18 @@ describe( 'MoveOperation', () => {
 			const sourcePosition = new Position( root, [ 0, 0 ] );
 			const targetPosition = new Position( root, [ 1, 0 ] );
 			const op = new MoveOperation( sourcePosition, 1, targetPosition, doc.version );
+
+			const serialized = jsonParseStringify( op );
+			const deserialized = MoveOperation.fromJSON( serialized, doc );
+
+			expect( deserialized ).to.deep.equal( op );
+		} );
+
+		it( 'should create proper MoveOperation from json object - sticky', () => {
+			const sourcePosition = new Position( root, [ 0, 0 ] );
+			const targetPosition = new Position( root, [ 1, 0 ] );
+			const op = new MoveOperation( sourcePosition, 1, targetPosition, doc.version );
+			op.isSticky = true;
 
 			const serialized = jsonParseStringify( op );
 			const deserialized = MoveOperation.fromJSON( serialized, doc );

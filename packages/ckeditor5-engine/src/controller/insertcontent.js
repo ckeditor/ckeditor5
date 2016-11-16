@@ -128,18 +128,10 @@ class Insertion {
 		if ( this.nodeToSelect ) {
 			return [ Range.createOn( this.nodeToSelect ) ];
 		} else {
-			const searchRange = new Range( Position.createAt( this.position.root ), this.position );
+			const document = this.dataController.model;
+			const selectionPosition = document.getNearestSelectionPosition( this.position );
 
-			for ( const position of searchRange.getPositions( { direction: 'backward' } ) ) {
-				if ( this.schema.check( { name: '$text', inside: position } ) ) {
-					return [ new Range( position ) ];
-				}
-			}
-
-			// As a last resort, simply return the current position.
-			// See the "should not break when autoparagraphing of text is not possible" test for
-			// a case which triggers this condition.
-			return [ new Range( this.position ) ];
+			return [ new Range( selectionPosition ) ];
 		}
 	}
 

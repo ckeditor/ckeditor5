@@ -11,7 +11,6 @@ import MoveOperation from './moveoperation.js';
 import RemoveOperation from './removeoperation.js';
 import NoOperation from './nooperation.js';
 import Range from '../range.js';
-import isEqual from '../../../utils/lib/lodash/isEqual.js';
 import compareArrays from '../../../utils/comparearrays.js';
 
 /**
@@ -110,22 +109,18 @@ const ot = {
 					return new AttributeOperation( range, a.key, a.oldValue, a.newValue, a.baseVersion );
 				} );
 
-				// Then we take care of the common part of ranges, but only if operations has different `newValue`.
-				if ( isStrong && !isEqual( a.newValue, b.newValue ) ) {
+				// Then we take care of the common part of ranges.
+				const common = a.range.getIntersection( b.range );
+
+				if ( common ) {
 					// If this operation is more important, we also want to apply change to the part of the
 					// original range that has already been changed by the other operation. Since that range
 					// got changed we also have to update `oldValue`.
-					const common = a.range.getIntersection( b.range );
-
-					if ( common !== null ) {
-						operations.push( new AttributeOperation( common, b.key, b.oldValue, a.newValue, a.baseVersion ) );
+					if ( isStrong ) {
+						operations.push( new AttributeOperation( common, b.key, b.newValue, a.newValue, a.baseVersion ) );
+					} else if ( operations.length === 0 ) {
+						operations.push( new NoOperation( 0 ) );
 					}
-				}
-
-				// If no operations has been added nothing should get updated, but since we need to return
-				// an instance of Operation we add NoOperation to the array.
-				if ( operations.length === 0 ) {
-					operations.push( new NoOperation( a.baseVersion ) );
 				}
 
 				return operations;
@@ -180,15 +175,15 @@ const ot = {
 				// previously transformed target position.
 				// Note that we do not use Position._getTransformedByMove on range boundaries because we need to
 				// transform by insertion a range as a whole, since newTargetPosition might be inside that range.
-				ranges = difference._getTransformedByInsertion( b.movedRangeStart, b.howMany, true, false ).reverse();
+				ranges = difference._getTransformedByInsertion( b.getMovedRangeStart(), b.howMany, true, false ).reverse();
 			}
 
 			if ( common !== null ) {
 				// Here we do not need to worry that newTargetPosition is inside moved range, because that
 				// would mean that the MoveOperation targets into itself, and that is incorrect operation.
 				// Instead, we calculate the new position of that part of original range.
-				common.start = common.start._getCombined( b.sourcePosition, b.movedRangeStart );
-				common.end = common.end._getCombined( b.sourcePosition, b.movedRangeStart );
+				common.start = common.start._getCombined( b.sourcePosition, b.getMovedRangeStart() );
+				common.end = common.end._getCombined( b.sourcePosition, b.getMovedRangeStart() );
 
 				ranges.push( common );
 			}
@@ -244,8 +239,12 @@ const ot = {
 			// Clone the operation, we don't want to alter the original operation.
 			const clone = a.clone();
 
-			if ( a.position.isEqual( b.position ) && !isStrong ) {
-				return [ new NoOperation( a.baseVersion ) ];
+			if ( a.position.isEqual( b.position ) ) {
+				if ( isStrong ) {
+					clone.oldName = b.newName;
+				} else {
+					return [ new NoOperation( a.baseVersion ) ];
+				}
 			}
 
 			return [ clone ];
@@ -280,6 +279,7 @@ const ot = {
 			);
 
 			result.isSticky = a.isSticky;
+			result._holderElementOffset = a._holderElementOffset;
 
 			return [ result ];
 		},
@@ -306,11 +306,11 @@ const ot = {
 			// (usually) creates a "holder" element for them in graveyard. Each RemoveOperation should move nodes to different
 			// "holder" element. If `a` operation points after `b` operation, we move `a` offset to acknowledge
 			// "holder" element insertion.
-			if ( a instanceof RemoveOperation && b instanceof RemoveOperation && b._needsHolderElement ) {
+			if ( a instanceof RemoveOperation && b instanceof RemoveOperation ) {
 				const aTarget = a.targetPosition.path[ 0 ];
 				const bTarget = b.targetPosition.path[ 0 ];
 
-				if ( aTarget > bTarget || ( aTarget == bTarget && isStrong ) ) {
+				if ( aTarget >= bTarget && isStrong ) {
 					// Do not change original operation!
 					a = a.clone();
 					a.targetPosition.path[ 0 ]++;
@@ -373,11 +373,11 @@ const ot = {
 				// Here we do not need to worry that newTargetPosition is inside moved range, because that
 				// would mean that the MoveOperation targets into itself, and that is incorrect operation.
 				// Instead, we calculate the new position of that part of original range.
-				common.start = common.start._getCombined( b.sourcePosition, b.movedRangeStart );
-				common.end = common.end._getCombined( b.sourcePosition, b.movedRangeStart );
+				common.start = common.start._getCombined( b.sourcePosition, b.getMovedRangeStart() );
+				common.end = common.end._getCombined( b.sourcePosition, b.getMovedRangeStart() );
 
 				// We have to take care of proper range order.
-				if ( difference && difference.start.isBefore( common.start ) ) {
+				if ( difference && rangeA.start.isBefore( rangeB.start ) ) {
 					ranges.push( common );
 				} else {
 					ranges.unshift( common );
@@ -387,7 +387,21 @@ const ot = {
 			// At this point we transformed this operation's source ranges it means that nothing should be changed.
 			// But since we need to return an instance of Operation we return an array with NoOperation.
 			if ( ranges.length === 0 ) {
-				return [ new NoOperation( a.baseVersion ) ];
+				if ( a instanceof RemoveOperation ) {
+					// If `a` operation was RemoveOperation, we cannot convert it to NoOperation.
+					// This is because RemoveOperation creates a holder in graveyard.
+					// Even if we "remove nothing" we need a RemoveOperation to create holder element
+					// so that the tree structure is synchronised between clients.
+					// Note that this can happen only if both operations are remove operations, because in
+					// other case RemoveOperation would be forced to be stronger and there would be a common range to move.
+					a = a.clone();
+					a.howMany = 0;
+					a.sourcePosition = b.targetPosition;
+
+					return [ a ];
+				} else {
+					return [ new NoOperation( a.baseVersion ) ];
+				}
 			}
 
 			// Target position also could be affected by the other MoveOperation. We will transform it.
