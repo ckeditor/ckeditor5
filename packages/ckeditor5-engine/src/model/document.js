@@ -14,7 +14,6 @@ import Batch from './batch.js';
 import History from './history.js';
 import LiveSelection from './liveselection.js';
 import Schema from './schema.js';
-import Composer from './composer/composer.js';
 import clone from '../../utils/lib/lodash/clone.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
@@ -77,15 +76,6 @@ export default class Document {
 		 * @member {engine.model.History} engine.model.Document#history
 		 */
 		this.history = new History( this );
-
-		/**
-		 * Composer for this document. Set of tools to work with the document.
-		 *
-		 * The features can tune up these tools to better work on their specific cases.
-		 *
-		 * @member {engine.model.composer.Composer} engine.model.Document#composer
-		 */
-		this.composer = new Composer();
 
 		/**
 		 * Array of pending changes. See: {@link engine.model.Document#enqueueChanges}.

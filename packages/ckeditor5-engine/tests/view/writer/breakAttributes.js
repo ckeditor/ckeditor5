@@ -9,7 +9,9 @@ import { breakAttributes } from 'ckeditor5/engine/view/writer.js';
 import { stringify, parse } from 'ckeditor5/engine/dev-utils/view.js';
 import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
 import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
+import EmptyElement from 'ckeditor5/engine/view/emptyelement.js';
 import Range from 'ckeditor5/engine/view/range.js';
+import Position from 'ckeditor5/engine/view/position.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
 describe( 'writer', () => {
@@ -226,6 +228,27 @@ describe( 'writer', () => {
 					'foo{}bar',
 					'foo{}bar'
 				);
+			} );
+
+			it( 'should throw if breaking inside EmptyElement #1', () => {
+				const img = new EmptyElement( 'img' );
+				new ContainerElement( 'p', null, img );
+				const position = new Position( img, 0 );
+
+				expect( () => {
+					breakAttributes( position );
+				} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
+			} );
+
+			it( 'should throw if breaking inside EmptyElement #2', () => {
+				const img = new EmptyElement( 'img' );
+				const b = new AttributeElement( 'b' );
+				new ContainerElement( 'p', null, [ img, b ] );
+				const range = Range.createFromParentsAndOffsets( img, 0, b, 0 );
+
+				expect( () => {
+					breakAttributes( range );
+				} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 			} );
 		} );
 	} );

@@ -3,15 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model */
-
 import Document from 'ckeditor5/engine/model/document.js';
 import DataController from 'ckeditor5/engine/controller/datacontroller.js';
-import insert from 'ckeditor5/engine/controller/insert.js';
+import insertContent from 'ckeditor5/engine/controller/insertcontent.js';
 
-import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
-import ViewText from 'ckeditor5/engine/view/text.js';
-import ModelDocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
+import DocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
 import Text from 'ckeditor5/engine/model/text.js';
 
 import { setData, getData, parse } from 'ckeditor5/engine/dev-utils/model.js';
@@ -19,7 +15,7 @@ import { setData, getData, parse } from 'ckeditor5/engine/dev-utils/model.js';
 describe( 'DataController', () => {
 	let doc, dataController;
 
-	describe( 'insert', () => {
+	describe( 'insertContent', () => {
 		it( 'uses the passed batch', () => {
 			doc = new Document();
 			doc.createRoot();
@@ -31,7 +27,7 @@ describe( 'DataController', () => {
 
 			setData( doc, 'x[]x' );
 
-			insert( dataController, new ViewDocumentFragment( [ new ViewText( 'a' ) ] ), doc.selection, batch );
+			insertContent( dataController, new DocumentFragment( [ new Text( 'a' ) ] ), doc.selection, batch );
 
 			expect( batch.deltas.length ).to.be.above( 0 );
 		} );
@@ -540,16 +536,10 @@ describe( 'DataController', () => {
 			} );
 		}
 
-		if ( !( content instanceof ModelDocumentFragment ) ) {
-			content = new ModelDocumentFragment( [ content ] );
+		if ( !( content instanceof DocumentFragment ) ) {
+			content = new DocumentFragment( [ content ] );
 		}
 
-		// Override the convertion so we get exactly the model that we defined in the content param.
-		// This way we avoid the need to write converters for everything we want to test.
-		dataController.viewToModel.convert = () => {
-			return content;
-		};
-
-		insert( dataController, new ViewDocumentFragment(), doc.selection );
+		insertContent( dataController, content, doc.selection );
 	}
 } );

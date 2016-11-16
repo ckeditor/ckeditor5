@@ -11,6 +11,7 @@ import Range from 'ckeditor5/engine/view/range.js';
 import DocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
 import { stringify, parse } from 'ckeditor5/engine/dev-utils/view.js';
 import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
+import EmptyElement from 'ckeditor5/engine/view/emptyelement.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
 describe( 'writer', () => {
@@ -109,6 +110,25 @@ describe( 'writer', () => {
 
 		it( 'should remove part of the text node in document fragment', () => {
 			test( 'fo{ob}ar', 'fo{}ar', 'ob' );
+		} );
+
+		it( 'should remove EmptyElement', () => {
+			test(
+				'<container:p>foo[<empty:img></empty:img>]bar</container:p>',
+				'<container:p>foo{}bar</container:p>',
+				'<empty:img></empty:img>'
+			);
+		} );
+
+		it( 'should throw if range is placed inside EmptyElement', () => {
+			const emptyElement = new EmptyElement( 'img' );
+			const attributeElement = new AttributeElement( 'b' );
+			new ContainerElement( 'p', null, [ emptyElement, attributeElement ] );
+			const range = Range.createFromParentsAndOffsets( emptyElement, 0, attributeElement, 0 );
+
+			expect( () => {
+				remove( range );
+			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 		} );
 	} );
 } );

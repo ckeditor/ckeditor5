@@ -10,48 +10,36 @@ import Element from '../model/element.js';
 import Range from '../model/range.js';
 import log from '../../utils/log.js';
 
-// import { stringify as stringifyModel } from '../dev-utils/model.js';
-
 /**
  * Inserts content into the editor (specified selection) as one would expect the paste
  * functionality to work.
  *
- * **Note:** Use {@link engine.controller.DataController#insert} instead of this function.
- * This function is only exposed to be reusable in algorithms which change the {@link engine.controller.DataController#insert}
+ * **Note:** Use {@link engine.controller.DataController#insertContent} instead of this function.
+ * This function is only exposed to be reusable in algorithms which change the {@link engine.controller.DataController#insertContent}
  * method's behavior.
  *
- * @method engine.controller.insert
+ * @method engine.controller.insertContent
  * @param {engine.controller.DataController} dataController The data controller in context of which the insertion
  * should be performed.
- * @param {engine.view.DocumentFragment} content The content to insert.
+ * @param {engine.model.DocumentFragment} content The content to insert.
  * @param {engine.model.Selection} selection Selection into which the content should be inserted.
  * @param {engine.model.Batch} [batch] Batch to which deltas will be added. If not specified, then
  * changes will be added to a new batch.
  */
-export default function insert( dataController, content, selection, batch ) {
+export default function insertContent( dataController, content, selection, batch ) {
 	if ( !batch ) {
 		batch = dataController.model.batch();
 	}
 
 	if ( !selection.isCollapsed ) {
-		dataController.model.composer.deleteContents( batch, selection, {
+		dataController.deleteContent( selection, batch, {
 			merge: true
 		} );
 	}
 
-	// Convert the pasted content to a model document fragment.
-	// Convertion is contextual, but in this case we need an "all allowed" context and for that
-	// we use the $clipboardHolder item.
-	const modelFragment = dataController.viewToModel.convert( content, {
-		context: [ '$clipboardHolder' ]
-	} );
-
-	// We'll be debugging this dozens of times still.
-	// console.log( stringifyModel( modelFragment ) );
-
 	const insertion = new Insertion( dataController, batch, selection.anchor );
 
-	insertion.handleNodes( modelFragment.getChildren(), {
+	insertion.handleNodes( content.getChildren(), {
 		// The set of children being inserted is the only set in this context
 		// so it's the first and last (it's a hack ;)).
 		isFirst: true,
@@ -71,16 +59,22 @@ class Insertion {
 	constructor( dataController, batch, position ) {
 		/**
 		 * The data controller in context of which the insertion should be performed.
+		 *
+		 * @member {engine.controller.DataController} #dataController
 		 */
 		this.dataController = dataController;
 
 		/**
 		 * Batch to which deltas will be added.
+		 *
+		 * @member {engine.model.Batch} #batch
 		 */
 		this.batch = batch;
 
 		/**
 		 * The position at which (or near which) the next node will be inserted.
+		 *
+		 * @member {engine.model.Position} #position
 		 */
 		this.position = position;
 
@@ -91,11 +85,16 @@ class Insertion {
 		 *		<p>x</p><p>^y</p> + <p>z</p> (can merge to <p>y</p>)
 		 *		<p>x^y</p> + <p>z</p> (can merge to <p>xy</p> which will be split during the action,
 		 *								so both its pieces will be added to this set)
+		 *
+		 *
+		 * @member {Set} #canMergeWith
 		 */
 		this.canMergeWith = new Set( [ this.position.parent ] );
 
 		/**
 		 * Schema of the model.
+		 *
+		 * @member {engine.model.Schema} #schema
 		 */
 		this.schema = dataController.model.schema;
 	}
@@ -152,7 +151,7 @@ class Insertion {
 	 * @param {Boolean} context.isFirst Whether the given node is the first one in the content to be inserted.
 	 * @param {Boolean} context.isLast Whether the given node is the last one in the content to be inserted.
 	 */
-	_handleNode( node, context = {} ) {
+	_handleNode( node, context ) {
 		// Let's handle object in a special way.
 		// * They should never be merged with other elements.
 		// * If they are not allowed in any of the selection ancestors, they could be either autoparagraphed or totally removed.

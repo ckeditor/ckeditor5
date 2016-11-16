@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, composer */
-
 import Document from 'ckeditor5/engine/model/document.js';
-import deleteContents from 'ckeditor5/engine/model/composer/deletecontents.js';
+import deleteContent from 'ckeditor5/engine/controller/deletecontent.js';
 import { setData, getData } from 'ckeditor5/engine/dev-utils/model.js';
 
 describe( 'Delete utils', () => {
 	let doc;
 
-	describe( 'deleteContents', () => {
+	describe( 'deleteContent', () => {
 		describe( 'in simple scenarios', () => {
 			beforeEach( () => {
 				doc = new Document();
@@ -41,7 +39,7 @@ describe( 'Delete utils', () => {
 			it( 'deletes single character (backward selection)' , () => {
 				setData( doc, 'f[o]o', { lastRangeBackward: true } );
 
-				deleteContents( doc.batch(), doc.selection );
+				deleteContent( doc.selection, doc.batch() );
 
 				expect( getData( doc ) ).to.equal( 'f[]o' );
 			} );
@@ -95,7 +93,7 @@ describe( 'Delete utils', () => {
 			it( 'deletes characters (first half has attrs)', () => {
 				setData( doc, '<$text bold="true">fo[o</$text>b]ar' );
 
-				deleteContents( doc.batch(), doc.selection );
+				deleteContent( doc.selection, doc.batch() );
 
 				expect( getData( doc ) ).to.equal( '<$text bold="true">fo[]</$text>ar' );
 				expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
@@ -104,7 +102,7 @@ describe( 'Delete utils', () => {
 			it( 'deletes characters (2nd half has attrs)', () => {
 				setData( doc, 'fo[o<$text bold="true">b]ar</$text>' );
 
-				deleteContents( doc.batch(), doc.selection );
+				deleteContent( doc.selection, doc.batch() );
 
 				expect( getData( doc ) ).to.equal( 'fo[]<$text bold="true">ar</$text>' );
 				expect( doc.selection.getAttribute( 'bold' ) ).to.undefined;
@@ -113,7 +111,7 @@ describe( 'Delete utils', () => {
 			it( 'clears selection attrs when emptied content', () => {
 				setData( doc, '<paragraph>x</paragraph><paragraph>[<$text bold="true">foo</$text>]</paragraph><paragraph>y</paragraph>' );
 
-				deleteContents( doc.batch(), doc.selection );
+				deleteContent( doc.selection, doc.batch() );
 
 				expect( getData( doc ) ).to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>y</paragraph>' );
 				expect( doc.selection.getAttribute( 'bold' ) ).to.undefined;
@@ -130,7 +128,7 @@ describe( 'Delete utils', () => {
 					}
 				);
 
-				deleteContents( doc.batch(), doc.selection );
+				deleteContent( doc.selection, doc.batch() );
 
 				expect( getData( doc ) ).to.equal( '<paragraph>x<$text bold="true">a[]b</$text>y</paragraph>' );
 				expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
@@ -203,7 +201,7 @@ describe( 'Delete utils', () => {
 					{ lastRangeBackward: true }
 				);
 
-				deleteContents( doc.batch(), doc.selection, { merge: true } );
+				deleteContent( doc.selection, doc.batch(), { merge: true } );
 
 				expect( getData( doc ) ).to.equal( '<paragraph>x</paragraph><heading1>fo[]ar</heading1><paragraph>y</paragraph>' );
 			} );
@@ -316,7 +314,7 @@ describe( 'Delete utils', () => {
 					{ rootName: 'paragraphRoot' }
 				);
 
-				deleteContents( doc.batch(), doc.selection );
+				deleteContent( doc.selection, doc.batch() );
 
 				expect( getData( doc, { rootName: 'paragraphRoot' } ) )
 					.to.equal( '<paragraph>x[]z</paragraph>' );
@@ -329,7 +327,7 @@ describe( 'Delete utils', () => {
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContents( doc.batch(), doc.selection );
+				deleteContent( doc.selection, doc.batch() );
 
 				expect( getData( doc, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
@@ -342,7 +340,7 @@ describe( 'Delete utils', () => {
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContents( doc.batch(), doc.selection );
+				deleteContent( doc.selection, doc.batch() );
 
 				expect( getData( doc, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
@@ -355,7 +353,7 @@ describe( 'Delete utils', () => {
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContents( doc.batch(), doc.selection );
+				deleteContent( doc.selection, doc.batch() );
 
 				expect( getData( doc, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
@@ -368,7 +366,7 @@ describe( 'Delete utils', () => {
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContents( doc.batch(), doc.selection );
+				deleteContent( doc.selection, doc.batch() );
 
 				expect( getData( doc, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
@@ -381,7 +379,7 @@ describe( 'Delete utils', () => {
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContents( doc.batch(), doc.selection );
+				deleteContent( doc.selection, doc.batch() );
 
 				expect( getData( doc, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>[]</paragraph>' );
@@ -394,7 +392,7 @@ describe( 'Delete utils', () => {
 					{ rootName: 'restrictedRoot' }
 				);
 
-				deleteContents( doc.batch(), doc.selection );
+				deleteContent( doc.selection, doc.batch() );
 
 				expect( getData( doc, { rootName: 'restrictedRoot' } ) )
 					.to.equal( '<blockWidget></blockWidget>[]<blockWidget></blockWidget>' );
@@ -405,7 +403,7 @@ describe( 'Delete utils', () => {
 			it( title, () => {
 				setData( doc, input );
 
-				deleteContents( doc.batch(), doc.selection, options );
+				deleteContent( doc.selection, doc.batch(), options );
 
 				expect( getData( doc ) ).to.equal( output );
 			} );
