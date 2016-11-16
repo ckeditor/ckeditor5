@@ -22,6 +22,7 @@ export default class EventInfo {
 		/**
 		 * The object that fired the event.
 		 *
+		 * @readonly
 		 * @member {Object}
 		 */
 		this.source = source;
@@ -29,6 +30,7 @@ export default class EventInfo {
 		/**
 		 * The event name.
 		 *
+		 * @readonly
 		 * @member {String}
 		 */
 		this.name = name;
@@ -36,6 +38,7 @@ export default class EventInfo {
 		/**
 		 * Path this event has followed. See {@link module:utils/emittermixin~EmitterMixin#delegate}.
 		 *
+		 * @readonly
 		 * @member {Array.<Object>}
 		 */
 		this.path = [];
