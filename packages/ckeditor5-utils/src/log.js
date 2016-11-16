@@ -38,6 +38,8 @@
  * * Whenever an incorrect situation occurs, but the app may continue working (although perhaps incorrectly),
  * log an error.
  * * Whenever it's really bad and it does not make sense to continue working, throw a {@link module:utils/ckeditorerror~CKEditorError}.
+ *
+ * @namespace
  */
 const log = {
 	/**
@@ -49,7 +51,6 @@ const log = {
 	 * During the minification process the "Error message" part will be removed to limit the code size
 	 * and a link to this error documentation will be logged to the console.
 	 * @param {Object} [data] Additional data describing the error.
-	 * @method #error
 	 */
 	error( message, data ) {
 		console.error( message, data );
@@ -64,7 +65,6 @@ const log = {
 	 * During the minification process the "Warning message" part will be removed to limit the code size
 	 * and a link to this error documentation will be logged to the console.
 	 * @param {Object} [data] Additional data describing the warning.
-	 * @method #warn
 	 */
 	warn( message, data ) {
 		console.warn( message, data );

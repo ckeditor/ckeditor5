@@ -191,7 +191,7 @@ const ObservableMixin = {
 	 *		A.unbind( 'a' );
 	 *		A.unbind();
 	 *
-	 * @method ~ObservableMixin#unbind
+	 * @method #unbind
 	 * @param {...String} [unbindAttrs] Observable attributes to be unbound. All the bindings will
 	 * be released if no attributes provided.
 	 */
@@ -248,19 +248,20 @@ const ObservableMixin = {
 			boundAttributes.clear();
 		}
 	}
+
 	/**
 	 * @private
-	 * @method ~ObservableMixin#_boundAttributes
+	 * @member ~ObservableMixin#_boundAttributes
 	 */
 
 	/**
 	 * @private
-	 * @method ~ObservableMixin#_boundObservables
+	 * @member ~ObservableMixin#_boundObservables
 	 */
 
 	/**
 	 * @private
-	 * @method ~ObservableMixin#_bindTo
+	 * @member ~ObservableMixin#_bindTo
 	 */
 };
 

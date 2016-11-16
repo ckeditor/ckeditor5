@@ -13,20 +13,24 @@ const userAgent = navigator.userAgent.toLowerCase();
 
 /**
  * A namespace containing environment and browser information.
+ *
+ * @namespace
  */
-export default {
+const env = {
 	/**
 	 * Indicates that application is running on Macintosh.
 	 *
-	 * @member {Boolean}
+	 * @static
+	 * @member {Boolean} module:utils/env~env#mac
 	 */
 	mac: isMac( userAgent )
 };
 
+export default env;
+
 /**
  * Checks if User Agent represented by the string is running on Macintosh.
  *
- * @function isMac
  * @param {String} userAgent **Lowercase** `navigator.userAgent` string.
  * @returns {Boolean} Whether User Agent is running on Macintosh or not.
  */

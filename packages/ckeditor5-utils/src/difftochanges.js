@@ -25,7 +25,6 @@
  *
  *		input.join( '' ) == output.join( '' ); // -> true
  *
- * @method diffToChanges
  * @param {Array.<'equal'|'insert'|'delete'>} diff Result of {@link module:utils/diff~diff}.
  * @param {String|Array} output The string or array which was passed as diff's output.
  * @returns {Array.<Object>} Set of changes (insert or delete) which need to be applied to the input

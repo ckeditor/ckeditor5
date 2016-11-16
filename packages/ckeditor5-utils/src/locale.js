@@ -21,7 +21,7 @@ export default class Locale {
 		 * The language code in [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
 		 *
 		 * @readonly
-		 * @member {String} ~Locale#lang
+		 * @member {String}
 		 */
 		this.lang = lang || 'en';
 
@@ -40,7 +40,7 @@ export default class Locale {
 		 *		const t = this.t;
 		 *		t( 'Label' );
 		 *
-		 * @method module:utils/locale~Locale#t
+		 * @method #t
 		 * @param {String} str The string to translate.
 		 * @param {String[]} values Values that should be used to interpolate the string.
 		 */

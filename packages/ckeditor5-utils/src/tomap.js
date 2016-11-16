@@ -4,7 +4,7 @@
  */
 
 /**
- * @module utils/toMap
+ * @module utils/tomap
  */
 
 import isPlainObject from './lib/lodash/isPlainObject.js';

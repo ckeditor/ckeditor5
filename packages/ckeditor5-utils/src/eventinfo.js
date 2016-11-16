@@ -14,25 +14,29 @@ import spy from './spy.js';
  * manipulate it.
  */
 export default class EventInfo {
+	/**
+	 * @param {Object} source The emitter.
+	 * @param {String} name The event name.
+	 */
 	constructor( source, name ) {
 		/**
 		 * The object that fired the event.
 		 *
-		 * @member #source
+		 * @member {Object}
 		 */
 		this.source = source;
 
 		/**
 		 * The event name.
 		 *
-		 * @member #name
+		 * @member {String}
 		 */
 		this.name = name;
 
 		/**
 		 * Path this event has followed. See {@link module:utils/emittermixin~EmitterMixin#delegate}.
 		 *
-		 * @member #path
+		 * @member {Array.<Object>}
 		 */
 		this.path = [];
 

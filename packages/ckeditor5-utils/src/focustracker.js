@@ -8,6 +8,7 @@
 /**
  * @module utils/focustracker
  */
+
 import DomEmitterMixin from './dom/emittermixin.js';
 import ObservableMixin from './observablemixin.js';
 import CKEditorError from './ckeditorerror.js';
@@ -23,8 +24,8 @@ import mix from './mix.js';
  * which contain other `focusable` elements. But note that this wrapper element has to be focusable too
  * (have e.g. `tabindex="-1"`).
  *
- * @mixes module:utils/dom/emittermixin/~DOMEmitterMixin
- * @mixes module:utils/observablemixin/~ObservableMixin
+ * @mixes module:utils/dom/emittermixin~EmitterMixin
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class FocusTracker {
 	constructor() {
@@ -41,7 +42,7 @@ export default class FocusTracker {
 		 * List of registered elements.
 		 *
 		 * @private
-		 * @member {Set<HTMLElement>} #_elements
+		 * @member {Set.<HTMLElement>}
 		 */
 		this._elements = new Set();
 
@@ -49,7 +50,7 @@ export default class FocusTracker {
 		 * Event loop timeout.
 		 *
 		 * @private
-		 * @member {Number} #_nextEventLoopTimeout
+		 * @member {Number}
 		 */
 		this._nextEventLoopTimeout = null;
 
@@ -57,7 +58,7 @@ export default class FocusTracker {
 		 * Currently focused element.
 		 *
 		 * @private
-		 * @member {HTMLElement} #_focusedElement
+		 * @member {HTMLElement}
 		 */
 		this._focusedElement = null;
 	}
@@ -107,11 +108,11 @@ export default class FocusTracker {
 	}
 
 	/**
-	 * Clears currently focused element and set {#isFocused} as `false`.
+	 * Clears currently focused element and set {@link #isFocused} as `false`.
 	 * This method uses `setTimeout` to change order of fires `blur` and `focus` events.
 	 *
 	 * @private
-	 * @fires #_blur
+	 * @fires #blur
 	 */
 	_blur() {
 		this._nextEventLoopTimeout = setTimeout( () => {
@@ -119,6 +120,14 @@ export default class FocusTracker {
 			this.isFocused = false;
 		}, 0 );
 	}
+
+	/**
+	 * @event #focus
+	 */
+
+	/**
+	 * @event #blur
+	 */
 }
 
 mix( FocusTracker, DomEmitterMixin );

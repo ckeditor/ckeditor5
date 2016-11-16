@@ -22,8 +22,6 @@ import env from './env.js';
  * * `arrow(left|up|right|bottom)`,
  * * `backspace`, `delete`, `enter`, `esc`, `tab`,
  * * `ctrl`, `cmd`, `shift`, `alt`.
- *
- * @constant {Object} module:utils/keyboard~keyCodes
  */
 export const keyCodes = generateKnownKeyCodes();
 
@@ -32,7 +30,6 @@ export const keyCodes = generateKnownKeyCodes();
  *
  * Note: Key names are matched with {@link module:utils/keyboard~keyCodes} in a case-insensitive way.
  *
- * @method module:utils/keyboard.getCode
  * @param {String|module:utils/keyboard~KeystrokeInfo} Key name (see {@link module:utils/keyboard~keyCodes})
  * or a keystroke data object.
  * @returns {Number} Key or keystroke code.
@@ -77,7 +74,6 @@ export function getCode( key ) {
  *
  * Note: Only keystrokes with a single non-modifier key are supported (e.g. `ctrl+A` is OK, but `ctrl+A+B` is not).
  *
- * @method module:utils/keyboard~parseKeystroke
  * @param {String|Array.<Number|String>} keystroke Keystroke definition.
  * @returns {Number} Keystroke code.
  */
@@ -95,7 +91,6 @@ export function parseKeystroke( keystroke ) {
  * It translates any keystroke string text like `"CTRL+A"` to an
  * environment–specific keystroke, i.e. `"⌘A"` on Mac OSX.
  *
- * @method module:utils/keyboard~getEnvKeystrokeText
  * @param {String} keystroke Keystroke text.
  * @returns {String} Keystroke text specific for the environment.
  */

@@ -37,7 +37,7 @@ export default class Collection {
 		 * The internal list of items in the collection.
 		 *
 		 * @private
-		 * @type {Object[]}
+		 * @member {Object[]}
 		 */
 		this._items = [];
 
@@ -45,7 +45,7 @@ export default class Collection {
 		 * The internal map of items in the collection.
 		 *
 		 * @private
-		 * @type {Map}
+		 * @member {Map}
 		 */
 		this._itemMap = new Map();
 
@@ -53,7 +53,7 @@ export default class Collection {
 		 * The name of the property which is considered to identify an item.
 		 *
 		 * @private
-		 * @type {String}
+		 * @member {String}
 		 */
 		this._idProperty = options && options.idProperty || 'id';
 	}
@@ -61,7 +61,7 @@ export default class Collection {
 	/**
 	 * The number of items available in the collection.
 	 *
-	 * @property length
+	 * @member {Number} #length
 	 */
 	get length() {
 		return this._items.length;
@@ -258,20 +258,20 @@ export default class Collection {
 	[ Symbol.iterator ]() {
 		return this._items[ Symbol.iterator ]();
 	}
+
+	/**
+	 * Fired when an item is added to the collection.
+	 *
+	 * @event module:utils/collection~Collection#add
+	 * @param {Object} item The added item.
+	 */
+
+	/**
+	 * Fired when an item is removed from the collection.
+	 *
+	 * @event module:utils/collection~Collection#remove
+	 * @param {Object} item The removed item.
+	 */
 }
 
 mix( Collection, EmitterMixin );
-
-/**
- * Fired when an item is added to the collection.
- *
- * @event module:utils/collection~Collection#add
- * @param {Object} item The added item.
- */
-
-/**
- * Fired when an item is removed from the collection.
- *
- * @event module:utils/collection~Collection#remove
- * @param {Object} item The removed item.
- */

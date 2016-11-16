@@ -23,7 +23,7 @@ export default class Config {
 		 * Store for the whole configuration.
 		 *
 		 * @private
-		 * @member {Object} #_config
+		 * @member {Object}
 		 */
 		this._config = {};
 
@@ -196,7 +196,7 @@ export default class Config {
 	}
 
 	/**
-	 * Iterate through passed object and call {@link #_setToTarget} method with object key and value for each property.
+	 * Iterates through passed object and calls {@link #_setToTarget} method with object key and value for each property.
 	 *
 	 * @private
 	 * @param {Object} target Nested config object.
