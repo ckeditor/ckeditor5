@@ -682,11 +682,13 @@ describe( 'Selection', () => {
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
-		it( 'should return false if ranges do not equal', () => {
+		it( 'should return false if ranges (other than the last added range) do not equal', () => {
 			selection.addRange( range1 );
+			selection.addRange( range3 );
 
 			const otherSelection = new Selection();
 			otherSelection.addRange( range2 );
+			otherSelection.addRange( range3 );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
