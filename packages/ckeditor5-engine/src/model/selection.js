@@ -142,14 +142,22 @@ export default class Selection {
 			return false;
 		}
 
-		// Every range from this selection...
-		return Array.from( this.getRanges() ).every( ( rangeA ) => {
-			// ... has a range in other selection...
-			return Array.from( otherSelection.getRanges() ).some( ( rangeB ) => {
-				// ... which it is equal to.
-				return rangeA.isEqual( rangeB );
-			} );
-		} );
+		for ( let thisRange of this._ranges ) {
+			let found = false;
+
+			for ( let otherRange of otherSelection._ranges ) {
+				if ( thisRange.isEqual( otherRange ) ) {
+					found = true;
+					break;
+				}
+			}
+
+			if ( !found ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
