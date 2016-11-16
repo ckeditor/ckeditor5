@@ -304,6 +304,9 @@ export default class Document {
 		}
 	}
 
+	/**
+	 * Destroys all observers created by view `Document`.
+	 */
 	destroy() {
 		for ( let observer of this._observers.values() ) {
 			observer.destroy();

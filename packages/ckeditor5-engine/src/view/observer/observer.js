@@ -62,6 +62,9 @@ export default class Observer {
 		this.isEnabled = false;
 	}
 
+	/**
+	 * Disables and destroys the observer, among others removes event listeners created by the observer.
+	 */
 	destroy() {
 		this.disable();
 		this.stopListening();

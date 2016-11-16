@@ -111,6 +111,9 @@ export default class SelectionObserver extends Observer {
 		this._documents.add( domDocument );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		super.destroy();
 

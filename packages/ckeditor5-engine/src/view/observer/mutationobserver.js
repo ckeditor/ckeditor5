@@ -112,6 +112,9 @@ export default class MutationObserver extends Observer {
 		this._mutationObserver.disconnect();
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		super.destroy();
 
