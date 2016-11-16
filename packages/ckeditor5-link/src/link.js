@@ -197,7 +197,7 @@ export default class Link extends Feature {
 
 		// Execute link command after clicking on formView `Save` button.
 		this.listenTo( formView, 'submit', () => {
-			editor.execute( 'link', formView.urlInputView.value );
+			editor.execute( 'link', formView.urlInputView.inputView.element.value );
 			this._hidePanel( true );
 		} );
 
