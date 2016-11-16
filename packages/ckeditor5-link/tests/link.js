@@ -367,7 +367,10 @@ describe( 'Link', () => {
 			it( 'should execute link command on formView#submit event', () => {
 				const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-				formView.urlInputView.value = 'http://cksource.com';
+				formView.urlInputView.value = 'http://ckeditor.com';
+				expect( formView.urlInputView.inputView.element.value ).to.equal( 'http://ckeditor.com' );
+
+				formView.urlInputView.inputView.element.value = 'http://cksource.com';
 				formView.fire( 'submit' );
 
 				expect( executeSpy.calledOnce ).to.true;
