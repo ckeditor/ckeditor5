@@ -37,8 +37,6 @@ export default class Bold extends Feature {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				isEnabled: true,
-				isOn: false,
 				label: t( 'Bold' ),
 				icon: 'bold',
 				keystroke

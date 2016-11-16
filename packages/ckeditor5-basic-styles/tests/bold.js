@@ -45,6 +45,10 @@ describe( 'Bold', () => {
 
 	it( 'should register bold feature component', () => {
 		expect( boldView ).to.be.instanceOf( ButtonView );
+		expect( boldView.isOn ).to.be.false;
+		expect( boldView.label ).to.equal( 'Bold' );
+		expect( boldView.icon ).to.equal( 'bold' );
+		expect( boldView.keystroke ).to.equal( 'CTRL+B' );
 	} );
 
 	it( 'should execute bold command on model execute event', () => {
