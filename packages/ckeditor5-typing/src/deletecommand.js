@@ -50,17 +50,18 @@ export default class DeleteCommand extends Command {
 	 * or a piece of content in the {@link typing.DeleteCommand#direction defined direction}.
 	 *
 	 * @param {Object} [options] The command options.
-	 * @param {'character'} [options.unit='character'] See {@link engine.model.composer.modifySelection}'s options.
+	 * @param {'character'} [options.unit='character'] See {@link engine.controller.modifySelection}'s options.
 	 */
 	_doExecute( options = {} ) {
 		const doc = this.editor.document;
+		const dataController = this.editor.data;
 
 		doc.enqueueChanges( () => {
 			const selection = Selection.createFromSelection( doc.selection );
 
 			// Try to extend the selection in the specified direction.
 			if ( selection.isCollapsed ) {
-				doc.composer.modifySelection( selection, { direction: this.direction, unit: options.unit } );
+				dataController.modifySelection( selection, { direction: this.direction, unit: options.unit } );
 			}
 
 			// If selection is still collapsed, then there's nothing to delete.
@@ -76,7 +77,7 @@ export default class DeleteCommand extends Command {
 				);
 			} );
 
-			doc.composer.deleteContents( this._buffer.batch, selection, { merge: true } );
+			dataController.deleteContent( selection, this._buffer.batch, { merge: true } );
 			this._buffer.input( changeCount );
 
 			doc.selection.setRanges( selection.getRanges(), selection.isBackward );

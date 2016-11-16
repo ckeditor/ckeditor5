@@ -78,7 +78,7 @@ export default class Input extends Feature {
 		}
 
 		doc.enqueueChanges( () => {
-			doc.composer.deleteContents( this._buffer.batch, doc.selection );
+			this.editor.data.deleteContent( doc.selection, this._buffer.batch );
 		} );
 	}
 

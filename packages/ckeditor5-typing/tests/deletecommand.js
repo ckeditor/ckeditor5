@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from '/tests/core/_utils/modeltesteditor.js';
-import DeleteCommand from '/ckeditor5/typing/deletecommand.js';
-import { getData, setData } from '/ckeditor5/engine/dev-utils/model.js';
+import ModelTestEditor from 'tests/core/_utils/modeltesteditor.js';
+import DeleteCommand from 'ckeditor5/typing/deletecommand.js';
+import { getData, setData } from 'ckeditor5/engine/dev-utils/model.js';
 
 describe( 'DeleteCommand', () => {
 	let editor, doc;
@@ -67,7 +67,7 @@ describe( 'DeleteCommand', () => {
 		it( 'does not try to delete when selection is at the boundary', () => {
 			const spy = sinon.spy();
 
-			doc.composer.on( 'deleteContents', spy );
+			editor.data.on( 'deleteContent', spy );
 			setData( doc, '<p>[]foo</p>' );
 
 			editor.execute( 'delete' );
@@ -79,7 +79,7 @@ describe( 'DeleteCommand', () => {
 		it( 'passes options to modifySelection', () => {
 			const spy = sinon.spy();
 
-			doc.composer.on( 'modifySelection', spy );
+			editor.data.on( 'modifySelection', spy );
 			setData( doc, '<p>foo[]bar</p>' );
 
 			editor.commands.get( 'delete' ).direction = 'forward';
