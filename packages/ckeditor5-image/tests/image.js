@@ -22,12 +22,12 @@ describe( 'Image', () => {
 		return ClassicTestEditor.create( editorElement, {
 			features: [ Image, Paragraph ]
 		} )
-			.then( newEditor => {
-				editor = newEditor;
-				document = editor.document;
-				viewDocument = editor.editing.view;
-				imageFeature = editor.plugins.get( Image );
-			} );
+		.then( newEditor => {
+			editor = newEditor;
+			document = editor.document;
+			viewDocument = editor.editing.view;
+			imageFeature = editor.plugins.get( Image );
+		} );
 	} );
 
 	it( 'should be loaded', () => {

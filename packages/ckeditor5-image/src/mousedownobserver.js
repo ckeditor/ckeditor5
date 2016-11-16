@@ -35,6 +35,6 @@ export default class MouseDownObserver extends DomEventObserver {
  * to {@link engine.view.Document} by a {@link engine.view.Document#addObserver} method.
  *
  * @see image.MouseDownObserver
- * @event engine.view.Document#click
+ * @event engine.view.Document#mousedown
  * @param {engine.view.observer.DomEventData} data Event data.
  */

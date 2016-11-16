@@ -32,7 +32,7 @@ export default class Image extends Feature {
 
 		// If mouse down is pressed create selection over whole view element.
 		viewDocument.addObserver( MouseDownObserver );
-		this.listenTo( viewDocument, 'mousedown', this._onMouseDown, { context: this } );
+		this.listenTo( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
 	}
 
 	/**
@@ -43,7 +43,7 @@ export default class Image extends Feature {
 	 * @param {utils.EventInfo} eventInfo
 	 * @param {envine.view.observer.DomEventData} domEventData
 	 */
-	_onMouseDown( eventInfo, domEventData ) {
+	_onMousedown( eventInfo, domEventData ) {
 		const target = domEventData.target;
 		const viewDocument = this.editor.editing.view;
 
