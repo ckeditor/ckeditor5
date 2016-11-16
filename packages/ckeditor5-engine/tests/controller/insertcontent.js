@@ -501,31 +501,6 @@ describe( 'DataController', () => {
 				expect( getData( doc ) ).to.equal( '<paragraph>f[]oo</paragraph>' );
 			} );
 		} );
-
-		describe( 'special schema configurations', () => {
-			beforeEach( () => {
-				doc = new Document();
-				doc.createRoot();
-
-				dataController = new DataController( doc );
-			} );
-
-			it( 'should not break when autoparagraphing of text is not possible', () => {
-				const schema = doc.schema;
-
-				schema.registerItem( 'noTextAllowed' );
-				schema.registerItem( 'object' );
-
-				schema.allow( { name: 'noTextAllowed', inside: '$root' } );
-				schema.allow( { name: 'object', inside: 'noTextAllowed' } );
-
-				schema.objects.add( 'object' );
-
-				setData( doc, '<noTextAllowed>[<object></object>]</noTextAllowed>' );
-				insertHelper( 'foo' );
-				expect( getData( doc ) ).to.equal( '<noTextAllowed>[]</noTextAllowed>' );
-			} );
-		} );
 	} );
 
 	// @param {engine.model.Item|String} content
