@@ -60,7 +60,7 @@ function renderIcon( ui ) {
 
 	const iconManager =  new IconManagerView();
 
-	iconManager.set( 'sprite', iconManagerModel.sprite );
+	iconManager.sprite = iconManagerModel.sprite;
 
 	ui.body.add( iconManager );
 
