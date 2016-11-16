@@ -3,11 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, composer */
-
 import Document from 'ckeditor5/engine/model/document.js';
 import Selection from 'ckeditor5/engine/model/selection.js';
-import modifySelection from 'ckeditor5/engine/model/composer/modifyselection.js';
+import modifySelection from 'ckeditor5/engine/controller/modifyselection.js';
 import { setData, stringify } from 'ckeditor5/engine/dev-utils/model.js';
 
 describe( 'Delete utils', () => {

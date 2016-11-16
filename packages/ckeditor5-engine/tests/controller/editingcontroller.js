@@ -4,7 +4,6 @@
  */
 
 /* globals setTimeout, Range, document */
-/* bender-tags: view */
 
 import EmitterMixin from 'ckeditor5/utils/emittermixin.js';
 

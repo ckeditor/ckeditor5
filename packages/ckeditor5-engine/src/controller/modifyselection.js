@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import Position from '../position.js';
-import TreeWalker from '../treewalker.js';
-import Range from '../range.js';
-import { isInsideSurrogatePair, isInsideCombinedSymbol } from '../../../utils/unicode.js';
+import Position from '../model/position.js';
+import TreeWalker from '../model/treewalker.js';
+import Range from '../model/range.js';
+import { isInsideSurrogatePair, isInsideCombinedSymbol } from '../../utils/unicode.js';
 
 /**
- * Modifies the selection. Currently the supported modifications are:
+ * Modifies the selection. Currently, the supported modifications are:
  *
  * * Extending. The selection focus is moved in the specified `options.direction` with a step specified in `options.unit`.
  * Possible values for `unit` are:
@@ -29,7 +29,7 @@ import { isInsideSurrogatePair, isInsideCombinedSymbol } from '../../../utils/un
  *
  * **Note:** if you extend a forward selection in a backward direction you will in fact shrink it.
  *
- * @method engine.model.composer.modifySelection
+ * @method engine.controller.modifySelection
  * @param {engine.model.Selection} selection The selection to modify.
  * @param {Object} [options]
  * @param {'forward'|'backward'} [options.direction='forward'] The direction in which the selection should be modified.
