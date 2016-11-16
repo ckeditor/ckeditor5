@@ -17,9 +17,10 @@ const WIDGET_SELECTED_CLASS_NAME = 'ck-widget_selected';
  *
  * then it will be converted into fake selection.
  *
+ * @param {Function} t {@link utils.Locale#t Locale#t function} used to translate default fake selection's label.
  * @returns {Function}
  */
-export function modelToViewSelection() {
+export function modelToViewSelection( t ) {
 	let selected;
 
 	return ( evt, data, consumable, conversionApi ) => {
@@ -35,7 +36,7 @@ export function modelToViewSelection() {
 
 		// Check if model selection is over image and create fake selection in the view.
 		if ( !modelSelection.isCollapsed && nodeAfter && nodeAfter.name == 'image' && nodeAfter == nodeBefore ) {
-			let fakeSelectionLabel = 'image widget';
+			let fakeSelectionLabel = t( 'image widget' );
 			const altText = nodeAfter.getAttribute( 'alt' );
 
 			if ( altText ) {

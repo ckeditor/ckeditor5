@@ -47,6 +47,6 @@ export default class ImageEngine extends Feature {
 		dataPipeline.viewToModel.on( 'element:figure', viewToModelImage() );
 
 		// Selection converter from view to model - applies fake selection if model selection is on widget.
-		editingPipeline.modelToView.on( 'selection', modelToViewSelection(), { priority: 'low' } );
+		editingPipeline.modelToView.on( 'selection', modelToViewSelection( editor.t ), { priority: 'low' } );
 	}
 }
