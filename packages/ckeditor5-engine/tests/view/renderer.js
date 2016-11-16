@@ -699,14 +699,13 @@ describe( 'Renderer', () => {
 			expect( domP.childNodes[ 2 ].data ).to.equal( INLINE_FILLER );
 
 			// Step 2: Move selection to a new attribute element.
-			const viewI = parse( '<attribute:i>abc</attribute:i>' );
-			viewP.appendChildren( viewI );
+			const viewAbc = parse( 'abc' );
+			viewP.appendChildren( viewAbc );
 
 			selection.removeAllRanges();
 			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP, 3, viewP, 3 ) );
 
 			renderer.markToSync( 'children', viewP );
-			renderer.markToSync( 'children', viewI );
 			renderer.render();
 
 			// Step 3: Check whether old filler was removed.
