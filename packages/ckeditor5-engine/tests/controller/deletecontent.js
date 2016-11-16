@@ -272,7 +272,7 @@ describe( 'Delete utils', () => {
 				const spyMerge = sinon.spy( batch, 'merge' );
 				const spyRemove = sinon.spy( batch, 'remove' );
 
-				deleteContents( batch, doc.selection, { merge: true } );
+				deleteContent( doc.selection, batch, { merge: true } );
 
 				expect( getData( doc ) ).to.equal( '<paragraph>ab[]</paragraph>' );
 
