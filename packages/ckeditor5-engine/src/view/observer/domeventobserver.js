@@ -56,7 +56,11 @@ export default class DomEventObserver extends Observer {
 		const types = typeof this.domEventType == 'string' ? [ this.domEventType ] : this.domEventType;
 
 		types.forEach( type => {
-			domElement.addEventListener( type, domEvent => this.isEnabled && this.onDomEvent( domEvent ) );
+			this.listenTo( domElement, type, ( eventInfo, domEvent ) => {
+				if ( this.isEnabled ) {
+					this.onDomEvent( domEvent );
+				}
+			} );
 		} );
 	}
 

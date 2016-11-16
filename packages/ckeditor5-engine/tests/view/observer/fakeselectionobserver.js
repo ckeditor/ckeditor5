@@ -36,6 +36,10 @@ describe( 'FakeSelectionObserver', () => {
 		viewDocument.selection.setFake();
 	} );
 
+	afterEach( () => {
+		viewDocument.destroy();
+	} );
+
 	it( 'should do nothing if selection is not fake', () => {
 		viewDocument.selection.setFake( false );
 

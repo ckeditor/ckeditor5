@@ -18,6 +18,10 @@ describe( 'FocusObserver', () => {
 		observer = viewDocument.getObserver( FocusObserver );
 	} );
 
+	afterEach( () => {
+		viewDocument.destroy();
+	} );
+
 	it( 'should define domEventType', () => {
 		expect( observer.domEventType ).to.deep.equal( [ 'focus', 'blur' ] );
 	} );

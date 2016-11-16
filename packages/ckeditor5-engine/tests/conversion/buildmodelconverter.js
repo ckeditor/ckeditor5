@@ -92,6 +92,10 @@ describe( 'Model converter builder', () => {
 		dispatcher.on( 'remove', remove() );
 	} );
 
+	afterEach( () => {
+		viewDoc.destroy();
+	} );
+
 	describe( 'model element to view element conversion', () => {
 		it( 'using passed view element name', () => {
 			buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );

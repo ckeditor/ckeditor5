@@ -18,6 +18,10 @@ describe( 'KeyObserver', () => {
 		observer = viewDocument.getObserver( KeyObserver );
 	} );
 
+	afterEach( () => {
+		viewDocument.destroy();
+	} );
+
 	it( 'should define domEventType', () => {
 		expect( observer.domEventType ).to.equal( 'keydown' );
 	} );

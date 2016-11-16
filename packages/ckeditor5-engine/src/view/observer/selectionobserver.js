@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global setInterval, clearInterval */
+
 import Observer from './observer.js';
 import MutationObserver from './mutationobserver.js';
-
 import log from '../../../utils/log.js';
 
 /**
@@ -68,6 +69,8 @@ export default class SelectionObserver extends Observer {
 		 */
 		this._documents = new WeakSet();
 
+		this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 2000 );
+
 		/**
 		 * Private property to store the last selection, to check if the code does not enter infinite loop.
 		 *
@@ -101,9 +104,20 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		domDocument.addEventListener( 'selectionchange', () => this._handleSelectionChange( domDocument ) );
+		this.listenTo( domDocument, 'selectionchange', () => {
+			this._handleSelectionChange( domDocument );
+		} );
 
 		this._documents.add( domDocument );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		clearInterval( this._clearInfiniteLoopInterval );
 	}
 
 	/**
@@ -151,10 +165,6 @@ export default class SelectionObserver extends Observer {
 			newSelection: newViewSelection,
 			domSelection: domSelection
 		} );
-
-		// If nothing changes on `selectionChange` event, at this point we have "dirty DOM" (changed) and de-synched
-		// view (which has not been changed). In order to "reset DOM" we render the view again.
-		this.document.render();
 	}
 
 	/**
@@ -179,11 +189,24 @@ export default class SelectionObserver extends Observer {
 			this._loopbackCounter = 0;
 		}
 
-		if ( this._loopbackCounter > 10 ) {
+		// This counter is reset every 2 seconds. 50 selection changes in 2 seconds is enough high number
+		// to be very difficult (impossible) to achieve using just keyboard keys (during normal editor use).
+		if ( this._loopbackCounter > 50 ) {
 			return true;
 		}
 
 		return false;
+	}
+
+	/**
+	 * Clears `SelectionObserver` internal properties connected with preventing infinite loop.
+	 *
+	 * @protected
+	 */
+	_clearInfiniteLoop() {
+		this._lastSelection = null;
+		this._lastButOneSelection = null;
+		this._loopbackCounter = 0;
 	}
 }
 

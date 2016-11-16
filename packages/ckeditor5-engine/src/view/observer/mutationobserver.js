@@ -113,6 +113,15 @@ export default class MutationObserver extends Observer {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this._mutationObserver.disconnect();
+	}
+
+	/**
 	 * Handles mutations. Deduplicates, mark view elements to sync, fire event and call render.
 	 *
 	 * @private
