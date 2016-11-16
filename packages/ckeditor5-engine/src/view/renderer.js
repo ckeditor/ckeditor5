@@ -298,10 +298,8 @@ export default class Renderer {
 		const selectionPosition = this.selection.getFirstPosition();
 		const position = this.domConverter.viewPositionToDom( selectionPosition );
 
-		if ( position ) {
-			if ( this.domConverter.isText( position.parent ) && startsWithFiller( position.parent ) ) {
-				return true;
-			}
+		if ( position && this.domConverter.isText( position.parent ) && startsWithFiller( position.parent ) ) {
+			return true;
 		}
 
 		return false;
