@@ -4,9 +4,12 @@
  */
 
 /**
+ * @module utils/dom/indexof
+ */
+
+/**
  * Returns index of the node in the parent element.
  *
- * @method utils.dom.indexOf
  * @param {Node} node Node which index is tested.
  * @returns {Number} Index of the node in the parent element. Returns 0 if node has no parent.
  */

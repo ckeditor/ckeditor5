@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module utils/dom/emittermixin
+ */
+
 import EmitterMixin from '../emittermixin.js';
 import uid from '../uid.js';
 import extend from '../lib/lodash/extend.js';
@@ -10,9 +14,9 @@ import isNative from '../lib/lodash/isNative.js';
 
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
- * compatible with {@link utils.EmitterMixin}.
+ * compatible with {@link module:utils/emittermixin~EmitterMixin}.
  *
- * DOM emitter mixin is by default available in the {@link ui.View} class,
+ * DOM emitter mixin is by default available in the {@link module:ui/view~View} class,
  * but it can also be mixed into any other class:
  *
  *		import mix from '../utils/mix.js';
@@ -26,27 +30,27 @@ import isNative from '../lib/lodash/isNative.js';
  *			console.log( evt, domEvt );
  *		} );
  *
- * @mixin utils.dom.EmitterMixin
- * @mixes utils.EmitterMixin
- * @implements ui.DomEmitter
+ * @mixin module:utils/dom/emittermixin~EmitterMixin
+ * @mixes module:utils/emittermixin~EmitterMixin
+ * @implements module:utils/dom/emittermixin~Emitter
  */
 const DomEmitterMixin = extend( {}, EmitterMixin, {
 	/**
 	 * Registers a callback function to be executed when an event is fired in a specific Emitter or DOM Node.
-	 * It is backwards compatible with {@link utils.EmitterMixin#listenTo}.
+	 * It is backwards compatible with {@link module:utils/emittermixin~EmitterMixin#listenTo}.
 	 *
-	 * @param {utils.Emitter|Node} emitter The object that fires the event.
+	 * @param {module:utils/emittermixin~Emitter|Node} emitter The object that fires the event.
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
 	 * @param {Object} [options={}] Additional options.
-	 * @param {utils.PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
 	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered
 	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
 	 *
-	 * @method utils.dom.EmitterMixin#listenTo
+	 * @method module:utils/dom/emittermixin~EmitterMixin#listenTo
 	 */
 	listenTo( ...args ) {
 		const emitter = args[ 0 ];
@@ -63,20 +67,20 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 
 	/**
 	 * Stops listening for events. It can be used at different levels:
-	 * It is backwards compatible with {@link utils.EmitterMixin#listenTo}.
+	 * It is backwards compatible with {@link module:utils/emittermixin~EmitterMixin#listenTo}.
 	 *
 	 * * To stop listening to a specific callback.
 	 * * To stop listening to a specific event.
 	 * * To stop listening to all events fired by a specific object.
 	 * * To stop listening to all events fired by all object.
 	 *
-	 * @param {utils.Emitter|Node} [emitter] The object to stop listening to. If omitted, stops it for all objects.
+	 * @param {module:utils/emittermixin~Emitter|Node} [emitter] The object to stop listening to. If omitted, stops it for all objects.
 	 * @param {String} [event] (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it
 	 * for all events from `emitter`.
 	 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
 	 * `event`.
 	 *
-	 * @method utils.dom.EmitterMixin#stopListening
+	 * @method module:utils/dom/emittermixin~EmitterMixin#stopListening
 	 */
 	stopListening( ...args ) {
 		const emitter = args[ 0 ];
@@ -101,8 +105,8 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 * Retrieves ProxyEmitter instance for given DOM Node residing in this Host.
 	 *
 	 * @param {Node} node DOM Node of the ProxyEmitter.
-	 * @method utils.dom.EmitterMixin#_getProxyEmitter
-	 * @return {ProxyEmitter} ProxyEmitter instance or null.
+	 * @method module:utils/dom/emittermixin~EmitterMixin#_getProxyEmitter
+	 * @return {module:utils/dom/emittermixin~ProxyEmitter} ProxyEmitter instance or null.
 	 */
 	_getProxyEmitter( node ) {
 		let proxy, emitters, emitterInfo;
@@ -125,7 +129,7 @@ export default DomEmitterMixin;
 
 /**
  * Creates a ProxyEmitter instance. Such an instance is a bridge between a DOM Node firing events
- * and any Host listening to them. It is backwards compatible with {@link utils.EmitterMixin#on}.
+ * and any Host listening to them. It is backwards compatible with {@link module:utils/emittermixin~EmitterMixin#on}.
  *
  *                                  listenTo( click, ... )
  *                    +-----------------------------------------+
@@ -149,9 +153,9 @@ export default DomEmitterMixin;
  *                    +-----------------------------------------+
  *                                fire( click, DOM Event )
  *
- * @memberOf ui
- * @mixes utils.EmitterMixin
- * @implements utils.dom.Emitter
+ * @mixes module:utils/emittermixin~EmitterMixin
+ * @implements module:utils/dom/emittermixin~Emitter
+ * @private
  */
 class ProxyEmitter {
 	/**
@@ -172,7 +176,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * Collection of native DOM listeners.
 	 *
 	 * @private
-	 * @member {Object} ui.ProxyEmitter#_domListeners
+	 * @member {Object} module:utils/dom/emittermixin~ProxyEmitter#_domListeners
 	 */
 
 	/**
@@ -184,14 +188,14 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
 	 * @param {Object} [options={}] Additional options.
-	 * @param {utils.PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
 	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
 	 * order they were added.
 	 * @param {Object} [options.context] The object that represents `this` in the callback. Defaults to the object firing the event.
 	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered
 	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
 	 *
-	 * @method ui.ProxyEmitter#on
+	 * @method module:utils/dom/emittermixin~ProxyEmitter#on
 	 */
 	on( event, callback, options = {} ) {
 		// Execute parent class method first.
@@ -225,7 +229,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * @param {Object} [context] The context object to be removed, pared with the given callback. To handle cases where
 	 * the same callback is used several times with different contexts.
 	 *
-	 * @method ui.ProxyEmitter#off
+	 * @method module:utils/dom/emittermixin~ProxyEmitter#off
 	 */
 	off( event ) {
 		// Execute parent class method first.
@@ -247,9 +251,10 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * is fired it will fire corresponding event on this ProxyEmitter.
 	 * Note: A native DOM Event is passed as an argument.
 	 *
+	 * @private
 	 * @param {String} event
 	 *
-	 * @method ui.ProxyEmitter#_createDomListener
+	 * @method module:utils/dom/emittermixin~ProxyEmitter#_createDomListener
 	 * @returns {Function} The DOM listener callback.
 	 */
 	_createDomListener( event ) {
@@ -288,7 +293,7 @@ function isDomNode( node ) {
 }
 
 /**
- * Interface representing classes which mix in {@link utils.dom.Emitter}.
+ * Interface representing classes which mix in {@link module:utils/dom/emittermixin~EmitterMixin}.
  *
- * @interface utils.dom.Emitter
+ * @interface Emitter
  */

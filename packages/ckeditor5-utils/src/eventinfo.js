@@ -3,21 +3,27 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module utils/eventinfo
+ */
+
 import spy from './spy.js';
 
 /**
  * The event object passed to event callbacks. It is used to provide information about the event as well as a tool to
  * manipulate it.
- *
- * @memberOf utils
  */
 export default class EventInfo {
+	/**
+	 * @param {Object} source The emitter.
+	 * @param {String} name The event name.
+	 */
 	constructor( source, name ) {
 		/**
 		 * The object that fired the event.
 		 *
 		 * @readonly
-		 * @member utils.EventInfo#source
+		 * @member {Object}
 		 */
 		this.source = source;
 
@@ -25,15 +31,15 @@ export default class EventInfo {
 		 * The event name.
 		 *
 		 * @readonly
-		 * @member utils.EventInfo#name
+		 * @member {String}
 		 */
 		this.name = name;
 
 		/**
-		 * Path this event has followed. See {@link utils.EmitterMixin#delegate}.
+		 * Path this event has followed. See {@link module:utils/emittermixin~EmitterMixin#delegate}.
 		 *
 		 * @readonly
-		 * @member utils.EventInfo#path
+		 * @member {Array.<Object>}
 		 */
 		this.path = [];
 
@@ -42,14 +48,14 @@ export default class EventInfo {
 		/**
 		 * Stops the event emitter to call further callbacks for this event interaction.
 		 *
-		 * @method utils.EventInfo#stop
+		 * @method #stop
 		 */
 		this.stop = spy();
 
 		/**
 		 * Removes the current callback from future interactions of this event.
 		 *
-		 * @method utils.EventInfo#off
+		 * @method #off
 		 */
 		this.off = spy();
 	}

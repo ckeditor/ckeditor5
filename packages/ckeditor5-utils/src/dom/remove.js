@@ -4,9 +4,12 @@
  */
 
 /**
+ * @module utils/dom/remove
+ */
+
+/**
  * Removes given node from parent.
  *
- * @method utils.dom.remove
  * @param {Node} node Node to remove.
  */
 export default function remove( node ) {

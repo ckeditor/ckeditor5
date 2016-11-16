@@ -4,11 +4,14 @@
  */
 
 /**
+ * @module utils/count
+ */
+
+/**
  * Returns the number of items return by the iterator.
  *
  *		count( [ 1, 2, 3, 4, 5 ] ); // 5;
  *
- * @memberOf utils
  * @param {Iterable.<*>} iterator Any iterator.
  * @returns {Number} Number of items returned by that iterator.
  */

@@ -4,13 +4,15 @@
  */
 
 /**
+ * @module utils/locale
+ */
+
+/**
  * Represents the localization services.
- *
- * @memberOf utils
  */
 export default class Locale {
 	/**
-	 * Creates a new instance of the Locale class. {@link Foo#bar}
+	 * Creates a new instance of the Locale class. {@link ~Locale}
 	 *
 	 * @param {String} [lang='en'] The language code in [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
 	 */
@@ -19,13 +21,13 @@ export default class Locale {
 		 * The language code in [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
 		 *
 		 * @readonly
-		 * @member {String} utils.Locale#lang
+		 * @member {String}
 		 */
 		this.lang = lang || 'en';
 
 		/**
-		 * Translates the given string to the {@link #lang}. This method is also availble in {@link Editor#t} and
-		 * {@link ui.View#t}.
+		 * Translates the given string to the {@link #lang}. This method is also availble in {@link module:core/editor~Editor#t} and
+		 * {@link module:ui/view~View#t}.
 		 *
 		 * The strings may contain placeholders (`%<index>`) for values which are passed as the second argument.
 		 * `<index>` is the index in the `values` array.
@@ -38,7 +40,7 @@ export default class Locale {
 		 *		const t = this.t;
 		 *		t( 'Label' );
 		 *
-		 * @method utils.Locale#t
+		 * @method #t
 		 * @param {String} str The string to translate.
 		 * @param {String[]} values Values that should be used to interpolate the string.
 		 */

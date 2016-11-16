@@ -4,21 +4,26 @@
  */
 
 /**
+ * @module utils/priorities
+ */
+
+/**
  * String representing a priority value.
  *
- * @typedef {'highest'|'high'|'normal'|'low'|'lowest'} utils.PriorityString
+ * @typedef {'highest'|'high'|'normal'|'low'|'lowest'} module:utils/priorities~PriorityString
  */
 
 /**
  * Provides group of constants to use instead of hardcoding numeric priority values.
  *
- * @memberOf utils
+ * @namespace
  */
 const priorities = {
 	/**
 	 * Converts a string with priority name to it's numeric value. If `Number` is given, it just returns it.
 	 *
-	 * @param {utils.PriorityString|Number} priority Priority to convert.
+	 * @static
+	 * @param {module:utils/priorities~PriorityString|Number} priority Priority to convert.
 	 * @returns {Number} Converted priority.
 	 */
 	get( priority ) {

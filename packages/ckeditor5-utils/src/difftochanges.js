@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module utils/difftochanges
+ */
+
+/**
  * Creates a set of changes which need to be applied to the input in order to transform
  * it into the output. This function can be used with strings or arrays.
  *
@@ -21,8 +25,7 @@
  *
  *		input.join( '' ) == output.join( '' ); // -> true
  *
- * @method utils.diffToChanges
- * @param {Array.<'equal'|'insert'|'delete'>} diff Result of {@link utils.diff}.
+ * @param {Array.<'equal'|'insert'|'delete'>} diff Result of {@link module:utils/diff~diff}.
  * @param {String|Array} output The string or array which was passed as diff's output.
  * @returns {Array.<Object>} Set of changes (insert or delete) which need to be applied to the input
  * in order to transform it into the output.

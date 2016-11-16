@@ -3,12 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module utils/dom/setdatainelement
+ */
+
 /* globals HTMLTextAreaElement */
 
 /**
  * Sets data in a given element.
  *
- * @method utils.dom.setDataInElement
  * @param {HTMLElement} el The element in which the data will be set.
  * @param {String} data The data string.
  */

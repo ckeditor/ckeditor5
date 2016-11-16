@@ -6,9 +6,12 @@
 /* globals HTMLTextAreaElement */
 
 /**
+ * @module utils/dom/getdatafromelement
+ */
+
+/**
  * Gets data from a given source element.
  *
- * @method utils.dom.getDataFromElement
  * @param {HTMLElement} el The element from which the data will be retrieved.
  * @returns {String} The data string.
  */

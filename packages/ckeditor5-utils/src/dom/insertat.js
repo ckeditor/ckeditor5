@@ -4,9 +4,12 @@
  */
 
 /**
+ * @module utils/dom/insertat
+ */
+
+/**
  * Inserts node to the parent at given index.
  *
- * @method utils.dom.insertAt
  * @param {Element} parentElement Parent element.
  * @param {Number} index Insertions index.
  * @param {Node} nodeToInsert Node to insert.

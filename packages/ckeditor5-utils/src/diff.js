@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module utils/diff
+ */
+
 // The following code is based on the "O(NP) Sequence Comparison Algorithm"
 // by Sun Wu, Udi Manber, Gene Myers, Webb Miller.
 
@@ -12,7 +16,6 @@
  *
  *		diff( 'aba', 'acca' ); // [ 'equal', 'insert', 'insert', 'delete', 'equal' ]
  *
- * @method utils.diff
  * @param {Array|String} a Input array or string.
  * @param {Array|String} b Output array or string.
  * @param {Function} [cmp] Optional function used to compare array values, by default === is used.

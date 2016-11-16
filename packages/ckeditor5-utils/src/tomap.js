@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module utils/tomap
+ */
+
 import isPlainObject from './lib/lodash/isPlainObject.js';
 import objectToMap from './objecttomap.js';
 
@@ -13,7 +17,6 @@ import objectToMap from './objecttomap.js';
  *		map = toMap( [ [ 'foo', 1 ], [ 'bar', 2 ] ] );
  *		map = toMap( anotherMap );
  *
- * @memberOf utils
  * @param {Object|Iterable} data Object or iterable to transform.
  * @returns {Map} Map created from data.
  */

@@ -3,16 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module utils/config
+ */
+
 import isPlainObject from './lib/lodash/isPlainObject.js';
 
 /**
  * Handles a configuration dictionary.
- *
- * @memberOf utils
  */
 export default class Config {
 	/**
-	 * Creates an instance of the {@link Config} class.
+	 * Creates an instance of the {@link ~Config} class.
 	 *
 	 * @param {Object} [configurations] The initial configurations to be set.
 	 */
@@ -21,7 +23,7 @@ export default class Config {
 		 * Store for the whole configuration.
 		 *
 		 * @private
-		 * @member {Object} utils.config#_config
+		 * @member {Object}
 		 */
 		this._config = {};
 
@@ -194,7 +196,7 @@ export default class Config {
 	}
 
 	/**
-	 * Iterate through passed object and call {@link #_setToTarget} method with object key and value for each property.
+	 * Iterates through passed object and calls {@link #_setToTarget} method with object key and value for each property.
 	 *
 	 * @private
 	 * @param {Object} target Nested config object.

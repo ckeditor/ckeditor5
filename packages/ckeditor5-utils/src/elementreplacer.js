@@ -4,10 +4,12 @@
  */
 
 /**
+ * @module utils/elementreplacer
+ */
+
+/**
  * Utility class allowing to hide existing HTML elements or replace them with given ones in a way that doesn't remove
  * the original elements from the DOM.
- *
- * @memberOf utils
  */
 export default class ElementReplacer {
 	constructor() {
@@ -15,7 +17,7 @@ export default class ElementReplacer {
 		 * The elements replaced by {@link #replace} and their replacements.
 		 *
 		 * @private
-		 * @member {Array.<Object>} utils.ElementReplacer#_replacedElements
+		 * @member {Array.<Object>}
 		 */
 		this._replacedElements = [];
 	}

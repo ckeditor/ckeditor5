@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module utils/observablemixin
+ */
+
 import EmitterMixin from './emittermixin.js';
 import CKEditorError from './ckeditorerror.js';
 import extend from './lib/lodash/extend.js';
@@ -14,11 +18,11 @@ const boundAttributesSymbol = Symbol( 'boundAttributes' );
 
 /**
  * Mixin that injects the "observable attributes" and data binding functionality.
- * Used mainly in the {@link ui.Model} class.
+ * Used mainly in the {@link module:ui/model~Model} class.
  *
- * @mixin utils.ObservableMixin
- * @mixes utils.EmitterMixin
- * @implements utils.Observable
+ * @mixin ObservableMixin
+ * @mixes module:utils/emittermixin~EmitterMixin
+ * @implements module:utils/observablemixin~Observable
  */
 const ObservableMixin = {
 	/**
@@ -27,11 +31,11 @@ const ObservableMixin = {
 	 *
 	 * It accepts also a single object literal containing key/value pairs with attributes to be set.
 	 *
-	 * This method throws the {@link observable-set-cannot-override} error if the observable instance already
+	 * This method throws the observable-set-cannot-override error if the observable instance already
 	 * have a property with a given attribute name. This prevents from mistakenly overriding existing
 	 * properties and methods, but means that `foo.set( 'bar', 1 )` may be slightly slower than `foo.bar = 1`.
 	 *
-	 * @method utils.ObservableMixin#set
+	 * @method #set
 	 * @param {String} name The attributes name.
 	 * @param {*} value The attributes value.
 	 */
@@ -53,7 +57,7 @@ const ObservableMixin = {
 			/**
 			 * Cannot override an existing property.
 			 *
-			 * This error is thrown when trying to {@link utils.Observable#set set} an attribute with
+			 * This error is thrown when trying to {@link ~Observable#set set} an attribute with
 			 * a name of an already existing property. For example:
 			 *
 			 *		let observable = new Model();
@@ -92,23 +96,23 @@ const ObservableMixin = {
 	},
 
 	/**
-	 * Binds observable attributes to another objects implementing {@link ObservableMixin}
-	 * interface (like {@link ui.Model}).
+	 * Binds observable attributes to another objects implementing {@link ~ObservableMixin}
+	 * interface (like {@link module:ui/model~Model}).
 	 *
 	 * Once bound, the observable will immediately share the current state of attributes
 	 * of the observable it is bound to and react to the changes to these attributes
 	 * in the future.
 	 *
-	 * **Note**: To release the binding use {@link utils.ObservableMixin#unbind}.
+	 * **Note**: To release the binding use {@link module:utils/observablemixin~ObservableMixin#unbind}.
 	 *
 	 *		A.bind( 'a' ).to( B );
 	 *		A.bind( 'a' ).to( B, 'b' );
 	 *		A.bind( 'a', 'b' ).to( B, 'c', 'd' );
 	 *		A.bind( 'a' ).to( B, 'b', C, 'd', ( b, d ) => b + d );
 	 *
-	 * @method utils.ObservableMixin#bind
+	 * @method #bind
 	 * @param {...String} bindAttrs Observable attributes that will be bound to another observable(s).
-	 * @returns {utils.BindChain}
+	 * @returns {module:utils/observablemixin~BindChain}
 	 */
 	bind( ...bindAttrs ) {
 		if ( !bindAttrs.length || !isStringArray( bindAttrs ) ) {
@@ -147,7 +151,7 @@ const ObservableMixin = {
 		const bindings = new Map();
 
 		/**
-		 * @typedef utils.Binding
+		 * @typedef Binding
 		 * @type Object
 		 * @property {Array} attr Attribute which is bound.
 		 * @property {Array} to Array of observable–attribute components of the binding (`{ observable: ..., attr: .. }`).
@@ -161,14 +165,14 @@ const ObservableMixin = {
 		} );
 
 		/**
-		 * @typedef utils.BindChain
+		 * @typedef BindChain
 		 * @type Object
-		 * @property {Function} to See {@link utils.ObservableMixin#_bindTo}.
+		 * @property {Function} to See {@link ~ObservableMixin#_bindTo}.
 		 * @property {Observable} _observable The observable which initializes the binding.
 		 * @property {Array} _bindAttrs Array of `_observable` attributes to be bound.
 		 * @property {Array} _to Array of `to()` observable–attributes (`{ observable: toObservable, attrs: ...toAttrs }`).
 		 * @property {Map} _bindings Stores bindings to be kept in
-		 *  {@link utils.ObservableMixin#_boundAttributes}/{@link utils.ObservableMixin#_boundObservables}
+		 *  {@link ~ObservableMixin#_boundAttributes}/{@link ~ObservableMixin#_boundObservables}
 		 * initiated in this binding chain.
 		 */
 		return {
@@ -182,12 +186,12 @@ const ObservableMixin = {
 	},
 
 	/**
-	 * Removes the binding created with {@link utils.ObservableMixin#bind}.
+	 * Removes the binding created with {@link ~ObservableMixin#bind}.
 	 *
 	 *		A.unbind( 'a' );
 	 *		A.unbind();
 	 *
-	 * @method utils.ObservableMixin#unbind
+	 * @method #unbind
 	 * @param {...String} [unbindAttrs] Observable attributes to be unbound. All the bindings will
 	 * be released if no attributes provided.
 	 */
@@ -244,6 +248,21 @@ const ObservableMixin = {
 			boundAttributes.clear();
 		}
 	}
+
+	/**
+	 * @private
+	 * @member ~ObservableMixin#_boundAttributes
+	 */
+
+	/**
+	 * @private
+	 * @member ~ObservableMixin#_boundObservables
+	 */
+
+	/**
+	 * @private
+	 * @member ~ObservableMixin#_bindTo
+	 */
 };
 
 export default ObservableMixin;
@@ -251,7 +270,7 @@ export default ObservableMixin;
 // Init symbol properties needed to for the observable mechanism to work.
 //
 // @private
-// @param {ObservableMixin} observable
+// @param {module:utils/observablemixin~ObservableMixin} observable
 function initObservable( observable ) {
 	// Do nothing if already inited.
 	if ( attributesSymbol in observable ) {
@@ -267,9 +286,9 @@ function initObservable( observable ) {
 	} );
 
 	// Map containing bindings to external observables. It shares the binding objects
-	// (`{ observable: A, attr: 'a', to: ... }`) with {@link utils.ObservableMixin#_boundAttributes} and
+	// (`{ observable: A, attr: 'a', to: ... }`) with {@link module:utils/observablemixin~ObservableMixin#_boundAttributes} and
 	// it is used to observe external observables to update own attributes accordingly.
-	// See {@link utils.ObservableMixin#bind}.
+	// See {@link module:utils/observablemixin~ObservableMixin#bind}.
 	//
 	//		A.bind( 'a', 'b', 'c' ).to( B, 'x', 'y', 'x' );
 	//		console.log( A._boundObservables );
@@ -348,7 +367,7 @@ function initObservable( observable ) {
 	} );
 }
 
-// A chaining for {@link utils.ObservableMixin#bind} providing `.to()` interface.
+// A chaining for {@link module:utils/observablemixin~ObservableMixin#bind} providing `.to()` interface.
 //
 // @private
 // @param {...[Observable|String|Function]} args Arguments of the `.to( args )` binding.
@@ -473,7 +492,7 @@ function parseBindToArgs( ...args ) {
 	return parsed;
 }
 
-// Synchronizes {@link Observable#_boundObservables} with {@link Binding}.
+// Synchronizes {@link module:utils/observablemixin#_boundObservables} with {@link Binding}.
 //
 // @private
 // @param {Binding} binding A binding to store in {@link Observable#_boundObservables}.
@@ -614,14 +633,14 @@ extend( ObservableMixin, EmitterMixin );
 /**
  * Fired when an attribute changed value.
  *
- * @event utils.ObservableMixin#change:{attribute}
+ * @event module:utils/observablemixin~ObservableMixin#change:{attribute}
  * @param {String} name The attribute name.
  * @param {*} value The new attribute value.
  * @param {*} oldValue The previous attribute value.
  */
 
 /**
- * Interface representing classes which mix in {@link utils.ObservableMixin}.
+ * Interface representing classes which mix in {@link module:utils/observablemixin~ObservableMixin}.
  *
- * @interface utils.Observable
+ * @interface Observable
  */

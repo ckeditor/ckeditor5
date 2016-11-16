@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module utils/collection
+ */
+
 import EmitterMixin from './emittermixin.js';
 import CKEditorError from './ckeditorerror.js';
 import uid from './uid.js';
@@ -18,7 +22,6 @@ import mix from './mix.js';
  * By default an item in the collection is identified by its `id` property. The name of the identifier can be
  * configured through the constructor of the collection.
  *
- * @memberOf utils
  * @mixes EventEmitter
  */
 export default class Collection {
@@ -34,7 +37,7 @@ export default class Collection {
 		 * The internal list of items in the collection.
 		 *
 		 * @private
-		 * @type {Object[]}
+		 * @member {Object[]}
 		 */
 		this._items = [];
 
@@ -42,7 +45,7 @@ export default class Collection {
 		 * The internal map of items in the collection.
 		 *
 		 * @private
-		 * @type {Map}
+		 * @member {Map}
 		 */
 		this._itemMap = new Map();
 
@@ -50,7 +53,7 @@ export default class Collection {
 		 * The name of the property which is considered to identify an item.
 		 *
 		 * @private
-		 * @type {String}
+		 * @member {String}
 		 */
 		this._idProperty = options && options.idProperty || 'id';
 	}
@@ -58,7 +61,7 @@ export default class Collection {
 	/**
 	 * The number of items available in the collection.
 	 *
-	 * @property length
+	 * @member {Number} #length
 	 */
 	get length() {
 		return this._items.length;
@@ -73,7 +76,7 @@ export default class Collection {
 	 * @param {Object} item
 	 * @param {Number} [index] The position of the item in the collection. The item
 	 * is pushed to the collection when `index` not specified.
-	 * @fires utils.Collection#add
+	 * @fires #add
 	 */
 	add( item, index ) {
 		let itemId;
@@ -154,7 +157,7 @@ export default class Collection {
 	 *
 	 * @param {Object|Number|String} subject The item to remove, its id or index in the collection.
 	 * @returns {Object} The removed item.
-	 * @fires utils.Collection#remove
+	 * @fires #remove
 	 */
 	remove( subject ) {
 		let index, id, item;
@@ -205,7 +208,7 @@ export default class Collection {
 	 * Executes the callback for each item in the collection and composes an array or values returned by this callback.
 	 *
 	 * @param {Function} callback
-	 * @param {Item} callback.item
+	 * @param {Object} callback.item
 	 * @param {Number} callback.index
 	 * @params {Object} ctx Context in which the `callback` will be called.
 	 * @returns {Array} The result of mapping.
@@ -255,20 +258,20 @@ export default class Collection {
 	[ Symbol.iterator ]() {
 		return this._items[ Symbol.iterator ]();
 	}
+
+	/**
+	 * Fired when an item is added to the collection.
+	 *
+	 * @event module:utils/collection~Collection#add
+	 * @param {Object} item The added item.
+	 */
+
+	/**
+	 * Fired when an item is removed from the collection.
+	 *
+	 * @event module:utils/collection~Collection#remove
+	 * @param {Object} item The removed item.
+	 */
 }
 
 mix( Collection, EmitterMixin );
-
-/**
- * Fired when an item is added to the collection.
- *
- * @event utils.Collection#add
- * @param {Object} item The added item.
- */
-
-/**
- * Fired when an item is removed from the collection.
- *
- * @event utils.Collection#remove
- * @param {Object} item The removed item.
- */
