@@ -280,5 +280,21 @@ describe( 'EditingController', () => {
 
 			editing.destroy();
 		} );
+
+		it( 'should destroy view', () => {
+			let model, editing;
+
+			model = new ModelDocument();
+			model.createRoot();
+			model.schema.registerItem( 'paragraph', '$block' );
+
+			editing = new EditingController( model );
+
+			const spy = sinon.spy( editing.view, 'destroy' );
+
+			editing.destroy();
+
+			expect( spy.called ).to.be.true;
+		} );
 	} );
 } );
