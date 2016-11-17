@@ -13,6 +13,7 @@ import Text from 'ckeditor5/engine/view/text.js';
 import Position from 'ckeditor5/engine/view/position.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 import count from 'ckeditor5/utils/count.js';
+import { parse } from 'ckeditor5/engine/dev-utils/view.js';
 
 describe( 'Selection', () => {
 	let selection;
@@ -776,6 +777,37 @@ describe( 'Selection', () => {
 			} );
 
 			selection.setFake( true, { label: 'foo bar baz' } );
+		} );
+	} );
+
+	describe( 'getSelectedElement', () => {
+		it( 'should return selected element', () => {
+			const { selection, view } = parse( 'foo [<b>bar</b>] baz' );
+			const p = view.getChild( 1 );
+
+			expect( selection.getSelectedElement() ).to.equal( p );
+		} );
+
+		it( 'should return null if there is more than one range', () => {
+			const { selection } = parse( 'foo [<b>bar</b>] [<i>baz</i>]' );
+
+			expect( selection.getSelectedElement() ).to.be.null;
+		} );
+
+		it( 'should return null if there is no selection', () => {
+			expect( selection.getSelectedElement() ).to.be.null;
+		} );
+
+		it( 'should return null if selection is not over single element #1', () => {
+			const { selection } = parse( 'foo [<b>bar</b> ba}z' );
+
+			expect( selection.getSelectedElement() ).to.be.null;
+		} );
+
+		it( 'should return null if selection is not over single element #2', () => {
+			const { selection } = parse( 'foo <b>{bar}</b> baz' );
+
+			expect( selection.getSelectedElement() ).to.be.null;
 		} );
 	} );
 } );

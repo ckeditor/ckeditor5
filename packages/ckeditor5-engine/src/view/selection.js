@@ -8,6 +8,7 @@ import Range from './range.js';
 import Position from './position.js';
 import mix from '../../utils/mix.js';
 import EmitterMixin from '../../utils/emittermixin.js';
+import Element from './element.js';
 
 /**
  * Class representing selection in tree view.
@@ -458,6 +459,25 @@ export default class Selection {
 		} else {
 			this.addRange( new Range( anchor, newFocus ) );
 		}
+	}
+
+	/**
+	 * Returns selected element. {@link engine.view.Element Element} is considered as selected if there is only
+	 * one range in selection, and that range is placed exactly on one element.
+	 * Returns `null` if there is no selected element.
+	 *
+	 * @return {engine.view.Element|null}
+	 */
+	getSelectedElement() {
+		if ( this.rangeCount == 1 ) {
+			const range = this.getFirstRange();
+			const nodeAfterStart = range.start.nodeAfter;
+			const nodeBeforeEnd = range.end.nodeBefore;
+
+			return nodeAfterStart instanceof Element && nodeAfterStart == nodeBeforeEnd ? nodeAfterStart : null;
+		}
+
+		return null;
 	}
 
 	/**
