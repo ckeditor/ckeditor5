@@ -1,21 +1,19 @@
-//figure {
-//	&.ck-widget.image {
-//		text-align: center;
-//
-//		img {
-//			pointer-events: none;
-//		}
-//
-//		&.ck-widget_selected img, &.ck-widget_selected:hover img{
-//			outline: 2px solid #ace;
-//		}
-//
-//		&:hover img {
-//			outline: 2px solid yellow;
-//		}
-//	}
-//}
-
+// Common styles applied to all widget.
 .ck-widget {
+	&.ck-widget_selected, &.ck-widget_selected:hover {
+		outline: 2px solid #ace;
+	}
 
+	.ck-editor__editable.ck-blurred &.ck-widget_selected {
+		outline: 2px solid #ddd;
+	}
+
+	&:hover {
+		outline: 2px solid yellow;
+	}
+}
+
+// Image widget's styles.
+.ck-widget.image {
+	text-align: center;
 }
