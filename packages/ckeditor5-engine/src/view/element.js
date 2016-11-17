@@ -575,14 +575,14 @@ export default class Element extends Node {
 	 * Provided patterns should be compatible with {@link engine.view.Matcher Matcher} as it is used internally.
 	 *
 	 * @see engine.view.Matcher
-	 * @param {Object|String|RegExp|function} patterns Patterns used to match correct ancestor. See {@link engine.view.Matcher}.
-	 * @return {engine.view.Element|null} Found element or `null` if no matching ancestor was found.
+	 * @param {Object|String|RegExp|Function} patterns Patterns used to match correct ancestor. See {@link engine.view.Matcher}.
+	 * @returns {engine.view.Element|null} Found element or `null` if no matching ancestor was found.
 	 */
 	findAncestor( ...patterns ) {
 		const matcher = new Matcher( ...patterns );
 		let parent = this.parent;
 
-		while ( parent !== null ) {
+		while ( parent ) {
 			if ( matcher.match( parent ) ) {
 				return parent;
 			}
