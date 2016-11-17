@@ -490,6 +490,12 @@ describe( 'Selection', () => {
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
+
+		it( 'should return true if both selections are empty', () => {
+			const otherSelection = new Selection();
+
+			expect( selection.isEqual( otherSelection ) ).to.be.true;
+		} );
 	} );
 
 	describe( 'removeAllRanges', () => {
