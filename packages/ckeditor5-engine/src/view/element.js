@@ -8,6 +8,7 @@ import Text from './text.js';
 import objectToMap from '../../utils/objecttomap.js';
 import isIterable from '../../utils/isiterable.js';
 import isPlainObject from '../../utils/lib/lodash/isPlainObject.js';
+import Matcher from './matcher.js';
 
 /**
  * View element.
@@ -567,6 +568,29 @@ export default class Element extends Node {
 	removeStyle( ...property ) {
 		this._fireChange( 'attributes', this );
 		property.forEach( name => this._styles.delete( name ) );
+	}
+
+	/**
+	 * Returns ancestor element that match specified pattern.
+	 * Provided patterns should be compatible with {@link engine.view.Matcher Matcher} as it is used internally.
+	 *
+	 * @see engine.view.Matcher
+	 * @param {Object|String|RegExp|Function} patterns Patterns used to match correct ancestor. See {@link engine.view.Matcher}.
+	 * @returns {engine.view.Element|null} Found element or `null` if no matching ancestor was found.
+	 */
+	findAncestor( ...patterns ) {
+		const matcher = new Matcher( ...patterns );
+		let parent = this.parent;
+
+		while ( parent ) {
+			if ( matcher.match( parent ) ) {
+				return parent;
+			}
+
+			parent = parent.parent;
+		}
+
+		return null;
 	}
 }
 

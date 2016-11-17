@@ -86,7 +86,7 @@ export default class Matcher {
 	 *
 	 * 		matcher.add( 'div', { class: 'foobar' } );
 	 *
-	 * @param {Object|String|RegExp|function} pattern Object describing pattern details. If string or regular expression
+	 * @param {Object|String|RegExp|Function} pattern Object describing pattern details. If string or regular expression
 	 * is provided it will be used to match element's name. Pattern can be also provided in a form
 	 * of a function - then this function will be called with each {@link engine.view.Element element} as a parameter.
 	 * Function's return value will be stored under `match` key of the object returned from
@@ -139,7 +139,7 @@ export default class Matcher {
 	 * @param {...core.view.Element} element View element to match against stored patterns.
 	 * @returns {Object|null} result
 	 * @returns {core.view.Element} result.element Matched view element.
-	 * @returns {Object|String|RegExp|function} result.pattern Pattern that was used to find matched element.
+	 * @returns {Object|String|RegExp|Function} result.pattern Pattern that was used to find matched element.
 	 * @returns {Object} result.match Object representing matched element parts.
 	 * @returns {Boolean} [result.match.name] True if name of the element was matched.
 	 * @returns {Array} [result.match.attribute] Array with matched attribute names.
@@ -212,7 +212,7 @@ export default class Matcher {
 // If element cannot be matched to provided pattern - returns `null`.
 //
 // @param {engine.view.Element} element
-// @param {Object|String|RegExp|function} pattern
+// @param {Object|String|RegExp|Function} pattern
 // @returns {Object|null} Returns object with match information or null if element is not matching.
 function isElementMatching( element, pattern ) {
 	// If pattern is provided as function - return result of that function;
