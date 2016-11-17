@@ -17,6 +17,10 @@ describe( 'MouseObserver', () => {
 		observer = viewDocument.addObserver( MouseObserver );
 	} );
 
+	afterEach( () => {
+		viewDocument.destroy();
+	} );
+
 	it( 'should define domEventType', () => {
 		expect( observer.domEventType ).to.equal( 'mousedown' );
 	} );
