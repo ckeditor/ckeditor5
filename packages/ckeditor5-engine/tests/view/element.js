@@ -784,4 +784,37 @@ describe( 'Element', () => {
 			} );
 		} );
 	} );
+
+	describe( 'findAncestor', () => {
+		it( 'should return null if element have no ancestor', () => {
+			const el = new Element( 'p' );
+
+			expect( el.findAncestor( 'div' ) ).to.be.null;
+		} );
+
+		it( 'should return ancestor if matching', () => {
+			const el1 = new Element( 'p' );
+			const el2 = new Element( 'div', null, el1 );
+
+			expect( el1.findAncestor( 'div' ) ).to.equal( el2 );
+		} );
+
+		it( 'should return parent\'s ancestor if matching', () => {
+			const el1 = new Element( 'p' );
+			const el2 = new Element( 'div', null, el1 );
+			const el3 = new Element( 'div', { class: 'foo bar' }, el2 );
+
+			expect( el1.findAncestor( { class: 'foo' } ) ).to.equal( el3 );
+		} );
+
+		it( 'should return null if no matches found', () => {
+			const el1 = new Element( 'p' );
+			new Element( 'div', null, el1 );
+
+			expect( el1.findAncestor( {
+				name: 'div',
+				class: 'container'
+			} ) ).to.be.null;
+		} );
+	} );
 } );
