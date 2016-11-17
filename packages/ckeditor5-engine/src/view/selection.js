@@ -462,22 +462,22 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns selected element. {@link engine.view.Element Element} is considered as selected if there is only
-	 * one range in selection, and that range is placed exactly on one element.
+	 * Returns the selected element. {@link engine.view.Element Element} is considered as selected if there is only
+	 * one range in the selection, and that range contains exactly one element.
 	 * Returns `null` if there is no selected element.
 	 *
-	 * @return {engine.view.Element|null}
+	 * @returns {engine.view.Element|null}
 	 */
 	getSelectedElement() {
-		if ( this.rangeCount == 1 ) {
-			const range = this.getFirstRange();
-			const nodeAfterStart = range.start.nodeAfter;
-			const nodeBeforeEnd = range.end.nodeBefore;
-
-			return nodeAfterStart instanceof Element && nodeAfterStart == nodeBeforeEnd ? nodeAfterStart : null;
+		if ( this.rangeCount !== 1 ) {
+			return null;
 		}
 
-		return null;
+		const range = this.getFirstRange();
+		const nodeAfterStart = range.start.nodeAfter;
+		const nodeBeforeEnd = range.end.nodeBefore;
+
+		return ( nodeAfterStart instanceof Element && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
 	}
 
 	/**

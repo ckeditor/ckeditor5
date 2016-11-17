@@ -789,9 +789,9 @@ describe( 'Selection', () => {
 	describe( 'getSelectedElement', () => {
 		it( 'should return selected element', () => {
 			const { selection, view } = parse( 'foo [<b>bar</b>] baz' );
-			const p = view.getChild( 1 );
+			const b = view.getChild( 1 );
 
-			expect( selection.getSelectedElement() ).to.equal( p );
+			expect( selection.getSelectedElement() ).to.equal( b );
 		} );
 
 		it( 'should return null if there is more than one range', () => {
