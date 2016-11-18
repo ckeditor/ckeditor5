@@ -6,7 +6,8 @@
 import Feature from '../core/feature.js';
 import ImageEngine from './imageengine.js';
 import ModelRange from '../engine/model/range.js';
-import MouseDownObserver from './mousedownobserver.js';
+import MouseObserver from '../engine/view/observer/mouseobserver.js';
+import { isImageWidget } from './utils.js';
 
 /**
  * The image feature.
@@ -31,42 +32,39 @@ export default class Image extends Feature {
 		const viewDocument = this.editor.editing.view;
 
 		// If mouse down is pressed create selection over whole view element.
-		viewDocument.addObserver( MouseDownObserver );
+		viewDocument.addObserver( MouseObserver );
 		this.listenTo( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
 	}
 
 	/**
-	 * Handles `mousedown` event. If image widget is event's target then new selection in model is created around that
-	 * element.
+	 * Handles `mousedown` event.
 	 *
 	 * @private
 	 * @param {utils.EventInfo} eventInfo
 	 * @param {envine.view.observer.DomEventData} domEventData
 	 */
 	_onMousedown( eventInfo, domEventData ) {
-		const target = domEventData.target;
+		let widgetElement = domEventData.target;
 		const viewDocument = this.editor.editing.view;
 
-		if ( isImageWidget( target ) ) {
-			domEventData.preventDefault();
+		// If target is not a widgetElement - check if one of the parents is.
+		if ( !isImageWidget( widgetElement ) ) {
+			widgetElement = widgetElement.findAncestor( element => isImageWidget( element ) );
 
-			// Focus editor if is not focused already.
-			if ( !viewDocument.isFocused ) {
-				viewDocument.focus();
+			if ( !widgetElement ) {
+				return;
 			}
-
-			createModelSelectionOverElement( this.editor, target );
 		}
-	}
-}
 
-// Checks if provided {@link engine.view.Element} is instance of image widget.
-//
-// @private
-// @param {engine.view.Element} viewElement
-// @returns {Boolean}
-function isImageWidget( viewElement ) {
-	return viewElement.isWidget && viewElement.name == 'figure' && viewElement.hasClass( 'image' );
+		domEventData.preventDefault();
+
+		// Focus editor if is not focused already.
+		if ( !viewDocument.isFocused ) {
+			viewDocument.focus();
+		}
+
+		createModelSelectionOverElement( this.editor, widgetElement );
+	}
 }
 
 // Creates model selection over provided {@link engine.view.Element view Element} and calls

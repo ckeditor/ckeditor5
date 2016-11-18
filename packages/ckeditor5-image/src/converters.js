@@ -6,6 +6,7 @@
 import ViewContainerElement from '../engine/view/containerelement.js';
 import ViewEmptyElement from '../engine/view/emptyelement.js';
 import ModelElement from '../engine/model/element.js';
+import { isImageWidget } from './utils.js';
 
 const WIDGET_SELECTED_CLASS_NAME = 'ck-widget_selected';
 
@@ -20,33 +21,30 @@ const WIDGET_SELECTED_CLASS_NAME = 'ck-widget_selected';
  * @returns {Function}
  */
 export function modelToViewSelection( t ) {
-	let selected;
+	let previouslySelected;
 
 	return ( evt, data, consumable, conversionApi ) => {
 		const viewSelection = conversionApi.viewSelection;
-		const modelSelection = data.selection;
+		const selectedElement = viewSelection.getSelectedElement();
 
-		const nodeAfter = modelSelection.anchor.nodeAfter;
-		const nodeBefore = modelSelection.focus.nodeBefore;
-
-		if ( selected && selected.hasClass( WIDGET_SELECTED_CLASS_NAME ) ) {
-			selected.removeClass( WIDGET_SELECTED_CLASS_NAME );
+		if ( !selectedElement || !isImageWidget( selectedElement ) ) {
+			return;
 		}
 
-		// Check if model selection is over image and create fake selection in the view.
-		if ( !modelSelection.isCollapsed && nodeAfter && nodeAfter.name == 'image' && nodeAfter == nodeBefore ) {
-			let fakeSelectionLabel = t( 'image widget' );
-			const altText = nodeAfter.getAttribute( 'alt' );
-
-			if ( altText ) {
-				fakeSelectionLabel = `${ altText } ${ fakeSelectionLabel }`;
-			}
-
-			viewSelection.setFake( true, { label: fakeSelectionLabel } );
-			const viewElement = conversionApi.mapper.toViewElement( nodeAfter );
-			viewElement.addClass( WIDGET_SELECTED_CLASS_NAME );
-			selected = viewElement;
+		if ( previouslySelected && previouslySelected.hasClass( WIDGET_SELECTED_CLASS_NAME ) ) {
+			previouslySelected.removeClass( WIDGET_SELECTED_CLASS_NAME );
 		}
+
+		let fakeSelectionLabel = t( 'image widget' );
+		const altText = selectedElement.getAttribute( 'alt' );
+
+		if ( altText ) {
+			fakeSelectionLabel = `${ altText } ${ fakeSelectionLabel }`;
+		}
+
+		viewSelection.setFake( true, { label: fakeSelectionLabel } );
+		selectedElement.addClass( WIDGET_SELECTED_CLASS_NAME );
+		previouslySelected = selectedElement;
 	};
 }
 
