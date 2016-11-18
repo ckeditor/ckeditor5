@@ -7,9 +7,12 @@
 
 import StandardEditor from 'ckeditor5/core/editor/standardeditor.js';
 import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
-import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
-import BoxedEditorUIView from 'ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
+
 import Feature from 'ckeditor5/core/feature.js';
+import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+
+import ClassicTestEditorUI from 'tests/core/_utils/classictesteditorui.js';
+import BoxedEditorUIView from 'ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
 
 import { getData } from 'ckeditor5/engine/dev-utils/model.js';
 import testUtils from 'tests/core/_utils/utils.js';
@@ -29,10 +32,10 @@ describe( 'ClassicTestEditor', () => {
 			const editor = new ClassicTestEditor( editorElement, { foo: 1 } );
 
 			expect( editor ).to.be.instanceof( StandardEditor );
-
 			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
-			expect( editor ).to.have.property( 'element', editorElement );
-			expect( editor ).to.have.property( 'ui' ).to.instanceOf( BoxedEditorUIView );
+			expect( editor.element ).to.equal( editorElement );
+			expect( editor.ui ).to.be.instanceOf( ClassicTestEditorUI );
+			expect( editor.ui.view ).to.be.instanceOf( BoxedEditorUIView );
 		} );
 
 		it( 'creates model and view roots', () => {
@@ -58,7 +61,8 @@ describe( 'ClassicTestEditor', () => {
 		it( 'creates and initilizes the UI', () => {
 			return ClassicTestEditor.create( editorElement, { foo: 1 } )
 				.then( editor => {
-					expect( editor.ui ).to.be.instanceof( BoxedEditorUIView );
+					expect( editor.ui ).to.be.instanceOf( ClassicTestEditorUI );
+					expect( editor.ui.view ).to.be.instanceOf( BoxedEditorUIView );
 				} );
 		} );
 
