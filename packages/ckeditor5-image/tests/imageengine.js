@@ -40,6 +40,12 @@ describe( `ImageEngine`, () => {
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png" alt="alt text"></figure>' );
 			} );
+
+			it( 'should convert without alt attribute', () => {
+				setModelData( document, '<image src="foo.png"></image>' );
+
+				expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png"></figure>' );
+			} );
 		} );
 
 		describe( 'view to model', () => {
@@ -71,11 +77,11 @@ describe( `ImageEngine`, () => {
 					.to.equal( '' );
 			} );
 
-			it( 'should not convert without alt attribute', () => {
+			it( 'should convert without alt attribute', () => {
 				editor.setData( '<figure class="image"><img src="foo.png" /></figure>' );
 
 				expect( getModelData( document, { withoutSelection: true } ) )
-					.to.equal( '' );
+					.to.equal( '<image src="foo.png"></image>' );
 			} );
 
 			it( 'should not convert without src attribute', () => {

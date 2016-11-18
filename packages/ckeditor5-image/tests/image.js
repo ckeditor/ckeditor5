@@ -9,7 +9,7 @@ import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
 import Image from 'ckeditor5/image/image.js';
 import Paragraph from 'ckeditor5/paragraph/paragraph.js';
 import ImageEngine from 'ckeditor5/image/imageengine.js';
-import MouseDownObserver from 'ckeditor5/image/mousedownobserver.js';
+import MouseObserver from 'ckeditor5/engine/view/observer/mouseobserver.js';
 import { getData as getModelData } from 'ckeditor5/engine/dev-utils/model.js';
 
 describe( 'Image', () => {
@@ -38,8 +38,8 @@ describe( 'Image', () => {
 		expect( editor.plugins.get( ImageEngine ) ).to.instanceOf( ImageEngine );
 	} );
 
-	it( 'should add MouseDownObserver', () => {
-		expect( viewDocument.getObserver( MouseDownObserver ) ).to.be.instanceOf( MouseDownObserver );
+	it( 'should add MouseObserver', () => {
+		expect( viewDocument.getObserver( MouseObserver ) ).to.be.instanceOf( MouseObserver );
 	} );
 
 	it( 'should create selection in model on mousedown event', () => {
@@ -47,6 +47,20 @@ describe( 'Image', () => {
 		const imageWidget = viewDocument.getRoot().getChild( 0 );
 		const domEventDataMock = {
 			target: imageWidget,
+			preventDefault: sinon.spy()
+		};
+
+		viewDocument.fire( 'mousedown', domEventDataMock );
+
+		sinon.assert.calledOnce( domEventDataMock.preventDefault );
+		expect( getModelData( document ) ).to.equal( '[<image alt="alt text" src="image.png"></image>]' );
+	} );
+
+	it( 'should create selection in model on mousedown event when target is widget\'s child element', () => {
+		editor.setData( '<figure class="image"><img src="image.png" alt="alt text" /></figure>' );
+		const imgElement = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+		const domEventDataMock = {
+			target: imgElement,
 			preventDefault: sinon.spy()
 		};
 

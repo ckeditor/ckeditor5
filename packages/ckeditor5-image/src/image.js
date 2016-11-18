@@ -47,7 +47,7 @@ export default class Image extends Feature {
 		let widgetElement = domEventData.target;
 		const viewDocument = this.editor.editing.view;
 
-		// If target is not a widgetElement - check if one of the parents is.
+		// If target is not a widget element - check if one of the ancestors is.
 		if ( !isImageWidget( widgetElement ) ) {
 			widgetElement = widgetElement.findAncestor( element => isImageWidget( element ) );
 
