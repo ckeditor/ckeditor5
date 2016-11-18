@@ -136,7 +136,7 @@ export default class Link extends Feature {
 
 		// Add balloonPanel.view#element to FocusTracker.
 		// @TODO: Do it automatically ckeditor5-core#23
-		editor.focusTracker.add( balloonPanelView.element );
+		editor.ui.focusTracker.add( balloonPanelView.element );
 
 		// Handle click on view document and show panel when selection is placed inside the link element.
 		// Keep panel open until selection will be inside the same link element.
@@ -176,7 +176,7 @@ export default class Link extends Feature {
 			callback: () => this._hidePanel()
 		} );
 
-		editor.ui.body.add( balloonPanelView );
+		editor.ui.view.body.add( balloonPanelView );
 
 		return balloonPanelView;
 	}

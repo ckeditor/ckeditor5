@@ -170,11 +170,11 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should add balloon panel element to focus tracker', () => {
-			editor.focusTracker.isFocused = false;
+			editor.ui.focusTracker.isFocused = false;
 
 			balloonPanelView.element.dispatchEvent( new Event( 'focus' ) );
 
-			expect( editor.focusTracker.isFocused ).to.true;
+			expect( editor.ui.focusTracker.isFocused ).to.true;
 		} );
 
 		describe( 'close listeners', () => {
