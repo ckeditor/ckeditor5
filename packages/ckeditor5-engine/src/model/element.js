@@ -198,6 +198,16 @@ export default class Element extends Node {
 		return nodes;
 	}
 
+	getNodeByPath( relativePath ) {
+		let node = this;
+
+		for ( const index of relativePath ) {
+			node = node.getChild( index );
+		}
+
+		return node;
+	}
+
 	/**
 	 * Converts `Element` instance to plain object and returns it. Takes care of converting all of this element's children.
 	 *

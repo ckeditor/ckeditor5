@@ -7,7 +7,7 @@ import Document from 'ckeditor5/engine/model/document.js';
 import deleteContent from 'ckeditor5/engine/controller/deletecontent.js';
 import { setData, getData } from 'ckeditor5/engine/dev-utils/model.js';
 
-describe( 'Delete utils', () => {
+describe( 'DataController', () => {
 	let doc;
 
 	describe( 'deleteContent', () => {

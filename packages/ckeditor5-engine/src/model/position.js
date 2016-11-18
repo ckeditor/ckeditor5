@@ -251,12 +251,21 @@ export default class Position {
 	}
 
 	/**
-	 * Returns ancestors array of this position, that is this position's parent and it's ancestors.
+	 * Returns ancestors array of this position, that is this position's parent and its ancestors.
 	 *
 	 * @returns {Array.<engine.model.Item>} Array with ancestors.
 	 */
 	getAncestors() {
 		return this.parent.getAncestors( { includeNode: true, parentFirst: true } );
+	}
+
+	getCommonPath( position ) {
+		// We find on which tree-level start and end have the lowest common ancestor
+		let cmp = compareArrays( this.path, position.path );
+		// If comparison returned string it means that arrays are same.
+		let diffAt = ( typeof cmp == 'string' ) ? Math.min( this.path.length, position.path.length ) : cmp;
+
+		return this.path.slice( 0, diffAt );
 	}
 
 	/**

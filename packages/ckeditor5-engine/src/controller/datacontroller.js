@@ -22,6 +22,7 @@ import ModelPosition from '../model/position.js';
 import insertContent from './insertcontent.js';
 import deleteContent from './deletecontent.js';
 import modifySelection from './modifyselection.js';
+import getSelectedContent from './getselectedcontent.js';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
@@ -116,6 +117,9 @@ export default class DataController {
 		this.on( 'insertContent', ( evt, data ) => insertContent( this, data.content, data.selection, data.batch ) );
 		this.on( 'deleteContent', ( evt, data ) => deleteContent( data.selection, data.batch, data.options ) );
 		this.on( 'modifySelection', ( evt, data ) => modifySelection( data.selection, data.options ) );
+		this.on( 'getSelectedContent', ( evt, data ) => {
+			data.content = getSelectedContent( data.selection );
+		} );
 	}
 
 	/**
@@ -259,6 +263,16 @@ export default class DataController {
 	 */
 	modifySelection( selection, options ) {
 		this.fire( 'modifySelection', { selection, options } );
+	}
+
+	getSelectedContent() {
+		const evtData = {
+			selection: this.model.selection
+		};
+
+		this.fire( 'getSelectedContent', evtData );
+
+		return evtData.content;
 	}
 }
 
