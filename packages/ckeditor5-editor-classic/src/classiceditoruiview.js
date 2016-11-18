@@ -44,10 +44,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	}
 
 	/**
-	 * The editing host element of {@link editor-classic.ClassicEditorUIView#editable}.
-	 *
-	 * @readonly
-	 * @type {HTMLElement}
+	 * @inheritDoc
 	 */
 	get editableElement() {
 		return this.editable.element;

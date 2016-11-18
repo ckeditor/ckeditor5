@@ -23,7 +23,7 @@ export default class ClassicEditorUI {
 		 * Editor that the UI belongs to.
 		 *
 		 * @readonly
-		 * @member {core.editor.Editor} editor-classic.ClssicEditorUI#editor
+		 * @member {core.editor.Editor} editor-classic.ClassicEditorUI#editor
 		 */
 		this.editor = editor;
 
@@ -31,7 +31,7 @@ export default class ClassicEditorUI {
 		 * View of the ui.
 		 *
 		 * @readonly
-		 * @member {ui.editorUI.EditorUIView} editor-classic.ClssicEditorUI#view
+		 * @member {ui.editorUI.EditorUIView} editor-classic.ClassicEditorUI#view
 		 */
 		this.view = view;
 
@@ -39,14 +39,15 @@ export default class ClassicEditorUI {
 		 * Instance of the {@link ui.ComponentFactory}.
 		 *
 		 * @readonly
-		 * @member {ui.ComponentFactory} editor-classic.ClssicEditorUI#featureComponents
+		 * @member {ui.ComponentFactory} editor-classic.ClassicEditorUI#featureComponents
 		 */
 		this.featureComponents = new ComponentFactory( editor );
 
 		/**
 		 * Keeps information about editor focus.
 		 *
-		 * @member {utils.FocusTracker} editor-classic.ClssicEditorUI#focusTracker
+		 * @readonly
+		 * @member {utils.FocusTracker} editor-classic.ClassicEditorUI#focusTracker
 		 */
 		this.focusTracker = new FocusTracker();
 
@@ -62,7 +63,7 @@ export default class ClassicEditorUI {
 		const editingRoot = editor.editing.createRoot( 'div' );
 		view.editable.bind( 'isReadOnly', 'isFocused' ).to( editingRoot );
 		view.editable.name = editingRoot.rootName;
-		this.focusTracker.add( view.editable.element );
+		this.focusTracker.add( view.editableElement );
 	}
 
 	/**
