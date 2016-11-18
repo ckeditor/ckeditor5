@@ -5,6 +5,7 @@
 
 import StandardEditor from '../core/editor/standardeditor.js';
 import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
+import ClassicEditorUI from './classiceditorui.js';
 import ClassicEditorUIView from './classiceditoruiview.js';
 import ElementReplacer from '../utils/elementreplacer.js';
 
@@ -27,12 +28,8 @@ export default class ClassicEditor extends StandardEditor {
 		super( element, config );
 
 		this.document.createRoot();
-
-		this.editing.createRoot( 'div' );
-
 		this.data.processor = new HtmlDataProcessor();
-
-		this.ui = new ClassicEditorUIView( this, this.locale );
+		this.ui = new ClassicEditorUI( this, new ClassicEditorUIView( this.locale ) );
 
 		/**
 		 * The element replacer instance used to hide the editor element.
@@ -83,9 +80,9 @@ export default class ClassicEditor extends StandardEditor {
 
 			resolve(
 				editor.initPlugins()
-					.then( () => editor._elementReplacer.replace( element, editor.ui.element ) )
+					.then( () => editor._elementReplacer.replace( element, editor.ui.view.element ) )
 					.then( () => editor.ui.init() )
-					.then( () => editor.editing.view.attachDomRoot( editor.ui.editableElement ) )
+					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
 					.then( () => editor.loadDataFromEditorElement() )
 					.then( () => editor )
 			);

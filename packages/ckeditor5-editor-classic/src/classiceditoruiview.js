@@ -16,93 +16,37 @@ import StickyToolbarView from '../ui/toolbar/sticky/stickytoolbarview.js';
  */
 export default class ClassicEditorUIView extends BoxedEditorUIView {
 	/**
-	 * Creates an instance of the classic editor UI.
+	 * Creates an instance of the classic editor UI view.
 	 *
-	 * @param {core.editor.Editor} editor
+	 * @param {utils.Locale} locale The {@link core.editor.Editor#locale} instance.
 	 */
-	constructor( editor, locale ) {
-		super( editor, locale );
+	constructor( locale ) {
+		super( locale );
 
 		/**
-		 * Toolbar view.
+		 * A sticky toolbar view instance.
 		 *
 		 * @readonly
-		 * @member {ui.toolbar.ToolbarView} editor-classic.ClassicEditorUI#toolbar
+		 * @member {ui.toolbar.sticky.StickyToolbarView} editor-classic.ClassicEditorUIView#toolbar
 		 */
-		this.toolbar = this._createToolbar();
+		this.toolbar = new StickyToolbarView( locale );
 
 		/**
 		 * Editable UI view.
 		 *
 		 * @readonly
-		 * @member {ui.editableUI.EditableUIView} editor-classic.ClassicEditorUI#editable
+		 * @member {ui.editableUI.inline.InlineEditableUIView} editor-classic.ClassicEditorUIView#editable
 		 */
-		this.editable = this._createEditableUIView( editor );
+		this.editable = new InlineEditableUIView( locale );
+
+		this.top.add( this.toolbar );
+		this.main.add( this.editable );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
-	init() {
-		this.toolbar.limiterElement = this.element;
-
-		const toolbarConfig = this.editor.config.get( 'toolbar' );
-
-		if ( toolbarConfig ) {
-			for ( let name of toolbarConfig ) {
-				this.toolbar.items.add( this.featureComponents.create( name ) );
-			}
-		}
-
-		return super.init();
-	}
-
-	/**
-	 * The editing host element, {@link editor-classic.ClassicEditorUI#editable}.
-	 *
-	 * @readonly
-	 * @type {HTMLElement}
-	 */
 	get editableElement() {
 		return this.editable.element;
-	}
-
-	/**
-	 * Creates the sticky toolbar view of the editor.
-	 *
-	 * @protected
-	 * @returns {ui.stickyToolbar.StickyToolbarView}
-	 */
-	_createToolbar() {
-		const editor = this.editor;
-		const toolbar = new StickyToolbarView( editor.locale );
-
-		toolbar.bind( 'isActive' ).to( editor.focusTracker, 'isFocused' );
-		this.top.add( toolbar );
-
-		return toolbar;
-	}
-
-	/**
-	 * Creates the main editable view of the editor and registers it
-	 * in {@link core.editor.Editor#focusTracker}.
-	 *
-	 * @protected
-	 * @returns {ui.editableUI.EditableUIView}
-	 */
-	_createEditableUIView() {
-		const editor = this.editor;
-		const editable = editor.editing.view.getRoot();
-		const editableUIView = new InlineEditableUIView( editor.locale );
-
-		editableUIView.bind( 'isReadOnly', 'isFocused' ).to( editable );
-		editableUIView.name = editable.rootName;
-
-		this.main.add( editableUIView );
-
-		// @TODO: Do it automatically ckeditor5-core#23
-		editor.focusTracker.add( editableUIView.element );
-
-		return editableUIView;
 	}
 }
