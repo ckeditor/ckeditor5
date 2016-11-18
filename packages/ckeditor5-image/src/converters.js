@@ -83,25 +83,20 @@ export function viewToModelImage() {
 			return;
 		}
 
-		// Consume img element.
-		if ( !consumable.consume( viewImg, { name: true } ) ) {
-			return;
-		}
-
-		// Check if 'src' attribute can be converted - it is required attribute.
-		if ( !consumable.consume( viewImg, { attribute: [ 'src' ] } ) ) {
+		// Consume img element with src attribute.
+		if ( !consumable.consume( viewImg, { name: true, attribute: 'src' } ) ) {
 			return;
 		}
 
 		// Create model element.
-		const modelImage = new ModelElement( 'image' );
+		const modelImage = new ModelElement( 'image', {
+			src: viewImg.getAttribute( 'src' )
+		} );
 
-		// Not required attribute - convert if present.
+		// Convert `alt` attribute if present.
 		if ( consumable.consume( viewImg, { attribute: [ 'alt' ] } ) ) {
 			modelImage.setAttribute( 'alt', viewImg.getAttribute( 'alt' ) );
 		}
-
-		modelImage.setAttribute( 'src', viewImg.getAttribute( 'src' ) );
 
 		data.output = modelImage;
 	};
