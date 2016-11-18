@@ -24,7 +24,7 @@ export default class ClassicTestEditorUI {
 		 * Editor that the UI belongs to.
 		 *
 		 * @readonly
-		 * @member {core.editor.Editor} tests.core._utils.ClssicTestEditorUI#editor
+		 * @member {core.editor.Editor} tests.core._utils.ClassicTestEditorUI#editor
 		 */
 		this.editor = editor;
 
@@ -32,7 +32,7 @@ export default class ClassicTestEditorUI {
 		 * View of the ui.
 		 *
 		 * @readonly
-		 * @member {ui.editorUI.EditorUIView} tests.core._utils.ClssicTestEditorUI#view
+		 * @member {ui.editorUI.EditorUIView} tests.core._utils.ClassicTestEditorUI#view
 		 */
 		this.view = view;
 
@@ -40,14 +40,14 @@ export default class ClassicTestEditorUI {
 		 * Instance of the {@link ui.ComponentFactory}.
 		 *
 		 * @readonly
-		 * @member {ui.ComponentFactory} tests.core._utils.ClssicTestEditorUI#featureComponents
+		 * @member {ui.ComponentFactory} tests.core._utils.ClassicTestEditorUI#featureComponents
 		 */
 		this.featureComponents = new ComponentFactory( editor );
 
 		/**
 		 * Keeps information about editor focus.
 		 *
-		 * @member {utils.FocusTracker} tests.core._utils.ClssicTestEditorUI#focusTracker
+		 * @member {utils.FocusTracker} tests.core._utils.ClassicTestEditorUI#focusTracker
 		 */
 		this.focusTracker = new FocusTracker();
 	}
