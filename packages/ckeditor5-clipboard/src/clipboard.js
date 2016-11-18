@@ -81,7 +81,7 @@ export default class Clipboard extends Feature {
 
 		editingView.addObserver( ClipboardObserver );
 
-		// The clipboard pipeline.
+		// The clipboard paste pipeline.
 
 		this.listenTo( editingView, 'paste', ( evt, data ) => {
 			const dataTransfer = data.dataTransfer;
@@ -115,6 +115,26 @@ export default class Clipboard extends Feature {
 				doc.enqueueChanges( () => {
 					dataController.insertContent( modelFragment, doc.selection );
 				} );
+			}
+		}, { priority: 'low' } );
+
+		// The clipboard copy/cut pipeline.
+
+		const onCopyCut = ( evt, data ) => {
+			const dataTransfer = data.dataTransfer;
+			const content = editor.data.toView( editor.data.getSelectedContent() );
+
+			data.preventDefault();
+
+			editingView.fire( 'clipboardOutput', { dataTransfer, content } );
+		};
+
+		this.listenTo( editingView, 'copy', onCopyCut, { priority: 'low' } );
+		this.listenTo( editingView, 'cut', onCopyCut, { priority: 'low' } );
+
+		this.listenTo( editingView, 'clipboardOutput', ( evt, data ) => {
+			if ( !data.content.isEmpty ) {
+				data.dataTransfer.setData( 'text/html', this._htmlDataProcessor.toData( data.content ) );
 			}
 		}, { priority: 'low' } );
 	}

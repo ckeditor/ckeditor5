@@ -30,4 +30,8 @@ export default class DataTransfer {
 	getData( type ) {
 		return this._native.getData( type );
 	}
+
+	setData( type, data ) {
+		this._native.setData( type, data );
+	}
 }
