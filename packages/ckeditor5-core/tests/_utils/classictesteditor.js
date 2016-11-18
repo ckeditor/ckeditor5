@@ -5,6 +5,7 @@
 
 import StandardEditor from 'ckeditor5/core/editor/standardeditor.js';
 import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+import ClassicTestEditorUI from './classictesteditorui.js';
 import BoxedEditorUIView from 'ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
 
 /**
@@ -24,7 +25,7 @@ export default class ClassicTestEditor extends StandardEditor {
 		this.editing.createRoot( 'div' );
 		this.data.processor = new HtmlDataProcessor();
 
-		this.ui = new BoxedEditorUIView( this, this.locale );
+		this.ui = new ClassicTestEditorUI( this, new BoxedEditorUIView( this.locale ) );
 	}
 
 	/**
