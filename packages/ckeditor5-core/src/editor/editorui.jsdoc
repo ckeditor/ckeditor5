@@ -1,0 +1,34 @@
+/**
+ * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * Minimal interface that is required to successfully bootstrap any editor UI.
+ *
+ * @interface core.editor.EditorUI
+ */
+
+/**
+ * The main (top–most) view of the editor UI.
+ *
+ * @readonly
+ * @member {ui.editorUI.EditorUIView} core.editor.EditorUI#view
+ */
+
+/**
+ * Instance of the {@link ui.ComponentFactory}, a registry used by features
+ * to register and create instance of UI components.
+ *
+ * @readonly
+ * @member {ui.ComponentFactory} core.editor.EditorUI#featureComponents
+ */
+
+/**
+ * Keeps information about editor UI focus and propagates it among
+ * various features and components, unifying them in a uniform
+ * focus group.
+ *
+ * @readonly
+ * @member {utils.FocusTracker} core.editor.EditorUI#focusTracker
+ */

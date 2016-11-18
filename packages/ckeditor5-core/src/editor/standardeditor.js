@@ -54,7 +54,7 @@ export default class StandardEditor extends Editor {
 		 * so every editor class which is meant to work with default features should set this property.
 		 *
 		 * @readonly
-		 * @member {ui.editorUI.EditorUI} core.editor.StandardEditor#ui
+		 * @member {core.editor.EditorUI} core.editor.StandardEditor#ui
 		 */
 	}
 
