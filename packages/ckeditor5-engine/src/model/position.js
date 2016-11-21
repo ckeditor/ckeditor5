@@ -259,7 +259,18 @@ export default class Position {
 		return this.parent.getAncestors( { includeNode: true, parentFirst: true } );
 	}
 
+	/**
+	 * Returns the slice of two position {@link #path paths} which is identical. The {@link #root roots}
+	 * of these two paths must be identical.
+	 *
+	 * @param {engine.model.Position} position The second position.
+	 * @returns {Array.<Number>} The common path.
+	 */
 	getCommonPath( position ) {
+		if ( this.root != position.root ) {
+			return [];
+		}
+
 		// We find on which tree-level start and end have the lowest common ancestor
 		let cmp = compareArrays( this.path, position.path );
 		// If comparison returned string it means that arrays are same.

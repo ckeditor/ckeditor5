@@ -509,6 +509,41 @@ describe( 'position', () => {
 		} );
 	} );
 
+	describe( 'getCommonPath', () => {
+		it( 'returns the common part', () => {
+			const pos1 = new Position( root, [ 1, 0, 0 ] );
+			const pos2 = new Position( root, [ 1, 0, 1 ] );
+
+			expect( pos1.getCommonPath( pos2 ) ).to.deep.equal( [ 1, 0 ] );
+		} );
+
+		it( 'returns the common part when paths are equal', () => {
+			const pos1 = new Position( root, [ 1, 0, 1 ] );
+			const pos2 = new Position( root, [ 1, 0, 1 ] );
+			const commonPath = pos1.getCommonPath( pos2 );
+
+			// Ensure that we have a clone
+			expect( commonPath ).to.not.equal( pos1.path );
+			expect( commonPath ).to.not.equal( pos2.path );
+
+			expect( commonPath ).to.deep.equal( [ 1, 0, 1 ] );
+		} );
+
+		it( 'returns empty array when paths totally differ', () => {
+			const pos1 = new Position( root, [ 1, 1 ] );
+			const pos2 = new Position( root, [ 0 ] );
+
+			expect( pos1.getCommonPath( pos2 ) ).to.deep.equal( [] );
+		} );
+
+		it( 'returns empty array when roots differ, but paths are the same', () => {
+			const pos1 = new Position( root, [ 1, 1 ] );
+			const pos2 = new Position( otherRoot, [ 1, 1 ] );
+
+			expect( pos1.getCommonPath( pos2 ) ).to.deep.equal( [] );
+		} );
+	} );
+
 	describe( 'compareWith', () => {
 		it( 'should return same if positions are same', () => {
 			const position = new Position( root, [ 1, 2, 3 ] );
