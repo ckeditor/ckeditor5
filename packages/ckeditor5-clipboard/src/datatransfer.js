@@ -31,6 +31,12 @@ export default class DataTransfer {
 		return this._native.getData( type );
 	}
 
+	/**
+	 * Sets data in the data transfer.
+	 *
+	 * @param {String} type The mime type. E.g. `text/html` or `text/plain`.
+	 * @param {String} data
+	 */
 	setData( type, data ) {
 		this._native.setData( type, data );
 	}
