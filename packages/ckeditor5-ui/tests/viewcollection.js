@@ -27,6 +27,7 @@ describe( 'ViewCollection', () => {
 			expect( collection.ready ).to.be.false;
 			expect( collection._parentElement ).to.be.null;
 			expect( collection._boundItemsToViewsMap ).to.be.instanceOf( Map );
+			expect( collection._idProperty ).to.equal( 'viewUid' );
 		} );
 
 		it( 'accepts locale and defines the locale property', () => {
@@ -139,7 +140,7 @@ describe( 'ViewCollection', () => {
 		} );
 	} );
 
-	describe( 'add', () => {
+	describe( 'add()', () => {
 		it( 'returns a promise', () => {
 			expect( collection.add( {} ) ).to.be.instanceof( Promise );
 		} );
@@ -167,6 +168,17 @@ describe( 'ViewCollection', () => {
 
 					sinon.assert.calledOnce( spy );
 				} );
+			} );
+		} );
+
+		it( 'works for a view with a Number view#id attribute', () => {
+			const view = new View();
+
+			view.set( 'id', 1 );
+
+			return collection.add( view ).then( () => {
+				expect( view.id ).to.equal( 1 );
+				expect( view.viewUid ).to.be.a( 'string' );
 			} );
 		} );
 	} );
