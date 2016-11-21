@@ -193,7 +193,7 @@ describe( 'ViewCollection', () => {
 		} );
 	} );
 
-	describe( 'bindTo', () => {
+	describe( 'bindTo()', () => {
 		class ViewClass extends View {
 			constructor( locale, data ) {
 				super( locale );
@@ -206,14 +206,14 @@ describe( 'ViewCollection', () => {
 			}
 		}
 
-		it( 'provides "as" interface', () => {
+		it( 'provides "as()" interface', () => {
 			const returned = collection.bindTo( {} );
 
 			expect( returned ).to.have.keys( 'as' );
 			expect( returned.as ).to.be.a( 'function' );
 		} );
 
-		describe( 'as', () => {
+		describe( 'as()', () => {
 			it( 'does not chain', () => {
 				const returned = collection.bindTo( new Collection() ).as( ViewClass );
 
@@ -304,7 +304,7 @@ describe( 'ViewCollection', () => {
 		} );
 	} );
 
-	describe( 'delegate', () => {
+	describe( 'delegate()', () => {
 		it( 'should throw when event names are not strings', () => {
 			expect( () => {
 				collection.delegate();
@@ -323,14 +323,14 @@ describe( 'ViewCollection', () => {
 			expect( collection.delegate( 'foo' ) ).to.be.an( 'object' );
 		} );
 
-		it( 'provides "to" interface', () => {
+		it( 'provides "to()" interface', () => {
 			const delegate = collection.delegate( 'foo' );
 
 			expect( delegate ).to.have.keys( 'to' );
 			expect( delegate.to ).to.be.a( 'function' );
 		} );
 
-		describe( 'to', () => {
+		describe( 'to()', () => {
 			it( 'does not chain', () => {
 				const returned = collection.delegate( 'foo' ).to( {} );
 
