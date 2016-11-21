@@ -69,6 +69,7 @@ export default class Clipboard extends Feature {
 	 */
 	init() {
 		const editor = this.editor;
+		const doc = editor.document;
 		const editingView = editor.editing.view;
 
 		/**
@@ -102,7 +103,6 @@ export default class Clipboard extends Feature {
 
 		this.listenTo( editingView, 'clipboardInput', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
-				const doc = editor.document;
 				const dataController = this.editor.data;
 
 				// Convert the pasted content to a model document fragment.
@@ -122,7 +122,7 @@ export default class Clipboard extends Feature {
 
 		const onCopyCut = ( evt, data ) => {
 			const dataTransfer = data.dataTransfer;
-			const content = editor.data.toView( editor.data.getSelectedContent() );
+			const content = editor.data.toView( editor.data.getSelectedContent( doc.selection ) );
 
 			data.preventDefault();
 
