@@ -265,10 +265,15 @@ export default class DataController {
 		this.fire( 'modifySelection', { selection, options } );
 	}
 
-	getSelectedContent() {
-		const evtData = {
-			selection: this.model.selection
-		};
+	/**
+	 * See {@link engine.controller.getSelectedContent}.
+	 *
+	 * @fires engine.controller.DataController#getSelectedContent
+	 * @param {engine.model.Selection} The selection of which content will be retrieved.
+	 * @returns {engine.model.DocumentFragment} Document fragment holding the clone of the selected content.
+	 */
+	getSelectedContent( selection ) {
+		const evtData = { selection };
 
 		this.fire( 'getSelectedContent', evtData );
 
@@ -311,4 +316,16 @@ mix( DataController, EmitterMixin );
  * @param {Object} data
  * @param {engine.model.Selection} data.selection
  * @param {Object} data.options See {@link engine.controller.modifySelection}'s options.
+ */
+
+/**
+ * Event fired when {@link engine.controller.DataController#getSelectedContent} method is called.
+ * The {@link engine.controller.getSelectedContent default action of that method} is implemented as a
+ * listener to this event so it can be fully customized by the features.
+ *
+ * @event engine.controller.DataController#getSelectedContent
+ * @param {Object} data
+ * @param {engine.model.Selection} data.selection
+ * @param {engine.model.DocumentFragment} data.content The document fragment to return
+ * (holding a clone of the selected content).
  */

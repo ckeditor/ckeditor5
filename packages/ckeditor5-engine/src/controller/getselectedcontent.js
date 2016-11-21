@@ -11,7 +11,7 @@ import Text from '../model/text.js';
 import { remove } from '../model/writer.js';
 
 /**
- * Gets selected content.
+ * Gets a clone of the selected content.
  *
  * For example, for the following selection:
  *
