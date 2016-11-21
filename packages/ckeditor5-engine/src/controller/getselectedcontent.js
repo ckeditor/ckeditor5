@@ -95,8 +95,8 @@ export default function getSelectedContent( selection ) {
 		const leftExcessRange = new Range( Position.createAt( frag ), newRange.start );
 		const rightExcessRange = new Range( newRange.end, Position.createAt( frag, 'end' ) );
 
-		removeFromRange( rightExcessRange );
-		removeFromRange( leftExcessRange );
+		removeRangeContent( rightExcessRange );
+		removeRangeContent( leftExcessRange );
 	}
 
 	return frag;
@@ -104,26 +104,36 @@ export default function getSelectedContent( selection ) {
 
 // After https://github.com/ckeditor/ckeditor5-engine/issues/690 is fixed,
 // this function will, most likely, be able to rewritten using getMinimalFlatRanges().
-function removeFromRange( range ) {
-	Array.from( range.getItems() )
-	// Filter only these items which are fully contained in the passed range.
-	//
-	// E.g. for the following range: [<quote><p>y</p><h>fir]st</h>
-	// the walker will return the entire <h> element, when only the "fir" item inside it is fully contained.
-	.filter( item => {
-		const rangeOn = Range.createOn( item );
-		const contained =
-			( rangeOn.start.isAfter( range.start ) || rangeOn.start.isEqual( range.start ) ) &&
-			( rangeOn.end.isBefore( range.end ) || rangeOn.end.isEqual( range.end ) );
+function removeRangeContent( range ) {
+	const parentsToCheck = [];
 
-		return contained;
-	} )
-	.forEach( item => {
-		let parent = item.parent;
+	Array.from( range.getItems( { direction: 'backward' } ) )
+		// We should better store ranges because text proxies will lose integrity
+		// with the text nodes when we'll start removing content.
+		.map( item => Range.createOn( item ) )
+		// Filter only these items which are fully contained in the passed range.
+		//
+		// E.g. for the following range: [<quote><p>y</p><h>fir]st</h>
+		// the walker will return the entire <h> element, when only the "fir" item inside it is fully contained.
+		.filter( itemRange => {
+			// We should be able to use Range.containsRange, but https://github.com/ckeditor/ckeditor5-engine/issues/691.
+			const contained =
+				( itemRange.start.isAfter( range.start ) || itemRange.start.isEqual( range.start ) ) &&
+				( itemRange.end.isBefore( range.end ) || itemRange.end.isEqual( range.end ) );
 
-		remove( Range.createOn( item ) );
+			return contained;
+		} )
+		.forEach( itemRange => {
+			parentsToCheck.push( itemRange.start.parent );
 
-		// Remove ancestors of the item if they turn to be empty now (their whole content was contained in the range).
+			remove( itemRange );
+		} );
+
+	// Remove ancestors of the removed items if they turned to be empty now
+	// (their whole content was contained in the range).
+	parentsToCheck.forEach( parentToCheck => {
+		let parent = parentToCheck;
+
 		while ( parent.parent && parent.isEmpty ) {
 			const removeRange = Range.createOn( parent );
 

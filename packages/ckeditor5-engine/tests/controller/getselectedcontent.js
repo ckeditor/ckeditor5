@@ -121,6 +121,8 @@ describe( 'Delete utils', () => {
 				schema.allow( { name: 'blockImage', inside: '$root' } );
 				schema.allow( { name: 'caption', inside: 'blockImage' } );
 				schema.allow( { name: '$inline', inside: 'caption' } );
+
+				schema.allow( { name: '$inline', attributes: [ 'bold' ] } );
 			} );
 
 			it( 'gets one character', () => {
@@ -221,6 +223,24 @@ describe( 'Delete utils', () => {
 
 				const content = stringify( getSelectedContent( doc.selection ) );
 				expect( content ).to.equal( '<blockImage></blockImage><blockImage></blockImage>' );
+			} );
+
+			// Purely related to the current implementation.
+			it( 'gets content when multiple text items needs to be removed from the right excess', () => {
+				setData( doc, '<paragraph>a[b</paragraph><paragraph>c]d<$text bold="true">e</$text>f</paragraph>' );
+
+				const content = stringify( getSelectedContent( doc.selection ) );
+				expect( content )
+					.to.equal( '<paragraph>b</paragraph><paragraph>c</paragraph>' );
+			} );
+
+			// Purely related to the current implementation.
+			it( 'gets content when multiple text items needs to be removed from the left excess', () => {
+				setData( doc, '<paragraph>a<$text bold="true">b</$text>c[d</paragraph><paragraph>e]f</paragraph>' );
+
+				const content = stringify( getSelectedContent( doc.selection ) );
+				expect( content )
+					.to.equal( '<paragraph>d</paragraph><paragraph>e</paragraph>' );
 			} );
 		} );
 
