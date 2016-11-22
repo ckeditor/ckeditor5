@@ -269,7 +269,7 @@ export default class DataController {
 	 * See {@link engine.controller.getSelectedContent}.
 	 *
 	 * @fires engine.controller.DataController#getSelectedContent
-	 * @param {engine.model.Selection} The selection of which content will be retrieved.
+	 * @param {engine.model.Selection} selection The selection of which content will be retrieved.
 	 * @returns {engine.model.DocumentFragment} Document fragment holding the clone of the selected content.
 	 */
 	getSelectedContent( selection ) {

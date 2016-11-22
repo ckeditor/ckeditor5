@@ -40,7 +40,7 @@ export default function getSelectedContent( selection ) {
 	// ## 1st step
 	//
 	// First, we'll clone a fragment represented by a minimal flat range
-	// containing the origian range to be cloned.
+	// containing the original range to be cloned.
 	// E.g. let's consider such a range:
 	//
 	// <p>x</p><quote><p>y</p><h>fir[st</h></quote><p>se]cond</p><p>z</p>
@@ -75,7 +75,7 @@ export default function getSelectedContent( selection ) {
 
 	// ## 2nd step
 	//
-	// If the orignal range wasn't flat, then we need to remove the excess nodes from the both ends of the cloned fragment.
+	// If the original range wasn't flat, then we need to remove the excess nodes from the both ends of the cloned fragment.
 	//
 	// For example, for the range shown in the 1st step comment, we need to remove these pieces:
 	//
