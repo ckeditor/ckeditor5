@@ -105,6 +105,15 @@ export default class Element extends Node {
 			parseInlineStyles( this._styles, this._attrs.get( 'style' ) );
 			this._attrs.delete( 'style' );
 		}
+
+		/**
+		 * Map of custom properties.
+		 * Custom properties can be added to element instance, will be cloned but not rendered into DOM.
+		 *
+		 * @protected
+		 * @memeber {Map} engine.view.Element#_customProperties.
+		 */
+		this._customProperties = new Map();
 	}
 
 	/**
@@ -150,6 +159,9 @@ export default class Element extends Node {
 		// parse once again in constructor.
 		cloned._classes = new Set( this._classes );
 		cloned._styles = new Map( this._styles );
+
+		// Clone custom properties.
+		cloned._customProperties = new Map( this._customProperties );
 
 		return cloned;
 	}
@@ -596,6 +608,45 @@ export default class Element extends Node {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Sets custom property.
+	 *
+	 * @param {String|Symbol} key
+	 * @param {*} value
+	 */
+	setCustomProperty( key, value ) {
+		this._customProperties.set( key, value );
+	}
+
+	/**
+	 * Returns custom property value for given key.
+	 *
+	 * @param {String|Symbol} key
+	 * @returns {*}
+	 */
+	getCustomProperty( key ) {
+		return this._customProperties.get( key );
+	}
+
+	/**
+	 * Removes custom property stored under given key.
+	 *
+	 * @param {String|Symbol} key
+	 * @returns {Boolean} Returns true if property was removed.
+	 */
+	removeCustomProperty( key ) {
+		return this._customProperties.delete( key );
+	}
+
+	/**
+	 * Returns iterator that iterates over this element's custom properties.
+	 *
+	 * @returns {Iterable.<*>}
+	 */
+	*getCustomProperties( ) {
+		yield* this._customProperties.entries();
 	}
 }
 
