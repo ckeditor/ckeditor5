@@ -144,6 +144,26 @@ describe( 'Element', () => {
 		} );
 	} );
 
+	describe( 'getNodeByPath', () => {
+		it( 'should return this node if path is empty', () => {
+			const element = new Element( 'elem' );
+
+			expect( element.getNodeByPath( [] ) ).to.equal( element );
+		} );
+
+		it( 'should return a descendant of this node', () => {
+			const image = new Element( 'image' );
+			const element = new Element( 'elem', [], [
+				new Element( 'elem', [], [
+					new Text( 'foo' ),
+					image
+				] )
+			] );
+
+			expect( element.getNodeByPath( [ 0, 1 ] ) ).to.equal( image );
+		} );
+	} );
+
 	describe( 'getChildIndex', () => {
 		it( 'should return child index', () => {
 			let element = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
