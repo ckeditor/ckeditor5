@@ -11,7 +11,7 @@ import DomEventObserver from './domeventobserver.js';
 import { getCode } from '../../../utils/keyboard.js';
 
 /**
- * {@link module:engine/view/document~Document#keydown Key down} event observer.
+ * {@link module:engine/view/document~Document#event:keydown Key down} event observer.
  *
  * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
  *
@@ -49,12 +49,12 @@ export default class KeyObserver extends DomEventObserver {
  * this event is available by default.
  *
  * @see module:engine/view/observer/keyobserver~KeyObserver
- * @event module:engine/view/document~Document#keydown
+ * @event module:engine/view/document~Document#event:keydown
  * @param {module:engine/view/observer/keyobserver~KeyObserver.KeyEventData} keyEventData
  */
 
 /**
- * The value of the {@link module:engine/view/document~Document#keydown} event.
+ * The value of the {@link module:engine/view/document~Document#event:keydown} event.
  *
  * @class module:engine/view/observer/keyobserver~KeyObserver.KeyEventData
  * @extends module:engine/view/observer/domeventdata~DomEventData

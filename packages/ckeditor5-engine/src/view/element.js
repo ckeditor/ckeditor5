@@ -155,7 +155,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * {@link module:engine/view/element~Element#insert Insert} a child node or a list of child nodes at the end of this node and sets
+	 * {@link module:engine/view/element~Element#insertChildren Insert} a child node or a list of child nodes at the end of this node and sets
 	 * the parent of these nodes to this element.
 	 *
 	 * @fires change

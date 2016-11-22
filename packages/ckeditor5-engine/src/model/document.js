@@ -29,7 +29,7 @@ const graveyardName = '$graveyard';
 
 /**
  * Document tree model describes all editable data in the editor. It may contain multiple
- * {@link module:engine/model/document~Document#roots root elements}, for example if the editor have multiple editable areas,
+ * {@link module:engine/model/document~Document#_roots root elements}, for example if the editor have multiple editable areas,
  * each area will be represented by the separate root.
  *
  * All changes in the document are done by {@link module:engine/model/operation/operation~Operation operations}. To create operations in
@@ -41,8 +41,8 @@ const graveyardName = '$graveyard';
  */
 export default class Document {
 	/**
-	 * Creates an empty document instance with no {@link module:engine/model/document~Document#roots} (other than
-	 * a {@link module:engine/model/document~Document#graveyard graveyard root}).
+	 * Creates an empty document instance with no {@link #_roots} (other than
+	 * a {@link #graveyard graveyard root}).
 	 */
 	constructor() {
 		/**
@@ -52,7 +52,7 @@ export default class Document {
 		 * not match document version the {@link document-applyOperation-wrong-version} error is thrown.
 		 *
 		 * @readonly
-		 * @member {Number} module:engine/model/document~Document#version
+		 * @member {Number}
 		 */
 		this.version = 0;
 
@@ -82,7 +82,7 @@ export default class Document {
 		this.history = new History( this );
 
 		/**
-		 * Array of pending changes. See: {@link module:engine/model/document~Document#enqueueChanges}.
+		 * Array of pending changes. See: {@link #enqueueChanges}.
 		 *
 		 * @private
 		 * @member {Array.<Function>}
@@ -90,8 +90,8 @@ export default class Document {
 		this._pendingChanges = [];
 
 		/**
-		 * List of roots that are owned and managed by this document. Use {@link module:engine/model/document~Document#createRoot} and
-		 * {@link module:engine/model/document~Document#getRoot} to manipulate it.
+		 * List of roots that are owned and managed by this document. Use {@link #createRoot} and
+		 * {@link #getRoot} to manipulate it.
 		 *
 		 * @readonly
 		 * @protected
@@ -132,9 +132,9 @@ export default class Document {
 	/**
 	 * This is the entry point for all document changes. All changes on the document are done using
 	 * {@link module:engine/model/operation/operation~Operation operations}. To create operations in the simple way use the
-	 * {@link module:engine/model/batch~Batch} API available via {@link module:engine/model/document~Document#batch} method.
+	 * {@link module:engine/model/batch~Batch} API available via {@link #batch} method.
 	 *
-	 * @fires @link module:engine/model/document~Document#change
+	 * @fires event:change
 	 * @param {module:engine/model/operation/operation~Operation} operation Operation to be applied.
 	 */
 	applyOperation( operation ) {
@@ -213,14 +213,14 @@ export default class Document {
 	}
 
 	/**
-	 * Enqueues document changes. Any changes to be done on document (mostly using {@link module:engine/model/document~Document#batch}
+	 * Enqueues document changes. Any changes to be done on document (mostly using {@link #batch}
 	 * should be placed in the queued callback. If no other plugin is changing document at the moment, the callback will be
 	 * called immediately. Otherwise it will wait for all previously queued changes to finish happening. This way
 	 * queued callback will not interrupt other callbacks.
 	 *
-	 * When all queued changes are done {@link module:engine/model/document~Document#changesDone} event is fired.
+	 * When all queued changes are done {@link #event:changesDone} event is fired.
 	 *
-	 * @fires @link module:engine/model/document~Document#changesDone
+	 * @fires changesDone
 	 * @param {Function} callback Callback to enqueue.
 	 */
 	enqueueChanges( callback ) {
@@ -270,7 +270,7 @@ export default class Document {
 	}
 
 	/**
-	 * Returns array with names of all roots (without the {@link module:engine/model/document~Document#graveyard}) added to the document.
+	 * Returns array with names of all roots (without the {@link #graveyard}) added to the document.
 	 *
 	 * @returns {Array.<String>} Roots names.
 	 */
@@ -376,7 +376,7 @@ export default class Document {
 
 	/**
 	 * Checks whether given {@link module:engine/model/range~Range range} is a valid range for
-	 * {@link module:engine/model/document~Document#selection document's selection}.
+	 * {@link #selection document's selection}.
 	 *
 	 * @private
 	 * @param {module:engine/model/range~Range} range Range to check.

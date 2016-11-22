@@ -45,7 +45,7 @@ export default class Node {
 	 * This is an abstract class, so this constructor should not be used directly.
 	 *
 	 * @abstract
-	 * @param {Object} [attrs] Node's attributes. See {@link utils.toMap} for a list of accepted values.
+	 * @param {Object} [attrs] Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
 	constructor( attrs ) {
 		/**
@@ -330,7 +330,7 @@ export default class Node {
 	/**
 	 * Removes all attributes from the node and sets given attributes.
 	 *
-	 * @param {Object} [attrs] Attributes to set. See {@link utils.toMap} for a list of accepted values.
+	 * @param {Object} [attrs] Attributes to set. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
 	setAttributesTo( attrs ) {
 		this._attrs = toMap( attrs );

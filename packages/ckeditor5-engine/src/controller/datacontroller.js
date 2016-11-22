@@ -52,7 +52,7 @@ export default class DataController {
 		 * Document model.
 		 *
 		 * @readonly
-		 * @member {module:module:engine/model/document~Document}
+		 * @member {module:engine/model/document~Document}
 		 */
 		this.model = model;
 
@@ -209,7 +209,7 @@ export default class DataController {
 	 * @param {String} data Data to parse.
 	 * @param {String} [context='$root'] Base context in which view will be converted to the model. See:
 	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
-	 * @returns {module:module:engine/model/documentfragment~DocumentFragment} Parsed data.
+	 * @returns {module:engine/model/documentfragment~DocumentFragment} Parsed data.
 	 */
 	parse( data, context = '$root' ) {
 		// data -> view
@@ -269,11 +269,11 @@ export default class DataController {
 	}
 
 	/**
-	 * See {@link engine.controller.getSelectedContent}.
+	 * See {@link module:engine/controller/getselectedcontent~getSelectedContent}.
 	 *
 	 * @fires engine.controller.DataController#getSelectedContent
-	 * @param {engine.model.Selection} selection The selection of which content will be retrieved.
-	 * @returns {engine.model.DocumentFragment} Document fragment holding the clone of the selected content.
+	 * @param {module:engine/model/selection~Selection} selection The selection of which content will be retrieved.
+	 * @returns {module:engine/model/documentfragment~DocumentFragment} Document fragment holding the clone of the selected content.
 	 */
 	getSelectedContent( selection ) {
 		const evtData = { selection };
@@ -323,12 +323,12 @@ mix( DataController, EmitterMixin );
 
 /**
  * Event fired when {@link engine.controller.DataController#getSelectedContent} method is called.
- * The {@link engine.controller.getSelectedContent default action of that method} is implemented as a
+ * The {@link module:engine/controller/getselectedcontent~getSelectedContent default action of that method} is implemented as a
  * listener to this event so it can be fully customized by the features.
  *
  * @event engine.controller.DataController#getSelectedContent
  * @param {Object} data
- * @param {engine.model.Selection} data.selection
- * @param {engine.model.DocumentFragment} data.content The document fragment to return
+ * @param {module:engine/model/selection~Selection} data.selection
+ * @param {module:engine/model/documentfragment~DocumentFragment} data.content The document fragment to return
  * (holding a clone of the selected content).
  */

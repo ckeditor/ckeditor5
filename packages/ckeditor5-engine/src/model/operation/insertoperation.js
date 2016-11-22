@@ -44,7 +44,7 @@ export default class InsertOperation extends Operation {
 		 * List of nodes to insert.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/node~NodeList} module:engine/model/operation/insertoperation~insertOperation#nodeList
+		 * @member {module:engine/model/nodelist~NodeList} module:engine/model/operation/insertoperation~insertOperation#nodeList
 		 */
 		this.nodes = new NodeList( normalizeNodes( nodes ) );
 	}

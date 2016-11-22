@@ -77,7 +77,7 @@ class Insertion {
 		/**
 		 * The position at which (or near which) the next node will be inserted.
 		 *
-		 * @member {module:module:engine/model/position~Position~Position} #position
+		 * @member {module:engine/model/position~Position} #position
 		 */
 		this.position = position;
 

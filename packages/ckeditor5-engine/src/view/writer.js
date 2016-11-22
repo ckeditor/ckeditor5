@@ -20,7 +20,7 @@ import isIterable from '../../utils/isiterable.js';
 /**
  * Contains functions used for composing view tree.
  *
- * @namespace module:engine/view/writer~writer
+ * @namespace writer
  */
 
 export default {

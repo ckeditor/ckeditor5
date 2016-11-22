@@ -148,7 +148,7 @@ export default class Node {
 	/**
 	 * @param {module:engine/view/document~ChangeType} type Type of the change.
 	 * @param {module:engine/view/node~Node} node Changed node.
-	 * @fires module:engine/view/node~Node#change
+	 * @fires change
 	 */
 	_fireChange( type, node ) {
 		this.fire( 'change:' + type, node );
@@ -161,43 +161,47 @@ export default class Node {
 	/**
 	 * Clones this node.
 	 *
-	 * @method module:engine/view/node~Node#clone
+	 * @method #clone
 	 * @returns {module:engine/view/node~Node} Clone of this node.
 	 */
 
 	/**
 	 * Checks if provided node is similar to this node.
 	 *
-	 * @method module:engine/view/node~Node#isSimilar
+	 * @method #isSimilar
 	 * @returns {Boolean} True if nodes are similar.
 	 */
-
-	/**
-	 * Fired when list of {@link module:engine/view/element~Element elements} children changes.
-	 *
-	 * Change event is bubbled – it is fired on all ancestors.
-	 *
-	 * @event module:engine/view/node~Node#change:children
-	 * @param {module:engine/view/node~Node} Changed node.
-	 */
-
-	/**
-	 * Fired when list of {@link module:engine/view/element~Element elements} attributes changes.
-	 *
-	 * Change event is bubbled – it is fired on all ancestors.
-	 *
-	 * @event module:engine/view/node~Node#change:attributes
-	 * @param {module:engine/view/node~Node} Changed node.
-	 */
-
-	/**
-	 * Fired when {@link module:engine/view/text~Text text nodes} data changes.
-	 *
-	 * Change event is bubbled – it is fired on all ancestors.
-	 *
-	 * @event module:engine/view/node~Node#change:text
-	 * @param {module:engine/view/node~Node} Changed node.
-	 */
 }
+
+/**
+ * Fired when list of {@link module:engine/view/element~Element elements} children changes.
+ *
+ * Change event is bubbled – it is fired on all ancestors.
+ *
+ * @event change:children
+ * @param {module:engine/view/node~Node} Changed node.
+ */
+
+/**
+ * Fired when list of {@link module:engine/view/element~Element elements} attributes changes.
+ *
+ * Change event is bubbled – it is fired on all ancestors.
+ *
+ * @event change:attributes
+ * @param {module:engine/view/node~Node} Changed node.
+ */
+
+/**
+ * Fired when {@link module:engine/view/text~Text text nodes} data changes.
+ *
+ * Change event is bubbled – it is fired on all ancestors.
+ *
+ * @event text
+ * @param {module:engine/view/node~Node} Changed node.
+ */
+
+/**
+ * @event change
+ */
 
 mix( Node, EmitterMixin );

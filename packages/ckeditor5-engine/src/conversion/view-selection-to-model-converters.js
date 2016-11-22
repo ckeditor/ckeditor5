@@ -19,7 +19,7 @@ import ModelSelection from '../model/selection.js';
 
 /**
  * Function factory, creates a callback function which converts a {@link module:engine/view/selection~Selection view selection} taken
- * from the {@link module:engine/view/document~Document#selectionChange} event
+ * from the {@link module:engine/view/document~Document#event:selectionChange} event
  * and sets in on the {@link module:engine/model/document~Document#selection model}.
  *
  * **Note**: because there is no view selection change dispatcher nor any other advanced view selection to model
@@ -29,7 +29,7 @@ import ModelSelection from '../model/selection.js';
  *
  * @param {module:engine/model/document~Document} modelDocument Model document on which selection should be updated.
  * @param {module:engine/conversion/mapper~Mapper} mapper Conversion mapper.
- * @returns {Function} {@link module:engine/view/document~Document#selectionChange} callback function.
+ * @returns {Function} {@link module:engine/view/document~Document#event:selectionChange} callback function.
  */
 export function convertSelectionChange( modelDocument, mapper ) {
 	return ( evt, data ) => {

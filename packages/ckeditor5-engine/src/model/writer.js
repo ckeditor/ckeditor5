@@ -306,7 +306,7 @@ function _haveSameAttributes( nodeA, nodeB ) {
  * Non-arrays are normalized as follows:
  * * {@link module:engine/model/node~Node Node} is left as is,
  * * {@link module:engine/model/textproxy~TextProxy TextProxy} and `String` are normalized to {@link module:engine/model/text~Text Text},
- * * {@link module:engine/model/node~NodeList NodeList} is normalized to an array containing all nodes that are in that node list,
+ * * {@link module:engine/model/nodelist~NodeList NodeList} is normalized to an array containing all nodes that are in that node list,
  * * {@link module:engine/model/documentfragment~DocumentFragment DocumentFragment} is normalized to an array containing all of it's
  * * children.
  *
@@ -315,6 +315,6 @@ function _haveSameAttributes( nodeA, nodeB ) {
  * merged if they have same attributes.
  *
  * @typedef {module:engine/model/node~Node|module:engine/model/textproxy~TextProxy|String|
- * module:engine/model/node~NodeList|module:engine/model/documentfragment~DocumentFragment|Iterable}
+ * module:engine/model/nodelist~NodeList|module:engine/model/documentfragment~DocumentFragment|Iterable}
  * module:engine/model/node~NodeSet
  */

@@ -190,7 +190,7 @@ class ModelConverterBuilder {
 	 * This method creates the converter and adds it as a callback to a proper
 	 * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher conversion dispatcher} event.
 	 *
-	 * @param {String|module:engine/view/viewelement~ViewElement|Function} element Element created by converter.
+	 * @param {String|module:engine/view/element~Element|Function} element Element created by converter.
 	 */
 	toElement( element ) {
 		const priority = this._from.priority === null ? 'normal' : this._from.priority;

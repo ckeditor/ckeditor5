@@ -15,10 +15,10 @@ import mix from '../../utils/mix.js';
 import extend from '../../utils/lib/lodash/extend.js';
 
 /**
- * `ViewConversionDispatcher` is a central point of {@link module:engine/view view} conversion, which is a process of
+ * `ViewConversionDispatcher` is a central point of {@link module:engine/view/view view} conversion, which is a process of
  * converting given {@link module:engine/view/documentfragment~DocumentFragment view document fragment} or
  * {@link module:engine/view/element~Element}
- * into another structure. In default application, {@link module:engine/view view} is converted to {@link engine.model}.
+ * into another structure. In default application, {@link module:engine/view/view view} is converted to {@link module:engine/model/model}.
  *
  * During conversion process, for all {@link module:engine/view/node~Node view nodes} from the converted view document fragment,
  * `ViewConversionDispatcher` fires corresponding events. Special callbacks called "converters" should listen to
@@ -102,7 +102,7 @@ export default class ViewConversionDispatcher {
 	/**
 	 * Creates a `ViewConversionDispatcher` that operates using passed API.
 	 *
-	 * @see engine.conversion.ViewConversionApi
+	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi
 	 * @param {Object} [conversionApi] Additional properties for interface that will be passed to events fired
 	 * by `ViewConversionDispatcher`.
 	 */
@@ -110,7 +110,7 @@ export default class ViewConversionDispatcher {
 		/**
 		 * Interface passed by dispatcher to the events callbacks.
 		 *
-		 * @member {engine.conversion.ViewConversionApi}
+		 * @member {module:engine/conversion/viewconversiondispatcher~ViewConversionApi}
 		 */
 		this.conversionApi = extend( {}, conversionApi );
 
@@ -129,7 +129,7 @@ export default class ViewConversionDispatcher {
 	 * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element}
 	 * viewItem Part of the view to be converted.
 	 * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
-	 * events. See also {@link #element element event}.
+	 * events. See also {@link #event:element element event}.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Model document fragment that is a result of the conversion process.
 	 */
 	convert( viewItem, additionalData = {} ) {
@@ -142,7 +142,7 @@ export default class ViewConversionDispatcher {
 
 	/**
 	 * @private
-	 * @see engine.conversion.ViewConversionApi#convertItem
+	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertItem
 	 */
 	_convertItem( input, consumable, additionalData = {} ) {
 		const data = extend( {}, additionalData, {
@@ -163,7 +163,7 @@ export default class ViewConversionDispatcher {
 
 	/**
 	 * @private
-	 * @see engine.conversion.ViewConversionApi#convertChildren
+	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertChildren
 	 */
 	_convertChildren( input, consumable, additionalData = {} ) {
 		const viewChildren = Array.from( input.getChildren() );
@@ -176,7 +176,7 @@ export default class ViewConversionDispatcher {
 	/**
 	 * Fired before the first conversion event, at the beginning of view to model conversion process.
 	 *
-	 * @event module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#viewCleanup
+	 * @event viewCleanup
 	 * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element}
 	 * viewItem Part of the view to be converted.
 	 */
@@ -188,9 +188,9 @@ export default class ViewConversionDispatcher {
 	 * `element:<elementName>` where `elementName` is the name of converted element. This way listeners may listen to
 	 * all elements conversion or to conversion of specific elements.
 	 *
-	 * @event module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#element
+	 * @event element
 	 * @param {Object} data Object containing conversion input and a placeholder for conversion output and possibly other
-	 * values (see {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}).
+	 * values (see {@link #convert}).
 	 * Keep in mind that this object is shared by reference between all callbacks that will be called.
 	 * This means that callbacks can add their own values if needed,
 	 * and those values will be available in other callbacks.
@@ -201,7 +201,7 @@ export default class ViewConversionDispatcher {
 	 * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ViewConversionDispatcher` constructor.
 	 * Besides of properties passed in constructor, it also has `convertItem` and `convertChildren` methods which are references
-	 * to {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#_convertItem} and
+	 * to {@link #_convertItem} and
 	 * {@link ~ViewConversionDispatcher#_convertChildren}. Those methods are needed to convert
 	 * the whole view-tree they were exposed in `conversionApi` for callbacks.
 	 */
@@ -248,7 +248,7 @@ mix( ViewConversionDispatcher, EmitterMixin );
  * input Item to convert.
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
  * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
- * events. See also {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#element element event}.
+ * events. See also {@link #event:element element event}.
  * @returns {*} The result of item conversion, created and modified by callbacks attached to fired event.
  */
 
@@ -263,6 +263,6 @@ mix( ViewConversionDispatcher, EmitterMixin );
  * input Item which children will be converted.
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
  * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
- * events. See also {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#element element event}.
+ * events. See also {@link #event:element element event}.
  * @returns {Array.<*>} Array containing results of conversion of all children of given item.
  */

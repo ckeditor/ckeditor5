@@ -39,7 +39,7 @@ export default class Selection {
 		 * Stores all ranges that are selected.
 		 *
 		 * @protected
-		 * @member {Array.<module:engine/view/range~Range>} module:engine/view/selection~Selection#_ranges
+		 * @member {Array.<module:engine/view/range~Range>}
 		 */
 		this._ranges = [];
 
@@ -47,7 +47,7 @@ export default class Selection {
 		 * Specifies whether the last added range was added as a backward or forward range.
 		 *
 		 * @protected
-		 * @member {Boolean} module:engine/view/selection~Selection#_lastRangeBackward
+		 * @member {Boolean}
 		 */
 		this._lastRangeBackward = false;
 
@@ -55,7 +55,7 @@ export default class Selection {
 		 * Specifies whether selection instance is fake.
 		 *
 		 * @private
-		 * @member {Boolean} module:engine/view/selection~Selection#_isFake
+		 * @member {Boolean}
 		 */
 		this._isFake = false;
 
@@ -63,7 +63,7 @@ export default class Selection {
 		 * Fake selection's label.
 		 *
 		 * @private
-		 * @member {String} module:engine/view/selection~Selection#_fakeSelectionLabel
+		 * @member {String}
 		 */
 		this._fakeSelectionLabel = '';
 	}
@@ -76,7 +76,7 @@ export default class Selection {
 	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
 	 * properly handled by screen readers).
 	 *
-	 * @fires module:engine/view/selection~Selection#change
+	 * @fires change
 	 * @param {Boolean} [value=true] If set to true selection will be marked as `fake`.
 	 * @param {Object} [options] Additional options.
 	 * @param {String} [options.label=''] Fake selection label.
@@ -91,7 +91,7 @@ export default class Selection {
 	/**
 	 * Returns true if selection instance is marked as `fake`.
 	 *
-	 * @see {@link module:engine/view/selection~Selection#setFake}
+	 * @see {@link #setFake}
 	 * @returns {Boolean}
 	 */
 	get isFake() {
@@ -101,7 +101,7 @@ export default class Selection {
 	/**
 	 * Returns fake selection label.
 	 *
-	 * @see {@link module:engine/view/selection~Selection#setFake}
+	 * @see {@link #setFake}
 	 * @returns {String}
 	 */
 	get fakeSelectionLabel() {
@@ -110,11 +110,11 @@ export default class Selection {
 
 	/**
 	 * Selection anchor. Anchor may be described as a position where the selection starts. Together with
-	 * {@link module:engine/view/selection~Selection#focus focus} they define the direction of selection, which is important
+	 * {@link #focus focus} they define the direction of selection, which is important
 	 * when expanding/shrinking selection. Anchor is always the start or end of the most recent added range.
 	 * It may be a bit unintuitive when there are multiple ranges in selection.
 	 *
-	 * @see module:engine/view/selection~Selection#focus
+	 * @see #focus
 	 * @type {module:engine/view/position~Position}
 	 */
 	get anchor() {
@@ -130,7 +130,7 @@ export default class Selection {
 	/**
 	 * Selection focus. Focus is a position where the selection ends.
 	 *
-	 * @see module:engine/view/selection~Selection#anchor
+	 * @see #anchor
 	 * @type {module:engine/view/position~Position}
 	 */
 	get focus() {
@@ -163,8 +163,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Specifies whether the {@link module:engine/view/selection~Selection#focus} precedes {@link
-	 * module:engine/view/selection~Selection#anchor}.
+	 * Specifies whether the {@link #focus} precedes {@link #anchor}.
 	 *
 	 * @type {Boolean}
 	 */
@@ -193,13 +192,12 @@ export default class Selection {
 	 * Accepts a flag describing in which way the selection is made - passed range might be selected from
 	 * {@link module:engine/view/range~Range#start start} to {@link module:engine/view/range~Range#end end}
 	 * or from {@link module:engine/view/range~Range#end end} to {@link module:engine/view/range~Range#start start}.
-	 * The flag is used to set {@link module:engine/view/selection~Selection#anchor anchor} and
-	 * {@link module:engine/view/selection~Selection#focus focus} properties.
+	 * The flag is used to set {@link #anchor anchor} and {@link #focus focus} properties.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
 	 * with ranges already stored in Selection instance.
 	 *
-	 * @fires module:engine/view/selection~Selection#change
+	 * @fires change
 	 * @param {module:engine/view/range~Range} range
 	 */
 	addRange( range, isBackward ) {
@@ -335,7 +333,7 @@ export default class Selection {
 	/**
 	 * Removes all ranges that were added to the selection.
 	 *
-	 * @fires module:engine/view/selection~Selection#change
+	 * @fires change
 	 */
 	removeAllRanges() {
 		if ( this._ranges.length ) {
@@ -346,11 +344,10 @@ export default class Selection {
 
 	/**
 	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
-	 * is treated like the last added range and is used to set {@link module:engine/view/selection~Selection#anchor anchor} and
-	 * {@link module:engine/view/selection~Selection#focus focus}. Accepts a flag describing in which way the selection is made
-	 * (see {@link module:engine/view/selection~Selection#addRange addRange}).
+	 * is treated like the last added range and is used to set {@link #anchor anchor} and {@link #focus focus}.
+	 * Accepts a flag describing in which way the selection is made (see {@link #addRange addRange}).
 	 *
-	 * @fires module:engine/view/selection~Selection#change
+	 * @fires change
 	 * @param {Array.<module:engine/view/range~Range>} newRanges Array of ranges to set.
 	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end
 	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
@@ -387,7 +384,7 @@ export default class Selection {
 	 *
 	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
 	 *
-	 * @fires module:engine/view/selection~Selection#change
+	 * @fires change
 	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
@@ -400,11 +397,11 @@ export default class Selection {
 	}
 
 	/**
-	 * Collapses selection to the selection's {@link module:engine/view/selection~Selection#getFirstPosition first position}.
+	 * Collapses selection to the selection's {@link #getFirstPosition first position}.
 	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
 	 * inside selection.
 	 *
-	 * @fires module:engine/view/selection~Selection#change
+	 * @fires change
 	 */
 	collapseToStart() {
 		const startPosition = this.getFirstPosition();
@@ -415,11 +412,11 @@ export default class Selection {
 	}
 
 	/**
-	 * Collapses selection to the selection's {@link module:engine/view/selection~Selection#getLastPosition last position}.
+	 * Collapses selection to the selection's {@link #getLastPosition last position}.
 	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
 	 * inside selection.
 	 *
-	 * @fires module:engine/view/selection~Selection#change
+	 * @fires change
 	 */
 	collapseToEnd() {
 		const endPosition = this.getLastPosition();
@@ -430,11 +427,11 @@ export default class Selection {
 	}
 
 	/**
-	 * Sets {@link module:engine/view/selection~Selection#focus} to the specified location.
+	 * Sets {@link #focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
 	 *
-	 * @fires module:engine/view/selection~Selection#change:range
+	 * @fires change:range
 	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
@@ -532,7 +529,11 @@ export default class Selection {
 mix( Selection, EmitterMixin );
 
 /**
- * Fired whenever selection ranges are changed through {@link module:engine/view/selection~Selection Selection API}.
+ * Fired whenever selection ranges are changed through {@link ~Selection Selection API}.
  *
- * @event module:engine/view/selection~Selection#change
+ * @event change
+ */
+
+/**
+ * @event change:range
  */

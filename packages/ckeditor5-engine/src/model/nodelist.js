@@ -103,7 +103,7 @@ export default class NodeList {
 	 * Converts index to offset in node list.
 	 *
 	 * Returns starting offset of a node that is at given index. Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
-	 * `model-nodelist-index-out-of-bounds` if given index is less than `0` or more than {@link module:engine/model/node~NodeList#length}.
+	 * `model-nodelist-index-out-of-bounds` if given index is less than `0` or more than {@link #length}.
 	 *
 	 * @param {Number} index Node's index.
 	 * @returns {Number} Node's starting offset.

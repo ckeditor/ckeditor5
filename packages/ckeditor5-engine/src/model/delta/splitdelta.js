@@ -51,7 +51,7 @@ export default class SplitDelta extends Delta {
 	 *
 	 * Most commonly this will be {@link module:engine/model/operation/insertoperation~insertOperation an insert operation},
 	 * as `SplitDelta` has to create a new node. If `SplitDelta` was created through
-	 * {@link module:module:engine/model/delta/delta~Delta/delta~Delta#getReversed reversing}
+	 * {@link module:engine/model/delta/delta~Delta#getReversed reversing}
 	 * a {@link module:engine/model/delta/delta~Delta.MergeDelta merge delta},
 	 * this will be a {@link module:engine/model/opertation/reinsertoperation~ReinsertOperation reinsert operation},
 	 * as we will want to re-insert the exact element that was removed by that merge delta.

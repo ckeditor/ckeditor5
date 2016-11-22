@@ -17,7 +17,7 @@ import log from '../../../utils/log.js';
  * Selection observer class observes selection changes in the document. If selection changes on the document this
  * observer checks if there are any mutations and if DOM selection is different than the
  * {@link module:engine/view/document~Document#selection view selection}. Selection observer fires
- * {@link module:engine/view/document~Document#selectionChange} event only if selection change was the only change in the document
+ * {@link module:engine/view/document~Document#event:selectionChange} event only if selection change was the only change in the document
  * and DOM selection is different then the view selection.
  *
  * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
@@ -32,7 +32,7 @@ export default class SelectionObserver extends Observer {
 		/**
 		 * Instance of the mutation observer. Selection observer calls
 		 * {@link module:engine/view/observer/mutationobserver~MutationObserver#flush} to ensure that the mutations will be handled before the
-		 * {@link module:engine/view/document~Document#selectionChange} event is fired.
+		 * {@link module:engine/view/document~Document#event:selectionChange} event is fired.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/observer/mutationobserver~MutationObserver}
@@ -126,7 +126,7 @@ export default class SelectionObserver extends Observer {
 
 	/**
 	 * Selection change listener. {@link module:engine/view/observer/mutationobserver~MutationObserver#flush Flush} mutations, check if
-	 * selection changes and fires {@link module:engine/view/document~Document#selectionChange} event.
+	 * selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event.
 	 *
 	 * @private
 	 * @param {Document} domDocument DOM document.
@@ -225,7 +225,7 @@ export default class SelectionObserver extends Observer {
  * this event is available by default.
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
- * @event module:engine/view/document~Document#selectionChange
+ * @event module:engine/view/document~Document#event:selectionChange
  * @param {Object} data
  * @param {module:engine/view/selection~Selection} data.oldSelection Old View selection which is
  * {@link module:engine/view/document~Document#selection}.

@@ -26,7 +26,7 @@ export default class Text extends Node {
 		/**
 		 * The text content.
 		 *
-		 * Setting the data fires the {@link module:engine/view/node~Node#event:change change event}.
+		 * Setting the data fires the {@link module:engine/view/node~Node#event:change:text change event}.
 		 *
 		 * @private
 		 * @member {String} module:engine/view/text~Text#_data
@@ -46,7 +46,7 @@ export default class Text extends Node {
 	/**
 	 * The text content.
 	 *
-	 * Setting the data fires the {@link module:engine/view/node~Node#change change event}.
+	 * Setting the data fires the {@link module:engine/view/node~Node#event:change:text change event}.
 	 */
 	get data() {
 		return this._data;

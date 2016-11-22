@@ -40,7 +40,7 @@ export default class WeakInsertDelta extends InsertDelta {
  * Thanks to this, attribute change "omits" the inserted nodes. The correct behavior for `WeakInsertDelta` is that
  * {@link module:engine/model/operation/attributeoperation~AttributeOperation AttributeOperation} does not "break" and also
  * applies attributes for inserted nodes. This behavior has to be reflected during
- * {@link module:engine/model/delta/delta~Delta.transform delta transformation}.
+ * {@link module:engine/model/delta/transform~transform delta transformation}.
  *
  * @chainable
  * @method module:engine/model/batch~Batch#weakInsert

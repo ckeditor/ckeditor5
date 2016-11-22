@@ -25,7 +25,7 @@ export default class Text extends Node {
 	 * Creates a text node.
 	 *
 	 * @param {String} data Node's text.
-	 * @param {Object} [attrs] Node's attributes. See {@link utils.toMap} for a list of accepted values.
+	 * @param {Object} [attrs] Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
 	constructor( data, attrs ) {
 		super( attrs );

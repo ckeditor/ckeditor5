@@ -8,11 +8,7 @@
  */
 
 /**
- * @namespace model
- */
-
-/**
- * Collection of methods for manipulating {@link engine.model engine.model} for testing purposes.
+ * Collection of methods for manipulating {@link module:engine/model/model model} for testing purposes.
  */
 
 import RootElement from '../model/rootelement.js';
@@ -50,7 +46,6 @@ import isPlainObject from '../../utils/lib/lodash/isPlainObject.js';
  *
  *		<$text attribute="value">Text data</$text>
  *
- * @method module:engine/dev-utils/model~model.getData
  * @param {module:engine/model/document~Document} document
  * @param {Object} [options]
  * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
@@ -84,7 +79,6 @@ getData._stringify = stringify;
  *
  *		<$text attribute="value">Text data</$text>
  *
- * @method module:engine/dev-utils/model~model.setData
  * @param {module:engine/model/document~Document} document
  * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
@@ -171,7 +165,6 @@ setData._parse = parse;
  *
  *		<$text attribute="value">Text data</$text>
  *
- * @method module:engine/dev-utils/model~model.stringify
  * @param {module:engine/model/rootelement~RootElement|module:engine/model/element~Element|module:engine/model/text~Text|
  * module:engine/model/documentfragment~DocumentFragment} node Node to stringify.
  * @param {module:engine/model/selection~Selection|module:engine/model/position~Position|module:engine/model/range~Range}
@@ -260,7 +253,6 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
  *
  *		<$text attribute="value">Text data</$text>
  *
- * @method module:engine/dev-utils/model~model.parse
  * @param {String} data HTML-like string to be parsed.
  * @param {module:engine/model/schema~Schema} schema Schema instance uses by converters for element validation.
  * @param {Object} options Additional configuration.

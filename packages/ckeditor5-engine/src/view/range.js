@@ -26,16 +26,14 @@ export default class Range {
 		/**
 		 * Start position.
 		 *
-		 * @member module:engine/view/range~Range#start
-		 * @type {module:engine/view/position~Position}
+		 * @member {module:engine/view/position~Position}
 		 */
 		this.start = Position.createFromPosition( start );
 
 		/**
 		 * End position.
 		 *
-		 * @member module:engine/view/range~Range#end
-		 * @type {module:engine/view/position~Position}
+		 * @member {module:engine/view/position~Position}
 		 */
 		this.end = end ? Position.createFromPosition( end ) : Position.createFromPosition( start );
 	}
@@ -230,12 +228,12 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link module:engine/view/item~Items view items} that are in this range and returns
+	 * Returns an iterator that iterates over all {@link module:engine/view/item~Item view items} that are in this range and returns
 	 * them.
 	 *
 	 * This method uses {@link module:engine/view/treewalker~TreeWalker} with `boundaries` set to this range and `ignoreElementEnd` option
-	 * set to `true`. However it returns only {@link module:engine/view/item~Item items}, not {@link
-	 * module:engine/view/treewalker~TreeWalkerValue}.
+	 * set to `true`. However it returns only {@link module:engine/view/item~Item items},
+	 * not {@link module:engine/view/treewalker~TreeWalkerValue}.
 	 *
 	 * You may specify additional options for the tree walker. See {@link module:engine/view/treewalker~TreeWalker} for
 	 * a full list of available options.
