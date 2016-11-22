@@ -72,13 +72,12 @@ import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
  * 1. {@link engine.controller.DataController#getSelectedContent get selected content} from the editor,
  * 2. prevent the default action of the native `copy` or `cut` event,
  * 3. fire {@link engine.view.Document#clipboardOutput} with a clone of the selected content
- * converted to a {@link engine.view.DocumentFragment view document fragment},
- * 4. in case of cut operation, delete the selected content.
+ * converted to a {@link engine.view.DocumentFragment view document fragment}.
  *
  * ### On {@link engine.view.Document#clipboardOutput}
  *
  * The default action is to put the content (`data.content`, represented by a {@link engine.view.DocumentFragment})
- * to the clipboard as HTML.
+ * to the clipboard as HTML. In case of the cut operation, the selected content is also deleted from the editor.
  *
  * This action is performed by a low priority listener, so it can be overridden by a normal one.
  *
@@ -150,13 +149,7 @@ export default class Clipboard extends Feature {
 
 			data.preventDefault();
 
-			editingView.fire( 'clipboardOutput', { dataTransfer, content } );
-
-			if ( evt.name == 'cut' ) {
-				doc.enqueueChanges( () => {
-					editor.data.deleteContent( doc.selection, doc.batch(), { merge: true } );
-				} );
-			}
+			editingView.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name } );
 		};
 
 		this.listenTo( editingView, 'copy', onCopyCut, { priority: 'low' } );
@@ -165,6 +158,12 @@ export default class Clipboard extends Feature {
 		this.listenTo( editingView, 'clipboardOutput', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
 				data.dataTransfer.setData( 'text/html', this._htmlDataProcessor.toData( data.content ) );
+			}
+
+			if ( data.method == 'cut' ) {
+				doc.enqueueChanges( () => {
+					editor.data.deleteContent( doc.selection, doc.batch(), { merge: true } );
+				} );
 			}
 		}, { priority: 'low' } );
 	}
@@ -229,4 +228,10 @@ export default class Clipboard extends Feature {
  * Read more about the clipboard pipelines in {@link clipboard.Clipboard}.
  *
  * @member {engine.view.DocumentFragment} engine.view.observer.ClipboardOutputEventData#content
+ */
+
+/**
+ * Whether the event was triggered by copy or cut operation.
+ *
+ * @member {'copy'|'cut'} engine.view.observer.ClipboardOutputEventData#method
  */

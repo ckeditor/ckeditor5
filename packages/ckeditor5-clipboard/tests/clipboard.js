@@ -10,9 +10,14 @@ import Paragraph from 'ckeditor5/paragraph/paragraph.js';
 import ClipboardObserver from 'ckeditor5/clipboard/clipboardobserver.js';
 
 import { stringify as stringifyView } from 'ckeditor5/engine/dev-utils/view.js';
-import { stringify as stringifyModel } from 'ckeditor5/engine/dev-utils/model.js';
+import {
+	stringify as stringifyModel,
+	setData as setModelData,
+	getData as getModelData
+} from 'ckeditor5/engine/dev-utils/model.js';
 
 import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
+import ViewText from 'ckeditor5/engine/view/text.js';
 
 describe( 'Clipboard feature', () => {
 	let editor, editingView;
@@ -33,7 +38,7 @@ describe( 'Clipboard feature', () => {
 		} );
 	} );
 
-	describe( 'clipboard pipeline', () => {
+	describe( 'clipboard paste pipeline', () => {
 		it( 'takes HTML data from the dataTransfer', ( done ) => {
 			const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
 			const preventDefaultSpy = sinon.spy();
@@ -170,13 +175,146 @@ describe( 'Clipboard feature', () => {
 
 			expect( spy.callCount ).to.equal( 0 );
 		} );
+
+		function createDataTransfer( data ) {
+			return {
+				getData( type ) {
+					return data[ type ];
+				}
+			};
+		}
+	} );
+
+	describe( 'clipboard copy/cut pipeline', () => {
+		it( 'fires clipboardOutput for copy with the selected content and correct method', ( done ) => {
+			const dataTransferMock = createDataTransfer();
+			const preventDefaultSpy = sinon.spy();
+
+			setModelData( editor.document, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
+
+			editingView.on( 'clipboardOutput', ( evt, data ) => {
+				expect( preventDefaultSpy.calledOnce ).to.be.true;
+				expect( data.method ).to.equal( 'copy' );
+
+				expect( data.dataTransfer ).to.equal( dataTransferMock );
+
+				expect( data.content ).is.instanceOf( ViewDocumentFragment );
+				expect( stringifyView( data.content ) ).to.equal( '<p>bc</p><p>de</p>' );
+
+				done();
+			} );
+
+			editingView.fire( 'copy', {
+				dataTransfer: dataTransferMock,
+				preventDefault: preventDefaultSpy
+			} );
+		} );
+
+		it( 'fires clipboardOutput for cut with the selected content and correct method', ( done ) => {
+			const dataTransferMock = createDataTransfer();
+			const preventDefaultSpy = sinon.spy();
+
+			setModelData( editor.document, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
+
+			editingView.on( 'clipboardOutput', ( evt, data ) => {
+				expect( data.method ).to.equal( 'cut' );
+
+				done();
+			} );
+
+			editingView.fire( 'cut', {
+				dataTransfer: dataTransferMock,
+				preventDefault: preventDefaultSpy
+			} );
+		} );
+
+		it( 'uses low priority observer for the copy event', () => {
+			const dataTransferMock = createDataTransfer();
+			const spy = sinon.spy();
+
+			editingView.on( 'copy', ( evt ) => {
+				evt.stop();
+			} );
+
+			editingView.on( 'clipboardOutput', spy );
+
+			editingView.fire( 'copy', {
+				dataTransfer: dataTransferMock,
+				preventDefault() {}
+			} );
+
+			expect( spy.callCount ).to.equal( 0 );
+		} );
+
+		it( 'sets clipboard HTML data', () => {
+			const dataTransferMock = createDataTransfer();
+
+			setModelData( editor.document, '<paragraph>f[o]o</paragraph>' );
+
+			editingView.fire( 'clipboardOutput', {
+				dataTransfer: dataTransferMock,
+				content: new ViewDocumentFragment( [ new ViewText( 'abc' ) ] ),
+				method: 'copy'
+			} );
+
+			expect( dataTransferMock.getData( 'text/html' ) ).to.equal( 'abc' );
+			expect( getModelData( editor.document ) ).to.equal( '<paragraph>f[o]o</paragraph>' );
+		} );
+
+		it( 'does not set clipboard HTML data if content is empty', () => {
+			const dataTransferMock = createDataTransfer();
+
+			editingView.fire( 'clipboardOutput', {
+				dataTransfer: dataTransferMock,
+				content: new ViewDocumentFragment(),
+				method: 'copy'
+			} );
+
+			expect( dataTransferMock.getData( 'text/html' ) ).to.be.undefined;
+		} );
+
+		it( 'deletes selected content in case of cut', () => {
+			const dataTransferMock = createDataTransfer();
+
+			setModelData( editor.document, '<paragraph>f[o</paragraph><paragraph>x]o</paragraph>' );
+
+			editingView.fire( 'clipboardOutput', {
+				dataTransfer: dataTransferMock,
+				content: new ViewDocumentFragment(),
+				method: 'cut'
+			} );
+
+			expect( getModelData( editor.document ) ).to.equal( '<paragraph>f[]o</paragraph>' );
+		} );
+
+		it( 'uses low priority observer for the clipboardOutput event', () => {
+			const dataTransferMock = createDataTransfer();
+
+			editingView.on( 'clipboardOutput', ( evt ) => {
+				evt.stop();
+			} );
+
+			editingView.fire( 'copy', {
+				dataTransfer: dataTransferMock,
+				content: new ViewDocumentFragment( [ new ViewText( 'abc' ) ] ),
+				preventDefault() {}
+			} );
+
+			expect( dataTransferMock.getData( 'text/html' ) ).to.be.undefined;
+		} );
+
+		function createDataTransfer() {
+			const store = new Map();
+
+			return {
+				setData( type, data ) {
+					store.set( type, data );
+				},
+
+				getData( type ) {
+					return store.get( type );
+				}
+			};
+		}
 	} );
 } );
-
-function createDataTransfer( data ) {
-	return {
-		getData( type ) {
-			return data[ type ];
-		}
-	};
-}
