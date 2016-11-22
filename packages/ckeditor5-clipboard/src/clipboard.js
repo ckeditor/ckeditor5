@@ -18,7 +18,7 @@ import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
  *
  * ## Clipboard input pipeline
  *
- * The feature creates the clipboard input pipeline which allows for processing clipboard content
+ * The feature creates the clipboard input pipeline which allows processing clipboard content
  * before it gets inserted into the editor. The pipeline consists of two events on which
  * the features can listen in order to modify or totally override the default behavior.
  *
@@ -31,9 +31,9 @@ import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
  * 3. fire {@link engine.view.Document#clipboardInput} with the clipboard data parsed to
  * a {@link engine.view.DocumentFragment view document fragment}.
  *
- * This action is performed by a low priority listener, so it can be overridden by a normal one.
- * You'd only need to do this when a deeper change in pasting behavior was needed. For example,
- * a feature which wants to differently read data from the clipboard (the {@link clipboard.DataTransfer `DataTransfer`}).
+ * This action is performed by a low priority listener, so it can be overridden by a normal one
+ * when a deeper change in pasting behavior is needed. For example, a feature which wants to differently read
+ * data from the clipboard (the {@link clipboard.DataTransfer `DataTransfer`}).
  * should plug a listener at this stage.
  *
  * ### On {@link engine.view.Document#clipboardInput}
@@ -63,7 +63,7 @@ import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
  * ## Clipboard output pipeline
  *
  * The output pipeline is the equivalent of the input pipeline but for the copy and cut operations.
- * It allows to process the content which will be then put into the clipboard or overriding the whole process.
+ * It allows to process the content which will be then put into the clipboard or to override the whole process.
  *
  * ### On {@link engine.view.Document#copy} and {@link engine.view.Document#cut}
  *
