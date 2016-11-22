@@ -8,45 +8,6 @@ import ViewEmptyElement from '../engine/view/emptyelement.js';
 import ModelElement from '../engine/model/element.js';
 import { isImageWidget } from './utils.js';
 
-const WIDGET_SELECTED_CLASS_NAME = 'ck-widget_selected';
-
-/**
- * Returns model to view selection converter. This converter is used after default selection conversion is made.
- * It creates fake view selection when {@link engine.view.Selection#getSelectedElement} returns instance of image widget.
- *
- * @param {Function} t {@link utils.Locale#t Locale#t function} used to translate default fake selection's label.
- * @returns {Function}
- */
-export function modelToViewSelection( t ) {
-	let previouslySelected;
-
-	return ( evt, data, consumable, conversionApi ) => {
-		const viewSelection = conversionApi.viewSelection;
-		const selectedElement = viewSelection.getSelectedElement();
-
-		// Remove selected class from previously selected widget.
-		if ( previouslySelected && previouslySelected.hasClass( WIDGET_SELECTED_CLASS_NAME ) ) {
-			previouslySelected.removeClass( WIDGET_SELECTED_CLASS_NAME );
-		}
-
-		if ( !selectedElement || !isImageWidget( selectedElement ) ) {
-			return;
-		}
-
-		let fakeSelectionLabel = t( 'image widget' );
-		const imgElement = selectedElement.getChild( 0 );
-		const altText = imgElement.getAttribute( 'alt' );
-
-		if ( altText ) {
-			fakeSelectionLabel = `${ altText } ${ fakeSelectionLabel }`;
-		}
-
-		viewSelection.setFake( true, { label: fakeSelectionLabel } );
-		selectedElement.addClass( WIDGET_SELECTED_CLASS_NAME );
-		previouslySelected = selectedElement;
-	};
-}
-
 /**
  * Returns function that converts image view representation:
  *
@@ -62,31 +23,27 @@ export function viewToModelImage() {
 	return ( evt, data, consumable, conversionApi ) => {
 		const viewFigureElement = data.input;
 
-		// Check if figure element from view can be consumed with `image` class.
-		if ( !consumable.consume( viewFigureElement, { name: true, class: 'image' } ) ) {
+		// *** Step 1: Validate conversion.
+		// Check if figure element can be consumed.
+		if ( !consumable.test( viewFigureElement, { name: true, class: 'image' } ) ) {
 			return;
 		}
 
-		// Check if image can be placed in current context.
+		// Check if image element can be converted in current context.
 		if ( !conversionApi.schema.check( { name: 'image', inside: data.context } ) ) {
 			return;
 		}
 
-		// Check if figure element have img inside.
-		if ( viewFigureElement.childCount != 1 ) {
-			return;
-		}
-
+		// Check if img element is placed inside figure element and can be consumed with `src` attribute.
 		const viewImg = viewFigureElement.getChild( 0 );
 
-		if ( viewImg.name != 'img' ) {
+		if ( !viewImg || viewImg.name != 'img' || !consumable.test( viewImg, { name: true, attribute: 'src' } ) ) {
 			return;
 		}
 
-		// Consume img element with src attribute.
-		if ( !consumable.consume( viewImg, { name: true, attribute: 'src' } ) ) {
-			return;
-		}
+		// *** Step2: Convert to model.
+		consumable.consume( viewFigureElement, { name: true, class: 'image' } );
+		consumable.consume( viewImg, { name: true, attribute: 'src' } );
 
 		// Create model element.
 		const modelImage = new ModelElement( 'image', {
@@ -99,6 +56,34 @@ export function viewToModelImage() {
 		}
 
 		data.output = modelImage;
+	};
+}
+
+/**
+ * Returns model to view selection converter. This converter is applied after default selection conversion is made.
+ * It creates fake view selection when {@link engine.view.Selection#getSelectedElement} returns instance of widget.
+ *
+ * @param {Function} t {@link utils.Locale#t Locale#t function} used to translate default fake selection's label.
+ * @returns {Function}
+ */
+export function modelToViewSelection( t ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		const viewSelection = conversionApi.viewSelection;
+		const selectedElement = viewSelection.getSelectedElement();
+
+		if ( !selectedElement || !isImageWidget( selectedElement ) ) {
+			return;
+		}
+
+		let fakeSelectionLabel = t( 'image widget' );
+		const imgElement = selectedElement.getChild( 0 );
+		const altText = imgElement.getAttribute( 'alt' );
+
+		if ( altText ) {
+			fakeSelectionLabel = `${ altText } ${ fakeSelectionLabel }`;
+		}
+
+		viewSelection.setFake( true, { label: fakeSelectionLabel } );
 	};
 }
 

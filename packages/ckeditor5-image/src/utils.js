@@ -3,12 +3,29 @@
  * For licensing, see LICENSE.md.
  */
 
+import { widgetize, isWidget } from './widget/utils.js';
+
+const imageSymbol = Symbol( 'isImage' );
+
 /**
- * Checks if provided {@link engine.view.Element} is instance of image widget.
+ * Converts given {@link engine.view.Element} to image widget. Adds {@link engine.view.Element#addCustomProperty custom
+ * property} and calls {@link image.widget.utils.widgetize widgetize} method on given element.
+ *
+ * @param {engine.view.Element} viewElement
+ * @returns {engine.view.Element}
+ */
+export function toImageWidget( viewElement ) {
+	viewElement.setCustomProperty( imageSymbol, true );
+
+	return widgetize( viewElement );
+}
+
+/**
+ * Checks if given view element is image widget.
  *
  * @param {engine.view.Element} viewElement
  * @returns {Boolean}
  */
 export function isImageWidget( viewElement ) {
-	return viewElement.isWidget && viewElement.name == 'figure' && viewElement.hasClass( 'image' );
+	return viewElement.getCustomProperty( imageSymbol ) && isWidget( viewElement );
 }
