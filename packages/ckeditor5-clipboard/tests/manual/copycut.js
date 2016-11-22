@@ -39,11 +39,11 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 	editor.editing.view.on( 'paste', ( evt, data ) => {
 		console.clear();
-		onNativeEvent( evt, data );
+		onViewEvent( evt, data );
 	} );
-	editor.editing.view.on( 'paste', onNativeEvent );
-	editor.editing.view.on( 'copy', onNativeEvent, { priority: 'lowest' } );
-	editor.editing.view.on( 'cut', onNativeEvent, { priority: 'lowest' } );
+	editor.editing.view.on( 'paste', onViewEvent );
+	editor.editing.view.on( 'copy', onViewEvent, { priority: 'lowest' } );
+	editor.editing.view.on( 'cut', onViewEvent, { priority: 'lowest' } );
 
 	editor.editing.view.on( 'clipboardInput', onPipelineEvent );
 	editor.editing.view.on( 'clipboardOutput', ( evt, data ) => {
@@ -51,7 +51,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		onPipelineEvent( evt, data );
 	} );
 
-	function onNativeEvent( evt, data ) {
+	function onViewEvent( evt, data ) {
 		console.log( `----- ${ evt.name } -----` );
 		console.log( 'text/html\n', data.dataTransfer.getData( 'text/html' ) );
 	}
@@ -64,3 +64,16 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .catch( err => {
 	console.error( err.stack );
 } );
+
+document.getElementById( 'native' ).addEventListener( 'paste', onNativeEvent );
+document.getElementById( 'native' ).addEventListener( 'copy', onNativeEvent );
+document.getElementById( 'native' ).addEventListener( 'cut', onNativeEvent );
+
+function onNativeEvent( evt ) {
+	console.clear();
+	console.log( `----- native ${ evt.type } -----` );
+
+	if ( evt.type == 'paste' ) {
+		console.log( 'text/html\n', evt.clipboardData.getData( 'text/html' ) );
+	}
+}
