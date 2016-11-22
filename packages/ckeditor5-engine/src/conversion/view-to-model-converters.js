@@ -12,27 +12,28 @@ import ModelText from '../model/text.js';
 import { normalizeNodes } from '../model/writer.js';
 
 /**
- * Contains {@link engine.view view} to {@link engine.model model} converters for
- * {@link engine.conversion.ViewConversionDispatcher}.
+ * Contains {@link module:engine/view view} to {@link module:engine/model model} converters for
+ * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher}.
  *
- * @namespace engine.conversion.viewToModel
+ * @namespace viewToModel
  */
 
 /**
- * Function factory, creates a converter that converts {@link engine.view.DocumentFragment view document fragment} or
- * all children of {@link engine.view.Element} into {@link engine.model.DocumentFragment model document fragment}.
+ * Function factory, creates a converter that converts {@link module:engine/view/documentfragment~DocumentFragment view document fragment}
+ * or all children of {@link module:engine/view/element~Element} into
+ * {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
  * This is the "entry-point" converter for view to model conversion. This converter starts the conversion of all children
- * of passed view document fragment. Those children {@link engine.view.Node view nodes} are then handled by other converters.
+ * of passed view document fragment. Those children {@link module:engine/view/node~Node view nodes} are then handled by other converters.
  *
  * This also a "default", last resort converter for all view elements that has not been converted by other converters.
  * When a view element is being converted to the model but it does not have converter specified, that view element
- * will be converted to {@link engine.model.DocumentFragment model document fragment} and returned.
+ * will be converted to {@link module:engine/model/documentfragment~DocumentFragment model document fragment} and returned.
  *
- * @external engine.conversion.viewToModel
- * @function engine.conversion.viewToModel.convertToModelFragment
- * @returns {Function} Universal converter for view {@link engine.view.DocumentFragment fragments} and
- * {@link engine.view.Element elements} that returns {@link engine.model.DocumentFragment model fragment} with
- * children of converted view item.
+ * @external module:engine/conversion/view-to-model-converters~viewToModel
+ * @function module:engine/conversion/view-to-model-converters~viewToModel.convertToModelFragment
+ * @returns {Function} Universal converter for view {@link module:engine/view/documentfragment~DocumentFragment fragments} and
+ * {@link module:engine/view/element~Element elements} that returns
+ * {@link module:engine/model/documentfragment~DocumentFragment model fragment} with children of converted view item.
  */
 export function convertToModelFragment() {
 	return ( evt, data, consumable, conversionApi ) => {
@@ -46,11 +47,11 @@ export function convertToModelFragment() {
 }
 
 /**
- * Function factory, creates a converter that converts {@link engine.view.Text} to {@link engine.model.Text}.
+ * Function factory, creates a converter that converts {@link module:engine/view/text~Text} to {@link module:engine/model/text~Text}.
  *
- * @external engine.conversion.viewToModel
- * @function engine.conversion.viewToModel.convertText
- * @returns {Function} {@link engine.view.Text View text} converter.
+ * @external module:engine/conversion/view-to-model-converters~viewToModel
+ * @function module:engine/conversion/view-to-model-converters~viewToModel.convertText
+ * @returns {Function} {@link module:engine/view/text~Text View text} converter.
  */
 export function convertText() {
 	return ( evt, data, consumable, conversionApi ) => {

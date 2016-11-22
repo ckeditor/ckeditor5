@@ -12,8 +12,7 @@ import Node from './node.js';
 /**
  * Tree view text node.
  *
- * @memberOf engine.view
- * @extends engine.view.Node
+ * @extends module:engine/view/node~Node
  */
 export default class Text extends Node {
 	/**
@@ -27,10 +26,10 @@ export default class Text extends Node {
 		/**
 		 * The text content.
 		 *
-		 * Setting the data fires the {@link engine.view.Node#event:change change event}.
+		 * Setting the data fires the {@link module:engine/view/node~Node#event:change change event}.
 		 *
 		 * @private
-		 * @member {String} engine.view.Text#_data
+		 * @member {String} module:engine/view/text~Text#_data
 		 */
 		this._data = data;
 	}
@@ -38,7 +37,7 @@ export default class Text extends Node {
 	/**
 	 * Clones this node.
 	 *
-	 * @returns {engine.view.Text} Text node that is a clone of this node.
+	 * @returns {module:engine/view/text~Text} Text node that is a clone of this node.
 	 */
 	clone() {
 		return new Text( this.data );
@@ -47,7 +46,7 @@ export default class Text extends Node {
 	/**
 	 * The text content.
 	 *
-	 * Setting the data fires the {@link view.Node#change change event}.
+	 * Setting the data fires the {@link module:engine/view/node~Node#change change event}.
 	 */
 	get data() {
 		return this._data;
@@ -63,7 +62,7 @@ export default class Text extends Node {
 	 * Checks if this text node is similar to other text node.
 	 * Both nodes should have the same data to be considered as similar.
 	 *
-	 * @param {engine.view.Text} otherNode Node to check if it is same as this node.
+	 * @param {module:engine/view/text~Text} otherNode Node to check if it is same as this node.
 	 * @returns {Boolean}
 	 */
 	isSimilar( otherNode ) {

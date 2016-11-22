@@ -16,28 +16,26 @@ import EditableElement from './editableelement.js';
 
 /**
  * Position in the tree. Position is always located before or after a node.
- *
- * @memberOf engine.view
  */
 export default class Position {
 	/**
 	 * Creates a position.
 	 *
-	 * @param {engine.view.Node} parent Position parent node.
+	 * @param {module:engine/view/node~Node} parent Position parent node.
 	 * @param {Number} offset Position offset.
 	 */
 	constructor( parent, offset ) {
 		/**
 		 * Position parent node.
 		 *
-		 * @member {engine.view.Node} engine.view.Position#parent
+		 * @member {module:engine/view/node~Node} module:engine/view/position~Position#parent
 		 */
 		this.parent = parent;
 
 		/**
 		 * Position offset.
 		 *
-		 * @member {Number} engine.view.Position#offset
+		 * @member {Number} module:engine/view/position~Position#offset
 		 */
 		this.offset = offset;
 	}
@@ -47,7 +45,7 @@ export default class Position {
 	 * inside text node.
 	 *
 	 * @readonly
-	 * @type {engine.view.Node|null}
+	 * @type {module:engine/view/node~Node|null}
 	 */
 	get nodeAfter() {
 		if ( this.parent instanceof Text ) {
@@ -62,7 +60,7 @@ export default class Position {
 	 * inside text node.
 	 *
 	 * @readonly
-	 * @type {engine.view.Node|null}
+	 * @type {module:engine/view/node~Node|null}
 	 */
 	get nodeBefore() {
 		if ( this.parent instanceof Text ) {
@@ -73,7 +71,7 @@ export default class Position {
 	}
 
 	/**
-	 * Is `true` if position is at the beginning of its {@link engine.view.Position#parent parent}, `false` otherwise.
+	 * Is `true` if position is at the beginning of its {@link module:engine/view/position~Position#parent parent}, `false` otherwise.
 	 *
 	 * @readonly
 	 * @type {Boolean}
@@ -83,7 +81,7 @@ export default class Position {
 	}
 
 	/**
-	 * Is `true` if position is at the end of its {@link engine.view.Position#parent parent}, `false` otherwise.
+	 * Is `true` if position is at the end of its {@link module:engine/view/position~Position#parent parent}, `false` otherwise.
 	 *
 	 * @readonly
 	 * @type {Boolean}
@@ -98,17 +96,17 @@ export default class Position {
 	 * Position's root, that is the root of the position's parent element.
 	 *
 	 * @readonly
-	 * @type {engine.view.Node|engine.view.DocumentFragment}
+	 * @type {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment}
 	 */
 	get root() {
 		return this.parent.root;
 	}
 
 	/**
-	 * {@link engine.view.EditableElement EditableElement} instance that contains this position, or `null` if
+	 * {@link module:engine/view/editableelement~EditableElement EditableElement} instance that contains this position, or `null` if
 	 * position is not inside an editable element.
 	 *
-	 * @type {engine.view.EditableElement|null}
+	 * @type {module:engine/view/editableelement~EditableElement|null}
 	 */
 	get editableElement() {
 		let editable = this.parent;
@@ -128,7 +126,7 @@ export default class Position {
 	 * Returns a new instance of Position with offset incremented by `shift` value.
 	 *
 	 * @param {Number} shift How position offset should get changed. Accepts negative values.
-	 * @returns {engine.view.Position} Shifted position.
+	 * @returns {module:engine/view/position~Position} Shifted position.
 	 */
 	getShiftedBy( shift ) {
 		let shifted = Position.createFromPosition( this );
@@ -151,7 +149,7 @@ export default class Position {
 	/**
 	 * Checks whether this position equals given position.
 	 *
-	 * @param {engine.view.Position} otherPosition Position to compare with.
+	 * @param {module:engine/view/position~Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if positions are same.
 	 */
 	isEqual( otherPosition ) {
@@ -163,9 +161,9 @@ export default class Position {
 	 * this position is after give one. Two positions may be located inside separate roots and in that situation this
 	 * method will still return `false`.
 	 *
-	 * @see engine.view.Position#isAfter
-	 * @see engine.view.Position#compareWith
-	 * @param {engine.view.Position} otherPosition Position to compare with.
+	 * @see module:engine/view/position~Position#isAfter
+	 * @see module:engine/view/position~Position#compareWith
+	 * @param {module:engine/view/position~Position} otherPosition Position to compare with.
 	 * @returns {Boolean} Returns `true` if this position is before given position.
 	 */
 	isBefore( otherPosition ) {
@@ -177,9 +175,9 @@ export default class Position {
 	 * this position is before give one. Two positions may be located inside separate roots and in that situation this
 	 * method will still return `false`.
 	 *
-	 * @see engine.view.Position#isBefore
-	 * @see engine.view.Position#compareWith
-	 * @param {engine.view.Position} otherPosition Position to compare with.
+	 * @see module:engine/view/position~Position#isBefore
+	 * @see module:engine/view/position~Position#compareWith
+	 * @param {module:engine/view/position~Position} otherPosition Position to compare with.
 	 * @returns {Boolean} Returns `true` if this position is after given position.
 	 */
 	isAfter( otherPosition ) {
@@ -190,8 +188,8 @@ export default class Position {
 	 * Checks whether this position is before, after or in same position that other position. Two positions may be also
 	 * different when they are located in separate roots.
 	 *
-	 * @param {engine.view.Position} otherPosition Position to compare with.
-	 * @returns {engine.view.PositionRelation}
+	 * @param {module:engine/view/position~Position} otherPosition Position to compare with.
+	 * @returns {module:engine/view/position~PositionRelation}
 	 */
 	compareWith( otherPosition ) {
 		if ( this.isEqual( otherPosition ) ) {
@@ -254,20 +252,20 @@ export default class Position {
 	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
-	 * * a {@link engine.view.Position position},
+	 * * a {@link module:engine/view/position~Position position},
 	 * * parent element and offset (offset defaults to `0`),
 	 * * parent element and `'end'` (sets position at the end of that element),
-	 * * {@link engine.view.Item view item} and `'before'` or `'after'` (sets position before or after given view item).
+	 * * {@link module:engine/view/item~Item view item} and `'before'` or `'after'` (sets position before or after given view item).
 	 *
 	 * This method is a shortcut to other constructors such as:
 	 *
-	 * * {@link engine.view.Position.createBefore},
-	 * * {@link engine.view.Position.createAfter},
-	 * * {@link engine.view.Position.createFromPosition}.
+	 * * {@link module:engine/view/position~Position.createBefore},
+	 * * {@link module:engine/view/position~Position.createAfter},
+	 * * {@link module:engine/view/position~Position.createFromPosition}.
 	 *
-	 * @param {engine.view.Item|engine.model.Position} itemOrPosition
+	 * @param {module:engine/view/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
-	 * first parameter is a {@link engine.view.Item view item}.
+	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
 	static createAt( itemOrPosition, offset ) {
 		if ( itemOrPosition instanceof Position ) {
@@ -292,8 +290,8 @@ export default class Position {
 	/**
 	 * Creates a new position after given view item.
 	 *
-	 * @param {engine.view.Item} item View item after which the position should be located.
-	 * @returns {engine.view.Position}
+	 * @param {module:engine/view/item~Item} item View item after which the position should be located.
+	 * @returns {module:engine/view/position~Position}
 	 */
 	static createAfter( item ) {
 		// TextProxy is not a instance of Node so we need do handle it in specific way.
@@ -306,7 +304,7 @@ export default class Position {
 			 * You can not make a position after a root.
 			 *
 			 * @error position-after-root
-			 * @param {engine.view.Node} root
+			 * @param {module:engine/view/node~Node} root
 			 */
 			throw new CKEditorError( 'view-position-after-root: You can not make position after root.', { root: item } );
 		}
@@ -317,8 +315,8 @@ export default class Position {
 	/**
 	 * Creates a new position before given view item.
 	 *
-	 * @param {engine.view.Item} item View item before which the position should be located.
-	 * @returns {engine.view.Position}
+	 * @param {module:engine/view/item~Item} item View item before which the position should be located.
+	 * @returns {module:engine/view/position~Position}
 	 */
 	static createBefore( item ) {
 		// TextProxy is not a instance of Node so we need do handle it in specific way.
@@ -331,7 +329,7 @@ export default class Position {
 			 * You cannot make a position before a root.
 			 *
 			 * @error position-before-root
-			 * @param {engine.view.Node} root
+			 * @param {module:engine/view/node~Node} root
 			 */
 			throw new CKEditorError( 'view-position-before-root: You can not make position before root.', { root: item } );
 		}
@@ -342,8 +340,8 @@ export default class Position {
 	/**
 	 * Creates and returns a new instance of `Position`, which is equal to the passed position.
 	 *
-	 * @param {engine.view.Position} position Position to be cloned.
-	 * @returns {engine.view.Position}
+	 * @param {module:engine/view/position~Position} position Position to be cloned.
+	 * @returns {module:engine/view/position~Position}
 	 */
 	static createFromPosition( position ) {
 		return new this( position.parent, position.offset );
@@ -354,5 +352,5 @@ export default class Position {
  * A flag indicating whether this position is `'before'` or `'after'` or `'same'` as given position.
  * If positions are in different roots `'different'` flag is returned.
  *
- * @typedef {String} engine.view.PositionRelation
+ * @typedef {String} module:engine/view/position~PositionRelation
  */

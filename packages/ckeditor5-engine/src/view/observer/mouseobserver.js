@@ -3,16 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/observer/mouseobserver
+ */
+
 import DomEventObserver from './domeventobserver.js';
 
 /**
  * Mouse events observer.
  *
- * Note that this observer is not available by default. To make it available it needs to be added to {@link engine.view.Document}
- * by {@link engine.view.Document#addObserver} method.
+ * Note that this observer is not available by default. To make it available it needs to be added to {@link
+ * module:engine/view/document~Document}
+ * by {@link module:engine/view/document~Document#addObserver} method.
  *
- * @memberOf engine.view.observer
- * @extends engine.view.observer.DomEventObserver
+ * @extends module:engine/view/observer/observer~Observer.DomEventObserver
  */
 export default class MouseObserver extends DomEventObserver {
 	constructor( document ) {
@@ -29,12 +33,13 @@ export default class MouseObserver extends DomEventObserver {
 /**
  * Fired when mouse button is pressed down on one of the editables.
  *
- * Introduced by {@link engine.view.observer.MouseObserver}.
+ * Introduced by {@link module:engine/view/observer/observer~Observer.MouseObserver}.
  *
- * Note that this event is not available by default. To make it available {@link engine.view.observer.MouseObserver}
- * needs to be added to {@link engine.view.Document} by a {@link engine.view.Document#addObserver} method.
+ * Note that this event is not available by default. To make it available {@link
+ * module:engine/view/observer/observer~Observer.MouseObserver}
+ * needs to be added to {@link module:engine/view/document~Document} by a {@link module:engine/view/document~Document#addObserver} method.
  *
- * @see engine.view.observer.MouseObserver
- * @event engine.view.Document#mousedown
- * @param {engine.view.observer.DomEventData} data Event data.
+ * @see module:engine/view/observer/observer~Observer.MouseObserver
+ * @event module:engine/view/document~Document#event:mousedown
+ * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
  */

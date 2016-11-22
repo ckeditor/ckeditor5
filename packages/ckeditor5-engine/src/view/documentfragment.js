@@ -14,14 +14,12 @@ import EmitterMixin from '../../utils/emittermixin.js';
 
 /**
  * DocumentFragment class.
- *
- * @memberOf engine.view
  */
 export default class DocumentFragment {
 	/**
 	 * Creates new DocumentFragment instance.
 	 *
-	 * @param {engine.view.Node|Iterable.<engine.view.Node>} [children] List of nodes to be inserted into
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children] List of nodes to be inserted into
 	 * created document fragment.
 	 */
 	constructor( children ) {
@@ -29,7 +27,7 @@ export default class DocumentFragment {
 		 * Array of child nodes.
 		 *
 		 * @protected
-		 * @member {Array.<engine.view.Element>} engine.view.DocumentFragment#_children
+		 * @member {Array.<module:engine/view/element~Element>} module:engine/view/documentfragment~DocumentFragment#_children
 		 */
 		this._children = [];
 
@@ -69,7 +67,7 @@ export default class DocumentFragment {
 	 * Artificial root of `DocumentFragment`. Returns itself. Added for compatibility reasons.
 	 *
 	 * @readonly
-	 * @type {engine.model.DocumentFragment}
+	 * @type {module:engine/model/documentfragment~DocumentFragment}
 	 */
 	get root() {
 		return this;
@@ -95,10 +93,10 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * {@link engine.view.DocumentFragment#insertChildren Insert} a child node or a list of child nodes at the end
+	 * {@link module:engine/view/documentfragment~DocumentFragment#insertChildren Insert} a child node or a list of child nodes at the end
 	 * and sets the parent of these nodes to this fragment.
 	 *
-	 * @param {engine.view.Node|Iterable.<engine.view.Node>} nodes Node or the list of nodes to be inserted.
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} nodes Node or the list of nodes to be inserted.
 	 * @returns {Number} Number of appended nodes.
 	 */
 	appendChildren( nodes ) {
@@ -109,7 +107,7 @@ export default class DocumentFragment {
 	 * Gets child at the given index.
 	 *
 	 * @param {Number} index Index of child.
-	 * @returns {engine.view.Node} Child node.
+	 * @returns {module:engine/view/node~Node} Child node.
 	 */
 	getChild( index ) {
 		return this._children[ index ];
@@ -118,7 +116,7 @@ export default class DocumentFragment {
 	/**
 	 * Gets index of the given child node. Returns `-1` if child node is not found.
 	 *
-	 * @param {engine.view.Node} node Child node.
+	 * @param {module:engine/view/node~Node} node Child node.
 	 * @returns {Number} Index of the child node.
 	 */
 	getChildIndex( node ) {
@@ -128,7 +126,7 @@ export default class DocumentFragment {
 	/**
 	 * Gets child nodes iterator.
 	 *
-	 * @returns {Iterable.<engine.view.Node>} Child nodes iterator.
+	 * @returns {Iterable.<module:engine/view/node~Node>} Child nodes iterator.
 	 */
 	getChildren() {
 		return this._children[ Symbol.iterator ]();
@@ -139,7 +137,7 @@ export default class DocumentFragment {
 	 * this fragment.
 	 *
 	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {engine.view.Node|Iterable.<engine.view.Node>} nodes Node or list of nodes to be inserted.
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} nodes Node or list of nodes to be inserted.
 	 * @returns {Number} Number of inserted nodes.
 	 */
 	insertChildren( index, nodes ) {
@@ -164,7 +162,7 @@ export default class DocumentFragment {
 	 *
 	 * @param {Number} index Number of the first node to remove.
 	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @returns {Array.<engine.view.Node>} The array of removed nodes.
+	 * @returns {Array.<module:engine/view/node~Node>} The array of removed nodes.
 	 */
 	removeChildren( index, howMany = 1 ) {
 		this._fireChange( 'children', this );
@@ -180,9 +178,9 @@ export default class DocumentFragment {
 	 * Fires `change` event with given type of the change.
 	 *
 	 * @private
-	 * @param {engine.view.ChangeType} type Type of the change.
-	 * @param {engine.view.Node} node Changed node.
-	 * @fires engine.view.Node#change
+	 * @param {module:engine/view/document~ChangeType} type Type of the change.
+	 * @param {module:engine/view/node~Node} node Changed node.
+	 * @fires module:engine/view/node~Node#change
 	 */
 	_fireChange( type, node ) {
 		this.fire( 'change:' + type, node );
@@ -193,8 +191,8 @@ mix( DocumentFragment, EmitterMixin );
 
 // Converts strings to Text and non-iterables to arrays.
 //
-// @param {String|engine.view.Node|Iterable.<String|engine.view.Node>}
-// @return {Iterable.<engine.view.Node>}
+// @param {String|module:engine/view/node~Node|Iterable.<String|module:engine/view/node~Node>}
+// @return {Iterable.<module:engine/view/node~Node>}
 function normalize( nodes ) {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {

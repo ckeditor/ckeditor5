@@ -12,45 +12,44 @@ import TreeWalker from './treewalker.js';
 
 /**
  * Tree view range.
- *
- * @memberOf engine.view
  */
 export default class Range {
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
 	 *
-	 * **Note:** Constructor creates it's own {@link engine.view.Position} instances basing on passed values.
+	 * **Note:** Constructor creates it's own {@link module:engine/view/position~Position} instances basing on passed values.
 	 *
-	 * @param {engine.view.Position} start Start position.
-	 * @param {engine.view.Position} [end] End position. If not set, range will be collapsed at `start` position.
+	 * @param {module:engine/view/position~Position} start Start position.
+	 * @param {module:engine/view/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
 	 */
 	constructor( start, end = null ) {
 		/**
 		 * Start position.
 		 *
-		 * @member engine.view.Range#start
-		 * @type {engine.view.Position}
+		 * @member module:engine/view/range~Range#start
+		 * @type {module:engine/view/position~Position}
 		 */
 		this.start = Position.createFromPosition( start );
 
 		/**
 		 * End position.
 		 *
-		 * @member engine.view.Range#end
-		 * @type {engine.view.Position}
+		 * @member module:engine/view/range~Range#end
+		 * @type {module:engine/view/position~Position}
 		 */
 		this.end = end ? Position.createFromPosition( end ) : Position.createFromPosition( start );
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link engine.view.Item view items} that are in this range and returns
-	 * them together with additional information like length or {@link engine.view.Position positions},
-	 * grouped as {@link engine.view.TreeWalkerValue}.
+	 * Returns an iterator that iterates over all {@link module:engine/view/item~Item view items} that are in this range and returns
+	 * them together with additional information like length or {@link module:engine/view/position~Position positions},
+	 * grouped as {@link module:engine/view/treewalker~TreeWalkerValue}.
 	 *
-	 * This iterator uses {@link engine.view.TreeWalker TreeWalker} with `boundaries` set to this range and `ignoreElementEnd` option
+	 * This iterator uses {@link module:engine/view/treewalker~TreeWalker TreeWalker} with `boundaries` set to this range and
+	 * `ignoreElementEnd` option
 	 * set to `true`.
 	 *
-	 * @returns {Iterable.<engine.view.TreeWalkerValue>}
+	 * @returns {Iterable.<module:engine/view/treewalker~TreeWalkerValue>}
 	 */
 	*[ Symbol.iterator ]() {
 		yield* new TreeWalker( { boundaries: this, ignoreElementEnd: true } );
@@ -66,8 +65,8 @@ export default class Range {
 	}
 
 	/**
-	 * Returns whether this range is flat, that is if {@link engine.view.Range#start start} position and
-	 * {@link engine.view.Range#end end} position are in the same {@link engine.view.Position#parent parent}.
+	 * Returns whether this range is flat, that is if {@link module:engine/view/range~Range#start start} position and
+	 * {@link module:engine/view/range~Range#end end} position are in the same {@link module:engine/view/position~Position#parent parent}.
 	 *
 	 * @type {Boolean}
 	 */
@@ -78,7 +77,7 @@ export default class Range {
 	/**
 	 * Range root element.
 	 *
-	 * @type {engine.view.Element|engine.view.DocumentFragment}
+	 * @type {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment}
 	 */
 	get root() {
 		return this.start.root;
@@ -87,7 +86,7 @@ export default class Range {
 	/**
 	 * Two ranges are equal if their start and end positions are equal.
 	 *
-	 * @param {engine.view.Range} otherRange Range to compare with.
+	 * @param {module:engine/view/range~Range} otherRange Range to compare with.
 	 * @returns {Boolean} `true` if ranges are equal, `false` otherwise
 	 */
 	isEqual( otherRange ) {
@@ -95,28 +94,30 @@ export default class Range {
 	}
 
 	/**
-	 * Checks whether this range contains given {@link engine.view.Position position}.
+	 * Checks whether this range contains given {@link module:engine/view/position~Position position}.
 	 *
-	 * @param {engine.view.Position} position Position to check.
-	 * @returns {Boolean} `true` if given {@link engine.view.Position position} is contained in this range, `false` otherwise.
+	 * @param {module:engine/view/position~Position} position Position to check.
+	 * @returns {Boolean} `true` if given {@link module:engine/view/position~Position position} is contained in this range, `false` otherwise.
 	 */
 	containsPosition( position ) {
 		return position.isAfter( this.start ) && position.isBefore( this.end );
 	}
 
 	/**
-	 * Checks whether this range contains given {@link engine.view.Range range}.
+	 * Checks whether this range contains given {@link module:engine/view/range~Range range}.
 	 *
-	 * @param {engine.view.Range} otherRange Range to check.
-	 * @returns {Boolean} `true` if given {@link engine.view.Range range} boundaries are contained by this range, `false` otherwise.
+	 * @param {module:engine/view/range~Range} otherRange Range to check.
+	 * @returns {Boolean} `true` if given {@link module:engine/view/range~Range range} boundaries are contained by this range, `false`
+	 * otherwise.
 	 */
 	containsRange( otherRange ) {
 		return this.containsPosition( otherRange.start ) && this.containsPosition( otherRange.end );
 	}
 
 	/**
-	 * Computes which part(s) of this {@link engine.view.Range range} is not a part of given {@link engine.view.Range range}.
-	 * Returned array contains zero, one or two {@link engine.view.Range ranges}.
+	 * Computes which part(s) of this {@link module:engine/view/range~Range range} is not a part of given {@link module:engine/view/range~Range
+	 * range}.
+	 * Returned array contains zero, one or two {@link module:engine/view/range~Range ranges}.
 	 *
 	 * Examples:
 	 *
@@ -138,8 +139,8 @@ export default class Range {
 	 *		transformed = range.getDifference( otherRange );
 	 *		// transformed array has two ranges: from ( foo, 1 ) to ( p, 1 ) and from ( p, 2 ) to ( bar, 1 )
 	 *
-	 * @param {engine.view.Range} otherRange Range to differentiate against.
-	 * @returns {Array.<engine.view.Range>} The difference between ranges.
+	 * @param {module:engine/view/range~Range} otherRange Range to differentiate against.
+	 * @returns {Array.<module:engine/view/range~Range>} The difference between ranges.
 	 */
 	getDifference( otherRange ) {
 		const ranges = [];
@@ -167,7 +168,7 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an intersection of this {@link engine.view.Range range} and given {@link engine.view.Range range}.
+	 * Returns an intersection of this {@link module:engine/view/range~Range range} and given {@link module:engine/view/range~Range range}.
 	 * Intersection is a common part of both of those ranges. If ranges has no common part, returns `null`.
 	 *
 	 * Examples:
@@ -184,8 +185,8 @@ export default class Range {
 	 *		otherRange = new Range( new Position( bar, 1 ), new Position( bar, 3 ); "ar" is in range.
 	 *		transformed = range.getIntersection( otherRange ); // null - no common part.
 	 *
-	 * @param {engine.view.Range} otherRange Range to check for intersection.
-	 * @returns {engine.view.Range|null} A common part of given ranges or `null` if ranges have no common part.
+	 * @param {module:engine/view/range~Range} otherRange Range to check for intersection.
+	 * @returns {module:engine/view/range~Range|null} A common part of given ranges or `null` if ranges have no common part.
 	 */
 	getIntersection( otherRange ) {
 		if ( this.isIntersecting( otherRange ) ) {
@@ -214,10 +215,10 @@ export default class Range {
 	}
 
 	/**
-	 * Creates a {@link engine.view.TreeWalker TreeWalker} instance with this range as a boundary.
+	 * Creates a {@link module:engine/view/treewalker~TreeWalker TreeWalker} instance with this range as a boundary.
 	 *
-	 * @param {Object} options Object with configuration options. See {@link engine.view.TreeWalker}.
-	 * @param {engine.view.Position} [options.startPosition]
+	 * @param {Object} options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
+	 * @param {module:engine/view/position~Position} [options.startPosition]
 	 * @param {Boolean} [options.singleCharacters=false]
 	 * @param {Boolean} [options.shallow=false]
 	 * @param {Boolean} [options.ignoreElementEnd=false]
@@ -229,17 +230,18 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link engine.view.Items view items} that are in this range and returns
+	 * Returns an iterator that iterates over all {@link module:engine/view/item~Items view items} that are in this range and returns
 	 * them.
 	 *
-	 * This method uses {@link engine.view.TreeWalker} with `boundaries` set to this range and `ignoreElementEnd` option
-	 * set to `true`. However it returns only {@link engine.view.Item items}, not {@link engine.view.TreeWalkerValue}.
+	 * This method uses {@link module:engine/view/treewalker~TreeWalker} with `boundaries` set to this range and `ignoreElementEnd` option
+	 * set to `true`. However it returns only {@link module:engine/view/item~Item items}, not {@link
+	 * module:engine/view/treewalker~TreeWalkerValue}.
 	 *
-	 * You may specify additional options for the tree walker. See {@link engine.view.TreeWalker} for
+	 * You may specify additional options for the tree walker. See {@link module:engine/view/treewalker~TreeWalker} for
 	 * a full list of available options.
 	 *
-	 * @param {Object} options Object with configuration options. See {@link engine.view.TreeWalker}.
-	 * @returns {Iterable.<engine.view.Item>}
+	 * @param {Object} options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
+	 * @returns {Iterable.<module:engine/view/item~Item>}
 	 */
 	*getItems( options = {} ) {
 		options.boundaries = this;
@@ -253,17 +255,17 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link engine.view.Position positions} that are boundaries or
+	 * Returns an iterator that iterates over all {@link module:engine/view/position~Position positions} that are boundaries or
 	 * contained in this range.
 	 *
-	 * This method uses {@link engine.view.TreeWalker} with `boundaries` set to this range. However it returns only
-	 * {@link engine.view.Position positions}, not {@link engine.view.TreeWalkerValue}.
+	 * This method uses {@link module:engine/view/treewalker~TreeWalker} with `boundaries` set to this range. However it returns only
+	 * {@link module:engine/view/position~Position positions}, not {@link module:engine/view/treewalker~TreeWalkerValue}.
 	 *
-	 * You may specify additional options for the tree walker. See {@link engine.view.TreeWalker} for
+	 * You may specify additional options for the tree walker. See {@link module:engine/view/treewalker~TreeWalker} for
 	 * a full list of available options.
 	 *
-	 * @param {Object} options Object with configuration options. See {@link engine.view.TreeWalker}.
-	 * @returns {Iterable.<engine.view.Position>}
+	 * @param {Object} options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
+	 * @returns {Iterable.<module:engine/view/position~Position>}
 	 */
 	*getPositions( options = {} ) {
 		options.boundaries = this;
@@ -280,7 +282,7 @@ export default class Range {
 	/**
 	 * Checks and returns whether this range intersects with given range.
 	 *
-	 * @param {engine.view.Range} otherRange Range to compare with.
+	 * @param {module:engine/view/range~Range} otherRange Range to compare with.
 	 * @returns {Boolean} True if ranges intersect.
 	 */
 	isIntersecting( otherRange ) {
@@ -290,11 +292,11 @@ export default class Range {
 	/**
 	 * Creates a range from given parents and offsets.
 	 *
-	 * @param {engine.view.Element} startElement Start position parent element.
+	 * @param {module:engine/view/element~Element} startElement Start position parent element.
 	 * @param {Number} startOffset Start position offset.
-	 * @param {engine.view.Element} endElement End position parent element.
+	 * @param {module:engine/view/element~Element} endElement End position parent element.
 	 * @param {Number} endOffset End position offset.
-	 * @returns {engine.view.Range} Created range.
+	 * @returns {module:engine/view/range~Range} Created range.
 	 */
 	static createFromParentsAndOffsets( startElement, startOffset, endElement, endOffset ) {
 		return new this(
@@ -306,20 +308,20 @@ export default class Range {
 	/**
 	 * Creates and returns a new instance of Range which is equal to passed range.
 	 *
-	 * @param {engine.view.Range} range Range to clone.
-	 * @returns {engine.view.Range}
+	 * @param {module:engine/view/range~Range} range Range to clone.
+	 * @returns {module:engine/view/range~Range}
 	 */
 	static createFromRange( range ) {
 		return new this( range.start, range.end );
 	}
 
 	/**
-	 * Creates a new range, spreading from specified {@link engine.view.Position position} to a position moved by
+	 * Creates a new range, spreading from specified {@link module:engine/view/position~Position position} to a position moved by
 	 * given `shift`. If `shift` is a negative value, shifted position is treated as the beginning of the range.
 	 *
-	 * @param {engine.view.Position} position Beginning of the range.
+	 * @param {module:engine/view/position~Position} position Beginning of the range.
 	 * @param {Number} shift How long the range should be.
-	 * @returns {engine.view.Range}
+	 * @returns {module:engine/view/range~Range}
 	 */
 	static createFromPositionAndShift( position, shift ) {
 		const start = position;
@@ -329,21 +331,21 @@ export default class Range {
 	}
 
 	/**
-	 * Creates a range inside an {@link engine.view.Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
-	 * @param {engine.view.Element} element Element which is a parent for the range.
-	 * @returns {engine.view.Range}
+	 * @param {module:engine/view/element~Element} element Element which is a parent for the range.
+	 * @returns {module:engine/view/range~Range}
 	 */
 	static createIn( element ) {
 		return this.createFromParentsAndOffsets( element, 0, element, element.childCount );
 	}
 
 	/**
-	 * Creates a range that starts before given {@link engine.view.Item view item} and ends after it.
+	 * Creates a range that starts before given {@link module:engine/view/item~Item view item} and ends after it.
 	 *
-	 * @param {engine.view.Item} item
-	 * @returns {engine.view.Range}
+	 * @param {module:engine/view/item~Item} item
+	 * @returns {module:engine/view/range~Range}
 	 */
 	static createOn( item ) {
 		return this.createFromPositionAndShift( Position.createBefore( item ), 1 );

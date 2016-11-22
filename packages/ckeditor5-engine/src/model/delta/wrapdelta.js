@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/delta/wrapdelta
+ */
+
 import Delta from './delta.js';
 import DeltaFactory from './deltafactory.js';
 import UnwrapDelta from './unwrapdelta.js';
@@ -16,16 +20,14 @@ import CKEditorError from '../../../utils/ckeditorerror.js';
 
 /**
  * @classdesc
- * To provide specific OT behavior and better collisions solving, {@link engine.model.Batch#merge} method
+ * To provide specific OT behavior and better collisions solving, {@link module:engine/model/batch~Batch#merge} method
  * uses the `WrapDelta` class which inherits from the `Delta` class and may overwrite some methods.
- *
- * @memberOf engine.model.delta
  */
 export default class WrapDelta extends Delta {
 	/**
 	 * Range to wrap or `null` if there are no operations in the delta.
 	 *
-	 * @type {engine.model.Range|null}
+	 * @type {module:engine/model/range~Range|null}
 	 */
 	get range() {
 		let moveOp = this._moveOperation;
@@ -48,7 +50,7 @@ export default class WrapDelta extends Delta {
 	 * Operation that inserts wrapping element or `null` if there are no operations in the delta.
 	 *
 	 * @protected
-	 * @type {engine.model.operation.InsertOperation|engine.model.operation.ReinsertOperation}
+	 * @type {module:engine/model/operation/insertoperation~insertOperation|module:engine/model/opertation/reinsertoperation~ReinsertOperation}
 	 */
 	get _insertOperation() {
 		return this.operations[ 0 ] || null;
@@ -58,7 +60,7 @@ export default class WrapDelta extends Delta {
 	 * Operation that moves wrapped nodes to their new parent or `null` if there are no operations in the delta.
 	 *
 	 * @protected
-	 * @type {engine.model.operation.MoveOperation|null}
+	 * @type {module:engine/model/operation/moveoperation~MoveOperation|null}
 	 */
 	get _moveOperation() {
 		return this.operations[ 1 ] || null;
@@ -88,12 +90,12 @@ export default class WrapDelta extends Delta {
 
 /**
  * Wraps given range with given element or with a new element with specified name, if string has been passed.
- * **Note:** range to wrap should be a "flat range" (see {@link engine.model.Range#isFlat}). If not, error will be thrown.
+ * **Note:** range to wrap should be a "flat range" (see {@link module:engine/model/range~Range#isFlat}). If not, error will be thrown.
  *
  * @chainable
- * @method engine.model.Batch#wrap
- * @param {engine.model.Range} range Range to wrap.
- * @param {engine.model.Element|String} elementOrString Element or name of element to wrap the range with.
+ * @method module:engine/model/batch~Batch#wrap
+ * @param {module:engine/model/range~Range} range Range to wrap.
+ * @param {module:engine/model/element~Element|String} elementOrString Element or name of element to wrap the range with.
  */
 register( 'wrap', function( range, elementOrString ) {
 	if ( !range.isFlat ) {

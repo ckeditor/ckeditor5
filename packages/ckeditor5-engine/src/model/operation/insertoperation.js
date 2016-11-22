@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/operation/insertoperation
+ */
+
 import Operation from './operation.js';
 import Position from '../position.js';
 import NodeList from '../nodelist.js';
@@ -15,16 +19,15 @@ import Element from '../element.js';
 /**
  * Operation to insert one or more nodes at given position in the model.
  *
- * @memberOf engine.model.operation
- * @extends engine.model.operation.Operation
+ * @extends module:engine/model/operation/operation~Operation
  */
 export default class InsertOperation extends Operation {
 	/**
 	 * Creates an insert operation.
 	 *
-	 * @param {engine.model.Position} position Position of insertion.
-	 * @param {engine.model.NodeSet} nodes The list of nodes to be inserted.
-	 * @param {Number} baseVersion {@link engine.model.Document#version} on which operation can be applied.
+	 * @param {module:engine/model/position~Position} position Position of insertion.
+	 * @param {module:engine/model/node~NodeSet} nodes The list of nodes to be inserted.
+	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which operation can be applied.
 	 */
 	constructor( position, nodes, baseVersion ) {
 		super( baseVersion );
@@ -33,7 +36,7 @@ export default class InsertOperation extends Operation {
 		 * Position of insertion.
 		 *
 		 * @readonly
-		 * @member {engine.model.Position} engine.model.operation.InsertOperation#position
+		 * @member {module:engine/model/position~Position} module:engine/model/operation/insertoperation~insertOperation#position
 		 */
 		this.position = Position.createFromPosition( position );
 
@@ -41,7 +44,7 @@ export default class InsertOperation extends Operation {
 		 * List of nodes to insert.
 		 *
 		 * @readonly
-		 * @member {engine.model.NodeList} engine.model.operation.InsertOperation#nodeList
+		 * @member {module:engine/model/node~NodeList} module:engine/model/operation/insertoperation~insertOperation#nodeList
 		 */
 		this.nodes = new NodeList( normalizeNodes( nodes ) );
 	}
@@ -55,7 +58,7 @@ export default class InsertOperation extends Operation {
 
 	/**
 	 * @inheritDoc
-	 * @returns {engine.model.operation.InsertOperation}
+	 * @returns {module:engine/model/operation/insertoperation~insertOperation}
 	 */
 	clone() {
 		const nodes = new NodeList( [ ...this.nodes ].map( ( node ) => node.clone( true ) ) );
@@ -65,7 +68,7 @@ export default class InsertOperation extends Operation {
 
 	/**
 	 * @inheritDoc
-	 * @returns {engine.model.operation.RemoveOperation}
+	 * @returns {module:engine/model/operation/removeoperation~RemoveOperation}
 	 */
 	getReversed() {
 		return new RemoveOperation( this.position, this.nodes.maxOffset, this.baseVersion + 1 );
@@ -91,15 +94,15 @@ export default class InsertOperation extends Operation {
 	 * @inheritDoc
 	 */
 	static get className() {
-		return 'engine.model.operation.InsertOperation';
+		return 'engine.model.operation.insertOperation';
 	}
 
 	/**
 	 * Creates `InsertOperation` object from deserilized object, i.e. from parsed JSON string.
 	 *
 	 * @param {Object} json Deserialized JSON object.
-	 * @param {engine.model.Document} document Document on which this operation will be applied.
-	 * @returns {engine.model.operation.InsertOperation}
+	 * @param {module:engine/model/document~Document} document Document on which this operation will be applied.
+	 * @returns {module:engine/model/operation/insertoperation~insertOperation}
 	 */
 	static fromJSON( json, document ) {
 		let children = [];

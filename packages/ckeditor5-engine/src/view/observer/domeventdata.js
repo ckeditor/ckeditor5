@@ -3,18 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/observer/domeventdata
+ */
+
 import extend from '../../../utils/lib/lodash/extend.js';
 
 /**
- * Information about a DOM event in context of the {@link engine.view.Document}.
+ * Information about a DOM event in context of the {@link module:engine/view/document~Document}.
  * It wraps the native event, which usually should not be used as the wrapper contains
  * additional data (like key code for keyboard events).
- *
- * @memberOf engine.view.observer
  */
 export default class DomEventData {
 	/**
-	 * @param {engine.view.Document} document The instance of the tree view Document.
+	 * @param {module:engine/view/document~Document} document The instance of the tree view Document.
 	 * @param {Event} domEvent The DOM event.
 	 * @param {Object} [additionalData] Additional properties that the instance should contain.
 	 */
@@ -23,7 +25,7 @@ export default class DomEventData {
 		 * The instance of the document.
 		 *
 		 * @readonly
-		 * @member {engine.view.Document} engine.view.observer.DomEvent#view
+		 * @member {module:engine/view/document~Document} module:engine/view/observer/observer~Observer.DomEvent#view
 		 */
 		this.document = document;
 
@@ -31,7 +33,7 @@ export default class DomEventData {
 		 * The DOM event.
 		 *
 		 * @readonly
-		 * @member {Event} engine.view.observer.DomEvent#domEvent
+		 * @member {Event} module:engine/view/observer/observer~Observer.DomEvent#domEvent
 		 */
 		this.domEvent = domEvent;
 
@@ -39,7 +41,7 @@ export default class DomEventData {
 		 * The DOM target.
 		 *
 		 * @readonly
-		 * @member {HTMLElement} engine.view.observer.DomEvent#target
+		 * @member {HTMLElement} module:engine/view/observer/observer~Observer.DomEvent#target
 		 */
 		this.domTarget = domEvent.target;
 
@@ -50,7 +52,7 @@ export default class DomEventData {
 	 * The tree view element representing the target.
 	 *
 	 * @readonly
-	 * @type engine.view.Element
+	 * @type module:engine/view/element~Element
 	 */
 	get target() {
 		return this.document.domConverter.getCorrespondingViewElement( this.domTarget );

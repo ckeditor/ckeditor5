@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/delta/unwrapdelta
+ */
+
 import Delta from './delta.js';
 import DeltaFactory from './deltafactory.js';
 import WrapDelta from './wrapdelta.js';
@@ -14,16 +18,14 @@ import CKEditorError from '../../../utils/ckeditorerror.js';
 
 /**
  * @classdesc
- * To provide specific OT behavior and better collisions solving, {@link engine.model.Batch#merge} method
+ * To provide specific OT behavior and better collisions solving, {@link module:engine/model/batch~Batch#merge} method
  * uses the `UnwrapDelta` class which inherits from the `Delta` class and may overwrite some methods.
- *
- * @memberOf engine.model.delta
  */
 export default class UnwrapDelta extends Delta {
 	/**
 	 * Position before unwrapped element or `null` if there are no operations in the delta.
 	 *
-	 * @type {engine.model.Position|null}
+	 * @type {module:engine/model/position~Position|null}
 	 */
 	get position() {
 		return this._moveOperation ? this._moveOperation.targetPosition : null;
@@ -33,7 +35,7 @@ export default class UnwrapDelta extends Delta {
 	 * Operation in the delta that moves unwrapped nodes to their new parent or `null` if there are no operations in the delta.
 	 *
 	 * @protected
-	 * @type {engine.model.operation.MoveOperation|null}
+	 * @type {module:engine/model/operation/moveoperation~MoveOperation|null}
 	 */
 	get _moveOperation() {
 		return this.operations[ 0 ] || null;
@@ -66,8 +68,8 @@ export default class UnwrapDelta extends Delta {
  * error if you try to unwrap an element that does not have a parent.
  *
  * @chainable
- * @method engine.model.Batch#unwrap
- * @param {engine.model.Element} position Element to unwrap.
+ * @method module:engine/model/batch~Batch#unwrap
+ * @param {module:engine/model/element~Element} position Element to unwrap.
  */
 register( 'unwrap', function( element ) {
 	if ( element.parent === null ) {

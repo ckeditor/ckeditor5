@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/operation/nooperation
+ */
+
 import Operation from './operation.js';
 
 /**
@@ -10,16 +14,15 @@ import Operation from './operation.js';
  * which when executed does not change the tree model. It still has some parameters defined for transformation purposes.
  *
  * In most cases this operation is a result of transforming operations. When transformation returns
- * {@link engine.model.operation.NoOperation} it means that changes done by the transformed operation
+ * {@link module:engine/model/operation/nooperation~NoOperation} it means that changes done by the transformed operation
  * have already been applied.
  *
- * @memberOf engine.model.operation
- * @extends engine.model.operation.Operation
+ * @extends module:engine/model/operation/operation~Operation
  */
 export default class NoOperation extends Operation {
 	/**
 	 * @inheritDoc
-	 * @returns {engine.model.operation.NoOperation}
+	 * @returns {module:engine/model/operation/nooperation~NoOperation}
 	 */
 	clone() {
 		return new NoOperation( this.baseVersion );
@@ -27,7 +30,7 @@ export default class NoOperation extends Operation {
 
 	/**
 	 * @inheritDoc
-	 * @returns {engine.model.operation.NoOperation}
+	 * @returns {module:engine/model/operation/nooperation~NoOperation}
 	 */
 	getReversed() {
 		return new NoOperation( this.baseVersion + 1 );

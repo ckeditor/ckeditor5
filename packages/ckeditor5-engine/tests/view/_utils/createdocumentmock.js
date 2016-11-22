@@ -9,7 +9,7 @@ import ObservableMixin from 'ckeditor5/utils/observablemixin.js';
 import Selection from 'ckeditor5/engine/view/selection.js';
 
 /**
- * Creates {@link engine.view.Document view Document} mock.
+ * Creates {@link module:engine/view/document~Document view Document} mock.
  *
  * @returns {utils.ObservableMixin} Document mock
  */

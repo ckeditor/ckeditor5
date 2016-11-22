@@ -348,7 +348,7 @@ describe( 'Delete utils', () => {
 			it( 'unicode support - combining mark backward', () => {
 				setData( document, '<p>foob̂[]ar</p>' );
 
-				// Creating new instance of selection instead of operation on engine.model.Document#selection.
+				// Creating new instance of selection instead of operation on module:engine/model/document~Document#selection.
 				// Document's selection will throw errors in some test cases (which are correct cases, but only for
 				// non-document selections).
 				const testSelection = Selection.createFromSelection( document.selection );
@@ -390,7 +390,7 @@ describe( 'Delete utils', () => {
 
 			setData( document, input );
 
-			// Creating new instance of selection instead of operation on engine.model.Document#selection.
+			// Creating new instance of selection instead of operation on module:engine/model/document~Document#selection.
 			// Document's selection will throw errors in some test cases (which are correct cases, but only for
 			// non-document selections).
 			const testSelection = Selection.createFromSelection( document.selection );

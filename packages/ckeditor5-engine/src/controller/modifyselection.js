@@ -34,7 +34,7 @@ import { isInsideSurrogatePair, isInsideCombinedSymbol } from '../../utils/unico
  * **Note:** if you extend a forward selection in a backward direction you will in fact shrink it.
  *
  * @method engine.controller.modifySelection
- * @param {engine.model.Selection} selection The selection to modify.
+ * @param {module:engine/model/selection~Selection} selection The selection to modify.
  * @param {Object} [options]
  * @param {'forward'|'backward'} [options.direction='forward'] The direction in which the selection should be modified.
  * @param {'character'|'codePoint'} [options.unit='character'] The unit by which selection should be modified.

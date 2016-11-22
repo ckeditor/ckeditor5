@@ -17,16 +17,15 @@ import Matcher from './matcher.js';
 /**
  * View element.
  *
- * Editing engine does not define fixed HTML DTD. This is why the type of the {@link engine.view.Element} need to
- * be defined by the feature developer. Creating an element you should use {@link engine.view.ContainerElement}
- * class, {@link engine.view.AttributeElement} class or {@link engine.view.EmptyElement} class.
+ * Editing engine does not define fixed HTML DTD. This is why the type of the {@link module:engine/view/element~Element} need to
+ * be defined by the feature developer. Creating an element you should use {@link module:engine/view/containerelement~ContainerElement}
+ * class, {@link module:engine/view/attributeelement~AttributeElement} class or {@link module:engine/view/emptyelement~EmptyElement} class.
  *
  * Note that for view elements which are not created from model, like elements from mutations, paste or
  * {@link engine.controller.DataController#set data.set} it is not possible to define the type of the element, so
- * these will be instances of the {@link engine.view.Element}.
+ * these will be instances of the {@link module:engine/view/element~Element}.
  *
- * @memberOf engine.view
- * @extends engine.view.Node
+ * @extends module:engine/view/node~Node
  */
 export default class Element extends Node {
 	/**
@@ -40,7 +39,8 @@ export default class Element extends Node {
 	 *
 	 * @param {String} name Node name.
 	 * @param {Object|Iterable} [attrs] Collection of attributes.
-	 * @param {engine.view.Node|Iterable.<engine.view.Node>} [children] List of nodes to be inserted into created element.
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
+	 * List of nodes to be inserted into created element.
 	 */
 	constructor( name, attrs, children ) {
 		super();
@@ -49,7 +49,7 @@ export default class Element extends Node {
 		 * Name of the element.
 		 *
 		 * @readonly
-		 * @member {String} engine.view.Element#name
+		 * @member {String}
 		 */
 		this.name = name;
 
@@ -57,7 +57,7 @@ export default class Element extends Node {
 		 * Map of attributes, where attributes names are keys and attributes values are values.
 		 *
 		 * @protected
-		 * @member {Map} engine.view.Element#_attrs
+		 * @member {Map} #_attrs
 		 */
 		if ( isPlainObject( attrs ) ) {
 			this._attrs = objectToMap( attrs );
@@ -69,7 +69,7 @@ export default class Element extends Node {
 		 * Array of child nodes.
 		 *
 		 * @protected
-		 * @member {Array.<engine.view.Node>} engine.view.Element#_children
+		 * @member {Array.<module:engine/view/node~Node>}
 		 */
 		this._children = [];
 
@@ -81,7 +81,7 @@ export default class Element extends Node {
 		 * Set of classes associated with element instance.
 		 *
 		 * @protected
-		 * @member {Set} engine.view.Element#_classes
+		 * @member {Set}
 		 */
 		this._classes = new Set();
 
@@ -96,7 +96,7 @@ export default class Element extends Node {
 		 * Map of styles.
 		 *
 		 * @protected
-		 * @member {Set} engine.view.Element#_styles
+		 * @member {Set} module:engine/view/element~Element#_styles
 		 */
 		this._styles = new Map();
 
@@ -132,7 +132,7 @@ export default class Element extends Node {
 	 *
 	 * @param {Boolean} deep If set to `true` clones element and all its children recursively. When set to `false`,
 	 * element will be cloned without any children.
-	 * @returns {engine.view.Element} Clone of this element.
+	 * @returns {module:engine/view/element~Element} Clone of this element.
 	 */
 	clone( deep ) {
 		const childrenClone = [];
@@ -155,11 +155,11 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * {@link engine.view.Element#insert Insert} a child node or a list of child nodes at the end of this node and sets
+	 * {@link module:engine/view/element~Element#insert Insert} a child node or a list of child nodes at the end of this node and sets
 	 * the parent of these nodes to this element.
 	 *
-	 * @fires engine.view.Node#change
-	 * @param {engine.view.Node|Iterable.<engine.view.Node>} nodes Node or the list of nodes to be inserted.
+	 * @fires change
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} nodes Node or the list of nodes to be inserted.
 	 * @returns {Number} Number of appended nodes.
 	 */
 	appendChildren( nodes ) {
@@ -170,7 +170,7 @@ export default class Element extends Node {
 	 * Gets child at the given index.
 	 *
 	 * @param {Number} index Index of child.
-	 * @returns {engine.view.Node} Child node.
+	 * @returns {module:engine/view/node~Node} Child node.
 	 */
 	getChild( index ) {
 		return this._children[ index ];
@@ -179,7 +179,7 @@ export default class Element extends Node {
 	/**
 	 * Gets index of the given child node. Returns `-1` if child node is not found.
 	 *
-	 * @param {engine.view.Node} node Child node.
+	 * @param {module:engine/view/node~Node} node Child node.
 	 * @returns {Number} Index of the child node.
 	 */
 	getChildIndex( node ) {
@@ -189,7 +189,7 @@ export default class Element extends Node {
 	/**
 	 * Gets child nodes iterator.
 	 *
-	 * @returns {Iterable.<engine.view.Node>} Child nodes iterator.
+	 * @returns {Iterable.<module:engine/view/node~Node>} Child nodes iterator.
 	 */
 	getChildren() {
 		return this._children[ Symbol.iterator ]();
@@ -291,7 +291,7 @@ export default class Element extends Node {
 	 *
 	 * @param {String} key Attribute key.
 	 * @param {String} value Attribute value.
-	 * @fires engine.view.Node#change
+	 * @fires module:engine/view/node~Node#change
 	 */
 	setAttribute( key, value ) {
 		this._fireChange( 'attributes', this );
@@ -310,8 +310,8 @@ export default class Element extends Node {
 	 * this element.
 	 *
 	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {engine.view.Node|Iterable.<engine.view.Node>} nodes Node or the list of nodes to be inserted.
-	 * @fires engine.view.Node#change
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} nodes Node or the list of nodes to be inserted.
+	 * @fires module:engine/view/node~Node#change
 	 * @returns {Number} Number of inserted nodes.
 	 */
 	insertChildren( index, nodes ) {
@@ -336,7 +336,7 @@ export default class Element extends Node {
 	 *
 	 * @param {String} key Attribute key.
 	 * @returns {Boolean} Returns true if an attribute existed and has been removed.
-	 * @fires engine.view.Node#change
+	 * @fires module:engine/view/node~Node#change
 	 */
 	removeAttribute( key ) {
 		this._fireChange( 'attributes', this );
@@ -372,8 +372,8 @@ export default class Element extends Node {
 	 *
 	 * @param {Number} index Number of the first node to remove.
 	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @returns {Array.<engine.view.Node>} The array of removed nodes.
-	 * @fires engine.view.Node#change
+	 * @returns {Array.<module:engine/view/node~Node>} The array of removed nodes.
+	 * @fires module:engine/view/node~Node#change
 	 */
 	removeChildren( index, howMany = 1 ) {
 		this._fireChange( 'children', this );
@@ -390,7 +390,7 @@ export default class Element extends Node {
 	 * Both elements should have the same name and attributes to be considered as similar. Two similar elements
 	 * can contain different set of children nodes.
 	 *
-	 * @param {engine.view.Element} otherElement
+	 * @param {module:engine/view/element~Element} otherElement
 	 * @returns {Boolean}
 	 */
 	isSimilar( otherElement ) {
@@ -445,7 +445,7 @@ export default class Element extends Node {
 	 *		element.addClass( 'foo', 'bar' ); // Adds 'foo' and 'bar' classes.
 	 *
 	 * @param {...String} className
-	 * @fires engine.view.Node#change
+	 * @fires module:engine/view/node~Node#change
 	 */
 	addClass( ...className ) {
 		this._fireChange( 'attributes', this );
@@ -459,7 +459,7 @@ export default class Element extends Node {
 	 *		element.removeClass( 'foo', 'bar' ); // Removes both 'foo' and 'bar' classes.
 	 *
 	 * @param {...String} className
-	 * @fires engine.view.Node#change
+	 * @fires module:engine/view/node~Node#change
 	 */
 	removeClass( ...className ) {
 		this._fireChange( 'attributes', this );
@@ -505,7 +505,7 @@ export default class Element extends Node {
 	 *
 	 * @param {String|Object} property Property name or object with key - value pairs.
 	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
-	 * @fires engine.view.Node#change
+	 * @fires module:engine/view/node~Node#change
 	 */
 	setStyle( property, value ) {
 		this._fireChange( 'attributes', this );
@@ -567,7 +567,7 @@ export default class Element extends Node {
 	 *		element.removeStyle( 'color', 'border-top' ); // Removes both 'color' and 'border-top' styles.
 	 *
 	 * @param {...String} property
-	 * @fires engine.view.Node#change
+	 * @fires module:engine/view/node~Node#change
 	 */
 	removeStyle( ...property ) {
 		this._fireChange( 'attributes', this );
@@ -576,11 +576,12 @@ export default class Element extends Node {
 
 	/**
 	 * Returns ancestor element that match specified pattern.
-	 * Provided patterns should be compatible with {@link engine.view.Matcher Matcher} as it is used internally.
+	 * Provided patterns should be compatible with {@link module:engine/view/matcher~Matcher Matcher} as it is used internally.
 	 *
-	 * @see engine.view.Matcher
-	 * @param {Object|String|RegExp|Function} patterns Patterns used to match correct ancestor. See {@link engine.view.Matcher}.
-	 * @returns {engine.view.Element|null} Found element or `null` if no matching ancestor was found.
+	 * @see module:engine/view/matcher~Matcher
+	 * @param {Object|String|RegExp|Function} patterns Patterns used to match correct ancestor.
+	 * See {@link module:engine/view/matcher~Matcher}.
+	 * @returns {module:engine/view/element~Element|null} Found element or `null` if no matching ancestor was found.
 	 */
 	findAncestor( ...patterns ) {
 		const matcher = new Matcher( ...patterns );
@@ -626,8 +627,8 @@ function parseClasses( classesSet, classesString ) {
 
 // Converts strings to Text and non-iterables to arrays.
 //
-// @param {String|engine.view.Node|Iterable.<String|engine.view.Node>}
-// @return {Iterable.<engine.view.Node>}
+// @param {String|module:engine/view/node~Node|Iterable.<String|module:engine/view/node~Node>}
+// @return {Iterable.<module:engine/view/node~Node>}
 function normalize( nodes ) {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {

@@ -13,12 +13,10 @@ import Text from './text.js';
 import isIterable from '../../utils/isiterable.js';
 
 /**
- * Model element. Type of {@link engine.model.Node node} that has a {@link engine.model.Element#name name} and
- * {@link engine.model.Element#getChildren child nodes}.
+ * Model element. Type of {@link module:engine/model/node~Node node} that has a {@link module:engine/model/element~Element#name name} and
+ * {@link module:engine/model/element~Element#getChildren child nodes}.
  *
- * **Important**: see {@link engine.model.Node} to read about restrictions using `Element` and `Node` API.
- *
- * @memberOf engine.model
+ * **Important**: see {@link module:engine/model/node~Node} to read about restrictions using `Element` and `Node` API.
  */
 export default class Element extends Node {
 	/**
@@ -26,8 +24,8 @@ export default class Element extends Node {
 	 *
 	 * @param {String} name Element's name.
 	 * @param {Object} [attrs] Element's attributes. See {@link utils.toMap} for a list of accepted values.
-	 * @param {engine.model.Node|Iterable.<engine.model.Node>} [children] One or more nodes to be inserted as children of
-	 * created element.
+	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} [children]
+	 * One or more nodes to be inserted as children of created element.
 	 */
 	constructor( name, attrs, children ) {
 		super( attrs );
@@ -35,7 +33,7 @@ export default class Element extends Node {
 		/**
 		 * Element name.
 		 *
-		 * @member {String} engine.model.Element#name
+		 * @member {String} module:engine/model/element~Element#name
 		 */
 		this.name = name;
 
@@ -43,7 +41,7 @@ export default class Element extends Node {
 		 * List of children nodes.
 		 *
 		 * @private
-		 * @member {engine.model.NodeList} engine.model.Element#_children
+		 * @member {module:engine/model/node~NodeList} module:engine/model/element~Element#_children
 		 */
 		this._children = new NodeList();
 
@@ -63,7 +61,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Sum of {engine.model.Node#offsetSize offset sizes} of all of this element's children.
+	 * Sum of {module:engine/model/node~Node#offsetSize offset sizes} of all of this element's children.
 	 *
 	 * @readonly
 	 * @type {Number}
@@ -86,7 +84,7 @@ export default class Element extends Node {
 	 * Gets the child at the given index.
 	 *
 	 * @param {Number} index Index of child.
-	 * @returns {engine.model.Node} Child node.
+	 * @returns {module:engine/model/node~Node} Child node.
 	 */
 	getChild( index ) {
 		return this._children.getNode( index );
@@ -95,7 +93,7 @@ export default class Element extends Node {
 	/**
 	 * Returns an iterator that iterates over all of this element's children.
 	 *
-	 * @returns {Iterable.<engine.model.Node>}
+	 * @returns {Iterable.<module:engine/model/node~Node>}
 	 */
 	getChildren() {
 		return this._children[ Symbol.iterator ]();
@@ -104,7 +102,7 @@ export default class Element extends Node {
 	/**
 	 * Returns an index of the given child node. Returns `null` if given node is not a child of this element.
 	 *
-	 * @param {engine.model.Node} node Child node to look for.
+	 * @param {module:engine/model/node~Node} node Child node to look for.
 	 * @returns {Number} Child node's index in this element.
 	 */
 	getChildIndex( node ) {
@@ -113,10 +111,10 @@ export default class Element extends Node {
 
 	/**
 	 * Returns the starting offset of given child. Starting offset is equal to the sum of
-	 * {engine.model.Node#offsetSize offset sizes} of all node's siblings that are before it. Returns `null` if
+	 * {module:engine/model/node~Node#offsetSize offset sizes} of all node's siblings that are before it. Returns `null` if
 	 * given node is not a child of this element.
 	 *
-	 * @param {engine.model.Node} node Child node to look for.
+	 * @param {module:engine/model/node~Node} node Child node to look for.
 	 * @returns {Number} Child node's starting offset.
 	 */
 	getChildStartOffset( node ) {
@@ -140,7 +138,7 @@ export default class Element extends Node {
 
 	/**
 	 * Returns index of a node that occupies given offset. If given offset is too low, returns `0`. If given offset is
-	 * too high, returns {@link engine.model.Element#getChildCount index after last child}.
+	 * too high, returns {@link module:engine/model/element~Element#getChildCount index after last child}.
 	 *
 	 *		const textNode = new Text( 'foo' );
 	 *		const pElement = new Element( 'p' );
@@ -160,20 +158,20 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * {@link engine.model.Element#insertChildren Inserts} one or more nodes at the end of this element.
+	 * {@link module:engine/model/element~Element#insertChildren Inserts} one or more nodes at the end of this element.
 	 *
-	 * @param {engine.model.Node|Iterable.<engine.model.Node>} nodes Nodes to be inserted.
+	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} nodes Nodes to be inserted.
 	 */
 	appendChildren( nodes ) {
 		this.insertChildren( this.childCount, nodes );
 	}
 
 	/**
-	 * Inserts one or more nodes at the given index and sets {@link engine.model.Node#parent parent} of these nodes
+	 * Inserts one or more nodes at the given index and sets {@link module:engine/model/node~Node#parent parent} of these nodes
 	 * to this element.
 	 *
 	 * @param {Number} index Index at which nodes should be inserted.
-	 * @param {engine.model.Node|Iterable.<engine.model.Node>} nodes Nodes to be inserted.
+	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} nodes Nodes to be inserted.
 	 */
 	insertChildren( index, nodes ) {
 		nodes = normalize( nodes );
@@ -186,11 +184,12 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Removes one or more nodes starting at the given index and sets {@link engine.model.Node#parent parent} of these nodes to `null`.
+	 * Removes one or more nodes starting at the given index and sets
+	 * {@link module:engine/model/node~Node#parent parent} of these nodes to `null`.
 	 *
 	 * @param {Number} index Index of the first node to remove.
 	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @returns {Array.<engine.model.Node>} Array containing removed nodes.
+	 * @returns {Array.<module:engine/model/node~Node>} Array containing removed nodes.
 	 */
 	removeChildren( index, howMany = 1 ) {
 		const nodes = this._children.removeNodes( index, howMany );
@@ -228,7 +227,7 @@ export default class Element extends Node {
 	 * Converts `Element` children to proper nodes.
 	 *
 	 * @param {Object} json Plain object to be converted to `Element`.
-	 * @returns {engine.model.Element} `Element` instance created using given plain object.
+	 * @returns {module:engine/model/element~Element} `Element` instance created using given plain object.
 	 */
 	static fromJSON( json ) {
 		let children = null;
@@ -253,8 +252,8 @@ export default class Element extends Node {
 
 // Converts strings to Text and non-iterables to arrays.
 //
-// @param {String|engine.model.Node|Iterable.<String|engine.model.Node>}
-// @return {Iterable.<engine.model.Node>}
+// @param {String|module:engine/model/node~Node|Iterable.<String|module:engine/model/node~Node>}
+// @return {Iterable.<module:engine/model/node~Node>}
 function normalize( nodes ) {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {

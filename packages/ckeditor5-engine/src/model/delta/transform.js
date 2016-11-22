@@ -3,17 +3,21 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/delta/transform
+ */
+
 import operationTransform from '../operation/transform.js';
 import arrayUtils from '../../../utils/lib/lodash/array.js';
 
 const specialCases = new Map();
 
 /**
- * Transforms given {@link engine.model.delta.Delta delta} by another {@link engine.model.delta.Delta delta} and
- * returns the result of that transformation as an array containing one or more {@link engine.model.delta.Delta delta}
+ * Transforms given {@link module:engine/model/delta/delta~Delta delta} by another {@link module:engine/model/delta/delta~Delta delta} and
+ * returns the result of that transformation as an array containing one or more {@link module:engine/model/delta/delta~Delta delta}
  * instances.
  *
- * Delta transformations heavily base on {@link engine.model.operation.transform operational transformations}. Since
+ * Delta transformations heavily base on {@link module:engine/model/operation/transform~transform operational transformations}. Since
  * delta is a list of operations most situations can be handled thanks to operational transformation. Unfortunately,
  * deltas are more complicated than operations and have they semantic meaning, as they represent user's editing intentions.
  *
@@ -22,20 +26,20 @@ const specialCases = new Map();
  * we need to handle transformations in special cases in a custom way.
  *
  * The function itself looks whether two given delta types have a special case function registered. If so, the deltas are
- * transformed using that function. If not, {@link engine.model.delta.defaultTransform default transformation algorithm}
+ * transformed using that function. If not, {@link module:engine/model/delta/delta~Delta.defaultTransform default transformation algorithm}
  * is used.
  *
- * @see engine.model.operation.transform
+ * @see module:engine/model/operation/transform~transform
  *
- * @external engine.model.delta.transform
- * @function engine.model.delta.transform.transform
- * @param {engine.model.delta.Delta} a Delta that will be transformed.
- * @param {engine.model.delta.Delta} b Delta to transform by.
+ * @external module:engine/model/delta/delta~Delta.transform
+ * @function module:engine/model/delta/delta~Delta.transform.transform
+ * @param {module:engine/model/delta/delta~Delta} a Delta that will be transformed.
+ * @param {module:engine/model/delta/delta~Delta} b Delta to transform by.
  * @param {Boolean} isAMoreImportantThanB Flag indicating whether the delta which will be transformed (`a`) should be treated
  * as more important when resolving conflicts. Note that this flag is used only if provided deltas have same
- * {@link engine.model.delta.priorities priority}. If deltas have different priorities, their importance is resolved
+ * {@link module:engine/model/delta/delta~Delta.priorities priority}. If deltas have different priorities, their importance is resolved
  * automatically and overwrites this flag.
- * @returns {Array.<engine.model.delta.Delta>} Result of the transformation.
+ * @returns {Array.<module:engine/model/delta/delta~Delta>} Result of the transformation.
  */
 export default function transform( a, b, isAMoreImportantThanB ) {
 	const transformAlgorithm = getTransformationCase( a, b ) || defaultTransform;
@@ -63,15 +67,15 @@ function updateBaseVersion( baseVersion, deltas ) {
  * This algorithm is similar to a popular `dOPT` algorithm used in operational transformation, as we are in fact
  * transforming two sets of operations by each other.
  *
- * @external engine.model.delta.transform
- * @function engine.model.delta.transform.defaultTransform
- * @param {engine.model.delta.Delta} a Delta that will be transformed.
- * @param {engine.model.delta.Delta} b Delta to transform by.
+ * @external module:engine/model/delta/delta~Delta.transform
+ * @function module:engine/model/delta/delta~Delta.transform.defaultTransform
+ * @param {module:engine/model/delta/delta~Delta} a Delta that will be transformed.
+ * @param {module:engine/model/delta/delta~Delta} b Delta to transform by.
  * @param {Boolean} isAMoreImportantThanB Flag indicating whether the delta which will be transformed (`a`) should be treated
  * as more important when resolving conflicts. Note that this flag is used only if provided deltas have same
- * {@link engine.model.delta.priorities priority}. If deltas have different priorities, their importance is resolved
+ * {@link module:engine/model/delta/delta~Delta.priorities priority}. If deltas have different priorities, their importance is resolved
  * automatically and overwrites this flag.
- * @returns {Array.<engine.model.delta.Delta>} Result of the transformation, that is an array with single delta instance.
+ * @returns {Array.<module:engine/model/delta/delta~Delta>} Result of the transformation, that is an array with single delta instance.
  */
 export function defaultTransform( a, b, isAMoreImportantThanB ) {
 	// First, resolve the flag real value.
@@ -161,8 +165,8 @@ export function defaultTransform( a, b, isAMoreImportantThanB ) {
 /**
  * Adds a special case callback for given delta classes.
  *
- * @external engine.model.delta.transform
- * @function engine.model.delta.transform.addTransformationCase
+ * @external module:engine/model/delta/delta~Delta.transform
+ * @function module:engine/model/delta/delta~Delta.transform.addTransformationCase
  * @param {Function} A Delta constructor which instance will get transformed.
  * @param {Function} B Delta constructor which instance will be transformed by.
  * @param {Function} resolver A callback that will handle custom special case transformation for instances of given delta classes.
@@ -179,12 +183,12 @@ export function addTransformationCase( A, B, resolver ) {
 }
 
 /**
- * Gets a special case callback which was previously {@link engine.model.delta.transform.addTransformationCase added}.
+ * Gets a special case callback which was previously {@link module:engine/model/delta/delta~Delta.transform.addTransformationCase added}.
  *
- * @external engine.model.delta.transform
- * @function engine.model.delta.transform.getTransformationCase
- * @param {engine.model.delta.Delta} a Delta to transform.
- * @param {engine.model.delta.Delta} b Delta to be transformed by.
+ * @external module:engine/model/delta/delta~Delta.transform
+ * @function module:engine/model/delta/delta~Delta.transform.getTransformationCase
+ * @param {module:engine/model/delta/delta~Delta} a Delta to transform.
+ * @param {module:engine/model/delta/delta~Delta} b Delta to be transformed by.
  */
 export function getTransformationCase( a, b ) {
 	let casesA = specialCases.get( a.constructor );

@@ -503,7 +503,7 @@ describe( 'DataController', () => {
 		} );
 	} );
 
-	// @param {engine.model.Item|String} content
+	// @param {module:engine/model/item~Item|String} content
 	function insertHelper( content ) {
 		if ( typeof content == 'string' ) {
 			content = parse( content, doc.schema, {

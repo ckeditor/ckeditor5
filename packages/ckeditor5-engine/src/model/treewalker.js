@@ -15,8 +15,6 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * Position iterator class. It allows to iterate forward and backward over the document.
- *
- * @memberOf engine.model
  */
 export default class TreeWalker {
 	/**
@@ -25,16 +23,16 @@ export default class TreeWalker {
 	 * @constructor
 	 * @param {Object} [options={}] Object with configuration.
 	 * @param {'forward'|'backward'} [options.direction='forward'] Walking direction.
-	 * @param {engine.model.Range} [options.boundaries=null] Range to define boundaries of the iterator.
-	 * @param {engine.model.Position} [options.startPosition] Starting position.
+	 * @param {module:engine/model/range~Range} [options.boundaries=null] Range to define boundaries of the iterator.
+	 * @param {module:engine/model/position~Position} [options.startPosition] Starting position.
 	 * @param {Boolean} [options.singleCharacters=false] Flag indicating whether all consecutive characters with the same attributes
-	 * should be returned one by one as multiple {@link engine.model.CharacterProxy} (`true`) objects or as one
-	 * {@link engine.model.TextProxy} (`false`).
+	 * should be returned one by one as multiple {@link module:engine/model/characterproxy~CharacterProxy} (`true`) objects or as one
+	 * {@link module:engine/model/textproxy~TextProxy} (`false`).
 	 * @param {Boolean} [options.shallow=false] Flag indicating whether iterator should enter elements or not. If the
 	 * iterator is shallow child nodes of any iterated node will not be returned along with `elementEnd` tag.
 	 * @param {Boolean} [options.ignoreElementEnd=false] Flag indicating whether iterator should ignore `elementEnd`
 	 * tags. If the option is true walker will not return a parent node of start position. If this option is `true`
-	 * each {@link engine.model.Element} will be returned once, while if the option is `false` they might be returned
+	 * each {@link module:engine/model/element~Element} will be returned once, while if the option is `false` they might be returned
 	 * twice: for `'elementStart'` and `'elementEnd'`.
 	 */
 	constructor( options = {} ) {
@@ -60,7 +58,7 @@ export default class TreeWalker {
 		 * Walking direction. Defaults `'forward'`.
 		 *
 		 * @readonly
-		 * @member {'backward'|'forward'} engine.model.TreeWalker#direction
+		 * @member {'backward'|'forward'} module:engine/model/treewalker~TreeWalker#direction
 		 */
 		this.direction = direction;
 
@@ -73,18 +71,18 @@ export default class TreeWalker {
 		 * If boundaries are not defined they are set before first and after last child of the root node.
 		 *
 		 * @readonly
-		 * @member {engine.model.Range} engine.model.TreeWalker#boundaries
+		 * @member {module:engine/model/range~Range} module:engine/model/treewalker~TreeWalker#boundaries
 		 */
 		this.boundaries = options.boundaries || null;
 
 		/**
 		 * Iterator position. This is always static position, even if the initial position was a
-		 * {@link engine.model.LivePosition live position}. If start position is not defined then position depends
+		 * {@link module:engine/model/liveposition~LivePosition live position}. If start position is not defined then position depends
 		 * on {@link #direction}. If direction is `'forward'` position starts form the beginning, when direction
 		 * is `'backward'` position starts from the end.
 		 *
 		 * @readonly
-		 * @member {engine.model.Position} engine.model.TreeWalker#position
+		 * @member {module:engine/model/position~Position} module:engine/model/treewalker~TreeWalker#position
 		 */
 		if ( options.startPosition ) {
 			this.position = Position.createFromPosition( options.startPosition );
@@ -94,10 +92,10 @@ export default class TreeWalker {
 
 		/**
 		 * Flag indicating whether all consecutive characters with the same attributes should be
-		 * returned as one {@link engine.model.CharacterProxy} (`true`) or one by one (`false`).
+		 * returned as one {@link module:engine/model/characterproxy~CharacterProxy} (`true`) or one by one (`false`).
 		 *
 		 * @readonly
-		 * @member {Boolean} engine.model.TreeWalker#singleCharacters
+		 * @member {Boolean} module:engine/model/treewalker~TreeWalker#singleCharacters
 		 */
 		this.singleCharacters = !!options.singleCharacters;
 
@@ -106,18 +104,18 @@ export default class TreeWalker {
 		 * iterated node will not be returned along with `elementEnd` tag.
 		 *
 		 * @readonly
-		 * @member {Boolean} engine.model.TreeWalker#shallow
+		 * @member {Boolean} module:engine/model/treewalker~TreeWalker#shallow
 		 */
 		this.shallow = !!options.shallow;
 
 		/**
 		 * Flag indicating whether iterator should ignore `elementEnd` tags. If the option is true walker will not
-		 * return a parent node of the start position. If this option is `true` each {@link engine.model.Element} will
+		 * return a parent node of the start position. If this option is `true` each {@link module:engine/model/element~Element} will
 		 * be returned once, while if the option is `false` they might be returned twice:
 		 * for `'elementStart'` and `'elementEnd'`.
 		 *
 		 * @readonly
-		 * @member {Boolean} engine.model.TreeWalker#ignoreElementEnd
+		 * @member {Boolean} module:engine/model/treewalker~TreeWalker#ignoreElementEnd
 		 */
 		this.ignoreElementEnd = !!options.ignoreElementEnd;
 
@@ -125,7 +123,7 @@ export default class TreeWalker {
 		 * Start boundary cached for optimization purposes.
 		 *
 		 * @private
-		 * @member {engine.model.Element} engine.model.TreeWalker#_boundaryStartParent
+		 * @member {module:engine/model/element~Element} module:engine/model/treewalker~TreeWalker#_boundaryStartParent
 		 */
 		this._boundaryStartParent = this.boundaries ? this.boundaries.start.parent : null;
 
@@ -133,7 +131,7 @@ export default class TreeWalker {
 		 * End boundary cached for optimization purposes.
 		 *
 		 * @private
-		 * @member {engine.model.Element} engine.model.TreeWalker#_boundaryEndParent
+		 * @member {module:engine/model/element~Element} module:engine/model/treewalker~TreeWalker#_boundaryEndParent
 		 */
 		this._boundaryEndParent = this.boundaries ? this.boundaries.end.parent : null;
 
@@ -141,7 +139,8 @@ export default class TreeWalker {
 		 * Parent of the most recently visited node. Cached for optimization purposes.
 		 *
 		 * @private
-		 * @member {engine.model.Element|engine.model.DocumentFragment} engine.model.TreeWalker#_visitedParent
+		 * @member {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
+		 * module:engine/model/treewalker~TreeWalker#_visitedParent
 		 */
 		this._visitedParent = this.position.parent;
 	}
@@ -173,7 +172,7 @@ export default class TreeWalker {
 	 * @private
 	 * @returns {Object}
 	 * @returns {Boolean} return.done True if iterator is done.
-	 * @returns {engine.model.TreeWalkerValue} return.value Information about taken step.
+	 * @returns {module:engine/model/treewalker~TreeWalkerValue} return.value Information about taken step.
 	 */
 	_next() {
 		const previousPosition = this.position;
@@ -248,7 +247,7 @@ export default class TreeWalker {
 	 * @private
 	 * @returns {Object}
 	 * @returns {Boolean} return.done True if iterator is done.
-	 * @returns {engine.model.TreeWalkerValue} return.value Information about taken step.
+	 * @returns {module:engine/model/treewalker~TreeWalkerValue} return.value Information about taken step.
 	 */
 	_previous() {
 		const previousPosition = this.position;
@@ -334,29 +333,29 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
 }
 
 /**
- * Type of the step made by {@link engine.model.TreeWalker}.
+ * Type of the step made by {@link module:engine/model/treewalker~TreeWalker}.
  * Possible values: `'elementStart'` if walker is at the beginning of a node, `'elementEnd'` if walker is at the end of node,
  * `'character'` if walker traversed over a character, or `'text'` if walker traversed over multiple characters (available in
- * character merging mode, see {@link engine.model.TreeWalker#constructor}).
+ * character merging mode, see {@link module:engine/model/treewalker~TreeWalker#constructor}).
  *
- * @typedef {String} engine.model.TreeWalkerValueType
+ * @typedef {String} module:engine/model/treewalker~TreeWalkerValueType
  */
 
 /**
- * Object returned by {@link engine.model.TreeWalker} when traversing tree model.
+ * Object returned by {@link module:engine/model/treewalker~TreeWalker} when traversing tree model.
  *
- * @typedef {Object} engine.model.TreeWalkerValue
- * @property {engine.model.TreeWalkerValueType} type
- * @property {engine.model.Item} item Item between old and new positions of {@link engine.model.TreeWalker}.
- * @property {engine.model.Position} previousPosition Previous position of the iterator.
+ * @typedef {Object} module:engine/model/treewalker~TreeWalkerValue
+ * @property {module:engine/model/treewalker~TreeWalkerValueType} type
+ * @property {module:engine/model/item~Item} item Item between old and new positions of {@link module:engine/model/treewalker~TreeWalker}.
+ * @property {module:engine/model/position~Position} previousPosition Previous position of the iterator.
  * * Forward iteration: For `'elementEnd'` it is the last position inside the element. For all other types it is the
  * position before the item. Note that it is more efficient to use this position then calculate the position before
- * the node using {@link engine.model.Position.createBefore}. It is also more efficient to get the
- * position after node by shifting `previousPosition` by `length`, using {@link engine.model.Position#getShiftedBy},
- * then calculate the position using {@link engine.model.Position.createAfter}.
+ * the node using {@link module:engine/model/position~Position.createBefore}. It is also more efficient to get the
+ * position after node by shifting `previousPosition` by `length`, using {@link module:engine/model/position~Position#getShiftedBy},
+ * then calculate the position using {@link module:engine/model/position~Position.createAfter}.
  * * Backward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
  * the position after item.
- * @property {engine.model.Position} nextPosition Next position of the iterator.
+ * @property {module:engine/model/position~Position} nextPosition Next position of the iterator.
  * * Forward iteration: For `'elementStart'` it is the first position inside the element. For all other types it is
  * the position after the item.
  * * Backward iteration: For `'elementEnd'` it is last position inside element. For all other types it is the position
@@ -368,5 +367,5 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
 /**
  * Tree walking directions.
  *
- * @typedef {'forward'|'backward'} engine.view.TreeWalkerDirection
+ * @typedef {'forward'|'backward'} module:engine/view/treewalker~TreeWalkerDirection
  */

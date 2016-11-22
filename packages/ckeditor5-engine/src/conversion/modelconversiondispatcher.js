@@ -15,9 +15,9 @@ import mix from '../../utils/mix.js';
 import extend from '../../utils/lib/lodash/extend.js';
 
 /**
- * `ModelConversionDispatcher` is a central point of {@link engine.model model} conversion, which is
+ * `ModelConversionDispatcher` is a central point of {@link module:engine/model model} conversion, which is
  * a process of reacting to changes in the model and reflecting them by listeners that listen to those changes.
- * In default application, {@link engine.model model} is converted to {@link engine.view view}. This means
+ * In default application, {@link module:engine/model model} is converted to {@link module:engine/view view}. This means
  * that changes in the model are reflected by changing the view (i.e. adding view nodes or changing attributes on view elements).
  *
  * During conversion process, `ModelConversionDispatcher` fires data-manipulation events, basing on state of the model and prepares
@@ -25,24 +25,24 @@ import extend from '../../utils/lib/lodash/extend.js';
  * or "removing" so one might say that we are converting "changes". This is in contrary to view to model conversion,
  * where we convert view nodes (the structure, not "changes" to the view). Note, that because changes are converted
  * and not the structure itself, there is a need to have a mapping between model and the structure on which changes are
- * reflected. To map elements during model to view conversion use {@link engine.conversion.Mapper}.
+ * reflected. To map elements during model to view conversion use {@link module:engine/conversion/mapper~Mapper}.
  *
- * The main use for this class is to listen to {@link engine.model.Document.change Document change event}, process it
+ * The main use for this class is to listen to {@link module:engine/model/document~Document.change Document change event}, process it
  * and then fire specific events telling what exactly has changed. For those events, `ModelConversionDispatcher`
- * creates {@link engine.conversion.ModelConsumable list of consumable values} that should be handled by event
+ * creates {@link module:engine/conversion/modelconsumable~ModelConsumable list of consumable values} that should be handled by event
  * callbacks. Those events are listened to by model-to-view converters which convert changes done in the
- * {@link engine.model model} to changes in the {@link engine.view view}. `ModelConversionController` also checks
+ * {@link module:engine/model model} to changes in the {@link module:engine/view view}. `ModelConversionController` also checks
  * the current state of consumables, so it won't fire events for parts of model that were already consumed. This is
- * especially important in callbacks that consume multiple values. See {@link engine.conversion.ModelConsumable}
+ * especially important in callbacks that consume multiple values. See {@link module:engine/conversion/modelconsumable~ModelConsumable}
  * for an example of such callback.
  *
  * Although the primary usage for this class is the model-to-view conversion, `ModelConversionDispatcher` can be used
  * to build custom data processing pipelines that converts model to anything that is needed. Existing model structure can
- * be used to generate events (listening to {@link engine.model.Document.change Document change event} is not required)
+ * be used to generate events (listening to {@link module:engine/model/document~Document.change Document change event} is not required)
  * and custom callbacks can be added to the events (these does not have to be limited to changes in the view).
  *
  * When providing your own event listeners for `ModelConversionDispatcher` keep in mind that any callback that had
- * {@link engine.conversion.ModelConsumable#consume consumed} a value from consumable (and did some changes, i.e. to
+ * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} a value from consumable (and did some changes, i.e. to
  * the view) should also stop the event. This is because whenever a callback is fired it is assumed that there is something
  * to be consumed. Thanks to that approach, you do not have to test whether there is anything to consume at the beginning
  * of your listener callback.
@@ -93,7 +93,8 @@ import extend from '../../utils/lib/lodash/extend.js';
  *			viewSourceBtn.addClass( 'source' );
  *
  *			// Insert the button using writer API.
- *			// If `addAttribute` event is fired by `engine.conversion.ModelConversionDispatcher#convertInsert` it is fired
+ *			// If `addAttribute` event is fired by `module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#convertInsert` it
+ *			// is fired
  *			// after `data.item` insert conversion was done. If the event is fired due to attribute insertion coming from
  *			// different source, `data.item` already existed. This means we are safe to get `viewQuote` from mapper.
  *			const viewQuote = conversionApi.mapper.toViewElement( data.item );
@@ -102,8 +103,6 @@ import extend from '../../utils/lib/lodash/extend.js';
  *
  *			evt.stop();
  *		}, { priority: 'high' } );
- *
- * @memberOf engine.conversion
  */
 export default class ModelConversionDispatcher {
 	/**
@@ -115,7 +114,7 @@ export default class ModelConversionDispatcher {
 		/**
 		 * Interface passed by dispatcher to the events callbacks.
 		 *
-		 * @member {Object} engine.conversion.ModelConversionDispatcher#conversionApi
+		 * @member {Object}
 		 */
 		this.conversionApi = extend( { dispatcher: this }, conversionApi );
 	}
@@ -123,16 +122,16 @@ export default class ModelConversionDispatcher {
 	/**
 	 * Prepares data and fires a proper event.
 	 *
-	 * The method is crafted to take use of parameters passed in {@link engine.model.Document.change Document change event}.
+	 * The method is crafted to take use of parameters passed in {@link module:engine/model/document~Document.change Document change event}.
 	 *
-	 * @see engine.model.Document.change
-	 * @fires engine.conversion.ModelConversionDispatcher#insert
-	 * @fires engine.conversion.ModelConversionDispatcher#move
-	 * @fires engine.conversion.ModelConversionDispatcher#remove
-	 * @fires engine.conversion.ModelConversionDispatcher#rename
-	 * @fires engine.conversion.ModelConversionDispatcher#addAttribute
-	 * @fires engine.conversion.ModelConversionDispatcher#removeAttribute
-	 * @fires engine.conversion.ModelConversionDispatcher#changeAttribute
+	 * @see module:engine/model/document~Document.change
+	 * @fires insert
+	 * @fires move
+	 * @fires remove
+	 * @fires rename
+	 * @fires addAttribute
+	 * @fires removeAttribute
+	 * @fires changeAttribute
 	 * @param {String} type Change type.
 	 * @param {Object} data Additional information about the change.
 	 */
@@ -171,9 +170,9 @@ export default class ModelConversionDispatcher {
 	 * **Note**: This method will fire separate events for node insertion and attributes insertion. All
 	 * attributes that are set on inserted nodes are treated like they were added just after node insertion.
 	 *
-	 * @fires engine.conversion.ModelConversionDispatcher#insert
-	 * @fires engine.conversion.ModelConversionDispatcher#addAttribute
-	 * @param {engine.model.Range} range Inserted range.
+	 * @fires insert
+	 * @fires addAttribute
+	 * @param {module:engine/model/range~Range} range Inserted range.
 	 */
 	convertInsertion( range ) {
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
@@ -206,9 +205,9 @@ export default class ModelConversionDispatcher {
 	/**
 	 * Fires move event with data based on passed values.
 	 *
-	 * @fires engine.conversion.ModelConversionDispatcher#move
-	 * @param {engine.model.Position} sourcePosition Position from where the range has been moved.
-	 * @param {engine.model.Range} range Moved range (after move).
+	 * @fires move
+	 * @param {module:engine/model/position~Position} sourcePosition Position from where the range has been moved.
+	 * @param {module:engine/model/range~Range} range Moved range (after move).
 	 */
 	convertMove( sourcePosition, range ) {
 		// Keep in mind that move dispatcher expects flat range.
@@ -236,9 +235,10 @@ export default class ModelConversionDispatcher {
 	/**
 	 * Fires remove event with data based on passed values.
 	 *
-	 * @fires engine.conversion.ModelConversionDispatcher#remove
-	 * @param {engine.model.Position} sourcePosition Position from where the range has been removed.
-	 * @param {engine.model.Range} range Removed range (after remove, in {@link engine.model.Document#graveyard graveyard root}).
+	 * @fires remove
+	 * @param {module:engine/model/position~Position} sourcePosition Position from where the range has been removed.
+	 * @param {module:engine/model/range~Range} range Removed range (after remove, in {@link module:engine/model/document~Document#graveyard
+	 * graveyard root}).
 	 */
 	convertRemove( sourcePosition, range ) {
 		const consumable = this._createConsumableForRange( range, 'remove' );
@@ -256,11 +256,11 @@ export default class ModelConversionDispatcher {
 	/**
 	 * Analyzes given attribute change and fires attributes-connected events with data based on passed values.
 	 *
-	 * @fires engine.conversion.ModelConversionDispatcher#addAttribute
-	 * @fires engine.conversion.ModelConversionDispatcher#removeAttribute
-	 * @fires engine.conversion.ModelConversionDispatcher#changeAttribute
+	 * @fires addAttribute
+	 * @fires removeAttribute
+	 * @fires changeAttribute
 	 * @param {String} type Change type. Possible values: `addAttribute`, `removeAttribute`, `changeAttribute`.
-	 * @param {engine.model.Range} range Changed range.
+	 * @param {module:engine/model/range~Range} range Changed range.
 	 * @param {String} key Attribute key.
 	 * @param {*} oldValue Attribute value before the change or `null` if attribute has not been set.
 	 * @param {*} newValue New attribute value or `null` if attribute has been removed.
@@ -288,8 +288,8 @@ export default class ModelConversionDispatcher {
 	/**
 	 * Fires rename event with data based on passed values.
 	 *
-	 * @fires engine.conversion.ModelConversionDispatcher#event:rename
-	 * @param {engine.view.Element} element Renamed element.
+	 * @fires rename
+	 * @param {module:engine/view/element~Element} element Renamed element.
 	 * @param {String} oldName Name of the renamed element before it was renamed.
 	 */
 	convertRename( element, oldName ) {
@@ -301,11 +301,11 @@ export default class ModelConversionDispatcher {
 	}
 
 	/**
-	 * Fires events for given {@link engine.model.Selection selection} to start selection conversion.
+	 * Fires events for given {@link module:engine/model/selection~Selection selection} to start selection conversion.
 	 *
-	 * @fires engine.conversion.ModelConversionDispatcher#selection
-	 * @fires engine.conversion.ModelConversionDispatcher#selectionAttribute
-	 * @param {engine.model.Selection} selection Selection to convert.
+	 * @fires selection
+	 * @fires selectionAttribute
+	 * @param {module:engine/model/selection~Selection} selection Selection to convert.
 	 */
 	convertSelection( selection ) {
 		const consumable = this._createSelectionConsumable( selection );
@@ -327,12 +327,12 @@ export default class ModelConversionDispatcher {
 	}
 
 	/**
-	 * Creates {@link engine.conversion.ModelConsumable} with values to consume from given range, assuming that
+	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume from given range, assuming that
 	 * given range has just been inserted to the model.
 	 *
 	 * @private
-	 * @param {engine.model.Range} range Inserted range.
-	 * @returns {engine.conversion.ModelConsumable} Values to consume.
+	 * @param {module:engine/model/range~Range} range Inserted range.
+	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} Values to consume.
 	 */
 	_createInsertConsumable( range ) {
 		const consumable = new Consumable();
@@ -351,12 +351,12 @@ export default class ModelConversionDispatcher {
 	}
 
 	/**
-	 * Creates {@link engine.conversion.ModelConsumable} with values of given `type` for each item from given `range`.
+	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with values of given `type` for each item from given `range`.
 	 *
 	 * @private
-	 * @param {engine.conversion.Range} range Affected range.
+	 * @param {module:engine/model/range~Range} range Affected range.
 	 * @param {String} type Consumable type.
-	 * @returns {engine.conversion.ModelConsumable} Values to consume.
+	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} Values to consume.
 	 */
 	_createConsumableForRange( range, type ) {
 		const consumable = new Consumable();
@@ -369,11 +369,11 @@ export default class ModelConversionDispatcher {
 	}
 
 	/**
-	 * Creates {@link engine.conversion.ModelConsumable} with selection consumable values.
+	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with selection consumable values.
 	 *
 	 * @private
-	 * @param {engine.model.Selection} selection Selection to create consumable from.
-	 * @returns {engine.conversion.ModelConsumable} Values to consume.
+	 * @param {module:engine/model/selection~Selection} selection Selection to create consumable from.
+	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} Values to consume.
 	 */
 	_createSelectionConsumable( selection ) {
 		const consumable = new Consumable();
@@ -391,13 +391,13 @@ export default class ModelConversionDispatcher {
 	 * Tests passed `consumable` to check whether given event can be fired and if so, fires it.
 	 *
 	 * @private
-	 * @fires engine.conversion.ModelConversionDispatcher#insert
-	 * @fires engine.conversion.ModelConversionDispatcher#addAttribute
-	 * @fires engine.conversion.ModelConversionDispatcher#removeAttribute
-	 * @fires engine.conversion.ModelConversionDispatcher#changeAttribute
+	 * @fires insert
+	 * @fires addAttribute
+	 * @fires removeAttribute
+	 * @fires changeAttribute
 	 * @param {String} type Event type.
 	 * @param {Object} data Event data.
-	 * @param {engine.conversion.ModelConsumable} consumable Values to consume.
+	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 */
 	_testAndFire( type, data, consumable ) {
 		if ( !consumable.test( data.item, type ) ) {
@@ -427,47 +427,48 @@ export default class ModelConversionDispatcher {
 	 *
 	 * `insert` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `insert:<type>:<elementName>`. `type` is either `text` when one or more characters has been inserted or `element`
-	 * when {@link engine.model.Element} has been inserted. If `type` is `element`, `elementName` is added and is
-	 * equal to the {@link engine.model.Element#name name} of inserted element. This way listeners can either
+	 * when {@link module:engine/model/element~Element} has been inserted. If `type` is `element`, `elementName` is added and is
+	 * equal to the {@link module:engine/model/element~Element#name name} of inserted element. This way listeners can either
 	 * listen to very general `insert` event or, i.e., very specific `insert:paragraph` event, which is fired only for
 	 * model elements with name `paragraph`.
 	 *
-	 * @event engine.conversion.ModelConversionDispatcher.insert
+	 * @event insert
 	 * @param {Object} data Additional information about the change.
-	 * @param {engine.model.Item} data.item Inserted item.
-	 * @param {engine.model.Range} data.range Range spanning over inserted item.
-	 * @param {engine.conversion.ModelConsumable} consumable Values to consume.
+	 * @param {module:engine/model/item~Item} data.item Inserted item.
+	 * @param {module:engine/model/range~Range} data.range Range spanning over inserted item.
+	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */
 
 	/**
 	 * Fired for moved nodes.
 	 *
-	 * @event engine.conversion.ModelConversionDispatcher.move
+	 * @event move
 	 * @param {Object} data Additional information about the change.
-	 * @param {engine.model.Position} data.sourcePosition Position from where the range has been moved.
-	 * @param {engine.model.Range} data.range Moved range (after move).
+	 * @param {module:engine/model/position~Position} data.sourcePosition Position from where the range has been moved.
+	 * @param {module:engine/model/range~Range} data.range Moved range (after move).
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */
 
 	/**
 	 * Fired for removed nodes.
 	 *
-	 * @event engine.conversion.ModelConversionDispatcher.remove
+	 * @event remove
 	 * @param {Object} data Additional information about the change.
-	 * @param {engine.model.Position} data.sourcePosition Position from where the range has been removed.
-	 * @param {engine.model.Range} data.range Removed range (in {@link engine.model.Document#graveyard graveyard root}).
+	 * @param {module:engine/model/position~Position} data.sourcePosition Position from where the range has been removed.
+	 * @param {module:engine/model/range~Range} data.range Removed range (in {@link module:engine/model/document~Document#graveyard graveyard
+	 * root}).
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */
 
 	/**
 	 * Fired for renamed element.
 	 *
-	 * @event engine.conversion.ModelConversionDispatcher.rename
+	 * @event rename
 	 * @param {Object} data Additional information about the change.
-	 * @param {engine.model.Element} data.element Renamed element.
+	 * @param {module:engine/model/element~Element} data.element Renamed element.
 	 * @param {String} data.oldName Old name of the renamed element.
-	 * @param {engine.conversion.ModelConsumable} consumable Values to consume.
+	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */
 
@@ -476,17 +477,17 @@ export default class ModelConversionDispatcher {
 	 *
 	 * `addAttribute` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `addAttribute:<attributeKey>:<elementName>`. `attributeKey` is the key of added attribute. `elementName` is
-	 * equal to the {@link engine.model.Element#name name} of the element which got the attribute. This way listeners
+	 * equal to the {@link module:engine/model/element~Element#name name} of the element which got the attribute. This way listeners
 	 * can either listen to adding certain attribute, i.e. `addAttribute:bold`, or be more specific, i.e. `addAttribute:link:img`.
 	 *
-	 * @event engine.conversion.ModelConversionDispatcher.addAttribute
+	 * @event addAttribute
 	 * @param {Object} data Additional information about the change.
-	 * @param {engine.model.Item} data.item Changed item.
-	 * @param {engine.model.Range} data.range Range spanning over changed item.
+	 * @param {module:engine/model/item~Item} data.item Changed item.
+	 * @param {module:engine/model/range~Range} data.range Range spanning over changed item.
 	 * @param {String} data.attributeKey Attribute key.
 	 * @param {null} data.attributeOldValue Attribute value before the change - always `null`. Kept for the sake of unifying events.
 	 * @param {*} data.attributeNewValue New attribute value.
-	 * @param {engine.conversion.ModelConsumable} consumable Values to consume.
+	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */
 
@@ -495,17 +496,17 @@ export default class ModelConversionDispatcher {
 	 *
 	 * `removeAttribute` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `removeAttribute:<attributeKey>:<elementName>`. `attributeKey` is the key of removed attribute. `elementName` is
-	 * equal to the {@link engine.model.Element#name name} of the element which got the attribute removed. This way listeners
+	 * equal to the {@link module:engine/model/element~Element#name name} of the element which got the attribute removed. This way listeners
 	 * can either listen to removing certain attribute, i.e. `removeAttribute:bold`, or be more specific, i.e. `removeAttribute:link:img`.
 	 *
-	 * @event engine.conversion.ModelConversionDispatcher.removeAttribute
+	 * @event removeAttribute
 	 * @param {Object} data Additional information about the change.
-	 * @param {engine.model.Item} data.item Changed item.
-	 * @param {engine.model.Range} data.range Range spanning over changed item.
+	 * @param {module:engine/model/item~Item} data.item Changed item.
+	 * @param {module:engine/model/range~Range} data.range Range spanning over changed item.
 	 * @param {String} data.attributeKey Attribute key.
 	 * @param {*} data.attributeOldValue Attribute value before it was removed.
 	 * @param {null} data.attributeNewValue New attribute value - always `null`. Kept for the sake of unifying events.
-	 * @param {engine.conversion.ModelConsumable} consumable Values to consume.
+	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */
 
@@ -514,42 +515,42 @@ export default class ModelConversionDispatcher {
 	 *
 	 * `changeAttribute` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `changeAttribute:<attributeKey>:<elementName>`. `attributeKey` is the key of changed attribute. `elementName` is
-	 * equal to the {@link engine.model.Element#name name} of the element which got the attribute changed. This way listeners
+	 * equal to the {@link module:engine/model/element~Element#name name} of the element which got the attribute changed. This way listeners
 	 * can either listen to changing certain attribute, i.e. `changeAttribute:link`, or be more specific, i.e. `changeAttribute:link:img`.
 	 *
-	 * @event engine.conversion.ModelConversionDispatcher.changeAttribute
+	 * @event changeAttribute
 	 * @param {Object} data Additional information about the change.
-	 * @param {engine.model.Item} data.item Changed item.
-	 * @param {engine.model.Range} data.range Range spanning over changed item.
+	 * @param {module:engine/model/item~Item} data.item Changed item.
+	 * @param {module:engine/model/range~Range} data.range Range spanning over changed item.
 	 * @param {String} data.attributeKey Attribute key.
 	 * @param {*} data.attributeOldValue Attribute value before the change.
 	 * @param {*} data.attributeNewValue New attribute value.
-	 * @param {engine.conversion.ModelConsumable} consumable Values to consume.
+	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */
 
 	/**
-	 * Fired for {@link engine.model.Selection selection} changes.
+	 * Fired for {@link module:engine/model/selection~Selection selection} changes.
 	 *
-	 * @event engine.conversion.ModelConversionDispatcher.selection
-	 * @param {engine.model.Selection} selection `Selection` instance that is converted.
-	 * @param {engine.conversion.ModelConsumable} consumable Values to consume.
+	 * @event selection
+	 * @param {module:engine/model/selection~Selection} selection `Selection` instance that is converted.
+	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */
 
 	/**
-	 * Fired for {@link engine.model.Selection selection} attributes changes.
+	 * Fired for {@link module:engine/model/selection~Selection selection} attributes changes.
 	 *
 	 * `selectionAttribute` is a namespace for a class of events. Names of actually called events follow this pattern:
 	 * `selectionAttribute:<attributeKey>`. `attributeKey` is the key of selection attribute. This way listen can listen to
 	 * certain attribute, i.e. `addAttribute:bold`.
 	 *
-	 * @event engine.conversion.ModelConversionDispatcher.selectionAttribute
+	 * @event selectionAttribute
 	 * @param {Object} data Additional information about the change.
-	 * @param {engine.model.Selection} data.selection Selection that is converted.
+	 * @param {module:engine/model/selection~Selection} data.selection Selection that is converted.
 	 * @param {String} data.attributeKey Key of changed attribute.
 	 * @param {*} data.attributeValue Value of changed attribute.
-	 * @param {engine.conversion.ModelConsumable} consumable Values to consume.
+	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */
 }

@@ -17,7 +17,6 @@ import { NBSP_FILLER } from '../view/filler.js';
  * HtmlDataProcessor class.
  * This data processor implementation uses HTML as input/output data.
  *
- * @memberOf engine.dataProcessor
  * @implements engine.dataProcessor.DataProcessor
  */
 export default class HtmlDataProcessor {
@@ -29,7 +28,7 @@ export default class HtmlDataProcessor {
 		 * DOMParser instance used to parse HTML string to HTMLDocument.
 		 *
 		 * @private
-		 * @member {DOMParser} engine.dataProcessor.HtmlDataProcessor#_domParser
+		 * @member {DOMParser}
 		 */
 		this._domParser = new DOMParser();
 
@@ -37,7 +36,7 @@ export default class HtmlDataProcessor {
 		 * DOM converter used to convert DOM elements to view elements.
 		 *
 		 * @private
-		 * @member {engine.view.DomConverter} engine.dataProcessor.HtmlDataProcessor#_domConverter.
+		 * @member
 		 */
 		this._domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
 
@@ -45,15 +44,16 @@ export default class HtmlDataProcessor {
 		 * BasicHtmlWriter instance used to convert DOM elements to HTML string.
 		 *
 		 * @private
-		 * @member {engine.dataProcessor.BasicHtmlWriter} engine.dataProcessor.HtmlDataProcessor#_htmlWriter
+		 * @member {module:engine/dataprocessor/basichtmlwriter~BasicHtmlWriter}
 		 */
 		this._htmlWriter = new BasicHtmlWriter();
 	}
 
 	/**
-	 * Converts provided {@link engine.view.DocumentFragment DocumentFragment} to data format - in this case HTML string.
+	 * Converts provided {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment}
+	 * to data format - in this case HTML string.
 	 *
-	 * @param {engine.view.DocumentFragment} viewFragment
+	 * @param {module:engine/view/documentfragment~DocumentFragment} viewFragment
 	 * @returns {String} HTML string.
 	 */
 	toData( viewFragment ) {
@@ -68,7 +68,7 @@ export default class HtmlDataProcessor {
 	 * Converts provided HTML string to view tree.
 	 *
 	 * @param {String} data HTML string.
-	 * @returns {engine.view.Node|engine.view.DocumentFragment|null} Converted view element.
+	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Converted view element.
 	 */
 	toView( data ) {
 		// Convert input HTML data to DOM DocumentFragment.

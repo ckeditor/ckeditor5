@@ -17,11 +17,12 @@ import CKEditorError from '../../utils/ckeditorerror.js';
  *
  * **Note:** If a node is detached from the model tree, you can manipulate it using it's API.
  * However, it is **very important** that nodes already attached to model tree should be only changed through
- * {@link engine.model.Document#batch Batch API}.
+ * {@link module:engine/model/document~Document#batch Batch API}.
  *
- * Changes done by `Node` methods, like {@link engine.model.Node#insertChildren insertChildren} or
- * {@link engine.model.Node#setAttribute setAttribute} do not generate {@link engine.model.operation.Operation operations}
- * which are essential for correct editor work if you modify nodes in {@link engine.model.Document document} root.
+ * Changes done by `Node` methods, like {@link module:engine/model/node~Node#insertChildren insertChildren} or
+ * {@link module:engine/model/node~Node#setAttribute setAttribute}
+ * do not generate {@link module:engine/model/operation/operation~Operation operations}
+ * which are essential for correct editor work if you modify nodes in {@link module:engine/model/document~Document document} root.
  *
  * The flow of working on `Node` (and classes that inherits from it) is as such:
  * 1. You can create a `Node` instance, modify it using it's API.
@@ -29,15 +30,13 @@ import CKEditorError from '../../utils/ckeditorerror.js';
  * 3. Change `Node` that was already added to the model using `Batch` API.
  *
  * Similarly, you cannot use `Batch` API on a node that has not been added to the model tree, with the exception
- * of {@link engine.model.Batch#insert inserting} that node to the model tree.
+ * of {@link module:engine/model/batch~Batch#insert inserting} that node to the model tree.
  *
- * Be aware that using {@link engine.model.Batch#remove remove from Batch API} does not allow to use `Node` API because
+ * Be aware that using {@link module:engine/model/batch~Batch#remove remove from Batch API} does not allow to use `Node` API because
  * the information about `Node` is still kept in model document.
  *
- * In case of {@link engine.model.Element element node}, adding and removing children also counts as changing a node and
+ * In case of {@link module:engine/model/element~Element element node}, adding and removing children also counts as changing a node and
  * follows same rules.
- *
- * @memberOf engine.model
  */
 export default class Node {
 	/**
@@ -50,11 +49,12 @@ export default class Node {
 	 */
 	constructor( attrs ) {
 		/**
-		 * Parent of this node. It could be {@link engine.model.Element} or {@link engine.model.DocumentFragment}.
+		 * Parent of this node. It could be {@link module:engine/model/element~Element}
+		 * or {@link module:engine/model/documentfragment~DocumentFragment}.
 		 * Equals to `null` if the node has no parent.
 		 *
 		 * @readonly
-		 * @member {engine.model.Element|engine.model.DocumentFragment|null} engine.model.Node#parent
+		 * @member {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment|null}
 		 */
 		this.parent = null;
 
@@ -62,7 +62,7 @@ export default class Node {
 		 * Attributes set on this node.
 		 *
 		 * @private
-		 * @member {Map} engine.model.Node#_attrs
+		 * @member {Map} module:engine/model/node~Node#_attrs
 		 */
 		this._attrs = toMap( attrs );
 	}
@@ -96,7 +96,7 @@ export default class Node {
 	}
 
 	/**
-	 * Offset at which this node starts in it's parent. It is equal to the sum of {@link engine.model.Node#offsetSize offsetSize}
+	 * Offset at which this node starts in it's parent. It is equal to the sum of {@link #offsetSize offsetSize}
 	 * of all it's previous siblings. Equals to `null` if node has no parent.
 	 *
 	 * Accessing this property throws an error if this node's parent element does not contain it.
@@ -126,9 +126,9 @@ export default class Node {
 
 	/**
 	 * Offset size of this node. Represents how much "offset space" is occupied by the node in it's parent.
-	 * It is important for {@link engine.model.Position position}. When node has `offsetSize` greater than `1`, position
+	 * It is important for {@link module:engine/model/position~Position position}. When node has `offsetSize` greater than `1`, position
 	 * can be placed between that node start and end. `offsetSize` greater than `1` is for nodes that represents more
-	 * than one entity, i.e. {@link engine.model.Text text node}.
+	 * than one entity, i.e. {@link module:engine/model/text~Text text node}.
 	 *
 	 * @readonly
 	 * @type {Number}
@@ -139,8 +139,8 @@ export default class Node {
 
 	/**
 	 * Offset at which this node ends in it's parent. It is equal to the sum of this node's
-	 * {@link engine.model.Node#startOffset start offset} and {@link engine.model.Node#offsetSize offset size}. Equals
-	 * to `null` if the node has no parent.
+	 * {@link module:engine/model/node~Node#startOffset start offset} and {@link #offsetSize offset size}.
+	 * Equals to `null` if the node has no parent.
 	 *
 	 * @readonly
 	 * @type {Number|null}
@@ -157,7 +157,7 @@ export default class Node {
 	 * Node's next sibling or `null` if the node is a last child of it's parent or if the node has no parent.
 	 *
 	 * @readonly
-	 * @type {engine.model.Node|null}
+	 * @type {module:engine/model/node~Node|null}
 	 */
 	get nextSibling() {
 		const index = this.index;
@@ -169,7 +169,7 @@ export default class Node {
 	 * Node's previous sibling or `null` if the node is a first child of it's parent or if the node has no parent.
 	 *
 	 * @readonly
-	 * @type {engine.model.Node|null}
+	 * @type {module:engine/model/node~Node|null}
 	 */
 	get previousSibling() {
 		const index = this.index;
@@ -179,10 +179,10 @@ export default class Node {
 
 	/**
 	 * The top-most ancestor of the node. If node has no parent it is the root itself. If the node is a part
-	 * of {@link engine.model.DocumentFragment}, it's `root` is equal to that `DocumentFragment`.
+	 * of {@link module:engine/model/documentfragment~DocumentFragment}, it's `root` is equal to that `DocumentFragment`.
 	 *
 	 * @readonly
-	 * @type {engine.model.Node|engine.model.DocumentFragment}
+	 * @type {module:engine/model/node~Node|module:engine/model/documentfragment~DocumentFragment}
 	 */
 	get root() {
 		let root = this;
@@ -195,11 +195,11 @@ export default class Node {
 	}
 
 	/**
-	 * {@link engine.model.Document Document} that owns this node or `null` if the node has no parent or is inside
-	 * a {@link engine.model.DocumentFragment DocumentFragment}.
+	 * {@link module:engine/model/document~Document Document} that owns this node or `null` if the node has no parent or is inside
+	 * a {@link module:engine/model/documentfragment~DocumentFragment DocumentFragment}.
 	 *
 	 * @readonly
-	 * @type {engine.model.Document|null}
+	 * @type {module:engine/model/document~Document|null}
 	 */
 	get document() {
 		// This is a top element of a sub-tree.
@@ -214,7 +214,7 @@ export default class Node {
 	/**
 	 * Creates a copy of this node, that is a node with exactly same attributes, and returns it.
 	 *
-	 * @returns {engine.model.Node} Node with same attributes as this node.
+	 * @returns {module:engine/model/node~Node} Node with same attributes as this node.
 	 */
 	clone() {
 		return new Node( this._attrs );
@@ -222,8 +222,8 @@ export default class Node {
 
 	/**
 	 * Gets path to the node. The path is an array containing starting offsets of consecutive ancestors of this node,
-	 * beginning from {@link engine.model.Node#root root}, down to this node's starting offset. The path can be used to
-	 * create {@link engine.model.Position Position} instance.
+	 * beginning from {@link module:engine/model/node~Node#root root}, down to this node's starting offset. The path can be used to
+	 * create {@link module:engine/model/position~Position Position} instance.
 	 *
 	 *		const abc = new Text( 'abc' );
 	 *		const foo = new Text( 'foo' );

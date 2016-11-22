@@ -19,7 +19,6 @@ import { NBSP_FILLER } from '../view/filler.js';
  * This class is needed because unlike HTML, XML allows to use any tag with any value.
  * E.g. `<link>Text</link>` is a valid XML but invalid HTML.
  *
- * @memberOf engine.dataProcessor
  * @implements engine.dataProcessor.DataProcessor
  */
 export default class XmlDataProcessor {
@@ -37,7 +36,7 @@ export default class XmlDataProcessor {
 		 * `<container:tagName></container:tagName>` input. It is mainly for debugging.
 		 *
 		 * @public
-		 * @member {DOMParser} engine.dataProcessor.XmlDataProcessor#namespaces
+		 * @member {DOMParser}
 		 */
 		this.namespaces = options.namespaces || [];
 
@@ -45,7 +44,7 @@ export default class XmlDataProcessor {
 		 * DOMParser instance used to parse XML string to XMLDocument.
 		 *
 		 * @private
-		 * @member {DOMParser} engine.dataProcessor.XmlDataProcessor#_domParser
+		 * @member {DOMParser}
 		 */
 		this._domParser = new DOMParser();
 
@@ -53,7 +52,7 @@ export default class XmlDataProcessor {
 		 * DOM converter used to convert DOM elements to view elements.
 		 *
 		 * @private
-		 * @member {engine.view.DomConverter} engine.dataProcessor.XmlDataProcessor#_domConverter.
+		 * @member {module:engine/view/domconverter~DomConverter}.
 		 */
 		this._domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
 
@@ -62,15 +61,16 @@ export default class XmlDataProcessor {
 		 * There is no need to use dedicated for XML writer because BasicHtmlWriter works well in this case.
 		 *
 		 * @private
-		 * @member {engine.dataProcessor.BasicHtmlWriter} engine.dataProcessor.HtmlDataProcessor#_htmlWriter
+		 * @member {module:engine/dataprocessor/basichtmlwriter~BasicHtmlWriter}
 		 */
 		this._htmlWriter = new BasicHtmlWriter();
 	}
 
 	/**
-	 * Converts provided {@link engine.view.DocumentFragment DocumentFragment} to data format - in this case XML string.
+	 * Converts provided {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment}
+	 * to data format- in this case XML string.
 	 *
-	 * @param {engine.view.DocumentFragment} viewFragment
+	 * @param {module:engine/view/documentfragment~DocumentFragment} viewFragment
 	 * @returns {String} XML string.
 	 */
 	toData( viewFragment ) {
@@ -86,7 +86,7 @@ export default class XmlDataProcessor {
 	 * Converts provided XML string to view tree.
 	 *
 	 * @param {String} data XML string.
-	 * @returns {engine.view.Node|engine.view.DocumentFragment|null} Converted view element.
+	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Converted view element.
 	 */
 	toView( data ) {
 		// Convert input XML data to DOM DocumentFragment.

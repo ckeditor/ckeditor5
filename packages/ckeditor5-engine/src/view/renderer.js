@@ -24,30 +24,28 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 /**
  * Renderer updates DOM structure and selection, to make them a reflection of the view structure and selection.
  *
- * View nodes which may need to be rendered needs to be {@link engine.view.Renderer#markToSync marked}.
- * Then, on {@link engine.view.Renderer#render render}, renderer compares the view nodes with the DOM nodes
+ * View nodes which may need to be rendered needs to be {@link module:engine/view/renderer~Renderer#markToSync marked}.
+ * Then, on {@link module:engine/view/renderer~Renderer#render render}, renderer compares the view nodes with the DOM nodes
  * in order to check which ones really need to be refreshed. Finally, it creates DOM nodes from these view nodes,
- * {@link engine.view.DomConverter#bindElements binds} them and inserts into the DOM tree.
+ * {@link module:engine/view/domconverter~DomConverter#bindElements binds} them and inserts into the DOM tree.
  *
- * Every time {@link engine.view.Renderer#render render} is called, renderer additionally checks if
- * {@link engine.view.Renderer#selection selection} needs update and updates it if so.
+ * Every time {@link module:engine/view/renderer~Renderer#render render} is called, renderer additionally checks if
+ * {@link module:engine/view/renderer~Renderer#selection selection} needs update and updates it if so.
  *
- * Renderer uses {@link engine.view.DomConverter} to transform and bind nodes.
- *
- * @memberOf engine.view
+ * Renderer uses {@link module:engine/view/domconverter~DomConverter} to transform and bind nodes.
  */
 export default class Renderer {
 	/**
 	 * Creates a renderer instance.
 	 *
-	 * @param {engine.view.DomConverter} domConverter Converter instance.
-	 * @param {engine.view.Selection} selection View selection.
+	 * @param {module:engine/view/domconverter~DomConverter} domConverter Converter instance.
+	 * @param {module:engine/view/selection~Selection} selection View selection.
 	 */
 	constructor( domConverter, selection ) {
 		/**
 		 * Set of DOM Documents instances.
 		 *
-		 * @member {Set.<Document>} engine.view.Renderer#domDocuments
+		 * @member {Set.<Document>} module:engine/view/renderer~Renderer#domDocuments
 		 */
 		this.domDocuments = new Set();
 
@@ -55,7 +53,7 @@ export default class Renderer {
 		 * Converter instance.
 		 *
 		 * @readonly
-		 * @member {engine.view.DomConverter} engine.view.Renderer#domConverter
+		 * @member {module:engine/view/domconverter~DomConverter} module:engine/view/renderer~Renderer#domConverter
 		 */
 		this.domConverter = domConverter;
 
@@ -63,7 +61,7 @@ export default class Renderer {
 		 * Set of nodes which attributes changed and may need to be rendered.
 		 *
 		 * @readonly
-		 * @member {Set.<engine.view.Node>} engine.view.Renderer#markedAttributes
+		 * @member {Set.<module:engine/view/node~Node>} module:engine/view/renderer~Renderer#markedAttributes
 		 */
 		this.markedAttributes = new Set();
 
@@ -71,7 +69,7 @@ export default class Renderer {
 		 * Set of elements which child lists changed and may need to be rendered.
 		 *
 		 * @readonly
-		 * @member {Set.<engine.view.Node>} engine.view.Renderer#markedChildren
+		 * @member {Set.<module:engine/view/node~Node>} module:engine/view/renderer~Renderer#markedChildren
 		 */
 		this.markedChildren = new Set();
 
@@ -79,7 +77,7 @@ export default class Renderer {
 		 * Set of text nodes which text data changed and may need to be rendered.
 		 *
 		 * @readonly
-		 * @member {Set.<engine.view.Node>} engine.view.Renderer#markedTexts
+		 * @member {Set.<module:engine/view/node~Node>} module:engine/view/renderer~Renderer#markedTexts
 		 */
 		this.markedTexts = new Set();
 
@@ -87,7 +85,7 @@ export default class Renderer {
 		 * View selection. Renderer updates DOM Selection to make it match this one.
 		 *
 		 * @readonly
-		 * @member {engine.view.Selection} engine.view.Renderer#selection
+		 * @member {module:engine/view/selection~Selection} module:engine/view/renderer~Renderer#selection
 		 */
 		this.selection = selection;
 
@@ -95,7 +93,7 @@ export default class Renderer {
 		 * The text node in which the inline filler was rendered.
 		 *
 		 * @private
-		 * @member {Text} engine.view.Renderer#_inlineFiller
+		 * @member {Text} module:engine/view/renderer~Renderer#_inlineFiller
 		 */
 		this._inlineFiller = null;
 
@@ -103,7 +101,7 @@ export default class Renderer {
 		 * Indicates if view document is focused and selection can be rendered. Selection will not be rendered if
 		 * this is set to `false`.
 		 *
-		 * @member {Boolean} engine.view.Renderer#isFocused
+		 * @member {Boolean} module:engine/view/renderer~Renderer#isFocused
 		 */
 		this.isFocused = false;
 
@@ -121,12 +119,12 @@ export default class Renderer {
 	 *
 	 * Note that only view nodes which parents have corresponding DOM elements need to be marked to be synchronized.
 	 *
-	 * @see engine.view.Renderer#markedAttributes
-	 * @see engine.view.Renderer#markedChildren
-	 * @see engine.view.Renderer#markedTexts
+	 * @see module:engine/view/renderer~Renderer#markedAttributes
+	 * @see module:engine/view/renderer~Renderer#markedChildren
+	 * @see module:engine/view/renderer~Renderer#markedTexts
 	 *
-	 * @param {engine.view.ChangeType} type Type of the change.
-	 * @param {engine.view.Node} node Node to be marked.
+	 * @param {module:engine/view/document~ChangeType} type Type of the change.
+	 * @param {module:engine/view/node~Node} node Node to be marked.
 	 */
 	markToSync( type, node ) {
 		if ( type === 'text' ) {
@@ -156,8 +154,8 @@ export default class Renderer {
 	}
 
 	/**
-	 * Render method checks {@link engine.view.Renderer#markedAttributes},
-	 * {@link engine.view.Renderer#markedChildren} and {@link engine.view.Renderer#markedTexts} and updates all
+	 * Render method checks {@link module:engine/view/renderer~Renderer#markedAttributes},
+	 * {@link module:engine/view/renderer~Renderer#markedChildren} and {@link module:engine/view/renderer~Renderer#markedTexts} and updates all
 	 * nodes which need to be updated. Then it clears all three sets. Also, every time render is called it compares and
 	 * if needed updates the selection.
 	 *
@@ -169,12 +167,12 @@ export default class Renderer {
 	 *
 	 * For text nodes it updates the text string if it is different. Note that if parent element is marked as an element
 	 * which changed child list, text node update will not be done, because it may not be possible do find a
-	 * {@link engine.view.DomConverter#getCorrespondingDomText corresponding DOM text}. The change will be handled
+	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomText corresponding DOM text}. The change will be handled
 	 * in the parent element.
 	 *
 	 * For elements, which child lists have changed, it calculates a {@link diff} and adds or removes children which have changed.
 	 *
-	 * Rendering also handles {@link engine.view.filler fillers}. Especially, it checks if the inline filler is needed
+	 * Rendering also handles {@link module:engine/view/filter~Filter fillers}. Especially, it checks if the inline filler is needed
 	 * at selection position and adds or removes it. To prevent breaking text composition inline filler will not be
 	 * removed as long selection is in the text node which needed it at first.
 	 */
@@ -229,7 +227,7 @@ export default class Renderer {
 	 * Gets the text node in which the inline filler is kept.
 	 *
 	 * @private
-	 * @param {engine.view.Position} fillerPosition The position on which the filler is needed in the view.
+	 * @param {module:engine/view/position~Position} fillerPosition The position on which the filler is needed in the view.
 	 * @returns {Text} The text node with the filler.
 	 */
 	_getInlineFillerNode( fillerPosition ) {
@@ -265,7 +263,7 @@ export default class Renderer {
 	 * bindings are only dependable after rendering.
 	 *
 	 * @private
-	 * @returns {engine.view.Position}
+	 * @returns {module:engine/view/position~Position}
 	 */
 	_getInlineFillerPosition() {
 		const firstPos = this.selection.getFirstPosition();
@@ -338,7 +336,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Checks if the inline {@link engine.view.filler filler} should be added.
+	 * Checks if the inline {@link module:engine/view/filter~Filter filler} should be added.
 	 *
 	 * @private
 	 * @returns {Boolean} True if the inline fillers should be added.
@@ -380,9 +378,9 @@ export default class Renderer {
 	 * Checks if text needs to be updated and possibly updates it.
 	 *
 	 * @private
-	 * @param {engine.view.Text} viewText View text to update.
+	 * @param {module:engine/view/text~Text} viewText View text to update.
 	 * @param {Object} options
-	 * @param {engine.view.Position} options.inlineFillerPosition The position on which the inline
+	 * @param {module:engine/view/position~Position} options.inlineFillerPosition The position on which the inline
 	 * filler should be rendered.
 	 */
 	_updateText( viewText, options ) {
@@ -407,7 +405,7 @@ export default class Renderer {
 	 * Checks if attributes list needs to be updated and possibly updates it.
 	 *
 	 * @private
-	 * @param {engine.view.Element} viewElement View element to update.
+	 * @param {module:engine/view/element~Element} viewElement View element to update.
 	 */
 	_updateAttrs( viewElement ) {
 		const domElement = this.domConverter.getCorrespondingDom( viewElement );
@@ -431,9 +429,9 @@ export default class Renderer {
 	 * Checks if elements child list needs to be updated and possibly updates it.
 	 *
 	 * @private
-	 * @param {engine.view.Element} viewElement View element to update.
+	 * @param {module:engine/view/element~Element} viewElement View element to update.
 	 * @param {Object} options
-	 * @param {engine.view.Position} options.inlineFillerPosition The position on which the inline
+	 * @param {module:engine/view/position~Position} options.inlineFillerPosition The position on which the inline
 	 * filler should be rendered.
 	 */
 	_updateChildren( viewElement, options ) {

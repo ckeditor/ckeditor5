@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/observer/selectionobserver
+ */
+
 /* global setInterval, clearInterval */
 
 import Observer from './observer.js';
@@ -12,15 +16,14 @@ import log from '../../../utils/log.js';
 /**
  * Selection observer class observes selection changes in the document. If selection changes on the document this
  * observer checks if there are any mutations and if DOM selection is different than the
- * {@link engine.view.Document#selection view selection}. Selection observer fires
- * {@link engine.view.Document#selectionChange} event only if selection change was the only change in the document
+ * {@link module:engine/view/document~Document#selection view selection}. Selection observer fires
+ * {@link module:engine/view/document~Document#selectionChange} event only if selection change was the only change in the document
  * and DOM selection is different then the view selection.
  *
- * Note that this observer is attached by the {@link engine.view.Document} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
  *
- * @see engine.view.MutationObserver
- * @memberOf engine.view.observer
- * @extends engine.view.observer.Observer
+ * @see module:engine/view/mutationobserver~MutationObserver
+ * @extends module:engine/view/observer/observer~Observer.Observer
  */
 export default class SelectionObserver extends Observer {
 	constructor( document ) {
@@ -28,35 +31,36 @@ export default class SelectionObserver extends Observer {
 
 		/**
 		 * Instance of the mutation observer. Selection observer calls
-		 * {@link engine.view.observer.MutationObserver#flush} to ensure that the mutations will be handled before the
-		 * {@link engine.view.Document#selectionChange} event is fired.
+		 * {@link module:engine/view/observer/mutationobserver~MutationObserver#flush} to ensure that the mutations will be handled before the
+		 * {@link module:engine/view/document~Document#selectionChange} event is fired.
 		 *
 		 * @readonly
-		 * @member {engine.view.observer.MutationObserver} engine.view.observer.SelectionObserver#mutationObserver
+		 * @member {module:engine/view/observer/mutationobserver~MutationObserver}
+		 * module:engine/view/observer/selectionobserver~SelectionObserver#mutationObserver
 		 */
 		this.mutationObserver = document.getObserver( MutationObserver );
 
 		/**
-		 * Reference to the {@link engine.view.Document} object.
+		 * Reference to the {@link module:engine/view/document~Document} object.
 		 *
 		 * @readonly
-		 * @member {engine.view.Document} engine.view.observer.SelectionObserver#document
+		 * @member {module:engine/view/document~Document} module:engine/view/observer/selectionobserver~SelectionObserver#document
 		 */
 		this.document = document;
 
 		/**
-		 * Reference to the view {@link engine.view.Selection} object used to compare new selection with it.
+		 * Reference to the view {@link module:engine/view/selection~Selection} object used to compare new selection with it.
 		 *
 		 * @readonly
-		 * @member {engine.view.Selection} engine.view.observer.SelectionObserver#selection
+		 * @member {module:engine/view/selection~Selection} module:engine/view/observer/selectionobserver~SelectionObserver#selection
 		 */
 		this.selection = document.selection;
 
 		/**
-		 * Reference to the {@link engine.view.Document#domConverter}.
+		 * Reference to the {@link module:engine/view/document~Document#domConverter}.
 		 *
 		 * @readonly
-		 * @member {engine.view.DomConverter} engine.view.observer.SelectionObserver#domConverter
+		 * @member {module:engine/view/domconverter~DomConverter} module:engine/view/observer/selectionobserver~SelectionObserver#domConverter
 		 */
 		this.domConverter = document.domConverter;
 
@@ -65,7 +69,7 @@ export default class SelectionObserver extends Observer {
 		 * document.
 		 *
 		 * @private
-		 * @member {WeakSet.<Document>} engine.view.observer.SelectionObserver#_documents
+		 * @member {WeakSet.<Document>} module:engine/view/observer/selectionobserver~SelectionObserver#_documents
 		 */
 		this._documents = new WeakSet();
 
@@ -75,21 +79,21 @@ export default class SelectionObserver extends Observer {
 		 * Private property to store the last selection, to check if the code does not enter infinite loop.
 		 *
 		 * @private
-		 * @member {engine.view.Selection} engine.view.observer.SelectionObserver#_lastSelection
+		 * @member {module:engine/view/selection~Selection} module:engine/view/observer/selectionobserver~SelectionObserver#_lastSelection
 		 */
 
 		/**
 		 * Private property to store the last but one selection, to check if the code does not enter infinite loop.
 		 *
 		 * @private
-		 * @member {engine.view.Selection} engine.view.observer.SelectionObserver#_lastButOneSelection
+		 * @member {module:engine/view/selection~Selection} module:engine/view/observer/selectionobserver~SelectionObserver#_lastButOneSelection
 		 */
 
 		/**
 		 * Private property to check if the code does not enter infinite loop.
 		 *
 		 * @private
-		 * @member {Number} engine.view.observer.SelectionObserver#_loopbackCounter
+		 * @member {Number} module:engine/view/observer/selectionobserver~SelectionObserver#_loopbackCounter
 		 */
 	}
 
@@ -121,8 +125,8 @@ export default class SelectionObserver extends Observer {
 	}
 
 	/**
-	 * Selection change listener. {@link engine.view.observer.MutationObserver#flush Flush} mutations, check if
-	 * selection changes and fires {@link engine.view.Document#selectionChange} event.
+	 * Selection change listener. {@link module:engine/view/observer/mutationobserver~MutationObserver#flush Flush} mutations, check if
+	 * selection changes and fires {@link module:engine/view/document~Document#selectionChange} event.
 	 *
 	 * @private
 	 * @param {Document} domDocument DOM document.
@@ -173,7 +177,7 @@ export default class SelectionObserver extends Observer {
 	 * See https://github.com/ckeditor/ckeditor5-engine/issues/400.
 	 *
 	 * @private
-	 * @param {engine.view.Selection} newSelection DOM selection converted to view.
+	 * @param {module:engine/view/selection~Selection} newSelection DOM selection converted to view.
 	 * @returns {Boolean} True is the same selection repeat more then 10 times.
 	 */
 	_isInfiniteLoop( newSelection ) {
@@ -214,16 +218,17 @@ export default class SelectionObserver extends Observer {
  * Fired when selection has changed. This event is fired only when the selection change was the only change that happened
  * in the document, and old selection is different then the new selection.
  *
- * Introduced by {@link engine.view.observer.SelectionObserver}.
+ * Introduced by {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
  *
- * Note that because {@link engine.view.observer.SelectionObserver} is attached by the {@link engine.view.Document}
+ * Note that because {@link module:engine/view/observer/selectionobserver~SelectionObserver} is attached by the {@link
+ * module:engine/view/document~Document}
  * this event is available by default.
  *
- * @see engine.view.observer.SelectionObserver
- * @event engine.view.Document#selectionChange
+ * @see module:engine/view/observer/selectionobserver~SelectionObserver
+ * @event module:engine/view/document~Document#selectionChange
  * @param {Object} data
- * @param {engine.view.Selection} data.oldSelection Old View selection which is
- * {@link engine.view.Document#selection}.
- * @param {engine.view.Selection} data.newSelection New View selection which is converted DOM selection.
+ * @param {module:engine/view/selection~Selection} data.oldSelection Old View selection which is
+ * {@link module:engine/view/document~Document#selection}.
+ * @param {module:engine/view/selection~Selection} data.newSelection New View selection which is converted DOM selection.
  * @param {Selection} data.domSelection Native DOM selection.
  */

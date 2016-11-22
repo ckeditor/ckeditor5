@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/delta/removedelta
+ */
+
 import MoveDelta from './movedelta.js';
 import { register } from '../batch.js';
 import DeltaFactory from './deltafactory.js';
@@ -12,10 +16,8 @@ import Range from '../range.js';
 
 /**
  * @classdesc
- * To provide specific OT behavior and better collisions solving, {@link engine.model.Batch#remove} method
+ * To provide specific OT behavior and better collisions solving, {@link module:engine/model/batch~Batch#remove} method
  * uses the `RemoveDelta` class which inherits from the `Delta` class and may overwrite some methods.
- *
- * @memberOf engine.model.delta
  */
 export default class RemoveDelta extends MoveDelta {
 	/**
@@ -33,11 +35,11 @@ function addRemoveOperation( batch, delta, position, howMany ) {
 }
 
 /**
- * Removes given {@link engine.model.Item model item} or given range.
+ * Removes given {@link module:engine/model/item~Item model item} or given range.
  *
  * @chainable
- * @method engine.model.Batch#remove
- * @param {engine.model.Item|engine.model.Range} itemOrRange Model item or range to remove.
+ * @method module:engine/model/batch~Batch#remove
+ * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange Model item or range to remove.
  */
 register( 'remove', function( itemOrRange ) {
 	const delta = new RemoveDelta();

@@ -10,43 +10,42 @@
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * TextProxy is a wrapper for substring of {@link engine.view.Text}. Instance of this class is created by
- * {@link engine.view.TreeWalker} when only a part of {@link engine.view.Text} needs to be returned.
+ * TextProxy is a wrapper for substring of {@link module:engine/view/text~Text}. Instance of this class is created by
+ * {@link module:engine/view/treewalker~TreeWalker} when only a part of {@link module:engine/view/text~Text} needs to be returned.
  *
- * `TextProxy` has an API similar to {@link engine.view.Text Text} and allows to do most of the common tasks performed
+ * `TextProxy` has an API similar to {@link module:engine/view/text~Text Text} and allows to do most of the common tasks performed
  * on view nodes.
  *
  * **Note:** Some `TextProxy` instances may represent whole text node, not just a part of it.
- * See {@link engine.view.TextProxy#isPartial}.
+ * See {@link module:engine/view/textproxy~TextProxy#isPartial}.
  *
  * **Note:** `TextProxy` is a readonly interface.
  *
- * **Note:** `TextProxy` instances are created on the fly basing on the current state of parent {@link engine.view.Text}.
+ * **Note:** `TextProxy` instances are created on the fly basing on the current state of parent {@link module:engine/view/text~Text}.
  * Because of this it is highly unrecommended to store references to `TextProxy instances because they might get
- * invalidated due to operations on Document. Also TextProxy is not a {@link engine.view.Node} so it can not be
- * inserted as a child of {@link engine.view.Element}.
+ * invalidated due to operations on Document. Also TextProxy is not a {@link module:engine/view/node~Node} so it can not be
+ * inserted as a child of {@link module:engine/view/element~Element}.
  *
- * `TextProxy` instances are created by {@link engine.view.TreeWalker view tree walker}. You should not need to create
+ * `TextProxy` instances are created by {@link module:engine/view/treewalker~TreeWalker view tree walker}. You should not need to create
  * an instance of this class by your own.
- *
- * @memberOf engine.view
  */
 export default class TextProxy {
 	/**
 	 * Creates a text proxy.
 	 *
 	 * @protected
-	 * @param {engine.view.Text} textNode Text node which part is represented by this text proxy.
-	 * @param {Number} offsetInText Offset in {@link engine.view.TextProxy#textNode text node} from which the text proxy starts.
+	 * @param {module:engine/view/text~Text} textNode Text node which part is represented by this text proxy.
+	 * @param {Number} offsetInText Offset in {@link module:engine/view/textproxy~TextProxy#textNode text node}
+	 * from which the text proxy starts.
 	 * @param {Number} length Text proxy length, that is how many text node's characters, starting from `offsetInText` it represents.
 	 * @constructor
 	 */
 	constructor( textNode, offsetInText, length ) {
 		/**
-		 * Reference to the {@link engine.view.Text} element which TextProxy is a substring.
+		 * Reference to the {@link module:engine/view/text~Text} element which TextProxy is a substring.
 		 *
 		 * @readonly
-		 * @member {engine.view.Text} engine.view.TextProxy#textNode
+		 * @member {module:engine/view/text~Text} module:engine/view/textproxy~TextProxy#textNode
 		 */
 		this.textNode = textNode;
 
@@ -71,7 +70,7 @@ export default class TextProxy {
 		 * Text data represented by this text proxy.
 		 *
 		 * @readonly
-		 * @member {String} engine.view.TextProxy#data
+		 * @member {String} module:engine/view/textproxy~TextProxy#data
 		 */
 		this.data = textNode.data.substring( offsetInText, offsetInText + length );
 
@@ -79,17 +78,17 @@ export default class TextProxy {
 		 * Offset in the `textNode` where this `TextProxy` instance starts.
 		 *
 		 * @readonly
-		 * @member {Number} engine.view.TextProxy#offsetInText
+		 * @member {Number} module:engine/view/textproxy~TextProxy#offsetInText
 		 */
 		this.offsetInText = offsetInText;
 	}
 
 	/**
-	 * Flag indicating whether `TextProxy` instance covers only part of the original {@link engine.view.Text text node}
+	 * Flag indicating whether `TextProxy` instance covers only part of the original {@link module:engine/view/text~Text text node}
 	 * (`true`) or the whole text node (`false`).
 	 *
-	 * This is `false` when text proxy starts at the very beginning of {@link engine.view.TextProxy#textNode textNode}
-	 * ({@link engine.view.TextProxy#offsetInText offsetInText} equals `0`) and text proxy sizes is equal to
+	 * This is `false` when text proxy starts at the very beginning of {@link module:engine/view/textproxy~TextProxy#textNode textNode}
+	 * ({@link module:engine/view/textproxy~TextProxy#offsetInText offsetInText} equals `0`) and text proxy sizes is equal to
 	 * text node size.
 	 *
 	 * @readonly
@@ -103,7 +102,7 @@ export default class TextProxy {
 	 * Parent of this text proxy, which is same as parent of text node represented by this text proxy.
 	 *
 	 * @readonly
-	 * @type {engine.view.Element|engine.view.DocumentFragment|null}
+	 * @type {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment|null}
 	 */
 	get parent() {
 		return this.textNode.parent;
@@ -113,18 +112,18 @@ export default class TextProxy {
 	 * Root of this text proxy, which is same as root of text node represented by this text proxy.
 	 *
 	 * @readonly
-	 * @type {engine.view.Node|engine.view.DocumentFragment}
+	 * @type {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment}
 	 */
 	get root() {
 		return this.textNode.root;
 	}
 
 	/**
-	 * {@link engine.view.Document View document} that owns this text proxy, or `null` if the text proxy is inside
-	 * {@link engine.view.DocumentFragment document fragment}.
+	 * {@link module:engine/view/document~Document View document} that owns this text proxy, or `null` if the text proxy is inside
+	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
 	 *
 	 * @readonly
-	 * @type {engine.view.Document|null}
+	 * @type {module:engine/view/document~Document|null}
 	 */
 	get document() {
 		return this.textNode.document;

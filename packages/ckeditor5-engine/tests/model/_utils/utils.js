@@ -47,12 +47,13 @@ export function jsonParseStringify( object ) {
 }
 
 /**
- * Adds given {@link engine.model.operation.Operation operation} to a newly created {@link engine.model.delta.Delta delta}
+ * Adds given {@link module:engine/model/operation/operation~Operation operation} to a newly created
+ * {@link module:engine/model/delta~Delta.Delta delta}
  * and returns it back. Every operation, when applied, have to be added to a delta. This helper function is useful in those
  * tests which focus on operations, not deltas.
  *
- * @param {engine.model.operation.Operation} operation Operation to wrap
- * @returns {engine.model.operation.Operation}
+ * @param {module:engine/model/operation/operation~Operation} operation Operation to wrap
+ * @returns {module:engine/model/operation/operation~Operation}
  */
 export function wrapInDelta( operation ) {
 	const delta = new Delta();

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/delta/movedelta
+ */
+
 import Delta from './delta.js';
 import DeltaFactory from './deltafactory.js';
 import { register } from '../batch.js';
@@ -13,10 +17,8 @@ import CKEditorError from '../../../utils/ckeditorerror.js';
 
 /**
  * @classdesc
- * To provide specific OT behavior and better collisions solving, {@link engine.model.Batch#move} method
+ * To provide specific OT behavior and better collisions solving, {@link module:engine/model/batch~Batch#move} method
  * uses the `MoveDelta` class which inherits from the `Delta` class and may overwrite some methods.
- *
- * @memberOf engine.model.delta
  */
 export default class MoveDelta extends Delta {
 	/**
@@ -29,33 +31,33 @@ export default class MoveDelta extends Delta {
 	}
 
 	/**
-	 * {@link engine.model.delta.MoveDelta#_moveOperation Move operation}
-	 * {@link engine.model.operation.MoveOperation#sourcePosition source position} or `null` if there are
+	 * {@link module:engine/model/delta/delta~Delta.MoveDelta#_moveOperation Move operation}
+	 * {@link module:engine/model/operation/moveoperation~MoveOperation#sourcePosition source position} or `null` if there are
 	 * no operations in the delta.
 	 *
-	 * @type {engine.model.Position|null}
+	 * @type {module:engine/model/position~Position|null}
 	 */
 	get sourcePosition() {
 		return this._moveOperation ? this._moveOperation.sourcePosition : null;
 	}
 
 	/**
-	 * {@link engine.model.delta.MoveDelta#_moveOperation Move operation}
-	 * {@link engine.model.operation.MoveOperation#targetPosition target position} or `null` if there are
+	 * {@link module:engine/model/delta/delta~Delta.MoveDelta#_moveOperation Move operation}
+	 * {@link module:engine/model/operation/moveoperation~MoveOperation#targetPosition target position} or `null` if there are
 	 * no operations in the delta.
 	 *
-	 * @type {engine.model.Position|null}
+	 * @type {module:engine/model/position~Position|null}
 	 */
 	get targetPosition() {
 		return this._moveOperation ? this._moveOperation.targetPosition : null;
 	}
 
 	/**
-	 * {@link engine.model.delta.MoveDelta#_moveOperation Move operation} that is saved in this delta or `null`
+	 * {@link module:engine/model/delta/delta~Delta.MoveDelta#_moveOperation Move operation} that is saved in this delta or `null`
 	 * if there are no operations in the delta.
 	 *
 	 * @protected
-	 * @type {engine.model.operation.MoveOperation|null}
+	 * @type {module:engine/model/operation/moveoperation~MoveOperation|null}
 	 */
 	get _moveOperation() {
 		return this.operations[ 0 ] || null;
@@ -90,12 +92,12 @@ function addMoveOperation( batch, delta, sourcePosition, howMany, targetPosition
 }
 
 /**
- * Moves given {@link engine.model.Item model item} or given range to target position.
+ * Moves given {@link module:engine/model/item~Item model item} or given range to target position.
  *
  * @chainable
- * @method engine.model.Batch#move
- * @param {engine.model.Item|engine.model.Range} itemOrRange Model item or range of nodes to move.
- * @param {engine.model.Position} targetPosition Position where moved nodes will be inserted.
+ * @method module:engine/model/batch~Batch#move
+ * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange Model item or range of nodes to move.
+ * @param {module:engine/model/position~Position} targetPosition Position where moved nodes will be inserted.
  */
 register( 'move', function( itemOrRange, targetPosition ) {
 	const delta = new MoveDelta();

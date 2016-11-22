@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/operation/operationfactory
+ */
+
 import AttributeOperation from '../operation/attributeoperation.js';
 import InsertOperation from '../operation/insertoperation.js';
 import MoveOperation from '../operation/moveoperation.js';
@@ -28,15 +32,14 @@ operations[ RootAttributeOperation.className ] = RootAttributeOperation;
  * A factory class for creating operations.
  *
  * @abstract
- * @memberOf engine.model.operation
  */
 export default class OperationFactory {
 	/**
 	 * Creates concrete `Operation` object from deserilized object, i.e. from parsed JSON string.
 	 *
 	 * @param {Object} json Deserialized JSON object.
-	 * @param {engine.model.Document} document Document on which this operation will be applied.
-	 * @returns {engine.model.operation.Operation}
+	 * @param {module:engine/model/document~Document} document Document on which this operation will be applied.
+	 * @returns {module:engine/model/operation/operation~Operation}
 	 */
 	static fromJSON( json, document ) {
 		return operations[ json.__className ].fromJSON( json, document );

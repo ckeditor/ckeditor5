@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/delta/mergedelta
+ */
+
 import Delta from './delta.js';
 import DeltaFactory from './deltafactory.js';
 import SplitDelta from './splitdelta.js';
@@ -15,17 +19,15 @@ import CKEditorError from '../../../utils/ckeditorerror.js';
 
 /**
  * @classdesc
- * To provide specific OT behavior and better collisions solving, {@link engine.model.Batch#merge} method
+ * To provide specific OT behavior and better collisions solving, {@link module:engine/model/batch~Batch#merge} method
  * uses the `MergeDelta` class which inherits from the `Delta` class and may overwrite some methods.
- *
- * @memberOf engine.model.delta
  */
 export default class MergeDelta extends Delta {
 	/**
 	 * Position between to merged nodes or `null` if the delta has no operations.
 	 *
 	 * @readonly
-	 * @type {engine.model.Position|null}
+	 * @type {module:engine/model/position~Position|null}
 	 */
 	get position() {
 		return this._removeOperation ? this._removeOperation.sourcePosition : null;
@@ -46,13 +48,13 @@ export default class MergeDelta extends Delta {
 
 	/**
 	 * Operation in this delta that removes the node after merge position (which will be empty at that point) or
-	 * `null` if the delta has no operations. Note, that after {@link engine.model.delta.transform transformation}
-	 * this might be an instance of {@link engine.model.operation.MoveOperation} instead of
-	 * {@link engine.model.operation.RemoveOperation}.
+	 * `null` if the delta has no operations. Note, that after {@link module:engine/model/delta/delta~Delta.transform transformation}
+	 * this might be an instance of {@link module:engine/model/operation/moveoperation~MoveOperation} instead of
+	 * {@link module:engine/model/operation/removeoperation~RemoveOperation}.
 	 *
 	 * @readonly
 	 * @protected
-	 * @type {engine.model.operation.MoveOperation|null}
+	 * @type {module:engine/model/operation/moveoperation~MoveOperation|null}
 	 */
 	get _removeOperation() {
 		return this.operations[ 1 ] || null;
@@ -80,8 +82,8 @@ export default class MergeDelta extends Delta {
  * `batch-merge-no-element-after` error will be thrown.
  *
  * @chainable
- * @method engine.model.Batch#merge
- * @param {engine.model.Position} position Position of merge.
+ * @method module:engine/model/batch~Batch#merge
+ * @param {module:engine/model/position~Position} position Position of merge.
  */
 register( 'merge', function( position ) {
 	const delta = new MergeDelta();

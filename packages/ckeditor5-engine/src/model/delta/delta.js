@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/delta/delta
+ */
+
 import clone from '../../../utils/lib/lodash/clone.js';
 import DeltaFactory from './deltafactory.js';
 
@@ -12,9 +16,7 @@ import DeltaFactory from './deltafactory.js';
  * Delta is a single, from the user action point of view, change in the editable document, like insert, split or
  * rename element. Delta is composed of operations, which are unit changes needed to be done to execute user action.
  *
- * Multiple deltas are grouped into a single {@link engine.model.Batch}.
- *
- * @memberOf engine.model.delta
+ * Multiple deltas are grouped into a single {@link module:engine/model/batch~Batch}.
  */
 export default class Delta {
 	/**
@@ -22,11 +24,11 @@ export default class Delta {
 	 */
 	constructor() {
 		/**
-		 * {@link engine.model.Batch} which delta is a part of. This property is null by default and set by the
-		 * {@link engine.model.Batch#addDelta} method.
+		 * {@link module:engine/model/batch~Batch} which delta is a part of. This property is null by default and set by the
+		 * {@link module:engine/model/batch~Batch#addDelta} method.
 		 *
 		 * @readonly
-		 * @member {engine.model.Batch} engine.model.delta.Delta#batch
+		 * @member {module:engine/model/batch~Batch} module:engine/model/delta/delta~Delta#batch
 		 */
 		this.batch = null;
 
@@ -34,7 +36,7 @@ export default class Delta {
 		 * Array of operations which compose delta.
 		 *
 		 * @readonly
-		 * @member {engine.model.operation.Operation[]} engine.model.delta.Delta#operations
+		 * @member {module:engine/model/operation/operation~Operation[]} module:engine/model/delta/delta~Delta#operations
 		 */
 		this.operations = [];
 	}
@@ -43,7 +45,7 @@ export default class Delta {
 	 * Returns delta base version which is equal to the base version of the first operation in delta. If there
 	 * are no operations in delta, returns `null`.
 	 *
-	 * @see engine.model.Document
+	 * @see module:engine/model/document~Document
 	 * @type {Number|null}
 	 */
 	get baseVersion() {
@@ -76,7 +78,7 @@ export default class Delta {
 	/**
 	 * Add operation to the delta.
 	 *
-	 * @param {engine.model.operation.Operation} operation Operation instance.
+	 * @param {module:engine/model/operation/operation~Operation} operation Operation instance.
 	 */
 	addOperation( operation ) {
 		operation.delta = this;
@@ -88,7 +90,7 @@ export default class Delta {
 	/**
 	 * Creates and returns a delta that has the same parameters as this delta.
 	 *
-	 * @returns {engine.model.delta.Delta} Clone of this delta.
+	 * @returns {module:engine/model/delta/delta~Delta} Clone of this delta.
 	 */
 	clone() {
 		let delta = new this.constructor();
@@ -106,10 +108,10 @@ export default class Delta {
 	 * by the original delta.
 	 *
 	 * Keep in mind that tree model state may change since executing the original delta, so reverse delta may be "outdated".
-	 * In that case you will need to {@link engine.model.delta.transform} it by all deltas that were executed after
+	 * In that case you will need to {@link module:engine/model/delta/delta~Delta.transform} it by all deltas that were executed after
 	 * the original delta.
 	 *
-	 * @returns {engine.model.delta.Delta} Reversed delta.
+	 * @returns {module:engine/model/delta/delta~Delta} Reversed delta.
 	 */
 	getReversed() {
 		let delta = new this._reverseDeltaClass();
@@ -144,8 +146,8 @@ export default class Delta {
 	}
 
 	/**
-	 * Delta class name. Used by {@link engine.model.delta.Delta#toJSON} method for serialization and
-	 * {@link engine.model.delta.DeltaFactory.fromJSON} during deserialization.
+	 * Delta class name. Used by {@link module:engine/model/delta/delta~Delta#toJSON} method for serialization and
+	 * {@link module:engine/model/delta/delta~DeltaFactory.fromJSON} during deserialization.
 	 *
 	 * @type {String}
 	 * @readonly
@@ -155,7 +157,7 @@ export default class Delta {
 	}
 
 	/**
-	 * Delta priority. Used in {@link engine.model.delta.transform delta transformations}. Delta with the higher
+	 * Delta priority. Used in {@link module:engine/model/delta/delta~Delta.transform delta transformations}. Delta with the higher
 	 * priority will be treated as more important when resolving transformation conflicts. If deltas have same
 	 * priority, other factors will be used to determine which delta is more important.
 	 *

@@ -10,8 +10,8 @@
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * `Batch` instance groups document changes ({@link engine.model.Delta deltas}). All deltas grouped in a single `Batch` can be
- * reverted together, so you can think about `Batch` as of a single undo step. If you want to extend given undo step you
+ * `Batch` instance groups document changes ({@link module:engine/model/delta/delta~Delta deltas}). All deltas grouped in a single `Batch`
+ * can be reverted together, so you can think about `Batch` as of a single undo step. If you want to extend given undo step you
  * can call another method on the same `Batch` object. If you want to create a separate undo step you can create a new `Batch`.
  *
  * For example to create two separate undo steps you can call:
@@ -28,14 +28,12 @@ import CKEditorError from '../../utils/ckeditorerror.js';
  * Note that all document modification methods (insert, remove, split, etc.) are chainable so you can shorten code to:
  *
  *		doc.batch().insert( firstPosition, 'foo' ).insert( secondPosition, 'bar' );
- *
- * @memberOf engine.model
  */
 export default class Batch {
 	/**
-	 * Creates `Batch` instance. Not recommended to use directly, use {@link engine.model.Document#batch} instead.
+	 * Creates `Batch` instance. Not recommended to use directly, use {@link module:engine/model/document~Document#batch} instead.
 	 *
-	 * @param {engine.model.Document} document Document which this Batch changes.
+	 * @param {module:engine/model/document~Document} document Document which this Batch changes.
 	 * @param {'transparent'|'default'} [type='default'] Type of the batch.
 	 */
 	constructor( document, type = 'default' ) {
@@ -43,7 +41,7 @@ export default class Batch {
 		 * Document which this batch changes.
 		 *
 		 * @readonly
-		 * @member {engine.model.Document} engine.model.Batch#document
+		 * @member {module:engine/model/document~Document} module:engine/model/batch~Batch#document
 		 */
 		this.document = document;
 
@@ -51,7 +49,7 @@ export default class Batch {
 		 * Array of deltas which compose this batch.
 		 *
 		 * @readonly
-		 * @member {Array.<engine.model.delta.Delta>} engine.model.Batch#deltas
+		 * @member {Array.<module:engine/model/delta/delta~Delta>} module:engine/model/batch~Batch#deltas
 		 */
 		this.deltas = [];
 
@@ -63,7 +61,7 @@ export default class Batch {
 		 * * `'transparent'` - batch that should be ignored by other features, i.e. initial batch or collaborative editing changes.
 		 *
 		 * @readonly
-		 * @member {'transparent'|'default'} engine.model.Batch#type
+		 * @member {'transparent'|'default'} module:engine/model/batch~Batch#type
 		 */
 		this.type = type;
 	}
@@ -83,8 +81,8 @@ export default class Batch {
 	 * Adds delta to the batch instance. All modification methods (insert, remove, split, etc.) use this method
 	 * to add created deltas.
 	 *
-	 * @param {engine.model.delta.Delta} delta Delta to add.
-	 * @return {engine.model.delta.Delta} Added delta.
+	 * @param {module:engine/model/delta/delta~Delta} delta Delta to add.
+	 * @return {module:engine/model/delta/delta~Delta} Added delta.
 	 */
 	addDelta( delta ) {
 		delta.batch = this;
@@ -96,7 +94,7 @@ export default class Batch {
 	/**
 	 * Gets an iterable collection of operations.
 	 *
-	 * @returns {Iterable.<engine.model.operation.Operation>}
+	 * @returns {Iterable.<module:engine/model/operation/operation~Operation>}
 	 */
 	*getOperations() {
 		for ( let delta of this.deltas ) {
@@ -136,7 +134,7 @@ export default class Batch {
  *			return this;
  *		} );
  *
- * @method engine.model.Batch.register
+ * @method module:engine/model/batch~Batch.register
  * @param {String} name Method name.
  * @param {Function} creator Method body.
  */

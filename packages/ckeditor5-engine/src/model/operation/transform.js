@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/operation/transform
+ */
+
 import InsertOperation from './insertoperation.js';
 import AttributeOperation from './attributeoperation.js';
 import RootAttributeOperation from './rootattributeoperation.js';
@@ -14,19 +18,23 @@ import Range from '../range.js';
 import compareArrays from '../../../utils/comparearrays.js';
 
 /**
- * Transforms given {@link engine.model.operation.Operation operation} by another {@link engine.model.operation.Operation operation}
- * and returns the result of that transformation as an array containing one or more {@link engine.model.operation.Operation operations}.
+ * Transforms given {@link module:engine/model/operation/operation~Operation operation}
+ * by another {@link module:engine/model/operation/operation~Operation operation}
+ * and returns the result of that transformation as an array containing
+ * one or more {@link module:engine/model/operation/operation~Operation operations}.
  *
- * Operations work on specified positions, passed to them when they are created. Whenever {@link engine.model.Document document}
+ * Operations work on specified positions, passed to them when they are created.
+ * Whenever {@link module:engine/model/document~Document document}
  * changes, we have to reflect those modifications by updating or "transforming" operations which are not yet applied.
  * When an operation is transformed, its parameters may change based on the operation by which it is transformed.
  * If the transform-by operation applied any modifications to the Tree Data Model which affect positions or nodes
  * connected with transformed operation, those changes will be reflected in the parameters of the returned operation(s).
  *
- * Whenever the {@link engine.model.Document document} has different {@link engine.model.Document#baseVersion}
- * than the operation you want to {@link engine.model.Document#applyOperation apply}, you need to transform that
- * operation by all operations which were already applied to the {@link engine.model.Document document} and have greater
- * {@link engine.model.Document#baseVersion} than the operation being applied. Transform them in the same order as those
+ * Whenever the {@link module:engine/model/document~Document document}
+ * has different {@link module:engine/model/document~Document#baseVersion}
+ * than the operation you want to {@link module:engine/model/document~Document#applyOperation apply}, you need to transform that
+ * operation by all operations which were already applied to the {@link module:engine/model/document~Document document} and have greater
+ * {@link module:engine/model/document~Document#baseVersion} than the operation being applied. Transform them in the same order as those
  * operations which were applied. This way all modifications done to the Tree Data Model will be reflected
  * in the operation parameters and the operation will "operate" on "up-to-date" version of the Tree Data Model.
  * This is mostly the case with Operational Transformations but it might be needed in particular features as well.
@@ -44,12 +52,12 @@ import compareArrays from '../../../utils/comparearrays.js';
  * that first or the second passed operation is always more important we won't be able to solve this case.
  *
  * @external engine.model.operation
- * @function engine.model.operation.transform
- * @param {engine.model.operation.Operation} a Operation that will be transformed.
- * @param {engine.model.operation.Operation} b Operation to transform by.
+ * @function module:engine/model/operation/transform~transform
+ * @param {module:engine/model/operation/operation~Operation} a Operation that will be transformed.
+ * @param {module:engine/model/operation/operation~Operation} b Operation to transform by.
  * @param {Boolean} isAMoreImportantThanB Flag indicating whether the operation which will be transformed (`a`) should be treated
  * as more important when resolving conflicts.
- * @returns {Array.<engine.model.operation.Operation>} Result of the transformation.
+ * @returns {Array.<module:engine/model/operation/operation~Operation>} Result of the transformation.
  */
 
 export default transform;

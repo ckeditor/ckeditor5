@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/view/writer
+ * @module module:engine/view/writer
  */
 
 import Position from './position.js';
@@ -20,7 +20,7 @@ import isIterable from '../../utils/isiterable.js';
 /**
  * Contains functions used for composing view tree.
  *
- * @namespace engine.view.writer
+ * @namespace module:engine/view/writer~writer
  */
 
 export default {
@@ -48,26 +48,30 @@ export default {
  *		<p>foo<b><u>b{}ar</u></b></p> -> <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
  *		<p><b>fo{o</b><u>ba}r</u></p> -> <p><b>fo</b><b>o</b><u>ba</u><u>r</u></b></p>
  *
- * **Note:** {@link engine.view.DocumentFragment DocumentFragment} is treated like a container.
+ * **Note:** {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} is treated like a container.
  *
- * **Note:** Difference between {@link engine.view.writer.breakAttributes breakAttributes} and
- * {@link engine.view.writer.breakContainer breakContainer} is that `breakAttributes` breaks all
- * {@link engine.view.AttributeElement attribute elements} that are ancestors of given `position`, up to the first
- * encountered {@link engine.view.ContainerElement container element}. `breakContainer` assumes that given `position`
+ * **Note:** Difference between {@link module:engine/view/writer~writer.breakAttributes breakAttributes} and
+ * {@link module:engine/view/writer~writer.breakContainer breakContainer} is that `breakAttributes` breaks all
+ * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that are ancestors of given `position`, up to the first
+ * encountered {@link module:engine/view/containerelement~ContainerElement container element}. `breakContainer` assumes that given
+ * `position`
  * is directly in container element and breaks that container element.
  *
- * Throws {@link utils.CKEditorError CKEditorError} `view-writer-invalid-range-container` when {@link engine.view.Range#start start}
- * and {@link engine.view.Range#end end} positions of a passed range are not placed inside same parent container.
+ * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container`
+ * when {@link module:engine/view/range~Range#start start}
+ * and {@link module:engine/view/range~Range#end end} positions of a passed range are not placed inside same parent container.
  *
- * Throws {@link utils.CKEditorError CKEditorError} `view-writer-cannot-break-empty-element` when trying to break attributes
- * inside {@link engine.view.EmptyElement EmptyElement}.
+ * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-empty-element`
+ * when trying to break attributes
+ * inside {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
  *
- * @see engine.view.AttributeElement
- * @see engine.view.ContainerElement
- * @see engine.view.writer.breakContainer
- * @function engine.view.writer.breakAttributes
- * @param {engine.view.Position|engine.view.Range} positionOrRange Position where to break attribute elements.
- * @returns {engine.view.Position|engine.view.Range} New position or range, after breaking the attribute elements.
+ * @see module:engine/view/attributeelement~AttributeElement
+ * @see module:engine/view/containerelement~ContainerElement
+ * @see module:engine/view/writer~writer.breakContainer
+ * @function module:engine/view/writer~writer.breakAttributes
+ * @param {module:engine/view/position~Position|module:engine/view/range~Range} positionOrRange Position where to break attribute elements.
+ * @returns {module:engine/view/position~Position|module:engine/view/range~Range} New position or range, after breaking the attribute
+ * elements.
  */
 export function breakAttributes( positionOrRange ) {
 	if ( positionOrRange instanceof Position ) {
@@ -78,7 +82,7 @@ export function breakAttributes( positionOrRange ) {
 }
 
 /**
- * Breaks {@link engine.view.ContainerElement container view element} into two, at the given position. Position
+ * Breaks {@link module:engine/view/containerelement~ContainerElement container view element} into two, at the given position. Position
  * has to be directly inside container element and cannot be in root. Does not break if position is at the beginning
  * or at the end of it's parent element.
  *
@@ -87,18 +91,19 @@ export function breakAttributes( positionOrRange ) {
  *		<p>^foobar</p> -> ^<p>foobar</p>
  *		<p>foobar^</p> -> <p>foobar</p>^
  *
- * **Note:** Difference between {@link engine.view.writer.breakAttributes breakAttributes} and
- * {@link engine.view.writer.breakContainer breakContainer} is that `breakAttributes` breaks all
- * {@link engine.view.AttributeElement attribute elements} that are ancestors of given `position`, up to the first
- * encountered {@link engine.view.ContainerElement container element}. `breakContainer` assumes that given `position`
+ * **Note:** Difference between {@link module:engine/view/writer~writer.breakAttributes breakAttributes} and
+ * {@link module:engine/view/writer~writer.breakContainer breakContainer} is that `breakAttributes` breaks all
+ * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that are ancestors of given `position`, up to the first
+ * encountered {@link module:engine/view/containerelement~ContainerElement container element}. `breakContainer` assumes that given
+ * `position`
  * is directly in container element and breaks that container element.
  *
- * @see engine.view.AttributeElement
- * @see engine.view.ContainerElement
- * @see engine.view.writer.breakAttributes
- * @function engine.view.writer.breakContainer
- * @param {engine.view.Position} position Position where to break element.
- * @returns {engine.view.Position} Position between broken elements. If element has not been broken, the returned position
+ * @see module:engine/view/attributeelement~AttributeElement
+ * @see module:engine/view/containerelement~ContainerElement
+ * @see module:engine/view/writer~writer.breakAttributes
+ * @function module:engine/view/writer~writer.breakContainer
+ * @param {module:engine/view/position~Position} position Position where to break element.
+ * @returns {module:engine/view/position~Position} Position between broken elements. If element has not been broken, the returned position
  * is placed either before it or after it.
  */
 export function breakContainer( position ) {
@@ -139,8 +144,8 @@ export function breakContainer( position ) {
 }
 
 /**
- * Merges {@link engine.view.AttributeElement attribute elements}. It also merges text nodes if needed.
- * Only {@link engine.view.AttributeElement#isSimilar similar} attribute elements can be merged.
+ * Merges {@link module:engine/view/attributeelement~AttributeElement attribute elements}. It also merges text nodes if needed.
+ * Only {@link module:engine/view/attributeelement~AttributeElement#isSimilar similar} attribute elements can be merged.
  *
  * In following examples `<p>` is a container and `<b>` is an attribute element:
  *
@@ -153,17 +158,17 @@ export function breakContainer( position ) {
  *		<p><b>[]</b></p> -> <p>[]</p>
  *		<p><b>foo</b><i>[]</i><b>bar</b></p> -> <p><b>foo{}bar</b></p>
  *
- * **Note:** Difference between {@link engine.view.writer.mergeAttributes mergeAttributes} and
- * {@link engine.view.writer.mergeContainers mergeContainers} is that `mergeAttributes` merges two
- * {@link engine.view.AttributeElement attribute elements} or {@link engine.view.Text text nodes}
- * while `mergeContainer` merges two {@link engine.view.ContainerElement container elements}.
+ * **Note:** Difference between {@link module:engine/view/writer~writer.mergeAttributes mergeAttributes} and
+ * {@link module:engine/view/writer~writer.mergeContainers mergeContainers} is that `mergeAttributes` merges two
+ * {@link module:engine/view/attributeelement~AttributeElement attribute elements} or {@link module:engine/view/text~Text text nodes}
+ * while `mergeContainer` merges two {@link module:engine/view/containerelement~ContainerElement container elements}.
  *
- * @see engine.view.AttributeElement
- * @see engine.view.ContainerElement
- * @see engine.view.writer.mergeContainers
- * @function engine.view.writer.mergeAttributes
- * @param {engine.view.Position} position Merge position.
- * @returns {engine.view.Position} Position after merge.
+ * @see module:engine/view/attributeelement~AttributeElement
+ * @see module:engine/view/containerelement~ContainerElement
+ * @see module:engine/view/writer~writer.mergeContainers
+ * @function module:engine/view/writer~writer.mergeAttributes
+ * @param {module:engine/view/position~Position} position Merge position.
+ * @returns {module:engine/view/position~Position} Position after merge.
  */
 export function mergeAttributes( position ) {
 	const positionOffset = position.offset;
@@ -222,23 +227,23 @@ export function mergeAttributes( position ) {
 }
 
 /**
- * Merges two {@link engine.view.ContainerElement container elements} that are before and after given position.
+ * Merges two {@link module:engine/view/containerelement~ContainerElement container elements} that are before and after given position.
  * Precisely, the element after the position is removed and it's contents are moved to element before the position.
  *
  *		<p>foo</p>^<p>bar</p> -> <p>foo^bar</p>
  *		<div>foo</div>^<p>bar</p> -> <div>foo^bar</div>
  *
- * **Note:** Difference between {@link engine.view.writer.mergeAttributes mergeAttributes} and
- * {@link engine.view.writer.mergeContainers mergeContainers} is that `mergeAttributes` merges two
- * {@link engine.view.AttributeElement attribute elements} or {@link engine.view.Text text nodes}
- * while `mergeContainer` merges two {@link engine.view.ContainerElement container elements}.
+ * **Note:** Difference between {@link module:engine/view/writer~writer.mergeAttributes mergeAttributes} and
+ * {@link module:engine/view/writer~writer.mergeContainers mergeContainers} is that `mergeAttributes` merges two
+ * {@link module:engine/view/attributeelement~AttributeElement attribute elements} or {@link module:engine/view/text~Text text nodes}
+ * while `mergeContainer` merges two {@link module:engine/view/containerelement~ContainerElement container elements}.
  *
- * @see engine.view.AttributeElement
- * @see engine.view.ContainerElement
- * @see engine.view.writer.mergeAttributes
- * @function engine.view.writer.mergeContainers
- * @param {engine.view.Position} position Merge position.
- * @returns {engine.view.Position} Position after merge.
+ * @see module:engine/view/attributeelement~AttributeElement
+ * @see module:engine/view/containerelement~ContainerElement
+ * @see module:engine/view/writer~writer.mergeAttributes
+ * @function module:engine/view/writer~writer.mergeContainers
+ * @param {module:engine/view/position~Position} position Merge position.
+ * @returns {module:engine/view/position~Position} Position after merge.
  */
 export function mergeContainers( position ) {
 	const prev = position.nodeBefore;
@@ -267,17 +272,20 @@ export function mergeContainers( position ) {
  * Insert node or nodes at specified position. Takes care about breaking attributes before insertion
  * and merging them afterwards.
  *
- * Throws {@link utils.CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
- * contains instances that are not {@link engine.view.Text Texts},
- * {@link engine.view.AttributeElement AttributeElements},
- * {@link engine.view.ContainerElement ContainerElements} or {@link engine.view.EmptyElement EmptyElements}.
+ * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
+ * contains instances that are not {@link module:engine/view/text~Text Texts},
+ * {@link module:engine/view/attributeelement~AttributeElement AttributeElements},
+ * {@link module:engine/view/containerelement~ContainerElement ContainerElements} or
+ * {@link module:engine/view/emptyelement~EmptyElement EmptyElements}.
  *
- * @function engine.view.writer.insert
- * @param {engine.view.Position} position Insertion position.
- * @param {engine.view.Text|engine.view.AttributeElement|engine.view.ContainerElement|engine.view.EmptyElement
- * |Iterable.<engine.view.Text|engine.view.AttributeElement|engine.view.ContainerElement|engine.view.EmptyElement>} nodes Node or
+ * @function insert
+ * @param {module:engine/view/position~Position} position Insertion position.
+ * @param {module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement|
+ * module:engine/view/containerelement~ContainerElement|module:engine/view/emptyelement~EmptyElement
+ * |Iterable.<module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement|
+ * module:engine/view/containerelement~ContainerElement|module:engine/view/emptyelement~EmptyElement>} nodes Node or
  * nodes to insert.
- * @returns {engine.view.Range} Range around inserted nodes.
+ * @returns {module:engine/view/range~Range} Range around inserted nodes.
  */
 export function insert( position, nodes ) {
 	nodes = isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
@@ -320,14 +328,14 @@ export function insert( position, nodes ) {
 /**
  * Removes provided range from the container.
  *
- * Throws {@link utils.CKEditorError CKEditorError} `view-writer-invalid-range-container` when
- * {@link engine.view.Range#start start} and {@link engine.view.Range#end end} positions are not placed inside
+ * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
+ * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
  * same parent container.
  *
- * @function engine.view.writer.remove
- * @param {engine.view.Range} range Range to remove from container. After removing, it will be updated
+ * @function module:engine/view/writer~writer.remove
+ * @param {module:engine/view/range~Range} range Range to remove from container. After removing, it will be updated
  * to a collapsed range showing the new position.
- * @returns {engine.view.DocumentFragment} Document fragment containing removed nodes.
+ * @returns {module:engine/view/documentfragment~DocumentFragment} Document fragment containing removed nodes.
  */
 export function remove( range ) {
 	validateRangeContainer( range );
@@ -358,15 +366,15 @@ export function remove( range ) {
 /**
  * Moves nodes from provided range to target position.
  *
- * Throws {@link utils.CKEditorError CKEditorError} `view-writer-invalid-range-container` when
- * {@link engine.view.Range#start start} and {@link engine.view.Range#end end} positions are not placed inside
+ * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
+ * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
  * same parent container.
  *
- * @function engine.view.writer.move
- * @param {engine.view.Range} sourceRange Range containing nodes to move.
- * @param {engine.view.Position} targetPosition Position to insert.
- * @returns {engine.view.Range} Range in target container. Inserted nodes are placed between
- * {@link engine.view.Range#start start} and {@link engine.view.Range#end end} positions.
+ * @function module:engine/view/writer~writer.move
+ * @param {module:engine/view/range~Range} sourceRange Range containing nodes to move.
+ * @param {module:engine/view/position~Position} targetPosition Position to insert.
+ * @returns {module:engine/view/range~Range} Range in target container. Inserted nodes are placed between
+ * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions.
  */
 export function move( sourceRange, targetPosition ) {
 	if ( sourceRange.start.parent == targetPosition.parent ) {
@@ -379,16 +387,17 @@ export function move( sourceRange, targetPosition ) {
 }
 
 /**
- * Wraps elements within range with provided {@link engine.view.AttributeElement AttributeElement}.
+ * Wraps elements within range with provided {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
  *
- * Throws {@link utils.CKEditorError} `view-writer-invalid-range-container` when {@link engine.view.Range#start}
- * and {@link engine.view.Range#end} positions are not placed inside same parent container.
- * Throws {@link utils.CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
- * an instance of {engine.view.AttributeElement AttributeElement}.
+ * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-invalid-range-container`
+ * when {@link module:engine/view/range~Range#start}
+ * and {@link module:engine/view/range~Range#end} positions are not placed inside same parent container.
+ * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
+ * an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
  *
- * @function engine.view.writer.wrap
- * @param {engine.view.Range} range Range to wrap.
- * @param {engine.view.AttributeElement} attribute Attribute element to use as wrapper.
+ * @function module:engine/view/writer~writer.wrap
+ * @param {module:engine/view/range~Range} range Range to wrap.
+ * @param {module:engine/view/attributeelement~AttributeElement} attribute Attribute element to use as wrapper.
  */
 export function wrap( range, attribute ) {
 	if ( !( attribute instanceof AttributeElement ) ) {
@@ -450,12 +459,12 @@ export function wrap( range, attribute ) {
  * Wraps position with provided attribute. Returns new position after wrapping. This method will also merge newly
  * added attribute with its siblings whenever possible.
  *
- * Throws {@link utils.CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
- * an instance of {engine.view.AttributeElement AttributeElement}.
+ * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
+ * an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
  *
- * @function engine.view.writer.wrapPosition
- * @param {engine.view.Position} position
- * @param {engine.view.AttributeElement} attribute
+ * @function module:engine/view/writer~writer.wrapPosition
+ * @param {module:engine/view/position~Position} position
+ * @param {module:engine/view/attributeelement~AttributeElement} attribute
  * @returns {Position} New position after wrapping.
  */
 export function wrapPosition( position, attribute ) {
@@ -511,13 +520,13 @@ export function wrapPosition( position, attribute ) {
 /**
  * Unwraps nodes within provided range from attribute element.
  *
- * Throws {@link utils.CKEditorError CKEditorError} `view-writer-invalid-range-container` when
- * {@link engine.view.Range#start start} and {@link engine.view.Range#end end} positions are not placed inside
+ * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
+ * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
  * same parent container.
  *
- * @function engine.view.writer.unwrap
- * @param {engine.view.Range} range
- * @param {engine.view.AttributeElement} element
+ * @function module:engine/view/writer~writer.unwrap
+ * @param {module:engine/view/range~Range} range
+ * @param {module:engine/view/attributeelement~AttributeElement} element
  */
 export function unwrap( range, attribute ) {
 	if ( !( attribute instanceof AttributeElement ) ) {
@@ -569,14 +578,14 @@ export function unwrap( range, attribute ) {
 
 /**
  * Renames element by creating a copy of renamed element but with changed name and then moving contents of the
- * old element to the new one. Keep in mind that this will invalidate all {@link engine.view.Position positions} which
- * has renamed element as {@link engine.view.Position#parent a parent}.
+ * old element to the new one. Keep in mind that this will invalidate all {@link module:engine/view/position~Position positions} which
+ * has renamed element as {@link module:engine/view/position~Position#parent a parent}.
  *
  * New element has to be created because `Element#tagName` property in DOM is readonly.
  *
  * Since this function creates a new element and removes the given one, the new element is returned to keep reference.
  *
- * @param {engine.view.ContainerElement} viewElement Element to be renamed.
+ * @param {module:engine/view/containerelement~ContainerElement} viewElement Element to be renamed.
  * @param {String} newName New name for element.
  */
 export function rename( viewElement, newName ) {
@@ -589,13 +598,13 @@ export function rename( viewElement, newName ) {
 	return newElement;
 }
 
-// Returns first parent container of specified {@link engine.view.Position Position}.
+// Returns first parent container of specified {@link module:engine/view/position~Position Position}.
 // Position's parent node is checked as first, then next parents are checked.
-// Note that {@link engine.view.DocumentFragment DocumentFragment} is treated like a container.
+// Note that {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} is treated like a container.
 //
-// @param {engine.view.Position} position Position used as a start point to locate parent container.
-// @returns {engine.view.ContainerElement|engine.view.DocumentFragment|undefined} Parent container element or
-// `undefined` if container is not found.
+// @param {module:engine/view/position~Position} position Position used as a start point to locate parent container.
+// @returns {module:engine/view/containerelement~ContainerElement|module:engine/view/documentfragment~DocumentFragment|undefined}
+// Parent container element or `undefined` if container is not found.
 function getParentContainer( position ) {
 	let parent = position.parent;
 
@@ -612,11 +621,11 @@ function getParentContainer( position ) {
 // Function used by both public breakAttributes (without splitting text nodes) and by other methods (with
 // splitting text nodes).
 //
-// @param {engine.view.Range} range Range which `start` and `end` positions will be used to break attributes.
+// @param {module:engine/view/range~Range} range Range which `start` and `end` positions will be used to break attributes.
 // @param {Boolean} [forceSplitText = false] If set to `true`, will break text nodes even if they are directly in
 // container element. This behavior will result in incorrect view state, but is needed by other view writing methods
 // which then fixes view state. Defaults to `false`.
-// @returns {engine.view.Range} New range with located at break positions.
+// @returns {module:engine/view/range~Range} New range with located at break positions.
 function _breakAttributesRange( range, forceSplitText = false ) {
 	const rangeStart = range.start;
 	const rangeEnd = range.end;
@@ -643,14 +652,14 @@ function _breakAttributesRange( range, forceSplitText = false ) {
 // Function used by public breakAttributes (without splitting text nodes) and by other methods (with
 // splitting text nodes).
 //
-// Throws {@link utils.CKEditorError CKEditorError} `view-writer-cannot-break-empty-element` break position is placed
-// inside {@link engine.view.EmptyElement EmptyElement}.
+// Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-empty-element` break position is placed
+// inside {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
 //
-// @param {engine.view.Position} position Position where to break attributes.
+// @param {module:engine/view/position~Position} position Position where to break attributes.
 // @param {Boolean} [forceSplitText = false] If set to `true`, will break text nodes even if they are directly in
 // container element. This behavior will result in incorrect view state, but is needed by other view writing methods
 // which then fixes view state. Defaults to `false`.
-// @returns {engine.view.Position} New position after breaking the attributes.
+// @returns {module:engine/view/position~Position} New position after breaking the attributes.
 function _breakAttributes( position, forceSplitText = false ) {
 	const positionOffset = position.offset;
 	const positionParent = position.parent;
@@ -728,10 +737,10 @@ function _breakAttributes( position, forceSplitText = false ) {
 // Unwraps children from provided `attribute`. Only children contained in `parent` element between
 // `startOffset` and `endOffset` will be unwrapped.
 //
-// @param {engine.view.Element} parent
+// @param {module:engine/view/element~Element} parent
 // @param {Number} startOffset
 // @param {Number} endOffset
-// @param {engine.view.Element} attribute
+// @param {module:engine/view/element~Element} attribute
 function unwrapChildren( parent, startOffset, endOffset, attribute ) {
 	let i = startOffset;
 	const unwrapPositions = [];
@@ -795,10 +804,10 @@ function unwrapChildren( parent, startOffset, endOffset, attribute ) {
 // Wraps children with provided `attribute`. Only children contained in `parent` element between
 // `startOffset` and `endOffset` will be wrapped.
 //
-// @param {engine.view.Element} parent
+// @param {module:engine/view/element~Element} parent
 // @param {Number} startOffset
 // @param {Number} endOffset
-// @param {engine.view.Element} attribute
+// @param {module:engine/view/element~Element} attribute
 function wrapChildren( parent, startOffset, endOffset, attribute ) {
 	let i = startOffset;
 	const wrapPositions = [];
@@ -857,8 +866,8 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 //		<p>foo[]</p>  ->  <p>foo{}</p>
 //		<p>[]foo</p>  ->  <p>{}foo</p>
 //
-// @param {engine.view.Position} position
-// @returns {engine.view.Position} Position located inside text node or same position if there is no text nodes
+// @param {module:engine/view/position~Position} position
+// @returns {module:engine/view/position~Position} Position located inside text node or same position if there is no text nodes
 // before or after position location.
 function movePositionToTextNode( position ) {
 	const nodeBefore = position.nodeBefore;
@@ -882,8 +891,8 @@ function movePositionToTextNode( position ) {
 //		<p>{}foobar</p> -> <p>[]foobar</p>
 //		<p>foobar{}</p> -> <p>foobar[]</p>
 //
-// @param {engine.view.Position} position Position that need to be placed inside text node.
-// @returns {engine.view.Position} New position after breaking text node.
+// @param {module:engine/view/position~Position} position Position that need to be placed inside text node.
+// @returns {module:engine/view/position~Position} New position after breaking text node.
 function breakTextNode( position ) {
 	if ( position.offset == position.parent.data.length ) {
 		return new Position( position.parent.parent, position.parent.index + 1 );
@@ -908,10 +917,10 @@ function breakTextNode( position ) {
 
 // Merges two text nodes into first node. Removes second node and returns merge position.
 //
-// @param {engine.view.Text} t1 First text node to merge. Data from second text node will be moved at the end of
+// @param {module:engine/view/text~Text} t1 First text node to merge. Data from second text node will be moved at the end of
 // this text node.
-// @param {engine.view.Text} t2 Second text node to merge. This node will be removed after merging.
-// @returns {engine.view.Position} Position after merging text nodes.
+// @param {module:engine/view/text~Text} t2 Second text node to merge. This node will be removed after merging.
+// @returns {module:engine/view/position~Position} Position after merging text nodes.
 function mergeTextNodes( t1, t2 ) {
 	// Merge text data into first text node and remove second one.
 	const nodeBeforeLength = t1.data.length;
@@ -921,13 +930,13 @@ function mergeTextNodes( t1, t2 ) {
 	return new Position( t1, nodeBeforeLength );
 }
 
-// Wraps one {@link engine.view.AttributeElement AttributeElement} into another by merging them if possible.
+// Wraps one {@link module:engine/view/attributeelement~AttributeElement AttributeElement} into another by merging them if possible.
 // Two AttributeElements can be merged when there is no attribute or style conflicts between them.
 // When merging is possible - all attributes, styles and classes are moved from wrapper element to element being
 // wrapped.
 //
-// @param {engine.view.AttributeElement} wrapper Wrapper AttributeElement.
-// @param {engine.view.AttributeElement} toWrap AttributeElement to wrap using wrapper element.
+// @param {module:engine/view/attributeelement~AttributeElement} wrapper Wrapper AttributeElement.
+// @param {module:engine/view/attributeelement~AttributeElement} toWrap AttributeElement to wrap using wrapper element.
 // @returns {Boolean} Returns `true` if elements are merged.
 function wrapAttributeElement( wrapper, toWrap ) {
 	// Can't merge if name or priority differs.
@@ -983,11 +992,11 @@ function wrapAttributeElement( wrapper, toWrap ) {
 	return true;
 }
 
-// Unwraps {@link engine.view.AttributeElement AttributeElement} from another by removing corresponding attributes,
+// Unwraps {@link module:engine/view/attributeelement~AttributeElement AttributeElement} from another by removing corresponding attributes,
 // classes and styles. All attributes, classes and styles from wrapper should be present inside element being unwrapped.
 //
-// @param {engine.view.AttributeElement} wrapper Wrapper AttributeElement.
-// @param {engine.view.AttributeElement} toUnwrap AttributeElement to unwrap using wrapper element.
+// @param {module:engine/view/attributeelement~AttributeElement} wrapper Wrapper AttributeElement.
+// @param {module:engine/view/attributeelement~AttributeElement} toUnwrap AttributeElement to unwrap using wrapper element.
 // @returns {Boolean} Returns `true` if elements are unwrapped.
 function unwrapAttributeElement( wrapper, toUnwrap ) {
 	// Can't unwrap if name or priority differs.
@@ -1040,11 +1049,11 @@ function unwrapAttributeElement( wrapper, toUnwrap ) {
 	return true;
 }
 
-// Returns `true` if range is located in same {@link engine.view.AttributeElement AttributeElement}
-// (`start` and `end` positions are located inside same {@link engine.view.AttributeElement AttributeElement}),
+// Returns `true` if range is located in same {@link module:engine/view/attributeelement~AttributeElement AttributeElement}
+// (`start` and `end` positions are located inside same {@link module:engine/view/attributeelement~AttributeElement AttributeElement}),
 // starts on 0 offset and ends after last child node.
 //
-// @param {engine.view.Range} Range
+// @param {module:engine/view/range~Range} Range
 // @returns {Boolean}
 function rangeSpansOnAllChildren( range ) {
 	return range.start.parent == range.end.parent && range.start.parent instanceof AttributeElement &&
@@ -1052,22 +1061,24 @@ function rangeSpansOnAllChildren( range ) {
 }
 
 // Checks if provided nodes are valid to insert. Checks if each node is an instance of
-// {@link engine.view.Text Text} or {@link engine.view.AttributeElement AttributeElement},
-// {@link engine.view.ContainerElement ContainerElement} or {@link engine.view.EmptyElement EmptyElement}.
+// {@link module:engine/view/text~Text Text} or {@link module:engine/view/attributeelement~AttributeElement AttributeElement},
+// {@link module:engine/view/containerelement~ContainerElement ContainerElement} or
+// {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
 //
-// Throws {@link utils.CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
-// contains instances that are not {@link engine.view.Text Texts},
-// {@link engine.view.EmptyElement EmptyElements},
-// {@link engine.view.AttributeElement AttributeElements} or
-// {@link engine.view.ContainerElement ContainerElements}.
+// Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
+// contains instances that are not {@link module:engine/view/text~Text Texts},
+// {@link module:engine/view/emptyelement~EmptyElement EmptyElements},
+// {@link module:engine/view/attributeelement~AttributeElement AttributeElements} or
+// {@link module:engine/view/containerelement~ContainerElement ContainerElements}.
 //
-// @param Iterable.<engine.view.Text|engine.view.AttributeElement|engine.view.ContainerElement> nodes
+// @param Iterable.<module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement
+// |module:engine/view/containerelement~ContainerElement> nodes
 function validateNodesToInsert( nodes ) {
 	for ( let node of nodes ) {
 		if ( !( node instanceof Text || node instanceof AttributeElement || node instanceof ContainerElement || node instanceof EmptyElement ) ) {
 			/**
-			 * Inserted nodes should be instance of {@link engine.view.AttributeElement AttributeElement},
-			 * {@link engine.view.ContainerElement ContainerElement} or {@link engine.view.Text Text}.
+			 * Inserted nodes should be instance of {@link module:engine/view/attributeelement~AttributeElement AttributeElement},
+			 * {@link module:engine/view/containerelement~ContainerElement ContainerElement} or {@link module:engine/view/text~Text Text}.
 			 *
 			 * @error view-writer-insert-invalid-node
 			 */
@@ -1082,25 +1093,25 @@ function validateNodesToInsert( nodes ) {
 
 // Checks if node is ContainerElement or DocumentFragment, because in most cases they should be treated the same way.
 //
-// @param {engine.view.Node} node
+// @param {module:engine/view/node~Node} node
 // @returns {Boolean} Returns `true` if node is instance of ContainerElement or DocumentFragment.
 function isContainerOrFragment( node ) {
 	return node instanceof ContainerElement || node instanceof DocumentFragment;
 }
 
-// Checks if {@link engine.view.Range#start range start} and {@link engine.view.Range#end range end} are placed
-// inside same {@link engine.view.ContainerElement container}.
-// Throws {@link utils.CKEditorError CKEditorError} `view-writer-invalid-range-container` when validation fails.
+// Checks if {@link module:engine/view/range~Range#start range start} and {@link module:engine/view/range~Range#end range end} are placed
+// inside same {@link module:engine/view/containerelement~ContainerElement container}.
+// Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when validation fails.
 //
-// @param {engine.view.Range} range
+// @param {module:engine/view/range~Range} range
 function validateRangeContainer( range ) {
 	const startContainer = getParentContainer( range.start );
 	const endContainer = getParentContainer( range.end );
 
 	if ( !startContainer || !endContainer || startContainer !== endContainer ) {
 		/**
-		 * Range container is invalid. This can happen if {@link engine.view.Range#start range start} and
-		 * {@link engine.view.Range#end range end} positions are not placed inside same container or
+		 * Range container is invalid. This can happen if {@link module:engine/view/range~Range#start range start} and
+		 * {@link module:engine/view/range~Range#end range end} positions are not placed inside same container or
 		 * parent container for these positions cannot be found.
 		 *
 		 * @error view-writer-invalid-range-container

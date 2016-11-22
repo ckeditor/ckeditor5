@@ -10,13 +10,13 @@
 import TextProxy from '../model/textproxy.js';
 
 /**
- * Manages a list of consumable values for {@link engine.model.Item model items}.
+ * Manages a list of consumable values for {@link module:engine/model/item~Item model items}.
  *
  * Consumables are various aspects of the model. A model item can be broken down into singular properties that might be
  * taken into consideration when converting that item.
  *
- * `ModelConsumable` is used by {@link engine.conversion.ModelConversionDispatcher} while analyzing changed
- * parts of {@link engine.model.Document the document}. The added / changed / removed model items are broken down
+ * `ModelConsumable` is used by {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher} while analyzing changed
+ * parts of {@link module:engine/model/document~Document the document}. The added / changed / removed model items are broken down
  * into singular properties (the item itself and it's attributes). All those parts are saved in `ModelConsumable`. Then,
  * during conversion, when given part of model item is converted (i.e. the view element has been inserted into the view,
  * but without attributes), consumable value is removed from `ModelConsumable`.
@@ -24,10 +24,12 @@ import TextProxy from '../model/textproxy.js';
  * For model items, `ModelConsumable` stores consumable values of one of following types: `insert`, `addAttribute:<attributeKey>`,
  * `changeAttribute:<attributeKey>`, `removeAttribute:<attributeKey>`.
  *
- * In most cases, it is enough to let {@link engine.conversion.ModelConversionDispatcher} gather consumable values, so
- * there is no need to use {@link engine.conversion.ModelConsumable#add add method} directly. However, it is important to
- * understand how consumable values can be {@link engine.conversion.ModelConsumable#consume consumed}. See
- * {@link engine.conversion.modelToView default model to view converters} for more information.
+ * In most cases, it is enough to let {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}
+ * gather consumable values, so there is no need to use
+ * @link module:engine/conversion/modelconsumable~ModelConsumable#add add method} directly.
+ * However, it is important to understand how consumable values can be
+ * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed}.
+ * See {@link module:engine/conversion/modeltoview~modelToView default model to view converters} for more information.
  *
  * Keep in mind, that one conversion event may have multiple callbacks (converters) attached to it. Each of those is
  * able to convert one or more parts of the model. However, when one of those callbacks actually converts
@@ -83,8 +85,6 @@ import TextProxy from '../model/textproxy.js';
  *
  *			evt.stop();
  *		} );
- *
- * @memberOf engine.conversion
  */
 export default class ModelConsumable {
 	/**
@@ -95,12 +95,12 @@ export default class ModelConsumable {
 		 * Contains list of consumable values.
 		 *
 		 * @private
-		 * @member {Map} engine.conversion.ModelConsumable#_consumable
+		 * @member {Map} module:engine/conversion/modelconsumable~ModelConsumable#_consumable
 		 */
 		this._consumable = new Map();
 
 		/**
-		 * For each {@link engine.model.TextProxy} added to `ModelConsumable`, this registry holds parent
+		 * For each {@link module:engine/model/textproxy~TextProxy} added to `ModelConsumable`, this registry holds parent
 		 * of that `TextProxy` and start and end indices of that `TextProxy`. This allows identification of `TextProxy`
 		 * instances that points to the same part of the model but are different instances. Each distinct `TextProxy`
 		 * is given unique `Symbol` which is then registered as consumable. This process is transparent for `ModelConsumable`
@@ -108,7 +108,7 @@ export default class ModelConsumable {
 		 * `ModelConsumable` translates `TextProxy` to that unique `Symbol`.
 		 *
 		 * @private
-		 * @member {Map} engine.conversion.ModelConsumable#_textProxyRegistry
+		 * @member {Map} module:engine/conversion/modelconsumable~ModelConsumable#_textProxyRegistry
 		 */
 		this._textProxyRegistry = new Map();
 	}
@@ -122,7 +122,7 @@ export default class ModelConsumable {
 	 *		modelConsumable.add( modelSelection, 'selection' ); // Add `modelSelection` to consumable values.
 	 *		modelConsumable.add( modelSelection, 'selectionAttribute:bold' ); // Add `bold` attribute on `modelSelection` to consumables.
 	 *
-	 * @param {engine.model.Item|engine.model.Selection} item Model item or selection that has the consumable.
+	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection} item Model item or selection that has the consumable.
 	 * @param {String} type Consumable type.
 	 */
 	add( item, type ) {
@@ -146,7 +146,8 @@ export default class ModelConsumable {
 	 *		modelConsumable.consume( modelSelection, 'selection' ); // Remove `modelSelection` from consumable values.
 	 *		modelConsumable.consume( modelSelection, 'selectionAttribute:bold' ); // Remove `bold` on `modelSelection` from consumables.
 	 *
-	 * @param {engine.model.Item|engine.model.Selection} item Model item or selection from which consumable will be consumed.
+	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection} item
+	 * Model item or selection from which consumable will be consumed.
 	 * @param {String} type Consumable type.
 	 * @returns {Boolean} `true` if consumable value was available and was consumed, `false` otherwise.
 	 */
@@ -173,7 +174,7 @@ export default class ModelConsumable {
 	 *		modelConsumable.test( modelSelection, 'selection' ); // Check if `modelSelection` is consumable.
 	 *		modelConsumable.test( modelSelection, 'selectionAttribute:bold' ); // Check if `bold` on `modelSelection` is consumable.
 	 *
-	 * @param {engine.model.Item|engine.model.Selection} item Model item or selection that will be tested.
+	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection} item Model item or selection that will be tested.
 	 * @param {String} type Consumable type.
 	 * @returns {null|Boolean} `null` if such consumable was never added, `false` if the consumable values was
 	 * already consumed or `true` if it was added and not consumed yet.
@@ -207,7 +208,7 @@ export default class ModelConsumable {
 	 *		modelConsumable.revert( modelSelection, 'selection' ); // Revert consuming `modelSelection`.
 	 *		modelConsumable.revert( modelSelection, 'selectionAttribute:bold' ); // Revert consuming `bold` from `modelSelection`.
 	 *
-	 * @param {engine.model.Item|engine.model.Selection} item Model item or selection that will be reverted.
+	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection} item Model item or selection that will be reverted.
 	 * @param {String} type Consumable type.
 	 * @returns {null|Boolean} `true` if consumable has been reversed, `false` otherwise. `null` if the consumable has
 	 * never been added.
@@ -231,13 +232,13 @@ export default class ModelConsumable {
 	}
 
 	/**
-	 * Gets a unique symbol for passed {@link engine.model.TextProxy} instance. All `TextProxy` instances that
+	 * Gets a unique symbol for passed {@link module:engine/model/textproxy~TextProxy} instance. All `TextProxy` instances that
 	 * have same parent, same start index and same end index will get the same symbol.
 	 *
 	 * Used internally to correctly consume `TextProxy` instances.
 	 *
 	 * @private
-	 * @param {engine.model.TextProxy} textProxy `TextProxy` instance to get a symbol for.
+	 * @param {module:engine/model/textproxy~TextProxy} textProxy `TextProxy` instance to get a symbol for.
 	 * @returns {Symbol} Symbol representing all equal instances of `TextProxy`.
 	 */
 	_getSymbolForTextProxy( textProxy ) {
@@ -261,14 +262,14 @@ export default class ModelConsumable {
 	}
 
 	/**
-	 * Adds a symbol for given properties that characterizes a {@link engine.model.TextProxy} instance.
+	 * Adds a symbol for given properties that characterizes a {@link module:engine/model/textproxy~TextProxy} instance.
 	 *
 	 * Used internally to correctly consume `TextProxy` instances.
 	 *
 	 * @private
 	 * @param {Number} startIndex Text proxy start index in it's parent.
 	 * @param {Number} endIndex Text proxy end index in it's parent.
-	 * @param {engine.model.Element} parent Text proxy parent.
+	 * @param {module:engine/model/element~Element} parent Text proxy parent.
 	 * @returns {Symbol} Symbol generated for given properties.
 	 */
 	_addSymbolForTextProxy( start, end, parent ) {

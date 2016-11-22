@@ -14,30 +14,29 @@ const DEFAULT_PRIORITY = 10;
 
 /**
  * Attributes are elements which define document presentation. They are mostly elements like `<b>` or `<span>`.
- * Attributes can be broken and merged by the {@link engine.view.writer view writer}.
+ * Attributes can be broken and merged by the {@link module:engine/view/writer~writer view writer}.
  *
- * Editing engine does not define fixed HTML DTD. This is why the type of the {@link engine.view.Element} need to
- * be defined by the feature developer. Creating an element you should use {@link engine.view.ContainerElement}
+ * Editing engine does not define fixed HTML DTD. This is why the type of the {@link module:engine/view/element~Element} need to
+ * be defined by the feature developer. Creating an element you should use {@link module:engine/view/containerelement~ContainerElement}
  * class or `AttributeElement`.
  *
- * @memberOf engine.view
- * @extends engine.view.Element
+ * @extends module:engine/view/element~Element
  */
 export default class AttributeElement extends Element {
 	/**
 	 * Creates a attribute element.
 	 *
-	 * @see engine.view.Element
+	 * @see module:engine/view/element~Element
 	 */
 	constructor( name, attrs, children ) {
 		super( name, attrs, children );
 
 		/**
 		 * Element priority. Attributes have to have the same priority to be
-		 * {@link engine.view.Element#isSimilar similar}. Setting different priorities on similar
+		 * {@link module:engine/view/element~Element#isSimilar similar}. Setting different priorities on similar
  		 * nodes may prevent merging, e.g. two `<abbr>` nodes next each other shouldn't be merged.
 		 *
-		 * @member {Number} engine.view.AttributeElement#priority
+		 * @member {Number} module:engine/view/attributeelement~AttributeElement#priority
 		 */
 		this.priority = DEFAULT_PRIORITY;
 	}
@@ -47,7 +46,7 @@ export default class AttributeElement extends Element {
 	 *
 	 * @param {Boolean} deep If set to `true` clones element and all its children recursively. When set to `false`,
 	 * element will be cloned without any children.
-	 * @returns {engine.view.AttributeElement} Clone of this element.
+	 * @returns {module:engine/view/attributeelement~AttributeElement} Clone of this element.
 	 */
 	clone( deep ) {
 		const cloned = super.clone( deep );
@@ -63,7 +62,7 @@ export default class AttributeElement extends Element {
 	 * Both elements should have the same name, attributes and priority to be considered as similar.
 	 * Two similar elements can contain different set of children nodes.
 	 *
-	 * @param {engine.view.Element} otherElement
+	 * @param {module:engine/view/element~Element} otherElement
 	 * @returns {Boolean}
 	 */
 	isSimilar( otherElement ) {
@@ -71,7 +70,7 @@ export default class AttributeElement extends Element {
 	}
 
 	/**
-	 * Returns block {@link engine.view.filler filler} offset or `null` if a block filler is not needed.
+	 * Returns block {@link module:engine/view/filter~Filter filler} offset or `null` if a block filler is not needed.
 	 *
 	 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
 	 */
@@ -103,6 +102,6 @@ export default class AttributeElement extends Element {
 /**
  * Default attribute priority.
  *
- * @member {Number} engine.view.AttributeElement.DEFAULT_PRIORITY
+ * @member {Number} module:engine/view/attributeelement~AttributeElement.DEFAULT_PRIORITY
  */
 AttributeElement.DEFAULT_PRIORITY = DEFAULT_PRIORITY;

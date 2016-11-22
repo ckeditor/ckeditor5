@@ -25,22 +25,20 @@ import getCommonAncestor from '../../utils/dom/getcommonancestor.js';
 
 /**
  * DomConverter is a set of tools to do transformations between DOM nodes and view nodes. It also handles
- * {@link engine.view.DomConverter#bindElements binding} these nodes.
+ * {@link module:engine/view/domconverter~DomConverter#bindElements binding} these nodes.
  *
- * DomConverter does not check which nodes should be rendered (use {@link engine.view.Renderer}), does not keep a
- * state of a tree nor keeps synchronization between tree view and DOM tree (use {@link engine.view.Document}).
+ * DomConverter does not check which nodes should be rendered (use {@link module:engine/view/renderer~Renderer}), does not keep a
+ * state of a tree nor keeps synchronization between tree view and DOM tree (use {@link module:engine/view/document~Document}).
  *
  * DomConverter keeps DOM elements to View element bindings, so when the converter will be destroyed, the binding will
  * be lost. Two converters will keep separate binding maps, so one tree view can be bound with two DOM trees.
- *
- * @memberOf engine.view
  */
 export default class DomConverter {
 	/**
 	 * Creates DOM converter.
 	 *
 	 * @param {Object} options Object with configuration options.
-	 * @param {Function} [options.blockFiller=engine.view.filler.BR_FILLER] Block filler creator.
+	 * @param {Function} [options.blockFiller=module:engine/view/filter~Filter.BR_FILLER] Block filler creator.
 	 */
 	constructor( options = {} ) {
 		// Using WeakMap prevent memory leaks: when the converter will be destroyed all referenced between View and DOM
@@ -54,25 +52,25 @@ export default class DomConverter {
 		// I've been here. Seen stuff. Afraid of code now.
 
 		/**
-		 * Block {@link engine.view.filler filler} creator, which is used to create all block fillers during the
+		 * Block {@link module:engine/view/filter~Filter filler} creator, which is used to create all block fillers during the
 		 * view to DOM conversion and to recognize block fillers during the DOM to view conversion.
 		 *
 		 * @readonly
-		 * @member {Function} engine.view.DomConverter#blockFiller
+		 * @member {Function} module:engine/view/domconverter~DomConverter#blockFiller
 		 */
 		this.blockFiller = options.blockFiller || BR_FILLER;
 
 		/**
 		 * Tag names of DOM `Element`s which are considered pre-formatted elements.
 		 *
-		 * @member {Array.<String>} engine.view.DomConverter#preElements
+		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#preElements
 		 */
 		this.preElements = [ 'pre' ];
 
 		/**
 		 * Tag names of DOM `Element`s which are considered block elements.
 		 *
-		 * @member {Array.<String>} engine.view.DomConverter#blockElements
+		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#blockElements
 		 */
 		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
 
@@ -80,7 +78,7 @@ export default class DomConverter {
 		 * DOM to View mapping.
 		 *
 		 * @private
-		 * @member {WeakMap} engine.view.DomConverter#_domToViewMapping
+		 * @member {WeakMap} module:engine/view/domconverter~DomConverter#_domToViewMapping
 		 */
 		this._domToViewMapping = new WeakMap();
 
@@ -88,7 +86,7 @@ export default class DomConverter {
 		 * View to DOM mapping.
 		 *
 		 * @private
-		 * @member {WeakMap} engine.view.DomConverter#_viewToDomMapping
+		 * @member {WeakMap} module:engine/view/domconverter~DomConverter#_viewToDomMapping
 		 */
 		this._viewToDomMapping = new WeakMap();
 
@@ -96,28 +94,28 @@ export default class DomConverter {
 		 * Holds mapping between fake selection containers and corresponding view selections.
 		 *
 		 * @private
-		 * @member {WeakMap} engine.view.DomConverter#_fakeSelectionMapping
+		 * @member {WeakMap} module:engine/view/domconverter~DomConverter#_fakeSelectionMapping
 		 */
 		this._fakeSelectionMapping = new WeakMap();
 	}
 
 	/**
-	 * Binds given DOM element that represents fake selection to {@link engine.view.Selection view selection}.
-	 * View selection copy is stored and can be retrieved by {@link engine.view.DomConverter#fakeSelectionToView} method.
+	 * Binds given DOM element that represents fake selection to {@link module:engine/view/selection~Selection view selection}.
+	 * View selection copy is stored and can be retrieved by {@link module:engine/view/domconverter~DomConverter#fakeSelectionToView} method.
 	 *
 	 * @param {HTMLElement} domElement
-	 * @param {engine.view.Selection} viewSelection
+	 * @param {module:engine/view/selection~Selection} viewSelection
 	 */
 	bindFakeSelection( domElement, viewSelection ) {
 		this._fakeSelectionMapping.set( domElement, ViewSelection.createFromSelection( viewSelection ) );
 	}
 
 	/**
-	 * Returns {@link engine.view.Selection view selection} instance corresponding to given DOM element that represents fake
+	 * Returns {@link module:engine/view/selection~Selection view selection} instance corresponding to given DOM element that represents fake
 	 * selection. Returns `undefined` if binding to given DOM element does not exists.
 	 *
 	 * @param {HTMLElement} domElement
-	 * @returns {engine.view.Selection|undefined}
+	 * @returns {module:engine/view/selection~Selection|undefined}
 	 */
 	fakeSelectionToView( domElement ) {
 		return this._fakeSelectionMapping.get( domElement );
@@ -125,11 +123,11 @@ export default class DomConverter {
 
 	/**
 	 * Binds DOM and View elements, so it will be possible to get corresponding elements using
-	 * {@link engine.view.DomConverter#getCorrespondingViewElement getCorrespondingViewElement} and
-	 * {@link engine.view.DomConverter#getCorrespondingDomElement getCorrespondingDomElement}.
+	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingViewElement getCorrespondingViewElement} and
+	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomElement getCorrespondingDomElement}.
 	 *
 	 * @param {HTMLElement} domElement DOM element to bind.
-	 * @param {engine.view.Element} viewElement View element to bind.
+	 * @param {module:engine/view/element~Element} viewElement View element to bind.
 	 */
 	bindElements( domElement, viewElement ) {
 		this._domToViewMapping.set( domElement, viewElement );
@@ -138,11 +136,11 @@ export default class DomConverter {
 
 	/**
 	 * Binds DOM and View document fragments, so it will be possible to get corresponding document fragments using
-	 * {@link engine.view.DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment} and
-	 * {@link engine.view.DomConverter#getCorrespondingDomDocumentFragment getCorrespondingDomDocumentFragment}.
+	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment} and
+	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomDocumentFragment getCorrespondingDomDocumentFragment}.
 	 *
 	 * @param {DocumentFragment} domFragment DOM document fragment to bind.
-	 * @param {engine.view.DocumentFragment} viewFragment View document fragment to bind.
+	 * @param {module:engine/view/documentfragment~DocumentFragment} viewFragment View document fragment to bind.
 	 */
 	bindDocumentFragments( domFragment, viewFragment ) {
 		this._domToViewMapping.set( domFragment, viewFragment );
@@ -153,7 +151,8 @@ export default class DomConverter {
 	 * Converts view to DOM. For all text nodes, not bound elements and document fragments new items will
 	 * be created. For bound elements and document fragments function will return corresponding items.
 	 *
-	 * @param {engine.view.Node|engine.view.DocumentFragment} viewNode View node or document fragment to transform.
+	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} viewNode View node or document fragment to
+	 * transform.
 	 * @param {document} domDocument Document which will be used to create DOM nodes.
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
@@ -204,12 +203,12 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Converts children of the view element to DOM using {@link engine.view.DomConverter#viewToDom} method.
-	 * Additionally this method adds block {@link engine.view.filler filler} to the list of children, if needed.
+	 * Converts children of the view element to DOM using {@link module:engine/view/domconverter~DomConverter#viewToDom} method.
+	 * Additionally this method adds block {@link module:engine/view/filter~Filter filler} to the list of children, if needed.
 	 *
-	 * @param {engine.view.Element|engine.view.DocumentFragment} viewElement Parent view element.
+	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElement Parent view element.
 	 * @param {document} domDocument Document which will be used to create DOM nodes.
-	 * @param {Object} options See {@link engine.view.DomConverter#viewToDom} options parameter.
+	 * @param {Object} options See {@link module:engine/view/domconverter~DomConverter#viewToDom} options parameter.
 	 * @returns {Iterable.<Node>} DOM nodes.
 	 */
 	*viewChildrenToDom( viewElement, domDocument, options = {} ) {
@@ -232,10 +231,10 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Converts view {@link engine.view.Range} to DOM range.
-	 * Inline and block {@link engine.view.filler fillers} are handled during the conversion.
+	 * Converts view {@link module:engine/view/range~Range} to DOM range.
+	 * Inline and block {@link module:engine/view/filter~Filter fillers} are handled during the conversion.
 	 *
-	 * @param {engine.view.Range} viewRange View range.
+	 * @param {module:engine/view/range~Range} viewRange View range.
 	 * @returns {Range} DOM range.
 	 */
 	viewRangeToDom( viewRange ) {
@@ -250,12 +249,12 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Converts view {@link engine.view.Position} to DOM parent and offset.
+	 * Converts view {@link module:engine/view/position~Position} to DOM parent and offset.
 	 *
-	 * Inline and block {@link engine.view.filler fillers} are handled during the conversion.
+	 * Inline and block {@link module:engine/view/filter~Filter fillers} are handled during the conversion.
 	 * If the converted position is directly before inline filler it is moved inside the filler.
 	 *
-	 * @param {engine.view.position} viewPosition View position.
+	 * @param {module:engine/view/position~Position} viewPosition View position.
 	 * @returns {Object|null} position DOM position or `null` if view position could not be converted to DOM.
 	 * @returns {Node} position.parent DOM position parent.
 	 * @returns {Number} position.offset DOM position offset.
@@ -318,15 +317,16 @@ export default class DomConverter {
 	/**
 	 * Converts DOM to view. For all text nodes, not bound elements and document fragments new items will
 	 * be created. For bound elements and document fragments function will return corresponding items. For
-	 * {@link engine.view.filler fillers} `null` will be returned.
+	 * {@link module:engine/view/filter~Filter fillers} `null` will be returned.
 	 *
 	 * @param {Node|DocumentFragment} domNode DOM node or document fragment to transform.
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
 	 * @param {Boolean} [options.withChildren=true] If `true`, node's and document fragment's children will be converted too.
 	 * @param {Boolean} [options.keepOriginalCase=false] If `false`, node's tag name will be converter to lower case.
-	 * @returns {engine.view.Node|engine.view.DocumentFragment|null} Converted node or document fragment or `null`
-	 * if DOM node is a {@link engine.view.filler filler} or the given node is an empty text node.
+	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Converted node or document fragment or
+	 * `null`
+	 * if DOM node is a {@link module:engine/view/filter~Filter filler} or the given node is an empty text node.
 	 */
 	domToView( domNode, options = {} ) {
 		if ( isBlockFiller( domNode, this.blockFiller )  ) {
@@ -383,12 +383,12 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Converts children of the DOM element to view nodes using {@link engine.view.DomConverter#domToView} method.
-	 * Additionally this method omits block {@link engine.view.filler filler}, if it exists in the DOM parent.
+	 * Converts children of the DOM element to view nodes using {@link module:engine/view/domconverter~DomConverter#domToView} method.
+	 * Additionally this method omits block {@link module:engine/view/filter~Filter filler}, if it exists in the DOM parent.
 	 *
 	 * @param {HTMLElement} domElement Parent DOM element.
-	 * @param {Object} options See {@link engine.view.DomConverter#domToView} options parameter.
-	 * @returns {Iterable.<engine.view.Node>} View nodes.
+	 * @param {Object} options See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
+	 * @returns {Iterable.<module:engine/view/node~Node>} View nodes.
 	 */
 	*domChildrenToView( domElement, options = {} ) {
 		for ( let i = 0; i < domElement.childNodes.length; i++ ) {
@@ -402,11 +402,11 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Converts DOM selection to view {@link engine.view.Selection}.
+	 * Converts DOM selection to view {@link module:engine/view/selection~Selection}.
 	 * Ranges which cannot be converted will be omitted.
 	 *
 	 * @param {Selection} domSelection DOM selection.
-	 * @returns {engine.view.Selection} View selection.
+	 * @returns {module:engine/view/selection~Selection} View selection.
 	 */
 	domSelectionToView( domSelection ) {
 		// DOM selection might be placed in fake selection container.
@@ -443,11 +443,11 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Converts DOM Range to view {@link engine.view.range}.
+	 * Converts DOM Range to view {@link module:engine/view/range~Range}.
 	 * If the start or end position can not be converted `null` is returned.
 	 *
 	 * @param {Range} domRange DOM range.
-	 * @returns {engine.view.Range|null} View range.
+	 * @returns {module:engine/view/range~Range|null} View range.
 	 */
 	domRangeToView( domRange ) {
 		const viewStart = this.domPositionToView( domRange.startContainer, domRange.startOffset );
@@ -461,16 +461,16 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Converts DOM parent and offset to view {@link engine.view.Position}.
+	 * Converts DOM parent and offset to view {@link module:engine/view/position~Position}.
 	 *
-	 * If the position is inside a {@link engine.view.filler filler} which has no corresponding view node,
+	 * If the position is inside a {@link module:engine/view/filter~Filter filler} which has no corresponding view node,
 	 * position of the filler will be converted and returned.
 	 *
 	 * If structures are too different and it is not possible to find corresponding position then `null` will be returned.
 	 *
 	 * @param {Node} domParent DOM position parent.
 	 * @param {Number} domOffset DOM position offset.
-	 * @returns {engine.view.Position} viewPosition View position.
+	 * @returns {module:engine/view/position~Position} viewPosition View position.
 	 */
 	domPositionToView( domParent, domOffset ) {
 		if ( isBlockFiller( domParent, this.blockFiller ) ) {
@@ -519,15 +519,15 @@ export default class DomConverter {
 
 	/**
 	 * Gets corresponding view item. This function use
-	 * {@link engine.view.DomConverter#getCorrespondingViewElement getCorrespondingViewElement}
-	 * for elements, {@link  engine.view.DomConverter#getCorrespondingViewText getCorrespondingViewText} for text
-	 * nodes and {@link engine.view.DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment}
+	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingViewElement getCorrespondingViewElement}
+	 * for elements, {@link  module:engine/view/domconverter~DomConverter#getCorrespondingViewText getCorrespondingViewText} for text
+	 * nodes and {@link module:engine/view/domconverter~DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment}
 	 * for document fragments.
 	 *
-	 * Note that for the block or inline {@link engine.view.filler filler} this method returns `null`.
+	 * Note that for the block or inline {@link module:engine/view/filter~Filter filler} this method returns `null`.
 	 *
 	 * @param {Node|DocumentFragment} domNode DOM node or document fragment.
-	 * @returns {engine.view.Node|engine.view.DocumentFragment|null} Corresponding view item.
+	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Corresponding view item.
 	 */
 	getCorrespondingView( domNode ) {
 		if ( this.isElement( domNode ) ) {
@@ -543,10 +543,10 @@ export default class DomConverter {
 
 	/**
 	 * Gets corresponding view element. Returns element if an view element was
-	 * {@link engine.view.DomConverter#bindElements bound} to the given DOM element or `null` otherwise.
+	 * {@link module:engine/view/domconverter~DomConverter#bindElements bound} to the given DOM element or `null` otherwise.
 	 *
 	 * @param {HTMLElement} domElement DOM element.
-	 * @returns {engine.view.Element|null} Corresponding element or `null` if no element was bound.
+	 * @returns {module:engine/view/element~Element|null} Corresponding element or `null` if no element was bound.
 	 */
 	getCorrespondingViewElement( domElement ) {
 		return this._domToViewMapping.get( domElement );
@@ -554,31 +554,32 @@ export default class DomConverter {
 
 	/**
 	 * Gets corresponding view document fragment. Returns document fragment if an view element was
-	 * {@link engine.view.DomConverter#bindDocumentFragments bound} to the given DOM fragment or `null` otherwise.
+	 * {@link module:engine/view/domconverter~DomConverter#bindDocumentFragments bound} to the given DOM fragment or `null` otherwise.
 	 *
 	 * @param {DocumentFragment} domFragment DOM element.
-	 * @returns {engine.view.DocumentFragment|null} Corresponding document fragment or `null` if none element was bound.
+	 * @returns {module:engine/view/documentfragment~DocumentFragment|null} Corresponding document fragment or `null` if none element was
+	 * bound.
 	 */
 	getCorrespondingViewDocumentFragment( domFragment ) {
 		return this._domToViewMapping.get( domFragment );
 	}
 
 	/**
-	 * Gets corresponding text node. Text nodes are not {@link engine.view.DomConverter#bindElements bound},
+	 * Gets corresponding text node. Text nodes are not {@link module:engine/view/domconverter~DomConverter#bindElements bound},
 	 * corresponding text node is returned based on the sibling or parent.
 	 *
-	 * If the directly previous sibling is a {@link engine.view.DomConverter#bindElements bound} element, it is used
+	 * If the directly previous sibling is a {@link module:engine/view/domconverter~DomConverter#bindElements bound} element, it is used
 	 * to find the corresponding text node.
 	 *
-	 * If this is a first child in the parent and the parent is a {@link engine.view.DomConverter#bindElements bound}
+	 * If this is a first child in the parent and the parent is a {@link module:engine/view/domconverter~DomConverter#bindElements bound}
 	 * element, it is used to find the corresponding text node.
 	 *
 	 * Otherwise `null` is returned.
 	 *
-	 * Note that for the block or inline {@link engine.view.filler filler} this method returns `null`.
+	 * Note that for the block or inline {@link module:engine/view/filter~Filter filler} this method returns `null`.
 	 *
 	 * @param {Text} domText DOM text node.
-	 * @returns {engine.view.Text|null} Corresponding view text node or `null`, if it was not possible to find a
+	 * @returns {module:engine/view/text~Text|null} Corresponding view text node or `null`, if it was not possible to find a
 	 * corresponding node.
 	 */
 	getCorrespondingViewText( domText ) {
@@ -629,12 +630,12 @@ export default class DomConverter {
 
 	/**
 	 * Gets corresponding DOM item. This function uses
-	 * {@link engine.view.DomConverter#getCorrespondingDomElement getCorrespondingDomElement} for
-	 * elements, {@link engine.view.DomConverter#getCorrespondingDomText getCorrespondingDomText} for text nodes
-	 * and {@link engine.view.DomConverter#getCorrespondingDomDocumentFragment getCorrespondingDomDocumentFragment}
+	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomElement getCorrespondingDomElement} for
+	 * elements, {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomText getCorrespondingDomText} for text nodes
+	 * and {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomDocumentFragment getCorrespondingDomDocumentFragment}
 	 * for document fragments.
 	 *
-	 * @param {engine.view.Node|engine.view.DocumentFragment} viewNode View node or document fragment.
+	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} viewNode View node or document fragment.
 	 * @returns {Node|DocumentFragment|null} Corresponding DOM node or document fragment.
 	 */
 	getCorrespondingDom( viewNode ) {
@@ -651,9 +652,9 @@ export default class DomConverter {
 
 	/**
 	 * Gets corresponding DOM element. Returns element if an DOM element was
-	 * {@link engine.view.DomConverter#bindElements bound} to the given view element or `null` otherwise.
+	 * {@link module:engine/view/domconverter~DomConverter#bindElements bound} to the given view element or `null` otherwise.
 	 *
-	 * @param {engine.view.Element} viewElement View element.
+	 * @param {module:engine/view/element~Element} viewElement View element.
 	 * @returns {HTMLElement|null} Corresponding element or `null` if none element was bound.
 	 */
 	getCorrespondingDomElement( viewElement ) {
@@ -662,9 +663,10 @@ export default class DomConverter {
 
 	/**
 	 * Gets corresponding DOM document fragment. Returns document fragment if an DOM element was
-	 * {@link engine.view.DomConverter#bindDocumentFragments bound} to the given view document fragment or `null` otherwise.
+	 * {@link module:engine/view/domconverter~DomConverter#bindDocumentFragments bound} to the given view document fragment or `null`
+	 * otherwise.
 	 *
-	 * @param {engine.view.DocumentFragment} viewDocumentFragment View document fragment.
+	 * @param {module:engine/view/documentfragment~DocumentFragment} viewDocumentFragment View document fragment.
 	 * @returns {DocumentFragment|null} Corresponding document fragment or `null` if no fragment was bound.
 	 */
 	getCorrespondingDomDocumentFragment( viewDocumentFragment ) {
@@ -672,18 +674,18 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Gets corresponding text node. Text nodes are not {@link engine.view.DomConverter#bindElements bound},
+	 * Gets corresponding text node. Text nodes are not {@link module:engine/view/domconverter~DomConverter#bindElements bound},
 	 * corresponding text node is returned based on the sibling or parent.
 	 *
-	 * If the directly previous sibling is a {@link engine.view.DomConverter#bindElements bound} element, it is used
+	 * If the directly previous sibling is a {@link module:engine/view/domconverter~DomConverter#bindElements bound} element, it is used
 	 * to find the corresponding text node.
 	 *
-	 * If this is a first child in the parent and the parent is a {@link engine.view.DomConverter#bindElements bound}
+	 * If this is a first child in the parent and the parent is a {@link module:engine/view/domconverter~DomConverter#bindElements bound}
 	 * element, it is used to find the corresponding text node.
 	 *
 	 * Otherwise `null` is returned.
 	 *
-	 * @param {engine.view.Text} viewText View text node.
+	 * @param {module:engine/view/text~Text} viewText View text node.
 	 * @returns {Text|null} Corresponding DOM text node or `null`, if it was not possible to find a corresponding node.
 	 */
 	getCorrespondingDomText( viewText ) {
@@ -703,9 +705,9 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Focuses DOM editable that is corresponding to provided {@link engine.view.EditableElement EditableElement}.
+	 * Focuses DOM editable that is corresponding to provided {@link module:engine/view/editableelement~EditableElement EditableElement}.
 	 *
-	 * @param {engine.view.EditableElement} viewEditable
+	 * @param {module:engine/view/editableelement~EditableElement} viewEditable
 	 */
 	focus( viewEditable ) {
 		const domEditable = this.getCorrespondingDomElement( viewEditable );
@@ -771,7 +773,7 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Takes text data from given {@link engine.view.Text#data} and processes it so it is correctly displayed in DOM.
+	 * Takes text data from given {@link module:engine/view/text~Text#data} and processes it so it is correctly displayed in DOM.
 	 *
 	 * Following changes are done:
 	 * * multiple spaces are replaced to a chain of spaces and `&nbsp;`,
@@ -780,7 +782,7 @@ export default class DomConverter {
 	 * * space at the end of the text node is changed to `&nbsp;` if it is a last text node in it's container.
 	 *
 	 * @private
-	 * @param {engine.view.Text} node View text node to process.
+	 * @param {module:engine/view/text~Text} node View text node to process.
 	 * @returns {String} Processed text data.
 	 */
 	_processDataFromViewText( node ) {
@@ -861,13 +863,13 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Helper function. For given {@link engine.view.Text view text node}, it finds previous or next sibling that is contained
+	 * Helper function. For given {@link module:engine/view/text~Text view text node}, it finds previous or next sibling that is contained
 	 * in the same block element. If there is no such sibling, `null` is returned.
 	 *
 	 * @private
-	 * @param {engine.view.Text} node
+	 * @param {module:engine/view/text~Text} node
 	 * @param {Boolean} getNext
-	 * @returns {engine.view.Text}
+	 * @returns {module:engine/view/text~Text}
 	 */
 	_getTouchingViewTextNode( node, getNext ) {
 		if ( !node.parent ) {
@@ -894,7 +896,7 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Takes text data from native `Text` node and processes it to a correct {@link engine.view.Text view text node} data.
+	 * Takes text data from native `Text` node and processes it to a correct {@link module:engine/view/text~Text view text node} data.
 	 *
 	 * Following changes are done:
 	 * * multiple whitespaces are replaced to a single space,

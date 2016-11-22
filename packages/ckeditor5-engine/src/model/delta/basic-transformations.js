@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/delta/basic-transformations
+ */
+
 import { addTransformationCase, defaultTransform } from './transform.js';
 
 import Range from '../range.js';

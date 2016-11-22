@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/delta/renamedelta
+ */
+
 import Delta from './delta.js';
 import DeltaFactory from './deltafactory.js';
 import { register } from '../batch.js';
@@ -12,10 +16,8 @@ import Position from '../position.js';
 import CKEditorError from '../../../utils/ckeditorerror.js';
 
 /**
- * To provide specific OT behavior and better collisions solving, the {@link engine.model.Batch#rename Batch#rename} method
+ * To provide specific OT behavior and better collisions solving, the {@link module:engine/model/batch~Batch#rename Batch#rename} method
  * uses the `RenameDelta` class which inherits from the `Delta` class and may overwrite some methods.
- *
- * @memberOf engine.model.delta
  */
 export default class RenameDelta extends Delta {
 	/**
@@ -42,8 +44,8 @@ function apply( batch, delta, operation ) {
  * Renames given element.
  *
  * @chainable
- * @method engine.model.Batch#rename
- * @param {engine.model.Element} element The element to rename.
+ * @method module:engine/model/batch~Batch#rename
+ * @param {module:engine/model/element~Element} element The element to rename.
  * @param {String} newName New element name.
  */
 register( 'rename', function( element, newName ) {

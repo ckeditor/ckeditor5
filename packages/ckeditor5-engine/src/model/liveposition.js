@@ -15,27 +15,29 @@ import mix from '../../utils/mix.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * `LivePosition` is a type of {@link engine.model.Position Position} that updates itself as {@link engine.model.Document document}
+ * `LivePosition` is a type of {@link module:engine/model/position~Position Position}
+ * that updates itself as {@link module:engine/model/document~Document document}
  * is changed through operations. It may be used as a bookmark.
  *
- * **Note:** Contrary to {@link engine.model.Position}, `LivePosition` works only in roots that are
- * {@link engine.model.RootElement}. If {@link engine.model.DocumentFragment} is passed, error will be thrown.
+ * **Note:** Contrary to {@link module:engine/model/position~Position}, `LivePosition` works only in roots that are
+ * {@link module:engine/model/rootelement~RootElement}.
+ * If {@link module:engine/model/documentfragment~DocumentFragment} is passed, error will be thrown.
  *
  * **Note:** Be very careful when dealing with `LivePosition`. Each `LivePosition` instance bind events that might
- * have to be unbound. Use {@link engine.model.LivePosition#detach} whenever you don't need `LivePosition` anymore.
+ * have to be unbound.
+ * Use {@link module:engine/model/liveposition~LivePosition#detach} whenever you don't need `LivePosition` anymore.
  *
- * @memberOf engine.model
- * @extends engine.model.Position
+ * @extends module:engine/model/position~Position
  */
 export default class LivePosition extends Position {
 	/**
 	 * Creates a live position.
 	 *
-	 * @see engine.model.Position
-	 * @param {engine.model.RootElement} root
+	 * @see module:engine/model/position~Position
+	 * @param {module:engine/model/rootelement~RootElement} root
 	 * @param {Array.<Number>} path
-	 * @param {engine.model.PositionStickiness} [stickiness] Defaults to `'sticksToNext'`.
-	 * See {@link engine.model.LivePosition#stickiness}.
+	 * @param {module:engine/model/position~PositionStickiness} [stickiness] Defaults to `'sticksToNext'`.
+	 * See {@link module:engine/model/liveposition~LivePosition#stickiness}.
 	 */
 	constructor( root, path, stickiness ) {
 		if ( !( root instanceof RootElement ) ) {
@@ -67,7 +69,7 @@ export default class LivePosition extends Position {
 		 *		- | sticks to previous node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f|</p><p>booar</p>`
 		 *		- | sticks to next node: `<p>f|[oo]</p><p>b^ar</p>` => `<p>f</p><p>b|ooar</p>`
 		 *
-		 * @member {engine.model.PositionStickiness} engine.model.LivePosition#stickiness
+		 * @member {module:engine/model/position~PositionStickiness} module:engine/model/liveposition~LivePosition#stickiness
 		 */
 		this.stickiness = stickiness || 'sticksToNext';
 
@@ -85,52 +87,52 @@ export default class LivePosition extends Position {
 
 	/**
 	 * @static
-	 * @method engine.model.LivePosition.createAfter
-	 * @see engine.model.Position.createAfter
-	 * @param {engine.model.Node} node
-	 * @returns {engine.model.LivePosition}
+	 * @method module:engine/model/liveposition~LivePosition.createAfter
+	 * @see module:engine/model/position~Position.createAfter
+	 * @param {module:engine/model/node~Node} node
+	 * @returns {module:engine/model/liveposition~LivePosition}
 	 */
 
 	/**
 	 * @static
-	 * @method engine.model.LivePosition.createBefore
-	 * @see engine.model.Position.createBefore
-	 * @param {engine.model.Node} node
-	 * @returns {engine.model.LivePosition}
+	 * @method module:engine/model/liveposition~LivePosition.createBefore
+	 * @see module:engine/model/position~Position.createBefore
+	 * @param {module:engine/model/node~Node} node
+	 * @returns {module:engine/model/liveposition~LivePosition}
 	 */
 
 	/**
 	 * @static
-	 * @method engine.model.LivePosition.createFromParentAndOffset
-	 * @see engine.model.Position.createFromParentAndOffset
-	 * @param {engine.model.Element} parent
+	 * @method module:engine/model/liveposition~LivePosition.createFromParentAndOffset
+	 * @see module:engine/model/position~Position.createFromParentAndOffset
+	 * @param {module:engine/model/element~Element} parent
 	 * @param {Number} offset
-	 * @returns {engine.model.LivePosition}
+	 * @returns {module:engine/model/liveposition~LivePosition}
 	 */
 
 	/**
 	 * @static
-	 * @method engine.model.LivePosition.createFromPosition
-	 * @see engine.model.Position.createFromPosition
-	 * @param {engine.model.Position} position
-	 * @returns {engine.model.LivePosition}
+	 * @method module:engine/model/liveposition~LivePosition.createFromPosition
+	 * @see module:engine/model/position~Position.createFromPosition
+	 * @param {module:engine/model/position~Position} position
+	 * @returns {module:engine/model/liveposition~LivePosition}
 	 */
 
 	/**
-	 * Fired when `LivePosition` instance is changed due to changes on {@link engine.model.Document}.
+	 * Fired when `LivePosition` instance is changed due to changes on {@link module:engine/model/document~Document}.
 	 *
-	 * @event engine.model.LivePosition#change
-	 * @param {engine.model.Position} oldPosition Position equal to this live position before it got changed.
+	 * @event module:engine/model/liveposition~LivePosition#change
+	 * @param {module:engine/model/position~Position} oldPosition Position equal to this live position before it got changed.
 	 */
 }
 
 /**
- * Binds this `LivePosition` to the {@link engine.model.Document document} that owns
- * this position's {@link engine.model.Position#root root}.
+ * Binds this `LivePosition` to the {@link module:engine/model/document~Document document} that owns
+ * this position's {@link module:engine/model/position~Position#root root}.
  *
  * @ignore
  * @private
- * @method engine.model.LivePosition.bindWithDocument
+ * @method module:engine/model/liveposition~LivePosition.bindWithDocument
  */
 function bindWithDocument() {
 	/*jshint validthis: true */
@@ -156,8 +158,8 @@ function bindWithDocument() {
  * @private
  * @method transform
  * @param {String} type Type of changes applied to the Tree Model.
- * @param {engine.model.Range} range Range containing the result of applied change.
- * @param {engine.model.Position} [position] Additional position parameter provided by some change events.
+ * @param {module:engine/model/range~Range} range Range containing the result of applied change.
+ * @param {module:engine/model/position~Position} [position] Additional position parameter provided by some change events.
  */
 function transform( type, range, position ) {
 	/*jshint validthis: true */
@@ -206,6 +208,6 @@ mix( LivePosition, EmitterMixin );
  * Enum representing how position is "sticking" with their neighbour nodes.
  * Possible values: `'sticksToNext'`, `'sticksToPrevious'`.
  *
- * @typedef {String} engine.model.PositionStickiness
+ * @typedef {String} module:engine/model/position~PositionStickiness
  */
 

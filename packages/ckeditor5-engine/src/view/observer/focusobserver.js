@@ -3,17 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/observer/focusobserver
+ */
+
 import DomEventObserver from './domeventobserver.js';
 
 /**
- * {@link engine.view.Document#focus Focus} and {@link engine.view.Document#blur blur} events observer.
- * Focus observer handle also {@link engine.view.RootEditableElement#isFocused isFocused} property of the
- * {@link engine.view.RootEditableElement root elements}.
+ * {@link module:engine/view/document~Document#focus Focus} and {@link module:engine/view/document~Document#blur blur} events observer.
+ * Focus observer handle also {@link module:engine/view/rooteditableelement~RootEditableElement#isFocused isFocused} property of the
+ * {@link module:engine/view/rooteditableelement~RootEditableElement root elements}.
  *
- * Note that this observer is attached by the {@link engine.view.Document} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
  *
- * @memberOf engine.view.observer
- * @extends engine.view.observer.DomEventObserver
+ * @extends module:engine/view/observer/observer~Observer.DomEventObserver
  */
 export default class FocusObserver extends DomEventObserver {
 	constructor( document ) {
@@ -42,25 +45,27 @@ export default class FocusObserver extends DomEventObserver {
 /**
  * Fired when one of the editables gets focus.
  *
- * Introduced by {@link engine.view.observer.FocusObserver}.
+ * Introduced by {@link module:engine/view/observer/focusobserver~FocusObserver}.
  *
- * Note that because {@link engine.view.observer.FocusObserver} is attached by the {@link engine.view.Document}
+ * Note that because {@link module:engine/view/observer/focusobserver~FocusObserver} is attached by the {@link
+ * module:engine/view/document~Document}
  * this event is available by default.
  *
- * @see engine.view.observer.FocusObserver
- * @event engine.view.Document#focus
- * @param {engine.view.observer.DomEventData} data Event data.
+ * @see module:engine/view/observer/focusobserver~FocusObserver
+ * @event module:engine/view/document~Document#focus
+ * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
  */
 
 /**
  * Fired when one of the editables loses focus.
  *
- * Introduced by {@link engine.view.observer.FocusObserver}.
+ * Introduced by {@link module:engine/view/observer/focusobserver~FocusObserver}.
  *
- * Note that because {@link engine.view.observer.FocusObserver} is attached by the {@link engine.view.Document}
+ * Note that because {@link module:engine/view/observer/focusobserver~FocusObserver} is attached by the {@link
+ * module:engine/view/document~Document}
  * this event is available by default.
  *
- * @see engine.view.observer.FocusObserver
- * @event engine.view.Document#blur
- * @param {engine.view.observer.DomEventData} data Event data.
+ * @see module:engine/view/observer/focusobserver~FocusObserver
+ * @event module:engine/view/document~Document#blur
+ * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
  */

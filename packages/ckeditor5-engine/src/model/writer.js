@@ -17,21 +17,21 @@ import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * Contains functions used for composing model tree, grouped together under "model writer" name. Those functions
- * are built on top of {@link engine.model.Node node}, and it's child classes', APIs.
+ * are built on top of {@link module:engine/model/node~Node node}, and it's child classes', APIs.
  *
  * Model writer API has multiple advantages and it is highly recommended to use it when changing model tree and nodes:
- * * model writer API {@link engine.model.writer.normalizeNodes normalizes inserted nodes}, which means that you can insert
- * not only {@link engine.model.Node nodes}, but also `String`s, {@link engine.model.TextProxy text proxies} and
- * {@link engine.model.DocumentFragment document fragments},
- * * model writer API operates on {@link engine.model.Position positions}, which means that you have
+ * * model writer API {@link module:engine/model/writer~writer.normalizeNodes normalizes inserted nodes}, which means that you can insert
+ * not only {@link module:engine/model/node~Node nodes}, but also `String`s, {@link module:engine/model/textproxy~TextProxy text proxies}
+ * and
+ * {@link module:engine/model/documentfragment~DocumentFragment document fragments},
+ * * model writer API operates on {@link module:engine/model/position~Position positions}, which means that you have
  * better control over manipulating model tree as positions operate on offsets rather than indexes,
- * * model writer API automatically merges {@link engine.model.TextNode text nodes} with same attributes, which means
+ * * model writer API automatically merges {@link module:engine/model/treenode~TextNode text nodes} with same attributes, which means
  * lower memory usage and better efficiency.
  *
- * @namespace engine.model.writer
+ * @namespace writer
  */
-
-export default {
+const writer = {
 	insert,
 	remove,
 	move,
@@ -40,13 +40,15 @@ export default {
 	normalizeNodes
 };
 
+export default writer;
+
 /**
  * Inserts given nodes at given position.
  *
- * @function engine.model.writer.insert
- * @param {engine.model.Position} position Position at which nodes should be inserted.
- * @param {engine.model.NodeSet} nodes Nodes to insert.
- * @returns {engine.model.Range} Range spanning over inserted elements.
+ * @function module:engine/model/writer~writer.insert
+ * @param {module:engine/model/position~Position} position Position at which nodes should be inserted.
+ * @param {module:engine/model/node~NodeSet} nodes Nodes to insert.
+ * @returns {module:engine/model/range~Range} Range spanning over inserted elements.
  */
 export function insert( position, nodes ) {
 	nodes = normalizeNodes( nodes );
@@ -71,11 +73,11 @@ export function insert( position, nodes ) {
 }
 
 /**
- * Removed nodes in given range. Only {@link engine.model.Range#isFlat flat} ranges are accepted.
+ * Removed nodes in given range. Only {@link module:engine/model/range~Range#isFlat flat} ranges are accepted.
  *
- * @function engine.model.writer.remove
- * @param {engine.model.Range} range Range containing nodes to remove.
- * @returns {Array.<engine.model.Node>}
+ * @function module:engine/model/writer~writer.remove
+ * @param {module:engine/model/range~Range} range Range containing nodes to remove.
+ * @returns {Array.<module:engine/model/node~Node>}
  */
 export function remove( range ) {
 	if ( !range.isFlat ) {
@@ -105,11 +107,11 @@ export function remove( range ) {
 }
 
 /**
- * Moves nodes in given range to given target position. Only {@link engine.model.Range#isFlat flat} ranges are accepted.
+ * Moves nodes in given range to given target position. Only {@link module:engine/model/range~Range#isFlat flat} ranges are accepted.
  *
- * @param {engine.model.Range} sourceRange Range containing nodes to move.
- * @param {engine.model.Position} targetPosition Position to which nodes should be moved.
- * @returns {engine.model.Range} Range containing moved nodes.
+ * @param {module:engine/model/range~Range} sourceRange Range containing nodes to move.
+ * @param {module:engine/model/position~Position} targetPosition Position to which nodes should be moved.
+ * @returns {module:engine/model/range~Range} Range containing moved nodes.
  */
 export function move( sourceRange, targetPosition ) {
 	/* jshint validthis:true */
@@ -135,7 +137,7 @@ export function move( sourceRange, targetPosition ) {
 /**
  * Sets given attribute on nodes in given range.
  *
- * @param {engine.model.Range} range Range containing nodes that should have the attribute set.
+ * @param {module:engine/model/range~Range} range Range containing nodes that should have the attribute set.
  * @param {String} key Key of attribute to set.
  * @param {*} value Attribute value.
  */
@@ -168,7 +170,7 @@ export function setAttribute( range, key, value ) {
 /**
  * Removes given attribute from nodes in given range.
  *
- * @param {engine.model.Range} range Range containing nodes that should have the attribute removed.
+ * @param {module:engine/model/range~Range} range Range containing nodes that should have the attribute removed.
  * @param {String} key Key of attribute to remove.
  */
 export function removeAttribute( range, key ) {
@@ -177,11 +179,11 @@ export function removeAttribute( range, key ) {
 }
 
 /**
- * Normalizes given object or an array of objects to an array of {@link engine.model.Node nodes}. See
- * {@link engine.model.NodeSet NodeSet} for details on how normalization is performed.
+ * Normalizes given object or an array of objects to an array of {@link module:engine/model/node~Node nodes}. See
+ * {@link module:engine/model/node~NodeSet NodeSet} for details on how normalization is performed.
  *
- * @param {engine.model.NodeSet} nodes Objects to normalize.
- * @returns {Array.<engine.model.Node>} Normalized nodes.
+ * @param {module:engine/model/node~NodeSet} nodes Objects to normalize.
+ * @returns {Array.<module:engine/model/node~Node>} Normalized nodes.
  */
 export function normalizeNodes( nodes ) {
 	const normalized = [];
@@ -222,14 +224,14 @@ export function normalizeNodes( nodes ) {
 }
 
 /**
- * Checks if nodes before and after given index in given element are {@link engine.model.Text text nodes} and
+ * Checks if nodes before and after given index in given element are {@link module:engine/model/text~Text text nodes} and
  * merges them into one node if they have same attributes.
  *
  * Merging is done by removing two text nodes and inserting a new text node containing data from both merged text nodes.
  *
  * @ignore
  * @private
- * @param {engine.model.Element} element Parent element of nodes to merge.
+ * @param {module:engine/model/element~Element} element Parent element of nodes to merge.
  * @param {Number} index Index between nodes to merge.
  */
 function _mergeNodesAtIndex( element, index ) {
@@ -255,7 +257,7 @@ function _mergeNodesAtIndex( element, index ) {
  *
  * @ignore
  * @private
- * @param {engine.model.Position} position Position at which node should be split.
+ * @param {module:engine/model/position~Position} position Position at which node should be split.
  */
 function _splitNodeAtPosition( position ) {
 	const textNode = position.textNode;
@@ -279,8 +281,8 @@ function _splitNodeAtPosition( position ) {
  *
  * @ignore
  * @private
- * @param {engine.model.Node} nodeA Node to check.
- * @param {engine.model.Node} nodeB Node to check.
+ * @param {module:engine/model/node~Node} nodeA Node to check.
+ * @param {module:engine/model/node~Node} nodeB Node to check.
  * @returns {Boolean} `true` if nodes have same attributes, `false` otherwise.
  */
 function _haveSameAttributes( nodeA, nodeB ) {
@@ -299,18 +301,20 @@ function _haveSameAttributes( nodeA, nodeB ) {
 }
 
 /**
- * Value that can be normalized to an array of {@link engine.model.Node nodes}.
+ * Value that can be normalized to an array of {@link module:engine/model/node~Node nodes}.
  *
  * Non-arrays are normalized as follows:
- * * {@link engine.model.Node Node} is left as is,
- * * {@link engine.model.TextProxy TextProxy} and `String` are normalized to {@link engine.model.Text Text},
- * * {@link engine.model.NodeList NodeList} is normalized to an array containing all nodes that are in that node list,
- * * {@link engine.model.DocumentFragment DocumentFragment} is normalized to an array containing all of it's children.
+ * * {@link module:engine/model/node~Node Node} is left as is,
+ * * {@link module:engine/model/textproxy~TextProxy TextProxy} and `String` are normalized to {@link module:engine/model/text~Text Text},
+ * * {@link module:engine/model/node~NodeList NodeList} is normalized to an array containing all nodes that are in that node list,
+ * * {@link module:engine/model/documentfragment~DocumentFragment DocumentFragment} is normalized to an array containing all of it's
+ * * children.
  *
  * Arrays are processed item by item like non-array values and flattened to one array. Normalization always results in
- * a flat array of {@link engine.model.Node nodes}. Consecutive text nodes (or items normalized to text nodes) will be
+ * a flat array of {@link module:engine/model/node~Node nodes}. Consecutive text nodes (or items normalized to text nodes) will be
  * merged if they have same attributes.
  *
- * @typedef {engine.model.Node|engine.model.TextProxy|String|engine.model.NodeList|engine.model.DocumentFragment|Iterable}
- * engine.model.NodeSet
+ * @typedef {module:engine/model/node~Node|module:engine/model/textproxy~TextProxy|String|
+ * module:engine/model/node~NodeList|module:engine/model/documentfragment~DocumentFragment|Iterable}
+ * module:engine/model/node~NodeSet
  */

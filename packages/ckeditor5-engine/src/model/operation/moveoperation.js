@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/operation/moveoperation
+ */
+
 import Operation from './operation.js';
 import Position from '../position.js';
 import Range from '../range.js';
@@ -11,51 +15,51 @@ import compareArrays from '../../../utils/comparearrays.js';
 import writer from './../writer.js';
 
 /**
- * Operation to move a range of {@link engine.model.Item model items} to given {@link engine.model.Position target position}.
- *
- * @memberOf engine.model.operation
+ * Operation to move a range of {@link module:engine/model/item~Item model items}
+ * to given {@link module:engine/model/position~Position target position}.
  */
 export default class MoveOperation extends Operation {
 	/**
 	 * Creates a move operation.
 	 *
-	 * @param {engine.model.Position} sourcePosition Position before the first {@link engine.model.Item model item} to move.
+	 * @param {module:engine/model/position~Position} sourcePosition
+	 * Position before the first {@link module:engine/model/item~Item model item} to move.
 	 * @param {Number} howMany Offset size of moved range. Moved range will start from `sourcePosition` and end at
 	 * `sourcePosition` with offset shifted by `howMany`.
-	 * @param {engine.model.Position} targetPosition Position at which moved nodes will be inserted.
-	 * @param {Number} baseVersion {@link engine.model.Document#version} on which operation can be applied.
+	 * @param {module:engine/model/position~Position} targetPosition Position at which moved nodes will be inserted.
+	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which operation can be applied.
 	 */
 	constructor( sourcePosition, howMany, targetPosition, baseVersion ) {
 		super( baseVersion );
 
 		/**
-		 * Position before the first {@link engine.model.Item model item} to move.
+		 * Position before the first {@link module:engine/model/item~Item model item} to move.
 		 *
-		 * @member {engine.model.Position} engine.model.operation.MoveOperation#sourcePosition
+		 * @member {module:engine/model/position~Position} module:engine/model/operation/moveoperation~MoveOperation#sourcePosition
 		 */
 		this.sourcePosition = Position.createFromPosition( sourcePosition );
 
 		/**
 		 * Offset size of moved range.
 		 *
-		 * @member {Number} engine.model.operation.MoveOperation#howMany
+		 * @member {Number} module:engine/model/operation/moveoperation~MoveOperation#howMany
 		 */
 		this.howMany = howMany;
 
 		/**
 		 * Position at which moved nodes will be inserted.
 		 *
-		 * @member {engine.model.Position} engine.model.operation.MoveOperation#targetPosition
+		 * @member {module:engine/model/position~Position} module:engine/model/operation/moveoperation~MoveOperation#targetPosition
 		 */
 		this.targetPosition = Position.createFromPosition( targetPosition );
 
 		/**
 		 * Defines whether `MoveOperation` is sticky. If `MoveOperation` is sticky, during
-		 * {@link engine.model.operation.transform operational transformation} if there will be an operation that
+		 * {@link module:engine/model/operation/transform~transform operational transformation} if there will be an operation that
 		 * inserts some nodes at the position equal to the boundary of this `MoveOperation`, that operation will
 		 * get their insertion path updated to the position where this `MoveOperation` moves the range.
 		 *
-		 * @member {Boolean} engine.model.operation.MoveOperation#isSticky
+		 * @member {Boolean} module:engine/model/operation/moveoperation~MoveOperation#isSticky
 		 */
 		this.isSticky = false;
 	}
@@ -69,7 +73,7 @@ export default class MoveOperation extends Operation {
 
 	/**
 	 * @inheritDoc
-	 * @returns {engine.model.operation.MoveOperation}
+	 * @returns {module:engine/model/operation/moveoperation~MoveOperation}
 	 */
 	clone() {
 		const op = new this.constructor( this.sourcePosition, this.howMany, this.targetPosition, this.baseVersion );
@@ -80,9 +84,9 @@ export default class MoveOperation extends Operation {
 
 	/**
 	 * Returns the start position of the moved range after it got moved. This may be different than
-	 * {@link engine.model.operation.MoveOperation#targetPosition} in some cases, i.e. when a range is moved
-	 * inside the same parent but {@link engine.model.operation.MoveOperation#targetPosition targetPosition}
-	 * is after {@link engine.model.operation.MoveOperation#sourcePosition sourcePosition}.
+	 * {@link module:engine/model/operation/moveoperation~MoveOperation#targetPosition} in some cases, i.e. when a range is moved
+	 * inside the same parent but {@link module:engine/model/operation/moveoperation~MoveOperation#targetPosition targetPosition}
+	 * is after {@link module:engine/model/operation/moveoperation~MoveOperation#sourcePosition sourcePosition}.
 	 *
 	 *		 vv              vv
 	 *		abcdefg ===> adefbcg
@@ -90,7 +94,7 @@ export default class MoveOperation extends Operation {
 	 *		     targetPos	movedRangeStart
 	 *		     offset 6	offset 4
 	 *
-	 * @returns {engine.model.Position}
+	 * @returns {module:engine/model/position~Position}
 	 */
 	getMovedRangeStart() {
 		return this.targetPosition._getTransformedByDeletion( this.sourcePosition, this.howMany );
@@ -98,7 +102,7 @@ export default class MoveOperation extends Operation {
 
 	/**
 	 * @inheritDoc
-	 * @returns {engine.model.operation.MoveOperation}
+	 * @returns {module:engine/model/operation/moveoperation~MoveOperation}
 	 */
 	getReversed() {
 		let newTargetPosition = this.sourcePosition._getTransformedByInsertion( this.targetPosition, this.howMany );
@@ -184,8 +188,8 @@ export default class MoveOperation extends Operation {
 	 * Creates `MoveOperation` object from deserilized object, i.e. from parsed JSON string.
 	 *
 	 * @param {Object} json Deserialized JSON object.
-	 * @param {engine.model.Document} document Document on which this operation will be applied.
-	 * @returns {engine.model.operation.MoveOperation}
+	 * @param {module:engine/model/document~Document} document Document on which this operation will be applied.
+	 * @returns {module:engine/model/operation/moveoperation~MoveOperation}
 	 */
 	static fromJSON( json, document ) {
 		let sourcePosition = Position.fromJSON( json.sourcePosition, document );

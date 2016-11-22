@@ -25,26 +25,27 @@ const attrOpTypes = new Set(
 );
 
 /**
- * `LiveSelection` is a type of {@link engine.model.Selection selection} that listens to changes on a
- * {@link engine.model.Document document} and has it ranges updated accordingly. Internal implementation of this
- * mechanism bases on {@link engine.model.LiveRange live ranges}.
+ * `LiveSelection` is a type of {@link module:engine/model/selection~Selection selection} that listens to changes on a
+ * {@link module:engine/model/document~Document document} and has it ranges updated accordingly. Internal implementation of this
+ * mechanism bases on {@link module:engine/model/liverange~LiveRange live ranges}.
  *
- * Differences between {@link engine.model.Selection} and `LiveSelection` are two:
+ * Differences between {@link module:engine/model/selection~Selection} and `LiveSelection` are two:
  * * there is always a range in `LiveSelection` - even if no ranges were added there is a
- * {@link engine.model.LiveSelection#_getDefaultRange "default range"} present in the selection,
+ * {@link module:engine/model/liveselection~LiveSelection#_getDefaultRange "default range"} present in the selection,
  * * ranges added to this selection updates automatically when the document changes.
  *
- * Since `LiveSelection` uses {@link engine.model.LiveRange live ranges} and is updated when {@link engine.model.Document document}
- * changes, it cannot be set on {@link engine.model.Node nodes} that are inside {@link engine.model.DocumentFragment document fragment}.
- * If you need to represent a selection in document fragment, use {@link engine.model.Selection "normal" selection} instead.
- *
- * @memberOf engine.model
+ * Since `LiveSelection` uses {@link module:engine/model/liverange~LiveRange live ranges}
+ * and is updated when {@link module:engine/model/document~Document document}
+ * changes, it cannot be set on {@link module:engine/model/node~Node nodes}
+ * that are inside {@link module:engine/model/documentfragment~DocumentFragment document fragment}.
+ * If you need to represent a selection in document fragment,
+ * use {@link module:engine/model/selection~Selection "normal" selection} instead.
  */
 export default class LiveSelection extends Selection {
 	/**
-	 * Creates an empty live selection for given {@link engine.model.Document}.
+	 * Creates an empty live selection for given {@link module:engine/model/document~Document}.
 	 *
-	 * @param {engine.model.Document} document Document which owns this selection.
+	 * @param {module:engine/model/document~Document} document Document which owns this selection.
 	 */
 	constructor( document ) {
 		super();
@@ -53,7 +54,7 @@ export default class LiveSelection extends Selection {
 		 * Document which owns this selection.
 		 *
 		 * @protected
-		 * @member {engine.model.Document} engine.model.LiveSelection#_document
+		 * @member {module:engine/model/document~Document} module:engine/model/liveselection~LiveSelection#_document
 		 */
 		this._document = document;
 
@@ -65,7 +66,7 @@ export default class LiveSelection extends Selection {
 		 * attributes API are set with `'normal'` priority.
 		 *
 		 * @private
-		 * @member {Map} engine.model.LiveSelection#_attributePriority
+		 * @member {Map} module:engine/model/liveselection~LiveSelection#_attributePriority
 		 */
 		this._attributePriority = new Map();
 
@@ -238,8 +239,8 @@ export default class LiveSelection extends Selection {
 	 * Creates and returns an instance of `LiveSelection` that is a clone of given selection, meaning that it has same
 	 * ranges and same direction as this selection.
 	 *
-	 * @params {engine.model.Selection} otherSelection Selection to be cloned.
-	 * @returns {engine.model.LiveSelection} `Selection` instance that is a clone of given selection.
+	 * @params {module:engine/model/selection~Selection} otherSelection Selection to be cloned.
+	 * @returns {module:engine/model/liveselection~LiveSelection} `Selection` instance that is a clone of given selection.
 	 */
 	static createFromSelection( otherSelection ) {
 		const selection = new this( otherSelection._document );
@@ -268,11 +269,12 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Prepares given range to be added to selection. Checks if it is correct, converts it to {@link engine.model.LiveRange LiveRange}
+	 * Prepares given range to be added to selection. Checks if it is correct,
+	 * converts it to {@link module:engine/model/liverange~LiveRange LiveRange}
 	 * and sets listeners listening to the range's change event.
 	 *
 	 * @private
-	 * @param {engine.model.Range} range
+	 * @param {module:engine/model/range~Range} range
 	 */
 	_prepareRange( range ) {
 		if ( !( range instanceof Range ) ) {
@@ -310,11 +312,11 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Updates this selection attributes according to its ranges and the {@link engine.model.Document model document}.
+	 * Updates this selection attributes according to its ranges and the {@link module:engine/model/document~Document model document}.
 	 *
 	 * @protected
 	 * @param {Boolean} clearAll
-	 * @fires engine.model.LiveSelection#change:attribute
+	 * @fires module:engine/model/liveselection~LiveSelection#change:attribute
 	 */
 	_updateAttributes( clearAll ) {
 		const newAttributes = toMap( this._getSurroundingAttributes() );
@@ -614,8 +616,8 @@ export default class LiveSelection extends Selection {
 	 * Fixes a selection range after it ends up in graveyard root.
 	 *
 	 * @private
-	 * @param {engine.model.LiveRange} gyRange The range added in selection, that ended up in graveyard root.
-	 * @param {engine.model.Range} oldRange The state of that range before it was added to graveyard root.
+	 * @param {module:engine/model/liverange~LiveRange} gyRange The range added in selection, that ended up in graveyard root.
+	 * @param {module:engine/model/range~Range} oldRange The state of that range before it was added to graveyard root.
 	 */
 	_fixGraveyardSelection( gyRange, oldRange ) {
 		const gyPath = gyRange.start.path;
@@ -635,10 +637,10 @@ export default class LiveSelection extends Selection {
 	}
 }
 
-// Helper function for {@link engine.model.LiveSelection#_updateAttributes}. It takes model item, checks whether
+// Helper function for {@link module:engine/model/liveselection~LiveSelection#_updateAttributes}. It takes model item, checks whether
 // it is a text node (or text proxy) and if so, returns it's attributes. If not, returns `null`.
 //
-// @param {engine.model.Item}  node
+// @param {module:engine/model/item~Item}  node
 // @returns {Boolean}
 function getAttrsIfCharacter( node ) {
 	if ( node instanceof TextProxy || node instanceof Text ) {

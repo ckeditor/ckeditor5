@@ -15,25 +15,24 @@ import isString from '../../utils/lib/lodash/isString.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * SchemaItem is a singular registry item in {@link engine.model.Schema} that groups and holds allow/disallow rules for
- * one entity. This class is used internally in {@link engine.model.Schema} and should not be used outside it.
+ * SchemaItem is a singular registry item in {@link module:engine/model/schema~Schema} that groups and holds allow/disallow rules for
+ * one entity. This class is used internally in {@link module:engine/model/schema~Schema} and should not be used outside it.
  *
- * @see engine.model.Schema
+ * @see module:engine/model/schema~Schema
  * @protected
- * @memberOf engine.model
  */
 export class SchemaItem {
 	/**
 	 * Creates SchemaItem instance.
 	 *
-	 * @param {engine.model.Schema} schema Schema instance that owns this item.
+	 * @param {module:engine/model/schema~Schema} schema Schema instance that owns this item.
 	 */
 	constructor( schema ) {
 		/**
 		 * Schema instance that owns this item.
 		 *
 		 * @private
-		 * @member {engine.model.Schema} engine.model.SchemaItem#_schema
+		 * @member {module:engine/model/schema~Schema} module:engine/model/schema~SchemaItem#_schema
 		 */
 		this._schema = schema;
 
@@ -41,7 +40,7 @@ export class SchemaItem {
 		 * Paths in which the entity, represented by this item, is allowed.
 		 *
 		 * @private
-		 * @member {Array} engine.model.SchemaItem#_allowed
+		 * @member {Array} module:engine/model/schema~SchemaItem#_allowed
 		 */
 		this._allowed = [];
 
@@ -49,7 +48,7 @@ export class SchemaItem {
 		 * Paths in which the entity, represented by this item, is disallowed.
 		 *
 		 * @private
-		 * @member {Array} engine.model.SchemaItem#_disallowed
+		 * @member {Array} module:engine/model/schema~SchemaItem#_disallowed
 		 */
 		this._disallowed = [];
 
@@ -57,7 +56,7 @@ export class SchemaItem {
 		 * Attributes that are required by the entity represented by this item.
 		 *
 		 * @protected
-		 * @member {Array} engine.model.SchemaItem#_requiredAttributes
+		 * @member {Array} module:engine/model/schema~SchemaItem#_requiredAttributes
 		 */
 		this._requiredAttributes = [];
 	}
@@ -138,7 +137,7 @@ export class SchemaItem {
 	 * Checks whether given set of attributes fulfills required attributes of this item.
 	 *
 	 * @protected
-	 * @see engine.model.SchemaItem#requireAttributes
+	 * @see module:engine/model/schema~SchemaItem#requireAttributes
 	 * @param {Array.<String>} attributesToCheck Attributes to check.
 	 * @returns {Boolean} `true` if given set or attributes fulfills required attributes, `false` otherwise.
 	 */
@@ -246,8 +245,6 @@ export class SchemaItem {
  * When registering an item it's possible to tell that this item should inherit from some other existing item.
  * E.g. `p` can inherit from `$block`, so whenever given attribute is allowed on the `$block` it will automatically be
  * also allowed on the `p` element. By default, `$text` item already inherits from `$inline`.
- *
- * @memberOf engine.model
  */
 export default class Schema {
 	/**
@@ -259,7 +256,7 @@ export default class Schema {
 		 * elements should be treated as whole, never merged, can be selected from outside, etc.
 		 * Just like images, placeholder widgets, etc.
 		 *
-		 * @member {Set.<String>} engine.model.Schema#objects
+		 * @member {Set.<String>} module:engine/model/schema~Schema#objects
 		 */
 		this.objects = new Set();
 
@@ -267,7 +264,7 @@ export default class Schema {
 		 * Schema items registered in the schema.
 		 *
 		 * @private
-		 * @member {Map} engine.model.Schema#_items
+		 * @member {Map} module:engine/model/schema~Schema#_items
 		 */
 		this._items = new Map();
 
@@ -275,7 +272,7 @@ export default class Schema {
 		 * Description of what entities are a base for given entity.
 		 *
 		 * @private
-		 * @member {Map} engine.model.Schema#_extensionChains
+		 * @member {Map} module:engine/model/schema~Schema#_extensionChains
 		 */
 		this._extensionChains = new Map();
 
@@ -308,7 +305,7 @@ export default class Schema {
 	 *		schema.registerItem( 'div', '$block' );
 	 *		schema.allow( { name: 'header', inside: 'div p' } ); // inside: [ 'div', 'p' ] would also work.
 	 *
-	 * @param {engine.model.SchemaQuery} query Allowed query.
+	 * @param {module:engine/model/schema~SchemaQuery} query Allowed query.
 	 */
 	allow( query ) {
 		this._getItem( query.name ).allow( Schema._normalizeQueryPath( query.inside ), query.attributes );
@@ -317,8 +314,8 @@ export default class Schema {
 	/**
 	 * Disallows given query in the schema.
 	 *
-	 * @see {@link engine.model.Schema#allow}
-	 * @param {engine.model.SchemaQuery} query Disallowed query.
+	 * @see {@link module:engine/model/schema~Schema#allow}
+	 * @param {module:engine/model/schema~SchemaQuery} query Disallowed query.
 	 */
 	disallow( query ) {
 		this._getItem( query.name ).disallow( Schema._normalizeQueryPath( query.inside ), query.attributes );
@@ -373,7 +370,7 @@ export default class Schema {
 	 *		};
 	 *		if ( schema.check( query ) ) { ... }
 	 *
-	 * @param {engine.model.SchemaQuery} query Query to check.
+	 * @param {module:engine/model/schema~SchemaQuery} query Query to check.
 	 * @returns {Boolean} `true` if given query is allowed in schema, `false` otherwise.
 	 */
 	check( query ) {
@@ -512,12 +509,12 @@ export default class Schema {
 	}
 
 	/**
-	 * Returns {@link engine.model.SchemaItem schema item} that was registered in the schema under given name.
+	 * Returns {@link module:engine/model/schema~SchemaItem schema item} that was registered in the schema under given name.
 	 * If item has not been found, throws error.
 	 *
 	 * @private
 	 * @param {String} itemName Name to look for in schema.
-	 * @returns {engine.model.SchemaItem} Schema item registered under given name.
+	 * @returns {module:engine/model/schema~SchemaItem} Schema item registered under given name.
 	 */
 	_getItem( itemName ) {
 		if ( !this.hasItem( itemName ) ) {
@@ -533,10 +530,10 @@ export default class Schema {
 	}
 
 	/**
-	 * Normalizes a path to an entity by converting it from {@link engine.model.SchemaPath} to an array of strings.
+	 * Normalizes a path to an entity by converting it from {@link module:engine/model/schema~SchemaPath} to an array of strings.
 	 *
 	 * @protected
-	 * @param {engine.model.SchemaPath} path Path to normalize.
+	 * @param {module:engine/model/schema~SchemaPath} path Path to normalize.
 	 * @returns {Array.<String>} Normalized path.
 	 */
 	static _normalizeQueryPath( path ) {
@@ -568,11 +565,11 @@ export default class Schema {
 }
 
 /**
- * Object with query used by {@link engine.model.Schema} to query schema or add allow/disallow rules to schema.
+ * Object with query used by {@link module:engine/model/schema~Schema} to query schema or add allow/disallow rules to schema.
  *
- * @typedef {Object} engine.model.SchemaQuery
+ * @typedef {Object} module:engine/model/schema~SchemaQuery
  * @property {String} name Entity name.
- * @property {engine.model.SchemaPath} inside Path inside which the entity is placed.
+ * @property {module:engine/model/schema~SchemaPath} inside Path inside which the entity is placed.
  * @property {Array.<String>|String} [attributes] If set, the query applies only to entities that has attribute(s) with given key.
  */
 
@@ -581,5 +578,6 @@ export default class Schema {
  * an array of strings. If string is passed, entities from the path should be divided by ` ` (space character). If
  * an array is passed, unrecognized items are skipped. If position is passed, it is assumed that the entity is at given position.
  *
- * @typedef {String|Array.<String|engine.model.Element>|engine.model.Position} engine.model.SchemaPath
+ * @typedef {String|Array.<String|module:engine/model/element~Element>|module:engine/model/position~Position}
+ * module:engine/model/schema~SchemaPath
  */

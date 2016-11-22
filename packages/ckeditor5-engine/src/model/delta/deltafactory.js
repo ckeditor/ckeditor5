@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/delta/deltafactory
+ */
+
 import CKEditorError from '../../../utils/ckeditorerror.js';
 
 import OperationFactory from '../operation/operationfactory.js';
@@ -15,17 +19,15 @@ const deserializers = new Map();
  * Delta is a single, from the user action point of view, change in the editable document, like insert, split or
  * rename element. Delta is composed of operations, which are unit changes needed to be done to execute user action.
  *
- * Multiple deltas are grouped into a single {@link engine.model.Batch}.
- *
- * @memberOf engine.model.delta
+ * Multiple deltas are grouped into a single {@link module:engine/model/batch~Batch}.
  */
 export default class DeltaFactory {
 	/**
 	 * Creates InsertDelta from deserialized object, i.e. from parsed JSON string.
 	 *
 	 * @param {Object} json
-	 * @param {engine.model.Document} doc Document on which this delta will be applied.
-	 * @returns {engine.model.delta.InsertDelta}
+	 * @param {module:engine/model/document~Document} doc Document on which this delta will be applied.
+	 * @returns {module:engine/model/delta/delta~Delta.InsertDelta}
 	 */
 	static fromJSON( json, doc ) {
 		if ( !deserializers.has( json.__className ) ) {

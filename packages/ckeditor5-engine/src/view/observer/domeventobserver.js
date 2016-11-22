@@ -3,17 +3,21 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/observer/domeventobserver
+ */
+
 import Observer from './observer.js';
 import DomEventData from './domeventdata.js';
 
 /**
  * Base class for DOM event observers. This class handles
- * {@link engine.view.observer.Observer#observe adding} listeners to DOM elements,
- * {@link engine.view.observer.Observer#disable disabling} and
- * {@link engine.view.observer.Observer#enable re-enabling} events.
+ * {@link module:engine/view/observer/observer~Observer#observe adding} listeners to DOM elements,
+ * {@link module:engine/view/observer/observer~Observer#disable disabling} and
+ * {@link module:engine/view/observer/observer~Observer#enable re-enabling} events.
  * Child class needs to define
- * {@link engine.view.observer.DomEventObserver#domEventType DOM event type} and
- * {@link engine.view.observer.DomEventObserver#onDomEvent callback}.
+ * {@link module:engine/view/observer/observer~Observer.DomEventObserver#domEventType DOM event type} and
+ * {@link module:engine/view/observer/observer~Observer.DomEventObserver#onDomEvent callback}.
  *
  * For instance:
  *
@@ -28,8 +32,7 @@ import DomEventData from './domeventdata.js';
  *			}
  *		}
  *
- * @memberOf engine.view.observer
- * @extends engine.view.observer.Observer
+ * @extends module:engine/view/observer/observer~Observer.Observer
  */
 export default class DomEventObserver extends Observer {
 	/**
@@ -37,16 +40,16 @@ export default class DomEventObserver extends Observer {
 	 * if the obsever should listen to multiple DOM events.
 	 *
 	 * @readonly
-	 * @member {String|Array.<String>} engine.view.observer.DomEventObserver#domEventType
+	 * @member {String|Array.<String>} module:engine/view/observer/observer~Observer.DomEventObserver#domEventType
 	 */
 
 	/**
 	 * Callback which should be called when the DOM event occurred. Note that the callback will not be called if
-	 * observer {@link engine.view.observer.DomEventObserver#isEnabled is not enabled}.
+	 * observer {@link module:engine/view/observer/observer~Observer.DomEventObserver#isEnabled is not enabled}.
 	 *
-	 * @see engine.view.observer.DomEventObserver#domEventType
+	 * @see module:engine/view/observer/observer~Observer.DomEventObserver#domEventType
 	 * @abstract
-	 * @method engine.view.observer.DomEventObserver#onDomEvent
+	 * @method module:engine/view/observer/observer~Observer.DomEventObserver#onDomEvent
 	 */
 
 	/**
@@ -65,14 +68,14 @@ export default class DomEventObserver extends Observer {
 	}
 
 	/**
-	 * Calls {@link engine.view.Document#fire} if observer
-	 * {@link engine.view.observer.DomEventObserver#isEnabled is enabled}.
+	 * Calls {@link module:engine/view/document~Document#fire} if observer
+	 * {@link module:engine/view/observer/observer~Observer.DomEventObserver#isEnabled is enabled}.
 	 *
-	 * @see engine.view.Document#fire
+	 * @see module:engine/view/document~Document#fire
 	 * @param {String} eventType The event type (name).
 	 * @param {Event} domEvent The DOM event.
 	 * @param {Object} [additionalData] The additional data which should extend the
-	 * {@link engine.view.observer.DomEventData event data} object.
+	 * {@link module:engine/view/observer/domeventdata~DomEventData event data} object.
 	 */
 	fire( eventType, domEvent, additionalData ) {
 		if ( this.isEnabled ) {

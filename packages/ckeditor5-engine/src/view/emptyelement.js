@@ -17,7 +17,7 @@ export default class EmptyElement extends Element {
 	/**
 	 * Creates new instance of EmptyElement.
 	 *
-	 * Throws {@link utils.CKEditorError CKEditorError} `view-emptyelement-cannot-add` when third parameter is passed,
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-emptyelement-cannot-add` when third parameter is passed,
 	 * to inform that usage of EmptyElement is incorrect (adding child nodes to EmptyElement is forbidden).
 	 *
 	 * @param {String} name Node name.
@@ -32,7 +32,7 @@ export default class EmptyElement extends Element {
 	}
 
 	/**
-	 * Clones provided element. Overrides {@link engine.view.Element#clone} method, as it's forbidden to pass child
+	 * Clones provided element. Overrides {@link module:engine/view/element~Element#clone} method, as it's forbidden to pass child
 	 * nodes to EmptyElement's constructor.
 	 *
 	 * @returns {envine.view.EmptyElement} Clone of this element.
@@ -49,8 +49,8 @@ export default class EmptyElement extends Element {
 	}
 
 	/**
-	 * Overrides {@link engine.view.Element#appendChildren} method.
-	 * Throws {@link utils.CKEditorError CKEditorError} `view-emptyelement-cannot-add` to prevent adding any child nodes
+	 * Overrides {@link module:engine/view/element~Element#appendChildren} method.
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-emptyelement-cannot-add` to prevent adding any child nodes
 	 * to EmptyElement.
 	 */
 	appendChildren() {
@@ -58,8 +58,8 @@ export default class EmptyElement extends Element {
 	}
 
 	/**
-	 * Overrides {@link engine.view.Element#insertChildren} method.
-	 * Throws {@link utils.CKEditorError CKEditorError} `view-emptyelement-cannot-add` to prevent adding any child nodes
+	 * Overrides {@link module:engine/view/element~Element#insertChildren} method.
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-emptyelement-cannot-add` to prevent adding any child nodes
 	 * to EmptyElement.
 	 */
 	insertChildren() {
@@ -78,7 +78,7 @@ export default class EmptyElement extends Element {
 
 function throwCannotAdd() {
 	/**
-	 * Cannot add children to {@link engine.view.EmptyElement}.
+	 * Cannot add children to {@link module:engine/view/emptyelement~EmptyElement}.
 	 *
 	 * @error view-emptyelement-cannot-add
 	 */

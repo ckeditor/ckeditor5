@@ -19,21 +19,22 @@ import ViewTreeWalker from '../view/treewalker.js';
 import viewWriter from '../view/writer.js';
 
 /**
- * Contains {@link engine.model model} to {@link engine.view view} converters for
- * {@link engine.conversion.ModelConversionDispatcher}.
+ * Contains {@link module:engine/model model} to {@link module:engine/view view} converters for
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}.
  *
- * @namespace engine.conversion.modelToView
+ * @namespace module:engine/conversion/modeltoview~modelToView
  */
 
 /**
  * Function factory, creates a converter that converts node insertion changes from the model to the view.
- * The view element that will be added to the view depends on passed parameter. If {@link engine.view.Element} was passed,
+ * The view element that will be added to the view depends on passed parameter. If {@link module:engine/view/element~Element} was passed,
  * it will be cloned and the copy will be inserted. If `Function` is provided, it is passed all the parameters of the
- * dispatcher's {@link engine.conversion.ModelConversionDispatcher#event:insert insert event}. It's expected that the
- * function returns a {@link engine.view.Element}. The result of the function will be inserted to the view.
+ * dispatcher's {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert insert event}.
+ * It's expected that the function returns a {@link module:engine/view/element~Element}.
+ * The result of the function will be inserted to the view.
  *
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
- * {@link engine.conversion.ModelConversionDispatcher}) and bind model and view elements.
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}) and bind model and view elements.
  *
  *		modelDispatcher.on( 'insert:paragraph', insertElement( new ViewElement( 'p' ) ) );
  *
@@ -48,9 +49,9 @@ import viewWriter from '../view/writer.js';
  *			}
  *		) );
  *
- * @external engine.conversion.modelToView
- * @function engine.conversion.modelToView.insertElement
- * @param {engine.view.Element|Function} elementCreator View element, or function returning a view element, which
+ * @external module:engine/conversion/modeltoview~modelToView
+ * @function module:engine/conversion/modeltoview~modelToView.insertElement
+ * @param {module:engine/view/element~Element|Function} elementCreator View element, or function returning a view element, which
  * will be inserted.
  * @returns {Function} Insert element event converter.
  */
@@ -74,12 +75,12 @@ export function insertElement( elementCreator ) {
  * Function factory, creates a default model-to-view converter for text insertion changes.
  *
  * The converter automatically consumes corresponding value from consumables list and stops the event (see
- * {@link engine.conversion.ModelConversionDispatcher}).
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}).
  *
  *		modelDispatcher.on( 'insert:$text', insertText() );
  *
- * @external engine.conversion.modelToView
- * @function engine.conversion.modelToView.insertText
+ * @external module:engine/conversion/modeltoview~modelToView
+ * @function module:engine/conversion/modeltoview~modelToView.insertText
  * @returns {Function} Insert text event converter.
  */
 export function insertText() {
@@ -104,7 +105,7 @@ export function insertText() {
  * **Note:** Provided attribute creator should always return the same `key` for given attribute from the model.
  *
  * The converter automatically consumes corresponding value from consumables list and stops the event (see
- * {@link engine.conversion.ModelConversionDispatcher}).
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}).
  *
  *		modelDispatcher.on( 'addAttribute:customAttr:myElem', setAttribute( ( data ) => {
  *			// Change attribute key from `customAttr` to `class` in view.
@@ -120,12 +121,13 @@ export function insertText() {
  *			return { key, value };
  *		} ) );
  *
- * @external engine.conversion.modelToView
- * @function engine.conversion.modelToView.setAttribute
+ * @external module:engine/conversion/modeltoview~modelToView
+ * @function module:engine/conversion/modeltoview~modelToView.setAttribute
  * @param {Function} [attributeCreator] Function returning an object with two properties: `key` and `value`, which
- * represents attribute key and attribute value to be set on a {@link engine.view.Element view element}. The function
- * is passed all the parameters of the {@link engine.conversion.ModelConversionDispatcher.addAttribute}
- * or {@link engine.conversion.ModelConversionDispatcher.changeAttribute} event.
+ * represents attribute key and attribute value to be set on a {@link module:engine/view/element~Element view element}.
+ * The function is passed all the parameters of the
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addAttribute}
+ * or {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher.changeAttribute} event.
  * @returns {Function} Set/change attribute converter.
  */
 export function setAttribute( attributeCreator ) {
@@ -149,10 +151,10 @@ export function setAttribute( attributeCreator ) {
  *
  * **Note:** Provided attribute creator should always return the same `key` for given attribute from the model.
  *
- * **Note:** You can use the same attribute creator as in {@link engine.conversion.modelToView.setAttribute}.
+ * **Note:** You can use the same attribute creator as in {@link module:engine/conversion/modeltoview~modelToView.setAttribute}.
  *
  * The converter automatically consumes corresponding value from consumables list and stops the event (see
- * {@link engine.conversion.ModelConversionDispatcher}).
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}).
  *
  *		modelDispatcher.on( 'removeAttribute:customAttr:myElem', removeAttribute( ( data ) => {
  *			// Change attribute key from `customAttr` to `class` in view.
@@ -168,12 +170,13 @@ export function setAttribute( attributeCreator ) {
  *			return { key, value };
  *		} ) );
  *
- * @external engine.conversion.modelToView
- * @function engine.conversion.modelToView.removeAttribute
+ * @external module:engine/conversion/modeltoview~modelToView
+ * @function module:engine/conversion/modeltoview~modelToView.removeAttribute
  * @param {Function} [attributeCreator] Function returning an object with two properties: `key` and `value`, which
- * represents attribute key and attribute value to be removed from {@link engine.view.Element view element}. The function
- * is passed all the parameters of the {@link engine.conversion.ModelConversionDispatcher#event:addAttribute addAttribute event}
- * or {@link engine.conversion.ModelConversionDispatcher#event:changeAttribute changeAttribute event}.
+ * represents attribute key and attribute value to be removed from {@link module:engine/view/element~Element view element}.
+ * The function is passed all the parameters of the
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addAttribute addAttribute event}
+ * or {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:changeAttribute changeAttribute event}.
  * @returns {Function} Remove attribute converter.
  */
 export function removeAttribute( attributeCreator ) {
@@ -201,20 +204,21 @@ export function removeAttribute( attributeCreator ) {
  *			|- b {bold: true}                             |   |- ab
  *			|- c                                          |- c
  *
- * The wrapping node depends on passed parameter. If {@link engine.view.Element} was passed, it will be cloned and
+ * The wrapping node depends on passed parameter. If {@link module:engine/view/element~Element} was passed, it will be cloned and
  * the copy will become the wrapping element. If `Function` is provided, it is passed all the parameters of the
- * {@link engine.conversion.ModelConversionDispatcher#event:setAttribute setAttribute event}. It's expected that the
- * function returns a {@link engine.view.Element}. The result of the function will be the wrapping element.
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:setAttribute setAttribute event}.
+ * It's expected that the function returns a {@link module:engine/view/element~Element}.
+ * The result of the function will be the wrapping element.
  * When provided `Function` does not return element, then will be no conversion.
  *
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
- * {@link engine.conversion.ModelConversionDispatcher}).
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}).
  *
  *		modelDispatcher.on( 'addAttribute:bold', wrap( new ViewElement( 'strong' ) ) );
  *
- * @external engine.conversion.modelToView
- * @function engine.conversion.modelToView.wrap
- * @param {engine.view.Element|Function} elementCreator View element, or function returning a view element, which will
+ * @external module:engine/conversion/modeltoview~modelToView
+ * @function module:engine/conversion/modeltoview~modelToView.wrap
+ * @param {module:engine/view/element~Element|Function} elementCreator View element, or function returning a view element, which will
  * be used for wrapping.
  * @returns {Function} Set/change attribute converter.
  */
@@ -250,21 +254,21 @@ export function wrap( elementCreator ) {
  * view element if given attribute was removed.
  *
  * The view element type that will be unwrapped depends on passed parameter.
- * If {@link engine.view.Element} was passed, it will be used to look for similar element in the view for unwrapping. If `Function`
- * is provided, it is passed all the parameters of the
- * {@link engine.conversion.ModelConversionDispatcher#event:setAttribute setAttribute event}. It's expected that the
- * function returns a {@link engine.view.Element}. The result of the function will be used to look for similar element
- * in the view for unwrapping.
+ * If {@link module:engine/view/element~Element} was passed, it will be used to look for similar element in the view for unwrapping.
+ * If `Function` is provided, it is passed all the parameters of the
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:setAttribute setAttribute event}.
+ * It's expected that the function returns a {@link module:engine/view/element~Element}.
+ * The result of the function will be used to look for similar element in the view for unwrapping.
  *
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
- * {@link engine.conversion.ModelConversionDispatcher}) and bind model and view elements.
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}) and bind model and view elements.
  *
  *		modelDispatcher.on( 'removeAttribute:bold', unwrap( new ViewElement( 'strong' ) ) );
  *
- * @see engine.conversion.modelToView.wrap
- * @external engine.conversion.modelToView
- * @function engine.conversion.modelToView.unwrap
- * @param {engine.view.Element|Function} elementCreator View element, or function returning a view element, which will
+ * @see module:engine/conversion/modeltoview~modelToView.wrap
+ * @external module:engine/conversion/modeltoview~modelToView
+ * @function module:engine/conversion/modeltoview~modelToView.unwrap
+ * @param {module:engine/view/element~Element|Function} elementCreator View element, or function returning a view element, which will
  * be used for unwrapping.
  * @returns {Function} Remove attribute converter.
  */
@@ -288,8 +292,8 @@ export function unwrap( elementCreator ) {
  *
  *		modelDispatcher.on( 'move', move() );
  *
- * @external engine.conversion.modelToView
- * @function engine.conversion.modelToView.move
+ * @external module:engine/conversion/modeltoview~modelToView
+ * @function module:engine/conversion/modeltoview~modelToView.move
  * @returns {Function} Move event converter.
  */
 export function move() {
@@ -320,8 +324,8 @@ export function move() {
  *
  *		modelDispatcher.on( 'remove', remove() );
  *
- * @external engine.conversion.modelToView
- * @function engine.conversion.modelToView.remove
+ * @external module:engine/conversion/modeltoview~modelToView
+ * @function module:engine/conversion/modeltoview~modelToView.remove
  * @returns {Function} Remove event converter.
  */
 export function remove() {
@@ -373,11 +377,11 @@ function findViewTextRange( start, size ) {
  *
  * This converter re-uses converters added for `insert`, `move` and `remove` change types.
  *
- * @external engine.conversion.modelToView
- * @function engine.conversion.modelToView.rename
- * @fires engine.conversion.ModelConversionDispatcher#event:insert
- * @fires engine.conversion.ModelConversionDispatcher#event:move
- * @fires engine.conversion.ModelConversionDispatcher#event:remove
+ * @external module:engine/conversion/modeltoview~modelToView
+ * @function module:engine/conversion/modeltoview~modelToView.rename
+ * @fires module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert
+ * @fires module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:move
+ * @fires module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:remove
  * @returns {Function}
  */
 export function rename() {

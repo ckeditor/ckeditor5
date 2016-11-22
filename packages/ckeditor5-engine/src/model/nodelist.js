@@ -11,21 +11,22 @@ import Node from './node.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * Provides an interface to operate on a list of {@link engine.model.Node nodes}. `NodeList` is used internally
- * in classes like {@link engine.model.Element Element} or {@link engine.model.DocumentFragment DocumentFragment}.
+ * Provides an interface to operate on a list of {@link module:engine/model/node~Node nodes}. `NodeList` is used internally
+ * in classes like {@link module:engine/model/element~Element Element}
+ * or {@link module:engine/model/documentfragment~DocumentFragment DocumentFragment}.
  */
 export default class NodeList {
 	/**
 	 * Creates an empty node list.
 	 *
-	 * @param {Iterable.<engine.model.Node>} nodes Nodes contained in this node list.
+	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes contained in this node list.
 	 */
 	constructor( nodes ) {
 		/**
 		 * Nodes contained in this node list.
 		 *
 		 * @private
-		 * @member {Array.<engine.model.Node>} engine.model.NodeList#_nodes
+		 * @member {Array.<module:engine/model/node~Node>}
 		 */
 		this._nodes = [];
 
@@ -37,7 +38,7 @@ export default class NodeList {
 	/**
 	 * Returns an iterator that iterates over all nodes contained inside this node list.
 	 *
-	 * @returns {Iterator.<engine.model.Node>}
+	 * @returns {Iterator.<module:engine/model/node~Node>}
 	 */
 	[ Symbol.iterator ]() {
 		return this._nodes[ Symbol.iterator ]();
@@ -54,7 +55,7 @@ export default class NodeList {
 	}
 
 	/**
-	 * Sum of {@link engine.model.Node#offsetSize offset sizes} of all nodes contained inside this node list.
+	 * Sum of {@link module:engine/model/node~Node#offsetSize offset sizes} of all nodes contained inside this node list.
 	 *
 	 * @readonly
 	 * @type {Number}
@@ -67,7 +68,7 @@ export default class NodeList {
 	 * Gets the node at the given index. Returns `null` if incorrect index was passed.
 	 *
 	 * @param {Number} index Index of node.
-	 * @returns {engine.model.Node|null} Node at given index.
+	 * @returns {module:engine/model/node~Node|null} Node at given index.
 	 */
 	getNode( index ) {
 		return this._nodes[ index ] || null;
@@ -76,7 +77,7 @@ export default class NodeList {
 	/**
 	 * Returns an index of the given node. Returns `null` if given node is not inside this node list.
 	 *
-	 * @param {engine.model.Node} node Child node to look for.
+	 * @param {module:engine/model/node~Node} node Child node to look for.
 	 * @returns {Number|null} Child node's index.
 	 */
 	getNodeIndex( node ) {
@@ -87,9 +88,9 @@ export default class NodeList {
 
 	/**
 	 * Returns the starting offset of given node. Starting offset is equal to the sum of
-	 * {engine.model.Node#offsetSize offset sizes} of all nodes that are before this node in this node list.
+	 * {module:engine/model/node~Node#offsetSize offset sizes} of all nodes that are before this node in this node list.
 	 *
-	 * @param {engine.model.Node} node Node to look for.
+	 * @param {module:engine/model/node~Node} node Node to look for.
 	 * @returns {Number|null} Node's starting offset.
 	 */
 	getNodeStartOffset( node ) {
@@ -101,8 +102,8 @@ export default class NodeList {
 	/**
 	 * Converts index to offset in node list.
 	 *
-	 * Returns starting offset of a node that is at given index. Throws {@link utils.CKEditorError CKEditorError}
-	 * `model-nodelist-index-out-of-bounds` if given index is less than `0` or more than {@link engine.model.NodeList#length}.
+	 * Returns starting offset of a node that is at given index. Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
+	 * `model-nodelist-index-out-of-bounds` if given index is less than `0` or more than {@link module:engine/model/node~NodeList#length}.
 	 *
 	 * @param {Number} index Node's index.
 	 * @returns {Number} Node's starting offset.
@@ -129,8 +130,8 @@ export default class NodeList {
 	/**
 	 * Converts offset in node list to index.
 	 *
-	 * Returns index of a node that occupies given offset. Throws {@link utils.CKEditorError CKEditorError}
-	 * `model-nodelist-offset-out-of-bounds` if given offset is less than `0` or more than {@link engine.model.NodeList#getMaxOffset}.
+	 * Returns index of a node that occupies given offset. Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
+	 * `model-nodelist-offset-out-of-bounds` if given offset is less than `0` or more than {@link #getMaxOffset}.
 	 *
 	 * @param {Number} offset Offset to look for.
 	 * @returns {Number} Index of a node that occupies given offset.
@@ -162,7 +163,7 @@ export default class NodeList {
 	 * Inserts given nodes at given index.
 	 *
 	 * @param {Number} index Index at which nodes should be inserted.
-	 * @param {Iterable.<engine.model.Node>} nodes Nodes to be inserted.
+	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes to be inserted.
 	 */
 	insertNodes( index, nodes ) {
 		// Validation.
@@ -185,7 +186,7 @@ export default class NodeList {
 	 *
 	 * @param {Number} indexStart Index of the first node to remove.
 	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @returns {Array.<engine.model.Node>} Array containing removed nodes.
+	 * @returns {Array.<module:engine/model/node~Node>} Array containing removed nodes.
 	 */
 	removeNodes( indexStart, howMany = 1 ) {
 		return this._nodes.splice( indexStart, howMany );
@@ -195,7 +196,7 @@ export default class NodeList {
 	 * Converts `NodeList` instance to an array containing nodes that were inserted in the node list. Nodes
 	 * are also converted to their plain object representation.
 	 *
-	 * @returns {Array.<engine.model.Node>} `NodeList` instance converted to `Array`.
+	 * @returns {Array.<module:engine/model/node~Node>} `NodeList` instance converted to `Array`.
 	 */
 	toJSON() {
 		return this._nodes.map( ( node ) => node.toJSON() );

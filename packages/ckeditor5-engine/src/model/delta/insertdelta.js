@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/delta/insertdelta
+ */
+
 import Delta from './delta.js';
 import DeltaFactory from './deltafactory.js';
 import RemoveDelta from './removedelta.js';
@@ -11,17 +15,15 @@ import InsertOperation from '../operation/insertoperation.js';
 
 /**
  * @classdesc
- * To provide specific OT behavior and better collisions solving, the {@link engine.model.Batch#insert Batch#insert} method
+ * To provide specific OT behavior and better collisions solving, the {@link module:engine/model/batch~Batch#insert Batch#insert} method
  * uses the `InsertDelta` class which inherits from the `Delta` class and may overwrite some methods.
- *
- * @memberOf engine.model.delta
  */
 export default class InsertDelta extends Delta {
 	/**
 	 * Position where the delta inserts nodes or `null` if there are no operations in the delta.
 	 *
 	 * @readonly
-	 * @type {engine.model.Position|null}
+	 * @type {module:engine/model/position~Position|null}
 	 */
 	get position() {
 		return this._insertOperation ? this._insertOperation.position : null;
@@ -31,7 +33,7 @@ export default class InsertDelta extends Delta {
 	 * Node list containing all the nodes inserted by the delta or `null` if there are no operations in the delta.
 	 *
 	 * @readonly
-	 * @type {engine.model.NodeList|null}
+	 * @type {module:engine/model/node~NodeList|null}
 	 */
 	get nodes() {
 		return this._insertOperation ? this._insertOperation.nodes : null;
@@ -42,7 +44,7 @@ export default class InsertDelta extends Delta {
 	 *
 	 * @readonly
 	 * @protected
-	 * @type {engine.model.operation.InsertOperation|null}
+	 * @type {module:engine/model/operation/insertoperation~insertOperation|null}
 	 */
 	get _insertOperation() {
 		return this.operations[ 0 ] || null;
@@ -74,9 +76,9 @@ export default class InsertDelta extends Delta {
  * Inserts a node or nodes at the given position.
  *
  * @chainable
- * @method engine.model.Batch#insert
- * @param {engine.model.Position} position Position of insertion.
- * @param {engine.model.NodeSet} nodes The list of nodes to be inserted.
+ * @method module:engine/model/batch~Batch#insert
+ * @param {module:engine/model/position~Position} position Position of insertion.
+ * @param {module:engine/model/node~NodeSet} nodes The list of nodes to be inserted.
  */
 register( 'insert', function( position, nodes ) {
 	const delta = new InsertDelta();

@@ -21,8 +21,8 @@ import isIterable from '../../utils/isiterable.js';
  * model, i.e. `<b>` and `<strong>` elements might be converted to `bold` attribute (even though `bold` attribute will
  * be then converted only to `<strong>` tag). Instances of this class are created by {@link engine.conversion.buildViewConverter}.
  *
- * If you need more complex converters, see {@link engine.conversion.ViewConversionDispatcher},
- * {@link engine.conversion.viewToModel}, {@link engine.conversion.ViewConsumable}.
+ * If you need more complex converters, see {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher},
+ * {@link module:engine/conversion/view-to-model-converters~viewToModel}, {@link module:engine/conversion/viewconsumable~ViewConsumable}.
  *
  * Using this API it is possible to create various kind of converters:
  *
@@ -47,7 +47,8 @@ import isIterable from '../../utils/isiterable.js';
  *			.fromElement( 'b' ).fromElement( 'strong' ).fromAttribute( 'style', { 'font-weight': 'bold' } )
  *			.toAttribute( 'bold', 'true' );
  *
- * 5. View {@link engine.view.Matcher view element matcher instance} or {@link engine.view.Matcher#add matcher pattern}
+ * 5. View {@link module:engine/view/matcher~Matcher view element matcher instance} or
+ * {@link module:engine/view/matcher~Matcher#add matcher pattern}
  * to model element or attribute:
  *
  *		const matcher = new ViewMatcher();
@@ -56,30 +57,29 @@ import isIterable from '../../utils/isiterable.js';
  *
  *		buildViewConverter().for( dispatcher ).from( { name: 'span', class: 'bold' } ).toAttribute( 'bold', 'true' );
  *
- * Note, that converters built using `ViewConverterBuilder` automatically check {@link engine.model.Schema schema}
+ * Note, that converters built using `ViewConverterBuilder` automatically check {@link module:engine/model/schema~Schema schema}
  * if created model structure is valid. If given conversion would be invalid according to schema, it is ignored.
  *
- * It is possible to provide creator functions as parameters for {@link engine.conversion.ViewConverterBuilder#toElement}
- * and {@link engine.conversion.ViewConverterBuilder#toAttribute} methods. See their descriptions to learn more.
+ * It is possible to provide creator functions as parameters for {@link ~ViewConverterBuilder#toElement}
+ * and {@link module:engine/conversion/buildviewconverter~ViewConverterBuilder#toAttribute} methods. See their descriptions to learn more.
  *
- * By default, converter will {@link engine.conversion.ViewConsumable#consume consume} every value specified in
+ * By default, converter will {@link module:engine/conversion/viewconsumable~ViewConsumable#consume consume} every value specified in
  * given `from...` query, i.e. `.from( { name: 'span', class: 'bold' } )` will make converter consume both `span` name
- * and `bold` class. It is possible to change this behavior using {@link engine.conversion.ViewConverterBuilder#consuming consuming}
+ * and `bold` class. It is possible to change this behavior using {@link ~ViewConverterBuilder#consuming consuming}
  * modifier. The modifier alters the last `fromXXX` query used before it. To learn more about consuming values,
- * see {@link engine.conversion.ViewConsumable}.
+ * see {@link module:engine/conversion/viewconsumable~ViewConsumable}.
  *
- * It is also possible to {@link engine.conversion.ViewConverterBuilder#withPriority change default priority}
+ * It is also possible to {@link module:engine/conversion/buildviewconverter~ViewConverterBuilder#withPriority change default priority}
  * of created converters to decide which converter should be fired earlier and which later. This is useful if you provide
  * a general converter but want to provide different converter for a specific-case (i.e. given view element is converted
  * always to given model element, but if it has given class it is converter to other model element). For this,
- * use {@link engine.conversion.ViewConverterBuilder#withPriority withPriority} modifier. The modifier alters
+ * use {@link module:engine/conversion/buildviewconverter~ViewConverterBuilder#withPriority withPriority} modifier. The modifier alters
  * the last `from...` query used before it.
  *
  * Note that `to...` methods are "terminators", which means that should be the last one used in building converter.
  *
- * You can use {@link engine.conversion.ModelConverterBuilder} to create "opposite" converters - from model to view.
- *
- * @memberOf engine.conversion
+ * You can use {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder}
+ * to create "opposite" converters - from model to view.
  */
 class ViewConverterBuilder {
 	/**
@@ -89,7 +89,7 @@ class ViewConverterBuilder {
 		/**
 		 * Dispatchers to which converters will be attached.
 		 *
-		 * @type {Array.<engine.conversion.ViewConversionDispatcher>}
+		 * @type {Array.<module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher>}
 		 * @private
 		 */
 		this._dispatchers = [];
@@ -107,8 +107,8 @@ class ViewConverterBuilder {
 	 * Set one or more dispatchers which the built converter will be attached to.
 	 *
 	 * @chainable
-	 * @param {...engine.conversion.ViewConversionDispatcher} dispatchers One or more dispatchers.
-	 * @returns {engine.conversion.ViewConverterBuilder}
+	 * @param {...module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher} dispatchers One or more dispatchers.
+	 * @returns {module:engine/conversion/buildviewconverter~ViewConverterBuilder}
 	 */
 	for( ...dispatchers ) {
 		this._dispatchers = dispatchers;
@@ -123,7 +123,7 @@ class ViewConverterBuilder {
 	 *
 	 * @chainable
 	 * @param {String} elementName View element name.
-	 * @returns {engine.conversion.ViewConverterBuilder}
+	 * @returns {module:engine/conversion/buildviewconverter~ViewConverterBuilder}
 	 */
 	fromElement( elementName ) {
 		return this.from( { name: elementName } );
@@ -137,7 +137,7 @@ class ViewConverterBuilder {
 	 * @chainable
 	 * @param {String|RegExp} key View attribute key.
 	 * @param {String|RegExp} [value] View attribute value.
-	 * @returns {engine.conversion.ViewConverterBuilder}
+	 * @returns {module:engine/conversion/buildviewconverter~ViewConverterBuilder}
 	 */
 	fromAttribute( key, value = /.*/ ) {
 		let pattern = {};
@@ -147,7 +147,7 @@ class ViewConverterBuilder {
 	}
 
 	/**
-	 * Registers what view pattern should be converted. The method accepts either {@link engine.view.Matcher view matcher}
+	 * Registers what view pattern should be converted. The method accepts either {@link module:engine/view/matcher~Matcher view matcher}
 	 * or view matcher pattern.
 	 *
 	 *		const matcher = new ViewMatcher();
@@ -157,8 +157,8 @@ class ViewConverterBuilder {
 	 *		buildViewConverter().for( dispatcher ).from( { name: 'span', class: 'bold' } ).toAttribute( 'bold', 'true' );
 	 *
 	 * @chainable
-	 * @param {Object|engine.view.Matcher} matcher View matcher or view matcher pattern.
-	 * @returns {engine.conversion.ViewConverterBuilder}
+	 * @param {Object|module:engine/view/matcher~Matcher} matcher View matcher or view matcher pattern.
+	 * @returns {module:engine/conversion/buildviewconverter~ViewConverterBuilder}
 	 */
 	from( matcher ) {
 		if ( !( matcher instanceof Matcher ) ) {
@@ -175,7 +175,8 @@ class ViewConverterBuilder {
 	}
 
 	/**
-	 * Modifies which consumable values will be {@link engine.conversion.ViewConsumable#consume consumed} by built converter.
+	 * Modifies which consumable values will be {@link module:engine/conversion/viewconsumable~ViewConsumable#consume consumed}
+	 * by built converter.
 	 * It modifies the last `from...` query. Can be used after each `from...` query in given chain. Useful for providing
 	 * more specific matches.
 	 *
@@ -197,10 +198,10 @@ class ViewConverterBuilder {
 	 * conversion conditions (like in second example). So, the view element, to be converter, has to match query of
 	 * `from...` method and then have to have enough consumable values to consume.
 	 *
-	 * @see engine.conversion.ViewConsumable
+	 * @see module:engine/conversion/viewconsumable~ViewConsumable
 	 * @chainable
 	 * @param {Object} consume Values to consume.
-	 * @returns {engine.conversion.ViewConverterBuilder}
+	 * @returns {module:engine/conversion/buildviewconverter~ViewConverterBuilder}
 	 */
 	consuming( consume ) {
 		let lastFrom = this._from[ this._from.length - 1 ];
@@ -228,7 +229,7 @@ class ViewConverterBuilder {
 	 *
 	 * @chainable
 	 * @param {Number} priority Converter priority.
-	 * @returns {engine.conversion.ViewConverterBuilder}
+	 * @returns {module:engine/conversion/buildviewconverter~ViewConverterBuilder}
 	 */
 	withPriority( priority ) {
 		let lastFrom = this._from[ this._from.length - 1 ];
@@ -385,7 +386,8 @@ class ViewConverterBuilder {
 	}
 }
 
-// Helper function that sets given attributes on given `engine.model.Node` or `engine.model.DocumentFragment`.
+// Helper function that sets given attributes on given `module:engine/model/node~Node` or
+// `module:engine/model/documentfragment~DocumentFragment`.
 function setAttributeOn( toChange, attribute, data, conversionApi ) {
 	if ( isIterable( toChange ) ) {
 		for ( let node of toChange ) {
@@ -412,10 +414,9 @@ function setAttributeOn( toChange, attribute, data, conversionApi ) {
 /**
  * Entry point for view-to-model converters builder. This chainable API makes it easy to create basic, most common
  * view-to-model converters and attach them to provided dispatchers. The method returns an instance of
- * {@link engine.conversion.ViewConverterBuilder}.
+ * {@link module:engine/conversion/buildviewconverter~ViewConverterBuilder}.
  *
  * @external engine.conversion.buildViewConverter
- * @memberOf engine.conversion
  */
 export default function buildViewConverter() {
 	return new ViewConverterBuilder();

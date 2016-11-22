@@ -77,7 +77,7 @@ describe( 'view test utils', () => {
 			it( 'should throw an error when passing invalid document', () => {
 				expect( () => {
 					getData( { invalid: 'document' } );
-				} ).to.throw( TypeError, 'Document needs to be an instance of engine.view.Document.' );
+				} ).to.throw( TypeError, 'Document needs to be an instance of module:engine/view/document~Document.' );
 			} );
 		} );
 
@@ -120,7 +120,7 @@ describe( 'view test utils', () => {
 			it( 'should throw an error when passing invalid document', () => {
 				expect( () => {
 					setData( { invalid: 'document' } );
-				} ).to.throw( TypeError, 'Document needs to be an instance of engine.view.Document.' );
+				} ).to.throw( TypeError, 'Document needs to be an instance of module:engine/view/document~Document.' );
 			} );
 		} );
 	} );

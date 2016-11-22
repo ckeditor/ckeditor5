@@ -10,13 +10,13 @@
 /**
  * HTML writer interface.
  *
- * @interface engine.dataProcessor.HtmlWriter
+ * @interface module:engine/dataprocessor/htmlwriter~HtmlWriter
  */
 
 /**
  * Returns HTML string created from DocumentFragment.
  *
- * @method engine.dataProcessor.HtmlWriter#getHtml
+ * @method module:engine/dataprocessor/htmlwriter~HtmlWriter#getHtml
  * @param {DocumentFragment} fragment
  * @returns {String}
  */

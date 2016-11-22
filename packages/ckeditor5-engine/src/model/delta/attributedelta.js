@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/delta/attributedelta
+ */
+
 import Delta from './delta.js';
 import DeltaFactory from './deltafactory.js';
 import { register } from '../batch.js';
@@ -15,11 +19,9 @@ import Element from '../element.js';
 
 /**
  * To provide specific OT behavior and better collisions solving, methods to change attributes
- * ({@link engine.model.Batch#setAttribute} and {@link engine.model.Batch#removeAttribute}) use `AttributeDelta` class
- * which inherits from the `Delta` class and may overwrite some methods.
- *
- * @memberOf engine.model.delta
- * @extends engine.model.delta.Delta
+ * ({@link module:engine/model/batch~Batch#setAttribute} and {@link module:engine/model/batch~Batch#removeAttribute})
+ * use `AttributeDelta` class which inherits from the `Delta` class and may overwrite some methods.
+ * @extends module:engine/model/delta/delta~Delta
  */
 export default class AttributeDelta extends Delta {
 	/**
@@ -46,7 +48,7 @@ export default class AttributeDelta extends Delta {
 	 * The range on which delta operates or `null` if the delta has no operations.
 	 *
 	 * @readonly
-	 * @type {engine.model.Range|null}
+	 * @type {module:engine/model/range~Range|null}
 	 */
 	get range() {
 		// Check if it is cached.
@@ -84,7 +86,7 @@ export default class AttributeDelta extends Delta {
 	 * @inheritDoc
 	 */
 	static get className() {
-		return 'engine.model.delta.AttributeDelta';
+		return 'engine.model.delta~Delta.AttributeDelta';
 	}
 
 	/**
@@ -96,12 +98,12 @@ export default class AttributeDelta extends Delta {
 }
 
 /**
- * To provide specific OT behavior and better collisions solving, methods to change attributes ({@link engine.model.Batch#setAttribute}
- * and {@link engine.model.Batch#removeAttribute}) use `RootAttributeDelta` class which inherits from the `Delta` class and may
+ * To provide specific OT behavior and better collisions solving, methods to change attributes
+ * ({@link module:engine/model/batch~Batch#setAttribute} and {@link module:engine/model/batch~Batch#removeAttribute})
+ * use `RootAttributeDelta` class which inherits from the `Delta` class and may
  * overwrite some methods.
  *
- * @memberOf engine.model.delta
- * @extends engine.model.delta.Delta
+ * @extends module:engine/model/delta/delta~Delta
  */
 export class RootAttributeDelta extends Delta {
 	/**
@@ -113,11 +115,13 @@ export class RootAttributeDelta extends Delta {
 }
 
 /**
- * Sets value of the attribute with given key on a {@link engine.model.Item model item} or on a {@link engine.model.Range range}.
+ * Sets value of the attribute with given key on a {@link module:engine/model/item~Item model item}
+ * or on a {@link module:engine/model/range~Range range}.
  *
  * @chainable
- * @method engine.model.Batch#setAttribute
- * @param {engine.model.Item|engine.model.Range} itemOrRange Model item or range on which the attribute will be set.
+ * @method module:engine/model/batch~Batch#setAttribute
+ * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange
+ * Model item or range on which the attribute will be set.
  * @param {String} key Attribute key.
  * @param {*} value Attribute new value.
  */
@@ -128,11 +132,13 @@ register( 'setAttribute', function( itemOrRange, key, value ) {
 } );
 
 /**
- * Removes an attribute with given key from a {@link engine model.Item model item} or from a {@link engine.model.Range range}.
+ * Removes an attribute with given key from a {@link module:engine/model/item~Item model item}
+ * or from a {@link module:engine/model/range~Range range}.
  *
  * @chainable
- * @param {engine.model.Item|engine.model.Range} itemOrRange Model item or range from which the attribute will be removed.
- * @method engine.model.Batch#removeAttribute
+ * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange
+ * Model item or range from which the attribute will be removed.
+ * @method module:engine/model/batch~Batch#removeAttribute
  * @param {String} key Attribute key.
  */
 register( 'removeAttribute', function( itemOrRange, key ) {

@@ -17,18 +17,18 @@ import Element from './element.js';
 /**
  * Class representing selection in tree view.
  *
- * Selection can consist of {@link engine.view.Range ranges} that can be added using
- * {@link engine.view.Selection#addRange addRange} and {@link engine.view.Selection#setRanges setRanges} methods.
+ * Selection can consist of {@link module:engine/view/range~Range ranges} that can be added using
+ * {@link module:engine/view/selection~Selection#addRange addRange}
+ * and {@link module:engine/view/selection~Selection#setRanges setRanges} methods.
  * Both methods create copies of provided ranges and store those copies internally. Further modifications to passed
  * ranges will not change selection's state.
- * Selection's ranges can be obtained via {@link engine.view.Selection#getRanges getRanges},
- * {@link engine.view.Selection#getFirstRange getFirstRange} and {@link engine.view.Selection#getLastRange getLastRange}
+ * Selection's ranges can be obtained via {@link module:engine/view/selection~Selection#getRanges getRanges},
+ * {@link module:engine/view/selection~Selection#getFirstRange getFirstRange}
+ * and {@link module:engine/view/selection~Selection#getLastRange getLastRange}
  * methods, which return copies of ranges stored inside selection. Modifications made on these copies will not change
- * selection's state. Similar situation occurs when getting {@link engine.view.Selection#anchor anchor},
- * {@link engine.view.Selection#focus focus}, {@link engine.view.Selection#getFirstPosition first} and
- * {@link engine.view.Selection#getLastPosition last} positions - all will return copies of requested positions.
- *
- * @memberOf engine.view
+ * selection's state. Similar situation occurs when getting {@link module:engine/view/selection~Selection#anchor anchor},
+ * {@link module:engine/view/selection~Selection#focus focus}, {@link module:engine/view/selection~Selection#getFirstPosition first} and
+ * {@link module:engine/view/selection~Selection#getLastPosition last} positions - all will return copies of requested positions.
  */
 export default class Selection {
 	/**
@@ -39,7 +39,7 @@ export default class Selection {
 		 * Stores all ranges that are selected.
 		 *
 		 * @protected
-		 * @member {Array.<engine.view.Range>} engine.view.Selection#_ranges
+		 * @member {Array.<module:engine/view/range~Range>} module:engine/view/selection~Selection#_ranges
 		 */
 		this._ranges = [];
 
@@ -47,7 +47,7 @@ export default class Selection {
 		 * Specifies whether the last added range was added as a backward or forward range.
 		 *
 		 * @protected
-		 * @member {Boolean} engine.view.Selection#_lastRangeBackward
+		 * @member {Boolean} module:engine/view/selection~Selection#_lastRangeBackward
 		 */
 		this._lastRangeBackward = false;
 
@@ -55,7 +55,7 @@ export default class Selection {
 		 * Specifies whether selection instance is fake.
 		 *
 		 * @private
-		 * @member {Boolean} engine.view.Selection#_isFake
+		 * @member {Boolean} module:engine/view/selection~Selection#_isFake
 		 */
 		this._isFake = false;
 
@@ -63,7 +63,7 @@ export default class Selection {
 		 * Fake selection's label.
 		 *
 		 * @private
-		 * @member {String} engine.view.Selection#_fakeSelectionLabel
+		 * @member {String} module:engine/view/selection~Selection#_fakeSelectionLabel
 		 */
 		this._fakeSelectionLabel = '';
 	}
@@ -76,7 +76,7 @@ export default class Selection {
 	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
 	 * properly handled by screen readers).
 	 *
-	 * @fires engine.view.Selection#change
+	 * @fires module:engine/view/selection~Selection#change
 	 * @param {Boolean} [value=true] If set to true selection will be marked as `fake`.
 	 * @param {Object} [options] Additional options.
 	 * @param {String} [options.label=''] Fake selection label.
@@ -91,7 +91,7 @@ export default class Selection {
 	/**
 	 * Returns true if selection instance is marked as `fake`.
 	 *
-	 * @see {@link engine.view.Selection#setFake}
+	 * @see {@link module:engine/view/selection~Selection#setFake}
 	 * @returns {Boolean}
 	 */
 	get isFake() {
@@ -101,7 +101,7 @@ export default class Selection {
 	/**
 	 * Returns fake selection label.
 	 *
-	 * @see {@link engine.view.Selection#setFake}
+	 * @see {@link module:engine/view/selection~Selection#setFake}
 	 * @returns {String}
 	 */
 	get fakeSelectionLabel() {
@@ -110,12 +110,12 @@ export default class Selection {
 
 	/**
 	 * Selection anchor. Anchor may be described as a position where the selection starts. Together with
-	 * {@link engine.view.Selection#focus focus} they define the direction of selection, which is important
+	 * {@link module:engine/view/selection~Selection#focus focus} they define the direction of selection, which is important
 	 * when expanding/shrinking selection. Anchor is always the start or end of the most recent added range.
 	 * It may be a bit unintuitive when there are multiple ranges in selection.
 	 *
-	 * @see engine.view.Selection#focus
-	 * @type {engine.view.Position}
+	 * @see module:engine/view/selection~Selection#focus
+	 * @type {module:engine/view/position~Position}
 	 */
 	get anchor() {
 		if ( !this._ranges.length ) {
@@ -130,8 +130,8 @@ export default class Selection {
 	/**
 	 * Selection focus. Focus is a position where the selection ends.
 	 *
-	 * @see engine.view.Selection#anchor
-	 * @type {engine.view.Position}
+	 * @see module:engine/view/selection~Selection#anchor
+	 * @type {module:engine/view/position~Position}
 	 */
 	get focus() {
 		if ( !this._ranges.length ) {
@@ -163,7 +163,8 @@ export default class Selection {
 	}
 
 	/**
-	 * Specifies whether the {@link engine.view.Selection#focus} precedes {@link engine.view.Selection#anchor}.
+	 * Specifies whether the {@link module:engine/view/selection~Selection#focus} precedes {@link
+	 * module:engine/view/selection~Selection#anchor}.
 	 *
 	 * @type {Boolean}
 	 */
@@ -172,10 +173,10 @@ export default class Selection {
 	}
 
 	/**
-	 * {@link engine.view.EditableElement EditableElement} instance that contains this selection, or `null`
+	 * {@link module:engine/view/editableelement~EditableElement EditableElement} instance that contains this selection, or `null`
 	 * if the selection is not inside an editable element.
 	 *
-	 * @type {engine.view.EditableElement|null}
+	 * @type {module:engine/view/editableelement~EditableElement|null}
 	 */
 	get editableElement() {
 		if ( this.anchor ) {
@@ -190,16 +191,16 @@ export default class Selection {
 	 * selection instance and you can safely operate on it.
 	 *
 	 * Accepts a flag describing in which way the selection is made - passed range might be selected from
-	 * {@link engine.view.Range#start start} to {@link engine.view.Range#end end}
-	 * or from {@link engine.view.Range#end end} to {@link engine.view.Range#start start}.
-	 * The flag is used to set {@link engine.view.Selection#anchor anchor} and
-	 * {@link engine.view.Selection#focus focus} properties.
+	 * {@link module:engine/view/range~Range#start start} to {@link module:engine/view/range~Range#end end}
+	 * or from {@link module:engine/view/range~Range#end end} to {@link module:engine/view/range~Range#start start}.
+	 * The flag is used to set {@link module:engine/view/selection~Selection#anchor anchor} and
+	 * {@link module:engine/view/selection~Selection#focus focus} properties.
 	 *
-	 * Throws {@link utils.CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
 	 * with ranges already stored in Selection instance.
 	 *
-	 * @fires engine.view.Selection#change
-	 * @param {engine.view.Range} range
+	 * @fires module:engine/view/selection~Selection#change
+	 * @param {module:engine/view/range~Range} range
 	 */
 	addRange( range, isBackward ) {
 		if ( !( range instanceof Range ) ) {
@@ -214,7 +215,7 @@ export default class Selection {
 	/**
 	 * Returns an iterator that contains copies of all ranges added to the selection.
 	 *
-	 * @returns {Iterator.<engine.view.Range>}
+	 * @returns {Iterator.<module:engine/view/range~Range>}
 	 */
 	*getRanges() {
 		for ( let range of this._ranges ) {
@@ -224,11 +225,11 @@ export default class Selection {
 
 	/**
 	 * Returns copy of the first range in the selection. First range is the one which
-	 * {@link engine.view.Range#start start} position {@link engine.view.Position#isBefore is before} start
+	 * {@link module:engine/view/range~Range#start start} position {@link module:engine/view/position~Position#isBefore is before} start
 	 * position of all other ranges (not to confuse with the first range added to the selection).
 	 * Returns `null` if no ranges are added to selection.
 	 *
-	 * @returns {engine.view.Range|null}
+	 * @returns {module:engine/view/range~Range|null}
 	 */
 	getFirstRange() {
 		let first = null;
@@ -243,11 +244,11 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns copy of the last range in the selection. Last range is the one which {@link engine.view.Range#end end}
-	 * position {@link engine.view.Position#isAfter is after} end position of all other ranges (not to confuse
+	 * Returns copy of the last range in the selection. Last range is the one which {@link module:engine/view/range~Range#end end}
+	 * position {@link module:engine/view/position~Position#isAfter is after} end position of all other ranges (not to confuse
 	 * with the last range added to the selection). Returns `null` if no ranges are added to selection.
 	 *
-	 * @returns {engine.view.Range|null}
+	 * @returns {module:engine/view/range~Range|null}
 	 */
 	getLastRange() {
 		let last = null;
@@ -263,10 +264,10 @@ export default class Selection {
 
 	/**
 	 * Returns copy of the first position in the selection. First position is the position that
-	 * {@link engine.view.Position#isBefore is before} any other position in the selection ranges.
+	 * {@link module:engine/view/position~Position#isBefore is before} any other position in the selection ranges.
 	 * Returns `null` if no ranges are added to selection.
 	 *
-	 * @returns {engine.view.Position|null}
+	 * @returns {module:engine/view/position~Position|null}
 	 */
 	getFirstPosition() {
 		const firstRange = this.getFirstRange();
@@ -276,10 +277,10 @@ export default class Selection {
 
 	/**
 	 * Returns copy of the last position in the selection. Last position is the position that
-	 * {@link engine.view.Position#isAfter is after} any other position in the selection ranges.
+	 * {@link module:engine/view/position~Position#isAfter is after} any other position in the selection ranges.
 	 * Returns `null` if no ranges are added to selection.
 	 *
-	 * @returns {engine.view.Position|null}
+	 * @returns {module:engine/view/position~Position|null}
 	 */
 	getLastPosition() {
 		const lastRange = this.getLastRange();
@@ -291,7 +292,7 @@ export default class Selection {
 	 * Checks whether, this selection is equal to given selection. Selections are equal if they have same directions,
 	 * same number of ranges and all ranges from one selection equal to a range from other selection.
 	 *
-	 * @param {engine.view.Selection} otherSelection Selection to compare with.
+	 * @param {module:engine/view/selection~Selection} otherSelection Selection to compare with.
 	 * @returns {Boolean} `true` if selections are equal, `false` otherwise.
 	 */
 	isEqual( otherSelection ) {
@@ -334,7 +335,7 @@ export default class Selection {
 	/**
 	 * Removes all ranges that were added to the selection.
 	 *
-	 * @fires engine.view.Selection#change
+	 * @fires module:engine/view/selection~Selection#change
 	 */
 	removeAllRanges() {
 		if ( this._ranges.length ) {
@@ -345,12 +346,12 @@ export default class Selection {
 
 	/**
 	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
-	 * is treated like the last added range and is used to set {@link engine.view.Selection#anchor anchor} and
-	 * {@link engine.view.Selection#focus focus}. Accepts a flag describing in which way the selection is made
-	 * (see {@link engine.view.Selection#addRange addRange}).
+	 * is treated like the last added range and is used to set {@link module:engine/view/selection~Selection#anchor anchor} and
+	 * {@link module:engine/view/selection~Selection#focus focus}. Accepts a flag describing in which way the selection is made
+	 * (see {@link module:engine/view/selection~Selection#addRange addRange}).
 	 *
-	 * @fires engine.view.Selection#change
-	 * @param {Array.<engine.view.Range>} newRanges Array of ranges to set.
+	 * @fires module:engine/view/selection~Selection#change
+	 * @param {Array.<module:engine/view/range~Range>} newRanges Array of ranges to set.
 	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end
 	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
 	 */
@@ -372,7 +373,7 @@ export default class Selection {
 	/**
 	 * Sets this selection's ranges and direction to the ranges and direction of the given selection.
 	 *
-	 * @param {engine.view.Selection} otherSelection
+	 * @param {module:engine/view/selection~Selection} otherSelection
 	 */
 	setTo( otherSelection ) {
 		this._isFake = otherSelection._isFake;
@@ -384,12 +385,12 @@ export default class Selection {
 	/**
 	 * Sets collapsed selection in the specified location.
 	 *
-	 * The location can be specified in the same form as {@link engine.view.Position.createAt} parameters.
+	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
 	 *
-	 * @fires engine.view.Selection#change
-	 * @param {engine.view.Item|engine.view.Position} itemOrPosition
+	 * @fires module:engine/view/selection~Selection#change
+	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
-	 * first parameter is a {@link engine.view.Item view item}.
+	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
 	collapse( itemOrPosition, offset ) {
 		const pos = Position.createAt( itemOrPosition, offset );
@@ -399,11 +400,11 @@ export default class Selection {
 	}
 
 	/**
-	 * Collapses selection to the selection's {@link engine.view.Selection#getFirstPosition first position}.
+	 * Collapses selection to the selection's {@link module:engine/view/selection~Selection#getFirstPosition first position}.
 	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
 	 * inside selection.
 	 *
-	 * @fires engine.view.Selection#change
+	 * @fires module:engine/view/selection~Selection#change
 	 */
 	collapseToStart() {
 		const startPosition = this.getFirstPosition();
@@ -414,11 +415,11 @@ export default class Selection {
 	}
 
 	/**
-	 * Collapses selection to the selection's {@link engine.view.Selection#getLastPosition last position}.
+	 * Collapses selection to the selection's {@link module:engine/view/selection~Selection#getLastPosition last position}.
 	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
 	 * inside selection.
 	 *
-	 * @fires engine.view.Selection#change
+	 * @fires module:engine/view/selection~Selection#change
 	 */
 	collapseToEnd() {
 		const endPosition = this.getLastPosition();
@@ -429,14 +430,14 @@ export default class Selection {
 	}
 
 	/**
-	 * Sets {@link engine.view.Selection#focus} to the specified location.
+	 * Sets {@link module:engine/view/selection~Selection#focus} to the specified location.
 	 *
-	 * The location can be specified in the same form as {@link engine.view.Position.createAt} parameters.
+	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
 	 *
-	 * @fires engine.view.Selection#change:range
-	 * @param {engine.view.Item|engine.view.Position} itemOrPosition
+	 * @fires module:engine/view/selection~Selection#change:range
+	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
-	 * first parameter is a {@link engine.view.Item view item}.
+	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
 	setFocus( itemOrPosition, offset ) {
 		if ( this.anchor === null ) {
@@ -466,11 +467,11 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns the selected element. {@link engine.view.Element Element} is considered as selected if there is only
+	 * Returns the selected element. {@link module:engine/view/element~Element Element} is considered as selected if there is only
 	 * one range in the selection, and that range contains exactly one element.
 	 * Returns `null` if there is no selected element.
 	 *
-	 * @returns {engine.view.Element|null}
+	 * @returns {module:engine/view/element~Element|null}
 	 */
 	getSelectedElement() {
 		if ( this.rangeCount !== 1 ) {
@@ -488,8 +489,8 @@ export default class Selection {
 	 * Creates and returns an instance of `Selection` that is a clone of given selection, meaning that it has same
 	 * ranges and same direction as this selection.
 	 *
-	 * @params {engine.view.Selection} otherSelection Selection to be cloned.
-	 * @returns {engine.view.Selection} `Selection` instance that is a clone of given selection.
+	 * @params {module:engine/view/selection~Selection} otherSelection Selection to be cloned.
+	 * @returns {module:engine/view/selection~Selection} `Selection` instance that is a clone of given selection.
 	 */
 	static createFromSelection( otherSelection ) {
 		const selection = new Selection();
@@ -501,11 +502,11 @@ export default class Selection {
 	/**
 	 * Adds range to selection - creates copy of given range so it can be safely used and modified.
 	 *
-	 * Throws {@link utils.CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
 	 * with ranges already stored in selection instance.
 	 *
 	 * @private
-	 * @param {engine.view.Range} range
+	 * @param {module:engine/view/range~Range} range
 	 */
 	_pushRange( range ) {
 		for ( let storedRange of this._ranges ) {
@@ -514,8 +515,8 @@ export default class Selection {
 				 * Trying to add a range that intersects with another range from selection.
 				 *
 				 * @error selection-range-intersects
-				 * @param {engine.view.Range} addedRange Range that was added to the selection.
-				 * @param {engine.view.Range} intersectingRange Range from selection that intersects with `addedRange`.
+				 * @param {module:engine/view/range~Range} addedRange Range that was added to the selection.
+				 * @param {module:engine/view/range~Range} intersectingRange Range from selection that intersects with `addedRange`.
 				 */
 				throw new CKEditorError(
 					'view-selection-range-intersects: Trying to add a range that intersects with another range from selection.',
@@ -531,7 +532,7 @@ export default class Selection {
 mix( Selection, EmitterMixin );
 
 /**
- * Fired whenever selection ranges are changed through {@link engine.view.Selection Selection API}.
+ * Fired whenever selection ranges are changed through {@link module:engine/view/selection~Selection Selection API}.
  *
- * @event engine.view.Selection#change
+ * @event module:engine/view/selection~Selection#change
  */

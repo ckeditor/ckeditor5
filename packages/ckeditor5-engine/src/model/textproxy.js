@@ -10,41 +10,42 @@
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * `TextProxy` represents a part of {@link engine.model.Text text node}.
+ * `TextProxy` represents a part of {@link module:engine/model/text~Text text node}.
  *
- * Since {@link engine.model.Position positions} can be placed between characters of a text node,
- * {@link engine.model.Range ranges} may contain only parts of text nodes. When {@link engine.model.Range#getItems getting items}
+ * Since {@link module:engine/model/position~Position positions} can be placed between characters of a text node,
+ * {@link module:engine/model/range~Range ranges} may contain only parts of text nodes. When {@link module:engine/model/range~Range#getItems
+ * getting items}
  * contained in such range, we need to represent a part of that text node, since returning the whole text node would be incorrect.
  * `TextProxy` solves this issue.
  *
- * `TextProxy` has an API similar to {@link engine.model.Text Text} and allows to do most of the common tasks performed
+ * `TextProxy` has an API similar to {@link module:engine/model/text~Text Text} and allows to do most of the common tasks performed
  * on model nodes.
  *
  * **Note:** Some `TextProxy` instances may represent whole text node, not just a part of it.
- * See {@link engine.model.TextProxy#isPartial}.
+ * See {@link module:engine/model/textproxy~TextProxy#isPartial}.
  *
- * **Note:** `TextProxy` is not an instance of {@link engine.model.Node node}. Keep this in mind when using it as a
+ * **Note:** `TextProxy` is not an instance of {@link module:engine/model/node~Node node}. Keep this in mind when using it as a
  * parameter of methods.
  *
  * **Note:** `TextProxy` is a readonly interface. If you want to perform changes on model data represented by a `TextProxy`
- * use {@link engine.model.writer model writer API}.
+ * use {@link module:engine/model/writer~writer model writer API}.
  *
  * **Note:** `TextProxy` instances are created on the fly, basing on the current state of model. Because of this, it is
  * highly unrecommended to store references to `TextProxy` instances. `TextProxy` instances are not refreshed when
- * model changes, so they might get invalidated. Instead, consider creating {@link engine.model.LivePosition live position}.
+ * model changes, so they might get invalidated. Instead, consider creating {@link module:engine/model/liveposition~LivePosition live
+ * position}.
  *
- * `TextProxy` instances are created by {@link engine.model.TreeWalker model tree walker}. You should not need to create
+ * `TextProxy` instances are created by {@link module:engine/model/treewalker~TreeWalker model tree walker}. You should not need to create
  * an instance of this class by your own.
- *
- * @memberOf engine.model
  */
 export default class TextProxy {
 	/**
 	 * Creates a text proxy.
 	 *
 	 * @protected
-	 * @param {engine.model.Text} textNode Text node which part is represented by this text proxy.
-	 * @param {Number} offsetInText Offset in {@link engine.model.TextProxy#textNode text node} from which the text proxy starts.
+	 * @param {module:engine/model/text~Text} textNode Text node which part is represented by this text proxy.
+	 * @param {Number} offsetInText Offset in {@link module:engine/model/textproxy~TextProxy#textNode text node} from which the text proxy
+	 * starts.
 	 * @param {Number} length Text proxy length, that is how many text node's characters, starting from `offsetInText` it represents.
 	 * @constructor
 	 */
@@ -53,7 +54,7 @@ export default class TextProxy {
 		 * Text node which part is represented by this text proxy.
 		 *
 		 * @readonly
-		 * @member {engine.model.Text} engine.model.TextProxy#textNode
+		 * @member {module:engine/model/text~Text}
 		 */
 		this.textNode = textNode;
 
@@ -78,15 +79,15 @@ export default class TextProxy {
 		 * Text data represented by this text proxy.
 		 *
 		 * @readonly
-		 * @member {String} engine.model.TextProxy#data
+		 * @member {String}
 		 */
 		this.data = textNode.data.substring( offsetInText, offsetInText + length );
 
 		/**
-		 * Offset in {@link engine.model.TextProxy#textNode text node} from which the text proxy starts.
+		 * Offset in {@link module:engine/model/textproxy~TextProxy#textNode text node} from which the text proxy starts.
 		 *
 		 * @readonly
-		 * @member {Number} engine.model.TextProxy#offsetInText
+		 * @member {Number}
 		 */
 		this.offsetInText = offsetInText;
 	}
@@ -94,7 +95,7 @@ export default class TextProxy {
 	/**
 	 * Offset at which this text proxy starts in it's parent.
 	 *
-	 * @see engine.model.Node#startOffset
+	 * @see module:engine/model/node~Node#startOffset
 	 * @readonly
 	 * @type {Number}
 	 */
@@ -105,7 +106,7 @@ export default class TextProxy {
 	/**
 	 * Offset size of this text proxy. Equal to the number of characters represented by the text proxy.
 	 *
-	 * @see engine.model.Node#offsetSize
+	 * @see module:engine/model/node~Node#offsetSize
 	 * @readonly
 	 * @type {Number}
 	 */
@@ -116,7 +117,7 @@ export default class TextProxy {
 	/**
 	 * Offset at which this text proxy ends in it's parent.
 	 *
-	 * @see engine.model.Node#endOffset
+	 * @see module:engine/model/node~Node#endOffset
 	 * @readonly
 	 * @type {Number}
 	 */
@@ -125,11 +126,11 @@ export default class TextProxy {
 	}
 
 	/**
-	 * Flag indicating whether `TextProxy` instance covers only part of the original {@link engine.model.Text text node}
+	 * Flag indicating whether `TextProxy` instance covers only part of the original {@link module:engine/model/text~Text text node}
 	 * (`true`) or the whole text node (`false`).
 	 *
-	 * This is `false` when text proxy starts at the very beginning of {@link engine.model.TextProxy#textNode textNode}
-	 * ({@link engine.model.TextProxy#offsetInText offsetInText} equals `0`) and text proxy sizes is equal to
+	 * This is `false` when text proxy starts at the very beginning of {@link module:engine/model/textproxy~TextProxy#textNode textNode}
+	 * ({@link module:engine/model/textproxy~TextProxy#offsetInText offsetInText} equals `0`) and text proxy sizes is equal to
 	 * text node size.
 	 *
 	 * @readonly
@@ -143,7 +144,7 @@ export default class TextProxy {
 	 * Parent of this text proxy, which is same as parent of text node represented by this text proxy.
 	 *
 	 * @readonly
-	 * @type {engine.model.Element|engine.model.DocumentFragment|null}
+	 * @type {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment|null}
 	 */
 	get parent() {
 		return this.textNode.parent;
@@ -153,18 +154,18 @@ export default class TextProxy {
 	 * Root of this text proxy, which is same as root of text node represented by this text proxy.
 	 *
 	 * @readonly
-	 * @type {engine.model.Node|engine.model.DocumentFragment}
+	 * @type {module:engine/model/node~Node|module:engine/model/documentfragment~DocumentFragment}
 	 */
 	get root() {
 		return this.textNode.root;
 	}
 
 	/**
-	 * {@link engine.model.Document Document} that owns text node represented by this text proxy or `null` if the text node
-	 * has no parent or is inside a {@link engine.model.DocumentFragment DocumentFragment}.
+	 * {@link module:engine/model/document~Document Document} that owns text node represented by this text proxy or `null` if the text node
+	 * has no parent or is inside a {@link module:engine/model/documentfragment~DocumentFragment DocumentFragment}.
 	 *
 	 * @readonly
-	 * @type {engine.model.Document|null}
+	 * @type {module:engine/model/document~Document|null}
 	 */
 	get document() {
 		return this.textNode.document;
@@ -173,7 +174,7 @@ export default class TextProxy {
 	/**
 	 * Gets path to this text proxy.
 	 *
-	 * @see engine.model.Node#getPath
+	 * @see module:engine/model/node~Node#getPath
 	 * @returns {Array.<Number>}
 	 */
 	getPath() {

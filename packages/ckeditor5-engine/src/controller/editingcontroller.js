@@ -22,8 +22,8 @@ import {
 import EmitterMixin from '../../utils/emittermixin.js';
 
 /**
- * Controller for the editing pipeline. The editing pipeline controls {@link engine.controller.EditingController#model model} rendering,
- * including selection handling. It also creates {@link engine.controller.EditingController#view view document} which build a
+ * Controller for the editing pipeline. The editing pipeline controls {@link ~EditingController#model model} rendering,
+ * including selection handling. It also creates {@link ~EditingController#view view document} which build a
  * browser-independent virtualization over the DOM elements. Editing controller also attach default converters.
  */
 export default class EditingController {
@@ -37,7 +37,7 @@ export default class EditingController {
 		 * Document model.
 		 *
 		 * @readonly
-		 * @member {engine.model.document}
+		 * @member {module:engine/model/document~Document}
 		 */
 		this.model = model;
 
@@ -45,7 +45,7 @@ export default class EditingController {
 		 * View document.
 		 *
 		 * @readonly
-		 * @member {engine.view.document}
+		 * @member {module:engine/view/document~Document}
 		 */
 		this.view = new ViewDocument();
 
@@ -53,7 +53,7 @@ export default class EditingController {
 		 * Mapper which describes model-view binding.
 		 *
 		 * @readonly
-		 * @member {engine.conversion.Mapper}
+		 * @member {module:engine/conversion/mapper~Mapper}
 		 */
 		this.mapper = new Mapper();
 
@@ -65,12 +65,12 @@ export default class EditingController {
 		 *
 		 *		editing.modelToView( 'insert:$element', customInsertConverter );
 		 *
-		 * Or use {@link engine.conversion.ModelConverterBuilder}:
+		 * Or use {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder}:
 		 *
 		 *		buildModelConverter().for( editing.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
 		 *
 		 * @readonly
-		 * @member {engine.conversion.ModelConversionDispatcher} #modelToView
+		 * @member {module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher} #modelToView
 		 */
 		this.modelToView = new ModelConversionDispatcher( {
 			mapper: this.mapper,
@@ -114,7 +114,8 @@ export default class EditingController {
 	}
 
 	/**
-	 * {@link engine.view.Document#createRoot Creates} a view root and {@link engine.conversion.Mapper#bindElements binds}
+	 * {@link module:engine/view/document~Document#createRoot Creates} a view root
+	 * and {@link module:engine/conversion/mapper~Mapper#bindElements binds}
 	 * the model root with view root and and view root with DOM element:
 	 *
 	 *		editing.createRoot( document.querySelector( div#editor ) );
@@ -128,7 +129,7 @@ export default class EditingController {
 	 * @param {Element|String} domRoot DOM root element or the name of view root element if the DOM element will be
 	 * attached later.
 	 * @param {String} [name='main'] Root name.
-	 * @returns {engine.view.ContainerElement} View root element.
+	 * @returns {module:engine/view/containerelement~ContainerElement} View root element.
 	 */
 	createRoot( domRoot, name = 'main' ) {
 		const viewRoot = this.view.createRoot( domRoot, name );

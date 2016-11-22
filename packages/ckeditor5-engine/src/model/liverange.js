@@ -12,19 +12,18 @@ import EmitterMixin from '../../utils/emittermixin.js';
 import mix from '../../utils/mix.js';
 
 /**
- * `LiveRange` is a type of {@link engine.model.Range Range} that updates itself as {@link engine.model.Document document}
+ * `LiveRange` is a type of {@link module:engine/model/range~Range Range}
+ * that updates itself as {@link module:engine/model/document~Document document}
  * is changed through operations. It may be used as a bookmark.
  *
  * **Note:** Be very careful when dealing with `LiveRange`. Each `LiveRange` instance bind events that might
- * have to be unbound. Use {@link engine.model.LiveRange#detach detach} whenever you don't need `LiveRange` anymore.
- *
- * @memberOf engine.model
+ * have to be unbound. Use {@link module:engine/model/liverange~LiveRange#detach detach} whenever you don't need `LiveRange` anymore.
  */
 export default class LiveRange extends Range {
 	/**
 	 * Creates a live range.
 	 *
-	 * @see engine.model.Range
+	 * @see module:engine/model/range~Range
 	 */
 	constructor( start, end ) {
 		super( start, end );
@@ -42,56 +41,57 @@ export default class LiveRange extends Range {
 	}
 
 	/**
-	 * @see engine.model.Range.createIn
+	 * @see module:engine/model/range~Range.createIn
 	 * @static
-	 * @method engine.model.LiveRange.createIn
-	 * @param {engine.model.Element} element
-	 * @returns {engine.model.LiveRange}
+	 * @method module:engine/model/liverange~LiveRange.createIn
+	 * @param {module:engine/model/element~Element} element
+	 * @returns {module:engine/model/liverange~LiveRange}
 	 */
 
 	/**
-	 * @see engine.model.Range.createFromPositionAndShift
+	 * @see module:engine/model/range~Range.createFromPositionAndShift
 	 * @static
-	 * @method engine.model.LiveRange.createFromPositionAndShift
-	 * @param {engine.model.Position} position
+	 * @method module:engine/model/liverange~LiveRange.createFromPositionAndShift
+	 * @param {module:engine/model/position~Position} position
 	 * @param {Number} shift
-	 * @returns {engine.model.LiveRange}
+	 * @returns {module:engine/model/liverange~LiveRange}
 	 */
 
 	/**
-	 * @see engine.model.Range.createFromParentsAndOffsets
+	 * @see module:engine/model/range~Range.createFromParentsAndOffsets
 	 * @static
-	 * @method engine.model.LiveRange.createFromParentsAndOffsets
-	 * @param {engine.model.Element} startElement
+	 * @method module:engine/model/liverange~LiveRange.createFromParentsAndOffsets
+	 * @param {module:engine/model/element~Element} startElement
 	 * @param {Number} startOffset
-	 * @param {engine.model.Element} endElement
+	 * @param {module:engine/model/element~Element} endElement
 	 * @param {Number} endOffset
-	 * @returns {engine.model.LiveRange}
+	 * @returns {module:engine/model/liverange~LiveRange}
 	 */
 
 	/**
-	 * @see engine.model.Range.createFromRange
+	 * @see module:engine/model/range~Range.createFromRange
 	 * @static
-	 * @method engine.model.LiveRange.createFromRange
-	 * @param {engine.model.Range} range
-	 * @returns {engine.model.LiveRange}
+	 * @method module:engine/model/liverange~LiveRange.createFromRange
+	 * @param {module:engine/model/range~Range} range
+	 * @returns {module:engine/model/liverange~LiveRange}
 	 */
 
 	/**
-	 * Fired when `LiveRange` instance is changed due to changes on {@link engine.model.Document}.
+	 * Fired when `LiveRange` instance is changed due to changes on {@link module:engine/model/document~Document}.
 	 *
-	 * @event engine.model.LiveRange#change
-	 * @param {engine.model.Range} oldRange Range with start and end position equal to start and end position of this live range
-	 * before it got changed.
+	 * @event change
+	 * @param {module:engine/model/range~Range} oldRange
+	 * Range with start and end position equal to start and end position of this live range before it got changed.
 	 */
 }
 
 /**
- * Binds this `LiveRange` to the {@link engine.model.Document document} that owns this range's {@link engine.model.Range#root root}.
+ * Binds this `LiveRange` to the {@link module:engine/model/document~Document document}
+ * that owns this range's {@link module:engine/model/range~Range#root root}.
  *
  * @ignore
  * @private
- * @method engine.model.LiveRange#bindWithDocument
+ * @method module:engine/model/liverange~LiveRange#bindWithDocument
  */
 function bindWithDocument() {
 	/*jshint validthis: true */
@@ -117,8 +117,8 @@ function bindWithDocument() {
  * @private
  * @method transform
  * @param {String} type Type of changes applied to the Tree Model.
- * @param {engine.model.Range} range Range containing the result of applied change.
- * @param {engine.model.Position} [position] Additional position parameter provided by some change events.
+ * @param {module:engine/model/range~Range} range Range containing the result of applied change.
+ * @param {module:engine/model/position~Position} [position] Additional position parameter provided by some change events.
  */
 function transform( type, range, position ) {
 	/* jshint validthis: true */

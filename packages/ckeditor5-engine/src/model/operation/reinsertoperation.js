@@ -3,28 +3,31 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/operation/reinsertoperation
+ */
+
 import MoveOperation from './moveoperation.js';
 import RemoveOperation from './removeoperation.js';
 
 /**
  * Operation to reinsert previously removed nodes back to the non-graveyard root. This operation acts like
- * {@link engine.model.operation.MoveOperation} but it returns {@link engine.model.operation.RemoveOperation} when reversed
+ * {@link module:engine/model/operation/moveoperation~MoveOperation} but it returns
+ * {@link module:engine/model/operation/removeoperation~RemoveOperation} when reversed
  * and fires different change event.
- *
- * @memberOf engine.model.operation
  */
 export default class ReinsertOperation extends MoveOperation {
 	/**
 	 * Position where nodes will be re-inserted.
 	 *
-	 * @type {engine.model.Position}
+	 * @type {module:engine/model/position~Position}
 	 */
 	get position() {
 		return this.targetPosition;
 	}
 
 	/**
-	 * @param {engine.model.Position} pos
+	 * @param {module:engine/model/position~Position} pos
 	 */
 	set position( pos ) {
 		this.targetPosition = pos;
@@ -39,7 +42,7 @@ export default class ReinsertOperation extends MoveOperation {
 
 	/**
 	 * @inheritDoc
-	 * @returns {engine.model.operation.RemoveOperation}
+	 * @returns {module:engine/model/operation/removeoperation~RemoveOperation}
 	 */
 	getReversed() {
 		return new RemoveOperation( this.targetPosition, this.howMany, this.baseVersion + 1 );

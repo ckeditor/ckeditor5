@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/operation/removeoperation
+ */
+
 import MoveOperation from './moveoperation.js';
 import Position from '../position.js';
 import Element from '../element.js';
@@ -10,17 +14,16 @@ import ReinsertOperation from './reinsertoperation.js';
 
 /**
  * Operation to remove a range of nodes.
- *
- * @memberOf engine.model.operation
  */
 export default class RemoveOperation extends MoveOperation {
 	/**
 	 * Creates a remove operation.
 	 *
-	 * @param {engine.model.Position} position Position before the first {@link engine.model.Item model item} to remove.
-	 * @param {Number} howMany Offset size of removed range. {@link engine.model.Item Model items} will be removed starting
+	 * @param {module:engine/model/position~Position} position Position before the first {@link module:engine/model/item~Item model item} to
+	 * remove.
+	 * @param {Number} howMany Offset size of removed range. {@link module:engine/model/item~Item Model items} will be removed starting
 	 * from `sourcePosition`, up to a `sourcePosition` with offset shifted by `howMany`.
-	 * @param {Number} baseVersion {@link engine.model.Document#version} on which operation can be applied.
+	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which operation can be applied.
 	 */
 	constructor( position, howMany, baseVersion ) {
 		const graveyard = position.root.document.graveyard;
@@ -47,7 +50,7 @@ export default class RemoveOperation extends MoveOperation {
 	}
 
 	/**
-	 * Sets {@link engine.model.operation.RemoveOperation#_holderElementOffset}.
+	 * Sets {@link module:engine/model/operation/removeoperation~RemoveOperation#_holderElementOffset}.
 	 *
 	 * @protected
 	 * @param {Number} offset
@@ -91,7 +94,7 @@ export default class RemoveOperation extends MoveOperation {
 
 	/**
 	 * @inheritDoc
-	 * @returns {engine.model.operation.ReinsertOperation}
+	 * @returns {module:engine/model/opertation/reinsertoperation~ReinsertOperation}
 	 */
 	getReversed() {
 		return new ReinsertOperation( this.targetPosition, this.howMany, this.sourcePosition, this.baseVersion + 1 );
@@ -99,7 +102,7 @@ export default class RemoveOperation extends MoveOperation {
 
 	/**
 	 * @inheritDoc
-	 * @returns {engine.model.operation.RemoveOperation}
+	 * @returns {module:engine/model/operation/removeoperation~RemoveOperation}
 	 */
 	clone() {
 		let removeOperation = new RemoveOperation( this.sourcePosition, this.howMany, this.baseVersion );
@@ -135,8 +138,8 @@ export default class RemoveOperation extends MoveOperation {
 	 * Creates `RemoveOperation` object from deserilized object, i.e. from parsed JSON string.
 	 *
 	 * @param {Object} json Deserialized JSON object.
-	 * @param {engine.model.Document} document Document on which this operation will be applied.
-	 * @returns {engine.model.operation.RemoveOperation}
+	 * @param {module:engine/model/document~Document} document Document on which this operation will be applied.
+	 * @returns {module:engine/model/operation/removeoperation~RemoveOperation}
 	 */
 	static fromJSON( json, document ) {
 		let sourcePosition = Position.fromJSON( json.sourcePosition, document );

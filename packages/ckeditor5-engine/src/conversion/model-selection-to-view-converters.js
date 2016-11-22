@@ -12,21 +12,22 @@ import ViewRange from '../view/range.js';
 import viewWriter from '../view/writer.js';
 
 /**
- * Contains {@link engine.model.Selection model selection} to {@link engine.view.Selection view selection} converters for
- * {@link engine.conversion.ModelConversionDispatcher}.
+ * Contains {@link module:engine/model/selection~Selection model selection} to
+ * {@link module:engine/view/selection~Selection view selection} converters for
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}.
  *
- * @namespace engine.conversion.modelSelectionToView
+ * @namespace module:engine/conversion/model-selection-to-view-converters~modelSelectionToView
  */
 
 /**
- * Function factory, creates a converter that converts non-collapsed {@link engine.model.Selection model selection} to
- * {@link engine.view.Selection view selection}. The converter consumes appropriate value from `consumable` object
+ * Function factory, creates a converter that converts non-collapsed {@link module:engine/model/selection~Selection model selection} to
+ * {@link module:engine/view/selection~Selection view selection}. The converter consumes appropriate value from `consumable` object
  * and maps model positions from selection to view positions.
  *
  *		modelDispatcher.on( 'selection', convertRangeSelection() );
  *
- * @external engine.conversion.modelSelectionToView
- * @function engine.conversion.modelSelectionToView.convertRangeSelection
+ * @external module:engine/conversion/model-selection-to-view-converters~modelSelectionToView
+ * @function module:engine/conversion/model-selection-to-view-converters~modelSelectionToView.convertRangeSelection
  * @returns {Function} Selection converter.
  */
 export function convertRangeSelection() {
@@ -51,9 +52,9 @@ export function convertRangeSelection() {
 }
 
 /**
- * Function factory, creates a converter that converts collapsed {@link engine.model.Selection model selection} to
- * {@link engine.view.Selection view selection}. The converter consumes appropriate value from `consumable` object,
- * maps model selection position to view position and breaks {@link engine.view.AttributeElement attribute elements}
+ * Function factory, creates a converter that converts collapsed {@link module:engine/model/selection~Selection model selection} to
+ * {@link module:engine/view/selection~Selection view selection}. The converter consumes appropriate value from `consumable` object,
+ * maps model selection position to view position and breaks {@link module:engine/view/attributeelement~AttributeElement attribute elements}
  * at the selection position.
  *
  *		modelDispatcher.on( 'selection', convertCollapsedSelection() );
@@ -64,14 +65,16 @@ export function convertRangeSelection() {
  *		-> <p><strong>f</strong>^<strong>oo</strong>bar</p>
  *
  * By breaking attribute elements like `<strong>`, selection is in correct element. See also complementary
- * {@link engine.conversion.modelSelectionToView.convertSelectionAttribute attribute converter} for selection attributes,
+ * {@link module:engine/conversion/model-selection-to-view-converters~modelSelectionToView.convertSelectionAttribute attribute converter}
+ * for selection attributes,
  * which wraps collapsed selection into view elements. Those converters together ensure, that selection ends up in
  * appropriate attribute elements.
  *
- * See also {@link engine.conversion.modelSelectionToView.clearAttributes} which does a clean-up by merging attributes.
+ * See also {@link module:engine/conversion/model-selection-to-view-converters~modelSelectionToView.clearAttributes} which does a clean-up
+ * by merging attributes.
  *
- * @external engine.conversion.modelSelectionToView
- * @function engine.conversion.modelSelectionToView.convertCollapsedSelection
+ * @external module:engine/conversion/model-selection-to-view-converters~modelSelectionToView
+ * @function module:engine/conversion/model-selection-to-view-converters~modelSelectionToView.convertCollapsedSelection
  * @returns {Function} Selection converter.
  */
 export function convertCollapsedSelection() {
@@ -96,15 +99,16 @@ export function convertCollapsedSelection() {
 }
 
 /**
- * Function factory, creates a converter that converts {@link engine.model.Selection model selection} attributes to
- * {@link engine.view.AttributeElement view attribute elements}. The converter works only for collapsed selection.
+ * Function factory, creates a converter that converts {@link module:engine/model/selection~Selection model selection} attributes to
+ * {@link module:engine/view/attributeelement~AttributeElement view attribute elements}. The converter works only for collapsed selection.
  * The converter consumes appropriate value from `consumable` object, maps model selection position to view position and
  * wraps that position into a view attribute element.
  *
- * The wrapping node depends on passed parameter. If {@link engine.view.Element} was passed, it will be cloned and
+ * The wrapping node depends on passed parameter. If {@link module:engine/view/element~Element} was passed, it will be cloned and
  * the copy will become the wrapping element. If `Function` is provided, it is passed all the parameters of the
- * {@link engine.conversion.ModelConversionDispatcher#event:selectionAttribute selectionAttribute event}. It's expected that
- * the function returns a {@link engine.view.AttributeElement}. The result of the function will be the wrapping element.
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:selectionAttribute selectionAttribute event}.
+ * It's expected that the function returns a {@link module:engine/view/attributeelement~AttributeElement}.
+ * The result of the function will be the wrapping element.
  *
  *		modelDispatcher.on( 'selectionAttribute:italic', convertSelectionAttribute( new ViewAttributeElement( 'em' ) ) );
  *
@@ -117,7 +121,8 @@ export function convertCollapsedSelection() {
  *		}
  *		modelDispatcher.on( 'selectionAttribute:style', convertSelectionAttribute( styleCreator ) );
  *
- * **Note:** You can use the same `elementCreator` function for this converter factory and {@link engine.conversion.modelToView.wrap}
+ * **Note:** You can use the same `elementCreator` function for this converter factory
+ * and {@link module:engine/conversion/modeltoview~modelToView.wrap}
  * model to view converter, as long as the `elementCreator` function uses only the first parameter (attribute value).
  *
  *		modelDispatcher.on( 'selection', convertCollapsedSelection() );
@@ -142,10 +147,10 @@ export function convertCollapsedSelection() {
  * but then it got wrapped-back by `convertSelectionAttribute()` converter. In second example, notice how `<strong>` element
  * is broken to prevent putting selection in it, since selection has no `bold` attribute.
  *
- * @external engine.conversion.modelSelectionToView
- * @function engine.conversion.modelSelectionToView.convertCollapsedSelection
- * @param {engine.view.AttributeElement|Function} elementCreator View element, or function returning a view element, which will
- * be used for wrapping.
+ * @external module:engine/conversion/model-selection-to-view-converters~modelSelectionToView
+ * @function module:engine/conversion/model-selection-to-view-converters~modelSelectionToView.convertCollapsedSelection
+ * @param {module:engine/view/attributeelement~AttributeElement|Function} elementCreator View element,
+ * or function returning a view element, which will be used for wrapping.
  * @returns {Function} Selection converter.
  */
 export function convertSelectionAttribute( elementCreator ) {
@@ -175,8 +180,8 @@ export function convertSelectionAttribute( elementCreator ) {
 
 /**
  * Function factory, creates a converter that clears artifacts after the previous
- * {@link engine.model.Selection model selection} conversion. It removes all empty
- * {@link engine.view.AttributeElement view attribute elements} and merge sibling attributes at all start and end
+ * {@link module:engine/model/selection~Selection model selection} conversion. It removes all empty
+ * {@link module:engine/view/attributeelement~AttributeElement view attribute elements} and merge sibling attributes at all start and end
  * positions of all ranges.
  *
  *		   <p><strong>^</strong></p>
@@ -192,11 +197,11 @@ export function convertSelectionAttribute( elementCreator ) {
  *
  *		modelDispatcher.on( 'selection', clearAttributes() );
  *
- * See {@link engine.conversion.modelSelectionToView.convertCollapsedSelection} which do the opposite by breaking
- * attributes in the selection position.
+ * See {@link module:engine/conversion/model-selection-to-view-converters~modelSelectionToView.convertCollapsedSelection}
+ * which do the opposite by breaking attributes in the selection position.
  *
- * @external engine.conversion.modelSelectionToView
- * @function engine.conversion.modelSelectionToView.clearAttributes
+ * @external module:engine/conversion/model-selection-to-view-converters~modelSelectionToView
+ * @function module:engine/conversion/model-selection-to-view-converters~modelSelectionToView.clearAttributes
  * @returns {Function} Selection converter.
  */
 export function clearAttributes() {
@@ -216,7 +221,7 @@ export function clearAttributes() {
 
 /**
  * Function factory, creates a converter that clears fake selection marking after the previous
- * {@link engine.model.Selection model selection} conversion.
+ * {@link module:engine/model/selection~Selection model selection} conversion.
  */
 export function clearFakeSelection() {
 	return ( evt, data, consumable, conversionApi ) => conversionApi.viewSelection.setFake( false );

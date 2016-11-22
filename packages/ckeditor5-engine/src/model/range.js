@@ -13,24 +13,22 @@ import compareArrays from '../../utils/comparearrays.js';
 
 /**
  * Range class. Range is iterable.
- *
- * @memberOf engine.model
  */
 export default class Range {
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
 	 *
-	 * **Note:** Constructor creates it's own {@link engine.model.Position Position} instances basing on passed values.
+	 * **Note:** Constructor creates it's own {@link module:engine/model/position~Position Position} instances basing on passed values.
 	 *
-	 * @param {engine.model.Position} start Start position.
-	 * @param {engine.model.Position} [end] End position. If not set, range will be collapsed at `start` position.
+	 * @param {module:engine/model/position~Position} start Start position.
+	 * @param {module:engine/model/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
 	 */
 	constructor( start, end = null ) {
 		/**
 		 * Start position.
 		 *
 		 * @readonly
-		 * @member {engine.model.Position} engine.model.Range#start
+		 * @member {module:engine/model/position~Position}
 		 */
 		this.start = Position.createFromPosition( start );
 
@@ -38,29 +36,30 @@ export default class Range {
 		 * End position.
 		 *
 		 * @readonly
-		 * @member {engine.model.Position} engine.model.Range#end
+		 * @member {module:engine/model/position~Position}
 		 */
 		this.end = end ? Position.createFromPosition( end ) : Position.createFromPosition( start );
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link engine.model.Item items} that are in this range and returns
-	 * them together with additional information like length or {@link engine.model.Position positions},
-	 * grouped as {@link engine.model.TreeWalkerValue}. It iterates over all {@link engine.model.TextProxy text contents}
-	 * that are inside the range and all the {@link engine.model.Element}s that are entered into when iterating over this range.
+	 * Returns an iterator that iterates over all {@link module:engine/model/item~Item items} that are in this range and returns
+	 * them together with additional information like length or {@link module:engine/model/position~Position positions},
+	 * grouped as {@link module:engine/model/treewalker~TreeWalkerValue}.
+	 * It iterates over all {@link module:engine/model/textproxy~TextProxy text contents} that are inside the range
+	 * and all the {@link module:engine/model/element~Element}s that are entered into when iterating over this range.
 	 *
-	 * This iterator uses {@link engine.model.TreeWalker} with `boundaries` set to this range and `ignoreElementEnd` option
-	 * set to `true`.
+	 * This iterator uses {@link module:engine/model/treewalker~TreeWalker} with `boundaries` set to this range
+	 * and `ignoreElementEnd` option set to `true`.
 	 *
-	 * @returns {Iterable.<engine.model.TreeWalkerValue>}
+	 * @returns {Iterable.<module:engine/model/treewalker~TreeWalkerValue>}
 	 */
 	*[ Symbol.iterator ]() {
 		yield* new TreeWalker( { boundaries: this, ignoreElementEnd: true } );
 	}
 
 	/**
-	 * Returns whether the range is collapsed, that is if {@link engine.model.Range#start start} and
-	 * {@link engine.model.Range#end end} positions are equal.
+	 * Returns whether the range is collapsed, that is if {@link #start start} and
+	 * {@link #end end} positions are equal.
 	 *
 	 * @type {Boolean}
 	 */
@@ -69,8 +68,8 @@ export default class Range {
 	}
 
 	/**
-	 * Returns whether this range is flat, that is if {@link engine.model.Range#start start} position and
-	 * {@link engine.model.Range#end end} position are in the same {@link engine.model.Position#parent parent}.
+	 * Returns whether this range is flat, that is if {@link #start start} position and
+	 * {@link #end end} position are in the same {@link module:engine/model/position~Position#parent parent}.
 	 *
 	 * @type {Boolean}
 	 */
@@ -79,10 +78,10 @@ export default class Range {
 	}
 
 	/**
-	 * Returns whether this range has no nodes in it, that is if {@link engine.model.Range#start start} position and
-	 * {@link engine.model.Range#end end} position are {@link engine.model.Position#isTouching touching}.
+	 * Returns whether this range has no nodes in it, that is if {@link #start start} position and
+	 * {@link #end end} position are {@link module:engine/model/position~Position#isTouching touching}.
 	 *
-	 * **Note:** A range may be empty, but not {@link engine.model.Range#isCollapsed collapsed}.
+	 * **Note:** A range may be empty, but not {@link #isCollapsed collapsed}.
 	 *
 	 * @type {Boolean}
 	 */
@@ -93,37 +92,37 @@ export default class Range {
 	/**
 	 * Range root element.
 	 *
-	 * @type {engine.model.Element|engine.model.DocumentFragment}
+	 * @type {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
 	 */
 	get root() {
 		return this.start.root;
 	}
 
 	/**
-	 * Checks whether this range contains given {@link engine.model.Position position}.
+	 * Checks whether this range contains given {@link module:engine/model/position~Position position}.
 	 *
-	 * @param {engine.model.Position} position Position to check.
-	 * @returns {Boolean} `true` if given {@link engine.model.Position position} is contained in this range, `false` otherwise.
+	 * @param {module:engine/model/position~Position} position Position to check.
+	 * @returns {Boolean} `true` if given {@link module:engine/model/position~Position position} is contained in this range, `false` otherwise.
 	 */
 	containsPosition( position ) {
 		return position.isAfter( this.start ) && position.isBefore( this.end );
 	}
 
 	/**
-	 * Checks whether this range contains given {@link engine.model.Range range}.
+	 * Checks whether this range contains given {@link ~Range range}.
 	 *
-	 * @param {engine.model.Range} otherRange Range to check.
-	 * @returns {Boolean} `true` if given {@link engine.model.Range range} boundaries are contained by this range, `false` otherwise.
+	 * @param {module:engine/model/range~Range} otherRange Range to check.
+	 * @returns {Boolean} `true` if given {@link ~Range range} boundaries are contained by this range, `false` otherwise.
 	 */
 	containsRange( otherRange ) {
 		return this.containsPosition( otherRange.start ) && this.containsPosition( otherRange.end );
 	}
 
 	/**
-	 * Two ranges are equal if their {@link engine.model.Range#start start} and
-	 * {@link engine.model.Range#end end} positions are equal.
+	 * Two ranges are equal if their {@link #start start} and
+	 * {@link #end end} positions are equal.
 	 *
-	 * @param {engine.model.Range} otherRange Range to compare with.
+	 * @param {module:engine/model/range~Range} otherRange Range to compare with.
 	 * @returns {Boolean} `true` if ranges are equal, `false` otherwise.
 	 */
 	isEqual( otherRange ) {
@@ -133,7 +132,7 @@ export default class Range {
 	/**
 	 * Checks and returns whether this range intersects with given range.
 	 *
-	 * @param {engine.model.Range} otherRange Range to compare with.
+	 * @param {module:engine/model/range~Range} otherRange Range to compare with.
 	 * @returns {Boolean} `true` if ranges intersect, `false` otherwise.
 	 */
 	isIntersecting( otherRange ) {
@@ -141,8 +140,8 @@ export default class Range {
 	}
 
 	/**
-	 * Computes which part(s) of this {@link engine.model.Range range} is not a part of given {@link engine.model.Range range}.
-	 * Returned array contains zero, one or two {@link engine.model.Range ranges}.
+	 * Computes which part(s) of this {@link ~Range range} is not a part of given {@link ~Range range}.
+	 * Returned array contains zero, one or two {@link ~Range ranges}.
 	 *
 	 * Examples:
 	 *
@@ -159,8 +158,8 @@ export default class Range {
 	 *		transformed = range.getDifference( otherRange );
 	 *		// transformed array has two ranges: from [ 2, 7 ] to [ 3 ] and from [ 4 ] to [ 4, 0, 1 ]
 	 *
-	 * @param {engine.model.Range} otherRange Range to differentiate against.
-	 * @returns {Array.<engine.model.Range>} The difference between ranges.
+	 * @param {module:engine/model/range~Range} otherRange Range to differentiate against.
+	 * @returns {Array.<module:engine/model/range~Range>} The difference between ranges.
 	 */
 	getDifference( otherRange ) {
 		const ranges = [];
@@ -188,7 +187,7 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an intersection of this {@link engine.model.Range range} and given {@link engine.model.Range range}.
+	 * Returns an intersection of this {@link ~Range range} and given {@link ~Range range}.
 	 * Intersection is a common part of both of those ranges. If ranges has no common part, returns `null`.
 	 *
 	 * Examples:
@@ -200,8 +199,8 @@ export default class Range {
 	 *		otherRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 5 ] ) );
 	 *		transformed = range.getIntersection( otherRange ); // range from [ 3 ] to [ 4, 0, 1 ]
 	 *
-	 * @param {engine.model.Range} otherRange Range to check for intersection.
-	 * @returns {engine.model.Range|null} A common part of given ranges or `null` if ranges have no common part.
+	 * @param {module:engine/model/range~Range} otherRange Range to check for intersection.
+	 * @returns {module:engine/model/range~Range|null} A common part of given ranges or `null` if ranges have no common part.
 	 */
 	getIntersection( otherRange ) {
 		if ( this.isIntersecting( otherRange ) ) {
@@ -230,7 +229,7 @@ export default class Range {
 	}
 
 	/**
-	 * Computes and returns the smallest set of {@link engine.model.Range#isFlat flat} ranges, that covers this range in whole.
+	 * Computes and returns the smallest set of {@link #isFlat flat} ranges, that covers this range in whole.
 	 *
 	 * See an example of model structure (`[` and `]` are range boundaries):
 	 *
@@ -260,13 +259,13 @@ export default class Range {
 	 *		( [ 1 ], [ 3 ] ) = element P2, element P3 ("foobar")
 	 *		( [ 3, 0, 0 ], [ 3, 0, 2 ] ) = "se"
 	 *
-	 * **Note:** if an {@link engine.model.Element element} is not contained wholly in this range, it won't be returned
+	 * **Note:** if an {@link module:engine/model/element~Element element} is not contained wholly in this range, it won't be returned
 	 * in any of returned flat ranges. See in an example, how `H` elements at the beginning and at the end of the range
 	 * were omitted. Only it's parts that were wholly in the range were returned.
 	 *
 	 * **Note:** this method is not returning flat ranges that contain no nodes.
 	 *
-	 * @returns {Array.<engine.model.Range>} Array of flat ranges covering this range.
+	 * @returns {Array.<module:engine/model/range~Range>} Array of flat ranges covering this range.
 	 */
 	getMinimalFlatRanges() {
 		let ranges = [];
@@ -309,10 +308,10 @@ export default class Range {
 	}
 
 	/**
-	 * Creates a {@link engine.model.TreeWalker TreeWalker} instance with this range as a boundary.
+	 * Creates a {@link module:engine/model/treewalker~TreeWalker TreeWalker} instance with this range as a boundary.
 	 *
-	 * @param {Object} options Object with configuration options. See {@link engine.model.TreeWalker}.
-	 * @param {engine.model.Position} [options.startPosition]
+	 * @param {Object} options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
+	 * @param {module:engine/model/position~Position} [options.startPosition]
 	 * @param {Boolean} [options.singleCharacters=false]
 	 * @param {Boolean} [options.shallow=false]
 	 * @param {Boolean} [options.ignoreElementEnd=false]
@@ -324,17 +323,18 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link engine.model.Item items} that are in this range and returns
+	 * Returns an iterator that iterates over all {@link module:engine/model/item~Item items} that are in this range and returns
 	 * them.
 	 *
-	 * This method uses {@link engine.model.TreeWalker} with `boundaries` set to this range and `ignoreElementEnd` option
-	 * set to `true`. However it returns only {@link engine.model.Item model items}, not {@link engine.model.TreeWalkerValue}.
+	 * This method uses {@link module:engine/model/treewalker~TreeWalker} with `boundaries` set to this range and `ignoreElementEnd` option
+	 * set to `true`. However it returns only {@link module:engine/model/item~Item model items},
+	 * not {@link module:engine/model/treewalker~TreeWalkerValue}.
 	 *
-	 * You may specify additional options for the tree walker. See {@link engine.model.TreeWalker} for
+	 * You may specify additional options for the tree walker. See {@link module:engine/model/treewalker~TreeWalker} for
 	 * a full list of available options.
 	 *
-	 * @param {Object} options Object with configuration options. See {@link engine.model.TreeWalker}.
-	 * @returns {Iterable.<engine.model.Item>}
+	 * @param {Object} options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
+	 * @returns {Iterable.<module:engine/model/item~Item>}
 	 */
 	*getItems( options = {} ) {
 		options.boundaries = this;
@@ -348,17 +348,17 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link engine.model.Position positions} that are boundaries or
+	 * Returns an iterator that iterates over all {@link module:engine/model/position~Position positions} that are boundaries or
 	 * contained in this range.
 	 *
-	 * This method uses {@link engine.model.TreeWalker} with `boundaries` set to this range. However it returns only
-	 * {@link engine.model.Position positions}, not {@link engine.model.TreeWalkerValue}.
+	 * This method uses {@link module:engine/model/treewalker~TreeWalker} with `boundaries` set to this range. However it returns only
+	 * {@link module:engine/model/position~Position positions}, not {@link module:engine/model/treewalker~TreeWalkerValue}.
 	 *
-	 * You may specify additional options for the tree walker. See {@link engine.model.TreeWalker} for
+	 * You may specify additional options for the tree walker. See {@link module:engine/model/treewalker~TreeWalker} for
 	 * a full list of available options.
 	 *
-	 * @param {Object} options Object with configuration options. See {@link engine.model.TreeWalker}.
-	 * @returns {Iterable.<engine.model.Position>}
+	 * @param {Object} options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
+	 * @returns {Iterable.<module:engine/model/position~Position>}
 	 */
 	*getPositions( options = {} ) {
 		options.boundaries = this;
@@ -373,9 +373,9 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an array containing one or two {@link engine.model.Range ranges} that are a result of transforming this
-	 * {@link engine.model.Range range} by inserting `howMany` nodes at `insertPosition`. Two {@link engine.model.Range ranges} are
-	 * returned if the insertion was inside this {@link engine.model.Range range} and `spread` is set to `true`.
+	 * Returns an array containing one or two {@link ~Range ranges} that are a result of transforming this
+	 * {@link ~Range range} by inserting `howMany` nodes at `insertPosition`. Two {@link ~Range ranges} are
+	 * returned if the insertion was inside this {@link ~Range range} and `spread` is set to `true`.
 	 *
 	 * Examples:
 	 *
@@ -399,13 +399,13 @@ export default class Range {
 	 *		// transformed array has one range: from [ 2, 7 ] to [ 4, 0, 5 ] because range was expanded
 	 *
 	 * @protected
-	 * @param {engine.model.Position} insertPosition Position where nodes are inserted.
+	 * @param {module:engine/model/position~Position} insertPosition Position where nodes are inserted.
 	 * @param {Number} howMany How many nodes are inserted.
-	 * @param {Boolean} [spread] Flag indicating whether this {engine.model.Range range} should be spread if insertion
+	 * @param {Boolean} [spread] Flag indicating whether this {~Range range} should be spread if insertion
 	 * was inside the range. Defaults to `false`.
 	 * @param {Boolean} [isSticky] Flag indicating whether insertion should expand a range if it is in a place of
 	 * range boundary. Defaults to `false`.
-	 * @returns {Array.<engine.model.Range>} Result of the transformation.
+	 * @returns {Array.<module:engine/model/range~Range>} Result of the transformation.
 	 */
 	_getTransformedByInsertion( insertPosition, howMany, spread = false, isSticky = false ) {
 		if ( spread && this.containsPosition( insertPosition ) ) {
@@ -434,16 +434,16 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an array containing {@link engine.model.Range ranges} that are a result of transforming this
-	 * {@link engine.model.Range range} by moving `howMany` nodes from `sourcePosition` to `targetPosition`.
+	 * Returns an array containing {@link ~Range ranges} that are a result of transforming this
+	 * {@link ~Range range} by moving `howMany` nodes from `sourcePosition` to `targetPosition`.
 	 *
 	 * @protected
-	 * @param {engine.model.Position} sourcePosition Position from which nodes are moved.
-	 * @param {engine.model.Position} targetPosition Position to where nodes are moved.
+	 * @param {module:engine/model/position~Position} sourcePosition Position from which nodes are moved.
+	 * @param {module:engine/model/position~Position} targetPosition Position to where nodes are moved.
 	 * @param {Number} howMany How many nodes are moved.
-	 * @param {Boolean} [spread] Flag indicating whether this {engine.model.Range range} should be spread if insertion
+	 * @param {Boolean} [spread] Flag indicating whether this {~Range range} should be spread if insertion
 	 * was inside the range. Defaults to `false`.
-	 * @returns {Array.<engine.model.Range>} Result of the transformation.
+	 * @returns {Array.<module:engine/model/range~Range>} Result of the transformation.
 	 */
 	_getTransformedByMove( sourcePosition, targetPosition, howMany, spread, isSticky = false ) {
 		let result;
@@ -493,12 +493,12 @@ export default class Range {
 	}
 
 	/**
-	 * Creates a new range, spreading from specified {@link engine.model.Position position} to a position moved by
+	 * Creates a new range, spreading from specified {@link module:engine/model/position~Position position} to a position moved by
 	 * given `shift`. If `shift` is a negative value, shifted position is treated as the beginning of the range.
 	 *
-	 * @param {engine.model.Position} position Beginning of the range.
+	 * @param {module:engine/model/position~Position} position Beginning of the range.
 	 * @param {Number} shift How long the range should be.
-	 * @returns {engine.model.Range}
+	 * @returns {module:engine/model/range~Range}
 	 */
 	static createFromPositionAndShift( position, shift ) {
 		const start = position;
@@ -510,11 +510,11 @@ export default class Range {
 	/**
 	 * Creates a range from given parents and offsets.
 	 *
-	 * @param {engine.model.Element} startElement Start position parent element.
+	 * @param {module:engine/model/element~Element} startElement Start position parent element.
 	 * @param {Number} startOffset Start position offset.
-	 * @param {engine.model.Element} endElement End position parent element.
+	 * @param {module:engine/model/element~Element} endElement End position parent element.
 	 * @param {Number} endOffset End position offset.
-	 * @returns {engine.model.Range}
+	 * @returns {module:engine/model/range~Range}
 	 */
 	static createFromParentsAndOffsets( startElement, startOffset, endElement, endOffset ) {
 		return new this(
@@ -526,29 +526,29 @@ export default class Range {
 	/**
 	 * Creates a new instance of `Range` which is equal to passed range.
 	 *
-	 * @param {engine.model.Range} range Range to clone.
-	 * @returns {engine.model.Range}
+	 * @param {module:engine/model/range~Range} range Range to clone.
+	 * @returns {module:engine/model/range~Range}
 	 */
 	static createFromRange( range ) {
 		return new this( range.start, range.end );
 	}
 
 	/**
-	 * Creates a range inside an {@link engine.model.Element element} which starts before the first child of
+	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
-	 * @param {engine.model.Element} element Element which is a parent for the range.
-	 * @returns {engine.model.Range}
+	 * @param {module:engine/model/element~Element} element Element which is a parent for the range.
+	 * @returns {module:engine/model/range~Range}
 	 */
 	static createIn( element ) {
 		return this.createFromParentsAndOffsets( element, 0, element, element.maxOffset );
 	}
 
 	/**
-	 * Creates a range that starts before given {@link engine.model.Item model item} and ends after it.
+	 * Creates a range that starts before given {@link module:engine/model/item~Item model item} and ends after it.
 	 *
-	 * @param {engine.model.Item} item
-	 * @returns {engine.model.Range}
+	 * @param {module:engine/model/item~Item} item
+	 * @returns {module:engine/model/range~Range}
 	 */
 	static createOn( item ) {
 		return this.createFromPositionAndShift( Position.createBefore( item ), item.offsetSize );
@@ -558,8 +558,8 @@ export default class Range {
 	 * Creates a `Range` instance from given plain object (i.e. parsed JSON string).
 	 *
 	 * @param {Object} json Plain object to be converted to `Range`.
-	 * @param {engine.model.Document} doc Document object that will be range owner.
-	 * @returns {engine.model.Element} `Range` instance created using given plain object.
+	 * @param {module:engine/model/document~Document} doc Document object that will be range owner.
+	 * @returns {module:engine/model/element~Element} `Range` instance created using given plain object.
 	 */
 	static fromJSON( json, doc ) {
 		return new this( Position.fromJSON( json.start, doc ), Position.fromJSON( json.end, doc ) );

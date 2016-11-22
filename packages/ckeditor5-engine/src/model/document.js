@@ -29,31 +29,30 @@ const graveyardName = '$graveyard';
 
 /**
  * Document tree model describes all editable data in the editor. It may contain multiple
- * {@link engine.model.Document#roots root elements}, for example if the editor have multiple editable areas, each area will be
- * represented by the separate root.
+ * {@link module:engine/model/document~Document#roots root elements}, for example if the editor have multiple editable areas,
+ * each area will be represented by the separate root.
  *
- * All changes in the document are done by {@link engine.model.operation.Operation operations}. To create operations in
- * a simple way, use the {@link engine.model.Batch} API, for example:
+ * All changes in the document are done by {@link module:engine/model/operation/operation~Operation operations}. To create operations in
+ * a simple way, use the {@link module:engine/model/batch~Batch} API, for example:
  *
  *		doc.batch().insert( position, nodes ).split( otherPosition );
  *
- * @see engine.model.Document#batch
- *
- * @memberOf engine.model
+ * @see ~Document#batch
  */
 export default class Document {
 	/**
-	 * Creates an empty document instance with no {@link engine.model.Document#roots} (other than
-	 * a {@link engine.model.Document#graveyard graveyard root}).
+	 * Creates an empty document instance with no {@link module:engine/model/document~Document#roots} (other than
+	 * a {@link module:engine/model/document~Document#graveyard graveyard root}).
 	 */
 	constructor() {
 		/**
 		 * Document version. It starts from `0` and every operation increases the version number. It is used to ensure that
-		 * operations are applied on the proper document version. If the {@link engine.model.operation.Operation#baseVersion} will
+		 * operations are applied on the proper document version.
+		 * If the {@link module:engine/model/operation/operation~Operation#baseVersion} will
 		 * not match document version the {@link document-applyOperation-wrong-version} error is thrown.
 		 *
 		 * @readonly
-		 * @member {Number} engine.model.Document#version
+		 * @member {Number} module:engine/model/document~Document#version
 		 */
 		this.version = 0;
 
@@ -61,14 +60,14 @@ export default class Document {
 		 * Selection done on this document.
 		 *
 		 * @readonly
-		 * @member {engine.model.LiveSelection} engine.model.Document#selection
+		 * @member {module:engine/model/liveselection~LiveSelection}
 		 */
 		this.selection = new LiveSelection( this );
 
 		/**
 		 * Schema for this document.
 		 *
-		 * @member {engine.model.Schema} engine.model.Document#schema
+		 * @member {module:engine/model/schema~Schema}
 		 */
 		this.schema = new Schema();
 
@@ -78,25 +77,25 @@ export default class Document {
 		 * **Note:** Be aware that deltas applied to the stored deltas might be removed or changed.
 		 *
 		 * @readonly
-		 * @member {engine.model.History} engine.model.Document#history
+		 * @member {module:engine/model/history~History}
 		 */
 		this.history = new History( this );
 
 		/**
-		 * Array of pending changes. See: {@link engine.model.Document#enqueueChanges}.
+		 * Array of pending changes. See: {@link module:engine/model/document~Document#enqueueChanges}.
 		 *
 		 * @private
-		 * @member {Array.<Function>} engine.model.Document#_pendingChanges
+		 * @member {Array.<Function>}
 		 */
 		this._pendingChanges = [];
 
 		/**
-		 * List of roots that are owned and managed by this document. Use {@link engine.model.document#createRoot} and
-		 * {@link engine.model.document#getRoot} to manipulate it.
+		 * List of roots that are owned and managed by this document. Use {@link module:engine/model/document~Document#createRoot} and
+		 * {@link module:engine/model/document~Document#getRoot} to manipulate it.
 		 *
 		 * @readonly
 		 * @protected
-		 * @member {Map} engine.model.Document#roots
+		 * @member {Map}
 		 */
 		this._roots = new Map();
 
@@ -108,7 +107,7 @@ export default class Document {
 					 * Range from document selection starts or ends at incorrect position.
 					 *
 					 * @error document-selection-wrong-position
-					 * @param {engine.model.Range} range
+					 * @param {module:engine/model/range~Range} range
 					 */
 					throw new CKEditorError( 'document-selection-wrong-position: ' +
 						'Range from document selection starts or ends at incorrect position.', { range } );
@@ -124,7 +123,7 @@ export default class Document {
 	 * Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 	 *
 	 * @readonly
-	 * @type {engine.model.RootElement}
+	 * @type {module:engine/model/rootelement~RootElement}
 	 */
 	get graveyard() {
 		return this.getRoot( graveyardName );
@@ -132,11 +131,11 @@ export default class Document {
 
 	/**
 	 * This is the entry point for all document changes. All changes on the document are done using
-	 * {@link engine.model.operation.Operation operations}. To create operations in the simple way use the
-	 * {@link engine.model.Batch} API available via {@link engine.model.Document#batch} method.
+	 * {@link module:engine/model/operation/operation~Operation operations}. To create operations in the simple way use the
+	 * {@link module:engine/model/batch~Batch} API available via {@link module:engine/model/document~Document#batch} method.
 	 *
-	 * @fires @link engine.model.Document#change
-	 * @param {engine.model.operation.Operation} operation Operation to be applied.
+	 * @fires @link module:engine/model/document~Document#change
+	 * @param {module:engine/model/operation/operation~Operation} operation Operation to be applied.
 	 */
 	applyOperation( operation ) {
 		if ( operation.baseVersion !== this.version ) {
@@ -144,7 +143,7 @@ export default class Document {
 			 * Only operations with matching versions can be applied.
 			 *
 			 * @error document-applyOperation-wrong-version
-			 * @param {engine.model.operation.Operation} operation
+			 * @param {module:engine/model/operation/operation~Operation} operation
 			 */
 			throw new CKEditorError(
 				'model-document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
@@ -166,10 +165,10 @@ export default class Document {
 	}
 
 	/**
-	 * Creates a {@link engine.model.Batch} instance which allows to change the document.
+	 * Creates a {@link module:engine/model/batch~Batch} instance which allows to change the document.
 	 *
-	 * @param {String} [type] Batch type. See {@link engine.model.Batch#type}.
-	 * @returns {engine.model.Batch} Batch instance.
+	 * @param {String} [type] Batch type. See {@link module:engine/model/batch~Batch#type}.
+	 * @returns {module:engine/model/batch~Batch} Batch instance.
 	 */
 	batch( type ) {
 		return new Batch( this, type );
@@ -182,7 +181,7 @@ export default class Document {
 	 * some basic schema defined (`$block`s are allowed inside the `$root`). Make sure to define a proper
 	 * schema if you use a different name.
 	 * @param {String} [rootName='main'] Unique root name.
-	 * @returns {engine.model.RootElement} Created root.
+	 * @returns {module:engine/model/rootelement~RootElement} Created root.
 	 */
 	createRoot( elementName = '$root', rootName = 'main' ) {
 		if ( this._roots.has( rootName ) ) {
@@ -190,7 +189,7 @@ export default class Document {
 			 * Root with specified name already exists.
 			 *
 			 * @error document-createRoot-name-exists
-			 * @param {engine.model.Document} doc
+			 * @param {module:engine/model/document~Document} doc
 			 * @param {String} name
 			 */
 			throw new CKEditorError(
@@ -214,14 +213,14 @@ export default class Document {
 	}
 
 	/**
-	 * Enqueues document changes. Any changes to be done on document (mostly using {@link engine.model.Document#batch}
+	 * Enqueues document changes. Any changes to be done on document (mostly using {@link module:engine/model/document~Document#batch}
 	 * should be placed in the queued callback. If no other plugin is changing document at the moment, the callback will be
 	 * called immediately. Otherwise it will wait for all previously queued changes to finish happening. This way
 	 * queued callback will not interrupt other callbacks.
 	 *
-	 * When all queued changes are done {@link engine.model.Document#changesDone} event is fired.
+	 * When all queued changes are done {@link module:engine/model/document~Document#changesDone} event is fired.
 	 *
-	 * @fires @link engine.model.Document#changesDone
+	 * @fires @link module:engine/model/document~Document#changesDone
 	 * @param {Function} callback Callback to enqueue.
 	 */
 	enqueueChanges( callback ) {
@@ -241,7 +240,7 @@ export default class Document {
 	 * Returns top-level root by its name.
 	 *
 	 * @param {String} [name='main'] Unique root name.
-	 * @returns {engine.model.RootElement} Root registered under given name.
+	 * @returns {module:engine/model/rootelement~RootElement} Root registered under given name.
 	 */
 	getRoot( name = 'main' ) {
 		if ( !this._roots.has( name ) ) {
@@ -271,7 +270,7 @@ export default class Document {
 	}
 
 	/**
-	 * Returns array with names of all roots (without the {@link engine.model.Document#graveyard}) added to the document.
+	 * Returns array with names of all roots (without the {@link module:engine/model/document~Document#graveyard}) added to the document.
 	 *
 	 * @returns {Array.<String>} Roots names.
 	 */
@@ -280,15 +279,15 @@ export default class Document {
 	}
 
 	/**
-	 * Basing on given `position`, finds and returns a {@link engine.model.Position Position} instance that is nearest
+	 * Basing on given `position`, finds and returns a {@link module:engine/model/position~Position Position} instance that is nearest
 	 * to that `position` and is a correct position for selection. A position is correct for selection if
 	 * text node can be placed at that position.
 	 *
 	 * If no correct position is found, the first position in given `position` root is returned. This can happen if no node
 	 * has been added to the root or it may mean incorrect model document state.
 	 *
-	 * @param {engine.model.Position} position Reference position where selection position should be looked for.
-	 * @returns {engine.model.Position|null} Nearest selection position.
+	 * @param {module:engine/model/position~Position} position Reference position where selection position should be looked for.
+	 * @returns {module:engine/model/position~Position|null} Nearest selection position.
 	 */
 	getNearestSelectionPosition( position ) {
 		if ( this.schema.check( { name: '$text', inside: position } ) ) {
@@ -336,18 +335,17 @@ export default class Document {
 		const json = clone( this );
 
 		// Due to circular references we need to remove parent reference.
-		json.selection = '[engine.model.LiveSelection]';
+		json.selection = '[module:engine/model/liveselection~LiveSelection]';
 
 		return json;
 	}
 
 	/**
 	 * Returns default root for this document which is either the first root that was added to the the document using
-	 * {@link engine.model.Document#createRoot} or the {@link engine.model.Document#graveyard graveyard root} if
-	 * no other roots were created.
+	 * {@link #createRoot} or the {@link #graveyard graveyard root} if no other roots were created.
 	 *
 	 * @protected
-	 * @returns {engine.model.RootElement} The default root for this document.
+	 * @returns {module:engine/model/rootelement~RootElement} The default root for this document.
 	 */
 	_getDefaultRoot() {
 		for ( let root of this._roots.values() ) {
@@ -361,10 +359,10 @@ export default class Document {
 
 	/**
 	 * Returns a default range for this selection. The default range is a collapsed range that starts and ends
-	 * at the beginning of this selection's document's {@link engine.model.Document#_getDefaultRoot default root}.
+	 * at the beginning of this selection's document's {@link #_getDefaultRoot default root}.
 	 *
 	 * @protected
-	 * @returns {engine.model.Range}
+	 * @returns {module:engine/model/range~Range}
 	 */
 	_getDefaultRange() {
 		const defaultRoot = this._getDefaultRoot();
@@ -377,11 +375,11 @@ export default class Document {
 	}
 
 	/**
-	 * Checks whether given {@link engine.model.Range range} is a valid range for
-	 * {@link engine.model.Document#selection document's selection}.
+	 * Checks whether given {@link module:engine/model/range~Range range} is a valid range for
+	 * {@link module:engine/model/document~Document#selection document's selection}.
 	 *
 	 * @private
-	 * @param {engine.model.Range} range Range to check.
+	 * @param {module:engine/model/range~Range} range Range to check.
 	 * @returns {Boolean} `true` if `range` is valid, `false` otherwise.
 	 */
 	_validateSelectionRange( range ) {
@@ -404,29 +402,31 @@ export default class Document {
 	 * * 'removeRootAttribute' when attribute for root is removed,
 	 * * 'changeRootAttribute' when attribute for root changes.
 	 *
-	 * @event engine.model.Document#change
+	 * @event change
 	 * @param {String} type Change type, possible option: 'insert', 'remove', 'reinsert', 'move', 'attribute'.
 	 * @param {Object} data Additional information about the change.
-	 * @param {engine.model.Range} data.range Range in model containing changed nodes. Note that the range state is
-	 * after changes has been done, i.e. for 'remove' the range will be in the {@link engine.model.Document#graveyard graveyard root}.
+	 * @param {module:engine/model/range~Range} data.range Range in model containing changed nodes. Note that the range state is
+	 * after changes has been done, i.e. for 'remove' the range will be in the {@link #graveyard graveyard root}.
 	 * This is `undefined` for "...root..." types.
-	 * @param {engine.model.Position} [data.sourcePosition] Change source position. Exists for 'remove', 'reinsert' and 'move'.
+	 * @param {module:engine/model/position~Position} [data.sourcePosition] Change source position.
+	 * Exists for 'remove', 'reinsert' and 'move'.
 	 * Note that this position state is before changes has been done, i.e. for 'reinsert' the source position will be in the
-	 * {@link engine.model.Document#graveyard graveyard root}.
+	 * {@link #graveyard graveyard root}.
 	 * @param {String} [data.key] Only for attribute types. Key of changed / inserted / removed attribute.
 	 * @param {*} [data.oldValue] Only for 'removeAttribute', 'removeRootAttribute', 'changeAttribute' or
 	 * 'changeRootAttribute' type.
 	 * @param {*} [data.newValue] Only for 'addAttribute', 'addRootAttribute', 'changeAttribute' or
 	 * 'changeRootAttribute' type.
-	 * @param {engine.model.RootElement} [changeInfo.root] Root element which attributes got changed. This is defined
+	 * @param {module:engine/model/rootelement~RootElement} [changeInfo.root] Root element which attributes got changed. This is defined
 	 * only for root types.
-	 * @param {engine.model.Batch} batch A {@link engine.model.Batch batch} of changes which this change is a part of.
+	 * @param {module:engine/model/batch~Batch} batch A {@link module:engine/model/batch~Batch batch}
+	 * of changes which this change is a part of.
 	 */
 
 	/**
-	 * Fired when all queued document changes are done. See {@link engine.model.Document#enqueueChanges}.
+	 * Fired when all queued document changes are done. See {@link #enqueueChanges}.
 	 *
-	 * @event engine.model.Document#changesDone
+	 * @event changesDone
 	 */
 }
 

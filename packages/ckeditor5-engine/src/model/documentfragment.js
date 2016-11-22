@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/model/documentfragment
+ * @module module:engine/model/documentfragment
  */
 
 import NodeList from './nodelist.js';
@@ -15,21 +15,20 @@ import isIterable from '../../utils/isiterable.js';
 /**
  * DocumentFragment represents a part of model which does not have a common root but it's top-level nodes
  * can be seen as siblings. In other words, it is a detached part of model tree, without a root.
- *
- * @memberOf engine.model
  */
 export default class DocumentFragment {
 	/**
 	 * Creates an empty `DocumentFragment`.
 	 *
-	 * @param {engine.model.Node|Iterable.<engine.model.Node>} [children] Nodes to be contained inside the `DocumentFragment`.
+	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} [children]
+	 * Nodes to be contained inside the `DocumentFragment`.
 	 */
 	constructor( children ) {
 		/**
 		 * List of nodes contained inside the document fragment.
 		 *
 		 * @private
-		 * @member {engine.model.NodeList} engine.model.DocumentFragment#_children
+		 * @member {module:engine/model/node~NodeList} module:engine/model/documentfragment~DocumentFragment#_children
 		 */
 		this._children = new NodeList();
 
@@ -41,7 +40,7 @@ export default class DocumentFragment {
 	/**
 	 * Returns an iterator that iterates over all nodes contained inside this document fragment.
 	 *
-	 * @returns {Iterator.<engine.model.Node>}
+	 * @returns {Iterator.<module:engine/model/node~Node>}
 	 */
 	[ Symbol.iterator ]() {
 		return this.getChildren();
@@ -58,7 +57,7 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * Sum of {engine.model.Node#offsetSize offset sizes} of all of this document fragment's children.
+	 * Sum of {module:engine/model/node~Node#offsetSize offset sizes} of all of this document fragment's children.
 	 *
 	 * @readonly
 	 * @type {Number}
@@ -81,7 +80,7 @@ export default class DocumentFragment {
 	 * Artificial root of `DocumentFragment`. Returns itself. Added for compatibility reasons.
 	 *
 	 * @readonly
-	 * @type {engine.model.DocumentFragment}
+	 * @type {module:engine/model/documentfragment~DocumentFragment}
 	 */
 	get root() {
 		return this;
@@ -101,7 +100,7 @@ export default class DocumentFragment {
 	 * Gets the child at the given index. Returns `null` if incorrect index was passed.
 	 *
 	 * @param {Number} index Index of child.
-	 * @returns {engine.model.Node|null} Child node.
+	 * @returns {module:engine/model/node~Node|null} Child node.
 	 */
 	getChild( index ) {
 		return this._children.getNode( index );
@@ -110,7 +109,7 @@ export default class DocumentFragment {
 	/**
 	 * Returns an iterator that iterates over all of this document fragment's children.
 	 *
-	 * @returns {Iterable.<engine.model.Node>}
+	 * @returns {Iterable.<module:engine/model/node~Node>}
 	 */
 	getChildren() {
 		return this._children[ Symbol.iterator ]();
@@ -119,7 +118,7 @@ export default class DocumentFragment {
 	/**
 	 * Returns an index of the given child node. Returns `null` if given node is not a child of this document fragment.
 	 *
-	 * @param {engine.model.Node} node Child node to look for.
+	 * @param {module:engine/model/node~Node} node Child node to look for.
 	 * @returns {Number|null} Child node's index.
 	 */
 	getChildIndex( node ) {
@@ -128,10 +127,10 @@ export default class DocumentFragment {
 
 	/**
 	 * Returns the starting offset of given child. Starting offset is equal to the sum of
-	 * {engine.model.Node#offsetSize offset sizes} of all node's siblings that are before it. Returns `null` if
+	 * {module:engine/model/node~Node#offsetSize offset sizes} of all node's siblings that are before it. Returns `null` if
 	 * given node is not a child of this document fragment.
 	 *
-	 * @param {engine.model.Node} node Child node to look for.
+	 * @param {module:engine/model/node~Node} node Child node to look for.
 	 * @returns {Number|null} Child node's starting offset.
 	 */
 	getChildStartOffset( node ) {
@@ -151,7 +150,7 @@ export default class DocumentFragment {
 	 * Converts offset "position" to index "position".
 	 *
 	 * Returns index of a node that occupies given offset. If given offset is too low, returns `0`. If given offset is
-	 * too high, returns {@link engine.model.DocumentFragment#getChildCount index after last child}.
+	 * too high, returns {@link module:engine/model/documentfragment~DocumentFragment#getChildCount index after last child}.
 	 *
 	 *		const textNode = new Text( 'foo' );
 	 *		const pElement = new Element( 'p' );
@@ -171,20 +170,20 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * {@link engine.model.DocumentFragment#insertChildren Inserts} one or more nodes at the end of this document fragment.
+	 * {@link #insertChildren Inserts} one or more nodes at the end of this document fragment.
 	 *
-	 * @param {engine.model.Node|Iterable.<engine.model.Node>} nodes Nodes to be inserted.
+	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} nodes Nodes to be inserted.
 	 */
 	appendChildren( nodes ) {
 		this.insertChildren( this.childCount, nodes );
 	}
 
 	/**
-	 * Inserts one or more nodes at the given index and sets {@link engine.model.Node#parent parent} of these nodes
+	 * Inserts one or more nodes at the given index and sets {@link module:engine/model/node~Node#parent parent} of these nodes
 	 * to this document fragment.
 	 *
 	 * @param {Number} index Index at which nodes should be inserted.
-	 * @param {engine.model.Node|Iterable.<engine.model.Node>} nodes Nodes to be inserted.
+	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} nodes Nodes to be inserted.
 	 */
 	insertChildren( index, nodes ) {
 		nodes = normalize( nodes );
@@ -197,11 +196,12 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * Removes one or more nodes starting at the given index and sets {@link engine.model.Node#parent parent} of these nodes to `null`.
+	 * Removes one or more nodes starting at the given index
+	 * and sets {@link module:engine/model/node~Node#parent parent} of these nodes to `null`.
 	 *
 	 * @param {Number} index Index of the first node to remove.
 	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @returns {Array.<engine.model.Node>} Array containing removed nodes.
+	 * @returns {Array.<module:engine/model/node~Node>} Array containing removed nodes.
 	 */
 	removeChildren( index, howMany = 1 ) {
 		const nodes = this._children.removeNodes( index, howMany );
@@ -234,7 +234,7 @@ export default class DocumentFragment {
 	 * Converts `DocumentFragment` children to proper nodes.
 	 *
 	 * @param {Object} json Plain object to be converted to `DocumentFragment`.
-	 * @returns {engine.model.DocumentFragment} `DocumentFragment` instance created using given plain object.
+	 * @returns {module:engine/model/documentfragment~DocumentFragment} `DocumentFragment` instance created using given plain object.
 	 */
 	static fromJSON( json ) {
 		let children = [];
@@ -255,8 +255,8 @@ export default class DocumentFragment {
 
 // Converts strings to Text and non-iterables to arrays.
 //
-// @param {String|engine.model.Node|Iterable.<String|engine.model.Node>}
-// @return {Iterable.<engine.model.Node>}
+// @param {String|module:engine/model/node~Node|Iterable.<String|module:engine/model/node~Node>}
+// @return {Iterable.<module:engine/model/node~Node>}
 function normalize( nodes ) {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {

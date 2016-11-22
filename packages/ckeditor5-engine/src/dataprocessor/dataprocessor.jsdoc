@@ -1,0 +1,32 @@
+/**
+ * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * @module engine/dataprocessor/dataprocessor
+ */
+
+/**
+ * DataProcessor interface. It should be implemented by actual DataProcessors.
+ * Each data processor implements a certain format of the data. E.g. `MarkdownDataProcessor` will convert the data
+ * (Markdown string) to a {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} and back.
+ *
+ * @interface DataProcessor
+ */
+
+/**
+ * Converts a {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} to data.
+ *
+ * @method #toData
+ * @param {module:engine/view/documentfragment~DocumentFragment} fragment DocumentFragment to be processed.
+ * @returns {*}
+ */
+
+/**
+ * Converts data to a {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment}.
+ *
+ * @method #toView
+ * @param {*} data Data to be processed.
+ * @returns {module:engine/view/documentfragment~DocumentFragment}
+ */

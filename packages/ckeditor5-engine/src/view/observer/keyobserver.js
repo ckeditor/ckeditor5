@@ -3,16 +3,19 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/view/observer/keyobserver
+ */
+
 import DomEventObserver from './domeventobserver.js';
 import { getCode } from '../../../utils/keyboard.js';
 
 /**
- * {@link engine.view.Document#keydown Key down} event observer.
+ * {@link module:engine/view/document~Document#keydown Key down} event observer.
  *
- * Note that this observer is attached by the {@link engine.view.Document} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
  *
- * @memberOf engine.view.observer
- * @extends engine.view.observer.DomEventObserver
+ * @extends module:engine/view/observer/observer~Observer.DomEventObserver
  */
 export default class KeyObserver extends DomEventObserver {
 	constructor( document ) {
@@ -39,21 +42,22 @@ export default class KeyObserver extends DomEventObserver {
 /**
  * Fired when a key has been pressed.
  *
- * Introduced by {@link engine.view.observer.KeyObserver}.
+ * Introduced by {@link module:engine/view/observer/keyobserver~KeyObserver}.
  *
- * Note that because {@link engine.view.observer.KeyObserver} is attached by the {@link engine.view.Document}
+ * Note that because {@link module:engine/view/observer/keyobserver~KeyObserver} is attached by the {@link
+ * module:engine/view/document~Document}
  * this event is available by default.
  *
- * @see engine.view.observer.KeyObserver
- * @event engine.view.Document#keydown
- * @param {engine.view.observer.keyObserver.KeyEventData} keyEventData
+ * @see module:engine/view/observer/keyobserver~KeyObserver
+ * @event module:engine/view/document~Document#keydown
+ * @param {module:engine/view/observer/keyobserver~KeyObserver.KeyEventData} keyEventData
  */
 
 /**
- * The value of the {@link engine.view.Document#keydown} event.
+ * The value of the {@link module:engine/view/document~Document#keydown} event.
  *
- * @class engine.view.observer.keyObserver.KeyEventData
- * @extends engine.view.observer.DomEventData
+ * @class module:engine/view/observer/keyobserver~KeyObserver.KeyEventData
+ * @extends module:engine/view/observer/domeventdata~DomEventData
  * @implements utils.keyboard.KeystrokeData
  */
 
@@ -61,5 +65,5 @@ export default class KeyObserver extends DomEventObserver {
  * Code of the whole keystroke. See {@link utils.keyboard.getCode}.
  *
  * @readonly
- * @member {Number} engine.view.observer.keyObserver.KeyEventData#keystroke
+ * @member {Number} module:engine/view/observer/keyobserver~KeyObserver.KeyEventData#keystroke
  */

@@ -9,15 +9,13 @@
 
 /**
  * View matcher class.
- * Instance of this class can be used to find {@link engine.view.Element elements} that match given pattern.
- *
- * @memberOf engine.view
+ * Instance of this class can be used to find {@link module:engine/view/element~Element elements} that match given pattern.
  */
 export default class Matcher {
 	/**
 	 * Creates new instance of Matcher.
 	 *
-	 * @param {String|RegExp|Object} [pattern] Match patterns. See {@link engine.view.Matcher#add add method} for
+	 * @param {String|RegExp|Object} [pattern] Match patterns. See {@link module:engine/view/matcher~Matcher#add add method} for
 	 * more information.
 	 */
 	constructor( ...pattern ) {
@@ -92,9 +90,9 @@ export default class Matcher {
 	 *
 	 * @param {Object|String|RegExp|Function} pattern Object describing pattern details. If string or regular expression
 	 * is provided it will be used to match element's name. Pattern can be also provided in a form
-	 * of a function - then this function will be called with each {@link engine.view.Element element} as a parameter.
+	 * of a function - then this function will be called with each {@link module:engine/view/element~Element element} as a parameter.
 	 * Function's return value will be stored under `match` key of the object returned from
-	 * {@link engine.view.Matcher#match match} or {@link engine.view.Matcher#matchAll matchAll} methods.
+	 * {@link module:engine/view/matcher~Matcher#match match} or {@link module:engine/view/matcher~Matcher#matchAll matchAll} methods.
 	 * @param {String|RegExp} [pattern.name] Name or regular expression to match element's name.
 	 * @param {Object} [pattern.attribute] Object with key-value pairs representing attributes to match. Each object key
 	 * represents attribute name. Value under that key can be either a string or a regular expression and it will be
@@ -123,7 +121,7 @@ export default class Matcher {
 
 	/**
 	 * Matches elements for currently stored patterns. Returns match information about first found
-	 * {@link engine.view.Element element}, otherwise returns `null`.
+	 * {@link module:engine/view/element~Element element}, otherwise returns `null`.
 	 *
 	 * Example of returned object:
 	 *
@@ -138,11 +136,11 @@ export default class Matcher {
 	 *			}
 	 *		}
 	 *
-	 * @see engine.view.Matcher#add
-	 * @see engine.view.Matcher#matchAll
-	 * @param {...core.view.Element} element View element to match against stored patterns.
+	 * @see module:engine/view/matcher~Matcher#add
+	 * @see module:engine/view/matcher~Matcher#matchAll
+	 * @param {...module:core/view/element~Element} element View element to match against stored patterns.
 	 * @returns {Object|null} result
-	 * @returns {core.view.Element} result.element Matched view element.
+	 * @returns {module:core/view/element~Element} result.element Matched view element.
 	 * @returns {Object|String|RegExp|Function} result.pattern Pattern that was used to find matched element.
 	 * @returns {Object} result.match Object representing matched element parts.
 	 * @returns {Boolean} [result.match.name] True if name of the element was matched.
@@ -170,13 +168,13 @@ export default class Matcher {
 
 	/**
 	 * Matches elements for currently stored patterns. Returns array of match information with all found
-	 * {@link engine.view.Element elements}. If no element is found - returns `null`.
+	 * {@link module:engine/view/element~Element elements}. If no element is found - returns `null`.
 	 *
-	 * @see engine.view.Matcher#add
-	 * @see engine.view.Matcher#match
-	 * @param {...engine.view.Element} element View element to match against stored patterns.
+	 * @see module:engine/view/matcher~Matcher#add
+	 * @see module:engine/view/matcher~Matcher#match
+	 * @param {...module:engine/view/element~Element} element View element to match against stored patterns.
 	 * @returns {Array.<Object>|null} Array with match information about found elements or `null`. For more information
-	 * see {@link engine.view.Matcher#match match method} description.
+	 * see {@link module:engine/view/matcher~Matcher#match match method} description.
 	 */
 	matchAll( ...element ) {
 		const results = [];
@@ -212,10 +210,10 @@ export default class Matcher {
 
 }
 
-// Returns match information if {@link engine.view.Element element} is matching provided pattern.
+// Returns match information if {@link module:engine/view/element~Element element} is matching provided pattern.
 // If element cannot be matched to provided pattern - returns `null`.
 //
-// @param {engine.view.Element} element
+// @param {module:engine/view/element~Element} element
 // @param {Object|String|RegExp|Function} pattern
 // @returns {Object|null} Returns object with match information or null if element is not matching.
 function isElementMatching( element, pattern ) {
@@ -282,7 +280,7 @@ function matchName( pattern, name ) {
 //
 // @param {Object} patterns Object with information about attributes to match. Each key of the object will be
 // used as attribute name. Value of each key can be a string or regular expression to match against attribute value.
-// @param {engine.view.Element} element Element which attributes will be tested.
+// @param {module:engine/view/element~Element} element Element which attributes will be tested.
 // @returns {Array|null} Returns array with matched attribute names or `null` if no attributes were matched.
 function matchAttributes( patterns, element ) {
 	const match = [];
@@ -315,7 +313,7 @@ function matchAttributes( patterns, element ) {
 // Checks if classes of provided element can be matched against provided patterns.
 //
 // @param {Array.<String|RegExp>} patterns Array of strings or regular expressions to match against element's classes.
-// @param {engine.view.Element} element Element which classes will be tested.
+// @param {module:engine/view/element~Element} element Element which classes will be tested.
 // @returns {Array|null} Returns array with matched class names or `null` if no classes were matched.
 function matchClasses( patterns, element ) {
 	const match = [];
@@ -347,7 +345,7 @@ function matchClasses( patterns, element ) {
 //
 // @param {Object} patterns Object with information about styles to match. Each key of the object will be
 // used as style name. Value of each key can be a string or regular expression to match against style value.
-// @param {engine.view.Element} element Element which styles will be tested.
+// @param {module:engine/view/element~Element} element Element which styles will be tested.
 // @returns {Array|null} Returns array with matched style names or `null` if no styles were matched.
 function matchStyles( patterns, element ) {
 	const match = [];

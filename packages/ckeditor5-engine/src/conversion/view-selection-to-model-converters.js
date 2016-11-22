@@ -8,27 +8,28 @@
  */
 
 /**
- * Contains {@link engine.view.Selection view selection} to {@link engine.model.Selection model selection} conversion
+ * Contains {@link module:engine/view/selection~Selection view selection}
+ * to {@link module:engine/model/selection~Selection model selection} conversion
  * helper.
  *
- * @namespace engine.conversion.viewSelectionToModel
+ * @namespace viewSelectionToModel
  */
 
 import ModelSelection from '../model/selection.js';
 
 /**
- * Function factory, creates a callback function which converts a {@link engine.view.Selection view selection} taken
- * from the {@link engine.view.Document#selectionChange} event and sets in on the {@link engine.model.Document#selection model}.
+ * Function factory, creates a callback function which converts a {@link module:engine/view/selection~Selection view selection} taken
+ * from the {@link module:engine/view/document~Document#selectionChange} event
+ * and sets in on the {@link module:engine/model/document~Document#selection model}.
  *
  * **Note**: because there is no view selection change dispatcher nor any other advanced view selection to model
  * conversion mechanism, the callback should be set directly on view document.
  *
  *		view.document.on( 'selectionChange', convertSelectionChange( modelDocument, mapper ) );
  *
- * @function engine.conversion.viewSelectionToModel.convertSelectionChange
- * @param {engine.model.Document} modelDocument Model document on which selection should be updated.
- * @param {engine.conversion.Mapper} mapper Conversion mapper.
- * @returns {Function} {@link engine.view.Document#selectionChange} callback function.
+ * @param {module:engine/model/document~Document} modelDocument Model document on which selection should be updated.
+ * @param {module:engine/conversion/mapper~Mapper} mapper Conversion mapper.
+ * @returns {Function} {@link module:engine/view/document~Document#selectionChange} callback function.
  */
 export function convertSelectionChange( modelDocument, mapper ) {
 	return ( evt, data ) => {

@@ -4,5 +4,5 @@
  */
 
 /**
- * @namespace engine.view.observer
+ * @module engine/view
  */

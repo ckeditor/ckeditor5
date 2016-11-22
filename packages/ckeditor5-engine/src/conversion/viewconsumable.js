@@ -14,11 +14,10 @@ import ViewText from '../view/text.js';
 import ViewDocumentFragment from '../view/documentfragment.js';
 
 /**
- * This is a private helper-class for {@link engine.conversion.ViewConsumable}.
- * It represents and manipulates consumable parts of a single {@link engine.view.Element}.
+ * This is a private helper-class for {@link module:engine/conversion/viewconsumable~ViewConsumable}.
+ * It represents and manipulates consumable parts of a single {@link module:engine/view/element~Element}.
  *
  * @private
- * @memberOf engine.conversion
  */
 class ViewElementConsumables {
 
@@ -30,7 +29,7 @@ class ViewElementConsumables {
 		 * Flag indicating if name of the element can be consumed.
 		 *
 		 * @private
-		 * @member {Boolean} engine.conversion.ViewElementConsumables#_canConsumeName
+		 * @member {Boolean}
 		 */
 		this._canConsumeName = null;
 
@@ -38,7 +37,7 @@ class ViewElementConsumables {
 		 * Contains maps of element's consumables: attributes, classes and styles.
 		 *
 		 * @private
-		 * @member {Object} engine.conversion.ViewElementConsumables#_consumables
+		 * @member {Object}
 		 */
 		this._consumables = {
 			attribute: new Map(),
@@ -48,7 +47,7 @@ class ViewElementConsumables {
 	}
 
 	/**
-	 * Adds consumable parts of the {@link engine.view.Element view element}.
+	 * Adds consumable parts of the {@link module:engine/view/element~Element view element}.
 	 * Element's name itself can be marked to be consumed (when element's name is consumed its attributes, classes and
 	 * styles still could be consumed):
 	 *
@@ -59,7 +58,7 @@ class ViewElementConsumables {
 	 *		consumables.add( { attribute: 'title', class: 'foo', style: 'color' } );
 	 *		consumables.add( { attribute: [ 'title', 'name' ], class: [ 'foo', 'bar' ] );
 	 *
-	 * Throws {@link utils.CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
 	 * attribute is provided - it should be handled separately by providing `style` and `class` in consumables object.
 	 *
 	 * @param {Object} consumables Object describing which parts of the element can be consumed.
@@ -81,7 +80,7 @@ class ViewElementConsumables {
 	}
 
 	/**
-	 * Tests if parts of the {@link engine.view.Element view element} can be consumed.
+	 * Tests if parts of the {@link module:engine/view/element~Element view element} can be consumed.
 	 *
 	 * Element's name can be tested:
 	 *
@@ -121,7 +120,7 @@ class ViewElementConsumables {
 	}
 
 	/**
-	 * Consumes parts of {@link engine.view.Element view element}. This function does not check if consumable item
+	 * Consumes parts of {@link module:engine/view/element~Element view element}. This function does not check if consumable item
 	 * is already consumed - it consumes all consumable items provided.
 	 * Element's name can be consumed:
 	 *
@@ -151,7 +150,7 @@ class ViewElementConsumables {
 	}
 
 	/**
-	 * Revert already consumed parts of {@link engine.view.Element view Element}, so they can be consumed once again.
+	 * Revert already consumed parts of {@link module:engine/view/element~Element view Element}, so they can be consumed once again.
 	 * Element's name can be reverted:
 	 *
 	 *		consumables.revert( { name: true } );
@@ -182,7 +181,7 @@ class ViewElementConsumables {
 	/**
 	 * Helper method that adds consumables of a given type: attribute, class or style.
 	 *
-	 * Throws {@link utils.CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
 	 * type is provided - it should be handled separately by providing actual style/class type.
 	 *
 	 * @private
@@ -292,14 +291,14 @@ class ViewElementConsumables {
 }
 
 /**
- * Class used for handling consumption of view {@link engine.view.Element elements},
- * {@link engine.view.Text text nodes} and {@link engine.view.DocumentFragment document fragments}.
+ * Class used for handling consumption of view {@link module:engine/view/element~Element elements},
+ * {@link module:engine/view/text~Text text nodes} and {@link module:engine/view/documentfragment~DocumentFragment document fragments}.
  * Element's name and its parts (attributes, classes and styles) can be consumed separately. Consuming an element's name
  * does not consume its attributes, classes and styles.
- * To add items for consumption use {@link engine.conversion.ViewConsumable#add add method}.
- * To test items use {@link engine.conversion.ViewConsumable#test test method}.
- * To consume items use {@link engine.conversion.ViewConsumable#consume consume method}.
- * To revert already consumed items use {@link engine.conversion.ViewConsumable#revert revert method}.
+ * To add items for consumption use {@link module:engine/conversion/viewconsumable~ViewConsumable#add add method}.
+ * To test items use {@link module:engine/conversion/viewconsumable~ViewConsumable#test test method}.
+ * To consume items use {@link module:engine/conversion/viewconsumable~ViewConsumable#consume consume method}.
+ * To revert already consumed items use {@link module:engine/conversion/viewconsumable~ViewConsumable#revert revert method}.
  *
  *		viewConsumable.add( element, { name: true } ); // Adds element's name as ready to be consumed.
  *		viewConsumable.add( textNode ); // Adds text node for consumption.
@@ -313,8 +312,6 @@ class ViewElementConsumables {
  *		viewConsumable.revert( element, { name: true }  ); // Revert already consumed element's name.
  *		viewConsumable.revert( textNode ); // Revert already consumed text node.
  *		viewConsumable.revert( docFragment ); // Revert already consumed document fragment.
- *
- * @memberOf engine.conversion
  */
 export default class ViewConsumable {
 
@@ -323,20 +320,20 @@ export default class ViewConsumable {
 	 */
 	constructor() {
 		/**
-		 * Map of consumable elements. If {@link engine.view.Element element} is used as a key,
-		 * {@link engine.conversion.ViewElementConsumables ViewElementConsumables} instance is stored as value.
-		 * For {@link engine.view.Text text nodes} and {@link engine.view.DocumentFragment document fragments}
+		 * Map of consumable elements. If {@link module:engine/view/element~Element element} is used as a key,
+		 * {@link module:engine/conversion/viewconsumable~ViewElementConsumables ViewElementConsumables} instance is stored as value.
+		 * For {@link module:engine/view/text~Text text nodes} and {@link module:engine/view/documentfragment~DocumentFragment document fragments}
 		 * boolean value is stored as value.
 		 *
 		 * @protected
-		 * @member {Map.<engine.conversion.ViewElementConsumables|Boolean>} engine.conversion.ViewConsumable#_consumables
+		 * @member {Map.<module:engine/conversion/viewconsumable~ViewElementConsumables|Boolean>}
 		*/
 		this._consumables = new Map();
 	}
 
 	/**
-	 * Adds {@link engine.view.Element view element}, {@link engine.view.Text text node} or
-	 * {@link engine.view.DocumentFragment document fragment} as ready to be consumed.
+	 * Adds {@link module:engine/view/element~Element view element}, {@link module:engine/view/text~Text text node} or
+	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment} as ready to be consumed.
 	 *
 	 *		viewConsumable.add( p, { name: true } ); // Adds element's name to consume.
 	 *		viewConsumable.add( p, { attribute: 'name' } ); // Adds element's attribute.
@@ -347,14 +344,14 @@ export default class ViewConsumable {
 	 *		viewConsumable.add( textNode ); // Adds text node to consume.
 	 *		viewConsumable.add( docFragment ); // Adds document fragment to consume.
 	 *
-	 * Throws {@link utils.CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
 	 * attribute is provided - it should be handled separately by providing actual style/class.
 	 *
 	 *		viewConsumable.add( p, { attribute: 'style' } ); // This call will throw an exception.
 	 *		viewConsumable.add( p, { style: 'color' } ); // This is properly handled style.
 	 *
-	 * @param {engine.view.Element|engine.view.Text|engine.view.DocumentFragment} element
-	 * @param {Object} [consumables] Used only if first parameter is {@link engine.view.Element view element} instance.
+	 * @param {module:engine/view/element~Element|module:engine/view/text~Text|module:engine/view/documentfragment~DocumentFragment} element
+	 * @param {Object} [consumables] Used only if first parameter is {@link module:engine/view/element~Element view element} instance.
 	 * @param {Boolean} consumables.name If set to true element's name will be included.
 	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names.
 	 * @param {String|Array.<String>} consumables.class Class name or array of class names.
@@ -382,8 +379,8 @@ export default class ViewConsumable {
 	}
 
 	/**
-	 * Tests if {@link engine.view.Element view element}, {@link engine.view.Text text node} or
-	 * {@link engine.view.DocumentFragment document fragment} can be consumed.
+	 * Tests if {@link module:engine/view/element~Element view element}, {@link module:engine/view/text~Text text node} or
+	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment} can be consumed.
 	 * It returns `true` when all items included in method's call can be consumed. Returns `false` when
 	 * first already consumed item is found and `null` when first non-consumable item is found.
 	 *
@@ -401,8 +398,8 @@ export default class ViewConsumable {
 	 *		viewConsumable.test( p, { attribute: 'class' } ); // Tests if all added classes can be consumed.
 	 *		viewConsumable.test( p, { attribute: 'style' } ); // Tests if all added styles can be consumed.
 	 *
-	 * @param {engine.view.Element|engine.view.Text|engine.view.DocumentFragment} element
-	 * @param {Object} [consumables] Used only if first parameter is {@link engine.view.Element view element} instance.
+	 * @param {module:engine/view/element~Element|module:engine/view/text~Text|module:engine/view/documentfragment~DocumentFragment} element
+	 * @param {Object} [consumables] Used only if first parameter is {@link module:engine/view/element~Element view element} instance.
 	 * @param {Boolean} consumables.name If set to true element's name will be included.
 	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names.
 	 * @param {String|Array.<String>} consumables.class Class name or array of class names.
@@ -427,8 +424,8 @@ export default class ViewConsumable {
 	}
 
 	/**
-	 * Consumes {@link engine.view.Element view element}, {@link engine.view.Text text node} or
-	 * {@link engine.view.DocumentFragment document fragment}.
+	 * Consumes {@link module:engine/view/element~Element view element}, {@link module:engine/view/text~Text text node} or
+	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
 	 * It returns `true` when all items included in method's call can be consumed, otherwise returns `false`.
 	 *
 	 *		viewConsumable.consume( p, { name: true } ); // Consumes element's name.
@@ -445,8 +442,8 @@ export default class ViewConsumable {
 	 *		viewConsumable.consume( p, { attribute: 'class' } ); // Consume only if all added classes can be consumed.
 	 *		viewConsumable.consume( p, { attribute: 'style' } ); // Consume only if all added styles can be consumed.
 	 *
-	 * @param {engine.view.Element|engine.view.Text|engine.view.DocumentFragment} element
-	 * @param {Object} [consumables] Used only if first parameter is {@link engine.view.Element view element} instance.
+	 * @param {module:engine/view/element~Element|module:engine/view/text~Text|module:engine/view/documentfragment~DocumentFragment} element
+	 * @param {Object} [consumables] Used only if first parameter is {@link module:engine/view/element~Element view element} instance.
 	 * @param {Boolean} consumables.name If set to true element's name will be included.
 	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names.
 	 * @param {String|Array.<String>} consumables.class Class name or array of class names.
@@ -471,8 +468,8 @@ export default class ViewConsumable {
 	}
 
 	/**
-	 * Reverts {@link engine.view.Element view element}, {@link engine.view.Text text node} or
-	 * {@link engine.view.DocumentFragment document fragment} so they can be consumed once again.
+	 * Reverts {@link module:engine/view/element~Element view element}, {@link module:engine/view/text~Text text node} or
+	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment} so they can be consumed once again.
 	 * Method does not revert items that were never previously added for consumption, even if they are included in
 	 * method's call.
 	 *
@@ -491,8 +488,8 @@ export default class ViewConsumable {
 	 *		viewConsumable.revert( p, { attribute: 'class' } ); // Reverts all classes added for consumption.
 	 *		viewConsumable.revert( p, { attribute: 'style' } ); // Reverts all styles added for consumption.
 	 *
-	 * @param {engine.view.Element|engine.view.Text|engine.view.DocumentFragment} element
-	 * @param {Object} [consumables] Used only if first parameter is {@link engine.view.Element view element} instance.
+	 * @param {module:engine/view/element~Element|module:engine/view/text~Text|module:engine/view/documentfragment~DocumentFragment} element
+	 * @param {Object} [consumables] Used only if first parameter is {@link module:engine/view/element~Element view element} instance.
 	 * @param {Boolean} consumables.name If set to true element's name will be included.
 	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names.
 	 * @param {String|Array.<String>} consumables.class Class name or array of class names.
@@ -513,11 +510,11 @@ export default class ViewConsumable {
 	}
 
 	/**
-	 * Creates consumable object from {@link engine.view.Element view element}. Consumable object will include
+	 * Creates consumable object from {@link module:engine/view/element~Element view element}. Consumable object will include
 	 * element's name and all its attributes, classes and styles.
 	 *
 	 * @static
-	 * @param {engine.view.Element} element
+	 * @param {module:engine/view/element~Element} element
 	 * @returns {Object} consumables
 	 */
 	static consumablesFromElement( element ) {
@@ -555,14 +552,14 @@ export default class ViewConsumable {
 	}
 
 	/**
-	 * Creates {@link engine.conversion.ViewConsumable ViewConsumable} instance from
-	 * {@link engine.view.Element element} or {@link engine.view.DocumentFragment document fragment}.
+	 * Creates {@link module:engine/conversion/viewconsumable~ViewConsumable ViewConsumable} instance from
+	 * {@link module:engine/view/element~Element element} or {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
 	 * Instance will contain all elements, child nodes, attributes, styles and classes added for consumption.
 	 *
 	 * @static
-	 * @param {engine.view.Element|engine.view.DocumentFragment} from View element or document fragment
+	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} from View element or document fragment
 	 * from which `ViewConsumable` will be created.
-	 * @param {engine.conversion.ViewConsumable} [instance] If provided, given `ViewConsumable` instance will be used
+	 * @param {module:engine/conversion/viewconsumable~ViewConsumable} [instance] If provided, given `ViewConsumable` instance will be used
 	 * to add all consumables. It will be returned instead of a new instance.
 	 */
 	static createFrom( from, instance ) {

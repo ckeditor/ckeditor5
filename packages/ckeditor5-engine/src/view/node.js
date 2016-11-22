@@ -15,7 +15,6 @@ import mix from '../../utils/mix.js';
  * Abstract tree view node class.
  *
  * @abstract
- * @memberOf engine.view
  */
 export default class Node {
 	/**
@@ -25,10 +24,10 @@ export default class Node {
 	 */
 	constructor() {
 		/**
-		 * Parent element. Null by default. Set by {@link engine.view.Element#insertChildren}.
+		 * Parent element. Null by default. Set by {@link module:engine/view/element~Element#insertChildren}.
 		 *
 		 * @readonly
-		 * @member {engine.view.Element|engine.view.DocumentFragment|null} engine.view.Node#parent
+		 * @member {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment|null}
 		 */
 		this.parent = null;
 	}
@@ -66,7 +65,7 @@ export default class Node {
 	 * Node's next sibling, or `null` if it is the last child.
 	 *
 	 * @readonly
-	 * @type {engine.view.Node|null}
+	 * @type {module:engine/view/node~Node|null}
 	 */
 	get nextSibling() {
 		const index = this.index;
@@ -78,7 +77,7 @@ export default class Node {
 	 * Node's previous sibling, or `null` if it is the first child.
 	 *
 	 * @readonly
-	 * @type {engine.view.Node|null}
+	 * @type {module:engine/view/node~Node|null}
 	 */
 	get previousSibling() {
 		const index = this.index;
@@ -90,7 +89,7 @@ export default class Node {
 	 * Top-most ancestor of the node. If the node has no parent it is the root itself.
 	 *
 	 * @readonly
-	 * @type {engine.view.Node|engine.view.DocumentFragment}
+	 * @type {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment}
 	 */
 	get root() {
 		let root = this;
@@ -103,11 +102,11 @@ export default class Node {
 	}
 
 	/**
-	 * {@link engine.view.Document View document} that owns this node, or `null` if the node is inside
-	 * {@link engine.view.DocumentFragment document fragment}.
+	 * {@link module:engine/view/document~Document View document} that owns this node, or `null` if the node is inside
+	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
 	 *
 	 * @readonly
-	 * @type {engine.view.Document|null}
+	 * @type {module:engine/view/document~Document|null}
 	 */
 	get document() {
 		// Parent might be Node, null or DocumentFragment.
@@ -147,9 +146,9 @@ export default class Node {
 	}
 
 	/**
-	 * @param {engine.view.ChangeType} type Type of the change.
-	 * @param {engine.view.Node} node Changed node.
-	 * @fires engine.view.Node#change
+	 * @param {module:engine/view/document~ChangeType} type Type of the change.
+	 * @param {module:engine/view/node~Node} node Changed node.
+	 * @fires module:engine/view/node~Node#change
 	 */
 	_fireChange( type, node ) {
 		this.fire( 'change:' + type, node );
@@ -162,42 +161,42 @@ export default class Node {
 	/**
 	 * Clones this node.
 	 *
-	 * @method view.Node#clone
-	 * @returns {view.Node} Clone of this node.
+	 * @method module:engine/view/node~Node#clone
+	 * @returns {module:engine/view/node~Node} Clone of this node.
 	 */
 
 	/**
 	 * Checks if provided node is similar to this node.
 	 *
-	 * @method view.Node#isSimilar
+	 * @method module:engine/view/node~Node#isSimilar
 	 * @returns {Boolean} True if nodes are similar.
 	 */
 
 	/**
-	 * Fired when list of {@link engine.view.Element elements} children changes.
+	 * Fired when list of {@link module:engine/view/element~Element elements} children changes.
 	 *
 	 * Change event is bubbled – it is fired on all ancestors.
 	 *
-	 * @event engine.view.Node#change:children
-	 * @param {engine.view.Node} Changed node.
+	 * @event module:engine/view/node~Node#change:children
+	 * @param {module:engine/view/node~Node} Changed node.
 	 */
 
 	/**
-	 * Fired when list of {@link engine.view.Element elements} attributes changes.
+	 * Fired when list of {@link module:engine/view/element~Element elements} attributes changes.
 	 *
 	 * Change event is bubbled – it is fired on all ancestors.
 	 *
-	 * @event engine.view.Node#change:attributes
-	 * @param {engine.view.Node} Changed node.
+	 * @event module:engine/view/node~Node#change:attributes
+	 * @param {module:engine/view/node~Node} Changed node.
 	 */
 
 	/**
-	 * Fired when {@link engine.view.Text text nodes} data changes.
+	 * Fired when {@link module:engine/view/text~Text text nodes} data changes.
 	 *
 	 * Change event is bubbled – it is fired on all ancestors.
 	 *
-	 * @event engine.view.Node#change:text
-	 * @param {engine.view.Node} Changed node.
+	 * @event module:engine/view/node~Node#change:text
+	 * @param {module:engine/view/node~Node} Changed node.
 	 */
 }
 

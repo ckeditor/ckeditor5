@@ -18,30 +18,30 @@ import Text from './text.js';
  * Represents a position in the model tree.
  *
  * **Note:** Position is based on offsets, not indexes. This means that position in element containing two text nodes
- * with data `foo` and `bar`, position between them has offset `3`, not `1`. See {@link engine.model.Position#path} for more.
+ * with data `foo` and `bar`, position between them has offset `3`, not `1`.
+ * See {@link module:engine/model/position~Position#path} for more.
  *
- * Since position in a model is represented by a {@link engine.model.Position#root position root} and
- * {@link engine.model.Position#path position path} it is possible to create positions placed in non-existing elements.
- * This requirement is important for {@link engine.model.operation.transfrom operational transformation}.
+ * Since position in a model is represented by a {@link module:engine/model/position~Position#root position root} and
+ * {@link module:engine/model/position~Position#path position path} it is possible to create positions placed in non-existing elements.
+ * This requirement is important for {@link module:engine/model/operation/transform~transform operational transformation}.
  *
- * Also, {@link engine.model.operation.Operation operations} kept in {@link engine.model.Document#history document history}
+ * Also, {@link module:engine/model/operation/operation~Operation operations}
+ * kept in {@link module:engine/model/document~Document#history document history}
  * are storing positions (and ranges) which were correct when those operations were applied, but may not be correct
  * after document got changed.
  *
- * When changes are applied to model, it may also happen that {@link engine.model.Position#parent position parent} will change
- * even if position path has not changed. Keep in mind, that if a position leads to non-existing element,
- * {@link engine.model.Position#parent} and some other properties and methods will throw errors.
+ * When changes are applied to model, it may also happen that {@link module:engine/model/position~Position#parent position parent}
+ * will change even if position path has not changed. Keep in mind, that if a position leads to non-existing element,
+ * {@link module:engine/model/position~Position#parent} and some other properties and methods will throw errors.
  *
  * In most cases, position with wrong path is caused by an error in code, but it is sometimes needed, as described above.
- *
- * @memberOf engine.model
  */
 export default class Position {
 	/**
 	 * Creates a position.
 	 *
-	 * @param {engine.model.Element|engine.model.DocumentFragment} root Root of the position.
-	 * @param {Array.<Number>} path Position path. See {@link engine.model.Position#path}.
+	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} root Root of the position.
+	 * @param {Array.<Number>} path Position path. See {@link module:engine/model/position~Position#path}.
 	 */
 	constructor( root, path ) {
 		if ( !( root instanceof Element ) && !( root instanceof DocumentFragment ) ) {
@@ -71,16 +71,17 @@ export default class Position {
 		 * Root of the position path.
 		 *
 		 * @readonly
-		 * @member {engine.model.Element|engine.model.DocumentFragment} engine.model.Position#root
+		 * @member {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
+		 * module:engine/model/position~Position#root
 		 */
 		this.root = root;
 
 		/**
 		 * Position of the node it the tree. Path is described through offsets, not indexes.
 		 *
-		 * Position can be placed before, after or in a {@link engine.model.Node node} if that node has
-		 * {@link engine.model.Node#offsetSize} greater than `1`. Items in position path are
-		 * {@link engine.model.Node#startOffset starting offsets} of position ancestors, starting from direct root children,
+		 * Position can be placed before, after or in a {@link module:engine/model/node~Node node} if that node has
+		 * {@link module:engine/model/node~Node#offsetSize} greater than `1`. Items in position path are
+		 * {@link module:engine/model/node~Node#startOffset starting offsets} of position ancestors, starting from direct root children,
 		 * down to the position offset in it's parent.
 		 *
 		 *		 ROOT
@@ -91,7 +92,7 @@ export default class Position {
 		 *		     |- LI        before: [ 1, 1 ]      after: [ 1, 2 ]
 		 *		        |- bar    before: [ 1, 1, 0 ]   after: [ 1, 1, 3 ]
 		 *
-		 * `foo` and `bar` are representing {@link engine.model.Text text nodes}. Since text nodes has offset size
+		 * `foo` and `bar` are representing {@link module:engine/model/text~Text text nodes}. Since text nodes has offset size
 		 * greater than `1` you can place position offset between their start and end:
 		 *
 		 *		 ROOT
@@ -102,14 +103,14 @@ export default class Position {
 		 *		     |- LI
 		 *		        |- b^a|r  ^ has path: [ 1, 1, 1 ]   | has path: [ 1, 1, 2 ]
 		 *
-		 * @member {Array.<Number>} engine.model.Position#path
+		 * @member {Array.<Number>} module:engine/model/position~Position#path
 		 */
 		this.path = path;
 	}
 
 	/**
-	 * Offset at which this position is located in its {@link engine.model.Position#parent parent}. It is equal
-	 * to the last item in position {@link engine.model.Position#path path}.
+	 * Offset at which this position is located in its {@link module:engine/model/position~Position#parent parent}. It is equal
+	 * to the last item in position {@link module:engine/model/position~Position#path path}.
 	 *
 	 * @type {Number}
 	 */
@@ -127,13 +128,14 @@ export default class Position {
 	/**
 	 * Parent element of this position.
 	 *
-	 * Keep in mind that `parent` value is calculated when the property is accessed. If {@link engine.model.Position#path position path}
+	 * Keep in mind that `parent` value is calculated when the property is accessed.
+	 * If {@link module:engine/model/position~Position#path position path}
 	 * leads to a non-existing element, `parent` property will throw error.
 	 *
 	 * Also it is a good idea to cache `parent` property if it is used frequently in an algorithm (i.e. in a long loop).
 	 *
 	 * @readonly
-	 * @type {engine.model.Element}
+	 * @type {module:engine/model/element~Element}
 	 */
 	get parent() {
 		let parent = this.root;
@@ -146,8 +148,8 @@ export default class Position {
 	}
 
 	/**
-	 * Position {@link engine.model.Position#offset offset} converted to an index in position's parent node. It is
-	 * equal to the {@link engine.model.Node#getIndex index} of a node after this position. If position is placed
+	 * Position {@link module:engine/model/position~Position#offset offset} converted to an index in position's parent node. It is
+	 * equal to the {@link module:engine/model/node~Node#getIndex index} of a node after this position. If position is placed
 	 * in text node, position index is equal to the index of that text node.
 	 *
 	 * @readonly
@@ -158,11 +160,11 @@ export default class Position {
 	}
 
 	/**
-	 * Returns {@link engine.model.Text text node} instance in which this position is placed or `null` if this
+	 * Returns {@link module:engine/model/text~Text text node} instance in which this position is placed or `null` if this
 	 * position is not in a text node.
 	 *
 	 * @readonly
-	 * @type {engine.model.Text|null}
+	 * @type {module:engine/model/text~Text|null}
 	 */
 	get textNode() {
 		let node = this.parent.getChild( this.index );
@@ -174,7 +176,7 @@ export default class Position {
 	 * Node directly after this position or `null` if this position is in text node.
 	 *
 	 * @readonly
-	 * @type {engine.model.Node|null}
+	 * @type {module:engine/model/node~Node|null}
 	 */
 	get nodeAfter() {
 		return this.textNode === null ? this.parent.getChild( this.index ) : null;
@@ -191,7 +193,7 @@ export default class Position {
 	}
 
 	/**
-	 * Is `true` if position is at the beginning of its {@link engine.model.Position#parent parent}, `false` otherwise.
+	 * Is `true` if position is at the beginning of its {@link module:engine/model/position~Position#parent parent}, `false` otherwise.
 	 *
 	 * @readonly
 	 * @type {Boolean}
@@ -201,7 +203,7 @@ export default class Position {
 	}
 
 	/**
-	 * Is `true` if position is at the end of its {@link engine.model.Position#parent parent}, `false` otherwise.
+	 * Is `true` if position is at the end of its {@link module:engine/model/position~Position#parent parent}, `false` otherwise.
 	 *
 	 * @readonly
 	 * @type {Boolean}
@@ -213,8 +215,8 @@ export default class Position {
 	/**
 	 * Checks whether this position is before or after given position.
 	 *
-	 * @param {engine.model.Position} otherPosition Position to compare with.
-	 * @returns {engine.model.PositionRelation}
+	 * @param {module:engine/model/position~Position} otherPosition Position to compare with.
+	 * @returns {module:engine/model/position~PositionRelation}
 	 */
 	compareWith( otherPosition ) {
 		if ( this.root != otherPosition.root ) {
@@ -243,7 +245,7 @@ export default class Position {
 	}
 
 	/**
-	 * Returns a path to this position's parent. Parent path is equal to position {@link engine.model.Position#path path}
+	 * Returns a path to this position's parent. Parent path is equal to position {@link module:engine/model/position~Position#path path}
 	 * but without the last item.
 	 *
 	 * This method returns the parent path even if the parent does not exists.
@@ -257,18 +259,18 @@ export default class Position {
 	/**
 	 * Returns ancestors array of this position, that is this position's parent and it's ancestors.
 	 *
-	 * @returns {Array.<engine.model.Item>} Array with ancestors.
+	 * @returns {Array.<module:engine/model/item~Item>} Array with ancestors.
 	 */
 	getAncestors() {
 		return this.parent.getAncestors( { includeNode: true, parentFirst: true } );
 	}
 
 	/**
-	 * Returns a new instance of `Position`, that has same {@link engine.model.Position#parent parent} but it's offset
+	 * Returns a new instance of `Position`, that has same {@link module:engine/model/position~Position#parent parent} but it's offset
 	 * is shifted by `shift` value (can be a negative value).
 	 *
 	 * @param {Number} shift Offset shift. Can be a negative value.
-	 * @returns {engine.model.Position} Shifted position.
+	 * @returns {module:engine/model/position~Position} Shifted position.
 	 */
 	getShiftedBy( shift ) {
 		let shifted = Position.createFromPosition( this );
@@ -282,9 +284,9 @@ export default class Position {
 	/**
 	 * Checks whether this position is after given position.
 	 *
-	 * @see engine.model.Position#isBefore
+	 * @see module:engine/model/position~Position#isBefore
 	 *
-	 * @param {engine.model.Position} otherPosition Position to compare with.
+	 * @param {module:engine/model/position~Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if this position is after given position.
 	 */
 	isAfter( otherPosition ) {
@@ -319,7 +321,7 @@ export default class Position {
 	 *			// do A.
 	 *		}
 	 *
-	 * @param {engine.model.Position} otherPosition Position to compare with.
+	 * @param {module:engine/model/position~Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if this position is before given position.
 	 */
 	isBefore( otherPosition ) {
@@ -329,7 +331,7 @@ export default class Position {
 	/**
 	 * Checks whether this position is equal to given position.
 	 *
-	 * @param {engine.model.Position} otherPosition Position to compare with.
+	 * @param {module:engine/model/position~Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if positions are same.
 	 */
 	isEqual( otherPosition ) {
@@ -341,7 +343,7 @@ export default class Position {
 	 * or empty nodes in a range between them. Technically, those positions are not equal but in many cases
 	 * they are very similar or even indistinguishable.
 	 *
-	 * @param {engine.model.Position} otherPosition Position to compare with.
+	 * @param {module:engine/model/position~Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if positions touch.
 	 */
 	isTouching( otherPosition ) {
@@ -398,9 +400,9 @@ export default class Position {
 	 * It may happen that this position is in a removed node. If that is the case, `null` is returned instead.
 	 *
 	 * @protected
-	 * @param {engine.model.Position} deletePosition Position before the first removed node.
+	 * @param {module:engine/model/position~Position} deletePosition Position before the first removed node.
 	 * @param {Number} howMany How many nodes are removed.
-	 * @returns {engine.model.Position|null} Transformed position or `null`.
+	 * @returns {module:engine/model/position~Position|null} Transformed position or `null`.
 	 */
 	_getTransformedByDeletion( deletePosition, howMany ) {
 		let transformed = Position.createFromPosition( this );
@@ -446,12 +448,12 @@ export default class Position {
 	 * Returns a copy of this position that is updated by inserting `howMany` nodes at `insertPosition`.
 	 *
 	 * @protected
-	 * @param {engine.model.Position} insertPosition Position where nodes are inserted.
+	 * @param {module:engine/model/position~Position} insertPosition Position where nodes are inserted.
 	 * @param {Number} howMany How many nodes are inserted.
 	 * @param {Boolean} insertBefore Flag indicating whether nodes are inserted before or after `insertPosition`.
 	 * This is important only when `insertPosition` and this position are same. If that is the case and the flag is
 	 * set to `true`, this position will get transformed. If the flag is set to `false`, it won't.
-	 * @returns {engine.model.Position} Transformed position.
+	 * @returns {module:engine/model/position~Position} Transformed position.
 	 */
 	_getTransformedByInsertion( insertPosition, howMany, insertBefore ) {
 		let transformed = Position.createFromPosition( this );
@@ -486,15 +488,15 @@ export default class Position {
 	 * Returns a copy of this position that is updated by moving `howMany` nodes from `sourcePosition` to `targetPosition`.
 	 *
 	 * @protected
-	 * @param {engine.model.Position} sourcePosition Position before the first element to move.
-	 * @param {engine.model.Position} targetPosition Position where moved elements will be inserted.
+	 * @param {module:engine/model/position~Position} sourcePosition Position before the first element to move.
+	 * @param {module:engine/model/position~Position} targetPosition Position where moved elements will be inserted.
 	 * @param {Number} howMany How many consecutive nodes to move, starting from `sourcePosition`.
 	 * @param {Boolean} insertBefore Flag indicating whether moved nodes are pasted before or after `insertPosition`.
 	 * This is important only when `targetPosition` and this position are same. If that is the case and the flag is
 	 * set to `true`, this position will get transformed by range insertion. If the flag is set to `false`, it won't.
 	 * @param {Boolean} [sticky] Flag indicating whether this position "sticks" to range, that is if it should be moved
 	 * with the moved range if it is equal to one of range's boundaries.
-	 * @returns {engine.model.Position} Transformed position.
+	 * @returns {module:engine/model/position~Position} Transformed position.
 	 */
 	_getTransformedByMove( sourcePosition, targetPosition, howMany, insertBefore, sticky ) {
 		// Moving a range removes nodes from their original position. We acknowledge this by proper transformation.
@@ -539,9 +541,9 @@ export default class Position {
 	 * Finally, the transformed position will point to `[ 1, 1, 4, 1 ]`.
 	 *
 	 * @protected
-	 * @param {engine.model.Position} source Beginning of the moved range.
-	 * @param {engine.model.Position} target Position where the range is moved.
-	 * @returns {engine.model.Position} Combined position.
+	 * @param {module:engine/model/position~Position} source Beginning of the moved range.
+	 * @param {module:engine/model/position~Position} target Position where the range is moved.
+	 * @returns {module:engine/model/position~Position} Combined position.
 	 */
 	_getCombined( source, target ) {
 		const i = source.path.length - 1;
@@ -564,21 +566,21 @@ export default class Position {
 	/**
 	 * Creates position at the given location. The location can be specified as:
 	 *
-	 * * a {@link engine.model.Position position},
+	 * * a {@link module:engine/model/position~Position position},
 	 * * parent element and offset (offset defaults to `0`),
 	 * * parent element and `'end'` (sets position at the end of that element),
-	 * * {@link engine.model.Item model item} and `'before'` or `'after'` (sets position before or after given model item).
+	 * * {@link module:engine/model/item~Item model item} and `'before'` or `'after'` (sets position before or after given model item).
 	 *
 	 * This method is a shortcut to other constructors such as:
 	 *
-	 * * {@link engine.model.Position.createBefore},
-	 * * {@link engine.model.Position.createAfter},
-	 * * {@link engine.model.Position.createFromParentAndOffset},
-	 * * {@link engine.model.Position.createFromPosition}.
+	 * * {@link module:engine/model/position~Position.createBefore},
+	 * * {@link module:engine/model/position~Position.createAfter},
+	 * * {@link module:engine/model/position~Position.createFromParentAndOffset},
+	 * * {@link module:engine/model/position~Position.createFromPosition}.
 	 *
-	 * @param {engine.model.Item|engine.model.Position} itemOrPosition
+	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
-	 * first parameter is a {@link engine.model.Item model item}.
+	 * first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	static createAt( itemOrPosition, offset ) {
 		if ( itemOrPosition instanceof Position ) {
@@ -601,10 +603,10 @@ export default class Position {
 	}
 
 	/**
-	 * Creates a new position, after given {@link engine.model.Item model item}.
+	 * Creates a new position, after given {@link module:engine/model/item~Item model item}.
 	 *
-	 * @param {engine.model.Item} item Item after which the position should be placed.
-	 * @returns {engine.model.Position}
+	 * @param {module:engine/model/item~Item} item Item after which the position should be placed.
+	 * @returns {module:engine/model/position~Position}
 	 */
 	static createAfter( item ) {
 		if ( !item.parent ) {
@@ -612,7 +614,7 @@ export default class Position {
 			 * You can not make position after root.
 			 *
 			 * @error position-after-root
-			 * @param {engine.model.Item} root
+			 * @param {module:engine/model/item~Item} root
 			 */
 			throw new CKEditorError( 'model-position-after-root: You can not make position after root.', { root: item } );
 		}
@@ -621,10 +623,10 @@ export default class Position {
 	}
 
 	/**
-	 * Creates a new position, before the given {@link engine.model.Item model item}.
+	 * Creates a new position, before the given {@link module:engine/model/item~Item model item}.
 	 *
-	 * @param {engine.model.Item} item Item before which the position should be placed.
-	 * @returns {engine.model.Position}
+	 * @param {module:engine/model/item~Item} item Item before which the position should be placed.
+	 * @returns {module:engine/model/position~Position}
 	 */
 	static createBefore( item ) {
 		if ( !item.parent ) {
@@ -632,7 +634,7 @@ export default class Position {
 			 * You can not make position before root.
 			 *
 			 * @error position-before-root
-			 * @param {engine.model.Item} root
+			 * @param {module:engine/model/item~Item} root
 			 */
 			throw new CKEditorError( 'model-position-before-root: You can not make position before root.', { root: item } );
 		}
@@ -643,9 +645,9 @@ export default class Position {
 	/**
 	 * Creates a new position from the parent element and an offset in that element.
 	 *
-	 * @param {engine.model.Element|engine.model.DocumentFragment} parent Position's parent.
+	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} parent Position's parent.
 	 * @param {Number} offset Position's offset.
-	 * @returns {engine.model.Position}
+	 * @returns {module:engine/model/position~Position}
 	 */
 	static createFromParentAndOffset( parent, offset ) {
 		if ( !( parent instanceof Element || parent instanceof DocumentFragment ) ) {
@@ -667,8 +669,8 @@ export default class Position {
 	/**
 	 * Creates a new position, which is equal to passed position.
 	 *
-	 * @param {engine.model.Position} position Position to be cloned.
-	 * @returns {engine.model.Position}
+	 * @param {module:engine/model/position~Position} position Position to be cloned.
+	 * @returns {module:engine/model/position~Position}
 	 */
 	static createFromPosition( position ) {
 		return new this( position.root, position.path.slice() );
@@ -678,7 +680,7 @@ export default class Position {
 	 * Creates a `Position` instance from given plain object (i.e. parsed JSON string).
 	 *
 	 * @param {Object} json Plain object to be converted to `Position`.
-	 * @returns {engine.model.Position} `Position` instance created using given plain object.
+	 * @returns {module:engine/model/position~Position} `Position` instance created using given plain object.
 	 */
 	static fromJSON( json, doc ) {
 		if ( json.root === '$graveyard' ) {
@@ -706,5 +708,5 @@ export default class Position {
  * A flag indicating whether this position is `'before'` or `'after'` or `'same'` as given position.
  * If positions are in different roots `'different'` flag is returned.
  *
- * @typedef {String} engine.model.PositionRelation
+ * @typedef {String} module:engine/model/position~PositionRelation
  */

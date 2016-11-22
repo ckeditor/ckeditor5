@@ -19,7 +19,8 @@ import log from '../../utils/log.js';
  * functionality to work.
  *
  * **Note:** Use {@link module:engine/controller/datacontroller~DataController#insertContent} instead of this function.
- * This function is only exposed to be reusable in algorithms which change the {@link engine.controller.DataController#insertContent}
+ * This function is only exposed to be reusable in algorithms
+ * which change the {@link module:engine/controller/datacontroller~DataController#insertContent}
  * method's behavior.
  *
  * @param {module:engine/controller/datacontroller~DataController} dataController The data controller in context of which the insertion
@@ -76,7 +77,7 @@ class Insertion {
 		/**
 		 * The position at which (or near which) the next node will be inserted.
 		 *
-		 * @member {module:engine/model/position~Position} #position
+		 * @member {module:module:engine/model/position~Position~Position} #position
 		 */
 		this.position = position;
 
@@ -374,7 +375,7 @@ class Insertion {
 	 * Check whether the given node is allowed in the specified schema path.
 	 *
 	 * @param {module:engine/model/node~Node} node
-	 * @param {module:engine/model/schemapath~SchemaPath} path
+	 * @param {module:engine/model/schema~SchemaPath} path
 	 */
 	_checkIsAllowed( node, path ) {
 		return this.schema.check( {
