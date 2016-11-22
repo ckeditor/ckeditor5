@@ -21,7 +21,11 @@ export default class ViewCollection extends Collection {
 	 * @param {utils.Locale} [locale] The {@link core.editor.Editor#locale editor's locale} instance.
 	 */
 	constructor( locale ) {
-		super();
+		super( {
+			// An #id Number attribute should be legal and not break the `ViewCollection` instance.
+			// https://github.com/ckeditor/ckeditor5-ui/issues/93
+			idProperty: 'viewUid'
+		} );
 
 		// Handle {@link ui.View#element} in DOM when a new view is added to the collection.
 		this.on( 'add', ( evt, view, index ) => {
@@ -70,10 +74,6 @@ export default class ViewCollection extends Collection {
 		 * @member {HTMLElement} ui.ViewCollection#_boundItemsToViewsMap
 		 */
 		this._boundItemsToViewsMap = new Map();
-
-		// An #id Number attribute should be legal and not break the `ViewCollection` instance.
-		// https://github.com/ckeditor/ckeditor5-ui/issues/93
-		this._idProperty = 'viewUid';
 	}
 
 	/**
