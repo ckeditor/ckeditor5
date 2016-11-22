@@ -198,6 +198,17 @@ export default class Element extends Node {
 		return nodes;
 	}
 
+	/**
+	 * Returns a descendant node by its path relative to this element.
+	 *
+	 *		// <this>a<b>c</b></this>
+	 *		this.getNodeByPath( [ 0 ] );     // -> "a"
+	 *		this.getNodeByPath( [ 1 ] );     // -> <b>
+	 *		this.getNodeByPath( [ 1, 0 ] );  // -> "c"
+	 *
+	 * @param {Array.<Number>} relativePath Path of the node to find, relative to this element.
+	 * @returns {engine.model.Node}
+	 */
 	getNodeByPath( relativePath ) {
 		let node = this;
 
