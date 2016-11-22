@@ -335,7 +335,7 @@ export default class Document {
 		const json = clone( this );
 
 		// Due to circular references we need to remove parent reference.
-		json.selection = '[module:engine/model/liveselection~LiveSelection]';
+		json.selection = '[engine.model.LiveSelection]';
 
 		return json;
 	}

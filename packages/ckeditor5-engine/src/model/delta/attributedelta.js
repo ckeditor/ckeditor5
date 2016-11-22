@@ -86,7 +86,7 @@ export default class AttributeDelta extends Delta {
 	 * @inheritDoc
 	 */
 	static get className() {
-		return 'engine.model.delta~Delta.AttributeDelta';
+		return 'engine.model.delta.AttributeDelta';
 	}
 
 	/**

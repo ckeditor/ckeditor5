@@ -94,7 +94,7 @@ export default class InsertOperation extends Operation {
 	 * @inheritDoc
 	 */
 	static get className() {
-		return 'engine.model.operation.insertOperation';
+		return 'engine.model.operation.InsertOperation';
 	}
 
 	/**
