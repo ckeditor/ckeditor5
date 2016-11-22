@@ -19,7 +19,7 @@ export default class ClipboardObserver extends DomEventObserver {
 	constructor( doc ) {
 		super( doc );
 
-		this.domEventType = 'paste';
+		this.domEventType = [ 'paste', 'copy', 'cut' ];
 	}
 
 	onDomEvent( domEvent ) {
@@ -44,7 +44,35 @@ export default class ClipboardObserver extends DomEventObserver {
  */
 
 /**
- * The value of the {@link engine.view.Document#paste} event.
+ * Fired when user copied content from one of the editables.
+ *
+ * Introduced by {@link clipboard.ClipboardObserver}.
+ *
+ * Note that this event is not available by default. To make it available {@link clipboard.ClipboardObserver} needs to be added
+ * to {@link engine.view.Document} by the {@link engine.view.Document#addObserver} method.
+ * It's done by the {@link clipboard.Clipboard} feature. If it's not loaded, it must be done manually.
+ *
+ * @see clipboard.ClipboardObserver
+ * @event engine.view.Document#copy
+ * @param {engine.view.observer.ClipboardEventData} data Event data.
+ */
+
+/**
+ * Fired when user cut content from one of the editables.
+ *
+ * Introduced by {@link clipboard.ClipboardObserver}.
+ *
+ * Note that this event is not available by default. To make it available {@link clipboard.ClipboardObserver} needs to be added
+ * to {@link engine.view.Document} by the {@link engine.view.Document#addObserver} method.
+ * It's done by the {@link clipboard.Clipboard} feature. If it's not loaded, it must be done manually.
+ *
+ * @see clipboard.ClipboardObserver
+ * @event engine.view.Document#cut
+ * @param {engine.view.observer.ClipboardEventData} data Event data.
+ */
+
+/**
+ * The value of the {@link engine.view.Document#paste}, {@link engine.view.Document#copy} and {@link engine.view.Document#cut} events.
  *
  * In order to access clipboard data use {@link #dataTransfer}.
  *

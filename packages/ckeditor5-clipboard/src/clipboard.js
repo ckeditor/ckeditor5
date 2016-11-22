@@ -16,9 +16,9 @@ import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
  * The clipboard feature. Currently, it's only responsible for intercepting the `paste` event and
  * passing the pasted content through the clipboard pipeline.
  *
- * ## Clipboard Pipeline
+ * ## Clipboard input pipeline
  *
- * The feature creates the clipboard pipeline which allows for processing clipboard content
+ * The feature creates the clipboard input pipeline which allows processing clipboard content
  * before it gets inserted into the editor. The pipeline consists of two events on which
  * the features can listen in order to modify or totally override the default behavior.
  *
@@ -27,13 +27,13 @@ import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
  * The default action is to:
  *
  * 1. get HTML or plain text from the clipboard,
- * 2. fire {@link engine.view.Document#clipboardInput} with the clipboard data parsed to
- * a {@link engine.view.DocumentFragment view document fragment},
- * 3. prevent the default action of the native `paste` event.
+ * 2. prevent the default action of the native `paste` event,
+ * 3. fire {@link engine.view.Document#clipboardInput} with the clipboard data parsed to
+ * a {@link engine.view.DocumentFragment view document fragment}.
  *
- * This action is performed by a low priority listener, so it can be overridden by a normal one.
- * You'd only need to do this when a deeper change in pasting behavior was needed. For example,
- * a feature which wants to differently read data from the clipboard (the {@link clipboard.DataTransfer `DataTransfer`}).
+ * This action is performed by a low priority listener, so it can be overridden by a normal one
+ * when a deeper change in pasting behavior is needed. For example, a feature which wants to differently read
+ * data from the clipboard (the {@link clipboard.DataTransfer `DataTransfer`}).
  * should plug a listener at this stage.
  *
  * ### On {@link engine.view.Document#clipboardInput}
@@ -60,6 +60,29 @@ import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
  *			}
  *		} );
  *
+ * ## Clipboard output pipeline
+ *
+ * The output pipeline is the equivalent of the input pipeline but for the copy and cut operations.
+ * It allows to process the content which will be then put into the clipboard or to override the whole process.
+ *
+ * ### On {@link engine.view.Document#copy} and {@link engine.view.Document#cut}
+ *
+ * The default action is to:
+ *
+ * 1. {@link engine.controller.DataController#getSelectedContent get selected content} from the editor,
+ * 2. prevent the default action of the native `copy` or `cut` event,
+ * 3. fire {@link engine.view.Document#clipboardOutput} with a clone of the selected content
+ * converted to a {@link engine.view.DocumentFragment view document fragment}.
+ *
+ * ### On {@link engine.view.Document#clipboardOutput}
+ *
+ * The default action is to put the content (`data.content`, represented by a {@link engine.view.DocumentFragment})
+ * to the clipboard as HTML. In case of the cut operation, the selected content is also deleted from the editor.
+ *
+ * This action is performed by a low priority listener, so it can be overridden by a normal one.
+ *
+ * At this stage the copied/cut content can be processed by the features.
+ *
  * @memberOf clipboard
  * @extends core.Feature
  */
@@ -69,6 +92,7 @@ export default class Clipboard extends Feature {
 	 */
 	init() {
 		const editor = this.editor;
+		const doc = editor.document;
 		const editingView = editor.editing.view;
 
 		/**
@@ -81,7 +105,7 @@ export default class Clipboard extends Feature {
 
 		editingView.addObserver( ClipboardObserver );
 
-		// The clipboard pipeline.
+		// The clipboard paste pipeline.
 
 		this.listenTo( editingView, 'paste', ( evt, data ) => {
 			const dataTransfer = data.dataTransfer;
@@ -102,7 +126,6 @@ export default class Clipboard extends Feature {
 
 		this.listenTo( editingView, 'clipboardInput', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
-				const doc = editor.document;
 				const dataController = this.editor.data;
 
 				// Convert the pasted content to a model document fragment.
@@ -114,6 +137,32 @@ export default class Clipboard extends Feature {
 
 				doc.enqueueChanges( () => {
 					dataController.insertContent( modelFragment, doc.selection );
+				} );
+			}
+		}, { priority: 'low' } );
+
+		// The clipboard copy/cut pipeline.
+
+		const onCopyCut = ( evt, data ) => {
+			const dataTransfer = data.dataTransfer;
+			const content = editor.data.toView( editor.data.getSelectedContent( doc.selection ) );
+
+			data.preventDefault();
+
+			editingView.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name } );
+		};
+
+		this.listenTo( editingView, 'copy', onCopyCut, { priority: 'low' } );
+		this.listenTo( editingView, 'cut', onCopyCut, { priority: 'low' } );
+
+		this.listenTo( editingView, 'clipboardOutput', ( evt, data ) => {
+			if ( !data.content.isEmpty ) {
+				data.dataTransfer.setData( 'text/html', this._htmlDataProcessor.toData( data.content ) );
+			}
+
+			if ( data.method == 'cut' ) {
+				doc.enqueueChanges( () => {
+					editor.data.deleteContent( doc.selection, doc.batch(), { merge: true } );
 				} );
 			}
 		}, { priority: 'low' } );
@@ -141,12 +190,48 @@ export default class Clipboard extends Feature {
  * Data transfer instance.
  *
  * @readonly
- * @member {clipboard.DataTransfer} engine.view.observer.ClipboardEventData#dataTransfer
+ * @member {clipboard.DataTransfer} engine.view.observer.ClipboardInputEventData#dataTransfer
  */
 
 /**
  * Content to be inserted into the editor. It can be modified by the event listeners.
- * Read more about the clipboard pipeline in {@link clipboard.Clipboard}.
+ * Read more about the clipboard pipelines in {@link clipboard.Clipboard}.
  *
- * @member {engine.view.DocumentFragment} engine.view.observer.ClipboardEventData#content
+ * @member {engine.view.DocumentFragment} engine.view.observer.ClipboardInputEventData#content
+ */
+
+/**
+ * Fired on {@link envine.view.Document#copy} and {@link envine.view.Document#cut} with a copy of selected content.
+ * The content can be processed before it ends up in the clipboard. It's part of the {@link clipboard.Clipboard "clipboard pipeline"}.
+ *
+ * @see clipboard.ClipboardObserver
+ * @see clipboard.Clipboard
+ * @event engine.view.Document#clipboardOutput
+ * @param {engine.view.observer.ClipboardOutputEventData} data Event data.
+ */
+
+/**
+ * The value of the {@link engine.view.Document#clipboardOutput} event.
+ *
+ * @class engine.view.observer.ClipboardOutputEventData
+ */
+
+/**
+ * Data transfer instance.
+ *
+ * @readonly
+ * @member {clipboard.DataTransfer} engine.view.observer.ClipboardOutputEventData#dataTransfer
+ */
+
+/**
+ * Content to be put into the clipboard. It can be modified by the event listeners.
+ * Read more about the clipboard pipelines in {@link clipboard.Clipboard}.
+ *
+ * @member {engine.view.DocumentFragment} engine.view.observer.ClipboardOutputEventData#content
+ */
+
+/**
+ * Whether the event was triggered by copy or cut operation.
+ *
+ * @member {'copy'|'cut'} engine.view.observer.ClipboardOutputEventData#method
  */

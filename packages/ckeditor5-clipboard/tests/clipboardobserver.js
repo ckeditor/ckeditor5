@@ -18,7 +18,7 @@ describe( 'ClipboardObserver', () => {
 	} );
 
 	it( 'should define domEventType', () => {
-		expect( observer.domEventType ).to.equal( 'paste' );
+		expect( observer.domEventType ).to.deep.equal( [ 'paste', 'copy', 'cut' ] );
 	} );
 
 	describe( 'onDomEvent', () => {
@@ -41,5 +41,7 @@ describe( 'ClipboardObserver', () => {
 			expect( data.dataTransfer ).to.be.instanceOf( DataTransfer );
 			expect( data.dataTransfer.getData( 'x/y' ) ).to.equal( 'foo:x/y' );
 		} );
+
+		// If it fires paste it fires all the other events too.
 	} );
 } );
