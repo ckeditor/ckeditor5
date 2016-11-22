@@ -12,6 +12,7 @@ import buildModelConverter  from 'ckeditor5/engine/conversion/buildmodelconverte
 
 import ModelDocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
 import ModelText from 'ckeditor5/engine/model/text.js';
+import ModelSelection from 'ckeditor5/engine/model/selection.js';
 
 import { getData, setData, stringify, parse } from 'ckeditor5/engine/dev-utils/model.js';
 
@@ -97,6 +98,20 @@ describe( 'DataController', () => {
 			expect( getData( modelDocument ) )
 				.to.equal( '<paragraph>fo[o]bar</paragraph>' );
 			expect( modelDocument.selection.isBackward ).to.true;
+		} );
+
+		it( 'should add getSelectedContent listener', () => {
+			schema.registerItem( 'paragraph', '$block' );
+
+			setData( modelDocument, '<paragraph>fo[ob]ar</paragraph>' );
+
+			const evtData = {
+				selection: modelDocument.selection
+			};
+
+			data.fire( 'getSelectedContent', evtData );
+
+			expect( stringify( evtData.content ) ).to.equal( 'ob' );
 		} );
 	} );
 
@@ -361,6 +376,33 @@ describe( 'DataController', () => {
 
 			expect( evtData.selection ).to.equal( modelDocument.selection );
 			expect( evtData.options ).to.equal( opts );
+		} );
+	} );
+
+	describe( 'getSelectedContent', () => {
+		it( 'should fire the getSelectedContent event', () => {
+			const spy = sinon.spy();
+			const sel = new ModelSelection();
+
+			data.on( 'getSelectedContent', spy );
+
+			data.getSelectedContent( sel );
+
+			const evtData = spy.args[ 0 ][ 1 ];
+
+			expect( evtData.selection ).to.equal( sel );
+		} );
+
+		it( 'should return the evtData.content of the getSelectedContent event', () => {
+			const frag = new ModelDocumentFragment();
+
+			data.on( 'getSelectedContent', ( evt, data ) => {
+				data.content = frag;
+
+				evt.stop();
+			}, { priority: 'high' } );
+
+			expect( data.getSelectedContent() ).to.equal( frag );
 		} );
 	} );
 } );

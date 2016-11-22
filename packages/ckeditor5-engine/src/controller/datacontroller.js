@@ -26,6 +26,7 @@ import ModelPosition from '../model/position.js';
 import insertContent from './insertcontent.js';
 import deleteContent from './deletecontent.js';
 import modifySelection from './modifyselection.js';
+import getSelectedContent from './getselectedcontent.js';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
@@ -119,6 +120,9 @@ export default class DataController {
 		this.on( 'insertContent', ( evt, data ) => insertContent( this, data.content, data.selection, data.batch ) );
 		this.on( 'deleteContent', ( evt, data ) => deleteContent( data.selection, data.batch, data.options ) );
 		this.on( 'modifySelection', ( evt, data ) => modifySelection( data.selection, data.options ) );
+		this.on( 'getSelectedContent', ( evt, data ) => {
+			data.content = getSelectedContent( data.selection );
+		} );
 	}
 
 	/**
@@ -263,6 +267,21 @@ export default class DataController {
 	modifySelection( selection, options ) {
 		this.fire( 'modifySelection', { selection, options } );
 	}
+
+	/**
+	 * See {@link engine.controller.getSelectedContent}.
+	 *
+	 * @fires engine.controller.DataController#getSelectedContent
+	 * @param {engine.model.Selection} selection The selection of which content will be retrieved.
+	 * @returns {engine.model.DocumentFragment} Document fragment holding the clone of the selected content.
+	 */
+	getSelectedContent( selection ) {
+		const evtData = { selection };
+
+		this.fire( 'getSelectedContent', evtData );
+
+		return evtData.content;
+	}
 }
 
 mix( DataController, EmitterMixin );
@@ -300,4 +319,16 @@ mix( DataController, EmitterMixin );
  * @param {Object} data
  * @param {module:engine/model/selection~Selection} data.selection
  * @param {Object} data.options See {@link module:engine/controller/modifyselection~modifySelection}'s options.
+ */
+
+/**
+ * Event fired when {@link engine.controller.DataController#getSelectedContent} method is called.
+ * The {@link engine.controller.getSelectedContent default action of that method} is implemented as a
+ * listener to this event so it can be fully customized by the features.
+ *
+ * @event engine.controller.DataController#getSelectedContent
+ * @param {Object} data
+ * @param {engine.model.Selection} data.selection
+ * @param {engine.model.DocumentFragment} data.content The document fragment to return
+ * (holding a clone of the selected content).
  */

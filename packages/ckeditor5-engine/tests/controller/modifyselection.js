@@ -8,7 +8,7 @@ import Selection from 'ckeditor5/engine/model/selection.js';
 import modifySelection from 'ckeditor5/engine/controller/modifyselection.js';
 import { setData, stringify } from 'ckeditor5/engine/dev-utils/model.js';
 
-describe( 'Delete utils', () => {
+describe( 'DataController', () => {
 	let document;
 
 	beforeEach( () => {

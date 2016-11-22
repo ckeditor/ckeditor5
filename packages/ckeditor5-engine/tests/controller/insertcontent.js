@@ -49,6 +49,9 @@ describe( 'DataController', () => {
 				// Otherwise it won't be passed to the temporary model fragment used inside insert().
 				schema.allow( { name: 'disallowedElement', inside: '$clipboardHolder' } );
 
+				schema.allow( { name: '$inline', attributes: [ 'bold' ] } );
+				schema.allow( { name: '$inline', attributes: [ 'italic' ] } );
+
 				schema.objects.add( 'image' );
 			} );
 
@@ -62,6 +65,41 @@ describe( 'DataController', () => {
 				setData( doc, 'foo[]' );
 				insertHelper( 'xyz' );
 				expect( getData( doc ) ).to.equal( 'fooxyz[]' );
+			} );
+
+			it( 'inserts one text node with attribute', () => {
+				setData( doc, 'f[]oo' );
+				insertHelper( '<$text bold="true">xyz</$text>' );
+				expect( getData( doc ) ).to.equal( 'f<$text bold="true">xyz[]</$text>oo' );
+
+				expect( doc.selection.getAttribute( 'bold' ) ).to.be.true;
+			} );
+
+			it( 'inserts one text node with attribute into text with a different attribute', () => {
+				setData( doc, '<$text bold="true">f[]oo</$text>' );
+				insertHelper( '<$text italic="true">xyz</$text>' );
+				expect( getData( doc ) )
+					.to.equal( '<$text bold="true">f</$text><$text italic="true">xyz[]</$text><$text bold="true">oo</$text>' );
+
+				expect( doc.selection.getAttribute( 'italic' ) ).to.be.true;
+				expect( doc.selection.hasAttribute( 'bold' ) ).to.be.false;
+			} );
+
+			it( 'inserts one text node with attribute into text with the same attribute', () => {
+				setData( doc, '<$text bold="true">f[]oo</$text>' );
+				insertHelper( '<$text bold="true">xyz</$text>' );
+				expect( getData( doc ) )
+					.to.equal( '<$text bold="true">fxyz[]oo</$text>' );
+
+				expect( doc.selection.getAttribute( 'bold' ) ).to.be.true;
+			} );
+
+			it( 'inserts a text without attributes into a text with an attribute', () => {
+				setData( doc, '<$text bold="true">f[]oo</$text>' );
+				insertHelper( 'xyz' );
+				expect( getData( doc ) ).to.equal( '<$text bold="true">f</$text>xyz[]<$text bold="true">oo</$text>' );
+
+				expect( doc.selection.hasAttribute( 'bold' ) ).to.be.false;
 			} );
 
 			it( 'inserts an element', () => {

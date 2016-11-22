@@ -9,7 +9,6 @@
 
 import Position from './position.js';
 import TreeWalker from './treewalker.js';
-import compareArrays from '../../utils/comparearrays.js';
 
 /**
  * Range class. Range is iterable.
@@ -231,7 +230,7 @@ export default class Range {
 	/**
 	 * Computes and returns the smallest set of {@link #isFlat flat} ranges, that covers this range in whole.
 	 *
-	 * See an example of model structure (`[` and `]` are range boundaries):
+	 * See an example of a model structure (`[` and `]` are range boundaries):
 	 *
 	 *		root                                                            root
 	 *		 |- element DIV                         DIV             P2              P3             DIV
@@ -259,21 +258,17 @@ export default class Range {
 	 *		( [ 1 ], [ 3 ] ) = element P2, element P3 ("foobar")
 	 *		( [ 3, 0, 0 ], [ 3, 0, 2 ] ) = "se"
 	 *
-	 * **Note:** if an {@link module:engine/model/element~Element element} is not contained wholly in this range, it won't be returned
-	 * in any of returned flat ranges. See in an example, how `H` elements at the beginning and at the end of the range
-	 * were omitted. Only it's parts that were wholly in the range were returned.
+	 * **Note:** if an {@link module:engine/model/element~Element element} is not wholly contained in this range, it won't be returned
+	 * in any of the returned flat ranges. See in the example how `H` elements at the beginning and at the end of the range
+	 * were omitted. Only their parts that were wholly in the range were returned.
 	 *
 	 * **Note:** this method is not returning flat ranges that contain no nodes.
 	 *
 	 * @returns {Array.<module:engine/model/range~Range>} Array of flat ranges covering this range.
 	 */
 	getMinimalFlatRanges() {
-		let ranges = [];
-
-		// We find on which tree-level start and end have the lowest common ancestor
-		let cmp = compareArrays( this.start.path, this.end.path );
-		// If comparison returned string it means that arrays are same.
-		let diffAt = ( typeof cmp == 'string' ) ? Math.min( this.start.path.length, this.end.path.length ) : cmp;
+		const ranges = [];
+		const diffAt = this.start.getCommonPath( this.end ).length;
 
 		let pos = Position.createFromPosition( this.start );
 		let posParent = pos.parent;

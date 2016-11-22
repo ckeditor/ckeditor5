@@ -257,7 +257,7 @@ export default class Position {
 	}
 
 	/**
-	 * Returns ancestors array of this position, that is this position's parent and it's ancestors.
+	 * Returns ancestors array of this position, that is this position's parent and its ancestors.
 	 *
 	 * @returns {Array.<module:engine/model/item~Item>} Array with ancestors.
 	 */
@@ -266,7 +266,27 @@ export default class Position {
 	}
 
 	/**
-	 * Returns a new instance of `Position`, that has same {@link module:engine/model/position~Position#parent parent} but it's offset
+	 * Returns the slice of two position {@link #path paths} which is identical. The {@link #root roots}
+	 * of these two paths must be identical.
+	 *
+	 * @param {engine.model.Position} position The second position.
+	 * @returns {Array.<Number>} The common path.
+	 */
+	getCommonPath( position ) {
+		if ( this.root != position.root ) {
+			return [];
+		}
+
+		// We find on which tree-level start and end have the lowest common ancestor
+		let cmp = compareArrays( this.path, position.path );
+		// If comparison returned string it means that arrays are same.
+		let diffAt = ( typeof cmp == 'string' ) ? Math.min( this.path.length, position.path.length ) : cmp;
+
+		return this.path.slice( 0, diffAt );
+	}
+
+	/**
+	 * Returns a new instance of `Position`, that has same {@link engine.model.Position#parent parent} but it's offset
 	 * is shifted by `shift` value (can be a negative value).
 	 *
 	 * @param {Number} shift Offset shift. Can be a negative value.
