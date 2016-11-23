@@ -7,100 +7,33 @@
 
 import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
 import Image from 'ckeditor5/image/image.js';
-import Paragraph from 'ckeditor5/paragraph/paragraph.js';
 import ImageEngine from 'ckeditor5/image/imageengine.js';
-import MouseObserver from 'ckeditor5/engine/view/observer/mouseobserver.js';
-import { getData as getModelData } from 'ckeditor5/engine/dev-utils/model.js';
+import Widget from 'ckeditor5/image/widget/widget.js';
 
 describe( 'Image', () => {
-	let editor, document, viewDocument, imageFeature;
+	let editor;
 
 	beforeEach( () => {
 		const editorElement = window.document.createElement( 'div' );
 		window.document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-			features: [ Image, Paragraph ]
+			features: [ Image ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
-			document = editor.document;
-			viewDocument = editor.editing.view;
-			imageFeature = editor.plugins.get( Image );
 		} );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( imageFeature ).to.instanceOf( Image );
+		expect( editor.plugins.get( Image ) ).to.instanceOf( Image );
 	} );
 
-	it( 'should load ImageEngine', () => {
+	it( 'should load ImageEngine feature', () => {
 		expect( editor.plugins.get( ImageEngine ) ).to.instanceOf( ImageEngine );
 	} );
 
-	it( 'should add MouseObserver', () => {
-		expect( viewDocument.getObserver( MouseObserver ) ).to.be.instanceOf( MouseObserver );
-	} );
-
-	it( 'should create selection in model on mousedown event', () => {
-		editor.setData( '<figure class="image"><img src="image.png" alt="alt text" /></figure>' );
-		const imageWidget = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = {
-			target: imageWidget,
-			preventDefault: sinon.spy()
-		};
-
-		viewDocument.fire( 'mousedown', domEventDataMock );
-
-		sinon.assert.calledOnce( domEventDataMock.preventDefault );
-		expect( getModelData( document ) ).to.equal( '[<image alt="alt text" src="image.png"></image>]' );
-	} );
-
-	it( 'should create selection in model on mousedown event when target is widget\'s child element', () => {
-		editor.setData( '<figure class="image"><img src="image.png" alt="alt text" /></figure>' );
-		const imgElement = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
-		const domEventDataMock = {
-			target: imgElement,
-			preventDefault: sinon.spy()
-		};
-
-		viewDocument.fire( 'mousedown', domEventDataMock );
-
-		sinon.assert.calledOnce( domEventDataMock.preventDefault );
-		expect( getModelData( document ) ).to.equal( '[<image alt="alt text" src="image.png"></image>]' );
-	} );
-
-	it( 'should do not change model if mousedown event is not on image', () => {
-		editor.setData( '<p>foo bar</p><figure class="image"><img src="image.png" alt="alt text" /></figure>' );
-
-		const paragraph = viewDocument.getRoot().getChild( 0 );
-
-		const domEventDataMock = {
-			target: paragraph,
-			preventDefault: sinon.spy()
-		};
-
-		viewDocument.fire( 'mousedown', domEventDataMock );
-		sinon.assert.notCalled( domEventDataMock.preventDefault );
-
-		expect( getModelData( document ) )
-			.to.equal( '<paragraph>[]foo bar</paragraph><image alt="alt text" src="image.png"></image>' );
-	} );
-
-	it( 'should not focus editable if already is focused', () => {
-		editor.setData( '<figure class="image"><img src="image.png" alt="alt text" /></figure>' );
-		const imageWidget = viewDocument.getRoot().getChild( 0 );
-		const domEventDataMock = {
-			target: imageWidget,
-			preventDefault: sinon.spy()
-		};
-		const focusSpy = sinon.spy( viewDocument, 'focus' );
-
-		viewDocument.isFocused = true;
-		viewDocument.fire( 'mousedown', domEventDataMock );
-
-		sinon.assert.calledOnce( domEventDataMock.preventDefault );
-		sinon.assert.notCalled( focusSpy );
-		expect( getModelData( document ) ).to.equal( '[<image alt="alt text" src="image.png"></image>]' );
+	it( 'should load Widget feature', () => {
+		expect( editor.plugins.get( Widget ) ).to.instanceOf( Widget );
 	} );
 } );
