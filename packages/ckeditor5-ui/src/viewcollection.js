@@ -7,6 +7,7 @@ import CKEditorError from '../utils/ckeditorerror.js';
 import ObservableMixin from '../utils/observablemixin.js';
 import Collection from '../utils/collection.js';
 import mix from '../utils/mix.js';
+import View from './view.js';
 
 /**
  * Collects {@link ui.View} instances.
@@ -233,7 +234,7 @@ export default class ViewCollection extends Collection {
 			as: ( CallbackOrViewClass ) => {
 				let createView;
 
-				if ( CallbackOrViewClass.prototype ) {
+				if ( CallbackOrViewClass.prototype instanceof View ) {
 					createView = ( item ) => {
 						const viewInstance = new CallbackOrViewClass( this.locale, item );
 

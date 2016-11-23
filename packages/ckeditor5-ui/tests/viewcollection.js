@@ -281,7 +281,7 @@ describe( 'ViewCollection', () => {
 				expect( collection ).to.have.length( 0 );
 			} );
 
-			it( 'binds collection as a view factory – custom factory', () => {
+			it( 'binds collection as a view factory – custom factory (arrow function)', () => {
 				const locale = {};
 				const items = new Collection();
 
@@ -300,6 +300,28 @@ describe( 'ViewCollection', () => {
 				expect( collection.get( 1 ) ).to.be.instanceOf( ViewClass );
 				expect( collection.get( 0 ).locale ).to.equal( locale );
 				expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
+			} );
+
+			// https://github.com/ckeditor/ckeditor5-ui/issues/113
+			it( 'binds collection as a view factory – custom factory (normal function)', () => {
+				const locale = { locale: true };
+				const items = new Collection();
+
+				collection = new ViewCollection( locale );
+				collection.bindTo( items ).as( function( item ) {
+					return new ViewClass( locale, item );
+				} );
+
+				items.add( { id: '1' } );
+
+				expect( collection ).to.have.length( 1 );
+
+				const view = collection.get( 0 );
+
+				// Wrong args will be passed to the callback if it's treated as the view constructor.
+				expect( view ).to.be.instanceOf( ViewClass );
+				expect( view.locale ).to.equal( locale );
+				expect( view.data ).to.equal( items.get( 0 ) );
 			} );
 		} );
 	} );
