@@ -23,8 +23,8 @@ export default class Operation {
 		/**
 		 * {@link module:engine/model/document~Document#version} on which operation can be applied. If you try to
 		 * {@link module:engine/model/document~Document#applyOperation apply} operation with different base version than the
-		 * {@link module:engine/model/document~Document#version document version} the {@link document-applyOperation-wrong-version}
-		 * error is thrown.
+		 * {@link module:engine/model/document~Document#version document version} the
+		 * {@link module:utils/ckeditorerror~CKEditorError model-document-applyOperation-wrong-version} error is thrown.
 		 *
 		 * @member {Number} #baseVersion
 		 */
@@ -48,7 +48,7 @@ export default class Operation {
 		 * Creates and returns an operation that has the same parameters as this operation.
 		 *
 		 * @method #clone
-		 * @returns {} Clone of this operation.
+		 * @returns {module:engine/model/operation/operation~Operation} Clone of this operation.
 		 */
 
 		/**
@@ -61,7 +61,7 @@ export default class Operation {
 		 * {@link module:engine/model/operation/transform~transform} it by all operations that were executed after the original operation.
 		 *
 		 * @method #getReversed
-		 * @returns {} Reversed operation.
+		 * @returns {module:engine/model/operation/operation~Operation} Reversed operation.
 		 */
 
 		/**

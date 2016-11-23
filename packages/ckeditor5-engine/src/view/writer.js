@@ -23,7 +23,7 @@ import isIterable from '../../utils/isiterable.js';
  * @namespace writer
  */
 
-export default {
+const writer = {
 	breakAttributes,
 	breakContainer,
 	mergeAttributes,
@@ -36,6 +36,8 @@ export default {
 	unwrap,
 	rename
 };
+
+export default writer;
 
 /**
  * Breaks attribute nodes at provided position or at boundaries of provided range. It breaks attribute elements inside
@@ -462,10 +464,9 @@ export function wrap( range, attribute ) {
  * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-wrap-invalid-attribute` when passed attribute element is not
  * an instance of {module:engine/view/attributeelement~AttributeElement AttributeElement}.
  *
- * @function module:engine/view/writer~writer.wrapPosition
  * @param {module:engine/view/position~Position} position
  * @param {module:engine/view/attributeelement~AttributeElement} attribute
- * @returns {Position} New position after wrapping.
+ * @returns {module:engine/view/position~Position} New position after wrapping.
  */
 export function wrapPosition( position, attribute ) {
 	if ( !( attribute instanceof AttributeElement ) ) {
@@ -524,7 +525,6 @@ export function wrapPosition( position, attribute ) {
  * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
  * same parent container.
  *
- * @function module:engine/view/writer~writer.unwrap
  * @param {module:engine/view/range~Range} range
  * @param {module:engine/view/attributeelement~AttributeElement} element
  */

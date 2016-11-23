@@ -70,7 +70,7 @@ export default class AttributeElement extends Element {
 	}
 
 	/**
-	 * Returns block {@link module:engine/view/filter~Filter filler} offset or `null` if a block filler is not needed.
+	 * Returns block {@link module:engine/view/filler filler} offset or `null` if a block filler is not needed.
 	 *
 	 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
 	 */

@@ -19,7 +19,7 @@ import { NBSP_FILLER } from '../view/filler.js';
  * This class is needed because unlike HTML, XML allows to use any tag with any value.
  * E.g. `<link>Text</link>` is a valid XML but invalid HTML.
  *
- * @implements engine.dataProcessor.DataProcessor
+ * @implements module:engine/dataprocessor/dataprocessor~DataProcessor
  */
 export default class XmlDataProcessor {
 	/**
@@ -52,7 +52,7 @@ export default class XmlDataProcessor {
 		 * DOM converter used to convert DOM elements to view elements.
 		 *
 		 * @private
-		 * @member {module:engine/view/domconverter~DomConverter}.
+		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
 		this._domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
 

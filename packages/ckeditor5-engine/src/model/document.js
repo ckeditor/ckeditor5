@@ -48,8 +48,8 @@ export default class Document {
 		/**
 		 * Document version. It starts from `0` and every operation increases the version number. It is used to ensure that
 		 * operations are applied on the proper document version.
-		 * If the {@link module:engine/model/operation/operation~Operation#baseVersion} will
-		 * not match document version the {@link document-applyOperation-wrong-version} error is thrown.
+		 * If the {@link module:engine/model/operation/operation~Operation#baseVersion} will not match document version the
+		 * {@link module:utils/ckeditorerror~CKEditorError model-document-applyOperation-wrong-version} error is thrown.
 		 *
 		 * @readonly
 		 * @member {Number}

@@ -416,8 +416,6 @@ function setAttributeOn( toChange, attribute, data, conversionApi ) {
  * Entry point for view-to-model converters builder. This chainable API makes it easy to create basic, most common
  * view-to-model converters and attach them to provided dispatchers. The method returns an instance of
  * {@link module:engine/conversion/buildviewconverter~ViewConverterBuilder}.
- *
- * @external module:engine/conversion/buildviewconverter~buildViewConverter
  */
 export default function buildViewConverter() {
 	return new ViewConverterBuilder();

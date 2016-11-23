@@ -129,7 +129,7 @@ export default class ViewConversionDispatcher {
 	 * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element}
 	 * viewItem Part of the view to be converted.
 	 * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
-	 * events. See also {@link #event:element element event}.
+	 * events. See also {@link ~ViewConversionDispatcher#event:element element event}.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Model document fragment that is a result of the conversion process.
 	 */
 	convert( viewItem, additionalData = {} ) {
@@ -240,15 +240,15 @@ mix( ViewConversionDispatcher, EmitterMixin );
  * Every fired event is passed (as first parameter) an object with `output` property. Every event may set and/or
  * modify that property. When all callbacks are done, the final value of `output` property is returned by this method.
  *
- * @function covertItem
- * @fires element
- * @fires text
- * @fires documentFragment
+ * @function convertItem
+ * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
+ * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:text
+ * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:documentFragment
  * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element|module:engine/view/text~Text}
  * input Item to convert.
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
  * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
- * events. See also {@link #event:element element event}.
+ * events. See also {@link ~ViewConversionDispatcher#event:element element event}.
  * @returns {*} The result of item conversion, created and modified by callbacks attached to fired event.
  */
 
@@ -256,13 +256,13 @@ mix( ViewConversionDispatcher, EmitterMixin );
  * Starts conversion of all children of given item by firing appropriate events for all those children.
  *
  * @function convertChildren
- * @fires element
- * @fires text
- * @fires documentFragment
+ * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
+ * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:text
+ * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:documentFragment
  * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element}
  * input Item which children will be converted.
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
  * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
- * events. See also {@link #event:element element event}.
+ * events. See also {@link ~ViewConversionDispatcher#event:element element event}.
  * @returns {Array.<*>} Array containing results of conversion of all children of given item.
  */

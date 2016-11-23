@@ -210,7 +210,7 @@ export default class Element extends Node {
 	 *		this.getNodeByPath( [ 1, 0 ] );  // -> "c"
 	 *
 	 * @param {Array.<Number>} relativePath Path of the node to find, relative to this element.
-	 * @returns {engine.model.Node}
+	 * @returns {module:engine/model/node~Node}
 	 */
 	getNodeByPath( relativePath ) {
 		let node = this;

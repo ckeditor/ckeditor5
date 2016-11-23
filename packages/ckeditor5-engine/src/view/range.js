@@ -113,8 +113,8 @@ export default class Range {
 	}
 
 	/**
-	 * Computes which part(s) of this {@link module:engine/view/range~Range range} is not a part of given {@link module:engine/view/range~Range
-	 * range}.
+	 * Computes which part(s) of this {@link module:engine/view/range~Range range} is not a part of given
+	 * {@link module:engine/view/range~Range range}.
 	 * Returned array contains zero, one or two {@link module:engine/view/range~Range ranges}.
 	 *
 	 * Examples:

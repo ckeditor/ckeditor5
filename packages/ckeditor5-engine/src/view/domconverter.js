@@ -38,7 +38,7 @@ export default class DomConverter {
 	 * Creates DOM converter.
 	 *
 	 * @param {Object} options Object with configuration options.
-	 * @param {Function} [options.blockFiller=module:engine/view/filter~Filter.BR_FILLER] Block filler creator.
+	 * @param {Function} [options.blockFiller=module:engine/view/filler~BR_FILLER] Block filler creator.
 	 */
 	constructor( options = {} ) {
 		// Using WeakMap prevent memory leaks: when the converter will be destroyed all referenced between View and DOM
@@ -52,7 +52,7 @@ export default class DomConverter {
 		// I've been here. Seen stuff. Afraid of code now.
 
 		/**
-		 * Block {@link module:engine/view/filter~Filter filler} creator, which is used to create all block fillers during the
+		 * Block {@link module:engine/view/filler filler} creator, which is used to create all block fillers during the
 		 * view to DOM conversion and to recognize block fillers during the DOM to view conversion.
 		 *
 		 * @readonly
@@ -204,7 +204,7 @@ export default class DomConverter {
 
 	/**
 	 * Converts children of the view element to DOM using {@link module:engine/view/domconverter~DomConverter#viewToDom} method.
-	 * Additionally this method adds block {@link module:engine/view/filter~Filter filler} to the list of children, if needed.
+	 * Additionally this method adds block {@link module:engine/view/filler filler} to the list of children, if needed.
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElement Parent view element.
 	 * @param {document} domDocument Document which will be used to create DOM nodes.
@@ -232,7 +232,7 @@ export default class DomConverter {
 
 	/**
 	 * Converts view {@link module:engine/view/range~Range} to DOM range.
-	 * Inline and block {@link module:engine/view/filter~Filter fillers} are handled during the conversion.
+	 * Inline and block {@link module:engine/view/filler fillers} are handled during the conversion.
 	 *
 	 * @param {module:engine/view/range~Range} viewRange View range.
 	 * @returns {Range} DOM range.
@@ -251,7 +251,7 @@ export default class DomConverter {
 	/**
 	 * Converts view {@link module:engine/view/position~Position} to DOM parent and offset.
 	 *
-	 * Inline and block {@link module:engine/view/filter~Filter fillers} are handled during the conversion.
+	 * Inline and block {@link module:engine/view/filler fillers} are handled during the conversion.
 	 * If the converted position is directly before inline filler it is moved inside the filler.
 	 *
 	 * @param {module:engine/view/position~Position} viewPosition View position.
@@ -317,7 +317,7 @@ export default class DomConverter {
 	/**
 	 * Converts DOM to view. For all text nodes, not bound elements and document fragments new items will
 	 * be created. For bound elements and document fragments function will return corresponding items. For
-	 * {@link module:engine/view/filter~Filter fillers} `null` will be returned.
+	 * {@link module:engine/view/filler fillers} `null` will be returned.
 	 *
 	 * @param {Node|DocumentFragment} domNode DOM node or document fragment to transform.
 	 * @param {Object} [options] Conversion options.
@@ -326,7 +326,7 @@ export default class DomConverter {
 	 * @param {Boolean} [options.keepOriginalCase=false] If `false`, node's tag name will be converter to lower case.
 	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Converted node or document fragment or
 	 * `null`
-	 * if DOM node is a {@link module:engine/view/filter~Filter filler} or the given node is an empty text node.
+	 * if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
 	 */
 	domToView( domNode, options = {} ) {
 		if ( isBlockFiller( domNode, this.blockFiller )  ) {
@@ -384,7 +384,7 @@ export default class DomConverter {
 
 	/**
 	 * Converts children of the DOM element to view nodes using {@link module:engine/view/domconverter~DomConverter#domToView} method.
-	 * Additionally this method omits block {@link module:engine/view/filter~Filter filler}, if it exists in the DOM parent.
+	 * Additionally this method omits block {@link module:engine/view/filler filler}, if it exists in the DOM parent.
 	 *
 	 * @param {HTMLElement} domElement Parent DOM element.
 	 * @param {Object} options See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
@@ -463,7 +463,7 @@ export default class DomConverter {
 	/**
 	 * Converts DOM parent and offset to view {@link module:engine/view/position~Position}.
 	 *
-	 * If the position is inside a {@link module:engine/view/filter~Filter filler} which has no corresponding view node,
+	 * If the position is inside a {@link module:engine/view/filler filler} which has no corresponding view node,
 	 * position of the filler will be converted and returned.
 	 *
 	 * If structures are too different and it is not possible to find corresponding position then `null` will be returned.
@@ -524,7 +524,7 @@ export default class DomConverter {
 	 * nodes and {@link module:engine/view/domconverter~DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment}
 	 * for document fragments.
 	 *
-	 * Note that for the block or inline {@link module:engine/view/filter~Filter filler} this method returns `null`.
+	 * Note that for the block or inline {@link module:engine/view/filler filler} this method returns `null`.
 	 *
 	 * @param {Node|DocumentFragment} domNode DOM node or document fragment.
 	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Corresponding view item.
@@ -576,7 +576,7 @@ export default class DomConverter {
 	 *
 	 * Otherwise `null` is returned.
 	 *
-	 * Note that for the block or inline {@link module:engine/view/filter~Filter filler} this method returns `null`.
+	 * Note that for the block or inline {@link module:engine/view/filler filler} this method returns `null`.
 	 *
 	 * @param {Text} domText DOM text node.
 	 * @returns {module:engine/view/text~Text|null} Corresponding view text node or `null`, if it was not possible to find a

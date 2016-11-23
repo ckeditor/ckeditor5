@@ -173,7 +173,7 @@ export default class Renderer {
 	 * For elements, which child lists have changed, it calculates a {@link module:utils/diff~diff} and adds or removes children which have
 	 * changed.
 	 *
-	 * Rendering also handles {@link module:engine/view/filter~Filter fillers}. Especially, it checks if the inline filler is needed
+	 * Rendering also handles {@link module:engine/view/filler fillers}. Especially, it checks if the inline filler is needed
 	 * at selection position and adds or removes it. To prevent breaking text composition inline filler will not be
 	 * removed as long selection is in the text node which needed it at first.
 	 */
@@ -337,7 +337,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Checks if the inline {@link module:engine/view/filter~Filter filler} should be added.
+	 * Checks if the inline {@link module:engine/view/filler filler} should be added.
 	 *
 	 * @private
 	 * @returns {Boolean} True if the inline fillers should be added.

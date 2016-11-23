@@ -26,7 +26,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
  * {@link module:engine/model/documentfragment~DocumentFragment document fragments},
  * * model writer API operates on {@link module:engine/model/position~Position positions}, which means that you have
  * better control over manipulating model tree as positions operate on offsets rather than indexes,
- * * model writer API automatically merges {@link module:engine/model/textnode~TextNode text nodes} with same attributes, which means
+ * * model writer API automatically merges {@link module:engine/model/text~Text text nodes} with same attributes, which means
  * lower memory usage and better efficiency.
  *
  * @namespace writer

@@ -17,7 +17,7 @@ import { NBSP_FILLER } from '../view/filler.js';
  * HtmlDataProcessor class.
  * This data processor implementation uses HTML as input/output data.
  *
- * @implements engine.dataProcessor.DataProcessor
+ * @implements module:engine/dataprocessor/dataprocessor~DataProcessor
  */
 export default class HtmlDataProcessor {
 	/**

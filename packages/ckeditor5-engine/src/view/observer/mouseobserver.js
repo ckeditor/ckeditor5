@@ -12,8 +12,8 @@ import DomEventObserver from './domeventobserver.js';
 /**
  * Mouse events observer.
  *
- * Note that this observer is not available by default. To make it available it needs to be added to {@link
- * module:engine/view/document~Document}
+ * Note that this observer is not available by default. To make it available it needs to be added to
+ * {@link module:engine/view/document~Document}
  * by {@link module:engine/view/document~Document#addObserver} method.
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver

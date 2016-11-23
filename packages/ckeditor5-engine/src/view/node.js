@@ -196,7 +196,7 @@ export default class Node {
  *
  * Change event is bubbled – it is fired on all ancestors.
  *
- * @event text
+ * @event change:text
  * @param {module:engine/view/node~Node} Changed node.
  */
 

@@ -440,7 +440,7 @@ export default class Schema {
 	 * Checks whether there is an item registered under given name in schema.
 	 *
 	 * @param itemName
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	hasItem( itemName ) {
 		return this._items.has( itemName );

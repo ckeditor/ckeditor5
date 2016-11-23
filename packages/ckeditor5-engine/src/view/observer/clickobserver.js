@@ -12,11 +12,11 @@ import DomEventObserver from './domeventobserver.js';
 /**
  * {@link module:engine/view/document~Document#event:click Click} event observer.
  *
- * Note that this observer is not available by default. To make it available it needs to be added to {@link
- * module:engine/view/document~Document}
+ * Note that this observer is not available by default. To make it available it needs to be added to
+ * {@link module:engine/view/document~Document}
  * by a {@link module:engine/view/document~Document#addObserver} method.
  *
- * @extends module:engine/view/observer/observer~Observer.DomEventObserver
+ * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class ClickObserver extends DomEventObserver {
 	constructor( document ) {

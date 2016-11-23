@@ -290,8 +290,6 @@ class ModelConverterBuilder {
  * Entry point for model-to-view converters builder. This chainable API makes it easy to create basic, most common
  * model-to-view converters and attach them to provided dispatchers. The method returns an instance of
  * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder}.
- *
- * @external module:engine/conversion/buildmodelconverter~buildModelConverter
  */
 export default function buildModelConverter() {
 	return new ModelConverterBuilder();

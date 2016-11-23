@@ -57,7 +57,7 @@ export default class FakeSelectionObserver extends Observer {
 	 *
 	 * @private
 	 * @param {Number} keyCode
-	 * @fires module:engine/view/document~Document#selectionChage
+	 * @fires module:engine/view/document~Document#event:selectionChange
 	 */
 	_handleSelectionMove( keyCode ) {
 		const selection = this.document.selection;
