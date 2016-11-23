@@ -28,8 +28,8 @@ describe( 'ClassicTestEditorUI', () => {
 			expect( ui.view ).to.equal( view );
 		} );
 
-		it( 'creates #featureComponents factory', () => {
-			expect( ui.featureComponents ).to.be.instanceOf( ComponentFactory );
+		it( 'creates #componentFactory factory', () => {
+			expect( ui.componentFactory ).to.be.instanceOf( ComponentFactory );
 		} );
 
 		it( 'creates #focusTracker', () => {

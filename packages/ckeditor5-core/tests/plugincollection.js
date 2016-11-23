@@ -9,14 +9,14 @@ import testUtils from 'tests/core/_utils/utils.js';
 import Editor from 'ckeditor5/core/editor/editor.js';
 import PluginCollection from 'ckeditor5/core/plugincollection.js';
 import Plugin from 'ckeditor5/core/plugin.js';
-import Feature from 'ckeditor5/core/feature.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 import log from 'ckeditor5/utils/log.js';
 
 let editor;
 let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI, PluginX;
 class TestError extends Error {}
-class GrandPlugin extends Feature {}
+class ChildPlugin extends Plugin {}
+class GrandPlugin extends ChildPlugin {}
 
 testUtils.createSinonSandbox();
 

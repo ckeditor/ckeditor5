@@ -76,7 +76,7 @@ describe( 'Editor', () => {
 
 		it( 'loads plugins', () => {
 			return Editor.create( {
-					features: [ PluginA ]
+					plugins: [ PluginA ]
 				} )
 				.then( editor => {
 					expect( getPlugins( editor ).length ).to.equal( 1 );
@@ -87,9 +87,9 @@ describe( 'Editor', () => {
 	} );
 
 	describe( 'initPlugins', () => {
-		it( 'should load features', () => {
+		it( 'should load plugins', () => {
 			const editor = new Editor( {
-				features: [ PluginA, PluginB ]
+				plugins: [ PluginA, PluginB ]
 			} );
 
 			expect( getPlugins( editor ) ).to.be.empty;
@@ -104,7 +104,7 @@ describe( 'Editor', () => {
 
 		it( 'should initialize plugins in the right order', () => {
 			const editor = new Editor( {
-				features: [ PluginA, PluginD ]
+				plugins: [ PluginA, PluginD ]
 			} );
 
 			return editor.initPlugins().then( () => {
@@ -148,7 +148,7 @@ describe( 'Editor', () => {
 			}
 
 			const editor = new Editor( {
-				features: [ PluginA, PluginSync ]
+				plugins: [ PluginA, PluginSync ]
 			} );
 
 			return editor.initPlugins().then( () => {

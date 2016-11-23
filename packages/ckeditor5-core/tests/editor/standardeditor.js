@@ -12,7 +12,7 @@ import { getData, setData } from 'ckeditor5/engine/dev-utils/model.js';
 
 import EditingController from 'ckeditor5/engine/controller/editingcontroller.js';
 import KeystrokeHandler from 'ckeditor5/core/keystrokehandler.js';
-import Feature from 'ckeditor5/core/feature.js';
+import Plugin from 'ckeditor5/core/plugin.js';
 
 describe( 'StandardEditor', () => {
 	let editorElement;
@@ -40,11 +40,11 @@ describe( 'StandardEditor', () => {
 
 	describe( 'create', () => {
 		it( 'initializes editor with plugins and config', () => {
-			class FeatureFoo extends Feature {}
+			class PluginFoo extends Plugin {}
 
 			return StandardEditor.create( editorElement, {
 					foo: 1,
-					features: [ FeatureFoo ]
+					plugins: [ PluginFoo ]
 				} )
 				.then( editor => {
 					expect( editor ).to.be.instanceof( StandardEditor );
@@ -52,7 +52,7 @@ describe( 'StandardEditor', () => {
 					expect( editor.config.get( 'foo' ) ).to.equal( 1 );
 					expect( editor ).to.have.property( 'element', editorElement );
 
-					expect( editor.plugins.get( FeatureFoo ) ).to.be.instanceof( FeatureFoo );
+					expect( editor.plugins.get( PluginFoo ) ).to.be.instanceof( PluginFoo );
 				} );
 		} );
 	} );

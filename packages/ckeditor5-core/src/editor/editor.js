@@ -97,7 +97,7 @@ export default class Editor {
 	}
 
 	/**
-	 * Loads and initializes plugins specified in config features.
+	 * Loads and initializes plugins specified in the config.
 	 *
 	 * @returns {Promise} A promise which resolves once the initialization is completed.
 	 */
@@ -109,9 +109,7 @@ export default class Editor {
 			.then( initPlugins );
 
 		function loadPlugins() {
-			let plugins = config.get( 'features' ) || [];
-
-			return that.plugins.load( plugins );
+			return that.plugins.load( config.get( 'plugins' ) || [] );
 		}
 
 		function initPlugins( loadedPlugins ) {

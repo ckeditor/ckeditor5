@@ -7,7 +7,7 @@ import ComponentFactory from 'ckeditor5/ui/componentfactory.js';
 import FocusTracker from 'ckeditor5/utils/focustracker.js';
 
 /**
- * A simplified classic editor ui class. Useful for testing features.
+ * A simplified classic editor UI class. Useful for testing features.
  *
  * @memberOf tests.core._utils
  * @extends ui.View
@@ -40,9 +40,9 @@ export default class ClassicTestEditorUI {
 		 * Instance of the {@link ui.ComponentFactory}.
 		 *
 		 * @readonly
-		 * @member {ui.ComponentFactory} tests.core._utils.ClassicTestEditorUI#featureComponents
+		 * @member {ui.ComponentFactory} tests.core._utils.ClassicTestEditorUI#componentFactory
 		 */
-		this.featureComponents = new ComponentFactory( editor );
+		this.componentFactory = new ComponentFactory( editor );
 
 		/**
 		 * Keeps information about editor focus.

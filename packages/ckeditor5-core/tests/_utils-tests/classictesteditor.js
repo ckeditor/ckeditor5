@@ -8,7 +8,7 @@
 import StandardEditor from 'ckeditor5/core/editor/standardeditor.js';
 import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
 
-import Feature from 'ckeditor5/core/feature.js';
+import Plugin from 'ckeditor5/core/plugin.js';
 import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
 import ClassicTestEditorUI from 'tests/core/_utils/classictesteditorui.js';
@@ -69,13 +69,13 @@ describe( 'ClassicTestEditor', () => {
 		it( 'loads data from the editor element', () => {
 			editorElement.innerHTML = 'foo';
 
-			class FeatureTextInRoot extends Feature {
+			class PluginTextInRoot extends Plugin {
 				init() {
 					this.editor.document.schema.allow( { name: '$text', inside: '$root' } );
 				}
 			}
 
-			return ClassicTestEditor.create( editorElement, { features: [ FeatureTextInRoot ] } )
+			return ClassicTestEditor.create( editorElement, { plugins: [ PluginTextInRoot ] } )
 				.then( editor => {
 					expect( getData( editor.document, { withoutSelection: true } ) ).to.equal( 'foo' );
 				} );

@@ -20,6 +20,8 @@ export default class Plugin {
 	 */
 	constructor( editor ) {
 		/**
+		 * The editor instance.
+		 *
 		 * @readonly
 		 * @member {core.editor.Editor} core.Plugin#editor
 		 */
@@ -33,7 +35,7 @@ export default class Plugin {
 	 *
 	 *		import Image from './image.js';
 	 *
-	 *		export default class ImageCaption extends Feature {
+	 *		export default class ImageCaption extends Plugin {
      *			static get requires() {
      *				return [ Image ];
      *			}
@@ -44,6 +46,8 @@ export default class Plugin {
 	 */
 
 	/**
+	 * Initializes the plugin.
+	 *
 	 * @returns {null|Promise}
 	 */
 	init() {}
