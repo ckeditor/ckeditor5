@@ -26,7 +26,7 @@ import {
  * It registers the `numberedList`, `bulletedList`, `indentList` and `outdentList` commands.
  *
  * @memberOf list
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class ListEngine extends Plugin {
 	/**

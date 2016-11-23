@@ -15,7 +15,7 @@ import { parseKeystroke } from '../utils/keyboard.js';
  * See also {@link list.ListEngine}.
  *
  * @memberOf list
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class List extends Plugin {
 	/**
