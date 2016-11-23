@@ -12,7 +12,7 @@ describe( 'Delete feature', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-				features: [ Delete ]
+				plugins: [ Delete ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

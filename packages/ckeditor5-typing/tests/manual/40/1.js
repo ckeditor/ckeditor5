@@ -11,7 +11,7 @@ import Typing from '/ckeditor5/typing/typing.js';
 import Heading from '/ckeditor5/heading/heading.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ Enter, Typing, Heading ],
+	plugins: [ Enter, Typing, Heading ],
 	toolbar: [ 'headings' ]
 } )
 .then( editor => {

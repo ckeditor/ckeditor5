@@ -12,7 +12,7 @@ let editor, doc;
 
 beforeEach( () => {
 	return ModelTestEditor.create( {
-			features: [
+			plugins: [
 				UndoEngine
 			],
 			undo: {

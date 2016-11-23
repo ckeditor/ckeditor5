@@ -20,7 +20,7 @@ describe( 'Bug #59', () => {
 		document.body.appendChild( container );
 
 		return ClassicEditor.create( container, {
-			features: [ Typing, Paragraph, Bold ]
+			plugins: [ Typing, Paragraph, Bold ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;

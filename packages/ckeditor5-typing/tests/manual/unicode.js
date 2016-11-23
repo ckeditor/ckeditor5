@@ -11,7 +11,7 @@ import Typing from '/ckeditor5/typing/typing.js';
 import Paragraph from '/ckeditor5/paragraph/paragraph.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ Enter, Typing, Paragraph ],
+	plugins: [ Enter, Typing, Paragraph ],
 	toolbar: []
 } )
 .then( editor => {

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import ChangeBuffer from './changebuffer.js';
 import ModelRange from '../engine/model/range.js';
 import ViewPosition from '../engine/view/position.js';
@@ -18,7 +18,7 @@ import { getCode } from '../utils/keyboard.js';
  * @memberOf typing
  * @extends core.Feature
  */
-export default class Input extends Feature {
+export default class Input extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
