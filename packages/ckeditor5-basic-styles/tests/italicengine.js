@@ -14,7 +14,7 @@ describe( 'ItalicEngine', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-				features: [ ItalicEngine ]
+				plugins: [ ItalicEngine ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

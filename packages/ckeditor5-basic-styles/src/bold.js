@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import BoldEngine from './boldengine.js';
 import ButtonView from '../ui/button/buttonview.js';
 
@@ -15,7 +15,7 @@ import ButtonView from '../ui/button/buttonview.js';
  * @memberOf basic-styles
  * @extends core.Feature
  */
-export default class Bold extends Feature {
+export default class Bold extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -33,7 +33,7 @@ export default class Bold extends Feature {
 		const keystroke = 'CTRL+B';
 
 		// Add bold button to feature components.
-		editor.ui.featureComponents.add( 'bold', ( locale ) => {
+		editor.ui.componentFactory.add( 'bold', ( locale ) => {
 			const view = new ButtonView( locale );
 
 			view.set( {
