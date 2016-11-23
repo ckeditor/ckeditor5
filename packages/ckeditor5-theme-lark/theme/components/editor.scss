@@ -20,7 +20,6 @@
 
 	.ck-editor__main {
 		background: ck-color();
-		overflow: hidden;
 	}
 
 	.ck-editor__bottom {
@@ -31,9 +30,15 @@
 		padding: ck-spacing();
 	}
 
-	.ck-editor__editable_inline {
-		overflow: auto;
-		padding: 0 ck-spacing();
+	.ck-editor__editable {
+		&.ck-focused {
+			@include ck-focus-outline();
+		}
+
+		&_inline {
+			overflow: auto;
+			padding: 0 ck-spacing();
+		}
 	}
 
 	.ck-toolbar {

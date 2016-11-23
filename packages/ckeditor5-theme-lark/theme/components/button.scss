@@ -16,7 +16,7 @@
 	position: relative;
 
 	@include ck-button-colors( $color );
-	@include ck-focus-shadow();
+	@include ck-user-focus-outline();
 }
 
 /**
