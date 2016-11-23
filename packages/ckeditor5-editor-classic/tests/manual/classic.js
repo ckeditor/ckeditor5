@@ -19,7 +19,7 @@ let editor, editable, observer;
 
 function initEditor() {
 	ClassicEditor.create( document.querySelector( '#editor' ), {
-		features: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
+		plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 		toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo' ]
 	} )
 	.then( newEditor => {

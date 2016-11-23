@@ -39,9 +39,9 @@ export default class ClassicEditorUI {
 		 * Instance of the {@link ui.ComponentFactory}.
 		 *
 		 * @readonly
-		 * @member {ui.ComponentFactory} editor-classic.ClassicEditorUI#featureComponents
+		 * @member {ui.ComponentFactory} editor-classic.ClassicEditorUI#componentFactory
 		 */
-		this.featureComponents = new ComponentFactory( editor );
+		this.componentFactory = new ComponentFactory( editor );
 
 		/**
 		 * Keeps information about editor focus.
@@ -81,7 +81,7 @@ export default class ClassicEditorUI {
 
 				if ( toolbarConfig ) {
 					for ( let name of toolbarConfig ) {
-						promises.push( this.view.toolbar.items.add( this.featureComponents.create( name ) ) );
+						promises.push( this.view.toolbar.items.add( this.componentFactory.create( name ) ) );
 					}
 				}
 

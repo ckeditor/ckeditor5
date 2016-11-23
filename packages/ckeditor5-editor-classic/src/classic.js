@@ -59,7 +59,7 @@ export default class ClassicEditor extends StandardEditor {
 	 * Creates a classic editor instance.
 	 *
 	 *		ClassicEditor.create( document.querySelector( '#editor' ), {
-	 *			features: [ Delete, Enter, Typing, Paragraph, Undo, Bold, Italic ],
+	 *			plugins: [ Delete, Enter, Typing, Paragraph, Undo, Bold, Italic ],
 	 *			toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
 	 *		} )
 	 *		.then( editor => {
