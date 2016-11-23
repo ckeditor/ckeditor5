@@ -11,7 +11,7 @@ import Delete from './delete.js';
  * The typing feature. Handles typing.
  *
  * @memberOf typing
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class Typing extends Plugin {
 	static get requires() {

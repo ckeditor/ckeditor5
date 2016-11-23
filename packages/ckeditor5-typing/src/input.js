@@ -16,7 +16,7 @@ import { getCode } from '../utils/keyboard.js';
  * Handles text input coming from the keyboard or other input methods.
  *
  * @memberOf typing
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class Input extends Plugin {
 	/**

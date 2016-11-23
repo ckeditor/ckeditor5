@@ -11,7 +11,7 @@ import DeleteObserver from './deleteobserver.js';
  * The delete and backspace feature. Handles the <kbd>Delete</kbd> and <kbd>Backspace</kbd> keys in the editor.
  *
  * @memberOf typing
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class Delete extends Plugin {
 	init() {
