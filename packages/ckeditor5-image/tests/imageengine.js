@@ -5,14 +5,14 @@
 
 import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
 import ImageEngine from 'ckeditor5/image/imageengine.js';
-import WidgetElement from 'ckeditor5/image/widgetelement.js';
 import { getData as getModelData, setData as setModelData } from 'ckeditor5/engine/dev-utils/model.js';
 import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
 import buildViewConverter from 'ckeditor5/engine/conversion/buildviewconverter.js';
 import buildModelConverter from 'ckeditor5/engine/conversion/buildmodelconverter.js';
+import { isImageWidget } from 'ckeditor5/image/utils.js';
 import ModelRange from 'ckeditor5/engine/model/range.js';
 
-describe( `ImageEngine`, () => {
+describe( 'ImageEngine', () => {
 	let editor, document, viewDocument;
 
 	beforeEach( () => {
@@ -142,12 +142,12 @@ describe( `ImageEngine`, () => {
 					.to.equal( '<figure class="image ck-widget" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>' );
 			} );
 
-			it( 'converted element should be instance of WidgetElement', () => {
+			it( 'converted element should be widgetized', () => {
 				setModelData( document, '<image src="foo.png" alt="alt text"></image>' );
 				const figure = viewDocument.getRoot().getChild( 0 );
 
 				expect( figure.name ).to.equal( 'figure' );
-				expect( figure ).to.be.instanceof( WidgetElement );
+				expect( isImageWidget( figure ) ).to.be.true;
 			} );
 		} );
 	} );
