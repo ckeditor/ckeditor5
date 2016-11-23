@@ -21,7 +21,7 @@ describe( 'Undo', () => {
 		const editorElement = document.createElement( 'div' );
 
 		return ClassicTestEditor.create( editorElement, {
-				features: [ Undo ]
+				plugins: [ Undo ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -71,7 +71,7 @@ describe( 'Undo', () => {
 			let button;
 
 			beforeEach( () => {
-				button = editor.ui.featureComponents.create( featureName );
+				button = editor.ui.componentFactory.create( featureName );
 			} );
 
 			it( 'should register feature component', () => {

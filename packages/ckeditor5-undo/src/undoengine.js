@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import UndoCommand from './undocommand.js';
 import RedoCommand from './redocommand.js';
 
@@ -16,7 +16,7 @@ import RedoCommand from './redocommand.js';
  * @memberOf undo
  * @extends core.Feature
  */
-export default class UndoEngine extends Feature {
+export default class UndoEngine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
