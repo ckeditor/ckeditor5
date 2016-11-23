@@ -5,7 +5,7 @@
 
 import HeadingEngine from './headingengine.js';
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 
 import Model from '../ui/model.js';
 import createListDropdown from '../ui/dropdown/list/createlistdropdown.js';
@@ -19,7 +19,7 @@ import Collection from '../utils/collection.js';
  * @memberOf heading
  * @extends core.Feature
  */
-export default class Heading extends Feature {
+export default class Heading extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -56,7 +56,7 @@ export default class Heading extends Feature {
 		dropdownModel.bind( 'label' ).to( command, 'value', format => format.label );
 
 		// Register UI component.
-		editor.ui.featureComponents.add( 'headings', ( locale ) => {
+		editor.ui.componentFactory.add( 'headings', ( locale ) => {
 			const dropdown = createListDropdown( dropdownModel, locale );
 
 			// Execute command when an item from the dropdown is selected.

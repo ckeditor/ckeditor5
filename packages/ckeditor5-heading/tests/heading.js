@@ -21,12 +21,12 @@ describe( 'Heading', () => {
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-			features: [ Heading ],
+			plugins: [ Heading ],
 			toolbar: [ 'heading' ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
-			dropdown = editor.ui.featureComponents.create( 'headings' );
+			dropdown = editor.ui.componentFactory.create( 'headings' );
 		} );
 	} );
 
@@ -44,7 +44,7 @@ describe( 'Heading', () => {
 
 	describe( 'init()', () => {
 		it( 'should register formats feature component', () => {
-			const dropdown = editor.ui.featureComponents.create( 'headings' );
+			const dropdown = editor.ui.componentFactory.create( 'headings' );
 
 			expect( dropdown ).to.be.instanceOf( DropdownView );
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
@@ -54,7 +54,7 @@ describe( 'Heading', () => {
 
 		it( 'should execute format command on model execute event', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
-			const dropdown = editor.ui.featureComponents.create( 'headings' );
+			const dropdown = editor.ui.componentFactory.create( 'headings' );
 
 			dropdown.formatId = 'foo';
 			dropdown.fire( 'execute' );
@@ -65,7 +65,7 @@ describe( 'Heading', () => {
 
 		it( 'should focus view after command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
-			const dropdown = editor.ui.featureComponents.create( 'headings' );
+			const dropdown = editor.ui.componentFactory.create( 'headings' );
 
 			dropdown.fire( 'execute' );
 
