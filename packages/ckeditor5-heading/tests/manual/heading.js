@@ -13,7 +13,7 @@ import Paragraph from '/ckeditor5/paragraph/paragraph.js';
 import Undo from '/ckeditor5/undo/undo.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ Enter, Typing, Undo, Heading, Paragraph ],
+	plugins: [ Enter, Typing, Undo, Heading, Paragraph ],
 	toolbar: [ 'headings', 'undo', 'redo' ]
 } )
 .then( editor => {

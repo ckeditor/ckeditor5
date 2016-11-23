@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
 import Paragraph from '../paragraph/paragraph.js';
@@ -23,7 +23,7 @@ const formats = [
  * @memberOf heading
  * @extends core.Feature
  */
-export default class HeadingEngine extends Feature {
+export default class HeadingEngine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

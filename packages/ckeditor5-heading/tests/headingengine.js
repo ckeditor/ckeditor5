@@ -15,7 +15,7 @@ describe( 'HeadingEngine', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			features: [ Enter, HeadingEngine ]
+			plugins: [ Enter, HeadingEngine ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
