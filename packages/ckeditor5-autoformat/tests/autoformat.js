@@ -17,7 +17,7 @@ describe( 'Autoformat', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			features: [ Enter, Paragraph, Autoformat ]
+			plugins: [ Enter, Paragraph, Autoformat ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;

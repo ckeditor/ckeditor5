@@ -5,7 +5,7 @@
 
 import BlockAutoformatEngine from './blockautoformatengine.js';
 import InlineAutoformatEngine from './inlineautoformatengine.js';
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import HeadingEngine from '../heading/headingengine.js';
 import ListEngine from '../list/listengine.js';
 import BoldEngine from '../basic-styles/boldengine.js';
@@ -46,7 +46,7 @@ import ItalicEngine from '../basic-styles/italicengine.js';
  * @memberOf autoformat
  * @extends core.Feature
  */
-export default class Autoformat extends Feature {
+export default class Autoformat extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
