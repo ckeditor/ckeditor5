@@ -4,7 +4,7 @@
 .ck-input {
 	&-text {
 		@include ck-rounded-corners();
-		@include ck-focus-shadow();
+		@include ck-user-focus-outline();
 
 		border: 1px solid ck-border-color( 'foreground' );
 		padding: ck-spacing( 'medium' );

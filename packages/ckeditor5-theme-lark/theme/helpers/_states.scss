@@ -10,17 +10,26 @@
 }
 
 /**
+ * A visual styling of focused element.
+ *
+ * @access public
+ */
+@mixin ck-focus-outline() {
+	outline: thin dotted;
+	outline: 5px auto -webkit-focus-ring-color;
+
+	// To avoid collision with border in Firefox.
+	outline-offset: -2px;
+}
+
+/**
  * Brings visual styling for :focus state.
  *
  * @access public
  */
-@mixin ck-focus-shadow() {
+@mixin ck-user-focus-outline() {
 	&:focus {
-		outline: thin dotted;
-		outline: 5px auto -webkit-focus-ring-color;
-
-		// To avoid collision with border in Firefox.
-		outline-offset: -2px;
+		@include ck-focus-outline();
 	}
 }
 
