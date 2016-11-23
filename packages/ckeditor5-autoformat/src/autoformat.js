@@ -44,7 +44,7 @@ import ItalicEngine from '../basic-styles/italicengine.js';
  * * `*foo bar*` or `_foo bar_` – will italicize the text,
  *
  * @memberOf autoformat
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class Autoformat extends Plugin {
 	/**
