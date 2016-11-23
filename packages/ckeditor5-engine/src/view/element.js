@@ -163,10 +163,8 @@ export default class Element extends Node {
 		// Clone custom properties.
 		cloned._customProperties = new Map( this._customProperties );
 
-		// Clone filler offset method if one exists.
-		if ( this.getFillerOffset ) {
-			cloned.getFillerOffset = this.getFillerOffset;
-		}
+		// Clone filler offset method.
+		cloned.getFillerOffset = this.getFillerOffset;
 
 		return cloned;
 	}
@@ -616,7 +614,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Sets custom property.
+	 * Sets a custom property.
 	 *
 	 * @param {String|Symbol} key
 	 * @param {*} value
@@ -626,7 +624,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Returns custom property value for given key.
+	 * Returns the custom property value for the given key.
 	 *
 	 * @param {String|Symbol} key
 	 * @returns {*}
@@ -636,7 +634,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Removes custom property stored under given key.
+	 * Removes the custom property stored under the given key.
 	 *
 	 * @param {String|Symbol} key
 	 * @returns {Boolean} Returns true if property was removed.
@@ -646,13 +644,21 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Returns iterator that iterates over this element's custom properties.
+	 * Returns an iterator which iterates over this element's custom properties.
+	 * Iterator provides [key, value] pair for each stored property.
 	 *
 	 * @returns {Iterable.<*>}
 	 */
 	*getCustomProperties() {
 		yield* this._customProperties.entries();
 	}
+
+	/**
+	 * Returns block {@link module:engine/view/filter~Filter filler} offset or `null` if block filler is not needed.
+	 *
+	 * @abstract
+	 * @method module:engine/view/element~Element#getFillerOffset
+	 */
 }
 
 // Parses inline styles and puts property - value pairs into styles map.

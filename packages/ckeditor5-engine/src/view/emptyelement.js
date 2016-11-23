@@ -31,11 +31,7 @@ export default class EmptyElement extends Element {
 		}
 
 		/**
-		 * Returns `null` because filler is not needed.
-		 * This method is implemented in a constructor because it is treated as an injected behaviour and it might be
-		 * changed during execution (in elements representing widgets for example).
-		 * When {@link module:engine/view/element~Element.clone element is cloned}, this method will be referenced from
-		 * source object.
+		 * Returns `null` because filler is not needed for EmptyElements.
 		 *
 		 * @method #getFillerOffset
 		 * @returns {null} Always returns null.

@@ -55,10 +55,6 @@ export default class ContainerElement extends Element {
 
 		/**
 		 * Returns block {@link module:engine/view/filter~Filter filler} offset or `null` if block filler is not needed.
-		 * This method is implemented in a constructor because it is treated as an injected behaviour and it might be
-		 * changed during execution (in elements representing widgets for example).
-		 * When {@link module:engine/view/element~Element.clone element is cloned}, this method will be referenced from
-		 * source object.
 		 *
 		 * @method #getFillerOffset
 		 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
