@@ -169,6 +169,18 @@ describe( 'Element', () => {
 			expect( cloned.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
 			expect( cloned.getCustomProperty( symbol ) ).to.equal( 'baz' );
 		} );
+
+		it( 'should clone getFillerOffset', () => {
+			const el = new Element( 'p' );
+			const fm = () => 'foo bar';
+
+			expect( el.getFillerOffset ).to.be.undefined;
+			el.getFillerOffset = fm;
+
+			const cloned = el.clone();
+
+			expect( cloned.getFillerOffset ).to.equal( fm );
+		} );
 	} );
 
 	describe( 'isSimilar', () => {

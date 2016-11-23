@@ -163,6 +163,11 @@ export default class Element extends Node {
 		// Clone custom properties.
 		cloned._customProperties = new Map( this._customProperties );
 
+		// Clone filler offset method if one exists.
+		if ( this.getFillerOffset ) {
+			cloned.getFillerOffset = this.getFillerOffset;
+		}
+
 		return cloned;
 	}
 

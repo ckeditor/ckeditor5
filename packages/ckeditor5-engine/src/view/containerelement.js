@@ -52,14 +52,25 @@ export default class ContainerElement extends Element {
 	 */
 	constructor( name, attrs, children ) {
 		super( name, attrs, children );
-	}
 
-	/**
-	 * Returns block {@link module:engine/view/filter~Filter filler} offset or `null` if block filler is not needed.
-	 *
-	 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
-	 */
-	getFillerOffset() {
-		return this.childCount === 0 ? 0 : null;
+		/**
+		 * Returns block {@link module:engine/view/filter~Filter filler} offset or `null` if block filler is not needed.
+		 * This method is implemented in a constructor because it is treated as an injected behaviour and it might be
+		 * changed during execution (in elements representing widgets for example).
+		 * When {@link module:engine/view/element~Element.clone element is cloned}, this method will be referenced from
+		 * source object.
+		 *
+		 * @method #getFillerOffset
+		 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
+		 */
+		this.getFillerOffset = getFillerOffset;
 	}
+}
+
+// Returns block {@link module:engine/view/filter~Filter filler} offset or `null` if block filler is not needed.
+//
+// @returns {Number|null} Block filler offset or `null` if block filler is not needed.
+function getFillerOffset() {
+	/*jshint validthis:true */
+	return this.childCount === 0 ? 0 : null;
 }

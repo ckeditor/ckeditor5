@@ -29,6 +29,18 @@ export default class EmptyElement extends Element {
 		if ( arguments.length > 2 ) {
 			throwCannotAdd();
 		}
+
+		/**
+		 * Returns `null` because filler is not needed.
+		 * This method is implemented in a constructor because it is treated as an injected behaviour and it might be
+		 * changed during execution (in elements representing widgets for example).
+		 * When {@link module:engine/view/element~Element.clone element is cloned}, this method will be referenced from
+		 * source object.
+		 *
+		 * @method #getFillerOffset
+		 * @returns {null} Always returns null.
+		 */
+		this.getFillerOffset = getFillerOffset;
 	}
 
 	/**
@@ -65,15 +77,6 @@ export default class EmptyElement extends Element {
 	insertChildren() {
 		throwCannotAdd();
 	}
-
-	/**
-	 * Returns `null` because block filler is not needed.
-	 *
-	 * @returns {null}
-	 */
-	getFillerOffset() {
-		return null;
-	}
 }
 
 function throwCannotAdd() {
@@ -83,4 +86,11 @@ function throwCannotAdd() {
 	 * @error view-emptyelement-cannot-add
 	 */
 	throw new CKEditorError( 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
+}
+
+// Returns `null` because block filler is not needed for EmptyElements.
+//
+// @returns {null}
+function getFillerOffset() {
+	return null;
 }
