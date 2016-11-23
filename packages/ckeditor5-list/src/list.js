@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import ListEngine from './listengine.js';
 import ButtonView from '../ui/button/buttonview.js';
 import { parseKeystroke } from '../utils/keyboard.js';
@@ -17,7 +17,7 @@ import { parseKeystroke } from '../utils/keyboard.js';
  * @memberOf list
  * @extends core.Feature
  */
-export default class List extends Feature {
+export default class List extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -84,8 +84,7 @@ export default class List extends Feature {
 		const editor = this.editor;
 		const command = editor.commands.get( commandName );
 
-		// Add button to feature components.
-		editor.ui.featureComponents.add( commandName, ( locale ) => {
+		editor.ui.componentFactory.add( commandName, ( locale ) => {
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {

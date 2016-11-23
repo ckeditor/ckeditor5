@@ -14,7 +14,7 @@ import Undo from '/ckeditor5/undo/undo.js';
 import List from '/ckeditor5/list/list.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ Enter, Typing, Heading, Paragraph, Undo, List ],
+	plugins: [ Enter, Typing, Heading, Paragraph, Undo, List ],
 	toolbar: [ 'headings', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 } )
 .then( editor => {

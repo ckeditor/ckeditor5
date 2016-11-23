@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import ListCommand from './listcommand.js';
 import IndentCommand from './indentcommand.js';
 
@@ -28,7 +28,7 @@ import {
  * @memberOf list
  * @extends core.Feature
  */
-export default class ListEngine extends Feature {
+export default class ListEngine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

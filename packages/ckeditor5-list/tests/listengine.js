@@ -23,7 +23,7 @@ describe( 'ListEngine', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			features: [ Paragraph, ListEngine ]
+			plugins: [ Paragraph, ListEngine ]
 		} )
 			.then( newEditor => {
 				editor = newEditor;
