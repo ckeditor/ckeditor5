@@ -11,7 +11,7 @@ import CKEditorError from '../utils/ckeditorerror.js';
  * Factories of specific UI components can be registered under their unique names. Registered
  * components can be later instantiated by providing the name of the component.
  *
- * The main use case for the component factory is the {@link ui.editorUI.EditorUI#featureComponents} factory.
+ * The main use case for the component factory is the {@link ui.editorUI.EditorUI#componentFactory} factory.
  *
  * @memberOf ui
  */
