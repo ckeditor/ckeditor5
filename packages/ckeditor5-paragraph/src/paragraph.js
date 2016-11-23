@@ -12,7 +12,7 @@ import buildViewConverter from '../engine/conversion/buildviewconverter.js';
  * Introduces the `<paragraph>` element in the model which renders as a `<p>` element in the DOM and data.
  *
  * @memberOf paragraph
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class Paragraph extends Plugin {
 	/**
