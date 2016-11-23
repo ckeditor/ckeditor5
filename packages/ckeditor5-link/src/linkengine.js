@@ -16,7 +16,7 @@ import UnlinkCommand from './unlinkcommand.js';
  * It introduces the `linkHref="url"` attribute in the model which renders to the view as a `<a href="url">` element.
  *
  * @memberOf link
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class LinkEngine extends Plugin {
 	/**

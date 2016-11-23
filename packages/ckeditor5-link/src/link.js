@@ -22,7 +22,7 @@ import LinkFormView from './ui/linkformview.js';
  * It uses the {@link link.LinkEngine link engine feature}.
  *
  * @memberOf link
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class Link extends Plugin {
 	/**
