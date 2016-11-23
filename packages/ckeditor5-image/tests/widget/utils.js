@@ -6,7 +6,7 @@
 import ViewElement from 'ckeditor5/engine/view/element.js';
 import { widgetize, isWidget, WIDGET_CLASS_NAME } from 'ckeditor5/image/widget/utils.js';
 
-describe( 'utils', () => {
+describe( 'widget utils', () => {
 	let element;
 
 	beforeEach( () => {

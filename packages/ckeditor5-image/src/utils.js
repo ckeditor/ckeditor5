@@ -27,5 +27,5 @@ export function toImageWidget( viewElement ) {
  * @returns {Boolean}
  */
 export function isImageWidget( viewElement ) {
-	return viewElement.getCustomProperty( imageSymbol ) && isWidget( viewElement );
+	return !!viewElement.getCustomProperty( imageSymbol ) && isWidget( viewElement );
 }
