@@ -20,7 +20,7 @@ window.setInterval( function() {
 }, 3000 );
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ Enter, Typing, Paragraph, Undo, Bold, Italic, Heading ],
+	plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic, Heading ],
 	toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo' ]
 } )
 .then( editor => {

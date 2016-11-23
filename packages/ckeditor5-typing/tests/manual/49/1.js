@@ -13,7 +13,7 @@ import { getData as getModelData } from '/ckeditor5/engine/dev-utils/model.js';
 import { getData as getViewData } from '/ckeditor5/engine/dev-utils/view.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ Enter, Typing, Paragraph ],
+	plugins: [ Enter, Typing, Paragraph ],
 	toolbar: []
 } )
 .then( editor => {

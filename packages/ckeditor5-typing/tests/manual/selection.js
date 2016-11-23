@@ -13,7 +13,7 @@ import Bold from '/ckeditor5/basic-styles/bold.js';
 import Undo from '/ckeditor5/undo/undo.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ Enter, Typing, Paragraph, Undo, Bold ],
+	plugins: [ Enter, Typing, Paragraph, Undo, Bold ],
 	toolbar: [ 'bold' ]
 } )
 .then( editor => {

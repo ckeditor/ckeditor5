@@ -11,7 +11,7 @@ import Paragraph from '/ckeditor5/paragraph/paragraph.js';
 import Bold from '/ckeditor5/basic-styles/bold.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ Typing, Paragraph, Bold ],
+	plugins: [ Typing, Paragraph, Bold ],
 	toolbar: [ 'bold' ]
 } )
 .then( editor => {

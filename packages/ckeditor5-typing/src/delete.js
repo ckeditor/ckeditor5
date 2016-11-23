@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import DeleteCommand from './deletecommand.js';
 import DeleteObserver from './deleteobserver.js';
 
@@ -13,7 +13,7 @@ import DeleteObserver from './deleteobserver.js';
  * @memberOf typing
  * @extends core.Feature
  */
-export default class Delete extends Feature {
+export default class Delete extends Plugin {
 	init() {
 		const editor = this.editor;
 		const editingView = editor.editing.view;

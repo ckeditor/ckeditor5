@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import Input from './input.js';
 import Delete from './delete.js';
 
@@ -13,7 +13,7 @@ import Delete from './delete.js';
  * @memberOf typing
  * @extends core.Feature
  */
-export default class Typing extends Feature {
+export default class Typing extends Plugin {
 	static get requires() {
 		return [ Input, Delete ];
 	}

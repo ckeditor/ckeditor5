@@ -16,7 +16,7 @@ import Italic from '/ckeditor5/basic-styles/italic.js';
 import { getData } from '/ckeditor5/engine/dev-utils/model.js';
 
 const config = {
-	features: [ Enter, Typing, Paragraph, Undo, Bold, Italic, Heading ],
+	plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic, Heading ],
 	toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo' ]
 };
 

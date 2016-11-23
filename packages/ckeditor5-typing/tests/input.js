@@ -29,7 +29,7 @@ describe( 'Input feature', () => {
 		listenter = Object.create( EmitterMixin );
 
 		return VirtualTestEditor.create( {
-				features: [ Input, Paragraph ]
+				plugins: [ Input, Paragraph ]
 			} )
 			.then( newEditor => {
 				// Mock image feature.
@@ -71,7 +71,7 @@ describe( 'Input feature', () => {
 
 	it( 'has a buffer configured to config.typing.undoStep', () => {
 		return VirtualTestEditor.create( {
-				features: [ Input ],
+				plugins: [ Input ],
 				typing: {
 					undoStep: 5
 				}
