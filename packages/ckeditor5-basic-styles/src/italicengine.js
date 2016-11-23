@@ -17,7 +17,7 @@ const ITALIC = 'italic';
  * as an `<em>` element.
  *
  * @memberOf basic-styles
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class ItalicEngine extends Plugin {
 	/**

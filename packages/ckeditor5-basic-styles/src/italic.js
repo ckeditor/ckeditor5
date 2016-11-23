@@ -13,7 +13,7 @@ import ButtonView from '../ui/button/buttonview.js';
  * It uses the {@link basic-styles.ItalicEngine italic engine feature}.
  *
  * @memberOf basic-styles
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class Italic extends Plugin {
 	/**

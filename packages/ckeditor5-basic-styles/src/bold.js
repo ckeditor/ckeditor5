@@ -13,7 +13,7 @@ import ButtonView from '../ui/button/buttonview.js';
  * It uses the {@link basic-styles.BoldEngine bold engine feature}.
  *
  * @memberOf basic-styles
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class Bold extends Plugin {
 	/**

@@ -17,7 +17,7 @@ const BOLD = 'bold';
  * as a `<strong>` element.
  *
  * @memberOf basic-styles
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class BoldEngine extends Plugin {
 	/**
