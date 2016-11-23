@@ -21,7 +21,7 @@ const formats = [
  * This class represents the engine part of the heading feature. See also {@link heading.Heading}.
  *
  * @memberOf heading
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class HeadingEngine extends Plugin {
 	/**

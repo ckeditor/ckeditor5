@@ -17,7 +17,7 @@ import Collection from '../utils/collection.js';
  * to convert paragraphs into headings.
  *
  * @memberOf heading
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class Heading extends Plugin {
 	/**
