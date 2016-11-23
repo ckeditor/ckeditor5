@@ -17,7 +17,7 @@ describe( 'InlineAutoformatEngine', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			features: [ Enter, Paragraph ]
+			plugins: [ Enter, Paragraph ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
