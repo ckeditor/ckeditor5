@@ -376,7 +376,7 @@
 			var jsdom = require('jsdom')
 			Parser.prototype.parseFromString = function (string) {
 				return jsdom.jsdom(string, {
-					features: {
+					plugins: {
 						FetchExternalResources: [],
 						ProcessExternalResources: false
 					}
