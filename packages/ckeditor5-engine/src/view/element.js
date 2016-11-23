@@ -645,7 +645,7 @@ export default class Element extends Node {
 	 *
 	 * @returns {Iterable.<*>}
 	 */
-	*getCustomProperties( ) {
+	*getCustomProperties() {
 		yield* this._customProperties.entries();
 	}
 }
