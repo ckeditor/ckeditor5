@@ -14,7 +14,7 @@ import RedoCommand from './redocommand.js';
  * the {@link engine.model.Document#batch Batch API}.
  *
  * @memberOf undo
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class UndoEngine extends Plugin {
 	/**

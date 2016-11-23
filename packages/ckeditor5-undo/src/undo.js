@@ -117,7 +117,7 @@ import ButtonView from '../ui/button/buttonview.js';
  * simultaneously updating them. Then deltas are applied to the document and removed from history (fig. 5).
  *
  * @memberOf undo
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class Undo extends Plugin {
 	/**
