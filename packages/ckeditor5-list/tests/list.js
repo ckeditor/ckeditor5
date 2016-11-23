@@ -20,14 +20,14 @@ describe( 'List', () => {
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-			features: [ Paragraph, List ]
+			plugins: [ Paragraph, List ]
 		} )
 			.then( newEditor => {
 				editor = newEditor;
 				schema = editor.document.schema;
 
-				bulletedListButton = editor.ui.featureComponents.create( 'bulletedList' );
-				numberedListButton = editor.ui.featureComponents.create( 'numberedList' );
+				bulletedListButton = editor.ui.componentFactory.create( 'bulletedList' );
+				numberedListButton = editor.ui.componentFactory.create( 'numberedList' );
 			} );
 	} );
 
