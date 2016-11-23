@@ -34,7 +34,7 @@ import getSelectedContent from './getselectedcontent.js';
  * and {@link ~DataController#set set} data of the {@link ~DataController#model model}
  * using given:
  *
- * * {@link module:engine/dataprocessor/dataProcessor~DataProcessor data processor},
+ * * {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor},
  * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher model to view} and
  * * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher view to model} converters.
  *
@@ -45,7 +45,7 @@ export default class DataController {
 	 * Creates data controller instance.
 	 *
 	 * @param {module:engine/model/document~Document} model Document model.
-	 * @param {module:engine/dataprocessor/dataProcessor~DataProcessor} [dataProcessor] Data processor which should used by the controller.
+	 * @param {module:engine/dataprocessor/dataprocessor~DataProcessor} [dataProcessor] Data processor which should used by the controller.
 	 */
 	constructor( model, dataProcessor ) {
 		/**
@@ -271,7 +271,7 @@ export default class DataController {
 	/**
 	 * See {@link module:engine/controller/getselectedcontent~getSelectedContent}.
 	 *
-	 * @fires engine.controller.DataController#getSelectedContent
+	 * @fires module:engine/controller/datacontroller~DataController#getSelectedContent
 	 * @param {module:engine/model/selection~Selection} selection The selection of which content will be retrieved.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Document fragment holding the clone of the selected content.
 	 */
@@ -288,7 +288,7 @@ mix( DataController, EmitterMixin );
 
 /**
  * Event fired when {@link #insertContent} method is called.
- * The {@link .insertContent default action of that method} is implemented as a
+ * The {@link #insertContent default action of that method} is implemented as a
  * listener to this event so it can be fully customized by the features.
  *
  * @event insertContent
@@ -322,11 +322,11 @@ mix( DataController, EmitterMixin );
  */
 
 /**
- * Event fired when {@link engine.controller.DataController#getSelectedContent} method is called.
+ * Event fired when {@link module:engine/controller/datacontroller~DataController#getSelectedContent} method is called.
  * The {@link module:engine/controller/getselectedcontent~getSelectedContent default action of that method} is implemented as a
  * listener to this event so it can be fully customized by the features.
  *
- * @event engine.controller.DataController#getSelectedContent
+ * @event module:engine/controller/datacontroller~DataController#getSelectedContent
  * @param {Object} data
  * @param {module:engine/model/selection~Selection} data.selection
  * @param {module:engine/model/documentfragment~DocumentFragment} data.content The document fragment to return

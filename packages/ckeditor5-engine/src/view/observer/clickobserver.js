@@ -33,13 +33,13 @@ export default class ClickObserver extends DomEventObserver {
 /**
  * Fired when one of the editables has been clicked.
  *
- * Introduced by {@link module:engine/view/observer/observer~Observer.ClickObserver}.
+ * Introduced by {@link module:engine/view/observer/clickobserver~ClickObserver}.
  *
- * Note that this event is not available by default. To make it available {@link
- * module:engine/view/observer/observer~Observer.ClickObserver} needs to be added
+ * Note that this event is not available by default. To make it available
+ * {@link module:engine/view/observer/clickobserver~ClickObserver} needs to be added
  * to {@link module:engine/view/document~Document} by a {@link module:engine/view/document~Document#addObserver} method.
  *
- * @see module:engine/view/observer/observer~Observer.ClickObserver
+ * @see module:engine/view/observer/clickobserver~ClickObserver
  * @event module:engine/view/document~Document#event:click
  * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
  */

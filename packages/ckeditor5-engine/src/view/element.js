@@ -22,7 +22,7 @@ import Matcher from './matcher.js';
  * class, {@link module:engine/view/attributeelement~AttributeElement} class or {@link module:engine/view/emptyelement~EmptyElement} class.
  *
  * Note that for view elements which are not created from model, like elements from mutations, paste or
- * {@link engine.controller.DataController#set data.set} it is not possible to define the type of the element, so
+ * {@link module:engine/controller/datacontroller~DataController#set data.set} it is not possible to define the type of the element, so
  * these will be instances of the {@link module:engine/view/element~Element}.
  *
  * @extends module:engine/view/node~Node

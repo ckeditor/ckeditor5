@@ -239,15 +239,15 @@ export default class MutationObserver extends Observer {
  *
  * Introduced by {@link module:engine/view/observer/mutationobserver~MutationObserver}.
  *
- * Note that because {@link module:engine/view/observer/mutationobserver~MutationObserver} is attached by the {@link
- * module:engine/view/document~Document}
+ * Note that because {@link module:engine/view/observer/mutationobserver~MutationObserver} is attached by the
+ * {@link module:engine/view/document~Document}
  * this event is available by default.
  *
  * @see module:engine/view/observer/mutationobserver~MutationObserver
  * @event module:engine/view/document~Document#event:mutations
  * @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|module:engine/view/observer/mutationobserver~MutatatedChildren>}
  * viewMutations Array of mutations.
- * For mutated texts it will be {@linkmodule:engine/view/observer/mutationobserver~MutatedText} and for mutated elements it will be
+ * For mutated texts it will be {@link module:engine/view/observer/mutationobserver~MutatedText} and for mutated elements it will be
  * {@link module:engine/view/observer/mutationobserver~MutatatedChildren}. You can recognize the type based on the `type` property.
  * @param {module:engine/view/selection~Selection|null} viewSelection View selection that is a result of converting DOM selection to view.
  * Keep in

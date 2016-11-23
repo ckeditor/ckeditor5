@@ -44,8 +44,8 @@ export default class KeyObserver extends DomEventObserver {
  *
  * Introduced by {@link module:engine/view/observer/keyobserver~KeyObserver}.
  *
- * Note that because {@link module:engine/view/observer/keyobserver~KeyObserver} is attached by the {@link
- * module:engine/view/document~Document}
+ * Note that because {@link module:engine/view/observer/keyobserver~KeyObserver} is attached by the
+ * {@link module:engine/view/document~Document}
  * this event is available by default.
  *
  * @see module:engine/view/observer/keyobserver~KeyObserver
@@ -58,11 +58,11 @@ export default class KeyObserver extends DomEventObserver {
  *
  * @class module:engine/view/observer/keyobserver~KeyObserver.KeyEventData
  * @extends module:engine/view/observer/domeventdata~DomEventData
- * @implements utils.keyboard.KeystrokeData
+ * @implements module:utils/keyboard/keystorkedata~KeystrokeData
  */
 
 /**
- * Code of the whole keystroke. See {@link utils.keyboard.getCode}.
+ * Code of the whole keystroke. See {@link module:utils/keyboard~getCode}.
  *
  * @readonly
  * @member {Number} module:engine/view/observer/keyobserver~KeyObserver.KeyEventData#keystroke

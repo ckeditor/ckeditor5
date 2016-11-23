@@ -220,8 +220,8 @@ export default class SelectionObserver extends Observer {
  *
  * Introduced by {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
  *
- * Note that because {@link module:engine/view/observer/selectionobserver~SelectionObserver} is attached by the {@link
- * module:engine/view/document~Document}
+ * Note that because {@link module:engine/view/observer/selectionobserver~SelectionObserver} is attached by the
+ * {@link module:engine/view/document~Document}
  * this event is available by default.
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver

@@ -44,7 +44,7 @@ export default class InsertDelta extends Delta {
 	 *
 	 * @readonly
 	 * @protected
-	 * @type {module:engine/model/operation/insertoperation~insertOperation|null}
+	 * @type {module:engine/model/operation/insertoperation~InsertOperation|null}
 	 */
 	get _insertOperation() {
 		return this.operations[ 0 ] || null;

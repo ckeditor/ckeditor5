@@ -31,7 +31,7 @@ export default class MoveDelta extends Delta {
 	}
 
 	/**
-	 * {@link module:engine/model/delta/delta~Delta.MoveDelta#_moveOperation Move operation}
+	 * {@link module:engine/model/delta/movedelta~MoveDelta#_moveOperation Move operation}
 	 * {@link module:engine/model/operation/moveoperation~MoveOperation#sourcePosition source position} or `null` if there are
 	 * no operations in the delta.
 	 *
@@ -42,7 +42,7 @@ export default class MoveDelta extends Delta {
 	}
 
 	/**
-	 * {@link module:engine/model/delta/delta~Delta.MoveDelta#_moveOperation Move operation}
+	 * {@link module:engine/model/delta/movedelta~MoveDelta#_moveOperation Move operation}
 	 * {@link module:engine/model/operation/moveoperation~MoveOperation#targetPosition target position} or `null` if there are
 	 * no operations in the delta.
 	 *
@@ -53,7 +53,7 @@ export default class MoveDelta extends Delta {
 	}
 
 	/**
-	 * {@link module:engine/model/delta/delta~Delta.MoveDelta#_moveOperation Move operation} that is saved in this delta or `null`
+	 * {@link module:engine/model/delta/movedelta~MoveDelta#_moveOperation Move operation} that is saved in this delta or `null`
 	 * if there are no operations in the delta.
 	 *
 	 * @protected

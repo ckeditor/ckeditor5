@@ -146,8 +146,8 @@ export default class Delta {
 	}
 
 	/**
-	 * Delta class name. Used by {@link module:engine/model/delta/delta~Delta#toJSON} method for serialization and
-	 * {@link module:engine/model/delta/delta~DeltaFactory.fromJSON} during deserialization.
+	 * Delta class name. Used by {@link #toJSON} method for serialization and
+	 * {@link module:engine/model/delta/deltafactory~DeltaFactory.fromJSON} during deserialization.
 	 *
 	 * @type {String}
 	 * @readonly
