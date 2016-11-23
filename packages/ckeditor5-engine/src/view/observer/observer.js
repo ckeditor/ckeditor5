@@ -28,7 +28,7 @@ export default class Observer {
 		 * Reference to the {@link module:engine/view/document~Document} object.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/document~Document} module:engine/view/observer/observer~Observer#document
+		 * @member {module:engine/view/document~Document}
 		 */
 		this.document = document;
 
@@ -36,7 +36,7 @@ export default class Observer {
 		 * State of the observer. If it is disabled events will not be fired.
 		 *
 		 * @readonly
-		 * @member {Boolean} module:engine/view/observer/observer~Observer#isEnabled
+		 * @member {Boolean}
 		 */
 		this.isEnabled = false;
 	}
@@ -44,7 +44,7 @@ export default class Observer {
 	/**
 	 * Enables the observer. This method is called when then observer is registered to the
 	 * {@link module:engine/view/document~Document} and after {@link module:engine/view/document~Document#render rendering}
-	 * (all observers are {@link module:engine/view/observer/observer~Observer#disable disabled} before rendering).
+	 * (all observers are {@link #disable disabled} before rendering).
 	 *
 	 * A typical use case for disabling observers is that mutation observers need to be disabled for the rendering.
 	 * However, a child class may not need to be disabled, so it can implement an empty method.

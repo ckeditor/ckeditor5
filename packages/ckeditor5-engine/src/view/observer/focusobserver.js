@@ -17,7 +17,7 @@ import DomEventObserver from './domeventobserver.js';
  *
  * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
  *
- * @extends module:engine/view/observer/observer~Observer.DomEventObserver
+ * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class FocusObserver extends DomEventObserver {
 	constructor( document ) {

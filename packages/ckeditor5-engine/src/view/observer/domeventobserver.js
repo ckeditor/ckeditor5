@@ -16,8 +16,8 @@ import DomEventData from './domeventdata.js';
  * {@link module:engine/view/observer/observer~Observer#disable disabling} and
  * {@link module:engine/view/observer/observer~Observer#enable re-enabling} events.
  * Child class needs to define
- * {@link module:engine/view/observer/observer~Observer.DomEventObserver#domEventType DOM event type} and
- * {@link module:engine/view/observer/observer~Observer.DomEventObserver#onDomEvent callback}.
+ * {@link module:engine/view/observer/domeventobserver~DomEventObserver#domEventType DOM event type} and
+ * {@link module:engine/view/observer/domeventobserver~DomEventObserver#onDomEvent callback}.
  *
  * For instance:
  *
@@ -32,7 +32,7 @@ import DomEventData from './domeventdata.js';
  *			}
  *		}
  *
- * @extends module:engine/view/observer/observer~Observer.Observer
+ * @extends module:engine/view/observer/observer~Observer
  */
 export default class DomEventObserver extends Observer {
 	/**
@@ -40,16 +40,16 @@ export default class DomEventObserver extends Observer {
 	 * if the obsever should listen to multiple DOM events.
 	 *
 	 * @readonly
-	 * @member {String|Array.<String>} module:engine/view/observer/observer~Observer.DomEventObserver#domEventType
+	 * @member {String|Array.<String>} #domEventType
 	 */
 
 	/**
 	 * Callback which should be called when the DOM event occurred. Note that the callback will not be called if
-	 * observer {@link module:engine/view/observer/observer~Observer.DomEventObserver#isEnabled is not enabled}.
+	 * observer {@link #isEnabled is not enabled}.
 	 *
-	 * @see module:engine/view/observer/observer~Observer.DomEventObserver#domEventType
+	 * @see #domEventType
 	 * @abstract
-	 * @method module:engine/view/observer/observer~Observer.DomEventObserver#onDomEvent
+	 * @method #onDomEvent
 	 */
 
 	/**
@@ -69,7 +69,7 @@ export default class DomEventObserver extends Observer {
 
 	/**
 	 * Calls {@link module:engine/view/document~Document#fire} if observer
-	 * {@link module:engine/view/observer/observer~Observer.DomEventObserver#isEnabled is enabled}.
+	 * {@link #isEnabled is enabled}.
 	 *
 	 * @see module:engine/view/document~Document#fire
 	 * @param {String} eventType The event type (name).
