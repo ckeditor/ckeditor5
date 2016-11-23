@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
 
@@ -14,7 +14,7 @@ import buildViewConverter from '../engine/conversion/buildviewconverter.js';
  * @memberOf paragraph
  * @extends core.Feature
  */
-export default class Paragraph extends Feature {
+export default class Paragraph extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
