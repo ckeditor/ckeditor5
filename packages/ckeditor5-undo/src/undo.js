@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import UndoEngine from './undoengine.js';
 import ButtonView from '../ui/button/buttonview.js';
 
@@ -119,7 +119,7 @@ import ButtonView from '../ui/button/buttonview.js';
  * @memberOf undo
  * @extends core.Feature
  */
-export default class Undo extends Feature {
+export default class Undo extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -154,7 +154,7 @@ export default class Undo extends Feature {
 		const editor = this.editor;
 		const command = editor.commands.get( name );
 
-		editor.ui.featureComponents.add( name, ( locale ) => {
+		editor.ui.componentFactory.add( name, ( locale ) => {
 			const view = new ButtonView( locale );
 
 			view.set( {

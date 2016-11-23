@@ -14,7 +14,7 @@ let editor, doc, root;
 
 beforeEach( () => {
 	return ModelTestEditor.create( {
-			features: [ UndoEngine ]
+			plugins: [ UndoEngine ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
