@@ -13,7 +13,7 @@ import Bold from '/ckeditor5/basic-styles/bold.js';
 import Italic from '/ckeditor5/basic-styles/italic.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ Enter, Typing, Paragraph, Bold, Italic ],
+	plugins: [ Enter, Typing, Paragraph, Bold, Italic ],
 	toolbar: [ 'bold', 'italic' ]
 } )
 .then( editor => {
