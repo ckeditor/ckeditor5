@@ -9,8 +9,8 @@ module.exports = {
 
 	editor: 'editor-classic/classic',
 
-	// List of features.
-	features: [
+	// List of plugins.
+	plugins: [
 		'autoformat',
 		'basic-styles/bold',
 		'basic-styles/italic',
