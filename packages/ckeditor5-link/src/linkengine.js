@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
 import LinkElement from './linkelement.js';
@@ -18,7 +18,7 @@ import UnlinkCommand from './unlinkcommand.js';
  * @memberOf link
  * @extends core.Feature
  */
-export default class LinkEngine extends Feature {
+export default class LinkEngine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

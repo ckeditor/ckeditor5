@@ -16,7 +16,7 @@ describe( 'LinkEngine', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-				features: [ LinkEngine ]
+				plugins: [ LinkEngine ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
