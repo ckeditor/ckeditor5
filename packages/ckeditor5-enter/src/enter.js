@@ -11,7 +11,7 @@ import EnterObserver from './enterobserver.js';
  * The Enter feature. Handles the <kbd>Enter</kbd> and <kbd>Shift + Enter</kbd> keys in the editor.
  *
  * @memberOf enter
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class Enter extends Plugin {
 	init() {
