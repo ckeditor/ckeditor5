@@ -28,7 +28,7 @@ describe( 'Link', () => {
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-			features: [ Link ]
+			plugins: [ Link ]
 		} )
 		.then( newEditor => {
 			newEditor.editing.view.attachDomRoot( editorElement );
@@ -36,8 +36,8 @@ describe( 'Link', () => {
 			editor = newEditor;
 
 			linkFeature = editor.plugins.get( Link );
-			linkButton = editor.ui.featureComponents.create( 'link' );
-			unlinkButton = editor.ui.featureComponents.create( 'unlink' );
+			linkButton = editor.ui.componentFactory.create( 'link' );
+			unlinkButton = editor.ui.componentFactory.create( 'unlink' );
 			balloonPanelView = linkFeature.balloonPanelView;
 			formView = linkFeature.formView;
 		} );
@@ -60,7 +60,7 @@ describe( 'Link', () => {
 	} );
 
 	describe( 'link toolbar button', () => {
-		it( 'should register link feature component', () => {
+		it( 'should register link button', () => {
 			expect( linkButton ).to.instanceOf( ButtonView );
 		} );
 
@@ -120,7 +120,7 @@ describe( 'Link', () => {
 	} );
 
 	describe( 'unlink toolbar button', () => {
-		it( 'should register unlink feature component', () => {
+		it( 'should register unlink button', () => {
 			expect( unlinkButton ).to.instanceOf( ButtonView );
 		} );
 

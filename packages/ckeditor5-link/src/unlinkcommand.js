@@ -7,7 +7,7 @@ import Command from '../core/command/command.js';
 import findLinkRange from './findlinkrange.js';
 
 /**
- * The unlink command. It is used by the {@link Link.Link link feature}.
+ * The unlink command. It is used by the {@link Link.Link link plugin}.
  *
  * @memberOf link
  * @extends core.command.Command

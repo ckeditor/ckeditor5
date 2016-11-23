@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import ClickObserver from '../engine/view/observer/clickobserver.js';
 import LinkEngine from './linkengine.js';
 import LinkElement from './linkelement.js';
@@ -24,7 +24,7 @@ import LinkFormView from './ui/linkformview.js';
  * @memberOf link
  * @extends core.Feature
  */
-export default class Link extends Feature {
+export default class Link extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -71,8 +71,7 @@ export default class Link extends Feature {
 		// Handle `Ctrl+K` keystroke and show panel.
 		editor.keystrokes.set( 'CTRL+K', () => this._showPanel() );
 
-		// Add link button to feature components.
-		editor.ui.featureComponents.add( 'link', ( locale ) => {
+		editor.ui.componentFactory.add( 'link', ( locale ) => {
 			const button = new ButtonView( locale );
 
 			button.isEnabled = true;
@@ -101,8 +100,7 @@ export default class Link extends Feature {
 		const t = editor.t;
 		const unlinkCommand = editor.commands.get( 'unlink' );
 
-		// Add unlink button to feature components.
-		editor.ui.featureComponents.add( 'unlink', ( locale ) => {
+		editor.ui.componentFactory.add( 'unlink', ( locale ) => {
 			const button = new ButtonView( locale );
 
 			button.isEnabled = false;
