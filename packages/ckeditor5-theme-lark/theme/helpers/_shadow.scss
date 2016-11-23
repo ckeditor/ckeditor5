@@ -2,5 +2,5 @@
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
 @mixin ck-dropshadow() {
-	box-shadow: 0 0 5px ck-color( 'foreground', -15 );
+	box-shadow: 0 0 5px ck-color( 'shadow' );
 }
