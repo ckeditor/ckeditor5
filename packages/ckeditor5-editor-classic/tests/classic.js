@@ -61,7 +61,7 @@ describe( 'ClassicEditor', () => {
 	describe( 'create', () => {
 		beforeEach( function() {
 			return ClassicEditor.create( editorElement, {
-					features: [ Paragraph, Bold ]
+					plugins: [ Paragraph, Bold ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -87,7 +87,7 @@ describe( 'ClassicEditor', () => {
 
 	describe( 'destroy', () => {
 		beforeEach( function() {
-			return ClassicEditor.create( editorElement, { features: [ Paragraph ] } )
+			return ClassicEditor.create( editorElement, { plugins: [ Paragraph ] } )
 				.then( newEditor => {
 					editor = newEditor;
 				} );
