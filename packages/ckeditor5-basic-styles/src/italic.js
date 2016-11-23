@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import ItalicEngine from './italicengine.js';
 import ButtonView from '../ui/button/buttonview.js';
 
@@ -15,7 +15,7 @@ import ButtonView from '../ui/button/buttonview.js';
  * @memberOf basic-styles
  * @extends core.Feature
  */
-export default class Italic extends Feature {
+export default class Italic extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -33,7 +33,7 @@ export default class Italic extends Feature {
 		const keystroke = 'CTRL+I';
 
 		// Add bold button to feature components.
-		editor.ui.featureComponents.add( 'italic', ( locale ) => {
+		editor.ui.componentFactory.add( 'italic', ( locale ) => {
 			const view = new ButtonView( locale );
 
 			view.set( {

@@ -14,7 +14,7 @@ describe( 'BoldEngine', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-				features: [ BoldEngine ]
+				plugins: [ BoldEngine ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

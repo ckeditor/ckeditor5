@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
 import ToggleAttributeCommand from '../core/command/toggleattributecommand.js';
@@ -19,7 +19,7 @@ const BOLD = 'bold';
  * @memberOf basic-styles
  * @extends core.Feature
  */
-export default class BoldEngine extends Feature {
+export default class BoldEngine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

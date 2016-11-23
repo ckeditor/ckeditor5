@@ -22,12 +22,12 @@ describe( 'Bold', () => {
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-				features: [ Bold ]
+				plugins: [ Bold ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 
-				boldView = editor.ui.featureComponents.create( 'bold' );
+				boldView = editor.ui.componentFactory.create( 'bold' );
 			} );
 	} );
 

@@ -22,12 +22,12 @@ describe( 'Italic', () => {
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-				features: [ Italic ]
+				plugins: [ Italic ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 
-				italicView = editor.ui.featureComponents.create( 'italic' );
+				italicView = editor.ui.componentFactory.create( 'italic' );
 			} );
 	} );
 
