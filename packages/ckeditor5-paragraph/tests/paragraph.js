@@ -13,7 +13,7 @@ describe( 'Paragraph feature', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-				features: [ Paragraph ]
+				plugins: [ Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
