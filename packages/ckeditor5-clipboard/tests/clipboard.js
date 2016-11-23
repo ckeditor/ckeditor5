@@ -24,7 +24,7 @@ describe( 'Clipboard feature', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-				features: [ Clipboard, Paragraph ]
+				plugins: [ Clipboard, Paragraph ]
 			} )
 			.then( ( newEditor ) => {
 				editor = newEditor;
