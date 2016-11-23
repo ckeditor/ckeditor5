@@ -107,7 +107,7 @@ export default class PluginCollection {
 		function assertIsPlugin( PluginConstructor ) {
 			if ( !( PluginConstructor.prototype instanceof Plugin ) ) {
 				/**
-				 * The loaded plugin module is not an instance of Plugin.
+				 * The loaded plugin module is not an instance of {@link core.Plugin}.
 				 *
 				 * @error plugincollection-instance
 				 * @param {*} plugin The constructor which is meant to be loaded as a plugin.

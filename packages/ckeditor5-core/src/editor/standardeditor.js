@@ -50,8 +50,8 @@ export default class StandardEditor extends Editor {
 		 * Editor UI instance.
 		 *
 		 * This property is set by more specialized editor constructors. However, it's required
-		 * for features to work (their UI-related part will try to interact with editor UI),
-		 * so every editor class which is meant to work with default features should set this property.
+		 * for plugins to work (their UI-related part will try to interact with editor UI),
+		 * so every editor class which is meant to work with default plugins should set this property.
 		 *
 		 * @readonly
 		 * @member {core.editor.EditorUI} core.editor.StandardEditor#ui

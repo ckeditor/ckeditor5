@@ -17,17 +17,16 @@
  */
 
 /**
- * Instance of the {@link ui.ComponentFactory}, a registry used by features
- * to register and create instance of UI components.
+ * Instance of the {@link ui.ComponentFactory}, a registry used by plugins
+ * to register factories of specific UI components.
  *
  * @readonly
- * @member {ui.ComponentFactory} core.editor.EditorUI#featureComponents
+ * @member {ui.ComponentFactory} core.editor.EditorUI#componentFactory
  */
 
 /**
- * Keeps information about editor UI focus and propagates it among
- * various features and components, unifying them in a uniform
- * focus group.
+ * Keeps information about editor UI focus and propagates it among various plugins and components,
+ * unifying them in a uniform focus group.
  *
  * @readonly
  * @member {utils.FocusTracker} core.editor.EditorUI#focusTracker

@@ -7,10 +7,10 @@ import EmitterMixin from '../utils/emittermixin.js';
 import { getCode, parseKeystroke } from '../utils/keyboard.js';
 
 /**
- * Keystroke handler. Its instance is available in {@link core.editor.Editor#keystrokes} so features
+ * Keystroke handler. Its instance is available in {@link core.editor.Editor#keystrokes} so plugins
  * can register their keystrokes.
  *
- * E.g. an undo feature would do this:
+ * E.g. an undo plugin would do this:
  *
  *		editor.keystrokes.set( 'ctrl + Z', 'undo' );
  *		editor.keystrokes.set( 'ctrl + shift + Z', 'redo' );
