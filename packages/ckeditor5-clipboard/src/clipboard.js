@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 
 import ClipboardObserver from './clipboardobserver.js';
 
@@ -86,7 +86,7 @@ import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
  * @memberOf clipboard
  * @extends core.Feature
  */
-export default class Clipboard extends Feature {
+export default class Clipboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

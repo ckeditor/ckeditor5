@@ -20,7 +20,7 @@ import Italic from '/ckeditor5/basic-styles/italic.js';
 import { stringify as stringifyView } from '/ckeditor5/engine/dev-utils/view.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [
+	plugins: [
 		Typing,
 		Paragraph,
 		Undo,
