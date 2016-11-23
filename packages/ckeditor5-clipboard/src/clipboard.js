@@ -84,7 +84,7 @@ import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
  * At this stage the copied/cut content can be processed by the features.
  *
  * @memberOf clipboard
- * @extends core.Feature
+ * @extends core.Plugin
  */
 export default class Clipboard extends Plugin {
 	/**
