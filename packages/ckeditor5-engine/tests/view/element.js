@@ -882,12 +882,12 @@ describe( 'Element', () => {
 
 			const properties = [ ...el.getCustomProperties() ];
 
-			expect( properties[0][0] ).to.equal( 'foo' );
-			expect( properties[0][1] ).to.equal( 1 );
-			expect( properties[1][0] ).to.equal( 'bar' );
-			expect( properties[1][1] ).to.equal( 2 );
-			expect( properties[2][0] ).to.equal( 'baz' );
-			expect( properties[2][1] ).to.equal( 3 );
+			expect( properties[ 0 ][ 0 ] ).to.equal( 'foo' );
+			expect( properties[ 0 ][ 1 ] ).to.equal( 1 );
+			expect( properties[ 1 ][ 0 ] ).to.equal( 'bar' );
+			expect( properties[ 1 ][ 1 ] ).to.equal( 2 );
+			expect( properties[ 2 ][ 0 ] ).to.equal( 'baz' );
+			expect( properties[ 2 ][ 1 ] ).to.equal( 3 );
 		} );
 	} );
 } );
