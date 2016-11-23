@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import EnterCommand from './entercommand.js';
 import EnterObserver from './enterobserver.js';
 
@@ -13,7 +13,7 @@ import EnterObserver from './enterobserver.js';
  * @memberOf enter
  * @extends core.Feature
  */
-export default class Enter extends Feature {
+export default class Enter extends Plugin {
 	init() {
 		const editor = this.editor;
 		const editingView = editor.editing.view;

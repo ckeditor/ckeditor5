@@ -13,7 +13,7 @@ describe( 'Enter feature', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-				features: [ Enter ]
+				plugins: [ Enter ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
