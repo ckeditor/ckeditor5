@@ -21,14 +21,20 @@ export default class ViewListItemElement extends ViewContainerElement {
 	 */
 	constructor( attrs, children ) {
 		super( 'li', attrs, children );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	getFillerOffset() {
-		const hasOnlyLists = !this.isEmpty && ( this.getChild( 0 ).name == 'ul' || this.getChild( 0 ).name == 'ol' );
-
-		return this.isEmpty || hasOnlyLists ? 0 : null;
+		/**
+		 * @inheritDoc
+		 */
+		this.getFillerOffset = getFillerOffset;
 	}
+}
+
+// Implementation of getFillerOffset for ViewListItemElements.
+//
+// @returns {Number|null} Block filler offset or `null` if block filler is not needed.
+function getFillerOffset() {
+	/*jshint validthis:true */
+	const hasOnlyLists = !this.isEmpty && ( this.getChild( 0 ).name == 'ul' || this.getChild( 0 ).name == 'ol' );
+
+	return this.isEmpty || hasOnlyLists ? 0 : null;
 }
