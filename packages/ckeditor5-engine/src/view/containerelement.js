@@ -54,7 +54,7 @@ export default class ContainerElement extends Element {
 		super( name, attrs, children );
 
 		/**
-		 * Returns block {@link module:engine/view/filter~Filter filler} offset or `null` if block filler is not needed.
+		 * Returns block {@link module:engine/view/filler~Filler filler} offset or `null` if block filler is not needed.
 		 *
 		 * @method #getFillerOffset
 		 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
@@ -63,7 +63,7 @@ export default class ContainerElement extends Element {
 	}
 }
 
-// Returns block {@link module:engine/view/filter~Filter filler} offset or `null` if block filler is not needed.
+// Returns block {@link module:engine/view/filler~Filler filler} offset or `null` if block filler is not needed.
 //
 // @returns {Number|null} Block filler offset or `null` if block filler is not needed.
 function getFillerOffset() {

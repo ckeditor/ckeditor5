@@ -614,7 +614,8 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Sets a custom property.
+	 * Sets a custom property. Unlike attributes, custom properties are not rendered to the DOM,
+	 * so they can be used to add special data to elements.
 	 *
 	 * @param {String|Symbol} key
 	 * @param {*} value
@@ -654,7 +655,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Returns block {@link module:engine/view/filter~Filter filler} offset or `null` if block filler is not needed.
+	 * Returns block {@link module:engine/view/filler~Filler filler} offset or `null` if block filler is not needed.
 	 *
 	 * @abstract
 	 * @method module:engine/view/element~Element#getFillerOffset
