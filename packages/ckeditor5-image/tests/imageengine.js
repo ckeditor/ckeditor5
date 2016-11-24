@@ -17,7 +17,7 @@ describe( 'ImageEngine', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			features: [ ImageEngine ]
+			plugins: [ ImageEngine ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;

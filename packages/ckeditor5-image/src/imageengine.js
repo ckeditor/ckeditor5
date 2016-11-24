@@ -3,21 +3,21 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import WidgetEngine from './widget/widgetengine.js';
 import { modelToViewImage, viewToModelImage, modelToViewSelection } from './converters.js';
 import { toImageWidget } from './utils.js';
 
 /**
- * The image engine feature.
+ * The image engine plugin.
  * Registers `image` as a block element in document's schema and allows it to have two attributes: `src` and `alt`.
  * Creates model converter for data and editing pipelines, and view converter for data pipeline.
  *
  * @memberof image
- * @extends core.Feature.
+ * @extends core.Plugin.
  */
-export default class ImageEngine extends Feature {
+export default class ImageEngine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

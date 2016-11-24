@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../core/feature.js';
+import Plugin from '../core/plugin.js';
 import ImageEngine from './imageengine.js';
 import Widget from './widget/widget.js';
 
 /**
- * The image feature.
+ * The image plugin.
  *
  * Uses {@link image.ImageEngine}.
  *
  * @memberOf image
- * @extends core.Feature
+ * @extends core.Plugin
  */
-export default class Image extends Feature {
+export default class Image extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

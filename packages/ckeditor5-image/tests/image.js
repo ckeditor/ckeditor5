@@ -18,7 +18,7 @@ describe( 'Image', () => {
 		window.document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-			features: [ Image ]
+			plugins: [ Image ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;

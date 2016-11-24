@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../../core/feature.js';
+import Plugin from '../../core/plugin.js';
 import { WIDGET_SELECTED_CLASS_NAME, isWidget } from './utils.js';
 
 /**
- * The widget engine feature.
+ * The widget engine plugin.
  * Registers model to view selection converter for editing pipeline. It is hooked after default selection conversion.
  * If converted selection is placed around widget element, selection is marked as fake. Additionally, proper CSS class
  * is added to indicate that widget has been selected.
  *
  * @memberOf image.widget
- * @extends core.Feature.
+ * @extends core.Plugin.
  */
-export default class WidgetEngine extends Feature {
+export default class WidgetEngine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

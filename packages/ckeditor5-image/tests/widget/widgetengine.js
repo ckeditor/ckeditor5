@@ -16,7 +16,7 @@ describe( 'WidgetEngine', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			features: [ WidgetEngine ]
+			plugins: [ WidgetEngine ]
 		} )
 			.then( newEditor => {
 				editor = newEditor;

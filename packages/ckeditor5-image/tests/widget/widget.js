@@ -17,7 +17,7 @@ describe( 'Widget', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			features: [ Widget ]
+			plugins: [ Widget ]
 		} )
 			.then( newEditor => {
 				editor = newEditor;

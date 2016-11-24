@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
-import Feature from '../../core/feature.js';
+import Plugin from '../../core/plugin.js';
 import WidgetEngine from './widgetengine.js';
 import MouseObserver from '../../engine/view/observer/mouseobserver.js';
 import ModelRange from '../../engine/model/range.js';
 import { isWidget } from './utils.js';
 
 /**
- * The widget feature.
+ * The widget plugin.
  * Adds default {@link engine.view.Document#mousedown mousedown} handling on widget elements.
  *
  * @memberOf image.widget
- * @extends core.Feature.
+ * @extends core.Plugin.
  */
-export default class Widget extends Feature {
+export default class Widget extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
