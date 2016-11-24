@@ -61,7 +61,7 @@ export function viewToModelImage() {
 
 /**
  * Returns model to view selection converter. This converter is applied after default selection conversion is made.
- * It creates fake view selection when {@link engine.view.Selection#getSelectedElement} returns instance of widget.
+ * It creates fake view selection when {@link engine.view.Selection#getSelectedElement} returns instance of image widget.
  *
  * @param {Function} t {@link utils.Locale#t Locale#t function} used to translate default fake selection's label.
  * @returns {Function}

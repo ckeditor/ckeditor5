@@ -12,7 +12,7 @@ import { toImageWidget } from './utils.js';
 /**
  * The image engine plugin.
  * Registers `image` as a block element in document's schema and allows it to have two attributes: `src` and `alt`.
- * Creates model converter for data and editing pipelines, and view converter for data pipeline.
+ * Registers converters for editing and data pipelines.
  *
  * @memberof image
  * @extends core.Plugin.

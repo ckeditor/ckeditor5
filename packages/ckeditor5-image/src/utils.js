@@ -8,8 +8,9 @@ import { widgetize, isWidget } from './widget/utils.js';
 const imageSymbol = Symbol( 'isImage' );
 
 /**
- * Converts given {@link engine.view.Element} to image widget. Adds {@link engine.view.Element#addCustomProperty custom
- * property} and calls {@link image.widget.utils.widgetize widgetize} method on given element.
+ * Converts given {@link engine.view.Element} to image widget:
+ * * adds {@link engine.view.Element#addCustomProperty custom property} allowing to recognize image widget element,
+ * * calls {@link image.widget.utils.widgetize widgetize}.
  *
  * @param {engine.view.Element} viewElement
  * @returns {engine.view.Element}
@@ -21,7 +22,7 @@ export function toImageWidget( viewElement ) {
 }
 
 /**
- * Checks if given view element is image widget.
+ * Checks if given view element is an image widget.
  *
  * @param {engine.view.Element} viewElement
  * @returns {Boolean}
