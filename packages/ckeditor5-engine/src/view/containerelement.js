@@ -52,14 +52,21 @@ export default class ContainerElement extends Element {
 	 */
 	constructor( name, attrs, children ) {
 		super( name, attrs, children );
-	}
 
-	/**
-	 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
-	 *
-	 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
-	 */
-	getFillerOffset() {
-		return this.childCount === 0 ? 0 : null;
+		/**
+		 * Returns block {@link module:engine/view/filler~Filler filler} offset or `null` if block filler is not needed.
+		 *
+		 * @method #getFillerOffset
+		 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
+		 */
+		this.getFillerOffset = getFillerOffset;
 	}
+}
+
+// Returns block {@link module:engine/view/filler~Filler filler} offset or `null` if block filler is not needed.
+//
+// @returns {Number|null} Block filler offset or `null` if block filler is not needed.
+function getFillerOffset() {
+	/*jshint validthis:true */
+	return this.childCount === 0 ? 0 : null;
 }

@@ -157,6 +157,30 @@ describe( 'Element', () => {
 			expect( clone._styles.has( 'font-size' ) ).to.be.true;
 			expect( clone._styles.get( 'font-size' ) ).to.equal( '12px' );
 		} );
+
+		it( 'should clone custom properties', () => {
+			const el = new Element( 'p' );
+			const symbol = Symbol( 'custom' );
+			el.setCustomProperty( 'foo', 'bar' );
+			el.setCustomProperty( symbol, 'baz' );
+
+			const cloned = el.clone();
+
+			expect( cloned.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
+			expect( cloned.getCustomProperty( symbol ) ).to.equal( 'baz' );
+		} );
+
+		it( 'should clone getFillerOffset', () => {
+			const el = new Element( 'p' );
+			const fm = () => 'foo bar';
+
+			expect( el.getFillerOffset ).to.be.undefined;
+			el.getFillerOffset = fm;
+
+			const cloned = el.clone();
+
+			expect( cloned.getFillerOffset ).to.equal( fm );
+		} );
 	} );
 
 	describe( 'isSimilar', () => {
@@ -815,6 +839,55 @@ describe( 'Element', () => {
 				name: 'div',
 				class: 'container'
 			} ) ).to.be.null;
+		} );
+	} );
+
+	describe( 'custom properties', () => {
+		it( 'should allow to set and get custom properties', () => {
+			const el = new Element( 'p' );
+			el.setCustomProperty( 'foo', 'bar' );
+
+			expect( el.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
+		} );
+
+		it( 'should allow to add symbol property', () => {
+			const el = new Element( 'p' );
+			const symbol = Symbol( 'custom' );
+			el.setCustomProperty( symbol, 'bar' );
+
+			expect( el.getCustomProperty( symbol ) ).to.equal( 'bar' );
+		} );
+
+		it( 'should allow to remove custom property', () => {
+			const el = new Element( 'foo' );
+			const symbol = Symbol( 'quix' );
+			el.setCustomProperty( 'bar', 'baz' );
+			el.setCustomProperty( symbol, 'test' );
+
+			expect( el.getCustomProperty( 'bar' ) ).to.equal( 'baz' );
+			expect( el.getCustomProperty( symbol ) ).to.equal( 'test' );
+
+			el.removeCustomProperty( 'bar' );
+			el.removeCustomProperty( symbol );
+
+			expect( el.getCustomProperty( 'bar' ) ).to.be.undefined;
+			expect( el.getCustomProperty( symbol ) ).to.be.undefined;
+		} );
+
+		it( 'should allow to iterate over custom properties', () => {
+			const el = new Element( 'p' );
+			el.setCustomProperty( 'foo', 1 );
+			el.setCustomProperty( 'bar', 2 );
+			el.setCustomProperty( 'baz', 3 );
+
+			const properties = [ ...el.getCustomProperties() ];
+
+			expect( properties[ 0 ][ 0 ] ).to.equal( 'foo' );
+			expect( properties[ 0 ][ 1 ] ).to.equal( 1 );
+			expect( properties[ 1 ][ 0 ] ).to.equal( 'bar' );
+			expect( properties[ 1 ][ 1 ] ).to.equal( 2 );
+			expect( properties[ 2 ][ 0 ] ).to.equal( 'baz' );
+			expect( properties[ 2 ][ 1 ] ).to.equal( 3 );
 		} );
 	} );
 } );
