@@ -11,11 +11,11 @@ import DomEventObserver from './domeventobserver.js';
 import { getCode } from '../../../utils/keyboard.js';
 
 /**
- * {@link module:engine/view/document~Document#keydown Key down} event observer.
+ * {@link module:engine/view/document~Document#event:keydown Key down} event observer.
  *
  * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
  *
- * @extends module:engine/view/observer/observer~Observer.DomEventObserver
+ * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class KeyObserver extends DomEventObserver {
 	constructor( document ) {
@@ -44,25 +44,25 @@ export default class KeyObserver extends DomEventObserver {
  *
  * Introduced by {@link module:engine/view/observer/keyobserver~KeyObserver}.
  *
- * Note that because {@link module:engine/view/observer/keyobserver~KeyObserver} is attached by the {@link
- * module:engine/view/document~Document}
+ * Note that because {@link module:engine/view/observer/keyobserver~KeyObserver} is attached by the
+ * {@link module:engine/view/document~Document}
  * this event is available by default.
  *
  * @see module:engine/view/observer/keyobserver~KeyObserver
- * @event module:engine/view/document~Document#keydown
+ * @event module:engine/view/document~Document#event:keydown
  * @param {module:engine/view/observer/keyobserver~KeyObserver.KeyEventData} keyEventData
  */
 
 /**
- * The value of the {@link module:engine/view/document~Document#keydown} event.
+ * The value of the {@link module:engine/view/document~Document#event:keydown} event.
  *
  * @class module:engine/view/observer/keyobserver~KeyObserver.KeyEventData
  * @extends module:engine/view/observer/domeventdata~DomEventData
- * @implements utils.keyboard.KeystrokeData
+ * @implements module:utils/keyboard/keystorkedata~KeystrokeData
  */
 
 /**
- * Code of the whole keystroke. See {@link utils.keyboard.getCode}.
+ * Code of the whole keystroke. See {@link module:utils/keyboard~getCode}.
  *
  * @readonly
  * @member {Number} module:engine/view/observer/keyobserver~KeyObserver.KeyEventData#keystroke

@@ -19,7 +19,7 @@ import ViewTreeWalker from '../view/treewalker.js';
 import viewWriter from '../view/writer.js';
 
 /**
- * Contains {@link module:engine/model model} to {@link module:engine/view view} converters for
+ * Contains {@link module:engine/model/model model} to {@link module:engine/view/view view} converters for
  * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}.
  *
  * @namespace module:engine/conversion/modeltoview~modelToView

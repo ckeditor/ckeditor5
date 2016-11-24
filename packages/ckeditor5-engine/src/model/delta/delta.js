@@ -108,7 +108,7 @@ export default class Delta {
 	 * by the original delta.
 	 *
 	 * Keep in mind that tree model state may change since executing the original delta, so reverse delta may be "outdated".
-	 * In that case you will need to {@link module:engine/model/delta/delta~Delta.transform} it by all deltas that were executed after
+	 * In that case you will need to {@link module:engine/model/delta/transform~transform} it by all deltas that were executed after
 	 * the original delta.
 	 *
 	 * @returns {module:engine/model/delta/delta~Delta} Reversed delta.
@@ -146,8 +146,8 @@ export default class Delta {
 	}
 
 	/**
-	 * Delta class name. Used by {@link module:engine/model/delta/delta~Delta#toJSON} method for serialization and
-	 * {@link module:engine/model/delta/delta~DeltaFactory.fromJSON} during deserialization.
+	 * Delta class name. Used by {@link #toJSON} method for serialization and
+	 * {@link module:engine/model/delta/deltafactory~DeltaFactory.fromJSON} during deserialization.
 	 *
 	 * @type {String}
 	 * @readonly
@@ -157,7 +157,7 @@ export default class Delta {
 	}
 
 	/**
-	 * Delta priority. Used in {@link module:engine/model/delta/delta~Delta.transform delta transformations}. Delta with the higher
+	 * Delta priority. Used in {@link module:engine/model/delta/transform~transform delta transformations}. Delta with the higher
 	 * priority will be treated as more important when resolving transformation conflicts. If deltas have same
 	 * priority, other factors will be used to determine which delta is more important.
 	 *

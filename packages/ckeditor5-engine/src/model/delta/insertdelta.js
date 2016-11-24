@@ -33,7 +33,7 @@ export default class InsertDelta extends Delta {
 	 * Node list containing all the nodes inserted by the delta or `null` if there are no operations in the delta.
 	 *
 	 * @readonly
-	 * @type {module:engine/model/node~NodeList|null}
+	 * @type {module:engine/model/nodelist~NodeList|null}
 	 */
 	get nodes() {
 		return this._insertOperation ? this._insertOperation.nodes : null;
@@ -44,7 +44,7 @@ export default class InsertDelta extends Delta {
 	 *
 	 * @readonly
 	 * @protected
-	 * @type {module:engine/model/operation/insertoperation~insertOperation|null}
+	 * @type {module:engine/model/operation/insertoperation~InsertOperation|null}
 	 */
 	get _insertOperation() {
 		return this.operations[ 0 ] || null;

@@ -29,7 +29,7 @@ export default class Selection {
 		 * Specifies whether the last added range was added as a backward or forward range.
 		 *
 		 * @private
-		 * @member {Boolean} module:engine/model/selection~Selection#_lastRangeBackward
+		 * @member {Boolean}
 		 */
 		this._lastRangeBackward = false;
 
@@ -37,7 +37,7 @@ export default class Selection {
 		 * Stores selection ranges.
 		 *
 		 * @protected
-		 * @member {Array.<module:engine/model/range~Range>} module:engine/model/selection~Selection#_ranges
+		 * @member {Array.<module:engine/model/range~Range>}
 		 */
 		this._ranges = [];
 
@@ -52,13 +52,13 @@ export default class Selection {
 
 	/**
 	 * Selection anchor. Anchor may be described as a position where the most recent part of the selection starts.
-	 * Together with {@link module:engine/model/selection~Selection#focus} they define the direction of selection, which is important
+	 * Together with {@link #focus} they define the direction of selection, which is important
 	 * when expanding/shrinking selection. Anchor is always {@link module:engine/model/range~Range#start start} or
 	 * {@link module:engine/model/range~Range#end end} position of the most recently added range.
 	 *
 	 * Is set to `null` if there are no ranges in selection.
 	 *
-	 * @see module:engine/model/selection~Selection#focus
+	 * @see #focus
 	 * @readonly
 	 * @type {module:engine/model/position~Position|null}
 	 */
@@ -77,7 +77,7 @@ export default class Selection {
 	 *
 	 * Is set to `null` if there are no ranges in selection.
 	 *
-	 * @see module:engine/model/selection~Selection#anchor
+	 * @see #anchor
 	 * @readonly
 	 * @type {module:engine/model/position~Position|null}
 	 */
@@ -118,8 +118,8 @@ export default class Selection {
 	}
 
 	/**
-	 * Specifies whether the {@link module:engine/model/selection~Selection#focus}
-	 * precedes {@link module:engine/model/selection~Selection#anchor}.
+	 * Specifies whether the {@link #focus}
+	 * precedes {@link #anchor}.
 	 *
 	 * @type {Boolean}
 	 */
@@ -256,10 +256,10 @@ export default class Selection {
 	 * {@link module:engine/model/range~Range#start start} to {@link module:engine/model/range~Range#end end}
 	 * or from {@link module:engine/model/range~Range#end end}
 	 * to {@link module:engine/model/range~Range#start start}.
-	 * The flag is used to set {@link module:engine/model/selection~Selection#anchor} and
-	 * {@link module:engine/model/selection~Selection#focus} properties.
+	 * The flag is used to set {@link #anchor} and
+	 * {@link #focus} properties.
 	 *
-	 * @fires module:engine/model/selection~Selection#change:range
+	 * @fires change:range
 	 * @param {module:engine/model/range~Range} range Range to add.
 	 * @param {Boolean} [isBackward=false] Flag describing if added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`).
@@ -274,7 +274,7 @@ export default class Selection {
 	/**
 	 * Removes all ranges that were added to the selection.
 	 *
-	 * @fires module:engine/model/selection~Selection#change:range
+	 * @fires change:range
 	 */
 	removeAllRanges() {
 		if ( this._ranges.length > 0 ) {
@@ -289,7 +289,7 @@ export default class Selection {
 	 * {@link module:engine/model/selection~Selection#focus}. Accepts a flag describing in which direction the selection is made
 	 * (see {@link module:engine/model/selection~Selection#addRange}).
 	 *
-	 * @fires module:engine/model/selection~Selection#change:range
+	 * @fires change:range
 	 * @param {Iterable.<module:engine/model/range~Range>} newRanges Ranges to set.
 	 * @param {Boolean} [isLastBackward=false] Flag describing if last added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`).
@@ -338,7 +338,7 @@ export default class Selection {
 	 *
 	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
 	 *
-	 * @fires module:engine/model/selection~Selection#change:range
+	 * @fires change:range
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
@@ -355,7 +355,7 @@ export default class Selection {
 	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
 	 * inside selection.
 	 *
-	 * @fires module:engine/view/selection~Selection#change
+	 * @fires change
 	 */
 	collapseToStart() {
 		const startPosition = this.getFirstPosition();
@@ -370,7 +370,7 @@ export default class Selection {
 	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
 	 * inside selection.
 	 *
-	 * @fires module:engine/view/selection~Selection#change
+	 * @fires change
 	 */
 	collapseToEnd() {
 		const endPosition = this.getLastPosition();
@@ -385,7 +385,7 @@ export default class Selection {
 	 *
 	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
 	 *
-	 * @fires module:engine/model/selection~Selection#change:range
+	 * @fires change:range
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
@@ -463,10 +463,10 @@ export default class Selection {
 	/**
 	 * Removes all attributes from the selection.
 	 *
-	 * If there were any attributes in selection, fires the {@link module:engine/model/selection~Selection#change} event with
+	 * If there were any attributes in selection, fires the {@link #event:change} event with
 	 * removed attributes' keys.
 	 *
-	 * @fires module:engine/model/selection~Selection#change:attribute
+	 * @fires change:attribute
 	 */
 	clearAttributes() {
 		if ( this._attrs.size > 0 ) {
@@ -480,10 +480,10 @@ export default class Selection {
 	/**
 	 * Removes an attribute with given key from the selection.
 	 *
-	 * If given attribute was set on the selection, fires the {@link module:engine/model/selection~Selection#change} event with
+	 * If given attribute was set on the selection, fires the {@link #event:change} event with
 	 * removed attribute key.
 	 *
-	 * @fires module:engine/model/selection~Selection#change:attribute
+	 * @fires change:attribute
 	 * @param {String} key Key of attribute to remove.
 	 */
 	removeAttribute( key ) {
@@ -497,10 +497,10 @@ export default class Selection {
 	/**
 	 * Sets attribute on the selection. If attribute with the same key already is set, it's value is overwritten.
 	 *
-	 * If the attribute value has changed, fires the {@link module:engine/model/selection~Selection#change} event with
+	 * If the attribute value has changed, fires the {@link #event:change} event with
 	 * the attribute key.
 	 *
-	 * @fires module:engine/model/selection~Selection#change:attribute
+	 * @fires change:attribute
 	 * @param {String} key Key of attribute to set.
 	 * @param {*} value Attribute value.
 	 */
@@ -516,9 +516,9 @@ export default class Selection {
 	 * Removes all attributes from the selection and sets given attributes.
 	 *
 	 * If given set of attributes is different than set of attributes already added to selection, fires
-	 * {@link module:engine/model/selection~Selection#change change event} with keys of attributes that changed.
+	 * {@link #event:change change event} with keys of attributes that changed.
 	 *
-	 * @fires module:engine/model/selection~Selection#change:attribute
+	 * @fires event:change:attribute
 	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
 	 */
 	setAttributesTo( attrs ) {
@@ -556,7 +556,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Adds given range to internal {@link module:engine/model/selection~Selection#_ranges ranges array}. Throws an error
+	 * Adds given range to internal {@link #_ranges ranges array}. Throws an error
 	 * if given range is intersecting with any range that is already stored in this selection.
 	 *
 	 * @protected
@@ -605,7 +605,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Deletes ranges from internal range array. Uses {@link module:engine/model/selection~Selection#_popRange _popRange} to
+	 * Deletes ranges from internal range array. Uses {@link #_popRange _popRange} to
 	 * ensure proper ranges removal.
 	 *
 	 * @private
@@ -617,9 +617,13 @@ export default class Selection {
 	}
 
 	/**
+	 * @event change
+	 */
+
+	/**
 	 * Fired whenever selection ranges are changed.
 	 *
-	 * @event range
+	 * @event change:range
 	 * @param {Boolean} directChange Specifies whether the range change was caused by direct usage of `Selection` API (`true`)
 	 * or by changes done to {@link module:engine/model/document~Document model document}
 	 * using {@link module:engine/model/batch~Batch Batch} API (`false`).
@@ -628,7 +632,7 @@ export default class Selection {
 	/**
 	 * Fired whenever selection attributes are changed.
 	 *
-	 * @event attribute
+	 * @event change:attribute
 	 * @param {Boolean} directChange Specifies whether the attributes changed by direct usage of the Selection API (`true`)
 	 * or by changes done to the {@link module:engine/model/document~Document model document}
 	 * using the {@link module:engine/model/batch~Batch Batch} API (`false`).

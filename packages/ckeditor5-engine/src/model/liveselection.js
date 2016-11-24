@@ -40,6 +40,8 @@ const attrOpTypes = new Set(
  * that are inside {@link module:engine/model/documentfragment~DocumentFragment document fragment}.
  * If you need to represent a selection in document fragment,
  * use {@link module:engine/model/selection~Selection "normal" selection} instead.
+ *
+ * @extends module:engine/model/selection~Selection
  */
 export default class LiveSelection extends Selection {
 	/**
@@ -316,7 +318,7 @@ export default class LiveSelection extends Selection {
 	 *
 	 * @protected
 	 * @param {Boolean} clearAll
-	 * @fires module:engine/model/liveselection~LiveSelection#change:attribute
+	 * @fires change:attribute
 	 */
 	_updateAttributes( clearAll ) {
 		const newAttributes = toMap( this._getSurroundingAttributes() );
@@ -636,6 +638,10 @@ export default class LiveSelection extends Selection {
 		gyRange.detach();
 	}
 }
+
+/**
+ * @event change:attribute
+ */
 
 // Helper function for {@link module:engine/model/liveselection~LiveSelection#_updateAttributes}. It takes model item, checks whether
 // it is a text node (or text proxy) and if so, returns it's attributes. If not, returns `null`.

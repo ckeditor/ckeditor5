@@ -190,7 +190,7 @@ class ModelConverterBuilder {
 	 * This method creates the converter and adds it as a callback to a proper
 	 * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher conversion dispatcher} event.
 	 *
-	 * @param {String|module:engine/view/viewelement~ViewElement|Function} element Element created by converter.
+	 * @param {String|module:engine/view/element~Element|Function} element Element created by converter.
 	 */
 	toElement( element ) {
 		const priority = this._from.priority === null ? 'normal' : this._from.priority;
@@ -290,8 +290,6 @@ class ModelConverterBuilder {
  * Entry point for model-to-view converters builder. This chainable API makes it easy to create basic, most common
  * model-to-view converters and attach them to provided dispatchers. The method returns an instance of
  * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder}.
- *
- * @external module:engine/conversion/buildmodelconverter~buildModelConverter
  */
 export default function buildModelConverter() {
 	return new ModelConverterBuilder();

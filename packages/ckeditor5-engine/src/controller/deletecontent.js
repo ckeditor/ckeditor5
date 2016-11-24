@@ -15,7 +15,6 @@ import compareArrays from '../../utils/comparearrays.js';
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.
  *
- * @method engine.controller.deleteContent
  * @param {module:engine/model/selection~Selection} selection Selection of which the content should be deleted.
  * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
  * @param {Object} [options]

@@ -269,7 +269,7 @@ export default class Position {
 	 * Returns the slice of two position {@link #path paths} which is identical. The {@link #root roots}
 	 * of these two paths must be identical.
 	 *
-	 * @param {engine.model.Position} position The second position.
+	 * @param {module:engine/model/position~Position} position The second position.
 	 * @returns {Array.<Number>} The common path.
 	 */
 	getCommonPath( position ) {
@@ -286,7 +286,7 @@ export default class Position {
 	}
 
 	/**
-	 * Returns a new instance of `Position`, that has same {@link engine.model.Position#parent parent} but it's offset
+	 * Returns a new instance of `Position`, that has same {@link #parent parent} but it's offset
 	 * is shifted by `shift` value (can be a negative value).
 	 *
 	 * @param {Number} shift Offset shift. Can be a negative value.

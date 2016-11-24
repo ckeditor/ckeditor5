@@ -43,7 +43,7 @@ export default class EmptyElement extends Element {
 	 * Clones provided element. Overrides {@link module:engine/view/element~Element#clone} method, as it's forbidden to pass child
 	 * nodes to EmptyElement's constructor.
 	 *
-	 * @returns {envine.view.EmptyElement} Clone of this element.
+	 * @returns {module:engine/view/emptyelement~EmptyElement} Clone of this element.
 	 */
 	clone() {
 		const cloned = new this.constructor( this.name, this._attrs );

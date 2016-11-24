@@ -26,7 +26,7 @@ export default class TreeWalker {
 	 * @param {module:engine/model/range~Range} [options.boundaries=null] Range to define boundaries of the iterator.
 	 * @param {module:engine/model/position~Position} [options.startPosition] Starting position.
 	 * @param {Boolean} [options.singleCharacters=false] Flag indicating whether all consecutive characters with the same attributes
-	 * should be returned one by one as multiple {@link module:engine/model/characterproxy~CharacterProxy} (`true`) objects or as one
+	 * should be returned one by one as multiple {@link module:engine/model/textproxy~TextProxy} (`true`) objects or as one
 	 * {@link module:engine/model/textproxy~TextProxy} (`false`).
 	 * @param {Boolean} [options.shallow=false] Flag indicating whether iterator should enter elements or not. If the
 	 * iterator is shallow child nodes of any iterated node will not be returned along with `elementEnd` tag.
@@ -92,7 +92,7 @@ export default class TreeWalker {
 
 		/**
 		 * Flag indicating whether all consecutive characters with the same attributes should be
-		 * returned as one {@link module:engine/model/characterproxy~CharacterProxy} (`true`) or one by one (`false`).
+		 * returned as one {@link module:engine/model/textproxy~TextProxy} (`true`) or one by one (`false`).
 		 *
 		 * @readonly
 		 * @member {Boolean} module:engine/model/treewalker~TreeWalker#singleCharacters

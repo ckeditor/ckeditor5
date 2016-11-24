@@ -18,7 +18,7 @@ import EmitterMixin from '../../utils/emittermixin.js';
 import mix from '../../utils/mix.js';
 
 /**
- * Maps elements and positions between {@link module:engine/view/document~Document view} and {@link module:engine/model model}.
+ * Maps elements and positions between {@link module:engine/view/document~Document view} and {@link module:engine/model/model model}.
  *
  * Mapper use bound elements to find corresponding elements and positions, so, to get proper results,
  * all model elements should be {@link module:engine/conversion/mapper~Mapper#bindElements bound}.

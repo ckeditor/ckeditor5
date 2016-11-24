@@ -23,7 +23,7 @@ export default class Element extends Node {
 	 * Creates a model element.
 	 *
 	 * @param {String} name Element's name.
-	 * @param {Object} [attrs] Element's attributes. See {@link utils.toMap} for a list of accepted values.
+	 * @param {Object} [attrs] Element's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} [children]
 	 * One or more nodes to be inserted as children of created element.
 	 */
@@ -41,7 +41,7 @@ export default class Element extends Node {
 		 * List of children nodes.
 		 *
 		 * @private
-		 * @member {module:engine/model/node~NodeList} module:engine/model/element~Element#_children
+		 * @member {module:engine/model/nodelist~NodeList} module:engine/model/element~Element#_children
 		 */
 		this._children = new NodeList();
 
@@ -138,7 +138,7 @@ export default class Element extends Node {
 
 	/**
 	 * Returns index of a node that occupies given offset. If given offset is too low, returns `0`. If given offset is
-	 * too high, returns {@link module:engine/model/element~Element#getChildCount index after last child}.
+	 * too high, returns {@link module:engine/model/element~Element#getChildIndex index after last child}.
 	 *
 	 *		const textNode = new Text( 'foo' );
 	 *		const pElement = new Element( 'p' );
@@ -210,7 +210,7 @@ export default class Element extends Node {
 	 *		this.getNodeByPath( [ 1, 0 ] );  // -> "c"
 	 *
 	 * @param {Array.<Number>} relativePath Path of the node to find, relative to this element.
-	 * @returns {engine.model.Node}
+	 * @returns {module:engine/model/node~Node}
 	 */
 	getNodeByPath( relativePath ) {
 		let node = this;

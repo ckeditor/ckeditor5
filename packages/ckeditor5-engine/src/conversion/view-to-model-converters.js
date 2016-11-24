@@ -12,7 +12,7 @@ import ModelText from '../model/text.js';
 import { normalizeNodes } from '../model/writer.js';
 
 /**
- * Contains {@link module:engine/view view} to {@link module:engine/model model} converters for
+ * Contains {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
  * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher}.
  *
  * @namespace viewToModel

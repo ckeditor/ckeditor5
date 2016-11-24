@@ -29,10 +29,6 @@ const specialCases = new Map();
  * transformed using that function. If not, {@link module:engine/model/delta/delta~Delta.defaultTransform default transformation algorithm}
  * is used.
  *
- * @see module:engine/model/operation/transform~transform
- *
- * @external module:engine/model/delta/delta~Delta.transform
- * @function module:engine/model/delta/delta~Delta.transform.transform
  * @param {module:engine/model/delta/delta~Delta} a Delta that will be transformed.
  * @param {module:engine/model/delta/delta~Delta} b Delta to transform by.
  * @param {Boolean} isAMoreImportantThanB Flag indicating whether the delta which will be transformed (`a`) should be treated
@@ -67,8 +63,6 @@ function updateBaseVersion( baseVersion, deltas ) {
  * This algorithm is similar to a popular `dOPT` algorithm used in operational transformation, as we are in fact
  * transforming two sets of operations by each other.
  *
- * @external module:engine/model/delta/delta~Delta.transform
- * @function module:engine/model/delta/delta~Delta.transform.defaultTransform
  * @param {module:engine/model/delta/delta~Delta} a Delta that will be transformed.
  * @param {module:engine/model/delta/delta~Delta} b Delta to transform by.
  * @param {Boolean} isAMoreImportantThanB Flag indicating whether the delta which will be transformed (`a`) should be treated
@@ -165,8 +159,8 @@ export function defaultTransform( a, b, isAMoreImportantThanB ) {
 /**
  * Adds a special case callback for given delta classes.
  *
- * @external module:engine/model/delta/delta~Delta.transform
- * @function module:engine/model/delta/delta~Delta.transform.addTransformationCase
+ * @external module:engine/model/delta/transform~transform
+ * @function module:engine/model/delta/transform~transform.addTransformationCase
  * @param {Function} A Delta constructor which instance will get transformed.
  * @param {Function} B Delta constructor which instance will be transformed by.
  * @param {Function} resolver A callback that will handle custom special case transformation for instances of given delta classes.
@@ -183,10 +177,8 @@ export function addTransformationCase( A, B, resolver ) {
 }
 
 /**
- * Gets a special case callback which was previously {@link module:engine/model/delta/delta~Delta.transform.addTransformationCase added}.
+ * Gets a special case callback which was previously {@link module:engine/model/delta/transform~transform.addTransformationCase added}.
  *
- * @external module:engine/model/delta/delta~Delta.transform
- * @function module:engine/model/delta/delta~Delta.transform.getTransformationCase
  * @param {module:engine/model/delta/delta~Delta} a Delta to transform.
  * @param {module:engine/model/delta/delta~Delta} b Delta to be transformed by.
  */

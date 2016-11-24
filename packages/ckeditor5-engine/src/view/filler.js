@@ -3,10 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/**
- * @module engine/view/filler
- */
-
 /* globals window, Range, Text */
 
 import { keyCodes } from '../../utils/keyboard.js';
@@ -22,13 +18,13 @@ import { keyCodes } from '../../utils/keyboard.js';
  * as browsers do natively. So instead of an empty `<p>` there will be `<p><br></p>`. The advantage of block filler is that
  * it is transparent for the selection, so when the caret is before the `<br>` and user presses right arrow he will be
  * moved to the next paragraph, not after the `<br>`. The disadvantage is that it breaks a block, so it can not be used
- * in the middle of a line of text. The {@link module:engine/view/filter~Filter.BR_FILLER `<br>` filler} can be replaced with any other
- * character in the data output, for instance {@link module:engine/view/filter~Filter.NBSP_FILLER non-breaking space}.
+ * in the middle of a line of text. The {@link module:engine/view/filler~BR_FILLER `<br>` filler} can be replaced with any other
+ * character in the data output, for instance {@link module:engine/view/filler~NBSP_FILLER non-breaking space}.
  *
  * * Inline filler is a filler which does not break a line of text, so it can be used inside the text, for instance in the empty
  * `<b>` surrendered by text: `foo<b></b>bar`, if we want to put the caret there. CKEditor uses a sequence of the zero-width
- * spaces as an {@link module:engine/view/filter~Filter.INLINE_FILLER inline filler} having the predetermined
- * {@link module:engine/view/filter~Filter.INLINE_FILLER_LENGTH length}. A sequence is used, instead of a single character to
+ * spaces as an {@link module:engine/view/filler~INLINE_FILLER inline filler} having the predetermined
+ * {@link module:engine/view/filler~INLINE_FILLER_LENGTH length}. A sequence is used, instead of a single character to
  * avoid treating random zero-width spaces as the inline filler. Disadvantage of the inline filler is that it is not
  * transparent for the selection. The arrow key moves the caret between zero-width spaces characters, so the additional
  * code is needed to handle the caret.
@@ -36,15 +32,15 @@ import { keyCodes } from '../../utils/keyboard.js';
  * Both inline and block fillers are handled by the {@link module:engine/view/renderer~Renderer renderer} and are not present in the
  * view.
  *
- * @namespace module:engine/view/filter~Filter
+ * @module engine/view/filler
  */
 
 /**
  * `<br> filler creator. This is a function which creates `<br data-cke-filler="true">` element.
  * It defines how the filler is created.
  *
- * @see module:engine/view/filter~Filter.NBSP_FILLER_FILLER
- * @member {Function} module:engine/view/filter~Filter.BR_FILLER
+ * @see module:engine/view/filler~NBSP_FILLER_FILLER
+ * @function
  */
 export const BR_FILLER = ( domDocument ) => {
 	const fillerBr = domDocument.createElement( 'br' );
@@ -57,22 +53,18 @@ export const BR_FILLER = ( domDocument ) => {
  * Non-breaking space filler creator. This is a function which creates `&nbsp;` text node.
  * It defines how the filler is created.
  *
- * @see module:engine/view/filter~Filter.BR_FILLER
- * @member {Function} module:engine/view/filter~Filter.NBSP_FILLER_FILLER
+ * @see module:engine/view/filler~BR_FILLER
+ * @function
  */
 export const NBSP_FILLER = ( domDocument ) => domDocument.createTextNode( '\u00A0' );
 
 /**
- * Length of the {@link module:engine/view/filter~Filter.INLINE_FILLER INLINE_FILLER}.
- *
- * @member {Function} module:engine/view/filter~Filter.INLINE_FILLER_LENGTH
+ * Length of the {@link module:engine/view/filler~INLINE_FILLER INLINE_FILLER}.
  */
 export const INLINE_FILLER_LENGTH = 7;
 
 /**
  * Inline filler which is sequence of the zero width spaces.
- *
- * @member {String} module:engine/view/filter~Filter.INLINE_FILLER
  */
 export let INLINE_FILLER = '';
 
@@ -81,7 +73,7 @@ for ( let i = 0; i < INLINE_FILLER_LENGTH; i++ ) {
 }
 
 /**
- * Checks if the node is a text node which starts with the {@link module:engine/view/filter~Filter.INLINE_FILLER inline filler}.
+ * Checks if the node is a text node which starts with the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
  *
  *		startsWithFiller( document.createTextNode( INLINE_FILLER ) ); // true
  *		startsWithFiller( document.createTextNode( INLINE_FILLER + 'foo' ) ); // true
@@ -89,27 +81,27 @@ for ( let i = 0; i < INLINE_FILLER_LENGTH; i++ ) {
  *		startsWithFiller( document.createElement( 'p' ) ); // false
  *
  * @param {Node} domNode DOM node.
- * @returns {Boolean} True if the text node starts with the {@link module:engine/view/filter~Filter.INLINE_FILLER inline filler}.
+ * @returns {Boolean} True if the text node starts with the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
  */
 export function startsWithFiller( domNode ) {
 	return ( domNode instanceof Text ) && ( domNode.data.substr( 0, INLINE_FILLER_LENGTH ) === INLINE_FILLER );
 }
 
 /**
- * Checks if the text node contains only the {@link module:engine/view/filter~Filter.INLINE_FILLER inline filler}.
+ * Checks if the text node contains only the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
  *
  *		isInlineFiller( document.createTextNode( INLINE_FILLER ) ); // true
  *		isInlineFiller( document.createTextNode( INLINE_FILLER + 'foo' ) ); // false
  *
  * @param {Text} domText DOM text node.
- * @returns {Boolean} True if the text node contains only the {@link module:engine/view/filter~Filter.INLINE_FILLER inline filler}.
+ * @returns {Boolean} True if the text node contains only the {@link module:engine/view/filler~INLINE_FILLER inline filler}.
  */
 export function isInlineFiller( domText ) {
 	return domText.data.length == INLINE_FILLER_LENGTH && startsWithFiller( domText );
 }
 
 /**
- * Get string data from the text node, removing an {@link module:engine/view/filter~Filter.INLINE_FILLER inline filler} from it,
+ * Get string data from the text node, removing an {@link module:engine/view/filler~INLINE_FILLER inline filler} from it,
  * if text node contains it.
  *
  *		getDataWithoutFiller( document.createTextNode( INLINE_FILLER + 'foo' ) ) == 'foo' // true
@@ -137,7 +129,7 @@ const templateBlockFillers = new WeakMap();
  *
  * @param {Node} domNode DOM node to check.
  * @param {Function} blockFiller Block filler creator.
- * @returns {Boolean} True if text node contains only {@link module:engine/view/filter~Filter.INLINE_FILLER inline filler}.
+ * @returns {Boolean} True if text node contains only {@link module:engine/view/filler~INLINE_FILLER inline filler}.
  */
 export function isBlockFiller( domNode, blockFiller ) {
 	let templateBlockFiller = templateBlockFillers.get( blockFiller );

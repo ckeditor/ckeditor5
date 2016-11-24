@@ -12,7 +12,7 @@ import Paragraph from '/ckeditor5/paragraph/paragraph.js';
 import Bold from '/ckeditor5/basic-styles/bold.js';
 
 ClassicEditor.create( document.getElementById( 'editor' ), {
-	features: [ Enter, Typing, Paragraph, Bold ],
+	plugins: [ Enter, Typing, Paragraph, Bold ],
 	toolbar: [ 'bold' ]
 } )
 .then( editor => {

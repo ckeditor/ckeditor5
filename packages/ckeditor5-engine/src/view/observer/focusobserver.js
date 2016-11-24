@@ -10,13 +10,14 @@
 import DomEventObserver from './domeventobserver.js';
 
 /**
- * {@link module:engine/view/document~Document#focus Focus} and {@link module:engine/view/document~Document#blur blur} events observer.
+ * {@link module:engine/view/document~Document#event:focus Focus}
+ * and {@link module:engine/view/document~Document#event:blur blur} events observer.
  * Focus observer handle also {@link module:engine/view/rooteditableelement~RootEditableElement#isFocused isFocused} property of the
  * {@link module:engine/view/rooteditableelement~RootEditableElement root elements}.
  *
  * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
  *
- * @extends module:engine/view/observer/observer~Observer.DomEventObserver
+ * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class FocusObserver extends DomEventObserver {
 	constructor( document ) {
@@ -47,12 +48,12 @@ export default class FocusObserver extends DomEventObserver {
  *
  * Introduced by {@link module:engine/view/observer/focusobserver~FocusObserver}.
  *
- * Note that because {@link module:engine/view/observer/focusobserver~FocusObserver} is attached by the {@link
- * module:engine/view/document~Document}
+ * Note that because {@link module:engine/view/observer/focusobserver~FocusObserver} is attached by the
+ * {@link module:engine/view/document~Document}
  * this event is available by default.
  *
  * @see module:engine/view/observer/focusobserver~FocusObserver
- * @event module:engine/view/document~Document#focus
+ * @event module:engine/view/document~Document#event:focus
  * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
  */
 
@@ -61,11 +62,11 @@ export default class FocusObserver extends DomEventObserver {
  *
  * Introduced by {@link module:engine/view/observer/focusobserver~FocusObserver}.
  *
- * Note that because {@link module:engine/view/observer/focusobserver~FocusObserver} is attached by the {@link
- * module:engine/view/document~Document}
+ * Note that because {@link module:engine/view/observer/focusobserver~FocusObserver} is attached by the
+ * {@link module:engine/view/document~Document}
  * this event is available by default.
  *
  * @see module:engine/view/observer/focusobserver~FocusObserver
- * @event module:engine/view/document~Document#blur
+ * @event module:engine/view/document~Document#event:blur
  * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
  */

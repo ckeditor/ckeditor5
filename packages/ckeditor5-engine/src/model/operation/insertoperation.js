@@ -36,7 +36,7 @@ export default class InsertOperation extends Operation {
 		 * Position of insertion.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/position~Position} module:engine/model/operation/insertoperation~insertOperation#position
+		 * @member {module:engine/model/position~Position} module:engine/model/operation/insertoperation~InsertOperation#position
 		 */
 		this.position = Position.createFromPosition( position );
 
@@ -44,7 +44,7 @@ export default class InsertOperation extends Operation {
 		 * List of nodes to insert.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/node~NodeList} module:engine/model/operation/insertoperation~insertOperation#nodeList
+		 * @member {module:engine/model/nodelist~NodeList} module:engine/model/operation/insertoperation~InsertOperation#nodeList
 		 */
 		this.nodes = new NodeList( normalizeNodes( nodes ) );
 	}
@@ -58,7 +58,7 @@ export default class InsertOperation extends Operation {
 
 	/**
 	 * @inheritDoc
-	 * @returns {module:engine/model/operation/insertoperation~insertOperation}
+	 * @returns {module:engine/model/operation/insertoperation~InsertOperation}
 	 */
 	clone() {
 		const nodes = new NodeList( [ ...this.nodes ].map( ( node ) => node.clone( true ) ) );
@@ -102,7 +102,7 @@ export default class InsertOperation extends Operation {
 	 *
 	 * @param {Object} json Deserialized JSON object.
 	 * @param {module:engine/model/document~Document} document Document on which this operation will be applied.
-	 * @returns {module:engine/model/operation/insertoperation~insertOperation}
+	 * @returns {module:engine/model/operation/insertoperation~InsertOperation}
 	 */
 	static fromJSON( json, document ) {
 		let children = [];

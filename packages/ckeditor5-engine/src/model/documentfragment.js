@@ -28,7 +28,7 @@ export default class DocumentFragment {
 		 * List of nodes contained inside the document fragment.
 		 *
 		 * @private
-		 * @member {module:engine/model/node~NodeList} module:engine/model/documentfragment~DocumentFragment#_children
+		 * @member {module:engine/model/nodelist~NodeList} module:engine/model/documentfragment~DocumentFragment#_children
 		 */
 		this._children = new NodeList();
 

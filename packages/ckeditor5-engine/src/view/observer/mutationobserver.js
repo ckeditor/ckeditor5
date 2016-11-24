@@ -14,16 +14,15 @@ import ViewSelection from '../selection.js';
 import { startsWithFiller, getDataWithoutFiller } from '../filler.js';
 
 /**
- * Mutation observer class observes changes in the DOM, fires {@link module:engine/view/document~Document#mutations} event, mark view
- * elements
- * as changed and call {@link engine.view.render}. Because all mutated nodes are marked as "to be rendered" and the
- * {@link engine.view.render} is called, all changes will be reverted, unless the mutation will be handled by the
- * {@link module:engine/view/document~Document#mutations} event listener. It means user will see only handled changes, and the editor will
- * block all changes which are not handled.
+ * Mutation observer class observes changes in the DOM, fires {@link module:engine/view/document~Document#event:mutations} event, mark view
+ * elements as changed and call {@link module:engine/view/view~render}. Because all mutated nodes are marked as "to be rendered" and the
+ * {@link module:engine/view/view.render} is called, all changes will be reverted, unless the mutation will be handled by the
+ * {@link module:engine/view/document~Document#event:mutations} event listener. It means user will see only handled changes, and the editor
+ * will block all changes which are not handled.
  *
  * Mutation Observer also take care of reducing number of mutations which are fired. It removes duplicates and
  * mutations on elements which do not have corresponding view elements. Also
- * {@link module:engine/view/document~Document.MutatedText text mutation} is fired only if parent element do not change child list.
+ * {@link module:engine/view/observer/mutationobserver~MutatedText text mutation} is fired only if parent element do not change child list.
  *
  * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
  * @extends module:engine/view/observer/observer~Observer.Observer
@@ -36,7 +35,7 @@ export default class MutationObserver extends Observer {
 		 * Native mutation observer config.
 		 *
 		 * @private
-		 * @member {Object} module:engine/view/observer/mutationobserver~MutationObserver#_config
+		 * @member {Object}
 		 */
 		this._config = {
 			childList: true,
@@ -48,14 +47,14 @@ export default class MutationObserver extends Observer {
 		/**
 		 * Reference to the {@link module:engine/view/document~Document#domConverter}.
 		 *
-		 * @member {module:engine/view/domconverter~DomConverter} module:engine/view/observer/mutationobserver~MutationObserver#domConverter
+		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
 		this.domConverter = document.domConverter;
 
 		/**
 		 * Reference to the {@link module:engine/view/document~Document#renderer}.
 		 *
-		 * @member {module:engine/view/renderer~Renderer} module:engine/view/observer/mutationobserver~MutationObserver#renderer
+		 * @member {module:engine/view/renderer~Renderer}
 		 */
 		this.renderer = document.renderer;
 
@@ -63,7 +62,7 @@ export default class MutationObserver extends Observer {
 		 * Observed DOM elements.
 		 *
 		 * @private
-		 * @member {Array.<HTMLElement>} module:engine/view/observer/mutationobserver~MutationObserver#_domElements
+		 * @member {Array.<HTMLElement>}
 		 */
 		this._domElements = [];
 
@@ -71,13 +70,13 @@ export default class MutationObserver extends Observer {
 		 * Native mutation observer.
 		 *
 		 * @private
-		 * @member {MutationObserver} module:engine/view/observer/mutationobserver~MutationObserver#_mutationObserver
+		 * @member {MutationObserver}
 		 */
 		this._mutationObserver = new window.MutationObserver( this._onMutations.bind( this ) );
 	}
 
 	/**
-	 * Synchronously fires {@link module:engine/view/document~Document#mutations} event with all mutations in record queue.
+	 * Synchronously fires {@link module:engine/view/document~Document#event:mutations} event with all mutations in record queue.
 	 * At the same time empties the queue so mutations will not be fired twice.
 	 */
 	flush() {
@@ -128,7 +127,6 @@ export default class MutationObserver extends Observer {
 	 * Handles mutations. Deduplicates, mark view elements to sync, fire event and call render.
 	 *
 	 * @private
-	 * @method module:engine/view/observer/mutationobserver~MutationObserver#_onMutations
 	 * @param {Array.<Object>} domMutations Array of native mutations.
 	 */
 	_onMutations( domMutations ) {
@@ -241,16 +239,16 @@ export default class MutationObserver extends Observer {
  *
  * Introduced by {@link module:engine/view/observer/mutationobserver~MutationObserver}.
  *
- * Note that because {@link module:engine/view/observer/mutationobserver~MutationObserver} is attached by the {@link
- * module:engine/view/document~Document}
+ * Note that because {@link module:engine/view/observer/mutationobserver~MutationObserver} is attached by the
+ * {@link module:engine/view/document~Document}
  * this event is available by default.
  *
  * @see module:engine/view/observer/mutationobserver~MutationObserver
- * @event module:engine/view/document~Document#mutations
- * @param {Array.<module:engine/view/document~Document~MutatedText|module:engine/view/document~Document~MutatatedChildren>} viewMutations
- * Array of mutations.
- * For mutated texts it will be {@link module:engine/view/document~Document~MutatedText} and for mutated elements it will be
- * {@link module:engine/view/document~Document~MutatatedElement}. You can recognize the type based on the `type` property.
+ * @event module:engine/view/document~Document#event:mutations
+ * @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|module:engine/view/observer/mutationobserver~MutatatedChildren>}
+ * viewMutations Array of mutations.
+ * For mutated texts it will be {@link module:engine/view/observer/mutationobserver~MutatedText} and for mutated elements it will be
+ * {@link module:engine/view/observer/mutationobserver~MutatatedChildren}. You can recognize the type based on the `type` property.
  * @param {module:engine/view/selection~Selection|null} viewSelection View selection that is a result of converting DOM selection to view.
  * Keep in
  * mind that the DOM selection is already "updated", meaning that it already acknowledges changes done in mutation.
@@ -259,7 +257,7 @@ export default class MutationObserver extends Observer {
 /**
  * Mutation item for text.
  *
- * @see module:engine/view/document~Document#mutations
+ * @see module:engine/view/document~Document#event:mutations
  * @see module:engine/view/observer/mutationobserver~MutatatedChildren
  *
  * @typedef {Object} module:engine/view/observer/mutationobserver~MutatedText
@@ -273,7 +271,7 @@ export default class MutationObserver extends Observer {
 /**
  * Mutation item for child nodes.
  *
- * @see module:engine/view/document~Document#mutations
+ * @see module:engine/view/document~Document#event:mutations
  * @see module:engine/view/observer/mutationobserver~MutatedText
  *
  * @typedef {Object} module:engine/view/observer/mutationobserver~MutatatedChildren

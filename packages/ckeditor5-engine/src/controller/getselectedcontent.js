@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/controller/getselectedcontent
+ */
+
 import DocumentFragment from '../model/documentfragment.js';
 import Range from '../model/range.js';
 import Position from '../model/position.js';
@@ -21,9 +25,8 @@ import { remove } from '../model/writer.js';
  *
  *		<quote><h>st</h></quote><p>se</p>
  *
- * @method engine.controller.getSelectedContent
- * @param {engine.model.Selection} selection The selection of which content will be returned.
- * @returns {engine.model.DocumentFragment}
+ * @param {module:engine/model/selection~Selection} selection The selection of which content will be returned.
+ * @returns {module:engine/model/documentfragment~DocumentFragment}
  */
 export default function getSelectedContent( selection ) {
 	const frag = new DocumentFragment();

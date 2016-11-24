@@ -36,9 +36,9 @@ import ObservableMixin from '../../utils/observablemixin.js';
  * * {@link module:engine/view/observer/selectionobserver~SelectionObserver},
  * * {@link module:engine/view/observer/focusobserver~FocusObserver},
  * * {@link module:engine/view/observer/keyobserver~KeyObserver},
- * * {@link module:engine/view/observer/fakeselecionobserver~FakeSelectionObserver}.
+ * * {@link module:engine/view/observer/fakeselectionobserver~FakeSelectionObserver}.
  *
- * @mixes utils.EmitterMixin
+ * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class Document {
 	/**
@@ -135,8 +135,8 @@ export default class Document {
 	 * multiple times without caring whether it has been already added or not.
 	 *
 	 * @param {Function} Observer The constructor of an observer to add.
-	 * Should create an instance inheriting from {@link module:engine/view/observer/observer~Observer.Observer}.
-	 * @returns {module:engine/view/observer/observer~Observer.Observer} Added observer instance.
+	 * Should create an instance inheriting from {@link module:engine/view/observer/observer~Observer}.
+	 * @returns {module:engine/view/observer/observer~Observer} Added observer instance.
 	 */
 	addObserver( Observer ) {
 		let observer = this._observers.get( Observer );
@@ -162,7 +162,7 @@ export default class Document {
 	 * Returns observer of the given type or `undefined` if such observer has not been added yet.
 	 *
 	 * @param {Function} Observer The constructor of an observer to get.
-	 * @returns {module:engine/view/observer/observer~Observer.Observer|undefined} Observer instance or undefined.
+	 * @returns {module:engine/view/observer/observer~Observer|undefined} Observer instance or undefined.
 	 */
 	getObserver( Observer ) {
 		return this._observers.get( Observer );

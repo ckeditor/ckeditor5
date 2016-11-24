@@ -19,7 +19,8 @@ import isIterable from '../../utils/isiterable.js';
  * HTML content to the editor. Then, converters are used to translate this structure, possibly removing unknown/incorrect
  * nodes, and add it to the model. Also multiple, different elements might be translated into the same thing in the
  * model, i.e. `<b>` and `<strong>` elements might be converted to `bold` attribute (even though `bold` attribute will
- * be then converted only to `<strong>` tag). Instances of this class are created by {@link engine.conversion.buildViewConverter}.
+ * be then converted only to `<strong>` tag). Instances of this class are created by
+ * {@link module:engine/conversion/buildviewconverter~buildViewConverter}.
  *
  * If you need more complex converters, see {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher},
  * {@link module:engine/conversion/view-to-model-converters~viewToModel}, {@link module:engine/conversion/viewconsumable~ViewConsumable}.
@@ -415,8 +416,6 @@ function setAttributeOn( toChange, attribute, data, conversionApi ) {
  * Entry point for view-to-model converters builder. This chainable API makes it easy to create basic, most common
  * view-to-model converters and attach them to provided dispatchers. The method returns an instance of
  * {@link module:engine/conversion/buildviewconverter~ViewConverterBuilder}.
- *
- * @external engine.conversion.buildViewConverter
  */
 export default function buildViewConverter() {
 	return new ViewConverterBuilder();

@@ -12,11 +12,11 @@ import DomEventObserver from './domeventobserver.js';
 /**
  * Mouse events observer.
  *
- * Note that this observer is not available by default. To make it available it needs to be added to {@link
- * module:engine/view/document~Document}
+ * Note that this observer is not available by default. To make it available it needs to be added to
+ * {@link module:engine/view/document~Document}
  * by {@link module:engine/view/document~Document#addObserver} method.
  *
- * @extends module:engine/view/observer/observer~Observer.DomEventObserver
+ * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class MouseObserver extends DomEventObserver {
 	constructor( document ) {
@@ -33,13 +33,12 @@ export default class MouseObserver extends DomEventObserver {
 /**
  * Fired when mouse button is pressed down on one of the editables.
  *
- * Introduced by {@link module:engine/view/observer/observer~Observer.MouseObserver}.
+ * Introduced by {@link module:engine/view/observer/mouseobserver~MouseObserver}.
  *
- * Note that this event is not available by default. To make it available {@link
- * module:engine/view/observer/observer~Observer.MouseObserver}
+ * Note that this event is not available by default. To make it available {@link module:engine/view/observer/mouseobserver~MouseObserver}
  * needs to be added to {@link module:engine/view/document~Document} by a {@link module:engine/view/document~Document#addObserver} method.
  *
- * @see module:engine/view/observer/observer~Observer.MouseObserver
+ * @see module:engine/view/observer/mouseobserver~MouseObserver
  * @event module:engine/view/document~Document#event:mousedown
  * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
  */

@@ -45,7 +45,7 @@ export default class Renderer {
 		/**
 		 * Set of DOM Documents instances.
 		 *
-		 * @member {Set.<Document>} module:engine/view/renderer~Renderer#domDocuments
+		 * @member {Set.<Document>}
 		 */
 		this.domDocuments = new Set();
 
@@ -53,7 +53,7 @@ export default class Renderer {
 		 * Converter instance.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/domconverter~DomConverter} module:engine/view/renderer~Renderer#domConverter
+		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
 		this.domConverter = domConverter;
 
@@ -61,7 +61,7 @@ export default class Renderer {
 		 * Set of nodes which attributes changed and may need to be rendered.
 		 *
 		 * @readonly
-		 * @member {Set.<module:engine/view/node~Node>} module:engine/view/renderer~Renderer#markedAttributes
+		 * @member {Set.<module:engine/view/node~Node>}
 		 */
 		this.markedAttributes = new Set();
 
@@ -69,7 +69,7 @@ export default class Renderer {
 		 * Set of elements which child lists changed and may need to be rendered.
 		 *
 		 * @readonly
-		 * @member {Set.<module:engine/view/node~Node>} module:engine/view/renderer~Renderer#markedChildren
+		 * @member {Set.<module:engine/view/node~Node>}
 		 */
 		this.markedChildren = new Set();
 
@@ -77,7 +77,7 @@ export default class Renderer {
 		 * Set of text nodes which text data changed and may need to be rendered.
 		 *
 		 * @readonly
-		 * @member {Set.<module:engine/view/node~Node>} module:engine/view/renderer~Renderer#markedTexts
+		 * @member {Set.<module:engine/view/node~Node>}
 		 */
 		this.markedTexts = new Set();
 
@@ -85,7 +85,7 @@ export default class Renderer {
 		 * View selection. Renderer updates DOM Selection to make it match this one.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/selection~Selection} module:engine/view/renderer~Renderer#selection
+		 * @member {module:engine/view/selection~Selection}
 		 */
 		this.selection = selection;
 
@@ -93,7 +93,7 @@ export default class Renderer {
 		 * The text node in which the inline filler was rendered.
 		 *
 		 * @private
-		 * @member {Text} module:engine/view/renderer~Renderer#_inlineFiller
+		 * @member {Text}
 		 */
 		this._inlineFiller = null;
 
@@ -101,7 +101,7 @@ export default class Renderer {
 		 * Indicates if view document is focused and selection can be rendered. Selection will not be rendered if
 		 * this is set to `false`.
 		 *
-		 * @member {Boolean} module:engine/view/renderer~Renderer#isFocused
+		 * @member {Boolean}
 		 */
 		this.isFocused = false;
 
@@ -119,9 +119,9 @@ export default class Renderer {
 	 *
 	 * Note that only view nodes which parents have corresponding DOM elements need to be marked to be synchronized.
 	 *
-	 * @see module:engine/view/renderer~Renderer#markedAttributes
-	 * @see module:engine/view/renderer~Renderer#markedChildren
-	 * @see module:engine/view/renderer~Renderer#markedTexts
+	 * @see #markedAttributes
+	 * @see #markedChildren
+	 * @see #markedTexts
 	 *
 	 * @param {module:engine/view/document~ChangeType} type Type of the change.
 	 * @param {module:engine/view/node~Node} node Node to be marked.
@@ -154,8 +154,8 @@ export default class Renderer {
 	}
 
 	/**
-	 * Render method checks {@link module:engine/view/renderer~Renderer#markedAttributes},
-	 * {@link module:engine/view/renderer~Renderer#markedChildren} and {@link module:engine/view/renderer~Renderer#markedTexts} and updates all
+	 * Render method checks {@link #markedAttributes},
+	 * {@link #markedChildren} and {@link #markedTexts} and updates all
 	 * nodes which need to be updated. Then it clears all three sets. Also, every time render is called it compares and
 	 * if needed updates the selection.
 	 *
@@ -170,9 +170,10 @@ export default class Renderer {
 	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomText corresponding DOM text}. The change will be handled
 	 * in the parent element.
 	 *
-	 * For elements, which child lists have changed, it calculates a {@link diff} and adds or removes children which have changed.
+	 * For elements, which child lists have changed, it calculates a {@link module:utils/diff~diff} and adds or removes children which have
+	 * changed.
 	 *
-	 * Rendering also handles {@link module:engine/view/filter~Filter fillers}. Especially, it checks if the inline filler is needed
+	 * Rendering also handles {@link module:engine/view/filler fillers}. Especially, it checks if the inline filler is needed
 	 * at selection position and adds or removes it. To prevent breaking text composition inline filler will not be
 	 * removed as long selection is in the text node which needed it at first.
 	 */
@@ -336,7 +337,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Checks if the inline {@link module:engine/view/filter~Filter filler} should be added.
+	 * Checks if the inline {@link module:engine/view/filler filler} should be added.
 	 *
 	 * @private
 	 * @returns {Boolean} True if the inline fillers should be added.

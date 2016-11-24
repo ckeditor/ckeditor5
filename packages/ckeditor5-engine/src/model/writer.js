@@ -26,7 +26,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
  * {@link module:engine/model/documentfragment~DocumentFragment document fragments},
  * * model writer API operates on {@link module:engine/model/position~Position positions}, which means that you have
  * better control over manipulating model tree as positions operate on offsets rather than indexes,
- * * model writer API automatically merges {@link module:engine/model/treenode~TextNode text nodes} with same attributes, which means
+ * * model writer API automatically merges {@link module:engine/model/text~Text text nodes} with same attributes, which means
  * lower memory usage and better efficiency.
  *
  * @namespace writer
@@ -306,7 +306,7 @@ function _haveSameAttributes( nodeA, nodeB ) {
  * Non-arrays are normalized as follows:
  * * {@link module:engine/model/node~Node Node} is left as is,
  * * {@link module:engine/model/textproxy~TextProxy TextProxy} and `String` are normalized to {@link module:engine/model/text~Text Text},
- * * {@link module:engine/model/node~NodeList NodeList} is normalized to an array containing all nodes that are in that node list,
+ * * {@link module:engine/model/nodelist~NodeList NodeList} is normalized to an array containing all nodes that are in that node list,
  * * {@link module:engine/model/documentfragment~DocumentFragment DocumentFragment} is normalized to an array containing all of it's
  * * children.
  *
@@ -315,6 +315,6 @@ function _haveSameAttributes( nodeA, nodeB ) {
  * merged if they have same attributes.
  *
  * @typedef {module:engine/model/node~Node|module:engine/model/textproxy~TextProxy|String|
- * module:engine/model/node~NodeList|module:engine/model/documentfragment~DocumentFragment|Iterable}
+ * module:engine/model/nodelist~NodeList|module:engine/model/documentfragment~DocumentFragment|Iterable}
  * module:engine/model/node~NodeSet
  */

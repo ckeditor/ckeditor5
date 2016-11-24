@@ -8,7 +8,7 @@
   */
 
 /**
- * Item is a {@link module/engine/model/node~Node Node} or {module/engine/model/textproxy~TextProxy TextProxy}.
+ * Item is a {@link module:engine/model/node~Node Node} or {module:engine/model/textproxy~TextProxy TextProxy}.
  *
- * @typedef {module/engine/model/node~Node|module/engine/model/textproxy~TextProxy} module:engine/model/item~Item
+ * @typedef {module:engine/model/node~Node|module:engine/model/textproxy~TextProxy} module:engine/model/item~Item
  */

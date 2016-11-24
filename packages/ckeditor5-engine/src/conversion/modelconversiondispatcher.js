@@ -15,9 +15,9 @@ import mix from '../../utils/mix.js';
 import extend from '../../utils/lib/lodash/extend.js';
 
 /**
- * `ModelConversionDispatcher` is a central point of {@link module:engine/model model} conversion, which is
+ * `ModelConversionDispatcher` is a central point of {@link module:engine/model/model model} conversion, which is
  * a process of reacting to changes in the model and reflecting them by listeners that listen to those changes.
- * In default application, {@link module:engine/model model} is converted to {@link module:engine/view view}. This means
+ * In default application, {@link module:engine/model/model model} is converted to {@link module:engine/view/view view}. This means
  * that changes in the model are reflected by changing the view (i.e. adding view nodes or changing attributes on view elements).
  *
  * During conversion process, `ModelConversionDispatcher` fires data-manipulation events, basing on state of the model and prepares
@@ -27,18 +27,19 @@ import extend from '../../utils/lib/lodash/extend.js';
  * and not the structure itself, there is a need to have a mapping between model and the structure on which changes are
  * reflected. To map elements during model to view conversion use {@link module:engine/conversion/mapper~Mapper}.
  *
- * The main use for this class is to listen to {@link module:engine/model/document~Document.change Document change event}, process it
+ * The main use for this class is to listen to {@link module:engine/model/document~Document#event:change Document change event}, process it
  * and then fire specific events telling what exactly has changed. For those events, `ModelConversionDispatcher`
  * creates {@link module:engine/conversion/modelconsumable~ModelConsumable list of consumable values} that should be handled by event
  * callbacks. Those events are listened to by model-to-view converters which convert changes done in the
- * {@link module:engine/model model} to changes in the {@link module:engine/view view}. `ModelConversionController` also checks
+ * {@link module:engine/model/model model} to changes in the {@link module:engine/view/view view}. `ModelConversionController` also checks
  * the current state of consumables, so it won't fire events for parts of model that were already consumed. This is
  * especially important in callbacks that consume multiple values. See {@link module:engine/conversion/modelconsumable~ModelConsumable}
  * for an example of such callback.
  *
  * Although the primary usage for this class is the model-to-view conversion, `ModelConversionDispatcher` can be used
  * to build custom data processing pipelines that converts model to anything that is needed. Existing model structure can
- * be used to generate events (listening to {@link module:engine/model/document~Document.change Document change event} is not required)
+ * be used to generate events (listening to {@link module:engine/model/document~Document#event:change Document change event} is not
+ * required)
  * and custom callbacks can be added to the events (these does not have to be limited to changes in the view).
  *
  * When providing your own event listeners for `ModelConversionDispatcher` keep in mind that any callback that had
@@ -122,9 +123,10 @@ export default class ModelConversionDispatcher {
 	/**
 	 * Prepares data and fires a proper event.
 	 *
-	 * The method is crafted to take use of parameters passed in {@link module:engine/model/document~Document.change Document change event}.
+	 * The method is crafted to take use of parameters passed in {@link module:engine/model/document~Document#event:change Document change
+	 * event}.
 	 *
-	 * @see module:engine/model/document~Document.change
+	 * @see module:engine/model/document~Document#event:change
 	 * @fires insert
 	 * @fires move
 	 * @fires remove

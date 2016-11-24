@@ -27,7 +27,7 @@ export default class DeltaFactory {
 	 *
 	 * @param {Object} json
 	 * @param {module:engine/model/document~Document} doc Document on which this delta will be applied.
-	 * @returns {module:engine/model/delta/delta~Delta.InsertDelta}
+	 * @returns {module:engine/model/delta/insertdelta~InsertDelta}
 	 */
 	static fromJSON( json, doc ) {
 		if ( !deserializers.has( json.__className ) ) {

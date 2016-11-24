@@ -8,11 +8,7 @@
  */
 
 /**
- * @namespace module:engine/dev-utils/view~View
- */
-
-/**
- * Collection of methods for manipulating {@link engine.view engine.view} for testing purposes.
+ * Collection of methods for manipulating {@link module:engine/view/view view} for testing purposes.
  */
 
 import Document from '../view/document.js';
@@ -40,7 +36,6 @@ const allowedTypes = {
 /**
  * Writes the contents of the {@link module:engine/view/document~Document Document} to an HTML-like string.
  *
- * @method module:engine/dev-utils/view~View.getData
  * @param {module:engine/view/document~Document} document
  * @param {Object} [options]
  * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
@@ -78,7 +73,6 @@ getData._stringify = stringify;
 /**
  * Sets the contents of the {@link module:engine/view/document~Document Document} provided as HTML-like string.
  *
- * @method module:engine/dev-utils/view~View.setData
  * @param {module:engine/view/document~Document} document
  * @param {String} data HTML-like string to write into Document.
  * @param {Object} options
@@ -173,8 +167,8 @@ setData._parse = parse;
  * Additional options object can be provided.
  * If `options.showType` is set to `true`, element's types will be
  * presented for {@link module:engine/view/attributeelement~AttributeElement AttributeElements},
- * {@link module:engine/view/containerelement~ContainerElement
- * ContainerElements} and {@link module:engine/view/emptyelement~EmptyElement EmptyElements}:
+ * {@link module:engine/view/containerelement~ContainerElement ContainerElements}
+ * and {@link module:engine/view/emptyelement~EmptyElement EmptyElements}:
  *
  *		const attribute = new AttributeElement( 'b' );
  *		const container = new ContainerElement( 'p' );
@@ -190,7 +184,6 @@ setData._parse = parse;
  *		attribute.priority = 20;
  *		getData( attribute, null, { showPriority: true } ); // <b view-priority="20"></b>
  *
- * @method module:engine/dev-utils/view~View.stringify
  * @param {module:engine/view/text~Text|module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment}
  * node Node to stringify.
  * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|module:engine/view/range~Range}
@@ -281,7 +274,6 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  *		// Returns Element and selection that is placed inside of DocumentFragment containing that element.
  *		const { root, selection } = parse( '[<a></a>]' );
  *
- * @method module:engine/dev-utils/view~View.parse
  * @param {String} data HTML-like string to be parsed.
  * @param {Object} options
  * @param {Array.<Number>} [options.order] Array with order of parsed ranges added to returned
