@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-lint": "^1.0.1",
+    "ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard",
     "ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic",
     "ckeditor5-enter": "ckeditor/ckeditor5-enter",
     "ckeditor5-typing": "ckeditor/ckeditor5-typing",
