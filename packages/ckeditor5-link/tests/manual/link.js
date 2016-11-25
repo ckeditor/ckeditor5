@@ -5,12 +5,12 @@
 
 /* globals console:false, window, document */
 
-import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
-import Enter from '/ckeditor5/enter/enter.js';
-import Typing from '/ckeditor5/typing/typing.js';
-import Link from '/ckeditor5/link/link.js';
-import Paragraph from '/ckeditor5/paragraph/paragraph.js';
-import Undo from '/ckeditor5/undo/undo.js';
+import ClassicEditor from 'ckeditor5/editor-classic/classic.js';
+import Enter from 'ckeditor5/enter/enter.js';
+import Typing from 'ckeditor5/typing/typing.js';
+import Link from 'ckeditor5/link/link.js';
+import Paragraph from 'ckeditor5/paragraph/paragraph.js';
+import Undo from 'ckeditor5/undo/undo.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Link, Typing, Paragraph, Undo, Enter ],
