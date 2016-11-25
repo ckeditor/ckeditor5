@@ -5,24 +5,24 @@
 
 /* globals document */
 
-import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
+import ClassicEditor from 'ckeditor5/editor-classic/classic.js';
 
-import Plugin from '/ckeditor5/core/plugin.js';
+import Plugin from 'ckeditor5/core/plugin.js';
 
-import TreeWalker from '/ckeditor5/engine/model/treewalker.js';
-import Position from '/ckeditor5/engine/model/position.js';
-import Range from '/ckeditor5/engine/model/range.js';
-import LivePosition from '/ckeditor5/engine/model/liveposition.js';
+import TreeWalker from 'ckeditor5/engine/model/treewalker.js';
+import Position from 'ckeditor5/engine/model/position.js';
+import Range from 'ckeditor5/engine/model/range.js';
+import LivePosition from 'ckeditor5/engine/model/liveposition.js';
 
-import buildModelConverter from '/ckeditor5/engine/conversion/buildmodelconverter.js';
-import buildViewConverter from '/ckeditor5/engine/conversion/buildviewconverter.js';
+import buildModelConverter from 'ckeditor5/engine/conversion/buildmodelconverter.js';
+import buildViewConverter from 'ckeditor5/engine/conversion/buildviewconverter.js';
 
-import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
+import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
 
-import Enter from '/ckeditor5/enter/enter.js';
-import Typing from '/ckeditor5/typing/typing.js';
-import Paragraph from '/ckeditor5/paragraph/paragraph.js';
-import Undo from '/ckeditor5/undo/undo.js';
+import Enter from 'ckeditor5/enter/enter.js';
+import Typing from 'ckeditor5/typing/typing.js';
+import Paragraph from 'ckeditor5/paragraph/paragraph.js';
+import Undo from 'ckeditor5/undo/undo.js';
 
 class Link extends Plugin {
 	init() {
