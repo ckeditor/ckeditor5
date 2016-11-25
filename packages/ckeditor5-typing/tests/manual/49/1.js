@@ -5,12 +5,12 @@
 
 /* globals console:false, document, window */
 
-import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
-import Enter from '/ckeditor5/enter/enter.js';
-import Typing from '/ckeditor5/typing/typing.js';
-import Paragraph from '/ckeditor5/paragraph/paragraph.js';
-import { getData as getModelData } from '/ckeditor5/engine/dev-utils/model.js';
-import { getData as getViewData } from '/ckeditor5/engine/dev-utils/view.js';
+import ClassicEditor from 'ckeditor5/editor-classic/classic.js';
+import Enter from 'ckeditor5/enter/enter.js';
+import Typing from 'ckeditor5/typing/typing.js';
+import Paragraph from 'ckeditor5/paragraph/paragraph.js';
+import { getData as getModelData } from 'ckeditor5/engine/dev-utils/model.js';
+import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Enter, Typing, Paragraph ],
