@@ -1,6 +1,3 @@
-@bender-ui: collapsed
-@bender-tags: view
-
 ## Image feature
 
 * Two images with CKEditor logo should be loaded.
