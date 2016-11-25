@@ -187,6 +187,13 @@ gulp.task( 'test:server', () => {
 	return tests.tasks.runTests( options );
 } );
 
+gulp.task( 'test:manual', ( done ) => {
+	tests.tasks.manualTests.run( {
+		packages: getCKEditor5PackagesPaths(),
+		destinationPath: path.resolve( config.ROOT_DIR, '.manual' ),
+	}, done );
+} );
+
 function getTestOptions() {
 	const options = tests.utils.parseArguments();
 
