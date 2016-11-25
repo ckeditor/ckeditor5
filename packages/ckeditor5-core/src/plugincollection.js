@@ -35,14 +35,18 @@ export default class PluginCollection {
 	/**
 	 * Collection iterator. Returns `[ PluginConstructor, pluginInstance ]` pairs.
 	 */
-	[ Symbol.iterator ]() {
-		return this._plugins[ Symbol.iterator ]();
+	*[ Symbol.iterator ]() {
+		for ( const entry of this._plugins ) {
+			if ( typeof entry[ 0 ] == 'function' ) {
+				yield entry;
+			}
+		}
 	}
 
 	/**
-	 * Gets the plugin instance by its constructor.
+	 * Gets the plugin instance by its constructor or name.
 	 *
-	 * @param {Function} key The plugin constructor.
+	 * @param {Function|String} key The plugin constructor or {@link core.Plugin.plugiName name}.
 	 * @returns {core.Plugin}
 	 */
 	get( key ) {
@@ -124,10 +128,14 @@ export default class PluginCollection {
 	 * Adds the plugin to the collection. Exposed mainly for testing purposes.
 	 *
 	 * @protected
-	 * @param {Function} key The plugin constructor.
+	 * @param {Function} PluginConstructor The plugin constructor.
 	 * @param {core.Plugin} plugin The instance of the plugin.
 	 */
-	_add( key, plugin ) {
-		this._plugins.set( key, plugin );
+	_add( PluginConstructor, plugin ) {
+		this._plugins.set( PluginConstructor, plugin );
+
+		if ( PluginConstructor.pluginName ) {
+			this._plugins.set( PluginConstructor.pluginName, plugin );
+		}
 	}
 }

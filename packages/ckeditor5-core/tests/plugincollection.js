@@ -48,7 +48,7 @@ before( () => {
 } );
 
 describe( 'PluginCollection', () => {
-	describe( 'load', () => {
+	describe( 'load()', () => {
 		it( 'should not fail when trying to load 0 plugins (empty array)', () => {
 			let plugins = new PluginCollection( editor );
 
@@ -191,19 +191,67 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 	} );
+
+	describe( 'get()', () => {
+		it( 'retrieves plugin by its constructor', () => {
+			let plugins = new PluginCollection( editor );
+
+			class SomePlugin extends Plugin {}
+
+			return plugins.load( [ SomePlugin ] )
+				.then( () => {
+					expect( plugins.get( SomePlugin ) ).to.be.instanceOf( SomePlugin );
+				} );
+		} );
+
+		it( 'retrieves plugin by its name and constructor', () => {
+			let plugins = new PluginCollection( editor );
+
+			class SomePlugin extends Plugin {}
+			SomePlugin.pluginName = 'foo/bar';
+
+			return plugins.load( [ SomePlugin ] )
+				.then( () => {
+					expect( plugins.get( 'foo/bar' ) ).to.be.instanceOf( SomePlugin );
+					expect( plugins.get( SomePlugin ) ).to.be.instanceOf( SomePlugin );
+				} );
+		} );
+	} );
+
+	describe( 'iterator', () => {
+		it( 'exists', () => {
+			let plugins = new PluginCollection( editor );
+
+			expect( plugins ).to.have.property( Symbol.iterator );
+		} );
+
+		it( 'returns only plugins by constructors', () => {
+			let plugins = new PluginCollection( editor );
+
+			class SomePlugin1 extends Plugin {}
+			class SomePlugin2 extends Plugin {}
+			SomePlugin2.pluginName = 'foo/bar';
+
+			return plugins.load( [ SomePlugin1, SomePlugin2 ] )
+				.then( () => {
+					const pluginConstructors = Array.from( plugins )
+						.map( entry => entry[ 0 ] );
+
+					expect( pluginConstructors ).to.have.members( [ SomePlugin1, SomePlugin2 ] );
+				} );
+		} );
+	} );
 } );
 
-function createPlugin( name, baseClass ) {
-	baseClass = baseClass || Plugin;
-
-	const P = class extends baseClass {
+function createPlugin( name ) {
+	const P = class extends Plugin {
 		constructor( editor ) {
 			super( editor );
-			this._pluginName = name;
+			this.pluginName = name;
 		}
 	};
 
-	P._pluginName = name;
+	P.pluginName = name;
 
 	return P;
 }
@@ -222,5 +270,5 @@ function getPluginsFromSpy( addSpy ) {
 }
 
 function getPluginNames( plugins ) {
-	return plugins.map( ( plugin ) => plugin._pluginName );
+	return plugins.map( ( plugin ) => plugin.pluginName );
 }
