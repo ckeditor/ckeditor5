@@ -39,8 +39,8 @@ export default class HeadingCommand extends Command {
 		 */
 		this.set( 'value', this.defaultFormat );
 
-		// Listen on selection change and set current command's format to format in the current selection.
-		this.listenTo( editor.document.selection, 'change', () => this._updateValue() );
+		// Update current value each time changes are done on document.
+		this.listenTo( editor.document, 'changesDone', () => this._updateValue() );
 	}
 
 	/**
@@ -118,9 +118,6 @@ export default class HeadingCommand extends Command {
 			// If range's selection start/end is placed directly in renamed block - we need to restore it's position
 			// after renaming, because renaming puts new element there.
 			doc.selection.setRanges( ranges, isSelectionBackward );
-
-			// Update command's value after change.
-			this._updateValue();
 		} );
 	}
 
