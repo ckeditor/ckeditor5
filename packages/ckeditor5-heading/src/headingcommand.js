@@ -39,18 +39,8 @@ export default class HeadingCommand extends Command {
 		 */
 		this.set( 'value', this.defaultFormat );
 
-		// Listen on selection change and set current command's format to format in the current selection.
-		this.listenTo( editor.document.selection, 'change', () => {
-			const position = editor.document.selection.getFirstPosition();
-			const block = findTopmostBlock( position );
-
-			if ( block ) {
-				const format = this._getFormatById( block.name );
-
-				// TODO: What should happen if format is not found?
-				this.value = format;
-			}
-		} );
+		// Update current value each time changes are done on document.
+		this.listenTo( editor.document, 'changesDone', () => this._updateValue() );
 	}
 
 	/**
@@ -140,6 +130,20 @@ export default class HeadingCommand extends Command {
 	 */
 	_getFormatById( id ) {
 		return this.formats.find( item => item.id === id ) || this.defaultFormat;
+	}
+
+	/**
+	 * Updates command's {@link heading.HeadingCommand#value value} based on current selection.
+	 *
+	 * @private
+	 */
+	_updateValue() {
+		const position = this.editor.document.selection.getFirstPosition();
+		const block = findTopmostBlock( position );
+
+		if ( block ) {
+			this.value = this._getFormatById( block.name );
+		}
 	}
 }
 

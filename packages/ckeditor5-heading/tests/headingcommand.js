@@ -65,6 +65,16 @@ describe( 'HeadingCommand', () => {
 	} );
 
 	describe( '_doExecute', () => {
+		it( 'should update value after execution', () => {
+			setData( document, '<paragraph>[]</paragraph>' );
+			command._doExecute( { formatId: 'heading1' } );
+
+			expect( getData( document ) ).to.equal( '<heading1>[]</heading1>' );
+			expect( command.value ).to.be.object;
+			expect( command.value.id ).to.equal( 'heading1' );
+			expect( command.value.viewElement ).to.equal( 'h2' );
+		} );
+
 		describe( 'custom options', () => {
 			it( 'should use provided batch', () => {
 				const batch = editor.document.batch();
