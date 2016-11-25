@@ -42,9 +42,16 @@ export function isWidget( element ) {
  */
 export function widgetize( element ) {
 	element.setAttribute( 'contenteditable', false );
-	element.getFillerOffset = () => null;
+	element.getFillerOffset = getFillerOffset;
 	element.addClass( WIDGET_CLASS_NAME );
 	element.setCustomProperty( widgetSymbol, true );
 
 	return element;
+}
+
+// Default filler offset function applied to all widget elements.
+//
+// @returns {null}
+function getFillerOffset() {
+	return null;
 }

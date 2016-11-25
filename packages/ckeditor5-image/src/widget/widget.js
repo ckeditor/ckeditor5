@@ -64,12 +64,12 @@ export default class Widget extends Plugin {
 		}
 
 		// Create model selection over widget.
-		const document = editor.document;
+		const modelDocument = editor.document;
 		const modelElement = editor.editing.mapper.toModelElement( widgetElement );
 		const modelRange = ModelRange.createOn( modelElement );
 
-		document.enqueueChanges( ( ) => {
-			document.selection.setRanges( [ modelRange ] );
+		modelDocument.enqueueChanges( ( ) => {
+			modelDocument.selection.setRanges( [ modelRange ] );
 		} );
 	}
 }

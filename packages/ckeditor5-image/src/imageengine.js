@@ -30,28 +30,28 @@ export default class ImageEngine extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const document = editor.document;
-		const dataPipeline = editor.data;
-		const editingPipeline = editor.editing;
+		const doc = editor.document;
+		const data = editor.data;
+		const editing = editor.editing;
 
 		// Configure schema.
-		document.schema.registerItem( 'image', '$block' );
-		document.schema.allow( { name: 'image', attributes: [ 'src', 'alt' ] } );
+		doc.schema.registerItem( 'image', '$block' );
+		doc.schema.allow( { name: 'image', attributes: [ 'src', 'alt' ] } );
 
 		// Build converter from model to view for data pipeline.
-		buildModelConverter().for( dataPipeline.modelToView )
+		buildModelConverter().for( data.modelToView )
 			.fromElement( 'image' )
 			.toElement( ( data ) => modelToViewImage( data.item ) );
 
 		// Build converter from model to view for editing pipeline.
-		buildModelConverter().for( editingPipeline.modelToView )
+		buildModelConverter().for( editing.modelToView )
 			.fromElement( 'image' )
 			.toElement( ( data ) => toImageWidget( modelToViewImage( data.item ) ) );
 
 		// Converter for figure element from view to model.
-		dataPipeline.viewToModel.on( 'element:figure', viewToModelImage() );
+		data.viewToModel.on( 'element:figure', viewToModelImage() );
 
 		// Creates fake selection label if selection is placed around image widget.
-		editingPipeline.modelToView.on( 'selection', modelToViewSelection( editor.t ), { priority: 'lowest' } );
+		editing.modelToView.on( 'selection', modelToViewSelection( editor.t ), { priority: 'lowest' } );
 	}
 }
