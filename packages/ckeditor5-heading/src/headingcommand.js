@@ -142,10 +142,7 @@ export default class HeadingCommand extends Command {
 		const block = findTopmostBlock( position );
 
 		if ( block ) {
-			const format = this._getFormatById( block.name );
-
-			// TODO: What should happen if format is not found?
-			this.value = format;
+			this.value = this._getFormatById( block.name );
 		}
 	}
 }
