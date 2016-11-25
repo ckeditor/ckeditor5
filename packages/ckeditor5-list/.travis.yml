@@ -22,5 +22,5 @@ install:
 script:
   - node_modules/.bin/ckeditor5-dev-tests --coverage --ignore-duplicates
 after_success:
-  - sed -i.backup 's/\.build\/ckeditor5\/[^\/]*/src/g' .build/coverage/lcov.info
+  - sed -i.backup 's/build\/\.automated-tests\/ckeditor5\/[^\/]*/src/g' build/.automated-tests/coverage/lcov.info
   - node_modules/.bin/codeclimate-test-reporter < .build/coverage/lcov.info
