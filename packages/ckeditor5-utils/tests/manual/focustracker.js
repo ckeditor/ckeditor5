@@ -5,7 +5,7 @@
 
 /* global document */
 
-import FocusTracker from '/ckeditor5/utils/focustracker.js';
+import FocusTracker from 'ckeditor5/utils/focustracker.js';
 
 const focusTracker = new FocusTracker();
 const counters = document.querySelectorAll( '.status b' );
