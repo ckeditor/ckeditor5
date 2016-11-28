@@ -379,11 +379,22 @@ export function remove( range ) {
  * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions.
  */
 export function move( sourceRange, targetPosition ) {
-	if ( sourceRange.start.parent == targetPosition.parent ) {
-		targetPosition.offset -= sourceRange.end.offset - sourceRange.start.offset;
-	}
+	let nodes;
 
-	const nodes = remove( sourceRange );
+	if ( targetPosition.isAfter( sourceRange.end ) ) {
+		targetPosition = _breakAttributes( targetPosition, true );
+
+		const parent = targetPosition.parent;
+		const countBefore = parent.childCount;
+
+		sourceRange = _breakAttributesRange( sourceRange, true );
+
+		nodes = remove( sourceRange );
+
+		targetPosition.offset += ( parent.childCount - countBefore );
+	} else {
+		nodes = remove( sourceRange );
+	}
 
 	return insert( targetPosition, nodes );
 }

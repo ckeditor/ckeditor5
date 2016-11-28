@@ -119,6 +119,17 @@ describe( 'writer', () => {
 			expect( stringify( view, newRange, { showType: true } ) ).to.equal( expectedView );
 		} );
 
+		it( 'should correctly move text nodes inside same container', () => {
+			let { view, selection } = parse( '<container:p><attribute:b>a{b</attribute:b>xx<attribute:b>c}d</attribute:b>yy</container:p>' );
+
+			const viewText = view.getChild( 3 );
+			const newRange = move( selection.getFirstRange(), ViewPosition.createAt( viewText, 1 ) );
+
+			expect( stringify( view, newRange, { showType: true } ) ).to.equal(
+				'<container:p><attribute:b>ad</attribute:b>y[<attribute:b>b</attribute:b>xx<attribute:b>c</attribute:b>]y</container:p>'
+			);
+		} );
+
 		it( 'should move EmptyElement', () => {
 			test(
 				'<container:p>foo[<empty:img></empty:img>]bar</container:p>',
