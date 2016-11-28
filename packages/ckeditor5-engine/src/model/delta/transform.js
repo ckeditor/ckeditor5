@@ -26,7 +26,7 @@ const specialCases = new Map();
  * we need to handle transformations in special cases in a custom way.
  *
  * The function itself looks whether two given delta types have a special case function registered. If so, the deltas are
- * transformed using that function. If not, {@link module:engine/model/delta/delta~Delta.defaultTransform default transformation algorithm}
+ * transformed using that function. If not, {@link module:engine/model/delta/transform~defaultTransform default transformation algorithm}
  * is used.
  *
  * @param {module:engine/model/delta/delta~Delta} a Delta that will be transformed.

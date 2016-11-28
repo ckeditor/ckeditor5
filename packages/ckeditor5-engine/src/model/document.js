@@ -123,7 +123,7 @@ export default class Document {
 	 * Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 	 *
 	 * @readonly
-	 * @type {module:engine/model/rootelement~RootElement}
+	 * @member {module:engine/model/rootelement~RootElement}
 	 */
 	get graveyard() {
 		return this.getRoot( graveyardName );

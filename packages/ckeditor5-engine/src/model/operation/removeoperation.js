@@ -94,7 +94,7 @@ export default class RemoveOperation extends MoveOperation {
 
 	/**
 	 * @inheritDoc
-	 * @returns {module:engine/model/opertation/reinsertoperation~ReinsertOperation}
+	 * @returns {module:engine/model/operation/reinsertoperation~ReinsertOperation}
 	 */
 	getReversed() {
 		return new ReinsertOperation( this.targetPosition, this.howMany, this.sourcePosition, this.baseVersion + 1 );

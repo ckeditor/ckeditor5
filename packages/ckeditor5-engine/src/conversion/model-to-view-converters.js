@@ -127,7 +127,7 @@ export function insertText() {
  * represents attribute key and attribute value to be set on a {@link module:engine/view/element~Element view element}.
  * The function is passed all the parameters of the
  * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addAttribute}
- * or {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher.changeAttribute} event.
+ * or {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:changeAttribute} event.
  * @returns {Function} Set/change attribute converter.
  */
 export function setAttribute( attributeCreator ) {
