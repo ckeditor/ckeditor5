@@ -4,9 +4,8 @@ CKEditor 5 Paragraph Feature
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-paragraph.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph)
 [![Build Status](https://travis-ci.org/ckeditor/ckeditor5-paragraph.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-paragraph)
 [![Test Coverage](https://codeclimate.com/github/ckeditor/ckeditor5-paragraph/badges/coverage.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-paragraph/coverage)
-[![Code Climate](https://codeclimate.com/github/ckeditor/ckeditor5-paragraph/badges/gpa.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-paragraph)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-paragraph/status.svg)](https://david-dm.org/ckeditor/ckeditor5-paragraph#info=dependencies)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-paragraph/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-paragraph#info=devDependencies)
+[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-paragraph/status.svg)](https://david-dm.org/ckeditor/ckeditor5-paragraph)
+[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-paragraph/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-paragraph?type=dev)
 
 The paragraph feature for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-paragraph>.
 
