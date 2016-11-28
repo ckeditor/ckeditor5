@@ -31,7 +31,8 @@ describe( 'ImageEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( document.schema.check( { name: 'image', attributes: [ 'src', 'alt' ] } ) ).to.be.true;
+		expect( document.schema.check( { name: 'image', attributes: [ 'src', 'alt' ], inside: '$root' } ) ).to.be.true;
+		expect( document.schema.objects.has( 'image' ) ).to.be.true;
 	} );
 
 	describe( 'conversion in data pipeline', () => {
@@ -97,9 +98,10 @@ describe( 'ImageEngine', () => {
 				const editing = editor.editing;
 
 				document.schema.registerItem( 'div', '$block' );
+				document.schema.disallow( { name: 'image', inside: 'div', attributes: [ 'src' ] } );
+
 				buildModelConverter().for( data.modelToView, editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 				buildViewConverter().for( data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
-				document.schema.disallow( { name: 'image', inside: 'div' } );
 
 				editor.setData( '<div><figure class="image"><img src="foo.png" alt="alt text" /></figure></div>' );
 

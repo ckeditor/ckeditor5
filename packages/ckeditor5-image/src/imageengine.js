@@ -31,12 +31,15 @@ export default class ImageEngine extends Plugin {
 	init() {
 		const editor = this.editor;
 		const doc = editor.document;
+		const schema = doc.schema;
 		const data = editor.data;
 		const editing = editor.editing;
 
 		// Configure schema.
-		doc.schema.registerItem( 'image', '$block' );
-		doc.schema.allow( { name: 'image', attributes: [ 'src', 'alt' ] } );
+		schema.registerItem( 'image' );
+		schema.requireAttributes( 'image', [ 'src' ] );
+		schema.allow( { name: 'image', attributes: [ 'alt', 'src' ], inside: '$root' } );
+		schema.objects.add( 'image' );
 
 		// Build converter from model to view for data pipeline.
 		buildModelConverter().for( data.modelToView )

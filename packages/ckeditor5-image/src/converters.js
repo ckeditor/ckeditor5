@@ -30,7 +30,7 @@ export function viewToModelImage() {
 		}
 
 		// Check if image element can be converted in current context.
-		if ( !conversionApi.schema.check( { name: 'image', inside: data.context } ) ) {
+		if ( !conversionApi.schema.check( { name: 'image', inside: data.context, attributes: 'src' } ) ) {
 			return;
 		}
 
