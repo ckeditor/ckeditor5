@@ -367,7 +367,7 @@ describe( 'LiveRange', () => {
 				live.end.path = [ 0, 1, 12 ];
 
 				let moveSource = new Position( root, [ 0, 1, 2 ] );
-				let moveRange = new Range( new Position( root, [ 0, 1, 5 ] ), new Position( root, [ 0, 1, 9 ] ) );
+				let moveRange = new Range( new Position( root, [ 0, 1, 7 ] ), new Position( root, [ 0, 1, 10 ] ) );
 
 				let changes = {
 					range: moveRange,
