@@ -11,7 +11,17 @@ import Element from 'ckeditor5/engine/model/element.js';
 import Text from 'ckeditor5/engine/model/text.js';
 import Document from 'ckeditor5/engine/model/document.js';
 import TreeWalker from 'ckeditor5/engine/model/treewalker.js';
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
+
+import {
+	getAttributeDelta,
+	getInsertDelta,
+	getMoveDelta,
+	getRemoveDelta,
+	getRenameDelta,
+	getSplitDelta
+} from 'tests/engine/model/delta/transform/_utils/utils.js';
 
 describe( 'Range', () => {
 	let doc, range, start, end, root, otherRoot;
@@ -192,6 +202,43 @@ describe( 'Range', () => {
 
 				expect( clone ).not.to.be.equal( range ); // clone is not pointing to the same object as position
 				expect( clone.isEqual( range ) ).to.be.true; // but they are equal in the position-sense
+			} );
+		} );
+
+		describe( 'createFromRanges', () => {
+			function makeRanges( root, ...points ) {
+				let ranges = [];
+
+				for ( let i = 0; i < points.length; i += 2 ) {
+					ranges.push( Range.createFromParentsAndOffsets( root, points[ i ], root, points[ i + 1 ] ) );
+				}
+
+				return ranges;
+			}
+
+			beforeEach( () => {
+				root.appendChildren( new Text( 'abcdefghijklmnopqrtuvwxyz' ) );
+			} );
+
+			it( 'should throw if empty array is passed', () => {
+				expect( () => {
+					Range.createFromRanges( [] );
+				} ).to.throw( CKEditorError, /^range-create-from-ranges-empty-array/ );
+			} );
+
+			it( 'should return a copy of the range if only one range was passed', () => {
+				const original = Range.createFromParentsAndOffsets( root, 2, root, 3 );
+				const range = Range.createFromRanges( [ original ] );
+
+				expect( range.isEqual( original ) ).to.be.true;
+				expect( range ).not.to.be.equal( original );
+			} );
+
+			it( 'should combine ranges with reference range', () => {
+				const range = Range.createFromRanges( makeRanges( root, 3, 7, 2, 3, 7, 9, 11, 14, 0, 1 ) );
+
+				expect( range.start.offset ).to.equal( 2 );
+				expect( range.end.offset ).to.equal( 9 );
 			} );
 		} );
 	} );
@@ -659,6 +706,148 @@ describe( 'Range', () => {
 
 			expect( common.start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( common.end.path ).to.deep.equal( [ 4, 7 ] );
+		} );
+	} );
+
+	describe( 'getTransformedByDelta', () => {
+		beforeEach( () => {
+			root.appendChildren( new Text( 'foobar' ) );
+			range = Range.createFromParentsAndOffsets( root, 2, root, 5 );
+		} );
+
+		function expectRange( range, startOffset, endOffset ) {
+			expect( range.start.offset ).to.equal( startOffset );
+			expect( range.end.offset ).to.equal( endOffset );
+		}
+
+		describe( 'by AttributeDelta', () => {
+			it( 'nothing should change', () => {
+				const delta = getAttributeDelta( Range.createFromParentsAndOffsets( root, 1, root, 6 ), 'key', true, false, 1 );
+				const transformed = range.getTransformedByDelta( delta );
+
+				expectRange( transformed[ 0 ], 2, 5 );
+			} );
+		} );
+
+		describe( 'by InsertDelta', () => {
+			it( 'insert before range', () => {
+				const delta = getInsertDelta( new Position( root, [ 1 ] ), new Text( 'abc' ), 1 );
+				const transformed = range.getTransformedByDelta( delta );
+
+				expectRange( transformed[ 0 ], 5, 8 );
+			} );
+
+			it( 'insert inside range', () => {
+				const delta = getInsertDelta( new Position( root, [ 3 ] ), new Text( 'abc' ), 1 );
+				const transformed = range.getTransformedByDelta( delta );
+
+				expectRange( transformed[ 0 ], 2, 8 );
+			} );
+
+			it( 'insert after range', () => {
+				const delta = getInsertDelta( new Position( root, [ 6 ] ), new Text( 'abc' ), 1 );
+				const transformed = range.getTransformedByDelta( delta );
+
+				expectRange( transformed[ 0 ], 2, 5 );
+			} );
+		} );
+
+		describe( 'by MoveDelta', () => {
+			it( 'move before range', () => {
+				const start = new Position( root, [ 0 ] );
+				const end = new Position( otherRoot, [ 0 ] );
+				const delta = getMoveDelta( start, 2, end, 1 );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expectRange( transformed[ 0 ], 0, 3 );
+			} );
+
+			it( 'move intersecting with range (and targeting before range)', () => {
+				const start = new Position( root, [ 4 ] );
+				const end = new Position( root, [ 0 ] );
+				const delta = getMoveDelta( start, 2, end, 1 );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expectRange( transformed[ 0 ], 4, 6 );
+				expectRange( transformed[ 1 ], 0, 1 );
+			} );
+
+			it( 'move inside the range', () => {
+				range.end.offset = 6;
+				const start = new Position( root, [ 3 ] );
+				const end = new Position( root, [ 5 ] );
+				const delta = getMoveDelta( start, 1, end, 1 );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expectRange( transformed[ 0 ], 2, 4 );
+				expectRange( transformed[ 1 ], 5, 6 );
+				expectRange( transformed[ 2 ], 4, 5 );
+			} );
+		} );
+
+		describe( 'by RemoveDelta', () => {
+			it( 'remove before range', () => {
+				const start = new Position( root, [ 0 ] );
+				const delta = getRemoveDelta( start, 2, 1 );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expectRange( transformed[ 0 ], 0, 3 );
+			} );
+
+			it( 'remove intersecting with range', () => {
+				const start = new Position( root, [ 4 ] );
+				const delta = getRemoveDelta( start, 2, 1 );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expectRange( transformed[ 0 ], 2, 4 );
+				expect( transformed[ 1 ].root ).to.equal( doc.graveyard );
+				expect( transformed[ 1 ].end.offset - transformed[ 1 ].start.offset ).to.equal( 1 );
+			} );
+
+			it( 'remove inside the range', () => {
+				const start = new Position( root, [ 3 ] );
+				const delta = getRemoveDelta( start, 2, 1 );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expectRange( transformed[ 0 ], 2, 3 );
+				expect( transformed[ 1 ].root ).to.equal( doc.graveyard );
+				expect( transformed[ 1 ].end.offset - transformed[ 1 ].start.offset ).to.equal( 2 );
+			} );
+		} );
+
+		describe( 'by RenameDelta', () => {
+			it( 'nothing should change', () => {
+				const delta = getRenameDelta( new Position( root, [ 3 ] ), 'old', 'new', 1 );
+				const transformed = range.getTransformedByDelta( delta );
+
+				expectRange( transformed[ 0 ], 2, 5 );
+			} );
+		} );
+
+		describe( 'by SplitDelta', () => {
+			it( 'split inside range', () => {
+				root.removeChildren( root.childCount );
+				root.appendChildren( new Element( 'p', null, new Text( 'foobar' ) ) );
+
+				range.start = new Position( root, [ 0, 2 ] );
+				range.end = new Position( root, [ 0, 4 ] );
+
+				const delta = getSplitDelta( new Position( root, [ 0, 3 ] ), new Element( 'p' ), 3, 1 );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expect( transformed.length ).to.equal( 2 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 2 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 3 ] );
+				expect( transformed[ 1 ].start.path ).to.deep.equal( [ 1, 0 ] );
+				expect( transformed[ 1 ].end.path ).to.deep.equal( [ 1, 1 ] );
+			} );
 		} );
 	} );
 
