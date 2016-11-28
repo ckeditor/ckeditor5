@@ -39,6 +39,14 @@ export default class AttributeElement extends Element {
 		 * @member {Number} module:engine/view/attributeelement~AttributeElement#priority
 		 */
 		this.priority = DEFAULT_PRIORITY;
+
+		/**
+		 * Returns block {@link module:engine/view/filler~Filler filler} offset or `null` if block filler is not needed.
+		 *
+		 * @method #getFillerOffset
+		 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
+		 */
+		this.getFillerOffset = getFillerOffset;
 	}
 
 	/**
@@ -68,35 +76,6 @@ export default class AttributeElement extends Element {
 	isSimilar( otherElement ) {
 		return super.isSimilar( otherElement ) && this.priority == otherElement.priority;
 	}
-
-	/**
-	 * Returns block {@link module:engine/view/filler filler} offset or `null` if a block filler is not needed.
-	 *
-	 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
-	 */
-	getFillerOffset() {
-		// <b>foo</b> does not need filler.
-		if ( this.childCount ) {
-			return null;
-		}
-
-		let element = this.parent;
-
-		// <p><b></b></p> needs filler -> <p><b><br></b></p>
-		while ( element instanceof AttributeElement ) {
-			if ( element.childCount > 1 ) {
-				return null;
-			}
-
-			element = element.parent;
-		}
-
-		if ( !element || element.childCount > 1 ) {
-			return null;
-		}
-
-		return 0;
-	}
 }
 
 /**
@@ -105,3 +84,32 @@ export default class AttributeElement extends Element {
  * @member {Number} module:engine/view/attributeelement~AttributeElement.DEFAULT_PRIORITY
  */
 AttributeElement.DEFAULT_PRIORITY = DEFAULT_PRIORITY;
+
+// Returns block {@link module:engine/view/filler~Filler filler} offset or `null` if block filler is not needed.
+//
+// @returns {Number|null} Block filler offset or `null` if block filler is not needed.
+function getFillerOffset() {
+	/*jshint validthis:true */
+
+	// <b>foo</b> does not need filler.
+	if ( this.childCount ) {
+		return null;
+	}
+
+	let element = this.parent;
+
+	// <p><b></b></p> needs filler -> <p><b><br></b></p>
+	while ( element instanceof AttributeElement ) {
+		if ( element.childCount > 1 ) {
+			return null;
+		}
+
+		element = element.parent;
+	}
+
+	if ( !element || element.childCount > 1 ) {
+		return null;
+	}
+
+	return 0;
+}

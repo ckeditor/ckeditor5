@@ -105,6 +105,15 @@ export default class Element extends Node {
 			parseInlineStyles( this._styles, this._attrs.get( 'style' ) );
 			this._attrs.delete( 'style' );
 		}
+
+		/**
+		 * Map of custom properties.
+		 * Custom properties can be added to element instance, will be cloned but not rendered into DOM.
+		 *
+		 * @protected
+		 * @memeber {Map} engine.view.Element#_customProperties.
+		 */
+		this._customProperties = new Map();
 	}
 
 	/**
@@ -150,6 +159,12 @@ export default class Element extends Node {
 		// parse once again in constructor.
 		cloned._classes = new Set( this._classes );
 		cloned._styles = new Map( this._styles );
+
+		// Clone custom properties.
+		cloned._customProperties = new Map( this._customProperties );
+
+		// Clone filler offset method.
+		cloned.getFillerOffset = this.getFillerOffset;
 
 		return cloned;
 	}
@@ -597,6 +612,54 @@ export default class Element extends Node {
 
 		return null;
 	}
+
+	/**
+	 * Sets a custom property. Unlike attributes, custom properties are not rendered to the DOM,
+	 * so they can be used to add special data to elements.
+	 *
+	 * @param {String|Symbol} key
+	 * @param {*} value
+	 */
+	setCustomProperty( key, value ) {
+		this._customProperties.set( key, value );
+	}
+
+	/**
+	 * Returns the custom property value for the given key.
+	 *
+	 * @param {String|Symbol} key
+	 * @returns {*}
+	 */
+	getCustomProperty( key ) {
+		return this._customProperties.get( key );
+	}
+
+	/**
+	 * Removes the custom property stored under the given key.
+	 *
+	 * @param {String|Symbol} key
+	 * @returns {Boolean} Returns true if property was removed.
+	 */
+	removeCustomProperty( key ) {
+		return this._customProperties.delete( key );
+	}
+
+	/**
+	 * Returns an iterator which iterates over this element's custom properties.
+	 * Iterator provides [key, value] pair for each stored property.
+	 *
+	 * @returns {Iterable.<*>}
+	 */
+	*getCustomProperties() {
+		yield* this._customProperties.entries();
+	}
+
+	/**
+	 * Returns block {@link module:engine/view/filler~Filler filler} offset or `null` if block filler is not needed.
+	 *
+	 * @abstract
+	 * @method module:engine/view/element~Element#getFillerOffset
+	 */
 }
 
 // Parses inline styles and puts property - value pairs into styles map.

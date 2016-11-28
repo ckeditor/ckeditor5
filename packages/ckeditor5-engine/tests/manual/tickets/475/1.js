@@ -5,26 +5,26 @@
 
 /* globals document */
 
-import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
+import ClassicEditor from 'ckeditor5/editor-classic/classic.js';
 
-import Feature from '/ckeditor5/core/feature.js';
+import Plugin from 'ckeditor5/core/plugin.js';
 
-import TreeWalker from '/ckeditor5/engine/model/treewalker.js';
-import Position from '/ckeditor5/engine/model/position.js';
-import Range from '/ckeditor5/engine/model/range.js';
-import LivePosition from '/ckeditor5/engine/model/liveposition.js';
+import TreeWalker from 'ckeditor5/engine/model/treewalker.js';
+import Position from 'ckeditor5/engine/model/position.js';
+import Range from 'ckeditor5/engine/model/range.js';
+import LivePosition from 'ckeditor5/engine/model/liveposition.js';
 
-import buildModelConverter from '/ckeditor5/engine/conversion/buildmodelconverter.js';
-import buildViewConverter from '/ckeditor5/engine/conversion/buildviewconverter.js';
+import buildModelConverter from 'ckeditor5/engine/conversion/buildmodelconverter.js';
+import buildViewConverter from 'ckeditor5/engine/conversion/buildviewconverter.js';
 
-import AttributeElement from '/ckeditor5/engine/view/attributeelement.js';
+import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
 
-import Enter from '/ckeditor5/enter/enter.js';
-import Typing from '/ckeditor5/typing/typing.js';
-import Paragraph from '/ckeditor5/paragraph/paragraph.js';
-import Undo from '/ckeditor5/undo/undo.js';
+import Enter from 'ckeditor5/enter/enter.js';
+import Typing from 'ckeditor5/typing/typing.js';
+import Paragraph from 'ckeditor5/paragraph/paragraph.js';
+import Undo from 'ckeditor5/undo/undo.js';
 
-class Link extends Feature {
+class Link extends Plugin {
 	init() {
 		const editor = this.editor;
 		const data = editor.data;
@@ -47,7 +47,7 @@ class Link extends Feature {
 
 const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 
-class AutoLinker extends Feature {
+class AutoLinker extends Plugin {
 	init() {
 		this.editor.document.on( 'change', ( event, type, changes, batch ) => {
 			if ( type != 'insert' ) {
@@ -92,6 +92,6 @@ function _getLastPathPart( path ) {
 }
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ Enter, Typing, Paragraph, Undo, Link, AutoLinker ],
+	plugins: [ Enter, Typing, Paragraph, Undo, Link, AutoLinker ],
 	toolbar: [ 'undo', 'redo' ]
 } );

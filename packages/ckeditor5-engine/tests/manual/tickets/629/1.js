@@ -5,14 +5,14 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
-import Enter from '/ckeditor5/enter/enter.js';
-import Typing from '/ckeditor5/typing/typing.js';
-import Paragraph from '/ckeditor5/paragraph/paragraph.js';
-import Bold from '/ckeditor5/basic-styles/bold.js';
+import ClassicEditor from 'ckeditor5/editor-classic/classic.js';
+import Enter from 'ckeditor5/enter/enter.js';
+import Typing from 'ckeditor5/typing/typing.js';
+import Paragraph from 'ckeditor5/paragraph/paragraph.js';
+import Bold from 'ckeditor5/basic-styles/bold.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	features: [ Enter, Typing, Paragraph, Bold ],
+	plugins: [ Enter, Typing, Paragraph, Bold ],
 	toolbar: [ 'bold' ]
 } )
 .then( editor => {
