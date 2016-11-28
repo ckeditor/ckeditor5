@@ -487,14 +487,6 @@ describe( 'Range', () => {
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 4 ] );
 		} );
 
-		it( 'should not change if the range is collapsed and isSticky is false', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 2 ] ) );
-			const transformed = range._getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3, false, false );
-
-			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
-			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 2 ] );
-		} );
-
 		it( 'should move after inserted nodes if the range is collapsed and isSticky is true', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 2 ] ) );
 			const transformed = range._getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3, false, true );
