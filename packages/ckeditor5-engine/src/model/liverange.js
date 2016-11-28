@@ -95,7 +95,7 @@ export default class LiveRange extends Range {
  */
 function bindWithDocument() {
 	/*jshint validthis: true */
-	// Operation types handled by LiveRange (these are operations that change model tree structure).
+	// Operation types that a range can be transformed by.
 	const supportedTypes = new Set( [ 'insert', 'move', 'remove', 'reinsert' ] );
 
 	this.listenTo(
@@ -116,55 +116,45 @@ function bindWithDocument() {
  * @ignore
  * @private
  * @method transform
- * @param {String} type Type of changes applied to the Tree Model.
- * @param {module:engine/model/range~Range} range Range containing the result of applied change.
- * @param {module:engine/model/position~Position} [position] Additional position parameter provided by some change events.
+ * @param {String} type Type of changes applied to the model document.
+ * @param {module:engine/model/range~Range} targetRange Range containing the result of applied change.
+ * @param {module:engine/model/position~Position} [sourcePosition] Source position for move, remove and reinsert change types.
  */
-function transform( type, range, position ) {
+function transform( type, targetRange, sourcePosition ) {
 	/* jshint validthis: true */
-	let updated;
-	const howMany = range.end.offset - range.start.offset;
+	const howMany = targetRange.end.offset - targetRange.start.offset;
+	let targetPosition = targetRange.start;
 
-	switch ( type ) {
-		case 'insert':
-			updated = this._getTransformedByInsertion( range.start, howMany, false, true )[ 0 ];
-			break;
-
-		case 'move':
-		case 'remove':
-		case 'reinsert':
-			const sourcePosition = position;
-
-			// Range._getTransformedByMove is expecting `targetPosition` to be "before" move
-			// (before transformation). `range.start` is already after the move happened.
-			// We have to revert `range.start` to the state before the move.
-			const targetPosition = range.start._getTransformedByInsertion( sourcePosition, howMany );
-
-			const result = this._getTransformedByMove( sourcePosition, targetPosition, howMany, false, true );
-
-			// First item in the array is the "difference" part, so a part of the range
-			// that did not get moved. We use it as reference range and expand if possible.
-			updated = result[ 0 ];
-
-			// We will check if there is other range and if it is touching the reference range.
-			// If it does, we will expand the reference range (at the beginning or at the end).
-			// Keep in mind that without settings `spread` flag, `_getTransformedByMove` may
-			// return maximum two ranges.
-			if ( result.length > 1 ) {
-				let otherRange = result[ 1 ];
-
-				if ( updated.start.isTouching( otherRange.end ) ) {
-					updated.start = otherRange.start;
-				} else if ( updated.end.isTouching( otherRange.start ) ) {
-					updated.end = otherRange.end;
-				}
-			}
-
-			break;
+	if ( type == 'move' ) {
+		// Range._getTransformedByDocumentChange is expecting `targetPosition` to be "before" move
+		// (before transformation). `targetRange.start` is already after the move happened.
+		// We have to revert `targetPosition` to the state before the move.
+		targetPosition = targetPosition._getTransformedByInsertion( sourcePosition, howMany );
 	}
 
+	const result = this._getTransformedByDocumentChange( type, targetPosition, howMany, sourcePosition );
+
+	// Decide whether inserted part should be included in the range.
+	// This extra step is needed only for `move` change type and only if the ranges have common part.
+	// If ranges are not intersecting and `targetRange` is moved to this range, it is included (in `_getTransformedByDocumentChange`).
+	//
+	// If ranges are intersecting, `result` contains spread range. `targetRange` need to be included if it is moved
+	// to this range, but only if it is moved to a position that is not touching this range boundary.
+	//
+	// First, this concerns only `move` change, because insert change includes inserted part always (type == 'move').
+	// Second, this is a case only if moved range was intersecting with this range and was inserted into this range (result.length == 3).
+	// Third, we check range `result[ 1 ]`, that is the range created by splitting this range by inserting `targetRange`.
+	// If that range is not empty, it means that we are in fact inserting inside `targetRange`.
+	if ( type == 'move' && result.length == 3 && !result[ 1 ].isEmpty ) {
+		// `result[ 2 ]` is a "common part" of this range and moved range. We substitute that common part with the whole
+		// `targetRange` because we want to include whole `targetRange` in this range.
+		result[ 2 ] = targetRange;
+	}
+
+	const updated = Range.createFromRanges( result );
+
 	// If anything changed, update the range and fire an event.
-	if ( !updated.start.isEqual( this.start ) || !updated.end.isEqual( this.end ) ) {
+	if ( !updated.isEqual( this ) ) {
 		const oldRange = Range.createFromRange( this );
 
 		this.start = updated.start;
