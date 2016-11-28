@@ -1,0 +1,22 @@
+// Common styles applied to all widgets.
+.ck-widget {
+	margin: 10px 0;
+	padding: 0;
+
+	&.ck-widget_selected, &.ck-widget_selected:hover {
+		outline: 2px solid #ace;
+	}
+
+	.ck-editor__editable.ck-blurred &.ck-widget_selected {
+		outline: 2px solid #ddd;
+	}
+
+	&:hover {
+		outline: 2px solid yellow;
+	}
+}
+
+// Image widget's styles.
+.ck-widget.image {
+	text-align: center;
+}
