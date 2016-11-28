@@ -149,7 +149,7 @@ export default class Position {
 
 	/**
 	 * Position {@link module:engine/model/position~Position#offset offset} converted to an index in position's parent node. It is
-	 * equal to the {@link module:engine/model/node~Node#getIndex index} of a node after this position. If position is placed
+	 * equal to the {@link module:engine/model/node~Node#index index} of a node after this position. If position is placed
 	 * in text node, position index is equal to the index of that text node.
 	 *
 	 * @readonly

@@ -89,10 +89,10 @@ import extend from '../../utils/lib/lodash/extend.js';
  *		// is going to be appended directly to a '$root' element, use that in `context`.
  *		viewDispatcher.convert( viewDocumentFragment, { context: [ '$root' ] } );
  *
- * Before each conversion process, `ViewConversionDispatcher` fires {@link ~ViewConversionDispatcher#viewCleanup}
+ * Before each conversion process, `ViewConversionDispatcher` fires {@link ~ViewConversionDispatcher#event:viewCleanup}
  * event which can be used to prepare tree view for conversion.
  *
- * @mixes utils.EmitterMixin
+ * @mixes module:utils/emittermixin~EmitterMixin
  * @fires viewCleanup
  * @fires element
  * @fires text

@@ -15,7 +15,7 @@ import { keyCodes } from '../../../utils/keyboard.js';
  * Fake selection observer class. If view selection is fake it is placed in dummy DOM container. This observer listens
  * on {@link module:engine/view/document~Document#event:keydown keydown} events and handles moving fake view selection to the correct place
  * if arrow keys are pressed.
- * Fires {@link module:engine/view/document~Document#selectionChage selectionChange event} simulating natural behaviour of
+ * Fires {@link module:engine/view/document~Document#event:selectionChange selectionChange event} simulating natural behaviour of
  * {@link module:engine/view/observer/selectionobserver~SelectionObserver SelectionObserver}.
  *
  * @extends module:engine/view/observer/observer~Observer.Observer

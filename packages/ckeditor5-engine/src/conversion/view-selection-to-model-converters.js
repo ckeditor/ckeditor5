@@ -4,15 +4,10 @@
  */
 
 /**
- * @module engine/conversion/view-selection-to-model-converters
- */
-
-/**
  * Contains {@link module:engine/view/selection~Selection view selection}
  * to {@link module:engine/model/selection~Selection model selection} conversion
+ * @module engine/conversion/view-selection-to-model-converters
  * helper.
- *
- * @namespace viewSelectionToModel
  */
 
 import ModelSelection from '../model/selection.js';

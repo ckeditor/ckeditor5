@@ -31,10 +31,10 @@ import compareArrays from '../../../utils/comparearrays.js';
  * connected with transformed operation, those changes will be reflected in the parameters of the returned operation(s).
  *
  * Whenever the {@link module:engine/model/document~Document document}
- * has different {@link module:engine/model/document~Document#baseVersion}
+ * has different {@link module:engine/model/document~Document#version}
  * than the operation you want to {@link module:engine/model/document~Document#applyOperation apply}, you need to transform that
  * operation by all operations which were already applied to the {@link module:engine/model/document~Document document} and have greater
- * {@link module:engine/model/document~Document#baseVersion} than the operation being applied. Transform them in the same order as those
+ * {@link module:engine/model/document~Document#version} than the operation being applied. Transform them in the same order as those
  * operations which were applied. This way all modifications done to the Tree Data Model will be reflected
  * in the operation parameters and the operation will "operate" on "up-to-date" version of the Tree Data Model.
  * This is mostly the case with Operational Transformations but it might be needed in particular features as well.

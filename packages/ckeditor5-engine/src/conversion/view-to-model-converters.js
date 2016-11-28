@@ -3,10 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/**
- * @module engine/conversion/view-to-model-converters
- */
-
 import ModelDocumentFragment from '../model/documentfragment.js';
 import ModelText from '../model/text.js';
 import { normalizeNodes } from '../model/writer.js';
@@ -15,7 +11,7 @@ import { normalizeNodes } from '../model/writer.js';
  * Contains {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
  * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher}.
  *
- * @namespace viewToModel
+ * @module engine/conversion/view-to-model-converters
  */
 
 /**
@@ -29,8 +25,6 @@ import { normalizeNodes } from '../model/writer.js';
  * When a view element is being converted to the model but it does not have converter specified, that view element
  * will be converted to {@link module:engine/model/documentfragment~DocumentFragment model document fragment} and returned.
  *
- * @external module:engine/conversion/view-to-model-converters~viewToModel
- * @function module:engine/conversion/view-to-model-converters~viewToModel.convertToModelFragment
  * @returns {Function} Universal converter for view {@link module:engine/view/documentfragment~DocumentFragment fragments} and
  * {@link module:engine/view/element~Element elements} that returns
  * {@link module:engine/model/documentfragment~DocumentFragment model fragment} with children of converted view item.
@@ -49,8 +43,6 @@ export function convertToModelFragment() {
 /**
  * Function factory, creates a converter that converts {@link module:engine/view/text~Text} to {@link module:engine/model/text~Text}.
  *
- * @external module:engine/conversion/view-to-model-converters~viewToModel
- * @function module:engine/conversion/view-to-model-converters~viewToModel.convertText
  * @returns {Function} {@link module:engine/view/text~Text View text} converter.
  */
 export function convertText() {

@@ -17,7 +17,7 @@ import ObservableMixin from '../../utils/observablemixin.js';
  * or nested editable area in the editor.
  *
  * @extends module:engine/view/containerelement~ContainerElement
- * @mixes utils.ObservaleMixin
+ * @mixes module:utils/observablemixin~ObservaleMixin
  */
 export default class EditableElement extends ContainerElement {
 	/**

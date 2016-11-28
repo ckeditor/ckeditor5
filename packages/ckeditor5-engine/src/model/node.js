@@ -19,7 +19,7 @@ import CKEditorError from '../../utils/ckeditorerror.js';
  * However, it is **very important** that nodes already attached to model tree should be only changed through
  * {@link module:engine/model/document~Document#batch Batch API}.
  *
- * Changes done by `Node` methods, like {@link module:engine/model/node~Node#insertChildren insertChildren} or
+ * Changes done by `Node` methods, like {@link module:engine/model/element~Element#insertChildren insertChildren} or
  * {@link module:engine/model/node~Node#setAttribute setAttribute}
  * do not generate {@link module:engine/model/operation/operation~Operation operations}
  * which are essential for correct editor work if you modify nodes in {@link module:engine/model/document~Document document} root.

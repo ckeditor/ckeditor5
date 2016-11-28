@@ -58,7 +58,7 @@ export default class KeyObserver extends DomEventObserver {
  *
  * @class module:engine/view/observer/keyobserver~KeyObserver.KeyEventData
  * @extends module:engine/view/observer/domeventdata~DomEventData
- * @implements module:utils/keyboard/keystorkedata~KeystrokeData
+ * @implements module:utils/keyboard~KeystrokeInfo
  */
 
 /**

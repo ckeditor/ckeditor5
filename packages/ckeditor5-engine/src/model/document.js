@@ -38,6 +38,7 @@ const graveyardName = '$graveyard';
  *		doc.batch().insert( position, nodes ).split( otherPosition );
  *
  * @see ~Document#batch
+ * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class Document {
 	/**

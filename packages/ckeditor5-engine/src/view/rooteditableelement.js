@@ -32,7 +32,7 @@ export default class RootEditableElement extends EditableElement {
 		 * Name of this root inside {@link module:engine/view/document~Document} that is an owner of this root.
 		 *
 		 * @readonly
-		 * @member {String} module:engine/view/rooteditableelement~RootEditableElement#rootName
+		 * @member {String}
 		 */
 		this.rootName = rootName;
 	}

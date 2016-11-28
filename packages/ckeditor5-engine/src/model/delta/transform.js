@@ -33,7 +33,7 @@ const specialCases = new Map();
  * @param {module:engine/model/delta/delta~Delta} b Delta to transform by.
  * @param {Boolean} isAMoreImportantThanB Flag indicating whether the delta which will be transformed (`a`) should be treated
  * as more important when resolving conflicts. Note that this flag is used only if provided deltas have same
- * {@link module:engine/model/delta/delta~Delta.priorities priority}. If deltas have different priorities, their importance is resolved
+ * {@link module:engine/model/delta/delta~Delta._priority priority}. If deltas have different priorities, their importance is resolved
  * automatically and overwrites this flag.
  * @returns {Array.<module:engine/model/delta/delta~Delta>} Result of the transformation.
  */
@@ -67,7 +67,7 @@ function updateBaseVersion( baseVersion, deltas ) {
  * @param {module:engine/model/delta/delta~Delta} b Delta to transform by.
  * @param {Boolean} isAMoreImportantThanB Flag indicating whether the delta which will be transformed (`a`) should be treated
  * as more important when resolving conflicts. Note that this flag is used only if provided deltas have same
- * {@link module:engine/model/delta/delta~Delta.priorities priority}. If deltas have different priorities, their importance is resolved
+ * {@link module:engine/model/delta/delta~Delta._priority priority}. If deltas have different priorities, their importance is resolved
  * automatically and overwrites this flag.
  * @returns {Array.<module:engine/model/delta/delta~Delta>} Result of the transformation, that is an array with single delta instance.
  */

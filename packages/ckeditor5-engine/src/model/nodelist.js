@@ -131,7 +131,7 @@ export default class NodeList {
 	 * Converts offset in node list to index.
 	 *
 	 * Returns index of a node that occupies given offset. Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError}
-	 * `model-nodelist-offset-out-of-bounds` if given offset is less than `0` or more than {@link #getMaxOffset}.
+	 * `model-nodelist-offset-out-of-bounds` if given offset is less than `0` or more than {@link #maxOffset}.
 	 *
 	 * @param {Number} offset Offset to look for.
 	 * @returns {Number} Index of a node that occupies given offset.

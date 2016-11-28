@@ -27,7 +27,7 @@ import ViewContainerElement from '../view/containerelement.js';
  * {@link module:engine/conversion/buildmodelconverter~buildModelConverter}.
  *
  * If you need more complex converters, see {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher},
- * {@link module:engine/conversion/modeltoview~modelToView}, {@link module:engine/conversion/modelconsumable~ModelConsumable},
+ * {@link module:engine/conversion/model-to-view-converters}, {@link module:engine/conversion/modelconsumable~ModelConsumable},
  * {@link module:engine/conversion/mapper~Mapper}.
  *
  * Using this API it is possible to create three kinds of converters:
@@ -166,7 +166,7 @@ class ModelConverterBuilder {
 	 * `string`, view element instance which will be cloned and used, or creator function which returns view element that
 	 * will be used. Keep in mind that when you view element instance or creator function, it has to be/return a
 	 * proper type of view element: {@link module:engine/view/containerelement~ContainerElement ViewContainerElement} if you convert
-	 * from element or {@link module:engine/view/attributeelement~ViewAttributeElement ViewAttributeElement} if you convert from attribute.
+	 * from element or {@link module:engine/view/attributeelement~AttributeElement ViewAttributeElement} if you convert from attribute.
 	 *
 	 *		buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
 	 *
