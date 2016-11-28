@@ -492,7 +492,7 @@ export default class Range {
 	 * was inside the range. Defaults to `false`.
 	 * @returns {Array.<module:engine/model/range~Range>} Result of the transformation.
 	 */
-	_getTransformedByMove( sourcePosition, targetPosition, howMany, spread, isSticky = false ) {
+	_getTransformedByMove( sourcePosition, targetPosition, howMany ) {
 		if ( this.isCollapsed ) {
 			const newPos = this.start._getTransformedByMove( sourcePosition, targetPosition, howMany, true, true );
 
@@ -504,38 +504,33 @@ export default class Range {
 		const moveRange = new Range( sourcePosition, sourcePosition.getShiftedBy( howMany ) );
 
 		const differenceSet = this.getDifference( moveRange );
-		let difference;
+		let difference = null;
+
+		const common = this.getIntersection( moveRange );
 
 		if ( differenceSet.length == 1 ) {
+			// `moveRange` and this range intersects.
 			difference = new Range(
 				differenceSet[ 0 ].start._getTransformedByDeletion( sourcePosition, howMany ),
 				differenceSet[ 0 ].end._getTransformedByDeletion( sourcePosition, howMany )
 			);
 		} else if ( differenceSet.length == 2 ) {
-			// This means that ranges were moved from the inside of this range.
-			// So we can operate on this range positions and we don't have to transform starting position.
+			// `moveRange` is inside this range.
 			difference = new Range(
 				this.start,
 				this.end._getTransformedByDeletion( sourcePosition, howMany )
 			);
-		} else {
-			// 0.
-			difference = null;
-		}
+		} // else, `moveRange` wholly contains this range.
 
 		const insertPosition = targetPosition._getTransformedByDeletion( sourcePosition, howMany );
 
 		if ( difference ) {
-			result = difference._getTransformedByInsertion( insertPosition, howMany, spread, isSticky );
+			result = difference._getTransformedByInsertion( insertPosition, howMany, common !== null );
 		} else {
 			result = [];
 		}
 
-		const common = this.getIntersection( moveRange );
-
-		// Add common part of the range only if there is any and only if it is not
-		// already included in `difference` part.
-		if ( common && ( spread || difference === null || !difference.containsPosition( insertPosition ) ) ) {
+		if ( common ) {
 			result.push( new Range(
 				common.start._getCombined( moveRange.start, insertPosition ),
 				common.end._getCombined( moveRange.start, insertPosition )
