@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5-heading",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Headings feature for CKEditor 5.",
   "keywords": [],
   "dependencies": {
