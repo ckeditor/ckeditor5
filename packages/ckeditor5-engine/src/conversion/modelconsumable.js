@@ -121,8 +121,10 @@ export default class ModelConsumable {
 	 *		modelConsumable.add( modelElement, 'removeAttribute:bold' ); // Add `bold` attribute removal on `modelElement` change.
 	 *		modelConsumable.add( modelSelection, 'selection' ); // Add `modelSelection` to consumable values.
 	 *		modelConsumable.add( modelSelection, 'selectionAttribute:bold' ); // Add `bold` attribute on `modelSelection` to consumables.
+	 *		modelConsumable.add( modelRange, 'range' ); // Add `modelRange` to consumable values.
 	 *
-	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection} item Model item or selection that has the consumable.
+	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection|module:engine/model/range~Range} item
+	 * Model item, range or selection that has the consumable.
 	 * @param {String} type Consumable type.
 	 */
 	add( item, type ) {
@@ -145,9 +147,10 @@ export default class ModelConsumable {
 	 *		modelConsumable.consume( modelElement, 'removeAttribute:bold' ); // Remove `bold` attribute removal on `modelElement` change.
 	 *		modelConsumable.consume( modelSelection, 'selection' ); // Remove `modelSelection` from consumable values.
 	 *		modelConsumable.consume( modelSelection, 'selectionAttribute:bold' ); // Remove `bold` on `modelSelection` from consumables.
+	 *		modelConsumable.consume( modelRange, 'range' ); // Remove 'modelRange' from consumable values.
 	 *
-	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection} item
-	 * Model item or selection from which consumable will be consumed.
+	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection|module:engine/model/range~Range} item
+	 * Model item, range or selection from which consumable will be consumed.
 	 * @param {String} type Consumable type.
 	 * @returns {Boolean} `true` if consumable value was available and was consumed, `false` otherwise.
 	 */
@@ -173,8 +176,10 @@ export default class ModelConsumable {
 	 *		modelConsumable.test( modelElement, 'removeAttribute:bold' ); // Check for `bold` attribute removal on `modelElement` change.
 	 *		modelConsumable.test( modelSelection, 'selection' ); // Check if `modelSelection` is consumable.
 	 *		modelConsumable.test( modelSelection, 'selectionAttribute:bold' ); // Check if `bold` on `modelSelection` is consumable.
+	 *		modelConsumable.test( modelRange, 'range' ); // Check if `modelRange` is consumable.
 	 *
-	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection} item Model item or selection that will be tested.
+	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection|module:engine/model/range~Range} item
+	 * Model item, range or selection to be tested.
 	 * @param {String} type Consumable type.
 	 * @returns {null|Boolean} `null` if such consumable was never added, `false` if the consumable values was
 	 * already consumed or `true` if it was added and not consumed yet.
@@ -207,8 +212,10 @@ export default class ModelConsumable {
 	 *		modelConsumable.revert( modelElement, 'removeAttribute:bold' ); // Revert consuming `bold` attribute remove from `modelElement`.
 	 *		modelConsumable.revert( modelSelection, 'selection' ); // Revert consuming `modelSelection`.
 	 *		modelConsumable.revert( modelSelection, 'selectionAttribute:bold' ); // Revert consuming `bold` from `modelSelection`.
+	 *		modelConsumable.revert( modelRange, 'range' ); // Revert consuming `modelRange`.
 	 *
-	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection} item Model item or selection that will be reverted.
+	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection|module:engine/model/range~Range} item
+	 * Model item, range or selection to be reverted.
 	 * @param {String} type Consumable type.
 	 * @returns {null|Boolean} `true` if consumable has been reversed, `false` otherwise. `null` if the consumable has
 	 * never been added.
