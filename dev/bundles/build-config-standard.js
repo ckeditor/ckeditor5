@@ -17,6 +17,7 @@ module.exports = {
 		'clipboard',
 		'enter',
 		'heading',
+		'image',
 		'link',
 		'list',
 		'paragraph',
