@@ -655,7 +655,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Returns block {@link module:engine/view/filler~Filler filler} offset or `null` if block filler is not needed.
+	 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
 	 *
 	 * @abstract
 	 * @method module:engine/view/element~Element#getFillerOffset

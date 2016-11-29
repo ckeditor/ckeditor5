@@ -38,7 +38,7 @@ import ObservableMixin from '../../utils/observablemixin.js';
  * * {@link module:engine/view/observer/keyobserver~KeyObserver},
  * * {@link module:engine/view/observer/fakeselectionobserver~FakeSelectionObserver}.
  *
- * @mixes module:utils/emittermixin~EmitterMixin
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Document {
 	/**
