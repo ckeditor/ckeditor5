@@ -216,15 +216,15 @@ export default class ModelConversionDispatcher {
 		const consumable = this._createConsumableForType( range, 'move' );
 
 		const items = Array.from( range.getItems( { shallow: true } ) );
-		const rangeSize = range.end.offset - range.start.offset;
 		const inSameParent = sourcePosition.parent == range.start.parent;
+		const targetsAfter = range.start.isAfter( sourcePosition );
 
 		let offset = 0;
 
 		for ( let item of items ) {
 			const data = {
 				sourcePosition: sourcePosition,
-				targetPosition: inSameParent ? range.start.getShiftedBy( rangeSize ) : range.start.getShiftedBy( offset ),
+				targetPosition: inSameParent && targetsAfter ? range.end : range.start.getShiftedBy( offset ),
 				item: item
 			};
 

@@ -311,7 +311,7 @@ describe( 'ModelConversionDispatcher', () => {
 	} );
 
 	describe( 'convertMove', () => {
-		it( 'should fire event for moved range', () => {
+		it( 'should fire event for moved range - move before source position', () => {
 			root.appendChildren( new ModelText( 'barfoo' ) );
 
 			const range = ModelRange.createFromParentsAndOffsets( root, 0, root, 3 );
@@ -322,9 +322,25 @@ describe( 'ModelConversionDispatcher', () => {
 				loggedEvents.push( log );
 			} );
 
+			dispatcher.convertMove( ModelPosition.createFromParentAndOffset( root , 3 ), range );
+
+			expect( loggedEvents ).to.deep.equal( [ 'move:3:0:3' ] );
+		} );
+
+		it( 'should fire event for moved range - move after source position', () => {
+			root.appendChildren( new ModelText( 'barfoo' ) );
+
+			const range = ModelRange.createFromParentsAndOffsets( root, 3, root, 6 );
+			const loggedEvents = [];
+
+			dispatcher.on( 'move', ( evt, data ) => {
+				const log = 'move:' + data.sourcePosition.path + ':' + data.targetPosition.path + ':' + data.item.offsetSize;
+				loggedEvents.push( log );
+			} );
+
 			dispatcher.convertMove( ModelPosition.createFromParentAndOffset( root , 0 ), range );
 
-			expect( loggedEvents ).to.deep.equal( [ 'move:0:3:3' ] );
+			expect( loggedEvents ).to.deep.equal( [ 'move:0:6:3' ] );
 		} );
 	} );
 
