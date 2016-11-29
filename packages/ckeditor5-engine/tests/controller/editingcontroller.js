@@ -18,6 +18,7 @@ import buildModelConverter from 'ckeditor5/engine/conversion/buildmodelconverter
 import ModelDocument from 'ckeditor5/engine/model/document.js';
 import ModelPosition from 'ckeditor5/engine/model/position.js';
 import ModelRange from 'ckeditor5/engine/model/range.js';
+import ModelLiveRange from 'ckeditor5/engine/model/liverange.js';
 import ModelDocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
 
 import createElement from 'ckeditor5/utils/dom/createelement.js';
@@ -251,6 +252,83 @@ describe( 'EditingController', () => {
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>ba{}r</p>' );
+		} );
+
+		it( 'should forward marker events to model conversion dispatcher', () => {
+			const range = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 );
+
+			sinon.spy( editing.modelToView, 'convertMarker' );
+
+			model.markers.fire( 'addMarker', range, 'name' );
+
+			expect( editing.modelToView.convertMarker.calledWithExactly( 'addMarker', range, 'name' ) ).to.be.true;
+
+			model.markers.fire( 'removeMarker', range, 'name' );
+
+			expect( editing.modelToView.convertMarker.calledWithExactly( 'removeMarker', range, 'name' ) ).to.be.true;
+
+			editing.modelToView.convertMarker.restore();
+		} );
+
+		it( 'should forward add marker event if content is inserted into a marker range', () => {
+			const markerRange = ModelLiveRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
+			const innerRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 );
+
+			model.markers.addRange( markerRange, 'name' );
+
+			sinon.spy( editing.modelToView, 'convertMarker' );
+
+			editing.modelToView.fire( 'insert', {
+				range: innerRange
+			} );
+
+			expect( editing.modelToView.convertMarker.calledWithExactly( 'addMarker', 'name', innerRange ) ).to.be.true;
+
+			editing.modelToView.convertMarker.restore();
+		} );
+
+		it( 'should forward remove marker event if part of marker range is moved', () => {
+			const markerRange = ModelLiveRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 );
+			const consumableMock = {
+				consume: () => true,
+				test: () => true
+			};
+
+			model.markers.addRange( markerRange, 'name' );
+
+			sinon.spy( editing.modelToView, 'convertMarker' );
+
+			editing.modelToView.fire( 'move', {
+				sourcePosition: ModelPosition.createAt( modelRoot, 1 ),
+				targetPosition: ModelPosition.createAt( modelRoot, 2 ),
+				item: modelRoot.getChild( 2 )
+			}, consumableMock, { mapper: editing.mapper } );
+
+			expect( editing.modelToView.convertMarker.calledWith( 'removeMarker', 'name' ) ).to.be.true;
+
+			editing.modelToView.convertMarker.restore();
+		} );
+
+		it( 'should forward add marker event if content is moved into a marker range', () => {
+			const markerRange = ModelLiveRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
+			const consumableMock = {
+				consume: () => true,
+				test: () => true
+			};
+
+			model.markers.addRange( markerRange, 'name' );
+
+			sinon.spy( editing.modelToView, 'convertMarker' );
+
+			editing.modelToView.fire( 'move', {
+				sourcePosition: ModelPosition.createAt( modelRoot, 2 ),
+				targetPosition: ModelPosition.createAt( modelRoot, 1 ),
+				item: modelRoot.getChild( 1 )
+			}, consumableMock, { mapper: editing.mapper } );
+
+			expect( editing.modelToView.convertMarker.calledWith( 'addMarker', 'name' ) ).to.be.true;
+
+			editing.modelToView.convertMarker.restore();
 		} );
 	} );
 
