@@ -8,9 +8,10 @@ import ModelPosition from '../model/position.js';
 import ModelElement from '../model/element.js';
 
 import ViewRange from '../view/range.js';
+import ViewPosition from '../view/position.js';
 import ViewElement from '../view/element.js';
+import ViewContainerElement from '../view/containerelement.js';
 import ViewText from '../view/text.js';
-import ViewTextProxy from '../view/textproxy.js';
 import ViewTreeWalker from '../view/treewalker.js';
 import viewWriter from '../view/writer.js';
 
@@ -202,7 +203,7 @@ export function removeAttribute( attributeCreator ) {
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
  * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}).
  *
- *		modelDispatcher.on( 'addAttribute:bold', wrap( new ViewElement( 'strong' ) ) );
+ *		modelDispatcher.on( 'addAttribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
  *
  * @param {module:engine/view/element~Element|Function} elementCreator View element, or function returning a view element, which will
  * be used for wrapping.
@@ -226,7 +227,7 @@ export function wrap( elementCreator ) {
 			// view element basing on old value and unwrap it before wrapping with a newly created view element.
 			if ( data.attributeOldValue !== null && !( elementCreator instanceof ViewElement ) ) {
 				const oldViewElement = elementCreator( data.attributeOldValue, data, consumable, conversionApi );
-				viewRange = viewWriter.unwrap( viewRange, oldViewElement, evt.priority );
+				viewRange = viewWriter.unwrap( viewRange, oldViewElement );
 			}
 
 			viewWriter.wrap( viewRange, viewElement );
@@ -249,7 +250,7 @@ export function wrap( elementCreator ) {
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
  * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}) and bind model and view elements.
  *
- *		modelDispatcher.on( 'removeAttribute:bold', unwrap( new ViewElement( 'strong' ) ) );
+ *		modelDispatcher.on( 'removeAttribute:bold', unwrap( new ViewAttributeElement( 'strong' ) ) );
  *
  * @see module:engine/conversion/model-to-view-converters~wrap
  * @param {module:engine/view/element~Element|Function} elementCreator View element, or function returning a view element, which will
@@ -272,6 +273,157 @@ export function unwrap( elementCreator ) {
 }
 
 /**
+ * Function factory, creates a converter that converts new model marker to view attribute element.
+ *
+ * Let's assume following model and view. `{}` represents a range that is added as a marker with `searchResult` name.
+ * The range represents a result of search `ab` string in the model document. The range has to be visualized in view.
+ *
+ *		[paragraph]              MODEL ====> VIEW        <p>
+ *			|- {a                                         |- <span class="searchResult">
+ *			|-  b}                                        |   |- ab
+ *			|-  c                                         |- c
+ *
+ * The wrapping node depends on passed parameter. If {@link engine.view.AttributeElement} was passed, it will be cloned and
+ * the copy will become the wrapping element. If `Function` is provided, it is passed all the parameters of the
+ * {@link engine.conversion.ModelConversionDispatcher#event:addMarker addMarker event}. It's expected that the
+ * function returns a {@link engine.view.AttributeElement}. The result of the function will be the wrapping element.
+ * When provided `Function` does not return element, then will be no conversion.
+ *
+ * The converter automatically consumes corresponding value from consumables list, stops the event (see
+ * {@link engine.conversion.ModelConversionDispatcher}).
+ *
+ *		modelDispatcher.on( 'addMarker:searchResult', wrapMarker( new ViewAttributeElement( 'span', { class: 'searchResult' } ) ) );
+ *
+ * @external engine.conversion.modelToView
+ * @function engine.conversion.modelToView.wrapMarker
+ * @param {engine.view.AttributeElement|Function} elementCreator View attribute element, or function returning
+ * a view attribute element, which will be used for wrapping.
+ * @returns {Function} Add marker converter.
+ */
+export function wrapMarker( elementCreator ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		const viewRange = conversionApi.mapper.toViewRange( data.range );
+
+		const viewElement = ( elementCreator instanceof ViewElement ) ?
+			elementCreator.clone( true ) :
+			elementCreator( data, consumable, conversionApi );
+
+		if ( viewElement ) {
+			if ( !consumable.consume( data.range, 'range' ) ) {
+				return;
+			}
+
+			if ( viewRange.isCollapsed ) {
+				viewWriter.wrapPosition( viewRange.start, viewElement );
+			} else {
+				const flatViewRanges = breakViewRangeOnFlat( viewRange );
+
+				for ( let range of flatViewRanges ) {
+					viewWriter.wrap( range, viewElement );
+				}
+			}
+		}
+	};
+}
+
+/**
+ * Function factory, creates a converter that converts removing of a model marker to view attribute element.
+ * This converter will unwrap view nodes from corresponding view range.
+ *
+ * The view element that will be unwrapped depends on passed parameter. If {@link engine.view.AttributeElement} was passed,
+ * it will be used to look for similar element in the view for unwrapping. If `Function` is provided, it is passed all
+ * the parameters of the {@link engine.conversion.ModelConversionDispatcher#event:removeMarker removeMarker event}. It's
+ * expected that the function returns a {@link engine.view.AttributeElement}. The result of the function will be used to
+ * look for similar element in the view for unwrapping.
+ *
+ * The converter automatically consumes corresponding value from consumables list, stops the event (see
+ * {@link engine.conversion.ModelConversionDispatcher}) and bind model and view elements.
+ *
+ *		modelDispatcher.on( 'removeMarker:searchResult', unwrapMarker( new ViewAttributeElement( 'span', { class: 'searchResult' } ) ) );
+ *
+ * @see engine.conversion.modelToView.wrapMarker
+ * @external engine.conversion.modelToView
+ * @function engine.conversion.modelToView.unwrapMarker
+ * @param {engine.view.AttributeElement|Function} elementCreator View attribute element, or function returning
+ * a view attribute element, which will be used for unwrapping.
+ * @returns {Function} Remove attribute converter.
+ */
+export function unwrapMarker( elementCreator ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		if ( !consumable.consume( data.range, 'range' ) ) {
+			return;
+		}
+
+		const viewElement = ( elementCreator instanceof ViewElement ) ?
+			elementCreator.clone( true ) :
+			elementCreator( data, consumable, conversionApi );
+
+		if ( data.range.isCollapsed ) {
+			const modelStart = data.range.start;
+			let viewStart = conversionApi.mapper.toViewPosition( modelStart );
+
+			if ( viewStart.parent instanceof ViewText ) {
+				viewStart = ViewPosition.createAfter( viewStart.parent );
+			}
+
+			const viewEnd = findFurthestZeroLengthPoint( viewStart, conversionApi.mapper );
+
+			viewWriter.unwrap( new ViewRange( viewStart, viewEnd ), viewElement );
+		} else {
+			const viewRange = conversionApi.mapper.toViewRange( data.range );
+			const flatViewRanges = breakViewRangeOnFlat( viewRange );
+
+			for ( let range of flatViewRanges ) {
+				viewWriter.unwrap( range, viewElement );
+			}
+		}
+	};
+}
+
+// Starting from given `viewPosition`, moving forward, finds the furthest position in a view, which is
+// separated only by elements with zero model length (which in most cases are empty `ViewAttributeElement`s).
+// Using `viewPosition` and returned position, one can build a view range, which start and position are mapped to
+// the same position in model.
+// @param {engine.view.Position} viewPosition Position to start from when looking for furthest zero length position.
+// @param {engine.conversion.Mapper} mapper Mapper to use when looking for furthest zero length position.
+// @returns {engine.view.Position} Furthest zero length position.
+function findFurthestZeroLengthPoint( viewPosition, mapper ) {
+	viewPosition = ViewPosition.createFromPosition( viewPosition );
+
+	while ( viewPosition.nodeAfter && mapper.getModelLength( viewPosition.nodeAfter ) === 0 ) {
+		viewPosition.offset++;
+	}
+
+	return viewPosition;
+}
+
+// Breaks given `viewRange` on "flat" view ranges, where "flat" means that the range is contained within
+// one container element. After `viewRange` is broken, it's "pieces" can be used in ViewWriter (which expects
+// that passed ranges are contained within one container element).
+// @param {engine.view.Range} viewRange Range to break.
+// @returns {Array.<engine.view.Range>} Flat ranges that combines into passed `viewRange`.
+function breakViewRangeOnFlat( viewRange ) {
+	const ranges = [];
+	const walker = new ViewTreeWalker( { boundaries: viewRange } );
+
+	let start = viewRange.start;
+
+	for ( let value of walker ) {
+		if ( value.item instanceof ViewContainerElement ) {
+			if ( !start.isEqual( value.previousPosition ) ) {
+				ranges.push( new ViewRange( start, value.previousPosition ) );
+			}
+
+			start = value.nextPosition;
+		}
+	}
+
+	ranges.push( new ViewRange( start, viewRange.end ) );
+
+	return ranges;
+}
+
+/**
  * Function factory, creates a default model-to-view converter for nodes move changes.
  *
  *		modelDispatcher.on( 'move', move() );
@@ -284,16 +436,8 @@ export function move() {
 			return;
 		}
 
-		let sourceViewRange;
-
-		if ( data.item instanceof ModelElement ) {
-			const viewElement = conversionApi.mapper.toViewElement( data.item );
-			sourceViewRange = ViewRange.createOn( viewElement );
-		} else {
-			const viewPosition = conversionApi.mapper.toViewPosition( data.sourcePosition );
-
-			sourceViewRange = findViewTextRange( viewPosition, data.item.offsetSize );
-		}
+		const modelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, data.item.offsetSize );
+		const sourceViewRange = conversionApi.mapper.toViewRange( modelRange );
 
 		const targetViewPosition = conversionApi.mapper.toViewPosition( data.targetPosition );
 
@@ -314,40 +458,12 @@ export function remove() {
 			return;
 		}
 
-		let viewRange = null;
-
-		if ( data.item instanceof ModelElement ) {
-			const viewElement = conversionApi.mapper.toViewElement( data.item );
-			viewRange = ViewRange.createOn( viewElement );
-		} else {
-			const viewPosition = conversionApi.mapper.toViewPosition( data.sourcePosition );
-
-			viewRange = findViewTextRange( viewPosition, data.item.offsetSize );
-		}
+		const modelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, data.item.offsetSize );
+		const viewRange = conversionApi.mapper.toViewRange( modelRange );
 
 		viewWriter.remove( viewRange );
 		conversionApi.mapper.unbindModelElement( data.item );
 	};
-}
-
-// Helper function for `remove` and `move` converters. It returns a ViewRange that starts at ViewPosition `start` and
-// includes `size` characters.
-// This method is used to find a ViewRange basing on ModelPosition and ModelTextProxy item size in `move` and `remove`
-// converters where it is impossible to just map positions because those positions already are invalid in model
-// (because they got moved or removed).
-function findViewTextRange( start, size ) {
-	const walker = new ViewTreeWalker( { startPosition: start, singleCharacters: true, ignoreElementEnd: true } );
-	let offset = 0;
-
-	for ( let value of walker ) {
-		if ( value.item instanceof ViewTextProxy ) {
-			offset++;
-
-			if ( offset == size ) {
-				return new ViewRange( start, walker.position );
-			}
-		}
-	}
 }
 
 /**
