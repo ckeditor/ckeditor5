@@ -84,21 +84,21 @@ export default class EditingController {
 		 * @private
 		 * @member {utils.EmitterMixin} #_listenter
 		 */
-		this._listenter = Object.create( EmitterMixin );
+		this._listener = Object.create( EmitterMixin );
 
 		// Convert changes in model to view.
-		this._listenter.listenTo( this.model, 'change', ( evt, type, changes ) => {
+		this._listener.listenTo( this.model, 'change', ( evt, type, changes ) => {
 			this.modelToView.convertChange( type, changes );
 		}, { priority: 'low' } );
 
 		// Convert model selection to view.
-		this._listenter.listenTo( this.model, 'changesDone', () => {
+		this._listener.listenTo( this.model, 'changesDone', () => {
 			this.modelToView.convertSelection( model.selection );
 			this.view.render();
 		}, { priority: 'low' } );
 
 		// Convert view selection to model.
-		this._listenter.listenTo( this.view, 'selectionChange', convertSelectionChange( model, this.mapper ) );
+		this._listener.listenTo( this.view, 'selectionChange', convertSelectionChange( model, this.mapper ) );
 
 		// Attach default content converters.
 		this.modelToView.on( 'insert:$text', insertText(), { priority: 'lowest' } );
@@ -146,6 +146,6 @@ export default class EditingController {
 	 */
 	destroy() {
 		this.view.destroy();
-		this._listenter.stopListening();
+		this._listener.stopListening();
 	}
 }
