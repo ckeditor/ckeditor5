@@ -58,7 +58,7 @@ describe( 'InlineAutoformatEngine', () => {
 				batch.insert( doc.selection.getFirstPosition(), '*' );
 			} );
 
-			expect( getData( doc ) ).to.equal( '<paragraph>*foob[*ar]</paragraph>' );
+			expect( getData( doc ) ).to.equal( '<paragraph>*foob*[ar]</paragraph>' );
 		} );
 	} );
 
