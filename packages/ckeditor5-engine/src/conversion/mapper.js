@@ -466,6 +466,8 @@ mix( Mapper, EmitterMixin );
  * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
  * `viewPosition` value to that object with calculated {@link module:engine/view/position~Position view position}.
  * @param {module:engine/model/position~Position} data.modelPosition Model position to be mapped.
+ * @param {module:engine/view/position~Position} data.viewPosition View position that is a result of mapping
+ * `modelPosition` using `Mapper` default algorithm.
  * @param {module:engine/conversion/mapper~Mapper} data.mapper Mapper instance that fired the event.
  */
 
@@ -490,5 +492,7 @@ mix( Mapper, EmitterMixin );
  * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
  * `modelPosition` value to that object with calculated {@link module:engine/model/position~Position model position}.
  * @param {module:engine/view/position~Position} data.viewPosition View position to be mapped.
+ * @param {module:engine/model/position~Position} data.modelPosition Model position that is a result of mapping
+ * `viewPosition` using `Mapper` default algorithm.
  * @param {module:engine/conversion/mapper~Mapper} data.mapper Mapper instance that fired the event.
  */
