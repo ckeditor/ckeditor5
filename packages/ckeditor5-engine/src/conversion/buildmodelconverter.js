@@ -12,7 +12,9 @@ import {
 	setAttribute,
 	removeAttribute,
 	wrap,
-	unwrap
+	unwrap,
+	wrapMarker,
+	unwrapMarker
 } from './model-to-view-converters.js';
 
 import { convertSelectionAttribute } from './model-selection-to-view-converters.js';
@@ -30,7 +32,7 @@ import ViewContainerElement from '../view/containerelement.js';
  * {@link module:engine/conversion/model-to-view-converters}, {@link module:engine/conversion/modelconsumable~ModelConsumable},
  * {@link module:engine/conversion/mapper~Mapper}.
  *
- * Using this API it is possible to create three kinds of converters:
+ * Using this API it is possible to create four kinds of converters:
  *
  * 1. Model element to view element converter. This is a converter that takes the model element and represents it
  * in the view.
@@ -50,6 +52,14 @@ import ViewContainerElement from '../view/containerelement.js';
  * set on model text nodes is converter to `strong` view element.
  *
  *		buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toElement( 'strong' );
+ *
+ * 4. Model marker to view element converter. This is a converter that converts markers from given group to view attribute element.
+ * Markers, basically, are {@link engine.model.LiveRange} instances, that are named. In this conversion, model range is
+ * converted to view range, then that view range is wrapped (or unwrapped, if range is removed) in a view attribute element.
+ * To learn more about markers, see {@link engine.model.MarkersCollection}.
+ *
+ *		const viewSpanSearchResult = new ViewAttributeElement( 'span', { class: 'search-result' } );
+ *		buildModelConverter().for( dispatcher ).fromMarker( 'searchResult' ).toElement( viewSpanSearchResult );
  *
  * It is possible to provide various different parameters for
  * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toElement}
@@ -137,6 +147,23 @@ class ModelConverterBuilder {
 	}
 
 	/**
+	 * Registers what type of marker should be converted.
+	 *
+	 * @chainable
+	 * @param {String} markerName Name of marker to convert.
+	 * @returns {engine.conversion.ModelConverterBuilder}
+	 */
+	fromMarker( markerName ) {
+		this._from = {
+			type: 'marker',
+			name: markerName,
+			priority: null
+		};
+
+		return this;
+	}
+
+	/**
 	 * Changes default priority for built converter. The lower the number, the earlier converter will be fired.
 	 * Default priority is `10`.
 	 *
@@ -190,7 +217,8 @@ class ModelConverterBuilder {
 	 * This method creates the converter and adds it as a callback to a proper
 	 * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher conversion dispatcher} event.
 	 *
-	 * @param {String|module:engine/view/element~Element|Function} element Element created by converter.
+	 * @param {String|module:engine/view/element~ViewElement|Function} element Element created by converter or
+	 * a function that returns view element.
 	 */
 	toElement( element ) {
 		const priority = this._from.priority === null ? 'normal' : this._from.priority;
@@ -201,7 +229,7 @@ class ModelConverterBuilder {
 				element = typeof element == 'string' ? new ViewContainerElement( element ) : element;
 
 				dispatcher.on( 'insert:' + this._from.name, insertElement( element ), { priority } );
-			} else {
+			} else if ( this._from.type == 'attribute' ) {
 				// From model attribute to view element -> wrap and unwrap.
 				element = typeof element == 'string' ? new ViewAttributeElement( element ) : element;
 
@@ -210,6 +238,12 @@ class ModelConverterBuilder {
 				dispatcher.on( 'removeAttribute:' + this._from.key, unwrap( element ), { priority } );
 
 				dispatcher.on( 'selectionAttribute:' + this._from.key, convertSelectionAttribute( element ), { priority } );
+			} else {
+				// From marker to view element -> wrapRange and unwrapRange.
+				element = typeof element == 'string' ? new ViewAttributeElement( element ) : element;
+
+				dispatcher.on( 'addMarker:' + this._from.name, wrapMarker( element ), { priority } );
+				dispatcher.on( 'removeMarker:' + this._from.name, unwrapMarker( element ), { priority } );
 			}
 		}
 	}
@@ -246,8 +280,8 @@ class ModelConverterBuilder {
 	 * @param {*} [value] Attribute value.
 	 */
 	toAttribute( keyOrCreator, value ) {
-		if ( this._from.type == 'element' ) {
-			// Converting from model element to view attribute is unsupported.
+		if ( this._from.type != 'attribute' ) {
+			// Only converting from attribute to attribute is supported.
 			return;
 		}
 
