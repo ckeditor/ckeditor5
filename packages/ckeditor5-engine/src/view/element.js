@@ -173,7 +173,7 @@ export default class Element extends Node {
 	 * {@link module:engine/view/element~Element#insertChildren Insert} a child node or a list of child nodes at the end of this node and sets
 	 * the parent of these nodes to this element.
 	 *
-	 * @fires change
+	 * @fires module:engine/view/node~Node#change
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} nodes Node or the list of nodes to be inserted.
 	 * @returns {Number} Number of appended nodes.
 	 */
@@ -655,7 +655,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Returns block {@link module:engine/view/filler~Filler filler} offset or `null` if block filler is not needed.
+	 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
 	 *
 	 * @abstract
 	 * @method module:engine/view/element~Element#getFillerOffset

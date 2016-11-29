@@ -68,10 +68,9 @@ export default class DomEventObserver extends Observer {
 	}
 
 	/**
-	 * Calls {@link module:engine/view/document~Document#fire} if observer
-	 * {@link #isEnabled is enabled}.
+	 * Calls `Document#fire()` if observer {@link #isEnabled is enabled}.
 	 *
-	 * @see module:engine/view/document~Document#fire
+	 * @see module:utils/emittermixin~EmitterMixin#fire
 	 * @param {String} eventType The event type (name).
 	 * @param {Event} domEvent The DOM event.
 	 * @param {Object} [additionalData] The additional data which should extend the

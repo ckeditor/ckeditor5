@@ -3,10 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/**
- * @module engine/conversion/model-selection-to-view-converters
- */
-
 import ViewElement from '../view/element.js';
 import ViewRange from '../view/range.js';
 import viewWriter from '../view/writer.js';
@@ -16,7 +12,7 @@ import viewWriter from '../view/writer.js';
  * {@link module:engine/view/selection~Selection view selection} converters for
  * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}.
  *
- * @namespace module:engine/conversion/model-selection-to-view-converters~modelSelectionToView
+ * @module engine/conversion/model-selection-to-view-converters
  */
 
 /**
@@ -26,8 +22,6 @@ import viewWriter from '../view/writer.js';
  *
  *		modelDispatcher.on( 'selection', convertRangeSelection() );
  *
- * @external module:engine/conversion/model-selection-to-view-converters~modelSelectionToView
- * @function module:engine/conversion/model-selection-to-view-converters~modelSelectionToView.convertRangeSelection
  * @returns {Function} Selection converter.
  */
 export function convertRangeSelection() {
@@ -65,16 +59,14 @@ export function convertRangeSelection() {
  *		-> <p><strong>f</strong>^<strong>oo</strong>bar</p>
  *
  * By breaking attribute elements like `<strong>`, selection is in correct element. See also complementary
- * {@link module:engine/conversion/model-selection-to-view-converters~modelSelectionToView.convertSelectionAttribute attribute converter}
+ * {@link module:engine/conversion/model-selection-to-view-converters~convertSelectionAttribute attribute converter}
  * for selection attributes,
  * which wraps collapsed selection into view elements. Those converters together ensure, that selection ends up in
  * appropriate attribute elements.
  *
- * See also {@link module:engine/conversion/model-selection-to-view-converters~modelSelectionToView.clearAttributes} which does a clean-up
+ * See also {@link module:engine/conversion/model-selection-to-view-converters~clearAttributes} which does a clean-up
  * by merging attributes.
  *
- * @external module:engine/conversion/model-selection-to-view-converters~modelSelectionToView
- * @function module:engine/conversion/model-selection-to-view-converters~modelSelectionToView.convertCollapsedSelection
  * @returns {Function} Selection converter.
  */
 export function convertCollapsedSelection() {
@@ -122,7 +114,7 @@ export function convertCollapsedSelection() {
  *		modelDispatcher.on( 'selectionAttribute:style', convertSelectionAttribute( styleCreator ) );
  *
  * **Note:** You can use the same `elementCreator` function for this converter factory
- * and {@link module:engine/conversion/modeltoview~modelToView.wrap}
+ * and {@link module:engine/conversion/model-to-view-converters~wrap}
  * model to view converter, as long as the `elementCreator` function uses only the first parameter (attribute value).
  *
  *		modelDispatcher.on( 'selection', convertCollapsedSelection() );
@@ -147,8 +139,6 @@ export function convertCollapsedSelection() {
  * but then it got wrapped-back by `convertSelectionAttribute()` converter. In second example, notice how `<strong>` element
  * is broken to prevent putting selection in it, since selection has no `bold` attribute.
  *
- * @external module:engine/conversion/model-selection-to-view-converters~modelSelectionToView
- * @function module:engine/conversion/model-selection-to-view-converters~modelSelectionToView.convertCollapsedSelection
  * @param {module:engine/view/attributeelement~AttributeElement|Function} elementCreator View element,
  * or function returning a view element, which will be used for wrapping.
  * @returns {Function} Selection converter.
@@ -197,11 +187,9 @@ export function convertSelectionAttribute( elementCreator ) {
  *
  *		modelDispatcher.on( 'selection', clearAttributes() );
  *
- * See {@link module:engine/conversion/model-selection-to-view-converters~modelSelectionToView.convertCollapsedSelection}
+ * See {@link module:engine/conversion/model-selection-to-view-converters~convertCollapsedSelection}
  * which do the opposite by breaking attributes in the selection position.
  *
- * @external module:engine/conversion/model-selection-to-view-converters~modelSelectionToView
- * @function module:engine/conversion/model-selection-to-view-converters~modelSelectionToView.clearAttributes
  * @returns {Function} Selection converter.
  */
 export function clearAttributes() {

@@ -38,7 +38,7 @@ import ObservableMixin from '../../utils/observablemixin.js';
  * * {@link module:engine/view/observer/keyobserver~KeyObserver},
  * * {@link module:engine/view/observer/fakeselectionobserver~FakeSelectionObserver}.
  *
- * @mixes module:utils/emittermixin~EmitterMixin
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Document {
 	/**
@@ -182,7 +182,8 @@ export default class Document {
 	 *		document.createRoot( 'body' );
 	 *		document.attachDomRoot( document.querySelector( 'body#editor' ) );
 	 *
-	 * In both cases, {@link module:engine/view/rooteditableelement~RootEditableElement#name element name} is always transformed to lower case.
+	 * In both cases, {@link module:engine/view/rooteditableelement~RootEditableElement#rootName element name} is always transformed to lower
+	 * case.
 	 *
 	 * @param {Element|String} domRoot DOM root element or the tag name of view root element if the DOM element will be
 	 * attached later.

@@ -36,12 +36,12 @@ export default class AttributeElement extends Element {
 		 * {@link module:engine/view/element~Element#isSimilar similar}. Setting different priorities on similar
  		 * nodes may prevent merging, e.g. two `<abbr>` nodes next each other shouldn't be merged.
 		 *
-		 * @member {Number} module:engine/view/attributeelement~AttributeElement#priority
+		 * @member {Number}
 		 */
 		this.priority = DEFAULT_PRIORITY;
 
 		/**
-		 * Returns block {@link module:engine/view/filler~Filler filler} offset or `null` if block filler is not needed.
+		 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
 		 *
 		 * @method #getFillerOffset
 		 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.

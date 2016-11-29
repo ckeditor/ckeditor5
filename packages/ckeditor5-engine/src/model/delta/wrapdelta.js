@@ -50,7 +50,7 @@ export default class WrapDelta extends Delta {
 	 * Operation that inserts wrapping element or `null` if there are no operations in the delta.
 	 *
 	 * @protected
-	 * @type {module:engine/model/operation/insertoperation~InsertOperation|module:engine/model/opertation/reinsertoperation~ReinsertOperation}
+	 * @type {module:engine/model/operation/insertoperation~InsertOperation|module:engine/model/operation/reinsertoperation~ReinsertOperation}
 	 */
 	get _insertOperation() {
 		return this.operations[ 0 ] || null;

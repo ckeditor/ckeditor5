@@ -38,6 +38,7 @@ const graveyardName = '$graveyard';
  *		doc.batch().insert( position, nodes ).split( otherPosition );
  *
  * @see ~Document#batch
+ * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class Document {
 	/**
@@ -123,7 +124,7 @@ export default class Document {
 	 * Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
 	 *
 	 * @readonly
-	 * @type {module:engine/model/rootelement~RootElement}
+	 * @member {module:engine/model/rootelement~RootElement}
 	 */
 	get graveyard() {
 		return this.getRoot( graveyardName );

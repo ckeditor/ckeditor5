@@ -23,7 +23,7 @@ import isIterable from '../../utils/isiterable.js';
  * {@link module:engine/conversion/buildviewconverter~buildViewConverter}.
  *
  * If you need more complex converters, see {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher},
- * {@link module:engine/conversion/view-to-model-converters~viewToModel}, {@link module:engine/conversion/viewconsumable~ViewConsumable}.
+ * {@link module:engine/conversion/view-to-model-converters}, {@link module:engine/conversion/viewconsumable~ViewConsumable}.
  *
  * Using this API it is possible to create various kind of converters:
  *

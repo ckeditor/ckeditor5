@@ -15,8 +15,9 @@ import { startsWithFiller, getDataWithoutFiller } from '../filler.js';
 
 /**
  * Mutation observer class observes changes in the DOM, fires {@link module:engine/view/document~Document#event:mutations} event, mark view
- * elements as changed and call {@link module:engine/view/view~render}. Because all mutated nodes are marked as "to be rendered" and the
- * {@link module:engine/view/view.render} is called, all changes will be reverted, unless the mutation will be handled by the
+ * elements as changed and call {@link module:engine/view/renderer~Renderer#render}.
+ * Because all mutated nodes are marked as "to be rendered" and the
+ * {@link module:engine/view/renderer~Renderer#render} is called, all changes will be reverted, unless the mutation will be handled by the
  * {@link module:engine/view/document~Document#event:mutations} event listener. It means user will see only handled changes, and the editor
  * will block all changes which are not handled.
  *

@@ -29,7 +29,7 @@ import TextProxy from '../model/textproxy.js';
  * @link module:engine/conversion/modelconsumable~ModelConsumable#add add method} directly.
  * However, it is important to understand how consumable values can be
  * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed}.
- * See {@link module:engine/conversion/modeltoview~modelToView default model to view converters} for more information.
+ * See {@link module:engine/conversion/model-selection-to-view-converters default model to view converters} for more information.
  *
  * Keep in mind, that one conversion event may have multiple callbacks (converters) attached to it. Each of those is
  * able to convert one or more parts of the model. However, when one of those callbacks actually converts

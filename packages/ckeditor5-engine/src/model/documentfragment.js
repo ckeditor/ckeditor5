@@ -150,7 +150,7 @@ export default class DocumentFragment {
 	 * Converts offset "position" to index "position".
 	 *
 	 * Returns index of a node that occupies given offset. If given offset is too low, returns `0`. If given offset is
-	 * too high, returns {@link module:engine/model/documentfragment~DocumentFragment#getChildCount index after last child}.
+	 * too high, returns index after last child}.
 	 *
 	 *		const textNode = new Text( 'foo' );
 	 *		const pElement = new Element( 'p' );
