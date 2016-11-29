@@ -5,7 +5,10 @@
 
 import Editor from 'ckeditor5/core/editor/editor.js';
 import ModelTestEditor from 'tests/core/_utils/modeltesteditor.js';
+
+import Plugin from 'ckeditor5/core/plugin.js';
 import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+
 import { getData, setData } from 'ckeditor5/engine/dev-utils/model.js';
 
 import testUtils from 'tests/core/_utils/utils.js';
@@ -37,6 +40,29 @@ describe( 'ModelTestEditor', () => {
 					expect( editor ).to.be.instanceof( ModelTestEditor );
 
 					expect( editor.config.get( 'foo' ) ).to.equal( 1 );
+				} );
+		} );
+
+		it( 'fires all events in the right order', () => {
+			const fired = [];
+
+			function spy( evt ) {
+				fired.push( evt.name );
+			}
+
+			class EventWatcher extends Plugin {
+				init() {
+					this.editor.on( 'pluginsReady', spy );
+					this.editor.on( 'dataReady', spy );
+					this.editor.on( 'ready', spy );
+				}
+			}
+
+			return ModelTestEditor.create( {
+					plugins: [ EventWatcher ]
+				} )
+				.then( () => {
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'dataReady', 'ready' ] );
 				} );
 		} );
 	} );

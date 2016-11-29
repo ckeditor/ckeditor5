@@ -84,6 +84,29 @@ describe( 'Editor', () => {
 					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
 				} );
 		} );
+
+		it( 'fires all events in the right order', () => {
+			const fired = [];
+
+			function spy( evt ) {
+				fired.push( evt.name );
+			}
+
+			class EventWatcher extends Plugin {
+				init() {
+					this.editor.on( 'pluginsReady', spy );
+					this.editor.on( 'dataReady', spy );
+					this.editor.on( 'ready', spy );
+				}
+			}
+
+			return Editor.create( {
+					plugins: [ EventWatcher ]
+				} )
+				.then( () => {
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'dataReady', 'ready' ] );
+				} );
+		} );
 	} );
 
 	describe( 'initPlugins', () => {

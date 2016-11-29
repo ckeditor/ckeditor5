@@ -80,6 +80,30 @@ describe( 'ClassicTestEditor', () => {
 					expect( getData( editor.document, { withoutSelection: true } ) ).to.equal( 'foo' );
 				} );
 		} );
+
+		it( 'fires all events in the right order', () => {
+			const fired = [];
+
+			function spy( evt ) {
+				fired.push( evt.name );
+			}
+
+			class EventWatcher extends Plugin {
+				init() {
+					this.editor.on( 'pluginsReady', spy );
+					this.editor.on( 'uiReady', spy );
+					this.editor.on( 'dataReady', spy );
+					this.editor.on( 'ready', spy );
+				}
+			}
+
+			return ClassicTestEditor.create( editorElement, {
+					plugins: [ EventWatcher ]
+				} )
+				.then( () => {
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
+				} );
+		} );
 	} );
 
 	describe( 'destroy', () => {

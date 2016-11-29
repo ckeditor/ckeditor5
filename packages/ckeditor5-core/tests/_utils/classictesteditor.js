@@ -46,7 +46,12 @@ export default class ClassicTestEditor extends StandardEditor {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
+					.then( () => editor.fire( 'uiReady' ) )
 					.then( () => editor.loadDataFromEditorElement() )
+					.then( () => {
+						editor.fire( 'dataReady' );
+						editor.fire( 'ready' );
+					} )
 					.then( () => editor )
 			);
 		} );
