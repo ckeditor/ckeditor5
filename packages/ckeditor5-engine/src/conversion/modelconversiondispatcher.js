@@ -213,7 +213,7 @@ export default class ModelConversionDispatcher {
 	 */
 	convertMove( sourcePosition, range ) {
 		// Keep in mind that move dispatcher expects flat range.
-		const consumable = this._createConsumableForRange( range, 'move' );
+		const consumable = this._createConsumableForType( range, 'move' );
 
 		const items = Array.from( range.getItems( { shallow: true } ) );
 		const rangeSize = range.end.offset - range.start.offset;
@@ -243,7 +243,7 @@ export default class ModelConversionDispatcher {
 	 * graveyard root}).
 	 */
 	convertRemove( sourcePosition, range ) {
-		const consumable = this._createConsumableForRange( range, 'remove' );
+		const consumable = this._createConsumableForType( range, 'remove' );
 
 		for ( let item of range.getItems( { shallow: true } ) ) {
 			const data = {
@@ -269,7 +269,7 @@ export default class ModelConversionDispatcher {
 	 */
 	convertAttribute( type, range, key, oldValue, newValue ) {
 		// Create a list with attributes to consume.
-		const consumable = this._createConsumableForRange( range, type + ':' + key );
+		const consumable = this._createConsumableForType( range, type + ':' + key );
 
 		// Create a separate attribute event for each node in the range.
 		for ( let value of range ) {
@@ -360,7 +360,7 @@ export default class ModelConversionDispatcher {
 	 * @param {String} type Consumable type.
 	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} Values to consume.
 	 */
-	_createConsumableForRange( range, type ) {
+	_createConsumableForType( range, type ) {
 		const consumable = new Consumable();
 
 		for ( let item of range.getItems() ) {
