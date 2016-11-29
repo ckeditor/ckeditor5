@@ -506,4 +506,47 @@ describe( 'ModelConversionDispatcher', () => {
 			expect( dispatcher.fire.calledWith( 'selectionAttribute:bold' ) ).to.be.false;
 		} );
 	} );
+
+	describe( 'convertMarker', () => {
+		let range;
+
+		beforeEach( () => {
+			range = ModelRange.createFromParentsAndOffsets( root, 0, root, 4 );
+		} );
+
+		it( 'should fire event based on passed parameters', () => {
+			sinon.spy( dispatcher, 'fire' );
+
+			const data = {
+				name: 'name',
+				range: range
+			};
+
+			dispatcher.convertMarker( 'addMarker', data );
+
+			expect( dispatcher.fire.calledWith( 'addMarker:name', data ) );
+
+			dispatcher.convertMarker( 'removeMarker', data );
+
+			expect( dispatcher.fire.calledWith( 'removeMarker:name', data ) );
+		} );
+
+		it( 'should prepare consumable values', () => {
+			const data = {
+				name: 'name',
+				range: range
+			};
+
+			dispatcher.on( 'addMarker:name', ( evt, data, consumable ) => {
+				expect( consumable.test( data.range, 'range' ) ).to.be.true;
+			} );
+
+			dispatcher.on( 'removeMarker:name', ( evt, data, consumable ) => {
+				expect( consumable.test( data.range, 'range' ) ).to.be.true;
+			} );
+
+			dispatcher.convertMarker( 'addMarker', data );
+			dispatcher.convertMarker( 'removeMarker', data );
+		} );
+	} );
 } );

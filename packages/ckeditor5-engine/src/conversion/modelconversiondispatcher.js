@@ -328,6 +328,13 @@ export default class ModelConversionDispatcher {
 		}
 	}
 
+	convertMarker( type, name, range ) {
+		const consumable = this._createRangeConsumable( range );
+		const data = { name, range };
+
+		this.fire( type + ':' + name, data, consumable, this.conversionApi );
+	}
+
 	/**
 	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume from given range, assuming that
 	 * given range has just been inserted to the model.
@@ -385,6 +392,14 @@ export default class ModelConversionDispatcher {
 		for ( let key of selection.getAttributeKeys() ) {
 			consumable.add( selection, 'selectionAttribute:' + key );
 		}
+
+		return consumable;
+	}
+
+	_createRangeConsumable( range ) {
+		const consumable = new Consumable();
+
+		consumable.add( range, 'range' );
 
 		return consumable;
 	}
