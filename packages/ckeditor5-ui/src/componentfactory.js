@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module ui/componentfactory
+ */
+
 import CKEditorError from '../utils/ckeditorerror.js';
 
 /**
@@ -11,23 +15,21 @@ import CKEditorError from '../utils/ckeditorerror.js';
  * Factories of specific UI components can be registered under their unique names. Registered
  * components can be later instantiated by providing the name of the component.
  *
- * The main use case for the component factory is the {@link ui.editorUI.EditorUI#componentFactory} factory.
- *
- * @memberOf ui
+ * The main use case for the component factory is the {@link module:core/editorUI/EditorUI#componentFactory} factory.
  */
 export default class ComponentFactory {
-	/**
+	/**ś
 	 * Creates ComponentFactory instance.
 	 *
 	 * @constructor
-	 * @param {core.editor.Editor} editor The editor instance.
+	 * @param {module:core/editor~Editor} editor The editor instance.
 	 */
 	constructor( editor ) {
 		/**
 		 * The editor instance.
 		 *
 		 * @readonly
-		 * @member {core.editor.Editor} ui.ComponentFactory#editor
+		 * @member {module:core/editor~Editor}
 		 */
 		this.editor = editor;
 
@@ -35,7 +37,7 @@ export default class ComponentFactory {
 		 * Registered component factories.
 		 *
 		 * @private
-		 * @member {Map} ui.ComponentFactory#_components
+		 * @member {Map}
 		 */
 		this._components = new Map();
 	}
@@ -63,7 +65,7 @@ export default class ComponentFactory {
 	 * Creates a component view instance.
 	 *
 	 * @param {String} name The name of the component.
-	 * @returns {ui.View} The instantiated component view.
+	 * @returns {module:ui/view~View} The instantiated component view.
 	 */
 	create( name ) {
 		return this._components.get( name )( this.editor.locale );

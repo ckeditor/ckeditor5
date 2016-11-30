@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module ui/viewcollection
+ */
+
 import CKEditorError from '../utils/ckeditorerror.js';
 import ObservableMixin from '../utils/observablemixin.js';
 import Collection from '../utils/collection.js';
@@ -10,16 +14,16 @@ import mix from '../utils/mix.js';
 import View from './view.js';
 
 /**
- * Collects {@link ui.View} instances.
+ * Collects {@link module:ui/view~View} instances.
  *
- * @memberOf ui
- * @extends utils.Collection
+ * @extends module:utils/collection~Collection
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class ViewCollection extends Collection {
 	/**
-	 * Creates a new {@link ui.ViewCollection} instance.
+	 * Creates a new {@link module:ui/viewcollection~ViewCollection} instance.
 	 *
-	 * @param {utils.Locale} [locale] The {@link core.editor.Editor#locale editor's locale} instance.
+	 * @param {module:utils/locale~Locale} [locale] The {@link module:core/editor~Editor editor's locale} instance.
 	 */
 	constructor( locale ) {
 		super( {
@@ -28,14 +32,14 @@ export default class ViewCollection extends Collection {
 			idProperty: 'viewUid'
 		} );
 
-		// Handle {@link ui.View#element} in DOM when a new view is added to the collection.
+		// Handle {@link module:ui/view~View#element} in DOM when a new view is added to the collection.
 		this.on( 'add', ( evt, view, index ) => {
 			if ( this.ready && view.element && this._parentElement ) {
 				this._parentElement.insertBefore( view.element, this._parentElement.children[ index ] );
 			}
 		} );
 
-		// Handle {@link ui.View#element} in DOM when a view is removed from the collection.
+		// Handle {@link module:ui/view~View#element} in DOM when a view is removed from the collection.
 		this.on( 'remove', ( evt, view ) => {
 			if ( this.ready && view.element && this._parentElement ) {
 				view.element.remove();
@@ -43,19 +47,19 @@ export default class ViewCollection extends Collection {
 		} );
 
 		/**
-		 * The {@link core.editor.Editor#locale editor's locale} instance.
+		 * The {@link module:core/editor~Editor editor's locale} instance.
 		 *
-		 * @member {utils.Locale} ui.ViewCollection#locale
+		 * @member {module:utils/locale~Locale}
 		 */
 		this.locale = locale;
 
 		/**
-		 * Set to `true` once the parent's {@link ui.View#ready} is true, which means
+		 * Set to `true` once the parent's {@link module:ui/view~View#ready} is true, which means
 		 * that all the views in the collection are also ready (which can be asynchronous).
 		 *
 		 * @readonly
 		 * @observable
-		 * @member {Boolean} ui.ViewCollection#ready
+		 * @member {Boolean} #ready
 		 */
 		this.set( 'ready', false );
 
@@ -63,23 +67,23 @@ export default class ViewCollection extends Collection {
 		 * A parent element within which child views are rendered and managed in DOM.
 		 *
 		 * @protected
-		 * @member {HTMLElement} ui.ViewCollection#_parentElement
+		 * @member {HTMLElement}
 		 */
 		this._parentElement = null;
 
 		/**
-		 * A helper mapping between bound collection items passed to {@link ui.ViewCollection#bindTo}
+		 * A helper mapping between bound collection items passed to {@link #bindTo}
 		 * and view instances. Speeds up the view management.
 		 *
 		 * @protected
-		 * @member {HTMLElement} ui.ViewCollection#_boundItemsToViewsMap
+		 * @member {HTMLElement}
 		 */
 		this._boundItemsToViewsMap = new Map();
 	}
 
 	/**
-	 * Initializes child views by injecting {@link ui.View#element} into DOM
-	 * and calling {@link ui.View#init}.
+	 * Initializes child views by injecting {@link module:ui/view~View#element} into DOM
+	 * and calling {@link module:ui/view~View#init}.
 	 *
 	 * @returns {Promise} A Promise resolved when the initialization process is finished.
 	 */
@@ -126,17 +130,17 @@ export default class ViewCollection extends Collection {
 	}
 
 	/**
-	 * Adds a child view to the collection. If {@link ui.ViewCollection#ready}, the child view
+	 * Adds a child view to the collection. If {@link module:ui/viewcollection~ViewCollection#ready}, the child view
 	 * is also initialized when added.
 	 *
-	 * @param {ui.View} view A child view.
+	 * @param {module:ui/view~View} view A child view.
 	 * @param {Number} [index] Index at which the child will be added to the collection.
-	 * @returns {Promise} A Promise resolved when the child {@link ui.View#init} is done.
+	 * @returns {Promise} A Promise resolved when the child {@link module:ui/view~View#init} is done.
 	 */
 	add( view, index ) {
 		super.add( view, index );
 
-		// {@link ui.View#init} returns `Promise`.
+		// {@link module:ui/view~View#init} returns `Promise`.
 		let promise = Promise.resolve();
 
 		if ( this.ready && !view.ready ) {
@@ -149,7 +153,7 @@ export default class ViewCollection extends Collection {
 	}
 
 	/**
-	 * Sets {@link ui.ViewCollection#parent} of this collection.
+	 * Sets {@link #_parentElement} of this collection.
 	 *
 	 * @param {HTMLElement} element A new parent.
 	 */
@@ -158,7 +162,7 @@ export default class ViewCollection extends Collection {
 	}
 
 	/**
-	 * Binds this collection to {@link utils.Collection another collection}. For each item in the
+	 * Binds this collection to {@link module:utils/collection~Collection another collection}. For each item in the
 	 * second collection there will be one view instance added to this collection.
 	 *
 	 * The process can be automatic:
@@ -219,16 +223,16 @@ export default class ViewCollection extends Collection {
 	 *		data.remove( 0 );
 	 *		console.log( controllers.length == 1 );
 	 *
-	 * @param {utils.Collection} collection A collection to be bound.
-	 * @returns {ui.ViewCollection.bindTo#as}
+	 * @param {module:utils/collection~Collection} collection A collection to be bound.
+	 * @returns {module:ui/viewcollection~ViewCollection#bindTo#as}
 	 */
 	bindTo( collection ) {
 		return {
 			/**
 			 * Determines the output view of the binding.
 			 *
-			 * @method ui.ViewCollection.bindTo#as
-			 * @param {Function|ui.View} CallbackOrViewClass Specifies the constructor of the view to be used or
+			 * @static
+			 * @param {Function|module:ui/view~View} CallbackOrViewClass Specifies the constructor of the view to be used or
 			 * a custom callback function which produces views.
 			 */
 			as: ( CallbackOrViewClass ) => {
@@ -273,7 +277,7 @@ export default class ViewCollection extends Collection {
 	}
 
 	/**
-	 * Delegates selected events coming from within the collection to desired {@link utils.Emitter}.
+	 * Delegates selected events coming from within the collection to desired {@link module:utils/emittermixin~EmitterMixin}.
 	 *
 	 * For instance:
 	 *
@@ -296,10 +300,11 @@ export default class ViewCollection extends Collection {
 	 *
 	 *		viewA.fire( 'eventY', customData );
 	 *
-	 * See {@link utils.EmitterMixin#delegate}.
+	 * See {@link module:utils/emittermixin~EmitterMixin#delegate}.
 	 *
-	 * @param {...String} events {@link ui.View} event names to be delegated to another {@link utils.Emitter}.
-	 * @returns {ui.ViewCollection.delegate#to}
+	 * @param {...String} events {@link module:ui/view~View} event names to be delegated to another {@link
+	 * module:utils/emittermixin~EmitterMixin}.
+	 * @returns {module:ui/viewcollection~ViewCollection#delegate.to}
 	 */
 	delegate( ...events ) {
 		if ( !events.length || !isStringArray( events ) ) {
@@ -313,10 +318,11 @@ export default class ViewCollection extends Collection {
 
 		return {
 			/**
-			 * Selects destination for {@link utils.EmitterMixin#delegate} events.
+			 * Selects destination for {@link module:utils/emittermixin~EmitterMixin#delegate} events.
 			 *
-			 * @method ui.ViewCollection.delegate#to
-			 * @param {utils.EmitterMixin} dest An `EmitterMixin` instance which is the destination for delegated events.
+			 * @memberOf module:ui/viewcollection~ViewCollection#delegate
+			 * @function module:ui/viewcollection~ViewCollection#delegate.to
+			 * @param {module:utils/emittermixin~EmitterMixin} dest An `EmitterMixin` instance which is the destination for delegated events.
 			 */
 			to: ( dest ) => {
 				// Activate delegating on existing views in this collection.

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module ui/view
+ */
+
 import CKEditorError from '../utils/ckeditorerror.js';
 import ViewCollection from './viewcollection.js';
 import Template from './template.js';
@@ -44,58 +48,57 @@ import isIterable from '../utils/isiterable.js';
  *			document.body.appendChild( view.element );
  *		} );
  *
- * @memberOf ui
- * @mixes utils.dom.EmmiterMixin
- * @mixes utils.ObservableMixin
+ * @mixes module:utils/dom/emittermixin~EmmiterMixin
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class View {
 	/**
-	 * Creates an instance of the {@link ui.View} class.
+	 * Creates an instance of the {@link module:ui/view~View} class.
 	 *
-	 * @param {utils.Locale} [locale] The {@link core.editor.Editor#locale editor's locale} instance.
+	 * @param {module:utils/locale~Locale} [locale] The {@link module:core/editor~Editor editor's locale} instance.
 	 */
 	constructor( locale ) {
 		/**
-		 * A set of tools to localize the user interface. See {@link core.editor.Editor#locale}.
+		 * A set of tools to localize the user interface. See {@link module:core/editor~Editor}.
 		 *
 		 * @readonly
-		 * @member {utils.Locale} ui.View#locale
+		 * @member {module:utils/locale~Locale}
 		 */
 		this.locale = locale;
 
 		/**
-		 * Shorthand for {@link utils.Locale#t}.
+		 * Shorthand for {@link module:utils/locale~Locale#t}.
 		 *
 		 * Note: If locale instance hasn't been passed to the view this method may not be available.
 		 *
-		 * @see utils.Locale#t
-		 * @method ui.View#t
+		 * @see module:utils/locale~Locale#t
+		 * @method
 		 */
 		this.t = locale && locale.t;
 
 		/**
-		 * Set `true` after {@link ui.View#init}, which can be asynchronous.
+		 * Set `true` after {@link #init}, which can be asynchronous.
 		 *
 		 * @readonly
 		 * @observable
-		 * @member {Boolean} ui.View#ready
+		 * @member {Boolean} #ready
 		 */
 		this.set( 'ready', false );
 
 		/**
-		 * Collections registered with {@link ui.View#createCollection}.
+		 * Collections registered with {@link #createCollection}.
 		 *
 		 * @protected
-		 * @member {Set.<ui.ViewCollection>} ui.View#_viewCollections
+		 * @member {Set.<module:ui/viewcollection~ViewCollection>}
 		 */
 		this._viewCollections = new Collection();
 
 		/**
 		 * A collection of view instances, which have been added directly
-		 * into the {@link ui.View.template#children}.
+		 * into the {@link module:ui/template~Template#children}.
 		 *
 		 * @protected
-		 * @member {ui.ViewCollection} ui.view#_unboundChildren
+		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
 		this._unboundChildren = this.createCollection();
 
@@ -107,28 +110,28 @@ export default class View {
 		/**
 		 * Template of this view.
 		 *
-		 * @member {ui.Template} ui.View#template
+		 * @member {module:ui/template~Template} #template
 		 */
 
 		/**
 		 * Element of this view.
 		 *
 		 * @private
-		 * @member {HTMLElement} ui.View.#_element
+		 * @member {HTMLElement} #_element
 		 */
 
 		/**
-		 * Cached {@link ui.Template} binder object specific for this instance.
-		 * See {@link ui.View#bindTemplate}.
+		 * Cached {@link module:ui/template~Template} binder object specific for this instance.
+		 * See {@link #bindTemplate}.
 		 *
 		 * @private
-		 * @member {Object} ui.View.#_bindTemplate
+		 * @member {Object} #_bindTemplate
 		 */
 	}
 
 	/**
 	 * Element of this view. The element is rendered on first reference
-	 * using {@link ui.View#template} definition.
+	 * using {@link #template} definition.
 	 *
 	 * @type {HTMLElement}
 	 */
@@ -153,11 +156,11 @@ export default class View {
 	}
 
 	/**
-	 * Shorthand for {@link ui.Template#bind}, bound to {@link ui.View} on the first access.
+	 * Shorthand for {@link module:ui/template~Template.bind}, bound to {@link ~View} on the first access.
 	 *
-	 * Cached {@link ui.Template#bind} object is stored in {@link ui.View.#_bindTemplate}.
+	 * Cached {@link module:ui/template~Template.bind} object is stored in {@link #_bindTemplate}.
 	 *
-	 * @method ui.View#bindTemplate
+	 * @method #bindTemplate
 	 */
 	get bindTemplate() {
 		if ( this._bindTemplate ) {
@@ -169,7 +172,7 @@ export default class View {
 
 	/**
 	 * Creates a new collection of views, which can be used in this view instance,
-	 * e.g. as a member of {@link ui.TemplateDefinition#children}.
+	 * e.g. as a member of {@link module:ui/template~TemplateDefinition#children}.
 	 *
 	 *		class SampleView extends View {
 	 *			constructor( locale ) {
@@ -198,7 +201,7 @@ export default class View {
 	 *			view.items.add( anotherView );
 	 *		} );
 	 *
-	 * @returns {ui.ViewCollection} A new collection of view instances.
+	 * @returns {module:ui/viewcollection~ViewCollection} A new collection of view instances.
 	 */
 	createCollection() {
 		const collection = new ViewCollection();
@@ -210,8 +213,8 @@ export default class View {
 
 	/**
 	 * Registers a new child view under this view instance. Once registered, a child
-	 * view is managed by its parent, including initialization ({@link ui.view#init})
-	 * and destruction ({@link ui.view#destroy}).
+	 * view is managed by its parent, including initialization ({@link #init})
+	 * and destruction ({@link #destroy}).
 	 *
 	 *		class SampleView extends View {
 	 *			constructor( locale ) {
@@ -246,7 +249,7 @@ export default class View {
 	 *			document.body.appendChild( view.element );
 	 *		} );
 	 *
-	 * @param {ui.View|Iterable.<ui.View>} children Children views to be registered.
+	 * @param {module:ui/view~View|Iterable.<module:ui/view~View>} children Children views to be registered.
 	 */
 	addChildren( children ) {
 		if ( !isIterable( children ) ) {
@@ -259,7 +262,7 @@ export default class View {
 	}
 
 	/**
-	 * Initializes the view and child views located in {@link ui.View#_viewCollections}.
+	 * Initializes the view and child views located in {@link #_viewCollections}.
 	 *
 	 * @returns {Promise} A Promise resolved when the initialization process is finished.
 	 */
@@ -285,7 +288,7 @@ export default class View {
 	}
 
 	/**
-	 * Destroys the view instance and child views located in {@link ui.View#_viewCollections}.
+	 * Destroys the view instance and child views located in {@link #_viewCollections}.
 	 *
 	 * @returns {Promise} A Promise resolved when the destruction process is finished.
 	 */

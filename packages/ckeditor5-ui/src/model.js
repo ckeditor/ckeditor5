@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module ui/model
+ */
+
 import extend from '../utils/lib/lodash/extend.js';
 import mix from '../utils/mix.js';
 import ObservableMixin from '../utils/observablemixin.js';
@@ -10,8 +14,7 @@ import ObservableMixin from '../utils/observablemixin.js';
 /**
  * The base MVC model class.
  *
- * @memberOf ui
- * @mixes utils.ObservableMixin
+ * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Model {
 	/**
