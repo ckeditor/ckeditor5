@@ -65,7 +65,7 @@ export default class Template {
 		/**
 		 * Text of this template, indicating that the instance will render to a DOM Text.
 		 *
-		 * @member {Array.<String|module:ui/template~TemplateValueSchema> #text
+		 * @member {Array.<String|module:ui/template~TemplateValueSchema>} #text
 		 */
 
 		/**
@@ -483,7 +483,7 @@ export default class Template {
 	 * needed.
 	 *
 	 * @private
-	 * @param {module:ui/template~TemplateDefinition.attributes.styles} styles Styles definition.
+	 * @param {Object} styles module:ui/template~TemplateDefinition.attributes.styles Styles definition.
 	 * @param {HTMLElement} el `HTMLElement` which `style` attribute is rendered.
 	 */
 	_renderStyleAttribute( styles, el ) {
@@ -542,7 +542,7 @@ export default class Template {
 	}
 
 	/**
-	 * Activates {@link module:ui/template~Template#on} listeners on a passed `HTMLElement`.
+	 * Activates ~Template#on listeners on a passed `HTMLElement`.
 	 *
 	 * @protected
 	 * @param {HTMLElement} el `HTMLElement` which is being rendered.

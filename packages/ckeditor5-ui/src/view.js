@@ -172,7 +172,7 @@ export default class View {
 
 	/**
 	 * Creates a new collection of views, which can be used in this view instance,
-	 * e.g. as a member of {@link module:ui/template~TemplateDefinition#children}.
+	 * e.g. as a member of {@link module:ui/template~TemplateDefinition TemplateDefinition} children.
 	 *
 	 *		class SampleView extends View {
 	 *			constructor( locale ) {
