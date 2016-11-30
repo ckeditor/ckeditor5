@@ -4,18 +4,26 @@
  */
 
 import Document from 'ckeditor5/engine/model/document.js';
+import DataController from 'ckeditor5/engine/controller/datacontroller.js';
 import Selection from 'ckeditor5/engine/model/selection.js';
 import modifySelection from 'ckeditor5/engine/controller/modifyselection.js';
 import { setData, stringify } from 'ckeditor5/engine/dev-utils/model.js';
 
 describe( 'DataController', () => {
-	let document;
+	let document, dataController;
 
 	beforeEach( () => {
 		document = new Document();
+		dataController = new DataController( document );
+		document.schema.registerItem( 'obj' );
+		document.schema.allow( { name: 'obj', inside: '$root' } );
+		document.schema.objects.add( 'obj' );
+		document.schema.registerItem( 'inlineObj', '$inline' );
+		document.schema.objects.add( 'inlineObj' );
 		document.schema.registerItem( 'p', '$block' );
 		document.schema.registerItem( 'x', '$block' );
 		document.schema.registerItem( 'img', '$inline' );
+		document.schema.registerItem( 'b', '$inline' );
 		document.schema.allow( { name: '$text', inside: '$root' } );
 		document.createRoot();
 	} );
@@ -64,7 +72,7 @@ describe( 'DataController', () => {
 				it( 'extends one character backward', () => {
 					setData( document, '<p>fo[]o</p>', { lastRangeBackward: true } );
 
-					modifySelection( document.selection, { direction: 'backward' } );
+					modifySelection( dataController, document.selection, { direction: 'backward' } );
 
 					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>f[o]o</p>' );
 					expect( document.selection.isBackward ).to.true;
@@ -79,7 +87,7 @@ describe( 'DataController', () => {
 				it( 'extends one character backward (non-collapsed)', () => {
 					setData( document, '<p>foob[a]r</p>', { lastRangeBackward: true } );
 
-					modifySelection( document.selection, { direction: 'backward' } );
+					modifySelection( dataController, document.selection, { direction: 'backward' } );
 
 					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>foo[ba]r</p>' );
 					expect( document.selection.isBackward ).to.true;
@@ -94,7 +102,7 @@ describe( 'DataController', () => {
 				it( 'extends to element boundary (backward)', () => {
 					setData( document, '<p>f[]oo</p>' );
 
-					modifySelection( document.selection, { direction: 'backward' } );
+					modifySelection( dataController, document.selection, { direction: 'backward' } );
 
 					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>[f]oo</p>' );
 					expect( document.selection.isBackward ).to.true;
@@ -110,7 +118,7 @@ describe( 'DataController', () => {
 				it( 'shrinks backward selection (to collapsed)', () => {
 					setData( document, '<p>foo[b]ar</p>', { lastRangeBackward: true } );
 
-					modifySelection( document.selection );
+					modifySelection( dataController, document.selection );
 
 					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>foob[]ar</p>' );
 					expect( document.selection.isBackward ).to.false;
@@ -131,7 +139,7 @@ describe( 'DataController', () => {
 				it( 'extends one element backward', () => {
 					setData( document, '<p>fo<img></img>[]o</p>' );
 
-					modifySelection( document.selection, { direction: 'backward' } );
+					modifySelection( dataController, document.selection, { direction: 'backward' } );
 
 					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>fo[<img></img>]o</p>' );
 					expect( document.selection.isBackward ).to.true;
@@ -146,7 +154,7 @@ describe( 'DataController', () => {
 				it( 'unicode support - combining mark backward', () => {
 					setData( document, '<p>foob̂[]ar</p>' );
 
-					modifySelection( document.selection, { direction: 'backward' } );
+					modifySelection( dataController, document.selection, { direction: 'backward' } );
 
 					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>foo[b̂]ar</p>' );
 					expect( document.selection.isBackward ).to.true;
@@ -161,7 +169,7 @@ describe( 'DataController', () => {
 				it( 'unicode support - combining mark multiple backward', () => {
 					setData( document, '<p>foo̻̐ͩ[]bar</p>' );
 
-					modifySelection( document.selection, { direction: 'backward' } );
+					modifySelection( dataController, document.selection, { direction: 'backward' } );
 
 					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>fo[o̻̐ͩ]bar</p>' );
 					expect( document.selection.isBackward ).to.true;
@@ -182,7 +190,7 @@ describe( 'DataController', () => {
 				it( 'unicode support - surrogate pairs backward', () => {
 					setData( document, '<p>\uD83D\uDCA9[]</p>' );
 
-					modifySelection( document.selection, { direction: 'backward' } );
+					modifySelection( dataController, document.selection, { direction: 'backward' } );
 
 					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>[\uD83D\uDCA9]</p>' );
 					expect( document.selection.isBackward ).to.true;
@@ -199,7 +207,7 @@ describe( 'DataController', () => {
 				it( 'extends over boundary of empty elements (backward)', () => {
 					setData( document, '<p></p><p></p><p>[]</p>' );
 
-					modifySelection( document.selection, { direction: 'backward' } );
+					modifySelection( dataController, document.selection, { direction: 'backward' } );
 
 					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p></p><p>[</p><p>]</p>' );
 					expect( document.selection.isBackward ).to.true;
@@ -214,7 +222,7 @@ describe( 'DataController', () => {
 				it( 'extends over boundary of non-empty elements (backward)', () => {
 					setData( document, '<p>a</p><p>[]bcd</p>' );
 
-					modifySelection( document.selection, { direction: 'backward' } );
+					modifySelection( dataController, document.selection, { direction: 'backward' } );
 
 					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>a[</p><p>]bcd</p>' );
 					expect( document.selection.isBackward ).to.true;
@@ -229,7 +237,7 @@ describe( 'DataController', () => {
 				it( 'extends over character after boundary (backward)', () => {
 					setData( document, '<p>abc[</p><p>]d</p>', { lastRangeBackward: true } );
 
-					modifySelection( document.selection, { direction: 'backward' } );
+					modifySelection( dataController, document.selection, { direction: 'backward' } );
 
 					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>ab[c</p><p>]d</p>' );
 					expect( document.selection.isBackward ).to.true;
@@ -256,7 +264,7 @@ describe( 'DataController', () => {
 				it( 'extends over element when next node is a text (backward)', () => {
 					setData( document, 'ab<p>[]c</p>' );
 
-					modifySelection( document.selection, { direction: 'backward' } );
+					modifySelection( dataController, document.selection, { direction: 'backward' } );
 
 					expect( stringify( document.getRoot(), document.selection ) ).to.equal( 'ab[<p>]c</p>' );
 					expect( document.selection.isBackward ).to.true;
@@ -265,7 +273,7 @@ describe( 'DataController', () => {
 				it( 'shrinks over boundary of empty elements', () => {
 					setData( document, '<p>[</p><p>]</p>', { lastRangeBackward: true } );
 
-					modifySelection( document.selection );
+					modifySelection( dataController, document.selection );
 
 					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p></p><p>[]</p>' );
 					expect( document.selection.isBackward ).to.false;
@@ -274,7 +282,7 @@ describe( 'DataController', () => {
 				it( 'shrinks over boundary of empty elements (backward)', () => {
 					setData( document, '<p>[</p><p>]</p>' );
 
-					modifySelection( document.selection, { direction: 'backward' } );
+					modifySelection( dataController, document.selection, { direction: 'backward' } );
 
 					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>[]</p><p></p>' );
 					expect( document.selection.isBackward ).to.false;
@@ -283,7 +291,7 @@ describe( 'DataController', () => {
 				it( 'shrinks over boundary of non-empty elements', () => {
 					setData( document, '<p>a[</p><p>]b</p>', { lastRangeBackward: true } );
 
-					modifySelection( document.selection );
+					modifySelection( dataController, document.selection );
 
 					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>a</p><p>[]b</p>' );
 					expect( document.selection.isBackward ).to.false;
@@ -299,7 +307,7 @@ describe( 'DataController', () => {
 				it( 'updates selection attributes', () => {
 					setData( document, '<p><$text bold="true">foo</$text>[b]</p>' );
 
-					modifySelection( document.selection, { direction: 'backward' } );
+					modifySelection( dataController, document.selection, { direction: 'backward' } );
 
 					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p><$text bold="true">foo[]</$text>b</p>' );
 					expect( document.selection.getAttribute( 'bold' ) ).to.equal( true );
@@ -332,7 +340,7 @@ describe( 'DataController', () => {
 			it( 'extends one user-perceived character backward - latin letters', () => {
 				setData( document, '<p>fo[]o</p>' );
 
-				modifySelection( document.selection, { unit: 'codePoint', direction: 'backward' } );
+				modifySelection( dataController, document.selection, { unit: 'codePoint', direction: 'backward' } );
 
 				expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>f[o]o</p>' );
 				expect( document.selection.isBackward ).to.true;
@@ -352,7 +360,7 @@ describe( 'DataController', () => {
 				// Document's selection will throw errors in some test cases (which are correct cases, but only for
 				// non-document selections).
 				const testSelection = Selection.createFromSelection( document.selection );
-				modifySelection( testSelection, { unit: 'codePoint', direction: 'backward' } );
+				modifySelection( dataController, testSelection, { unit: 'codePoint', direction: 'backward' } );
 
 				expect( stringify( document.getRoot(), testSelection ) ).to.equal( '<p>foob[̂]ar</p>' );
 				expect( testSelection.isBackward ).to.true;
@@ -375,11 +383,54 @@ describe( 'DataController', () => {
 			it( 'unicode support surrogate pairs backward', () => {
 				setData( document, '<p>\uD83D\uDCA9[]</p>' );
 
-				modifySelection( document.selection, { unit: 'codePoint', direction: 'backward' } );
+				modifySelection( dataController, document.selection, { unit: 'codePoint', direction: 'backward' } );
 
 				expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>[\uD83D\uDCA9]</p>' );
 				expect( document.selection.isBackward ).to.true;
 			} );
+		} );
+
+		describe( 'objects handling', () => {
+			test(
+				'extends over next object element when at the end of an element',
+				'<p>foo[]</p><obj>bar</obj>',
+				'<p>foo[</p><obj>bar</obj>]'
+			);
+
+			test(
+				'extends over previous object element when at the beginning of an element ',
+				'<obj>bar</obj><p>[]foo</p>',
+				'[<obj>bar</obj><p>]foo</p>',
+				{ direction: 'backward' }
+			);
+
+			test(
+				'extends over object elements - forward',
+				'[<obj></obj>]<obj></obj>',
+				'[<obj></obj><obj></obj>]'
+			);
+
+			it( 'extends over object elements - backward', () => {
+				setData( document, '<obj></obj>[<obj></obj>]', { lastRangeBackward: true } );
+
+				modifySelection( dataController, document.selection, { direction: 'backward' } );
+
+				expect( stringify( document.getRoot(), document.selection ) ).to.equal( '[<obj></obj><obj></obj>]' );
+				expect( document.selection.isBackward ).to.true;
+			} );
+
+			test(
+				'extends over inline objects - forward',
+				'<p>foo<b>[]</b><inlineObj>bar</inlineObj></p>',
+				'<p>foo<b>[</b><inlineObj>bar</inlineObj>]</p>'
+			);
+
+			test(
+				'extends over inline objects - backward',
+				'<p><inlineObj>bar</inlineObj><b>[]foo</b></p>',
+				'<p>[<inlineObj>bar</inlineObj><b>]foo</b></p>',
+				{ direction: 'backward' }
+			);
 		} );
 	} );
 
@@ -394,7 +445,7 @@ describe( 'DataController', () => {
 			// Document's selection will throw errors in some test cases (which are correct cases, but only for
 			// non-document selections).
 			const testSelection = Selection.createFromSelection( document.selection );
-			modifySelection( testSelection, options );
+			modifySelection( dataController, testSelection, options );
 
 			expect( stringify( document.getRoot(), testSelection ) ).to.equal( output );
 		} );
