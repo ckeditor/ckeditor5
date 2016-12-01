@@ -20,10 +20,64 @@ export default class Rect {
 	/**
 	 * Creates an instance of rect.
 	 *
-	 * @param {HTMLElement|Range|utils.dom.Rect|Object} obj A source object of the rect.
+	 * 		// Rect of an HTMLElement.
+	 * 		const rectA = new Rect( document.body );
+	 *
+	 * 		// Rect of a DOM Range.
+	 * 		const rectB = new Rect( document.getSelection().getRangeAt( 0 ) );
+	 *
+	 * 		// Rect out of an object.
+	 * 		const rectC = new Rect( { top: 0, right: 10, bottom: 10, left: 0, width: 10, height: 10 } );
+	 *
+	 * 		// Rect out of another Rect instance.
+	 * 		const rectC = new Rect( rectC );
+	 *
+	 * @param {HTMLElement|Range|utils.dom.Rect|Object} obj A source object to create the rect.
 	 */
 	constructor( obj ) {
 		Object.assign( this, getRect( obj ) );
+
+		/**
+		 * The "top" value of the rect.
+		 *
+		 * @readonly
+		 * @member {Number} utils.dom.Rect#top
+		 */
+
+		/**
+		 * The "right" value of the rect.
+		 *
+		 * @readonly
+		 * @member {Number} utils.dom.Rect#right
+		 */
+
+		/**
+		 * The "bottom" value of the rect.
+		 *
+		 * @readonly
+		 * @member {Number} utils.dom.Rect#bottom
+		 */
+
+		/**
+		 * The "left" value of the rect.
+		 *
+		 * @readonly
+		 * @member {Number} utils.dom.Rect#left
+		 */
+
+		/**
+		 * The "width" value of the rect.
+		 *
+		 * @readonly
+		 * @member {Number} utils.dom.Rect#width
+		 */
+
+		/**
+		 * The "height" value of the rect.
+		 *
+		 * @readonly
+		 * @member {Number} utils.dom.Rect#height
+		 */
 	}
 
 	/**
