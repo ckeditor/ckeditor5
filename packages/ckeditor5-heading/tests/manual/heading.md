@@ -1,5 +1,3 @@
-@bender-ui: collapsed
-
 ## Headings feature
 
 1. The data should be loaded with three headings and one paragraph.
