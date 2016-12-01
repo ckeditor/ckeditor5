@@ -7,7 +7,9 @@ import Plugin from '../../core/plugin.js';
 import WidgetEngine from './widgetengine.js';
 import MouseObserver from '../../engine/view/observer/mouseobserver.js';
 import ModelRange from '../../engine/model/range.js';
+import ModelSelection from '../../engine/model/selection.js';
 import { isWidget } from './utils.js';
+import { keyCodes } from '../../utils/keyboard.js';
 
 /**
  * The widget plugin.
@@ -33,14 +35,17 @@ export default class Widget extends Plugin {
 		// If mouse down is pressed on widget - create selection over whole widget.
 		viewDocument.addObserver( MouseObserver );
 		this.listenTo( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
+
+		// Handle custom keydown behaviour.
+		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( ...args ), { priority: 'high' } );
 	}
 
 	/**
 	 * Handles {@link engine.view.Document#mousedown mousedown} events on widget elements.
 	 *
+	 * @private
 	 * @param {utils.EventInfo} eventInfo
 	 * @param {envine.view.observer.DomEventData} domEventData
-	 * @private
 	 */
 	_onMousedown( eventInfo, domEventData ) {
 		let widgetElement = domEventData.target;
@@ -64,12 +69,71 @@ export default class Widget extends Plugin {
 		}
 
 		// Create model selection over widget.
-		const modelDocument = editor.document;
 		const modelElement = editor.editing.mapper.toModelElement( widgetElement );
-		const modelRange = ModelRange.createOn( modelElement );
 
-		modelDocument.enqueueChanges( ( ) => {
-			modelDocument.selection.setRanges( [ modelRange ] );
+		editor.document.enqueueChanges( ( ) => {
+			this._setSelectionOverElement( modelElement );
 		} );
+	}
+
+	/**
+	 * Handles {@link engine.view.Document#keydown keydown} events.
+	 *
+	 * @private
+	 * @param {utils.EventInfo} eventInfo
+	 * @param {envine.view.observer.DomEventData} domEventData
+	 */
+	_onKeydown( eventInfo, domEventData  ) {
+		const keyCode = domEventData.keyCode;
+
+		// Handle only delete and backspace.
+		if ( keyCode !== keyCodes.delete && keyCode !== keyCodes.backspace ) {
+			return;
+		}
+
+		const dataController = this.editor.data;
+		const modelDocument = this.editor.document;
+		const modelSelection = modelDocument.selection;
+
+		// Do nothing on non-collapsed selection.
+		if ( !modelSelection.isCollapsed ) {
+			return;
+		}
+
+		// Clone current selection to use it as a probe. We must leave default selection as it is so it can return
+		// to its current state after undo.
+		const probe = ModelSelection.createFromSelection( modelSelection );
+		const isForward = ( keyCode == keyCodes.delete );
+
+		dataController.modifySelection( probe, { direction: isForward ? 'forward' : 'backward' } );
+
+		const objectElement = isForward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
+
+		if ( objectElement && modelDocument.schema.objects.has( objectElement.name ) ) {
+			domEventData.preventDefault();
+			eventInfo.stop();
+
+			modelDocument.enqueueChanges( () => {
+				// Remove previous node if empty;
+				const previousNode = probe.anchor.parent;
+
+				if ( previousNode.isEmpty ) {
+					const batch = modelDocument.batch();
+					batch.remove( previousNode );
+				}
+
+				this._setSelectionOverElement( objectElement );
+			} );
+		}
+	}
+
+	/**
+	 * Sets {@link engine.model.Selection document's selection} over given element.
+	 *
+	 * @private
+	 * @param {engine.model.Element} element
+	 */
+	_setSelectionOverElement( element ) {
+		this.editor.document.selection.setRanges( [ ModelRange.createOn( element ) ] );
 	}
 }
