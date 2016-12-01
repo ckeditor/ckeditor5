@@ -1,5 +1,3 @@
-@bender-ui: collapsed
-
 ## Basic styles
 
 1. The data should be loaded with:
