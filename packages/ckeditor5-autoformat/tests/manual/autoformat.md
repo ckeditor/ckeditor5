@@ -1,6 +1,3 @@
-@bender-ui: collapsed
-@bender-tags: autoformat
-
 ## Autoformat
 
 1. Type `#` and press space in empty paragraph to replace it with the heading.
