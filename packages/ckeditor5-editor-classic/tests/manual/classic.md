@@ -1,5 +1,3 @@
-@bender-ui: collapsed
-
 1. Click "Init editor".
 2. Expected:
   * Framed editor should be created.
@@ -18,4 +16,3 @@
   * `editable.isReadOnly`,
 * Changes to `editable.isFocused` should be logged to the console.
 * Features should work.
-
