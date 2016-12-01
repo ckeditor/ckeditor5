@@ -15,15 +15,9 @@ describe( 'DataController', () => {
 	beforeEach( () => {
 		document = new Document();
 		dataController = new DataController( document );
-		document.schema.registerItem( 'obj' );
-		document.schema.allow( { name: 'obj', inside: '$root' } );
-		document.schema.objects.add( 'obj' );
-		document.schema.registerItem( 'inlineObj', '$inline' );
-		document.schema.objects.add( 'inlineObj' );
 		document.schema.registerItem( 'p', '$block' );
 		document.schema.registerItem( 'x', '$block' );
 		document.schema.registerItem( 'img', '$inline' );
-		document.schema.registerItem( 'b', '$inline' );
 		document.schema.allow( { name: '$text', inside: '$root' } );
 		document.createRoot();
 	} );
@@ -391,6 +385,14 @@ describe( 'DataController', () => {
 		} );
 
 		describe( 'objects handling', () => {
+			beforeEach( () => {
+				document.schema.registerItem( 'obj' );
+				document.schema.allow( { name: 'obj', inside: '$root' } );
+				document.schema.objects.add( 'obj' );
+				document.schema.registerItem( 'inlineObj', '$inline' );
+				document.schema.objects.add( 'inlineObj' );
+			} );
+
 			test(
 				'extends over next object element when at the end of an element',
 				'<p>foo[]</p><obj>bar</obj>',
@@ -421,14 +423,14 @@ describe( 'DataController', () => {
 
 			test(
 				'extends over inline objects - forward',
-				'<p>foo<b>[]</b><inlineObj>bar</inlineObj></p>',
-				'<p>foo<b>[</b><inlineObj>bar</inlineObj>]</p>'
+				'<p>foo[]<inlineObj>bar</inlineObj></p>',
+				'<p>foo[<inlineObj>bar</inlineObj>]</p>'
 			);
 
 			test(
 				'extends over inline objects - backward',
-				'<p><inlineObj>bar</inlineObj><b>[]foo</b></p>',
-				'<p>[<inlineObj>bar</inlineObj><b>]foo</b></p>',
+				'<p><inlineObj>bar</inlineObj>[]foo</p>',
+				'<p>[<inlineObj>bar</inlineObj>]foo</p>',
 				{ direction: 'backward' }
 			);
 		} );
