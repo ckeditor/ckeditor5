@@ -1,5 +1,3 @@
-@bender-ui: collapsed
-
 ### Loading
 
 1. The data should be loaded with:
