@@ -1,5 +1,3 @@
-@bender-ui: collapsed
-
 ## Link
 
 ### Create new link from text
