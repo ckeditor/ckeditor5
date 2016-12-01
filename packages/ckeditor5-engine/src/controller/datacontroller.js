@@ -119,7 +119,7 @@ export default class DataController {
 
 		this.on( 'insertContent', ( evt, data ) => insertContent( this, data.content, data.selection, data.batch ) );
 		this.on( 'deleteContent', ( evt, data ) => deleteContent( data.selection, data.batch, data.options ) );
-		this.on( 'modifySelection', ( evt, data ) => modifySelection( data.selection, data.options ) );
+		this.on( 'modifySelection', ( evt, data ) => modifySelection( this, data.selection, data.options ) );
 		this.on( 'getSelectedContent', ( evt, data ) => {
 			data.content = getSelectedContent( data.selection );
 		} );
