@@ -11,6 +11,7 @@ import { widgetize } from 'ckeditor5/image/widget/utils.js';
 import ViewContainer from 'ckeditor5/engine/view/containerelement.js';
 import AttributeContainer from 'ckeditor5/engine/view/attributeelement.js';
 import { setData as setModelData, getData as getModelData } from 'ckeditor5/engine/dev-utils/model.js';
+import { keyCodes } from 'ckeditor5/utils/keyboard.js';
 
 describe( 'Widget', () => {
 	let editor, document, viewDocument;
@@ -25,6 +26,7 @@ describe( 'Widget', () => {
 				viewDocument = editor.editing.view;
 
 				document.schema.registerItem( 'widget', '$block' );
+				document.schema.objects.add( 'widget' );
 				document.schema.registerItem( 'paragraph', '$block' );
 
 				buildModelConverter().for( editor.editing.modelToView )
@@ -109,5 +111,86 @@ describe( 'Widget', () => {
 		sinon.assert.calledOnce( domEventDataMock.preventDefault );
 		sinon.assert.notCalled( focusSpy );
 		expect( getModelData( document ) ).to.equal( '[<widget></widget>]' );
+	} );
+
+	describe( 'delete and backspace handling', () => {
+		test(
+			'should select widget when backspace is pressed',
+			'<widget></widget><paragraph>[]foo</paragraph>',
+			keyCodes.backspace,
+			'[<widget></widget>]<paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should remove empty element after selecting widget when backspace is pressed',
+			'<widget></widget><paragraph>[]</paragraph>',
+			keyCodes.backspace,
+			'[<widget></widget>]'
+		);
+
+		test(
+			'should select widget when delete is pressed',
+			'<paragraph>foo[]</paragraph><widget></widget>',
+			keyCodes.delete,
+			'<paragraph>foo</paragraph>[<widget></widget>]'
+		);
+
+		test(
+			'should remove empty element after selecting widget when delete is pressed',
+			'<paragraph>[]</paragraph><widget></widget>',
+			keyCodes.delete,
+			'[<widget></widget>]'
+		);
+
+		test(
+			'should not respond to other keys',
+			'<widget></widget><paragraph>[]foo</paragraph>',
+			65,
+			'<widget></widget><paragraph>[]foo</paragraph>'
+		);
+
+		test(
+			'should do nothing on non-collapsed selection',
+			'<widget></widget><paragraph>[f]oo</paragraph>',
+			keyCodes.backspace,
+			'<widget></widget><paragraph>[f]oo</paragraph>'
+		);
+
+		test(
+			'should od nothing when entering non-object elements',
+			'<paragraph>foo</paragraph><paragraph>[]bar</paragraph>',
+			keyCodes.backspace,
+			'<paragraph>foo</paragraph><paragraph>[]bar</paragraph>'
+		);
+
+		it( 'should prevent default behaviour and stop event propagation', () => {
+			const keydownHandler = sinon.spy();
+			const domEventDataMock = {
+				keyCode: keyCodes.delete,
+				preventDefault: sinon.spy()
+			};
+			setModelData( document, '<paragraph>foo[]</paragraph><widget></widget>' );
+			viewDocument.on( 'keydown',  keydownHandler );
+
+			viewDocument.fire( 'keydown', domEventDataMock );
+
+			expect( getModelData( document ) ).to.equal( '<paragraph>foo</paragraph>[<widget></widget>]' );
+			sinon.assert.calledOnce( domEventDataMock.preventDefault );
+			sinon.assert.notCalled( keydownHandler );
+		} );
+
+		function test( name, data, keyCode, expected ) {
+			it( name, () => {
+				const domEventDataMock = {
+					keyCode: keyCode,
+					preventDefault: () => {}
+				};
+
+				setModelData( document, data );
+				viewDocument.fire( 'keydown', domEventDataMock );
+
+				expect( getModelData( document ) ).to.equal( expected );
+			} );
+		}
 	} );
 } );
