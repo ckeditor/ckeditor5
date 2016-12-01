@@ -1,6 +1,3 @@
-@bender-ui: collapsed
-@bender-tags: view
-
 ### Move selection
 
 Selection should be moved and event should be fired (see console),

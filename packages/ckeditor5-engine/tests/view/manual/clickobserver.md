@@ -1,6 +1,3 @@
-@bender-ui: collapsed
-@bender-tags: view
-
  - Open console.
  - Click Clicker A.
  - 2 events should be fired.

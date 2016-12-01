@@ -1,6 +1,3 @@
-@bender-ui: collapsed
-@bender-tags: view
-
 ## Fake selection
 
 Click on bold `bar` to create fake selection over it before each of following steps:

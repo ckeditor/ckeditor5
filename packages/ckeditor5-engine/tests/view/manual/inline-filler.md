@@ -1,6 +1,3 @@
-@bender-ui: collapsed
-@bender-tags: view
-
  * initialization expected: `foo{}bar`
  * press arrow left,
  * expected: `fo{}obar`

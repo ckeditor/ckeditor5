@@ -1,6 +1,3 @@
-@bender-ui: collapsed
-@bender-tags: view
-
 Try to:
 
 * type,

@@ -1,6 +1,3 @@
-@bender-ui: collapsed
-@bender-tags: view
-
 Focused editable should be green.
 Blurred editable should be red.
 
