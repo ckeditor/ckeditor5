@@ -1,5 +1,3 @@
-@bender-ui: collapsed
-
 ## Unicode support
 
 ### Selection

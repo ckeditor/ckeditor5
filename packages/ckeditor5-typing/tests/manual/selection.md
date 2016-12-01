@@ -1,5 +1,3 @@
-@bender-ui: collapsed
-
 ### Selection after typing
 
 #### Spellchecker

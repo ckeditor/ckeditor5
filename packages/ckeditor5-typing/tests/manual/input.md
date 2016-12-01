@@ -1,5 +1,3 @@
-@bender-ui: collapsed
-
 ## Input (typing) feature
 
 Check:

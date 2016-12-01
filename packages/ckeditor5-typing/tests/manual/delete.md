@@ -1,5 +1,3 @@
-@bender-ui: collapsed
-
 ## Delete feature
 
 Check:
