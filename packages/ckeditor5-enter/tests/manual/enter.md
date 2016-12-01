@@ -1,5 +1,3 @@
-@bender-ui: collapsed
-
 ## Enter key
 
 Test the <kbd>Enter</kbd> key support.
