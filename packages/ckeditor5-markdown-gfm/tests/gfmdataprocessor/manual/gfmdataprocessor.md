@@ -1,5 +1,3 @@
-@bender-ui: collapsed
-
 #### GitHub Flavored Markdown DataProcessor
 
 - Test conversion from markdown to view by typing markdown inside first textarea and pressing `Convert to view` button.
