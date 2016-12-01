@@ -1,5 +1,3 @@
-@bender-ui: collapsed
-
 ## Pasting
 
 Simply test pasting various content to the editor.

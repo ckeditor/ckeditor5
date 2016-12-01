@@ -1,5 +1,3 @@
-@bender-ui: collapsed
-
 ## Copy and cut
 
 Play with copy and cut. Paste copied content.
