@@ -1,7 +1,3 @@
-
-@bender-ui: collapsed
-@bender-tags: focustracker
-
 ## Focus Tracker
 
 1. Set focus to first tracked input,
