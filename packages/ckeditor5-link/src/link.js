@@ -129,7 +129,6 @@ export default class Link extends Plugin {
 
 		// Create the balloon panel instance.
 		const balloonPanelView = new BalloonPanelView( editor.locale );
-
 		balloonPanelView.maxWidth = 300;
 
 		// Add balloonPanel.view#element to FocusTracker.
@@ -221,23 +220,18 @@ export default class Link extends Plugin {
 	 */
 	_attachPanelToElement( parentLink ) {
 		const viewDocument = this.editor.editing.view;
-		const domEditableElement = viewDocument.domConverter.getCorrespondingDomElement( viewDocument.selection.editableElement );
 		const targetLink = parentLink || getPositionParentLink( viewDocument.selection.getFirstPosition() );
 
-		// When selection is inside link element, then attach panel to this element.
-		if ( targetLink ) {
-			this.balloonPanelView.attachTo(
-				viewDocument.domConverter.getCorrespondingDomElement( targetLink ),
-				domEditableElement
-			);
-		}
-		// Otherwise attach panel to the selection.
-		else {
-			this.balloonPanelView.attachTo(
-				viewDocument.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() ),
-				domEditableElement
-			);
-		}
+		this.balloonPanelView.limiter = viewDocument.domConverter.getCorrespondingDomElement( viewDocument.selection.editableElement );
+
+		const target = targetLink ?
+				// When selection is inside link element, then attach panel to this element.
+				viewDocument.domConverter.getCorrespondingDomElement( targetLink )
+			:
+				// Otherwise attach panel to the selection.
+				viewDocument.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
+
+		this.balloonPanelView.attachTo( target );
 	}
 
 	/**

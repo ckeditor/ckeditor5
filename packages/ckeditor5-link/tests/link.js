@@ -91,7 +91,8 @@ describe( 'Link', () => {
 
 			const linkElement = editorElement.querySelector( 'a' );
 
-			expect( attachToSpy.calledWithExactly( linkElement, editorElement ) ).to.true;
+			expect( balloonPanelView.limiter ).to.equal( editorElement );
+			expect( attachToSpy.calledWithExactly( linkElement ) ).to.true;
 		} );
 
 		it( 'should open panel attached to the selection, when there is non-collapsed selection', () => {
@@ -105,7 +106,8 @@ describe( 'Link', () => {
 
 			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
 
-			expect( attachToSpy.calledWithExactly( selectedRange, editorElement ) ).to.true;
+			expect( balloonPanelView.limiter ).to.equal( editorElement );
+			expect( attachToSpy.calledWithExactly( selectedRange ) ).to.true;
 		} );
 
 		it( 'should select panel input value when panel is opened', () => {
