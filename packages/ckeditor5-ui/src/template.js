@@ -149,61 +149,18 @@ export default class Template {
 	 * There are two types of bindings:
 	 *
 	 * * `HTMLElement` attributes or Text Node `textContent` can be synchronized with {@link module:utils/observablemixin~ObservableMixin}
-	 * instance attributes. See {@link module:ui/template~Template.bind.to} and {@link module:ui/template~Template.bind.if}.
+	 * instance attributes. See {@link module:ui/template~BindChain#to} and {@link module:ui/template~BindChain#if}.
 	 *
 	 * * DOM events fired on `HTMLElement` can be propagated through {@link module:utils/observablemixin~ObservableMixin}.
-	 * See {@link module:ui/template~Template.bind.to}.
+	 * See {@link module:ui/template~BindChain#to}.
 	 *
 	 * @param {module:utils/observablemixin~ObservableMixin} observable An instance of ObservableMixin class.
 	 * @param {module:utils/emittermixin~EmitterMixin} emitter An instance of `Emitter` class. It listens
 	 * to `observable` attribute changes and DOM Events, depending on the binding. Usually {@link module:ui/view~View} instance.
-	 * @returns {Object}
+	 * @returns {module:ui/template~BindChain}
 	 */
 	static bind( observable, emitter ) {
 		return {
-			/**
-			 * Binds {@link module:utils/observablemixin~ObservableMixin} instance to:
-			 *  * HTMLElement attribute or Text Node `textContent` so remains in sync with the Observable when it changes:
-			 *  * HTMLElement DOM event, so the DOM events are propagated through Observable.
-			 *
-			 *		const bind = Template.bind( observableInstance, emitterInstance );
-			 *
-			 *		new Template( {
-			 *			tag: 'p',
-			 *			attributes: {
-			 *				// class="..." attribute gets bound to `observableInstance#a`
-			 *				'class': bind.to( 'a' )
-			 *			},
-			 *			children: [
-			 *				// <p>...</p> gets bound to `observableInstance#b`; always `toUpperCase()`.
-			 *				{ text: bind.to( 'b', ( value, node ) => value.toUpperCase() ) }
-			 *			],
-			 *			on: {
-			 *				click: [
-			 *					// "clicked" event will be fired on `observableInstance` when "click" fires in DOM.
-			 *					bind.to( 'clicked' ),
-			 *
-			 *					// A custom callback function will be executed when "click" fires in DOM.
-			 *					bind.to( () => {
-			 *						...
-			 *					} )
-			 *				]
-			 *			}
-			 *		} ).render();
-			 *
-			 *		const bind = Template.bind( observableInstance, emitterInstance );
-			 *
-			 *		new Template( {
-			 *			tag: 'p',
-			 *		} ).render();
-			 *
-			 * @function
-			 * @param {String|Function} eventNameOrFunctionOrAttribute An attribute name of {@link module:utils/observablemixin~ObservableMixin} or a
-			 * DOM
-			 * event name or an event callback.
-			 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
-			 * @return {module:ui/template~TemplateBinding}
-			 */
 			to( eventNameOrFunctionOrAttribute, callback ) {
 				return new TemplateToBinding( {
 					eventNameOrFunction: eventNameOrFunctionOrAttribute,
@@ -212,37 +169,6 @@ export default class Template {
 				} );
 			},
 
-			/**
-			 * Binds {@link module:utils/observablemixin~ObservableMixin} to HTMLElement attribute or Text Node `textContent`
-			 * so remains in sync with the Model when it changes. Unlike {@link module:ui/template~Template.bind.to},
-			 * it controls the presence of the attribute/`textContent` depending on the "falseness" of
-			 * {@link module:utils/observablemixin~ObservableMixin} attribute.
-			 *
-			 *		const bind = Template.bind( observableInstance, emitterInstance );
-			 *
-			 *		new Template( {
-			 *			tag: 'input',
-			 *			attributes: {
-			 *				// <input checked> when `observableInstance#a` is not undefined/null/false/''
-			 *				// <input> when `observableInstance#a` is undefined/null/false
-			 *				checked: bind.if( 'a' )
-			 *			},
-			 *			children: [
-			 *				{
-			 *					// <input>"b-is-not-set"</input> when `observableInstance#b` is undefined/null/false/''
-			 *					// <input></input> when `observableInstance#b` is not "falsy"
-			 *					text: bind.if( 'b', 'b-is-not-set', ( value, node ) => !value )
-			 *				}
-			 *			]
-			 *		} ).render();
-			 *
-			 * @function
-			 * @param {String} attribute An attribute name of {@link module:utils/observablemixin~ObservableMixin} used in the binding.
-			 * @param {String} [valueIfTrue] Value set when {@link module:utils/observablemixin~ObservableMixin} attribute is not
-			 * undefined/null/false/''.
-			 * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
-			 * @return {module:ui/template~TemplateBinding}
-			 */
 			if( attribute, valueIfTrue, callback ) {
 				return new TemplateIfBinding( {
 					observable, emitter, attribute, valueIfTrue, callback
@@ -667,12 +593,12 @@ export class TemplateBinding {
 }
 
 /**
- * Describes either
+ * Describes either:
  *
  * * a binding to {@link module:utils/observablemixin~ObservableMixin}
  * * or a native DOM event binding
  *
- * created by {@link module:ui/template~Template.bind.to} method.
+ * created by {@link module:ui/template~BindChain#to} method.
  *
  * @protected
  */
@@ -699,7 +625,7 @@ export class TemplateToBinding extends TemplateBinding {
 }
 
 /**
- * Describes a binding to {@link module:utils/observablemixin~ObservableMixin} created by {@link module:ui/template~Template.bind.if}
+ * Describes a binding to {@link module:utils/observablemixin~ObservableMixin} created by {@link module:ui/template~BindChain#if}
  * method.
  *
  * @protected
@@ -1266,4 +1192,86 @@ function isViewCollection( item ) {
  *
  * @typedef module:ui/template~TemplateListenerSchema
  * @type {Object|String|Array}
+ */
+
+/**
+ * The type of {@link ~Template.bind}'s return value.
+ *
+ * @interface module:ui/template~BindChain
+ */
+
+/**
+ * Binds {@link module:utils/observablemixin~ObservableMixin} instance to:
+ *
+ * * HTMLElement attribute or Text Node `textContent` so remains in sync with the Observable when it changes:
+ * * HTMLElement DOM event, so the DOM events are propagated through Observable.
+ *
+ *		const bind = Template.bind( observableInstance, emitterInstance );
+ *
+ *		new Template( {
+ *			tag: 'p',
+ *			attributes: {
+ *				// class="..." attribute gets bound to `observableInstance#a`
+ *				'class': bind.to( 'a' )
+ *			},
+ *			children: [
+ *				// <p>...</p> gets bound to `observableInstance#b`; always `toUpperCase()`.
+ *				{ text: bind.to( 'b', ( value, node ) => value.toUpperCase() ) }
+ *			],
+ *			on: {
+ *				click: [
+ *					// "clicked" event will be fired on `observableInstance` when "click" fires in DOM.
+ *					bind.to( 'clicked' ),
+ *
+ *					// A custom callback function will be executed when "click" fires in DOM.
+ *					bind.to( () => {
+ *						...
+ *					} )
+ *				]
+ *			}
+ *		} ).render();
+ *
+ *		const bind = Template.bind( observableInstance, emitterInstance );
+ *
+ *		new Template( {
+ *			tag: 'p',
+ *		} ).render();
+ *
+ * @method #to
+ * @param {String|Function} eventNameOrFunctionOrAttribute An attribute name of
+ * {@link module:utils/observablemixin~ObservableMixin} or a DOM event name or an event callback.
+ * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
+ * @return {module:ui/template~TemplateBinding}
+ */
+
+/**
+ * Binds {@link module:utils/observablemixin~ObservableMixin} to HTMLElement attribute or Text Node `textContent`
+ * so remains in sync with the Model when it changes. Unlike {@link module:ui/template~BindChain#to},
+ * it controls the presence of the attribute/`textContent` depending on the "falseness" of
+ * {@link module:utils/observablemixin~ObservableMixin} attribute.
+ *
+ *		const bind = Template.bind( observableInstance, emitterInstance );
+ *
+ *		new Template( {
+ *			tag: 'input',
+ *			attributes: {
+ *				// <input checked> when `observableInstance#a` is not undefined/null/false/''
+ *				// <input> when `observableInstance#a` is undefined/null/false
+ *				checked: bind.if( 'a' )
+ *			},
+ *			children: [
+ *				{
+ *					// <input>"b-is-not-set"</input> when `observableInstance#b` is undefined/null/false/''
+ *					// <input></input> when `observableInstance#b` is not "falsy"
+ *					text: bind.if( 'b', 'b-is-not-set', ( value, node ) => !value )
+ *				}
+ *			]
+ *		} ).render();
+ *
+ * @method #if
+ * @param {String} attribute An attribute name of {@link module:utils/observablemixin~ObservableMixin} used in the binding.
+ * @param {String} [valueIfTrue] Value set when {@link module:utils/observablemixin~ObservableMixin} attribute is not
+ * undefined/null/false/''.
+ * @param {Function} [callback] Allows processing of the value. Accepts `Node` and `value` as arguments.
+ * @return {module:ui/template~TemplateBinding}
  */
