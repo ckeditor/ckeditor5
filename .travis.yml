@@ -18,4 +18,4 @@ install:
   - npm install
   - npm install @ckeditor/ckeditor5-dev-tests
 script:
-  - node_modules/.bin/ckeditor5-dev-tests --ignore-duplicates --files=**/*.js
+  - node_modules/.bin/ckeditor5-dev-tests --ignore-duplicates --reporter=dots --files=**/*.js
