@@ -4,24 +4,28 @@
  */
 
 /**
+ * @module core/editor/editorui
+ */
+
+/**
  * Minimal interface that is required to successfully bootstrap any editor UI.
  *
- * @interface core.editor.EditorUI
+ * @interface EditorUI
  */
 
 /**
  * The main (top–most) view of the editor UI.
  *
  * @readonly
- * @member {ui.editorUI.EditorUIView} core.editor.EditorUI#view
+ * @member {module:ui/editorui/editoruiview~EditorUIView} #view
  */
 
 /**
- * Instance of the {@link ui.ComponentFactory}, a registry used by plugins
+ * Instance of the {@link module:ui/componentfactory~ComponentFactory}, a registry used by plugins
  * to register factories of specific UI components.
  *
  * @readonly
- * @member {ui.ComponentFactory} core.editor.EditorUI#componentFactory
+ * @member {module:ui/componentfactory~ComponentFactory} #componentFactory
  */
 
 /**
@@ -29,5 +33,5 @@
  * unifying them in a uniform focus group.
  *
  * @readonly
- * @member {utils.FocusTracker} core.editor.EditorUI#focusTracker
+ * @member {module:utils/focustracker~FocusTracker} #focusTracker
  */

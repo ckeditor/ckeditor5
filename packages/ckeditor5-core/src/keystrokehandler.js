@@ -3,11 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module core/keystrokehandler
+ */
+
 import EmitterMixin from '../utils/emittermixin.js';
 import { getCode, parseKeystroke } from '../utils/keyboard.js';
 
 /**
- * Keystroke handler. Its instance is available in {@link core.editor.Editor#keystrokes} so plugins
+ * Keystroke handler. Its instance is available in {@link module:core/editor/editor~Editor#keystrokes} so plugins
  * can register their keystrokes.
  *
  * E.g. an undo plugin would do this:
@@ -15,21 +19,19 @@ import { getCode, parseKeystroke } from '../utils/keyboard.js';
  *		editor.keystrokes.set( 'ctrl + Z', 'undo' );
  *		editor.keystrokes.set( 'ctrl + shift + Z', 'redo' );
  *		editor.keystrokes.set( 'ctrl + Y', 'redo' );
- *
- * @memberOf core
  */
 export default class KeystrokeHandler {
 	/**
 	 * Creates an instance of the keystroke handler.
 	 *
-	 * @param {engine.treeView.TreeView} editingView
+	 * @param {module:core/editor/editor~Editor} editor
 	 */
 	constructor( editor ) {
 		/**
 		 * The editor instance.
 		 *
 		 * @readonly
-		 * @member {core.editor.Editor} core.KeystrokeHandler#editor
+		 * @member {module:core/editor/editor~Editor}
 		 */
 		this.editor = editor;
 
@@ -37,7 +39,7 @@ export default class KeystrokeHandler {
 		 * Listener used to listen to events for easier keystroke handler destruction.
 		 *
 		 * @private
-		 * @member {utils.Emitter} core.KeystrokeHandler#_listener
+		 * @member {module:utils/emittermixin~Emitter}
 		 */
 		this._listener = Object.create( EmitterMixin );
 
@@ -45,7 +47,7 @@ export default class KeystrokeHandler {
 		 * Map of the defined keystrokes. Keystroke codes are the keys.
 		 *
 		 * @private
-		 * @member {Map} core.KeystrokeHandler#_keystrokes
+		 * @member {Map}
 		 */
 		this._keystrokes = new Map();
 
@@ -64,11 +66,11 @@ export default class KeystrokeHandler {
 	 * The handler can be specified as a command name or a callback.
 	 *
 	 * @param {String|Array.<String|Number>} keystroke Keystroke defined in a format accepted by
-	 * the {@link utils.keyboard.parseKeystroke} function.
+	 * the {@link module:utils/keyboard~parseKeystroke} function.
 	 * @param {String|Function} callback If a string is passed, then the keystroke will
-	 * {@link core.editor.Editor#execute execute a command}.
+	 * {@link module:core/editor/editor~Editor#execute execute a command}.
 	 * If a function, then it will be called with the
-	 * {@link engine.view.observer.keyObserver.KeyEventData key event data} object.
+	 * {@link module:engine/view/observer/keyobserver~KeyEventData key event data} object.
 	 */
 	set( keystroke, callback ) {
 		this._keystrokes.set( parseKeystroke( keystroke ), callback );
@@ -77,7 +79,7 @@ export default class KeystrokeHandler {
 	/**
 	 * Triggers a keystroke handler for a specified key combination, if such a keystroke was {@link #set defined}.
 	 *
-	 * @param {engine.view.observer.keyObserver.KeyEventData} keyEventData Key event data.
+	 * @param {module:engine/view/observer/keyobserver~KeyEventData} keyEventData Key event data.
 	 * @returns {Boolean} Whether the keystroke was handled.
 	 */
 	press( keyEventData ) {

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module core/command/helpers/getschemavalidranges
+ */
+
 import TreeWalker from '../../../engine/model/treewalker.js';
 import Range from '../../../engine/model/range.js';
 
@@ -11,9 +15,9 @@ import Range from '../../../engine/model/range.js';
  * attribute set. This is done by breaking a range in two and omitting the not allowed part.
  *
  * @param {String} attribute Attribute key.
- * @param {Array.<engine.model.Range>} ranges Ranges to be validated.
- * @param {engine.model.Schema} schema Document schema.
- * @returns {Array.<engine.model.Range>} Ranges without invalid parts.
+ * @param {Array.<module:engine/model/range~Range>} ranges Ranges to be validated.
+ * @param {module:engine/model/schema~Schema} schema Document schema.
+ * @returns {Array.<module:engine/model/range~Range>} Ranges without invalid parts.
  */
 export default function getSchemaValidRanges( attribute, ranges, schema ) {
 	const validRanges = [];

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module core/editor/editor
+ */
+
 import EmitterMixin from '../../utils/emittermixin.js';
 import Config from '../../utils/config.js';
 import PluginCollection from '../plugincollection.js';
@@ -16,10 +20,9 @@ import mix from '../../utils/mix.js';
 /**
  * Class representing a basic editor. It contains a base architecture, without much additional logic.
  *
- * See also {@link core.editor.StandardEditor}.
+ * See also {@link module:core/editor/editor~StandardEditor}.
  *
- * @memberOf core.editor
- * @mixes utils.EmitterMixin
+ * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class Editor {
 	/**
@@ -32,7 +35,7 @@ export default class Editor {
 		 * Holds all configurations specific to this editor instance.
 		 *
 		 * @readonly
-		 * @member {utils.Config} core.editor.Editor#config
+		 * @member {utils.Config}
 		 */
 		this.config = new Config( config );
 
@@ -40,7 +43,7 @@ export default class Editor {
 		 * The plugins loaded and in use by this editor instance.
 		 *
 		 * @readonly
-		 * @member {core.PluginCollection} core.editor.Editor#plugins
+		 * @member {module:core/plugin~PluginCollection}
 		 */
 		this.plugins = new PluginCollection( this );
 
@@ -48,21 +51,21 @@ export default class Editor {
 		 * Commands registered to the editor.
 		 *
 		 * @readonly
-		 * @member {Map.<core.command.Command>} core.editor.Editor#commands
+		 * @member {Map.<module:core/command/command~Command>}
 		 */
 		this.commands = new Map();
 
 		/**
 		 * @readonly
-		 * @member {utils.Locale} core.editor.Editor#locale
+		 * @member {module:utils/locale~Locale}
 		 */
 		this.locale = new Locale( this.config.get( 'lang' ) );
 
 		/**
-		 * Shorthand for {@link utils.Locale#t}.
+		 * Shorthand for {@link module:utils/locale~Locale#t}.
 		 *
-		 * @see utils.Locale#t
-		 * @method core.editor.Editor#t
+		 * @see module:utils/locale~Locale#t
+		 * @method #t
 		 */
 		this.t = this.locale.t;
 
@@ -70,29 +73,29 @@ export default class Editor {
 		 * Tree Model document managed by this editor.
 		 *
 		 * @readonly
-		 * @member {engine.model.Document} core.editor.Editor#document
+		 * @member {module:engine/model/document~Document}
 		 */
 		this.document = new Document();
 
 		/**
-		 * Instance of the {@link engine.controller.DataController data controller}.
+		 * Instance of the {@link module:engine/controller/datacontroller~DataController data controller}.
 		 *
 		 * @readonly
-		 * @member {engine.controller.DataController} core.editor.Editor#data
+		 * @member {module:engine/controller.DataController}
 		 */
 		this.data = new DataController( this.document );
 
 		/**
-		 * Instance of the {@link engine.controller.EditingController editing controller}.
+		 * Instance of the {@link module:engine/controller/editingcontroller~EditingController editing controller}.
 		 *
-		 * This property is set by more specialized editor classes (such as {@link core.editor.StandardEditor}),
+		 * This property is set by more specialized editor classes (such as {@link module:core/editor/editor~StandardEditor}),
 		 * however, it's required for features to work as their engine-related parts will try to connect converters.
 		 *
 		 * When defining a virtual editor class, like one working in Node.js, it's possible to plug a virtual
 		 * editing controller which only instantiates necessary properties, but without any observers and listeners.
 		 *
 		 * @readonly
-		 * @member {engine.controller.EditingController} core.editor.Editor#editing
+		 * @member {module:engine/controller/editingcontroller~EditingController} #editing
 		 */
 	}
 
@@ -122,7 +125,7 @@ export default class Editor {
 	/**
 	 * Destroys the editor instance, releasing all resources used by it.
 	 *
-	 * @fires core.editor.Editor#destroy
+	 * @fires module:core/editor/editor~Editor#destroy
 	 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
 	 */
 	destroy() {
@@ -160,9 +163,9 @@ export default class Editor {
 	/**
 	 * Creates a basic editor instance.
 	 *
-	 * @param {Object} config See {@link core.editor.StandardEditor}'s param.
+	 * @param {Object} config See {@link module:core/editor/editor~StandardEditor}'s param.
 	 * @returns {Promise} Promise resolved once editor is ready.
-	 * @returns {core.editor.StandardEditor} return.editor The editor instance.
+	 * @returns {module:core/editor/editor~StandardEditor} return.editor The editor instance.
 	 */
 	static create( config ) {
 		return new Promise( ( resolve ) => {
@@ -182,5 +185,5 @@ mix( Editor, EmitterMixin );
  * Fired when this editor instance is destroyed. The editor at this point is not usable and this event should be used to
  * perform the clean-up in any plugin.
  *
- * @event core.editor.Editor#destroy
+ * @event module:core/editor/editor~Editor#destroy
  */

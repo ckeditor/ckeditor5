@@ -3,31 +3,33 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module core/plugincollection
+ */
+
 import Plugin from './plugin.js';
 import CKEditorError from '../utils/ckeditorerror.js';
 import log from '../utils/log.js';
 
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.
- *
- * @memberOf core
  */
 export default class PluginCollection {
 	/**
 	 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.
 	 *
-	 * @param {core.editor.Editor} editor
+	 * @param {module:core/editor/editor~Editor} editor
 	 */
 	constructor( editor ) {
 		/**
 		 * @protected
-		 * @member {core.editor.Editor} core.PluginCollection#_editor
+		 * @member {module:core/editor/editor~Editor} module:core/plugin~PluginCollection#_editor
 		 */
 		this._editor = editor;
 
 		/**
 		 * @protected
-		 * @member {Map} core.PluginCollection#_plugins
+		 * @member {Map} module:core/plugin~PluginCollection#_plugins
 		 */
 		this._plugins = new Map();
 	}
@@ -46,8 +48,8 @@ export default class PluginCollection {
 	/**
 	 * Gets the plugin instance by its constructor or name.
 	 *
-	 * @param {Function|String} key The plugin constructor or {@link core.Plugin.plugiName name}.
-	 * @returns {core.Plugin}
+	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~Plugin.plugiName name}.
+	 * @returns {module:core/plugin~Plugin}
 	 */
 	get( key ) {
 		return this._plugins.get( key );
@@ -56,10 +58,10 @@ export default class PluginCollection {
 	/**
 	 * Loads a set of plugins and add them to the collection.
 	 *
-	 * @param {Function[]} plugins An array of {@link core.Plugin plugin constructors}.
+	 * @param {Function[]} plugins An array of {@link module:core/plugin~Plugin plugin constructors}.
 	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
 	 * collection.
-	 * @param {core.Plugin[]} returns.loadedPlugins The array of loaded plugins.
+	 * @param {Array.<module:core/plugin~Plugin>} returns.loadedPlugins The array of loaded plugins.
 	 */
 	load( plugins ) {
 		const that = this;
@@ -111,7 +113,7 @@ export default class PluginCollection {
 		function assertIsPlugin( PluginConstructor ) {
 			if ( !( PluginConstructor.prototype instanceof Plugin ) ) {
 				/**
-				 * The loaded plugin module is not an instance of {@link core.Plugin}.
+				 * The loaded plugin module is not an instance of {@link module:core/plugin~Plugin}.
 				 *
 				 * @error plugincollection-instance
 				 * @param {*} plugin The constructor which is meant to be loaded as a plugin.
@@ -129,7 +131,7 @@ export default class PluginCollection {
 	 *
 	 * @protected
 	 * @param {Function} PluginConstructor The plugin constructor.
-	 * @param {core.Plugin} plugin The instance of the plugin.
+	 * @param {module:core/plugin~Plugin} plugin The instance of the plugin.
 	 */
 	_add( PluginConstructor, plugin ) {
 		this._plugins.set( PluginConstructor, plugin );

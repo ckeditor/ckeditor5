@@ -3,16 +3,21 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module core/command/helpers/isattributeallowedinselection
+ */
+
 import TreeWalker from '../../../engine/model/treewalker.js';
 
 /**
- * Checks {@link engine.model.Document#schema} if attribute is allowed in selection:
+ * Checks {@link module:engine/model/document~Document#schema} if attribute is allowed in selection:
+ *
  * * if selection is on range, the command is enabled if any of nodes in that range can have bold,
  * * if selection is collapsed, the command is enabled if text with bold is allowed in that node.
  *
  * @param {String} attribute Attribute key.
- * @param {engine.model.Selection} selection Selection which ranges will be validate.
- * @param {engine.model.Schema} schema Document schema.
+ * @param {module:engine/model/selection~Selection} selection Selection which ranges will be validate.
+ * @param {module:engine/model/schema~Schema} schema Document schema.
  * @returns {Boolean}
  */
 export default function isAttributeAllowedInSelection( attribute, selection, schema ) {

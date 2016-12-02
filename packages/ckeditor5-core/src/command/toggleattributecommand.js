@@ -3,25 +3,25 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module core/command/toggleattributecommand
+ */
+
 import Command from './command.js';
 import getSchemaValidRanges from './helpers/getschemavalidranges.js';
 import isAttributeAllowedInSelection from './helpers/isattributeallowedinselection.js';
 
 /**
- * An extension of basic {@link core.command.Command} class, which provides utilities for a command that toggle a single
- * attribute on a text or element with value `true`. ToggleAttributeCommand uses {@link engine.model.Document#selection}
+ * An extension of the base {@link module:core/command/command~Command} class, which provides utilities for a command which toggles a single
+ * attribute on a text or an element. `ToggleAttributeCommand` uses {@link module:engine/model/document~Document#selection}
  * to decide which nodes (if any) should be changed, and applies or removes attributes from them.
- * See {@link engine.view.Converter#execute} for more.
  *
- * The command checks {@link engine.model.Document#schema} to decide if it should be enabled.
- * See {@link engine.view.Converter#checkSchema} for more.
- *
- * @memberOf core.command
+ * The command checks {@link module:engine/model/document~Document#schema} to decide if it should be enabled.
  */
 export default class ToggleAttributeCommand extends Command {
 	/**
-	 * @see core.command.Command
-	 * @param {core.editor.Editor} editor
+	 * @see module:core/command/command~Command
+	 * @param {module:core/editor/editor~Editor} editor
 	 * @param {String} attributeKey Attribute that will be set by the command.
 	 */
 	constructor( editor, attributeKey ) {
@@ -30,7 +30,7 @@ export default class ToggleAttributeCommand extends Command {
 		/**
 		 * Attribute that will be set by the command.
 		 *
-		 * @member {String} core.command.ToggleAttributeCommand#attributeKey
+		 * @member {String}
 		 */
 		this.attributeKey = attributeKey;
 
@@ -39,7 +39,7 @@ export default class ToggleAttributeCommand extends Command {
 		 * the command's attribute set. For range selection it means that all nodes inside have the attribute applied.
 		 *
 		 * @observable
-		 * @member {Boolean} core.command.ToggleAttributeCommand#value
+		 * @member {Boolean} #value
 		 */
 		this.set( 'value', false );
 
@@ -49,7 +49,8 @@ export default class ToggleAttributeCommand extends Command {
 	}
 
 	/**
-	 * Checks if {@link engine.model.Document#schema} allows to create attribute in {@link engine.model.Document#selection}
+	 * Checks if {@link module:engine/model/document~Document#schema} allows to create attribute in
+	 * {@link module:engine/model/document~Document#selection}.
 	 *
 	 * @private
 	 * @returns {Boolean}
@@ -65,11 +66,11 @@ export default class ToggleAttributeCommand extends Command {
 	 *
 	 * If the command is active (`value == true`), it will remove attributes. Otherwise, it will set attributes.
 	 *
-	 * The execution result differs, depending on the {@link engine.model.Document#selection}:
+	 * The execution result differs, depending on the {@link module:engine/model/document~Document#selection}:
 	 * * if selection is on a range, the command applies the attribute on all nodes in that ranges
-	 * (if they are allowed to have this attribute by the {@link engine.model.Schema schema}),
-	 * * if selection is collapsed in non-empty node, the command applies attribute to the {@link engine.model.Document#selection}
-	 * itself (note that typed characters copy attributes from selection),
+	 * (if they are allowed to have this attribute by the {@link module:engine/model/schema~Schema schema}),
+	 * * if selection is collapsed in non-empty node, the command applies attribute to the
+	 * {@link module:engine/model/document~Document#selection} itself (note that typed characters copy attributes from selection),
 	 * * if selection is collapsed in empty node, the command applies attribute to the parent node of selection (note
 	 * that selection inherits all attributes from a node if it is in empty node).
 	 *
@@ -79,7 +80,7 @@ export default class ToggleAttributeCommand extends Command {
 	 * @param {Object} [options] Options of command.
 	 * @param {Boolean} [options.forceValue] If set it will force command behavior. If `true`, command will apply attribute,
 	 * otherwise command will remove attribute. If not set, command will look for it's current value to decide what it should do.
-	 * @param {engine.model.Batch} [options.batch] Batch to group undo steps.
+	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to group undo steps.
 	 */
 	_doExecute( options = {} ) {
 		const document = this.editor.document;
