@@ -211,6 +211,24 @@ describe( 'getOptimalPosition', () => {
 				name: 'right'
 			} );
 		} );
+
+		it( 'should return the very first coordinates no fitting position with a positive intersection has been found', () => {
+			assertPosition( {
+				element, target, limiter,
+				positions: [
+					() => ( {
+						left: -10000,
+						top: -10000,
+						name: 'no-intersect-position'
+					} )
+				],
+				fitInViewport: true
+			}, {
+				left: -10000,
+				top: -10000,
+				name: 'no-intersect-position'
+			} );
+		} );
 	} );
 } );
 

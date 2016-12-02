@@ -34,12 +34,15 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 
 	// If there are no limits, just grab the very first position and be done with that drama.
 	if ( !limiter && !fitInViewport ) {
-		[ bestPositionName, { left, top } ] = getPositionRect( positions[ 0 ], targetRect, elementRect );
+		[ bestPositionName, { left, top } ] = getPosition( positions[ 0 ], targetRect, elementRect );
 	} else {
 		const limiterRect = limiter && new Rect( limiter );
 		const viewportRect = fitInViewport && Rect.getViewportRect();
+		const bestPosition = getBestPosition( positions, targetRect, elementRect, limiterRect, viewportRect );
 
-		[ bestPositionName, { left, top } ] = getBestPositionRect( positions, targetRect, elementRect, limiterRect, viewportRect );
+		// If there's no best position found, i.e. when all intersections have no area because
+		// rects have no width or height, then just use the first available position.
+		[ bestPositionName, { left, top } ] = bestPosition || getPosition( positions[ 0 ], targetRect, elementRect );
 	}
 
 	// (#126) If there's some positioned ancestor of the panel, then its rect must be taken into
@@ -70,7 +73,7 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 // @param {Rect} targetRect A rect of the target.
 // @param {Rect} elementRect A rect of positioned element.
 // @returns {Array} An array containing position name and its Rect.
-function getPositionRect( position, targetRect, elementRect ) {
+function getPosition( position, targetRect, elementRect ) {
 	const { left, top, name } = position( targetRect, elementRect );
 
 	return [ name, elementRect.clone().moveTo( left, top ) ];
@@ -87,7 +90,7 @@ function getPositionRect( position, targetRect, elementRect ) {
 // @param {Rect} limiterRect A rect of the {@link module:utils/dom/position~Options#limiter}.
 // @param {Rect} viewportRect A rect of the viewport.
 // @returns {Array} An array containing the name of the position and it's rect.
-function getBestPositionRect( positions, targetRect, elementRect, limiterRect, viewportRect ) {
+function getBestPosition( positions, targetRect, elementRect, limiterRect, viewportRect ) {
 	let maxLimiterIntersectArea = -1;
 	let maxViewportIntersectArea = -1;
 	let bestPositionRect;
@@ -97,7 +100,7 @@ function getBestPositionRect( positions, targetRect, elementRect, limiterRect, v
 	const elementRectArea = elementRect.getArea();
 
 	positions.some( position => {
-		const [ positionName, positionRect ] = getPositionRect( position, targetRect, elementRect );
+		const [ positionName, positionRect ] = getPosition( position, targetRect, elementRect );
 		let limiterIntersectArea;
 		let viewportIntersectArea;
 
@@ -146,7 +149,7 @@ function getBestPositionRect( positions, targetRect, elementRect, limiterRect, v
 		return limiterIntersectArea === elementRectArea;
 	} );
 
-	return [ bestPositionName, bestPositionRect ];
+	return bestPositionRect ? [ bestPositionName, bestPositionRect ] : null;
 }
 
 /**
