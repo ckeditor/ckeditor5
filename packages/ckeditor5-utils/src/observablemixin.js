@@ -168,7 +168,7 @@ const ObservableMixin = {
 		 * @typedef BindChain
 		 * @type Object
 		 * @property {Function} to See {@link ~ObservableMixin#_bindTo}.
-		 * @property {Observable} _observable The observable which initializes the binding.
+		 * @property {module:utils/observablemixin~Observable} _observable The observable which initializes the binding.
 		 * @property {Array} _bindAttrs Array of `_observable` attributes to be bound.
 		 * @property {Array} _to Array of `to()` observable–attributes (`{ observable: toObservable, attrs: ...toAttrs }`).
 		 * @property {Map} _bindings Stores bindings to be kept in
