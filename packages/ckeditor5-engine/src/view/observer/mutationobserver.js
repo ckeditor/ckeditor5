@@ -26,7 +26,8 @@ import { startsWithFiller, getDataWithoutFiller } from '../filler.js';
  * {@link module:engine/view/observer/mutationobserver~MutatedText text mutation} is fired only if parent element do not change child list.
  *
  * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
- * @extends module:engine/view/observer/observer~Observer.Observer
+ *
+ * @extends module:engine/view/observer/observer~Observer
  */
 export default class MutationObserver extends Observer {
 	constructor( document ) {

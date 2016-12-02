@@ -22,8 +22,8 @@ import log from '../../../utils/log.js';
  *
  * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
  *
- * @see module:engine/view/mutationobserver~MutationObserver
- * @extends module:engine/view/observer/observer~Observer.Observer
+ * @see module:engine/view/observer/mutationobserver~MutationObserver
+ * @extends module:engine/view/observer/observer~Observer
  */
 export default class SelectionObserver extends Observer {
 	constructor( document ) {

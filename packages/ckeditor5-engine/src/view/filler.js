@@ -39,7 +39,7 @@ import { keyCodes } from '../../utils/keyboard.js';
  * `<br> filler creator. This is a function which creates `<br data-cke-filler="true">` element.
  * It defines how the filler is created.
  *
- * @see module:engine/view/filler~NBSP_FILLER_FILLER
+ * @see module:engine/view/filler~NBSP_FILLER
  * @function
  */
 export const BR_FILLER = ( domDocument ) => {

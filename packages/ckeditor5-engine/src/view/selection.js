@@ -91,7 +91,7 @@ export default class Selection {
 	/**
 	 * Returns true if selection instance is marked as `fake`.
 	 *
-	 * @see {@link #setFake}
+	 * @see #setFake
 	 * @returns {Boolean}
 	 */
 	get isFake() {
@@ -101,7 +101,7 @@ export default class Selection {
 	/**
 	 * Returns fake selection label.
 	 *
-	 * @see {@link #setFake}
+	 * @see #setFake
 	 * @returns {String}
 	 */
 	get fakeSelectionLabel() {

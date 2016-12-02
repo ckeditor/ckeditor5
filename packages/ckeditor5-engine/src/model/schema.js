@@ -314,7 +314,7 @@ export default class Schema {
 	/**
 	 * Disallows given query in the schema.
 	 *
-	 * @see {@link module:engine/model/schema~Schema#allow}
+	 * @see #allow
 	 * @param {module:engine/model/schema~SchemaQuery} query Disallowed query.
 	 */
 	disallow( query ) {
