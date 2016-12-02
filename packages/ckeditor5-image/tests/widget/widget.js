@@ -5,10 +5,12 @@
 
 import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
 import Widget from 'ckeditor5/image/widget/widget.js';
+import Typing from 'ckeditor5/typing/typing.js';
 import MouseObserver from 'ckeditor5/engine/view/observer/mouseobserver.js';
 import buildModelConverter from 'ckeditor5/engine/conversion/buildmodelconverter.js';
 import { widgetize } from 'ckeditor5/image/widget/utils.js';
 import ViewContainer from 'ckeditor5/engine/view/containerelement.js';
+import DomEventData from 'ckeditor5/engine/view/observer/domeventdata.js';
 import AttributeContainer from 'ckeditor5/engine/view/attributeelement.js';
 import { setData as setModelData, getData as getModelData } from 'ckeditor5/engine/dev-utils/model.js';
 import { keyCodes } from 'ckeditor5/utils/keyboard.js';
@@ -18,7 +20,7 @@ describe( 'Widget', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			plugins: [ Widget ]
+			plugins: [ Widget, Typing ]
 		} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -28,6 +30,8 @@ describe( 'Widget', () => {
 				document.schema.registerItem( 'widget', '$block' );
 				document.schema.objects.add( 'widget' );
 				document.schema.registerItem( 'paragraph', '$block' );
+				document.schema.registerItem( 'inline', '$inline' );
+				document.schema.objects.add( 'inline' );
 
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'paragraph' )
@@ -41,6 +45,10 @@ describe( 'Widget', () => {
 
 						return widgetize( div );
 					} );
+
+				buildModelConverter().for( editor.editing.modelToView )
+					.fromElement( 'inline' )
+					.toElement( 'figure' );
 			} );
 	} );
 
@@ -150,17 +158,17 @@ describe( 'Widget', () => {
 		);
 
 		test(
-			'should do nothing on non-collapsed selection',
+			'should delete normally on non-collapsed selection',
 			'<widget></widget><paragraph>[f]oo</paragraph>',
 			keyCodes.backspace,
-			'<widget></widget><paragraph>[f]oo</paragraph>'
+			'<widget></widget><paragraph>[]oo</paragraph>'
 		);
 
 		test(
-			'should od nothing when entering non-object elements',
+			'shoulddelete normally on non-object elements',
 			'<paragraph>foo</paragraph><paragraph>[]bar</paragraph>',
 			keyCodes.backspace,
-			'<paragraph>foo</paragraph><paragraph>[]bar</paragraph>'
+			'<paragraph>foo[]bar</paragraph>'
 		);
 
 		test(
@@ -205,11 +213,137 @@ describe( 'Widget', () => {
 			'<paragraph>foo</paragraph>[<widget></widget>]'
 		);
 
+		test(
+			'should not modify backspace default behaviour in single paragraph boundaries',
+			'<paragraph>[]foo</paragraph>',
+			keyCodes.backspace,
+			'<paragraph>[]foo</paragraph>'
+		);
+
+		test(
+			'should not modify delete default behaviour in single paragraph boundaries',
+			'<paragraph>foo[]</paragraph>',
+			keyCodes.delete,
+			'<paragraph>foo[]</paragraph>'
+		);
+
+		test(
+			'should correctly delete widget preceded by a paragraph - backspace',
+			'<paragraph>foo</paragraph>[<widget></widget>]',
+			keyCodes.backspace,
+			'<paragraph>foo</paragraph><paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should correctly delete widget preceded by another widget - backspace',
+			'<widget></widget>[<widget></widget>]',
+			keyCodes.backspace,
+			'<widget></widget><paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should correctly delete widget before paragraph - backspace',
+			'[<widget></widget>]<paragraph>foo</paragraph>',
+			keyCodes.backspace,
+			'<paragraph>[]</paragraph><paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should correctly delete widget before another widget - backspace',
+			'[<widget></widget>]<widget></widget>',
+			keyCodes.backspace,
+			'<paragraph>[]</paragraph><widget></widget>'
+		);
+
+		test(
+			'should correctly delete widget between paragraphs - backspace',
+			'<paragraph>bar</paragraph>[<widget></widget>]<paragraph>foo</paragraph>',
+			keyCodes.backspace,
+			'<paragraph>bar</paragraph><paragraph>[]</paragraph><paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should correctly delete widget between other widgets - backspace',
+			'<widget></widget>[<widget></widget>]<widget></widget>',
+			keyCodes.backspace,
+			'<widget></widget><paragraph>[]</paragraph><widget></widget>'
+		);
+
+		test(
+			'should correctly delete widget preceded by a paragraph - delete',
+			'<paragraph>foo</paragraph>[<widget></widget>]',
+			keyCodes.delete,
+			'<paragraph>foo</paragraph><paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should correctly delete widget preceded by another widget - delete',
+			'<widget></widget>[<widget></widget>]',
+			keyCodes.delete,
+			'<widget></widget><paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should correctly delete widget before paragraph - delete',
+			'[<widget></widget>]<paragraph>foo</paragraph>',
+			keyCodes.delete,
+			'<paragraph>[]</paragraph><paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should correctly delete widget before another widget - delete',
+			'[<widget></widget>]<widget></widget>',
+			keyCodes.delete,
+			'<paragraph>[]</paragraph><widget></widget>'
+		);
+
+		test(
+			'should correctly delete widget between paragraphs - delete',
+			'<paragraph>bar</paragraph>[<widget></widget>]<paragraph>foo</paragraph>',
+			keyCodes.delete,
+			'<paragraph>bar</paragraph><paragraph>[]</paragraph><paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should correctly delete widget between other widgets - delete',
+			'<widget></widget>[<widget></widget>]<widget></widget>',
+			keyCodes.delete,
+			'<widget></widget><paragraph>[]</paragraph><widget></widget>'
+		);
+
+		test(
+			'should select inline objects - backspace',
+			'<paragraph>foo<inline></inline>[]bar</paragraph>',
+			keyCodes.backspace,
+			'<paragraph>foo[<inline></inline>]bar</paragraph>'
+		);
+
+		test(
+			'should select inline objects - delete',
+			'<paragraph>foo[]<inline></inline>bar</paragraph>',
+			keyCodes.delete,
+			'<paragraph>foo[<inline></inline>]bar</paragraph>'
+		);
+
+		test(
+			'should remove inline objects - backspace',
+			'<paragraph>foo[<inline></inline>]bar</paragraph>',
+			keyCodes.backspace,
+			'<paragraph>foo[]bar</paragraph>'
+		);
+
+		test(
+			'should remove inline objects - delete',
+			'<paragraph>foo[<inline></inline>]bar</paragraph>',
+			keyCodes.delete,
+			'<paragraph>foo[]bar</paragraph>'
+		);
+
 		it( 'should prevent default behaviour and stop event propagation', () => {
 			const keydownHandler = sinon.spy();
 			const domEventDataMock = {
 				keyCode: keyCodes.delete,
-				preventDefault: sinon.spy()
+				preventDefault: sinon.spy(),
 			};
 			setModelData( document, '<paragraph>foo[]</paragraph><widget></widget>' );
 			viewDocument.on( 'keydown',  keydownHandler );
@@ -224,12 +358,15 @@ describe( 'Widget', () => {
 		function test( name, data, keyCodeOrMock, expected ) {
 			it( name, () => {
 				const domEventDataMock = ( typeof keyCodeOrMock == 'object' ) ? keyCodeOrMock : {
-					keyCode: keyCodeOrMock,
-					preventDefault: () => {}
+					keyCode: keyCodeOrMock
 				};
 
 				setModelData( document, data );
-				viewDocument.fire( 'keydown', domEventDataMock );
+				viewDocument.fire( 'keydown', new DomEventData(
+					viewDocument,
+					{ target: null, preventDefault: () => {} },
+					domEventDataMock
+				) );
 
 				expect( getModelData( document ) ).to.equal( expected );
 			} );
