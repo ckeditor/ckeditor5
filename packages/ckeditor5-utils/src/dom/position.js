@@ -102,19 +102,39 @@ function getBestPositionRect( positions, targetRect, elementRect, limiterRect, v
 		let viewportIntersectArea;
 
 		if ( limiterRect ) {
-			limiterIntersectArea = limiterRect.getIntersectionArea( positionRect );
+			if ( viewportRect ) {
+				limiterIntersectArea = limiterRect.getIntersection( viewportRect ).getIntersectionArea( positionRect );
+			} else {
+				limiterIntersectArea = limiterRect.getIntersectionArea( positionRect );
+			}
 		}
 
 		if ( viewportRect ) {
 			viewportIntersectArea = viewportRect.getIntersectionArea( positionRect );
 		}
 
-		if (
-			// The primary criterion is whether the element visibility in the viewport has improved.
-			( viewportRect ? viewportIntersectArea >= maxViewportIntersectArea : true ) &&
-			// The secondary criterion is whether the element is more container by the limiter.
-			( limiterRect ? limiterIntersectArea > maxLimiterIntersectArea : true )
-		) {
+		// The only criterion: intersection with the viewport.
+		if ( viewportRect && !limiterRect ) {
+			if ( viewportIntersectArea > maxViewportIntersectArea ) {
+				setBestPosition();
+			}
+		}
+		// The only criterion: intersection with the limiter.
+		else if ( !viewportRect && limiterRect ) {
+			if ( limiterIntersectArea > maxLimiterIntersectArea ) {
+				setBestPosition();
+			}
+		}
+		// Two criteria: intersection with the viewport and the limiter visible in the viewport.
+		else {
+			if ( viewportIntersectArea > maxViewportIntersectArea && limiterIntersectArea >= maxLimiterIntersectArea ) {
+				setBestPosition();
+			} else if ( viewportIntersectArea >= maxViewportIntersectArea && limiterIntersectArea > maxLimiterIntersectArea ) {
+				setBestPosition();
+			}
+		}
+
+		function setBestPosition() {
 			maxViewportIntersectArea = viewportIntersectArea;
 			maxLimiterIntersectArea = limiterIntersectArea;
 			bestPositionRect = positionRect;

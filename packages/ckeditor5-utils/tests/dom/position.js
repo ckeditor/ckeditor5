@@ -104,7 +104,7 @@ describe( 'getOptimalPosition', () => {
 				positions: [ attachLeft, attachRight ]
 			}, {
 				top: 100,
-				left: -90,
+				left: -20,
 				name: 'left'
 			} );
 		} );
@@ -115,7 +115,7 @@ describe( 'getOptimalPosition', () => {
 				positions: [ attachRight, attachLeft ]
 			}, {
 				top: 100,
-				left: -90,
+				left: -20,
 				name: 'left'
 			} );
 		} );
@@ -131,7 +131,7 @@ describe( 'getOptimalPosition', () => {
 				fitInViewport: true
 			}, {
 				top: 100,
-				left: 120,
+				left: 10,
 				name: 'right'
 			} );
 		} );
@@ -143,7 +143,7 @@ describe( 'getOptimalPosition', () => {
 				fitInViewport: true
 			}, {
 				top: 100,
-				left: 120,
+				left: 10,
 				name: 'right'
 			} );
 		} );
@@ -151,11 +151,11 @@ describe( 'getOptimalPosition', () => {
 		it( 'should return coordinates (#3)', () => {
 			assertPosition( {
 				element, target,
-				positions: [ attachLeft, attachRight, attachBottom ],
+				positions: [ attachLeft, attachBottom, attachRight ],
 				fitInViewport: true
 			}, {
 				top: 110,
-				left: 110,
+				left: 0,
 				name: 'bottom'
 			} );
 		} );
@@ -164,26 +164,50 @@ describe( 'getOptimalPosition', () => {
 	describe( 'with limiter and fitInViewport on', () => {
 		beforeEach( setElementTargetLimiterPlayground );
 
-		it( 'should return coordinates (viewport is more important than limiter #1)', () => {
+		it( 'should return coordinates (#1)', () => {
 			assertPosition( {
 				element, target, limiter,
 				positions: [ attachLeft, attachRight ],
 				fitInViewport: true
 			}, {
 				top: 100,
-				left: -90,
-				name: 'left'
+				left: 10,
+				name: 'right'
 			} );
 		} );
 
-		it( 'should return coordinates (viewport is more important than limiter #2)', () => {
+		it( 'should return coordinates (#2)', () => {
 			assertPosition( {
 				element, target, limiter,
 				positions: [ attachRight, attachLeft ],
 				fitInViewport: true
 			}, {
 				top: 100,
-				left: 120,
+				left: 10,
+				name: 'right'
+			} );
+		} );
+
+		it( 'should return coordinates (#3)', () => {
+			assertPosition( {
+				element, target, limiter,
+				positions: [ attachRight, attachLeft, attachBottom ],
+				fitInViewport: true
+			}, {
+				top: 110,
+				left: 0,
+				name: 'bottom'
+			} );
+		} );
+
+		it( 'should return coordinates (#4)', () => {
+			assertPosition( {
+				element, target, limiter,
+				positions: [ attachTop, attachRight ],
+				fitInViewport: true
+			}, {
+				top: 100,
+				left: 10,
 				name: 'right'
 			} );
 		} );
@@ -225,6 +249,17 @@ const attachBottom = ( targetRect ) => ( {
 	name: 'bottom'
 } );
 
+//	+--------+
+//	|    E   |
+//	+--+-----+
+//	   |  T  |
+//	   +-----+
+const attachTop = ( targetRect, elementRect ) => ( {
+	top: targetRect.top - elementRect.height,
+	left: targetRect.left - ( elementRect.width - targetRect.width ),
+	name: 'bottom'
+} );
+
 function stubWindowScroll( x, y ) {
 	const { scrollX: savedX, scrollY: savedY } = window;
 
@@ -243,7 +278,7 @@ function stubElementRect( element, rect ) {
 
 //        <-- 100px ->
 //
-//    ^   +--------------[ BODY ]----------
+//    ^   +--------------[ Viewport ]----------
 //    |   |
 //  100px |
 //	  |   |           <-- 10px -->
@@ -278,25 +313,26 @@ function setElementTargetPlayground() {
 	} );
 }
 
-//        <-- 100px -->
 //
-//    ^   +--------------[ BODY ]----------------------
-//    |   |
-//  100px |
-//    |   |            <--------- 20px ------->
-//	  |   |                        <-- 10px -->
-//	  V   |
-//	      |   ^   ^    +------------+---------+
-//	      |   |   |    |            |         |
-//	      |   |  10px  |            |    T    |
-//	      |   |   |    |            |         |
-//	      |  20px V    |            +---------+
-//	      |   |        |                      |
-//	      |   |        |                      |
-//	      |   |        |                      |
-//        |   V        +------[ LIMITER ]-----+
-//        |
-//        |
+//
+//     ^                +-----------[ Viewport ]----------------------
+//     |                |
+//   100px              |
+//     |   <--------- 20px ------->
+//	   |               <-- 10px -->
+//	   V                |
+//	       +------------+---------+  ^    ^
+//	       |            |         |  |    |
+//	       |            |    T    | 10px  |
+//	       |            |         |  |    |
+//	       |            +---------+  V   20px
+//	       |            |         |       |
+//	       |            |         |       |
+//	       |            |         |       |
+//         +------[ Limiter ]-----+       V
+//                      |
+//                      |
+//
 //
 function setElementTargetLimiterPlayground() {
 	element = document.createElement( 'div' );
@@ -305,27 +341,27 @@ function setElementTargetLimiterPlayground() {
 
 	stubElementRect( element, {
 		top: 0,
-		right: 200,
-		bottom: 200,
+		right: 20,
+		bottom: 20,
 		left: 0,
-		width: 200,
-		height: 200
+		width: 20,
+		height: 20
 	} );
 
 	stubElementRect( limiter, {
 		top: 100,
-		right: 120,
+		right: 10,
 		bottom: 120,
-		left: 100,
+		left: -10,
 		width: 20,
 		height: 20
 	} );
 
 	stubElementRect( target, {
 		top: 100,
-		right: 120,
+		right: 10,
 		bottom: 110,
-		left: 110,
+		left: 0,
 		width: 10,
 		height: 10
 	} );
