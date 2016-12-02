@@ -109,18 +109,19 @@ export default class Editor {
 		const config = this.config;
 
 		return loadPlugins()
-			.then( initPlugins )
-			.then( () => {
-				this.fire( 'pluginsReady' );
-			} );
+			.then( ( loadedPlugins ) => {
+				return initPlugins( loadedPlugins, 'init' )
+					.then( () => initPlugins( loadedPlugins, 'afterInit' ) );
+			} )
+			.then( () => this.fire( 'pluginsReady' ) );
 
 		function loadPlugins() {
 			return that.plugins.load( config.get( 'plugins' ) || [] );
 		}
 
-		function initPlugins( loadedPlugins ) {
+		function initPlugins( loadedPlugins, method ) {
 			return loadedPlugins.reduce( ( promise, plugin ) => {
-				return promise.then( plugin.init.bind( plugin ) );
+				return promise.then( plugin[ method ].bind( plugin ) );
 			}, Promise.resolve() );
 		}
 	}

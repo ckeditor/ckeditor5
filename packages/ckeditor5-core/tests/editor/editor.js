@@ -15,28 +15,35 @@ class PluginA extends Plugin {
 	constructor( editor ) {
 		super( editor );
 		this.init = sinon.spy().named( 'A' );
+		this.afterInit = sinon.spy().named( 'A-after' );
 	}
 }
+
 class PluginB extends Plugin {
 	constructor( editor ) {
 		super( editor );
 		this.init = sinon.spy().named( 'B' );
+		this.afterInit = sinon.spy().named( 'B-after' );
 	}
 }
+
 class PluginC extends Plugin {
 	constructor( editor ) {
 		super( editor );
 		this.init = sinon.spy().named( 'C' );
+		this.afterInit = sinon.spy().named( 'C-after' );
 	}
 
 	static get requires() {
 		return [ PluginB ];
 	}
 }
+
 class PluginD extends Plugin {
 	constructor( editor ) {
 		super( editor );
 		this.init = sinon.spy().named( 'D' );
+		this.afterInit = sinon.spy().named( 'D-after' );
 	}
 
 	static get requires() {
@@ -130,17 +137,25 @@ describe( 'Editor', () => {
 				plugins: [ PluginA, PluginD ]
 			} );
 
+			const pluginsReadySpy = sinon.spy().named( 'pluginsReady' );
+			editor.on( 'pluginsReady', pluginsReadySpy );
+
 			return editor.initPlugins().then( () => {
 				sinon.assert.callOrder(
 					editor.plugins.get( PluginA ).init,
 					editor.plugins.get( PluginB ).init,
 					editor.plugins.get( PluginC ).init,
-					editor.plugins.get( PluginD ).init
+					editor.plugins.get( PluginD ).init,
+					editor.plugins.get( PluginA ).afterInit,
+					editor.plugins.get( PluginB ).afterInit,
+					editor.plugins.get( PluginC ).afterInit,
+					editor.plugins.get( PluginD ).afterInit,
+					pluginsReadySpy
 				);
 			} );
 		} );
 
-		it( 'should initialize plugins in the right order, waiting for asynchronous ones', () => {
+		it( 'should initialize plugins in the right order, waiting for asynchronous init()', () => {
 			const asyncSpy = sinon.spy().named( 'async-call-spy' );
 
 			// Synchronous plugin that depends on an asynchronous one.
@@ -181,6 +196,52 @@ describe( 'Editor', () => {
 					// This one is called with delay by the async init.
 					asyncSpy,
 					editor.plugins.get( PluginSync ).init
+				);
+			} );
+		} );
+
+		it( 'should initialize plugins in the right order, waiting for asynchronous afterInit()', () => {
+			const asyncSpy = sinon.spy().named( 'async-call-spy' );
+
+			// Synchronous plugin that depends on an asynchronous one.
+			class PluginSync extends Plugin {
+				constructor( editor ) {
+					super( editor );
+					this.afterInit = sinon.spy().named( 'sync' );
+				}
+
+				static get requires() {
+					return [ PluginAsync ];
+				}
+			}
+
+			class PluginAsync extends Plugin {
+				constructor( editor ) {
+					super( editor );
+
+					this.afterInit = sinon.spy( () => {
+						return new Promise( ( resolve ) => {
+							setTimeout( () => {
+								asyncSpy();
+								resolve();
+							}, 0 );
+						} );
+					} );
+				}
+			}
+
+			const editor = new Editor( {
+				plugins: [ PluginA, PluginSync ]
+			} );
+
+			return editor.initPlugins().then( () => {
+				sinon.assert.callOrder(
+					editor.plugins.get( PluginA ).afterInit,
+					editor.plugins.get( PluginAsync ).afterInit,
+
+					// This one is called with delay by the async init.
+					asyncSpy,
+					editor.plugins.get( PluginSync ).afterInit
 				);
 			} );
 		} );
