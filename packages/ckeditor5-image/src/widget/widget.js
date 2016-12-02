@@ -114,7 +114,7 @@ export default class Widget extends Plugin {
 			eventInfo.stop();
 
 			modelDocument.enqueueChanges( () => {
-				// Remove previous node if empty;
+				// Remove previous element if empty.
 				const previousNode = probe.anchor.parent;
 
 				if ( previousNode.isEmpty ) {
