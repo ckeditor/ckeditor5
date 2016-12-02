@@ -21,4 +21,5 @@ install:
 script:
   - node_modules/.bin/ckeditor5-dev-tests-travis
 after_success:
-  - node_modules/.bin/codeclimate-test-reporter < .build/coverage/lcov.info
+  - node_modules/.bin/codeclimate-test-reporter < build/.automated-tests/coverage/lcov.info
+
