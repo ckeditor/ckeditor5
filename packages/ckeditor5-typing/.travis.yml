@@ -19,7 +19,6 @@ install:
   - npm install @ckeditor/ckeditor5-dev-tests
   - npm install codeclimate-test-reporter
 script:
-  - node_modules/.bin/ckeditor5-dev-tests --coverage --ignore-duplicates
+  - node_modules/.bin/ckeditor5-dev-tests-travis
 after_success:
-  - sed -i.backup 's/build\/\.automated-tests\/ckeditor5\/[^\/]*/src/g' build/.automated-tests/coverage/lcov.info
   - node_modules/.bin/codeclimate-test-reporter < .build/coverage/lcov.info
