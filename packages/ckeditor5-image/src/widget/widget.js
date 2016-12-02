@@ -8,6 +8,7 @@ import WidgetEngine from './widgetengine.js';
 import MouseObserver from '../../engine/view/observer/mouseobserver.js';
 import ModelRange from '../../engine/model/range.js';
 import ModelSelection from '../../engine/model/selection.js';
+import ModelElement from '../../engine/model/element.js';
 import { isWidget } from './utils.js';
 import { keyCodes } from '../../utils/keyboard.js';
 
@@ -109,7 +110,7 @@ export default class Widget extends Plugin {
 
 		const objectElement = isForward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
 
-		if ( objectElement && modelDocument.schema.objects.has( objectElement.name ) ) {
+		if ( objectElement instanceof ModelElement && modelDocument.schema.objects.has( objectElement.name ) ) {
 			domEventData.preventDefault();
 			eventInfo.stop();
 
