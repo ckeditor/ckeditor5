@@ -163,6 +163,48 @@ describe( 'Widget', () => {
 			'<paragraph>foo</paragraph><paragraph>[]bar</paragraph>'
 		);
 
+		test(
+			'should work correctly with modifier key: backspace + ctrl',
+			'<widget></widget><paragraph>[]foo</paragraph>',
+			{ keyCode: keyCodes.backspace, ctrlKey: true, preventDefault: () => {} },
+			'[<widget></widget>]<paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should work correctly with modifier key: backspace + alt',
+			'<widget></widget><paragraph>[]foo</paragraph>',
+			{ keyCode: keyCodes.backspace, altKey: true, preventDefault: () => {} },
+			'[<widget></widget>]<paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should work correctly with modifier key: backspace + shift',
+			'<widget></widget><paragraph>[]foo</paragraph>',
+			{ keyCode: keyCodes.backspace, shiftKey: true, preventDefault: () => {} },
+			'[<widget></widget>]<paragraph>foo</paragraph>'
+		);
+
+		test(
+			'should work correctly with modifier key: delete + ctrl',
+			'<paragraph>foo[]</paragraph><widget></widget>',
+			{ keyCode: keyCodes.delete, ctrlKey: true, preventDefault: () => {} },
+			'<paragraph>foo</paragraph>[<widget></widget>]'
+		);
+
+		test(
+			'should work correctly with modifier key: delete + alt',
+			'<paragraph>foo[]</paragraph><widget></widget>',
+			{ keyCode: keyCodes.delete, altKey: true, preventDefault: () => {} },
+			'<paragraph>foo</paragraph>[<widget></widget>]'
+		);
+
+		test(
+			'should work correctly with modifier key: delete + shift',
+			'<paragraph>foo[]</paragraph><widget></widget>',
+			{ keyCode: keyCodes.delete, shiftKey: true, preventDefault: () => {} },
+			'<paragraph>foo</paragraph>[<widget></widget>]'
+		);
+
 		it( 'should prevent default behaviour and stop event propagation', () => {
 			const keydownHandler = sinon.spy();
 			const domEventDataMock = {
@@ -179,10 +221,10 @@ describe( 'Widget', () => {
 			sinon.assert.notCalled( keydownHandler );
 		} );
 
-		function test( name, data, keyCode, expected ) {
+		function test( name, data, keyCodeOrMock, expected ) {
 			it( name, () => {
-				const domEventDataMock = {
-					keyCode: keyCode,
+				const domEventDataMock = ( typeof keyCodeOrMock == 'object' ) ? keyCodeOrMock : {
+					keyCode: keyCodeOrMock,
 					preventDefault: () => {}
 				};
 
