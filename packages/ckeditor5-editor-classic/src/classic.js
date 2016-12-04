@@ -82,8 +82,13 @@ export default class ClassicEditor extends StandardEditor {
 				editor.initPlugins()
 					.then( () => editor._elementReplacer.replace( element, editor.ui.view.element ) )
 					.then( () => editor.ui.init() )
+					.then( () => editor.fire( 'uiReady' ) )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
 					.then( () => editor.loadDataFromEditorElement() )
+					.then( () => {
+						editor.fire( 'dataReady' );
+						editor.fire( 'ready' );
+					} )
 					.then( () => editor )
 			);
 		} );
