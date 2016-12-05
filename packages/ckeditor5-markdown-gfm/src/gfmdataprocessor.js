@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module markdown-gfm/gfmdataprocessor
+ */
+
 import marked from './lib/marked/marked.js';
 import toMarkdown from './lib/to-markdown/to-markdown.js';
 import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
@@ -10,11 +14,9 @@ import GFMRenderer from './lib/marked/renderer.js';
 import converters from './lib/to-markdown/converters.js';
 
 /**
- * GFMDataProcessor class.
  * This data processor implementation uses GitHub flavored markdown as input/output data.
  *
- * @memberOf markdown-gfm
- * @implements engine.dataProcessor.DataProcessor
+ * @implements module:engine/dataprocessor/dataprocessor~DataProcessor
  */
 export default class GFMDataProcessor {
 	constructor() {
@@ -22,7 +24,7 @@ export default class GFMDataProcessor {
 		 * HTML data processor used to process HTML produced by the Markdown to HTML converter and the other way.
 		 *
 		 * @private
-		 * @member {engine.dataProcessor.HtmlDataProcessor} markdown-gfm.GFMDataProcessor#_htmlDP
+		 * @member {module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}
 		 */
 		this._htmlDP = new HtmlDataProcessor();
 	}
@@ -31,7 +33,7 @@ export default class GFMDataProcessor {
 	 * Converts provided markdown string to view tree.
 	 *
 	 * @param {String} data Markdown string.
-	 * @returns {engine.view.DocumentFragment} Converted view element.
+	 * @returns {module:engine/view/documentfragment~DocumentFragment} Converted view element.
 	 */
 	toView( data ) {
 		const html = marked.parse( data, {
@@ -46,9 +48,9 @@ export default class GFMDataProcessor {
 	}
 
 	/**
-	 * Converts provided {@link engine.view.DocumentFragment DocumentFragment} to data format - in this case markdown string.
+	 * Converts provided {@link module:engine/view/documentfragment~DocumentFragment} to data format - in this case markdown string.
 	 *
-	 * @param {engine.view.DocumentFragment} viewFragment
+	 * @param {module:engine/view/documentfragment~DocumentFragment} viewFragment
 	 * @returns {String} Markdown string.
 	 */
 	toData( viewFragment ) {
