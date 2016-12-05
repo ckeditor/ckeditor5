@@ -1,8 +1,10 @@
 /**
- * The list indent command. It is used by the {@link list.List list feature}.
- *
- * @memberOf list
- * @namespace list.converters
+ * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * @module list/converters
  */
 
 import ViewListItemElement from './viewlistitemelement.js';
@@ -135,10 +137,10 @@ function injectViewList( modelItem, injectedItem, mapper ) {
  * It creates `<ul><li></li><ul>` (or `<ol>`) view structure out of `listItem` model element, inserts it at correct
  * position, and merges the list with surrounding lists (if able).
  *
- * @see engine.conversion.ModelConversionDispatcher#event:insert
- * @param {utils.EventInfo} evt Object containing information about the fired event.
+ * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert
+ * @param {module:utils/eventinfo~EventInfo} evt Object containing information about the fired event.
  * @param {Object} data Additional information about the change.
- * @param {engine.conversion.ModelConsumable} consumable Values to consume.
+ * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface.
  */
 export function modelViewInsertion( evt, data, consumable, conversionApi ) {
@@ -165,10 +167,10 @@ export function modelViewInsertion( evt, data, consumable, conversionApi ) {
  * This change means that `<li>`s parent changes from `<ul>` to `<ol>` (or vice versa). This is accomplished by breaking
  * view elements, changing their name and merging them.
  *
- * @see engine.conversion.ModelConversionDispatcher#event:changeAttribute
- * @param {utils.EventInfo} evt Object containing information about the fired event.
+ * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:changeAttribute
+ * @param {module:utils/eventinfo~EventInfo} evt Object containing information about the fired event.
  * @param {Object} data Additional information about the change.
- * @param {engine.conversion.ModelConsumable} consumable Values to consume.
+ * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface.
  */
 export function modelViewChangeType( evt, data, consumable, conversionApi ) {
@@ -197,10 +199,10 @@ export function modelViewChangeType( evt, data, consumable, conversionApi ) {
 /**
  * Model to view converter for `listItem` model element remove.
  *
- * @see engine.conversion.ModelConversionDispatcher#event:remove
- * @param {utils.EventInfo} evt Object containing information about the fired event.
+ * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:remove
+ * @param {module:utils/eventinfo~EventInfo} evt Object containing information about the fired event.
  * @param {Object} data Additional information about the change.
- * @param {engine.conversion.ModelConsumable} consumable Values to consume.
+ * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface.
  */
 export function modelViewRemove( evt, data, consumable, conversionApi ) {
@@ -223,10 +225,10 @@ export function modelViewRemove( evt, data, consumable, conversionApi ) {
 /**
  * Model to view converter for `listItem` model element move.
  *
- * @see engine.conversion.ModelConversionDispatcher#event:move
- * @param {utils.EventInfo} evt Object containing information about the fired event.
+ * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:move
+ * @param {module:utils/eventinfo~EventInfo} evt Object containing information about the fired event.
  * @param {Object} data Additional information about the change.
- * @param {engine.conversion.ModelConsumable} consumable Values to consume.
+ * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface.
  */
 export function modelViewMove( evt, data, consumable, conversionApi ) {
@@ -263,10 +265,10 @@ export function modelViewMove( evt, data, consumable, conversionApi ) {
 /**
  * Model to view converter for `indent` attribute change on `listItem` model element.
  *
- * @see engine.conversion.ModelConversionDispatcher#event:changeAttribute
- * @param {utils.EventInfo} evt Object containing information about the fired event.
+ * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:changeAttribute
+ * @param {module:utils/eventinfo~EventInfo} evt Object containing information about the fired event.
  * @param {Object} data Additional information about the change.
- * @param {engine.conversion.ModelConsumable} consumable Values to consume.
+ * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface.
  */
 export function modelViewChangeIndent( evt, data, consumable, conversionApi ) {
@@ -296,7 +298,7 @@ export function modelViewChangeIndent( evt, data, consumable, conversionApi ) {
 }
 
 /**
- * A special model to view converter introduced by {@link list.List List feature}. This converter is fired for
+ * A special model to view converter introduced by {@link module:list/list~List List feature}. This converter is fired for
  * insert change of every model item, and should be fired before actual converter. The converter checks whether inserted
  * model item is a non-`listItem` element. If it is, and it is inserted inside a view list, the converter breaks the
  * list so the model element is inserted to the view parent element corresponding to its model parent element.
@@ -314,10 +316,10 @@ export function modelViewChangeIndent( evt, data, consumable, conversionApi ) {
  *		<paragraph>xxx</paragraph>       // Instead of this wrong view state:
  *		<listItem>bar</listItem>         <ul><li>foo</li><p>xxx</p><li>bar</li></ul>
  *
- * @see engine.conversion.ModelConversionDispatcher#event:insert
- * @param {utils.EventInfo} evt Object containing information about the fired event.
+ * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert
+ * @param {module:utils/eventinfo~EventInfo} evt Object containing information about the fired event.
  * @param {Object} data Additional information about the change.
- * @param {engine.conversion.ModelConsumable} consumable Values to consume.
+ * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface.
  */
 export function modelViewSplitOnInsert( evt, data, consumable, conversionApi ) {
@@ -340,7 +342,7 @@ export function modelViewSplitOnInsert( evt, data, consumable, conversionApi ) {
 }
 
 /**
- * A special model to view converter introduced by {@link list.List List feature}. This converter takes care of
+ * A special model to view converter introduced by {@link module:list/list~List List feature}. This converter takes care of
  * merging view lists after something is removed or moved from near them.
  *
  * Example:
@@ -356,11 +358,11 @@ export function modelViewSplitOnInsert( evt, data, consumable, conversionApi ) {
  *		                                     <li>bar</li>
  *		                                 </ul>
  *
- * @see engine.conversion.ModelConversionDispatcher#event:remove
- * @see engine.conversion.ModelConversionDispatcher#event:move
- * @param {utils.EventInfo} evt Object containing information about the fired event.
+ * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:remove
+ * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:move
+ * @param {module:utils/eventinfo~EventInfo} evt Object containing information about the fired event.
  * @param {Object} data Additional information about the change.
- * @param {engine.conversion.ModelConsumable} consumable Values to consume.
+ * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface.
  */
 export function modelViewMergeAfter( evt, data, consumable, conversionApi ) {
@@ -381,10 +383,10 @@ export function modelViewMergeAfter( evt, data, consumable, conversionApi ) {
  * * checks `<li>`'s parent,
  * * passes `data.indent` value when `<li>`'s sub-items are converted.
  *
- * @see engine.conversion.ViewConversionDispatcher#event:element
- * @param {utils.EventInfo} evt Object containing information about the fired event.
+ * @see module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
+ * @param {module:utils/eventinfo~EventInfo} evt Object containing information about the fired event.
  * @param {Object} data Object containing conversion input and a placeholder for conversion output and possibly other values.
- * @param {engine.conversion.ViewConsumable} consumable Values to consume.
+ * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface to be used by callback.
  */
 export function viewModelConverter( evt, data, consumable, conversionApi ) {
@@ -439,10 +441,10 @@ export function viewModelConverter( evt, data, consumable, conversionApi ) {
  * This is mostly to clean white spaces from between `<li>` view elements inside the view list element, however also
  * incorrect data can be cleared if the view was incorrect.
  *
- * @see engine.conversion.ViewConversionDispatcher#event:element
- * @param {utils.EventInfo} evt Object containing information about the fired event.
+ * @see module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
+ * @param {module:utils/eventinfo~EventInfo} evt Object containing information about the fired event.
  * @param {Object} data Object containing conversion input and a placeholder for conversion output and possibly other values.
- * @param {engine.conversion.ViewConsumable} consumable Values to consume.
+ * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
  */
 export function cleanList( evt, data, consumable ) {
 	if ( consumable.test( data.input, { name: true } ) ) {
@@ -458,12 +460,12 @@ export function cleanList( evt, data, consumable ) {
 }
 
 /**
- * Callback for model position to view position mapping for {@link engine.conversion.Mapper}. The callback fixes positions
+ * Callback for model position to view position mapping for {@link module:engine/conversion/mapper~Mapper}. The callback fixes positions
  * between `listItem` elements, that would be incorrectly mapped because of how list items are represented in model
  * and view.
  *
- * @see engine.conversion.Mapper#event:modelToViewPosition
- * @param {utils.EventInfo} evt Object containing information about the fired event.
+ * @see module:engine/conversion/mapper~Mapper#event:modelToViewPosition
+ * @param {module:utils/eventinfo~EventInfo} evt Object containing information about the fired event.
  * @param {Object} data Object containing additional data and placeholder for mapping result.
  */
 export function modelToViewPosition( evt, data ) {
@@ -488,12 +490,12 @@ export function modelToViewPosition( evt, data ) {
 }
 
 /**
- * Callback for view position to model position mapping for {@link engine.conversion.Mapper}. The callback fixes positions
+ * Callback for view position to model position mapping for {@link module:engine/conversion/mapper~Mapper}. The callback fixes positions
  * between `<li>` elements, that would be incorrectly mapped because of how list items are represented in model
  * and view.
  *
- * @see engine.conversion.Mapper#event:viewToModelPosition
- * @param {utils.EventInfo} evt Object containing information about the fired event.
+ * @see module:engine/conversion/mapper~Mapper#event:viewToModelPosition
+ * @param {module:utils/eventinfo~EventInfo} evt Object containing information about the fired event.
  * @param {Object} data Object containing additional data and placeholder for mapping result.
  */
 export function viewToModelPosition( evt, data ) {

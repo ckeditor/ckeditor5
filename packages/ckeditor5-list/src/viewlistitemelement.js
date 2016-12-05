@@ -3,13 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module list/viewlistitemelement
+ */
+
 import ViewContainerElement from '../engine/view/containerelement.js';
 
 /**
  * View element class representing list item (`<li>`). It extends {@link engine.view.ContainerElement} and overwrites
  * {@link list.ViewListItemElement#getFillerOffset evaluating whether filler offset} is needed.
  *
- * @memberOf list
  * @extends engine.view.ContainerElement
  */
 export default class ViewListItemElement extends ViewContainerElement {

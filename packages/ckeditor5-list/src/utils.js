@@ -6,19 +6,17 @@
 /**
  * Utilities used in modules from {@link list list} package.
  *
- * @memberOf list
- * @namespace list.utils
+ * @module list/utils
  */
 
 import Position from '../engine/model/position.js';
 
 /**
- * For given {@link engine.model.Position position}, returns the closest ancestor of that position which is a
+ * For given {@link module:engine/model/position~Position position}, returns the closest ancestor of that position which is a
  * `listItem` element.
  *
- * @function list.utils.getClosestListItem
- * @param {engine.model.Position} position Position which ancestor should be check looking for `listItem` element.
- * @returns {engine.model.Element|null} Element with `listItem` name that is a closest ancestor of given `position`, or
+ * @param {module:engine/model/position~Position} position Position which ancestor should be check looking for `listItem` element.
+ * @returns {module:engine/model/element~Element|null} Element with `listItem` name that is a closest ancestor of given `position`, or
  * `null` if neither of `position` ancestors is a `listItem`.
  */
 export function getClosestListItem( position ) {
@@ -26,13 +24,12 @@ export function getClosestListItem( position ) {
 }
 
 /**
- * For given {@link engine.model.Selection selection} and {@link engine.model.Schema schema}, returns an array with
- * all elements that are in the selection and are extending `$block` schema item.
+ * For given {@link module:engine/model/selection~Selection selection} and {@link module:engine/model/schema~Schema schema},
+ * returns an array with all elements that are in the selection and are extending `$block` schema item.
  *
- * @function list.utils.getSelectedBlocks
- * @param {engine.model.Selection} selection Selection from which blocks will be taken.
- * @param {engine.model.Schema} schema Schema which will be used to check if a model element extends `$block`.
- * @returns {Array.<engine.model.Element>} All blocks from the selection.
+ * @param {module:engine/model/selection~Selection} selection Selection from which blocks will be taken.
+ * @param {module:engine/model/schema~Schema} schema Schema which will be used to check if a model element extends `$block`.
+ * @returns {Array.<module:engine/model/element~Element>} All blocks from the selection.
  */
 export function getSelectedBlocks( selection, schema ) {
 	let position = getPositionBeforeBlock( selection.getFirstPosition(), schema );
@@ -53,7 +50,7 @@ export function getSelectedBlocks( selection, schema ) {
 }
 
 /**
- * For given {@link engine.model.Position position}, finds a model element extending `$block` schema item which is
+ * For given {@link module:engine/model/position~Position position}, finds a model element extending `$block` schema item which is
  * closest element to that position. First node after the position is checked and then the position's ancestors. `null`
  * is returned if such element has not been found or found element is a root element.
  *

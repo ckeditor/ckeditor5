@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module list/listengine
+ */
+
 import Plugin from '../core/plugin.js';
 import ListCommand from './listcommand.js';
 import IndentCommand from './indentcommand.js';
@@ -25,8 +29,7 @@ import {
  * The engine of the lists feature. It handles creating, editing and removing lists and list items.
  * It registers the `numberedList`, `bulletedList`, `indentList` and `outdentList` commands.
  *
- * @memberOf list
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class ListEngine extends Plugin {
 	/**

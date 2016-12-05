@@ -3,20 +3,23 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module list/indentcommand
+ */
+
 import Command from '../core/command/command.js';
 import { getClosestListItem } from './utils.js';
 
 /**
- * The list indent command. It is used by the {@link list.List list feature}.
+ * The list indent command. It is used by the {@link module:list/list~List list feature}.
  *
- * @memberOf list
  * @extends core.command.Command
  */
 export default class IndentCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {core.editor.Editor} editor Editor instance.
+	 * @param {module:core/editor/editor~Editor} editor Editor instance.
 	 * @param {'forward'|'backward'} indentDirection Direction of indent. If it is equal to `backward`, the command
 	 * will outdent a list item.
 	 */
