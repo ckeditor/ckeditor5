@@ -3,27 +3,29 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module editor-classic/classiceditorui
+ */
+
 import ComponentFactory from '../ui/componentfactory.js';
 import FocusTracker from '../utils/focustracker.js';
 
 /**
  * The classic editor UI class.
- *
- * @memberOf editor-classic
  */
 export default class ClassicEditorUI {
 	/**
 	 * Creates an instance of the editor UI class.
 	 *
-	 * @param {core.editor.Editor} editor The editor instance.
-	 * @param {ui.editorUI.EditorUIView} view View of the ui.
+	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param {module:ui/editorui/editoruiview~EditorUIView} view View of the ui.
 	 */
 	constructor( editor, view ) {
 		/**
 		 * Editor that the UI belongs to.
 		 *
 		 * @readonly
-		 * @member {core.editor.Editor} editor-classic.ClassicEditorUI#editor
+		 * @member {module:core/editor/editor~Editor}
 		 */
 		this.editor = editor;
 
@@ -31,15 +33,15 @@ export default class ClassicEditorUI {
 		 * View of the ui.
 		 *
 		 * @readonly
-		 * @member {ui.editorUI.EditorUIView} editor-classic.ClassicEditorUI#view
+		 * @member {module:ui/editorui/editoruiview~EditorUIView}
 		 */
 		this.view = view;
 
 		/**
-		 * Instance of the {@link ui.ComponentFactory}.
+		 * Instance of the {@link module:ui/componentfactory~ComponentFactory}.
 		 *
 		 * @readonly
-		 * @member {ui.ComponentFactory} editor-classic.ClassicEditorUI#componentFactory
+		 * @member {module:ui/componentfactory~ComponentFactory}
 		 */
 		this.componentFactory = new ComponentFactory( editor );
 
@@ -47,7 +49,7 @@ export default class ClassicEditorUI {
 		 * Keeps information about editor focus.
 		 *
 		 * @readonly
-		 * @member {utils.FocusTracker} editor-classic.ClassicEditorUI#focusTracker
+		 * @member {module:utils/focustracker~FocusTracker}
 		 */
 		this.focusTracker = new FocusTracker();
 

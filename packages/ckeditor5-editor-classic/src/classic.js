@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module editor-classic/classic
+ */
+
 import StandardEditor from '../core/editor/standardeditor.js';
 import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
 import ClassicEditorUI from './classiceditorui.js';
@@ -13,8 +17,7 @@ import ElementReplacer from '../utils/elementreplacer.js';
  * Classic editor. Uses inline editable and sticky toolbar, all
  * enclosed in a boxed UI.
  *
- * @memberOf editor-classic
- * @extends core.editor.StandardEditor
+ * @extends module:core/editor/standardeditor~StandardEditor
  */
 export default class ClassicEditor extends StandardEditor {
 	/**
@@ -35,7 +38,7 @@ export default class ClassicEditor extends StandardEditor {
 		 * The element replacer instance used to hide the editor element.
 		 *
 		 * @protected
-		 * @member {utils.ElementReplacer} editor-classic.Classic#_elementReplacer
+		 * @member {module:utils/elementreplacer~ElementReplacer}
 		 */
 		this._elementReplacer = new ElementReplacer();
 	}
@@ -69,10 +72,10 @@ export default class ClassicEditor extends StandardEditor {
 	 *			console.error( err.stack );
 	 *		} );
 	 *
-	 * @param {HTMLElement} element See {@link core.editor.ClassicEditor#constructor}'s parameters.
-	 * @param {Object} config See {@link core.editor.ClassicEditor#constructor}'s parameters.
+	 * @param {HTMLElement} element See {@link module:editor-classic/classic~ClassicEditor#constructor}'s parameters.
+	 * @param {Object} config See {@link module:editor-classic/classic~ClassicEditor#constructor}'s parameters.
 	 * @returns {Promise} A promise resolved once the editor is ready.
-	 * @returns {core.editor.StandardEditor} return.editor The editor instance.
+	 * @returns {module:core/editor/standardeditor~StandardEditor} return.editor The editor instance.
 	 */
 	static create( element, config ) {
 		return new Promise( ( resolve ) => {
