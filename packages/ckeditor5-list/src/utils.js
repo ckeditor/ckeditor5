@@ -4,7 +4,7 @@
  */
 
 /**
- * Utilities used in modules from {@link list list} package.
+ * Utilities used in modules from {@link module:list/list list} package.
  *
  * @module list/utils
  */

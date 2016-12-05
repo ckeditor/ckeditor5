@@ -10,17 +10,19 @@
 import ViewContainerElement from '../engine/view/containerelement.js';
 
 /**
- * View element class representing list item (`<li>`). It extends {@link engine.view.ContainerElement} and overwrites
- * {@link list.ViewListItemElement#getFillerOffset evaluating whether filler offset} is needed.
+ * View element class representing list item (`<li>`). It extends {@link module:engine/view/containerelement~ContainerElement}
+ * and overwrites {@link module:list/viewlistitemelement~ViewListItemElement#getFillerOffset evaluating whether filler offset}
+ * is needed.
  *
- * @extends engine.view.ContainerElement
+ * @extends module:engine/view/containerelement~ContainerElement
  */
 export default class ViewListItemElement extends ViewContainerElement {
 	/**
 	 * Creates `<li>` view item.
 	 *
 	 * @param {Object|Iterable} [attrs] Collection of attributes.
-	 * @param {engine.view.Node|Iterable.<engine.view.Node>} [children] List of nodes to be inserted into created element.
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children] List of nodes to be inserted
+	 * into created element.
 	 */
 	constructor( attrs, children ) {
 		super( 'li', attrs, children );

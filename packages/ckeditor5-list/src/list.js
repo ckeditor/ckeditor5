@@ -16,7 +16,7 @@ import { parseKeystroke } from '../utils/keyboard.js';
  * The lists feature. It introduces the `numberedList` and `bulletedList` buttons which
  * allows to convert paragraphs to/from list items and indent/outdent them.
  *
- * See also {@link module:list/list~ListEngine}.
+ * See also {@link module:list/listengine~ListEngine}.
  *
  * @extends module:core/plugin~Plugin
  */

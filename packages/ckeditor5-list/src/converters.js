@@ -17,120 +17,6 @@ import ViewPosition from '../engine/view/position.js';
 import ViewRange from '../engine/view/range.js';
 import viewWriter from '../engine/view/writer.js';
 
-// Helper function that creates a `<ul><li></li></ul>` structure out of given `modelItem` model `listItem` element.
-// Then, it binds created view list item (LI) with model `listItem` element.
-// The function then returns created view list item (LI).
-function generateLiInUl( modelItem, mapper ) {
-	const listType = modelItem.getAttribute( 'type' ) == 'numbered' ? 'ol' : 'ul';
-	const viewItem = new ViewListItemElement();
-
-	const viewList = new ViewContainerElement( listType, null );
-	viewList.appendChildren( viewItem );
-
-	mapper.bindElements( modelItem, viewItem );
-
-	return viewItem;
-}
-
-// Helper function that seeks for a sibling of given `modelItem` that is a `listItem` element and meets given criteria.
-// `options` object may contain one or more of given values (by default they are `false`):
-// `options.getNext` - whether next or previous siblings should be checked (default = previous)
-// `options.checkAllSiblings` - whether all siblings or just the first one should be checked (default = only one),
-// `options.sameIndent` - whether sought sibling should have same indent (default = no),
-// `options.biggerIndent` - whether sought sibling should have bigger indent (default = no).
-// Either `options.sameIndent` or `options.biggerIndent` should be set to `true`.
-function getSiblingListItem( modelItem, options ) {
-	const direction = options.getNext ? 'nextSibling' : 'previousSibling';
-	const checkAllSiblings = !!options.checkAllSiblings;
-	const sameIndent = !!options.sameIndent;
-	const biggerIndent = !!options.biggerIndent;
-
-	const indent = modelItem.getAttribute( 'indent' );
-
-	let item = modelItem[ direction ];
-
-	while ( item && item.name == 'listItem' ) {
-		let itemIndent = item.getAttribute( 'indent' );
-
-		if ( sameIndent && indent == itemIndent || biggerIndent && indent < itemIndent ) {
-			return item;
-		} else if ( !checkAllSiblings || indent > itemIndent ) {
-			return null;
-		}
-
-		item = item[ direction ];
-	}
-
-	return null;
-}
-
-// Helper function that takes two parameters, that are expected to be view list elements, and merges them.
-// The merge happen only if both parameters are UL or OL elements.
-function mergeViewLists( firstList, secondList ) {
-	if ( firstList && secondList && ( firstList.name == 'ul' || firstList.name == 'ol' ) && firstList.name == secondList.name ) {
-		viewWriter.mergeContainers( ViewPosition.createAfter( firstList ) );
-	}
-}
-
-// Helper function that takes model list item element `modelItem`, corresponding view list item element `injectedItem`
-// that is not added to the view and is inside a view list element (`ul` or `ol`) and is that's list only child.
-// The list is inserted at correct position (element breaking may be needed) and then merged with it's siblings.
-// See comments below to better understand the algorithm.
-function injectViewList( modelItem, injectedItem, mapper ) {
-	const injectedList = injectedItem.parent;
-
-	// 1. Break after previous `listItem` if it has same or bigger indent.
-	const prevModelItem = getSiblingListItem( modelItem, { sameIndent: true, biggerIndent: true } );
-
-	if ( prevModelItem ) {
-		let viewItem = mapper.toViewElement( prevModelItem );
-		let viewPosition = ViewPosition.createAfter( viewItem );
-		viewWriter.breakContainer( viewPosition );
-	}
-
-	// 2. Break after closest previous `listItem` sibling with same indent.
-	const sameIndentModelItem = getSiblingListItem( modelItem, { sameIndent: true, checkAllSiblings: true } );
-	// Position between broken lists will be a place where new list is inserted.
-	// If there is nothing to break (`sameIndentModelItem` is falsy) it means that converted list item
-	// is (will be) the first list item.
-	let insertionPosition;
-
-	if ( sameIndentModelItem ) {
-		let viewItem = mapper.toViewElement( sameIndentModelItem );
-		let viewPosition = ViewPosition.createAfter( viewItem );
-		insertionPosition = viewWriter.breakContainer( viewPosition );
-	} else {
-		// If there is a list item before converted list item, it means that that list item has lower indent.
-		// In such case the created view list should be appended as a child of that item.
-		const prevSibling = modelItem.previousSibling;
-
-		if ( prevSibling && prevSibling.name == 'listItem' ) {
-			insertionPosition = ViewPosition.createAt( mapper.toViewElement( prevSibling ), 'end' );
-		} else {
-			// This is the very first list item, use position mapping to get correct insertion position.
-			insertionPosition = mapper.toViewPosition( ModelPosition.createBefore( modelItem ) );
-		}
-	}
-
-	// 3. Append new UL/OL in position after breaking in step 2.
-	viewWriter.insert( insertionPosition, injectedList );
-
-	// 4. If next sibling is list item with bigger indent, append it's UL/OL to new LI.
-	const nextModelItem = getSiblingListItem( modelItem, { getNext: true, biggerIndent: true } );
-	const nextViewItem = mapper.toViewElement( nextModelItem );
-
-	/* istanbul ignore if */ // Part of code connected with indenting that is not yet complete.
-	if ( nextViewItem ) {
-		let sourceRange = ViewRange.createOn( nextViewItem.parent );
-		let targetPosition = ViewPosition.createAt( injectedItem, 'end' );
-		viewWriter.move( sourceRange, targetPosition );
-	}
-
-	// 5. Merge new UL/OL with above and below items (ULs/OLs or LIs).
-	mergeViewLists( injectedList, injectedList.nextSibling );
-	mergeViewLists( injectedList.previousSibling, injectedList );
-}
-
 /**
  * Model to view converter for `listItem` model element insertion.
  *
@@ -551,4 +437,118 @@ export function viewToModelPosition( evt, data ) {
 	if ( data.modelPosition !== null ) {
 		evt.stop();
 	}
+}
+
+// Helper function that creates a `<ul><li></li></ul>` structure out of given `modelItem` model `listItem` element.
+// Then, it binds created view list item (LI) with model `listItem` element.
+// The function then returns created view list item (LI).
+function generateLiInUl( modelItem, mapper ) {
+	const listType = modelItem.getAttribute( 'type' ) == 'numbered' ? 'ol' : 'ul';
+	const viewItem = new ViewListItemElement();
+
+	const viewList = new ViewContainerElement( listType, null );
+	viewList.appendChildren( viewItem );
+
+	mapper.bindElements( modelItem, viewItem );
+
+	return viewItem;
+}
+
+// Helper function that seeks for a sibling of given `modelItem` that is a `listItem` element and meets given criteria.
+// `options` object may contain one or more of given values (by default they are `false`):
+// `options.getNext` - whether next or previous siblings should be checked (default = previous)
+// `options.checkAllSiblings` - whether all siblings or just the first one should be checked (default = only one),
+// `options.sameIndent` - whether sought sibling should have same indent (default = no),
+// `options.biggerIndent` - whether sought sibling should have bigger indent (default = no).
+// Either `options.sameIndent` or `options.biggerIndent` should be set to `true`.
+function getSiblingListItem( modelItem, options ) {
+	const direction = options.getNext ? 'nextSibling' : 'previousSibling';
+	const checkAllSiblings = !!options.checkAllSiblings;
+	const sameIndent = !!options.sameIndent;
+	const biggerIndent = !!options.biggerIndent;
+
+	const indent = modelItem.getAttribute( 'indent' );
+
+	let item = modelItem[ direction ];
+
+	while ( item && item.name == 'listItem' ) {
+		let itemIndent = item.getAttribute( 'indent' );
+
+		if ( sameIndent && indent == itemIndent || biggerIndent && indent < itemIndent ) {
+			return item;
+		} else if ( !checkAllSiblings || indent > itemIndent ) {
+			return null;
+		}
+
+		item = item[ direction ];
+	}
+
+	return null;
+}
+
+// Helper function that takes two parameters, that are expected to be view list elements, and merges them.
+// The merge happen only if both parameters are UL or OL elements.
+function mergeViewLists( firstList, secondList ) {
+	if ( firstList && secondList && ( firstList.name == 'ul' || firstList.name == 'ol' ) && firstList.name == secondList.name ) {
+		viewWriter.mergeContainers( ViewPosition.createAfter( firstList ) );
+	}
+}
+
+// Helper function that takes model list item element `modelItem`, corresponding view list item element `injectedItem`
+// that is not added to the view and is inside a view list element (`ul` or `ol`) and is that's list only child.
+// The list is inserted at correct position (element breaking may be needed) and then merged with it's siblings.
+// See comments below to better understand the algorithm.
+function injectViewList( modelItem, injectedItem, mapper ) {
+	const injectedList = injectedItem.parent;
+
+	// 1. Break after previous `listItem` if it has same or bigger indent.
+	const prevModelItem = getSiblingListItem( modelItem, { sameIndent: true, biggerIndent: true } );
+
+	if ( prevModelItem ) {
+		let viewItem = mapper.toViewElement( prevModelItem );
+		let viewPosition = ViewPosition.createAfter( viewItem );
+		viewWriter.breakContainer( viewPosition );
+	}
+
+	// 2. Break after closest previous `listItem` sibling with same indent.
+	const sameIndentModelItem = getSiblingListItem( modelItem, { sameIndent: true, checkAllSiblings: true } );
+	// Position between broken lists will be a place where new list is inserted.
+	// If there is nothing to break (`sameIndentModelItem` is falsy) it means that converted list item
+	// is (will be) the first list item.
+	let insertionPosition;
+
+	if ( sameIndentModelItem ) {
+		let viewItem = mapper.toViewElement( sameIndentModelItem );
+		let viewPosition = ViewPosition.createAfter( viewItem );
+		insertionPosition = viewWriter.breakContainer( viewPosition );
+	} else {
+		// If there is a list item before converted list item, it means that that list item has lower indent.
+		// In such case the created view list should be appended as a child of that item.
+		const prevSibling = modelItem.previousSibling;
+
+		if ( prevSibling && prevSibling.name == 'listItem' ) {
+			insertionPosition = ViewPosition.createAt( mapper.toViewElement( prevSibling ), 'end' );
+		} else {
+			// This is the very first list item, use position mapping to get correct insertion position.
+			insertionPosition = mapper.toViewPosition( ModelPosition.createBefore( modelItem ) );
+		}
+	}
+
+	// 3. Append new UL/OL in position after breaking in step 2.
+	viewWriter.insert( insertionPosition, injectedList );
+
+	// 4. If next sibling is list item with bigger indent, append it's UL/OL to new LI.
+	const nextModelItem = getSiblingListItem( modelItem, { getNext: true, biggerIndent: true } );
+	const nextViewItem = mapper.toViewElement( nextModelItem );
+
+	/* istanbul ignore if */ // Part of code connected with indenting that is not yet complete.
+	if ( nextViewItem ) {
+		let sourceRange = ViewRange.createOn( nextViewItem.parent );
+		let targetPosition = ViewPosition.createAt( injectedItem, 'end' );
+		viewWriter.move( sourceRange, targetPosition );
+	}
+
+	// 5. Merge new UL/OL with above and below items (ULs/OLs or LIs).
+	mergeViewLists( injectedList, injectedList.nextSibling );
+	mergeViewLists( injectedList.previousSibling, injectedList );
 }

@@ -31,7 +31,7 @@ export default class IndentCommand extends Command {
 		 *
 		 * @readonly
 		 * @private
-		 * @member {Number} list.IndentCommand#_indentBy
+		 * @member {Number}
 		 */
 		this._indentBy = indentDirection == 'forward' ? 1 : -1;
 
