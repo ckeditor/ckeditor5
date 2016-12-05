@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module enter/enter
+ */
+
 import Plugin from '../core/plugin.js';
 import EnterCommand from './entercommand.js';
 import EnterObserver from './enterobserver.js';
@@ -10,8 +14,7 @@ import EnterObserver from './enterobserver.js';
 /**
  * The Enter feature. Handles the <kbd>Enter</kbd> and <kbd>Shift + Enter</kbd> keys in the editor.
  *
- * @memberOf enter
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class Enter extends Plugin {
 	init() {

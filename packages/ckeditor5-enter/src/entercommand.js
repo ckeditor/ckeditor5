@@ -3,14 +3,17 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module enter/entercommand
+ */
+
 import Command from '../core/command/command.js';
 import Position from '../engine/model/position.js';
 
 /**
  * Enter command. It is used by the {@link enter.Enter Enter feature} to handle the <kbd>Enter</kbd> key.
  *
- * @member enter
- * @extends core.command.Command
+ * @extends modue:core/command/command~Command
  */
 export default class EnterCommand extends Command {
 	/**

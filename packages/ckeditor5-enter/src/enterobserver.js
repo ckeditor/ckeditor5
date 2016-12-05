@@ -3,15 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module enter/enterobserver
+ */
+
 import Observer from '../engine/view/observer/observer.js';
 import DomEventData from '../engine/view/observer/domeventdata.js';
 import { keyCodes } from '../utils/keyboard.js';
 
 /**
- * Enter observer introduces the {@link engine.view.Document#enter} event.
+ * Enter observer introduces the {@link module:engine/view/document~Document#enter} event.
  *
- * @memberOf enter
- * @extends engine.view.observer.Observer
+ * @extends module:engine/view/observer~Observer
  */
 export default class EnterObserver extends Observer {
 	constructor( document ) {
@@ -36,6 +39,6 @@ export default class EnterObserver extends Observer {
  * Note: This event is fired by the {@link enter.EnterObserver observer}
  * (usually registered by the {@link enter.Enter Enter feature}).
  *
- * @event engine.view.Document#enter
- * @param {engine.view.observer.DomEventData} data
+ * @event module:engine/view/document~Document#event:enter
+ * @param {module:engine/view/observer/domeventdata~DomEventData} data
  */
