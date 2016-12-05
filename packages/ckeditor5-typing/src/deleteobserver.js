@@ -3,14 +3,17 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module typing/deleteobserver
+ */
+
 import Observer from '../engine/view/observer/observer.js';
 import DomEventData from '../engine/view/observer/domeventdata.js';
 import { keyCodes } from '../utils/keyboard.js';
 
 /**
- * Delete observer introduces the {@link engine.view.Document#delete} event.
+ * Delete observer introduces the {@link module:engine/view/document~Document#event:delete} event.
  *
- * @memberOf typing
  * @extends engine.view.observer.Observer
  */
 export default class DeleteObserver extends Observer {
@@ -45,11 +48,11 @@ export default class DeleteObserver extends Observer {
 /**
  * Event fired when the user tries to delete content (e.g. presses <kbd>Delete</kbd> or <kbd>Backspace</kbd>).
  *
- * Note: This event is fired by the {@link typing.DeleteObserver observer}
- * (usually registered by the {@link typing.Delete delete feature}).
+ * Note: This event is fired by the {@link module:typing/deleteobserver~DeleteObserver observer}
+ * (usually registered by the {@link module:typing/delete~Delete delete feature}).
  *
- * @event engine.view.Document#delete
- * @param {engine.view.observer.DomEventData} data
+ * @event module:engine/view/document~Document#event:delete
+ * @param {module:engine/view/observer/domeventdata~DomEventData} data
  * @param {'forward'|'delete'} data.direction The direction in which the deletion should happen.
  * @param {'character'|'word'} data.unit The "amount" of content that should be deleted.
  */

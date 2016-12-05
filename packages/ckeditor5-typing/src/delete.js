@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module typing/delete
+ */
+
 import Plugin from '../core/plugin.js';
 import DeleteCommand from './deletecommand.js';
 import DeleteObserver from './deleteobserver.js';
@@ -10,7 +14,6 @@ import DeleteObserver from './deleteobserver.js';
 /**
  * The delete and backspace feature. Handles the <kbd>Delete</kbd> and <kbd>Backspace</kbd> keys in the editor.
  *
- * @memberOf typing
  * @extends core.Plugin
  */
 export default class Delete extends Plugin {

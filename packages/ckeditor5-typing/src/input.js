@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module typing/input
+ */
+
 import Plugin from '../core/plugin.js';
 import ChangeBuffer from './changebuffer.js';
 import ModelRange from '../engine/model/range.js';
@@ -15,7 +19,6 @@ import { getCode } from '../utils/keyboard.js';
 /**
  * Handles text input coming from the keyboard or other input methods.
  *
- * @memberOf typing
  * @extends core.Plugin
  */
 export default class Input extends Plugin {
@@ -30,7 +33,7 @@ export default class Input extends Plugin {
 		 * Typing's change buffer used to group subsequent changes into batches.
 		 *
 		 * @protected
-		 * @member {typing.ChangeBuffer} typing.Input#_buffer
+		 * @member {typing.ChangeBuffer} #_buffer
 		 */
 		this._buffer = new ChangeBuffer( editor.document, editor.config.get( 'typing.undoStep' ) || 20 );
 
@@ -68,7 +71,7 @@ export default class Input extends Plugin {
 	 * to handle the event.
 	 *
 	 * @private
-	 * @param {engine.view.observer.keyObserver.KeyEventData} evtData
+	 * @param {module:engine/view/observer/keyobserver~KeyEventData} evtData
 	 */
 	_handleKeydown( evtData ) {
 		const doc = this.editor.document;
@@ -99,35 +102,33 @@ export default class Input extends Plugin {
  * Helper class for translating DOM mutations into model changes.
  *
  * @private
- * @member typing.Input
  */
 class MutationHandler {
 	/**
 	 * Creates an instance of the mutation handler.
 	 *
-	 * @param {engine.controller.EditingController} editing
-	 * @param {typing.ChangeBuffer} buffer
+	 * @param {module:engine/controller/editingcontroller~EditingController} editing
+	 * @param {module:typing/changebuffer~ChangeBuffer} buffer
 	 */
 	constructor( editing, buffer ) {
 		/**
 		 * The editing controller.
 		 *
-		 * @member {engine.controller.EditingController} typing.Input.MutationHandler#editing
+		 * @member {engine.controller.EditingController} #editing
 		 */
 		this.editing = editing;
 
 		/**
 		 * The change buffer.
 		 *
-		 * @member {engine.controller.EditingController} typing.Input.MutationHandler#buffer
+		 * @member {engine.controller.EditingController} #buffer
 		 */
 		this.buffer = buffer;
 
 		/**
-		 * The number of inserted characters which need to be fed to the {@link #buffer change buffer}
-		 * on {@link #commit}.
+		 * The number of inserted characters which need to be fed to the {@link #buffer change buffer}.
 		 *
-		 * @member {Number} typing.Input.MutationHandler#insertedCharacterCount
+		 * @member {Number} #insertedCharacterCount
 		 */
 		this.insertedCharacterCount = 0;
 	}

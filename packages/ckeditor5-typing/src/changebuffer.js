@@ -3,16 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module typing/changebuffer
+ */
+
 import count from '../utils/count.js';
 
 /**
  * Change buffer allows to group atomic changes (like characters that have been typed) into
- * {@link engine.treeModel.batch.Batch batches}.
+ * {@link module:engine/model/batch~Batch batches}.
  *
  * Batches represent single undo steps, hence changes added to one single batch are undone together.
  *
  * The buffer has a configurable limit of atomic changes that it can accommodate. After the limit was
- * exceeded (see {@link typing.ChangeBuffer#input}), a new batch is created in {@link typing.ChangeBuffer#batch}.
+ * exceeded (see {@link ~ChangeBuffer#input}), a new batch is created in {@link ~ChangeBuffer#batch}.
  *
  * To use the change buffer you need to let it know about the number of changes that were added to the batch:
  *
@@ -22,13 +26,12 @@ import count from '../utils/count.js';
  *		buffer.batch.insert( pos, insertedCharacters );
  *		buffer.input( insertedCharacters.length );
  *
- * @memberOf typing
  */
 export default class ChangeBuffer {
 	/**
 	 * Creates a new instance of the change buffer.
 	 *
-	 * @param {engine.treeModel.Document} document
+	 * @param {module:engine/model/document~Document} document
 	 * @param {Number} [limit=20] The maximum number of atomic changes which can be contained in one batch.
 	 */
 	constructor( doc, limit = 20 ) {
@@ -36,16 +39,16 @@ export default class ChangeBuffer {
 		 * The document instance.
 		 *
 		 * @readonly
-		 * @property {engine.treeModel.Document} typing.ChangeBuffer#document
+		 * @member {module:engine/model/document~Document} #document
 		 */
 		this.document = doc;
 
 		/**
-		 * The number of atomic changes in the buffer. Once it exceeds the {@link typing.ChangeBuffer#limit},
-		 * the {@link typing.ChangeBuffer#batch batch} is set to a new one.
+		 * The number of atomic changes in the buffer. Once it exceeds the {@link #limit},
+		 * the {@link #batch batch} is set to a new one.
 		 *
 		 * @readonly
-		 * @property {Number} typing.ChangeBuffer#size
+		 * @member {Number} #size
 		 */
 		this.size = 0;
 
@@ -53,7 +56,7 @@ export default class ChangeBuffer {
 		 * The maximum number of atomic changes which can be contained in one batch.
 		 *
 		 * @readonly
-		 * @property {Number} typing.ChangeBuffer#limit
+		 * @member {Number} #limit
 		 */
 		this.limit = limit;
 
@@ -67,20 +70,20 @@ export default class ChangeBuffer {
 		 * The current batch instance.
 		 *
 		 * @private
-		 * @property typing.ChangeBuffer#_batch
+		 * @member #_batch
 		 */
 
 		/**
 		 * The callback to document the change event which later needs to be removed.
 		 *
 		 * @private
-		 * @property typing.ChangeBuffer#_changeCallback
+		 * @member #_changeCallback
 		 */
 	}
 
 	/**
-	 * The current batch to which a feature should add its deltas. Once the {@link typing.ChangeBuffer#size}
-	 * is reached or exceeds the {@link typing.ChangeBuffer#limit}, the batch is set to a new instance and the size is reset.
+	 * The current batch to which a feature should add its deltas. Once the {@link #size}
+	 * is reached or exceeds the {@link #limit}, the batch is set to a new instance and the size is reset.
 	 *
 	 * @type {engine.treeModel.batch.Batch}
 	 */
@@ -93,8 +96,8 @@ export default class ChangeBuffer {
 	}
 
 	/**
-	 * The input number of changes into the buffer. Once the {@link typing.ChangeBuffer#size} is
-	 * reached or exceeds the {@link typing.ChangeBuffer#limit}, the batch is set to a new instance and the size is reset.
+	 * The input number of changes into the buffer. Once the {@link #size} is
+	 * reached or exceeds the {@link #limit}, the batch is set to a new instance and the size is reset.
 	 *
 	 * @param {Number} changeCount The number of atomic changes to input.
 	 */
@@ -122,7 +125,7 @@ export default class ChangeBuffer {
 	 * the characters typed after inserting the image should be added to a different batch than the characters typed before.
 	 *
 	 * @private
-	 * @param {engine.treeModel.batch.Batch} batch The batch which appears in the document.
+	 * @param {module:engine/model/batch~Batch} batch The batch which appears in the document.
 	 */
 	_onBatch( batch ) {
 		// One operation means a newly created batch.
