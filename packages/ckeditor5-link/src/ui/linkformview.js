@@ -33,7 +33,7 @@ export default class LinkFormView extends View {
 		/**
 		 * The url input view.
 		 *
-		 * @member {ui.input.labeled.LabeledInputView}
+		 * @member {module:ui/labeledinput/labeledinputview~LabeledInputView}
 		 */
 		this.urlInputView = this._createUrlInput();
 
@@ -108,7 +108,7 @@ export default class LinkFormView extends View {
 	 * Create labeled input view.
 	 *
 	 * @private
-	 * @returns {module:ui/labeled/labeledinputview~LabeledInputView} Labeled input view instance.
+	 * @returns {module:ui/labeledinput/labeledinputview~LabeledInputView} Labeled input view instance.
 	 */
 	_createUrlInput() {
 		const t = this.locale.t;
