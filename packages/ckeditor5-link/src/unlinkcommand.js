@@ -3,19 +3,22 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module link/unlinkcommand
+ */
+
 import Command from '../core/command/command.js';
 import findLinkRange from './findlinkrange.js';
 
 /**
- * The unlink command. It is used by the {@link Link.Link link plugin}.
+ * The unlink command. It is used by the {@link module:link/link~Link link plugin}.
  *
- * @memberOf link
- * @extends core.command.Command
+ * @extends module:core/command/command~Command
  */
 export default class UnlinkCommand extends Command {
 	/**
-	 * @see core.command.Command
-	 * @param {core.editor.Editor} editor
+	 * @see module:core/command/command~Command
+	 * @param {module:core/editor/editor~Editor} editor
 	 */
 	constructor( editor ) {
 		super( editor );

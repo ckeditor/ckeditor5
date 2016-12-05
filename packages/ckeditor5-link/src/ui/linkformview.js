@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module link/ui/linkformview
+ */
+
 import View from '../../ui/view.js';
 import Template from '../../ui/template.js';
 
@@ -15,10 +19,9 @@ import submitHandler from '../../ui/bindings/submithandler.js';
 /**
  * The link form view controller class.
  *
- * See {@link link.ui.LinkForm}.
+ * See {@link module:link/ui/linkformview~LinkFormView}.
  *
- * @memberOf link.ui
- * @extends ui.View
+ * @extends module:ui/view~View
  */
 export default class LinkFormView extends View {
 	/**
@@ -30,14 +33,14 @@ export default class LinkFormView extends View {
 		/**
 		 * The url input view.
 		 *
-		 * @member {ui.input.labeled.LabeledInputView} link.ui.LinkFormView#urlInputView
+		 * @member {ui.input.labeled.LabeledInputView}
 		 */
 		this.urlInputView = this._createUrlInput();
 
 		/**
 		 * The save button view.
 		 *
-		 * @member {ui.button.ButtonView} link.ui.LinkFormView#saveButtonView
+		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this.saveButtonView = this._createButton( 'Save' );
 		this.saveButtonView.type = 'submit';
@@ -45,14 +48,14 @@ export default class LinkFormView extends View {
 		/**
 		 * The cancel button view.
 		 *
-		 * @member {ui.button.ButtonView} link.ui.LinkFormView#cancelButtonView
+		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this.cancelButtonView = this._createButton( 'Cancel', 'cancel' );
 
 		/**
 		 * The unlink button view.
 		 *
-		 * @member {ui.button.ButtonView} link.ui.LinkFormView#unlinkButtonView
+		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this.unlinkButtonView = this._createButton( 'Unlink', 'unlink' );
 
@@ -105,7 +108,7 @@ export default class LinkFormView extends View {
 	 * Create labeled input view.
 	 *
 	 * @private
-	 * @returns {ui.labeled.LabeledInputView} Labeled input view instance.
+	 * @returns {module:ui/labeled/labeledinputview~LabeledInputView} Labeled input view instance.
 	 */
 	_createUrlInput() {
 		const t = this.locale.t;
@@ -123,7 +126,7 @@ export default class LinkFormView extends View {
 	 * @private
 	 * @param {String} label Button label
 	 * @param {String} [eventName] Event name which ButtonView#execute event will be delegated to.
-	 * @returns {ui.button.ButtonView} Button view instance.
+	 * @returns {module:ui/button/buttonview~ButtonView} Button view instance.
 	 */
 	_createButton( label, eventName ) {
 		const t = this.locale.t;
@@ -142,19 +145,19 @@ export default class LinkFormView extends View {
 
 /**
  * Fired when the form view is submitted (when one of the child triggered submit event).
- * E.g. click on {@link link.ui.LinkFormView#saveButtonView}.
+ * E.g. click on {@link #saveButtonView}.
  *
- * @event link.ui.LinkFormView#submit
+ * @event submit
  */
 
 /**
- * Fired when the form view is canceled, e.g. click on {@link link.ui.LinkFormView#cancelButtonView}.
+ * Fired when the form view is canceled, e.g. click on {@link #cancelButtonView}.
  *
- * @event link.ui.LinkFormView#cancel
+ * @event cancel
  */
 
 /**
- * Fired when the {@link link.ui.LinkFormView#unlinkButtonView} is clicked.
+ * Fired when the {@link #unlinkButtonView} is clicked.
  *
- * @event link.ui.LinkFormView#unlink
+ * @event unlink
  */
