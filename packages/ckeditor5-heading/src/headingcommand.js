@@ -3,21 +3,24 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module heading/headingcommand
+ */
+
 import Command from '../core/command/command.js';
 import RootElement from '../engine/model/rootelement.js';
 
 /**
- * The heading command. It is used by the {@link heading.Heading heading feature} to apply headings.
+ * The heading command. It is used by the {@link module:heading/heading~Heading heading feature} to apply headings.
  *
- * @memberOf heading
- * @extends core.command.Command
+ * @extends module:core/command/command~Command
  */
 export default class HeadingCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {core.editor.Editor} editor Editor instance.
-	 * @param {Array.<heading.HeadingFormat>} formats Heading formats to be used by the command instance.
+	 * @param {module:core/editor/editor~Editor} editor Editor instance.
+	 * @param {Array.<module:heading/headingcommand~HeadingFormat>} formats Heading formats to be used by the command instance.
 	 */
 	constructor( editor, formats ) {
 		super( editor );
@@ -26,7 +29,7 @@ export default class HeadingCommand extends Command {
 		 * Heading formats used by this command.
 		 *
 		 * @readonly
-		 * @member {heading.HeadingFormat} heading.HeadingCommand#formats
+		 * @member {module:heading/headingcommand~HeadingFormat}
 		 */
 		this.formats = formats;
 
@@ -35,7 +38,7 @@ export default class HeadingCommand extends Command {
 		 *
 		 * @readonly
 		 * @observable
-		 * @member {heading.HeadingFormat} heading.HeadingCommand#value
+		 * @member {module:heading/headingcommand~HeadingFormat} #value
 		 */
 		this.set( 'value', this.defaultFormat );
 
@@ -46,7 +49,7 @@ export default class HeadingCommand extends Command {
 	/**
 	 * The default format.
 	 *
-	 * @type {heading.HeadingFormat}
+	 * @member {module:heading/headingcommand~HeadingFormat} #defaultFormat
 	 */
 	get defaultFormat() {
 		// See https://github.com/ckeditor/ckeditor5/issues/98.
@@ -59,9 +62,10 @@ export default class HeadingCommand extends Command {
 	 * @protected
 	 * @param {Object} [options] Options for executed command.
 	 * @param {String} [options.formatId] The identifier of the heading format that should be applied. It should be one of the
-	 * {@link heading.HeadingFormat heading formats} provided to the command constructor. If this parameter is not provided,
-	 * the value from {@link heading.HeadingCommand#defaultFormat defaultFormat} will be used.
-	 * @param {engine.model.Batch} [options.batch] Batch to collect all the change steps.
+	 * {@link module:heading/headingcommand~HeadingFormat heading formats} provided to the command constructor. If this parameter is not
+	 * provided,
+	 * the value from {@link #defaultFormat defaultFormat} will be used.
+	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
 	 */
 	_doExecute( options = {} ) {
@@ -126,14 +130,14 @@ export default class HeadingCommand extends Command {
 	 *
 	 * @private
 	 * @param {String} id
-	 * @returns {heading.HeadingFormat}
+	 * @returns {module:heading/headingcommand~HeadingFormat}
 	 */
 	_getFormatById( id ) {
 		return this.formats.find( item => item.id === id ) || this.defaultFormat;
 	}
 
 	/**
-	 * Updates command's {@link heading.HeadingCommand#value value} based on current selection.
+	 * Updates command's {@link #value value} based on current selection.
 	 *
 	 * @private
 	 */
@@ -175,7 +179,7 @@ function findTopmostBlock( position, nodeAfter = true ) {
 /**
  * Heading format descriptor.
  *
- * @typedef {Object} heading.HeadingFormat
+ * @typedef {Object} module:heading/headingcommand~HeadingFormat
  * @property {String} id Format identifier. It will be used as the element's name in the model.
  * @property {String} viewElement The name of the view element that will be used to represent the model element in the view.
  * @property {String} label The display name of the format.

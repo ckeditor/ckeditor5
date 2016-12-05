@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module heading/heading
+ */
+
 import HeadingEngine from './headingengine.js';
 
 import Plugin from '../core/plugin.js';
@@ -16,8 +20,7 @@ import Collection from '../utils/collection.js';
  * The headings feature. It introduces the `headings` drop-down list and the `heading` command which allow
  * to convert paragraphs into headings.
  *
- * @memberOf heading
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class Heading extends Plugin {
 	/**

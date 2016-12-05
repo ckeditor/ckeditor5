@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module heading/headingengine
+ */
+
 import Plugin from '../core/plugin.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
@@ -18,10 +22,9 @@ const formats = [
 
 /**
  * The headings engine feature. It handles switching between block formats &ndash; headings and paragraph.
- * This class represents the engine part of the heading feature. See also {@link heading.Heading}.
+ * This class represents the engine part of the heading feature. See also {@link module:heading/heading~Heading}.
  *
- * @memberOf heading
- * @extends core.Plugin
+ * @extends modules:core/plugin~Plugin
  */
 export default class HeadingEngine extends Plugin {
 	/**
