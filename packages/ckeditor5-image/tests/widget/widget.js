@@ -338,6 +338,20 @@ describe( 'Widget', () => {
 			'<paragraph>foo[<inline></inline>]bar</paragraph>'
 		);
 
+		test(
+			'should do nothing if selection is placed after first letter - backspace',
+			'<paragraph>a[]</paragraph>',
+			keyCodes.backspace,
+			'<paragraph>a[]</paragraph>'
+		);
+
+		test(
+			'should do nothing if selection is placed before first letter - delete',
+			'<paragraph>[]a</paragraph>',
+			keyCodes.delete,
+			'<paragraph>[]a</paragraph>'
+		);
+
 		it( 'should prevent default behaviour and stop event propagation', () => {
 			const keydownHandler = sinon.spy();
 			const domEventDataMock = {
