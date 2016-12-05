@@ -23,13 +23,13 @@ import getSchemaValidRanges from '../core/command/helpers/getschemavalidranges.j
  */
 export default class InlineAutoformatEngine {
 	/**
-	 * Enables autoformatting mechanism on a given {@link module:core/editor~Editor}.
+	 * Enables autoformatting mechanism on a given {@link module:core/editor/editor~Editor}.
 	 *
 	 * It formats the matched text by applying given model attribute or by running the provided formatting callback.
 	 * Each time data model changes text from given node (from the beginning of the current node to the collapsed
 	 * selection location) will be tested.
 	 *
-	 * @param {module:core/editor~Editor} editor Editor instance.
+	 * @param {module:core/editor/editor~Editor} editor Editor instance.
 	 * @param {Function|RegExp} testRegexpOrCallback RegExp or callback to execute on text.
 	 * Provided RegExp *must* have three capture groups. First and third capture groups
 	 * should match opening/closing delimiters. Second capture group should match text to format.

@@ -45,7 +45,7 @@ export default class BlockAutoformatEngine {
 	 *			} );
 	 * 		} );
 	 *
-	 * @param {module:core/editor~Editor} editor Editor instance.
+	 * @param {module:core/editor/editor~Editor} editor Editor instance.
 	 * @param {RegExp} pattern Regular expression to exec on just inserted text.
 	 * @param {Function|String} callbackOrCommand Callback to execute or command to run when text is matched.
 	 * In case of providing callback it receives following parameters:
