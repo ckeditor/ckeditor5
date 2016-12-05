@@ -3,25 +3,30 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module undo/redocommand
+ */
+
 import BaseCommand from './basecommand.js';
 import { transformDelta as transformDelta } from './basecommand.js';
 
 /**
- * The redo command stores {@link engine.model.Batch batches} that were used to undo a batch by {@link undo.UndoCommand UndoCommand}.
- * It is able to redo a previously undone batch by reversing the undoing batches created by `UndoCommand`. The reversed batch is
- * also transformed by batches from {@link engine.model.Document#history history} that happened after it and are not other redo batches.
+ * The redo command stores {@link module:engine/model/batch~Batch batches} that were used to undo a batch by
+ * {@link module:undo/undocommand~UndoCommand}. It is able to redo a previously undone batch by reversing the undoing
+ * batches created by `UndoCommand`. The reversed batch is also transformed by batches from
+ * {@link module:engine/model/document~Document#history history} that happened after it and are not other redo batches.
  *
- * The redo command also takes care of restoring the {@link engine.model.Document#selection document selection} to the state before
- * an undone batch was applied.
+ * The redo command also takes care of restoring the {@link module:engine/model/document~Document#selection document selection}
+ * to the state before an undone batch was applied.
  *
- * @memberOf undo
- * @extends undo.BaseCommand
+ * @extends module:undo/basecommand~BaseCommand
  */
 export default class RedoCommand extends BaseCommand {
 	/**
-	 * Executes the command. This method reverts the last {@link engine.model.Batch batch} added to the command's stack, applies
-	 * the reverted and transformed version on the {@link engine.model.Document document} and removes the batch from the stack.
-	 * Then, it restores the {@link engine.model.Document#selection document selection}.
+	 * Executes the command. This method reverts the last {@link module:engine/model/batch~Batch batch} added to
+	 * the command's stack, applies the reverted and transformed version on the
+	 * {@link module:engine/model/document~Document document} and removes the batch from the stack.
+	 * Then, it restores the {@link module:engine/model/document~Document#selection document selection}.
 	 *
 	 * @protected
 	 */
@@ -51,10 +56,10 @@ export default class RedoCommand extends BaseCommand {
 
 	/**
 	 * Redoes a batch by reversing the batch that has undone it, transforming that batch and applying it. This is
-	 * a helper method for {@link undo.RedoCommand#_doExecute}.
+	 * a helper method for {@link #_doExecute}.
 	 *
 	 * @private
-	 * @param {engine.model.Batch} storedBatch The batch whose deltas will be reversed, transformed and applied.
+	 * @param {module:engine/model/batch~Batch} storedBatch The batch whose deltas will be reversed, transformed and applied.
 	 */
 	_redo( storedBatch ) {
 		const document = this.editor.document;

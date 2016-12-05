@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module undo/undoengine
+ */
+
 import Plugin from '../core/plugin.js';
 import UndoCommand from './undocommand.js';
 import RedoCommand from './redocommand.js';
@@ -11,10 +15,9 @@ import RedoCommand from './redocommand.js';
  * The undo engine feature.
  *
  * Undo brings in possibility to undo and redo changes done in the model by deltas through
- * the {@link engine.model.Document#batch Batch API}.
+ * the {@link module:engine/model/document~Document#batch Batch API}.
  *
- * @memberOf undo
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class UndoEngine extends Plugin {
 	/**
@@ -24,26 +27,26 @@ export default class UndoEngine extends Plugin {
 		super( editor );
 
 		/**
-		 * The command that manages undo {@link engine.model.Batch batches} stack (history).
-		 * Created and registered during the {@link undo.UndoEngine#init feature initialization}.
+		 * The command that manages undo {@link module:engine/model/batch~Batch batches} stack (history).
+		 * Created and registered during the {@link #init feature initialization}.
 		 *
 		 * @private
-		 * @member {undo.UndoEngineCommand} undo.UndoEngine#_undoCommand
+		 * @member {undo.UndoEngineCommand} #_undoCommand
 		 */
 
 		/**
-		 * The command that manages redo {@link engine.model.Batch batches} stack (history).
-		 * Created and registered during the {@link undo.UndoEngine#init feature initialization}.
+		 * The command that manages redo {@link module:engine/model/batch~Batch batches} stack (history).
+		 * Created and registered during the {@link #init feature initialization}.
 		 *
 		 * @private
-		 * @member {undo.UndoEngineCommand} undo.UndoEngine#_redoCommand
+		 * @member {undo.UndoEngineCommand} #_redoCommand
 		 */
 
 		/**
 		 * Keeps track of which batches were registered in undo.
 		 *
 		 * @private
-		 * @member {WeakSet.<engine.model.Batch>} undo.UndoEngine#_batchRegistry
+		 * @member {WeakSet.<module:engine/model/batch~Batch>}
 		 */
 		this._batchRegistry = new WeakSet();
 	}

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module undo/undo
+ */
+
 import Plugin from '../core/plugin.js';
 import UndoEngine from './undoengine.js';
 import ButtonView from '../ui/button/buttonview.js';
@@ -10,12 +14,14 @@ import ButtonView from '../ui/button/buttonview.js';
 /**
  * The undo feature. It introduces the Undo and Redo buttons to the editor.
  *
- * Below is the explanation of the undo mechanism working together with {@link engine.model.History History}:
+ * Below is the explanation of the undo mechanism working together with {@link module:engine/model/history~History History}:
  *
- * Whenever a {@link engine.model.Delta delta} is applied to the {@link engine.model.Document document}, it is saved to
- * `History` as is. The {@link engine.model.Batch batch} that owns that delta is also saved, in {@link undo.UndoCommand},
- * together with the selection that was present in the document before the delta was applied. A batch is saved instead of the delta
- * because changes are undone batch-by-batch, not delta-by-delta and a batch is seen as one undo step.
+ * Whenever a {@link module:engine/model/delta/delta~Delta delta} is applied to the
+ * {@link module:engine/model/document~Document document}, it is saved to `History` as is.
+ * The {@link module:engine/model/batch~Batch batch} that owns that delta is also saved, in
+ * {@link module:undo/undocommand~UndoCommand}, together with the selection that was present in the document before the
+ * delta was applied. A batch is saved instead of the delta because changes are undone batch-by-batch, not delta-by-delta
+ * and a batch is seen as one undo step.
  *
  * After some changes happen to the document, the `History` and `UndoCommand` stack can be represented as follows:
  *
@@ -36,9 +42,9 @@ import ButtonView from '../ui/button/buttonview.js';
  * so if a batch has delta `X`, `Y`, `Z`, reversed deltas `Zr`, `Yr` and `Xr` need to be applied. Otherwise reversed delta
  * `Xr` would operate on a wrong document state, because delta `X` does not know that deltas `Y` and `Z` happened.
  *
- * After deltas from an undone batch got {@link engine.model.Delta#getReversed reversed}, one needs to make sure if they are
- * ready to be applied. In the scenario above, delta `C3` is the last delta and `C3r` bases on up-to-date document state, so
- * it can be applied to the document.
+ * After deltas from an undone batch got {@link module:engine/model/delta/delta~Delta#getReversed reversed},
+ * one needs to make sure if they are ready to be applied. In the scenario above, delta `C3` is the last delta and `C3r`
+ * bases on up-to-date document state, so it can be applied to the document.
  *
  *		  History                           Undo stack
  *		===========             ==================================
@@ -58,7 +64,7 @@ import ButtonView from '../ui/button/buttonview.js';
  * operational transformation algorithms assume there is no connection between two transformed operations when resolving
  * conflicts, which is true for example for collaborative editing, but is not true for the undo algorithm.
  *
- * To prevent both problems, `History` introduces an API to {@link engine.model.History#removeDelta remove}
+ * To prevent both problems, `History` introduces an API to {@link module:engine/model/history~History#removeDelta remove}
  * deltas from history. It is used to remove undone and undoing deltas after they are applied. It feels right &mdash; since when a
  * delta is undone or reversed, it is "removed" and there should be no sign of it in the history (fig. 1).
  *
@@ -92,7 +98,7 @@ import ButtonView from '../ui/button/buttonview.js';
  * It is an obvious error &mdash; transforming by that delta would lead to incorrect results or "repeating" history would
  * produce a different document than the actual one.
  *
- * To prevent this situation, `B3` needs to also be {@link engine.model.History#updateDelta updated} in history.
+ * To prevent this situation, `B3` needs to also be {@link module:engine/model/history~History#updateDelta updated} in history.
  * It should be kept in a state that "does not remember" deltas that were removed from history. It is easily
  * achieved while transforming the reversed delta. For example, when `C2r` is transformed by `B3`, at the same time `B3` is
  * transformed by `C2r`. Transforming `B3` that remembers `C2` by a delta reversing `C2` effectively makes `B3` "forget" about `C2`.
@@ -116,8 +122,7 @@ import ButtonView from '../ui/button/buttonview.js';
  * The same algorithm applies: deltas from a batch (i.e. `A1`) are reversed and then transformed by deltas stored in history,
  * simultaneously updating them. Then deltas are applied to the document and removed from history (fig. 5).
  *
- * @memberOf undo
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class Undo extends Plugin {
 	/**
