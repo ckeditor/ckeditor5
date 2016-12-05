@@ -11,7 +11,7 @@ import Command from '../core/command/command.js';
 import Position from '../engine/model/position.js';
 
 /**
- * Enter command. It is used by the {@link enter.Enter Enter feature} to handle the <kbd>Enter</kbd> key.
+ * Enter command. It is used by the {@link module:enter/enter~Enter Enter feature} to handle the <kbd>Enter</kbd> key.
  *
  * @extends modue:core/command/command~Command
  */
@@ -34,8 +34,8 @@ export default class EnterCommand extends Command {
 // Creates a new block in the way that the <kbd>Enter</kbd> key is expected to work.
 //
 // @param {engine.controller.DataController} dataController
-// @param {engine.model.Batch} batch A batch to which the deltas will be added.
-// @param {engine.model.Selection} selection Selection on which the action should be performed.
+// @param {module:engine/model/batch~Batch} batch A batch to which the deltas will be added.
+// @param {module:engine/model/selection~Selection} selection Selection on which the action should be performed.
 function enterBlock( dataController, batch, selection ) {
 	const isSelectionEmpty = selection.isCollapsed;
 	const range = selection.getFirstRange();
