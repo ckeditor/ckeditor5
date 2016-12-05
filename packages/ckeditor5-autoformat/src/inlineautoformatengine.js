@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module autoformat/inlineautoformatengine
+ */
+
 import LiveRange from '../engine/model/liverange.js';
 import getSchemaValidRanges from '../core/command/helpers/getschemavalidranges.js';
 
@@ -14,19 +18,18 @@ import getSchemaValidRanges from '../core/command/helpers/getschemavalidranges.j
  * so the autoformatting step can be undone, if the user's intention wasn't to format the text.
  *
  * See the constructors documentation to learn how to create custom inline autoformatters. You can also use
- * the {@link autoformat.Autoformat} feature which enables a set of default autoformatters (lists, headings, bold and italic).
- *
- * @memberOf autoformat
+ * the {@link module:autoformat/autoformat~Autoformat} feature which enables a set of default autoformatters
+ * (lists, headings, bold and italic).
  */
 export default class InlineAutoformatEngine {
 	/**
-	 * Enables autoformatting mechanism on a given {@link core.editor.Editor}.
+	 * Enables autoformatting mechanism on a given {@link module:core/editor~Editor}.
 	 *
 	 * It formats the matched text by applying given model attribute or by running the provided formatting callback.
 	 * Each time data model changes text from given node (from the beginning of the current node to the collapsed
 	 * selection location) will be tested.
 	 *
-	 * @param {core.editor.Editor} editor Editor instance.
+	 * @param {module:core/editor~Editor} editor Editor instance.
 	 * @param {Function|RegExp} testRegexpOrCallback RegExp or callback to execute on text.
 	 * Provided RegExp *must* have three capture groups. First and third capture groups
 	 * should match opening/closing delimiters. Second capture group should match text to format.
@@ -202,7 +205,7 @@ export default class InlineAutoformatEngine {
 // Returns whole text from parent element by adding all data from text nodes together.
 //
 // @private
-// @param {engine.model.Element} element
+// @param {module:engine/model/element~Element} element
 // @returns {String}
 function getText( element ) {
 	return Array.from( element.getChildren() ).reduce( ( a, b ) => a + b.data, '' );

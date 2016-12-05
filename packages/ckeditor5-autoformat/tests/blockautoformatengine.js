@@ -102,7 +102,7 @@ class TestCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {core.editor.Editor} editor Editor instance.
+	 * @param {module:core/editor~Editor} editor Editor instance.
 	 * @param {Function} onExecuteCallback _doExecute call hook
 	 */
 	constructor( editor, onExecuteCallback ) {
