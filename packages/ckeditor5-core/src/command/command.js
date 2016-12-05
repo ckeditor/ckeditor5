@@ -78,7 +78,7 @@ export default class Command {
 	 * Executes the command if it is enabled.
 	 *
 	 * @protected
-	 * @param {*} param Parameter passed to {@link #execute execute} method of this command.
+	 * @param {*} param Parameter passed to {@link module:core/editor/editor~Editor#execute execute} method of this command.
 	 */
 	_execute( param ) {
 		if ( this.isEnabled ) {

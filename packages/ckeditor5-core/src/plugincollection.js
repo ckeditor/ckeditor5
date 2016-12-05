@@ -48,7 +48,7 @@ export default class PluginCollection {
 	/**
 	 * Gets the plugin instance by its constructor or name.
 	 *
-	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~Plugin.plugiName name}.
+	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~Plugin.pluginName name}.
 	 * @returns {module:core/plugin~Plugin}
 	 */
 	get( key ) {

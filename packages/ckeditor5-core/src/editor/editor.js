@@ -20,7 +20,7 @@ import mix from '../../utils/mix.js';
 /**
  * Class representing a basic editor. It contains a base architecture, without much additional logic.
  *
- * See also {@link module:core/editor/editor~StandardEditor}.
+ * See also {@link module:core/editor/standardeditor~StandardEditor}.
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  */
@@ -81,14 +81,14 @@ export default class Editor {
 		 * Instance of the {@link module:engine/controller/datacontroller~DataController data controller}.
 		 *
 		 * @readonly
-		 * @member {module:engine/controller.DataController}
+		 * @member {module:engine/controller/datacontroller~DataController}
 		 */
 		this.data = new DataController( this.document );
 
 		/**
 		 * Instance of the {@link module:engine/controller/editingcontroller~EditingController editing controller}.
 		 *
-		 * This property is set by more specialized editor classes (such as {@link module:core/editor/editor~StandardEditor}),
+		 * This property is set by more specialized editor classes (such as {@link module:core/editor/standardeditor~StandardEditor}),
 		 * however, it's required for features to work as their engine-related parts will try to connect converters.
 		 *
 		 * When defining a virtual editor class, like one working in Node.js, it's possible to plug a virtual
@@ -163,9 +163,9 @@ export default class Editor {
 	/**
 	 * Creates a basic editor instance.
 	 *
-	 * @param {Object} config See {@link module:core/editor/editor~StandardEditor}'s param.
+	 * @param {Object} config See {@link module:core/editor/standardeditor~StandardEditor}'s param.
 	 * @returns {Promise} Promise resolved once editor is ready.
-	 * @returns {module:core/editor/editor~StandardEditor} return.editor The editor instance.
+	 * @returns {module:core/editor/standardeditor~StandardEditor} return.editor The editor instance.
 	 */
 	static create( config ) {
 		return new Promise( ( resolve ) => {
