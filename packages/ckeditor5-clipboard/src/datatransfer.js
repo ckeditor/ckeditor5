@@ -4,9 +4,11 @@
  */
 
 /**
+ * @module clipboard/datatransfer
+ */
+
+/**
  * Facade over the native [`DataTransfer`](https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer) object.
- *
- * @memberOf clipboard
  */
 export default class DataTransfer {
 	constructor( nativeDataTransfer ) {
@@ -14,7 +16,7 @@ export default class DataTransfer {
 		 * The native DataTransfer object.
 		 *
 		 * @private
-		 * @member {DataTransfer} clipboard.DataTransfer#_native
+		 * @member {DataTransfer} #_native
 		 */
 		this._native = nativeDataTransfer;
 	}
