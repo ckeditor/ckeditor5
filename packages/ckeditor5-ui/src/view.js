@@ -55,11 +55,11 @@ export default class View {
 	/**
 	 * Creates an instance of the {@link module:ui/view~View} class.
 	 *
-	 * @param {module:utils/locale~Locale} [locale] The {@link module:core/editor~Editor editor's locale} instance.
+	 * @param {module:utils/locale~Locale} [locale] The {@link module:core/editor/editor~Editor editor's locale} instance.
 	 */
 	constructor( locale ) {
 		/**
-		 * A set of tools to localize the user interface. See {@link module:core/editor~Editor}.
+		 * A set of tools to localize the user interface. See {@link module:core/editor/editor~Editor}.
 		 *
 		 * @readonly
 		 * @member {module:utils/locale~Locale}
