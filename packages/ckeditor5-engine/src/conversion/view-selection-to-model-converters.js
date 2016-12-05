@@ -5,9 +5,9 @@
 
 /**
  * Contains {@link module:engine/view/selection~Selection view selection}
- * to {@link module:engine/model/selection~Selection model selection} conversion
+ * to {@link module:engine/model/selection~Selection model selection} conversion helpers.
+ *
  * @module engine/conversion/view-selection-to-model-converters
- * helper.
  */
 
 import ModelSelection from '../model/selection.js';
