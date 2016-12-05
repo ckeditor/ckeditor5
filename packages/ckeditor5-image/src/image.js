@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module image/image
+ */
+
 import Plugin from '../core/plugin.js';
 import ImageEngine from './imageengine.js';
 import Widget from './widget/widget.js';
@@ -10,10 +14,9 @@ import Widget from './widget/widget.js';
 /**
  * The image plugin.
  *
- * Uses {@link image.ImageEngine}.
+ * Uses {@link module:image/imageengine~ImageEngine}.
  *
- * @memberOf image
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class Image extends Plugin {
 	/**

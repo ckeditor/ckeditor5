@@ -3,17 +3,21 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module image/utils
+ */
+
 import { widgetize, isWidget } from './widget/utils.js';
 
 const imageSymbol = Symbol( 'isImage' );
 
 /**
- * Converts given {@link engine.view.Element} to image widget:
- * * adds {@link engine.view.Element#addCustomProperty custom property} allowing to recognize image widget element,
- * * calls {@link image.widget.utils.widgetize widgetize}.
+ * Converts given {@link module:engine/view/element~Element} to image widget:
+ * * adds {@link module:engine/view/element~Element#setCustomProperty custom property} allowing to recognize image widget element,
+ * * calls {@link module:image/widget/utils~widgetize widgetize}.
  *
- * @param {engine.view.Element} viewElement
- * @returns {engine.view.Element}
+ * @param {module:engine/view/element~Element} viewElement
+ * @returns {module:engine/view/element~Element}
  */
 export function toImageWidget( viewElement ) {
 	viewElement.setCustomProperty( imageSymbol, true );
@@ -24,7 +28,7 @@ export function toImageWidget( viewElement ) {
 /**
  * Checks if given view element is an image widget.
  *
- * @param {engine.view.Element} viewElement
+ * @param {module:engine/view/element~Element} viewElement
  * @returns {Boolean}
  */
 export function isImageWidget( viewElement ) {

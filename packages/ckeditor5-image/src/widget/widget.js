@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module image/widget/widget
+ */
+
 import Plugin from '../../core/plugin.js';
 import WidgetEngine from './widgetengine.js';
 import MouseObserver from '../../engine/view/observer/mouseobserver.js';
@@ -11,10 +15,9 @@ import { isWidget } from './utils.js';
 
 /**
  * The widget plugin.
- * Adds default {@link engine.view.Document#mousedown mousedown} handling on widget elements.
+ * Adds default {@link module:engine/view/document~Document#event:mousedown mousedown} handling on widget elements.
  *
- * @memberOf image.widget
- * @extends core.Plugin.
+ * @extends module:core/plugin~Plugin.
  */
 export default class Widget extends Plugin {
 	/**
@@ -36,11 +39,11 @@ export default class Widget extends Plugin {
 	}
 
 	/**
-	 * Handles {@link engine.view.Document#mousedown mousedown} events on widget elements.
+	 * Handles {@link module:engine/view/document~Document#event:mousedown mousedown} events on widget elements.
 	 *
-	 * @param {utils.EventInfo} eventInfo
-	 * @param {envine.view.observer.DomEventData} domEventData
 	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_onMousedown( eventInfo, domEventData ) {
 		let widgetElement = domEventData.target;
