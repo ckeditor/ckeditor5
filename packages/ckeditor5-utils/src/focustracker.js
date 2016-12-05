@@ -17,7 +17,7 @@ import mix from './mix.js';
 /**
  * Allows observing a group of `HTMLElement`s whether at least one of them is focused.
  *
- * Used by the {@link module:core/editor~Editor} in order to track whether the focus is still within the application,
+ * Used by the {@link module:core/editor/editor~Editor} in order to track whether the focus is still within the application,
  * or were used outside of its UI.
  *
  * **Note** `focus` and `blur` listeners use event capturing, so it is only needed to register wrapper `HTMLElement`
