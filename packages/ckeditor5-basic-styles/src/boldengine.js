@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module basic-styles/boldengine
+ */
+
 import Plugin from '../core/plugin.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
@@ -16,8 +20,7 @@ const BOLD = 'bold';
  * It registers the `bold` command and introduces the `bold` attribute in the model which renders to the view
  * as a `<strong>` element.
  *
- * @memberOf basic-styles
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class BoldEngine extends Plugin {
 	/**

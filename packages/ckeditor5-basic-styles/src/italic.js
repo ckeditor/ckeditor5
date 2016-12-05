@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module basic-styles/italic
+ */
+
 import Plugin from '../core/plugin.js';
 import ItalicEngine from './italicengine.js';
 import ButtonView from '../ui/button/buttonview.js';
@@ -10,10 +14,9 @@ import ButtonView from '../ui/button/buttonview.js';
 /**
  * The italic feature. It introduces the Italic button and the <kbd>Ctrl+I</kbd> keystroke.
  *
- * It uses the {@link basic-styles.ItalicEngine italic engine feature}.
+ * It uses the {@link module:basic-styles/italicengine~ItalicEngine italic engine feature}.
  *
- * @memberOf basic-styles
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class Italic extends Plugin {
 	/**

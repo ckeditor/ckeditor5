@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module basic-styles/bold
+ */
+
 import Plugin from '../core/plugin.js';
 import BoldEngine from './boldengine.js';
 import ButtonView from '../ui/button/buttonview.js';
@@ -10,10 +14,9 @@ import ButtonView from '../ui/button/buttonview.js';
 /**
  * The bold feature. It introduces the Bold button and the <kbd>Ctrl+B</kbd> keystroke.
  *
- * It uses the {@link basic-styles.BoldEngine bold engine feature}.
+ * It uses the {@link module:basic-styles/boldengine~BoldEngine bold engine feature}.
  *
- * @memberOf basic-styles
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class Bold extends Plugin {
 	/**
