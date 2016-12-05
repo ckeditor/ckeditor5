@@ -138,9 +138,9 @@ export default class Matcher {
 	 *
 	 * @see module:engine/view/matcher~Matcher#add
 	 * @see module:engine/view/matcher~Matcher#matchAll
-	 * @param {...module:core/view/element~Element} element View element to match against stored patterns.
+	 * @param {...module:engine/view/element~Element} element View element to match against stored patterns.
 	 * @returns {Object|null} result
-	 * @returns {module:core/view/element~Element} result.element Matched view element.
+	 * @returns {module:engine/view/element~Element} result.element Matched view element.
 	 * @returns {Object|String|RegExp|Function} result.pattern Pattern that was used to find matched element.
 	 * @returns {Object} result.match Object representing matched element parts.
 	 * @returns {Boolean} [result.match.name] True if name of the element was matched.
