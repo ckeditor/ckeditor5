@@ -12,7 +12,7 @@ import DomEventData from '../engine/view/observer/domeventdata.js';
 import { keyCodes } from '../utils/keyboard.js';
 
 /**
- * Enter observer introduces the {@link module:engine/view/document~Document#enter} event.
+ * Enter observer introduces the {@link module:engine/view/document~Document#event:enter} event.
  *
  * @extends module:engine/view/observer~Observer
  */
