@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module paragraph/paragraph
+ */
+
 import Plugin from '../core/plugin.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
@@ -11,8 +15,7 @@ import buildViewConverter from '../engine/conversion/buildviewconverter.js';
  * The paragraph feature for the editor.
  * Introduces the `<paragraph>` element in the model which renders as a `<p>` element in the DOM and data.
  *
- * @memberOf paragraph
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class Paragraph extends Plugin {
 	/**
