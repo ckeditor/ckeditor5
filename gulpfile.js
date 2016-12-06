@@ -157,43 +157,57 @@ gulp.task( 'bundle:generate',
 
 // Documentation. -------------------------------------------------------------
 
-const ckeditor5DevDocs = require( '@ckeditor/ckeditor5-dev-docs' );
-const docsBuilder = ckeditor5DevDocs.docs( config );
-
 gulp.task( 'docs', [ 'docs:clean', 'compile:js:esnext' ], ( done ) => {
 	runSequence( 'docs:editors', 'docs:build', done );
 } );
 
 // Documentation's helpers.
-gulp.task( 'docs:clean', docsBuilder.clean );
-gulp.task( 'docs:build', docsBuilder.buildDocs );
+gulp.task( 'docs:clean', () => {
+	const docsBuilder = require( '@ckeditor/ckeditor5-dev-docs' ).docs( config );
+
+	return docsBuilder.clean();
+} );
+
+gulp.task( 'docs:build', () => {
+	const docsBuilder = require( '@ckeditor/ckeditor5-dev-docs' ).docs( config );
+
+	return docsBuilder.buildDocs;
+} );
+
 gulp.task( 'docs:editors', [ 'compile:js:esnext', 'compile:themes:esnext' ], () => {
+	const docsBuilder = require( '@ckeditor/ckeditor5-dev-docs' ).docs( config );
+
 	return docsBuilder.buildEditorsForSamples( getCKEditor5PackagesPaths(), config.DOCUMENTATION.SAMPLES );
 } );
 
 // Tests. ---------------------------------------------------------------------
 
-const tests = require( '@ckeditor/ckeditor5-dev-tests' );
-
 gulp.task( 'test', () => {
+	const tests = require( '@ckeditor/ckeditor5-dev-tests' );
+
 	return tests.tasks.automated.test( getTestOptions() );
 } );
 
 // Requires compiled sources. Task should be used in parallel with `gulp compile --formats=esnext --watch`.
 gulp.task( 'test:server', () => {
+	const tests = require( '@ckeditor/ckeditor5-dev-tests' );
 	const options = getTestOptions();
+
 	options.sourcePath = path.resolve( config.MODULE_DIR.esnext );
 
 	return tests.tasks.automated.runTests( options );
 } );
 
 gulp.task( 'test:manual', ( done ) => {
+	const tests = require( '@ckeditor/ckeditor5-dev-tests' );
+
 	tests.tasks.manual.run( {
 		packages: getCKEditor5PackagesPaths()
 	}, done );
 } );
 
 function getTestOptions() {
+	const tests = require( '@ckeditor/ckeditor5-dev-tests' );
 	const options = tests.utils.parseArguments();
 
 	options.packages = getCKEditor5PackagesPaths();
