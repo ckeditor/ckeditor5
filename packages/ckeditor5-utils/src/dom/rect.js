@@ -6,7 +6,7 @@
 /* globals window, Range, HTMLElement */
 
 /**
- * @module utils/dom/boundingrect
+ * @module utils/dom/rect
  */
 
 /**

@@ -64,8 +64,8 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 //
 // @private
 // @param {Function} position A function returning {@link module:utils/dom/position~Position}.
-// @param {utils/dom/boundingrect~Rect} targetRect A rect of the target.
-// @param {utils/dom/boundingrect~Rect} elementRect A rect of positioned element.
+// @param {utils/dom/rect~Rect} targetRect A rect of the target.
+// @param {utils/dom/rect~Rect} elementRect A rect of positioned element.
 // @returns {Array} An array containing position name and its Rect.
 function getPosition( position, targetRect, elementRect ) {
 	const { left, top, name } = position( targetRect, elementRect );
@@ -79,10 +79,10 @@ function getPosition( position, targetRect, elementRect ) {
 // @private
 // @param {module:utils/dom/position~Options#positions} positions Functions returning
 // {@link module:utils/dom/position~Position} to be checked, in the order of preference.
-// @param {utils/dom/boundingrect~Rect} targetRect A rect of the {@link module:utils/dom/position~Options#target}.
-// @param {utils/dom/boundingrect~Rect} elementRect A rect of positioned {@link module:utils/dom/position~Options#element}.
-// @param {utils/dom/boundingrect~Rect} limiterRect A rect of the {@link module:utils/dom/position~Options#limiter}.
-// @param {utils/dom/boundingrect~Rect} viewportRect A rect of the viewport.
+// @param {utils/dom/rect~Rect} targetRect A rect of the {@link module:utils/dom/position~Options#target}.
+// @param {utils/dom/rect~Rect} elementRect A rect of positioned {@link module:utils/dom/position~Options#element}.
+// @param {utils/dom/rect~Rect} limiterRect A rect of the {@link module:utils/dom/position~Options#limiter}.
+// @param {utils/dom/rect~Rect} viewportRect A rect of the viewport.
 // @returns {Array} An array containing the name of the position and it's rect.
 function getBestPosition( positions, targetRect, elementRect, limiterRect, viewportRect ) {
 	let maxLimiterIntersectArea = -1;
@@ -150,7 +150,7 @@ function getBestPosition( positions, targetRect, elementRect, limiterRect, viewp
 // This function converts Rect to `position: absolute` coordinates.
 //
 // @private
-// @param {utils/dom/boundingrect~Rect} rect A rect to be converted.
+// @param {utils/dom/rect~Rect} rect A rect to be converted.
 // @returns {Object} Object containing `left` and `top` properties, in absolute coordinates.
 function getAbsoluteRectCoordinates( { left, top } ) {
 	return {
