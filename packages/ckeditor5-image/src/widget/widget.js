@@ -88,6 +88,11 @@ export default class Widget extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_onKeydown( eventInfo, domEventData  ) {
+		this._handleBackspaceAndDelete( eventInfo, domEventData );
+		this._handleArrowKeys( eventInfo, domEventData );
+	}
+
+	_handleBackspaceAndDelete( eventInfo, domEventData ) {
 		const keyCode = domEventData.keyCode;
 
 		// Handle only delete and backspace.
@@ -131,6 +136,34 @@ export default class Widget extends Plugin {
 		}
 	}
 
+	_handleArrowKeys( eventInfo, domEventData ) {
+		const keyCode = domEventData.keyCode;
+
+		if ( !isArrowKeyCode( keyCode ) ) {
+			return;
+		}
+
+		const modelDocument = this.editor.document;
+		const schema = modelDocument.schema;
+		const modelSelection = modelDocument.selection;
+		const objectElement = getSelectedElement( modelSelection );
+
+		if ( objectElement && schema.objects.has( objectElement.name ) ) {
+			domEventData.preventDefault();
+			eventInfo.stop();
+
+			const isForward = ( keyCode == keyCodes.arrowdown || keyCode == keyCodes.arrowright );
+			const position = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
+			const newRange = modelDocument.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
+
+			if ( newRange ) {
+				modelDocument.enqueueChanges( () => {
+					modelSelection.setRanges( [ newRange ] );
+				} );
+			}
+		}
+	}
+
 	/**
 	 * Sets {@link module:engine/model/selection~Selection document's selection} over given element.
 	 *
@@ -140,4 +173,23 @@ export default class Widget extends Plugin {
 	_setSelectionOverElement( element ) {
 		this.editor.document.selection.setRanges( [ ModelRange.createOn( element ) ] );
 	}
+}
+
+function getSelectedElement( modelSelection ) {
+	if ( modelSelection.rangeCount !== 1 ) {
+		return null;
+	}
+
+	const range = modelSelection.getFirstRange();
+	const nodeAfterStart = range.start.nodeAfter;
+	const nodeBeforeEnd = range.end.nodeBefore;
+
+	return ( nodeAfterStart instanceof ModelElement && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
+}
+
+function isArrowKeyCode( keyCode ) {
+	return keyCode == keyCodes.arrowright ||
+		keyCode == keyCodes.arrowleft ||
+		keyCode == keyCodes.arrowup ||
+		keyCode == keyCodes.arrowdown;
 }
