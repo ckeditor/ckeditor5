@@ -11,7 +11,7 @@ import Paragraph from 'ckeditor5/paragraph/paragraph.js';
 import Bold from 'ckeditor5/basic-styles/bold.js';
 import { setData } from 'ckeditor5/engine/dev-utils/model.js';
 
-describe( 'Bug #59', () => {
+describe( 'Bug ckeditor5-typing#59', () => {
 	let editor;
 	let container;
 
