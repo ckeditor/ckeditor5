@@ -44,7 +44,7 @@ describe( 'getOptimalPosition', () => {
 		} );
 
 		it( 'should return coordinates (window scroll)', () => {
-			revertWindowScroll = stubWindowScroll( 100, 100 );
+			stubWindowScroll( 100, 100 );
 
 			assertPosition( { element, target, positions: [ attachLeft ] }, {
 				top: 200,
@@ -55,7 +55,7 @@ describe( 'getOptimalPosition', () => {
 
 		it( 'should return coordinates (positioned element parent)', () => {
 			const positionedParent = document.createElement( 'div' );
-			revertWindowScroll = stubWindowScroll( 1000, 1000 );
+			stubWindowScroll( 1000, 1000 );
 
 			Object.assign( positionedParent.style, {
 				position: 'absolute',
@@ -289,9 +289,11 @@ function stubWindowScroll( x, y ) {
 	window.scrollX = x;
 	window.scrollY = y;
 
-	return () => {
+	revertWindowScroll = () => {
 		window.scrollX = savedX;
 		window.scrollY = savedY;
+
+		revertWindowScroll = null;
 	};
 }
 
