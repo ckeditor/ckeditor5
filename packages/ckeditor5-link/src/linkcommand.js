@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module link/linkcommand
+ */
+
 import Command from '../core/command/command.js';
 import Text from '../engine/model/text.js';
 import Range from '../engine/model/range.js';
@@ -11,15 +15,14 @@ import isAttributeAllowedInSelection from '../core/command/helpers/isattributeal
 import findLinkRange from './findlinkrange.js';
 
 /**
- * The link command. It is used by the {@link Link.Link link feature}.
+ * The link command. It is used by the {@link module:link/link~Link link feature}.
  *
- * @memberOf link
- * @extends core.command.Command
+ * @extends module:core/command/command~Command
  */
 export default class LinkCommand extends Command {
 	/**
-	 * @see core.command.Command
-	 * @param {core.editor.Editor} editor
+	 * @see module:core/command/command~Command
+	 * @param {module:core/editor/editor~Editor} editor
 	 */
 	constructor( editor ) {
 		super( editor );
@@ -28,7 +31,7 @@ export default class LinkCommand extends Command {
 		 * Currently selected `linkHref` attribute value.
 		 *
 		 * @observable
-		 * @member {Boolean} core.command.ToggleAttributeCommand#value
+		 * @member {Boolean} module:core/command/toggleattributecommand~ToggleAttributeCommand#value
 		 */
 		this.set( 'value', undefined );
 
@@ -38,7 +41,8 @@ export default class LinkCommand extends Command {
 	}
 
 	/**
-	 * Checks if {@link engine.model.Document#schema} allows to create attribute in {@link engine.model.Document#selection}
+	 * Checks if {@link module:engine/model/document~Document#schema} allows to create attribute in {@link
+	 * module:engine/model/document~Document#selection}
 	 *
 	 * @protected
 	 * @returns {Boolean}
@@ -55,7 +59,8 @@ export default class LinkCommand extends Command {
 	 * When selection is non-collapsed, then `linkHref` attribute will be applied to nodes inside selection, but only to
 	 * those nodes where `linkHref` attribute is allowed (disallowed nodes will be omitted).
 	 *
-	 * When selection is collapsed and is not inside text with `linkHref` attribute, then new {@link engine.model.Text Text node} with
+	 * When selection is collapsed and is not inside text with `linkHref` attribute, then new {@link module:engine/model/text~Text Text node}
+	 * with
 	 * `linkHref` attribute will be inserted in place of caret, but only if such an element is allowed in this place. `_data` of
 	 * the inserted text will equal `href` parameter. Selection will be updated to wrap just inserted text node.
 	 *

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module link/link
+ */
+
 import Plugin from '../core/plugin.js';
 import ClickObserver from '../engine/view/observer/clickobserver.js';
 import LinkEngine from './linkengine.js';
@@ -19,10 +23,9 @@ import LinkFormView from './ui/linkformview.js';
 /**
  * The link feature. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
  *
- * It uses the {@link link.LinkEngine link engine feature}.
+ * It uses the {@link module:link/linkengine~LinkEngine link engine feature}.
  *
- * @memberOf link
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class Link extends Plugin {
 	/**
@@ -41,14 +44,14 @@ export default class Link extends Plugin {
 		/**
 		 * Balloon panel view to display the main UI.
 		 *
-		 * @member {link.ui.LinkBalloonPanelView} link.Link#balloonPanelView
+		 * @member {module:link/ui/balloonpanel~BalloonPanelView}
 		 */
 		this.balloonPanelView = this._createBalloonPanel();
 
 		/**
-		 * The form view inside {@link link.Link#balloonPanelView}.
+		 * The form view inside {@link #balloonPanelView}.
 		 *
-		 * @member {link.ui.LinkFormView} link.Link#formView
+		 * @member {module:link/ui/linkformview~LinkFormView}
 		 */
 		this.formView = this._createForm();
 
@@ -59,7 +62,7 @@ export default class Link extends Plugin {
 
 	/**
 	 * Creates a toolbar link button. Clicking this button will show
-	 * {@link link.Link#balloonPanelView} attached to the selection.
+	 * {@link #balloonPanelView} attached to the selection.
 	 *
 	 * @private
 	 */
@@ -118,10 +121,10 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Creates the {@link link.ui.LinkBalloonPanel} instance.
+	 * Creates the {@link module:ui/balloonpanel/balloonpanelview~BalloonPanelView} instance.
 	 *
 	 * @private
-	 * @returns {link.ui.LinkBalloonPanel} Link balloon panel instance.
+	 * @returns {module:ui/balloonpanel/balloonpanelview~BalloonPanelView} Link balloon panel instance.
 	 */
 	_createBalloonPanel() {
 		const editor = this.editor;
@@ -179,10 +182,10 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Creates the {@link link.ui.LinkForm} instance.
+	 * Creates the {@link module:link/ui/linkformview~LinkFormView} instance.
 	 *
 	 * @private
-	 * @returns {link.ui.LinkForm} Link form instance.
+	 * @returns {module:link/ui/linkformview~LinkFormView} Link form instance.
 	 */
 	_createForm() {
 		const editor = this.editor;
@@ -211,12 +214,12 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Shows {@link link.Link#balloonPanel LinkBalloonPanel} and attach to target element.
+	 * Shows {@link #balloonPanelView link balloon panel} and attach to target element.
 	 * If selection is collapsed and is placed inside link element, then panel will be attached
 	 * to whole link element, otherwise will be attached to the selection.
 	 *
 	 * @private
-	 * @param {link.LinkElement} [parentLink] Target element.
+	 * @param {module:link/linkelement~LinkElement} [parentLink] Target element.
 	 */
 	_attachPanelToElement( parentLink ) {
 		const viewDocument = this.editor.editing.view;
@@ -236,7 +239,7 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Hides {@link link.Link#balloonPanel LinkBalloonPanel}.
+	 * Hides {@link #balloonPanelView balloon panel view}.
 	 *
 	 * @private
 	 * @param {Boolean} [focusEditable=false] When `true` then editable focus will be restored on panel hide.
@@ -250,7 +253,7 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Shows {@link link.Link#balloonPanel LinkBalloonPanel}.
+	 * Shows {@link #balloonPanelView balloon panel view}.
 	 *
 	 * @private
 	 */
@@ -265,7 +268,7 @@ export default class Link extends Plugin {
 //
 // @private
 // @param {engine.view.Position} position
-// @returns {link.LinkElement|null}
+// @returns {module:link/linkelement~LinkElement|null}
 function getPositionParentLink( position ) {
 	return position.parent.getAncestors().find( ( ancestor ) => ancestor instanceof LinkElement );
 }

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module link/linkengine
+ */
+
 import Plugin from '../core/plugin.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
@@ -15,8 +19,7 @@ import UnlinkCommand from './unlinkcommand.js';
  *
  * It introduces the `linkHref="url"` attribute in the model which renders to the view as a `<a href="url">` element.
  *
- * @memberOf link
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class LinkEngine extends Plugin {
 	/**
