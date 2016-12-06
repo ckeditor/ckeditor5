@@ -17,7 +17,7 @@ import mix from '../utils/mix.js';
  */
 export default class Plugin {
 	/**
-	 * Creates a new Plugin instance. This is first step of a plugin initialization.
+	 * Creates a new Plugin instance. This is the first step of a plugin initialization.
 	 * See also {@link #init} and {@link #afterInit}.
 	 *
 	 * A plugin is always instantiated after its {@link #requires dependencies} and the
