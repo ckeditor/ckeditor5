@@ -63,9 +63,14 @@ export default class HeadingEngine extends Plugin {
 		// Register the heading command.
 		const command = new HeadingCommand( editor, formats );
 		editor.commands.set( 'heading', command );
+	}
 
+	afterInit() {
 		// If the enter command is added to the editor, alter its behavior.
 		// Enter at the end of a heading element should create a paragraph.
+
+		const editor = this.editor;
+		const command = editor.commands.get( 'heading' );
 		const enterCommand = editor.commands.get( 'enter' );
 
 		if ( enterCommand ) {
