@@ -629,9 +629,14 @@ export default class LiveSelection extends Selection {
 		newPath[ newPath.length - 1 ] -= gyPath[ 1 ];
 
 		const newPosition = new Position( oldRange.root, newPath );
-		const selectionPosition = this._document.getNearestSelectionPosition( newPosition );
-		const newRange = this._prepareRange( new Range( selectionPosition ) );
+		let selectionRange = this._document.getNearestSelectionRange( newPosition );
 
+		// If nearest valid selection range cannot be found - use one created at root beginning.
+		if ( !selectionRange ) {
+			selectionRange = new Range( new Position( newPosition.root, [ 0 ] ) );
+		}
+
+		const newRange = this._prepareRange( selectionRange );
 		const index = this._ranges.indexOf( gyRange );
 		this._ranges.splice( index, 1, newRange );
 

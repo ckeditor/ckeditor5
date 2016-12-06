@@ -280,51 +280,55 @@ export default class Document {
 	}
 
 	/**
-	 * Basing on given `position`, finds and returns a {@link module:engine/model/position~Position Position} instance that is nearest
-	 * to that `position` and is a correct position for selection. A position is correct for selection if
-	 * text node can be placed at that position.
+	 * Basing on given `position`, finds and returns a {@link module:engine/model/range~Range Range} instance that is
+	 * nearest to that `position` and is a correct range for selection.
 	 *
-	 * If no correct position is found, the first position in given `position` root is returned. This can happen if no node
-	 * has been added to the root or it may mean incorrect model document state.
+	 * Correct selection range might be collapsed - when it's located in position where text node can be placed.
+	 * Non-collapsed range is returned when selection can be placed around element marked as "object" in
+	 * {@link module:engine/model/schema~Schema schema}.
 	 *
-	 * @param {module:engine/model/position~Position} position Reference position where selection position should be looked for.
-	 * @returns {module:engine/model/position~Position|null} Nearest selection position.
+	 * Direction of searching for nearest correct selection range can be specified as:
+	 * * `both` - searching will be performed in both ways,
+	 * * `forward` - searching will be performed only forward,
+	 * * `backward` - searching will be performed only backward.
+	 *
+	 * When valid selection range cannot be found, `null` value is returned.
+	 *
+	 * @param {module:engine/model/position~Position} position Reference position where new selection range should be looked for.
+	 * @param {'both'|'forward'|'backward'} [direction='both'] Search direction.
+	 * @returns {module:engine/model/range~Range|null} Nearest selection range or `null` if one cannot be found.
 	 */
-	getNearestSelectionPosition( position ) {
+	getNearestSelectionRange( position, direction = 'both' ) {
+		// Return collapsed range if provided position is valid.
 		if ( this.schema.check( { name: '$text', inside: position } ) ) {
-			return Position.createFromPosition( position );
+			return new Range( position );
 		}
 
-		const backwardWalker = new TreeWalker( { startPosition: position, direction: 'backward' } );
-		const forwardWalker = new TreeWalker( { startPosition: position } );
+		let backwardWalker;
+		let forwardWalker;
 
-		let done = false;
+		if ( direction == 'both' || direction == 'backward' ) {
+			backwardWalker = new TreeWalker( { startPosition: position, direction: 'backward' } );
+		}
 
-		while ( !done ) {
-			done = true;
+		if ( direction == 'both' || direction == 'forward' ) {
+			forwardWalker = new TreeWalker( { startPosition: position } );
+		}
 
-			let step = backwardWalker.next();
+		for ( let data of getWalkersData( backwardWalker, forwardWalker ) ) {
+			const type = ( data.walker == backwardWalker ? 'elementEnd' : 'elementStart' );
+			const value = data.value;
 
-			if ( !step.done ) {
-				if ( this.schema.check( { name: '$text', inside: step.value.nextPosition } ) ) {
-					return step.value.nextPosition;
-				}
-
-				done = false;
+			if ( value.type == type && this.schema.objects.has( value.item.name ) ) {
+				return Range.createOn( value.item );
 			}
 
-			step = forwardWalker.next();
-
-			if ( !step.done ) {
-				if ( this.schema.check( { name: '$text', inside: step.value.nextPosition } ) ) {
-					return step.value.nextPosition;
-				}
-
-				done = false;
+			if ( this.schema.check( { name: '$text', inside: value.nextPosition } ) ) {
+				return new Range( value.nextPosition );
 			}
 		}
 
-		return new Position( position.root, [ 0 ] );
+		return null;
 	}
 
 	/**
@@ -370,9 +374,10 @@ export default class Document {
 
 		// Find the first position where the selection can be put.
 		const position = new Position( defaultRoot, [ 0 ] );
-		const selectionPosition = this.getNearestSelectionPosition( position );
+		const nearestRange = this.getNearestSelectionRange( position );
 
-		return new Range( selectionPosition );
+		// If valid selection range is not found - return range collapsed at the beginning of the root.
+		return nearestRange || new Range( position );
 	}
 
 	/**
@@ -446,4 +451,43 @@ function validateTextNodePosition( rangeBoundary ) {
 	}
 
 	return true;
+}
+
+// Generator function returning values from provided walkers, switching between them at each iteration. If only one walker
+// is provided it will return data only from that walker.
+//
+// @param {module:engine/module/treewalker~TreeWalker} [backward] Walker iterating in backward direction.
+// @param {module:engine/module/treewalker~TreeWalker} [forward] Walker iterating in forward direction.
+// @returns {Iterable.<Object>} Object returned at each iteration contains `value` and `walker` (informing which walker returned
+// given value) fields.
+function *getWalkersData( backward, forward ) {
+	let done = false;
+
+	while ( !done ) {
+		done = true;
+
+		if ( backward ) {
+			const step = backward.next();
+
+			if ( !step.done ) {
+				done = false;
+				yield {
+					walker: backward,
+					value: step.value
+				};
+			}
+		}
+
+		if ( forward ) {
+			const step = forward.next();
+
+			if ( !step.done ) {
+				done = false;
+				yield {
+					walker: forward,
+					value: step.value
+				};
+			}
+		}
+	}
 }

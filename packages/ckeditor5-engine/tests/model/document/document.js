@@ -8,14 +8,13 @@
 import Document from 'ckeditor5/engine/model/document.js';
 import Schema from 'ckeditor5/engine/model/schema.js';
 import RootElement from 'ckeditor5/engine/model/rootelement.js';
-import Element from 'ckeditor5/engine/model/element.js';
 import Batch from 'ckeditor5/engine/model/batch.js';
 import Delta from 'ckeditor5/engine/model/delta/delta.js';
-import Position from 'ckeditor5/engine/model/position.js';
 import Range from 'ckeditor5/engine/model/range.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 import count from 'ckeditor5/utils/count.js';
 import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
+import { setData, getData } from 'ckeditor5/engine/dev-utils/model.js';
 
 describe( 'Document', () => {
 	let doc;
@@ -276,49 +275,160 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'getNearestSelectionPosition', () => {
+	describe( 'getNearestSelectionRange', () => {
 		let root;
+		let selection;
 
 		beforeEach( () => {
 			doc.schema.registerItem( 'paragraph', '$block' );
+			doc.schema.registerItem( 'image' );
+			doc.schema.allow( { name: 'image', inside: '$root' } );
+			doc.schema.registerItem( 'widget', '$block' );
+			doc.schema.allow( { name: 'widget', inside: '$root' } );
+			doc.schema.objects.add( 'widget' );
+
 			root = doc.createRoot();
+			selection = doc.selection;
 		} );
 
-		it( 'should return equal position if text node can be placed at that position', () => {
-			root.appendChildren( new Element( 'paragraph' ) );
+		test(
+			'should return collapsed range if text node can be placed at that position - both',
+			'<paragraph>[]</paragraph>',
+			'both',
+			'<paragraph>[]</paragraph>'
+		);
 
-			const position = new Position( root, [ 0, 0 ] );
-			const selectionPosition = doc.getNearestSelectionPosition( position );
+		test(
+			'should return collapsed range if text node can be placed at that position - forward',
+			'<paragraph>[]</paragraph>',
+			'forward',
+			'<paragraph>[]</paragraph>'
+		);
 
-			expect( position.isEqual( selectionPosition ) ).to.be.true;
-		} );
+		test(
+			'should return collapsed range if text node can be placed at that position - backward',
+			'<paragraph>[]</paragraph>',
+			'backward',
+			'<paragraph>[]</paragraph>'
+		);
 
-		it( 'should return a position before if it is a closer position at which text node can be placed', () => {
-			root.appendChildren( [ new Element( 'paragraph' ), new Element( 'paragraph' ) ] );
+		test( 'should return null in empty document - both', '', 'both', null );
 
-			const position = new Position( root, [ 1 ] );
-			const selectionPosition = doc.getNearestSelectionPosition( position );
+		test( 'should return null in empty document - backward', '', 'backward', null );
 
-			expect( selectionPosition.path ).to.deep.equal( [ 0, 0 ] );
-		} );
+		test( 'should return null in empty document - forward', '', 'forward', null );
 
-		it( 'should return a position after if it is a closer position at which text node can be placed', () => {
-			root.appendChildren( [ new Element( 'paragraph' ), new Element( 'image' ), new Element( 'paragraph' ) ] );
+		test(
+			'should find range before when searching both ways',
+			'<paragraph></paragraph>[]<paragraph></paragraph>',
+			'both',
+			'<paragraph>[]</paragraph><paragraph></paragraph>'
+		);
 
-			const position = new Position( root, [ 2 ] );
-			const selectionPosition = doc.getNearestSelectionPosition( position );
+		test(
+			'should find range before when searching backward',
+			'<paragraph></paragraph>[]<paragraph></paragraph>',
+			'backward',
+			'<paragraph>[]</paragraph><paragraph></paragraph>'
+		);
 
-			expect( selectionPosition.path ).to.deep.equal( [ 2, 0 ] );
-		} );
+		test(
+			'should find range after when searching forward',
+			'<paragraph></paragraph>[]<paragraph></paragraph>',
+			'forward',
+			'<paragraph></paragraph><paragraph>[]</paragraph>'
+		);
 
-		it( 'should return first position in root if there is no position where text node can be placed', () => {
-			root.appendChildren( new Element( 'table' ) );
+		test(
+			'should find range after when searching both ways when it is closer',
+			'<paragraph></paragraph><image></image>[]<paragraph></paragraph>',
+			'both',
+			'<paragraph></paragraph><image></image><paragraph>[]</paragraph>'
+		);
 
-			const position = new Position( root, [ 0, 0 ] );
-			const selectionPosition = doc.getNearestSelectionPosition( position );
+		test(
+			'should find range before when searching both ways when it is closer',
+			'<paragraph></paragraph><image></image>[]<image></image><image></image><paragraph></paragraph>',
+			'both',
+			'<paragraph>[]</paragraph><image></image><image></image><image></image><paragraph></paragraph>'
+		);
 
-			expect( selectionPosition.path ).to.deep.equal( [ 0 ] );
-		} );
+		test(
+			'should return null if there is no valid range',
+			'<image></image>',
+			'both',
+			null
+		);
+
+		test(
+			'should return null if there is no valid range in given direction - backward',
+			'[]<paragraph></paragraph>',
+			'backward',
+			null
+		);
+
+		test(
+			'should return null if there is no valid range in given direction - forward',
+			'<paragraph></paragraph>[]',
+			'forward',
+			null
+		);
+
+		test(
+			'should select nearest object - both',
+			'<widget></widget>[]<widget></widget>',
+			'both',
+			'[<widget></widget>]<widget></widget>'
+		);
+
+		test(
+			'should select nearest object - forward',
+			'<paragraph></paragraph>[]<widget></widget>',
+			'forward',
+			'<paragraph></paragraph>[<widget></widget>]'
+		);
+
+		test(
+			'should select nearest object - forward',
+			'<paragraph></paragraph>[]<widget></widget>',
+			'forward',
+			'<paragraph></paragraph>[<widget></widget>]'
+		);
+
+		test(
+			'should select nearest object - backward',
+			'<widget></widget>[]<paragraph></paragraph>',
+			'backward',
+			'[<widget></widget>]<paragraph></paragraph>'
+		);
+
+		test(
+			'should move forward when placed at root start',
+			'[]<paragraph></paragraph><paragraph></paragraph>',
+			'both',
+			'<paragraph>[]</paragraph><paragraph></paragraph>'
+		);
+
+		test(
+			'should move backward when placed at root end',
+			'<paragraph></paragraph><paragraph></paragraph>[]',
+			'both',
+			'<paragraph></paragraph><paragraph>[]</paragraph>'
+		);
+
+		function test( testName, data, direction, expected ) {
+			it( testName, () => {
+				setData( doc, data );
+				const range = doc.getNearestSelectionRange( selection.anchor, direction );
+
+				if ( expected === null ) {
+					expect( range ).to.be.null;
+				} else {
+					selection.setRanges( [ range ] );
+					expect( getData( doc ) ).to.equal( expected );
+				}
+			} );
+		}
 	} );
 
 	describe( '_getDefaultRoot', () => {
