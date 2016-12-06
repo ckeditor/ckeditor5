@@ -12,6 +12,7 @@ import ClassicEditorUIView from 'ckeditor5/editor-classic/classiceditoruiview.js
 import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
 import ClassicEditor from 'ckeditor5/editor-classic/classic.js';
+import Plugin from 'ckeditor5/core/plugin.js';
 import Paragraph from 'ckeditor5/paragraph/paragraph.js';
 import Bold from 'ckeditor5/basic-styles/bold.js';
 
@@ -58,7 +59,7 @@ describe( 'ClassicEditor', () => {
 		} );
 	} );
 
-	describe( 'create', () => {
+	describe( 'create()', () => {
 		beforeEach( function() {
 			return ClassicEditor.create( editorElement, {
 					plugins: [ Paragraph, Bold ]
@@ -66,6 +67,10 @@ describe( 'ClassicEditor', () => {
 				.then( newEditor => {
 					editor = newEditor;
 				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
 		} );
 
 		it( 'creates an instance which inherits from the ClassicEditor', () => {
@@ -82,6 +87,80 @@ describe( 'ClassicEditor', () => {
 
 		it( 'loads data from the editor element', () => {
 			expect( editor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+		} );
+	} );
+
+	describe( 'create - events', () => {
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'fires all events in the right order', () => {
+			const fired = [];
+
+			function spy( evt ) {
+				fired.push( evt.name );
+			}
+
+			class EventWatcher extends Plugin {
+				init() {
+					this.editor.on( 'pluginsReady', spy );
+					this.editor.on( 'uiReady', spy );
+					this.editor.on( 'dataReady', spy );
+					this.editor.on( 'ready', spy );
+				}
+			}
+
+			return ClassicEditor.create( editorElement, {
+					plugins: [ EventWatcher ]
+				} )
+				.then( ( newEditor ) => {
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
+
+					editor = newEditor;
+				} );
+		} );
+
+		it( 'fires dataReady once data is loaded', () => {
+			let data;
+
+			class EventWatcher extends Plugin {
+				init() {
+					this.editor.on( 'dataReady', () => {
+						data = this.editor.getData();
+					} );
+				}
+			}
+
+			return ClassicEditor.create( editorElement, {
+					plugins: [ EventWatcher, Paragraph, Bold ]
+				} )
+				.then( ( newEditor ) => {
+					expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
+
+					editor = newEditor;
+				} );
+		} );
+
+		it( 'fires uiReady once UI is ready', () => {
+			let isReady;
+
+			class EventWatcher extends Plugin {
+				init() {
+					this.editor.on( 'uiReady', () => {
+						isReady = this.editor.ui.view.ready;
+					} );
+				}
+			}
+
+			return ClassicEditor.create( editorElement, {
+					plugins: [ EventWatcher ]
+				} )
+				.then( ( newEditor ) => {
+					expect( isReady ).to.be.true;
+
+					editor = newEditor;
+				} );
 		} );
 	} );
 
