@@ -109,15 +109,19 @@ export default class Editor {
 		const config = this.config;
 
 		return loadPlugins()
-			.then( initPlugins );
+			.then( ( loadedPlugins ) => {
+				return initPlugins( loadedPlugins, 'init' )
+					.then( () => initPlugins( loadedPlugins, 'afterInit' ) );
+			} )
+			.then( () => this.fire( 'pluginsReady' ) );
 
 		function loadPlugins() {
 			return that.plugins.load( config.get( 'plugins' ) || [] );
 		}
 
-		function initPlugins( loadedPlugins ) {
+		function initPlugins( loadedPlugins, method ) {
 			return loadedPlugins.reduce( ( promise, plugin ) => {
-				return promise.then( plugin.init.bind( plugin ) );
+				return promise.then( plugin[ method ].bind( plugin ) );
 			}, Promise.resolve() );
 		}
 	}
@@ -163,9 +167,9 @@ export default class Editor {
 	/**
 	 * Creates a basic editor instance.
 	 *
-	 * @param {Object} config See {@link module:core/editor/standardeditor~StandardEditor}'s param.
+	 * @param {Object} config See {@link module:core/editor/editor~Editor}'s param.
 	 * @returns {Promise} Promise resolved once editor is ready.
-	 * @returns {module:core/editor/standardeditor~StandardEditor} return.editor The editor instance.
+	 * @returns {module:core/editor/editor~Editor} return.editor The editor instance.
 	 */
 	static create( config ) {
 		return new Promise( ( resolve ) => {
@@ -173,6 +177,10 @@ export default class Editor {
 
 			resolve(
 				editor.initPlugins()
+					.then( () => {
+						editor.fire( 'dataReady' );
+						editor.fire( 'ready' );
+					} )
 					.then( () => editor )
 			);
 		} );
@@ -180,6 +188,32 @@ export default class Editor {
 }
 
 mix( Editor, EmitterMixin );
+
+/**
+ * Fired after {@link core.editor.Editor#initPlugins plugins are initialized}.
+ *
+ * @event core.editor.Editor#pluginsReady
+ */
+
+/**
+ * Fired when the editor UI is ready. This event won't be fired if the editor has no UI.
+ *
+ * @event core.editor.Editor#uiReady
+ */
+
+/**
+ * Fired when the data loaded to the editor is ready. If a specific editor doesn't load
+ * any data initially, this event will be fired right before {@link #ready}.
+ *
+ * @event core.editor.Editor#dataReady
+ */
+
+/**
+ * Fired when {@link #pluginsReady plugins}, {@link #uiReady UI} and {@link #dataReady data} and all additional
+ * editor components are ready.
+ *
+ * @event core.editor.Editor#ready
+ */
 
 /**
  * Fired when this editor instance is destroyed. The editor at this point is not usable and this event should be used to

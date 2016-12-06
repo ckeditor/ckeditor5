@@ -113,6 +113,10 @@ export default class StandardEditor extends Editor {
 
 			resolve(
 				editor.initPlugins()
+					.then( () => {
+						editor.fire( 'dataReady' );
+						editor.fire( 'ready' );
+					} )
 					.then( () => editor )
 			);
 		} );

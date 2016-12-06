@@ -38,6 +38,10 @@ export default class VirtualTestEditor extends StandardEditor {
 
 			resolve(
 				editor.initPlugins()
+					.then( () => {
+						editor.fire( 'dataReady' );
+						editor.fire( 'ready' );
+					} )
 					.then( () => editor )
 			);
 		} );

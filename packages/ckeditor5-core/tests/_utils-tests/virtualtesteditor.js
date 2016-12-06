@@ -5,6 +5,8 @@
 
 import StandardEditor from 'ckeditor5/core/editor/standardeditor.js';
 import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
+
+import Plugin from 'ckeditor5/core/plugin.js';
 import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
 
 import testUtils from 'tests/core/_utils/utils.js';
@@ -37,6 +39,29 @@ describe( 'VirtualTestEditor', () => {
 					expect( editor ).to.be.instanceof( VirtualTestEditor );
 
 					expect( editor.config.get( 'foo' ) ).to.equal( 1 );
+				} );
+		} );
+
+		it( 'fires all events in the right order', () => {
+			const fired = [];
+
+			function spy( evt ) {
+				fired.push( evt.name );
+			}
+
+			class EventWatcher extends Plugin {
+				init() {
+					this.editor.on( 'pluginsReady', spy );
+					this.editor.on( 'dataReady', spy );
+					this.editor.on( 'ready', spy );
+				}
+			}
+
+			return VirtualTestEditor.create( {
+					plugins: [ EventWatcher ]
+				} )
+				.then( () => {
+					expect( fired ).to.deep.equal( [ 'pluginsReady', 'dataReady', 'ready' ] );
 				} );
 		} );
 	} );
