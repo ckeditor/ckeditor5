@@ -20,13 +20,13 @@ export default class Plugin {
 	 * Creates a new Plugin instance. This is the first step of a plugin initialization.
 	 * See also {@link #init} and {@link #afterInit}.
 	 *
-	 * A plugin is always instantiated after its {@link #requires dependencies} and the
+	 * A plugin is always instantiated after its {@link module:core/plugin~Plugin.requires dependencies} and the
 	 * {@link #init} and {@link #afterInit} methods are called in the same order.
 	 *
 	 * Usually, you'll want to put your plugin's initialization code in the {@link #init} method.
 	 * The constructor can be understood as "before init" and used in special cases, just like
 	 * {@link #afterInit} servers for the special "after init" scenarios (e.g. code which depends on other
-	 * plugins, but which doesn't {@link #requires explicitly require} them).
+	 * plugins, but which doesn't {@link module:core/plugin~Plugin.requires explicitly require} them).
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
 	 */
@@ -81,7 +81,7 @@ export default class Plugin {
 	 * The second stage (after plugin {@link #constructor}) of plugin initialization.
 	 * Unlike the plugin constructor this method can perform asynchronous.
 	 *
-	 * A plugin's `init()` method is called after its {@link #requires dependencies} are initialized,
+	 * A plugin's `init()` method is called after its {@link module:core/plugin~Plugin.requires dependencies} are initialized,
 	 * so in the same order as constructors of these plugins.
 	 *
 	 * @returns {null|Promise}

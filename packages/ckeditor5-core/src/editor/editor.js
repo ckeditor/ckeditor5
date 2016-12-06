@@ -190,34 +190,34 @@ export default class Editor {
 mix( Editor, EmitterMixin );
 
 /**
- * Fired after {@link core.editor.Editor#initPlugins plugins are initialized}.
+ * Fired after {@link #initPlugins plugins are initialized}.
  *
- * @event core.editor.Editor#pluginsReady
+ * @event pluginsReady
  */
 
 /**
  * Fired when the editor UI is ready. This event won't be fired if the editor has no UI.
  *
- * @event core.editor.Editor#uiReady
+ * @event uiReady
  */
 
 /**
  * Fired when the data loaded to the editor is ready. If a specific editor doesn't load
- * any data initially, this event will be fired right before {@link #ready}.
+ * any data initially, this event will be fired right before {@link #event:ready}.
  *
- * @event core.editor.Editor#dataReady
+ * @event dataReady
  */
 
 /**
- * Fired when {@link #pluginsReady plugins}, {@link #uiReady UI} and {@link #dataReady data} and all additional
+ * Fired when {@link #event:pluginsReady plugins}, {@link #event:uiReady UI} and {@link #event:dataReady data} and all additional
  * editor components are ready.
  *
- * @event core.editor.Editor#ready
+ * @event ready
  */
 
 /**
  * Fired when this editor instance is destroyed. The editor at this point is not usable and this event should be used to
  * perform the clean-up in any plugin.
  *
- * @event module:core/editor/editor~Editor#destroy
+ * @event destroy
  */
