@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module image/converters
+ */
+
 import ViewContainerElement from '../engine/view/containerelement.js';
 import ViewEmptyElement from '../engine/view/emptyelement.js';
 import ModelElement from '../engine/model/element.js';
@@ -61,9 +65,10 @@ export function viewToModelImage() {
 
 /**
  * Returns model to view selection converter. This converter is applied after default selection conversion is made.
- * It creates fake view selection when {@link engine.view.Selection#getSelectedElement} returns instance of image widget.
+ * It creates fake view selection when {@link module:engine/view/selection~Selection#getSelectedElement} returns instance
+ * of image widget.
  *
- * @param {Function} t {@link utils.Locale#t Locale#t function} used to translate default fake selection's label.
+ * @param {Function} t {@link module:utils/locale~Locale#t Locale#t function} used to translate default fake selection's label.
  * @returns {Function}
  */
 export function modelToViewSelection( t ) {
@@ -92,8 +97,8 @@ export function modelToViewSelection( t ) {
  *
  *		<figure class="image"><img src="..." alt="..."></img></figure>
  *
- * @param {engine.model.Element} modelElement
- * @returns {engine.view.ContainerElement}
+ * @param {module:engine/model/element~Element} modelElement
+ * @return {module:engine/view/containerelement~ContainerElement}
  */
 export function modelToViewImage( modelElement ) {
 	const viewImg = new ViewEmptyElement( 'img', {

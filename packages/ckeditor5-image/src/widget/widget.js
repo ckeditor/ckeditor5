@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module image/widget/widget
+ */
+
 import Plugin from '../../core/plugin.js';
 import WidgetEngine from './widgetengine.js';
 import MouseObserver from '../../engine/view/observer/mouseobserver.js';
@@ -14,10 +18,9 @@ import { keyCodes } from '../../utils/keyboard.js';
 
 /**
  * The widget plugin.
- * Adds default {@link engine.view.Document#mousedown mousedown} handling on widget elements.
+ * Adds default {@link module:engine/view/document~Document#event:mousedown mousedown} handling on widget elements.
  *
- * @memberOf image.widget
- * @extends core.Plugin.
+ * @extends module:core/plugin~Plugin.
  */
 export default class Widget extends Plugin {
 	/**
@@ -42,11 +45,11 @@ export default class Widget extends Plugin {
 	}
 
 	/**
-	 * Handles {@link engine.view.Document#mousedown mousedown} events on widget elements.
+	 * Handles {@link module:engine/view/document~Document#event:mousedown mousedown} events on widget elements.
 	 *
 	 * @private
-	 * @param {utils.EventInfo} eventInfo
-	 * @param {envine.view.observer.DomEventData} domEventData
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_onMousedown( eventInfo, domEventData ) {
 		let widgetElement = domEventData.target;
@@ -78,11 +81,11 @@ export default class Widget extends Plugin {
 	}
 
 	/**
-	 * Handles {@link engine.view.Document#keydown keydown} events.
+	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events.
 	 *
 	 * @private
-	 * @param {utils.EventInfo} eventInfo
-	 * @param {envine.view.observer.DomEventData} domEventData
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_onKeydown( eventInfo, domEventData  ) {
 		const keyCode = domEventData.keyCode;
@@ -129,10 +132,10 @@ export default class Widget extends Plugin {
 	}
 
 	/**
-	 * Sets {@link engine.model.Selection document's selection} over given element.
+	 * Sets {@link module:engine/model/selection~Selection document's selection} over given element.
 	 *
 	 * @private
-	 * @param {engine.model.Element} element
+	 * @param {module:engine/model/element~Element} element
 	 */
 	_setSelectionOverElement( element ) {
 		this.editor.document.selection.setRanges( [ ModelRange.createOn( element ) ] );

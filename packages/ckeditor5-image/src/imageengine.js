@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module image/imageengine
+ */
+
 import Plugin from '../core/plugin.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import WidgetEngine from './widget/widgetengine.js';
@@ -14,8 +18,7 @@ import { toImageWidget } from './utils.js';
  * Registers `image` as a block element in document's schema and allows it to have two attributes: `src` and `alt`.
  * Registers converters for editing and data pipelines.
  *
- * @memberof image
- * @extends core.Plugin.
+ * @extends module:core/plugin~Plugin.
  */
 export default class ImageEngine extends Plugin {
 	/**

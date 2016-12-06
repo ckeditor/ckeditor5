@@ -3,27 +3,30 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module image/widget/utils
+ */
+
 const widgetSymbol = Symbol( 'isWidget' );
 
 /**
- * CSS classes added to each widget element.
+ * CSS class added to each widget element.
  *
- * @member {String} image.widget.utils.WIDGET_CLASS_NAME
+ * @const {String}
  */
 export const WIDGET_CLASS_NAME = 'ck-widget';
 
 /**
- * CSS classes added to currently selected widget element.
+ * CSS class added to currently selected widget element.
  *
- * @member {String} image.widget.utils.WIDGET_SELECTED_CLASS_NAME
+ * @const {String}
  */
 export const WIDGET_SELECTED_CLASS_NAME = 'ck-widget_selected';
 
 /**
- * Returns `true` if given {@link engine.view.Element} is a widget.
+ * Returns `true` if given {@link module:engine/view/element~Element} is a widget.
  *
- * @method image.widget.utils.isWidget
- * @param {engine.view.Element} element
+ * @param {module:engine/view/element~Element} element
  * @returns {Boolean}
  */
 export function isWidget( element ) {
@@ -31,14 +34,14 @@ export function isWidget( element ) {
 }
 
 /**
- * "Widgetizes" given {@link engine.view.Element}:
- * * sets `contenteditable` attribue to `true`,
+ * "Widgetizes" given {@link module:engine/view/element~Element}:
+ * * sets `contenteditable` attribute to `true`,
  * * adds custom `getFillerOffset` method returning `null`,
  * * adds `ck-widget` CSS class,
- * * adds custom property allowing to recognize widget elements by using {@link image.widget.utils.isWidget}.
+ * * adds custom property allowing to recognize widget elements by using {@link ~isWidget}.
  *
- * @param {engine.view.Element} element
- * @returns {engine.view.Element} Returns same element.
+ * @param {module:engine/view/element~Element} element
+ * @returns {module:engine/view/element~Element} Returns same element.
  */
 export function widgetize( element ) {
 	element.setAttribute( 'contenteditable', false );

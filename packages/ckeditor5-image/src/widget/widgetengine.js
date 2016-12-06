@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module image/widget/widgetengine
+ */
+
 import Plugin from '../../core/plugin.js';
 import { WIDGET_SELECTED_CLASS_NAME, isWidget } from './utils.js';
 
@@ -12,8 +16,7 @@ import { WIDGET_SELECTED_CLASS_NAME, isWidget } from './utils.js';
  * If converted selection is placed around widget element, selection is marked as fake. Additionally, proper CSS class
  * is added to indicate that widget has been selected.
  *
- * @memberOf image.widget
- * @extends core.Plugin.
+ * @extends module:core/plugin~Plugin.
  */
 export default class WidgetEngine extends Plugin {
 	/**
