@@ -13,8 +13,6 @@
  * A helper class representing a `DOMRect` object, e.g. value returned by
  * the native `object.getBoundingClientRect()` method. Provides a set of methods
  * to manipulate the rect and compare it against other `Rect` instances.
- *
- * @memberOf utils.dom
  */
 export default class Rect {
 	/**
@@ -32,7 +30,7 @@ export default class Rect {
 	 * 		// Rect out of another Rect instance.
 	 * 		const rectC = new Rect( rectC );
 	 *
-	 * @param {HTMLElement|Range|utils.dom.Rect|Object} obj A source object to create the rect.
+	 * @param {HTMLElement|Range|module:utils/dom/rect~Rect|Object} obj A source object to create the rect.
 	 */
 	constructor( obj ) {
 		Object.assign( this, getRect( obj ) );
@@ -41,49 +39,49 @@ export default class Rect {
 		 * The "top" value of the rect.
 		 *
 		 * @readonly
-		 * @member {Number} utils.dom.Rect#top
+		 * @member {Number} #top
 		 */
 
 		/**
 		 * The "right" value of the rect.
 		 *
 		 * @readonly
-		 * @member {Number} utils.dom.Rect#right
+		 * @member {Number} #right
 		 */
 
 		/**
 		 * The "bottom" value of the rect.
 		 *
 		 * @readonly
-		 * @member {Number} utils.dom.Rect#bottom
+		 * @member {Number} #bottom
 		 */
 
 		/**
 		 * The "left" value of the rect.
 		 *
 		 * @readonly
-		 * @member {Number} utils.dom.Rect#left
+		 * @member {Number} #left
 		 */
 
 		/**
 		 * The "width" value of the rect.
 		 *
 		 * @readonly
-		 * @member {Number} utils.dom.Rect#width
+		 * @member {Number} #width
 		 */
 
 		/**
 		 * The "height" value of the rect.
 		 *
 		 * @readonly
-		 * @member {Number} utils.dom.Rect#height
+		 * @member {Number} #height
 		 */
 	}
 
 	/**
 	 * Returns a clone of the rect.
 	 *
-	 * @returns {utils.dom.Rect} A cloned rect.
+	 * @returns {module:utils/dom/rect~Rect} A cloned rect.
 	 */
 	clone() {
 		return new Rect( this );
@@ -94,7 +92,7 @@ export default class Rect {
 	 *
 	 * @param {Number} x Desired horizontal location.
 	 * @param {Number} y Desired vertical location.
-	 * @returns {utils.dom.Rect} A rect which has been moved.
+	 * @returns {module:utils/dom/rect~Rect} A rect which has been moved.
 	 */
 	moveTo( x, y ) {
 		this.top = y;
@@ -110,7 +108,7 @@ export default class Rect {
 	 *
 	 * @param {Number} x A horizontal offset.
 	 * @param {Number} y A vertical offset
-	 * @returns {utils.dom.Rect} A rect which has been moved.
+	 * @returns {module:utils/dom/rect~Rect} A rect which has been moved.
 	 */
 	moveBy( x, y ) {
 		this.top += y;
@@ -124,8 +122,8 @@ export default class Rect {
 	/**
 	 * Returns a new rect a a result of intersection with another rect.
 	 *
-	 * @param {utils.dom.Rect} anotherRect
-	 * @returns {utils.dom.Rect}
+	 * @param {module:utils/dom/rect~Rect} anotherRect
+	 * @returns {module:utils/dom/rect~Rect}
 	 */
 	getIntersection( anotherRect ) {
 		const rect = {
@@ -144,7 +142,7 @@ export default class Rect {
 	/**
 	 * Returns the area of intersection with another rect.
 	 *
-	 * @param {utils.dom.Rect} anotherRect [description]
+	 * @param {module:utils/dom/rect~Rect} anotherRect [description]
 	 * @returns {Number} Area of intersection.
 	 */
 	getIntersectionArea( anotherRect ) {
@@ -163,7 +161,7 @@ export default class Rect {
 	/**
 	 * Returns a rect of the web browser viewport.
 	 *
-	 * @returns {utils.dom.Rect} A viewport rect.
+	 * @returns {module:utils/dom/rect~Rect} A viewport rect.
 	 */
 	static getViewportRect() {
 		const { innerWidth, innerHeight } = window;
