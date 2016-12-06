@@ -171,7 +171,7 @@ gulp.task( 'docs:clean', () => {
 gulp.task( 'docs:build', () => {
 	const docsBuilder = require( '@ckeditor/ckeditor5-dev-docs' ).docs( config );
 
-	return docsBuilder.buildDocs;
+	return docsBuilder.buildDocs();
 } );
 
 gulp.task( 'docs:editors', [ 'compile:js:esnext', 'compile:themes:esnext' ], () => {
