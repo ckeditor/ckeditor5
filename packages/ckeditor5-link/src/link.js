@@ -222,8 +222,6 @@ export default class Link extends Plugin {
 		const viewDocument = this.editor.editing.view;
 		const targetLink = parentLink || getPositionParentLink( viewDocument.selection.getFirstPosition() );
 
-		this.balloonPanelView.limiter = viewDocument.domConverter.getCorrespondingDomElement( viewDocument.selection.editableElement );
-
 		const target = targetLink ?
 				// When selection is inside link element, then attach panel to this element.
 				viewDocument.domConverter.getCorrespondingDomElement( targetLink )
@@ -231,7 +229,10 @@ export default class Link extends Plugin {
 				// Otherwise attach panel to the selection.
 				viewDocument.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
 
-		this.balloonPanelView.attachTo( target );
+		this.balloonPanelView.attachTo( {
+			target,
+			limiter: viewDocument.domConverter.getCorrespondingDomElement( viewDocument.selection.editableElement )
+		} );
 	}
 
 	/**
