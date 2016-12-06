@@ -63,15 +63,13 @@ export default class Plugin {
 	 * name and its constructor. If not, then only by its constructor.
 	 *
 	 * The name should reflect the package name + path to that module. E.g. `ckeditor5-image/src/image.js` plugin
-	 * should be named `ckeditor5-image/image`.
+	 * should be named `image/image` (the `ckeditor5-` prefix is stripped during compilation).
 	 *
 	 * To keep a plugin class definition tight it's recommended to define this property as a static getter:
 	 *
-	 *		import Image from './image.js';
-	 *
-	 *		export default class ImageCaption extends Plugin {
+	 *		export default class ImageCaption {
      *			static get pluginName() {
-     *				return 'ckeditor5-image/image';
+     *				return 'image/imagecaption';
      *			}
 	 *		}
 	 *
