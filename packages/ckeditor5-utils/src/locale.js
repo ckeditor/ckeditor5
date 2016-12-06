@@ -12,7 +12,7 @@
  */
 export default class Locale {
 	/**
-	 * Creates a new instance of the Locale class. {@link ~Locale}
+	 * Creates a new instance of the Locale class.
 	 *
 	 * @param {String} [lang='en'] The language code in [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
 	 */
@@ -26,7 +26,7 @@ export default class Locale {
 		this.lang = lang || 'en';
 
 		/**
-		 * Translates the given string to the {@link #lang}. This method is also availble in {@link module:core/editor~Editor#t} and
+		 * Translates the given string to the {@link #lang}. This method is also availble in {@link module:core/editor/editor~Editor#t} and
 		 * {@link module:ui/view~View#t}.
 		 *
 		 * The strings may contain placeholders (`%<index>`) for values which are passed as the second argument.
