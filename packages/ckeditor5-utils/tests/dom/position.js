@@ -11,7 +11,7 @@ import testUtils from 'tests/core/_utils/utils.js';
 
 testUtils.createSinonSandbox();
 
-let element, target, limiter;
+let element, target, limiter, revertWindowScroll;
 
 describe( 'getOptimalPosition', () => {
 	beforeEach( () => {
@@ -26,6 +26,12 @@ describe( 'getOptimalPosition', () => {
 		} ) );
 	} );
 
+	afterEach( () => {
+		if ( revertWindowScroll ) {
+			revertWindowScroll();
+		}
+	} );
+
 	describe( 'for single position', () => {
 		beforeEach( setElementTargetPlayground );
 
@@ -38,32 +44,31 @@ describe( 'getOptimalPosition', () => {
 		} );
 
 		it( 'should return coordinates (window scroll)', () => {
-			const revert = stubWindowScroll( 100, 100 );
+			revertWindowScroll = stubWindowScroll( 100, 100 );
 
 			assertPosition( { element, target, positions: [ attachLeft ] }, {
 				top: 200,
 				left: 180,
 				name: 'left'
 			} );
-
-			revert();
 		} );
 
 		it( 'should return coordinates (positioned element parent)', () => {
 			const positionedParent = document.createElement( 'div' );
+			revertWindowScroll = stubWindowScroll( 1000, 1000 );
 
 			Object.assign( positionedParent.style, {
 				position: 'absolute',
-				top: '100px',
-				left: '100px'
+				top: '1000px',
+				left: '1000px'
 			} );
 
 			document.body.appendChild( positionedParent );
 			positionedParent.appendChild( element );
 
 			assertPosition( { element, target, positions: [ attachLeft ] }, {
-				top: 0,
-				left: -20,
+				top: -900,
+				left: -920,
 				name: 'left'
 			} );
 		} );

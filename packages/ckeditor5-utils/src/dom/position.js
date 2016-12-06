@@ -24,54 +24,48 @@ import getPositionedAncestor from './getpositionedancestor.js';
  * of the position.
  */
 export function getOptimalPosition( { element, target, positions, limiter, fitInViewport } ) {
+	const positionedElementAncestor = getPositionedAncestor( element.parentElement );
 	const elementRect = new Rect( element );
 	const targetRect = new Rect( target );
-	const positionedElementAncestor = getPositionedAncestor( element.parentElement );
 
-	let bestPositionName;
-	let left;
-	let top;
+	let bestPosition;
+	let name;
 
 	// If there are no limits, just grab the very first position and be done with that drama.
 	if ( !limiter && !fitInViewport ) {
-		[ bestPositionName, { left, top } ] = getPosition( positions[ 0 ], targetRect, elementRect );
+		[ name, bestPosition ] = getPosition( positions[ 0 ], targetRect, elementRect );
 	} else {
 		const limiterRect = limiter && new Rect( limiter );
 		const viewportRect = fitInViewport && Rect.getViewportRect();
-		const bestPosition = getBestPosition( positions, targetRect, elementRect, limiterRect, viewportRect );
 
-		// If there's no best position found, i.e. when all intersections have no area because
-		// rects have no width or height, then just use the first available position.
-		[ bestPositionName, { left, top } ] = bestPosition || getPosition( positions[ 0 ], targetRect, elementRect );
+		[ name, bestPosition ] =
+			getBestPosition( positions, targetRect, elementRect, limiterRect, viewportRect ) ||
+			// If there's no best position found, i.e. when all intersections have no area because
+			// rects have no width or height, then just use the first available position.
+			getPosition( positions[ 0 ], targetRect, elementRect );
 	}
+
+	let { left, top } = getAbsoluteRectCoordinates( bestPosition );
 
 	// (#126) If there's some positioned ancestor of the panel, then its rect must be taken into
 	// consideration. `Rect` is always relative to the viewport while `position: absolute` works
 	// with respect to that positioned ancestor.
 	if ( positionedElementAncestor ) {
-		const { top: ancestorTop, left: ancestorLeft } = new Rect( positionedElementAncestor );
+		const ancestorPosition = getAbsoluteRectCoordinates( new Rect( positionedElementAncestor ) );
 
-		top -= ancestorTop;
-		left -= ancestorLeft;
+		left -= ancestorPosition.left;
+		top -= ancestorPosition.top;
 	}
 
-	// DOMRect works in a scroll–independent geometry but `position: absolute` doesn't.
-	// Let's fix it at this stage.
-	top += window.scrollY;
-	left += window.scrollX;
-
-	return {
-		top, left,
-		name: bestPositionName
-	};
+	return { left, top, name };
 }
 
 // For given position function, returns a corresponding `Rect` instance.
 //
 // @private
 // @param {Function} position A function returning {@link module:utils/dom/position~Position}.
-// @param {Rect} targetRect A rect of the target.
-// @param {Rect} elementRect A rect of positioned element.
+// @param {utils/dom/boundingrect~Rect} targetRect A rect of the target.
+// @param {utils/dom/boundingrect~Rect} elementRect A rect of positioned element.
 // @returns {Array} An array containing position name and its Rect.
 function getPosition( position, targetRect, elementRect ) {
 	const { left, top, name } = position( targetRect, elementRect );
@@ -85,10 +79,10 @@ function getPosition( position, targetRect, elementRect ) {
 // @private
 // @param {module:utils/dom/position~Options#positions} positions Functions returning
 // {@link module:utils/dom/position~Position} to be checked, in the order of preference.
-// @param {Rect} targetRect A rect of the {@link module:utils/dom/position~Options#target}.
-// @param {Rect} elementRect A rect of positioned {@link module:utils/dom/position~Options#element}.
-// @param {Rect} limiterRect A rect of the {@link module:utils/dom/position~Options#limiter}.
-// @param {Rect} viewportRect A rect of the viewport.
+// @param {utils/dom/boundingrect~Rect} targetRect A rect of the {@link module:utils/dom/position~Options#target}.
+// @param {utils/dom/boundingrect~Rect} elementRect A rect of positioned {@link module:utils/dom/position~Options#element}.
+// @param {utils/dom/boundingrect~Rect} limiterRect A rect of the {@link module:utils/dom/position~Options#limiter}.
+// @param {utils/dom/boundingrect~Rect} viewportRect A rect of the viewport.
 // @returns {Array} An array containing the name of the position and it's rect.
 function getBestPosition( positions, targetRect, elementRect, limiterRect, viewportRect ) {
 	let maxLimiterIntersectArea = -1;
@@ -150,6 +144,19 @@ function getBestPosition( positions, targetRect, elementRect, limiterRect, viewp
 	} );
 
 	return bestPositionRect ? [ bestPositionName, bestPositionRect ] : null;
+}
+
+// DOMRect (also Rect) works in a scroll–independent geometry but `position: absolute` doesn't.
+// This function converts Rect to `position: absolute` coordinates.
+//
+// @private
+// @param {utils/dom/boundingrect~Rect} rect A rect to be converted.
+// @returns {Object} Object containing `left` and `top` properties, in absolute coordinates.
+function getAbsoluteRectCoordinates( { left, top } ) {
+	return {
+		left: left + window.scrollX,
+		top: top + window.scrollY,
+	};
 }
 
 /**
