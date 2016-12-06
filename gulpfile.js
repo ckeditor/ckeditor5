@@ -126,34 +126,24 @@ gulp.task( 'compile:themes:esnext', ( callback ) => {
 
 // Building tasks. ------------------------------------------------------------
 
-const ckeditor5DevBundler = require( '@ckeditor/ckeditor5-dev-bundler-rollup' )( config );
+gulp.task( 'build', () => {
+	const bundler = require( '@ckeditor/ckeditor5-dev-bundler-rollup' );
 
-gulp.task( 'build', callback => {
-	runSequence(
-		'bundle:generate',
-		[
-			'bundle:minify:js',
-			'bundle:minify:css'
-		],
-		() => ckeditor5DevBundler.showSummaryFromConfig( callback )
-	);
+	return bundler.tasks.build( getBuildOptions() );
 } );
 
-// Helpers. ---------------------------
+function getBuildOptions() {
+	const minimist = require( 'minimist' );
+	const pathToConfig = minimist( process.argv.slice( 2 ) ).config || './build-config';
 
-gulp.task( 'bundle:clean', ckeditor5DevBundler.cleanFromConfig );
-gulp.task( 'bundle:minify:js', ckeditor5DevBundler.minify.jsFromConfig );
-gulp.task( 'bundle:minify:css', ckeditor5DevBundler.minify.cssFromConfig );
+	return {
+		packages: getCKEditor5PackagesPaths(),
+		buildConfig: require( path.resolve( '.', pathToConfig ) ),
 
-// Generates the bundle without minifying it.
-gulp.task( 'bundle:generate',
-	[
-		'bundle:clean',
-		'compile:js:esnext',
-		'compile:themes:esnext'
-	],
-	ckeditor5DevBundler.generateFromConfig
-);
+		ROOT_DIR: config.ROOT_DIR,
+		MODULE_DIR: config.MODULE_DIR,
+	};
+}
 
 // Documentation. -------------------------------------------------------------
 
