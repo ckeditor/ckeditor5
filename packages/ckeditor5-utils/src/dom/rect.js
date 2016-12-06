@@ -166,13 +166,13 @@ export default class Rect {
 	 * @returns {utils.dom.Rect} A viewport rect.
 	 */
 	static getViewportRect() {
-		const { scrollX, scrollY, innerWidth, innerHeight } = window;
+		const { innerWidth, innerHeight } = window;
 
 		return new Rect( {
-			top: scrollY,
-			right: innerWidth + scrollX,
-			bottom: innerHeight + scrollY,
-			left: scrollX,
+			top: 0,
+			right: innerWidth,
+			bottom: innerHeight,
+			left: 0,
 			width: innerWidth,
 			height: innerHeight
 		} );

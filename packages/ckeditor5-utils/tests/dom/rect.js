@@ -332,10 +332,10 @@ describe( 'Rect', () => {
 			window.innerHeight = 500;
 
 			assertRect( Rect.getViewportRect(), {
-				top: 200,
-				right: 1100,
-				bottom: 700,
-				left: 100,
+				top: 0,
+				right: 1000,
+				bottom: 500,
+				left: 0,
 				width: 1000,
 				height: 500
 			} );
