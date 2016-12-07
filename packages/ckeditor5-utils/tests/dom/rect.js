@@ -228,16 +228,7 @@ describe( 'Rect', () => {
 				height: 100
 			} );
 
-			const insersect = rectA.getIntersection( rectB );
-
-			assertRect( insersect, {
-				top: 100,
-				right: 100,
-				bottom: 100,
-				left: 200,
-				width: -100,
-				height: 0
-			} );
+			expect( rectA.getIntersection( rectB ) ).to.be.null;
 		} );
 	} );
 

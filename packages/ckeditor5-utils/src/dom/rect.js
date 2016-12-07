@@ -136,7 +136,11 @@ export default class Rect {
 		rect.width = rect.right - rect.left;
 		rect.height = rect.bottom - rect.top;
 
-		return new Rect( rect );
+		if ( rect.width < 0 || rect.height < 0 ) {
+			return null;
+		} else {
+			return new Rect( rect );
+		}
 	}
 
 	/**
@@ -146,7 +150,13 @@ export default class Rect {
 	 * @returns {Number} Area of intersection.
 	 */
 	getIntersectionArea( anotherRect ) {
-		return this.getIntersection( anotherRect ).getArea();
+		const rect = this.getIntersection( anotherRect );
+
+		if ( rect ) {
+			return rect.getArea();
+		} else {
+			return 0;
+		}
 	}
 
 	/**

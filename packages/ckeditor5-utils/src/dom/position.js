@@ -85,8 +85,8 @@ function getPosition( position, targetRect, elementRect ) {
 // @param {utils/dom/rect~Rect} viewportRect A rect of the viewport.
 // @returns {Array} An array containing the name of the position and it's rect.
 function getBestPosition( positions, targetRect, elementRect, limiterRect, viewportRect ) {
-	let maxLimiterIntersectArea = -1;
-	let maxViewportIntersectArea = -1;
+	let maxLimiterIntersectArea = 0;
+	let maxViewportIntersectArea = 0;
 	let bestPositionRect;
 	let bestPositionName;
 
@@ -100,7 +100,16 @@ function getBestPosition( positions, targetRect, elementRect, limiterRect, viewp
 
 		if ( limiterRect ) {
 			if ( viewportRect ) {
-				limiterIntersectArea = limiterRect.getIntersection( viewportRect ).getIntersectionArea( positionRect );
+				// Consider only the part of the limiter which is visible in the viewport. So the limiter is getting limited.
+				const limiterViewportIntersectRect = limiterRect.getIntersection( viewportRect );
+
+				if ( limiterViewportIntersectRect ) {
+					// If the limiter is within the viewport, then check the intersection between that part of the
+					// limiter and actual position.
+					limiterIntersectArea = limiterViewportIntersectRect.getIntersectionArea( positionRect );
+				} else {
+					limiterIntersectArea = 0;
+				}
 			} else {
 				limiterIntersectArea = limiterRect.getIntersectionArea( positionRect );
 			}

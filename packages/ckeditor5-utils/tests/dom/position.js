@@ -217,7 +217,7 @@ describe( 'getOptimalPosition', () => {
 			} );
 		} );
 
-		it( 'should return the very first coordinates no fitting position with a positive intersection has been found', () => {
+		it( 'should return the very first coordinates if no fitting position with a positive intersection has been found', () => {
 			assertPosition( {
 				element, target, limiter,
 				positions: [
@@ -232,6 +232,27 @@ describe( 'getOptimalPosition', () => {
 				left: -10000,
 				top: -10000,
 				name: 'no-intersect-position'
+			} );
+		} );
+
+		it( 'should return the very first coordinates if limiter does not fit into the viewport', () => {
+			stubElementRect( limiter, {
+				top: -100,
+				right: -80,
+				bottom: -80,
+				left: -100,
+				width: 20,
+				height: 20
+			} );
+
+			assertPosition( {
+				element, target, limiter,
+				positions: [ attachRight, attachTop ],
+				fitInViewport: true
+			}, {
+				top: 100,
+				left: 10,
+				name: 'right'
 			} );
 		} );
 	} );
@@ -298,6 +319,10 @@ function stubWindowScroll( x, y ) {
 }
 
 function stubElementRect( element, rect ) {
+	if ( element.getBoundingClientRect.restore ) {
+		element.getBoundingClientRect.restore();
+	}
+
 	testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( rect );
 }
 
