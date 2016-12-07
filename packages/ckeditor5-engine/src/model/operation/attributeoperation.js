@@ -117,6 +117,7 @@ export default class AttributeOperation extends Operation {
 				 * @error operation-attribute-wrong-old-value
 				 * @param {module:engine/model/item~Item} item
 				 * @param {String} key
+				 * @param {*} value
 				 */
 				throw new CKEditorError(
 					'attribute-operation-wrong-old-value: Changed node has different attribute value than operation\'s old attribute value.',
