@@ -1,6 +1,37 @@
 // Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
+@mixin ck-editor-toolbar {
+	// Toolbars should not react to ck-rounded-corners() mixin.
+	border-radius: 0;
+
+	.ck-button {
+		border-width: 0;
+
+		// Make sure the next button does not overlap focused one.
+		&:focus {
+			z-index: 1;
+		}
+
+		&:not(:hover):not(:focus):not(.ck-on),
+		&.ck-disabled {
+			background: ck-color( 'foreground' );
+		}
+
+		&.ck-on {
+			@include ck-button-colors( 'foreground', -10 );
+		}
+	}
+
+	.ck-dropdown__button {
+		border-width: 1px;
+
+		&:not(:hover):not(:focus):not(.ck-on) {
+			background: ck-color( 'background' );
+		}
+	}
+}
+
 // TODO/NOTE: This along with _editor helper will probably become a creator theme.
 @include ck-editor {
 	@include ck-rounded-corners();
@@ -12,6 +43,8 @@
 
 	.ck-editor__top {
 		.ck-toolbar {
+			@include ck-editor-toolbar();
+
 			border-top: 0;
 			border-left: 0;
 			border-right: 0;
@@ -38,37 +71,6 @@
 		&_inline {
 			overflow: auto;
 			padding: 0 ck-spacing();
-		}
-	}
-
-	.ck-toolbar {
-		// Toolbars should not react to ck-rounded-corners() mixin.
-		border-radius: 0;
-
-		.ck-button {
-			border-width: 0;
-
-			// Make sure the next button does not overlap focused one.
-			&:focus {
-				z-index: 1;
-			}
-
-			&:not(:hover):not(:focus):not(.ck-on),
-			&.ck-disabled {
-				background: ck-color( 'foreground' );
-			}
-
-			&.ck-on {
-				@include ck-button-colors( 'foreground', -10 );
-			}
-		}
-
-		.ck-dropdown__button {
-			border-width: 1px;
-
-			&:not(:hover):not(:focus):not(.ck-on) {
-				background: ck-color( 'background' );
-			}
 		}
 	}
 }
