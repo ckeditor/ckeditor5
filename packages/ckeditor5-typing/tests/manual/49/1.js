@@ -21,7 +21,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 	editor.document.schema.allow( { name: '$text', inside: '$root' } );
 
-	const editable = editor.ui.editableElement;
+	const editable = editor.ui.view.editableElement;
 
 	document.querySelector( '#nbsp' ).addEventListener( 'click', () => {
 		editor.document.enqueueChanges( () => {
