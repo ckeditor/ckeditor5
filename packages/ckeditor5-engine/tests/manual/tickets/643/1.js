@@ -5,21 +5,20 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '/ckeditor5/editor-classic/classic.js';
-import Enter from '/ckeditor5/enter/enter.js';
-import Typing from '/ckeditor5/typing/typing.js';
-import Paragraph from '/ckeditor5/paragraph/paragraph.js';
-import Bold from '/ckeditor5/basic-styles/bold.js';
-import Italic from '/ckeditor5/basic-styles/italic.js';
-import List from '/ckeditor5/list/list.js';
-import Heading from '/ckeditor5/heading/heading.js';
-import Undo from '/ckeditor5/undo/undo.js';
+import ClassicEditor from 'ckeditor5/editor-classic/classic.js';
+import Enter from 'ckeditor5/enter/enter.js';
+import Typing from 'ckeditor5/typing/typing.js';
+import Paragraph from 'ckeditor5/paragraph/paragraph.js';
+import Bold from 'ckeditor5/basic-styles/bold.js';
+import Italic from 'ckeditor5/basic-styles/italic.js';
+import List from 'ckeditor5/list/list.js';
+import Heading from 'ckeditor5/heading/heading.js';
+import Undo from 'ckeditor5/undo/undo.js';
 
-//import { wrapMarker, unwrapMarker } from '/ckeditor5/engine/conversion/model-to-view-converters.js';
-import buildModelConverter from '/ckeditor5/engine/conversion/buildmodelconverter.js';
-import Position from '/ckeditor5/engine/model/position.js';
-import LiveRange from '/ckeditor5/engine/model/liverange.js';
-import ViewAttributeElement from '/ckeditor5/engine/view/attributeelement.js';
+import buildModelConverter from 'ckeditor5/engine/conversion/buildmodelconverter.js';
+import Position from 'ckeditor5/engine/model/position.js';
+import LiveRange from 'ckeditor5/engine/model/liverange.js';
+import ViewAttributeElement from 'ckeditor5/engine/view/attributeelement.js';
 
 let model = null;
 
