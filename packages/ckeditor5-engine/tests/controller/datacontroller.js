@@ -14,6 +14,8 @@ import ModelDocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
 import ModelText from 'ckeditor5/engine/model/text.js';
 import ModelSelection from 'ckeditor5/engine/model/selection.js';
 
+import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
+
 import { getData, setData, stringify, parse } from 'ckeditor5/engine/dev-utils/model.js';
 
 import count from 'ckeditor5/utils/count.js';
@@ -293,26 +295,57 @@ describe( 'DataController', () => {
 	} );
 
 	describe( 'stringify', () => {
-		it( 'should get paragraph with text', () => {
+		beforeEach( () => {
 			modelDocument.schema.registerItem( 'paragraph', '$block' );
 			modelDocument.schema.registerItem( 'div', '$block' );
-			const modelElement = parse( '<div><paragraph>foo</paragraph></div>', modelDocument.schema );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+		} );
+
+		it( 'should stringify a content of an element', () => {
+			const modelElement = parse( '<div><paragraph>foo</paragraph></div>', modelDocument.schema );
 
 			expect( data.stringify( modelElement ) ).to.equal( '<p>foo</p>' );
+		} );
+
+		it( 'should stringify a content of a document fragment', () => {
+			const modelDocumentFragment = parse( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', modelDocument.schema );
+
+			expect( data.stringify( modelDocumentFragment ) ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
 	} );
 
 	describe( 'toView', () => {
-		it( 'should get view element P with text', () => {
+		beforeEach( () => {
 			modelDocument.schema.registerItem( 'paragraph', '$block' );
 			modelDocument.schema.registerItem( 'div', '$block' );
-			const modelElement = parse( '<div><paragraph>foo</paragraph></div>', modelDocument.schema );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+		} );
 
-			const viewElement = data.toView( modelElement ).getChild( 0 );
+		it( 'should convert a content of an element', () => {
+			const modelElement = parse( '<div><paragraph>foo</paragraph></div>', modelDocument.schema );
+
+			const viewDocumentFragment = data.toView( modelElement );
+
+			expect( viewDocumentFragment ).to.be.instanceOf( ViewDocumentFragment );
+
+			const viewElement = viewDocumentFragment.getChild( 0 );
+
+			expect( viewElement.name ).to.equal( 'p' );
+			expect( viewElement.childCount ).to.equal( 1 );
+			expect( viewElement.getChild( 0 ).data ).to.equal( 'foo' );
+		} );
+
+		it( 'should convert a document fragment', () => {
+			const modelDocumentFragment = parse( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', modelDocument.schema );
+
+			const viewDocumentFragment = data.toView( modelDocumentFragment );
+
+			expect( viewDocumentFragment ).to.be.instanceOf( ViewDocumentFragment );
+			expect( viewDocumentFragment ).to.have.property( 'childCount', 2 );
+
+			const viewElement = viewDocumentFragment.getChild( 0 );
 
 			expect( viewElement.name ).to.equal( 'p' );
 			expect( viewElement.childCount ).to.equal( 1 );
