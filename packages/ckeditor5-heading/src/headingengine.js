@@ -65,6 +65,9 @@ export default class HeadingEngine extends Plugin {
 		editor.commands.set( 'heading', command );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	afterInit() {
 		// If the enter command is added to the editor, alter its behavior.
 		// Enter at the end of a heading element should create a paragraph.
