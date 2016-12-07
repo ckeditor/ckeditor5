@@ -3,14 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window, Range, HTMLElement */
+/* globals window, Range, ClientRect, HTMLElement */
 
 /**
  * @module utils/dom/rect
  */
 
+const rectProperties = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
+
 /**
- * A helper class representing a `DOMRect` object, e.g. value returned by
+ * A helper class representing a `ClientRect` object, e.g. value returned by
  * the native `object.getBoundingClientRect()` method. Provides a set of methods
  * to manipulate the rect and compare it against other `Rect` instances.
  */
@@ -28,9 +30,12 @@ export default class Rect {
 	 * 		const rectC = new Rect( { top: 0, right: 10, bottom: 10, left: 0, width: 10, height: 10 } );
 	 *
 	 * 		// Rect out of another Rect instance.
-	 * 		const rectC = new Rect( rectC );
+	 * 		const rectD = new Rect( rectC );
 	 *
-	 * @param {HTMLElement|Range|module:utils/dom/rect~Rect|Object} obj A source object to create the rect.
+	 *  	// Rect out of a ClientRect.
+	 * 		const rectE = new Rect( document.body.getClientRects().item( 0 ) );
+	 *
+	 * @param {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} obj A source object to create the rect.
 	 */
 	constructor( obj ) {
 		Object.assign( this, getRect( obj ) );
@@ -194,12 +199,17 @@ export default class Rect {
 // @param {HTMLElement|Range|Object} object Target object witch rect is to be determined.
 // @returns {Object} Client rect object.
 function getRect( object ) {
-	// A HTMLElement or DOM Range has been passed.
-	if ( isDomElement( object ) || isDomRange( object ) ) {
-		// De-structuring the native DOMRect.
-		const { top, right, bottom, left, width, height } = object.getBoundingClientRect();
+	// A HTMLElement, DOM Range or DOM ClientRect has been passed.
+	if ( isDomElement( object ) || isDomRange( object ) || isClientRect( object ) ) {
+		if ( !isClientRect( object ) ) {
+			object = object.getBoundingClientRect();
+		}
 
-		return { top, right, bottom, left, width, height };
+		return rectProperties.reduce( ( returned, property ) => {
+			returned[ property ] = object[ property ];
+
+			return returned;
+		}, {} );
 	}
 	// A Rect instance or a rect–like object has been passed.
 	else {
@@ -223,4 +233,13 @@ function isDomRange( obj ) {
 // @returns {Boolean}
 function isDomElement( obj ) {
 	return obj instanceof HTMLElement;
+}
+
+// Checks if the object is a DOM ClientRect.
+//
+// @private
+// @param {*} obj
+// @returns {Boolean}
+function isClientRect( obj ) {
+	return obj instanceof ClientRect;
 }

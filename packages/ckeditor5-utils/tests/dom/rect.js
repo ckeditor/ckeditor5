@@ -49,6 +49,14 @@ describe( 'Rect', () => {
 			assertRect( rect, geometry );
 		} );
 
+		it( 'should accept ClientRect', () => {
+			const clientRect = document.body.getBoundingClientRect();
+			const { top, right, bottom, left, width, height } = clientRect;
+			const rect = new Rect( clientRect );
+
+			assertRect( rect, { top, right, bottom, left, width, height } );
+		} );
+
 		it( 'should accept geometry object', () => {
 			assertRect( new Rect( geometry ), geometry );
 		} );
