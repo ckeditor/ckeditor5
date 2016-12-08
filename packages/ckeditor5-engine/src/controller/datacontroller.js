@@ -211,7 +211,7 @@ export default class DataController {
 	 *
 	 * @see #set
 	 * @param {String} data Data to parse.
-	 * @param {String} [context='$root'] Base context in which view will be converted to the model. See:
+	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
 	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Parsed data.
 	 */
@@ -220,7 +220,23 @@ export default class DataController {
 		const viewDocumentFragment = this.processor.toView( data );
 
 		// view -> model
-		return this.viewToModel.convert( viewDocumentFragment, { context: [ context ] } );
+		return this.toModel( viewDocumentFragment, context );
+	}
+
+	/**
+	 * Returns the content of the given {@link module:engine/view/element~Element view element} or
+	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment} converted by the
+	 * {@link #viewToModel view to model converters} to a
+	 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
+	 *
+	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElementOrFragment
+	 * Element or document fragment which content will be converted.
+	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
+	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
+	 * @returns {module:engine/model/documentfragment~DocumentFragment} Output document fragment.
+	 */
+	toModel( viewElementOrFragment, context = '$root' ) {
+		return this.viewToModel.convert( viewElementOrFragment, { context: [ context ] } );
 	}
 
 	/**
