@@ -27,6 +27,7 @@ import WeakInsertDelta from './weakinsertdelta.js';
 import WrapDelta from './wrapdelta.js';
 import UnwrapDelta from './unwrapdelta.js';
 import RenameDelta from './renamedelta.js';
+import RemoveDelta from './removedelta.js';
 
 import compareArrays from '../../../utils/comparearrays.js';
 
@@ -388,6 +389,42 @@ addTransformationCase( SplitDelta, RenameDelta, ( a, b ) => {
 	}
 
 	return [ a ];
+} );
+
+// Add special case for RemoveDelta x SplitDelta transformation.
+addTransformationCase( RemoveDelta, SplitDelta, ( a, b, isStrong ) => {
+	const deltas = defaultTransform( a, b, isStrong );
+	const insertPosition = b._cloneOperation.position;
+
+	// In case if `defaultTransform` returned more than one delta.
+	for ( let delta of deltas ) {
+		for ( let operation of delta.operations ) {
+			const rangeEnd = operation.sourcePosition.getShiftedBy( operation.howMany );
+
+			if ( rangeEnd.isEqual( insertPosition ) ) {
+				operation.howMany += 1;
+			}
+		}
+	}
+
+	return deltas;
+} );
+
+// Add special case for SplitDelta x RemoveDelta transformation.
+addTransformationCase( SplitDelta, RemoveDelta, ( a, b, isStrong ) => {
+	b = b.clone();
+
+	const insertPosition = a._cloneOperation.position;
+
+	for ( let operation of b.operations ) {
+		const rangeEnd = operation.sourcePosition.getShiftedBy( operation.howMany );
+
+		if ( rangeEnd.isEqual( insertPosition ) ) {
+			operation.howMany += 1;
+		}
+	}
+
+	return defaultTransform( a, b, isStrong );
 } );
 
 // Helper function for `AttributeDelta` class transformations.
