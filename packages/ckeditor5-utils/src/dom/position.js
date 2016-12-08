@@ -20,8 +20,7 @@ import getPositionedAncestor from './getpositionedancestor.js';
  * TODO: more docs and example.
  *
  * @param {module:utils/dom/position~Options} options Positioning options object.
- * @returns {Object} An object containing CSS `top`, `left` coordinates ready to use with `position: absolute` and the `name`
- * of the position.
+ * @returns {module:utils/dom/position~Position}
  */
 export function getOptimalPosition( { element, target, positions, limiter, fitInViewport } ) {
 	const positionedElementAncestor = getPositionedAncestor( element.parentElement );
@@ -177,39 +176,39 @@ function getAbsoluteRectCoordinates( { left, top } ) {
 /**
  * Element that is to be positioned.
  *
- * @member {HTMLElement} module:utils/dom/position~Options#element
+ * @member {HTMLElement} #element
  */
 
 /**
  * Target with respect to which the `element` is to be positioned.
  *
- * @member {HTMLElement|Range|ClientRect} module:utils/dom/position~Options#target
+ * @member {HTMLElement|Range|ClientRect} #target
  */
 
 /**
  * An array of functions which return {@link module:utils/dom/position~Position} relative
  * to the `target`, in the order of preference.
  *
- * @member {Array.<Function>} module:utils/dom/position~Options#positions
+ * @member {Array.<Function>} #positions
  */
 
 /**
  * When set, the algorithm will chose position which fits the most in the
  * limiter's bounding rect.
  *
- * @member {HTMLElement|Range|ClientRect} module:utils/dom/position~Options#limiter
+ * @member {HTMLElement|Range|ClientRect} #limiter
  */
 
 /**
  * When set, the algorithm will chose such a position which fits `element`
  * the most inside visible viewport.
  *
- * @member {Boolean} module:utils/dom/position~Options#fitInViewport
+ * @member {Boolean} #fitInViewport
  */
 
 /**
- * An object describing the position in `position: absolute` coordinate
- * system.
+ * An object describing a position in `position: absolute` coordinate
+ * system, along with position name.
  *
  * @typedef {Object} module:utils/dom/position~Position
  *

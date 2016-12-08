@@ -23,20 +23,20 @@ export default class Rect {
 	/**
 	 * Creates an instance of rect.
 	 *
-	 * 		// Rect of an HTMLElement.
-	 * 		const rectA = new Rect( document.body );
+	 *		// Rect of an HTMLElement.
+	 *		const rectA = new Rect( document.body );
 	 *
-	 * 		// Rect of a DOM Range.
-	 * 		const rectB = new Rect( document.getSelection().getRangeAt( 0 ) );
+	 *		// Rect of a DOM Range.
+	 *		const rectB = new Rect( document.getSelection().getRangeAt( 0 ) );
 	 *
-	 * 		// Rect out of an object.
-	 * 		const rectC = new Rect( { top: 0, right: 10, bottom: 10, left: 0, width: 10, height: 10 } );
+	 *		// Rect out of an object.
+	 *		const rectC = new Rect( { top: 0, right: 10, bottom: 10, left: 0, width: 10, height: 10 } );
 	 *
-	 * 		// Rect out of another Rect instance.
-	 * 		const rectD = new Rect( rectC );
+	 *		// Rect out of another Rect instance.
+	 *		const rectD = new Rect( rectC );
 	 *
-	 *  	// Rect out of a ClientRect.
-	 * 		const rectE = new Rect( document.body.getClientRects().item( 0 ) );
+	 *		// Rect out of a ClientRect.
+	 *		const rectE = new Rect( document.body.getClientRects().item( 0 ) );
 	 *
 	 * @param {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} obj A source object to create the rect.
 	 */
