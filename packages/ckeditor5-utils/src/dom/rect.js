@@ -3,11 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window, Range, ClientRect, HTMLElement */
+/* global window */
 
 /**
  * @module utils/dom/rect
  */
+
+import isRange from './isrange.js';
+import isElement from '../../utils/lib/lodash/isElement.js';
 
 const rectProperties = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
@@ -38,7 +41,11 @@ export default class Rect {
 	 * @param {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} obj A source object to create the rect.
 	 */
 	constructor( obj ) {
-		Object.assign( this, getRect( obj ) );
+		if ( isElement( obj ) || isRange( obj ) ) {
+			obj = obj.getBoundingClientRect();
+		}
+
+		rectProperties.forEach( p => this[ p ] = obj[ p ] );
 
 		/**
 		 * The "top" value of the rect.
@@ -190,56 +197,4 @@ export default class Rect {
 			height: innerHeight
 		} );
 	}
-}
-
-// Returns the client rect of an HTMLElement, Range, or rect. The obtained geometry of the rect
-// corresponds with `position: absolute` relative to the `<body>` (`document.body`).
-//
-// @private
-// @param {HTMLElement|Range|Object} object Target object witch rect is to be determined.
-// @returns {Object} Client rect object.
-function getRect( object ) {
-	// A HTMLElement, DOM Range or DOM ClientRect has been passed.
-	if ( isDomElement( object ) || isDomRange( object ) || isClientRect( object ) ) {
-		if ( !isClientRect( object ) ) {
-			object = object.getBoundingClientRect();
-		}
-
-		return rectProperties.reduce( ( returned, property ) => {
-			returned[ property ] = object[ property ];
-
-			return returned;
-		}, {} );
-	}
-	// A Rect instance or a rect–like object has been passed.
-	else {
-		return Object.assign( {}, object );
-	}
-}
-
-// Checks if the object is a DOM Range.
-//
-// @private
-// @param {*} obj
-// @returns {Boolean}
-function isDomRange( obj ) {
-	return obj instanceof Range;
-}
-
-// Checks if the object is a DOM HTMLElement.
-//
-// @private
-// @param {*} obj
-// @returns {Boolean}
-function isDomElement( obj ) {
-	return obj instanceof HTMLElement;
-}
-
-// Checks if the object is a DOM ClientRect.
-//
-// @private
-// @param {*} obj
-// @returns {Boolean}
-function isClientRect( obj ) {
-	return obj instanceof ClientRect;
 }
