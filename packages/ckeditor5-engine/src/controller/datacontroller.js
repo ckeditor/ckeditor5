@@ -138,34 +138,38 @@ export default class DataController {
 	}
 
 	/**
-	 * Returns the content of the given {@link module:engine/model/element~Element model's element} converted by the
+	 * Returns the content of the given {@link module:engine/model/element~Element model's element} or
+	 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment} converted by the
 	 * {@link #modelToView model to view converters} and formatted by the
 	 * {@link #processor data processor}.
 	 *
-	 * @param {module:engine/model/element~Element} modelElement Element which content will be stringified.
+	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
+	 * Element which content will be stringified.
 	 * @returns {String} Output data.
 	 */
-	stringify( modelElement ) {
+	stringify( modelElementOrFragment ) {
 		// model -> view
-		const viewDocumentFragment = this.toView( modelElement );
+		const viewDocumentFragment = this.toView( modelElementOrFragment );
 
 		// view -> data
 		return this.processor.toData( viewDocumentFragment );
 	}
 
 	/**
-	 * Returns the content of the given {@link module:engine/model/element~Element model's element} converted by the
-	 * {@link #modelToView model to view converters} to the
-	 * {@link module:engine/view/documentfragment~DocumentFragment view DocumentFragment}.
+	 * Returns the content of the given {@link module:engine/model/element~Element model element} or
+	 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment} converted by the
+	 * {@link #modelToView model to view converters} to a
+	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
 	 *
-	 * @param {module:engine/model/element~Element} modelElement Element which content will be stringified.
+	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
+	 * Element or document fragment which content will be converted.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Output view DocumentFragment.
 	 */
-	toView( modelElement ) {
-		const modelRange = ModelRange.createIn( modelElement );
+	toView( modelElementOrFragment ) {
+		const modelRange = ModelRange.createIn( modelElementOrFragment );
 
 		const viewDocumentFragment = new ViewDocumentFragment();
-		this.mapper.bindElements( modelElement, viewDocumentFragment );
+		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
 		this.modelToView.convertInsertion( modelRange );
 
@@ -207,7 +211,7 @@ export default class DataController {
 	 *
 	 * @see #set
 	 * @param {String} data Data to parse.
-	 * @param {String} [context='$root'] Base context in which view will be converted to the model. See:
+	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
 	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Parsed data.
 	 */
@@ -216,7 +220,23 @@ export default class DataController {
 		const viewDocumentFragment = this.processor.toView( data );
 
 		// view -> model
-		return this.viewToModel.convert( viewDocumentFragment, { context: [ context ] } );
+		return this.toModel( viewDocumentFragment, context );
+	}
+
+	/**
+	 * Returns the content of the given {@link module:engine/view/element~Element view element} or
+	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment} converted by the
+	 * {@link #viewToModel view to model converters} to a
+	 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
+	 *
+	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElementOrFragment
+	 * Element or document fragment which content will be converted.
+	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
+	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
+	 * @returns {module:engine/model/documentfragment~DocumentFragment} Output document fragment.
+	 */
+	toModel( viewElementOrFragment, context = '$root' ) {
+		return this.viewToModel.convert( viewElementOrFragment, { context: [ context ] } );
 	}
 
 	/**
