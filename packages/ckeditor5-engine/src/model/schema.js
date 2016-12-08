@@ -15,218 +15,6 @@ import isString from '../../utils/lib/lodash/isString.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
- * SchemaItem is a singular registry item in {@link module:engine/model/schema~Schema} that groups and holds allow/disallow rules for
- * one entity. This class is used internally in {@link module:engine/model/schema~Schema} and should not be used outside it.
- *
- * @see module:engine/model/schema~Schema
- * @protected
- */
-export class SchemaItem {
-	/**
-	 * Creates SchemaItem instance.
-	 *
-	 * @param {module:engine/model/schema~Schema} schema Schema instance that owns this item.
-	 */
-	constructor( schema ) {
-		/**
-		 * Schema instance that owns this item.
-		 *
-		 * @private
-		 * @member {module:engine/model/schema~Schema} module:engine/model/schema~SchemaItem#_schema
-		 */
-		this._schema = schema;
-
-		/**
-		 * Paths in which the entity, represented by this item, is allowed.
-		 *
-		 * @private
-		 * @member {Array} module:engine/model/schema~SchemaItem#_allowed
-		 */
-		this._allowed = [];
-
-		/**
-		 * Paths in which the entity, represented by this item, is disallowed.
-		 *
-		 * @private
-		 * @member {Array} module:engine/model/schema~SchemaItem#_disallowed
-		 */
-		this._disallowed = [];
-
-		/**
-		 * Attributes that are required by the entity represented by this item.
-		 *
-		 * @protected
-		 * @member {Array} module:engine/model/schema~SchemaItem#_requiredAttributes
-		 */
-		this._requiredAttributes = [];
-	}
-
-	/**
-	 * Allows entity, represented by this item, to be in given path.
-	 *
-	 * @param {Array.<String>} path Path in which entity is allowed.
-	 * @param {Array.<String>|String} [attributes] If set, this path will be used only for entities that have attribute(s) with this key.
-	 */
-	allow( path, attributes ) {
-		this._addPath( '_allowed', path, attributes );
-	}
-
-	/**
-	 * Disallows entity, represented by this item, to be in given path.
-	 *
-	 * @param {Array.<String>} path Path in which entity is disallowed.
-	 * @param {Array.<String>|String} [attributes] If set, this path will be used only for entities that have an attribute(s) with this key.
-	 */
-	disallow( path, attributes ) {
-		this._addPath( '_disallowed', path, attributes );
-	}
-
-	/**
-	 * Specifies that the entity, to be valid, requires given attributes set. It is possible to register multiple
-	 * different attributes set. If there are more than one attributes set required, the entity will be valid if
-	 * at least one of them is fulfilled.
-	 *
-	 * @param {Array.<String>} attributes Attributes that has to be set on the entity to make it valid.
-	 */
-	requireAttributes( attributes ) {
-		this._requiredAttributes.push( attributes );
-	}
-
-	/**
-	 * Adds path to the SchemaItem instance.
-	 *
-	 * @private
-	 * @param {String} member Name of the array member into which the path will be added. Possible values are `_allowed` or `_disallowed`.
-	 * @param {Array.<String>} path Path to add.
-	 * @param {Array.<String>|String} [attributes] If set, this path will be used only for entities that have attribute(s) with this key.
-	 */
-	_addPath( member, path, attributes ) {
-		path = path.slice();
-
-		if ( !isArray( attributes ) ) {
-			attributes = [ attributes ];
-		}
-
-		for ( let attribute of attributes ) {
-			this[ member ].push( { path, attribute } );
-		}
-	}
-
-	/**
-	 * Returns all paths of given type that were previously registered in the item.
-	 *
-	 * @private
-	 * @param {String} type Paths' type. Possible values are `allow` or `disallow`.
-	 * @param {String} [attribute] If set, only paths registered for given attribute will be returned.
-	 * @returns {Array} Paths registered in the item.
-	 */
-	_getPaths( type, attribute ) {
-		const source = type === 'allow' ? this._allowed : this._disallowed;
-		const paths = [];
-
-		for ( let item of source ) {
-			if ( item.attribute === attribute ) {
-				paths.push( item.path );
-			}
-		}
-
-		return paths;
-	}
-
-	/**
-	 * Checks whether given set of attributes fulfills required attributes of this item.
-	 *
-	 * @protected
-	 * @see module:engine/model/schema~SchemaItem#requireAttributes
-	 * @param {Array.<String>} attributesToCheck Attributes to check.
-	 * @returns {Boolean} `true` if given set or attributes fulfills required attributes, `false` otherwise.
-	 */
-	_checkRequiredAttributes( attributesToCheck ) {
-		let found = true;
-
-		for ( let attributeSet of this._requiredAttributes ) {
-			found = true;
-
-			for ( let attribute of attributeSet ) {
-				if ( attributesToCheck.indexOf( attribute ) == -1 ) {
-					found = false;
-					break;
-				}
-			}
-
-			if ( found ) {
-				break;
-			}
-		}
-
-		return found;
-	}
-
-	/**
-	 * Checks whether this item has any registered path of given type that matches provided path.
-	 *
-	 * @protected
-	 * @param {String} type Paths' type. Possible values are `allow` or `disallow`.
-	 * @param {Array.<String>} checkPath Path to check.
-	 * @param {String} [attribute] If set, only paths registered for given attribute will be checked.
-	 * @returns {Boolean} `true` if item has any registered matching path, `false` otherwise.
-	 */
-	_hasMatchingPath( type, checkPath, attribute ) {
-		const itemPaths = this._getPaths( type, attribute );
-
-		// We check every path registered (possibly with given attribute) in the item.
-		for ( let itemPath of itemPaths ) {
-			// Pointer to last found item from `itemPath`.
-			let i = 0;
-
-			// Now we have to check every item name from the path to check.
-			for ( let checkName of checkPath ) {
-				// Don't check items that are not registered in schema.
-				if ( !this._schema.hasItem( checkName ) ) {
-					continue;
-				}
-
-				// Every item name is expanded to all names of items that item is extending.
-				// So, if on item path, there is an item that is extended by item from checked path, it will
-				// also be treated as matching.
-				const chain = this._schema._extensionChains.get( checkName );
-
-				// Since our paths have to match in given order, we always check against first item from item path.
-				// So, if item path is: B D E
-				// And checked path is: A B C D E
-				// It will be matching (A won't match, B will match, C won't match, D and E will match)
-				if ( chain.indexOf( itemPath[ i ] ) > -1 ) {
-					// Move pointer as we found element under index `i`.
-					i++;
-				}
-			}
-
-			// If `itemPath` has no items it means that we removed all of them, so we matched all of them.
-			// This means that we found a matching path.
-			if ( i === itemPath.length ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Custom toJSON method to solve child-parent circular dependencies.
-	 *
-	 * @returns {Object} Clone of this object with the parent property replaced with its name.
-	 */
-	toJSON() {
-		const json = clone( this );
-
-		// Due to circular references we need to remove parent reference.
-		json._schema = '[model.Schema]';
-
-		return json;
-	}
-}
-
-/**
  * Schema is a definition of the structure of the document. It allows to define which tree model items (element, text, etc.)
  * can be nested within which ones and which attributes can be applied to them. It's created during the run-time of the application,
  * typically by features. Also, the features can query the schema to learn what structure is allowed and act accordingly.
@@ -561,6 +349,218 @@ export default class Schema {
 		}
 
 		return normalized;
+	}
+}
+
+/**
+ * SchemaItem is a singular registry item in {@link module:engine/model/schema~Schema} that groups and holds allow/disallow rules for
+ * one entity. This class is used internally in {@link module:engine/model/schema~Schema} and should not be used outside it.
+ *
+ * @see module:engine/model/schema~Schema
+ * @protected
+ */
+export class SchemaItem {
+	/**
+	 * Creates SchemaItem instance.
+	 *
+	 * @param {module:engine/model/schema~Schema} schema Schema instance that owns this item.
+	 */
+	constructor( schema ) {
+		/**
+		 * Schema instance that owns this item.
+		 *
+		 * @private
+		 * @member {module:engine/model/schema~Schema} module:engine/model/schema~SchemaItem#_schema
+		 */
+		this._schema = schema;
+
+		/**
+		 * Paths in which the entity, represented by this item, is allowed.
+		 *
+		 * @private
+		 * @member {Array} module:engine/model/schema~SchemaItem#_allowed
+		 */
+		this._allowed = [];
+
+		/**
+		 * Paths in which the entity, represented by this item, is disallowed.
+		 *
+		 * @private
+		 * @member {Array} module:engine/model/schema~SchemaItem#_disallowed
+		 */
+		this._disallowed = [];
+
+		/**
+		 * Attributes that are required by the entity represented by this item.
+		 *
+		 * @protected
+		 * @member {Array} module:engine/model/schema~SchemaItem#_requiredAttributes
+		 */
+		this._requiredAttributes = [];
+	}
+
+	/**
+	 * Allows entity, represented by this item, to be in given path.
+	 *
+	 * @param {Array.<String>} path Path in which entity is allowed.
+	 * @param {Array.<String>|String} [attributes] If set, this path will be used only for entities that have attribute(s) with this key.
+	 */
+	allow( path, attributes ) {
+		this._addPath( '_allowed', path, attributes );
+	}
+
+	/**
+	 * Disallows entity, represented by this item, to be in given path.
+	 *
+	 * @param {Array.<String>} path Path in which entity is disallowed.
+	 * @param {Array.<String>|String} [attributes] If set, this path will be used only for entities that have an attribute(s) with this key.
+	 */
+	disallow( path, attributes ) {
+		this._addPath( '_disallowed', path, attributes );
+	}
+
+	/**
+	 * Specifies that the entity, to be valid, requires given attributes set. It is possible to register multiple
+	 * different attributes set. If there are more than one attributes set required, the entity will be valid if
+	 * at least one of them is fulfilled.
+	 *
+	 * @param {Array.<String>} attributes Attributes that has to be set on the entity to make it valid.
+	 */
+	requireAttributes( attributes ) {
+		this._requiredAttributes.push( attributes );
+	}
+
+	/**
+	 * Adds path to the SchemaItem instance.
+	 *
+	 * @private
+	 * @param {String} member Name of the array member into which the path will be added. Possible values are `_allowed` or `_disallowed`.
+	 * @param {Array.<String>} path Path to add.
+	 * @param {Array.<String>|String} [attributes] If set, this path will be used only for entities that have attribute(s) with this key.
+	 */
+	_addPath( member, path, attributes ) {
+		path = path.slice();
+
+		if ( !isArray( attributes ) ) {
+			attributes = [ attributes ];
+		}
+
+		for ( let attribute of attributes ) {
+			this[ member ].push( { path, attribute } );
+		}
+	}
+
+	/**
+	 * Returns all paths of given type that were previously registered in the item.
+	 *
+	 * @private
+	 * @param {String} type Paths' type. Possible values are `allow` or `disallow`.
+	 * @param {String} [attribute] If set, only paths registered for given attribute will be returned.
+	 * @returns {Array} Paths registered in the item.
+	 */
+	_getPaths( type, attribute ) {
+		const source = type === 'allow' ? this._allowed : this._disallowed;
+		const paths = [];
+
+		for ( let item of source ) {
+			if ( item.attribute === attribute ) {
+				paths.push( item.path );
+			}
+		}
+
+		return paths;
+	}
+
+	/**
+	 * Checks whether given set of attributes fulfills required attributes of this item.
+	 *
+	 * @protected
+	 * @see module:engine/model/schema~SchemaItem#requireAttributes
+	 * @param {Array.<String>} attributesToCheck Attributes to check.
+	 * @returns {Boolean} `true` if given set or attributes fulfills required attributes, `false` otherwise.
+	 */
+	_checkRequiredAttributes( attributesToCheck ) {
+		let found = true;
+
+		for ( let attributeSet of this._requiredAttributes ) {
+			found = true;
+
+			for ( let attribute of attributeSet ) {
+				if ( attributesToCheck.indexOf( attribute ) == -1 ) {
+					found = false;
+					break;
+				}
+			}
+
+			if ( found ) {
+				break;
+			}
+		}
+
+		return found;
+	}
+
+	/**
+	 * Checks whether this item has any registered path of given type that matches provided path.
+	 *
+	 * @protected
+	 * @param {String} type Paths' type. Possible values are `allow` or `disallow`.
+	 * @param {Array.<String>} checkPath Path to check.
+	 * @param {String} [attribute] If set, only paths registered for given attribute will be checked.
+	 * @returns {Boolean} `true` if item has any registered matching path, `false` otherwise.
+	 */
+	_hasMatchingPath( type, checkPath, attribute ) {
+		const itemPaths = this._getPaths( type, attribute );
+
+		// We check every path registered (possibly with given attribute) in the item.
+		for ( let itemPath of itemPaths ) {
+			// Pointer to last found item from `itemPath`.
+			let i = 0;
+
+			// Now we have to check every item name from the path to check.
+			for ( let checkName of checkPath ) {
+				// Don't check items that are not registered in schema.
+				if ( !this._schema.hasItem( checkName ) ) {
+					continue;
+				}
+
+				// Every item name is expanded to all names of items that item is extending.
+				// So, if on item path, there is an item that is extended by item from checked path, it will
+				// also be treated as matching.
+				const chain = this._schema._extensionChains.get( checkName );
+
+				// Since our paths have to match in given order, we always check against first item from item path.
+				// So, if item path is: B D E
+				// And checked path is: A B C D E
+				// It will be matching (A won't match, B will match, C won't match, D and E will match)
+				if ( chain.indexOf( itemPath[ i ] ) > -1 ) {
+					// Move pointer as we found element under index `i`.
+					i++;
+				}
+			}
+
+			// If `itemPath` has no items it means that we removed all of them, so we matched all of them.
+			// This means that we found a matching path.
+			if ( i === itemPath.length ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Custom toJSON method to solve child-parent circular dependencies.
+	 *
+	 * @returns {Object} Clone of this object with the parent property replaced with its name.
+	 */
+	toJSON() {
+		const json = clone( this );
+
+		// Due to circular references we need to remove parent reference.
+		json._schema = '[model.Schema]';
+
+		return json;
 	}
 }
 
