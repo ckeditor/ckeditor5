@@ -91,7 +91,10 @@ describe( 'Link', () => {
 
 			const linkElement = editorElement.querySelector( 'a' );
 
-			expect( attachToSpy.calledWithExactly( linkElement, editorElement ) ).to.true;
+			sinon.assert.calledWithExactly( attachToSpy, sinon.match( {
+				target: linkElement,
+				limiter: editorElement
+			} ) );
 		} );
 
 		it( 'should open panel attached to the selection, when there is non-collapsed selection', () => {
@@ -105,7 +108,10 @@ describe( 'Link', () => {
 
 			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
 
-			expect( attachToSpy.calledWithExactly( selectedRange, editorElement ) ).to.true;
+			sinon.assert.calledWithExactly( attachToSpy, sinon.match( {
+				target: selectedRange,
+				limiter: editorElement
+			} ) );
 		} );
 
 		it( 'should select panel input value when panel is opened', () => {
