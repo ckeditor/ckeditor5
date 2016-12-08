@@ -13,7 +13,7 @@ import transform from 'ckeditor5/engine/model/delta/transform.js';
 import Position from 'ckeditor5/engine/model/position.js';
 import Range from 'ckeditor5/engine/model/range.js';
 
-import RemoveDelta from 'ckeditor5/engine/model/delta/movedelta.js';
+import RemoveDelta from 'ckeditor5/engine/model/delta/removedelta.js';
 import SplitDelta from 'ckeditor5/engine/model/delta/splitdelta.js';
 
 import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';

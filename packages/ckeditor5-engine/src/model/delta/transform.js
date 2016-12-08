@@ -191,8 +191,10 @@ export function getTransformationCase( a, b ) {
 		const cases = specialCases.keys();
 
 		for ( let caseClass of cases ) {
-			if ( a instanceof caseClass ) {
+			if ( a instanceof caseClass && specialCases.get( caseClass ).get( b.constructor ) ) {
 				casesA = specialCases.get( caseClass );
+
+				break;
 			}
 		}
 	}
