@@ -100,7 +100,6 @@ export default class Widget extends Plugin {
 			return;
 		}
 
-		const dataController = this.editor.data;
 		const modelDocument = this.editor.document;
 		const modelSelection = modelDocument.selection;
 
@@ -109,22 +108,15 @@ export default class Widget extends Plugin {
 			return;
 		}
 
-		// Clone current selection to use it as a probe. We must leave default selection as it is so it can return
-		// to its current state after undo.
-		const probe = ModelSelection.createFromSelection( modelSelection );
-		const isForward = ( keyCode == keyCodes.delete );
+		const objectElement = this._getObjectNextToSelection( keyCode == keyCodes.delete );
 
-		dataController.modifySelection( probe, { direction: isForward ? 'forward' : 'backward' } );
-
-		const objectElement = isForward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
-
-		if ( objectElement instanceof ModelElement && modelDocument.schema.objects.has( objectElement.name ) ) {
+		if ( objectElement ) {
 			domEventData.preventDefault();
 			eventInfo.stop();
 
 			modelDocument.enqueueChanges( () => {
 				// Remove previous element if empty.
-				const previousNode = probe.anchor.parent;
+				const previousNode = modelSelection.anchor.parent;
 
 				if ( previousNode.isEmpty ) {
 					const batch = modelDocument.batch();
@@ -147,12 +139,13 @@ export default class Widget extends Plugin {
 		const schema = modelDocument.schema;
 		const modelSelection = modelDocument.selection;
 		const objectElement = getSelectedElement( modelSelection );
+		const isForward = ( keyCode == keyCodes.arrowdown || keyCode == keyCodes.arrowright );
 
+		// if object element is selected.
 		if ( objectElement && schema.objects.has( objectElement.name ) ) {
 			domEventData.preventDefault();
 			eventInfo.stop();
 
-			const isForward = ( keyCode == keyCodes.arrowdown || keyCode == keyCodes.arrowright );
 			const position = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
 			const newRange = modelDocument.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
 
@@ -161,6 +154,25 @@ export default class Widget extends Plugin {
 					modelSelection.setRanges( [ newRange ] );
 				} );
 			}
+
+			return;
+		}
+
+		// If selection is next to object element.
+		// Return if not collapsed.
+		if ( !modelSelection.isCollapsed ) {
+			return;
+		}
+
+		const objectElement2 = this._getObjectNextToSelection( isForward );
+
+		if ( objectElement2 instanceof ModelElement && modelDocument.schema.objects.has( objectElement2.name ) ) {
+			domEventData.preventDefault();
+			eventInfo.stop();
+
+			modelDocument.enqueueChanges( () => {
+				this._setSelectionOverElement( objectElement2 );
+			} );
 		}
 	}
 
@@ -172,6 +184,25 @@ export default class Widget extends Plugin {
 	 */
 	_setSelectionOverElement( element ) {
 		this.editor.document.selection.setRanges( [ ModelRange.createOn( element ) ] );
+	}
+
+	_getObjectNextToSelection( forward = true ) {
+		const modelDocument = this.editor.document;
+		const schema = modelDocument.schema;
+		const modelSelection = modelDocument.selection;
+		const dataController = this.editor.data;
+
+		// Clone current selection to use it as a probe. We must leave default selection as it is so it can return
+		// to its current state after undo.
+		const probe = ModelSelection.createFromSelection( modelSelection );
+		dataController.modifySelection( probe, { direction: forward ? 'forward' : 'backward' } );
+		const objectElement = forward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
+
+		if ( objectElement instanceof ModelElement && schema.objects.has( objectElement.name ) ) {
+			return objectElement;
+		}
+
+		return null;
 	}
 }
 
