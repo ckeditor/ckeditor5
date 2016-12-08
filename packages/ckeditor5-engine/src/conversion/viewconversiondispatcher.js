@@ -44,7 +44,7 @@ import extend from '../../utils/lib/lodash/extend.js';
  * Examples of providing callbacks for `ViewConversionDispatcher`:
  *
  *		// Converter for paragraphs (<p>).
- *		viewDispatcher.on( 'element:p', ( data, consumable, conversionApi ) => {
+ *		viewDispatcher.on( 'element:p', ( evt, data, consumable, conversionApi ) => {
  *			const paragraph = new ModelElement( 'paragraph' );
  *			const schemaQuery = {
  *				name: 'paragraph',
@@ -64,7 +64,7 @@ import extend from '../../utils/lib/lodash/extend.js';
  *		} );
  *
  *		// Converter for links (<a>).
- *		viewDispatcher.on( 'element:a', ( data, consumable, conversionApi ) => {
+ *		viewDispatcher.on( 'element:a', ( evt, data, consumable, conversionApi ) => {
  *			if ( consumable.consume( data.input, { name: true, attributes: [ 'href' ] } ) ) {
  *				// <a> element is inline and is represented by an attribute in the model.
  *				// This is why we are not updating `context` property.
