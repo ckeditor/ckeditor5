@@ -5,8 +5,14 @@
 
 import Paragraph from 'ckeditor5/paragraph/paragraph.js';
 import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
-import { getData as getModelData } from 'ckeditor5/engine/dev-utils/model.js';
+import {
+	getData as getModelData,
+	setData as setModelData,
+	stringify as stringifyModel
+} from 'ckeditor5/engine/dev-utils/model.js';
 import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
+
+import buildViewConverter from 'ckeditor5/engine/conversion/buildviewconverter.js';
 
 describe( 'Paragraph feature', () => {
 	let editor, doc;
@@ -31,6 +37,10 @@ describe( 'Paragraph feature', () => {
 		expect( doc.schema.check( { name: '$inline', inside: 'paragraph' } ) ).to.be.true;
 	} );
 
+	it( 'should have a static paragraphLikeElements property', () => {
+		expect( Paragraph ).to.have.property( 'paragraphLikeElements' );
+	} );
+
 	describe( 'data pipeline conversions', () => {
 		it( 'should convert paragraph', () => {
 			editor.setData( '<p>foobar</p>' );
@@ -52,14 +62,109 @@ describe( 'Paragraph feature', () => {
 			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph><paragraph>baz</paragraph>' );
 			expect( editor.getData() ).to.equal( '<p>foo</p><p>baz</p>' );
 		} );
+
+		describe( 'generic block converter (autoparagraphing)', () => {
+			it( 'should autoparagraph text', () => {
+				editor.setData( 'foo' );
+
+				expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph>' );
+				expect( editor.getData() ).to.equal( '<p>foo</p>' );
+			} );
+
+			it( 'should autoparagraph text next to allowed element', () => {
+				doc.schema.registerItem( 'heading1', '$block' );
+				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'h1' ).toElement( 'heading1' );
+
+				const modelFragment = editor.data.parse( '<h1>foo</h1>bar<p>bom</p>' );
+
+				expect( stringifyModel( modelFragment ) )
+					.to.equal( '<heading1>foo</heading1><paragraph>bar</paragraph><paragraph>bom</paragraph>' );
+			} );
+
+			it( 'should autoparagraph 3 inline things into one paragraph', () => {
+				const modelFragment = editor.data.parse( 'foo<b>bar</b>bom' );
+
+				expect( stringifyModel( modelFragment ) )
+					.to.equal( '<paragraph>foobarbom</paragraph>' );
+			} );
+
+			it( 'should autoparagraph h1, h2...', () => {
+				const modelFragment = editor.data.parse( '<h1>foo</h1><h2>bar</h2>' );
+
+				expect( stringifyModel( modelFragment ) )
+					.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+			} );
+
+			it( 'should autoparagraph ul > li', () => {
+				const modelFragment = editor.data.parse( '<ul><li>foo</li><li>bar</li></ul>' );
+
+				expect( stringifyModel( modelFragment ) )
+					.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+			} );
+
+			it( 'should autoparagraph tr', () => {
+				const modelFragment = editor.data.parse( '<table><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></table>' );
+
+				expect( stringifyModel( modelFragment ) )
+					.to.equal( '<paragraph>ab</paragraph><paragraph>cd</paragraph>' );
+			} );
+
+			it( 'should autoparagraph inside some container', () => {
+				doc.schema.registerItem( 'div' );
+				doc.schema.allow( { name: '$inline', attributes: [ 'bold' ] } );
+				doc.schema.allow( { name: 'div', inside: '$root' } );
+				doc.schema.allow( { name: 'paragraph', inside: 'div' } );
+
+				buildViewConverter().for( editor.data.viewToModel )
+					.fromElement( 'b' )
+					.toAttribute( 'bold', true );
+
+				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+
+				const modelFragment = editor.data.parse( '<div><ul><li>foo</li><li>bar</li></ul></div><div>bom<p>bim</p></div>' );
+
+				expect( stringifyModel( modelFragment ) )
+					.to.equal(
+						'<div><paragraph>foo</paragraph><paragraph>bar</paragraph></div>' +
+						'<div><paragraph>bom</paragraph><paragraph>bim</paragraph></div>'
+					);
+			} );
+
+			it( 'should not autopargraph when disallowed element contains allowed element', () => {
+				doc.schema.registerItem( 'heading1', '$block' );
+				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'h1' ).toElement( 'heading1' );
+
+				const modelFragment = editor.data.parse( '<div><h1>foo</h1>bar</div>' );
+
+				expect( stringifyModel( modelFragment ) )
+					.to.equal( '<heading1>foo</heading1><paragraph>bar</paragraph>' );
+			} );
+
+			it( 'should not autopargraph when allowed element contains disallowed element', () => {
+				doc.schema.registerItem( 'heading1', '$block' );
+				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'h1' ).toElement( 'heading1' );
+
+				const modelFragment = editor.data.parse( '<h1><b>foo</b>bar</h1>' );
+
+				expect( stringifyModel( modelFragment ) )
+					.to.equal( '<heading1>foobar</heading1>' );
+			} );
+		} );
 	} );
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert paragraph', () => {
-			// Workaround for setting model data: https://github.com/ckeditor/ckeditor5-engine/issues/455
-			editor.setData( '<p>foo</p><p>bar</p>' );
+			setModelData( doc, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
+		} );
+	} );
+
+	describe( 'autoparagraphing on data load', () => {
+		it( 'wraps text and place selection at the beginning of that paragraph', () => {
+			editor.setData( 'foo' );
+
+			expect( getModelData( doc ) ).to.equal( '<paragraph>[]foo</paragraph>' );
 		} );
 	} );
 } );
