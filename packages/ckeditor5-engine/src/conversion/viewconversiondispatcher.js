@@ -77,7 +77,7 @@ import extend from '../../utils/lib/lodash/extend.js';
  *						inside: data.context
  *					};
  *
- *					if ( conversionApi.schema.checkQuery( schemaQuery ) ) {
+ *					if ( conversionApi.schema.check( schemaQuery ) ) {
  *						item.setAttribute( 'link', data.input.getAttribute( 'href' ) );
  *					}
  *				}
