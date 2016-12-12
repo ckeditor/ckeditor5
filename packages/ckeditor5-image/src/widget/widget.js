@@ -89,26 +89,19 @@ export default class Widget extends Plugin {
 	 */
 	_onKeydown( eventInfo, domEventData  ) {
 		const keyCode = domEventData.keyCode;
+		const isForward = keyCode == keyCodes.delete || keyCode == keyCodes.arrowdown || keyCode == keyCodes.arrowright;
 
-		// Handling delete keys.
-		if ( keyCode == keyCodes.delete || keyCode == keyCodes.backspace ) {
-			if ( this._handleDelete( keyCode == keyCodes.delete ) ) {
-				domEventData.preventDefault();
-				eventInfo.stop();
-			}
-		}
-
-		// Handling arrow keys.
-		if ( isArrowKeyCode( keyCode ) ) {
-			if ( this._handleArrowKeys( keyCode == keyCodes.arrowdown || keyCode == keyCodes.arrowright ) ) {
-				domEventData.preventDefault();
-				eventInfo.stop();
-			}
+		// Checks if delete/backspace or arrow keys were handled and then prevents default event behaviour and stops
+		// event propagation.
+		if ( ( isDeleteKeyCode( keyCode ) && this._handleDelete( isForward ) ) ||
+			( isArrowKeyCode( keyCode ) && this._handleArrowKeys( isForward ) ) ) {
+			domEventData.preventDefault();
+			eventInfo.stop();
 		}
 	}
 
 	/**
-	 * Handles delete keys.
+	 * Handles delete keys: backspace and delete.
 	 *
 	 * @private
 	 * @param {Boolean} isForward Set to true if delete was performed in forward direction.
@@ -123,7 +116,7 @@ export default class Widget extends Plugin {
 			return;
 		}
 
-		const objectElement = this._getObjectNextToSelection( isForward );
+		const objectElement = this._getObjectElementNextToSelection( isForward );
 
 		if ( objectElement ) {
 			modelDocument.enqueueChanges( () => {
@@ -145,7 +138,7 @@ export default class Widget extends Plugin {
 	/**
 	 * Handles arrow keys.
 	 *
-	 * @param {Boolean} isForward Set to true if arrow key should be handled if forward direction.
+	 * @param {Boolean} isForward Set to true if arrow key should be handled in forward direction.
 	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
 	 */
 	_handleArrowKeys( isForward ) {
@@ -174,7 +167,7 @@ export default class Widget extends Plugin {
 			return;
 		}
 
-		const objectElement2 = this._getObjectNextToSelection( isForward );
+		const objectElement2 = this._getObjectElementNextToSelection( isForward );
 
 		if ( objectElement2 instanceof ModelElement && modelDocument.schema.objects.has( objectElement2.name ) ) {
 			modelDocument.enqueueChanges( () => {
@@ -195,7 +188,16 @@ export default class Widget extends Plugin {
 		this.editor.document.selection.setRanges( [ ModelRange.createOn( element ) ] );
 	}
 
-	_getObjectNextToSelection( forward = true ) {
+	/**
+	 * Checks if {@link module:engine/model/element~Element element} placed next to the current
+	 * {@link module:engine/model/selection~Selection model selection} exists and is marked in
+	 * {@link module:engine/model/schema~Schema schema} as `object`.
+	 *
+	 * @private
+	 * @param {Boolean} forward Direction of checking.
+	 * @returns {module:engine/model/element~Element|null}
+	 */
+	_getObjectElementNextToSelection( forward = true ) {
 		const modelDocument = this.editor.document;
 		const schema = modelDocument.schema;
 		const modelSelection = modelDocument.selection;
@@ -215,6 +217,13 @@ export default class Widget extends Plugin {
 	}
 }
 
+/**
+ * Returns the selected element. {@link module:engine/model/element~Element Element} is considered as selected if there is only
+ * one range in the selection, and that range contains exactly one element.
+ * Returns `null` if there is no selected element.
+ *
+ * @returns {module:engine/model/element~Element|null}
+ */
 function getSelectedElement( modelSelection ) {
 	if ( modelSelection.rangeCount !== 1 ) {
 		return null;
@@ -227,9 +236,25 @@ function getSelectedElement( modelSelection ) {
 	return ( nodeAfterStart instanceof ModelElement && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
 }
 
+/**
+ * Returns 'true' if provided key code represents one of the arrow keys.
+ *
+ * @param {Number} keyCode
+ * @return {Boolean}
+ */
 function isArrowKeyCode( keyCode ) {
 	return keyCode == keyCodes.arrowright ||
 		keyCode == keyCodes.arrowleft ||
 		keyCode == keyCodes.arrowup ||
 		keyCode == keyCodes.arrowdown;
+}
+
+/**
+ * Returns 'true' if provided key code represents one of the delete keys: delete or backspace.
+ *
+ * @param {Number} keyCode
+ * @return {Boolean}
+ */
+function isDeleteKeyCode( keyCode ) {
+	return keyCode == keyCodes.delete || keyCode == keyCodes.backspace;
 }
