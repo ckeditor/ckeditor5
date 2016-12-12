@@ -88,18 +88,33 @@ export default class Widget extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_onKeydown( eventInfo, domEventData  ) {
-		this._handleBackspaceAndDelete( eventInfo, domEventData );
-		this._handleArrowKeys( eventInfo, domEventData );
-	}
-
-	_handleBackspaceAndDelete( eventInfo, domEventData ) {
 		const keyCode = domEventData.keyCode;
 
-		// Handle only delete and backspace.
-		if ( keyCode !== keyCodes.delete && keyCode !== keyCodes.backspace ) {
-			return;
+		// Handling delete keys.
+		if ( keyCode == keyCodes.delete || keyCode == keyCodes.backspace ) {
+			if ( this._handleDelete( keyCode == keyCodes.delete ) ) {
+				domEventData.preventDefault();
+				eventInfo.stop();
+			}
 		}
 
+		// Handling arrow keys.
+		if ( isArrowKeyCode( keyCode ) ) {
+			if ( this._handleArrowKeys( keyCode == keyCodes.arrowdown || keyCode == keyCodes.arrowright ) ) {
+				domEventData.preventDefault();
+				eventInfo.stop();
+			}
+		}
+	}
+
+	/**
+	 * Handles delete keys.
+	 *
+	 * @private
+	 * @param {Boolean} isForward Set to true if delete was performed in forward direction.
+	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
+	 */
+	_handleDelete( isForward ) {
 		const modelDocument = this.editor.document;
 		const modelSelection = modelDocument.selection;
 
@@ -108,12 +123,9 @@ export default class Widget extends Plugin {
 			return;
 		}
 
-		const objectElement = this._getObjectNextToSelection( keyCode == keyCodes.delete );
+		const objectElement = this._getObjectNextToSelection( isForward );
 
 		if ( objectElement ) {
-			domEventData.preventDefault();
-			eventInfo.stop();
-
 			modelDocument.enqueueChanges( () => {
 				// Remove previous element if empty.
 				const previousNode = modelSelection.anchor.parent;
@@ -125,27 +137,25 @@ export default class Widget extends Plugin {
 
 				this._setSelectionOverElement( objectElement );
 			} );
+
+			return true;
 		}
 	}
 
-	_handleArrowKeys( eventInfo, domEventData ) {
-		const keyCode = domEventData.keyCode;
-
-		if ( !isArrowKeyCode( keyCode ) ) {
-			return;
-		}
-
+	/**
+	 * Handles arrow keys.
+	 *
+	 * @param {Boolean} isForward Set to true if arrow key should be handled if forward direction.
+	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
+	 */
+	_handleArrowKeys( isForward ) {
 		const modelDocument = this.editor.document;
 		const schema = modelDocument.schema;
 		const modelSelection = modelDocument.selection;
 		const objectElement = getSelectedElement( modelSelection );
-		const isForward = ( keyCode == keyCodes.arrowdown || keyCode == keyCodes.arrowright );
 
 		// if object element is selected.
 		if ( objectElement && schema.objects.has( objectElement.name ) ) {
-			domEventData.preventDefault();
-			eventInfo.stop();
-
 			const position = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
 			const newRange = modelDocument.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
 
@@ -155,7 +165,7 @@ export default class Widget extends Plugin {
 				} );
 			}
 
-			return;
+			return true;
 		}
 
 		// If selection is next to object element.
@@ -167,12 +177,11 @@ export default class Widget extends Plugin {
 		const objectElement2 = this._getObjectNextToSelection( isForward );
 
 		if ( objectElement2 instanceof ModelElement && modelDocument.schema.objects.has( objectElement2.name ) ) {
-			domEventData.preventDefault();
-			eventInfo.stop();
-
 			modelDocument.enqueueChanges( () => {
 				this._setSelectionOverElement( objectElement2 );
 			} );
+
+			return true;
 		}
 	}
 
