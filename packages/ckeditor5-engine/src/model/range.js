@@ -442,6 +442,12 @@ export default class Range {
 	 * @returns {Array.<module:engine/model/range~Range>} Result of the transformation.
 	 */
 	_getTransformedByMove( sourcePosition, targetPosition, howMany, spread, isSticky = false ) {
+		if ( this.isCollapsed ) {
+			const newPos = this.start._getTransformedByMove( sourcePosition, targetPosition, howMany, true, true );
+
+			return [ new Range( newPos ) ];
+		}
+
 		let result;
 
 		const moveRange = new Range( sourcePosition, sourcePosition.getShiftedBy( howMany ) );
