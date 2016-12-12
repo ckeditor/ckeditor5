@@ -156,9 +156,9 @@ export default class Widget extends Plugin {
 				modelDocument.enqueueChanges( () => {
 					modelSelection.setRanges( [ newRange ] );
 				} );
-			}
 
-			return true;
+				return true;
+			}
 		}
 
 		// If selection is next to object element.
@@ -197,7 +197,7 @@ export default class Widget extends Plugin {
 	 * @param {Boolean} forward Direction of checking.
 	 * @returns {module:engine/model/element~Element|null}
 	 */
-	_getObjectElementNextToSelection( forward = true ) {
+	_getObjectElementNextToSelection( forward ) {
 		const modelDocument = this.editor.document;
 		const schema = modelDocument.schema;
 		const modelSelection = modelDocument.selection;
@@ -217,13 +217,12 @@ export default class Widget extends Plugin {
 	}
 }
 
-/**
- * Returns the selected element. {@link module:engine/model/element~Element Element} is considered as selected if there is only
- * one range in the selection, and that range contains exactly one element.
- * Returns `null` if there is no selected element.
- *
- * @returns {module:engine/model/element~Element|null}
- */
+// Returns the selected element. {@link module:engine/model/element~Element Element} is considered as selected if there is only
+// one range in the selection, and that range contains exactly one element.
+// Returns `null` if there is no selected element.
+//
+// @param {module:engine/model/selection~Selection} modelSelection
+// @returns {module:engine/model/element~Element|null}
 function getSelectedElement( modelSelection ) {
 	if ( modelSelection.rangeCount !== 1 ) {
 		return null;
@@ -236,12 +235,10 @@ function getSelectedElement( modelSelection ) {
 	return ( nodeAfterStart instanceof ModelElement && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
 }
 
-/**
- * Returns 'true' if provided key code represents one of the arrow keys.
- *
- * @param {Number} keyCode
- * @return {Boolean}
- */
+// Returns 'true' if provided key code represents one of the arrow keys.
+//
+// @param {Number} keyCode
+// @returns {Boolean}
 function isArrowKeyCode( keyCode ) {
 	return keyCode == keyCodes.arrowright ||
 		keyCode == keyCodes.arrowleft ||
@@ -249,12 +246,10 @@ function isArrowKeyCode( keyCode ) {
 		keyCode == keyCodes.arrowdown;
 }
 
-/**
- * Returns 'true' if provided key code represents one of the delete keys: delete or backspace.
- *
- * @param {Number} keyCode
- * @return {Boolean}
- */
+//Returns 'true' if provided key code represents one of the delete keys: delete or backspace.
+//
+//@param {Number} keyCode
+//@returns {Boolean}
 function isDeleteKeyCode( keyCode ) {
 	return keyCode == keyCodes.delete || keyCode == keyCodes.backspace;
 }
