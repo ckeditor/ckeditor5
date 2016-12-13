@@ -10,6 +10,7 @@ import transformations from 'ckeditor5/engine/model/delta/basic-transformations.
 
 import transform from 'ckeditor5/engine/model/delta/transform.js';
 
+import Element from 'ckeditor5/engine/model/element.js';
 import Position from 'ckeditor5/engine/model/position.js';
 import Range from 'ckeditor5/engine/model/range.js';
 
@@ -17,6 +18,7 @@ import RemoveDelta from 'ckeditor5/engine/model/delta/removedelta.js';
 import SplitDelta from 'ckeditor5/engine/model/delta/splitdelta.js';
 
 import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
+import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
 
 import { getNodesAndText, jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
 
@@ -25,7 +27,8 @@ import {
 	expectDelta,
 	getFilledDocument,
 	getMergeDelta,
-	getRemoveDelta
+	getRemoveDelta,
+	getSplitDelta
 } from 'tests/engine/model/delta/transform/_utils/utils.js';
 
 describe( 'transform', () => {
@@ -39,18 +42,11 @@ describe( 'transform', () => {
 	} );
 
 	describe( 'RemoveDelta by', () => {
-		let removeDelta;
-
-		beforeEach( () => {
-			let sourcePosition = new Position( root, [ 3, 3, 3 ] );
-			let howMany = 1;
-
-			removeDelta = getRemoveDelta( sourcePosition, howMany, baseVersion );
-		} );
-
 		describe( 'MergeDelta', () => {
 			it( 'node on the right side of merge was removed', () => {
 				// This special case should be handled by MoveDelta x MergeDelta special case.
+				let sourcePosition = new Position( root, [ 3, 3, 3 ] );
+				let removeDelta = getRemoveDelta( sourcePosition, 1, baseVersion );
 
 				let mergePosition = new Position( root, [ 3, 3, 3 ] );
 				let mergeDelta = getMergeDelta( mergePosition, 4, 12, baseVersion );
@@ -94,7 +90,6 @@ describe( 'transform', () => {
 				} );
 
 				// Test if deltas do what they should after applying transformed delta.
-
 				applyDelta( mergeDelta, doc );
 				applyDelta( transformed[ 0 ], doc );
 				applyDelta( transformed[ 1 ], doc );
@@ -103,6 +98,62 @@ describe( 'transform', () => {
 
 				// RemoveDelta is applied. MergeDelta is discarded.
 				expect( nodesAndText ).to.equal( 'DIVXXXXXabcdXDIV' );
+			} );
+		} );
+
+		describe( 'SplitDelta', () => {
+			it( 'node inside the removed range was a node that has been split', () => {
+				let sourcePosition = new Position( root, [ 3, 3, 1 ] );
+				let removeDelta = getRemoveDelta( sourcePosition, 3, baseVersion );
+
+				let splitPosition = new Position( root, [ 3, 3, 2, 2 ] );
+				let nodeCopy = new Element( 'x' );
+				let splitDelta = getSplitDelta( splitPosition, nodeCopy, 2, baseVersion );
+
+				let transformed = transform( removeDelta, splitDelta );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = splitDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: RemoveDelta,
+					operations: [
+						{
+							type: RemoveOperation,
+							sourcePosition: sourcePosition,
+							howMany: 4,
+							baseVersion: baseVersion
+						}
+					]
+				} );
+			} );
+
+			it( 'last node in the removed range was a node that has been split', () => {
+				let sourcePosition = new Position( root, [ 3, 2 ] );
+				let removeDelta = getRemoveDelta( sourcePosition, 2, baseVersion );
+
+				let splitPosition = new Position( root, [ 3, 3, 2 ] );
+				let nodeCopy = new Element( 'div' );
+				let splitDelta = getSplitDelta( splitPosition, nodeCopy, 2, baseVersion );
+
+				let transformed = transform( removeDelta, splitDelta );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = splitDelta.operations.length;
+
+				expectDelta( transformed[ 0 ], {
+					type: RemoveDelta,
+					operations: [
+						{
+							type: RemoveOperation,
+							sourcePosition: sourcePosition,
+							howMany: 3,
+							baseVersion: baseVersion
+						}
+					]
+				} );
 			} );
 		} );
 	} );
