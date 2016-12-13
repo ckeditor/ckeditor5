@@ -292,7 +292,7 @@ export default class Document {
 	 * * `forward` - searching will be performed only forward,
 	 * * `backward` - searching will be performed only backward.
 	 *
-	 * When valid selection range cannot be found, `null` value is returned.
+	 * When valid selection range cannot be found, `null` is returned.
 	 *
 	 * @param {module:engine/model/position~Position} position Reference position where new selection range should be looked for.
 	 * @param {'both'|'forward'|'backward'} [direction='both'] Search direction.
@@ -315,7 +315,7 @@ export default class Document {
 			forwardWalker = new TreeWalker( { startPosition: position } );
 		}
 
-		for ( let data of getWalkersData( backwardWalker, forwardWalker ) ) {
+		for ( let data of combineWalkers( backwardWalker, forwardWalker ) ) {
 			const type = ( data.walker == backwardWalker ? 'elementEnd' : 'elementStart' );
 			const value = data.value;
 
@@ -460,7 +460,7 @@ function validateTextNodePosition( rangeBoundary ) {
 // @param {module:engine/module/treewalker~TreeWalker} [forward] Walker iterating in forward direction.
 // @returns {Iterable.<Object>} Object returned at each iteration contains `value` and `walker` (informing which walker returned
 // given value) fields.
-function *getWalkersData( backward, forward ) {
+function *combineWalkers( backward, forward ) {
 	let done = false;
 
 	while ( !done ) {
