@@ -66,6 +66,15 @@ describe( 'getOptimalPosition', () => {
 			document.body.appendChild( positionedParent );
 			positionedParent.appendChild( element );
 
+			stubElementRect( positionedParent, {
+				top: 1000,
+				right: 1010,
+				bottom: 1010,
+				left: 1000,
+				width: 10,
+				height: 10
+			} );
+
 			assertPosition( { element, target, positions: [ attachLeft ] }, {
 				top: -900,
 				left: -920,
