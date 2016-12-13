@@ -139,9 +139,6 @@ function getBuildOptions() {
 	return {
 		packages: getCKEditor5PackagesPaths(),
 		buildConfig: require( path.resolve( '.', pathToConfig ) ),
-
-		ROOT_DIR: config.ROOT_DIR,
-		MODULE_DIR: config.MODULE_DIR,
 	};
 }
 
