@@ -52,18 +52,19 @@ export default function insertContent( dataController, content, selection, batch
 
 	const newRange = insertion.getSelectionRange();
 
-	// We are not testing else because it's a safe check for unpredictable edge cases: an insertion without proper range
-	// to select.
 	/* istanbul ignore else */
 	if ( newRange ) {
 		selection.setRanges( [ newRange ] );
 	} else {
+		// We are not testing else because it's a safe check for unpredictable edge cases:
+		// an insertion without proper range to select.
+
 		/**
-		 * Cannot determine proper range after insertion.
+		 * Cannot determine a proper selection range after insertion.
 		 *
-		 * @warning controller-insert-content-no-range
+		 * @warning insertcontent-no-range
 		 */
-		log.warn( 'controller-insert-content-no-range: Cannot determine proper range after insertion.' );
+		log.warn( 'insertcontent-no-range: Cannot determine a proper selection range after insertion.' );
 	}
 }
 
