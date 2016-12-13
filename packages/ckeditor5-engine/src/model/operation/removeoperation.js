@@ -120,7 +120,14 @@ export default class RemoveOperation extends MoveOperation {
 			const graveyard = this.targetPosition.root;
 			const holderElement = new Element( '$graveyardHolder' );
 
-			graveyard.insertChildren( this.targetPosition.path[ 0 ], holderElement );
+			graveyard.insertChildren( this._holderElementOffset, holderElement );
+
+			// If the operation removes nodes that are already in graveyard, it may happen that
+			// the operation's source position is invalidated by inserting new holder element into the graveyard.
+			// If that's the case, we need to fix source position path.
+			if ( this.sourcePosition.root == graveyard && this.sourcePosition.path[ 0 ] >= this._holderElementOffset ) {
+				this.sourcePosition.path[ 0 ]++;
+			}
 		}
 
 		// Then, execute as a move operation.

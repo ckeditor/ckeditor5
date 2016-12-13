@@ -18,11 +18,13 @@ import Delta from 'ckeditor5/engine/model/delta/delta.js';
 import SplitDelta from 'ckeditor5/engine/model/delta/splitdelta.js';
 import AttributeDelta from 'ckeditor5/engine/model/delta/attributedelta.js';
 import RenameDelta from 'ckeditor5/engine/model/delta/renamedelta.js';
+import RemoveDelta from 'ckeditor5/engine/model/delta/removedelta.js';
 
 import InsertOperation from 'ckeditor5/engine/model/operation/insertoperation.js';
 import AttributeOperation from 'ckeditor5/engine/model/operation/attributeoperation.js';
 import ReinsertOperation from 'ckeditor5/engine/model/operation/reinsertoperation.js';
 import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
+import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
 import NoOperation from 'ckeditor5/engine/model/operation/nooperation.js';
 import RenameOperation from 'ckeditor5/engine/model/operation/renameoperation.js';
 
@@ -34,7 +36,8 @@ import {
 	getFilledDocument,
 	getSplitDelta,
 	getWrapDelta,
-	getUnwrapDelta
+	getUnwrapDelta,
+	getRemoveDelta
 } from 'tests/engine/model/delta/transform/_utils/utils.js';
 
 describe( 'transform', () => {
@@ -684,6 +687,83 @@ describe( 'transform', () => {
 							sourcePosition: new Position( root, [ 3, 3, 3, 3 ] ),
 							howMany: 9,
 							targetPosition: new Position( root, [ 3, 3, 4, 0 ] ),
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+			} );
+		} );
+
+		describe( 'RemoveDelta', () => {
+			it( 'node inside the removed range was a node that has been split', () => {
+				splitPosition = new Position( root, [ 3, 3, 2, 2 ] );
+				splitDelta = getSplitDelta( splitPosition, new Element( 'x' ), 2, baseVersion );
+
+				let removePosition = new Position( root, [ 3, 3, 1 ] );
+				let removeDelta = getRemoveDelta( removePosition, 3, baseVersion );
+				let removeOperation = removeDelta.operations[ 0 ];
+
+				let transformed = transform( splitDelta, removeDelta );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = removeDelta.operations.length;
+
+				let newInsertPosition = removeOperation.targetPosition.getShiftedBy( 2 );
+				let newMoveSourcePosition = removeOperation.targetPosition.getShiftedBy( 1 );
+				newMoveSourcePosition.path.push( 2 );
+				let newMoveTargetPosition = Position.createAt( newInsertPosition );
+				newMoveTargetPosition.path.push( 0 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: newInsertPosition,
+							baseVersion: baseVersion
+						},
+						{
+							type: MoveOperation,
+							sourcePosition: newMoveSourcePosition,
+							howMany: 2,
+							targetPosition: newMoveTargetPosition,
+							baseVersion: baseVersion + 1
+						}
+					]
+				} );
+			} );
+
+			it( 'last node in the removed range was a node that has been split', () => {
+				let removePosition = new Position( root, [ 3, 3, 2 ] );
+				let removeDelta = getRemoveDelta( removePosition, 2, baseVersion );
+				let removeOperation = removeDelta.operations[ 0 ];
+
+				let transformed = transform( splitDelta, removeDelta );
+
+				expect( transformed.length ).to.equal( 1 );
+
+				baseVersion = removeDelta.operations.length;
+
+				let newInsertPosition = removeOperation.targetPosition.getShiftedBy( 2 );
+				let newMoveSourcePosition = removeOperation.targetPosition.getShiftedBy( 1 );
+				newMoveSourcePosition.path.push( 3 );
+				let newMoveTargetPosition = Position.createAt( newInsertPosition );
+				newMoveTargetPosition.path.push( 0 );
+
+				expectDelta( transformed[ 0 ], {
+					type: SplitDelta,
+					operations: [
+						{
+							type: InsertOperation,
+							position: newInsertPosition,
+							baseVersion: baseVersion
+						},
+						{
+							type: MoveOperation,
+							sourcePosition: newMoveSourcePosition,
+							howMany: 9,
+							targetPosition: newMoveTargetPosition,
 							baseVersion: baseVersion + 1
 						}
 					]

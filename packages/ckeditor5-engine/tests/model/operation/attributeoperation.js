@@ -165,6 +165,22 @@ describe( 'AttributeOperation', () => {
 		expect( root.getChild( 0 ).hasAttribute( 'bar' ) ).to.be.true;
 	} );
 
+	it( 'should not throw for non-primitive attribute values', () => {
+		root.insertChildren( 0, new Text( 'x', { foo: [ 'bar', 'xyz' ] } ) );
+
+		expect( () => {
+			doc.applyOperation( wrapInDelta(
+				new AttributeOperation(
+					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+					'foo',
+					[ 'bar', 'xyz' ],
+					true,
+					doc.version
+				)
+			) );
+		} ).to.not.throw( Error );
+	} );
+
 	it( 'should create an AttributeOperation as a reverse', () => {
 		let range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) );
 		let operation = new AttributeOperation( range, 'x', 'old', 'new', doc.version );

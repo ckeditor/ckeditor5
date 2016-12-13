@@ -176,6 +176,21 @@ describe( 'RemoveOperation', () => {
 		expect( root.getChild( 0 ).data ).to.equal( 'bar' );
 	} );
 
+	it( 'should properly remove a node that is already in a graveyard', () => {
+		doc.graveyard.appendChildren( new Element( '$graveyardHolder', {}, [ new Text( 'foo' ) ] ) );
+
+		let position = new Position( doc.graveyard, [ 0, 0 ] );
+		let operation = new RemoveOperation( position, 1, 0 );
+
+		operation.targetPosition.path = [ 0, 0 ];
+
+		doc.applyOperation( wrapInDelta( operation ) );
+
+		expect( doc.graveyard.childCount ).to.equal( 2 );
+		expect( doc.graveyard.getChild( 0 ).getChild( 0 ).data ).to.equal( 'f' );
+		expect( doc.graveyard.getChild( 1 ).getChild( 0 ).data ).to.equal( 'oo' );
+	} );
+
 	describe( 'toJSON', () => {
 		it( 'should create proper json object', () => {
 			const op = new RemoveOperation(
