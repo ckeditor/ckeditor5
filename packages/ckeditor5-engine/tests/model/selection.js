@@ -996,6 +996,7 @@ describe( 'Selection', () => {
 			schema = new Schema();
 			schema.registerItem( 'p', '$block' );
 		} );
+
 		it( 'should return selected element', () => {
 			const { selection, model } = parse( '<p>foo</p>[<p>bar</p>]<p>baz</p>', schema );
 			const p = model.getChild( 1 );
