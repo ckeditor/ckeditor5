@@ -15,6 +15,8 @@ import Selection from 'ckeditor5/engine/model/selection.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 import testUtils from 'tests/core/_utils/utils.js';
 import count from 'ckeditor5/utils/count.js';
+import { parse } from 'ckeditor5/engine/dev-utils/model.js';
+import Schema from 'ckeditor5/engine/model/schema.js';
 
 testUtils.createSinonSandbox();
 
@@ -984,6 +986,43 @@ describe( 'Selection', () => {
 
 				expect( spy.called ).to.be.false;
 			} );
+		} );
+	} );
+
+	describe( 'getSelectedElement', () => {
+		let schema;
+
+		beforeEach( () => {
+			schema = new Schema();
+			schema.registerItem( 'p', '$block' );
+		} );
+		it( 'should return selected element', () => {
+			const { selection, model } = parse( '<p>foo</p>[<p>bar</p>]<p>baz</p>', schema );
+			const p = model.getChild( 1 );
+
+			expect( selection.getSelectedElement() ).to.equal( p );
+		} );
+
+		it( 'should return null if there is more than one range', () => {
+			const { selection } = parse( '[<p>foo</p>][<p>bar</p>]<p>baz</p>', schema );
+
+			expect( selection.getSelectedElement() ).to.be.null;
+		} );
+
+		it( 'should return null if there is no selection', () => {
+			expect( selection.getSelectedElement() ).to.be.null;
+		} );
+
+		it( 'should return null if selection is not over single element #1', () => {
+			const { selection } = parse( '<p>foo</p>[<p>bar</p><p>baz}</p>', schema );
+
+			expect( selection.getSelectedElement() ).to.be.null;
+		} );
+
+		it( 'should return null if selection is not over single element #2', () => {
+			const { selection } = parse( '<p>{bar}</p>', schema );
+
+			expect( selection.getSelectedElement() ).to.be.null;
 		} );
 	} );
 } );
