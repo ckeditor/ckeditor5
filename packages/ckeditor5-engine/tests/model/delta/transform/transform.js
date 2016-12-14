@@ -332,5 +332,20 @@ describe( 'transform', () => {
 				]
 			} );
 		} );
+
+		it( 'should not modify original deltas or arrays', () => {
+			const insertDeltaA = getInsertDelta( new Position( root, [ 0, 0 ] ), new Text( 'x' ), baseVersion );
+			const insertDeltaB = getInsertDelta( new Position( root, [ 1, 0 ] ), new Text( 'y' ), baseVersion );
+
+			const originalDeltasA = [ insertDeltaA ];
+			const originalDeltasB = [ insertDeltaB ];
+
+			let { deltasA, deltasB } = transformDeltaSets( originalDeltasA, originalDeltasB, false );
+
+			expect( deltasA ).to.not.equal( originalDeltasA );
+			expect( deltasB ).to.not.equal( originalDeltasB );
+			expect( deltasA[ 0 ] ).to.not.equal( originalDeltasA[ 0 ] );
+			expect( deltasB[ 0 ] ).to.not.equal( originalDeltasB[ 0 ] );
+		} );
 	} );
 } );
