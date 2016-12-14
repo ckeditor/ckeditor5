@@ -156,9 +156,9 @@ export default class Widget extends Plugin {
 				modelDocument.enqueueChanges( () => {
 					modelSelection.setRanges( [ newRange ] );
 				} );
-
-				return true;
 			}
+
+			return true;
 		}
 
 		// If selection is next to object element.

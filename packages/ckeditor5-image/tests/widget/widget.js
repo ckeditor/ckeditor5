@@ -485,6 +485,38 @@ describe( 'Widget', () => {
 				'[<widget></widget>]<paragraph>foo</paragraph>'
 			);
 
+			it( 'should prevent default behaviour when there is no correct location - document end', () => {
+				const keydownHandler = sinon.spy();
+				const domEventDataMock = {
+					keyCode: keyCodes.arrowright,
+					preventDefault: sinon.spy(),
+				};
+				setModelData( doc, '<paragraph>foo</paragraph>[<widget></widget>]' );
+				viewDocument.on( 'keydown',  keydownHandler );
+
+				viewDocument.fire( 'keydown', domEventDataMock );
+
+				expect( getModelData( doc ) ).to.equal( '<paragraph>foo</paragraph>[<widget></widget>]' );
+				sinon.assert.calledOnce( domEventDataMock.preventDefault );
+				sinon.assert.notCalled( keydownHandler );
+			} );
+
+			it( 'should prevent default behaviour when there is no correct location - document start', () => {
+				const keydownHandler = sinon.spy();
+				const domEventDataMock = {
+					keyCode: keyCodes.arrowleft,
+					preventDefault: sinon.spy(),
+				};
+				setModelData( doc, '[<widget></widget>]<paragraph>foo</paragraph>' );
+				viewDocument.on( 'keydown',  keydownHandler );
+
+				viewDocument.fire( 'keydown', domEventDataMock );
+
+				expect( getModelData( doc ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
+				sinon.assert.calledOnce( domEventDataMock.preventDefault );
+				sinon.assert.notCalled( keydownHandler );
+			} );
+
 			test(
 				'should move selection to object element - right arrow',
 				'<paragraph>foo[]</paragraph><widget></widget>',
