@@ -7,7 +7,9 @@
  * @module engine/model/delta/transform
  */
 
+import Delta from './delta.js';
 import operationTransform from '../operation/transform.js';
+import NoOperation from '../operation/nooperation.js';
 import arrayUtils from '../../../utils/lib/lodash/array.js';
 
 const specialCases = new Map();
@@ -216,4 +218,80 @@ function getPriority( A, B, isAMoreImportantThanB ) {
 	} else {
 		return isAMoreImportantThanB;
 	}
+}
+
+/**
+ * Transforms two sets of deltas by themselves. Returns both transformed sets. Does not modify passed parameters.
+ *
+ * @param {Array.<module:engine/model/delta/delta~Delta>} deltasA Array with first set of deltas to transform.
+ * @param {Array.<module:engine/model/delta/delta~Delta>} deltasB Array with second set of deltas to transform.
+ * @param {Boolean} isAMoreImportantThanB Flag indicating whether the deltas from `deltasA` set should be treated as more
+ * important when resolving conflicts.
+ * @returns {Object}
+ * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasA The first set of deltas transformed by the second set of deltas.
+ * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasB The second set of deltas transformed by the first set of deltas.
+ */
+export function transformDeltaSets( deltasA, deltasB, isAMoreImportantThanB ) {
+	let transformedDeltasA = Array.from( deltasA );
+	let transformedDeltasB = Array.from( deltasB );
+
+	for ( let i = 0; i < transformedDeltasA.length; i++ ) {
+		let deltaA = [ transformedDeltasA[ i ] ];
+
+		for ( let j = 0; j < transformedDeltasB.length; j++ ) {
+			let deltaB = [ transformedDeltasB[ j ] ];
+
+			for ( let k = 0; k < deltaA.length; k++ ) {
+				for ( let l = 0; l < deltaB.length; l++ ) {
+					let resultAB = transform( deltaA[ k ], deltaB[ l ], isAMoreImportantThanB );
+					let resultBA = transform( deltaB[ l ], deltaA[ k ], !isAMoreImportantThanB );
+
+					deltaA.splice( k, 1, ...resultAB );
+					k += resultAB.length - 1;
+
+					deltaB.splice( l, 1, ...resultBA );
+					l += resultBA.length - 1;
+				}
+			}
+
+			transformedDeltasB.splice( j, 1, ...deltaB );
+			j += deltaB.length - 1;
+		}
+
+		transformedDeltasA.splice( i, 1, ...deltaA );
+		i += deltaA.length - 1;
+	}
+
+	const opsDiffA = getOpsCount( transformedDeltasA ) - getOpsCount( deltasA );
+	const opsDiffB = getOpsCount( transformedDeltasB ) - getOpsCount( deltasB );
+
+	if ( opsDiffB < opsDiffA ) {
+		padWithNoOps( transformedDeltasB, opsDiffA - opsDiffB );
+	} else if ( opsDiffA < opsDiffB ) {
+		padWithNoOps( transformedDeltasA, opsDiffB - opsDiffA );
+	}
+
+	return { deltasA: transformedDeltasA, deltasB: transformedDeltasB };
+}
+
+// Returns number of operations in given array of deltas.
+function getOpsCount( deltas ) {
+	return deltas.reduce( ( current, delta ) => {
+		return current + delta.operations.length;
+	}, 0 );
+}
+
+// Adds a delta containing `howMany` `NoOperation` instances to given array with deltas.
+// Used to "synchronize" the number of operations in two delta sets.
+function padWithNoOps( deltas, howMany ) {
+	const lastDelta = deltas[ deltas.length - 1 ];
+	let baseVersion = lastDelta.operations.length + lastDelta.baseVersion;
+
+	let noDelta = new Delta();
+
+	for ( let i = 0; i < howMany; i++ ) {
+		noDelta.addOperation( new NoOperation( baseVersion++ ) );
+	}
+
+	deltas.push( noDelta );
 }
