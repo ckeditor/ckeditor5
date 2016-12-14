@@ -8,7 +8,8 @@
  */
 
 import BaseCommand from './basecommand.js';
-import { transformDelta, transformRangesByDeltas } from './basecommand.js';
+import { transformRangesByDeltas } from './basecommand.js';
+import { transformDeltaSets } from '../engine/model/delta/transform.js';
 
 /**
  * The undo command stores {@link module:engine/model/batch~Batch batches} applied to the
@@ -133,13 +134,13 @@ export default class UndoCommand extends BaseCommand {
 					this._stack[ itemIndex ].selection.ranges = transformRangesByDeltas( this._stack[ itemIndex ].selection.ranges, reversedDelta );
 				}
 
-				// 3.2. Transform history delta by reversed delta. We need this to update document history.
-				const updatedHistoryDelta = transformDelta( [ historyDelta ], reversedDelta, false );
+				// 3.2. Transform reversed delta by history delta and vice-versa.
+				const results = transformDeltaSets( reversedDelta, [ historyDelta ], true );
 
-				// 3.3. Transform reversed delta by history delta (in state before transformation above).
-				reversedDelta = transformDelta( reversedDelta, [ historyDelta ], true );
+				reversedDelta = results.deltasA;
+				const updatedHistoryDelta = results.deltasB;
 
-				// 3.4. Store updated history delta. Later, it will be updated in `history`.
+				// 3.3. Store updated history delta. Later, it will be updated in `history`.
 				if ( !updatedHistoryDeltas[ historyDelta.baseVersion ] ) {
 					updatedHistoryDeltas[ historyDelta.baseVersion ] = [];
 				}

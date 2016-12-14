@@ -8,7 +8,7 @@
  */
 
 import BaseCommand from './basecommand.js';
-import { transformDelta as transformDelta } from './basecommand.js';
+import { transformDeltaSets } from '../engine/model/delta/transform.js';
 
 /**
  * The redo command stores {@link module:engine/model/batch~Batch batches} that were used to undo a batch by
@@ -88,7 +88,7 @@ export default class RedoCommand extends BaseCommand {
 			// again will result in incorrect deltas.
 			for ( let historyDelta of document.history.getDeltas( nextBaseVersion ) ) {
 				if ( !this._createdBatches.has( historyDelta.batch ) ) {
-					reversedDelta = transformDelta( reversedDelta, [ historyDelta ], true );
+					reversedDelta = transformDeltaSets( reversedDelta, [ historyDelta ], true ).deltasA;
 				}
 			}
 
