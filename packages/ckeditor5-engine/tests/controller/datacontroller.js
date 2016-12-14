@@ -409,6 +409,7 @@ describe( 'DataController', () => {
 			const spy = sinon.spy();
 			const content = new ModelDocumentFragment( [ new ModelText( 'x' ) ] );
 			const batch = modelDocument.batch();
+			schema.allow( { name: '$text', inside: '$root' } );
 
 			data.on( 'insertContent', spy );
 

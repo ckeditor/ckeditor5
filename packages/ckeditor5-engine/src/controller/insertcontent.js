@@ -50,7 +50,22 @@ export default function insertContent( dataController, content, selection, batch
 		isLast: true
 	} );
 
-	selection.setRanges( insertion.getSelectionRanges() );
+	const newRange = insertion.getSelectionRange();
+
+	/* istanbul ignore else */
+	if ( newRange ) {
+		selection.setRanges( [ newRange ] );
+	} else {
+		// We are not testing else because it's a safe check for unpredictable edge cases:
+		// an insertion without proper range to select.
+
+		/**
+		 * Cannot determine a proper selection range after insertion.
+		 *
+		 * @warning insertcontent-no-range
+		 */
+		log.warn( 'insertcontent-no-range: Cannot determine a proper selection range after insertion.' );
+	}
 }
 
 /**
@@ -123,19 +138,17 @@ class Insertion {
 	}
 
 	/**
-	 * Returns a range to be selected after insertion.
+	 * Returns range to be selected after insertion.
+	 * Returns null if there is no valid range to select after insertion.
 	 *
-	 * @returns {module:engine/model/range~Range}
+	 * @returns {module:engine/model/range~Range|null}
 	 */
-	getSelectionRanges() {
+	getSelectionRange() {
 		if ( this.nodeToSelect ) {
-			return [ Range.createOn( this.nodeToSelect ) ];
-		} else {
-			const document = this.dataController.model;
-			const selectionPosition = document.getNearestSelectionPosition( this.position );
-
-			return [ new Range( selectionPosition ) ];
+			return Range.createOn( this.nodeToSelect );
 		}
+
+		return this.dataController.model.getNearestSelectionRange( this.position );
 	}
 
 	/**
