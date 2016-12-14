@@ -145,7 +145,7 @@ export default class Widget extends Plugin {
 		const modelDocument = this.editor.document;
 		const schema = modelDocument.schema;
 		const modelSelection = modelDocument.selection;
-		const objectElement = getSelectedElement( modelSelection );
+		const objectElement = modelSelection.getSelectedElement();
 
 		// if object element is selected.
 		if ( objectElement && schema.objects.has( objectElement.name ) ) {
@@ -215,24 +215,6 @@ export default class Widget extends Plugin {
 
 		return null;
 	}
-}
-
-// Returns the selected element. {@link module:engine/model/element~Element Element} is considered as selected if there is only
-// one range in the selection, and that range contains exactly one element.
-// Returns `null` if there is no selected element.
-//
-// @param {module:engine/model/selection~Selection} modelSelection
-// @returns {module:engine/model/element~Element|null}
-function getSelectedElement( modelSelection ) {
-	if ( modelSelection.rangeCount !== 1 ) {
-		return null;
-	}
-
-	const range = modelSelection.getFirstRange();
-	const nodeAfterStart = range.start.nodeAfter;
-	const nodeBeforeEnd = range.end.nodeBefore;
-
-	return ( nodeAfterStart instanceof ModelElement && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
 }
 
 // Returns 'true' if provided key code represents one of the arrow keys.
