@@ -89,13 +89,25 @@ export default class Widget extends Plugin {
 	 */
 	_onKeydown( eventInfo, domEventData  ) {
 		const keyCode = domEventData.keyCode;
+		const isForward = keyCode == keyCodes.delete || keyCode == keyCodes.arrowdown || keyCode == keyCodes.arrowright;
 
-		// Handle only delete and backspace.
-		if ( keyCode !== keyCodes.delete && keyCode !== keyCodes.backspace ) {
-			return;
+		// Checks if delete/backspace or arrow keys were handled and then prevents default event behaviour and stops
+		// event propagation.
+		if ( ( isDeleteKeyCode( keyCode ) && this._handleDelete( isForward ) ) ||
+			( isArrowKeyCode( keyCode ) && this._handleArrowKeys( isForward ) ) ) {
+			domEventData.preventDefault();
+			eventInfo.stop();
 		}
+	}
 
-		const dataController = this.editor.data;
+	/**
+	 * Handles delete keys: backspace and delete.
+	 *
+	 * @private
+	 * @param {Boolean} isForward Set to true if delete was performed in forward direction.
+	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
+	 */
+	_handleDelete( isForward ) {
 		const modelDocument = this.editor.document;
 		const modelSelection = modelDocument.selection;
 
@@ -104,22 +116,12 @@ export default class Widget extends Plugin {
 			return;
 		}
 
-		// Clone current selection to use it as a probe. We must leave default selection as it is so it can return
-		// to its current state after undo.
-		const probe = ModelSelection.createFromSelection( modelSelection );
-		const isForward = ( keyCode == keyCodes.delete );
+		const objectElement = this._getObjectElementNextToSelection( isForward );
 
-		dataController.modifySelection( probe, { direction: isForward ? 'forward' : 'backward' } );
-
-		const objectElement = isForward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
-
-		if ( objectElement instanceof ModelElement && modelDocument.schema.objects.has( objectElement.name ) ) {
-			domEventData.preventDefault();
-			eventInfo.stop();
-
+		if ( objectElement ) {
 			modelDocument.enqueueChanges( () => {
 				// Remove previous element if empty.
-				const previousNode = probe.anchor.parent;
+				const previousNode = modelSelection.anchor.parent;
 
 				if ( previousNode.isEmpty ) {
 					const batch = modelDocument.batch();
@@ -128,6 +130,51 @@ export default class Widget extends Plugin {
 
 				this._setSelectionOverElement( objectElement );
 			} );
+
+			return true;
+		}
+	}
+
+	/**
+	 * Handles arrow keys.
+	 *
+	 * @param {Boolean} isForward Set to true if arrow key should be handled in forward direction.
+	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
+	 */
+	_handleArrowKeys( isForward ) {
+		const modelDocument = this.editor.document;
+		const schema = modelDocument.schema;
+		const modelSelection = modelDocument.selection;
+		const objectElement = modelSelection.getSelectedElement();
+
+		// if object element is selected.
+		if ( objectElement && schema.objects.has( objectElement.name ) ) {
+			const position = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
+			const newRange = modelDocument.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
+
+			if ( newRange ) {
+				modelDocument.enqueueChanges( () => {
+					modelSelection.setRanges( [ newRange ] );
+				} );
+			}
+
+			return true;
+		}
+
+		// If selection is next to object element.
+		// Return if not collapsed.
+		if ( !modelSelection.isCollapsed ) {
+			return;
+		}
+
+		const objectElement2 = this._getObjectElementNextToSelection( isForward );
+
+		if ( objectElement2 instanceof ModelElement && modelDocument.schema.objects.has( objectElement2.name ) ) {
+			modelDocument.enqueueChanges( () => {
+				this._setSelectionOverElement( objectElement2 );
+			} );
+
+			return true;
 		}
 	}
 
@@ -140,4 +187,51 @@ export default class Widget extends Plugin {
 	_setSelectionOverElement( element ) {
 		this.editor.document.selection.setRanges( [ ModelRange.createOn( element ) ] );
 	}
+
+	/**
+	 * Checks if {@link module:engine/model/element~Element element} placed next to the current
+	 * {@link module:engine/model/selection~Selection model selection} exists and is marked in
+	 * {@link module:engine/model/schema~Schema schema} as `object`.
+	 *
+	 * @private
+	 * @param {Boolean} forward Direction of checking.
+	 * @returns {module:engine/model/element~Element|null}
+	 */
+	_getObjectElementNextToSelection( forward ) {
+		const modelDocument = this.editor.document;
+		const schema = modelDocument.schema;
+		const modelSelection = modelDocument.selection;
+		const dataController = this.editor.data;
+
+		// Clone current selection to use it as a probe. We must leave default selection as it is so it can return
+		// to its current state after undo.
+		const probe = ModelSelection.createFromSelection( modelSelection );
+		dataController.modifySelection( probe, { direction: forward ? 'forward' : 'backward' } );
+		const objectElement = forward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
+
+		if ( objectElement instanceof ModelElement && schema.objects.has( objectElement.name ) ) {
+			return objectElement;
+		}
+
+		return null;
+	}
+}
+
+// Returns 'true' if provided key code represents one of the arrow keys.
+//
+// @param {Number} keyCode
+// @returns {Boolean}
+function isArrowKeyCode( keyCode ) {
+	return keyCode == keyCodes.arrowright ||
+		keyCode == keyCodes.arrowleft ||
+		keyCode == keyCodes.arrowup ||
+		keyCode == keyCodes.arrowdown;
+}
+
+//Returns 'true' if provided key code represents one of the delete keys: delete or backspace.
+//
+//@param {Number} keyCode
+//@returns {Boolean}
+function isDeleteKeyCode( keyCode ) {
+	return keyCode == keyCodes.delete || keyCode == keyCodes.backspace;
 }
