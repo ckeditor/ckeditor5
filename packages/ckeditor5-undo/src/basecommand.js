@@ -8,7 +8,6 @@
  */
 
 import Command from '../core/command/command.js';
-import transform from '../engine/model/delta/transform.js';
 
 /**
  * Base class for undo feature commands: {@link module:undo/undocommand~UndoCommand} and {@link module:undo/redocommand~RedoCommand}.
@@ -110,28 +109,6 @@ export default class BaseCommand extends Command {
 			document.selection.setRanges( selectionRanges, isBackward );
 		}
 	}
-}
-
-// Performs a transformation of delta set `setToTransform` by given delta set `setToTransformBy`.
-// If `setToTransform` deltas are more important than `setToTransformBy` deltas, `isStrong` should be true.
-export function transformDelta( setToTransform, setToTransformBy, isStrong ) {
-	let results = [];
-
-	for ( let toTransform of setToTransform ) {
-		let to = [ toTransform ];
-
-		for ( let t = 0; t < to.length; t++ ) {
-			for ( let transformBy of setToTransformBy ) {
-				let transformed = transform( to[ t ], transformBy, isStrong );
-				to.splice( t, 1, ...transformed );
-				t = t - 1 + transformed.length;
-			}
-		}
-
-		results = results.concat( to );
-	}
-
-	return results;
 }
 
 // Transforms given range `range` by deltas from `document` history, starting from a delta with given `baseVersion`.
