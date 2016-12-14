@@ -281,8 +281,8 @@ describe( 'Document', () => {
 
 		beforeEach( () => {
 			doc.schema.registerItem( 'paragraph', '$block' );
-			doc.schema.registerItem( 'image' );
-			doc.schema.allow( { name: 'image', inside: '$root' } );
+			doc.schema.registerItem( 'emptyBlock' );
+			doc.schema.allow( { name: 'emptyBlock', inside: '$root' } );
 			doc.schema.registerItem( 'widget', '$block' );
 			doc.schema.allow( { name: 'widget', inside: '$root' } );
 			doc.schema.objects.add( 'widget' );
@@ -341,21 +341,21 @@ describe( 'Document', () => {
 
 		test(
 			'should find range after when searching both ways when it is closer',
-			'<paragraph></paragraph><image></image>[]<paragraph></paragraph>',
+			'<paragraph></paragraph><emptyBlock></emptyBlock>[]<paragraph></paragraph>',
 			'both',
-			'<paragraph></paragraph><image></image><paragraph>[]</paragraph>'
+			'<paragraph></paragraph><emptyBlock></emptyBlock><paragraph>[]</paragraph>'
 		);
 
 		test(
 			'should find range before when searching both ways when it is closer',
-			'<paragraph></paragraph><image></image>[]<image></image><image></image><paragraph></paragraph>',
+			'<paragraph></paragraph><emptyBlock></emptyBlock>[]<emptyBlock></emptyBlock><emptyBlock></emptyBlock><paragraph></paragraph>',
 			'both',
-			'<paragraph>[]</paragraph><image></image><image></image><image></image><paragraph></paragraph>'
+			'<paragraph>[]</paragraph><emptyBlock></emptyBlock><emptyBlock></emptyBlock><emptyBlock></emptyBlock><paragraph></paragraph>'
 		);
 
 		test(
 			'should return null if there is no valid range',
-			'<image></image>',
+			'[]<emptyBlock></emptyBlock>',
 			'both',
 			null
 		);
