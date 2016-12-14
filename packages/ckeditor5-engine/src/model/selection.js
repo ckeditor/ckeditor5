@@ -8,6 +8,7 @@
  */
 
 import Position from './position.js';
+import Element from './element.js';
 import Range from './range.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
@@ -539,6 +540,25 @@ export default class Selection {
 
 			this.fire( 'change:attribute', { attributeKeys: Array.from( changed ), directChange: true } );
 		}
+	}
+
+	/**
+	 * Returns the selected element. {@link module:engine/model/element~Element Element} is considered as selected if there is only
+	 * one range in the selection, and that range contains exactly one element.
+	 * Returns `null` if there is no selected element.
+	 *
+	 * @returns {module:engine/model/element~Element|null}
+	 */
+	getSelectedElement() {
+		if ( this.rangeCount !== 1 ) {
+			return null;
+		}
+
+		const range = this.getFirstRange();
+		const nodeAfterStart = range.start.nodeAfter;
+		const nodeBeforeEnd = range.end.nodeBefore;
+
+		return ( nodeAfterStart instanceof Element && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
 	}
 
 	/**
