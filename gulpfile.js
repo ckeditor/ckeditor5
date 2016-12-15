@@ -164,40 +164,15 @@ gulp.task( 'docs:build', () => {
 // Tests. ---------------------------------------------------------------------
 
 gulp.task( 'test', () => {
-	const tests = require( '@ckeditor/ckeditor5-dev-tests' );
-
-	return tests.tasks.automated.test( getTestOptions() );
+	return require( '@ckeditor/ckeditor5-dev-tests' )
+		.runAutomatedTests( getTestOptions() );
 } );
 
-// Requires compiled sources. Task should be used in parallel with `gulp compile --formats=esnext --watch`.
-gulp.task( 'test:server', () => {
-	const tests = require( '@ckeditor/ckeditor5-dev-tests' );
-	const options = getTestOptions();
-
-	options.sourcePath = path.resolve( config.MODULE_DIR.esnext );
-
-	return tests.tasks.automated.runTests( options );
-} );
-
-gulp.task( 'test:manual', ( done ) => {
-	const tests = require( '@ckeditor/ckeditor5-dev-tests' );
-
-	tests.tasks.manual.run( {
-		packages: getCKEditor5PackagesPaths()
-	}, done );
+gulp.task( 'test:manual', () => {
+	return require( '@ckeditor/ckeditor5-dev-tests' )
+		.runManualTests( getTestOptions() );
 } );
 
 function getTestOptions() {
-	const tests = require( '@ckeditor/ckeditor5-dev-tests' );
-	const options = tests.utils.parseArguments();
-
-	options.packages = getCKEditor5PackagesPaths();
-
-	// If --paths weren't specified, then test all packages.
-	if ( !options.paths ) {
-		options.paths = options.packages
-			.map( ( packagePath ) => tests.utils.getPackageName( path.resolve( packagePath ) ) );
-	}
-
-	return options;
+	return require( '@ckeditor/ckeditor5-dev-tests' ).parseArguments( process.argv.slice( 2 ) );
 }
