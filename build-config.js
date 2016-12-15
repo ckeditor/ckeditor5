@@ -1,9 +1,7 @@
 /* jshint browser: false, node: true, strict: true */
+
 'use strict';
 
-/**
- * @see https://github.com/ckeditor/ckeditor5-dev-bundler-rollup/issues/37 for config options
- */
 module.exports = {
 	// Specify path where bundled editor will be saved.
 	destinationPath: './build/dist/',
