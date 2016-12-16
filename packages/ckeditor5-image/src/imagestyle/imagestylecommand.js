@@ -17,9 +17,8 @@ export default class ImageStyleCommand extends Command {
 		this.set( 'value', false );
 
 		const document = this.editor.document;
-
 		this.listenTo( document.selection, 'change', () => {
-			const element = getSelectedElement( document.selection );
+			const element = document.selection.getSelectedElement();
 
 			if ( element && element.name === 'image' && element.hasAttribute( 'style' ) ) {
 				this.value = element.getAttribute( 'style' );
@@ -35,22 +34,13 @@ export default class ImageStyleCommand extends Command {
 
 	_checkEnabled() {
 		const document = this.editor.document;
-		const element = getSelectedElement( document.selection );
+		const element = document.selection.getSelectedElement();
 
-		// Todo: add schema checking.
 		return element && element.name === 'image';
 	}
-}
 
-// TODO: duplicated code - move to model selection.
-function getSelectedElement( modelSelection ) {
-	if ( modelSelection.rangeCount !== 1 ) {
-		return null;
+	_doExecute() {
+		console.log( 'execute image style command' );
 	}
-
-	const range = modelSelection.getFirstRange();
-	const nodeAfterStart = range.start.nodeAfter;
-	const nodeBeforeEnd = range.end.nodeBefore;
-
-	return ( nodeAfterStart instanceof ModelElement && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
 }
+
