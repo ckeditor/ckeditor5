@@ -89,8 +89,8 @@ gulp.task( 'compile', () => {
 	} );
 } );
 
-// Tasks specific for preparing compiled output with unmodified source files. Used by `gulp docs` or `gulp build`.
-// Todo: These tasks should be moved direct to Docs and Bundler.
+// Tasks specific for preparing compiled output with unmodified source files. Used by `gulp docs`.
+// TODO: These tasks should be moved directly to ckeditor5-dev-docs.
 gulp.task( 'compile:clean:js:esnext', () => {
 	return compiler.tasks.clean.js( [ config.MODULE_DIR.esnext ] );
 } );
@@ -144,8 +144,8 @@ function getBuildOptions() {
 
 // Documentation. -------------------------------------------------------------
 
-gulp.task( 'docs', [ 'docs:clean', 'compile:js:esnext' ], ( done ) => {
-	runSequence( 'docs:editors', 'docs:build', done );
+gulp.task( 'docs', [ 'docs:clean', 'compile:js:esnext', 'compile:themes:esnext' ], ( done ) => {
+	runSequence( 'docs:build', done );
 } );
 
 // Documentation's helpers.
@@ -159,12 +159,6 @@ gulp.task( 'docs:build', () => {
 	const docsBuilder = require( '@ckeditor/ckeditor5-dev-docs' ).docs( config );
 
 	return docsBuilder.buildDocs();
-} );
-
-gulp.task( 'docs:editors', [ 'compile:js:esnext', 'compile:themes:esnext' ], () => {
-	const docsBuilder = require( '@ckeditor/ckeditor5-dev-docs' ).docs( config );
-
-	return docsBuilder.buildEditorsForSamples( getCKEditor5PackagesPaths(), config.DOCUMENTATION.SAMPLES );
 } );
 
 // Tests. ---------------------------------------------------------------------
