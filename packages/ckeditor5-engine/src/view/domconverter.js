@@ -153,7 +153,7 @@ export default class DomConverter {
 	 *
 	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} viewNode View node or document fragment to
 	 * transform.
-	 * @param {document} domDocument Document which will be used to create DOM nodes.
+	 * @param {Document} domDocument Document which will be used to create DOM nodes.
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
 	 * @param {Boolean} [options.withChildren=true] If true node's and document fragment's children  will be converted too.
@@ -207,7 +207,7 @@ export default class DomConverter {
 	 * Additionally this method adds block {@link module:engine/view/filler filler} to the list of children, if needed.
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElement Parent view element.
-	 * @param {document} domDocument Document which will be used to create DOM nodes.
+	 * @param {Document} domDocument Document which will be used to create DOM nodes.
 	 * @param {Object} options See {@link module:engine/view/domconverter~DomConverter#viewToDom} options parameter.
 	 * @returns {Iterable.<Node>} DOM nodes.
 	 */
