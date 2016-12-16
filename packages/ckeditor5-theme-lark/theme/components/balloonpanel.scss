@@ -38,6 +38,7 @@ $ck-balloon-arrow-half-width: 10px;
 		z-index: ck-z( 'default', 1 );
 	}
 
+	&_arrow_s,
 	&_arrow_se,
 	&_arrow_sw {
 		&:before,
@@ -57,6 +58,7 @@ $ck-balloon-arrow-half-width: 10px;
 		}
 	}
 
+	&_arrow_n,
 	&_arrow_ne,
 	&_arrow_nw {
 		&:before,
@@ -76,6 +78,15 @@ $ck-balloon-arrow-half-width: 10px;
 		}
 	}
 
+	&_arrow_s {
+		&:before,
+		&:after {
+			left: 50%;
+			margin-left: -$ck-balloon-arrow-half-width;
+			top: -$ck-balloon-arrow-height;
+		}
+	}
+
 	&_arrow_se {
 		&:before,
 		&:after {
@@ -89,6 +100,15 @@ $ck-balloon-arrow-half-width: 10px;
 		&:after {
 			right: 2 * $ck-balloon-arrow-half-width;
 			top: -$ck-balloon-arrow-height;
+		}
+	}
+
+	&_arrow_n {
+		&:before,
+		&:after {
+			left: 50%;
+			margin-left: -$ck-balloon-arrow-half-width;
+			bottom: -$ck-balloon-arrow-height;
 		}
 	}
 
