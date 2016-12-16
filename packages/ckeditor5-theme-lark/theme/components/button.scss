@@ -68,12 +68,12 @@
 .ck-button,
 a.ck-button {
 	display: inline-block;
-	overflow: hidden;
 	padding: ck-spacing( 'small' );
 
 	@include ck-button( 'background' );
 	@include ck-unselectable();
 	@include ck-rounded-corners();
+	@include ck-tooltip_enabled();
 
 	@include ck-button-icon {
 		float: left;
@@ -118,6 +118,19 @@ a.ck-button {
 		use * {
 			color: inherit;
 		}
+	}
+
+	&:hover {
+		@include ck-tooltip_visible();
+	}
+
+	// 1. Get rid of the focus outline around the tooltip when focused (but not :hover).
+	// 2. Don't display tooltips for disabled buttons, they're unavailable anyway.
+	// 3. Don't display tooltips for buttons with text; text explains the button anyway.
+	&:focus:not(:hover),
+	&.ck-disabled,
+	&.ck-button_with-text {
+		@include ck-tooltip_disabled();
 	}
 
 	.ck-button__label {
