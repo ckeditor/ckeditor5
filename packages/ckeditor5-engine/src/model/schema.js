@@ -577,7 +577,14 @@ function matchPaths( schema, checkPath, allowedPath ) {
 	let index = 0;
 
 	while ( index < length ) {
-		const extChain = schema._extensionChains.get( checkPathReversed[ index ] );
+		const checkName = checkPathReversed[ index ];
+
+		// Fail when checking a path which contains element which aren't even registered to the schema.
+		if ( !schema.hasItem( checkName ) ) {
+			return false;
+		}
+
+		const extChain = schema._extensionChains.get( checkName );
 
 		if ( extChain.includes( allowedPathReversed[ index ] ) ) {
 			index++;
