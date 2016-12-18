@@ -336,6 +336,75 @@ describe( 'check', () => {
 			expect( schema.check( { name: 'new', inside: new Position( root, [ 0 ] ) } ) ).to.be.false;
 		} );
 	} );
+
+	describe( 'bug #732', () => {
+		// Ticket case.
+		it( 'should return false if given element is allowed in the root but not deeper', () => {
+			schema.registerItem( 'paragraph', '$block' );
+
+			expect( schema.check( { name: 'paragraph', inside: [ '$root', 'paragraph' ] } ) ).to.be.false;
+		} );
+
+		// Two additional, real life cases accompanying the ticket case.
+		it( 'should return true if checking whether text is allowed in $root > paragraph', () => {
+			schema.registerItem( 'paragraph', '$block' );
+
+			expect( schema.check( { name: '$text', inside: [ '$root', 'paragraph' ] } ) ).to.be.true;
+		} );
+
+		it( 'should return true if checking whether text is allowed in paragraph', () => {
+			schema.registerItem( 'paragraph', '$block' );
+
+			expect( schema.check( { name: '$text', inside: [ 'paragraph' ] } ) ).to.be.true;
+		} );
+
+		// Veryfing the matching algorithm.
+		// The right ends of the element to check and "inside" paths must match.
+		describe( 'right ends of paths must match', () => {
+			beforeEach( () => {
+				schema.registerItem( 'a' );
+				schema.registerItem( 'b' );
+				schema.registerItem( 'c' );
+				schema.registerItem( 'd' );
+				schema.registerItem( 'e' );
+
+				schema.allow( { name: 'a', inside: [ 'b', 'c', 'd' ] } );
+				schema.allow( { name: 'e', inside: [ 'a' ] } );
+			} );
+
+			// Simple chains created by a single allow() call.
+
+			it( 'a inside b, c', () => {
+				expect( schema.check( { name: 'a', inside: [ 'b', 'c' ] } ) ).to.be.false;
+			} );
+
+			it( 'a inside b', () => {
+				expect( schema.check( { name: 'a', inside: [ 'b' ] } ) ).to.be.false;
+			} );
+
+			it( 'a inside b, c, d', () => {
+				expect( schema.check( { name: 'a', inside: [ 'b', 'c', 'd' ] } ) ).to.be.true;
+			} );
+
+			it( 'a inside c, d', () => {
+				expect( schema.check( { name: 'a', inside: [ 'c', 'd' ] } ) ).to.be.true;
+			} );
+
+			it( 'a inside d', () => {
+				expect( schema.check( { name: 'a', inside: [ 'd' ] } ) ).to.be.true;
+			} );
+
+			// "Allowed in" chains created by two separate allow() calls (`e inside a` and `a inside b,c,d`).
+
+			it( 'e inside a, d', () => {
+				expect( schema.check( { name: 'e', inside: [ 'd', 'a' ] } ) ).to.be.true;
+			} );
+
+			it( 'e inside b, c, d', () => {
+				expect( schema.check( { name: 'e', inside: [ 'b', 'c', 'd' ] } ) ).to.be.false;
+			} );
+		} );
+	} );
 } );
 
 describe( 'itemExtends', () => {

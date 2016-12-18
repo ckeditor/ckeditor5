@@ -112,23 +112,21 @@ describe( 'SchemaItem', () => {
 
 			expect( item._hasMatchingPath( 'allow', [ 'div', 'header' ] ) ).to.be.true;
 			expect( item._hasMatchingPath( 'allow', [ 'html', 'div', 'header' ] ) ).to.be.true;
-			expect( item._hasMatchingPath( 'allow', [ 'div', 'header', 'span' ] ) ).to.be.true;
-			expect( item._hasMatchingPath( 'allow', [ 'html', 'div', 'p', 'header', 'span' ] ) ).to.be.true;
 		} );
 
 		it( 'should return false if there are no allowed paths that match query path', () => {
 			item.allow( [ 'div', 'p' ] );
 
-			expect( item._hasMatchingPath( 'allow', [ 'p' ] ) ).to.be.false;
 			expect( item._hasMatchingPath( 'allow', [ 'div' ] ) ).to.be.false;
 			expect( item._hasMatchingPath( 'allow', [ 'p', 'div' ] ) ).to.be.false;
+			expect( item._hasMatchingPath( 'allow', [ 'div', 'p', 'span' ] ) ).to.be.false;
 		} );
 
 		it( 'should return true if there is at least one disallowed path that matches query path', () => {
 			item.allow( [ 'div', 'header' ] );
 			item.disallow( [ 'p', 'header' ] );
 
-			expect( item._hasMatchingPath( 'disallow', [ 'html', 'div', 'p', 'header', 'span' ] ) ).to.be.true;
+			expect( item._hasMatchingPath( 'disallow', [ 'html', 'div', 'p', 'header' ] ) ).to.be.true;
 		} );
 
 		it( 'should use only paths that are registered for given attribute', () => {
@@ -142,7 +140,7 @@ describe( 'SchemaItem', () => {
 			expect( item._hasMatchingPath( 'allow', [ 'html', 'div' ], 'bold' ) ).to.be.true;
 
 			expect( item._hasMatchingPath( 'disallow', [ 'html', 'div', 'header' ] ) ).to.be.false;
-			expect( item._hasMatchingPath( 'disallow', [ 'html', 'div', 'p', 'header', 'span' ], 'bold' ) ).to.be.true;
+			expect( item._hasMatchingPath( 'disallow', [ 'html', 'div', 'p', 'header' ], 'bold' ) ).to.be.true;
 		} );
 	} );
 

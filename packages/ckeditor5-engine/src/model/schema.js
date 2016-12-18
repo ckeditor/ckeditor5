@@ -501,7 +501,7 @@ export class SchemaItem {
 	}
 
 	/**
-	 * Checks whether this item has any registered path of given type that matches provided path.
+	 * Checks whether this item has any registered path of given type that matches the provided path.
 	 *
 	 * @protected
 	 * @param {String} type Paths' type. Possible values are `allow` or `disallow`.
@@ -510,38 +510,10 @@ export class SchemaItem {
 	 * @returns {Boolean} `true` if item has any registered matching path, `false` otherwise.
 	 */
 	_hasMatchingPath( type, checkPath, attribute ) {
-		const itemPaths = this._getPaths( type, attribute );
+		const allowedPaths = this._getPaths( type, attribute );
 
-		// We check every path registered (possibly with given attribute) in the item.
-		for ( let itemPath of itemPaths ) {
-			// Pointer to last found item from `itemPath`.
-			let i = 0;
-
-			// Now we have to check every item name from the path to check.
-			for ( let checkName of checkPath ) {
-				// Don't check items that are not registered in schema.
-				if ( !this._schema.hasItem( checkName ) ) {
-					continue;
-				}
-
-				// Every item name is expanded to all names of items that item is extending.
-				// So, if on item path, there is an item that is extended by item from checked path, it will
-				// also be treated as matching.
-				const chain = this._schema._extensionChains.get( checkName );
-
-				// Since our paths have to match in given order, we always check against first item from item path.
-				// So, if item path is: B D E
-				// And checked path is: A B C D E
-				// It will be matching (A won't match, B will match, C won't match, D and E will match)
-				if ( chain.indexOf( itemPath[ i ] ) > -1 ) {
-					// Move pointer as we found element under index `i`.
-					i++;
-				}
-			}
-
-			// If `itemPath` has no items it means that we removed all of them, so we matched all of them.
-			// This means that we found a matching path.
-			if ( i === itemPath.length ) {
+		for ( const allowedPath of allowedPaths ) {
+			if ( matchPaths( this._schema, checkPath, allowedPath ) ) {
 				return true;
 			}
 		}
@@ -581,3 +553,38 @@ export class SchemaItem {
  * @typedef {String|Array.<String|module:engine/model/element~Element>|module:engine/model/position~Position}
  * module:engine/model/schema~SchemaPath
  */
+
+// Checks whether the given checkPath and allowedPath right ends match.
+//
+// checkPath: C, D
+// allowedPath: A, B, C, D
+// result: OK
+//
+// checkPath: A, B, C
+// allowedPath: A, B, C, D
+// result: NOK
+//
+// Note – when matching paths, element extension chains (inheritance) are taken into consideration.
+//
+// @param {Schema} schema
+// @param {Array.<String>} checkPath
+// @param {Array.<String>} allowedPath
+function matchPaths( schema, checkPath, allowedPath ) {
+	const allowedPathReversed = allowedPath.slice().reverse();
+	const checkPathReversed = checkPath.slice().reverse();
+
+	const length = Math.min( allowedPathReversed.length, checkPathReversed.length );
+	let index = 0;
+
+	while ( index < length ) {
+		const extChain = schema._extensionChains.get( checkPathReversed[ index ] );
+
+		if ( extChain.includes( allowedPathReversed[ index ] ) ) {
+			index++;
+		} else {
+			return false;
+		}
+	}
+
+	return true;
+}
