@@ -10,197 +10,199 @@ import Range from 'ckeditor5/engine/model/range.js';
 import Position from 'ckeditor5/engine/model/position.js';
 import { setData, getData } from 'ckeditor5/engine/dev-utils/model.js';
 
-let editor, doc, root;
-
-beforeEach( () => {
-	editor = new Editor();
-	editor.document = new Document();
-
-	doc = editor.document;
-	root = doc.createRoot();
-
-	doc.schema.registerItem( 'listItem', '$block' );
-
-	doc.schema.allow( { name: '$block', inside: '$root' } );
-	doc.schema.allow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: '$root' } );
-
-	setData(
-		doc,
-		'<listItem indent="0" type="bulleted">a</listItem>' +
-		'<listItem indent="0" type="bulleted">b</listItem>' +
-		'<listItem indent="1" type="bulleted">c</listItem>' +
-		'<listItem indent="2" type="bulleted">d</listItem>' +
-		'<listItem indent="2" type="bulleted">e</listItem>' +
-		'<listItem indent="1" type="bulleted">f</listItem>' +
-		'<listItem indent="0" type="bulleted">g</listItem>'
-	);
-} );
-
 describe( 'IndentCommand', () => {
-	let command;
+	let editor, doc, root;
 
 	beforeEach( () => {
-		command = new IndentCommand( editor, 'forward' );
+		editor = new Editor();
+		editor.document = new Document();
+
+		doc = editor.document;
+		root = doc.createRoot();
+
+		doc.schema.registerItem( 'listItem', '$block' );
+
+		doc.schema.allow( { name: '$block', inside: '$root' } );
+		doc.schema.allow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: '$root' } );
+
+		setData(
+			doc,
+			'<listItem indent="0" type="bulleted">a</listItem>' +
+			'<listItem indent="0" type="bulleted">b</listItem>' +
+			'<listItem indent="1" type="bulleted">c</listItem>' +
+			'<listItem indent="2" type="bulleted">d</listItem>' +
+			'<listItem indent="2" type="bulleted">e</listItem>' +
+			'<listItem indent="1" type="bulleted">f</listItem>' +
+			'<listItem indent="0" type="bulleted">g</listItem>'
+		);
 	} );
 
-	afterEach( () => {
-		command.destroy();
-	} );
+	describe( 'IndentCommand', () => {
+		let command;
 
-	describe( 'isEnabled', () => {
-		it( 'should be true if selection starts in list item', () => {
-			doc.selection.collapse( root.getChild( 5 ) );
-
-			expect( command.isEnabled ).to.be.true;
+		beforeEach( () => {
+			command = new IndentCommand( editor, 'forward' );
 		} );
 
-		it( 'should be false if selection starts in first list item', () => {
-			doc.selection.collapse( root.getChild( 0 ) );
-
-			expect( command.isEnabled ).to.be.false;
+		afterEach( () => {
+			command.destroy();
 		} );
 
-		it( 'should be false if selection starts in a list item that has bigger indent than it\'s previous sibling', () => {
-			doc.selection.collapse( root.getChild( 2 ) );
+		describe( 'isEnabled', () => {
+			it( 'should be true if selection starts in list item', () => {
+				doc.selection.collapse( root.getChild( 5 ) );
 
-			expect( command.isEnabled ).to.be.false;
-		} );
-	} );
+				expect( command.isEnabled ).to.be.true;
+			} );
 
-	describe( '_doExecute', () => {
-		it( 'should increment indent attribute by 1', () => {
-			doc.selection.collapse( root.getChild( 5 ) );
+			it( 'should be false if selection starts in first list item', () => {
+				doc.selection.collapse( root.getChild( 0 ) );
 
-			command._doExecute();
+				expect( command.isEnabled ).to.be.false;
+			} );
 
-			expect( getData( doc, { withoutSelection: true } ) ).to.equal(
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="0" type="bulleted">b</listItem>' +
-				'<listItem indent="1" type="bulleted">c</listItem>' +
-				'<listItem indent="2" type="bulleted">d</listItem>' +
-				'<listItem indent="2" type="bulleted">e</listItem>' +
-				'<listItem indent="2" type="bulleted">f</listItem>' +
-				'<listItem indent="0" type="bulleted">g</listItem>'
-			);
+			it( 'should be false if selection starts in a list item that has bigger indent than it\'s previous sibling', () => {
+				doc.selection.collapse( root.getChild( 2 ) );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
 		} );
 
-		it( 'should increment indent of only first selected item when multiple items are selected', () => {
-			doc.selection.setRanges( [ new Range(
-				new Position( root.getChild( 4 ), [ 0 ] ),
-				new Position( root.getChild( 6 ), [ 0 ] )
-			) ] );
+		describe( '_doExecute', () => {
+			it( 'should increment indent attribute by 1', () => {
+				doc.selection.collapse( root.getChild( 5 ) );
 
-			command._doExecute();
+				command._doExecute();
 
-			expect( getData( doc, { withoutSelection: true } ) ).to.equal(
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="0" type="bulleted">b</listItem>' +
-				'<listItem indent="1" type="bulleted">c</listItem>' +
-				'<listItem indent="2" type="bulleted">d</listItem>' +
-				'<listItem indent="3" type="bulleted">e</listItem>' +
-				'<listItem indent="1" type="bulleted">f</listItem>' +
-				'<listItem indent="0" type="bulleted">g</listItem>'
-			);
-		} );
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="0" type="bulleted">b</listItem>' +
+					'<listItem indent="1" type="bulleted">c</listItem>' +
+					'<listItem indent="2" type="bulleted">d</listItem>' +
+					'<listItem indent="2" type="bulleted">e</listItem>' +
+					'<listItem indent="2" type="bulleted">f</listItem>' +
+					'<listItem indent="0" type="bulleted">g</listItem>'
+				);
+			} );
 
-		it( 'should increment indent of all sub-items of indented item', () => {
-			doc.selection.collapse( root.getChild( 1 ) );
+			it( 'should increment indent of only first selected item when multiple items are selected', () => {
+				doc.selection.setRanges( [ new Range(
+					new Position( root.getChild( 4 ), [ 0 ] ),
+					new Position( root.getChild( 6 ), [ 0 ] )
+				) ] );
 
-			command._doExecute();
+				command._doExecute();
 
-			expect( getData( doc, { withoutSelection: true } ) ).to.equal(
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'<listItem indent="2" type="bulleted">c</listItem>' +
-				'<listItem indent="3" type="bulleted">d</listItem>' +
-				'<listItem indent="3" type="bulleted">e</listItem>' +
-				'<listItem indent="2" type="bulleted">f</listItem>' +
-				'<listItem indent="0" type="bulleted">g</listItem>'
-			);
-		} );
-	} );
-} );
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="0" type="bulleted">b</listItem>' +
+					'<listItem indent="1" type="bulleted">c</listItem>' +
+					'<listItem indent="2" type="bulleted">d</listItem>' +
+					'<listItem indent="3" type="bulleted">e</listItem>' +
+					'<listItem indent="1" type="bulleted">f</listItem>' +
+					'<listItem indent="0" type="bulleted">g</listItem>'
+				);
+			} );
 
-describe( 'IndentCommand - backward (outdent)', () => {
-	let command;
+			it( 'should increment indent of all sub-items of indented item', () => {
+				doc.selection.collapse( root.getChild( 1 ) );
 
-	beforeEach( () => {
-		command = new IndentCommand( editor, 'backward' );
-	} );
+				command._doExecute();
 
-	afterEach( () => {
-		command.destroy();
-	} );
-
-	describe( 'isEnabled', () => {
-		it( 'should be true if selection starts in list item', () => {
-			doc.selection.collapse( root.getChild( 5 ) );
-
-			expect( command.isEnabled ).to.be.true;
-		} );
-
-		it( 'should be true if selection starts in first list item', () => {
-			// This is in contrary to forward indent command.
-			doc.selection.collapse( root.getChild( 0 ) );
-
-			expect( command.isEnabled ).to.be.true;
-		} );
-
-		it( 'should be true if selection starts in a list item that has bigger indent than it\'s previous sibling', () => {
-			// This is in contrary to forward indent command.
-			doc.selection.collapse( root.getChild( 2 ) );
-
-			expect( command.isEnabled ).to.be.true;
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'<listItem indent="2" type="bulleted">c</listItem>' +
+					'<listItem indent="3" type="bulleted">d</listItem>' +
+					'<listItem indent="3" type="bulleted">e</listItem>' +
+					'<listItem indent="2" type="bulleted">f</listItem>' +
+					'<listItem indent="0" type="bulleted">g</listItem>'
+				);
+			} );
 		} );
 	} );
 
-	describe( '_doExecute', () => {
-		it( 'should decrement indent attribute by 1 (if it is bigger than 0)', () => {
-			doc.selection.collapse( root.getChild( 5 ) );
+	describe( 'IndentCommand - backward (outdent)', () => {
+		let command;
 
-			command._doExecute();
-
-			expect( getData( doc, { withoutSelection: true } ) ).to.equal(
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="0" type="bulleted">b</listItem>' +
-				'<listItem indent="1" type="bulleted">c</listItem>' +
-				'<listItem indent="2" type="bulleted">d</listItem>' +
-				'<listItem indent="2" type="bulleted">e</listItem>' +
-				'<listItem indent="0" type="bulleted">f</listItem>' +
-				'<listItem indent="0" type="bulleted">g</listItem>'
-			);
+		beforeEach( () => {
+			command = new IndentCommand( editor, 'backward' );
 		} );
 
-		it( 'should rename listItem to paragraph (if indent is equal to 0)', () => {
-			doc.selection.collapse( root.getChild( 0 ) );
-
-			command._doExecute();
-
-			expect( getData( doc, { withoutSelection: true } ) ).to.equal(
-				'<paragraph>a</paragraph>' +
-				'<listItem indent="0" type="bulleted">b</listItem>' +
-				'<listItem indent="1" type="bulleted">c</listItem>' +
-				'<listItem indent="2" type="bulleted">d</listItem>' +
-				'<listItem indent="2" type="bulleted">e</listItem>' +
-				'<listItem indent="1" type="bulleted">f</listItem>' +
-				'<listItem indent="0" type="bulleted">g</listItem>'
-			);
+		afterEach( () => {
+			command.destroy();
 		} );
 
-		it( 'should decrement indent of all sub-items of outdented item', () => {
-			doc.selection.collapse( root.getChild( 1 ) );
+		describe( 'isEnabled', () => {
+			it( 'should be true if selection starts in list item', () => {
+				doc.selection.collapse( root.getChild( 5 ) );
 
-			command._doExecute();
+				expect( command.isEnabled ).to.be.true;
+			} );
 
-			expect( getData( doc, { withoutSelection: true } ) ).to.equal(
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<paragraph>b</paragraph>' +
-				'<listItem indent="0" type="bulleted">c</listItem>' +
-				'<listItem indent="1" type="bulleted">d</listItem>' +
-				'<listItem indent="1" type="bulleted">e</listItem>' +
-				'<listItem indent="0" type="bulleted">f</listItem>' +
-				'<listItem indent="0" type="bulleted">g</listItem>'
-			);
+			it( 'should be true if selection starts in first list item', () => {
+				// This is in contrary to forward indent command.
+				doc.selection.collapse( root.getChild( 0 ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true if selection starts in a list item that has bigger indent than it\'s previous sibling', () => {
+				// This is in contrary to forward indent command.
+				doc.selection.collapse( root.getChild( 2 ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+		} );
+
+		describe( '_doExecute', () => {
+			it( 'should decrement indent attribute by 1 (if it is bigger than 0)', () => {
+				doc.selection.collapse( root.getChild( 5 ) );
+
+				command._doExecute();
+
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="0" type="bulleted">b</listItem>' +
+					'<listItem indent="1" type="bulleted">c</listItem>' +
+					'<listItem indent="2" type="bulleted">d</listItem>' +
+					'<listItem indent="2" type="bulleted">e</listItem>' +
+					'<listItem indent="0" type="bulleted">f</listItem>' +
+					'<listItem indent="0" type="bulleted">g</listItem>'
+				);
+			} );
+
+			it( 'should rename listItem to paragraph (if indent is equal to 0)', () => {
+				doc.selection.collapse( root.getChild( 0 ) );
+
+				command._doExecute();
+
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>a</paragraph>' +
+					'<listItem indent="0" type="bulleted">b</listItem>' +
+					'<listItem indent="1" type="bulleted">c</listItem>' +
+					'<listItem indent="2" type="bulleted">d</listItem>' +
+					'<listItem indent="2" type="bulleted">e</listItem>' +
+					'<listItem indent="1" type="bulleted">f</listItem>' +
+					'<listItem indent="0" type="bulleted">g</listItem>'
+				);
+			} );
+
+			it( 'should decrement indent of all sub-items of outdented item', () => {
+				doc.selection.collapse( root.getChild( 1 ) );
+
+				command._doExecute();
+
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<paragraph>b</paragraph>' +
+					'<listItem indent="0" type="bulleted">c</listItem>' +
+					'<listItem indent="1" type="bulleted">d</listItem>' +
+					'<listItem indent="1" type="bulleted">e</listItem>' +
+					'<listItem indent="0" type="bulleted">f</listItem>' +
+					'<listItem indent="0" type="bulleted">g</listItem>'
+				);
+			} );
 		} );
 	} );
 } );
