@@ -7,42 +7,44 @@
 
 import log from 'ckeditor5/utils/log.js';
 
-let spy;
+describe( 'log', () => {
+	let spy;
 
-beforeEach( () => {
-	if ( spy ) {
-		spy.restore();
-	}
-} );
-
-describe( 'warn()', () => {
-	it( 'logs the message to the console using console.warn()', () => {
-		let spy = sinon.stub( console, 'warn' );
-		let data = { bar: 1 };
-
-		log.warn( 'foo', data );
-
-		sinon.assert.calledOnce( spy );
-		sinon.assert.calledWith( spy, 'foo', data );
-
-		log.warn( 'bar' );
-		sinon.assert.calledTwice( spy );
-		sinon.assert.calledWith( spy, 'bar' );
+	beforeEach( () => {
+		if ( spy ) {
+			spy.restore();
+		}
 	} );
-} );
 
-describe( 'error()', () => {
-	it( 'logs the message to the console using console.error()', () => {
-		let spy = sinon.stub( console, 'error' );
-		let data = { bar: 1 };
+	describe( 'warn()', () => {
+		it( 'logs the message to the console using console.warn()', () => {
+			let spy = sinon.stub( console, 'warn' );
+			let data = { bar: 1 };
 
-		log.error( 'foo', data );
+			log.warn( 'foo', data );
 
-		sinon.assert.calledOnce( spy );
-		sinon.assert.calledWith( spy, 'foo', data );
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWith( spy, 'foo', data );
 
-		log.error( 'bar' );
-		sinon.assert.calledTwice( spy );
-		sinon.assert.calledWith( spy, 'bar' );
+			log.warn( 'bar' );
+			sinon.assert.calledTwice( spy );
+			sinon.assert.calledWith( spy, 'bar' );
+		} );
+	} );
+
+	describe( 'error()', () => {
+		it( 'logs the message to the console using console.error()', () => {
+			let spy = sinon.stub( console, 'error' );
+			let data = { bar: 1 };
+
+			log.error( 'foo', data );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWith( spy, 'foo', data );
+
+			log.error( 'bar' );
+			sinon.assert.calledTwice( spy );
+			sinon.assert.calledWith( spy, 'bar' );
+		} );
 	} );
 } );
