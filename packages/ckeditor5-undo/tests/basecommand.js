@@ -6,22 +6,22 @@
 import ModelTestEditor from 'tests/core/_utils/modeltesteditor.js';
 import BaseCommand from 'ckeditor5/undo/basecommand.js';
 
-let editor, doc, root, base;
-
-beforeEach( () => {
-	editor = new ModelTestEditor();
-	base = new BaseCommand( editor );
-
-	doc = editor.document;
-
-	root = doc.getRoot();
-} );
-
-afterEach( () => {
-	base.destroy();
-} );
-
 describe( 'BaseCommand', () => {
+	let editor, doc, root, base;
+
+	beforeEach( () => {
+		editor = new ModelTestEditor();
+		base = new BaseCommand( editor );
+
+		doc = editor.document;
+
+		root = doc.getRoot();
+	} );
+
+	afterEach( () => {
+		base.destroy();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should create command with empty batch stack', () => {
 			expect( base._checkEnabled() ).to.be.false;
