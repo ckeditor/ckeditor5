@@ -14,10 +14,14 @@ import ImagePlugin from 'ckeditor5/image/image.js';
 import UndoPlugin from 'ckeditor5/undo/undo.js';
 import ClipboardPlugin from 'ckeditor5/clipboard/clipboard.js';
 import ImageStyle from 'ckeditor5/image/imagestyle/imagestyle.js';
+import ImageToolbar from 'ckeditor5/image/imagetoolbar.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin, ImageStyle ],
-	toolbar: [ 'headings', 'undo', 'redo', 'imageStyleFull', 'imageStyleSide' ]
+	plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin, ImageStyle, ImageToolbar ],
+	toolbar: [ 'headings', 'undo', 'redo' ],
+	image: {
+		toolbar: [ 'imageStyleFull', 'imageStyleSide' ]
+	}
 } )
 	.then( editor => {
 		window.editor = editor;
