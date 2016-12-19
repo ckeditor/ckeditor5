@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global window */
-
 /**
  * @module utils/dom/rect
  */
 
+import global from './global.js';
 import isRange from './isrange.js';
 import isElement from '../../utils/lib/lodash/isElement.js';
 
+const window = global.window;
 const rectProperties = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 
 /**

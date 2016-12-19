@@ -3,11 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window */
-
 /**
  * @module utils/dom/getpositionedancestor
  */
+
+import global from './global.js';
+
+const window = global.window;
 
 /**
  * For a given element, returns the nearest ancestor element which CSS position is not "static".

@@ -3,14 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window */
-
 /**
  * @module utils/dom/position
  */
 
 import Rect from './rect.js';
+import global from './global.js';
 import getPositionedAncestor from './getpositionedancestor.js';
+
+const window = global.window;
 
 /**
  * Calculates the `position: absolute` coordinates of a given element so it can be positioned with respect to the

@@ -3,33 +3,25 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document, window */
+/* global document */
 
+import global from 'ckeditor5/utils/dom/global.js';
 import { getOptimalPosition } from 'ckeditor5/utils/dom/position.js';
-import Rect from 'ckeditor5/utils/dom/rect.js';
 import testUtils from 'tests/core/_utils/utils.js';
 
 testUtils.createSinonSandbox();
 
-let element, target, limiter, revertWindowScroll;
+const window = global.window;
+let element, target, limiter;
 
 describe( 'getOptimalPosition', () => {
 	beforeEach( () => {
 		// Give us a lot of space.
-		testUtils.sinon.stub( Rect, 'getViewportRect' ).returns( new Rect( {
-			top: 0,
-			right: 10000,
-			bottom: 10000,
-			left: 0,
-			width: 10000,
-			height: 10000
-		} ) );
-	} );
+		testUtils.sinon.stub( window, 'innerWidth', 10000 );
+		testUtils.sinon.stub( window, 'innerHeight', 10000 );
 
-	afterEach( () => {
-		if ( revertWindowScroll ) {
-			revertWindowScroll();
-		}
+		testUtils.sinon.stub( window, 'scrollX', 0 );
+		testUtils.sinon.stub( window, 'scrollY', 0 );
 	} );
 
 	describe( 'for single position', () => {
@@ -44,7 +36,8 @@ describe( 'getOptimalPosition', () => {
 		} );
 
 		it( 'should return coordinates (window scroll)', () => {
-			stubWindowScroll( 100, 100 );
+			testUtils.sinon.stub( window, 'scrollX', 100 );
+			testUtils.sinon.stub( window, 'scrollY', 100 );
 
 			assertPosition( { element, target, positions: [ attachLeft ] }, {
 				top: 200,
@@ -55,7 +48,9 @@ describe( 'getOptimalPosition', () => {
 
 		it( 'should return coordinates (positioned element parent)', () => {
 			const positionedParent = document.createElement( 'div' );
-			stubWindowScroll( 1000, 1000 );
+
+			testUtils.sinon.stub( window, 'scrollX', 1000 );
+			testUtils.sinon.stub( window, 'scrollY', 1000 );
 
 			Object.assign( positionedParent.style, {
 				position: 'absolute',
@@ -312,20 +307,6 @@ const attachTop = ( targetRect, elementRect ) => ( {
 	left: targetRect.left - ( elementRect.width - targetRect.width ),
 	name: 'bottom'
 } );
-
-function stubWindowScroll( x, y ) {
-	const { scrollX: savedX, scrollY: savedY } = window;
-
-	window.scrollX = x;
-	window.scrollY = y;
-
-	revertWindowScroll = () => {
-		window.scrollX = savedX;
-		window.scrollY = savedY;
-
-		revertWindowScroll = null;
-	};
-}
 
 function stubElementRect( element, rect ) {
 	if ( element.getBoundingClientRect.restore ) {
