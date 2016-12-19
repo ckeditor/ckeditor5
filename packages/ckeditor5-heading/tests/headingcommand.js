@@ -30,7 +30,6 @@ describe( 'HeadingCommand', () => {
 					schema.registerItem( format.id, '$block' );
 				}
 
-				schema.registerItem( 'b', '$inline' );
 				root = document.getRoot();
 			} );
 	} );
@@ -111,10 +110,13 @@ describe( 'HeadingCommand', () => {
 			} );
 
 			it( 'converts topmost blocks', () => {
-				setData( document, '<heading1><b>foo[]</b>bar</heading1>' );
+				schema.registerItem( 'inlineImage', '$inline' );
+				schema.allow( { name: '$text', inside: 'inlineImage' } );
+
+				setData( document, '<heading1><inlineImage>foo[]</inlineImage>bar</heading1>' );
 				command._doExecute( { formatId: 'heading1' } );
 
-				expect( getData( document ) ).to.equal( '<paragraph><b>foo[]</b>bar</paragraph>' );
+				expect( getData( document ) ).to.equal( '<paragraph><inlineImage>foo[]</inlineImage>bar</paragraph>' );
 			} );
 
 			function test( from, to ) {
