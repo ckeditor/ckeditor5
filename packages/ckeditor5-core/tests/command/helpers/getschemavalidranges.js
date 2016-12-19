@@ -5,8 +5,9 @@
 
 import Document from 'ckeditor5/engine/model/document.js';
 import Range from 'ckeditor5/engine/model/range.js';
+import Selection from 'ckeditor5/engine/model/selection.js';
 import getSchemaValidRanges from 'ckeditor5/core/command/helpers/getschemavalidranges.js';
-import { setData } from 'ckeditor5/engine/dev-utils/model.js';
+import { setData, stringify } from 'ckeditor5/engine/dev-utils/model.js';
 
 describe( 'getSchemaValidRanges', () => {
 	const attribute = 'bold';
@@ -21,7 +22,6 @@ describe( 'getSchemaValidRanges', () => {
 		schema.registerItem( 'h1', '$block' );
 		schema.registerItem( 'img', '$inline' );
 
-		// Allow bold on p
 		schema.allow( { name: '$text', attributes: 'bold', inside: 'p' } );
 		schema.allow( { name: 'p', attributes: 'bold', inside: '$root' } );
 
@@ -29,11 +29,43 @@ describe( 'getSchemaValidRanges', () => {
 		ranges = [ Range.createOn( root.getChild( 0 ) ) ];
 	} );
 
-	it( 'should return unmodified ranges when attribute is allowed on each element', () => {
-		// Allow bold on img
+	it( 'should return unmodified ranges when attribute is allowed on each item (v1 – text is not allowed in img)', () => {
 		schema.allow( { name: 'img', attributes: 'bold', inside: 'p' } );
 
 		expect( getSchemaValidRanges( attribute, ranges, schema ) ).to.deep.equal( ranges );
+	} );
+
+	it( 'should return unmodified ranges when attribute is allowed on each item (v2 – text is allowed in img)', () => {
+		schema.allow( { name: 'img', attributes: 'bold', inside: 'p' } );
+		schema.allow( { name: '$text', inside: 'img' } );
+
+		expect( getSchemaValidRanges( attribute, ranges, schema ) ).to.deep.equal( ranges );
+	} );
+
+	it( 'should return two ranges when attribute is not allowed in one item', () => {
+		schema.allow( { name: 'img', attributes: 'bold', inside: 'p' } );
+		schema.allow( { name: '$text', inside: 'img' } );
+
+		setData( document, '<p>foo<img>xxx</img>bar</p>' );
+
+		const validRanges = getSchemaValidRanges( attribute, ranges, schema );
+		const sel = new Selection();
+		sel.setRanges( validRanges );
+
+		expect( stringify( root, sel ) ).to.equal( '[<p>foo<img>]xxx[</img>bar</p>]' );
+	} );
+
+	it( 'should return three ranges when attribute is not allowed on one element but is allowed on its child', () => {
+		schema.allow( { name: '$text', inside: 'img' } );
+		schema.allow( { name: '$text', attributes: 'bold', inside: 'img' } );
+
+		setData( document, '<p>foo<img>xxx</img>bar</p>' );
+
+		const validRanges = getSchemaValidRanges( attribute, ranges, schema );
+		const sel = new Selection();
+		sel.setRanges( validRanges );
+
+		expect( stringify( root, sel ) ).to.equal( '[<p>foo]<img>[xxx]</img>[bar</p>]' );
 	} );
 
 	it( 'should split range into two ranges and omit disallowed element', () => {

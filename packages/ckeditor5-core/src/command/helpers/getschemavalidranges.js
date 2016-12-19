@@ -9,6 +9,7 @@
 
 import TreeWalker from '../../../engine/model/treewalker.js';
 import Range from '../../../engine/model/range.js';
+import Position from '../../../engine/model/position.js';
 
 /**
  * Walks through given array of ranges and removes parts of them that are not allowed by passed schema to have the
@@ -32,8 +33,9 @@ export default function getSchemaValidRanges( attribute, ranges, schema ) {
 
 		while ( !step.done ) {
 			const name = step.value.item.name || '$text';
+			const itemPosition = Position.createBefore( step.value.item );
 
-			if ( !schema.check( { name: name, inside: last, attributes: attribute } ) ) {
+			if ( !schema.check( { name: name, inside: itemPosition, attributes: attribute } ) ) {
 				if ( !from.isEqual( last ) ) {
 					validRanges.push( new Range( from, last ) );
 				}
