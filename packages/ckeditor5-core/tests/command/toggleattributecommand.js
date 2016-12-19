@@ -158,14 +158,14 @@ describe( 'ToggleAttributeCommand', () => {
 
 		it( 'should not apply attribute change where it would invalid schema', () => {
 			modelDoc.schema.registerItem( 'image', '$block' );
-			setData( modelDoc, '<p>ab[c<image></image><$text bold="true">foobar</$text>xy<image></image>]z</p>' );
+			setData( modelDoc, '<p>ab[c<img></img><$text bold="true">foobar</$text>xy<img></img>]z</p>' );
 
 			expect( command.isEnabled ).to.be.true;
 
 			command._doExecute();
 
 			expect( getData( modelDoc ) )
-				.to.equal( '<p>ab[<$text bold="true">c</$text><image></image><$text bold="true">foobarxy</$text><image></image>]z</p>' );
+				.to.equal( '<p>ab[<$text bold="true">c</$text><img></img><$text bold="true">foobarxy</$text><img></img>]z</p>' );
 		} );
 
 		it( 'should use provided batch for storing undo steps', () => {
