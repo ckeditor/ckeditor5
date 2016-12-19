@@ -426,9 +426,14 @@ describe( 'model-selection-to-view-converters', () => {
 
 	describe( 'table cell selection converter', () => {
 		beforeEach( () => {
-			modelDoc.schema.registerItem( 'table', '$block' );
-			modelDoc.schema.registerItem( 'tr', '$block' );
-			modelDoc.schema.registerItem( 'td', '$block' );
+			modelDoc.schema.registerItem( 'table' );
+			modelDoc.schema.registerItem( 'tr' );
+			modelDoc.schema.registerItem( 'td' );
+
+			modelDoc.schema.allow( { name: 'table', inside: '$root' } );
+			modelDoc.schema.allow( { name: 'tr', inside: 'table' } );
+			modelDoc.schema.allow( { name: 'td', inside: 'tr' } );
+			modelDoc.schema.allow( { name: '$text', inside: 'td' } );
 
 			// "Universal" converter to convert table structure.
 			const tableConverter = insertElement( ( data ) => new ViewContainerElement( data.item.name ) );
