@@ -10,7 +10,7 @@
 import Plugin from '../../core/plugin.js';
 import ImageStyleCommand from './imagestylecommand.js';
 import ImageEngine from '../imageengine.js';
-import ModelElement from '../../engine/model/element.js';
+import { isImage, getStyleByValue } from './utils.js';
 
 export default class ImageStyleEngine extends Plugin {
 	/**
@@ -31,10 +31,10 @@ export default class ImageStyleEngine extends Plugin {
 		editor.config.define( 'image.styles', {
 			options: {
 				// This option is equal to situation when no style is applied at all.
-				imageStyleFull: { title: 'Full size image', image: 'bold', value: null },
+				imageStyleFull: { title: 'Full size image', icon: 'bold', value: null },
 
 				// This represents side image.
-				imageStyleSide: { title: 'Side image', image: 'italic', value: 'side', className: 'image-style-side' }
+				imageStyleSide: { title: 'Side image', icon: 'italic', value: 'side', className: 'image-style-side' }
 			}
 		} );
 
@@ -60,7 +60,7 @@ export default class ImageStyleEngine extends Plugin {
 		}
 
 		// Register image style command.
-		editor.commands.set( 'imagestyle', new ImageStyleCommand( editor ) );
+		editor.commands.set( 'imagestyle', new ImageStyleCommand( editor, styles ) );
 	}
 }
 
@@ -111,13 +111,15 @@ function removeStyle( styles ) {
 
 		// Check if there is class name associated with given value.
 		const newStyle = getStyleByValue( data.attributeNewValue, styles );
+		const oldStyle = getStyleByValue( data.attributeOldValue, styles );
 
-		// Check if new style is allowed in configuration.
-		if ( !newStyle ) {
+		// Check if styles are allowed in configuration.
+		if ( !newStyle || !oldStyle ) {
 			return;
 		}
 
-		conversionApi.mapper.toViewElement( data.item ).viewElement.removeClass( data.attributeOldValue );
+		const viewElement = conversionApi.mapper.toViewElement( data.item );
+		viewElement.removeClass( oldStyle.className );
 	};
 }
 
@@ -148,18 +150,4 @@ function viewToModelImageStyle( style ) {
 		consumable.consume( viewFigureElement, { class: style.className } );
 		modelImageElement.setAttribute( 'style', style.value );
 	};
-}
-
-function isImage( modelElement ) {
-	return modelElement instanceof ModelElement && modelElement.name == 'image';
-}
-
-function getStyleByValue( value, styles ) {
-	for ( let key in styles ) {
-		const style = styles[ key ];
-
-		if ( style.value == value ) {
-			return style;
-		}
-	}
 }

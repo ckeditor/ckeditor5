@@ -24,22 +24,36 @@ export default class ImageStyle extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const t = editor.t;
+
+		// Get configuration.
+		const styles = editor.config.get( 'image.styles.options' );
+
+		for ( let name in styles ) {
+			this._createButton( name, styles[ name ] );
+		}
+	}
+
+	_createButton( name, style ) {
+		const editor = this.editor;
 		const command = editor.commands.get( 'imagestyle' );
+		const t = editor.t;
 
 		// Add bold button to feature components.
-		editor.ui.componentFactory.add( 'imagestyle', ( locale ) => {
+		editor.ui.componentFactory.add( name, ( locale ) => {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: t( 'Image style' ),
-				icon: 'bold'
+				label: t( style.title ),
+				icon: style.icon
 			} );
 
-			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
+			view.bind( 'isOn' ).to( command, 'value', ( commandValue ) => {
+				return commandValue == style.value;
+			} );
 
 			// // Execute command.
-			this.listenTo( view, 'execute', () => editor.execute( 'imagestyle' ) );
+			this.listenTo( view, 'execute', () => editor.execute( 'imagestyle', { value: style.value } ) );
 
 			return view;
 		} );
