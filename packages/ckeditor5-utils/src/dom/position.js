@@ -7,11 +7,9 @@
  * @module utils/dom/position
  */
 
-import Rect from './rect.js';
 import global from './global.js';
+import Rect from './rect.js';
 import getPositionedAncestor from './getpositionedancestor.js';
-
-const window = global.window;
 
 /**
  * Calculates the `position: absolute` coordinates of a given element so it can be positioned with respect to the
@@ -216,9 +214,11 @@ function getBestPosition( positions, targetRect, elementRect, limiterRect, viewp
 // @param {utils/dom/rect~Rect} rect A rect to be converted.
 // @returns {Object} Object containing `left` and `top` properties, in absolute coordinates.
 function getAbsoluteRectCoordinates( { left, top } ) {
+	const { scrollX, scrollY } = global.window;
+
 	return {
-		left: left + window.scrollX,
-		top: top + window.scrollY,
+		left: left + scrollX,
+		top: top + scrollY,
 	};
 }
 

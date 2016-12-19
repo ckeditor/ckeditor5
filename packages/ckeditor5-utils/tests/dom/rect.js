@@ -9,8 +9,6 @@ import global from 'ckeditor5/utils/dom/global.js';
 import Rect from 'ckeditor5/utils/dom/rect.js';
 import testUtils from 'tests/core/_utils/utils.js';
 
-const window = global.window;
-
 testUtils.createSinonSandbox();
 
 describe( 'Rect', () => {
@@ -328,11 +326,12 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should return the viewport\'s rect', () => {
-			testUtils.sinon.stub( window, 'innerWidth', 1000 );
-			testUtils.sinon.stub( window, 'innerHeight', 500 );
-
-			testUtils.sinon.stub( window, 'scrollX', 100 );
-			testUtils.sinon.stub( window, 'scrollY', 200 );
+			testUtils.sinon.stub( global, 'window', {
+				innerWidth: 1000,
+				innerHeight: 500,
+				scrollX: 100,
+				scrollY: 200
+			} );
 
 			assertRect( Rect.getViewportRect(), {
 				top: 0,

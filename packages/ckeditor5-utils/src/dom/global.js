@@ -12,13 +12,15 @@
 /**
  * A helper (module) giving an access to the global DOM objects such as `window` and
  * `document`. Accessing these objects using this helper allows easy and bulletproof
- * testing, i.e. stubbing native properties
+ * testing, i.e. stubbing native properties:
  *
  *		import global from 'ckeditor5/utils/dom/global.js';
  *
  *		const window = global.window;
  *
- * 		// This stub will work for any code using global module in tests.
- *		testUtils.sinon.stub( window, 'innerWidth', 10000 );
+ *		// This stub will work for any code using global module.
+ *		testUtils.sinon.stub( global, 'window', {
+ *			innerWidth: 10000
+ *		} );
  */
-export default { document, window };
+export default { window, document };

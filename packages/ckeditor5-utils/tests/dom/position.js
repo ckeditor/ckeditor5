@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document */
+/* global document, window */
 
 import global from 'ckeditor5/utils/dom/global.js';
 import { getOptimalPosition } from 'ckeditor5/utils/dom/position.js';
@@ -11,17 +11,18 @@ import testUtils from 'tests/core/_utils/utils.js';
 
 testUtils.createSinonSandbox();
 
-const window = global.window;
-let element, target, limiter;
+let element, target, limiter, windowStub;
 
 describe( 'getOptimalPosition', () => {
 	beforeEach( () => {
-		// Give us a lot of space.
-		testUtils.sinon.stub( window, 'innerWidth', 10000 );
-		testUtils.sinon.stub( window, 'innerHeight', 10000 );
+		windowStub = {
+			innerWidth: 10000,
+			innerHeight: 10000,
+			scrollX: 0,
+			scrollY: 0
+		};
 
-		testUtils.sinon.stub( window, 'scrollX', 0 );
-		testUtils.sinon.stub( window, 'scrollY', 0 );
+		testUtils.sinon.stub( global, 'window', windowStub );
 	} );
 
 	describe( 'for single position', () => {
@@ -36,8 +37,12 @@ describe( 'getOptimalPosition', () => {
 		} );
 
 		it( 'should return coordinates (window scroll)', () => {
-			testUtils.sinon.stub( window, 'scrollX', 100 );
-			testUtils.sinon.stub( window, 'scrollY', 100 );
+			Object.assign( windowStub, {
+				innerWidth: 10000,
+				innerHeight: 10000,
+				scrollX: 100,
+				scrollY: 100,
+			} );
 
 			assertPosition( { element, target, positions: [ attachLeft ] }, {
 				top: 200,
@@ -49,8 +54,15 @@ describe( 'getOptimalPosition', () => {
 		it( 'should return coordinates (positioned element parent)', () => {
 			const positionedParent = document.createElement( 'div' );
 
-			testUtils.sinon.stub( window, 'scrollX', 1000 );
-			testUtils.sinon.stub( window, 'scrollY', 1000 );
+			Object.assign( windowStub, {
+				innerWidth: 10000,
+				innerHeight: 10000,
+				scrollX: 1000,
+				scrollY: 1000,
+				getComputedStyle: ( el ) => {
+					return window.getComputedStyle( el );
+				}
+			} );
 
 			Object.assign( positionedParent.style, {
 				position: 'absolute',

@@ -9,8 +9,6 @@
 
 import global from './global.js';
 
-const window = global.window;
-
 /**
  * For a given element, returns the nearest ancestor element which CSS position is not "static".
  *
@@ -19,7 +17,7 @@ const window = global.window;
  */
 export default function getPositionedAncestor( element ) {
 	while ( element && element.tagName.toLowerCase() != 'html' ) {
-		if ( window.getComputedStyle( element ).position != 'static' ) {
+		if ( global.window.getComputedStyle( element ).position != 'static' ) {
 			return element;
 		}
 
