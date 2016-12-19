@@ -23,6 +23,7 @@ describe( 'LinkCommand', () => {
 				// Allow text with `linkHref` attribute in paragraph.
 				document.schema.registerItem( 'p', '$block' );
 				document.schema.allow( { name: '$text', attributes: 'linkHref', inside: '$root' } );
+				document.schema.allow( { name: '$text', attributes: 'linkHref', inside: 'p' } );
 			} );
 	} );
 
@@ -154,8 +155,7 @@ describe( 'LinkCommand', () => {
 
 			it( 'should set `linkHref` attribute only to allowed elements and omit disallowed', () => {
 				// Disallow text in img.
-				document.schema.registerItem( 'img', '$block' );
-				document.schema.disallow( { name: '$text', attributes: 'linkHref', inside: 'img' } );
+				document.schema.registerItem( 'img', '$inline' );
 
 				setData( document, '<p>f[oo<img></img>ba]r</p>' );
 
