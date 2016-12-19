@@ -570,14 +570,13 @@ export class SchemaItem {
 // @param {Array.<String>} checkPath
 // @param {Array.<String>} allowedPath
 function matchPaths( schema, checkPath, allowedPath ) {
-	const allowedPathReversed = allowedPath.slice().reverse();
-	const checkPathReversed = checkPath.slice().reverse();
+	// Start checking from the right end of both tables.
+	let allowedPathIndex = allowedPath.length - 1;
+	let checkPathIndex = checkPath.length - 1;
 
-	const length = Math.min( allowedPathReversed.length, checkPathReversed.length );
-	let index = 0;
-
-	while ( index < length ) {
-		const checkName = checkPathReversed[ index ];
+	// And finish once reaching an end of the shorter table.
+	while ( allowedPathIndex >= 0 && checkPathIndex >= 0 ) {
+		const checkName = checkPath[ checkPathIndex ];
 
 		// Fail when checking a path which contains element which aren't even registered to the schema.
 		if ( !schema.hasItem( checkName ) ) {
@@ -586,8 +585,9 @@ function matchPaths( schema, checkPath, allowedPath ) {
 
 		const extChain = schema._extensionChains.get( checkName );
 
-		if ( extChain.includes( allowedPathReversed[ index ] ) ) {
-			index++;
+		if ( extChain.includes( allowedPath[ allowedPathIndex ] ) ) {
+			allowedPathIndex--;
+			checkPathIndex--;
 		} else {
 			return false;
 		}
