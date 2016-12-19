@@ -27,6 +27,7 @@ describe( 'ListCommand', () => {
 		doc.schema.registerItem( 'widget', '$block' );
 
 		doc.schema.allow( { name: '$block', inside: '$root' } );
+		doc.schema.allow( { name: 'paragraph', inside: 'widget' } );
 		doc.schema.allow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: '$root' } );
 		doc.schema.disallow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: 'widget' } );
 
