@@ -16,21 +16,16 @@ import AttributeDelta from 'ckeditor5/engine/model/delta/attributedelta.js';
 import { RootAttributeDelta } from 'ckeditor5/engine/model/delta/attributedelta.js';
 import AttributeOperation from 'ckeditor5/engine/model/operation/attributeoperation.js';
 
-let doc, root;
-
-beforeEach( () => {
-	doc = new Document();
-	root = doc.createRoot();
-} );
-
 describe( 'Batch', () => {
-	let batch;
+	let batch, doc, root;
 
 	const correctDeltaMatcher = sinon.match( ( operation ) => {
 		return operation.delta && operation.delta.batch && operation.delta.batch == batch;
 	} );
 
 	beforeEach( () => {
+		doc = new Document();
+		root = doc.createRoot();
 		batch = doc.batch();
 	} );
 
@@ -403,9 +398,11 @@ describe( 'Batch', () => {
 } );
 
 describe( 'AttributeDelta', () => {
-	let delta;
+	let doc, root, delta;
 
 	beforeEach( () => {
+		doc = new Document();
+		root = doc.createRoot();
 		delta = new AttributeDelta();
 	} );
 
