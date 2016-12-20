@@ -165,6 +165,20 @@ describe( 'Paragraph feature', () => {
 				expect( modelFragment.getChild( 0 ).childCount ).to.equal( 1 );
 				expect( modelFragment.getChild( 0 ).getChild( 0 ) ).to.be.instanceOf( ModelText );
 			} );
+
+			it( 'does not break converting inline elements', () => {
+				doc.schema.allow( { name: '$inline', attributes: [ 'bold' ] } );
+				buildViewConverter().for( editor.data.viewToModel )
+					.fromElement( 'b' )
+					.toAttribute( 'bold', true );
+
+				const modelFragment = editor.data.parse( 'foo<b>bar</b>bom' );
+
+				// The result of this test is wrong due to https://github.com/ckeditor/ckeditor5-paragraph/issues/10.
+				// It's meant to catch the odd situation in mergeSubsequentParagraphs when data.output may be an array
+				// for a while
+				expect( stringifyModel( modelFragment ) ).to.equal( '<paragraph>foobarbom</paragraph>' );
+			} );
 		} );
 
 		describe( 'generic block converter (paragraph-like element handling)', () => {

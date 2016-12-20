@@ -19,6 +19,8 @@ import modelWriter from '../engine/model/writer.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
 
+import isArray from '../utils/lib/lodash/isArray.js';
+
 /**
  * The paragraph feature for the editor.
  * Introduces the `<paragraph>` element in the model which renders as a `<p>` element in the DOM and data.
@@ -97,7 +99,7 @@ export default class Paragraph extends Plugin {
  *
  * @member {Set.<String>} module:paragraph/paragraph~Paragraph.paragraphLikeElements
  */
-Paragraph.paragraphLikeElements = new Set( [ 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'li', 'div' ] );
+Paragraph.paragraphLikeElements = new Set( [ 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'li', 'div', 'dt', 'dd' ] );
 
 const paragraphsToMerge = new WeakSet();
 
@@ -172,7 +174,13 @@ function autoparagraphParagraphLikeElements( doc, evt, data, consumable, convers
 
 // Merges subsequent paragraphs if they should be merged (see shouldMerge).
 function mergeSubsequentParagraphs( evt, data ) {
-	let node = data.output.getChild( 0 );
+	let node;
+
+	if ( isArray( data.output ) ) {
+		node = data.output[ 0 ];
+	} else {
+		node = data.output.getChild( 0 );
+	}
 
 	while ( node && node.nextSibling ) {
 		const nextSibling = node.nextSibling;
