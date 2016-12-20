@@ -170,8 +170,8 @@ export default class Mapper {
 	 * Maps model position to view position using default mapper algorithm.
 	 *
 	 * @private
-	 * @param {engine.model.Position} modelPosition
-	 * @returns {engine.view.Position} View position mapped from model position.
+	 * @param {module:engine/model/position~Position} modelPosition
+	 * @returns {module:engine/view/position~Position} View position mapped from model position.
 	 */
 	_defaultToViewPosition( modelPosition ) {
 		let viewContainer = this._modelToViewMapping.get( modelPosition.parent );
@@ -202,8 +202,8 @@ export default class Mapper {
 	 * Maps view position to model position using default mapper algorithm.
 	 *
 	 * @private
-	 * @param {engine.view.Position} viewPosition
-	 * @returns {engine.model.Position} Model position mapped from view position.
+	 * @param {module:engine/view/position~Position} viewPosition
+	 * @returns {module:engine/model/position~Position} Model position mapped from view position.
 	 */
 	_defaultToModelPosition( viewPosition ) {
 		let viewBlock = viewPosition.parent;

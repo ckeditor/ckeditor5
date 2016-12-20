@@ -1142,19 +1142,19 @@ function isContainerOrFragment( node ) {
 	return node instanceof ContainerElement || node instanceof DocumentFragment;
 }
 
-// Checks if {@link engine.view.Range#start range start} and {@link engine.view.Range#end range end} are placed
-// inside same {@link engine.view.ContainerElement container}.
-// Throws {@link utils.CKEditorError CKEditorError} `view-writer-invalid-range-container` when validation fails.
+// Checks if {@link module:engine/view/range~Range#start range start} and {@link module:engine/view/range~Range#end range end} are placed
+// inside same {@link module:engine/view/containerelement~ContainerElement container element}.
+// Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when validation fails.
 //
-// @param {engine.view.Range} range
+// @param {module:engine/view/range~Range} range
 function validateRangeContainer( range ) {
 	const startContainer = getParentContainer( range.start );
 	const endContainer = getParentContainer( range.end );
 
 	if ( !startContainer || !endContainer || startContainer !== endContainer ) {
 		/**
-		 * Range container is invalid. This can happen if {@link engine.view.Range#start range start} and
-		 * {@link engine.view.Range#end range end} positions are not placed inside same container or
+		 * Range container is invalid. This can happen if {@link module:engine/view/range~Range#start range start} and
+		 * {@link module:engine/view/range~Range#end range end} positions are not placed inside same container or
 		 * parent container for these positions cannot be found.
 		 *
 		 * @error view-writer-invalid-range-container

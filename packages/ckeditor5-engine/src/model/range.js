@@ -372,8 +372,8 @@ export default class Range {
 	/**
 	 * Returns a range that is a result of transforming this range by given `delta`.
 	 *
-	 * @param {engine.model.Delta} delta Delta to transform range by.
-	 * @returns {Array.<engine.model.Range>} Range which is the result of transformation.
+	 * @param {module:engine/model/delta~Delta} delta Delta to transform range by.
+	 * @returns {Array.<module:engine/model/range~Range>} Range which is the result of transformation.
 	 */
 	getTransformedByDelta( delta ) {
 		let ranges = [ Range.createFromRange( this ) ];
@@ -406,10 +406,10 @@ export default class Range {
 	 *
 	 * @protected
 	 * @param {'insert'|'move'|'remove'|'reinsert'} type Change type.
-	 * @param {engine.model.Position} targetPosition Position before the first changed node.
+	 * @param {module:engine/model/position~Position} targetPosition Position before the first changed node.
 	 * @param {Number} howMany How many nodes has been changed.
-	 * @param {engine.model.Position} sourcePosition Source position of changes.
-	 * @returns {Array.<engine.model.Range>}
+	 * @param {module:engine/model/position~Position} sourcePosition Source position of changes.
+	 * @returns {Array.<module:engine/model/range~Range>}
 	 */
 	_getTransformedByDocumentChange( type, targetPosition, howMany, sourcePosition ) {
 		if ( type == 'insert' ) {
@@ -606,8 +606,8 @@ export default class Range {
 	 * Combines all ranges from the passed array into a one range. At least one range has to be passed.
 	 * Passed ranges must not have common parts.
 	 *
-	 * The first range from the array is a reference range. If other ranges {@link engine.model.Position.isTouching are touching}
-	 * the reference range, they will get combined into one range.
+	 * The first range from the array is a reference range. If other ranges
+	 * {@link module:engine/model/position~Position#isTouching are touching} the reference range, they will get combined into one range.
 	 *
 	 *		[  ][]  [    ][ ][  ref range  ][ ][]  [  ]  // Passed ranges, shown sorted. "Ref range" was the first range in original array.
 	 *		        [      returned range       ]  [  ]  // The combined range.
@@ -615,8 +615,8 @@ export default class Range {
 	 *	            [                           ]        // The result of the function if the third-to-seventh range was a reference range.
 	 *	                                           [  ]  // The result of the function if the last range was a reference range.
 	 *
-	 * @param {Array.<engine.model.Range>} ranges Ranges to combine.
-	 * @returns {engine.model.Range} Combined range.
+	 * @param {Array.<module:engine/model/range~Range>} ranges Ranges to combine.
+	 * @returns {module:engine/model/range~Range} Combined range.
 	 */
 	static createFromRanges( ranges ) {
 		if ( ranges.length === 0 ) {

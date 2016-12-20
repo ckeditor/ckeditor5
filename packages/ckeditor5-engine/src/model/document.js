@@ -87,7 +87,7 @@ export default class Document {
 		 * Document's markers' collection.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/markerscollection~MarkersCollection} engine.model.Document#markers
+		 * @member {module:engine/model/markerscollection~MarkersCollection}
 		 */
 		this.markers = new MarkersCollection();
 

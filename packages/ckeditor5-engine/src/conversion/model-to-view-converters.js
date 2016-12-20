@@ -281,18 +281,18 @@ export function unwrapItem( elementCreator ) {
  *			|-  b}                                        |   |- ab
  *			|-  c                                         |- c
  *
- * The wrapping node depends on passed parameter. If {@link engine.view.AttributeElement} was passed, it will be cloned and
- * the copy will become the wrapping element. If `Function` is provided, it is passed all the parameters of the
- * {@link engine.conversion.ModelConversionDispatcher#event:addMarker addMarker event}. It's expected that the
- * function returns a {@link engine.view.AttributeElement}. The result of the function will be the wrapping element.
- * When provided `Function` does not return element, then will be no conversion.
+ * The wrapping node depends on passed parameter. If {@link module:engine/view/attributeelement~AttributeElement} was passed, it
+ * will be cloned and the copy will become the wrapping element. If `Function` is provided, it is passed all the parameters of the
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker addMarker event}. It's expected
+ * that the function returns a {@link module:engine/view/attributeelement~AttributeElement}. The result of the function will be the
+ * wrapping element. When provided `Function` does not return element, then will be no conversion.
  *
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
- * {@link engine.conversion.ModelConversionDispatcher}).
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}).
  *
  *		modelDispatcher.on( 'addMarker:searchResult', wrapRange( new ViewAttributeElement( 'span', { class: 'searchResult' } ) ) );
  *
- * @param {engine.view.AttributeElement|Function} elementCreator View attribute element, or function returning
+ * @param {module:engine/view/attributeelement~AttributeElement|Function} elementCreator View attribute element, or function returning
  * a view attribute element, which will be used for wrapping.
  * @returns {Function} Wrap range converter.
  */
@@ -326,19 +326,20 @@ export function wrapRange( elementCreator ) {
  * Function factory, creates a converter that converts removing of a model marker to view attribute element.
  * This converter will unwrap view nodes from corresponding view range.
  *
- * The view element that will be unwrapped depends on passed parameter. If {@link engine.view.AttributeElement} was passed,
- * it will be used to look for similar element in the view for unwrapping. If `Function` is provided, it is passed all
- * the parameters of the {@link engine.conversion.ModelConversionDispatcher#event:removeMarker removeMarker event}. It's
- * expected that the function returns a {@link engine.view.AttributeElement}. The result of the function will be used to
- * look for similar element in the view for unwrapping.
+ * The view element that will be unwrapped depends on passed parameter. If {@link module:engine/view/attributeelement~AttributeElement}
+ * was passed, it will be used to look for similar element in the view for unwrapping. If `Function` is provided, it is passed all
+ * the parameters of the
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:removeMarker removeMarker event}.
+ * It's expected that the function returns a {@link module:/engine/view/attributeelement~AttributeElement}. The result of
+ * the function will be used to look for similar element in the view for unwrapping.
  *
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
- * {@link engine.conversion.ModelConversionDispatcher}) and bind model and view elements.
+ * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}) and bind model and view elements.
  *
  *		modelDispatcher.on( 'removeMarker:searchResult', unwrapRange( new ViewAttributeElement( 'span', { class: 'searchResult' } ) ) );
  *
- * @see engine.conversion.modelToView.wrapRange
- * @param {engine.view.AttributeElement|Function} elementCreator View attribute element, or function returning
+ * @see module:engine/conversion/model-to-view-converters~wrapRange
+ * @param {module:engine/view/attributeelement~AttributeElement|Function} elementCreator View attribute element, or function returning
  * a view attribute element, which will be used for unwrapping.
  * @returns {Function} Unwrap range converter.
  */
@@ -376,9 +377,9 @@ export function unwrapRange( elementCreator ) {
 
 // Takes given `viewPosition` and returns a widest possible range that contains this position and all view elements
 // before that position and after that position which has zero length in model (in most cases empty `ViewAttributeElement`s).
-// @param {engine.view.Position} viewPosition Position to start from when looking for furthest zero length position.
-// @param {engine.conversion.Mapper} mapper Mapper to use when looking for furthest zero length position.
-// @returns {engine.view.Range}
+// @param {module:engine/view/position~Position} viewPosition Position to start from when looking for furthest zero length position.
+// @param {module:engine/conversion/mapper~Mapper} mapper Mapper to use when looking for furthest zero length position.
+// @returns {module:engine/view/range~Range}
 function enlargeViewPosition( viewPosition, mapper ) {
 	const start = ViewPosition.createFromPosition( viewPosition );
 	const end = ViewPosition.createFromPosition( viewPosition );

@@ -32,8 +32,6 @@ import mix from '../../utils/mix.js';
  * a given node (i.e. a character is bold no matter if it gets moved or content around it changes). Markers on the
  * other hand are continuous ranges (i.e. if a character from inside of marker range is moved somewhere else, marker
  * range is shrunk and the character does not have any attribute or information that it was in the marked range).
- *
- * @memberOf engine.model
  */
 export default class MarkersCollection {
 	/**
