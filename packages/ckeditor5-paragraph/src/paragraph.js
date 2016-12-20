@@ -10,7 +10,11 @@
 import Plugin from '../core/plugin.js';
 
 import ModelElement from '../engine/model/element.js';
+import ModelPosition from '../engine/model/position.js';
+import ViewElement from '../engine/view/element.js';
+import ViewRange from '../engine/view/range.js';
 
+import modelWriter from '../engine/model/writer.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
 
@@ -53,6 +57,13 @@ export default class Paragraph extends Plugin {
 		// Post-fix potential subsequent paragraphs created by autoparagraphText().
 		data.viewToModel.on( 'element', mergeSubsequentParagraphs, { priority: 'lowest' } );
 		data.viewToModel.on( 'documentFragment', mergeSubsequentParagraphs, { priority: 'lowest' } );
+
+		// Convert paragraph-like elements to paragraphs if they weren't consumed.
+		// It's a 'low' priority in order to hook in before the default 'element' converter
+		// which would then convert children before handling this element.
+		data.viewToModel.on( 'element', ( evt, data, consumable, conversionApi ) => {
+			autoparagraphParagraphLikeElements( doc, evt, data, consumable, conversionApi );
+		}, { priority: 'low' } );
 	}
 }
 
@@ -62,25 +73,35 @@ export default class Paragraph extends Plugin {
  *
  *		<h1>Foo</h1>
  *		<table>
- *			<tr><td>X</td><td>Y</td></tr>
- *			<tr><td>X</td><td>Y</td></tr>
+ *			<tr>
+ *				<td>X</td>
+ *				<td>
+ *					<ul>
+ *						<li>Y</li>
+ *						<li>Z</li>
+ *					</ul>
+ *				</td>
+ *			</tr>
  *		</table>
  *
- * Contains three paragraph-like elements – `<h1>` and two `<tr>`. Hence, if none of the features is going to convert
- * those elements the above content will automatically be handled by the paragraph feature and converted to:
+ * Contains five paragraph-like elements – `<h1>` and two `<td>` and two `<li>`.
+ * Hence, if none of the features is going to convert  those elements the above content will be automatically handled
+ * by the paragraph feature and converted to:
  *
  *		<p>Foo</p>
- *		<p>XY</p>
- *		<p>XY</p>
+ *		<p>X</p>
+ *		<p>Y</p>
+ *		<p>Z</p>
  *
- * Note that subsequent cells were merged, but `<tr>` elements were maintaned.
+ * Note: The `<td>` containing two `<li>` elements was ignored – the inner-most paragraph-like elements
+ * have priority upon conversion.
  *
  * @member {Set.<String>} module:paragraph/paragraph~Paragraph.paragraphLikeElements
  */
-Paragraph.paragraphLikeElements = new Set( [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'tr', 'li' ] );
+Paragraph.paragraphLikeElements = new Set( [ 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'li', 'div' ] );
 
 // A map of paragraphs to merge (model elements) to their block contexts in the view.
-// The context is used in order to check whether two paragraps should really be merged.
+// The context is used in order to check whether two paragraphs should really be merged.
 // E.g.
 // <h1>foo</h1><h1>bar</h1> => <p>foo</p><p>bar</p> (contexts: two different h1 elements – no merge)
 // <div>foo<img>bar</div> => <p>foo</p><p><img></p><p>bar</p> (contexts: 3x the same div element – merge)
@@ -103,13 +124,56 @@ function autoparagraphText( doc, evt, data, consumable, conversionApi ) {
 
 	paragraphsToMerge.set( paragraph, getBlockContext( data.input ) );
 
-	const newContext = data.context.concat( paragraph );
-	const text = conversionApi.convertItem( data.input, consumable, { context: newContext } );
+	data.context.push( paragraph );
+
+	const text = conversionApi.convertItem( data.input, consumable, data );
 
 	if ( text ) {
 		data.output = paragraph;
 		paragraph.appendChildren( text );
 	}
+
+	data.context.pop();
+}
+
+function autoparagraphParagraphLikeElements( doc, evt, data, consumable, conversionApi ) {
+	// If this is a paragraph-like element...
+	if ( !Paragraph.paragraphLikeElements.has( data.input.name ) ) {
+		return;
+	}
+
+	// Which wasn't consumed by its own converter...
+	if ( !consumable.test( data.input, { name: true } ) ) {
+		return;
+	}
+
+	// And there are no other paragraph-like elements inside this tree...
+	if ( hasParagraphLikeContent( data.input ) ) {
+		return;
+	}
+
+	// And paragraph is allowed in this context...
+	if ( !doc.schema.check( { name: 'paragraph', inside: data.context } ) ) {
+		return;
+	}
+
+	// Let's convert this element to a paragraph and then all its children.
+
+	consumable.consume( data.input, { name: true } );
+
+	const paragraph = new ModelElement( 'paragraph' );
+
+	data.context.push( paragraph );
+
+	const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
+
+	modelWriter.insert( ModelPosition.createAt( paragraph ), convertedChildren );
+
+	// Remove the created paragraph from the stack for other converters.
+	// See https://github.com/ckeditor/ckeditor5-engine/issues/736
+	data.context.pop();
+
+	data.output = paragraph;
 }
 
 // Merges subsequent paragraphs if they should be merged (see shouldMerge).
@@ -153,4 +217,17 @@ function getBlockContext( node ) {
 	} );
 
 	return blockLikeAncestor ? blockLikeAncestor : node.root;
+}
+
+// Checks whether an element has paragraph-like descendant.
+function hasParagraphLikeContent( element ) {
+	const range = ViewRange.createIn( element );
+
+	for ( const value of range ) {
+		if ( value.item instanceof ViewElement && Paragraph.paragraphLikeElements.has( value.item.name ) ) {
+			return true;
+		}
+	}
+
+	return false;
 }
