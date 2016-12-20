@@ -99,7 +99,21 @@ export default class Paragraph extends Plugin {
  *
  * @member {Set.<String>} module:paragraph/paragraph~Paragraph.paragraphLikeElements
  */
-Paragraph.paragraphLikeElements = new Set( [ 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'li', 'div', 'dt', 'dd' ] );
+Paragraph.paragraphLikeElements = new Set( [
+	'p',
+	'h1',
+	'h2',
+	'h3',
+	'h4',
+	'h5',
+	'h6',
+	'td',
+	'li',
+	'div',
+	'dt',
+	'dd',
+	'blockquote'
+] );
 
 const paragraphsToMerge = new WeakSet();
 
