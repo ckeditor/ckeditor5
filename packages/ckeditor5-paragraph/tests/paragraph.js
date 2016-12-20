@@ -14,6 +14,9 @@ import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
 
 import buildViewConverter from 'ckeditor5/engine/conversion/buildviewconverter.js';
 
+import ModelDocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
+import ModelText from 'ckeditor5/engine/model/text.js';
+
 describe( 'Paragraph feature', () => {
 	let editor, doc;
 
@@ -154,6 +157,14 @@ describe( 'Paragraph feature', () => {
 
 				expect( stringifyModel( modelFragment ) ).to.equal( '' );
 			} );
+
+			it( 'creates normalized model', () => {
+				const modelFragment = editor.data.parse( 'foo<b>bar</b>bom' );
+
+				expect( modelFragment ).to.be.instanceof( ModelDocumentFragment );
+				expect( modelFragment.getChild( 0 ).childCount ).to.equal( 1 );
+				expect( modelFragment.getChild( 0 ).getChild( 0 ) ).to.be.instanceOf( ModelText );
+			} );
 		} );
 
 		describe( 'generic block converter (paragraph-like element handling)', () => {
@@ -272,6 +283,16 @@ describe( 'Paragraph feature', () => {
 						'<paragraph>foo</paragraph><paragraph>bar</paragraph>' +
 						'<paragraph>bom</paragraph><paragraph>bim</paragraph>'
 					);
+			} );
+
+			it( 'creates normalized model', () => {
+				const modelFragment = editor.data.parse( '<h1><span>foo</span><span>bar</span>' );
+
+				expect( stringifyModel( modelFragment ) ).to.equal( '<paragraph>foobar</paragraph>' );
+
+				expect( modelFragment ).to.be.instanceof( ModelDocumentFragment );
+				expect( modelFragment.getChild( 0 ).childCount ).to.equal( 1 );
+				expect( modelFragment.getChild( 0 ).getChild( 0 ) ).to.be.instanceOf( ModelText );
 			} );
 		} );
 	} );

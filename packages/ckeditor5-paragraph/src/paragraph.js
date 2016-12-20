@@ -11,6 +11,7 @@ import Plugin from '../core/plugin.js';
 
 import ModelElement from '../engine/model/element.js';
 import ModelPosition from '../engine/model/position.js';
+import ModelRange from '../engine/model/range.js';
 import ViewElement from '../engine/view/element.js';
 import ViewRange from '../engine/view/range.js';
 
@@ -160,7 +161,7 @@ function autoparagraphParagraphLikeElements( doc, evt, data, consumable, convers
 
 	const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
 
-	modelWriter.insert( ModelPosition.createAt( paragraph ), convertedChildren );
+	paragraph.appendChildren( modelWriter.normalizeNodes( convertedChildren ) );
 
 	// Remove the created paragraph from the stack for other converters.
 	// See https://github.com/ckeditor/ckeditor5-engine/issues/736
@@ -177,8 +178,8 @@ function mergeSubsequentParagraphs( evt, data ) {
 		const nextSibling = node.nextSibling;
 
 		if ( paragraphsToMerge.has( node ) && paragraphsToMerge.has( nextSibling ) ) {
-			node.appendChildren( nextSibling.getChildren() );
-			nextSibling.remove();
+			modelWriter.insert( ModelPosition.createAt( node, 'end' ), Array.from( nextSibling.getChildren() ) );
+			modelWriter.remove( ModelRange.createOn( nextSibling ) );
 		} else {
 			node = node.nextSibling;
 		}
