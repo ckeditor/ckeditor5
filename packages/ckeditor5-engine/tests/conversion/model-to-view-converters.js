@@ -24,10 +24,10 @@ import {
 	insertText,
 	setAttribute,
 	removeAttribute,
-	wrap,
-	unwrap,
-	wrapMarker,
-	unwrapMarker,
+	wrapItem,
+	unwrapItem,
+	wrapRange,
+	unwrapRange,
 	move,
 	remove,
 	rename
@@ -263,8 +263,8 @@ describe( 'wrap/unwrap', () => {
 		modelRoot.appendChildren( modelElement );
 		dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
 		dispatcher.on( 'insert:$text', insertText() );
-		dispatcher.on( 'addAttribute:bold', wrap( viewB ) );
-		dispatcher.on( 'removeAttribute:bold', unwrap( viewB ) );
+		dispatcher.on( 'addAttribute:bold', wrapItem( viewB ) );
+		dispatcher.on( 'removeAttribute:bold', unwrapItem( viewB ) );
 
 		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
@@ -290,8 +290,8 @@ describe( 'wrap/unwrap', () => {
 		modelRoot.appendChildren( modelElement );
 		dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
 		dispatcher.on( 'insert:$text', insertText() );
-		dispatcher.on( 'addAttribute:style', wrap( elementGenerator ) );
-		dispatcher.on( 'removeAttribute:style', unwrap( elementGenerator ) );
+		dispatcher.on( 'addAttribute:style', wrapItem( elementGenerator ) );
+		dispatcher.on( 'removeAttribute:style', unwrapItem( elementGenerator ) );
 
 		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
@@ -318,8 +318,8 @@ describe( 'wrap/unwrap', () => {
 		modelRoot.appendChildren( modelElement );
 		dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
 		dispatcher.on( 'insert:$text', insertText() );
-		dispatcher.on( 'addAttribute:link', wrap( elementGenerator ) );
-		dispatcher.on( 'changeAttribute:link', wrap( elementGenerator ) );
+		dispatcher.on( 'addAttribute:link', wrapItem( elementGenerator ) );
+		dispatcher.on( 'changeAttribute:link', wrapItem( elementGenerator ) );
 
 		dispatcher.convertInsertion(
 			ModelRange.createIn( modelRoot )
@@ -348,8 +348,8 @@ describe( 'wrap/unwrap', () => {
 		modelRoot.appendChildren( modelElement );
 		dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
 		dispatcher.on( 'insert:$text', insertText() );
-		dispatcher.on( 'addAttribute:bold', wrap( viewB ) );
-		dispatcher.on( 'removeAttribute:bold', unwrap( viewB ) );
+		dispatcher.on( 'addAttribute:bold', wrapItem( viewB ) );
+		dispatcher.on( 'removeAttribute:bold', unwrapItem( viewB ) );
 
 		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
 
@@ -370,7 +370,7 @@ describe( 'wrap/unwrap', () => {
 		modelRoot.appendChildren( modelElement );
 		dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
 		dispatcher.on( 'insert:$text', insertText() );
-		dispatcher.on( 'addAttribute:bold', wrap( viewB ) );
+		dispatcher.on( 'addAttribute:bold', wrapItem( viewB ) );
 		dispatcher.on( 'addAttribute:bold', ( evt, data, consumable ) => {
 			consumable.consume( data.item, 'addAttribute:bold' );
 		}, { priority: 'high' } );
@@ -388,8 +388,8 @@ describe( 'wrap/unwrap', () => {
 		modelRoot.appendChildren( modelElement );
 		dispatcher.on( 'insert:paragraph', insertElement( viewP ) );
 		dispatcher.on( 'insert:$text', insertText() );
-		dispatcher.on( 'addAttribute:bold', wrap( viewB ) );
-		dispatcher.on( 'removeAttribute:bold', unwrap( viewB ) );
+		dispatcher.on( 'addAttribute:bold', wrapItem( viewB ) );
+		dispatcher.on( 'removeAttribute:bold', unwrapItem( viewB ) );
 		dispatcher.on( 'removeAttribute:bold', ( evt, data, consumable ) => {
 			consumable.consume( data.item, 'removeAttribute:bold' );
 		}, { priority: 'high' } );
@@ -407,7 +407,7 @@ describe( 'wrap/unwrap', () => {
 	} );
 } );
 
-describe( 'wrapMarker/unwrapMarker', () => {
+describe( 'wrapRange/unwrapRange', () => {
 	let modelText, rangeJohn, rangeAlice, modelElement;
 
 	beforeEach( () => {
@@ -428,8 +428,8 @@ describe( 'wrapMarker/unwrapMarker', () => {
 	it( 'should convert adding/removing of marker into wrapping element in a view', () => {
 		const viewSpan = new ViewAttributeElement( 'span', { class: 'name' } );
 
-		dispatcher.on( 'addMarker:name', wrapMarker( viewSpan ) );
-		dispatcher.on( 'removeMarker:name', unwrapMarker( viewSpan ) );
+		dispatcher.on( 'addMarker:name', wrapRange( viewSpan ) );
+		dispatcher.on( 'removeMarker:name', unwrapRange( viewSpan ) );
 
 		dispatcher.convertMarker( 'addMarker', 'name', rangeJohn );
 
@@ -443,8 +443,8 @@ describe( 'wrapMarker/unwrapMarker', () => {
 	it( 'should support collapsed markers', () => {
 		const viewSpan = new ViewAttributeElement( 'span' );
 
-		dispatcher.on( 'addMarker:name', wrapMarker( viewSpan ) );
-		dispatcher.on( 'removeMarker:name', unwrapMarker( viewSpan ) );
+		dispatcher.on( 'addMarker:name', wrapRange( viewSpan ) );
+		dispatcher.on( 'removeMarker:name', unwrapRange( viewSpan ) );
 
 		const rangeP = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 0 );
 
@@ -469,8 +469,8 @@ describe( 'wrapMarker/unwrapMarker', () => {
 			return new ViewAttributeElement( 'span', { class: name } );
 		};
 
-		dispatcher.on( 'addMarker:name', wrapMarker( converterCallback ) );
-		dispatcher.on( 'removeMarker:name', unwrapMarker( converterCallback ) );
+		dispatcher.on( 'addMarker:name', wrapRange( converterCallback ) );
+		dispatcher.on( 'removeMarker:name', unwrapRange( converterCallback ) );
 
 		dispatcher.convertMarker( 'addMarker', 'name:john', rangeJohn );
 
@@ -508,8 +508,8 @@ describe( 'wrapMarker/unwrapMarker', () => {
 		const range = ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement3, 1 );
 		const viewSpan = new ViewAttributeElement( 'span', { class: 'name' } );
 
-		dispatcher.on( 'addMarker:name', wrapMarker( viewSpan ) );
-		dispatcher.on( 'removeMarker:name', unwrapMarker( viewSpan ) );
+		dispatcher.on( 'addMarker:name', wrapRange( viewSpan ) );
+		dispatcher.on( 'removeMarker:name', unwrapRange( viewSpan ) );
 
 		dispatcher.convertMarker( 'addMarker', 'name', range );
 
@@ -522,16 +522,16 @@ describe( 'wrapMarker/unwrapMarker', () => {
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p><p>22</p><p>333</p></div>' );
 	} );
 
-	it( 'should be possible to override wrapMarker', () => {
+	it( 'should be possible to override wrapRange', () => {
 		const converterCallback = ( data ) => {
 			const name = data.name.split( ':' )[ 1 ];
 
 			return new ViewAttributeElement( 'span', { class: name } );
 		};
 
-		dispatcher.on( 'addMarker:name', wrapMarker( converterCallback ) );
+		dispatcher.on( 'addMarker:name', wrapRange( converterCallback ) );
 		dispatcher.on( 'addMarker:name:alice', ( evt, data, consumable ) => {
-			consumable.consume( data.range, 'range' );
+			consumable.consume( data.range, 'addMarker' );
 		}, { priority: 'high' } );
 
 		dispatcher.convertMarker( 'addMarker', 'name:john', rangeJohn );
@@ -540,17 +540,17 @@ describe( 'wrapMarker/unwrapMarker', () => {
 		expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="john">ob</span>ar</p></div>' );
 	} );
 
-	it( 'should be possible to override unwrapMarker', () => {
+	it( 'should be possible to override unwrapRange', () => {
 		const converterCallback = ( data ) => {
 			const name = data.name.split( ':' )[ 1 ];
 
 			return new ViewAttributeElement( 'span', { class: name } );
 		};
 
-		dispatcher.on( 'addMarker:name', wrapMarker( converterCallback ) );
-		dispatcher.on( 'removeMarker:name', unwrapMarker( converterCallback ) );
+		dispatcher.on( 'addMarker:name', wrapRange( converterCallback ) );
+		dispatcher.on( 'removeMarker:name', unwrapRange( converterCallback ) );
 		dispatcher.on( 'removeMarker:name:john', ( evt, data, consumable ) => {
-			consumable.consume( data.range, 'range' );
+			consumable.consume( data.range, 'removeMarker' );
 		}, { priority: 'high' } );
 
 		dispatcher.convertMarker( 'addMarker', 'name:john', rangeJohn );
@@ -565,10 +565,10 @@ describe( 'wrapMarker/unwrapMarker', () => {
 	it( 'should not convert if view element is not returned by element generating function', () => {
 		const converterCallback = () => null;
 
-		dispatcher.on( 'addMarker:name', wrapMarker( converterCallback ) );
+		dispatcher.on( 'addMarker:name', wrapRange( converterCallback ) );
 		dispatcher.on( 'addMarker:name', ( evt, data, consumable ) => {
 			// Check whether value was not consumed from `consumable`.
-			expect( consumable.test( data.range, 'range' ) ).to.be.true;
+			expect( consumable.test( data.range, 'addMarker' ) ).to.be.true;
 		} );
 
 		dispatcher.convertMarker( 'addMarker', 'name', rangeJohn );
@@ -581,10 +581,10 @@ describe( 'wrapMarker/unwrapMarker', () => {
 			const converterCallbackName = ( data ) => new ViewAttributeElement( 'span', { class: data.name.split( ':' )[ 1 ] } );
 			const converterCallbackSearch = () => new ViewAttributeElement( 'em', { class: 'search' } );
 
-			dispatcher.on( 'addMarker:name', wrapMarker( converterCallbackName ) );
-			dispatcher.on( 'removeMarker:name', unwrapMarker( converterCallbackName ) );
-			dispatcher.on( 'addMarker:search', wrapMarker( converterCallbackSearch ) );
-			dispatcher.on( 'removeMarker:search', unwrapMarker( converterCallbackSearch ) );
+			dispatcher.on( 'addMarker:name', wrapRange( converterCallbackName ) );
+			dispatcher.on( 'removeMarker:name', unwrapRange( converterCallbackName ) );
+			dispatcher.on( 'addMarker:search', wrapRange( converterCallbackSearch ) );
+			dispatcher.on( 'removeMarker:search', unwrapRange( converterCallbackSearch ) );
 
 			const range = rangeAlice;
 
@@ -616,10 +616,10 @@ describe( 'wrapMarker/unwrapMarker', () => {
 			};
 			const converterCallbackSearch = () => new ViewAttributeElement( 'em', { class: 'search' } );
 
-			dispatcher.on( 'addMarker:name', wrapMarker( converterCallbackName ) );
-			dispatcher.on( 'removeMarker:name', unwrapMarker( converterCallbackName ) );
-			dispatcher.on( 'addMarker:search', wrapMarker( converterCallbackSearch ) );
-			dispatcher.on( 'removeMarker:search', unwrapMarker( converterCallbackSearch ) );
+			dispatcher.on( 'addMarker:name', wrapRange( converterCallbackName ) );
+			dispatcher.on( 'removeMarker:name', unwrapRange( converterCallbackName ) );
+			dispatcher.on( 'addMarker:search', wrapRange( converterCallbackSearch ) );
+			dispatcher.on( 'removeMarker:search', unwrapRange( converterCallbackSearch ) );
 
 			const range = rangeJohn;
 
@@ -644,8 +644,8 @@ describe( 'wrapMarker/unwrapMarker', () => {
 		it( 'non-collapsed markers intersecting with same priority', () => {
 			const converterCallbackSearch = () => new ViewAttributeElement( 'em', { class: 'search' } );
 
-			dispatcher.on( 'addMarker:search', wrapMarker( converterCallbackSearch ) );
-			dispatcher.on( 'removeMarker:search', unwrapMarker( converterCallbackSearch ) );
+			dispatcher.on( 'addMarker:search', wrapRange( converterCallbackSearch ) );
+			dispatcher.on( 'removeMarker:search', unwrapRange( converterCallbackSearch ) );
 
 			const range1 = ModelRange.createFromParentsAndOffsets( modelElement, 1, modelElement, 3 );
 			const range2 = ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 );
@@ -679,8 +679,8 @@ describe( 'wrapMarker/unwrapMarker', () => {
 				return element;
 			};
 
-			dispatcher.on( 'addMarker:name', wrapMarker( converterCallbackName ) );
-			dispatcher.on( 'removeMarker:name', unwrapMarker( converterCallbackName ) );
+			dispatcher.on( 'addMarker:name', wrapRange( converterCallbackName ) );
+			dispatcher.on( 'removeMarker:name', unwrapRange( converterCallbackName ) );
 
 			const range1 = ModelRange.createFromParentsAndOffsets( modelElement, 1, modelElement, 5 );
 			const range2 = ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 );

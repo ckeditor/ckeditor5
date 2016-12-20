@@ -36,6 +36,8 @@ import {
 
 import { createRangeOnElementOnly } from 'tests/engine/model/_utils/utils.js';
 
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+
 function viewAttributesToString( item ) {
 	let result = '';
 
@@ -422,18 +424,9 @@ describe( 'Model converter builder', () => {
 		} );
 	} );
 
-	it( 'should do nothing on model element to view attribute conversion', () => {
-		buildModelConverter().for( dispatcher ).fromElement( 'div' ).toElement( 'div' );
-		// Should do nothing:
-		buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toAttribute( 'paragraph', true );
-		// If above would do something this one would not be fired:
-		buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
-
-		let modelElement = new ModelElement( 'div', null, new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) ) );
-		modelRoot.appendChildren( modelElement );
-
-		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
-
-		expect( viewToString( viewRoot ) ).to.equal( '<div><div><p>foobar</p></div></div>' );
+	it( 'should throw when trying to build model element to view attribute converter', () => {
+		expect( () => {
+			buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toAttribute( 'paragraph', true );
+		} ).to.throw( CKEditorError, /^build-model-converter-non-attribute-to-attribute/ );
 	} );
 } );

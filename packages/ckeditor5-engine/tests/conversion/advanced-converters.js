@@ -32,8 +32,8 @@ import {
 	insertText,
 	setAttribute,
 	removeAttribute,
-	wrap,
-	unwrap,
+	wrapItem,
+	unwrapItem,
 	move,
 	remove,
 	eventNameToConsumableType
@@ -334,8 +334,8 @@ describe( 'image with caption converters', () => {
 describe( 'custom attribute handling for given element', () => {
 	beforeEach( () => {
 		// NORMAL LINK MODEL TO VIEW CONVERTERS
-		modelDispatcher.on( 'addAttribute:linkHref', wrap( ( value ) => new ViewAttributeElement( 'a', { href: value } ) ) );
-		modelDispatcher.on( 'addAttribute:linkTitle', wrap( ( value ) => new ViewAttributeElement( 'a', { title: value } ) ) );
+		modelDispatcher.on( 'addAttribute:linkHref', wrapItem( ( value ) => new ViewAttributeElement( 'a', { href: value } ) ) );
+		modelDispatcher.on( 'addAttribute:linkTitle', wrapItem( ( value ) => new ViewAttributeElement( 'a', { title: value } ) ) );
 
 		const changeLinkAttribute = function( elementCreator ) {
 			return ( evt, data, consumable, conversionApi ) => {
@@ -364,12 +364,12 @@ describe( 'custom attribute handling for given element', () => {
 
 		modelDispatcher.on(
 			'removeAttribute:linkHref',
-			unwrap( ( value ) => new ViewAttributeElement( 'a', { href: value } ) )
+			unwrapItem( ( value ) => new ViewAttributeElement( 'a', { href: value } ) )
 		);
 
 		modelDispatcher.on(
 			'removeAttribute:linkTitle',
-			unwrap( ( value ) => new ViewAttributeElement( 'a', { title: value } ) )
+			unwrapItem( ( value ) => new ViewAttributeElement( 'a', { title: value } ) )
 		);
 
 		// NORMAL LINK VIEW TO MODEL CONVERTERS
@@ -538,9 +538,9 @@ describe( 'custom attribute handling for given element', () => {
 		let expected = '<div><blockquote>foo<a href="foo.html" title="Foo source">see source</a></blockquote></div>';
 		expect( viewToString( viewRoot ) ).to.equal( expected );
 
-		modelDispatcher.on( 'addAttribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
-		modelDispatcher.on( 'changeAttribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
-		modelDispatcher.on( 'removeAttribute:bold', unwrap( new ViewAttributeElement( 'strong' ) ) );
+		modelDispatcher.on( 'addAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
+		modelDispatcher.on( 'changeAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
+		modelDispatcher.on( 'removeAttribute:bold', unwrapItem( new ViewAttributeElement( 'strong' ) ) );
 
 		modelElement.appendChildren( new ModelText( 'bar', { bold: true } ) );
 		modelDispatcher.convertInsertion( ModelRange.createFromParentsAndOffsets( modelElement, 3, modelElement, 6 ) );
@@ -675,9 +675,9 @@ describe( 'universal converter', () => {
 
 		// "Real" converters -- added with higher priority. Should overwrite the "universal" converters.
 		modelDispatcher.on( 'insert:image', insertElement( new ViewContainerElement( 'img' ) ) );
-		modelDispatcher.on( 'addAttribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
-		modelDispatcher.on( 'changeAttribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
-		modelDispatcher.on( 'removeAttribute:bold', unwrap( new ViewAttributeElement( 'strong' ) ) );
+		modelDispatcher.on( 'addAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
+		modelDispatcher.on( 'changeAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
+		modelDispatcher.on( 'removeAttribute:bold', unwrapItem( new ViewAttributeElement( 'strong' ) ) );
 
 		viewDispatcher.on( 'element:img', ( evt, data, consumable ) => {
 			if ( consumable.consume( data.input, { name: true } ) ) {

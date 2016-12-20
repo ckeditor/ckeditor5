@@ -8,10 +8,16 @@
  */
 
 import ViewDocument from '../view/document.js';
-import ModelRange from '../model/range.js';
 import Mapper from '../conversion/mapper.js';
 import ModelConversionDispatcher from '../conversion/modelconversiondispatcher.js';
-import { insertText, remove, move, rename } from '../conversion/model-to-view-converters.js';
+import {
+	insertText,
+	remove,
+	move,
+	rename,
+	insertIntoMarker,
+	moveInOutOfMarker
+} from '../conversion/model-to-view-converters.js';
 import { convertSelectionChange } from '../conversion/view-selection-to-model-converters.js';
 import {
 	convertRangeSelection,
@@ -99,11 +105,11 @@ export default class EditingController {
 		}, { priority: 'low' } );
 
 		// Convert model markers changes.
-		this._listener.listenTo( this.model.markers, 'addMarker', ( evt, name, range ) => {
+		this._listener.listenTo( this.model.markers, 'add', ( evt, name, range ) => {
 			this.modelToView.convertMarker( 'addMarker', name, range );
 		} );
 
-		this._listener.listenTo( this.model.markers, 'removeMarker', ( evt, name, range ) => {
+		this._listener.listenTo( this.model.markers, 'remove', ( evt, name, range ) => {
 			this.modelToView.convertMarker( 'removeMarker', name, range );
 		} );
 
@@ -116,32 +122,9 @@ export default class EditingController {
 		this.modelToView.on( 'move', move(), { priority: 'low' } );
 		this.modelToView.on( 'rename', rename(), { priority: 'low' } );
 
-		// Attach markers converters.
-		this.modelToView.on( 'insert', ( evt, data ) => {
-			const pos = data.range.start;
-
-			for ( let [ range, name ] of this.model.markers._markerNames ) {
-				if ( range.containsPosition( pos ) || range.start.isEqual( pos ) ) {
-					this.modelToView.convertMarker( 'addMarker', name, data.range );
-				}
-			}
-		}, { priority: 'lowest' } );
-
-		this.modelToView.on( 'move', ( evt, data ) => {
-			const pos = data.sourcePosition._getTransformedByInsertion( data.targetPosition, data.item.offsetSize );
-
-			for ( let [ range, name ] of this.model.markers._markerNames ) {
-				if ( range.start.isEqual( pos ) || range.end.isEqual( pos ) ) {
-					const movedRange = ModelRange.createOn( data.item );
-
-					if ( range.containsPosition( data.targetPosition ) ) {
-						this.modelToView.convertMarker( 'addMarker', name, movedRange );
-					} else {
-						this.modelToView.convertMarker( 'removeMarker', name, movedRange );
-					}
-				}
-			}
-		}, { priority: 'lowest' } );
+		// Attach default markers converters.
+		this.modelToView.on( 'insert', insertIntoMarker( this.model.markers ), { priority: 'lowest' } );
+		this.modelToView.on( 'move', moveInOutOfMarker( this.model.markers ), { priority: 'lowest' } );
 
 		// Attach default selection converters.
 		this.modelToView.on( 'selection', clearAttributes(), { priority: 'low' } );

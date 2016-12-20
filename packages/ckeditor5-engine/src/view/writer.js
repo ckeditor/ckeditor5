@@ -13,6 +13,7 @@ import AttributeElement from './attributeelement.js';
 import EmptyElement from './emptyelement.js';
 import Text from './text.js';
 import Range from './range.js';
+import TreeWalker from './treewalker.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 import DocumentFragment from './documentfragment.js';
 import isIterable from '../../utils/isiterable.js';
@@ -34,7 +35,8 @@ const writer = {
 	wrap,
 	wrapPosition,
 	unwrap,
-	rename
+	rename,
+	breakViewRangePerContainer
 };
 
 export default writer;
@@ -268,6 +270,36 @@ export function mergeContainers( position ) {
 	remove( Range.createOn( next ) );
 
 	return newPosition;
+}
+
+/**
+ * Breaks given `range` on a set of {@link module:engine/view/range~Range ranges}, that each are contained within a
+ * {@link module:engine/view/containerelement~ContainerElement container element}. After `range` is broken, it's "pieces" can
+ * be used by {@link module:engine/view/writer~writer} (which expects that passed ranges are contained within on container element).
+ *
+ * @function module:engine/view/writer~writer.breakViewRangePerContainer
+ * @param {module:engine/view/range~Range} range Range to break.
+ * @returns {Array.<module:engine/view/range~Range>} Ranges that combine into passed `viewRange`.
+ */
+export function breakViewRangePerContainer( range ) {
+	const ranges = [];
+	const walker = new TreeWalker( { boundaries: range } );
+
+	let start = range.start;
+
+	for ( let value of walker ) {
+		if ( value.item instanceof ContainerElement ) {
+			if ( !start.isEqual( value.previousPosition ) ) {
+				ranges.push( new Range( start, value.previousPosition ) );
+			}
+
+			start = value.nextPosition;
+		}
+	}
+
+	ranges.push( new Range( start, range.end ) );
+
+	return ranges;
 }
 
 /**
@@ -1110,19 +1142,19 @@ function isContainerOrFragment( node ) {
 	return node instanceof ContainerElement || node instanceof DocumentFragment;
 }
 
-// Checks if {@link module:engine/view/range~Range#start range start} and {@link module:engine/view/range~Range#end range end} are placed
-// inside same {@link module:engine/view/containerelement~ContainerElement container}.
-// Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when validation fails.
+// Checks if {@link engine.view.Range#start range start} and {@link engine.view.Range#end range end} are placed
+// inside same {@link engine.view.ContainerElement container}.
+// Throws {@link utils.CKEditorError CKEditorError} `view-writer-invalid-range-container` when validation fails.
 //
-// @param {module:engine/view/range~Range} range
+// @param {engine.view.Range} range
 function validateRangeContainer( range ) {
 	const startContainer = getParentContainer( range.start );
 	const endContainer = getParentContainer( range.end );
 
 	if ( !startContainer || !endContainer || startContainer !== endContainer ) {
 		/**
-		 * Range container is invalid. This can happen if {@link module:engine/view/range~Range#start range start} and
-		 * {@link module:engine/view/range~Range#end range end} positions are not placed inside same container or
+		 * Range container is invalid. This can happen if {@link engine.view.Range#start range start} and
+		 * {@link engine.view.Range#end range end} positions are not placed inside same container or
 		 * parent container for these positions cannot be found.
 		 *
 		 * @error view-writer-invalid-range-container

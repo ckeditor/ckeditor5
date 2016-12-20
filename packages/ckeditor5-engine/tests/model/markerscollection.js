@@ -11,94 +11,123 @@ import LiveRange from 'ckeditor5/engine/model/liverange.js';
 import Document from 'ckeditor5/engine/model/document.js';
 import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
 
-let markers, live, doc, root;
-
-beforeEach( () => {
-	doc = new Document();
-	markers = new MarkersCollection();
-
-	root = doc.createRoot();
-	live = LiveRange.createFromParentsAndOffsets( root, 0, root, 4 );
-} );
-
-afterEach( () => {
-	markers.destroy();
-	live.detach();
-} );
-
 describe( 'MarkersCollection', () => {
-	describe( 'addRange', () => {
+	let markers, live, doc, root;
+
+	beforeEach( () => {
+		doc = new Document();
+		markers = new MarkersCollection();
+
+		root = doc.createRoot();
+		live = LiveRange.createFromParentsAndOffsets( root, 0, root, 4 );
+	} );
+
+	afterEach( () => {
+		markers.destroy();
+		live.detach();
+	} );
+
+	describe( 'add', () => {
 		it( 'should throw if passed parameter is not a LiveRange', () => {
 			const range = Range.createFromParentsAndOffsets( root, 1, root, 3 );
 
 			expect( () => {
-				markers.addRange( range, 'name' );
+				markers.add( 'name', range );
 			} ).to.throw( CKEditorError, /^markers-collection-add-range-not-live-range/ );
 		} );
 
-		it( 'should fire addMarker event when range is added', () => {
+		it( 'should fire add event when range is added', () => {
 			sinon.spy( markers, 'fire' );
 
-			markers.on( 'addMarker', ( evt, name, range ) => {
+			markers.on( 'add', ( evt, name, range ) => {
 				expect( name ).to.equal( 'name' );
 				expect( range.isEqual( live ) ).to.be.true;
 				expect( range ).not.to.equal( live );
 			} );
 
-			markers.addRange( live, 'name' );
+			markers.add( 'name', live );
 
-			expect( markers.fire.calledWith( 'addMarker' ) ).to.be.true;
+			expect( markers.fire.calledWith( 'add' ) ).to.be.true;
 		} );
 
-		it( 'should throw if given range was already added', () => {
-			markers.addRange( live, 'name' );
+		it( 'should throw if given name was already added', () => {
+			const other = LiveRange.createFromParentsAndOffsets( root, 0, root, 4 );
+			markers.add( 'name', other );
+
+			other.detach();
 
 			expect( () => {
-				markers.addRange( live, 'otherName' );
-			} ).to.throw( CKEditorError, /^markers-collection-add-range-already-added/ );
+				markers.add( 'name', live );
+			} ).to.throw( CKEditorError, /^markers-collection-add-name-exists/ );
 		} );
 	} );
 
-	describe( 'removeRange', () => {
-		it( 'should return false if range has not been found in collection', () => {
-			const result = markers.removeRange( live );
+	describe( 'get', () => {
+		it( 'should return range added to the collection with given name', () => {
+			markers.add( 'name', live );
+
+			expect( markers.get( 'name' ) ).to.equal( live );
+		} );
+
+		it( 'should return null if range with given name has not been found', () => {
+			expect( markers.get( 'name' ) ).to.be.null;
+		} );
+	} );
+
+	describe( 'remove', () => {
+		it( 'should return true and fire remove event if range is removed - passed name', () => {
+			markers.add( 'name', live );
+
+			sinon.spy( markers, 'fire' );
+
+			markers.on( 'remove', ( evt, name, range ) => {
+				expect( name ).to.equal( 'name' );
+				expect( range.isEqual( live ) ).to.be.true;
+				expect( range ).not.to.equal( live );
+			} );
+
+			const result = markers.remove( 'name' );
+
+			expect( result ).to.be.true;
+			expect( markers.fire.calledWith( 'remove' ) ).to.be.true;
+		} );
+
+		it( 'should return true and fire remove event if range is removed - passed range', () => {
+			markers.add( 'name', live );
+
+			sinon.spy( markers, 'fire' );
+
+			markers.on( 'remove', ( evt, name, range ) => {
+				expect( name ).to.equal( 'name' );
+				expect( range.isEqual( live ) ).to.be.true;
+				expect( range ).not.to.equal( live );
+			} );
+
+			const result = markers.remove( live );
+
+			expect( result ).to.be.true;
+			expect( markers.fire.calledWith( 'remove' ) ).to.be.true;
+		} );
+
+		it( 'should return false if name has not been found in collection', () => {
+			const result = markers.remove( 'name' );
 
 			expect( result ).to.be.false;
 		} );
 
-		it( 'should return true and fire removeMarker event if range is removed', () => {
-			markers.addRange( live, 'name' );
+		it( 'should return false if range has not been found in collection', () => {
+			markers.add( 'name', live );
 
-			sinon.spy( markers, 'fire' );
+			const other = LiveRange.createFromParentsAndOffsets( root, 0, root, 4 );
+			const result = markers.remove( other );
 
-			markers.on( 'removeMarker', ( evt, name, range ) => {
-				expect( name ).to.equal( 'name' );
-				expect( range.isEqual( live ) ).to.be.true;
-				expect( range ).not.to.equal( live );
-			} );
+			other.detach();
 
-			const result = markers.removeRange( live );
-
-			expect( result ).to.be.true;
-			expect( markers.fire.calledWith( 'removeMarker' ) ).to.be.true;
-		} );
-
-		it( 'should make MarkersCollection stop listening to range change event', () => {
-			markers.addRange( live, 'name' );
-			markers.removeRange( live );
-
-			sinon.spy( markers, 'fire' );
-
-			// Simulate LiveRange change.
-			const oldRange = Range.createFromRange( live );
-			live.end.path[ 0 ]++;
-			live.fire( 'change', oldRange );
-
-			expect( markers.fire.called ).to.be.false;
+			expect( result ).to.be.false;
 		} );
 	} );
 
-	describe( 'updateRange', () => {
+	describe( 'update', () => {
 		let newLive;
 
 		beforeEach( () => {
@@ -109,24 +138,48 @@ describe( 'MarkersCollection', () => {
 			newLive.detach();
 		} );
 
-		it( 'should return false if given range was not found in collection', () => {
-			const result = markers.updateRange( live, newLive );
+		it( 'should return true and use remove and add methods if range was found in collection - passed name', () => {
+			const newLive = LiveRange.createFromParentsAndOffsets( root, 1, root, 5 );
+			markers.add( 'name', live );
+
+			sinon.spy( markers, 'remove' );
+			sinon.spy( markers, 'add' );
+
+			const result = markers.update( 'name', newLive );
+
+			expect( markers.remove.calledWith( 'name' ) ).to.be.true;
+			expect( markers.add.calledWith( 'name', newLive ) ).to.be.true;
+			expect( result ).to.be.true;
+
+			newLive.detach();
+		} );
+
+		it( 'should return true and use remove and add methods if range was found in collection - passed range', () => {
+			const newLive = LiveRange.createFromParentsAndOffsets( root, 1, root, 5 );
+			markers.add( 'name', live );
+
+			sinon.spy( markers, 'remove' );
+			sinon.spy( markers, 'add' );
+
+			const result = markers.update( live, newLive );
+
+			expect( markers.remove.calledWith( 'name' ) ).to.be.true;
+			expect( markers.add.calledWith( 'name', newLive ) ).to.be.true;
+			expect( result ).to.be.true;
+
+			newLive.detach();
+		} );
+
+		it( 'should return false if given name was not found in collection', () => {
+			const result = markers.update( 'name', newLive );
 
 			expect( result ).to.be.false;
 		} );
 
-		it( 'should return true and use removeRange and addRange methods if range was found in collection', () => {
-			const newLive = LiveRange.createFromParentsAndOffsets( root, 1, root, 5 );
-			markers.addRange( live, 'name' );
+		it( 'should return false if given range was not found in collection', () => {
+			const result = markers.update( live, newLive );
 
-			sinon.spy( markers, 'removeRange' );
-			sinon.spy( markers, 'addRange' );
-
-			const result = markers.updateRange( live, newLive );
-
-			expect( markers.removeRange.calledWith( live ) ).to.be.true;
-			expect( markers.addRange.calledWith( newLive, 'name' ) ).to.be.true;
-			expect( result ).to.be.true;
+			expect( result ).to.be.false;
 		} );
 	} );
 

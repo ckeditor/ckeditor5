@@ -10,9 +10,7 @@ import ModelElement from '../model/element.js';
 import ViewRange from '../view/range.js';
 import ViewPosition from '../view/position.js';
 import ViewElement from '../view/element.js';
-import ViewContainerElement from '../view/containerelement.js';
 import ViewText from '../view/text.js';
-import ViewTreeWalker from '../view/treewalker.js';
 import viewWriter from '../view/writer.js';
 
 /**
@@ -203,13 +201,13 @@ export function removeAttribute( attributeCreator ) {
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
  * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}).
  *
- *		modelDispatcher.on( 'addAttribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
+ *		modelDispatcher.on( 'addAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
  *
  * @param {module:engine/view/element~Element|Function} elementCreator View element, or function returning a view element, which will
  * be used for wrapping.
  * @returns {Function} Set/change attribute converter.
  */
-export function wrap( elementCreator ) {
+export function wrapItem( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		let viewRange = conversionApi.mapper.toViewRange( data.range );
 
@@ -250,14 +248,14 @@ export function wrap( elementCreator ) {
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
  * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}) and bind model and view elements.
  *
- *		modelDispatcher.on( 'removeAttribute:bold', unwrap( new ViewAttributeElement( 'strong' ) ) );
+ *		modelDispatcher.on( 'removeAttribute:bold', unwrapItem( new ViewAttributeElement( 'strong' ) ) );
  *
- * @see module:engine/conversion/model-to-view-converters~wrap
+ * @see module:engine/conversion/model-to-view-converters~wrapItem
  * @param {module:engine/view/element~Element|Function} elementCreator View element, or function returning a view element, which will
  * be used for unwrapping.
  * @returns {Function} Remove attribute converter.
  */
-export function unwrap( elementCreator ) {
+export function unwrapItem( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
 			return;
@@ -292,15 +290,13 @@ export function unwrap( elementCreator ) {
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
  * {@link engine.conversion.ModelConversionDispatcher}).
  *
- *		modelDispatcher.on( 'addMarker:searchResult', wrapMarker( new ViewAttributeElement( 'span', { class: 'searchResult' } ) ) );
+ *		modelDispatcher.on( 'addMarker:searchResult', wrapRange( new ViewAttributeElement( 'span', { class: 'searchResult' } ) ) );
  *
- * @external engine.conversion.modelToView
- * @function engine.conversion.modelToView.wrapMarker
  * @param {engine.view.AttributeElement|Function} elementCreator View attribute element, or function returning
  * a view attribute element, which will be used for wrapping.
- * @returns {Function} Add marker converter.
+ * @returns {Function} Wrap range converter.
  */
-export function wrapMarker( elementCreator ) {
+export function wrapRange( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		const viewRange = conversionApi.mapper.toViewRange( data.range );
 
@@ -309,14 +305,14 @@ export function wrapMarker( elementCreator ) {
 			elementCreator( data, consumable, conversionApi );
 
 		if ( viewElement ) {
-			if ( !consumable.consume( data.range, 'range' ) ) {
+			if ( !consumable.consume( data.range, 'addMarker' ) ) {
 				return;
 			}
 
 			if ( viewRange.isCollapsed ) {
 				viewWriter.wrapPosition( viewRange.start, viewElement );
 			} else {
-				const flatViewRanges = breakViewRangeOnFlat( viewRange );
+				const flatViewRanges = viewWriter.breakViewRangePerContainer( viewRange );
 
 				for ( let range of flatViewRanges ) {
 					viewWriter.wrap( range, viewElement );
@@ -339,18 +335,16 @@ export function wrapMarker( elementCreator ) {
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
  * {@link engine.conversion.ModelConversionDispatcher}) and bind model and view elements.
  *
- *		modelDispatcher.on( 'removeMarker:searchResult', unwrapMarker( new ViewAttributeElement( 'span', { class: 'searchResult' } ) ) );
+ *		modelDispatcher.on( 'removeMarker:searchResult', unwrapRange( new ViewAttributeElement( 'span', { class: 'searchResult' } ) ) );
  *
- * @see engine.conversion.modelToView.wrapMarker
- * @external engine.conversion.modelToView
- * @function engine.conversion.modelToView.unwrapMarker
+ * @see engine.conversion.modelToView.wrapRange
  * @param {engine.view.AttributeElement|Function} elementCreator View attribute element, or function returning
  * a view attribute element, which will be used for unwrapping.
- * @returns {Function} Remove attribute converter.
+ * @returns {Function} Unwrap range converter.
  */
-export function unwrapMarker( elementCreator ) {
+export function unwrapRange( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.range, 'range' ) ) {
+		if ( !consumable.consume( data.range, 'removeMarker' ) ) {
 			return;
 		}
 
@@ -366,12 +360,12 @@ export function unwrapMarker( elementCreator ) {
 				viewStart = ViewPosition.createAfter( viewStart.parent );
 			}
 
-			const viewEnd = findFurthestZeroLengthPoint( viewStart, conversionApi.mapper );
+			const viewRange = enlargeViewPosition( viewStart, conversionApi.mapper );
 
-			viewWriter.unwrap( new ViewRange( viewStart, viewEnd ), viewElement );
+			viewWriter.unwrap( viewRange, viewElement );
 		} else {
 			const viewRange = conversionApi.mapper.toViewRange( data.range );
-			const flatViewRanges = breakViewRangeOnFlat( viewRange );
+			const flatViewRanges = viewWriter.breakViewRangePerContainer( viewRange );
 
 			for ( let range of flatViewRanges ) {
 				viewWriter.unwrap( range, viewElement );
@@ -380,47 +374,20 @@ export function unwrapMarker( elementCreator ) {
 	};
 }
 
-// Starting from given `viewPosition`, moving forward, finds the furthest position in a view, which is
-// separated only by elements with zero model length (which in most cases are empty `ViewAttributeElement`s).
-// Using `viewPosition` and returned position, one can build a view range, which start and position are mapped to
-// the same position in model.
+// Takes given `viewPosition` and returns a widest possible range that contains this position and all view elements
+// before that position and after that position which has zero length in model (in most cases empty `ViewAttributeElement`s).
 // @param {engine.view.Position} viewPosition Position to start from when looking for furthest zero length position.
 // @param {engine.conversion.Mapper} mapper Mapper to use when looking for furthest zero length position.
-// @returns {engine.view.Position} Furthest zero length position.
-function findFurthestZeroLengthPoint( viewPosition, mapper ) {
-	viewPosition = ViewPosition.createFromPosition( viewPosition );
+// @returns {engine.view.Range}
+function enlargeViewPosition( viewPosition, mapper ) {
+	const start = ViewPosition.createFromPosition( viewPosition );
+	const end = ViewPosition.createFromPosition( viewPosition );
 
-	while ( viewPosition.nodeAfter && mapper.getModelLength( viewPosition.nodeAfter ) === 0 ) {
-		viewPosition.offset++;
+	while ( end.nodeAfter && mapper.getModelLength( end.nodeAfter ) === 0 ) {
+		end.offset++;
 	}
 
-	return viewPosition;
-}
-
-// Breaks given `viewRange` on "flat" view ranges, where "flat" means that the range is contained within
-// one container element. After `viewRange` is broken, it's "pieces" can be used in ViewWriter (which expects
-// that passed ranges are contained within one container element).
-// @param {engine.view.Range} viewRange Range to break.
-// @returns {Array.<engine.view.Range>} Flat ranges that combines into passed `viewRange`.
-function breakViewRangeOnFlat( viewRange ) {
-	const ranges = [];
-	const walker = new ViewTreeWalker( { boundaries: viewRange } );
-
-	let start = viewRange.start;
-
-	for ( let value of walker ) {
-		if ( value.item instanceof ViewContainerElement ) {
-			if ( !start.isEqual( value.previousPosition ) ) {
-				ranges.push( new ViewRange( start, value.previousPosition ) );
-			}
-
-			start = value.nextPosition;
-		}
-	}
-
-	ranges.push( new ViewRange( start, viewRange.end ) );
-
-	return ranges;
+	return new ViewRange( start, end );
 }
 
 /**
@@ -514,6 +481,53 @@ export function rename() {
 
 		// Cleanup.
 		fakeElement.remove();
+	};
+}
+
+/**
+ * Function factory, creates a default converter for inserting {@link module:engine/model/item~Item model item} into a marker range.
+ *
+ *		modelDispatcher.on( 'insert', insertIntoRange( modelDocument.markers ) );
+ *
+ * @param {module:engine/model/markerscollection~MarkersCollection} markersCollection Markers collection to check when
+ * inserting.
+ * @returns {Function}
+ */
+export function insertIntoMarker( markersCollection ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		for ( let [ name, range ] of markersCollection ) {
+			if ( range.containsPosition( data.range.start ) ) {
+				conversionApi.dispatcher.convertMarker( 'addMarker', name, data.range );
+			}
+		}
+	};
+}
+
+/**
+ * Function factory, creates a default converter for move changes that move {@link module:engine/model/item~Item model items}
+ * into or outside of a marker range.
+ *
+ *		modelDispatcher.on( 'move', moveInOutOfMarker( modelDocument.markers ) );
+ *
+ * @param {module:engine/model/markerscollection~MarkersCollection} markersCollection Markers collection to check when
+ * moving.
+ * @returns {Function}
+ */
+export function moveInOutOfMarker( markersCollection ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		const sourcePos = data.sourcePosition._getTransformedByInsertion( data.targetPosition, data.item.offsetSize );
+		const movedRange = ModelRange.createOn( data.item );
+
+		for ( let [ name, range ] of markersCollection ) {
+			const wasInMarker = range.containsPosition( sourcePos ) || range.start.isEqual( sourcePos ) || range.end.isEqual( sourcePos );
+			const isInMarker = range.containsPosition( movedRange.start );
+
+			if ( wasInMarker && !isInMarker ) {
+				conversionApi.dispatcher.convertMarker( 'removeMarker', name, movedRange );
+			} else if ( !wasInMarker && isInMarker ) {
+				conversionApi.dispatcher.convertMarker( 'addMarker', name, movedRange );
+			}
+		}
 	};
 }
 

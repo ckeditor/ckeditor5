@@ -12,15 +12,15 @@ import mix from '../../utils/mix.js';
 /**
  * Manages and stores markers.
  *
- * Markers are simply {@link module:engine/model/liverange~LiveRange live ranges} added to `MarkersCollection`.
+ * Markers are simply {@link module:engine/model/liverange~LiveRange live ranges} that were added to `MarkersCollection`.
  * Markers are used to represent information connected with model document. In contrary to
  * {@link module:engine/model/node~Node nodes}, which are bits of data, markers are marking a part of model document.
- * Each live range/marker is added with `name` parameter. Name is used to group and identify markers. Multiple live
- * ranges can be added under the same name.
+ * Each live range is added with `name` parameter. Name is used to group and identify markers. Names have to be unique, but
+ * markers can be grouped by using common prefixes, separated with `:`, for example: `user:john` or `search:3`.
  *
- * Whenever live range is added or removed from markers collection, markers collection fires `addMarker` and `removeMarker`
- * events. Same happens when a live range is changed due to changes in the model (both events are fired, `removeMarker` first,
- * then `addMarker`).
+ * Whenever live range is added or removed from `MarkersCollection`,
+ * {@link module:engine/model/markerscollection~MarkersCollection#event:addMarker addMarker event} and
+ * {@link module:engine/model/markerscollection~MarkersCollection#event:addMarker removeMarker event} are fired.
  *
  * Markers can be converted to view by adding appropriate converters for
  * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker addMarker} and
@@ -41,36 +41,42 @@ export default class MarkersCollection {
 	 */
 	constructor() {
 		/**
-		 * Stores range to marker name bindings for added ranges.
+		 * Stores marker name to range bindings for added ranges.
 		 *
 		 * @private
-		 * @member {Map} #_markerNames
+		 * @member {Map} #_nameToRange
 		 */
-		this._markerNames = new Map();
+		this._nameToRange = new Map();
 	}
 
 	/**
-	 * Sets a name for given live range and adds it to the markers collection. Multiple live ranges may have same name.
-	 * Markers can also be grouped while still having different names, i.e.: `search:22`, `search:37`.
+	 * Returns an iterator that iterates over all markers added to the collection. Each item returned by the iterator is an array
+	 * containing two elements, first is a marker {String name} and second is a marker {@link module:engine/model/range~Range range}.
+	 *
+	 * @returns {Iterator}
+	 */
+	[ Symbol.iterator ]() {
+		return this._nameToRange.entries();
+	}
+
+	/**
+	 * Sets a name for given live range and adds it to the markers collection.
+	 *
+	 * Throws, if given `markerName` was already used.
 	 *
 	 * Throws, if given `liveRange` is not an instance of {@link module:engine/model/liverange~LiveRange}.
 	 *
-	 * Throws, if given {@link module:engine/model/liverange~LiveRange LiveRange} instance is already added to the collection.
-	 *
-	 * `MarkersCollection` instance listens to `change` event of all live ranges added to it and fires `removeMarker`
-	 * and `addMarker` events when the live range changes.
-	 *
-	 * @param {module:engine/model/liverange~LiveRange} liveRange Live range to be added as a marker to markers collection.
 	 * @param {String} markerName Name to be associated with given `liveRange`.
+	 * @param {module:engine/model/liverange~LiveRange} liveRange Live range to be added as a marker to markers collection.
 	 */
-	addRange( liveRange, markerName ) {
-		if ( this._markerNames.has( liveRange ) ) {
+	add( markerName, liveRange ) {
+		if ( this._nameToRange.has( markerName ) ) {
 			/**
-			 * Given range instance was already added.
+			 * Marker with given name is already added.
 			 *
-			 * @error markers-collection-add-range-range-already-added
+			 * @error markers-collection-add-name-exists
 			 */
-			throw new CKEditorError( 'markers-collection-add-range-already-added: Given range instance was already added.' );
+			throw new CKEditorError( 'markers-collection-add-name-exists: Marker with given name is already added.' );
 		}
 
 		if ( !( liveRange instanceof LiveRange ) ) {
@@ -82,23 +88,43 @@ export default class MarkersCollection {
 			throw new CKEditorError( 'markers-collection-add-range-not-live-range: Added range is not an instance of LiveRange.' );
 		}
 
-		this._markerNames.set( liveRange, markerName );
-		this.fire( 'addMarker', markerName, Range.createFromRange( liveRange ) );
+		this._nameToRange.set( markerName, liveRange );
+		this.fire( 'add', markerName, Range.createFromRange( liveRange ) );
 	}
 
 	/**
-	 * Removes a live range from markers collection and makes markers collection stop listening to that live range
-	 * `change` event.
+	 * Returns the live range that was added to `MarkersCollection` under given `markerName`.
 	 *
-	 * @param {module:engine/model/liverange~LiveRange} liveRange Live range to be removed from markers collection.
-	 * @returns {Boolean} `true` is passed `liveRange` was found and removed from the markers collection, `false` otherwise.
+	 * @param {String} markerName Name of range to get.
+	 * @returns {module:engine/model/liverange~LiveRange|null} Range added to collection under given name or `null` if
+	 * no range was added with that name.
 	 */
-	removeRange( liveRange ) {
-		const markerName = this._markerNames.get( liveRange );
+	get( markerName ) {
+		return this._nameToRange.get( markerName ) || null;
+	}
 
-		if ( markerName ) {
-			this._markerNames.delete( liveRange );
-			this.fire( 'removeMarker', markerName, Range.createFromRange( liveRange ) );
+	/**
+	 * Removes a live range from markers collection.
+	 *
+	 * @param {String|module:engine/model/liverange~LiveRange} nameOrRange Name of live range to remove or live range instance.
+	 * @returns {Boolean} `true` is passed if range was found and removed from the markers collection, `false` otherwise.
+	 */
+	remove( nameOrRange ) {
+		if ( nameOrRange instanceof LiveRange ) {
+			const name = this._getMarkerName( nameOrRange );
+
+			if ( name ) {
+				return this.remove( name );
+			}
+
+			return false;
+		}
+
+		const range = this._nameToRange.get( nameOrRange );
+
+		if ( range ) {
+			this._nameToRange.delete( nameOrRange );
+			this.fire( 'remove', nameOrRange, Range.createFromRange( range ) );
 
 			return true;
 		}
@@ -114,21 +140,28 @@ export default class MarkersCollection {
 	 *
 	 * **Note**: this method does not change properties of `oldLiveRange`.
 	 *
-	 * @param {module:engine/model/liverange~LiveRange} oldLiveRange Live range to be changed.
+	 * @param {String|module:engine/model/liverange~LiveRange} nameOrRange Name of range or range instance to be changed.
 	 * @param {module:engine/model/liverange~LiveRange} newLiveRange Live range to be added.
 	 * @returns {Boolean} `true` if `oldLiveRange` was found and changed, `false` otherwise.
 	 */
-	updateRange( oldLiveRange, newLiveRange ) {
-		const markerName = this._markerNames.get( oldLiveRange );
+	update( nameOrRange, newLiveRange ) {
+		if ( nameOrRange instanceof LiveRange ) {
+			const name = this._getMarkerName( nameOrRange );
 
-		if ( markerName ) {
-			this.removeRange( oldLiveRange );
-			this.addRange( newLiveRange, markerName );
+			if ( name ) {
+				return this.update( name, newLiveRange );
+			}
 
-			return true;
+			return false;
 		}
 
-		return false;
+		const removed = this.remove( nameOrRange );
+
+		if ( removed ) {
+			this.add( nameOrRange, newLiveRange );
+		}
+
+		return removed;
 	}
 
 	/**
@@ -136,6 +169,23 @@ export default class MarkersCollection {
 	 */
 	destroy() {
 		this.stopListening();
+	}
+
+	/**
+	 * Returns range for given name.
+	 *
+	 * @private
+	 * @param {module:engine/model/liverange~LiveRange} range Range for which name should be obtained.
+	 * @returns {String|null} Name of the range or `null` if range has not been added to the collection.
+	 */
+	_getMarkerName( range ) {
+		for ( let [ markerName, markerRange ] of this ) {
+			if ( markerRange == range ) {
+				return markerName;
+			}
+		}
+
+		return null;
 	}
 }
 

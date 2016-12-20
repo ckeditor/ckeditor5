@@ -11,16 +11,18 @@ import {
 	insertElement,
 	setAttribute,
 	removeAttribute,
-	wrap,
-	unwrap,
-	wrapMarker,
-	unwrapMarker
+	wrapItem,
+	unwrapItem,
+	wrapRange,
+	unwrapRange
 } from './model-to-view-converters.js';
 
 import { convertSelectionAttribute } from './model-selection-to-view-converters.js';
 
 import ViewAttributeElement from '../view/attributeelement.js';
 import ViewContainerElement from '../view/containerelement.js';
+
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * Provides chainable, high-level API to easily build basic model-to-view converters that are appended to given
@@ -233,17 +235,17 @@ class ModelConverterBuilder {
 				// From model attribute to view element -> wrap and unwrap.
 				element = typeof element == 'string' ? new ViewAttributeElement( element ) : element;
 
-				dispatcher.on( 'addAttribute:' + this._from.key, wrap( element ), { priority } );
-				dispatcher.on( 'changeAttribute:' + this._from.key, wrap( element ), { priority } );
-				dispatcher.on( 'removeAttribute:' + this._from.key, unwrap( element ), { priority } );
+				dispatcher.on( 'addAttribute:' + this._from.key, wrapItem( element ), { priority } );
+				dispatcher.on( 'changeAttribute:' + this._from.key, wrapItem( element ), { priority } );
+				dispatcher.on( 'removeAttribute:' + this._from.key, unwrapItem( element ), { priority } );
 
 				dispatcher.on( 'selectionAttribute:' + this._from.key, convertSelectionAttribute( element ), { priority } );
 			} else {
 				// From marker to view element -> wrapRange and unwrapRange.
 				element = typeof element == 'string' ? new ViewAttributeElement( element ) : element;
 
-				dispatcher.on( 'addMarker:' + this._from.name, wrapMarker( element ), { priority } );
-				dispatcher.on( 'removeMarker:' + this._from.name, unwrapMarker( element ), { priority } );
+				dispatcher.on( 'addMarker:' + this._from.name, wrapRange( element ), { priority } );
+				dispatcher.on( 'removeMarker:' + this._from.name, unwrapRange( element ), { priority } );
 			}
 		}
 	}
@@ -281,8 +283,14 @@ class ModelConverterBuilder {
 	 */
 	toAttribute( keyOrCreator, value ) {
 		if ( this._from.type != 'attribute' ) {
-			// Only converting from attribute to attribute is supported.
-			return;
+			/**
+			 * To-attribute conversion is supported only for model attributes.
+			 *
+			 * @error build-model-converter-element-to-attribute
+			 * @param {module:engine/model/range~Range} range
+			 */
+			throw new CKEditorError( 'build-model-converter-non-attribute-to-attribute: ' +
+				'To-attribute conversion is supported only from model attributes.' );
 		}
 
 		let attributeCreator;

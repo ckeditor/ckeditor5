@@ -213,7 +213,7 @@ export default class ModelConversionDispatcher {
 	 */
 	convertMove( sourcePosition, range ) {
 		// Keep in mind that move dispatcher expects flat range.
-		const consumable = this._createConsumableForType( range, 'move' );
+		const consumable = this._createConsumableForRange( range, 'move' );
 
 		const items = Array.from( range.getItems( { shallow: true } ) );
 		const inSameParent = sourcePosition.parent == range.start.parent;
@@ -243,7 +243,7 @@ export default class ModelConversionDispatcher {
 	 * graveyard root}).
 	 */
 	convertRemove( sourcePosition, range ) {
-		const consumable = this._createConsumableForType( range, 'remove' );
+		const consumable = this._createConsumableForRange( range, 'remove' );
 
 		for ( let item of range.getItems( { shallow: true } ) ) {
 			const data = {
@@ -269,7 +269,7 @@ export default class ModelConversionDispatcher {
 	 */
 	convertAttribute( type, range, key, oldValue, newValue ) {
 		// Create a list with attributes to consume.
-		const consumable = this._createConsumableForType( range, type + ':' + key );
+		const consumable = this._createConsumableForRange( range, type + ':' + key );
 
 		// Create a separate attribute event for each node in the range.
 		for ( let value of range ) {
@@ -328,8 +328,17 @@ export default class ModelConversionDispatcher {
 		}
 	}
 
+	/**
+	 * Fires event for given marker change.
+	 *
+	 * @fires addMarker
+	 * @fires removeMarker
+	 * @param {String} type Change type.
+	 * @param {String} name Marker name.
+	 * @param {module:engine/model/range~Range} range Marker range.
+	 */
 	convertMarker( type, name, range ) {
-		const consumable = this._createRangeConsumable( range );
+		const consumable = this._createMarkerConsumable( type, range );
 		const data = { name, range };
 
 		this.fire( type + ':' + name, data, consumable, this.conversionApi );
@@ -360,14 +369,15 @@ export default class ModelConversionDispatcher {
 	}
 
 	/**
-	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with values of given `type` for each item from given `range`.
+	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with values of given `type`
+	 * for each item from given `range`.
 	 *
 	 * @private
 	 * @param {module:engine/model/range~Range} range Affected range.
 	 * @param {String} type Consumable type.
 	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} Values to consume.
 	 */
-	_createConsumableForType( range, type ) {
+	_createConsumableForRange( range, type ) {
 		const consumable = new Consumable();
 
 		for ( let item of range.getItems() ) {
@@ -396,10 +406,18 @@ export default class ModelConversionDispatcher {
 		return consumable;
 	}
 
-	_createRangeConsumable( range ) {
+	/**
+	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} for adding or removing marker on given `range`.
+	 *
+	 * @private
+	 * @param {'addMarker'|'removeMarker'} type Change type.
+	 * @param {module:engine/model/range~Range} range Range on which marker was added or removed.
+	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} Values to consume.
+	 */
+	_createMarkerConsumable( type, range ) {
 		const consumable = new Consumable();
 
-		consumable.add( range, 'range' );
+		consumable.add( range, type );
 
 		return consumable;
 	}
@@ -567,6 +585,38 @@ export default class ModelConversionDispatcher {
 	 * @param {module:engine/model/selection~Selection} data.selection Selection that is converted.
 	 * @param {String} data.attributeKey Key of changed attribute.
 	 * @param {*} data.attributeValue Value of changed attribute.
+	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
+	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
+	 */
+
+	/**
+	 * Fired when a new marker is added to the model.
+	 *
+	 * `addMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
+	 * `addMarker:<markerName>`. By specifying certain marker names, you can make the events even more gradual. For example,
+	 * markers can be named `foo:abc`, `foo:bar`, then it is possible to listen to `addMarker:foo` or `addMarker:foo:abc` and
+	 * `addMarker:foo:bar` events.
+	 *
+	 * @event addMarker
+	 * @param {Object} data Additional information about the change.
+	 * @param {String} data.name Marker name.
+	 * @param {module:engine/model/range~Range} data.range Marker range.
+	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
+	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
+	 */
+
+	/**
+	 * Fired when marker is removed from the model.
+	 *
+	 * `removeMarker` is a namespace for a class of events. Names of actually called events follow this pattern:
+	 * `removeMarker:<markerName>`. By specifying certain marker names, you can make the events even more gradual. For example,
+	 * markers can be named `foo:abc`, `foo:bar`, then it is possible to listen to `removeMarker:foo` or `removeMarker:foo:abc` and
+	 * `removeMarker:foo:bar` events.
+	 *
+	 * @event removeMarker
+	 * @param {Object} data Additional information about the change.
+	 * @param {String} data.name Marker name.
+	 * @param {module:engine/model/range~Range} data.range Marker range.
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */
