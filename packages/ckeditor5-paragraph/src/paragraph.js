@@ -18,8 +18,6 @@ import modelWriter from '../engine/model/writer.js';
 import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
 import buildViewConverter from '../engine/conversion/buildviewconverter.js';
 
-import isArray from '../utils/lib/lodash/isArray.js';
-
 /**
  * The paragraph feature for the editor.
  * Introduces the `<paragraph>` element in the model which renders as a `<p>` element in the DOM and data.
@@ -100,12 +98,7 @@ export default class Paragraph extends Plugin {
  */
 Paragraph.paragraphLikeElements = new Set( [ 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'td', 'li', 'div' ] );
 
-// A map of paragraphs to merge (model elements) to their block contexts in the view.
-// The context is used in order to check whether two paragraphs should really be merged.
-// E.g.
-// <h1>foo</h1><h1>bar</h1> => <p>foo</p><p>bar</p> (contexts: two different h1 elements – no merge)
-// <div>foo<img>bar</div> => <p>foo</p><p><img></p><p>bar</p> (contexts: 3x the same div element – merge)
-const paragraphsToMerge = new WeakMap();
+const paragraphsToMerge = new WeakSet();
 
 function autoparagraphText( doc, evt, data, consumable, conversionApi ) {
 	// If text wasn't consumed by the default converter...
@@ -122,7 +115,7 @@ function autoparagraphText( doc, evt, data, consumable, conversionApi ) {
 
 	const paragraph = new ModelElement( 'paragraph' );
 
-	paragraphsToMerge.set( paragraph, getBlockContext( data.input ) );
+	paragraphsToMerge.add( paragraph );
 
 	data.context.push( paragraph );
 
@@ -178,45 +171,18 @@ function autoparagraphParagraphLikeElements( doc, evt, data, consumable, convers
 
 // Merges subsequent paragraphs if they should be merged (see shouldMerge).
 function mergeSubsequentParagraphs( evt, data ) {
-	if ( !data.output ) {
-		return;
-	}
-
-	let node;
-
-	if ( isArray( data.output ) ) {
-		node = data.output[ 0 ];
-	} else {
-		node = data.output.getChild( 0 );
-	}
+	let node = data.output.getChild( 0 );
 
 	while ( node && node.nextSibling ) {
 		const nextSibling = node.nextSibling;
 
-		if ( shouldMerge( node, nextSibling ) ) {
+		if ( paragraphsToMerge.has( node ) && paragraphsToMerge.has( nextSibling ) ) {
 			node.appendChildren( nextSibling.getChildren() );
 			nextSibling.remove();
 		} else {
 			node = node.nextSibling;
 		}
 	}
-}
-
-// Checks whether two paragraphs should be merged. This
-// may happen only if they were created by autoparagraphText() and were
-// created from two nodes in the same block context.
-function shouldMerge( paragraphA, paragraphB ) {
-	return paragraphsToMerge.has( paragraphA ) && paragraphsToMerge.has( paragraphB ) &&
-		( paragraphsToMerge.get( paragraphA ) == paragraphsToMerge.get( paragraphB ) );
-}
-
-// Returns first ancestor which name exists in paragraphLikeElements or the root.
-function getBlockContext( node ) {
-	const blockLikeAncestor = node.getAncestors( { parentFirst: true } ).find( ( ancestor ) => {
-		return Paragraph.paragraphLikeElements.has( ancestor.name );
-	} );
-
-	return blockLikeAncestor ? blockLikeAncestor : node.root;
 }
 
 // Checks whether an element has paragraph-like descendant.

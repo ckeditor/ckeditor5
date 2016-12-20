@@ -78,6 +78,15 @@ describe( 'Paragraph feature', () => {
 					.to.equal( 'foo' );
 			} );
 
+			it( 'should not autoparagraph text (in a context which does not allow paragraphs', () => {
+				doc.schema.registerItem( 'specialRoot' );
+
+				const modelFragment = editor.data.parse( 'foo', 'specialRoot' );
+
+				expect( stringifyModel( modelFragment ) )
+					.to.equal( '' );
+			} );
+
 			it( 'should autoparagraph text next to allowed element', () => {
 				doc.schema.registerItem( 'heading1', '$block' );
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'h1' ).toElement( 'heading1' );
@@ -137,6 +146,14 @@ describe( 'Paragraph feature', () => {
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<heading1>foobar</heading1>' );
 			} );
+
+			it( 'should not fail when text is not allowed in paragraph', () => {
+				doc.schema.disallow( { name: '$text', inside: [ '$root', 'paragraph' ] } );
+
+				const modelFragment = editor.data.parse( 'foo' );
+
+				expect( stringifyModel( modelFragment ) ).to.equal( '' );
+			} );
 		} );
 
 		describe( 'generic block converter (paragraph-like element handling)', () => {
@@ -152,6 +169,20 @@ describe( 'Paragraph feature', () => {
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+			} );
+
+			it( 'should not convert h1+h2 (in a context which does not allow paragraphs)', () => {
+				doc.schema.registerItem( 'div' );
+				doc.schema.registerItem( 'specialRoot' );
+				doc.schema.allow( { name: 'div', inside: 'specialRoot' } );
+				doc.schema.allow( { name: '$text', inside: 'div' } );
+
+				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+
+				const modelFragment = editor.data.parse( '<h1>foo</h1><h2>bar</h2><div>bom</div>', 'specialRoot' );
+
+				expect( stringifyModel( modelFragment ) )
+					.to.equal( '<div>bom</div>' );
 			} );
 
 			it( 'should convert ul,ol>li', () => {
