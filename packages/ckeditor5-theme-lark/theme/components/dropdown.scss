@@ -41,7 +41,7 @@
 	z-index: ck-z();
 
 	@include ck-rounded-corners();
-	@include ck-dropshadow();
+	@include ck-drop-shadow();
 
 	&-visible {
 		display: inline-block;

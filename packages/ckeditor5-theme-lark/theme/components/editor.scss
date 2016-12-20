@@ -65,7 +65,8 @@
 
 	.ck-editor__editable {
 		&.ck-focused {
-			@include ck-focus-outline();
+			@include ck-focus-ring( 'outline' );
+			@include ck-box-shadow( $ck-inner-shadow );
 		}
 
 		&_inline {
