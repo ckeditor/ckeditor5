@@ -14,6 +14,7 @@ import ToolbarView from '../ui/toolbar/toolbarview.js';
 import BalloonPanelView from '../ui/balloonpanel/balloonpanelview.js';
 import Template from '../ui/template.js';
 import ClickObserver from 'ckeditor5/engine/view/observer/clickobserver.js';
+import { isImageWidget } from './utils.js';
 
 const arrowVOffset = BalloonPanelView.arrowVerticalOffset;
 const positions = {
@@ -84,9 +85,11 @@ export default class ImageToolbar extends Plugin {
 
 			editingView.addObserver( ClickObserver );
 
-			// Check if the toolbar should be displayed each time the user clicked in editable.
-			editor.listenTo( editingView, 'click', () => {
-				if ( editingView.selection.isFake ) {
+			// Check if the toolbar should be displayed each time view is rendered.
+			editor.listenTo( editingView, 'render', () => {
+				const selectedElement = editingView.selection.getSelectedElement();
+
+				if ( selectedElement && isImageWidget( selectedElement ) ) {
 					attachToolbar();
 
 					// TODO: These 2 need interval–based event debouncing for performance
@@ -99,7 +102,7 @@ export default class ImageToolbar extends Plugin {
 					editor.ui.view.stopListening( window, 'scroll', attachToolbar );
 					editor.ui.view.stopListening( window, 'resize', attachToolbar );
 				}
-			} );
+			}, { priority: 'low' } );
 
 			function attachToolbar() {
 				panel.attachTo( {

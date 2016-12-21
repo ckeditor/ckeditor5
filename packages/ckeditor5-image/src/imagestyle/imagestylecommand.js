@@ -16,7 +16,6 @@ import { isImage, getStyleByValue } from './utils.js';
  * @extends module:core/command/command~Command
  */
 export default class ImageStyleCommand extends Command {
-
 	/**
 	 * Creates instance of the command.
 	 *

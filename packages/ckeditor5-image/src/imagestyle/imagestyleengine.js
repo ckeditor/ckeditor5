@@ -10,8 +10,14 @@
 import Plugin from '../../core/plugin.js';
 import ImageStyleCommand from './imagestylecommand.js';
 import ImageEngine from '../imageengine.js';
-import { isImage, getStyleByValue } from './utils.js';
+import { addStyle, changeStyle, removeStyle, viewToModelImageStyle } from './converters.js';
 
+/**
+ * The image style engine plugin. Sets default configuration, creates converters and registers
+ * {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand ImageStyleCommand}.
+ *
+ * @extends {module:core/plugin~Plugin}
+ */
 export default class ImageStyleEngine extends Plugin {
 	/**
 	 * @inheritDoc
@@ -20,6 +26,9 @@ export default class ImageStyleEngine extends Plugin {
 		return [ ImageEngine ];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const doc = editor.document;
@@ -31,23 +40,26 @@ export default class ImageStyleEngine extends Plugin {
 		editor.config.define( 'image.styles', {
 			options: {
 				// This option is equal to situation when no style is applied at all.
-				imageStyleFull: { title: 'Full size image', icon: 'bold', value: null },
+				imageStyleFull: { title: 'Full size image', icon: 'object-center', value: null },
 
 				// This represents side image.
-				imageStyleSide: { title: 'Side image', icon: 'italic', value: 'side', className: 'image-style-side' }
+				imageStyleSide: { title: 'Side image', icon: 'object-right', value: 'side', className: 'image-style-side' }
 			}
 		} );
 
 		// Get configuration.
 		const styles = editor.config.get( 'image.styles.options' );
 
-		// Allow style attribute in image.
-		schema.allow( { name: 'image', attributes: 'style' } );
+		// Allow imageStyle attribute in image.
+		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
+		schema.allow( { name: 'image', attributes: 'imageStyle', inside: '$root' } );
 
-		// Converters for models element style attribute.
-		editing.modelToView.on( 'addAttribute:style', addStyle( styles ) );
-		editing.modelToView.on( 'changeAttribute:style', changeStyle( styles ) );
-		editing.modelToView.on( 'removeAttribute:style', removeStyle( styles ) );
+		// Converters for models element imageStyle attribute.
+		editing.modelToView.on( 'addAttribute:imageStyle', addStyle( styles ) );
+		data.modelToView.on( 'addAttribute:imageStyle', addStyle( styles ) );
+		editing.modelToView.on( 'changeAttribute:imageStyle', changeStyle( styles ) );
+		data.modelToView.on( 'changeAttribute:imageStyle', changeStyle( styles ) );
+		editing.modelToView.on( 'removeAttribute:imageStyle', removeStyle( styles ) );
 
 		for ( let key in styles ) {
 			const style = styles[ key ];
@@ -64,90 +76,13 @@ export default class ImageStyleEngine extends Plugin {
 	}
 }
 
-function addStyle( styles ) {
-	return ( event, data, consumable, conversionApi ) => {
-		// Check if we can consume, and we are adding in image.
-		if ( !consumable.consume( data.item, 'addAttribute:style' ) || !isImage( data.item ) ) {
-			return;
-		}
-
-		// Check if there is class name associated with given value.
-		const newStyle = getStyleByValue( data.attributeNewValue, styles );
-
-		// Check if new style is allowed in configuration.
-		if ( !newStyle ) {
-			return;
-		}
-
-		conversionApi.mapper.toViewElement( data.item ).addClass( newStyle.className );
-	};
-}
-
-function changeStyle( styles ) {
-	return ( event, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.item, 'changeAttribute:style' ) || !isImage( data.item ) ) {
-			return;
-		}
-
-		// Check if there is class name associated with given value.
-		const newStyle = getStyleByValue( data.attributeNewValue, styles );
-
-		// Check if new style is allowed in configuration.
-		if ( !newStyle ) {
-			return;
-		}
-
-		const viewElement = conversionApi.mapper.toViewElement( data.item );
-		viewElement.removeClass( data.attributeOldValue );
-		viewElement.addClass( newStyle.className );
-	};
-}
-
-function removeStyle( styles ) {
-	return ( event, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.item, 'removeAttribute:style' ) || !isImage( data.item ) ) {
-			return;
-		}
-
-		// Check if there is class name associated with given value.
-		const newStyle = getStyleByValue( data.attributeNewValue, styles );
-		const oldStyle = getStyleByValue( data.attributeOldValue, styles );
-
-		// Check if styles are allowed in configuration.
-		if ( !newStyle || !oldStyle ) {
-			return;
-		}
-
-		const viewElement = conversionApi.mapper.toViewElement( data.item );
-		viewElement.removeClass( oldStyle.className );
-	};
-}
-
-function viewToModelImageStyle( style ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		const viewFigureElement = data.input;
-		const modelImageElement = data.output;
-
-		// *** Step 1: Validate conversion.
-		// Check if view element has proper class to consume.
-		if ( !consumable.test( viewFigureElement, { class: style.className } ) ) {
-			return;
-		}
-
-		// Check if figure is converted to image.
-		if ( !isImage( modelImageElement ) ) {
-			return;
-		}
-
-		// Check if image element can be placed in current context wit additional attribute.
-		const attributes = [ ...modelImageElement.getAttributeKeys(), 'style' ];
-
-		if ( !conversionApi.schema.check( { name: 'image', inside: data.context, attributes } ) ) {
-			return;
-		}
-
-		// *** Step2: Convert to model.
-		consumable.consume( viewFigureElement, { class: style.className } );
-		modelImageElement.setAttribute( 'style', style.value );
-	};
-}
+/**
+ * Image style format descriptor.
+ *
+ * @typedef {Object} module:image/imagestyle/imagestyleengine~ImageStyleFormat
+ * @property {String} value Value used to store this style in model.
+ * When value is `null` style will be used as default one. Default style does not apply any CSS class to the view element.
+ * @property {String} icon Icon name to use when creating style's toolbar button.
+ * @property {String} title Style's title.
+ * @property {String} className CSS class used to represent style in view.
+ */
