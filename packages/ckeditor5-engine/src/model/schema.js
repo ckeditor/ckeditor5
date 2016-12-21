@@ -505,15 +505,15 @@ export class SchemaItem {
 	 *
 	 * @protected
 	 * @param {String} type Paths' type. Possible values are `allow` or `disallow`.
-	 * @param {Array.<String>} checkPath Path to check.
+	 * @param {Array.<String>} pathToCheck Path to check.
 	 * @param {String} [attribute] If set, only paths registered for given attribute will be checked.
 	 * @returns {Boolean} `true` if item has any registered matching path, `false` otherwise.
 	 */
-	_hasMatchingPath( type, checkPath, attribute ) {
-		const allowedPaths = this._getPaths( type, attribute );
+	_hasMatchingPath( type, pathToCheck, attribute ) {
+		const registeredPaths = this._getPaths( type, attribute );
 
-		for ( const allowedPath of allowedPaths ) {
-			if ( matchPaths( this._schema, checkPath, allowedPath ) ) {
+		for ( const registeredPathPath of registeredPaths ) {
+			if ( matchPaths( this._schema, pathToCheck, registeredPathPath ) ) {
 				return true;
 			}
 		}
@@ -554,29 +554,29 @@ export class SchemaItem {
  * module:engine/model/schema~SchemaPath
  */
 
-// Checks whether the given checkPath and allowedPath right ends match.
+// Checks whether the given pathToCheck and registeredPath right ends match.
 //
-// checkPath: C, D
-// allowedPath: A, B, C, D
+// pathToCheck: C, D
+// registeredPath: A, B, C, D
 // result: OK
 //
-// checkPath: A, B, C
-// allowedPath: A, B, C, D
+// pathToCheck: A, B, C
+// registeredPath: A, B, C, D
 // result: NOK
 //
 // Note – when matching paths, element extension chains (inheritance) are taken into consideration.
 //
 // @param {Schema} schema
-// @param {Array.<String>} checkPath
-// @param {Array.<String>} allowedPath
-function matchPaths( schema, checkPath, allowedPath ) {
+// @param {Array.<String>} pathToCheck
+// @param {Array.<String>} registeredPath
+function matchPaths( schema, pathToCheck, registeredPath ) {
 	// Start checking from the right end of both tables.
-	let allowedPathIndex = allowedPath.length - 1;
-	let checkPathIndex = checkPath.length - 1;
+	let registeredPathIndex = registeredPath.length - 1;
+	let pathToCheckIndex = pathToCheck.length - 1;
 
 	// And finish once reaching an end of the shorter table.
-	while ( allowedPathIndex >= 0 && checkPathIndex >= 0 ) {
-		const checkName = checkPath[ checkPathIndex ];
+	while ( registeredPathIndex >= 0 && pathToCheckIndex >= 0 ) {
+		const checkName = pathToCheck[ pathToCheckIndex ];
 
 		// Fail when checking a path which contains element which aren't even registered to the schema.
 		if ( !schema.hasItem( checkName ) ) {
@@ -585,9 +585,9 @@ function matchPaths( schema, checkPath, allowedPath ) {
 
 		const extChain = schema._extensionChains.get( checkName );
 
-		if ( extChain.includes( allowedPath[ allowedPathIndex ] ) ) {
-			allowedPathIndex--;
-			checkPathIndex--;
+		if ( extChain.includes( registeredPath[ registeredPathIndex ] ) ) {
+			registeredPathIndex--;
+			pathToCheckIndex--;
 		} else {
 			return false;
 		}
