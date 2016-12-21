@@ -8,7 +8,7 @@ $ck-balloon-arrow-half-width: 10px;
 .ck-balloon-panel {
 	@include ck-unselectable();
 	@include ck-rounded-corners();
-	@include ck-dropshadow();
+	@include ck-drop-shadow();
 
 	min-width: 50px;
 	min-height: 15px;

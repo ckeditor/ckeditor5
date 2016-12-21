@@ -16,7 +16,11 @@
 	position: relative;
 
 	@include ck-button-colors( $color );
-	@include ck-user-focus-outline();
+
+	&:focus {
+		@include ck-focus-ring();
+		@include ck-box-shadow( $ck-focus-outer-shadow );
+	}
 }
 
 /**
