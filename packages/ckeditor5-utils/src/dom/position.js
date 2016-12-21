@@ -3,12 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window */
-
 /**
  * @module utils/dom/position
  */
 
+import global from './global.js';
 import Rect from './rect.js';
 import getPositionedAncestor from './getpositionedancestor.js';
 
@@ -215,9 +214,11 @@ function getBestPosition( positions, targetRect, elementRect, limiterRect, viewp
 // @param {utils/dom/rect~Rect} rect A rect to be converted.
 // @returns {Object} Object containing `left` and `top` properties, in absolute coordinates.
 function getAbsoluteRectCoordinates( { left, top } ) {
+	const { scrollX, scrollY } = global.window;
+
 	return {
-		left: left + window.scrollX,
-		top: top + window.scrollY,
+		left: left + scrollX,
+		top: top + scrollY,
 	};
 }
 

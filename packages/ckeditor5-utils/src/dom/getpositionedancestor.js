@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window */
-
 /**
  * @module utils/dom/getpositionedancestor
  */
+
+import global from './global.js';
 
 /**
  * For a given element, returns the nearest ancestor element which CSS position is not "static".
@@ -17,7 +17,7 @@
  */
 export default function getPositionedAncestor( element ) {
 	while ( element && element.tagName.toLowerCase() != 'html' ) {
-		if ( window.getComputedStyle( element ).position != 'static' ) {
+		if ( global.window.getComputedStyle( element ).position != 'static' ) {
 			return element;
 		}
 

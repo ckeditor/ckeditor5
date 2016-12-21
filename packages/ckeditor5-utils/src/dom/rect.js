@@ -3,12 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global window */
-
 /**
  * @module utils/dom/rect
  */
 
+import global from './global.js';
 import isRange from './isrange.js';
 import isElement from '../../utils/lib/lodash/isElement.js';
 
@@ -186,7 +185,7 @@ export default class Rect {
 	 * @returns {module:utils/dom/rect~Rect} A viewport rect.
 	 */
 	static getViewportRect() {
-		const { innerWidth, innerHeight } = window;
+		const { innerWidth, innerHeight } = global.window;
 
 		return new Rect( {
 			top: 0,

@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document, window */
+/* global document */
 
+import global from 'ckeditor5/utils/dom/global.js';
 import Rect from 'ckeditor5/utils/dom/rect.js';
 import testUtils from 'tests/core/_utils/utils.js';
 
@@ -325,10 +326,12 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should return the viewport\'s rect', () => {
-			window.scrollX = 100;
-			window.scrollY = 200;
-			window.innerWidth = 1000;
-			window.innerHeight = 500;
+			testUtils.sinon.stub( global, 'window', {
+				innerWidth: 1000,
+				innerHeight: 500,
+				scrollX: 100,
+				scrollY: 200
+			} );
 
 			assertRect( Rect.getViewportRect(), {
 				top: 0,
