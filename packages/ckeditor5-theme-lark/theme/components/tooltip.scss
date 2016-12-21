@@ -120,7 +120,7 @@ $ck-tooltip-arrow-size: 5px;
 	}
 
 	@include ck-tooltip__arrow {
-		bottom: 0px;
+		bottom: 0;
 		transform: translate( -50%, 100% );
 		border-color: transparent transparent ck-color( 'text' ) transparent;
 		border-width: 0 $ck-tooltip-arrow-size $ck-tooltip-arrow-size $ck-tooltip-arrow-size;
