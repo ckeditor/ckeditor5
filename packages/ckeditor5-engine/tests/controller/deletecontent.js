@@ -157,6 +157,7 @@ describe( 'DataController', () => {
 				schema.registerItem( 'image', '$inline' );
 
 				schema.allow( { name: 'pchild', inside: 'paragraph' } );
+				schema.allow( { name: '$text', inside: 'pchild' } );
 				schema.allow( { name: 'paragraph', attributes: [ 'align' ] } );
 			} );
 

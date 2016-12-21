@@ -25,13 +25,19 @@ describe( 'model test utils', () => {
 		document.schema.registerItem( 'a', '$inline' );
 		document.schema.allow( { name: 'a', inside: '$root' } );
 		document.schema.allow( { name: 'a', inside: '$root', attributes: [ 'bar', 'car', 'foo' ] } );
+
 		document.schema.registerItem( 'b', '$inline' );
 		document.schema.allow( { name: 'b', inside: '$root' } );
 		document.schema.allow( { name: 'b', inside: '$root', attributes: [ 'barFoo', 'fooBar', 'x' ] } );
+
 		document.schema.registerItem( 'c', '$inline' );
 		document.schema.allow( { name: 'c', inside: '$root' } );
+
 		document.schema.registerItem( 'paragraph', '$block' );
 		document.schema.allow( { name: '$text', inside: '$root' } );
+		document.schema.allow( { name: '$text', inside: 'a' } );
+		document.schema.allow( { name: '$text', inside: 'b' } );
+		document.schema.allow( { name: 'c', inside: 'b' } );
 	} );
 
 	afterEach( () => {
@@ -480,7 +486,7 @@ describe( 'model test utils', () => {
 		it( 'throws when try to set element not registered in schema', () => {
 			expect( () => {
 				parse( '<xyz></xyz>', document.schema );
-			} ).to.throw( Error, `Element 'xyz' not allowed in context.` );
+			} ).to.throw( Error, `Element 'xyz' not allowed in context ["$root"].` );
 		} );
 
 		it( 'throws when try to set text directly to $root without registering it', () => {
@@ -488,7 +494,7 @@ describe( 'model test utils', () => {
 
 			expect( () => {
 				parse( 'text', doc.schema );
-			} ).to.throw( Error, `Element '$text' not allowed in context.` );
+			} ).to.throw( Error, `Element '$text' not allowed in context ["$root"].` );
 		} );
 
 		it( 'converts data in the specified context', () => {

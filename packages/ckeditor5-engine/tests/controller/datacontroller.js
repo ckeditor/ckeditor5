@@ -339,7 +339,10 @@ describe( 'DataController', () => {
 	describe( 'stringify', () => {
 		beforeEach( () => {
 			modelDocument.schema.registerItem( 'paragraph', '$block' );
-			modelDocument.schema.registerItem( 'div', '$block' );
+			modelDocument.schema.registerItem( 'div' );
+
+			modelDocument.schema.allow( { name: '$block', inside: 'div' } );
+			modelDocument.schema.allow( { name: 'div', inside: '$root' } );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 		} );
@@ -360,7 +363,10 @@ describe( 'DataController', () => {
 	describe( 'toView', () => {
 		beforeEach( () => {
 			modelDocument.schema.registerItem( 'paragraph', '$block' );
-			modelDocument.schema.registerItem( 'div', '$block' );
+			modelDocument.schema.registerItem( 'div' );
+
+			modelDocument.schema.allow( { name: '$block', inside: 'div' } );
+			modelDocument.schema.allow( { name: 'div', inside: '$root' } );
 
 			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
 		} );

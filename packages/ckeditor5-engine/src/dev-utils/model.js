@@ -354,7 +354,7 @@ function convertToModelElement() {
 		};
 
 		if ( !conversionApi.schema.check( schemaQuery ) ) {
-			throw new Error( `Element '${ schemaQuery.name }' not allowed in context.` );
+			throw new Error( `Element '${ schemaQuery.name }' not allowed in context ${ JSON.stringify( data.context ) }.` );
 		}
 
 		// View attribute value is a string so we want to typecast it to the original type.
@@ -380,7 +380,7 @@ function convertToModelText( withAttributes = false ) {
 		};
 
 		if ( !conversionApi.schema.check( schemaQuery ) ) {
-			throw new Error( `Element '${ schemaQuery.name }' not allowed in context.` );
+			throw new Error( `Element '${ schemaQuery.name }' not allowed in context ${ JSON.stringify( data.context ) }.` );
 		}
 
 		let node;
