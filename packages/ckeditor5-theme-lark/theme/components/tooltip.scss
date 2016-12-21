@@ -79,8 +79,9 @@ $ck-tooltip-arrow-size: 5px;
 		pointer-events: none;
 
 		// For the transition to work, the tooltip must be controlled
-		// using visibility+opacity.
-		transition: opacity .2s ease-in-out;
+		// using visibility+opacity. A delay prevents a "tooltip avalanche"
+		// i.e. when scanning the toolbar with mouse cursor.
+		transition: opacity .2s ease-in-out .2s;
 
 		// This is to get rid of flickering when transitioning opacity in Chrome.
 		// It's weird but it works.
