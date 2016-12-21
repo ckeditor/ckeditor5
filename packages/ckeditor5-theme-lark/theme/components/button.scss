@@ -124,11 +124,10 @@ a.ck-button {
 		@include ck-tooltip_visible();
 	}
 
-	// 1. Get rid of the focus outline around the tooltip when focused (but not :hover).
-	// 2. Don't display tooltips for disabled buttons, they're unavailable anyway.
-	// 3. Don't display tooltips for buttons with text; text explains the button anyway.
+	// Tooltip tweaks:
+	//   1. Get rid of the focus outline around the tooltip when focused (but not :hover).
+	//   2. Don't display tooltips for buttons with text; text explains the button anyway.
 	&:focus:not(:hover),
-	&.ck-disabled,
 	&.ck-button_with-text {
 		@include ck-tooltip_disabled();
 	}

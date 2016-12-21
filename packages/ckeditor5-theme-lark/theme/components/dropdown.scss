@@ -23,17 +23,20 @@
 	}
 
 	.ck-button.ck-dropdown__button {
+		// Tooltips are disabled for buttons with text. Dropdowns are a different
+		// case because their buttons do not trigger the action itself but
+		// give an access to a set of actions. What is displayed in the button
+		// label not necessarily describes purpose of the dropdown (but it's state)
+		// so tooltips should be enabled here.
 		@include ck-tooltip_enabled();
 
-		&:hover,
-		&:focus:hover {
+		&:hover {
 			@include ck-tooltip_visible();
 		}
 
-		// 1. Get rid of the focus outline around the tooltip when focused (but not :hover).
-		// 2. Don't display tooltips for disabled buttons, they're unavailable anyway.
-		&:focus:not(:hover),
-		&.ck-disabled {
+		// Get rid of the focus outline around the tooltip when focused
+		// (but keep it when :hover).
+		&:focus:not(:hover) {
 			@include ck-tooltip_disabled();
 		}
 
