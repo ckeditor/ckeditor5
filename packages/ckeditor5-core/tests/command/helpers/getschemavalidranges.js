@@ -42,7 +42,7 @@ describe( 'getSchemaValidRanges', () => {
 		expect( getSchemaValidRanges( attribute, ranges, schema ) ).to.deep.equal( ranges );
 	} );
 
-	it( 'should return two ranges when attribute is not allowed in one item', () => {
+	it( 'should return two ranges when attribute is not allowed on one item', () => {
 		schema.allow( { name: 'img', attributes: 'bold', inside: 'p' } );
 		schema.allow( { name: '$text', inside: 'img' } );
 
