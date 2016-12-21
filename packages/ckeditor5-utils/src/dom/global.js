@@ -16,11 +16,11 @@
  *
  *		import global from 'ckeditor5/utils/dom/global.js';
  *
- *		const window = global.window;
- *
  *		// This stub will work for any code using global module.
  *		testUtils.sinon.stub( global, 'window', {
  *			innerWidth: 10000
  *		} );
+ *
+ *		console.log( global.window.innerWidth );
  */
 export default { window, document };
