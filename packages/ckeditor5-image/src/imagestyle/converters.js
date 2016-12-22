@@ -14,7 +14,7 @@ import { isImage, getStyleByValue } from './utils.js';
  *
  * @param {Object} styles Object containing available styles. See {@link module:image/imagestyle/imagestyleengine~ImageStyleFormat}
  * for more details.
- * @return {Function} Model to view attribute converter.
+ * @returns {Function} Model to view attribute converter.
  */
 export function modelToViewSetStyle( styles ) {
 	return ( evt, data, consumable, conversionApi ) => {
@@ -54,7 +54,7 @@ export function modelToViewSetStyle( styles ) {
  * Returns view to model converter converting image style CSS class to proper value in the model.
  *
  * @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} style Style for which converter is created.
- * @return {Function} View to model converter.
+ * @returns {Function} View to model converter.
  */
 export function viewToModelImageStyle( style ) {
 	return ( evt, data, consumable, conversionApi ) => {

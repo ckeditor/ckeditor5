@@ -34,10 +34,10 @@ export default class ImageStyleCommand extends Command {
 		this.set( 'value', false );
 
 		/**
-		 * Image styles uses by this command.
+		 * Allowed image styles used by this command.
 		 *
 		 * @readonly
-		 * @member {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat>} Allowed image styles.
+		 * @member {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat>} #styles
 		 */
 		this.styles = styles;
 
