@@ -308,9 +308,9 @@ function text() {
 	return new TextView();
 }
 
-function icon( name ) {
+function icon( content ) {
 	const icon = new IconView();
-	icon.name = name;
+	icon.content = content;
 
 	return icon;
 }
