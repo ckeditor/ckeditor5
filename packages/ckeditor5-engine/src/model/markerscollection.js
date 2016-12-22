@@ -29,9 +29,12 @@ import mix from '../../utils/mix.js';
  * using {@link module:engine/conversion/buildmodelconverter~buildModelConverter model converter builder}.
  *
  * Markers are similar to adding and converting attributes on nodes. The difference is that attribute is connected to
- * a given node (i.e. a character is bold no matter if it gets moved or content around it changes). Markers on the
- * other hand are continuous ranges (i.e. if a character from inside of marker range is moved somewhere else, marker
- * range is shrunk and the character does not have any attribute or information that it was in the marked range).
+ * a given node (e.g. a character is bold no matter if it gets moved or content around it changes). Markers on the
+ * other hand are continuous ranges (e.g. if a character from inside of marker range is moved somewhere else, marker
+ * range is shrunk and the character does not have any attribute or information that it was in the marked range). Another
+ * upside of markers is that finding marked text is fast and easy. Using attributes to mark some nodes and then trying to
+ * find that part of document would require traversing whole document tree. For markers, only marker name is needed
+ * and a proper range can {@link module:engine/model/markerscollection~MarkersCollection#get be obtained} from the collection.
  */
 export default class MarkersCollection {
 	/**
@@ -102,27 +105,17 @@ export default class MarkersCollection {
 	}
 
 	/**
-	 * Removes a live range from markers collection.
+	 * Removes a live range having given `name` from markers collection.
 	 *
-	 * @param {String|module:engine/model/liverange~LiveRange} nameOrRange Name of live range to remove or live range instance.
+	 * @param {String} name Name of live range to remove.
 	 * @returns {Boolean} `true` is passed if range was found and removed from the markers collection, `false` otherwise.
 	 */
-	remove( nameOrRange ) {
-		if ( nameOrRange instanceof LiveRange ) {
-			const name = this._getMarkerName( nameOrRange );
-
-			if ( name ) {
-				return this.remove( name );
-			}
-
-			return false;
-		}
-
-		const range = this._nameToRange.get( nameOrRange );
+	remove( name ) {
+		const range = this._nameToRange.get( name );
 
 		if ( range ) {
-			this._nameToRange.delete( nameOrRange );
-			this.fire( 'remove', nameOrRange, Range.createFromRange( range ) );
+			this._nameToRange.delete( name );
+			this.fire( 'remove', name, Range.createFromRange( range ) );
 
 			return true;
 		}
@@ -131,32 +124,20 @@ export default class MarkersCollection {
 	}
 
 	/**
-	 * Substitutes given `oldLiveRange`, that was already added to the markers collection, with given `newLiveRange`.
+	 * Substitutes range having given `name`, that was already added to the markers collection, with given `newLiveRange`.
 	 *
 	 * This method is basically a wrapper for using {@link module:engine/model/markerscollection~MarkersCollection#removeRange removeRange}
 	 * followed by using {@link module:engine/model/markerscollection~MarkersCollection#addRange addRange}.
 	 *
-	 * **Note**: this method does not change properties of `oldLiveRange`.
-	 *
-	 * @param {String|module:engine/model/liverange~LiveRange} nameOrRange Name of range or range instance to be changed.
+	 * @param {String} name Name of a range to be changed.
 	 * @param {module:engine/model/liverange~LiveRange} newLiveRange Live range to be added.
-	 * @returns {Boolean} `true` if `oldLiveRange` was found and changed, `false` otherwise.
+	 * @returns {Boolean} `true` if range for given `name` was found and changed, `false` otherwise.
 	 */
-	update( nameOrRange, newLiveRange ) {
-		if ( nameOrRange instanceof LiveRange ) {
-			const name = this._getMarkerName( nameOrRange );
-
-			if ( name ) {
-				return this.update( name, newLiveRange );
-			}
-
-			return false;
-		}
-
-		const removed = this.remove( nameOrRange );
+	update( name, newLiveRange ) {
+		const removed = this.remove( name );
 
 		if ( removed ) {
-			this.add( nameOrRange, newLiveRange );
+			this.add( name, newLiveRange );
 		}
 
 		return removed;
@@ -167,23 +148,6 @@ export default class MarkersCollection {
 	 */
 	destroy() {
 		this.stopListening();
-	}
-
-	/**
-	 * Returns range for given name.
-	 *
-	 * @private
-	 * @param {module:engine/model/liverange~LiveRange} range Range for which name should be obtained.
-	 * @returns {String|null} Name of the range or `null` if range has not been added to the collection.
-	 */
-	_getMarkerName( range ) {
-		for ( let [ markerName, markerRange ] of this ) {
-			if ( markerRange == range ) {
-				return markerName;
-			}
-		}
-
-		return null;
 	}
 }
 
