@@ -10,7 +10,7 @@
 import Plugin from '../../core/plugin.js';
 import ImageStyleCommand from './imagestylecommand.js';
 import ImageEngine from '../imageengine.js';
-import { addStyle, changeStyle, removeStyle, viewToModelImageStyle } from './converters.js';
+import { viewToModelImageStyle, modelToViewSetStyle } from './converters.js';
 
 /**
  * The image style engine plugin. Sets default configuration, creates converters and registers
@@ -52,18 +52,18 @@ export default class ImageStyleEngine extends Plugin {
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
 		schema.allow( { name: 'image', attributes: 'imageStyle', inside: '$root' } );
 
-		// Converters for models element imageStyle attribute.
-		editing.modelToView.on( 'addAttribute:imageStyle', addStyle( styles ) );
-		data.modelToView.on( 'addAttribute:imageStyle', addStyle( styles ) );
-		editing.modelToView.on( 'changeAttribute:imageStyle', changeStyle( styles ) );
-		data.modelToView.on( 'changeAttribute:imageStyle', changeStyle( styles ) );
-		editing.modelToView.on( 'removeAttribute:imageStyle', removeStyle( styles ) );
-		data.modelToView.on( 'removeAttribute:imageStyle', removeStyle( styles ) );
+		// Converters for imageStyle attribute from model to view.
+		editing.modelToView.on( 'addAttribute:imageStyle:image', modelToViewSetStyle( styles ) );
+		data.modelToView.on( 'addAttribute:imageStyle:image', modelToViewSetStyle( styles ) );
+		editing.modelToView.on( 'changeAttribute:imageStyle:image', modelToViewSetStyle( styles ) );
+		data.modelToView.on( 'changeAttribute:imageStyle:image', modelToViewSetStyle( styles ) );
+		editing.modelToView.on( 'removeAttribute:imageStyle:image', modelToViewSetStyle( styles ) );
+		data.modelToView.on( 'removeAttribute:imageStyle:image', modelToViewSetStyle( styles ) );
 
+		// Converter for figure element from view to model.
 		for ( let key in styles ) {
 			const style = styles[ key ];
 
-			// Converter for figure element from view to model.
 			// Create converter only for non-null values.
 			if ( style.value !== null ) {
 				data.viewToModel.on( 'element:figure', viewToModelImageStyle( style ), { priority: 'low' } );
@@ -79,7 +79,7 @@ export default class ImageStyleEngine extends Plugin {
  * Image style format descriptor.
  *
  * @typedef {Object} module:image/imagestyle/imagestyleengine~ImageStyleFormat
- * @property {String} value Value used to store this style in model.
+ * @property {String} value Value used to store this style in model attribute.
  * When value is `null` style will be used as default one. Default style does not apply any CSS class to the view element.
  * @property {String} icon Icon name to use when creating style's toolbar button.
  * @property {String} title Style's title.

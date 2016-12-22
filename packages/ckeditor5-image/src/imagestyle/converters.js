@@ -9,70 +9,53 @@
 
 import { isImage, getStyleByValue } from './utils.js';
 
-export function addStyle( styles ) {
-	return ( event, data, consumable, conversionApi ) => {
-		// Check if we can consume, and we are adding in image.
-		if ( !consumable.test( data.item, 'addAttribute:imageStyle' ) || !isImage( data.item ) ) {
-			return;
-		}
+/**
+ * Returns converter for `imageStyle` attribute. It can be used for adding, changing and removing the attribute.
+ *
+ * @param {Object} styles Object containing available styles. See {@link module:image/imagestyle/imagestyleengine~ImageStyleFormat}
+ * for more details.
+ * @return {Function} Model to view attribute converter.
+ */
+export function modelToViewSetStyle( styles ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		const eventType = evt.name.split( ':' )[ 0 ];
+		const consumableType = eventType + ':imageStyle';
 
-		// Check if there is class name associated with given value.
-		const newStyle = getStyleByValue( data.attributeNewValue, styles );
-
-		// Check if new style is allowed in configuration.
-		if ( !newStyle ) {
-			return;
-		}
-
-		consumable.consume( data.item, 'addAttribute:imageStyle' );
-		conversionApi.mapper.toViewElement( data.item ).addClass( newStyle.className );
-	};
-}
-
-export function changeStyle( styles ) {
-	return ( event, data, consumable, conversionApi ) => {
-		if ( !consumable.test( data.item, 'changeAttribute:imageStyle' ) || !isImage( data.item ) ) {
+		if ( !consumable.test( data.item, consumableType ) ) {
 			return;
 		}
 
 		// Check if there is class name associated with given value.
 		const newStyle = getStyleByValue( data.attributeNewValue, styles );
 		const oldStyle = getStyleByValue( data.attributeOldValue, styles );
+		const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-		// Check if new style is allowed in configuration.
-		if ( !newStyle || !oldStyle ) {
-			return;
+		if ( eventType == 'addAttribute' || eventType == 'changeAttribute' ) {
+			if ( !newStyle ) {
+				return;
+			}
+
+			viewElement.addClass( newStyle.className );
 		}
 
-		consumable.consume( data.item, 'changeAttribute:imageStyle' );
-		const viewElement = conversionApi.mapper.toViewElement( data.item );
-		viewElement.removeClass( data.attributeOldValue );
-		viewElement.addClass( newStyle.className );
+		if ( eventType == 'changeAttribute' || eventType == 'removeAttribute' ) {
+			if ( !oldStyle ) {
+				return;
+			}
+
+			viewElement.removeClass( data.attributeOldValue );
+		}
+
+		consumable.consume( data.item, consumableType );
 	};
 }
 
-export function removeStyle( styles ) {
-	return ( event, data, consumable, conversionApi ) => {
-		if ( !consumable.test( data.item, 'removeAttribute:imageStyle' ) || !isImage( data.item ) ) {
-			return;
-		}
-
-		// Check if there is class name associated with given value.
-		const newStyle = getStyleByValue( data.attributeNewValue, styles );
-		const oldStyle = getStyleByValue( data.attributeOldValue, styles );
-
-		// Check if styles are allowed in configuration.
-		if ( !newStyle || !oldStyle ) {
-			return;
-		}
-
-		consumable.consume( data.item, 'removeAttribute:imageStyle' );
-
-		const viewElement = conversionApi.mapper.toViewElement( data.item );
-		viewElement.removeClass( oldStyle.className );
-	};
-}
-
+/**
+ * Returns view to model converter converting image style CSS class to proper value in the model.
+ *
+ * @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} style Style for which converter is created.
+ * @return {Function} View to model converter.
+ */
 export function viewToModelImageStyle( style ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		const viewFigureElement = data.input;
