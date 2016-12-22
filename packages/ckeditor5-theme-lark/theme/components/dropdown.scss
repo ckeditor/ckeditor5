@@ -4,30 +4,42 @@
 .ck-dropdown {
 	display: inline-block;
 	position: relative;
-}
 
-.ck-dropdown__button {
-	&:after {
+	// A triangle displayed to indicate this is actually a dropdown.
+	&::after {
 		content: '';
 		width: 0;
 		height: 0;
 		border-style: solid;
 		border-width: .4em .4em 0 .4em;
 		border-color: ck-color( 'text', 30 ) transparent;
-		position: relative;
-		top: .9em;
-		margin-left: ck-spacing( 'medium' );
+		pointer-events: none;
+
+		position: absolute;
+		top: 50%;
+		right: ck-spacing();
+		z-index: ck-z();
+		transform: translate( 0, -50% );
 	}
 
-	// #23
-	.ck-button__label {
-		width: 7em;
-		overflow: hidden;
-		text-overflow: ellipsis;
+	.ck-button.ck-dropdown__button {
+		// A space to accommodate the triangle.
+		padding-right: 2 * ck-spacing();
+
+		// #23
+		.ck-button__label {
+			width: 7em;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
 	}
 }
 
 .ck-dropdown__panel {
+	// This is to get rid of flickering when the tooltip is shown under the panel,
+	// which looks like the panel moves vertically a pixel down and up.
+	-webkit-backface-visibility: hidden;
+
 	border: 1px solid ck-border-color( 'foreground' );
 	display: none;
 	position: absolute;
@@ -38,10 +50,10 @@
 
 	transform: translateY( 100% );
 	background: ck-color( 'background' );
-	z-index: ck-z();
+	z-index: ck-z( 'modal' );
 
 	@include ck-rounded-corners();
-	@include ck-dropshadow();
+	@include ck-drop-shadow();
 
 	&-visible {
 		display: inline-block;

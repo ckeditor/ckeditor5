@@ -16,7 +16,11 @@
 	position: relative;
 
 	@include ck-button-colors( $color );
-	@include ck-user-focus-outline();
+
+	&:focus {
+		@include ck-focus-ring();
+		@include ck-box-shadow( $ck-focus-outer-shadow );
+	}
 }
 
 /**
@@ -68,12 +72,12 @@
 .ck-button,
 a.ck-button {
 	display: inline-block;
-	overflow: hidden;
 	padding: ck-spacing( 'small' );
 
 	@include ck-button( 'background' );
 	@include ck-unselectable();
 	@include ck-rounded-corners();
+	@include ck-tooltip_enabled();
 
 	@include ck-button-icon {
 		float: left;
@@ -118,6 +122,15 @@ a.ck-button {
 		use * {
 			color: inherit;
 		}
+	}
+
+	&:hover {
+		@include ck-tooltip_visible();
+	}
+
+	// Get rid of the focus outline around the tooltip when focused (but not :hover).
+	&:focus:not(:hover) {
+		@include ck-tooltip_disabled();
 	}
 
 	.ck-button__label {

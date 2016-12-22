@@ -1,6 +1,26 @@
 // Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
-@mixin ck-dropshadow() {
-	box-shadow: 0 0 5px ck-color( 'shadow' );
+/**
+ * A visual style of element's inner shadow (i.e. input).
+ */
+$ck-inner-shadow: 2px 2px 3px ck-color( 'foreground', -7 ) inset;
+
+/**
+ * A visual style of element's drop shadow (i.e. panel).
+ */
+$ck-drop-shadow: 0 0 5px ck-color( 'shadow' );
+
+/**
+ * A helper to combine multiple shadows.
+ */
+@mixin ck-box-shadow($shadows...) {
+	box-shadow: $shadows;
+}
+
+/**
+ * Gives an element a drop shadow so it looks like a floating panel.
+ */
+@mixin ck-drop-shadow() {
+	@include ck-box-shadow( $ck-drop-shadow );
 }

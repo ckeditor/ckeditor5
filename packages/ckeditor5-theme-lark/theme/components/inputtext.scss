@@ -4,11 +4,15 @@
 .ck-input {
 	&-text {
 		@include ck-rounded-corners();
-		@include ck-user-focus-outline();
+		@include ck-box-shadow( $ck-inner-shadow );
 
 		border: 1px solid ck-border-color( 'foreground' );
 		padding: ck-spacing( 'medium' );
 		min-width: 250px;
-		box-shadow: 0 2px 3px ck-color( 'foreground', -7 ) inset;
+
+		&:focus {
+			@include ck-focus-ring();
+			@include ck-box-shadow( $ck-focus-outer-shadow, $ck-inner-shadow );
+		}
 	}
 }

@@ -1,31 +1,46 @@
 // Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
+/**
+ * A visual style of focused element's outer shadow.
+ */
+$ck-focus-outer-shadow: 0 0 3px 2px lighten( ck-color( 'focus' ), 10% );
+
+/**
+ * A visual style of focused element's border or outline.
+ */
+$ck-focus-ring: 1px solid ck-color( 'focus' );
+
+/**
+ * A class which hides an element in DOM.
+ */
 .ck-hidden {
 	display: none;
 }
 
+/**
+ * A class which indicates that an element holding it is disabled.
+ */
 .ck-disabled {
 	opacity: .5;
 }
 
 /**
- * A visual styling of focused element.
- *
- * @access public
+ * A visual style of focused element's border or outline.
  */
-@mixin ck-focus-outline() {
-	outline: thin dotted;
-	outline: 5px auto -webkit-focus-ring-color;
-
-	// To avoid collision with border in Firefox.
-	outline-offset: -2px;
+@mixin ck-focus-ring( $borderOrOutline: 'border' ) {
+	@if $borderOrOutline == 'outline' {
+		outline: $ck-focus-ring;
+	}
+	@else {
+		// Disable native outline.
+		outline: none;
+		border: $ck-focus-ring;
+	}
 }
 
 /**
  * Brings visual styling for :focus state.
- *
- * @access public
  */
 @mixin ck-user-focus-outline() {
 	&:focus {
@@ -35,8 +50,6 @@
 
 /**
  * Makes element unselectable.
- *
- * @access public
  */
 @mixin ck-unselectable() {
 	-moz-user-select: none;
