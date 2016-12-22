@@ -21,6 +21,16 @@
 		&.ck-on {
 			@include ck-button-colors( 'foreground', -10 );
 		}
+
+		// Tooltip tweaks:
+		//    1. Don't display tooltips for disabled buttons in the toolbar,
+		//       they're unavailable anyway.
+		//    2. Don't display tooltips for buttons with text; text explains
+		//       the button anyway.
+		&.ck-button_with-text:not(.ck-dropdown__button),
+		&.ck-disabled {
+			@include ck-tooltip_disabled();
+		}
 	}
 
 	.ck-dropdown__button {
