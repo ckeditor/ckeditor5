@@ -11,6 +11,13 @@ import Plugin from '../../core/plugin.js';
 import ImageStyleEngine from './imagestyleengine.js';
 import ButtonView from '../../ui/button/buttonview.js';
 
+/**
+ * The image style plugin.
+ *
+ * Uses {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine}.
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class ImageStyle extends Plugin {
 	/**
 	 * @inheritDoc
@@ -23,16 +30,19 @@ export default class ImageStyle extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const editor = this.editor;
-
-		// Get configuration.
-		const styles = editor.config.get( 'image.styles' );
+		const styles = this.editor.config.get( 'image.styles' );
 
 		for ( let style of styles ) {
 			this._createButton( style );
 		}
 	}
 
+	/**
+	 * Creates button for each style and stores it in editor's {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
+	 *
+	 * @private
+	 * @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} style
+	 */
 	_createButton( style ) {
 		const editor = this.editor;
 		const command = editor.commands.get( 'imagestyle' );
@@ -52,7 +62,6 @@ export default class ImageStyle extends Plugin {
 				return commandValue == style.value;
 			} );
 
-			// // Execute command.
 			this.listenTo( view, 'execute', () => editor.execute( 'imagestyle', { value: style.value } ) );
 
 			return view;

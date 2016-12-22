@@ -116,4 +116,3 @@ export default class ImageStyleCommand extends Command {
 		} );
 	}
 }
-
