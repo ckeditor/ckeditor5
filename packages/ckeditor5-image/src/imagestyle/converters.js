@@ -30,20 +30,20 @@ export function modelToViewSetStyle( styles ) {
 		const oldStyle = getStyleByValue( data.attributeOldValue, styles );
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 
+		if ( eventType == 'changeAttribute' || eventType == 'removeAttribute' ) {
+			if ( !oldStyle ) {
+				return;
+			}
+
+			viewElement.removeClass( oldStyle.className );
+		}
+
 		if ( eventType == 'addAttribute' || eventType == 'changeAttribute' ) {
 			if ( !newStyle ) {
 				return;
 			}
 
 			viewElement.addClass( newStyle.className );
-		}
-
-		if ( eventType == 'changeAttribute' || eventType == 'removeAttribute' ) {
-			if ( !oldStyle ) {
-				return;
-			}
-
-			viewElement.removeClass( data.attributeOldValue );
 		}
 
 		consumable.consume( data.item, consumableType );
