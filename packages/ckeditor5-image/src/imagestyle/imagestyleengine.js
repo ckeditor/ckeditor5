@@ -53,12 +53,13 @@ export default class ImageStyleEngine extends Plugin {
 		schema.allow( { name: 'image', attributes: 'imageStyle', inside: '$root' } );
 
 		// Converters for imageStyle attribute from model to view.
-		editing.modelToView.on( 'addAttribute:imageStyle:image', modelToViewSetStyle( styles ) );
-		data.modelToView.on( 'addAttribute:imageStyle:image', modelToViewSetStyle( styles ) );
-		editing.modelToView.on( 'changeAttribute:imageStyle:image', modelToViewSetStyle( styles ) );
-		data.modelToView.on( 'changeAttribute:imageStyle:image', modelToViewSetStyle( styles ) );
-		editing.modelToView.on( 'removeAttribute:imageStyle:image', modelToViewSetStyle( styles ) );
-		data.modelToView.on( 'removeAttribute:imageStyle:image', modelToViewSetStyle( styles ) );
+		const modelToViewConverter = modelToViewSetStyle( styles );
+		editing.modelToView.on( 'addAttribute:imageStyle:image', modelToViewConverter );
+		data.modelToView.on( 'addAttribute:imageStyle:image', modelToViewConverter );
+		editing.modelToView.on( 'changeAttribute:imageStyle:image', modelToViewConverter );
+		data.modelToView.on( 'changeAttribute:imageStyle:image', modelToViewConverter );
+		editing.modelToView.on( 'removeAttribute:imageStyle:image', modelToViewConverter );
+		data.modelToView.on( 'removeAttribute:imageStyle:image', modelToViewConverter );
 
 		// Converter for figure element from view to model.
 		for ( let style of styles ) {
