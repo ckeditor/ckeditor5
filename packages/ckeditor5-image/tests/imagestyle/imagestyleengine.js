@@ -17,9 +17,11 @@ describe( 'ImageStyleEngine', () => {
 		return VirtualTestEditor.create( {
 			plugins: [ ImageStyleEngine ],
 			image: {
-				styles: {
-					imageStyleDummy: { title: 'Dummy style', icon: 'dummy-icon', value: 'dummy', className: 'image-style-dummy' }
-				}
+				styles: [
+					{ name: 'fullStyle', title: 'foo', icon: 'object-center', value: null },
+					{ name: 'sideStyle', title: 'bar', icon: 'object-right', value: 'side', className: 'side-class' },
+					{ name: 'dummyStyle', title: 'baz', icon: 'object-dummy', value: 'dummy', className: 'dummy-class' }
+				]
 			}
 		} )
 			.then( newEditor => {
@@ -51,7 +53,7 @@ describe( 'ImageStyleEngine', () => {
 	} );
 
 	it( 'should convert from view to model', () => {
-		editor.setData( '<figure class="image image-style-side"><img src="foo.png" /></figure>' );
+		editor.setData( '<figure class="image side-class"><img src="foo.png" /></figure>' );
 
 		expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image imageStyle="side" src="foo.png"></image>' );
 	} );
@@ -63,14 +65,14 @@ describe( 'ImageStyleEngine', () => {
 	} );
 
 	it( 'should not convert from view to model when not in image figure', () => {
-		editor.setData( '<figure class="image-style-side"></figure>'  );
+		editor.setData( '<figure class="side-class"></figure>'  );
 
 		expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '' );
 	} );
 
 	it( 'should not convert from view to model if schema prevents it', () => {
 		document.schema.disallow( { name: 'image', attributes: 'imageStyle' } );
-		editor.setData( '<figure class="image image-style-side"><img src="foo.png" /></figure>' );
+		editor.setData( '<figure class="image side-class"><img src="foo.png" /></figure>' );
 
 		expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image src="foo.png"></image>' );
 	} );
@@ -84,7 +86,7 @@ describe( 'ImageStyleEngine', () => {
 			batch.setAttribute( image, 'imageStyle', 'side' );
 		} );
 
-		expect( editor.getData() ).to.equal( '<figure class="image image-style-side"><img src="foo.png"></figure>' );
+		expect( editor.getData() ).to.equal( '<figure class="image side-class"><img src="foo.png"></figure>' );
 	} );
 
 	it( 'should convert model to view: removing attribute', () => {
@@ -108,7 +110,7 @@ describe( 'ImageStyleEngine', () => {
 			batch.setAttribute( image, 'imageStyle', 'side' );
 		} );
 
-		expect( editor.getData() ).to.equal( '<figure class="image image-style-side"><img src="foo.png"></figure>' );
+		expect( editor.getData() ).to.equal( '<figure class="image side-class"><img src="foo.png"></figure>' );
 	} );
 
 	it( 'should not convert from model to view if already consumed: adding attribute', () => {
@@ -143,7 +145,7 @@ describe( 'ImageStyleEngine', () => {
 		} );
 
 		expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-			'<figure class="image ck-widget image-style-side" contenteditable="false"><img src="foo.png"></img></figure>'
+			'<figure class="image ck-widget side-class" contenteditable="false"><img src="foo.png"></img></figure>'
 		);
 	} );
 
@@ -161,7 +163,7 @@ describe( 'ImageStyleEngine', () => {
 		} );
 
 		expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-			'<figure class="image ck-widget image-style-dummy" contenteditable="false"><img src="foo.png"></img></figure>'
+			'<figure class="image ck-widget dummy-class" contenteditable="false"><img src="foo.png"></img></figure>'
 		);
 	} );
 

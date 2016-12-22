@@ -14,9 +14,7 @@ export function isImage( modelElement ) {
 }
 
 export function getStyleByValue( value, styles ) {
-	for ( let key in styles ) {
-		const style = styles[ key ];
-
+	for ( let style of styles ) {
 		if ( style.value === value ) {
 			return style;
 		}

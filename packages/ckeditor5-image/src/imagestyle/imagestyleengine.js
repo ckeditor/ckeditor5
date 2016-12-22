@@ -37,13 +37,13 @@ export default class ImageStyleEngine extends Plugin {
 		const editing = editor.editing;
 
 		// Define default configuration.
-		editor.config.define( 'image.styles', {
+		editor.config.define( 'image.styles', [
 			// This option is equal to situation when no style is applied at all.
-			imageStyleFull: { title: 'Full size image', icon: 'object-center', value: null },
+			{ name: 'imageStyleFull', title: 'Full size image', icon: 'object-center', value: null },
 
 			// This represents side image.
-			imageStyleSide: { title: 'Side image', icon: 'object-right', value: 'side', className: 'image-style-side' }
-		} );
+			{ name: 'imageStyleSide', title: 'Side image', icon: 'object-right', value: 'side', className: 'image-style-side' }
+		] );
 
 		// Get configuration.
 		const styles = editor.config.get( 'image.styles' );
@@ -61,9 +61,7 @@ export default class ImageStyleEngine extends Plugin {
 		data.modelToView.on( 'removeAttribute:imageStyle:image', modelToViewSetStyle( styles ) );
 
 		// Converter for figure element from view to model.
-		for ( let key in styles ) {
-			const style = styles[ key ];
-
+		for ( let style of styles ) {
 			// Create converter only for non-null values.
 			if ( style.value !== null ) {
 				data.viewToModel.on( 'element:figure', viewToModelImageStyle( style ), { priority: 'low' } );
@@ -79,6 +77,8 @@ export default class ImageStyleEngine extends Plugin {
  * Image style format descriptor.
  *
  * @typedef {Object} module:image/imagestyle/imagestyleengine~ImageStyleFormat
+ * @property {String} name Name of the style, it will be used to store style's button under that name in editor's
+ * {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
  * @property {String} value Value used to store this style in model attribute.
  * When value is `null` style will be used as default one. Default style does not apply any CSS class to the view element.
  * @property {String} icon Icon name to use when creating style's toolbar button.

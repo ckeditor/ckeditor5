@@ -28,18 +28,18 @@ export default class ImageStyle extends Plugin {
 		// Get configuration.
 		const styles = editor.config.get( 'image.styles' );
 
-		for ( let name in styles ) {
-			this._createButton( name, styles[ name ] );
+		for ( let style of styles ) {
+			this._createButton( style );
 		}
 	}
 
-	_createButton( name, style ) {
+	_createButton( style ) {
 		const editor = this.editor;
 		const command = editor.commands.get( 'imagestyle' );
 		const t = editor.t;
 
 		// Add bold button to feature components.
-		editor.ui.componentFactory.add( name, ( locale ) => {
+		editor.ui.componentFactory.add( style.name, ( locale ) => {
 			const view = new ButtonView( locale );
 
 			view.set( {

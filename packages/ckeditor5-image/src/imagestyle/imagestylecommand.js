@@ -20,12 +20,10 @@ export default class ImageStyleCommand extends Command {
 	 * Creates instance of the command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {Object} styles Allowed styles. See {@link module:image/imagestyle/imagestyleengine~ImageStyleFormat
-	 * ImageStyleFormat} for more information.
+	 * @param {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat>} styles Allowed styles.
 	 */
 	constructor( editor, styles ) {
 		super( editor );
-
 		/**
 		 * The current style value.
 		 *
@@ -39,7 +37,7 @@ export default class ImageStyleCommand extends Command {
 		 * Image styles uses by this command.
 		 *
 		 * @readonly
-		 * @member {Object} Allowed image styles. See {@link module:image/imagestyle/imagestyleengine~ImageStyleFormat}.
+		 * @member {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat>} Allowed image styles.
 		 */
 		this.styles = styles;
 

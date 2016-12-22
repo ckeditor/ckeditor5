@@ -8,10 +8,10 @@ import ImageStyleCommand from 'ckeditor5/image/imagestyle/imagestylecommand.js';
 import { setData, getData } from 'ckeditor5/engine/dev-utils/model.js';
 
 describe( 'ImageStyleCommand', () => {
-	const styles = {
-		defaultStyle: { title: 'foo bar', icon: 'icon-1', value: null },
-		otherStyle: { title: 'baz', icon: 'icon-2', value: 'other', className: 'other-class-name' }
-	};
+	const styles = [
+		{ name: 'defaultStyle', title: 'foo bar', icon: 'icon-1', value: null },
+		{ name: 'otherStyle', title: 'baz', icon: 'icon-2', value: 'other', className: 'other-class-name' }
+	];
 
 	let document, command;
 
