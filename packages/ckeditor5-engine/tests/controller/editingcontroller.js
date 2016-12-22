@@ -406,32 +406,6 @@ describe( 'EditingController', () => {
 
 			editing.modelToView.convertMarker.restore();
 		} );
-
-		it( 'should not start marker conversion if content is moved inside the marker', () => {
-			model.enqueueChanges( () => {
-				model.batch().insert( ModelPosition.createAt( model.getRoot(), 'end' ), new ModelElement( 'paragraph' ) );
-			} );
-
-			const markerRange = ModelLiveRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 4 );
-			const consumableMock = {
-				consume: () => true,
-				test: () => true
-			};
-
-			model.markers.add( 'name', markerRange );
-
-			sinon.spy( editing.modelToView, 'convertMarker' );
-
-			editing.modelToView.fire( 'move', {
-				sourcePosition: ModelPosition.createAt( modelRoot, 3 ),
-				targetPosition: ModelPosition.createAt( modelRoot, 1 ),
-				item: modelRoot.getChild( 1 )
-			}, consumableMock, { dispatcher: editing.modelToView, mapper: editing.mapper } );
-
-			expect( editing.modelToView.convertMarker.called ).to.be.false;
-
-			editing.modelToView.convertMarker.restore();
-		} );
 	} );
 
 	describe( 'destroy', () => {

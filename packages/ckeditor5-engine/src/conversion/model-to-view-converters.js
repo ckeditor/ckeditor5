@@ -192,7 +192,7 @@ export function removeAttribute( attributeCreator ) {
  *			|- c                                          |- c
  *
  * The wrapping node depends on passed parameter. If {@link module:engine/view/element~Element} was passed, it will be cloned and
- * the copy will become the wrapping element. If `Function` is provided, it is passed all the parameters of the
+ * the copy will become the wrapping element. If `Function` is provided, it is passed attribute value and then all the parameters of the
  * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addAttribute addAttribute event}.
  * It's expected that the function returns a {@link module:engine/view/element~Element}.
  * The result of the function will be the wrapping element.
@@ -271,7 +271,13 @@ export function unwrapItem( elementCreator ) {
 }
 
 /**
- * Function factory, creates a converter that converts new model marker to view attribute element.
+ * Function factory, creates a converter that wraps model range.
+ *
+ * In contrary to {@link module:engine/conversion/model-to-view-converters~wrapItem}, this converter's input is a
+ * {@link module:engine/model/range~Range model range} (not changed model item). The model range is mapped
+ * to {@link module:engine/view/range~Range view range} and then, view items within that view range are wrapped in a
+ * {@link module:engine/view/attributeelement~AttributeElement view attribute element}. Note, that `elementCreator`
+ * function of this converter takes different parameters that `elementCreator` of `wrapItem`.
  *
  * Let's assume following model and view. `{}` represents a range that is added as a marker with `searchResult` name.
  * The range represents a result of search `ab` string in the model document. The range has to be visualized in view.
@@ -525,7 +531,7 @@ export function moveInOutOfMarker( markersCollection ) {
 
 			if ( wasInMarker && !isInMarker ) {
 				conversionApi.dispatcher.convertMarker( 'removeMarker', name, movedRange );
-			} else if ( !wasInMarker && isInMarker ) {
+			} else if ( isInMarker ) {
 				conversionApi.dispatcher.convertMarker( 'addMarker', name, movedRange );
 			}
 		}

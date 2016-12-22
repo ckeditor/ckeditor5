@@ -48,23 +48,30 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	model.enqueueChanges( () => {
 		const root = model.getRoot();
 		const range = new LiveRange( new Position( root, [ 0, 10 ] ), new Position( root, [ 0, 16 ] ) );
+		const name = 'highlight:yellow:' + uid();
 
-		ranges.push( range );
-		model.markers.addRange( range, 'highlight:yellow' );
+		markerNames.push( name );
+		model.markers.add( name, range );
 	} );
 } )
 .catch( err => {
 	console.error( err.stack );
 } );
 
-const ranges = [];
+const markerNames = [];
+let _uid = 1;
+
+function uid() {
+	return _uid++;
+}
 
 function addHighlight( color ) {
 	model.enqueueChanges( () => {
 		const range = LiveRange.createFromRange( model.selection.getFirstRange() );
+		const name = 'highlight:' + color + ':' + uid();
 
-		ranges.push( range );
-		model.markers.addRange( range, 'highlight:' + color );
+		markerNames.push( name );
+		model.markers.add( name, range );
 	} );
 }
 
@@ -72,12 +79,15 @@ function removeHighlight() {
 	model.enqueueChanges( () => {
 		const pos = model.selection.getFirstPosition();
 
-		for ( let i = 0; i < ranges.length; i++ ) {
-			if ( ranges[ i ].containsPosition( pos ) || ranges[ i ].start.isEqual( pos ) || ranges[ i ].end.isEqual( pos ) ) {
-				model.markers.removeRange( ranges[ i ] );
+		for ( let i = 0; i < markerNames.length; i++ ) {
+			const name = markerNames[ i ];
+			const range = model.markers.get( name );
 
-				ranges[ i ].detach();
-				ranges.splice( i, 1 );
+			if ( range.containsPosition( pos ) || range.start.isEqual( pos ) || range.end.isEqual( pos ) ) {
+				model.markers.remove( name );
+				range.detach();
+
+				markerNames.splice( i, 1 );
 				break;
 			}
 		}
