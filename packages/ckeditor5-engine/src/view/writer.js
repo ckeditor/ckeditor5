@@ -275,7 +275,8 @@ export function mergeContainers( position ) {
 /**
  * Breaks given `range` on a set of {@link module:engine/view/range~Range ranges}, that each are contained within a
  * {@link module:engine/view/containerelement~ContainerElement container element}. After `range` is broken, it's "pieces" can
- * be used by other {@link module:engine/view/writer~writer} (which expect that passed ranges are contained within one container element).
+ * be used by other {@link module:engine/view/writer~writer} methods (which expect that passed ranges are contained within
+ * one container element).
  *
  * @function module:engine/view/writer~writer.breakViewRangePerContainer
  * @param {module:engine/view/range~Range} range Range to break.
