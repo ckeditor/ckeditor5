@@ -12,7 +12,7 @@ import { isImage, getStyleByValue } from './utils.js';
 export function addStyle( styles ) {
 	return ( event, data, consumable, conversionApi ) => {
 		// Check if we can consume, and we are adding in image.
-		if ( !consumable.consume( data.item, 'addAttribute:imageStyle' ) || !isImage( data.item ) ) {
+		if ( !consumable.test( data.item, 'addAttribute:imageStyle' ) || !isImage( data.item ) ) {
 			return;
 		}
 
@@ -24,13 +24,14 @@ export function addStyle( styles ) {
 			return;
 		}
 
+		consumable.consume( data.item, 'addAttribute:imageStyle' );
 		conversionApi.mapper.toViewElement( data.item ).addClass( newStyle.className );
 	};
 }
 
 export function changeStyle( styles ) {
 	return ( event, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.item, 'changeAttribute:imageStyle' ) || !isImage( data.item ) ) {
+		if ( !consumable.test( data.item, 'changeAttribute:imageStyle' ) || !isImage( data.item ) ) {
 			return;
 		}
 
@@ -43,6 +44,7 @@ export function changeStyle( styles ) {
 			return;
 		}
 
+		consumable.consume( data.item, 'changeAttribute:imageStyle' );
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 		viewElement.removeClass( data.attributeOldValue );
 		viewElement.addClass( newStyle.className );

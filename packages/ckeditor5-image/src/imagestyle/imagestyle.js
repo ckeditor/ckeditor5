@@ -26,7 +26,7 @@ export default class ImageStyle extends Plugin {
 		const editor = this.editor;
 
 		// Get configuration.
-		const styles = editor.config.get( 'image.styles.options' );
+		const styles = editor.config.get( 'image.styles' );
 
 		for ( let name in styles ) {
 			this._createButton( name, styles[ name ] );

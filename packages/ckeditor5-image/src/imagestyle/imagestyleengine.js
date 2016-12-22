@@ -38,17 +38,15 @@ export default class ImageStyleEngine extends Plugin {
 
 		// Define default configuration.
 		editor.config.define( 'image.styles', {
-			options: {
-				// This option is equal to situation when no style is applied at all.
-				imageStyleFull: { title: 'Full size image', icon: 'object-center', value: null },
+			// This option is equal to situation when no style is applied at all.
+			imageStyleFull: { title: 'Full size image', icon: 'object-center', value: null },
 
-				// This represents side image.
-				imageStyleSide: { title: 'Side image', icon: 'object-right', value: 'side', className: 'image-style-side' }
-			}
+			// This represents side image.
+			imageStyleSide: { title: 'Side image', icon: 'object-right', value: 'side', className: 'image-style-side' }
 		} );
 
 		// Get configuration.
-		const styles = editor.config.get( 'image.styles.options' );
+		const styles = editor.config.get( 'image.styles' );
 
 		// Allow imageStyle attribute in image.
 		// We could call it 'style' but https://github.com/ckeditor/ckeditor5-engine/issues/559.
@@ -60,6 +58,7 @@ export default class ImageStyleEngine extends Plugin {
 		editing.modelToView.on( 'changeAttribute:imageStyle', changeStyle( styles ) );
 		data.modelToView.on( 'changeAttribute:imageStyle', changeStyle( styles ) );
 		editing.modelToView.on( 'removeAttribute:imageStyle', removeStyle( styles ) );
+		data.modelToView.on( 'removeAttribute:imageStyle', removeStyle( styles ) );
 
 		for ( let key in styles ) {
 			const style = styles[ key ];
