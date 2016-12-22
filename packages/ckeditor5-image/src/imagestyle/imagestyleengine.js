@@ -38,7 +38,7 @@ export default class ImageStyleEngine extends Plugin {
 
 		// Define default configuration.
 		editor.config.define( 'image.styles', [
-			// This option is equal to situation when no style is applied at all.
+			// This option is equal to situation when no style is applied.
 			{ name: 'imageStyleFull', title: 'Full size image', icon: 'object-center', value: null },
 
 			// This represents side image.
