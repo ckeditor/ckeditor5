@@ -13,6 +13,7 @@ import AttributeElement from './attributeelement.js';
 import EmptyElement from './emptyelement.js';
 import Text from './text.js';
 import Range from './range.js';
+import TreeWalker from './treewalker.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
 import DocumentFragment from './documentfragment.js';
 import isIterable from '../../utils/isiterable.js';
@@ -34,7 +35,8 @@ const writer = {
 	wrap,
 	wrapPosition,
 	unwrap,
-	rename
+	rename,
+	breakViewRangePerContainer
 };
 
 export default writer;
@@ -271,6 +273,37 @@ export function mergeContainers( position ) {
 }
 
 /**
+ * Breaks given `range` on a set of {@link module:engine/view/range~Range ranges}, that each are contained within a
+ * {@link module:engine/view/containerelement~ContainerElement container element}. After `range` is broken, it's "pieces" can
+ * be used by other {@link module:engine/view/writer~writer} methods (which expect that passed ranges are contained within
+ * one container element).
+ *
+ * @function module:engine/view/writer~writer.breakViewRangePerContainer
+ * @param {module:engine/view/range~Range} range Range to break.
+ * @returns {Array.<module:engine/view/range~Range>} Ranges that combine into passed `viewRange`.
+ */
+export function breakViewRangePerContainer( range ) {
+	const ranges = [];
+	const walker = new TreeWalker( { boundaries: range } );
+
+	let start = range.start;
+
+	for ( let value of walker ) {
+		if ( value.item instanceof ContainerElement ) {
+			if ( !start.isEqual( value.previousPosition ) ) {
+				ranges.push( new Range( start, value.previousPosition ) );
+			}
+
+			start = value.nextPosition;
+		}
+	}
+
+	ranges.push( new Range( start, range.end ) );
+
+	return ranges;
+}
+
+/**
  * Insert node or nodes at specified position. Takes care about breaking attributes before insertion
  * and merging them afterwards.
  *
@@ -379,11 +412,22 @@ export function remove( range ) {
  * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions.
  */
 export function move( sourceRange, targetPosition ) {
-	if ( sourceRange.start.parent == targetPosition.parent ) {
-		targetPosition.offset -= sourceRange.end.offset - sourceRange.start.offset;
-	}
+	let nodes;
 
-	const nodes = remove( sourceRange );
+	if ( targetPosition.isAfter( sourceRange.end ) ) {
+		targetPosition = _breakAttributes( targetPosition, true );
+
+		const parent = targetPosition.parent;
+		const countBefore = parent.childCount;
+
+		sourceRange = _breakAttributesRange( sourceRange, true );
+
+		nodes = remove( sourceRange );
+
+		targetPosition.offset += ( parent.childCount - countBefore );
+	} else {
+		nodes = remove( sourceRange );
+	}
 
 	return insert( targetPosition, nodes );
 }
@@ -1100,7 +1144,7 @@ function isContainerOrFragment( node ) {
 }
 
 // Checks if {@link module:engine/view/range~Range#start range start} and {@link module:engine/view/range~Range#end range end} are placed
-// inside same {@link module:engine/view/containerelement~ContainerElement container}.
+// inside same {@link module:engine/view/containerelement~ContainerElement container element}.
 // Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when validation fails.
 //
 // @param {module:engine/view/range~Range} range

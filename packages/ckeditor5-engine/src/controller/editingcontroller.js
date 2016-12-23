@@ -10,7 +10,14 @@
 import ViewDocument from '../view/document.js';
 import Mapper from '../conversion/mapper.js';
 import ModelConversionDispatcher from '../conversion/modelconversiondispatcher.js';
-import { insertText, remove, move, rename } from '../conversion/model-to-view-converters.js';
+import {
+	insertText,
+	remove,
+	move,
+	rename,
+	insertIntoMarker,
+	moveInOutOfMarker
+} from '../conversion/model-to-view-converters.js';
 import { convertSelectionChange } from '../conversion/view-selection-to-model-converters.js';
 import {
 	convertRangeSelection,
@@ -84,27 +91,40 @@ export default class EditingController {
 		 * @private
 		 * @member {utils.EmitterMixin} #_listenter
 		 */
-		this._listenter = Object.create( EmitterMixin );
+		this._listener = Object.create( EmitterMixin );
 
 		// Convert changes in model to view.
-		this._listenter.listenTo( this.model, 'change', ( evt, type, changes ) => {
+		this._listener.listenTo( this.model, 'change', ( evt, type, changes ) => {
 			this.modelToView.convertChange( type, changes );
 		}, { priority: 'low' } );
 
 		// Convert model selection to view.
-		this._listenter.listenTo( this.model, 'changesDone', () => {
+		this._listener.listenTo( this.model, 'changesDone', () => {
 			this.modelToView.convertSelection( model.selection );
 			this.view.render();
 		}, { priority: 'low' } );
 
+		// Convert model markers changes.
+		this._listener.listenTo( this.model.markers, 'add', ( evt, name, range ) => {
+			this.modelToView.convertMarker( 'addMarker', name, range );
+		} );
+
+		this._listener.listenTo( this.model.markers, 'remove', ( evt, name, range ) => {
+			this.modelToView.convertMarker( 'removeMarker', name, range );
+		} );
+
 		// Convert view selection to model.
-		this._listenter.listenTo( this.view, 'selectionChange', convertSelectionChange( model, this.mapper ) );
+		this._listener.listenTo( this.view, 'selectionChange', convertSelectionChange( model, this.mapper ) );
 
 		// Attach default content converters.
 		this.modelToView.on( 'insert:$text', insertText(), { priority: 'lowest' } );
 		this.modelToView.on( 'remove', remove(), { priority: 'low' } );
 		this.modelToView.on( 'move', move(), { priority: 'low' } );
 		this.modelToView.on( 'rename', rename(), { priority: 'low' } );
+
+		// Attach default markers converters.
+		this.modelToView.on( 'insert', insertIntoMarker( this.model.markers ), { priority: 'lowest' } );
+		this.modelToView.on( 'move', moveInOutOfMarker( this.model.markers ), { priority: 'lowest' } );
 
 		// Attach default selection converters.
 		this.modelToView.on( 'selection', clearAttributes(), { priority: 'low' } );
@@ -146,6 +166,6 @@ export default class EditingController {
 	 */
 	destroy() {
 		this.view.destroy();
-		this._listenter.stopListening();
+		this._listener.stopListening();
 	}
 }

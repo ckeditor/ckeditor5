@@ -19,6 +19,7 @@ import History from './history.js';
 import LiveSelection from './liveselection.js';
 import Schema from './schema.js';
 import TreeWalker from './treewalker.js';
+import MarkersCollection from './markerscollection.js';
 import clone from '../../utils/lib/lodash/clone.js';
 import EmitterMixin from '../../utils/emittermixin.js';
 import CKEditorError from '../../utils/ckeditorerror.js';
@@ -75,12 +76,20 @@ export default class Document {
 		/**
 		 * Document's history.
 		 *
-		 * **Note:** Be aware that deltas applied to the stored deltas might be removed or changed.
+		 * **Note:** Be aware that deltas applied to the document might get removed or changed.
 		 *
 		 * @readonly
 		 * @member {module:engine/model/history~History}
 		 */
 		this.history = new History( this );
+
+		/**
+		 * Document's markers' collection.
+		 *
+		 * @readonly
+		 * @member {module:engine/model/markerscollection~MarkersCollection}
+		 */
+		this.markers = new MarkersCollection();
 
 		/**
 		 * Array of pending changes. See: {@link #enqueueChanges}.

@@ -61,28 +61,6 @@ export default class Mapper {
 		 * @member {Map}
 		 */
 		this._viewToModelLengthCallbacks = new Map();
-
-		// Add default callback for model to view position mapping.
-		this.on( 'modelToViewPosition', ( evt, data ) => {
-			let viewContainer = this._modelToViewMapping.get( data.modelPosition.parent );
-
-			data.viewPosition = this._findPositionIn( viewContainer, data.modelPosition.offset );
-		}, { priority: 'lowest' } );
-
-		// Add default callback for view to model position mapping.
-		this.on( 'viewToModelPosition', ( evt, data ) => {
-			let viewBlock = data.viewPosition.parent;
-			let modelParent = this._viewToModelMapping.get( viewBlock );
-
-			while ( !modelParent ) {
-				viewBlock = viewBlock.parent;
-				modelParent = this._viewToModelMapping.get( viewBlock );
-			}
-
-			let modelOffset = this._toModelOffset( data.viewPosition.parent, data.viewPosition.offset, viewBlock );
-
-			data.modelPosition = ModelPosition.createFromParentAndOffset( modelParent, modelOffset );
-		}, { priority: 'lowest' } );
 	}
 
 	/**
@@ -179,13 +157,26 @@ export default class Mapper {
 	toModelPosition( viewPosition ) {
 		const data = {
 			viewPosition: viewPosition,
-			modelPosition: null,
+			modelPosition: this._defaultToModelPosition( viewPosition ),
 			mapper: this
 		};
 
 		this.fire( 'viewToModelPosition', data );
 
 		return data.modelPosition;
+	}
+
+	/**
+	 * Maps model position to view position using default mapper algorithm.
+	 *
+	 * @private
+	 * @param {module:engine/model/position~Position} modelPosition
+	 * @returns {module:engine/view/position~Position} View position mapped from model position.
+	 */
+	_defaultToViewPosition( modelPosition ) {
+		let viewContainer = this._modelToViewMapping.get( modelPosition.parent );
+
+		return this._findPositionIn( viewContainer, modelPosition.offset );
 	}
 
 	/**
@@ -197,7 +188,7 @@ export default class Mapper {
 	 */
 	toViewPosition( modelPosition ) {
 		const data = {
-			viewPosition: null,
+			viewPosition: this._defaultToViewPosition( modelPosition ),
 			modelPosition: modelPosition,
 			mapper: this
 		};
@@ -205,6 +196,27 @@ export default class Mapper {
 		this.fire( 'modelToViewPosition', data );
 
 		return data.viewPosition;
+	}
+
+	/**
+	 * Maps view position to model position using default mapper algorithm.
+	 *
+	 * @private
+	 * @param {module:engine/view/position~Position} viewPosition
+	 * @returns {module:engine/model/position~Position} Model position mapped from view position.
+	 */
+	_defaultToModelPosition( viewPosition ) {
+		let viewBlock = viewPosition.parent;
+		let modelParent = this._viewToModelMapping.get( viewBlock );
+
+		while ( !modelParent ) {
+			viewBlock = viewBlock.parent;
+			modelParent = this._viewToModelMapping.get( viewBlock );
+		}
+
+		let modelOffset = this._toModelOffset( viewPosition.parent, viewPosition.offset, viewBlock );
+
+		return ModelPosition.createFromParentAndOffset( modelParent, modelOffset );
 	}
 
 	/**
@@ -454,6 +466,8 @@ mix( Mapper, EmitterMixin );
  * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
  * `viewPosition` value to that object with calculated {@link module:engine/view/position~Position view position}.
  * @param {module:engine/model/position~Position} data.modelPosition Model position to be mapped.
+ * @param {module:engine/view/position~Position} data.viewPosition View position that is a result of mapping
+ * `modelPosition` using `Mapper` default algorithm.
  * @param {module:engine/conversion/mapper~Mapper} data.mapper Mapper instance that fired the event.
  */
 
@@ -478,5 +492,7 @@ mix( Mapper, EmitterMixin );
  * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
  * `modelPosition` value to that object with calculated {@link module:engine/model/position~Position model position}.
  * @param {module:engine/view/position~Position} data.viewPosition View position to be mapped.
+ * @param {module:engine/model/position~Position} data.modelPosition Model position that is a result of mapping
+ * `viewPosition` using `Mapper` default algorithm.
  * @param {module:engine/conversion/mapper~Mapper} data.mapper Mapper instance that fired the event.
  */

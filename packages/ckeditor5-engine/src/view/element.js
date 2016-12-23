@@ -111,7 +111,7 @@ export default class Element extends Node {
 		 * Custom properties can be added to element instance, will be cloned but not rendered into DOM.
 		 *
 		 * @protected
-		 * @memeber {Map} engine.view.Element#_customProperties.
+		 * @memeber {Map}
 		 */
 		this._customProperties = new Map();
 	}

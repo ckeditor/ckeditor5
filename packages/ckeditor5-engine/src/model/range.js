@@ -9,6 +9,7 @@
 
 import Position from './position.js';
 import TreeWalker from './treewalker.js';
+import CKEditorError from '../../utils/ckeditorerror.js';
 
 /**
  * Range class. Range is iterable.
@@ -369,6 +370,56 @@ export default class Range {
 	}
 
 	/**
+	 * Returns a range that is a result of transforming this range by given `delta`.
+	 *
+	 * @param {module:engine/model/delta~Delta} delta Delta to transform range by.
+	 * @returns {Array.<module:engine/model/range~Range>} Range which is the result of transformation.
+	 */
+	getTransformedByDelta( delta ) {
+		let ranges = [ Range.createFromRange( this ) ];
+
+		// Operation types that a range can be transformed by.
+		const supportedTypes = new Set( [ 'insert', 'move', 'remove', 'reinsert' ] );
+
+		for ( let operation of delta.operations ) {
+			if ( supportedTypes.has( operation.type ) ) {
+				for ( let i = 0; i < ranges.length; i++ ) {
+					const result = ranges[ i ]._getTransformedByDocumentChange(
+						operation.type,
+						operation.targetPosition || operation.position,
+						operation.howMany || operation.nodes.maxOffset,
+						operation.sourcePosition
+					);
+
+					ranges.splice( i, 1, ...result );
+
+					i += result.length - 1;
+				}
+			}
+		}
+
+		return ranges;
+	}
+
+	/**
+	 * Returns a range that is a result of transforming this range by a change in the model document.
+	 *
+	 * @protected
+	 * @param {'insert'|'move'|'remove'|'reinsert'} type Change type.
+	 * @param {module:engine/model/position~Position} targetPosition Position before the first changed node.
+	 * @param {Number} howMany How many nodes has been changed.
+	 * @param {module:engine/model/position~Position} sourcePosition Source position of changes.
+	 * @returns {Array.<module:engine/model/range~Range>}
+	 */
+	_getTransformedByDocumentChange( type, targetPosition, howMany, sourcePosition ) {
+		if ( type == 'insert' ) {
+			return this._getTransformedByInsertion( targetPosition, howMany, false, false );
+		} else {
+			return this._getTransformedByMove( sourcePosition, targetPosition, howMany );
+		}
+	}
+
+	/**
 	 * Returns an array containing one or two {@link ~Range ranges} that are a result of transforming this
 	 * {@link ~Range range} by inserting `howMany` nodes at `insertPosition`. Two {@link ~Range ranges} are
 	 * returned if the insertion was inside this {@link ~Range range} and `spread` is set to `true`.
@@ -419,8 +470,8 @@ export default class Range {
 		} else {
 			const range = Range.createFromRange( this );
 
-			let insertBeforeStart = range.isCollapsed ? isSticky : !isSticky;
-			let insertBeforeEnd = isSticky;
+			let insertBeforeStart = range.isCollapsed ? true : !isSticky;
+			let insertBeforeEnd = range.isCollapsed ? true : isSticky;
 
 			range.start = range.start._getTransformedByInsertion( insertPosition, howMany, insertBeforeStart );
 			range.end = range.end._getTransformedByInsertion( insertPosition, howMany, insertBeforeEnd );
@@ -441,7 +492,7 @@ export default class Range {
 	 * was inside the range. Defaults to `false`.
 	 * @returns {Array.<module:engine/model/range~Range>} Result of the transformation.
 	 */
-	_getTransformedByMove( sourcePosition, targetPosition, howMany, spread, isSticky = false ) {
+	_getTransformedByMove( sourcePosition, targetPosition, howMany ) {
 		if ( this.isCollapsed ) {
 			const newPos = this.start._getTransformedByMove( sourcePosition, targetPosition, howMany, true, true );
 
@@ -453,38 +504,33 @@ export default class Range {
 		const moveRange = new Range( sourcePosition, sourcePosition.getShiftedBy( howMany ) );
 
 		const differenceSet = this.getDifference( moveRange );
-		let difference;
+		let difference = null;
+
+		const common = this.getIntersection( moveRange );
 
 		if ( differenceSet.length == 1 ) {
+			// `moveRange` and this range intersects.
 			difference = new Range(
 				differenceSet[ 0 ].start._getTransformedByDeletion( sourcePosition, howMany ),
 				differenceSet[ 0 ].end._getTransformedByDeletion( sourcePosition, howMany )
 			);
 		} else if ( differenceSet.length == 2 ) {
-			// This means that ranges were moved from the inside of this range.
-			// So we can operate on this range positions and we don't have to transform starting position.
+			// `moveRange` is inside this range.
 			difference = new Range(
 				this.start,
 				this.end._getTransformedByDeletion( sourcePosition, howMany )
 			);
-		} else {
-			// 0.
-			difference = null;
-		}
+		} // else, `moveRange` wholly contains this range.
 
 		const insertPosition = targetPosition._getTransformedByDeletion( sourcePosition, howMany );
 
 		if ( difference ) {
-			result = difference._getTransformedByInsertion( insertPosition, howMany, spread, isSticky );
+			result = difference._getTransformedByInsertion( insertPosition, howMany, common !== null );
 		} else {
 			result = [];
 		}
 
-		const common = this.getIntersection( moveRange );
-
-		// Add common part of the range only if there is any and only if it is not
-		// already included in `difference` part.
-		if ( common && ( spread || difference === null || !difference.containsPosition( insertPosition ) ) ) {
+		if ( common ) {
 			result.push( new Range(
 				common.start._getCombined( moveRange.start, insertPosition ),
 				common.end._getCombined( moveRange.start, insertPosition )
@@ -554,6 +600,75 @@ export default class Range {
 	 */
 	static createOn( item ) {
 		return this.createFromPositionAndShift( Position.createBefore( item ), item.offsetSize );
+	}
+
+	/**
+	 * Combines all ranges from the passed array into a one range. At least one range has to be passed.
+	 * Passed ranges must not have common parts.
+	 *
+	 * The first range from the array is a reference range. If other ranges
+	 * {@link module:engine/model/position~Position#isTouching are touching} the reference range, they will get combined into one range.
+	 *
+	 *		[  ][]  [    ][ ][  ref range  ][ ][]  [  ]  // Passed ranges, shown sorted. "Ref range" was the first range in original array.
+	 *		        [      returned range       ]  [  ]  // The combined range.
+	 *		[    ]                                       // The result of the function if the first range was a reference range.
+	 *	            [                           ]        // The result of the function if the third-to-seventh range was a reference range.
+	 *	                                           [  ]  // The result of the function if the last range was a reference range.
+	 *
+	 * @param {Array.<module:engine/model/range~Range>} ranges Ranges to combine.
+	 * @returns {module:engine/model/range~Range} Combined range.
+	 */
+	static createFromRanges( ranges ) {
+		if ( ranges.length === 0 ) {
+			/**
+			 * At least one range has to be passed.
+			 *
+			 * @error range-create-from-ranges-empty-array
+			 */
+			throw new CKEditorError( 'range-create-from-ranges-empty-array: At least one range has to be passed.' );
+		} else if ( ranges.length == 1 ) {
+			return Range.createFromRange( ranges[ 0 ] );
+		}
+
+		// 1. Set the first range in `ranges` array as a reference range.
+		// If we are going to return just a one range, one of the ranges need to be the reference one.
+		// Other ranges will be stuck to that range, if possible.
+		const ref = ranges[ 0 ];
+
+		// 2. Sort all the ranges so it's easier to process them.
+		ranges.sort( ( a, b ) => a.start.isAfter( b.start ) );
+
+		// 3. Check at which index the reference range is now.
+		const refIndex = ranges.indexOf( ref );
+
+		// 4. At this moment we don't need the original range.
+		// We are going to modify the result and we need to return a new instance of Range.
+		// We have to create a copy of the reference range.
+		const result = new this( ref.start, ref.end );
+
+		// 5. Ranges before reference range should be glued starting from the "last one", that is the range
+		// that is closest to the reference range.
+		for ( let i = refIndex - 1; i >= 0; i++ ) {
+			if ( ranges[ i ].end.isTouching( result.start ) ) {
+				result.start = Position.createFromPosition( ranges[ i ].start );
+			} else {
+				// If range do not touch with reference range there is no point in looking further.
+				break;
+			}
+		}
+
+		// 5. Ranges after reference range should be glued starting from the "first one", that is the range
+		// that is closest to the reference range.
+		for ( let i = refIndex + 1; i < ranges.length; i++ ) {
+			if ( ranges[ i ].start.isTouching( result.end ) ) {
+				result.end = Position.createFromPosition( ranges[ i ].end );
+			} else {
+				// If range do not touch with reference range there is no point in looking further.
+				break;
+			}
+		}
+
+		return result;
 	}
 
 	/**

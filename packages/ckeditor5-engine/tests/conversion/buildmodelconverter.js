@@ -36,6 +36,8 @@ import {
 
 import { createRangeOnElementOnly } from 'tests/engine/model/_utils/utils.js';
 
+import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+
 function viewAttributesToString( item ) {
 	let result = '';
 
@@ -346,6 +348,68 @@ describe( 'Model converter builder', () => {
 		} );
 	} );
 
+	describe( 'model marker to view element conversion', () => {
+		let modelText, modelElement;
+
+		beforeEach( () => {
+			modelText = new ModelText( 'foobar' );
+			modelElement = new ModelElement( 'paragraph', null, [ modelText ] );
+			modelRoot.appendChildren( modelElement );
+
+			let viewText = new ViewText( 'foobar' );
+			let viewElement = new ViewContainerElement( 'p', null, [ viewText ] );
+			viewRoot.appendChildren( viewElement );
+
+			mapper.bindElements( modelElement, viewElement );
+		} );
+
+		it( 'using passed view element name', () => {
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'strong' );
+
+			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<strong>ob</strong>ar</p></div>' );
+
+			dispatcher.convertMarker( 'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
+
+		it( 'using passed view element', () => {
+			const viewElement = new ViewAttributeElement( 'span', { class: 'search' } );
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( viewElement );
+
+			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search">ob</span>ar</p></div>' );
+
+			dispatcher.convertMarker( 'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
+
+		it( 'using passed creator function', () => {
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( ( data ) => {
+				const className = 'search search-color-' + data.name.split( ':' )[ 1 ];
+
+				return new ViewAttributeElement( 'span', { class: className } );
+			} );
+
+			dispatcher.convertMarker( 'addMarker', 'search:red', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search search-color-red">ob</span>ar</p></div>' );
+
+			dispatcher.convertMarker( 'removeMarker', 'search:blue', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+
+			// Nothing should change as we remove a marker with different name, which should generate different view attribute element.
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search search-color-red">ob</span>ar</p></div>' );
+
+			dispatcher.convertMarker( 'removeMarker', 'search:red', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
+	} );
+
 	describe( 'withPriority', () => {
 		it( 'should change default converters priority', () => {
 			buildModelConverter().for( dispatcher ).fromElement( 'custom' ).toElement( 'custom' );
@@ -360,18 +424,9 @@ describe( 'Model converter builder', () => {
 		} );
 	} );
 
-	it( 'should do nothing on model element to view attribute conversion', () => {
-		buildModelConverter().for( dispatcher ).fromElement( 'div' ).toElement( 'div' );
-		// Should do nothing:
-		buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toAttribute( 'paragraph', true );
-		// If above would do something this one would not be fired:
-		buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
-
-		let modelElement = new ModelElement( 'div', null, new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) ) );
-		modelRoot.appendChildren( modelElement );
-
-		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
-
-		expect( viewToString( viewRoot ) ).to.equal( '<div><div><p>foobar</p></div></div>' );
+	it( 'should throw when trying to build model element to view attribute converter', () => {
+		expect( () => {
+			buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toAttribute( 'paragraph', true );
+		} ).to.throw( CKEditorError, /^build-model-converter-non-attribute-to-attribute/ );
 	} );
 } );

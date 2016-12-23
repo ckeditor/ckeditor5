@@ -36,7 +36,7 @@ import {
 	convertCollapsedSelection,
 	convertSelectionAttribute
 } from '../conversion/model-selection-to-view-converters.js';
-import { insertText, insertElement, wrap } from '../conversion/model-to-view-converters.js';
+import { insertText, insertElement, wrapItem } from '../conversion/model-to-view-converters.js';
 import isPlainObject from '../../utils/lib/lodash/isPlainObject.js';
 
 /**
@@ -214,7 +214,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	mapper.bindElements( node.root, viewDocumentFragment );
 
 	modelToView.on( 'insert:$text', insertText() );
-	modelToView.on( 'addAttribute', wrap( ( value, data ) => {
+	modelToView.on( 'addAttribute', wrapItem( ( value, data ) => {
 		if ( data.item instanceof ModelTextProxy ) {
 			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: stringifyAttributeValue( value ) } );
 		}

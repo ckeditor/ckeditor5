@@ -311,7 +311,7 @@ describe( 'ModelConversionDispatcher', () => {
 	} );
 
 	describe( 'convertMove', () => {
-		it( 'should fire event for moved range', () => {
+		it( 'should fire event for moved range - move before source position', () => {
 			root.appendChildren( new ModelText( 'barfoo' ) );
 
 			const range = ModelRange.createFromParentsAndOffsets( root, 0, root, 3 );
@@ -322,9 +322,25 @@ describe( 'ModelConversionDispatcher', () => {
 				loggedEvents.push( log );
 			} );
 
+			dispatcher.convertMove( ModelPosition.createFromParentAndOffset( root , 3 ), range );
+
+			expect( loggedEvents ).to.deep.equal( [ 'move:3:0:3' ] );
+		} );
+
+		it( 'should fire event for moved range - move after source position', () => {
+			root.appendChildren( new ModelText( 'barfoo' ) );
+
+			const range = ModelRange.createFromParentsAndOffsets( root, 3, root, 6 );
+			const loggedEvents = [];
+
+			dispatcher.on( 'move', ( evt, data ) => {
+				const log = 'move:' + data.sourcePosition.path + ':' + data.targetPosition.path + ':' + data.item.offsetSize;
+				loggedEvents.push( log );
+			} );
+
 			dispatcher.convertMove( ModelPosition.createFromParentAndOffset( root , 0 ), range );
 
-			expect( loggedEvents ).to.deep.equal( [ 'move:0:3:3' ] );
+			expect( loggedEvents ).to.deep.equal( [ 'move:0:6:3' ] );
 		} );
 	} );
 
@@ -488,6 +504,49 @@ describe( 'ModelConversionDispatcher', () => {
 			dispatcher.convertSelection( doc.selection );
 
 			expect( dispatcher.fire.calledWith( 'selectionAttribute:bold' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'convertMarker', () => {
+		let range;
+
+		beforeEach( () => {
+			range = ModelRange.createFromParentsAndOffsets( root, 0, root, 4 );
+		} );
+
+		it( 'should fire event based on passed parameters', () => {
+			sinon.spy( dispatcher, 'fire' );
+
+			const data = {
+				name: 'name',
+				range: range
+			};
+
+			dispatcher.convertMarker( 'addMarker', data );
+
+			expect( dispatcher.fire.calledWith( 'addMarker:name', data ) );
+
+			dispatcher.convertMarker( 'removeMarker', data );
+
+			expect( dispatcher.fire.calledWith( 'removeMarker:name', data ) );
+		} );
+
+		it( 'should prepare consumable values', () => {
+			const data = {
+				name: 'name',
+				range: range
+			};
+
+			dispatcher.on( 'addMarker:name', ( evt, data, consumable ) => {
+				expect( consumable.test( data.range, 'range' ) ).to.be.true;
+			} );
+
+			dispatcher.on( 'removeMarker:name', ( evt, data, consumable ) => {
+				expect( consumable.test( data.range, 'range' ) ).to.be.true;
+			} );
+
+			dispatcher.convertMarker( 'addMarker', data );
+			dispatcher.convertMarker( 'removeMarker', data );
 		} );
 	} );
 } );

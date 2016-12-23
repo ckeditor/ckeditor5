@@ -28,7 +28,7 @@ import {
 import {
 	insertElement,
 	insertText,
-	wrap
+	wrapItem
 } from 'ckeditor5/engine/conversion/model-to-view-converters.js';
 
 import { stringify as stringifyView } from 'ckeditor5/engine/dev-utils/view.js';
@@ -56,7 +56,7 @@ describe( 'model-selection-to-view-converters', () => {
 		dispatcher = new ModelConversionDispatcher( { mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
-		dispatcher.on( 'addAttribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
+		dispatcher.on( 'addAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
 
 		// Default selection converters.
 		dispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
@@ -270,7 +270,7 @@ describe( 'model-selection-to-view-converters', () => {
 		describe( 'clearAttributes', () => {
 			it( 'should remove all ranges before adding new range', () => {
 				dispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( new ViewAttributeElement( 'b' ) ) );
-				dispatcher.on( 'addAttribute:style', wrap( new ViewAttributeElement( 'b' ) ) );
+				dispatcher.on( 'addAttribute:style', wrapItem( new ViewAttributeElement( 'b' ) ) );
 
 				test(
 					[ 3, 3 ],
@@ -292,7 +292,7 @@ describe( 'model-selection-to-view-converters', () => {
 
 			it( 'should do nothing if the attribute element had been already removed', () => {
 				dispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( new ViewAttributeElement( 'b' ) ) );
-				dispatcher.on( 'addAttribute:style', wrap( new ViewAttributeElement( 'b' ) ) );
+				dispatcher.on( 'addAttribute:style', wrapItem( new ViewAttributeElement( 'b' ) ) );
 
 				test(
 					[ 3, 3 ],
@@ -339,7 +339,7 @@ describe( 'model-selection-to-view-converters', () => {
 			}
 
 			dispatcher.on( 'selectionAttribute:theme', convertSelectionAttribute( themeElementCreator ) );
-			dispatcher.on( 'addAttribute:theme', wrap( themeElementCreator ) );
+			dispatcher.on( 'addAttribute:theme', wrapItem( themeElementCreator ) );
 
 			dispatcher.on( 'selectionAttribute:italic', convertSelectionAttribute( new ViewAttributeElement( 'em' ) ) );
 		} );
