@@ -3,14 +3,17 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module undo/basecommand
+ */
+
 import Command from '../core/command/command.js';
-import transform from '../engine/model/delta/transform.js';
 
 /**
- * Base class for undo feature commands: {@link undo.UndoCommand} and {@link undo.RedoCommand}.
+ * Base class for undo feature commands: {@link module:undo/undocommand~UndoCommand} and {@link module:undo/redocommand~RedoCommand}.
  *
  * @protected
- * @memberOf undo
+ * @extends module:core/command/command~Command
  */
 export default class BaseCommand extends Command {
 	constructor( editor ) {
@@ -19,11 +22,11 @@ export default class BaseCommand extends Command {
 		/**
 		 * Stack of items stored by the command. These are pairs of:
 		 *
-		 * * {@link engine.model.Batch batch} saved by the command,
-		 * * {@link engine.model.Selection selection} state at the moment of saving the batch.
+		 * * {@link module:engine/model/batch~Batch batch} saved by the command,
+		 * * {@link module:engine/model/selection~Selection selection} state at the moment of saving the batch.
 		 *
 		 * @protected
-		 * @member {Array} undo.BaseCommand#_stack
+		 * @member {Array} #_stack
 		 */
 		this._stack = [];
 
@@ -31,7 +34,7 @@ export default class BaseCommand extends Command {
 		 * Stores all batches that were created by this command.
 		 *
 		 * @protected
-		 * @member {WeakSet.<engine.model.Batch>} undo.BaseCommand#_createdBatches
+		 * @member {WeakSet.<module:engine/model/batch~Batch>} #_createdBatches
 		 */
 		this._createdBatches = new WeakSet();
 
@@ -40,10 +43,10 @@ export default class BaseCommand extends Command {
 	}
 
 	/**
-	 * Stores a batch in the command, together with the selection state of the {@link engine.model.Document document}
+	 * Stores a batch in the command, together with the selection state of the {@link module:engine/model/document~Document document}
 	 * created by the editor which this command is registered to.
 	 *
-	 * @param {engine.model.Batch} batch The batch to add.
+	 * @param {module:engine/model/batch~Batch} batch The batch to add.
 	 */
 	addBatch( batch ) {
 		const selection = {
@@ -71,10 +74,10 @@ export default class BaseCommand extends Command {
 	}
 
 	/**
-	 * Restores the {@link engine.model.Document#selection document selection} state after a batch was undone.
+	 * Restores the {@link module:engine/model/document~Document#selection document selection} state after a batch was undone.
 	 *
 	 * @protected
-	 * @param {Array.<engine.model.Range>} ranges Ranges to be restored.
+	 * @param {Array.<module:engine/model/range~Range>} ranges Ranges to be restored.
 	 * @param {Boolean} isBackward A flag describing whether the restored range was selected forward or backward.
 	 */
 	_restoreSelection( ranges, isBackward, deltas ) {
@@ -106,28 +109,6 @@ export default class BaseCommand extends Command {
 			document.selection.setRanges( selectionRanges, isBackward );
 		}
 	}
-}
-
-// Performs a transformation of delta set `setToTransform` by given delta set `setToTransformBy`.
-// If `setToTransform` deltas are more important than `setToTransformBy` deltas, `isStrong` should be true.
-export function transformDelta( setToTransform, setToTransformBy, isStrong ) {
-	let results = [];
-
-	for ( let toTransform of setToTransform ) {
-		let to = [ toTransform ];
-
-		for ( let t = 0; t < to.length; t++ ) {
-			for ( let transformBy of setToTransformBy ) {
-				let transformed = transform( to[ t ], transformBy, isStrong );
-				to.splice( t, 1, ...transformed );
-				t = t - 1 + transformed.length;
-			}
-		}
-
-		results = results.concat( to );
-	}
-
-	return results;
 }
 
 // Transforms given range `range` by deltas from `document` history, starting from a delta with given `baseVersion`.

@@ -3,29 +3,33 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module undo/undocommand
+ */
+
 import BaseCommand from './basecommand.js';
-import { transformDelta, transformRangesByDeltas } from './basecommand.js';
+import { transformRangesByDeltas } from './basecommand.js';
+import { transformDeltaSets } from '../engine/model/delta/transform.js';
 
 /**
- * The undo command stores {@link engine.model.Batch batches} applied to the {@link engine.model.Document document}
- * and is able to undo a batch by reversing it and transforming by other batches from {@link engine.model.Document#history history}
- * that happened after the reversed batch.
+ * The undo command stores {@link module:engine/model/batch~Batch batches} applied to the
+ * {@link module:engine/model/document~Document document} and is able to undo a batch by reversing it and transforming by
+ * other batches from {@link module:engine/model/document~Document#history history} that happened after the reversed batch.
  *
- * The undo command also takes care of restoring the {@link engine.model.Document#selection document selection} to the state before
- * the undone batch was applied.
+ * The undo command also takes care of restoring the {@link module:engine/model/document~Document#selection document selection}
+ * to the state before the undone batch was applied.
  *
- * @memberOf undo
- * @extends undo.BaseCommand
+ * @extends module:undo/basecommand~BaseCommand
  */
 export default class UndoCommand extends BaseCommand {
 	/**
-	 * Executes the command. This method reverts a {@link engine.model.Batch batch} added to the command's stack, transforms
-	 * and applies the reverted version on the {@link engine.model.Document document} and removes the batch from the stack.
-	 * Then, it restores the {@link engine.model.Document#selection document selection}.
+	 * Executes the command. This method reverts a {@link module:engine/model/batch~Batch batch} added to the command's stack, transforms
+	 * and applies the reverted version on the {@link module:engine/model/document~Document document} and removes the batch from the stack.
+	 * Then, it restores the {@link module:engine/model/document~Document#selection document selection}.
 	 *
 	 * @protected
-	 * @fires undo.UndoCommand#event:revert
-	 * @param {engine.model.Batch} [batch] A batch that should be undone. If not set, the last added batch will be undone.
+	 * @fires revert
+	 * @param {module:engine/model/batch~Batch} [batch] A batch that should be undone. If not set, the last added batch will be undone.
 	 */
 	_doExecute( batch = null ) {
 		// If batch is not given, set `batchIndex` to the last index in command stack.
@@ -48,8 +52,8 @@ export default class UndoCommand extends BaseCommand {
 	}
 
 	/**
-	 * Returns an index in {@link undo.BaseCommand#_stack} pointing to the item that is storing a batch that has a given
-	 * {@link engine.model.Batch#baseVersion}.
+	 * Returns an index in {@link module:undo/basecommand~BaseCommand#_stack} pointing to the item that is storing a
+	 * batch that has a given {@link module:engine/model/batch~Batch#baseVersion}.
 	 *
 	 * @private
 	 * @param {Number} baseVersion The base version of the batch to find.
@@ -67,10 +71,10 @@ export default class UndoCommand extends BaseCommand {
 
 	/**
 	 * Undoes a batch by reversing a batch from history, transforming that reversed batch and applying it. This is
-	 * a helper method for {@link undo.UndoCommand#_doExecute}.
+	 * a helper method for {@link #_doExecute}.
 	 *
 	 * @private
-	 * @param {engine.model.Batch} batchToUndo A batch whose deltas will be reversed, transformed and applied.
+	 * @param {module:engine/model/batch~Batch} batchToUndo A batch whose deltas will be reversed, transformed and applied.
 	 */
 	_undo( batchToUndo ) {
 		const document = this.editor.document;
@@ -130,13 +134,13 @@ export default class UndoCommand extends BaseCommand {
 					this._stack[ itemIndex ].selection.ranges = transformRangesByDeltas( this._stack[ itemIndex ].selection.ranges, reversedDelta );
 				}
 
-				// 3.2. Transform history delta by reversed delta. We need this to update document history.
-				const updatedHistoryDelta = transformDelta( [ historyDelta ], reversedDelta, false );
+				// 3.2. Transform reversed delta by history delta and vice-versa.
+				const results = transformDeltaSets( reversedDelta, [ historyDelta ], true );
 
-				// 3.3. Transform reversed delta by history delta (in state before transformation above).
-				reversedDelta = transformDelta( reversedDelta, [ historyDelta ], true );
+				reversedDelta = results.deltasA;
+				const updatedHistoryDelta = results.deltasB;
 
-				// 3.4. Store updated history delta. Later, it will be updated in `history`.
+				// 3.3. Store updated history delta. Later, it will be updated in `history`.
 				if ( !updatedHistoryDeltas[ historyDelta.baseVersion ] ) {
 					updatedHistoryDeltas[ historyDelta.baseVersion ] = [];
 				}
@@ -177,3 +181,9 @@ export default class UndoCommand extends BaseCommand {
 		return undoingBatch;
 	}
 }
+
+/**
+ * Fired when execution of the command reverts some batch.
+ *
+ * @event revert
+ */
