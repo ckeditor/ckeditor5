@@ -3,20 +3,23 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module list/listcommand
+ */
+
 import Command from '../core/command/command.js';
 import { getClosestListItem, getSelectedBlocks, getPositionBeforeBlock } from './utils.js';
 
 /**
- * The list command. It is used by the {@link list.List list feature}.
+ * The list command. It is used by the {@link module:list/list~List list feature}.
  *
- * @memberOf list
- * @extends core.command.Command
+ * @extends module:core/command/command~Command
  */
 export default class ListCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *
-	 * @param {core.editor.Editor} editor Editor instance.
+	 * @param {module:core/editor/editor~Editor} editor Editor instance.
 	 * @param {'numbered'|'bulleted'} type List type that will be handled by this command.
 	 */
 	constructor( editor, type ) {
@@ -26,7 +29,7 @@ export default class ListCommand extends Command {
 		 * The type of list created by the command.
 		 *
 		 * @readonly
-		 * @member {'numbered'|'bulleted'} list.ListCommand#type
+		 * @member {'numbered'|'bulleted'}
 		 */
 		this.type = type == 'bulleted' ? 'bulleted' : 'numbered';
 
@@ -34,7 +37,7 @@ export default class ListCommand extends Command {
 		 * Flag indicating whether the command is active, which means that selection starts in a list of the same type.
 		 *
 		 * @observable
-		 * @member {Boolean} list.ListCommand#value
+		 * @member {Boolean}
 		 */
 		this.set( 'value', false );
 
@@ -64,7 +67,7 @@ export default class ListCommand extends Command {
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for executed command.
-	 * @param {engine.model.Batch} [options.batch] Batch to collect all the change steps.
+	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
 	 */
 	_doExecute( options = {} ) {

@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module list/list
+ */
+
 import Plugin from '../core/plugin.js';
 import ListEngine from './listengine.js';
 import ButtonView from '../ui/button/buttonview.js';
@@ -12,10 +16,9 @@ import { parseKeystroke } from '../utils/keyboard.js';
  * The lists feature. It introduces the `numberedList` and `bulletedList` buttons which
  * allows to convert paragraphs to/from list items and indent/outdent them.
  *
- * See also {@link list.ListEngine}.
+ * See also {@link module:list/listengine~ListEngine}.
  *
- * @memberOf list
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class List extends Plugin {
 	/**
