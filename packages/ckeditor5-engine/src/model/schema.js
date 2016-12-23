@@ -501,47 +501,19 @@ export class SchemaItem {
 	}
 
 	/**
-	 * Checks whether this item has any registered path of given type that matches provided path.
+	 * Checks whether this item has any registered path of given type that matches the provided path.
 	 *
 	 * @protected
 	 * @param {String} type Paths' type. Possible values are `allow` or `disallow`.
-	 * @param {Array.<String>} checkPath Path to check.
+	 * @param {Array.<String>} pathToCheck Path to check.
 	 * @param {String} [attribute] If set, only paths registered for given attribute will be checked.
 	 * @returns {Boolean} `true` if item has any registered matching path, `false` otherwise.
 	 */
-	_hasMatchingPath( type, checkPath, attribute ) {
-		const itemPaths = this._getPaths( type, attribute );
+	_hasMatchingPath( type, pathToCheck, attribute ) {
+		const registeredPaths = this._getPaths( type, attribute );
 
-		// We check every path registered (possibly with given attribute) in the item.
-		for ( let itemPath of itemPaths ) {
-			// Pointer to last found item from `itemPath`.
-			let i = 0;
-
-			// Now we have to check every item name from the path to check.
-			for ( let checkName of checkPath ) {
-				// Don't check items that are not registered in schema.
-				if ( !this._schema.hasItem( checkName ) ) {
-					continue;
-				}
-
-				// Every item name is expanded to all names of items that item is extending.
-				// So, if on item path, there is an item that is extended by item from checked path, it will
-				// also be treated as matching.
-				const chain = this._schema._extensionChains.get( checkName );
-
-				// Since our paths have to match in given order, we always check against first item from item path.
-				// So, if item path is: B D E
-				// And checked path is: A B C D E
-				// It will be matching (A won't match, B will match, C won't match, D and E will match)
-				if ( chain.indexOf( itemPath[ i ] ) > -1 ) {
-					// Move pointer as we found element under index `i`.
-					i++;
-				}
-			}
-
-			// If `itemPath` has no items it means that we removed all of them, so we matched all of them.
-			// This means that we found a matching path.
-			if ( i === itemPath.length ) {
+		for ( const registeredPathPath of registeredPaths ) {
+			if ( matchPaths( this._schema, pathToCheck, registeredPathPath ) ) {
 				return true;
 			}
 		}
@@ -581,3 +553,45 @@ export class SchemaItem {
  * @typedef {String|Array.<String|module:engine/model/element~Element>|module:engine/model/position~Position}
  * module:engine/model/schema~SchemaPath
  */
+
+// Checks whether the given pathToCheck and registeredPath right ends match.
+//
+// pathToCheck: C, D
+// registeredPath: A, B, C, D
+// result: OK
+//
+// pathToCheck: A, B, C
+// registeredPath: A, B, C, D
+// result: NOK
+//
+// Note – when matching paths, element extension chains (inheritance) are taken into consideration.
+//
+// @param {Schema} schema
+// @param {Array.<String>} pathToCheck
+// @param {Array.<String>} registeredPath
+function matchPaths( schema, pathToCheck, registeredPath ) {
+	// Start checking from the right end of both tables.
+	let registeredPathIndex = registeredPath.length - 1;
+	let pathToCheckIndex = pathToCheck.length - 1;
+
+	// And finish once reaching an end of the shorter table.
+	while ( registeredPathIndex >= 0 && pathToCheckIndex >= 0 ) {
+		const checkName = pathToCheck[ pathToCheckIndex ];
+
+		// Fail when checking a path which contains element which aren't even registered to the schema.
+		if ( !schema.hasItem( checkName ) ) {
+			return false;
+		}
+
+		const extChain = schema._extensionChains.get( checkName );
+
+		if ( extChain.includes( registeredPath[ registeredPathIndex ] ) ) {
+			registeredPathIndex--;
+			pathToCheckIndex--;
+		} else {
+			return false;
+		}
+	}
+
+	return true;
+}

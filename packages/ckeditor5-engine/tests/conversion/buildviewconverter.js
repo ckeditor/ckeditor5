@@ -80,6 +80,7 @@ describe( 'View converter builder', () => {
 		schema.allow( { name: '$inline', attributes: textAttributes, inside: '$root' } );
 		schema.allow( { name: 'image', attributes: [ 'src' ], inside: '$root' } );
 		schema.allow( { name: 'image', attributes: [ 'src' ], inside: '$block' } );
+		schema.allow( { name: '$text', inside: '$inline' } );
 		schema.allow( { name: '$text', attributes: textAttributes, inside: '$block' } );
 		schema.allow( { name: '$text', attributes: textAttributes, inside: '$root' } );
 		schema.allow( { name: 'paragraph', attributes: pAttributes, inside: '$root' } );

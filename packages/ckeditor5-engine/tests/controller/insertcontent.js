@@ -48,6 +48,7 @@ describe( 'DataController', () => {
 				schema.allow( { name: 'image', inside: '$root' } );
 				// Otherwise it won't be passed to the temporary model fragment used inside insert().
 				schema.allow( { name: 'disallowedElement', inside: '$clipboardHolder' } );
+				doc.schema.allow( { name: '$text', inside: 'disallowedElement' } );
 
 				schema.allow( { name: '$inline', attributes: [ 'bold' ] } );
 				schema.allow( { name: '$inline', attributes: [ 'italic' ] } );
@@ -513,6 +514,7 @@ describe( 'DataController', () => {
 
 				schema.allow( { name: 'table', inside: '$clipboardHolder' } );
 				schema.allow( { name: 'td', inside: '$clipboardHolder' } );
+				schema.allow( { name: 'td', inside: 'table' } );
 				schema.allow( { name: '$block', inside: 'td' } );
 				schema.allow( { name: '$text', inside: 'td' } );
 

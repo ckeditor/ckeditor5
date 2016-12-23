@@ -18,7 +18,13 @@ describe( 'DataController', () => {
 		document.schema.registerItem( 'p', '$block' );
 		document.schema.registerItem( 'x', '$block' );
 		document.schema.registerItem( 'img', '$inline' );
+
 		document.schema.allow( { name: '$text', inside: '$root' } );
+		document.schema.allow( { name: '$text', inside: 'img' } );
+		document.schema.allow( { name: '$text', inside: 'obj' } );
+		document.schema.allow( { name: '$text', inside: 'inlineObj' } );
+		document.schema.allow( { name: 'x', inside: 'p' } );
+
 		document.createRoot();
 	} );
 
