@@ -355,23 +355,10 @@ export function cleanList( evt, data, consumable ) {
  * @param {Object} data Object containing additional data and placeholder for mapping result.
  */
 export function modelToViewPosition( evt, data ) {
-	const modelPosition = data.modelPosition;
-	const mapper = data.mapper;
-	const nodeAfter = modelPosition.nodeAfter;
+	if ( data.viewPosition.parent.name == 'li' && data.modelPosition.parent.name != 'listItem' ) {
+		data.viewPosition = ViewPosition.createBefore( data.viewPosition.parent );
 
-	// `listItem` elements are mapped with view, so positions inside them will be correctly mapped by default algorithm.
-	// Problem are positions between `listItem`s because they are incorrectly mapped to inside `<li>`. This is
-	// because of how view-to-model lengths work. What is important is that if a position is before a `listItem` and
-	// it is not a first `listItem`, the position has to be placed before corresponding `<li>`. If this is the first
-	// `listItem` position has to be before `<ul>` (this is default behavior).
-	if ( nodeAfter && nodeAfter.name == 'listItem' ) {
-		const viewNode = mapper.toViewElement( nodeAfter );
-
-		if ( viewNode && viewNode.index !== 0 ) {
-			data.viewPosition = ViewPosition.createBefore( viewNode );
-
-			evt.stop();
-		}
+		evt.stop();
 	}
 }
 
