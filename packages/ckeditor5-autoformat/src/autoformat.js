@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module autoformat/autoformat
+ */
+
 import BlockAutoformatEngine from './blockautoformatengine.js';
 import InlineAutoformatEngine from './inlineautoformatengine.js';
 import Plugin from '../core/plugin.js';
@@ -43,8 +47,7 @@ import ItalicEngine from '../basic-styles/italicengine.js';
  * * `**foo bar**` or `__foo bar__` – will bold the text,
  * * `*foo bar*` or `_foo bar_` – will italicize the text,
  *
- * @memberOf autoformat
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class Autoformat extends Plugin {
 	/**

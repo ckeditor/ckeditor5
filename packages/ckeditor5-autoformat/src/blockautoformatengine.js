@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module autoformat/blockautoformatengine
+ */
+
 import Range from '../engine/model/range.js';
 import TextProxy from '../engine/model/textproxy.js';
 
@@ -14,9 +18,8 @@ import TextProxy from '../engine/model/textproxy.js';
  * so the autoformatting step can be undone, if the user's intention wasn't to format the text.
  *
  * See the constructors documentation to learn how to create custom inline autoformatters. You can also use
- * the {@link autoformat.Autoformat} feature which enables a set of default autoformatters (lists, headings, bold and italic).
- *
- * @memberOf autoformat
+ * the {@link module:autoformat/autoformat~Autoformat} feature which enables a set of default autoformatters
+ * (lists, headings, bold and italic).
  */
 export default class BlockAutoformatEngine {
 	/**
@@ -42,11 +45,11 @@ export default class BlockAutoformatEngine {
 	 *			} );
 	 * 		} );
 	 *
-	 * @param {core.editor.Editor} editor Editor instance.
+	 * @param {module:core/editor/editor~Editor} editor Editor instance.
 	 * @param {RegExp} pattern Regular expression to exec on just inserted text.
 	 * @param {Function|String} callbackOrCommand Callback to execute or command to run when text is matched.
 	 * In case of providing callback it receives following parameters:
-	 * * {engine.model.Batch} batch Newly created batch for autoformat changes.
+	 * * {module:engine/model/batch~Batch} batch Newly created batch for autoformat changes.
 	 * * {Object} match RegExp.exec() result of matching pattern to inserted text.
 	 */
 	constructor( editor, pattern, callbackOrCommand ) {
