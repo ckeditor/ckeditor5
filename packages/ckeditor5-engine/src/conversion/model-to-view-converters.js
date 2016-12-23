@@ -527,12 +527,12 @@ export function moveInOutOfMarker( markersCollection ) {
 
 		for ( let [ name, range ] of markersCollection ) {
 			const wasInMarker = range.containsPosition( sourcePos ) || range.start.isEqual( sourcePos ) || range.end.isEqual( sourcePos );
-			const isInMarker = range.containsPosition( movedRange.start );
+			const common = movedRange.getIntersection( range );
 
-			if ( wasInMarker && !isInMarker ) {
+			if ( wasInMarker && common === null ) {
 				conversionApi.dispatcher.convertMarker( 'removeMarker', name, movedRange );
-			} else if ( isInMarker ) {
-				conversionApi.dispatcher.convertMarker( 'addMarker', name, movedRange );
+			} else if ( common !== null ) {
+				conversionApi.dispatcher.convertMarker( 'addMarker', name, common );
 			}
 		}
 	};
