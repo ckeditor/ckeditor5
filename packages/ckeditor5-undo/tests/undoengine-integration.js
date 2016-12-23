@@ -229,7 +229,7 @@ describe( 'UndoEngine integration', () => {
 				input( 'fo[zb]ar' );
 
 				doc.batch().wrap( doc.selection.getFirstRange(), 'p' );
-				output( 'fo[<p>zb</p>]ar' );
+				output( 'fo<p>[zb]</p>ar' );
 
 				editor.execute( 'undo' );
 				output( 'fo[zb]ar' );
@@ -243,7 +243,7 @@ describe( 'UndoEngine integration', () => {
 
 				doc.batch().wrap( doc.selection.getFirstRange(), 'p' );
 				// Would be better if selection was inside P.
-				output( 'fo[<p>zb</p>]ar' );
+				output( 'fo<p>[zb]</p>ar' );
 
 				setSelection( [ 2, 0 ], [ 2, 1 ] );
 				doc.batch().move( doc.selection.getFirstRange(), new Position( root, [ 0 ] ) );

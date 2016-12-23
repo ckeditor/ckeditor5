@@ -222,7 +222,7 @@ describe( 'UndoCommand', () => {
 				expect( root.childCount ).to.equal( 1 );
 				expect( itemAt( root, 0 ).name ).to.equal( 'p' );
 
-				expect( editor.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
+				expect( editor.document.selection.getFirstRange().isEqual( r( 1, 1 ) ) ).to.be.true;
 				expect( editor.document.selection.isBackward ).to.be.false;
 
 				undo._execute( batch1 );
@@ -234,7 +234,7 @@ describe( 'UndoCommand', () => {
 				expect( itemAt( root, 0 ).name ).to.equal( 'p' );
 
 				// Operations for undoing that batch were working on graveyard so document selection should not change.
-				expect( editor.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
+				expect( editor.document.selection.getFirstRange().isEqual( r( 1, 1 ) ) ).to.be.true;
 				expect( editor.document.selection.isBackward ).to.be.false;
 
 				expect( doc.graveyard.getChild( 0 ).maxOffset ).to.equal( 6 );
