@@ -95,7 +95,7 @@ describe( 'Paragraph feature – integration', () => {
 		} );
 
 		// See 'should convert ul>li>ul>li+li (in clipboard holder)' in clipboard.js.
-		it( 'pastes ul>li>p,text', () => {
+		it( 'pastes ul>li>ul>li+li', () => {
 			return VirtualTestEditor.create( {
 					plugins: [ Paragraph, Clipboard ]
 				} )

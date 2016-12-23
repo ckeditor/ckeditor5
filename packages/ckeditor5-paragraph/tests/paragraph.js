@@ -100,14 +100,14 @@ describe( 'Paragraph feature', () => {
 					.to.equal( '<heading1>foo</heading1><paragraph>bar</paragraph><paragraph>bom</paragraph>' );
 			} );
 
-			it( 'should autoparagraph 3 inline inline nodes into one paragraph', () => {
+			it( 'should autoparagraph 3 inline nodes into one paragraph', () => {
 				const modelFragment = editor.data.parse( 'foo<b>bar</b>bom' );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<paragraph>foobarbom</paragraph>' );
 			} );
 
-			it( 'should not autoparagraph 3 inline inline nodes (in clipboardHolder)', () => {
+			it( 'should not autoparagraph 3 inline nodes (in clipboardHolder)', () => {
 				const modelFragment = editor.data.parse( 'foo<b>bar</b>bom', '$clipboardHolder' );
 
 				expect( stringifyModel( modelFragment ) )
