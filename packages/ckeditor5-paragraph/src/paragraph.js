@@ -188,6 +188,10 @@ function autoparagraphParagraphLikeElements( doc, evt, data, consumable, convers
 
 // Merges subsequent paragraphs if they should be merged (see shouldMerge).
 function mergeSubsequentParagraphs( evt, data ) {
+	if ( !data.output ) {
+		return;
+	}
+
 	let node;
 
 	if ( isArray( data.output ) ) {

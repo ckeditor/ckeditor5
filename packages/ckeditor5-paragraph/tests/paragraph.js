@@ -179,6 +179,17 @@ describe( 'Paragraph feature', () => {
 				// for a while
 				expect( stringifyModel( modelFragment ) ).to.equal( '<paragraph>foobarbom</paragraph>' );
 			} );
+
+			// This test was taken from the list package.
+			it( 'does not break when some converter returns nothing', () => {
+				editor.data.viewToModel.on( 'element:li', ( evt, data, consumable ) => {
+					consumable.consume( data.input, { name: true } );
+				}, { priority: 'highest' } );
+
+				const modelFragment = editor.data.parse( '<ul><li></li></ul>' );
+
+				expect( stringifyModel( modelFragment ) ).to.equal( '' );
+			} );
 		} );
 
 		describe( 'generic block converter (paragraph-like element handling)', () => {
