@@ -5,20 +5,20 @@
 
 /* globals document */
 
-import testUtils from 'tests/ui/_utils/utils.js';
+import testUtils from 'ckeditor5-ui/tests/_utils/utils';
 
-import Collection from 'ckeditor5/utils/collection.js';
-import Model from 'ckeditor5/ui/model.js';
-import View from 'ckeditor5/ui/view.js';
-import Template from 'ckeditor5/ui/template.js';
+import Collection from 'ckeditor5-utils/src/collection';
+import Model from 'ckeditor5-ui/src/model';
+import View from 'ckeditor5-ui/src/view';
+import Template from 'ckeditor5-ui/src/template';
 
-import iconManagerModel from 'theme/iconmanagermodel.js';
-import IconManagerView from 'ckeditor5/ui/iconmanager/iconmanagerview.js';
+import iconManagerModel from 'theme/iconmanagermodel';
+import IconManagerView from 'ckeditor5-ui/src/iconmanager/iconmanagerview';
 
-import IconView from 'ckeditor5/ui/icon/iconview.js';
-import ButtonView from 'ckeditor5/ui/button/buttonview.js';
-import createListDropdown from 'ckeditor5/ui/dropdown/list/createlistdropdown.js';
-import ToolbarView from 'ckeditor5/ui/toolbar/toolbarview.js';
+import IconView from 'ckeditor5-ui/src/icon/iconview';
+import ButtonView from 'ckeditor5-ui/src/button/buttonview';
+import createListDropdown from 'ckeditor5-ui/src/dropdown/list/createlistdropdown';
+import ToolbarView from 'ckeditor5-ui/src/toolbar/toolbarview';
 
 testUtils.createTestUIView( {
 	'iconPlain1':					'#icon-plain-1',
