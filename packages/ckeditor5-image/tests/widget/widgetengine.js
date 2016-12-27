@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
-import WidgetEngine from 'ckeditor5/image/widget/widgetengine.js';
-import buildModelConverter from 'ckeditor5/engine/conversion/buildmodelconverter.js';
-import { setData as setModelData } from 'ckeditor5/engine/dev-utils/model.js';
-import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
-import ViewContainer from 'ckeditor5/engine/view/containerelement.js';
-import { widgetize } from 'ckeditor5/image/widget/utils.js';
+import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
+import WidgetEngine from 'ckeditor5-image/src/widget/widgetengine';
+import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
+import { setData as setModelData } from 'ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from 'ckeditor5-engine/src/dev-utils/view';
+import ViewContainer from 'ckeditor5-engine/src/view/containerelement';
+import { widgetize } from 'ckeditor5-image/src/widget/utils';
 
 describe( 'WidgetEngine', () => {
 	let editor, document, viewDocument;

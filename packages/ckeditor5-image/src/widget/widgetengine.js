@@ -7,8 +7,8 @@
  * @module image/widget/widgetengine
  */
 
-import Plugin from '../../core/plugin.js';
-import { WIDGET_SELECTED_CLASS_NAME, isWidget } from './utils.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import { WIDGET_SELECTED_CLASS_NAME, isWidget } from './utils';
 
 /**
  * The widget engine plugin.

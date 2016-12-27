@@ -7,11 +7,11 @@
  * @module image/imageengine
  */
 
-import Plugin from '../core/plugin.js';
-import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
-import WidgetEngine from './widget/widgetengine.js';
-import { modelToViewImage, viewToModelImage, modelToViewSelection } from './converters.js';
-import { toImageWidget } from './utils.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
+import WidgetEngine from './widget/widgetengine';
+import { modelToViewImage, viewToModelImage, modelToViewSelection } from './converters';
+import { toImageWidget } from './utils';
 
 /**
  * The image engine plugin.

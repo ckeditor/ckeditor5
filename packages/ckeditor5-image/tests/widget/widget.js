@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
-import Widget from 'ckeditor5/image/widget/widget.js';
-import MouseObserver from 'ckeditor5/engine/view/observer/mouseobserver.js';
-import buildModelConverter from 'ckeditor5/engine/conversion/buildmodelconverter.js';
-import { widgetize } from 'ckeditor5/image/widget/utils.js';
-import ViewContainer from 'ckeditor5/engine/view/containerelement.js';
-import DomEventData from 'ckeditor5/engine/view/observer/domeventdata.js';
-import AttributeContainer from 'ckeditor5/engine/view/attributeelement.js';
-import { setData as setModelData, getData as getModelData } from 'ckeditor5/engine/dev-utils/model.js';
-import { keyCodes } from 'ckeditor5/utils/keyboard.js';
+import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
+import Widget from 'ckeditor5-image/src/widget/widget';
+import MouseObserver from 'ckeditor5-engine/src/view/observer/mouseobserver';
+import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
+import { widgetize } from 'ckeditor5-image/src/widget/utils';
+import ViewContainer from 'ckeditor5-engine/src/view/containerelement';
+import DomEventData from 'ckeditor5-engine/src/view/observer/domeventdata';
+import AttributeContainer from 'ckeditor5-engine/src/view/attributeelement';
+import { setData as setModelData, getData as getModelData } from 'ckeditor5-engine/src/dev-utils/model';
+import { keyCodes } from 'ckeditor5-utils/src/keyboard';
 
 /* global document */
 

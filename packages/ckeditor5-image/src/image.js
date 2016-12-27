@@ -7,9 +7,9 @@
  * @module image/image
  */
 
-import Plugin from '../core/plugin.js';
-import ImageEngine from './imageengine.js';
-import Widget from './widget/widget.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import ImageEngine from './imageengine';
+import Widget from './widget/widget';
 
 /**
  * The image plugin.

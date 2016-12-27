@@ -7,7 +7,7 @@
  * @module image/utils
  */
 
-import { widgetize, isWidget } from './widget/utils.js';
+import { widgetize, isWidget } from './widget/utils';
 
 const imageSymbol = Symbol( 'isImage' );
 
