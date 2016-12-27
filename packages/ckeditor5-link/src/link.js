@@ -20,6 +20,9 @@ import BalloonPanelView from 'ckeditor5-ui/src/balloonpanel/balloonpanelview';
 
 import LinkFormView from './ui/linkformview';
 
+import linkIcon from '../theme/icons/link.svg';
+import unlinkIcon from '../theme/icons/unlink.svg';
+
 /**
  * The link feature. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
  *
@@ -79,7 +82,7 @@ export default class Link extends Plugin {
 
 			button.isEnabled = true;
 			button.label = t( 'Link' );
-			button.icon = 'link';
+			button.icon = linkIcon;
 			button.keystroke = 'CTRL+K';
 
 			// Bind button to the command.
@@ -108,7 +111,7 @@ export default class Link extends Plugin {
 
 			button.isEnabled = false;
 			button.label = t( 'Unlink' );
-			button.icon = 'unlink';
+			button.icon = unlinkIcon;
 
 			// Bind button to the command.
 			button.bind( 'isEnabled' ).to( unlinkCommand, 'isEnabled' );
