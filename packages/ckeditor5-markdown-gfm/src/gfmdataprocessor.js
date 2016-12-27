@@ -7,11 +7,11 @@
  * @module markdown-gfm/gfmdataprocessor
  */
 
-import marked from './lib/marked/marked.js';
-import toMarkdown from './lib/to-markdown/to-markdown.js';
-import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
-import GFMRenderer from './lib/marked/renderer.js';
-import converters from './lib/to-markdown/converters.js';
+import marked from './lib/marked/marked';
+import toMarkdown from './lib/to-markdown/to-markdown';
+import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import GFMRenderer from './lib/marked/renderer';
+import converters from './lib/to-markdown/converters';
 
 /**
  * This data processor implementation uses GitHub flavored markdown as input/output data.
