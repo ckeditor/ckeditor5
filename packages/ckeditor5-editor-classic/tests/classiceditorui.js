@@ -6,15 +6,15 @@
 /* globals document, Event */
 /* bender-tags: editor, browser-only */
 
-import ComponentFactory from 'ckeditor5/ui/componentfactory.js';
-import FocusTracker from 'ckeditor5/utils/focustracker.js';
-import ClassicEditorUI from 'ckeditor5/editor-classic/classiceditorui.js';
-import ClassicEditorUIView from 'ckeditor5/editor-classic/classiceditoruiview.js';
-import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
-import View from 'ckeditor5/ui/view.js';
+import ComponentFactory from 'ckeditor5-ui/src/componentfactory';
+import FocusTracker from 'ckeditor5-utils/src/focustracker';
+import ClassicEditorUI from 'ckeditor5-editor-classic/src/classiceditorui';
+import ClassicEditorUIView from 'ckeditor5-editor-classic/src/classiceditoruiview';
+import ClassicTestEditor from 'ckeditor5-core/tests/_utils/classictesteditor';
+import View from 'ckeditor5-ui/src/view';
 
-import testUtils from 'tests/core/_utils/utils.js';
-import utils from 'tests/utils/_utils/utils.js';
+import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import utils from 'ckeditor5-utils/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 
