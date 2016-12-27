@@ -13,6 +13,8 @@ import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
 import ElementReplacer from 'ckeditor5-utils/src/elementreplacer';
 
+import '../theme/theme.scss';
+
 /**
  * Classic editor. Uses inline editable and sticky toolbar, all
  * enclosed in a boxed UI.

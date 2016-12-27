@@ -1,0 +1,53 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+@import '~ckeditor5-theme-lark/theme/theme.scss';
+
+@include ck-editor {
+	@include ck-rounded-corners();
+
+	// All the elements within `.ck-editor` are positioned relatively to it.
+	// If any element needs to be positioned with respect to the <body>, etc.,
+	// it must land outside of the `.ck-editor` in DOM.
+	position: relative;
+
+	.ck-editor__top {
+		.ck-toolbar {
+			@include ck-editor-toolbar();
+
+			border-top: 0;
+			border-left: 0;
+			border-right: 0;
+		}
+	}
+
+	.ck-editor__main {
+		background: ck-color();
+	}
+
+	.ck-editor__bottom {
+		border-bottom: 0;
+		border-left: 0;
+		border-right: 0;
+
+		padding: ck-spacing();
+	}
+
+	.ck-editor__editable {
+		&.ck-focused {
+			@include ck-focus-ring( 'outline' );
+			@include ck-box-shadow( $ck-inner-shadow );
+		}
+
+		&_inline {
+			overflow: auto;
+			padding: 0 ck-spacing();
+		}
+	}
+}
+
+.ck-editor,
+.ck-editor-bottom {
+	background: ck-color( 'foreground' );
+	border: 1px solid ck-border-color( 'foreground' );
+}
