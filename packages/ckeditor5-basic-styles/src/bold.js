@@ -10,6 +10,7 @@
 import Plugin from 'ckeditor5-core/src/plugin';
 import BoldEngine from './boldengine';
 import ButtonView from 'ckeditor5-ui/src/button/buttonview';
+import boldIcon from '../theme/icons/bold.svg';
 
 /**
  * The bold feature. It introduces the Bold button and the <kbd>Ctrl+B</kbd> keystroke.
@@ -41,7 +42,7 @@ export default class Bold extends Plugin {
 
 			view.set( {
 				label: t( 'Bold' ),
-				icon: 'bold',
+				icon: boldIcon,
 				keystroke
 			} );
 

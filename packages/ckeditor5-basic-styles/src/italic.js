@@ -10,6 +10,7 @@
 import Plugin from 'ckeditor5-core/src/plugin';
 import ItalicEngine from './italicengine';
 import ButtonView from 'ckeditor5-ui/src/button/buttonview';
+import italicIcon from '../theme/icons/italic.svg';
 
 /**
  * The italic feature. It introduces the Italic button and the <kbd>Ctrl+I</kbd> keystroke.
@@ -41,7 +42,7 @@ export default class Italic extends Plugin {
 
 			view.set( {
 				label: t( 'Italic' ),
-				icon: 'italic',
+				icon: italicIcon,
 				keystroke
 			} );
 
