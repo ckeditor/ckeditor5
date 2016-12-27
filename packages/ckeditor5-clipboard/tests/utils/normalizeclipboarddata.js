@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import normalizeClipboardData from 'ckeditor5/clipboard/utils/normalizeclipboarddata.js';
+import normalizeClipboardData from 'ckeditor5-clipboard/src/utils/normalizeclipboarddata';
 
 describe( 'normalizeClipboardData', () => {
 	it( 'should strip all span.Apple-converted-space', () => {
