@@ -7,9 +7,9 @@
  * @module basic-styles/bold
  */
 
-import Plugin from '../core/plugin.js';
-import BoldEngine from './boldengine.js';
-import ButtonView from '../ui/button/buttonview.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import BoldEngine from './boldengine';
+import ButtonView from 'ckeditor5-ui/src/button/buttonview';
 
 /**
  * The bold feature. It introduces the Bold button and the <kbd>Ctrl+B</kbd> keystroke.

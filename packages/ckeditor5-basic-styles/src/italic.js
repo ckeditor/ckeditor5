@@ -7,9 +7,9 @@
  * @module basic-styles/italic
  */
 
-import Plugin from '../core/plugin.js';
-import ItalicEngine from './italicengine.js';
-import ButtonView from '../ui/button/buttonview.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import ItalicEngine from './italicengine';
+import ButtonView from 'ckeditor5-ui/src/button/buttonview';
 
 /**
  * The italic feature. It introduces the Italic button and the <kbd>Ctrl+I</kbd> keystroke.

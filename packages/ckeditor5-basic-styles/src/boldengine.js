@@ -7,10 +7,10 @@
  * @module basic-styles/boldengine
  */
 
-import Plugin from '../core/plugin.js';
-import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
-import buildViewConverter from '../engine/conversion/buildviewconverter.js';
-import ToggleAttributeCommand from '../core/command/toggleattributecommand.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
+import buildViewConverter from 'ckeditor5-engine/src/conversion/buildviewconverter';
+import ToggleAttributeCommand from 'ckeditor5-core/src/command/toggleattributecommand';
 
 const BOLD = 'bold';
 
