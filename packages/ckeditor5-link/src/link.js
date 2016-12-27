@@ -23,6 +23,8 @@ import LinkFormView from './ui/linkformview';
 import linkIcon from '../theme/icons/link.svg';
 import unlinkIcon from '../theme/icons/unlink.svg';
 
+import '../theme/theme.scss';
+
 /**
  * The link feature. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
  *
