@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import LinkEngine from 'ckeditor5/link/linkengine.js';
-import LinkCommand from 'ckeditor5/link/linkcommand.js';
-import LinkElement from 'ckeditor5/link/linkelement.js';
-import UnlinkCommand from 'ckeditor5/link/unlinkcommand.js';
-import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
-import { getData as getModelData, setData as setModelData } from 'ckeditor5/engine/dev-utils/model.js';
-import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
+import LinkEngine from 'ckeditor5-link/src/linkengine';
+import LinkCommand from 'ckeditor5-link/src/linkcommand';
+import LinkElement from 'ckeditor5-link/src/linkelement';
+import UnlinkCommand from 'ckeditor5-link/src/unlinkcommand';
+import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
+import { getData as getModelData, setData as setModelData } from 'ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from 'ckeditor5-engine/src/dev-utils/view';
 
 describe( 'LinkEngine', () => {
 	let editor, doc;

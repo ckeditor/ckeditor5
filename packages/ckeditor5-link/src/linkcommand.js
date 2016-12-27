@@ -7,12 +7,12 @@
  * @module link/linkcommand
  */
 
-import Command from '../core/command/command.js';
-import Text from '../engine/model/text.js';
-import Range from '../engine/model/range.js';
-import getSchemaValidRanges from '../core/command/helpers/getschemavalidranges.js';
-import isAttributeAllowedInSelection from '../core/command/helpers/isattributeallowedinselection.js';
-import findLinkRange from './findlinkrange.js';
+import Command from 'ckeditor5-core/src/command/command';
+import Text from 'ckeditor5-engine/src/model/text';
+import Range from 'ckeditor5-engine/src/model/range';
+import getSchemaValidRanges from 'ckeditor5-core/src/command/helpers/getschemavalidranges';
+import isAttributeAllowedInSelection from 'ckeditor5-core/src/command/helpers/isattributeallowedinselection';
+import findLinkRange from './findlinkrange';
 
 /**
  * The link command. It is used by the {@link module:link/link~Link link feature}.

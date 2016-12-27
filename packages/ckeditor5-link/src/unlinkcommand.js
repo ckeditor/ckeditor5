@@ -7,8 +7,8 @@
  * @module link/unlinkcommand
  */
 
-import Command from '../core/command/command.js';
-import findLinkRange from './findlinkrange.js';
+import Command from 'ckeditor5-core/src/command/command';
+import findLinkRange from './findlinkrange';
 
 /**
  * The unlink command. It is used by the {@link module:link/link~Link link plugin}.

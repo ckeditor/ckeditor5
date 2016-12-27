@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from 'tests/core/_utils/modeltesteditor.js';
-import UnlinkCommand from 'ckeditor5/link/unlinkcommand.js';
-import { setData, getData } from 'ckeditor5/engine/dev-utils/model.js';
-import testUtils from 'tests/core/_utils/utils.js';
+import ModelTestEditor from 'ckeditor5-core/tests/_utils/modeltesteditor';
+import UnlinkCommand from 'ckeditor5-link/src/unlinkcommand';
+import { setData, getData } from 'ckeditor5-engine/src/dev-utils/model';
+import testUtils from 'ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 
