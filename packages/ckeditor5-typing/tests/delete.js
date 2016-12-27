@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
-import Delete from 'ckeditor5/typing/delete.js';
-import DomEventData from 'ckeditor5/engine/view/observer/domeventdata.js';
+import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
+import Delete from 'ckeditor5-typing/src/delete';
+import DomEventData from 'ckeditor5-engine/src/view/observer/domeventdata';
 
 describe( 'Delete feature', () => {
 	let editor, editingView;

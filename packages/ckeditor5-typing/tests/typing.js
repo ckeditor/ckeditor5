@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import Typing from 'ckeditor5/typing/typing.js';
-import Input from 'ckeditor5/typing/input.js';
-import Delete from 'ckeditor5/typing/delete.js';
+import Typing from 'ckeditor5-typing/src/typing';
+import Input from 'ckeditor5-typing/src/input';
+import Delete from 'ckeditor5-typing/src/delete';
 
 describe( 'Typing feature', () => {
 	it( 'requires Input and Delete features', () => {

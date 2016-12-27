@@ -7,9 +7,9 @@
  * @module typing/typing
  */
 
-import Plugin from '../core/plugin.js';
-import Input from './input.js';
-import Delete from './delete.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import Input from './input';
+import Delete from './delete';
 
 /**
  * The typing feature. Handles typing.
