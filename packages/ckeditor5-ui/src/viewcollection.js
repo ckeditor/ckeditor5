@@ -7,11 +7,11 @@
  * @module ui/viewcollection
  */
 
-import CKEditorError from '../utils/ckeditorerror.js';
-import ObservableMixin from '../utils/observablemixin.js';
-import Collection from '../utils/collection.js';
-import mix from '../utils/mix.js';
-import View from './view.js';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import ObservableMixin from 'ckeditor5-utils/src/observablemixin';
+import Collection from 'ckeditor5-utils/src/collection';
+import mix from 'ckeditor5-utils/src/mix';
+import View from './view';
 
 /**
  * Collects {@link module:ui/view~View} instances.

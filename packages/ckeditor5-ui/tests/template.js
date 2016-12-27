@@ -6,17 +6,17 @@
 /* bender-tags: ui */
 /* globals HTMLElement, Event, document */
 
-import testUtils from 'tests/core/_utils/utils.js';
-import Template from 'ckeditor5/ui/template.js';
-import { TemplateToBinding, TemplateIfBinding } from 'ckeditor5/ui/template.js';
-import View from 'ckeditor5/ui/view.js';
-import ViewCollection from 'ckeditor5/ui/viewcollection.js';
-import Model from 'ckeditor5/ui/model.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
-import EmitterMixin from 'ckeditor5/utils/emittermixin.js';
-import DomEmitterMixin from 'ckeditor5/utils/dom/emittermixin.js';
-import Collection from 'ckeditor5/utils/collection.js';
-import normalizeHtml from 'tests/utils/_utils/normalizehtml.js';
+import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import Template from 'ckeditor5-ui/src/template';
+import { TemplateToBinding, TemplateIfBinding } from 'ckeditor5-ui/src/template';
+import View from 'ckeditor5-ui/src/view';
+import ViewCollection from 'ckeditor5-ui/src/viewcollection';
+import Model from 'ckeditor5-ui/src/model';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import DomEmitterMixin from 'ckeditor5-utils/src/dom/emittermixin';
+import Collection from 'ckeditor5-utils/src/collection';
+import normalizeHtml from 'ckeditor5-utils/tests/_utils/normalizehtml';
 
 testUtils.createSinonSandbox();
 
