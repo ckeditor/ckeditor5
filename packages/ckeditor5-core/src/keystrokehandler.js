@@ -7,8 +7,8 @@
  * @module core/keystrokehandler
  */
 
-import EmitterMixin from '../utils/emittermixin.js';
-import { getCode, parseKeystroke } from '../utils/keyboard.js';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import { getCode, parseKeystroke } from 'ckeditor5-utils/src/keyboard';
 
 /**
  * Keystroke handler. Its instance is available in {@link module:core/editor/standardeditor~StandardEditor#keystrokes} so plugins

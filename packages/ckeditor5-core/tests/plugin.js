@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import Plugin from 'ckeditor5/core/plugin.js';
-import Editor from 'ckeditor5/core/editor/editor.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import Editor from 'ckeditor5-core/src/editor/editor';
 
 let editor;
 

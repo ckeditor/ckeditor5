@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5/engine/model/document.js';
-import Range from 'ckeditor5/engine/model/range.js';
-import Selection from 'ckeditor5/engine/model/selection.js';
-import getSchemaValidRanges from 'ckeditor5/core/command/helpers/getschemavalidranges.js';
-import { setData, stringify } from 'ckeditor5/engine/dev-utils/model.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import Range from 'ckeditor5-engine/src/model/range';
+import Selection from 'ckeditor5-engine/src/model/selection';
+import getSchemaValidRanges from 'ckeditor5-core/src/command/helpers/getschemavalidranges';
+import { setData, stringify } from 'ckeditor5-engine/src/dev-utils/model';
 
 describe( 'getSchemaValidRanges', () => {
 	const attribute = 'bold';

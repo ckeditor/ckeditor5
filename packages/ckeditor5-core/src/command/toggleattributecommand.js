@@ -7,9 +7,9 @@
  * @module core/command/toggleattributecommand
  */
 
-import Command from './command.js';
-import getSchemaValidRanges from './helpers/getschemavalidranges.js';
-import isAttributeAllowedInSelection from './helpers/isattributeallowedinselection.js';
+import Command from './command';
+import getSchemaValidRanges from './helpers/getschemavalidranges';
+import isAttributeAllowedInSelection from './helpers/isattributeallowedinselection';
 
 /**
  * An extension of the base {@link module:core/command/command~Command} class, which provides utilities for a command which toggles a single

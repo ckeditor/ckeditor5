@@ -7,7 +7,7 @@
  * @module core/command/helpers/isattributeallowedinselection
  */
 
-import TreeWalker from '../../../engine/model/treewalker.js';
+import TreeWalker from 'ckeditor5-engine/src/model/treewalker';
 
 /**
  * Checks {@link module:engine/model/document~Document#schema} if attribute is allowed in selection:

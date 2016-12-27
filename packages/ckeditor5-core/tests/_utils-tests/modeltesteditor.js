@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
-import Editor from 'ckeditor5/core/editor/editor.js';
-import ModelTestEditor from 'tests/core/_utils/modeltesteditor.js';
+import Editor from 'ckeditor5-core/src/editor/editor';
+import ModelTestEditor from 'ckeditor5-core/tests/_utils/modeltesteditor';
 
-import Plugin from 'ckeditor5/core/plugin.js';
-import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
-import { getData, setData } from 'ckeditor5/engine/dev-utils/model.js';
+import { getData, setData } from 'ckeditor5-engine/src/dev-utils/model';
 
-import testUtils from 'tests/core/_utils/utils.js';
+import testUtils from 'ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 

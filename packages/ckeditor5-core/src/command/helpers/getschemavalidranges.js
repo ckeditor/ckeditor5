@@ -7,9 +7,9 @@
  * @module core/command/helpers/getschemavalidranges
  */
 
-import TreeWalker from '../../../engine/model/treewalker.js';
-import Range from '../../../engine/model/range.js';
-import Position from '../../../engine/model/position.js';
+import TreeWalker from 'ckeditor5-engine/src/model/treewalker';
+import Range from 'ckeditor5-engine/src/model/range';
+import Position from 'ckeditor5-engine/src/model/position';
 
 /**
  * Walks through given array of ranges and removes parts of them that are not allowed by passed schema to have the
