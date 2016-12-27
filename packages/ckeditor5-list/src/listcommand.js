@@ -7,8 +7,8 @@
  * @module list/listcommand
  */
 
-import Command from '../core/command/command.js';
-import { getClosestListItem, getSelectedBlocks, getPositionBeforeBlock } from './utils.js';
+import Command from 'ckeditor5-core/src/command/command';
+import { getClosestListItem, getSelectedBlocks, getPositionBeforeBlock } from './utils';
 
 /**
  * The list command. It is used by the {@link module:list/list~List list feature}.

@@ -7,8 +7,8 @@
  * @module list/indentcommand
  */
 
-import Command from '../core/command/command.js';
-import { getClosestListItem } from './utils.js';
+import Command from 'ckeditor5-core/src/command/command';
+import { getClosestListItem } from './utils';
 
 /**
  * The list indent command. It is used by the {@link module:list/list~List list feature}.

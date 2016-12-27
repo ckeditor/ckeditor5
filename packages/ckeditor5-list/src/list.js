@@ -7,10 +7,10 @@
  * @module list/list
  */
 
-import Plugin from '../core/plugin.js';
-import ListEngine from './listengine.js';
-import ButtonView from '../ui/button/buttonview.js';
-import { parseKeystroke } from '../utils/keyboard.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import ListEngine from './listengine';
+import ButtonView from 'ckeditor5-ui/src/button/buttonview';
+import { parseKeystroke } from 'ckeditor5-utils/src/keyboard';
 
 /**
  * The lists feature. It introduces the `numberedList` and `bulletedList` buttons which
