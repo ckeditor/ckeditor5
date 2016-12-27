@@ -1,0 +1,30 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+.ck-toolbar__container {
+	background: ck-color( 'foreground' );
+
+	.ck-toolbar {
+		@include ck-editor-toolbar;
+
+		border: 0;
+	}
+
+	&.ck-balloon-panel {
+		&_arrow_s,
+		&_arrow_se,
+		&_arrow_sw {
+			&:after {
+				border-bottom-color: ck-color( 'foreground' );
+			}
+		}
+
+		&_arrow_n,
+		&_arrow_ne,
+		&_arrow_nw {
+			&:after {
+				border-top-color: ck-color( 'foreground' );
+			}
+		}
+	}
+}
