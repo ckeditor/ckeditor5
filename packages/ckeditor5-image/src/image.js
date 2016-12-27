@@ -11,6 +11,8 @@ import Plugin from 'ckeditor5-core/src/plugin';
 import ImageEngine from './imageengine';
 import Widget from './widget/widget';
 
+import '../theme/theme.scss';
+
 /**
  * The image plugin.
  *
