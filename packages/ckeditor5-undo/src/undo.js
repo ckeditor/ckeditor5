@@ -11,6 +11,9 @@ import Plugin from 'ckeditor5-core/src/plugin';
 import UndoEngine from './undoengine';
 import ButtonView from 'ckeditor5-ui/src/button/buttonview';
 
+import undoIcon from '../theme/icons/undo.svg';
+import redoIcon from '../theme/icons/redo.svg';
+
 /**
  * The undo feature. It introduces the Undo and Redo buttons to the editor.
  *
@@ -139,8 +142,8 @@ export default class Undo extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		this._addButton( 'undo', t( 'Undo' ), 'CTRL+Z' );
-		this._addButton( 'redo', t( 'Redo' ), 'CTRL+Y' );
+		this._addButton( 'undo', t( 'Undo' ), 'CTRL+Z', undoIcon );
+		this._addButton( 'redo', t( 'Redo' ), 'CTRL+Y', redoIcon );
 
 		editor.keystrokes.set( 'CTRL+Z', 'undo' );
 		editor.keystrokes.set( 'CTRL+Y', 'redo' );
@@ -154,8 +157,9 @@ export default class Undo extends Plugin {
 	 * @param {String} name Command name.
 	 * @param {String} label Button label.
 	 * @param {String} keystroke Command keystroke.
+	 * @param {String} Icon Source of the icon.
 	 */
-	_addButton( name, label, keystroke ) {
+	_addButton( name, label, keystroke, Icon ) {
 		const editor = this.editor;
 		const command = editor.commands.get( name );
 
@@ -164,7 +168,7 @@ export default class Undo extends Plugin {
 
 			view.set( {
 				label: label,
-				icon: name,
+				icon: Icon,
 				keystroke
 			} );
 
