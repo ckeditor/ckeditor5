@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from 'tests/core/_utils/modeltesteditor.js';
-import BaseCommand from 'ckeditor5/undo/basecommand.js';
+import ModelTestEditor from 'ckeditor5-core/tests/_utils/modeltesteditor';
+import BaseCommand from 'ckeditor5-undo/src/basecommand';
 
 describe( 'BaseCommand', () => {
 	let editor, doc, root, base;

@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from 'tests/core/_utils/modeltesteditor.js';
-import Range from 'ckeditor5/engine/model/range.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import UndoEngine from 'ckeditor5/undo/undoengine.js';
+import ModelTestEditor from 'ckeditor5-core/tests/_utils/modeltesteditor';
+import Range from 'ckeditor5-engine/src/model/range';
+import Position from 'ckeditor5-engine/src/model/position';
+import UndoEngine from 'ckeditor5-undo/src/undoengine';
 
-import { setData, getData } from 'ckeditor5/engine/dev-utils/model.js';
+import { setData, getData } from 'ckeditor5-engine/src/dev-utils/model';
 
 describe( 'UndoEngine integration', () => {
 	let editor, doc, root;

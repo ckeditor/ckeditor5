@@ -7,9 +7,9 @@
  * @module undo/undo
  */
 
-import Plugin from '../core/plugin.js';
-import UndoEngine from './undoengine.js';
-import ButtonView from '../ui/button/buttonview.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import UndoEngine from './undoengine';
+import ButtonView from 'ckeditor5-ui/src/button/buttonview';
 
 /**
  * The undo feature. It introduces the Undo and Redo buttons to the editor.

@@ -7,8 +7,8 @@
  * @module undo/redocommand
  */
 
-import BaseCommand from './basecommand.js';
-import { transformDeltaSets } from '../engine/model/delta/transform.js';
+import BaseCommand from './basecommand';
+import { transformDeltaSets } from 'ckeditor5-engine/src/model/delta/transform';
 
 /**
  * The redo command stores {@link module:engine/model/batch~Batch batches} that were used to undo a batch by

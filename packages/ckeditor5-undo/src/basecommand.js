@@ -7,7 +7,7 @@
  * @module undo/basecommand
  */
 
-import Command from '../core/command/command.js';
+import Command from 'ckeditor5-core/src/command/command';
 
 /**
  * Base class for undo feature commands: {@link module:undo/undocommand~UndoCommand} and {@link module:undo/redocommand~RedoCommand}.

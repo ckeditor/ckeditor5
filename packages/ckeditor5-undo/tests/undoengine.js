@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from 'tests/core/_utils/modeltesteditor.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import UndoEngine from 'ckeditor5/undo/undoengine.js';
+import ModelTestEditor from 'ckeditor5-core/tests/_utils/modeltesteditor';
+import Position from 'ckeditor5-engine/src/model/position';
+import UndoEngine from 'ckeditor5-undo/src/undoengine';
 
 describe( 'UndoEngine', () => {
 	let editor, undo, batch, doc, root;

@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from 'tests/core/_utils/modeltesteditor.js';
-import Range from 'ckeditor5/engine/model/range.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import UndoCommand from 'ckeditor5/undo/undocommand.js';
-import RedoCommand from 'ckeditor5/undo/redocommand.js';
-import { itemAt, getText } from 'tests/engine/model/_utils/utils.js';
+import ModelTestEditor from 'ckeditor5-core/tests/_utils/modeltesteditor';
+import Range from 'ckeditor5-engine/src/model/range';
+import Position from 'ckeditor5-engine/src/model/position';
+import UndoCommand from 'ckeditor5-undo/src/undocommand';
+import RedoCommand from 'ckeditor5-undo/src/redocommand';
+import { itemAt, getText } from 'ckeditor5-engine/tests/model/_utils/utils';
 
 describe( 'RedoCommand', () => {
 	let editor, doc, root, redo, undo;

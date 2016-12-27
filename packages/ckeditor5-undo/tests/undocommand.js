@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from 'tests/core/_utils/modeltesteditor.js';
-import Range from 'ckeditor5/engine/model/range.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import Text from 'ckeditor5/engine/model/text.js';
-import UndoCommand from 'ckeditor5/undo/undocommand.js';
-import AttributeDelta from 'ckeditor5/engine/model/delta/attributedelta.js';
-import { itemAt, getText } from 'tests/engine/model/_utils/utils.js';
+import ModelTestEditor from 'ckeditor5-core/tests/_utils/modeltesteditor';
+import Range from 'ckeditor5-engine/src/model/range';
+import Position from 'ckeditor5-engine/src/model/position';
+import Text from 'ckeditor5-engine/src/model/text';
+import UndoCommand from 'ckeditor5-undo/src/undocommand';
+import AttributeDelta from 'ckeditor5-engine/src/model/delta/attributedelta';
+import { itemAt, getText } from 'ckeditor5-engine/tests/model/_utils/utils';
 
 describe( 'UndoCommand', () => {
 	let editor, doc, root, undo;
