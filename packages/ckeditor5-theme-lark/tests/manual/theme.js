@@ -12,13 +12,13 @@ import Model from 'ckeditor5-ui/src/model';
 import View from 'ckeditor5-ui/src/view';
 import Template from 'ckeditor5-ui/src/template';
 
-import iconManagerModel from 'theme/iconmanagermodel';
-import IconManagerView from 'ckeditor5-ui/src/iconmanager/iconmanagerview';
-
 import IconView from 'ckeditor5-ui/src/icon/iconview';
 import ButtonView from 'ckeditor5-ui/src/button/buttonview';
 import createListDropdown from 'ckeditor5-ui/src/dropdown/list/createlistdropdown';
 import ToolbarView from 'ckeditor5-ui/src/toolbar/toolbarview';
+
+// TODO needs to be filled with icon imports.
+const availableIcons = [];
 
 testUtils.createTestUIView( {
 	'iconPlain1':					'#icon-plain-1',
@@ -56,14 +56,6 @@ testUtils.createTestUIView( {
 } );
 
 function renderIcon( ui ) {
-	// --- IconManager ------------------------------------------------------------
-
-	const iconManager =  new IconManagerView();
-
-	iconManager.sprite = iconManagerModel.sprite;
-
-	ui.body.add( iconManager );
-
 	// --- In-text ------------------------------------------------------------
 
 	ui.iconPlain1.add( icon( 'bold' ) );
@@ -73,7 +65,7 @@ function renderIcon( ui ) {
 
 	// --- Availability ------------------------------------------------------------
 
-	iconManagerModel.icons.forEach( i => {
+	availableIcons.forEach( i => {
 		ui.iconAvailability.add( icon( i ) );
 		ui.iconAvailabilityColor.add( icon( i ) );
 	} );
@@ -117,7 +109,7 @@ function renderButton( ui ) {
 
 	// --- Icon ------------------------------------------------------------
 
-	iconManagerModel.icons.forEach( i => {
+	availableIcons.forEach( i => {
 		ui.buttonIcon.add( button( {
 			label: i,
 			icon: i
