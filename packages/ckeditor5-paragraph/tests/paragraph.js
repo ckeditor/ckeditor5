@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md.
  */
 
-import Paragraph from 'ckeditor5/paragraph/paragraph.js';
-import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
+import Paragraph from 'ckeditor5-paragraph/src/paragraph';
+import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
 import {
 	getData as getModelData,
 	setData as setModelData,
 	stringify as stringifyModel
-} from 'ckeditor5/engine/dev-utils/model.js';
-import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
+} from 'ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from 'ckeditor5-engine/src/dev-utils/view';
 
-import buildViewConverter from 'ckeditor5/engine/conversion/buildviewconverter.js';
+import buildViewConverter from 'ckeditor5-engine/src/conversion/buildviewconverter';
 
-import ModelDocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
-import ModelText from 'ckeditor5/engine/model/text.js';
+import ModelDocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
+import ModelText from 'ckeditor5-engine/src/model/text';
 
 describe( 'Paragraph feature', () => {
 	let editor, doc;
