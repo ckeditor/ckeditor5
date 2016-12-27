@@ -7,11 +7,11 @@
  * @module engine/conversion/viewconsumable
  */
 
-import isArray from '../../utils/lib/lodash/isArray.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
-import ViewElement from '../view/element.js';
-import ViewText from '../view/text.js';
-import ViewDocumentFragment from '../view/documentfragment.js';
+import isArray from 'ckeditor5-utils/src/lib/lodash/isArray';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import ViewElement from '../view/element';
+import ViewText from '../view/text';
+import ViewDocumentFragment from '../view/documentfragment';
 
 /**
  * Class used for handling consumption of view {@link module:engine/view/element~Element elements},

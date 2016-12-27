@@ -7,7 +7,7 @@
  * @module engine/model/textproxy
  */
 
-import CKEditorError from '../../utils/ckeditorerror.js';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 /**
  * `TextProxy` represents a part of {@link module:engine/model/text~Text text node}.

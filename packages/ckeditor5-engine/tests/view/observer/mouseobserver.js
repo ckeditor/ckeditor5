@@ -6,8 +6,8 @@
 /* globals document */
 /* bender-tags: view, browser-only */
 
-import MouseObserver from 'ckeditor5/engine/view/observer/mouseobserver.js';
-import ViewDocument from 'ckeditor5/engine/view/document.js';
+import MouseObserver from 'ckeditor5-engine/src/view/observer/mouseobserver';
+import ViewDocument from 'ckeditor5-engine/src/view/document';
 
 describe( 'MouseObserver', () => {
 	let viewDocument, observer;

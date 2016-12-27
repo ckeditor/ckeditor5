@@ -7,12 +7,12 @@
  * @module engine/model/liveposition
  */
 
-import RootElement from './rootelement.js';
-import Position from './position.js';
-import Range from './range.js';
-import EmitterMixin from '../../utils/emittermixin.js';
-import mix from '../../utils/mix.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
+import RootElement from './rootelement';
+import Position from './position';
+import Range from './range';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import mix from 'ckeditor5-utils/src/mix';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 /**
  * `LivePosition` is a type of {@link module:engine/model/position~Position Position}

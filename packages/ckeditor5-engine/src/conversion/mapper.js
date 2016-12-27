@@ -7,15 +7,15 @@
  * @module engine/conversion/mapper
  */
 
-import ModelPosition from '../model/position.js';
-import ModelRange from '../model/range.js';
+import ModelPosition from '../model/position';
+import ModelRange from '../model/range';
 
-import ViewPosition from '../view/position.js';
-import ViewRange from '../view/range.js';
-import ViewText from '../view/text.js';
+import ViewPosition from '../view/position';
+import ViewRange from '../view/range';
+import ViewText from '../view/text';
 
-import EmitterMixin from '../../utils/emittermixin.js';
-import mix from '../../utils/mix.js';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import mix from 'ckeditor5-utils/src/mix';
 
 /**
  * Maps elements and positions between {@link module:engine/view/document~Document view} and {@link module:engine/model/model model}.

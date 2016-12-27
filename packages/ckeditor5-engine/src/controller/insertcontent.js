@@ -7,12 +7,12 @@
  * @module engine/controller/insertcontent
  */
 
-import Position from '../model/position.js';
-import LivePosition from '../model/liveposition.js';
-import Text from '../model/text.js';
-import Element from '../model/element.js';
-import Range from '../model/range.js';
-import log from '../../utils/log.js';
+import Position from '../model/position';
+import LivePosition from '../model/liveposition';
+import Text from '../model/text';
+import Element from '../model/element';
+import Range from '../model/range';
+import log from 'ckeditor5-utils/src/log';
 
 /**
  * Inserts content into the editor (specified selection) as one would expect the paste

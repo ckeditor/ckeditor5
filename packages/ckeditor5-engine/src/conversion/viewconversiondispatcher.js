@@ -7,12 +7,12 @@
  * @module engine/conversion/viewconversiondispatcher
  */
 
-import ViewConsumable from './viewconsumable.js';
-import ViewElement from '../view/element.js';
-import ViewText from '../view/text.js';
-import EmitterMixin from '../../utils/emittermixin.js';
-import mix from '../../utils/mix.js';
-import extend from '../../utils/lib/lodash/extend.js';
+import ViewConsumable from './viewconsumable';
+import ViewElement from '../view/element';
+import ViewText from '../view/text';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import mix from 'ckeditor5-utils/src/mix';
+import extend from 'ckeditor5-utils/src/lib/lodash/extend';
 
 /**
  * `ViewConversionDispatcher` is a central point of {@link module:engine/view/view view} conversion, which is a process of

@@ -5,38 +5,38 @@
 
 /* bender-tags: conversion */
 
-import buildModelConverter from 'ckeditor5/engine/conversion/buildmodelconverter.js';
+import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
 
-import ModelDocument from 'ckeditor5/engine/model/document.js';
-import ModelElement from 'ckeditor5/engine/model/element.js';
-import ModelText from 'ckeditor5/engine/model/text.js';
-import ModelRange from 'ckeditor5/engine/model/range.js';
-import ModelPosition from 'ckeditor5/engine/model/position.js';
-import modelWriter from 'ckeditor5/engine/model/writer.js';
+import ModelDocument from 'ckeditor5-engine/src/model/document';
+import ModelElement from 'ckeditor5-engine/src/model/element';
+import ModelText from 'ckeditor5-engine/src/model/text';
+import ModelRange from 'ckeditor5-engine/src/model/range';
+import ModelPosition from 'ckeditor5-engine/src/model/position';
+import modelWriter from 'ckeditor5-engine/src/model/writer';
 
-import ViewDocument from 'ckeditor5/engine/view/document.js';
-import ViewElement from 'ckeditor5/engine/view/element.js';
-import ViewContainerElement from 'ckeditor5/engine/view/containerelement.js';
-import ViewAttributeElement from 'ckeditor5/engine/view/attributeelement.js';
-import ViewText from 'ckeditor5/engine/view/text.js';
+import ViewDocument from 'ckeditor5-engine/src/view/document';
+import ViewElement from 'ckeditor5-engine/src/view/element';
+import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
+import ViewAttributeElement from 'ckeditor5-engine/src/view/attributeelement';
+import ViewText from 'ckeditor5-engine/src/view/text';
 
-import Mapper from 'ckeditor5/engine/conversion/mapper.js';
-import ModelConversionDispatcher from 'ckeditor5/engine/conversion/modelconversiondispatcher.js';
+import Mapper from 'ckeditor5-engine/src/conversion/mapper';
+import ModelConversionDispatcher from 'ckeditor5-engine/src/conversion/modelconversiondispatcher';
 
 import {
 	insertText,
 	move,
 	remove
-} from 'ckeditor5/engine/conversion/model-to-view-converters.js';
+} from 'ckeditor5-engine/src/conversion/model-to-view-converters';
 
 import {
 	convertCollapsedSelection,
 	clearAttributes
-} from 'ckeditor5/engine/conversion/model-selection-to-view-converters.js';
+} from 'ckeditor5-engine/src/conversion/model-selection-to-view-converters';
 
-import { createRangeOnElementOnly } from 'tests/engine/model/_utils/utils.js';
+import { createRangeOnElementOnly } from 'ckeditor5-engine/tests/model/_utils/utils';
 
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 function viewAttributesToString( item ) {
 	let result = '';

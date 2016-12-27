@@ -7,13 +7,13 @@
  * @module engine/model/delta/renamedelta
  */
 
-import Delta from './delta.js';
-import DeltaFactory from './deltafactory.js';
-import { register } from '../batch.js';
-import RenameOperation from '../operation/renameoperation.js';
-import Element from '../element.js';
-import Position from '../position.js';
-import CKEditorError from '../../../utils/ckeditorerror.js';
+import Delta from './delta';
+import DeltaFactory from './deltafactory';
+import { register } from '../batch';
+import RenameOperation from '../operation/renameoperation';
+import Element from '../element';
+import Position from '../position';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 /**
  * To provide specific OT behavior and better collisions solving, the {@link module:engine/model/batch~Batch#rename Batch#rename} method

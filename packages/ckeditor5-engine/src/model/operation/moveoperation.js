@@ -7,12 +7,12 @@
  * @module engine/model/operation/moveoperation
  */
 
-import Operation from './operation.js';
-import Position from '../position.js';
-import Range from '../range.js';
-import CKEditorError from '../../../utils/ckeditorerror.js';
-import compareArrays from '../../../utils/comparearrays.js';
-import writer from './../writer.js';
+import Operation from './operation';
+import Position from '../position';
+import Range from '../range';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import compareArrays from 'ckeditor5-utils/src/comparearrays';
+import writer from './../writer';
 
 /**
  * Operation to move a range of {@link module:engine/model/item~Item model items}

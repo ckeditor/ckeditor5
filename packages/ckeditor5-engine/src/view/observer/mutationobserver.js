@@ -9,9 +9,9 @@
 
 /* globals window */
 
-import Observer from './observer.js';
-import ViewSelection from '../selection.js';
-import { startsWithFiller, getDataWithoutFiller } from '../filler.js';
+import Observer from './observer';
+import ViewSelection from '../selection';
+import { startsWithFiller, getDataWithoutFiller } from '../filler';
 
 /**
  * Mutation observer class observes changes in the DOM, fires {@link module:engine/view/document~Document#event:mutations} event, mark view

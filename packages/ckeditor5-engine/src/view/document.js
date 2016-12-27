@@ -7,19 +7,19 @@
  * @module engine/view/document
  */
 
-import Selection from './selection.js';
-import Renderer from './renderer.js';
-import DomConverter from './domconverter.js';
-import RootEditableElement from './rooteditableelement.js';
-import { injectQuirksHandling } from './filler.js';
-import log from '../../utils/log.js';
-import MutationObserver from './observer/mutationobserver.js';
-import SelectionObserver from './observer/selectionobserver.js';
-import FocusObserver from './observer/focusobserver.js';
-import KeyObserver from './observer/keyobserver.js';
-import FakeSelectionObserver from './observer/fakeselectionobserver.js';
-import mix from '../../utils/mix.js';
-import ObservableMixin from '../../utils/observablemixin.js';
+import Selection from './selection';
+import Renderer from './renderer';
+import DomConverter from './domconverter';
+import RootEditableElement from './rooteditableelement';
+import { injectQuirksHandling } from './filler';
+import log from 'ckeditor5-utils/src/log';
+import MutationObserver from './observer/mutationobserver';
+import SelectionObserver from './observer/selectionobserver';
+import FocusObserver from './observer/focusobserver';
+import KeyObserver from './observer/keyobserver';
+import FakeSelectionObserver from './observer/fakeselectionobserver';
+import mix from 'ckeditor5-utils/src/mix';
+import ObservableMixin from 'ckeditor5-utils/src/observablemixin';
 
 /**
  * Document class creates an abstract layer over the content editable area.

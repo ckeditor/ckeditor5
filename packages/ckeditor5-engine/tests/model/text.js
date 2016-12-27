@@ -5,9 +5,9 @@
 
 /* bender-tags: model */
 
-import Text from 'ckeditor5/engine/model/text.js';
-import Node from 'ckeditor5/engine/model/node.js';
-import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
+import Text from 'ckeditor5-engine/src/model/text';
+import Node from 'ckeditor5-engine/src/model/node';
+import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
 
 describe( 'Text', () => {
 	describe( 'constructor()', () => {

@@ -5,9 +5,9 @@
 
 /* bender-tags: view */
 
-import EmptyElement from 'ckeditor5/engine/view/emptyelement.js';
-import Element from 'ckeditor5/engine/view/element.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import EmptyElement from 'ckeditor5-engine/src/view/emptyelement';
+import Element from 'ckeditor5-engine/src/view/element';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 describe( 'EmptyElement', () => {
 	let element, emptyElement;

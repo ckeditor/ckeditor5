@@ -5,25 +5,25 @@
 
 /* bender-tags: model, delta */
 
-import Delta from 'ckeditor5/engine/model/delta/delta.js';
-import InsertDelta from 'ckeditor5/engine/model/delta/insertdelta.js';
+import Delta from 'ckeditor5-engine/src/model/delta/delta';
+import InsertDelta from 'ckeditor5-engine/src/model/delta/insertdelta';
 
-import AttributeOperation from 'ckeditor5/engine/model/operation/attributeoperation.js';
-import InsertOperation from 'ckeditor5/engine/model/operation/insertoperation.js';
-import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
-import NoOperation from 'ckeditor5/engine/model/operation/nooperation.js';
-import ReinsertOperation from 'ckeditor5/engine/model/operation/reinsertoperation.js';
-import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
-import RootAttributeOperation from 'ckeditor5/engine/model/operation/rootattributeoperation.js';
+import AttributeOperation from 'ckeditor5-engine/src/model/operation/attributeoperation';
+import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
+import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
+import NoOperation from 'ckeditor5-engine/src/model/operation/nooperation';
+import ReinsertOperation from 'ckeditor5-engine/src/model/operation/reinsertoperation';
+import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
+import RootAttributeOperation from 'ckeditor5-engine/src/model/operation/rootattributeoperation';
 
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
-import DeltaFactory from 'ckeditor5/engine/model/delta/deltafactory.js';
+import DeltaFactory from 'ckeditor5-engine/src/model/delta/deltafactory';
 
-import Document from 'ckeditor5/engine/model/document.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import Range from 'ckeditor5/engine/model/range.js';
-import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import Position from 'ckeditor5-engine/src/model/position';
+import Range from 'ckeditor5-engine/src/model/range';
+import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
 
 class FooDelta extends Delta {
 	static get className() {

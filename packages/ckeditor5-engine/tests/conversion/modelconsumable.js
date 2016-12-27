@@ -5,10 +5,10 @@
 
 /* bender-tags: conversion */
 
-import ModelConsumable from 'ckeditor5/engine/conversion/modelconsumable.js';
-import ModelElement from 'ckeditor5/engine/model/element.js';
-import ModelTextProxy from 'ckeditor5/engine/model/textproxy.js';
-import ModelText from 'ckeditor5/engine/model/text.js';
+import ModelConsumable from 'ckeditor5-engine/src/conversion/modelconsumable';
+import ModelElement from 'ckeditor5-engine/src/model/element';
+import ModelTextProxy from 'ckeditor5-engine/src/model/textproxy';
+import ModelText from 'ckeditor5-engine/src/model/text';
 
 describe( 'ModelConsumable', () => {
 	let modelConsumable, modelElement;

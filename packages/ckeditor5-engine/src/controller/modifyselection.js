@@ -7,10 +7,10 @@
  * @module engine/controller/modifyselection
  */
 
-import Position from '../model/position.js';
-import TreeWalker from '../model/treewalker.js';
-import Range from '../model/range.js';
-import { isInsideSurrogatePair, isInsideCombinedSymbol } from '../../utils/unicode.js';
+import Position from '../model/position';
+import TreeWalker from '../model/treewalker';
+import Range from '../model/range';
+import { isInsideSurrogatePair, isInsideCombinedSymbol } from 'ckeditor5-utils/src/unicode';
 
 /**
  * Modifies the selection. Currently, the supported modifications are:

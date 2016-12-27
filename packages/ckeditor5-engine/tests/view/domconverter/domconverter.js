@@ -6,11 +6,11 @@
 /* globals document */
 /* bender-tags: view, domconverter */
 
-import DomConverter from 'ckeditor5/engine/view/domconverter.js';
-import ViewEditable from 'ckeditor5/engine/view/editableelement.js';
-import ViewDocument from 'ckeditor5/engine/view/document.js';
-import { BR_FILLER, NBSP_FILLER } from 'ckeditor5/engine/view/filler.js';
-import testUtils from 'tests/core/_utils/utils.js';
+import DomConverter from 'ckeditor5-engine/src/view/domconverter';
+import ViewEditable from 'ckeditor5-engine/src/view/editableelement';
+import ViewDocument from 'ckeditor5-engine/src/view/document';
+import { BR_FILLER, NBSP_FILLER } from 'ckeditor5-engine/src/view/filler';
+import testUtils from 'ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 

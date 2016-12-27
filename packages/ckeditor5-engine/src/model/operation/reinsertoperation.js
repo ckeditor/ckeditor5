@@ -7,8 +7,8 @@
  * @module engine/model/operation/reinsertoperation
  */
 
-import MoveOperation from './moveoperation.js';
-import RemoveOperation from './removeoperation.js';
+import MoveOperation from './moveoperation';
+import RemoveOperation from './removeoperation';
 
 /**
  * Operation to reinsert previously removed nodes back to the non-graveyard root. This operation acts like

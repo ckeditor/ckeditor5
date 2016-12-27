@@ -7,10 +7,10 @@
  * @module engine/view/editableelement
  */
 
-import ContainerElement from './containerelement.js';
+import ContainerElement from './containerelement';
 
-import mix from '../../utils/mix.js';
-import ObservableMixin from '../../utils/observablemixin.js';
+import mix from 'ckeditor5-utils/src/mix';
+import ObservableMixin from 'ckeditor5-utils/src/observablemixin';
 
 /**
  * Editable element which can be a {@link module:engine/view/rooteditableelement~RootEditableElement root}

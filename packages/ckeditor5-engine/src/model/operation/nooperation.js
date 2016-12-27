@@ -7,7 +7,7 @@
  * @module engine/model/operation/nooperation
  */
 
-import Operation from './operation.js';
+import Operation from './operation';
 
 /**
  * Operation which is doing nothing ("empty operation", "do-nothing operation", "noop"). This is an operation,

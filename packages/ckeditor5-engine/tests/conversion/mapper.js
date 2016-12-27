@@ -5,18 +5,18 @@
 
 /* bender-tags: conversion */
 
-import Mapper from 'ckeditor5/engine/conversion/mapper.js';
+import Mapper from 'ckeditor5-engine/src/conversion/mapper';
 
-import ModelElement from 'ckeditor5/engine/model/element.js';
-import ModelRootElement from 'ckeditor5/engine/model/rootelement.js';
-import ModelText from 'ckeditor5/engine/model/text.js';
-import ModelPosition from 'ckeditor5/engine/model/position.js';
-import ModelRange from 'ckeditor5/engine/model/range.js';
+import ModelElement from 'ckeditor5-engine/src/model/element';
+import ModelRootElement from 'ckeditor5-engine/src/model/rootelement';
+import ModelText from 'ckeditor5-engine/src/model/text';
+import ModelPosition from 'ckeditor5-engine/src/model/position';
+import ModelRange from 'ckeditor5-engine/src/model/range';
 
-import ViewElement from 'ckeditor5/engine/view/element.js';
-import ViewText from 'ckeditor5/engine/view/text.js';
-import ViewPosition from 'ckeditor5/engine/view/position.js';
-import ViewRange from 'ckeditor5/engine/view/range.js';
+import ViewElement from 'ckeditor5-engine/src/view/element';
+import ViewText from 'ckeditor5-engine/src/view/text';
+import ViewPosition from 'ckeditor5-engine/src/view/position';
+import ViewRange from 'ckeditor5-engine/src/view/range';
 
 describe( 'Mapper', () => {
 	describe( 'clearBindings', () => {

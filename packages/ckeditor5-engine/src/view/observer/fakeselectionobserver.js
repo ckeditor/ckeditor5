@@ -7,9 +7,9 @@
  * @module engine/view/observer/fakeselectionobserver
  */
 
-import Observer from './observer.js';
-import ViewSelection from '../selection.js';
-import { keyCodes } from '../../../utils/keyboard.js';
+import Observer from './observer';
+import ViewSelection from '../selection';
+import { keyCodes } from 'ckeditor5-utils/src/keyboard';
 
 /**
  * Fake selection observer class. If view selection is fake it is placed in dummy DOM container. This observer listens

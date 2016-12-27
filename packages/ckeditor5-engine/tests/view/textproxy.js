@@ -5,14 +5,14 @@
 
 /* bender-tags: view */
 
-import TextProxy from 'ckeditor5/engine/view/textproxy.js';
-import Text from 'ckeditor5/engine/view/text.js';
-import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
-import DocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
-import RootEditableElement from 'ckeditor5/engine/view/rooteditableelement.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import TextProxy from 'ckeditor5-engine/src/view/textproxy';
+import Text from 'ckeditor5-engine/src/view/text';
+import ContainerElement from 'ckeditor5-engine/src/view/containerelement';
+import DocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
+import RootEditableElement from 'ckeditor5-engine/src/view/rooteditableelement';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
-import createDocumentMock from 'tests/engine/view/_utils/createdocumentmock.js';
+import createDocumentMock from 'ckeditor5-engine/tests/view/_utils/createdocumentmock';
 
 describe( 'TextProxy', () => {
 	let text, parent, wrapper, textProxy;

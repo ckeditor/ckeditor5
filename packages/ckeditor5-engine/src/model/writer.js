@@ -7,13 +7,13 @@
  * @module engine/model/writer
  */
 
-import Node from './node.js';
-import Text from './text.js';
-import TextProxy from './textproxy.js';
-import Range from './range.js';
-import DocumentFragment from './documentfragment.js';
-import NodeList from './nodelist.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
+import Node from './node';
+import Text from './text';
+import TextProxy from './textproxy';
+import Range from './range';
+import DocumentFragment from './documentfragment';
+import NodeList from './nodelist';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Contains functions used for composing model tree, grouped together under "model writer" name. Those functions

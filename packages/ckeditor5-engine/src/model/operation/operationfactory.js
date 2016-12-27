@@ -7,15 +7,15 @@
  * @module engine/model/operation/operationfactory
  */
 
-import AttributeOperation from '../operation/attributeoperation.js';
-import InsertOperation from '../operation/insertoperation.js';
-import MoveOperation from '../operation/moveoperation.js';
-import NoOperation from '../operation/nooperation.js';
-import Operation from '../operation/operation.js';
-import ReinsertOperation from '../operation/reinsertoperation.js';
-import RemoveOperation from '../operation/removeoperation.js';
-import RenameOperation from '../operation/renameoperation.js';
-import RootAttributeOperation from '../operation/rootattributeoperation.js';
+import AttributeOperation from '../operation/attributeoperation';
+import InsertOperation from '../operation/insertoperation';
+import MoveOperation from '../operation/moveoperation';
+import NoOperation from '../operation/nooperation';
+import Operation from '../operation/operation';
+import ReinsertOperation from '../operation/reinsertoperation';
+import RemoveOperation from '../operation/removeoperation';
+import RenameOperation from '../operation/renameoperation';
+import RootAttributeOperation from '../operation/rootattributeoperation';
 
 const operations = {};
 operations[ AttributeOperation.className ] = AttributeOperation;

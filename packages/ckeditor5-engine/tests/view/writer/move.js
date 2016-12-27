@@ -5,15 +5,15 @@
 
 /* bender-tags: view, browser-only */
 
-import { move } from 'ckeditor5/engine/view/writer.js';
-import ViewPosition from 'ckeditor5/engine/view/position.js';
-import { stringify, parse } from 'ckeditor5/engine/dev-utils/view.js';
-import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
-import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
-import EmptyElement from 'ckeditor5/engine/view/emptyelement.js';
-import Range from 'ckeditor5/engine/view/range.js';
-import Position from 'ckeditor5/engine/view/position.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import { move } from 'ckeditor5-engine/src/view/writer';
+import ViewPosition from 'ckeditor5-engine/src/view/position';
+import { stringify, parse } from 'ckeditor5-engine/src/dev-utils/view';
+import ContainerElement from 'ckeditor5-engine/src/view/containerelement';
+import AttributeElement from 'ckeditor5-engine/src/view/attributeelement';
+import EmptyElement from 'ckeditor5-engine/src/view/emptyelement';
+import Range from 'ckeditor5-engine/src/view/range';
+import Position from 'ckeditor5-engine/src/view/position';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 describe( 'writer', () => {
 	/**

@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import LiveRange from './liverange.js';
-import Range from './range.js';
-import EmitterMixin from '../../utils/emittermixin.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
-import mix from '../../utils/mix.js';
+import LiveRange from './liverange';
+import Range from './range';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import mix from 'ckeditor5-utils/src/mix';
 
 /**
  * Manages and stores markers.

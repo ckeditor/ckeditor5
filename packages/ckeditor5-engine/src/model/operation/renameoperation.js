@@ -7,10 +7,10 @@
  * @module engine/model/operation/renameoperation
  */
 
-import Operation from './operation.js';
-import Element from '../element.js';
-import CKEditorError from '../../../utils/ckeditorerror.js';
-import Position from '../position.js';
+import Operation from './operation';
+import Element from '../element';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Position from '../position';
 
 /**
  * Operation to change element's name.

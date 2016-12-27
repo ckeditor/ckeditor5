@@ -5,14 +5,14 @@
 
 /* bender-tags: model */
 
-import Range from 'ckeditor5/engine/model/range.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import Element from 'ckeditor5/engine/model/element.js';
-import Text from 'ckeditor5/engine/model/text.js';
-import Document from 'ckeditor5/engine/model/document.js';
-import TreeWalker from 'ckeditor5/engine/model/treewalker.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
-import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
+import Range from 'ckeditor5-engine/src/model/range';
+import Position from 'ckeditor5-engine/src/model/position';
+import Element from 'ckeditor5-engine/src/model/element';
+import Text from 'ckeditor5-engine/src/model/text';
+import Document from 'ckeditor5-engine/src/model/document';
+import TreeWalker from 'ckeditor5-engine/src/model/treewalker';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
 
 import {
 	getAttributeDelta,
@@ -21,7 +21,7 @@ import {
 	getRemoveDelta,
 	getRenameDelta,
 	getSplitDelta
-} from 'tests/engine/model/delta/transform/_utils/utils.js';
+} from 'ckeditor5-engine/tests/model/delta/transform/_utils/utils';
 
 describe( 'Range', () => {
 	let doc, range, start, end, root, otherRoot;

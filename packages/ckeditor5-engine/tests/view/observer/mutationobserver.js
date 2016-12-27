@@ -6,9 +6,9 @@
 /* globals document */
 /* bender-tags: view, browser-only */
 
-import ViewDocument from 'ckeditor5/engine/view/document.js';
-import MutationObserver from 'ckeditor5/engine/view/observer/mutationobserver.js';
-import { parse } from 'ckeditor5/engine/dev-utils/view.js';
+import ViewDocument from 'ckeditor5-engine/src/view/document';
+import MutationObserver from 'ckeditor5-engine/src/view/observer/mutationobserver';
+import { parse } from 'ckeditor5-engine/src/dev-utils/view';
 
 describe( 'MutationObserver', () => {
 	let domEditor, viewDocument, viewRoot, mutationObserver, lastMutations, domRoot;

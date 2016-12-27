@@ -5,16 +5,16 @@
 
 /* bender-tags: model, delta */
 
-import Document from 'ckeditor5/engine/model/document.js';
-import Element from 'ckeditor5/engine/model/element.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import Text from 'ckeditor5/engine/model/text.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import Element from 'ckeditor5-engine/src/model/element';
+import Position from 'ckeditor5-engine/src/model/position';
+import Text from 'ckeditor5-engine/src/model/text';
 
-import InsertOperation from 'ckeditor5/engine/model/operation/insertoperation.js';
-import InsertDelta from 'ckeditor5/engine/model/delta/insertdelta.js';
+import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
+import InsertDelta from 'ckeditor5-engine/src/model/delta/insertdelta';
 
-import RemoveDelta from 'ckeditor5/engine/model/delta/removedelta.js';
-import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
+import RemoveDelta from 'ckeditor5-engine/src/model/delta/removedelta';
+import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
 
 describe( 'Batch', () => {
 	let doc, root, batch, p, ul, chain;

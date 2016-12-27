@@ -5,11 +5,11 @@
 
 /* bender-tags: view */
 
-import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
-import EditableElement from 'ckeditor5/engine/view/editableelement.js';
-import RootEditableElement from 'ckeditor5/engine/view/rooteditableelement.js';
+import ContainerElement from 'ckeditor5-engine/src/view/containerelement';
+import EditableElement from 'ckeditor5-engine/src/view/editableelement';
+import RootEditableElement from 'ckeditor5-engine/src/view/rooteditableelement';
 
-import createDocumentMock from 'tests/engine/view/_utils/createdocumentmock.js';
+import createDocumentMock from 'ckeditor5-engine/tests/view/_utils/createdocumentmock';
 
 describe( 'RootEditableElement', () => {
 	describe( 'constructor()', () => {

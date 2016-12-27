@@ -7,7 +7,7 @@
  * @module engine/model/batch
  */
 
-import CKEditorError from '../../utils/ckeditorerror.js';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 /**
  * `Batch` instance groups document changes ({@link module:engine/model/delta/delta~Delta deltas}). All deltas grouped in a single `Batch`

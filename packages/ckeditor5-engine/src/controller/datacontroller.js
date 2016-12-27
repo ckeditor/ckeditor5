@@ -7,26 +7,26 @@
  * @module engine/controller/datacontroller
  */
 
-import mix from '../../utils/mix.js';
-import EmitterMixin from '../../utils/emittermixin.js';
+import mix from 'ckeditor5-utils/src/mix';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
 
-import Mapper from '../conversion/mapper.js';
+import Mapper from '../conversion/mapper';
 
-import ModelConversionDispatcher from '../conversion/modelconversiondispatcher.js';
-import { insertText } from '../conversion/model-to-view-converters.js';
+import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
+import { insertText } from '../conversion/model-to-view-converters';
 
-import ViewConversionDispatcher from '../conversion/viewconversiondispatcher.js';
-import { convertText, convertToModelFragment } from '../conversion/view-to-model-converters.js';
+import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
+import { convertText, convertToModelFragment } from '../conversion/view-to-model-converters';
 
-import ViewDocumentFragment from '../view/documentfragment.js';
+import ViewDocumentFragment from '../view/documentfragment';
 
-import ModelRange from '../model/range.js';
-import ModelPosition from '../model/position.js';
+import ModelRange from '../model/range';
+import ModelPosition from '../model/position';
 
-import insertContent from './insertcontent.js';
-import deleteContent from './deletecontent.js';
-import modifySelection from './modifyselection.js';
-import getSelectedContent from './getselectedcontent.js';
+import insertContent from './insertcontent';
+import deleteContent from './deletecontent';
+import modifySelection from './modifyselection';
+import getSelectedContent from './getselectedcontent';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document

@@ -5,15 +5,15 @@
 
 /* bender-tags: model */
 
-import Document from 'ckeditor5/engine/model/document.js';
-import DocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
-import Element from 'ckeditor5/engine/model/element.js';
-import Text from 'ckeditor5/engine/model/text.js';
-import TextProxy from 'ckeditor5/engine/model/textproxy.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
-import testUtils from 'tests/core/_utils/utils.js';
-import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import DocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
+import Element from 'ckeditor5-engine/src/model/element';
+import Text from 'ckeditor5-engine/src/model/text';
+import TextProxy from 'ckeditor5-engine/src/model/textproxy';
+import Position from 'ckeditor5-engine/src/model/position';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
 
 testUtils.createSinonSandbox();
 

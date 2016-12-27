@@ -7,10 +7,10 @@
  * @module module:engine/model/documentfragment
  */
 
-import NodeList from './nodelist.js';
-import Element from './element.js';
-import Text from './text.js';
-import isIterable from '../../utils/isiterable.js';
+import NodeList from './nodelist';
+import Element from './element';
+import Text from './text';
+import isIterable from 'ckeditor5-utils/src/isiterable';
 
 /**
  * DocumentFragment represents a part of model which does not have a common root but it's top-level nodes

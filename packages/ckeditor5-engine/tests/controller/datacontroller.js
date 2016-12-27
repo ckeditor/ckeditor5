@@ -3,24 +3,24 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelDocument from 'ckeditor5/engine/model/document.js';
-import DataController from 'ckeditor5/engine/controller/datacontroller.js';
-import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+import ModelDocument from 'ckeditor5-engine/src/model/document';
+import DataController from 'ckeditor5-engine/src/controller/datacontroller';
+import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
-import buildViewConverter  from 'ckeditor5/engine/conversion/buildviewconverter.js';
-import buildModelConverter  from 'ckeditor5/engine/conversion/buildmodelconverter.js';
+import buildViewConverter  from 'ckeditor5-engine/src/conversion/buildviewconverter';
+import buildModelConverter  from 'ckeditor5-engine/src/conversion/buildmodelconverter';
 
-import ModelDocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
-import ModelElement from 'ckeditor5/engine/model/element.js';
-import ModelText from 'ckeditor5/engine/model/text.js';
-import ModelSelection from 'ckeditor5/engine/model/selection.js';
+import ModelDocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
+import ModelElement from 'ckeditor5-engine/src/model/element';
+import ModelText from 'ckeditor5-engine/src/model/text';
+import ModelSelection from 'ckeditor5-engine/src/model/selection';
 
-import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
+import ViewDocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
 
-import { getData, setData, stringify, parse as parseModel } from 'ckeditor5/engine/dev-utils/model.js';
-import { parse as parseView } from 'ckeditor5/engine/dev-utils/view.js';
+import { getData, setData, stringify, parse as parseModel } from 'ckeditor5-engine/src/dev-utils/model';
+import { parse as parseView } from 'ckeditor5-engine/src/dev-utils/view';
 
-import count from 'ckeditor5/utils/count.js';
+import count from 'ckeditor5-utils/src/count';
 
 describe( 'DataController', () => {
 	let modelDocument, htmlDataProcessor, data, schema;

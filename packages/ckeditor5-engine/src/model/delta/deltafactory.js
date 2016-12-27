@@ -7,9 +7,9 @@
  * @module engine/model/delta/deltafactory
  */
 
-import CKEditorError from '../../../utils/ckeditorerror.js';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
-import OperationFactory from '../operation/operationfactory.js';
+import OperationFactory from '../operation/operationfactory';
 
 const deserializers = new Map();
 

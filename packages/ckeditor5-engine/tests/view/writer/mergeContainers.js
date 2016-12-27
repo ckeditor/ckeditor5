@@ -5,9 +5,9 @@
 
 /* bender-tags: view, browser-only */
 
-import { mergeContainers } from 'ckeditor5/engine/view/writer.js';
-import { stringify, parse } from 'ckeditor5/engine/dev-utils/view.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import { mergeContainers } from 'ckeditor5-engine/src/view/writer';
+import { stringify, parse } from 'ckeditor5-engine/src/dev-utils/view';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 describe( 'writer', () => {
 	/**

@@ -7,7 +7,7 @@
  * @module engine/view/observer/mouseobserver
  */
 
-import DomEventObserver from './domeventobserver.js';
+import DomEventObserver from './domeventobserver';
 
 /**
  * Mouse events observer.
