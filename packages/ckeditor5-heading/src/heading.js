@@ -7,14 +7,14 @@
  * @module heading/heading
  */
 
-import HeadingEngine from './headingengine.js';
+import HeadingEngine from './headingengine';
 
-import Plugin from '../core/plugin.js';
+import Plugin from 'ckeditor5-core/src/plugin';
 
-import Model from '../ui/model.js';
-import createListDropdown from '../ui/dropdown/list/createlistdropdown.js';
+import Model from 'ckeditor5-ui/src/model';
+import createListDropdown from 'ckeditor5-ui/src/dropdown/list/createlistdropdown';
 
-import Collection from '../utils/collection.js';
+import Collection from 'ckeditor5-utils/src/collection';
 
 /**
  * The headings feature. It introduces the `headings` drop-down list and the `heading` command which allow

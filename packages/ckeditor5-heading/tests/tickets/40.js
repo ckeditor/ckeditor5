@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import HeadingEngine from 'ckeditor5/heading/headingengine.js';
-import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
-import Enter from 'ckeditor5/enter/enter.js';
-import { getData, setData } from 'ckeditor5/engine/dev-utils/model.js';
+import HeadingEngine from 'ckeditor5-heading/src/headingengine';
+import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
+import Enter from 'ckeditor5-enter/src/enter';
+import { getData, setData } from 'ckeditor5-engine/src/dev-utils/model';
 
 describe( 'Bug ckeditor5-heading#40', () => {
 	let editor;

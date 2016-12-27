@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import HeadingEngine from 'ckeditor5/heading/headingengine.js';
-import Paragraph from 'ckeditor5/paragraph/paragraph.js';
-import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
-import HeadingCommand from 'ckeditor5/heading/headingcommand.js';
-import Enter from 'ckeditor5/enter/enter.js';
-import { getData } from 'ckeditor5/engine/dev-utils/model.js';
+import HeadingEngine from 'ckeditor5-heading/src/headingengine';
+import Paragraph from 'ckeditor5-paragraph/src/paragraph';
+import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
+import HeadingCommand from 'ckeditor5-heading/src/headingcommand';
+import Enter from 'ckeditor5-enter/src/enter';
+import { getData } from 'ckeditor5-engine/src/dev-utils/model';
 
 describe( 'HeadingEngine', () => {
 	let editor, document;

@@ -7,11 +7,11 @@
  * @module heading/headingengine
  */
 
-import Plugin from '../core/plugin.js';
-import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
-import buildViewConverter from '../engine/conversion/buildviewconverter.js';
-import Paragraph from '../paragraph/paragraph.js';
-import HeadingCommand from './headingcommand.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
+import buildViewConverter from 'ckeditor5-engine/src/conversion/buildviewconverter';
+import Paragraph from 'ckeditor5-paragraph/src/paragraph';
+import HeadingCommand from './headingcommand';
 
 const formats = [
 	{ id: 'paragraph', viewElement: 'p', label: 'Paragraph' },
