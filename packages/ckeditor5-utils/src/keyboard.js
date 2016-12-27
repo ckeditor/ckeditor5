@@ -9,8 +9,8 @@
  * @module utils/keyboard
  */
 
-import CKEditorError from './ckeditorerror.js';
-import env from './env.js';
+import CKEditorError from './ckeditorerror';
+import env from './env';
 
 /**
  * Object with `keyName => keyCode` pairs for a set of known keys.

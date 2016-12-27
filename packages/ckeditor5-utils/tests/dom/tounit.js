@@ -5,7 +5,7 @@
 
 /* bender-tags: dom */
 
-import toUnit from 'ckeditor5/utils/dom/tounit.js';
+import toUnit from 'ckeditor5-utils/src/dom/tounit';
 
 describe( 'toUnit', () => {
 	it( 'should be a function', () => {

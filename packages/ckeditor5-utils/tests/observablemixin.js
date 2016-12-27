@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import testUtils from 'tests/core/_utils/utils.js';
-import utilsTestUtils from 'tests/utils/_utils/utils.js';
-import ObservableMixin from 'ckeditor5/utils/observablemixin.js';
-import EmitterMixin from 'ckeditor5/utils/emittermixin.js';
-import EventInfo from 'ckeditor5/utils/eventinfo.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
-import mix from 'ckeditor5/utils/mix.js';
+import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import utilsTestUtils from 'ckeditor5-utils/tests/_utils/utils';
+import ObservableMixin from 'ckeditor5-utils/src/observablemixin';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import EventInfo from 'ckeditor5-utils/src/eventinfo';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import mix from 'ckeditor5-utils/src/mix';
 
 const assertBinding = utilsTestUtils.assertBinding;
 

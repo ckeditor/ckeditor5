@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import EventInfo from 'ckeditor5/utils/eventinfo.js';
+import EventInfo from 'ckeditor5-utils/src/eventinfo';
 
 describe( 'EventInfo', () => {
 	it( 'should be created properly', () => {

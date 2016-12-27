@@ -9,10 +9,10 @@
  * @module utils/focustracker
  */
 
-import DomEmitterMixin from './dom/emittermixin.js';
-import ObservableMixin from './observablemixin.js';
-import CKEditorError from './ckeditorerror.js';
-import mix from './mix.js';
+import DomEmitterMixin from './dom/emittermixin';
+import ObservableMixin from './observablemixin';
+import CKEditorError from './ckeditorerror';
+import mix from './mix';
 
 /**
  * Allows observing a group of `HTMLElement`s whether at least one of them is focused.

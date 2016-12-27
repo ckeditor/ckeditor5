@@ -6,7 +6,7 @@
 /* globals document */
 /* bender-tags: dom, browser-only */
 
-import createElement from 'ckeditor5/utils/dom/createelement.js';
+import createElement from 'ckeditor5-utils/src/dom/createelement';
 
 describe( 'createElement', () => {
 	it( 'should create element', () => {

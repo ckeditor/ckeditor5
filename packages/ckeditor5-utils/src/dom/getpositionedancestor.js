@@ -7,7 +7,7 @@
  * @module utils/dom/getpositionedancestor
  */
 
-import global from './global.js';
+import global from './global';
 
 /**
  * For a given element, returns the nearest ancestor element which CSS position is not "static".

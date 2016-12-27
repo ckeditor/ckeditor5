@@ -7,10 +7,10 @@
  * @module utils/dom/emittermixin
  */
 
-import EmitterMixin from '../emittermixin.js';
-import uid from '../uid.js';
-import extend from '../lib/lodash/extend.js';
-import isNative from '../lib/lodash/isNative.js';
+import EmitterMixin from '../emittermixin';
+import uid from '../uid';
+import extend from '../lib/lodash/extend';
+import isNative from '../lib/lodash/isNative';
 
 /**
  * Mixin that injects the DOM events API into its host. It provides the API

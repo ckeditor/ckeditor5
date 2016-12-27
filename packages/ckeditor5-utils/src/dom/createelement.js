@@ -7,8 +7,8 @@
  * @module utils/dom/createelement
  */
 
-import isString from '../lib/lodash/isString.js';
-import isIterable from '../isiterable.js';
+import isString from '../lib/lodash/isString';
+import isIterable from '../isiterable';
 
 /**
  * Creates element with attributes and children.

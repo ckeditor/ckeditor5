@@ -7,7 +7,7 @@
  * @module utils/dom/getcommonancestor
  */
 
-import getAncestors from './getancestors.js';
+import getAncestors from './getancestors';
 
 /**
  * Searches and returns the lowest common ancestor of two given nodes.

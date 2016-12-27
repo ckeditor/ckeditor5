@@ -6,9 +6,9 @@
 /* globals document, window, Event, MouseEvent */
 /* bender-tags: ui */
 
-import testUtils from 'tests/core/_utils/utils.js';
-import DomEmitterMixin from 'ckeditor5/utils/dom/emittermixin.js';
-import EmitterMixin from 'ckeditor5/utils/emittermixin.js';
+import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import DomEmitterMixin from 'ckeditor5-utils/src/dom/emittermixin';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
 
 testUtils.createSinonSandbox();
 
