@@ -1,0 +1,55 @@
+<head>
+	<link rel="stylesheet" href="/theme/ckeditor.css">
+</head>
+
+<div class="ck-reset ck-editor position-relative">
+	<div class="ck-reset_all ck-editor__top">
+	</div>
+	<p class="ck-reset">
+		An editable content mock–up.
+		An editable content mock–up.
+		An editable content mock–up.
+		An editable content mock–up.
+		An editable content mock–up.
+		An editable content mock–up.
+		An editable content mock–up.
+		An editable content mock–up.
+	</p>
+	<div class="ck-reset_all offset-visualizer">
+	</div>
+</div>
+
+<style>
+	.ck-editor {
+		height: 200px;
+		max-width: 400px;
+		margin: 5em;
+		background: #ccc;
+	}
+
+	.ck-toolbar {
+		background: #fff !important;
+	}
+
+	.ck-toolbar:after {
+		content: "A toolbar mock–up.";
+	}
+
+	.offset-visualizer {
+		height: 50px;
+		width: 100%;
+		position: absolute;
+		bottom: 0;
+		background: red;
+		color: #fff;
+	}
+
+	.offset-visualizer:after {
+		content: "An offset mock–up. Toolbar should *never* cover the red area.";
+	}
+
+	body {
+		width: 3000px;
+		height: 3000px;
+	}
+</style>

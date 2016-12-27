@@ -1,0 +1,26 @@
+/**
+ * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * The list dropdown model interface.
+ *
+ * @implements module:ui/dropdown/dropdownmodel~DropdownModel
+ * @interface module:ui/dropdown/list/listdropdownmodel~ListDropdownModel
+ */
+
+/**
+ * A {@link module:utils/collection~Collection} of {@link module:utils/observablemixin~Observable} used to populate
+ * the inner {@link module:ui/list/listview~ListView} instance.
+ *
+ * @observable
+ * @member {Boolean} #items
+ */
+
+/**
+ * Fired when the list dropdown should be executed, usually when
+ * one of the list items in {@link #items} has been executed.
+ *
+ * @event #execute
+ */
