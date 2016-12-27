@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global document */
+
 import testUtils from 'ckeditor5-core/tests/_utils/utils';
 import EditorUIView from 'ckeditor5-ui/src/editorui/editoruiview';
 import ViewCollection from 'ckeditor5-ui/src/viewcollection';
@@ -28,45 +30,20 @@ describe( 'EditorUIView', () => {
 		it( 'sets all the properties', () => {
 			expect( view.body ).to.be.instanceof( ViewCollection );
 		} );
+	} );
 
+	describe( 'init()', () => {
 		it( 'sets the right class set to the body region', () => {
 			const el = view._bodyCollectionContainer;
 
+			expect( el.parentNode ).to.equal( document.body );
 			expect( el.classList.contains( 'ck-body' ) ).to.be.true;
 			expect( el.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
 			expect( el.classList.contains( 'ck-reset_all' ) ).to.be.true;
 		} );
 	} );
 
-	describe( 'init', () => {
-		it( 'calls view#_setupIconManager', () => {
-			view = new EditorUIView( locale );
-			const spy = testUtils.sinon.spy( view, '_setupIconManager' );
-
-			return view.init().then( () => {
-				expect( spy.calledOnce ).to.be.true;
-			} );
-		} );
-	} );
-
-	describe( 'view#_setupIconManager', () => {
-		it( 'injects the manager into DOM', () => {
-			view._setupIconManager().then( () => {
-				const iconManagerElement = view._bodyCollectionContainer.firstChild;
-
-				expect( iconManagerElement.classList.contains( 'ck-icon-manager__sprite' ) ).to.be.true;
-			} );
-		} );
-
-		it( 'sets view#icon property', () => {
-			view._setupIconManager().then( () => {
-				expect( view.icons ).to.be.an( 'array' );
-				expect( view.icons ).to.not.be.empty;
-			} );
-		} );
-	} );
-
-	describe( 'destroy', () => {
+	describe( 'destroy()', () => {
 		it( 'removes the body region container', () => {
 			const el = view._bodyCollectionContainer;
 

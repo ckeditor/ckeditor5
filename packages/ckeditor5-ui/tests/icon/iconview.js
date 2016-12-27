@@ -40,20 +40,5 @@ describe( 'IconView', () => {
 				expect( view.element.innerHTML = '<g id="test"></g>' );
 			} );
 		} );
-
-		describe( 'legacy xlink:href', () => {
-			it( 'reacts to changes in view#content', () => {
-				const svgHrefNs = 'http://www.w3.org/1999/xlink';
-				let svgUseElement;
-
-				view.content = 'foo';
-				svgUseElement = view.element.firstChild;
-				expect( svgUseElement.getAttributeNS( svgHrefNs, 'href' ) ).to.equal( '#ck-icon-foo' );
-
-				view.content = 'abc';
-				svgUseElement = view.element.firstChild;
-				expect( svgUseElement.getAttributeNS( svgHrefNs, 'href' ) ).to.equal( '#ck-icon-abc' );
-			} );
-		} );
 	} );
 } );

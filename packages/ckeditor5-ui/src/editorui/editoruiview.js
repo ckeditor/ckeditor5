@@ -11,8 +11,6 @@
 
 import View from '../view';
 import Template from '../template';
-import IconManagerView from '../iconmanager/iconmanagerview';
-import iconManagerModel from 'ckeditor5-theme/src/iconmanagermodel';
 
 /**
  * The editor UI view class. Base class for the editor main views.
@@ -51,7 +49,6 @@ export default class EditorUIView extends View {
 	init() {
 		return Promise.resolve()
 			.then( () => this._renderBodyCollection() )
-			.then( () => this._setupIconManager() )
 			.then( () => super.init() );
 	}
 
@@ -62,17 +59,6 @@ export default class EditorUIView extends View {
 		this._bodyCollectionContainer.remove();
 
 		return super.destroy();
-	}
-
-	/**
-	 * Injects the {@link module:ui/iconmanager/iconmanagerview~IconManagerView} into DOM.
-	 *
-	 * @protected
-	 */
-	_setupIconManager() {
-		this.iconManagerView = new IconManagerView( iconManagerModel.sprite, iconManagerModel.icons );
-
-		return this.body.add( this.iconManagerView );
 	}
 
 	/**

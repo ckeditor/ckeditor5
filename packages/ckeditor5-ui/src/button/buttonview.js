@@ -86,9 +86,7 @@ export default class ButtonView extends View {
 		this.set( 'withText', false );
 
 		/**
-		 * (Optional) The name of the icon of the button view.
-		 * See {@link module:ui/icon/iconview~IconView} and
-		 * {@link module:theme/iconmanagermodel~IconManagerModel}.
+		 * (Optional) Source of the icon. See {@link module:ui/icon/iconview~IconView#content}.
 		 *
 		 * @observable
 		 * @member {String} #icon
