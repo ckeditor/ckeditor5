@@ -67,4 +67,26 @@ describe( 'ImageStyle', () => {
 			spy.reset();
 		}
 	} );
+
+	it( 'should add buttons to image toolbar if there is no default configuration', () => {
+		const toolbarConfig =  editor.config.get( 'image.toolbar' );
+
+		expect( toolbarConfig ).to.eql( styles.map( style => style.name ) );
+	} );
+
+	it( 'should not add buttons to image toolbar if configuration is present', () => {
+		const editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		return ClassicTestEditor.create( editorElement, {
+			plugins: [ ImageStyle ],
+			image: {
+				styles,
+				toolbar: [ 'foo', 'bar' ]
+			}
+		} )
+		.then( newEditor => {
+			expect( newEditor.config.get( 'image.toolbar' ) ).to.eql( [ 'foo',  'bar' ] );
+		} );
+	} );
 } );

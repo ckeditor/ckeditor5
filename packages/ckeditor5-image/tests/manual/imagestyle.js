@@ -17,11 +17,8 @@ import ImageStyle from 'ckeditor5/image/imagestyle/imagestyle.js';
 import ImageToolbar from 'ckeditor5/image/imagetoolbar.js';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin, ImageStyle, ImageToolbar ],
-	toolbar: [ 'headings', 'undo', 'redo' ],
-	image: {
-		toolbar: [ 'imageStyleFull', 'imageStyleSide' ]
-	}
+	plugins: [ ImageToolbar, EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin, ImageStyle ],
+	toolbar: [ 'headings', 'undo', 'redo' ]
 } )
 	.then( editor => {
 		window.editor = editor;

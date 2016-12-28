@@ -52,8 +52,14 @@ export default class ImageToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	afterInit() {
 		const editor = this.editor;
+		const toolbarConfig = editor.config.get( 'image.toolbar' );
+
+		// Don't add the toolbar if there is no configuration.
+		if ( !toolbarConfig ) {
+			return;
+		}
 
 		// Create a plain toolbar instance.
 		const toolbar = new ToolbarView();
@@ -74,7 +80,6 @@ export default class ImageToolbar extends Plugin {
 
 		return editor.ui.view.body.add( panel ).then( () => {
 			const editingView = editor.editing.view;
-			const toolbarConfig = editor.config.get( 'image.toolbar' );
 			const promises = [];
 
 			if ( toolbarConfig ) {
