@@ -7,22 +7,22 @@
  * @module image/imagetoolbar
  */
 
-/* globals window */
-
 import Plugin from '../core/plugin.js';
 import ToolbarView from '../ui/toolbar/toolbarview.js';
 import BalloonPanelView from '../ui/balloonpanel/balloonpanelview.js';
 import Template from '../ui/template.js';
 import ClickObserver from 'ckeditor5/engine/view/observer/clickobserver.js';
 import { isImageWidget } from './utils.js';
+import throttle from '../utils/lib/lodash/throttle.js';
+import global from '../utils/dom/global.js';
 
 const arrowVOffset = BalloonPanelView.arrowVerticalOffset;
 const positions = {
-	//          [text range]
-	//                ^
-	//       +-----------------+
-	//       |     Balloon     |
-	//       +-----------------+
+	//	   [text range]
+	//	        ^
+	//	+-----------------+
+	//	|     Balloon     |
+	//	+-----------------+
 	south: ( targetRect, balloonRect ) => ( {
 		top: targetRect.bottom + arrowVOffset,
 		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
@@ -41,7 +41,17 @@ const positions = {
 	} )
 };
 
+/**
+ * Image toolbar class. Creates image toolbar placed inside balloon panel that is showed when image widget is selected.
+ * Toolbar components are created using editor's {@link module:ui/componentfactory~ComponentFactory ComponentFactory}
+ * based on {@link module:core/editor/editor~Editor#config configuration} stored under `image.toolbar`.
+ *
+ * @extends module:core/plugin~Plugin.
+ */
 export default class ImageToolbar extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 
@@ -88,19 +98,18 @@ export default class ImageToolbar extends Plugin {
 			// Check if the toolbar should be displayed each time view is rendered.
 			editor.listenTo( editingView, 'render', () => {
 				const selectedElement = editingView.selection.getSelectedElement();
+				const attachToolbarCallback = throttle( attachToolbar, 100 );
 
 				if ( selectedElement && isImageWidget( selectedElement ) ) {
 					attachToolbar();
 
-					// TODO: These 2 need interval–based event debouncing for performance
-					// reasons. I guess even lodash offers such a helper.
-					editor.ui.view.listenTo( window, 'scroll', attachToolbar );
-					editor.ui.view.listenTo( window, 'resize', attachToolbar );
+					editor.ui.view.listenTo( global.window, 'scroll', attachToolbarCallback );
+					editor.ui.view.listenTo( global.window, 'resize', attachToolbarCallback );
 				} else {
 					panel.hide();
 
-					editor.ui.view.stopListening( window, 'scroll', attachToolbar );
-					editor.ui.view.stopListening( window, 'resize', attachToolbar );
+					editor.ui.view.stopListening( global.window, 'scroll', attachToolbarCallback );
+					editor.ui.view.stopListening( global.window, 'resize', attachToolbarCallback );
 				}
 			}, { priority: 'low' } );
 
