@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
-import ImageEngine from 'ckeditor5/image/imageengine.js';
-import { getData as getModelData, setData as setModelData } from 'ckeditor5/engine/dev-utils/model.js';
-import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
-import buildViewConverter from 'ckeditor5/engine/conversion/buildviewconverter.js';
-import buildModelConverter from 'ckeditor5/engine/conversion/buildmodelconverter.js';
-import { isImageWidget } from 'ckeditor5/image/utils.js';
-import ModelRange from 'ckeditor5/engine/model/range.js';
+import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
+import ImageEngine from 'ckeditor5-image/src/imageengine';
+import { getData as getModelData, setData as setModelData } from 'ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from 'ckeditor5-engine/src/dev-utils/view';
+import buildViewConverter from 'ckeditor5-engine/src/conversion/buildviewconverter';
+import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
+import { isImageWidget } from 'ckeditor5-image/src/utils';
+import ModelRange from 'ckeditor5-engine/src/model/range';
 
 describe( 'ImageEngine', () => {
 	let editor, document, viewDocument;

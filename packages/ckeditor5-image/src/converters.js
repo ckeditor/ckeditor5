@@ -7,10 +7,10 @@
  * @module image/converters
  */
 
-import ViewContainerElement from '../engine/view/containerelement.js';
-import ViewEmptyElement from '../engine/view/emptyelement.js';
-import ModelElement from '../engine/model/element.js';
-import { isImageWidget } from './utils.js';
+import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
+import ViewEmptyElement from 'ckeditor5-engine/src/view/emptyelement';
+import ModelElement from 'ckeditor5-engine/src/model/element';
+import { isImageWidget } from './utils';
 
 /**
  * Returns function that converts image view representation:
