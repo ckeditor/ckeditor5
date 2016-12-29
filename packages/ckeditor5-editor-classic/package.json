@@ -7,7 +7,6 @@
     "ckeditor5-core": "ckeditor/ckeditor5-core",
     "ckeditor5-engine": "ckeditor/ckeditor5-engine",
     "ckeditor5-ui": "ckeditor/ckeditor5-ui",
-    "ckeditor5-ui-default": "ckeditor/ckeditor5-ui-default",
     "ckeditor5-utils": "ckeditor/ckeditor5-utils"
   },
   "devDependencies": {
