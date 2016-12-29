@@ -3,21 +3,21 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
-import Clipboard from 'ckeditor5/clipboard/clipboard.js';
-import Paragraph from 'ckeditor5/paragraph/paragraph.js';
+import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
+import Clipboard from 'ckeditor5-clipboard/src/clipboard';
+import Paragraph from 'ckeditor5-paragraph/src/paragraph';
 
-import ClipboardObserver from 'ckeditor5/clipboard/clipboardobserver.js';
+import ClipboardObserver from 'ckeditor5-clipboard/src/clipboardobserver';
 
-import { stringify as stringifyView } from 'ckeditor5/engine/dev-utils/view.js';
+import { stringify as stringifyView } from 'ckeditor5-engine/src/dev-utils/view';
 import {
 	stringify as stringifyModel,
 	setData as setModelData,
 	getData as getModelData
-} from 'ckeditor5/engine/dev-utils/model.js';
+} from 'ckeditor5-engine/src/dev-utils/model';
 
-import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
-import ViewText from 'ckeditor5/engine/view/text.js';
+import ViewDocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
+import ViewText from 'ckeditor5-engine/src/view/text';
 
 describe( 'Clipboard feature', () => {
 	let editor, editingView;

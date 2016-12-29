@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import DataTransfer from 'ckeditor5/clipboard/datatransfer.js';
+import DataTransfer from 'ckeditor5-clipboard/src/datatransfer';
 
 describe( 'DataTransfer', () => {
 	describe( 'getData', () => {

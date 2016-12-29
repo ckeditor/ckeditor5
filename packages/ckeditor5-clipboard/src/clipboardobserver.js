@@ -7,8 +7,8 @@
  * @module clipboard/clipboardobserver
  */
 
-import DomEventObserver from '../engine/view/observer/domeventobserver.js';
-import DataTransfer from './datatransfer.js';
+import DomEventObserver from 'ckeditor5-engine/src/view/observer/domeventobserver';
+import DataTransfer from './datatransfer';
 
 /**
  * {@link module:engine/view/document~Document#event:paste Paste} event observer.
