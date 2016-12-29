@@ -7,10 +7,10 @@
  * @module typing/deletecommand
  */
 
-import Command from '../core/command/command.js';
-import Selection from '../engine/model/selection.js';
-import ChangeBuffer from './changebuffer.js';
-import count from '../utils/count.js';
+import Command from 'ckeditor5-core/src/command/command';
+import Selection from 'ckeditor5-engine/src/model/selection';
+import ChangeBuffer from './changebuffer';
+import count from 'ckeditor5-utils/src/count';
 
 /**
  * The delete command. Used by the {@link module:typing/delete~Delete delete feature} to handle the <kbd>Delete</kbd> and

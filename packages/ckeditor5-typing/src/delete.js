@@ -7,9 +7,9 @@
  * @module typing/delete
  */
 
-import Plugin from '../core/plugin.js';
-import DeleteCommand from './deletecommand.js';
-import DeleteObserver from './deleteobserver.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import DeleteCommand from './deletecommand';
+import DeleteObserver from './deleteobserver';
 
 /**
  * The delete and backspace feature. Handles the <kbd>Delete</kbd> and <kbd>Backspace</kbd> keys in the editor.

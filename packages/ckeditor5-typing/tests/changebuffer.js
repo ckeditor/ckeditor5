@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import ChangeBuffer from 'ckeditor5/typing/changebuffer.js';
-import Document from 'ckeditor5/engine/model/document.js';
-import Batch from 'ckeditor5/engine/model/batch.js';
-import Position from 'ckeditor5/engine/model/position.js';
+import ChangeBuffer from 'ckeditor5-typing/src/changebuffer';
+import Document from 'ckeditor5-engine/src/model/document';
+import Batch from 'ckeditor5-engine/src/model/batch';
+import Position from 'ckeditor5-engine/src/model/position';
 
 describe( 'ChangeBuffer', () => {
 	const CHANGE_LIMIT = 3;
