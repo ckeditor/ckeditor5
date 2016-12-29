@@ -7,9 +7,9 @@
  * @module enter/enter
  */
 
-import Plugin from '../core/plugin.js';
-import EnterCommand from './entercommand.js';
-import EnterObserver from './enterobserver.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import EnterCommand from './entercommand';
+import EnterObserver from './enterobserver';
 
 /**
  * The Enter feature. Handles the <kbd>Enter</kbd> and <kbd>Shift + Enter</kbd> keys in the editor.
