@@ -7,9 +7,9 @@
  * @module utils/emittermixin
  */
 
-import EventInfo from './eventinfo.js';
-import uid from './uid.js';
-import priorities from './priorities.js';
+import EventInfo from './eventinfo';
+import uid from './uid';
+import priorities from './priorities';
 
 /**
  * Mixin that injects the events API into its host.

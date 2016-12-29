@@ -7,9 +7,9 @@
  * @module utils/dom/position
  */
 
-import global from './global.js';
-import Rect from './rect.js';
-import getPositionedAncestor from './getpositionedancestor.js';
+import global from './global';
+import Rect from './rect';
+import getPositionedAncestor from './getpositionedancestor';
 
 /**
  * Calculates the `position: absolute` coordinates of a given element so it can be positioned with respect to the

@@ -6,8 +6,8 @@
 /* globals document */
 /* bender-tags: dom, browser-only */
 
-import getAncestors from 'ckeditor5/utils/dom/getancestors.js';
-import createElement from 'ckeditor5/utils/dom/createelement.js';
+import getAncestors from 'ckeditor5-utils/src/dom/getancestors';
+import createElement from 'ckeditor5-utils/src/dom/createelement';
 
 describe( 'getAncestors', () => {
 	it( 'should return all parents of given node and the node itself, starting from top-most parent', () => {

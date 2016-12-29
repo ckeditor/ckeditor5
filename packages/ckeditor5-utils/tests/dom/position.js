@@ -5,9 +5,9 @@
 
 /* global document, window */
 
-import global from 'ckeditor5/utils/dom/global.js';
-import { getOptimalPosition } from 'ckeditor5/utils/dom/position.js';
-import testUtils from 'tests/core/_utils/utils.js';
+import global from 'ckeditor5-utils/src/dom/global';
+import { getOptimalPosition } from 'ckeditor5-utils/src/dom/position';
+import testUtils from 'ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import env, { isMac } from 'ckeditor5/utils/env.js';
+import env, { isMac } from 'ckeditor5-utils/src/env';
 
 describe( 'Env', () => {
 	beforeEach( () => {

@@ -7,9 +7,9 @@
  * @module utils/dom/rect
  */
 
-import global from './global.js';
-import isRange from './isrange.js';
-import isElement from '../../utils/lib/lodash/isElement.js';
+import global from './global';
+import isRange from './isrange';
+import isElement from '../lib/lodash/isElement';
 
 const rectProperties = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
 

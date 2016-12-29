@@ -7,10 +7,10 @@
  * @module utils/observablemixin
  */
 
-import EmitterMixin from './emittermixin.js';
-import CKEditorError from './ckeditorerror.js';
-import extend from './lib/lodash/extend.js';
-import isObject from './lib/lodash/isObject.js';
+import EmitterMixin from './emittermixin';
+import CKEditorError from './ckeditorerror';
+import extend from './lib/lodash/extend';
+import isObject from './lib/lodash/isObject';
 
 const attributesSymbol = Symbol( 'attributes' );
 const boundObservablesSymbol = Symbol( 'boundObservables' );

@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import testUtils from 'tests/core/_utils/utils.js';
-import Collection from 'ckeditor5/utils/collection.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import Collection from 'ckeditor5-utils/src/collection';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 testUtils.createSinonSandbox();
 

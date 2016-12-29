@@ -6,8 +6,8 @@
 /* globals document */
 /* bender-tags: dom, browser-only */
 
-import setDataInElement from 'ckeditor5/utils/dom/setdatainelement.js';
-import getDataFromElement from 'ckeditor5/utils/dom/getdatafromelement.js';
+import setDataInElement from 'ckeditor5-utils/src/dom/setdatainelement';
+import getDataFromElement from 'ckeditor5-utils/src/dom/getdatafromelement';
 
 describe( 'setDataInElement', () => {
 	[ 'textarea', 'template', 'div' ].forEach( ( elementName ) => {

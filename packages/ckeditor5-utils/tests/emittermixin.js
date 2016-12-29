@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import EmitterMixin from 'ckeditor5/utils/emittermixin.js';
-import EventInfo from 'ckeditor5/utils/eventinfo.js';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import EventInfo from 'ckeditor5-utils/src/eventinfo';
 
 describe( 'EmitterMixin', () => {
 	let emitter, listener;

@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import env from 'ckeditor5/utils/env.js';
-import { keyCodes, getCode, parseKeystroke, getEnvKeystrokeText } from 'ckeditor5/utils/keyboard.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import env from 'ckeditor5-utils/src/env';
+import { keyCodes, getCode, parseKeystroke, getEnvKeystrokeText } from 'ckeditor5-utils/src/keyboard';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 describe( 'Keyboard', () => {
 	describe( 'keyCodes', () => {
