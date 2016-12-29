@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
-import Paragraph from 'ckeditor5/paragraph/paragraph.js';
-import Clipboard from 'ckeditor5/clipboard/clipboard.js';
-import HeadingEngine from 'ckeditor5/heading/headingengine.js';
-import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
+import Paragraph from 'ckeditor5-paragraph/src/paragraph';
+import Clipboard from 'ckeditor5-clipboard/src/clipboard';
+import HeadingEngine from 'ckeditor5-heading/src/headingengine';
+import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
 import {
 	getData as getModelData,
 	setData as setModelData
-} from 'ckeditor5/engine/dev-utils/model.js';
-import { parse as parseView } from 'ckeditor5/engine/dev-utils/view.js';
+} from 'ckeditor5-engine/src/dev-utils/model';
+import { parse as parseView } from 'ckeditor5-engine/src/dev-utils/view';
 
 describe( 'Paragraph feature – integration', () => {
 	describe( 'with clipboard', () => {
