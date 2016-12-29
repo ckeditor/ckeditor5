@@ -5,15 +5,15 @@
 
 /* globals console:false, document, window */
 
-import ClassicEditor from 'ckeditor5/editor-classic/classic.js';
-import Enter from 'ckeditor5/enter/enter.js';
-import Typing from 'ckeditor5/typing/typing.js';
-import Heading from 'ckeditor5/heading/heading.js';
-import Paragraph from 'ckeditor5/paragraph/paragraph.js';
-import Undo from 'ckeditor5/undo/undo.js';
-import Bold from 'ckeditor5/basic-styles/bold.js';
-import Italic from 'ckeditor5/basic-styles/italic.js';
-import testUtils from 'tests/utils/_utils/utils.js';
+import ClassicEditor from 'ckeditor5-editor-classic/src/classic';
+import Enter from 'ckeditor5-enter/src/enter';
+import Typing from 'ckeditor5-typing/src/typing';
+import Heading from 'ckeditor5-heading/src/heading';
+import Paragraph from 'ckeditor5-paragraph/src/paragraph';
+import Undo from 'ckeditor5-undo/src/undo';
+import Bold from 'ckeditor5-basic-styles/src/bold';
+import Italic from 'ckeditor5-basic-styles/src/italic';
+import testUtils from 'ckeditor5-utils/tests/_utils/utils';
 
 let editor, editable, observer;
 

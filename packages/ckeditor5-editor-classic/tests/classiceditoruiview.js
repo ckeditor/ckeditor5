@@ -6,10 +6,10 @@
 /* globals document */
 /* bender-tags: editor, browser-only */
 
-import ClassicEditorUIView from 'ckeditor5/editor-classic/classiceditoruiview.js';
-import StickyToolbarView from 'ckeditor5/ui/toolbar/sticky/stickytoolbarview.js';
-import InlineEditableUIView from 'ckeditor5/ui/editableui/inline/inlineeditableuiview.js';
-import Locale from 'ckeditor5/utils/locale.js';
+import ClassicEditorUIView from 'ckeditor5-editor-classic/src/classiceditoruiview';
+import StickyToolbarView from 'ckeditor5-ui/src/toolbar/sticky/stickytoolbarview';
+import InlineEditableUIView from 'ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
+import Locale from 'ckeditor5-utils/src/locale';
 
 describe( 'ClassicEditorUIView', () => {
 	let locale, view;

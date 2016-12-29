@@ -7,8 +7,8 @@
  * @module editor-classic/classiceditorui
  */
 
-import ComponentFactory from '../ui/componentfactory.js';
-import FocusTracker from '../utils/focustracker.js';
+import ComponentFactory from 'ckeditor5-ui/src/componentfactory';
+import FocusTracker from 'ckeditor5-utils/src/focustracker';
 
 /**
  * The classic editor UI class.

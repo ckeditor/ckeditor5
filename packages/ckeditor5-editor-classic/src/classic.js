@@ -7,11 +7,13 @@
  * @module editor-classic/classic
  */
 
-import StandardEditor from '../core/editor/standardeditor.js';
-import HtmlDataProcessor from '../engine/dataprocessor/htmldataprocessor.js';
-import ClassicEditorUI from './classiceditorui.js';
-import ClassicEditorUIView from './classiceditoruiview.js';
-import ElementReplacer from '../utils/elementreplacer.js';
+import StandardEditor from 'ckeditor5-core/src/editor/standardeditor';
+import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import ClassicEditorUI from './classiceditorui';
+import ClassicEditorUIView from './classiceditoruiview';
+import ElementReplacer from 'ckeditor5-utils/src/elementreplacer';
+
+import '../theme/theme.scss';
 
 /**
  * Classic editor. Uses inline editable and sticky toolbar, all
