@@ -5,17 +5,17 @@
 
 /* bender-tags: model */
 
-import Document from 'ckeditor5/engine/model/document.js';
-import DocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
-import Element from 'ckeditor5/engine/model/element.js';
-import Text from 'ckeditor5/engine/model/text.js';
-import TextProxy from 'ckeditor5/engine/model/textproxy.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import Range from 'ckeditor5/engine/model/range.js';
-import writer from 'ckeditor5/engine/model/writer.js';
-import { getData } from 'ckeditor5/engine/dev-utils/model.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import DocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
+import Element from 'ckeditor5-engine/src/model/element';
+import Text from 'ckeditor5-engine/src/model/text';
+import TextProxy from 'ckeditor5-engine/src/model/textproxy';
+import Position from 'ckeditor5-engine/src/model/position';
+import Range from 'ckeditor5-engine/src/model/range';
+import writer from 'ckeditor5-engine/src/model/writer';
+import { getData } from 'ckeditor5-engine/src/dev-utils/model';
 
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 let doc, root;
 

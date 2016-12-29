@@ -5,12 +5,12 @@
 
 /* bender-tags: model, operation */
 
-import Document from 'ckeditor5/engine/model/document.js';
-import Element from 'ckeditor5/engine/model/element.js';
-import RenameOperation from 'ckeditor5/engine/model/operation/renameoperation.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
-import { jsonParseStringify, wrapInDelta } from 'tests/engine/model/_utils/utils.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import Element from 'ckeditor5-engine/src/model/element';
+import RenameOperation from 'ckeditor5-engine/src/model/operation/renameoperation';
+import Position from 'ckeditor5-engine/src/model/position';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import { jsonParseStringify, wrapInDelta } from 'ckeditor5-engine/tests/model/_utils/utils';
 
 describe( 'RenameOperation', () => {
 	const oldName = 'oldName';

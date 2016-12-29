@@ -7,15 +7,15 @@
  * @module engine/model/delta/attributedelta
  */
 
-import Delta from './delta.js';
-import DeltaFactory from './deltafactory.js';
-import { register } from '../batch.js';
-import AttributeOperation from '../operation/attributeoperation.js';
-import RootAttributeOperation from '../operation/rootattributeoperation.js';
-import Position from '../position.js';
-import Range from '../range.js';
-import RootElement from '../rootelement.js';
-import Element from '../element.js';
+import Delta from './delta';
+import DeltaFactory from './deltafactory';
+import { register } from '../batch';
+import AttributeOperation from '../operation/attributeoperation';
+import RootAttributeOperation from '../operation/rootattributeoperation';
+import Position from '../position';
+import Range from '../range';
+import RootElement from '../rootelement';
+import Element from '../element';
 
 /**
  * To provide specific OT behavior and better collisions solving, methods to change attributes

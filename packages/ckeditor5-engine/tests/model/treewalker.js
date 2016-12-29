@@ -5,13 +5,13 @@
 
 /* bender-tags: model */
 
-import Document from 'ckeditor5/engine/model/document.js';
-import Element from 'ckeditor5/engine/model/element.js';
-import Text from 'ckeditor5/engine/model/text.js';
-import TreeWalker from 'ckeditor5/engine/model/treewalker.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import Range from 'ckeditor5/engine/model/range.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import Element from 'ckeditor5-engine/src/model/element';
+import Text from 'ckeditor5-engine/src/model/text';
+import TreeWalker from 'ckeditor5-engine/src/model/treewalker';
+import Position from 'ckeditor5-engine/src/model/position';
+import Range from 'ckeditor5-engine/src/model/range';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 describe( 'TreeWalker', () => {
 	let doc, root, img1, paragraph, ba, r, img2, x;

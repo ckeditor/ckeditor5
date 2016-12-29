@@ -5,11 +5,11 @@
 
 /* bender-tags: model */
 
-import MarkersCollection from 'ckeditor5/engine/model/markerscollection.js';
-import Range from 'ckeditor5/engine/model/range.js';
-import LiveRange from 'ckeditor5/engine/model/liverange.js';
-import Document from 'ckeditor5/engine/model/document.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import MarkersCollection from 'ckeditor5-engine/src/model/markerscollection';
+import Range from 'ckeditor5-engine/src/model/range';
+import LiveRange from 'ckeditor5-engine/src/model/liverange';
+import Document from 'ckeditor5-engine/src/model/document';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 describe( 'MarkersCollection', () => {
 	let markers, live, doc, root;

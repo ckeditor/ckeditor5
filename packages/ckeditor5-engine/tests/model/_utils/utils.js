@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import Range from 'ckeditor5/engine/model/range.js';
-import TreeWalker from 'ckeditor5/engine/model/treewalker.js';
-import Text from 'ckeditor5/engine/model/text.js';
-import TextProxy from 'ckeditor5/engine/model/textproxy.js';
-import Delta from 'ckeditor5/engine/model/delta/delta.js';
+import Range from 'ckeditor5-engine/src/model/range';
+import TreeWalker from 'ckeditor5-engine/src/model/treewalker';
+import Text from 'ckeditor5-engine/src/model/text';
+import TextProxy from 'ckeditor5-engine/src/model/textproxy';
+import Delta from 'ckeditor5-engine/src/model/delta/delta';
 
 /**
  * Returns tree structure as a simplified string. Elements are uppercase and characters are lowercase.

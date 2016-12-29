@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import History from 'ckeditor5/engine/model/history.js';
-import Delta from 'ckeditor5/engine/model/delta/delta.js';
-import Operation from 'ckeditor5/engine/model/operation/operation.js';
+import History from 'ckeditor5-engine/src/model/history';
+import Delta from 'ckeditor5-engine/src/model/delta/delta';
+import Operation from 'ckeditor5-engine/src/model/operation/operation';
 
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 describe( 'History', () => {
 	let history;

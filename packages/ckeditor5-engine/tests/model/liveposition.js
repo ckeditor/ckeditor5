@@ -5,14 +5,14 @@
 
 /* bender-tags: model */
 
-import Document from 'ckeditor5/engine/model/document.js';
-import DocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
-import Element from 'ckeditor5/engine/model/element.js';
-import Text from 'ckeditor5/engine/model/text.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import LivePosition from 'ckeditor5/engine/model/liveposition.js';
-import Range from 'ckeditor5/engine/model/range.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import DocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
+import Element from 'ckeditor5-engine/src/model/element';
+import Text from 'ckeditor5-engine/src/model/text';
+import Position from 'ckeditor5-engine/src/model/position';
+import LivePosition from 'ckeditor5-engine/src/model/liveposition';
+import Range from 'ckeditor5-engine/src/model/range';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 describe( 'LivePosition', () => {
 	let doc, root, ul, p, li1, li2;

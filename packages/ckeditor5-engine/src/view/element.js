@@ -7,12 +7,12 @@
  * @module engine/view/element
  */
 
-import Node from './node.js';
-import Text from './text.js';
-import objectToMap from '../../utils/objecttomap.js';
-import isIterable from '../../utils/isiterable.js';
-import isPlainObject from '../../utils/lib/lodash/isPlainObject.js';
-import Matcher from './matcher.js';
+import Node from './node';
+import Text from './text';
+import objectToMap from 'ckeditor5-utils/src/objecttomap';
+import isIterable from 'ckeditor5-utils/src/isiterable';
+import isPlainObject from 'ckeditor5-utils/src/lib/lodash/isPlainObject';
+import Matcher from './matcher';
 
 /**
  * View element.

@@ -5,10 +5,10 @@
 
 /* bender-tags: model */
 
-import Document from 'ckeditor5/engine/model/document.js';
-import Element from 'ckeditor5/engine/model/element.js';
-import RootElement from 'ckeditor5/engine/model/rootelement.js';
-import count from 'ckeditor5/utils/count.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import Element from 'ckeditor5-engine/src/model/element';
+import RootElement from 'ckeditor5-engine/src/model/rootelement';
+import count from 'ckeditor5-utils/src/count';
 
 describe( 'Element', () => {
 	describe( 'constructor()', () => {

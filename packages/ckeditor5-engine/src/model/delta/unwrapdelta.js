@@ -7,14 +7,14 @@
  * @module engine/model/delta/unwrapdelta
  */
 
-import Delta from './delta.js';
-import DeltaFactory from './deltafactory.js';
-import WrapDelta from './wrapdelta.js';
-import { register } from '../batch.js';
-import Position from '../position.js';
-import RemoveOperation from '../operation/removeoperation.js';
-import MoveOperation from '../operation/moveoperation.js';
-import CKEditorError from '../../../utils/ckeditorerror.js';
+import Delta from './delta';
+import DeltaFactory from './deltafactory';
+import WrapDelta from './wrapdelta';
+import { register } from '../batch';
+import Position from '../position';
+import RemoveOperation from '../operation/removeoperation';
+import MoveOperation from '../operation/moveoperation';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 /**
  * @classdesc

@@ -5,10 +5,10 @@
 
 /* bender-tags: conversion */
 
-import ViewElement from 'ckeditor5/engine/view/element.js';
-import ViewText from 'ckeditor5/engine/view/text.js';
-import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
-import ViewConsumable from 'ckeditor5/engine/conversion/viewconsumable.js';
+import ViewElement from 'ckeditor5-engine/src/view/element';
+import ViewText from 'ckeditor5-engine/src/view/text';
+import ViewDocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
+import ViewConsumable from 'ckeditor5-engine/src/conversion/viewconsumable';
 
 describe( 'ViewConsumable', () => {
 	let viewConsumable;

@@ -7,7 +7,7 @@
  * @module engine/view/containerelement
  */
 
-import Element from './element.js';
+import Element from './element';
 
 /**
  * Containers are elements which define document structure. They define boundaries for

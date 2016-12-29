@@ -7,7 +7,7 @@
  * @module engine/view/text
  */
 
-import Node from './node.js';
+import Node from './node';
 
 /**
  * Tree view text node.

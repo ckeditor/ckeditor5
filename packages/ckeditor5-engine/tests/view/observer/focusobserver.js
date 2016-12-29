@@ -6,9 +6,9 @@
 /* globals document */
 /* bender-tags: view, browser-only */
 
-import FocusObserver from 'ckeditor5/engine/view/observer/focusobserver.js';
-import ViewDocument from 'ckeditor5/engine/view/document.js';
-import ViewRange from 'ckeditor5/engine/view/range.js';
+import FocusObserver from 'ckeditor5-engine/src/view/observer/focusobserver';
+import ViewDocument from 'ckeditor5-engine/src/view/document';
+import ViewRange from 'ckeditor5-engine/src/view/range';
 
 describe( 'FocusObserver', () => {
 	let viewDocument, observer;

@@ -7,11 +7,11 @@
  * @module engine/view/treewalker
  */
 
-import Element from './element.js';
-import Text from './text.js';
-import TextProxy from './textproxy.js';
-import Position from './position.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
+import Element from './element';
+import Text from './text';
+import TextProxy from './textproxy';
+import Position from './position';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Position iterator class. It allows to iterate forward and backward over the document.

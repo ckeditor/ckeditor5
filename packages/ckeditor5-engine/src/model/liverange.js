@@ -7,9 +7,9 @@
  * @module engine/model/liverange
  */
 
-import Range from './range.js';
-import EmitterMixin from '../../utils/emittermixin.js';
-import mix from '../../utils/mix.js';
+import Range from './range';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import mix from 'ckeditor5-utils/src/mix';
 
 /**
  * `LiveRange` is a type of {@link module:engine/model/range~Range Range}

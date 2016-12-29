@@ -8,23 +8,23 @@
  */
 
 // Load all basic deltas and transformations, they register themselves, but they need to be imported somewhere.
-import deltas from './delta/basic-deltas.js'; // jshint ignore:line
-import transformations from './delta/basic-transformations.js'; // jshint ignore:line
+import deltas from './delta/basic-deltas'; // jshint ignore:line
+import transformations from './delta/basic-transformations'; // jshint ignore:line
 
-import Range from './range.js';
-import Position from './position.js';
-import RootElement from './rootelement.js';
-import Batch from './batch.js';
-import History from './history.js';
-import LiveSelection from './liveselection.js';
-import Schema from './schema.js';
-import TreeWalker from './treewalker.js';
-import MarkersCollection from './markerscollection.js';
-import clone from '../../utils/lib/lodash/clone.js';
-import EmitterMixin from '../../utils/emittermixin.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
-import mix from '../../utils/mix.js';
-import { isInsideSurrogatePair, isInsideCombinedSymbol } from '../../utils/unicode.js';
+import Range from './range';
+import Position from './position';
+import RootElement from './rootelement';
+import Batch from './batch';
+import History from './history';
+import LiveSelection from './liveselection';
+import Schema from './schema';
+import TreeWalker from './treewalker';
+import MarkersCollection from './markerscollection';
+import clone from 'ckeditor5-utils/src/lib/lodash/clone';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import mix from 'ckeditor5-utils/src/mix';
+import { isInsideSurrogatePair, isInsideCombinedSymbol } from 'ckeditor5-utils/src/unicode';
 
 const graveyardName = '$graveyard';
 

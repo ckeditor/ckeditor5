@@ -5,9 +5,9 @@
 
 /* bender-tags: model, operation */
 
-import Document from 'ckeditor5/engine/model/document.js';
-import NoOperation from 'ckeditor5/engine/model/operation/nooperation.js';
-import { jsonParseStringify, wrapInDelta } from 'tests/engine/model/_utils/utils.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import NoOperation from 'ckeditor5-engine/src/model/operation/nooperation';
+import { jsonParseStringify, wrapInDelta } from 'ckeditor5-engine/tests/model/_utils/utils';
 
 describe( 'NoOperation', () => {
 	let noop, doc, root;

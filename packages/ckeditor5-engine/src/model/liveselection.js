@@ -7,16 +7,16 @@
  * @module engine/model/liveselection
  */
 
-import Position from './position.js';
-import Range from './range.js';
-import LiveRange from './liverange.js';
-import Text from './text.js';
-import TextProxy from './textproxy.js';
-import toMap from '../../utils/tomap.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
-import log from '../../utils/log.js';
+import Position from './position';
+import Range from './range';
+import LiveRange from './liverange';
+import Text from './text';
+import TextProxy from './textproxy';
+import toMap from 'ckeditor5-utils/src/tomap';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import log from 'ckeditor5-utils/src/log';
 
-import Selection from './selection.js';
+import Selection from './selection';
 
 const storePrefix = 'selection:';
 

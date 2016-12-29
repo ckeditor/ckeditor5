@@ -5,15 +5,15 @@
 
 /* bender-tags: model, operation */
 
-import Document from 'ckeditor5/engine/model/document.js';
-import ReinsertOperation from 'ckeditor5/engine/model/operation/reinsertoperation.js';
-import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
-import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import Text from 'ckeditor5/engine/model/text.js';
-import Element from 'ckeditor5/engine/model/element.js';
-import Delta from 'ckeditor5/engine/model/delta/delta.js';
-import { jsonParseStringify, wrapInDelta } from 'tests/engine/model/_utils/utils.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import ReinsertOperation from 'ckeditor5-engine/src/model/operation/reinsertoperation';
+import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
+import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
+import Position from 'ckeditor5-engine/src/model/position';
+import Text from 'ckeditor5-engine/src/model/text';
+import Element from 'ckeditor5-engine/src/model/element';
+import Delta from 'ckeditor5-engine/src/model/delta/delta';
+import { jsonParseStringify, wrapInDelta } from 'ckeditor5-engine/tests/model/_utils/utils';
 
 describe( 'RemoveOperation', () => {
 	let doc, root, graveyard;

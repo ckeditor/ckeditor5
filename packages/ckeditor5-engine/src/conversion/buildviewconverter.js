@@ -7,11 +7,11 @@
  * @module engine/conversion/buildviewconverter
  */
 
-import Matcher from '../view/matcher.js';
-import ModelElement from '../model/element.js';
-import ModelPosition from '../model/position.js';
-import modelWriter from '../model/writer.js';
-import isIterable from '../../utils/isiterable.js';
+import Matcher from '../view/matcher';
+import ModelElement from '../model/element';
+import ModelPosition from '../model/position';
+import modelWriter from '../model/writer';
+import isIterable from 'ckeditor5-utils/src/isiterable';
 
 /**
  * Provides chainable, high-level API to easily build basic view-to-model converters that are appended to given

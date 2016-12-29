@@ -7,8 +7,8 @@
  * @module engine/view/emptyelement
  */
 
-import Element from './element.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
+import Element from './element';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 /**
  * EmptyElement class. It is used to represent elements that cannot contain any child nodes.

@@ -7,16 +7,16 @@
  * @module module:engine/view/writer
  */
 
-import Position from './position.js';
-import ContainerElement from './containerelement.js';
-import AttributeElement from './attributeelement.js';
-import EmptyElement from './emptyelement.js';
-import Text from './text.js';
-import Range from './range.js';
-import TreeWalker from './treewalker.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
-import DocumentFragment from './documentfragment.js';
-import isIterable from '../../utils/isiterable.js';
+import Position from './position';
+import ContainerElement from './containerelement';
+import AttributeElement from './attributeelement';
+import EmptyElement from './emptyelement';
+import Text from './text';
+import Range from './range';
+import TreeWalker from './treewalker';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import DocumentFragment from './documentfragment';
+import isIterable from 'ckeditor5-utils/src/isiterable';
 
 /**
  * Contains functions used for composing view tree.

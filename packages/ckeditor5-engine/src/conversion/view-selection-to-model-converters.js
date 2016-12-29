@@ -10,7 +10,7 @@
  * @module engine/conversion/view-selection-to-model-converters
  */
 
-import ModelSelection from '../model/selection.js';
+import ModelSelection from '../model/selection';
 
 /**
  * Function factory, creates a callback function which converts a {@link module:engine/view/selection~Selection view selection} taken

@@ -5,33 +5,33 @@
 
 /* bender-tags: model, operation */
 
-import transformations from 'ckeditor5/engine/model/delta/basic-transformations.js';
+import transformations from 'ckeditor5-engine/src/model/delta/basic-transformations';
 /*jshint unused: false*/
 
-import { transformDeltaSets } from 'ckeditor5/engine/model/delta/transform.js';
+import { transformDeltaSets } from 'ckeditor5-engine/src/model/delta/transform';
 
-import Document from 'ckeditor5/engine/model/document.js';
-import Element from 'ckeditor5/engine/model/element.js';
-import Text from 'ckeditor5/engine/model/text.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import Range from 'ckeditor5/engine/model/range.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import Element from 'ckeditor5-engine/src/model/element';
+import Text from 'ckeditor5-engine/src/model/text';
+import Position from 'ckeditor5-engine/src/model/position';
+import Range from 'ckeditor5-engine/src/model/range';
 
-import Delta from 'ckeditor5/engine/model/delta/delta.js';
-import InsertDelta from 'ckeditor5/engine/model/delta/insertdelta.js';
-import RemoveDelta from 'ckeditor5/engine/model/delta/removedelta.js';
-import SplitDelta from 'ckeditor5/engine/model/delta/splitdelta.js';
+import Delta from 'ckeditor5-engine/src/model/delta/delta';
+import InsertDelta from 'ckeditor5-engine/src/model/delta/insertdelta';
+import RemoveDelta from 'ckeditor5-engine/src/model/delta/removedelta';
+import SplitDelta from 'ckeditor5-engine/src/model/delta/splitdelta';
 
-import NoOperation from 'ckeditor5/engine/model/operation/nooperation.js';
-import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
-import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
-import InsertOperation from 'ckeditor5/engine/model/operation/insertoperation.js';
+import NoOperation from 'ckeditor5-engine/src/model/operation/nooperation';
+import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
+import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
+import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
 
 import {
 	expectDelta,
 	getInsertDelta,
 	getSplitDelta,
 	getRemoveDelta
-} from 'tests/engine/model/delta/transform/_utils/utils.js';
+} from 'ckeditor5-engine/tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
 	let doc, root, gy, baseVersion;

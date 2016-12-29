@@ -7,10 +7,10 @@
  * @module engine/model/delta/transform
  */
 
-import Delta from './delta.js';
-import operationTransform from '../operation/transform.js';
-import NoOperation from '../operation/nooperation.js';
-import arrayUtils from '../../../utils/lib/lodash/array.js';
+import Delta from './delta';
+import operationTransform from '../operation/transform';
+import NoOperation from '../operation/nooperation';
+import arrayUtils from 'ckeditor5-utils/src/lib/lodash/array';
 
 const specialCases = new Map();
 

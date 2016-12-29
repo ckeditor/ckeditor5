@@ -7,11 +7,11 @@
  * @module engine/model/operation/attributeoperation
  */
 
-import Operation from './operation.js';
-import Range from '../range.js';
-import CKEditorError from '../../../utils/ckeditorerror.js';
-import writer from '../writer.js';
-import isEqual from '../../../utils/lib/lodash/isEqual.js';
+import Operation from './operation';
+import Range from '../range';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import writer from '../writer';
+import isEqual from 'ckeditor5-utils/src/lib/lodash/isEqual';
 
 /**
  * Operation to change nodes' attribute.

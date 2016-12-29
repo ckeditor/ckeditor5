@@ -7,14 +7,14 @@
  * @module engine/model/operation/insertoperation
  */
 
-import Operation from './operation.js';
-import Position from '../position.js';
-import NodeList from '../nodelist.js';
-import RemoveOperation from './removeoperation.js';
-import writer from './../writer.js';
-import { normalizeNodes } from './../writer.js';
-import Text from '../text.js';
-import Element from '../element.js';
+import Operation from './operation';
+import Position from '../position';
+import NodeList from '../nodelist';
+import RemoveOperation from './removeoperation';
+import writer from './../writer';
+import { normalizeNodes } from './../writer';
+import Text from '../text';
+import Element from '../element';
 
 /**
  * Operation to insert one or more nodes at given position in the model.

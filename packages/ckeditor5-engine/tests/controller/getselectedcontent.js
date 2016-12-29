@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5/engine/model/document.js';
-import DocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
-import getSelectedContent from 'ckeditor5/engine/controller/getselectedcontent.js';
-import { setData, stringify } from 'ckeditor5/engine/dev-utils/model.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import DocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
+import getSelectedContent from 'ckeditor5-engine/src/controller/getselectedcontent';
+import { setData, stringify } from 'ckeditor5-engine/src/dev-utils/model';
 
 describe( 'Delete utils', () => {
 	let doc;

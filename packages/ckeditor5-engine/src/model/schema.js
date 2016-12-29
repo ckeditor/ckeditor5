@@ -7,12 +7,12 @@
  * @module engine/model/schema
  */
 
-import Position from './position.js';
-import Element from './element.js';
-import clone from '../../utils/lib/lodash/clone.js';
-import isArray from '../../utils/lib/lodash/isArray.js';
-import isString from '../../utils/lib/lodash/isString.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
+import Position from './position';
+import Element from './element';
+import clone from 'ckeditor5-utils/src/lib/lodash/clone';
+import isArray from 'ckeditor5-utils/src/lib/lodash/isArray';
+import isString from 'ckeditor5-utils/src/lib/lodash/isString';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Schema is a definition of the structure of the document. It allows to define which tree model items (element, text, etc.)

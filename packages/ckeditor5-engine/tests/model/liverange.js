@@ -5,12 +5,12 @@
 
 /* bender-tags: model */
 
-import Document from 'ckeditor5/engine/model/document.js';
-import Element from 'ckeditor5/engine/model/element.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import LiveRange from 'ckeditor5/engine/model/liverange.js';
-import Range from 'ckeditor5/engine/model/range.js';
-import Text from 'ckeditor5/engine/model/text.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import Element from 'ckeditor5-engine/src/model/element';
+import Position from 'ckeditor5-engine/src/model/position';
+import LiveRange from 'ckeditor5-engine/src/model/liverange';
+import Range from 'ckeditor5-engine/src/model/range';
+import Text from 'ckeditor5-engine/src/model/text';
 
 describe( 'LiveRange', () => {
 	let doc, root, ul, p;

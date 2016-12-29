@@ -7,8 +7,8 @@
  * @module engine/model/nodelist
  */
 
-import Node from './node.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
+import Node from './node';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Provides an interface to operate on a list of {@link module:engine/model/node~Node nodes}. `NodeList` is used internally

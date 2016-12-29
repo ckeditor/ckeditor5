@@ -7,12 +7,12 @@
  * @module engine/controller/getselectedcontent
  */
 
-import DocumentFragment from '../model/documentfragment.js';
-import Range from '../model/range.js';
-import Position from '../model/position.js';
-import TextProxy from '../model/textproxy.js';
-import Text from '../model/text.js';
-import { remove } from '../model/writer.js';
+import DocumentFragment from '../model/documentfragment';
+import Range from '../model/range';
+import Position from '../model/position';
+import TextProxy from '../model/textproxy';
+import Text from '../model/text';
+import { remove } from '../model/writer';
 
 /**
  * Gets a clone of the selected content.

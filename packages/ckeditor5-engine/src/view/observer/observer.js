@@ -7,8 +7,8 @@
  * @module engine/view/observer/observer
  */
 
-import DomEmitterMixin from '../../../utils/dom/emittermixin.js';
-import mix from '../../../utils/mix.js';
+import DomEmitterMixin from 'ckeditor5-utils/src/dom/emittermixin';
+import mix from 'ckeditor5-utils/src/mix';
 
 /**
  * Abstract base observer class. Observers are classes which observe changes on DOM elements, do the preliminary

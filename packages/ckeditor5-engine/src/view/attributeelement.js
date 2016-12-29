@@ -7,7 +7,7 @@
  * @module engine/view/attributeelement
  */
 
-import Element from './element.js';
+import Element from './element';
 
 // Default attribute priority.
 const DEFAULT_PRIORITY = 10;

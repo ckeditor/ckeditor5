@@ -7,7 +7,7 @@
  * @module engine/conversion/modelconsumable
  */
 
-import TextProxy from '../model/textproxy.js';
+import TextProxy from '../model/textproxy';
 
 /**
  * Manages a list of consumable values for {@link module:engine/model/item~Item model items}.

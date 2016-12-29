@@ -7,7 +7,7 @@
  * @module engine/view/rooteditableelement
  */
 
-import EditableElement from './editableelement.js';
+import EditableElement from './editableelement';
 
 /**
  * Class representing a single root in the data view. A root can be either {@link #isReadOnly editable or read-only}, but

@@ -5,21 +5,21 @@
 
 /* bender-tags: model, operation */
 
-import transform from 'ckeditor5/engine/model/operation/transform.js';
+import transform from 'ckeditor5-engine/src/model/operation/transform';
 
-import Document from 'ckeditor5/engine/model/document.js';
-import RootElement from 'ckeditor5/engine/model/rootelement.js';
-import Node from 'ckeditor5/engine/model/node.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import Range from 'ckeditor5/engine/model/range.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import RootElement from 'ckeditor5-engine/src/model/rootelement';
+import Node from 'ckeditor5-engine/src/model/node';
+import Position from 'ckeditor5-engine/src/model/position';
+import Range from 'ckeditor5-engine/src/model/range';
 
-import InsertOperation from 'ckeditor5/engine/model/operation/insertoperation.js';
-import AttributeOperation from 'ckeditor5/engine/model/operation/attributeoperation.js';
-import RootAttributeOperation from 'ckeditor5/engine/model/operation/rootattributeoperation.js';
-import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
-import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
-import RenameOperation from 'ckeditor5/engine/model/operation/renameoperation.js';
-import NoOperation from 'ckeditor5/engine/model/operation/nooperation.js';
+import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
+import AttributeOperation from 'ckeditor5-engine/src/model/operation/attributeoperation';
+import RootAttributeOperation from 'ckeditor5-engine/src/model/operation/rootattributeoperation';
+import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
+import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
+import RenameOperation from 'ckeditor5-engine/src/model/operation/renameoperation';
+import NoOperation from 'ckeditor5-engine/src/model/operation/nooperation';
 
 describe( 'transform', () => {
 	let doc, root, op, nodeA, nodeB, expected, baseVersion;

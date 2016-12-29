@@ -7,12 +7,12 @@
  * @module engine/conversion/modelconversiondispatcher
  */
 
-import Consumable from './modelconsumable.js';
-import Range from '../model/range.js';
-import TextProxy from '../model/textproxy.js';
-import EmitterMixin from '../../utils/emittermixin.js';
-import mix from '../../utils/mix.js';
-import extend from '../../utils/lib/lodash/extend.js';
+import Consumable from './modelconsumable';
+import Range from '../model/range';
+import TextProxy from '../model/textproxy';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import mix from 'ckeditor5-utils/src/mix';
+import extend from 'ckeditor5-utils/src/lib/lodash/extend';
 
 /**
  * `ModelConversionDispatcher` is a central point of {@link module:engine/model/model model} conversion, which is

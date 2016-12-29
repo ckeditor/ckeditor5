@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelRange from '../model/range.js';
-import ModelPosition from '../model/position.js';
-import ModelElement from '../model/element.js';
+import ModelRange from '../model/range';
+import ModelPosition from '../model/position';
+import ModelElement from '../model/element';
 
-import ViewRange from '../view/range.js';
-import ViewPosition from '../view/position.js';
-import ViewElement from '../view/element.js';
-import ViewText from '../view/text.js';
-import viewWriter from '../view/writer.js';
+import ViewRange from '../view/range';
+import ViewPosition from '../view/position';
+import ViewElement from '../view/element';
+import ViewText from '../view/text';
+import viewWriter from '../view/writer';
 
 /**
  * Contains {@link module:engine/model/model model} to {@link module:engine/view/view view} converters for

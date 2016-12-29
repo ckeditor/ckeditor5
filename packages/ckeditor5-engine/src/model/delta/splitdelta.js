@@ -7,15 +7,15 @@
  * @module engine/model/delta/splitdelta
  */
 
-import Delta from './delta.js';
-import DeltaFactory from './deltafactory.js';
-import { register } from '../batch.js';
-import Position from '../position.js';
-import Element from '../element.js';
-import InsertOperation from '../operation/insertoperation.js';
-import MoveOperation from '../operation/moveoperation.js';
-import CKEditorError from '../../../utils/ckeditorerror.js';
-import MergeDelta from '../delta/mergedelta.js';
+import Delta from './delta';
+import DeltaFactory from './deltafactory';
+import { register } from '../batch';
+import Position from '../position';
+import Element from '../element';
+import InsertOperation from '../operation/insertoperation';
+import MoveOperation from '../operation/moveoperation';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import MergeDelta from '../delta/mergedelta';
 
 /**
  * @classdesc

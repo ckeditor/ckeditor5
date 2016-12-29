@@ -5,7 +5,7 @@
 
 /* bender-tags: view */
 
-import createDocumentMock from 'tests/engine/view/_utils/createdocumentmock.js';
+import createDocumentMock from 'ckeditor5-engine/tests/view/_utils/createdocumentmock';
 
 describe( 'createDocumentMock', () => {
 	it( 'should create document mock', ( done ) => {

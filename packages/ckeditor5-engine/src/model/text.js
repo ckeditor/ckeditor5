@@ -7,7 +7,7 @@
  * @module engine/model/text
  */
 
-import Node from './node.js';
+import Node from './node';
 
 /**
  * Model text node. Type of {@link module:engine/model/node~Node node} that contains {@link module:engine/model/text~Text#data text data}.

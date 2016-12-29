@@ -7,7 +7,7 @@
  * @module engine/view/observer/clickobserver
  */
 
-import DomEventObserver from './domeventobserver.js';
+import DomEventObserver from './domeventobserver';
 
 /**
  * {@link module:engine/view/document~Document#event:click Click} event observer.

@@ -7,15 +7,15 @@
  * @module engine/model/operation/transform
  */
 
-import InsertOperation from './insertoperation.js';
-import AttributeOperation from './attributeoperation.js';
-import RootAttributeOperation from './rootattributeoperation.js';
-import RenameOperation from './renameoperation.js';
-import MoveOperation from './moveoperation.js';
-import RemoveOperation from './removeoperation.js';
-import NoOperation from './nooperation.js';
-import Range from '../range.js';
-import compareArrays from '../../../utils/comparearrays.js';
+import InsertOperation from './insertoperation';
+import AttributeOperation from './attributeoperation';
+import RootAttributeOperation from './rootattributeoperation';
+import RenameOperation from './renameoperation';
+import MoveOperation from './moveoperation';
+import RemoveOperation from './removeoperation';
+import NoOperation from './nooperation';
+import Range from '../range';
+import compareArrays from 'ckeditor5-utils/src/comparearrays';
 
 /**
  * Transforms given {@link module:engine/model/operation/operation~Operation operation}

@@ -7,8 +7,8 @@
  * @module engine/view/observer/keyobserver
  */
 
-import DomEventObserver from './domeventobserver.js';
-import { getCode } from '../../../utils/keyboard.js';
+import DomEventObserver from './domeventobserver';
+import { getCode } from 'ckeditor5-utils/src/keyboard';
 
 /**
  * {@link module:engine/view/document~Document#event:keydown Key down} event observer.

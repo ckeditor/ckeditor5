@@ -5,8 +5,8 @@
 
 /* globals document */
 
-import Document from 'ckeditor5/engine/view/document.js';
-import { setData } from 'ckeditor5/engine/dev-utils/view.js';
+import Document from 'ckeditor5-engine/src/view/document';
+import { setData } from 'ckeditor5-engine/src/dev-utils/view';
 
 const viewDocument = new Document();
 viewDocument.createRoot( document.getElementById( 'editor' ) );

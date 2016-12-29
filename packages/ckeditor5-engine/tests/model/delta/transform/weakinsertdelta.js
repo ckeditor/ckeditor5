@@ -5,27 +5,27 @@
 
 /* bender-tags: model, operation */
 
-import transformations from 'ckeditor5/engine/model/delta/basic-transformations.js';
+import transformations from 'ckeditor5-engine/src/model/delta/basic-transformations';
 /*jshint unused: false*/
 
-import transform from 'ckeditor5/engine/model/delta/transform.js';
+import transform from 'ckeditor5-engine/src/model/delta/transform';
 
-import Text from 'ckeditor5/engine/model/text.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import Range from 'ckeditor5/engine/model/range.js';
+import Text from 'ckeditor5-engine/src/model/text';
+import Position from 'ckeditor5-engine/src/model/position';
+import Range from 'ckeditor5-engine/src/model/range';
 
-import WeakInsertDelta from 'ckeditor5/engine/model/delta/weakinsertdelta.js';
-import AttributeDelta from 'ckeditor5/engine/model/delta/attributedelta.js';
+import WeakInsertDelta from 'ckeditor5-engine/src/model/delta/weakinsertdelta';
+import AttributeDelta from 'ckeditor5-engine/src/model/delta/attributedelta';
 
-import InsertOperation from 'ckeditor5/engine/model/operation/insertoperation.js';
-import AttributeOperation from 'ckeditor5/engine/model/operation/attributeoperation.js';
+import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
+import AttributeOperation from 'ckeditor5-engine/src/model/operation/attributeoperation';
 
 import {
 	expectDelta,
 	getFilledDocument,
 	getAttributeDelta,
 	getWeakInsertDelta
-} from 'tests/engine/model/delta/transform/_utils/utils.js';
+} from 'ckeditor5-engine/tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
 	let doc, root, baseVersion;
