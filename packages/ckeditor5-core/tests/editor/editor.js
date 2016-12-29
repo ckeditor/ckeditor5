@@ -6,10 +6,10 @@
 /* globals setTimeout */
 /* bender-tags: editor, browser-only */
 
-import Editor from 'ckeditor5/core/editor/editor.js';
-import Plugin from 'ckeditor5/core/plugin.js';
-import Config from 'ckeditor5/utils/config.js';
-import PluginCollection from 'ckeditor5/core/plugincollection.js';
+import Editor from 'ckeditor5-core/src/editor/editor';
+import Plugin from 'ckeditor5-core/src/plugin';
+import Config from 'ckeditor5-utils/src/config';
+import PluginCollection from 'ckeditor5-core/src/plugincollection';
 
 class PluginA extends Plugin {
 	constructor( editor ) {

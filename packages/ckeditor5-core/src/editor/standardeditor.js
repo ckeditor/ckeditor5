@@ -7,12 +7,12 @@
  * @module core/editor/standardeditor
  */
 
-import Editor from './editor.js';
-import KeystrokeHandler from '../keystrokehandler.js';
-import EditingController from '../../engine/controller/editingcontroller.js';
+import Editor from './editor';
+import KeystrokeHandler from '../keystrokehandler';
+import EditingController from 'ckeditor5-engine/src/controller/editingcontroller';
 
-import getDataFromElement from '../../utils/dom/getdatafromelement.js';
-import setDataInElement from '../../utils/dom/setdatainelement.js';
+import getDataFromElement from 'ckeditor5-utils/src/dom/getdatafromelement';
+import setDataInElement from 'ckeditor5-utils/src/dom/setdatainelement';
 
 /**
  * Class representing a typical browser-based editor. It handles a single source element and

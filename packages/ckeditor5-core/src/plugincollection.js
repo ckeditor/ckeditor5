@@ -7,9 +7,9 @@
  * @module core/plugincollection
  */
 
-import Plugin from './plugin.js';
-import CKEditorError from '../utils/ckeditorerror.js';
-import log from '../utils/log.js';
+import Plugin from './plugin';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import log from 'ckeditor5-utils/src/log';
 
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.

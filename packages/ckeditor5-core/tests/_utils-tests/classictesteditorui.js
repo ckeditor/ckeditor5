@@ -5,10 +5,10 @@
 
 /* bender-tags: editor, browser-only */
 
-import ComponentFactory from 'ckeditor5/ui/componentfactory.js';
-import FocusTracker from 'ckeditor5/utils/focustracker.js';
-import ClassicTestEditorUI from 'tests/core/_utils/classictesteditorui.js';
-import View from 'ckeditor5/ui/view.js';
+import ComponentFactory from 'ckeditor5-ui/src/componentfactory';
+import FocusTracker from 'ckeditor5-utils/src/focustracker';
+import ClassicTestEditorUI from 'ckeditor5-core/tests/_utils/classictesteditorui';
+import View from 'ckeditor5-ui/src/view';
 
 describe( 'ClassicTestEditorUI', () => {
 	let editor, view, ui;

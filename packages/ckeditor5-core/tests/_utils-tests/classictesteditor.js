@@ -5,17 +5,17 @@
 
 /* globals document */
 
-import StandardEditor from 'ckeditor5/core/editor/standardeditor.js';
-import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
+import StandardEditor from 'ckeditor5-core/src/editor/standardeditor';
+import ClassicTestEditor from 'ckeditor5-core/tests/_utils/classictesteditor';
 
-import Plugin from 'ckeditor5/core/plugin.js';
-import HtmlDataProcessor from 'ckeditor5/engine/dataprocessor/htmldataprocessor.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
-import ClassicTestEditorUI from 'tests/core/_utils/classictesteditorui.js';
-import BoxedEditorUIView from 'ckeditor5/ui/editorui/boxed/boxededitoruiview.js';
+import ClassicTestEditorUI from 'ckeditor5-core/tests/_utils/classictesteditorui';
+import BoxedEditorUIView from 'ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
 
-import { getData } from 'ckeditor5/engine/dev-utils/model.js';
-import testUtils from 'tests/core/_utils/utils.js';
+import { getData } from 'ckeditor5-engine/src/dev-utils/model';
+import testUtils from 'ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 

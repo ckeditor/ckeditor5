@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import ComponentFactory from 'ckeditor5/ui/componentfactory.js';
-import FocusTracker from 'ckeditor5/utils/focustracker.js';
+import ComponentFactory from 'ckeditor5-ui/src/componentfactory';
+import FocusTracker from 'ckeditor5-utils/src/focustracker';
 
 /**
  * A simplified classic editor UI class. Useful for testing features.

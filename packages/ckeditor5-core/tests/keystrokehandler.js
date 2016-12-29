@@ -5,9 +5,9 @@
 
 /* bender-tags: browser-only */
 
-import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
-import KeystrokeHandler from 'ckeditor5/core/keystrokehandler.js';
-import { keyCodes } from 'ckeditor5/utils/keyboard.js';
+import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
+import KeystrokeHandler from 'ckeditor5-core/src/keystrokehandler';
+import { keyCodes } from 'ckeditor5-utils/src/keyboard';
 
 describe( 'KeystrokeHandler', () => {
 	let editor;
