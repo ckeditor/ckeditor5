@@ -7,13 +7,13 @@
  * @module autoformat/autoformat
  */
 
-import BlockAutoformatEngine from './blockautoformatengine.js';
-import InlineAutoformatEngine from './inlineautoformatengine.js';
-import Plugin from '../core/plugin.js';
-import HeadingEngine from '../heading/headingengine.js';
-import ListEngine from '../list/listengine.js';
-import BoldEngine from '../basic-styles/boldengine.js';
-import ItalicEngine from '../basic-styles/italicengine.js';
+import BlockAutoformatEngine from './blockautoformatengine';
+import InlineAutoformatEngine from './inlineautoformatengine';
+import Plugin from 'ckeditor5-core/src/plugin';
+import HeadingEngine from 'ckeditor5-heading/src/headingengine';
+import ListEngine from 'ckeditor5-list/src/listengine';
+import BoldEngine from 'ckeditor5-basic-styles/src/boldengine';
+import ItalicEngine from 'ckeditor5-basic-styles/src/italicengine';
 
 /**
  * Includes a set of predefined autoformatting actions.
