@@ -7,7 +7,7 @@
  * @module link/linkelement
  */
 
-import AttributeElement from '../engine/view/attributeelement.js';
+import AttributeElement from 'ckeditor5-engine/src/view/attributeelement';
 
 /**
  * This class is to mark specific {@link module:engine/view/node~Node} as {@link module:link/linkelement~LinkElement}.

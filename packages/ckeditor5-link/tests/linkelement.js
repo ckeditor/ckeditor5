@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import LinkElement from 'ckeditor5/link/linkelement.js';
-import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
+import LinkElement from 'ckeditor5-link/src/linkelement';
+import AttributeElement from 'ckeditor5-engine/src/view/attributeelement';
 
 describe( 'LinkElement', () => {
 	it( 'should extend AttributeElement', () => {

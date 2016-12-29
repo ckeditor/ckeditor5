@@ -7,18 +7,23 @@
  * @module link/link
  */
 
-import Plugin from '../core/plugin.js';
-import ClickObserver from '../engine/view/observer/clickobserver.js';
-import LinkEngine from './linkengine.js';
-import LinkElement from './linkelement.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import ClickObserver from 'ckeditor5-engine/src/view/observer/clickobserver';
+import LinkEngine from './linkengine';
+import LinkElement from './linkelement';
 
-import clickOutsideHandler from '../ui/bindings/clickoutsidehandler.js';
-import escPressHandler from '../ui/bindings/escpresshandler.js';
+import clickOutsideHandler from 'ckeditor5-ui/src/bindings/clickoutsidehandler';
+import escPressHandler from 'ckeditor5-ui/src/bindings/escpresshandler';
 
-import ButtonView from '../ui/button/buttonview.js';
-import BalloonPanelView from '../ui/balloonpanel/balloonpanelview.js';
+import ButtonView from 'ckeditor5-ui/src/button/buttonview';
+import BalloonPanelView from 'ckeditor5-ui/src/balloonpanel/balloonpanelview';
 
-import LinkFormView from './ui/linkformview.js';
+import LinkFormView from './ui/linkformview';
+
+import linkIcon from '../theme/icons/link.svg';
+import unlinkIcon from '../theme/icons/unlink.svg';
+
+import '../theme/theme.scss';
 
 /**
  * The link feature. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
@@ -79,7 +84,7 @@ export default class Link extends Plugin {
 
 			button.isEnabled = true;
 			button.label = t( 'Link' );
-			button.icon = 'link';
+			button.icon = linkIcon;
 			button.keystroke = 'CTRL+K';
 
 			// Bind button to the command.
@@ -108,7 +113,7 @@ export default class Link extends Plugin {
 
 			button.isEnabled = false;
 			button.label = t( 'Unlink' );
-			button.icon = 'unlink';
+			button.icon = unlinkIcon;
 
 			// Bind button to the command.
 			button.bind( 'isEnabled' ).to( unlinkCommand, 'isEnabled' );

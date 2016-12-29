@@ -7,12 +7,12 @@
  * @module link/linkengine
  */
 
-import Plugin from '../core/plugin.js';
-import buildModelConverter from '../engine/conversion/buildmodelconverter.js';
-import buildViewConverter from '../engine/conversion/buildviewconverter.js';
-import LinkElement from './linkelement.js';
-import LinkCommand from './linkcommand.js';
-import UnlinkCommand from './unlinkcommand.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
+import buildViewConverter from 'ckeditor5-engine/src/conversion/buildviewconverter';
+import LinkElement from './linkelement';
+import LinkCommand from './linkcommand';
+import UnlinkCommand from './unlinkcommand';
 
 /**
  * The link engine feature.

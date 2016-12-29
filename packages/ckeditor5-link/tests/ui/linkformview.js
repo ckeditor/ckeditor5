@@ -5,8 +5,8 @@
 
 /* bender-tags: ui, form */
 
-import View from 'ckeditor5/ui/view.js';
-import LinkFormView from 'ckeditor5/link/ui/linkformview.js';
+import View from 'ckeditor5-ui/src/view';
+import LinkFormView from 'ckeditor5-link/src/ui/linkformview';
 
 describe( 'LinkFormView', () => {
 	let view;
