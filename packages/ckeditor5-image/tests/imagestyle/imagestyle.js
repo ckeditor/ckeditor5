@@ -3,12 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document */
-
 import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
 import ImageStyle from 'ckeditor5/image/imagestyle/imagestyle.js';
 import ImageStyleEngine from 'ckeditor5/image/imagestyle/imagestyleengine.js';
 import ButtonView from 'ckeditor5/ui/button/buttonview.js';
+import global from 'ckeditor5/utils/dom/global.js';
 
 describe( 'ImageStyle', () => {
 	let editor;
@@ -19,8 +18,8 @@ describe( 'ImageStyle', () => {
 	];
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
-		document.body.appendChild( editorElement );
+		const editorElement = global.document.createElement( 'div' );
+		global.document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
 			plugins: [ ImageStyle ],
@@ -75,8 +74,8 @@ describe( 'ImageStyle', () => {
 	} );
 
 	it( 'should not add buttons to image toolbar if configuration is present', () => {
-		const editorElement = document.createElement( 'div' );
-		document.body.appendChild( editorElement );
+		const editorElement = global.document.createElement( 'div' );
+		global.document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
 			plugins: [ ImageStyle ],
