@@ -7,7 +7,7 @@
  * @module list/viewlistitemelement
  */
 
-import ViewContainerElement from '../engine/view/containerelement.js';
+import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
 
 /**
  * View element class representing list item (`<li>`). It extends {@link module:engine/view/containerelement~ContainerElement}

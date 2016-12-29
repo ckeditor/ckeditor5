@@ -7,15 +7,15 @@
  * @module list/converters
  */
 
-import ViewListItemElement from './viewlistitemelement.js';
+import ViewListItemElement from './viewlistitemelement';
 
-import ModelElement from '../engine/model/element.js';
-import ModelPosition from '../engine/model/position.js';
+import ModelElement from 'ckeditor5-engine/src/model/element';
+import ModelPosition from 'ckeditor5-engine/src/model/position';
 
-import ViewContainerElement from '../engine/view/containerelement.js';
-import ViewPosition from '../engine/view/position.js';
-import ViewRange from '../engine/view/range.js';
-import viewWriter from '../engine/view/writer.js';
+import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
+import ViewPosition from 'ckeditor5-engine/src/view/position';
+import ViewRange from 'ckeditor5-engine/src/view/range';
+import viewWriter from 'ckeditor5-engine/src/view/writer';
 
 /**
  * Model to view converter for `listItem` model element insertion.

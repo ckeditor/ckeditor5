@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import Editor from 'ckeditor5/core/editor/editor.js';
-import Document from 'ckeditor5/engine/model/document.js';
-import IndentCommand from 'ckeditor5/list/indentcommand.js';
-import Range from 'ckeditor5/engine/model/range.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import { setData, getData } from 'ckeditor5/engine/dev-utils/model.js';
+import Editor from 'ckeditor5-core/src/editor/editor';
+import Document from 'ckeditor5-engine/src/model/document';
+import IndentCommand from 'ckeditor5-list/src/indentcommand';
+import Range from 'ckeditor5-engine/src/model/range';
+import Position from 'ckeditor5-engine/src/model/position';
+import { setData, getData } from 'ckeditor5-engine/src/dev-utils/model';
 
 describe( 'IndentCommand', () => {
 	let editor, doc, root;

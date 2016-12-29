@@ -7,10 +7,13 @@
  * @module list/list
  */
 
-import Plugin from '../core/plugin.js';
-import ListEngine from './listengine.js';
-import ButtonView from '../ui/button/buttonview.js';
-import { parseKeystroke } from '../utils/keyboard.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import ListEngine from './listengine';
+import ButtonView from 'ckeditor5-ui/src/button/buttonview';
+import { parseKeystroke } from 'ckeditor5-utils/src/keyboard';
+
+import numberedListIcon from '../theme/icons/numberedlist.svg';
+import bulletedListIcon from '../theme/icons/bulletedlist.svg';
 
 /**
  * The lists feature. It introduces the `numberedList` and `bulletedList` buttons which
@@ -34,8 +37,8 @@ export default class List extends Plugin {
 	init() {
 		// Create two buttons and link them with numberedList and bulletedList commands.
 		const t = this.editor.t;
-		this._addButton( 'numberedList', t( 'Numbered List' ) );
-		this._addButton( 'bulletedList', t( 'Bulleted List' ) );
+		this._addButton( 'numberedList', t( 'Numbered List' ), numberedListIcon );
+		this._addButton( 'bulletedList', t( 'Bulleted List' ), bulletedListIcon );
 
 		// Overwrite default enter key behavior.
 		// If enter key is pressed with selection collapsed in empty list item, outdent it instead of breaking it.
@@ -82,8 +85,9 @@ export default class List extends Plugin {
 	 * @private
 	 * @param {String} commandName Name of the command.
 	 * @param {Object} label Button label.
+	 * @param {String} icon Source of the icon.
 	 */
-	_addButton( commandName, label ) {
+	_addButton( commandName, label, icon ) {
 		const editor = this.editor;
 		const command = editor.commands.get( commandName );
 
@@ -92,7 +96,7 @@ export default class List extends Plugin {
 
 			buttonView.set( {
 				label: label,
-				icon: commandName.toLowerCase()
+				icon: icon
 			} );
 
 			// Bind button model to command.

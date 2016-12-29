@@ -7,9 +7,9 @@
  * @module list/listengine
  */
 
-import Plugin from '../core/plugin.js';
-import ListCommand from './listcommand.js';
-import IndentCommand from './indentcommand.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import ListCommand from './listcommand';
+import IndentCommand from './indentcommand';
 
 import {
 	cleanList,
@@ -23,7 +23,7 @@ import {
 	viewModelConverter,
 	modelToViewPosition,
 	viewToModelPosition
-} from './converters.js';
+} from './converters';
 
 /**
  * The engine of the lists feature. It handles creating, editing and removing lists and list items.
