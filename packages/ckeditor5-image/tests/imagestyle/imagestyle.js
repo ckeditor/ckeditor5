@@ -87,6 +87,7 @@ describe( 'ImageStyle', () => {
 		} )
 		.then( newEditor => {
 			expect( newEditor.config.get( 'image.toolbar' ) ).to.eql( [ 'foo',  'bar' ] );
+			newEditor.destroy();
 		} );
 	} );
 } );

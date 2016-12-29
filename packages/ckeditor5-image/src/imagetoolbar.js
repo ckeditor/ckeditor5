@@ -82,10 +82,8 @@ export default class ImageToolbar extends Plugin {
 			const editingView = editor.editing.view;
 			const promises = [];
 
-			if ( toolbarConfig ) {
-				for ( let name of toolbarConfig ) {
-					promises.push( toolbar.items.add( editor.ui.componentFactory.create( name ) ) );
-				}
+			for ( let name of toolbarConfig ) {
+				promises.push( toolbar.items.add( editor.ui.componentFactory.create( name ) ) );
 			}
 
 			// Let the focusTracker know about new focusable UI element.

@@ -55,7 +55,6 @@ export default class ImageStyle extends Plugin {
 		const command = editor.commands.get( 'imagestyle' );
 		const t = editor.t;
 
-		// Add bold button to feature components.
 		editor.ui.componentFactory.add( style.name, ( locale ) => {
 			const view = new ButtonView( locale );
 
