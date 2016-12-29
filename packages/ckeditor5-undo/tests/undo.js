@@ -5,12 +5,12 @@
 
 /* globals document */
 
-import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
-import Undo from 'ckeditor5/undo/undo.js';
-import UndoEngine from 'ckeditor5/undo/undoengine.js';
-import ButtonView from 'ckeditor5/ui/button/buttonview.js';
-import testUtils from 'tests/core/_utils/utils.js';
-import { keyCodes } from 'ckeditor5/utils/keyboard.js';
+import ClassicTestEditor from 'ckeditor5-core/tests/_utils/classictesteditor';
+import Undo from 'ckeditor5-undo/src/undo';
+import UndoEngine from 'ckeditor5-undo/src/undoengine';
+import ButtonView from 'ckeditor5-ui/src/button/buttonview';
+import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import { keyCodes } from 'ckeditor5-utils/src/keyboard';
 
 testUtils.createSinonSandbox();
 
