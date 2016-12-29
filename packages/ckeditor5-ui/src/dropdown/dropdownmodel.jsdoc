@@ -1,0 +1,38 @@
+/**
+ * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * The basic dropdown model interface.
+ *
+ * @interface module:ui/dropdown/dropdownmodel~DropdownModel
+ */
+
+/**
+ * The label of the dropdown.
+ *
+ * @observable
+ * @member {String} #label
+ */
+
+/**
+ * Controls whether the dropdown is enabled (can be clicked).
+ *
+ * @observable
+ * @member {Boolean} #isEnabled
+ */
+
+/**
+ * Controls whether the {@link module:ui/dropdown/dropdownview~DropdownView#buttonView} is "pushed".
+ *
+ * @observable
+ * @member {Boolean} #isOn
+ */
+
+/**
+ * (Optional) Whether the label of the dropdown is visible. See {@link module:ui/button/buttonview~ButtonView#withText}.
+ *
+ * @observable
+ * @member {Boolean} #withText
+ */

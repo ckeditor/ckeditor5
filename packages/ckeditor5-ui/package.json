@@ -6,6 +6,7 @@
     "CKEditor"
   ],
   "dependencies": {
+    "ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark",
     "ckeditor5-utils": "ckeditor/ckeditor5-utils"
   },
   "devDependencies": {

@@ -5,9 +5,9 @@
 
 /* bender-tags: ui */
 
-import Editor from 'ckeditor5/core/editor/editor.js';
-import ComponentFactory from 'ckeditor5/ui/componentfactory.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import Editor from 'ckeditor5-core/src/editor/editor';
+import ComponentFactory from 'ckeditor5-ui/src/componentfactory';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 describe( 'ComponentFactory', () => {
 	let editor, factory;

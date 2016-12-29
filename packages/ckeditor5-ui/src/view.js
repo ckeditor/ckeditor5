@@ -7,14 +7,14 @@
  * @module ui/view
  */
 
-import CKEditorError from '../utils/ckeditorerror.js';
-import ViewCollection from './viewcollection.js';
-import Template from './template.js';
-import DomEmmiterMixin from '../utils/dom/emittermixin.js';
-import ObservableMixin from '../utils/observablemixin.js';
-import Collection from '../utils/collection.js';
-import mix from '../utils/mix.js';
-import isIterable from '../utils/isiterable.js';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import ViewCollection from './viewcollection';
+import Template from './template';
+import DomEmmiterMixin from 'ckeditor5-utils/src/dom/emittermixin';
+import ObservableMixin from 'ckeditor5-utils/src/observablemixin';
+import Collection from 'ckeditor5-utils/src/collection';
+import mix from 'ckeditor5-utils/src/mix';
+import isIterable from 'ckeditor5-utils/src/isiterable';
 
 /**
  * Basic View class.
