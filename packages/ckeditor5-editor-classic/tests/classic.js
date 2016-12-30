@@ -4,7 +4,6 @@
  */
 
 /* globals document */
-/* bender-tags: editor, browser-only */
 
 import ClassicEditorUI from 'ckeditor5-editor-classic/src/classiceditorui';
 import ClassicEditorUIView from 'ckeditor5-editor-classic/src/classiceditoruiview';

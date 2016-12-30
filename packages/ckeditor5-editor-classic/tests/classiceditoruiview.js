@@ -4,7 +4,6 @@
  */
 
 /* globals document */
-/* bender-tags: editor, browser-only */
 
 import ClassicEditorUIView from 'ckeditor5-editor-classic/src/classiceditoruiview';
 import StickyToolbarView from 'ckeditor5-ui/src/toolbar/sticky/stickytoolbarview';
