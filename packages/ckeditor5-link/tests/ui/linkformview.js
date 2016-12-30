@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: ui, form */
-
 import View from 'ckeditor5-ui/src/view';
 import LinkFormView from 'ckeditor5-link/src/ui/linkformview';
 
