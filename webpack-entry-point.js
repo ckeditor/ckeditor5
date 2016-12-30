@@ -1,4 +1,4 @@
-/* jshint browser: true */
+/* jshint browser: true, node: false, strict: implied */
 /* global console */
 
 import ClassicEditor from 'ckeditor5-editor-classic/src/classic';

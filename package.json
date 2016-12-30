@@ -29,14 +29,12 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-bundler-rollup": "^5.0.0",
-    "@ckeditor/ckeditor5-dev-compiler": "^6.0.0",
-    "@ckeditor/ckeditor5-dev-docs": "^5.0.0",
-    "@ckeditor/ckeditor5-dev-env": "^1.0.0",
-    "@ckeditor/ckeditor5-dev-lint": "^1.0.1",
+    "@ckeditor/ckeditor5-dev-docs": "^6.0.0",
+    "@ckeditor/ckeditor5-dev-env": "^2.0.0",
+    "@ckeditor/ckeditor5-dev-lint": "^2.0.0",
     "@ckeditor/ckeditor5-dev-tests": "^3.1.0",
     "gulp": "^3.9.0",
-    "guppy-pre-commit": "^0.4.0",
-    "run-sequence": "^1.1.5"
+    "guppy-pre-commit": "^0.4.0"
   },
   "engines": {
     "node": ">=6.0.0",

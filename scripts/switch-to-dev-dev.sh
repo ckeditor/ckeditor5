@@ -6,6 +6,11 @@ if [ ! -d node_modules/@ckeditor ]; then
   mkdir node_modules/@ckeditor
 fi
 
+echo "Linking ckeditor5-dev-docs..."
+
+rm -rf node_modules/@ckeditor/ckeditor5-dev-docs
+ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-docs node_modules/@ckeditor
+
 echo "Linking ckeditor5-dev-env..."
 
 rm -rf node_modules/@ckeditor/ckeditor5-dev-env
