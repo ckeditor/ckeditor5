@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model */
-
 import NodeList from 'ckeditor5-engine/src/model/nodelist';
 import Element from 'ckeditor5-engine/src/model/element';
 import Text from 'ckeditor5-engine/src/model/text';

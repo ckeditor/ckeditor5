@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, operation */
-
 import Document from 'ckeditor5-engine/src/model/document';
 import ReinsertOperation from 'ckeditor5-engine/src/model/operation/reinsertoperation';
 import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view, browser-only */
-
 import { breakContainer } from 'ckeditor5-engine/src/view/writer';
 import { stringify, parse } from 'ckeditor5-engine/src/dev-utils/view';
 import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';

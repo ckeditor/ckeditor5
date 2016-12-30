@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: conversion */
-
 import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
 
 import ModelDocument from 'ckeditor5-engine/src/model/document';

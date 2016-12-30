@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: conversion */
-
 import Mapper from 'ckeditor5-engine/src/conversion/mapper';
 
 import ModelElement from 'ckeditor5-engine/src/model/element';

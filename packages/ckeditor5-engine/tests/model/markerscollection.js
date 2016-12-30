@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model */
-
 import MarkersCollection from 'ckeditor5-engine/src/model/markerscollection';
 import Range from 'ckeditor5-engine/src/model/range';
 import LiveRange from 'ckeditor5-engine/src/model/liverange';

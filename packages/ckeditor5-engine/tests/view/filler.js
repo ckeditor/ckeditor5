@@ -4,7 +4,6 @@
  */
 
 /* globals document */
-/* bender-tags: view, browser-only */
 
 import {
 	BR_FILLER,

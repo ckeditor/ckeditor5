@@ -4,7 +4,6 @@
  */
 
 /* globals setTimeout, document */
-/* bender-tags: view, browser-only */
 
 import ViewRange from 'ckeditor5-engine/src/view/range';
 import testUtils from 'ckeditor5-core/tests/_utils/utils';

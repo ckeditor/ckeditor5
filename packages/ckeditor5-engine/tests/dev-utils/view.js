@@ -4,7 +4,6 @@
  */
 
 /* globals document */
-/* bender-tags: browser-only */
 
 import { parse, stringify, getData, setData }from 'ckeditor5-engine/src/dev-utils/view';
 import DocumentFragment from 'ckeditor5-engine/src/view/documentfragment';

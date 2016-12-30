@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, delta */
-
 import Delta from 'ckeditor5-engine/src/model/delta/delta';
 import Operation from 'ckeditor5-engine/src/model/operation/operation';
 import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';

@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: browser-only */
 /* globals window */
 
 import XmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/xmldataprocessor';

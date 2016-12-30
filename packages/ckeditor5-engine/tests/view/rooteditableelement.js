@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view */
-
 import ContainerElement from 'ckeditor5-engine/src/view/containerelement';
 import EditableElement from 'ckeditor5-engine/src/view/editableelement';
 import RootEditableElement from 'ckeditor5-engine/src/view/rooteditableelement';

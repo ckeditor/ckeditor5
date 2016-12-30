@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view, browser-only */
-
 import { wrapPosition } from 'ckeditor5-engine/src/view/writer';
 import Text from 'ckeditor5-engine/src/view/text';
 import Element from 'ckeditor5-engine/src/view/element';

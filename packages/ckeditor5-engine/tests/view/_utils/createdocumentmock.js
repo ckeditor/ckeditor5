@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view */
-
 import ObservableMixin from 'ckeditor5-utils/src/observablemixin';
 import Selection from 'ckeditor5-engine/src/view/selection';
 

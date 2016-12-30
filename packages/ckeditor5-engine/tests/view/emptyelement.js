@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view */
-
 import EmptyElement from 'ckeditor5-engine/src/view/emptyelement';
 import Element from 'ckeditor5-engine/src/view/element';
 import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';

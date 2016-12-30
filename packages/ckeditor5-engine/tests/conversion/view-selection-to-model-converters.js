@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: conversion */
-
 import ViewDocument from 'ckeditor5-engine/src/view/document';
 import ViewSelection from 'ckeditor5-engine/src/view/selection';
 import ViewRange from 'ckeditor5-engine/src/view/range';

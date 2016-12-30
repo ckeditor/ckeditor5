@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view, browser-only */
-
 import Position from 'ckeditor5-engine/src/view/position';
 import Node from 'ckeditor5-engine/src/view/node';
 import Element from 'ckeditor5-engine/src/view/element';

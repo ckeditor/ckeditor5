@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, delta */
-
 import count from 'ckeditor5-utils/src/count';
 import Document from 'ckeditor5-engine/src/model/document';
 import Text from 'ckeditor5-engine/src/model/text';

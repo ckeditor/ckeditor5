@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, operation */
-
 import Document from 'ckeditor5-engine/src/model/document';
 import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
 import Position from 'ckeditor5-engine/src/model/position';

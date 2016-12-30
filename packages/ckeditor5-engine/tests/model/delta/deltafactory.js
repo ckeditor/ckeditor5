@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, delta */
-
 import Delta from 'ckeditor5-engine/src/model/delta/delta';
 import InsertDelta from 'ckeditor5-engine/src/model/delta/insertdelta';
 

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, operation */
-
 import transform from 'ckeditor5-engine/src/model/operation/transform';
 
 import Document from 'ckeditor5-engine/src/model/document';

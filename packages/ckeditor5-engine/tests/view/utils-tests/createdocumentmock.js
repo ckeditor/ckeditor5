@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view */
-
 import createDocumentMock from 'ckeditor5-engine/tests/view/_utils/createdocumentmock';
 
 describe( 'createDocumentMock', () => {

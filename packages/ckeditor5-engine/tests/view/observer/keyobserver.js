@@ -4,7 +4,6 @@
  */
 
 /* globals document */
-/* bender-tags: view, browser-only */
 
 import KeyObserver from 'ckeditor5-engine/src/view/observer/keyobserver';
 import ViewDocument from 'ckeditor5-engine/src/view/document';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view, browser-only */
-
 import { mergeAttributes } from 'ckeditor5-engine/src/view/writer';
 import ContainerElement from 'ckeditor5-engine/src/view/containerelement';
 import Text from 'ckeditor5-engine/src/view/text';

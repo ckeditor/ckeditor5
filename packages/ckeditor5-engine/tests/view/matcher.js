@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view */
-
 import Matcher from 'ckeditor5-engine/src/view/matcher';
 import Element from 'ckeditor5-engine/src/view/element';
 

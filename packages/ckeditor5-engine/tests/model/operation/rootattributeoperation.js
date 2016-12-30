@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, operation */
-
 import Document from 'ckeditor5-engine/src/model/document';
 import RootAttributeOperation from 'ckeditor5-engine/src/model/operation/rootattributeoperation';
 import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';

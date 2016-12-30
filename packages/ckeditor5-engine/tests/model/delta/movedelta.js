@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, delta */
-
 import { getNodesAndText } from 'ckeditor5-engine/tests/model/_utils/utils';
 import Document from 'ckeditor5-engine/src/model/document';
 import Position from 'ckeditor5-engine/src/model/position';

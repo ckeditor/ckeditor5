@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model */
-
 import Document from 'ckeditor5-engine/src/model/document';
 import DocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
 import Element from 'ckeditor5-engine/src/model/element';

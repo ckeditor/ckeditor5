@@ -4,7 +4,6 @@
  */
 
 /* globals Range, document */
-/* bender-tags: view, domconverter, browser-only */
 
 import ViewElement from 'ckeditor5-engine/src/view/element';
 import ViewRange from 'ckeditor5-engine/src/view/range';

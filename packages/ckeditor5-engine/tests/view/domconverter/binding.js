@@ -4,7 +4,6 @@
  */
 
 /* globals document */
-/* bender-tags: view, domconverter, browser-only */
 
 import ViewElement from 'ckeditor5-engine/src/view/element';
 import ViewSelection from 'ckeditor5-engine/src/view/selection';

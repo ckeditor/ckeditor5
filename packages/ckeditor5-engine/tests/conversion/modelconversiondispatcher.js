@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: conversion */
-
 import ModelConversionDispatcher from 'ckeditor5-engine/src/conversion/modelconversiondispatcher';
 import ModelDocument from 'ckeditor5-engine/src/model/document';
 import ModelText from 'ckeditor5-engine/src/model/text';

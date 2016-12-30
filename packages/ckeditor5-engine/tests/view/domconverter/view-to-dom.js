@@ -4,7 +4,6 @@
  */
 
 /* globals Range, DocumentFragment, HTMLElement, document, Text */
-/* bender-tags: view, domconverter, browser-only */
 
 import ViewText from 'ckeditor5-engine/src/view/text';
 import ViewElement from 'ckeditor5-engine/src/view/element';

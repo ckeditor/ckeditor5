@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view */
-
 import TextProxy from 'ckeditor5-engine/src/view/textproxy';
 import Text from 'ckeditor5-engine/src/view/text';
 import ContainerElement from 'ckeditor5-engine/src/view/containerelement';

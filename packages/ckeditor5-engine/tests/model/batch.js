@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, delta */
-
 import deltas from 'ckeditor5-engine/src/model/delta/basic-deltas'; // jshint ignore:line
 
 import Document from 'ckeditor5-engine/src/model/document';

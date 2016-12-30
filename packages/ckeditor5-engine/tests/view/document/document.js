@@ -4,7 +4,6 @@
  */
 
 /* globals document */
-/* bender-tags: view, browser-only */
 
 import createElement from 'ckeditor5-utils/src/dom/createelement';
 import Document from 'ckeditor5-engine/src/view/document';

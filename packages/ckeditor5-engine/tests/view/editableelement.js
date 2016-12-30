@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view */
-
 import createDocumentMock from 'ckeditor5-engine/tests/view/_utils/createdocumentmock';
 import RootEditableElement from 'ckeditor5-engine/src/view/rooteditableelement';
 import Range from 'ckeditor5-engine/src/view/range';

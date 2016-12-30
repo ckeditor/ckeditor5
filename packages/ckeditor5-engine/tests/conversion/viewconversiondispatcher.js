@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: conversion */
-
 import ViewConversionDispatcher from 'ckeditor5-engine/src/conversion/viewconversiondispatcher';
 import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
 import ViewAttributeElement from 'ckeditor5-engine/src/view/attributeelement';

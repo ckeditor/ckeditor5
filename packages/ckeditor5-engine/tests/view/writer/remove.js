@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view, browser-only */
-
 import { remove } from 'ckeditor5-engine/src/view/writer';
 import ContainerElement from 'ckeditor5-engine/src/view/containerelement';
 import Range from 'ckeditor5-engine/src/view/range';

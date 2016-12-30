@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view, browser-only */
-
 import { move } from 'ckeditor5-engine/src/view/writer';
 import ViewPosition from 'ckeditor5-engine/src/view/position';
 import { stringify, parse } from 'ckeditor5-engine/src/dev-utils/view';

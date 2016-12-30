@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view, browser-only */
-
 import AttributeElement from 'ckeditor5-engine/src/view/attributeelement';
 import Element from 'ckeditor5-engine/src/view/element';
 import { parse } from 'ckeditor5-engine/src/dev-utils/view';

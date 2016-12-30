@@ -4,7 +4,6 @@
  */
 
 /* globals document */
-/* bender-tags: view, browser-only */
 
 import DomEventData from 'ckeditor5-engine/src/view/observer/domeventdata';
 import ViewDocument from 'ckeditor5-engine/src/view/document';

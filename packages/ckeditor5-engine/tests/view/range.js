@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view */
-
 import Range from 'ckeditor5-engine/src/view/range';
 import Position from 'ckeditor5-engine/src/view/position';
 import Element from 'ckeditor5-engine/src/view/element';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: conversion */
-
 import ModelConsumable from 'ckeditor5-engine/src/conversion/modelconsumable';
 import ModelElement from 'ckeditor5-engine/src/model/element';
 import ModelTextProxy from 'ckeditor5-engine/src/model/textproxy';

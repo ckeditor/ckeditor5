@@ -4,7 +4,6 @@
  */
 
 /* globals document */
-/* bender-tags: view, browser-only */
 
 import ViewDocument from 'ckeditor5-engine/src/view/document';
 import MutationObserver from 'ckeditor5-engine/src/view/observer/mutationobserver';

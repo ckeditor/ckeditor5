@@ -4,7 +4,6 @@
  */
 
 /* globals document */
-/* bender-tags: view, domconverter */
 
 import DomConverter from 'ckeditor5-engine/src/view/domconverter';
 import ViewEditable from 'ckeditor5-engine/src/view/editableelement';

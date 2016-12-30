@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, operation */
-
 import transformations from 'ckeditor5-engine/src/model/delta/basic-transformations';
 /*jshint unused: false*/
 

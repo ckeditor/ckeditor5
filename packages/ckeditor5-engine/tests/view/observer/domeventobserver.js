@@ -4,7 +4,6 @@
  */
 
 /* globals MouseEvent, document */
-/* bender-tags: view, browser-only */
 
 import DomEventObserver from 'ckeditor5-engine/src/view/observer/domeventobserver';
 import Observer from 'ckeditor5-engine/src/view/observer/observer';
