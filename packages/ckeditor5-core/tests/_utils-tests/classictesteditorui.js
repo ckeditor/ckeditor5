@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: editor, browser-only */
-
 import ComponentFactory from 'ckeditor5-ui/src/componentfactory';
 import FocusTracker from 'ckeditor5-utils/src/focustracker';
 import ClassicTestEditorUI from 'ckeditor5-core/tests/_utils/classictesteditorui';

@@ -4,7 +4,6 @@
  */
 
 /* globals document */
-/* bender-tags: editor, browser-only */
 
 import StandardEditor from 'ckeditor5-core/src/editor/standardeditor';
 import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';

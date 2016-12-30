@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: editor */
-
 import Editor from 'ckeditor5-core/src/editor/editor';
 import Command from 'ckeditor5-core/src/command/command';
 import Locale from 'ckeditor5-utils/src/locale';

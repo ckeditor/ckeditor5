@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: browser-only */
-
 import testUtils from 'ckeditor5-core/tests/_utils/utils';
 import Editor from 'ckeditor5-core/src/editor/editor';
 import PluginCollection from 'ckeditor5-core/src/plugincollection';

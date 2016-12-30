@@ -4,7 +4,6 @@
  */
 
 /* globals setTimeout */
-/* bender-tags: editor, browser-only */
 
 import Editor from 'ckeditor5-core/src/editor/editor';
 import Plugin from 'ckeditor5-core/src/plugin';

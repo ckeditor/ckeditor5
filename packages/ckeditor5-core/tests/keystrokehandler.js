@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: browser-only */
-
 import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
 import KeystrokeHandler from 'ckeditor5-core/src/keystrokehandler';
 import { keyCodes } from 'ckeditor5-utils/src/keyboard';
