@@ -4,7 +4,6 @@
  */
 
 /* globals document */
-/* bender-tags: dom, browser-only */
 
 import remove from 'ckeditor5-utils/src/dom/remove';
 

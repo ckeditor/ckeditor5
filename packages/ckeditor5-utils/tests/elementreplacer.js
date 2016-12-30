@@ -4,7 +4,6 @@
  */
 
 /* globals document */
-/* bender-tags: browser-only */
 
 import ElementReplacer from 'ckeditor5-utils/src/elementreplacer';
 

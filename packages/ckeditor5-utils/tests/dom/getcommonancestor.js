@@ -4,7 +4,6 @@
  */
 
 /* globals document */
-/* bender-tags: dom, browser-only */
 
 import getCommonAncestor from 'ckeditor5-utils/src/dom/getcommonancestor';
 import createElement from 'ckeditor5-utils/src/dom/createelement';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: dom */
-
 import toUnit from 'ckeditor5-utils/src/dom/tounit';
 
 describe( 'toUnit', () => {
