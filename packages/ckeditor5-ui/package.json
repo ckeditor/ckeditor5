@@ -10,7 +10,7 @@
     "ckeditor5-utils": "ckeditor/ckeditor5-utils"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-lint": "^1.0.1",
+    "@ckeditor/ckeditor5-dev-lint": "^2.0.0",
     "ckeditor5-core": "ckeditor/ckeditor5-core",
     "del": "^2.2.0",
     "gulp": "^3.9.0",
