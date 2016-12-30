@@ -11,7 +11,6 @@ import Plugin from '../core/plugin.js';
 import ToolbarView from '../ui/toolbar/toolbarview.js';
 import BalloonPanelView from '../ui/balloonpanel/balloonpanelview.js';
 import Template from '../ui/template.js';
-import ClickObserver from 'ckeditor5/engine/view/observer/clickobserver.js';
 import { isImageWidget } from './utils.js';
 import throttle from '../utils/lib/lodash/throttle.js';
 import global from '../utils/dom/global.js';
@@ -95,8 +94,6 @@ export default class ImageToolbar extends Plugin {
 					panel.hide();
 				}
 			} );
-
-			editingView.addObserver( ClickObserver );
 
 			// Check if the toolbar should be displayed each time view is rendered.
 			editor.listenTo( editingView, 'render', () => {
