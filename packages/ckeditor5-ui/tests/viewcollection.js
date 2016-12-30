@@ -4,7 +4,6 @@
  */
 
 /* global document */
-/* bender-tags: ui */
 
 import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 import Collection from 'ckeditor5-utils/src/collection';

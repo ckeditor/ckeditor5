@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: ui */
-
 import Editor from 'ckeditor5-core/src/editor/editor';
 import ComponentFactory from 'ckeditor5-ui/src/componentfactory';
 import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';

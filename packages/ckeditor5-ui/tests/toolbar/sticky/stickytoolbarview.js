@@ -4,7 +4,6 @@
  */
 
 /* globals document */
-/* bender-tags: ui, toolbar */
 
 import global from 'ckeditor5-utils/src/dom/global';
 import testUtils from 'ckeditor5-core/tests/_utils/utils';

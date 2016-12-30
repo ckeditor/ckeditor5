@@ -4,7 +4,6 @@
  */
 
 /* globals document, Event */
-/* bender-tags: ui, dropdown */
 
 import Model from 'ckeditor5-ui/src/model';
 import createListDropdown from 'ckeditor5-ui/src/dropdown/list/createlistdropdown';

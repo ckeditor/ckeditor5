@@ -4,7 +4,6 @@
  */
 
 /* global window, document */
-/* bender-tags: ui, balloonPanel, browser-only */
 
 import global from 'ckeditor5-utils/src/dom/global';
 import ViewCollection from 'ckeditor5-ui/src/viewcollection';

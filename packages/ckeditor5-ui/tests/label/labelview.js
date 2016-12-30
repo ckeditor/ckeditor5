@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: ui, label */
-
 import LabelView from 'ckeditor5-ui/src/label/labelview';
 
 describe( 'LabelView', () => {

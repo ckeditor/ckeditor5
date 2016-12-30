@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: ui, list */
-
 import ViewCollection from 'ckeditor5-ui/src/viewcollection';
 import ListView from 'ckeditor5-ui/src/list/listview';
 

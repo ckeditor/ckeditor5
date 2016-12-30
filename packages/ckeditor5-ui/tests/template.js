@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: ui */
 /* globals HTMLElement, Event, document */
 
 import testUtils from 'ckeditor5-core/tests/_utils/utils';

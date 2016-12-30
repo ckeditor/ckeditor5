@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: ui */
-
 import Model from 'ckeditor5-ui/src/model';
 
 let Car, car;

@@ -4,7 +4,6 @@
  */
 
 /* global document, setTimeout, HTMLElement */
-/* bender-tags: ui */
 
 import testUtils from 'ckeditor5-core/tests/_utils/utils';
 import View from 'ckeditor5-ui/src/view';

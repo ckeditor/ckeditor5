@@ -4,7 +4,6 @@
  */
 
 /* globals Event */
-/* bender-tags: ui, button */
 
 import testUtils from 'ckeditor5-core/tests/_utils/utils';
 import ButtonView from 'ckeditor5-ui/src/button/buttonview';

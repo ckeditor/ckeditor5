@@ -4,7 +4,6 @@
  */
 
 /* globals Event */
-/* bender-tags: ui, list */
 
 import ListItemView from 'ckeditor5-ui/src/list/listitemview';
 

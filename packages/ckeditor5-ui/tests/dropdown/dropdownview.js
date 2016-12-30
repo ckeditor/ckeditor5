@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: ui, dropdown */
-
 import DropdownView from 'ckeditor5-ui/src/dropdown/dropdownview';
 import ButtonView from 'ckeditor5-ui/src/button/buttonview';
 import DropdownPanelView from 'ckeditor5-ui/src/dropdown/dropdownpanelview';

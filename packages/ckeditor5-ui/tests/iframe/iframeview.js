@@ -4,7 +4,6 @@
  */
 
 /* globals document */
-/* bender-tags: ui, iframe */
 
 import IframeView from 'ckeditor5-ui/src/iframe/iframeview';
 

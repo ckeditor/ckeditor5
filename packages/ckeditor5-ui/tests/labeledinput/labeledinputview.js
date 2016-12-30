@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: ui, input */
-
 import LabeledInputView from 'ckeditor5-ui/src/labeledinput/labeledinputview';
 import InputView from 'ckeditor5-ui/src/inputtext/inputtextview';
 import LabelView from 'ckeditor5-ui/src/label/labelview';

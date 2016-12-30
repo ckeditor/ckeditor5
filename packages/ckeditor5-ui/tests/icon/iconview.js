@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: ui, icon */
-
 import IconView from 'ckeditor5-ui/src/icon/iconview';
 
 describe( 'IconView', () => {

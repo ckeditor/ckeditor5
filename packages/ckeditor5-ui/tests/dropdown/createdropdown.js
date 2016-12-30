@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: ui, dropdown */
-
 import utilsTestUtils from 'ckeditor5-utils/tests/_utils/utils';
 import createDropdown from 'ckeditor5-ui/src/dropdown/createdropdown';
 import Model from 'ckeditor5-ui/src/model';

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: ui, toolbar */
-
 import ToolbarView from 'ckeditor5-ui/src/toolbar/toolbarview';
 import ViewCollection from 'ckeditor5-ui/src/viewcollection';
 
