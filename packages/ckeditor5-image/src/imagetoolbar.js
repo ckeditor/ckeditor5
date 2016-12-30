@@ -95,10 +95,11 @@ export default class ImageToolbar extends Plugin {
 				}
 			} );
 
+			const attachToolbarCallback = throttle( attachToolbar, 100 );
+
 			// Check if the toolbar should be displayed each time view is rendered.
 			editor.listenTo( editingView, 'render', () => {
 				const selectedElement = editingView.selection.getSelectedElement();
-				const attachToolbarCallback = throttle( attachToolbar, 100 );
 
 				if ( selectedElement && isImageWidget( selectedElement ) ) {
 					attachToolbar();
