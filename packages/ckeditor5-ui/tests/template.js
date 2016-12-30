@@ -484,6 +484,30 @@ describe( 'Template', () => {
 
 				expect( collection._parentElement ).to.equal( rendered );
 			} );
+
+			it( 'renders template children', () => {
+				const childTplA = new Template( {
+					tag: 'a'
+				} );
+
+				const childTplB = new Template( {
+					tag: 'b'
+				} );
+
+				const tpl = new Template( {
+					tag: 'p',
+					children: [
+						childTplA,
+						childTplB
+					]
+				} );
+
+				// Make sure child instances weren't cloned.
+				expect( tpl.children.get( 0 ) ).to.equal( childTplA );
+				expect( tpl.children.get( 1 ) ).to.equal( childTplB );
+
+				expect( normalizeHtml( tpl.render().outerHTML ) ).to.equal( '<p><a></a><b></b></p>' );
+			} );
 		} );
 
 		describe( 'bindings', () => {
