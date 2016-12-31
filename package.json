@@ -24,27 +24,23 @@
     "ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark",
     "ckeditor5-typing": "ckeditor/ckeditor5-typing",
     "ckeditor5-ui": "ckeditor/ckeditor5-ui",
-    "ckeditor5-ui-default": "ckeditor/ckeditor5-ui-default",
     "ckeditor5-undo": "ckeditor/ckeditor5-undo",
     "ckeditor5-utils": "ckeditor/ckeditor5-utils"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-bundler-rollup": "^5.0.0",
-    "@ckeditor/ckeditor5-dev-compiler": "^6.0.0",
-    "@ckeditor/ckeditor5-dev-docs": "^5.0.0",
-    "@ckeditor/ckeditor5-dev-env": "^1.0.0",
-    "@ckeditor/ckeditor5-dev-lint": "^1.0.1",
-    "@ckeditor/ckeditor5-dev-tests": "^3.1.0",
+    "@ckeditor/ckeditor5-dev-docs": "^6.0.0",
+    "@ckeditor/ckeditor5-dev-env": "^2.0.0",
+    "@ckeditor/ckeditor5-dev-lint": "^2.0.0",
+    "@ckeditor/ckeditor5-dev-tests": "^4.0.0",
     "gulp": "^3.9.0",
-    "guppy-pre-commit": "^0.4.0",
-    "run-sequence": "^1.1.5"
+    "guppy-pre-commit": "^0.4.0"
   },
   "engines": {
     "node": ">=6.0.0",
     "npm": ">=3.0.0"
   },
   "author": "CKSource (http://cksource.com/)",
-  "license": "See LICENSE.md",
+  "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
   "homepage": "http://ckeditor.com",
   "bugs": "https://github.com/ckeditor/ckeditor5/issues",
   "repository": {

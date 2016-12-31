@@ -1,4 +1,5 @@
 {
+  "node": true,
   "esnext": true,
   "immed": true,
   "loopfunc": true,
@@ -6,6 +7,6 @@
   "nonbsp": true,
   "undef": true,
   "unused": true,
-  "strict": "implied",
+  "strict": true,
   "varstmt": true
 }
