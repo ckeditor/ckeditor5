@@ -81,7 +81,7 @@ describe( 'Undo', () => {
 			it( 'should create UI component with correct attribute values', () => {
 				expect( button.isOn ).to.be.false;
 				expect( button.label ).to.equal( label );
-				expect( button.icon ).to.equal( featureName );
+				expect( button.icon ).to.match( /<svg / );
 				expect( button.keystroke ).to.equal( featureKeystroke );
 			} );
 
