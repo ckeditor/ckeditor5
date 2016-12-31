@@ -47,7 +47,7 @@ describe( 'Italic', () => {
 		expect( italicView ).to.be.instanceOf( ButtonView );
 		expect( italicView.isOn ).to.be.false;
 		expect( italicView.label ).to.equal( 'Italic' );
-		expect( italicView.icon ).to.equal( 'italic' );
+		expect( italicView.icon ).to.match( /<svg / );
 		expect( italicView.keystroke ).to.equal( 'CTRL+I' );
 	} );
 

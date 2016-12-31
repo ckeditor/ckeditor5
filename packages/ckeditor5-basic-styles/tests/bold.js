@@ -47,7 +47,7 @@ describe( 'Bold', () => {
 		expect( boldView ).to.be.instanceOf( ButtonView );
 		expect( boldView.isOn ).to.be.false;
 		expect( boldView.label ).to.equal( 'Bold' );
-		expect( boldView.icon ).to.equal( 'bold' );
+		expect( boldView.icon ).to.match( /<svg / );
 		expect( boldView.keystroke ).to.equal( 'CTRL+B' );
 	} );
 
