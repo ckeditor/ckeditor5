@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>CKEditor library splitting</title>
+</head>
+<body>
+
+<div id="editor">
+	<p><em>This</em> is an <strong>editor</strong> instance.</p>
+</div>
+
+<script src="./dist/ClassicEditor.ckeditor.js"></script>
+<script src="./dist/CKEditorPresetBasic.ckeditor.js"></script>
+<script src="./dist/CKEditorList.ckeditor.js"></script>
+<script src="./dist/CKEditorLink.ckeditor.js"></script>
+<script src="./dist/CKEditorHeading.ckeditor.js"></script>
+<script>
+	'use strict';
+
+	ClassicEditor.default.create( document.querySelector( '#editor' ), {
+		plugins: [ CKEditorPresetBasic.default, CKEditorList.default, CKEditorLink.default, CKEditorHeading.default, ],
+		toolbar: [ 'undo', 'redo', 'headings', 'bulletedList', 'numberedList', 'link', 'bold', 'italic' ]
+	} ).then( editor => {
+		window.editor = editor;
+	} ).catch( err => {
+		console.error( err.stack );
+	} );
+</script>
+
+</body>
+</html>
