@@ -10,6 +10,7 @@
 import Plugin from 'ckeditor5-core/src/plugin';
 import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
 import WidgetEngine from './widget/widgetengine';
+import ImageAlternateTextCommand from './imagealternatetextcommand.js';
 import { modelToViewImage, viewToModelImage, modelToViewSelection } from './converters';
 import { toImageWidget } from './utils';
 
@@ -18,7 +19,7 @@ import { toImageWidget } from './utils';
  * Registers `image` as a block element in document's schema and allows it to have two attributes: `src` and `alt`.
  * Registers converters for editing and data pipelines.
  *
- * @extends module:core/plugin~Plugin.
+ * @extends module:core/plugin~Plugin
  */
 export default class ImageEngine extends Plugin {
 	/**
@@ -59,5 +60,8 @@ export default class ImageEngine extends Plugin {
 
 		// Creates fake selection label if selection is placed around image widget.
 		editing.modelToView.on( 'selection', modelToViewSelection( editor.t ), { priority: 'lowest' } );
+
+		// Register ImageAlternateTextCommand.
+		editor.commands.set( 'imageAlternateText', new ImageAlternateTextCommand( editor ) );
 	}
 }
