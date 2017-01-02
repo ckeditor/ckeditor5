@@ -13,11 +13,10 @@ import HeadingPlugin from 'ckeditor5-heading/src/heading';
 import ImagePlugin from 'ckeditor5-image/src/image';
 import UndoPlugin from 'ckeditor5-undo/src/undo';
 import ClipboardPlugin from 'ckeditor5-clipboard/src/clipboard';
-import ImageStyle from 'ckeditor5-image/src/imagestyle/imagestyle';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin, ImageStyle ],
-	toolbar: [ 'headings', 'undo', 'redo', 'imagestyle' ]
+	plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin ],
+	toolbar: [ 'headings', 'undo', 'redo' ]
 } )
 .then( editor => {
 	window.editor = editor;

@@ -7,7 +7,7 @@
  * @module image/imagestyle/utils
  */
 
-import ModelElement from '../../engine/model/element.js';
+import ModelElement from 'ckeditor5-engine/src/model/element';
 
 /**
  * Checks if provided modelElement is an instance of {@link module:engine/model/element~Element Element} and its name

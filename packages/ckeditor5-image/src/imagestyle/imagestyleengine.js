@@ -7,10 +7,12 @@
  * @module image/imagestyle/imagestyleengine
  */
 
-import Plugin from '../../core/plugin.js';
-import ImageStyleCommand from './imagestylecommand.js';
-import ImageEngine from '../imageengine.js';
-import { viewToModelImageStyle, modelToViewSetStyle } from './converters.js';
+import Plugin from 'ckeditor5-core/src/plugin';
+import ImageStyleCommand from './imagestylecommand';
+import ImageEngine from '../imageengine';
+import { viewToModelImageStyle, modelToViewSetStyle } from './converters';
+import fullSizeIcon from 'ckeditor5-core/theme/icons/align-center.svg';
+import sideIcon from 'ckeditor5-core/theme/icons/align-right.svg';
 
 /**
  * The image style engine plugin. Sets default configuration, creates converters and registers
@@ -39,10 +41,10 @@ export default class ImageStyleEngine extends Plugin {
 		// Define default configuration.
 		editor.config.define( 'image.styles', [
 			// This option is equal to situation when no style is applied.
-			{ name: 'imageStyleFull', title: 'Full size image', icon: 'object-center', value: null },
+			{ name: 'imageStyleFull', title: 'Full size image', icon: fullSizeIcon, value: null },
 
 			// This represents side image.
-			{ name: 'imageStyleSide', title: 'Side image', icon: 'object-right', value: 'side', className: 'image-style-side' }
+			{ name: 'imageStyleSide', title: 'Side image', icon: sideIcon, value: 'side', className: 'image-style-side' }
 		] );
 
 		// Get configuration.
@@ -82,7 +84,7 @@ export default class ImageStyleEngine extends Plugin {
  * {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
  * @property {String} value Value used to store this style in model attribute.
  * When value is `null` style will be used as default one. Default style does not apply any CSS class to the view element.
- * @property {String} icon Icon name to use when creating style's toolbar button.
+ * @property {String} icon SVG icon representation to use when creating style's button.
  * @property {String} title Style's title.
  * @property {String} className CSS class used to represent style in view.
  */

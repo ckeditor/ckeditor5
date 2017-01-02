@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from 'tests/core/_utils/modeltesteditor.js';
-import ImageStyleCommand from 'ckeditor5/image/imagestyle/imagestylecommand.js';
-import { setData, getData } from 'ckeditor5/engine/dev-utils/model.js';
+import ModelTestEditor from 'ckeditor5-core/tests/_utils/modeltesteditor';
+import ImageStyleCommand from 'ckeditor5-image/src/imagestyle/imagestylecommand';
+import { setData, getData } from 'ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageStyleCommand', () => {
 	const styles = [

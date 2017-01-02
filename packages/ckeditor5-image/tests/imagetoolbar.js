@@ -5,14 +5,14 @@
 
 /* global Event */
 
-import ClassicEditor from 'ckeditor5/editor-classic/classic.js';
-import ImageToolbar from 'ckeditor5/image/imagetoolbar.js';
-import Image from 'ckeditor5/image/image.js';
-import global from 'ckeditor5/utils/dom/global.js';
-import BalloonPanelView from 'ckeditor5/ui/balloonpanel/balloonpanelview.js';
-import Plugin from 'ckeditor5/core/plugin.js';
-import ButtonView from 'ckeditor5/ui/button/buttonview.js';
-import { setData } from 'ckeditor5/engine/dev-utils/model.js';
+import ClassicEditor from 'ckeditor5-editor-classic/src/classic';
+import ImageToolbar from 'ckeditor5-image/src/imagetoolbar';
+import Image from 'ckeditor5-image/src/image';
+import global from 'ckeditor5-utils/src/dom/global';
+import BalloonPanelView from 'ckeditor5-ui/src/balloonpanel/balloonpanelview';
+import Plugin from 'ckeditor5-core/src/plugin';
+import ButtonView from 'ckeditor5-ui/src/button/buttonview';
+import { setData } from 'ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageToolbar', () => {
 	let editor, button, editingView, doc, panel;

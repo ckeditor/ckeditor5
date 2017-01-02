@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import ClassicTestEditor from 'tests/core/_utils/classictesteditor.js';
-import ImageStyle from 'ckeditor5/image/imagestyle/imagestyle.js';
-import ImageStyleEngine from 'ckeditor5/image/imagestyle/imagestyleengine.js';
-import ButtonView from 'ckeditor5/ui/button/buttonview.js';
-import global from 'ckeditor5/utils/dom/global.js';
+import ClassicTestEditor from 'ckeditor5-core/tests/_utils/classictesteditor';
+import ImageStyle from 'ckeditor5-image/src/imagestyle/imagestyle';
+import ImageStyleEngine from 'ckeditor5-image/src/imagestyle/imagestyleengine';
+import ButtonView from 'ckeditor5-ui/src/button/buttonview';
+import global from 'ckeditor5-utils/src/dom/global';
 
 describe( 'ImageStyle', () => {
 	let editor;

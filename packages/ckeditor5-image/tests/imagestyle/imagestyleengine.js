@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualTestEditor from 'tests/core/_utils/virtualtesteditor.js';
-import ImageStyleEngine from 'ckeditor5/image/imagestyle/imagestyleengine.js';
-import ImageEngine from 'ckeditor5/image/imageengine.js';
-import ImageStyleCommand from 'ckeditor5/image/imagestyle/imagestylecommand.js';
-import { getData as getModelData, setData as setModelData } from 'ckeditor5/engine/dev-utils/model.js';
-import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
+import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
+import ImageStyleEngine from 'ckeditor5-image/src/imagestyle/imagestyleengine';
+import ImageEngine from 'ckeditor5-image/src/imageengine';
+import ImageStyleCommand from 'ckeditor5-image/src/imagestyle/imagestylecommand';
+import { getData as getModelData, setData as setModelData } from 'ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from 'ckeditor5-engine/src/dev-utils/view';
 
 describe( 'ImageStyleEngine', () => {
 	let editor, document, viewDocument;

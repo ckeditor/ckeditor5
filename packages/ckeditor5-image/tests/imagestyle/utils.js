@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import { isImage, getStyleByValue } from 'ckeditor5/image/imagestyle/utils.js';
-import ModelElement from 'ckeditor5/engine/model/element.js';
+import { isImage, getStyleByValue } from 'ckeditor5-image/src/imagestyle/utils';
+import ModelElement from 'ckeditor5-engine/src/model/element';
 
 describe( 'ImageStyle utils', () => {
 	describe( 'isImage', () => {

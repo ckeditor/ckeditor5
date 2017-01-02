@@ -7,7 +7,7 @@
  * @module image/imagestyle/converters
  */
 
-import { isImage, getStyleByValue } from './utils.js';
+import { isImage, getStyleByValue } from './utils';
 
 /**
  * Returns converter for `imageStyle` attribute. It can be used for adding, changing and removing the attribute.

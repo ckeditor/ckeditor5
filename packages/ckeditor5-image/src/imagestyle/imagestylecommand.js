@@ -7,8 +7,8 @@
  * @module image/imagestyle/imagestylecommand
  */
 
-import Command from '../../core/command/command.js';
-import { isImage, getStyleByValue } from './utils.js';
+import Command from 'ckeditor5-core/src/command/command';
+import { isImage, getStyleByValue } from './utils';
 
 /**
  * The image style command. It is used to apply different image styles.
