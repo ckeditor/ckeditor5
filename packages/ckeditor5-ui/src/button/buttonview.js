@@ -45,16 +45,15 @@ export default class ButtonView extends View {
 		/**
 		 * (Optional) Tooltip of the button, i.e. displayed when hovering the button with the mouse cursor.
 		 *
-		 *   * If defined as a `Boolean` (e.g. `true`), then combination of `label` and `keystroke` will be set as tooltip.
-		 *   * If defined as a `String`, tooltip will equal the exact text of that `String`.
-		 *   * If defined as a `Function`, `label` and `keystroke` will be passed to that function, which is to return
-		 *     a string with the tooltip text.
+		 * * If defined as a `Boolean` (e.g. `true`), then combination of `label` and `keystroke` will be set as a tooltip.
+		 * * If defined as a `String`, tooltip will equal the exact text of that `String`.
+		 * * If defined as a `Function`, `label` and `keystroke` will be passed to that function, which is to return
+		 * a string with the tooltip text.
 		 *
 		 *		const view = new ButtonView( locale );
 		 *		view.tooltip = ( label, keystroke ) => `A tooltip for ${ label } and ${ keystroke }.`
 		 *
 		 * @observable
-		 * @see #_tooltipString
 		 * @member {Boolean|String|Function} #tooltip
 		 */
 		this.set( 'tooltip' );
@@ -109,7 +108,12 @@ export default class ButtonView extends View {
 		 * @observable
 		 * @member {Boolean} #_tooltipString
 		 */
-		this.bind( '_tooltipString' ).to( this, 'tooltip', this, 'label', this, 'keystroke', this._getTooltipString.bind( this ) );
+		this.bind( '_tooltipString' ).to(
+			this, 'tooltip',
+			this, 'label',
+			this, 'keystroke',
+			this._getTooltipString.bind( this )
+		);
 
 		/**
 		 * Icon of the button view.
@@ -213,7 +217,7 @@ export default class ButtonView extends View {
 	 */
 	_getTooltipString( tooltip, label, keystroke ) {
 		if ( tooltip ) {
-			if ( typeof tooltip === 'string' ) {
+			if ( typeof tooltip == 'string' ) {
 				return tooltip;
 			} else {
 				if ( keystroke ) {
