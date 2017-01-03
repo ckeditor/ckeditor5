@@ -34,10 +34,12 @@ export default class ImageAlternateText extends Plugin {
 		// TODO: Register ImageAlternateTextCommand in engine part.
 		this.editor.commands.set( 'imageAlternateText', new ImageAlternateTextCommand( this.editor ) );
 
-		// TODO: this returns promise too.
-		this._createAlternateTextChangeButton();
+		// TODO: docs for this._panel and this._form.
 
-		return this._createAlternateTextBalloonPanel();
+		return Promise.all( [
+			this._createButton(),
+			this._createBalloonPanel()
+		] );
 	}
 
 	/**
@@ -46,7 +48,7 @@ export default class ImageAlternateText extends Plugin {
 	 *
 	 * @private
 	 */
-	_createAlternateTextChangeButton() {
+	_createButton() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'imageAlternateText' );
 		const t = editor.t;
@@ -61,30 +63,30 @@ export default class ImageAlternateText extends Plugin {
 
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
-			this.listenTo( view, 'execute', () => this._showAlternateTextChangePanel() );
+			this.listenTo( view, 'execute', () => this._showBalloonPanel() );
 
 			return view;
 		} );
 	}
 
-	_createAlternateTextBalloonPanel() {
+	_createBalloonPanel() {
 		const editor = this.editor;
 
 		const panel = new ImageBalloonPanel( editor );
-		const form = this._alternateTextForm = new AlternateTextFormView( editor.locale );
+		const form = this._form = new AlternateTextFormView( editor.locale );
 
 		this.listenTo( form, 'submit', () => {
 			editor.execute( 'imageAlternateText', form.alternateTextInput.value );
-			this._hideAlternateTextChangePanel();
+			this._hideBalloonPanel();
 		} );
 
-		this.listenTo( form, 'cancel', () => this._hideAlternateTextChangePanel() );
+		this.listenTo( form, 'cancel', () => this._hideBalloonPanel() );
 
 		// Close on `ESC` press.
 		escPressHandler( {
 			emitter: panel,
 			activator: () => panel.isVisible,
-			callback: () => this._hideAlternateTextChangePanel()
+			callback: () => this._hideBalloonPanel()
 		} );
 
 		// Close on click outside of balloon panel element.
@@ -92,18 +94,18 @@ export default class ImageAlternateText extends Plugin {
 			emitter: panel,
 			activator: () => panel.isVisible,
 			contextElement: panel.element,
-			callback: () => this._hideAlternateTextChangePanel()
+			callback: () => this._hideBalloonPanel()
 		} );
 
-		this.panel = panel;
+		this._panel = panel;
 
 		return Promise.all( [
-			panel.content.add( this._alternateTextForm ),
+			panel.content.add( this._form ),
 			editor.ui.view.body.add( panel )
 		] );
 	}
 
-	_showAlternateTextChangePanel() {
+	_showBalloonPanel() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'imageAlternateText' );
 		const imageToolbar = editor.plugins.get( ImageToolbar );
@@ -112,14 +114,14 @@ export default class ImageAlternateText extends Plugin {
 			imageToolbar.hide();
 		}
 
-		this._alternateTextForm.alternateTextInput.value = command.value || '';
-		this._alternateTextForm.alternateTextInput.select();
-		this.panel.attach();
+		this._form.alternateTextInput.value = command.value || '';
+		this._form.alternateTextInput.select();
+		this._panel.attach();
 	}
 
-	_hideAlternateTextChangePanel() {
+	_hideBalloonPanel() {
 		const editor = this.editor;
-		this.panel.hide();
+		this._panel.hide();
 		editor.editing.view.focus();
 
 		const imageToolbar = editor.plugins.get( ImageToolbar );
