@@ -18,7 +18,8 @@ describe( 'createDropdown', () => {
 			label: 'foo',
 			isOn: false,
 			isEnabled: true,
-			withText: false
+			withText: false,
+			tooltip: false
 		};
 
 		const model = new Model( modelDef );
@@ -27,9 +28,9 @@ describe( 'createDropdown', () => {
 		assertBinding( view.buttonView,
 			modelDef,
 			[
-				[ model, { label: 'bar', isOn: true, isEnabled: false, withText: true } ]
+				[ model, { label: 'bar', isOn: true, isEnabled: false, withText: true, tooltip: true } ]
 			],
-			{ label: 'bar', isOn: true, isEnabled: false, withText: true }
+			{ label: 'bar', isOn: true, isEnabled: false, withText: true, tooltip: true }
 		);
 	} );
 

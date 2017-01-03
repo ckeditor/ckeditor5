@@ -23,10 +23,9 @@ describe( 'ButtonView', () => {
 	describe( '<button> bindings', () => {
 		describe( 'class', () => {
 			it( 'is set initially', () => {
-				expect( view.element.classList ).to.have.length( 4 );
+				expect( view.element.classList ).to.have.length( 3 );
 				expect( view.element.classList.contains( 'ck-button' ) ).to.true;
 				expect( view.element.classList.contains( 'ck-off' ) ).to.true;
-				expect( view.element.classList.contains( 'ck-tooltip_s' ) ).to.true;
 			} );
 
 			it( 'reacts on view#isEnabled', () => {
@@ -67,29 +66,93 @@ describe( 'ButtonView', () => {
 		} );
 
 		describe( 'tooltip', () => {
-			it( 'is not initially set ', () => {
+			it( 'is not initially set', () => {
 				expect( view.element.dataset.ckTooltip ).to.undefined;
 			} );
 
-			it( 'is always equal to view#title if is defined', () => {
-				view.title = 'bar';
+			it( 'is not initially set (despite #label and #keystroke)', () => {
 				view.label = 'foo';
 				view.keystroke = 'A';
 
-				expect( view.element.dataset.ckTooltip ).to.equal( 'bar' );
+				expect( view.element.dataset.ckTooltip ).to.undefined;
 			} );
 
-			it( 'is equal to view#label when view#title is not defined', () => {
-				view.label = 'bar';
-
-				expect( view.element.dataset.ckTooltip ).to.equal( 'bar' );
-			} );
-
-			it( 'contains keystroke when view#label and view#keystroke is defined', () => {
-				view.label = 'bar';
+			it( 'is not set if neither `true`, String or Function', () => {
+				view.label = 'foo';
 				view.keystroke = 'A';
+				view.tooltip = false;
 
-				expect( view.element.dataset.ckTooltip ).to.equal( 'bar (A)' );
+				expect( view.element.dataset.ckTooltip ).to.undefined;
+
+				view.tooltip = 3;
+				expect( view.element.dataset.ckTooltip ).to.undefined;
+
+				view.tooltip = new Date();
+				expect( view.element.dataset.ckTooltip ).to.undefined;
+			} );
+
+			describe( 'defined as a Boolean', () => {
+				it( 'renders tooltip text out of #label and #keystroke', () => {
+					view.tooltip = true;
+					view.label = 'bar';
+					view.keystroke = 'A';
+
+					expect( view.element.dataset.ckTooltip ).to.equal( 'bar (A)' );
+				} );
+
+				it( 'reacts to changes in #label and #keystroke', () => {
+					view.tooltip = true;
+					view.label = 'foo';
+					view.keystroke = 'B';
+
+					expect( view.element.dataset.ckTooltip ).to.equal( 'foo (B)' );
+
+					view.label = 'baz';
+					view.keystroke = false;
+
+					expect( view.element.dataset.ckTooltip ).to.equal( 'baz' );
+				} );
+			} );
+
+			describe( 'defined as a String', () => {
+				it( 'renders as a plain text', () => {
+					view.tooltip = 'bar';
+					view.label = 'foo';
+					view.keystroke = 'A';
+
+					expect( view.element.dataset.ckTooltip ).to.equal( 'bar' );
+				} );
+
+				it( 'reacts to changes of #tooltip', () => {
+					view.tooltip = 'bar';
+					expect( view.element.dataset.ckTooltip ).to.equal( 'bar' );
+
+					view.tooltip = 'foo';
+					expect( view.element.dataset.ckTooltip ).to.equal( 'foo' );
+				} );
+			} );
+
+			describe( 'defined as a Function', () => {
+				it( 'generates a tooltip text when passed #label and #keystroke', () => {
+					view.tooltip = ( l, k ) => `${ l } - ${ k }`;
+					view.label = 'foo';
+					view.keystroke = 'A';
+
+					expect( view.element.dataset.ckTooltip ).to.equal( 'foo - A' );
+				} );
+
+				it( 'reacts to changes of #label and #keystroke', () => {
+					view.tooltip = ( l, k ) => `${ l } - ${ k }`;
+					view.label = 'foo';
+					view.keystroke = 'A';
+
+					expect( view.element.dataset.ckTooltip ).to.equal( 'foo - A' );
+
+					view.label = 'bar';
+					view.keystroke = 'B';
+
+					expect( view.element.dataset.ckTooltip ).to.equal( 'bar - B' );
+				} );
 			} );
 		} );
 
