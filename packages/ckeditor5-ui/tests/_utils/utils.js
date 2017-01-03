@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import View from 'ckeditor5/ui/view.js';
+import View from 'ckeditor5-ui/src/view';
 
 /**
  * Test utils for CKEditor UI.

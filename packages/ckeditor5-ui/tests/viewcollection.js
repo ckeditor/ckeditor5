@@ -4,15 +4,14 @@
  */
 
 /* global document */
-/* bender-tags: ui */
 
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
-import Collection from 'ckeditor5/utils/collection.js';
-import testUtils from 'tests/core/_utils/utils.js';
-import View from 'ckeditor5/ui/view.js';
-import ViewCollection from 'ckeditor5/ui/viewcollection.js';
-import Template from 'ckeditor5/ui/template.js';
-import normalizeHtml from 'tests/utils/_utils/normalizehtml.js';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Collection from 'ckeditor5-utils/src/collection';
+import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import View from 'ckeditor5-ui/src/view';
+import ViewCollection from 'ckeditor5-ui/src/viewcollection';
+import Template from 'ckeditor5-ui/src/template';
+import normalizeHtml from 'ckeditor5-utils/tests/_utils/normalizehtml';
 
 let collection;
 

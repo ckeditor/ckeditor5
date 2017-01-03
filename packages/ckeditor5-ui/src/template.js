@@ -9,14 +9,14 @@
 
 /* global document */
 
-import CKEditorError from '../utils/ckeditorerror.js';
-import mix from '../utils/mix.js';
-import EmitterMixin from '../utils/emittermixin.js';
-import Collection from '../utils/collection.js';
-import View from './view.js';
-import ViewCollection from './viewcollection.js';
-import cloneDeepWith from '../utils/lib/lodash/cloneDeepWith.js';
-import isObject from '../utils/lib/lodash/isObject.js';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import mix from 'ckeditor5-utils/src/mix';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import Collection from 'ckeditor5-utils/src/collection';
+import View from './view';
+import ViewCollection from './viewcollection';
+import cloneDeepWith from 'ckeditor5-utils/src/lib/lodash/cloneDeepWith';
+import isObject from 'ckeditor5-utils/src/lib/lodash/isObject';
 
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 

@@ -7,9 +7,9 @@
  * @module ui/model
  */
 
-import extend from '../utils/lib/lodash/extend.js';
-import mix from '../utils/mix.js';
-import ObservableMixin from '../utils/observablemixin.js';
+import extend from 'ckeditor5-utils/src/lib/lodash/extend';
+import mix from 'ckeditor5-utils/src/mix';
+import ObservableMixin from 'ckeditor5-utils/src/observablemixin';
 
 /**
  * The base MVC model class.
