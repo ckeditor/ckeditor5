@@ -784,10 +784,13 @@ function clone( def ) {
 		// cloneDeepWith algorithm. There's no point in cloning Observable/DomEmitterMixins
 		// along with the definition.
 		//
+		// Don't clone Template instances if provided as a child. They're simply #render()ed
+		// and nothing should interfere.
+		//
 		// Also don't clone View instances if provided as a child of the Template. The template
 		// instance will be extracted from the View during the normalization and there's no need
 		// to clone it.
-		if ( value && ( value instanceof TemplateBinding || isView( value ) || isViewCollection( value ) ) ) {
+		if ( value && ( value instanceof TemplateBinding || isTemplate( value ) || isView( value ) || isViewCollection( value ) ) ) {
 			return value;
 		}
 	} );
@@ -831,7 +834,7 @@ function normalize( def ) {
 				children.add( def.children );
 			} else {
 				for ( let child of def.children ) {
-					if ( isView( child ) ) {
+					if ( isTemplate( child ) || isView( child ) ) {
 						children.add( child );
 					} else {
 						children.add( new Template( child ) );
@@ -1063,6 +1066,14 @@ function isView( item ) {
 	return item instanceof View;
 }
 
+// Checks if the item is an instance of {@link module:ui/template~Template}
+//
+// @private
+// @param {*} value Value to be checked.
+function isTemplate( item ) {
+	return item instanceof Template;
+}
+
 // Checks if the item is an instance of {@link module:ui/viewcollection~ViewCollection}
 //
 // @private
@@ -1089,6 +1100,7 @@ function isViewCollection( item ) {
  *				},
  *				'also-static–text',
  *				<{@link module:ui/view~View} instance>
+ *				<{@link module:ui/template~Template} instance>
  *				...
  *			],
  *			attributes: {

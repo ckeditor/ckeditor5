@@ -483,6 +483,77 @@ describe( 'Template', () => {
 
 				expect( collection._parentElement ).to.equal( rendered );
 			} );
+
+			// #117
+			it( 'renders template children', () => {
+				const childTplA = new Template( {
+					tag: 'a'
+				} );
+
+				const childTplB = new Template( {
+					tag: 'b'
+				} );
+
+				const view = new View();
+
+				view.set( {
+					foo: 'bar',
+					bar: 'foo'
+				} );
+
+				const bind = Template.bind( view, view );
+
+				// Yes, this TC is crazy in some sort of way. It's all about template
+				// normalization and deep cloning and the like.
+				//
+				// To **really** prove the code is safe there must be a View instance,
+				// which has some child bound to its attribute and... there must be a
+				// Template instance (below), which also has a child bound to the same attribute.
+				//
+				// I know, the view instance and its template aren't even rendered.
+				//
+				// The truth is that madness behind this test case is so deep there are no
+				// words to explain it. But what actually matters is that it proves the Template
+				// class is free of "Maximum call stack size exceeded" error in certain
+				// situations.
+				view.template = new Template( {
+					tag: 'span',
+
+					children: [
+						{
+							text: bind.to( 'bar' )
+						}
+					]
+				} );
+
+				const childTplC = new Template( {
+					tag: 'i',
+
+					children: [
+						{
+							text: bind.to( 'bar' )
+						}
+					]
+				} );
+
+				const tpl = new Template( {
+					tag: 'p',
+					children: [
+						childTplA,
+						childTplB,
+						childTplC
+					]
+				} );
+
+				// Make sure child instances weren't cloned.
+				expect( tpl.children.get( 0 ) ).to.equal( childTplA );
+				expect( tpl.children.get( 1 ) ).to.equal( childTplB );
+				expect( tpl.children.get( 2 ) ).to.equal( childTplC );
+
+				expect( normalizeHtml( tpl.render().outerHTML ) ).to.equal(
+					'<p><a></a><b></b><i>foo</i></p>'
+				);
+			} );
 		} );
 
 		describe( 'bindings', () => {
