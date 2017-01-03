@@ -11,6 +11,8 @@ import Collection from 'ckeditor5-utils/src/collection';
 import createDropdown from 'ckeditor5-ui/src/dropdown/createDropdown';
 import createListDropdown from 'ckeditor5-ui/src/dropdown/list/createListDropdown';
 
+import 'ckeditor5-theme-lark/theme/theme.scss';
+
 function renderInto( selector, view ) {
 	view.init().then( () => {
 		document.querySelector( selector ).appendChild( view.element );
