@@ -11,8 +11,8 @@ import Plugin from 'ckeditor5-core/src/plugin';
 import ImageStyleCommand from './imagestylecommand';
 import ImageEngine from '../imageengine';
 import { viewToModelImageStyle, modelToViewSetStyle } from './converters';
-import fullSizeIcon from 'ckeditor5-core/theme/icons/align-center.svg';
-import sideIcon from 'ckeditor5-core/theme/icons/align-right.svg';
+import fullSizeIcon from 'ckeditor5-core/theme/icons/object-center.svg';
+import sideIcon from 'ckeditor5-core/theme/icons/object-right.svg';
 
 /**
  * The image style engine plugin. Sets default configuration, creates converters and registers
