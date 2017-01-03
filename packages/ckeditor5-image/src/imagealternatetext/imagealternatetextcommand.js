@@ -4,13 +4,13 @@
  */
 
 /**
- * @module image/alternatetextcommand
+ * @module image/imagelaternatetext/imagealternatetextcommand
  */
 
 import Command from 'ckeditor5-core/src/command/command';
 
 // TODO: isImage to image utils.
-import { isImage } from './imagestyle/utils';
+import { isImage } from '../imagestyle/utils';
 
 export default class ImageAlternateTextCommand extends Command {
 	constructor( editor ) {

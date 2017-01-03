@@ -17,7 +17,7 @@ import ImageToolbar from 'ckeditor5-image/src/imagetoolbar';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin, ImageToolbar ],
-	toolbar: [ 'headings', 'undo', 'redo' ],
+	toolbar: [ 'headings', 'undo', 'redo', 'imageAlternateText' ],
 	image: {
 		toolbar: [ 'imageAlternateText' ]
 	}
