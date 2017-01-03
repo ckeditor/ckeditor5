@@ -96,7 +96,8 @@ export default class List extends Plugin {
 
 			buttonView.set( {
 				label: label,
-				icon: icon
+				icon: icon,
+				tooltip: true
 			} );
 
 			// Bind button model to command.
