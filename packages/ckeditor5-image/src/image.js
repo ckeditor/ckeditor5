@@ -39,6 +39,7 @@ export default class Image extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		// TODO: this returns promise too.
 		this._createAlternateTextChangeButton();
 
 		return this._createAlternateTextBalloonPanel();

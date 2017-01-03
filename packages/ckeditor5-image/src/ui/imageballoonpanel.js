@@ -68,7 +68,7 @@ export default class ImageBalloonPanel extends BalloonPanelView {
 			const selectedElement = editingView.selection.getSelectedElement();
 
 			if ( !selectedElement || !isImageWidget( selectedElement ) ) {
-				this.hide();
+				this.detach();
 			}
 		}, { priority: 'low' } );
 
@@ -78,15 +78,15 @@ export default class ImageBalloonPanel extends BalloonPanelView {
 	}
 
 	attach() {
-		super.show();
+		this.show();
 
 		this._attach();
 		this.editor.ui.view.listenTo( global.window, 'scroll', this._throttledAttach );
 		this.editor.ui.view.listenTo( global.window, 'resize', this._throttledAttach );
 	}
 
-	hide() {
-		super.hide();
+	detach() {
+		this.hide();
 
 		this.editor.ui.view.stopListening( global.window, 'scroll', this._throttledAttach );
 		this.editor.ui.view.stopListening( global.window, 'resize', this._throttledAttach );
