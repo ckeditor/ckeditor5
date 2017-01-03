@@ -43,7 +43,8 @@ export default class Bold extends Plugin {
 			view.set( {
 				label: t( 'Bold' ),
 				icon: boldIcon,
-				keystroke
+				keystroke,
+				tooltip: true
 			} );
 
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );

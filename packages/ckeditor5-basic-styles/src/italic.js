@@ -43,7 +43,8 @@ export default class Italic extends Plugin {
 			view.set( {
 				label: t( 'Italic' ),
 				icon: italicIcon,
-				keystroke
+				keystroke,
+				tooltip: true
 			} );
 
 			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
