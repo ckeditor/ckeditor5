@@ -56,14 +56,14 @@ export default class ImageBalloonPanel extends BalloonPanelView {
 		// Let the focusTracker know about new focusable UI element.
 		editor.ui.focusTracker.add( this.element );
 
-		// Hide the panel when editor loses focus but no the other way around.
+		// Hide the balloon if editor had focus and now focus is lost.
 		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, is, was ) => {
 			if ( was && !is ) {
-				this.hide();
+				this.detach();
 			}
 		} );
 
-		// Check if the toolbar should be displayed each time view is rendered.
+		// Hide the balloon if no image is currently selected.
 		editor.listenTo( editingView, 'render', () => {
 			const selectedElement = editingView.selection.getSelectedElement();
 
@@ -78,8 +78,6 @@ export default class ImageBalloonPanel extends BalloonPanelView {
 	}
 
 	attach() {
-		this.show();
-
 		this._attach();
 		this.editor.ui.view.listenTo( global.window, 'scroll', this._throttledAttach );
 		this.editor.ui.view.listenTo( global.window, 'resize', this._throttledAttach );
@@ -87,7 +85,6 @@ export default class ImageBalloonPanel extends BalloonPanelView {
 
 	detach() {
 		this.hide();
-
 		this.editor.ui.view.stopListening( global.window, 'scroll', this._throttledAttach );
 		this.editor.ui.view.stopListening( global.window, 'resize', this._throttledAttach );
 	}

@@ -43,18 +43,26 @@ export default class ImageToolbar extends Plugin {
 			promises.push( toolbar.items.add( editor.ui.componentFactory.create( name ) ) );
 		}
 
-		// Add toolbar to editor's UI.
+		// Add balloon panel to editor's UI.
 		promises.push( editor.ui.view.body.add( panel ) );
 
-		// Show toolbar each time image widget is selected.
-		editor.listenTo( this.editor.editing.view, 'render', () => {
+		// Show balloon panel each time image widget is selected.
+		this.listenTo( this.editor.editing.view, 'render', () => {
 			this.show();
+		}, { priority: 'low' } );
+
+		// There is no render method after focus is back in editor, we need to check if balloon panel should be visible.
+		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, is, was ) => {
+			if ( !was && is ) {
+				this.show();
+			}
 		} );
 
 		return Promise.all( promises );
 	}
 
 	show() {
+		// TODO: maybe isImageWidgetSelected( editor ) - this code is repeated in many places.
 		const selectedElement = this.editor.editing.view.selection.getSelectedElement();
 
 		if ( selectedElement && isImageWidget( selectedElement ) ) {
