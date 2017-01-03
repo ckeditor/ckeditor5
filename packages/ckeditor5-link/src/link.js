@@ -86,6 +86,7 @@ export default class Link extends Plugin {
 			button.label = t( 'Link' );
 			button.icon = linkIcon;
 			button.keystroke = 'CTRL+K';
+			button.tooltip = true;
 
 			// Bind button to the command.
 			button.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
@@ -114,6 +115,7 @@ export default class Link extends Plugin {
 			button.isEnabled = false;
 			button.label = t( 'Unlink' );
 			button.icon = unlinkIcon;
+			button.tooltip = true;
 
 			// Bind button to the command.
 			button.bind( 'isEnabled' ).to( unlinkCommand, 'isEnabled' );
