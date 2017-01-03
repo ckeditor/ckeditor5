@@ -38,7 +38,7 @@ export default class ButtonView extends View {
 		 * in the string format compatible with {@link module:utils/keyboard}.
 		 *
 		 * @observable
-		 * @member {Boolean} #keystroke.
+		 * @member {Boolean} #keystroke
 		 */
 		this.set( 'keystroke' );
 
@@ -54,6 +54,7 @@ export default class ButtonView extends View {
 		 *		view.tooltip = ( label, keystroke ) => `A tooltip for ${ label } and ${ keystroke }.`
 		 *
 		 * @observable
+		 * @default false
 		 * @member {Boolean|String|Function} #tooltip
 		 */
 		this.set( 'tooltip' );
