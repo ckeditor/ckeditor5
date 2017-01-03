@@ -17,6 +17,8 @@ import ButtonView from 'ckeditor5-ui/src/button/buttonview';
 import createListDropdown from 'ckeditor5-ui/src/dropdown/list/createlistdropdown';
 import ToolbarView from 'ckeditor5-ui/src/toolbar/toolbarview';
 
+import '../../theme/theme.scss';
+
 // TODO needs to be filled with icon imports.
 const availableIcons = [];
 
