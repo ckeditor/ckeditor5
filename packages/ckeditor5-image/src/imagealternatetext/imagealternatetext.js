@@ -13,6 +13,8 @@ import ButtonView from 'ckeditor5-ui/src/button/buttonview';
 import clickOutsideHandler from 'ckeditor5-ui/src/bindings/clickoutsidehandler';
 import escPressHandler from 'ckeditor5-ui/src/bindings/escpresshandler';
 
+import ImageToolbar from '../imagetoolbar';
+
 import AlternateTextFormView from './ui/alternatetextformview';
 import ImageBalloonPanel from '../ui/imageballoonpanel';
 
@@ -22,16 +24,14 @@ import alternateTextIcon from 'ckeditor5-core/theme/icons/source.svg';
 /**
  * The image alternate text plugin.
  *
- *
  * @extends module:core/plugin~Plugin
  */
 export default class ImageAlternateText extends Plugin {
-
 	/**
 	 * @inheritDoc
 	 */
 	init() {
-		// Register ImageAlternateTextCommand.
+		// TODO: Register ImageAlternateTextCommand in engine part.
 		this.editor.commands.set( 'imageAlternateText', new ImageAlternateTextCommand( this.editor ) );
 
 		// TODO: this returns promise too.
@@ -106,15 +106,26 @@ export default class ImageAlternateText extends Plugin {
 	_showAlternateTextChangePanel() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'imageAlternateText' );
+		const imageToolbar = editor.plugins.get( ImageToolbar );
+
+		if ( imageToolbar ) {
+			imageToolbar.hide();
+		}
 
 		this._alternateTextForm.alternateTextInput.value = command.value || '';
-
 		this._alternateTextForm.alternateTextInput.select();
 		this.panel.attach();
 	}
 
 	_hideAlternateTextChangePanel() {
+		const editor = this.editor;
 		this.panel.hide();
-		this.editor.editing.view.focus();
+		editor.editing.view.focus();
+
+		const imageToolbar = editor.plugins.get( ImageToolbar );
+
+		if ( imageToolbar ) {
+			imageToolbar.show();
+		}
 	}
 }

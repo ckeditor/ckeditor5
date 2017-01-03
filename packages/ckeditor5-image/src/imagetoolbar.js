@@ -31,7 +31,9 @@ export default class ImageToolbar extends Plugin {
 			return;
 		}
 
-		const panel = new ImageBalloonPanel( editor );
+		this._panel = new ImageBalloonPanel( editor );
+
+		const panel = this._panel;
 		const promises = [];
 		const toolbar = new ToolbarView();
 		panel.content.add( toolbar );
@@ -45,15 +47,22 @@ export default class ImageToolbar extends Plugin {
 		promises.push( editor.ui.view.body.add( panel ) );
 
 		// Show toolbar each time image widget is selected.
-		const editingView = editor.editing.view;
-		editor.listenTo( editingView, 'render', () => {
-			const selectedElement = editingView.selection.getSelectedElement();
-
-			if ( selectedElement && isImageWidget( selectedElement ) ) {
-				panel.attach();
-			}
+		editor.listenTo( this.editor.editing.view, 'render', () => {
+			this.show();
 		} );
 
 		return Promise.all( promises );
+	}
+
+	show() {
+		const selectedElement = this.editor.editing.view.selection.getSelectedElement();
+
+		if ( selectedElement && isImageWidget( selectedElement ) ) {
+			this._panel.attach();
+		}
+	}
+
+	hide() {
+		this._panel.detach();
 	}
 }
