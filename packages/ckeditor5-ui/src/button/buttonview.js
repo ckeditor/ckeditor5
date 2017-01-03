@@ -38,19 +38,26 @@ export default class ButtonView extends View {
 		 * in the string format compatible with {@link module:utils/keyboard}.
 		 *
 		 * @observable
-		 * @member {Boolean} #keystroke.
+		 * @member {Boolean} #keystroke
 		 */
 		this.set( 'keystroke' );
 
 		/**
-		 * (Optional) Title of the button displayed in the tooltip, i.e. when
-		 * hovering the button with the mouse cursor. When `title` property is not defined
-		 * then combination of `label` and `keystroke` will be set as title.
+		 * (Optional) Tooltip of the button, i.e. displayed when hovering the button with the mouse cursor.
+		 *
+		 * * If defined as a `Boolean` (e.g. `true`), then combination of `label` and `keystroke` will be set as a tooltip.
+		 * * If defined as a `String`, tooltip will equal the exact text of that `String`.
+		 * * If defined as a `Function`, `label` and `keystroke` will be passed to that function, which is to return
+		 * a string with the tooltip text.
+		 *
+		 *		const view = new ButtonView( locale );
+		 *		view.tooltip = ( label, keystroke ) => `A tooltip for ${ label } and ${ keystroke }.`
 		 *
 		 * @observable
-		 * @member {Boolean} #title
+		 * @default false
+		 * @member {Boolean|String|Function} #tooltip
 		 */
-		this.set( 'title' );
+		this.set( 'tooltip' );
 
 		/**
 		 * The HTML type of the button. Default `button`.
@@ -94,14 +101,20 @@ export default class ButtonView extends View {
 		this.set( 'icon' );
 
 		/**
-		 * Title of the button bound to the template.
+		 * Tooltip of the button bound to the template.
 		 *
-		 * @see #title
+		 * @see #tooltip
+		 * @see #_getTooltipString
 		 * @private
 		 * @observable
-		 * @member {Boolean} #_tooltip
+		 * @member {Boolean} #_tooltipString
 		 */
-		this.bind( '_tooltip' ).to( this, 'title', this, 'label', this, 'keystroke', this._getTooltip.bind( this ) );
+		this.bind( '_tooltipString' ).to(
+			this, 'tooltip',
+			this, 'label',
+			this, 'keystroke',
+			this._getTooltipString.bind( this )
+		);
 
 		/**
 		 * Icon of the button view.
@@ -118,14 +131,14 @@ export default class ButtonView extends View {
 			attributes: {
 				class: [
 					'ck-button',
-					'ck-tooltip_s',
+					bind.if( '_tooltipString', 'ck-tooltip_s' ),
 					bind.to( 'isEnabled', value => value ? 'ck-enabled' : 'ck-disabled' ),
 					bind.to( 'isOn', value => value ? 'ck-on' : 'ck-off' ),
 					bind.if( 'withText', 'ck-button_with-text' )
 				],
 				type: bind.to( 'type', value => value ? value : 'button' ),
 				'data-ck-tooltip': [
-					bind.to( '_tooltip' )
+					bind.to( '_tooltipString' )
 				]
 			},
 
@@ -192,23 +205,34 @@ export default class ButtonView extends View {
 	}
 
 	/**
-	 * Gets value for the `data-ck-tooltip` attribute from title, label and keystroke properties.
+	 * Gets value for the `data-ck-tooltip` attribute from the combination of
+	 * {@link #tooltip}, {@link #label} and {@link #keystroke} attributes.
 	 *
 	 * @private
-	 * @param {String} title Button title.
+	 * @see #tooltip
+	 * @see #_tooltipString
+	 * @param {Boolean|String|Function} tooltip Button tooltip.
 	 * @param {String} label Button label.
 	 * @param {String} keystroke Button keystroke.
 	 * @returns {String}
 	 */
-	_getTooltip( title, label, keystroke ) {
-		if ( title ) {
-			return title;
+	_getTooltipString( tooltip, label, keystroke ) {
+		if ( tooltip ) {
+			if ( typeof tooltip == 'string' ) {
+				return tooltip;
+			} else {
+				if ( keystroke ) {
+					keystroke = getEnvKeystrokeText( keystroke );
+				}
+
+				if ( tooltip instanceof Function ) {
+					return tooltip( label, keystroke );
+				} else if ( tooltip === true ) {
+					return `${ label }${ keystroke ? ` (${ keystroke })` : '' }`;
+				}
+			}
 		}
 
-		if ( keystroke ) {
-			label += ` (${ getEnvKeystrokeText( keystroke ) })`;
-		}
-
-		return label;
+		return false;
 	}
 }
