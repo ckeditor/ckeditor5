@@ -23,7 +23,7 @@
     "ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph",
     "ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark",
     "ckeditor5-typing": "ckeditor/ckeditor5-typing",
-    "ckeditor5-ui": "ckeditor/ckeditor5-ui",
+    "ckeditor5-ui": "ckeditor/ckeditor5-ui#t/119",
     "ckeditor5-undo": "ckeditor/ckeditor5-undo#t/57",
     "ckeditor5-utils": "ckeditor/ckeditor5-utils"
   },
