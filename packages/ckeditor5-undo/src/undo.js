@@ -169,7 +169,8 @@ export default class Undo extends Plugin {
 			view.set( {
 				label: label,
 				icon: Icon,
-				keystroke
+				keystroke,
+				tooltip: true
 			} );
 
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
