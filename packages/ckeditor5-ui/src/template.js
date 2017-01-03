@@ -784,6 +784,9 @@ function clone( def ) {
 		// cloneDeepWith algorithm. There's no point in cloning Observable/DomEmitterMixins
 		// along with the definition.
 		//
+		// Don't clone Template instances if provided as a child. They're simply #render()ed
+		// and nothing should interfere.
+		//
 		// Also don't clone View instances if provided as a child of the Template. The template
 		// instance will be extracted from the View during the normalization and there's no need
 		// to clone it.
@@ -1097,6 +1100,7 @@ function isViewCollection( item ) {
  *				},
  *				'also-static–text',
  *				<{@link module:ui/view~View} instance>
+ *				<{@link module:ui/template~Template} instance>
  *				...
  *			],
  *			attributes: {
