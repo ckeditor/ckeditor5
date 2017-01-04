@@ -44,6 +44,8 @@ const positions = {
  * Image toolbar class. Creates image toolbar placed inside balloon panel that is showed when image widget is selected.
  * Toolbar components are created using editor's {@link module:ui/componentfactory~ComponentFactory ComponentFactory}
  * based on {@link module:core/editor/editor~Editor#config configuration} stored under `image.toolbar`.
+ * Other plugins can add new components to the default toolbar configuration by pushing them to `image.defaultToolbar`
+ * configuration. Default configuration is used when `image.toolbar` config is not present.
  *
  * @extends module:core/plugin~Plugin.
  */
@@ -51,12 +53,21 @@ export default class ImageToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.set( 'image.defaultToolbar', [] );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	afterInit() {
 		const editor = this.editor;
-		const toolbarConfig = editor.config.get( 'image.toolbar' );
+		const toolbarConfig = editor.config.get( 'image.toolbar' ) || editor.config.get( 'image.defaultToolbar' );
 
 		// Don't add the toolbar if there is no configuration.
-		if ( !toolbarConfig ) {
+		if ( !toolbarConfig.length ) {
 			return;
 		}
 

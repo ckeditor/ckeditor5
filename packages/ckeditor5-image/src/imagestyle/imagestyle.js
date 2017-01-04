@@ -36,11 +36,11 @@ export default class ImageStyle extends Plugin {
 			this._createButton( style );
 		}
 
-		// If there is no default image toolbar configuration, add all image styles buttons.
-		const imageToolbarConfig = this.editor.config.get( 'image.toolbar' );
+		// Push buttons to default image toolbar if one exists.
+		const defaultImageToolbarConfig = this.editor.config.get( 'image.defaultToolbar' );
 
-		if ( !imageToolbarConfig ) {
-			this.editor.config.set( 'image.toolbar', styles.map( style => style.name ) );
+		if ( defaultImageToolbarConfig ) {
+			styles.forEach( style => defaultImageToolbarConfig.push( style.name ) );
 		}
 	}
 
