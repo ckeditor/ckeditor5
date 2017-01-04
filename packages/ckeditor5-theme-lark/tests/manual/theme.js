@@ -17,18 +17,16 @@ import ButtonView from 'ckeditor5-ui/src/button/buttonview';
 import createListDropdown from 'ckeditor5-ui/src/dropdown/list/createlistdropdown';
 import ToolbarView from 'ckeditor5-ui/src/toolbar/toolbarview';
 
-import '../../theme/theme.scss';
+import boldIcon from 'ckeditor5-basic-styles/theme/icons/bold.svg';
+import italicIcon from 'ckeditor5-basic-styles/theme/icons/italic.svg';
 
-// TODO needs to be filled with icon imports.
-const availableIcons = [];
+import '../../theme/theme.scss';
 
 testUtils.createTestUIView( {
 	'iconPlain1':					'#icon-plain-1',
 	'iconPlain2':					'#icon-plain-2',
 	'iconColor1':					'#icon-color-1',
 	'iconColor2':					'#icon-color-2',
-	'iconAvailability':				'#icon-availability',
-	'iconAvailabilityColor':		'#icon-availability-color',
 
 	'buttonStates':					'#button-states',
 	'buttonTypes':					'#button-types',
@@ -60,17 +58,10 @@ testUtils.createTestUIView( {
 function renderIcon( ui ) {
 	// --- In-text ------------------------------------------------------------
 
-	ui.iconPlain1.add( icon( 'bold' ) );
-	ui.iconPlain2.add( icon( 'quote' ) );
-	ui.iconColor1.add( icon( 'bold' ) );
-	ui.iconColor2.add( icon( 'quote' ) );
-
-	// --- Availability ------------------------------------------------------------
-
-	availableIcons.forEach( i => {
-		ui.iconAvailability.add( icon( i ) );
-		ui.iconAvailabilityColor.add( icon( i ) );
-	} );
+	ui.iconPlain1.add( icon( boldIcon ) );
+	ui.iconPlain2.add( icon( italicIcon ) );
+	ui.iconColor1.add( icon( boldIcon ) );
+	ui.iconColor2.add( icon( italicIcon ) );
 }
 
 function renderButton( ui ) {
@@ -111,16 +102,14 @@ function renderButton( ui ) {
 
 	// --- Icon ------------------------------------------------------------
 
-	availableIcons.forEach( i => {
-		ui.buttonIcon.add( button( {
-			label: i,
-			icon: i
-		} ) );
-	} );
+	ui.buttonIcon.add( button( {
+		label: 'Bold',
+		icon: boldIcon
+	} ) );
 
 	const styledButton = button( {
 		label: 'Button with an icon and custom styles',
-		icon: 'italic'
+		icon: italicIcon
 	} );
 
 	// TODO: It probably requires model interface.
@@ -130,13 +119,13 @@ function renderButton( ui ) {
 
 	ui.buttonIconStates.add( button( {
 		label: 'Disabled',
-		icon: 'bold',
+		icon: boldIcon,
 		isEnabled: false
 	} ) );
 
 	const disabledActionButton = button( {
 		label: 'Disabled action',
-		icon: 'bold',
+		icon: boldIcon,
 		isEnabled: false
 	} );
 
@@ -148,7 +137,7 @@ function renderButton( ui ) {
 	ui.buttonIconStates.add( button( {
 		label: 'Bold',
 		withText: false,
-		icon: 'bold'
+		icon: boldIcon
 	} ) );
 
 	// --- Responsive ------------------------------------------------------------
@@ -161,14 +150,14 @@ function renderButton( ui ) {
 
 		ui[ `buttonResponsive${ i }` ].add( button( {
 			label: 'Bold',
-			icon: 'bold',
+			icon: boldIcon,
 			isEnabled: true
 		} ) );
 
 		const notextButton = button( {
-			label: 'Link',
+			label: 'Bold',
 			withText: false,
-			icon: 'link'
+			icon: boldIcon
 		} );
 
 		// TODO: It requires model interface.
@@ -211,7 +200,7 @@ function renderToolbar( ui ) {
 	// --- Text ------------------------------------------------------------
 
 	ui.toolbarText.add( toolbar( [
-		icon( 'bold' ),
+		icon( boldIcon ),
 		text()
 	] ) );
 
@@ -222,7 +211,7 @@ function renderToolbar( ui ) {
 		text(),
 		button( {
 			label: 'Button with an icon',
-			icon: 'bold'
+			icon: boldIcon
 		} ),
 		dropdown(),
 		button()
@@ -236,7 +225,7 @@ function renderToolbar( ui ) {
 		} ),
 		button( {
 			label: 'Button with an icon',
-			icon: 'bold'
+			icon: boldIcon
 		} )
 	] ) );
 
@@ -259,13 +248,13 @@ function renderToolbar( ui ) {
 		button(),
 		toolbarSeparator(),
 		button( {
-			label: 'Link',
-			icon: 'link'
+			label: 'Foo',
+			icon: boldIcon
 		} ),
 		toolbarSeparator(),
 		button( {
-			label: 'Unlink RTL',
-			icon: 'unlink'
+			label: 'Bar RTL',
+			icon: boldIcon
 		} )
 	] ) );
 
@@ -276,16 +265,16 @@ function renderToolbar( ui ) {
 		button(),
 		toolbarNewLine(),
 		button( {
-			label: 'Link',
-			icon: 'link'
+			label: 'Foo',
+			icon: boldIcon
 		} ),
 		button( {
-			label: 'Unlink RTL',
-			icon: 'unlink'
+			label: 'Bar',
+			icon: boldIcon
 		} ),
 		button( {
-			label: 'Link',
-			icon: 'link'
+			label: 'Baz',
+			icon: boldIcon
 		} )
 	] ) );
 }
