@@ -8,7 +8,7 @@
  */
 
 import Command from 'ckeditor5-core/src/command/command';
-import { isImage, getStyleByValue } from './utils';
+import { isImage } from './utils';
 
 /**
  * The image style command. It is used to apply different image styles.
@@ -17,30 +17,31 @@ import { isImage, getStyleByValue } from './utils';
  */
 export default class ImageStyleCommand extends Command {
 	/**
-	 * Creates instance of the command.
+	 * Creates instance of the image style command. Each command instance is handling one style.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat>} styles Allowed styles.
+	 * @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} styles Style to apply by this command.
 	 */
-	constructor( editor, styles ) {
+	constructor( editor, style ) {
 		super( editor );
 
 		/**
-		 * The current style value.
+		 * The current command value - `true` if style handled by the command is applied on currently selected image,
+		 * `false` otherwise.
 		 *
 		 * @readonly
 		 * @observable
-		 * @member {String} #value
+		 * @member {Boolean} #value
 		 */
 		this.set( 'value', false );
 
 		/**
-		 * Allowed image styles used by this command.
+		 * Style handled by this command.
 		 *
 		 * @readonly
-		 * @member {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat>} #styles
+		 * @member {module:image/imagestyle/imagestyleengine~ImageStyleFormat} #style
 		 */
-		this.styles = styles;
+		this.style = style;
 
 		// Update current value and refresh state each time something change in model document.
 		this.listenTo( editor.document, 'changesDone', () => {
@@ -58,18 +59,16 @@ export default class ImageStyleCommand extends Command {
 		const doc = this.editor.document;
 		const element = doc.selection.getSelectedElement();
 
-		if ( isImage( element ) ) {
-			if ( element.hasAttribute( 'imageStyle' ) ) {
-				const value = element.getAttribute( 'imageStyle' );
-
-				// Check if value exists.
-				this.value = ( getStyleByValue( value, this.styles ) ? value : false );
-			} else {
-				// When there is no `style` attribute - set value to null.
-				this.value = null;
-			}
-		} else {
+		if ( !element ) {
 			this.value = false;
+
+			return;
+		}
+
+		if ( this.style.value === null ) {
+			this.value = !element.hasAttribute( 'imageStyle' );
+		} else {
+			this.value = ( element.getAttribute( 'imageStyle' ) == this.style.value );
 		}
 	}
 
@@ -87,21 +86,12 @@ export default class ImageStyleCommand extends Command {
 	 *
 	 * @protected
 	 * @param {Object} options
-	 * @param {String} options.value Value to apply. It must be one of the values from styles passed to {@link #constructor}.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps. New batch will be
 	 * created if this option is not set.
 	 */
-	_doExecute( options ) {
-		const currentValue = this.value;
-		const newValue = options.value;
-
-		// Check if new value is valid.
-		if ( !getStyleByValue( newValue, this.styles ) ) {
-			return;
-		}
-
-		// Stop if same value is already applied.
-		if ( currentValue == newValue ) {
+	_doExecute( options = {} ) {
+		// Stop if style is already applied.
+		if ( this.value ) {
 			return;
 		}
 
@@ -113,7 +103,7 @@ export default class ImageStyleCommand extends Command {
 		doc.enqueueChanges( () => {
 			const batch = options.batch || doc.batch();
 
-			batch.setAttribute( imageElement, 'imageStyle', newValue );
+			batch.setAttribute( imageElement, 'imageStyle', this.style.value );
 		} );
 	}
 }

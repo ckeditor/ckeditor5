@@ -64,16 +64,16 @@ export default class ImageStyleEngine extends Plugin {
 		editing.modelToView.on( 'removeAttribute:imageStyle:image', modelToViewConverter );
 		data.modelToView.on( 'removeAttribute:imageStyle:image', modelToViewConverter );
 
-		// Converter for figure element from view to model.
 		for ( let style of styles ) {
+			// Converter for figure element from view to model.
 			// Create converter only for non-null values.
 			if ( style.value !== null ) {
 				data.viewToModel.on( 'element:figure', viewToModelImageStyle( style ), { priority: 'low' } );
 			}
-		}
 
-		// Register image style command.
-		editor.commands.set( 'imagestyle', new ImageStyleCommand( editor, styles ) );
+			// Register separate command for each style.
+			editor.commands.set( style.name, new ImageStyleCommand( editor, style ) );
+		}
 	}
 }
 
@@ -91,8 +91,9 @@ export default class ImageStyleEngine extends Plugin {
  *	}
  *
  * @typedef {Object} module:image/imagestyle/imagestyleengine~ImageStyleFormat
- * @property {String} name Name of the style, it will be used to store style's button under that name in editor's
- * {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
+ * @property {String} name Name of the style. It will be used to:
+ * * register {@link module:core/command/command~Command command} which will apply this style,
+ * * store style's button in editor's {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
  * @property {String} value Value used to store this style in model attribute.
  * When value is `null` style will be used as default one. Default style does not apply any CSS class to the view element.
  * @property {String} icon SVG icon representation to use when creating style's button.

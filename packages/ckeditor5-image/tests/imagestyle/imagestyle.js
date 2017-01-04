@@ -46,10 +46,10 @@ describe( 'ImageStyle', () => {
 	} );
 
 	it( 'should register buttons for each style', () => {
-		const command = editor.commands.get( 'imagestyle' );
 		const spy = sinon.spy( editor, 'execute' );
 
 		for ( let style of styles ) {
+			const command = editor.commands.get( style.name );
 			const buttonView =  editor.ui.componentFactory.create( style.name );
 
 			expect( buttonView ).to.be.instanceOf( ButtonView );
@@ -62,7 +62,7 @@ describe( 'ImageStyle', () => {
 			expect( buttonView.isEnabled ).to.be.false;
 
 			buttonView.fire( 'execute' );
-			sinon.assert.calledWithExactly( editor.execute, 'imagestyle', { value: style.value } );
+			sinon.assert.calledWithExactly( editor.execute, style.name );
 
 			spy.reset();
 		}

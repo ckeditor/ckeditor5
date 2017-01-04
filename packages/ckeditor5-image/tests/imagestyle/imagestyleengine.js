@@ -45,11 +45,14 @@ describe( 'ImageStyleEngine', () => {
 		expect( schema.check( { name: 'image', attributes: [ 'imageStyle', 'src' ], inside: '$root' } ) ).to.be.true;
 	} );
 
-	it( 'should register command', () => {
-		expect( editor.commands.has( 'imagestyle' ) ).to.be.true;
-		const command = editor.commands.get( 'imagestyle' );
+	it( 'should register separate command for each style', () => {
+		expect( editor.commands.has( 'fullStyle' ) ).to.be.true;
+		expect( editor.commands.has( 'sideStyle' ) ).to.be.true;
+		expect( editor.commands.has( 'dummyStyle' ) ).to.be.true;
 
-		expect( command ).to.be.instanceOf( ImageStyleCommand );
+		expect( editor.commands.get( 'fullStyle' ) ).to.be.instanceOf( ImageStyleCommand );
+		expect( editor.commands.get( 'sideStyle' ) ).to.be.instanceOf( ImageStyleCommand );
+		expect( editor.commands.get( 'dummyStyle' ) ).to.be.instanceOf( ImageStyleCommand );
 	} );
 
 	it( 'should convert from view to model', () => {

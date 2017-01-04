@@ -8,18 +8,17 @@ import ImageStyleCommand from 'ckeditor5-image/src/imagestyle/imagestylecommand'
 import { setData, getData } from 'ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageStyleCommand', () => {
-	const styles = [
-		{ name: 'defaultStyle', title: 'foo bar', icon: 'icon-1', value: null },
-		{ name: 'otherStyle', title: 'baz', icon: 'icon-2', value: 'other', className: 'other-class-name' }
-	];
+	const defaultStyle = { name: 'defaultStyle', title: 'foo bar', icon: 'icon-1', value: null };
+	const otherStyle = { name: 'otherStyle', title: 'baz', icon: 'icon-2', value: 'other', className: 'other-class-name' };
 
-	let document, command;
+	let document, defaultStyleCommand, otherStyleCommand;
 
 	beforeEach( () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {
 				document = newEditor.document;
-				command = new ImageStyleCommand( newEditor, styles );
+				defaultStyleCommand = new ImageStyleCommand( newEditor, defaultStyle );
+				otherStyleCommand = new ImageStyleCommand( newEditor, otherStyle );
 
 				document.schema.registerItem( 'p', '$block' );
 
@@ -30,50 +29,46 @@ describe( 'ImageStyleCommand', () => {
 			} );
 	} );
 
-	it( 'should have false if image is not selected', () => {
+	it( 'command value should be false if no image is selected', () => {
 		setData( document, '[]<image></image>' );
 
-		expect( command.value ).to.be.false;
+		expect( defaultStyleCommand.value ).to.be.false;
+		expect( otherStyleCommand.value ).to.be.false;
 	} );
 
-	it( 'should have null if image without style is selected', () => {
+	it( 'should match default style if no imageStyle attribute is present', () => {
 		setData( document, '[<image></image>]' );
 
-		expect( command.value ).to.be.null;
+		expect( defaultStyleCommand.value ).to.be.true;
+		expect( otherStyleCommand.value ).to.be.false;
 	} );
 
-	it( 'should have proper value if image with style is selected', () => {
+	it( 'proper command should have true value when imageStyle attribute is present', () => {
 		setData( document, '[<image imageStyle="other"></image>]' );
 
-		expect( command.value ).to.equal( 'other' );
+		expect( defaultStyleCommand.value ).to.be.false;
+		expect( otherStyleCommand.value ).to.be.true;
 	} );
 
-	it( 'should return false if value is not allowed', () => {
+	it( 'should have false value if style does not match', () => {
 		setData( document, '[<image imageStyle="foo"></image>]' );
 
-		expect( command.value ).to.be.false;
+		expect( defaultStyleCommand.value ).to.be.false;
+		expect( otherStyleCommand.value ).to.be.false;
 	} );
 
 	it( 'should set proper value when executed', () => {
 		setData( document, '[<image></image>]' );
 
-		command._doExecute( { value: 'other' } );
+		otherStyleCommand._doExecute();
 
 		expect( getData( document ) ).to.equal( '[<image imageStyle="other"></image>]' );
 	} );
 
-	it( 'should do nothing when executed with wrong value', () => {
-		setData( document, '[<image></image>]' );
-
-		command._doExecute( { value: 'foo' } );
-
-		expect( getData( document ) ).to.equal( '[<image></image>]' );
-	} );
-
-	it( 'should do nothing when executed with same value', () => {
+	it( 'should do nothing when attribute already present', () => {
 		setData( document, '[<image imageStyle="other"></image>]' );
 
-		command._doExecute( { value: 'other' } );
+		otherStyleCommand._doExecute();
 
 		expect( getData( document ) ).to.equal( '[<image imageStyle="other"></image>]' );
 	} );
@@ -84,7 +79,7 @@ describe( 'ImageStyleCommand', () => {
 
 		setData( document, '[<image></image>]' );
 
-		command._doExecute( { value: 'other', batch } );
+		otherStyleCommand._doExecute( { batch } );
 
 		expect( getData( document ) ).to.equal( '[<image imageStyle="other"></image>]' );
 		sinon.assert.calledOnce( spy );
@@ -93,18 +88,21 @@ describe( 'ImageStyleCommand', () => {
 	it( 'should be enabled on image element', () => {
 		setData( document, '[<image></image>]' );
 
-		expect( command.isEnabled ).to.be.true;
+		expect( defaultStyleCommand.isEnabled ).to.be.true;
+		expect( otherStyleCommand.isEnabled ).to.be.true;
 	} );
 
 	it( 'should be disabled when not placed on image', () => {
 		setData( document, '[<p></p>]' );
 
-		expect( command.isEnabled ).to.be.false;
+		expect( defaultStyleCommand.isEnabled ).to.be.false;
+		expect( otherStyleCommand.isEnabled ).to.be.false;
 	} );
 
 	it( 'should be disabled when not placed directly on image', () => {
 		setData( document, '[<p></p><image></image>]' );
 
-		expect( command.isEnabled ).to.be.false;
+		expect( defaultStyleCommand.isEnabled ).to.be.false;
+		expect( otherStyleCommand.isEnabled ).to.be.false;
 	} );
 } );

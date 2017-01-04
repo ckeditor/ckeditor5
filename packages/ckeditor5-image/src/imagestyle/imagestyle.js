@@ -52,7 +52,7 @@ export default class ImageStyle extends Plugin {
 	 */
 	_createButton( style ) {
 		const editor = this.editor;
-		const command = editor.commands.get( 'imagestyle' );
+		const command = editor.commands.get( style.name );
 
 		editor.ui.componentFactory.add( style.name, ( locale ) => {
 			const view = new ButtonView( locale );
@@ -64,11 +64,9 @@ export default class ImageStyle extends Plugin {
 			} );
 
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
-			view.bind( 'isOn' ).to( command, 'value', ( commandValue ) => {
-				return commandValue == style.value;
-			} );
+			view.bind( 'isOn' ).to( command, 'value' );
 
-			this.listenTo( view, 'execute', () => editor.execute( 'imagestyle', { value: style.value } ) );
+			this.listenTo( view, 'execute', () => editor.execute( style.name ) );
 
 			return view;
 		} );
