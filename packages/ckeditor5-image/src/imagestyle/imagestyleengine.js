@@ -33,6 +33,7 @@ export default class ImageStyleEngine extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const t = editor.t;
 		const doc = editor.document;
 		const schema = doc.schema;
 		const data = editor.data;
@@ -41,10 +42,10 @@ export default class ImageStyleEngine extends Plugin {
 		// Define default configuration.
 		editor.config.define( 'image.styles', [
 			// This option is equal to situation when no style is applied.
-			{ name: 'imageStyleFull', title: 'Full size image', icon: fullSizeIcon, value: null },
+			{ name: 'imageStyleFull', title: t( 'Full size image' ), icon: fullSizeIcon, value: null },
 
 			// This represents side image.
-			{ name: 'imageStyleSide', title: 'Side image', icon: sideIcon, value: 'side', className: 'image-style-side' }
+			{ name: 'imageStyleSide', title: t( 'Side image' ), icon: sideIcon, value: 'side', className: 'image-style-side' }
 		] );
 
 		// Get configuration.
@@ -78,6 +79,16 @@ export default class ImageStyleEngine extends Plugin {
 
 /**
  * Image style format descriptor.
+ *
+ *	import fullIcon from 'path/to/icon.svg`;
+ *
+ *	const imageStyleFormat = {
+ *		name: 'fullSizeImage',
+ *		value: 'full',
+ *		icon: fullIcon,
+ *		title: `Full size image`,
+ *		class: `image-full-size`
+ *	}
  *
  * @typedef {Object} module:image/imagestyle/imagestyleengine~ImageStyleFormat
  * @property {String} name Name of the style, it will be used to store style's button under that name in editor's

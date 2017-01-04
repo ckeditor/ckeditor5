@@ -53,14 +53,14 @@ export default class ImageStyle extends Plugin {
 	_createButton( style ) {
 		const editor = this.editor;
 		const command = editor.commands.get( 'imagestyle' );
-		const t = editor.t;
 
 		editor.ui.componentFactory.add( style.name, ( locale ) => {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: t( style.title ),
-				icon: style.icon
+				label: style.title,
+				icon: style.icon,
+				tooltip: true
 			} );
 
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );

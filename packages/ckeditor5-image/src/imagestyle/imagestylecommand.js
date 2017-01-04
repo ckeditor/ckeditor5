@@ -24,6 +24,7 @@ export default class ImageStyleCommand extends Command {
 	 */
 	constructor( editor, styles ) {
 		super( editor );
+
 		/**
 		 * The current style value.
 		 *
