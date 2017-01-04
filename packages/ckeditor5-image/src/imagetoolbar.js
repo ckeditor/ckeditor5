@@ -36,7 +36,9 @@ export default class ImageToolbar extends Plugin {
 		const panel = this._panel;
 		const promises = [];
 		const toolbar = new ToolbarView();
-		panel.content.add( toolbar );
+
+		// Add toolbar to balloon panel.
+		promises.push( panel.content.add( toolbar ) );
 
 		// Add buttons to the toolbar.
 		for ( let name of toolbarConfig ) {
