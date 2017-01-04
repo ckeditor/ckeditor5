@@ -372,6 +372,10 @@ export default class Range {
 	/**
 	 * Returns a range that is a result of transforming this range by given `delta`.
 	 *
+	 * **Note:** transformation may break one range into multiple ranges (e.g. when a part of the range is
+	 * moved to a different part of document tree). For this reason, an array is returned by this method and it
+	 * may contain one or more `Range` instances.
+	 *
 	 * @param {module:engine/model/delta~Delta} delta Delta to transform range by.
 	 * @returns {Array.<module:engine/model/range~Range>} Range which is the result of transformation.
 	 */
@@ -394,6 +398,47 @@ export default class Range {
 					ranges.splice( i, 1, ...result );
 
 					i += result.length - 1;
+				}
+			}
+		}
+
+		return ranges;
+	}
+
+	/**
+	 * Returns a range that is a result of transforming this range by multiple `deltas`.
+	 *
+	 * **Note:** transformation may break one range into multiple ranges (e.g. when a part of the range is
+	 * moved to a different part of document tree). For this reason, an array is returned by this method and it
+	 * may contain one or more `Range` instances.
+	 *
+	 * @param {Iterable.<module:engine/model/delta~Delta>} deltas Deltas to transform the range by.
+	 * @returns {Array.<module:engine/model/range~Range>} Range which is the result of transformation.
+	 */
+	getTransformedByDeltas( deltas ) {
+		let ranges = [ Range.createFromRange( this ) ];
+
+		for ( let delta of deltas ) {
+			for ( let i = 0; i < ranges.length; i++ ) {
+				let result = ranges[ i ].getTransformedByDelta( delta );
+
+				ranges.splice( i, 1, ...result );
+				i += result.length - 1;
+			}
+		}
+
+		// It may happen that a range is split into two, and then the part of second "piece" is moved into first
+		// "piece". In this case we will have incorrect third rage, which should not be included in the result --
+		// because it is already included in first "piece". In this loop we are looking for all such ranges that
+		// are inside other ranges and we simply remove them.
+		for ( let i = 0; i < ranges.length; i++ ) {
+			const range = ranges[ i ];
+
+			for ( let j = i + 1; j < ranges.length; j++ ) {
+				const next = ranges[ j ];
+
+				if ( range.containsRange( next ) || next.containsRange( range ) || range.isEqual( next ) ) {
+					ranges.splice( j, 1 );
 				}
 			}
 		}
@@ -627,7 +672,7 @@ export default class Range {
 			 */
 			throw new CKEditorError( 'range-create-from-ranges-empty-array: At least one range has to be passed.' );
 		} else if ( ranges.length == 1 ) {
-			return Range.createFromRange( ranges[ 0 ] );
+			return this.createFromRange( ranges[ 0 ] );
 		}
 
 		// 1. Set the first range in `ranges` array as a reference range.
