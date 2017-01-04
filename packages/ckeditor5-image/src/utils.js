@@ -8,6 +8,7 @@
  */
 
 import { widgetize, isWidget } from './widget/utils';
+import ModelElement from 'ckeditor5-engine/src/model/element';
 
 const imageSymbol = Symbol( 'isImage' );
 
@@ -33,4 +34,15 @@ export function toImageWidget( viewElement ) {
  */
 export function isImageWidget( viewElement ) {
 	return !!viewElement.getCustomProperty( imageSymbol ) && isWidget( viewElement );
+}
+
+/**
+ * Checks if provided modelElement is an instance of {@link module:engine/model/element~Element Element} and its name
+ * is `image`.
+ *
+ * @param {module:engine/model/element~Element} modelElement
+ * @returns {Boolean}
+ */
+export function isImage( modelElement ) {
+	return modelElement instanceof ModelElement && modelElement.name == 'image';
 }

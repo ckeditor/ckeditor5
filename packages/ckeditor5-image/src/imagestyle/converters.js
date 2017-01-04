@@ -7,7 +7,7 @@
  * @module image/imagestyle/converters
  */
 
-import { isImage, getStyleByValue } from './utils';
+import { isImage } from '../utils';
 
 /**
  * Returns converter for `imageStyle` attribute. It can be used for adding, changing and removing the attribute.
@@ -83,4 +83,16 @@ export function viewToModelImageStyle( style ) {
 		consumable.consume( viewFigureElement, { class: style.className } );
 		modelImageElement.setAttribute( 'imageStyle', style.value );
 	};
+}
+
+// Returns style with given `value` from array of styles.
+// @param {String} value
+// @param {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat> } styles
+// @return {module:image/imagestyle/imagestyleengine~ImageStyleFormat|undefined}
+function getStyleByValue( value, styles ) {
+	for ( let style of styles ) {
+		if ( style.value === value ) {
+			return style;
+		}
+	}
 }

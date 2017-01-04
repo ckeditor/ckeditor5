@@ -8,7 +8,7 @@
  */
 
 import Command from 'ckeditor5-core/src/command/command';
-import { isImage } from './utils';
+import { isImage } from '../utils';
 
 /**
  * The image style command. It is used to apply different image styles.
