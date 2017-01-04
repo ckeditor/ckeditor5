@@ -6,36 +6,20 @@ $ck-balloon-arrow-height: 15px;
 $ck-balloon-arrow-half-width: 10px;
 
 .ck-balloon-panel {
-	@include ck-unselectable();
 	@include ck-rounded-corners();
 	@include ck-drop-shadow();
 
 	min-width: 50px;
 	min-height: 15px;
 
-	display: none;
-	position: absolute;
 	background: ck-color( 'background' );
 	border: 1px solid ck-border-color( 'foreground' );
 
-	z-index: ck-z( 'modal' );
-
 	&:before,
 	&:after {
-		content: "";
-		position: absolute;
-
 		width: 0;
 		height: 0;
 		border-style: solid;
-	}
-
-	&:before {
-		z-index: ck-z();
-	}
-
-	&:after {
-		z-index: ck-z( 'default', 1 );
 	}
 
 	&_arrow_s,
@@ -47,12 +31,10 @@ $ck-balloon-arrow-half-width: 10px;
 		}
 
 		&:before {
-			z-index: ck-z( 'default' );
 			border-color: transparent transparent ck-border-color( 'foreground' ) transparent;
 		}
 
 		&:after {
-			z-index: ck-z( 'default', 1 );
 			border-color: transparent transparent ck-color( 'background' ) transparent;
 			margin-top: $ck-balloon-arrow-offset;
 		}
@@ -67,12 +49,10 @@ $ck-balloon-arrow-half-width: 10px;
 		}
 
 		&:before {
-			z-index: ck-z( 'default' );
 			border-color: ck-border-color( 'foreground' ) transparent  transparent;
 		}
 
 		&:after {
-			z-index: ck-z( 'default', 1 );
 			border-color: ck-color( 'background' ) transparent transparent transparent;
 			margin-bottom: $ck-balloon-arrow-offset;
 		}
@@ -126,9 +106,5 @@ $ck-balloon-arrow-half-width: 10px;
 			right: 2 * $ck-balloon-arrow-half-width;
 			bottom: -$ck-balloon-arrow-height;
 		}
-	}
-
-	&_visible {
-		display: block;
 	}
 }

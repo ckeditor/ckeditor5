@@ -45,9 +45,7 @@ testUtils.createTestUIView( {
 	'toolbarRounded':				'#toolbar-rounded',
 	'toolbarWrap':					'#toolbar-wrap',
 	'toolbarSeparator':				'#toolbar-separator',
-	'toolbarMultiRow':				'#toolbar-multi-row',
-
-	body:							'div#body'
+	'toolbarMultiRow':				'#toolbar-multi-row'
 } ).then( ui => {
 	renderIcon( ui );
 	renderButton( ui );
@@ -137,6 +135,7 @@ function renderButton( ui ) {
 	ui.buttonIconStates.add( button( {
 		label: 'Bold',
 		withText: false,
+		tooltip: true,
 		icon: boldIcon
 	} ) );
 
@@ -157,6 +156,7 @@ function renderButton( ui ) {
 		const notextButton = button( {
 			label: 'Bold',
 			withText: false,
+			tooltip: true,
 			icon: boldIcon
 		} );
 
@@ -303,11 +303,12 @@ function button( {
 	isEnabled = true,
 	isOn = false,
 	withText = true,
+	tooltip,
 	icon
 } = {} ) {
 	const button = new ButtonView();
 
-	button.set( { label, isEnabled, isOn, withText, icon } );
+	button.set( { label, isEnabled, isOn, withText, icon, tooltip } );
 
 	return button;
 }

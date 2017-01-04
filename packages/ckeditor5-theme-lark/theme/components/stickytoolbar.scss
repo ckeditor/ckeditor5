@@ -5,14 +5,12 @@
 	.ck-toolbar.ck-toolbar_sticky {
 		@include ck-drop-shadow();
 
-		position: fixed;
 		top: 0;
 		border: 1px solid ck-border-color();
 		border-width: 0 0 1px;
 		background: ck-color( 'foreground' );
 
 		&.ck-toolbar_sticky_bottom-limit {
-			top: auto;
 			position: absolute;
 		}
 	}

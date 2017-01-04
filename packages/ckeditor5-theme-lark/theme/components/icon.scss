@@ -3,21 +3,8 @@
 
 /**
  * Default width/height of an icon.
- *
- * @access public
  */
 $ck-icon-size: 20px;
-
-.ck-icon-manager__sprite {
-	display: none;
-
-	* {
-		// Allows dynamic coloring of the icons.
-		color: inherit;
-		// Needed by Webkit/Blink.
-		fill: currentColor;
-	}
-}
 
 .ck-icon {
 	min-width: $ck-icon-size;

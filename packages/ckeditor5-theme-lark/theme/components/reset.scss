@@ -1,7 +1,9 @@
 // Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
-// Reset for single elements, not their children.
+/**
+ * Resets an element, ignoring its children.
+ */
 .ck-reset {
 	// Do not include inheritable rules here.
 	margin: 0;
@@ -11,13 +13,11 @@
 	text-decoration: none;
 	vertical-align: middle;
 	transition: none;
-	box-sizing: border-box;
-	width: auto;
-	height: auto;
-	position: static;
 }
 
-// Reset for elements and their children.
+/**
+ * Resets an element AND its children.
+ */
 .ck-reset_all {
 	&, *, a, textarea {
 		// These are rule inherited by all children elements.
@@ -63,15 +63,9 @@
 		border: 2px groove #E0DFE3;
 	}
 
-	table {
-		table-layout: auto;
-	}
-
 	// See http://stackoverflow.com/questions/5517744/remove-extra-button-spacing-padding-in-firefox
 	button::-moz-focus-inner {
 	    padding: 0;
 	    border: 0
 	}
 }
-
-

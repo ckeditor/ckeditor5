@@ -4,14 +4,12 @@
 /**
  * Default border-radius value.
  *
- * @access public
  */
 $ck-border-radius: 2px !default;
 
 /**
  * Implements rounded corner interface for .ck-rounded-corners class.
  *
- * @access public
  * @see $ck-border-radius
  */
 @mixin ck-rounded-corners() {

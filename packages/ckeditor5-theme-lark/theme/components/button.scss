@@ -4,29 +4,6 @@
 /**
  * Implements a button of given background color.
  *
- * @access public
- * @param {String} $color - Background color of the button.
- */
-@mixin ck-button( $color ) {
-	border: 1px solid;
-	white-space: nowrap;
-	cursor: default;
-	vertical-align: middle;
-	line-height: $ck-icon-size / $ck-font-size-base;
-	position: relative;
-
-	@include ck-button-colors( $color );
-
-	&:focus {
-		@include ck-focus-ring();
-		@include ck-box-shadow( $ck-focus-outer-shadow );
-	}
-}
-
-/**
- * Implements a button of given background color.
- *
- * @access public
  * @param {String} $color - Background color of the button.
  */
 @mixin ck-button-colors( $color, $offset: 0 ) {
@@ -39,7 +16,6 @@
 /**
  * Implements button states.
  *
- * @access public
  * @param {String} $color - Background color of the button.
  */
 @mixin ck-button-state-colors( $color, $offset: 0 ) {
@@ -61,7 +37,6 @@
 /**
  * A helper to define button–specific icon styles.
  *
- * @access public
  */
 @mixin ck-button-icon {
 	.ck-icon {
@@ -71,13 +46,21 @@
 
 .ck-button,
 a.ck-button {
-	display: inline-block;
-	padding: ck-spacing( 'small' );
-
-	@include ck-button( 'background' );
-	@include ck-unselectable();
+	@include ck-button-colors( 'background' );
 	@include ck-rounded-corners();
-	@include ck-tooltip_enabled();
+
+	border-width: 1px;
+	border-style: solid;
+	white-space: nowrap;
+	cursor: default;
+	vertical-align: middle;
+	padding: ck-spacing( 'small' );
+	line-height: $ck-icon-size / $ck-font-size-base;
+
+	&:focus {
+		@include ck-focus-ring();
+		@include ck-box-shadow( $ck-focus-outer-shadow );
+	}
 
 	@include ck-button-icon {
 		float: left;
@@ -97,14 +80,14 @@ a.ck-button {
 	}
 
 	&.ck-on {
-		@include ck-button( 'foreground' );
+		@include ck-button-colors( 'foreground' );
 	}
 
 	&-action {
+		@include ck-button-colors( 'action' );
+
 		text-shadow: 0 -1px ck-color( 'action', -20 );
 		color: ck-color();
-
-		@include ck-button( 'action' );
 
 		&:hover,
 		&:focus,
@@ -124,17 +107,7 @@ a.ck-button {
 		}
 	}
 
-	&:hover {
-		@include ck-tooltip_visible();
-	}
-
-	// Get rid of the focus outline around the tooltip when focused (but not :hover).
-	&:focus:not(:hover) {
-		@include ck-tooltip_disabled();
-	}
-
 	.ck-button__label {
-		display: none;
 		float: left;
 		line-height: inherit;
 		font-size: inherit;
