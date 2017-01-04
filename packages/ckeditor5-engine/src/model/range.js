@@ -7,9 +7,9 @@
  * @module engine/model/range
  */
 
-import Position from './position.js';
-import TreeWalker from './treewalker.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
+import Position from './position';
+import TreeWalker from './treewalker';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Range class. Range is iterable.

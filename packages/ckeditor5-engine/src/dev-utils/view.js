@@ -11,17 +11,17 @@
  * Collection of methods for manipulating {@link module:engine/view/view view} for testing purposes.
  */
 
-import Document from '../view/document.js';
-import ViewDocumentFragment from '../view/documentfragment.js';
-import XmlDataProcessor from '../dataprocessor/xmldataprocessor.js';
-import ViewElement from '../view/element.js';
-import Selection from '../view/selection.js';
-import Range from '../view/range.js';
-import Position from '../view/position.js';
-import AttributeElement from '../view/attributeelement.js';
-import ContainerElement from '../view/containerelement.js';
-import EmptyElement from '../view/emptyelement.js';
-import ViewText from '../view/text.js';
+import Document from '../view/document';
+import ViewDocumentFragment from '../view/documentfragment';
+import XmlDataProcessor from '../dataprocessor/xmldataprocessor';
+import ViewElement from '../view/element';
+import Selection from '../view/selection';
+import Range from '../view/range';
+import Position from '../view/position';
+import AttributeElement from '../view/attributeelement';
+import ContainerElement from '../view/containerelement';
+import EmptyElement from '../view/emptyelement';
+import ViewText from '../view/text';
 
 const ELEMENT_RANGE_START_TOKEN = '[';
 const ELEMENT_RANGE_END_TOKEN = ']';

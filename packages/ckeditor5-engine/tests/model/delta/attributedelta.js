@@ -3,18 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, delta */
+import count from 'ckeditor5-utils/src/count';
+import Document from 'ckeditor5-engine/src/model/document';
+import Text from 'ckeditor5-engine/src/model/text';
+import Range from 'ckeditor5-engine/src/model/range';
+import Position from 'ckeditor5-engine/src/model/position';
+import Element from 'ckeditor5-engine/src/model/element';
 
-import count from 'ckeditor5/utils/count.js';
-import Document from 'ckeditor5/engine/model/document.js';
-import Text from 'ckeditor5/engine/model/text.js';
-import Range from 'ckeditor5/engine/model/range.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import Element from 'ckeditor5/engine/model/element.js';
-
-import AttributeDelta from 'ckeditor5/engine/model/delta/attributedelta.js';
-import { RootAttributeDelta } from 'ckeditor5/engine/model/delta/attributedelta.js';
-import AttributeOperation from 'ckeditor5/engine/model/operation/attributeoperation.js';
+import AttributeDelta from 'ckeditor5-engine/src/model/delta/attributedelta';
+import { RootAttributeDelta } from 'ckeditor5-engine/src/model/delta/attributedelta';
+import AttributeOperation from 'ckeditor5-engine/src/model/operation/attributeoperation';
 
 describe( 'Batch', () => {
 	let batch, doc, root;

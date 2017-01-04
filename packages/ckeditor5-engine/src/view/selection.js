@@ -7,12 +7,12 @@
  * @module engine/view/selection
  */
 
-import CKEditorError from '../../utils/ckeditorerror.js';
-import Range from './range.js';
-import Position from './position.js';
-import mix from '../../utils/mix.js';
-import EmitterMixin from '../../utils/emittermixin.js';
-import Element from './element.js';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Range from './range';
+import Position from './position';
+import mix from 'ckeditor5-utils/src/mix';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import Element from './element';
 
 /**
  * Class representing selection in tree view.

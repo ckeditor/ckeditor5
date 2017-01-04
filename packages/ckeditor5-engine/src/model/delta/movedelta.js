@@ -7,13 +7,13 @@
  * @module engine/model/delta/movedelta
  */
 
-import Delta from './delta.js';
-import DeltaFactory from './deltafactory.js';
-import { register } from '../batch.js';
-import MoveOperation from '../operation/moveoperation.js';
-import Position from '../position.js';
-import Range from '../range.js';
-import CKEditorError from '../../../utils/ckeditorerror.js';
+import Delta from './delta';
+import DeltaFactory from './deltafactory';
+import { register } from '../batch';
+import MoveOperation from '../operation/moveoperation';
+import Position from '../position';
+import Range from '../range';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 /**
  * @classdesc

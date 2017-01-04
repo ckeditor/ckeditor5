@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, delta */
-
-import Document from 'ckeditor5/engine/model/document.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import Text from 'ckeditor5/engine/model/text.js';
-import WeakInsertDelta from 'ckeditor5/engine/model/delta/weakinsertdelta.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import Position from 'ckeditor5-engine/src/model/position';
+import Text from 'ckeditor5-engine/src/model/text';
+import WeakInsertDelta from 'ckeditor5-engine/src/model/delta/weakinsertdelta';
 
 describe( 'Batch', () => {
 	let doc, root, batch, chain, attrs;

@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: conversion */
-
-import ModelConversionDispatcher from 'ckeditor5/engine/conversion/modelconversiondispatcher.js';
-import ModelDocument from 'ckeditor5/engine/model/document.js';
-import ModelText from 'ckeditor5/engine/model/text.js';
-import ModelElement from 'ckeditor5/engine/model/element.js';
-import ModelRange from 'ckeditor5/engine/model/range.js';
-import ModelPosition from 'ckeditor5/engine/model/position.js';
-import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
-import { wrapInDelta } from 'tests/engine/model/_utils/utils.js';
+import ModelConversionDispatcher from 'ckeditor5-engine/src/conversion/modelconversiondispatcher';
+import ModelDocument from 'ckeditor5-engine/src/model/document';
+import ModelText from 'ckeditor5-engine/src/model/text';
+import ModelElement from 'ckeditor5-engine/src/model/element';
+import ModelRange from 'ckeditor5-engine/src/model/range';
+import ModelPosition from 'ckeditor5-engine/src/model/position';
+import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
+import { wrapInDelta } from 'ckeditor5-engine/tests/model/_utils/utils';
 
 describe( 'ModelConversionDispatcher', () => {
 	let dispatcher, doc, root;

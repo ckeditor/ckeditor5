@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view */
-
-import Observer from 'ckeditor5/engine/view/observer/observer.js';
+import Observer from 'ckeditor5-engine/src/view/observer/observer';
 
 describe( 'Observer', () => {
 	describe( 'constructor()', () => {

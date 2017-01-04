@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view */
+import Element from 'ckeditor5-engine/src/view/element';
+import Text from 'ckeditor5-engine/src/view/text';
+import DocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
+import RootEditableElement from 'ckeditor5-engine/src/view/rooteditableelement';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
-import Element from 'ckeditor5/engine/view/element.js';
-import Text from 'ckeditor5/engine/view/text.js';
-import DocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
-import RootEditableElement from 'ckeditor5/engine/view/rooteditableelement.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
-
-import createDocumentMock from 'tests/engine/view/_utils/createdocumentmock.js';
+import createDocumentMock from 'ckeditor5-engine/tests/view/_utils/createdocumentmock';
 
 describe( 'Node', () => {
 	let root;

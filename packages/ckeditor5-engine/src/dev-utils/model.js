@@ -11,33 +11,33 @@
  * Collection of methods for manipulating {@link module:engine/model/model model} for testing purposes.
  */
 
-import RootElement from '../model/rootelement.js';
-import ModelDocument from '../model/document.js';
-import ModelRange from '../model/range.js';
-import ModelPosition from '../model/position.js';
-import ModelConversionDispatcher from '../conversion/modelconversiondispatcher.js';
-import ModelSelection from '../model/selection.js';
-import ModelDocumentFragment from '../model/documentfragment.js';
-import ModelElement from '../model/element.js';
-import ModelText from '../model/text.js';
-import ModelTextProxy from '../model/textproxy.js';
-import modelWriter from '../model/writer.js';
+import RootElement from '../model/rootelement';
+import ModelDocument from '../model/document';
+import ModelRange from '../model/range';
+import ModelPosition from '../model/position';
+import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
+import ModelSelection from '../model/selection';
+import ModelDocumentFragment from '../model/documentfragment';
+import ModelElement from '../model/element';
+import ModelText from '../model/text';
+import ModelTextProxy from '../model/textproxy';
+import modelWriter from '../model/writer';
 
-import ViewConversionDispatcher from '../conversion/viewconversiondispatcher.js';
-import ViewSelection from '../view/selection.js';
-import ViewDocumentFragment from '../view/documentfragment.js';
-import ViewElement from '../view/containerelement.js';
-import ViewAttributeElement from '../view/attributeelement.js';
+import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
+import ViewSelection from '../view/selection';
+import ViewDocumentFragment from '../view/documentfragment';
+import ViewElement from '../view/containerelement';
+import ViewAttributeElement from '../view/attributeelement';
 
-import Mapper from '../conversion/mapper.js';
-import { parse as viewParse, stringify as viewStringify } from '../../engine/dev-utils/view.js';
+import Mapper from '../conversion/mapper';
+import { parse as viewParse, stringify as viewStringify } from 'ckeditor5-engine/src/dev-utils/view';
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 	convertSelectionAttribute
-} from '../conversion/model-selection-to-view-converters.js';
-import { insertText, insertElement, wrapItem } from '../conversion/model-to-view-converters.js';
-import isPlainObject from '../../utils/lib/lodash/isPlainObject.js';
+} from '../conversion/model-selection-to-view-converters';
+import { insertText, insertElement, wrapItem } from '../conversion/model-to-view-converters';
+import isPlainObject from 'ckeditor5-utils/src/lib/lodash/isPlainObject';
 
 /**
  * Writes the contents of the {@link module:engine/model/document~Document Document} to an HTML-like string.

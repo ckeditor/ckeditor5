@@ -9,9 +9,9 @@
 
 /* globals DOMParser, document */
 
-import BasicHtmlWriter from './basichtmlwriter.js';
-import DomConverter from '../view/domconverter.js';
-import { NBSP_FILLER } from '../view/filler.js';
+import BasicHtmlWriter from './basichtmlwriter';
+import DomConverter from '../view/domconverter';
+import { NBSP_FILLER } from '../view/filler';
 
 /**
  * XmlDataProcessor class.

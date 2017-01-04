@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, operation */
-
-import Document from 'ckeditor5/engine/model/document.js';
-import NodeList from 'ckeditor5/engine/model/nodelist.js';
-import Element from 'ckeditor5/engine/model/element.js';
-import InsertOperation from 'ckeditor5/engine/model/operation/insertoperation.js';
-import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import Text from 'ckeditor5/engine/model/text.js';
-import { jsonParseStringify, wrapInDelta } from 'tests/engine/model/_utils/utils.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import NodeList from 'ckeditor5-engine/src/model/nodelist';
+import Element from 'ckeditor5-engine/src/model/element';
+import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
+import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
+import Position from 'ckeditor5-engine/src/model/position';
+import Text from 'ckeditor5-engine/src/model/text';
+import { jsonParseStringify, wrapInDelta } from 'ckeditor5-engine/tests/model/_utils/utils';
 
 describe( 'InsertOperation', () => {
 	let doc, root;

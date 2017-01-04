@@ -7,9 +7,9 @@
  * @module engine/controller/editingcontroller
  */
 
-import ViewDocument from '../view/document.js';
-import Mapper from '../conversion/mapper.js';
-import ModelConversionDispatcher from '../conversion/modelconversiondispatcher.js';
+import ViewDocument from '../view/document';
+import Mapper from '../conversion/mapper';
+import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
 import {
 	insertText,
 	remove,
@@ -17,16 +17,16 @@ import {
 	rename,
 	insertIntoMarker,
 	moveInOutOfMarker
-} from '../conversion/model-to-view-converters.js';
-import { convertSelectionChange } from '../conversion/view-selection-to-model-converters.js';
+} from '../conversion/model-to-view-converters';
+import { convertSelectionChange } from '../conversion/view-selection-to-model-converters';
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 	clearAttributes,
 	clearFakeSelection
-} from '../conversion/model-selection-to-view-converters.js';
+} from '../conversion/model-selection-to-view-converters';
 
-import EmitterMixin from '../../utils/emittermixin.js';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
 
 /**
  * Controller for the editing pipeline. The editing pipeline controls {@link ~EditingController#model model} rendering,

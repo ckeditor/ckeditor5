@@ -7,11 +7,11 @@
  * @module engine/model/delta/weakinsertdelta
  */
 
-import InsertDelta from './insertdelta.js';
-import { register } from '../batch.js';
-import DeltaFactory from './deltafactory.js';
-import InsertOperation from '../operation/insertoperation.js';
-import { normalizeNodes } from './../writer.js';
+import InsertDelta from './insertdelta';
+import { register } from '../batch';
+import DeltaFactory from './deltafactory';
+import InsertOperation from '../operation/insertoperation';
+import { normalizeNodes } from './../writer';
 
 /**
  * @classdesc

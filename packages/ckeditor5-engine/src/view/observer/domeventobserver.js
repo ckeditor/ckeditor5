@@ -7,8 +7,8 @@
  * @module engine/view/observer/domeventobserver
  */
 
-import Observer from './observer.js';
-import DomEventData from './domeventdata.js';
+import Observer from './observer';
+import DomEventData from './domeventdata';
 
 /**
  * Base class for DOM event observers. This class handles

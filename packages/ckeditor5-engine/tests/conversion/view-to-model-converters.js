@@ -3,19 +3,17 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: conversion */
+import ViewConversionDispatcher from 'ckeditor5-engine/src/conversion/viewconversiondispatcher';
+import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
+import ViewDocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
+import ViewText from 'ckeditor5-engine/src/view/text';
 
-import ViewConversionDispatcher from 'ckeditor5/engine/conversion/viewconversiondispatcher.js';
-import ViewContainerElement from 'ckeditor5/engine/view/containerelement.js';
-import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
-import ViewText from 'ckeditor5/engine/view/text.js';
+import ModelSchema from 'ckeditor5-engine/src/model/schema';
+import ModelDocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
+import ModelElement from 'ckeditor5-engine/src/model/element';
+import ModelText from 'ckeditor5-engine/src/model/text';
 
-import ModelSchema from 'ckeditor5/engine/model/schema.js';
-import ModelDocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
-import ModelElement from 'ckeditor5/engine/model/element.js';
-import ModelText from 'ckeditor5/engine/model/text.js';
-
-import { convertToModelFragment, convertText } from 'ckeditor5/engine/conversion/view-to-model-converters.js';
+import { convertToModelFragment, convertText } from 'ckeditor5-engine/src/conversion/view-to-model-converters';
 
 describe( 'view-to-model-converters', () => {
 	let dispatcher, schema, objWithContext;

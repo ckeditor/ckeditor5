@@ -7,12 +7,12 @@
  * @module engine/view/position
  */
 
-import Text from './text.js';
-import TextProxy from './textproxy.js';
+import Text from './text';
+import TextProxy from './textproxy';
 
-import compareArrays from '../../utils/comparearrays.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
-import EditableElement from './editableelement.js';
+import compareArrays from 'ckeditor5-utils/src/comparearrays';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import EditableElement from './editableelement';
 
 /**
  * Position in the tree. Position is always located before or after a node.

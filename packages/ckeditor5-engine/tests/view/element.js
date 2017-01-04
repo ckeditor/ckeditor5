@@ -3,11 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view */
-
-import count from 'ckeditor5/utils/count.js';
-import Node from 'ckeditor5/engine/view/node.js';
-import Element from 'ckeditor5/engine/view/element.js';
+import count from 'ckeditor5-utils/src/count';
+import Node from 'ckeditor5-engine/src/view/node';
+import Element from 'ckeditor5-engine/src/view/element';
 
 describe( 'Element', () => {
 	describe( 'constructor()', () => {

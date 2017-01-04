@@ -5,10 +5,10 @@
 
 /* globals document, console */
 
-import ViewDocument from 'ckeditor5/engine/view/document.js';
-import DomEventObserver from 'ckeditor5/engine/view/observer/domeventobserver.js';
-import ViewRange from 'ckeditor5/engine/view/range.js';
-import { setData } from 'ckeditor5/engine/dev-utils/view.js';
+import ViewDocument from 'ckeditor5-engine/src/view/document';
+import DomEventObserver from 'ckeditor5-engine/src/view/observer/domeventobserver';
+import ViewRange from 'ckeditor5-engine/src/view/range';
+import { setData } from 'ckeditor5-engine/src/dev-utils/view';
 
 const viewDocument = new ViewDocument();
 const domEditable = document.getElementById( 'editor' );

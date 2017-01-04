@@ -3,11 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, delta */
-
-import Delta from 'ckeditor5/engine/model/delta/delta.js';
-import Operation from 'ckeditor5/engine/model/operation/operation.js';
-import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
+import Delta from 'ckeditor5-engine/src/model/delta/delta';
+import Operation from 'ckeditor5-engine/src/model/operation/operation';
+import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
 
 describe( 'Operation', () => {
 	it( 'should save its base version', () => {

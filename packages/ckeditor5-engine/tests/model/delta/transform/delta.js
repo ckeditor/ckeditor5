@@ -3,21 +3,19 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, operation */
-
-import transformations from 'ckeditor5/engine/model/delta/basic-transformations.js';
+import transformations from 'ckeditor5-engine/src/model/delta/basic-transformations';
 /*jshint unused: false*/
 
-import transform from 'ckeditor5/engine/model/delta/transform.js';
+import transform from 'ckeditor5-engine/src/model/delta/transform';
 
-import Position from 'ckeditor5/engine/model/position.js';
-import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
-import Delta from 'ckeditor5/engine/model/delta/delta.js';
+import Position from 'ckeditor5-engine/src/model/position';
+import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
+import Delta from 'ckeditor5-engine/src/model/delta/delta';
 
 import {
 	expectDelta,
 	getFilledDocument,
-} from 'tests/engine/model/delta/transform/_utils/utils.js';
+} from 'ckeditor5-engine/tests/model/delta/transform/_utils/utils';
 
 describe( 'Delta', () => {
 	let doc, root, baseVersion;

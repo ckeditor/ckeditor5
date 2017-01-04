@@ -3,18 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model */
-
-import Document from 'ckeditor5/engine/model/document.js';
-import Schema from 'ckeditor5/engine/model/schema.js';
-import RootElement from 'ckeditor5/engine/model/rootelement.js';
-import Batch from 'ckeditor5/engine/model/batch.js';
-import Delta from 'ckeditor5/engine/model/delta/delta.js';
-import Range from 'ckeditor5/engine/model/range.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
-import count from 'ckeditor5/utils/count.js';
-import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
-import { setData, getData } from 'ckeditor5/engine/dev-utils/model.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import Schema from 'ckeditor5-engine/src/model/schema';
+import RootElement from 'ckeditor5-engine/src/model/rootelement';
+import Batch from 'ckeditor5-engine/src/model/batch';
+import Delta from 'ckeditor5-engine/src/model/delta/delta';
+import Range from 'ckeditor5-engine/src/model/range';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import count from 'ckeditor5-utils/src/count';
+import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
+import { setData, getData } from 'ckeditor5-engine/src/dev-utils/model';
 
 describe( 'Document', () => {
 	let doc;

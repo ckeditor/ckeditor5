@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: conversion */
-
-import ViewConversionDispatcher from 'ckeditor5/engine/conversion/viewconversiondispatcher.js';
-import ViewContainerElement from 'ckeditor5/engine/view/containerelement.js';
-import ViewAttributeElement from 'ckeditor5/engine/view/attributeelement.js';
-import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
-import ViewText from 'ckeditor5/engine/view/text.js';
+import ViewConversionDispatcher from 'ckeditor5-engine/src/conversion/viewconversiondispatcher';
+import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
+import ViewAttributeElement from 'ckeditor5-engine/src/view/attributeelement';
+import ViewDocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
+import ViewText from 'ckeditor5-engine/src/view/text';
 
 describe( 'ViewConversionDispatcher', () => {
 	describe( 'constructor()', () => {

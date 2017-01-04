@@ -4,20 +4,19 @@
  */
 
 /* globals Range, DocumentFragment, HTMLElement, document, Text */
-/* bender-tags: view, domconverter, browser-only */
 
-import ViewText from 'ckeditor5/engine/view/text.js';
-import ViewElement from 'ckeditor5/engine/view/element.js';
-import ViewPosition from 'ckeditor5/engine/view/position.js';
-import ViewContainerElement from 'ckeditor5/engine/view/containerelement.js';
-import ViewAttributeElement from 'ckeditor5/engine/view/attributeelement.js';
-import DomConverter from 'ckeditor5/engine/view/domconverter.js';
-import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
-import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller } from 'ckeditor5/engine/view/filler.js';
+import ViewText from 'ckeditor5-engine/src/view/text';
+import ViewElement from 'ckeditor5-engine/src/view/element';
+import ViewPosition from 'ckeditor5-engine/src/view/position';
+import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
+import ViewAttributeElement from 'ckeditor5-engine/src/view/attributeelement';
+import DomConverter from 'ckeditor5-engine/src/view/domconverter';
+import ViewDocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
+import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller } from 'ckeditor5-engine/src/view/filler';
 
-import { parse } from 'ckeditor5/engine/dev-utils/view.js';
+import { parse } from 'ckeditor5-engine/src/dev-utils/view';
 
-import createElement from 'ckeditor5/utils/dom/createelement.js';
+import createElement from 'ckeditor5-utils/src/dom/createelement';
 
 describe( 'DomConverter', () => {
 	let converter;

@@ -3,23 +3,21 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, delta */
-
-import count from 'ckeditor5/utils/count.js';
-import Delta from 'ckeditor5/engine/model/delta/delta.js';
-import Operation from 'ckeditor5/engine/model/operation/operation.js';
-import AttributeOperation from 'ckeditor5/engine/model/operation/attributeoperation.js';
-import InsertOperation from 'ckeditor5/engine/model/operation/insertoperation.js';
-import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
-import NoOperation from 'ckeditor5/engine/model/operation/nooperation.js';
-import ReinsertOperation from 'ckeditor5/engine/model/operation/reinsertoperation.js';
-import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
-import RootAttributeOperation from 'ckeditor5/engine/model/operation/rootattributeoperation.js';
-import DeltaFactory from 'ckeditor5/engine/model/delta/deltafactory.js';
-import Document from 'ckeditor5/engine/model/document.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import Range from 'ckeditor5/engine/model/range.js';
-import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
+import count from 'ckeditor5-utils/src/count';
+import Delta from 'ckeditor5-engine/src/model/delta/delta';
+import Operation from 'ckeditor5-engine/src/model/operation/operation';
+import AttributeOperation from 'ckeditor5-engine/src/model/operation/attributeoperation';
+import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
+import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
+import NoOperation from 'ckeditor5-engine/src/model/operation/nooperation';
+import ReinsertOperation from 'ckeditor5-engine/src/model/operation/reinsertoperation';
+import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
+import RootAttributeOperation from 'ckeditor5-engine/src/model/operation/rootattributeoperation';
+import DeltaFactory from 'ckeditor5-engine/src/model/delta/deltafactory';
+import Document from 'ckeditor5-engine/src/model/document';
+import Position from 'ckeditor5-engine/src/model/position';
+import Range from 'ckeditor5-engine/src/model/range';
+import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
 
 // Some test examples of operations.
 class FooOperation extends Operation {

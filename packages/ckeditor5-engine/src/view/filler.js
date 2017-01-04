@@ -5,7 +5,7 @@
 
 /* globals window, Range, Text */
 
-import { keyCodes } from '../../utils/keyboard.js';
+import { keyCodes } from 'ckeditor5-utils/src/keyboard';
 
 /**
  * Set of utils related to block and inline fillers handling.

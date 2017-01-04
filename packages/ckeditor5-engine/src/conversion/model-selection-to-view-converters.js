@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewElement from '../view/element.js';
-import ViewRange from '../view/range.js';
-import viewWriter from '../view/writer.js';
+import ViewElement from '../view/element';
+import ViewRange from '../view/range';
+import viewWriter from '../view/writer';
 
 /**
  * Contains {@link module:engine/model/selection~Selection model selection} to

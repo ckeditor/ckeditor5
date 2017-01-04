@@ -3,26 +3,24 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: conversion */
+import buildViewConverter from 'ckeditor5-engine/src/conversion/buildviewconverter';
 
-import buildViewConverter from 'ckeditor5/engine/conversion/buildviewconverter.js';
+import ModelSchema from 'ckeditor5-engine/src/model/schema';
+import ModelDocument from 'ckeditor5-engine/src/model/document';
+import ModelElement from 'ckeditor5-engine/src/model/element';
+import ModelTextProxy from 'ckeditor5-engine/src/model/textproxy';
+import ModelRange from 'ckeditor5-engine/src/model/range';
+import ModelWalker from 'ckeditor5-engine/src/model/treewalker';
 
-import ModelSchema from 'ckeditor5/engine/model/schema.js';
-import ModelDocument from 'ckeditor5/engine/model/document.js';
-import ModelElement from 'ckeditor5/engine/model/element.js';
-import ModelTextProxy from 'ckeditor5/engine/model/textproxy.js';
-import ModelRange from 'ckeditor5/engine/model/range.js';
-import ModelWalker from 'ckeditor5/engine/model/treewalker.js';
+import ViewDocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
+import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
+import ViewAttributeElement from 'ckeditor5-engine/src/view/attributeelement';
+import ViewText from 'ckeditor5-engine/src/view/text';
+import ViewMatcher from 'ckeditor5-engine/src/view/matcher';
 
-import ViewDocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
-import ViewContainerElement from 'ckeditor5/engine/view/containerelement.js';
-import ViewAttributeElement from 'ckeditor5/engine/view/attributeelement.js';
-import ViewText from 'ckeditor5/engine/view/text.js';
-import ViewMatcher from 'ckeditor5/engine/view/matcher.js';
+import ViewConversionDispatcher from 'ckeditor5-engine/src/conversion/viewconversiondispatcher';
 
-import ViewConversionDispatcher from 'ckeditor5/engine/conversion/viewconversiondispatcher.js';
-
-import { convertToModelFragment, convertText } from 'ckeditor5/engine/conversion/view-to-model-converters.js';
+import { convertToModelFragment, convertText } from 'ckeditor5-engine/src/conversion/view-to-model-converters';
 
 function modelAttributesToString( item ) {
 	let result = '';

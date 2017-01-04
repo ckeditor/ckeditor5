@@ -3,12 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, operation */
-
-import Document from 'ckeditor5/engine/model/document.js';
-import RootAttributeOperation from 'ckeditor5/engine/model/operation/rootattributeoperation.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
-import { jsonParseStringify, wrapInDelta } from 'tests/engine/model/_utils/utils.js';
+import Document from 'ckeditor5-engine/src/model/document';
+import RootAttributeOperation from 'ckeditor5-engine/src/model/operation/rootattributeoperation';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import { jsonParseStringify, wrapInDelta } from 'ckeditor5-engine/tests/model/_utils/utils';
 
 describe( 'RootAttributeOperation', () => {
 	let doc, root;

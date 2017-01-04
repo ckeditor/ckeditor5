@@ -5,8 +5,8 @@
 
 /* globals console:false, document */
 
-import Document from 'ckeditor5/engine/view/document.js';
-import DomEventObserver from 'ckeditor5/engine/view/observer/domeventobserver.js';
+import Document from 'ckeditor5-engine/src/view/document';
+import DomEventObserver from 'ckeditor5-engine/src/view/observer/domeventobserver';
 
 const viewDocument = new Document();
 let observer1, observer2;

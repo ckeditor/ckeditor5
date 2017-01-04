@@ -7,10 +7,10 @@
  * @module engine/view/documentfragment
  */
 
-import Text from './text.js';
-import mix from '../../utils/mix.js';
-import isIterable from '../../utils/isiterable.js';
-import EmitterMixin from '../../utils/emittermixin.js';
+import Text from './text';
+import mix from 'ckeditor5-utils/src/mix';
+import isIterable from 'ckeditor5-utils/src/isiterable';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
 
 /**
  * DocumentFragment class.

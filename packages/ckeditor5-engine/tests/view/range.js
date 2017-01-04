@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view */
-
-import Range from 'ckeditor5/engine/view/range.js';
-import Position from 'ckeditor5/engine/view/position.js';
-import Element from 'ckeditor5/engine/view/element.js';
-import DocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
-import Text from 'ckeditor5/engine/view/text.js';
-import TreeWalker from 'ckeditor5/engine/view/treewalker.js';
-import { parse } from 'ckeditor5/engine/dev-utils/view.js';
+import Range from 'ckeditor5-engine/src/view/range';
+import Position from 'ckeditor5-engine/src/view/position';
+import Element from 'ckeditor5-engine/src/view/element';
+import DocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
+import Text from 'ckeditor5-engine/src/view/text';
+import TreeWalker from 'ckeditor5-engine/src/view/treewalker';
+import { parse } from 'ckeditor5-engine/src/dev-utils/view';
 
 function getRange( view, options = {} ) {
 	const { selection } = parse( view, options );

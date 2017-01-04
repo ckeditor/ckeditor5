@@ -3,22 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, operation */
-
-import transformations from 'ckeditor5/engine/model/delta/basic-transformations.js';
+import transformations from 'ckeditor5-engine/src/model/delta/basic-transformations';
 /*jshint unused: false*/
 
-import transform from 'ckeditor5/engine/model/delta/transform.js';
+import transform from 'ckeditor5-engine/src/model/delta/transform';
 
-import Position from 'ckeditor5/engine/model/position.js';
-import Range from 'ckeditor5/engine/model/range.js';
+import Position from 'ckeditor5-engine/src/model/position';
+import Range from 'ckeditor5-engine/src/model/range';
 
-import MoveDelta from 'ckeditor5/engine/model/delta/movedelta.js';
-import SplitDelta from 'ckeditor5/engine/model/delta/splitdelta.js';
+import MoveDelta from 'ckeditor5-engine/src/model/delta/movedelta';
+import SplitDelta from 'ckeditor5-engine/src/model/delta/splitdelta';
 
-import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
+import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
 
-import { getNodesAndText, jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
+import { getNodesAndText, jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
 
 import {
 	applyDelta,
@@ -26,7 +24,7 @@ import {
 	getFilledDocument,
 	getMergeDelta,
 	getMoveDelta
-} from 'tests/engine/model/delta/transform/_utils/utils.js';
+} from 'ckeditor5-engine/tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
 	let doc, root, gy, baseVersion;

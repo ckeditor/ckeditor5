@@ -7,9 +7,9 @@
  * @module engine/view/node
  */
 
-import CKEditorError from '../../utils/ckeditorerror.js';
-import EmitterMixin from '../../utils/emittermixin.js';
-import mix from '../../utils/mix.js';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import mix from 'ckeditor5-utils/src/mix';
 
 /**
  * Abstract tree view node class.

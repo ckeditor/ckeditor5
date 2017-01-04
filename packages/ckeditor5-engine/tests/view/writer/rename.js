@@ -3,10 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view, browser-only */
-
-import { rename } from 'ckeditor5/engine/view/writer.js';
-import { parse } from 'ckeditor5/engine/dev-utils/view.js';
+import { rename } from 'ckeditor5-engine/src/view/writer';
+import { parse } from 'ckeditor5-engine/src/dev-utils/view';
 
 describe( 'writer', () => {
 	describe( 'rename', () => {

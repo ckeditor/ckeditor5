@@ -7,10 +7,10 @@
  * @module engine/model/operation/removeoperation
  */
 
-import MoveOperation from './moveoperation.js';
-import Position from '../position.js';
-import Element from '../element.js';
-import ReinsertOperation from './reinsertoperation.js';
+import MoveOperation from './moveoperation';
+import Position from '../position';
+import Element from '../element';
+import ReinsertOperation from './reinsertoperation';
 
 /**
  * Operation to remove a range of nodes.

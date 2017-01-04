@@ -7,29 +7,29 @@
  * @module engine/model/delta/basic-transformations
  */
 
-import { addTransformationCase, defaultTransform } from './transform.js';
+import { addTransformationCase, defaultTransform } from './transform';
 
-import Range from '../range.js';
-import Position from '../position.js';
+import Range from '../range';
+import Position from '../position';
 
-import NoOperation from '../operation/nooperation.js';
-import AttributeOperation from '../operation/attributeoperation.js';
-import InsertOperation from '../operation/insertoperation.js';
-import ReinsertOperation from '../operation/reinsertoperation.js';
+import NoOperation from '../operation/nooperation';
+import AttributeOperation from '../operation/attributeoperation';
+import InsertOperation from '../operation/insertoperation';
+import ReinsertOperation from '../operation/reinsertoperation';
 
-import Delta from './delta.js';
-import AttributeDelta from './attributedelta.js';
-import InsertDelta from './insertdelta.js';
-import MergeDelta from './mergedelta.js';
-import MoveDelta from './movedelta.js';
-import SplitDelta from './splitdelta.js';
-import WeakInsertDelta from './weakinsertdelta.js';
-import WrapDelta from './wrapdelta.js';
-import UnwrapDelta from './unwrapdelta.js';
-import RenameDelta from './renamedelta.js';
-import RemoveDelta from './removedelta.js';
+import Delta from './delta';
+import AttributeDelta from './attributedelta';
+import InsertDelta from './insertdelta';
+import MergeDelta from './mergedelta';
+import MoveDelta from './movedelta';
+import SplitDelta from './splitdelta';
+import WeakInsertDelta from './weakinsertdelta';
+import WrapDelta from './wrapdelta';
+import UnwrapDelta from './unwrapdelta';
+import RenameDelta from './renamedelta';
+import RemoveDelta from './removedelta';
 
-import compareArrays from '../../../utils/comparearrays.js';
+import compareArrays from 'ckeditor5-utils/src/comparearrays';
 
 // Provide transformations for default deltas.
 

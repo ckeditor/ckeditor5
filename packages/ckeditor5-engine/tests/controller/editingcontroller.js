@@ -5,27 +5,27 @@
 
 /* globals setTimeout, Range, document */
 
-import EmitterMixin from 'ckeditor5/utils/emittermixin.js';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
 
-import EditingController from 'ckeditor5/engine/controller/editingcontroller.js';
+import EditingController from 'ckeditor5-engine/src/controller/editingcontroller';
 
-import ViewDocument from 'ckeditor5/engine/view/document.js';
+import ViewDocument from 'ckeditor5-engine/src/view/document';
 
-import Mapper from 'ckeditor5/engine/conversion/mapper.js';
-import ModelConversionDispatcher from 'ckeditor5/engine/conversion/modelconversiondispatcher.js';
-import buildModelConverter from 'ckeditor5/engine/conversion/buildmodelconverter.js';
+import Mapper from 'ckeditor5-engine/src/conversion/mapper';
+import ModelConversionDispatcher from 'ckeditor5-engine/src/conversion/modelconversiondispatcher';
+import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
 
-import ModelDocument from 'ckeditor5/engine/model/document.js';
-import ModelPosition from 'ckeditor5/engine/model/position.js';
-import ModelElement from 'ckeditor5/engine/model/element.js';
-import ModelRange from 'ckeditor5/engine/model/range.js';
-import ModelLiveRange from 'ckeditor5/engine/model/liverange.js';
-import ModelDocumentFragment from 'ckeditor5/engine/model/documentfragment.js';
+import ModelDocument from 'ckeditor5-engine/src/model/document';
+import ModelPosition from 'ckeditor5-engine/src/model/position';
+import ModelElement from 'ckeditor5-engine/src/model/element';
+import ModelRange from 'ckeditor5-engine/src/model/range';
+import ModelLiveRange from 'ckeditor5-engine/src/model/liverange';
+import ModelDocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
 
-import createElement from 'ckeditor5/utils/dom/createelement.js';
+import createElement from 'ckeditor5-utils/src/dom/createelement';
 
-import { parse, getData as getModelData } from 'ckeditor5/engine/dev-utils/model.js';
-import { getData as getViewData } from 'ckeditor5/engine/dev-utils/view.js';
+import { parse, getData as getModelData } from 'ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from 'ckeditor5-engine/src/dev-utils/view';
 
 describe( 'EditingController', () => {
 	describe( 'constructor()', () => {

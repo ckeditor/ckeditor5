@@ -4,18 +4,17 @@
  */
 
 /* globals setTimeout, document */
-/* bender-tags: view, browser-only */
 
-import ViewRange from 'ckeditor5/engine/view/range.js';
-import testUtils from 'tests/core/_utils/utils.js';
-import ViewSelection from 'ckeditor5/engine/view/selection.js';
-import ViewDocument from 'ckeditor5/engine/view/document.js';
-import SelectionObserver from 'ckeditor5/engine/view/observer/selectionobserver.js';
-import MutationObserver from 'ckeditor5/engine/view/observer/mutationobserver.js';
+import ViewRange from 'ckeditor5-engine/src/view/range';
+import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import ViewSelection from 'ckeditor5-engine/src/view/selection';
+import ViewDocument from 'ckeditor5-engine/src/view/document';
+import SelectionObserver from 'ckeditor5-engine/src/view/observer/selectionobserver';
+import MutationObserver from 'ckeditor5-engine/src/view/observer/mutationobserver';
 
-import log from 'ckeditor5/utils/log.js';
+import log from 'ckeditor5-utils/src/log';
 
-import { parse } from 'ckeditor5/engine/dev-utils/view.js';
+import { parse } from 'ckeditor5-engine/src/dev-utils/view';
 
 testUtils.createSinonSandbox();
 

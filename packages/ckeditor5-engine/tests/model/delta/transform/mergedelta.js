@@ -3,25 +3,23 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, operation */
-
-import transformations from 'ckeditor5/engine/model/delta/basic-transformations.js';
+import transformations from 'ckeditor5-engine/src/model/delta/basic-transformations';
 /*jshint unused: false*/
 
-import transform from 'ckeditor5/engine/model/delta/transform.js';
+import transform from 'ckeditor5-engine/src/model/delta/transform';
 
-import Element from 'ckeditor5/engine/model/element.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import Range from 'ckeditor5/engine/model/range.js';
+import Element from 'ckeditor5-engine/src/model/element';
+import Position from 'ckeditor5-engine/src/model/position';
+import Range from 'ckeditor5-engine/src/model/range';
 
-import Delta from 'ckeditor5/engine/model/delta/delta.js';
-import MergeDelta from 'ckeditor5/engine/model/delta/mergedelta.js';
+import Delta from 'ckeditor5-engine/src/model/delta/delta';
+import MergeDelta from 'ckeditor5-engine/src/model/delta/mergedelta';
 
-import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
-import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
-import NoOperation from 'ckeditor5/engine/model/operation/nooperation.js';
+import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
+import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
+import NoOperation from 'ckeditor5-engine/src/model/operation/nooperation';
 
-import { getNodesAndText, jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
+import { getNodesAndText, jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
 
 import {
 	applyDelta,
@@ -30,7 +28,7 @@ import {
 	getInsertDelta,
 	getMergeDelta,
 	getMoveDelta
-} from 'tests/engine/model/delta/transform/_utils/utils.js';
+} from 'ckeditor5-engine/tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
 	let doc, root, gy, baseVersion;

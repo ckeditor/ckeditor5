@@ -7,8 +7,8 @@
  * @module engine/model/operation/rootattributeoperation
  */
 
-import Operation from './operation.js';
-import CKEditorError from '../../../utils/ckeditorerror.js';
+import Operation from './operation';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Operation to change root element's attribute. Using this class you can add, remove or change value of the attribute.

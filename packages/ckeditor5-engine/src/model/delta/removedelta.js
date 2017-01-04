@@ -7,12 +7,12 @@
  * @module engine/model/delta/removedelta
  */
 
-import MoveDelta from './movedelta.js';
-import { register } from '../batch.js';
-import DeltaFactory from './deltafactory.js';
-import RemoveOperation from '../operation/removeoperation.js';
-import Position from '../position.js';
-import Range from '../range.js';
+import MoveDelta from './movedelta';
+import { register } from '../batch';
+import DeltaFactory from './deltafactory';
+import RemoveOperation from '../operation/removeoperation';
+import Position from '../position';
+import Range from '../range';
 
 /**
  * @classdesc

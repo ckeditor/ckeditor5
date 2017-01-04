@@ -3,20 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, delta */
+import Document from 'ckeditor5-engine/src/model/document';
+import Element from 'ckeditor5-engine/src/model/element';
+import Text from 'ckeditor5-engine/src/model/text';
+import Position from 'ckeditor5-engine/src/model/position';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
-import Document from 'ckeditor5/engine/model/document.js';
-import Element from 'ckeditor5/engine/model/element.js';
-import Text from 'ckeditor5/engine/model/text.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import UnwrapDelta from 'ckeditor5-engine/src/model/delta/unwrapdelta';
+import WrapDelta from 'ckeditor5-engine/src/model/delta/wrapdelta';
 
-import UnwrapDelta from 'ckeditor5/engine/model/delta/unwrapdelta.js';
-import WrapDelta from 'ckeditor5/engine/model/delta/wrapdelta.js';
-
-import MoveOperation from 'ckeditor5/engine/model/operation/moveoperation.js';
-import RemoveOperation from 'ckeditor5/engine/model/operation/removeoperation.js';
-import ReinsertOperation from 'ckeditor5/engine/model/operation/reinsertoperation.js';
+import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
+import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
+import ReinsertOperation from 'ckeditor5-engine/src/model/operation/reinsertoperation';
 
 describe( 'Batch', () => {
 	let doc, root, p;

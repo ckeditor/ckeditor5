@@ -7,11 +7,11 @@
  * @module engine/model/delta/insertdelta
  */
 
-import Delta from './delta.js';
-import DeltaFactory from './deltafactory.js';
-import RemoveDelta from './removedelta.js';
-import { register } from '../batch.js';
-import InsertOperation from '../operation/insertoperation.js';
+import Delta from './delta';
+import DeltaFactory from './deltafactory';
+import RemoveDelta from './removedelta';
+import { register } from '../batch';
+import InsertOperation from '../operation/insertoperation';
 
 /**
  * @classdesc

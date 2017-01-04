@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view, browser-only */
-
-import { mergeAttributes } from 'ckeditor5/engine/view/writer.js';
-import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
-import Text from 'ckeditor5/engine/view/text.js';
-import Position from 'ckeditor5/engine/view/position.js';
-import { stringify, parse } from 'ckeditor5/engine/dev-utils/view.js';
+import { mergeAttributes } from 'ckeditor5-engine/src/view/writer';
+import ContainerElement from 'ckeditor5-engine/src/view/containerelement';
+import Text from 'ckeditor5-engine/src/view/text';
+import Position from 'ckeditor5-engine/src/view/position';
+import { stringify, parse } from 'ckeditor5-engine/src/dev-utils/view';
 
 describe( 'writer', () => {
 	/**

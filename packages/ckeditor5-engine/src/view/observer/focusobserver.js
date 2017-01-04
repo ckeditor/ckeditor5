@@ -7,7 +7,7 @@
  * @module engine/view/observer/focusobserver
  */
 
-import DomEventObserver from './domeventobserver.js';
+import DomEventObserver from './domeventobserver';
 
 /**
  * {@link module:engine/view/document~Document#event:focus Focus}

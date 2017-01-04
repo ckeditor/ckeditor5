@@ -4,16 +4,15 @@
  */
 
 /* globals document, Range */
-/* bender-tags: view, browser-only */
 
-import ViewRange from 'ckeditor5/engine/view/range.js';
-import ViewDocument from 'ckeditor5/engine/view/document.js';
-import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from 'ckeditor5/engine/view/filler.js';
+import ViewRange from 'ckeditor5-engine/src/view/range';
+import ViewDocument from 'ckeditor5-engine/src/view/document';
+import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from 'ckeditor5-engine/src/view/filler';
 
-import { keyCodes } from 'ckeditor5/utils/keyboard.js';
-import createElement from 'ckeditor5/utils/dom/createelement.js';
+import { keyCodes } from 'ckeditor5-utils/src/keyboard';
+import createElement from 'ckeditor5-utils/src/dom/createelement';
 
-import { parse, setData } from 'ckeditor5/engine/dev-utils/view.js';
+import { parse, setData } from 'ckeditor5-engine/src/dev-utils/view';
 
 describe( 'Document', () => {
 	let viewDocument, domRoot;

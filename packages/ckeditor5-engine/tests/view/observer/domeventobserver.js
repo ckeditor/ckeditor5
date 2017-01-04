@@ -4,11 +4,10 @@
  */
 
 /* globals MouseEvent, document */
-/* bender-tags: view, browser-only */
 
-import DomEventObserver from 'ckeditor5/engine/view/observer/domeventobserver.js';
-import Observer from 'ckeditor5/engine/view/observer/observer.js';
-import ViewDocument from 'ckeditor5/engine/view/document.js';
+import DomEventObserver from 'ckeditor5-engine/src/view/observer/domeventobserver';
+import Observer from 'ckeditor5-engine/src/view/observer/observer';
+import ViewDocument from 'ckeditor5-engine/src/view/document';
 
 class ClickObserver extends DomEventObserver {
 	constructor( document ) {

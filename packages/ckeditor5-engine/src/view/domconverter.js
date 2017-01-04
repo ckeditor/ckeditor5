@@ -9,19 +9,19 @@
 
 /* globals Range, Node, NodeFilter */
 
-import ViewText from './text.js';
-import ViewElement from './element.js';
-import ViewPosition from './position.js';
-import ViewRange from './range.js';
-import ViewSelection from './selection.js';
-import ViewDocumentFragment from './documentfragment.js';
-import ViewContainerElement from './containerelement.js';
-import ViewTreeWalker from './treewalker.js';
-import { BR_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, isInlineFiller, startsWithFiller, getDataWithoutFiller } from './filler.js';
+import ViewText from './text';
+import ViewElement from './element';
+import ViewPosition from './position';
+import ViewRange from './range';
+import ViewSelection from './selection';
+import ViewDocumentFragment from './documentfragment';
+import ViewContainerElement from './containerelement';
+import ViewTreeWalker from './treewalker';
+import { BR_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, isInlineFiller, startsWithFiller, getDataWithoutFiller } from './filler';
 
-import indexOf from '../../utils/dom/indexof.js';
-import getAncestors from '../../utils/dom/getancestors.js';
-import getCommonAncestor from '../../utils/dom/getcommonancestor.js';
+import indexOf from 'ckeditor5-utils/src/dom/indexof';
+import getAncestors from 'ckeditor5-utils/src/dom/getancestors';
+import getCommonAncestor from 'ckeditor5-utils/src/dom/getcommonancestor';
 
 /**
  * DomConverter is a set of tools to do transformations between DOM nodes and view nodes. It also handles

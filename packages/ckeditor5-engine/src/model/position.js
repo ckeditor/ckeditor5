@@ -7,12 +7,12 @@
  * @module engine/model/position
  */
 
-import DocumentFragment from './documentfragment.js';
-import Element from './element.js';
-import last from '../../utils/lib/lodash/last.js';
-import compareArrays from '../../utils/comparearrays';
-import CKEditorError from '../../utils/ckeditorerror.js';
-import Text from './text.js';
+import DocumentFragment from './documentfragment';
+import Element from './element';
+import last from 'ckeditor5-utils/src/lib/lodash/last';
+import compareArrays from 'ckeditor5-utils/src/comparearrays';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Text from './text';
 
 /**
  * Represents a position in the model tree.

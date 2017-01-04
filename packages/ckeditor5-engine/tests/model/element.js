@@ -3,14 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model */
-
-import Node from 'ckeditor5/engine/model/node.js';
-import Element from 'ckeditor5/engine/model/element.js';
-import Text from 'ckeditor5/engine/model/text.js';
-import { jsonParseStringify } from 'tests/engine/model/_utils/utils.js';
-import count from 'ckeditor5/utils/count.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import Node from 'ckeditor5-engine/src/model/node';
+import Element from 'ckeditor5-engine/src/model/element';
+import Text from 'ckeditor5-engine/src/model/text';
+import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
+import count from 'ckeditor5-utils/src/count';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 describe( 'Element', () => {
 	describe( 'constructor()', () => {

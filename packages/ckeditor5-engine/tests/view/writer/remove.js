@@ -3,16 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: view, browser-only */
-
-import { remove } from 'ckeditor5/engine/view/writer.js';
-import ContainerElement from 'ckeditor5/engine/view/containerelement.js';
-import Range from 'ckeditor5/engine/view/range.js';
-import DocumentFragment from 'ckeditor5/engine/view/documentfragment.js';
-import { stringify, parse } from 'ckeditor5/engine/dev-utils/view.js';
-import AttributeElement from 'ckeditor5/engine/view/attributeelement.js';
-import EmptyElement from 'ckeditor5/engine/view/emptyelement.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
+import { remove } from 'ckeditor5-engine/src/view/writer';
+import ContainerElement from 'ckeditor5-engine/src/view/containerelement';
+import Range from 'ckeditor5-engine/src/view/range';
+import DocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
+import { stringify, parse } from 'ckeditor5-engine/src/dev-utils/view';
+import AttributeElement from 'ckeditor5-engine/src/view/attributeelement';
+import EmptyElement from 'ckeditor5-engine/src/view/emptyelement';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 
 describe( 'writer', () => {
 	/**

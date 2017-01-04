@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model, delta */
-
-import { getNodesAndText } from 'tests/engine/model/_utils/utils.js';
-import Document from 'ckeditor5/engine/model/document.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import Range from 'ckeditor5/engine/model/range.js';
-import Element from 'ckeditor5/engine/model/element.js';
-import Text from 'ckeditor5/engine/model/text.js';
-import RemoveDelta from 'ckeditor5/engine/model/delta/removedelta.js';
+import { getNodesAndText } from 'ckeditor5-engine/tests/model/_utils/utils';
+import Document from 'ckeditor5-engine/src/model/document';
+import Position from 'ckeditor5-engine/src/model/position';
+import Range from 'ckeditor5-engine/src/model/range';
+import Element from 'ckeditor5-engine/src/model/element';
+import Text from 'ckeditor5-engine/src/model/text';
+import RemoveDelta from 'ckeditor5-engine/src/model/delta/removedelta';
 
 describe( 'Batch', () => {
 	let doc, root, div, p, batch, chain, range;

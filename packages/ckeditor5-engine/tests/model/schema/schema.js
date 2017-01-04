@@ -3,15 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-/* bender-tags: model */
-
-import Schema from 'ckeditor5/engine/model/schema.js';
-import { SchemaItem as SchemaItem } from 'ckeditor5/engine/model/schema.js';
-import Document from 'ckeditor5/engine/model/document.js';
-import Element from 'ckeditor5/engine/model/element.js';
-import Position from 'ckeditor5/engine/model/position.js';
-import CKEditorError from 'ckeditor5/utils/ckeditorerror.js';
-import testUtils from 'tests/core/_utils/utils.js';
+import Schema from 'ckeditor5-engine/src/model/schema';
+import { SchemaItem as SchemaItem } from 'ckeditor5-engine/src/model/schema';
+import Document from 'ckeditor5-engine/src/model/document';
+import Element from 'ckeditor5-engine/src/model/element';
+import Position from 'ckeditor5-engine/src/model/position';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import testUtils from 'ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 

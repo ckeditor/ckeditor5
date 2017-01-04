@@ -7,14 +7,14 @@
  * @module engine/model/selection
  */
 
-import Position from './position.js';
-import Element from './element.js';
-import Range from './range.js';
-import EmitterMixin from '../../utils/emittermixin.js';
-import CKEditorError from '../../utils/ckeditorerror.js';
-import mix from '../../utils/mix.js';
-import toMap from '../../utils/tomap.js';
-import mapsEqual from '../../utils/mapsequal.js';
+import Position from './position';
+import Element from './element';
+import Range from './range';
+import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import mix from 'ckeditor5-utils/src/mix';
+import toMap from 'ckeditor5-utils/src/tomap';
+import mapsEqual from 'ckeditor5-utils/src/mapsequal';
 
 /**
  * `Selection` is a group of {@link module:engine/model/range~Range ranges} which has a direction specified by
