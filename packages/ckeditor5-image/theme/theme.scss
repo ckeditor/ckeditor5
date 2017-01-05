@@ -2,6 +2,10 @@
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
 @import '~ckeditor5-theme-lark/theme/helpers/_spacing';
+@import '~ckeditor5-theme-lark/theme/helpers/_colors';
+@import '~ckeditor5-theme-lark/theme/helpers/_rounded';
+@import '~ckeditor5-theme-lark/theme/helpers/_shadow';
+@import '~ckeditor5-theme-lark/theme/helpers/_states';
 
 // Common styles applied to all widgets.
 .ck-widget {
@@ -59,5 +63,22 @@
 				}
 			}
 		}
+	}
+}
+
+// Textarea view.
+// TODO: how to define by class only without textarea
+textarea.ck-textarea {
+	@include ck-rounded-corners();
+	@include ck-box-shadow( $ck-inner-shadow );
+
+	border: 1px solid ck-border-color( 'foreground' );
+	padding: ck-spacing( 'medium' );
+	min-width: 250px;
+	resize: none;
+
+	&:focus {
+		@include ck-focus-ring();
+		@include ck-box-shadow( $ck-focus-outer-shadow, $ck-inner-shadow );
 	}
 }

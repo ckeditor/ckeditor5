@@ -7,6 +7,7 @@
  * @module image/imagetoolbar
  */
 
+import Template from 'ckeditor5-ui/src/template';
 import Plugin from 'ckeditor5-core/src/plugin';
 import ToolbarView from 'ckeditor5-ui/src/toolbar/toolbarview';
 import { isImageWidget } from './utils';
@@ -31,11 +32,18 @@ export default class ImageToolbar extends Plugin {
 			return;
 		}
 
-		this._panel = new ImageBalloonPanel( editor );
-
-		const panel = this._panel;
+		const panel = this._panel = new ImageBalloonPanel( editor );
 		const promises = [];
 		const toolbar = new ToolbarView();
+
+		// Add CSS class to the panel.
+		Template.extend( panel.template, {
+			attributes: {
+				class: [
+					'ck-toolbar__container',
+				]
+			}
+		} );
 
 		// Add toolbar to balloon panel.
 		promises.push( panel.content.add( toolbar ) );

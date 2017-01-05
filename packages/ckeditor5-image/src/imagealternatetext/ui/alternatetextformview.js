@@ -11,7 +11,7 @@ import View from 'ckeditor5-ui/src/view';
 import ButtonView from 'ckeditor5-ui/src/button/buttonview';
 import Template from 'ckeditor5-ui/src/template';
 import LabeledInputView from 'ckeditor5-ui/src/labeledinput/labeledinputview';
-import InputTextView from 'ckeditor5-ui/src/inputtext/inputtextview';
+import TextAreaView from './textareaview';
 import submitHandler from 'ckeditor5-ui/src/bindings/submithandler';
 
 export default class AlternateTextFormView extends View{
@@ -94,7 +94,7 @@ export default class AlternateTextFormView extends View{
 	_createAlternateTextInput() {
 		const t = this.locale.t;
 
-		const labeledInput = new LabeledInputView( this.locale, InputTextView );
+		const labeledInput = new LabeledInputView( this.locale, TextAreaView );
 
 		labeledInput.label = t( 'Alternate image text' );
 

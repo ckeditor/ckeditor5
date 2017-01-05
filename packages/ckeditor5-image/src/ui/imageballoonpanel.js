@@ -7,7 +7,6 @@
  * @module image/ui/imageballoonpanel
  */
 
-import Template from 'ckeditor5-ui/src/template';
 import throttle from 'ckeditor5-utils/src/lib/lodash/throttle';
 import global from 'ckeditor5-utils/src/dom/global';
 import BalloonPanelView from 'ckeditor5-ui/src/balloonpanel/balloonpanelview';
@@ -44,14 +43,6 @@ export default class ImageBalloonPanel extends BalloonPanelView {
 
 		this.editor = editor;
 		const editingView = editor.editing.view;
-
-		Template.extend( this.template, {
-			attributes: {
-				class: [
-					'ck-toolbar__container',
-				]
-			}
-		} );
 
 		// Let the focusTracker know about new focusable UI element.
 		editor.ui.focusTracker.add( this.element );
