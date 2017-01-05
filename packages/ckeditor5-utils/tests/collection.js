@@ -281,6 +281,42 @@ describe( 'Collection', () => {
 		} );
 	} );
 
+	describe( 'getIndex', () => {
+		it( 'should return index of given item', () => {
+			const item1 = { foo: 'bar' };
+			const item2 = { bar: 'biz' };
+			const item3 = { foo: 'biz' };
+
+			collection.add( item1 );
+			collection.add( item2 );
+			collection.add( item3 );
+
+			expect( collection.getIndex( item1 ) ).to.equal( 0 );
+			expect( collection.getIndex( item2 ) ).to.equal( 1 );
+			expect( collection.getIndex( item3 ) ).to.equal( 2 );
+		} );
+
+		it( 'should return index of item with given id', () => {
+			collection.add( { id: 'id1' } );
+			collection.add( { id: 'id2' } );
+			collection.add( { id: 'id3' } );
+
+			expect( collection.getIndex( 'id1' ) ).to.equal( 0 );
+			expect( collection.getIndex( 'id2' ) ).to.equal( 1 );
+			expect( collection.getIndex( 'id3' ) ).to.equal( 2 );
+		} );
+
+		it( 'should return index equal to -1 when given item is not defined in the collection', () => {
+			const item1 = { foo: 'bar' };
+
+			expect( collection.getIndex( item1 ) ).to.equal( -1 );
+		} );
+
+		it( 'should return index equal to -1 when item of given id is not defined in the collection', () => {
+			expect( collection.getIndex( 'id1' ) ).to.equal( -1 );
+		} );
+	} );
+
 	describe( 'remove', () => {
 		it( 'should remove the model by index', () => {
 			collection.add( getItem( 'bom' ) );

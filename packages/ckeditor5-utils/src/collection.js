@@ -153,6 +153,25 @@ export default class Collection {
 	}
 
 	/**
+	 * Gets index of item in the collection.
+	 * When item is not defined in the collection then index will be equal -1.
+	 *
+	 * @param {String|Object} idOrItem The item or its id in the collection.
+	 * @returns {Number} Index of given item.
+	 */
+	getIndex( idOrItem ) {
+		let item;
+
+		if ( typeof idOrItem == 'string' ) {
+			item = this._itemMap.get( idOrItem );
+		} else {
+			item = idOrItem;
+		}
+
+		return this._items.indexOf( item );
+	}
+
+	/**
 	 * Removes an item from the collection.
 	 *
 	 * @param {Object|Number|String} subject The item to remove, its id or index in the collection.
