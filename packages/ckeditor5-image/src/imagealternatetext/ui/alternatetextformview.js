@@ -18,7 +18,7 @@ export default class AlternateTextFormView extends View{
 	constructor( locale ) {
 		super( locale );
 
-		this.alternateTextInput = this._createAlternateTextInput();
+		this.labeledTextarea = this._createLabeledTextarea();
 
 		this.saveButtonView = this._createButton( 'Ok' );
 		this.saveButtonView.type = 'submit';
@@ -46,7 +46,7 @@ export default class AlternateTextFormView extends View{
 			},
 
 			children: [
-				this.alternateTextInput,
+				this.labeledTextarea,
 				{
 					tag: 'div',
 
@@ -91,7 +91,7 @@ export default class AlternateTextFormView extends View{
 		return button;
 	}
 
-	_createAlternateTextInput() {
+	_createLabeledTextarea() {
 		const t = this.locale.t;
 
 		const labeledInput = new LabeledInputView( this.locale, TextAreaView );

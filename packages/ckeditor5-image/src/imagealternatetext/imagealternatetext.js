@@ -76,7 +76,7 @@ export default class ImageAlternateText extends Plugin {
 		const form = this._form = new AlternateTextFormView( editor.locale );
 
 		this.listenTo( form, 'submit', () => {
-			editor.execute( 'imageAlternateText', form.alternateTextInput.value );
+			editor.execute( 'imageAlternateText', { newValue: form.labeledTextarea.inputView.element.value } );
 			this._hideBalloonPanel();
 		} );
 
@@ -114,8 +114,8 @@ export default class ImageAlternateText extends Plugin {
 			imageToolbar.hide();
 		}
 
-		this._form.alternateTextInput.value = command.value || '';
-		this._form.alternateTextInput.select();
+		this._form.labeledTextarea.value = command.value || '';
+		this._form.labeledTextarea.select();
 		this._panel.attach();
 	}
 
