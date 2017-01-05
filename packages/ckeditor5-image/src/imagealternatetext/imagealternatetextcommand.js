@@ -42,7 +42,15 @@ export default class ImageAlternateTextCommand extends Command {
 		return isImage( element );
 	}
 
-	_doExecute() {
-		console.log( 'attribute change command execute' );
+	_doExecute( options ) {
+		const editor = this.editor;
+		const doc = editor.document;
+		const imageElement = doc.selection.getSelectedElement();
+
+		doc.enqueueChanges( () => {
+			const batch = options.batch || doc.batch();
+
+			batch.setAttribute( imageElement, 'alt', options.newValue );
+		} );
 	}
 }
