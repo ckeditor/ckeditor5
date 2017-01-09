@@ -30,23 +30,10 @@ export function modelToViewSetStyle( styles ) {
 		const oldStyle = getStyleByValue( data.attributeOldValue, styles );
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-		if ( eventType == 'changeAttribute' || eventType == 'removeAttribute' ) {
-			if ( !oldStyle ) {
-				return;
-			}
-
-			viewElement.removeClass( oldStyle.className );
+		if ( handleRemoval( eventType, oldStyle, viewElement ) &&
+			handleAddition( eventType, newStyle, viewElement ) ) {
+			consumable.consume( data.item, consumableType );
 		}
-
-		if ( eventType == 'addAttribute' || eventType == 'changeAttribute' ) {
-			if ( !newStyle ) {
-				return;
-			}
-
-			viewElement.addClass( newStyle.className );
-		}
-
-		consumable.consume( data.item, consumableType );
 	};
 }
 
@@ -70,7 +57,6 @@ export function viewToModelImageStyles( styles ) {
 // Converter from view to model converting single style.
 // For more information see {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher};
 //
-// @private
 // @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} style
 // @param {Object} data
 // @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable
@@ -103,6 +89,7 @@ function viewToModelImageStyle( style, data, consumable, conversionApi ) {
 }
 
 // Returns style with given `value` from array of styles.
+//
 // @param {String} value
 // @param {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat> } styles
 // @return {module:image/imagestyle/imagestyleengine~ImageStyleFormat|undefined}
@@ -112,4 +99,42 @@ function getStyleByValue( value, styles ) {
 			return style;
 		}
 	}
+}
+
+// Handles converting removal of the attribute.
+// Returns `true` when handling was processed correctly and further conversion can be performed.
+//
+// @param {String} eventType Type of the event.
+// @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} style
+// @param {module:engine/view/element~Element} viewElement
+// @returns {Boolean}
+function handleRemoval( eventType, style, viewElement ) {
+	if ( eventType == 'changeAttribute' || eventType == 'removeAttribute' ) {
+		if ( !style ) {
+			return false;
+		}
+
+		viewElement.removeClass( style.className );
+	}
+
+	return true;
+}
+
+// Handles converting addition of the attribute.
+// Returns `true` when handling was processed correctly and further conversion can be performed.
+//
+// @param {String} eventType Type of the event.
+// @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} style
+// @param {module:engine/view/element~Element} viewElement
+// @returns {Boolean}
+function handleAddition( evenType, style, viewElement ) {
+	if ( evenType == 'addAttribute' || evenType == 'changeAttribute' ) {
+		if ( !style ) {
+			return false;
+		}
+
+		viewElement.addClass( style.className );
+	}
+
+	return true;
 }
