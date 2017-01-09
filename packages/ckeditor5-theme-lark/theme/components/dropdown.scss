@@ -25,12 +25,9 @@
 
 .ck-dropdown__panel {
 	border: 1px solid ck-border-color( 'foreground' );
-	left: 0px;
 
 	// Compensate double border from button and from box when positioned below the button.
 	bottom: 2px;
-
-	transform: translateY( 100% );
 	background: ck-color( 'background' );
 
 	@include ck-rounded-corners();
