@@ -51,38 +51,55 @@ export function modelToViewSetStyle( styles ) {
 }
 
 /**
- * Returns view to model converter converting image style CSS class to proper value in the model.
+ * Returns view to model converter converting image CSS classes to proper value in the model.
  *
- * @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} style Style for which converter is created.
+ * @param {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat>} styles Styles for which converter is created.
  * @returns {Function} View to model converter.
  */
-export function viewToModelImageStyle( style ) {
+export function viewToModelImageStyles( styles ) {
+	// Convert only styles without `null` value.
+	const filteredStyles = styles.filter( style => style.value !== null );
+
 	return ( evt, data, consumable, conversionApi ) => {
-		const viewFigureElement = data.input;
-		const modelImageElement = data.output;
-
-		// *** Step 1: Validate conversion.
-		// Check if view element has proper class to consume.
-		if ( !consumable.test( viewFigureElement, { class: style.className } ) ) {
-			return;
+		for ( let style of filteredStyles ) {
+			viewToModelImageStyle( style, data, consumable, conversionApi );
 		}
-
-		// Check if figure is converted to image.
-		if ( !isImage( modelImageElement ) ) {
-			return;
-		}
-
-		// Check if image element can be placed in current context wit additional attribute.
-		const attributes = [ ...modelImageElement.getAttributeKeys(), 'imageStyle' ];
-
-		if ( !conversionApi.schema.check( { name: 'image', inside: data.context, attributes } ) ) {
-			return;
-		}
-
-		// *** Step2: Convert to model.
-		consumable.consume( viewFigureElement, { class: style.className } );
-		modelImageElement.setAttribute( 'imageStyle', style.value );
 	};
+}
+
+// Converter from view to model converting single style.
+// For more information see {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher};
+//
+// @private
+// @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} style
+// @param {Object} data
+// @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable
+// @param {Object} conversionApi
+function viewToModelImageStyle( style, data, consumable, conversionApi ) {
+	const viewFigureElement = data.input;
+	const modelImageElement = data.output;
+
+	// *** Step 1: Validate conversion.
+	// Check if view element has proper class to consume.
+	if ( !consumable.test( viewFigureElement, { class: style.className } ) ) {
+		return;
+	}
+
+	// Check if figure is converted to image.
+	if ( !isImage( modelImageElement ) ) {
+		return;
+	}
+
+	// Check if image element can be placed in current context wit additional attribute.
+	const attributes = [ ...modelImageElement.getAttributeKeys(), 'imageStyle' ];
+
+	if ( !conversionApi.schema.check( { name: 'image', inside: data.context, attributes } ) ) {
+		return;
+	}
+
+	// *** Step2: Convert to model.
+	consumable.consume( viewFigureElement, { class: style.className } );
+	modelImageElement.setAttribute( 'imageStyle', style.value );
 }
 
 // Returns style with given `value` from array of styles.

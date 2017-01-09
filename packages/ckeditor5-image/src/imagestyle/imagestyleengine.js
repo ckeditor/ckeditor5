@@ -10,7 +10,7 @@
 import Plugin from 'ckeditor5-core/src/plugin';
 import ImageStyleCommand from './imagestylecommand';
 import ImageEngine from '../imageengine';
-import { viewToModelImageStyle, modelToViewSetStyle } from './converters';
+import { viewToModelImageStyles, modelToViewSetStyle } from './converters';
 import fullSizeIcon from 'ckeditor5-core/theme/icons/object-center.svg';
 import sideIcon from 'ckeditor5-core/theme/icons/object-right.svg';
 
@@ -64,14 +64,11 @@ export default class ImageStyleEngine extends Plugin {
 		editing.modelToView.on( 'removeAttribute:imageStyle:image', modelToViewConverter );
 		data.modelToView.on( 'removeAttribute:imageStyle:image', modelToViewConverter );
 
-		for ( let style of styles ) {
-			// Converter for figure element from view to model.
-			// Create converter only for non-null values.
-			if ( style.value !== null ) {
-				data.viewToModel.on( 'element:figure', viewToModelImageStyle( style ), { priority: 'low' } );
-			}
+		// Converter for figure element from view to model.
+		data.viewToModel.on( 'element:figure', viewToModelImageStyles( styles ), { priority: 'low' } );
 
-			// Register separate command for each style.
+		// Register separate command for each style.
+		for ( let style of styles ) {
 			editor.commands.set( style.name, new ImageStyleCommand( editor, style ) );
 		}
 	}
