@@ -9,36 +9,59 @@
 
 const translations = {};
 
-export function define( lang, fileDictionary ) {
+/**
+ * Merges package translations to existing ones.
+ * These translations can be used later with {@link module:utils/translations-service~translate translate}
+ *
+ *		define( 'pl', {
+ *			core: {
+ *				ok: 'OK',
+ *				cancel: 'Anuluj'
+ *			}
+ *		} );
+ *
+ * @param {String} lang
+ * @param {Object.<String, Object>} packageDictionary
+ * @returns undefined
+ */
+export function define( lang, packageDictionary ) {
 	if ( !( lang in translations ) ) {
 		translations[ lang ] = {};
 	}
 
 	const dictionary = translations[ lang ];
 
-	for ( const packageName in fileDictionary ) {
-		if ( !( packageName in dictionary ) ) {
-			dictionary[ packageName ] = {};
+	for ( const packageName in packageDictionary ) {
+		for ( const translationKey in packageDictionary[ packageName ] ) {
+			const translation = packageDictionary[ packageName ][ translationKey ];
+			dictionary[ `${packageName}/${translationKey}` ] = translation;
 		}
-
-		Object.assign( dictionary[ packageName ], fileDictionary[ packageName ] );
 	}
 }
 
+/**
+ * Translates string if the translation of the string was previously defined using {@link module:utils/translations-service~define define}.
+ * Otherwise returns original (English) sentence.
+ *
+ *		translate( 'pl', 'core/ok: OK' );
+ *
+ * @param {String} lang Translation language.
+ * @param {String} str Sentence which is going to be translated.
+ * @returns {String} Translated sentence.
+ */
 export function translate( lang, str ) {
-	const [ contextId, englishWord ] = str.split( ': ' );
-	const [ packageName, translationKey ] = contextId.split( '/' );
+	const [ translationKey, englishSentence ] = str.split( ': ' );
 
-	if (
-		!( lang in translations ) ||
-		!( packageName in translations[ lang ] ) ||
-		!( translationKey in translations[ lang ][ packageName ] )
-	) {
-		return englishWord;
+	if ( !existTranslationKey( lang, translationKey ) ) {
+		return englishSentence;
 	}
 
-	return translations[ lang ][ packageName ][ translationKey ];
+	return translations[ lang ][ translationKey ];
+}
 
-	// development
-	// return str.replace( /^[^:]+: /, '' );
+function existTranslationKey( lang, translationKey ) {
+	return (
+		!( lang in translations ) ||
+		!( translationKey in translations[ lang ] )
+	);
 }
