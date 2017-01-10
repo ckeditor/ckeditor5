@@ -10,13 +10,13 @@
 import { isImage } from '../utils';
 
 /**
- * Returns converter for `imageStyle` attribute. It can be used for adding, changing and removing the attribute.
+ * Returns converter for the `imageStyle` attribute. It can be used for adding, changing and removing the attribute.
  *
  * @param {Object} styles Object containing available styles. See {@link module:image/imagestyle/imagestyleengine~ImageStyleFormat}
  * for more details.
  * @returns {Function} Model to view attribute converter.
  */
-export function modelToViewSetStyle( styles ) {
+export function modelToViewStyleAttribute( styles ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		const eventType = evt.name.split( ':' )[ 0 ];
 		const consumableType = eventType + ':imageStyle';
@@ -42,7 +42,7 @@ export function modelToViewSetStyle( styles ) {
  * @param {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat>} styles Styles for which converter is created.
  * @returns {Function} View to model converter.
  */
-export function viewToModelImageStyles( styles ) {
+export function viewToModelStyleAttribute( styles ) {
 	// Convert only styles without `null` value.
 	const filteredStyles = styles.filter( style => style.value !== null );
 
