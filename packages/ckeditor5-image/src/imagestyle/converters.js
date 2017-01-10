@@ -30,8 +30,7 @@ export function modelToViewSetStyle( styles ) {
 		const oldStyle = getStyleByValue( data.attributeOldValue, styles );
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 
-		if ( handleRemoval( eventType, oldStyle, viewElement ) &&
-			handleAddition( eventType, newStyle, viewElement ) ) {
+		if ( handleRemoval( eventType, oldStyle, viewElement ) || handleAddition( eventType, newStyle, viewElement ) ) {
 			consumable.consume( data.item, consumableType );
 		}
 	};
@@ -107,17 +106,15 @@ function getStyleByValue( value, styles ) {
 // @param {String} eventType Type of the event.
 // @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} style
 // @param {module:engine/view/element~Element} viewElement
-// @returns {Boolean}
+// @returns {Boolean} Whether the change was handled.
 function handleRemoval( eventType, style, viewElement ) {
-	if ( eventType == 'changeAttribute' || eventType == 'removeAttribute' ) {
-		if ( !style ) {
-			return false;
-		}
-
+	if ( style && ( eventType == 'changeAttribute' || eventType == 'removeAttribute' ) ) {
 		viewElement.removeClass( style.className );
+
+		return true;
 	}
 
-	return true;
+	return false;
 }
 
 // Handles converting addition of the attribute.
@@ -126,15 +123,13 @@ function handleRemoval( eventType, style, viewElement ) {
 // @param {String} eventType Type of the event.
 // @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} style
 // @param {module:engine/view/element~Element} viewElement
-// @returns {Boolean}
+// @returns {Boolean} Whether the change was handled.
 function handleAddition( evenType, style, viewElement ) {
-	if ( evenType == 'addAttribute' || evenType == 'changeAttribute' ) {
-		if ( !style ) {
-			return false;
-		}
-
+	if ( style && ( evenType == 'addAttribute' || evenType == 'changeAttribute' ) ) {
 		viewElement.addClass( style.className );
+
+		return true;
 	}
 
-	return true;
+	return false;
 }
