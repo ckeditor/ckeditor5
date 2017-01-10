@@ -55,10 +55,22 @@ describe( 'ImageStyleEngine', () => {
 		expect( editor.commands.get( 'dummyStyle' ) ).to.be.instanceOf( ImageStyleCommand );
 	} );
 
-	it( 'should convert from view to model', () => {
+	it( 'should convert from view to model #1', () => {
+		editor.setData( '<figure class="image"><img src="foo.png" /></figure>' );
+
+		expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image src="foo.png"></image>' );
+	} );
+
+	it( 'should convert from view to model #2', () => {
 		editor.setData( '<figure class="image side-class"><img src="foo.png" /></figure>' );
 
 		expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image imageStyle="side" src="foo.png"></image>' );
+	} );
+
+	it( 'should convert from view to model #3', () => {
+		editor.setData( '<figure class="image dummy-class"><img src="foo.png" /></figure>' );
+
+		expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image imageStyle="dummy" src="foo.png"></image>' );
 	} );
 
 	it( 'should not convert from view to model if class is not defined', () => {

@@ -10,9 +10,10 @@
 import Plugin from 'ckeditor5-core/src/plugin';
 import ImageStyleCommand from './imagestylecommand';
 import ImageEngine from '../imageengine';
-import { viewToModelImageStyles, modelToViewSetStyle } from './converters';
+import { modelToViewSetStyle } from './converters';
 import fullSizeIcon from 'ckeditor5-core/theme/icons/object-center.svg';
 import sideIcon from 'ckeditor5-core/theme/icons/object-right.svg';
+import buildViewConverter from 'ckeditor5-engine/src/conversion/buildviewconverter';
 
 /**
  * The image style engine plugin. Sets default configuration, creates converters and registers
@@ -64,8 +65,18 @@ export default class ImageStyleEngine extends Plugin {
 		editing.modelToView.on( 'removeAttribute:imageStyle:image', modelToViewConverter );
 		data.modelToView.on( 'removeAttribute:imageStyle:image', modelToViewConverter );
 
-		// Converter for figure element from view to model.
-		data.viewToModel.on( 'element:figure', viewToModelImageStyles( styles ), { priority: 'low' } );
+		const viewConverter = buildViewConverter().for( data.viewToModel );
+
+		for ( let style of styles ) {
+			if ( style.value === null ) {
+				continue;
+			}
+
+			viewConverter
+				.from( { name: 'figure', class: [ 'image', style.className ] } )
+				.consuming( { class: style.className } )
+				.toAttribute( 'imageStyle', style.value );
+		}
 
 		// Register separate command for each style.
 		for ( let style of styles ) {
