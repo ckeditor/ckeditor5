@@ -4,6 +4,7 @@
  */
 
 import ClassicTestEditor from 'ckeditor5-core/tests/_utils/classictesteditor';
+import ImageToolbar from 'ckeditor5-image/src/imagetoolbar';
 import ImageStyle from 'ckeditor5-image/src/imagestyle/imagestyle';
 import ImageStyleEngine from 'ckeditor5-image/src/imagestyle/imagestyleengine';
 import ButtonView from 'ckeditor5-ui/src/button/buttonview';
@@ -45,10 +46,10 @@ describe( 'ImageStyle', () => {
 	} );
 
 	it( 'should register buttons for each style', () => {
-		const command = editor.commands.get( 'imagestyle' );
 		const spy = sinon.spy( editor, 'execute' );
 
 		for ( let style of styles ) {
+			const command = editor.commands.get( style.name );
 			const buttonView =  editor.ui.componentFactory.create( style.name );
 
 			expect( buttonView ).to.be.instanceOf( ButtonView );
@@ -61,16 +62,28 @@ describe( 'ImageStyle', () => {
 			expect( buttonView.isEnabled ).to.be.false;
 
 			buttonView.fire( 'execute' );
-			sinon.assert.calledWithExactly( editor.execute, 'imagestyle', { value: style.value } );
+			sinon.assert.calledWithExactly( editor.execute, style.name );
 
 			spy.reset();
 		}
 	} );
 
-	it( 'should add buttons to image toolbar if there is no default configuration', () => {
-		const toolbarConfig =  editor.config.get( 'image.toolbar' );
+	it( 'should not add buttons to default image toolbar if image toolbar is not present', () => {
+		expect( editor.config.get( 'image.defaultToolbar' ) ).to.be.undefined;
+	} );
 
-		expect( toolbarConfig ).to.eql( styles.map( style => style.name ) );
+	it( 'should add buttons to default image toolbar if toolbar is present', () => {
+		const editorElement = global.document.createElement( 'div' );
+		global.document.body.appendChild( editorElement );
+
+		return ClassicTestEditor.create( editorElement, {
+			plugins: [ ImageStyle, ImageToolbar ]
+		} )
+			.then( newEditor => {
+				expect( newEditor.config.get( 'image.defaultToolbar' ) ).to.eql( [ 'imageStyleFull', 'imageStyleSide' ] );
+
+				newEditor.destroy();
+			} );
 	} );
 
 	it( 'should not add buttons to image toolbar if configuration is present', () => {

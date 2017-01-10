@@ -36,11 +36,11 @@ export default class ImageStyle extends Plugin {
 			this._createButton( style );
 		}
 
-		// If there is no default image toolbar configuration, add all image styles buttons.
-		const imageToolbarConfig = this.editor.config.get( 'image.toolbar' );
+		// Push buttons to default image toolbar if one exists.
+		const defaultImageToolbarConfig = this.editor.config.get( 'image.defaultToolbar' );
 
-		if ( !imageToolbarConfig ) {
-			this.editor.config.set( 'image.toolbar', styles.map( style => style.name ) );
+		if ( defaultImageToolbarConfig ) {
+			styles.forEach( style => defaultImageToolbarConfig.push( style.name ) );
 		}
 	}
 
@@ -52,23 +52,21 @@ export default class ImageStyle extends Plugin {
 	 */
 	_createButton( style ) {
 		const editor = this.editor;
-		const command = editor.commands.get( 'imagestyle' );
-		const t = editor.t;
+		const command = editor.commands.get( style.name );
 
 		editor.ui.componentFactory.add( style.name, ( locale ) => {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: t( style.title ),
-				icon: style.icon
+				label: style.title,
+				icon: style.icon,
+				tooltip: true
 			} );
 
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
-			view.bind( 'isOn' ).to( command, 'value', ( commandValue ) => {
-				return commandValue == style.value;
-			} );
+			view.bind( 'isOn' ).to( command, 'value' );
 
-			this.listenTo( view, 'execute', () => editor.execute( 'imagestyle', { value: style.value } ) );
+			this.listenTo( view, 'execute', () => editor.execute( style.name ) );
 
 			return view;
 		} );
