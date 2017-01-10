@@ -841,6 +841,48 @@ describe( 'Range', () => {
 		} );
 	} );
 
+	describe( 'getTransformedByDeltas', () => {
+		beforeEach( () => {
+			root.appendChildren( new Text( 'foobar' ) );
+			range = Range.createFromParentsAndOffsets( root, 2, root, 5 );
+		} );
+
+		function expectRange( range, startOffset, endOffset ) {
+			expect( range.start.offset ).to.equal( startOffset );
+			expect( range.end.offset ).to.equal( endOffset );
+		}
+
+		it( 'should return a range transformed by multiple deltas', () => {
+			const transformed = range.getTransformedByDeltas( [
+				getInsertDelta( new Position( root, [ 1 ] ), new Text( 'abc' ), 1 ), // Range becomes 5..8.
+				getInsertDelta( new Position( root, [ 6 ] ), new Text( 'xx' ), 2 ) // Range becomes 5..10.
+			] );
+
+			expectRange( transformed[ 0 ], 5, 10 );
+		} );
+
+		it( 'should correctly handle breaking transformed range and all range "pieces"', () => {
+			const transformed = range.getTransformedByDeltas( [
+				getInsertDelta( new Position( root, [ 3 ] ), new Text( 'abc' ), 1 ), // Range becomes 2..8.
+				getMoveDelta( new Position( root, [ 4 ] ), 3, new Position( root, [ 9 ] ), 2 ), // Range becomes 2..5 and 6..9.
+				getInsertDelta( new Position( root, [ 0 ] ), new Text( 'x' ), 3 ), // Range becomes 3..6 and 7..10.
+				getMoveDelta( new Position( root, [ 9 ] ), 1, new Position( root, [ 4 ] ), 4 ), // Range becomes 3..7 and 8..10.
+				getMoveDelta( new Position( root, [ 6 ] ), 1, new Position( root, [ 1 ] ), 5 ) // Range becomes 1..2, 4..7 and 8..10.
+			] );
+
+			expect( transformed.length ).to.equal( 3 );
+			expectRange( transformed[ 0 ], 4, 7 );
+			expectRange( transformed[ 1 ], 1, 2 );
+			expectRange( transformed[ 2 ], 8, 10 );
+		} );
+
+		it( 'should return range equal to original range for empty delta set', () => {
+			const transformed = range.getTransformedByDeltas( [] );
+
+			expectRange( transformed[ 0 ], 2, 5 );
+		} );
+	} );
+
 	describe( 'getMinimalFlatRanges', () => {
 		beforeEach( () => {
 			prepareRichRoot( root );
