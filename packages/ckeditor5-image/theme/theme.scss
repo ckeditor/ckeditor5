@@ -22,4 +22,12 @@
 // Image widget's styles.
 .ck-widget.image {
 	text-align: center;
+	clear: both;
+
+	&.image-style-side {
+		display: inline-block;
+		float: right;
+		margin-left: 0.8em;
+	}
 }
+
