@@ -480,8 +480,6 @@ describe( 'EmitterMixin', () => {
 			listener.listenTo( emitter1, 'event1', spy1 );
 			listener.listenTo( emitter2, 'event2', spy2 );
 
-			expect( listener ).to.have.property( '_listeningTo' );
-
 			emitter1.fire( 'event1' );
 			emitter2.fire( 'event2' );
 
@@ -492,8 +490,6 @@ describe( 'EmitterMixin', () => {
 
 			sinon.assert.calledOnce( spy1 );
 			sinon.assert.calledOnce( spy2 );
-
-			expect( listener ).to.not.have.property( '_listeningTo' );
 		} );
 
 		it( 'should not stop other emitters when a non-listened emitter is provided', () => {

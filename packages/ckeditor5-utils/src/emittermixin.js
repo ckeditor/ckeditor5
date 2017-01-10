@@ -11,6 +11,12 @@ import EventInfo from './eventinfo';
 import uid from './uid';
 import priorities from './priorities';
 
+// Symbol for private `_listeningTo` property.
+const _listeningTo = Symbol();
+
+// Symbol for private `_emitterId` property.
+const _emitterId = Symbol();
+
 /**
  * Mixin that injects the events API into its host.
  *
@@ -150,13 +156,17 @@ const EmitterMixin = {
 		//     ...
 		// }
 
-		if ( !( emitters = this._listeningTo ) ) {
-			emitters = this._listeningTo = {};
+		if ( !this[ _listeningTo ] ) {
+			this[ _listeningTo ] = {};
 		}
 
-		if ( !( emitterId = emitter._emitterId ) ) {
-			emitterId = emitter._emitterId = uid();
+		emitters = this[ _listeningTo ];
+
+		if ( !emitter._emitterId ) {
+			emitter._emitterId = uid();
 		}
+
+		emitterId = emitter._emitterId;
 
 		if ( !( emitterInfo = emitters[ emitterId ] ) ) {
 			emitterInfo = emitters[ emitterId ] = {
@@ -191,7 +201,7 @@ const EmitterMixin = {
 	 * `event`.
 	 */
 	stopListening( emitter, event, callback ) {
-		let emitters = this._listeningTo;
+		let emitters = this[ _listeningTo ];
 		let emitterId = emitter && emitter._emitterId;
 		let emitterInfo = emitters && emitterId && emitters[ emitterId ];
 		let eventCallbacks = emitterInfo && event && emitterInfo.callbacks[ event ];
@@ -224,7 +234,7 @@ const EmitterMixin = {
 			for ( emitterId in emitters ) {
 				this.stopListening( emitters[ emitterId ].emitter );
 			}
-			delete this._listeningTo;
+			delete this[ _listeningTo ];
 		}
 	},
 
@@ -356,6 +366,48 @@ const EmitterMixin = {
 			if ( destinations ) {
 				destinations.delete( emitter );
 			}
+		}
+	},
+
+	/**
+	 * Returns an `EmitterMixin` instance with given `id`, which this emitter is listening to. Returns `null` if
+	 * this emitter do not listen to any emitter identified by `id`.
+	 *
+	 * @protected
+	 * @param {String} id Unique emitter id.
+	 * @returns {EmitterMixin|null}
+	 */
+	_getEmitterListenedTo( id ) {
+		if ( this[ _listeningTo ] && this[ _listeningTo ][ id ] ) {
+			return this[ _listeningTo ][ id ].emitter;
+		}
+
+		return null;
+	},
+
+	/**
+	 * Emitter's unique id.
+	 *
+	 * **Note:** `_emitterId` can be set only once.
+	 *
+	 * @protected
+	 * @type {String}
+	 */
+	get _emitterId() {
+		return this[ _emitterId ];
+	},
+
+	/**
+	 * Emitter's unique id.
+	 *
+	 * **Note:** `_emitterId` can be set only once.
+	 *
+	 * @protected
+	 * @type {String}
+	 */
+	set _emitterId( id ) {
+		if ( !this[ _emitterId ] ) {
+			this[ _emitterId ] = id;
 		}
 	}
 };
