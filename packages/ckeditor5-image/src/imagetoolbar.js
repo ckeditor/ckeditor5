@@ -12,6 +12,7 @@ import Plugin from 'ckeditor5-core/src/plugin';
 import ToolbarView from 'ckeditor5-ui/src/toolbar/toolbarview';
 import { isImageWidget } from './utils';
 import ImageBalloonPanel from './ui/imageballoonpanel';
+
 /**
  * Image toolbar class. Creates image toolbar placed inside balloon panel that is showed when image widget is selected.
  * Toolbar components are created using editor's {@link module:ui/componentfactory~ComponentFactory ComponentFactory}
@@ -82,8 +83,10 @@ export default class ImageToolbar extends Plugin {
 		return Promise.all( promises );
 	}
 
+	/**
+	 * Shows the toolbar.
+	 */
 	show() {
-		// TODO: maybe isImageWidgetSelected( editor ) - this code is repeated in many places.
 		const selectedElement = this.editor.editing.view.selection.getSelectedElement();
 
 		if ( selectedElement && isImageWidget( selectedElement ) ) {
@@ -91,6 +94,9 @@ export default class ImageToolbar extends Plugin {
 		}
 	}
 
+	/**
+	 * Hides the toolbar.
+	 */
 	hide() {
 		this._panel.detach();
 	}
