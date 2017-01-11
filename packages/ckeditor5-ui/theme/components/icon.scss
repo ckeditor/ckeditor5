@@ -1,0 +1,30 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+/**
+ * Default width/height of an icon.
+ */
+$ck-icon-size: 20px;
+
+svg.ck-icon {
+	min-width: $ck-icon-size;
+	min-height: $ck-icon-size;
+
+	font-size: 1em;
+	vertical-align: middle;
+	color: inherit;
+
+	// Inherit cursor style (#5).
+	cursor: inherit;
+
+	* {
+		// Inherit cursor style (#5).
+		cursor: inherit;
+
+		// Allows dynamic coloring of the icons.
+		color: inherit;
+
+		// Needed by FF.
+		fill: currentColor;
+	}
+}

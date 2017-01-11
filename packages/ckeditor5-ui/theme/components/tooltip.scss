@@ -1,0 +1,92 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+/**
+ * Applies styles to the main part of the tooltip.
+ */
+@mixin ck-tooltip__main {
+	&::after {
+		@content;
+	}
+}
+
+/**
+ * Applies styles to the arrow part of the tooltip.
+ */
+@mixin ck-tooltip__arrow {
+	&::before {
+		@content;
+	}
+}
+
+/**
+ * Applies styles to both arrow and main part of the tooltip.
+ */
+@mixin ck-tooltip__elements {
+	@include ck-tooltip__main {
+		@content;
+	}
+
+	@include ck-tooltip__arrow {
+		@content;
+	}
+}
+
+/**
+ * Enables the tooltip, which is the tooltip is in DOM but
+ * not yet displayed.
+ */
+@mixin ck-tooltip_enabled {
+	@include ck-tooltip__elements {
+		display: block;
+	}
+}
+
+/**
+ * Disables the tooltip making it disappear from DOM.
+ */
+@mixin ck-tooltip_disabled {
+	@include ck-tooltip__elements {
+		display: none;
+	}
+}
+
+/**
+ * Shows the tooltip, which is already in DOM.
+ * Requires `ck-tooltip_enabled` first.
+ */
+@mixin ck-tooltip_visible {
+	@include ck-tooltip__elements {
+		visibility: visible;
+		opacity: 1;
+	}
+}
+
+[data-ck-tooltip] {
+	@include ck-tooltip__elements {
+		// Tooltip is hidden by default.
+		visibility: hidden;
+		opacity: 0;
+		display: none;
+
+		position: absolute;
+		z-index: ck-z( 'modal' );
+
+		// Without this, hovering the tooltip could keep it visible.
+		pointer-events: none;
+
+		// This is to get rid of flickering when transitioning opacity in Chrome.
+		// It's weird but it works.
+		-webkit-backface-visibility: hidden;
+	}
+
+	@include ck-tooltip__main {
+		content: attr(data-ck-tooltip);
+	}
+
+	@include ck-tooltip__arrow {
+		content: "";
+		width: 0;
+		height: 0;
+	}
+}
