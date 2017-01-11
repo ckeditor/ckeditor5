@@ -3,93 +3,17 @@
 
 $ck-tooltip-arrow-size: 5px;
 
-/**
- * Applies styles to the main part of the tooltip.
- */
-@mixin ck-tooltip__main {
-	&::after {
-		@content;
-	}
-}
-
-/**
- * Applies styles to the arrow part of the tooltip.
- */
-@mixin ck-tooltip__arrow {
-	&::before {
-		@content;
-	}
-}
-
-/**
- * Applies styles to both arrow and main part of the tooltip.
- */
-@mixin ck-tooltip__elements {
-	@include ck-tooltip__main {
-		@content;
-	}
-
-	@include ck-tooltip__arrow {
-		@content;
-	}
-}
-
-/**
- * Enables the tooltip, which is the tooltip is in DOM but
- * not yet displayed.
- */
-@mixin ck-tooltip_enabled {
-	@include ck-tooltip__elements {
-		display: block;
-	}
-}
-
-/**
- * Disables the tooltip making it disappear from DOM.
- */
-@mixin ck-tooltip_disabled {
-	@include ck-tooltip__elements {
-		display: none;
-	}
-}
-
-/**
- * Shows the tooltip, which is already in DOM.
- * Requires `ck-tooltip_enabled` first.
- */
-@mixin ck-tooltip_visible {
-	@include ck-tooltip__elements {
-		visibility: visible;
-		opacity: 1;
-	}
-}
-
 [data-ck-tooltip] {
 	@include ck-tooltip__elements {
-		// Tooltip is hidden by default.
-		visibility: hidden;
-		opacity: 0;
-		display: none;
-
-		position: absolute;
 		left: 50%;
-		z-index: ck-z( 'modal' );
-
-		// Without this, hovering the tooltip could keep it visible.
-		pointer-events: none;
 
 		// For the transition to work, the tooltip must be controlled
 		// using visibility+opacity. A delay prevents a "tooltip avalanche"
 		// i.e. when scanning the toolbar with mouse cursor.
 		transition: opacity .2s ease-in-out .2s;
-
-		// This is to get rid of flickering when transitioning opacity in Chrome.
-		// It's weird but it works.
-		-webkit-backface-visibility: hidden;
 	}
 
 	@include ck-tooltip__main {
-		content: attr(data-ck-tooltip);
 		border-radius: $ck-border-radius;
 		color: ck-color( 'background' );
 		font-size: ck-font-size( -2 );
@@ -98,9 +22,6 @@ $ck-tooltip-arrow-size: 5px;
 	}
 
 	@include ck-tooltip__arrow {
-		content: "";
-		width: 0;
-		height: 0;
 		border-style: solid;
 	}
 }

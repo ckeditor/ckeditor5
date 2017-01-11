@@ -6,11 +6,9 @@
 	list-style-type: none;
 	background: ck-color( 'background' );
 
-	@include ck-unselectable();
 	@include ck-rounded-corners();
 
 	&__item {
-		display: block;
 		padding: ck-spacing( 'medium' );
 		cursor: pointer;
 		min-width: 12em;

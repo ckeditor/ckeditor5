@@ -47,12 +47,3 @@ $ck-focus-ring: 1px solid ck-color( 'focus' );
 		@include ck-focus-outline();
 	}
 }
-
-/**
- * Makes element unselectable.
- */
-@mixin ck-unselectable() {
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-}

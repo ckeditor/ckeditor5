@@ -4,7 +4,6 @@
 /**
  * Base font size.
  *
- * @access public
  * @see $ck-font-sizes
  */
 $ck-font-size-base: 12px !default;
@@ -12,14 +11,12 @@ $ck-font-size-base: 12px !default;
 /**
  * Base font face.
  *
- * @access public
  */
 $ck-font-face: Helvetica, Arial, Tahoma, Verdana, Sans-Serif !default;
 
 /**
  * Base font sizes for scaling.
  *
- * @access public
  * @see ck-font-size
  */
 $ck-font-sizes: (
@@ -33,7 +30,6 @@ $ck-font-sizes: (
 /**
  * Returns font-size in units for given level.
  *
- * @access public
  * @param {Number} $level [ 0 ] - Size of the font.
  * @return {String}
  * @see $ck-font-sizes

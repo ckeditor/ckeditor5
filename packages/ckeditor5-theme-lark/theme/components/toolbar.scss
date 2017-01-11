@@ -14,13 +14,10 @@
 		width: 1px;
 		height: calc( 1em + 2 * #{ck-spacing( 'medium' )} );
 		vertical-align: middle;
-		display: inline-block;
 		background: ck-border-color();
 	}
 
 	&-newline {
-		display: block;
-		clear: left;
 		height: ck-spacing( 'small' );
 	}
 

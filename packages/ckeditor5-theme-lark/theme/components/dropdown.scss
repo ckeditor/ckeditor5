@@ -2,24 +2,12 @@
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
 .ck-dropdown {
-	display: inline-block;
-	position: relative;
-
 	// A triangle displayed to indicate this is actually a dropdown.
 	&::after {
-		content: '';
-		width: 0;
-		height: 0;
 		border-style: solid;
 		border-width: .4em .4em 0 .4em;
 		border-color: ck-color( 'text', 30 ) transparent;
-		pointer-events: none;
-
-		position: absolute;
-		top: 50%;
 		right: ck-spacing();
-		z-index: ck-z();
-		transform: translate( 0, -50% );
 	}
 
 	.ck-button.ck-dropdown__button {
@@ -36,26 +24,12 @@
 }
 
 .ck-dropdown__panel {
-	// This is to get rid of flickering when the tooltip is shown under the panel,
-	// which looks like the panel moves vertically a pixel down and up.
-	-webkit-backface-visibility: hidden;
-
 	border: 1px solid ck-border-color( 'foreground' );
-	display: none;
-	position: absolute;
-	left: 0px;
 
 	// Compensate double border from button and from box when positioned below the button.
 	bottom: 2px;
-
-	transform: translateY( 100% );
 	background: ck-color( 'background' );
-	z-index: ck-z( 'modal' );
 
 	@include ck-rounded-corners();
 	@include ck-drop-shadow();
-
-	&-visible {
-		display: inline-block;
-	}
 }

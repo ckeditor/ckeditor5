@@ -5,7 +5,6 @@
  * Colors configured by the user.
  *
  * @type Map
- * @access public
  * @example
  *		$ck-colors: ( 'foreground': red );
  * @see $_ck-colors
@@ -16,7 +15,6 @@ $ck-colors: () !default;
  * Internal map with default colors.
  *
  * @type Map
- * @access private
  * @see ck-color-add
  */
 $_ck-colors: (
@@ -31,7 +29,6 @@ $_ck-colors: (
 /**
  * Returns a color of given name and lightness offset.
  *
- * @access public
  * @param {String} $name [ 'background' ] - Name of the color.
  * @param {Number} $offset [ 0 ] - Offset of the lightness.
  * @return {String}
@@ -46,7 +43,6 @@ $_ck-colors: (
 /**
  * Returns a border–color for a given name and lightness offset.
  *
- * @access public
  * @param {String} $name [ 'background' ] - Name of the color.
  * @param {Number} $offset [ 0 ] - Offset of the lightness.
  * @return {String}
@@ -59,7 +55,6 @@ $_ck-colors: (
 /**
  * Adds a color to internal color map.
  *
- * @access public
  * @example
  *		@include ck-color-add( ( 'special': yellow, 'hover': #00FF00 ) );
  * @param {Map} $map - A map with new colors.

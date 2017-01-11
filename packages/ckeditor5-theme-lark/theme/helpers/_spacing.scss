@@ -4,7 +4,6 @@
 /**
  * Default spacing value ("unit").
  *
- * @access public
  */
 $ck-def-spacing: .8em !default;
 
@@ -12,7 +11,6 @@ $ck-def-spacing: .8em !default;
  * Internal map with default spacings.
  *
  * @type Map
- * @access public
  * @see ck-spacing
  */
 $ck-def-spacings: (
@@ -26,7 +24,6 @@ $ck-def-spacings: (
 /**
  * Returns a spacing value with units for given name.
  *
- * @access public
  * @param {String} $spacing [ 'standard' ] - Spacing level.
  * @return {String}
  * @see $ck-def-spacing
