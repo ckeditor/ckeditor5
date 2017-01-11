@@ -35,7 +35,6 @@ export default class ImageAlternateText extends Plugin {
 		this.editor.commands.set( 'imageAlternateText', new ImageAlternateTextCommand( this.editor ) );
 
 		// TODO: docs for this._panel and this._form.
-
 		return Promise.all( [
 			this._createButton(),
 			this._createBalloonPanel()
@@ -121,7 +120,7 @@ export default class ImageAlternateText extends Plugin {
 
 	_hideBalloonPanel() {
 		const editor = this.editor;
-		this._panel.hide();
+		this._panel.detach();
 		editor.editing.view.focus();
 
 		const imageToolbar = editor.plugins.get( ImageToolbar );
