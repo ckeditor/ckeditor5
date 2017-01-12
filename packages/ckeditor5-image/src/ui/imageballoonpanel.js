@@ -37,7 +37,17 @@ const positions = {
 	} )
 };
 
+/**
+ * Image balloon panel class. It extends {module:ui/balloonpanel/balloonpanelview~BalloonPanelView} by adding helpers
+ * to use with image widgets. It sets proper positioning on `scroll` and `resize` events and hides the panel when
+ * image is no longer selected or focus is lost.
+ *
+ * @extends module:ui/balloonpanel/balloonpanelview~BalloonPanelView
+ */
 export default class ImageBalloonPanel extends BalloonPanelView {
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		super( editor.locale );
 
@@ -63,23 +73,41 @@ export default class ImageBalloonPanel extends BalloonPanelView {
 			}
 		}, { priority: 'low' } );
 
+		/**
+		 * Wraps {@link #_attach} method with throttle function that will fire it not more than every 100ms.
+		 * It is used as `scroll` and `resize` callback.
+		 *
+		 * @private
+		 * @member {Function} #_throttledAttach
+		 */
 		this._throttledAttach = throttle( () => {
 			this._attach();
 		}, 100 );
 	}
 
+	/**
+	 * Attaches the panel and enables `scroll` and `resize` listeners.
+	 */
 	attach() {
 		this._attach();
 		this.editor.ui.view.listenTo( global.window, 'scroll', this._throttledAttach );
 		this.editor.ui.view.listenTo( global.window, 'resize', this._throttledAttach );
 	}
 
+	/**
+	 * Detaches the panel and disables `scroll` and `resize` listeners.
+	 */
 	detach() {
 		this.hide();
 		this.editor.ui.view.stopListening( global.window, 'scroll', this._throttledAttach );
 		this.editor.ui.view.stopListening( global.window, 'resize', this._throttledAttach );
 	}
 
+	/**
+	 * Attaches the panel to the first selection range.
+	 *
+	 * @private
+	 */
 	_attach() {
 		const editingView = this.editor.editing.view;
 
