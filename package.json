@@ -29,7 +29,6 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-docs": "^6.0.0",
-    "@ckeditor/ckeditor5-dev-env": "^2.0.0",
     "@ckeditor/ckeditor5-dev-lint": "^2.0.0",
     "@ckeditor/ckeditor5-dev-tests": "^4.0.0",
     "gulp": "^3.9.0",
