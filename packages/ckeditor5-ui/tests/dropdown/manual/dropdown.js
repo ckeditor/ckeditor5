@@ -8,8 +8,8 @@
 import Model from 'ckeditor5-ui/src/model';
 import Collection from 'ckeditor5-utils/src/collection';
 
-import createDropdown from 'ckeditor5-ui/src/dropdown/createDropdown';
-import createListDropdown from 'ckeditor5-ui/src/dropdown/list/createListDropdown';
+import createDropdown from 'ckeditor5-ui/src/dropdown/createdropdown';
+import createListDropdown from 'ckeditor5-ui/src/dropdown/list/createlistdropdown';
 
 import 'ckeditor5-theme-lark/theme/theme.scss';
 
