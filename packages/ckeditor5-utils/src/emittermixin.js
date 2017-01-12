@@ -159,11 +159,11 @@ const EmitterMixin = {
 
 		emitters = this[ _listeningTo ];
 
-		if ( !emitter._emitterId ) {
-			emitter._emitterId = uid();
+		if ( !_getEmitterId( emitter ) ) {
+			_setEmitterId( emitter );
 		}
 
-		emitterId = emitter._emitterId;
+		emitterId = _getEmitterId( emitter );
 
 		if ( !( emitterInfo = emitters[ emitterId ] ) ) {
 			emitterInfo = emitters[ emitterId ] = {
@@ -199,7 +199,7 @@ const EmitterMixin = {
 	 */
 	stopListening( emitter, event, callback ) {
 		let emitters = this[ _listeningTo ];
-		let emitterId = emitter && emitter._emitterId;
+		let emitterId = emitter && _getEmitterId( emitter );
 		let emitterInfo = emitters && emitterId && emitters[ emitterId ];
 		let eventCallbacks = emitterInfo && event && emitterInfo.callbacks[ event ];
 
@@ -364,32 +364,6 @@ const EmitterMixin = {
 				destinations.delete( emitter );
 			}
 		}
-	},
-
-	/**
-	 * Emitter's unique id.
-	 *
-	 * **Note:** `_emitterId` can be set only once.
-	 *
-	 * @protected
-	 * @type {String}
-	 */
-	get _emitterId() {
-		return this[ _emitterId ];
-	},
-
-	/**
-	 * Emitter's unique id.
-	 *
-	 * **Note:** `_emitterId` can be set only once.
-	 *
-	 * @protected
-	 * @type {String}
-	 */
-	set _emitterId( id ) {
-		if ( !this[ _emitterId ] ) {
-			this[ _emitterId ] = id;
-		}
 	}
 };
 
@@ -410,6 +384,31 @@ export function _getEmitterListenedTo( listeningEmitter, listenedToEmitterId ) {
 	}
 
 	return null;
+}
+
+/**
+ * Sets emitter's unique id.
+ *
+ * **Note:** `_emitterId` can be set only once.
+ *
+ * @protected
+ * @param {module:utils/emittermixin~EmitterMixin} emitter Emitter for which id will be set.
+ * @param {String} [id] Unique id to set. If not passed, random unique id will be set.
+ */
+export function _setEmitterId( emitter, id ) {
+	if ( !emitter[ _emitterId ] ) {
+		emitter[ _emitterId ] = id || uid();
+	}
+}
+
+/**
+ * Returns emitter's unique id.
+ *
+ * @protected
+ * @param {module:utils/emittermixin~EmitterMixin} emitter Emitter which id will be returned.
+ */
+export function _getEmitterId( emitter ) {
+	return emitter[ _emitterId ];
 }
 
 // Gets the internal `_events` property of the given object.

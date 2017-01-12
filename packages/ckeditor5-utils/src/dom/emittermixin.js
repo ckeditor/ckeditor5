@@ -8,7 +8,7 @@
  */
 
 import EmitterMixin from '../emittermixin';
-import { _getEmitterListenedTo } from '../emittermixin';
+import { _getEmitterListenedTo, _setEmitterId } from '../emittermixin';
 import uid from '../uid';
 import extend from '../lib/lodash/extend';
 import isNative from '../lib/lodash/isNative';
@@ -153,7 +153,7 @@ class ProxyEmitter {
 	 */
 	constructor( node ) {
 		// Set emitter ID to match DOM Node "expando" property.
-		this._emitterId = getNodeUID( node );
+		_setEmitterId( this, getNodeUID( node ) );
 
 		// Remember the DOM Node this ProxyEmitter is bound to.
 		this._domNode = node;

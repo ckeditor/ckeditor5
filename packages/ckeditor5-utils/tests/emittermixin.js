@@ -4,7 +4,7 @@
  */
 
 import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
-import { _getEmitterListenedTo } from 'ckeditor5-utils/src/emittermixin';
+import { _getEmitterListenedTo, _getEmitterId, _setEmitterId } from 'ckeditor5-utils/src/emittermixin';
 import EventInfo from 'ckeditor5-utils/src/eventinfo';
 
 describe( 'EmitterMixin', () => {
@@ -13,22 +13,6 @@ describe( 'EmitterMixin', () => {
 	beforeEach( () => {
 		emitter = getEmitterInstance();
 		listener = getEmitterInstance();
-	} );
-
-	describe( '_emitterId', () => {
-		it( 'should not be set by default', () => {
-			expect( emitter._emitterId ).to.be.undefined;
-		} );
-
-		it( 'should be settable but only once', () => {
-			emitter._emitterId = 'abc';
-
-			expect( emitter._emitterId ).to.equal( 'abc' );
-
-			emitter._emitterId = 'xyz';
-
-			expect( emitter._emitterId ).to.equal( 'abc' );
-		} );
 	} );
 
 	describe( 'fire', () => {
@@ -1116,6 +1100,28 @@ describe( 'EmitterMixin', () => {
 	}
 } );
 
+describe( 'emitter id', () => {
+	let emitter;
+
+	beforeEach( () => {
+		emitter = getEmitterInstance();
+	} );
+
+	it( 'should be undefined before it is set', () => {
+		expect( _getEmitterId( emitter ) ).to.be.undefined;
+	} );
+
+	it( 'should be settable but only once', () => {
+		_setEmitterId( emitter, 'abc' );
+
+		expect( _getEmitterId( emitter ) ).to.equal( 'abc' );
+
+		_setEmitterId( emitter, 'xyz' );
+
+		expect( _getEmitterId( emitter ) ).to.equal( 'abc' );
+	} );
+} );
+
 describe( '_getEmitterListenedTo', () => {
 	let emitter, listener;
 
@@ -1130,7 +1136,7 @@ describe( '_getEmitterListenedTo', () => {
 
 	it( 'should return emitter with given id', () => {
 		listener.listenTo( emitter, 'eventName', () => {} );
-		const emitterId = emitter._emitterId;
+		const emitterId = _getEmitterId( emitter );
 
 		expect( _getEmitterListenedTo( listener, emitterId ) ).to.equal( emitter );
 	} );
