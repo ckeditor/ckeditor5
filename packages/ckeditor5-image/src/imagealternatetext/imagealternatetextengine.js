@@ -4,19 +4,19 @@
  */
 
 /**
- * @module image/imagealternatetext/engine
+ * @module image/imagealternatetext/imagealternatetextengine
  */
 
 import ImageAlternateTextCommand from './imagealternatetextcommand';
 import Plugin from 'ckeditor5-core/src/plugin';
 
 /**
- * The image engine plugin.
+ * The ImageAlternateTextEngine plugin.
  * Registers `imageAlternateText` command.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ImageEngine extends Plugin {
+export default class ImageAlternateTextEngine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
