@@ -11,11 +11,8 @@ import EventInfo from './eventinfo';
 import uid from './uid';
 import priorities from './priorities';
 
-// Symbol for private `_listeningTo` property.
-const _listeningTo = Symbol();
-
-// Symbol for private `_emitterId` property.
-const _emitterId = Symbol();
+const _listeningTo = Symbol( 'listeningTo' );
+const _emitterId = Symbol( 'emitterId' );
 
 /**
  * Mixin that injects the events API into its host.
@@ -370,22 +367,6 @@ const EmitterMixin = {
 	},
 
 	/**
-	 * Returns an `EmitterMixin` instance with given `id`, which this emitter is listening to. Returns `null` if
-	 * this emitter do not listen to any emitter identified by `id`.
-	 *
-	 * @protected
-	 * @param {String} id Unique emitter id.
-	 * @returns {EmitterMixin|null}
-	 */
-	_getEmitterListenedTo( id ) {
-		if ( this[ _listeningTo ] && this[ _listeningTo ][ id ] ) {
-			return this[ _listeningTo ][ id ].emitter;
-		}
-
-		return null;
-	},
-
-	/**
 	 * Emitter's unique id.
 	 *
 	 * **Note:** `_emitterId` can be set only once.
@@ -413,6 +394,23 @@ const EmitterMixin = {
 };
 
 export default EmitterMixin;
+
+/**
+ * Checks if `listeningEmitter` listens to an emitter with given `listenedToEmitterId` and if so, returns that emitter.
+ * If not, returns `null`.
+ *
+ * @protected
+ * @param {module:utils/emittermixin~EmitterMixin} listeningEmitter Emitter that listens.
+ * @param {String} listenedToEmitterId Unique emitter id of emitter listened to.
+ * @returns {module:utils/emittermixin~EmitterMixin|null}
+ */
+export function _getEmitterListenedTo( listeningEmitter, listenedToEmitterId ) {
+	if ( listeningEmitter[ _listeningTo ] && listeningEmitter[ _listeningTo ][ listenedToEmitterId ] ) {
+		return listeningEmitter[ _listeningTo ][ listenedToEmitterId ].emitter;
+	}
+
+	return null;
+}
 
 // Gets the internal `_events` property of the given object.
 // `_events` property store all lists with callbacks for registered event names.

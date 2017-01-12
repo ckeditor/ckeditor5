@@ -8,6 +8,7 @@
  */
 
 import EmitterMixin from '../emittermixin';
+import { _getEmitterListenedTo } from '../emittermixin';
 import uid from '../uid';
 import extend from '../lib/lodash/extend';
 import isNative from '../lib/lodash/isNative';
@@ -109,7 +110,7 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 * @return {module:utils/dom/emittermixin~ProxyEmitter} ProxyEmitter instance or null.
 	 */
 	_getProxyEmitter( node ) {
-		return this._getEmitterListenedTo( getNodeUID( node ) ) || null;
+		return _getEmitterListenedTo( this, getNodeUID( node ) );
 	}
 } );
 
