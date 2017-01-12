@@ -11,7 +11,7 @@ import View from 'ckeditor5-ui/src/view';
 import Template from 'ckeditor5-ui/src/template';
 
 /**
- * The textarea view class.
+ * The TextAreaView class.
  *
  * @extends module:ui/view~View
  */
