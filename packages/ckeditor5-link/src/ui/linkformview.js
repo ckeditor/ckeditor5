@@ -30,6 +30,8 @@ export default class LinkFormView extends View {
 	constructor( locale ) {
 		super( locale );
 
+		const t = locale.t;
+
 		/**
 		 * The url input view.
 		 *
@@ -50,14 +52,14 @@ export default class LinkFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.cancelButtonView = this._createButton( 'Cancel', 'cancel' );
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), 'cancel' );
 
 		/**
 		 * The unlink button view.
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.unlinkButtonView = this._createButton( 'Unlink', 'unlink' );
+		this.unlinkButtonView = this._createButton( t( 'Unlink' ), 'unlink' );
 
 		// Register child views.
 		this.addChildren( [ this.urlInputView, this.saveButtonView, this.cancelButtonView, this.unlinkButtonView ] );
@@ -129,10 +131,9 @@ export default class LinkFormView extends View {
 	 * @returns {module:ui/button/buttonview~ButtonView} Button view instance.
 	 */
 	_createButton( label, eventName ) {
-		const t = this.locale.t;
 		const button = new ButtonView( this.locale );
 
-		button.label = t( label );
+		button.label = label;
 		button.withText = true;
 
 		if ( eventName ) {
