@@ -11,6 +11,9 @@ import EventInfo from './eventinfo';
 import uid from './uid';
 import priorities from './priorities';
 
+const _listeningTo = Symbol( 'listeningTo' );
+const _emitterId = Symbol( 'emitterId' );
+
 /**
  * Mixin that injects the events API into its host.
  *
@@ -150,13 +153,17 @@ const EmitterMixin = {
 		//     ...
 		// }
 
-		if ( !( emitters = this._listeningTo ) ) {
-			emitters = this._listeningTo = {};
+		if ( !this[ _listeningTo ] ) {
+			this[ _listeningTo ] = {};
 		}
 
-		if ( !( emitterId = emitter._emitterId ) ) {
-			emitterId = emitter._emitterId = uid();
+		emitters = this[ _listeningTo ];
+
+		if ( !_getEmitterId( emitter ) ) {
+			_setEmitterId( emitter );
 		}
+
+		emitterId = _getEmitterId( emitter );
 
 		if ( !( emitterInfo = emitters[ emitterId ] ) ) {
 			emitterInfo = emitters[ emitterId ] = {
@@ -191,8 +198,8 @@ const EmitterMixin = {
 	 * `event`.
 	 */
 	stopListening( emitter, event, callback ) {
-		let emitters = this._listeningTo;
-		let emitterId = emitter && emitter._emitterId;
+		let emitters = this[ _listeningTo ];
+		let emitterId = emitter && _getEmitterId( emitter );
 		let emitterInfo = emitters && emitterId && emitters[ emitterId ];
 		let eventCallbacks = emitterInfo && event && emitterInfo.callbacks[ event ];
 
@@ -224,7 +231,7 @@ const EmitterMixin = {
 			for ( emitterId in emitters ) {
 				this.stopListening( emitters[ emitterId ].emitter );
 			}
-			delete this._listeningTo;
+			delete this[ _listeningTo ];
 		}
 	},
 
@@ -361,6 +368,48 @@ const EmitterMixin = {
 };
 
 export default EmitterMixin;
+
+/**
+ * Checks if `listeningEmitter` listens to an emitter with given `listenedToEmitterId` and if so, returns that emitter.
+ * If not, returns `null`.
+ *
+ * @protected
+ * @param {module:utils/emittermixin~EmitterMixin} listeningEmitter Emitter that listens.
+ * @param {String} listenedToEmitterId Unique emitter id of emitter listened to.
+ * @returns {module:utils/emittermixin~EmitterMixin|null}
+ */
+export function _getEmitterListenedTo( listeningEmitter, listenedToEmitterId ) {
+	if ( listeningEmitter[ _listeningTo ] && listeningEmitter[ _listeningTo ][ listenedToEmitterId ] ) {
+		return listeningEmitter[ _listeningTo ][ listenedToEmitterId ].emitter;
+	}
+
+	return null;
+}
+
+/**
+ * Sets emitter's unique id.
+ *
+ * **Note:** `_emitterId` can be set only once.
+ *
+ * @protected
+ * @param {module:utils/emittermixin~EmitterMixin} emitter Emitter for which id will be set.
+ * @param {String} [id] Unique id to set. If not passed, random unique id will be set.
+ */
+export function _setEmitterId( emitter, id ) {
+	if ( !emitter[ _emitterId ] ) {
+		emitter[ _emitterId ] = id || uid();
+	}
+}
+
+/**
+ * Returns emitter's unique id.
+ *
+ * @protected
+ * @param {module:utils/emittermixin~EmitterMixin} emitter Emitter which id will be returned.
+ */
+export function _getEmitterId( emitter ) {
+	return emitter[ _emitterId ];
+}
 
 // Gets the internal `_events` property of the given object.
 // `_events` property store all lists with callbacks for registered event names.

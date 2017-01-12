@@ -4,12 +4,16 @@
  */
 
 import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import { _getEmitterListenedTo, _getEmitterId, _setEmitterId } from 'ckeditor5-utils/src/emittermixin';
 import EventInfo from 'ckeditor5-utils/src/eventinfo';
 
 describe( 'EmitterMixin', () => {
 	let emitter, listener;
 
-	beforeEach( refreshEmitter );
+	beforeEach( () => {
+		emitter = getEmitterInstance();
+		listener = getEmitterInstance();
+	} );
 
 	describe( 'fire', () => {
 		it( 'should execute callbacks in the right order without priority', () => {
@@ -376,8 +380,6 @@ describe( 'EmitterMixin', () => {
 	} );
 
 	describe( 'listenTo', () => {
-		beforeEach( refreshListener );
-
 		it( 'should properly register callbacks', () => {
 			let spy = sinon.spy();
 
@@ -408,8 +410,6 @@ describe( 'EmitterMixin', () => {
 	} );
 
 	describe( 'stopListening', () => {
-		beforeEach( refreshListener );
-
 		it( 'should stop listening to given event callback', () => {
 			let spy1 = sinon.spy();
 			let spy2 = sinon.spy();
@@ -480,8 +480,6 @@ describe( 'EmitterMixin', () => {
 			listener.listenTo( emitter1, 'event1', spy1 );
 			listener.listenTo( emitter2, 'event2', spy2 );
 
-			expect( listener ).to.have.property( '_listeningTo' );
-
 			emitter1.fire( 'event1' );
 			emitter2.fire( 'event2' );
 
@@ -492,8 +490,6 @@ describe( 'EmitterMixin', () => {
 
 			sinon.assert.calledOnce( spy1 );
 			sinon.assert.calledOnce( spy2 );
-
-			expect( listener ).to.not.have.property( '_listeningTo' );
 		} );
 
 		it( 'should not stop other emitters when a non-listened emitter is provided', () => {
@@ -1094,18 +1090,6 @@ describe( 'EmitterMixin', () => {
 		} );
 	} );
 
-	function refreshEmitter() {
-		emitter = getEmitterInstance();
-	}
-
-	function refreshListener() {
-		listener = getEmitterInstance();
-	}
-
-	function getEmitterInstance() {
-		return Object.create( EmitterMixin );
-	}
-
 	function assertDelegated( evtArgs, { expectedName, expectedSource, expectedPath, expectedData } ) {
 		const evtInfo = evtArgs[ 0 ];
 
@@ -1115,3 +1099,49 @@ describe( 'EmitterMixin', () => {
 		expect( evtArgs.slice( 1 ) ).to.deep.equal( expectedData );
 	}
 } );
+
+describe( 'emitter id', () => {
+	let emitter;
+
+	beforeEach( () => {
+		emitter = getEmitterInstance();
+	} );
+
+	it( 'should be undefined before it is set', () => {
+		expect( _getEmitterId( emitter ) ).to.be.undefined;
+	} );
+
+	it( 'should be settable but only once', () => {
+		_setEmitterId( emitter, 'abc' );
+
+		expect( _getEmitterId( emitter ) ).to.equal( 'abc' );
+
+		_setEmitterId( emitter, 'xyz' );
+
+		expect( _getEmitterId( emitter ) ).to.equal( 'abc' );
+	} );
+} );
+
+describe( '_getEmitterListenedTo', () => {
+	let emitter, listener;
+
+	beforeEach( () => {
+		emitter = getEmitterInstance();
+		listener = getEmitterInstance();
+	} );
+
+	it( 'should return null if listener do not listen to emitter with given id', () => {
+		expect( _getEmitterListenedTo( listener, 'abc' ) ).to.be.null;
+	} );
+
+	it( 'should return emitter with given id', () => {
+		listener.listenTo( emitter, 'eventName', () => {} );
+		const emitterId = _getEmitterId( emitter );
+
+		expect( _getEmitterListenedTo( listener, emitterId ) ).to.equal( emitter );
+	} );
+} );
+
+function getEmitterInstance() {
+	return Object.create( EmitterMixin );
+}

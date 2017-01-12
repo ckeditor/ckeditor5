@@ -8,6 +8,7 @@
  */
 
 import EmitterMixin from '../emittermixin';
+import { _getEmitterListenedTo, _setEmitterId } from '../emittermixin';
 import uid from '../uid';
 import extend from '../lib/lodash/extend';
 import isNative from '../lib/lodash/isNative';
@@ -109,19 +110,7 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 * @return {module:utils/dom/emittermixin~ProxyEmitter} ProxyEmitter instance or null.
 	 */
 	_getProxyEmitter( node ) {
-		let proxy, emitters, emitterInfo;
-
-		// Get node UID. It allows finding Proxy Emitter for this DOM Node.
-		const uid = getNodeUID( node );
-
-		// Find existing Proxy Emitter for this DOM Node among emitters.
-		if ( ( emitters = this._listeningTo ) ) {
-			if ( ( emitterInfo = emitters[ uid ] ) ) {
-				proxy = emitterInfo.emitter;
-			}
-		}
-
-		return proxy || null;
+		return _getEmitterListenedTo( this, getNodeUID( node ) );
 	}
 } );
 
@@ -142,7 +131,7 @@ export default DomEmitterMixin;
  *     |     emitter: ProxyEmitter, |                +------------------------+                      +------------v----------+
  *     |     callbacks: {           |                | events: {              |                      | Node (HTMLElement)    |
  *     |       click: [ callbacks ] |                |   click: [ callbacks ] |                      +-----------------------+
- *     |     }                      |                | },                     |                      | data-cke-expando: UID |
+ *     |     }                      |                | },                     |                      | data-ck-expando: UID  |
  *     |   }                        |                | _domNode: Node,        |                      +-----------------------+
  *     | }                          |                | _domListeners: {},     |                                   |
  *     | +------------------------+ |                | _emitterId: UID        |                                   |
@@ -164,7 +153,7 @@ class ProxyEmitter {
 	 */
 	constructor( node ) {
 		// Set emitter ID to match DOM Node "expando" property.
-		this._emitterId = getNodeUID( node );
+		_setEmitterId( this, getNodeUID( node ) );
 
 		// Remember the DOM Node this ProxyEmitter is bound to.
 		this._domNode = node;
