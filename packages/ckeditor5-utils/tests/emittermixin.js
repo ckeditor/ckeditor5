@@ -4,12 +4,32 @@
  */
 
 import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import { _getEmitterListenedTo } from 'ckeditor5-utils/src/emittermixin';
 import EventInfo from 'ckeditor5-utils/src/eventinfo';
 
 describe( 'EmitterMixin', () => {
 	let emitter, listener;
 
-	beforeEach( refreshEmitter );
+	beforeEach( () => {
+		emitter = getEmitterInstance();
+		listener = getEmitterInstance();
+	} );
+
+	describe( '_emitterId', () => {
+		it( 'should not be set by default', () => {
+			expect( emitter._emitterId ).to.be.undefined;
+		} );
+
+		it( 'should be settable but only once', () => {
+			emitter._emitterId = 'abc';
+
+			expect( emitter._emitterId ).to.equal( 'abc' );
+
+			emitter._emitterId = 'xyz';
+
+			expect( emitter._emitterId ).to.equal( 'abc' );
+		} );
+	} );
 
 	describe( 'fire', () => {
 		it( 'should execute callbacks in the right order without priority', () => {
@@ -376,8 +396,6 @@ describe( 'EmitterMixin', () => {
 	} );
 
 	describe( 'listenTo', () => {
-		beforeEach( refreshListener );
-
 		it( 'should properly register callbacks', () => {
 			let spy = sinon.spy();
 
@@ -408,8 +426,6 @@ describe( 'EmitterMixin', () => {
 	} );
 
 	describe( 'stopListening', () => {
-		beforeEach( refreshListener );
-
 		it( 'should stop listening to given event callback', () => {
 			let spy1 = sinon.spy();
 			let spy2 = sinon.spy();
@@ -1090,18 +1106,6 @@ describe( 'EmitterMixin', () => {
 		} );
 	} );
 
-	function refreshEmitter() {
-		emitter = getEmitterInstance();
-	}
-
-	function refreshListener() {
-		listener = getEmitterInstance();
-	}
-
-	function getEmitterInstance() {
-		return Object.create( EmitterMixin );
-	}
-
 	function assertDelegated( evtArgs, { expectedName, expectedSource, expectedPath, expectedData } ) {
 		const evtInfo = evtArgs[ 0 ];
 
@@ -1111,3 +1115,27 @@ describe( 'EmitterMixin', () => {
 		expect( evtArgs.slice( 1 ) ).to.deep.equal( expectedData );
 	}
 } );
+
+describe( '_getEmitterListenedTo', () => {
+	let emitter, listener;
+
+	beforeEach( () => {
+		emitter = getEmitterInstance();
+		listener = getEmitterInstance();
+	} );
+
+	it( 'should return null if listener do not listen to emitter with given id', () => {
+		expect( _getEmitterListenedTo( listener, 'abc' ) ).to.be.null;
+	} );
+
+	it( 'should return emitter with given id', () => {
+		listener.listenTo( emitter, 'eventName', () => {} );
+		const emitterId = emitter._emitterId;
+
+		expect( _getEmitterListenedTo( listener, emitterId ) ).to.equal( emitter );
+	} );
+} );
+
+function getEmitterInstance() {
+	return Object.create( EmitterMixin );
+}
