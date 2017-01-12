@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/ui/imagealternativetextformview
+ * @module image/imagealternatetext/ui/imagealternatetextformview
  */
 
 import View from 'ckeditor5-ui/src/view';

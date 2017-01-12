@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/image
+ * @module image/imagealternatetext/imagealternatetext
  */
 
 import Plugin from 'ckeditor5-core/src/plugin';
@@ -17,7 +17,7 @@ import AlternateTextFormView from './ui/alternatetextformview';
 import ImageBalloonPanel from '../ui/imageballoonpanel';
 
 import alternateTextIcon from 'ckeditor5-core/theme/icons/source.svg';
-// TODO: move part of the theme to this sub-directory.
+import '../../theme/imagealternatetext/theme.scss';
 
 /**
  * The image alternate text plugin.
@@ -36,11 +36,21 @@ export default class ImageAlternateText extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		// TODO: docs for this._panel and this._form.
 		this._createButton();
 
 		return this._createBalloonPanel().then( panel => {
+			/**
+			 * Balloon panel containing alternate text change form.
+			 *
+			 * @member {module:image/ui/imageballoonpanel~ImageBalloonPanel} #baloonPanel
+			 */
 			this.balloonPanel = panel;
+
+			/**
+			 * Form containing textarea and buttons, used to change `alt` text value.
+			 *
+			 * @member {module:image/imagealternatetext/ui/imagealternatetextformview~AlternateTextFormView} #form
+			 */
 			this.form = panel.content.get( 0 );
 		} );
 	}
@@ -72,6 +82,12 @@ export default class ImageAlternateText extends Plugin {
 		} );
 	}
 
+	/**
+	 * Creates balloon panel.
+	 *
+	 * @private
+	 * @return {Promise.<module:image/ui/imageballoonpanel~ImageBalloonPanel>}
+	 */
 	_createBalloonPanel() {
 		const editor = this.editor;
 
@@ -106,6 +122,11 @@ export default class ImageAlternateText extends Plugin {
 		] ).then( () => panel ) ;
 	}
 
+	/**
+	 * Shows the balloon panel.
+	 *
+	 * @private
+	 */
 	_showBalloonPanel() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'imageAlternateText' );
@@ -120,6 +141,11 @@ export default class ImageAlternateText extends Plugin {
 		this.form.labeledTextarea.select();
 	}
 
+	/**
+	 * Hides the balloon panel.
+	 *
+	 * @private
+	 */
 	_hideBalloonPanel() {
 		const editor = this.editor;
 		this.balloonPanel.detach();

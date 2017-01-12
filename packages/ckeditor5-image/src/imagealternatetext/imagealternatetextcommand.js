@@ -21,7 +21,14 @@ export default class ImageAlternateTextCommand extends Command {
 	 */
 	constructor( editor ) {
 		super( editor );
-
+		/**
+		 * The current command value - `false` if there is no `alt` attribute, otherwise contains string wilt `alt`
+		 * attribute value.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {String|Boolean} #value
+		 */
 		this.set( 'value', false );
 
 		// Update current value and refresh state each time something change in model document.
