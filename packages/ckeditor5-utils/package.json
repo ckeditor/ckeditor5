@@ -1,5 +1,5 @@
 {
-  "name": "ckeditor5-utils",
+  "name": "@ckeditor/ckeditor5-utils",
   "version": "0.6.0",
   "description": "CKEditor 5 Utils",
   "keywords": [
@@ -7,7 +7,7 @@
   ],
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-lint": "^2.0.0",
-    "ckeditor5-core": "ckeditor/ckeditor5-core",
+    "@ckeditor/ckeditor5-core": "*",
     "del": "^2.2.0",
     "gulp": "^3.9.0",
     "guppy-pre-commit": "^0.4.0",
