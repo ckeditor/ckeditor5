@@ -8,13 +8,11 @@
  */
 
 import Plugin from 'ckeditor5-core/src/plugin';
-import ImageAlternateTextCommand from './imagealternatetextcommand';
 import ButtonView from 'ckeditor5-ui/src/button/buttonview';
+import ImageAlternateTextEngine from './imagealternatetextengine';
 import clickOutsideHandler from 'ckeditor5-ui/src/bindings/clickoutsidehandler';
 import escPressHandler from 'ckeditor5-ui/src/bindings/escpresshandler';
-
 import ImageToolbar from '../imagetoolbar';
-
 import AlternateTextFormView from './ui/alternatetextformview';
 import ImageBalloonPanel from '../ui/imageballoonpanel';
 
@@ -30,15 +28,21 @@ export default class ImageAlternateText extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
-		// TODO: Register ImageAlternateTextCommand in engine part.
-		this.editor.commands.set( 'imageAlternateText', new ImageAlternateTextCommand( this.editor ) );
+	static get requires() {
+		return [ ImageAlternateTextEngine ];
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	init() {
 		// TODO: docs for this._panel and this._form.
-		return Promise.all( [
-			this._createButton(),
-			this._createBalloonPanel()
-		] );
+		this._createButton();
+
+		return this._createBalloonPanel().then( panel => {
+			this.balloonPanel = panel;
+			this.form = panel.content.get( 0 );
+		} );
 	}
 
 	/**
@@ -52,7 +56,7 @@ export default class ImageAlternateText extends Plugin {
 		const command = editor.commands.get( 'imageAlternateText' );
 		const t = editor.t;
 
-		return editor.ui.componentFactory.add( 'imageAlternateText', ( locale ) => {
+		editor.ui.componentFactory.add( 'imageAlternateText', ( locale ) => {
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -72,7 +76,7 @@ export default class ImageAlternateText extends Plugin {
 		const editor = this.editor;
 
 		const panel = new ImageBalloonPanel( editor );
-		const form = this._form = new AlternateTextFormView( editor.locale );
+		const form = new AlternateTextFormView( editor.locale );
 
 		this.listenTo( form, 'submit', () => {
 			editor.execute( 'imageAlternateText', { newValue: form.labeledTextarea.inputView.element.value } );
@@ -96,12 +100,10 @@ export default class ImageAlternateText extends Plugin {
 			callback: () => this._hideBalloonPanel()
 		} );
 
-		this._panel = panel;
-
 		return Promise.all( [
-			panel.content.add( this._form ),
+			panel.content.add( form ),
 			editor.ui.view.body.add( panel )
-		] );
+		] ).then( () => panel ) ;
 	}
 
 	_showBalloonPanel() {
@@ -113,14 +115,14 @@ export default class ImageAlternateText extends Plugin {
 			imageToolbar.hide();
 		}
 
-		this._form.labeledTextarea.value = command.value || '';
-		this._form.labeledTextarea.select();
-		this._panel.attach();
+		this.form.labeledTextarea.value = command.value || '';
+		this.balloonPanel.attach();
+		this.form.labeledTextarea.select();
 	}
 
 	_hideBalloonPanel() {
 		const editor = this.editor;
-		this._panel.detach();
+		this.balloonPanel.detach();
 		editor.editing.view.focus();
 
 		const imageToolbar = editor.plugins.get( ImageToolbar );
