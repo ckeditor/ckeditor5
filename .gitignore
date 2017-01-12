@@ -13,3 +13,4 @@ build/modules/**
 build/docs/**
 coverage/**
 packages/**
+lerna-debug.log
