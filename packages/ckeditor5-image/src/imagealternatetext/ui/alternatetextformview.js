@@ -14,15 +14,38 @@ import LabeledInputView from 'ckeditor5-ui/src/labeledinput/labeledinputview';
 import TextAreaView from './textareaview';
 import submitHandler from 'ckeditor5-ui/src/bindings/submithandler';
 
-export default class AlternateTextFormView extends View{
+/**
+ * AlternateTextFormView class.
+ *
+ * @extends module:ui/view~View
+ */
+export default class AlternateTextFormView extends View {
+	/**
+	 * @inheritDoc
+	 */
 	constructor( locale ) {
 		super( locale );
 
+		/**
+		 * Text area with label.
+		 *
+		 * @member {module:ui/labeledinput/labeledinputview~LabeledInputView} #labeledTextarea
+		 */
 		this.labeledTextarea = this._createLabeledTextarea();
 
+		/**
+		 * Button used to submit the form.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView} #saveButtonView
+		 */
 		this.saveButtonView = this._createButton( 'Ok' );
 		this.saveButtonView.type = 'submit';
 
+		/**
+		 * Button used to cancel the form.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView} #cancelButtonView
+		 */
 		this.cancelButtonView = this._createButton( 'Cancel', 'cancel' );
 
 		// Register child views.
@@ -91,11 +114,15 @@ export default class AlternateTextFormView extends View{
 		return button;
 	}
 
+	/**
+	 * Creates textarea with label.
+	 *
+	 * @private
+	 * @return {module:ui/labeledinput/labeledinputview~LabeledInputView}
+	 */
 	_createLabeledTextarea() {
 		const t = this.locale.t;
-
 		const labeledInput = new LabeledInputView( this.locale, TextAreaView );
-
 		labeledInput.label = t( 'Alternate image text' );
 
 		return labeledInput;
