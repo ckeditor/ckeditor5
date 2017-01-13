@@ -3,10 +3,12 @@
   "version": "0.5.0",
   "description": "A bright theme for CKEditor 5.",
   "keywords": [],
-  "dependencies": {},
+  "dependencies": {
+    "@ckeditor/ckeditor5-ui": "*"
+  },
   "devDependencies": {
+    "@ckeditor/ckeditor5-basic-styles": "*",
     "@ckeditor/ckeditor5-dev-lint": "^2.0.0",
-    "@ckeditor/ckeditor5-ui": "*",
     "@ckeditor/ckeditor5-utils": "*",
     "gulp": "^3.9.0",
     "guppy-pre-commit": "^0.4.0"
