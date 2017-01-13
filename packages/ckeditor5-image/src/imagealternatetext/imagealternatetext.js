@@ -10,7 +10,6 @@
 import Plugin from 'ckeditor5-core/src/plugin';
 import ButtonView from 'ckeditor5-ui/src/button/buttonview';
 import ImageAlternateTextEngine from './imagealternatetextengine';
-import clickOutsideHandler from 'ckeditor5-ui/src/bindings/clickoutsidehandler';
 import escPressHandler from 'ckeditor5-ui/src/bindings/escpresshandler';
 import ImageToolbar from '../imagetoolbar';
 import AlternateTextFormView from './ui/alternatetextformview';
@@ -106,14 +105,6 @@ export default class ImageAlternateText extends Plugin {
 		escPressHandler( {
 			emitter: panel,
 			activator: () => panel.isVisible,
-			callback: () => this._hideBalloonPanel()
-		} );
-
-		// Close on click outside of balloon panel element.
-		clickOutsideHandler( {
-			emitter: panel,
-			activator: () => panel.isVisible,
-			contextElement: panel.element,
 			callback: () => this._hideBalloonPanel()
 		} );
 

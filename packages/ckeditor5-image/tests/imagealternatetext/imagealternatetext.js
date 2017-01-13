@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global Event */
-
 import ClassicTestEditor from 'ckeditor5-core/tests/_utils/classictesteditor';
 import Image from 'ckeditor5-image/src/image';
 import ImageToolbar from 'ckeditor5-image/src/imagetoolbar';
@@ -173,15 +171,6 @@ describe( 'ImageAlternateText', () => {
 					event.which = keyCode;
 					event.keyCode = keyCode;
 					global.document.dispatchEvent( event );
-
-					sinon.assert.called( hidePanelSpy );
-				} );
-			} );
-
-			describe( 'mouse', () => {
-				it( 'should close on click outside the panel', () => {
-					balloonPanel.isVisible = true;
-					global.document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 
 					sinon.assert.called( hidePanelSpy );
 				} );
