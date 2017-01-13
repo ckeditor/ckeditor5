@@ -33,7 +33,8 @@
     "@ckeditor/ckeditor5-dev-tests": "^4.0.0",
     "gulp": "^3.9.0",
     "guppy-pre-commit": "^0.4.0",
-    "lerna": "2.0.0-beta.32"
+    "lerna": "2.0.0-beta.32",
+    "mgit2": "*"
   },
   "engines": {
     "node": ">=6.0.0",
