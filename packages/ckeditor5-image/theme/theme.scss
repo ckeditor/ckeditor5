@@ -36,20 +36,3 @@
 		margin-left: 0.8em;
 	}
 }
-
-// Textarea view.
-// TODO: how to define by class only without textarea
-textarea.ck-textarea {
-	@include ck-rounded-corners();
-	@include ck-box-shadow( $ck-inner-shadow );
-
-	border: 1px solid ck-border-color( 'foreground' );
-	padding: ck-spacing( 'medium' );
-	min-width: 250px;
-	resize: none;
-
-	&:focus {
-		@include ck-focus-ring();
-		@include ck-box-shadow( $ck-focus-outer-shadow, $ck-inner-shadow );
-	}
-}

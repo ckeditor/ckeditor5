@@ -1,0 +1,25 @@
+// Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+@import '~ckeditor5-theme-lark/theme/helpers/_spacing';
+@import '~ckeditor5-theme-lark/theme/helpers/_colors';
+@import '~ckeditor5-theme-lark/theme/helpers/_rounded';
+@import '~ckeditor5-theme-lark/theme/helpers/_shadow';
+@import '~ckeditor5-theme-lark/theme/helpers/_states';
+
+// Textarea view.
+textarea.ck-textarea {
+	@include ck-rounded-corners();
+	@include ck-box-shadow( $ck-inner-shadow );
+
+	border: 1px solid ck-border-color( 'foreground' );
+	padding: ck-spacing( 'medium' );
+	min-width: 250px;
+	min-height: 60px;
+	resize: none;
+
+	&:focus {
+		@include ck-focus-ring();
+		@include ck-box-shadow( $ck-focus-outer-shadow, $ck-inner-shadow );
+	}
+}
