@@ -15,7 +15,8 @@ before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 install:
-  - npm install
-  - npm install @ckeditor/ckeditor5-dev-tests
+  - npm install mgit2 lerna @ckeditor/ckeditor5-dev-tests
+  - mgit bootstrap
+  - lerna bootstrap
 script:
   - node_modules/.bin/ckeditor5-dev-tests --reporter=dots
