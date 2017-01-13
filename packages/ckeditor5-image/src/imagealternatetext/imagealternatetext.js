@@ -71,7 +71,8 @@ export default class ImageAlternateText extends Plugin {
 
 			view.set( {
 				label: t( 'Change alternate text' ),
-				icon: alternateTextIcon
+				icon: alternateTextIcon,
+				tooltip: true
 			} );
 
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
