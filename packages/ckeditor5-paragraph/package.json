@@ -5,7 +5,8 @@
   "keywords": [],
   "dependencies": {
     "@ckeditor/ckeditor5-core": "*",
-    "@ckeditor/ckeditor5-engine": "*"
+    "@ckeditor/ckeditor5-engine": "*",
+    "@ckeditor/ckeditor5-utils": "*"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-lint": "^2.0.0",
