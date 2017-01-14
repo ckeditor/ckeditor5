@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from 'ckeditor5-core/tests/_utils/modeltesteditor';
-import DeleteCommand from 'ckeditor5-typing/src/deletecommand';
-import { getData, setData } from 'ckeditor5-engine/src/dev-utils/model';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import DeleteCommand from '../src/deletecommand';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DeleteCommand', () => {
 	let editor, doc;

@@ -7,7 +7,7 @@
  * @module typing/changebuffer
  */
 
-import count from 'ckeditor5-utils/src/count';
+import count from '@ckeditor/ckeditor5-utils/src/count';
 
 /**
  * Change buffer allows to group atomic changes (like characters that have been typed) into

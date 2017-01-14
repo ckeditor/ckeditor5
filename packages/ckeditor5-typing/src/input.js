@@ -7,14 +7,14 @@
  * @module typing/input
  */
 
-import Plugin from 'ckeditor5-core/src/plugin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ChangeBuffer from './changebuffer';
-import ModelRange from 'ckeditor5-engine/src/model/range';
-import ViewPosition from 'ckeditor5-engine/src/view/position';
-import ViewText from 'ckeditor5-engine/src/view/text';
-import diff from 'ckeditor5-utils/src/diff';
-import diffToChanges from 'ckeditor5-utils/src/difftochanges';
-import { getCode } from 'ckeditor5-utils/src/keyboard';
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
+import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
+import diff from '@ckeditor/ckeditor5-utils/src/diff';
+import diffToChanges from '@ckeditor/ckeditor5-utils/src/difftochanges';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * Handles text input coming from the keyboard or other input methods.

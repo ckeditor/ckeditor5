@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from 'ckeditor5-core/tests/_utils/modeltesteditor';
-import DeleteCommand from 'ckeditor5-typing/src/deletecommand';
-import UndoEngine from 'ckeditor5-undo/src/undoengine';
-import { getData, setData } from 'ckeditor5-engine/src/dev-utils/model';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import DeleteCommand from '../src/deletecommand';
+import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DeleteCommand integration', () => {
 	let editor, doc;
