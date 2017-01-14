@@ -5,7 +5,7 @@
 
 /* global console:false */
 
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import EmitterMixin from '../../src/emittermixin';
 
 const utils = {
 	/**

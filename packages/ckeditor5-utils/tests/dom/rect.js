@@ -5,9 +5,9 @@
 
 /* global document */
 
-import global from 'ckeditor5-utils/src/dom/global';
-import Rect from 'ckeditor5-utils/src/dom/rect';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import global from '../../src/dom/global';
+import Rect from '../../src/dom/rect';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import nth from 'ckeditor5-utils/src/nth';
+import nth from '../src/nth';
 
 describe( 'utils', () => {
 	describe( 'nth', () => {

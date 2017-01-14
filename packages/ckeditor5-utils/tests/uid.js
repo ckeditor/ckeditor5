@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import uid from 'ckeditor5-utils/src/uid';
+import uid from '../src/uid';
 
 describe( 'utils', () => {
 	describe( 'uid', () => {

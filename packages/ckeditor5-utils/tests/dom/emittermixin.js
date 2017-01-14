@@ -5,9 +5,9 @@
 
 /* globals document, window, Event, MouseEvent */
 
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import DomEmitterMixin from 'ckeditor5-utils/src/dom/emittermixin';
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import DomEmitterMixin from '../../src/dom/emittermixin';
+import EmitterMixin from '../../src/emittermixin';
 
 testUtils.createSinonSandbox();
 

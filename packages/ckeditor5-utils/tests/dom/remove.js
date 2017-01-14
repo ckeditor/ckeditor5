@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import remove from 'ckeditor5-utils/src/dom/remove';
+import remove from '../../src/dom/remove';
 
 describe( 'remove', () => {
 	it( 'should remove element form parent', () => {

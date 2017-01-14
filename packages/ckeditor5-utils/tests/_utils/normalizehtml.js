@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import { stringify } from 'ckeditor5-engine/src/dev-utils/view';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 /**
  * Parses given string of HTML and returns normalized HTML.
