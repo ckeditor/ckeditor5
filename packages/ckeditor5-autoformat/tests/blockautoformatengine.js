@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import BlockAutoformatEngine from 'ckeditor5-autoformat/src/blockautoformatengine';
-import Paragraph from 'ckeditor5-paragraph/src/paragraph';
-import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
-import Enter from 'ckeditor5-enter/src/enter';
-import { setData, getData } from 'ckeditor5-engine/src/dev-utils/model';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import Command from 'ckeditor5-core/src/command/command';
+import BlockAutoformatEngine from '../src/blockautoformatengine';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Command from '@ckeditor/ckeditor5-core/src/command/command';
 
 testUtils.createSinonSandbox();
 

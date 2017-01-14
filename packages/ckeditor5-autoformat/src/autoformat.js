@@ -9,11 +9,11 @@
 
 import BlockAutoformatEngine from './blockautoformatengine';
 import InlineAutoformatEngine from './inlineautoformatengine';
-import Plugin from 'ckeditor5-core/src/plugin';
-import HeadingEngine from 'ckeditor5-heading/src/headingengine';
-import ListEngine from 'ckeditor5-list/src/listengine';
-import BoldEngine from 'ckeditor5-basic-styles/src/boldengine';
-import ItalicEngine from 'ckeditor5-basic-styles/src/italicengine';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
+import ListEngine from '@ckeditor/ckeditor5-list/src/listengine';
+import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
+import ItalicEngine from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
 
 /**
  * Includes a set of predefined autoformatting actions.
