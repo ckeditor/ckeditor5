@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import MarkdownDataProcessor from 'ckeditor5-markdown-gfm/src/gfmdataprocessor';
-import { stringify } from 'ckeditor5-engine/src/dev-utils/view';
+import MarkdownDataProcessor from '../../src/gfmdataprocessor';
+import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 const testCases = {
 	'backslash': { test: '\\\\', result: '\\' },

@@ -9,7 +9,7 @@
 
 import marked from './lib/marked/marked';
 import toMarkdown from './lib/to-markdown/to-markdown';
-import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import GFMRenderer from './lib/marked/renderer';
 import converters from './lib/to-markdown/converters';
 
