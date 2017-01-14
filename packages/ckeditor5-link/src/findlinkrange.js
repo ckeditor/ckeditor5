@@ -7,8 +7,8 @@
  * @module link/findlinkrange
  */
 
-import Range from 'ckeditor5-engine/src/model/range';
-import Position from 'ckeditor5-engine/src/model/position';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 /**
  * Walk backward and forward from start position, node by node as long as they have the same `linkHref` attribute value and return

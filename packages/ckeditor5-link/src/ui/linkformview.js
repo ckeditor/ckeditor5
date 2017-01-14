@@ -7,14 +7,14 @@
  * @module link/ui/linkformview
  */
 
-import View from 'ckeditor5-ui/src/view';
-import Template from 'ckeditor5-ui/src/template';
+import View from '@ckeditor/ckeditor5-ui/src/view';
+import Template from '@ckeditor/ckeditor5-ui/src/template';
 
-import ButtonView from 'ckeditor5-ui/src/button/buttonview';
-import LabeledInputView from 'ckeditor5-ui/src/labeledinput/labeledinputview';
-import InputTextView from 'ckeditor5-ui/src/inputtext/inputtextview';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinputview';
+import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 
-import submitHandler from 'ckeditor5-ui/src/bindings/submithandler';
+import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 
 /**
  * The link form view controller class.

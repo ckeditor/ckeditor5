@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import findLinkRange from 'ckeditor5-link/src/findlinkrange';
-import Document from 'ckeditor5-engine/src/model/document';
-import Range from 'ckeditor5-engine/src/model/range';
-import Position from 'ckeditor5-engine/src/model/position';
-import { setData } from 'ckeditor5-engine/src/dev-utils/model';
+import findLinkRange from '../src/findlinkrange';
+import Document from '@ckeditor/ckeditor5-engine/src/model/document';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'findLinkRange', () => {
 	let document, root;

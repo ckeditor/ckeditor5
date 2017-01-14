@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import View from 'ckeditor5-ui/src/view';
-import LinkFormView from 'ckeditor5-link/src/ui/linkformview';
+import View from '@ckeditor/ckeditor5-ui/src/view';
+import LinkFormView from '../../src/ui/linkformview';
 
 describe( 'LinkFormView', () => {
 	let view;
