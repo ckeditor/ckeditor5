@@ -7,9 +7,9 @@
  * @module image/converters
  */
 
-import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import ViewEmptyElement from 'ckeditor5-engine/src/view/emptyelement';
-import ModelElement from 'ckeditor5-engine/src/model/element';
+import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
+import ViewEmptyElement from '@ckeditor/ckeditor5-engine/src/view/emptyelement';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { isImageWidget } from './utils';
 
 /**

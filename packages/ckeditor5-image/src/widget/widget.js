@@ -7,14 +7,14 @@
  * @module image/widget/widget
  */
 
-import Plugin from 'ckeditor5-core/src/plugin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import WidgetEngine from './widgetengine';
-import MouseObserver from 'ckeditor5-engine/src/view/observer/mouseobserver';
-import ModelRange from 'ckeditor5-engine/src/model/range';
-import ModelSelection from 'ckeditor5-engine/src/model/selection';
-import ModelElement from 'ckeditor5-engine/src/model/element';
+import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
+import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { isWidget } from './utils';
-import { keyCodes } from 'ckeditor5-utils/src/keyboard';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * The widget plugin.

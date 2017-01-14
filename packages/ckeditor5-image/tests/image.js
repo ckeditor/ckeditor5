@@ -5,10 +5,10 @@
 
 /* global window */
 
-import ClassicTestEditor from 'ckeditor5-core/tests/_utils/classictesteditor';
-import Image from 'ckeditor5-image/src/image';
-import ImageEngine from 'ckeditor5-image/src/imageengine';
-import Widget from 'ckeditor5-image/src/widget/widget';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Image from '../src/image';
+import ImageEngine from '../src/imageengine';
+import Widget from '../src/widget/widget';
 
 describe( 'Image', () => {
 	let editor;
