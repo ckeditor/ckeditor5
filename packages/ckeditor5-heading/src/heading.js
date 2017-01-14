@@ -9,12 +9,12 @@
 
 import HeadingEngine from './headingengine';
 
-import Plugin from 'ckeditor5-core/src/plugin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import Model from 'ckeditor5-ui/src/model';
-import createListDropdown from 'ckeditor5-ui/src/dropdown/list/createlistdropdown';
+import Model from '@ckeditor/ckeditor5-ui/src/model';
+import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
 
-import Collection from 'ckeditor5-utils/src/collection';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 /**
  * The headings feature. It introduces the `headings` drop-down list and the `heading` command which allow
