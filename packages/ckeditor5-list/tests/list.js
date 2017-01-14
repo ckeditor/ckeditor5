@@ -5,12 +5,12 @@
 
 /* globals document */
 
-import ClassicTestEditor from 'ckeditor5-core/tests/_utils/classictesteditor';
-import List from 'ckeditor5-list/src/list';
-import Paragraph from 'ckeditor5-paragraph/src/paragraph';
-import ListEngine from 'ckeditor5-list/src/listengine';
-import ButtonView from 'ckeditor5-ui/src/button/buttonview';
-import { getCode } from 'ckeditor5-utils/src/keyboard';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import List from '../src/list';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ListEngine from '../src/listengine';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'List', () => {
 	let editor, bulletedListButton, numberedListButton, schema;

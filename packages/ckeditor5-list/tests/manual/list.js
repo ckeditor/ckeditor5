@@ -5,13 +5,13 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from 'ckeditor5-editor-classic/src/classic';
-import Enter from 'ckeditor5-enter/src/enter';
-import Typing from 'ckeditor5-typing/src/typing';
-import Heading from 'ckeditor5-heading/src/heading';
-import Paragraph from 'ckeditor5-paragraph/src/paragraph';
-import Undo from 'ckeditor5-undo/src/undo';
-import List from 'ckeditor5-list/src/list';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import List from '../../src/list';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Enter, Typing, Heading, Paragraph, Undo, List ],

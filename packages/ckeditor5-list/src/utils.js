@@ -9,7 +9,7 @@
  * @module list/utils
  */
 
-import Position from 'ckeditor5-engine/src/model/position';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 /**
  * For given {@link module:engine/model/position~Position position}, returns the closest ancestor of that position which is a
