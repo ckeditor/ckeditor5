@@ -5,7 +5,7 @@
 
 /* globals Event */
 
-import ListItemView from 'ckeditor5-ui/src/list/listitemview';
+import ListItemView from '../../src/list/listitemview';
 
 describe( 'ListItemView', () => {
 	let view;

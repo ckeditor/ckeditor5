@@ -5,17 +5,17 @@
 
 /* globals HTMLElement, Event, document */
 
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import Template from 'ckeditor5-ui/src/template';
-import { TemplateToBinding, TemplateIfBinding } from 'ckeditor5-ui/src/template';
-import View from 'ckeditor5-ui/src/view';
-import ViewCollection from 'ckeditor5-ui/src/viewcollection';
-import Model from 'ckeditor5-ui/src/model';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
-import DomEmitterMixin from 'ckeditor5-utils/src/dom/emittermixin';
-import Collection from 'ckeditor5-utils/src/collection';
-import normalizeHtml from 'ckeditor5-utils/tests/_utils/normalizehtml';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Template from '../src/template';
+import { TemplateToBinding, TemplateIfBinding } from '../src/template';
+import View from '../src/view';
+import ViewCollection from '../src/viewcollection';
+import Model from '../src/model';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 testUtils.createSinonSandbox();
 

@@ -8,7 +8,7 @@
  */
 
 import EditorUIView from '../../editorui/editoruiview';
-import uid from 'ckeditor5-utils/src/uid';
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
 import Template from '../../template';
 
 /**

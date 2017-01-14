@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import IframeView from 'ckeditor5-ui/src/iframe/iframeview';
+import IframeView from '../../src/iframe/iframeview';
 
 describe( 'IframeView', () => {
 	let view;

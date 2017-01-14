@@ -11,8 +11,8 @@
 
 import View from '../view';
 import Template from '../template';
-import { getOptimalPosition } from 'ckeditor5-utils/src/dom/position';
-import toUnit from 'ckeditor5-utils/src/dom/tounit';
+import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 
 const toPx = toUnit( 'px' );
 

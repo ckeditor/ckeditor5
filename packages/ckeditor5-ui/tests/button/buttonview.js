@@ -5,9 +5,9 @@
 
 /* globals Event */
 
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import ButtonView from 'ckeditor5-ui/src/button/buttonview';
-import IconView from 'ckeditor5-ui/src/icon/iconview';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ButtonView from '../../src/button/buttonview';
+import IconView from '../../src/icon/iconview';
 
 testUtils.createSinonSandbox();
 

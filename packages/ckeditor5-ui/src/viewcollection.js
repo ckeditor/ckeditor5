@@ -7,10 +7,10 @@
  * @module ui/viewcollection
  */
 
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import ObservableMixin from 'ckeditor5-utils/src/observablemixin';
-import Collection from 'ckeditor5-utils/src/collection';
-import mix from 'ckeditor5-utils/src/mix';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import View from './view';
 
 /**

@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewCollection from 'ckeditor5-ui/src/viewcollection';
-import ListView from 'ckeditor5-ui/src/list/listview';
+import ViewCollection from '../../src/viewcollection';
+import ListView from '../../src/list/listview';
 
 describe( 'ListView', () => {
 	let view;
