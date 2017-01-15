@@ -7,9 +7,9 @@
  * @module basic-styles/bold
  */
 
-import Plugin from 'ckeditor5-core/src/plugin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import BoldEngine from './boldengine';
-import ButtonView from 'ckeditor5-ui/src/button/buttonview';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import boldIcon from '../theme/icons/bold.svg';
 
 /**
