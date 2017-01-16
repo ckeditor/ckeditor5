@@ -10,6 +10,8 @@ import FocusTracker from 'ckeditor5-utils/src/focustracker';
 import ClassicEditorUI from 'ckeditor5-editor-classic/src/classiceditorui';
 import ClassicEditorUIView from 'ckeditor5-editor-classic/src/classiceditoruiview';
 import ClassicTestEditor from 'ckeditor5-core/tests/_utils/classictesteditor';
+import KeystrokeHandler from 'ckeditor5-utils/src/keystrokehandler';
+import { keyCodes } from 'ckeditor5-utils/src/keyboard';
 import View from 'ckeditor5-ui/src/view';
 
 import testUtils from 'ckeditor5-core/tests/_utils/utils';
@@ -55,6 +57,10 @@ describe( 'ClassicEditorUI', () => {
 
 		it( 'creates #focusTracker', () => {
 			expect( ui.focusTracker ).to.be.instanceOf( FocusTracker );
+		} );
+
+		it( 'creates #keystrokes', () => {
+			expect( ui.keystrokes ).to.be.instanceOf( KeystrokeHandler );
 		} );
 
 		it( 'sets view#width and view#height', () => {
@@ -142,6 +148,76 @@ describe( 'ClassicEditorUI', () => {
 				expect( view.toolbar.items.get( 1 ).name ).to.equal( 'bar' );
 			} );
 		} );
+
+		describe( 'activates keyboard navigation for the toolbar', () => {
+			it( 'listens for keystrokes coming from various parts of the UI', () => {
+				const spy = sinon.spy( ui.keystrokes, 'listenTo' );
+
+				return ui.init().then( () => {
+					sinon.assert.calledTwice( spy );
+					sinon.assert.calledWithExactly( spy.firstCall, ui.view.element );
+					sinon.assert.calledWithExactly( spy.secondCall, ui.view._bodyCollectionContainer );
+				} );
+			} );
+
+			it( 'alt + f10: focus the first focusable toolbar item', () => {
+				return ui.init().then( () => {
+					const spy = sinon.spy( view.toolbar, 'focus' );
+					const toolbarFocusTracker = view.toolbar.focusTracker;
+					const keyEvtData = {
+						keyCode: keyCodes.f10,
+						altKey: true,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					toolbarFocusTracker.isFocused = false;
+					ui.focusTracker.isFocused = false;
+
+					ui.keystrokes.press( keyEvtData );
+					sinon.assert.notCalled( spy );
+
+					toolbarFocusTracker.isFocused = true;
+					ui.focusTracker.isFocused = true;
+
+					ui.keystrokes.press( keyEvtData );
+					sinon.assert.notCalled( spy );
+
+					toolbarFocusTracker.isFocused = false;
+					ui.focusTracker.isFocused = true;
+
+					ui.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( spy );
+
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				} );
+			} );
+
+			it( 'esc: re–foucus editable when toolbar is focused', () => {
+				return ui.init().then( () => {
+					const spy = sinon.spy( editor.editing.view, 'focus' );
+					const toolbarFocusTracker = view.toolbar.focusTracker;
+					const keyEvtData = { keyCode: keyCodes.esc,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					toolbarFocusTracker.isFocused = false;
+
+					ui.keystrokes.press( keyEvtData );
+					sinon.assert.notCalled( spy );
+
+					toolbarFocusTracker.isFocused = true;
+
+					ui.keystrokes.press( keyEvtData );
+
+					sinon.assert.calledOnce( spy );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				} );
+			} );
+		} );
 	} );
 
 	describe( 'destroy()', () => {
@@ -176,6 +252,7 @@ function viewCreator( name ) {
 		const view = new View( locale );
 
 		view.name = name;
+		view.element = document.createElement( 'a' );
 
 		return view;
 	};

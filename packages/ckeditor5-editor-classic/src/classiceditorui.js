@@ -9,6 +9,7 @@
 
 import ComponentFactory from 'ckeditor5-ui/src/componentfactory';
 import FocusTracker from 'ckeditor5-utils/src/focustracker';
+import KeystrokeHandler from 'ckeditor5-utils/src/keystrokehandler';
 
 /**
  * The classic editor UI class.
@@ -53,6 +54,14 @@ export default class ClassicEditorUI {
 		 */
 		this.focusTracker = new FocusTracker();
 
+		/**
+		 * Instance of the {@link module:core/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:core/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
+
 		// Set–up the view.
 		view.set( 'width', editor.config.get( 'ui.width' ) );
 		view.set( 'height', editor.config.get( 'ui.height' ) );
@@ -66,6 +75,7 @@ export default class ClassicEditorUI {
 		view.editable.bind( 'isReadOnly', 'isFocused' ).to( editingRoot );
 		view.editable.name = editingRoot.rootName;
 		this.focusTracker.add( view.editableElement );
+		this.focusTracker.add( this.view.toolbar.element );
 	}
 
 	/**
@@ -75,6 +85,7 @@ export default class ClassicEditorUI {
 	 */
 	init() {
 		const editor = this.editor;
+		const toolbarFocusTracker = this.view.toolbar.focusTracker;
 
 		return this.view.init()
 			.then( () => {
@@ -88,6 +99,29 @@ export default class ClassicEditorUI {
 				}
 
 				return Promise.all( promises );
+			} )
+			.then( () => {
+				// Listen on the keystrokes from the main UI.
+				this.keystrokes.listenTo( this.view.element );
+
+				// Listen on the keystrokes from the floating panels, toolbars and the such.
+				this.keystrokes.listenTo( this.view._bodyCollectionContainer );
+
+				// Focus the toolbar on the keystroke, if not already focused.
+				this.keystrokes.set( 'alt + f10', ( data, cancel ) => {
+					if ( this.focusTracker.isFocused && !toolbarFocusTracker.isFocused ) {
+						this.view.toolbar.focus();
+						cancel();
+					}
+				} );
+
+				// Blur the toolbar and bring the focus back to editable on the keystroke.
+				this.keystrokes.set( 'esc', ( data, cancel ) => {
+					if ( toolbarFocusTracker.isFocused ) {
+						editor.editing.view.focus();
+						cancel();
+					}
+				} );
 			} );
 	}
 
