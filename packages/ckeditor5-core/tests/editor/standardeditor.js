@@ -5,6 +5,7 @@
 
 /* globals document */
 
+import Editor from 'ckeditor5-core/src/editor/editor';
 import StandardEditor from 'ckeditor5-core/src/editor/standardeditor';
 import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import { getData, setData } from 'ckeditor5-engine/src/dev-utils/model';
@@ -45,6 +46,12 @@ describe( 'StandardEditor', () => {
 	} );
 
 	describe( 'destroy()', () => {
+		it( 'returns a Promise', () => {
+			const editor = new StandardEditor( editorElement, { foo: 1 } );
+
+			expect( editor.destroy() ).to.be.an.instanceof( Promise );
+		} );
+
 		it( 'destroys the #keystrokes', () => {
 			const editor = new StandardEditor( editorElement, { foo: 1 } );
 			const spy = sinon.spy( editor.keystrokes, 'destroy' );
@@ -56,9 +63,33 @@ describe( 'StandardEditor', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 		} );
+
+		it( 'destroys the #editing', () => {
+			const editor = new StandardEditor( editorElement, { foo: 1 } );
+			const spy = sinon.spy( editor.editing, 'destroy' );
+
+			sinon.assert.notCalled( spy );
+
+			return editor.destroy()
+				.then( () => {
+					sinon.assert.calledOnce( spy );
+				} );
+		} );
+
+		it( 'destroys the parent', () => {
+			const editor = new StandardEditor( editorElement, { foo: 1 } );
+			const spy = sinon.spy( Editor.prototype, 'destroy' );
+
+			sinon.assert.notCalled( spy );
+
+			return editor.destroy()
+				.then( () => {
+					sinon.assert.calledOnce( spy );
+				} );
+		} );
 	} );
 
-	describe( 'create', () => {
+	describe( 'create()', () => {
 		it( 'initializes editor with plugins and config', () => {
 			class PluginFoo extends Plugin {}
 
@@ -100,7 +131,7 @@ describe( 'StandardEditor', () => {
 		} );
 	} );
 
-	describe( 'setData', () => {
+	describe( 'setData()', () => {
 		let editor;
 
 		beforeEach( () => {
@@ -127,7 +158,7 @@ describe( 'StandardEditor', () => {
 		} );
 	} );
 
-	describe( 'getData', () => {
+	describe( 'getData()', () => {
 		let editor;
 
 		beforeEach( () => {
@@ -154,7 +185,7 @@ describe( 'StandardEditor', () => {
 		} );
 	} );
 
-	describe( 'updateEditorElement', () => {
+	describe( 'updateEditorElement()', () => {
 		it( 'sets data to editor element', () => {
 			const editor = new StandardEditor( editorElement );
 
@@ -166,7 +197,7 @@ describe( 'StandardEditor', () => {
 		} );
 	} );
 
-	describe( 'loadDataFromEditorElement', () => {
+	describe( 'loadDataFromEditorElement()', () => {
 		it( 'sets data to editor element', () => {
 			const editor = new StandardEditor( editorElement );
 
