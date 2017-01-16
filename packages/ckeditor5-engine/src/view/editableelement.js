@@ -12,6 +12,8 @@ import ContainerElement from './containerelement';
 import mix from 'ckeditor5-utils/src/mix';
 import ObservableMixin from 'ckeditor5-utils/src/observablemixin';
 
+const documentSymbol = Symbol( 'document' );
+
 /**
  * Editable element which can be a {@link module:engine/view/rooteditableelement~RootEditableElement root}
  * or nested editable area in the editor.
@@ -23,16 +25,8 @@ export default class EditableElement extends ContainerElement {
 	/**
 	 * Creates an editable element.
 	 */
-	constructor( document, name, attrs, children ) {
+	constructor( name, attrs, children ) {
 		super( name, attrs, children );
-
-		/**
-		 * {@link module:engine/view/document~Document} that is an owner of this root.
-		 *
-		 * @private
-		 * @member {module:engine/view/document~Document} module:engine/view/rooteditableelement~RootEditableElement#_document
-		 */
-		this._document = document;
 
 		/**
 		 * Whether the editable is in read-write or read-only mode.
@@ -52,6 +46,26 @@ export default class EditableElement extends ContainerElement {
 		 * @observable
 		 * @member {Boolean} module:engine/view/editableelement~EditableElement#isFocused
 		 */
+		this.set( 'isFocused', false );
+	}
+
+	/**
+	 * Gets {@link module:engine/view/document~Document View document} reference that owns this editable element.
+	 *
+	 * @type {module:engine/view/document~Document}
+	 */
+	get document() {
+		return this.getCustomProperty( documentSymbol );
+	}
+
+	/**
+	 * Sets {@link module:engine/view/document~Document} that is an owner of this root.
+	 *
+	 * @type {module:engine/view/document~Document}
+	 */
+	set document( document ) {
+		this.setCustomProperty( documentSymbol, document );
+
 		this.bind( 'isFocused' ).to(
 			document,
 			'isFocused',
@@ -63,15 +77,6 @@ export default class EditableElement extends ContainerElement {
 		this.listenTo( document, 'render', () => {
 			this.isFocused = document.isFocused && document.selection.editableElement == this;
 		}, { priority: 'low' } );
-	}
-
-	/**
-	 * {@link module:engine/view/document~Document View document} reference that owns this editable element.
-	 *
-	 * @type {module:engine/view/document~Document|null}
-	 */
-	get document() {
-		return this._document;
 	}
 }
 

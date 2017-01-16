@@ -193,7 +193,8 @@ export default class Document {
 	createRoot( domRoot, name = 'main' ) {
 		const rootTag = typeof domRoot == 'string' ? domRoot : domRoot.tagName;
 
-		const viewRoot = new RootEditableElement( this, rootTag.toLowerCase(), name );
+		const viewRoot = new RootEditableElement( rootTag.toLowerCase(), name );
+		viewRoot.document = this;
 
 		this.roots.set( name, viewRoot );
 

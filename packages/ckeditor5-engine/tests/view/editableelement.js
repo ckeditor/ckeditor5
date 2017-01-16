@@ -14,12 +14,17 @@ describe( 'EditableElement', () => {
 		beforeEach( () => {
 			docMock = createDocumentMock();
 
-			viewMain = new RootEditableElement( docMock, 'div' );
-			viewHeader = new RootEditableElement( docMock, 'h1', 'header' );
+			viewMain = new RootEditableElement( 'div' );
+			viewMain.document = docMock;
+
+			viewHeader = new RootEditableElement( 'h1' );
+			viewHeader.document = docMock;
+			viewHeader.rootName = 'header';
 		} );
 
 		it( 'should be observable', () => {
-			const root = new RootEditableElement( createDocumentMock(), 'div' );
+			const root = new RootEditableElement( 'div' );
+			root.document = createDocumentMock();
 
 			expect( root.isFocused ).to.be.false;
 
@@ -73,7 +78,8 @@ describe( 'EditableElement', () => {
 
 	describe( 'isReadOnly', () => {
 		it( 'should be observable', () => {
-			const root = new RootEditableElement( createDocumentMock(), 'div' );
+			const root = new RootEditableElement( 'div' );
+			root.document = createDocumentMock();
 
 			expect( root.isReadOnly ).to.be.false;
 
@@ -92,7 +98,8 @@ describe( 'EditableElement', () => {
 	describe( 'getDocument', ()=> {
 		it( 'should return document', () => {
 			const docMock = createDocumentMock();
-			const root = new RootEditableElement( docMock, 'div' );
+			const root = new RootEditableElement( 'div' );
+			root.document = docMock;
 
 			expect( root.document ).to.equal( docMock );
 		} );

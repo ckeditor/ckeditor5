@@ -12,7 +12,8 @@ import createDocumentMock from 'ckeditor5-engine/tests/view/_utils/createdocumen
 describe( 'RootEditableElement', () => {
 	describe( 'constructor()', () => {
 		it( 'should create an element with default root name', () => {
-			const root = new RootEditableElement( createDocumentMock(), 'div' );
+			const root = new RootEditableElement( 'div' );
+			root.document = createDocumentMock();
 
 			expect( root ).to.be.instanceof( EditableElement );
 			expect( root ).to.be.instanceof( ContainerElement );
@@ -25,7 +26,9 @@ describe( 'RootEditableElement', () => {
 		} );
 
 		it( 'should create an element with custom root name', () => {
-			const root = new RootEditableElement( createDocumentMock(), 'h1', 'header' );
+			const root = new RootEditableElement( 'h1' );
+			root.document = createDocumentMock();
+			root.rootName = 'header';
 
 			expect( root.rootName ).to.equal( 'header' );
 			expect( root.name ).to.equal( 'h1' );

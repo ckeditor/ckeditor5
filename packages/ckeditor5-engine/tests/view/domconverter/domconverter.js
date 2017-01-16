@@ -36,7 +36,9 @@ describe( 'DomConverter', () => {
 
 		beforeEach( () => {
 			viewDocument = new ViewDocument();
-			viewEditable = new ViewEditable( viewDocument, 'div' );
+			viewEditable = new ViewEditable( 'div' );
+			viewEditable.document = viewDocument;
+
 			domEditable = document.createElement( 'div' );
 			converter.bindElements( domEditable, viewEditable );
 			domEditable.setAttribute( 'contenteditable', 'true' );
