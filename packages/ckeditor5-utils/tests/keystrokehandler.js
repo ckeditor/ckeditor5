@@ -35,9 +35,7 @@ describe( 'KeystrokeHandler', () => {
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, keyEvtData );
 		} );
-	} );
 
-	describe( 'constructor()', () => {
 		it( 'triggers #press on #keydown', () => {
 			const spy = sinon.spy( keystrokes, 'press' );
 			const keyEvtData = { keyCode: 1 };
