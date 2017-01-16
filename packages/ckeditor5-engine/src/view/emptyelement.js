@@ -23,12 +23,8 @@ export default class EmptyElement extends Element {
 	 * @param {String} name Node name.
 	 * @param {Object|Iterable} [attributes] Collection of attributes.
 	 */
-	constructor( name, attributes ) {
-		super( name, attributes );
-
-		if ( arguments.length > 2 ) {
-			throwCannotAdd();
-		}
+	constructor( name, attributes, children ) {
+		super( name, attributes, children );
 
 		/**
 		 * Returns `null` because filler is not needed for EmptyElements.
@@ -37,23 +33,6 @@ export default class EmptyElement extends Element {
 		 * @returns {null} Always returns null.
 		 */
 		this.getFillerOffset = getFillerOffset;
-	}
-
-	/**
-	 * Clones provided element. Overrides {@link module:engine/view/element~Element#clone} method, as it's forbidden to pass child
-	 * nodes to EmptyElement's constructor.
-	 *
-	 * @returns {module:engine/view/emptyelement~EmptyElement} Clone of this element.
-	 */
-	clone() {
-		const cloned = new this.constructor( this.name, this._attrs );
-
-		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
-		// parse once again in constructor.
-		cloned._classes = new Set( this._classes );
-		cloned._styles = new Map( this._styles );
-
-		return cloned;
 	}
 
 	/**
