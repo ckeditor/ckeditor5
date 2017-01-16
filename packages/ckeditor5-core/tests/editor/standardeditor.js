@@ -10,7 +10,7 @@ import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataproces
 import { getData, setData } from 'ckeditor5-engine/src/dev-utils/model';
 
 import EditingController from 'ckeditor5-engine/src/controller/editingcontroller';
-import KeystrokeHandler from 'ckeditor5-core/src/keystrokehandler';
+import EditingKeystrokeHandler from 'ckeditor5-core/src/editingkeystrokehandler';
 import Plugin from 'ckeditor5-core/src/plugin';
 
 describe( 'StandardEditor', () => {
@@ -27,13 +27,34 @@ describe( 'StandardEditor', () => {
 
 			expect( editor ).to.have.property( 'element', editorElement );
 			expect( editor.editing ).to.be.instanceof( EditingController );
-			expect( editor.keystrokes ).to.be.instanceof( KeystrokeHandler );
+			expect( editor.keystrokes ).to.be.instanceof( EditingKeystrokeHandler );
+		} );
+
+		it( 'activates #keystrokes', () => {
+			const spy = sinon.spy( EditingKeystrokeHandler.prototype, 'listenTo' );
+			const editor = new StandardEditor( editorElement, { foo: 1 } );
+
+			sinon.assert.calledWith( spy, editor.editing.view );
 		} );
 
 		it( 'sets config', () => {
 			const editor = new StandardEditor( editorElement, { foo: 1 } );
 
 			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'destroys the #keystrokes', () => {
+			const editor = new StandardEditor( editorElement, { foo: 1 } );
+			const spy = sinon.spy( editor.keystrokes, 'destroy' );
+
+			sinon.assert.notCalled( spy );
+
+			return editor.destroy()
+				.then( () => {
+					sinon.assert.calledOnce( spy );
+				} );
 		} );
 	} );
 

@@ -8,7 +8,7 @@
  */
 
 import Editor from './editor';
-import KeystrokeHandler from '../keystrokehandler';
+import EditingKeystrokeHandler from '../editingkeystrokehandler';
 import EditingController from 'ckeditor5-engine/src/controller/editingcontroller';
 
 import getDataFromElement from 'ckeditor5-utils/src/dom/getdatafromelement';
@@ -46,7 +46,7 @@ export default class StandardEditor extends Editor {
 		 * @readonly
 		 * @member {module:core/keystrokehandler~KeystrokeHandler}
 		 */
-		this.keystrokes = new KeystrokeHandler( this );
+		this.keystrokes = new EditingKeystrokeHandler( this );
 
 		/**
 		 * Editor UI instance.
@@ -58,6 +58,8 @@ export default class StandardEditor extends Editor {
 		 * @readonly
 		 * @member {module:core/editor/editorui~EditorUI} #ui
 		 */
+
+		this.keystrokes.listenTo( this.editing.view );
 	}
 
 	/**
@@ -65,6 +67,7 @@ export default class StandardEditor extends Editor {
 	 */
 	destroy() {
 		return Promise.resolve()
+			.then( () => this.keystrokes.destroy() )
 			.then( () => this.editing.destroy() )
 			.then( super.destroy() );
 	}
