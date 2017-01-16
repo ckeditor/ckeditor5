@@ -23,11 +23,14 @@ describe( 'Keyboard', () => {
 			expect( keyCodes.delete ).to.equal( 46 );
 			expect( keyCodes.ctrl ).to.equal( 0x110000 );
 			expect( keyCodes.cmd ).to.equal( 0x110000 );
+			expect( keyCodes.f1 ).to.equal( 112 );
+			expect( keyCodes.f12 ).to.equal( 123 );
 
 			expect( keyCodes ).to.include.keys(
 				'ctrl', 'cmd', 'shift', 'alt',
 				'arrowleft', 'arrowup', 'arrowright', 'arrowdown',
-				'backspace', 'delete', 'enter', 'esc', 'tab'
+				'backspace', 'delete', 'enter', 'esc', 'tab',
+				'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12'
 			);
 		} );
 	} );
@@ -39,6 +42,10 @@ describe( 'Keyboard', () => {
 
 		it( 'gets code of a letter', () => {
 			expect( getCode( 'a' ) ).to.equal( 65 );
+		} );
+
+		it( 'gets code of a function key', () => {
+			expect( getCode( 'f6' ) ).to.equal( 117 );
 		} );
 
 		it( 'is case insensitive', () => {

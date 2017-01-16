@@ -19,6 +19,7 @@ import env from './env';
  *
  * * `a-z`,
  * * `0-9`,
+ * * `f1-f12`,
  * * `arrow(left|up|right|bottom)`,
  * * `backspace`, `delete`, `enter`, `esc`, `tab`,
  * * `ctrl`, `cmd`, `shift`, `alt`.
@@ -138,6 +139,11 @@ function generateKnownKeyCodes() {
 	// 0-9
 	for ( let code = 48; code <= 57; code++ ) {
 		keyCodes[ code - 48 ] = code;
+	}
+
+	// F1-F12
+	for ( let code = 112; code <= 123; code++ ) {
+		keyCodes[ 'f' + ( code - 111 ) ] = code;
 	}
 
 	return keyCodes;
