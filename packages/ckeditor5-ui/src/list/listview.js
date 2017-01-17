@@ -110,7 +110,7 @@ export default class ListView extends View {
 	}
 
 	/**
-	 * Focuses the list.
+	 * Focuses the first focusable in {@link #items}.
 	 */
 	focus() {
 		// Find the very first list item that can be focused.
@@ -118,6 +118,18 @@ export default class ListView extends View {
 
 		if ( firstFocusable ) {
 			firstFocusable.focus();
+		}
+	}
+
+	/**
+	 * Focuses the last focusable in {@link #items}.
+	 */
+	focusLast() {
+		// Find the last list item that can be focused.
+		const lastFocusable = this._focusCycler.last;
+
+		if ( lastFocusable ) {
+			lastFocusable.focus();
 		}
 	}
 }
