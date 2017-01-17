@@ -4,10 +4,46 @@
  */
 
 import createDocumentMock from 'ckeditor5-engine/tests/view/_utils/createdocumentmock';
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 import RootEditableElement from 'ckeditor5-engine/src/view/rooteditableelement';
 import Range from 'ckeditor5-engine/src/view/range';
 
 describe( 'EditableElement', () => {
+	describe( 'document', () => {
+		let element, docMock;
+
+		beforeEach( () => {
+			element = new RootEditableElement( 'div' );
+			docMock = createDocumentMock();
+		} );
+
+		it( 'should allow to set document', () => {
+			element.document = docMock;
+
+			expect( element.document ).to.equal( docMock );
+		} );
+
+		it( 'should return undefined if document is not set', () => {
+			expect( element.document ).to.be.undefined;
+		} );
+
+		it( 'should throw if trying to set document again', () => {
+			element.document = docMock;
+			const newDoc = createDocumentMock();
+
+			expect( () => {
+				element.document = newDoc;
+			} ).to.throw( CKEditorError, 'view-editableelement-document-already-set: View document is already set.' );
+		} );
+
+		it( 'should be cloned properly', () => {
+			element.document = docMock;
+			const newElement = element.clone();
+
+			expect( newElement.document ).to.equal( docMock );
+		} );
+	} );
+
 	describe( 'isFocused', () => {
 		let docMock, viewMain, viewHeader;
 

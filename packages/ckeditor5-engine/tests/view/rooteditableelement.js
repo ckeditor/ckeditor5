@@ -37,4 +37,15 @@ describe( 'RootEditableElement', () => {
 			expect( root.isReadOnly ).to.be.false;
 		} );
 	} );
+
+	it( 'should be cloned properly', () => {
+		const root = new RootEditableElement( 'h1' );
+		root.document = createDocumentMock();
+		root.rootName = 'header';
+
+		const newRoot = root.clone();
+
+		expect( newRoot.document ).to.equal( root.document );
+		expect( newRoot.rootName ).to.equal( root.rootName );
+	} );
 } );
