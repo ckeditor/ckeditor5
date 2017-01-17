@@ -35,6 +35,13 @@ describe( 'EditableElement', () => {
 				element.document = newDoc;
 			} ).to.throw( CKEditorError, 'view-editableelement-document-already-set: View document is already set.' );
 		} );
+
+		it( 'should be cloned properly', () => {
+			element.document = docMock;
+			const newElement = element.clone();
+
+			expect( newElement.document ).to.equal( docMock );
+		} );
 	} );
 
 	describe( 'isFocused', () => {

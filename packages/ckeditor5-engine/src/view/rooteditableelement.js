@@ -30,28 +30,18 @@ export default class RootEditableElement extends EditableElement {
 		super( name );
 
 		/**
-		 * Name of this root inside {@link module:engine/view/document~Document} that is an owner of this root.
+		 * Name of this root inside {@link module:engine/view/document~Document} that is an owner of this root. If no
+		 * other name is set, `main` name is used.
 		 *
-		 * @readonly
 		 * @member {String}
 		 */
 		this.rootName = 'main';
 	}
 
-	/**
-	 * Gets root name inside parent {@link module:engine/view/document~Document}.
-	 *
-	 * @type {String}
-	 */
 	get rootName() {
 		return this.getCustomProperty( rootNameSymbol );
 	}
 
-	/**
-	 * Sets root name inside parent {@link module:engine/view/document~Document}.
-	 *
-	 * @type {String}
-	 */
 	set rootName( rootName ) {
 		this.setCustomProperty( rootNameSymbol, rootName );
 	}
