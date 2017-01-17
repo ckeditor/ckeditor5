@@ -10,7 +10,7 @@
 import View from '../view';
 import Template from '../template';
 import FocusTracker from 'ckeditor5-utils/src/focustracker';
-import FocusCycler from 'ckeditor5-utils/src/focuscycler';
+import FocusCycler from '../focuscycler';
 import KeystrokeHandler from 'ckeditor5-utils/src/keystrokehandler';
 
 /**
@@ -53,7 +53,7 @@ export default class ToolbarView extends View {
 		 * Helps cycling over focusable {@link #items} in the toolbar.
 		 *
 		 * @readonly
-		 * @member {module:utils/focuscycler~FocusCycler}
+		 * @member {module:ui/focuscycler~FocusCycler}
 		 */
 		this._focusCycler = new FocusCycler( this.items, this.focusTracker );
 
