@@ -39,6 +39,14 @@ export default class FocusTracker {
 		this.set( 'isFocused', false );
 
 		/**
+		 * Currently focused element.
+		 *
+		 * @readonly
+		 * @member {HTMLElement}
+		 */
+		this.focusedElement = null;
+
+		/**
 		 * List of registered elements.
 		 *
 		 * @private
@@ -53,14 +61,6 @@ export default class FocusTracker {
 		 * @member {Number}
 		 */
 		this._nextEventLoopTimeout = null;
-
-		/**
-		 * Currently focused element.
-		 *
-		 * @private
-		 * @member {HTMLElement}
-		 */
-		this._focusedElement = null;
 	}
 
 	/**
@@ -84,7 +84,7 @@ export default class FocusTracker {
 	 * @param {HTMLElement} element
 	 */
 	remove( element ) {
-		if ( element === this._focusedElement ) {
+		if ( element === this.focusedElement ) {
 			this._blur( element );
 		}
 
@@ -103,7 +103,7 @@ export default class FocusTracker {
 	_focus( element ) {
 		clearTimeout( this._nextEventLoopTimeout );
 
-		this._focusedElement = element;
+		this.focusedElement = element;
 		this.isFocused = true;
 	}
 
@@ -116,7 +116,7 @@ export default class FocusTracker {
 	 */
 	_blur() {
 		this._nextEventLoopTimeout = setTimeout( () => {
-			this._focusedElement = null;
+			this.focusedElement = null;
 			this.isFocused = false;
 		}, 0 );
 	}
