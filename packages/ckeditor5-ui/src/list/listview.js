@@ -50,7 +50,7 @@ export default class ListView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
-		 * Helps cycling over focusable items in the list.
+		 * Helps cycling over focusable {@link #items} in the list.
 		 *
 		 * @readonly
 		 * @protected
