@@ -101,6 +101,15 @@ export default class ButtonView extends View {
 		this.set( 'icon' );
 
 		/**
+		 * Controls the `tabindex` attribute of the button.
+		 *
+		 * @observable
+		 * @default -1
+		 * @member {String} #tabindex
+		 */
+		this.set( 'tabindex', -1 );
+
+		/**
 		 * Tooltip of the button bound to the template.
 		 *
 		 * @see #tooltip
@@ -139,7 +148,8 @@ export default class ButtonView extends View {
 				type: bind.to( 'type', value => value ? value : 'button' ),
 				'data-ck-tooltip': [
 					bind.to( '_tooltipString' )
-				]
+				],
+				tabindex: bind.to( 'tabindex' )
 			},
 
 			children: [
@@ -202,6 +212,13 @@ export default class ButtonView extends View {
 		}
 
 		return promise.then( () => super.init() );
+	}
+
+	/**
+	 * Focuses the button.
+	 */
+	focus() {
+		this.element.focus();
 	}
 
 	/**
