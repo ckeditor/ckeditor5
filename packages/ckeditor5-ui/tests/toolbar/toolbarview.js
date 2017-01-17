@@ -76,7 +76,7 @@ describe( 'ToolbarView', () => {
 			} );
 		} );
 
-		describe( 'activates keyboard navigation for the list', () => {
+		describe( 'activates keyboard navigation for the toolbar', () => {
 			it( 'so "arrowup" focuses previous focusable item', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.arrowup,
