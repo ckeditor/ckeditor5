@@ -2,7 +2,6 @@
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
 .ck-list {
-	overflow: hidden;
 	list-style-type: none;
 	background: ck-color( 'background' );
 
@@ -16,6 +15,11 @@
 		&:hover,
 		&:focus {
 			background: ck-color( 'foreground' );
+		}
+
+		&:focus {
+			@include ck-box-shadow( $ck-focus-outer-shadow );
+			outline: none;
 		}
 
 		&:last-of-type {
