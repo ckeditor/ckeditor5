@@ -38,7 +38,8 @@ export default class FocusCycler {
 	}
 
 	/**
-	 * Returns the first focusable view in the collection. `null` if there's none.
+	 * Returns the first focusable view in {@link #viewCollection}.
+	 * `null` if there's none.
 	 *
 	 * @member {module:ui/view~View|null} #first
 	 */
@@ -47,7 +48,17 @@ export default class FocusCycler {
 	}
 
 	/**
-	 * Returns the next focusable view in the collection based on {@link #current}.
+	 * Returns the last focusable view in {@link #viewCollection}.
+	 * `null` if there's none.
+	 *
+	 * @member {module:ui/view~View|null} #last
+	 */
+	get last() {
+		return this.viewCollection.filter( isFocusable ).slice( -1 )[ 0 ] || null;
+	}
+
+	/**
+	 * Returns the next focusable view in {@link #viewCollection} based on {@link #current}.
 	 * `null` if there's none.
 	 *
 	 * @member {module:ui/view~View|null} #next
@@ -57,7 +68,7 @@ export default class FocusCycler {
 	}
 
 	/**
-	 * Returns the previous focusable view in the collection based on {@link #current}.
+	 * Returns the previous focusable view in {@link #viewCollection} based on {@link #current}.
 	 * `null` if there's none.
 	 *
 	 * @member {module:ui/view~View|null} #next

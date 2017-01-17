@@ -66,6 +66,29 @@ describe( 'FocusCycler', () => {
 		} );
 	} );
 
+	describe( 'last()', () => {
+		it( 'returns last focusable view', () => {
+			expect( cycler.last ).to.equal( viewCollection.get( 3 ) );
+		} );
+
+		it( 'returns null when no focusable items', () => {
+			viewCollection = new ViewCollection();
+			cycler = new FocusCycler( viewCollection, focusTracker );
+
+			viewCollection.add( nonFocusable() );
+			viewCollection.add( nonFocusable() );
+
+			expect( cycler.last ).to.be.null;
+		} );
+
+		it( 'returns null when no items', () => {
+			viewCollection = new ViewCollection();
+			cycler = new FocusCycler( viewCollection, focusTracker );
+
+			expect( cycler.last ).to.be.null;
+		} );
+	} );
+
 	describe( 'next()', () => {
 		it( 'cycles to return the next focusable view', () => {
 			focusTracker.focusedElement = viewCollection.get( 2 ).element;
