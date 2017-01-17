@@ -10,7 +10,6 @@ import Plugin from 'ckeditor5-core/src/plugin';
 import Enter from 'ckeditor5-enter/src/enter';
 import Typing from 'ckeditor5-typing/src/typing';
 import Paragraph from 'ckeditor5-paragraph/src/paragraph';
-import Bold from 'ckeditor5-basic-styles/src/bold';
 import Undo from 'ckeditor5-undo/src/undo';
 import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from 'ckeditor5-engine/src/conversion/buildviewconverter';
@@ -60,8 +59,8 @@ class NestedEditable extends Plugin {
 }
 
 ClassicEditor.create( global.document.querySelector( '#editor' ), {
-	plugins: [ Enter, Typing, Paragraph, Bold, NestedEditable, Undo ],
-	toolbar: [ 'undo', 'redo', 'bold' ]
+	plugins: [ Enter, Typing, Paragraph, NestedEditable, Undo ],
+	toolbar: [ 'undo', 'redo' ]
 } )
 .then( editor => {
 	editor.document.on( 'changesDone', () => {
