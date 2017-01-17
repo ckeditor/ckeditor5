@@ -5,12 +5,13 @@
 
 /* globals document */
 
+import Editor from 'ckeditor5-core/src/editor/editor';
 import StandardEditor from 'ckeditor5-core/src/editor/standardeditor';
 import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import { getData, setData } from 'ckeditor5-engine/src/dev-utils/model';
 
 import EditingController from 'ckeditor5-engine/src/controller/editingcontroller';
-import KeystrokeHandler from 'ckeditor5-core/src/keystrokehandler';
+import EditingKeystrokeHandler from 'ckeditor5-core/src/editingkeystrokehandler';
 import Plugin from 'ckeditor5-core/src/plugin';
 
 describe( 'StandardEditor', () => {
@@ -27,7 +28,14 @@ describe( 'StandardEditor', () => {
 
 			expect( editor ).to.have.property( 'element', editorElement );
 			expect( editor.editing ).to.be.instanceof( EditingController );
-			expect( editor.keystrokes ).to.be.instanceof( KeystrokeHandler );
+			expect( editor.keystrokes ).to.be.instanceof( EditingKeystrokeHandler );
+		} );
+
+		it( 'activates #keystrokes', () => {
+			const spy = sinon.spy( EditingKeystrokeHandler.prototype, 'listenTo' );
+			const editor = new StandardEditor( editorElement, { foo: 1 } );
+
+			sinon.assert.calledWith( spy, editor.editing.view );
 		} );
 
 		it( 'sets config', () => {
@@ -37,7 +45,51 @@ describe( 'StandardEditor', () => {
 		} );
 	} );
 
-	describe( 'create', () => {
+	describe( 'destroy()', () => {
+		it( 'returns a Promise', () => {
+			const editor = new StandardEditor( editorElement, { foo: 1 } );
+
+			expect( editor.destroy() ).to.be.an.instanceof( Promise );
+		} );
+
+		it( 'destroys the #keystrokes', () => {
+			const editor = new StandardEditor( editorElement, { foo: 1 } );
+			const spy = sinon.spy( editor.keystrokes, 'destroy' );
+
+			sinon.assert.notCalled( spy );
+
+			return editor.destroy()
+				.then( () => {
+					sinon.assert.calledOnce( spy );
+				} );
+		} );
+
+		it( 'destroys the #editing', () => {
+			const editor = new StandardEditor( editorElement, { foo: 1 } );
+			const spy = sinon.spy( editor.editing, 'destroy' );
+
+			sinon.assert.notCalled( spy );
+
+			return editor.destroy()
+				.then( () => {
+					sinon.assert.calledOnce( spy );
+				} );
+		} );
+
+		it( 'destroys the parent', () => {
+			const editor = new StandardEditor( editorElement, { foo: 1 } );
+			const spy = sinon.spy( Editor.prototype, 'destroy' );
+
+			sinon.assert.notCalled( spy );
+
+			return editor.destroy()
+				.then( () => {
+					sinon.assert.calledOnce( spy );
+				} );
+		} );
+	} );
+
+	describe( 'create()', () => {
 		it( 'initializes editor with plugins and config', () => {
 			class PluginFoo extends Plugin {}
 
@@ -79,7 +131,7 @@ describe( 'StandardEditor', () => {
 		} );
 	} );
 
-	describe( 'setData', () => {
+	describe( 'setData()', () => {
 		let editor;
 
 		beforeEach( () => {
@@ -106,7 +158,7 @@ describe( 'StandardEditor', () => {
 		} );
 	} );
 
-	describe( 'getData', () => {
+	describe( 'getData()', () => {
 		let editor;
 
 		beforeEach( () => {
@@ -133,7 +185,7 @@ describe( 'StandardEditor', () => {
 		} );
 	} );
 
-	describe( 'updateEditorElement', () => {
+	describe( 'updateEditorElement()', () => {
 		it( 'sets data to editor element', () => {
 			const editor = new StandardEditor( editorElement );
 
@@ -145,7 +197,7 @@ describe( 'StandardEditor', () => {
 		} );
 	} );
 
-	describe( 'loadDataFromEditorElement', () => {
+	describe( 'loadDataFromEditorElement()', () => {
 		it( 'sets data to editor element', () => {
 			const editor = new StandardEditor( editorElement );
 
