@@ -5,44 +5,66 @@
 
 import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
 import EditingKeystrokeHandler from 'ckeditor5-core/src/editingkeystrokehandler';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from 'ckeditor5-utils/src/keyboard';
 
-testUtils.createSinonSandbox();
-
 describe( 'EditingKeystrokeHandler', () => {
-	let editor;
+	let editor, keystrokes;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create()
 			.then( newEditor => {
 				editor = newEditor;
-				editor.keystrokes = new EditingKeystrokeHandler( editor );
+				keystrokes = new EditingKeystrokeHandler( editor );
 			} );
 	} );
 
 	describe( 'listenTo()', () => {
 		it( 'prevents default when keystroke was handled', () => {
-			const keyEvtData = { keyCode: 1, preventDefault: testUtils.sinon.spy() };
+			const keyEvtData = { keyCode: 1, preventDefault: sinon.spy() };
 
-			testUtils.sinon.stub( EditingKeystrokeHandler.prototype, 'press' ).returns( true );
+			sinon.stub( keystrokes, 'press' ).returns( true );
 
+			keystrokes.listenTo( editor.editing.view );
 			editor.editing.view.fire( 'keydown', keyEvtData );
 
 			sinon.assert.calledOnce( keyEvtData.preventDefault );
+		} );
+
+		it( 'does not prevent default when keystroke was not handled', () => {
+			const keyEvtData = { keyCode: 1, preventDefault: sinon.spy() };
+
+			sinon.stub( keystrokes, 'press' ).returns( false );
+
+			keystrokes.listenTo( editor.editing.view );
+			editor.editing.view.fire( 'keydown', keyEvtData );
+
+			sinon.assert.notCalled( keyEvtData.preventDefault );
 		} );
 	} );
 
 	describe( 'press()', () => {
 		it( 'executes a command', () => {
-			const spy = testUtils.sinon.stub( editor, 'execute' );
+			const spy = sinon.stub( editor, 'execute' );
 
-			editor.keystrokes.set( 'ctrl + A', 'foo' );
+			keystrokes.set( 'ctrl + A', 'foo' );
 
-			const wasHandled = editor.keystrokes.press( getCtrlA() );
+			const wasHandled = keystrokes.press( getCtrlA() );
 
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, 'foo' );
+			expect( wasHandled ).to.be.true;
+		} );
+
+		it( 'executes a callback', () => {
+			const executeSpy = sinon.stub( editor, 'execute' );
+			const callback = sinon.spy();
+
+			keystrokes.set( 'ctrl + A', callback );
+
+			const wasHandled = keystrokes.press( getCtrlA() );
+
+			expect( executeSpy.called ).to.be.false;
+			expect( callback.calledOnce ).to.be.true;
 			expect( wasHandled ).to.be.true;
 		} );
 	} );
