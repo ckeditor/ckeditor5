@@ -22,6 +22,15 @@ export default class ListItemView extends View {
 	constructor() {
 		super();
 
+		/**
+		 * Controls the `tabindex` attribute of the item.
+		 *
+		 * @observable
+		 * @default -1
+		 * @member {String} #tabindex
+		 */
+		this.set( 'tabindex', -1 );
+
 		const bind = this.bindTemplate;
 
 		this.template = new Template( {
@@ -31,7 +40,8 @@ export default class ListItemView extends View {
 				class: [
 					'ck-list__item'
 				],
-				style: bind.to( 'style' )
+				style: bind.to( 'style' ),
+				tabindex: bind.to( 'tabindex' )
 			},
 
 			children: [
@@ -64,5 +74,12 @@ export default class ListItemView extends View {
 		 *
 		 * @event #execute
 		 */
+	}
+
+	/**
+	 * Focuses the list item.
+	 */
+	focus() {
+		this.element.focus();
 	}
 }
