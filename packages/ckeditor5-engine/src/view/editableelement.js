@@ -8,7 +8,7 @@
  */
 
 import ContainerElement from './containerelement';
-
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 import mix from 'ckeditor5-utils/src/mix';
 import ObservableMixin from 'ckeditor5-utils/src/observablemixin';
 
@@ -47,23 +47,30 @@ export default class EditableElement extends ContainerElement {
 		 * @member {Boolean} module:engine/view/editableelement~EditableElement#isFocused
 		 */
 		this.set( 'isFocused', false );
+
+		/**
+		 * {@link module:engine/view/document~Document} that is an owner of this root.
+		 * Can only by set once, throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-editableelement-document-already-set`
+		 * when document is already set.
+		 *
+		 * @member {module:engine/view/document~Document} module:engine/view/rooteditableelement~RootEditableElement#document
+		 */
 	}
 
-	/**
-	 * Gets {@link module:engine/view/document~Document View document} reference that owns this editable element.
-	 *
-	 * @type {module:engine/view/document~Document}
-	 */
 	get document() {
 		return this.getCustomProperty( documentSymbol );
 	}
 
-	/**
-	 * Sets {@link module:engine/view/document~Document} that is an owner of this root.
-	 *
-	 * @type {module:engine/view/document~Document}
-	 */
 	set document( document ) {
+		if ( this.getCustomProperty( documentSymbol ) ) {
+			/**
+			 * Cannot set {@link module:engine/view/document~Document} if one is already present.
+			 *
+			 * @error view-editableelement-document-already-set
+			 */
+			throw new CKEditorError( 'view-editableelement-document-already-set: View document is already set.' );
+		}
+
 		this.setCustomProperty( documentSymbol, document );
 
 		this.bind( 'isFocused' ).to(
