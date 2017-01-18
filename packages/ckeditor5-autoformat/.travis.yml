@@ -16,7 +16,7 @@ before_install:
   - sh -e /etc/init.d/xvfb start
 install:
   - npm install mgit2 lerna
-  - npm install git://github.com/ckeditor/ckeditor5-dev.git#t/mgit-tests
+  - npm install git://github.com/ckeditor/ckeditor5-dev.git#t/6
   - cd node_modules/ckeditor5-dev/packages/ckeditor5-dev-tests && npm install && npm link
   - cd $TRAVIS_BUILD_DIR && npm link @ckeditor/ckeditor5-dev-tests
   - npm install gulp @ckeditor/ckeditor5-dev-lint
