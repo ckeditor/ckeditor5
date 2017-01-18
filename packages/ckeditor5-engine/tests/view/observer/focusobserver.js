@@ -25,6 +25,10 @@ describe( 'FocusObserver', () => {
 		expect( observer.domEventType ).to.deep.equal( [ 'focus', 'blur' ] );
 	} );
 
+	it( 'should use capturing phase', () => {
+		expect( observer.useCapture ).to.be.true;
+	} );
+
 	describe( 'onDomEvent', () => {
 		it( 'should fire focus with the right event data', () => {
 			const spy = sinon.spy();
