@@ -24,6 +24,7 @@ export default class FocusObserver extends DomEventObserver {
 		super( document );
 
 		this.domEventType = [ 'focus', 'blur' ];
+		this.useCapture = true;
 
 		document.on( 'focus', () => {
 			document.isFocused = true;

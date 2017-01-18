@@ -55,6 +55,21 @@ export default class DomEventObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( document ) {
+		super( document );
+
+		/**
+		 * If set to `true` DOM events will be listened on the capturing phase.
+		 * Default value is `false`.
+		 *
+		 * @member {Boolean}
+		 */
+		this.useCapture = false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	observe( domElement ) {
 		const types = typeof this.domEventType == 'string' ? [ this.domEventType ] : this.domEventType;
 
@@ -63,7 +78,7 @@ export default class DomEventObserver extends Observer {
 				if ( this.isEnabled ) {
 					this.onDomEvent( domEvent );
 				}
-			} );
+			}, { useCapture: this.useCapture } );
 		} );
 	}
 
