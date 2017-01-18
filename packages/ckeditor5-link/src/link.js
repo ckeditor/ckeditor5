@@ -13,7 +13,6 @@ import LinkEngine from './linkengine';
 import LinkElement from './linkelement';
 
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
-import escPressHandler from '@ckeditor/ckeditor5-ui/src/bindings/escpresshandler';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/balloonpanel/balloonpanelview';
@@ -168,11 +167,20 @@ export default class Link extends Plugin {
 			}
 		} );
 
-		// Close on `ESC` press.
-		escPressHandler( {
-			emitter: balloonPanelView,
-			activator: () => balloonPanelView.isVisible,
-			callback: () => this._hidePanel( true )
+		// Focus the form if balloon panel is open and tab key has been pressed.
+		editor.ui.keystrokes.set( 'tab', ( data, cancel ) => {
+			if ( balloonPanelView.isVisible && !this.formView.focusTracker.isFocused ) {
+				this.formView.focus();
+				cancel();
+			}
+		} );
+
+		// // Close the panel on esc key press.
+		editor.ui.keystrokes.set( 'esc', ( data, cancel ) => {
+			if ( balloonPanelView.isVisible ) {
+				this._hidePanel( true );
+				cancel();
+			}
 		} );
 
 		// Close on click outside of balloon panel element.

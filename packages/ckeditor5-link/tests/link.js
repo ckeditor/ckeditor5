@@ -183,15 +183,59 @@ describe( 'Link', () => {
 			expect( editor.ui.focusTracker.isFocused ).to.true;
 		} );
 
+		it( 'should focus the link form on tab key press', () => {
+			const keyEvtData = {
+				keyCode: keyCodes.tab,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			// Mock balloon invisible, form not focused.
+			balloonPanelView.isVisible = false;
+			formView.focusTracker.isFocused = false;
+
+			const spy = sinon.spy( formView, 'focus' );
+
+			editor.ui.keystrokes.press( keyEvtData );
+			sinon.assert.notCalled( keyEvtData.preventDefault );
+			sinon.assert.notCalled( keyEvtData.stopPropagation );
+			sinon.assert.notCalled( spy );
+
+			// Mock balloon visible, form focused.
+			balloonPanelView.isVisible = true;
+			formView.focusTracker.isFocused = true;
+
+			editor.ui.keystrokes.press( keyEvtData );
+			sinon.assert.notCalled( keyEvtData.preventDefault );
+			sinon.assert.notCalled( keyEvtData.stopPropagation );
+			sinon.assert.notCalled( spy );
+
+			// Mock balloon visible, form not focused.
+			balloonPanelView.isVisible = true;
+			formView.focusTracker.isFocused = false;
+
+			editor.ui.keystrokes.press( keyEvtData );
+			sinon.assert.calledOnce( keyEvtData.preventDefault );
+			sinon.assert.calledOnce( keyEvtData.stopPropagation );
+			sinon.assert.calledOnce( spy );
+		} );
+
 		describe( 'close listeners', () => {
 			describe( 'keyboard', () => {
 				it( 'should close after `ESC` press', () => {
+					balloonPanelView.isVisible = false;
+
+					dispatchKeyboardEvent( editor.ui.view.element, 'keydown', keyCodes.esc );
+
+					sinon.assert.notCalled( hidePanelSpy );
+					sinon.assert.notCalled( focusEditableSpy );
+
 					balloonPanelView.isVisible = true;
 
-					dispatchKeyboardEvent( document, 'keydown', keyCodes.esc );
+					dispatchKeyboardEvent( editor.ui.view.element, 'keydown', keyCodes.esc );
 
-					expect( hidePanelSpy.calledOnce ).to.true;
-					expect( focusEditableSpy.calledOnce ).to.true;
+					sinon.assert.calledOnce( hidePanelSpy );
+					sinon.assert.calledOnce( focusEditableSpy );
 				} );
 			} );
 
