@@ -52,13 +52,17 @@ export default class DomEventObserver extends Observer {
 	 * @method #onDomEvent
 	 */
 
+	/**
+	 * @inheritDoc
+	 */
 	constructor( document ) {
 		super( document );
+
 		/**
-		 * If set to `true` DOM events will be listened on capturing phase.
+		 * If set to `true` DOM events will be listened on the capturing phase.
 		 * Default value is `false`.
 		 *
-		 * @member {Boolean} #useCapture
+		 * @member {Boolean}
 		 */
 		this.useCapture = false;
 	}
