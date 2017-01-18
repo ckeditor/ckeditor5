@@ -146,7 +146,8 @@ describe( 'Node', () => {
 
 		it( 'should return Document attached to the parent element', () => {
 			const docMock = createDocumentMock();
-			const parent = new RootEditableElement( docMock, 'div' );
+			const parent = new RootEditableElement( 'div' );
+			parent.document = docMock;
 			const child = new Element( 'p' );
 
 			child.parent = parent;
@@ -171,7 +172,8 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should return root element', () => {
-			const parent = new RootEditableElement( createDocumentMock(), 'div' );
+			const parent = new RootEditableElement( 'div' );
+			parent.document = createDocumentMock();
 			const child = new Element( 'p' );
 
 			child.parent = parent;

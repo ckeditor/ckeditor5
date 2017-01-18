@@ -68,7 +68,8 @@ describe( 'TextProxy', () => {
 
 		it( 'should return Document attached to the parent element', () => {
 			const docMock = createDocumentMock();
-			const root = new RootEditableElement( docMock, 'div' );
+			const root = new RootEditableElement( 'div' );
+			root.document = docMock;
 
 			wrapper.parent = root;
 
@@ -84,7 +85,8 @@ describe( 'TextProxy', () => {
 
 	describe( 'getRoot', () => {
 		it( 'should return root element', () => {
-			const root = new RootEditableElement( createDocumentMock(), 'div' );
+			const root = new RootEditableElement( 'div' );
+			root.document = createDocumentMock();
 
 			wrapper.parent = root;
 

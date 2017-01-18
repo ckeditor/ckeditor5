@@ -8,9 +8,11 @@
  */
 
 import ContainerElement from './containerelement';
-
+import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
 import mix from 'ckeditor5-utils/src/mix';
 import ObservableMixin from 'ckeditor5-utils/src/observablemixin';
+
+const documentSymbol = Symbol( 'document' );
 
 /**
  * Editable element which can be a {@link module:engine/view/rooteditableelement~RootEditableElement root}
@@ -23,16 +25,8 @@ export default class EditableElement extends ContainerElement {
 	/**
 	 * Creates an editable element.
 	 */
-	constructor( document, name, attrs, children ) {
+	constructor( name, attrs, children ) {
 		super( name, attrs, children );
-
-		/**
-		 * {@link module:engine/view/document~Document} that is an owner of this root.
-		 *
-		 * @private
-		 * @member {module:engine/view/document~Document} module:engine/view/rooteditableelement~RootEditableElement#_document
-		 */
-		this._document = document;
 
 		/**
 		 * Whether the editable is in read-write or read-only mode.
@@ -52,6 +46,34 @@ export default class EditableElement extends ContainerElement {
 		 * @observable
 		 * @member {Boolean} module:engine/view/editableelement~EditableElement#isFocused
 		 */
+		this.set( 'isFocused', false );
+
+		/**
+		 * The {@link module:engine/view/document~Document} which is an owner of this root.
+		 * Can only by set once.
+		 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-editableelement-document-already-set`
+		 * when document is already set.
+		 *
+		 * @member {module:engine/view/document~Document} #document
+		 */
+	}
+
+	get document() {
+		return this.getCustomProperty( documentSymbol );
+	}
+
+	set document( document ) {
+		if ( this.getCustomProperty( documentSymbol ) ) {
+			/**
+			 * View document is already set. It can only be set once.
+			 *
+			 * @error view-editableelement-document-already-set
+			 */
+			throw new CKEditorError( 'view-editableelement-document-already-set: View document is already set.' );
+		}
+
+		this.setCustomProperty( documentSymbol, document );
+
 		this.bind( 'isFocused' ).to(
 			document,
 			'isFocused',
@@ -63,15 +85,6 @@ export default class EditableElement extends ContainerElement {
 		this.listenTo( document, 'render', () => {
 			this.isFocused = document.isFocused && document.selection.editableElement == this;
 		}, { priority: 'low' } );
-	}
-
-	/**
-	 * {@link module:engine/view/document~Document View document} reference that owns this editable element.
-	 *
-	 * @type {module:engine/view/document~Document|null}
-	 */
-	get document() {
-		return this._document;
 	}
 }
 
