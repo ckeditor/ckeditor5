@@ -9,12 +9,16 @@
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
+import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinputview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 /**
  * The link form view controller class.
@@ -31,6 +35,22 @@ export default class LinkFormView extends View {
 		super( locale );
 
 		const t = locale.t;
+
+		/**
+		 * Tracks information about DOM focus in the form.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+
+		/**
+		 * Instance of the {@link module:core/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:core/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
 
 		/**
 		 * The url input view.
@@ -60,6 +80,24 @@ export default class LinkFormView extends View {
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this.unlinkButtonView = this._createButton( t( 'Unlink' ), 'unlink' );
+
+		/**
+		 * A collection of views which can be focused in the form.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/viewcollection~ViewCollection}
+		 */
+		this._focusables = new ViewCollection();
+
+		/**
+		 * Helps cycling over {@link #_focusables} in the form.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/focuscycler~FocusCycler}
+		 */
+		this._focusCycler = new FocusCycler( this._focusables, this.focusTracker );
 
 		Template.extend( this.saveButtonView.template, {
 			attributes: {
@@ -101,6 +139,47 @@ export default class LinkFormView extends View {
 		submitHandler( {
 			view: this
 		} );
+
+		const childViews = [
+			this.urlInputView, this.saveButtonView, this.cancelButtonView, this.unlinkButtonView
+		];
+
+		childViews.forEach( v => {
+			// Register the view as focusable.
+			this._focusables.add( v );
+
+			// Register the view in the focus tracker.
+			this.focusTracker.add( v.element );
+		} );
+
+		// Register child views. It tells #destroy() to handle theme.
+		this.addChildren( childViews );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		this.keystrokes.listenTo( this.element );
+
+		this.keystrokes.set( 'tab', ( data, cancel ) => {
+			this._focusCycler.next.focus();
+			cancel();
+		} );
+
+		this.keystrokes.set( 'shift + tab', ( data, cancel ) => {
+			this._focusCycler.previous.focus();
+			cancel();
+		} );
+
+		return super.init();
+	}
+
+	/**
+	 * Focuses the fist {@link #_focusables} in the form.
+	 */
+	focus() {
+		this._focusCycler.first.focus();
 	}
 
 	/**
