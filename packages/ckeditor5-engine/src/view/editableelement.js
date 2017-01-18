@@ -49,11 +49,12 @@ export default class EditableElement extends ContainerElement {
 		this.set( 'isFocused', false );
 
 		/**
-		 * {@link module:engine/view/document~Document} that is an owner of this root.
-		 * Can only by set once, throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-editableelement-document-already-set`
+		 * The {@link module:engine/view/document~Document} which is an owner of this root.
+		 * Can only by set once.
+		 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-editableelement-document-already-set`
 		 * when document is already set.
 		 *
-		 * @member {module:engine/view/document~Document} module:engine/view/rooteditableelement~RootEditableElement#document
+		 * @member {module:engine/view/document~Document} #document
 		 */
 	}
 
@@ -64,7 +65,7 @@ export default class EditableElement extends ContainerElement {
 	set document( document ) {
 		if ( this.getCustomProperty( documentSymbol ) ) {
 			/**
-			 * Cannot set {@link module:engine/view/document~Document} if one is already present.
+			 * View document is already set. It can only be set once.
 			 *
 			 * @error view-editableelement-document-already-set
 			 */
