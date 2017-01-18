@@ -109,4 +109,11 @@ export default class LabeledInputView extends View {
 	select() {
 		this.inputView.select();
 	}
+
+	/**
+	 * Focuses the input.
+	 */
+	focus() {
+		this.inputView.focus();
+	}
 }
