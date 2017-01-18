@@ -33,6 +33,14 @@ class MultiObserver extends DomEventObserver {
 	}
 }
 
+class ClickCapturingObserver extends ClickObserver {
+	constructor( document ) {
+		super( document );
+
+		this.useCapture = true;
+	}
+}
+
 describe( 'DomEventObserver', () => {
 	let viewDocument;
 
@@ -127,6 +135,22 @@ describe( 'DomEventObserver', () => {
 		domElement.dispatchEvent( domEvent );
 
 		expect( evtSpy.calledOnce ).to.be.true;
+	} );
+
+	it( 'should allow to listen events on capturing phase', ( done ) => {
+		const domElement = document.createElement( 'div' );
+		const childDomElement = document.createElement( 'p' );
+		const domEvent = new MouseEvent( 'click' );
+		domElement.appendChild( childDomElement );
+		viewDocument.createRoot( domElement, 'root' );
+		viewDocument.addObserver( ClickCapturingObserver );
+
+		viewDocument.on( 'click', ( evt, domEventData ) => {
+			expect( domEventData.domEvent.eventPhase ).to.equal( MouseEvent.CAPTURING_PHASE );
+			done();
+		} );
+
+		childDomElement.dispatchEvent( domEvent );
 	} );
 
 	describe( 'fire', () => {
