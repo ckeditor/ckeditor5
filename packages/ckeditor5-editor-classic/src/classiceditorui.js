@@ -81,7 +81,6 @@ export default class ClassicEditorUI {
 		view.editable.bind( 'isReadOnly', 'isFocused' ).to( editingRoot );
 		view.editable.name = editingRoot.rootName;
 		this.focusTracker.add( view.editableElement );
-		this.focusTracker.add( this.view.toolbar.element );
 	}
 
 	/**
@@ -91,7 +90,6 @@ export default class ClassicEditorUI {
 	 */
 	init() {
 		const editor = this.editor;
-		const toolbarFocusTracker = this.view.toolbar.focusTracker;
 
 		return this.view.init()
 			.then( () => {
@@ -107,6 +105,12 @@ export default class ClassicEditorUI {
 				return Promise.all( promises );
 			} )
 			.then( () => {
+				const toolbarFocusTracker = this.view.toolbar.focusTracker;
+
+				// Because toolbar items can get focus, the overall state of
+				// the toolbar must also be tracked.
+				this.focusTracker.add( this.view.toolbar.element );
+
 				// Listen on the keystrokes from the main UI.
 				this.keystrokes.listenTo( this.view.element );
 
