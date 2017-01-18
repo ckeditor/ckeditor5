@@ -14,11 +14,9 @@ const translations = {};
  * These translations can be used later with {@link module:utils/translations-service~translate translate}
  *
  *		define( 'pl', {
- *			core: {
- *				ok: 'OK',
- *				cancel: 'Anuluj'
- *			}
- *		} );
+ *			'OK': 'OK',
+ *			'Cancel [context: reject]': 'Anuluj'
+ *		} );OK
  *
  * @param {String} lang
  * @param {Object.<String, Object>} packageDictionary
@@ -31,11 +29,9 @@ export function define( lang, packageDictionary ) {
 
 	const dictionary = translations[ lang ];
 
-	for ( const packageName in packageDictionary ) {
-		for ( const translationKey in packageDictionary[ packageName ] ) {
-			const translation = packageDictionary[ packageName ][ translationKey ];
-			dictionary[ `${packageName}/${translationKey}` ] = translation;
-		}
+	for ( const translationKey in packageDictionary ) {
+		const translation = packageDictionary[ translationKey ];
+		dictionary[ translationKey ] = translation;
 	}
 }
 
@@ -43,17 +39,15 @@ export function define( lang, packageDictionary ) {
  * Translates string if the translation of the string was previously defined using {@link module:utils/translations-service~define define}.
  * Otherwise returns original (English) sentence.
  *
- *		translate( 'pl', 'core/ok: OK' );
+ *		translate( 'pl', 'Cancel [context: reject]' );
  *
  * @param {String} lang Translation language.
- * @param {String} str Sentence which is going to be translated.
+ * @param {String} translationKey Sentence which is going to be translated.
  * @returns {String} Translated sentence.
  */
-export function translate( lang, str ) {
-	const [ translationKey, englishSentence ] = str.split( ': ' );
-
+export function translate( lang, translationKey ) {
 	if ( !existTranslationKey( lang, translationKey ) ) {
-		return englishSentence;
+		return translationKey.replace( / \[\s]*[context: [^\]]+\]$/, '' ) ;
 	}
 
 	return translations[ lang ][ translationKey ];
