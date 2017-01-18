@@ -63,7 +63,8 @@ export default class ClassicEditorUI {
 
 		// Setup the editable.
 		const editingRoot = editor.editing.createRoot( 'div' );
-		view.editable.bind( 'isReadOnly', 'isFocused' ).to( editingRoot );
+		view.editable.bind( 'isReadOnly' ).to( editingRoot );
+		view.editable.bind( 'isFocused' ).to( editor.editing.view );
 		view.editable.name = editingRoot.rootName;
 		this.focusTracker.add( view.editableElement );
 	}
