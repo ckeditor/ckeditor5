@@ -53,6 +53,7 @@ export default class ToolbarView extends View {
 		 * Helps cycling over focusable {@link #items} in the toolbar.
 		 *
 		 * @readonly
+		 * @protected
 		 * @member {module:ui/focuscycler~FocusCycler}
 		 */
 		this._focusCycler = new FocusCycler( this.items, this.focusTracker );
