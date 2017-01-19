@@ -18,4 +18,6 @@ install:
   - npm install gulp mgit2 lerna @ckeditor/ckeditor5-dev-tests @ckeditor/ckeditor5-dev-lint
   - ckeditor5-dev-tests-install-dependencies
 script:
-  - node_modules/.bin/ckeditor5-dev-tests-travis
+  - ckeditor5-dev-tests-travis
+after_success:
+  - codeclimate-test-reporter < coverage/lcov.info
