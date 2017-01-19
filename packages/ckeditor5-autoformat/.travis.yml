@@ -15,10 +15,7 @@ before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 install:
-  - npm install mgit2 lerna
-  - npm install git://github.com/ckeditor/ckeditor5-dev.git#t/6
-  - cd node_modules/ckeditor5-dev/packages/ckeditor5-dev-tests && npm install && npm link
-  - cd $TRAVIS_BUILD_DIR && npm link @ckeditor/ckeditor5-dev-tests
-  - npm install gulp @ckeditor/ckeditor5-dev-lint
+  - npm install gulp mgit2 lerna @ckeditor/ckeditor5-dev-tests @ckeditor/ckeditor5-dev-lint
+  - ckeditor5-dev-tests-install-dependencies
 script:
-  - node_modules/.bin/ckeditor5-dev-tests-travis
+  - ckeditor5-dev-tests-travis
