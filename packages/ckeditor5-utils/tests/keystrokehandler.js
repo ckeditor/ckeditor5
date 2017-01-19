@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
-import KeystrokeHandler from 'ckeditor5-utils/src/keystrokehandler';
-import { keyCodes } from 'ckeditor5-utils/src/keyboard';
+import EmitterMixin from '../src/emittermixin';
+import KeystrokeHandler from '../src/keystrokehandler';
+import { keyCodes } from '../src/keyboard';
 
 describe( 'KeystrokeHandler', () => {
 	let emitter, keystrokes;
