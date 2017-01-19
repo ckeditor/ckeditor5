@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Config from 'ckeditor5-utils/src/config';
+import Config from '../src/config';
 
 describe( 'Config', () => {
 	let config;

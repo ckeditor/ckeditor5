@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import createElement from 'ckeditor5-utils/src/dom/createelement';
+import createElement from '../../src/dom/createelement';
 
 describe( 'createElement', () => {
 	it( 'should create element', () => {

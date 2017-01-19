@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import indexOf from 'ckeditor5-utils/src/dom/indexof';
+import indexOf from '../../src/dom/indexof';
 
 describe( 'indexOf', () => {
 	it( 'should return 0 if element has no parent', () => {

@@ -5,8 +5,8 @@
 
 /* globals document */
 
-import getAncestors from 'ckeditor5-utils/src/dom/getancestors';
-import createElement from 'ckeditor5-utils/src/dom/createelement';
+import getAncestors from '../../src/dom/getancestors';
+import createElement from '../../src/dom/createelement';
 
 describe( 'getAncestors', () => {
 	it( 'should return all parents of given node and the node itself, starting from top-most parent', () => {

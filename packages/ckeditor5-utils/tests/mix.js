@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import mix from 'ckeditor5-utils/src/mix';
+import mix from '../src/mix';
 
 describe( 'utils', () => {
 	describe( 'mix', () => {

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import diff from 'ckeditor5-utils/src/diff';
+import diff from '../src/diff';
 
 describe( 'diff', () => {
 	it( 'should diff strings', () => {

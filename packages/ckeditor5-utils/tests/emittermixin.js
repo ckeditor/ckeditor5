@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
-import { _getEmitterListenedTo, _getEmitterId, _setEmitterId } from 'ckeditor5-utils/src/emittermixin';
-import EventInfo from 'ckeditor5-utils/src/eventinfo';
+import EmitterMixin from '../src/emittermixin';
+import { _getEmitterListenedTo, _getEmitterId, _setEmitterId } from '../src/emittermixin';
+import EventInfo from '../src/eventinfo';
 
 describe( 'EmitterMixin', () => {
 	let emitter, listener;

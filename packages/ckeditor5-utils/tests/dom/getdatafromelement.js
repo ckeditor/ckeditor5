@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import getDataFromElement from 'ckeditor5-utils/src/dom/getdatafromelement';
+import getDataFromElement from '../../src/dom/getdatafromelement';
 
 describe( 'getDataFromElement', () => {
 	let divEl;

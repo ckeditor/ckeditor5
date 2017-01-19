@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import diff from 'ckeditor5-utils/src/diff';
-import diffToChanges from 'ckeditor5-utils/src/difftochanges';
+import diff from '../src/diff';
+import diffToChanges from '../src/difftochanges';
 
 describe( 'diffToChanges', () => {
 	describe( 'equal patterns', () => {

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import compareArrays from 'ckeditor5-utils/src/comparearrays';
+import compareArrays from '../src/comparearrays';
 
 describe( 'utils', () => {
 	describe( 'compareArrays', () => {

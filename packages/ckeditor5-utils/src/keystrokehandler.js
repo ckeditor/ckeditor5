@@ -7,8 +7,8 @@
  * @module utils/keystrokehandler
  */
 
-import DomEmitterMixin from 'ckeditor5-utils/src/dom/emittermixin';
-import { getCode, parseKeystroke } from 'ckeditor5-utils/src/keyboard';
+import DomEmitterMixin from './dom/emittermixin';
+import { getCode, parseKeystroke } from './keyboard';
 
 /**
  * Keystroke handler registers keystrokes so the callbacks associated

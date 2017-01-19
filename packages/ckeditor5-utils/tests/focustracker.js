@@ -5,9 +5,9 @@
 
 /* global document, Event */
 
-import FocusTracker from 'ckeditor5-utils/src/focustracker';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import FocusTracker from '../src/focustracker';
+import CKEditorError from '../src/ckeditorerror';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 

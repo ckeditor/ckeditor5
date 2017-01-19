@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import extend from 'ckeditor5-utils/src/lib/lodash/extend';
+import extend from '../src/lib/lodash/extend';
 
 describe( 'utils', () => {
 	describe( 'extend()', () => {

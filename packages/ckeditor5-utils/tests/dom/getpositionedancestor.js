@@ -5,7 +5,7 @@
 
 /* global document */
 
-import getPositionedAncestor from 'ckeditor5-utils/src/dom/getpositionedancestor';
+import getPositionedAncestor from '../../src/dom/getpositionedancestor';
 
 describe( 'getPositionedAncestor', () => {
 	let element;

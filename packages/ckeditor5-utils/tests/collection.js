@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import Collection from 'ckeditor5-utils/src/collection';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Collection from '../src/collection';
+import CKEditorError from '../src/ckeditorerror';
 
 testUtils.createSinonSandbox();
 

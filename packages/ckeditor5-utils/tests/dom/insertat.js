@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import insertAt from 'ckeditor5-utils/src/dom/insertat';
+import insertAt from '../../src/dom/insertat';
 
 describe( 'insertAt', () => {
 	it( 'should insert at given position', () => {

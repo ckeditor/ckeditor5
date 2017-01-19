@@ -5,7 +5,7 @@
 
 /* globals console */
 
-import log from 'ckeditor5-utils/src/log';
+import log from '../src/log';
 
 describe( 'log', () => {
 	let spy;

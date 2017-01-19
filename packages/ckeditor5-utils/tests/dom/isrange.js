@@ -5,7 +5,7 @@
 
 /* global Range */
 
-import isRange from 'ckeditor5-utils/src/dom/isrange';
+import isRange from '../../src/dom/isrange';
 
 describe( 'isRange()', () => {
 	it( 'detects native DOM Range', () => {

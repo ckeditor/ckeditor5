@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import ElementReplacer from 'ckeditor5-utils/src/elementreplacer';
+import ElementReplacer from '../src/elementreplacer';
 
 describe( 'ElementReplacer', () => {
 	let replacer;

@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import utilsTestUtils from 'ckeditor5-utils/tests/_utils/utils';
-import ObesrvableMixin from 'ckeditor5-utils/src/observablemixin';
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import utilsTestUtils from '../../tests/_utils/utils';
+import ObesrvableMixin from '../../src/observablemixin';
+import EmitterMixin from '../../src/emittermixin';
 
 testUtils.createSinonSandbox();
 
