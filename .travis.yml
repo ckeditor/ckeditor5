@@ -19,4 +19,4 @@ install:
   - mgit bootstrap --repository-resolver=@ckeditor/ckeditor5-dev-tests/lib/git-https-resolver.js
   - lerna bootstrap
 script:
-  - node_modules/.bin/ckeditor5-dev-tests --reporter=dots
+  - ckeditor5-dev-tests --reporter=dots
