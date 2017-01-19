@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import BoldEngine from 'ckeditor5-basic-styles/src/boldengine';
-import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getModelData, setData as setModelData } from 'ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from 'ckeditor5-engine/src/dev-utils/view';
-import ToggleAttributeCommand from 'ckeditor5-core/src/command/toggleattributecommand';
+import BoldEngine from '../src/boldengine';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import ToggleAttributeCommand from '@ckeditor/ckeditor5-core/src/command/toggleattributecommand';
 
 describe( 'BoldEngine', () => {
 	let editor, doc;
