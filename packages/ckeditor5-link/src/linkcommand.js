@@ -7,11 +7,11 @@
  * @module link/linkcommand
  */
 
-import Command from 'ckeditor5-core/src/command/command';
-import Text from 'ckeditor5-engine/src/model/text';
-import Range from 'ckeditor5-engine/src/model/range';
-import getSchemaValidRanges from 'ckeditor5-core/src/command/helpers/getschemavalidranges';
-import isAttributeAllowedInSelection from 'ckeditor5-core/src/command/helpers/isattributeallowedinselection';
+import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Text from '@ckeditor/ckeditor5-engine/src/model/text';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import getSchemaValidRanges from '@ckeditor/ckeditor5-core/src/command/helpers/getschemavalidranges';
+import isAttributeAllowedInSelection from '@ckeditor/ckeditor5-core/src/command/helpers/isattributeallowedinselection';
 import findLinkRange from './findlinkrange';
 
 /**

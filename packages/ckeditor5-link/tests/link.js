@@ -5,18 +5,18 @@
 
 /* globals document */
 
-import ClassicTestEditor from 'ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import { keyCodes } from 'ckeditor5-utils/src/keyboard';
-import { setData as setModelData } from 'ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import Link from 'ckeditor5-link/src/link';
-import LinkEngine from 'ckeditor5-link/src/linkengine';
-import ButtonView from 'ckeditor5-ui/src/button/buttonview';
-import BalloonPanelView from 'ckeditor5-ui/src/balloonpanel/balloonpanelview';
+import Link from '../src/link';
+import LinkEngine from '../src/linkengine';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/balloonpanel/balloonpanelview';
 
-import Range from 'ckeditor5-engine/src/view/range';
-import ClickObserver from 'ckeditor5-engine/src/view/observer/clickobserver';
+import Range from '@ckeditor/ckeditor5-engine/src/view/range';
+import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 
 testUtils.createSinonSandbox();
 

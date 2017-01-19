@@ -7,16 +7,16 @@
  * @module link/link
  */
 
-import Plugin from 'ckeditor5-core/src/plugin';
-import ClickObserver from 'ckeditor5-engine/src/view/observer/clickobserver';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 import LinkEngine from './linkengine';
 import LinkElement from './linkelement';
 
-import clickOutsideHandler from 'ckeditor5-ui/src/bindings/clickoutsidehandler';
-import escPressHandler from 'ckeditor5-ui/src/bindings/escpresshandler';
+import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
+import escPressHandler from '@ckeditor/ckeditor5-ui/src/bindings/escpresshandler';
 
-import ButtonView from 'ckeditor5-ui/src/button/buttonview';
-import BalloonPanelView from 'ckeditor5-ui/src/balloonpanel/balloonpanelview';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/balloonpanel/balloonpanelview';
 
 import LinkFormView from './ui/linkformview';
 
