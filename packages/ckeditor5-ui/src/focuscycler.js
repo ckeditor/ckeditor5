@@ -13,54 +13,134 @@
  */
 export default class FocusCycler {
 	/**
-	 * Creates an instance of the focus cycler.
+	 * Creates an instance of the focus cycler utility.
 	 *
-	 * @param {module:ui/viewcollection~ViewCollection} viewCollection
-	 * @param {module:utils/focustracker~FocusTracker} focusTracker
+	 *		const focusables = new ViewCollection();
+	 *		const focusTracker = new FocusTracker();
+	 *
+	 *		// Add focusables to the focus tracker.
+	 *		focusTracker.add( ... );
+	 *
+	 * The cycler can be used manually:
+	 *
+	 *		const cycler = new FocusCycler( { focusables, focusTracker } );
+	 *
+	 *		// Will focus the first forusable view in #focusables.
+	 *		cycler.focusFirst();
+	 *
+	 *		// Will log next focusable item in #focusables.
+	 *		console.log( cycler.next );
+	 *
+	 * or it can be used as an automated, keystroke–detecting utility:
+	 *
+	 *		const keystrokeHandler = new KeystrokeHandler();
+	 *
+	 *		// Activate the keystroke handler.
+	 *		keystrokeHandler.listenTo( sourceOfEvents );
+	 *
+	 *		const cycler = new FocusCycler( {
+	 *			focusables, focusTracker, keystrokeHandler,
+	 *			actions: {
+	 *				// When arrowup of arrowleft is detected by the #keystrokeHandler
+	 *				// focusPrevious() will be called by the cycler.
+	 *				focusPrevious: [ 'arrowup', 'arrowleft' ],
+	 *			}
+	 *		} );
+	 *
+	 * @param {Object} options Configuration options.
+	 * @param {module:utils/collection~Collection|Object} options.focusables
+	 * @param {module:utils/focustracker~FocusTracker} options.focusTracker
+	 * @param {module:core/keystrokehandler~KeystrokeHandler} [options.keystrokeHandler]
+	 * @param {Object} [options.actions]
 	 */
-	constructor( viewCollection, focusTracker ) {
+	constructor( options ) {
+		Object.assign( this, options );
+
 		/**
 		 * A view collection the cycler operates on.
 		 *
 		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
+		 * @member {module:utils/collection~Collection} focusables
 		 */
-		this.viewCollection = viewCollection;
 
 		/**
 		 * A focus tracker instance that cycler uses to determine focus
 		 * state in {@link #viewCollection}.
 		 *
 		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
+		 * @member {module:utils/focustracker~FocusTracker} focusTracker
 		 */
-		this.focusTracker = focusTracker;
+
+		/**
+		 * Instance of the {@link module:core/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:core/keystrokehandler~KeystrokeHandler} keystrokeHandler
+		 */
+
+		/**
+		 * Actions that the cycler can take when a keystroke is pressed. Requires
+		 * `options.keystrokeHandler` to be passed and working. When an action is
+		 * performed, the event the keystroke fired is will be `preventDefault` and
+		 * `stopPropagation` in DOM.
+		 *
+		 *		actions: {
+		 *			// Will call #focusPrevious() when arrowleft or arrowup is pressed.
+		 *			focusPrevious: [ 'arrowleft', 'arrowup' ],
+		 *
+		 *			// Will call #focusNext() when arrowdown is pressed.
+		 *			focusNext: 'arrowdown'
+		 *		}
+		 *
+		 * @readonly
+		 * @member {Object} actions
+		 */
+
+		if ( options.actions && options.keystrokeHandler ) {
+			for ( let methodName in options.actions ) {
+				let actions = options.actions[ methodName ];
+
+				if ( typeof actions == 'string' ) {
+					actions = [ actions ];
+				}
+
+				for ( let keystroke of actions ) {
+					options.keystrokeHandler.set( keystroke, ( data, cancel ) => {
+						this[ methodName ]();
+						cancel();
+					} );
+				}
+			}
+		}
 	}
 
 	/**
 	 * Returns the first focusable view in {@link #viewCollection}.
 	 * `null` if there's none.
 	 *
+	 * @readonly
 	 * @member {module:ui/view~View|null} #first
 	 */
 	get first() {
-		return this.viewCollection.find( isFocusable ) || null;
+		return this.focusables.find( isFocusable ) || null;
 	}
 
 	/**
 	 * Returns the last focusable view in {@link #viewCollection}.
 	 * `null` if there's none.
 	 *
+	 * @readonly
 	 * @member {module:ui/view~View|null} #last
 	 */
 	get last() {
-		return this.viewCollection.filter( isFocusable ).slice( -1 )[ 0 ] || null;
+		return this.focusables.filter( isFocusable ).slice( -1 )[ 0 ] || null;
 	}
 
 	/**
 	 * Returns the next focusable view in {@link #viewCollection} based on {@link #current}.
 	 * `null` if there's none.
 	 *
+	 * @readonly
 	 * @member {module:ui/view~View|null} #next
 	 */
 	get next() {
@@ -71,6 +151,7 @@ export default class FocusCycler {
 	 * Returns the previous focusable view in {@link #viewCollection} based on {@link #current}.
 	 * `null` if there's none.
 	 *
+	 * @readonly
 	 * @member {module:ui/view~View|null} #next
 	 */
 	get previous() {
@@ -81,6 +162,7 @@ export default class FocusCycler {
 	 * An index of the view in the {@link #viewCollection} which is focused according
 	 * to {@link #focusTracker}. `null` when there's no such view.
 	 *
+	 * @readonly
 	 * @member {Number|null} #current
 	 */
 	get current() {
@@ -91,7 +173,7 @@ export default class FocusCycler {
 			return null;
 		}
 
-		this.viewCollection.find( ( view, viewIndex ) => {
+		this.focusables.find( ( view, viewIndex ) => {
 			const focused = view.element === this.focusTracker.focusedElement;
 
 			if ( focused ) {
@@ -102,6 +184,46 @@ export default class FocusCycler {
 		} );
 
 		return index;
+	}
+
+	/**
+	 * Focuses the {@link #first}.
+	 */
+	focusFirst() {
+		this._focus( this.first );
+	}
+
+	/**
+	 * Focuses the {@link #last}.
+	 */
+	focusLast() {
+		this._focus( this.last );
+	}
+
+	/**
+	 * Focuses the {@link #next}.
+	 */
+	focusNext() {
+		this._focus( this.next );
+	}
+
+	/**
+	 * Focuses the {@link #previous}.
+	 */
+	focusPrevious() {
+		this._focus( this.previous );
+	}
+
+	/**
+	 * Focuses the passed view, if exists.
+	 *
+	 * @protected
+	 * @param {module:ui/view~View} view
+	 */
+	_focus( view ) {
+		if ( view ) {
+			view.focus();
+		}
 	}
 
 	/**
@@ -116,7 +238,7 @@ export default class FocusCycler {
 	_getFocusableItem( step ) {
 		// Cache for speed.
 		const current = this.current;
-		const collectionLength = this.viewCollection.length;
+		const collectionLength = this.focusables.length;
 
 		if ( !collectionLength || current === null ) {
 			return null;
@@ -126,7 +248,7 @@ export default class FocusCycler {
 		let index = ( current + collectionLength + step ) % collectionLength;
 
 		do {
-			let view = this.viewCollection.get( index );
+			let view = this.focusables.get( index );
 
 			// TODO: Check if view is visible.
 			if ( isFocusable( view ) ) {

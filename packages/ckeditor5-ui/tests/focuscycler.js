@@ -6,27 +6,32 @@
 import ViewCollection from 'ckeditor5-ui/src/viewcollection';
 import View from 'ckeditor5-ui/src/view';
 import FocusCycler from 'ckeditor5-ui/src/focuscycler';
+import KeystrokeHandler from 'ckeditor5-utils/src/keystrokehandler';
+import { keyCodes } from 'ckeditor5-utils/src/keyboard';
 
 describe( 'FocusCycler', () => {
-	let viewCollection, focusTracker, cycler;
+	let focusables, focusTracker, cycler;
 
 	beforeEach( () => {
-		viewCollection = new ViewCollection();
+		focusables = new ViewCollection();
 		focusTracker = {
 			focusedElement: null
 		};
-		cycler = new FocusCycler( viewCollection, focusTracker );
+		cycler = new FocusCycler( {
+			focusables: focusables,
+			focusTracker: focusTracker
+		} );
 
-		viewCollection.add( nonFocusable() );
-		viewCollection.add( focusable() );
-		viewCollection.add( focusable() );
-		viewCollection.add( focusable() );
-		viewCollection.add( nonFocusable() );
+		focusables.add( nonFocusable() );
+		focusables.add( focusable() );
+		focusables.add( focusable() );
+		focusables.add( focusable() );
+		focusables.add( nonFocusable() );
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'sets class properties', () => {
-			expect( cycler.viewCollection ).to.equal( viewCollection );
+			expect( cycler.focusables ).to.equal( focusables );
 			expect( cycler.focusTracker ).to.equal( focusTracker );
 		} );
 	} );
@@ -35,7 +40,7 @@ describe( 'FocusCycler', () => {
 		it( 'returns null when no view is focused', () => {
 			expect( cycler.current ).to.equal( null );
 
-			focusTracker.focusedElement = viewCollection.get( 2 ).element;
+			focusTracker.focusedElement = focusables.get( 2 ).element;
 			expect( cycler.current ).to.equal( 2 );
 
 			focusTracker.focusedElement = null;
@@ -45,22 +50,22 @@ describe( 'FocusCycler', () => {
 
 	describe( 'first()', () => {
 		it( 'returns first focusable view', () => {
-			expect( cycler.first ).to.equal( viewCollection.get( 1 ) );
+			expect( cycler.first ).to.equal( focusables.get( 1 ) );
 		} );
 
 		it( 'returns null when no focusable items', () => {
-			viewCollection = new ViewCollection();
-			cycler = new FocusCycler( viewCollection, focusTracker );
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			viewCollection.add( nonFocusable() );
-			viewCollection.add( nonFocusable() );
+			focusables.add( nonFocusable() );
+			focusables.add( nonFocusable() );
 
 			expect( cycler.first ).to.be.null;
 		} );
 
 		it( 'returns null when no items', () => {
-			viewCollection = new ViewCollection();
-			cycler = new FocusCycler( viewCollection, focusTracker );
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
 
 			expect( cycler.first ).to.be.null;
 		} );
@@ -68,22 +73,22 @@ describe( 'FocusCycler', () => {
 
 	describe( 'last()', () => {
 		it( 'returns last focusable view', () => {
-			expect( cycler.last ).to.equal( viewCollection.get( 3 ) );
+			expect( cycler.last ).to.equal( focusables.get( 3 ) );
 		} );
 
 		it( 'returns null when no focusable items', () => {
-			viewCollection = new ViewCollection();
-			cycler = new FocusCycler( viewCollection, focusTracker );
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			viewCollection.add( nonFocusable() );
-			viewCollection.add( nonFocusable() );
+			focusables.add( nonFocusable() );
+			focusables.add( nonFocusable() );
 
 			expect( cycler.last ).to.be.null;
 		} );
 
 		it( 'returns null when no items', () => {
-			viewCollection = new ViewCollection();
-			cycler = new FocusCycler( viewCollection, focusTracker );
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
 
 			expect( cycler.last ).to.be.null;
 		} );
@@ -91,14 +96,14 @@ describe( 'FocusCycler', () => {
 
 	describe( 'next()', () => {
 		it( 'cycles to return the next focusable view', () => {
-			focusTracker.focusedElement = viewCollection.get( 2 ).element;
-			expect( cycler.next ).to.equal( viewCollection.get( 3 ) );
+			focusTracker.focusedElement = focusables.get( 2 ).element;
+			expect( cycler.next ).to.equal( focusables.get( 3 ) );
 
-			focusTracker.focusedElement = viewCollection.get( 3 ).element;
-			expect( cycler.next ).to.equal( viewCollection.get( 1 ) );
+			focusTracker.focusedElement = focusables.get( 3 ).element;
+			expect( cycler.next ).to.equal( focusables.get( 1 ) );
 
-			focusTracker.focusedElement = viewCollection.get( 1 ).element;
-			expect( cycler.next ).to.equal( viewCollection.get( 2 ) );
+			focusTracker.focusedElement = focusables.get( 1 ).element;
+			expect( cycler.next ).to.equal( focusables.get( 2 ) );
 		} );
 
 		it( 'returns null when no view is focused', () => {
@@ -108,47 +113,47 @@ describe( 'FocusCycler', () => {
 		} );
 
 		it( 'returns null when no items', () => {
-			viewCollection = new ViewCollection();
-			cycler = new FocusCycler( viewCollection, focusTracker );
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
 
 			expect( cycler.next ).to.be.null;
 		} );
 
 		it( 'returns null when no focusable items', () => {
-			viewCollection = new ViewCollection();
-			cycler = new FocusCycler( viewCollection, focusTracker );
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			viewCollection.add( nonFocusable() );
-			viewCollection.add( nonFocusable() );
+			focusables.add( nonFocusable() );
+			focusables.add( nonFocusable() );
 
 			expect( cycler.next ).to.be.null;
 		} );
 
-		it( 'returns null if the only focusable in viewCollection', () => {
-			viewCollection = new ViewCollection();
-			cycler = new FocusCycler( viewCollection, focusTracker );
+		it( 'returns null if the only focusable in focusables', () => {
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			viewCollection.add( nonFocusable() );
-			viewCollection.add( focusable() );
-			viewCollection.add( nonFocusable() );
+			focusables.add( nonFocusable() );
+			focusables.add( focusable() );
+			focusables.add( nonFocusable() );
 
-			focusTracker.focusedElement = viewCollection.get( 1 ).element;
+			focusTracker.focusedElement = focusables.get( 1 ).element;
 
-			expect( cycler.first ).to.equal( viewCollection.get( 1 ) );
+			expect( cycler.first ).to.equal( focusables.get( 1 ) );
 			expect( cycler.next ).to.be.null;
 		} );
 	} );
 
 	describe( 'previous()', () => {
 		it( 'cycles to return the previous focusable view', () => {
-			focusTracker.focusedElement = viewCollection.get( 1 ).element;
-			expect( cycler.previous ).to.equal( viewCollection.get( 3 ) );
+			focusTracker.focusedElement = focusables.get( 1 ).element;
+			expect( cycler.previous ).to.equal( focusables.get( 3 ) );
 
-			focusTracker.focusedElement = viewCollection.get( 2 ).element;
-			expect( cycler.previous ).to.equal( viewCollection.get( 1 ) );
+			focusTracker.focusedElement = focusables.get( 2 ).element;
+			expect( cycler.previous ).to.equal( focusables.get( 1 ) );
 
-			focusTracker.focusedElement = viewCollection.get( 3 ).element;
-			expect( cycler.previous ).to.equal( viewCollection.get( 2 ) );
+			focusTracker.focusedElement = focusables.get( 3 ).element;
+			expect( cycler.previous ).to.equal( focusables.get( 2 ) );
 		} );
 
 		it( 'returns null when no view is focused', () => {
@@ -158,34 +163,224 @@ describe( 'FocusCycler', () => {
 		} );
 
 		it( 'returns null when no items', () => {
-			viewCollection = new ViewCollection();
-			cycler = new FocusCycler( viewCollection, focusTracker );
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
 
 			expect( cycler.previous ).to.be.null;
 		} );
 
 		it( 'returns null when no focusable items', () => {
-			viewCollection = new ViewCollection();
-			cycler = new FocusCycler( viewCollection, focusTracker );
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			viewCollection.add( nonFocusable() );
-			viewCollection.add( nonFocusable() );
+			focusables.add( nonFocusable() );
+			focusables.add( nonFocusable() );
 
 			expect( cycler.previous ).to.be.null;
 		} );
 
-		it( 'returns null if the only focusable in viewCollection', () => {
-			viewCollection = new ViewCollection();
-			cycler = new FocusCycler( viewCollection, focusTracker );
+		it( 'returns null if the only focusable in focusables', () => {
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
 
-			viewCollection.add( nonFocusable() );
-			viewCollection.add( focusable() );
-			viewCollection.add( nonFocusable() );
+			focusables.add( nonFocusable() );
+			focusables.add( focusable() );
+			focusables.add( nonFocusable() );
 
-			focusTracker.focusedElement = viewCollection.get( 1 ).element;
+			focusTracker.focusedElement = focusables.get( 1 ).element;
 
-			expect( cycler.first ).to.equal( viewCollection.get( 1 ) );
+			expect( cycler.first ).to.equal( focusables.get( 1 ) );
 			expect( cycler.previous ).to.be.null;
+		} );
+	} );
+
+	describe( 'focusFirst()', () => {
+		it( 'focuses first focusable view', () => {
+			const spy = sinon.spy( focusables.get( 1 ), 'focus' );
+
+			cycler.focusFirst();
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'does not throw when no focusable items', () => {
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			focusables.add( nonFocusable() );
+			focusables.add( nonFocusable() );
+
+			expect( () => {
+				cycler.focusFirst();
+			} ).to.not.throw();
+		} );
+
+		it( 'does not throw when no items', () => {
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			expect( () => {
+				cycler.focusFirst();
+			} ).to.not.throw();
+		} );
+	} );
+
+	describe( 'focusLast()', () => {
+		it( 'focuses last focusable view', () => {
+			const spy = sinon.spy( focusables.get( 3 ), 'focus' );
+
+			cycler.focusLast();
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'does not throw when no focusable items', () => {
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			focusables.add( nonFocusable() );
+			focusables.add( nonFocusable() );
+
+			expect( () => {
+				cycler.focusLast();
+			} ).to.not.throw();
+		} );
+
+		it( 'does not throw when no items', () => {
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			expect( () => {
+				cycler.focusLast();
+			} ).to.not.throw();
+		} );
+	} );
+
+	describe( 'focusNext()', () => {
+		it( 'focuses next focusable view', () => {
+			const spy = sinon.spy( focusables.get( 3 ), 'focus' );
+
+			focusTracker.focusedElement = focusables.get( 2 ).element;
+			cycler.focusNext();
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'does not throw when no focusable items', () => {
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			focusables.add( nonFocusable() );
+			focusables.add( nonFocusable() );
+
+			expect( () => {
+				cycler.focusNext();
+			} ).to.not.throw();
+		} );
+
+		it( 'does not throw when no items', () => {
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			expect( () => {
+				cycler.focusNext();
+			} ).to.not.throw();
+		} );
+	} );
+
+	describe( 'focusPrevious()', () => {
+		it( 'focuses previous focusable view', () => {
+			const spy = sinon.spy( focusables.get( 3 ), 'focus' );
+
+			focusTracker.focusedElement = focusables.get( 1 ).element;
+			cycler.focusPrevious();
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'does not throw when no focusable items', () => {
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			focusables.add( nonFocusable() );
+			focusables.add( nonFocusable() );
+
+			expect( () => {
+				cycler.focusPrevious();
+			} ).to.not.throw();
+		} );
+
+		it( 'does not throw when no items', () => {
+			focusables = new ViewCollection();
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			expect( () => {
+				cycler.focusPrevious();
+			} ).to.not.throw();
+		} );
+	} );
+
+	describe( 'keystrokes', () => {
+		it( 'creates event listeners', () => {
+			const keystrokeHandler = new KeystrokeHandler();
+
+			cycler = new FocusCycler( {
+				focusables, focusTracker, keystrokeHandler,
+				actions: {
+					focusPrevious: 'arrowup',
+					focusNext: 'arrowdown'
+				}
+			} );
+
+			const keyEvtData = {
+				keyCode: keyCodes.arrowup,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			const spy1 = sinon.spy( cycler, 'focusPrevious' );
+			const spy2 = sinon.spy( cycler, 'focusNext' );
+
+			keystrokeHandler.press( keyEvtData );
+
+			sinon.assert.calledOnce( spy1 );
+			sinon.assert.calledOnce( keyEvtData.preventDefault );
+			sinon.assert.calledOnce( keyEvtData.stopPropagation );
+			sinon.assert.notCalled( spy2 );
+
+			keyEvtData.keyCode = keyCodes.arrowdown;
+
+			keystrokeHandler.press( keyEvtData );
+
+			sinon.assert.calledOnce( spy1 );
+			sinon.assert.calledTwice( keyEvtData.preventDefault );
+			sinon.assert.calledTwice( keyEvtData.stopPropagation );
+			sinon.assert.calledOnce( spy2 );
+		} );
+
+		it( 'supports array keystroke syntax', () => {
+			const keystrokeHandler = new KeystrokeHandler();
+
+			cycler = new FocusCycler( {
+				focusables, focusTracker, keystrokeHandler,
+				actions: {
+					focusPrevious: [ 'arrowup', 'arrowleft' ],
+				}
+			} );
+
+			const keyEvtData = {
+				keyCode: keyCodes.arrowleft,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			const spy = sinon.spy( cycler, 'focusPrevious' );
+
+			keystrokeHandler.press( keyEvtData );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnce( keyEvtData.preventDefault );
+			sinon.assert.calledOnce( keyEvtData.stopPropagation );
 		} );
 	} );
 } );
