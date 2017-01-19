@@ -56,7 +56,18 @@ export default class ListView extends View {
 		 * @protected
 		 * @member {module:ui/focuscycler~FocusCycler}
 		 */
-		this._focusCycler = new FocusCycler( this.items, this.focusTracker );
+		this._focusCycler = new FocusCycler( {
+			focusables: this.items,
+			focusTracker: this.focusTracker,
+			keystrokeHandler: this.keystrokes,
+			actions: {
+				// Navigate list items backwards using the arrowup key.
+				focusPrevious: 'arrowup',
+
+				// Navigate toolbar items forwards using the arrowdown key.
+				focusNext: 'arrowdown',
+			}
+		} );
 
 		this.template = new Template( {
 			tag: 'ul',
@@ -84,27 +95,8 @@ export default class ListView extends View {
 	 * @inheritDoc
 	 */
 	init() {
+		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
-
-		this.keystrokes.set( 'arrowup', ( data, cancel ) => {
-			const previousFocusable = this._focusCycler.previous;
-
-			if ( previousFocusable ) {
-				previousFocusable.focus();
-			}
-
-			cancel();
-		} );
-
-		this.keystrokes.set( 'arrowdown', ( data, cancel ) => {
-			const nextFocusable = this._focusCycler.next;
-
-			if ( nextFocusable ) {
-				nextFocusable.focus();
-			}
-
-			cancel();
-		} );
 
 		return super.init();
 	}
@@ -113,23 +105,13 @@ export default class ListView extends View {
 	 * Focuses the first focusable in {@link #items}.
 	 */
 	focus() {
-		// Find the very first list item that can be focused.
-		const firstFocusable = this._focusCycler.first;
-
-		if ( firstFocusable ) {
-			firstFocusable.focus();
-		}
+		this._focusCycler.focusFirst();
 	}
 
 	/**
 	 * Focuses the last focusable in {@link #items}.
 	 */
 	focusLast() {
-		// Find the last list item that can be focused.
-		const lastFocusable = this._focusCycler.last;
-
-		if ( lastFocusable ) {
-			lastFocusable.focus();
-		}
+		this._focusCycler.focusLast();
 	}
 }
