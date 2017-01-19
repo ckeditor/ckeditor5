@@ -9,13 +9,14 @@ CKEditor 5 – development repository
 
 Version 0.5.0 was released on November 29, 2016. This is the 5th developer preview of the new CKEditor 5.
 
+Read more in the [CKEditor 5 v0.5.0 release blog post](http://ckeditor.com/blog/5th-developer-preview-of-CKEditor-5-available) and check the [CKEditor 5 sample](https://ckeditor5.github.io/).
+
 **It is not production ready** and will be followed by several releases before it reaches its first stable 1.0.0 version.
 
-Read more in the [CKEditor 5 v0.5.0 release blog post](http://ckeditor.com/blog/5th-developer-preview-of-CKEditor-5-available).
+### Follow us!
 
-Check the basic CKEditor 5 sample on the [GitHub.io page](https://ckeditor5.github.io/).
-
-[Periodic news and updates](https://github.com/ckeditor/ckeditor5-design/labels/announcement) about the project can be found in the [CKEditor 5 design repository](https://github.com/ckeditor/ckeditor5-design).
+* [Periodic news and updates](https://github.com/ckeditor/ckeditor5-design/labels/announcement) about the project.
+* [Roadmap to 1.0.0 and beyond](https://github.com/ckeditor/ckeditor5-design/issues/172).
 
 ## Project Organization
 
@@ -43,9 +44,7 @@ Each repository independently handles its issues. However, it's recommended to r
 <thead>
 	<tr>
 		<th>Package</th>
-		<th>Version</th>
-		<th>Build</th>
-		<th>Dependencies</th>
+		<th>Status</th>
 	</tr>
 </thead>
 <tbody>
@@ -58,14 +57,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-engine"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-engine.svg" alt="ckeditor5-engine npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-engine"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-engine/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-engine/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-engine.svg" alt="ckeditor5-engine coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-engine"><img src="https://img.shields.io/david/ckeditor/ckeditor5-engine.svg" alt="ckeditor5-engine dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-engine?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-engine.svg" alt="ckeditor5-engine devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -77,14 +70,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-core"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-core.svg" alt="ckeditor5-core npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-core"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-core/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-core/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-core.svg" alt="ckeditor5-core coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-core"><img src="https://img.shields.io/david/ckeditor/ckeditor5-core.svg" alt="ckeditor5-core dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-core?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-core.svg" alt="ckeditor5-core devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -96,14 +83,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-ui"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-ui.svg" alt="ckeditor5-ui npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-ui"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-ui/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-ui/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-ui.svg" alt="ckeditor5-ui coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-ui"><img src="https://img.shields.io/david/ckeditor/ckeditor5-ui.svg" alt="ckeditor5-ui dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-ui?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-ui.svg" alt="ckeditor5-ui devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -115,14 +96,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-utils"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-utils.svg" alt="ckeditor5-utils npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-utils"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-utils/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-utils/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-utils.svg" alt="ckeditor5-utils coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-utils"><img src="https://img.shields.io/david/ckeditor/ckeditor5-utils.svg" alt="ckeditor5-utils dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-utils?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-utils.svg" alt="ckeditor5-utils devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -135,9 +110,7 @@ Each repository independently handles its issues. However, it's recommended to r
 <thead>
 	<tr>
 		<th>Package</th>
-		<th>Version</th>
-		<th>Build</th>
-		<th>Dependencies</th>
+		<th>Status</th>
 	</tr>
 </thead>
 <tbody>
@@ -150,14 +123,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-editor-classic.svg" alt="ckeditor5-editor-classic npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-editor-classic"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-editor-classic/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-editor-classic/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-editor-classic.svg" alt="ckeditor5-editor-classic coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-editor-classic"><img src="https://img.shields.io/david/ckeditor/ckeditor5-editor-classic.svg" alt="ckeditor5-editor-classic dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-editor-classic?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-editor-classic.svg" alt="ckeditor5-editor-classic devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -169,14 +136,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-editor-inline.svg" alt="ckeditor5-editor-inline npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-editor-inline"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-editor-inline/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-editor-inline/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-editor-inline.svg" alt="ckeditor5-editor-inline coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-editor-inline"><img src="https://img.shields.io/david/ckeditor/ckeditor5-editor-inline.svg" alt="ckeditor5-editor-inline dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-editor-inline?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-editor-inline.svg" alt="ckeditor5-editor-inline devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -189,9 +150,7 @@ Each repository independently handles its issues. However, it's recommended to r
 <thead>
 	<tr>
 		<th>Package</th>
-		<th>Version</th>
-		<th>Build</th>
-		<th>Dependencies</th>
+		<th>Status</th>
 	</tr>
 </thead>
 <tbody>
@@ -204,14 +163,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-autoformat.svg" alt="ckeditor5-autoformat npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-autoformat"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-autoformat/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-autoformat/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-autoformat.svg" alt="ckeditor5-autoformat coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-autoformat"><img src="https://img.shields.io/david/ckeditor/ckeditor5-autoformat.svg" alt="ckeditor5-autoformat dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-autoformat?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-autoformat.svg" alt="ckeditor5-autoformat devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -223,14 +176,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-basic-styles.svg" alt="ckeditor5-basic-styles npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-basic-styles"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-basic-styles/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-basic-styles/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-basic-styles.svg" alt="ckeditor5-basic-styles coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-basic-styles"><img src="https://img.shields.io/david/ckeditor/ckeditor5-basic-styles.svg" alt="ckeditor5-basic-styles dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-basic-styles?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-basic-styles.svg" alt="ckeditor5-basic-styles devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -242,14 +189,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-clipboard.svg" alt="ckeditor5-clipboard npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-clipboard"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-clipboard/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-clipboard/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-clipboard.svg" alt="ckeditor5-clipboard coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-clipboard"><img src="https://img.shields.io/david/ckeditor/ckeditor5-clipboard.svg" alt="ckeditor5-clipboard dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-clipboard?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-clipboard.svg" alt="ckeditor5-clipboard devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -261,14 +202,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-enter"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-enter.svg" alt="ckeditor5-enter npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-enter"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-enter/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-enter/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-enter.svg" alt="ckeditor5-enter coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-enter"><img src="https://img.shields.io/david/ckeditor/ckeditor5-enter.svg" alt="ckeditor5-enter dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-enter?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-enter.svg" alt="ckeditor5-enter devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -280,14 +215,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-heading"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-heading.svg" alt="ckeditor5-heading npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-heading"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-heading/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-heading/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-heading.svg" alt="ckeditor5-heading coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-heading"><img src="https://img.shields.io/david/ckeditor/ckeditor5-heading.svg" alt="ckeditor5-heading dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-heading?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-heading.svg" alt="ckeditor5-heading devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -299,14 +228,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-image"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-image.svg" alt="ckeditor5-image npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-image"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-image/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-image/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-image.svg" alt="ckeditor5-image coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-image"><img src="https://img.shields.io/david/ckeditor/ckeditor5-image.svg" alt="ckeditor5-image dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-image?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-image.svg" alt="ckeditor5-image devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -318,14 +241,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-link"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-link.svg" alt="ckeditor5-link npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-link"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-link/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-link/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-link.svg" alt="ckeditor5-link coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-link"><img src="https://img.shields.io/david/ckeditor/ckeditor5-link.svg" alt="ckeditor5-link dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-link?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-link.svg" alt="ckeditor5-link devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -337,14 +254,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-list"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-list.svg" alt="ckeditor5-list npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-list"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-list/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-list/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-list.svg" alt="ckeditor5-list coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-list"><img src="https://img.shields.io/david/ckeditor/ckeditor5-list.svg" alt="ckeditor5-list dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-list?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-list.svg" alt="ckeditor5-list devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -356,14 +267,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-markdown-gfm.svg" alt="ckeditor5-markdown-gfm npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-markdown-gfm"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-markdown-gfm/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-markdown-gfm/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-markdown-gfm.svg" alt="ckeditor5-markdown-gfm coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-markdown-gfm"><img src="https://img.shields.io/david/ckeditor/ckeditor5-markdown-gfm.svg" alt="ckeditor5-markdown-gfm dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-markdown-gfm?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-markdown-gfm.svg" alt="ckeditor5-markdown-gfm devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -375,14 +280,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-paragraph.svg" alt="ckeditor5-paragraph npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-paragraph"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-paragraph/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-paragraph/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-paragraph.svg" alt="ckeditor5-paragraph coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-paragraph"><img src="https://img.shields.io/david/ckeditor/ckeditor5-paragraph.svg" alt="ckeditor5-paragraph dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-paragraph?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-paragraph.svg" alt="ckeditor5-paragraph devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -394,14 +293,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-typing"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-typing.svg" alt="ckeditor5-typing npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-typing"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-typing/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-typing/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-typing.svg" alt="ckeditor5-typing coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-typing"><img src="https://img.shields.io/david/ckeditor/ckeditor5-typing.svg" alt="ckeditor5-typing dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-typing?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-typing.svg" alt="ckeditor5-typing devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -413,14 +306,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-undo"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-undo.svg" alt="ckeditor5-undo npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-undo"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-undo/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-undo/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-undo.svg" alt="ckeditor5-undo coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-undo"><img src="https://img.shields.io/david/ckeditor/ckeditor5-undo.svg" alt="ckeditor5-undo dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-undo?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-undo.svg" alt="ckeditor5-undo devDependencies status badge"></a>
 	</td>
 </tr>
 
@@ -433,9 +320,7 @@ Each repository independently handles its issues. However, it's recommended to r
 <thead>
 	<tr>
 		<th>Package</th>
-		<th>Version</th>
-		<th>Build</th>
-		<th>Dependencies</th>
+		<th>Status</th>
 	</tr>
 </thead>
 <tbody>
@@ -448,14 +333,8 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-theme-lark.svg" alt="ckeditor5-theme-lark npm package badge"></a>
-	</td>
-	<td>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-theme-lark"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-theme-lark/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-theme-lark/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-theme-lark.svg" alt="ckeditor5-theme-lark coverage badge"></a>
-	</td>
-	<td>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-theme-lark"><img src="https://img.shields.io/david/ckeditor/ckeditor5-theme-lark.svg" alt="ckeditor5-theme-lark dependencies status badge"></a>
-		<a href="https://david-dm.org/ckeditor/ckeditor5-theme-lark?type=dev"><img src="https://img.shields.io/david/dev/ckeditor/ckeditor5-theme-lark.svg" alt="ckeditor5-theme-lark devDependencies status badge"></a>
 	</td>
 </tr>
 
