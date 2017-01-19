@@ -5,12 +5,12 @@
 
 /* global Event */
 
-import ClassicEditor from 'ckeditor5-editor-classic/src/classic';
-import global from 'ckeditor5-utils/src/dom/global';
-import ImageBalloonPanel from 'ckeditor5-image/src/ui/imageballoonpanel';
-import BalloonPanelView from 'ckeditor5-ui/src/balloonpanel/balloonpanelview';
-import ImageEngine from 'ckeditor5-image/src/imageengine';
-import { setData } from 'ckeditor5-engine/src/dev-utils/model';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ImageBalloonPanel from '../../src/ui/imageballoonpanel';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/balloonpanel/balloonpanelview';
+import ImageEngine from '../../src/imageengine';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageBalloonPanel', () => {
 	let editor, panel, document, editingView;

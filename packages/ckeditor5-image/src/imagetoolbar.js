@@ -7,9 +7,9 @@
  * @module image/imagetoolbar
  */
 
-import Template from 'ckeditor5-ui/src/template';
-import Plugin from 'ckeditor5-core/src/plugin';
-import ToolbarView from 'ckeditor5-ui/src/toolbar/toolbarview';
+import Template from '@ckeditor/ckeditor5-ui/src/template';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import { isImageWidget } from './utils';
 import ImageBalloonPanel from './ui/imageballoonpanel';
 

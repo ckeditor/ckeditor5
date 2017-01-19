@@ -7,8 +7,8 @@
  * @module image/imagealternatetext/ui/textareaview
  */
 
-import View from 'ckeditor5-ui/src/view';
-import Template from 'ckeditor5-ui/src/template';
+import View from '@ckeditor/ckeditor5-ui/src/view';
+import Template from '@ckeditor/ckeditor5-ui/src/template';
 import '../../../theme/textareaview/theme.scss';
 
 /**

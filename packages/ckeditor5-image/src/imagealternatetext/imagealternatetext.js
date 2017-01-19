@@ -7,15 +7,15 @@
  * @module image/imagealternatetext/imagealternatetext
  */
 
-import Plugin from 'ckeditor5-core/src/plugin';
-import ButtonView from 'ckeditor5-ui/src/button/buttonview';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ImageAlternateTextEngine from './imagealternatetextengine';
-import escPressHandler from 'ckeditor5-ui/src/bindings/escpresshandler';
+import escPressHandler from '@ckeditor/ckeditor5-ui/src/bindings/escpresshandler';
 import ImageToolbar from '../imagetoolbar';
 import AlternateTextFormView from './ui/alternatetextformview';
 import ImageBalloonPanel from '../ui/imageballoonpanel';
 
-import alternateTextIcon from 'ckeditor5-core/theme/icons/input.svg';
+import alternateTextIcon from '@ckeditor/ckeditor5-core/theme/icons/input.svg';
 import '../../theme/imagealternatetext/theme.scss';
 
 /**

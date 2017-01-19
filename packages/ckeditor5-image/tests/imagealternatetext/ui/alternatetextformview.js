@@ -5,8 +5,8 @@
 
 /* global Event */
 
-import AlternateTextFormView from 'ckeditor5-image/src/imagealternatetext/ui/alternatetextformview';
-import View from 'ckeditor5-ui/src/view';
+import AlternateTextFormView from '../../../src/imagealternatetext/ui/alternatetextformview';
+import View from '@ckeditor/ckeditor5-ui/src/view';
 
 describe( 'AlternateTextFormView', () => {
 	let view;

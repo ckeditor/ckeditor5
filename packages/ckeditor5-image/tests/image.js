@@ -5,11 +5,11 @@
 
 /* global window */
 
-import ClassicTestEditor from 'ckeditor5-core/tests/_utils/classictesteditor';
-import Image from 'ckeditor5-image/src/image';
-import ImageEngine from 'ckeditor5-image/src/imageengine';
-import Widget from 'ckeditor5-image/src/widget/widget';
-import ImageAlternateText from 'ckeditor5-image/src/imagealternatetext/imagealternatetext';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Image from '../src/image';
+import ImageEngine from '../src/imageengine';
+import Widget from '../src/widget/widget';
+import ImageAlternateText from '../src/imagealternatetext/imagealternatetext';
 
 describe( 'Image', () => {
 	let editor;

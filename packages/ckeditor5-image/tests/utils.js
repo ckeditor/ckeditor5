@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewElement from 'ckeditor5-engine/src/view/element';
-import ModelElement from 'ckeditor5-engine/src/model/element';
-import { toImageWidget, isImageWidget, isImage } from 'ckeditor5-image/src/utils';
-import { isWidget } from 'ckeditor5-image/src/widget/utils';
+import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import { toImageWidget, isImageWidget, isImage } from '../src/utils';
+import { isWidget } from '../src/widget/utils';
 
 describe( 'image widget utils', () => {
 	let element;

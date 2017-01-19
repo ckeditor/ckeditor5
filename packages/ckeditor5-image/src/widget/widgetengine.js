@@ -7,7 +7,7 @@
  * @module image/widget/widgetengine
  */
 
-import Plugin from 'ckeditor5-core/src/plugin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { WIDGET_SELECTED_CLASS_NAME, isWidget } from './utils';
 
 /**

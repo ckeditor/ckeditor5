@@ -7,12 +7,12 @@
  * @module image/imagealternatetext/ui/imagealternatetextformview
  */
 
-import View from 'ckeditor5-ui/src/view';
-import ButtonView from 'ckeditor5-ui/src/button/buttonview';
-import Template from 'ckeditor5-ui/src/template';
-import LabeledInputView from 'ckeditor5-ui/src/labeledinput/labeledinputview';
+import View from '@ckeditor/ckeditor5-ui/src/view';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import Template from '@ckeditor/ckeditor5-ui/src/template';
+import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinputview';
 import TextAreaView from './textareaview';
-import submitHandler from 'ckeditor5-ui/src/bindings/submithandler';
+import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 
 /**
  * AlternateTextFormView class.

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import TextAreaView from 'ckeditor5-image/src/imagealternatetext/ui/textareaview';
+import TextAreaView from '../../../src/imagealternatetext/ui/textareaview';
 
 describe( 'TextAreaView', () => {
 	let view;

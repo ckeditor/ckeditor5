@@ -7,7 +7,7 @@
  * @module image/imagelaternatetext/imagealternatetextcommand
  */
 
-import Command from 'ckeditor5-core/src/command/command';
+import Command from '@ckeditor/ckeditor5-core/src/command/command';
 import { isImage } from '../utils';
 
 /**

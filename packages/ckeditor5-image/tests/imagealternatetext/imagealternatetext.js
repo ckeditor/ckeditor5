@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
-import ClassicTestEditor from 'ckeditor5-core/tests/_utils/classictesteditor';
-import Image from 'ckeditor5-image/src/image';
-import ImageToolbar from 'ckeditor5-image/src/imagetoolbar';
-import ImageAlternateText from 'ckeditor5-image/src/imagealternatetext/imagealternatetext';
-import ImageAlternateTextEngine from 'ckeditor5-image/src/imagealternatetext/imagealternatetextengine';
-import ButtonView from 'ckeditor5-ui/src/button/buttonview';
-import global from 'ckeditor5-utils/src/dom/global';
-import { setData } from 'ckeditor5-engine/src/dev-utils/model';
-import { keyCodes } from 'ckeditor5-utils/src/keyboard';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Image from '../../src/image';
+import ImageToolbar from '../../src/imagetoolbar';
+import ImageAlternateText from '../../src/imagealternatetext/imagealternatetext';
+import ImageAlternateTextEngine from '../../src/imagealternatetext/imagealternatetextengine';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'ImageAlternateText', () => {
 	let editor, plugin, command, balloonPanel, form;

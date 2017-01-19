@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewElement from 'ckeditor5-engine/src/view/element';
-import { widgetize, isWidget, WIDGET_CLASS_NAME } from 'ckeditor5-image/src/widget/utils';
+import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
+import { widgetize, isWidget, WIDGET_CLASS_NAME } from '../../src/widget/utils';
 
 describe( 'widget utils', () => {
 	let element;

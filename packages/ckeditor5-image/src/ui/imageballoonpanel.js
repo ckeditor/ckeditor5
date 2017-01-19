@@ -7,9 +7,9 @@
  * @module image/ui/imageballoonpanel
  */
 
-import throttle from 'ckeditor5-utils/src/lib/lodash/throttle';
-import global from 'ckeditor5-utils/src/dom/global';
-import BalloonPanelView from 'ckeditor5-ui/src/balloonpanel/balloonpanelview';
+import throttle from '@ckeditor/ckeditor5-utils/src/lib/lodash/throttle';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/balloonpanel/balloonpanelview';
 import { isImageWidget } from '../utils';
 
 const arrowVOffset = BalloonPanelView.arrowVerticalOffset;
