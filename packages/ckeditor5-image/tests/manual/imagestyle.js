@@ -5,16 +5,16 @@
 
 /* global document, console, window */
 
-import ClassicEditor from 'ckeditor5-editor-classic/src/classic';
-import EnterPlugin from 'ckeditor5-enter/src/enter';
-import TypingPlugin from 'ckeditor5-typing/src/typing';
-import ParagraphPlugin from 'ckeditor5-paragraph/src/paragraph';
-import HeadingPlugin from 'ckeditor5-heading/src/heading';
-import ImagePlugin from 'ckeditor5-image/src/image';
-import UndoPlugin from 'ckeditor5-undo/src/undo';
-import ClipboardPlugin from 'ckeditor5-clipboard/src/clipboard';
-import ImageStyle from 'ckeditor5-image/src/imagestyle/imagestyle';
-import ImageToolbar from 'ckeditor5-image/src/imagetoolbar';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import EnterPlugin from '@ckeditor/ckeditor5-enter/src/enter';
+import TypingPlugin from '@ckeditor/ckeditor5-typing/src/typing';
+import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
+import ImagePlugin from '../../src/image';
+import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
+import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ImageStyle from '../../src/imagestyle/imagestyle';
+import ImageToolbar from '../../src/imagetoolbar';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ ImageToolbar, EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin, ImageStyle ],

@@ -7,9 +7,9 @@
  * @module image/imagestyle/imagestyle
  */
 
-import Plugin from 'ckeditor5-core/src/plugin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageStyleEngine from './imagestyleengine';
-import ButtonView from 'ckeditor5-ui/src/button/buttonview';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 /**
  * The image style plugin.

@@ -7,13 +7,13 @@
  * @module image/imagetoolbar
  */
 
-import Plugin from 'ckeditor5-core/src/plugin';
-import ToolbarView from 'ckeditor5-ui/src/toolbar/toolbarview';
-import BalloonPanelView from 'ckeditor5-ui/src/balloonpanel/balloonpanelview';
-import Template from 'ckeditor5-ui/src/template';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/balloonpanel/balloonpanelview';
+import Template from '@ckeditor/ckeditor5-ui/src/template';
 import { isImageWidget } from './utils';
-import throttle from 'ckeditor5-utils/src/lib/lodash/throttle';
-import global from 'ckeditor5-utils/src/dom/global';
+import throttle from '@ckeditor/ckeditor5-utils/src/lib/lodash/throttle';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 const arrowVOffset = BalloonPanelView.arrowVerticalOffset;
 const positions = {

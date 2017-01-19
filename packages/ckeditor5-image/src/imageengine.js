@@ -7,8 +7,8 @@
  * @module image/imageengine
  */
 
-import Plugin from 'ckeditor5-core/src/plugin';
-import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import WidgetEngine from './widget/widgetengine';
 import { modelToViewImage, viewToModelImage, modelToViewSelection } from './converters';
 import { toImageWidget } from './utils';

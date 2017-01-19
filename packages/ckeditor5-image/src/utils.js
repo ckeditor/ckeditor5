@@ -8,7 +8,7 @@
  */
 
 import { widgetize, isWidget } from './widget/utils';
-import ModelElement from 'ckeditor5-engine/src/model/element';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 
 const imageSymbol = Symbol( 'isImage' );
 
