@@ -5,18 +5,18 @@
 
 /* global console */
 
-import ClassicEditor from 'ckeditor5-editor-classic/src/classic';
-import Plugin from 'ckeditor5-core/src/plugin';
-import Enter from 'ckeditor5-enter/src/enter';
-import Typing from 'ckeditor5-typing/src/typing';
-import Paragraph from 'ckeditor5-paragraph/src/paragraph';
-import Undo from 'ckeditor5-undo/src/undo';
-import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from 'ckeditor5-engine/src/conversion/buildviewconverter';
-import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import ViewEditableElement from 'ckeditor5-engine/src/view/editableelement';
-import { getData } from 'ckeditor5-engine/src/dev-utils/model';
-import global from 'ckeditor5-utils/src/dom/global';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import buildModelConverter from '../../src/conversion/buildmodelconverter';
+import buildViewConverter from '../../src/conversion/buildviewconverter';
+import ViewContainerElement from '../../src/view/containerelement';
+import ViewEditableElement from '../../src/view/editableelement';
+import { getData } from '../../src/dev-utils/model';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import './nestededitable.scss';
 
