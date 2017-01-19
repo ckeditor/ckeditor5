@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import StandardEditor from 'ckeditor5-core/src/editor/standardeditor';
-import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import StandardEditor from '../../src/editor/standardeditor';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ClassicTestEditorUI from './classictesteditorui';
-import BoxedEditorUIView from 'ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
+import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
 
 /**
  * A simplified classic editor. Useful for testing features.

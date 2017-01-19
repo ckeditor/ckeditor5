@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import Editor from 'ckeditor5-core/src/editor/editor';
-import Command from 'ckeditor5-core/src/command/command';
+import Editor from '../../src/editor/editor';
+import Command from '../../src/command/command';
 
 describe( 'Command', () => {
 	let editor, command;

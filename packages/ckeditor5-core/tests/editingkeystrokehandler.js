@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
-import EditingKeystrokeHandler from 'ckeditor5-core/src/editingkeystrokehandler';
-import { keyCodes } from 'ckeditor5-utils/src/keyboard';
+import VirtualTestEditor from '../tests/_utils/virtualtesteditor';
+import EditingKeystrokeHandler from '../src/editingkeystrokehandler';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'EditingKeystrokeHandler', () => {
 	let editor, keystrokes;

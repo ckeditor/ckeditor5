@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import ComponentFactory from 'ckeditor5-ui/src/componentfactory';
-import FocusTracker from 'ckeditor5-utils/src/focustracker';
-import ClassicTestEditorUI from 'ckeditor5-core/tests/_utils/classictesteditorui';
-import View from 'ckeditor5-ui/src/view';
+import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import ClassicTestEditorUI from '../../tests/_utils/classictesteditorui';
+import View from '@ckeditor/ckeditor5-ui/src/view';
 
 describe( 'ClassicTestEditorUI', () => {
 	let editor, view, ui;

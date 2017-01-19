@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import testUtils from '../../tests/_utils/utils';
 
 const obj = {
 	method() {}
