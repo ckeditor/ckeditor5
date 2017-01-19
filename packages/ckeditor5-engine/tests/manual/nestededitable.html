@@ -1,12 +1,17 @@
 <style>
 	figure {
-		background-color: lightgray;
+		background-color: #f3f3f3;
 		padding: 10px;
 	}
 
 	figcaption {
-		background-color: white;
-		border: 1px solid black;
+		background: white;
+		outline: none;
+	}
+
+	figcaption.focused {
+		outline: 1px solid #6ab5f7;
+		box-shadow: 2px 2px 3px #e6e6e6 inset;
 	}
 </style>
 <div id="editor"><p>paragraph</p><figure>Caption:<figcaption>foo bar baz</figcaption></figure></div>

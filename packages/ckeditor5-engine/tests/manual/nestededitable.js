@@ -23,6 +23,7 @@ class NestedEditable extends Plugin {
 		const editor = this.editor;
 		const document = editor.document;
 		const editing = editor.editing;
+		const viewDocument = editing.view;
 		const data = editor.data;
 		const schema = document.schema;
 
@@ -47,7 +48,15 @@ class NestedEditable extends Plugin {
 			.fromElement( 'figcaption' )
 			.toElement( () => {
 				const element = new ViewEditableElement( 'figcaption', { contenteditable: 'true' } );
-				element.document = document;
+				element.document = viewDocument;
+
+				element.on( 'change:isFocused', ( evt, property, is ) => {
+					if ( is ) {
+						element.addClass( 'focused' );
+					} else {
+						element.removeClass( 'focused' );
+					}
+				} );
 
 				return element;
 			} );
