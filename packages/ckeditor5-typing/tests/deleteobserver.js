@@ -5,10 +5,10 @@
 
 /* globals document */
 
-import DeleteObserver from 'ckeditor5-typing/src/deleteobserver';
-import ViewDocument from 'ckeditor5-engine/src/view/document';
-import DomEventData from 'ckeditor5-engine/src/view/observer/domeventdata';
-import { getCode } from 'ckeditor5-utils/src/keyboard';
+import DeleteObserver from '../src/deleteobserver';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'DeleteObserver', () => {
 	let viewDocument, observer;

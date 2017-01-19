@@ -3,24 +3,24 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
-import Input from 'ckeditor5-typing/src/input';
-import Paragraph from 'ckeditor5-paragraph/src/paragraph';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import Input from '../src/input';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import Batch from 'ckeditor5-engine/src/model/batch';
-import ModelRange from 'ckeditor5-engine/src/model/range';
-import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from 'ckeditor5-engine/src/conversion/buildviewconverter';
+import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
+import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 
-import ViewText from 'ckeditor5-engine/src/view/text';
-import ViewElement from 'ckeditor5-engine/src/view/element';
-import ViewSelection from 'ckeditor5-engine/src/view/selection';
+import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
+import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
+import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection';
 
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
-import { getCode } from 'ckeditor5-utils/src/keyboard';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
-import { getData as getModelData } from 'ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from 'ckeditor5-engine/src/dev-utils/view';
+import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'Input feature', () => {
 	let editor, model, modelRoot, view, viewRoot, listenter;
