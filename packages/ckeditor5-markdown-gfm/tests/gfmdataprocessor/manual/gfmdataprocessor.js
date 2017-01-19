@@ -5,8 +5,8 @@
 
 /* globals document */
 
-import MarkdownDataProcessor from 'ckeditor5-markdown-gfm/src/gfmdataprocessor';
-import { stringify, parse } from 'ckeditor5-engine/src/dev-utils/view';
+import MarkdownDataProcessor from '../../../src/gfmdataprocessor';
+import { stringify, parse } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 const markdownTextArea = document.getElementById( 'markdown' );
 const viewTextArea = document.getElementById( 'view' );

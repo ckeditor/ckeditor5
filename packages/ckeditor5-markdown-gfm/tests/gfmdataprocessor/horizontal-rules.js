@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { testDataProcessor as test } from 'ckeditor5-markdown-gfm/tests/_utils/utils';
+import { testDataProcessor as test } from '../../tests/_utils/utils';
 
 describe( 'GFMDataProcessor', () => {
 	// Horizontal rules are are always rendered by GitHub as <hr> and normalized when converting

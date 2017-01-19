@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { testDataProcessor as test } from 'ckeditor5-markdown-gfm/tests/_utils/utils';
+import { testDataProcessor as test } from '../../tests/_utils/utils';
 
 describe( 'GFMDataProcessor', () => {
 	describe( 'strong and emphasis', () => {
