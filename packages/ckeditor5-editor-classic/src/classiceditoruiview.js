@@ -7,9 +7,9 @@
  * @module editor-classic/classiceditoruiview
  */
 
-import BoxedEditorUIView from 'ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
-import InlineEditableUIView from 'ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import StickyToolbarView from 'ckeditor5-ui/src/toolbar/sticky/stickytoolbarview';
+import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
+import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
+import StickyToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/sticky/stickytoolbarview';
 
 /**
  * Classic editor UI view. Uses inline editable and sticky toolbar, all
