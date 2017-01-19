@@ -5,15 +5,15 @@
 
 /* globals document, Event */
 
-import ComponentFactory from 'ckeditor5-ui/src/componentfactory';
-import FocusTracker from 'ckeditor5-utils/src/focustracker';
-import ClassicEditorUI from 'ckeditor5-editor-classic/src/classiceditorui';
-import ClassicEditorUIView from 'ckeditor5-editor-classic/src/classiceditoruiview';
-import ClassicTestEditor from 'ckeditor5-core/tests/_utils/classictesteditor';
-import View from 'ckeditor5-ui/src/view';
+import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import ClassicEditorUI from '../src/classiceditorui';
+import ClassicEditorUIView from '../src/classiceditoruiview';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import View from '@ckeditor/ckeditor5-ui/src/view';
 
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import utils from 'ckeditor5-utils/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 

@@ -5,18 +5,18 @@
 
 /* globals document */
 
-import ClassicEditorUI from 'ckeditor5-editor-classic/src/classiceditorui';
-import ClassicEditorUIView from 'ckeditor5-editor-classic/src/classiceditoruiview';
+import ClassicEditorUI from '../src/classiceditorui';
+import ClassicEditorUIView from '../src/classiceditoruiview';
 
-import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
-import ClassicEditor from 'ckeditor5-editor-classic/src/classic';
-import Plugin from 'ckeditor5-core/src/plugin';
-import Paragraph from 'ckeditor5-paragraph/src/paragraph';
-import Bold from 'ckeditor5-basic-styles/src/bold';
+import ClassicEditor from '../src/classic';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import count from 'ckeditor5-utils/src/count';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import count from '@ckeditor/ckeditor5-utils/src/count';
 
 testUtils.createSinonSandbox();
 

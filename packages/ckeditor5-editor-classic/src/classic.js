@@ -7,11 +7,11 @@
  * @module editor-classic/classic
  */
 
-import StandardEditor from 'ckeditor5-core/src/editor/standardeditor';
-import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
-import ElementReplacer from 'ckeditor5-utils/src/elementreplacer';
+import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 
 import '../theme/theme.scss';
 
