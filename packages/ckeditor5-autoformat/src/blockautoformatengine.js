@@ -7,8 +7,8 @@
  * @module autoformat/blockautoformatengine
  */
 
-import Range from 'ckeditor5-engine/src/model/range';
-import TextProxy from 'ckeditor5-engine/src/model/textproxy';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import TextProxy from '@ckeditor/ckeditor5-engine/src/model/textproxy';
 
 /**
  * The block autoformatting engine. Allows to format various block patterns. For example,

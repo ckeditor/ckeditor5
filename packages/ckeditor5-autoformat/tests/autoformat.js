@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import Autoformat from 'ckeditor5-autoformat/src/autoformat';
-import Paragraph from 'ckeditor5-paragraph/src/paragraph';
-import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
-import Enter from 'ckeditor5-enter/src/enter';
-import { setData, getData } from 'ckeditor5-engine/src/dev-utils/model';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import Autoformat from '../src/autoformat';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 

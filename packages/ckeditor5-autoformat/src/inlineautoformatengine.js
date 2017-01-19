@@ -7,8 +7,8 @@
  * @module autoformat/inlineautoformatengine
  */
 
-import LiveRange from 'ckeditor5-engine/src/model/liverange';
-import getSchemaValidRanges from 'ckeditor5-core/src/command/helpers/getschemavalidranges';
+import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
+import getSchemaValidRanges from '@ckeditor/ckeditor5-core/src/command/helpers/getschemavalidranges';
 
 /**
  * The inline autoformatting engine. Allows to format various inline patterns. For example,
