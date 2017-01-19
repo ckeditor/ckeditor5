@@ -97,7 +97,18 @@ export default class LinkFormView extends View {
 		 * @protected
 		 * @member {module:ui/focuscycler~FocusCycler}
 		 */
-		this._focusCycler = new FocusCycler( this._focusables, this.focusTracker );
+		this._focusCycler = new FocusCycler( {
+			focusables: this._focusables,
+			focusTracker: this.focusTracker,
+			keystrokeHandler: this.keystrokes,
+			actions: {
+				// Navigate form fields backwards using the shift + tab keystroke.
+				focusPrevious: 'shift + tab',
+
+				// Navigate form fields forwards using the tab key.
+				focusNext: 'tab'
+			}
+		} );
 
 		Template.extend( this.saveButtonView.template, {
 			attributes: {
@@ -141,7 +152,10 @@ export default class LinkFormView extends View {
 		} );
 
 		const childViews = [
-			this.urlInputView, this.saveButtonView, this.cancelButtonView, this.unlinkButtonView
+			this.urlInputView,
+			this.saveButtonView,
+			this.cancelButtonView,
+			this.unlinkButtonView
 		];
 
 		childViews.forEach( v => {
@@ -160,17 +174,8 @@ export default class LinkFormView extends View {
 	 * @inheritDoc
 	 */
 	init() {
+		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
-
-		this.keystrokes.set( 'tab', ( data, cancel ) => {
-			this._focusCycler.next.focus();
-			cancel();
-		} );
-
-		this.keystrokes.set( 'shift + tab', ( data, cancel ) => {
-			this._focusCycler.previous.focus();
-			cancel();
-		} );
 
 		return super.init();
 	}
@@ -179,7 +184,7 @@ export default class LinkFormView extends View {
 	 * Focuses the fist {@link #_focusables} in the form.
 	 */
 	focus() {
-		this._focusCycler.first.focus();
+		this._focusCycler.focusFirst();
 	}
 
 	/**
