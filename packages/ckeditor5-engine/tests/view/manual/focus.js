@@ -5,8 +5,8 @@
 
 /* globals document */
 
-import Document from 'ckeditor5-engine/src/view/document';
-import { parse } from 'ckeditor5-engine/src/dev-utils/view';
+import Document from '../../../src/view/document';
+import { parse } from '../../../src/dev-utils/view';
 
 const viewDocument = new Document();
 

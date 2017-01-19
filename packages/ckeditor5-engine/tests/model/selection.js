@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import Range from 'ckeditor5-engine/src/model/range';
-import Position from 'ckeditor5-engine/src/model/position';
-import LiveRange from 'ckeditor5-engine/src/model/liverange';
-import Selection from 'ckeditor5-engine/src/model/selection';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import count from 'ckeditor5-utils/src/count';
-import { parse } from 'ckeditor5-engine/src/dev-utils/model';
-import Schema from 'ckeditor5-engine/src/model/schema';
+import Document from '../../src/model/document';
+import Element from '../../src/model/element';
+import Text from '../../src/model/text';
+import Range from '../../src/model/range';
+import Position from '../../src/model/position';
+import LiveRange from '../../src/model/liverange';
+import Selection from '../../src/model/selection';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import count from '@ckeditor/ckeditor5-utils/src/count';
+import { parse } from '../../src/dev-utils/model';
+import Schema from '../../src/model/schema';
 
 testUtils.createSinonSandbox();
 

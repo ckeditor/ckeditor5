@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import DocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
-import Element from 'ckeditor5-engine/src/view/element';
-import Node from 'ckeditor5-engine/src/view/node';
+import DocumentFragment from '../../src/view/documentfragment';
+import Element from '../../src/view/element';
+import Node from '../../src/view/node';
 
 describe( 'DocumentFragment', () => {
 	describe( 'constructor()', () => {

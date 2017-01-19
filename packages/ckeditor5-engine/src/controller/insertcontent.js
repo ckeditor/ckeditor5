@@ -12,7 +12,7 @@ import LivePosition from '../model/liveposition';
 import Text from '../model/text';
 import Element from '../model/element';
 import Range from '../model/range';
-import log from 'ckeditor5-utils/src/log';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * Inserts content into the editor (specified selection) as one would expect the paste

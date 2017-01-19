@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import Position from 'ckeditor5-engine/src/model/position';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Document from '../../../src/model/document';
+import Element from '../../../src/model/element';
+import Text from '../../../src/model/text';
+import Position from '../../../src/model/position';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import UnwrapDelta from 'ckeditor5-engine/src/model/delta/unwrapdelta';
-import WrapDelta from 'ckeditor5-engine/src/model/delta/wrapdelta';
+import UnwrapDelta from '../../../src/model/delta/unwrapdelta';
+import WrapDelta from '../../../src/model/delta/wrapdelta';
 
-import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
-import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
-import ReinsertOperation from 'ckeditor5-engine/src/model/operation/reinsertoperation';
+import MoveOperation from '../../../src/model/operation/moveoperation';
+import RemoveOperation from '../../../src/model/operation/removeoperation';
+import ReinsertOperation from '../../../src/model/operation/reinsertoperation';
 
 describe( 'Batch', () => {
 	let doc, root, p;

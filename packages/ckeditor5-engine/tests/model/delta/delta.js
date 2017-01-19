@@ -3,21 +3,21 @@
  * For licensing, see LICENSE.md.
  */
 
-import count from 'ckeditor5-utils/src/count';
-import Delta from 'ckeditor5-engine/src/model/delta/delta';
-import Operation from 'ckeditor5-engine/src/model/operation/operation';
-import AttributeOperation from 'ckeditor5-engine/src/model/operation/attributeoperation';
-import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
-import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
-import NoOperation from 'ckeditor5-engine/src/model/operation/nooperation';
-import ReinsertOperation from 'ckeditor5-engine/src/model/operation/reinsertoperation';
-import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
-import RootAttributeOperation from 'ckeditor5-engine/src/model/operation/rootattributeoperation';
-import DeltaFactory from 'ckeditor5-engine/src/model/delta/deltafactory';
-import Document from 'ckeditor5-engine/src/model/document';
-import Position from 'ckeditor5-engine/src/model/position';
-import Range from 'ckeditor5-engine/src/model/range';
-import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
+import count from '@ckeditor/ckeditor5-utils/src/count';
+import Delta from '../../../src/model/delta/delta';
+import Operation from '../../../src/model/operation/operation';
+import AttributeOperation from '../../../src/model/operation/attributeoperation';
+import InsertOperation from '../../../src/model/operation/insertoperation';
+import MoveOperation from '../../../src/model/operation/moveoperation';
+import NoOperation from '../../../src/model/operation/nooperation';
+import ReinsertOperation from '../../../src/model/operation/reinsertoperation';
+import RemoveOperation from '../../../src/model/operation/removeoperation';
+import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation';
+import DeltaFactory from '../../../src/model/delta/deltafactory';
+import Document from '../../../src/model/document';
+import Position from '../../../src/model/position';
+import Range from '../../../src/model/range';
+import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 // Some test examples of operations.
 class FooOperation extends Operation {

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import createDocumentMock from 'ckeditor5-engine/tests/view/_utils/createdocumentmock';
+import createDocumentMock from '../../../tests/view/_utils/createdocumentmock';
 
 describe( 'createDocumentMock', () => {
 	it( 'should create document mock', ( done ) => {

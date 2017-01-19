@@ -7,7 +7,7 @@
  * @module engine/model/operation/operation
  */
 
-import clone from 'ckeditor5-utils/src/lib/lodash/clone';
+import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 
 /**
  * Abstract base operation class.

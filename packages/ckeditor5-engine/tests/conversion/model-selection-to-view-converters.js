@@ -3,34 +3,34 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelDocument from 'ckeditor5-engine/src/model/document';
-import ModelElement from 'ckeditor5-engine/src/model/element';
-import ModelRange from 'ckeditor5-engine/src/model/range';
-import ModelPosition from 'ckeditor5-engine/src/model/position';
+import ModelDocument from '../../src/model/document';
+import ModelElement from '../../src/model/element';
+import ModelRange from '../../src/model/range';
+import ModelPosition from '../../src/model/position';
 
-import ViewDocument from 'ckeditor5-engine/src/view/document';
-import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import ViewAttributeElement from 'ckeditor5-engine/src/view/attributeelement';
-import { mergeAttributes } from 'ckeditor5-engine/src/view/writer';
+import ViewDocument from '../../src/view/document';
+import ViewContainerElement from '../../src/view/containerelement';
+import ViewAttributeElement from '../../src/view/attributeelement';
+import { mergeAttributes } from '../../src/view/writer';
 
-import Mapper from 'ckeditor5-engine/src/conversion/mapper';
-import ModelConversionDispatcher from 'ckeditor5-engine/src/conversion/modelconversiondispatcher';
+import Mapper from '../../src/conversion/mapper';
+import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 	convertSelectionAttribute,
 	clearAttributes,
 	clearFakeSelection
-} from 'ckeditor5-engine/src/conversion/model-selection-to-view-converters';
+} from '../../src/conversion/model-selection-to-view-converters';
 
 import {
 	insertElement,
 	insertText,
 	wrapItem
-} from 'ckeditor5-engine/src/conversion/model-to-view-converters';
+} from '../../src/conversion/model-to-view-converters';
 
-import { stringify as stringifyView } from 'ckeditor5-engine/src/dev-utils/view';
-import { setData as setModelData } from 'ckeditor5-engine/src/dev-utils/model';
+import { stringify as stringifyView } from '../../src/dev-utils/view';
+import { setData as setModelData } from '../../src/dev-utils/model';
 
 describe( 'model-selection-to-view-converters', () => {
 	let dispatcher, mapper;

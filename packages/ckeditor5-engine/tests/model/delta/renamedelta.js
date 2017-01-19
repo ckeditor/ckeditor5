@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Document from '../../../src/model/document';
+import Element from '../../../src/model/element';
+import Text from '../../../src/model/text';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import RenameDelta from 'ckeditor5-engine/src/model/delta/renamedelta';
+import RenameDelta from '../../../src/model/delta/renamedelta';
 
 describe( 'Batch', () => {
 	let doc, root, batch, chain;

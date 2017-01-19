@@ -5,14 +5,14 @@
 
 /* globals document, Range */
 
-import ViewRange from 'ckeditor5-engine/src/view/range';
-import ViewDocument from 'ckeditor5-engine/src/view/document';
-import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from 'ckeditor5-engine/src/view/filler';
+import ViewRange from '../../../src/view/range';
+import ViewDocument from '../../../src/view/document';
+import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '../../../src/view/filler';
 
-import { keyCodes } from 'ckeditor5-utils/src/keyboard';
-import createElement from 'ckeditor5-utils/src/dom/createelement';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
-import { parse, setData } from 'ckeditor5-engine/src/dev-utils/view';
+import { parse, setData } from '../../../src/dev-utils/view';
 
 describe( 'Document', () => {
 	let viewDocument, domRoot;

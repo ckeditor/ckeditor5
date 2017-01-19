@@ -10,9 +10,9 @@
 import RootElement from './rootelement';
 import Position from './position';
 import Range from './range';
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
-import mix from 'ckeditor5-utils/src/mix';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * `LivePosition` is a type of {@link module:engine/model/position~Position Position}

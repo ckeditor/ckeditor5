@@ -5,18 +5,18 @@
 
 /* globals document */
 
-import { parse, stringify, getData, setData }from 'ckeditor5-engine/src/dev-utils/view';
-import DocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
-import Position from 'ckeditor5-engine/src/view/position';
-import Element from 'ckeditor5-engine/src/view/element';
-import AttributeElement from 'ckeditor5-engine/src/view/attributeelement';
-import ContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import EmptyElement from 'ckeditor5-engine/src/view/emptyelement';
-import Text from 'ckeditor5-engine/src/view/text';
-import Selection from 'ckeditor5-engine/src/view/selection';
-import Range from 'ckeditor5-engine/src/view/range';
-import Document from 'ckeditor5-engine/src/view/document';
-import XmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/xmldataprocessor';
+import { parse, stringify, getData, setData }from '../../src/dev-utils/view';
+import DocumentFragment from '../../src/view/documentfragment';
+import Position from '../../src/view/position';
+import Element from '../../src/view/element';
+import AttributeElement from '../../src/view/attributeelement';
+import ContainerElement from '../../src/view/containerelement';
+import EmptyElement from '../../src/view/emptyelement';
+import Text from '../../src/view/text';
+import Selection from '../../src/view/selection';
+import Range from '../../src/view/range';
+import Document from '../../src/view/document';
+import XmlDataProcessor from '../../src/dataprocessor/xmldataprocessor';
 
 describe( 'view test utils', () => {
 	describe( 'getData, setData', () => {

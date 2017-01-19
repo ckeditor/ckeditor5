@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-import count from 'ckeditor5-utils/src/count';
-import Document from 'ckeditor5-engine/src/model/document';
-import Text from 'ckeditor5-engine/src/model/text';
-import Range from 'ckeditor5-engine/src/model/range';
-import Position from 'ckeditor5-engine/src/model/position';
-import Element from 'ckeditor5-engine/src/model/element';
+import count from '@ckeditor/ckeditor5-utils/src/count';
+import Document from '../../../src/model/document';
+import Text from '../../../src/model/text';
+import Range from '../../../src/model/range';
+import Position from '../../../src/model/position';
+import Element from '../../../src/model/element';
 
-import AttributeDelta from 'ckeditor5-engine/src/model/delta/attributedelta';
-import { RootAttributeDelta } from 'ckeditor5-engine/src/model/delta/attributedelta';
-import AttributeOperation from 'ckeditor5-engine/src/model/operation/attributeoperation';
+import AttributeDelta from '../../../src/model/delta/attributedelta';
+import { RootAttributeDelta } from '../../../src/model/delta/attributedelta';
+import AttributeOperation from '../../../src/model/operation/attributeoperation';
 
 describe( 'Batch', () => {
 	let batch, doc, root;

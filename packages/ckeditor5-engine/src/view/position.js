@@ -10,8 +10,8 @@
 import Text from './text';
 import TextProxy from './textproxy';
 
-import compareArrays from 'ckeditor5-utils/src/comparearrays';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EditableElement from './editableelement';
 
 /**

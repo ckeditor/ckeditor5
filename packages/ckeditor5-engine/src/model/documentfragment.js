@@ -10,7 +10,7 @@
 import NodeList from './nodelist';
 import Element from './element';
 import Text from './text';
-import isIterable from 'ckeditor5-utils/src/isiterable';
+import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 /**
  * DocumentFragment represents a part of model which does not have a common root but it's top-level nodes

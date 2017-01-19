@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import Schema from 'ckeditor5-engine/src/model/schema';
-import { SchemaItem as SchemaItem } from 'ckeditor5-engine/src/model/schema';
+import Schema from '../../../src/model/schema';
+import { SchemaItem as SchemaItem } from '../../../src/model/schema';
 
 let schema, item;
 

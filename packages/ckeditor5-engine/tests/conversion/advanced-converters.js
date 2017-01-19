@@ -3,27 +3,27 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelDocument from 'ckeditor5-engine/src/model/document';
-import ModelDocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
-import ModelElement from 'ckeditor5-engine/src/model/element';
-import ModelText from 'ckeditor5-engine/src/model/text';
-import ModelTextProxy from 'ckeditor5-engine/src/model/textproxy';
-import ModelRange from 'ckeditor5-engine/src/model/range';
-import ModelPosition from 'ckeditor5-engine/src/model/position';
-import ModelWalker from 'ckeditor5-engine/src/model/treewalker';
-import modelWriter from 'ckeditor5-engine/src/model/writer';
+import ModelDocument from '../../src/model/document';
+import ModelDocumentFragment from '../../src/model/documentfragment';
+import ModelElement from '../../src/model/element';
+import ModelText from '../../src/model/text';
+import ModelTextProxy from '../../src/model/textproxy';
+import ModelRange from '../../src/model/range';
+import ModelPosition from '../../src/model/position';
+import ModelWalker from '../../src/model/treewalker';
+import modelWriter from '../../src/model/writer';
 
-import ViewElement from 'ckeditor5-engine/src/view/element';
-import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import ViewAttributeElement from 'ckeditor5-engine/src/view/attributeelement';
-import ViewText from 'ckeditor5-engine/src/view/text';
-import viewWriter from 'ckeditor5-engine/src/view/writer';
-import ViewPosition from 'ckeditor5-engine/src/view/position';
-import ViewRange from 'ckeditor5-engine/src/view/range';
+import ViewElement from '../../src/view/element';
+import ViewContainerElement from '../../src/view/containerelement';
+import ViewAttributeElement from '../../src/view/attributeelement';
+import ViewText from '../../src/view/text';
+import viewWriter from '../../src/view/writer';
+import ViewPosition from '../../src/view/position';
+import ViewRange from '../../src/view/range';
 
-import Mapper from 'ckeditor5-engine/src/conversion/mapper';
-import ModelConversionDispatcher from 'ckeditor5-engine/src/conversion/modelconversiondispatcher';
-import ViewConversionDispatcher from 'ckeditor5-engine/src/conversion/viewconversiondispatcher';
+import Mapper from '../../src/conversion/mapper';
+import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
+import ViewConversionDispatcher from '../../src/conversion/viewconversiondispatcher';
 
 import {
 	insertElement,
@@ -35,10 +35,10 @@ import {
 	move,
 	remove,
 	eventNameToConsumableType
-} from 'ckeditor5-engine/src/conversion/model-to-view-converters';
-import { convertToModelFragment, convertText } from 'ckeditor5-engine/src/conversion/view-to-model-converters';
+} from '../../src/conversion/model-to-view-converters';
+import { convertToModelFragment, convertText } from '../../src/conversion/view-to-model-converters';
 
-import { createRangeOnElementOnly } from 'ckeditor5-engine/tests/model/_utils/utils';
+import { createRangeOnElementOnly } from '../../tests/model/_utils/utils';
 
 describe( 'advanced-converters', () => {
 	let modelDoc, modelRoot, viewRoot, mapper, modelDispatcher, viewDispatcher;

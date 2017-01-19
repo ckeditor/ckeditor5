@@ -5,8 +5,8 @@
 
 /* globals document */
 
-import DomEventData from 'ckeditor5-engine/src/view/observer/domeventdata';
-import ViewDocument from 'ckeditor5-engine/src/view/document';
+import DomEventData from '../../../src/view/observer/domeventdata';
+import ViewDocument from '../../../src/view/document';
 
 describe( 'DomEventData', () => {
 	let viewDocument, viewBody, domRoot;

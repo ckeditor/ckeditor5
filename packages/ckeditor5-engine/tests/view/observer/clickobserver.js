@@ -5,8 +5,8 @@
 
 /* globals document */
 
-import ClickObserver from 'ckeditor5-engine/src/view/observer/clickobserver';
-import ViewDocument from 'ckeditor5-engine/src/view/document';
+import ClickObserver from '../../../src/view/observer/clickobserver';
+import ViewDocument from '../../../src/view/document';
 
 describe( 'ClickObserver', () => {
 	let viewDocument, observer;

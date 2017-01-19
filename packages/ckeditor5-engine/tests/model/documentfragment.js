@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import DocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
-import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Element from '../../src/model/element';
+import Text from '../../src/model/text';
+import DocumentFragment from '../../src/model/documentfragment';
+import { jsonParseStringify } from '../../tests/model/_utils/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'DocumentFragment', () => {
 	describe( 'constructor()', () => {

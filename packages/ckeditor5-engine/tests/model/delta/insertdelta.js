@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import Element from 'ckeditor5-engine/src/model/element';
-import Position from 'ckeditor5-engine/src/model/position';
-import Text from 'ckeditor5-engine/src/model/text';
+import Document from '../../../src/model/document';
+import Element from '../../../src/model/element';
+import Position from '../../../src/model/position';
+import Text from '../../../src/model/text';
 
-import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
-import InsertDelta from 'ckeditor5-engine/src/model/delta/insertdelta';
+import InsertOperation from '../../../src/model/operation/insertoperation';
+import InsertDelta from '../../../src/model/delta/insertdelta';
 
-import RemoveDelta from 'ckeditor5-engine/src/model/delta/removedelta';
-import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
+import RemoveDelta from '../../../src/model/delta/removedelta';
+import RemoveOperation from '../../../src/model/operation/removeoperation';
 
 describe( 'Batch', () => {
 	let doc, root, batch, p, ul, chain;

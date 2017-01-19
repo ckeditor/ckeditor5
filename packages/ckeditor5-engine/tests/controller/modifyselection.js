@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import DataController from 'ckeditor5-engine/src/controller/datacontroller';
-import Selection from 'ckeditor5-engine/src/model/selection';
-import modifySelection from 'ckeditor5-engine/src/controller/modifyselection';
-import { setData, stringify } from 'ckeditor5-engine/src/dev-utils/model';
+import Document from '../../src/model/document';
+import DataController from '../../src/controller/datacontroller';
+import Selection from '../../src/model/selection';
+import modifySelection from '../../src/controller/modifyselection';
+import { setData, stringify } from '../../src/dev-utils/model';
 
 describe( 'DataController', () => {
 	let document, dataController;

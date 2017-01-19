@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import deleteContent from 'ckeditor5-engine/src/controller/deletecontent';
-import { setData, getData } from 'ckeditor5-engine/src/dev-utils/model';
+import Document from '../../src/model/document';
+import deleteContent from '../../src/controller/deletecontent';
+import { setData, getData } from '../../src/dev-utils/model';
 
 describe( 'DataController', () => {
 	let doc;

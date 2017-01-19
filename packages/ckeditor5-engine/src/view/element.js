@@ -9,9 +9,9 @@
 
 import Node from './node';
 import Text from './text';
-import objectToMap from 'ckeditor5-utils/src/objecttomap';
-import isIterable from 'ckeditor5-utils/src/isiterable';
-import isPlainObject from 'ckeditor5-utils/src/lib/lodash/isPlainObject';
+import objectToMap from '@ckeditor/ckeditor5-utils/src/objecttomap';
+import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObject';
 import Matcher from './matcher';
 
 /**

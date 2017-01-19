@@ -20,11 +20,11 @@ import LiveSelection from './liveselection';
 import Schema from './schema';
 import TreeWalker from './treewalker';
 import MarkersCollection from './markerscollection';
-import clone from 'ckeditor5-utils/src/lib/lodash/clone';
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import mix from 'ckeditor5-utils/src/mix';
-import { isInsideSurrogatePair, isInsideCombinedSymbol } from 'ckeditor5-utils/src/unicode';
+import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckeditor5-utils/src/unicode';
 
 const graveyardName = '$graveyard';
 

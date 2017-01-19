@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewElement from 'ckeditor5-engine/src/view/element';
-import ViewText from 'ckeditor5-engine/src/view/text';
-import ViewDocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
-import ViewConsumable from 'ckeditor5-engine/src/conversion/viewconsumable';
+import ViewElement from '../../src/view/element';
+import ViewText from '../../src/view/text';
+import ViewDocumentFragment from '../../src/view/documentfragment';
+import ViewConsumable from '../../src/conversion/viewconsumable';
 
 describe( 'ViewConsumable', () => {
 	let viewConsumable;

@@ -3,30 +3,30 @@
  * For licensing, see LICENSE.md.
  */
 
-import transformations from 'ckeditor5-engine/src/model/delta/basic-transformations';
+import transformations from '../../../../src/model/delta/basic-transformations';
 /*jshint unused: false*/
 
-import transform from 'ckeditor5-engine/src/model/delta/transform';
+import transform from '../../../../src/model/delta/transform';
 
-import Element from 'ckeditor5-engine/src/model/element';
-import Position from 'ckeditor5-engine/src/model/position';
-import Range from 'ckeditor5-engine/src/model/range';
+import Element from '../../../../src/model/element';
+import Position from '../../../../src/model/position';
+import Range from '../../../../src/model/range';
 
-import Delta from 'ckeditor5-engine/src/model/delta/delta';
-import SplitDelta from 'ckeditor5-engine/src/model/delta/splitdelta';
-import AttributeDelta from 'ckeditor5-engine/src/model/delta/attributedelta';
-import RenameDelta from 'ckeditor5-engine/src/model/delta/renamedelta';
-import RemoveDelta from 'ckeditor5-engine/src/model/delta/removedelta';
+import Delta from '../../../../src/model/delta/delta';
+import SplitDelta from '../../../../src/model/delta/splitdelta';
+import AttributeDelta from '../../../../src/model/delta/attributedelta';
+import RenameDelta from '../../../../src/model/delta/renamedelta';
+import RemoveDelta from '../../../../src/model/delta/removedelta';
 
-import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
-import AttributeOperation from 'ckeditor5-engine/src/model/operation/attributeoperation';
-import ReinsertOperation from 'ckeditor5-engine/src/model/operation/reinsertoperation';
-import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
-import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
-import NoOperation from 'ckeditor5-engine/src/model/operation/nooperation';
-import RenameOperation from 'ckeditor5-engine/src/model/operation/renameoperation';
+import InsertOperation from '../../../../src/model/operation/insertoperation';
+import AttributeOperation from '../../../../src/model/operation/attributeoperation';
+import ReinsertOperation from '../../../../src/model/operation/reinsertoperation';
+import MoveOperation from '../../../../src/model/operation/moveoperation';
+import RemoveOperation from '../../../../src/model/operation/removeoperation';
+import NoOperation from '../../../../src/model/operation/nooperation';
+import RenameOperation from '../../../../src/model/operation/renameoperation';
 
-import { getNodesAndText, jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
+import { getNodesAndText, jsonParseStringify } from '../../../../tests/model/_utils/utils';
 
 import {
 	applyDelta,
@@ -36,7 +36,7 @@ import {
 	getWrapDelta,
 	getUnwrapDelta,
 	getRemoveDelta
-} from 'ckeditor5-engine/tests/model/delta/transform/_utils/utils';
+} from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
 	let doc, root, gy, baseVersion;

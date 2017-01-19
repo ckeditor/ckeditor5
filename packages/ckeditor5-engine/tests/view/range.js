@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import Range from 'ckeditor5-engine/src/view/range';
-import Position from 'ckeditor5-engine/src/view/position';
-import Element from 'ckeditor5-engine/src/view/element';
-import DocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
-import Text from 'ckeditor5-engine/src/view/text';
-import TreeWalker from 'ckeditor5-engine/src/view/treewalker';
-import { parse } from 'ckeditor5-engine/src/dev-utils/view';
+import Range from '../../src/view/range';
+import Position from '../../src/view/position';
+import Element from '../../src/view/element';
+import DocumentFragment from '../../src/view/documentfragment';
+import Text from '../../src/view/text';
+import TreeWalker from '../../src/view/treewalker';
+import { parse } from '../../src/dev-utils/view';
 
 function getRange( view, options = {} ) {
 	const { selection } = parse( view, options );

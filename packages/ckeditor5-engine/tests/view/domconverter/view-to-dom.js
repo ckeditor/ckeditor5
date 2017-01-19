@@ -5,18 +5,18 @@
 
 /* globals Range, DocumentFragment, HTMLElement, document, Text */
 
-import ViewText from 'ckeditor5-engine/src/view/text';
-import ViewElement from 'ckeditor5-engine/src/view/element';
-import ViewPosition from 'ckeditor5-engine/src/view/position';
-import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import ViewAttributeElement from 'ckeditor5-engine/src/view/attributeelement';
-import DomConverter from 'ckeditor5-engine/src/view/domconverter';
-import ViewDocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
-import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller } from 'ckeditor5-engine/src/view/filler';
+import ViewText from '../../../src/view/text';
+import ViewElement from '../../../src/view/element';
+import ViewPosition from '../../../src/view/position';
+import ViewContainerElement from '../../../src/view/containerelement';
+import ViewAttributeElement from '../../../src/view/attributeelement';
+import DomConverter from '../../../src/view/domconverter';
+import ViewDocumentFragment from '../../../src/view/documentfragment';
+import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller } from '../../../src/view/filler';
 
-import { parse } from 'ckeditor5-engine/src/dev-utils/view';
+import { parse } from '../../../src/dev-utils/view';
 
-import createElement from 'ckeditor5-utils/src/dom/createelement';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 describe( 'DomConverter', () => {
 	let converter;

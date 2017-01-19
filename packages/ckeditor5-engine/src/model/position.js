@@ -9,9 +9,9 @@
 
 import DocumentFragment from './documentfragment';
 import Element from './element';
-import last from 'ckeditor5-utils/src/lib/lodash/last';
-import compareArrays from 'ckeditor5-utils/src/comparearrays';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import last from '@ckeditor/ckeditor5-utils/src/lib/lodash/last';
+import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Text from './text';
 
 /**

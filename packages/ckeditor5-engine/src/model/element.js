@@ -10,7 +10,7 @@
 import Node from './node';
 import NodeList from './nodelist';
 import Text from './text';
-import isIterable from 'ckeditor5-utils/src/isiterable';
+import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 /**
  * Model element. Type of {@link module:engine/model/node~Node node} that has a {@link module:engine/model/element~Element#name name} and

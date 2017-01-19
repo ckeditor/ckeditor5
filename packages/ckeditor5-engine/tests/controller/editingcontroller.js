@@ -5,27 +5,27 @@
 
 /* globals setTimeout, Range, document */
 
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
-import EditingController from 'ckeditor5-engine/src/controller/editingcontroller';
+import EditingController from '../../src/controller/editingcontroller';
 
-import ViewDocument from 'ckeditor5-engine/src/view/document';
+import ViewDocument from '../../src/view/document';
 
-import Mapper from 'ckeditor5-engine/src/conversion/mapper';
-import ModelConversionDispatcher from 'ckeditor5-engine/src/conversion/modelconversiondispatcher';
-import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
+import Mapper from '../../src/conversion/mapper';
+import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
+import buildModelConverter from '../../src/conversion/buildmodelconverter';
 
-import ModelDocument from 'ckeditor5-engine/src/model/document';
-import ModelPosition from 'ckeditor5-engine/src/model/position';
-import ModelElement from 'ckeditor5-engine/src/model/element';
-import ModelRange from 'ckeditor5-engine/src/model/range';
-import ModelLiveRange from 'ckeditor5-engine/src/model/liverange';
-import ModelDocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
+import ModelDocument from '../../src/model/document';
+import ModelPosition from '../../src/model/position';
+import ModelElement from '../../src/model/element';
+import ModelRange from '../../src/model/range';
+import ModelLiveRange from '../../src/model/liverange';
+import ModelDocumentFragment from '../../src/model/documentfragment';
 
-import createElement from 'ckeditor5-utils/src/dom/createelement';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
-import { parse, getData as getModelData } from 'ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from 'ckeditor5-engine/src/dev-utils/view';
+import { parse, getData as getModelData } from '../../src/dev-utils/model';
+import { getData as getViewData } from '../../src/dev-utils/view';
 
 describe( 'EditingController', () => {
 	describe( 'constructor()', () => {

@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import RootAttributeOperation from 'ckeditor5-engine/src/model/operation/rootattributeoperation';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import { jsonParseStringify, wrapInDelta } from 'ckeditor5-engine/tests/model/_utils/utils';
+import Document from '../../../src/model/document';
+import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'RootAttributeOperation', () => {
 	let doc, root;

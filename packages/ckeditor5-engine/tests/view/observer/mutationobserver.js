@@ -5,9 +5,9 @@
 
 /* globals document */
 
-import ViewDocument from 'ckeditor5-engine/src/view/document';
-import MutationObserver from 'ckeditor5-engine/src/view/observer/mutationobserver';
-import { parse } from 'ckeditor5-engine/src/dev-utils/view';
+import ViewDocument from '../../../src/view/document';
+import MutationObserver from '../../../src/view/observer/mutationobserver';
+import { parse } from '../../../src/dev-utils/view';
 
 describe( 'MutationObserver', () => {
 	let domEditor, viewDocument, viewRoot, mutationObserver, lastMutations, domRoot;

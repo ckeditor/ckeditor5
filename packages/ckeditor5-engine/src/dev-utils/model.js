@@ -30,14 +30,14 @@ import ViewElement from '../view/containerelement';
 import ViewAttributeElement from '../view/attributeelement';
 
 import Mapper from '../conversion/mapper';
-import { parse as viewParse, stringify as viewStringify } from 'ckeditor5-engine/src/dev-utils/view';
+import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view';
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 	convertSelectionAttribute
 } from '../conversion/model-selection-to-view-converters';
 import { insertText, insertElement, wrapItem } from '../conversion/model-to-view-converters';
-import isPlainObject from 'ckeditor5-utils/src/lib/lodash/isPlainObject';
+import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObject';
 
 /**
  * Writes the contents of the {@link module:engine/model/document~Document Document} to an HTML-like string.

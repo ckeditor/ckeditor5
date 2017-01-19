@@ -5,11 +5,11 @@
 
 /* globals document */
 
-import DomConverter from 'ckeditor5-engine/src/view/domconverter';
-import ViewEditable from 'ckeditor5-engine/src/view/editableelement';
-import ViewDocument from 'ckeditor5-engine/src/view/document';
-import { BR_FILLER, NBSP_FILLER } from 'ckeditor5-engine/src/view/filler';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import DomConverter from '../../../src/view/domconverter';
+import ViewEditable from '../../../src/view/editableelement';
+import ViewDocument from '../../../src/view/document';
+import { BR_FILLER, NBSP_FILLER } from '../../../src/view/filler';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 

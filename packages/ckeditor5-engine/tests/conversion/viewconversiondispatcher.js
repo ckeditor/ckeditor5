@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewConversionDispatcher from 'ckeditor5-engine/src/conversion/viewconversiondispatcher';
-import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import ViewAttributeElement from 'ckeditor5-engine/src/view/attributeelement';
-import ViewDocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
-import ViewText from 'ckeditor5-engine/src/view/text';
+import ViewConversionDispatcher from '../../src/conversion/viewconversiondispatcher';
+import ViewContainerElement from '../../src/view/containerelement';
+import ViewAttributeElement from '../../src/view/attributeelement';
+import ViewDocumentFragment from '../../src/view/documentfragment';
+import ViewText from '../../src/view/text';
 
 describe( 'ViewConversionDispatcher', () => {
 	describe( 'constructor()', () => {

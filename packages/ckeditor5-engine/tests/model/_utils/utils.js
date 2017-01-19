@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import Range from 'ckeditor5-engine/src/model/range';
-import TreeWalker from 'ckeditor5-engine/src/model/treewalker';
-import Text from 'ckeditor5-engine/src/model/text';
-import TextProxy from 'ckeditor5-engine/src/model/textproxy';
-import Delta from 'ckeditor5-engine/src/model/delta/delta';
+import Range from '../../../src/model/range';
+import TreeWalker from '../../../src/model/treewalker';
+import Text from '../../../src/model/text';
+import TextProxy from '../../../src/model/textproxy';
+import Delta from '../../../src/model/delta/delta';
 
 /**
  * Returns tree structure as a simplified string. Elements are uppercase and characters are lowercase.

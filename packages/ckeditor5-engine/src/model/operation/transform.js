@@ -15,7 +15,7 @@ import MoveOperation from './moveoperation';
 import RemoveOperation from './removeoperation';
 import NoOperation from './nooperation';
 import Range from '../range';
-import compareArrays from 'ckeditor5-utils/src/comparearrays';
+import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 
 /**
  * Transforms given {@link module:engine/model/operation/operation~Operation operation}

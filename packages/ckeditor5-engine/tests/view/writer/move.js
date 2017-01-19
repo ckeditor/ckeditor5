@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
-import { move } from 'ckeditor5-engine/src/view/writer';
-import ViewPosition from 'ckeditor5-engine/src/view/position';
-import { stringify, parse } from 'ckeditor5-engine/src/dev-utils/view';
-import ContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import AttributeElement from 'ckeditor5-engine/src/view/attributeelement';
-import EmptyElement from 'ckeditor5-engine/src/view/emptyelement';
-import Range from 'ckeditor5-engine/src/view/range';
-import Position from 'ckeditor5-engine/src/view/position';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import { move } from '../../../src/view/writer';
+import ViewPosition from '../../../src/view/position';
+import { stringify, parse } from '../../../src/dev-utils/view';
+import ContainerElement from '../../../src/view/containerelement';
+import AttributeElement from '../../../src/view/attributeelement';
+import EmptyElement from '../../../src/view/emptyelement';
+import Range from '../../../src/view/range';
+import Position from '../../../src/view/position';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'writer', () => {
 	/**

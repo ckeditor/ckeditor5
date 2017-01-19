@@ -11,7 +11,7 @@
 
 import Observer from './observer';
 import MutationObserver from './mutationobserver';
-import log from 'ckeditor5-utils/src/log';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * Selection observer class observes selection changes in the document. If selection changes on the document this

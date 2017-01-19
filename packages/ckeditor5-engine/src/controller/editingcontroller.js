@@ -26,7 +26,7 @@ import {
 	clearFakeSelection
 } from '../conversion/model-selection-to-view-converters';
 
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 /**
  * Controller for the editing pipeline. The editing pipeline controls {@link ~EditingController#model model} rendering,

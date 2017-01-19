@@ -9,7 +9,7 @@
 
 import Observer from './observer';
 import ViewSelection from '../selection';
-import { keyCodes } from 'ckeditor5-utils/src/keyboard';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * Fake selection observer class. If view selection is fake it is placed in dummy DOM container. This observer listens

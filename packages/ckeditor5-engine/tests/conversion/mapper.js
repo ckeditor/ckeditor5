@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
-import Mapper from 'ckeditor5-engine/src/conversion/mapper';
+import Mapper from '../../src/conversion/mapper';
 
-import ModelElement from 'ckeditor5-engine/src/model/element';
-import ModelRootElement from 'ckeditor5-engine/src/model/rootelement';
-import ModelText from 'ckeditor5-engine/src/model/text';
-import ModelPosition from 'ckeditor5-engine/src/model/position';
-import ModelRange from 'ckeditor5-engine/src/model/range';
+import ModelElement from '../../src/model/element';
+import ModelRootElement from '../../src/model/rootelement';
+import ModelText from '../../src/model/text';
+import ModelPosition from '../../src/model/position';
+import ModelRange from '../../src/model/range';
 
-import ViewElement from 'ckeditor5-engine/src/view/element';
-import ViewText from 'ckeditor5-engine/src/view/text';
-import ViewPosition from 'ckeditor5-engine/src/view/position';
-import ViewRange from 'ckeditor5-engine/src/view/range';
+import ViewElement from '../../src/view/element';
+import ViewText from '../../src/view/text';
+import ViewPosition from '../../src/view/position';
+import ViewRange from '../../src/view/range';
 
 describe( 'Mapper', () => {
 	describe( 'clearBindings', () => {

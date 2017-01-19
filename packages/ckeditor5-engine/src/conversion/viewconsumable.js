@@ -7,8 +7,8 @@
  * @module engine/conversion/viewconsumable
  */
 
-import isArray from 'ckeditor5-utils/src/lib/lodash/isArray';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import isArray from '@ckeditor/ckeditor5-utils/src/lib/lodash/isArray';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ViewElement from '../view/element';
 import ViewText from '../view/text';
 import ViewDocumentFragment from '../view/documentfragment';

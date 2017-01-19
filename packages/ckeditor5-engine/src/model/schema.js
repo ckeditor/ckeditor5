@@ -9,10 +9,10 @@
 
 import Position from './position';
 import Element from './element';
-import clone from 'ckeditor5-utils/src/lib/lodash/clone';
-import isArray from 'ckeditor5-utils/src/lib/lodash/isArray';
-import isString from 'ckeditor5-utils/src/lib/lodash/isString';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
+import isArray from '@ckeditor/ckeditor5-utils/src/lib/lodash/isArray';
+import isString from '@ckeditor/ckeditor5-utils/src/lib/lodash/isString';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Schema is a definition of the structure of the document. It allows to define which tree model items (element, text, etc.)

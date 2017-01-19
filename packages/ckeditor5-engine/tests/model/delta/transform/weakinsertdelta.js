@@ -3,27 +3,27 @@
  * For licensing, see LICENSE.md.
  */
 
-import transformations from 'ckeditor5-engine/src/model/delta/basic-transformations';
+import transformations from '../../../../src/model/delta/basic-transformations';
 /*jshint unused: false*/
 
-import transform from 'ckeditor5-engine/src/model/delta/transform';
+import transform from '../../../../src/model/delta/transform';
 
-import Text from 'ckeditor5-engine/src/model/text';
-import Position from 'ckeditor5-engine/src/model/position';
-import Range from 'ckeditor5-engine/src/model/range';
+import Text from '../../../../src/model/text';
+import Position from '../../../../src/model/position';
+import Range from '../../../../src/model/range';
 
-import WeakInsertDelta from 'ckeditor5-engine/src/model/delta/weakinsertdelta';
-import AttributeDelta from 'ckeditor5-engine/src/model/delta/attributedelta';
+import WeakInsertDelta from '../../../../src/model/delta/weakinsertdelta';
+import AttributeDelta from '../../../../src/model/delta/attributedelta';
 
-import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
-import AttributeOperation from 'ckeditor5-engine/src/model/operation/attributeoperation';
+import InsertOperation from '../../../../src/model/operation/insertoperation';
+import AttributeOperation from '../../../../src/model/operation/attributeoperation';
 
 import {
 	expectDelta,
 	getFilledDocument,
 	getAttributeDelta,
 	getWeakInsertDelta
-} from 'ckeditor5-engine/tests/model/delta/transform/_utils/utils';
+} from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
 	let doc, root, baseVersion;
