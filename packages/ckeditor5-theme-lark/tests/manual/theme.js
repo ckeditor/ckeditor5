@@ -5,20 +5,20 @@
 
 /* globals document */
 
-import testUtils from 'ckeditor5-ui/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-ui/tests/_utils/utils';
 
-import Collection from 'ckeditor5-utils/src/collection';
-import Model from 'ckeditor5-ui/src/model';
-import View from 'ckeditor5-ui/src/view';
-import Template from 'ckeditor5-ui/src/template';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import Model from '@ckeditor/ckeditor5-ui/src/model';
+import View from '@ckeditor/ckeditor5-ui/src/view';
+import Template from '@ckeditor/ckeditor5-ui/src/template';
 
-import IconView from 'ckeditor5-ui/src/icon/iconview';
-import ButtonView from 'ckeditor5-ui/src/button/buttonview';
-import createListDropdown from 'ckeditor5-ui/src/dropdown/list/createlistdropdown';
-import ToolbarView from 'ckeditor5-ui/src/toolbar/toolbarview';
+import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
+import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 
-import boldIcon from 'ckeditor5-basic-styles/theme/icons/bold.svg';
-import italicIcon from 'ckeditor5-basic-styles/theme/icons/italic.svg';
+import boldIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
+import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
 
 import '../../theme/theme.scss';
 
