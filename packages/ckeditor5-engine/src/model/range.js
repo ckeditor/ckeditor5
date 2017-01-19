@@ -9,7 +9,7 @@
 
 import Position from './position';
 import TreeWalker from './treewalker';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Range class. Range is iterable.

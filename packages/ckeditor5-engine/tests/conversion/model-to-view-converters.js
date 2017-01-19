@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelDocument from 'ckeditor5-engine/src/model/document';
-import ModelElement from 'ckeditor5-engine/src/model/element';
-import ModelText from 'ckeditor5-engine/src/model/text';
-import ModelRange from 'ckeditor5-engine/src/model/range';
-import ModelPosition from 'ckeditor5-engine/src/model/position';
-import modelWriter from 'ckeditor5-engine/src/model/writer';
+import ModelDocument from '../../src/model/document';
+import ModelElement from '../../src/model/element';
+import ModelText from '../../src/model/text';
+import ModelRange from '../../src/model/range';
+import ModelPosition from '../../src/model/position';
+import modelWriter from '../../src/model/writer';
 
-import ViewElement from 'ckeditor5-engine/src/view/element';
-import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import ViewAttributeElement from 'ckeditor5-engine/src/view/attributeelement';
-import ViewText from 'ckeditor5-engine/src/view/text';
+import ViewElement from '../../src/view/element';
+import ViewContainerElement from '../../src/view/containerelement';
+import ViewAttributeElement from '../../src/view/attributeelement';
+import ViewText from '../../src/view/text';
 
-import Mapper from 'ckeditor5-engine/src/conversion/mapper';
-import ModelConversionDispatcher from 'ckeditor5-engine/src/conversion/modelconversiondispatcher';
+import Mapper from '../../src/conversion/mapper';
+import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
 import {
 	insertElement,
 	insertText,
@@ -29,9 +29,9 @@ import {
 	move,
 	remove,
 	rename
-} from 'ckeditor5-engine/src/conversion/model-to-view-converters';
+} from '../../src/conversion/model-to-view-converters';
 
-import { createRangeOnElementOnly } from 'ckeditor5-engine/tests/model/_utils/utils';
+import { createRangeOnElementOnly } from '../../tests/model/_utils/utils';
 
 describe( 'model-to-view-converters', () => {
 	let dispatcher, modelDoc, modelRoot, mapper, viewRoot;

@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import { breakContainer } from 'ckeditor5-engine/src/view/writer';
-import { stringify, parse } from 'ckeditor5-engine/src/dev-utils/view';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import ContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import Position from 'ckeditor5-engine/src/view/position';
+import { breakContainer } from '../../../src/view/writer';
+import { stringify, parse } from '../../../src/dev-utils/view';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import ContainerElement from '../../../src/view/containerelement';
+import Position from '../../../src/view/position';
 
 describe( 'writer', () => {
 	/**

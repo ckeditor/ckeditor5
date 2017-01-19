@@ -3,21 +3,21 @@
  * For licensing, see LICENSE.md.
  */
 
-import transform from 'ckeditor5-engine/src/model/operation/transform';
+import transform from '../../../src/model/operation/transform';
 
-import Document from 'ckeditor5-engine/src/model/document';
-import RootElement from 'ckeditor5-engine/src/model/rootelement';
-import Node from 'ckeditor5-engine/src/model/node';
-import Position from 'ckeditor5-engine/src/model/position';
-import Range from 'ckeditor5-engine/src/model/range';
+import Document from '../../../src/model/document';
+import RootElement from '../../../src/model/rootelement';
+import Node from '../../../src/model/node';
+import Position from '../../../src/model/position';
+import Range from '../../../src/model/range';
 
-import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
-import AttributeOperation from 'ckeditor5-engine/src/model/operation/attributeoperation';
-import RootAttributeOperation from 'ckeditor5-engine/src/model/operation/rootattributeoperation';
-import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
-import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
-import RenameOperation from 'ckeditor5-engine/src/model/operation/renameoperation';
-import NoOperation from 'ckeditor5-engine/src/model/operation/nooperation';
+import InsertOperation from '../../../src/model/operation/insertoperation';
+import AttributeOperation from '../../../src/model/operation/attributeoperation';
+import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation';
+import MoveOperation from '../../../src/model/operation/moveoperation';
+import RemoveOperation from '../../../src/model/operation/removeoperation';
+import RenameOperation from '../../../src/model/operation/renameoperation';
+import NoOperation from '../../../src/model/operation/nooperation';
 
 describe( 'transform', () => {
 	let doc, root, op, nodeA, nodeB, expected, baseVersion;

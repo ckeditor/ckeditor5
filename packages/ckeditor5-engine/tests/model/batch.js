@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-import deltas from 'ckeditor5-engine/src/model/delta/basic-deltas'; // jshint ignore:line
+import deltas from '../../src/model/delta/basic-deltas'; // jshint ignore:line
 
-import Document from 'ckeditor5-engine/src/model/document';
-import Batch from 'ckeditor5-engine/src/model/batch';
-import { register } from 'ckeditor5-engine/src/model/batch';
-import Delta from 'ckeditor5-engine/src/model/delta/delta';
-import Operation from 'ckeditor5-engine/src/model/operation/operation';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Document from '../../src/model/document';
+import Batch from '../../src/model/batch';
+import { register } from '../../src/model/batch';
+import Delta from '../../src/model/delta/delta';
+import Operation from '../../src/model/operation/operation';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'Batch', () => {
 	it( 'should have registered basic methods', () => {

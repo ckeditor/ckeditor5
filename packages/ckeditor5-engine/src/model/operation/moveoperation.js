@@ -10,8 +10,8 @@
 import Operation from './operation';
 import Position from '../position';
 import Range from '../range';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import compareArrays from 'ckeditor5-utils/src/comparearrays';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import writer from './../writer';
 
 /**

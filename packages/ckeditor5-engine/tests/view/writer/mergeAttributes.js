@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import { mergeAttributes } from 'ckeditor5-engine/src/view/writer';
-import ContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import Text from 'ckeditor5-engine/src/view/text';
-import Position from 'ckeditor5-engine/src/view/position';
-import { stringify, parse } from 'ckeditor5-engine/src/dev-utils/view';
+import { mergeAttributes } from '../../../src/view/writer';
+import ContainerElement from '../../../src/view/containerelement';
+import Text from '../../../src/view/text';
+import Position from '../../../src/view/position';
+import { stringify, parse } from '../../../src/dev-utils/view';
 
 describe( 'writer', () => {
 	/**

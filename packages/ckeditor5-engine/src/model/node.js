@@ -7,8 +7,8 @@
  * @module engine/model/node
  */
 
-import toMap from 'ckeditor5-utils/src/tomap';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Model node. Most basic structure of model tree.

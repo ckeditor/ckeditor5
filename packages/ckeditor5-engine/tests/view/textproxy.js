@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-import TextProxy from 'ckeditor5-engine/src/view/textproxy';
-import Text from 'ckeditor5-engine/src/view/text';
-import ContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import DocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
-import RootEditableElement from 'ckeditor5-engine/src/view/rooteditableelement';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import TextProxy from '../../src/view/textproxy';
+import Text from '../../src/view/text';
+import ContainerElement from '../../src/view/containerelement';
+import DocumentFragment from '../../src/view/documentfragment';
+import RootEditableElement from '../../src/view/rooteditableelement';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import createDocumentMock from 'ckeditor5-engine/tests/view/_utils/createdocumentmock';
+import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
 
 describe( 'TextProxy', () => {
 	let text, parent, wrapper, textProxy;

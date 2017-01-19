@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-import { stringify, parse, getData, setData } from 'ckeditor5-engine/src/dev-utils/model';
-import Document from 'ckeditor5-engine/src/model/document';
-import DocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import Range from 'ckeditor5-engine/src/model/range';
-import Position from 'ckeditor5-engine/src/model/position';
-import count from 'ckeditor5-utils/src/count';
+import { stringify, parse, getData, setData } from '../../src/dev-utils/model';
+import Document from '../../src/model/document';
+import DocumentFragment from '../../src/model/documentfragment';
+import Element from '../../src/model/element';
+import Text from '../../src/model/text';
+import Range from '../../src/model/range';
+import Position from '../../src/model/position';
+import count from '@ckeditor/ckeditor5-utils/src/count';
 
 describe( 'model test utils', () => {
 	let document, root, selection, sandbox;

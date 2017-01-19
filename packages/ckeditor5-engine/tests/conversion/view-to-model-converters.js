@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewConversionDispatcher from 'ckeditor5-engine/src/conversion/viewconversiondispatcher';
-import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import ViewDocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
-import ViewText from 'ckeditor5-engine/src/view/text';
+import ViewConversionDispatcher from '../../src/conversion/viewconversiondispatcher';
+import ViewContainerElement from '../../src/view/containerelement';
+import ViewDocumentFragment from '../../src/view/documentfragment';
+import ViewText from '../../src/view/text';
 
-import ModelSchema from 'ckeditor5-engine/src/model/schema';
-import ModelDocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
-import ModelElement from 'ckeditor5-engine/src/model/element';
-import ModelText from 'ckeditor5-engine/src/model/text';
+import ModelSchema from '../../src/model/schema';
+import ModelDocumentFragment from '../../src/model/documentfragment';
+import ModelElement from '../../src/model/element';
+import ModelText from '../../src/model/text';
 
-import { convertToModelFragment, convertText } from 'ckeditor5-engine/src/conversion/view-to-model-converters';
+import { convertToModelFragment, convertText } from '../../src/conversion/view-to-model-converters';
 
 describe( 'view-to-model-converters', () => {
 	let dispatcher, schema, objWithContext;

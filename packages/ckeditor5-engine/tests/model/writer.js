@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import DocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import TextProxy from 'ckeditor5-engine/src/model/textproxy';
-import Position from 'ckeditor5-engine/src/model/position';
-import Range from 'ckeditor5-engine/src/model/range';
-import writer from 'ckeditor5-engine/src/model/writer';
-import { getData } from 'ckeditor5-engine/src/dev-utils/model';
+import Document from '../../src/model/document';
+import DocumentFragment from '../../src/model/documentfragment';
+import Element from '../../src/model/element';
+import Text from '../../src/model/text';
+import TextProxy from '../../src/model/textproxy';
+import Position from '../../src/model/position';
+import Range from '../../src/model/range';
+import writer from '../../src/model/writer';
+import { getData } from '../../src/dev-utils/model';
 
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 let doc, root;
 

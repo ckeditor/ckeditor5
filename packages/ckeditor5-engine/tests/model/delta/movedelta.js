@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-import { getNodesAndText } from 'ckeditor5-engine/tests/model/_utils/utils';
-import Document from 'ckeditor5-engine/src/model/document';
-import Position from 'ckeditor5-engine/src/model/position';
-import Range from 'ckeditor5-engine/src/model/range';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import { getNodesAndText } from '../../../tests/model/_utils/utils';
+import Document from '../../../src/model/document';
+import Position from '../../../src/model/position';
+import Range from '../../../src/model/range';
+import Element from '../../../src/model/element';
+import Text from '../../../src/model/text';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import MoveDelta from 'ckeditor5-engine/src/model/delta/movedelta';
-import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
+import MoveDelta from '../../../src/model/delta/movedelta';
+import MoveOperation from '../../../src/model/operation/moveoperation';
 
 describe( 'Batch', () => {
 	let doc, root, div, p, batch, chain;

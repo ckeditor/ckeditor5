@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import TreeWalker from 'ckeditor5-engine/src/model/treewalker';
-import Position from 'ckeditor5-engine/src/model/position';
-import Range from 'ckeditor5-engine/src/model/range';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Document from '../../src/model/document';
+import Element from '../../src/model/element';
+import Text from '../../src/model/text';
+import TreeWalker from '../../src/model/treewalker';
+import Position from '../../src/model/position';
+import Range from '../../src/model/range';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'TreeWalker', () => {
 	let doc, root, img1, paragraph, ba, r, img2, x;

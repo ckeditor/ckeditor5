@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import Element from 'ckeditor5-engine/src/model/element';
-import RenameOperation from 'ckeditor5-engine/src/model/operation/renameoperation';
-import Position from 'ckeditor5-engine/src/model/position';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import { jsonParseStringify, wrapInDelta } from 'ckeditor5-engine/tests/model/_utils/utils';
+import Document from '../../../src/model/document';
+import Element from '../../../src/model/element';
+import RenameOperation from '../../../src/model/operation/renameoperation';
+import Position from '../../../src/model/position';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'RenameOperation', () => {
 	const oldName = 'oldName';

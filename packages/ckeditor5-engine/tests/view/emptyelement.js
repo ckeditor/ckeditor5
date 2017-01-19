@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import EmptyElement from 'ckeditor5-engine/src/view/emptyelement';
-import Element from 'ckeditor5-engine/src/view/element';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import EmptyElement from '../../src/view/emptyelement';
+import Element from '../../src/view/element';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'EmptyElement', () => {
 	let element, emptyElement;

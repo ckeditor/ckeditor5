@@ -8,9 +8,9 @@
  */
 
 import Text from './text';
-import mix from 'ckeditor5-utils/src/mix';
-import isIterable from 'ckeditor5-utils/src/isiterable';
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 /**
  * DocumentFragment class.

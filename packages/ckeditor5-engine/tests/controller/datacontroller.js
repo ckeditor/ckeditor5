@@ -3,24 +3,24 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelDocument from 'ckeditor5-engine/src/model/document';
-import DataController from 'ckeditor5-engine/src/controller/datacontroller';
-import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import ModelDocument from '../../src/model/document';
+import DataController from '../../src/controller/datacontroller';
+import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 
-import buildViewConverter  from 'ckeditor5-engine/src/conversion/buildviewconverter';
-import buildModelConverter  from 'ckeditor5-engine/src/conversion/buildmodelconverter';
+import buildViewConverter  from '../../src/conversion/buildviewconverter';
+import buildModelConverter  from '../../src/conversion/buildmodelconverter';
 
-import ModelDocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
-import ModelElement from 'ckeditor5-engine/src/model/element';
-import ModelText from 'ckeditor5-engine/src/model/text';
-import ModelSelection from 'ckeditor5-engine/src/model/selection';
+import ModelDocumentFragment from '../../src/model/documentfragment';
+import ModelElement from '../../src/model/element';
+import ModelText from '../../src/model/text';
+import ModelSelection from '../../src/model/selection';
 
-import ViewDocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
+import ViewDocumentFragment from '../../src/view/documentfragment';
 
-import { getData, setData, stringify, parse as parseModel } from 'ckeditor5-engine/src/dev-utils/model';
-import { parse as parseView } from 'ckeditor5-engine/src/dev-utils/view';
+import { getData, setData, stringify, parse as parseModel } from '../../src/dev-utils/model';
+import { parse as parseView } from '../../src/dev-utils/view';
 
-import count from 'ckeditor5-utils/src/count';
+import count from '@ckeditor/ckeditor5-utils/src/count';
 
 describe( 'DataController', () => {
 	let modelDocument, htmlDataProcessor, data, schema;

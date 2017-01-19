@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import count from 'ckeditor5-utils/src/count';
-import Node from 'ckeditor5-engine/src/view/node';
-import Element from 'ckeditor5-engine/src/view/element';
+import count from '@ckeditor/ckeditor5-utils/src/count';
+import Node from '../../src/view/node';
+import Element from '../../src/view/element';
 
 describe( 'Element', () => {
 	describe( 'constructor()', () => {

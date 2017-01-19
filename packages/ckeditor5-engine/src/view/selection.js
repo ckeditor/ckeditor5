@@ -7,11 +7,11 @@
  * @module engine/view/selection
  */
 
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Range from './range';
 import Position from './position';
-import mix from 'ckeditor5-utils/src/mix';
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import Element from './element';
 
 /**

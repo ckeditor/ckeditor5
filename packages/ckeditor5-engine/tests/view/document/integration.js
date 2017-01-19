@@ -5,11 +5,11 @@
 
 /* globals document */
 
-import Document from 'ckeditor5-engine/src/view/document';
-import ViewElement from 'ckeditor5-engine/src/view/element';
-import { isBlockFiller, BR_FILLER } from 'ckeditor5-engine/src/view/filler';
+import Document from '../../../src/view/document';
+import ViewElement from '../../../src/view/element';
+import { isBlockFiller, BR_FILLER } from '../../../src/view/filler';
 
-import createElement from 'ckeditor5-utils/src/dom/createelement';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 describe( 'Document integration', () => {
 	it( 'should remove content of the DOM', () => {

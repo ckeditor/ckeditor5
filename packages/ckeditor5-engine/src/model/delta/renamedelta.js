@@ -13,7 +13,7 @@ import { register } from '../batch';
 import RenameOperation from '../operation/renameoperation';
 import Element from '../element';
 import Position from '../position';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * To provide specific OT behavior and better collisions solving, the {@link module:engine/model/batch~Batch#rename Batch#rename} method

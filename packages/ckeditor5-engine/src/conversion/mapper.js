@@ -14,8 +14,8 @@ import ViewPosition from '../view/position';
 import ViewRange from '../view/range';
 import ViewText from '../view/text';
 
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
-import mix from 'ckeditor5-utils/src/mix';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Maps elements and positions between {@link module:engine/view/document~Document view} and {@link module:engine/model/model model}.

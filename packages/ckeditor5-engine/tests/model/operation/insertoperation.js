@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import NodeList from 'ckeditor5-engine/src/model/nodelist';
-import Element from 'ckeditor5-engine/src/model/element';
-import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
-import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
-import Position from 'ckeditor5-engine/src/model/position';
-import Text from 'ckeditor5-engine/src/model/text';
-import { jsonParseStringify, wrapInDelta } from 'ckeditor5-engine/tests/model/_utils/utils';
+import Document from '../../../src/model/document';
+import NodeList from '../../../src/model/nodelist';
+import Element from '../../../src/model/element';
+import InsertOperation from '../../../src/model/operation/insertoperation';
+import RemoveOperation from '../../../src/model/operation/removeoperation';
+import Position from '../../../src/model/position';
+import Text from '../../../src/model/text';
+import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'InsertOperation', () => {
 	let doc, root;

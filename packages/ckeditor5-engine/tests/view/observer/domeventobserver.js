@@ -5,9 +5,9 @@
 
 /* globals MouseEvent, document */
 
-import DomEventObserver from 'ckeditor5-engine/src/view/observer/domeventobserver';
-import Observer from 'ckeditor5-engine/src/view/observer/observer';
-import ViewDocument from 'ckeditor5-engine/src/view/document';
+import DomEventObserver from '../../../src/view/observer/domeventobserver';
+import Observer from '../../../src/view/observer/observer';
+import ViewDocument from '../../../src/view/document';
 
 class ClickObserver extends DomEventObserver {
 	constructor( document ) {

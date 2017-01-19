@@ -5,20 +5,20 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from 'ckeditor5-editor-classic/src/classic';
-import Enter from 'ckeditor5-enter/src/enter';
-import Typing from 'ckeditor5-typing/src/typing';
-import Paragraph from 'ckeditor5-paragraph/src/paragraph';
-import Bold from 'ckeditor5-basic-styles/src/bold';
-import Italic from 'ckeditor5-basic-styles/src/italic';
-import List from 'ckeditor5-list/src/list';
-import Heading from 'ckeditor5-heading/src/heading';
-import Undo from 'ckeditor5-undo/src/undo';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import List from '@ckeditor/ckeditor5-list/src/list';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
-import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
-import Position from 'ckeditor5-engine/src/model/position';
-import LiveRange from 'ckeditor5-engine/src/model/liverange';
-import ViewAttributeElement from 'ckeditor5-engine/src/view/attributeelement';
+import buildModelConverter from '../../../../src/conversion/buildmodelconverter';
+import Position from '../../../../src/model/position';
+import LiveRange from '../../../../src/model/liverange';
+import ViewAttributeElement from '../../../../src/view/attributeelement';
 
 let model = null;
 

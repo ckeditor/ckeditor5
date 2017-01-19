@@ -12,12 +12,12 @@ import ViewElement from './element';
 import ViewPosition from './position';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller, isBlockFiller } from './filler';
 
-import mix from 'ckeditor5-utils/src/mix';
-import diff from 'ckeditor5-utils/src/diff';
-import insertAt from 'ckeditor5-utils/src/dom/insertat';
-import remove from 'ckeditor5-utils/src/dom/remove';
-import ObservableMixin from 'ckeditor5-utils/src/observablemixin';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import diff from '@ckeditor/ckeditor5-utils/src/diff';
+import insertAt from '@ckeditor/ckeditor5-utils/src/dom/insertat';
+import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /* global Range */
 

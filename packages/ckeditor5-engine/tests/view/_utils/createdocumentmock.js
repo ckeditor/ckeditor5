@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import ObservableMixin from 'ckeditor5-utils/src/observablemixin';
-import Selection from 'ckeditor5-engine/src/view/selection';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import Selection from '../../../src/view/selection';
 
 /**
  * Creates {@link module:engine/view/document~Document view Document} mock.

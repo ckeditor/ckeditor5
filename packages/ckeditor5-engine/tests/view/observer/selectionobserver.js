@@ -5,16 +5,16 @@
 
 /* globals setTimeout, document */
 
-import ViewRange from 'ckeditor5-engine/src/view/range';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import ViewSelection from 'ckeditor5-engine/src/view/selection';
-import ViewDocument from 'ckeditor5-engine/src/view/document';
-import SelectionObserver from 'ckeditor5-engine/src/view/observer/selectionobserver';
-import MutationObserver from 'ckeditor5-engine/src/view/observer/mutationobserver';
+import ViewRange from '../../../src/view/range';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import ViewSelection from '../../../src/view/selection';
+import ViewDocument from '../../../src/view/document';
+import SelectionObserver from '../../../src/view/observer/selectionobserver';
+import MutationObserver from '../../../src/view/observer/mutationobserver';
 
-import log from 'ckeditor5-utils/src/log';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
-import { parse } from 'ckeditor5-engine/src/dev-utils/view';
+import { parse } from '../../../src/dev-utils/view';
 
 testUtils.createSinonSandbox();
 

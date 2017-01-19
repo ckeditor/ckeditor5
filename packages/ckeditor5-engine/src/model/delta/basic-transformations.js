@@ -29,7 +29,7 @@ import UnwrapDelta from './unwrapdelta';
 import RenameDelta from './renamedelta';
 import RemoveDelta from './removedelta';
 
-import compareArrays from 'ckeditor5-utils/src/comparearrays';
+import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 
 // Provide transformations for default deltas.
 

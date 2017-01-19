@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import Schema from 'ckeditor5-engine/src/model/schema';
-import { SchemaItem as SchemaItem } from 'ckeditor5-engine/src/model/schema';
-import Document from 'ckeditor5-engine/src/model/document';
-import Element from 'ckeditor5-engine/src/model/element';
-import Position from 'ckeditor5-engine/src/model/position';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import Schema from '../../../src/model/schema';
+import { SchemaItem as SchemaItem } from '../../../src/model/schema';
+import Document from '../../../src/model/document';
+import Element from '../../../src/model/element';
+import Position from '../../../src/model/position';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 

@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelConsumable from 'ckeditor5-engine/src/conversion/modelconsumable';
-import ModelElement from 'ckeditor5-engine/src/model/element';
-import ModelTextProxy from 'ckeditor5-engine/src/model/textproxy';
-import ModelText from 'ckeditor5-engine/src/model/text';
+import ModelConsumable from '../../src/conversion/modelconsumable';
+import ModelElement from '../../src/model/element';
+import ModelTextProxy from '../../src/model/textproxy';
+import ModelText from '../../src/model/text';
 
 describe( 'ModelConsumable', () => {
 	let modelConsumable, modelElement;
