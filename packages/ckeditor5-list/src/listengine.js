@@ -7,7 +7,7 @@
  * @module list/listengine
  */
 
-import Plugin from 'ckeditor5-core/src/plugin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ListCommand from './listcommand';
 import IndentCommand from './indentcommand';
 

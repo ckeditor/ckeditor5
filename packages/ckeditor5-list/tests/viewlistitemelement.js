@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewListItemElement from 'ckeditor5-list/src/viewlistitemelement';
-import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import ViewText from 'ckeditor5-engine/src/view/text';
+import ViewListItemElement from '../src/viewlistitemelement';
+import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
+import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 
 describe( 'ViewListItemElement', () => {
 	it( 'should extend ViewContainerElement', () => {

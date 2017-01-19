@@ -7,7 +7,7 @@
  * @module list/listcommand
  */
 
-import Command from 'ckeditor5-core/src/command/command';
+import Command from '@ckeditor/ckeditor5-core/src/command/command';
 import { getClosestListItem, getSelectedBlocks, getPositionBeforeBlock } from './utils';
 
 /**

@@ -9,13 +9,13 @@
 
 import ViewListItemElement from './viewlistitemelement';
 
-import ModelElement from 'ckeditor5-engine/src/model/element';
-import ModelPosition from 'ckeditor5-engine/src/model/position';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 
-import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import ViewPosition from 'ckeditor5-engine/src/view/position';
-import ViewRange from 'ckeditor5-engine/src/view/range';
-import viewWriter from 'ckeditor5-engine/src/view/writer';
+import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
+import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
+import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 
 /**
  * Model to view converter for `listItem` model element insertion.
