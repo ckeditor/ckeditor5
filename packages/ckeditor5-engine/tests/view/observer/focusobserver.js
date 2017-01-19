@@ -5,9 +5,9 @@
 
 /* globals document */
 
-import FocusObserver from 'ckeditor5-engine/src/view/observer/focusobserver';
-import ViewDocument from 'ckeditor5-engine/src/view/document';
-import ViewRange from 'ckeditor5-engine/src/view/range';
+import FocusObserver from '../../../src/view/observer/focusobserver';
+import ViewDocument from '../../../src/view/document';
+import ViewRange from '../../../src/view/range';
 
 describe( 'FocusObserver', () => {
 	let viewDocument, observer;

@@ -5,10 +5,10 @@
 
 /* globals setTimeout, window */
 
-import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import xssTemplates from 'ckeditor5-engine/tests/dataprocessor/_utils/xsstemplates';
-import ViewDocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
-import { stringify, parse } from 'ckeditor5-engine/src/dev-utils/view';
+import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
+import xssTemplates from '../../tests/dataprocessor/_utils/xsstemplates';
+import ViewDocumentFragment from '../../src/view/documentfragment';
+import { stringify, parse } from '../../src/dev-utils/view';
 
 describe( 'HtmlDataProcessor', () => {
 	const dataProcessor = new HtmlDataProcessor();

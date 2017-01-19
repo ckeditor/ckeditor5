@@ -3,19 +3,19 @@
  * For licensing, see LICENSE.md.
  */
 
-import transformations from 'ckeditor5-engine/src/model/delta/basic-transformations';
+import transformations from '../../../../src/model/delta/basic-transformations';
 /*jshint unused: false*/
 
-import transform from 'ckeditor5-engine/src/model/delta/transform';
+import transform from '../../../../src/model/delta/transform';
 
-import Position from 'ckeditor5-engine/src/model/position';
-import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
-import Delta from 'ckeditor5-engine/src/model/delta/delta';
+import Position from '../../../../src/model/position';
+import MoveOperation from '../../../../src/model/operation/moveoperation';
+import Delta from '../../../../src/model/delta/delta';
 
 import {
 	expectDelta,
 	getFilledDocument,
-} from 'ckeditor5-engine/tests/model/delta/transform/_utils/utils';
+} from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'Delta', () => {
 	let doc, root, baseVersion;

@@ -5,20 +5,20 @@
 
 /* globals document */
 
-import createElement from 'ckeditor5-utils/src/dom/createelement';
-import Document from 'ckeditor5-engine/src/view/document';
-import Observer from 'ckeditor5-engine/src/view/observer/observer';
-import MutationObserver from 'ckeditor5-engine/src/view/observer/mutationobserver';
-import SelectionObserver from 'ckeditor5-engine/src/view/observer/selectionobserver';
-import FocusObserver from 'ckeditor5-engine/src/view/observer/focusobserver';
-import KeyObserver from 'ckeditor5-engine/src/view/observer/keyobserver';
-import FakeSelectionObserver from 'ckeditor5-engine/src/view/observer/fakeselectionobserver';
-import Renderer from 'ckeditor5-engine/src/view/renderer';
-import ViewRange from 'ckeditor5-engine/src/view/range';
-import DomConverter from 'ckeditor5-engine/src/view/domconverter';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import count from 'ckeditor5-utils/src/count';
-import log from 'ckeditor5-utils/src/log';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import Document from '../../../src/view/document';
+import Observer from '../../../src/view/observer/observer';
+import MutationObserver from '../../../src/view/observer/mutationobserver';
+import SelectionObserver from '../../../src/view/observer/selectionobserver';
+import FocusObserver from '../../../src/view/observer/focusobserver';
+import KeyObserver from '../../../src/view/observer/keyobserver';
+import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
+import Renderer from '../../../src/view/renderer';
+import ViewRange from '../../../src/view/range';
+import DomConverter from '../../../src/view/domconverter';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import count from '@ckeditor/ckeditor5-utils/src/count';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 testUtils.createSinonSandbox();
 

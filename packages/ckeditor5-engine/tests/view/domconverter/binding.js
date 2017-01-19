@@ -5,16 +5,16 @@
 
 /* globals document */
 
-import ViewElement from 'ckeditor5-engine/src/view/element';
-import ViewSelection from 'ckeditor5-engine/src/view/selection';
-import ViewRange from 'ckeditor5-engine/src/view/range';
-import DomConverter from 'ckeditor5-engine/src/view/domconverter';
-import ViewDocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
-import { INLINE_FILLER } from 'ckeditor5-engine/src/view/filler';
+import ViewElement from '../../../src/view/element';
+import ViewSelection from '../../../src/view/selection';
+import ViewRange from '../../../src/view/range';
+import DomConverter from '../../../src/view/domconverter';
+import ViewDocumentFragment from '../../../src/view/documentfragment';
+import { INLINE_FILLER } from '../../../src/view/filler';
 
-import { parse } from 'ckeditor5-engine/src/dev-utils/view';
+import { parse } from '../../../src/dev-utils/view';
 
-import createElement from 'ckeditor5-utils/src/dom/createelement';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 describe( 'DomConverter', () => {
 	let converter;

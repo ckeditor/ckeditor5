@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import { rename } from 'ckeditor5-engine/src/view/writer';
-import { parse } from 'ckeditor5-engine/src/dev-utils/view';
+import { rename } from '../../../src/view/writer';
+import { parse } from '../../../src/dev-utils/view';
 
 describe( 'writer', () => {
 	describe( 'rename', () => {

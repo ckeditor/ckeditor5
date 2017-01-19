@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import Text from 'ckeditor5-engine/src/model/text';
-import Node from 'ckeditor5-engine/src/model/node';
-import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
+import Text from '../../src/model/text';
+import Node from '../../src/model/node';
+import { jsonParseStringify } from '../../tests/model/_utils/utils';
 
 describe( 'Text', () => {
 	describe( 'constructor()', () => {

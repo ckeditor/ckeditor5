@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelConversionDispatcher from 'ckeditor5-engine/src/conversion/modelconversiondispatcher';
-import ModelDocument from 'ckeditor5-engine/src/model/document';
-import ModelText from 'ckeditor5-engine/src/model/text';
-import ModelElement from 'ckeditor5-engine/src/model/element';
-import ModelRange from 'ckeditor5-engine/src/model/range';
-import ModelPosition from 'ckeditor5-engine/src/model/position';
-import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
-import { wrapInDelta } from 'ckeditor5-engine/tests/model/_utils/utils';
+import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
+import ModelDocument from '../../src/model/document';
+import ModelText from '../../src/model/text';
+import ModelElement from '../../src/model/element';
+import ModelRange from '../../src/model/range';
+import ModelPosition from '../../src/model/position';
+import RemoveOperation from '../../src/model/operation/removeoperation';
+import { wrapInDelta } from '../../tests/model/_utils/utils';
 
 describe( 'ModelConversionDispatcher', () => {
 	let dispatcher, doc, root;

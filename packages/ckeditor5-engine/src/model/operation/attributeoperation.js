@@ -9,9 +9,9 @@
 
 import Operation from './operation';
 import Range from '../range';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import writer from '../writer';
-import isEqual from 'ckeditor5-utils/src/lib/lodash/isEqual';
+import isEqual from '@ckeditor/ckeditor5-utils/src/lib/lodash/isEqual';
 
 /**
  * Operation to change nodes' attribute.

@@ -7,7 +7,7 @@
  * @module engine/view/observer/domeventdata
  */
 
-import extend from 'ckeditor5-utils/src/lib/lodash/extend';
+import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
 
 /**
  * Information about a DOM event in context of the {@link module:engine/view/document~Document}.

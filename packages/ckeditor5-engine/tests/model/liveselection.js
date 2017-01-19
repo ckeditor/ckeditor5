@@ -3,23 +3,23 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import Range from 'ckeditor5-engine/src/model/range';
-import Position from 'ckeditor5-engine/src/model/position';
-import LiveRange from 'ckeditor5-engine/src/model/liverange';
-import LiveSelection from 'ckeditor5-engine/src/model/liveselection';
-import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
-import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
-import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
-import AttributeOperation from 'ckeditor5-engine/src/model/operation/attributeoperation';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import count from 'ckeditor5-utils/src/count';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import { wrapInDelta } from 'ckeditor5-engine/tests/model/_utils/utils';
+import Document from '../../src/model/document';
+import Element from '../../src/model/element';
+import Text from '../../src/model/text';
+import Range from '../../src/model/range';
+import Position from '../../src/model/position';
+import LiveRange from '../../src/model/liverange';
+import LiveSelection from '../../src/model/liveselection';
+import InsertOperation from '../../src/model/operation/insertoperation';
+import MoveOperation from '../../src/model/operation/moveoperation';
+import RemoveOperation from '../../src/model/operation/removeoperation';
+import AttributeOperation from '../../src/model/operation/attributeoperation';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import count from '@ckeditor/ckeditor5-utils/src/count';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { wrapInDelta } from '../../tests/model/_utils/utils';
 
-import log from 'ckeditor5-utils/src/log';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 testUtils.createSinonSandbox();
 

@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import { mergeContainers } from 'ckeditor5-engine/src/view/writer';
-import { stringify, parse } from 'ckeditor5-engine/src/dev-utils/view';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import { mergeContainers } from '../../../src/view/writer';
+import { stringify, parse } from '../../../src/dev-utils/view';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'writer', () => {
 	/**

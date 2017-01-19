@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import Node from 'ckeditor5-engine/src/model/node';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
-import count from 'ckeditor5-utils/src/count';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Node from '../../src/model/node';
+import Element from '../../src/model/element';
+import Text from '../../src/model/text';
+import { jsonParseStringify } from '../../tests/model/_utils/utils';
+import count from '@ckeditor/ckeditor5-utils/src/count';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'Element', () => {
 	describe( 'constructor()', () => {

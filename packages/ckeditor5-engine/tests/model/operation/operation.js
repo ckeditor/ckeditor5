@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import Delta from 'ckeditor5-engine/src/model/delta/delta';
-import Operation from 'ckeditor5-engine/src/model/operation/operation';
-import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
+import Delta from '../../../src/model/delta/delta';
+import Operation from '../../../src/model/operation/operation';
+import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'Operation', () => {
 	it( 'should save its base version', () => {

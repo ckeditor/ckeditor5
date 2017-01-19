@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md.
  */
 
-import transformations from 'ckeditor5-engine/src/model/delta/basic-transformations';
+import transformations from '../../../../src/model/delta/basic-transformations';
 /*jshint unused: false*/
 
-import transform from 'ckeditor5-engine/src/model/delta/transform';
+import transform from '../../../../src/model/delta/transform';
 
-import Element from 'ckeditor5-engine/src/model/element';
-import Position from 'ckeditor5-engine/src/model/position';
-import Range from 'ckeditor5-engine/src/model/range';
+import Element from '../../../../src/model/element';
+import Position from '../../../../src/model/position';
+import Range from '../../../../src/model/range';
 
-import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
-import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
+import MoveOperation from '../../../../src/model/operation/moveoperation';
+import InsertOperation from '../../../../src/model/operation/insertoperation';
 
-import MergeDelta from 'ckeditor5-engine/src/model/delta/mergedelta';
-import WrapDelta from 'ckeditor5-engine/src/model/delta/wrapdelta';
+import MergeDelta from '../../../../src/model/delta/mergedelta';
+import WrapDelta from '../../../../src/model/delta/wrapdelta';
 
-import { getNodesAndText, jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
+import { getNodesAndText, jsonParseStringify } from '../../../../tests/model/_utils/utils';
 
 import {
 	applyDelta,
@@ -26,7 +26,7 @@ import {
 	getFilledDocument,
 	getSplitDelta,
 	getWrapDelta
-} from 'ckeditor5-engine/tests/model/delta/transform/_utils/utils';
+} from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
 	let doc, root, gy, baseVersion;

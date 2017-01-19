@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
-import Selection from 'ckeditor5-engine/src/view/selection';
-import Range from 'ckeditor5-engine/src/view/range';
-import Document from 'ckeditor5-engine/src/view/document';
-import Element from 'ckeditor5-engine/src/view/element';
-import Text from 'ckeditor5-engine/src/view/text';
-import Position from 'ckeditor5-engine/src/view/position';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import count from 'ckeditor5-utils/src/count';
-import { parse } from 'ckeditor5-engine/src/dev-utils/view';
+import Selection from '../../src/view/selection';
+import Range from '../../src/view/range';
+import Document from '../../src/view/document';
+import Element from '../../src/view/element';
+import Text from '../../src/view/text';
+import Position from '../../src/view/position';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import count from '@ckeditor/ckeditor5-utils/src/count';
+import { parse } from '../../src/dev-utils/view';
 
 describe( 'Selection', () => {
 	let selection;

@@ -5,8 +5,8 @@
 
 /* globals document */
 
-import MouseObserver from 'ckeditor5-engine/src/view/observer/mouseobserver';
-import ViewDocument from 'ckeditor5-engine/src/view/document';
+import MouseObserver from '../../../src/view/observer/mouseobserver';
+import ViewDocument from '../../../src/view/document';
 
 describe( 'MouseObserver', () => {
 	let viewDocument, observer;

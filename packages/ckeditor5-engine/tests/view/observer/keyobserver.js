@@ -5,9 +5,9 @@
 
 /* globals document */
 
-import KeyObserver from 'ckeditor5-engine/src/view/observer/keyobserver';
-import ViewDocument from 'ckeditor5-engine/src/view/document';
-import { getCode } from 'ckeditor5-utils/src/keyboard';
+import KeyObserver from '../../../src/view/observer/keyobserver';
+import ViewDocument from '../../../src/view/document';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'KeyObserver', () => {
 	let viewDocument, observer;

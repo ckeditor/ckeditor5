@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import NodeList from 'ckeditor5-engine/src/model/nodelist';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import NodeList from '../../src/model/nodelist';
+import Element from '../../src/model/element';
+import Text from '../../src/model/text';
+import { jsonParseStringify } from '../../tests/model/_utils/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'NodeList', () => {
 	let nodes, p, foo, img;

@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import Node from 'ckeditor5-engine/src/view/node';
-import Text from 'ckeditor5-engine/src/view/text';
+import Node from '../../src/view/node';
+import Text from '../../src/view/text';
 
 describe( 'Element', () => {
 	describe( 'constructor()', () => {

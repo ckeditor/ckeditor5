@@ -3,17 +3,17 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewDocument from 'ckeditor5-engine/src/view/document';
-import ViewSelection from 'ckeditor5-engine/src/view/selection';
-import ViewRange from 'ckeditor5-engine/src/view/range';
+import ViewDocument from '../../src/view/document';
+import ViewSelection from '../../src/view/selection';
+import ViewRange from '../../src/view/range';
 
-import ModelDocument from 'ckeditor5-engine/src/model/document';
+import ModelDocument from '../../src/model/document';
 
-import Mapper from 'ckeditor5-engine/src/conversion/mapper';
-import { convertSelectionChange } from 'ckeditor5-engine/src/conversion/view-selection-to-model-converters';
+import Mapper from '../../src/conversion/mapper';
+import { convertSelectionChange } from '../../src/conversion/view-selection-to-model-converters';
 
-import { setData as modelSetData, getData as modelGetData } from 'ckeditor5-engine/src/dev-utils/model';
-import { setData as viewSetData } from 'ckeditor5-engine/src/dev-utils/view';
+import { setData as modelSetData, getData as modelGetData } from '../../src/dev-utils/model';
+import { setData as viewSetData } from '../../src/dev-utils/view';
 
 describe( 'convertSelectionChange', () => {
 	let model, view, mapper, convertSelection, modelRoot, viewRoot;

@@ -10,7 +10,7 @@
 import LivePosition from '../model/liveposition';
 import Position from '../model/position';
 import Element from '../model/element';
-import compareArrays from 'ckeditor5-utils/src/comparearrays';
+import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.

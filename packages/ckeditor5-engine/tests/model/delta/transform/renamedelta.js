@@ -3,23 +3,23 @@
  * For licensing, see LICENSE.md.
  */
 
-import transformations from 'ckeditor5-engine/src/model/delta/basic-transformations';
+import transformations from '../../../../src/model/delta/basic-transformations';
 /*jshint unused: false*/
 
-import transform from 'ckeditor5-engine/src/model/delta/transform';
+import transform from '../../../../src/model/delta/transform';
 
-import Element from 'ckeditor5-engine/src/model/element';
-import Position from 'ckeditor5-engine/src/model/position';
-import Range from 'ckeditor5-engine/src/model/range';
+import Element from '../../../../src/model/element';
+import Position from '../../../../src/model/position';
+import Range from '../../../../src/model/range';
 
-import RenameDelta from 'ckeditor5-engine/src/model/delta/renamedelta';
-import RenameOperation from 'ckeditor5-engine/src/model/operation/renameoperation';
+import RenameDelta from '../../../../src/model/delta/renamedelta';
+import RenameOperation from '../../../../src/model/operation/renameoperation';
 
 import {
 	getFilledDocument,
 	expectDelta,
 	getSplitDelta
-} from 'ckeditor5-engine/tests/model/delta/transform/_utils/utils';
+} from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
 	let doc, root, baseVersion;

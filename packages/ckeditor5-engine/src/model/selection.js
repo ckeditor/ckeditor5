@@ -10,11 +10,11 @@
 import Position from './position';
 import Element from './element';
 import Range from './range';
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import mix from 'ckeditor5-utils/src/mix';
-import toMap from 'ckeditor5-utils/src/tomap';
-import mapsEqual from 'ckeditor5-utils/src/mapsequal';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
+import mapsEqual from '@ckeditor/ckeditor5-utils/src/mapsequal';
 
 /**
  * `Selection` is a group of {@link module:engine/model/range~Range ranges} which has a direction specified by

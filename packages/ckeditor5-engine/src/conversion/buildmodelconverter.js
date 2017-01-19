@@ -22,7 +22,7 @@ import { convertSelectionAttribute } from './model-selection-to-view-converters'
 import ViewAttributeElement from '../view/attributeelement';
 import ViewContainerElement from '../view/containerelement';
 
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Provides chainable, high-level API to easily build basic model-to-view converters that are appended to given

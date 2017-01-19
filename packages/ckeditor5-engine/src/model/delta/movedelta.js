@@ -13,7 +13,7 @@ import { register } from '../batch';
 import MoveOperation from '../operation/moveoperation';
 import Position from '../position';
 import Range from '../range';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * @classdesc

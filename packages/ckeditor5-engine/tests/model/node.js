@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import DocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
-import Node from 'ckeditor5-engine/src/model/node';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import count from 'ckeditor5-utils/src/count';
+import Document from '../../src/model/document';
+import DocumentFragment from '../../src/model/documentfragment';
+import Node from '../../src/model/node';
+import Element from '../../src/model/element';
+import Text from '../../src/model/text';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import count from '@ckeditor/ckeditor5-utils/src/count';
 
 describe( 'Node', () => {
 	let doc, root, node;

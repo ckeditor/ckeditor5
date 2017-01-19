@@ -3,29 +3,29 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
+import Document from '../../../../../src/model/document';
+import Element from '../../../../../src/model/element';
+import Text from '../../../../../src/model/text';
 
-import Position from 'ckeditor5-engine/src/model/position';
-import Range from 'ckeditor5-engine/src/model/range';
+import Position from '../../../../../src/model/position';
+import Range from '../../../../../src/model/range';
 
-import AttributeDelta from 'ckeditor5-engine/src/model/delta/attributedelta';
-import InsertDelta from 'ckeditor5-engine/src/model/delta/insertdelta';
-import WeakInsertDelta from 'ckeditor5-engine/src/model/delta/weakinsertdelta';
-import RenameDelta from 'ckeditor5-engine/src/model/delta/renamedelta';
-import RemoveDelta from 'ckeditor5-engine/src/model/delta/removedelta';
-import MoveDelta from 'ckeditor5-engine/src/model/delta/movedelta';
-import MergeDelta from 'ckeditor5-engine/src/model/delta/mergedelta';
-import SplitDelta from 'ckeditor5-engine/src/model/delta/splitdelta';
-import WrapDelta from 'ckeditor5-engine/src/model/delta/wrapdelta';
-import UnwrapDelta from 'ckeditor5-engine/src/model/delta/unwrapdelta';
+import AttributeDelta from '../../../../../src/model/delta/attributedelta';
+import InsertDelta from '../../../../../src/model/delta/insertdelta';
+import WeakInsertDelta from '../../../../../src/model/delta/weakinsertdelta';
+import RenameDelta from '../../../../../src/model/delta/renamedelta';
+import RemoveDelta from '../../../../../src/model/delta/removedelta';
+import MoveDelta from '../../../../../src/model/delta/movedelta';
+import MergeDelta from '../../../../../src/model/delta/mergedelta';
+import SplitDelta from '../../../../../src/model/delta/splitdelta';
+import WrapDelta from '../../../../../src/model/delta/wrapdelta';
+import UnwrapDelta from '../../../../../src/model/delta/unwrapdelta';
 
-import AttributeOperation from 'ckeditor5-engine/src/model/operation/attributeoperation';
-import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
-import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
-import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
-import RenameOperation from 'ckeditor5-engine/src/model/operation/renameoperation';
+import AttributeOperation from '../../../../../src/model/operation/attributeoperation';
+import InsertOperation from '../../../../../src/model/operation/insertoperation';
+import MoveOperation from '../../../../../src/model/operation/moveoperation';
+import RemoveOperation from '../../../../../src/model/operation/removeoperation';
+import RenameOperation from '../../../../../src/model/operation/renameoperation';
 
 export function getAttributeDelta( range, key, oldValue, newValue, version ) {
 	let delta = new AttributeDelta();

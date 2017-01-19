@@ -3,16 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import Schema from 'ckeditor5-engine/src/model/schema';
-import RootElement from 'ckeditor5-engine/src/model/rootelement';
-import Batch from 'ckeditor5-engine/src/model/batch';
-import Delta from 'ckeditor5-engine/src/model/delta/delta';
-import Range from 'ckeditor5-engine/src/model/range';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import count from 'ckeditor5-utils/src/count';
-import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
-import { setData, getData } from 'ckeditor5-engine/src/dev-utils/model';
+import Document from '../../../src/model/document';
+import Schema from '../../../src/model/schema';
+import RootElement from '../../../src/model/rootelement';
+import Batch from '../../../src/model/batch';
+import Delta from '../../../src/model/delta/delta';
+import Range from '../../../src/model/range';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import count from '@ckeditor/ckeditor5-utils/src/count';
+import { jsonParseStringify } from '../../../tests/model/_utils/utils';
+import { setData, getData } from '../../../src/dev-utils/model';
 
 describe( 'Document', () => {
 	let doc;

@@ -10,15 +10,15 @@ import {
 	itemAt,
 	getText,
 	createRangeOnElementOnly
-} from 'ckeditor5-engine/tests/model/_utils/utils';
-import Document from 'ckeditor5-engine/src/model/document';
-import Range from 'ckeditor5-engine/src/model/range';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import Node from 'ckeditor5-engine/src/model/node';
-import TextProxy from 'ckeditor5-engine/src/model/textproxy';
-import Operation from 'ckeditor5-engine/src/model/operation/operation';
-import Delta from 'ckeditor5-engine/src/model/delta/delta';
+} from '../../../tests/model/_utils/utils';
+import Document from '../../../src/model/document';
+import Range from '../../../src/model/range';
+import Element from '../../../src/model/element';
+import Text from '../../../src/model/text';
+import Node from '../../../src/model/node';
+import TextProxy from '../../../src/model/textproxy';
+import Operation from '../../../src/model/operation/operation';
+import Delta from '../../../src/model/delta/delta';
 
 describe( 'getNodesAndText', () => {
 	let doc, root, div, p;

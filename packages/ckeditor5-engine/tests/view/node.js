@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import Element from 'ckeditor5-engine/src/view/element';
-import Text from 'ckeditor5-engine/src/view/text';
-import DocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
-import RootEditableElement from 'ckeditor5-engine/src/view/rooteditableelement';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Element from '../../src/view/element';
+import Text from '../../src/view/text';
+import DocumentFragment from '../../src/view/documentfragment';
+import RootEditableElement from '../../src/view/rooteditableelement';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import createDocumentMock from 'ckeditor5-engine/tests/view/_utils/createdocumentmock';
+import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
 
 describe( 'Node', () => {
 	let root;

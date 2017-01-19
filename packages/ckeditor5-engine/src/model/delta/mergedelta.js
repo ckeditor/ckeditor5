@@ -15,7 +15,7 @@ import Position from '../position';
 import Element from '../element';
 import RemoveOperation from '../operation/removeoperation';
 import MoveOperation from '../operation/moveoperation';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * @classdesc

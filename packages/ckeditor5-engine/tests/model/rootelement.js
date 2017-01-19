@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import Element from 'ckeditor5-engine/src/model/element';
-import RootElement from 'ckeditor5-engine/src/model/rootelement';
-import count from 'ckeditor5-utils/src/count';
+import Document from '../../src/model/document';
+import Element from '../../src/model/element';
+import RootElement from '../../src/model/rootelement';
+import count from '@ckeditor/ckeditor5-utils/src/count';
 
 describe( 'Element', () => {
 	describe( 'constructor()', () => {

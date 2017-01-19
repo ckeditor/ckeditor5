@@ -5,10 +5,10 @@
 
 /* globals window */
 
-import XmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/xmldataprocessor';
-import xssTemplates from 'ckeditor5-engine/tests/dataprocessor/_utils/xsstemplates';
-import ViewDocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
-import { stringify, parse } from 'ckeditor5-engine/src/dev-utils/view';
+import XmlDataProcessor from '../../src/dataprocessor/xmldataprocessor';
+import xssTemplates from '../../tests/dataprocessor/_utils/xsstemplates';
+import ViewDocumentFragment from '../../src/view/documentfragment';
+import { stringify, parse } from '../../src/dev-utils/view';
 
 describe( 'XmlDataProcessor', () => {
 	let dataProcessor;

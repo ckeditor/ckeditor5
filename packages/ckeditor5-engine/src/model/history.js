@@ -7,7 +7,7 @@
  * @module engine/model/history
  */
 
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * `History` keeps the track of all the deltas applied to the {@link module:engine/model/document~Document document}. Deltas stored in

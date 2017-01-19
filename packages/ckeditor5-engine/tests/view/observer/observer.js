@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Observer from 'ckeditor5-engine/src/view/observer/observer';
+import Observer from '../../../src/view/observer/observer';
 
 describe( 'Observer', () => {
 	describe( 'constructor()', () => {

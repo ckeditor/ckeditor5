@@ -5,24 +5,24 @@
 
 /* globals document */
 
-import ClassicEditor from 'ckeditor5-editor-classic/src/classic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
 
-import Plugin from 'ckeditor5-core/src/plugin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import TreeWalker from 'ckeditor5-engine/src/model/treewalker';
-import Position from 'ckeditor5-engine/src/model/position';
-import Range from 'ckeditor5-engine/src/model/range';
-import LivePosition from 'ckeditor5-engine/src/model/liveposition';
+import TreeWalker from '../../../../src/model/treewalker';
+import Position from '../../../../src/model/position';
+import Range from '../../../../src/model/range';
+import LivePosition from '../../../../src/model/liveposition';
 
-import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from 'ckeditor5-engine/src/conversion/buildviewconverter';
+import buildModelConverter from '../../../../src/conversion/buildmodelconverter';
+import buildViewConverter from '../../../../src/conversion/buildviewconverter';
 
-import AttributeElement from 'ckeditor5-engine/src/view/attributeelement';
+import AttributeElement from '../../../../src/view/attributeelement';
 
-import Enter from 'ckeditor5-enter/src/enter';
-import Typing from 'ckeditor5-typing/src/typing';
-import Paragraph from 'ckeditor5-paragraph/src/paragraph';
-import Undo from 'ckeditor5-undo/src/undo';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
 class Link extends Plugin {
 	init() {

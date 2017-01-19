@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import Position from 'ckeditor5-engine/src/model/position';
-import Text from 'ckeditor5-engine/src/model/text';
-import WeakInsertDelta from 'ckeditor5-engine/src/model/delta/weakinsertdelta';
+import Document from '../../../src/model/document';
+import Position from '../../../src/model/position';
+import Text from '../../../src/model/text';
+import WeakInsertDelta from '../../../src/model/delta/weakinsertdelta';
 
 describe( 'Batch', () => {
 	let doc, root, batch, chain, attrs;

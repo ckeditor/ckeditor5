@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import ContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import Element from 'ckeditor5-engine/src/view/element';
-import { parse } from 'ckeditor5-engine/src/dev-utils/view';
+import ContainerElement from '../../src/view/containerelement';
+import Element from '../../src/view/element';
+import { parse } from '../../src/dev-utils/view';
 
 describe( 'ContainerElement', () => {
 	describe( 'constructor()', () => {
