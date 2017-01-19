@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import Editor from 'ckeditor5-core/src/editor/editor';
-import PluginCollection from 'ckeditor5-core/src/plugincollection';
-import Plugin from 'ckeditor5-core/src/plugin';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import log from 'ckeditor5-utils/src/log';
+import testUtils from '../tests/_utils/utils';
+import Editor from '../src/editor/editor';
+import PluginCollection from '../src/plugincollection';
+import Plugin from '../src/plugin';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 let editor;
 let PluginA, PluginB, PluginC, PluginD, PluginE, PluginF, PluginG, PluginH, PluginI, PluginX;

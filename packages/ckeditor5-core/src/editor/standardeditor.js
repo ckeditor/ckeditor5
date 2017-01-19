@@ -9,10 +9,10 @@
 
 import Editor from './editor';
 import EditingKeystrokeHandler from '../editingkeystrokehandler';
-import EditingController from 'ckeditor5-engine/src/controller/editingcontroller';
+import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 
-import getDataFromElement from 'ckeditor5-utils/src/dom/getdatafromelement';
-import setDataInElement from 'ckeditor5-utils/src/dom/setdatainelement';
+import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
+import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 
 /**
  * Class representing a typical browser-based editor. It handles a single source element and

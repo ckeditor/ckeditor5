@@ -5,14 +5,14 @@
 
 /* globals document */
 
-import Editor from 'ckeditor5-core/src/editor/editor';
-import StandardEditor from 'ckeditor5-core/src/editor/standardeditor';
-import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import { getData, setData } from 'ckeditor5-engine/src/dev-utils/model';
+import Editor from '../../src/editor/editor';
+import StandardEditor from '../../src/editor/standardeditor';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import EditingController from 'ckeditor5-engine/src/controller/editingcontroller';
-import EditingKeystrokeHandler from 'ckeditor5-core/src/editingkeystrokehandler';
-import Plugin from 'ckeditor5-core/src/plugin';
+import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
+import EditingKeystrokeHandler from '../../src/editingkeystrokehandler';
+import Plugin from '../../src/plugin';
 
 describe( 'StandardEditor', () => {
 	let editorElement;

@@ -7,15 +7,15 @@
  * @module core/editor/editor
  */
 
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
-import Config from 'ckeditor5-utils/src/config';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import Config from '@ckeditor/ckeditor5-utils/src/config';
 import PluginCollection from '../plugincollection';
-import Locale from 'ckeditor5-utils/src/locale';
-import DataController from 'ckeditor5-engine/src/controller/datacontroller';
-import Document from 'ckeditor5-engine/src/model/document';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale';
+import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
+import Document from '@ckeditor/ckeditor5-engine/src/model/document';
 
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import mix from 'ckeditor5-utils/src/mix';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Class representing a basic editor. It contains a base architecture, without much additional logic.

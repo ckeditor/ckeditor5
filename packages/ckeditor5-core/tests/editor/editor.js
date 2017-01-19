@@ -5,10 +5,10 @@
 
 /* globals setTimeout */
 
-import Editor from 'ckeditor5-core/src/editor/editor';
-import Plugin from 'ckeditor5-core/src/plugin';
-import Config from 'ckeditor5-utils/src/config';
-import PluginCollection from 'ckeditor5-core/src/plugincollection';
+import Editor from '../../src/editor/editor';
+import Plugin from '../../src/plugin';
+import Config from '@ckeditor/ckeditor5-utils/src/config';
+import PluginCollection from '../../src/plugincollection';
 
 class PluginA extends Plugin {
 	constructor( editor ) {

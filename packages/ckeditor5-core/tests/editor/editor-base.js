@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import Editor from 'ckeditor5-core/src/editor/editor';
-import Command from 'ckeditor5-core/src/command/command';
-import Locale from 'ckeditor5-utils/src/locale';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Editor from '../../src/editor/editor';
+import Command from '../../src/command/command';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'Editor', () => {
 	describe( 'locale', () => {

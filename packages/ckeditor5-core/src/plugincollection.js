@@ -8,8 +8,8 @@
  */
 
 import Plugin from './plugin';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import log from 'ckeditor5-utils/src/log';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * Manages a list of CKEditor plugins, including loading, resolving dependencies and initialization.

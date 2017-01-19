@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import Editor from 'ckeditor5-core/src/editor/editor';
-import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import Editor from '../../src/editor/editor';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
 /**
  * A simple editor implementation with a functional model part of the engine (the document).

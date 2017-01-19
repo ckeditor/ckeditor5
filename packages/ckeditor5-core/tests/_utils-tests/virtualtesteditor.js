@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-import StandardEditor from 'ckeditor5-core/src/editor/standardeditor';
-import VirtualTestEditor from 'ckeditor5-core/tests/_utils/virtualtesteditor';
+import StandardEditor from '../../src/editor/standardeditor';
+import VirtualTestEditor from '../../tests/_utils/virtualtesteditor';
 
-import Plugin from 'ckeditor5-core/src/plugin';
-import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import Plugin from '../../src/plugin';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import testUtils from '../../tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 
