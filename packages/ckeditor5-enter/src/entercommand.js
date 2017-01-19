@@ -7,8 +7,8 @@
  * @module enter/entercommand
  */
 
-import Command from 'ckeditor5-core/src/command/command';
-import Position from 'ckeditor5-engine/src/model/position';
+import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 /**
  * Enter command. It is used by the {@link module:enter/enter~Enter Enter feature} to handle the <kbd>Enter</kbd> key.
