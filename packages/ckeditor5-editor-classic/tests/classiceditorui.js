@@ -93,7 +93,7 @@ describe( 'ClassicEditorUI', () => {
 					view.editable,
 					{ isFocused: false },
 					[
-						[ editable, { isFocused: true } ]
+						[ editor.editing.view, { isFocused: true } ]
 					],
 					{ isFocused: true }
 				);
