@@ -7,19 +7,19 @@
  * @module paragraph/paragraph
  */
 
-import Plugin from 'ckeditor5-core/src/plugin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import ModelElement from 'ckeditor5-engine/src/model/element';
-import ModelPosition from 'ckeditor5-engine/src/model/position';
-import ModelRange from 'ckeditor5-engine/src/model/range';
-import ViewElement from 'ckeditor5-engine/src/view/element';
-import ViewRange from 'ckeditor5-engine/src/view/range';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
+import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
+import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 
-import modelWriter from 'ckeditor5-engine/src/model/writer';
-import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from 'ckeditor5-engine/src/conversion/buildviewconverter';
+import modelWriter from '@ckeditor/ckeditor5-engine/src/model/writer';
+import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 
-import isArray from 'ckeditor5-utils/src/lib/lodash/isArray';
+import isArray from '@ckeditor/ckeditor5-utils/src/lib/lodash/isArray';
 
 /**
  * The paragraph feature for the editor.
