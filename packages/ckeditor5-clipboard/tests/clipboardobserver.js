@@ -5,9 +5,9 @@
 
 /* globals document */
 
-import ClipboardObserver from 'ckeditor5-clipboard/src/clipboardobserver';
-import ViewDocument from 'ckeditor5-engine/src/view/document';
-import DataTransfer from 'ckeditor5-clipboard/src/datatransfer';
+import ClipboardObserver from '../src/clipboardobserver';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import DataTransfer from '../src/datatransfer';
 
 describe( 'ClipboardObserver', () => {
 	let viewDocument, observer;

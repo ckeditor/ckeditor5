@@ -7,14 +7,14 @@
  * @module clipboard/clipboard
  */
 
-import Plugin from 'ckeditor5-core/src/plugin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import ClipboardObserver from './clipboardobserver';
 
 import plainTextToHtml from './utils/plaintexttohtml';
 import normalizeClipboardHtml from './utils/normalizeclipboarddata';
 
-import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
 /**
  * The clipboard feature. Currently, it's only responsible for intercepting the `paste` event and

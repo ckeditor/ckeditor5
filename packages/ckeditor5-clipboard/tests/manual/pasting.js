@@ -5,19 +5,19 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from 'ckeditor5-editor-classic/src/classic';
-import Typing from 'ckeditor5-typing/src/typing';
-import Paragraph from 'ckeditor5-paragraph/src/paragraph';
-import Undo from 'ckeditor5-undo/src/undo';
-import Enter from 'ckeditor5-enter/src/enter';
-import Clipboard from 'ckeditor5-clipboard/src/clipboard';
-import Link from 'ckeditor5-link/src/link';
-import List from 'ckeditor5-list/src/list';
-import Heading from 'ckeditor5-heading/src/heading';
-import Bold from 'ckeditor5-basic-styles/src/bold';
-import Italic from 'ckeditor5-basic-styles/src/italic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Clipboard from '../../src/clipboard';
+import Link from '@ckeditor/ckeditor5-link/src/link';
+import List from '@ckeditor/ckeditor5-list/src/list';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-import { stringify as stringifyView } from 'ckeditor5-engine/src/dev-utils/view';
+import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [

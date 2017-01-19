@@ -7,7 +7,7 @@
  * @module clipboard/clipboardobserver
  */
 
-import DomEventObserver from 'ckeditor5-engine/src/view/observer/domeventobserver';
+import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domeventobserver';
 import DataTransfer from './datatransfer';
 
 /**
