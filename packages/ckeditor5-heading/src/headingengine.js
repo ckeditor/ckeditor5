@@ -7,10 +7,10 @@
  * @module heading/headingengine
  */
 
-import Plugin from 'ckeditor5-core/src/plugin';
-import buildModelConverter from 'ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from 'ckeditor5-engine/src/conversion/buildviewconverter';
-import Paragraph from 'ckeditor5-paragraph/src/paragraph';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import HeadingCommand from './headingcommand';
 
 const formats = [

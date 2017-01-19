@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from 'ckeditor5-core/tests/_utils/modeltesteditor';
-import HeadingCommand from 'ckeditor5-heading/src/headingcommand';
-import Range from 'ckeditor5-engine/src/model/range';
-import { setData, getData } from 'ckeditor5-engine/src/dev-utils/model';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import HeadingCommand from '../src/headingcommand';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 const formats = [
 	{ id: 'paragraph', viewElement: 'p', default: true },
