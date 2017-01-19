@@ -5,17 +5,17 @@
 
 /* globals Range, document, window */
 
-import ViewElement from 'ckeditor5-engine/src/view/element';
-import ViewText from 'ckeditor5-engine/src/view/text';
-import ViewRange from 'ckeditor5-engine/src/view/range';
-import Selection from 'ckeditor5-engine/src/view/selection';
-import DomConverter from 'ckeditor5-engine/src/view/domconverter';
-import Renderer from 'ckeditor5-engine/src/view/renderer';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import { parse } from 'ckeditor5-engine/src/dev-utils/view';
-import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from 'ckeditor5-engine/src/view/filler';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import createElement from 'ckeditor5-utils/src/dom/createelement';
+import ViewElement from '../../src/view/element';
+import ViewText from '../../src/view/text';
+import ViewRange from '../../src/view/range';
+import Selection from '../../src/view/selection';
+import DomConverter from '../../src/view/domconverter';
+import Renderer from '../../src/view/renderer';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { parse } from '../../src/dev-utils/view';
+import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '../../src/view/filler';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
 testUtils.createSinonSandbox();
 

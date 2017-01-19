@@ -3,18 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
-import Position from 'ckeditor5-engine/src/view/position';
-import Node from 'ckeditor5-engine/src/view/node';
-import Element from 'ckeditor5-engine/src/view/element';
-import DocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
-import EditableElement from 'ckeditor5-engine/src/view/editableelement';
-import Document from 'ckeditor5-engine/src/view/document';
-import Text from 'ckeditor5-engine/src/view/text';
-import TextProxy from 'ckeditor5-engine/src/view/textproxy';
+import Position from '../../src/view/position';
+import Node from '../../src/view/node';
+import Element from '../../src/view/element';
+import DocumentFragment from '../../src/view/documentfragment';
+import EditableElement from '../../src/view/editableelement';
+import Document from '../../src/view/document';
+import Text from '../../src/view/text';
+import TextProxy from '../../src/view/textproxy';
 
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import { parse } from 'ckeditor5-engine/src/dev-utils/view';
+import { parse } from '../../src/dev-utils/view';
 
 describe( 'Position', () => {
 	const parentMock = {};

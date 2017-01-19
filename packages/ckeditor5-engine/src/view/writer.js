@@ -14,9 +14,9 @@ import EmptyElement from './emptyelement';
 import Text from './text';
 import Range from './range';
 import TreeWalker from './treewalker';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import DocumentFragment from './documentfragment';
-import isIterable from 'ckeditor5-utils/src/isiterable';
+import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 /**
  * Contains functions used for composing view tree.

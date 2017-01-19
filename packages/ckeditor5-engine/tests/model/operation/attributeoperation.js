@@ -3,15 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import AttributeOperation from 'ckeditor5-engine/src/model/operation/attributeoperation';
-import Position from 'ckeditor5-engine/src/model/position';
-import Range from 'ckeditor5-engine/src/model/range';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import count from 'ckeditor5-utils/src/count';
-import { jsonParseStringify, wrapInDelta } from 'ckeditor5-engine/tests/model/_utils/utils';
+import Document from '../../../src/model/document';
+import Element from '../../../src/model/element';
+import Text from '../../../src/model/text';
+import AttributeOperation from '../../../src/model/operation/attributeoperation';
+import Position from '../../../src/model/position';
+import Range from '../../../src/model/range';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import count from '@ckeditor/ckeditor5-utils/src/count';
+import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'AttributeOperation', () => {
 	let doc, root;

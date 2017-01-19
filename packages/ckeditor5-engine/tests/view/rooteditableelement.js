@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import ContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import EditableElement from 'ckeditor5-engine/src/view/editableelement';
-import RootEditableElement from 'ckeditor5-engine/src/view/rooteditableelement';
+import ContainerElement from '../../src/view/containerelement';
+import EditableElement from '../../src/view/editableelement';
+import RootEditableElement from '../../src/view/rooteditableelement';
 
-import createDocumentMock from 'ckeditor5-engine/tests/view/_utils/createdocumentmock';
+import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
 
 describe( 'RootEditableElement', () => {
 	describe( 'constructor()', () => {

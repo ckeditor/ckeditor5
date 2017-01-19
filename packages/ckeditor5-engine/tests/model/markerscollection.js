@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import MarkersCollection from 'ckeditor5-engine/src/model/markerscollection';
-import Range from 'ckeditor5-engine/src/model/range';
-import LiveRange from 'ckeditor5-engine/src/model/liverange';
-import Document from 'ckeditor5-engine/src/model/document';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import MarkersCollection from '../../src/model/markerscollection';
+import Range from '../../src/model/range';
+import LiveRange from '../../src/model/liverange';
+import Document from '../../src/model/document';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'MarkersCollection', () => {
 	let markers, live, doc, root;

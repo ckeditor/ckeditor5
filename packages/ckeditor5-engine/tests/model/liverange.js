@@ -3,12 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import Element from 'ckeditor5-engine/src/model/element';
-import Position from 'ckeditor5-engine/src/model/position';
-import LiveRange from 'ckeditor5-engine/src/model/liverange';
-import Range from 'ckeditor5-engine/src/model/range';
-import Text from 'ckeditor5-engine/src/model/text';
+import Document from '../../src/model/document';
+import Element from '../../src/model/element';
+import Position from '../../src/model/position';
+import LiveRange from '../../src/model/liverange';
+import Range from '../../src/model/range';
+import Text from '../../src/model/text';
 
 describe( 'LiveRange', () => {
 	let doc, root, ul, p;

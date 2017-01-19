@@ -3,25 +3,25 @@
  * For licensing, see LICENSE.md.
  */
 
-import Delta from 'ckeditor5-engine/src/model/delta/delta';
-import InsertDelta from 'ckeditor5-engine/src/model/delta/insertdelta';
+import Delta from '../../../src/model/delta/delta';
+import InsertDelta from '../../../src/model/delta/insertdelta';
 
-import AttributeOperation from 'ckeditor5-engine/src/model/operation/attributeoperation';
-import InsertOperation from 'ckeditor5-engine/src/model/operation/insertoperation';
-import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
-import NoOperation from 'ckeditor5-engine/src/model/operation/nooperation';
-import ReinsertOperation from 'ckeditor5-engine/src/model/operation/reinsertoperation';
-import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
-import RootAttributeOperation from 'ckeditor5-engine/src/model/operation/rootattributeoperation';
+import AttributeOperation from '../../../src/model/operation/attributeoperation';
+import InsertOperation from '../../../src/model/operation/insertoperation';
+import MoveOperation from '../../../src/model/operation/moveoperation';
+import NoOperation from '../../../src/model/operation/nooperation';
+import ReinsertOperation from '../../../src/model/operation/reinsertoperation';
+import RemoveOperation from '../../../src/model/operation/removeoperation';
+import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation';
 
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import DeltaFactory from 'ckeditor5-engine/src/model/delta/deltafactory';
+import DeltaFactory from '../../../src/model/delta/deltafactory';
 
-import Document from 'ckeditor5-engine/src/model/document';
-import Position from 'ckeditor5-engine/src/model/position';
-import Range from 'ckeditor5-engine/src/model/range';
-import { jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
+import Document from '../../../src/model/document';
+import Position from '../../../src/model/position';
+import Range from '../../../src/model/range';
+import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 class FooDelta extends Delta {
 	static get className() {

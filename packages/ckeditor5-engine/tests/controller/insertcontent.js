@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import DataController from 'ckeditor5-engine/src/controller/datacontroller';
-import insertContent from 'ckeditor5-engine/src/controller/insertcontent';
+import Document from '../../src/model/document';
+import DataController from '../../src/controller/datacontroller';
+import insertContent from '../../src/controller/insertcontent';
 
-import DocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
-import Text from 'ckeditor5-engine/src/model/text';
+import DocumentFragment from '../../src/model/documentfragment';
+import Text from '../../src/model/text';
 
-import { setData, getData, parse } from 'ckeditor5-engine/src/dev-utils/model';
+import { setData, getData, parse } from '../../src/dev-utils/model';
 
 describe( 'DataController', () => {
 	let doc, dataController;

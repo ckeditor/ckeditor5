@@ -14,7 +14,7 @@ import {
 	isInlineFiller,
 	getDataWithoutFiller,
 	isBlockFiller
-} from 'ckeditor5-engine/src/view/filler';
+} from '../../src/view/filler';
 
 describe( 'filler', () => {
 	describe( 'INLINE_FILLER', () => {

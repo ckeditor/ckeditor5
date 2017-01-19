@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import Position from 'ckeditor5-engine/src/model/position';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Document from '../../../src/model/document';
+import Position from '../../../src/model/position';
+import Element from '../../../src/model/element';
+import Text from '../../../src/model/text';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import MergeDelta from 'ckeditor5-engine/src/model/delta/mergedelta';
-import SplitDelta from 'ckeditor5-engine/src/model/delta/splitdelta';
+import MergeDelta from '../../../src/model/delta/mergedelta';
+import SplitDelta from '../../../src/model/delta/splitdelta';
 
-import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
-import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
-import ReinsertOperation from 'ckeditor5-engine/src/model/operation/reinsertoperation';
+import MoveOperation from '../../../src/model/operation/moveoperation';
+import RemoveOperation from '../../../src/model/operation/removeoperation';
+import ReinsertOperation from '../../../src/model/operation/reinsertoperation';
 
-import count from 'ckeditor5-utils/src/count';
+import count from '@ckeditor/ckeditor5-utils/src/count';
 
 describe( 'Batch', () => {
 	let doc, root, p1, p2, batch;

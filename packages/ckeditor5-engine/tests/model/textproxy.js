@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import TextProxy from 'ckeditor5-engine/src/model/textproxy';
-import Document from 'ckeditor5-engine/src/model/document';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Element from '../../src/model/element';
+import Text from '../../src/model/text';
+import TextProxy from '../../src/model/textproxy';
+import Document from '../../src/model/document';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'TextProxy', () => {
 	let doc, element, textProxy, root, textProxyNoParent, text, textNoParent;

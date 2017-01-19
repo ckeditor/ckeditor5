@@ -12,9 +12,9 @@ import Range from './range';
 import LiveRange from './liverange';
 import Text from './text';
 import TextProxy from './textproxy';
-import toMap from 'ckeditor5-utils/src/tomap';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import log from 'ckeditor5-utils/src/log';
+import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import Selection from './selection';
 

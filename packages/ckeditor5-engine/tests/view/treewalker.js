@@ -5,14 +5,14 @@
 
 /* globals document */
 
-import Document from 'ckeditor5-engine/src/view/document';
-import AttributeElement from 'ckeditor5-engine/src/view/attributeelement';
-import ContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import Text from 'ckeditor5-engine/src/view/text';
-import TreeWalker from 'ckeditor5-engine/src/view/treewalker';
-import Position from 'ckeditor5-engine/src/view/position';
-import Range from 'ckeditor5-engine/src/view/range';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Document from '../../src/view/document';
+import AttributeElement from '../../src/view/attributeelement';
+import ContainerElement from '../../src/view/containerelement';
+import Text from '../../src/view/text';
+import TreeWalker from '../../src/view/treewalker';
+import Position from '../../src/view/position';
+import Range from '../../src/view/range';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'TreeWalker', () => {
 	let doc, root, img1, paragraph, bold, textAbcd, charY, img2, charX;

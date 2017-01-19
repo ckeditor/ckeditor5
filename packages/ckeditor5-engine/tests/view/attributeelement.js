@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import AttributeElement from 'ckeditor5-engine/src/view/attributeelement';
-import Element from 'ckeditor5-engine/src/view/element';
-import { parse } from 'ckeditor5-engine/src/dev-utils/view';
+import AttributeElement from '../../src/view/attributeelement';
+import Element from '../../src/view/element';
+import { parse } from '../../src/dev-utils/view';
 
 describe( 'AttributeElement', () => {
 	describe( 'constructor()', () => {

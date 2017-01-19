@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import DocumentFragment from 'ckeditor5-engine/src/model/documentfragment';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import Position from 'ckeditor5-engine/src/model/position';
-import LivePosition from 'ckeditor5-engine/src/model/liveposition';
-import Range from 'ckeditor5-engine/src/model/range';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Document from '../../src/model/document';
+import DocumentFragment from '../../src/model/documentfragment';
+import Element from '../../src/model/element';
+import Text from '../../src/model/text';
+import Position from '../../src/model/position';
+import LivePosition from '../../src/model/liveposition';
+import Range from '../../src/model/range';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'LivePosition', () => {
 	let doc, root, ul, p, li1, li2;

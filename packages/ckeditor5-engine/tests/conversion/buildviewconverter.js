@@ -3,24 +3,24 @@
  * For licensing, see LICENSE.md.
  */
 
-import buildViewConverter from 'ckeditor5-engine/src/conversion/buildviewconverter';
+import buildViewConverter from '../../src/conversion/buildviewconverter';
 
-import ModelSchema from 'ckeditor5-engine/src/model/schema';
-import ModelDocument from 'ckeditor5-engine/src/model/document';
-import ModelElement from 'ckeditor5-engine/src/model/element';
-import ModelTextProxy from 'ckeditor5-engine/src/model/textproxy';
-import ModelRange from 'ckeditor5-engine/src/model/range';
-import ModelWalker from 'ckeditor5-engine/src/model/treewalker';
+import ModelSchema from '../../src/model/schema';
+import ModelDocument from '../../src/model/document';
+import ModelElement from '../../src/model/element';
+import ModelTextProxy from '../../src/model/textproxy';
+import ModelRange from '../../src/model/range';
+import ModelWalker from '../../src/model/treewalker';
 
-import ViewDocumentFragment from 'ckeditor5-engine/src/view/documentfragment';
-import ViewContainerElement from 'ckeditor5-engine/src/view/containerelement';
-import ViewAttributeElement from 'ckeditor5-engine/src/view/attributeelement';
-import ViewText from 'ckeditor5-engine/src/view/text';
-import ViewMatcher from 'ckeditor5-engine/src/view/matcher';
+import ViewDocumentFragment from '../../src/view/documentfragment';
+import ViewContainerElement from '../../src/view/containerelement';
+import ViewAttributeElement from '../../src/view/attributeelement';
+import ViewText from '../../src/view/text';
+import ViewMatcher from '../../src/view/matcher';
 
-import ViewConversionDispatcher from 'ckeditor5-engine/src/conversion/viewconversiondispatcher';
+import ViewConversionDispatcher from '../../src/conversion/viewconversiondispatcher';
 
-import { convertToModelFragment, convertText } from 'ckeditor5-engine/src/conversion/view-to-model-converters';
+import { convertToModelFragment, convertText } from '../../src/conversion/view-to-model-converters';
 
 function modelAttributesToString( item ) {
 	let result = '';

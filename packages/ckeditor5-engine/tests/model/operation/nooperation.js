@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import NoOperation from 'ckeditor5-engine/src/model/operation/nooperation';
-import { jsonParseStringify, wrapInDelta } from 'ckeditor5-engine/tests/model/_utils/utils';
+import Document from '../../../src/model/document';
+import NoOperation from '../../../src/model/operation/nooperation';
+import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'NoOperation', () => {
 	let noop, doc, root;

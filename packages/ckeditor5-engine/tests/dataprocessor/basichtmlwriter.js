@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import BasicHtmlWriter from 'ckeditor5-engine/src/dataprocessor/basichtmlwriter';
+import BasicHtmlWriter from '../../src/dataprocessor/basichtmlwriter';
 
 describe( 'BasicHtmlWriter', () => {
 	const basicHtmlWriter = new BasicHtmlWriter();

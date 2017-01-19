@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import createDocumentMock from 'ckeditor5-engine/tests/view/_utils/createdocumentmock';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import RootEditableElement from 'ckeditor5-engine/src/view/rooteditableelement';
-import Range from 'ckeditor5-engine/src/view/range';
+import createDocumentMock from '../../tests/view/_utils/createdocumentmock';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import RootEditableElement from '../../src/view/rooteditableelement';
+import Range from '../../src/view/range';
 
 describe( 'EditableElement', () => {
 	describe( 'document', () => {

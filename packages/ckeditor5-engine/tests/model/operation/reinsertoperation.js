@@ -3,14 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
-import Document from 'ckeditor5-engine/src/model/document';
-import ReinsertOperation from 'ckeditor5-engine/src/model/operation/reinsertoperation';
-import RemoveOperation from 'ckeditor5-engine/src/model/operation/removeoperation';
-import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
-import Position from 'ckeditor5-engine/src/model/position';
-import Element from 'ckeditor5-engine/src/model/element';
-import Text from 'ckeditor5-engine/src/model/text';
-import { jsonParseStringify, wrapInDelta } from 'ckeditor5-engine/tests/model/_utils/utils';
+import Document from '../../../src/model/document';
+import ReinsertOperation from '../../../src/model/operation/reinsertoperation';
+import RemoveOperation from '../../../src/model/operation/removeoperation';
+import MoveOperation from '../../../src/model/operation/moveoperation';
+import Position from '../../../src/model/position';
+import Element from '../../../src/model/element';
+import Text from '../../../src/model/text';
+import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'ReinsertOperation', () => {
 	let doc, root, graveyard, operation, graveyardPosition, rootPosition;

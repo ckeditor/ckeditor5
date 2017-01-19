@@ -10,9 +10,9 @@
 import ViewConsumable from './viewconsumable';
 import ViewElement from '../view/element';
 import ViewText from '../view/text';
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
-import mix from 'ckeditor5-utils/src/mix';
-import extend from 'ckeditor5-utils/src/lib/lodash/extend';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
 
 /**
  * `ViewConversionDispatcher` is a central point of {@link module:engine/view/view view} conversion, which is a process of

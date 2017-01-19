@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import Matcher from 'ckeditor5-engine/src/view/matcher';
-import Element from 'ckeditor5-engine/src/view/element';
+import Matcher from '../../src/view/matcher';
+import Element from '../../src/view/element';
 
 describe( 'Matcher', () => {
 	describe( 'add', () => {

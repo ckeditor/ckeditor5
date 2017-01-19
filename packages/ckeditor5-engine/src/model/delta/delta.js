@@ -7,7 +7,7 @@
  * @module engine/model/delta/delta
  */
 
-import clone from 'ckeditor5-utils/src/lib/lodash/clone';
+import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 import DeltaFactory from './deltafactory';
 
 /**

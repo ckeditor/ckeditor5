@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
-import transformations from 'ckeditor5-engine/src/model/delta/basic-transformations';
+import transformations from '../../../../src/model/delta/basic-transformations';
 /*jshint unused: false*/
 
-import transform from 'ckeditor5-engine/src/model/delta/transform';
+import transform from '../../../../src/model/delta/transform';
 
-import Position from 'ckeditor5-engine/src/model/position';
-import Range from 'ckeditor5-engine/src/model/range';
+import Position from '../../../../src/model/position';
+import Range from '../../../../src/model/range';
 
-import MoveDelta from 'ckeditor5-engine/src/model/delta/movedelta';
-import SplitDelta from 'ckeditor5-engine/src/model/delta/splitdelta';
+import MoveDelta from '../../../../src/model/delta/movedelta';
+import SplitDelta from '../../../../src/model/delta/splitdelta';
 
-import MoveOperation from 'ckeditor5-engine/src/model/operation/moveoperation';
+import MoveOperation from '../../../../src/model/operation/moveoperation';
 
-import { getNodesAndText, jsonParseStringify } from 'ckeditor5-engine/tests/model/_utils/utils';
+import { getNodesAndText, jsonParseStringify } from '../../../../tests/model/_utils/utils';
 
 import {
 	applyDelta,
@@ -24,7 +24,7 @@ import {
 	getFilledDocument,
 	getMergeDelta,
 	getMoveDelta
-} from 'ckeditor5-engine/tests/model/delta/transform/_utils/utils';
+} from '../../../../tests/model/delta/transform/_utils/utils';
 
 describe( 'transform', () => {
 	let doc, root, gy, baseVersion;
