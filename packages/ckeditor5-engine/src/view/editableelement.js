@@ -80,11 +80,11 @@ export default class EditableElement extends ContainerElement {
 			( isFocused ) => isFocused && document.selection.editableElement == this
 		);
 
-		// Update focus state after each rendering. Selection might be moved to different editable before rendering,
-		// but this does not mean that editable has focus - it will be placed there after rendering.
+		// Update focus state before each rendering. Rendering should not change neither the selection nor the value of
+		// document.isFocused property.
 		this.listenTo( document, 'render', () => {
 			this.isFocused = document.isFocused && document.selection.editableElement == this;
-		}, { priority: 'low' } );
+		}, { priority: 'high' } );
 	}
 }
 

@@ -91,6 +91,28 @@ describe( 'EditableElement', () => {
 			expect( viewHeader.isFocused ).to.be.true;
 		} );
 
+		it( 'should change isFocus before actual rendering', ( done ) => {
+			const rangeMain = Range.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
+			const rangeHeader = Range.createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
+			docMock.render = sinon.spy();
+
+			docMock.selection.addRange( rangeMain );
+			docMock.isFocused = true;
+
+			expect( viewMain.isFocused ).to.be.true;
+			expect( viewHeader.isFocused ).to.be.false;
+
+			docMock.selection.setRanges( [ rangeHeader ] );
+
+			viewHeader.on( 'change:isFocused', ( evt, propertyName, value ) => {
+				expect( value ).to.be.true;
+				sinon.assert.notCalled( docMock.render );
+				done();
+			} );
+
+			docMock.fire( 'render' );
+		} );
+
 		it( 'should change isFocused when document.isFocus changes', () => {
 			const rangeMain = Range.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
 			const rangeHeader = Range.createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
