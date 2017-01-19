@@ -36,7 +36,7 @@ describe( 'ToolbarView', () => {
 			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
 
-		it( 'creates #keystrokeHandler instance', () => {
+		it( 'creates #keystrokes instance', () => {
 			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
 		} );
 

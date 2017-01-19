@@ -56,7 +56,18 @@ export default class ToolbarView extends View {
 		 * @protected
 		 * @member {module:ui/focuscycler~FocusCycler}
 		 */
-		this._focusCycler = new FocusCycler( this.items, this.focusTracker );
+		this._focusCycler = new FocusCycler( {
+			focusables: this.items,
+			focusTracker: this.focusTracker,
+			keystrokeHandler: this.keystrokes,
+			actions: {
+				// Navigate toolbar items backwards using the arrow[left,up] keys.
+				focusPrevious: [ 'arrowleft', 'arrowup' ],
+
+				// Navigate toolbar items forwards using the arrow[right,down] keys.
+				focusNext: [ 'arrowright', 'arrowdown' ]
+			}
+		} );
 
 		this.template = new Template( {
 			tag: 'div',
@@ -82,35 +93,8 @@ export default class ToolbarView extends View {
 	 * @inheritDoc
 	 */
 	init() {
+		// Start listening for the keystrokes coming from #element.
 		this.keystrokes.listenTo( this.element );
-
-		const focusNext = ( data, cancel ) => {
-			const nextFocusable = this._focusCycler.next;
-
-			if ( nextFocusable ) {
-				nextFocusable.focus();
-			}
-
-			cancel();
-		};
-
-		const focusPrevious = ( data, cancel ) => {
-			const previousFocusable = this._focusCycler.previous;
-
-			if ( previousFocusable ) {
-				previousFocusable.focus();
-			}
-
-			cancel();
-		};
-
-		// Navigate toolbar items back using the arrow left/up key.
-		this.keystrokes.set( 'arrowleft', focusPrevious );
-		this.keystrokes.set( 'arrowup', focusPrevious );
-
-		// Navigate toolbar items forwards using the arrow right/down key.
-		this.keystrokes.set( 'arrowright', focusNext );
-		this.keystrokes.set( 'arrowdown', focusNext );
 
 		return super.init();
 	}
@@ -119,12 +103,7 @@ export default class ToolbarView extends View {
 	 * Focuses the first focusable in {@link #items}.
 	 */
 	focus() {
-		// Find the very first toolbar item that can be focused.
-		const firstFocusable = this._focusCycler.first;
-
-		if ( firstFocusable ) {
-			firstFocusable.focus();
-		}
+		this._focusCycler.focusFirst();
 	}
 }
 
