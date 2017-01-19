@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import ToolbarView from 'ckeditor5-ui/src/toolbar/toolbarview';
-import ViewCollection from 'ckeditor5-ui/src/viewcollection';
+import ToolbarView from '../../src/toolbar/toolbarview';
+import ViewCollection from '../../src/viewcollection';
 
 describe( 'ToolbarView', () => {
 	let locale, view;

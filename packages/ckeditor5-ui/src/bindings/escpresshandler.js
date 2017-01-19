@@ -9,7 +9,7 @@
 
 /* global document */
 
-import { keyCodes } from 'ckeditor5-utils/src/keyboard';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * Detects <kbd>Esc</kbd> `keydown` DOM event and fires an action.

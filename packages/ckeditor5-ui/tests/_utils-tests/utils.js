@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import testUtils from 'ckeditor5-ui/tests/_utils/utils';
+import testUtils from '../../tests/_utils/utils';
 
 describe( 'utils', () => {
 	describe( 'createTestUIView', () => {

@@ -5,13 +5,13 @@
 
 /* global document */
 
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import Collection from 'ckeditor5-utils/src/collection';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import View from 'ckeditor5-ui/src/view';
-import ViewCollection from 'ckeditor5-ui/src/viewcollection';
-import Template from 'ckeditor5-ui/src/template';
-import normalizeHtml from 'ckeditor5-utils/tests/_utils/normalizehtml';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import View from '../src/view';
+import ViewCollection from '../src/viewcollection';
+import Template from '../src/template';
+import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 let collection;
 

@@ -5,12 +5,12 @@
 
 /* global document */
 
-import escPressHandler from 'ckeditor5-ui/src/bindings/escpresshandler';
+import escPressHandler from '../../src/bindings/escpresshandler';
 
-import DomEmitterMixin from 'ckeditor5-utils/src/dom/emittermixin';
-import { keyCodes } from 'ckeditor5-utils/src/keyboard';
+import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 

@@ -5,10 +5,10 @@
 
 /* global document */
 
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import EditorUIView from 'ckeditor5-ui/src/editorui/editoruiview';
-import ViewCollection from 'ckeditor5-ui/src/viewcollection';
-import Locale from 'ckeditor5-utils/src/locale';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import EditorUIView from '../../src/editorui/editoruiview';
+import ViewCollection from '../../src/viewcollection';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
 testUtils.createSinonSandbox();
 

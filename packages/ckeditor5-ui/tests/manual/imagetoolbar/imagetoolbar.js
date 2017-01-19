@@ -5,19 +5,19 @@
 
 /* globals window, document, console:false */
 
-import ClassicEditor from 'ckeditor5-editor-classic/src/classic';
-import ClickObserver from 'ckeditor5-engine/src/view/observer/clickobserver';
-import Enter from 'ckeditor5-enter/src/enter';
-import Typing from 'ckeditor5-typing/src/typing';
-import Paragraph from 'ckeditor5-paragraph/src/paragraph';
-import Undo from 'ckeditor5-undo/src/undo';
-import Image from 'ckeditor5-image/src/image';
-import Bold from 'ckeditor5-basic-styles/src/bold';
-import Italic from 'ckeditor5-basic-styles/src/italic';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-import Template from 'ckeditor5-ui/src/template';
-import ToolbarView from 'ckeditor5-ui/src/toolbar/toolbarview';
-import BalloonPanelView from 'ckeditor5-ui/src/balloonpanel/balloonpanelview';
+import Template from '../../../src/template';
+import ToolbarView from '../../../src/toolbar/toolbarview';
+import BalloonPanelView from '../../../src/balloonpanel/balloonpanelview';
 
 const arrowVOffset = BalloonPanelView.arrowVerticalOffset;
 const positions = {

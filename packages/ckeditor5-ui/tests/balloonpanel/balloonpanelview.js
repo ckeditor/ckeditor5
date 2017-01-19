@@ -5,12 +5,12 @@
 
 /* global window, document */
 
-import global from 'ckeditor5-utils/src/dom/global';
-import ViewCollection from 'ckeditor5-ui/src/viewcollection';
-import BalloonPanelView from 'ckeditor5-ui/src/balloonpanel/balloonpanelview';
-import ButtonView from 'ckeditor5-ui/src/button/buttonview';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import * as positionUtils from 'ckeditor5-utils/src/dom/position';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ViewCollection from '../../src/viewcollection';
+import BalloonPanelView from '../../src/balloonpanel/balloonpanelview';
+import ButtonView from '../../src/button/buttonview';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import * as positionUtils from '@ckeditor/ckeditor5-utils/src/dom/position';
 
 testUtils.createSinonSandbox();
 

@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import DropdownView from 'ckeditor5-ui/src/dropdown/dropdownview';
-import ButtonView from 'ckeditor5-ui/src/button/buttonview';
-import DropdownPanelView from 'ckeditor5-ui/src/dropdown/dropdownpanelview';
+import DropdownView from '../../src/dropdown/dropdownview';
+import ButtonView from '../../src/button/buttonview';
+import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 
 describe( 'DropdownView', () => {
 	let view, buttonView, panelView, locale;

@@ -7,7 +7,7 @@
  * @module ui/componentfactory
  */
 
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Class implementing the UI component factory.

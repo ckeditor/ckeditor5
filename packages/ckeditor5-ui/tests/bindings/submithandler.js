@@ -5,10 +5,10 @@
 
 /* global document, Event */
 
-import submitHandler from 'ckeditor5-ui/src/bindings/submithandler';
+import submitHandler from '../../src/bindings/submithandler';
 
-import View from 'ckeditor5-ui/src/view';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import View from '../../src/view';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 

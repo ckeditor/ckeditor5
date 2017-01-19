@@ -5,9 +5,9 @@
 
 /* globals document */
 
-import IconView from 'ckeditor5-ui/src/icon/iconview';
+import IconView from '../../../src/icon/iconview';
 
-import 'ckeditor5-theme-lark/theme/theme.scss';
+import '@ckeditor/ckeditor5-theme-lark/theme/theme.scss';
 
 const wrapper = document.querySelector( '#inline-svg' );
 
