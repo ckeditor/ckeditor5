@@ -7,7 +7,7 @@
  * @module undo/undoengine
  */
 
-import Plugin from 'ckeditor5-core/src/plugin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import UndoCommand from './undocommand';
 import RedoCommand from './redocommand';
 

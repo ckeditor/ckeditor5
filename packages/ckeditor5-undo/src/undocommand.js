@@ -9,7 +9,7 @@
 
 import BaseCommand from './basecommand';
 import { transformRangesByDeltas } from './basecommand';
-import { transformDeltaSets } from 'ckeditor5-engine/src/model/delta/transform';
+import { transformDeltaSets } from '@ckeditor/ckeditor5-engine/src/model/delta/transform';
 
 /**
  * The undo command stores {@link module:engine/model/batch~Batch batches} applied to the
