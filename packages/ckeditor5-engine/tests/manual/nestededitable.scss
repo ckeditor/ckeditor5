@@ -1,0 +1,25 @@
+// Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_colors.scss';
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_shadow.scss';
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_states.scss';
+
+figure {
+	background-color: #f3f3f3;
+	padding: 10px;
+
+	figcaption {
+		background: white;
+		outline: none;
+
+		&.focused {
+			@include ck-focus-ring( 'outline' );
+			@include ck-box-shadow( $ck-inner-shadow );
+		}
+	}
+}
+
+
+
+
