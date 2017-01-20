@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import WidgetEngine from './widget/widgetengine';
-import { modelToViewImage, viewToModelImage, modelToViewSelection } from './converters';
+import { modelToViewImage, viewToModelImage, modelToViewSelection, imageAttributeToView } from './converters';
 import { toImageWidget } from './utils';
 
 /**
@@ -47,12 +47,15 @@ export default class ImageEngine extends Plugin {
 		// Build converter from model to view for data pipeline.
 		buildModelConverter().for( data.modelToView )
 			.fromElement( 'image' )
-			.toElement( ( data ) => modelToViewImage( data.item ) );
+			.toElement( () => modelToViewImage() );
 
 		// Build converter from model to view for editing pipeline.
 		buildModelConverter().for( editing.modelToView )
 			.fromElement( 'image' )
-			.toElement( ( data ) => toImageWidget( modelToViewImage( data.item ) ) );
+			.toElement( () => toImageWidget( modelToViewImage() ) );
+
+		imageAttributeToView( [ editing.modelToView, data.modelToView ], 'src' );
+		imageAttributeToView( [ editing.modelToView, data.modelToView ], 'alt' );
 
 		// Converter for figure element from view to model.
 		data.viewToModel.on( 'element:figure', viewToModelImage() );
