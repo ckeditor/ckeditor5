@@ -14,6 +14,7 @@ import Range from '../../../src/model/range';
 import InsertOperation from '../../../src/model/operation/insertoperation';
 import AttributeOperation from '../../../src/model/operation/attributeoperation';
 import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation';
+import MarkerOperation from '../../../src/model/operation/markeroperation';
 import MoveOperation from '../../../src/model/operation/moveoperation';
 import RemoveOperation from '../../../src/model/operation/removeoperation';
 import RenameOperation from '../../../src/model/operation/renameoperation';
@@ -406,6 +407,18 @@ describe( 'transform', () => {
 		describe( 'by RenameOperation', () => {
 			it( 'no position update', () => {
 				let transformBy = new RenameOperation( new Position( root, [ 0, 2, 0 ] ), 'oldName', 'newName', baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by MarkerOperation', () => {
+			it( 'no position update', () => {
+				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 4 ] ) );
+				let transformBy = new MarkerOperation( 'name', null, newRange, baseVersion );
 
 				let transOp = transform( op, transformBy );
 
@@ -1125,6 +1138,18 @@ describe( 'transform', () => {
 					expectOperation( transOp[ 0 ], expected );
 				} );
 			} );
+
+			describe( 'by MarkerOperation', () => {
+				it( 'no operation update', () => {
+					const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
+					let transformBy = new MarkerOperation( 'name', null, newRange, baseVersion );
+
+					let transOp = transform( op, transformBy );
+
+					expect( transOp.length ).to.equal( 1 );
+					expectOperation( transOp[ 0 ], expected );
+				} );
+			} );
 		} );
 
 		// Some extra cases for a AttributeOperation that operates on single tree level range.
@@ -1584,6 +1609,18 @@ describe( 'transform', () => {
 		describe( 'by RenameOperation', () => {
 			it( 'no position update', () => {
 				let transformBy = new RenameOperation( new Position( root, [ 0 ] ), 'oldName', 'newName', baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by MarkerOperation', () => {
+			it( 'no position update', () => {
+				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
+				let transformBy = new MarkerOperation( 'name', null, newRange, baseVersion );
 
 				let transOp = transform( op, transformBy );
 
@@ -2705,6 +2742,18 @@ describe( 'transform', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
+
+		describe( 'by MarkerOperation', () => {
+			it( 'no position update', () => {
+				const newRange = new Range( new Position( root, [ 2, 2, 3 ] ), new Position( root, [ 2, 2, 8 ] ) );
+				let transformBy = new MarkerOperation( 'name', null, newRange, baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
 	} );
 
 	describe( 'RemoveOperation', () => {
@@ -2844,6 +2893,18 @@ describe( 'transform', () => {
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
+
+		describe( 'by MarkerOperation', () => {
+			it( 'no position update', () => {
+				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
+				let transformBy = new MarkerOperation( 'name', null, newRange, baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
 	} );
 
 	describe( 'RenameOperation', () => {
@@ -2949,6 +3010,18 @@ describe( 'transform', () => {
 					'bar',
 					baseVersion
 				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by MarkerOperation', () => {
+			it( 'no operation update', () => {
+				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
+				let transformBy = new MarkerOperation( 'name', null, newRange, baseVersion );
 
 				let transOp = transform( op, transformBy );
 
@@ -3106,6 +3179,197 @@ describe( 'transform', () => {
 
 				expected.position.offset = 0;
 
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+	} );
+
+	describe( 'MarkerOperation', () => {
+		let oldRange, newRange;
+
+		beforeEach( () => {
+			oldRange = Range.createFromParentsAndOffsets( root, 1, root, 4 );
+			newRange = Range.createFromParentsAndOffsets( root, 10, root, 12 );
+			op = new MarkerOperation( 'name', oldRange, newRange, baseVersion );
+
+			expected = {
+				name: 'name',
+				oldRange: oldRange,
+				newRange: newRange,
+				baseVersion: baseVersion + 1
+			};
+		} );
+
+		describe( 'by InsertOperation', () => {
+			it( 'insert position affecting oldRange: update oldRange', () => {
+				// Just CC things.
+				op.newRange = null;
+				let transformBy = new InsertOperation( Position.createAt( root, 0 ), [ nodeA, nodeB ], baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expected.newRange = null;
+				expected.oldRange.start.offset = 3;
+				expected.oldRange.end.offset = 6;
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'insert position affecting newRange: update newRange', () => {
+				// Just CC things.
+				op.oldRange = null;
+				let transformBy = new InsertOperation( Position.createAt( root, 8 ), [ nodeA, nodeB ], baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expected.oldRange = null;
+				expected.newRange.start.offset = 12;
+				expected.newRange.end.offset = 14;
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by AttributeOperation', () => {
+			it( 'no operation update', () => {
+				let transformBy = new AttributeOperation(
+					new Range(
+						new Position( root, [ 2 ] ),
+						new Position( root, [ 11 ] )
+					),
+					'foo',
+					'bar',
+					'xyz',
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by MoveOperation', () => {
+			it( 'moved range is before oldRange: update oldRange', () => {
+				// Just CC things.
+				op.newRange = null;
+
+				let transformBy = new MoveOperation( Position.createAt( root, 0 ), 1, Position.createAt( root, 20 ), baseVersion );
+				let transOp = transform( op, transformBy );
+
+				expected.newRange = null;
+				expected.oldRange.start.offset = 0;
+				expected.oldRange.end.offset = 3;
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'moved range contains oldRange and is before newRange: update oldRange and newRange', () => {
+				let transformBy = new MoveOperation( Position.createAt( root, 2 ), 2, Position.createAt( root, 20 ), baseVersion );
+				let transOp = transform( op, transformBy );
+
+				expected.oldRange.start.offset = 1;
+				expected.oldRange.end.offset = 2;
+				expected.newRange.start.offset = 8;
+				expected.newRange.end.offset = 10;
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'target position is inside newRange: update newRange', () => {
+				// Just CC things.
+				op.oldRange = null;
+
+				let transformBy = new MoveOperation( Position.createAt( root, 20 ), 2, Position.createAt( root, 11 ), baseVersion );
+				let transOp = transform( op, transformBy );
+
+				expected.oldRange = null;
+				expected.newRange.start.offset = 10;
+				expected.newRange.end.offset = 14;
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'target position is inside oldRange and before newRange: update oldRange and newRange', () => {
+				let transformBy = new MoveOperation( Position.createAt( root, 20 ), 4, Position.createAt( root, 2 ), baseVersion );
+				let transOp = transform( op, transformBy );
+
+				expected.oldRange.start.offset = 1;
+				expected.oldRange.end.offset = 8;
+				expected.newRange.start.offset = 14;
+				expected.newRange.end.offset = 16;
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by RootAttributeOperation', () => {
+			it( 'no operation update', () => {
+				let transformBy = new RootAttributeOperation(
+					root,
+					'foo',
+					null,
+					'bar',
+					baseVersion
+				);
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by RenameOperation', () => {
+			it( 'no operation update', () => {
+				let transformBy = new RenameOperation( new Position( root, [ 1 ] ), 'oldName', 'newName', baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+		} );
+
+		describe( 'by MarkerOperation', () => {
+			it( 'different marker name: no operation update', () => {
+				let transformBy = new MarkerOperation( 'otherName', oldRange, newRange, baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
+
+			it( 'same marker name and is important: convert to NoOperation', () => {
+				const anotherRange = Range.createFromParentsAndOffsets( root, 2, root, 2 );
+				let transformBy = new MarkerOperation( 'name', oldRange, anotherRange, baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], {
+					type: NoOperation,
+					baseVersion: baseVersion + 1
+				} );
+			} );
+
+			it( 'same marker name and is less important: update oldRange parameter', () => {
+				const anotherRange = Range.createFromParentsAndOffsets( root, 2, root, 2 );
+				let transformBy = new MarkerOperation( 'name', oldRange, anotherRange, baseVersion );
+
+				let transOp = transform( op, transformBy, true );
+
+				expected.oldRange = anotherRange;
+
+				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );

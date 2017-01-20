@@ -255,16 +255,20 @@ describe( 'EditingController', () => {
 
 		it( 'should forward marker events to model conversion dispatcher', () => {
 			const range = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 );
+			const markerStub = {
+				name: 'name',
+				getRange: () => range
+			};
 
 			sinon.spy( editing.modelToView, 'convertMarker' );
 
-			model.markers.fire( 'add', range, 'name' );
+			model.markers.fire( 'add', markerStub );
 
-			expect( editing.modelToView.convertMarker.calledWithExactly( 'addMarker', range, 'name' ) ).to.be.true;
+			expect( editing.modelToView.convertMarker.calledWithExactly( 'addMarker', 'name', range ) ).to.be.true;
 
-			model.markers.fire( 'remove', range, 'name' );
+			model.markers.fire( 'remove', markerStub );
 
-			expect( editing.modelToView.convertMarker.calledWithExactly( 'removeMarker', range, 'name' ) ).to.be.true;
+			expect( editing.modelToView.convertMarker.calledWithExactly( 'removeMarker', 'name', range ) ).to.be.true;
 
 			editing.modelToView.convertMarker.restore();
 		} );
@@ -277,7 +281,7 @@ describe( 'EditingController', () => {
 				test: () => true
 			};
 
-			model.markers.add( 'name', markerRange );
+			model.markers.set( 'name', markerRange );
 
 			sinon.spy( editing.modelToView, 'convertMarker' );
 
@@ -298,7 +302,7 @@ describe( 'EditingController', () => {
 				test: () => true
 			};
 
-			model.markers.add( 'name', markerRange );
+			model.markers.set( 'name', markerRange );
 
 			sinon.spy( editing.modelToView, 'convertMarker' );
 
@@ -318,7 +322,7 @@ describe( 'EditingController', () => {
 				test: () => true
 			};
 
-			model.markers.add( 'name', markerRange );
+			model.markers.set( 'name', markerRange );
 
 			sinon.spy( editing.modelToView, 'convertMarker' );
 
@@ -344,7 +348,7 @@ describe( 'EditingController', () => {
 				test: () => true
 			};
 
-			model.markers.add( 'name', markerRange );
+			model.markers.set( 'name', markerRange );
 
 			sinon.spy( editing.modelToView, 'convertMarker' );
 
@@ -370,7 +374,7 @@ describe( 'EditingController', () => {
 				test: () => true
 			};
 
-			model.markers.add( 'name', markerRange );
+			model.markers.set( 'name', markerRange );
 
 			sinon.spy( editing.modelToView, 'convertMarker' );
 
@@ -392,7 +396,7 @@ describe( 'EditingController', () => {
 				test: () => true
 			};
 
-			model.markers.add( 'name', markerRange );
+			model.markers.set( 'name', markerRange );
 
 			sinon.spy( editing.modelToView, 'convertMarker' );
 

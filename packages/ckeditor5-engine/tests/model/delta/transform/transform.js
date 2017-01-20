@@ -12,7 +12,6 @@ import Document from '../../../../src/model/document';
 import Element from '../../../../src/model/element';
 import Text from '../../../../src/model/text';
 import Position from '../../../../src/model/position';
-import Range from '../../../../src/model/range';
 
 import Delta from '../../../../src/model/delta/delta';
 import InsertDelta from '../../../../src/model/delta/insertdelta';

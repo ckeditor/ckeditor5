@@ -15,6 +15,7 @@ import InsertDelta from '../../../../../src/model/delta/insertdelta';
 import WeakInsertDelta from '../../../../../src/model/delta/weakinsertdelta';
 import RenameDelta from '../../../../../src/model/delta/renamedelta';
 import RemoveDelta from '../../../../../src/model/delta/removedelta';
+import MarkerDelta from '../../../../../src/model/delta/markerdelta';
 import MoveDelta from '../../../../../src/model/delta/movedelta';
 import MergeDelta from '../../../../../src/model/delta/mergedelta';
 import SplitDelta from '../../../../../src/model/delta/splitdelta';
@@ -23,6 +24,7 @@ import UnwrapDelta from '../../../../../src/model/delta/unwrapdelta';
 
 import AttributeOperation from '../../../../../src/model/operation/attributeoperation';
 import InsertOperation from '../../../../../src/model/operation/insertoperation';
+import MarkerOperation from '../../../../../src/model/operation/markeroperation';
 import MoveOperation from '../../../../../src/model/operation/moveoperation';
 import RemoveOperation from '../../../../../src/model/operation/removeoperation';
 import RenameOperation from '../../../../../src/model/operation/renameoperation';
@@ -44,6 +46,13 @@ export function getInsertDelta( position, nodes, version ) {
 export function getWeakInsertDelta( position, nodes, version ) {
 	let delta = new WeakInsertDelta();
 	delta.addOperation( new InsertOperation( position, nodes, version ) );
+
+	return delta;
+}
+
+export function getMarkerDelta( name, oldRange, newRange, version ) {
+	let delta = new MarkerDelta();
+	delta.addOperation( new MarkerOperation( name, oldRange, newRange, version ) );
 
 	return delta;
 }

@@ -105,12 +105,12 @@ export default class EditingController {
 		}, { priority: 'low' } );
 
 		// Convert model markers changes.
-		this._listener.listenTo( this.model.markers, 'add', ( evt, name, range ) => {
-			this.modelToView.convertMarker( 'addMarker', name, range );
+		this._listener.listenTo( this.model.markers, 'add', ( evt, marker ) => {
+			this.modelToView.convertMarker( 'addMarker', marker.name, marker.getRange() );
 		} );
 
-		this._listener.listenTo( this.model.markers, 'remove', ( evt, name, range ) => {
-			this.modelToView.convertMarker( 'removeMarker', name, range );
+		this._listener.listenTo( this.model.markers, 'remove', ( evt, marker ) => {
+			this.modelToView.convertMarker( 'removeMarker', marker.name, marker.getRange() );
 		} );
 
 		// Convert view selection to model.
