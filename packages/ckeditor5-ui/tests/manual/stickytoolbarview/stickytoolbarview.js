@@ -8,7 +8,7 @@
 import testUtils from '../../../tests/_utils/utils';
 import StickyToolbarView from '../../../src/toolbar/sticky/stickytoolbarview';
 
-import 'ckeditor5-theme-lark/theme/theme.scss';
+import '@ckeditor/ckeditor5-theme-lark/theme/theme.scss';
 
 testUtils.createTestUIView( {
 	top: '.ck-editor__top'
