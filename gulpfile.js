@@ -23,8 +23,8 @@ gulp.task( 'docs', () => {
 		.build( {
 			readmePath: path.join( process.cwd(), 'README.md' ),
 			sourceFiles: [
-				process.cwd() + '/node_modules/ckeditor5-*/src/**/*.@(js|jsdoc)',
-				'!' + process.cwd() + '/node_modules/ckeditor5-*/src/lib/**/*.js'
+				process.cwd() + '/packages/ckeditor5-*/src/**/*.@(js|jsdoc)',
+				'!' + process.cwd() + '/packages/ckeditor5-*/src/lib/**/*.js'
 			],
 			destinationPath: path.join( process.cwd(), 'build', 'docs' )
 		} );
