@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import LabeledInputView from 'ckeditor5-ui/src/labeledinput/labeledinputview';
-import InputView from 'ckeditor5-ui/src/inputtext/inputtextview';
-import LabelView from 'ckeditor5-ui/src/label/labelview';
+import LabeledInputView from '../../src/labeledinput/labeledinputview';
+import InputView from '../../src/inputtext/inputtextview';
+import LabelView from '../../src/label/labelview';
 
 describe( 'LabeledInputView', () => {
 	const locale = {};

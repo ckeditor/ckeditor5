@@ -5,8 +5,8 @@
 
 /* globals document */
 
-import InlineEditableUIView from 'ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import Locale from 'ckeditor5-utils/src/locale';
+import InlineEditableUIView from '../../../src/editableui/inline/inlineeditableuiview';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
 describe( 'InlineEditableUIView', () => {
 	let view, editableElement, locale;

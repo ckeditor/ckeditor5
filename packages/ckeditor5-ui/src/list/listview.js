@@ -9,9 +9,9 @@
 
 import View from '../view';
 import Template from '../template';
-import FocusTracker from 'ckeditor5-utils/src/focustracker';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
-import KeystrokeHandler from 'ckeditor5-utils/src/keystrokehandler';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 /**
  * The list view class.

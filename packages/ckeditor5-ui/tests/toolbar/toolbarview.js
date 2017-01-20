@@ -5,13 +5,13 @@
 
 /* global document */
 
-import ToolbarView from 'ckeditor5-ui/src/toolbar/toolbarview';
-import KeystrokeHandler from 'ckeditor5-utils/src/keystrokehandler';
-import FocusTracker from 'ckeditor5-utils/src/focustracker';
-import FocusCycler from 'ckeditor5-ui/src/focuscycler';
-import { keyCodes } from 'ckeditor5-utils/src/keyboard';
-import ViewCollection from 'ckeditor5-ui/src/viewcollection';
-import View from 'ckeditor5-ui/src/view';
+import ToolbarView from '../../src/toolbar/toolbarview';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import FocusCycler from '../../src/focuscycler';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import ViewCollection from '../../src/viewcollection';
+import View from '../../src/view';
 
 describe( 'ToolbarView', () => {
 	let locale, view;

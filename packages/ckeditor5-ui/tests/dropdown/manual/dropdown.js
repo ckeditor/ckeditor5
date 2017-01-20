@@ -5,11 +5,11 @@
 
 /* globals document, window */
 
-import Model from 'ckeditor5-ui/src/model';
-import Collection from 'ckeditor5-utils/src/collection';
+import Model from '../../../src/model';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
-import createDropdown from 'ckeditor5-ui/src/dropdown/createdropdown';
-import createListDropdown from 'ckeditor5-ui/src/dropdown/list/createlistdropdown';
+import createDropdown from '../../../src/dropdown/createdropdown';
+import createListDropdown from '../../../src/dropdown/list/createlistdropdown';
 
 import 'ckeditor5-theme-lark/theme/theme.scss';
 

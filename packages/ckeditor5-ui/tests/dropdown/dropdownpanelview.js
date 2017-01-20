@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewCollection from 'ckeditor5-ui/src/viewcollection';
-import DropdownPanelView from 'ckeditor5-ui/src/dropdown/dropdownpanelview';
+import ViewCollection from '../../src/viewcollection';
+import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 
 describe( 'DropdownPanelView', () => {
 	let view, locale;

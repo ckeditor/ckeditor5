@@ -5,12 +5,12 @@
 
 /* globals document, Event */
 
-import Model from 'ckeditor5-ui/src/model';
-import createListDropdown from 'ckeditor5-ui/src/dropdown/list/createlistdropdown';
-import Collection from 'ckeditor5-utils/src/collection';
-import ListView from 'ckeditor5-ui/src/list/listview';
-import ListItemView from 'ckeditor5-ui/src/list/listitemview';
-import { keyCodes } from 'ckeditor5-utils/src/keyboard';
+import Model from '../../../src/model';
+import createListDropdown from '../../../src/dropdown/list/createlistdropdown';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import ListView from '../../../src/list/listview';
+import ListItemView from '../../../src/list/listitemview';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'createListDropdown', () => {
 	let view, model, locale, items;

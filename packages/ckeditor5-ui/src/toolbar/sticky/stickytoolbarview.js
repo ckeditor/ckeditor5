@@ -7,10 +7,10 @@
  * @module ui/toolbar/sticky/stickytoolbarview
  */
 
-import global from 'ckeditor5-utils/src/dom/global';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Template from '../../template';
 import ToolbarView from '../toolbarview';
-import toUnit from 'ckeditor5-utils/src/dom/tounit';
+import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 
 const toPx = toUnit( 'px' );
 

@@ -9,7 +9,7 @@
 
 import View from '../view';
 import Template from '../template';
-import uid from 'ckeditor5-utils/src/uid';
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 import LabelView from '../label/labelview';
 

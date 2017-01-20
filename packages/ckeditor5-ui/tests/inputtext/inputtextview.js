@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import InputTextView from 'ckeditor5-ui/src/inputtext/inputtextview';
+import InputTextView from '../../src/inputtext/inputtextview';
 
 describe( 'InputTextView', () => {
 	let view;

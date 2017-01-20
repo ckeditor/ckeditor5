@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Model from 'ckeditor5-ui/src/model';
+import Model from '../src/model';
 
 let Car, car;
 

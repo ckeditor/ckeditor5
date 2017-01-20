@@ -11,7 +11,7 @@ import View from '../view';
 import Template from '../template';
 import IconView from '../icon/iconview';
 
-import { getEnvKeystrokeText } from 'ckeditor5-utils/src/keyboard';
+import { getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * The button view class.

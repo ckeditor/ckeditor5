@@ -5,8 +5,8 @@
 
 /* globals console:false */
 
-import testUtils from 'ckeditor5-ui/tests/_utils/utils';
-import StickyToolbarView from 'ckeditor5-ui/src/toolbar/sticky/stickytoolbarview';
+import testUtils from '../../../tests/_utils/utils';
+import StickyToolbarView from '../../../src/toolbar/sticky/stickytoolbarview';
 
 import 'ckeditor5-theme-lark/theme/theme.scss';
 

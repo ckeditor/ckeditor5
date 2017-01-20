@@ -5,11 +5,11 @@
 
 /* globals document */
 
-import global from 'ckeditor5-utils/src/dom/global';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import StickyToolbarView from 'ckeditor5-ui/src/toolbar/sticky/stickytoolbarview';
-import ToolbarView from 'ckeditor5-ui/src/toolbar/toolbarview';
-import DomEmitterMixin from 'ckeditor5-utils/src/dom/emittermixin';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import StickyToolbarView from '../../../src/toolbar/sticky/stickytoolbarview';
+import ToolbarView from '../../../src/toolbar/toolbarview';
+import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 
 testUtils.createSinonSandbox();
 

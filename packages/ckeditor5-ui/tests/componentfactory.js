@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-import Editor from 'ckeditor5-core/src/editor/editor';
-import ComponentFactory from 'ckeditor5-ui/src/componentfactory';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
+import ComponentFactory from '../src/componentfactory';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'ComponentFactory', () => {
 	let editor, factory;

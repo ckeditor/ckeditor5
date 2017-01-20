@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewCollection from 'ckeditor5-ui/src/viewcollection';
-import View from 'ckeditor5-ui/src/view';
-import FocusCycler from 'ckeditor5-ui/src/focuscycler';
-import KeystrokeHandler from 'ckeditor5-utils/src/keystrokehandler';
-import { keyCodes } from 'ckeditor5-utils/src/keyboard';
+import ViewCollection from '../src/viewcollection';
+import View from '../src/view';
+import FocusCycler from '../src/focuscycler';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'FocusCycler', () => {
 	let focusables, focusTracker, cycler;

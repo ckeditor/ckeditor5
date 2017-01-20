@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import IconView from 'ckeditor5-ui/src/icon/iconview';
+import IconView from '../../src/icon/iconview';
 
 describe( 'IconView', () => {
 	let view;

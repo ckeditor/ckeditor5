@@ -5,13 +5,13 @@
 
 /* global document */
 
-import ViewCollection from 'ckeditor5-ui/src/viewcollection';
-import ListView from 'ckeditor5-ui/src/list/listview';
-import KeystrokeHandler from 'ckeditor5-utils/src/keystrokehandler';
-import FocusTracker from 'ckeditor5-utils/src/focustracker';
-import FocusCycler from 'ckeditor5-ui/src/focuscycler';
-import { keyCodes } from 'ckeditor5-utils/src/keyboard';
-import View from 'ckeditor5-ui/src/view';
+import ViewCollection from '../../src/viewcollection';
+import ListView from '../../src/list/listview';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import FocusCycler from '../../src/focuscycler';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import View from '../../src/view';
 
 describe( 'ListView', () => {
 	let view;
