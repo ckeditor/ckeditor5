@@ -492,7 +492,8 @@ export function rename() {
 }
 
 /**
- * Function factory, creates a default converter for inserting {@link module:engine/model/item~Item model item} into a marker range.
+ * Function factory, creates a default converter for inserting {@link module:engine/model/item~Item model item} into a marker range
+ * or inserting a part of a model that contains a marker (this happens when reinserting nodes from graveyard).
  *
  *		modelDispatcher.on( 'insert', insertIntoRange( modelDocument.markers ) );
  *
@@ -500,13 +501,15 @@ export function rename() {
  * inserting.
  * @returns {Function}
  */
-export function insertIntoMarker( markerCollection ) {
+export function insertMarkerOrIntoMarker( markerCollection ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		for ( let marker of markerCollection ) {
 			const range = marker.getRange();
 
 			if ( range.containsPosition( data.range.start ) ) {
 				conversionApi.dispatcher.convertMarker( 'addMarker', marker.name, data.range );
+			} else if ( data.range.containsRange( range ) || data.range.isEqual( range ) ) {
+				conversionApi.dispatcher.convertMarker( 'addMarker', marker.name, range );
 			}
 		}
 	};

@@ -515,36 +515,53 @@ describe( 'ModelConversionDispatcher', () => {
 		it( 'should fire event based on passed parameters', () => {
 			sinon.spy( dispatcher, 'fire' );
 
-			const data = {
-				name: 'name',
-				range: range
-			};
+			dispatcher.convertMarker( 'addMarker', 'name', range );
 
-			dispatcher.convertMarker( 'addMarker', data );
+			expect( dispatcher.fire.calledWith( 'addMarker:name', 'name', range ) );
 
-			expect( dispatcher.fire.calledWith( 'addMarker:name', data ) );
+			dispatcher.convertMarker( 'removeMarker', 'name', range );
 
-			dispatcher.convertMarker( 'removeMarker', data );
+			expect( dispatcher.fire.calledWith( 'removeMarker:name', 'name', range ) );
+		} );
 
-			expect( dispatcher.fire.calledWith( 'removeMarker:name', data ) );
+		it( 'should not convert marker if it is added in graveyard', () => {
+			const gyRange = ModelRange.createFromParentsAndOffsets( doc.graveyard, 0, doc.graveyard, 0 );
+			sinon.spy( dispatcher, 'fire' );
+
+			dispatcher.convertMarker( 'addMarker', 'name', gyRange );
+
+			expect( dispatcher.fire.called ).to.be.false;
+
+			dispatcher.convertMarker( 'removeMarker', 'name', gyRange );
+
+			expect( dispatcher.fire.called ).to.be.false;
+		} );
+
+		it( 'should not convert marker if it is not in model root', () => {
+			const element = new ModelElement( 'element', null, new ModelText( 'foo' ) );
+			const eleRange = ModelRange.createFromParentsAndOffsets( element, 1, element, 2 );
+			sinon.spy( dispatcher, 'fire' );
+
+			dispatcher.convertMarker( 'addMarker', 'name', eleRange );
+
+			expect( dispatcher.fire.called ).to.be.false;
+
+			dispatcher.convertMarker( 'removeMarker', 'name', eleRange );
+
+			expect( dispatcher.fire.called ).to.be.false;
 		} );
 
 		it( 'should prepare consumable values', () => {
-			const data = {
-				name: 'name',
-				range: range
-			};
-
 			dispatcher.on( 'addMarker:name', ( evt, data, consumable ) => {
-				expect( consumable.test( data.range, 'range' ) ).to.be.true;
+				expect( consumable.test( data.range, 'addMarker' ) ).to.be.true;
 			} );
 
 			dispatcher.on( 'removeMarker:name', ( evt, data, consumable ) => {
-				expect( consumable.test( data.range, 'range' ) ).to.be.true;
+				expect( consumable.test( data.range, 'removeMarker' ) ).to.be.true;
 			} );
 
-			dispatcher.convertMarker( 'addMarker', data );
-			dispatcher.convertMarker( 'removeMarker', data );
+			dispatcher.convertMarker( 'addMarker', 'name', range );
+			dispatcher.convertMarker( 'removeMarker', 'name', range );
 		} );
 	} );
 } );

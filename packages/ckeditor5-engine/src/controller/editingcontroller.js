@@ -15,7 +15,7 @@ import {
 	remove,
 	move,
 	rename,
-	insertIntoMarker,
+	insertMarkerOrIntoMarker,
 	moveInOutOfMarker
 } from '../conversion/model-to-view-converters';
 import { convertSelectionChange } from '../conversion/view-selection-to-model-converters';
@@ -123,7 +123,7 @@ export default class EditingController {
 		this.modelToView.on( 'rename', rename(), { priority: 'low' } );
 
 		// Attach default markers converters.
-		this.modelToView.on( 'insert', insertIntoMarker( this.model.markers ), { priority: 'lowest' } );
+		this.modelToView.on( 'insert', insertMarkerOrIntoMarker( this.model.markers ), { priority: 'lowest' } );
 		this.modelToView.on( 'move', moveInOutOfMarker( this.model.markers ), { priority: 'lowest' } );
 
 		// Attach default selection converters.
