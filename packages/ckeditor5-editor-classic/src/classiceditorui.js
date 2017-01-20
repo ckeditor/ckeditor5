@@ -56,11 +56,12 @@ export default class ClassicEditorUI {
 
 		/**
 		 * Instance of the {@link module:core/keystrokehandler~KeystrokeHandler}.
+		 *
 		 * Unlike {@link core/editor/standardeditor~StandardEditor#keystrokes}, this
 		 * keystroke handler is focused on keystrokes associated exclusively with the
 		 * user interface, not edited content. It takes care of accessibility–related
-		 * keystrokes (i.e. focus the toolbar) and similar, leaving content
-		 * keystrokes (i.e. bold text, insert link) to aforementioned instance
+		 * keystrokes (e.g. focus the toolbar) and similar, leaving content
+		 * keystrokes (e.g. bold text, insert link) to aforementioned instance
 		 * in `StandardEditor`.
 		 *
 		 * @readonly
