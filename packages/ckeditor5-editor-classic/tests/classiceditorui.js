@@ -6,13 +6,15 @@
 /* globals document, Event */
 
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import View from '@ckeditor/ckeditor5-ui/src/view';
+
 import ClassicEditorUI from '../src/classiceditorui';
 import ClassicEditorUIView from '../src/classiceditoruiview';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -99,7 +101,7 @@ describe( 'ClassicEditorUI', () => {
 					view.editable,
 					{ isFocused: false },
 					[
-						[ editable, { isFocused: true } ]
+						[ editor.editing.view, { isFocused: true } ]
 					],
 					{ isFocused: true }
 				);
