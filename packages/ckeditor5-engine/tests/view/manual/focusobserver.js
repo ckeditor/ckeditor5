@@ -10,8 +10,8 @@ import { setData } from '../../../src/dev-utils/view';
 
 const viewDocument = new Document();
 
-viewDocument.on( 'focus', ( evt, data ) => console.log( 'event:focus', data.domTarget ) );
-viewDocument.on( 'blur', ( evt, data ) => console.log( 'event:blur', data.domTarget ) );
+viewDocument.on( 'focus', ( evt, data ) => console.log( `Focus in ${ data.domTarget.id }.` ) );
+viewDocument.on( 'blur', ( evt, data ) => console.log( `Blur in ${ data.domTarget.id }.` ) );
 
 const domEditable1 = document.getElementById( 'editable1' );
 const domEditable2 = document.getElementById( 'editable2' );
@@ -21,12 +21,13 @@ const editable2 = viewDocument.createRoot( domEditable2, 'editable2' );
 
 viewDocument.on( 'selectionChange', ( evt, data ) => {
 	viewDocument.selection.setTo( data.newSelection );
+	viewDocument.render();
 } );
 
-setData( viewDocument, '<p>First editable.</p>', { rootName: 'editable1' } );
+setData( viewDocument, '<p>{}First editable.</p>', { rootName: 'editable1' } );
 setData( viewDocument, '<p>Second editable.</p>', { rootName: 'editable2' } );
 
 editable1.on( 'change:isFocused', () => domEditable1.style.backgroundColor = editable1.isFocused ? 'green' : 'red' );
 editable2.on( 'change:isFocused', () => domEditable2.style.backgroundColor = editable2.isFocused ? 'green' : 'red' );
 
-viewDocument.render();
+viewDocument.focus();
