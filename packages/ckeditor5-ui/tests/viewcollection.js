@@ -71,6 +71,7 @@ describe( 'ViewCollection', () => {
 				expect( normalizeHtml( parentElement.outerHTML ) ).to.equal( '<p></p>' );
 			} );
 
+			// #145
 			it( 'always keeps the collection synchronized with DOM', () => {
 				const view = new View();
 				const viewA = getView( 'A' );
