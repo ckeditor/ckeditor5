@@ -10,8 +10,10 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import WidgetEngine from './widget/widgetengine';
-import { modelToViewImage, viewToModelImage, modelToViewSelection } from './converters';
+import { viewToModelImage, modelToViewSelection, createImageAttributeConverter } from './converters';
 import { toImageWidget } from './utils';
+import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
+import ViewEmptyElement from '@ckeditor/ckeditor5-engine/src/view/emptyelement';
 
 /**
  * The image engine plugin.
@@ -47,12 +49,15 @@ export default class ImageEngine extends Plugin {
 		// Build converter from model to view for data pipeline.
 		buildModelConverter().for( data.modelToView )
 			.fromElement( 'image' )
-			.toElement( ( data ) => modelToViewImage( data.item ) );
+			.toElement( () => createImageViewElement() );
 
 		// Build converter from model to view for editing pipeline.
 		buildModelConverter().for( editing.modelToView )
 			.fromElement( 'image' )
-			.toElement( ( data ) => toImageWidget( modelToViewImage( data.item ) ) );
+			.toElement( () => toImageWidget( createImageViewElement() ) );
+
+		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'src' );
+		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'alt' );
 
 		// Converter for figure element from view to model.
 		data.viewToModel.on( 'element:figure', viewToModelImage() );
@@ -60,4 +65,16 @@ export default class ImageEngine extends Plugin {
 		// Creates fake selection label if selection is placed around image widget.
 		editing.modelToView.on( 'selection', modelToViewSelection( editor.t ), { priority: 'lowest' } );
 	}
+}
+
+// Creates view element representing the image.
+//
+//		<figure class="image"><img></img></figure>
+//
+// Note that `alt` and `src` attributes are converted separately, so they're not included.
+//
+// @private
+// @return {module:engine/view/containerelement~ContainerElement}
+export function createImageViewElement() {
+	return new ViewContainerElement( 'figure', { class: 'image' }, new ViewEmptyElement( 'img' ) );
 }

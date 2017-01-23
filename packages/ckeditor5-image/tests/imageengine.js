@@ -40,7 +40,7 @@ describe( 'ImageEngine', () => {
 			it( 'should convert', () => {
 				setModelData( document, '<image src="foo.png" alt="alt text"></image>' );
 
-				expect( editor.getData() ).to.equal( '<figure class="image"><img src="foo.png" alt="alt text"></figure>' );
+				expect( editor.getData() ).to.equal( '<figure class="image"><img alt="alt text" src="foo.png"></figure>' );
 			} );
 
 			it( 'should convert without alt attribute', () => {
@@ -150,6 +150,52 @@ describe( 'ImageEngine', () => {
 
 				expect( figure.name ).to.equal( 'figure' );
 				expect( isImageWidget( figure ) ).to.be.true;
+			} );
+
+			it( 'should convert attribute change', () => {
+				setModelData( document, '<image src="foo.png" alt="alt text"></image>' );
+				const image = document.getRoot().getChild( 0 );
+
+				document.enqueueChanges( () => {
+					const batch = document.batch();
+
+					batch.setAttribute( image, 'alt', 'new text' );
+				} );
+
+				expect( getViewData( viewDocument, { withoutSelection: true } ) )
+					.to.equal( '<figure class="image ck-widget" contenteditable="false"><img alt="new text" src="foo.png"></img></figure>' );
+			} );
+
+			it( 'should convert attribute removal', () => {
+				setModelData( document, '<image src="foo.png" alt="alt text"></image>' );
+				const image = document.getRoot().getChild( 0 );
+
+				document.enqueueChanges( () => {
+					const batch = document.batch();
+
+					batch.removeAttribute( image, 'alt' );
+				} );
+
+				expect( getViewData( viewDocument, { withoutSelection: true } ) )
+					.to.equal( '<figure class="image ck-widget" contenteditable="false"><img src="foo.png"></img></figure>' );
+			} );
+
+			it( 'should not convert change if is already consumed', () => {
+				setModelData( document, '<image src="foo.png" alt="alt text"></image>' );
+				const image = document.getRoot().getChild( 0 );
+
+				editor.editing.modelToView.on( 'removeAttribute:alt:image', ( evt, data, consumable ) => {
+					consumable.consume( data.item, 'removeAttribute:alt' );
+				}, { priority: 'high' } );
+
+				document.enqueueChanges( () => {
+					const batch = document.batch();
+
+					batch.removeAttribute( image, 'alt' );
+				} );
+
+				expect( getViewData( viewDocument, { withoutSelection: true } ) )
+					.to.equal( '<figure class="image ck-widget" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>' );
 			} );
 		} );
 	} );
