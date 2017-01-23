@@ -132,6 +132,15 @@ describe( 'ImageEngine', () => {
 				expect( getModelData( document, { withoutSelection: true } ) )
 					.to.equal( '' );
 			} );
+
+			it( 'should dispatch conversion for nested elements', () => {
+				const conversionSpy = sinon.spy();
+				editor.data.viewToModel.on( 'element:figcaption', conversionSpy );
+
+				editor.setData( '<figure class="image"><img src="foo.png" alt="alt text" /><figcaption></figcaption></figure>' );
+
+				sinon.assert.calledOnce( conversionSpy );
+			} );
 		} );
 	} );
 

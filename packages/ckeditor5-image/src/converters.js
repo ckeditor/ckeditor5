@@ -8,6 +8,8 @@
  */
 
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
+import modelWriter from '@ckeditor/ckeditor5-engine/src/model/writer';
 import { isImageWidget } from './utils';
 
 /**
@@ -56,6 +58,13 @@ export function viewToModelImage() {
 		if ( consumable.consume( viewImg, { attribute: [ 'alt' ] } ) ) {
 			modelImage.setAttribute( 'alt', viewImg.getAttribute( 'alt' ) );
 		}
+
+		// Convert children of converted view element and append them to `modelImage`.
+		data.context.push( modelImage );
+		const modelChildren = conversionApi.convertChildren( viewFigureElement, consumable, data );
+		const insertPosition = ModelPosition.createAt( modelImage, 'end' );
+		modelWriter.insert( insertPosition, modelChildren );
+		data.context.pop();
 
 		data.output = modelImage;
 	};
