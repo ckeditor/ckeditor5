@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document */
+/* global document, setTimeout */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -35,45 +35,143 @@ describe( 'ViewCollection', () => {
 			expect( new ViewCollection( locale ).locale ).to.equal( locale );
 		} );
 
-		it( 'manages view#element of the children in DOM', () => {
-			const parentElement = document.createElement( 'p' );
-			collection.setParent( parentElement );
+		describe( 'child view management in DOM', () => {
+			it( 'manages view#element of the children in DOM', () => {
+				const parentElement = document.createElement( 'p' );
+				collection.setParent( parentElement );
 
-			const viewA = new View();
+				const viewA = new View();
 
-			expect( () => {
+				expect( () => {
+					collection.add( viewA );
+					collection.remove( viewA );
+				} ).to.not.throw();
+
+				expect( () => {
+					collection.ready = true;
+					collection.add( viewA );
+					collection.remove( viewA );
+				} ).to.not.throw();
+
+				viewA.element = document.createElement( 'b' );
 				collection.add( viewA );
-				collection.remove( viewA );
-			} ).to.not.throw();
 
-			expect( () => {
-				collection.ready = true;
+				expect( normalizeHtml( parentElement.outerHTML ) ).to.equal( '<p><b></b></p>' );
+
+				const viewB = new View();
+				viewB.element = document.createElement( 'i' );
+
+				collection.add( viewB, 0 );
+				expect( normalizeHtml( parentElement.outerHTML ) ).to.equal( '<p><i></i><b></b></p>' );
+
+				collection.remove( viewA );
+				expect( normalizeHtml( parentElement.outerHTML ) ).to.equal( '<p><i></i></p>' );
+
+				collection.remove( viewB );
+				expect( normalizeHtml( parentElement.outerHTML ) ).to.equal( '<p></p>' );
+			} );
+
+			it( 'always keeps the collection synchronized with DOM', () => {
+				const view = new View();
+				const viewA = getView( 'A' );
+				const viewB = getView( 'B' );
+
+				function getView( text ) {
+					const view = new View();
+
+					view.template = new Template( {
+						tag: 'li',
+						children: [
+							{
+								text: text
+							}
+						]
+					} );
+
+					return view;
+				}
+
+				// Fill the collection with children.
 				collection.add( viewA );
-				collection.remove( viewA );
-			} ).to.not.throw();
+				collection.add( viewB );
 
-			viewA.element = document.createElement( 'b' );
-			collection.add( viewA );
+				// Put the collection in the template.
+				view.template = new Template( {
+					tag: 'ul',
+					children: collection
+				} );
 
-			expect( normalizeHtml( parentElement.outerHTML ) ).to.equal( '<p><b></b></p>' );
+				// Render view#template along with collection of children.
+				view.element;
 
-			const viewB = new View();
-			viewB.element = document.createElement( 'i' );
+				const viewC = getView( 'C' );
 
-			collection.add( viewB, 0 );
-			expect( normalizeHtml( parentElement.outerHTML ) ).to.equal( '<p><i></i><b></b></p>' );
+				// Modify the collection, while the view#element has already
+				// been rendered but the view has **not** been inited yet.
+				collection.add( viewC );
+				collection.remove( 1 );
 
-			collection.remove( viewA );
-			expect( normalizeHtml( parentElement.outerHTML ) ).to.equal( '<p><i></i></p>' );
-
-			collection.remove( viewB );
-			expect( normalizeHtml( parentElement.outerHTML ) ).to.equal( '<p></p>' );
+				// Finally init the view. Check what's in there.
+				return view.init().then( () => {
+					expect( view.element.childNodes ).to.have.length( 2 );
+					expect( view.element.childNodes[ 0 ] ).to.equal( viewA.element );
+					expect( view.element.childNodes[ 1 ] ).to.equal( viewC.element );
+				} );
+			} );
 		} );
 	} );
 
 	describe( 'init()', () => {
 		it( 'should return a promise', () => {
 			expect( collection.init() ).to.be.instanceof( Promise );
+		} );
+
+		it( 'should return a composition of child init() promises', () => {
+			const spyA = sinon.spy().named( 'A' );
+			const spyB = sinon.spy().named( 'B' );
+			const spyC = sinon.spy().named( 'C' );
+
+			const childA = {
+				init: () => {
+					return new Promise( ( resolve ) => {
+						setTimeout( () => {
+							spyA();
+							resolve();
+						}, 20 );
+					} );
+				}
+			};
+
+			const childB = {
+				init: () => {
+					return new Promise( ( resolve ) => {
+						setTimeout( () => {
+							spyB();
+							resolve();
+						}, 10 );
+					} );
+				}
+			};
+
+			const childC = {
+				init: () => {
+					return new Promise( ( resolve ) => {
+						setTimeout( () => {
+							spyC();
+							resolve();
+						}, 0 );
+					} );
+				}
+			};
+
+			collection.add( childA );
+			collection.add( childB );
+			collection.add( childC );
+
+			return collection.init()
+				.then( () => {
+					sinon.assert.callOrder( spyC, spyB, spyA );
+				} );
 		} );
 
 		it( 'should throw if already initialized', () => {
@@ -182,7 +280,7 @@ describe( 'ViewCollection', () => {
 		} );
 	} );
 
-	describe( 'setParent', () => {
+	describe( 'setParent()', () => {
 		it( 'sets #_parentElement', () => {
 			const el = {};
 			expect( collection._parentElement ).to.be.null;
