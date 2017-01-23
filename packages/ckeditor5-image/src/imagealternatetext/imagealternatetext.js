@@ -13,7 +13,7 @@ import ImageAlternateTextEngine from './imagealternatetextengine';
 import escPressHandler from '@ckeditor/ckeditor5-ui/src/bindings/escpresshandler';
 import ImageToolbar from '../imagetoolbar';
 import AlternateTextFormView from './ui/alternatetextformview';
-import ImageBalloonPanel from '../ui/imageballoonpanel';
+import ImageBalloonPanel from '../ui/imageballoonpanelview';
 
 import alternateTextIcon from '@ckeditor/ckeditor5-core/theme/icons/input.svg';
 import '../../theme/imagealternatetext/theme.scss';
@@ -41,7 +41,7 @@ export default class ImageAlternateText extends Plugin {
 			/**
 			 * Balloon panel containing alternate text change form.
 			 *
-			 * @member {module:image/ui/imageballoonpanel~ImageBalloonPanel} #baloonPanel
+			 * @member {module:image/ui/imageballoonpanel~ImageBalloonPanelView} #baloonPanel
 			 */
 			this.balloonPanel = panel;
 
@@ -86,7 +86,7 @@ export default class ImageAlternateText extends Plugin {
 	 * Creates balloon panel.
 	 *
 	 * @private
-	 * @return {Promise.<module:image/ui/imageballoonpanel~ImageBalloonPanel>}
+	 * @return {Promise.<module:image/ui/imageballoonpanel~ImageBalloonPanelView>}
 	 */
 	_createBalloonPanel() {
 		const editor = this.editor;

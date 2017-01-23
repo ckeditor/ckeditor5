@@ -44,7 +44,7 @@ const positions = {
  *
  * @extends module:ui/balloonpanel/balloonpanelview~BalloonPanelView
  */
-export default class ImageBalloonPanel extends BalloonPanelView {
+export default class ImageBalloonPanelView extends BalloonPanelView {
 	/**
 	 * @inheritDoc
 	 */

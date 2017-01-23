@@ -26,6 +26,8 @@ export default class AlternateTextFormView extends View {
 	constructor( locale ) {
 		super( locale );
 
+		const t = this.locale.t;
+
 		/**
 		 * Text area with label.
 		 *
@@ -38,7 +40,7 @@ export default class AlternateTextFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView} #saveButtonView
 		 */
-		this.saveButtonView = this._createButton( 'Ok' );
+		this.saveButtonView = this._createButton( t( 'Save' ) );
 		this.saveButtonView.type = 'submit';
 
 		/**
@@ -46,7 +48,7 @@ export default class AlternateTextFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView} #cancelButtonView
 		 */
-		this.cancelButtonView = this._createButton( 'Cancel', 'cancel' );
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), 'cancel' );
 
 		// Register child views.
 		this.addChildren( [ this.saveButtonView ] );
@@ -93,7 +95,7 @@ export default class AlternateTextFormView extends View {
 	}
 
 	/**
-	 * Creates button View.
+	 * Creates button view.
 	 *
 	 * @private
 	 * @param {String} label Button label
@@ -101,10 +103,9 @@ export default class AlternateTextFormView extends View {
 	 * @returns {module:ui/button/buttonview~ButtonView} Button view instance.
 	 */
 	_createButton( label, eventName ) {
-		const t = this.locale.t;
 		const button = new ButtonView( this.locale );
 
-		button.label = t( label );
+		button.label = label;
 		button.withText = true;
 
 		if ( eventName ) {

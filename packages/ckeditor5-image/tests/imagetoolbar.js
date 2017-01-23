@@ -7,7 +7,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
 import ImageToolbar from '../src/imagetoolbar';
 import Image from '../src/image';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import ImageBalloonPanel from '../src/ui/imageballoonpanel';
+import ImageBalloonPanel from '../src/ui/imageballoonpanelview';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
