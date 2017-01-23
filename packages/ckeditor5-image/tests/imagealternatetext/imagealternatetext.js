@@ -98,21 +98,21 @@ describe( 'ImageAlternateText', () => {
 		} );
 
 		it( 'should set alt attribute value to textarea and select it', () => {
-			const spy = sinon.spy( form.labeledTextarea, 'select' );
+			const spy = sinon.spy( form.lebeledInput, 'select' );
 			setData( editor.document, '[<image src="" alt="foo bar"></image>]' );
 			button.fire( 'execute' );
 
 			sinon.assert.calledOnce( spy );
-			expect( plugin.form.labeledTextarea.value ).equals( 'foo bar' );
+			expect( plugin.form.lebeledInput.value ).equals( 'foo bar' );
 		} );
 
 		it( 'should set empty text to textarea and select it when there is no alt attribute', () => {
-			const spy = sinon.spy( form.labeledTextarea, 'select' );
+			const spy = sinon.spy( form.lebeledInput, 'select' );
 			setData( editor.document, '[<image src=""></image>]' );
 			button.fire( 'execute' );
 
 			sinon.assert.calledOnce( spy );
-			expect( plugin.form.labeledTextarea.value ).equals( '' );
+			expect( plugin.form.lebeledInput.value ).equals( '' );
 		} );
 	} );
 
@@ -122,7 +122,7 @@ describe( 'ImageAlternateText', () => {
 			form.fire( 'submit' );
 
 			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, 'imageAlternateText', { newValue: form.labeledTextarea.inputView.element.value } );
+			sinon.assert.calledWithExactly( spy, 'imageAlternateText', { newValue: form.lebeledInput.inputView.element.value } );
 		} );
 
 		it( 'should detach panel on cancel', () => {
