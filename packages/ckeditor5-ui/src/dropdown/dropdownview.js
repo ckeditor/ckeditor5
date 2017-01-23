@@ -22,6 +22,17 @@ export default class DropdownView extends View {
 	constructor( locale, buttonView, panelView ) {
 		super( locale );
 
+		// Extend button's template before it's registered as a child of the dropdown because
+		// by doing so, its #element is rendered and any post–render template extension will
+		// not be reflected in DOM.
+		Template.extend( buttonView.template, {
+			attributes: {
+				class: [
+					'ck-dropdown__button'
+				]
+			}
+		} );
+
 		/**
 		 * Button of this dropdown view.
 		 *
@@ -60,14 +71,6 @@ export default class DropdownView extends View {
 				buttonView,
 				panelView
 			]
-		} );
-
-		Template.extend( buttonView.template, {
-			attributes: {
-				class: [
-					'ck-dropdown__button'
-				]
-			}
 		} );
 
 		// Toggle the the dropdown when it's button has been clicked.
