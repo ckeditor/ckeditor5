@@ -53,6 +53,24 @@ export default function createListDropdown( model, locale ) {
 		dropdownView.isOpen = false;
 	} );
 
+	// If the dropdown panel is already open, the arrow down key should
+	// focus the first element in list.
+	dropdownView.keystrokes.set( 'arrowdown', ( data, cancel ) => {
+		if ( dropdownView.isOpen ) {
+			listView.focus();
+			cancel();
+		}
+	} );
+
+	// If the dropdown panel is already open, the arrow up key should
+	// focus the last element in the list.
+	dropdownView.keystrokes.set( 'arrowup', ( data, cancel ) => {
+		if ( dropdownView.isOpen ) {
+			listView.focusLast();
+			cancel();
+		}
+	} );
+
 	return dropdownView;
 }
 

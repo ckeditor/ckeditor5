@@ -47,6 +47,18 @@ describe( 'ListItemView', () => {
 			} );
 		} );
 
+		describe( 'tabindex', () => {
+			it( 'is initially set ', () => {
+				expect( view.element.attributes.tabindex.value ).to.equal( '-1' );
+			} );
+
+			it( 'reacts on view#tabindex', () => {
+				view.tabindex = 3;
+
+				expect( view.element.attributes.tabindex.value ).to.equal( '3' );
+			} );
+		} );
+
 		describe( 'view#execute event', () => {
 			it( 'triggers view#execute event when "click" is fired in DOM', () => {
 				const spy = sinon.spy();
@@ -56,6 +68,16 @@ describe( 'ListItemView', () => {
 				view.element.dispatchEvent( new Event( 'click' ) );
 				expect( spy.calledOnce ).to.be.true;
 			} );
+		} );
+	} );
+
+	describe( 'focus()', () => {
+		it( 'focuses the item in DOM', () => {
+			const spy = sinon.spy( view.element, 'focus' );
+
+			view.focus();
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 } );

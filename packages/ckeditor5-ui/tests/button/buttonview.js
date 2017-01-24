@@ -168,6 +168,18 @@ describe( 'ButtonView', () => {
 			} );
 		} );
 
+		describe( 'tabindex', () => {
+			it( 'is initially set ', () => {
+				expect( view.element.attributes.tabindex.value ).to.equal( '-1' );
+			} );
+
+			it( 'reacts on view#tabindex', () => {
+				view.tabindex = 3;
+
+				expect( view.element.attributes.tabindex.value ).to.equal( '3' );
+			} );
+		} );
+
 		describe( 'mousedown event', () => {
 			it( 'should be prevented', () => {
 				const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
@@ -227,6 +239,16 @@ describe( 'ButtonView', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'focus()', () => {
+		it( 'focuses the button in DOM', () => {
+			const spy = sinon.spy( view.element, 'focus' );
+
+			view.focus();
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 } );

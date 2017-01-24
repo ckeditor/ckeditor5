@@ -58,7 +58,7 @@ describe( 'InputTextView', () => {
 		} );
 	} );
 
-	describe( 'select', () => {
+	describe( 'select()', () => {
 		it( 'should select input value', () => {
 			const selectSpy = sinon.spy( view.element, 'select' );
 
@@ -67,6 +67,16 @@ describe( 'InputTextView', () => {
 			expect( selectSpy.calledOnce ).to.true;
 
 			selectSpy.restore();
+		} );
+	} );
+
+	describe( 'focus()', () => {
+		it( 'focuses the input in DOM', () => {
+			const spy = sinon.spy( view.element, 'focus' );
+
+			view.focus();
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 } );
