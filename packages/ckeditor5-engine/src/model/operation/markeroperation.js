@@ -100,10 +100,10 @@ export default class MarkerOperation extends Operation {
 			!( this.oldRange === null && this.newRange === null ) &&
 			!( this.oldRange !== null && this.newRange !== null && this.oldRange.isEqual( this.newRange ) );
 
-		const document = changeInMarkersCollection && ( this.oldRange || this.newRange ).root.document;
 		const type = this.newRange ? 'set' : 'remove';
 
 		if ( changeInMarkersCollection ) {
+			const document = ( this.oldRange || this.newRange ).root.document;
 			document.markers[ type ]( this.name, this.newRange );
 		}
 
