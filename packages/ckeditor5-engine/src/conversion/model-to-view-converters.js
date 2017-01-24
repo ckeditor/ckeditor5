@@ -496,15 +496,17 @@ export function rename() {
  *
  *		modelDispatcher.on( 'insert', insertIntoRange( modelDocument.markers ) );
  *
- * @param {module:engine/model/markerscollection~MarkersCollection} markersCollection Markers collection to check when
+ * @param {module:engine/model/markercollection~MarkerCollection} markerCollection Markers collection to check when
  * inserting.
  * @returns {Function}
  */
-export function insertIntoMarker( markersCollection ) {
+export function insertIntoMarker( markerCollection ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		for ( let [ name, range ] of markersCollection ) {
+		for ( let marker of markerCollection ) {
+			const range = marker.getRange();
+
 			if ( range.containsPosition( data.range.start ) ) {
-				conversionApi.dispatcher.convertMarker( 'addMarker', name, data.range );
+				conversionApi.dispatcher.convertMarker( 'addMarker', marker.name, data.range );
 			}
 		}
 	};
@@ -516,23 +518,25 @@ export function insertIntoMarker( markersCollection ) {
  *
  *		modelDispatcher.on( 'move', moveInOutOfMarker( modelDocument.markers ) );
  *
- * @param {module:engine/model/markerscollection~MarkersCollection} markersCollection Markers collection to check when
+ * @param {module:engine/model/markercollection~MarkerCollection} markerCollection Markers collection to check when
  * moving.
  * @returns {Function}
  */
-export function moveInOutOfMarker( markersCollection ) {
+export function moveInOutOfMarker( markerCollection ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		const sourcePos = data.sourcePosition._getTransformedByInsertion( data.targetPosition, data.item.offsetSize );
 		const movedRange = ModelRange.createOn( data.item );
 
-		for ( let [ name, range ] of markersCollection ) {
+		for ( let marker of markerCollection ) {
+			const range = marker.getRange();
+
 			const wasInMarker = range.containsPosition( sourcePos ) || range.start.isEqual( sourcePos ) || range.end.isEqual( sourcePos );
 			const common = movedRange.getIntersection( range );
 
 			if ( wasInMarker && common === null ) {
-				conversionApi.dispatcher.convertMarker( 'removeMarker', name, movedRange );
+				conversionApi.dispatcher.convertMarker( 'removeMarker', marker.name, movedRange );
 			} else if ( common !== null ) {
-				conversionApi.dispatcher.convertMarker( 'addMarker', name, common );
+				conversionApi.dispatcher.convertMarker( 'addMarker', marker.name, common );
 			}
 		}
 	};

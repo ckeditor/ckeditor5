@@ -51,7 +51,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		const name = 'highlight:yellow:' + uid();
 
 		markerNames.push( name );
-		model.markers.add( name, range );
+		model.markers.set( name, range );
 	} );
 } )
 .catch( err => {
@@ -71,7 +71,7 @@ function addHighlight( color ) {
 		const name = 'highlight:' + color + ':' + uid();
 
 		markerNames.push( name );
-		model.markers.add( name, range );
+		model.markers.set( name, range );
 	} );
 }
 
