@@ -16,6 +16,7 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 testUtils.createSinonSandbox();
 
@@ -23,6 +24,10 @@ let el, text;
 
 describe( 'Template', () => {
 	describe( 'constructor()', () => {
+		it( 'sets #_rendered property', () => {
+			expect( new Template( { tag: 'p' } )._rendered ).to.be.false;
+		} );
+
 		it( 'accepts and normalizes the definition', () => {
 			const bind = Template.bind( new Model( {} ), Object.create( DomEmitterMixin ) );
 			const tpl = new Template( {
@@ -119,7 +124,7 @@ describe( 'Template', () => {
 		} );
 	} );
 
-	describe( 'render', () => {
+	describe( 'render()', () => {
 		it( 'throws when the template definition is wrong', () => {
 			expect( () => {
 				new Template( {} ).render();
@@ -131,6 +136,16 @@ describe( 'Template', () => {
 					text: 'foo'
 				} ).render();
 			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
+		} );
+
+		it( 'sets #_rendered true', () => {
+			const tpl = new Template( { tag: 'p' } );
+
+			expect( tpl._rendered ).to.be.false;
+
+			tpl.render();
+
+			expect( tpl._rendered ).to.be.true;
 		} );
 
 		describe( 'DOM Node', () => {
@@ -609,7 +624,7 @@ describe( 'Template', () => {
 		} );
 	} );
 
-	describe( 'apply', () => {
+	describe( 'apply()', () => {
 		let observable, domEmitter, bind;
 
 		beforeEach( () => {
@@ -857,7 +872,7 @@ describe( 'Template', () => {
 		} );
 	} );
 
-	describe( 'bind', () => {
+	describe( 'bind()', () => {
 		it( 'returns object', () => {
 			expect( Template.bind() ).to.be.an( 'object' );
 		} );
@@ -1586,7 +1601,7 @@ describe( 'Template', () => {
 		} );
 	} );
 
-	describe( 'extend', () => {
+	describe( 'extend()', () => {
 		let observable, emitter, bind;
 
 		beforeEach( () => {
@@ -1619,6 +1634,31 @@ describe( 'Template', () => {
 
 			expect( tpl.attributes.a[ 0 ] ).to.equal( 'foo' );
 			expect( tpl.attributes.b[ 0 ] ).to.equal( 'bar' );
+		} );
+
+		it( 'logs a warning if an element has already been rendered', () => {
+			const spy = testUtils.sinon.spy( log, 'warn' );
+
+			const tpl = new Template( {
+				tag: 'p'
+			} );
+
+			Template.extend( tpl, {
+				attributes: {
+					class: 'foo'
+				}
+			} );
+
+			tpl.render();
+
+			Template.extend( tpl, {
+				attributes: {
+					class: 'bar'
+				}
+			} );
+
+			sinon.assert.calledOnce( spy );
+			sinon.assert.calledWithExactly( spy, sinon.match( /^template-extend-render/ ) );
 		} );
 
 		describe( 'attributes', () => {
