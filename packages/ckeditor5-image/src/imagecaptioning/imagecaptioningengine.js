@@ -11,10 +11,9 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ModelTreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
+import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import { isImage } from '../utils';
 
@@ -55,7 +54,7 @@ export default class ImageCaptioningEngine extends Plugin {
 			.toElement( 'caption' );
 
 		// Model to view converter for editing pipeline.
-		const insertConverter = insertElement( new ViewContainerElement( 'figcaption', { contenteditable: true } ) );
+		const insertConverter = insertElement( new ViewEditableElement( 'figcaption', { contenteditable: true } ) );
 		editing.modelToView.on( 'insert:caption', ( evt, data, consumable, conversionApi ) => {
 			const captionElement = data.item;
 
