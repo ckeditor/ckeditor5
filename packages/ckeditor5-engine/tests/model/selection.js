@@ -987,6 +987,50 @@ describe( 'Selection', () => {
 		} );
 	} );
 
+	describe( 'markers interface', () => {
+		it( 'getMarkers should not iterate over anything if no markers were added', () => {
+			expect( Array.from( selection.getMarkers() ) ).to.deep.equal( [] );
+		} );
+
+		it( 'addMarker should add marker name to the list of markers containing selection', () => {
+			selection.addMarker( 'name' );
+			selection.addMarker( 'name2' );
+			selection.addMarker( 'name' ); // Duplicates should be filtered.
+
+			expect( Array.from( selection.getMarkers() ) ).to.deep.equal( [ 'name', 'name2' ] );
+		} );
+
+		it( 'removeMarker should remove marker name from the list of markers containing selection', () => {
+			let result;
+
+			selection.addMarker( 'name' );
+			selection.addMarker( 'name2' );
+
+			result = selection.removeMarker( 'name' );
+
+			expect( result ).to.be.true;
+			expect( Array.from( selection.getMarkers() ) ).to.deep.equal( [ 'name2' ] );
+
+			result = selection.removeMarker( 'name2' );
+
+			expect( result ).to.be.true;
+			expect( Array.from( selection.getMarkers() ) ).to.deep.equal( [] );
+
+			result = selection.removeMarker( 'name2' );
+
+			expect( result ).to.be.false;
+		} );
+
+		it( 'clearMarkers should remove all marker names from the list of markers containing selection', () => {
+			selection.addMarker( 'name' );
+			selection.addMarker( 'name2' );
+
+			selection.clearMarkers();
+
+			expect( Array.from( selection.getMarkers() ) ).to.deep.equal( [] );
+		} );
+	} );
+
 	describe( 'getSelectedElement', () => {
 		let schema;
 
