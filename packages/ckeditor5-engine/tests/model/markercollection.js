@@ -155,6 +155,18 @@ describe( 'MarkerCollection', () => {
 		} );
 	} );
 
+	describe( 'getMarkersGroup', () => {
+		it( 'returns all markers which names start on given prefix', () => {
+			const markerFooA = markers.set( 'foo:a', range );
+			const markerFooB = markers.set( 'foo:b', range );
+			markers.set( 'bar:a', range );
+			markers.set( 'foobar:a', range );
+
+			expect( Array.from( markers.getMarkersGroup( 'foo' ) ) ).to.deep.equal( [ markerFooA, markerFooB ] );
+			expect( Array.from( markers.getMarkersGroup( 'a' ) ) ).to.deep.equal( [] );
+		} );
+	} );
+
 	describe( 'destroy', () => {
 		it( 'should make MarkerCollection stop listening to all events and destroy all markers', () => {
 			const markerA = markers.set( 'a', range );
