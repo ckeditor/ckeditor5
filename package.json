@@ -28,9 +28,9 @@
     "@ckeditor/ckeditor5-utils": "*"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-docs": "^6.0.0",
+    "@ckeditor/ckeditor5-dev-docs": "^6.1.0",
     "@ckeditor/ckeditor5-dev-lint": "^2.0.0",
-    "@ckeditor/ckeditor5-dev-tests": "^6.0.0",
+    "@ckeditor/ckeditor5-dev-tests": "^6.1.0",
     "gulp": "^3.9.0",
     "guppy-pre-commit": "^0.4.0",
     "lerna": "2.0.0-beta.32",
