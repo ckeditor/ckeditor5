@@ -159,8 +159,16 @@ mix( MarkerCollection, EmitterMixin );
 
 /**
  * `Marker` is a continuous parts of model (like a range), is named and represent some kind of information about marked
- * part of model document. In contrary to {@link module:engine/model/node~Node nodes}, which are bits of data, markers are
- * kind of bookmarks, marking part of a model document between marker start and marker end.
+ * part of model document. In contrary to {@link module:engine/model/node~Node nodes}, which are building blocks of
+ * model document tree, markers are not stored directly in document tree. Still, they are document data, by giving
+ * additional meaning to the part of a model document between marker start and marker end.
+ *
+ * In this sense, markers are similar to adding and converting attributes on nodes. The difference is that attribute is
+ * connected with a given node (e.g. a character is bold no matter if it gets moved or content around it changes).
+ * Markers on the other hand are continuous ranges and are characterised by their start and end position. This means that
+ * any character in the marker is marked by the marker. For example, if a character is moved outside of marker it stops being
+ * "special" and the marker is shrunk. Similarly, when a character is moved into the marker from other place in document
+ * model, it starts being "special" and the marker is enlarged.
  *
  * Since markers are based on {@link module:engine/model/liverange~LiveRange live ranges}, for efficiency reasons, it's
  * best to create and keep at least markers as possible.
@@ -170,11 +178,6 @@ mix( MarkerCollection, EmitterMixin );
  * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:removeMarker removeMarker}
  * events, or by building converters for {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}
  * using {@link module:engine/conversion/buildmodelconverter~buildModelConverter model converter builder}.
- *
- * Markers are similar to adding and converting attributes on nodes. The difference is that attribute is connected with
- * a given node (e.g. a character is bold no matter if it gets moved or content around it changes). Markers on the
- * other hand are continuous ranges (e.g. a character inside of marker doesn't have any special property itself, when it
- * is moved outside of marker it stops being "special" and the marker is shrunk).
  *
  * Another upside of markers is that finding marked part of document is fast and easy. Using attributes to mark some nodes
  * and then trying to find that part of document would require traversing whole document tree. Marker gives instant access
