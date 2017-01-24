@@ -145,6 +145,8 @@ export default class View {
 			return null;
 		}
 
+		this._addTemplateChildren();
+
 		return ( this._element = this.template.render() );
 	}
 
@@ -223,22 +225,17 @@ export default class View {
 	 *				this.childA = new SomeChildView( locale );
 	 *				this.childB = new SomeChildView( locale );
 	 *
+	 *				this.template = new Template( { tag: 'p' } );
+	 *
 	 *				// Register children.
 	 *				this.addChildren( [ this.childA, this.childB ] );
+	 *			}
 	 *
-	 *				this.template = new Template( {
-	 *					tag: 'p',
+	 *			init() {
+	 *				this.element.appendChild( this.childA.element );
+	 *				this.element.appendChild( this.childB.element );
 	 *
-	 *					children: [
-	 *						// This is where the `childA` will render.
-	 *						this.childA,
-	 *
-	 *						{ tag: 'b' },
-	 *
-	 *						// This is where the `childB` will render.
-	 *						this.childB
-	 *					]
-	 *				} );
+	 *				return super.init();
 	 *			}
 	 *		}
 	 *
@@ -248,6 +245,28 @@ export default class View {
 	 *			// Will append <p><childA#element><b></b><childB#element></p>
 	 *			document.body.appendChild( view.element );
 	 *		} );
+	 *
+	 * **Note**: There's no need to add child views if they're used in the
+	 * {@link #template} explicitly:
+	 *
+	 *		class SampleView extends View {
+	 *			constructor( locale ) {
+	 *				super( locale );
+	 *
+	 *				this.childA = new SomeChildView( locale );
+	 *				this.childB = new SomeChildView( locale );
+	 *
+	 *				this.template = new Template( {
+	 *					tag: 'p',
+	 *
+ 	 *					// These children will be added automatically. There's no
+ 	 *					// need to call {@link #addChildren} for any of them.
+	 *					children: [ this.childA, this.childB ]
+	 *				} );
+	 *			}
+	 *
+	 *			...
+	 *		}
 	 *
 	 * @param {module:ui/view~View|Iterable.<module:ui/view~View>} children Children views to be registered.
 	 */
@@ -308,6 +327,28 @@ export default class View {
 			this._viewCollections = this._unboundChildren = null;
 
 		return Promise.all( promises );
+	}
+
+	/**
+	 * Recursively traverses {@link #template} in search of {@link module:ui/view~View}
+	 * instances and automatically registers them using {@link #addChildren} method.
+	 *
+	 * @protected
+	 */
+	_addTemplateChildren() {
+		const search = ( def ) => {
+			if ( def.children ) {
+				for ( let defOrView of def.children ) {
+					if ( defOrView instanceof View ) {
+						this.addChildren( defOrView );
+					} else {
+						search( defOrView );
+					}
+				}
+			}
+		};
+
+		search( this.template );
 	}
 }
 
