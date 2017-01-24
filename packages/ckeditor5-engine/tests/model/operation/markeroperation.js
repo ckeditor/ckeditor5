@@ -94,8 +94,9 @@ describe( 'MarkerOperation', () => {
 		expect( doc.fire.called ).to.be.true;
 	} );
 
-	it( 'should cause a change event when applied if oldRange and newRange are null', () => {
+	it( 'should fire document change event but not document markers remove event if oldRange and newRange are null', () => {
 		sinon.spy( doc, 'fire' );
+		sinon.spy( doc.markers, 'fire' );
 
 		doc.on( 'change', ( evt, type, changes ) => {
 			expect( type ).to.equal( 'marker' );
@@ -108,6 +109,25 @@ describe( 'MarkerOperation', () => {
 		) );
 
 		expect( doc.fire.calledWith( 'change', 'marker' ) ).to.be.true;
+		expect( doc.markers.fire.notCalled ).to.be.true;
+	} );
+
+	it( 'should fire document change event but not document markers remove event if oldRange and newRange are equal', () => {
+		sinon.spy( doc, 'fire' );
+		sinon.spy( doc.markers, 'fire' );
+
+		doc.on( 'change', ( evt, type, changes ) => {
+			expect( type ).to.equal( 'marker' );
+			expect( changes.name ).to.equal( 'name' );
+			expect( changes.type ).to.equal( 'set' );
+		} );
+
+		doc.applyOperation( wrapInDelta(
+			new MarkerOperation( 'name', range, range, doc.version )
+		) );
+
+		expect( doc.fire.calledWith( 'change', 'marker' ) ).to.be.true;
+		expect( doc.markers.fire.notCalled ).to.be.true;
 	} );
 
 	it( 'should return MarkerOperation with swapped ranges as reverse operation', () => {

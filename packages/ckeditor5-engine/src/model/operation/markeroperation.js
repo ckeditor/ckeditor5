@@ -94,19 +94,17 @@ export default class MarkerOperation extends Operation {
 	 * @inheritDoc
 	 */
 	_execute() {
-		if ( this.oldRange === null && this.newRange === null ) {
-			return { name: this.name, type: 'remove' };
-		}
+		// Make a change in Document#markers only when something actually changes, that is
+		// `this.oldRange` and `this.newRange` are different.
+		const changeInMarkersCollection =
+			!( this.oldRange === null && this.newRange === null ) &&
+			!( this.oldRange !== null && this.newRange !== null && this.oldRange.isEqual( this.newRange ) );
 
-		const document = ( this.oldRange || this.newRange ).root.document;
-		let type;
+		const document = changeInMarkersCollection && ( this.oldRange || this.newRange ).root.document;
+		const type = this.newRange ? 'set' : 'remove';
 
-		if ( this.newRange ) {
-			type = 'set';
-			document.markers.set( this.name, this.newRange );
-		} else {
-			type = 'remove';
-			document.markers.remove( this.name );
+		if ( changeInMarkersCollection ) {
+			document.markers[ type ]( this.name, this.newRange );
 		}
 
 		return { name: this.name, type: type };
