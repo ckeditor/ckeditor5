@@ -7,8 +7,6 @@
  * @module image/converters
  */
 
-import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
-import ViewEmptyElement from '@ckeditor/ckeditor5-engine/src/view/emptyelement';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { isImageWidget } from './utils';
 
@@ -93,21 +91,36 @@ export function modelToViewSelection( t ) {
 }
 
 /**
- * Converts model `image` element to view representation:
+ * Creates image attribute converter for provided model conversion dispatchers.
  *
- *		<figure class="image"><img src="..." alt="..."></img></figure>
- *
- * @param {module:engine/model/element~Element} modelElement
- * @return {module:engine/view/containerelement~ContainerElement}
+ * @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher>} dispatchers
+ * @param {String} attributeName
  */
-export function modelToViewImage( modelElement ) {
-	const viewImg = new ViewEmptyElement( 'img', {
-		src: modelElement.getAttribute( 'src' )
-	} );
+export function createImageAttributeConverter( dispatchers, attributeName ) {
+	for ( let dispatcher of dispatchers ) {
+		dispatcher.on( `addAttribute:${ attributeName }:image`, modelToViewAttributeConverter );
+		dispatcher.on( `changeAttribute:${ attributeName }:image`, modelToViewAttributeConverter );
+		dispatcher.on( `removeAttribute:${ attributeName }:image`, modelToViewAttributeConverter );
+	}
+}
 
-	if ( modelElement.hasAttribute( 'alt' ) ) {
-		viewImg.setAttribute( 'alt', modelElement.getAttribute( 'alt' ) );
+// Model to view image converter converting given attribute, and adding it to `img` element nested inside `figure` element.
+//
+// @private
+function modelToViewAttributeConverter( evt, data, consumable, conversionApi ) {
+	const parts = evt.name.split( ':' );
+	const consumableType = parts[ 0 ] + ':' + parts[ 1 ];
+
+	if ( !consumable.consume( data.item, consumableType ) ) {
+		return;
 	}
 
-	return new ViewContainerElement( 'figure', { class: 'image' }, viewImg );
+	const figure = conversionApi.mapper.toViewElement( data.item );
+	const img = figure.getChild( 0 );
+
+	if ( parts[ 0 ] == 'removeAttribute' ) {
+		img.removeAttribute( data.attributeKey );
+	} else {
+		img.setAttribute( data.attributeKey, data.attributeNewValue );
+	}
 }
