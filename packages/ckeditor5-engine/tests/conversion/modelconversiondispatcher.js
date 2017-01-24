@@ -503,6 +503,31 @@ describe( 'ModelConversionDispatcher', () => {
 
 			expect( dispatcher.fire.calledWith( 'selectionAttribute:bold' ) ).to.be.false;
 		} );
+
+		it( 'should fire events for each marker which contains selection', () => {
+			doc.markers.set( 'name', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
+
+			sinon.spy( dispatcher, 'fire' );
+
+			dispatcher.convertSelection( doc.selection );
+
+			expect( dispatcher.fire.calledWith( 'selectionMarker:name' ) ).to.be.true;
+		} );
+
+		it( 'should not fire events if information about marker has been consumed', () => {
+			doc.markers.set( 'foo', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
+			doc.markers.set( 'bar', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
+
+			sinon.spy( dispatcher, 'fire' );
+
+			dispatcher.on( 'selectionMarker:foo', ( evt, data, consumable ) => {
+				consumable.consume( data.selection, 'selectionMarker:bar' );
+			} );
+
+			dispatcher.convertSelection( doc.selection );
+
+			expect( dispatcher.fire.calledWith( 'selectionMarker:bar' ) ).to.be.false;
+		} );
 	} );
 
 	describe( 'convertMarker', () => {

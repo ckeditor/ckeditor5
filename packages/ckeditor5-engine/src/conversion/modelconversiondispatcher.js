@@ -311,15 +311,26 @@ export default class ModelConversionDispatcher {
 	 */
 	convertSelection( selection ) {
 		const consumable = this._createSelectionConsumable( selection );
-		const data = {
-			selection: selection
-		};
 
-		this.fire( 'selection', data, consumable, this.conversionApi );
+		this.fire( 'selection', { selection }, consumable, this.conversionApi );
+
+		for ( let markerName of selection.getMarkers() ) {
+			const data = {
+				selection: selection,
+				name: markerName
+			};
+
+			if ( consumable.test( selection, 'selectionMarker:' + markerName ) ) {
+				this.fire( 'selectionMarker:' + markerName, data, consumable, this.conversionApi );
+			}
+		}
 
 		for ( let key of selection.getAttributeKeys() ) {
-			data.key = key;
-			data.value = selection.getAttribute( key );
+			const data = {
+				selection: selection,
+				key: key,
+				value: selection.getAttribute( key )
+			};
 
 			// Do not fire event if the attribute has been consumed.
 			if ( consumable.test( selection, 'selectionAttribute:' + data.key ) ) {
@@ -403,6 +414,10 @@ export default class ModelConversionDispatcher {
 		const consumable = new Consumable();
 
 		consumable.add( selection, 'selection' );
+
+		for ( let markerName of selection.getMarkers() ) {
+			consumable.add( selection, 'selectionMarker:' + markerName );
+		}
 
 		for ( let key of selection.getAttributeKeys() ) {
 			consumable.add( selection, 'selectionAttribute:' + key );

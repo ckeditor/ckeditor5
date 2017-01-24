@@ -17,7 +17,7 @@ import {
 	unwrapRange
 } from './model-to-view-converters';
 
-import { convertSelectionAttribute } from './model-selection-to-view-converters';
+import { convertSelectionAttribute, convertSelectionMarker } from './model-selection-to-view-converters';
 
 import ViewAttributeElement from '../view/attributeelement';
 import ViewContainerElement from '../view/containerelement';
@@ -246,6 +246,8 @@ class ModelConverterBuilder {
 
 				dispatcher.on( 'addMarker:' + this._from.name, wrapRange( element ), { priority } );
 				dispatcher.on( 'removeMarker:' + this._from.name, unwrapRange( element ), { priority } );
+
+				dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( element ), { priority } );
 			}
 		}
 	}
