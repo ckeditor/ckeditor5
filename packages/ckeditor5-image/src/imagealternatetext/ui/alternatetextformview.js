@@ -50,9 +50,6 @@ export default class AlternateTextFormView extends View {
 		 */
 		this.cancelButtonView = this._createButton( t( 'Cancel' ), 'cancel' );
 
-		// Register child views.
-		this.addChildren( [ this.saveButtonView ] );
-
 		Template.extend( this.saveButtonView.template, {
 			attributes: {
 				class: [
