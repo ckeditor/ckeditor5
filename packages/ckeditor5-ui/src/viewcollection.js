@@ -34,14 +34,14 @@ export default class ViewCollection extends Collection {
 
 		// Handle {@link module:ui/view~View#element} in DOM when a new view is added to the collection.
 		this.on( 'add', ( evt, view, index ) => {
-			if ( this.ready && view.element && this._parentElement ) {
+			if ( view.element && this._parentElement ) {
 				this._parentElement.insertBefore( view.element, this._parentElement.children[ index ] );
 			}
 		} );
 
 		// Handle {@link module:ui/view~View#element} in DOM when a view is removed from the collection.
 		this.on( 'remove', ( evt, view ) => {
-			if ( this.ready && view.element && this._parentElement ) {
+			if ( view.element && this._parentElement ) {
 				view.element.remove();
 			}
 		} );
@@ -97,21 +97,10 @@ export default class ViewCollection extends Collection {
 			throw new CKEditorError( 'ui-viewcollection-init-reinit: This ViewCollection has already been initialized.' );
 		}
 
-		const promises = [];
-
-		for ( let view of this ) {
-			// Do not render unbound children. They're already in DOM by explicit declaration
-			// in Template definition.
-			if ( this._parentElement && view.element ) {
-				this._parentElement.appendChild( view.element );
-			}
-
-			promises.push( view.init() );
-		}
-
-		return Promise.all( promises ).then( () => {
-			this.ready = true;
-		} );
+		return Promise.all( this.map( v => v.init() ) )
+			.then( () => {
+				this.ready = true;
+			} );
 	}
 
 	/**
