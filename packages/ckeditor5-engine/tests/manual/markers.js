@@ -15,10 +15,10 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
-import buildModelConverter from '../../../../src/conversion/buildmodelconverter';
-import Position from '../../../../src/model/position';
-import LiveRange from '../../../../src/model/liverange';
-import ViewAttributeElement from '../../../../src/view/attributeelement';
+import buildModelConverter from '../../src/conversion/buildmodelconverter';
+import Position from '../../src/model/position';
+import LiveRange from '../../src/model/liverange';
+import ViewAttributeElement from '../../src/view/attributeelement';
 
 let model = null;
 
