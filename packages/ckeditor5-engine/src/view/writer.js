@@ -887,6 +887,8 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 	let offsetChange = 0;
 
 	for ( let position of wrapPositions ) {
+		position.offset -= offsetChange;
+
 		// Do not merge with elements outside selected children.
 		if ( position.offset == startOffset ) {
 			continue;
