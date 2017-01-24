@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEngine from './imageengine';
 import Widget from './widget/widget';
+import ImageAlternateText from './imagealternatetext/imagealternatetext';
 
 import '../theme/theme.scss';
 
@@ -25,6 +26,6 @@ export default class Image extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEngine, Widget ];
+		return [ ImageEngine, Widget, ImageAlternateText ];
 	}
 }

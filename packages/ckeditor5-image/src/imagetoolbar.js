@@ -7,38 +7,11 @@
  * @module image/imagetoolbar
  */
 
+import Template from '@ckeditor/ckeditor5-ui/src/template';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/balloonpanel/balloonpanelview';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
 import { isImageWidget } from './utils';
-import throttle from '@ckeditor/ckeditor5-utils/src/lib/lodash/throttle';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-
-const arrowVOffset = BalloonPanelView.arrowVerticalOffset;
-const positions = {
-	//	   [text range]
-	//	        ^
-	//	+-----------------+
-	//	|     Balloon     |
-	//	+-----------------+
-	south: ( targetRect, balloonRect ) => ( {
-		top: targetRect.bottom + arrowVOffset,
-		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-		name: 's'
-	} ),
-
-	//	+-----------------+
-	//	|     Balloon     |
-	//	+-----------------+
-	//	        V
-	//	   [text range]
-	north: ( targetRect, balloonRect ) => ( {
-		top: targetRect.top - balloonRect.height - arrowVOffset,
-		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-		name: 'n'
-	} )
-};
+import ImageBalloonPanel from './ui/imageballoonpanelview';
 
 /**
  * Image toolbar class. Creates image toolbar placed inside balloon panel that is showed when image widget is selected.
@@ -71,12 +44,11 @@ export default class ImageToolbar extends Plugin {
 			return;
 		}
 
-		// Create a plain toolbar instance.
+		const panel = this._panel = new ImageBalloonPanel( editor );
+		const promises = [];
 		const toolbar = new ToolbarView();
 
-		// Create a BalloonPanelView instance.
-		const panel = new BalloonPanelView( editor.locale );
-
+		// Add CSS class to the panel.
 		Template.extend( panel.template, {
 			attributes: {
 				class: [
@@ -85,54 +57,47 @@ export default class ImageToolbar extends Plugin {
 			}
 		} );
 
-		// Putting the toolbar inside of the balloon panel.
-		panel.content.add( toolbar );
+		// Add toolbar to balloon panel.
+		promises.push( panel.content.add( toolbar ) );
 
-		return editor.ui.view.body.add( panel ).then( () => {
-			const editingView = editor.editing.view;
-			const promises = [];
+		// Add buttons to the toolbar.
+		for ( let name of toolbarConfig ) {
+			promises.push( toolbar.items.add( editor.ui.componentFactory.create( name ) ) );
+		}
 
-			for ( let name of toolbarConfig ) {
-				promises.push( toolbar.items.add( editor.ui.componentFactory.create( name ) ) );
+		// Add balloon panel to editor's UI.
+		promises.push( editor.ui.view.body.add( panel ) );
+
+		// Show balloon panel each time image widget is selected.
+		this.listenTo( this.editor.editing.view, 'render', () => {
+			this.show();
+		}, { priority: 'low' } );
+
+		// There is no render method after focus is back in editor, we need to check if balloon panel should be visible.
+		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, is, was ) => {
+			if ( !was && is ) {
+				this.show();
 			}
-
-			// Let the focusTracker know about new focusable UI element.
-			editor.ui.focusTracker.add( panel.element );
-
-			// Hide the panel when editor loses focus but no the other way around.
-			panel.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, is, was ) => {
-				if ( was && !is ) {
-					panel.hide();
-				}
-			} );
-
-			const attachToolbarCallback = throttle( attachToolbar, 100 );
-
-			// Check if the toolbar should be displayed each time view is rendered.
-			editor.listenTo( editingView, 'render', () => {
-				const selectedElement = editingView.selection.getSelectedElement();
-
-				if ( selectedElement && isImageWidget( selectedElement ) ) {
-					attachToolbar();
-
-					editor.ui.view.listenTo( global.window, 'scroll', attachToolbarCallback );
-					editor.ui.view.listenTo( global.window, 'resize', attachToolbarCallback );
-				} else {
-					panel.hide();
-
-					editor.ui.view.stopListening( global.window, 'scroll', attachToolbarCallback );
-					editor.ui.view.stopListening( global.window, 'resize', attachToolbarCallback );
-				}
-			}, { priority: 'low' } );
-
-			function attachToolbar() {
-				panel.attachTo( {
-					target: editingView.domConverter.viewRangeToDom( editingView.selection.getFirstRange() ),
-					positions: [ positions.north, positions.south ]
-				} );
-			}
-
-			return Promise.all( promises );
 		} );
+
+		return Promise.all( promises );
+	}
+
+	/**
+	 * Shows the toolbar.
+	 */
+	show() {
+		const selectedElement = this.editor.editing.view.selection.getSelectedElement();
+
+		if ( selectedElement && isImageWidget( selectedElement ) ) {
+			this._panel.attach();
+		}
+	}
+
+	/**
+	 * Hides the toolbar.
+	 */
+	hide() {
+		this._panel.detach();
 	}
 }
