@@ -62,7 +62,7 @@ describe( 'Batch', () => {
 
 			doc.batch().setMarker( marker );
 
-			expect( doc.fire.calledWith( 'marker' ) );
+			expect( doc.fire.calledWith( 'change', 'marker' ) ).to.be.true;
 		} );
 
 		it( 'should throw if marker with given name does not exist and range is not passed', () => {

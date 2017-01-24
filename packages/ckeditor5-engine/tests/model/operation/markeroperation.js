@@ -94,21 +94,20 @@ describe( 'MarkerOperation', () => {
 		expect( doc.fire.called ).to.be.true;
 	} );
 
-	it( 'should not cause change event if operation does not change marker', () => {
-		const range = Range.createFromParentsAndOffsets( root, 0, root, 3 );
-		doc.markers.set( 'name', range );
-
+	it( 'should cause a change event when applied if oldRange and newRange are null', () => {
 		sinon.spy( doc, 'fire' );
 
-		doc.applyOperation( wrapInDelta(
-			new MarkerOperation( 'name', range, range, doc.version )
-		) );
+		doc.on( 'change', ( evt, type, changes ) => {
+			expect( type ).to.equal( 'marker' );
+			expect( changes.name ).to.equal( 'name' );
+			expect( changes.type ).to.equal( 'remove' );
+		} );
 
 		doc.applyOperation( wrapInDelta(
-			new MarkerOperation( 'otherName', null, null, doc.version )
+			new MarkerOperation( 'name', null, null, doc.version )
 		) );
 
-		expect( doc.fire.notCalled ).to.be.true;
+		expect( doc.fire.calledWith( 'change', 'marker' ) ).to.be.true;
 	} );
 
 	it( 'should return MarkerOperation with swapped ranges as reverse operation', () => {

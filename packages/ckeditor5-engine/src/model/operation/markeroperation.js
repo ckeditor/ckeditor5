@@ -94,14 +94,10 @@ export default class MarkerOperation extends Operation {
 	 * @inheritDoc
 	 */
 	_execute() {
-		// If old range and new range are "same", operation should not do anything.
 		if ( this.oldRange === null && this.newRange === null ) {
-			return;
-		} else if ( this.oldRange !== null && this.newRange !== null && this.oldRange.isEqual( this.newRange ) ) {
-			return;
+			return { name: this.name, type: 'remove' };
 		}
 
-		// At this point either `this.oldRange` or `this.newRange` has to be not-null.
 		const document = ( this.oldRange || this.newRange ).root.document;
 		let type;
 
