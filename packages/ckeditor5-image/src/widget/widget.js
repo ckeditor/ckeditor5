@@ -13,6 +13,7 @@ import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobs
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import { isWidget } from './utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
@@ -38,7 +39,7 @@ export default class Widget extends Plugin {
 
 		// If mouse down is pressed on widget - create selection over whole widget.
 		viewDocument.addObserver( MouseObserver );
-		// this.listenTo( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
+		this.listenTo( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
 
 		// Handle custom keydown behaviour.
 		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( ...args ), { priority: 'high' } );
@@ -52,13 +53,21 @@ export default class Widget extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_onMousedown( eventInfo, domEventData ) {
-		let widgetElement = domEventData.target;
 		const editor = this.editor;
 		const viewDocument = editor.editing.view;
 
+		// Do nothing if inside nested editable.
+		if ( domEventData.target instanceof ViewEditableElement ) {
+			return;
+		}
+
 		// If target is not a widget element - check if one of the ancestors is.
+		let widgetElement = domEventData.target;
+
 		if ( !isWidget( widgetElement ) ) {
-			widgetElement = widgetElement.findAncestor( element => isWidget( element ) );
+			widgetElement = widgetElement.findAncestor( element => {
+				return isWidget( element );
+			} );
 
 			if ( !widgetElement ) {
 				return;

@@ -34,6 +34,23 @@ export default class WidgetEngine extends Plugin {
 			}
 
 			const viewSelection = conversionApi.viewSelection;
+
+			// If selection is placed inside some nested editable check if it is placed inside widget element.
+			// If yes - add CSS class to that widget element.
+			const editableElement = viewSelection.editableElement;
+
+			if ( editableElement ) {
+				const widget = editableElement.findAncestor( element => isWidget( element ) );
+
+				if ( widget ) {
+					widget.addClass( WIDGET_SELECTED_CLASS_NAME );
+					previouslySelected = widget;
+
+					return;
+				}
+			}
+
+			// Check if widget was clicked or some sub-element.
 			const selectedElement = viewSelection.getSelectedElement();
 
 			if ( !selectedElement || !isWidget( selectedElement ) ) {
