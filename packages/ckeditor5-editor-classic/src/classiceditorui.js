@@ -98,7 +98,7 @@ export default class ClassicEditorUI {
 				this.focusTracker.add( this.view.toolbar.element );
 
 				// Focus the toolbar on the keystroke, if not already focused.
-				editor.keystrokes.set( 'alt + f10', ( data, cancel ) => {
+				editor.keystrokes.set( 'Alt+F10', ( data, cancel ) => {
 					if ( this.focusTracker.isFocused && !toolbarFocusTracker.isFocused ) {
 						this.view.toolbar.focus();
 						cancel();
@@ -106,7 +106,7 @@ export default class ClassicEditorUI {
 				} );
 
 				// Blur the toolbar and bring the focus back to editable on the keystroke.
-				this.view.toolbar.keystrokes.set( 'esc', ( data, cancel ) => {
+				this.view.toolbar.keystrokes.set( 'Esc', ( data, cancel ) => {
 					if ( toolbarFocusTracker.isFocused ) {
 						editor.editing.view.focus();
 						cancel();

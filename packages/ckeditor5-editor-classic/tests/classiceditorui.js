@@ -147,7 +147,7 @@ describe( 'ClassicEditorUI', () => {
 		} );
 
 		describe( 'activates keyboard navigation for the toolbar', () => {
-			it( 'alt + f10: focus the first focusable toolbar item', () => {
+			it( 'Alt+F10: focus the first focusable toolbar item', () => {
 				return ui.init().then( () => {
 					const spy = sinon.spy( view.toolbar, 'focus' );
 					const toolbarFocusTracker = view.toolbar.focusTracker;
