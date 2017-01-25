@@ -68,7 +68,7 @@ describe( 'ImageCaptioningEngine', () => {
 			it( 'should convert caption element to figcaption', () => {
 				setModelData( document, '<image src="img.png"><caption>Foo bar baz.</caption></image>' );
 
-				expect( editor.getData() ).to.equal( '<figure class="image"><figcaption>Foo bar baz.</figcaption><img src="img.png"></figure>' );
+				expect( editor.getData() ).to.equal( '<figure class="image"><img src="img.png"><figcaption>Foo bar baz.</figcaption></figure>' );
 			} );
 
 			it( 'should not convert caption if it\'s empty', () => {

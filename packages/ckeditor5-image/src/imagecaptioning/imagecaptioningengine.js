@@ -9,13 +9,19 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ModelTreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
-import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
+// import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
+import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
+import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import { isImage } from '../utils';
+
+// TODO: move to the ImageCaptioning
+import '../../theme/imagecaptioning/theme.scss';
 
 export default class ImageCaptioningEngine extends Plugin {
 	/**
@@ -62,7 +68,7 @@ export default class ImageCaptioningEngine extends Plugin {
 		// Model to view converter for editing pipeline.
 		editing.modelToView.on(
 			'insert:caption',
-			captionModelToView( new ViewEditableElement( 'figcaption', { contenteditable: true } ), false )
+			captionModelToView( new ViewEditableElement( 'figcaption', { contenteditable: true } ) )
 		);
 	}
 }
@@ -109,4 +115,22 @@ function hasCaption( image ) {
 	}
 
 	return false;
+}
+
+function insertElement( elementCreator ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		if ( !consumable.consume( data.item, 'insert' ) ) {
+			return;
+		}
+
+		const imageFigure = conversionApi.mapper.toViewElement( data.range.start.parent );
+		const viewPosition = ViewPosition.createAt( imageFigure, 'end' );
+
+		const viewElement = ( elementCreator instanceof ViewElement ) ?
+			elementCreator.clone( true ) :
+			elementCreator( data, consumable, conversionApi );
+
+		conversionApi.mapper.bindElements( data.item, viewElement );
+		viewWriter.insert( viewPosition, viewElement );
+	};
 }
