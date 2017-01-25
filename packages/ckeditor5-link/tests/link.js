@@ -196,7 +196,7 @@ describe( 'Link', () => {
 
 			const spy = sinon.spy( formView, 'focus' );
 
-			editor.ui.keystrokes.press( keyEvtData );
+			editor.keystrokes.press( keyEvtData );
 			sinon.assert.notCalled( keyEvtData.preventDefault );
 			sinon.assert.notCalled( keyEvtData.stopPropagation );
 			sinon.assert.notCalled( spy );
@@ -205,7 +205,7 @@ describe( 'Link', () => {
 			balloonPanelView.isVisible = true;
 			formView.focusTracker.isFocused = true;
 
-			editor.ui.keystrokes.press( keyEvtData );
+			editor.keystrokes.press( keyEvtData );
 			sinon.assert.notCalled( keyEvtData.preventDefault );
 			sinon.assert.notCalled( keyEvtData.stopPropagation );
 			sinon.assert.notCalled( spy );
@@ -214,7 +214,7 @@ describe( 'Link', () => {
 			balloonPanelView.isVisible = true;
 			formView.focusTracker.isFocused = false;
 
-			editor.ui.keystrokes.press( keyEvtData );
+			editor.keystrokes.press( keyEvtData );
 			sinon.assert.calledOnce( keyEvtData.preventDefault );
 			sinon.assert.calledOnce( keyEvtData.stopPropagation );
 			sinon.assert.calledOnce( spy );
@@ -223,16 +223,22 @@ describe( 'Link', () => {
 		describe( 'close listeners', () => {
 			describe( 'keyboard', () => {
 				it( 'should close after `ESC` press', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.esc,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
 					balloonPanelView.isVisible = false;
 
-					dispatchKeyboardEvent( editor.ui.view.element, 'keydown', keyCodes.esc );
+					editor.keystrokes.press( keyEvtData );
 
 					sinon.assert.notCalled( hidePanelSpy );
 					sinon.assert.notCalled( focusEditableSpy );
 
 					balloonPanelView.isVisible = true;
 
-					dispatchKeyboardEvent( editor.ui.view.element, 'keydown', keyCodes.esc );
+					editor.keystrokes.press( keyEvtData );
 
 					sinon.assert.calledOnce( hidePanelSpy );
 					sinon.assert.calledOnce( focusEditableSpy );
@@ -459,19 +465,3 @@ describe( 'Link', () => {
 		} );
 	} );
 } );
-
-// Creates and dispatches keyboard event with specified keyCode.
-//
-// @private
-// @param {EventTarget} eventTarget
-// @param {String} eventName
-// @param {Number} keyCode
-function dispatchKeyboardEvent( element, eventName, keyCode ) {
-	const event = document.createEvent( 'Events' );
-
-	event.initEvent( eventName, true, true );
-	event.which = keyCode;
-	event.keyCode = keyCode;
-
-	element.dispatchEvent( event );
-}

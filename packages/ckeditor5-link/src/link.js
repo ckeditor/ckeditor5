@@ -168,7 +168,7 @@ export default class Link extends Plugin {
 		} );
 
 		// Focus the form if balloon panel is open and tab key has been pressed.
-		editor.ui.keystrokes.set( 'tab', ( data, cancel ) => {
+		editor.keystrokes.set( 'tab', ( data, cancel ) => {
 			if ( balloonPanelView.isVisible && !this.formView.focusTracker.isFocused ) {
 				this.formView.focus();
 				cancel();
@@ -176,7 +176,7 @@ export default class Link extends Plugin {
 		} );
 
 		// // Close the panel on esc key press.
-		editor.ui.keystrokes.set( 'esc', ( data, cancel ) => {
+		editor.keystrokes.set( 'esc', ( data, cancel ) => {
 			if ( balloonPanelView.isVisible ) {
 				this._hidePanel( true );
 				cancel();
