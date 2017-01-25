@@ -76,19 +76,6 @@ describe( 'LinkFormView', () => {
 			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.unlinkButtonView.element );
 		} );
 
-		it( 'should register child views as children', () => {
-			const spy = testUtils.sinon.spy( LinkFormView.prototype, 'addChildren' );
-
-			view = new LinkFormView( { t: () => {} } );
-
-			sinon.assert.calledWithExactly( spy, [
-				view.urlInputView,
-				view.saveButtonView,
-				view.cancelButtonView,
-				view.unlinkButtonView
-			] );
-		} );
-
 		it( 'should fire `cancel` event on cancelButtonView#execute', () => {
 			const spy = sinon.spy();
 

@@ -165,9 +165,6 @@ export default class LinkFormView extends View {
 			// Register the view in the focus tracker.
 			this.focusTracker.add( v.element );
 		} );
-
-		// Register child views. It tells #destroy() to handle theme.
-		this.addChildren( childViews );
 	}
 
 	/**
