@@ -60,11 +60,21 @@ describe( 'LabeledInputView', () => {
 		} );
 	} );
 
-	describe( 'select', () => {
+	describe( 'select()', () => {
 		it( 'should select input value', () => {
 			const spy = sinon.spy( view.inputView, 'select' );
 
 			view.select();
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( 'focus()', () => {
+		it( 'focuses the input in DOM', () => {
+			const spy = sinon.spy( view.inputView, 'focus' );
+
+			view.focus();
 
 			sinon.assert.calledOnce( spy );
 		} );

@@ -51,14 +51,14 @@ export default class LabeledInputView extends View {
 		 *
 		 * @member {module:ui/label/labelview~LabelView} #labelView
 		 */
-		this.addChildren( this.labelView = this._createLabelView( id ) );
+		this.labelView = this._createLabelView( id );
 
 		/**
 		 * The input view.
 		 *
 		 * @member {module:ui/view~View} #inputView
 		 */
-		this.addChildren( this.inputView = this._createInputView( InputView, id ) );
+		this.inputView = this._createInputView( InputView, id );
 
 		this.template = new Template( {
 			tag: 'div',
@@ -108,5 +108,12 @@ export default class LabeledInputView extends View {
 	 */
 	select() {
 		this.inputView.select();
+	}
+
+	/**
+	 * Focuses the input.
+	 */
+	focus() {
+		this.inputView.focus();
 	}
 }

@@ -9,6 +9,8 @@
 
 import View from '../view';
 import Template from '../template';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 /**
  * The dropdown view class.
@@ -39,7 +41,7 @@ export default class DropdownView extends View {
 		 * @readonly
 		 * @member {ui.button.ButtonView} #buttonView
 		 */
-		this.addChildren( this.buttonView = buttonView );
+		this.buttonView = buttonView;
 
 		/**
 		 * Panel of this dropdown view.
@@ -47,7 +49,7 @@ export default class DropdownView extends View {
 		 * @readonly
 		 * @member {module:ui/dropdown/dropdownpanelview~DropdownPanelView} #panelView
 		 */
-		this.addChildren( this.panelView = panelView );
+		this.panelView = panelView;
 
 		/**
 		 * Controls whether the dropdown view is open, which also means its
@@ -57,6 +59,22 @@ export default class DropdownView extends View {
 		 * @member {Boolean} #isOpen
 		 */
 		this.set( 'isOpen', false );
+
+		/**
+		 * Tracks information about DOM focus in the list.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+
+		/**
+		 * Instance of the {@link module:core/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:core/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
 
 		this.template = new Template( {
 			tag: 'div',
@@ -106,5 +124,52 @@ export default class DropdownView extends View {
 		 * @observable
 		 * @member {Boolean} #withText
 		 */
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		// Listen for keystrokes coming from within #element.
+		this.keystrokes.listenTo( this.element );
+
+		// Register #element in the focus tracker.
+		this.focusTracker.add( this.element );
+
+		const closeDropdown = ( data, cancel ) => {
+			if ( this.isOpen ) {
+				this.buttonView.focus();
+				this.isOpen = false;
+				cancel();
+			}
+		};
+
+		// Open the dropdown panel using the arrow down key, just like with return or space.
+		this.keystrokes.set( 'arrowdown', ( data, cancel ) => {
+			if ( !this.isOpen ) {
+				this.isOpen = true;
+				cancel();
+			}
+		} );
+
+		// Block the right arrow key (until nested dropdowns are implemented).
+		this.keystrokes.set( 'arrowright', ( data, cancel ) => {
+			if ( this.isOpen ) {
+				cancel();
+			}
+		} );
+
+		// Close the dropdown using the arrow left/escape key.
+		this.keystrokes.set( 'arrowleft', closeDropdown );
+		this.keystrokes.set( 'esc', closeDropdown );
+
+		return super.init();
+	}
+
+	/**
+	 * Focuses the {@link #buttonView}.
+	 */
+	focus() {
+		this.buttonView.focus();
 	}
 }

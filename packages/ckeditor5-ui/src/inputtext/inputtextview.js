@@ -62,4 +62,11 @@ export default class InputTextView extends View {
 	select() {
 		this.element.select();
 	}
+
+	/**
+	 * Focuses the input.
+	 */
+	focus() {
+		this.element.focus();
+	}
 }

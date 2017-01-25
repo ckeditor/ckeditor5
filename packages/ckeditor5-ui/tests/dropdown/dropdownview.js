@@ -4,6 +4,9 @@
  */
 
 import DropdownView from '../../src/dropdown/dropdownview';
+import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ButtonView from '../../src/button/buttonview';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 
@@ -34,6 +37,14 @@ describe( 'DropdownView', () => {
 
 		it( 'sets view#isOpen false', () => {
 			expect( view.isOpen ).to.be.false;
+		} );
+
+		it( 'creates #focusTracker instance', () => {
+			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
+		} );
+
+		it( 'creates #keystrokeHandler instance', () => {
+			expect( view.keystrokes ).to.be.instanceOf( KeystrokeHandler );
 		} );
 
 		it( 'creates #element from template', () => {
@@ -78,6 +89,132 @@ describe( 'DropdownView', () => {
 					expect( values ).to.have.members( [ true, false, true ] );
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'init()', () => {
+		it( 'starts listening for #keystrokes coming from #element', () => {
+			view = new DropdownView( locale,
+				new ButtonView( locale ),
+				new DropdownPanelView( locale ) );
+
+			const spy = sinon.spy( view.keystrokes, 'listenTo' );
+
+			return view.init().then( () => {
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledWithExactly( spy, view.element );
+			} );
+		} );
+
+		it( 'adds #element to #focusTracker', () => {
+			view = new DropdownView( locale,
+				new ButtonView( locale ),
+				new DropdownPanelView( locale ) );
+
+			const spy = sinon.spy( view.focusTracker, 'add' );
+
+			return view.init().then( () => {
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledWithExactly( spy, view.element );
+			} );
+		} );
+
+		describe( 'activates keyboard navigation for the dropdown', () => {
+			it( 'so "arrowdown" opens the #panelView', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.arrowdown,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				view.isOpen = true;
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.notCalled( keyEvtData.preventDefault );
+				sinon.assert.notCalled( keyEvtData.stopPropagation );
+				expect( view.isOpen ).to.be.true;
+
+				view.isOpen = false;
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				expect( view.isOpen ).to.be.true;
+			} );
+
+			it( 'so "arrowright" is blocked', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.arrowright,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				view.false = true;
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.notCalled( keyEvtData.preventDefault );
+				sinon.assert.notCalled( keyEvtData.stopPropagation );
+				expect( view.isOpen ).to.be.false;
+
+				view.isOpen = true;
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				expect( view.isOpen ).to.be.true;
+			} );
+
+			it( 'so "arrowleft" closes the #panelView', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.arrowleft,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+				const spy = sinon.spy( view.buttonView, 'focus' );
+
+				view.isOpen = false;
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.notCalled( keyEvtData.preventDefault );
+				sinon.assert.notCalled( keyEvtData.stopPropagation );
+				sinon.assert.notCalled( spy );
+				expect( view.isOpen ).to.be.false;
+
+				view.isOpen = true;
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( spy );
+				expect( view.isOpen ).to.be.false;
+			} );
+
+			it( 'so "esc" closes the #panelView', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.esc,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+				const spy = sinon.spy( view.buttonView, 'focus' );
+
+				view.isOpen = false;
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.notCalled( keyEvtData.preventDefault );
+				sinon.assert.notCalled( keyEvtData.stopPropagation );
+				sinon.assert.notCalled( spy );
+				expect( view.isOpen ).to.be.false;
+
+				view.isOpen = true;
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+				sinon.assert.calledOnce( spy );
+				expect( view.isOpen ).to.be.false;
+			} );
+		} );
+	} );
+
+	describe( 'focus()', () => {
+		it( 'focuses the #buttonView in DOM', () => {
+			const spy = sinon.spy( view.buttonView, 'focus' );
+
+			view.focus();
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 } );

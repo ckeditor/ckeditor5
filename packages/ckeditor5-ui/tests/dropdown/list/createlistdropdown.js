@@ -10,6 +10,7 @@ import createListDropdown from '../../../src/dropdown/list/createlistdropdown';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import ListView from '../../../src/list/listview';
 import ListItemView from '../../../src/list/listitemview';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'createListDropdown', () => {
 	let view, model, locale, items;
@@ -139,6 +140,42 @@ describe( 'createListDropdown', () => {
 
 			// Dropdown is still open.
 			expect( view.isOpen ).to.be.true;
+		} );
+
+		describe( 'activates keyboard navigation for the dropdown', () => {
+			it( 'so "arrowdown" focuses the #listView if dropdown is open', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.arrowdown,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+				const spy = sinon.spy( view.listView, 'focus' );
+
+				view.isOpen = false;
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.notCalled( spy );
+
+				view.isOpen = true;
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'so "arrowup" focuses the last #item in #listView if dropdown is open', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.arrowup,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+				const spy = sinon.spy( view.listView, 'focusLast' );
+
+				view.isOpen = false;
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.notCalled( spy );
+
+				view.isOpen = true;
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 	} );
 } );

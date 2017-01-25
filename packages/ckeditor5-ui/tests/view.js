@@ -61,7 +61,7 @@ describe( 'View', () => {
 		} );
 	} );
 
-	describe( 'createCollection', () => {
+	describe( 'createCollection()', () => {
 		beforeEach( () => {
 			setTestViewClass();
 			setTestViewInstance();
@@ -81,7 +81,7 @@ describe( 'View', () => {
 		} );
 	} );
 
-	describe( 'addChildren', () => {
+	describe( 'addChildren()', () => {
 		beforeEach( () => {
 			setTestViewClass();
 			setTestViewInstance();
@@ -192,6 +192,44 @@ describe( 'View', () => {
 		it( 'is null when there is no template', () => {
 			expect( new View().element ).to.be.null;
 		} );
+
+		it( 'registers child views found in the template', () => {
+			const view = new View();
+			const viewA = new View();
+			const viewB = new View();
+			const viewC = new View();
+
+			viewA.template = new Template( { tag: 'a' } );
+			viewB.template = new Template( { tag: 'b' } );
+			viewC.template = new Template( { tag: 'c' } );
+
+			view.template = new Template( {
+				tag: 'div',
+				children: [
+					viewA,
+					viewB,
+					{
+						tag: 'p',
+						children: [
+							viewC
+						]
+					},
+					{
+						text: 'foo'
+					}
+				]
+			} );
+
+			expect( view._unboundChildren ).to.have.length( 0 );
+
+			// Render the view.
+			view.element;
+
+			expect( view._unboundChildren ).to.have.length( 3 );
+			expect( view._unboundChildren.get( 0 ) ).to.equal( viewA );
+			expect( view._unboundChildren.get( 1 ) ).to.equal( viewB );
+			expect( view._unboundChildren.get( 2 ) ).to.equal( viewC );
+		} );
 	} );
 
 	describe( 'destroy()', () => {
@@ -216,8 +254,8 @@ describe( 'View', () => {
 		it( 'clears #_unboundChildren', () => {
 			const cached = view._unboundChildren;
 
-			view.addChildren( new View(), new View() );
-			expect( cached ).to.have.length.above( 1 );
+			view.addChildren( [ new View(), new View() ] );
+			expect( cached ).to.have.length.above( 2 );
 
 			return view.destroy().then( () => {
 				expect( cached ).to.have.length( 0 );
@@ -350,6 +388,4 @@ function createViewWithChildren() {
 	} );
 
 	setTestViewInstance();
-
-	view.addChildren( childA, childB );
 }
