@@ -9,7 +9,6 @@
 
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 /**
  * The classic editor UI class.
@@ -53,21 +52,6 @@ export default class ClassicEditorUI {
 		 * @member {module:utils/focustracker~FocusTracker}
 		 */
 		this.focusTracker = new FocusTracker();
-
-		/**
-		 * Instance of the {@link module:core/keystrokehandler~KeystrokeHandler}.
-		 *
-		 * Unlike {@link core/editor/standardeditor~StandardEditor#keystrokes}, this
-		 * keystroke handler is focused on keystrokes associated exclusively with the
-		 * user interface, not edited content. It takes care of accessibility–related
-		 * keystrokes (e.g. focus the toolbar) and similar, leaving content
-		 * keystrokes (e.g. bold text, insert link) to aforementioned instance
-		 * in `StandardEditor`.
-		 *
-		 * @readonly
-		 * @member {module:core/keystrokehandler~KeystrokeHandler}
-		 */
-		this.keystrokes = new KeystrokeHandler();
 
 		// Set–up the view.
 		view.set( 'width', editor.config.get( 'ui.width' ) );
@@ -113,14 +97,8 @@ export default class ClassicEditorUI {
 				// the toolbar must also be tracked.
 				this.focusTracker.add( this.view.toolbar.element );
 
-				// Listen on the keystrokes from the main UI.
-				this.keystrokes.listenTo( this.view.element );
-
-				// Listen on the keystrokes from the floating panels, toolbars and the such.
-				this.keystrokes.listenTo( this.view._bodyCollectionContainer );
-
 				// Focus the toolbar on the keystroke, if not already focused.
-				this.keystrokes.set( 'alt + f10', ( data, cancel ) => {
+				editor.keystrokes.set( 'alt + f10', ( data, cancel ) => {
 					if ( this.focusTracker.isFocused && !toolbarFocusTracker.isFocused ) {
 						this.view.toolbar.focus();
 						cancel();
@@ -128,7 +106,7 @@ export default class ClassicEditorUI {
 				} );
 
 				// Blur the toolbar and bring the focus back to editable on the keystroke.
-				this.keystrokes.set( 'esc', ( data, cancel ) => {
+				this.view.toolbar.keystrokes.set( 'esc', ( data, cancel ) => {
 					if ( toolbarFocusTracker.isFocused ) {
 						editor.editing.view.focus();
 						cancel();

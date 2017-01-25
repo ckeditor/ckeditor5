@@ -13,7 +13,6 @@ import ClassicEditorUIView from '../src/classiceditoruiview';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -59,10 +58,6 @@ describe( 'ClassicEditorUI', () => {
 
 		it( 'creates #focusTracker', () => {
 			expect( ui.focusTracker ).to.be.instanceOf( FocusTracker );
-		} );
-
-		it( 'creates #keystrokes', () => {
-			expect( ui.keystrokes ).to.be.instanceOf( KeystrokeHandler );
 		} );
 
 		it( 'sets view#width and view#height', () => {
@@ -152,16 +147,6 @@ describe( 'ClassicEditorUI', () => {
 		} );
 
 		describe( 'activates keyboard navigation for the toolbar', () => {
-			it( 'listens for keystrokes coming from various parts of the UI', () => {
-				const spy = sinon.spy( ui.keystrokes, 'listenTo' );
-
-				return ui.init().then( () => {
-					sinon.assert.calledTwice( spy );
-					sinon.assert.calledWithExactly( spy.firstCall, ui.view.element );
-					sinon.assert.calledWithExactly( spy.secondCall, ui.view._bodyCollectionContainer );
-				} );
-			} );
-
 			it( 'alt + f10: focus the first focusable toolbar item', () => {
 				return ui.init().then( () => {
 					const spy = sinon.spy( view.toolbar, 'focus' );
@@ -176,19 +161,19 @@ describe( 'ClassicEditorUI', () => {
 					toolbarFocusTracker.isFocused = false;
 					ui.focusTracker.isFocused = false;
 
-					ui.keystrokes.press( keyEvtData );
+					editor.keystrokes.press( keyEvtData );
 					sinon.assert.notCalled( spy );
 
 					toolbarFocusTracker.isFocused = true;
 					ui.focusTracker.isFocused = true;
 
-					ui.keystrokes.press( keyEvtData );
+					editor.keystrokes.press( keyEvtData );
 					sinon.assert.notCalled( spy );
 
 					toolbarFocusTracker.isFocused = false;
 					ui.focusTracker.isFocused = true;
 
-					ui.keystrokes.press( keyEvtData );
+					editor.keystrokes.press( keyEvtData );
 					sinon.assert.calledOnce( spy );
 
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
@@ -207,12 +192,12 @@ describe( 'ClassicEditorUI', () => {
 
 					toolbarFocusTracker.isFocused = false;
 
-					ui.keystrokes.press( keyEvtData );
+					ui.view.toolbar.keystrokes.press( keyEvtData );
 					sinon.assert.notCalled( spy );
 
 					toolbarFocusTracker.isFocused = true;
 
-					ui.keystrokes.press( keyEvtData );
+					ui.view.toolbar.keystrokes.press( keyEvtData );
 
 					sinon.assert.calledOnce( spy );
 					sinon.assert.calledOnce( keyEvtData.preventDefault );
