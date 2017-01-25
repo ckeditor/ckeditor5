@@ -492,23 +492,44 @@ export function rename() {
 }
 
 /**
- * Function factory, creates a default converter for inserting {@link module:engine/model/item~Item model item} into a marker range
- * or inserting a part of a model that contains a marker (this happens when reinserting nodes from graveyard).
+ * Function factory, creates a default converter for inserting {@link module:engine/model/item~Item model item}
+ * into a marker range.
  *
- *		modelDispatcher.on( 'insert', insertIntoRange( modelDocument.markers ) );
+ *		modelDispatcher.on( 'insert', insertRangeIntoMarker( modelDocument.markers ) );
  *
  * @param {module:engine/model/markercollection~MarkerCollection} markerCollection Markers collection to check when
  * inserting.
  * @returns {Function}
  */
-export function insertMarkerOrIntoMarker( markerCollection ) {
+export function insertRangeIntoMarker( markerCollection ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		for ( let marker of markerCollection ) {
 			const range = marker.getRange();
 
 			if ( range.containsPosition( data.range.start ) ) {
 				conversionApi.dispatcher.convertMarker( 'addMarker', marker.name, data.range );
-			} else if ( data.range.containsRange( range ) || data.range.isEqual( range ) ) {
+			}
+		}
+	};
+}
+
+/**
+ * Function factory, creates a default converter for inserting a {@link module:engine/model/range~Range model range}
+ * that contains a marker. This happens when marker was in a graveyard (so it was removed from the view) or was
+ * created in a {@link module:engine/model/documentfragment~DocumentFragment DocumentFragment} (so it was not in the view before).
+ *
+ *		modelDispatcher.on( 'insert', insertRangeWithMarker( modelDocument.markers ) );
+ *
+ * @param {module:engine/model/markercollection~MarkerCollection} markerCollection Markers collection to check when
+ * inserting.
+ * @returns {Function}
+ */
+export function insertRangeWithMarker( markerCollection ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		for ( let marker of markerCollection ) {
+			const range = marker.getRange();
+
+			if ( data.range.containsRange( range ) || data.range.isEqual( range ) ) {
 				conversionApi.dispatcher.convertMarker( 'addMarker', marker.name, range );
 			}
 		}
