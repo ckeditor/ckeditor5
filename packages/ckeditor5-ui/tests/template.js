@@ -24,8 +24,8 @@ let el, text;
 
 describe( 'Template', () => {
 	describe( 'constructor()', () => {
-		it( 'sets #_rendered property', () => {
-			expect( new Template( { tag: 'p' } )._rendered ).to.be.false;
+		it( 'sets #_isRendered property', () => {
+			expect( new Template( { tag: 'p' } )._isRendered ).to.be.false;
 		} );
 
 		it( 'accepts and normalizes the definition', () => {
@@ -138,14 +138,14 @@ describe( 'Template', () => {
 			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
 		} );
 
-		it( 'sets #_rendered true', () => {
+		it( 'sets #_isRendered true', () => {
 			const tpl = new Template( { tag: 'p' } );
 
-			expect( tpl._rendered ).to.be.false;
+			expect( tpl._isRendered ).to.be.false;
 
 			tpl.render();
 
-			expect( tpl._rendered ).to.be.true;
+			expect( tpl._isRendered ).to.be.true;
 		} );
 
 		describe( 'DOM Node', () => {

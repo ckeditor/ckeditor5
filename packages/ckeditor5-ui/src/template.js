@@ -64,7 +64,7 @@ export default class Template {
 		 * @protected
 		 * @member {Boolean}
 		 */
-		this._rendered = false;
+		this._isRendered = false;
 
 		/**
 		 * Tag of this template, i.e. `div`, indicating that the instance will render
@@ -114,7 +114,7 @@ export default class Template {
 	render() {
 		const node = this._renderNode( undefined, true );
 
-		this._rendered = true;
+		this._isRendered = true;
 
 		return node;
 	}
@@ -247,7 +247,7 @@ export default class Template {
 	 * @param {module:ui/template~TemplateDefinition} def An extension to existing an template instance.
 	 */
 	static extend( template, def ) {
-		if ( template._rendered ) {
+		if ( template._isRendered ) {
 			/**
 			 * Extending a template after rendering may not work as expected. To make sure
 			 * the {@link #extend extending} works for the rendered element, perform it
