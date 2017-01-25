@@ -222,7 +222,7 @@ describe( 'Link', () => {
 
 		describe( 'close listeners', () => {
 			describe( 'keyboard', () => {
-				it( 'should close after `ESC` press', () => {
+				it( 'should close after esc key press (from editor)', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.esc,
 						preventDefault: sinon.spy(),
@@ -239,6 +239,19 @@ describe( 'Link', () => {
 					balloonPanelView.isVisible = true;
 
 					editor.keystrokes.press( keyEvtData );
+
+					sinon.assert.calledOnce( hidePanelSpy );
+					sinon.assert.calledOnce( focusEditableSpy );
+				} );
+
+				it( 'should close after esc key press (from the form)', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.esc,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					formView.keystrokes.press( keyEvtData );
 
 					sinon.assert.calledOnce( hidePanelSpy );
 					sinon.assert.calledOnce( focusEditableSpy );

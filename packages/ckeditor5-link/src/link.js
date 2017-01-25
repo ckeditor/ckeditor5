@@ -175,7 +175,7 @@ export default class Link extends Plugin {
 			}
 		} );
 
-		// // Close the panel on esc key press.
+		// Close the panel on esc key press when editable has focus.
 		editor.keystrokes.set( 'esc', ( data, cancel ) => {
 			if ( balloonPanelView.isVisible ) {
 				this._hidePanel( true );
@@ -218,6 +218,12 @@ export default class Link extends Plugin {
 		this.listenTo( formView, 'unlink', () => {
 			editor.execute( 'unlink' );
 			this._hidePanel( true );
+		} );
+
+		// Close the panel on esc key press when the form has focus.
+		formView.keystrokes.set( 'esc', ( data, cancel ) => {
+			this._hidePanel( true );
+			cancel();
 		} );
 
 		// Hide balloon panel after clicking on formView `Cancel` button.
