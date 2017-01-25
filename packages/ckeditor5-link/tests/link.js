@@ -183,7 +183,7 @@ describe( 'Link', () => {
 			expect( editor.ui.focusTracker.isFocused ).to.true;
 		} );
 
-		it( 'should focus the link form on tab key press', () => {
+		it( 'should focus the link form on Tab key press', () => {
 			const keyEvtData = {
 				keyCode: keyCodes.tab,
 				preventDefault: sinon.spy(),
@@ -222,7 +222,7 @@ describe( 'Link', () => {
 
 		describe( 'close listeners', () => {
 			describe( 'keyboard', () => {
-				it( 'should close after esc key press (from editor)', () => {
+				it( 'should close after Esc key press (from editor)', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.esc,
 						preventDefault: sinon.spy(),
@@ -244,7 +244,7 @@ describe( 'Link', () => {
 					sinon.assert.calledOnce( focusEditableSpy );
 				} );
 
-				it( 'should close after esc key press (from the form)', () => {
+				it( 'should close after Esc key press (from the form)', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.esc,
 						preventDefault: sinon.spy(),
