@@ -89,6 +89,29 @@ export default class ClassicEditorUI {
 				}
 
 				return Promise.all( promises );
+			} )
+			.then( () => {
+				const toolbarFocusTracker = this.view.toolbar.focusTracker;
+
+				// Because toolbar items can get focus, the overall state of
+				// the toolbar must also be tracked.
+				this.focusTracker.add( this.view.toolbar.element );
+
+				// Focus the toolbar on the keystroke, if not already focused.
+				editor.keystrokes.set( 'Alt+F10', ( data, cancel ) => {
+					if ( this.focusTracker.isFocused && !toolbarFocusTracker.isFocused ) {
+						this.view.toolbar.focus();
+						cancel();
+					}
+				} );
+
+				// Blur the toolbar and bring the focus back to editable on the keystroke.
+				this.view.toolbar.keystrokes.set( 'Esc', ( data, cancel ) => {
+					if ( toolbarFocusTracker.isFocused ) {
+						editor.editing.view.focus();
+						cancel();
+					}
+				} );
 			} );
 	}
 
