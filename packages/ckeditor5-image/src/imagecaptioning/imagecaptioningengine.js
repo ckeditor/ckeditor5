@@ -53,16 +53,30 @@ export default class ImageCaptioningEngine extends Plugin {
 			.from( matcher )
 			.toElement( 'caption' );
 
-		// Model to view converter for editing pipeline.
-		const insertConverter = insertElement( new ViewEditableElement( 'figcaption', { contenteditable: true } ) );
-		editing.modelToView.on( 'insert:caption', ( evt, data, consumable, conversionApi ) => {
-			const captionElement = data.item;
+		// Model to view converter for data pipeline.
+		data.modelToView.on(
+			'insert:caption',
+			captionModelToView( new ViewEditableElement( 'figcaption' ), false )
+		);
 
-			if ( isImage( captionElement.parent ) ) {
-				insertConverter( evt, data, consumable, conversionApi );
-			}
-		} );
+		// Model to view converter for editing pipeline.
+		editing.modelToView.on(
+			'insert:caption',
+			captionModelToView( new ViewEditableElement( 'figcaption', { contenteditable: true } ), false )
+		);
 	}
+}
+
+function captionModelToView( element, convertEmpty = true ) {
+	const insertConverter = insertElement( element );
+
+	return ( evt, data, consumable, conversionApi ) => {
+		const captionElement = data.item;
+
+		if ( isImage( captionElement.parent ) && ( convertEmpty || captionElement.childCount > 0 ) ) {
+			insertConverter( evt, data, consumable, conversionApi );
+		}
+	};
 }
 
 function insertCaptionElement( evt, changeType, data, batch ) {
@@ -78,7 +92,7 @@ function insertCaptionElement( evt, changeType, data, batch ) {
 	for ( let value of walker ) {
 		const item = value.item;
 
-		if ( value.type == 'elementStart' && item.name == 'image' && !hasCaption( item ) ) {
+		if ( value.type == 'elementStart' && isImage( item ) && !hasCaption( item ) ) {
 			// Using batch of insertion.
 			batch.document.enqueueChanges( () => {
 				batch.insert( ModelPosition.createAt( item, 'end' ), new ModelElement( 'caption' ) );
