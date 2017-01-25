@@ -183,15 +183,78 @@ describe( 'Link', () => {
 			expect( editor.ui.focusTracker.isFocused ).to.true;
 		} );
 
+		it( 'should focus the link form on Tab key press', () => {
+			const keyEvtData = {
+				keyCode: keyCodes.tab,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			// Mock balloon invisible, form not focused.
+			balloonPanelView.isVisible = false;
+			formView.focusTracker.isFocused = false;
+
+			const spy = sinon.spy( formView, 'focus' );
+
+			editor.keystrokes.press( keyEvtData );
+			sinon.assert.notCalled( keyEvtData.preventDefault );
+			sinon.assert.notCalled( keyEvtData.stopPropagation );
+			sinon.assert.notCalled( spy );
+
+			// Mock balloon visible, form focused.
+			balloonPanelView.isVisible = true;
+			formView.focusTracker.isFocused = true;
+
+			editor.keystrokes.press( keyEvtData );
+			sinon.assert.notCalled( keyEvtData.preventDefault );
+			sinon.assert.notCalled( keyEvtData.stopPropagation );
+			sinon.assert.notCalled( spy );
+
+			// Mock balloon visible, form not focused.
+			balloonPanelView.isVisible = true;
+			formView.focusTracker.isFocused = false;
+
+			editor.keystrokes.press( keyEvtData );
+			sinon.assert.calledOnce( keyEvtData.preventDefault );
+			sinon.assert.calledOnce( keyEvtData.stopPropagation );
+			sinon.assert.calledOnce( spy );
+		} );
+
 		describe( 'close listeners', () => {
 			describe( 'keyboard', () => {
-				it( 'should close after `ESC` press', () => {
+				it( 'should close after Esc key press (from editor)', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.esc,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					balloonPanelView.isVisible = false;
+
+					editor.keystrokes.press( keyEvtData );
+
+					sinon.assert.notCalled( hidePanelSpy );
+					sinon.assert.notCalled( focusEditableSpy );
+
 					balloonPanelView.isVisible = true;
 
-					dispatchKeyboardEvent( document, 'keydown', keyCodes.esc );
+					editor.keystrokes.press( keyEvtData );
 
-					expect( hidePanelSpy.calledOnce ).to.true;
-					expect( focusEditableSpy.calledOnce ).to.true;
+					sinon.assert.calledOnce( hidePanelSpy );
+					sinon.assert.calledOnce( focusEditableSpy );
+				} );
+
+				it( 'should close after Esc key press (from the form)', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.esc,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+
+					formView.keystrokes.press( keyEvtData );
+
+					sinon.assert.calledOnce( hidePanelSpy );
+					sinon.assert.calledOnce( focusEditableSpy );
 				} );
 			} );
 
@@ -415,19 +478,3 @@ describe( 'Link', () => {
 		} );
 	} );
 } );
-
-// Creates and dispatches keyboard event with specified keyCode.
-//
-// @private
-// @param {EventTarget} eventTarget
-// @param {String} eventName
-// @param {Number} keyCode
-function dispatchKeyboardEvent( element, eventName, keyCode ) {
-	const event = document.createEvent( 'Events' );
-
-	event.initEvent( eventName, true, true );
-	event.which = keyCode;
-	event.keyCode = keyCode;
-
-	element.dispatchEvent( event );
-}
