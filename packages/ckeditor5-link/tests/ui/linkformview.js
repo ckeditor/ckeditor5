@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+import LinkFormView from '../../src/ui/linkformview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import LinkFormView from '@ckeditor/ckeditor5-link/src/ui/linkformview';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
