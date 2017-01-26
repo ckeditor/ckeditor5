@@ -143,7 +143,7 @@ export default class MarkerCollection {
 	 */
 	*getMarkersGroup( prefix ) {
 		for ( let marker of this._markers.values() ) {
-			if ( marker.name.indexOf( prefix + ':' ) === 0 ) {
+			if ( marker.name.startsWith( prefix + ':' ) ) {
 				yield marker;
 			}
 		}
