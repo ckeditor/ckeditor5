@@ -35,6 +35,9 @@ export default class FocusObserver extends DomEventObserver {
 
 			if ( selectedEditable === null || selectedEditable === data.target ) {
 				document.isFocused = false;
+
+				// Re-render the document to update view elements.
+				document.render();
 			}
 		} );
 	}
