@@ -42,14 +42,16 @@ describe( 'Batch', () => {
 			const marker = doc.markers.get( 'name' );
 			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
 
-			doc.batch().setMarker( marker, range2 );
+			const batch = doc.batch().setMarker( marker, range2 );
+			const op = batch.deltas[ 0 ].operations[ 0 ];
 
 			expect( doc.markers.get( 'name' ).getRange().isEqual( range2 ) ).to.be.true;
+			expect( op.oldRange.isEqual( range ) ).to.be.true;
+			expect( op.newRange.isEqual( range2 ) ).to.be.true;
 		} );
 
 		it( 'should accept empty range parameter if marker instance is passed', () => {
-			doc.markers.set( 'name', range );
-			const marker = doc.markers.get( 'name' );
+			const marker = doc.markers.set( 'name', range );
 
 			sinon.spy( doc, 'fire' );
 
@@ -60,9 +62,12 @@ describe( 'Batch', () => {
 				}
 			} );
 
-			doc.batch().setMarker( marker );
+			const batch = doc.batch().setMarker( marker );
+			const op = batch.deltas[ 0 ].operations[ 0 ];
 
 			expect( doc.fire.calledWith( 'change', 'marker' ) ).to.be.true;
+			expect( op.oldRange ).to.be.null;
+			expect( op.newRange.isEqual( range ) ).to.be.true;
 		} );
 
 		it( 'should throw if marker with given name does not exist and range is not passed', () => {
