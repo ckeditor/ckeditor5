@@ -129,6 +129,27 @@ export default class MarkerCollection {
 	}
 
 	/**
+	 * Iterates over all markers that starts with given `prefix`.
+	 *
+	 *		const markerFooA = markersCollection.set( 'foo:a', rangeFooA );
+	 *		const markerFooB = markersCollection.set( 'foo:b', rangeFooB );
+	 *		const markerBarA = markersCollection.set( 'bar:a', rangeBarA );
+	 *		const markerFooBarA = markersCollection.set( 'foobar:a', rangeFooBarA );
+	 *		Array.from( markersCollection.getMarkersGroup( 'foo' ) ); // [ markerFooA, markerFooB ]
+	 *		Array.from( markersCollection.getMarkersGroup( 'a' ) ); // []
+	 *
+	 * @param prefix
+	 * @returns {Iterator.<~Marker>}
+	 */
+	*getMarkersGroup( prefix ) {
+		for ( let marker of this._markers.values() ) {
+			if ( marker.name.startsWith( prefix + ':' ) ) {
+				yield marker;
+			}
+		}
+	}
+
+	/**
 	 * Destroys marker.
 	 *
 	 * @private
