@@ -101,7 +101,10 @@ export default class EditingController {
 
 		// Convert model selection to view.
 		this._listener.listenTo( this.model, 'changesDone', () => {
-			this.modelToView.convertSelection( model.selection );
+			const selection = model.selection;
+			const markers = Array.from( model.markers.getMarkersAtPosition( selection.getFirstPosition() ) );
+
+			this.modelToView.convertSelection( selection, markers );
 			this.view.render();
 		}, { priority: 'low' } );
 

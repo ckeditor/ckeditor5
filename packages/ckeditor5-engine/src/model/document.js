@@ -59,14 +59,6 @@ export default class Document {
 		this.version = 0;
 
 		/**
-		 * Selection done on this document.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/liveselection~LiveSelection}
-		 */
-		this.selection = new LiveSelection( this );
-
-		/**
 		 * Schema for this document.
 		 *
 		 * @member {module:engine/model/schema~Schema}
@@ -90,6 +82,14 @@ export default class Document {
 		 * @member {module:engine/model/markercollection~MarkerCollection}
 		 */
 		this.markers = new MarkerCollection();
+
+		/**
+		 * Selection done on this document.
+		 *
+		 * @readonly
+		 * @member {module:engine/model/liveselection~LiveSelection}
+		 */
+		this.selection = new LiveSelection( this );
 
 		/**
 		 * Array of pending changes. See: {@link #enqueueChanges}.

@@ -19,6 +19,7 @@ import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 	convertSelectionAttribute,
+	convertSelectionMarker,
 	clearAttributes,
 	clearFakeSelection
 } from '../../src/conversion/model-selection-to-view-converters';
@@ -26,11 +27,16 @@ import {
 import {
 	insertElement,
 	insertText,
-	wrapItem
+	wrapItem,
+	wrapRange,
+	unwrapRange
 } from '../../src/conversion/model-to-view-converters';
 
 import { stringify as stringifyView } from '../../src/dev-utils/view';
 import { setData as setModelData } from '../../src/dev-utils/model';
+
+const spanViewElementForMarker = new ViewAttributeElement( 'span' );
+spanViewElementForMarker.priority = 1;
 
 describe( 'model-selection-to-view-converters', () => {
 	let dispatcher, mapper;
@@ -55,6 +61,8 @@ describe( 'model-selection-to-view-converters', () => {
 
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'addAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
+		dispatcher.on( 'addMarker:marker', wrapRange( spanViewElementForMarker ) );
+		dispatcher.on( 'removeMarker:marker', unwrapRange( spanViewElementForMarker ) );
 
 		// Default selection converters.
 		dispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
@@ -71,6 +79,7 @@ describe( 'model-selection-to-view-converters', () => {
 			// Selection converters for selection attributes.
 			dispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( new ViewAttributeElement( 'strong' ) ) );
 			dispatcher.on( 'selectionAttribute:italic', convertSelectionAttribute( new ViewAttributeElement( 'em' ) ) );
+			dispatcher.on( 'selectionMarker:marker', convertSelectionMarker( spanViewElementForMarker ) );
 		} );
 
 		describe( 'range selection', () => {
@@ -207,6 +216,81 @@ describe( 'model-selection-to-view-converters', () => {
 				);
 			} );
 
+			it( 'in attribute and marker', () => {
+				setModelData( modelDoc, 'fo<$text bold="true">ob</$text>ar' );
+				const marker = modelDoc.markers.set( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
+
+				modelSelection.setRanges( [ new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) ] );
+
+				// Update selection attributes according to model.
+				modelSelection.refreshAttributes();
+
+				// Remove view children manually (without firing additional conversion).
+				viewRoot.removeChildren( 0, viewRoot.childCount );
+
+				// Convert model to view.
+				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+				dispatcher.convertMarker( 'addMarker', marker.name, marker.getRange() );
+
+				const markers = Array.from( modelDoc.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
+				dispatcher.convertSelection( modelSelection, markers );
+
+				// Stringify view and check if it is same as expected.
+				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
+					.to.equal( '<div>f<span>o<strong>o{}b</strong>a</span>r</div>' );
+			} );
+
+			it( 'in attribute and marker - no attribute', () => {
+				setModelData( modelDoc, 'fo<$text bold="true">ob</$text>ar' );
+				const marker = modelDoc.markers.set( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
+
+				modelSelection.setRanges( [ new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) ] );
+
+				// Update selection attributes according to model.
+				modelSelection.refreshAttributes();
+
+				modelSelection.removeAttribute( 'bold' );
+
+				// Remove view children manually (without firing additional conversion).
+				viewRoot.removeChildren( 0, viewRoot.childCount );
+
+				// Convert model to view.
+				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+				dispatcher.convertMarker( 'addMarker', marker.name, marker.getRange() );
+
+				const markers = Array.from( modelDoc.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
+				dispatcher.convertSelection( modelSelection, markers );
+
+				// Stringify view and check if it is same as expected.
+				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
+					.to.equal( '<div>f<span>o<strong>o</strong>[]<strong>b</strong>a</span>r</div>' );
+			} );
+
+			it( 'in marker - using view element as element creator function for selection marker conversion', () => {
+				dispatcher.on( 'selectionMarker:marker2', convertSelectionMarker(
+					( data ) => new ViewAttributeElement( 'span', { 'class': data.name } )
+				) );
+
+				setModelData( modelDoc, 'foobar' );
+				const marker = modelDoc.markers.set( 'marker2', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
+
+				modelSelection.setRanges( [ new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) ] );
+
+				// Remove view children manually (without firing additional conversion).
+				viewRoot.removeChildren( 0, viewRoot.childCount );
+
+				// Convert model to view.
+				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+				dispatcher.convertMarker( 'addMarker', marker.name, marker.getRange() );
+
+				const markers = Array.from( modelDoc.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
+				dispatcher.convertSelection( modelSelection, markers );
+
+				// Stringify view and check if it is same as expected.
+				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
+					.to.equal( '<div>foo<span class="marker2">[]</span>bar</div>' );
+			} );
+
 			it( 'consumes consumable values properly', () => {
 				// Add callbacks that will fire before default ones.
 				// This should prevent default callbacks doing anything.
@@ -218,7 +302,7 @@ describe( 'model-selection-to-view-converters', () => {
 					expect( consumable.consume( data.selection, 'selectionAttribute:bold' ) ).to.be.true;
 				}, { priority: 'high' } );
 
-				// Similar test case as above
+				// Similar test case as above.
 				test(
 					[ 3, 3 ],
 					'f<$text bold="true">ooba</$text>r',
@@ -280,7 +364,7 @@ describe( 'model-selection-to-view-converters', () => {
 				const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
 				modelDoc.selection.setRanges( [ modelRange ] );
 
-				dispatcher.convertSelection( modelDoc.selection );
+				dispatcher.convertSelection( modelDoc.selection, [] );
 
 				expect( viewSelection.rangeCount ).to.equal( 1 );
 
@@ -305,7 +389,7 @@ describe( 'model-selection-to-view-converters', () => {
 				const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
 				modelDoc.selection.setRanges( [ modelRange ] );
 
-				dispatcher.convertSelection( modelDoc.selection );
+				dispatcher.convertSelection( modelDoc.selection, [] );
 
 				expect( viewSelection.rangeCount ).to.equal( 1 );
 
@@ -319,7 +403,7 @@ describe( 'model-selection-to-view-converters', () => {
 				dispatcher.on( 'selection', clearFakeSelection() );
 				viewSelection.setFake( true );
 
-				dispatcher.convertSelection( modelSelection );
+				dispatcher.convertSelection( modelSelection, [] );
 
 				expect( viewSelection.isFake ).to.be.false;
 			} );
@@ -499,13 +583,15 @@ describe( 'model-selection-to-view-converters', () => {
 		// Manually set selection ranges using passed `selectionPaths`.
 		const startPath = typeof selectionPaths[ 0 ] == 'number' ? [ selectionPaths[ 0 ] ] : selectionPaths[ 0 ];
 		const endPath = typeof selectionPaths[ 1 ] == 'number' ? [ selectionPaths[ 1 ] ] : selectionPaths[ 1 ];
+
 		const startPos = new ModelPosition( modelRoot, startPath );
 		const endPos = new ModelPosition( modelRoot, endPath );
+
 		const isBackward = selectionPaths[ 2 ] === 'backward';
 		modelSelection.setRanges( [ new ModelRange( startPos, endPos ) ], isBackward );
 
-		// Updated selection attributes according to model.
-		modelSelection._updateAttributes();
+		// Update selection attributes according to model.
+		modelSelection.refreshAttributes();
 
 		// And add or remove passed attributes.
 		for ( let key in selectionAttributes ) {
@@ -518,12 +604,12 @@ describe( 'model-selection-to-view-converters', () => {
 			}
 		}
 
-		// Remove view children since we do not want to convert deletion.
+		// Remove view children manually (without firing additional conversion).
 		viewRoot.removeChildren( 0, viewRoot.childCount );
 
 		// Convert model to view.
 		dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
-		dispatcher.convertSelection( modelSelection );
+		dispatcher.convertSelection( modelSelection, [] );
 
 		// Stringify view and check if it is same as expected.
 		expect( stringifyView( viewRoot, viewSelection, { showType: false } ) ).to.equal( '<div>' + expectedView + '</div>' );

@@ -192,6 +192,18 @@ describe( 'writer', () => {
 			);
 		} );
 
+		it( 'merges wrapped nodes #6', () => {
+			test(
+				'<container:div>f{o<attribute:strong>ob</attribute:strong>a}r</container:div>',
+				'<attribute:span view-priority="1"></attribute:span>',
+				'<container:div>f[' +
+					'<attribute:span view-priority="1">o' +
+						'<attribute:strong view-priority="10">ob</attribute:strong>' +
+					'a</attribute:span>' +
+				']r</container:div>'
+			);
+		} );
+
 		it( 'should wrap single element by merging attributes', () => {
 			test(
 				'<container:p>[<attribute:b view-priority="1" foo="bar" one="two"></attribute:b>]</container:p>',

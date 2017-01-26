@@ -447,7 +447,7 @@ describe( 'ModelConversionDispatcher', () => {
 		it( 'should fire selection event', () => {
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertSelection( doc.selection );
+			dispatcher.convertSelection( doc.selection, [] );
 
 			expect( dispatcher.fire.calledWith(
 				'selection',
@@ -468,7 +468,7 @@ describe( 'ModelConversionDispatcher', () => {
 				expect( consumable.test( data.selection, 'selectionAttribute:italic' ) ).to.be.null;
 			} );
 
-			dispatcher.convertSelection( doc.selection );
+			dispatcher.convertSelection( doc.selection, [] );
 		} );
 
 		it( 'should fire attributes events for selection', () => {
@@ -480,7 +480,7 @@ describe( 'ModelConversionDispatcher', () => {
 					.setAttribute( ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ), 'italic', true );
 			} );
 
-			dispatcher.convertSelection( doc.selection );
+			dispatcher.convertSelection( doc.selection, [] );
 
 			expect( dispatcher.fire.calledWith( 'selectionAttribute:bold' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'selectionAttribute:italic' ) ).to.be.false;
@@ -499,9 +499,37 @@ describe( 'ModelConversionDispatcher', () => {
 					.setAttribute( ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ), 'italic', true );
 			} );
 
-			dispatcher.convertSelection( doc.selection );
+			dispatcher.convertSelection( doc.selection, [] );
 
 			expect( dispatcher.fire.calledWith( 'selectionAttribute:bold' ) ).to.be.false;
+		} );
+
+		it( 'should fire events for each marker which contains selection', () => {
+			doc.markers.set( 'name', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
+
+			sinon.spy( dispatcher, 'fire' );
+
+			const markers = Array.from( doc.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
+			dispatcher.convertSelection( doc.selection, markers );
+
+			expect( dispatcher.fire.calledWith( 'selectionMarker:name' ) ).to.be.true;
+		} );
+
+		it( 'should not fire events if information about marker has been consumed', () => {
+			doc.markers.set( 'foo', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
+			doc.markers.set( 'bar', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
+
+			sinon.spy( dispatcher, 'fire' );
+
+			dispatcher.on( 'selectionMarker:foo', ( evt, data, consumable ) => {
+				consumable.consume( data.selection, 'selectionMarker:bar' );
+			} );
+
+			const markers = Array.from( doc.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
+			dispatcher.convertSelection( doc.selection, markers );
+
+			expect( dispatcher.fire.calledWith( 'selectionMarker:foo' ) ).to.be.true;
+			expect( dispatcher.fire.calledWith( 'selectionMarker:bar' ) ).to.be.false;
 		} );
 	} );
 

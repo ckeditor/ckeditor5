@@ -29,17 +29,18 @@ const attrOpTypes = new Set(
  * {@link module:engine/model/document~Document document} and has it ranges updated accordingly. Internal implementation of this
  * mechanism bases on {@link module:engine/model/liverange~LiveRange live ranges}.
  *
- * Differences between {@link module:engine/model/selection~Selection} and `LiveSelection` are two:
+ * Differences between {@link module:engine/model/selection~Selection} and `LiveSelection` are:
  * * there is always a range in `LiveSelection` - even if no ranges were added there is a
  * {@link module:engine/model/liveselection~LiveSelection#_getDefaultRange "default range"} present in the selection,
- * * ranges added to this selection updates automatically when the document changes.
+ * * ranges added to this selection updates automatically when the document changes,
+ * * attributes of `LiveSelection` are updated automatically according to selection ranges.
  *
  * Since `LiveSelection` uses {@link module:engine/model/liverange~LiveRange live ranges}
  * and is updated when {@link module:engine/model/document~Document document}
  * changes, it cannot be set on {@link module:engine/model/node~Node nodes}
  * that are inside {@link module:engine/model/documentfragment~DocumentFragment document fragment}.
  * If you need to represent a selection in document fragment,
- * use {@link module:engine/model/selection~Selection "normal" selection} instead.
+ * use {@link module:engine/model/selection~Selection Selection class} instead.
  *
  * @extends module:engine/model/selection~Selection
  */
@@ -72,9 +73,8 @@ export default class LiveSelection extends Selection {
 		 */
 		this._attributePriority = new Map();
 
-		// Whenever attribute operation is performed on document, update attributes. This is not the most efficient
-		// way to update selection attributes, but should be okay for now. `_updateAttributes` will be fired too often,
-		// but it won't change attributes or fire `change:attribute` event if not needed.
+		// Whenever attribute operation is performed on document, update selection attributes.
+		// This is not the most efficient way to update selection attributes, but should be okay for now.
 		this.listenTo( this._document, 'change', ( evt, type ) => {
 			if ( attrOpTypes.has( type ) ) {
 				this._updateAttributes( false );
@@ -638,9 +638,9 @@ export default class LiveSelection extends Selection {
 
 		const newRange = this._prepareRange( selectionRange );
 		const index = this._ranges.indexOf( gyRange );
-		this._ranges.splice( index, 1, newRange );
-
 		gyRange.detach();
+
+		this._ranges.splice( index, 1, newRange );
 	}
 }
 

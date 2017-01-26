@@ -212,7 +212,7 @@ describe( 'Model converter builder', () => {
 
 			// Convert stuff.
 			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
-			dispatcher.convertSelection( modelDoc.selection );
+			dispatcher.convertSelection( modelDoc.selection, [] );
 
 			// Check if view structure is ok.
 			expect( viewToString( viewRoot ) ).to.equal( '<div><em>foo</em></div>' );
@@ -226,7 +226,7 @@ describe( 'Model converter builder', () => {
 
 			// Change selection attribute, convert it.
 			modelDoc.selection.setAttribute( 'italic', 'i' );
-			dispatcher.convertSelection( modelDoc.selection );
+			dispatcher.convertSelection( modelDoc.selection, [] );
 
 			// Check if view structure has changed.
 			expect( viewToString( viewRoot ) ).to.equal( '<div><em>f</em><i></i><em>oo</em></div>' );
@@ -240,7 +240,7 @@ describe( 'Model converter builder', () => {
 
 			// Some more tests checking how selection attributes changes are converted:
 			modelDoc.selection.removeAttribute( 'italic' );
-			dispatcher.convertSelection( modelDoc.selection );
+			dispatcher.convertSelection( modelDoc.selection, [] );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><em>f</em><em>oo</em></div>' );
 			ranges = Array.from( viewSelection.getRanges() );
@@ -248,7 +248,7 @@ describe( 'Model converter builder', () => {
 			expect( ranges[ 0 ].start.offset ).to.equal( 1 );
 
 			modelDoc.selection.setAttribute( 'italic', 'em' );
-			dispatcher.convertSelection( modelDoc.selection );
+			dispatcher.convertSelection( modelDoc.selection, [] );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><em>foo</em></div>' );
 			ranges = Array.from( viewSelection.getRanges() );
