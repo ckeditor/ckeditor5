@@ -9,9 +9,9 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ModelTreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
-// import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
+import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
@@ -20,9 +20,6 @@ import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildv
 import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import { isImage } from '../utils';
 
-// TODO: move to the ImageCaptioning
-import '../../theme/imagecaptioning/theme.scss';
-
 export default class ImageCaptioningEngine extends Plugin {
 	/**
 	 * @inheritDoc
@@ -30,6 +27,7 @@ export default class ImageCaptioningEngine extends Plugin {
 	init() {
 		const editor = this.editor;
 		const document = editor.document;
+		const viewDocument = editor.editing.view;
 		const schema = document.schema;
 		const data = editor.data;
 		const editing = editor.editing;
@@ -62,19 +60,36 @@ export default class ImageCaptioningEngine extends Plugin {
 		// Model to view converter for data pipeline.
 		data.modelToView.on(
 			'insert:caption',
-			captionModelToView( new ViewEditableElement( 'figcaption' ), false )
+			captionModelToView( new ViewContainerElement( 'figcaption' ), false )
 		);
 
 		// Model to view converter for editing pipeline.
 		editing.modelToView.on(
 			'insert:caption',
-			captionModelToView( new ViewEditableElement( 'figcaption', { contenteditable: true } ) )
+			captionModelToView( editingViewEditableCreator( viewDocument ) )
 		);
 	}
 }
 
+function editingViewEditableCreator( viewDocument ) {
+	return () => {
+		const editable = new ViewEditableElement( 'figcaption', { contenteditable: true } ) ;
+		editable.document = viewDocument;
+
+		editable.on( 'change:isFocused', ( evt, property, is ) => {
+			if ( is ) {
+				editable.addClass( 'focused' );
+			} else {
+				editable.removeClass( 'focused' );
+			}
+		} );
+
+		return editable;
+	};
+}
+
 function captionModelToView( element, convertEmpty = true ) {
-	const insertConverter = insertElement( element );
+	const insertConverter = insertElementAtEnd( element );
 
 	return ( evt, data, consumable, conversionApi ) => {
 		const captionElement = data.item;
@@ -117,7 +132,7 @@ function hasCaption( image ) {
 	return false;
 }
 
-function insertElement( elementCreator ) {
+function insertElementAtEnd( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		if ( !consumable.consume( data.item, 'insert' ) ) {
 			return;
