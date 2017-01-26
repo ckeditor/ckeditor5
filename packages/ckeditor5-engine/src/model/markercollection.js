@@ -116,6 +116,20 @@ export default class MarkerCollection {
 	}
 
 	/**
+	 * Returns iterator that iterates over all markers, which ranges contain given {@link module:engine/model/position~Position position}.
+	 *
+	 * @param {module:engine/model/position~Position} position
+	 * @returns {Iterator.<~Marker>}
+	 */
+	*getMarkersAtPosition( position ) {
+		for ( let marker of this ) {
+			if ( marker.getRange().containsPosition( position ) ) {
+				yield marker;
+			}
+		}
+	}
+
+	/**
 	 * Destroys markers collection.
 	 */
 	destroy() {

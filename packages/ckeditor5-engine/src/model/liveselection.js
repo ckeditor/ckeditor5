@@ -33,8 +33,7 @@ const attrOpTypes = new Set(
  * * there is always a range in `LiveSelection` - even if no ranges were added there is a
  * {@link module:engine/model/liveselection~LiveSelection#_getDefaultRange "default range"} present in the selection,
  * * ranges added to this selection updates automatically when the document changes,
- * * attributes of `LiveSelection` are updated automatically according to selection ranges,
- * * markers containing `LiveSelection` are updated automatically according to selection ranges.
+ * * attributes of `LiveSelection` are updated automatically according to selection ranges.
  *
  * Since `LiveSelection` uses {@link module:engine/model/liverange~LiveRange live ranges}
  * and is updated when {@link module:engine/model/document~Document document}
@@ -74,36 +73,11 @@ export default class LiveSelection extends Selection {
 		 */
 		this._attributePriority = new Map();
 
-		/**
-		 * Keeps names of markers in which selection is placed.
-		 *
-		 * @private
-		 * @member {Set} module:engine/model/liveselection~LiveSelection#_markers
-		 */
-		this._markers = new Set();
-
-		// Whenever attribute operation is performed on document, update attributes and markers that contains this selection.
+		// Whenever attribute operation is performed on document, update selection attributes.
 		// This is not the most efficient way to update selection attributes, but should be okay for now.
 		this.listenTo( this._document, 'change', ( evt, type ) => {
 			if ( attrOpTypes.has( type ) ) {
 				this._updateAttributes( false );
-			} else if ( type == 'move' ) {
-				// The only case when `LiveSelection` range may end up in marker after document change
-				// is when the document fragment containing selection is moved into (or outside of) a marker.
-				this._updateMarkers();
-			}
-		} );
-
-		// Whenever marker is added or removed, update list of markers that contains this selection.
-		this.listenTo( this._document.markers, 'add', ( evt, marker ) => {
-			if ( marker.getRange().containsPosition( this.getFirstPosition() ) ) {
-				this.addMarker( marker.name );
-			}
-		} );
-
-		this.listenTo( this._document.markers, 'remove', ( evt, marker ) => {
-			if ( marker.getRange().containsPosition( this.getFirstPosition() ) ) {
-				this.removeMarker( marker.name );
 			}
 		} );
 	}
@@ -179,7 +153,7 @@ export default class LiveSelection extends Selection {
 	 */
 	addRange( range, isBackward = false ) {
 		super.addRange( range, isBackward );
-		this.refresh();
+		this.refreshAttributes();
 	}
 
 	/**
@@ -187,7 +161,7 @@ export default class LiveSelection extends Selection {
 	 */
 	removeAllRanges() {
 		super.removeAllRanges();
-		this.refresh();
+		this.refreshAttributes();
 	}
 
 	/**
@@ -195,7 +169,7 @@ export default class LiveSelection extends Selection {
 	 */
 	setRanges( newRanges, isLastBackward = false ) {
 		super.setRanges( newRanges, isLastBackward );
-		this.refresh();
+		this.refreshAttributes();
 	}
 
 	/**
@@ -257,12 +231,10 @@ export default class LiveSelection extends Selection {
 	}
 
 	/**
-	 * Removes all attributes from the selection and sets attributes according to the surrounding nodes. Refreshes list
-	 * of names of markers containing this selection.
+	 * Removes all attributes from the selection and sets attributes according to the surrounding nodes.
 	 */
-	refresh() {
+	refreshAttributes() {
 		this._updateAttributes( true );
-		this._updateMarkers();
 	}
 
 	/**
@@ -389,26 +361,6 @@ export default class LiveSelection extends Selection {
 		// Fire event with exact data (fire only if anything changed).
 		if ( changed.length > 0 ) {
 			this.fire( 'change:attribute', { attributeKeys: changed, directChange: false } );
-		}
-	}
-
-	/**
-	 * Updates list of markers which contains this selection.
-	 *
-	 * A marker contains this selection if {@link module:engine/model/selection~Selection#getFirstPosition first position}
-	 * is inside that marker range.
-	 *
-	 * @protected
-	 */
-	_updateMarkers() {
-		this.clearMarkers();
-
-		const pos = this.getFirstPosition();
-
-		for ( let marker of this._document.markers ) {
-			if ( marker.getRange().containsPosition( pos ) ) {
-				this.addMarker( marker.name );
-			}
 		}
 	}
 

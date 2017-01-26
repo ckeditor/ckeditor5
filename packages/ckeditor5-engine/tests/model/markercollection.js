@@ -167,6 +167,17 @@ describe( 'MarkerCollection', () => {
 		} );
 	} );
 
+	describe( 'getMarkersAtPosition', () => {
+		it( 'should return iterator iterating over all markers that contains given position', () => {
+			markers.set( 'a', range );
+			const markerB = markers.set( 'b', range2 );
+
+			const result = Array.from( markers.getMarkersAtPosition( Position.createAt( root, 1 ) ) );
+
+			expect( result ).to.deep.equal( [ markerB ] );
+		} );
+	} );
+
 	describe( 'destroy', () => {
 		it( 'should make MarkerCollection stop listening to all events and destroy all markers', () => {
 			const markerA = markers.set( 'a', range );

@@ -236,7 +236,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 
 	// Convert model selection to view selection.
 	if ( selection ) {
-		modelToView.convertSelection( selection );
+		modelToView.convertSelection( selection, [] );
 	}
 
 	// Parse view to data string.

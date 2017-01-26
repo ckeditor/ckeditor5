@@ -49,14 +49,6 @@ export default class Selection {
 		 * @member {Map} module:engine/model/selection~Selection#_attrs
 		 */
 		this._attrs = new Map();
-
-		/**
-		 * List of markers in which the current selection is placed.
-		 *
-		 * @protected
-		 * @member {Set} module:engine/model/selection~Selection#_markers
-		 */
-		this._markers = new Set();
 	}
 
 	/**
@@ -548,45 +540,6 @@ export default class Selection {
 
 			this.fire( 'change:attribute', { attributeKeys: Array.from( changed ), directChange: true } );
 		}
-	}
-
-	/**
-	 * Returns iterator that iterates over names of all markers which contain this selection.
-	 *
-	 * **Note:** In case of `Selection`, you have to manage list of those markers on your own. Use {@link ~addMarker},
-	 * {@link ~removeMarker} and {@link ~clearMarkers} methods. {@link module:engine/model/liveselection~LiveSelection LiveSelection}
-	 * manages list of those markers on it's own.
-	 *
-	 * @returns {Iterator.<String>}
-	 */
-	getMarkers() {
-		return this._markers.values();
-	}
-
-	/**
-	 * Adds name of a marker which contains this selection.
-	 *
-	 * @param {String} markerName Marker name to add.
-	 */
-	addMarker( markerName ) {
-		this._markers.add( markerName );
-	}
-
-	/**
-	 * Removes name of a marker from the list of markers which contains this selection.
-	 *
-	 * @param {String} markerName Marker name to remove.
-	 * @returns {Boolean} `true` if marker name was on the list and was removed, `false` otherwise.
-	 */
-	removeMarker( markerName ) {
-		return this._markers.delete( markerName );
-	}
-
-	/**
-	 * Removes all names from the list of markers which contains this selection.
-	 */
-	clearMarkers() {
-		this._markers.clear();
 	}
 
 	/**

@@ -308,20 +308,21 @@ export default class ModelConversionDispatcher {
 	 * @fires selection
 	 * @fires selectionAttribute
 	 * @param {module:engine/model/selection~Selection} selection Selection to convert.
+	 * @param {Array.<module:engine/model/markercollection~Marker>} markers Markers which contains selection.
 	 */
-	convertSelection( selection ) {
-		const consumable = this._createSelectionConsumable( selection );
+	convertSelection( selection, markers ) {
+		const consumable = this._createSelectionConsumable( selection, markers );
 
 		this.fire( 'selection', { selection }, consumable, this.conversionApi );
 
-		for ( let markerName of selection.getMarkers() ) {
+		for ( let marker of markers ) {
 			const data = {
 				selection: selection,
-				name: markerName
+				name: marker.name
 			};
 
-			if ( consumable.test( selection, 'selectionMarker:' + markerName ) ) {
-				this.fire( 'selectionMarker:' + markerName, data, consumable, this.conversionApi );
+			if ( consumable.test( selection, 'selectionMarker:' + marker.name ) ) {
+				this.fire( 'selectionMarker:' + marker.name, data, consumable, this.conversionApi );
 			}
 		}
 
@@ -408,15 +409,16 @@ export default class ModelConversionDispatcher {
 	 *
 	 * @private
 	 * @param {module:engine/model/selection~Selection} selection Selection to create consumable from.
+	 * @param {Iterable.<module:engine/model/markercollection~Marker>} markers Markers which contains selection.
 	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} Values to consume.
 	 */
-	_createSelectionConsumable( selection ) {
+	_createSelectionConsumable( selection, markers ) {
 		const consumable = new Consumable();
 
 		consumable.add( selection, 'selection' );
 
-		for ( let markerName of selection.getMarkers() ) {
-			consumable.add( selection, 'selectionMarker:' + markerName );
+		for ( let marker of markers ) {
+			consumable.add( selection, 'selectionMarker:' + marker.name );
 		}
 
 		for ( let key of selection.getAttributeKeys() ) {

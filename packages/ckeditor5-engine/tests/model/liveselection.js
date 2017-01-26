@@ -790,52 +790,6 @@ describe( 'LiveSelection', () => {
 		} );
 	} );
 
-	describe( 'update list of names of markers that contain selection', () => {
-		it( 'on range change', () => {
-			doc.markers.set( 'name', Range.createFromParentsAndOffsets( root, 1, root, 4 ) );
-			doc.markers.set( 'name2', Range.createFromParentsAndOffsets( root, 4, root, 5 ) );
-
-			expect( Array.from( selection.getMarkers() ) ).to.deep.equal( [] );
-
-			selection.setRanges( [ new Range( new Position( root, [ 2, 3 ] ) ) ] );
-
-			expect( Array.from( selection.getMarkers() ) ).to.deep.equal( [ 'name' ] );
-
-			selection.setRanges( [ new Range( new Position( root, [ 0 ] ) ) ] );
-
-			expect( Array.from( selection.getMarkers() ) ).to.deep.equal( [] );
-		} );
-
-		it( 'on marker change', () => {
-			selection.setRanges( [ new Range( new Position( root, [ 2, 3 ] ) ) ] );
-
-			doc.markers.set( 'name', Range.createFromParentsAndOffsets( root, 1, root, 4 ) );
-
-			expect( Array.from( selection.getMarkers() ) ).to.deep.equal( [ 'name' ] );
-
-			doc.markers.remove( 'name' );
-
-			expect( Array.from( selection.getMarkers() ) ).to.deep.equal( [] );
-		} );
-
-		it( 'on document change', () => {
-			doc.markers.set( 'name', Range.createFromParentsAndOffsets( root, 3, root, 5 ) );
-			selection.setRanges( [ new Range( new Position( root, [ 2, 3 ] ) ) ] );
-
-			doc.enqueueChanges( () => {
-				doc.batch().move( root.getChild( 2 ), Position.createAt( root, 4 ) );
-			} );
-
-			expect( Array.from( selection.getMarkers() ) ).to.deep.equal( [ 'name' ] );
-
-			doc.enqueueChanges( () => {
-				doc.batch().move( root.getChild( 3 ), Position.createAt( root, 0 ) );
-			} );
-
-			expect( Array.from( selection.getMarkers() ) ).to.deep.equal( [] );
-		} );
-	} );
-
 	describe( '_getStoredAttributes', () => {
 		it( 'should return no values if there are no ranges in selection', () => {
 			let values = Array.from( selection._getStoredAttributes() );

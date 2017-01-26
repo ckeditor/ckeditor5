@@ -149,7 +149,9 @@ export function convertSelectionAttribute( elementCreator ) {
 			elementCreator.clone( true ) :
 			elementCreator( data.value, data, data.selection, consumable, conversionApi );
 
-		convertSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, 'selectionAttribute:' + data.key );
+		const consumableName = 'selectionAttribute:' + data.key;
+
+		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, consumableName );
 	};
 }
 
@@ -173,12 +175,14 @@ export function convertSelectionMarker( elementCreator ) {
 			elementCreator.clone( true ) :
 			elementCreator( data, consumable, conversionApi );
 
-		convertSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, 'selectionMarker:' + data.name );
+		const consumableName = 'selectionMarker:' + data.name;
+
+		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, consumableName );
 	};
 }
 
 // Helper function for `convertSelectionAttribute` and `convertSelectionMarker`, which perform similar task.
-function convertSelectionPosition( modelSelection, viewSelection, viewElement, consumable, consumableName ) {
+function wrapCollapsedSelectionPosition( modelSelection, viewSelection, viewElement, consumable, consumableName ) {
 	if ( !modelSelection.isCollapsed ) {
 		return;
 	}
@@ -188,10 +192,9 @@ function convertSelectionPosition( modelSelection, viewSelection, viewElement, c
 	}
 
 	let viewPosition = viewSelection.getFirstPosition();
-	viewSelection.removeAllRanges();
-
 	viewPosition = viewWriter.wrapPosition( viewPosition, viewElement );
 
+	viewSelection.removeAllRanges();
 	viewSelection.addRange( new ViewRange( viewPosition, viewPosition ) );
 }
 
