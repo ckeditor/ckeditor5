@@ -17,6 +17,7 @@ import View from './view';
 import ViewCollection from './viewcollection';
 import cloneDeepWith from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeepWith';
 import isObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isObject';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
 
@@ -54,6 +55,16 @@ export default class Template {
 	 */
 	constructor( def ) {
 		Object.assign( this, normalize( clone( def ) ) );
+
+		/**
+		 * Indicates whether this particular Template instance has been
+		 * {@link #render rendered}.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {Boolean}
+		 */
+		this._isRendered = false;
 
 		/**
 		 * Tag of this template, i.e. `div`, indicating that the instance will render
@@ -101,7 +112,11 @@ export default class Template {
 	 * @returns {HTMLElement|Text}
 	 */
 	render() {
-		return this._renderNode( undefined, true );
+		const node = this._renderNode( undefined, true );
+
+		this._isRendered = true;
+
+		return node;
 	}
 
 	/**
@@ -232,6 +247,17 @@ export default class Template {
 	 * @param {module:ui/template~TemplateDefinition} def An extension to existing an template instance.
 	 */
 	static extend( template, def ) {
+		if ( template._isRendered ) {
+			/**
+			 * Extending a template after rendering may not work as expected. To make sure
+			 * the {@link #extend extending} works for the rendered element, perform it
+			 * before {@link #render} is called.
+			 *
+			 * @error template-extend-render
+			 */
+			log.warn( 'template-extend-render: Attempting to extend a template which has already been rendered.' );
+		}
+
 		extendTemplate( template, normalize( clone( def ) ) );
 	}
 
