@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import HtmlDataProcessor from 'ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import { stringify } from 'ckeditor5-engine/src/dev-utils/view';
+import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 /**
  * Parses given string of HTML and returns normalized HTML.

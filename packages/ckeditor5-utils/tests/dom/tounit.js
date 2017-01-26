@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import toUnit from 'ckeditor5-utils/src/dom/tounit';
+import toUnit from '../../src/dom/tounit';
 
 describe( 'toUnit', () => {
 	it( 'should be a function', () => {

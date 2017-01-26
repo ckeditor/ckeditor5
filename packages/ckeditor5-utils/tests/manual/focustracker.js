@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* global document */
 
-import FocusTracker from 'ckeditor5-utils/src/focustracker';
+import FocusTracker from '../../src/focustracker';
 
 const focusTracker = new FocusTracker();
 const counters = document.querySelectorAll( '.status b' );

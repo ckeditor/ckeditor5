@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals document, window, Event, MouseEvent */
 
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import DomEmitterMixin from 'ckeditor5-utils/src/dom/emittermixin';
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import DomEmitterMixin from '../../src/dom/emittermixin';
+import EmitterMixin from '../../src/emittermixin';
 
 testUtils.createSinonSandbox();
 
@@ -184,8 +184,6 @@ describe( 'DomEmitterMixin', () => {
 			domEmitter.listenTo( node1, 'event1', spy1 );
 			domEmitter.listenTo( node2, 'event2', spy2 );
 
-			expect( domEmitter ).to.have.property( '_listeningTo' );
-
 			node1.dispatchEvent( new Event( 'event1' ) );
 			node2.dispatchEvent( new Event( 'event2' ) );
 
@@ -196,8 +194,6 @@ describe( 'DomEmitterMixin', () => {
 
 			sinon.assert.calledOnce( spy1 );
 			sinon.assert.calledOnce( spy2 );
-
-			expect( domEmitter ).to.not.have.property( '_listeningTo' );
 		} );
 
 		it( 'should stop listening to everything what left', () => {
@@ -213,8 +209,6 @@ describe( 'DomEmitterMixin', () => {
 			domEmitter.listenTo( node1, 'event2', spy2 );
 			domEmitter.listenTo( node2, 'event1', spy3 );
 			domEmitter.listenTo( node2, 'event2', spy4 );
-
-			expect( domEmitter ).to.have.property( '_listeningTo' );
 
 			domEmitter.stopListening( node1, 'event1', spy1 );
 			domEmitter.stopListening( node2, 'event1' );
@@ -240,8 +234,6 @@ describe( 'DomEmitterMixin', () => {
 			sinon.assert.calledOnce( spy2 );
 			sinon.assert.notCalled( spy3 );
 			sinon.assert.calledOnce( spy4 );
-
-			expect( domEmitter ).to.not.have.property( '_listeningTo' );
 		} );
 
 		it( 'should not stop other nodes when a non-listened node is provided', () => {

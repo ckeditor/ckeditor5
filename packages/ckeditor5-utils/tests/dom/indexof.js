@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals document */
 
-import indexOf from 'ckeditor5-utils/src/dom/indexof';
+import indexOf from '../../src/dom/indexof';
 
 describe( 'indexOf', () => {
 	it( 'should return 0 if element has no parent', () => {

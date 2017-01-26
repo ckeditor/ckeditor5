@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* global document */
 
-import getPositionedAncestor from 'ckeditor5-utils/src/dom/getpositionedancestor';
+import getPositionedAncestor from '../../src/dom/getpositionedancestor';
 
 describe( 'getPositionedAncestor', () => {
 	let element;

@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals document */
 
-import getAncestors from 'ckeditor5-utils/src/dom/getancestors';
-import createElement from 'ckeditor5-utils/src/dom/createelement';
+import getAncestors from '../../src/dom/getancestors';
+import createElement from '../../src/dom/createelement';
 
 describe( 'getAncestors', () => {
 	it( 'should return all parents of given node and the node itself, starting from top-most parent', () => {

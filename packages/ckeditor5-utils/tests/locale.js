@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import Locale from 'ckeditor5-utils/src/locale';
+import Locale from '../src/locale';
 
 describe( 'Locale', () => {
 	let locale;

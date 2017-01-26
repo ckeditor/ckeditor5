@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals document */
 
-import setDataInElement from 'ckeditor5-utils/src/dom/setdatainelement';
-import getDataFromElement from 'ckeditor5-utils/src/dom/getdatafromelement';
+import setDataInElement from '../../src/dom/setdatainelement';
+import getDataFromElement from '../../src/dom/getdatafromelement';
 
 describe( 'setDataInElement', () => {
 	[ 'textarea', 'template', 'div' ].forEach( ( elementName ) => {

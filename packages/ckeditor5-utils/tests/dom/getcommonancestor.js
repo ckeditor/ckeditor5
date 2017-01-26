@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals document */
 
-import getCommonAncestor from 'ckeditor5-utils/src/dom/getcommonancestor';
-import createElement from 'ckeditor5-utils/src/dom/createelement';
+import getCommonAncestor from '../../src/dom/getcommonancestor';
+import createElement from '../../src/dom/createelement';
 
 describe( 'getParents', () => {
 	let b, span1, span2, p1, p2, i, div;

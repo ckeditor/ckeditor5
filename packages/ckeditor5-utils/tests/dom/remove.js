@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals document */
 
-import remove from 'ckeditor5-utils/src/dom/remove';
+import remove from '../../src/dom/remove';
 
 describe( 'remove', () => {
 	it( 'should remove element form parent', () => {

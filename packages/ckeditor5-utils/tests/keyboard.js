@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import env from 'ckeditor5-utils/src/env';
-import { keyCodes, getCode, parseKeystroke, getEnvKeystrokeText } from 'ckeditor5-utils/src/keyboard';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
+import env from '../src/env';
+import { keyCodes, getCode, parseKeystroke, getEnvKeystrokeText } from '../src/keyboard';
+import CKEditorError from '../src/ckeditorerror';
 
 describe( 'Keyboard', () => {
 	describe( 'keyCodes', () => {
@@ -23,11 +23,14 @@ describe( 'Keyboard', () => {
 			expect( keyCodes.delete ).to.equal( 46 );
 			expect( keyCodes.ctrl ).to.equal( 0x110000 );
 			expect( keyCodes.cmd ).to.equal( 0x110000 );
+			expect( keyCodes.f1 ).to.equal( 112 );
+			expect( keyCodes.f12 ).to.equal( 123 );
 
 			expect( keyCodes ).to.include.keys(
 				'ctrl', 'cmd', 'shift', 'alt',
 				'arrowleft', 'arrowup', 'arrowright', 'arrowdown',
-				'backspace', 'delete', 'enter', 'esc', 'tab'
+				'backspace', 'delete', 'enter', 'esc', 'tab',
+				'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12'
 			);
 		} );
 	} );
@@ -39,6 +42,10 @@ describe( 'Keyboard', () => {
 
 		it( 'gets code of a letter', () => {
 			expect( getCode( 'a' ) ).to.equal( 65 );
+		} );
+
+		it( 'gets code of a function key', () => {
+			expect( getCode( 'f6' ) ).to.equal( 117 );
 		} );
 
 		it( 'is case insensitive', () => {

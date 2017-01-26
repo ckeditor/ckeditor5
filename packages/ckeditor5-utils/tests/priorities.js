@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import priorities from 'ckeditor5-utils/src/priorities';
+import priorities from '../src/priorities';
 
 describe( 'get', () => {
 	it( 'should return correct value for string priority', () => {

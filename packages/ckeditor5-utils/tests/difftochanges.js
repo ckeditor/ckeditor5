@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import diff from 'ckeditor5-utils/src/diff';
-import diffToChanges from 'ckeditor5-utils/src/difftochanges';
+import diff from '../src/diff';
+import diffToChanges from '../src/difftochanges';
 
 describe( 'diffToChanges', () => {
 	describe( 'equal patterns', () => {

@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* global document, Event */
 
-import FocusTracker from 'ckeditor5-utils/src/focustracker';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
+import FocusTracker from '../src/focustracker';
+import CKEditorError from '../src/ckeditorerror';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 

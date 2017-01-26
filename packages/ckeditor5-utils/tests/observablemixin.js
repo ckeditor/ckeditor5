@@ -1,15 +1,15 @@
 /**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import testUtils from 'ckeditor5-core/tests/_utils/utils';
-import utilsTestUtils from 'ckeditor5-utils/tests/_utils/utils';
-import ObservableMixin from 'ckeditor5-utils/src/observablemixin';
-import EmitterMixin from 'ckeditor5-utils/src/emittermixin';
-import EventInfo from 'ckeditor5-utils/src/eventinfo';
-import CKEditorError from 'ckeditor5-utils/src/ckeditorerror';
-import mix from 'ckeditor5-utils/src/mix';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import utilsTestUtils from '../tests/_utils/utils';
+import ObservableMixin from '../src/observablemixin';
+import EmitterMixin from '../src/emittermixin';
+import EventInfo from '../src/eventinfo';
+import CKEditorError from '../src/ckeditorerror';
+import mix from '../src/mix';
 
 const assertBinding = utilsTestUtils.assertBinding;
 

@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import normalizeHtml from 'ckeditor5-utils/tests/_utils/normalizehtml';
+import normalizeHtml from '../../tests/_utils/normalizehtml';
 
 describe( 'utils', () => {
 	describe( 'normalizeHtml', () => {

@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* global Range */
 
-import isRange from 'ckeditor5-utils/src/dom/isrange';
+import isRange from '../../src/dom/isrange';
 
 describe( 'isRange()', () => {
 	it( 'detects native DOM Range', () => {

@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals document */
 
-import insertAt from 'ckeditor5-utils/src/dom/insertat';
+import insertAt from '../../src/dom/insertat';
 
 describe( 'insertAt', () => {
 	it( 'should insert at given position', () => {
