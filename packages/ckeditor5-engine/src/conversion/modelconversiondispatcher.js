@@ -338,6 +338,11 @@ export default class ModelConversionDispatcher {
 	 * @param {module:engine/model/range~Range} range Marker range.
 	 */
 	convertMarker( type, name, range ) {
+		// Do not convert if range is in graveyard or not in the document (e.g. in DocumentFragment).
+		if ( !range.root.document || range.root.rootName == '$graveyard' ) {
+			return;
+		}
+
 		const consumable = this._createMarkerConsumable( type, range );
 		const data = { name, range };
 
