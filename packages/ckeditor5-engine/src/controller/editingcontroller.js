@@ -15,7 +15,8 @@ import {
 	remove,
 	move,
 	rename,
-	insertIntoMarker,
+	insertRangeIntoMarker,
+	insertRangeWithMarker,
 	moveInOutOfMarker
 } from '../conversion/model-to-view-converters';
 import { convertSelectionChange } from '../conversion/view-selection-to-model-converters';
@@ -100,17 +101,20 @@ export default class EditingController {
 
 		// Convert model selection to view.
 		this._listener.listenTo( this.model, 'changesDone', () => {
-			this.modelToView.convertSelection( model.selection );
+			const selection = model.selection;
+			const markers = Array.from( model.markers.getMarkersAtPosition( selection.getFirstPosition() ) );
+
+			this.modelToView.convertSelection( selection, markers );
 			this.view.render();
 		}, { priority: 'low' } );
 
 		// Convert model markers changes.
-		this._listener.listenTo( this.model.markers, 'add', ( evt, name, range ) => {
-			this.modelToView.convertMarker( 'addMarker', name, range );
+		this._listener.listenTo( this.model.markers, 'add', ( evt, marker ) => {
+			this.modelToView.convertMarker( 'addMarker', marker.name, marker.getRange() );
 		} );
 
-		this._listener.listenTo( this.model.markers, 'remove', ( evt, name, range ) => {
-			this.modelToView.convertMarker( 'removeMarker', name, range );
+		this._listener.listenTo( this.model.markers, 'remove', ( evt, marker ) => {
+			this.modelToView.convertMarker( 'removeMarker', marker.name, marker.getRange() );
 		} );
 
 		// Convert view selection to model.
@@ -123,7 +127,8 @@ export default class EditingController {
 		this.modelToView.on( 'rename', rename(), { priority: 'low' } );
 
 		// Attach default markers converters.
-		this.modelToView.on( 'insert', insertIntoMarker( this.model.markers ), { priority: 'lowest' } );
+		this.modelToView.on( 'insert', insertRangeIntoMarker( this.model.markers ), { priority: 'lowest' } );
+		this.modelToView.on( 'insert', insertRangeWithMarker( this.model.markers ), { priority: 'lowest' } );
 		this.modelToView.on( 'move', moveInOutOfMarker( this.model.markers ), { priority: 'lowest' } );
 
 		// Attach default selection converters.

@@ -46,7 +46,7 @@ export default class Selection {
 		 * List of attributes set on current selection.
 		 *
 		 * @protected
-		 * @member {Map} module:engine/model/liveselection~LiveSelection#_attrs
+		 * @member {Map} module:engine/model/selection~Selection#_attrs
 		 */
 		this._attrs = new Map();
 	}

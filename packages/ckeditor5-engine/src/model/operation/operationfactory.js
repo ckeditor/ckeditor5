@@ -9,6 +9,7 @@
 
 import AttributeOperation from '../operation/attributeoperation';
 import InsertOperation from '../operation/insertoperation';
+import MarkerOperation from '../operation/markeroperation';
 import MoveOperation from '../operation/moveoperation';
 import NoOperation from '../operation/nooperation';
 import Operation from '../operation/operation';
@@ -20,6 +21,7 @@ import RootAttributeOperation from '../operation/rootattributeoperation';
 const operations = {};
 operations[ AttributeOperation.className ] = AttributeOperation;
 operations[ InsertOperation.className ] = InsertOperation;
+operations[ MarkerOperation.className ] = MarkerOperation;
 operations[ MoveOperation.className ] = MoveOperation;
 operations[ NoOperation.className ] = NoOperation;
 operations[ Operation.className ] = Operation;

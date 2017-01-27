@@ -145,27 +145,57 @@ export function convertCollapsedSelection() {
  */
 export function convertSelectionAttribute( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		const selection = data.selection;
-
-		if ( !selection.isCollapsed ) {
-			return;
-		}
-
-		if ( !consumable.consume( selection, 'selectionAttribute:' + data.key ) ) {
-			return;
-		}
-
-		let viewPosition = conversionApi.viewSelection.getFirstPosition();
-		conversionApi.viewSelection.removeAllRanges();
-
 		const viewElement = elementCreator instanceof ViewElement ?
-				elementCreator.clone( true ) :
-				elementCreator( data.value, data, selection, consumable, conversionApi );
+			elementCreator.clone( true ) :
+			elementCreator( data.value, data, data.selection, consumable, conversionApi );
 
-		viewPosition = viewWriter.wrapPosition( viewPosition, viewElement );
+		const consumableName = 'selectionAttribute:' + data.key;
 
-		conversionApi.viewSelection.addRange( new ViewRange( viewPosition, viewPosition ) );
+		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, consumableName );
 	};
+}
+
+/**
+ * Performs similar conversion as {@link ~convertSelectionAttribute}, but depends on a marker name of a marker in which
+ * collapsed selection is placed.
+ *
+ *		modelDispatcher.on( 'selectionMarker:searchResult', wrapRange( new ViewAttributeElement( 'span', { class: 'searchResult' } ) ) );
+ *
+ * **Note:** You can use the same `elementCreator` function for this converter factory
+ * and {@link module:engine/conversion/model-to-view-converters~wrapRange}.
+ *
+ * @see {~convertSelectionAttribute}
+ * @param {module:engine/view/attributeelement~AttributeElement|Function} elementCreator View element,
+ * or function returning a view element, which will be used for wrapping.
+ * @returns {Function} Selection converter.
+ */
+export function convertSelectionMarker( elementCreator ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		const viewElement = elementCreator instanceof ViewElement ?
+			elementCreator.clone( true ) :
+			elementCreator( data, consumable, conversionApi );
+
+		const consumableName = 'selectionMarker:' + data.name;
+
+		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, consumableName );
+	};
+}
+
+// Helper function for `convertSelectionAttribute` and `convertSelectionMarker`, which perform similar task.
+function wrapCollapsedSelectionPosition( modelSelection, viewSelection, viewElement, consumable, consumableName ) {
+	if ( !modelSelection.isCollapsed ) {
+		return;
+	}
+
+	if ( !consumable.consume( modelSelection, consumableName ) ) {
+		return;
+	}
+
+	let viewPosition = viewSelection.getFirstPosition();
+	viewPosition = viewWriter.wrapPosition( viewPosition, viewElement );
+
+	viewSelection.removeAllRanges();
+	viewSelection.addRange( new ViewRange( viewPosition, viewPosition ) );
 }
 
 /**

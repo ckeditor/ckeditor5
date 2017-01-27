@@ -19,7 +19,7 @@ import History from './history';
 import LiveSelection from './liveselection';
 import Schema from './schema';
 import TreeWalker from './treewalker';
-import MarkersCollection from './markerscollection';
+import MarkerCollection from './markercollection';
 import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -59,14 +59,6 @@ export default class Document {
 		this.version = 0;
 
 		/**
-		 * Selection done on this document.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/liveselection~LiveSelection}
-		 */
-		this.selection = new LiveSelection( this );
-
-		/**
 		 * Schema for this document.
 		 *
 		 * @member {module:engine/model/schema~Schema}
@@ -87,9 +79,17 @@ export default class Document {
 		 * Document's markers' collection.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/markerscollection~MarkersCollection}
+		 * @member {module:engine/model/markercollection~MarkerCollection}
 		 */
-		this.markers = new MarkersCollection();
+		this.markers = new MarkerCollection();
+
+		/**
+		 * Selection done on this document.
+		 *
+		 * @readonly
+		 * @member {module:engine/model/liveselection~LiveSelection}
+		 */
+		this.selection = new LiveSelection( this );
 
 		/**
 		 * Array of pending changes. See: {@link #enqueueChanges}.

@@ -17,7 +17,7 @@ import {
 	unwrapRange
 } from './model-to-view-converters';
 
-import { convertSelectionAttribute } from './model-selection-to-view-converters';
+import { convertSelectionAttribute, convertSelectionMarker } from './model-selection-to-view-converters';
 
 import ViewAttributeElement from '../view/attributeelement';
 import ViewContainerElement from '../view/containerelement';
@@ -58,7 +58,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * 4. Model marker to view element converter. This is a converter that converts markers from given group to view attribute element.
  * Markers, basically, are {@link module:engine/model/liverange~LiveRange} instances, that are named. In this conversion, model range is
  * converted to view range, then that view range is wrapped (or unwrapped, if range is removed) in a view attribute element.
- * To learn more about markers, see {@link module:engine/model/markerscollection~MarkersCollection}.
+ * To learn more about markers, see {@link module:engine/model/markercollection~MarkerCollection}.
  *
  *		const viewSpanSearchResult = new ViewAttributeElement( 'span', { class: 'search-result' } );
  *		buildModelConverter().for( dispatcher ).fromMarker( 'searchResult' ).toElement( viewSpanSearchResult );
@@ -246,6 +246,8 @@ class ModelConverterBuilder {
 
 				dispatcher.on( 'addMarker:' + this._from.name, wrapRange( element ), { priority } );
 				dispatcher.on( 'removeMarker:' + this._from.name, unwrapRange( element ), { priority } );
+
+				dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( element ), { priority } );
 			}
 		}
 	}

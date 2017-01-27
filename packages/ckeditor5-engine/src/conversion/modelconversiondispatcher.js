@@ -308,18 +308,30 @@ export default class ModelConversionDispatcher {
 	 * @fires selection
 	 * @fires selectionAttribute
 	 * @param {module:engine/model/selection~Selection} selection Selection to convert.
+	 * @param {Array.<module:engine/model/markercollection~Marker>} markers Markers which contains selection.
 	 */
-	convertSelection( selection ) {
-		const consumable = this._createSelectionConsumable( selection );
-		const data = {
-			selection: selection
-		};
+	convertSelection( selection, markers ) {
+		const consumable = this._createSelectionConsumable( selection, markers );
 
-		this.fire( 'selection', data, consumable, this.conversionApi );
+		this.fire( 'selection', { selection }, consumable, this.conversionApi );
+
+		for ( let marker of markers ) {
+			const data = {
+				selection: selection,
+				name: marker.name
+			};
+
+			if ( consumable.test( selection, 'selectionMarker:' + marker.name ) ) {
+				this.fire( 'selectionMarker:' + marker.name, data, consumable, this.conversionApi );
+			}
+		}
 
 		for ( let key of selection.getAttributeKeys() ) {
-			data.key = key;
-			data.value = selection.getAttribute( key );
+			const data = {
+				selection: selection,
+				key: key,
+				value: selection.getAttribute( key )
+			};
 
 			// Do not fire event if the attribute has been consumed.
 			if ( consumable.test( selection, 'selectionAttribute:' + data.key ) ) {
@@ -338,6 +350,11 @@ export default class ModelConversionDispatcher {
 	 * @param {module:engine/model/range~Range} range Marker range.
 	 */
 	convertMarker( type, name, range ) {
+		// Do not convert if range is in graveyard or not in the document (e.g. in DocumentFragment).
+		if ( !range.root.document || range.root.rootName == '$graveyard' ) {
+			return;
+		}
+
 		const consumable = this._createMarkerConsumable( type, range );
 		const data = { name, range };
 
@@ -392,12 +409,17 @@ export default class ModelConversionDispatcher {
 	 *
 	 * @private
 	 * @param {module:engine/model/selection~Selection} selection Selection to create consumable from.
+	 * @param {Iterable.<module:engine/model/markercollection~Marker>} markers Markers which contains selection.
 	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} Values to consume.
 	 */
-	_createSelectionConsumable( selection ) {
+	_createSelectionConsumable( selection, markers ) {
 		const consumable = new Consumable();
 
 		consumable.add( selection, 'selection' );
+
+		for ( let marker of markers ) {
+			consumable.add( selection, 'selectionMarker:' + marker.name );
+		}
 
 		for ( let key of selection.getAttributeKeys() ) {
 			consumable.add( selection, 'selectionAttribute:' + key );

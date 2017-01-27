@@ -11,6 +11,7 @@ import InsertOperation from './insertoperation';
 import AttributeOperation from './attributeoperation';
 import RootAttributeOperation from './rootattributeoperation';
 import RenameOperation from './renameoperation';
+import MarkerOperation from './markeroperation';
 import MoveOperation from './moveoperation';
 import RemoveOperation from './removeoperation';
 import NoOperation from './nooperation';
@@ -82,6 +83,8 @@ const ot = {
 
 		RenameOperation: doNotUpdate,
 
+		MarkerOperation: doNotUpdate,
+
 		// Transforms InsertOperation `a` by MoveOperation `b`. Accepts a flag stating whether `a` is more important
 		// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
 		MoveOperation( a, b, isStrong ) {
@@ -141,6 +144,8 @@ const ot = {
 		RootAttributeOperation: doNotUpdate,
 
 		RenameOperation: doNotUpdate,
+
+		MarkerOperation: doNotUpdate,
 
 		// Transforms AttributeOperation `a` by MoveOperation `b`. Returns results as an array of operations.
 		MoveOperation( a, b ) {
@@ -222,6 +227,8 @@ const ot = {
 
 		RenameOperation: doNotUpdate,
 
+		MarkerOperation: doNotUpdate,
+
 		MoveOperation: doNotUpdate
 	},
 
@@ -258,12 +265,73 @@ const ot = {
 			return [ clone ];
 		},
 
+		MarkerOperation: doNotUpdate,
+
 		// Transforms RenameOperation `a` by MoveOperation `b`. Returns results as an array of operations.
 		MoveOperation( a, b ) {
 			const clone = a.clone();
 			const isSticky = clone.position.isEqual( b.sourcePosition );
 
 			clone.position = clone.position._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany, true, isSticky );
+
+			return [ clone ];
+		}
+	},
+
+	MarkerOperation: {
+		// Transforms MarkerOperation `a` by InsertOperation `b`. Returns results as an array of operations.
+		InsertOperation( a, b ) {
+			// Clone the operation, we don't want to alter the original operation.
+			const clone = a.clone();
+
+			if ( clone.oldRange ) {
+				clone.oldRange = clone.oldRange._getTransformedByInsertion( b.position, b.nodes.maxOffset, false, false )[ 0 ];
+			}
+
+			if ( clone.newRange ) {
+				clone.newRange = clone.newRange._getTransformedByInsertion( b.position, b.nodes.maxOffset, false, false )[ 0 ];
+			}
+
+			return [ clone ];
+		},
+
+		AttributeOperation: doNotUpdate,
+
+		RootAttributeOperation: doNotUpdate,
+
+		RenameOperation: doNotUpdate,
+
+		// Transforms MarkerOperation `a` by MarkerOperation `b`. Accepts a flag stating whether `a` is more important
+		// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
+		MarkerOperation( a, b, isStrong ) {
+			// Clone the operation, we don't want to alter the original operation.
+			const clone = a.clone();
+
+			if ( a.name == b.name ) {
+				if ( isStrong ) {
+					clone.oldRange = b.newRange;
+				} else {
+					return [ new NoOperation( a.baseVersion ) ];
+				}
+			}
+
+			return [ clone ];
+		},
+
+		// Transforms MarkerOperation `a` by MoveOperation `b`. Returns results as an array of operations.
+		MoveOperation( a, b ) {
+			// Clone the operation, we don't want to alter the original operation.
+			const clone = a.clone();
+
+			if ( clone.oldRange ) {
+				const oldRanges = clone.oldRange._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany );
+				clone.oldRange = Range.createFromRanges( oldRanges );
+			}
+
+			if ( clone.newRange ) {
+				const newRanges = clone.newRange._getTransformedByMove( b.sourcePosition, b.targetPosition, b.howMany );
+				clone.newRange = Range.createFromRanges( newRanges );
+			}
 
 			return [ clone ];
 		}
@@ -297,6 +365,8 @@ const ot = {
 		RootAttributeOperation: doNotUpdate,
 
 		RenameOperation: doNotUpdate,
+
+		MarkerOperation: doNotUpdate,
 
 		// Transforms MoveOperation `a` by MoveOperation `b`. Accepts a flag stating whether `a` is more important
 		// than `b` when it comes to resolving conflicts. Returns results as an array of operations.
@@ -452,6 +522,8 @@ function transform( a, b, isStrong ) {
 		group = ot.RootAttributeOperation;
 	} else if ( a instanceof RenameOperation ) {
 		group = ot.RenameOperation;
+	} else if ( a instanceof MarkerOperation ) {
+		group = ot.MarkerOperation;
 	} else if ( a instanceof MoveOperation ) {
 		group = ot.MoveOperation;
 	} else {
@@ -467,6 +539,8 @@ function transform( a, b, isStrong ) {
 			algorithm = group.RootAttributeOperation;
 		} else if ( b instanceof RenameOperation ) {
 			algorithm = group.RenameOperation;
+		} else if ( b instanceof MarkerOperation ) {
+			algorithm = group.MarkerOperation;
 		} else if ( b instanceof MoveOperation ) {
 			algorithm = group.MoveOperation;
 		} else {

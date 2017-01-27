@@ -18,8 +18,8 @@ import buildModelConverter from '../../src/conversion/buildmodelconverter';
 import ModelDocument from '../../src/model/document';
 import ModelPosition from '../../src/model/position';
 import ModelElement from '../../src/model/element';
+import ModelText from '../../src/model/text';
 import ModelRange from '../../src/model/range';
-import ModelLiveRange from '../../src/model/liverange';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
@@ -55,6 +55,7 @@ describe( 'EditingController', () => {
 
 		afterEach( () => {
 			editing.destroy();
+			model.markers.destroy();
 		} );
 
 		it( 'should create root', () => {
@@ -255,29 +256,33 @@ describe( 'EditingController', () => {
 
 		it( 'should forward marker events to model conversion dispatcher', () => {
 			const range = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 );
+			const markerStub = {
+				name: 'name',
+				getRange: () => range
+			};
 
 			sinon.spy( editing.modelToView, 'convertMarker' );
 
-			model.markers.fire( 'add', range, 'name' );
+			model.markers.fire( 'add', markerStub );
 
-			expect( editing.modelToView.convertMarker.calledWithExactly( 'addMarker', range, 'name' ) ).to.be.true;
+			expect( editing.modelToView.convertMarker.calledWithExactly( 'addMarker', 'name', range ) ).to.be.true;
 
-			model.markers.fire( 'remove', range, 'name' );
+			model.markers.fire( 'remove', markerStub );
 
-			expect( editing.modelToView.convertMarker.calledWithExactly( 'removeMarker', range, 'name' ) ).to.be.true;
+			expect( editing.modelToView.convertMarker.calledWithExactly( 'removeMarker', 'name', range ) ).to.be.true;
 
 			editing.modelToView.convertMarker.restore();
 		} );
 
 		it( 'should forward add marker event if content is inserted into a marker range', () => {
-			const markerRange = ModelLiveRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
+			const markerRange = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
 			const innerRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 );
 			const consumableMock = {
 				consume: () => true,
 				test: () => true
 			};
 
-			model.markers.add( 'name', markerRange );
+			model.markers.set( 'name', markerRange );
 
 			sinon.spy( editing.modelToView, 'convertMarker' );
 
@@ -290,15 +295,63 @@ describe( 'EditingController', () => {
 			editing.modelToView.convertMarker.restore();
 		} );
 
+		it( 'should forward add marker event if inserted content has a marker (reinsert from graveyard)', () => {
+			const gyHolder = new ModelElement( '$graveyardHolder', [], new ModelText( 'foo' ) );
+			model.graveyard.appendChildren( gyHolder );
+
+			const markerRange = ModelRange.createIn( gyHolder );
+			const consumableMock = {
+				consume: () => true,
+				test: () => true
+			};
+
+			model.markers.set( 'name', markerRange );
+
+			sinon.spy( editing.modelToView, 'convertMarker' );
+
+			editing.modelToView.fire( 'insert', {
+				range: markerRange
+			}, consumableMock, { dispatcher: editing.modelToView } );
+
+			expect( editing.modelToView.convertMarker.calledWithExactly( 'addMarker', 'name', markerRange ) ).to.be.true;
+
+			editing.modelToView.convertMarker.restore();
+		} );
+
+		it( 'should forward add marker event if inserted content has a marker (inserted element from outside of tree)', () => {
+			const element = new ModelElement( new ModelText( 'foo' ) );
+			modelRoot.appendChildren( element );
+
+			const markerRange = ModelRange.createFromParentsAndOffsets( element, 1, element, 2 );
+			const outerRange = ModelRange.createOn( element );
+
+			const consumableMock = {
+				consume: () => true,
+				test: () => true
+			};
+
+			model.markers.set( 'name', markerRange );
+
+			sinon.spy( editing.modelToView, 'convertMarker' );
+
+			editing.modelToView.fire( 'insert', {
+				range: outerRange
+			}, consumableMock, { dispatcher: editing.modelToView } );
+
+			expect( editing.modelToView.convertMarker.calledWithExactly( 'addMarker', 'name', markerRange ) ).to.be.true;
+
+			editing.modelToView.convertMarker.restore();
+		} );
+
 		it( 'should not start marker conversion if content is not inserted into any marker range', () => {
-			const markerRange = ModelLiveRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
+			const markerRange = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
 			const insertRange = ModelRange.createFromParentsAndOffsets( modelRoot, 6, modelRoot, 8 );
 			const consumableMock = {
 				consume: () => true,
 				test: () => true
 			};
 
-			model.markers.add( 'name', markerRange );
+			model.markers.set( 'name', markerRange );
 
 			sinon.spy( editing.modelToView, 'convertMarker' );
 
@@ -312,13 +365,13 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should forward remove marker event if part of marker range is moved - intersecting', () => {
-			const markerRange = ModelLiveRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 );
+			const markerRange = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 );
 			const consumableMock = {
 				consume: () => true,
 				test: () => true
 			};
 
-			model.markers.add( 'name', markerRange );
+			model.markers.set( 'name', markerRange );
 
 			sinon.spy( editing.modelToView, 'convertMarker' );
 
@@ -338,13 +391,13 @@ describe( 'EditingController', () => {
 				model.batch().insert( ModelPosition.createAt( model.getRoot(), 'end' ), new ModelElement( 'paragraph' ) );
 			} );
 
-			const markerRange = ModelLiveRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 2 );
+			const markerRange = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 2 );
 			const consumableMock = {
 				consume: () => true,
 				test: () => true
 			};
 
-			model.markers.add( 'name', markerRange );
+			model.markers.set( 'name', markerRange );
 
 			sinon.spy( editing.modelToView, 'convertMarker' );
 
@@ -364,13 +417,13 @@ describe( 'EditingController', () => {
 				model.batch().insert( ModelPosition.createAt( model.getRoot(), 'end' ), new ModelElement( 'paragraph' ) );
 			} );
 
-			const markerRange = ModelLiveRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
+			const markerRange = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
 			const consumableMock = {
 				consume: () => true,
 				test: () => true
 			};
 
-			model.markers.add( 'name', markerRange );
+			model.markers.set( 'name', markerRange );
 
 			sinon.spy( editing.modelToView, 'convertMarker' );
 
@@ -386,13 +439,13 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should not start marker conversion if moved content does not affect the marker', () => {
-			const markerRange = ModelLiveRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 );
+			const markerRange = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 );
 			const consumableMock = {
 				consume: () => true,
 				test: () => true
 			};
 
-			model.markers.add( 'name', markerRange );
+			model.markers.set( 'name', markerRange );
 
 			sinon.spy( editing.modelToView, 'convertMarker' );
 
