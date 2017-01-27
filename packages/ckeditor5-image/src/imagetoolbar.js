@@ -30,6 +30,14 @@ export default class ImageToolbar extends Plugin {
 		super( editor );
 
 		editor.config.set( 'image.defaultToolbar', [] );
+
+		/**
+		 * When set to `true`, toolbar will be repositioned and showed on each render event and focus change.
+		 * Set to `false` to temporary disable the image toolbar.
+		 *
+		 * @member {Boolean}
+		 */
+		this.isEnabled = true;
 	}
 
 	/**
@@ -70,12 +78,14 @@ export default class ImageToolbar extends Plugin {
 
 		// Show balloon panel each time image widget is selected.
 		this.listenTo( this.editor.editing.view, 'render', () => {
-			this.show();
+			if ( this.isEnabled ) {
+				this.show();
+			}
 		}, { priority: 'low' } );
 
 		// There is no render method after focus is back in editor, we need to check if balloon panel should be visible.
 		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, is, was ) => {
-			if ( !was && is ) {
+			if ( !was && is && this.isEnabled ) {
 				this.show();
 			}
 		} );
