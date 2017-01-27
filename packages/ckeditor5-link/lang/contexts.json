@@ -1,6 +1,5 @@
 {
 	"Unlink": "Toolbar button tooltip for the Unlink feature.",
 	"Link": "Toolbar button tooltip for the Link feature.",
-	"Link URL": "Label for the url input in the Link dialog.",
-	"Cancel": "Label for the cancel button in the Link dialog."
+	"Link URL": "Label for the url input in the Link dialog."
 }
