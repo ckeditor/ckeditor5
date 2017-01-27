@@ -119,7 +119,7 @@ describe( 'Template', () => {
 		} );
 	} );
 
-	describe( 'render', () => {
+	describe( 'render()', () => {
 		it( 'throws when the template definition is wrong', () => {
 			expect( () => {
 				new Template( {} ).render();
@@ -609,7 +609,7 @@ describe( 'Template', () => {
 		} );
 	} );
 
-	describe( 'apply', () => {
+	describe( 'apply()', () => {
 		let observable, domEmitter, bind;
 
 		beforeEach( () => {
@@ -659,7 +659,21 @@ describe( 'Template', () => {
 				expect( text.textContent ).to.equal( 'abc' );
 			} );
 
-			it( 'applies new textContent to an existing Text Node of an HTMLElement', () => {
+			it( 'preserves existing textContent of a Text Node', () => {
+				text.textContent = 'foo';
+
+				new Template( {
+					text: bind.to( 'foo' )
+				} ).apply( text );
+
+				expect( text.textContent ).to.equal( 'foo bar' );
+
+				observable.foo = 'qux';
+
+				expect( text.textContent ).to.equal( 'foo qux' );
+			} );
+
+			it( 'preserves textContent of an existing Text Node in a HTMLElement', () => {
 				el.textContent = 'bar';
 
 				new Template( {
@@ -667,7 +681,7 @@ describe( 'Template', () => {
 					children: [ 'foo' ]
 				} ).apply( el );
 
-				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div>foo</div>' );
+				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div>barfoo</div>' );
 			} );
 		} );
 
@@ -682,6 +696,23 @@ describe( 'Template', () => {
 				} ).apply( el );
 
 				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div class="a b" x="bar"></div>' );
+			} );
+
+			it( 'preserves existing attributes', () => {
+				el.setAttribute( 'class', 'default' );
+				el.setAttribute( 'x', 'foo' );
+
+				new Template( {
+					tag: 'div',
+					attributes: {
+						'class': [ 'a', 'b' ],
+						x: 'bar'
+					}
+				} ).apply( el );
+
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<div class="default a b" x="foo bar"></div>'
+				);
 			} );
 
 			it( 'applies attributes and TextContent to a DOM tree', () => {
@@ -704,7 +735,108 @@ describe( 'Template', () => {
 					]
 				} ).apply( el );
 
-				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div class="parent">Children:<span class="child"></span></div>' );
+				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div class="parent">abcChildren:<span class="child"></span></div>' );
+			} );
+
+			describe( 'style', () => {
+				beforeEach( () => {
+					observable = new Model( {
+						width: '10px',
+						backgroundColor: 'yellow'
+					} );
+
+					bind = Template.bind( observable, domEmitter );
+				} );
+
+				it( 'applies as a static value', () => {
+					setElement( {
+						tag: 'p',
+						attributes: {
+							style: 'color: red;'
+						}
+					} );
+
+					new Template( {
+						attributes: {
+							style: 'display: block'
+						}
+					} ).apply( el );
+
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="color:red;display:block;"></p>' );
+				} );
+
+				it( 'applies as a static value (Array of values)', () => {
+					setElement( {
+						tag: 'p',
+						attributes: {
+							style: [ 'color: red;', 'display: block;' ]
+						}
+					} );
+
+					new Template( {
+						attributes: {
+							style: [ 'float: left;', 'overflow: hidden;' ]
+						}
+					} ).apply( el );
+
+					expect( normalizeHtml( el.outerHTML ) ).to.equal(
+						'<p style="color:red;display:block;float:left;overflow:hidden;"></p>'
+					);
+				} );
+
+				it( 'applies when in an object syntax', () => {
+					setElement( {
+						tag: 'p',
+						attributes: {
+							style: {
+								width: '20px',
+							}
+						}
+					} );
+
+					new Template( {
+						attributes: {
+							style: {
+								height: '10px',
+								float: 'left',
+								backgroundColor: 'green'
+							}
+						}
+					} ).apply( el );
+
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="width:20px;height:10px;float:left;background-color:green;"></p>' );
+				} );
+
+				it( 'applies when bound to observable', () => {
+					setElement( {
+						tag: 'p',
+						attributes: {
+							style: {
+								left: '20px',
+							}
+						}
+					} );
+
+					new Template( {
+						attributes: {
+							style: {
+								width: bind.to( 'width' ),
+								float: 'left',
+								backgroundColor: 'green'
+							}
+						}
+					} ).apply( el );
+
+					expect( normalizeHtml( el.outerHTML ) ).to.equal(
+						'<p style="left:20px;width:10px;float:left;background-color:green;"></p>'
+					);
+
+					observable.width = '100px';
+
+					expect( normalizeHtml( el.outerHTML ) ).to.equal(
+						'<p style="left:20px;width:100px;float:left;background-color:green;"></p>'
+					);
+				} );
 			} );
 		} );
 
@@ -770,17 +902,22 @@ describe( 'Template', () => {
 				expect( collection._parentElement ).to.be.null;
 			} );
 
-			it( 'should work for deep DOM structure', () => {
+			it( 'should work for deep DOM structure with bindings and event listeners', () => {
 				const childA = document.createElement( 'a' );
 				const childB = document.createElement( 'b' );
 
-				childA.textContent = 'anchor';
-				childB.textContent = 'bold';
+				childA.textContent = 'a';
+				childB.textContent = 'b';
+
+				childA.setAttribute( 'class', 'a1 a2' );
+				childB.setAttribute( 'class', 'b1 b2' );
 
 				el.appendChild( childA );
 				el.appendChild( childB );
 
-				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div><a>anchor</a><b>bold</b></div>' );
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<div><a class="a1 a2">a</a><b class="b1 b2">b</b></div>'
+				);
 
 				const spy1 = testUtils.sinon.spy();
 				const spy2 = testUtils.sinon.spy();
@@ -802,7 +939,7 @@ describe( 'Template', () => {
 								class: bind.to( 'foo', val => 'applied-A-' + val ),
 								id: 'applied-A'
 							},
-							children: [ 'Text applied to childA.' ]
+							children: [ ', applied-a' ]
 						},
 						{
 							tag: 'b',
@@ -813,7 +950,7 @@ describe( 'Template', () => {
 								class: bind.to( 'baz', val => 'applied-B-' + val ),
 								id: 'applied-B'
 							},
-							children: [ 'Text applied to childB.' ]
+							children: [ ', applied-b' ]
 						},
 						'Text which is not to be applied because it does NOT exist in original element.'
 					],
@@ -827,15 +964,15 @@ describe( 'Template', () => {
 				} ).apply( el );
 
 				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div class="applied-parent-qux" id="BAR">' +
-					'<a class="applied-A-bar" id="applied-A">Text applied to childA.</a>' +
-					'<b class="applied-B-qux" id="applied-B">Text applied to childB.</b>' +
+					'<a class="a1 a2 applied-A-bar" id="applied-A">a, applied-a</a>' +
+					'<b class="b1 b2 applied-B-qux" id="applied-B">b, applied-b</b>' +
 				'</div>' );
 
 				observable.foo = 'updated';
 
 				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div class="applied-parent-qux" id="UPDATED">' +
-					'<a class="applied-A-updated" id="applied-A">Text applied to childA.</a>' +
-					'<b class="applied-B-qux" id="applied-B">Text applied to childB.</b>' +
+					'<a class="a1 a2 applied-A-updated" id="applied-A">a, applied-a</a>' +
+					'<b class="b1 b2 applied-B-qux" id="applied-B">b, applied-b</b>' +
 				'</div>' );
 
 				document.body.appendChild( el );
@@ -857,7 +994,424 @@ describe( 'Template', () => {
 		} );
 	} );
 
-	describe( 'bind', () => {
+	describe( 'revert()', () => {
+		let observable, domEmitter, bind;
+
+		beforeEach( () => {
+			el = document.createElement( 'div' );
+
+			observable = new Model( {
+				foo: 'bar',
+				baz: 'qux'
+			} );
+
+			domEmitter = Object.create( DomEmitterMixin );
+			bind = Template.bind( observable, domEmitter );
+		} );
+
+		it( 'throws when no HTMLElement passed', () => {
+			expect( () => {
+				new Template( {
+					tag: 'p'
+				} ).revert();
+			} ).to.throw( CKEditorError, /ui-template-wrong-node/ );
+		} );
+
+		it( 'should throw if template is not applied', () => {
+			const tpl = new Template( {
+				tag: 'div'
+			} );
+
+			expect( () => {
+				tpl.revert( el );
+			} ).to.throw( CKEditorError, /ui-template-revert-not-applied/ );
+
+			tpl.render();
+
+			expect( () => {
+				tpl.revert( el );
+			} ).to.throw( CKEditorError, /ui-template-revert-not-applied/ );
+		} );
+
+		describe( 'text', () => {
+			it( 'should revert textContent to the initial value', () => {
+				el = getElement( {
+					tag: 'a',
+					children: [
+						'a',
+						{
+							tag: 'b',
+							children: [
+								'b'
+							]
+						}
+					]
+				} );
+
+				const tpl = new Template( {
+					children: [
+						'bar',
+						{
+							children: [
+								'qux'
+							]
+						}
+					]
+				} );
+
+				tpl.apply( el );
+
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<a>abar<b>bqux</b></a>'
+				);
+
+				tpl.revert( el );
+
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<a>a<b>b</b></a>'
+				);
+			} );
+
+			it( 'should remove bindings', () => {
+				el = getElement( {
+					tag: 'a',
+					children: [
+						'a',
+						{
+							tag: 'b',
+							children: [
+								'b'
+							]
+						}
+					]
+				} );
+
+				const tpl = new Template( {
+					children: [
+						'foo',
+						{
+							children: [
+								{
+									text: bind.to( 'foo' )
+								}
+							]
+						}
+					]
+				} );
+
+				tpl.apply( el );
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<a>afoo<b>b bar</b></a>'
+				);
+
+				observable.foo = 'abc';
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<a>afoo<b>b abc</b></a>'
+				);
+
+				tpl.revert( el );
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<a>a<b>b</b></a>'
+				);
+
+				observable.foo = 'xyz';
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<a>a<b>b</b></a>'
+				);
+			} );
+		} );
+
+		describe( 'attributes', () => {
+			it( 'should revert attributes to the initial values', () => {
+				el = getElement( {
+					tag: 'a',
+					attributes: {
+						foo: 'af',
+						bar: 'ab',
+					},
+					children: [
+						{
+							tag: 'b',
+							attributes: {
+								foo: 'bf',
+								bar: 'bb',
+							}
+						}
+					]
+				} );
+
+				const tpl = new Template( {
+					attributes: {
+						foo: 'af1',
+						bar: [ 'ab1', 'ab2' ],
+						baz: 'x'
+					},
+					children: [
+						{
+							attributes: {
+								foo: 'bf1'
+							}
+						}
+					]
+				} );
+
+				tpl.apply( el );
+
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<a bar="ab ab1 ab2" baz="x" foo="af af1">' +
+						'<b bar="bb" foo="bf bf1"></b>' +
+					'</a>'
+				);
+
+				tpl.revert( el );
+
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<a bar="ab" foo="af">' +
+						'<b bar="bb" foo="bf"></b>' +
+					'</a>'
+				);
+			} );
+
+			it( 'should remove bindings', () => {
+				el = getElement( {
+					tag: 'a',
+					attributes: {
+						foo: 'af',
+						bar: 'ab',
+					},
+					children: [
+						{
+							tag: 'b',
+							attributes: {
+								foo: 'bf',
+								bar: 'bb',
+							}
+						}
+					]
+				} );
+
+				const tpl = new Template( {
+					attributes: {
+						foo: 'af1',
+						bar: [
+							'ab1',
+							bind.to( 'baz' )
+						]
+					},
+					children: [
+						{
+							attributes: {
+								foo: bind.to( 'foo' )
+							}
+						}
+					]
+				} );
+
+				tpl.apply( el );
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<a bar="ab ab1 qux" foo="af af1">' +
+						'<b bar="bb" foo="bf bar"></b>' +
+					'</a>'
+				);
+
+				observable.foo = 'x';
+				observable.baz = 'y';
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<a bar="ab ab1 y" foo="af af1">' +
+						'<b bar="bb" foo="bf x"></b>' +
+					'</a>'
+				);
+
+				tpl.revert( el );
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<a bar="ab" foo="af">' +
+						'<b bar="bb" foo="bf"></b>' +
+					'</a>'
+				);
+
+				observable.foo = 'abc';
+				observable.baz = 'cba';
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<a bar="ab" foo="af">' +
+						'<b bar="bb" foo="bf"></b>' +
+					'</a>'
+				);
+			} );
+
+			describe( 'style', () => {
+				beforeEach( () => {
+					observable = new Model( {
+						overflow: 'visible'
+					} );
+
+					bind = Template.bind( observable, domEmitter );
+				} );
+
+				it( 'should remove bindings', () => {
+					el = getElement( {
+						tag: 'a',
+						attributes: {
+							style: {
+								fontWeight: 'bold'
+							}
+						},
+						children: [
+							{
+								tag: 'b',
+								attributes: {
+									style: {
+										color: 'red'
+									}
+								}
+							}
+						]
+					} );
+
+					const tpl = new Template( {
+						attributes: {
+							style: {
+								overflow: bind.to( 'overflow' )
+							}
+						},
+						children: [
+							{
+								tag: 'b',
+								attributes: {
+									style: {
+										display: 'block'
+									}
+								}
+							}
+						]
+					} );
+
+					tpl.apply( el );
+					expect( normalizeHtml( el.outerHTML ) ).to.equal(
+						'<a style="font-weight:bold;overflow:visible;">' +
+							'<b style="color:red;display:block;"></b>' +
+						'</a>'
+					);
+
+					tpl.revert( el );
+					expect( normalizeHtml( el.outerHTML ) ).to.equal(
+						'<a style="font-weight:bold;">' +
+							'<b style="color:red;"></b>' +
+						'</a>'
+					);
+
+					observable.overflow = 'hidden';
+					expect( normalizeHtml( el.outerHTML ) ).to.equal(
+						'<a style="font-weight:bold;">' +
+							'<b style="color:red;"></b>' +
+						'</a>'
+					);
+				} );
+			} );
+		} );
+
+		describe( 'children', () => {
+			it( 'should work for deep DOM structure with bindings and event listeners', () => {
+				el = getElement( {
+					tag: 'div',
+					children: [
+						{
+							tag: 'a',
+							attributes: {
+								class: [ 'a1', 'a2' ]
+							},
+							children: [
+								'a'
+							]
+						},
+						{
+							tag: 'b',
+							attributes: {
+								class: [ 'b1', 'b2' ]
+							},
+							children: [
+								'b'
+							]
+						}
+					]
+				} );
+
+				const spy = sinon.spy();
+				observable.on( 'ku', spy );
+
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<div><a class="a1 a2">a</a><b class="b1 b2">b</b></div>'
+				);
+
+				const tpl = new Template( {
+					tag: 'div',
+					attributes: {
+						class: [ 'div1', 'div2' ],
+						style: {
+							fontWeight: 'bold'
+						}
+					},
+					children: [
+						{
+							tag: 'a',
+							attributes: {
+								class: [ 'x', 'y' ],
+								'data-new-attr': 'foo'
+							},
+							children: [ ', applied-a' ]
+						},
+						{
+							tag: 'b',
+							attributes: {
+								class: [
+									'a',
+									'b',
+									bind.to( 'foo' )
+								]
+							},
+							children: [ ', applied-b' ]
+						}
+					],
+					on: {
+						keyup: bind.to( 'ku' )
+					}
+				} );
+
+				tpl.apply( el );
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<div class="div1 div2" style="font-weight:bold;">' +
+						'<a class="a1 a2 x y" data-new-attr="foo">a, applied-a</a>' +
+						'<b class="b1 b2 a b bar">b, applied-b</b>' +
+					'</div>'
+				);
+
+				observable.foo = 'baz';
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<div class="div1 div2" style="font-weight:bold;">' +
+						'<a class="a1 a2 x y" data-new-attr="foo">a, applied-a</a>' +
+						'<b class="b1 b2 a b baz">b, applied-b</b>' +
+					'</div>'
+				);
+
+				dispatchEvent( el.firstChild, 'keyup' );
+				sinon.assert.calledOnce( spy );
+
+				tpl.revert( el );
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<div><a class="a1 a2">a</a><b class="b1 b2">b</b></div>'
+				);
+
+				observable.foo = 'qux';
+				expect( normalizeHtml( el.outerHTML ) ).to.equal(
+					'<div><a class="a1 a2">a</a><b class="b1 b2">b</b></div>'
+				);
+
+				dispatchEvent( el.firstChild, 'keyup' );
+				sinon.assert.calledOnce( spy );
+			} );
+		} );
+	} );
+
+	describe( 'bind()', () => {
 		it( 'returns object', () => {
 			expect( Template.bind() ).to.be.an( 'object' );
 		} );
@@ -1578,15 +2132,15 @@ describe( 'Template', () => {
 					]
 				} ).apply( el );
 
-				expect( child.textContent ).to.equal( 'bar' );
+				expect( child.textContent ).to.equal( 'foo bar' );
 
 				observable.foo = 'baz';
-				expect( child.textContent ).to.equal( 'baz' );
+				expect( child.textContent ).to.equal( 'foo baz' );
 			} );
 		} );
 	} );
 
-	describe( 'extend', () => {
+	describe( 'extend()', () => {
 		let observable, emitter, bind;
 
 		beforeEach( () => {
@@ -2279,6 +2833,10 @@ describe( 'Template', () => {
 		} );
 	} );
 } );
+
+function getElement( template ) {
+	return new Template( template ).render();
+}
 
 function setElement( template ) {
 	el = new Template( template ).render();

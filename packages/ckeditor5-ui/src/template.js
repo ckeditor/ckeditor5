@@ -56,6 +56,13 @@ export default class Template {
 		Object.assign( this, normalize( clone( def ) ) );
 
 		/**
+		 * A template used by {@link #revert} method.
+		 *
+		 * @member {ui/template~Template}
+		 */
+		this._revertData = null;
+
+		/**
 		 * Tag of this template, i.e. `div`, indicating that the instance will render
 		 * to an HTMLElement.
 		 *
@@ -129,6 +136,7 @@ export default class Template {
 	 *		element.outerHTML == "<div id="first-div" class="my-div">Div text.</div>"
 	 *
 	 * @see module:ui/template~Template#render
+	 * @see module:ui/template~Template#revert
 	 * @param {Node} element Root element for the template to apply.
 	 */
 	apply( node ) {
@@ -141,7 +149,39 @@ export default class Template {
 			throw new CKEditorError( 'ui-template-wrong-node: No DOM Node specified.' );
 		}
 
-		return this._renderNode( node );
+		this._revertData = {};
+
+		this._renderNode( node, null, this._revertData );
+
+		return node;
+	}
+
+	/**
+	 * Reverts the template from an existing DOM Node, either `HTMLElement` or `Text`.
+	 *
+	 * @see module:ui/template~Template#apply
+	 * @param {Node} element Root element for the template to revert.
+	 */
+	revert( node ) {
+		if ( !node ) {
+			/**
+			 * No DOM Node specified.
+			 *
+			 * @error ui-template-wrong-syntax
+			 */
+			throw new CKEditorError( 'ui-template-wrong-node: No DOM Node specified.' );
+		}
+
+		if ( !this._revertData ) {
+			/**
+			 * Attempting reverting a template which has not been applied yet.
+			 *
+			 * @error ui-template-revert-not-applied
+			 */
+			throw new CKEditorError( 'ui-template-revert-not-applied: Attempting reverting a template which has not been applied yet.' );
+		}
+
+		this._revertNode( node, this._revertData );
 	}
 
 	/**
@@ -242,8 +282,9 @@ export default class Template {
 	 * @param {Node} applyNode If specified, this template will be applied to an existing DOM Node.
 	 * @param {Boolean} intoFragment If set, children are rendered into `DocumentFragment`.
 	 * @returns {HTMLElement|Text} A rendered Node.
+	 * @param {Object} revertData
 	 */
-	_renderNode( applyNode, intoFragment ) {
+	_renderNode( applyNode, intoFragment, revertData ) {
 		let isInvalid;
 
 		if ( applyNode ) {
@@ -264,7 +305,10 @@ export default class Template {
 			throw new CKEditorError( 'ui-template-wrong-syntax: Node definition must have either "tag" or "text" when rendering new Node.' );
 		}
 
-		return this.text ? this._renderText( applyNode ) : this._renderElement( applyNode, intoFragment );
+		return this.text ?
+				this._renderText( applyNode, !!applyNode, revertData )
+			:
+				this._renderElement( applyNode, intoFragment, revertData );
 	}
 
 	/**
@@ -274,12 +318,13 @@ export default class Template {
 	 * @param {HTMLElement} applyElement If specified, this template will be applied to an existing `HTMLElement`.
 	 * @param {Boolean} intoFragment If set, children are rendered into `DocumentFragment`.
 	 * @returns {HTMLElement} A rendered `HTMLElement`.
+	 * @param {Object} revertData
 	 */
-	_renderElement( applyElement, intoFragment ) {
+	_renderElement( applyElement, intoFragment, revertData ) {
 		const el = applyElement ||
 			document.createElementNS( this.ns || xhtmlNs, this.tag );
 
-		this._renderAttributes( el );
+		this._renderAttributes( el, !!applyElement, revertData );
 
 		// Invoke children recursively.
 		if ( intoFragment ) {
@@ -289,11 +334,11 @@ export default class Template {
 
 			el.appendChild( docFragment );
 		} else {
-			this._renderElementChildren( el, el, !!applyElement );
+			this._renderElementChildren( el, el, !!applyElement, revertData );
 		}
 
 		// Setup DOM bindings event listeners.
-		this._setUpListeners( el );
+		this._setUpListeners( el, revertData );
 
 		return el;
 	}
@@ -304,20 +349,40 @@ export default class Template {
 	 * @protected
 	 * @param {HTMLElement} textNode If specified, this template instance will be applied to an existing `Text` Node.
 	 * @returns {Text} A rendered `Text` node in DOM.
+	 * @param {Object} revertData
 	 */
-	_renderText( textNode = document.createTextNode( '' ) ) {
+	_renderText( textNode, shouldApply, revertData ) {
+		if ( !textNode ) {
+			textNode = document.createTextNode( '' );
+		}
+
+		// Save the original textContent to revert it in #revert().
+		if ( shouldApply ) {
+			revertData.text = textNode.textContent;
+		}
+
 		// Check if this Text Node is bound to Observable. Cases:
 		//		{ text: [ Template.bind( ... ).to( ... ) ] }
 		//		{ text: [ 'foo', Template.bind( ... ).to( ... ), ... ] }
 		if ( hasTemplateBinding( this.text ) ) {
-			this._bindToObservable( this.text, textNode, getTextUpdater( textNode ) );
+			// Preserve the original content of the text node.
+			if ( shouldApply && textNode.textContent ) {
+				this.text.unshift( textNode.textContent );
+			}
+
+			this._bindToObservable(
+				this.text,
+				textNode,
+				getTextUpdater( textNode ),
+				revertData
+			);
 		}
 
 		// Simply set text. Cases:
 		// 		{ text: [ 'all', 'are', 'static' ] }
 		// 		{ text: [ 'foo' ] }
 		else {
-			textNode.textContent = this.text.join( '' );
+			textNode.textContent += this.text.join( '' );
 		}
 
 		return textNode;
@@ -328,16 +393,27 @@ export default class Template {
 	 *
 	 * @protected
 	 * @param {HTMLElement} el `HTMLElement` which attributes are to be rendered.
+	 * @param {Object} revertData
 	 */
-	_renderAttributes( el ) {
-		let attrName, attrValue, attrNs;
+	_renderAttributes( el, shouldApply, revertData ) {
+		let attrName, attrValue, domValue, attrNs;
 
 		if ( !this.attributes ) {
 			return;
 		}
 
+		if ( shouldApply ) {
+			revertData.attributes = {};
+		}
+
 		for ( attrName in this.attributes ) {
+			domValue = el.getAttribute( attrName );
 			attrValue = this.attributes[ attrName ];
+
+			// Save revert data.
+			if ( shouldApply ) {
+				revertData.attributes[ attrName ] = domValue;
+			}
 
 			// Detect custom namespace:
 			// 		{ class: { ns: 'abc', value: Template.bind( ... ).to( ... ) } }
@@ -348,12 +424,20 @@ export default class Template {
 			// 		{ class: [ 'bar', Template.bind( ... ).to( ... ), 'baz' ] }
 			// 		{ class: { ns: 'abc', value: Template.bind( ... ).to( ... ) } }
 			if ( hasTemplateBinding( attrValue ) ) {
+				// Normalize attributes with additional data like namespace:
+				//		{ class: { ns: 'abc', value: [ ... ] } }
+				const attrValueToBind = attrNs ? attrValue[ 0 ].value : attrValue;
+
+				if ( shouldApply ) {
+					// Preserve the original value.
+					attrValueToBind.unshift( domValue );
+				}
+
 				this._bindToObservable(
-					// Normalize attributes with additional data like namespace:
-					//		{ class: { ns: 'abc', value: [ ... ] } }
-					attrNs ? attrValue[ 0 ].value : attrValue,
+					attrValueToBind,
 					el,
-					getAttributeUpdater( el, attrName, attrNs )
+					getAttributeUpdater( el, attrName, attrNs ),
+					revertData
 				);
 			}
 
@@ -363,7 +447,7 @@ export default class Template {
 			//			height: Template.bind( ... ).to( ... )
 			//		}
 			else if ( attrName == 'style' && typeof attrValue[ 0 ] !== 'string' ) {
-				this._renderStyleAttribute( attrValue[ 0 ], el );
+				this._renderStyleAttribute( attrValue[ 0 ], el, revertData );
 			}
 
 			// Otherwise simply set the static attribute.
@@ -371,6 +455,10 @@ export default class Template {
 			// 		{ class: [ 'all', 'are', 'static' ] }
 			// 		{ class: [ { ns: 'abc', value: [ 'foo' ] } ] }
 			else {
+				if ( domValue ) {
+					attrValue.unshift( domValue );
+				}
+
 				attrValue = attrValue
 					// Retrieve "values" from { class: [ { ns: 'abc', value: [ ... ] } ] }
 					.map( v => v ? ( v.value || v ) : v )
@@ -411,8 +499,9 @@ export default class Template {
 	 * @private
 	 * @param {Object} styles module:ui/template~TemplateDefinition.attributes.styles Styles definition.
 	 * @param {HTMLElement} el `HTMLElement` which `style` attribute is rendered.
+	 * @param {Object} revertData
 	 */
-	_renderStyleAttribute( styles, el ) {
+	_renderStyleAttribute( styles, el, revertData ) {
 		for ( let styleName in styles ) {
 			const styleValue = styles[ styleName ];
 
@@ -420,7 +509,12 @@ export default class Template {
 			//	color: bind.to( 'attribute' )
 			// }
 			if ( hasTemplateBinding( styleValue ) ) {
-				this._bindToObservable( [ styleValue ], el, getStyleUpdater( el, styleName ) );
+				this._bindToObservable(
+					[ styleValue ],
+					el,
+					getStyleUpdater( el, styleName ),
+					revertData
+				);
 			}
 
 			// style: {
@@ -440,8 +534,9 @@ export default class Template {
 	 * @param {HTMLElement|DocumentFragment} container `HTMLElement` or `DocumentFragment`
 	 * into which children are being rendered. If `shouldApply == true`, then `container === element`.
 	 * @param {Boolean} shouldApply Traverse existing DOM structure only, don't modify DOM.
+	 * @param {Object} revertData
 	 */
-	_renderElementChildren( element, container, shouldApply ) {
+	_renderElementChildren( element, container, shouldApply, revertData ) {
 		let childIndex = 0;
 
 		for ( let child of this.children ) {
@@ -459,7 +554,15 @@ export default class Template {
 				}
 			} else {
 				if ( shouldApply ) {
-					child._renderNode( container.childNodes[ childIndex++ ] );
+					const childRevertData = {};
+
+					if ( !revertData.children ) {
+						revertData.children = [];
+					}
+
+					revertData.children.push( childRevertData );
+
+					child._renderNode( container.childNodes[ childIndex++ ], null, childRevertData );
 				} else {
 					container.appendChild( child.render() );
 				}
@@ -472,18 +575,24 @@ export default class Template {
 	 *
 	 * @protected
 	 * @param {HTMLElement} el `HTMLElement` which is being rendered.
+	 * @param {Object} revertData
 	 */
-	_setUpListeners( el ) {
+	_setUpListeners( el, revertData ) {
 		if ( !this.eventListeners ) {
 			return;
 		}
 
-		for ( let key in this.eventListeners ) {
-			const [ domEvtName, domSelector ] = key.split( '@' );
+		if ( revertData && !revertData.bindings ) {
+			revertData.bindings = [];
+		}
 
-			this.eventListeners[ key ].forEach( schemaItem => {
-				schemaItem.activateDomEventListener( el, domEvtName, domSelector );
-			} );
+		for ( let key in this.eventListeners ) {
+			const reverts = this.eventListeners[ key ]
+				.map( schemaItem => schemaItem.activateDomEventListener( el, ...key.split( '@' ) ) );
+
+			if ( revertData ) {
+				revertData.bindings.push( reverts );
+			}
 		}
 	}
 
@@ -497,9 +606,13 @@ export default class Template {
 	 * @param {module:ui/template~TemplateValueSchema} valueSchema
 	 * @param {Node} node DOM Node to be updated when {@link module:utils/observablemixin~ObservableMixin} changes.
 	 * @param {Function} domUpdater A function which updates DOM (like attribute or text).
+	 * @param {Object} revertData
 	 */
-	_bindToObservable( valueSchema ) {
-		valueSchema
+	_bindToObservable( valueSchema, node, domUpdater, revertData ) {
+		// Set initial values.
+		syncValueSchemaValue( ...arguments );
+
+		const reverts = valueSchema
 			// Filter "falsy" (false, undefined, null, '') value schema components out.
 			.filter( item => !isFalsy( item ) )
 			// Filter inactive bindings from schema, like static strings ('foo'), numbers (42), etc.
@@ -507,10 +620,49 @@ export default class Template {
 			// Once only the actual binding are left, let the emitter listen to observable change:attribute event.
 			// TODO: Reduce the number of listeners attached as many bindings may listen
 			// to the same observable attribute.
-			.forEach( templateBinding => templateBinding.activateAttributeListener( ...arguments ) );
+			.map( templateBinding => templateBinding.activateAttributeListener( ...arguments ) );
 
-		// Set initial values.
-		syncValueSchemaValue( ...arguments );
+		if ( revertData ) {
+			if ( !revertData.bindings ) {
+				revertData.bindings = [];
+			}
+
+			revertData.bindings.push( reverts );
+		}
+	}
+
+	_revertNode( node, revertData ) {
+		if ( revertData.text ) {
+			node.textContent = revertData.text;
+		}
+
+		for ( let attrName in revertData.attributes ) {
+			const attrValue = revertData.attributes[ attrName ];
+
+			// When the attribute has **not** been set before #apply().
+			if ( attrValue === null ) {
+				node.removeAttribute( attrName );
+			} else {
+				node.setAttribute( attrName, attrValue );
+			}
+		}
+
+		if ( revertData.bindings ) {
+			for ( let binding of revertData.bindings ) {
+				// Each binding may consist of several observable+observable#attribute.
+				// like the following has 2:
+				// 		class: [ 'x', bind.to( 'foo' ), 'y', bind.to( 'bar' ) ]
+				for ( let revertBinding of binding ) {
+					revertBinding();
+				}
+			}
+		}
+
+		if ( revertData.children ) {
+			for ( let i = 0; i < revertData.children.length; ++i ) {
+				this._revertNode( node.childNodes[ i ], revertData.children[ i ] );
+			}
+		}
 	}
 }
 
@@ -584,11 +736,17 @@ export class TemplateBinding {
 	 * @param {module:ui/template~TemplateValueSchema} valueSchema A full schema to generate an attribute or text in DOM.
 	 * @param {Node} node A native DOM node, which attribute or text is to be updated.
 	 * @param {Function} updater A DOM updater function used to update native DOM attribute or text.
+	 * @returns {Function} TODO
 	 */
 	activateAttributeListener( valueSchema, node, updater ) {
-		this.emitter.listenTo( this.observable, 'change:' + this.attribute, () => {
-			syncValueSchemaValue( valueSchema, node, updater );
-		} );
+		const callback = () => syncValueSchemaValue( valueSchema, node, updater );
+
+		this.emitter.listenTo( this.observable, 'change:' + this.attribute, callback );
+
+		// Allows revert of the listener.
+		return () => {
+			this.emitter.stopListening( this.observable, 'change:' + this.attribute, callback );
+		};
 	}
 }
 
@@ -610,9 +768,10 @@ export class TemplateToBinding extends TemplateBinding {
 	 * @param {HTMLElement} element An element on which listening to the native DOM event.
 	 * @param {String} domEvtName A name of the native DOM event.
 	 * @param {String} [domSelector] A selector in DOM to filter delegated events.
+	 * @returns {Function} TODO
 	 */
 	activateDomEventListener( el, domEvtName, domSelector ) {
-		this.emitter.listenTo( el, domEvtName, ( evt, domEvt ) => {
+		const callback = ( evt, domEvt ) => {
 			if ( !domSelector || domEvt.target.matches( domSelector ) ) {
 				if ( typeof this.eventNameOrFunction == 'function' ) {
 					this.eventNameOrFunction( domEvt );
@@ -620,7 +779,14 @@ export class TemplateToBinding extends TemplateBinding {
 					this.observable.fire( this.eventNameOrFunction, domEvt );
 				}
 			}
-		} );
+		};
+
+		this.emitter.listenTo( el, domEvtName, callback );
+
+		// Allows revert of the listener.
+		return () => {
+			this.emitter.stopListening( el, domEvtName, callback );
+		};
 	}
 }
 
