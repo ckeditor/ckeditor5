@@ -5,10 +5,8 @@
 
 import Document from '../../../src/model/document';
 import Text from '../../../src/model/text';
-import DocumentFragment from '../../../src/model/documentfragment';
 import Range from '../../../src/model/range';
 import MarkerOperation from '../../../src/model/operation/markeroperation';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { jsonParseStringify, wrapInDelta } from '../../model/_utils/utils';
 
 function matchRange( range ) {
@@ -26,7 +24,7 @@ describe( 'MarkerOperation', () => {
 	} );
 
 	it( 'should have property type equal to "marker"', () => {
-		const op = new MarkerOperation( 'name', null, range, 0 );
+		const op = new MarkerOperation( 'name', null, range, doc.markers, 0 );
 		expect( op.type ).to.equal( 'marker' );
 	} );
 
@@ -41,7 +39,7 @@ describe( 'MarkerOperation', () => {
 		} );
 
 		doc.applyOperation( wrapInDelta(
-			new MarkerOperation( 'name', null, range, doc.version )
+			new MarkerOperation( 'name', null, range, doc.markers, doc.version )
 		) );
 
 		expect( doc.version ).to.equal( 1 );
@@ -52,7 +50,7 @@ describe( 'MarkerOperation', () => {
 
 	it( 'should update marker in document marker collection', () => {
 		doc.applyOperation( wrapInDelta(
-			new MarkerOperation( 'name', null, range, doc.version )
+			new MarkerOperation( 'name', null, range, doc.markers, doc.version )
 		) );
 
 		const range2 = Range.createFromParentsAndOffsets( root, 0, root, 3 );
@@ -61,7 +59,7 @@ describe( 'MarkerOperation', () => {
 		sinon.spy( doc, 'fire' );
 
 		doc.applyOperation( wrapInDelta(
-			new MarkerOperation( 'name', range, range2, doc.version )
+			new MarkerOperation( 'name', range, range2, doc.markers, doc.version )
 		) );
 
 		expect( doc.version ).to.equal( 2 );
@@ -72,7 +70,7 @@ describe( 'MarkerOperation', () => {
 
 	it( 'should remove marker from document marker collection', () => {
 		doc.applyOperation( wrapInDelta(
-			new MarkerOperation( 'name', null, range, doc.version )
+			new MarkerOperation( 'name', null, range, doc.markers, doc.version )
 		) );
 
 		sinon.spy( doc.markers, 'remove' );
@@ -85,7 +83,7 @@ describe( 'MarkerOperation', () => {
 		} );
 
 		doc.applyOperation( wrapInDelta(
-			new MarkerOperation( 'name', range, null, doc.version )
+			new MarkerOperation( 'name', range, null, doc.markers, doc.version )
 		) );
 
 		expect( doc.version ).to.equal( 2 );
@@ -94,7 +92,7 @@ describe( 'MarkerOperation', () => {
 		expect( doc.fire.called ).to.be.true;
 	} );
 
-	it( 'should fire document change event but not document markers remove event if oldRange and newRange are null', () => {
+	it( 'should fire document change event but not document markers remove event if removing non-existing range', () => {
 		sinon.spy( doc, 'fire' );
 		sinon.spy( doc.markers, 'fire' );
 
@@ -105,14 +103,16 @@ describe( 'MarkerOperation', () => {
 		} );
 
 		doc.applyOperation( wrapInDelta(
-			new MarkerOperation( 'name', null, null, doc.version )
+			new MarkerOperation( 'name', null, null, doc.markers, doc.version )
 		) );
 
 		expect( doc.fire.calledWith( 'change', 'marker' ) ).to.be.true;
 		expect( doc.markers.fire.notCalled ).to.be.true;
 	} );
 
-	it( 'should fire document change event but not document markers remove event if oldRange and newRange are equal', () => {
+	it( 'should fire document change event but not document markers set event if newRange is same as current marker range', () => {
+		doc.markers.set( 'name', range );
+
 		sinon.spy( doc, 'fire' );
 		sinon.spy( doc.markers, 'fire' );
 
@@ -123,7 +123,7 @@ describe( 'MarkerOperation', () => {
 		} );
 
 		doc.applyOperation( wrapInDelta(
-			new MarkerOperation( 'name', range, range, doc.version )
+			new MarkerOperation( 'name', range, range, doc.markers, doc.version )
 		) );
 
 		expect( doc.fire.calledWith( 'change', 'marker' ) ).to.be.true;
@@ -133,10 +133,10 @@ describe( 'MarkerOperation', () => {
 	it( 'should return MarkerOperation with swapped ranges as reverse operation', () => {
 		const range2 = Range.createFromParentsAndOffsets( root, 0, root, 3 );
 
-		const op1 = new MarkerOperation( 'name', null, range, doc.version );
+		const op1 = new MarkerOperation( 'name', null, range, doc.markers, doc.version );
 		const reversed1 = op1.getReversed();
 
-		const op2 = new MarkerOperation( 'name', range, range2, doc.version );
+		const op2 = new MarkerOperation( 'name', range, range2, doc.markers, doc.version );
 		const reversed2 = op2.getReversed();
 
 		expect( reversed1 ).to.be.an.instanceof( MarkerOperation );
@@ -154,44 +154,16 @@ describe( 'MarkerOperation', () => {
 	} );
 
 	it( 'should create a MarkerOperation with the same parameters when cloned', () => {
-		const op = new MarkerOperation( 'name', null, range, 0 );
+		const op = new MarkerOperation( 'name', null, range, doc.markers, 0 );
 		const clone = op.clone();
 
 		expect( clone ).to.be.an.instanceof( MarkerOperation );
 		expect( clone ).to.deep.equal( op );
 	} );
 
-	it( 'should throw if oldRange is not in a document', () => {
-		const docFrag = new DocumentFragment();
-		const rangeInDocFrag = Range.createIn( docFrag );
-
-		expect( () => {
-			new MarkerOperation( 'name', rangeInDocFrag, null, 0 );
-		} ).to.throw( CKEditorError, /^marker-operation-range-not-in-document/ );
-	} );
-
-	it( 'should throw if newRange is not in a document', () => {
-		const docFrag = new DocumentFragment();
-		const rangeInDocFrag = Range.createIn( docFrag );
-
-		expect( () => {
-			new MarkerOperation( 'name', null, rangeInDocFrag, 0 );
-		} ).to.throw( CKEditorError, /^marker-operation-range-not-in-document/ );
-	} );
-
-	it( 'should throw if ranges are in different documents', () => {
-		const document2 = new Document();
-		const root2 = document2.createRoot();
-		const rangeInRoot2 = Range.createIn( root2 );
-
-		expect( () => {
-			new MarkerOperation( 'name', range, rangeInRoot2, 0 );
-		} ).to.throw( CKEditorError, /^marker-operation-ranges-in-different-documents/ );
-	} );
-
 	describe( 'toJSON', () => {
 		it( 'should create proper serialized object', () => {
-			const op = new MarkerOperation( 'name', null, range, doc.version );
+			const op = new MarkerOperation( 'name', null, range, doc.markers, doc.version );
 			const serialized = jsonParseStringify( op );
 
 			expect( serialized ).to.deep.equal( {
@@ -206,7 +178,7 @@ describe( 'MarkerOperation', () => {
 
 	describe( 'fromJSON', () => {
 		it( 'should create proper MarkerOperation from json object #1', () => {
-			const op = new MarkerOperation( 'name', null, range, doc.version );
+			const op = new MarkerOperation( 'name', null, range, doc.markers, doc.version );
 
 			const serialized = jsonParseStringify( op );
 			const deserialized = MarkerOperation.fromJSON( serialized, doc );
@@ -216,7 +188,7 @@ describe( 'MarkerOperation', () => {
 
 		it( 'should create proper MarkerOperation from json object #2', () => {
 			// Gotta love 100% CC.
-			const op = new MarkerOperation( 'name', range, null, doc.version );
+			const op = new MarkerOperation( 'name', range, null, doc.markers, doc.version );
 
 			const serialized = jsonParseStringify( op );
 			const deserialized = MarkerOperation.fromJSON( serialized, doc );

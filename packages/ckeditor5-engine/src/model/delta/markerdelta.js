@@ -53,13 +53,14 @@ export default class MarkerDelta extends Delta {
  *
  * @chainable
  * @method module:engine/model/batch~Batch#setMarker
- * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker to update or marker name to add or update.
- * @param {module:engine/model/range~Range} [range] Marker range.
+ * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker or marker name to add or update.
+ * @param {module:engine/model/range~Range} [newRange] Marker range.
  */
-register( 'setMarker', function( markerOrName, range ) {
+register( 'setMarker', function( markerOrName, newRange ) {
 	const name = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
+	const currentMarker = this.document.markers.get( name );
 
-	if ( !range && !this.document.markers.has( name ) ) {
+	if ( !newRange && !currentMarker ) {
 		/**
 		 * Range parameter is required when adding a new marker.
 		 *
@@ -68,11 +69,16 @@ register( 'setMarker', function( markerOrName, range ) {
 		throw new CKEditorError( 'batch-setMarker-no-range: Range parameter is required when adding a new marker.' );
 	}
 
-	if ( !range ) {
-		range = this.document.markers.get( name ).getRange();
-	}
+	const currentRange = currentMarker ? currentMarker.getRange() : null;
 
-	addOperation( this, name, range );
+	if ( !newRange ) {
+		// If `newRange` is not given, treat this as synchronizing existing marker.
+		// Create `MarkerOperation` with `oldRange` set to `null`, so reverse operation will remove the marker.
+		addOperation( this, name, null, currentRange );
+	} else {
+		// Just change marker range.
+		addOperation( this, name, currentRange, newRange );
+	}
 
 	return this;
 } );
@@ -82,24 +88,12 @@ register( 'setMarker', function( markerOrName, range ) {
  *
  * @chainable
  * @method module:engine/model/batch~Batch#removeMarker
- * @param {module:engine/model/markerscollection~Marker|String} markerOrName
+ * @param {module:engine/model/markerscollection~Marker|String} markerOrName Marker or marker name to remove.
  */
 register( 'removeMarker', function( markerOrName ) {
 	const name = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
 
-	addOperation( this, name, null );
-
-	return this;
-} );
-
-function addOperation( batch, name, newRange ) {
-	const doc = batch.document;
-
-	const delta = new MarkerDelta();
-	const marker = doc.markers.get( name );
-	const oldRange = marker ? marker.getRange() : null;
-
-	if ( !newRange && !oldRange ) {
+	if ( !this.document.markers.has( name ) ) {
 		/**
 		 * Trying to remove marker that does not exist.
 		 *
@@ -108,7 +102,18 @@ function addOperation( batch, name, newRange ) {
 		throw new CKEditorError( 'batch-removeMarker-no-marker: Trying to remove marker that does not exist.' );
 	}
 
-	const operation = new MarkerOperation( name, oldRange, newRange, doc.version );
+	const oldRange = this.document.markers.get( name ).getRange();
+
+	addOperation( this, name, oldRange, null );
+
+	return this;
+} );
+
+function addOperation( batch, name, oldRange, newRange ) {
+	const doc = batch.document;
+	const delta = new MarkerDelta();
+
+	const operation = new MarkerOperation( name, oldRange, newRange, doc.markers, doc.version );
 
 	batch.addDelta( delta );
 	delta.addOperation( operation );
