@@ -47,7 +47,7 @@ export function define( lang, packageDictionary ) {
  */
 export function translate( lang, translationKey ) {
 	if ( !existTranslationKey( lang, translationKey ) ) {
-		return translationKey.replace( / \[\s]*[context: [^\]]+\]$/, '' ) ;
+		return translationKey.replace( / \[context: [^\]]+\]$/, '' ) ;
 	}
 
 	return translations[ lang ][ translationKey ];
@@ -58,4 +58,15 @@ function existTranslationKey( lang, translationKey ) {
 		( lang in translations ) &&
 		( translationKey in translations[ lang ] )
 	);
+}
+
+/**
+ * Clears translations for test purpose.
+ *
+ * @protected
+ */
+export function _clear() {
+	for ( const key in translations ) {
+		delete translations[ key ];
+	}
 }
