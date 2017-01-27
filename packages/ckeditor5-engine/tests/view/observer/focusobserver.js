@@ -55,6 +55,14 @@ describe( 'FocusObserver', () => {
 			const data = spy.args[ 0 ][ 1 ];
 			expect( data.domTarget ).to.equal( document.body );
 		} );
+
+		it( 'should render document after blurring', () => {
+			const renderSpy = sinon.spy( viewDocument, 'render' );
+
+			observer.onDomEvent( { type: 'blur', target: document.body } );
+
+			sinon.assert.calledOnce( renderSpy );
+		} );
 	} );
 
 	describe( 'handle isFocused property of the document', () => {
