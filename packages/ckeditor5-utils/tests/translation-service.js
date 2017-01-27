@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { translate, define, _clear } from '../src/translation-service';
+import { translate, add, _clear } from '../src/translation-service';
 
 describe( 'translationService', () => {
 	beforeEach( () => {
@@ -23,7 +23,7 @@ describe( 'translationService', () => {
 	} );
 
 	it( 'should return translation if the translation for the concrete language is defined', () => {
-		define( 'pl', {
+		add( 'pl', {
 			'OK': 'OK',
 			'Cancel [context: reject]': 'Anuluj'
 		} );
@@ -34,7 +34,7 @@ describe( 'translationService', () => {
 	} );
 
 	it( 'should return english string without context if the translations for the concrete language exist, but translation doesn\'t', () => {
-		define( 'pl', {
+		add( 'pl', {
 			'OK': 'OK',
 			'Cancel [context: reject]': 'Anuluj'
 		} );
@@ -45,12 +45,12 @@ describe( 'translationService', () => {
 	} );
 
 	it( 'should be able to merge translations', () => {
-		define( 'pl', {
+		add( 'pl', {
 			'OK': 'OK',
 			'Cancel [context: reject]': 'Anuluj'
 		} );
 
-		define( 'en_US', {
+		add( 'en_US', {
 			'OK': 'OK',
 			'Cancel [context: reject]': 'Cancel'
 		} );

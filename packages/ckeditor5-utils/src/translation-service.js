@@ -13,7 +13,7 @@ const translations = {};
  * Merges package translations to existing ones.
  * These translations can be used later with {@link module:utils/translations-service~translate translate}
  *
- *		define( 'pl', {
+ *		add( 'pl', {
  *			'OK': 'OK',
  *			'Cancel [context: reject]': 'Anuluj'
  *		} );OK
@@ -22,7 +22,7 @@ const translations = {};
  * @param {Object.<String, Object>} packageDictionary
  * @returns undefined
  */
-export function define( lang, packageDictionary ) {
+export function add( lang, packageDictionary ) {
 	if ( !( lang in translations ) ) {
 		translations[ lang ] = {};
 	}
@@ -36,7 +36,7 @@ export function define( lang, packageDictionary ) {
 }
 
 /**
- * Translates string if the translation of the string was previously defined using {@link module:utils/translations-service~define define}.
+ * Translates string if the translation of the string was previously added using {@link module:utils/translations-service~add add}.
  * Otherwise returns original (English) sentence.
  *
  *		translate( 'pl', 'Cancel [context: reject]' );
