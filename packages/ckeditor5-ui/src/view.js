@@ -319,10 +319,6 @@ export default class View {
 		this._unboundChildren.clear();
 		this._viewCollections.clear();
 
-		if ( this.element ) {
-			this.element.remove();
-		}
-
 		this.element = this.template = this.locale = this.t =
 			this._viewCollections = this._unboundChildren = null;
 
