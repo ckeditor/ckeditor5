@@ -1463,14 +1463,14 @@ function getEmptyRevertData() {
 
 /**
  * Tells {@link module:ui/template~Template#_renderNode} to render
- * children into DocumentFragment first and then append the fragment
- * to the parent element.
+ * children into `DocumentFragment` first and then append the fragment
+ * to the parent element. It's a speed optimization.
  *
  * @member {Boolean} #intoFragment
  */
 
 /**
- * A node which is rendered.
+ * A node which is being rendered.
  *
  * @member {HTMLElement|Text} #node
  */
@@ -1479,12 +1479,12 @@ function getEmptyRevertData() {
  * Indicates whether the {@module:ui/template~RenderNodeOptions#node} has
  * been provided by {@module:ui/template~Template#apply}.
  *
- * @member {Node} #isApplying
+ * @member {Boolean} #isApplying
  */
 
 /**
  * An object storing the data to help {@module:ui/template~Template#revert}
- * bring back an element is initial state.
+ * bring back an element to its initial state.
  *
- * @member {Node} #revertData
+ * @member {Object} #revertData
  */
