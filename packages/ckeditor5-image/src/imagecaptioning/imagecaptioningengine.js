@@ -18,7 +18,7 @@ import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
-import { isImage } from '../utils';
+import { isImage, isImageWidget } from '../utils';
 
 export default class ImageCaptioningEngine extends Plugin {
 	/**
@@ -60,14 +60,41 @@ export default class ImageCaptioningEngine extends Plugin {
 		// Model to view converter for data pipeline.
 		data.modelToView.on(
 			'insert:caption',
-			captionModelToView( new ViewContainerElement( 'figcaption' ), false )
+			captionModelToView( new ViewContainerElement( 'figcaption' ) )
 		);
 
 		// Model to view converter for editing pipeline.
+		const editableCreator = editingViewEditableCreator( viewDocument );
 		editing.modelToView.on(
 			'insert:caption',
-			captionModelToView( editingViewEditableCreator( viewDocument ) )
+			captionModelToView( editableCreator )
 		);
+
+		// Add view element if is not present.
+		const selection = viewDocument.selection;
+		let lastCaptionAdded;
+
+		selection.on( 'change', () => {
+			const imageFigure = selection.getSelectedElement();
+			const mapper = editing.mapper;
+
+			if ( imageFigure && isImageWidget( imageFigure ) ) {
+				const modelImage = mapper.toModelElement( imageFigure );
+				const modelCaption = getCaption( modelImage );
+				let viewCaption =  mapper.toViewElement( modelCaption );
+
+				if ( !viewCaption ) {
+					// TODO: this is same code as in insertElementAtEnd - refactor.
+					const viewPosition = ViewPosition.createAt( imageFigure, 'end' );
+					viewCaption = editableCreator();
+
+					mapper.bindElements( modelCaption, viewCaption );
+					viewWriter.insert( viewPosition, viewCaption );
+				}
+
+				lastCaptionAdded = viewCaption;
+			}
+		} );
 	}
 }
 
@@ -88,13 +115,13 @@ function editingViewEditableCreator( viewDocument ) {
 	};
 }
 
-function captionModelToView( element, convertEmpty = true ) {
+function captionModelToView( element ) {
 	const insertConverter = insertElementAtEnd( element );
 
 	return ( evt, data, consumable, conversionApi ) => {
 		const captionElement = data.item;
 
-		if ( isImage( captionElement.parent ) && ( convertEmpty || captionElement.childCount > 0 ) ) {
+		if ( isImage( captionElement.parent ) && ( captionElement.childCount > 0 ) ) {
 			insertConverter( evt, data, consumable, conversionApi );
 		}
 	};
@@ -113,7 +140,7 @@ function insertCaptionElement( evt, changeType, data, batch ) {
 	for ( let value of walker ) {
 		const item = value.item;
 
-		if ( value.type == 'elementStart' && isImage( item ) && !hasCaption( item ) ) {
+		if ( value.type == 'elementStart' && isImage( item ) && !getCaption( item ) ) {
 			// Using batch of insertion.
 			batch.document.enqueueChanges( () => {
 				batch.insert( ModelPosition.createAt( item, 'end' ), new ModelElement( 'caption' ) );
@@ -122,14 +149,14 @@ function insertCaptionElement( evt, changeType, data, batch ) {
 	}
 }
 
-function hasCaption( image ) {
+function getCaption( image ) {
 	for ( let node of image.getChildren() ) {
 		if ( node instanceof ModelElement && node.name == 'caption' ) {
-			return true;
+			return node;
 		}
 	}
 
-	return false;
+	return null;
 }
 
 function insertElementAtEnd( elementCreator ) {
