@@ -625,8 +625,19 @@ export default class Template {
 	 * about desired node state after revert.
 	 */
 	_revertNode( node, revertData ) {
+		for ( let binding of revertData.bindings ) {
+			// Each binding may consist of several observable+observable#attribute.
+			// like the following has 2:
+			// 		class: [ 'x', bind.to( 'foo' ), 'y', bind.to( 'bar' ) ]
+			for ( let revertBinding of binding ) {
+				revertBinding();
+			}
+		}
+
 		if ( revertData.text ) {
 			node.textContent = revertData.text;
+
+			return;
 		}
 
 		for ( let attrName in revertData.attributes ) {
@@ -640,21 +651,8 @@ export default class Template {
 			}
 		}
 
-		if ( revertData.bindings ) {
-			for ( let binding of revertData.bindings ) {
-				// Each binding may consist of several observable+observable#attribute.
-				// like the following has 2:
-				// 		class: [ 'x', bind.to( 'foo' ), 'y', bind.to( 'bar' ) ]
-				for ( let revertBinding of binding ) {
-					revertBinding();
-				}
-			}
-		}
-
-		if ( revertData.children ) {
-			for ( let i = 0; i < revertData.children.length; ++i ) {
-				this._revertNode( node.childNodes[ i ], revertData.children[ i ] );
-			}
+		for ( let i = 0; i < revertData.children.length; ++i ) {
+			this._revertNode( node.childNodes[ i ], revertData.children[ i ] );
 		}
 	}
 }
