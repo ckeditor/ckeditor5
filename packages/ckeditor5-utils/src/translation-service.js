@@ -55,7 +55,7 @@ export function translate( lang, translationKey ) {
 
 function existTranslationKey( lang, translationKey ) {
 	return (
-		!( lang in translations ) ||
-		!( translationKey in translations[ lang ] )
+		( lang in translations ) &&
+		( translationKey in translations[ lang ] )
 	);
 }
