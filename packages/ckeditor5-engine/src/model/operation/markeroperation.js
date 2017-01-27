@@ -86,17 +86,7 @@ export default class MarkerOperation extends Operation {
 	_execute() {
 		const type = this.newRange ? 'set' : 'remove';
 
-		if ( type == 'remove' && this._markers.has( this.name ) ) {
-			// Remove marker only if the marker exists.
-			this._markers.remove( this.name );
-		} else if ( type == 'set' ) {
-			const oldMarker = this._markers.get( this.name );
-
-			if ( oldMarker === null || !oldMarker.getRange().isEqual( this.newRange ) ) {
-				// Set marker only if it does not exist or it has different range.
-				this._markers.set( this.name, this.newRange );
-			}
-		}
+		this._markers[ type ]( this.name, this.newRange );
 
 		return { name: this.name, type: type };
 	}

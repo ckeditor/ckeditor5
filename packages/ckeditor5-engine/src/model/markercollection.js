@@ -79,8 +79,15 @@ export default class MarkerCollection {
 	 */
 	set( markerOrName, range ) {
 		const markerName = markerOrName instanceof Marker ? markerOrName.name : markerOrName;
+		const oldMarker = this._markers.get( markerName );
 
-		if ( this._markers.has( markerName ) ) {
+		if ( oldMarker ) {
+			const oldRange = oldMarker.getRange();
+
+			if ( oldRange.isEqual( range ) ) {
+				return oldMarker;
+			}
+
 			this.remove( markerName );
 		}
 
@@ -101,13 +108,13 @@ export default class MarkerCollection {
 	 */
 	remove( markerOrName ) {
 		const markerName = markerOrName instanceof Marker ? markerOrName.name : markerOrName;
-		const marker = this._markers.get( markerName );
+		const oldMarker = this._markers.get( markerName );
 
-		if ( marker ) {
+		if ( oldMarker ) {
 			this._markers.delete( markerName );
-			this.fire( 'remove', marker );
+			this.fire( 'remove', oldMarker );
 
-			this._destroyMarker( marker );
+			this._destroyMarker( oldMarker );
 
 			return true;
 		}

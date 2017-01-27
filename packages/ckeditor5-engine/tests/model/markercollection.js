@@ -52,15 +52,12 @@ describe( 'MarkerCollection', () => {
 		} );
 
 		it( 'should fire remove event, and create a new marker if marker with given name was in the collection', () => {
-			markers.set( 'name', range );
-			const marker1 = markers.get( 'name' );
+			const marker1 = markers.set( 'name', range );
 
 			sinon.spy( markers, 'fire' );
 
-			const result = markers.set( 'name', range2 );
-			const marker2 = markers.get( 'name' );
+			const marker2 = markers.set( 'name', range2 );
 
-			expect( result ).to.equal( marker2 );
 			expect( markers.fire.calledWithExactly( 'remove', marker1 ) ).to.be.true;
 			expect( markers.fire.calledWithExactly( 'add', marker2 ) ).to.be.true;
 
@@ -68,6 +65,17 @@ describe( 'MarkerCollection', () => {
 			expect( marker2.getRange().isEqual( range2 ) ).to.be.true;
 
 			expect( marker1 ).not.to.equal( marker2 );
+		} );
+
+		it( 'should not fire event and return the same marker if given marker has a range equal to given range', () => {
+			const marker1 = markers.set( 'name', range );
+
+			sinon.spy( markers, 'fire' );
+
+			const marker2 = markers.set( 'name', range );
+
+			expect( marker1 ).to.equal( marker2 );
+			expect( markers.fire.notCalled ).to.be.true;
 		} );
 
 		it( 'should accept marker instance instead of name', () => {
