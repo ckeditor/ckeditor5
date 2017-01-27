@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ImageAlternateTextEngine from './imagealternatetextengine';
 import escPressHandler from '@ckeditor/ckeditor5-ui/src/bindings/escpresshandler';
+import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 import ImageToolbar from '../imagetoolbar';
 import AlternateTextFormView from './ui/alternatetextformview';
 import ImageBalloonPanel from '../ui/imageballoonpanelview';
@@ -99,12 +100,35 @@ export default class ImageAlternateText extends Plugin {
 			this._hideBalloonPanel();
 		} );
 
+		// If image toolbar is present - hide it when alternate text balloon is visible.
+		const imageToolbar = editor.plugins.get( ImageToolbar );
+
+		if ( imageToolbar ) {
+			this.listenTo( panel, 'change:isVisible', () => {
+				if ( panel.isVisible ) {
+					imageToolbar.hide();
+					imageToolbar.isEnabled = false;
+				} else {
+					imageToolbar.show();
+					imageToolbar.isEnabled = true;
+				}
+			} );
+		}
+
 		this.listenTo( form, 'cancel', () => this._hideBalloonPanel() );
 
 		// Close on `ESC` press.
 		escPressHandler( {
 			emitter: panel,
 			activator: () => panel.isVisible,
+			callback: () => this._hideBalloonPanel()
+		} );
+
+		// Close on click outside of balloon panel element.
+		clickOutsideHandler( {
+			emitter: panel,
+			activator: () => panel.isVisible,
+			contextElement: panel.element,
 			callback: () => this._hideBalloonPanel()
 		} );
 
@@ -122,12 +146,6 @@ export default class ImageAlternateText extends Plugin {
 	_showBalloonPanel() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'imageAlternateText' );
-		const imageToolbar = editor.plugins.get( ImageToolbar );
-
-		if ( imageToolbar ) {
-			imageToolbar.hide();
-		}
-
 		this.form.lebeledInput.value = command.value || '';
 		this.balloonPanel.attach();
 		this.form.lebeledInput.select();
@@ -142,11 +160,5 @@ export default class ImageAlternateText extends Plugin {
 		const editor = this.editor;
 		this.balloonPanel.detach();
 		editor.editing.view.focus();
-
-		const imageToolbar = editor.plugins.get( ImageToolbar );
-
-		if ( imageToolbar ) {
-			imageToolbar.show();
-		}
 	}
 }

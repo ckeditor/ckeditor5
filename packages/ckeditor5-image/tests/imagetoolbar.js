@@ -93,6 +93,17 @@ describe( 'ImageToolbar', () => {
 		sinon.assert.calledOnce( spy );
 	} );
 
+	it( 'should not show the panel automatically when it is disabled', () => {
+		plugin.isEnabled = false;
+		setData( doc, '[<image src=""></image>]' );
+		editor.ui.focusTracker.isFocused = true;
+		const spy = sinon.spy( plugin, 'show' );
+
+		editingView.render();
+
+		sinon.assert.notCalled( spy );
+	} );
+
 	it( 'should not show the panel when editor looses focus', () => {
 		editor.ui.focusTracker.isFocused = true;
 		const spy = sinon.spy( plugin, 'show' );
