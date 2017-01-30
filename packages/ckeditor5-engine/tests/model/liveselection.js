@@ -14,6 +14,7 @@ import InsertOperation from '../../src/model/operation/insertoperation';
 import MoveOperation from '../../src/model/operation/moveoperation';
 import RemoveOperation from '../../src/model/operation/removeoperation';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
+import SplitDelta from '../../src/model/delta/splitdelta';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -461,22 +462,26 @@ describe( 'LiveSelection', () => {
 					expect( data.directChange ).to.be.false;
 				} );
 
-				doc.applyOperation( wrapInDelta(
-					new InsertOperation(
-						new Position( root, [ 2 ] ),
-						new Element( 'p' ),
-						doc.version
-					)
-				) );
+				const splitDelta = new SplitDelta();
 
-				doc.applyOperation( wrapInDelta(
-					new MoveOperation(
-						new Position( root, [ 1, 2 ] ),
-						4,
-						new Position( root, [ 2, 0 ] ),
-						doc.version
-					)
-				) );
+				const insertOperation = new InsertOperation(
+					new Position( root, [ 2 ] ),
+					new Element( 'p' ),
+					0
+				);
+
+				const moveOperation = new MoveOperation(
+					new Position( root, [ 1, 2 ] ),
+					4,
+					new Position( root, [ 2, 0 ] ),
+					1
+				);
+
+				splitDelta.addOperation( insertOperation );
+				splitDelta.addOperation( moveOperation );
+
+				doc.applyOperation( insertOperation );
+				doc.applyOperation( moveOperation );
 
 				let range = selection.getFirstRange();
 
