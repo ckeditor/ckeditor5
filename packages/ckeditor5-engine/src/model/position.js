@@ -363,6 +363,8 @@ export default class Position {
 	 * or empty nodes in a range between them. Technically, those positions are not equal but in many cases
 	 * they are very similar or even indistinguishable.
 	 *
+	 * **Note:** this method traverses model document so it can be only used when range is up-to-date with model document.
+	 *
 	 * @param {module:engine/model/position~Position} otherPosition Position to compare with.
 	 * @returns {Boolean} True if positions touch.
 	 */
