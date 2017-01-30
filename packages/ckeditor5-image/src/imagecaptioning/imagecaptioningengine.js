@@ -14,6 +14,7 @@ import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableele
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
+import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
@@ -70,14 +71,19 @@ export default class ImageCaptioningEngine extends Plugin {
 			captionModelToView( editableCreator )
 		);
 
-		// Add view element if is not present.
+		// Adding / removing caption element when there is no text in the model.
 		const selection = viewDocument.selection;
-		let lastCaptionAdded;
 
-		selection.on( 'change', () => {
+		this.lastCaptionAdded = undefined;
+
+		// Update view before each rendering.
+		this.listenTo( viewDocument, 'render', () => {
 			const imageFigure = selection.getSelectedElement();
 			const mapper = editing.mapper;
 
+			this._removeEmptyCaption();
+
+			// Clicking on image figure without figcaption.
 			if ( imageFigure && isImageWidget( imageFigure ) ) {
 				const modelImage = mapper.toModelElement( imageFigure );
 				const modelCaption = getCaption( modelImage );
@@ -92,16 +98,67 @@ export default class ImageCaptioningEngine extends Plugin {
 					viewWriter.insert( viewPosition, viewCaption );
 				}
 
-				lastCaptionAdded = viewCaption;
+				this.lastCaptionAdded = viewCaption;
+
+				return;
 			}
-		} );
+
+			// Inside figcaption.
+			const editableElement = selection.editableElement;
+
+			if ( editableElement && isCaptionViewElement( selection.editableElement ) ) {
+				this.lastCaptionAdded = selection.editableElement;
+
+				return;
+			}
+		}, { priority: 'high' } );
 	}
+
+	_removeEmptyCaption() {
+		const viewSelection = this.editor.editing.view.selection;
+		const viewCaption = this.lastCaptionAdded;
+
+		// No caption to hide.
+		if ( !viewCaption ) {
+			return;
+		}
+
+		// If selection is placed inside caption - do not remove it.
+		if ( viewSelection.editableElement === viewCaption ) {
+			return;
+		}
+
+		// Do not remove caption if selection is placed on image that contains that caption.
+		const selectedElement = viewSelection.getSelectedElement();
+
+		if ( selectedElement && isImageWidget( selectedElement ) ) {
+			const viewImage = viewCaption.findAncestor( element => element == selectedElement );
+
+			if ( viewImage ) {
+				return;
+			}
+		}
+
+		// Remove image caption if its empty.
+		if ( viewCaption.childCount === 0 ) {
+			const mapper = this.editor.editing.mapper;
+			viewWriter.remove( ViewRange.createOn( viewCaption ) );
+			mapper.unbindViewElement( viewCaption );
+		}
+	}
+}
+
+const captionSymbol = Symbol( 'imageCaption' );
+
+function isCaptionViewElement( viewElement ) {
+	return !!viewElement.getCustomProperty( captionSymbol );
 }
 
 function editingViewEditableCreator( viewDocument ) {
 	return () => {
 		const editable = new ViewEditableElement( 'figcaption', { contenteditable: true } ) ;
 		editable.document = viewDocument;
+		editable.setCustomProperty( captionSymbol, true );
 
 		editable.on( 'change:isFocused', ( evt, property, is ) => {
 			if ( is ) {
