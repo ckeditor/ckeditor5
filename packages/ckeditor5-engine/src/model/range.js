@@ -378,6 +378,7 @@ export default class Range {
 				for ( let i = 0; i < ranges.length; i++ ) {
 					const result = ranges[ i ]._getTransformedByDocumentChange(
 						operation.type,
+						delta.type,
 						operation.targetPosition || operation.position,
 						operation.howMany || operation.nodes.maxOffset,
 						operation.sourcePosition
@@ -442,13 +443,21 @@ export default class Range {
 	 * @param {module:engine/model/position~Position} targetPosition Position before the first changed node.
 	 * @param {Number} howMany How many nodes has been changed.
 	 * @param {module:engine/model/position~Position} sourcePosition Source position of changes.
+	 * @param {module:engine/model/delta/delta~Delta} delta Delta that introduced the change.
 	 * @returns {Array.<module:engine/model/range~Range>}
 	 */
-	_getTransformedByDocumentChange( type, targetPosition, howMany, sourcePosition ) {
+	_getTransformedByDocumentChange( type, deltaType, targetPosition, howMany, sourcePosition ) {
 		if ( type == 'insert' ) {
 			return this._getTransformedByInsertion( targetPosition, howMany, false, false );
 		} else {
-			return this._getTransformedByMove( sourcePosition, targetPosition, howMany );
+			const ranges = this._getTransformedByMove( sourcePosition, targetPosition, howMany );
+
+			if ( deltaType == 'split' && this.containsPosition( sourcePosition ) ) {
+				ranges[ 0 ].end = ranges[ 1 ].end;
+				ranges.pop();
+			}
+
+			return ranges;
 		}
 	}
 
@@ -521,8 +530,6 @@ export default class Range {
 	 * @param {module:engine/model/position~Position} sourcePosition Position from which nodes are moved.
 	 * @param {module:engine/model/position~Position} targetPosition Position to where nodes are moved.
 	 * @param {Number} howMany How many nodes are moved.
-	 * @param {Boolean} [spread] Flag indicating whether this {~Range range} should be spread if insertion
-	 * was inside the range. Defaults to `false`.
 	 * @returns {Array.<module:engine/model/range~Range>} Result of the transformation.
 	 */
 	_getTransformedByMove( sourcePosition, targetPosition, howMany ) {
