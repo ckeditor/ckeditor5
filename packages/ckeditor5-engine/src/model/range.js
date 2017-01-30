@@ -639,8 +639,8 @@ export default class Range {
 	 * Combines all ranges from the passed array into a one range. At least one range has to be passed.
 	 * Passed ranges must not have common parts.
 	 *
-	 * The first range from the array is a reference range. If other ranges
-	 * {@link module:engine/model/position~Position#isTouching are touching} the reference range, they will get combined into one range.
+	 * The first range from the array is a reference range. If other ranges starts or ends on the exactly same position where
+	 * the reference range, they get combined into one range.
 	 *
 	 *		[  ][]  [    ][ ][  ref range  ][ ][]  [  ]  // Passed ranges, shown sorted. "Ref range" was the first range in original array.
 	 *		        [      returned range       ]  [  ]  // The combined range.
@@ -679,24 +679,24 @@ export default class Range {
 		// We have to create a copy of the reference range.
 		const result = new this( ref.start, ref.end );
 
-		// 5. Ranges before reference range should be glued starting from the "last one", that is the range
-		// that is closest to the reference range.
+		// 5. Ranges should be checked and glued starting from the range that is closest to the reference range.
+		// Since ranges are sorted, start with the range with index that is closest to reference range index.
 		for ( let i = refIndex - 1; i >= 0; i++ ) {
-			if ( ranges[ i ].end.isTouching( result.start ) ) {
+			if ( ranges[ i ].end.isEqual( result.start ) ) {
 				result.start = Position.createFromPosition( ranges[ i ].start );
 			} else {
-				// If range do not touch with reference range there is no point in looking further.
+				// If ranges are not starting/ending at the same position there is no point in looking further.
 				break;
 			}
 		}
 
-		// 5. Ranges after reference range should be glued starting from the "first one", that is the range
-		// that is closest to the reference range.
+		// 6. Ranges should be checked and glued starting from the range that is closest to the reference range.
+		// Since ranges are sorted, start with the range with index that is closest to reference range index.
 		for ( let i = refIndex + 1; i < ranges.length; i++ ) {
-			if ( ranges[ i ].start.isTouching( result.end ) ) {
+			if ( ranges[ i ].start.isEqual( result.end ) ) {
 				result.end = Position.createFromPosition( ranges[ i ].end );
 			} else {
-				// If range do not touch with reference range there is no point in looking further.
+				// If ranges are not starting/ending at the same position there is no point in looking further.
 				break;
 			}
 		}
