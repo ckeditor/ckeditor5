@@ -112,6 +112,12 @@ describe( 'WrapDelta', () => {
 		} );
 	} );
 
+	describe( 'type', () => {
+		it( 'should be equal to wrap', () => {
+			expect( wrapDelta.type ).to.equal( 'wrap' );
+		} );
+	} );
+
 	describe( 'range', () => {
 		it( 'should be equal to null if there are no operations in delta', () => {
 			expect( wrapDelta.range ).to.be.null;

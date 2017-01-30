@@ -76,6 +76,13 @@ export default class Delta {
 	}
 
 	/**
+	 * Delta type.
+	 *
+	 * @readonly
+	 * @member {String} #type
+	 */
+
+	/**
 	 * Add operation to the delta.
 	 *
 	 * @param {module:engine/model/operation/operation~Operation} operation Operation instance.

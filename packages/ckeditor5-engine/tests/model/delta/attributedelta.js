@@ -404,6 +404,12 @@ describe( 'AttributeDelta', () => {
 		delta = new AttributeDelta();
 	} );
 
+	describe( 'type', () => {
+		it( 'should be equal to attribute', () => {
+			expect( delta.type ).to.equal( 'attribute' );
+		} );
+	} );
+
 	describe( 'key', () => {
 		it( 'should be null if there are no operations in delta', () => {
 			expect( delta.key ).to.be.null;

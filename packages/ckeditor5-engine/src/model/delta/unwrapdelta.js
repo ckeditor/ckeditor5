@@ -23,6 +23,13 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  */
 export default class UnwrapDelta extends Delta {
 	/**
+	 * @inheritDoc
+	 */
+	get type() {
+		return 'unwrap';
+	}
+
+	/**
 	 * Position before unwrapped element or `null` if there are no operations in the delta.
 	 *
 	 * @type {module:engine/model/position~Position|null}

@@ -78,6 +78,12 @@ describe( 'UnwrapDelta', () => {
 		} );
 	} );
 
+	describe( 'type', () => {
+		it( 'should be equal to unwrap', () => {
+			expect( unwrapDelta.type ).to.equal( 'unwrap' );
+		} );
+	} );
+
 	describe( 'position', () => {
 		it( 'should be null if there are no operations in delta', () => {
 			expect( unwrapDelta.position ).to.be.null;

@@ -25,6 +25,13 @@ import Element from '../element';
  */
 export default class AttributeDelta extends Delta {
 	/**
+	 * @inheritDoc
+	 */
+	get type() {
+		return 'attribute';
+	}
+
+	/**
 	 * The attribute key that is changed by the delta or `null` if the delta has no operations.
 	 *
 	 * @readonly
