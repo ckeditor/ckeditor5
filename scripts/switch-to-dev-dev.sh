@@ -29,3 +29,8 @@ echo "Linking ckeditor5-dev-tests..."
 
 rm -rf node_modules/@ckeditor/ckeditor5-dev-tests
 ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-tests node_modules/@ckeditor
+
+echo "Linking ckeditor5-dev-webpack-plugin..."
+
+rm -rf node_modules/@ckeditor/ckeditor5-dev-webpack-plugin
+ln -s ../../../ckeditor5-dev/packages/ckeditor5-dev-webpack-plugin node_modules/@ckeditor

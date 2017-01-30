@@ -46,3 +46,17 @@ function getTestOptions() {
 	return require( '@ckeditor/ckeditor5-dev-tests' )
 		.parseArguments( process.argv.slice( 2 ) );
 }
+
+// Translations ----------------------------------------------------------------
+
+gulp.task( 'translations:collect', () => {
+	return require( '@ckeditor/ckeditor5-dev-env' )( {} ).collectTranslations();
+} );
+
+gulp.task( 'translations:upload', () => {
+	return require( '@ckeditor/ckeditor5-dev-env' )( {} ).uploadTranslations();
+} );
+
+gulp.task( 'translations:download', () => {
+	return require( '@ckeditor/ckeditor5-dev-env' )( {} ).downloadTranslations();
+} );
