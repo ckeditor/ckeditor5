@@ -78,18 +78,6 @@ export default class Range {
 	}
 
 	/**
-	 * Returns whether this range has no nodes in it, that is if {@link #start start} position and
-	 * {@link #end end} position are {@link module:engine/model/position~Position#isTouching touching}.
-	 *
-	 * **Note:** A range may be empty, but not {@link #isCollapsed collapsed}.
-	 *
-	 * @type {Boolean}
-	 */
-	get isEmpty() {
-		return this.start.isTouching( this.end );
-	}
-
-	/**
 	 * Range root element.
 	 *
 	 * @type {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}

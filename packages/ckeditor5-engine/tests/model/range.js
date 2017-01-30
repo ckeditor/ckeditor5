@@ -954,22 +954,6 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'isEmpty', () => {
-		beforeEach( () => {
-			prepareRichRoot( root );
-		} );
-
-		it( 'should be true if there are no nodes between range start and end', () => {
-			let range = new Range( new Position( root, [ 0, 0, 5 ] ), new Position( root, [ 0, 1, 0 ] ) );
-			expect( range.isEmpty ).to.be.true;
-		} );
-
-		it( 'should be false if there are nodes between range start and end', () => {
-			let range = new Range( new Position( root, [ 0, 0, 5 ] ), new Position( root, [ 0, 1, 1 ] ) );
-			expect( range.isEmpty ).to.be.false;
-		} );
-	} );
-
 	function mapNodesToNames( nodes ) {
 		return nodes.map( ( node ) => {
 			return ( node instanceof Element ) ? 'E:' + node.name : 'T:' + node.data;
