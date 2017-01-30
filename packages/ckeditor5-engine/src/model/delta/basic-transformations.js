@@ -103,33 +103,23 @@ addTransformationCase( MarkerDelta, SplitDelta, ( a, b, isStrong ) => {
 	// ab[cdef]gh   ==>  ab[cd
 	//                   ef]gh
 	// To mimic what normally happens with LiveRange if you split it.
-	const markerOp = a.operations[ 0 ];
 
-	let oldRangeEndPosition = null;
-	let newRangeEndPosition = null;
+	// Mote: MarkerDelta can't get split to two deltas, neither can MarkerOperation.
+	const transformedDelta = defaultTransform( a, b, isStrong )[ 0 ];
+	const transformedOp = transformedDelta.operations[ 0 ];
+
+	// Fix positions, if needed.
+	const markerOp = a.operations[ 0 ];
 
 	const source = b.position;
 	const target = b._moveOperation.targetPosition;
 
 	if ( markerOp.oldRange.containsPosition( b.position ) ) {
-		oldRangeEndPosition = markerOp.oldRange.end._getCombined( source, target );
+		transformedOp.oldRange.end = markerOp.oldRange.end._getCombined( source, target );
 	}
 
 	if ( markerOp.newRange.containsPosition( b.position ) ) {
-		newRangeEndPosition = markerOp.newRange.end._getCombined( source, target );
-	}
-
-	// MarkerDelta can't get split to two deltas, neither can MarkerOperation.
-	const transformedDelta = defaultTransform( a, b, isStrong )[ 0 ];
-	const transformedOp = transformedDelta.operations[ 0 ];
-
-	// Fix positions.
-	if ( oldRangeEndPosition ) {
-		transformedOp.oldRange.end = oldRangeEndPosition;
-	}
-
-	if ( newRangeEndPosition ) {
-		transformedOp.newRange.end = newRangeEndPosition;
+		transformedOp.newRange.end = markerOp.newRange.end._getCombined( source, target );
 	}
 
 	return [ transformedDelta ];
