@@ -55,14 +55,14 @@ export default class Locale {
 	 * @private
 	 */
 	_t( str, values ) {
-		let trasnaltedString = translate( this.lang, str );
+		let translatedString = translate( this.lang, str );
 
 		if ( values ) {
-			trasnaltedString = trasnaltedString.replace( /\%(\d+)/g, ( match, index ) => {
+			translatedString = translatedString.replace( /\%(\d+)/g, ( match, index ) => {
 				return ( index < values.length ) ? values[ index ] : match;
 			} );
 		}
 
-		return trasnaltedString;
+		return translatedString;
 	}
 }

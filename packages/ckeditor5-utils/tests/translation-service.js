@@ -5,7 +5,7 @@
 
 import { translate, add, _clear } from '../src/translation-service';
 
-describe( 'translationService', () => {
+describe( 'translation-service', () => {
 	beforeEach( () => {
 		_clear();
 	} );

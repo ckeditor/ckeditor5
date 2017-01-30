@@ -7,66 +7,59 @@
  * @module utils/translation-service
  */
 
-const translations = {};
+let dictionaries = {};
 
 /**
- * Merges package translations to existing ones.
- * These translations can be used later with {@link module:utils/translations-service~translate translate}
+ * Adds package translations to existing ones.
+ * These translations can be used later with {@link module:utils/translations-service~translate translate}.
  *
  *		add( 'pl', {
  *			'OK': 'OK',
  *			'Cancel [context: reject]': 'Anuluj'
- *		} );OK
+ *		} );
  *
- * @param {String} lang
- * @param {Object.<String, Object>} packageDictionary
- * @returns undefined
+ * @param {String} lang Target language.
+ * @param {Object.<String, String>} translations translations which will be added to a dictionary.
  */
-export function add( lang, packageDictionary ) {
-	if ( !( lang in translations ) ) {
-		translations[ lang ] = {};
-	}
-
-	const dictionary = translations[ lang ];
-
-	for ( const translationKey in packageDictionary ) {
-		const translation = packageDictionary[ translationKey ];
-		dictionary[ translationKey ] = translation;
-	}
+export function add( lang, translations ) {
+	dictionaries[ lang ] = dictionaries[ lang ] || {};
+	Object.assign( dictionaries[ lang ], translations );
 }
 
 /**
- * Translates string if the translation of the string was previously added using {@link module:utils/translations-service~add add}.
- * Otherwise returns original (English) sentence.
+ * Translates string if the translation of the string was previously added using {@link module:utils/translations-service~add add}
+ * (multi-language mode). When no translation is defined in the dictionary or the dictionary doesn't exists it returns original string
+ * without the '[context: ]' (development mode and single-language mode). In single-language mode the strings are without the contexts
+ * already, but it's hard to separate that mode and development mode here (In both cases the dictionary is empty) and this replacement
+ * should not replace nothing in already translated strings.
  *
  *		translate( 'pl', 'Cancel [context: reject]' );
  *
- * @param {String} lang Translation language.
- * @param {String} translationKey Sentence which is going to be translated.
+ * @param {String} lang Target language.
+ * @param {String} translationKey String which is going to be translated.
  * @returns {String} Translated sentence.
  */
 export function translate( lang, translationKey ) {
-	if ( !existTranslationKey( lang, translationKey ) ) {
+	if ( !hasTranslation( lang, translationKey ) ) {
 		return translationKey.replace( / \[context: [^\]]+\]$/, '' ) ;
 	}
 
-	return translations[ lang ][ translationKey ];
+	return dictionaries[ lang ][ translationKey ];
 }
 
-function existTranslationKey( lang, translationKey ) {
+// Checks whether the dictionary exists and translaiton in that dictionary exists.
+function hasTranslation( lang, translationKey ) {
 	return (
-		( lang in translations ) &&
-		( translationKey in translations[ lang ] )
+		( lang in dictionaries ) &&
+		( translationKey in dictionaries[ lang ] )
 	);
 }
 
 /**
- * Clears translations for test purpose.
+ * Clears dictionaries for test purpose.
  *
  * @protected
  */
 export function _clear() {
-	for ( const key in translations ) {
-		delete translations[ key ];
-	}
+	dictionaries = {};
 }
