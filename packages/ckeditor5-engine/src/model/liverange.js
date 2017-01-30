@@ -101,9 +101,9 @@ function bindWithDocument() {
 	this.listenTo(
 		this.root.document,
 		'change',
-		( event, type, changes ) => {
+		( event, type, changes, batch, deltaType ) => {
 			if ( supportedTypes.has( type ) ) {
-				transform.call( this, type, changes.range, changes.sourcePosition );
+				transform.call( this, type, deltaType, changes.range, changes.sourcePosition );
 			}
 		},
 		{ priority: 'high' }
@@ -116,36 +116,30 @@ function bindWithDocument() {
  * @ignore
  * @private
  * @method transform
- * @param {String} type Type of changes applied to the model document.
+ * @param {String} [changeType] Type of change applied to the model document.
+ * @param {String} [deltaType] Type of delta which introduced the change.
  * @param {module:engine/model/range~Range} targetRange Range containing the result of applied change.
  * @param {module:engine/model/position~Position} [sourcePosition] Source position for move, remove and reinsert change types.
  */
-function transform( type, targetRange, sourcePosition ) {
+function transform( changeType, deltaType, targetRange, sourcePosition ) {
 	/* jshint validthis: true */
 	const howMany = targetRange.end.offset - targetRange.start.offset;
 	let targetPosition = targetRange.start;
 
-	if ( type == 'move' ) {
+	if ( changeType == 'move' ) {
 		// Range._getTransformedByDocumentChange is expecting `targetPosition` to be "before" move
 		// (before transformation). `targetRange.start` is already after the move happened.
 		// We have to revert `targetPosition` to the state before the move.
 		targetPosition = targetPosition._getTransformedByInsertion( sourcePosition, howMany );
 	}
 
-	const result = this._getTransformedByDocumentChange( type, targetPosition, howMany, sourcePosition );
+	const result = this._getTransformedByDocumentChange( changeType, deltaType, targetPosition, howMany, sourcePosition );
 
-	// Decide whether inserted part should be included in the range.
-	// This extra step is needed only for `move` change type and only if the ranges have common part.
-	// If ranges are not intersecting and `targetRange` is moved to this range, it is included (in `_getTransformedByDocumentChange`).
+	// Decide whether moved part should be included in the range.
 	//
-	// If ranges are intersecting, `result` contains spread range. `targetRange` need to be included if it is moved
-	// to this range, but only if it is moved to a position that is not touching this range boundary.
-	//
-	// First, this concerns only `move` change, because insert change includes inserted part always (type == 'move').
+	// First, this concerns only `move` change, because insert change includes inserted part always (changeType == 'move').
 	// Second, this is a case only if moved range was intersecting with this range and was inserted into this range (result.length == 3).
-	// Third, we check range `result[ 1 ]`, that is the range created by splitting this range by inserting `targetRange`.
-	// If that range is not empty, it means that we are in fact inserting inside `targetRange`.
-	if ( type == 'move' && result.length == 3 && !result[ 1 ].isEmpty ) {
+	if ( changeType == 'move' && result.length == 3 ) {
 		// `result[ 2 ]` is a "common part" of this range and moved range. We substitute that common part with the whole
 		// `targetRange` because we want to include whole `targetRange` in this range.
 		result[ 2 ] = targetRange;
