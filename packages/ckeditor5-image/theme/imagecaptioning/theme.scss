@@ -10,10 +10,18 @@
 		background-color: ck-color( 'foreground' );
 		padding: 10px;
 
+		// The `:focus` styles is applied before `.focused` class inside editables.
+		// These styles show different border for a blink of an eye.
+		&:focus {
+			outline: none;
+			box-shadow: none;
+		}
+
 		&.focused {
 			@include ck-focus-ring( 'outline' );
 			@include ck-box-shadow( $ck-inner-shadow );
 			background-color: ck-color( 'background' );;
 		}
+
 	}
 }
