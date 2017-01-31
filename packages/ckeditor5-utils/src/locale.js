@@ -7,6 +7,8 @@
  * @module utils/locale
  */
 
+import { translate } from './translation-service';
+
 /**
  * Represents the localization services.
  */
@@ -53,10 +55,14 @@ export default class Locale {
 	 * @private
 	 */
 	_t( str, values ) {
+		let translatedString = translate( this.lang, str );
+
 		if ( values ) {
-			str = str.replace( /\%(\d+)/g, ( match, index ) => ( index < values.length ) ? values[ index ] : match );
+			translatedString = translatedString.replace( /\%(\d+)/g, ( match, index ) => {
+				return ( index < values.length ) ? values[ index ] : match;
+			} );
 		}
 
-		return str;
+		return translatedString;
 	}
 }
