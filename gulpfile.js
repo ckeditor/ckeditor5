@@ -50,13 +50,13 @@ function getTestOptions() {
 // Translations ----------------------------------------------------------------
 
 gulp.task( 'translations:collect', () => {
-	return require( '@ckeditor/ckeditor5-dev-env' )( {} ).collectTranslations();
+	return require( '@ckeditor/ckeditor5-dev-env' ).collectTranslations();
 } );
 
 gulp.task( 'translations:upload', () => {
-	return require( '@ckeditor/ckeditor5-dev-env' )( {} ).uploadTranslations();
+	return require( '@ckeditor/ckeditor5-dev-env' ).uploadTranslations();
 } );
 
 gulp.task( 'translations:download', () => {
-	return require( '@ckeditor/ckeditor5-dev-env' )( {} ).downloadTranslations();
+	return require( '@ckeditor/ckeditor5-dev-env' ).downloadTranslations();
 } );
