@@ -10,6 +10,7 @@ import DocumentFragment from '../../../src/view/documentfragment';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import AttributeElement from '../../../src/view/attributeelement';
 import EmptyElement from '../../../src/view/emptyelement';
+import UIElement from '../../../src/view/uielement';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'writer', () => {
@@ -127,6 +128,25 @@ describe( 'writer', () => {
 			expect( () => {
 				remove( range );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
+		} );
+
+		it( 'should remove UIElement', () => {
+			test(
+				'<container:p>foo[<ui:span></ui:span>]bar</container:p>',
+				'<container:p>foo{}bar</container:p>',
+				'<ui:span></ui:span>'
+			);
+		} );
+
+		it( 'should throw if range is placed inside UIElement', () => {
+			const uiElement = new UIElement( 'span' );
+			const attributeElement = new AttributeElement( 'b' );
+			new ContainerElement( 'p', null, [ uiElement, attributeElement ] );
+			const range = Range.createFromParentsAndOffsets( uiElement, 0, attributeElement, 0 );
+
+			expect( () => {
+				remove( range );
+			} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
 		} );
 	} );
 } );

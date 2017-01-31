@@ -134,5 +134,12 @@ describe( 'writer', () => {
 				'<container:p><empty:img></empty:img>[]<empty:img></empty:img></container:p>'
 			);
 		} );
+
+		it( 'should not merge when placed between UIElements', () => {
+			test(
+				'<container:p><ui:span></ui:span>[]<ui:span></ui:span></container:p>',
+				'<container:p><ui:span></ui:span>[]<ui:span></ui:span></container:p>'
+			);
+		} );
 	} );
 } );

@@ -9,6 +9,7 @@ import { stringify, parse } from '../../../src/dev-utils/view';
 import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
 import EmptyElement from '../../../src/view/emptyelement';
+import UIElement from '../../../src/view/uielement';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'writer', () => {
@@ -141,6 +142,16 @@ describe( 'writer', () => {
 			test(
 				elementToRemove,
 				'<container:p>f{oo<empty:img></empty:img>ba}r</container:p>',
+				'<container:p>foobar</container:p>'
+			);
+		} );
+
+		it( 'should remove UIElement', () => {
+			const elementToRemove = new UIElement( 'span' );
+
+			test(
+				elementToRemove,
+				'<container:p>f{oo<ui:span></ui:span>ba}r</container:p>',
 				'<container:p>foobar</container:p>'
 			);
 		} );

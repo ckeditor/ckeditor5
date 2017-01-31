@@ -8,6 +8,7 @@ import Element from '../../../src/view/element';
 import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
 import EmptyElement from '../../../src/view/emptyelement';
+import UIElement from '../../../src/view/uielement';
 import Position from '../../../src/view/position';
 import Range from '../../../src/view/range';
 import Text from '../../../src/view/text';
@@ -298,6 +299,24 @@ describe( 'writer', () => {
 			expect( () => {
 				wrap( range, new AttributeElement( 'b' ) );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
+		} );
+
+		it( 'should wrap UIElement', () => {
+			test(
+				'<container:p>[<ui:span></ui:span>]</container:p>',
+				'<attribute:b></attribute:b>',
+				'<container:p>[<attribute:b view-priority="10"><ui:span></ui:span></attribute:b>]</container:p>'
+			);
+		} );
+
+		it( 'should throw if range is inside UIElement', () => {
+			const uiElement = new UIElement( 'span' );
+			const container = new ContainerElement( 'p', null, uiElement );
+			const range = Range.createFromParentsAndOffsets( uiElement, 0, container, 1 );
+
+			expect( () => {
+				wrap( range, new AttributeElement( 'b' ) );
+			} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
 		} );
 	} );
 } );

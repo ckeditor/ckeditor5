@@ -8,6 +8,7 @@ import { stringify, parse } from '../../../src/dev-utils/view';
 import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
 import EmptyElement from '../../../src/view/emptyelement';
+import UIElement from '../../../src/view/uielement';
 import Range from '../../../src/view/range';
 import Position from '../../../src/view/position';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -247,6 +248,27 @@ describe( 'writer', () => {
 				expect( () => {
 					breakAttributes( range );
 				} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
+			} );
+
+			it( 'should throw if breaking inside UIElement #1', () => {
+				const span = new UIElement( 'span' );
+				new ContainerElement( 'p', null, span );
+				const position = new Position( span, 0 );
+
+				expect( () => {
+					breakAttributes( position );
+				} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
+			} );
+
+			it( 'should throw if breaking inside UIElement #2', () => {
+				const span = new UIElement( 'span' );
+				const b = new AttributeElement( 'b' );
+				new ContainerElement( 'p', null, [ span, b ] );
+				const range = Range.createFromParentsAndOffsets( span, 0, b, 0 );
+
+				expect( () => {
+					breakAttributes( range );
+				} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
 			} );
 		} );
 	} );
