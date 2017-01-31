@@ -856,6 +856,10 @@ function _convertViewElements( rootNode ) {
 				throw new Error( `Parse error - cannot parse inside EmptyElement.` );
 			}
 
+			if ( convertedElement instanceof UIElement ) {
+				throw new Error( `Parse error - cannot parse inside UIElement.` );
+			}
+
 			convertedElement.appendChildren( _convertViewElements( child ) );
 		}
 

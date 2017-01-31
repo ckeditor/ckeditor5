@@ -653,5 +653,11 @@ describe( 'view test utils', () => {
 				parse( '<empty:img>foo bar</empty:img>' );
 			} ).to.throw( Error, 'Parse error - cannot parse inside EmptyElement.' );
 		} );
+
+		it( 'should throw an error if UIElement is not empty', () => {
+			expect( () => {
+				parse( '<ui:span>foo bar</ui:span>' );
+			} ).to.throw( Error, 'Parse error - cannot parse inside UIElement.' );
+		} );
 	} );
 } );
