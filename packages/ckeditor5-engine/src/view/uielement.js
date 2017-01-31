@@ -12,7 +12,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Node from './node';
 
 /**
- * UIElement class. It is used to represent features of UI not content of the document.
+ * UIElement class. It is used to represent UI not a content of the document.
  * This element can't be split and selection can't be placed inside this element.
  */
 export default class UIElement extends Element {
@@ -29,7 +29,7 @@ export default class UIElement extends Element {
 		super( name, attributes, children );
 
 		/**
-		 * Returns `null` because filler is not needed for EmptyElements.
+		 * Returns `null` because filler is not needed for UIElements.
 		 *
 		 * @method #getFillerOffset
 		 * @returns {null} Always returns null.
@@ -39,13 +39,13 @@ export default class UIElement extends Element {
 
 	/**
 	 * Overrides {@link module:engine/view/element~Element#insertChildren} method.
-	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-emptyelement-cannot-add` to prevent adding any child nodes
-	 * to EmptyElement.
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-uielement-cannot-add` to prevent adding any child nodes
+	 * to UIElement.
 	 */
 	insertChildren( index, nodes ) {
 		if ( nodes && ( nodes instanceof Node || Array.from( nodes ).length > 0 ) ) {
 			/**
-			 * Cannot add children to {@link module:engine/view/emptyelement~EmptyElement}.
+			 * Cannot add children to {@link module:engine/view/uielement~UIElement}.
 			 *
 			 * @error view-uielement-cannot-add
 			 */
@@ -54,7 +54,7 @@ export default class UIElement extends Element {
 	}
 }
 
-// Returns `null` because block filler is not needed for EmptyElements.
+// Returns `null` because block filler is not needed for UIElements.
 //
 // @returns {null}
 function getFillerOffset() {

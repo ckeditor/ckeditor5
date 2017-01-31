@@ -412,7 +412,7 @@ export function remove( range ) {
 }
 
 /**
- * Removes matches elements from given range.
+ * Removes matching elements from given range.
  *
  * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
  * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
@@ -426,14 +426,14 @@ export function clear( range, element ) {
 	validateRangeContainer( range );
 
 	// Create walker on given range.
-	// We are walking backward because when we remove element during walk it modify range end position.
-	const rangeWalker = range.getWalker( {
+	// We walk backward because when we remove element during walk it modify range end position.
+	const walker = range.getWalker( {
 		direction: 'backward',
 		ignoreElementEnd: true
 	} );
 
 	// Let's walk.
-	for ( const current of rangeWalker ) {
+	for ( const current of walker ) {
 		const item = current.item;
 		let rangeToRemove;
 
@@ -448,7 +448,7 @@ export function clear( range, element ) {
 				return ancestor instanceof Element && element.isSimilar( ancestor );
 			} );
 
-			// If it is then create a range inside this element.
+			// If it is then create range inside this element.
 			if ( parentElement && parentElement ) {
 				rangeToRemove = Range.createIn( parentElement );
 			}
@@ -456,7 +456,7 @@ export function clear( range, element ) {
 
 		// If we have found element to remove.
 		if ( rangeToRemove ) {
-			// We need to check if element range stick out of given range and truncate if it is.
+			// We need to check if element range stick out of the given range and truncate if it is.
 			if ( !range.containsRange( rangeToRemove ) && range.isIntersecting( rangeToRemove ) ) {
 				if ( rangeToRemove.end.isAfter( range.end ) ) {
 					rangeToRemove.end = range.end;
@@ -467,6 +467,7 @@ export function clear( range, element ) {
 				}
 			}
 
+			// At the end we remove range with founded element.
 			remove( rangeToRemove );
 		}
 	}
