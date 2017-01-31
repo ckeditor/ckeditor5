@@ -18,11 +18,4 @@ export default class ImageCaptioning extends Plugin {
 	static get requires() {
 		return [ ImageCaptioningEngine ];
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-
-	}
 }

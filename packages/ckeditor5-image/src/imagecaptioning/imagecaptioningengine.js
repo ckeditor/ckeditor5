@@ -10,9 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ModelTreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
-import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
@@ -20,6 +18,8 @@ import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import { isImage, isImageWidget } from '../utils';
+import { captionModelToView } from './converters';
+import { captionEditableCreator, isCaptionEditable, getCaptionFromImage } from './utils';
 
 export default class ImageCaptioningEngine extends Plugin {
 	/**
@@ -65,7 +65,7 @@ export default class ImageCaptioningEngine extends Plugin {
 		);
 
 		// Model to view converter for editing pipeline.
-		const editableCreator = editingViewEditableCreator( viewDocument );
+		const editableCreator = captionEditableCreator( viewDocument );
 		editing.modelToView.on(
 			'insert:caption',
 			captionModelToView( editableCreator )
@@ -74,57 +74,41 @@ export default class ImageCaptioningEngine extends Plugin {
 		// Adding / removing caption element when there is no text in the model.
 		const selection = viewDocument.selection;
 
-		this.lastCaptionAdded = undefined;
+		this.lastCaptionUsed = undefined;
 
 		// Update view before each rendering.
 		this.listenTo( viewDocument, 'render', () => {
-			const imageFigure = selection.getSelectedElement();
-			const mapper = editing.mapper;
-
+			// Check if there is an empty caption view element to remove.
 			this._removeEmptyCaption();
 
-			// Clicking on image figure without figcaption.
-			if ( imageFigure && isImageWidget( imageFigure ) ) {
-				const modelImage = mapper.toModelElement( imageFigure );
-				const modelCaption = getCaption( modelImage );
-				let viewCaption =  mapper.toViewElement( modelCaption );
+			// Check if image widget is selected and caption view element needs to be added.
+			this._addCaption();
 
-				if ( !viewCaption ) {
-					// TODO: this is same code as in insertElementAtEnd - refactor.
-					const viewPosition = ViewPosition.createAt( imageFigure, 'end' );
-					viewCaption = editableCreator();
-
-					mapper.bindElements( modelCaption, viewCaption );
-					viewWriter.insert( viewPosition, viewCaption );
-				}
-
-				this.lastCaptionAdded = viewCaption;
-
-				return;
-			}
-
-			// Inside figcaption.
+			// If selection is currently inside caption - store it to hide when empty.
 			const editableElement = selection.editableElement;
 
-			if ( editableElement && isCaptionViewElement( selection.editableElement ) ) {
-				this.lastCaptionAdded = selection.editableElement;
-
-				return;
+			if ( editableElement && isCaptionEditable( selection.editableElement ) ) {
+				this.lastCaptionUsed = selection.editableElement;
 			}
 		}, { priority: 'high' } );
 	}
 
+	/**
+	 * Checks if there is an empty caption element to remove from view.
+	 *
+	 * @private
+	 */
 	_removeEmptyCaption() {
 		const viewSelection = this.editor.editing.view.selection;
-		const viewCaption = this.lastCaptionAdded;
+		const viewCaptionElement = this.lastCaptionUsed;
 
 		// No caption to hide.
-		if ( !viewCaption ) {
+		if ( !viewCaptionElement ) {
 			return;
 		}
 
 		// If selection is placed inside caption - do not remove it.
-		if ( viewSelection.editableElement === viewCaption ) {
+		if ( viewSelection.editableElement === viewCaptionElement ) {
 			return;
 		}
 
@@ -132,7 +116,7 @@ export default class ImageCaptioningEngine extends Plugin {
 		const selectedElement = viewSelection.getSelectedElement();
 
 		if ( selectedElement && isImageWidget( selectedElement ) ) {
-			const viewImage = viewCaption.findAncestor( element => element == selectedElement );
+			const viewImage = viewCaptionElement.findAncestor( element => element == selectedElement );
 
 			if ( viewImage ) {
 				return;
@@ -140,50 +124,48 @@ export default class ImageCaptioningEngine extends Plugin {
 		}
 
 		// Remove image caption if its empty.
-		if ( viewCaption.childCount === 0 ) {
+		if ( viewCaptionElement.childCount === 0 ) {
 			const mapper = this.editor.editing.mapper;
-			viewWriter.remove( ViewRange.createOn( viewCaption ) );
-			mapper.unbindViewElement( viewCaption );
+			viewWriter.remove( ViewRange.createOn( viewCaptionElement ) );
+			mapper.unbindViewElement( viewCaptionElement );
+		}
+	}
+
+	/**
+	 * Checks if selected image needs a new caption element inside.
+	 *
+	 * @private
+	 */
+	_addCaption() {
+		const editing = this.editor.editing;
+		const selection = editing.view.selection;
+		const imageFigure = selection.getSelectedElement();
+		const mapper = editing.mapper;
+		const editableCreator = captionEditableCreator( editing.view );
+
+		if ( imageFigure && isImageWidget( imageFigure ) ) {
+			const modelImage = mapper.toModelElement( imageFigure );
+			const modelCaption = getCaptionFromImage( modelImage );
+			let viewCaption =  mapper.toViewElement( modelCaption );
+
+			if ( !viewCaption ) {
+				// TODO: this is same code as in insertElementAtEnd - refactor.
+				const viewPosition = ViewPosition.createAt( imageFigure, 'end' );
+				viewCaption = editableCreator();
+
+				mapper.bindElements( modelCaption, viewCaption );
+				viewWriter.insert( viewPosition, viewCaption );
+			}
+
+			this.lastCaptionUsed = viewCaption;
 		}
 	}
 }
 
-const captionSymbol = Symbol( 'imageCaption' );
-
-function isCaptionViewElement( viewElement ) {
-	return !!viewElement.getCustomProperty( captionSymbol );
-}
-
-function editingViewEditableCreator( viewDocument ) {
-	return () => {
-		const editable = new ViewEditableElement( 'figcaption', { contenteditable: true } ) ;
-		editable.document = viewDocument;
-		editable.setCustomProperty( captionSymbol, true );
-
-		editable.on( 'change:isFocused', ( evt, property, is ) => {
-			if ( is ) {
-				editable.addClass( 'focused' );
-			} else {
-				editable.removeClass( 'focused' );
-			}
-		} );
-
-		return editable;
-	};
-}
-
-function captionModelToView( element ) {
-	const insertConverter = insertElementAtEnd( element );
-
-	return ( evt, data, consumable, conversionApi ) => {
-		const captionElement = data.item;
-
-		if ( isImage( captionElement.parent ) && ( captionElement.childCount > 0 ) ) {
-			insertConverter( evt, data, consumable, conversionApi );
-		}
-	};
-}
-
+// Checks whether data inserted to the model document have image element that has no caption element inside it.
+// If there is none - adds it to the image element.
+//
+// @private
 function insertCaptionElement( evt, changeType, data, batch ) {
 	if ( changeType !== 'insert' ) {
 		return;
@@ -197,39 +179,11 @@ function insertCaptionElement( evt, changeType, data, batch ) {
 	for ( let value of walker ) {
 		const item = value.item;
 
-		if ( value.type == 'elementStart' && isImage( item ) && !getCaption( item ) ) {
+		if ( value.type == 'elementStart' && isImage( item ) && !getCaptionFromImage( item ) ) {
 			// Using batch of insertion.
 			batch.document.enqueueChanges( () => {
 				batch.insert( ModelPosition.createAt( item, 'end' ), new ModelElement( 'caption' ) );
 			} );
 		}
 	}
-}
-
-function getCaption( image ) {
-	for ( let node of image.getChildren() ) {
-		if ( node instanceof ModelElement && node.name == 'caption' ) {
-			return node;
-		}
-	}
-
-	return null;
-}
-
-function insertElementAtEnd( elementCreator ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.item, 'insert' ) ) {
-			return;
-		}
-
-		const imageFigure = conversionApi.mapper.toViewElement( data.range.start.parent );
-		const viewPosition = ViewPosition.createAt( imageFigure, 'end' );
-
-		const viewElement = ( elementCreator instanceof ViewElement ) ?
-			elementCreator.clone( true ) :
-			elementCreator( data, consumable, conversionApi );
-
-		conversionApi.mapper.bindElements( data.item, viewElement );
-		viewWriter.insert( viewPosition, viewElement );
-	};
 }
