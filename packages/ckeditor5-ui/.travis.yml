@@ -15,8 +15,7 @@ before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 install:
-  - npm install gulp mgit2 lerna codeclimate-test-reporter
-  - npm install @ckeditor/ckeditor5-dev-tests @ckeditor/ckeditor5-dev-lint
+  - npm install @ckeditor/ckeditor5-dev-tests
   - ckeditor5-dev-tests-install-dependencies
 script:
   - ckeditor5-dev-tests-travis
