@@ -11,7 +11,7 @@ let dictionaries = {};
 
 /**
  * Adds package translations to existing ones.
- * These translations can be used later with {@link module:utils/translations-service~translate translate}.
+ * These translations will later be available for {@link module:utils/translations-service~translate translate}.
  *
  *		add( 'pl', {
  *			'OK': 'OK',
@@ -19,19 +19,23 @@ let dictionaries = {};
  *		} );
  *
  * @param {String} lang Target language.
- * @param {Object.<String, String>} translations translations which will be added to a dictionary.
+ * @param {Object.<String, String>} translations Translations which will be added to the dictionary.
  */
 export function add( lang, translations ) {
 	dictionaries[ lang ] = dictionaries[ lang ] || {};
+
 	Object.assign( dictionaries[ lang ], translations );
 }
 
 /**
- * Translates string if the translation of the string was previously added using {@link module:utils/translations-service~add add}
- * (multi-language mode). When no translation is defined in the dictionary or the dictionary doesn't exists it returns original string
- * without the '[context: ]' (development mode and single-language mode). In single-language mode the strings are without the contexts
- * already, but it's hard to separate that mode and development mode here (In both cases the dictionary is empty) and this replacement
- * should not replace nothing in already translated strings.
+ * Translates string if the translation of the string was previously {@link module:utils/translations-service~add added}
+ * to the dictionary. This happens in a multi-language mode were translation modules are created by the bundler.
+ *
+ * When no translation is defined in the dictionary or the dictionary doesn't exist this function returns
+ * the original string without the `'[context: ]'` (happens in development and single-language modes).
+ *
+ * In a single-language mode (when values passed to `t()` were replaced with target languange strings) the dictionary
+ * is left empty, so this function will return the original strings always.
  *
  *		translate( 'pl', 'Cancel [context: reject]' );
  *
@@ -56,7 +60,7 @@ function hasTranslation( lang, translationKey ) {
 }
 
 /**
- * Clears dictionaries for test purpose.
+ * Clears dictionaries for test purposes.
  *
  * @protected
  */
