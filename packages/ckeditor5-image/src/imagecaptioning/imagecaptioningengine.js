@@ -65,16 +65,15 @@ export default class ImageCaptioningEngine extends Plugin {
 		);
 
 		// Model to view converter for editing pipeline.
-		const editableCreator = captionEditableCreator( viewDocument );
 		editing.modelToView.on(
 			'insert:caption',
-			captionModelToView( editableCreator )
+			captionModelToView( captionEditableCreator( viewDocument ) )
 		);
 
 		// Adding / removing caption element when there is no text in the model.
 		const selection = viewDocument.selection;
 
-		this.lastCaptionUsed = undefined;
+		this.lastCaptionEditable = undefined;
 
 		// Update view before each rendering.
 		this.listenTo( viewDocument, 'render', () => {
@@ -84,11 +83,11 @@ export default class ImageCaptioningEngine extends Plugin {
 			// Check if image widget is selected and caption view element needs to be added.
 			this._addCaption();
 
-			// If selection is currently inside caption - store it to hide when empty.
+			// If selection is currently inside caption editable - store it to hide when empty.
 			const editableElement = selection.editableElement;
 
 			if ( editableElement && isCaptionEditable( selection.editableElement ) ) {
-				this.lastCaptionUsed = selection.editableElement;
+				this.lastCaptionEditable = selection.editableElement;
 			}
 		}, { priority: 'high' } );
 	}
@@ -100,7 +99,7 @@ export default class ImageCaptioningEngine extends Plugin {
 	 */
 	_removeEmptyCaption() {
 		const viewSelection = this.editor.editing.view.selection;
-		const viewCaptionElement = this.lastCaptionUsed;
+		const viewCaptionElement = this.lastCaptionEditable;
 
 		// No caption to hide.
 		if ( !viewCaptionElement ) {
@@ -149,15 +148,14 @@ export default class ImageCaptioningEngine extends Plugin {
 			let viewCaption =  mapper.toViewElement( modelCaption );
 
 			if ( !viewCaption ) {
-				// TODO: this is same code as in insertElementAtEnd - refactor.
-				const viewPosition = ViewPosition.createAt( imageFigure, 'end' );
 				viewCaption = editableCreator();
 
+				const viewPosition = ViewPosition.createAt( imageFigure, 'end' );
 				mapper.bindElements( modelCaption, viewCaption );
 				viewWriter.insert( viewPosition, viewCaption );
 			}
 
-			this.lastCaptionUsed = viewCaption;
+			this.lastCaptionEditable = viewCaption;
 		}
 	}
 }
