@@ -70,7 +70,7 @@ describe( 'writer', () => {
 			test( '<container:p>f{oob}ar</container:p>', '<container:p>f{}ar</container:p>', 'oob' );
 		} );
 
-		it( 'should remove parts of nodes', () => {
+		it( 'should remove parts of nodes #1', () => {
 			test(
 				'<container:p>f{oo<attribute:b view-priority="10">ba}r</attribute:b></container:p>',
 				'<container:p>f[]<attribute:b view-priority="10">r</attribute:b></container:p>',

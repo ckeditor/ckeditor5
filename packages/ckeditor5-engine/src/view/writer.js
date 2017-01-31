@@ -11,12 +11,15 @@ import Position from './position';
 import ContainerElement from './containerelement';
 import AttributeElement from './attributeelement';
 import EmptyElement from './emptyelement';
+import Element from './element';
 import Text from './text';
+import TextProxy from './textproxy';
 import Range from './range';
 import TreeWalker from './treewalker';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import DocumentFragment from './documentfragment';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import { stringify, parse } from '../dev-utils/view';
 
 /**
  * Contains functions used for composing view tree.
@@ -396,6 +399,67 @@ export function remove( range ) {
 
 	// Return removed nodes.
 	return new DocumentFragment( removed );
+}
+
+/**
+ * Removes matches elements from given range.
+ *
+ * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
+ * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
+ * same parent container.
+ *
+ * @function module:engine/view/writer~writer.clear
+ * @param {module:engine/view/range~Range} range Range to clear.
+ * @param {module:engine/view/element~Element} element Element to remove.
+ */
+export function clear( range, element ) {
+	validateRangeContainer( range );
+
+	// Create walker on given range.
+	// We are walking backward because when we remove element during walk it modify range end position.
+	const rangeWalker = range.getWalker( {
+		direction: 'backward',
+		ignoreElementEnd: true
+	} );
+
+	// Let's walk.
+	for ( const current of rangeWalker ) {
+		const item = current.item;
+		let rangeToRemove;
+
+		// When current item matches to the given element.
+		if ( item instanceof Element && element.isSimilar( item ) ) {
+			// Create range on this element.
+			rangeToRemove = Range.createOn( item );
+		// When range starts inside Text or TextProxy element.
+		} else if ( !current.nextPosition.isAfter( range.start ) && ( item instanceof Text || item instanceof TextProxy ) ) {
+			// We need to check if parent of this text matches to given element.
+			const parentElement = item.getAncestors().find( ( ancestor ) => {
+				return ancestor instanceof Element && element.isSimilar( ancestor );
+			} );
+
+			// If it is then create a range inside this element.
+			if ( parentElement && parentElement) {
+				rangeToRemove = Range.createIn( parentElement );
+			}
+		}
+
+		// If we have found element to remove.
+		if ( rangeToRemove ) {
+			// We need to check if element range stick out of given range and truncate if it is.
+			if ( !range.containsRange( rangeToRemove ) && range.isIntersecting( rangeToRemove ) ) {
+				if ( rangeToRemove.end.isAfter( range.end ) ) {
+					rangeToRemove.end = range.end;
+				}
+
+				if ( rangeToRemove.start.isBefore( range.start ) ) {
+					rangeToRemove.start = range.start;
+				}
+			}
+
+			remove( rangeToRemove );
+		}
+	}
 }
 
 /**
