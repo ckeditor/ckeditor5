@@ -457,7 +457,7 @@ export function clear( range, element ) {
 		// If we have found element to remove.
 		if ( rangeToRemove ) {
 			// We need to check if element range stick out of the given range and truncate if it is.
-			if ( !range.containsRange( rangeToRemove ) && range.isIntersecting( rangeToRemove ) ) {
+			if ( !range.containsRange( rangeToRemove ) ) {
 				if ( rangeToRemove.end.isAfter( range.end ) ) {
 					rangeToRemove.end = range.end;
 				}
