@@ -21,6 +21,7 @@ import Position from '../view/position';
 import AttributeElement from '../view/attributeelement';
 import ContainerElement from '../view/containerelement';
 import EmptyElement from '../view/emptyelement';
+import UIElement from '../view/uielement';
 import ViewText from '../view/text';
 
 const ELEMENT_RANGE_START_TOKEN = '[';
@@ -31,6 +32,7 @@ const allowedTypes = {
 	'container': ContainerElement,
 	'attribute': AttributeElement,
 	'empty': EmptyElement,
+	'ui': UIElement
 };
 
 /**
@@ -168,14 +170,17 @@ setData._parse = parse;
  * If `options.showType` is set to `true`, element's types will be
  * presented for {@link module:engine/view/attributeelement~AttributeElement AttributeElements},
  * {@link module:engine/view/containerelement~ContainerElement ContainerElements}
- * and {@link module:engine/view/emptyelement~EmptyElement EmptyElements}:
+ * {@link module:engine/view/emptyelement~EmptyElement EmptyElements}
+ * and {@link module:engine/view/uielement~UIElement UIElements}:
  *
  *		const attribute = new AttributeElement( 'b' );
  *		const container = new ContainerElement( 'p' );
  *		const empty = new EmptyElement( 'img' );
+ *		const ui = new EmptyElement( 'span' );
  *		getData( attribute, null, { showType: true } ); // '<attribute:b></attribute:b>'
  *		getData( container, null, { showType: true } ); // '<container:p></container:p>'
  *		getData( empty, null, { showType: true } ); // '<empty:img></empty:img>'
+ *		getData( ui, null, { showType: true } ); // '<ui:span></ui:span>'
  *
  * If `options.showPriority` is set to `true`, priority will be displayed for all
  * {@link module:engine/view/attributeelement~AttributeElement AttributeElements}.
@@ -764,10 +769,13 @@ class ViewStringify {
 
 	/**
 	 * Converts passed {@link module:engine/view/element~Element Element's} type to its string representation
-	 * Returns 'attribute' for {@link module:engine/view/attributeelement~AttributeElement AttributeElements},
-	 * 'container' for {@link module:engine/view/containerelement~ContainerElement ContainerElements} and 'empty' for
-	 * {@link module:engine/view/emptyelement~EmptyElement EmptyElements}. Returns empty string when current configuration is preventing
-	 * showing elements' types.
+	 *
+	 * Returns:
+	 * * 'attribute' for {@link module:engine/view/attributeelement~AttributeElement AttributeElements},
+	 * * 'container' for {@link module:engine/view/containerelement~ContainerElement ContainerElements},
+	 * * 'empty' for {@link module:engine/view/emptyelement~EmptyElement EmptyElements}.
+	 * * 'ui' for {@link module:engine/view/uielement~UIElement UIElements}.
+	 * * empty string when current configuration is preventing showing elements' types.
 	 *
 	 * @private
 	 * @param {module:engine/view/element~Element} element
@@ -825,8 +833,9 @@ class ViewStringify {
 
 // Converts {@link module:engine/view/element~Element Elements} to
 // {@link module:engine/view/attributeelement~AttributeElement AttributeElements},
-// {@link module:engine/view/containerelement~ContainerElement ContainerElements} or
-// {@link module:engine/view/emptyelement~EmptyElement EmptyElements}.
+// {@link module:engine/view/containerelement~ContainerElement ContainerElements},
+// {@link module:engine/view/emptyelement~EmptyElement EmptyElements} or
+// {@link module:engine/view/uielement~UIElement UIElements}.
 // It converts whole tree starting from the `rootNode`. Conversion is based on element names.
 // See `_convertElement` method for more details.
 //
@@ -858,19 +867,23 @@ function _convertViewElements( rootNode ) {
 
 // Converts {@link module:engine/view/element~Element Element} to
 // {@link module:engine/view/attributeelement~AttributeElement AttributeElement},
-// {@link module:engine/view/containerelement~ContainerElement ContainerElement} or
-// {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
+// {@link module:engine/view/containerelement~ContainerElement ContainerElement},
+// {@link module:engine/view/emptyelement~EmptyElement EmptyElement} or
+// {@link module:engine/view/uielement~UIElement UIElement}.
 // If element's name is in format `attribute:b` with `view-priority="11"` attribute it will be converted to
 // {@link module:engine/view/attributeelement~AttributeElement AttributeElement} with priority 11.
 // If element's name is in format `container:p` - it will be converted to
 // {@link module:engine/view/containerelement~ContainerElement ContainerElement}.
 // If element's name is in format `empty:img` - it will be converted to
 // {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
+// If element's name is in format `ui:span` - it will be converted to
+// {@link module:engine/view/uielement~UIElement UIElement}.
 // If element's name will not contain any additional information - {@link module:engine/view/element~Element view Element} will be
 // returned.
 //
 // @param {module:engine/view/element~Element} viewElement View element to convert.
 // @returns {module:engine/view/element~Element|module:engine/view/attributeelement~AttributeElement|
+// module:engine/view/emptyelement~EmptyElement|module:engine/view/uielement~UIElement|
 // module:engine/view/containerelement~ContainerElement} Tree view
 // element converted according to it's name.
 function _convertElement( viewElement ) {
@@ -894,10 +907,11 @@ function _convertElement( viewElement ) {
 
 // Converts `view-priority` attribute and {@link module:engine/view/element~Element#name Element's name} information needed for creating
 // {@link module:engine/view/attributeelement~AttributeElement AttributeElement},
-// {@link module:engine/view/containerelement~ContainerElement ContainerElement} or
-// {@link module:engine/view/emptyelement~EmptyElement EmptyElement} instance.
+// {@link module:engine/view/containerelement~ContainerElement ContainerElement},
+// {@link module:engine/view/emptyelement~EmptyElement EmptyElement} or,
+// {@link module:engine/view/uielement~UIElement UIElement}.
 // Name can be provided in two formats: as a simple element's name (`div`), or as a type and name (`container:div`,
-// `attribute:span`, `empty:img`);
+// `attribute:span`, `empty:img`, `ui:span`);
 //
 // @param {module:engine/view/element~Element} element Element which name should be converted.
 // @returns {Object} info Object with parsed information.
