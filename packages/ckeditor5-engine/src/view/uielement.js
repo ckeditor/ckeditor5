@@ -8,6 +8,8 @@
  */
 
 import Element from './element';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Node from './node';
 
 /**
  * UIElement class. It is used to represent features of UI not content of the document.
@@ -17,7 +19,11 @@ export default class UIElement extends Element {
 	/**
 	 * Creates new instance of UIElement.
 	 *
-	 * @see module:engine/view/element~Element
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-uielement-cannot-add` when third parameter is passed,
+	 * to inform that usage of UIElement is incorrect (adding child nodes to UIElement is forbidden).
+	 *
+	 * @param {String} name Node name.
+	 * @param {Object|Iterable} [attributes] Collection of attributes.
 	 */
 	constructor( name, attributes, children ) {
 		super( name, attributes, children );
@@ -29,6 +35,22 @@ export default class UIElement extends Element {
 		 * @returns {null} Always returns null.
 		 */
 		this.getFillerOffset = getFillerOffset;
+	}
+
+	/**
+	 * Overrides {@link module:engine/view/element~Element#insertChildren} method.
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-emptyelement-cannot-add` to prevent adding any child nodes
+	 * to EmptyElement.
+	 */
+	insertChildren( index, nodes ) {
+		if ( nodes && ( nodes instanceof Node || Array.from( nodes ).length > 0 ) ) {
+			/**
+			 * Cannot add children to {@link module:engine/view/emptyelement~EmptyElement}.
+			 *
+			 * @error view-uielement-cannot-add
+			 */
+			throw new CKEditorError( 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
+		}
 	}
 }
 
