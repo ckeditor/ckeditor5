@@ -432,8 +432,7 @@ class RangeParser {
 
 				brackets.push( {
 					bracket: bracket,
-					textOffset: index - offset,
-					outer: index === 0 || index == node._data.length - 1
+					textOffset: index - offset
 				} );
 
 				offset++;
@@ -453,7 +452,7 @@ class RangeParser {
 				// Non-empty text node.
 				if ( text ) {
 					if (
-						( this.sameSelectionCharacters && !item.outer ) ||
+						this.sameSelectionCharacters ||
 						( !this.sameSelectionCharacters && ( item.bracket == TEXT_RANGE_START_TOKEN || item.bracket == TEXT_RANGE_END_TOKEN ) )
 					) {
 						// Store information about text range delimiter.
