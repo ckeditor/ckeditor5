@@ -440,10 +440,10 @@ export default class Range {
 	 *
 	 * @protected
 	 * @param {'insert'|'move'|'remove'|'reinsert'} type Change type.
+	 * @param {String} deltaType Type of delta that introduced the change.
 	 * @param {module:engine/model/position~Position} targetPosition Position before the first changed node.
 	 * @param {Number} howMany How many nodes has been changed.
 	 * @param {module:engine/model/position~Position} sourcePosition Source position of changes.
-	 * @param {module:engine/model/delta/delta~Delta} delta Delta that introduced the change.
 	 * @returns {Array.<module:engine/model/range~Range>}
 	 */
 	_getTransformedByDocumentChange( type, deltaType, targetPosition, howMany, sourcePosition ) {
