@@ -12,6 +12,7 @@
 import Observer from './observer';
 import MutationObserver from './mutationobserver';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
 
 /**
  * Selection observer class observes selection changes in the document. If selection changes on the document this
@@ -73,6 +74,15 @@ export default class SelectionObserver extends Observer {
 		 */
 		this._documents = new WeakSet();
 
+		/**
+		 * Fires `selectionChangeDone` event debounced. It use `lodash#debounce` method to delay function call.
+		 *
+		 * @private
+		 * @param {Object} data Selection change data.
+		 * @method #_fireSelectionChangeDoneDebounced
+		 */
+		this._fireSelectionChangeDoneDebounced = debounce( data => this.document.fire( 'selectionChangeDone', data ), 200 );
+
 		this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 2000 );
 
 		/**
@@ -112,6 +122,14 @@ export default class SelectionObserver extends Observer {
 			this._handleSelectionChange( domDocument );
 		} );
 
+		// Call` #_fireSelectionChangeDoneDebounced` on each `selectionChange` event.
+		// This function is debounced what means that `selectionChangeDone` event will be fired only when
+		// defined int the function time will elapse since the last time the function was called.
+		// So `selectionChangeDone` will be fired when selection will stop changing.
+		this.listenTo( this.document, 'selectionChange', ( evt, data ) => {
+			this._fireSelectionChangeDoneDebounced( data );
+		} );
+
 		this._documents.add( domDocument );
 	}
 
@@ -122,6 +140,7 @@ export default class SelectionObserver extends Observer {
 		super.destroy();
 
 		clearInterval( this._clearInfiniteLoopInterval );
+		this._fireSelectionChangeDoneDebounced.cancel();
 	}
 
 	/**

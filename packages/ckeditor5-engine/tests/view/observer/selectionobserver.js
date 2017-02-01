@@ -226,6 +226,70 @@ describe( 'SelectionObserver', () => {
 			}, 200 );
 		}, 400 );
 	} );
+
+	it( 'should fire `selectionChangeDone` event after selection stop changing', ( done ) => {
+		// Note that it's difficult to test lodash#debounce with sinon fake timers.
+		// See: https://github.com/lodash/lodash/issues/304
+
+		const spy = sinon.spy();
+
+		viewDocument.on( 'selectionChangeDone', spy );
+
+		// Fire `selectionChange` event.
+		viewDocument.fire( 'selectionChange' );
+
+		// Wait 100ms.
+		setTimeout( () => {
+			// Check if spy was called.
+			expect( spy.notCalled ).to.true;
+
+			// Fire event again.
+			viewDocument.fire( 'selectionChange' );
+
+			// Wait 100ms.
+			setTimeout( () => {
+				// Check if spy was called.
+				expect( spy.notCalled ).to.true;
+
+				// Fire event again.
+				viewDocument.fire( 'selectionChange', { foo: 'bar' } );
+
+				// Wait 210ms (debounced function should be called).
+				setTimeout( () => {
+					expect( spy.calledOnce ).to.true;
+					expect( spy.firstCall.args[ 1 ] ).to.deep.equal( { foo: 'bar' } );
+
+					done();
+				}, 210 );
+			}, 100 );
+		}, 100 );
+	} );
+
+	it( 'should not fire `selectionChangeDone` event when observer will be destroyed', ( done ) => {
+		// Note that it's difficult to test lodash#debounce with sinon fake timers.
+		// See: https://github.com/lodash/lodash/issues/304
+
+		const spy = sinon.spy();
+
+		viewDocument.on( 'selectionChangeDone', spy );
+
+		// Fire `selectionChange` event.
+		viewDocument.fire( 'selectionChange' );
+
+		// Wait 100ms.
+		setTimeout( () => {
+			// And destroy observer.
+			selectionObserver.destroy();
+
+			// Wait another 110ms.
+			setTimeout( () => {
+				// Check that event won't be called.
+				expect( spy.notCalled ).to.true;
+
+				done();
+			}, 110 );
+		}, 100 );
+	} );
 } );
 
 function changeDomSelection() {
