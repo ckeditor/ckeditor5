@@ -295,26 +295,9 @@ describe( 'LiveRange', () => {
 				expect( spy.calledOnce ).to.be.true;
 			} );
 
-			it( 'intersects on live range left side and live range new start is touching moved range end', () => {
-				let moveSource = new Position( root, [ 0, 1, 0 ] );
-				let moveRange = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 6 ] ) );
-
-				let changes = {
-					range: moveRange,
-					sourcePosition: moveSource
-				};
-				doc.fire( 'change', 'move', changes, null );
-
-				expect( live.start.path ).to.deep.equal( [ 0, 5 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 7, 2 ] );
-				expect( spy.calledOnce ).to.be.true;
-			} );
-
-			it( 'intersects on live range right side and live range new end is touching moved range start', () => {
-				live.end.offset = 12;
-
-				let moveSource = new Position( root, [ 0, 2, 10 ] );
-				let moveRange = new Range( new Position( root, [ 0, 3, 0 ] ), new Position( root, [ 0, 3, 5 ] ) );
+			it( 'intersects with live range and is moved into live range', () => {
+				let moveSource = new Position( root, [ 0, 2, 1 ] );
+				let moveRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 5 ] ) );
 
 				let changes = {
 					range: moveRange,
@@ -323,7 +306,7 @@ describe( 'LiveRange', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 3, 2 ] );
+				expect( live.end.path ).to.deep.equal( [ 0, 2, 6 ] );
 				expect( spy.calledOnce ).to.be.true;
 			} );
 

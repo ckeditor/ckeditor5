@@ -25,6 +25,13 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  */
 export default class WrapDelta extends Delta {
 	/**
+	 * @inheritDoc
+	 */
+	get type() {
+		return 'wrap';
+	}
+
+	/**
 	 * Range to wrap or `null` if there are no operations in the delta.
 	 *
 	 * @type {module:engine/model/range~Range|null}

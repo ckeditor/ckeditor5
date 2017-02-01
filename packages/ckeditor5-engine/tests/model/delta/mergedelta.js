@@ -90,6 +90,12 @@ describe( 'MergeDelta', () => {
 		} );
 	} );
 
+	describe( 'type', () => {
+		it( 'should be equal to merge', () => {
+			expect( mergeDelta.type ).to.equal( 'merge' );
+		} );
+	} );
+
 	describe( 'position', () => {
 		it( 'should be null if there are no operations in delta', () => {
 			expect( mergeDelta.position ).to.be.null;

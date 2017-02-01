@@ -114,6 +114,7 @@ describe( 'Document', () => {
 			const data = { data: 'x' };
 			const batch = new Batch();
 			const delta = new Delta();
+			delta.type = 'type';
 
 			let operation = {
 				type: type,
@@ -133,7 +134,8 @@ describe( 'Document', () => {
 			sinon.assert.calledOnce( changeCallback );
 			expect( changeCallback.args[ 0 ][ 1 ] ).to.equal( type );
 			expect( changeCallback.args[ 0 ][ 2 ] ).to.equal( data );
-			expect( changeCallback.args[ 0 ][ 3 ] ).to.equal( batch );
+			expect( changeCallback.args[ 0 ][ 3 ] ).to.deep.equal( batch );
+			expect( changeCallback.args[ 0 ][ 4 ] ).to.equal( delta.type );
 		} );
 
 		it( 'should throw an error on the operation base version and the document version is different', () => {

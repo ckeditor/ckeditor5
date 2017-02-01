@@ -832,11 +832,9 @@ describe( 'Range', () => {
 
 				const transformed = range.getTransformedByDelta( delta );
 
-				expect( transformed.length ).to.equal( 2 );
+				expect( transformed.length ).to.equal( 1 );
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 2 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 3 ] );
-				expect( transformed[ 1 ].start.path ).to.deep.equal( [ 1, 0 ] );
-				expect( transformed[ 1 ].end.path ).to.deep.equal( [ 1, 1 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
 			} );
 		} );
 	} );
@@ -951,22 +949,6 @@ describe( 'Range', () => {
 			const deserialized = Range.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.deep.equal( range );
-		} );
-	} );
-
-	describe( 'isEmpty', () => {
-		beforeEach( () => {
-			prepareRichRoot( root );
-		} );
-
-		it( 'should be true if there are no nodes between range start and end', () => {
-			let range = new Range( new Position( root, [ 0, 0, 5 ] ), new Position( root, [ 0, 1, 0 ] ) );
-			expect( range.isEmpty ).to.be.true;
-		} );
-
-		it( 'should be false if there are nodes between range start and end', () => {
-			let range = new Range( new Position( root, [ 0, 0, 5 ] ), new Position( root, [ 0, 1, 1 ] ) );
-			expect( range.isEmpty ).to.be.false;
 		} );
 	} );
 

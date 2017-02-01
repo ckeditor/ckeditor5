@@ -78,18 +78,6 @@ export default class Range {
 	}
 
 	/**
-	 * Returns whether this range has no nodes in it, that is if {@link #start start} position and
-	 * {@link #end end} position are {@link module:engine/model/position~Position#isTouching touching}.
-	 *
-	 * **Note:** A range may be empty, but not {@link #isCollapsed collapsed}.
-	 *
-	 * @type {Boolean}
-	 */
-	get isEmpty() {
-		return this.start.isTouching( this.end );
-	}
-
-	/**
 	 * Range root element.
 	 *
 	 * @type {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
@@ -390,6 +378,7 @@ export default class Range {
 				for ( let i = 0; i < ranges.length; i++ ) {
 					const result = ranges[ i ]._getTransformedByDocumentChange(
 						operation.type,
+						delta.type,
 						operation.targetPosition || operation.position,
 						operation.howMany || operation.nodes.maxOffset,
 						operation.sourcePosition
@@ -451,16 +440,24 @@ export default class Range {
 	 *
 	 * @protected
 	 * @param {'insert'|'move'|'remove'|'reinsert'} type Change type.
+	 * @param {String} deltaType Type of delta that introduced the change.
 	 * @param {module:engine/model/position~Position} targetPosition Position before the first changed node.
 	 * @param {Number} howMany How many nodes has been changed.
 	 * @param {module:engine/model/position~Position} sourcePosition Source position of changes.
 	 * @returns {Array.<module:engine/model/range~Range>}
 	 */
-	_getTransformedByDocumentChange( type, targetPosition, howMany, sourcePosition ) {
+	_getTransformedByDocumentChange( type, deltaType, targetPosition, howMany, sourcePosition ) {
 		if ( type == 'insert' ) {
 			return this._getTransformedByInsertion( targetPosition, howMany, false, false );
 		} else {
-			return this._getTransformedByMove( sourcePosition, targetPosition, howMany );
+			const ranges = this._getTransformedByMove( sourcePosition, targetPosition, howMany );
+
+			if ( deltaType == 'split' && this.containsPosition( sourcePosition ) ) {
+				ranges[ 0 ].end = ranges[ 1 ].end;
+				ranges.pop();
+			}
+
+			return ranges;
 		}
 	}
 
@@ -533,8 +530,6 @@ export default class Range {
 	 * @param {module:engine/model/position~Position} sourcePosition Position from which nodes are moved.
 	 * @param {module:engine/model/position~Position} targetPosition Position to where nodes are moved.
 	 * @param {Number} howMany How many nodes are moved.
-	 * @param {Boolean} [spread] Flag indicating whether this {~Range range} should be spread if insertion
-	 * was inside the range. Defaults to `false`.
 	 * @returns {Array.<module:engine/model/range~Range>} Result of the transformation.
 	 */
 	_getTransformedByMove( sourcePosition, targetPosition, howMany ) {
@@ -651,8 +646,8 @@ export default class Range {
 	 * Combines all ranges from the passed array into a one range. At least one range has to be passed.
 	 * Passed ranges must not have common parts.
 	 *
-	 * The first range from the array is a reference range. If other ranges
-	 * {@link module:engine/model/position~Position#isTouching are touching} the reference range, they will get combined into one range.
+	 * The first range from the array is a reference range. If other ranges starts or ends on the exactly same position where
+	 * the reference range, they get combined into one range.
 	 *
 	 *		[  ][]  [    ][ ][  ref range  ][ ][]  [  ]  // Passed ranges, shown sorted. "Ref range" was the first range in original array.
 	 *		        [      returned range       ]  [  ]  // The combined range.
@@ -691,24 +686,24 @@ export default class Range {
 		// We have to create a copy of the reference range.
 		const result = new this( ref.start, ref.end );
 
-		// 5. Ranges before reference range should be glued starting from the "last one", that is the range
-		// that is closest to the reference range.
+		// 5. Ranges should be checked and glued starting from the range that is closest to the reference range.
+		// Since ranges are sorted, start with the range with index that is closest to reference range index.
 		for ( let i = refIndex - 1; i >= 0; i++ ) {
-			if ( ranges[ i ].end.isTouching( result.start ) ) {
+			if ( ranges[ i ].end.isEqual( result.start ) ) {
 				result.start = Position.createFromPosition( ranges[ i ].start );
 			} else {
-				// If range do not touch with reference range there is no point in looking further.
+				// If ranges are not starting/ending at the same position there is no point in looking further.
 				break;
 			}
 		}
 
-		// 5. Ranges after reference range should be glued starting from the "first one", that is the range
-		// that is closest to the reference range.
+		// 6. Ranges should be checked and glued starting from the range that is closest to the reference range.
+		// Since ranges are sorted, start with the range with index that is closest to reference range index.
 		for ( let i = refIndex + 1; i < ranges.length; i++ ) {
-			if ( ranges[ i ].start.isTouching( result.end ) ) {
+			if ( ranges[ i ].start.isEqual( result.end ) ) {
 				result.end = Position.createFromPosition( ranges[ i ].end );
 			} else {
-				// If range do not touch with reference range there is no point in looking further.
+				// If ranges are not starting/ending at the same position there is no point in looking further.
 				break;
 			}
 		}

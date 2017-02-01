@@ -166,11 +166,9 @@ export default class Document {
 
 		this.history.addDelta( operation.delta );
 
-		const batch = operation.delta && operation.delta.batch;
-
 		if ( changes ) {
 			// `NoOperation` returns no changes, do not fire event for it.
-			this.fire( 'change', operation.type, changes, batch );
+			this.fire( 'change', operation.type, changes, operation.delta.batch, operation.delta.type );
 		}
 	}
 

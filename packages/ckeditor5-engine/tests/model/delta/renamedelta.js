@@ -70,6 +70,12 @@ describe( 'RenameDelta', () => {
 		} );
 	} );
 
+	describe( 'type', () => {
+		it( 'should be equal to rename', () => {
+			expect( renameDelta.type ).to.equal( 'rename' );
+		} );
+	} );
+
 	describe( 'getReversed', () => {
 		it( 'should return instance of RenameDelta', () => {
 			let reversed = renameDelta.getReversed();
