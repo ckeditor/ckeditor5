@@ -16,7 +16,7 @@ before_install:
   - sh -e /etc/init.d/xvfb start
 install:
   - npm install mgit2 lerna @ckeditor/ckeditor5-dev-tests
-  - mgit bootstrap --repository-resolver=@ckeditor/ckeditor5-dev-tests/lib/git-https-resolver.js
+  - mgit bootstrap --resolver-url-template="https://github.com/\${ path }.git"
   - lerna bootstrap
 script:
   - ckeditor5-dev-tests --reporter=dots
