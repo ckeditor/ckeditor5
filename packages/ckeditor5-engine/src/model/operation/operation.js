@@ -33,6 +33,7 @@ export default class Operation {
 		/**
 		 * Operation type.
 		 *
+		 * @readonly
 		 * @member {String} #type
 		 */
 

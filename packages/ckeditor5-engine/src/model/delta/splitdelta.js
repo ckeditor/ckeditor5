@@ -24,6 +24,13 @@ import MergeDelta from '../delta/mergedelta';
  */
 export default class SplitDelta extends Delta {
 	/**
+	 * @inheritDoc
+	 */
+	get type() {
+		return 'split';
+	}
+
+	/**
 	 * Position of split or `null` if there are no operations in the delta.
 	 *
 	 * @type {module:engine/model/position~Position|null}

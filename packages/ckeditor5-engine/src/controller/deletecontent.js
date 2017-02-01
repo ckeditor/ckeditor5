@@ -33,7 +33,7 @@ export default function deleteContent( selection, batch, options = {} ) {
 	const endPos = LivePosition.createFromPosition( selRange.end );
 
 	// 1. Remove the contents if there are any.
-	if ( !selRange.isEmpty ) {
+	if ( !selRange.start.isTouching( selRange.end ) ) {
 		batch.remove( selRange );
 	}
 

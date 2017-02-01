@@ -107,6 +107,12 @@ describe( 'SplitDelta', () => {
 		} );
 	} );
 
+	describe( 'type', () => {
+		it( 'should be equal to split', () => {
+			expect( splitDelta.type ).to.equal( 'split' );
+		} );
+	} );
+
 	describe( 'position', () => {
 		it( 'should be null if there are no operations in delta', () => {
 			expect( splitDelta.position ).to.be.null;

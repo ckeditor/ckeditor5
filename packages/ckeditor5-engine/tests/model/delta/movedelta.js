@@ -91,6 +91,12 @@ describe( 'MoveDelta', () => {
 		} );
 	} );
 
+	describe( 'type', () => {
+		it( 'should be equal to move', () => {
+			expect( moveDelta.type ).to.equal( 'move' );
+		} );
+	} );
+
 	describe( 'sourcePosition', () => {
 		it( 'should be null if there are no operations in delta', () => {
 			expect( moveDelta.sourcePosition ).to.be.null;

@@ -21,6 +21,13 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  */
 export default class MarkerDelta extends Delta {
 	/**
+	 * @inheritDoc
+	 */
+	get type() {
+		return 'marker';
+	}
+
+	/**
 	 * A class that will be used when creating reversed delta.
 	 *
 	 * @private

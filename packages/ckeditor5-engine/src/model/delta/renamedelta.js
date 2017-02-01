@@ -23,6 +23,13 @@ export default class RenameDelta extends Delta {
 	/**
 	 * @inheritDoc
 	 */
+	get type() {
+		return 'rename';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	get _reverseDeltaClass() {
 		return RenameDelta;
 	}

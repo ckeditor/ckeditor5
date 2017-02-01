@@ -70,6 +70,12 @@ describe( 'InsertDelta', () => {
 		} );
 	} );
 
+	describe( 'type', () => {
+		it( 'should be equal to insert', () => {
+			expect( insertDelta.type ).to.equal( 'insert' );
+		} );
+	} );
+
 	describe( 'position', () => {
 		it( 'should be null if there are no operations in delta', () => {
 			expect( insertDelta.position ).to.be.null;

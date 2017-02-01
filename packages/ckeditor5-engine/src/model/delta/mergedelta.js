@@ -24,6 +24,13 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  */
 export default class MergeDelta extends Delta {
 	/**
+	 * @inheritDoc
+	 */
+	get type() {
+		return 'merge';
+	}
+
+	/**
 	 * Position between to merged nodes or `null` if the delta has no operations.
 	 *
 	 * @readonly

@@ -136,6 +136,12 @@ describe( 'MarkerDelta', () => {
 		} );
 	} );
 
+	describe( 'type', () => {
+		it( 'should be equal to marker', () => {
+			expect( markerDelta.type ).to.equal( 'marker' );
+		} );
+	} );
+
 	describe( 'getReversed', () => {
 		it( 'should return correct MarkerDelta', () => {
 			markerDelta.addOperation( new MarkerOperation( 'name', null, range, 0 ) );

@@ -20,6 +20,13 @@ import InsertOperation from '../operation/insertoperation';
  */
 export default class InsertDelta extends Delta {
 	/**
+	 * @inheritDoc
+	 */
+	get type() {
+		return 'insert';
+	}
+
+	/**
 	 * Position where the delta inserts nodes or `null` if there are no operations in the delta.
 	 *
 	 * @readonly

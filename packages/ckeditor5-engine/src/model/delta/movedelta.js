@@ -22,6 +22,13 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  */
 export default class MoveDelta extends Delta {
 	/**
+	 * @inheritDoc
+	 */
+	get type() {
+		return 'move';
+	}
+
+	/**
 	 * Offset size of moved range or `null` if there are no operations in the delta.
 	 *
 	 * @type {Number|null}
