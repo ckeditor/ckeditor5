@@ -43,7 +43,17 @@ describe( 'ImageToolbar', () => {
 	} );
 
 	it( 'should initialize image.defaultToolbar to an empty array', () => {
-		expect( editor.config.get( 'image.defaultToolbar' ) ).to.eql( [] );
+		const editorElement = global.document.createElement( 'div' );
+		global.document.body.appendChild( editorElement );
+
+		return ClassicEditor.create( editorElement, {
+			plugins: [ ImageToolbar ],
+		} )
+		.then( editor => {
+			expect( editor.config.get( 'image.defaultToolbar' ) ).to.eql( [] );
+
+			return editor.destroy();
+		} );
 	} );
 
 	it( 'should not initialize if there is no configuration', () => {

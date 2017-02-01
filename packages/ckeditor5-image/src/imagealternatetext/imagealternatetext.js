@@ -38,6 +38,13 @@ export default class ImageAlternateText extends Plugin {
 	init() {
 		this._createButton();
 
+		// Push button to default image toolbar if one exists.
+		const defaultImageToolbarConfig = this.editor.config.get( 'image.defaultToolbar' );
+
+		if ( defaultImageToolbarConfig ) {
+			defaultImageToolbarConfig.push( 'imageAlternateText' );
+		}
+
 		return this._createBalloonPanel().then( panel => {
 			/**
 			 * Balloon panel containing alternate text change form.
