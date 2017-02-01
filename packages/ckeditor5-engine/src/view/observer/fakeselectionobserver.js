@@ -10,6 +10,7 @@
 import Observer from './observer';
 import ViewSelection from '../selection';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
 
 /**
  * Fake selection observer class. If view selection is fake it is placed in dummy DOM container. This observer listens
@@ -28,6 +29,15 @@ export default class FakeSelectionObserver extends Observer {
 	 */
 	constructor( document ) {
 		super( document );
+
+		/**
+		 * Fires `selectionChangeDone` event debounced. It use `lodash#debounce` method to delay function call.
+		 *
+		 * @private
+		 * @param {Object} data Selection change data.
+		 * @method #_fireSelectionChangeDoneDebounced
+		 */
+		this._fireSelectionChangeDoneDebounced = debounce( data => this.document.fire( 'selectionChangeDone', data ), 200 );
 	}
 
 	/**
@@ -49,15 +59,26 @@ export default class FakeSelectionObserver extends Observer {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this._fireSelectionChangeDoneDebounced.cancel();
+	}
+
+	/**
 	 * Handles collapsing view selection according to given key code. If left or up key is provided - new selection will be
 	 * collapsed to left. If right or down key is pressed - new selection will be collapsed to right.
 	 *
-	 * This method fires {@link module:engine/view/document~Document#event:selectionChange} event imitating behaviour of
+	 * This method fires {@link module:engine/view/document~Document#event:selectionChange} and
+	 * {@link module:engine/view/document~Document#event:selectionChangeDone} events imitating behaviour of
 	 * {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
 	 *
 	 * @private
 	 * @param {Number} keyCode
 	 * @fires module:engine/view/document~Document#event:selectionChange
+	 * @fires module:engine/view/document~Document#event:selectionChangeDone
 	 */
 	_handleSelectionMove( keyCode ) {
 		const selection = this.document.selection;
@@ -74,12 +95,20 @@ export default class FakeSelectionObserver extends Observer {
 			newSelection.collapseToEnd();
 		}
 
-		// Fire dummy selection change event.
-		this.document.fire( 'selectionChange', {
+		const data = {
 			oldSelection: selection,
 			newSelection: newSelection,
 			domSelection: null
-		} );
+		};
+
+		// Fire dummy selection change event.
+		this.document.fire( 'selectionChange', data );
+
+		// Call` #_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
+		// This function is debounced what means that `selectionChangeDone` event will be fired only when
+		// defined int the function time will elapse since the last time the function was called.
+		// So `selectionChangeDone` will be fired when selection will stop changing.
+		this._fireSelectionChangeDoneDebounced( data );
 	}
 }
 

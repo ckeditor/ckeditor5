@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
+/* globals document, setTimeout */
 
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
@@ -100,6 +100,60 @@ describe( 'FakeSelectionObserver', () => {
 		);
 	} );
 
+	it( 'should fire `selectionChangeDone` event after selection stop changing', ( done ) => {
+		// Note that it's difficult to test lodash#debounce with sinon fake timers.
+		// See: https://github.com/lodash/lodash/issues/304
+
+		const spy = sinon.spy();
+
+		viewDocument.on( 'selectionChangeDone', spy );
+
+		// Change selection.
+		changeFakeSelectionPressing( keyCodes.arrowdown );
+
+		// Wait 100ms.
+		setTimeout( () => {
+			// Check if spy was called.
+			expect( spy.notCalled ).to.true;
+
+			// Change selection one more time.
+			changeFakeSelectionPressing( keyCodes.arrowdown );
+
+			// Wait 210ms (debounced function should be called).
+			setTimeout( () => {
+				expect( spy.calledOnce ).to.true;
+
+				done();
+			}, 210 );
+		}, 100 );
+	} );
+
+	it( 'should not fire `selectionChangeDone` event when observer will be destroyed', ( done ) => {
+		// Note that it's difficult to test lodash#debounce with sinon fake timers.
+		// See: https://github.com/lodash/lodash/issues/304
+
+		const spy = sinon.spy();
+
+		viewDocument.on( 'selectionChangeDone', spy );
+
+		// Change selection.
+		changeFakeSelectionPressing( keyCodes.arrowdown );
+
+		// Wait 100ms.
+		setTimeout( () => {
+			// And destroy observer.
+			observer.destroy();
+
+			// Wait another 110ms.
+			setTimeout( () => {
+				// Check that event won't be called.
+				expect( spy.notCalled ).to.true;
+
+				done();
+			}, 110 );
+		}, 100 );
+	} );
+
 	// Checks if preventDefault method was called by FakeSelectionObserver for specified key code.
 	//
 	// @param {Number} keyCode
@@ -140,14 +194,21 @@ describe( 'FakeSelectionObserver', () => {
 			} );
 
 			setData( viewDocument, initialData );
-			viewDocument.selection.setFake();
-
-			const data = {
-				keyCode,
-				preventDefault: sinon.spy(),
-			};
-
-			viewDocument.fire( 'keydown', new DomEventData( viewDocument, { target: document.body }, data ) );
+			changeFakeSelectionPressing( keyCode );
 		} );
+	}
+
+	// Sets fake selection to the document and fire `keydown` event what cause `selectionChange` event.
+	//
+	// @param {Number} keyCode
+	function changeFakeSelectionPressing( keyCode ) {
+		viewDocument.selection.setFake();
+
+		const data = {
+			keyCode,
+			preventDefault: sinon.spy(),
+		};
+
+		viewDocument.fire( 'keydown', new DomEventData( viewDocument, { target: document.body }, data ) );
 	}
 } );
