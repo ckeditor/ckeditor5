@@ -178,7 +178,6 @@ function insertCaptionElement( evt, changeType, data, batch ) {
 		const item = value.item;
 
 		if ( value.type == 'elementStart' && isImage( item ) && !getCaptionFromImage( item ) ) {
-			// Using batch of insertion.
 			batch.document.enqueueChanges( () => {
 				batch.insert( ModelPosition.createAt( item, 'end' ), new ModelElement( 'caption' ) );
 			} );
