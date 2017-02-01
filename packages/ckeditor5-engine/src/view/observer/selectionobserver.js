@@ -122,14 +122,6 @@ export default class SelectionObserver extends Observer {
 			this._handleSelectionChange( domDocument );
 		} );
 
-		// Call` #_fireSelectionChangeDoneDebounced` on each `selectionChange` event.
-		// This function is debounced what means that `selectionChangeDone` event will be fired only when
-		// defined int the function time will elapse since the last time the function was called.
-		// So `selectionChangeDone` will be fired when selection will stop changing.
-		this.listenTo( this.document, 'selectionChange', ( evt, data ) => {
-			this._fireSelectionChangeDoneDebounced( data );
-		} );
-
 		this._documents.add( domDocument );
 	}
 
@@ -182,12 +174,20 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		// Should be fired only when selection change was the only document change.
-		this.document.fire( 'selectionChange', {
+		const data = {
 			oldSelection: this.selection,
 			newSelection: newViewSelection,
 			domSelection: domSelection
-		} );
+		};
+
+		// Should be fired only when selection change was the only document change.
+		this.document.fire( 'selectionChange', data );
+
+		// Call` #_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
+		// This function is debounced what means that `selectionChangeDone` event will be fired only when
+		// defined int the function time will elapse since the last time the function was called.
+		// So `selectionChangeDone` will be fired when selection will stop changing.
+		this._fireSelectionChangeDoneDebounced( data );
 	}
 
 	/**
@@ -245,6 +245,24 @@ export default class SelectionObserver extends Observer {
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
  * @event module:engine/view/document~Document#event:selectionChange
+ * @param {Object} data
+ * @param {module:engine/view/selection~Selection} data.oldSelection Old View selection which is
+ * {@link module:engine/view/document~Document#selection}.
+ * @param {module:engine/view/selection~Selection} data.newSelection New View selection which is converted DOM selection.
+ * @param {Selection} data.domSelection Native DOM selection.
+ */
+
+/**
+ * Fired when selection stop changing.
+ *
+ * Introduced by {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
+ *
+ * Note that because {@link module:engine/view/observer/selectionobserver~SelectionObserver} is attached by the
+ * {@link module:engine/view/document~Document}
+ * this event is available by default.
+ *
+ * @see module:engine/view/observer/selectionobserver~SelectionObserver
+ * @event module:engine/view/document~Document#event:selectionChangeDone
  * @param {Object} data
  * @param {module:engine/view/selection~Selection} data.oldSelection Old View selection which is
  * {@link module:engine/view/document~Document#selection}.

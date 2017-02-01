@@ -235,29 +235,45 @@ describe( 'SelectionObserver', () => {
 
 		viewDocument.on( 'selectionChangeDone', spy );
 
-		// Fire `selectionChange` event.
-		viewDocument.fire( 'selectionChange' );
+		// Change selection.
+		changeDomSelection();
 
 		// Wait 100ms.
 		setTimeout( () => {
 			// Check if spy was called.
 			expect( spy.notCalled ).to.true;
 
-			// Fire event again.
-			viewDocument.fire( 'selectionChange' );
+			// Change selection.
+			changeDomSelection();
 
 			// Wait 100ms.
 			setTimeout( () => {
 				// Check if spy was called.
 				expect( spy.notCalled ).to.true;
 
-				// Fire event again.
-				viewDocument.fire( 'selectionChange', { foo: 'bar' } );
+				// Change selection.
+				changeDomSelection();
 
 				// Wait 210ms (debounced function should be called).
 				setTimeout( () => {
+					const data = spy.firstCall.args[ 1 ];
+
 					expect( spy.calledOnce ).to.true;
-					expect( spy.firstCall.args[ 1 ] ).to.deep.equal( { foo: 'bar' } );
+					expect( data ).to.have.property( 'domSelection' ).to.equal( document.getSelection() );
+
+					expect( data ).to.have.property( 'oldSelection' ).to.instanceof( ViewSelection );
+					expect( data.oldSelection.rangeCount ).to.equal( 0 );
+
+					expect( data ).to.have.property( 'newSelection' ).to.instanceof( ViewSelection );
+					expect( data.newSelection.rangeCount ).to.equal( 1 );
+
+					const newViewRange = data.newSelection.getFirstRange();
+					const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+
+					expect( newViewRange.start.parent ).to.equal( viewFoo );
+					expect( newViewRange.start.offset ).to.equal( 2 );
+					expect( newViewRange.end.parent ).to.equal( viewFoo );
+					expect( newViewRange.end.offset ).to.equal( 2 );
 
 					done();
 				}, 210 );
@@ -273,8 +289,8 @@ describe( 'SelectionObserver', () => {
 
 		viewDocument.on( 'selectionChangeDone', spy );
 
-		// Fire `selectionChange` event.
-		viewDocument.fire( 'selectionChange' );
+		// Change selection.
+		changeDomSelection();
 
 		// Wait 100ms.
 		setTimeout( () => {
