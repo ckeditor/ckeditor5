@@ -243,41 +243,32 @@ describe( 'SelectionObserver', () => {
 			// Check if spy was called.
 			expect( spy.notCalled ).to.true;
 
-			// Change selection.
+			// Change selection one more time.
 			changeDomSelection();
 
-			// Wait 100ms.
+			// Wait 210ms (debounced function should be called).
 			setTimeout( () => {
-				// Check if spy was called.
-				expect( spy.notCalled ).to.true;
+				const data = spy.firstCall.args[ 1 ];
 
-				// Change selection.
-				changeDomSelection();
+				expect( spy.calledOnce ).to.true;
+				expect( data ).to.have.property( 'domSelection' ).to.equal( document.getSelection() );
 
-				// Wait 210ms (debounced function should be called).
-				setTimeout( () => {
-					const data = spy.firstCall.args[ 1 ];
+				expect( data ).to.have.property( 'oldSelection' ).to.instanceof( ViewSelection );
+				expect( data.oldSelection.rangeCount ).to.equal( 0 );
 
-					expect( spy.calledOnce ).to.true;
-					expect( data ).to.have.property( 'domSelection' ).to.equal( document.getSelection() );
+				expect( data ).to.have.property( 'newSelection' ).to.instanceof( ViewSelection );
+				expect( data.newSelection.rangeCount ).to.equal( 1 );
 
-					expect( data ).to.have.property( 'oldSelection' ).to.instanceof( ViewSelection );
-					expect( data.oldSelection.rangeCount ).to.equal( 0 );
+				const newViewRange = data.newSelection.getFirstRange();
+				const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 
-					expect( data ).to.have.property( 'newSelection' ).to.instanceof( ViewSelection );
-					expect( data.newSelection.rangeCount ).to.equal( 1 );
+				expect( newViewRange.start.parent ).to.equal( viewFoo );
+				expect( newViewRange.start.offset ).to.equal( 3 );
+				expect( newViewRange.end.parent ).to.equal( viewFoo );
+				expect( newViewRange.end.offset ).to.equal( 3 );
 
-					const newViewRange = data.newSelection.getFirstRange();
-					const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
-
-					expect( newViewRange.start.parent ).to.equal( viewFoo );
-					expect( newViewRange.start.offset ).to.equal( 2 );
-					expect( newViewRange.end.parent ).to.equal( viewFoo );
-					expect( newViewRange.end.offset ).to.equal( 2 );
-
-					done();
-				}, 210 );
-			}, 100 );
+				done();
+			}, 210 );
 		}, 100 );
 	} );
 
