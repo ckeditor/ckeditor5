@@ -18,7 +18,6 @@
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#abf1964a65268f576e8014c247aee05345e4832e",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#72e67b457fe7c79cc04399bff6932aacd9455adb",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#00e488bbf926d59f54b5cd367fc57a481373b68b",
-    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#d3702f4d396849ab3e67358ef74fb670133b4e89",
-    "ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#6380f0ad47a136e0a24e147a041a8b2718162535"
+    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#d3702f4d396849ab3e67358ef74fb670133b4e89"
   }
 }
