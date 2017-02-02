@@ -38,7 +38,7 @@ export default class ImageAlternateText extends Plugin {
 	init() {
 		this._createButton();
 
-		// Push button to default image toolbar if one exists.
+		// Push button to default image toolbar if the image toolbar was loaded.
 		const defaultImageToolbarConfig = this.editor.config.get( 'image.defaultToolbar' );
 
 		if ( defaultImageToolbarConfig ) {
