@@ -5,6 +5,7 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ImageCaptioningEngine from '../../src/imagecaptioning/imagecaptioningengine';
 import ImageEngine from '../../src/imageengine';
@@ -217,6 +218,43 @@ describe( 'ImageCaptioningEngine', () => {
 					'<img src=""></img>' +
 					'<figcaption contenteditable="true">[]</figcaption>' +
 				'</figure>'
+			);
+		} );
+
+		it( 'should not remove figcaption when selection is moved from it to its image', () => {
+			setModelData( document, '<image src=""><caption>[foo bar]</caption></image>' );
+			const image = document.getRoot().getChild( 0 );
+
+			document.enqueueChanges( () => {
+				document.batch().remove( document.selection.getFirstRange() );
+				document.selection.setRanges( [ ModelRange.createOn( image ) ] );
+			} );
+
+			expect( getViewData( viewDocument ) ).to.equal(
+				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
+					'<img src=""></img>' +
+					'<figcaption contenteditable="true"></figcaption>' +
+				'</figure>]'
+			);
+		} );
+
+		it( 'should not remove figcaption when selection is moved from it to other image', () => {
+			setModelData( document, '<image src=""><caption>[foo bar]</caption></image><image src=""><caption></caption></image>' );
+			const image = document.getRoot().getChild( 1 );
+
+			document.enqueueChanges( () => {
+				document.selection.setRanges( [ ModelRange.createOn( image ) ] );
+			} );
+
+			expect( getViewData( viewDocument ) ).to.equal(
+				'<figure class="image ck-widget" contenteditable="false">' +
+					'<img src=""></img>' +
+					'<figcaption contenteditable="true">foo bar</figcaption>' +
+				'</figure>' +
+				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
+					'<img src=""></img>' +
+					'<figcaption contenteditable="true"></figcaption>' +
+				'</figure>]'
 			);
 		} );
 	} );
