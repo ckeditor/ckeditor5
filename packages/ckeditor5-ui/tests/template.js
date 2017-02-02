@@ -659,21 +659,21 @@ describe( 'Template', () => {
 				expect( text.textContent ).to.equal( 'abc' );
 			} );
 
-			it( 'preserves existing textContent of a Text Node', () => {
+			it( 'overrides existing textContent of a Text Node', () => {
 				text.textContent = 'foo';
 
 				new Template( {
 					text: bind.to( 'foo' )
 				} ).apply( text );
 
-				expect( text.textContent ).to.equal( 'foo bar' );
+				expect( text.textContent ).to.equal( 'bar' );
 
 				observable.foo = 'qux';
 
-				expect( text.textContent ).to.equal( 'foo qux' );
+				expect( text.textContent ).to.equal( 'qux' );
 			} );
 
-			it( 'preserves textContent of an existing Text Node in a HTMLElement', () => {
+			it( 'overrides textContent of an existing Text Node in a HTMLElement', () => {
 				el.textContent = 'bar';
 
 				new Template( {
@@ -681,7 +681,7 @@ describe( 'Template', () => {
 					children: [ 'foo' ]
 				} ).apply( el );
 
-				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div>barfoo</div>' );
+				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div>foo</div>' );
 			} );
 		} );
 
@@ -698,7 +698,7 @@ describe( 'Template', () => {
 				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div class="a b" x="bar"></div>' );
 			} );
 
-			it( 'preserves existing attributes', () => {
+			it( 'manages existing attribute values ("class" vs. "non–class")', () => {
 				el.setAttribute( 'class', 'default' );
 				el.setAttribute( 'x', 'foo' );
 
@@ -711,7 +711,7 @@ describe( 'Template', () => {
 				} ).apply( el );
 
 				expect( normalizeHtml( el.outerHTML ) ).to.equal(
-					'<div class="default a b" x="foo bar"></div>'
+					'<div class="default a b" x="bar"></div>'
 				);
 			} );
 
@@ -735,7 +735,7 @@ describe( 'Template', () => {
 					]
 				} ).apply( el );
 
-				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div class="parent">abcChildren:<span class="child"></span></div>' );
+				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div class="parent">Children:<span class="child"></span></div>' );
 			} );
 
 			describe( 'style', () => {
@@ -903,14 +903,25 @@ describe( 'Template', () => {
 			} );
 
 			it( 'should work for deep DOM structure with bindings and event listeners', () => {
-				const childA = document.createElement( 'a' );
-				const childB = document.createElement( 'b' );
+				const childA = getElement( {
+					tag: 'a',
+					attributes: {
+						class: 'a1 a2'
+					},
+					children: [
+						'a'
+					]
+				} );
 
-				childA.textContent = 'a';
-				childB.textContent = 'b';
-
-				childA.setAttribute( 'class', 'a1 a2' );
-				childB.setAttribute( 'class', 'b1 b2' );
+				const childB = getElement( {
+					tag: 'b',
+					attributes: {
+						class: 'b1 b2'
+					},
+					children: [
+						'b'
+					]
+				} );
 
 				el.appendChild( childA );
 				el.appendChild( childB );
@@ -939,7 +950,7 @@ describe( 'Template', () => {
 								class: bind.to( 'foo', val => 'applied-A-' + val ),
 								id: 'applied-A'
 							},
-							children: [ ', applied-a' ]
+							children: [ 'applied-a' ]
 						},
 						{
 							tag: 'b',
@@ -950,7 +961,7 @@ describe( 'Template', () => {
 								class: bind.to( 'baz', val => 'applied-B-' + val ),
 								id: 'applied-B'
 							},
-							children: [ ', applied-b' ]
+							children: [ 'applied-b' ]
 						},
 						'Text which is not to be applied because it does NOT exist in original element.'
 					],
@@ -964,15 +975,15 @@ describe( 'Template', () => {
 				} ).apply( el );
 
 				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div class="applied-parent-qux" id="BAR">' +
-					'<a class="a1 a2 applied-A-bar" id="applied-A">a, applied-a</a>' +
-					'<b class="b1 b2 applied-B-qux" id="applied-B">b, applied-b</b>' +
+					'<a class="a1 a2 applied-A-bar" id="applied-A">applied-a</a>' +
+					'<b class="b1 b2 applied-B-qux" id="applied-B">applied-b</b>' +
 				'</div>' );
 
 				observable.foo = 'updated';
 
 				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div class="applied-parent-qux" id="UPDATED">' +
-					'<a class="a1 a2 applied-A-updated" id="applied-A">a, applied-a</a>' +
-					'<b class="b1 b2 applied-B-qux" id="applied-B">b, applied-b</b>' +
+					'<a class="a1 a2 applied-A-updated" id="applied-A">applied-a</a>' +
+					'<b class="b1 b2 applied-B-qux" id="applied-B">applied-b</b>' +
 				'</div>' );
 
 				document.body.appendChild( el );
@@ -1062,7 +1073,7 @@ describe( 'Template', () => {
 				tpl.apply( el );
 
 				expect( normalizeHtml( el.outerHTML ) ).to.equal(
-					'<a>abar<b>bqux</b></a>'
+					'<a>bar<b>qux</b></a>'
 				);
 
 				tpl.revert( el );
@@ -1101,12 +1112,12 @@ describe( 'Template', () => {
 
 				tpl.apply( el );
 				expect( normalizeHtml( el.outerHTML ) ).to.equal(
-					'<a>afoo<b>b bar</b></a>'
+					'<a>foo<b>bar</b></a>'
 				);
 
 				observable.foo = 'abc';
 				expect( normalizeHtml( el.outerHTML ) ).to.equal(
-					'<a>afoo<b>b abc</b></a>'
+					'<a>foo<b>abc</b></a>'
 				);
 
 				tpl.revert( el );
@@ -1158,8 +1169,8 @@ describe( 'Template', () => {
 				tpl.apply( el );
 
 				expect( normalizeHtml( el.outerHTML ) ).to.equal(
-					'<a bar="ab ab1 ab2" baz="x" foo="af af1">' +
-						'<b bar="bb" foo="bf bf1"></b>' +
+					'<a bar="ab1 ab2" baz="x" foo="af1">' +
+						'<b bar="bb" foo="bf1"></b>' +
 					'</a>'
 				);
 
@@ -1209,16 +1220,16 @@ describe( 'Template', () => {
 
 				tpl.apply( el );
 				expect( normalizeHtml( el.outerHTML ) ).to.equal(
-					'<a bar="ab ab1 qux" foo="af af1">' +
-						'<b bar="bb" foo="bf bar"></b>' +
+					'<a bar="ab1 qux" foo="af1">' +
+						'<b bar="bb" foo="bar"></b>' +
 					'</a>'
 				);
 
 				observable.foo = 'x';
 				observable.baz = 'y';
 				expect( normalizeHtml( el.outerHTML ) ).to.equal(
-					'<a bar="ab ab1 y" foo="af af1">' +
-						'<b bar="bb" foo="bf x"></b>' +
+					'<a bar="ab1 y" foo="af1">' +
+						'<b bar="bb" foo="x"></b>' +
 					'</a>'
 				);
 
@@ -1357,7 +1368,7 @@ describe( 'Template', () => {
 								class: [ 'x', 'y' ],
 								'data-new-attr': 'foo'
 							},
-							children: [ ', applied-a' ]
+							children: [ 'applied-a' ]
 						},
 						{
 							tag: 'b',
@@ -1368,7 +1379,7 @@ describe( 'Template', () => {
 									bind.to( 'foo' )
 								]
 							},
-							children: [ ', applied-b' ]
+							children: [ 'applied-b' ]
 						}
 					],
 					on: {
@@ -1379,16 +1390,16 @@ describe( 'Template', () => {
 				tpl.apply( el );
 				expect( normalizeHtml( el.outerHTML ) ).to.equal(
 					'<div class="div1 div2" style="font-weight:bold;">' +
-						'<a class="a1 a2 x y" data-new-attr="foo">a, applied-a</a>' +
-						'<b class="b1 b2 a b bar">b, applied-b</b>' +
+						'<a class="a1 a2 x y" data-new-attr="foo">applied-a</a>' +
+						'<b class="b1 b2 a b bar">applied-b</b>' +
 					'</div>'
 				);
 
 				observable.foo = 'baz';
 				expect( normalizeHtml( el.outerHTML ) ).to.equal(
 					'<div class="div1 div2" style="font-weight:bold;">' +
-						'<a class="a1 a2 x y" data-new-attr="foo">a, applied-a</a>' +
-						'<b class="b1 b2 a b baz">b, applied-b</b>' +
+						'<a class="a1 a2 x y" data-new-attr="foo">applied-a</a>' +
+						'<b class="b1 b2 a b baz">applied-b</b>' +
 					'</div>'
 				);
 
@@ -2113,9 +2124,11 @@ describe( 'Template', () => {
 
 			it( 'works with Template#apply() – children', () => {
 				const el = document.createElement( 'div' );
-				const child = document.createElement( 'span' );
+				const child = getElement( {
+					tag: 'span',
+					children: [ 'foo' ]
+				} );
 
-				child.textContent = 'foo';
 				el.appendChild( child );
 
 				new Template( {
@@ -2132,10 +2145,10 @@ describe( 'Template', () => {
 					]
 				} ).apply( el );
 
-				expect( child.textContent ).to.equal( 'foo bar' );
+				expect( child.textContent ).to.equal( 'bar' );
 
 				observable.foo = 'baz';
-				expect( child.textContent ).to.equal( 'foo baz' );
+				expect( child.textContent ).to.equal( 'baz' );
 			} );
 		} );
 	} );

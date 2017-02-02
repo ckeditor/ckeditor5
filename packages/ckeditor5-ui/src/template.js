@@ -363,18 +363,13 @@ export default class Template {
 		//		{ text: [ Template.bind( ... ).to( ... ) ] }
 		//		{ text: [ 'foo', Template.bind( ... ).to( ... ), ... ] }
 		if ( hasTemplateBinding( this.text ) ) {
-			// Preserve the original content of the text node.
-			if ( config.revertData && node.textContent ) {
-				this.text.unshift( node.textContent );
-			}
-
 			this._bindToObservable( this.text, getTextUpdater( node ), config );
 		}
 		// Simply set text. Cases:
 		// 		{ text: [ 'all', 'are', 'static' ] }
 		// 		{ text: [ 'foo' ] }
 		else {
-			node.textContent += this.text.join( '' );
+			node.textContent = this.text.join( '' );
 		}
 
 		return node;
@@ -421,8 +416,9 @@ export default class Template {
 				//		{ class: { ns: 'abc', value: [ ... ] } }
 				const toBind = attrNs ? attrValue[ 0 ].value : attrValue;
 
-				// Preserve the original value.
-				if ( revertData ) {
+				// Extend the original value of attributes like "style" and "class",
+				// don't override them.
+				if ( revertData && shouldExtend( attrName ) ) {
 					toBind.unshift( domAttrValue );
 				}
 
@@ -443,8 +439,9 @@ export default class Template {
 			// 		{ class: [ 'all', 'are', 'static' ] }
 			// 		{ class: [ { ns: 'abc', value: [ 'foo' ] } ] }
 			else {
-				// Preserve the original value.
-				if ( domAttrValue ) {
+				// Extend the original value of attributes like "style" and "class",
+				// don't override them.
+				if ( revertData && domAttrValue && shouldExtend( attrName ) ) {
 					attrValue.unshift( domAttrValue );
 				}
 
@@ -1245,6 +1242,15 @@ function getEmptyRevertData() {
 		bindings: [],
 		attributes: {}
 	};
+}
+
+// Checks whether an attribute should be extended when
+// {@link module:ui/template~Template#apply} is called.
+//
+// @private
+// @param {String} attrName Attribute name to check.
+function shouldExtend( attrName ) {
+	return attrName == 'class' || attrName == 'style';
 }
 
 /**
