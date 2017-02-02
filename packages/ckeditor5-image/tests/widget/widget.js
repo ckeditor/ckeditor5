@@ -9,6 +9,7 @@ import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobs
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import { widgetize } from '../../src/widget/utils';
 import ViewContainer from '@ckeditor/ckeditor5-engine/src/view/containerelement';
+import ViewEditable from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import AttributeContainer from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -33,6 +34,9 @@ describe( 'Widget', () => {
 				doc.schema.registerItem( 'paragraph', '$block' );
 				doc.schema.registerItem( 'inline', '$inline' );
 				doc.schema.objects.add( 'inline' );
+				doc.schema.registerItem( 'nested' );
+				doc.schema.allow( { name: '$inline', inside: 'nested' } );
+				doc.schema.allow( { name: 'nested', inside: 'widget' } );
 
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'paragraph' )
@@ -50,6 +54,10 @@ describe( 'Widget', () => {
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'inline' )
 					.toElement( 'figure' );
+
+				buildModelConverter().for( editor.editing.modelToView )
+					.fromElement( 'nested' )
+					.toElement( () => new ViewEditable( 'figcaption', { contenteditable: true } ) );
 			} );
 	} );
 
@@ -88,6 +96,21 @@ describe( 'Widget', () => {
 
 		expect( getModelData( doc ) ).to.equal( '[<widget></widget>]' );
 		sinon.assert.calledOnce( domEventDataMock.preventDefault );
+	} );
+
+	it( 'should do nothing if clicked inside nested editable', () => {
+		setModelData( doc, '[]<widget><nested>foo bar</nested></widget>' );
+		const viewDiv = viewDocument.getRoot().getChild( 0 );
+		const viewFigcaption = viewDiv.getChild( 0 );
+
+		const domEventDataMock = {
+			target: viewFigcaption,
+			preventDefault: sinon.spy()
+		};
+
+		viewDocument.fire( 'mousedown', domEventDataMock );
+
+		sinon.assert.notCalled( domEventDataMock.preventDefault );
 	} );
 
 	it( 'should do nothing if clicked in non-widget element', () => {

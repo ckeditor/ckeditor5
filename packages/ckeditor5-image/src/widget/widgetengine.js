@@ -8,6 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import RootEditable from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement';
 import { WIDGET_SELECTED_CLASS_NAME, isWidget } from './utils';
 
 /**
@@ -35,11 +36,10 @@ export default class WidgetEngine extends Plugin {
 
 			const viewSelection = conversionApi.viewSelection;
 
-			// If selection is placed inside some nested editable check if it is placed inside widget element.
-			// If yes - add CSS class to that widget element.
+			// Add CSS class if selection is placed inside nested editable that belongs to widget.
 			const editableElement = viewSelection.editableElement;
 
-			if ( editableElement ) {
+			if ( editableElement && !( editableElement instanceof RootEditable ) ) {
 				const widget = editableElement.findAncestor( element => isWidget( element ) );
 
 				if ( widget ) {
