@@ -20,14 +20,22 @@
 }
 
 // Image widget's styles.
-.ck-widget.image {
+.image {
 	text-align: center;
 	clear: both;
 	position: relative;
 
 	&.image-style-side {
-		display: inline-block;
 		float: right;
 		margin-left: 0.8em;
+		max-width: 50%;
 	}
+}
+
+.image > img {
+	// Prevent unnecessary margins caused by line-height (see #44).
+	display: block;
+
+	// Center the image if its width is smaller than content's width.
+	margin: 0 auto;
 }
