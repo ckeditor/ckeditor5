@@ -11,6 +11,11 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageCaptioningEngine from './imagecaptioningengine';
 import '../../theme/imagecaptioning/theme.scss';
 
+/**
+ * The image captioning plugin.
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class ImageCaptioning extends Plugin {
 	/**
 	 * @inheritDoc

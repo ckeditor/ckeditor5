@@ -21,6 +21,13 @@ import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import { isImage, isImageWidget } from '../utils';
 import { captionEditableCreator, isCaptionEditable, getCaptionFromImage } from './utils';
 
+/**
+ * The image captioning engine plugin.
+ *
+ * Registers proper converters. Takes care of adding caption element if image without it is inserted to model document.
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class ImageCaptioningEngine extends Plugin {
 	/**
 	 * @inheritDoc
@@ -32,6 +39,13 @@ export default class ImageCaptioningEngine extends Plugin {
 		const schema = document.schema;
 		const data = editor.data;
 		const editing = editor.editing;
+
+		/**
+		 * Last selected caption editable.
+		 * It is used for hiding editable when is empty and image widget is no longer selected.
+		 *
+		 * @member {module:image/imagecaptioning/imagecaptioningengine~ImageCaptioningEngine} #_lastSelectedEditable
+		 */
 
 		// Schema configuration.
 		schema.registerItem( 'caption' );
@@ -73,8 +87,6 @@ export default class ImageCaptioningEngine extends Plugin {
 		// Adding / removing caption element when there is no text in the model.
 		const selection = viewDocument.selection;
 
-		this.lastCaptionEditable = undefined;
-
 		// Update view before each rendering.
 		this.listenTo( viewDocument, 'render', () => {
 			// Check if there is an empty caption view element to remove.
@@ -87,7 +99,7 @@ export default class ImageCaptioningEngine extends Plugin {
 			const editableElement = selection.editableElement;
 
 			if ( editableElement && isCaptionEditable( selection.editableElement ) ) {
-				this.lastCaptionEditable = selection.editableElement;
+				this._lastSelectedEditable = selection.editableElement;
 			}
 		}, { priority: 'high' } );
 	}
@@ -99,7 +111,7 @@ export default class ImageCaptioningEngine extends Plugin {
 	 */
 	_removeEmptyCaption() {
 		const viewSelection = this.editor.editing.view.selection;
-		const viewCaptionElement = this.lastCaptionEditable;
+		const viewCaptionElement = this._lastSelectedEditable;
 
 		// No caption to hide.
 		if ( !viewCaptionElement ) {
@@ -155,7 +167,7 @@ export default class ImageCaptioningEngine extends Plugin {
 				viewWriter.insert( viewPosition, viewCaption );
 			}
 
-			this.lastCaptionEditable = viewCaption;
+			this._lastSelectedEditable = viewCaption;
 		}
 	}
 }
