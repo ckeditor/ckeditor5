@@ -4,6 +4,9 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ViewAttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
+import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
@@ -112,6 +115,29 @@ describe( 'ImageCaptioningEngine', () => {
 			it( 'should not convert caption from other elements', () => {
 				setModelData( document, '<widget>foo bar<caption></caption></widget>' );
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( '<widget>foo bar</widget>' );
+			} );
+
+			it( 'should not convert when element is already consumed', () => {
+				editor.editing.modelToView.on(
+					'insert:caption',
+					( evt, data, consumable, conversionApi ) => {
+						consumable.consume( data.item, 'insert' );
+
+						const imageFigure = conversionApi.mapper.toViewElement( data.range.start.parent );
+						const viewElement = new ViewAttributeElement( 'span' );
+
+						const viewPosition = ViewPosition.createAt( imageFigure, 'end' );
+						conversionApi.mapper.bindElements( data.item, viewElement );
+						viewWriter.insert( viewPosition, viewElement );
+					},
+					{ priority: 'high' }
+				);
+
+				setModelData( document, '<image src="img.png"><caption>Foo bar baz.</caption></image>' );
+
+				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+					'<figure class="image ck-widget" contenteditable="false"><img src="img.png"></img><span></span>Foo bar baz.</figure>'
+				);
 			} );
 		} );
 	} );

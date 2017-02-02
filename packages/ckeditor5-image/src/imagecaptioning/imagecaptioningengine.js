@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ModelTreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
+import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
@@ -18,7 +19,6 @@ import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import { isImage, isImageWidget } from '../utils';
-import { captionModelToView } from './converters';
 import { captionEditableCreator, isCaptionEditable, getCaptionFromImage } from './utils';
 
 export default class ImageCaptioningEngine extends Plugin {
@@ -183,4 +183,30 @@ function insertCaptionElement( evt, changeType, data, batch ) {
 			} );
 		}
 	}
+}
+
+// Creates a converter that converts image caption model element to view element.
+//
+// @private
+// @param {Function|module:engine/view/element~Element} elementCreator
+// @return {Function}
+function captionModelToView( elementCreator ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		const captionElement = data.item;
+
+		if ( isImage( captionElement.parent ) && ( captionElement.childCount > 0 ) ) {
+			if ( !consumable.consume( data.item, 'insert' ) ) {
+				return;
+			}
+
+			const imageFigure = conversionApi.mapper.toViewElement( data.range.start.parent );
+			const viewElement = ( elementCreator instanceof ViewElement ) ?
+				elementCreator.clone( true ) :
+				elementCreator( data, consumable, conversionApi );
+
+			const viewPosition = ViewPosition.createAt( imageFigure, 'end' );
+			conversionApi.mapper.bindElements( data.item, viewElement );
+			viewWriter.insert( viewPosition, viewElement );
+		}
+	};
 }
