@@ -53,10 +53,6 @@ describe( 'InlineEditableUIView', () => {
 			expect( view.element.getAttribute( 'aria-label' ) ).to.equal( ariaLabel );
 		} );
 
-		it( 'has proper title', () => {
-			expect( view.element.getAttribute( 'title' ) ).to.equal( ariaLabel );
-		} );
-
 		it( 'has proper class name', () => {
 			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-editor__editable_inline' ) ).to.be.true;
