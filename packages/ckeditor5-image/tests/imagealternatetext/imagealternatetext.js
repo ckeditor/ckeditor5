@@ -91,6 +91,24 @@ describe( 'ImageAlternateText', () => {
 			sinon.assert.calledOnce( spy );
 			expect( plugin.form.lebeledInput.value ).equals( '' );
 		} );
+
+		it( 'should not add button to default image toolbar if image toolbar is not present', () => {
+			expect( editor.config.get( 'image.defaultToolbar' ) ).to.be.undefined;
+		} );
+
+		it( 'should add button to default image toolbar if toolbar is present', () => {
+			const editorElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( editorElement );
+
+			return ClassicTestEditor.create( editorElement, {
+				plugins: [ ImageAlternateText, ImageToolbar ]
+			} )
+			.then( newEditor => {
+				expect( newEditor.config.get( 'image.defaultToolbar' ) ).to.eql( [ 'imageAlternateText' ] );
+
+				newEditor.destroy();
+			} );
+		} );
 	} );
 
 	describe( 'balloon panel form', () => {
