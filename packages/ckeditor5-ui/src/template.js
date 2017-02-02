@@ -100,7 +100,7 @@ export default class Template {
 		 *
 		 * @protected
 		 * @readonly
-		 * @member {ui/template~Template}
+		 * @member {module:ui/template~RenderConfig#renderData}
 		 */
 		this._revertData = null;
 	}
@@ -124,6 +124,12 @@ export default class Template {
 	 * **Note:** No new DOM nodes (HTMLElement or Text) will be created. Applying extends attributes
 	 * ({@link module:ui/template~TemplateDefinition attributes}) and listeners ({@link module:ui/template~TemplateDefinition on}) only.
 	 *
+	 * **Note:** Existing "class" and "style" attributes are extended when a template
+	 * is applied to a Node, while other attributes and `textContent` are overridden.
+	 *
+	 * **Note:** The process of applying a template can be easily reverted using
+	 * {@link module:ui/template~Template#revert} method.
+	 *
 	 *		const element = document.createElement( 'div' );
 	 *		const bind = Template.bind( observableInstance, emitterInstance );
 	 *
@@ -141,9 +147,6 @@ export default class Template {
 	 *		} ).apply( element );
 	 *
 	 *		element.outerHTML == "<div id="first-div" class="my-div">Div text.</div>"
-	 *
-	 * **Note:** The process of applying a template can be reverted using
-	 * {@link module:ui/template~Template#revert} method.
 	 *
 	 * @see module:ui/template~Template#render
 	 * @see module:ui/template~Template#revert
@@ -360,14 +363,28 @@ export default class Template {
 		}
 
 		// Check if this Text Node is bound to Observable. Cases:
-		//		{ text: [ Template.bind( ... ).to( ... ) ] }
-		//		{ text: [ 'foo', Template.bind( ... ).to( ... ), ... ] }
+		//
+		//		text: [ Template.bind( ... ).to( ... ) ]
+		//
+		//		text: [
+		//			'foo',
+		//			Template.bind( ... ).to( ... ),
+		//			...
+		//		]
+		//
 		if ( hasTemplateBinding( this.text ) ) {
-			this._bindToObservable( this.text, getTextUpdater( node ), config );
+			this._bindToObservable( {
+				schema: this.text,
+				updater: getTextUpdater( node ),
+				config
+			} );
 		}
 		// Simply set text. Cases:
-		// 		{ text: [ 'all', 'are', 'static' ] }
-		// 		{ text: [ 'foo' ] }
+		//
+		//		text: [ 'all', 'are', 'static' ]
+		//
+		//		text: [ 'foo' ]
+		//
 		else {
 			node.textContent = this.text.join( '' );
 		}
@@ -404,40 +421,78 @@ export default class Template {
 			}
 
 			// Detect custom namespace:
-			// 		{ class: { ns: 'abc', value: Template.bind( ... ).to( ... ) } }
+			//
+			//		class: {
+			//			ns: 'abc',
+			//			value: Template.bind( ... ).to( ... )
+			//		}
+			//
 			attrNs = ( isObject( attrValue[ 0 ] ) && attrValue[ 0 ].ns ) ? attrValue[ 0 ].ns : null;
 
 			// Activate binding if one is found. Cases:
-			// 		{ class: [ Template.bind( ... ).to( ... ) ] }
-			// 		{ class: [ 'bar', Template.bind( ... ).to( ... ), 'baz' ] }
-			// 		{ class: { ns: 'abc', value: Template.bind( ... ).to( ... ) } }
+			//
+			//		class: [
+			//			Template.bind( ... ).to( ... )
+			//		]
+			//
+			//		class: [
+			//			'bar',
+			//			Template.bind( ... ).to( ... ),
+			//			'baz'
+			//		]
+			//
+			//		class: {
+			//			ns: 'abc',
+			//			value: Template.bind( ... ).to( ... )
+			//		}
+			//
 			if ( hasTemplateBinding( attrValue ) ) {
 				// Normalize attributes with additional data like namespace:
-				//		{ class: { ns: 'abc', value: [ ... ] } }
-				const toBind = attrNs ? attrValue[ 0 ].value : attrValue;
+				//
+				//		class: {
+				//			ns: 'abc',
+				//			value: [ ... ]
+				//		}
+				//
+				const valueToBind = attrNs ? attrValue[ 0 ].value : attrValue;
 
 				// Extend the original value of attributes like "style" and "class",
 				// don't override them.
 				if ( revertData && shouldExtend( attrName ) ) {
-					toBind.unshift( domAttrValue );
+					valueToBind.unshift( domAttrValue );
 				}
 
-				this._bindToObservable( toBind, getAttributeUpdater( node, attrName, attrNs ), config );
+				this._bindToObservable( {
+					schema: valueToBind,
+					updater: getAttributeUpdater( node, attrName, attrNs ),
+					config
+				} );
 			}
 
 			// Style attribute could be an Object so it needs to be parsed in a specific way.
+			//
 			//		style: {
 			//			width: '100px',
 			//			height: Template.bind( ... ).to( ... )
 			//		}
+			//
 			else if ( attrName == 'style' && typeof attrValue[ 0 ] !== 'string' ) {
 				this._renderStyleAttribute( attrValue[ 0 ], config );
 			}
 
-			// Otherwise simply set the static attribute.
-			// 		{ class: [ 'foo' ] }
-			// 		{ class: [ 'all', 'are', 'static' ] }
-			// 		{ class: [ { ns: 'abc', value: [ 'foo' ] } ] }
+			// Otherwise simply set the static attribute:
+			//
+			//		class: [ 'foo' ]
+			//
+			//		class: [ 'all', 'are', 'static' ]
+			//
+			//		class: [
+			//			{
+			//				ns: 'abc',
+			//				value: [ 'foo' ]
+			//			}
+			//		]
+			//
 			else {
 				// Extend the original value of attributes like "style" and "class",
 				// don't override them.
@@ -446,10 +501,18 @@ export default class Template {
 				}
 
 				attrValue = attrValue
-					// Retrieve "values" from { class: [ { ns: 'abc', value: [ ... ] } ] }
-					.map( v => v ? ( v.value || v ) : v )
+					// Retrieve "values" from:
+					//
+					//		class: [
+					//			{
+					//				ns: 'abc',
+					//				value: [ ... ]
+					//			}
+					//		]
+					//
+					.map( val => val ? ( val.value || val ) : val )
 					// Flatten the array.
-					.reduce( ( p, n ) => p.concat( n ), [] )
+					.reduce( ( prev, next ) => prev.concat( next ), [] )
 					// Convert into string.
 					.reduce( arrayValueReducer, '' );
 
@@ -466,18 +529,18 @@ export default class Template {
 	 * Style attribute is an {Object} with static values:
 	 *
 	 *		attributes: {
-	 * 			style: {
-	 * 				color: 'red'
-	 * 			}
-	 * 		}
+	 *			style: {
+	 *				color: 'red'
+	 *			}
+	 *		}
 	 *
 	 * or values bound to {@link module:ui/model~Model} properties:
 	 *
 	 *		attributes: {
-	 * 			style: {
-	 * 				color: bind.to( ... )
-	 * 			}
-	 * 		}
+	 *			style: {
+	 *				color: bind.to( ... )
+	 *			}
+	 *		}
 	 *
 	 * Note: `style` attribute is rendered without setting the namespace. It does not seem to be
 	 * needed.
@@ -492,16 +555,26 @@ export default class Template {
 		for ( let styleName in styles ) {
 			const styleValue = styles[ styleName ];
 
-			// style: {
-			//	color: bind.to( 'attribute' )
-			// }
+			// Cases:
+			//
+			//		style: {
+			//			color: bind.to( 'attribute' )
+			//		}
+			//
 			if ( hasTemplateBinding( styleValue ) ) {
-				this._bindToObservable( [ styleValue ], getStyleUpdater( node, styleName ), config );
+				this._bindToObservable( {
+					schema: [ styleValue ],
+					updater: getStyleUpdater( node, styleName ),
+					config
+				} );
 			}
 
-			// style: {
-			//	color: 'red'
-			// }
+			// Cases:
+			//
+			//		style: {
+			//			color: 'red'
+			//		}
+			//
 			else {
 				node.style[ styleName ] = styleValue;
 			}
@@ -587,15 +660,16 @@ export default class Template {
 	 * Note: {@link module:ui/template~TemplateValueSchema} can be for HTMLElement attributes or Text Node `textContent`.
 	 *
 	 * @protected
-	 * @param {module:ui/template~TemplateValueSchema} schema
-	 * @param {Function} updater A function which updates DOM (like attribute or text).
-	 * @param {module:ui/template~RenderConfig} config Rendering config.
+	 * @param {Object} options Binding options.
+	 * @param {module:ui/template~TemplateValueSchema} options.schema
+	 * @param {Function} options.updater A function which updates DOM (like attribute or text).
+	 * @param {module:ui/template~RenderConfig} options.config Rendering config.
 	 */
-	_bindToObservable( schema, updater, config ) {
+	_bindToObservable( { schema, updater, config } ) {
 		const revertData = config.revertData;
 
 		// Set initial values.
-		syncValueSchemaValue( ...arguments );
+		syncValueSchemaValue( schema, updater, config );
 
 		const revertBindings = schema
 			// Filter "falsy" (false, undefined, null, '') value schema components out.
@@ -605,7 +679,7 @@ export default class Template {
 			// Once only the actual binding are left, let the emitter listen to observable change:attribute event.
 			// TODO: Reduce the number of listeners attached as many bindings may listen
 			// to the same observable attribute.
-			.map( templateBinding => templateBinding.activateAttributeListener( ...arguments ) );
+			.map( templateBinding => templateBinding.activateAttributeListener( schema, updater, config ) );
 
 		if ( revertData ) {
 			revertData.bindings.push( revertBindings );
@@ -625,7 +699,14 @@ export default class Template {
 		for ( let binding of revertData.bindings ) {
 			// Each binding may consist of several observable+observable#attribute.
 			// like the following has 2:
-			// 		class: [ 'x', bind.to( 'foo' ), 'y', bind.to( 'bar' ) ]
+			//
+			//		class: [
+			//			'x',
+			//			bind.to( 'foo' ),
+			//			'y',
+			//			bind.to( 'bar' )
+			//		]
+			//
 			for ( let revertBinding of binding ) {
 				revertBinding();
 			}
@@ -813,7 +894,12 @@ function hasTemplateBinding( schema ) {
 	}
 
 	// Normalize attributes with additional data like namespace:
-	// 		class: { ns: 'abc', value: [ ... ] }
+	//
+	//		class: {
+	//			ns: 'abc',
+	//			value: [ ... ]
+	//		}
+	//
 	if ( schema.value ) {
 		schema = schema.value;
 	}
@@ -856,7 +942,9 @@ function syncValueSchemaValue( schema, updater, { node } ) {
 	let value = getValueSchemaValue( schema, node );
 
 	// Check if schema is a single Template.bind.if, like:
-	//		{ class: Template.bind.if( 'foo' ) }
+	//
+	//		class: Template.bind.if( 'foo' )
+	//
 	if ( schema.length == 1 && schema[ 0 ] instanceof TemplateIfBinding ) {
 		value = value[ 0 ];
 	} else {
@@ -1236,6 +1324,10 @@ function isViewCollection( item ) {
 	return item instanceof ViewCollection;
 }
 
+// Creates an empty skeleton for {@link module:ui/template~Template#revert}
+// data.
+//
+// @private
 function getEmptyRevertData() {
 	return {
 		children: [],

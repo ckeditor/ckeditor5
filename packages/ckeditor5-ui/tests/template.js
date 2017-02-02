@@ -613,7 +613,7 @@ describe( 'Template', () => {
 		let observable, domEmitter, bind;
 
 		beforeEach( () => {
-			el = document.createElement( 'div' );
+			el = getElement( { tag: 'div' } );
 			text = document.createTextNode( '' );
 
 			observable = new Model( {
@@ -717,7 +717,7 @@ describe( 'Template', () => {
 
 			it( 'applies attributes and TextContent to a DOM tree', () => {
 				el.textContent = 'abc';
-				el.appendChild( document.createElement( 'span' ) );
+				el.appendChild( getElement( { tag: 'span' } ) );
 
 				new Template( {
 					tag: 'div',
@@ -1009,7 +1009,7 @@ describe( 'Template', () => {
 		let observable, domEmitter, bind;
 
 		beforeEach( () => {
-			el = document.createElement( 'div' );
+			el = getElement( { tag: 'div' } );
 
 			observable = new Model( {
 				foo: 'bar',
@@ -1644,7 +1644,7 @@ describe( 'Template', () => {
 
 				observable.on( 'a', spy );
 
-				const div = document.createElement( 'div' );
+				const div = getElement( { tag: 'div' } );
 				el.appendChild( div );
 
 				dispatchEvent( div, 'test' );
@@ -2123,7 +2123,7 @@ describe( 'Template', () => {
 			} );
 
 			it( 'works with Template#apply() – children', () => {
-				const el = document.createElement( 'div' );
+				const el = getElement( { tag: 'div' } );
 				const child = getElement( {
 					tag: 'span',
 					children: [ 'foo' ]
