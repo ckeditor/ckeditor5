@@ -228,9 +228,6 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should fire `selectionChangeDone` event after selection stop changing', ( done ) => {
-		// Note that it's difficult to test lodash#debounce with sinon fake timers.
-		// See: https://github.com/lodash/lodash/issues/304
-
 		const spy = sinon.spy();
 
 		viewDocument.on( 'selectionChangeDone', spy );
@@ -239,6 +236,8 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 
 		// Wait 100ms.
+		// Note that it's difficult/not possible to test lodash#debounce with sinon fake timers.
+		// See: https://github.com/lodash/lodash/issues/304
 		setTimeout( () => {
 			// Check if spy was called.
 			expect( spy.notCalled ).to.true;
@@ -273,9 +272,6 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should not fire `selectionChangeDone` event when observer will be destroyed', ( done ) => {
-		// Note that it's difficult to test lodash#debounce with sinon fake timers.
-		// See: https://github.com/lodash/lodash/issues/304
-
 		const spy = sinon.spy();
 
 		viewDocument.on( 'selectionChangeDone', spy );
@@ -284,6 +280,8 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 
 		// Wait 100ms.
+		// Note that it's difficult/not possible to test lodash#debounce with sinon fake timers.
+		// See: https://github.com/lodash/lodash/issues/304
 		setTimeout( () => {
 			// And destroy observer.
 			selectionObserver.destroy();

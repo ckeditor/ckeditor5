@@ -31,7 +31,7 @@ export default class FakeSelectionObserver extends Observer {
 		super( document );
 
 		/**
-		 * Fires `selectionChangeDone` event debounced. It use `lodash#debounce` method to delay function call.
+		 * Fires debounced event `selectionChangeDone`. It uses `lodash#debounce` method to delay function call.
 		 *
 		 * @private
 		 * @param {Object} data Selection change data.
