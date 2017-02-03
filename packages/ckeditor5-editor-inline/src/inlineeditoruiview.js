@@ -12,8 +12,7 @@ import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/i
 import FloatingToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/floating/floatingtoolbarview';
 
 /**
- * Inline editor UI view. Uses inline editable and floating toolbar, all
- * enclosed in a boxed UI view.
+ * Inline editor UI view. Uses inline editable and floating toolbar.
  *
  * @extends module:ui/editorui/editoruiview~EditorUIView
  */
