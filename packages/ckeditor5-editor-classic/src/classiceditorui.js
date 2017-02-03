@@ -16,6 +16,8 @@ import {
 
 /**
  * The classic editor UI class.
+ *
+ * @implements module:core/editor/editorui~EditorUI
  */
 export default class ClassicEditorUI {
 	/**
@@ -26,34 +28,22 @@ export default class ClassicEditorUI {
 	 */
 	constructor( editor, view ) {
 		/**
-		 * Editor that the UI belongs to.
-		 *
-		 * @readonly
-		 * @member {module:core/editor/editor~Editor}
+		 * @inheritDoc
 		 */
 		this.editor = editor;
 
 		/**
-		 * View of the ui.
-		 *
-		 * @readonly
-		 * @member {module:ui/editorui/editoruiview~EditorUIView}
+		 * @inheritDoc
 		 */
 		this.view = view;
 
 		/**
-		 * Instance of the {@link module:ui/componentfactory~ComponentFactory}.
-		 *
-		 * @readonly
-		 * @member {module:ui/componentfactory~ComponentFactory}
+		 * @inheritDoc
 		 */
 		this.componentFactory = new ComponentFactory( editor );
 
 		/**
-		 * Keeps information about editor focus.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
+		 * @inheritDoc
 		 */
 		this.focusTracker = new FocusTracker();
 
