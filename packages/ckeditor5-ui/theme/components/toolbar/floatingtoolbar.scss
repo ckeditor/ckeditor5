@@ -2,7 +2,7 @@
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
 .ck-toolbar {
-	.ck-toolbar_floating {
+	&.ck-toolbar_floating {
 		position: absolute;
 		display: none;
 
