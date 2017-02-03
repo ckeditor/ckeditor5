@@ -1,11 +1,16 @@
 <p>
-	<button id="destroyEditor">Destroy editor</button>
-	<button id="initEditor">Init editor</button>
+	<button id="destroyEditors">Destroy editor</button>
+	<button id="initEditors">Init editors</button>
 </p>
 
-<div id="editor" contenteditable="true" class="custom-class" custom-attr="foo">
-	<h2>Hello world!</h2>
+<div id="editor-1" contenteditable="true" class="custom-class" custom-attr="foo">
+	<h2>Editor 1</h2>
 	<p>This is an editor instance.</p>
+</div>
+
+<div id="editor-2" contenteditable="true" class="custom-class" custom-attr="foo">
+	<h2>Editor 2</h2>
+	<p>This is another editor instance.</p>
 </div>
 
 <style>
@@ -14,10 +19,10 @@
 		height: 10000px;
 	}
 
-	#editor {
-		margin-top: 200px;
+	.custom-class {
+		margin-top: 100px;
 		margin-left: 100px;
-		margin-bottom: 200px;
+		margin-bottom: 100px;
 		width: 450px;
 	}
 </style>

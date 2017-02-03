@@ -1,24 +1,27 @@
-1. Click "Init editor".
+1. Click "Init editors".
 2. Expected:
-  * Inline editor should be created.
-  * The element used as editable should remain visible.
-    * It should preserve `.custom-class` and `custom-attr="foo"`.
-  * There should be a floating toolbar with "Bold", "Italic", "Undo", "Redo", "Link" and "Unlink" buttons.
+  * Two inline editor should be created.
+  * Elements used as editables should remain visible.
+    * They should preserve `.custom-class` and `custom-attr="foo"`.
+  * There should be floating toolbars with "Bold", "Italic", "Undo", "Redo", "Link" and "Unlink" buttons.
 3. Scroll the webpage.
 4. Expected:
-  * The toolbar should float around but always stick to editable.
-  * The toolbar should stick to the bottom of the editable if there's not enough space above.
-5. Click "Destroy editor".
+  * Focused editor's toolbar should float around but always stick to editable.
+  * Focused editor's toolbar should stick to the bottom of the editable if there's not enough space above.
+5. Press <kbd>Alt+F10</kbd> when focusing the editor.
 6. Expected:
-  * Editor should be destroyed.
-  * The element used as editable should remain visible.
-    * It should preserve `.custom-class` and `custom-attr="foo"`.
-  * The element should contain its data (updated).
-  * The 'ck-body region' should be removed.
+  * Toolbar should gain focus. Editable should keep its styling.
+7. Click "Destroy editors".
+8. Expected:
+  * Editors should be destroyed.
+  * Element used as editables should remain visible.
+    * They should preserve `.custom-class` and `custom-attr="foo"`.
+  * Elements should contain its data (updated).
+  * `.ck-body` regions should be removed from `<body>`.
 
 ## Notes:
 
 * You can play with:
-  * `editable.isReadOnly`,
-* Changes to `editor.focusTracker.isFocused` should be logged to the console.
+  * `window.editables[ N ].isReadOnly`,
+* Changes to `window.editors[ name ].focusTracker.isFocused` should be logged to the console.
 * Features should work.

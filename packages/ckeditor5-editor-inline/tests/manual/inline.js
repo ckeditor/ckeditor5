@@ -16,40 +16,56 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import testUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-let editor, editable, observer;
+window.editors = {};
+window.editables = [];
+window._observers = [];
 
-function initEditor() {
-	InlineEditor.create( document.querySelector( '#editor' ), {
-		plugins: [ Link, Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
-		toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo', 'link', 'unlink' ]
-	} )
-	.then( newEditor => {
-		console.log( 'Editor was initialized', newEditor );
-		console.log( 'You can now play with it using global `editor` and `editable` variables.' );
+function initEditors() {
+	init( '#editor-1' );
+	init( '#editor-2' );
 
-		window.editor = editor = newEditor;
-		window.editable = editable = editor.editing.view.getRoot();
+	function init( selector ) {
+		InlineEditor.create( document.querySelector( selector ), {
+			plugins: [ Link, Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
+			toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo', 'link', 'unlink' ]
+		} )
+		.then( editor => {
+			console.log( `${ selector } has been initialized`, editor );
+			console.log( 'It has been added to global `editors` and `editables`.' );
 
-		observer = testUtils.createObserver();
-		observer.observe( 'editor.ui.focusTracker', editor.ui.focusTracker, [ 'isFocused' ] );
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
-}
+			window.editors[ selector ] = editor;
+			window.editables.push( editor.editing.view.getRoot() );
 
-function destroyEditor() {
-	editor.destroy()
-		.then( () => {
-			window.editor = editor = null;
-			window.editable = editable = null;
+			let observer = testUtils.createObserver();
 
-			observer.stopListening();
-			observer = null;
+			observer.observe(
+				`${ selector }.ui.focusTracker`,
+				editor.ui.focusTracker,
+				[ 'isFocused' ]
+			);
 
-			console.log( 'Editor was destroyed' );
+			window._observers.push( observer );
+		} )
+		.catch( err => {
+			console.error( err.stack );
 		} );
+	}
 }
 
-document.getElementById( 'initEditor' ).addEventListener( 'click', initEditor );
-document.getElementById( 'destroyEditor' ).addEventListener( 'click', destroyEditor );
+function destroyEditors() {
+	for ( let selector in window.editors ) {
+		window.editors[ selector ].destroy().then( () => {
+			console.log( `${ selector } was destroyed.` );
+		} );
+	}
+
+	for ( let observer of window._observers ) {
+		observer.stopListening();
+	}
+
+	window.editors = {};
+	window.editables.length = window._observers.length = 0;
+}
+
+document.getElementById( 'initEditors' ).addEventListener( 'click', initEditors );
+document.getElementById( 'destroyEditors' ).addEventListener( 'click', destroyEditors );
