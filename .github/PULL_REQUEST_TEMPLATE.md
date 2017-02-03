@@ -1,8 +1,6 @@
 ### Proposed merge commit message
 
-```
 Type: Message. Closes: #000.
-```
 
 Convention:
 https://github.com/ckeditor/ckeditor5-design/wiki/Git-commit-message-convention
