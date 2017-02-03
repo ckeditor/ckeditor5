@@ -15,12 +15,13 @@
 @import 'components/icon';
 @import 'components/tooltip';
 @import 'components/button';
-@import 'components/toolbar';
+@import 'components/toolbar/toolbar';
 @import 'components/dropdown';
 @import 'components/list';
 @import 'components/label';
 @import 'components/inputtext';
 @import 'components/balloonpanel';
 @import 'components/editor';
-@import 'components/contextualtoolbar';
-@import 'components/stickytoolbar';
+@import 'components/toolbar/contextualtoolbar';
+@import 'components/toolbar/stickytoolbar';
+@import 'components/toolbar/floatingtoolbar';

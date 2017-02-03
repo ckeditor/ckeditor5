@@ -1,0 +1,14 @@
+// Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+@include ck-editor {
+	.ck-toolbar {
+		&.ck-toolbar_sticky {
+			@include ck-drop-shadow();
+
+			border: 1px solid ck-border-color();
+			border-width: 0 0 1px;
+			background: ck-color( 'foreground' );
+		}
+	}
+}
