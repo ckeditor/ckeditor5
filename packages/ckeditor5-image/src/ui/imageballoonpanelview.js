@@ -54,9 +54,6 @@ export default class ImageBalloonPanelView extends BalloonPanelView {
 		this.editor = editor;
 		const editingView = editor.editing.view;
 
-		// Let the focusTracker know about new focusable UI element.
-		editor.ui.focusTracker.add( this.element );
-
 		// Hide the balloon if editor had focus and now focus is lost.
 		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, is, was ) => {
 			if ( was && !is ) {
@@ -83,6 +80,16 @@ export default class ImageBalloonPanelView extends BalloonPanelView {
 		this._throttledAttach = throttle( () => {
 			this._attach();
 		}, 100 );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		super.init();
+
+		// Let the focusTracker know about new focusable UI element.
+		this.editor.ui.focusTracker.add( this.element );
 	}
 
 	/**

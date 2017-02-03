@@ -36,10 +36,12 @@ describe( 'ImageBalloonPanel', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should add element to editor\'s focus tracker', () => {
+	it( 'should add element to editor\'s focus tracker after init', () => {
 		const spy = sinon.spy( editor.ui.focusTracker, 'add' );
 		const panel = new ImageBalloonPanel( editor );
 
+		sinon.assert.notCalled( spy );
+		panel.init();
 		sinon.assert.calledOnce( spy );
 		sinon.assert.calledWithExactly( spy, panel.element );
 	} );
