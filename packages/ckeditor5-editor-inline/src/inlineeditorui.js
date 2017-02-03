@@ -54,7 +54,10 @@ export default class InlineEditorUI {
 		// Setup the editable.
 		const editingRoot = editor.editing.createRoot( view.editableElement );
 		view.editable.bind( 'isReadOnly' ).to( editingRoot );
-		view.editable.bind( 'isFocused' ).to( editor.editing.view );
+
+		// Bind to focusTracker instead of editor.editing.view because otherwise
+		// focused editable styles disappear when view#toolbar is focused.
+		view.editable.bind( 'isFocused' ).to( this.focusTracker );
 		view.editable.name = editingRoot.rootName;
 
 		this.focusTracker.add( view.editableElement );

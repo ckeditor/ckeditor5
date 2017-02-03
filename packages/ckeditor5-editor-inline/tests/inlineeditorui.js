@@ -57,7 +57,7 @@ describe( 'InlineEditorUI', () => {
 		} );
 
 		describe( 'toolbar', () => {
-			it( 'binds view.toolbar#isActive to editor#focusTracker', () => {
+			it( 'binds view.toolbar#isActive to editor.ui#focusTracker', () => {
 				ui.focusTracker.isFocused = false;
 				expect( view.toolbar.isActive ).to.be.false;
 
@@ -87,7 +87,7 @@ describe( 'InlineEditorUI', () => {
 					view.editable,
 					{ isFocused: false },
 					[
-						[ editor.editing.view, { isFocused: true } ]
+						[ ui.focusTracker, { isFocused: true } ]
 					],
 					{ isFocused: true }
 				);
