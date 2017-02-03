@@ -1637,7 +1637,7 @@ describe( 'Template', () => {
 		} );
 
 		it( 'logs a warning if an element has already been rendered', () => {
-			const spy = testUtils.sinon.spy( log, 'warn' );
+			const spy = testUtils.sinon.stub( log, 'warn' );
 
 			const tpl = new Template( {
 				tag: 'p'
