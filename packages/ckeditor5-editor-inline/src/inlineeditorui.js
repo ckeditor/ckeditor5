@@ -9,9 +9,15 @@
 
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import {
+	expandToolbarConfig,
+	enableToolbarKeyboardFocus
+} from '@ckeditor/ckeditor5-ui/src/toolbar/utils';
 
 /**
  * The inline editor UI class.
+ *
+ * @extends module:core/editor/standardeditorui~StandardEditorUI
  */
 export default class InlineEditorUI {
 	/**
@@ -72,43 +78,22 @@ export default class InlineEditorUI {
 	 * @returns {Promise} A Promise resolved when the initialization process is finished.
 	 */
 	init() {
-		// TODO: All of this should be common with editor-classic.
 		const editor = this.editor;
 
 		return this.view.init()
 			.then( () => {
-				const toolbarConfig = editor.config.get( 'toolbar' );
-				const promises = [];
-
-				if ( toolbarConfig ) {
-					for ( let name of toolbarConfig ) {
-						promises.push( this.view.toolbar.items.add( this.componentFactory.create( name ) ) );
-					}
-				}
-
-				return Promise.all( promises );
+				return expandToolbarConfig(
+					editor.config.get( 'toolbar' ),
+					this.view.toolbar.items,
+					this.componentFactory
+				);
 			} )
 			.then( () => {
-				const toolbarFocusTracker = this.view.toolbar.focusTracker;
-
-				// Because toolbar items can get focus, the overall state of
-				// the toolbar must also be tracked.
-				this.focusTracker.add( this.view.toolbar.element );
-
-				// Focus the toolbar on the keystroke, if not already focused.
-				editor.keystrokes.set( 'Alt+F10', ( data, cancel ) => {
-					if ( this.focusTracker.isFocused && !toolbarFocusTracker.isFocused ) {
-						this.view.toolbar.focus();
-						cancel();
-					}
-				} );
-
-				// Blur the toolbar and bring the focus back to editable on the keystroke.
-				this.view.toolbar.keystrokes.set( 'Esc', ( data, cancel ) => {
-					if ( toolbarFocusTracker.isFocused ) {
-						editor.editing.view.focus();
-						cancel();
-					}
+				enableToolbarKeyboardFocus( {
+					origin: editor.editing.view,
+					originFocusTracker: this.focusTracker,
+					originKeystrokeHandler: editor.keystrokes,
+					toolbar: this.view.toolbar
 				} );
 			} );
 	}
