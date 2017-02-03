@@ -144,13 +144,13 @@ describe( 'FloatingToolbarView', () => {
 
 			view._updatePosition();
 
-			sinon.assert.calledWithMatch( spy, sinon.match( {
+			sinon.assert.calledWithExactly( spy, {
 				element: view.element,
 				target: target,
 				positions: [ nw, sw, ne, se ],
 				limiter: global.document.body,
 				fitInViewport: true
-			} ) );
+			} );
 
 			expect( view.top ).to.equal( 5 );
 			expect( view.left ).to.equal( 10 );
