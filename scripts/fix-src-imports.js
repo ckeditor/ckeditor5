@@ -12,7 +12,7 @@ const path = require( 'path' );
 const glob = require( 'glob' );
 
 const srcDir = path.join( process.cwd(), 'src' );
-const srcPath = path.join( srcDir , '**', '*.js' );
+const srcPath = path.join( srcDir, '**', '*.js' );
 
 for ( const filePath of glob.sync( srcPath ) ) {
 	const fileDepth = countOcurrences( filePath.replace( srcDir + '/', '' ), path.sep );
@@ -21,12 +21,12 @@ for ( const filePath of glob.sync( srcPath ) ) {
 	const fileContent = fs.readFileSync( filePath, 'utf-8' )
 		.replace( /\nimport[^']+?'((\.\.\/)+[\w-]+)\/[^']+?'/gm, fix );
 
-	fs.writeFileSync( filePath, fileContent , 'utf-8' );
+	fs.writeFileSync( filePath, fileContent, 'utf-8' );
 }
 
 function fixImport( wholeImport, pathStart, fileDepth ) {
 	const indexOfPathStart = wholeImport.indexOf( '../' );
-	const packageShortName = pathStart.split( '/' ).slice( -1 )[0];
+	const packageShortName = pathStart.split( '/' ).slice( -1 )[ 0 ];
 	const importDepth = countOcurrences( pathStart, '../' );
 
 	if ( importDepth <= fileDepth ) {
