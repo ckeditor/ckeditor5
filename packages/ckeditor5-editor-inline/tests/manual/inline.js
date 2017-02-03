@@ -13,14 +13,15 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import Link from '@ckeditor/ckeditor5-link/src/link';
 import testUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 let editor, editable, observer;
 
 function initEditor() {
 	InlineEditor.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
-		toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo' ]
+		plugins: [ Link, Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
+		toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo', 'link', 'unlink' ]
 	} )
 	.then( newEditor => {
 		console.log( 'Editor was initialized', newEditor );
@@ -30,7 +31,7 @@ function initEditor() {
 		window.editable = editable = editor.editing.view.getRoot();
 
 		observer = testUtils.createObserver();
-		observer.observe( 'Editable', editable, [ 'isFocused' ] );
+		observer.observe( 'editor.ui.focusTracker', editor.ui.focusTracker, [ 'isFocused' ] );
 	} )
 	.catch( err => {
 		console.error( err.stack );

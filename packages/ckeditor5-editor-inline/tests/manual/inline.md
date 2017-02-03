@@ -3,7 +3,7 @@
   * Inline editor should be created.
   * The element used as editable should remain visible.
     * It should preserve `.custom-class` and `custom-attr="foo"`.
-  * There should be a floating toolbar with "Bold", "Italic", "Undo" and "Redo" buttons.
+  * There should be a floating toolbar with "Bold", "Italic", "Undo", "Redo", "Link" and "Unlink" buttons.
 3. Scroll the webpage.
 4. Expected:
   * The toolbar should float around but always stick to editable.
@@ -20,5 +20,5 @@
 
 * You can play with:
   * `editable.isReadOnly`,
-* Changes to `editable.isFocused` should be logged to the console.
+* Changes to `editor.focusTracker.isFocused` should be logged to the console.
 * Features should work.
