@@ -4,7 +4,7 @@
 Type: Message. Closes: #000.
 ```
 
-Commit message convention:
+Convention:
 https://github.com/ckeditor/ckeditor5-design/wiki/Git-commit-message-convention
 
 ---
