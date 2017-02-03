@@ -1,10 +1,7 @@
 # These files will be ignored by Git and by our linting tools:
-#	grunt jshint
-#	grunt jscs
+#	gulp lint
+#	gulp lint-staged
 #
 # Be sure to append /** to folders to have everything inside them ignored.
-
-# All "dot directories".
-.*/**
 
 node_modules/**
