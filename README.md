@@ -3,7 +3,7 @@ CKEditor 5 – development repository
 
 [![Build Status](https://travis-ci.org/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5)
 [![Dependency Status](https://img.shields.io/david/ckeditor/ckeditor5.svg)](https://david-dm.org/ckeditor/ckeditor5)
-[![devDependency Status](https://img.shields.io/david/ckeditor/dev/ckeditor5.svg)](https://david-dm.org/ckeditor/ckeditor5?type=dev)
+[![devDependency Status](https://img.shields.io/david/dev/ckeditor/ckeditor5.svg)](https://david-dm.org/ckeditor/ckeditor5?type=dev)
 
 ## Project Status (December 2016)
 
