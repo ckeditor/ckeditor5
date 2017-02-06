@@ -307,6 +307,7 @@ describe( 'Input feature', () => {
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
 
+		// #69
 		it( 'should do nothing on tab key', () => {
 			model.enqueueChanges( () => {
 				model.selection.setRanges( [
