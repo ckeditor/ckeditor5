@@ -155,5 +155,15 @@ describe( 'writer', () => {
 				'<container:p>foobar</container:p>'
 			);
 		} );
+
+		it( 'should remove ContainerElement', () => {
+			const elementToRemove = new ContainerElement( 'p' );
+
+			test(
+				elementToRemove,
+				'[<container:div>foo</container:div><container:p>bar</container:p><container:div>biz</container:div>]',
+				'<container:div>foo</container:div><container:div>biz</container:div>'
+			);
+		} );
 	} );
 } );
