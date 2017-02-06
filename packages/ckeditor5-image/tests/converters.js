@@ -8,21 +8,46 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { createImageViewElement } from '../src/imageengine';
 import { toImageWidget } from '../src/utils';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import ViewConversionDispatcher from '@ckeditor/ckeditor5-engine/src/conversion/viewconversiondispatcher';
-import Schema from '@ckeditor/ckeditor5-engine/src/model/schema';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { parse as parseView, getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { stringify as stringifyModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe.only( 'Image converters', () => {
+	let editor, document, viewDocument;
+
+	beforeEach( () => {
+		return VirtualTestEditor.create()
+			.then( newEditor => {
+				editor = newEditor;
+				document = editor.document;
+				viewDocument = editor.editing.view;
+				const schema = document.schema;
+
+				schema.registerItem( 'image' );
+				schema.requireAttributes( 'image', [ 'src' ] );
+				schema.allow( { name: 'image', attributes: [ 'alt', 'src' ], inside: '$root' } );
+				schema.objects.add( 'image' );
+
+				buildModelConverter().for( )
+					.fromElement( 'image' )
+					.toElement( () => toImageWidget( createImageViewElement() ) );
+
+				editor.editing.modelToView.on( 'selection', modelToViewSelection( editor.t ), { priority: 'lowest' } );
+				buildModelConverter().for( editor.editing.modelToView )
+					.fromElement( 'image' )
+					.toElement( () => toImageWidget( createImageViewElement() ) );
+
+				createImageAttributeConverter( [ editor.editing.modelToView ], 'src' );
+				createImageAttributeConverter( [ editor.editing.modelToView ], 'alt' );
+			} );
+	} );
+
 	describe( 'viewToModelImage', () => {
 		let dispatcher, schema;
 
 		beforeEach( () => {
-			schema = new Schema();
-			setImageSchema( schema );
-
-			dispatcher = new ViewConversionDispatcher( { schema } );
+			schema = document.schema;
+			dispatcher = editor.data.viewToModel;
 			dispatcher.on( 'element:figure', viewToModelImage() );
 		} );
 
@@ -58,14 +83,14 @@ describe.only( 'Image converters', () => {
 			const element = parseView( '<figure class="image"><img src="foo.png"></img></figure>' );
 			const model = dispatcher.convert( element );
 
-			expect( model ).to.be.null;
+			expect( stringifyModel( model ) ).to.equal( '' );
 		} );
 
 		it( 'should not convert image if there is no img element', () => {
 			const element = parseView( '<figure class="image"></figure>' );
 			const model = dispatcher.convert( element );
 
-			expect( model ).to.be.null;
+			expect( stringifyModel( model ) ).to.equal( '' );
 		} );
 
 		function test( viewString, modelString ) {
@@ -77,30 +102,6 @@ describe.only( 'Image converters', () => {
 	} );
 
 	describe( 'modelToViewSelection', () => {
-		let editor, document, viewDocument;
-
-		beforeEach( () => {
-			return VirtualTestEditor.create()
-				.then( newEditor => {
-					editor = newEditor;
-					document = editor.document;
-					viewDocument = editor.editing.view;
-					setImageSchema( document.schema );
-
-					buildModelConverter().for( )
-						.fromElement( 'image' )
-						.toElement( () => toImageWidget( createImageViewElement() ) );
-
-					editor.editing.modelToView.on( 'selection', modelToViewSelection( editor.t ), { priority: 'lowest' } );
-					buildModelConverter().for( editor.editing.modelToView )
-						.fromElement( 'image' )
-						.toElement( () => toImageWidget( createImageViewElement() ) );
-
-					createImageAttributeConverter( [ editor.editing.modelToView ], 'src' );
-					createImageAttributeConverter( [ editor.editing.modelToView ], 'alt' );
-				} );
-		} );
-
 		it( 'should convert selection over image to fake selection', () => {
 			setModelData( document, '[<image src=""></image>]' );
 
@@ -121,11 +122,70 @@ describe.only( 'Image converters', () => {
 			expect( viewDocument.selection.isFake ).to.be.false;
 		} );
 	} );
-} );
 
-function setImageSchema( schema ) {
-	schema.registerItem( 'image' );
-	schema.requireAttributes( 'image', [ 'src' ] );
-	schema.allow( { name: 'image', attributes: [ 'alt', 'src' ], inside: '$root' } );
-	schema.objects.add( 'image' );
-}
+	describe( 'modelToViewAttributeConverter', () => {
+		it( 'should convert adding attribute to image', () => {
+			setModelData( document, '<image src=""></image>' );
+			const image = document.getRoot().getChild( 0 );
+
+			document.enqueueChanges( () => {
+				const batch = document.batch();
+
+				batch.setAttribute( image, 'alt', 'foo bar' );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				'<figure class="image ck-widget" contenteditable="false"><img alt="foo bar" src=""></img></figure>'
+			);
+		} );
+
+		it( 'should convert removing attribute from image', () => {
+			setModelData( document, '<image src="" alt="foo bar"></image>' );
+			const image = document.getRoot().getChild( 0 );
+
+			document.enqueueChanges( () => {
+				const batch = document.batch();
+
+				batch.removeAttribute( image, 'alt' );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				'<figure class="image ck-widget" contenteditable="false"><img src=""></img></figure>'
+			);
+		} );
+
+		it( 'should convert change of attribute image', () => {
+			setModelData( document, '<image src="" alt="foo bar"></image>' );
+			const image = document.getRoot().getChild( 0 );
+
+			document.enqueueChanges( () => {
+				const batch = document.batch();
+
+				batch.setAttribute( image, 'alt', 'baz quix' );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				'<figure class="image ck-widget" contenteditable="false"><img alt="baz quix" src=""></img></figure>'
+			);
+		} );
+
+		it( 'should not change attribute if change is already consumed', () => {
+			editor.editing.modelToView.on( `changeAttribute:alt:image`, ( evt, data, consumable ) => {
+				consumable.consume( data.item, 'changeAttribute:alt' );
+			}, { priority: 'high' } );
+
+			setModelData( document, '<image src="" alt="foo bar"></image>' );
+			const image = document.getRoot().getChild( 0 );
+
+			document.enqueueChanges( () => {
+				const batch = document.batch();
+
+				batch.setAttribute( image, 'alt', 'baz quix' );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				'<figure class="image ck-widget" contenteditable="false"><img alt="foo bar" src=""></img></figure>'
+			);
+		} );
+	} );
+} );
