@@ -4,12 +4,15 @@
  */
 
 import { viewToModelImage, modelToViewSelection, createImageAttributeConverter } from '../src/converters';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import { createImageViewElement } from '../src/imageengine';
+import { toImageWidget } from '../src/utils';
+import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import ViewConversionDispatcher from '@ckeditor/ckeditor5-engine/src/conversion/viewconversiondispatcher';
 import Schema from '@ckeditor/ckeditor5-engine/src/model/schema';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { stringify as stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import { stringify as stringifyModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe.only( 'Image converters', () => {
 	describe( 'viewToModelImage', () => {
@@ -17,18 +20,10 @@ describe.only( 'Image converters', () => {
 
 		beforeEach( () => {
 			schema = new Schema();
-			schema.registerItem( 'image' );
-			schema.requireAttributes( 'image', [ 'src' ] );
-			schema.allow( { name: 'image', attributes: [ 'alt', 'src' ], inside: '$root' } );
-			schema.objects.add( 'image' );
-			schema.registerItem( 'paragraph', '$block' );
+			setImageSchema( schema );
 
 			dispatcher = new ViewConversionDispatcher( { schema } );
 			dispatcher.on( 'element:figure', viewToModelImage() );
-
-			buildViewConverter().for( dispatcher )
-				.fromElement( 'p' )
-				.toElement( 'paragraph' );
 		} );
 
 		it( 'should convert view figure element', () => {
@@ -80,4 +75,57 @@ describe.only( 'Image converters', () => {
 			expect( stringifyModel( model ) ).to.equal( modelString );
 		}
 	} );
+
+	describe( 'modelToViewSelection', () => {
+		let editor, document, viewDocument;
+
+		beforeEach( () => {
+			return VirtualTestEditor.create()
+				.then( newEditor => {
+					editor = newEditor;
+					document = editor.document;
+					viewDocument = editor.editing.view;
+					setImageSchema( document.schema );
+
+					buildModelConverter().for( )
+						.fromElement( 'image' )
+						.toElement( () => toImageWidget( createImageViewElement() ) );
+
+					editor.editing.modelToView.on( 'selection', modelToViewSelection( editor.t ), { priority: 'lowest' } );
+					buildModelConverter().for( editor.editing.modelToView )
+						.fromElement( 'image' )
+						.toElement( () => toImageWidget( createImageViewElement() ) );
+
+					createImageAttributeConverter( [ editor.editing.modelToView ], 'src' );
+					createImageAttributeConverter( [ editor.editing.modelToView ], 'alt' );
+				} );
+		} );
+
+		it( 'should convert selection over image to fake selection', () => {
+			setModelData( document, '[<image src=""></image>]' );
+
+			expect( viewDocument.selection.isFake ).to.be.true;
+			expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'image widget' );
+		} );
+
+		it( 'should convert fake selection label with alt', () => {
+			setModelData( document, '[<image src="" alt="foo bar"></image>]' );
+
+			expect( viewDocument.selection.isFake ).to.be.true;
+			expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'foo bar image widget' );
+		} );
+
+		it( 'should not convert fake selection if image is not selected', () => {
+			setModelData( document, '[]<image src="" alt="foo bar"></image>' );
+
+			expect( viewDocument.selection.isFake ).to.be.false;
+		} );
+	} );
 } );
+
+function setImageSchema( schema ) {
+	schema.registerItem( 'image' );
+	schema.requireAttributes( 'image', [ 'src' ] );
+	schema.allow( { name: 'image', attributes: [ 'alt', 'src' ], inside: '$root' } );
+	schema.objects.add( 'image' );
+}
