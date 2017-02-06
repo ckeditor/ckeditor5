@@ -426,7 +426,7 @@ export function clear( range, element ) {
 	validateRangeContainer( range );
 
 	// Create walker on given range.
-	// We walk backward because when we remove element during walk it modify range end position.
+	// We walk backward because when we remove element during walk it modifies range end position.
 	const walker = range.getWalker( {
 		direction: 'backward',
 		ignoreElementEnd: true
@@ -457,14 +457,12 @@ export function clear( range, element ) {
 		// If we have found element to remove.
 		if ( rangeToRemove ) {
 			// We need to check if element range stick out of the given range and truncate if it is.
-			if ( !range.containsRange( rangeToRemove ) ) {
-				if ( rangeToRemove.end.isAfter( range.end ) ) {
-					rangeToRemove.end = range.end;
-				}
+			if ( rangeToRemove.end.isAfter( range.end ) ) {
+				rangeToRemove.end = range.end;
+			}
 
-				if ( rangeToRemove.start.isBefore( range.start ) ) {
-					rangeToRemove.start = range.start;
-				}
+			if ( rangeToRemove.start.isBefore( range.start ) ) {
+				rangeToRemove.start = range.start;
 			}
 
 			// At the end we remove range with found element.
