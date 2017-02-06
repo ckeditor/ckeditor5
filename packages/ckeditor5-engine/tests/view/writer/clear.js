@@ -44,7 +44,7 @@ describe( 'writer', () => {
 			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 		} );
 
-		it( 'should remove matches element from range', () => {
+		it( 'should remove matched element from range', () => {
 			const elementToRemove = new AttributeElement( 'b' );
 
 			test(
@@ -54,7 +54,7 @@ describe( 'writer', () => {
 			);
 		} );
 
-		it( 'should remove matches element from range when range is inside text node', () => {
+		it( 'should remove matched element from range when range is inside text node', () => {
 			const elementToRemove = new AttributeElement( 'b' );
 
 			test(
@@ -64,7 +64,7 @@ describe( 'writer', () => {
 			);
 		} );
 
-		it( 'should remove matches elements from range', () => {
+		it( 'should remove multiple matched elements from range', () => {
 			const elementToRemove = new AttributeElement( 'b' );
 
 			test(
@@ -74,7 +74,7 @@ describe( 'writer', () => {
 			);
 		} );
 
-		it( 'should remove matches elements from range when range is inside text node', () => {
+		it( 'should remove multiple matched elements from range when range is inside text node', () => {
 			const elementToRemove = new AttributeElement( 'b' );
 
 			test(
@@ -84,7 +84,7 @@ describe( 'writer', () => {
 			);
 		} );
 
-		it( 'should remove only matches element', () => {
+		it( 'should remove only matched element', () => {
 			const elementToRemove = new AttributeElement( 'b' );
 
 			test(

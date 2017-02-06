@@ -176,7 +176,7 @@ setData._parse = parse;
  *		const attribute = new AttributeElement( 'b' );
  *		const container = new ContainerElement( 'p' );
  *		const empty = new EmptyElement( 'img' );
- *		const ui = new EmptyElement( 'span' );
+ *		const ui = new UIElement( 'span' );
  *		getData( attribute, null, { showType: true } ); // '<attribute:b></attribute:b>'
  *		getData( container, null, { showType: true } ); // '<container:p></container:p>'
  *		getData( empty, null, { showType: true } ); // '<empty:img></empty:img>'

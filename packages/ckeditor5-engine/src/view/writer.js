@@ -467,7 +467,7 @@ export function clear( range, element ) {
 				}
 			}
 
-			// At the end we remove range with founded element.
+			// At the end we remove range with found element.
 			remove( rangeToRemove );
 		}
 	}
