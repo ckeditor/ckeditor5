@@ -449,7 +449,7 @@ export function clear( range, element ) {
 			} );
 
 			// If it is then create range inside this element.
-			if ( parentElement && parentElement ) {
+			if ( parentElement ) {
 				rangeToRemove = Range.createIn( parentElement );
 			}
 		}
