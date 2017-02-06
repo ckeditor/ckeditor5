@@ -307,6 +307,18 @@ describe( 'Input feature', () => {
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
 
+		// #69
+		it( 'should do nothing on tab key', () => {
+			model.enqueueChanges( () => {
+				model.selection.setRanges( [
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
+			} );
+
+			view.fire( 'keydown', { keyCode: 9 } ); // Tab
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
+		} );
+
 		it( 'should do nothing if selection is collapsed', () => {
 			view.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
 
