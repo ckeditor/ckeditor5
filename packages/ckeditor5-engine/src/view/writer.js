@@ -34,6 +34,7 @@ const writer = {
 	mergeContainers,
 	insert,
 	remove,
+	clear,
 	move,
 	wrap,
 	wrapPosition,
