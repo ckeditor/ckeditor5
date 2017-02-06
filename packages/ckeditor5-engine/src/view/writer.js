@@ -1211,16 +1211,15 @@ function rangeSpansOnAllChildren( range ) {
 // @param Iterable.<module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement
 // |module:engine/view/containerelement~ContainerElement> nodes
 function validateNodesToInsert( nodes ) {
+	const validNodes = [ Text, AttributeElement, ContainerElement, EmptyElement, UIElement ];
+
 	for ( let node of nodes ) {
-		if (
-			!( node instanceof Text || node instanceof AttributeElement || node instanceof ContainerElement ||
-			node instanceof EmptyElement || node instanceof UIElement )
-		) {
+		if ( !validNodes.some( ( validNode => node instanceof validNode ) ) ) {
 			/**
-			 * Inserted nodes should be instance of {@link module:engine/view/attributeelement~AttributeElement AttributeElement},
+			 * Inserted nodes should be valid to insert. of {@link module:engine/view/attributeelement~AttributeElement AttributeElement},
 			 * {@link module:engine/view/containerelement~ContainerElement ContainerElement},
-			 * {@link module:engine/view/emptyerelement~EmptyElement EmptyElement},
-			 * {@link module:engine/view/uierelement~UIElement UIElement}, {@link module:engine/view/text~Text Text}.
+			 * {@link module:engine/view/emptyelement~EmptyElement EmptyElement},
+			 * {@link module:engine/view/uielement~UIElement UIElement}, {@link module:engine/view/text~Text Text}.
 			 *
 			 * @error view-writer-insert-invalid-node
 			 */
