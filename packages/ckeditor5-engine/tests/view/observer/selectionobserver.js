@@ -226,6 +226,75 @@ describe( 'SelectionObserver', () => {
 			}, 200 );
 		}, 400 );
 	} );
+
+	it( 'should fire `selectionChangeDone` event after selection stop changing', ( done ) => {
+		const spy = sinon.spy();
+
+		viewDocument.on( 'selectionChangeDone', spy );
+
+		// Change selection.
+		changeDomSelection();
+
+		// Wait 100ms.
+		// Note that it's difficult/not possible to test lodash#debounce with sinon fake timers.
+		// See: https://github.com/lodash/lodash/issues/304
+		setTimeout( () => {
+			// Check if spy was called.
+			expect( spy.notCalled ).to.true;
+
+			// Change selection one more time.
+			changeDomSelection();
+
+			// Wait 210ms (debounced function should be called).
+			setTimeout( () => {
+				const data = spy.firstCall.args[ 1 ];
+
+				expect( spy.calledOnce ).to.true;
+				expect( data ).to.have.property( 'domSelection' ).to.equal( document.getSelection() );
+
+				expect( data ).to.have.property( 'oldSelection' ).to.instanceof( ViewSelection );
+				expect( data.oldSelection.rangeCount ).to.equal( 0 );
+
+				expect( data ).to.have.property( 'newSelection' ).to.instanceof( ViewSelection );
+				expect( data.newSelection.rangeCount ).to.equal( 1 );
+
+				const newViewRange = data.newSelection.getFirstRange();
+				const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
+
+				expect( newViewRange.start.parent ).to.equal( viewFoo );
+				expect( newViewRange.start.offset ).to.equal( 3 );
+				expect( newViewRange.end.parent ).to.equal( viewFoo );
+				expect( newViewRange.end.offset ).to.equal( 3 );
+
+				done();
+			}, 210 );
+		}, 100 );
+	} );
+
+	it( 'should not fire `selectionChangeDone` event when observer will be destroyed', ( done ) => {
+		const spy = sinon.spy();
+
+		viewDocument.on( 'selectionChangeDone', spy );
+
+		// Change selection.
+		changeDomSelection();
+
+		// Wait 100ms.
+		// Note that it's difficult/not possible to test lodash#debounce with sinon fake timers.
+		// See: https://github.com/lodash/lodash/issues/304
+		setTimeout( () => {
+			// And destroy observer.
+			selectionObserver.destroy();
+
+			// Wait another 110ms.
+			setTimeout( () => {
+				// Check that event won't be called.
+				expect( spy.notCalled ).to.true;
+
+				done();
+			}, 110 );
+		}, 100 );
+	} );
 } );
 
 function changeDomSelection() {

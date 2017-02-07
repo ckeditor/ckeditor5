@@ -12,6 +12,7 @@
 import Observer from './observer';
 import MutationObserver from './mutationobserver';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
 
 /**
  * Selection observer class observes selection changes in the document. If selection changes on the document this
@@ -73,6 +74,15 @@ export default class SelectionObserver extends Observer {
 		 */
 		this._documents = new WeakSet();
 
+		/**
+		 * Fires debounced event `selectionChangeDone`. It uses `lodash#debounce` method to delay function call.
+		 *
+		 * @private
+		 * @param {Object} data Selection change data.
+		 * @method #_fireSelectionChangeDoneDebounced
+		 */
+		this._fireSelectionChangeDoneDebounced = debounce( data => this.document.fire( 'selectionChangeDone', data ), 200 );
+
 		this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 2000 );
 
 		/**
@@ -122,11 +132,13 @@ export default class SelectionObserver extends Observer {
 		super.destroy();
 
 		clearInterval( this._clearInfiniteLoopInterval );
+		this._fireSelectionChangeDoneDebounced.cancel();
 	}
 
 	/**
 	 * Selection change listener. {@link module:engine/view/observer/mutationobserver~MutationObserver#flush Flush} mutations, check if
-	 * selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event.
+	 * selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event on every change
+	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when selection stop changing.
 	 *
 	 * @private
 	 * @param {Document} domDocument DOM document.
@@ -163,12 +175,20 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		// Should be fired only when selection change was the only document change.
-		this.document.fire( 'selectionChange', {
+		const data = {
 			oldSelection: this.selection,
 			newSelection: newViewSelection,
 			domSelection: domSelection
-		} );
+		};
+
+		// Should be fired only when selection change was the only document change.
+		this.document.fire( 'selectionChange', data );
+
+		// Call` #_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
+		// This function is debounced what means that `selectionChangeDone` event will be fired only when
+		// defined int the function time will elapse since the last time the function was called.
+		// So `selectionChangeDone` will be fired when selection will stop changing.
+		this._fireSelectionChangeDoneDebounced( data );
 	}
 
 	/**
@@ -226,6 +246,24 @@ export default class SelectionObserver extends Observer {
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
  * @event module:engine/view/document~Document#event:selectionChange
+ * @param {Object} data
+ * @param {module:engine/view/selection~Selection} data.oldSelection Old View selection which is
+ * {@link module:engine/view/document~Document#selection}.
+ * @param {module:engine/view/selection~Selection} data.newSelection New View selection which is converted DOM selection.
+ * @param {Selection} data.domSelection Native DOM selection.
+ */
+
+/**
+ * Fired when selection stops changing.
+ *
+ * Introduced by {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
+ *
+ * Note that because {@link module:engine/view/observer/selectionobserver~SelectionObserver} is attached by the
+ * {@link module:engine/view/document~Document}
+ * this event is available by default.
+ *
+ * @see module:engine/view/observer/selectionobserver~SelectionObserver
+ * @event module:engine/view/document~Document#event:selectionChangeDone
  * @param {Object} data
  * @param {module:engine/view/selection~Selection} data.oldSelection Old View selection which is
  * {@link module:engine/view/document~Document#selection}.
