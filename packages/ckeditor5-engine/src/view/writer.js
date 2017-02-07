@@ -1210,10 +1210,8 @@ function rangeSpansOnAllChildren( range ) {
 // @param Iterable.<module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement
 // |module:engine/view/containerelement~ContainerElement> nodes
 function validateNodesToInsert( nodes ) {
-	const validNodes = [ Text, AttributeElement, ContainerElement, EmptyElement, UIElement ];
-
 	for ( let node of nodes ) {
-		if ( !validNodes.some( ( validNode => node instanceof validNode ) ) ) {
+		if ( !validNodesToInsert.some( ( validNode => node instanceof validNode ) ) ) {
 			/**
 			 * Inserted nodes should be valid to insert. of {@link module:engine/view/attributeelement~AttributeElement AttributeElement},
 			 * {@link module:engine/view/containerelement~ContainerElement ContainerElement},
@@ -1230,6 +1228,8 @@ function validateNodesToInsert( nodes ) {
 		}
 	}
 }
+
+const validNodesToInsert = [ Text, AttributeElement, ContainerElement, EmptyElement, UIElement ];
 
 // Checks if node is ContainerElement or DocumentFragment, because in most cases they should be treated the same way.
 //
