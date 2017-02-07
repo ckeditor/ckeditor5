@@ -4,6 +4,7 @@
  */
 
 import Document from '../../src/model/document';
+import DocumentFragment from '../../src/model/documentfragment';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import TreeWalker from '../../src/model/treewalker';
@@ -536,6 +537,30 @@ describe( 'TreeWalker', () => {
 				expect( i ).to.equal( 0 );
 			} );
 		} );
+	} );
+
+	it( 'should iterate over document fragment', () => {
+		const foo = new Text( 'foo' );
+		const bar = new Text( 'bar' );
+		const p = new Element( 'p', null, [ foo, bar ] );
+		const docFrag = new DocumentFragment( [ p ] );
+
+		const iterator = new TreeWalker( {
+			startPosition: new Position( docFrag, [ 0 ] ),
+			ignoreElementEnd: true
+		} );
+
+		const expected = [
+			{ type: 'elementStart', item: p },
+			{ type: 'text', data: 'foo', attrs: [] },
+			{ type: 'text', data: 'bar', attrs: [] }
+		];
+
+		let i = 0;
+
+		for ( let value of iterator ) {
+			expectValue( value, expected[ i++ ], { ignoreElementEnd: true } );
+		}
 	} );
 } );
 

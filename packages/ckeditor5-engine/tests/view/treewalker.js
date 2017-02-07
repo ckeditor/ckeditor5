@@ -6,6 +6,7 @@
 /* globals document */
 
 import Document from '../../src/view/document';
+import DocumentFragment from '../../src/view/documentfragment';
 import AttributeElement from '../../src/view/attributeelement';
 import ContainerElement from '../../src/view/containerelement';
 import Text from '../../src/view/text';
@@ -976,6 +977,23 @@ describe( 'TreeWalker', () => {
 				expect( i ).to.equal( 0 );
 			} );
 		} );
+	} );
+
+	it( 'should iterate over document fragment', () => {
+		const foo = new Text( 'foo' );
+		const bar = new Text( 'bar' );
+		const p = new ContainerElement( 'p', null, foo );
+		const b = new AttributeElement( 'b', null, bar );
+		const docFrag = new DocumentFragment( [ p, b ] );
+
+		const iterator = new TreeWalker( {
+			startPosition: new Position( docFrag, 0 ),
+			ignoreElementEnd: true
+		} );
+
+		const nodes = Array.from( iterator ).map( ( step ) => step.item );
+
+		expect( nodes ).to.deep.equal( [ p, foo, b, bar ] );
 	} );
 } );
 
