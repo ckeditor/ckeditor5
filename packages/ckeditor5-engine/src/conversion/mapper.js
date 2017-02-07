@@ -13,6 +13,7 @@ import ModelRange from '../model/range';
 import ViewPosition from '../view/position';
 import ViewRange from '../view/range';
 import ViewText from '../view/text';
+import ViewUIElement from '../view/uielement';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -109,6 +110,8 @@ export default class Mapper {
 
 	/**
 	 * Gets the corresponding model element.
+	 *
+	 * **Note:** {@link module:engine/view/uielement~UIElement} does not have corresponding element in model.
 	 *
 	 * @param {module:engine/view/element~Element} viewElement View element.
 	 * @returns {module:engine/model/element~Element|undefined} Corresponding model element or `undefined` if not found.
@@ -312,29 +315,35 @@ export default class Mapper {
 	 * Gets the length of the view element in the model.
 	 *
 	 * The length is calculated as follows:
-	 * * length of a {@link module:engine/view/text~Text text node}
-	 * is equal to the length of it's {@link module:engine/view/text~Text#data data},
-	 * * length of a mapped {@link module:engine/view/element~Element element} is equal to 1 or to the value evaluated by the callback
-	 * added through {@link module:engine/conversion/mapper~Mapper#registerViewToModelLength},
+	 * * if {@link ~registerViewToModelLength length mapping callback} is provided for given `viewNode` it is used to
+	 * evaluate model length (`viewNode` is used as first and only parameter passed to the callback),
+	 * * length of a {@link module:engine/view/text~Text text node} is equal to the length of it's
+	 * {@link module:engine/view/text~Text#data data},
+	 * * length of a {@link module:engine/view/uielement~UIElement ui element} is equal to 0,
+	 * * length of a mapped {@link module:engine/view/element~Element element} is equal to 1,
 	 * * length of a not-mapped {@link module:engine/view/element~Element element} is equal to the length of it's children.
 	 *
 	 * Examples:
 	 *
-	 *		foo                     -> 3 // Text length is equal to it's data length.
-	 *		<p>foo</p>              -> 1 // Length of an element which is mapped is by default equal to 1.
-	 *		<b>foo</b>              -> 3 // Length of an element which is not mapped is a length of its children.
-	 *		<div><p>x</p><p>y</p>   -> 2 // Assuming that <div> is not mapped and <p> are mapped.
+	 *		foo                          -> 3 // Text length is equal to it's data length.
+	 *		<p>foo</p>                   -> 1 // Length of an element which is mapped is by default equal to 1.
+	 *		<b>foo</b>                   -> 3 // Length of an element which is not mapped is a length of its children.
+	 *		<div><p>x</p><p>y</p></div>  -> 2 // Assuming that <div> is not mapped and <p> are mapped.
 	 *
 	 * @param {module:engine/view/element~Element} viewNode View node.
 	 * @returns {Number} Length of the node in the tree model.
 	 */
 	getModelLength( viewNode ) {
-		if ( this._viewToModelMapping.has( viewNode ) ) {
+		if ( this._viewToModelLengthCallbacks.get( viewNode.name ) ) {
 			const callback = this._viewToModelLengthCallbacks.get( viewNode.name );
 
-			return callback ? callback( viewNode ) : 1;
+			return callback( viewNode );
+		} else if ( this._viewToModelMapping.has( viewNode ) ) {
+			return 1;
 		} else if ( viewNode instanceof ViewText ) {
 			return viewNode.data.length;
+		} else if ( viewNode instanceof ViewUIElement ) {
+			return 0;
 		} else {
 			let len = 0;
 
