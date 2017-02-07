@@ -158,7 +158,7 @@ export default class Position {
 	 * @returns {Boolean} True if positions are same.
 	 */
 	isEqual( otherPosition ) {
-		return this == otherPosition || ( this.parent == otherPosition.parent && this.offset == otherPosition.offset );
+		return ( this.parent == otherPosition.parent && this.offset == otherPosition.offset );
 	}
 
 	/**
