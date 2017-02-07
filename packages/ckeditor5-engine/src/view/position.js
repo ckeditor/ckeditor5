@@ -22,14 +22,15 @@ export default class Position {
 	/**
 	 * Creates a position.
 	 *
-	 * @param {module:engine/view/node~Node} parent Position parent node.
+	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} parent Position parent.
 	 * @param {Number} offset Position offset.
 	 */
 	constructor( parent, offset ) {
 		/**
-		 * Position parent node.
+		 * Position parent.
 		 *
-		 * @member {module:engine/view/node~Node} module:engine/view/position~Position#parent
+		 * @member {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment}
+		 * module:engine/view/position~Position#parent
 		 */
 		this.parent = parent;
 
