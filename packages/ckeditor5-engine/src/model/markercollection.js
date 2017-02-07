@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module engine/model/markercollection
+ */
+
 import LiveRange from './liverange';
 import Position from './position';
 import Range from './range';
@@ -57,7 +61,8 @@ export default class MarkerCollection {
 	 * Returns {@link ~Marker marker} with given `markerName`.
 	 *
 	 * @param {String} markerName Name of marker to get.
-	 * @returns {~Marker|null} Marker with given name or `null` if such marker was not added to the collection.
+	 * @returns {module:engine/model/markercollection~Marker|null} Marker with given name or `null` if such marker was
+	 * not added to the collection.
 	 */
 	get( markerName ) {
 		return this._markers.get( markerName ) || null;
@@ -71,11 +76,11 @@ export default class MarkerCollection {
 	 * set is different, the marker in collection is removed and then new marker is added. If the range was same, nothing
 	 * happens and `false` is returned.
 	 *
-	 * @fires {module:engine/model/markercollection~MarkerCollection#event:add}
-	 * @fires {module:engine/model/markercollection~MarkerCollection#event:remove}
-	 * @param {String|~Marker} markerOrName Name of marker to add or Marker instance to update.
+	 * @fires module:engine/model/markercollection~MarkerCollection#event:add
+	 * @fires module:engine/model/markercollection~MarkerCollection#event:remove
+	 * @param {String|module:engine/model/markercollection~Marker} markerOrName Name of marker to add or Marker instance to update.
 	 * @param {module:engine/model/range~Range} range Marker range.
-	 * @returns {~Marker} `Marker` instance added to the collection.
+	 * @returns {module:engine/model/markercollection~Marker} `Marker` instance added to the collection.
 	 */
 	set( markerOrName, range ) {
 		const markerName = markerOrName instanceof Marker ? markerOrName.name : markerOrName;
@@ -126,7 +131,7 @@ export default class MarkerCollection {
 	 * Returns iterator that iterates over all markers, which ranges contain given {@link module:engine/model/position~Position position}.
 	 *
 	 * @param {module:engine/model/position~Position} position
-	 * @returns {Iterator.<~Marker>}
+	 * @returns {Iterator.<module:engine/model/markercollection~Marker>}
 	 */
 	*getMarkersAtPosition( position ) {
 		for ( let marker of this ) {
@@ -160,7 +165,7 @@ export default class MarkerCollection {
 	 *		Array.from( markersCollection.getMarkersGroup( 'a' ) ); // []
 	 *
 	 * @param prefix
-	 * @returns {Iterator.<~Marker>}
+	 * @returns {Iterator.<module:engine/model/markercollection~Marker>}
 	 */
 	*getMarkersGroup( prefix ) {
 		for ( let marker of this._markers.values() ) {
@@ -174,7 +179,7 @@ export default class MarkerCollection {
 	 * Destroys marker.
 	 *
 	 * @private
-	 * @param {~Marker} marker Marker to destroy.
+	 * @param {module:engine/model/markercollection~Marker} marker Marker to destroy.
 	 */
 	_destroyMarker( marker ) {
 		marker.stopListening();
@@ -186,14 +191,14 @@ export default class MarkerCollection {
 	 * Fired whenever marker is added to `MarkerCollection`.
 	 *
 	 * @event add
-	 * @param {~Marker} The added marker.
+	 * @param {module:engine/model/markercollection~Marker} The added marker.
 	 */
 
 	/**
 	 * Fired whenever marker is removed from `MarkerCollection`.
 	 *
 	 * @event remove
-	 * @param {~Marker} marker The removed marker.
+	 * @param {module:engine/model/markercollection~Marker} marker The removed marker.
 	 */
 }
 
@@ -223,7 +228,7 @@ mix( MarkerCollection, EmitterMixin );
  *
  * Another upside of markers is that finding marked part of document is fast and easy. Using attributes to mark some nodes
  * and then trying to find that part of document would require traversing whole document tree. Marker gives instant access
- * to the {@link ~Marker#range range} which it is marking at the moment.
+ * to the range which it is marking at the moment.
  *
  * `Marker` instances are created and destroyed only by {@link ~MarkerCollection MarkerCollection}.
  */
@@ -319,10 +324,11 @@ class Marker {
 	 * Fired whenever {@link ~Marker#_liveRange marker range} is changed due to changes on {@link module:engine/model/document~Document}.
 	 * This is actually a delegated {@link module:engine/model/liverange~LiveRange#event:change LiveRange change event}.
 	 *
-	 * When marker is removed from {@link ~MarkerCollection MarkerCollection}, all event listeners listening to it should be
-	 * removed. It is best to do it on {@link ~MarkerCollection#event:remove MarkerCollection remove event}.
+	 * When marker is removed from {@link module:engine/model/markercollection~MarkerCollection MarkerCollection},
+	 * all event listeners listening to it should be removed. It is best to do it on
+	 * {@link module:engine/model/markercollection~MarkerCollection#event:remove MarkerCollection remove event}.
 	 *
-	 * @see {module:engine/model/liverange~LiveRange#event:change}
+	 * @see module:engine/model/liverange~LiveRange#event:change
 	 * @event change
 	 * @param {module:engine/model/range~Range} oldRange Range with start and end position equal to start and end position of
 	 * this marker range before it got changed.
