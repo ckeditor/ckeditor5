@@ -16,6 +16,7 @@ import ViewDocument from '../../src/view/document';
 import ViewElement from '../../src/view/element';
 import ViewContainerElement from '../../src/view/containerelement';
 import ViewAttributeElement from '../../src/view/attributeelement';
+import ViewUIElement from '../../src/view/uielement';
 import ViewText from '../../src/view/text';
 
 import Mapper from '../../src/conversion/mapper';
@@ -403,6 +404,63 @@ describe( 'Model converter builder', () => {
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search search-color-red">ob</span>ar</p></div>' );
 
 			dispatcher.convertMarker( 'removeMarker', 'search:red', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
+	} );
+
+	describe( 'model collapsed marker to view element conversion', () => {
+		let modelText, modelElement;
+
+		beforeEach( () => {
+			modelText = new ModelText( 'foobar' );
+			modelElement = new ModelElement( 'paragraph', null, [ modelText ] );
+			modelRoot.appendChildren( modelElement );
+
+			let viewText = new ViewText( 'foobar' );
+			let viewElement = new ViewContainerElement( 'p', null, [ viewText ] );
+			viewRoot.appendChildren( viewElement );
+
+			mapper.bindElements( modelElement, viewElement );
+		} );
+
+		it( 'using passed view element name', () => {
+			buildModelConverter().for( dispatcher ).fromCollapsedMarker( 'search' ).toElement( 'span' );
+
+			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 3, modelElement, 3 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo<span></span>bar</p></div>' );
+
+			dispatcher.convertMarker( 'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 3, modelElement, 3 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
+
+		it( 'using passed view element', () => {
+			const viewElement = new ViewUIElement( 'span', { class: 'search' } );
+			buildModelConverter().for( dispatcher ).fromCollapsedMarker( 'search' ).toElement( viewElement );
+
+			dispatcher.convertMarker( 'addMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 3, modelElement, 3 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo<span class="search"></span>bar</p></div>' );
+
+			dispatcher.convertMarker( 'removeMarker', 'search', ModelRange.createFromParentsAndOffsets( modelElement, 3, modelElement, 3 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
+
+		it( 'using passed creator function', () => {
+			buildModelConverter().for( dispatcher ).fromCollapsedMarker( 'search' ).toElement( ( data ) => {
+				const className = 'search search-color-' + data.name.split( ':' )[ 1 ];
+
+				return new ViewUIElement( 'span', { class: className } );
+			} );
+
+			dispatcher.convertMarker( 'addMarker', 'search:red', ModelRange.createFromParentsAndOffsets( modelElement, 3, modelElement, 3 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo<span class="search search-color-red"></span>bar</p></div>' );
+
+			dispatcher.convertMarker( 'removeMarker', 'search:red', ModelRange.createFromParentsAndOffsets( modelElement, 3, modelElement, 3 ) );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );

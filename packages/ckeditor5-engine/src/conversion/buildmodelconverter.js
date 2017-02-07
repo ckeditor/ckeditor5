@@ -9,8 +9,10 @@
 
 import {
 	insertElement,
+	insertUIElement,
 	setAttribute,
 	removeAttribute,
+	removeUIElement,
 	wrapItem,
 	unwrapItem,
 	wrapRange,
@@ -21,6 +23,7 @@ import { convertSelectionAttribute, convertSelectionMarker } from './model-selec
 
 import ViewAttributeElement from '../view/attributeelement';
 import ViewContainerElement from '../view/containerelement';
+import ViewUIElement from '../view/uielement';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -149,7 +152,8 @@ class ModelConverterBuilder {
 	}
 
 	/**
-	 * Registers what type of marker should be converted.
+	 * Registers what type of non-collapsed marker should be converted. For collapsed markers conversion, see
+	 * {@link ~fromCollapsedMarker}.
 	 *
 	 * @chainable
 	 * @param {String} markerName Name of marker to convert.
@@ -159,7 +163,26 @@ class ModelConverterBuilder {
 		this._from = {
 			type: 'marker',
 			name: markerName,
-			priority: null
+			priority: null,
+			collapsed: false
+		};
+
+		return this;
+	}
+
+	/**
+	 * Registers what type of collapsed marker should be converted. For non-collapsed markers conversion, see {@link ~fromMarker}.
+	 *
+	 * @chainable
+	 * @param {String} markerName Name of marker to convert.
+	 * @returns {module:engine/conversion/modelconverterbuilder~ModelConverterBuilder}
+	 */
+	fromCollapsedMarker( markerName ) {
+		this._from = {
+			type: 'marker',
+			name: markerName,
+			priority: null,
+			collapsed: true
 		};
 
 		return this;
@@ -241,13 +264,21 @@ class ModelConverterBuilder {
 
 				dispatcher.on( 'selectionAttribute:' + this._from.key, convertSelectionAttribute( element ), { priority } );
 			} else {
-				// From marker to view element -> wrapRange and unwrapRange.
-				element = typeof element == 'string' ? new ViewAttributeElement( element ) : element;
+				if ( this._from.collapsed ) {
+					// From collapsed marker to view element -> insertUIElement, removeUIElement.
+					element = typeof element == 'string' ? new ViewUIElement( element ) : element;
 
-				dispatcher.on( 'addMarker:' + this._from.name, wrapRange( element ), { priority } );
-				dispatcher.on( 'removeMarker:' + this._from.name, unwrapRange( element ), { priority } );
+					dispatcher.on( 'addMarker:' + this._from.name, insertUIElement( element ), { priority } );
+					dispatcher.on( 'removeMarker:' + this._from.name, removeUIElement( element ), { priority } );
+				} else {
+					// From non-collapsed marker to view element -> wrapRange and unwrapRange.
+					element = typeof element == 'string' ? new ViewAttributeElement( element ) : element;
 
-				dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( element ), { priority } );
+					dispatcher.on( 'addMarker:' + this._from.name, wrapRange( element ), { priority } );
+					dispatcher.on( 'removeMarker:' + this._from.name, unwrapRange( element ), { priority } );
+
+					dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( element ), { priority } );
+				}
 			}
 		}
 	}
