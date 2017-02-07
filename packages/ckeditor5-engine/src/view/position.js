@@ -9,6 +9,7 @@
 
 import Text from './text';
 import TextProxy from './textproxy';
+import DocumentFragment from './documentfragment';
 
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -143,7 +144,11 @@ export default class Position {
 	 * @returns {Array} Array with ancestors.
 	 */
 	getAncestors() {
-		return this.parent.getAncestors( { includeNode: true, parentFirst: true } );
+		if ( this.parent instanceof DocumentFragment ) {
+			return [ this.parent ];
+		} else {
+			return this.parent.getAncestors( { includeNode: true, parentFirst: true } );
+		}
 	}
 
 	/**
@@ -202,8 +207,8 @@ export default class Position {
 		}
 
 		// Get path from root to position's parent element.
-		const path = this.parent.getAncestors( { includeNode: true } );
-		const otherPath = otherPosition.parent.getAncestors( { includeNode: true } );
+		const path = this.getAncestors().reverse();
+		const otherPath = otherPosition.getAncestors().reverse();
 
 		// Compare both path arrays to find common ancestor.
 		const result = compareArrays( path, otherPath );

@@ -123,6 +123,12 @@ describe( 'Position', () => {
 
 			expect( new Position( foo, 1 ).getAncestors() ).to.deep.equal( [ foo, p, div, docFrag ] );
 		} );
+
+		it( 'should return DocumentFragment if position is directly in document fragment', () => {
+			const docFrag = new DocumentFragment();
+
+			expect( new Position( docFrag, 0 ).getAncestors() ).to.deep.equal( [ docFrag ] );
+		} );
 	} );
 
 	describe( 'createAt', () => {
@@ -172,6 +178,19 @@ describe( 'Position', () => {
 			expect( fooAfter.offset ).to.equal( 1 );
 
 			expect( pEnd.parent ).to.equal( p );
+			expect( pEnd.offset ).to.equal( 1 );
+		} );
+
+		it( 'should create positions in document fragment', () => {
+			const foo = new Text( 'foo' );
+			const docFrag = new DocumentFragment( [ foo ] );
+
+			const pStart = Position.createAt( docFrag, 0 );
+			const pEnd = Position.createAt( docFrag, 'end' );
+
+			expect( pStart.parent ).to.equal( docFrag );
+			expect( pStart.offset ).to.equal( 0 );
+			expect( pEnd.parent ).to.equal( docFrag );
 			expect( pEnd.offset ).to.equal( 1 );
 		} );
 	} );
@@ -394,6 +413,20 @@ describe( 'Position', () => {
 			const compared = new Position( root2, 1 );
 
 			expect( position.compareWith( compared ) ).to.equal( 'different' );
+		} );
+
+		it( 'should return correct results if position is in document fragment', () => {
+			const node = new Node( 'name' );
+			const docFrag = new DocumentFragment( [ node ] );
+			const position = new Position( docFrag, 0 );
+			const compared = new Position( docFrag, 1 );
+			const posInNode = new Position( node, 0 );
+
+			expect( position.compareWith( compared ) ).to.equal( 'before' );
+			expect( compared.compareWith( position ) ).to.equal( 'after' );
+			expect( compared.compareWith( compared ) ).to.equal( 'same' );
+			expect( position.compareWith( posInNode ) ).to.equal( 'before' );
+			expect( compared.compareWith( posInNode ) ).to.equal( 'after' );
 		} );
 	} );
 

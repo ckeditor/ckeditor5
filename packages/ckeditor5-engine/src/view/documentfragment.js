@@ -84,15 +84,6 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * Returns ancestor elements of `DocumentFragment`, which is an empty array. Added for compatibility reasons.
-	 *
-	 * @returns {Array}
-	 */
-	getAncestors() {
-		return [];
-	}
-
-	/**
 	 * {@link module:engine/view/documentfragment~DocumentFragment#insertChildren Insert} a child node or a list of child nodes at the end
 	 * and sets the parent of these nodes to this fragment.
 	 *
