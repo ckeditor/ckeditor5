@@ -503,7 +503,7 @@ describe( 'position', () => {
 
 	describe( 'getAncestors', () => {
 		it( 'should return position parent element and it\'s ancestors', () => {
-			expect( new Position( root, [ 1, 1, 1 ] ).getAncestors() ).to.deep.equal( [ li2, ul, root ] );
+			expect( new Position( root, [ 1, 1, 1 ] ).getAncestors() ).to.deep.equal( [ root, ul, li2 ] );
 		} );
 
 		it( 'should return DocumentFragment if position is directly in document fragment', () => {

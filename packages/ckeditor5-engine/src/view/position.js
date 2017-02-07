@@ -148,7 +148,7 @@ export default class Position {
 		if ( this.parent instanceof DocumentFragment ) {
 			return [ this.parent ];
 		} else {
-			return this.parent.getAncestors( { includeNode: true, parentFirst: true } );
+			return this.parent.getAncestors( { includeNode: true } );
 		}
 	}
 
@@ -208,8 +208,8 @@ export default class Position {
 		}
 
 		// Get path from root to position's parent element.
-		const path = this.getAncestors().reverse();
-		const otherPath = otherPosition.getAncestors().reverse();
+		const path = this.getAncestors();
+		const otherPath = otherPosition.getAncestors();
 
 		// Compare both path arrays to find common ancestor.
 		const result = compareArrays( path, otherPath );

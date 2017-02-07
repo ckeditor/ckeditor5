@@ -265,7 +265,7 @@ export default class Position {
 		if ( this.parent instanceof DocumentFragment ) {
 			return [ this.parent ];
 		} else {
-			return this.parent.getAncestors( { includeNode: true, parentFirst: true } );
+			return this.parent.getAncestors( { includeNode: true } );
 		}
 	}
 
