@@ -9,6 +9,7 @@ import { stringify, parse } from '../../../src/dev-utils/view';
 import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
 import EmptyElement from '../../../src/view/emptyelement';
+import UIElement from '../../../src/view/uielement';
 import Range from '../../../src/view/range';
 import Position from '../../../src/view/position';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -149,6 +150,29 @@ describe( 'writer', () => {
 			expect( () => {
 				move( srcRange, dstPosition );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
+		} );
+
+		it( 'should move UIElement', () => {
+			test(
+				'<container:p>foo[<ui:span></ui:span>]bar</container:p>',
+				'<container:div>baz{}quix</container:div>',
+				'<container:p>foobar</container:p>',
+				'<container:div>baz[<ui:span></ui:span>]quix</container:div>'
+			);
+		} );
+
+		it( 'should throw if trying to move to UIElement', () => {
+			const srcAttribute = new AttributeElement( 'b' );
+			const srcContainer = new ContainerElement( 'p', null, srcAttribute );
+			const srcRange = Range.createFromParentsAndOffsets( srcContainer, 0, srcContainer, 1 );
+
+			const dstUI = new UIElement( 'span' );
+			new ContainerElement( 'p', null, dstUI );
+			const dstPosition = new Position( dstUI, 0 );
+
+			expect( () => {
+				move( srcRange, dstPosition );
+			} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
 		} );
 	} );
 } );

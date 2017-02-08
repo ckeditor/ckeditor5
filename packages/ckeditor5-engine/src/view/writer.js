@@ -11,7 +11,10 @@ import Position from './position';
 import ContainerElement from './containerelement';
 import AttributeElement from './attributeelement';
 import EmptyElement from './emptyelement';
+import UIElement from './uielement';
+import Element from './element';
 import Text from './text';
+import TextProxy from './textproxy';
 import Range from './range';
 import TreeWalker from './treewalker';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -31,6 +34,7 @@ const writer = {
 	mergeContainers,
 	insert,
 	remove,
+	clear,
 	move,
 	wrap,
 	wrapPosition,
@@ -68,6 +72,10 @@ export default writer;
  * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-empty-element`
  * when trying to break attributes
  * inside {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
+ *
+ * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-ui-element`
+ * when trying to break attributes
+ * inside {@link module:engine/view/uielement~UIElement UIElement}.
  *
  * @see module:engine/view/attributeelement~AttributeElement
  * @see module:engine/view/containerelement~ContainerElement
@@ -210,6 +218,11 @@ export function mergeAttributes( position ) {
 		return position;
 	}
 
+	// When one or both nodes are UIElements - no attributes to merge.
+	if ( ( nodeBefore instanceof UIElement ) || ( nodeAfter instanceof UIElement ) ) {
+		return position;
+	}
+
 	// When position is between two text nodes.
 	if ( nodeBefore instanceof Text && nodeAfter instanceof Text ) {
 		return mergeTextNodes( nodeBefore, nodeAfter );
@@ -310,22 +323,23 @@ export function breakViewRangePerContainer( range ) {
  * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
  * contains instances that are not {@link module:engine/view/text~Text Texts},
  * {@link module:engine/view/attributeelement~AttributeElement AttributeElements},
- * {@link module:engine/view/containerelement~ContainerElement ContainerElements} or
- * {@link module:engine/view/emptyelement~EmptyElement EmptyElements}.
+ * {@link module:engine/view/containerelement~ContainerElement ContainerElements},
+ * {@link module:engine/view/emptyelement~EmptyElement EmptyElements} or
+ * {@link module:engine/view/uielement~UIElement UIElements}.
  *
  * @function insert
  * @param {module:engine/view/position~Position} position Insertion position.
  * @param {module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement|
- * module:engine/view/containerelement~ContainerElement|module:engine/view/emptyelement~EmptyElement
- * |Iterable.<module:engine/view/text~Text|module:engine/view/attributeelement~AttributeElement|
- * module:engine/view/containerelement~ContainerElement|module:engine/view/emptyelement~EmptyElement>} nodes Node or
- * nodes to insert.
+ * module:engine/view/containerelement~ContainerElement|module:engine/view/emptyelement~EmptyElement|
+ * module:engine/view/uielement~UIElement|Iterable.<module:engine/view/text~Text|
+ * module:engine/view/attributeelement~AttributeElement|module:engine/view/containerelement~ContainerElement|
+ * module:engine/view/emptyelement~EmptyElement|module:engine/view/uielement~UIElement>} nodes Node or nodes to insert.
  * @returns {module:engine/view/range~Range} Range around inserted nodes.
  */
 export function insert( position, nodes ) {
 	nodes = isIterable( nodes ) ? [ ...nodes ] : [ nodes ];
 
-	// Check if nodes to insert are instances of AttributeElements, ContainerElements, EmptyElements or Text.
+	// Check if nodes to insert are instances of AttributeElements, ContainerElements, EmptyElements, UIElements or Text.
 	validateNodesToInsert( nodes );
 
 	const container = getParentContainer( position );
@@ -396,6 +410,66 @@ export function remove( range ) {
 
 	// Return removed nodes.
 	return new DocumentFragment( removed );
+}
+
+/**
+ * Removes matching elements from given range.
+ *
+ * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-invalid-range-container` when
+ * {@link module:engine/view/range~Range#start start} and {@link module:engine/view/range~Range#end end} positions are not placed inside
+ * same parent container.
+ *
+ * @function module:engine/view/writer~writer.clear
+ * @param {module:engine/view/range~Range} range Range to clear.
+ * @param {module:engine/view/element~Element} element Element to remove.
+ */
+export function clear( range, element ) {
+	validateRangeContainer( range );
+
+	// Create walker on given range.
+	// We walk backward because when we remove element during walk it modifies range end position.
+	const walker = range.getWalker( {
+		direction: 'backward',
+		ignoreElementEnd: true
+	} );
+
+	// Let's walk.
+	for ( const current of walker ) {
+		const item = current.item;
+		let rangeToRemove;
+
+		// When current item matches to the given element.
+		if ( item instanceof Element && element.isSimilar( item ) ) {
+			// Create range on this element.
+			rangeToRemove = Range.createOn( item );
+		// When range starts inside Text or TextProxy element.
+		} else if ( !current.nextPosition.isAfter( range.start ) && ( item instanceof Text || item instanceof TextProxy ) ) {
+			// We need to check if parent of this text matches to given element.
+			const parentElement = item.getAncestors().find( ( ancestor ) => {
+				return ancestor instanceof Element && element.isSimilar( ancestor );
+			} );
+
+			// If it is then create range inside this element.
+			if ( parentElement ) {
+				rangeToRemove = Range.createIn( parentElement );
+			}
+		}
+
+		// If we have found element to remove.
+		if ( rangeToRemove ) {
+			// We need to check if element range stick out of the given range and truncate if it is.
+			if ( rangeToRemove.end.isAfter( range.end ) ) {
+				rangeToRemove.end = range.end;
+			}
+
+			if ( rangeToRemove.start.isBefore( range.start ) ) {
+				rangeToRemove.start = range.start;
+			}
+
+			// At the end we remove range with found element.
+			remove( rangeToRemove );
+		}
+	}
 }
 
 /**
@@ -696,8 +770,11 @@ function _breakAttributesRange( range, forceSplitText = false ) {
 // Function used by public breakAttributes (without splitting text nodes) and by other methods (with
 // splitting text nodes).
 //
-// Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-empty-element` break position is placed
-// inside {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
+// Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-empty-element` when break position
+// is placed inside {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
+//
+// Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-ui-element` when break position
+// is placed inside {@link module:engine/view/uielement~UIElement UIElement}.
 //
 // @param {module:engine/view/position~Position} position Position where to break attributes.
 // @param {Boolean} [forceSplitText = false] If set to `true`, will break text nodes even if they are directly in
@@ -716,6 +793,16 @@ function _breakAttributes( position, forceSplitText = false ) {
 		 * @error view-writer-cannot-break-empty-element
 		 */
 		throw new CKEditorError( 'view-writer-cannot-break-empty-element' );
+	}
+
+	// If position is placed inside UIElement - throw an exception as we cannot break inside.
+	if ( position.parent instanceof UIElement ) {
+		/**
+		 * Cannot break inside UIElement instance.
+		 *
+		 * @error view-writer-cannot-break-ui-element
+		 */
+		throw new CKEditorError( 'view-writer-cannot-break-ui-element' );
 	}
 
 	// There are no attributes to break and text nodes breaking is not forced.
@@ -861,9 +948,10 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 		const isText = child instanceof Text;
 		const isAttribute = child instanceof AttributeElement;
 		const isEmpty = child instanceof EmptyElement;
+		const isUI = child instanceof UIElement;
 
-		// Wrap text, empty elements or attributes with higher or equal priority.
-		if ( isText || isEmpty || ( isAttribute && attribute.priority <= child.priority ) ) {
+		// Wrap text, empty elements, ui elements or attributes with higher or equal priority.
+		if ( isText || isEmpty || isUI || ( isAttribute && attribute.priority <= child.priority ) ) {
 			// Clone attribute.
 			const newAttribute = attribute.clone();
 
@@ -1108,12 +1196,14 @@ function rangeSpansOnAllChildren( range ) {
 
 // Checks if provided nodes are valid to insert. Checks if each node is an instance of
 // {@link module:engine/view/text~Text Text} or {@link module:engine/view/attributeelement~AttributeElement AttributeElement},
-// {@link module:engine/view/containerelement~ContainerElement ContainerElement} or
-// {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
+// {@link module:engine/view/containerelement~ContainerElement ContainerElement},
+// {@link module:engine/view/emptyelement~EmptyElement EmptyElement} or
+// {@link module:engine/view/uielement~UIElement UIElement}.
 //
 // Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-insert-invalid-node` when nodes to insert
 // contains instances that are not {@link module:engine/view/text~Text Texts},
 // {@link module:engine/view/emptyelement~EmptyElement EmptyElements},
+// {@link module:engine/view/uielement~UIElement UIElements},
 // {@link module:engine/view/attributeelement~AttributeElement AttributeElements} or
 // {@link module:engine/view/containerelement~ContainerElement ContainerElements}.
 //
@@ -1121,10 +1211,12 @@ function rangeSpansOnAllChildren( range ) {
 // |module:engine/view/containerelement~ContainerElement> nodes
 function validateNodesToInsert( nodes ) {
 	for ( let node of nodes ) {
-		if ( !( node instanceof Text || node instanceof AttributeElement || node instanceof ContainerElement || node instanceof EmptyElement ) ) {
+		if ( !validNodesToInsert.some( ( validNode => node instanceof validNode ) ) ) {
 			/**
-			 * Inserted nodes should be instance of {@link module:engine/view/attributeelement~AttributeElement AttributeElement},
-			 * {@link module:engine/view/containerelement~ContainerElement ContainerElement} or {@link module:engine/view/text~Text Text}.
+			 * Inserted nodes should be valid to insert. of {@link module:engine/view/attributeelement~AttributeElement AttributeElement},
+			 * {@link module:engine/view/containerelement~ContainerElement ContainerElement},
+			 * {@link module:engine/view/emptyelement~EmptyElement EmptyElement},
+			 * {@link module:engine/view/uielement~UIElement UIElement}, {@link module:engine/view/text~Text Text}.
 			 *
 			 * @error view-writer-insert-invalid-node
 			 */
@@ -1136,6 +1228,8 @@ function validateNodesToInsert( nodes ) {
 		}
 	}
 }
+
+const validNodesToInsert = [ Text, AttributeElement, ContainerElement, EmptyElement, UIElement ];
 
 // Checks if node is ContainerElement or DocumentFragment, because in most cases they should be treated the same way.
 //

@@ -9,6 +9,7 @@ import Element from '../../../src/view/element';
 import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
 import EmptyElement from '../../../src/view/emptyelement';
+import UIElement from '../../../src/view/uielement';
 import Position from '../../../src/view/position';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { stringify, parse } from '../../../src/dev-utils/view';
@@ -132,5 +133,16 @@ describe( 'wrapPosition', () => {
 		expect( () => {
 			wrapPosition( position, attributeElement );
 		} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add' );
+	} );
+
+	it( 'should throw if position is set inside UIElement', () => {
+		const uiElement = new UIElement( 'span' );
+		new ContainerElement( 'p', null, uiElement );
+		const attributeElement = new AttributeElement( 'b' );
+		const position = new Position( uiElement, 0 );
+
+		expect( () => {
+			wrapPosition( position, attributeElement );
+		} ).to.throw( CKEditorError, 'view-uielement-cannot-add' );
 	} );
 } );

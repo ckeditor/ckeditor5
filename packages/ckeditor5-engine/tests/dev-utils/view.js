@@ -12,6 +12,7 @@ import Element from '../../src/view/element';
 import AttributeElement from '../../src/view/attributeelement';
 import ContainerElement from '../../src/view/containerelement';
 import EmptyElement from '../../src/view/emptyelement';
+import UIElement from '../../src/view/uielement';
 import Text from '../../src/view/text';
 import Selection from '../../src/view/selection';
 import Range from '../../src/view/range';
@@ -347,6 +348,13 @@ describe( 'view test utils', () => {
 			expect( stringify( p, null, { showType: true } ) )
 				.to.equal( '<container:p><empty:img></empty:img></container:p>' );
 		} );
+
+		it( 'should stringify UIElement', () => {
+			const span = new UIElement( 'span' );
+			const p = new ContainerElement( 'p', null, span );
+			expect( stringify( p, null, { showType: true } ) )
+				.to.equal( '<container:p><ui:span></ui:span></container:p>' );
+		} );
 	} );
 
 	describe( 'parse', () => {
@@ -634,10 +642,22 @@ describe( 'view test utils', () => {
 			expect( parsed ).to.be.instanceof( EmptyElement );
 		} );
 
+		it( 'should parse UIElement', () => {
+			const parsed = parse( '<ui:span></ui:span>' );
+
+			expect( parsed ).to.be.instanceof( UIElement );
+		} );
+
 		it( 'should throw an error if EmptyElement is not empty', () => {
 			expect( () => {
 				parse( '<empty:img>foo bar</empty:img>' );
 			} ).to.throw( Error, 'Parse error - cannot parse inside EmptyElement.' );
+		} );
+
+		it( 'should throw an error if UIElement is not empty', () => {
+			expect( () => {
+				parse( '<ui:span>foo bar</ui:span>' );
+			} ).to.throw( Error, 'Parse error - cannot parse inside UIElement.' );
 		} );
 	} );
 } );

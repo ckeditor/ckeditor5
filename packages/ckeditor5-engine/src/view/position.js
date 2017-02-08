@@ -9,6 +9,7 @@
 
 import Text from './text';
 import TextProxy from './textproxy';
+import DocumentFragment from './documentfragment';
 
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -21,14 +22,15 @@ export default class Position {
 	/**
 	 * Creates a position.
 	 *
-	 * @param {module:engine/view/node~Node} parent Position parent node.
+	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} parent Position parent.
 	 * @param {Number} offset Position offset.
 	 */
 	constructor( parent, offset ) {
 		/**
-		 * Position parent node.
+		 * Position parent.
 		 *
-		 * @member {module:engine/view/node~Node} module:engine/view/position~Position#parent
+		 * @member {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment}
+		 * module:engine/view/position~Position#parent
 		 */
 		this.parent = parent;
 
@@ -143,7 +145,11 @@ export default class Position {
 	 * @returns {Array} Array with ancestors.
 	 */
 	getAncestors() {
-		return this.parent.getAncestors( { includeNode: true, parentFirst: true } );
+		if ( this.parent instanceof DocumentFragment ) {
+			return [ this.parent ];
+		} else {
+			return this.parent.getAncestors( { includeNode: true } );
+		}
 	}
 
 	/**
@@ -153,7 +159,7 @@ export default class Position {
 	 * @returns {Boolean} True if positions are same.
 	 */
 	isEqual( otherPosition ) {
-		return this == otherPosition || ( this.parent == otherPosition.parent && this.offset == otherPosition.offset );
+		return ( this.parent == otherPosition.parent && this.offset == otherPosition.offset );
 	}
 
 	/**
@@ -202,8 +208,8 @@ export default class Position {
 		}
 
 		// Get path from root to position's parent element.
-		const path = this.parent.getAncestors( { includeNode: true } );
-		const otherPath = otherPosition.parent.getAncestors( { includeNode: true } );
+		const path = this.getAncestors();
+		const otherPath = otherPosition.getAncestors();
 
 		// Compare both path arrays to find common ancestor.
 		const result = compareArrays( path, otherPath );

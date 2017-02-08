@@ -55,14 +55,6 @@ describe( 'DocumentFragment', () => {
 		} );
 	} );
 
-	describe( 'getAncestors', () => {
-		it( 'should return empty array', () => {
-			const fragment = new DocumentFragment();
-
-			expect( fragment.getAncestors() ).to.deep.equal( [] );
-		} );
-	} );
-
 	describe( 'isEmpty', () => {
 		it( 'should return true if there are no children in document fragment', () => {
 			const fragment = new DocumentFragment();

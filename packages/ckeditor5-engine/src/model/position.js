@@ -262,7 +262,11 @@ export default class Position {
 	 * @returns {Array.<module:engine/model/item~Item>} Array with ancestors.
 	 */
 	getAncestors() {
-		return this.parent.getAncestors( { includeNode: true, parentFirst: true } );
+		if ( this.parent instanceof DocumentFragment ) {
+			return [ this.parent ];
+		} else {
+			return this.parent.getAncestors( { includeNode: true } );
+		}
 	}
 
 	/**

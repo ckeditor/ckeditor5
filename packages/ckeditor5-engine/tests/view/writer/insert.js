@@ -7,6 +7,7 @@ import { insert } from '../../../src/view/writer';
 import ContainerElement from '../../../src/view/containerelement';
 import Element from '../../../src/view/element';
 import EmptyElement from '../../../src/view/emptyelement';
+import UIElement from '../../../src/view/uielement';
 import Position from '../../../src/view/position';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { stringify, parse } from '../../../src/dev-utils/view';
@@ -192,6 +193,17 @@ describe( 'writer', () => {
 			expect( () => {
 				insert( position, attributeElement );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
+		} );
+
+		it( 'should throw if trying to insert inside UIElement', () => {
+			const uiElement = new UIElement( 'span' );
+			new ContainerElement( 'p', null, uiElement );
+			const position = new Position( uiElement, 0 );
+			const attributeElement = new AttributeElement( 'i' );
+
+			expect( () => {
+				insert( position, attributeElement );
+			} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
 		} );
 	} );
 } );

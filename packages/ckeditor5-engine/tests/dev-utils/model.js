@@ -151,6 +151,12 @@ describe( 'model test utils', () => {
 			} ).to.throw( TypeError, 'Document needs to be an instance of module:engine/model/document~Document.' );
 		} );
 
+		it( 'should set attributes to the selection', () => {
+			setData( document, '<b>[foo bar]</b>', { selectionAttributes: { foo: 'bar' } } );
+
+			expect( document.selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
+		} );
+
 		function test( data, expected ) {
 			expected = expected || data;
 
