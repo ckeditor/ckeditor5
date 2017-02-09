@@ -19,7 +19,7 @@ import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import { isImage, isImageWidget } from '../utils';
-import { captionEditableCreator, isCaptionEditable, getCaptionFromImage } from './utils';
+import { editableCaptionCreator, isCaptionEditable, getCaptionFromImage } from './utils';
 
 /**
  * The image caption engine plugin.
@@ -53,7 +53,7 @@ export default class ImageCaptionEngine extends Plugin {
 		schema.allow( { name: 'caption', inside: 'image' } );
 
 		// Add caption element to each image inserted without it.
-		document.on( 'change', insertCaptionElement );
+		document.on( 'change', insertMissingCaptionElement );
 
 		// View to model converter for data pipeline.
 		const matcher = new ViewMatcher( ( element ) => {
@@ -81,7 +81,7 @@ export default class ImageCaptionEngine extends Plugin {
 		// Model to view converter for editing pipeline.
 		editing.modelToView.on(
 			'insert:caption',
-			captionModelToView( captionEditableCreator( viewDocument ) )
+			captionModelToView( editableCaptionCreator( viewDocument ) )
 		);
 
 		// Adding / removing caption element when there is no text in the model.
@@ -152,7 +152,7 @@ export default class ImageCaptionEngine extends Plugin {
 		const selection = editing.view.selection;
 		const imageFigure = selection.getSelectedElement();
 		const mapper = editing.mapper;
-		const editableCreator = captionEditableCreator( editing.view );
+		const editableCreator = editableCaptionCreator( editing.view );
 
 		if ( imageFigure && isImageWidget( imageFigure ) ) {
 			const modelImage = mapper.toModelElement( imageFigure );
@@ -176,7 +176,7 @@ export default class ImageCaptionEngine extends Plugin {
 // If there is none - adds it to the image element.
 //
 // @private
-function insertCaptionElement( evt, changeType, data, batch ) {
+function insertMissingCaptionElement( evt, changeType, data, batch ) {
 	if ( changeType !== 'insert' ) {
 		return;
 	}

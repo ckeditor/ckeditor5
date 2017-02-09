@@ -13,14 +13,14 @@ import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 const captionSymbol = Symbol( 'imageCaption' );
 
 /**
- * Returns function that creates caption editable element for given {@link module:engine/view/document~Document}.
+ * Returns a function that creates caption editable element for the given {@link module:engine/view/document~Document}.
  *
  * @param {module:engine/view/document~Document} viewDocument
  * @return {Function}
  */
-export function captionEditableCreator( viewDocument ) {
+export function editableCaptionCreator( viewDocument ) {
 	return () => {
-		const editable = new ViewEditableElement( 'figcaption', { contenteditable: true } ) ;
+		const editable = new ViewEditableElement( 'figcaption', { contenteditable: true } );
 		editable.document = viewDocument;
 		editable.setCustomProperty( captionSymbol, true );
 

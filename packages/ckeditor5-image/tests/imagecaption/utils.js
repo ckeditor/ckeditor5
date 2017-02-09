@@ -5,7 +5,7 @@
 
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
-import { captionEditableCreator, isCaptionEditable, getCaptionFromImage } from '../../src/imagecaption/utils';
+import { editableCaptionCreator, isCaptionEditable, getCaptionFromImage } from '../../src/imagecaption/utils';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 
 describe( 'image captioning utils', () => {
@@ -13,11 +13,11 @@ describe( 'image captioning utils', () => {
 
 	beforeEach( () => {
 		document = new ViewDocument();
-		const creator = captionEditableCreator( document );
+		const creator = editableCaptionCreator( document );
 		element = creator();
 	} );
 
-	describe( 'captionEditableCreator', () => {
+	describe( 'editableCaptionCreator', () => {
 		it( 'should create figcatpion editable element', () => {
 			expect( element ).to.be.instanceOf( ViewEditableElement );
 			expect( element.name ).to.equal( 'figcaption' );
