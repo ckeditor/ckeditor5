@@ -4,23 +4,23 @@
  */
 
 /**
- * @module image/imagecaptioning/imagecaptioning
+ * @module image/imagecaption/imagecaption
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageCaptioningEngine from './imagecaptioningengine';
-import '../../theme/imagecaptioning/theme.scss';
+import ImageCaptionEngine from './imagecaptionengine';
+import '../../theme/imagecaption/theme.scss';
 
 /**
- * The image captioning plugin.
+ * The image caption plugin.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ImageCaptioning extends Plugin {
+export default class ImageCaption extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageCaptioningEngine ];
+		return [ ImageCaptionEngine ];
 	}
 }

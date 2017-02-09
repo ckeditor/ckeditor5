@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imagecaptioning/utils
+ * @module image/imagecaption/utils
  */
 
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';

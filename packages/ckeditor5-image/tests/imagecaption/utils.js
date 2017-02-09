@@ -5,7 +5,7 @@
 
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
-import { captionEditableCreator, isCaptionEditable, getCaptionFromImage } from '../../src/imagecaptioning/utils';
+import { captionEditableCreator, isCaptionEditable, getCaptionFromImage } from '../../src/imagecaption/utils';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 
 describe( 'image captioning utils', () => {

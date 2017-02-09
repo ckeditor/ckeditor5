@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imagecaptioning/imagecaptioningengine
+ * @module image/imagecaption/imagecaptionengine
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -22,13 +22,13 @@ import { isImage, isImageWidget } from '../utils';
 import { captionEditableCreator, isCaptionEditable, getCaptionFromImage } from './utils';
 
 /**
- * The image captioning engine plugin.
+ * The image caption engine plugin.
  *
  * Registers proper converters. Takes care of adding caption element if image without it is inserted to model document.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ImageCaptioningEngine extends Plugin {
+export default class ImageCaptionEngine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -44,7 +44,7 @@ export default class ImageCaptioningEngine extends Plugin {
 		 * Last selected caption editable.
 		 * It is used for hiding editable when is empty and image widget is no longer selected.
 		 *
-		 * @member {module:image/imagecaptioning/imagecaptioningengine~ImageCaptioningEngine} #_lastSelectedEditable
+		 * @member {module:image/imagecaption/imagecaptionengine~ImageCaptionEngine} #_lastSelectedEditable
 		 */
 
 		// Schema configuration.

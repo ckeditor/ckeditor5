@@ -11,14 +11,14 @@ import TypingPlugin from '@ckeditor/ckeditor5-typing/src/typing';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
 import ImagePlugin from '../../src/image';
-import ImageCaptioning from '../../src/imagecaptioning/imagecaptioning';
+import ImageCaption from '../../src/imagecaption/imagecaption';
 import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
 import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [
 		EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin,
-		UndoPlugin, ClipboardPlugin, ImageCaptioning
+		UndoPlugin, ClipboardPlugin, ImageCaption
 	],
 	toolbar: [ 'headings', 'undo', 'redo' ]
 } )

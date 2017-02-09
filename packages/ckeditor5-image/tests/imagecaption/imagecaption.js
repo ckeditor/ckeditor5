@@ -6,10 +6,10 @@
 /* global window */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ImageCaptioning from '../../src/imagecaptioning/imagecaptioning';
-import ImageCaptioningEngine from '../../src/imagecaptioning/imagecaptioningengine';
+import ImageCaption from '../../src/imagecaption/imagecaption';
+import ImageCaptionEngine from '../../src/imagecaption/imagecaptionengine';
 
-describe( 'ImageCaptioning', () => {
+describe( 'ImageCaption', () => {
 	let editor;
 
 	beforeEach( () => {
@@ -17,7 +17,7 @@ describe( 'ImageCaptioning', () => {
 		window.document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-			plugins: [ ImageCaptioning ]
+			plugins: [ ImageCaption ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
@@ -25,10 +25,10 @@ describe( 'ImageCaptioning', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ImageCaptioning ) ).to.instanceOf( ImageCaptioning );
+		expect( editor.plugins.get( ImageCaption ) ).to.instanceOf( ImageCaption );
 	} );
 
-	it( 'should load ImageCaptioningEngine plugin', () => {
-		expect( editor.plugins.get( ImageCaptioningEngine ) ).to.instanceOf( ImageCaptioningEngine );
+	it( 'should load ImageCaptionEngine plugin', () => {
+		expect( editor.plugins.get( ImageCaptionEngine ) ).to.instanceOf( ImageCaptionEngine );
 	} );
 } );

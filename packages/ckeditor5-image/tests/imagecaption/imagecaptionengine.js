@@ -10,19 +10,19 @@ import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
-import ImageCaptioningEngine from '../../src/imagecaptioning/imagecaptioningengine';
+import ImageCaptionEngine from '../../src/imagecaption/imagecaptionengine';
 import ImageEngine from '../../src/imageengine';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 
-describe( 'ImageCaptioningEngine', () => {
+describe( 'ImageCaptionEngine', () => {
 	let editor, document, viewDocument;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			plugins: [ ImageCaptioningEngine, ImageEngine ]
+			plugins: [ ImageCaptionEngine, ImageEngine ]
 		} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -39,7 +39,7 @@ describe( 'ImageCaptioningEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ImageCaptioningEngine ) ).to.be.instanceOf( ImageCaptioningEngine );
+		expect( editor.plugins.get( ImageCaptionEngine ) ).to.be.instanceOf( ImageCaptionEngine );
 	} );
 
 	it( 'should set proper schema rules', () => {
