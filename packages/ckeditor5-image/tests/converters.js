@@ -9,8 +9,8 @@ import { createImageViewElement } from '../src/imageengine';
 import { toImageWidget } from '../src/utils';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import { parse as parseView, getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { stringify as stringifyModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'Image converters', () => {
 	let editor, document, viewDocument;
@@ -52,17 +52,13 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should convert view figure element', () => {
-			test(
-				'<figure class="image"><img src="foo.png" alt="bar baz"></img></figure>',
-				'<image alt="bar baz" src="foo.png"></image>'
-			);
+			editor.setData( '<figure class="image"><img src="foo.png" alt="bar baz"></img></figure>' );
+			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image alt="bar baz" src="foo.png"></image>' );
 		} );
 
 		it( 'should convert without alt', () => {
-			test(
-				'<figure class="image"><img src="foo.png"></img></figure>',
-				'<image src="foo.png"></image>'
-			);
+			editor.setData( '<figure class="image"><img src="foo.png"></img></figure>' );
+			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image src="foo.png"></image>' );
 		} );
 
 		it( 'should not convert if figure element is already consumed', () => {
@@ -72,33 +68,21 @@ describe( 'Image converters', () => {
 				data.output = new ModelElement( 'not-image' );
 			}, { priority: 'high' } );
 
-			test(
-				'<figure class="image"><img src="foo.png" alt="bar baz"></img></figure>',
-				'<not-image></not-image>'
-			);
+			editor.setData( '<figure class="image"><img src="foo.png" alt="bar baz"></img></figure>' );
+			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<not-image></not-image>' );
 		} );
 
 		it( 'should not convert image if schema disallows it', () => {
 			schema.disallow( { name: 'image', attributes: [ 'alt', 'src' ], inside: '$root' } );
-			const element = parseView( '<figure class="image"><img src="foo.png"></img></figure>' );
-			const model = dispatcher.convert( element );
 
-			expect( stringifyModel( model ) ).to.equal( '' );
+			editor.setData( '<figure class="image"><img src="foo.png"></img></figure>' );
+			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '' );
 		} );
 
 		it( 'should not convert image if there is no img element', () => {
-			const element = parseView( '<figure class="image"></figure>' );
-			const model = dispatcher.convert( element );
-
-			expect( stringifyModel( model ) ).to.equal( '' );
+			editor.setData( '<figure class="image"></figure>' );
+			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '' );
 		} );
-
-		function test( viewString, modelString ) {
-			const element = parseView( viewString );
-			const model = dispatcher.convert( element );
-
-			expect( stringifyModel( model ) ).to.equal( modelString );
-		}
 	} );
 
 	describe( 'modelToViewSelection', () => {
