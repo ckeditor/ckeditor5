@@ -12,7 +12,7 @@ import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { parse as parseView, getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { stringify as stringifyModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe.only( 'Image converters', () => {
+describe( 'Image converters', () => {
 	let editor, document, viewDocument;
 
 	beforeEach( () => {
