@@ -8,9 +8,11 @@ import ModelPosition from '../model/position';
 import ModelElement from '../model/element';
 
 import ViewRange from '../view/range';
-import ViewPosition from '../view/position';
 import ViewElement from '../view/element';
+import ViewAttributeElement from '../view/element';
+import ViewUIElement from '../view/element';
 import ViewText from '../view/text';
+import ViewTreeWalker from '../view/treewalker';
 import viewWriter from '../view/writer';
 
 /**
@@ -50,14 +52,19 @@ import viewWriter from '../view/writer';
  */
 export function insertElement( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
+		const viewElement = ( elementCreator instanceof ViewElement ) ?
+			elementCreator.clone( true ) :
+			elementCreator( data, consumable, conversionApi );
+
+		if ( !viewElement ) {
+			return;
+		}
+
 		if ( !consumable.consume( data.item, 'insert' ) ) {
 			return;
 		}
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-		const viewElement = ( elementCreator instanceof ViewElement ) ?
-			elementCreator.clone( true ) :
-			elementCreator( data, consumable, conversionApi );
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		viewWriter.insert( viewPosition, viewElement );
@@ -84,6 +91,37 @@ export function insertText() {
 		const viewText = new ViewText( data.item.data );
 
 		viewWriter.insert( viewPosition, viewText );
+	};
+}
+
+/**
+ * Function factory, creates a converter that converts marker adding change to the view ui element.
+ * The view ui element that will be added to the view depends on passed parameter. See {@link ~insertElement}.
+ *
+ * **Note:** unlike {@link ~insertElement}, the converter does not bind view element to model, because this converter
+ * uses marker as "model source of data". This means that view ui element does not have corresponding model element.
+ *
+ * @param {module:engine/view/uielement~UIElement|Function} elementCreator View ui element, or function returning a view element, which
+ * will be inserted.
+ * @returns {Function} Insert element event converter.
+ */
+export function insertUIElement( elementCreator ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		const viewElement = ( elementCreator instanceof ViewElement ) ?
+			elementCreator.clone( true ) :
+			elementCreator( data, consumable, conversionApi );
+
+		if ( !viewElement ) {
+			return;
+		}
+
+		if ( !consumable.consume( data.range, 'addMarker' ) ) {
+			return;
+		}
+
+		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+
+		viewWriter.insert( viewPosition, viewElement );
 	};
 }
 
@@ -209,27 +247,29 @@ export function removeAttribute( attributeCreator ) {
  */
 export function wrapItem( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		let viewRange = conversionApi.mapper.toViewRange( data.range );
-
 		const viewElement = ( elementCreator instanceof ViewElement ) ?
 			elementCreator.clone( true ) :
 			elementCreator( data.attributeNewValue, data, consumable, conversionApi );
 
-		if ( viewElement ) {
-			if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
-				return;
-			}
-
-			// If this is a change event (because old value is not empty) and the creator is a function (so
-			// it may create different view elements basing on attribute value) we have to create
-			// view element basing on old value and unwrap it before wrapping with a newly created view element.
-			if ( data.attributeOldValue !== null && !( elementCreator instanceof ViewElement ) ) {
-				const oldViewElement = elementCreator( data.attributeOldValue, data, consumable, conversionApi );
-				viewRange = viewWriter.unwrap( viewRange, oldViewElement );
-			}
-
-			viewWriter.wrap( viewRange, viewElement );
+		if ( !viewElement ) {
+			return;
 		}
+
+		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
+			return;
+		}
+
+		let viewRange = conversionApi.mapper.toViewRange( data.range );
+
+		// If this is a change event (because old value is not empty) and the creator is a function (so
+		// it may create different view elements basing on attribute value) we have to create
+		// view element basing on old value and unwrap it before wrapping with a newly created view element.
+		if ( data.attributeOldValue !== null && !( elementCreator instanceof ViewElement ) ) {
+			const oldViewElement = elementCreator( data.attributeOldValue, data, consumable, conversionApi );
+			viewRange = viewWriter.unwrap( viewRange, oldViewElement );
+		}
+
+		viewWriter.wrap( viewRange, viewElement );
 	};
 }
 
@@ -257,16 +297,21 @@ export function wrapItem( elementCreator ) {
  */
 export function unwrapItem( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
+		const viewElement = ( elementCreator instanceof ViewElement ) ?
+			elementCreator.clone( true ) :
+			elementCreator( data.attributeOldValue, data, consumable, conversionApi );
+
+		if ( !viewElement ) {
+			return;
+		}
+
 		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
 			return;
 		}
 
 		const viewRange = conversionApi.mapper.toViewRange( data.range );
-		const viewNode = ( elementCreator instanceof ViewElement ) ?
-			elementCreator.clone( true ) :
-			elementCreator( data.attributeOldValue, data, consumable, conversionApi );
 
-		viewWriter.unwrap( viewRange, viewNode );
+		viewWriter.unwrap( viewRange, viewElement );
 	};
 }
 
@@ -304,26 +349,23 @@ export function unwrapItem( elementCreator ) {
  */
 export function wrapRange( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		const viewRange = conversionApi.mapper.toViewRange( data.range );
-
 		const viewElement = ( elementCreator instanceof ViewElement ) ?
 			elementCreator.clone( true ) :
 			elementCreator( data, consumable, conversionApi );
 
-		if ( viewElement ) {
-			if ( !consumable.consume( data.range, 'addMarker' ) ) {
-				return;
-			}
+		if ( !viewElement ) {
+			return;
+		}
 
-			if ( viewRange.isCollapsed ) {
-				viewWriter.wrapPosition( viewRange.start, viewElement );
-			} else {
-				const flatViewRanges = viewWriter.breakViewRangePerContainer( viewRange );
+		if ( !consumable.consume( data.range, 'addMarker' ) ) {
+			return;
+		}
 
-				for ( let range of flatViewRanges ) {
-					viewWriter.wrap( range, viewElement );
-				}
-			}
+		const viewRange = conversionApi.mapper.toViewRange( data.range );
+		const flatViewRanges = viewWriter.breakViewRangePerContainer( viewRange );
+
+		for ( let range of flatViewRanges ) {
+			viewWriter.wrap( range, viewElement );
 		}
 	};
 }
@@ -351,47 +393,43 @@ export function wrapRange( elementCreator ) {
  */
 export function unwrapRange( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.range, 'removeMarker' ) ) {
-			return;
-		}
-
 		const viewElement = ( elementCreator instanceof ViewElement ) ?
 			elementCreator.clone( true ) :
 			elementCreator( data, consumable, conversionApi );
 
-		if ( data.range.isCollapsed ) {
-			const modelStart = data.range.start;
-			let viewStart = conversionApi.mapper.toViewPosition( modelStart );
+		if ( !viewElement ) {
+			return;
+		}
 
-			if ( viewStart.parent instanceof ViewText ) {
-				viewStart = ViewPosition.createAfter( viewStart.parent );
-			}
+		if ( !consumable.consume( data.range, 'removeMarker' ) ) {
+			return;
+		}
 
-			const viewRange = enlargeViewPosition( viewStart, conversionApi.mapper );
+		const viewRange = conversionApi.mapper.toViewRange( data.range );
+		const flatViewRanges = viewWriter.breakViewRangePerContainer( viewRange );
 
-			viewWriter.unwrap( viewRange, viewElement );
-		} else {
-			const viewRange = conversionApi.mapper.toViewRange( data.range );
-			const flatViewRanges = viewWriter.breakViewRangePerContainer( viewRange );
-
-			for ( let range of flatViewRanges ) {
-				viewWriter.unwrap( range, viewElement );
-			}
+		for ( let range of flatViewRanges ) {
+			viewWriter.unwrap( range, viewElement );
 		}
 	};
 }
 
 // Takes given `viewPosition` and returns a widest possible range that contains this position and all view elements
-// before that position and after that position which has zero length in model (in most cases empty `ViewAttributeElement`s).
+// before that position and after that position which has zero length in model (empty `ViewAttributeElement`s and `ViewUIElement`s).
 // @param {module:engine/view/position~Position} viewPosition Position to start from when looking for furthest zero length position.
-// @param {module:engine/conversion/mapper~Mapper} mapper Mapper to use when looking for furthest zero length position.
 // @returns {module:engine/view/range~Range}
-function enlargeViewPosition( viewPosition, mapper ) {
-	const start = ViewPosition.createFromPosition( viewPosition );
-	const end = ViewPosition.createFromPosition( viewPosition );
+function enlargeViewPosition( viewPosition ) {
+	const start = viewPosition;
+	let end = viewPosition;
 
-	while ( end.nodeAfter && mapper.getModelLength( end.nodeAfter ) === 0 ) {
-		end.offset++;
+	const walker = new ViewTreeWalker( { startPosition: start } );
+
+	for ( let step of walker ) {
+		if ( step.item instanceof ViewAttributeElement || step.item instanceof ViewUIElement ) {
+			end = walker.position;
+		} else {
+			break;
+		}
 	}
 
 	return new ViewRange( start, end );
@@ -437,6 +475,35 @@ export function remove() {
 
 		viewWriter.remove( viewRange );
 		conversionApi.mapper.unbindModelElement( data.item );
+	};
+}
+
+/**
+ * Function factory, creates a default model-to-view converter for removing {@link module:engine/view/uielement~UIElement ui element}
+ * basing on marker remove change.
+ *
+ * @param {module:engine/view/uielement~UIElement|Function} elementCreator View ui element, or function returning
+ * a view ui element, which will be used as a pattern when look for element to remove at the marker start position.
+ * @returns {Function} Remove ui element converter.
+ */
+export function removeUIElement( elementCreator ) {
+	return ( evt, data, consumable, conversionApi ) => {
+		const viewElement = ( elementCreator instanceof ViewElement ) ?
+			elementCreator.clone( true ) :
+			elementCreator( data, consumable, conversionApi );
+
+		if ( !viewElement ) {
+			return;
+		}
+
+		if ( !consumable.consume( data.range, 'removeMarker' ) ) {
+			return;
+		}
+
+		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+		const viewRange = enlargeViewPosition( viewPosition );
+
+		viewWriter.clear( viewRange, viewElement );
 	};
 }
 

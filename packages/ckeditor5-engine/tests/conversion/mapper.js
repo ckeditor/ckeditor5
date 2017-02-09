@@ -12,6 +12,7 @@ import ModelPosition from '../../src/model/position';
 import ModelRange from '../../src/model/range';
 
 import ViewElement from '../../src/view/element';
+import ViewUIElement from '../../src/view/uielement';
 import ViewText from '../../src/view/text';
 import ViewPosition from '../../src/view/position';
 import ViewRange from '../../src/view/range';
@@ -469,7 +470,7 @@ describe( 'Mapper', () => {
 		} );
 	} );
 
-	describe( 'List mapping (test registerViewToModelLengthCallback)', () => {
+	describe( 'List mapping (test registerViewToModelLength)', () => {
 		function createToModelTest( viewElement, viewOffset, modelElement, modelOffset ) {
 			const viewPosition = new ViewPosition( viewElement, viewOffset );
 			const modelPosition = mapper.toModelPosition( viewPosition );
@@ -536,6 +537,56 @@ describe( 'Mapper', () => {
 			it( 'should transform viewList 0', () => createToModelTest( viewList, 0, modelRoot, 0 ) );
 			it( 'should transform viewList 1', () => createToModelTest( viewList, 1, modelRoot, 3 ) );
 			it( 'should transform viewList 2', () => createToModelTest( viewList, 2, modelRoot, 4 ) );
+		} );
+	} );
+
+	describe( 'getModelLength', () => {
+		let mapper;
+
+		beforeEach( () => {
+			mapper = new Mapper();
+		} );
+
+		it( 'should return length according to callback added by registerViewToModelLength', () => {
+			const viewElement = new ViewElement( 'span' );
+
+			mapper.registerViewToModelLength( 'span', () => 4 );
+
+			expect( mapper.getModelLength( viewElement ) ).to.equal( 4 );
+		} );
+
+		it( 'should return 1 for mapped elements', () => {
+			const viewElement = new ViewElement( 'span' );
+			const modelElement = new ModelElement( 'span' );
+			mapper.bindElements( modelElement, viewElement );
+
+			expect( mapper.getModelLength( viewElement ) ).to.equal( 1 );
+		} );
+
+		it( 'should return 0 for ui elements', () => {
+			const viewUiElement = new ViewUIElement( 'span' );
+
+			expect( mapper.getModelLength( viewUiElement ) ).to.equal( 0 );
+		} );
+
+		it( 'should return length of data for text nodes', () => {
+			const viewText = new ViewText( 'foo' );
+
+			expect( mapper.getModelLength( viewText ) ).to.equal( 3 );
+		} );
+
+		it( 'should return sum of length of children for unmapped element', () => {
+			const modelP = new ModelElement( 'p' );
+			const viewP = new ViewElement( 'p' );
+			const viewUi = new ViewUIElement( 'span' );
+			const viewFoo = new ViewText( 'foo' );
+			const viewCallback = new ViewElement( 'xxx' );
+			const viewDiv = new ViewElement( 'div', null, [ viewP, viewUi, viewFoo, viewCallback ] );
+
+			mapper.bindElements( modelP, viewP );
+			mapper.registerViewToModelLength( 'xxx', () => 2 );
+
+			expect( mapper.getModelLength( viewDiv ) ).to.equal( 6 );
 		} );
 	} );
 } );

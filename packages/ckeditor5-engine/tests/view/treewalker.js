@@ -979,6 +979,17 @@ describe( 'TreeWalker', () => {
 		} );
 	} );
 
+	it( 'should not return elementEnd for a text node when iteration begins at the start or the end of that text node', () => {
+		let iterator = new TreeWalker( {
+			startPosition: Position.createAt( textAbcd, 'end' )
+		} );
+
+		const step = iterator.next();
+
+		expect( step.value.type ).to.equal( 'elementEnd' );
+		expect( step.value.item ).to.equal( bold );
+	} );
+
 	it( 'should iterate over document fragment', () => {
 		const foo = new Text( 'foo' );
 		const bar = new Text( 'bar' );
