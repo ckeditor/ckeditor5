@@ -86,10 +86,10 @@ export default class ImageBalloonPanelView extends BalloonPanelView {
 	 * @inheritDoc
 	 */
 	init() {
-		super.init();
-
 		// Let the focusTracker know about new focusable UI element.
 		this.editor.ui.focusTracker.add( this.element );
+
+		return super.init();
 	}
 
 	/**
