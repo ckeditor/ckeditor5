@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command/command';
-import { getClosestListItem, getSelectedBlocks, getPositionBeforeBlock } from './utils';
+import { getClosestListItem, getPositionBeforeBlock } from './utils';
 
 /**
  * The list command. It is used by the {@link module:list/list~List list feature}.
@@ -72,7 +72,7 @@ export default class ListCommand extends Command {
 	 */
 	_doExecute( options = {} ) {
 		const document = this.editor.document;
-		const blocks = getSelectedBlocks( document.selection, document.schema );
+		const blocks = Array.from( document.selection.getSelectedBlocks() );
 
 		// Whether we are turning off some items.
 		const turnOff = this.value === true;
