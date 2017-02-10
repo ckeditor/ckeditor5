@@ -1,4 +1,4 @@
-CKEditor 5 Message Quote Feature
+CKEditor 5 Block Quote Feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-quote.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-quote)
@@ -7,7 +7,7 @@ CKEditor 5 Message Quote Feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-quote/status.svg)](https://david-dm.org/ckeditor/ckeditor5-quote)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-quote/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-quote?type=dev)
 
-The message quote feature for CKEditor 5 project. More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5>.
+The block quote feature for CKEditor 5 project. More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5>.
 
 ## License
 

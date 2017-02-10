@@ -1,14 +1,23 @@
 {
-  "name": "@ckeditor/ckeditor5-quote",
+  "name": "@ckeditor/ckeditor5-block-quote",
   "version": "0.0.0",
-  "description": "Message quote feature for CKEditor 5.",
+  "description": "Block quote feature for CKEditor 5.",
   "keywords": [
     "CKEditor"
   ],
   "dependencies": {
+    "@ckeditor/ckeditor5-core": "*",
+    "@ckeditor/ckeditor5-engine": "*",
+    "@ckeditor/ckeditor5-ui": "*",
+    "@ckeditor/ckeditor5-utils": "*"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-lint": "^2.0.0",
+    "@ckeditor/ckeditor5-dev-lint": "^2.0.2",
+    "@ckeditor/ckeditor5-editor-classic": "*",
+    "@ckeditor/ckeditor5-enter": "*",
+    "@ckeditor/ckeditor5-list": "*",
+    "@ckeditor/ckeditor5-paragraph": "*",
+    "@ckeditor/ckeditor5-presets": "*",
     "gulp": "^3.9.0",
     "guppy-pre-commit": "^0.4.0"
   },
@@ -19,9 +28,9 @@
   "author": "CKSource (http://cksource.com/)",
   "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
   "homepage": "https://ckeditor5.github.io",
-  "bugs": "https://github.com/ckeditor/ckeditor5-quote/issues",
+  "bugs": "https://github.com/ckeditor/ckeditor5-block-quote/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5-quote.git"
+    "url": "https://github.com/ckeditor/ckeditor5-block-quote.git"
   }
 }
