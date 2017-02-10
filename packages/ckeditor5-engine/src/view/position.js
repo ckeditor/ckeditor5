@@ -11,6 +11,8 @@ import Text from './text';
 import TextProxy from './textproxy';
 import DocumentFragment from './documentfragment';
 
+import TreeWalker from './treewalker';
+
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EditableElement from './editableelement';
@@ -137,6 +139,44 @@ export default class Position {
 		shifted.offset = offset < 0 ? 0 : offset;
 
 		return shifted;
+	}
+
+	/**
+	 * Use forward {@link module:engine/view/treewalker~TreeWalker TreeWalker} to get the farthest position which
+	 * matches the callback.
+	 *
+	 * For example:
+	 *
+	 * 		getFurtherPosition( value => value.type == 'text' ); // <p>{}foo</p> -> <p>foo[]</p>
+	 * 		getFurtherPosition( value => false ); // Do not move the position.
+	 *
+	 * @param {Function} skip Callback function. Gets {@link module:engine/view/treewalker~TreeWalkerValue} and should
+	 * return `true` if the value should be skipped or `false` if not.
+	 */
+	getFurtherPosition( skip ) {
+		const treeWalker = new TreeWalker( { startPosition: this } );
+		treeWalker.skip( skip );
+
+		return treeWalker.position;
+	}
+
+	/**
+	 * Use backward {@link module:engine/view/treewalker~TreeWalker TreeWalker} to get the farthest position which
+	 * matches the callback.
+	 *
+	 * For example:
+	 *
+	 * 		getPriorPosition( value => value.type == 'text' ); // <p>[]foo</p> -> <p>foo{}</p>
+	 * 		getPriorPosition( value => false ); // Do not move the position.
+	 *
+	 * @param {Function} skip Callback function. Gets {@link module:engine/view/treewalker~TreeWalkerValue} and should
+	 * return `true` if the value should be skipped or `false` if not.
+	 */
+	getPriorPosition( skip ) {
+		const treeWalker = new TreeWalker( { startPosition: this, direction: 'backward' } );
+		treeWalker.skip( skip );
+
+		return treeWalker.position;
 	}
 
 	/**

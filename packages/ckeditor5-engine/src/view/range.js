@@ -7,8 +7,13 @@
  * @module engine/view/range
  */
 
+import Text from './text';
 import Position from './position';
 import TreeWalker from './treewalker';
+
+import AttributeElement from './attributeelement';
+import ContainerElement from './AttributeElement';
+import UIElement from './uielement';
 
 /**
  * Tree view range.
@@ -79,6 +84,60 @@ export default class Range {
 	 */
 	get root() {
 		return this.start.root;
+	}
+
+	/**
+	 * Create a new range with the same content, but containing all surrendering tags with no semantic meaning.
+	 *
+	 * For example:
+	 *
+	 * 		<p>Foo</p><p><b>{Bar}</b></p> -> <p>Foo</p>[<p><b>Bar</b></p>]
+	 * 		<p><b>foo</b>{bar}<span></span></p> -> <p><b>foo[</b>bar<span></span>]</p>
+	 *
+	 * Note that in the sample above all:
+	 *  - `<p>` have type of {@link module:engine/view/containerelement~ContainerElement}
+	 *  - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement}
+	 *  - `<span>` have type of {@link module:engine/view/uielement~UiElement}
+	 *
+	 * @returns {module:engine/view/range~Range} Enlarged range.
+	 */
+	getEnlagred() {
+		const start = this.start.getPriorPosition( enlagreShrinkStartSkip );
+		const end = this.end.getFurtherPosition( enlagreShrinkEndSkip );
+
+		return new Range( start, end );
+	}
+
+	/**
+	 * Create a new range with the same content, but without all surrendering tags with no semantic meaning.
+	 *
+	 * For example:
+	 *
+	 * 		<p>Foo</p>[<p><b>Bar</b></p>] -> <p>Foo</p><p><b>{Bar}</b></p>
+	 * 		<p><b>foo[</b>bar<span></span>]</p> -> <p><b>foo</b>{bar}<span></span></p>
+	 *
+	 * Note that in the sample above all:
+	 *  - `<p>` have type of {@link module:engine/view/containerelement~ContainerElement}
+	 *  - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement}
+	 *  - `<span>` have type of {@link module:engine/view/uielement~UiElement}
+	 *
+	 * @returns {module:engine/view/range~Range} Shrink range.
+	 */
+	getShrinked() {
+		let start = this.start.getFurtherPosition( enlagreShrinkStartSkip );
+		let end = this.end.getPriorPosition( enlagreShrinkEndSkip );
+		let nodeAfterStart = start.nodeAfter;
+		let nodeBeforeEnd = end.nodeBefore;
+
+		if ( nodeAfterStart instanceof Text ) {
+			start = new Position( nodeAfterStart, 0 );
+		}
+
+		if ( nodeBeforeEnd instanceof Text ) {
+			end = new Position( nodeBeforeEnd, nodeBeforeEnd.data.length );
+		}
+
+		return new Range( start, end );
 	}
 
 	/**
@@ -348,4 +407,30 @@ export default class Range {
 	static createOn( item ) {
 		return this.createFromPositionAndShift( Position.createBefore( item ), 1 );
 	}
+}
+
+// Function used by getEnlagred and getShrinked methods.
+function enlagreShrinkStartSkip( value ) {
+	if ( value.item instanceof AttributeElement || value.item instanceof UIElement ) {
+		return true;
+	}
+
+	if ( value.item instanceof ContainerElement && value.type == 'elementStart' ) {
+		return true;
+	}
+
+	return false;
+}
+
+// Function used by getEnlagred and getShrinked methods.
+function enlagreShrinkEndSkip( value ) {
+	if ( value.item instanceof AttributeElement || value.item instanceof UIElement ) {
+		return true;
+	}
+
+	if ( value.item instanceof ContainerElement && value.type == 'elementEnd' ) {
+		return true;
+	}
+
+	return false;
 }

@@ -9,7 +9,7 @@ import Element from '../../src/view/element';
 import DocumentFragment from '../../src/view/documentfragment';
 import Text from '../../src/view/text';
 import TreeWalker from '../../src/view/treewalker';
-import { parse } from '../../src/dev-utils/view';
+import { parse, stringify } from '../../src/dev-utils/view';
 
 function getRange( view, options = {} ) {
 	const { selection } = parse( view, options );
@@ -84,6 +84,111 @@ describe( 'Range', () => {
 
 			expect( range.root ).to.equal( viewFrag );
 		} );
+	} );
+
+	describe( 'getEnlagred', () => {
+		it( 'case 1', () => {
+			expect( enlarge( '<p>f<b>{oo}</b></p><p>bar</p>' ) )
+				.to.equal( '<p>f[<b>oo</b></p>]<p>bar</p>' );
+		} );
+
+		it( 'case 2', () => {
+			expect( enlarge( '<p>f{oo}bar</p>' ) )
+				.to.equal( '<p>f{oo}bar</p>' );
+		} );
+
+		it( 'case 3', () => {
+			expect( enlarge( '<p>f<span></span>{oo}<span></span>bar</p>' ) )
+				.to.equal( '<p>f[<span></span>oo<span></span>]bar</p>' );
+		} );
+
+		it( 'case 4', () => {
+			expect( enlarge( '<p>f<img></img>{oo}<img></img>bar</p>' ) )
+				.to.equal( '<p>f<img></img>[oo]<img></img>bar</p>' );
+		} );
+
+		it( 'case 5', () => {
+			expect( enlarge( '<p><b>f</b>{oo}<b><span></span>bar</b></p>' ) )
+				.to.equal( '<p><b>f[</b>oo<b><span></span>]bar</b></p>' );
+		} );
+
+		it( 'case6', () => {
+			expect( enlarge( '<p>foo</p><p>[bar]</p><p>bom</p>' ) )
+				.to.equal( '<p>foo</p>[<p>bar</p>]<p>bom</p>' );
+		} );
+
+		function enlarge( data ) {
+			data = data
+				.replace( /<p>/g, '<container:p>' )
+				.replace( /<\/p>/g, '</container:p>' )
+				.replace( /<b>/g, '<attribute:b>' )
+				.replace( /<\/b>/g, '</attribute:b>' )
+				.replace( /<img><\/img>/g, '<empty:img></empty:img>' )
+				.replace( /<span><\/span>/g, '<ui:span></ui:span>' );
+
+			const viewFrag = new DocumentFragment();
+			const { view, selection } = parse( data, { rootElement: viewFrag } );
+			const range = selection.getFirstRange();
+
+			const enlargedRange = range.getEnlagred();
+
+			return stringify( view, enlargedRange );
+		}
+	} );
+
+	describe( 'getShrinked', () => {
+		it( 'case 1', () => {
+			expect( shrink( '<p>f[<b>oo</b></p>]<p>bar</p>' ) )
+				.to.equal( '<p>f<b>{oo}</b></p><p>bar</p>' );
+		} );
+
+		it( 'case 2', () => {
+			expect( shrink( '<p>f{oo}bar</p>' ) )
+				.to.equal( '<p>f{oo}bar</p>' );
+		} );
+
+		it( 'case 3', () => {
+			expect( shrink( '<p>f[<span></span>oo<span></span>]bar</p>' ) )
+				.to.equal( '<p>f<span></span>{oo}<span></span>bar</p>' );
+		} );
+
+		it( 'case 4', () => {
+			expect( shrink( '<p>f<img></img>[oo]<img></img>bar</p>' ) )
+				.to.equal( '<p>f<img></img>{oo}<img></img>bar</p>' );
+		} );
+
+		it( 'case 5', () => {
+			expect( shrink( '<p><b>f[</b>oo<b><span></span>]bar</b></p>' ) )
+				.to.equal( '<p><b>f</b>{oo}<b><span></span>bar</b></p>' );
+		} );
+
+		it( 'case6', () => {
+			expect( shrink( '<p>foo[</p><p>bar</p><p>]bom</p>' ) )
+				.to.equal( '<p>foo[</p><p>bar</p><p>]bom</p>' );
+		} );
+
+		it( 'case7', () => {
+			expect( shrink( '<p>foo[<b><img></img></b>]bom</p>' ) )
+				.to.equal( '<p>foo<b>[<img></img>]</b>bom</p>' );
+		} );
+
+		function shrink( data ) {
+			data = data
+				.replace( /<p>/g, '<container:p>' )
+				.replace( /<\/p>/g, '</container:p>' )
+				.replace( /<b>/g, '<attribute:b>' )
+				.replace( /<\/b>/g, '</attribute:b>' )
+				.replace( /<img><\/img>/g, '<empty:img></empty:img>' )
+				.replace( /<span><\/span>/g, '<ui:span></ui:span>' );
+
+			const viewFrag = new DocumentFragment();
+			const { view, selection } = parse( data, { rootElement: viewFrag } );
+			const range = selection.getFirstRange();
+
+			const shrinkedRange = range.getShrinked();
+
+			return stringify( view, shrinkedRange );
+		}
 	} );
 
 	describe( 'isEqual', () => {
