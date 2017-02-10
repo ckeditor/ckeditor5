@@ -338,7 +338,7 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
  * `'character'` if walker traversed over a character, or `'text'` if walker traversed over multiple characters (available in
  * character merging mode, see {@link module:engine/model/treewalker~TreeWalker#constructor}).
  *
- * @typedef {String} module:engine/model/treewalker~TreeWalkerValueType
+ * @typedef {'elementStart'|'elementEnd'|'character'|'text'} module:engine/model/treewalker~TreeWalkerValueType
  */
 
 /**

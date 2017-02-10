@@ -13,7 +13,7 @@ import Selection from '../../src/model/selection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
-import { parse } from '../../src/dev-utils/model';
+import { parse, setData } from '../../src/dev-utils/model';
 import Schema from '../../src/model/schema';
 
 testUtils.createSinonSandbox();
@@ -134,7 +134,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'addRange', () => {
+	describe( 'addRange()', () => {
 		it( 'should copy added ranges and store multiple ranges', () => {
 			selection.addRange( liveRange );
 			selection.addRange( range );
@@ -832,6 +832,129 @@ describe( 'Selection', () => {
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );
+	} );
+
+	describe( 'getSelectedBlocks()', () => {
+		beforeEach( () => {
+			doc.schema.registerItem( 'p', '$block' );
+			doc.schema.registerItem( 'h', '$block' );
+
+			doc.schema.registerItem( 'blockquote' );
+			doc.schema.allow( { name: 'blockquote', inside: '$root' } );
+			doc.schema.allow( { name: '$block', inside: 'blockquote' } );
+
+			doc.schema.registerItem( 'image' );
+			doc.schema.allow( { name: 'image', inside: '$root' } );
+			doc.schema.allow( { name: '$text', inside: 'image' } );
+
+			// Special block which can contain another blocks.
+			doc.schema.registerItem( 'nestedBlock', '$block' );
+			doc.schema.allow( { name: 'nestedBlock', inside: '$block' } );
+		} );
+
+		it( 'returns an iterator', () => {
+			setData( doc, '<p>a</p><p>[]b</p><p>c</p>' );
+
+			expect( doc.selection.getSelectedBlocks().next ).to.be.a( 'function' );
+		} );
+
+		it( 'returns block for a collapsed selection', () => {
+			setData( doc, '<p>a</p><p>[]b</p><p>c</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b' ] );
+		} );
+
+		it( 'returns block for a non collapsed selection', () => {
+			setData( doc, '<p>a</p><p>[b]</p><p>c</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b' ] );
+		} );
+
+		it( 'returns two blocks for a non collapsed selection', () => {
+			setData( doc, '<p>a</p><h>[b</h><p>c]</p><p>d</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'c' ] );
+		} );
+
+		// This isn't a behaviour that we like (https://github.com/ckeditor/ckeditor5-heading/issues/9) but I don't
+		// want to work on this issue now, when porting this method from the list/heading features.
+		// It has to be covered separately.
+		it( 'returns two blocks for a non collapsed selection if only end of selection is touching a block', () => {
+			setData( doc, '<p>a</p><h>b[</h><p>]c</p><p>d</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'c' ] );
+		} );
+
+		it( 'returns proper block for a multi-range selection', () => {
+			setData( doc, '<p>a</p><h>[b</h><p>c]</p><p>d</p><p>[e]</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'c', 'e' ] );
+		} );
+
+		it( 'does not return a block twice if two ranges are anchored in it', () => {
+			setData( doc, '<p>[a]b[c]</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'abc' ] );
+		} );
+
+		it( 'returns only blocks', () => {
+			setData( doc, '<p>[a</p><image>b</image><p>c]</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'c' ] );
+		} );
+
+		it( 'gets deeper into the tree', () => {
+			setData( doc, '<p>[a</p><blockquote><p>b</p><p>c</p></blockquote><p>d]</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
+		} );
+
+		it( 'gets deeper into the tree (end deeper)', () => {
+			setData( doc, '<p>[a</p><blockquote><p>b]</p><p>c</p></blockquote><p>d</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b' ] );
+		} );
+
+		it( 'gets deeper into the tree (start deeper)', () => {
+			setData( doc, '<p>a</p><blockquote><p>b</p><p>[c</p></blockquote><p>d]</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'c', 'd' ] );
+		} );
+
+		it( 'returns an empty array if none of the selected elements is a block', () => {
+			setData( doc, '<p>a</p><image>[a</image><image>b]</image><p>b</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.be.empty;
+		} );
+
+		it( 'returns an empty array if the selected element is not a block', () => {
+			setData( doc, '<p>a</p><image>[]a</image><p>b</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.be.empty;
+		} );
+
+		// Super edge case – should not happen (blocks should never be nested),
+		// but since the code handles it already it's worth testing.
+		it( 'returns only the lowest block if blocks are nested', () => {
+			setData( doc, '<nestedBlock>a<nestedBlock>[]b</nestedBlock></nestedBlock>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b' ] );
+		} );
+
+		// Like above but trickier.
+		it( 'returns only the lowest block if blocks are nested', () => {
+			setData(
+				doc,
+				'<nestedBlock>a<nestedBlock>[b</nestedBlock></nestedBlock>' +
+				'<nestedBlock>c<nestedBlock>d]</nestedBlock></nestedBlock>'
+			);
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'd' ] );
+		} );
+
+		function toText( elements ) {
+			return Array.from( elements ).map( el => el.getChild( 0 ).data );
+		}
 	} );
 
 	describe( 'attributes interface', () => {
