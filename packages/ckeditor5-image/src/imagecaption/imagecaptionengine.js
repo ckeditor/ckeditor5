@@ -19,7 +19,7 @@ import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import { isImage, isImageWidget } from '../utils';
-import { editableCaptionCreator, isCaptionEditable, getCaptionFromImage } from './utils';
+import { captionElementCreator, isCaption, getCaptionFromImage } from './utils';
 
 /**
  * The image caption engine plugin.
@@ -81,7 +81,7 @@ export default class ImageCaptionEngine extends Plugin {
 		// Model to view converter for editing pipeline.
 		editing.modelToView.on(
 			'insert:caption',
-			captionModelToView( editableCaptionCreator( viewDocument ) )
+			captionModelToView( captionElementCreator( viewDocument ) )
 		);
 
 		// Adding / removing caption element when there is no text in the model.
@@ -98,7 +98,7 @@ export default class ImageCaptionEngine extends Plugin {
 			// If selection is currently inside caption editable - store it to hide when empty.
 			const editableElement = selection.editableElement;
 
-			if ( editableElement && isCaptionEditable( selection.editableElement ) ) {
+			if ( editableElement && isCaption( selection.editableElement ) ) {
 				this._lastSelectedEditable = selection.editableElement;
 			}
 		}, { priority: 'high' } );
@@ -152,7 +152,7 @@ export default class ImageCaptionEngine extends Plugin {
 		const selection = editing.view.selection;
 		const imageFigure = selection.getSelectedElement();
 		const mapper = editing.mapper;
-		const editableCreator = editableCaptionCreator( editing.view );
+		const editableCreator = captionElementCreator( editing.view );
 
 		if ( imageFigure && isImageWidget( imageFigure ) ) {
 			const modelImage = mapper.toModelElement( imageFigure );

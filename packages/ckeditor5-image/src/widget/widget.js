@@ -65,9 +65,7 @@ export default class Widget extends Plugin {
 		let widgetElement = domEventData.target;
 
 		if ( !isWidget( widgetElement ) ) {
-			widgetElement = widgetElement.findAncestor( element => {
-				return isWidget( element );
-			} );
+			widgetElement = widgetElement.findAncestor( isWidget );
 
 			if ( !widgetElement ) {
 				return;

@@ -18,7 +18,7 @@ const captionSymbol = Symbol( 'imageCaption' );
  * @param {module:engine/view/document~Document} viewDocument
  * @return {Function}
  */
-export function editableCaptionCreator( viewDocument ) {
+export function captionElementCreator( viewDocument ) {
 	return () => {
 		const editable = new ViewEditableElement( 'figcaption', { contenteditable: true } );
 		editable.document = viewDocument;
@@ -42,7 +42,7 @@ export function editableCaptionCreator( viewDocument ) {
  * @param {module:engine/view/element~Element} viewElement
  * @return {Boolean}
  */
-export function isCaptionEditable( viewElement ) {
+export function isCaption( viewElement ) {
 	return !!viewElement.getCustomProperty( captionSymbol );
 }
 

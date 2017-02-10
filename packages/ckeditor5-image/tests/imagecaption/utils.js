@@ -5,7 +5,7 @@
 
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
-import { editableCaptionCreator, isCaptionEditable, getCaptionFromImage } from '../../src/imagecaption/utils';
+import { captionElementCreator, isCaption, getCaptionFromImage } from '../../src/imagecaption/utils';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 
 describe( 'image captioning utils', () => {
@@ -13,7 +13,7 @@ describe( 'image captioning utils', () => {
 
 	beforeEach( () => {
 		document = new ViewDocument();
-		const creator = editableCaptionCreator( document );
+		const creator = captionElementCreator( document );
 		element = creator();
 	} );
 
@@ -21,7 +21,7 @@ describe( 'image captioning utils', () => {
 		it( 'should create figcatpion editable element', () => {
 			expect( element ).to.be.instanceOf( ViewEditableElement );
 			expect( element.name ).to.equal( 'figcaption' );
-			expect( isCaptionEditable( element ) ).to.be.true;
+			expect( isCaption( element ) ).to.be.true;
 		} );
 
 		it( 'should be created in context of proper document', () => {
@@ -39,14 +39,14 @@ describe( 'image captioning utils', () => {
 
 	describe( 'isCaptionEditable', () => {
 		it( 'should return true for elements created with creator', () => {
-			expect( isCaptionEditable( element ) ).to.be.true;
+			expect( isCaption( element ) ).to.be.true;
 		} );
 
 		it( 'should return false for other elements', () => {
 			const editable = new ViewEditableElement( 'figcaption', { contenteditable: true } ) ;
 			editable.document = document;
 
-			expect( isCaptionEditable( editable ) ).to.be.false;
+			expect( isCaption( editable ) ).to.be.false;
 		} );
 	} );
 
