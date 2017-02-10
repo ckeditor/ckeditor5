@@ -65,22 +65,6 @@ describe( 'Input feature', () => {
 		listenter.stopListening();
 	} );
 
-	it( 'has a buffer configured to default value of config.typing.undoStep', () => {
-		expect( editor.plugins.get( Input )._buffer ).to.have.property( 'limit', 20 );
-	} );
-
-	it( 'has a buffer configured to config.typing.undoStep', () => {
-		return VirtualTestEditor.create( {
-				plugins: [ Input ],
-				typing: {
-					undoStep: 5
-				}
-			} )
-			.then( editor => {
-				expect( editor.plugins.get( Input )._buffer ).to.have.property( 'limit', 5 );
-			} );
-	} );
-
 	describe( 'mutations handling', () => {
 		it( 'should handle text mutation', () => {
 			view.fire( 'mutations', [
@@ -323,20 +307,6 @@ describe( 'Input feature', () => {
 			view.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
-		} );
-	} );
-
-	describe( 'destroy', () => {
-		it( 'should destroy change buffer', () => {
-			const typing = new Input( new VirtualTestEditor() );
-			typing.init();
-
-			const destroy = typing._buffer.destroy = sinon.spy();
-
-			typing.destroy();
-
-			expect( destroy.calledOnce ).to.be.true;
-			expect( typing._buffer ).to.be.null;
 		} );
 	} );
 } );
