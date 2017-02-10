@@ -68,16 +68,6 @@ describe( 'WidgetEngine', () => {
 		);
 	} );
 
-	it( 'should add selected class if selection is placed inside nested editable', () => {
-		setModelData( document, '<widget><editable>[foo bar]</editable></widget>' );
-
-		expect( getViewData( viewDocument ) ).to.equal(
-			'<div class="ck-widget ck-widget_selected" contenteditable="false">' +
-				'<figcaption contenteditable="true">{foo bar}</figcaption>' +
-			'</div>'
-		);
-	} );
-
 	it( 'should do nothing when selection is placed in other editable', () => {
 		setModelData( document, '<widget><editable>foo bar</editable></widget><editable>[baz]</editable>' );
 

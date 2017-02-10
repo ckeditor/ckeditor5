@@ -232,7 +232,7 @@ describe( 'ImageCaptionEngine', () => {
 			);
 		} );
 
-		it( 'should not remove figcatpion when selection is inside it even when it is empty', () => {
+		it( 'should not remove figcaption when selection is inside it even when it is empty', () => {
 			setModelData( document, '<image src=""><caption>[foo bar]</caption></image>' );
 
 			document.enqueueChanges( () => {
@@ -240,7 +240,7 @@ describe( 'ImageCaptionEngine', () => {
 			} );
 
 			expect( getViewData( viewDocument ) ).to.equal(
-				'<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
+				'<figure class="image ck-widget" contenteditable="false">' +
 					'<img src=""></img>' +
 					'<figcaption contenteditable="true">[]</figcaption>' +
 				'</figure>'
