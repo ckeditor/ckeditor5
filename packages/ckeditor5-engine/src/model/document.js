@@ -104,10 +104,9 @@ export default class Document {
 		 * {@link #getRoot} to manipulate it.
 		 *
 		 * @readonly
-		 * @protected
 		 * @member {Map}
 		 */
-		this._roots = new Map();
+		this.roots = new Map();
 
 		// Add events that will ensure selection correctness.
 		this.selection.on( 'change:range', () => {
@@ -192,7 +191,7 @@ export default class Document {
 	 * @returns {module:engine/model/rootelement~RootElement} Created root.
 	 */
 	createRoot( elementName = '$root', rootName = 'main' ) {
-		if ( this._roots.has( rootName ) ) {
+		if ( this.roots.has( rootName ) ) {
 			/**
 			 * Root with specified name already exists.
 			 *
@@ -207,7 +206,7 @@ export default class Document {
 		}
 
 		const root = new RootElement( this, elementName, rootName );
-		this._roots.set( rootName, root );
+		this.roots.set( rootName, root );
 
 		return root;
 	}
@@ -251,7 +250,7 @@ export default class Document {
 	 * @returns {module:engine/model/rootelement~RootElement} Root registered under given name.
 	 */
 	getRoot( name = 'main' ) {
-		if ( !this._roots.has( name ) ) {
+		if ( !this.roots.has( name ) ) {
 			/**
 			 * Root with specified name does not exist.
 			 *
@@ -264,7 +263,7 @@ export default class Document {
 			);
 		}
 
-		return this._roots.get( name );
+		return this.roots.get( name );
 	}
 
 	/**
@@ -274,7 +273,7 @@ export default class Document {
 	 * @returns {Boolean}
 	 */
 	hasRoot( name ) {
-		return this._roots.has( name );
+		return this.roots.has( name );
 	}
 
 	/**
@@ -283,7 +282,7 @@ export default class Document {
 	 * @returns {Array.<String>} Roots names.
 	 */
 	getRootNames() {
-		return Array.from( this._roots.keys() ).filter( ( name ) => name != graveyardName );
+		return Array.from( this.roots.keys() ).filter( ( name ) => name != graveyardName );
 	}
 
 	/**
@@ -360,7 +359,7 @@ export default class Document {
 	 * @returns {module:engine/model/rootelement~RootElement} The default root for this document.
 	 */
 	_getDefaultRoot() {
-		for ( let root of this._roots.values() ) {
+		for ( let root of this.roots.values() ) {
 			if ( root !== this.graveyard ) {
 				return root;
 			}
