@@ -86,7 +86,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'getEnlagred', () => {
+	describe( 'getEnlarged', () => {
 		it( 'case 1', () => {
 			expect( enlarge( '<p>f<b>{oo}</b></p><p>bar</p>' ) )
 				.to.equal( '<p>f[<b>oo</b></p>]<p>bar</p>' );
@@ -130,7 +130,7 @@ describe( 'Range', () => {
 			const { view, selection } = parse( data, { rootElement: viewFrag } );
 			const range = selection.getFirstRange();
 
-			const enlargedRange = range.getEnlagred();
+			const enlargedRange = range.getEnlarged();
 
 			return stringify( view, enlargedRange );
 		}

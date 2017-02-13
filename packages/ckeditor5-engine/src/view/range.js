@@ -101,7 +101,7 @@ export default class Range {
 	 *
 	 * @returns {module:engine/view/range~Range} Enlarged range.
 	 */
-	getEnlagred() {
+	getEnlarged() {
 		const start = this.start.getPriorPosition( enlagreShrinkStartSkip );
 		const end = this.end.getFurtherPosition( enlagreShrinkEndSkip );
 
