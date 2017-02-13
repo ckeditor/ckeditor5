@@ -153,7 +153,7 @@ export default class TreeWalker {
 	}
 
 	/**
-	 * Move {@link #position} in the {@link #direction} skipping values as long as the callback function returns `true`.
+	 * Moves {@link #position} in the {@link #direction} skipping values as long as the callback function returns `true`.
 	 *
 	 * For example:
 	 *

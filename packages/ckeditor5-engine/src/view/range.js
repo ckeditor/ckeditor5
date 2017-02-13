@@ -131,6 +131,7 @@ export default class Range {
 		let nodeAfterStart = start.nodeAfter;
 		let nodeBeforeEnd = end.nodeBefore;
 
+		// Because TreeWalker prefers positions next to text node, we need to move them manually into these text nodes.
 		if ( nodeAfterStart instanceof Text ) {
 			start = new Position( nodeAfterStart, 0 );
 		}
