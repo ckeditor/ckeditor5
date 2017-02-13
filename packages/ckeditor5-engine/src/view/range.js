@@ -87,7 +87,7 @@ export default class Range {
 	}
 
 	/**
-	 * Create a new range with the same content, but containing all surrendering tags with no semantic meaning.
+	 * Creates a new range with the same content, but containing all surrendering tags with no semantic meaning.
 	 *
 	 * For example:
 	 *
@@ -95,9 +95,9 @@ export default class Range {
 	 * 		<p><b>foo</b>{bar}<span></span></p> -> <p><b>foo[</b>bar<span></span>]</p>
 	 *
 	 * Note that in the sample above all:
-	 *  - `<p>` have type of {@link module:engine/view/containerelement~ContainerElement}
-	 *  - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement}
-	 *  - `<span>` have type of {@link module:engine/view/uielement~UiElement}
+	 *  - `<p>` have type of {@link module:engine/view/containerelement~ContainerElement},
+	 *  - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement},
+	 *  - `<span>` have type of {@link module:engine/view/uielement~UiElement}.
 	 *
 	 * @returns {module:engine/view/range~Range} Enlarged range.
 	 */
@@ -109,7 +109,7 @@ export default class Range {
 	}
 
 	/**
-	 * Create a new range with the same content, but without all surrendering tags with no semantic meaning.
+	 * Creates a new range with the same content, but without all surrendering tags with no semantic meaning.
 	 *
 	 * For example:
 	 *
@@ -117,9 +117,9 @@ export default class Range {
 	 * 		<p><b>foo[</b>bar<span></span>]</p> -> <p><b>foo</b>{bar}<span></span></p>
 	 *
 	 * Note that in the sample above all:
-	 *  - `<p>` have type of {@link module:engine/view/containerelement~ContainerElement}
-	 *  - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement}
-	 *  - `<span>` have type of {@link module:engine/view/uielement~UiElement}
+	 *  - `<p>` have type of {@link module:engine/view/containerelement~ContainerElement},
+	 *  - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement},
+	 *  - `<span>` have type of {@link module:engine/view/uielement~UiElement}.
 	 *
 	 * @returns {module:engine/view/range~Range} Shrink range.
 	 */

@@ -166,7 +166,7 @@ export default class Position {
 	 *
 	 * For example:
 	 *
-	 * 		getPriorPosition( value => value.type == 'text' ); // <p>[]foo</p> -> <p>foo{}</p>
+	 * 		getPriorPosition( value => value.type == 'text' ); // <p>foo[]</p> -> <p>{}foo</p>
 	 * 		getPriorPosition( value => false ); // Do not move the position.
 	 *
 	 * @param {Function} skip Callback function. Gets {@link module:engine/view/treewalker~TreeWalkerValue} and should
