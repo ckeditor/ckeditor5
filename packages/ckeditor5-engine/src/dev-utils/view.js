@@ -571,8 +571,8 @@ class ViewStringify {
 	 * Creates ViewStringify instance.
 	 *
 	 * @param root
-	 * @param {module:engine/view/selection~Selection} [selection=null] Selection which ranges should be also converted to string.
-	 * @param {Object} [options] Options object.
+	 * @param {module:engine/view/selection~Selection} selection Selection which ranges should be also converted to string.
+	 * @param {Object} options Options object.
 	 * @param {Boolean} [options.showType=false] When set to `true` type of elements will be printed (`<container:p>`
 	 * instead of `<p>`, `<attribute:b>` instead of `<b>` and `<empty:img>` instead of `<img>`).
 	 * @param {Boolean} [options.showPriority=false] When set to `true` AttributeElement's priority will be printed.
@@ -581,7 +581,7 @@ class ViewStringify {
 	 * @param {Boolean} [options.sameSelectionCharacters=false] When set to `true` it means that selection inside text is marked as
 	 * `{` and `}` and selection outside text as `[` and `]`. When set to `false` then both are marked as `[` and `]`.
 	 */
-	constructor( root, selection = null, options = {} ) {
+	constructor( root, selection, options ) {
 		this.root = root;
 		this.selection = selection;
 		this.ranges = [];
