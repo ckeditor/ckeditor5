@@ -311,14 +311,14 @@ describe( 'DataController', () => {
 			it( 'deletes two inline elements', () => {
 				setData(
 					doc,
-					'<paragraph>x[<image></image><image></image>]z</paragraph>',
+					'x[<image></image><image></image>]z',
 					{ rootName: 'paragraphRoot' }
 				);
 
 				deleteContent( doc.selection, doc.batch() );
 
 				expect( getData( doc, { rootName: 'paragraphRoot' } ) )
-					.to.equal( '<paragraph>x[]z</paragraph>' );
+					.to.equal( 'x[]z' );
 			} );
 
 			it( 'creates a paragraph when text is not allowed (paragraph selected)', () => {
