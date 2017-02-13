@@ -41,7 +41,7 @@ let enabled = false;
 let log = console.log;
 
 /**
- * Enhances model classes with logging classes. Returns a plugin that should be loaded in the editor to
+ * Enhances model classes with logging methods. Returns a plugin that should be loaded in the editor to
  * enable debugging features.
  *
  * Every operation applied on {@link module:engine/model/document~Document model.Document} is logged.
