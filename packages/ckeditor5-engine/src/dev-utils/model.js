@@ -100,7 +100,8 @@ export function setData( document, data, options = {} ) {
 	// Parse data string to model.
 	const parsedResult = setData._parse( data, document.schema, {
 		lastRangeBackward: options.lastRangeBackward,
-		selectionAttributes: options.selectionAttributes
+		selectionAttributes: options.selectionAttributes,
+		context: [ modelRoot.name ]
 	} );
 
 	// Retrieve DocumentFragment and Selection from parsed model.
