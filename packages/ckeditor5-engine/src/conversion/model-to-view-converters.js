@@ -7,12 +7,8 @@ import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
 import ModelElement from '../model/element';
 
-import ViewRange from '../view/range';
 import ViewElement from '../view/element';
-import ViewAttributeElement from '../view/element';
-import ViewUIElement from '../view/element';
 import ViewText from '../view/text';
-import ViewTreeWalker from '../view/treewalker';
 import viewWriter from '../view/writer';
 
 /**
@@ -414,27 +410,6 @@ export function unwrapRange( elementCreator ) {
 	};
 }
 
-// Takes given `viewPosition` and returns a widest possible range that contains this position and all view elements
-// before that position and after that position which has zero length in model (empty `ViewAttributeElement`s and `ViewUIElement`s).
-// @param {module:engine/view/position~Position} viewPosition Position to start from when looking for furthest zero length position.
-// @returns {module:engine/view/range~Range}
-function enlargeViewPosition( viewPosition ) {
-	const start = viewPosition;
-	let end = viewPosition;
-
-	const walker = new ViewTreeWalker( { startPosition: start } );
-
-	for ( let step of walker ) {
-		if ( step.item instanceof ViewAttributeElement || step.item instanceof ViewUIElement ) {
-			end = walker.position;
-		} else {
-			break;
-		}
-	}
-
-	return new ViewRange( start, end );
-}
-
 /**
  * Function factory, creates a default model-to-view converter for nodes move changes.
  *
@@ -500,10 +475,10 @@ export function removeUIElement( elementCreator ) {
 			return;
 		}
 
-		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-		const viewRange = enlargeViewPosition( viewPosition );
+		const viewRange = conversionApi.mapper.toViewRange( data.range );
+		const enlargedViewRange = viewRange.getEnlarged();
 
-		viewWriter.clear( viewRange, viewElement );
+		viewWriter.clear( enlargedViewRange, viewElement );
 	};
 }
 
