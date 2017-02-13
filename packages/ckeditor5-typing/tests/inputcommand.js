@@ -88,7 +88,7 @@ describe( 'InputCommand', () => {
 			} );
 
 			expect( getData( doc, { selection: true } ) ).to.be.equal( '<p>rab[]r</p>' );
-			expect( editor.commands.get( 'input' ).buffer.size ).to.be.equal( 0 );
+			expect( editor.commands.get( 'input' ).buffer.size ).to.be.equal( 3 );
 		} );
 
 		it( 'replaces text for range within single element in the middle', () => {
@@ -100,7 +100,7 @@ describe( 'InputCommand', () => {
 			} );
 
 			expect( getData( doc, { selection: true } ) ).to.be.equal( '<p>fobazz[]r</p>' );
-			expect( editor.commands.get( 'input' ).buffer.size ).to.be.equal( 1 );
+			expect( editor.commands.get( 'input' ).buffer.size ).to.be.equal( 4 );
 		} );
 
 		it( 'replaces text for range within single element on the end', () => {
@@ -112,7 +112,7 @@ describe( 'InputCommand', () => {
 			} );
 
 			expect( getData( doc, { selection: true } ) ).to.be.equal( '<p>foobazzz[]</p>' );
-			expect( editor.commands.get( 'input' ).buffer.size ).to.be.equal( 2 );
+			expect( editor.commands.get( 'input' ).buffer.size ).to.be.equal( 3 );
 		} );
 
 		it( 'replaces text for range within multiple elements', () => {
@@ -124,7 +124,7 @@ describe( 'InputCommand', () => {
 			} );
 
 			expect( getData( doc, { selection: true } ) ).to.be.equal( '<h1>Funny c[</h1><p>]ar</p>' );
-			expect( editor.commands.get( 'input' ).buffer.size ).to.be.equal( 3 );
+			expect( editor.commands.get( 'input' ).buffer.size ).to.be.equal( 6 );
 		} );
 
 		it( 'uses current selection when range is not given', () => {
@@ -135,7 +135,7 @@ describe( 'InputCommand', () => {
 			} );
 
 			expect( getData( doc, { selection: true } ) ).to.be.equal( '<p>foobaz[]</p>' );
-			expect( editor.commands.get( 'input' ).buffer.size ).to.be.equal( 0 );
+			expect( editor.commands.get( 'input' ).buffer.size ).to.be.equal( 2 );
 		} );
 
 		it( 'only removes content when text is not given', () => {
@@ -164,23 +164,6 @@ describe( 'InputCommand', () => {
 
 			expect( data ).to.be.equal( '<p>[fo]obar</p>' );
 			expect( editor.commands.get( 'input' ).buffer.size ).to.be.equal( 0 );
-		} );
-	} );
-
-	describe( '_getTextWithinRange', () => {
-		it( 'returns empty text for collapsed selection', () => {
-			setData( doc, '<p>[]foo</p>' );
-			expect( editor.commands.get( 'input' )._getTextWithinRange( editor.document.selection.getFirstRange() ) ).to.be.empty;
-		} );
-
-		it( 'returns valid text for selection within single element', () => {
-			setData( doc, '<p>[fooBA]R</p>' );
-			expect( editor.commands.get( 'input' )._getTextWithinRange( editor.document.selection.getFirstRange() ) ).to.be.equal( 'fooBA' );
-		} );
-
-		it( 'returns valid text for selection within mulitple elements', () => {
-			setData( doc, '<h1>fo[o</h1><p>BARb]az</p>' );
-			expect( editor.commands.get( 'input' )._getTextWithinRange( editor.document.selection.getFirstRange() ) ).to.be.equal( 'oBARb' );
 		} );
 	} );
 

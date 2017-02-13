@@ -8,7 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command/command';
-import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 import ChangeBuffer from './changebuffer';
 
 /**
@@ -56,9 +55,9 @@ export default class InputCommand extends Command {
 	}
 
 	/**
-	 * Executes the input command. It replaces the content within the given range with given text. Replacing is a two
-	 * step process, first content within range is removed and then new text is inserted on the beginning
-	 * of the range (which after removal is a collapsed range).
+	 * Executes the input command. It replaces the content within the given range with the given text.
+	 * Replacing is a two step process, first content within the range is removed and then new text is inserted
+	 * on the beginning of the range (which after removal is a collapsed range).
 	 *
 	 * @param {Object} [options] The command options.
 	 * @param {String} [options.text=''] Text to be inserted.
@@ -72,19 +71,18 @@ export default class InputCommand extends Command {
 		const range = options.range || doc.selection.getFirstRange();
 		const text = options.text || '';
 		const selectionAnchor = options.selectionAnchor;
-		let textLength = 0;
+		let textInsertions = 0;
 
 		if ( range ) {
 			doc.enqueueChanges( () => {
 				const isCollapsedRange = range.isCollapsed;
 
 				if ( !isCollapsedRange ) {
-					textLength -= this._getTextWithinRange( range ).length;
 					this._buffer.batch.remove( range );
 				}
 
 				if ( text ) {
-					textLength += text.length;
+					textInsertions = text.length;
 					this._buffer.batch.weakInsert( range.start, text );
 				}
 
@@ -92,34 +90,11 @@ export default class InputCommand extends Command {
 					this.editor.data.model.selection.collapse( selectionAnchor );
 				} else if ( isCollapsedRange ) {
 					// If range was collapsed just shift the selection by the number of inserted characters.
-					this.editor.data.model.selection.collapse( range.start.getShiftedBy( textLength ) );
+					this.editor.data.model.selection.collapse( range.start.getShiftedBy( textInsertions ) );
 				}
 
-				this._buffer.input( Math.max( textLength, 0 ) );
+				this._buffer.input( textInsertions );
 			} );
 		}
-	}
-
-	/**
-	 * Returns text within given range.
-	 *
-	 * @protected
-	 * @param {module:engine/model/range~Range} range Range from which text will be extracted.
-	 * @returns {String} Text within the given range.
-	 */
-	_getTextWithinRange( range ) {
-		let txt = '';
-		const treeWalker = new TreeWalker( { boundaries: range } );
-
-		for ( let value of treeWalker ) {
-			let node = value.item;
-			let nodeText = node.data;
-
-			if ( nodeText ) {
-				txt += nodeText;
-			}
-		}
-
-		return txt;
 	}
 }
