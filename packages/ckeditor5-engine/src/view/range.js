@@ -7,8 +7,13 @@
  * @module engine/view/range
  */
 
+import Text from './text';
 import Position from './position';
 import TreeWalker from './treewalker';
+
+import AttributeElement from './attributeelement';
+import ContainerElement from './containerelement';
+import UIElement from './uielement';
 
 /**
  * Tree view range.
@@ -79,6 +84,63 @@ export default class Range {
 	 */
 	get root() {
 		return this.start.root;
+	}
+
+	/**
+	 * Creates a maximal range that has the same content as this range but is expanded in both ways (at the beginning
+	 * and at the end).
+	 *
+	 * For example:
+	 *
+	 * 		<p>Foo</p><p><b>{Bar}</b></p> -> <p>Foo</p>[<p><b>Bar</b></p>]
+	 * 		<p><b>foo</b>{bar}<span></span></p> -> <p><b>foo[</b>bar<span></span>]</p>
+	 *
+	 * Note that in the sample above:
+	 *  - `<p>` have type of {@link module:engine/view/containerelement~ContainerElement},
+	 *  - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement},
+	 *  - `<span>` have type of {@link module:engine/view/uielement~UIElement}.
+	 *
+	 * @returns {module:engine/view/range~Range} Enlarged range.
+	 */
+	getEnlarged() {
+		const start = this.start.getLastMatchingPosition( enlargeShrinkStartSkip, { direction: 'backward' } );
+		const end = this.end.getLastMatchingPosition( enlargeShrinkEndSkip );
+
+		return new Range( start, end );
+	}
+
+	/**
+	 * Creates a minimum range that has the same content as this range but is trimmed in both ways (at the beginning
+	 * and at the end).
+	 *
+	 * For example:
+	 *
+	 * 		<p>Foo</p>[<p><b>Bar</b></p>] -> <p>Foo</p><p><b>{Bar}</b></p>
+	 * 		<p><b>foo[</b>bar<span></span>]</p> -> <p><b>foo</b>{bar}<span></span></p>
+	 *
+	 * Note that in the sample above:
+	 *  - `<p>` have type of {@link module:engine/view/containerelement~ContainerElement},
+	 *  - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement},
+	 *  - `<span>` have type of {@link module:engine/view/uielement~UIElement}.
+	 *
+	 * @returns {module:engine/view/range~Range} Shrink range.
+	 */
+	getTrimmed() {
+		let start = this.start.getLastMatchingPosition( enlargeShrinkStartSkip );
+		let end = this.end.getLastMatchingPosition( enlargeShrinkEndSkip, { direction: 'backward' } );
+		let nodeAfterStart = start.nodeAfter;
+		let nodeBeforeEnd = end.nodeBefore;
+
+		// Because TreeWalker prefers positions next to text node, we need to move them manually into these text nodes.
+		if ( nodeAfterStart instanceof Text ) {
+			start = new Position( nodeAfterStart, 0 );
+		}
+
+		if ( nodeBeforeEnd instanceof Text ) {
+			end = new Position( nodeBeforeEnd, nodeBeforeEnd.data.length );
+		}
+
+		return new Range( start, end );
 	}
 
 	/**
@@ -348,4 +410,30 @@ export default class Range {
 	static createOn( item ) {
 		return this.createFromPositionAndShift( Position.createBefore( item ), 1 );
 	}
+}
+
+// Function used by getEnlagred and getShrinked methods.
+function enlargeShrinkStartSkip( value ) {
+	if ( value.item instanceof AttributeElement || value.item instanceof UIElement ) {
+		return true;
+	}
+
+	if ( value.item instanceof ContainerElement && value.type == 'elementStart' ) {
+		return true;
+	}
+
+	return false;
+}
+
+// Function used by getEnlagred and getShrinked methods.
+function enlargeShrinkEndSkip( value ) {
+	if ( value.item instanceof AttributeElement || value.item instanceof UIElement ) {
+		return true;
+	}
+
+	if ( value.item instanceof ContainerElement && value.type == 'elementEnd' ) {
+		return true;
+	}
+
+	return false;
 }

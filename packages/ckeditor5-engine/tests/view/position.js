@@ -14,7 +14,7 @@ import TextProxy from '../../src/view/textproxy';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-import { parse } from '../../src/dev-utils/view';
+import { parse, stringify } from '../../src/dev-utils/view';
 
 describe( 'Position', () => {
 	const parentMock = {};
@@ -96,6 +96,26 @@ describe( 'Position', () => {
 			const shifted = position.getShiftedBy( -20 );
 
 			expect( shifted.offset ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'getLastMatchingPosition', () => {
+		it( 'should skip forward', () => {
+			const { view, selection } = parse( '<p><b>{}foo</b></p>' );
+			let position = selection.getFirstPosition();
+
+			position = position.getLastMatchingPosition( ( value ) => value.type == 'text' );
+
+			expect( stringify( view, position ) ).to.equal( '<p><b>foo[]</b></p>' );
+		} );
+
+		it( 'should skip backward', () => {
+			const { view, selection } = parse( '<p><b>foo{}</b></p>' );
+			let position = selection.getFirstPosition();
+
+			position = position.getLastMatchingPosition( ( value ) => value.type == 'text', { direction: 'backward' } );
+
+			expect( stringify( view, position ) ).to.equal( '<p><b>[]foo</b></p>' );
 		} );
 	} );
 

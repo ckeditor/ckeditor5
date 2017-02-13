@@ -578,6 +578,24 @@ describe( 'position', () => {
 		} );
 	} );
 
+	describe( 'getLastMatchingPosition', () => {
+		it( 'should skip forward', () => {
+			let position = new Position( root, [ 1, 0, 0 ] );
+
+			position = position.getLastMatchingPosition( ( value ) => value.type == 'text' );
+
+			expect( position.path ).to.deep.equal( [ 1, 0, 3 ] );
+		} );
+
+		it( 'should skip backward', () => {
+			let position = new Position( root, [ 1, 0, 2 ] );
+
+			position = position.getLastMatchingPosition( ( value ) => value.type == 'text', { direction: 'backward' } );
+
+			expect( position.path ).to.deep.equal( [ 1, 0, 0 ] );
+		} );
+	} );
+
 	describe( '_getTransformedByInsertion', () => {
 		it( 'should return a new Position instance', () => {
 			const position = new Position( root, [ 0 ] );

@@ -27,10 +27,7 @@ describe( 'TreeWalker', () => {
 		//  |- img1
 		//  |- p
 		//     |- b
-		//     |  |- A
-		//     |  |- B
-		//     |  |- C
-		//     |  |- D
+		//     |  |- abcd
 		//     |
 		//     |- Y
 		//     |
@@ -1005,6 +1002,92 @@ describe( 'TreeWalker', () => {
 		const nodes = Array.from( iterator ).map( ( step ) => step.item );
 
 		expect( nodes ).to.deep.equal( [ p, foo, b, bar ] );
+	} );
+
+	describe( 'skip', () => {
+		describe( 'forward treewalker', () => {
+			it( 'should jump over all text nodes', () => {
+				const walker = new TreeWalker( {
+					startPosition: new Position( paragraph, 0 )
+				} );
+
+				walker.skip( value => value.type == 'text' || value.item.name == 'b' );
+
+				expect( walker.position.parent ).to.equal( paragraph );
+				expect( walker.position.offset ).to.equal( 2 );
+			} );
+
+			it( 'should do not move if the condition is false', () => {
+				const walker = new TreeWalker( {
+					startPosition: new Position( bold, 0 )
+				} );
+
+				walker.skip( () => false );
+
+				expect( walker.position.parent ).to.equal( bold );
+				expect( walker.position.offset ).to.equal( 0 );
+			} );
+
+			it( 'should do not move if the condition is false and the position is in text node', () => {
+				const walker = new TreeWalker( {
+					startPosition: new Position( bold.getChild( 0 ), 2 )
+				} );
+
+				walker.skip( () => false );
+
+				expect( walker.position.parent ).to.equal( bold.getChild( 0 ) );
+				expect( walker.position.offset ).to.equal( 2 );
+			} );
+
+			it( 'should move to the end if the condition is true', () => {
+				const walker = new TreeWalker( {
+					startPosition: new Position( bold, 0 )
+				} );
+
+				walker.skip( () => true );
+
+				expect( walker.position.parent ).to.equal( rootEnding.parent );
+				expect( walker.position.offset ).to.equal( rootEnding.offset );
+			} );
+		} );
+
+		describe( 'backward treewalker', () => {
+			it( 'should jump over all text nodes', () => {
+				const walker = new TreeWalker( {
+					startPosition: new Position( bold.getChild( 0 ), 2 ),
+					direction: 'backward'
+				} );
+
+				walker.skip( value => value.type == 'text' || value.item.name == 'b' );
+
+				expect( walker.position.parent ).to.equal( paragraph );
+				expect( walker.position.offset ).to.equal( 0 );
+			} );
+
+			it( 'should do not move if the condition is false', () => {
+				const walker = new TreeWalker( {
+					startPosition: new Position( bold, 0 ),
+					direction: 'backward'
+				} );
+
+				walker.skip( () => false );
+
+				expect( walker.position.parent ).to.equal( bold );
+				expect( walker.position.offset ).to.equal( 0 );
+			} );
+
+			it( 'should move to the end if the condition is true', () => {
+				const walker = new TreeWalker( {
+					startPosition: new Position( bold, 0 ),
+					direction: 'backward'
+				} );
+
+				walker.skip( () => true );
+
+				expect( walker.position.parent ).to.equal( rootBeginning.parent );
+				expect( walker.position.offset ).to.equal( rootBeginning.offset );
+			} );
+		} );
 	} );
 } );
 

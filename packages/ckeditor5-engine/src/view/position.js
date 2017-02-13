@@ -11,6 +11,8 @@ import Text from './text';
 import TextProxy from './textproxy';
 import DocumentFragment from './documentfragment';
 
+import TreeWalker from './treewalker';
+
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EditableElement from './editableelement';
@@ -137,6 +139,31 @@ export default class Position {
 		shifted.offset = offset < 0 ? 0 : offset;
 
 		return shifted;
+	}
+
+	/**
+	 * Gets the farthest position which matches the callback using
+	 * {@link module:engine/view/treewalker~TreeWalker TreeWalker}.
+	 *
+	 * For example:
+	 *
+	 * 		getLastMatchingPosition( value => value.type == 'text' ); // <p>{}foo</p> -> <p>foo[]</p>
+	 * 		getLastMatchingPosition( value => value.type == 'text', { direction: 'backward' } ); // <p>foo[]</p> -> <p>{}foo</p>
+	 * 		getLastMatchingPosition( value => false ); // Do not move the position.
+	 *
+	 * @param {Function} skip Callback function. Gets {@link module:engine/view/treewalker~TreeWalkerValue} and should
+	 * return `true` if the value should be skipped or `false` if not.
+	 * @param {Object} options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
+	 *
+	 * @returns {module:engine/view/position~Position} The position after the last item which matches the `skip` callback test.
+	 */
+	getLastMatchingPosition( skip, options = {} ) {
+		options.startPosition = this;
+
+		const treeWalker = new TreeWalker( options );
+		treeWalker.skip( skip );
+
+		return treeWalker.position;
 	}
 
 	/**
