@@ -136,43 +136,43 @@ describe( 'Range', () => {
 		}
 	} );
 
-	describe( 'getShrinked', () => {
+	describe( 'getTrimmed', () => {
 		it( 'case 1', () => {
-			expect( shrink( '<p>f[<b>oo</b></p>]<p>bar</p>' ) )
+			expect( trim( '<p>f[<b>oo</b></p>]<p>bar</p>' ) )
 				.to.equal( '<p>f<b>{oo}</b></p><p>bar</p>' );
 		} );
 
 		it( 'case 2', () => {
-			expect( shrink( '<p>f{oo}bar</p>' ) )
+			expect( trim( '<p>f{oo}bar</p>' ) )
 				.to.equal( '<p>f{oo}bar</p>' );
 		} );
 
 		it( 'case 3', () => {
-			expect( shrink( '<p>f[<span></span>oo<span></span>]bar</p>' ) )
+			expect( trim( '<p>f[<span></span>oo<span></span>]bar</p>' ) )
 				.to.equal( '<p>f<span></span>{oo}<span></span>bar</p>' );
 		} );
 
 		it( 'case 4', () => {
-			expect( shrink( '<p>f<img></img>[oo]<img></img>bar</p>' ) )
+			expect( trim( '<p>f<img></img>[oo]<img></img>bar</p>' ) )
 				.to.equal( '<p>f<img></img>{oo}<img></img>bar</p>' );
 		} );
 
 		it( 'case 5', () => {
-			expect( shrink( '<p><b>f[</b>oo<b><span></span>]bar</b></p>' ) )
+			expect( trim( '<p><b>f[</b>oo<b><span></span>]bar</b></p>' ) )
 				.to.equal( '<p><b>f</b>{oo}<b><span></span>bar</b></p>' );
 		} );
 
 		it( 'case6', () => {
-			expect( shrink( '<p>foo[</p><p>bar</p><p>]bom</p>' ) )
+			expect( trim( '<p>foo[</p><p>bar</p><p>]bom</p>' ) )
 				.to.equal( '<p>foo[</p><p>bar</p><p>]bom</p>' );
 		} );
 
 		it( 'case7', () => {
-			expect( shrink( '<p>foo[<b><img></img></b>]bom</p>' ) )
+			expect( trim( '<p>foo[<b><img></img></b>]bom</p>' ) )
 				.to.equal( '<p>foo<b>[<img></img>]</b>bom</p>' );
 		} );
 
-		function shrink( data ) {
+		function trim( data ) {
 			data = data
 				.replace( /<p>/g, '<container:p>' )
 				.replace( /<\/p>/g, '</container:p>' )
@@ -185,9 +185,9 @@ describe( 'Range', () => {
 			const { view, selection } = parse( data, { rootElement: viewFrag } );
 			const range = selection.getFirstRange();
 
-			const shrinkedRange = range.getShrinked();
+			const trimmedRange = range.getTrimmed();
 
-			return stringify( view, shrinkedRange );
+			return stringify( view, trimmedRange );
 		}
 	} );
 

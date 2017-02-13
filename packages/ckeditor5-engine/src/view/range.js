@@ -87,45 +87,47 @@ export default class Range {
 	}
 
 	/**
-	 * Creates a new range with the same content, but containing all surrendering tags with no semantic meaning.
+	 * Creates a maximal range that has the same content as this range but is expanded in both ways (at the beginning
+	 * and at the end).
 	 *
 	 * For example:
 	 *
 	 * 		<p>Foo</p><p><b>{Bar}</b></p> -> <p>Foo</p>[<p><b>Bar</b></p>]
 	 * 		<p><b>foo</b>{bar}<span></span></p> -> <p><b>foo[</b>bar<span></span>]</p>
 	 *
-	 * Note that in the sample above all:
+	 * Note that in the sample above:
 	 *  - `<p>` have type of {@link module:engine/view/containerelement~ContainerElement},
 	 *  - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement},
-	 *  - `<span>` have type of {@link module:engine/view/uielement~UiElement}.
+	 *  - `<span>` have type of {@link module:engine/view/uielement~UIElement}.
 	 *
 	 * @returns {module:engine/view/range~Range} Enlarged range.
 	 */
 	getEnlarged() {
-		const start = this.start.getPriorPosition( enlagreShrinkStartSkip );
-		const end = this.end.getFurtherPosition( enlagreShrinkEndSkip );
+		const start = this.start.getLastMatchingPosition( enlargeShrinkStartSkip, { direction: 'backward' } );
+		const end = this.end.getLastMatchingPosition( enlargeShrinkEndSkip );
 
 		return new Range( start, end );
 	}
 
 	/**
-	 * Creates a new range with the same content, but without all surrendering tags with no semantic meaning.
+	 * Creates a minimum range that has the same content as this range but is trimmed in both ways (at the beginning
+	 * and at the end).
 	 *
 	 * For example:
 	 *
 	 * 		<p>Foo</p>[<p><b>Bar</b></p>] -> <p>Foo</p><p><b>{Bar}</b></p>
 	 * 		<p><b>foo[</b>bar<span></span>]</p> -> <p><b>foo</b>{bar}<span></span></p>
 	 *
-	 * Note that in the sample above all:
+	 * Note that in the sample above:
 	 *  - `<p>` have type of {@link module:engine/view/containerelement~ContainerElement},
 	 *  - `<b>` have type of {@link module:engine/view/attributeelement~AttributeElement},
-	 *  - `<span>` have type of {@link module:engine/view/uielement~UiElement}.
+	 *  - `<span>` have type of {@link module:engine/view/uielement~UIElement}.
 	 *
 	 * @returns {module:engine/view/range~Range} Shrink range.
 	 */
-	getShrinked() {
-		let start = this.start.getFurtherPosition( enlagreShrinkStartSkip );
-		let end = this.end.getPriorPosition( enlagreShrinkEndSkip );
+	getTrimmed() {
+		let start = this.start.getLastMatchingPosition( enlargeShrinkStartSkip );
+		let end = this.end.getLastMatchingPosition( enlargeShrinkEndSkip, { direction: 'backward' } );
 		let nodeAfterStart = start.nodeAfter;
 		let nodeBeforeEnd = end.nodeBefore;
 
@@ -410,7 +412,7 @@ export default class Range {
 }
 
 // Function used by getEnlagred and getShrinked methods.
-function enlagreShrinkStartSkip( value ) {
+function enlargeShrinkStartSkip( value ) {
 	if ( value.item instanceof AttributeElement || value.item instanceof UIElement ) {
 		return true;
 	}
@@ -423,7 +425,7 @@ function enlagreShrinkStartSkip( value ) {
 }
 
 // Function used by getEnlagred and getShrinked methods.
-function enlagreShrinkEndSkip( value ) {
+function enlargeShrinkEndSkip( value ) {
 	if ( value.item instanceof AttributeElement || value.item instanceof UIElement ) {
 		return true;
 	}

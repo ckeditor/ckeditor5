@@ -578,21 +578,19 @@ describe( 'position', () => {
 		} );
 	} );
 
-	describe( 'getFurtherPosition', () => {
-		it( 'should return skip', () => {
+	describe( 'getLastMatchingPosition', () => {
+		it( 'should skip forward', () => {
 			let position = new Position( root, [ 1, 0, 0 ] );
 
-			position = position.getFurtherPosition( ( value ) => value.type == 'text' );
+			position = position.getLastMatchingPosition( ( value ) => value.type == 'text' );
 
 			expect( position.path ).to.deep.equal( [ 1, 0, 3 ] );
 		} );
-	} );
 
-	describe( 'getPriorPosition', () => {
-		it( 'should return skip', () => {
+		it( 'should skip backward', () => {
 			let position = new Position( root, [ 1, 0, 2 ] );
 
-			position = position.getPriorPosition( ( value ) => value.type == 'text' );
+			position = position.getLastMatchingPosition( ( value ) => value.type == 'text', { direction: 'backward' } );
 
 			expect( position.path ).to.deep.equal( [ 1, 0, 0 ] );
 		} );

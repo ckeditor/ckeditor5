@@ -99,23 +99,21 @@ describe( 'Position', () => {
 		} );
 	} );
 
-	describe( 'getFurtherPosition', () => {
-		it( 'should return skip', () => {
+	describe( 'getLastMatchingPosition', () => {
+		it( 'should skip forward', () => {
 			const { view, selection } = parse( '<p><b>{}foo</b></p>' );
 			let position = selection.getFirstPosition();
 
-			position = position.getFurtherPosition( ( value ) => value.type == 'text' );
+			position = position.getLastMatchingPosition( ( value ) => value.type == 'text' );
 
 			expect( stringify( view, position ) ).to.equal( '<p><b>foo[]</b></p>' );
 		} );
-	} );
 
-	describe( 'getPriorPosition', () => {
-		it( 'should return skip', () => {
+		it( 'should skip backward', () => {
 			const { view, selection } = parse( '<p><b>foo{}</b></p>' );
 			let position = selection.getFirstPosition();
 
-			position = position.getPriorPosition( ( value ) => value.type == 'text' );
+			position = position.getLastMatchingPosition( ( value ) => value.type == 'text', { direction: 'backward' } );
 
 			expect( stringify( view, position ) ).to.equal( '<p><b>[]foo</b></p>' );
 		} );

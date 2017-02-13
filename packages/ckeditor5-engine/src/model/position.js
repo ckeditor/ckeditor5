@@ -246,38 +246,30 @@ export default class Position {
 	}
 
 	/**
-	 * Use forward {@link module:engine/model/treewalker~TreeWalker TreeWalker} to get the farthest position which
-	 * matches the callback.
+	 * Gets the farthest position which matches the callback using
+	 * {@link module:engine/model/treewalker~TreeWalker TreeWalker}.
 	 *
 	 * For example:
 	 *
-	 * 		getFurtherPosition( value => value.type == 'text' ); // <paragraph>[]foo</paragraph> -> <paragraph>foo[]</paragraph>
-	 * 		getFurtherPosition( value => false ); // Do not move the position.
+	 * 		getLastMatchingPosition( value => value.type == 'text' );
+	 * 		// <paragraph>[]foo</paragraph> -> <paragraph>foo[]</paragraph>
+	 *
+	 * 		getLastMatchingPosition( value => value.type == 'text', { direction: 'backward' } );
+	 * 		// <paragraph>foo[]</paragraph> -> <paragraph>[]foo</paragraph>
+	 *
+	 * 		getLastMatchingPosition( value => false );
+	 * 		// Do not move the position.
 	 *
 	 * @param {Function} skip Callback function. Gets {@link module:engine/model/treewalker~TreeWalkerValue} and should
 	 * return `true` if the value should be skipped or `false` if not.
+	 * @param {Object} options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
+	 *
+	 * @returns {module:engine/model/position~Position} The position after the last item which matches the `skip` callback test.
 	 */
-	getFurtherPosition( skip ) {
-		const treeWalker = new TreeWalker( { startPosition: this } );
-		treeWalker.skip( skip );
+	getLastMatchingPosition( skip, options = {} ) {
+		options.startPosition = this;
 
-		return treeWalker.position;
-	}
-
-	/**
-	 * Use backward {@link module:engine/model/treewalker~TreeWalker TreeWalker} to get the farthest position which
-	 * matches the callback.
-	 *
-	 * For example:
-	 *
-	 * 		getPriorPosition( value => value.type == 'text' ); // <paragraph>foo[]</paragraph> -> <paragraph>[]foo</paragraph>
-	 * 		getPriorPosition( value => false ); // Do not move the position.
-	 *
-	 * @param {Function} skip Callback function. Gets {@link module:engine/model/treewalker~TreeWalkerValue} and should
-	 * return `true` if the value should be skipped or `false` if not.
-	 */
-	getPriorPosition( skip ) {
-		const treeWalker = new TreeWalker( { startPosition: this, direction: 'backward' } );
+		const treeWalker = new TreeWalker( options );
 		treeWalker.skip( skip );
 
 		return treeWalker.position;

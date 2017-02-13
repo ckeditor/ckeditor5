@@ -142,38 +142,25 @@ export default class Position {
 	}
 
 	/**
-	 * Use forward {@link module:engine/view/treewalker~TreeWalker TreeWalker} to get the farthest position which
-	 * matches the callback.
+	 * Gets the farthest position which matches the callback using
+	 * {@link module:engine/view/treewalker~TreeWalker TreeWalker}.
 	 *
 	 * For example:
 	 *
-	 * 		getFurtherPosition( value => value.type == 'text' ); // <p>{}foo</p> -> <p>foo[]</p>
-	 * 		getFurtherPosition( value => false ); // Do not move the position.
+	 * 		getLastMatchingPosition( value => value.type == 'text' ); // <p>{}foo</p> -> <p>foo[]</p>
+	 * 		getLastMatchingPosition( value => value.type == 'text', { direction: 'backward' } ); // <p>foo[]</p> -> <p>{}foo</p>
+	 * 		getLastMatchingPosition( value => false ); // Do not move the position.
 	 *
 	 * @param {Function} skip Callback function. Gets {@link module:engine/view/treewalker~TreeWalkerValue} and should
 	 * return `true` if the value should be skipped or `false` if not.
+	 * @param {Object} options Object with configuration options. See {@link module:engine/view/treewalker~TreeWalker}.
+	 *
+	 * @returns {module:engine/view/position~Position} The position after the last item which matches the `skip` callback test.
 	 */
-	getFurtherPosition( skip ) {
-		const treeWalker = new TreeWalker( { startPosition: this } );
-		treeWalker.skip( skip );
+	getLastMatchingPosition( skip, options = {} ) {
+		options.startPosition = this;
 
-		return treeWalker.position;
-	}
-
-	/**
-	 * Use backward {@link module:engine/view/treewalker~TreeWalker TreeWalker} to get the farthest position which
-	 * matches the callback.
-	 *
-	 * For example:
-	 *
-	 * 		getPriorPosition( value => value.type == 'text' ); // <p>foo[]</p> -> <p>{}foo</p>
-	 * 		getPriorPosition( value => false ); // Do not move the position.
-	 *
-	 * @param {Function} skip Callback function. Gets {@link module:engine/view/treewalker~TreeWalkerValue} and should
-	 * return `true` if the value should be skipped or `false` if not.
-	 */
-	getPriorPosition( skip ) {
-		const treeWalker = new TreeWalker( { startPosition: this, direction: 'backward' } );
+		const treeWalker = new TreeWalker( options );
 		treeWalker.skip( skip );
 
 		return treeWalker.position;
