@@ -5,6 +5,7 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import InputCommand from '../src/inputcommand';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import ChangeBuffer from '../src/changebuffer';
@@ -13,7 +14,9 @@ import Input from '../src/input';
 describe( 'InputCommand', () => {
 	let editor, doc;
 
-	beforeEach( () => {
+	testUtils.createSinonSandbox();
+
+	before( () => {
 		return ModelTestEditor.create( )
 			.then( newEditor => {
 				editor = newEditor;
@@ -25,6 +28,10 @@ describe( 'InputCommand', () => {
 				doc.schema.registerItem( 'p', '$block' );
 				doc.schema.registerItem( 'h1', '$block' );
 			} );
+	} );
+
+	beforeEach( () => {
+		editor.commands.get( 'input' )._buffer.size = 0;
 	} );
 
 	describe( 'buffer', () => {
@@ -53,7 +60,7 @@ describe( 'InputCommand', () => {
 		it( 'uses enqueueChanges', () => {
 			setData( doc, '<p>foo[]bar</p>' );
 
-			const spy = sinon.spy( doc, 'enqueueChanges' );
+			const spy = testUtils.sinon.spy( doc, 'enqueueChanges' );
 
 			editor.execute( 'input' );
 
@@ -145,7 +152,7 @@ describe( 'InputCommand', () => {
 		it( 'does nothing when there is no range', () => {
 			setData( doc, '<p>[fo]obar</p>' );
 
-			sinon.stub( editor.document.selection, 'getFirstRange' ).returns( null );
+			testUtils.sinon.stub( editor.document.selection, 'getFirstRange' ).returns( null );
 
 			editor.execute( 'input', {
 				text: 'baz'
@@ -180,7 +187,7 @@ describe( 'InputCommand', () => {
 	describe( 'destroy', () => {
 		it( 'should destroy change buffer', () => {
 			const command = editor.commands.get( 'input' );
-			const destroy = command._buffer.destroy = sinon.spy();
+			const destroy = command._buffer.destroy = testUtils.sinon.spy();
 
 			command.destroy();
 
