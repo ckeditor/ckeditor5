@@ -157,6 +157,18 @@ describe( 'model test utils', () => {
 			expect( document.selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 		} );
 
+		// #815.
+		it( 'should work in a special root', () => {
+			const document = new Document();
+
+			document.schema.registerItem( 'textOnly' );
+			document.schema.allow( { name: '$text', inside: 'textOnly' } );
+			document.createRoot( 'textOnly', 'textOnly' );
+
+			setData( document, 'a[b]c', { rootName: 'textOnly' } );
+			expect( getData( document, { rootName: 'textOnly' } ) ).to.equal( 'a[b]c' );
+		} );
+
 		function test( data, expected ) {
 			expected = expected || data;
 
