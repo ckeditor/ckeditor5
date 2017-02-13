@@ -12,7 +12,7 @@ import Position from './position';
 import TreeWalker from './treewalker';
 
 import AttributeElement from './attributeelement';
-import ContainerElement from './AttributeElement';
+import ContainerElement from './containerelement';
 import UIElement from './uielement';
 
 /**
