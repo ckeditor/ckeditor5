@@ -76,9 +76,7 @@ export default class Input extends Plugin {
 	 * @param {module:engine/controller/editingcontroller~EditingController} viewSelection
 	 */
 	_handleMutations( mutations, viewSelection ) {
-		const handler = new MutationHandler( this.editor );
-
-		handler.handle( mutations, viewSelection );
+		new MutationHandler( this.editor ).handle( mutations, viewSelection );
 	}
 }
 
@@ -188,14 +186,8 @@ class MutationHandler {
 
 		this.editor.execute( 'input', {
 			text: mutation.newText.substr( firstChangeAt, insertions ),
-			range: deletions > 0 ? ModelRange.createFromPositionAndShift( modelPos, deletions ) : null
-		} );
-
-		this.editor.document.enqueueChanges( () => {
-			// If there was `viewSelection` and it got correctly mapped, collapse selection at found model position.
-			if ( modelSelectionPosition ) {
-				this.editing.model.selection.collapse( modelSelectionPosition );
-			}
+			range: deletions > 0 ? ModelRange.createFromPositionAndShift( modelPos, deletions ) : null,
+			selectionAnchor: modelSelectionPosition
 		} );
 	}
 
@@ -236,10 +228,6 @@ class MutationHandler {
 			// Just change &nbsp; in case there are some.
 			text: insertedText.replace( /\u00A0/g, ' ' ),
 			range: new ModelRange( modelPos )
-		} );
-
-		this.editor.document.enqueueChanges( () => {
-			this.editing.model.selection.collapse( modelPos.getShiftedBy( insertedText.length ) );
 		} );
 	}
 }

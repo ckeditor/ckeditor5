@@ -64,16 +64,21 @@ export default class InputCommand extends Command {
 	 * @param {String} [options.text=''] Text to be inserted.
 	 * @param {module:engine/model/range~Range} [options.range=null] Range in which the text is inserted. Defaults
 	 * to first range in the current selection.
+	 * @param {module:engine/model/position~Position} [options.selectionAnchor] Selection anchor which will be used
+	 * to set selection on a data model.
 	 */
 	_doExecute( options = {} ) {
 		const doc = this.editor.document;
 		const range = options.range || doc.selection.getFirstRange();
 		const text = options.text || '';
+		const selectionAnchor = options.selectionAnchor;
 		let textLength = 0;
 
 		if ( range ) {
 			doc.enqueueChanges( () => {
-				if ( !range.isCollapsed ) {
+				const isCollapsedRange = range.isCollapsed;
+
+				if ( !isCollapsedRange ) {
 					textLength -= this._getTextWithinRange( range ).length;
 					this._buffer.batch.remove( range );
 				}
@@ -81,6 +86,13 @@ export default class InputCommand extends Command {
 				if ( text ) {
 					textLength += text.length;
 					this._buffer.batch.weakInsert( range.start, text );
+				}
+
+				if ( selectionAnchor ) {
+					this.editor.data.model.selection.collapse( selectionAnchor );
+				} else if ( isCollapsedRange ) {
+					// If range was collapsed just shift the selection by the number of inserted characters.
+					this.editor.data.model.selection.collapse( range.start.getShiftedBy( textLength ) );
 				}
 
 				this._buffer.input( Math.max( textLength, 0 ) );
