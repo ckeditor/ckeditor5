@@ -562,6 +562,81 @@ describe( 'TreeWalker', () => {
 			expectValue( value, expected[ i++ ], { ignoreElementEnd: true } );
 		}
 	} );
+
+	describe( 'skip', () => {
+		describe( 'forward treewalker', () => {
+			it( 'should jump over all text nodes', () => {
+				const walker = new TreeWalker( {
+					startPosition: Position.createFromParentAndOffset( paragraph, 0 )
+				} );
+
+				walker.skip( value => value.type == 'text' );
+
+				expect( walker.position.parent ).to.equal( paragraph );
+				expect( walker.position.offset ).to.equal( 3 );
+			} );
+
+			it( 'should do not move if the condition is false', () => {
+				const walker = new TreeWalker( {
+					startPosition: Position.createFromParentAndOffset( paragraph, 1 )
+				} );
+
+				walker.skip( () => false );
+
+				expect( walker.position.parent ).to.equal( paragraph );
+				expect( walker.position.offset ).to.equal( 1 );
+			} );
+
+			it( 'should move to the end if the condition is true', () => {
+				const walker = new TreeWalker( {
+					startPosition: Position.createFromParentAndOffset( paragraph, 1 )
+				} );
+
+				walker.skip( () => true );
+
+				expect( walker.position.parent ).to.equal( rootEnding.parent );
+				expect( walker.position.offset ).to.equal( rootEnding.offset );
+			} );
+		} );
+
+		describe( 'backward treewalker', () => {
+			it( 'should jump over all text nodes', () => {
+				const walker = new TreeWalker( {
+					startPosition: Position.createFromParentAndOffset( paragraph, 3 ),
+					direction: 'backward'
+				} );
+
+				walker.skip( value => value.type == 'text' );
+
+				expect( walker.position.parent ).to.equal( paragraph );
+				expect( walker.position.offset ).to.equal( 0 );
+			} );
+
+			it( 'should do not move if the condition is false', () => {
+				const walker = new TreeWalker( {
+					startPosition: Position.createFromParentAndOffset( paragraph, 1 ),
+					direction: 'backward'
+				} );
+
+				walker.skip( () => false );
+
+				expect( walker.position.parent ).to.equal( paragraph );
+				expect( walker.position.offset ).to.equal( 1 );
+			} );
+
+			it( 'should move to the end if the condition is true', () => {
+				const walker = new TreeWalker( {
+					startPosition: Position.createFromParentAndOffset( paragraph, 1 ),
+					direction: 'backward'
+				} );
+
+				walker.skip( () => true );
+
+				expect( walker.position.parent ).to.equal( rootBeginning.parent );
+				expect( walker.position.offset ).to.equal( rootBeginning.offset );
+			} );
+		} );
+	} );
 } );
 
 function expectValue( value, expected, options ) {

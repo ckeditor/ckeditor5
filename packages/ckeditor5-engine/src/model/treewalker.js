@@ -153,6 +153,34 @@ export default class TreeWalker {
 	}
 
 	/**
+	 * Move {@link #position} in the {@link #direction} skipping values as long as the callback function returns `true`.
+	 *
+	 * For example:
+	 *
+	 * 		walker.skip( value => value.type == 'text' ); // <paragraph>[]foo</paragraph> -> <paragraph>foo[]</paragraph>
+	 * 		walker.skip( value => true ); // Move the position to the end: <paragraph>[]foo</paragraph> -> <paragraph>foo</paragraph>[]
+	 * 		walker.skip( value => false ); // Do not move the position.
+	 *
+	 * @param {Function} skip Callback function. Gets {@link module:engine/model/treewalker~TreeWalkerValue} and should
+	 * return `true` if the value should be skipped or `false` if not.
+	 */
+	skip( skip ) {
+		let done, value, prevPosition, prevVisitedParent;
+
+		do {
+			prevPosition = this.position;
+			prevVisitedParent = this._visitedParent;
+
+			( { done, value } = this.next() );
+		} while ( !done && skip( value ) );
+
+		if ( !done ) {
+			this.position = prevPosition;
+			this._visitedParent = prevVisitedParent;
+		}
+	}
+
+	/**
 	 * Iterator interface method.
 	 * Detects walking direction and makes step forward or backward.
 	 *

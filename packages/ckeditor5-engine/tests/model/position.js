@@ -578,6 +578,26 @@ describe( 'position', () => {
 		} );
 	} );
 
+	describe( 'getFurtherPosition', () => {
+		it( 'should return skip', () => {
+			let position = new Position( root, [ 1, 0, 0 ] );
+
+			position = position.getFurtherPosition( ( value ) => value.type == 'text' );
+
+			expect( position.path ).to.deep.equal( [ 1, 0, 3 ] );
+		} );
+	} );
+
+	describe( 'getPriorPosition', () => {
+		it( 'should return skip', () => {
+			let position = new Position( root, [ 1, 0, 2 ] );
+
+			position = position.getPriorPosition( ( value ) => value.type == 'text' );
+
+			expect( position.path ).to.deep.equal( [ 1, 0, 0 ] );
+		} );
+	} );
+
 	describe( '_getTransformedByInsertion', () => {
 		it( 'should return a new Position instance', () => {
 			const position = new Position( root, [ 0 ] );
