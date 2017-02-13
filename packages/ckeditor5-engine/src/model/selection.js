@@ -592,7 +592,7 @@ export default class Selection {
 			}
 
 			for ( const value of range.getWalker() ) {
-				if ( value.type == 'elementEnd' && checkIsBlock( value.item, visited ) ) {
+				if ( value.type == 'elementEnd' && checkIsBlockContainer( value.item, visited ) ) {
 					yield value.item;
 				}
 			}
@@ -706,9 +706,9 @@ export default class Selection {
 
 mix( Selection, EmitterMixin );
 
-// Checks whether the given element extends $block in the schema.
-// and marks it as already visited.
-function checkIsBlock( element, visited ) {
+// Checks whether the given element extends $block in the schema and has a parent (is not a root).
+// Marks it as already visited.
+function checkIsBlockContainer( element, visited ) {
 	if ( visited.has( element ) ) {
 		return false;
 	}
@@ -717,14 +717,14 @@ function checkIsBlock( element, visited ) {
 
 	// TODO https://github.com/ckeditor/ckeditor5-engine/issues/532#issuecomment-278900072.
 	// This should not be a `$block` check.
-	return element.document.schema.itemExtends( element.name, '$block' );
+	return element.document.schema.itemExtends( element.name, '$block' ) && element.parent;
 }
 
 // Finds the lowest element in position's ancestors which is a block.
 // Marks all ancestors as already visited to not include any of them later on.
 function getParentBlock( position, visited ) {
 	const ancestors = position.parent.getAncestors( { parentFirst: true, includeNode: true } );
-	const block = ancestors.find( ( element ) => checkIsBlock( element, visited ) );
+	const block = ancestors.find( ( element ) => checkIsBlockContainer( element, visited ) );
 
 	// Mark all ancestors of this position's parent, because find() might've stopped early and
 	// the found block may be a child of another block.

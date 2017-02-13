@@ -952,6 +952,14 @@ describe( 'Selection', () => {
 			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'd' ] );
 		} );
 
+		it( 'returns nothing if directly in a root', () => {
+			doc.createRoot( 'p', 'inlineOnlyRoot' );
+
+			setData( doc, 'a[b]c', { rootName: 'inlineOnlyRoot' } );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.be.empty;
+		} );
+
 		function toText( elements ) {
 			return Array.from( elements ).map( el => el.getChild( 0 ).data );
 		}
