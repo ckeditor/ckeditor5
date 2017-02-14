@@ -19,6 +19,7 @@ const imageSymbol = Symbol( 'isImage' );
  * * calls {@link module:image/widget/utils~widgetize widgetize}.
  *
  * @param {module:engine/view/element~Element} viewElement
+ * @param {function} t Shorthand for {@link module:utils/locale~Locale#t}.
  * @returns {module:engine/view/element~Element}
  */
 export function toImageWidget( viewElement, t ) {

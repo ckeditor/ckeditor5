@@ -6,19 +6,29 @@
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { toImageWidget, isImageWidget, isImage } from '../src/utils';
-import { isWidget } from '../src/widget/utils';
+import { isWidget, getFakeSelectionLabel } from '../src/widget/utils';
 
 describe( 'image widget utils', () => {
-	let element;
+	let element, image;
 
 	beforeEach( () => {
-		element = new ViewElement( 'div' );
-		toImageWidget( element );
+		image = new ViewElement( 'img' );
+		element = new ViewElement( 'figure', null, image );
+		toImageWidget( element, ( t ) => t );
 	} );
 
 	describe( 'toImageWidget()', () => {
 		it( 'should be widgetized', () => {
 			expect( isWidget( element ) ).to.be.true;
+		} );
+
+		it( 'should set fake selection label', () => {
+			expect( getFakeSelectionLabel( element ) ).to.equal( 'image widget' );
+		} );
+
+		it( 'should set fake selection label combined with alt attribute', () => {
+			image.setAttribute( 'alt', 'foo bar baz' );
+			expect( getFakeSelectionLabel( element ) ).to.equal( 'foo bar baz image widget' );
 		} );
 	} );
 
