@@ -233,25 +233,29 @@ function enableLoggingTools() {
 	};
 
 	Operation.prototype.log = function() {
-		log( getClassName( this ) + ': ' + this );
+		log( this.toString() );
 	};
 
 	AttributeOperation.prototype.toString = function() {
-		return `"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.range }`;
+		return getClassName( this ) + ': ' +
+			`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.range }`;
 	};
 
 	InsertOperation.prototype.toString = function() {
-		return `[ ${ this.nodes.length } ] -> ${ this.position }`;
+		return getClassName( this ) + ': ' +
+			`[ ${ this.nodes.length } ] -> ${ this.position }`;
 	};
 
 	MarkerOperation.prototype.toString = function() {
-		return `"${ this.name }": ${ this.oldRange } -> ${ this.newRange }`;
+		return getClassName( this ) + ': ' +
+			`"${ this.name }": ${ this.oldRange } -> ${ this.newRange }`;
 	};
 
 	MoveOperation.prototype.toString = function() {
 		const range = ModelRange.createFromPositionAndShift( this.sourcePosition, this.howMany );
 
-		return `${ range } -> ${ this.targetPosition }`;
+		return getClassName( this ) + ': ' +
+			`${ range } -> ${ this.targetPosition }`;
 	};
 
 	NoOperation.prototype.toString = function() {
@@ -259,15 +263,17 @@ function enableLoggingTools() {
 	};
 
 	RenameOperation.prototype.toString = function() {
-		return `${ this.position }: "${ this.oldName }" -> "${ this.newName }"`;
+		return getClassName( this ) + ': ' +
+			`${ this.position }: "${ this.oldName }" -> "${ this.newName }"`;
 	};
 
 	RootAttributeOperation.prototype.toString = function() {
-		return `"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.root.rootName }`;
+		return getClassName( this ) + ': ' +
+			`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.root.rootName }`;
 	};
 
 	Delta.prototype.log = function() {
-		log( getClassName( this ) + ': ' + this );
+		log( this.toString() );
 	};
 
 	Delta.prototype.logAll = function() {
@@ -281,51 +287,71 @@ function enableLoggingTools() {
 	};
 
 	AttributeDelta.prototype.toString = function() {
-		return `"${ this.key }": -> ${ JSON.stringify( this.value ) }, ${ this.range }, ${ this.operations.length } ops`;
+		return getClassName( this ) + ': ' +
+			`"${ this.key }": -> ${ JSON.stringify( this.value ) }, ${ this.range }, ${ this.operations.length } ops`;
 	};
 
 	InsertDelta.prototype.toString = function() {
-		return this._insertOperation.toString();
+		const op = this._insertOperation;
+
+		return getClassName( this ) + ': ' +
+			`[ ${ op.nodes.length } ] -> ${ op.position }`;
 	};
 
 	MarkerDelta.prototype.toString = function() {
-		return this.operations[ 0 ].toString();
+		const op = this.operations[ 0 ];
+
+		return getClassName( this ) + ': ' +
+			`"${ op.name }": ${ op.oldRange } -> ${ op.newRange }`;
 	};
 
 	MergeDelta.prototype.toString = function() {
-		return this.position.toString();
+		return getClassName( this ) + ': ' +
+			this.position.toString();
 	};
 
 	MoveDelta.prototype.toString = function() {
 		const opStrings = [];
 
 		for ( let op of this.operations ) {
-			opStrings.push( op.toString() );
+			const range = ModelRange.createFromPositionAndShift( op.sourcePosition, op.howMany );
+
+			opStrings.push( `${ range } -> ${ op.targetPosition }` );
 		}
 
-		return opStrings.join( '; ' );
+		return getClassName( this ) + ': ' +
+			opStrings.join( '; ' );
 	};
 
 	RenameDelta.prototype.toString = function() {
-		return this.operations[ 0 ].toString();
+		const op = this.operations[ 0 ];
+
+		return getClassName( this ) + ': ' +
+			`${ op.position }: "${ op.oldName }" -> "${ op.newName }"`;
 	};
 
 	RootAttributeDelta.prototype.toString = function() {
-		return this.operations[ 0 ].toString();
+		const op = this.operations[ 0 ];
+
+		return getClassName( this ) + ': ' +
+			`"${ op.key }": ${ JSON.stringify( op.oldValue ) } -> ${ JSON.stringify( op.newValue ) }, ${ op.root.rootName }`;
 	};
 
 	SplitDelta.prototype.toString = function() {
-		return this.position.toString();
+		return getClassName( this ) + ': ' +
+			this.position.toString();
 	};
 
 	UnwrapDelta.prototype.toString = function() {
-		return this.position.toString();
+		return getClassName( this ) + ': ' +
+			this.position.toString();
 	};
 
 	WrapDelta.prototype.toString = function() {
 		const wrapElement = this._insertOperation.nodes.getNode( 0 );
 
-		return `${ this.range } -> ${ wrapElement }`;
+		return getClassName( this ) + ': ' +
+			`${ this.range } -> ${ wrapElement }`;
 	};
 
 	ViewElement.prototype.printTree = function( level = 0 ) {
@@ -379,7 +405,7 @@ function enableDocumentTools() {
 	const _modelDocumentApplyOperation = ModelDocument.prototype.applyOperation;
 
 	ModelDocument.prototype.applyOperation = function( operation ) {
-		log( 'Applying ' + getClassName( operation ) + ': ' + operation );
+		log( 'Applying : ' + operation );
 
 		_modelDocumentApplyOperation.call( this, operation );
 	};
