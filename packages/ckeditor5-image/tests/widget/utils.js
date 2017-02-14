@@ -4,7 +4,7 @@
  */
 
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import { widgetize, isWidget, WIDGET_CLASS_NAME } from '../../src/widget/utils';
+import { widgetize, isWidget, WIDGET_CLASS_NAME, setFakeSelectionLabel, getFakeSelectionLabel } from '../../src/widget/utils';
 
 describe( 'widget utils', () => {
 	let element;
@@ -36,6 +36,31 @@ describe( 'widget utils', () => {
 
 		it( 'should return false for non-widgetized elements', () => {
 			expect( isWidget( new ViewElement( 'p' ) ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'fake selection label utils', () => {
+		it( 'should allow to set fake selection for element', () => {
+			const element = new ViewElement( 'p' );
+			setFakeSelectionLabel( element, 'foo bar baz' );
+
+			expect( getFakeSelectionLabel( element ) ).to.equal( 'foo bar baz' );
+		} );
+
+		it( 'should return undefined for elements without fake selection label', () => {
+			const element = new ViewElement( 'div' );
+
+			expect( getFakeSelectionLabel( element ) ).to.be.undefined;
+		} );
+
+		it( 'should allow to use a function as label creator', () => {
+			const element = new ViewElement( 'p' );
+			let caption = 'foo';
+			setFakeSelectionLabel( element, () => caption );
+
+			expect( getFakeSelectionLabel( element ) ).to.equal( 'foo' );
+			caption = 'bar';
+			expect( getFakeSelectionLabel( element ) ).to.equal( 'bar' );
 		} );
 	} );
 } );

@@ -9,7 +9,7 @@ import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/build
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ViewContainer from '@ckeditor/ckeditor5-engine/src/view/containerelement';
-import { widgetize } from '../../src/widget/utils';
+import { widgetize, setFakeSelectionLabel } from '../../src/widget/utils';
 
 describe( 'WidgetEngine', () => {
 	let editor, document, viewDocument;
@@ -26,7 +26,12 @@ describe( 'WidgetEngine', () => {
 
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'widget' )
-					.toElement( () => widgetize( new ViewContainer( 'div' ) ) );
+					.toElement( () => {
+						const element = widgetize( new ViewContainer( 'div' ) );
+						setFakeSelectionLabel( element, 'fake selection' );
+
+						return element;
+					} );
 			} );
 	} );
 
@@ -41,6 +46,18 @@ describe( 'WidgetEngine', () => {
 			'[<div class="ck-widget ck-widget_selected" contenteditable="false">foo bar</div>]'
 		);
 		expect( viewDocument.selection.isFake ).to.be.true;
+	} );
+
+	it( 'should use element\'s fake selection label if one is provided', () => {
+		setModelData( document, '[<widget>foo bar</widget>]' );
+
+		expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'fake selection' );
+	} );
+
+	it( 'fake selection should be empty if widget is not selected', () => {
+		setModelData( document, '<widget>foo bar</widget>' );
+
+		expect( viewDocument.selection.fakeSelectionLabel ).to.equal( '' );
 	} );
 
 	it( 'should toggle selected class', () => {
