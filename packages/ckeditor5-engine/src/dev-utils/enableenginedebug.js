@@ -36,8 +36,14 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 
 const treeDump = Symbol( '_treeDump' );
+
+// Maximum number of stored states of model and view document.
 const maxTreeDumpLength = 20;
+
+// Specified whether debug tools were already enabled;
 let enabled = false;
+
+// Logging function used to log debug messages.
 let log = console.log;
 
 /**
@@ -80,9 +86,7 @@ let log = console.log;
  * @returns {module:engine/dev-utils/enableenginedebug~DebugPlugin} Plugin to be loaded in the editor.
  */
 export default function enableEngineDebug( logger = console.log ) {
-	if ( logger ) {
-		log = logger;
-	}
+	log = logger;
 
 	if ( !enabled ) {
 		enabled = true;
