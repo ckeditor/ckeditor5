@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { WIDGET_SELECTED_CLASS_NAME, isWidget } from './utils';
+import { WIDGET_SELECTED_CLASS_NAME, isWidget, getFakeSelectionLabel } from './utils';
 
 /**
  * The widget engine plugin.
@@ -40,7 +40,7 @@ export default class WidgetEngine extends Plugin {
 				return;
 			}
 
-			viewSelection.setFake( true );
+			viewSelection.setFake( true, { label: getFakeSelectionLabel( selectedElement ) } );
 			selectedElement.addClass( WIDGET_SELECTED_CLASS_NAME );
 			previouslySelected = selectedElement;
 		}, { priority: 'low' } );

@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import WidgetEngine from './widget/widgetengine';
-import { viewToModelImage, modelToViewSelection, createImageAttributeConverter } from './converters';
+import { viewToModelImage, createImageAttributeConverter } from './converters';
 import { toImageWidget } from './utils';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewEmptyElement from '@ckeditor/ckeditor5-engine/src/view/emptyelement';
@@ -54,16 +54,13 @@ export default class ImageEngine extends Plugin {
 		// Build converter from model to view for editing pipeline.
 		buildModelConverter().for( editing.modelToView )
 			.fromElement( 'image' )
-			.toElement( () => toImageWidget( createImageViewElement() ) );
+			.toElement( () => toImageWidget( createImageViewElement(), editor.t ) );
 
 		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'src' );
 		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'alt' );
 
 		// Converter for figure element from view to model.
 		data.viewToModel.on( 'element:figure', viewToModelImage() );
-
-		// Creates fake selection label if selection is placed around image widget.
-		editing.modelToView.on( 'selection', modelToViewSelection( editor.t ), { priority: 'lowest' } );
 	}
 }
 

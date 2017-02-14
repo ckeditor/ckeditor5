@@ -7,7 +7,7 @@
  * @module image/utils
  */
 
-import { widgetize, isWidget } from './widget/utils';
+import { widgetize, isWidget, setFakeSelectionLabel } from './widget/utils';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 
 const imageSymbol = Symbol( 'isImage' );
@@ -15,13 +15,26 @@ const imageSymbol = Symbol( 'isImage' );
 /**
  * Converts given {@link module:engine/view/element~Element} to image widget:
  * * adds {@link module:engine/view/element~Element#setCustomProperty custom property} allowing to recognize image widget element,
+ * * sets fake selection label function,
  * * calls {@link module:image/widget/utils~widgetize widgetize}.
  *
  * @param {module:engine/view/element~Element} viewElement
  * @returns {module:engine/view/element~Element}
  */
-export function toImageWidget( viewElement ) {
+export function toImageWidget( viewElement, t ) {
 	viewElement.setCustomProperty( imageSymbol, true );
+
+	setFakeSelectionLabel( viewElement, () => {
+		let fakeSelectionLabel = t( 'image widget' );
+		const imgElement = viewElement.getChild( 0 );
+		const altText = imgElement.getAttribute( 'alt' );
+
+		if ( altText ) {
+			fakeSelectionLabel = `${ altText } ${ fakeSelectionLabel }`;
+		}
+
+		return fakeSelectionLabel;
+	} );
 
 	return widgetize( viewElement );
 }
