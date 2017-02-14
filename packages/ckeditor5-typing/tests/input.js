@@ -4,8 +4,9 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Input from '../src/input';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Input from '../src/input';
 
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
@@ -24,6 +25,8 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 
 describe( 'Input feature', () => {
 	let editor, model, modelRoot, view, viewRoot, listenter;
+
+	testUtils.createSinonSandbox();
 
 	before( () => {
 		listenter = Object.create( EmitterMixin );
@@ -63,6 +66,24 @@ describe( 'Input feature', () => {
 
 	afterEach( () => {
 		listenter.stopListening();
+	} );
+
+	describe( 'buffer', () => {
+		it( 'has a buffer configured to default value of config.typing.undoStep', () => {
+			expect( editor.plugins.get( Input )._buffer ).to.have.property( 'limit', 20 );
+		} );
+
+		it( 'has a buffer configured to config.typing.undoStep', () => {
+			return VirtualTestEditor.create( {
+				plugins: [ Input ],
+				typing: {
+					undoStep: 5
+				}
+			} )
+				.then( editor => {
+					expect( editor.plugins.get( Input )._buffer ).to.have.property( 'limit', 5 );
+				} );
+		} );
 	} );
 
 	describe( 'mutations handling', () => {
@@ -212,8 +233,8 @@ describe( 'Input feature', () => {
 			const viewSelection = new ViewSelection();
 			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
 
-			sinon.spy( Batch.prototype, 'weakInsert' );
-			sinon.spy( Batch.prototype, 'remove' );
+			testUtils.sinon.spy( Batch.prototype, 'weakInsert' );
+			testUtils.sinon.spy( Batch.prototype, 'remove' );
 
 			view.fire( 'mutations',
 				[ {
@@ -307,6 +328,20 @@ describe( 'Input feature', () => {
 			view.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+		} );
+	} );
+
+	describe( 'destroy', () => {
+		it( 'should destroy change buffer', () => {
+			const typing = new Input( new VirtualTestEditor() );
+			typing.init();
+
+			const destroy = typing._buffer.destroy = testUtils.sinon.spy();
+
+			typing.destroy();
+
+			expect( destroy.calledOnce ).to.be.true;
+			expect( typing._buffer ).to.be.null;
 		} );
 	} );
 } );

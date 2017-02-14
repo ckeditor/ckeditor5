@@ -15,11 +15,12 @@ import diff from '@ckeditor/ckeditor5-utils/src/diff';
 import diffToChanges from '@ckeditor/ckeditor5-utils/src/difftochanges';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import InputCommand from './inputcommand';
+import ChangeBuffer from './changebuffer';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
  *
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class Input extends Plugin {
 	/**
@@ -28,17 +29,36 @@ export default class Input extends Plugin {
 	init() {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
-		const inputCommand = new InputCommand( editor );
 
-		editor.commands.set( 'input', inputCommand );
+		/**
+		 * Typing's change buffer used to group subsequent changes into batches.
+		 *
+		 * @protected
+		 * @member {module:typing/changebuffer~ChangeBuffer} #_buffer
+		 */
+		this._buffer = new ChangeBuffer( editor.document, editor.config.get( 'typing.undoStep' ) || 20 );
+
+		// TODO The above default configuration value should be defined using editor.config.define() once it's fixed.
+
+		editor.commands.set( 'input', new InputCommand( editor ) );
 
 		this.listenTo( editingView, 'keydown', ( evt, data ) => {
-			this._handleKeydown( data, inputCommand.buffer );
+			this._handleKeydown( data );
 		}, { priority: 'lowest' } );
 
 		this.listenTo( editingView, 'mutations', ( evt, mutations, viewSelection ) => {
 			this._handleMutations( mutations, viewSelection );
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this._buffer.destroy();
+		this._buffer = null;
 	}
 
 	/**
@@ -55,9 +75,8 @@ export default class Input extends Plugin {
 	 *
 	 * @private
 	 * @param {module:engine/view/observer/keyobserver~KeyEventData} evtData
-	 * @param {typing.ChangeBuffer} buffer
 	 */
-	_handleKeydown( evtData, buffer ) {
+	_handleKeydown( evtData ) {
 		const doc = this.editor.document;
 
 		if ( isSafeKeystroke( evtData ) || doc.selection.isCollapsed ) {
@@ -65,7 +84,7 @@ export default class Input extends Plugin {
 		}
 
 		doc.enqueueChanges( () => {
-			this.editor.data.deleteContent( doc.selection, buffer.batch );
+			this.editor.data.deleteContent( doc.selection, this._buffer.batch );
 		} );
 	}
 
@@ -73,10 +92,10 @@ export default class Input extends Plugin {
 	 * Handles DOM mutations.
 	 *
 	 * @param {Array.<module:engine/view/document~MutatatedText|module:engine/view/document~MutatatedChildren>} mutations
-	 * @param {module:engine/controller/editingcontroller~EditingController} viewSelection
+	 * @param {module:engine/view/selection~Selection|null} viewSelection
 	 */
 	_handleMutations( mutations, viewSelection ) {
-		new MutationHandler( this.editor ).handle( mutations, viewSelection );
+		new MutationHandler( this.editor, this._buffer ).handle( mutations, viewSelection );
 	}
 }
 
@@ -90,8 +109,9 @@ class MutationHandler {
 	 * Creates an instance of the mutation handler.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
+	 * @param {module:typing/changebuffer~ChangeBuffer} buffer
 	 */
-	constructor( editor ) {
+	constructor( editor, buffer ) {
 		/**
 		 * Editor instance for which mutations are handled.
 		 *
@@ -106,12 +126,20 @@ class MutationHandler {
 		 * @member {module:engine/controller/editingcontroller~EditingController} #editing
 		 */
 		this.editing = this.editor.editing;
+
+		/**
+		 * The change buffer;
+		 *
+		 * @type {module:typing/changebuffer~ChangeBuffer} #buffer
+		 */
+		this.buffer = buffer;
 	}
 
 	/**
 	 * Handles given mutations.
 	 *
 	 * @param {Array.<module:engine/view/document~MutatatedText|module:engine/view/document~MutatatedChildren>} mutations
+	 * @param {module:engine/view/selection~Selection|null} viewSelection
 	 */
 	handle( mutations, viewSelection ) {
 		for ( let mutation of mutations ) {
@@ -183,11 +211,14 @@ class MutationHandler {
 		// Get the position in view and model where the changes will happen.
 		const viewPos = new ViewPosition( mutation.node, firstChangeAt );
 		const modelPos = this.editing.mapper.toModelPosition( viewPos );
+		const removeRange = deletions > 0 ? ModelRange.createFromPositionAndShift( modelPos, deletions ) : null;
+		const insertText = mutation.newText.substr( firstChangeAt, insertions );
 
 		this.editor.execute( 'input', {
-			text: mutation.newText.substr( firstChangeAt, insertions ),
-			range: deletions > 0 ? ModelRange.createFromPositionAndShift( modelPos, deletions ) : null,
-			selectionAnchor: modelSelectionPosition
+			text: insertText,
+			range: removeRange,
+			selectionAnchor: modelSelectionPosition,
+			buffer: this.buffer
 		} );
 	}
 
@@ -227,7 +258,8 @@ class MutationHandler {
 			// In this case we don't need to do this before `diff` because we diff whole nodes.
 			// Just change &nbsp; in case there are some.
 			text: insertedText.replace( /\u00A0/g, ' ' ),
-			range: new ModelRange( modelPos )
+			range: new ModelRange( modelPos ),
+			buffer: this.buffer
 		} );
 	}
 }
