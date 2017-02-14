@@ -405,7 +405,7 @@ function enableDocumentTools() {
 	const _modelDocumentApplyOperation = ModelDocument.prototype.applyOperation;
 
 	ModelDocument.prototype.applyOperation = function( operation ) {
-		log( 'Applying : ' + operation );
+		log( 'Applying ' + operation );
 
 		_modelDocumentApplyOperation.call( this, operation );
 	};

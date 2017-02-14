@@ -394,7 +394,7 @@ describe( 'debug tools', () => {
 
 			modelDoc.applyOperation( op );
 
-			expect( log.calledWithExactly( 'Applying InsertOperation: [ 1 ] -> main [ 0 ]' ) );
+			expect( log.calledWithExactly( 'Applying InsertOperation: [ 1 ] -> main [ 0 ]' ) ).to.be.true;
 		} );
 	} );
 
