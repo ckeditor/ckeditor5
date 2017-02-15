@@ -23,6 +23,8 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
 describe( 'Input feature', () => {
 	let editor, model, modelRoot, view, viewRoot, listenter;
 
@@ -433,6 +435,48 @@ describe( 'Input feature', () => {
 			view.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+		} );
+
+		it( 'should lock buffer if selection is not collapsed', () => {
+			const buffer = editor.plugins.get( Input )._buffer;
+			const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
+			const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
+
+			model.enqueueChanges( () => {
+				model.selection.setRanges( [
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
+			} );
+
+			view.fire( 'keydown', { keyCode: getCode( 'y' ) } );
+
+			expect( lockSpy.calledOnce ).to.be.true;
+			expect( unlockSpy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should not lock buffer on non printable keys', () => {
+			const buffer = editor.plugins.get( Input )._buffer;
+			const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
+			const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
+
+			view.fire( 'keydown', { keyCode: 16 } ); // Shift
+			view.fire( 'keydown', { keyCode: 35 } ); // Home
+			view.fire( 'keydown', { keyCode: 112 } ); // F1
+
+			expect( lockSpy.callCount ).to.be.equal( 0 );
+			expect( unlockSpy.callCount ).to.be.equal( 0 );
+		} );
+
+		it( 'should not lock buffer on collapsed selection', () => {
+			const buffer = editor.plugins.get( Input )._buffer;
+			const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
+			const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
+
+			view.fire( 'keydown', { keyCode: getCode( 'b' ) } );
+			view.fire( 'keydown', { keyCode: getCode( 'a' ) } );
+			view.fire( 'keydown', { keyCode: getCode( 'z' ) } );
+
+			expect( lockSpy.callCount ).to.be.equal( 0 );
+			expect( unlockSpy.callCount ).to.be.equal( 0 );
 		} );
 	} );
 } );

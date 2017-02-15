@@ -6,9 +6,12 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import DeleteCommand from '../src/deletecommand';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'DeleteCommand', () => {
 	let editor, doc;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return ModelTestEditor.create( )
@@ -33,11 +36,24 @@ describe( 'DeleteCommand', () => {
 		it( 'uses enqueueChanges', () => {
 			setData( doc, '<p>foo[]bar</p>' );
 
-			const spy = sinon.spy( doc, 'enqueueChanges' );
+			const spy = testUtils.sinon.spy( doc, 'enqueueChanges' );
 
 			editor.execute( 'delete' );
 
 			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'locks buffer when executing', () => {
+			setData( doc, '<p>foo[]bar</p>' );
+
+			const buffer = editor.commands.get( 'delete' )._buffer;
+			const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
+			const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
+
+			editor.execute( 'delete' );
+
+			expect( lockSpy.calledOnce ).to.be.true;
+			expect( unlockSpy.calledOnce ).to.be.true;
 		} );
 
 		it( 'deletes previous character when selection is collapsed', () => {
