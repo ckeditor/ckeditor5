@@ -35,7 +35,7 @@ export default class Editor {
 		 * Holds all configurations specific to this editor instance.
 		 *
 		 * @readonly
-		 * @member {utils.Config}
+		 * @member {module:utils/config~Config}
 		 */
 		this.config = new Config( config );
 
