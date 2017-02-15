@@ -49,6 +49,14 @@ export default class Schema {
 		this.objects = new Set();
 
 		/**
+		 * Names of elements which have "limited" nature. They should be treated as a single container that cannot be
+		 * split by enter key.
+		 *
+		 * @member {Set.<String>} module:engine/model/schema~Schema#limits
+		 */
+		this.limits = new Set();
+
+		/**
 		 * Schema items registered in the schema.
 		 *
 		 * @private
