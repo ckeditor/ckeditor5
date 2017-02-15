@@ -23,12 +23,33 @@ describe( 'ChangeBuffer', () => {
 			expect( buffer ).to.have.property( 'document', doc );
 			expect( buffer ).to.have.property( 'limit', CHANGE_LIMIT );
 			expect( buffer ).to.have.property( 'size', 0 );
+			expect( buffer ).to.have.property( 'isLocked', false );
 		} );
 
 		it( 'sets limit property according to default value', () => {
 			buffer = new ChangeBuffer( doc );
 
 			expect( buffer ).to.have.property( 'limit', 20 );
+		} );
+	} );
+
+	describe( 'locking', () => {
+		it( 'is unlocked by default', () => {
+			expect( buffer.isLocked ).to.be.false;
+		} );
+
+		it( 'is locked by lock method', () => {
+			buffer.lock();
+
+			expect( buffer.isLocked ).to.be.true;
+		} );
+
+		it( 'is unlocked by unlock method', () => {
+			buffer.isLocked = true;
+
+			buffer.unlock();
+
+			expect( buffer.isLocked ).to.be.false;
 		} );
 	} );
 
@@ -107,6 +128,60 @@ describe( 'ChangeBuffer', () => {
 
 			expect( buffer.batch ).to.equal( bufferBatch );
 		} );
+
+		it( 'is not reset while locked', () => {
+			const initialBatch = buffer.batch;
+
+			buffer.lock();
+
+			buffer.input( 1 );
+			buffer._reset();
+
+			buffer.unlock();
+
+			expect( buffer.batch ).to.be.equal( initialBatch );
+			expect( buffer.size ).to.equal( 1 );
+		} );
+
+		it( 'is reset while locked with ignoreLock used', () => {
+			const initialBatch = buffer.batch;
+
+			buffer.lock();
+
+			buffer.input( 1 );
+			buffer._reset( true );
+
+			buffer.unlock();
+
+			expect( buffer.batch ).to.not.equal( initialBatch );
+			expect( buffer.size ).to.equal( 0 );
+		} );
+
+		it( 'is reset while locked and limit exceeded', () => {
+			const initialBatch = buffer.batch;
+
+			buffer.lock();
+
+			buffer.input( CHANGE_LIMIT + 1 );
+
+			buffer.unlock();
+
+			expect( buffer.batch ).to.not.equal( initialBatch );
+			expect( buffer.size ).to.equal( 0 );
+		} );
+
+		it( 'is reset while locked and new batch is applied', () => {
+			const initialBatch = buffer.batch;
+
+			buffer.lock();
+
+			doc.batch().insert( Position.createAt( root, 0 ), 'a' );
+
+			buffer.unlock();
+
+			expect( buffer.batch ).to.not.equal( initialBatch );
+			expect( buffer.size ).to.equal( 0 );
+		} );
 	} );
 
 	describe( 'destroy', () => {
@@ -116,6 +191,26 @@ describe( 'ChangeBuffer', () => {
 			buffer.destroy();
 
 			doc.batch().insert( Position.createAt( root, 0 ), 'a' );
+
+			expect( buffer.batch ).to.equal( batch1 );
+		} );
+
+		it( 'offs the buffer from the selection change:range', () => {
+			const batch1 = buffer.batch;
+
+			buffer.destroy();
+
+			doc.selection.fire( 'change:attribute' );
+
+			expect( buffer.batch ).to.equal( batch1 );
+		} );
+
+		it( 'offs the buffer from the selection change:attribute', () => {
+			const batch1 = buffer.batch;
+
+			buffer.destroy();
+
+			doc.selection.fire( 'change:range' );
 
 			expect( buffer.batch ).to.equal( batch1 );
 		} );
