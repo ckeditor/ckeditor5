@@ -23,8 +23,8 @@ describe( 'Document', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create Document with no data, empty graveyard and selection set to default range', () => {
-			expect( doc ).to.have.property( '_roots' ).that.is.instanceof( Map );
-			expect( doc._roots.size ).to.equal( 1 );
+			expect( doc ).to.have.property( 'roots' ).that.is.instanceof( Map );
+			expect( doc.roots.size ).to.equal( 1 );
 			expect( doc.graveyard ).to.be.instanceof( RootElement );
 			expect( doc.graveyard.maxOffset ).to.equal( 0 );
 			expect( count( doc.selection.getRanges() ) ).to.equal( 1 );
@@ -50,7 +50,7 @@ describe( 'Document', () => {
 		it( 'should create a new RootElement with default element and root names, add it to roots map and return it', () => {
 			let root = doc.createRoot();
 
-			expect( doc._roots.size ).to.equal( 2 );
+			expect( doc.roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
 			expect( root.maxOffset ).to.equal( 0 );
 			expect( root ).to.have.property( 'name', '$root' );
@@ -60,7 +60,7 @@ describe( 'Document', () => {
 		it( 'should create a new RootElement with custom element and root names, add it to roots map and return it', () => {
 			let root = doc.createRoot( 'customElementName', 'customRootName' );
 
-			expect( doc._roots.size ).to.equal( 2 );
+			expect( doc.roots.size ).to.equal( 2 );
 			expect( root ).to.be.instanceof( RootElement );
 			expect( root.maxOffset ).to.equal( 0 );
 			expect( root ).to.have.property( 'name', 'customElementName' );
