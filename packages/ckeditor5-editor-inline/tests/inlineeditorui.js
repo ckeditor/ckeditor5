@@ -128,7 +128,7 @@ describe( 'InlineEditorUI', () => {
 		} );
 
 		it( 'fills view.toolbar#items with editor config', () => {
-			const spy = testUtils.sinon.spy( toolbarUtils, 'expandToolbarConfig' );
+			const spy = testUtils.sinon.spy( toolbarUtils, 'getItemsFromConfig' );
 
 			return ui.init().then( () => {
 				sinon.assert.calledWithExactly( spy,
