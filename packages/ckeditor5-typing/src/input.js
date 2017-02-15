@@ -91,6 +91,7 @@ export default class Input extends Plugin {
 	/**
 	 * Handles DOM mutations.
 	 *
+	 * @private
 	 * @param {Array.<module:engine/view/document~MutatatedText|module:engine/view/document~MutatatedChildren>} mutations
 	 * @param {module:engine/view/selection~Selection|null} viewSelection
 	 */
@@ -123,6 +124,7 @@ class MutationHandler {
 		/**
 		 * The editing controller.
 		 *
+		 * @readonly
 		 * @member {module:engine/controller/editingcontroller~EditingController} #editing
 		 */
 		this.editing = this.editor.editing;
@@ -130,7 +132,8 @@ class MutationHandler {
 		/**
 		 * The change buffer;
 		 *
-		 * @type {module:typing/changebuffer~ChangeBuffer} #buffer
+		 * @readonly
+		 * @member {module:typing/changebuffer~ChangeBuffer} #buffer
 		 */
 		this.buffer = buffer;
 	}
