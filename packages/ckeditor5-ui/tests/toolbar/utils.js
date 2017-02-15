@@ -14,12 +14,12 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import {
-	expandToolbarConfig,
+	getItemsFromConfig,
 	enableToolbarKeyboardFocus
 } from '../../src/toolbar/utils';
 
 describe( 'utils', () => {
-	describe( 'expandToolbarConfig()', () => {
+	describe( 'getItemsFromConfig()', () => {
 		let factory;
 
 		beforeEach( () => {
@@ -30,13 +30,13 @@ describe( 'utils', () => {
 		} );
 
 		it( 'returns a promise', () => {
-			expect( expandToolbarConfig() ).to.be.instanceOf( Promise );
+			expect( getItemsFromConfig() ).to.be.instanceOf( Promise );
 		} );
 
 		it( 'expands the config into collection', () => {
 			const collection = new Collection();
 
-			return expandToolbarConfig( [ 'foo', 'bar', 'foo' ], collection, factory )
+			return getItemsFromConfig( [ 'foo', 'bar', 'foo' ], collection, factory )
 				.then( () => {
 					expect( collection ).to.have.length( 3 );
 					expect( collection.get( 0 ).name ).to.equal( 'foo' );

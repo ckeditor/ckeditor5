@@ -17,7 +17,7 @@
  * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
  * @returns {Promise} A promise resolved when all toolbar items are initialized.
  */
-export function expandToolbarConfig( config, collection, factory ) {
+export function getItemsFromConfig( config, collection, factory ) {
 	let promises = [];
 
 	if ( config ) {
