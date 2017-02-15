@@ -1,3 +1,14 @@
+/**
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * @module engine/dev-utils/enableenginedebug
+ */
+
+/* global console */
+
 import ModelPosition from '../model/position';
 import ModelRange from '../model/range';
 import ModelText from '../model/text';
@@ -30,8 +41,6 @@ import ViewElement from '../view/element';
 import ViewText from '../view/text';
 import ViewDocumentFragment from '../view/documentfragment';
 
-/* global console */
-
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 
@@ -40,7 +49,7 @@ const treeDump = Symbol( '_treeDump' );
 // Maximum number of stored states of model and view document.
 const maxTreeDumpLength = 20;
 
-// Specified whether debug tools were already enabled;
+// Specified whether debug tools were already enabled.
 let enabled = false;
 
 // Logging function used to log debug messages.
