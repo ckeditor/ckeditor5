@@ -17,7 +17,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
 import Template from '../../../src/template';
 import ToolbarView from '../../../src/toolbar/toolbarview';
-import BalloonPanelView from '../../../src/balloonpanel/balloonpanelview';
+import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 
 const arrowVOffset = BalloonPanelView.arrowVerticalOffset;
 const positions = {
