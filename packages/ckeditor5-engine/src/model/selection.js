@@ -562,6 +562,51 @@ export default class Selection {
 	}
 
 	/**
+	 * Gets elements of type "block" touched by the selection.
+	 *
+	 * This method's result can be used for example to apply block styling to all blocks covered by this selection.
+	 *
+	 * *Note:* `getSelectedBlocks` always returns the deepest block.
+	 *
+	 * In this case the function will return exactly all 3 paragraphs:
+	 *
+	 *		<paragraph>[a</paragraph>
+	 *		<quote>
+	 *			<paragraph>b</paragraph>
+	 *		</quote>
+	 *		<paragraph>c]d</paragraph>
+	 *
+	 * In this case the paragraph will also be returned, despite the collapsed selection:
+	 *
+	 *		<paragraph>[]a</paragraph>
+	 *
+	 * @returns {Iterator.<module:engine/model/element~Element>}
+	 */
+	*getSelectedBlocks() {
+		const visited = new WeakSet();
+
+		for ( const range of this.getRanges() ) {
+			const startBlock = getParentBlock( range.start, visited );
+
+			if ( startBlock ) {
+				yield startBlock;
+			}
+
+			for ( const value of range.getWalker() ) {
+				if ( value.type == 'elementEnd' && isUnvisitedBlockContainer( value.item, visited ) ) {
+					yield value.item;
+				}
+			}
+
+			const endBlock = getParentBlock( range.end, visited );
+
+			if ( endBlock ) {
+				yield endBlock;
+			}
+		}
+	}
+
+	/**
 	 * Creates and returns an instance of `Selection` that is a clone of given selection, meaning that it has same
 	 * ranges and same direction as this selection.
 	 *
@@ -661,3 +706,30 @@ export default class Selection {
 }
 
 mix( Selection, EmitterMixin );
+
+// Checks whether the given element extends $block in the schema and has a parent (is not a root).
+// Marks it as already visited.
+function isUnvisitedBlockContainer( element, visited ) {
+	if ( visited.has( element ) ) {
+		return false;
+	}
+
+	visited.add( element );
+
+	// TODO https://github.com/ckeditor/ckeditor5-engine/issues/532#issuecomment-278900072.
+	// This should not be a `$block` check.
+	return element.document.schema.itemExtends( element.name, '$block' ) && element.parent;
+}
+
+// Finds the lowest element in position's ancestors which is a block.
+// Marks all ancestors as already visited to not include any of them later on.
+function getParentBlock( position, visited ) {
+	const ancestors = position.parent.getAncestors( { parentFirst: true, includeNode: true } );
+	const block = ancestors.find( ( element ) => isUnvisitedBlockContainer( element, visited ) );
+
+	// Mark all ancestors of this position's parent, because find() might've stopped early and
+	// the found block may be a child of another block.
+	ancestors.forEach( element => visited.add( element ) );
+
+	return block;
+}
