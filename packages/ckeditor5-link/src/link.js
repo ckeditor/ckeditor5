@@ -15,7 +15,7 @@ import LinkElement from './linkelement';
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/balloonpanel/balloonpanelview';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 
 import LinkFormView from './ui/linkformview';
 
