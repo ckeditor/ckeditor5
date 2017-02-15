@@ -56,17 +56,17 @@ describe( 'InlineEditorUI', () => {
 			expect( ui.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
 
-		describe( 'toolbar', () => {
-			it( 'binds view.toolbar#isActive to editor.ui#focusTracker', () => {
+		describe( 'panel', () => {
+			it( 'binds view.panel#isActive to editor.ui#focusTracker', () => {
 				ui.focusTracker.isFocused = false;
-				expect( view.toolbar.isActive ).to.be.false;
+				expect( view.panel.isActive ).to.be.false;
 
 				ui.focusTracker.isFocused = true;
-				expect( view.toolbar.isActive ).to.be.true;
+				expect( view.panel.isActive ).to.be.true;
 			} );
 
-			it( 'sets view.toolbar#targetElement', () => {
-				expect( view.toolbar.targetElement ).to.equal( view.editableElement );
+			it( 'sets view.panel#targetElement', () => {
+				expect( view.panel.targetElement ).to.equal( view.editableElement );
 			} );
 		} );
 

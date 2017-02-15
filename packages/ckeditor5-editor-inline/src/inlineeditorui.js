@@ -47,9 +47,9 @@ export default class InlineEditorUI {
 		 */
 		this.focusTracker = new FocusTracker();
 
-		// Set–up the toolbar.
-		view.toolbar.bind( 'isActive' ).to( this.focusTracker, 'isFocused' );
-		view.toolbar.targetElement = view.editableElement;
+		// Set–up the view#panel.
+		view.panel.bind( 'isActive' ).to( this.focusTracker, 'isFocused' );
+		view.panel.targetElement = view.editableElement;
 
 		// Setup the editable.
 		const editingRoot = editor.editing.createRoot( view.editableElement );

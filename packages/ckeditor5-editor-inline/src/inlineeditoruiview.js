@@ -9,7 +9,9 @@
 
 import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import FloatingToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/floating/floatingtoolbarview';
+import FloatingPanelView from '@ckeditor/ckeditor5-ui/src/panel/floating/floatingpanelview';
+import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 /**
  * Inline editor UI view. Uses inline editable and floating toolbar.
@@ -29,9 +31,23 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * A floating toolbar view instance.
 		 *
 		 * @readonly
-		 * @member {module:ui/toolbar/floating/floatingtoolbarview~FloatingToolbarView}
+		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
-		this.toolbar = new FloatingToolbarView( locale );
+		this.toolbar = new ToolbarView( locale );
+
+		/**
+		 * A floating panel view instance.
+		 *
+		 * @readonly
+		 * @member {module:ui/panel/floating/floatingpanelview~FloatingPanelView}
+		 */
+		this.panel = new FloatingPanelView( locale );
+
+		Template.extend( this.panel.template, {
+			attributes: {
+				class: 'ck-toolbar__container'
+			}
+		} );
 
 		/**
 		 * Editable UI view.
@@ -41,8 +57,16 @@ export default class InlineEditorUIView extends EditorUIView {
 		 */
 		this.editable = new InlineEditableUIView( locale, editableElement );
 
-		this.body.add( this.toolbar );
+		this.body.add( this.panel );
 		this.addChildren( this.editable );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		return super.init()
+			.then( () => this.panel.content.add( this.toolbar ) );
 	}
 
 	/**
