@@ -218,7 +218,7 @@ class MutationHandler {
 		}
 
 		// Insert appropriate characters basing on `mutation.text`.
-		const insertedText = mutation.newText.substr( firstChangeAt, insertions );
+		const insertedText = newText.substr( firstChangeAt, insertions );
 		this._insert( modelPos, insertedText );
 
 		// If there was `viewSelection` and it got correctly mapped, collapse selection at found model position.
