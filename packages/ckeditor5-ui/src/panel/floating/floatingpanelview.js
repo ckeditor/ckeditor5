@@ -67,6 +67,14 @@ export default class FloatingPanelView extends View {
 		 */
 		this.set( 'targetElement', null );
 
+		/**
+		 * Collection of the child views which creates balloon panel contents.
+		 *
+		 * @readonly
+		 * @member {module:ui/viewcollection~ViewCollection}
+		 */
+		this.content = this.createCollection();
+
 		this.template = new Template( {
 			tag: 'div',
 			attributes: {
@@ -78,7 +86,9 @@ export default class FloatingPanelView extends View {
 					top: bind.to( 'top', toPx ),
 					left: bind.to( 'left', toPx ),
 				}
-			}
+			},
+
+			children: this.content
 		} );
 	}
 

@@ -3,11 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global Event */
+/* global document, Event */
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import FloatingPanelView from '../../../src/panel/floating/floatingpanelview';
 import View from '../../../src/view';
+import ViewCollection from '../../../src/viewcollection';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import * as positionUtils from '@ckeditor/ckeditor5-utils/src/dom/position';
 
@@ -62,6 +63,10 @@ describe( 'FloatingPanelView', () => {
 
 			expect( view.targetElement ).to.be.null;
 		} );
+
+		it( 'creates view#content collection', () => {
+			expect( view.content ).to.be.instanceOf( ViewCollection );
+		} );
 	} );
 
 	describe( 'template', () => {
@@ -89,6 +94,18 @@ describe( 'FloatingPanelView', () => {
 				it( 'reacts on #left', () => {
 					view.left = 20;
 					expect( view.element.style.left ).to.equal( '20px' );
+				} );
+			} );
+
+			describe( 'children', () => {
+				it( 'should react on view#content', () => {
+					expect( view.element.childNodes.length ).to.equal( 0 );
+
+					const item = new View();
+					item.element = document.createElement( 'div' );
+					view.content.add( item );
+
+					expect( view.element.childNodes.length ).to.equal( 1 );
 				} );
 			} );
 		} );
