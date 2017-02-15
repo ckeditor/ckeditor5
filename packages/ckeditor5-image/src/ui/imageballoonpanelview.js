@@ -9,7 +9,7 @@
 
 import throttle from '@ckeditor/ckeditor5-utils/src/lib/lodash/throttle';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/balloonpanel/balloonpanelview';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import { isImageWidget } from '../utils';
 
 const arrowVOffset = BalloonPanelView.arrowVerticalOffset;
