@@ -564,10 +564,11 @@ export default class Selection {
 	/**
 	 * Gets elements of type "block" touched by the selection.
 	 *
-	 * This method's result can be used for example to apply block styling to all
-	 * blocks covered by this selection.
+	 * This method's result can be used for example to apply block styling to all blocks covered by this selection.
 	 *
-	 * In this case the function will return all 3 paragraphs:
+	 * *Note:* `getSelectedBlocks` always returns the deepest block.
+	 *
+	 * In this case the function will return exactly all 3 paragraphs:
 	 *
 	 *		<paragraph>[a</paragraph>
 	 *		<quote>
@@ -592,7 +593,7 @@ export default class Selection {
 			}
 
 			for ( const value of range.getWalker() ) {
-				if ( value.type == 'elementEnd' && checkIsBlockContainer( value.item, visited ) ) {
+				if ( value.type == 'elementEnd' && isUnvisitedBlockContainer( value.item, visited ) ) {
 					yield value.item;
 				}
 			}
@@ -708,7 +709,7 @@ mix( Selection, EmitterMixin );
 
 // Checks whether the given element extends $block in the schema and has a parent (is not a root).
 // Marks it as already visited.
-function checkIsBlockContainer( element, visited ) {
+function isUnvisitedBlockContainer( element, visited ) {
 	if ( visited.has( element ) ) {
 		return false;
 	}
@@ -724,7 +725,7 @@ function checkIsBlockContainer( element, visited ) {
 // Marks all ancestors as already visited to not include any of them later on.
 function getParentBlock( position, visited ) {
 	const ancestors = position.parent.getAncestors( { parentFirst: true, includeNode: true } );
-	const block = ancestors.find( ( element ) => checkIsBlockContainer( element, visited ) );
+	const block = ancestors.find( ( element ) => isUnvisitedBlockContainer( element, visited ) );
 
 	// Mark all ancestors of this position's parent, because find() might've stopped early and
 	// the found block may be a child of another block.
