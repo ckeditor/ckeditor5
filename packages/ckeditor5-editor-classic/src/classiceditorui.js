@@ -10,7 +10,7 @@
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import {
-	expandToolbarConfig,
+	getItemsFromConfig,
 	enableToolbarKeyboardFocus
 } from '@ckeditor/ckeditor5-ui/src/toolbar/utils';
 
@@ -73,7 +73,7 @@ export default class ClassicEditorUI {
 
 		return this.view.init()
 			.then( () => {
-				return expandToolbarConfig(
+				return getItemsFromConfig(
 					editor.config.get( 'toolbar' ),
 					this.view.toolbar.items,
 					this.componentFactory
