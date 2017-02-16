@@ -250,6 +250,75 @@ describe( 'Input feature', () => {
 			expect( Batch.prototype.remove.calledOnce ).to.be.true;
 		} );
 
+		it( 'should place selection after when correcting to longer word (spellchecker)', () => {
+			// This test case emulates spellchecker correction.
+			editor.setData( '<p>Foo hous a</p>' );
+
+			model.enqueueChanges( () => {
+				model.selection.setRanges( [
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 4, modelRoot.getChild( 0 ), 8 )
+				] );
+			} );
+
+			view.fire( 'mutations',
+				[ {
+					type: 'text',
+					oldText: 'Foo hous a',
+					newText: 'Foo house a',
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				} ]
+			);
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>Foo house[] a</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>Foo house{} a</p>' );
+		} );
+
+		it( 'should place selection after when correcting to shorter word (spellchecker)', () => {
+			// This test case emulates spellchecker correction.
+			editor.setData( '<p>Bar athat foo</p>' );
+
+			model.enqueueChanges( () => {
+				model.selection.setRanges( [
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 4, modelRoot.getChild( 0 ), 9 )
+				] );
+			} );
+
+			view.fire( 'mutations',
+				[ {
+					type: 'text',
+					oldText: 'Bar athat foo',
+					newText: 'Bar that foo',
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				} ]
+			);
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>Bar that[] foo</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>Bar that{} foo</p>' );
+		} );
+
+		it( 'should place selection after when merging two words (spellchecker)', () => {
+			// This test case emulates spellchecker correction.
+			editor.setData( '<p>Foo hous e</p>' );
+
+			model.enqueueChanges( () => {
+				model.selection.setRanges( [
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 4, modelRoot.getChild( 0 ), 10 )
+				] );
+			} );
+
+			view.fire( 'mutations',
+				[ {
+					type: 'text',
+					oldText: 'Foo hous e',
+					newText: 'Foo house',
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				} ]
+			);
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>Foo house[]</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>Foo house{}</p>' );
+		} );
+
 		it( 'should replace last &nbsp; with space', () => {
 			model.enqueueChanges( () => {
 				model.selection.setRanges( [
