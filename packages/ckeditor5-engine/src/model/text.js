@@ -46,6 +46,13 @@ export default class Text extends Node {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	is( type ) {
+		return type == 'text' || super.is( type );
+	}
+
+	/**
 	 * Creates a copy of this text node and returns it. Created text node has same text data and attributes as original text node.
 	 */
 	clone() {

@@ -212,6 +212,28 @@ export default class Node {
 	}
 
 	/**
+	 * Checks whether given model tree object is of given type.
+	 *
+	 * This method is useful when processing model tree objects that are of unknown type. For example, a function
+	 * may return {@link module:engine/model/documentfragment~DocumentFragment} or {@link module:engine/model/node~Node}
+	 * that can be either text node or element. This method can be used to check what kind of object is returned.
+	 *
+	 *		obj.is( 'node' ); // true for any node, false for document fragment
+	 *		obj.is( 'documentFragment' ); // true for document fragment, false for any node
+	 *		obj.is( 'element' ); // true for any element, false for text node or document fragment
+	 *		obj.is( 'element', 'paragraph' ); // true only for element which name is 'paragraph'
+	 *		obj.is( 'paragraph' ); // shortcut for obj.is( 'element', 'paragraph' )
+	 *		obj.is( 'text' ); // true for text node, false for element and document fragment
+	 *		obj.is( 'textProxy' ); // true for text proxy object
+	 *
+	 * @param {'node'|'element'|'rootElement'|'text'|'textProxy'|'documentFragment'} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'node';
+	}
+
+	/**
 	 * Creates a copy of this node, that is a node with exactly same attributes, and returns it.
 	 *
 	 * @returns {module:engine/model/node~Node} Node with same attributes as this node.

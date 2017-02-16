@@ -81,6 +81,37 @@ export default class Element extends Node {
 	}
 
 	/**
+	 * Checks whether given model tree object is of given type.
+	 *
+	 * This method is useful when processing model tree objects that are of unknown type. For example, a function
+	 * may return {@link module:engine/model/documentfragment~DocumentFragment} or {@link module:engine/model/node~Node}
+	 * that can be either text node or element. This method can be used to check what kind of object is returned.
+	 *
+	 *		obj.is( 'node' ); // true for any node, false for document fragment
+	 *		obj.is( 'documentFragment' ); // true for document fragment, false for any node
+	 *		obj.is( 'element' ); // true for any element, false for text node or document fragment
+	 *		obj.is( 'element', 'paragraph' ); // true only for element which name is 'paragraph'
+	 *		obj.is( 'paragraph' ); // shortcut for obj.is( 'element', 'paragraph' )
+	 *		obj.is( 'text' ); // true for text node, false for element and document fragment
+	 *		obj.is( 'textProxy' ); // true for text proxy object
+	 *
+	 * @param {'node'|'element'|'rootElement'|'text'|'textProxy'|'documentFragment'} type
+	 * @param {String} [name] Element name.
+	 * @returns {Boolean}
+	 */
+	is( type, name = null ) {
+		let matches = false;
+
+		if ( !name ) {
+			matches = type == 'element' || type == this.name;
+		} else {
+			matches = type == 'element' && name == this.name;
+		}
+
+		return matches || super.is( type );
+	}
+
+	/**
 	 * Gets the child at the given index.
 	 *
 	 * @param {Number} index Index of child.

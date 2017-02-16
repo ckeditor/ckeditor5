@@ -38,6 +38,28 @@ describe( 'Element', () => {
 		} );
 	} );
 
+	describe( 'is', () => {
+		let element;
+
+		before( () => {
+			element = new Element( 'paragraph' );
+		} );
+
+		it( 'should return true for element, element with same name, element name and node', () => {
+			expect( element.is( 'element' ) ).to.be.true;
+			expect( element.is( 'element', 'paragraph' ) ).to.be.true;
+			expect( element.is( 'paragraph' ) ).to.be.true;
+			expect( element.is( 'node' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( element.is( 'text' ) ).to.be.false;
+			expect( element.is( 'textProxy' ) ).to.be.false;
+			expect( element.is( 'documentFragment' ) ).to.be.false;
+			expect( element.is( 'rootElement' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'clone', () => {
 		it( 'should return an element with same name, attributes and same instances of children if clone was not deep', () => {
 			let p = new Element( 'p' );

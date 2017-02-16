@@ -33,6 +33,26 @@ describe( 'Text', () => {
 		} );
 	} );
 
+	describe( 'is', () => {
+		let text;
+
+		before( () => {
+			text = new Text( 'bar' );
+		} );
+
+		it( 'should return true for text and node', () => {
+			expect( text.is( 'text' ) ).to.be.true;
+			expect( text.is( 'node' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( text.is( 'textProxy' ) ).to.be.false;
+			expect( text.is( 'element' ) ).to.be.false;
+			expect( text.is( 'rootElement' ) ).to.be.false;
+			expect( text.is( 'documentFragment' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'clone', () => {
 		it( 'should return a new Text instance, with data and attributes equal to cloned text node', () => {
 			let text = new Text( 'foo', { bold: true } );
