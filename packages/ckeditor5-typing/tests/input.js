@@ -273,7 +273,7 @@ describe( 'Input feature', () => {
 		it( 'should replace first &nbsp; with space', () => {
 			model.enqueueChanges( () => {
 				model.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 6, modelRoot.getChild( 0 ), 6 )
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 0, modelRoot.getChild( 0 ), 0 )
 				] );
 			} );
 
@@ -286,11 +286,17 @@ describe( 'Input feature', () => {
 				}
 			] );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph> foobar[]</paragraph>' );
-			expect( getViewData( view ) ).to.equal( '<p> foobar{}</p>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph> []foobar</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p> {}foobar</p>' );
 		} );
 
 		it( 'should replace all &nbsp; with spaces', () => {
+			model.enqueueChanges( () => {
+				model.selection.setRanges( [
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 6, modelRoot.getChild( 0 ), 6 )
+				] );
+			} );
+
 			view.fire( 'mutations', [
 				{
 					type: 'text',
@@ -300,9 +306,8 @@ describe( 'Input feature', () => {
 				}
 			] );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar   baz</paragraph>' );
-			expect( getViewData( view ) ).to.equal( '<p>foo{}bar' +
-				'   baz</p>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>foobar   baz[]</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>foobar   baz{}</p>' );
 		} );
 	} );
 
