@@ -440,6 +440,27 @@ describe( 'DataController', () => {
 				{ direction: 'backward' }
 			);
 		} );
+
+		describe( 'limits handling', () => {
+			beforeEach( () => {
+				document.schema.registerItem( 'limit' );
+				document.schema.allow( { name: 'limit', inside: '$root' } );
+				document.schema.allow( { name: '$text', inside: 'limit' } );
+			} );
+
+			test(
+				'should not extend to outside of limit element',
+				'<limit>foo[]</limit>',
+				'<limit>foo[]</limit>'
+			);
+
+			test(
+				'should not extend to outside of limit element - backward',
+				'<limit>[]foo</limit>',
+				'<limit>[]foo</limit>',
+				{ direction: 'backward' }
+			);
+		} );
 	} );
 
 	function test( title, input, output, options ) {

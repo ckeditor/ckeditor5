@@ -76,7 +76,13 @@ export default function modifySelection( dataController, selection, options = {}
 	}
 
 	// 4. If previous scenarios are false, it means that focus is at the beginning/at the end of element and by
-	// extending we are "leaving" the element. Let's see what is further.
+	// extending we are "leaving" the element.
+	// If the element is registered as `limit` - prevent from "leaving" it.
+	if ( schema.limits.has( value.item.name ) ) {
+		return;
+	}
+
+	// Let's see what is further.
 	next = walker.next();
 
 	// 4.1. Nothing left, so let's stay where we were.
