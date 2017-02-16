@@ -9,7 +9,6 @@
 
 import Consumable from './modelconsumable';
 import Range from '../model/range';
-import TextProxy from '../model/textproxy';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
@@ -463,7 +462,7 @@ export default class ModelConversionDispatcher {
 		}
 
 		if ( type === 'insert' || type === 'remove' || type == 'move' ) {
-			if ( data.item instanceof TextProxy ) {
+			if ( data.item.is( 'textProxy' ) ) {
 				// Example: insert:$text.
 				this.fire( type + ':$text', data, consumable, this.conversionApi );
 			} else {

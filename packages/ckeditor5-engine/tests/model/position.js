@@ -114,7 +114,7 @@ describe( 'position', () => {
 
 			expect( () => {
 				new Position();
-			} ).to.throw( CKEditorError, /model-position-root-invalid/ );
+			} ).to.throw();
 		} );
 	} );
 

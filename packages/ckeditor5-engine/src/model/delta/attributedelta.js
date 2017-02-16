@@ -14,8 +14,6 @@ import AttributeOperation from '../operation/attributeoperation';
 import RootAttributeOperation from '../operation/rootattributeoperation';
 import Position from '../position';
 import Range from '../range';
-import RootElement from '../rootelement';
-import Element from '../element';
 
 /**
  * To provide specific OT behavior and better collisions solving, methods to change attributes
@@ -166,15 +164,15 @@ function changeItem( batch, doc, key, value, item ) {
 	const previousValue = item.getAttribute( key );
 	let range, operation;
 
-	const delta = item instanceof RootElement ? new RootAttributeDelta() : new AttributeDelta();
+	const delta = item.is( 'rootElement' ) ? new RootAttributeDelta() : new AttributeDelta();
 	batch.addDelta( delta );
 
 	if ( previousValue != value ) {
-		if ( item instanceof RootElement ) {
+		if ( item.is( 'rootElement' ) ) {
 			// If we change attributes of root element, we have to use `RootAttributeOperation`.
 			operation = new RootAttributeOperation( item, key, previousValue, value, doc.version );
 		} else {
-			if ( item instanceof Element ) {
+			if ( item.is( 'element' ) ) {
 				// If we change the attribute of the element, we do not want to change attributes of its children, so
 				// the end of the range cannot be after the closing tag, it should be inside that element, before any of
 				// it's children, so the range will contain only the opening tag.

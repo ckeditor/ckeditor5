@@ -7,7 +7,6 @@
  * @module engine/model/liveposition
  */
 
-import RootElement from './rootelement';
 import Position from './position';
 import Range from './range';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
@@ -40,7 +39,9 @@ export default class LivePosition extends Position {
 	 * See {@link module:engine/model/liveposition~LivePosition#stickiness}.
 	 */
 	constructor( root, path, stickiness ) {
-		if ( !( root instanceof RootElement ) ) {
+		super( root, path );
+
+		if ( !this.root.is( 'rootElement' ) ) {
 			/**
 			 * LivePosition root has to be an instance of RootElement.
 			 *
@@ -48,8 +49,6 @@ export default class LivePosition extends Position {
 			 */
 			throw new CKEditorError( 'model-liveposition-root-not-rootelement: LivePosition root has to be an instance of RootElement.' );
 		}
-
-		super( root, path );
 
 		/**
 		 * Flag representing `LivePosition` stickiness. `LivePosition` might be sticking to previous node or next node.

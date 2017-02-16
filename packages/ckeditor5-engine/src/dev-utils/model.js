@@ -20,7 +20,6 @@ import ModelSelection from '../model/selection';
 import ModelDocumentFragment from '../model/documentfragment';
 import ModelElement from '../model/element';
 import ModelText from '../model/text';
-import ModelTextProxy from '../model/textproxy';
 import modelWriter from '../model/writer';
 
 import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
@@ -132,13 +131,13 @@ export function setData( document, data, options = {} ) {
 				// Each range returned from `parse()` method has its root placed in DocumentFragment.
 				// Here we convert each range to have its root re-calculated properly and be placed inside
 				// model document root.
-				if ( range.start.parent instanceof ModelDocumentFragment ) {
+				if ( range.start.parent.is( 'documentFragment' ) ) {
 					start = ModelPosition.createFromParentAndOffset( modelRoot, range.start.offset );
 				} else {
 					start = ModelPosition.createFromParentAndOffset( range.start.parent, range.start.offset );
 				}
 
-				if ( range.end.parent instanceof ModelDocumentFragment ) {
+				if ( range.end.parent.is( 'documentFragment' ) ) {
 					end = ModelPosition.createFromParentAndOffset( modelRoot, range.end.offset );
 				} else {
 					end = ModelPosition.createFromParentAndOffset( range.end.parent, range.end.offset );
@@ -216,7 +215,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 
 	modelToView.on( 'insert:$text', insertText() );
 	modelToView.on( 'addAttribute', wrapItem( ( value, data ) => {
-		if ( data.item instanceof ModelTextProxy ) {
+		if ( data.item.is( 'textProxy' ) ) {
 			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: stringifyAttributeValue( value ) } );
 		}
 	} ) );
@@ -299,7 +298,7 @@ export function parse( data, schema, options = {} ) {
 	let model = viewToModel.convert( viewDocumentFragment.root, { context: options.context || [ '$root' ] } );
 
 	// If root DocumentFragment contains only one element - return that element.
-	if ( model instanceof ModelDocumentFragment && model.childCount == 1 ) {
+	if ( model.is( 'documentFragment' ) && model.childCount == 1 ) {
 		model = model.getChild( 0 );
 	}
 

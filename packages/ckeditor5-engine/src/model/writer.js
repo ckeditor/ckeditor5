@@ -151,7 +151,7 @@ export function setAttribute( range, key, value ) {
 		// Iterator will return `TextProxy` instances but we know that those text proxies will
 		// always represent full text nodes (this is guaranteed thanks to splitting we did before).
 		// So, we can operate on those text proxies' text nodes.
-		let node = item instanceof TextProxy ? item.textNode : item;
+		let node = item.is( 'textProxy' ) ? item.textNode : item;
 
 		if ( value !== null ) {
 			node.setAttribute( key, value );
@@ -213,7 +213,7 @@ export function normalizeNodes( nodes ) {
 		const node = normalized[ i ];
 		const prev = normalized[ i - 1 ];
 
-		if ( node instanceof Text && prev instanceof Text && _haveSameAttributes( node, prev ) ) {
+		if ( node.is( 'text' ) && prev.is( 'text' ) && _haveSameAttributes( node, prev ) ) {
 			// Doing this instead changing prev.data because .data is readonly.
 			normalized.splice( i - 1, 2, new Text( prev.data + node.data, prev.getAttributes() ) );
 			i--;
@@ -239,7 +239,7 @@ function _mergeNodesAtIndex( element, index ) {
 	const nodeAfter = element.getChild( index );
 
 	// Check if both of those nodes are text objects with same attributes.
-	if ( nodeBefore instanceof Text && nodeAfter instanceof Text && _haveSameAttributes( nodeBefore, nodeAfter ) ) {
+	if ( nodeBefore && nodeAfter && nodeBefore.is( 'text' ) && nodeAfter.is( 'text' ) && _haveSameAttributes( nodeBefore, nodeAfter ) ) {
 		// Append text of text node after index to the before one.
 		const mergedNode = new Text( nodeBefore.data + nodeAfter.data, nodeBefore.getAttributes() );
 

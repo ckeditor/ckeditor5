@@ -167,7 +167,7 @@ function enableLoggingTools() {
 		for ( let child of this.getChildren() ) {
 			string += '\n';
 
-			if ( child instanceof ModelText ) {
+			if ( child.is( 'text' ) ) {
 				const textAttrs = mapToTags( child._attrs );
 
 				string += '\t'.repeat( level + 1 );
@@ -217,7 +217,7 @@ function enableLoggingTools() {
 		for ( let child of this.getChildren() ) {
 			string += '\n';
 
-			if ( child instanceof ModelText ) {
+			if ( child.is( 'text' ) ) {
 				const textAttrs = mapToTags( child._attrs );
 
 				string += '\t'.repeat( 1 );

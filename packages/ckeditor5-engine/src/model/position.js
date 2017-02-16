@@ -7,8 +7,6 @@
  * @module engine/model/position
  */
 
-import DocumentFragment from './documentfragment';
-import Element from './element';
 import TreeWalker from './treewalker';
 import last from '@ckeditor/ckeditor5-utils/src/lib/lodash/last';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
@@ -45,7 +43,7 @@ export default class Position {
 	 * @param {Array.<Number>} path Position path. See {@link module:engine/model/position~Position#path}.
 	 */
 	constructor( root, path ) {
-		if ( !( root instanceof Element ) && !( root instanceof DocumentFragment ) ) {
+		if ( !root.is( 'element' ) && !root.is( 'documentFragment' ) ) {
 			/**
 			 * Position root invalid.
 			 *
@@ -293,7 +291,7 @@ export default class Position {
 	 * @returns {Array.<module:engine/model/item~Item>} Array with ancestors.
 	 */
 	getAncestors() {
-		if ( this.parent instanceof DocumentFragment ) {
+		if ( this.parent.is( 'documentFragment' ) ) {
 			return [ this.parent ];
 		} else {
 			return this.parent.getAncestors( { includeNode: true } );
@@ -707,7 +705,7 @@ export default class Position {
 	 * @returns {module:engine/model/position~Position}
 	 */
 	static createFromParentAndOffset( parent, offset ) {
-		if ( !( parent instanceof Element || parent instanceof DocumentFragment ) ) {
+		if ( !parent.is( 'element' ) && !parent.is( 'documentFragment' ) ) {
 			/**
 			 * Position parent have to be a model element or model document fragment.
 			 *

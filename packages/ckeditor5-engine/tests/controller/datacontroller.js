@@ -181,7 +181,7 @@ describe( 'DataController', () => {
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 		} );
 
-		it( 'should convert content of an element', () => {
+		it( 'should convert content of an element #1', () => {
 			const viewElement = parseView( '<p>foo</p>' );
 			const modelElement = data.toModel( viewElement );
 
@@ -189,7 +189,7 @@ describe( 'DataController', () => {
 			expect( stringify( modelElement ) ).to.equal( '<paragraph>foo</paragraph>' );
 		} );
 
-		it( 'should convert content of an element', () => {
+		it( 'should convert content of an element #2', () => {
 			const viewFragment = parseView( '<p>foo</p><p>bar</p>' );
 			const modelFragment = data.toModel( viewFragment );
 
