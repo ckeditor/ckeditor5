@@ -26,6 +26,10 @@ describe( 'EnterCommand', () => {
 				schema.registerItem( 'img', '$inline' );
 				schema.registerItem( 'p', '$block' );
 				schema.registerItem( 'h', '$block' );
+				schema.registerItem( 'w' );
+				schema.allow( { name: 'w', inside: '$root' } );
+				schema.allow( { name: '$text', inside: 'w' } );
+				schema.limits.add( 'w' );
 				schema.allow( { name: '$text', inside: '$root' } );
 			} );
 	} );
@@ -105,6 +109,30 @@ describe( 'EnterCommand', () => {
 				'leaves one empty element after two were fully selected',
 				'<p>[abc</p><p>def]</p>',
 				'<p>[]</p>'
+			);
+
+			test(
+				'should not break limit elements - collapsed',
+				'<w>foo[]bar</w>',
+				'<w>foo[]bar</w>'
+			);
+
+			test(
+				'should not break limit elements',
+				'<w>foo[bar]baz</w>',
+				'<w>foo[bar]baz</w>'
+			);
+
+			test(
+				'should not break limit elements - selection partially inside',
+				'<p>fo[o</p><w>ba]r</w>',
+				'<p>fo[o</p><w>ba]r</w>'
+			);
+
+			test(
+				'should delete limit element when fully contained inside selection',
+				'<p>fo[o</p><w>bar</w><p>ba]z</p>',
+				'<p>fo</p><p>[]z</p>'
 			);
 
 			it( 'leaves one empty element after two were fully selected (backward)', () => {
