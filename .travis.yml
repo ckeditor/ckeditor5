@@ -19,4 +19,4 @@ install:
   - mgit bootstrap --resolver-url-template="https://github.com/\${ path }.git"
   - lerna bootstrap
 script:
-  - node --max_old_space_size=4096 ckeditor5-dev-tests --reporter=dots
+  - node --max_old_space_size=4096 ./node_modules/.bin/ckeditor5-dev-tests --reporter=dots
