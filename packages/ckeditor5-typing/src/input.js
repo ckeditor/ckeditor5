@@ -215,7 +215,7 @@ class MutationHandler {
 		const viewPos = new ViewPosition( mutation.node, firstChangeAt );
 		const modelPos = this.editing.mapper.toModelPosition( viewPos );
 		const removeRange = deletions > 0 ? ModelRange.createFromPositionAndShift( modelPos, deletions ) : null;
-		const insertText = mutation.newText.substr( firstChangeAt, insertions );
+		const insertText = newText.substr( firstChangeAt, insertions );
 
 		this.editor.execute( 'input', {
 			text: insertText,

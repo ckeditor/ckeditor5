@@ -249,6 +249,61 @@ describe( 'Input feature', () => {
 			expect( Batch.prototype.weakInsert.calledOnce ).to.be.true;
 			expect( Batch.prototype.remove.calledOnce ).to.be.true;
 		} );
+
+		it( 'should replace last &nbsp; with space', () => {
+			model.enqueueChanges( () => {
+				model.selection.setRanges( [
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 6, modelRoot.getChild( 0 ), 6 )
+				] );
+			} );
+
+			view.fire( 'mutations', [
+				{
+					type: 'text',
+					oldText: 'foobar',
+					newText: 'foobar\u00A0',
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				}
+			] );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foobar []</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>foobar {}</p>' );
+		} );
+
+		it( 'should replace first &nbsp; with space', () => {
+			model.enqueueChanges( () => {
+				model.selection.setRanges( [
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 6, modelRoot.getChild( 0 ), 6 )
+				] );
+			} );
+
+			view.fire( 'mutations', [
+				{
+					type: 'text',
+					oldText: 'foobar',
+					newText: '\u00A0foobar',
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				}
+			] );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph> foobar[]</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p> foobar{}</p>' );
+		} );
+
+		it( 'should replace all &nbsp; with spaces', () => {
+			view.fire( 'mutations', [
+				{
+					type: 'text',
+					oldText: 'foobar',
+					newText: 'foobar\u00A0\u00A0\u00A0baz',
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				}
+			] );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar   baz</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>foo{}bar' +
+				'   baz</p>' );
+		} );
 	} );
 
 	describe( 'keystroke handling', () => {
