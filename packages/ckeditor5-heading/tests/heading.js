@@ -9,6 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Heading from '../src/heading';
 import HeadingEngine from '../src/headingengine';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
+import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
@@ -89,6 +90,50 @@ describe( 'Heading', () => {
 				expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
 				command.value = command.formats[ 1 ];
 				expect( dropdown.buttonView.label ).to.equal( 'Heading 1' );
+			} );
+		} );
+
+		describe( 'localization', () => {
+			let command;
+
+			beforeEach( () => {
+				const editorElement = document.createElement( 'div' );
+
+				const spy = testUtils.sinon.stub( Locale.prototype, '_t' ).returns( 'foo' );
+
+				spy.withArgs( 'Paragraph' ).returns( 'Akapit' );
+				spy.withArgs( 'Heading 1' ).returns( 'Nagłówek 1' );
+				spy.withArgs( 'Heading 2' ).returns( 'Nagłówek 2' );
+				spy.withArgs( 'Heading 3' ).returns( 'Nagłówek 3' );
+
+				return ClassicTestEditor.create( editorElement, {
+					plugins: [ Heading ],
+					toolbar: [ 'heading' ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					dropdown = editor.ui.componentFactory.create( 'headings' );
+					command = editor.commands.get( 'heading' );
+				} );
+			} );
+
+			it( 'works for the #buttonView', () => {
+				const buttonView = dropdown.buttonView;
+
+				expect( buttonView.label ).to.equal( 'Akapit' );
+				command.value = command.formats[ 1 ];
+				expect( buttonView.label ).to.equal( 'Nagłówek 1' );
+			} );
+
+			it( 'works for the listView#items in the panel', () => {
+				const listView = dropdown.listView;
+
+				expect( listView.items.map( item => item.label ) ).to.deep.equal( [
+					'Akapit',
+					'Nagłówek 1',
+					'Nagłówek 2',
+					'Nagłówek 3'
+				] );
 			} );
 		} );
 	} );

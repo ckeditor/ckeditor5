@@ -38,25 +38,25 @@ export default class Heading extends Plugin {
 		const command = editor.commands.get( 'heading' );
 		const formats = command.formats;
 		const collection = new Collection();
+		const t = editor.t;
 
 		// Add formats to collection.
 		for ( let format of formats ) {
 			collection.add( new Model( {
 				formatId: format.id,
-				label: format.label
+				label: t( format.label )
 			} ) );
 		}
 
 		// Create dropdown model.
 		const dropdownModel = new Model( {
-			label: 'Heading',
 			withText: true,
 			items: collection
 		} );
 
 		// Bind dropdown model to command.
 		dropdownModel.bind( 'isEnabled' ).to( command, 'isEnabled' );
-		dropdownModel.bind( 'label' ).to( command, 'value', format => format.label );
+		dropdownModel.bind( 'label' ).to( command, 'value', format => t( format.label ) );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'headings', ( locale ) => {
