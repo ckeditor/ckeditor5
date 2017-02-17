@@ -146,10 +146,24 @@ class MutationHandler {
 	 */
 	handle( mutations, viewSelection ) {
 		for ( let mutation of mutations ) {
+			// console.log( 'if', mutation );
 			// Fortunately it will never be both.
 			this._handleTextMutation( mutation, viewSelection );
 			this._handleTextNodeInsertion( mutation );
 		}
+	}
+
+	// TODO needs proper description
+	// Check if mutation is normal typing.
+	// There is also composition (mutations will be blocked during composing in future) and spellchecking.
+	// There are also cases when spell checking generates one insertion and no deletions (like hous -> house)
+	// and the mutation is identical as typing.
+	_isTyping( insertions, deletions, firstChangeAt, lastChangeAt, viewSelection ) {
+		const viewSelectionAnchorOffset = viewSelection ? viewSelection.anchor.offset : null;
+
+		return deletions === 0 && insertions == 1 &&
+			firstChangeAt && lastChangeAt && ( lastChangeAt - firstChangeAt === 0 ) &&
+			( viewSelectionAnchorOffset <= firstChangeAt + 1 );
 	}
 
 	_handleTextMutation( mutation, viewSelection ) {
@@ -204,23 +218,59 @@ class MutationHandler {
 			}
 		}
 
-		// Try setting new model selection according to passed view selection.
-		let modelSelectionPosition = null;
-
-		if ( viewSelection ) {
-			modelSelectionPosition = this.editing.mapper.toModelPosition( viewSelection.anchor );
-		}
+		// TODO transform into human readable and understandable text.
+		// For insertions of the same character in a row, like
+		// ab^cde - inserting c
+		// and
+		// abc^de - inserting c
+		// the diff is the same.
+		// This causes the problem with using ModelRange.createFromPositionAndShift( modelPos, 0 ); (passing when there is no removeRange)
+		// because the last character in the sequence of the same characters is always recognized as an insertion.
+		// From the other hand without ModelRange.createFromPositionAndShift( modelPos, 0 ); it works fine, but spellchecking
+		// cases which cannot be differentiated from typing ( hous -> house ) is broken because `InputCommand` wll use
+		// default selection which is [hous] to do text replacement (results in e[]).
 
 		// Get the position in view and model where the changes will happen.
-		const viewPos = new ViewPosition( mutation.node, firstChangeAt );
-		const modelPos = this.editing.mapper.toModelPosition( viewPos );
-		const removeRange = deletions > 0 ? ModelRange.createFromPositionAndShift( modelPos, deletions ) : null;
-		const insertText = newText.substr( firstChangeAt, insertions );
+		let viewPos = new ViewPosition( mutation.node, firstChangeAt );
+
+		// TODO references to previous comment about diff with same character sequence. Needs proper, dteailed description.
+		if ( viewSelection && viewSelection.anchor.offset <= firstChangeAt ) {
+			viewPos = new ViewPosition( mutation.node, viewSelection.anchor.offset - 1 );
+		}
+
+		let modelPos = this.editing.mapper.toModelPosition( viewPos );
+		let removeRange = ModelRange.createFromPositionAndShift( modelPos, deletions || 0 );
+		let insertText = newText.substr( firstChangeAt, insertions );
+
+		// TODO detailed description what is going on here.
+		if ( viewSelection && !this._isTyping( insertions, deletions, firstChangeAt, lastChangeAt, viewSelection ) ) {
+			// The beginning of the corrected word is always at the fixed position no matter what was changed
+			// by spellchecking mechanism so it may be recognized by getting last space before corrected word.
+			let lastSpaceBeforeChangeAt = 0;
+
+			for ( let i = 0; i < newText.length; i++ ) {
+				if ( newText[ i ] === ' ' ) {
+					if ( i < firstChangeAt ) {
+						lastSpaceBeforeChangeAt = i + 1;
+					} else {
+						break;
+					}
+				}
+			}
+
+			let correctedText = newText.substring( lastSpaceBeforeChangeAt, viewSelection.anchor.offset );
+
+			if ( correctedText.length ) {
+				insertText = correctedText;
+				viewPos = new ViewPosition( mutation.node, lastSpaceBeforeChangeAt );
+				modelPos = this.editing.mapper.toModelPosition( viewPos );
+				removeRange = ModelRange.createFromPositionAndShift( modelPos, insertText.length - insertions + deletions );
+			}
+		}
 
 		this.editor.execute( 'input', {
 			text: insertText,
 			range: removeRange,
-			selectionAnchor: modelSelectionPosition,
 			buffer: this.buffer
 		} );
 	}
