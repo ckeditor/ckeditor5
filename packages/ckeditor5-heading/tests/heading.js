@@ -9,8 +9,14 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Heading from '../src/heading';
 import HeadingEngine from '../src/headingengine';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import Locale from '@ckeditor/ckeditor5-utils/src/locale';
+import { add } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+add( 'pl', {
+	'Paragraph': 'Akapit',
+	'Heading 1': 'Nagłówek 1',
+	'Heading 2': 'Nagłówek 2',
+} );
 
 testUtils.createSinonSandbox();
 
@@ -98,15 +104,11 @@ describe( 'Heading', () => {
 
 			beforeEach( () => {
 				const editorElement = document.createElement( 'div' );
-				const spy = testUtils.sinon.stub( Locale.prototype, '_t' ).returns( 'foo' );
-
-				spy.withArgs( 'Paragraph' ).returns( 'Akapit' );
-				spy.withArgs( 'Heading 1' ).returns( 'Nagłówek 1' );
-				spy.withArgs( 'Heading 2' ).returns( 'Nagłówek 2' );
 
 				return ClassicTestEditor.create( editorElement, {
 					plugins: [ Heading ],
 					toolbar: [ 'heading' ],
+					lang: 'pl',
 					heading: {
 						formats: [
 							{ id: 'paragraph', element: 'p', label: 'Paragraph' },

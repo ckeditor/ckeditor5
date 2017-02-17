@@ -8,7 +8,15 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import HeadingCommand from '../src/headingcommand';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import { add } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+
+add( 'pl', {
+	'Paragraph': 'Akapit',
+	'Heading 1': 'Nagłówek 1',
+	'Heading 2': 'Nagłówek 2',
+	'Heading 3': 'Nagłówek 3',
+} );
 
 describe( 'HeadingEngine', () => {
 	let editor, document;
@@ -95,13 +103,30 @@ describe( 'HeadingEngine', () => {
 
 	describe( 'config', () => {
 		describe( 'formats', () => {
-			it( 'should have default value', () => {
-				expect( editor.config.get( 'heading.formats' ) ).to.deep.equal( [
-					{ id: 'paragraph', element: 'p', label: 'Paragraph' },
-					{ id: 'heading1', element: 'h2', label: 'Heading 1' },
-					{ id: 'heading2', element: 'h3', label: 'Heading 2' },
-					{ id: 'heading3', element: 'h4', label: 'Heading 3' }
-				] );
+			describe( 'default value', () => {
+				it( 'should be set', () => {
+					expect( editor.config.get( 'heading.formats' ) ).to.deep.equal( [
+						{ id: 'paragraph', element: 'p', label: 'Paragraph' },
+						{ id: 'heading1', element: 'h2', label: 'Heading 1' },
+						{ id: 'heading2', element: 'h3', label: 'Heading 2' },
+						{ id: 'heading3', element: 'h4', label: 'Heading 3' }
+					] );
+				} );
+
+				it( 'should be localized', () => {
+					return VirtualTestEditor.create( {
+						plugins: [ Enter, HeadingEngine ],
+						lang: 'pl',
+					} )
+					.then( editor => {
+						expect( editor.config.get( 'heading.formats' ) ).to.deep.equal( [
+							{ id: 'paragraph', element: 'p', label: 'Akapit' },
+							{ id: 'heading1', element: 'h2', label: 'Nagłówek 1' },
+							{ id: 'heading2', element: 'h3', label: 'Nagłówek 2' },
+							{ id: 'heading3', element: 'h4', label: 'Nagłówek 3' }
+						] );
+					} );
+				} );
 			} );
 
 			it( 'should customize formats', () => {
