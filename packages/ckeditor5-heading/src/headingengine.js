@@ -13,12 +13,14 @@ import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildv
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import HeadingCommand from './headingcommand';
 
-const formats = [
-	{ id: 'paragraph', viewElement: 'p', label: 'Paragraph' },
-	{ id: 'heading1', viewElement: 'h2', label: 'Heading 1' },
-	{ id: 'heading2', viewElement: 'h3', label: 'Heading 2' },
-	{ id: 'heading3', viewElement: 'h4', label: 'Heading 3' }
+const defaultFormats = [
+	{ id: 'paragraph', element: 'p', label: 'Paragraph' },
+	{ id: 'heading1', element: 'h2', label: 'Heading 1' },
+	{ id: 'heading2', element: 'h3', label: 'Heading 2' },
+	{ id: 'heading3', element: 'h4', label: 'Heading 3' }
 ];
+
+const defaultFormatId = 'paragraph';
 
 /**
  * The headings engine feature. It handles switching between block formats &ndash; headings and paragraph.
@@ -27,6 +29,18 @@ const formats = [
  * @extends modules:core/plugin~Plugin
  */
 export default class HeadingEngine extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'heading', {
+			formats: defaultFormats,
+			defaultFormatId: defaultFormatId
+		} );
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -41,21 +55,23 @@ export default class HeadingEngine extends Plugin {
 		const editor = this.editor;
 		const data = editor.data;
 		const editing = editor.editing;
+		const formats = editor.config.get( 'heading.formats' );
+		const defaultFormatId = editor.config.get( 'heading.defaultFormatId' );
 
 		for ( let format of formats ) {
 			// Skip paragraph - it is defined in required Paragraph feature.
-			if ( format.id !== 'paragraph' ) {
+			if ( format.id !== defaultFormatId ) {
 				// Schema.
 				editor.document.schema.registerItem( format.id, '$block' );
 
 				// Build converter from model to view for data and editing pipelines.
 				buildModelConverter().for( data.modelToView, editing.modelToView )
 					.fromElement( format.id )
-					.toElement( format.viewElement );
+					.toElement( format.element );
 
 				// Build converter from view to model for data pipeline.
 				buildViewConverter().for( data.viewToModel )
-					.fromElement( format.viewElement )
+					.fromElement( format.element )
 					.toElement( format.id );
 			}
 		}
@@ -75,6 +91,7 @@ export default class HeadingEngine extends Plugin {
 		const editor = this.editor;
 		const command = editor.commands.get( 'heading' );
 		const enterCommand = editor.commands.get( 'enter' );
+		const formats = editor.config.get( 'heading.formats' );
 
 		if ( enterCommand ) {
 			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {

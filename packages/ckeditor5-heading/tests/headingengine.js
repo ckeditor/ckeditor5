@@ -92,4 +92,74 @@ describe( 'HeadingEngine', () => {
 
 		expect( getData( document ) ).to.equal( '<heading1>foo</heading1><heading1>[]bar</heading1>' );
 	} );
+
+	describe( 'config', () => {
+		describe( 'formats', () => {
+			it( 'should have default value', () => {
+				expect( editor.config.get( 'heading.formats' ) ).to.deep.equal( [
+					{ id: 'paragraph', element: 'p', label: 'Paragraph' },
+					{ id: 'heading1', element: 'h2', label: 'Heading 1' },
+					{ id: 'heading2', element: 'h3', label: 'Heading 2' },
+					{ id: 'heading3', element: 'h4', label: 'Heading 3' }
+				] );
+			} );
+
+			it( 'should customize formats', () => {
+				const formats = [
+					{ id: 'paragraph', element: 'p', label: 'Paragraph' },
+					{ id: 'h4', element: 'h4', label: 'H4' }
+				];
+
+				return VirtualTestEditor.create( {
+					plugins: [ Enter, HeadingEngine ],
+					heading: {
+						formats: formats
+					}
+				} )
+				.then( editor => {
+					document = editor.document;
+
+					expect( editor.commands.get( 'heading' ).formats ).to.deep.equal( formats );
+
+					expect( document.schema.hasItem( 'paragraph' ) ).to.be.true;
+					expect( document.schema.hasItem( 'h4' ) ).to.be.true;
+
+					expect( document.schema.hasItem( 'heading1' ) ).to.be.false;
+					expect( document.schema.hasItem( 'heading2' ) ).to.be.false;
+					expect( document.schema.hasItem( 'heading3' ) ).to.be.false;
+				} );
+			} );
+		} );
+
+		describe( 'defaultFormatId', () => {
+			it( 'should have default value', () => {
+				expect( editor.config.get( 'heading.defaultFormatId' ) ).to.equal( 'paragraph' );
+			} );
+
+			it( 'should customize formats', () => {
+				return VirtualTestEditor.create( {
+					plugins: [ Enter, HeadingEngine ],
+					heading: {
+						formats: [
+							{ id: 'foo', element: 'f', label: 'Foo' },
+							{ id: 'bar', element: 'b', label: 'Bar' }
+						],
+						defaultFormatId: 'bar'
+					}
+				} )
+				.then( editor => {
+					document = editor.document;
+
+					expect( editor.commands.get( 'heading' ).value ).to.deep.equal( {
+						id: 'bar',
+						element: 'b',
+						label: 'Bar'
+					} );
+
+					expect( document.schema.hasItem( 'foo' ) ).to.be.true;
+					expect( document.schema.hasItem( 'bar' ) ).to.be.false;
+				} );
+			} );
+		} );
+	} );
 } );

@@ -9,29 +9,33 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 const formats = [
-	{ id: 'paragraph', viewElement: 'p', default: true },
-	{ id: 'heading1', viewElement: 'h2' },
-	{ id: 'heading2', viewElement: 'h3' },
-	{ id: 'heading3', viewElement: 'h4' }
+	{ id: 'paragraph', element: 'p', default: true },
+	{ id: 'heading1', element: 'h2' },
+	{ id: 'heading2', element: 'h3' },
+	{ id: 'heading3', element: 'h4' }
 ];
 
 describe( 'HeadingCommand', () => {
 	let editor, document, command, root, schema;
 
 	beforeEach( () => {
-		return ModelTestEditor.create()
-			.then( newEditor => {
-				editor = newEditor;
-				document = editor.document;
-				command = new HeadingCommand( editor, formats );
-				schema = document.schema;
+		return ModelTestEditor.create( {
+			heading: {
+				defaultFormatId: 'paragraph'
+			}
+		} )
+		.then( newEditor => {
+			editor = newEditor;
+			document = editor.document;
+			command = new HeadingCommand( editor, formats );
+			schema = document.schema;
 
-				for ( let format of formats ) {
-					schema.registerItem( format.id, '$block' );
-				}
+			for ( let format of formats ) {
+				schema.registerItem( format.id, '$block' );
+			}
 
-				root = document.getRoot();
-			} );
+			root = document.getRoot();
+		} );
 	} );
 
 	afterEach( () => {
@@ -71,7 +75,7 @@ describe( 'HeadingCommand', () => {
 			expect( getData( document ) ).to.equal( '<heading1>[]</heading1>' );
 			expect( command.value ).to.be.object;
 			expect( command.value.id ).to.equal( 'heading1' );
-			expect( command.value.viewElement ).to.equal( 'h2' );
+			expect( command.value.element ).to.equal( 'h2' );
 		} );
 
 		describe( 'custom options', () => {

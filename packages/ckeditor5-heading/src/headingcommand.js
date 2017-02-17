@@ -53,7 +53,7 @@ export default class HeadingCommand extends Command {
 	 */
 	get defaultFormat() {
 		// See https://github.com/ckeditor/ckeditor5/issues/98.
-		return this._getFormatById( 'paragraph' );
+		return this._getFormatById( this.editor.config.get( 'heading.defaultFormatId' ) );
 	}
 
 	/**
