@@ -13,15 +13,6 @@ import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildv
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import HeadingCommand from './headingcommand';
 
-const defaultFormats = [
-	{ id: 'paragraph', element: 'p', label: 'Paragraph' },
-	{ id: 'heading1', element: 'h2', label: 'Heading 1' },
-	{ id: 'heading2', element: 'h3', label: 'Heading 2' },
-	{ id: 'heading3', element: 'h4', label: 'Heading 3' }
-];
-
-const defaultFormatId = 'paragraph';
-
 /**
  * The headings engine feature. It handles switching between block formats &ndash; headings and paragraph.
  * This class represents the engine part of the heading feature. See also {@link module:heading/heading~Heading}.
@@ -35,9 +26,30 @@ export default class HeadingEngine extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
+		const t = editor.t;
+
+		/**
+		 * A set of default localized labels for `config.heading.formats`.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {Object} #_formatLabels
+		 */
+		const labels = this._formatLabels = {
+			'Paragraph': t( 'Paragraph' ),
+			'Heading 1': t( 'Heading 1' ),
+			'Heading 2': t( 'Heading 2' ),
+			'Heading 3': t( 'Heading 3' )
+		};
+
 		editor.config.define( 'heading', {
-			formats: defaultFormats,
-			defaultFormatId: defaultFormatId
+			formats: [
+				{ id: 'paragraph', element: 'p', label: labels.Paragraph },
+				{ id: 'heading1', element: 'h2', label: labels[ 'Heading 1' ] },
+				{ id: 'heading2', element: 'h3', label: labels[ 'Heading 2' ] },
+				{ id: 'heading3', element: 'h4', label: labels[ 'Heading 3' ] }
+			],
+			defaultFormatId: 'paragraph'
 		} );
 	}
 
@@ -55,7 +67,7 @@ export default class HeadingEngine extends Plugin {
 		const editor = this.editor;
 		const data = editor.data;
 		const editing = editor.editing;
-		const formats = editor.config.get( 'heading.formats' );
+		const formats = this._formats;
 		const defaultFormatId = editor.config.get( 'heading.defaultFormatId' );
 
 		for ( let format of formats ) {
@@ -91,18 +103,44 @@ export default class HeadingEngine extends Plugin {
 		const editor = this.editor;
 		const command = editor.commands.get( 'heading' );
 		const enterCommand = editor.commands.get( 'enter' );
-		const formats = editor.config.get( 'heading.formats' );
+		const formats = this._formats;
 
 		if ( enterCommand ) {
 			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
 				const positionParent = editor.document.selection.getFirstPosition().parent;
 				const batch = data.batch;
-				const isHeading = formats.some( ( format ) => format.id == positionParent.name );
+				const isHeading = formats.some( ( { id } ) => id == positionParent.name );
 
 				if ( isHeading && positionParent.name != command.defaultFormat.id && positionParent.childCount === 0 ) {
 					batch.rename( positionParent, command.defaultFormat.id );
 				}
 			} );
 		}
+	}
+
+	/**
+	 * A set of formats as defined in `config.heading.formats`.
+	 *
+	 * @readonly
+	 * @protected
+	 * @type {Array.<module:heading/headingcommand~HeadingFormat>}
+	 */
+	get _formats() {
+		const editor = this.editor;
+
+		return editor.config.get( 'heading.formats' )
+			.map( format => {
+				// Translate `label`s in the config to with current locale using `#_formatLabels` because
+				// there's no way to use t() when the config is defined i.e. when the editor does not
+				// exist yet.
+				if ( this._formatLabels[ format.label ] ) {
+					// Clone the format to avoid altering the original `config.heading.formats`.
+					format = Object.assign( {}, format, {
+						label: this._formatLabels[ format.label ]
+					} );
+				}
+
+				return format;
+			} );
 	}
 }

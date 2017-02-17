@@ -98,23 +98,36 @@ describe( 'Heading', () => {
 
 			beforeEach( () => {
 				const editorElement = document.createElement( 'div' );
-
 				const spy = testUtils.sinon.stub( Locale.prototype, '_t' ).returns( 'foo' );
 
 				spy.withArgs( 'Paragraph' ).returns( 'Akapit' );
 				spy.withArgs( 'Heading 1' ).returns( 'Nagłówek 1' );
 				spy.withArgs( 'Heading 2' ).returns( 'Nagłówek 2' );
-				spy.withArgs( 'Heading 3' ).returns( 'Nagłówek 3' );
 
 				return ClassicTestEditor.create( editorElement, {
 					plugins: [ Heading ],
-					toolbar: [ 'heading' ]
+					toolbar: [ 'heading' ],
+					heading: {
+						formats: [
+							{ id: 'paragraph', element: 'p', label: 'Paragraph' },
+							{ id: 'heading1', element: 'h2', label: 'Heading 1' },
+							{ id: 'heading2', element: 'h3', label: 'Not automatically localized' }
+						]
+					}
 				} )
 				.then( newEditor => {
 					editor = newEditor;
 					dropdown = editor.ui.componentFactory.create( 'headings' );
 					command = editor.commands.get( 'heading' );
 				} );
+			} );
+
+			it( 'does not alter the original config', () => {
+				expect( editor.config.get( 'heading.formats' ) ).to.deep.equal( [
+					{ id: 'paragraph', element: 'p', label: 'Paragraph' },
+					{ id: 'heading1', element: 'h2', label: 'Heading 1' },
+					{ id: 'heading2', element: 'h3', label: 'Not automatically localized' }
+				] );
 			} );
 
 			it( 'works for the #buttonView', () => {
@@ -131,8 +144,7 @@ describe( 'Heading', () => {
 				expect( listView.items.map( item => item.label ) ).to.deep.equal( [
 					'Akapit',
 					'Nagłówek 1',
-					'Nagłówek 2',
-					'Nagłówek 3'
+					'Not automatically localized'
 				] );
 			} );
 		} );
