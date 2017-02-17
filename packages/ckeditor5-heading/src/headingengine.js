@@ -33,9 +33,9 @@ export default class HeadingEngine extends Plugin {
 		 *
 		 * @readonly
 		 * @protected
-		 * @member {Object} #_formatLabels
+		 * @member {Object} #_localizedFormatLabels
 		 */
-		const labels = this._formatLabels = {
+		const labels = this._localizedFormatLabels = {
 			'Paragraph': t( 'Paragraph' ),
 			'Heading 1': t( 'Heading 1' ),
 			'Heading 2': t( 'Heading 2' ),
@@ -130,13 +130,13 @@ export default class HeadingEngine extends Plugin {
 
 		return editor.config.get( 'heading.formats' )
 			.map( format => {
-				// Translate `label`s in the config to with current locale using `#_formatLabels` because
+				// Translate `label`s in the config to with current locale using `#_localizedFormatLabels` because
 				// there's no way to use t() when the config is defined i.e. when the editor does not
 				// exist yet.
-				if ( this._formatLabels[ format.label ] ) {
+				if ( this._localizedFormatLabels[ format.label ] ) {
 					// Clone the format to avoid altering the original `config.heading.formats`.
 					format = Object.assign( {}, format, {
-						label: this._formatLabels[ format.label ]
+						label: this._localizedFormatLabels[ format.label ]
 					} );
 				}
 
