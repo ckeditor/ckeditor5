@@ -35,6 +35,35 @@ describe( 'UIElement', () => {
 		} );
 	} );
 
+	describe( 'is()', () => {
+		let el;
+
+		before( () => {
+			el = new UIElement( 'span' );
+		} );
+
+		it( 'should return true for uiElement/element, also with correct name and element name', () => {
+			expect( el.is( 'uiElement' ) ).to.be.true;
+			expect( el.is( 'uiElement', 'span' ) ).to.be.true;
+			expect( el.is( 'element' ) ).to.be.true;
+			expect( el.is( 'element', 'span' ) ).to.be.true;
+			expect( el.is( 'span' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( el.is( 'uiElement', 'p' ) ).to.be.false;
+			expect( el.is( 'element', 'p' ) ).to.be.false;
+			expect( el.is( 'p' ) ).to.be.false;
+			expect( el.is( 'text' ) ).to.be.false;
+			expect( el.is( 'textProxy' ) ).to.be.false;
+			expect( el.is( 'containerElement' ) ).to.be.false;
+			expect( el.is( 'attributeElement' ) ).to.be.false;
+			expect( el.is( 'emptyElement' ) ).to.be.false;
+			expect( el.is( 'rootElement' ) ).to.be.false;
+			expect( el.is( 'documentFragment' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'appendChildren()', () => {
 		it( 'should throw when try to append new child element', () => {
 			expect( () => {

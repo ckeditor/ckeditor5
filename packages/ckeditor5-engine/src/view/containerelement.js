@@ -61,6 +61,17 @@ export default class ContainerElement extends Element {
 		 */
 		this.getFillerOffset = getFillerOffset;
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	is( type, name = null ) {
+		if ( !name ) {
+			return type == 'containerElement' || super.is( type );
+		} else {
+			return ( type == 'containerElement' && name == this.name ) || super.is( type, name );
+		}
+	}
 }
 
 // Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.

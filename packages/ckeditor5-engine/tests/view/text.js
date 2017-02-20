@@ -6,7 +6,7 @@
 import Node from '../../src/view/node';
 import Text from '../../src/view/text';
 
-describe( 'Element', () => {
+describe( 'Text', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element without attributes', () => {
 			const text = new Text( 'foo' );
@@ -14,6 +14,29 @@ describe( 'Element', () => {
 			expect( text ).to.be.an.instanceof( Node );
 			expect( text.data ).to.equal( 'foo' );
 			expect( text ).to.have.property( 'parent' ).that.is.null;
+		} );
+	} );
+
+	describe( 'is', () => {
+		let text;
+
+		before( () => {
+			text = new Text( 'foo' );
+		} );
+
+		it( 'should return true for text', () => {
+			expect( text.is( 'text' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( text.is( 'textProxy' ) ).to.be.false;
+			expect( text.is( 'element' ) ).to.be.false;
+			expect( text.is( 'containerElement' ) ).to.be.false;
+			expect( text.is( 'attributeElement' ) ).to.be.false;
+			expect( text.is( 'uiElement' ) ).to.be.false;
+			expect( text.is( 'emptyElement' ) ).to.be.false;
+			expect( text.is( 'rootElement' ) ).to.be.false;
+			expect( text.is( 'documentFragment' ) ).to.be.false;
 		} );
 	} );
 

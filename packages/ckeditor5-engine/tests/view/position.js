@@ -403,7 +403,7 @@ describe( 'Position', () => {
 
 	describe( 'compareWith', () => {
 		it( 'should return same if positions are same', () => {
-			const root = new Node();
+			const root = new Element();
 			const position = new Position( root, 0 );
 			const compared = new Position( root, 0 );
 
@@ -411,7 +411,7 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should return before if the position is before compared one', () => {
-			const root = new Node();
+			const root = new Element();
 			const position = new Position( root, 0 );
 			const compared = new Position( root, 1 );
 
@@ -419,7 +419,7 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should return after if the position is after compared one', () => {
-			const root = new Node();
+			const root = new Element();
 			const position = new Position( root, 4 );
 			const compared = new Position( root, 1 );
 
@@ -427,8 +427,8 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should return different if positions are in different roots', () => {
-			const root1 = new Node();
-			const root2 = new Node();
+			const root1 = new Element();
+			const root2 = new Element();
 			const position = new Position( root1, 4 );
 			const compared = new Position( root2, 1 );
 
@@ -436,7 +436,7 @@ describe( 'Position', () => {
 		} );
 
 		it( 'should return correct results if position is in document fragment', () => {
-			const node = new Node( 'name' );
+			const node = new Element( 'name' );
 			const docFrag = new DocumentFragment( [ node ] );
 			const position = new Position( docFrag, 0 );
 			const compared = new Position( docFrag, 1 );

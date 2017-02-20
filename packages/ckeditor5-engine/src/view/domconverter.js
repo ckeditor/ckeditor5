@@ -15,7 +15,6 @@ import ViewPosition from './position';
 import ViewRange from './range';
 import ViewSelection from './selection';
 import ViewDocumentFragment from './documentfragment';
-import ViewContainerElement from './containerelement';
 import ViewTreeWalker from './treewalker';
 import { BR_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, isInlineFiller, startsWithFiller, getDataWithoutFiller } from './filler';
 
@@ -160,7 +159,7 @@ export default class DomConverter {
 	 * @returns {Node|DocumentFragment} Converted node or DocumentFragment.
 	 */
 	viewToDom( viewNode, domDocument, options = {} ) {
-		if ( viewNode instanceof ViewText ) {
+		if ( viewNode.is( 'text' ) ) {
 			const textData = this._processDataFromViewText( viewNode );
 
 			return domDocument.createTextNode( textData );
@@ -171,7 +170,7 @@ export default class DomConverter {
 
 			let domElement;
 
-			if ( viewNode instanceof ViewDocumentFragment ) {
+			if ( viewNode.is( 'documentFragment' ) ) {
 				// Create DOM document fragment.
 				domElement = domDocument.createDocumentFragment();
 
@@ -262,7 +261,7 @@ export default class DomConverter {
 	viewPositionToDom( viewPosition ) {
 		const viewParent = viewPosition.parent;
 
-		if ( viewParent instanceof ViewText ) {
+		if ( viewParent.is( 'text' ) ) {
 			const domParent = this.getCorrespondingDomText( viewParent );
 
 			if ( !domParent ) {
@@ -882,11 +881,11 @@ export default class DomConverter {
 		} );
 
 		for ( let value of treeWalker ) {
-			if ( value.item instanceof ViewContainerElement ) {
+			if ( value.item.is( 'containerElement' ) ) {
 				// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
 				// text node in it's container element.
 				return null;
-			} else if ( value.item instanceof ViewText ) {
+			} else if ( value.item.is( 'text' ) ) {
 				// Found a text node in the same container element.
 				return value.item;
 			}

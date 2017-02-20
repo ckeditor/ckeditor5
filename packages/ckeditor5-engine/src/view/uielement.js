@@ -38,6 +38,17 @@ export default class UIElement extends Element {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	is( type, name = null ) {
+		if ( !name ) {
+			return type == 'uiElement' || super.is( type );
+		} else {
+			return ( type == 'uiElement' && name == this.name ) || super.is( type, name );
+		}
+	}
+
+	/**
 	 * Overrides {@link module:engine/view/element~Element#insertChildren} method.
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-uielement-cannot-add` to prevent adding any child nodes
 	 * to UIElement.

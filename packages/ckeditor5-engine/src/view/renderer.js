@@ -8,7 +8,6 @@
  */
 
 import ViewText from './text';
-import ViewElement from './element';
 import ViewPosition from './position';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller, isBlockFiller } from './filler';
 
@@ -269,7 +268,7 @@ export default class Renderer {
 	_getInlineFillerPosition() {
 		const firstPos = this.selection.getFirstPosition();
 
-		if ( firstPos.parent  instanceof ViewText ) {
+		if ( firstPos.parent.is( 'text' ) ) {
 			return ViewPosition.createBefore( this.selection.getFirstPosition().parent );
 		} else {
 			return firstPos;
@@ -356,7 +355,7 @@ export default class Renderer {
 			return false;
 		}
 
-		if ( !( selectionParent instanceof ViewElement ) ) {
+		if ( !( selectionParent.is( 'element' ) ) ) {
 			return false;
 		}
 

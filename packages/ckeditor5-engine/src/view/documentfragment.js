@@ -84,6 +84,28 @@ export default class DocumentFragment {
 	}
 
 	/**
+	 * Checks whether given view tree object is of given type.
+	 *
+	 * This method is useful when processing view tree objects that are of unknown type. For example, a function
+	 * may return {@link module:engine/view/documentfragment~DocumentFragment} or {@link module:engine/view/node~Node}
+	 * that can be either text node or element. This method can be used to check what kind of object is returned.
+	 *
+	 *		obj.is( 'node' ); // true for any node, false for document fragment
+	 *		obj.is( 'documentFragment' ); // true for document fragment, false for any node
+	 *		obj.is( 'element' ); // true for any element, false for text node or document fragment
+	 *		obj.is( 'element', 'p' ); // true only for element which name is 'p'
+	 *		obj.is( 'p' ); // shortcut for obj.is( 'element', 'p' )
+	 *		obj.is( 'text' ); // true for text node, false for element and document fragment
+	 *
+	 * @param {'node'|'element'|'containerElement'|'attributeElement'|'emptyElement'|'uiElement'|
+	 * 'rootElement'|'documentFragment'|'text'|'textProxy'} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'documentFragment';
+	}
+
+	/**
 	 * {@link module:engine/view/documentfragment~DocumentFragment#insertChildren Insert} a child node or a list of child nodes at the end
 	 * and sets the parent of these nodes to this fragment.
 	 *
