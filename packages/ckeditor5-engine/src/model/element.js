@@ -95,20 +95,16 @@ export default class Element extends Node {
 	 *		obj.is( 'text' ); // true for text node, false for element and document fragment
 	 *		obj.is( 'textProxy' ); // true for text proxy object
 	 *
-	 * @param {'node'|'element'|'rootElement'|'text'|'textProxy'|'documentFragment'} type
+	 * @param {'element'|'rootElement'|'text'|'textProxy'|'documentFragment'} type
 	 * @param {String} [name] Element name.
 	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
-		let matches = false;
-
 		if ( !name ) {
-			matches = type == 'element' || type == this.name;
+			return type == 'element' || type == this.name;
 		} else {
-			matches = type == 'element' && name == this.name;
+			return type == 'element' && name == this.name;
 		}
-
-		return matches || super.is( type );
 	}
 
 	/**

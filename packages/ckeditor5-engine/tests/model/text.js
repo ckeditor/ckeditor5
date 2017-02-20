@@ -40,9 +40,8 @@ describe( 'Text', () => {
 			text = new Text( 'bar' );
 		} );
 
-		it( 'should return true for text and node', () => {
+		it( 'should return true for text', () => {
 			expect( text.is( 'text' ) ).to.be.true;
-			expect( text.is( 'node' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {

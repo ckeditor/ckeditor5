@@ -57,7 +57,11 @@ export default class RootElement extends Element {
 	 * @inheritDoc
 	 */
 	is( type, name ) {
-		return type == 'rootElement' || super.is( type, name );
+		if ( !name ) {
+			return type == 'rootElement' || super.is( type );
+		} else {
+			return ( type == 'rootElement' && name == this.name ) || super.is( type, name );
+		}
 	}
 
 	/**

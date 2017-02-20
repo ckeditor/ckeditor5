@@ -67,7 +67,6 @@ describe( 'DocumentFragment', () => {
 		} );
 
 		it( 'should return false for other accept values', () => {
-			expect( frag.is( 'node' ) ).to.be.false;
 			expect( frag.is( 'text' ) ).to.be.false;
 			expect( frag.is( 'textProxy' ) ).to.be.false;
 			expect( frag.is( 'element' ) ).to.be.false;

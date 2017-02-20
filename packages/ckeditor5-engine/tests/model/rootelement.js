@@ -29,15 +29,18 @@ describe( 'RootElement', () => {
 			root = new RootElement( doc, '$root' );
 		} );
 
-		it( 'should return true for rootElement, element, element with same name, element name and node', () => {
-			expect( root.is( 'element' ) ).to.be.true;
+		it( 'should return true for rootElement, element, element with same name and element name', () => {
 			expect( root.is( 'element', '$root' ) ).to.be.true;
+			expect( root.is( 'element' ) ).to.be.true;
 			expect( root.is( '$root' ) ).to.be.true;
+			expect( root.is( 'rootElement', '$root' ) ).to.be.true;
 			expect( root.is( 'rootElement' ) ).to.be.true;
-			expect( root.is( 'node' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
+			expect( root.is( 'element', '$graveyard' ) ).to.be.false;
+			expect( root.is( 'rootElement', '$graveyard' ) ).to.be.false;
+			expect( root.is( '$graveyard' ) ).to.be.false;
 			expect( root.is( 'text' ) ).to.be.false;
 			expect( root.is( 'textProxy' ) ).to.be.false;
 			expect( root.is( 'documentFragment' ) ).to.be.false;

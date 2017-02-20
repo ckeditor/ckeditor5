@@ -186,7 +186,7 @@ export default class TextProxy {
 	 *		obj.is( 'text' ); // true for text node, false for element and document fragment
 	 *		obj.is( 'textProxy' ); // true for text proxy object
 	 *
-	 * @param {'node'|'element'|'rootElement'|'text'|'textProxy'|'documentFragment'} type
+	 * @param {'element'|'rootElement'|'text'|'textProxy'|'documentFragment'} type
 	 * @returns {Boolean}
 	 */
 	is( type ) {

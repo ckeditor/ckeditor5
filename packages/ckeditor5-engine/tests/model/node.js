@@ -134,20 +134,6 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'is', () => {
-		it( 'should return true for node', () => {
-			expect( node.is( 'node' ) ).to.be.true;
-		} );
-
-		it( 'should return false for other accept values', () => {
-			expect( node.is( 'text' ) ).to.be.false;
-			expect( node.is( 'textProxy' ) ).to.be.false;
-			expect( node.is( 'element' ) ).to.be.false;
-			expect( node.is( 'rootElement' ) ).to.be.false;
-			expect( node.is( 'documentFragment' ) ).to.be.false;
-		} );
-	} );
-
 	describe( 'clone', () => {
 		it( 'should return a copy of cloned node', () => {
 			let node = new Node( { foo: 'bar' } );

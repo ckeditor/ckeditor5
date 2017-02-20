@@ -45,14 +45,15 @@ describe( 'Element', () => {
 			element = new Element( 'paragraph' );
 		} );
 
-		it( 'should return true for element, element with same name, element name and node', () => {
+		it( 'should return true for element, element with same name and element name', () => {
 			expect( element.is( 'element' ) ).to.be.true;
 			expect( element.is( 'element', 'paragraph' ) ).to.be.true;
 			expect( element.is( 'paragraph' ) ).to.be.true;
-			expect( element.is( 'node' ) ).to.be.true;
 		} );
 
 		it( 'should return false for other accept values', () => {
+			expect( element.is( 'element', 'image' ) ).to.be.false;
+			expect( element.is( 'image' ) ).to.be.false;
 			expect( element.is( 'text' ) ).to.be.false;
 			expect( element.is( 'textProxy' ) ).to.be.false;
 			expect( element.is( 'documentFragment' ) ).to.be.false;
