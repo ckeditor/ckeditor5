@@ -543,6 +543,49 @@ describe( 'DataController', () => {
 		} );
 	} );
 
+	describe( 'integration with limit elements', () => {
+		doc = new Document();
+		doc.createRoot();
+		dataController = new DataController( doc );
+
+		const schema = doc.schema;
+
+		schema.registerItem( 'limit' );
+		schema.allow( { name: 'limit', inside: '$root' } );
+		schema.allow( { name: '$text', inside: 'limit' } );
+		schema.limits.add( 'limit' );
+
+		schema.registerItem( 'disallowedElement' );
+		schema.allow( { name: 'disallowedElement', inside: '$clipboardHolder' } );
+
+		it( 'should insert limit element', () => {
+			insertHelper( '<limit></limit>' );
+
+			expect( getData( doc ) ).to.equal( '<limit>[]</limit>' );
+		} );
+
+		it( 'should insert text into limit element', () => {
+			setData( doc, '<limit>[]</limit>' );
+			insertHelper( 'foo bar' );
+
+			expect( getData( doc ) ).to.equal( '<limit>foo bar[]</limit>' );
+		} );
+
+		it( 'should insert text into limit element', () => {
+			setData( doc, '<limit>foo[</limit><limit>]bar</limit>' );
+			insertHelper( 'baz' );
+
+			expect( getData( doc ) ).to.equal( '<limit>foobaz[]bar</limit>' );
+		} );
+
+		it( 'should not insert disallowed elements inside limit elements', () => {
+			setData( doc, '<limit>[]</limit>' );
+			insertHelper( '<disallowedElement></disallowedElement>' );
+
+			expect( getData( doc ) ).to.equal( '<limit>[]</limit>' );
+		} );
+	} );
+
 	// @param {module:engine/model/item~Item|String} content
 	function insertHelper( content ) {
 		if ( typeof content == 'string' ) {

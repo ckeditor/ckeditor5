@@ -400,6 +400,45 @@ describe( 'DataController', () => {
 			} );
 		} );
 
+		describe( 'integration with limit elements', () => {
+			beforeEach( () => {
+				doc = new Document();
+				doc.createRoot();
+
+				const schema = doc.schema;
+
+				schema.registerItem( 'limit' );
+				schema.allow( { name: 'limit', inside: '$root' } );
+				schema.allow( { name: '$text', inside: 'limit' } );
+				schema.limits.add( 'limit' );
+			} );
+
+			test(
+				'should delete inside limit element',
+				'<limit>foo [bar] baz</limit>',
+				'<limit>foo [] baz</limit>'
+			);
+
+			test(
+				'should delete whole limit element',
+				'[<limit>foo bar</limit>]',
+				'[]'
+			);
+
+			test(
+				'should delete from two limit elements',
+				'<limit>foo [bar</limit><limit>baz] qux</limit>',
+				'<limit>foo []</limit><limit> qux</limit>'
+			);
+
+			test(
+				'should delete from two limit elements - merge',
+				'<limit>foo [bar</limit><limit>baz] qux</limit>',
+				'<limit>foo [] qux</limit>',
+				{ merge: true }
+			);
+		} );
+
 		function test( title, input, output, options ) {
 			it( title, () => {
 				setData( doc, input );
