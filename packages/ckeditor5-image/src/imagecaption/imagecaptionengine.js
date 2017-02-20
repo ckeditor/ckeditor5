@@ -51,6 +51,7 @@ export default class ImageCaptionEngine extends Plugin {
 		schema.registerItem( 'caption' );
 		schema.allow( { name: '$inline', inside: 'caption' } );
 		schema.allow( { name: 'caption', inside: 'image' } );
+		schema.limits.add( 'caption' );
 
 		// Add caption element to each image inserted without it.
 		document.on( 'change', insertMissingCaptionElement );
