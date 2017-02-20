@@ -13,7 +13,6 @@ import ModelRange from '../model/range';
 import ViewPosition from '../view/position';
 import ViewRange from '../view/range';
 import ViewText from '../view/text';
-import ViewUIElement from '../view/uielement';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -285,7 +284,7 @@ export default class Mapper {
 		// viewBlock == viewParent, so we need to calculate the offset in the parent element.
 
 		// If the position is a text it is simple ("ba|r" -> 2).
-		if ( viewParent instanceof ViewText ) {
+		if ( viewParent.is( 'text' ) ) {
 			return viewOffset;
 		}
 
@@ -340,9 +339,9 @@ export default class Mapper {
 			return callback( viewNode );
 		} else if ( this._viewToModelMapping.has( viewNode ) ) {
 			return 1;
-		} else if ( viewNode instanceof ViewText ) {
+		} else if ( viewNode.is( 'text' ) ) {
 			return viewNode.data.length;
-		} else if ( viewNode instanceof ViewUIElement ) {
+		} else if ( viewNode.is( 'uiElement' ) ) {
 			return 0;
 		} else {
 			let len = 0;
@@ -390,7 +389,7 @@ export default class Mapper {
 		let viewOffset = 0;
 
 		// In the text node it is simple: offset in the model equals offset in the text.
-		if ( viewParent instanceof ViewText ) {
+		if ( viewParent.is( 'text' ) ) {
 			return new ViewPosition( viewParent, expectedOffset );
 		}
 
