@@ -113,9 +113,13 @@ export function insertUIElement( elementCreator ) {
 			return;
 		}
 
-		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+		const mapper = conversionApi.mapper;
 
-		viewWriter.insert( viewPosition, viewElement );
+		viewWriter.insert( mapper.toViewPosition( data.range.start ), viewElement );
+
+		if ( !data.range.isCollapsed ) {
+			viewWriter.insert( mapper.toViewPosition( data.range.end ), viewElement.clone( true ) );
+		}
 	};
 }
 
