@@ -60,6 +60,7 @@ export function viewToModelImage() {
 		}
 
 		// Convert children of converted view element and append them to `modelImage`.
+		// TODO https://github.com/ckeditor/ckeditor5-engine/issues/736.
 		data.context.push( modelImage );
 		const modelChildren = conversionApi.convertChildren( viewFigureElement, consumable, data );
 		const insertPosition = ModelPosition.createAt( modelImage, 'end' );
