@@ -544,19 +544,21 @@ describe( 'DataController', () => {
 	} );
 
 	describe( 'integration with limit elements', () => {
-		doc = new Document();
-		doc.createRoot();
-		dataController = new DataController( doc );
+		beforeEach( () => {
+			doc = new Document();
+			doc.createRoot();
+			dataController = new DataController( doc );
 
-		const schema = doc.schema;
+			const schema = doc.schema;
 
-		schema.registerItem( 'limit' );
-		schema.allow( { name: 'limit', inside: '$root' } );
-		schema.allow( { name: '$text', inside: 'limit' } );
-		schema.limits.add( 'limit' );
+			schema.registerItem( 'limit' );
+			schema.allow( { name: 'limit', inside: '$root' } );
+			schema.allow( { name: '$text', inside: 'limit' } );
+			schema.limits.add( 'limit' );
 
-		schema.registerItem( 'disallowedElement' );
-		schema.allow( { name: 'disallowedElement', inside: '$clipboardHolder' } );
+			schema.registerItem( 'disallowedElement' );
+			schema.allow( { name: 'disallowedElement', inside: '$clipboardHolder' } );
+		} );
 
 		it( 'should insert limit element', () => {
 			insertHelper( '<limit></limit>' );
