@@ -42,7 +42,7 @@ describe( 'ImageCaptionEngine', () => {
 		expect( editor.plugins.get( ImageCaptionEngine ) ).to.be.instanceOf( ImageCaptionEngine );
 	} );
 
-	it.only( 'should set proper schema rules', () => {
+	it( 'should set proper schema rules', () => {
 		expect( document.schema.check( { name: 'caption', iniside: 'image' } ) ).to.be.true;
 		expect( document.schema.check( { name: '$inline', inside: 'caption' } ) ).to.be.true;
 		expect( document.schema.limits.has( 'caption' ) );
