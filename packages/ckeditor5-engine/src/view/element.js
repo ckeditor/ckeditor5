@@ -137,7 +137,13 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Checks whether given view tree object is of given type.
+	 *
+	 * Read more in {@link module:engine/view/node~Node#is}.
+	 *
+	 * @param {String} type
+	 * @param {String} [name] Element name.
+	 * @returns {Boolean}
 	 */
 	is( type, name = null ) {
 		if ( !name ) {
