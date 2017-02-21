@@ -71,8 +71,8 @@ export default class UnwrapDelta extends Delta {
 }
 
 /**
- * Unwraps given element, that is moves all it's children before it and then removes it. Throws
- * error if you try to unwrap an element that does not have a parent.
+ * Unwraps children of the given element – all its children are moved before it and then the element is removed.
+ * Throws error if you try to unwrap an element which does not have a parent.
  *
  * @chainable
  * @method module:engine/model/batch~Batch#unwrap
@@ -81,11 +81,11 @@ export default class UnwrapDelta extends Delta {
 register( 'unwrap', function( element ) {
 	if ( element.parent === null ) {
 		/**
-		 * Trying to unwrap an element that has no parent.
+		 * Trying to unwrap an element which has no parent.
 		 *
 		 * @error batch-unwrap-element-no-parent
 		 */
-		throw new CKEditorError( 'batch-unwrap-element-no-parent: Trying to unwrap an element that has no parent.' );
+		throw new CKEditorError( 'batch-unwrap-element-no-parent: Trying to unwrap an element which has no parent.' );
 	}
 
 	const delta = new UnwrapDelta();

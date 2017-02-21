@@ -13,7 +13,7 @@ import Selection from '../../src/model/selection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
-import { parse } from '../../src/dev-utils/model';
+import { parse, setData } from '../../src/dev-utils/model';
 import Schema from '../../src/model/schema';
 
 testUtils.createSinonSandbox();
@@ -105,7 +105,36 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'addRange', () => {
+	describe( 'focus', () => {
+		let r3;
+
+		beforeEach( () => {
+			const r1 = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+			const r2 = Range.createFromParentsAndOffsets( root, 4, root, 6 );
+			r3 = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+			selection.addRange( r1 );
+			selection.addRange( r2 );
+		} );
+
+		it( 'should return correct focus when last added range is not backward one', () => {
+			selection.addRange( r3 );
+
+			expect( selection.focus.isEqual( r3.end ) ).to.be.true;
+		} );
+
+		it( 'should return correct focus when last added range is backward one', () => {
+			selection.addRange( r3, true );
+
+			expect( selection.focus.isEqual( r3.start ) ).to.be.true;
+		} );
+
+		it( 'should return null if no ranges in selection', () => {
+			selection.removeAllRanges();
+			expect( selection.focus ).to.be.null;
+		} );
+	} );
+
+	describe( 'addRange()', () => {
 		it( 'should copy added ranges and store multiple ranges', () => {
 			selection.addRange( liveRange );
 			selection.addRange( range );
@@ -183,7 +212,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'collapse', () => {
+	describe( 'collapse()', () => {
 		it( 'fires change:range', () => {
 			const spy = sinon.spy();
 
@@ -257,35 +286,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'focus', () => {
-		let r3;
-		beforeEach( () => {
-			const r1 = Range.createFromParentsAndOffsets( root, 2, root, 4 );
-			const r2 = Range.createFromParentsAndOffsets( root, 4, root, 6 );
-			r3 = Range.createFromParentsAndOffsets( root, 1, root, 2 );
-			selection.addRange( r1 );
-			selection.addRange( r2 );
-		} );
-
-		it( 'should return correct focus when last added range is not backward one', () => {
-			selection.addRange( r3 );
-
-			expect( selection.focus.isEqual( r3.end ) ).to.be.true;
-		} );
-
-		it( 'should return correct focus when last added range is backward one', () => {
-			selection.addRange( r3, true );
-
-			expect( selection.focus.isEqual( r3.start ) ).to.be.true;
-		} );
-
-		it( 'should return null if no ranges in selection', () => {
-			selection.removeAllRanges();
-			expect( selection.focus ).to.be.null;
-		} );
-	} );
-
-	describe( 'setFocus', () => {
+	describe( 'setFocus()', () => {
 		it( 'keeps all existing ranges and fires no change:range when no modifications needed', () => {
 			selection.addRange( range );
 			selection.addRange( liveRange );
@@ -456,7 +457,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'removeAllRanges', () => {
+	describe( 'removeAllRanges()', () => {
 		let spy;
 
 		it( 'should remove all stored ranges', () => {
@@ -490,7 +491,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setRanges', () => {
+	describe( 'setRanges()', () => {
 		let newRanges, spy, oldRanges;
 
 		beforeEach( () => {
@@ -552,7 +553,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setTo', () => {
+	describe( 'setTo()', () => {
 		it( 'should set selection to be same as given selection, using setRanges method', () => {
 			const spy = sinon.spy( selection, 'setRanges' );
 
@@ -569,7 +570,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'getFirstRange', () => {
+	describe( 'getFirstRange()', () => {
 		it( 'should return null if no ranges were added', () => {
 			expect( selection.getFirstRange() ).to.be.null;
 		} );
@@ -591,7 +592,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'getFirstPosition', () => {
+	describe( 'getFirstPosition()', () => {
 		it( 'should return null if no ranges were added', () => {
 			expect( selection.getFirstPosition() ).to.be.null;
 		} );
@@ -612,7 +613,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'getLastRange', () => {
+	describe( 'getLastRange()', () => {
 		it( 'should return null if no ranges were added', () => {
 			expect( selection.getLastRange() ).to.be.null;
 		} );
@@ -629,7 +630,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'getLastPosition', () => {
+	describe( 'getLastPosition()', () => {
 		it( 'should return null if no ranges were added', () => {
 			expect( selection.getLastPosition() ).to.be.null;
 		} );
@@ -645,7 +646,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'isEqual', () => {
+	describe( 'isEqual()', () => {
 		it( 'should return true if selections equal', () => {
 			selection.addRange( range1 );
 			selection.addRange( range2 );
@@ -703,7 +704,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'collapseToStart', () => {
+	describe( 'collapseToStart()', () => {
 		it( 'should collapse to start position and fire change event', () => {
 			selection.setRanges( [ range2, range1, range3 ] );
 
@@ -739,7 +740,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'collapseToEnd', () => {
+	describe( 'collapseToEnd()', () => {
 		it( 'should collapse to start position and fire change:range event', () => {
 			selection.setRanges( [ range2, range3, range1 ] );
 
@@ -775,7 +776,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'createFromSelection', () => {
+	describe( 'createFromSelection()', () => {
 		it( 'should return a Selection instance with same ranges and direction as given selection', () => {
 			selection.addRange( liveRange );
 			selection.addRange( range, true );
@@ -795,6 +796,175 @@ describe( 'Selection', () => {
 		} );
 	} );
 
+	describe( 'getSelectedElement()', () => {
+		let schema;
+
+		beforeEach( () => {
+			schema = new Schema();
+			schema.registerItem( 'p', '$block' );
+		} );
+
+		it( 'should return selected element', () => {
+			const { selection, model } = parse( '<p>foo</p>[<p>bar</p>]<p>baz</p>', schema );
+			const p = model.getChild( 1 );
+
+			expect( selection.getSelectedElement() ).to.equal( p );
+		} );
+
+		it( 'should return null if there is more than one range', () => {
+			const { selection } = parse( '[<p>foo</p>][<p>bar</p>]<p>baz</p>', schema );
+
+			expect( selection.getSelectedElement() ).to.be.null;
+		} );
+
+		it( 'should return null if there is no selection', () => {
+			expect( selection.getSelectedElement() ).to.be.null;
+		} );
+
+		it( 'should return null if selection is not over single element #1', () => {
+			const { selection } = parse( '<p>foo</p>[<p>bar</p><p>baz}</p>', schema );
+
+			expect( selection.getSelectedElement() ).to.be.null;
+		} );
+
+		it( 'should return null if selection is not over single element #2', () => {
+			const { selection } = parse( '<p>{bar}</p>', schema );
+
+			expect( selection.getSelectedElement() ).to.be.null;
+		} );
+	} );
+
+	describe( 'getSelectedBlocks()', () => {
+		beforeEach( () => {
+			doc.schema.registerItem( 'p', '$block' );
+			doc.schema.registerItem( 'h', '$block' );
+
+			doc.schema.registerItem( 'blockquote' );
+			doc.schema.allow( { name: 'blockquote', inside: '$root' } );
+			doc.schema.allow( { name: '$block', inside: 'blockquote' } );
+
+			doc.schema.registerItem( 'image' );
+			doc.schema.allow( { name: 'image', inside: '$root' } );
+			doc.schema.allow( { name: '$text', inside: 'image' } );
+
+			// Special block which can contain another blocks.
+			doc.schema.registerItem( 'nestedBlock', '$block' );
+			doc.schema.allow( { name: 'nestedBlock', inside: '$block' } );
+		} );
+
+		it( 'returns an iterator', () => {
+			setData( doc, '<p>a</p><p>[]b</p><p>c</p>' );
+
+			expect( doc.selection.getSelectedBlocks().next ).to.be.a( 'function' );
+		} );
+
+		it( 'returns block for a collapsed selection', () => {
+			setData( doc, '<p>a</p><p>[]b</p><p>c</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b' ] );
+		} );
+
+		it( 'returns block for a non collapsed selection', () => {
+			setData( doc, '<p>a</p><p>[b]</p><p>c</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b' ] );
+		} );
+
+		it( 'returns two blocks for a non collapsed selection', () => {
+			setData( doc, '<p>a</p><h>[b</h><p>c]</p><p>d</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'c' ] );
+		} );
+
+		// This isn't a behaviour that we like (https://github.com/ckeditor/ckeditor5-heading/issues/9) but I don't
+		// want to work on this issue now, when porting this method from the list/heading features.
+		// It has to be covered separately.
+		it( 'returns two blocks for a non collapsed selection if only end of selection is touching a block', () => {
+			setData( doc, '<p>a</p><h>b[</h><p>]c</p><p>d</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'c' ] );
+		} );
+
+		it( 'returns proper block for a multi-range selection', () => {
+			setData( doc, '<p>a</p><h>[b</h><p>c]</p><p>d</p><p>[e]</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'c', 'e' ] );
+		} );
+
+		it( 'does not return a block twice if two ranges are anchored in it', () => {
+			setData( doc, '<p>[a]b[c]</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'abc' ] );
+		} );
+
+		it( 'returns only blocks', () => {
+			setData( doc, '<p>[a</p><image>b</image><p>c]</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'c' ] );
+		} );
+
+		it( 'gets deeper into the tree', () => {
+			setData( doc, '<p>[a</p><blockquote><p>b</p><p>c</p></blockquote><p>d]</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
+		} );
+
+		it( 'gets deeper into the tree (end deeper)', () => {
+			setData( doc, '<p>[a</p><blockquote><p>b]</p><p>c</p></blockquote><p>d</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'a', 'b' ] );
+		} );
+
+		it( 'gets deeper into the tree (start deeper)', () => {
+			setData( doc, '<p>a</p><blockquote><p>b</p><p>[c</p></blockquote><p>d]</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'c', 'd' ] );
+		} );
+
+		it( 'returns an empty array if none of the selected elements is a block', () => {
+			setData( doc, '<p>a</p><image>[a</image><image>b]</image><p>b</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.be.empty;
+		} );
+
+		it( 'returns an empty array if the selected element is not a block', () => {
+			setData( doc, '<p>a</p><image>[]a</image><p>b</p>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.be.empty;
+		} );
+
+		// Super edge case – should not happen (blocks should never be nested),
+		// but since the code handles it already it's worth testing.
+		it( 'returns only the lowest block if blocks are nested', () => {
+			setData( doc, '<nestedBlock>a<nestedBlock>[]b</nestedBlock></nestedBlock>' );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b' ] );
+		} );
+
+		// Like above but trickier.
+		it( 'returns only the lowest block if blocks are nested', () => {
+			setData(
+				doc,
+				'<nestedBlock>a<nestedBlock>[b</nestedBlock></nestedBlock>' +
+				'<nestedBlock>c<nestedBlock>d]</nestedBlock></nestedBlock>'
+			);
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'b', 'd' ] );
+		} );
+
+		it( 'returns nothing if directly in a root', () => {
+			doc.createRoot( 'p', 'inlineOnlyRoot' );
+
+			setData( doc, 'a[b]c', { rootName: 'inlineOnlyRoot' } );
+
+			expect( toText( doc.selection.getSelectedBlocks() ) ).to.be.empty;
+		} );
+
+		function toText( elements ) {
+			return Array.from( elements ).map( el => el.getChild( 0 ).data );
+		}
+	} );
+
 	describe( 'attributes interface', () => {
 		let rangeInFullP;
 
@@ -807,7 +977,7 @@ describe( 'Selection', () => {
 			rangeInFullP = new Range( new Position( root, [ 0, 4 ] ), new Position( root, [ 0, 4 ] ) );
 		} );
 
-		describe( 'setAttribute', () => {
+		describe( 'setAttribute()', () => {
 			it( 'should set given attribute on the selection', () => {
 				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
@@ -836,13 +1006,13 @@ describe( 'Selection', () => {
 			} );
 		} );
 
-		describe( 'getAttribute', () => {
+		describe( 'getAttribute()', () => {
 			it( 'should return undefined if element does not contain given attribute', () => {
 				expect( selection.getAttribute( 'abc' ) ).to.be.undefined;
 			} );
 		} );
 
-		describe( 'getAttributes', () => {
+		describe( 'getAttributes()', () => {
 			it( 'should return an iterator that iterates over all attributes set on selection', () => {
 				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
@@ -854,7 +1024,7 @@ describe( 'Selection', () => {
 			} );
 		} );
 
-		describe( 'getAttributeKeys', () => {
+		describe( 'getAttributeKeys()', () => {
 			it( 'should return iterator that iterates over all attribute keys set on selection', () => {
 				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
@@ -866,7 +1036,7 @@ describe( 'Selection', () => {
 			} );
 		} );
 
-		describe( 'hasAttribute', () => {
+		describe( 'hasAttribute()', () => {
 			it( 'should return true if element contains attribute with given key', () => {
 				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
@@ -879,7 +1049,7 @@ describe( 'Selection', () => {
 			} );
 		} );
 
-		describe( 'clearAttributes', () => {
+		describe( 'clearAttributes()', () => {
 			it( 'should remove all attributes from the element', () => {
 				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
@@ -912,7 +1082,7 @@ describe( 'Selection', () => {
 			} );
 		} );
 
-		describe( 'removeAttribute', () => {
+		describe( 'removeAttribute()', () => {
 			it( 'should remove attribute', () => {
 				selection.setRanges( [ rangeInFullP ] );
 				selection.setAttribute( 'foo', 'bar' );
@@ -942,7 +1112,7 @@ describe( 'Selection', () => {
 			} );
 		} );
 
-		describe( 'setAttributesTo', () => {
+		describe( 'setAttributesTo()', () => {
 			it( 'should remove all attributes set on element and set the given ones', () => {
 				selection.setAttribute( 'abc', 'xyz' );
 				selection.setAttributesTo( { foo: 'bar' } );
@@ -984,44 +1154,6 @@ describe( 'Selection', () => {
 
 				expect( spy.called ).to.be.false;
 			} );
-		} );
-	} );
-
-	describe( 'getSelectedElement', () => {
-		let schema;
-
-		beforeEach( () => {
-			schema = new Schema();
-			schema.registerItem( 'p', '$block' );
-		} );
-
-		it( 'should return selected element', () => {
-			const { selection, model } = parse( '<p>foo</p>[<p>bar</p>]<p>baz</p>', schema );
-			const p = model.getChild( 1 );
-
-			expect( selection.getSelectedElement() ).to.equal( p );
-		} );
-
-		it( 'should return null if there is more than one range', () => {
-			const { selection } = parse( '[<p>foo</p>][<p>bar</p>]<p>baz</p>', schema );
-
-			expect( selection.getSelectedElement() ).to.be.null;
-		} );
-
-		it( 'should return null if there is no selection', () => {
-			expect( selection.getSelectedElement() ).to.be.null;
-		} );
-
-		it( 'should return null if selection is not over single element #1', () => {
-			const { selection } = parse( '<p>foo</p>[<p>bar</p><p>baz}</p>', schema );
-
-			expect( selection.getSelectedElement() ).to.be.null;
-		} );
-
-		it( 'should return null if selection is not over single element #2', () => {
-			const { selection } = parse( '<p>{bar}</p>', schema );
-
-			expect( selection.getSelectedElement() ).to.be.null;
 		} );
 	} );
 } );
