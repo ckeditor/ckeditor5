@@ -7,13 +7,8 @@
  * @module engine/view/range
  */
 
-import Text from './text';
 import Position from './position';
 import TreeWalker from './treewalker';
-
-import AttributeElement from './attributeelement';
-import ContainerElement from './containerelement';
-import UIElement from './uielement';
 
 /**
  * Tree view range.
@@ -132,11 +127,11 @@ export default class Range {
 		let nodeBeforeEnd = end.nodeBefore;
 
 		// Because TreeWalker prefers positions next to text node, we need to move them manually into these text nodes.
-		if ( nodeAfterStart instanceof Text ) {
+		if ( nodeAfterStart && nodeAfterStart.is( 'text' ) ) {
 			start = new Position( nodeAfterStart, 0 );
 		}
 
-		if ( nodeBeforeEnd instanceof Text ) {
+		if ( nodeBeforeEnd && nodeBeforeEnd.is( 'text' ) ) {
 			end = new Position( nodeBeforeEnd, nodeBeforeEnd.data.length );
 		}
 
@@ -414,11 +409,11 @@ export default class Range {
 
 // Function used by getEnlagred and getShrinked methods.
 function enlargeShrinkStartSkip( value ) {
-	if ( value.item instanceof AttributeElement || value.item instanceof UIElement ) {
+	if ( value.item.is( 'attributeElement' ) || value.item.is( 'uiElement' ) ) {
 		return true;
 	}
 
-	if ( value.item instanceof ContainerElement && value.type == 'elementStart' ) {
+	if ( value.item.is( 'containerElement' ) && value.type == 'elementStart' ) {
 		return true;
 	}
 
@@ -427,11 +422,11 @@ function enlargeShrinkStartSkip( value ) {
 
 // Function used by getEnlagred and getShrinked methods.
 function enlargeShrinkEndSkip( value ) {
-	if ( value.item instanceof AttributeElement || value.item instanceof UIElement ) {
+	if ( value.item.is( 'attributeElement' ) || value.item.is( 'uiElement' ) ) {
 		return true;
 	}
 
-	if ( value.item instanceof ContainerElement && value.type == 'elementEnd' ) {
+	if ( value.item.is( 'containerElement' ) && value.type == 'elementEnd' ) {
 		return true;
 	}
 

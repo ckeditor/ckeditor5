@@ -8,8 +8,6 @@
  */
 
 import ViewConsumable from './viewconsumable';
-import ViewElement from '../view/element';
-import ViewText from '../view/text';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
@@ -150,9 +148,9 @@ export default class ViewConversionDispatcher {
 			output: null
 		} );
 
-		if ( input instanceof ViewElement ) {
+		if ( input.is( 'element' ) ) {
 			this.fire( 'element:' + input.name, data, consumable, this.conversionApi );
-		} else if ( input instanceof ViewText ) {
+		} else if ( input.is( 'text' ) ) {
 			this.fire( 'text', data, consumable, this.conversionApi );
 		} else {
 			this.fire( 'documentFragment', data, consumable, this.conversionApi );

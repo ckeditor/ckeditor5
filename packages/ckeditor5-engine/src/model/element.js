@@ -81,6 +81,23 @@ export default class Element extends Node {
 	}
 
 	/**
+	 * Checks whether given model tree object is of given type.
+	 *
+	 * Read more in {@link module:engine/model/node~Node#is}.
+	 *
+	 * @param {String} type
+	 * @param {String} [name] Element name.
+	 * @returns {Boolean}
+	 */
+	is( type, name = null ) {
+		if ( !name ) {
+			return type == 'element' || type == this.name;
+		} else {
+			return type == 'element' && name == this.name;
+		}
+	}
+
+	/**
 	 * Gets the child at the given index.
 	 *
 	 * @param {Number} index Index of child.

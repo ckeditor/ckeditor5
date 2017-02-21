@@ -172,6 +172,18 @@ export default class TextProxy {
 	}
 
 	/**
+	 * Checks whether given model tree object is of given type.
+	 *
+	 * Read more in {@link module:engine/model/node~Node#is}.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'textProxy';
+	}
+
+	/**
 	 * Gets path to this text proxy.
 	 *
 	 * @see module:engine/model/node~Node#getPath

@@ -55,6 +55,25 @@ describe( 'DocumentFragment', () => {
 		} );
 	} );
 
+	describe( 'is', () => {
+		let frag;
+
+		before( () => {
+			frag = new DocumentFragment();
+		} );
+
+		it( 'should return true for documentFragment', () => {
+			expect( frag.is( 'documentFragment' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( frag.is( 'text' ) ).to.be.false;
+			expect( frag.is( 'textProxy' ) ).to.be.false;
+			expect( frag.is( 'element' ) ).to.be.false;
+			expect( frag.is( 'rootElement' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'isEmpty', () => {
 		it( 'should return true if document fragment has no children', () => {
 			let frag = new DocumentFragment();

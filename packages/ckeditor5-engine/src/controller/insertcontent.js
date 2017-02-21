@@ -9,7 +9,6 @@
 
 import Position from '../model/position';
 import LivePosition from '../model/liveposition';
-import Text from '../model/text';
 import Element from '../model/element';
 import Range from '../model/range';
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -218,7 +217,7 @@ class Insertion {
 	 */
 	_handleDisallowedNode( node, context ) {
 		// Try inserting its children (strip the parent).
-		if ( node instanceof Element ) {
+		if ( node.is( 'element' ) ) {
 			this.handleNodes( node.getChildren(), context );
 		}
 		// Try autoparagraphing.
@@ -413,7 +412,7 @@ class Insertion {
 	 * @param {module:engine/model/node~Node} node The node.
 	 */
 	_getNodeSchemaName( node ) {
-		if ( node instanceof Text ) {
+		if ( node.is( 'text' ) ) {
 			return '$text';
 		}
 

@@ -137,6 +137,23 @@ export default class Element extends Node {
 	}
 
 	/**
+	 * Checks whether given view tree object is of given type.
+	 *
+	 * Read more in {@link module:engine/view/node~Node#is}.
+	 *
+	 * @param {String} type
+	 * @param {String} [name] Element name.
+	 * @returns {Boolean}
+	 */
+	is( type, name = null ) {
+		if ( !name ) {
+			return type == 'element' || type == this.name;
+		} else {
+			return type == 'element' && name == this.name;
+		}
+	}
+
+	/**
 	 * Clones provided element.
 	 *
 	 * @param {Boolean} deep If set to `true` clones element and all its children recursively. When set to `false`,

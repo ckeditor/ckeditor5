@@ -84,6 +84,18 @@ export default class DocumentFragment {
 	}
 
 	/**
+	 * Checks whether given view tree object is of given type.
+	 *
+	 * Read more in {@link module:engine/view/node~Node#is}.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'documentFragment';
+	}
+
+	/**
 	 * {@link module:engine/view/documentfragment~DocumentFragment#insertChildren Insert} a child node or a list of child nodes at the end
 	 * and sets the parent of these nodes to this fragment.
 	 *

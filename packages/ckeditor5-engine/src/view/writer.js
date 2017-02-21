@@ -12,9 +12,7 @@ import ContainerElement from './containerelement';
 import AttributeElement from './attributeelement';
 import EmptyElement from './emptyelement';
 import UIElement from './uielement';
-import Element from './element';
 import Text from './text';
-import TextProxy from './textproxy';
 import Range from './range';
 import TreeWalker from './treewalker';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -121,7 +119,7 @@ export function breakAttributes( positionOrRange ) {
 export function breakContainer( position ) {
 	const element = position.parent;
 
-	if ( !( element instanceof ContainerElement ) ) {
+	if ( !( element.is( 'containerElement' ) ) ) {
 		/**
 		 * Trying to break an element which is not a container element.
 		 *
@@ -187,12 +185,12 @@ export function mergeAttributes( position ) {
 	const positionParent = position.parent;
 
 	// When inside text node - nothing to merge.
-	if ( positionParent instanceof Text ) {
+	if ( positionParent.is( 'text' ) ) {
 		return position;
 	}
 
 	// When inside empty attribute - remove it.
-	if ( positionParent instanceof AttributeElement && positionParent.childCount === 0 ) {
+	if ( positionParent.is( 'attributeElement' ) && positionParent.childCount === 0 ) {
 		const parent = positionParent.parent;
 		const offset = positionParent.index;
 		positionParent.remove();
@@ -208,28 +206,12 @@ export function mergeAttributes( position ) {
 		return position;
 	}
 
-	// When one or both nodes are containers - no attributes to merge.
-	if ( ( nodeBefore instanceof ContainerElement ) || ( nodeAfter instanceof ContainerElement ) ) {
-		return position;
-	}
-
-	// When one or both nodes are EmptyElements - no attributes to merge.
-	if ( ( nodeBefore instanceof EmptyElement ) || ( nodeAfter instanceof EmptyElement ) ) {
-		return position;
-	}
-
-	// When one or both nodes are UIElements - no attributes to merge.
-	if ( ( nodeBefore instanceof UIElement ) || ( nodeAfter instanceof UIElement ) ) {
-		return position;
-	}
-
 	// When position is between two text nodes.
-	if ( nodeBefore instanceof Text && nodeAfter instanceof Text ) {
+	if ( nodeBefore.is( 'text' ) && nodeAfter.is( 'text' ) ) {
 		return mergeTextNodes( nodeBefore, nodeAfter );
 	}
-
-	// When selection is between same nodes.
-	else if ( nodeBefore.isSimilar( nodeAfter ) ) {
+	// When selection is between two same attribute elements.
+	else if ( nodeBefore.is( 'attributeElement' ) && nodeAfter.is( 'attributeElement' ) && nodeBefore.isSimilar( nodeAfter ) ) {
 		// Move all children nodes from node placed after selection and remove that node.
 		const count = nodeBefore.childCount;
 		nodeBefore.appendChildren( nodeAfter.getChildren() );
@@ -266,7 +248,7 @@ export function mergeContainers( position ) {
 	const prev = position.nodeBefore;
 	const next = position.nodeAfter;
 
-	if ( !prev || !next || !( prev instanceof ContainerElement ) || !( next instanceof ContainerElement ) ) {
+	if ( !prev || !next || !prev.is( 'containerElement' ) || !next.is( 'containerElement' ) ) {
 		/**
 		 * Element before and after given position cannot be merged.
 		 *
@@ -302,7 +284,7 @@ export function breakViewRangePerContainer( range ) {
 	let start = range.start;
 
 	for ( let value of walker ) {
-		if ( value.item instanceof ContainerElement ) {
+		if ( value.item.is( 'containerElement' ) ) {
 			if ( !start.isEqual( value.previousPosition ) ) {
 				ranges.push( new Range( start, value.previousPosition ) );
 			}
@@ -439,14 +421,14 @@ export function clear( range, element ) {
 		let rangeToRemove;
 
 		// When current item matches to the given element.
-		if ( item instanceof Element && element.isSimilar( item ) ) {
+		if ( item.is( 'element' ) && element.isSimilar( item ) ) {
 			// Create range on this element.
 			rangeToRemove = Range.createOn( item );
 		// When range starts inside Text or TextProxy element.
-		} else if ( !current.nextPosition.isAfter( range.start ) && ( item instanceof Text || item instanceof TextProxy ) ) {
+		} else if ( !current.nextPosition.isAfter( range.start ) && ( item.is( 'text' ) || item.is( 'textProxy' ) ) ) {
 			// We need to check if parent of this text matches to given element.
 			const parentElement = item.getAncestors().find( ( ancestor ) => {
-				return ancestor instanceof Element && element.isSimilar( ancestor );
+				return ancestor.is( 'element' ) && element.isSimilar( ancestor );
 			} );
 
 			// If it is then create range inside this element.
@@ -602,7 +584,7 @@ export function wrapPosition( position, attribute ) {
 	}
 
 	// When position is inside text node - break it and place new position between two text nodes.
-	if ( position.parent instanceof Text ) {
+	if ( position.parent.is( 'text' ) ) {
 		position = breakTextNode( position );
 	}
 
@@ -786,7 +768,7 @@ function _breakAttributes( position, forceSplitText = false ) {
 	const positionParent = position.parent;
 
 	// If position is placed inside EmptyElement - throw an exception as we cannot break inside.
-	if ( position.parent instanceof EmptyElement ) {
+	if ( position.parent.is( 'emptyElement' ) ) {
 		/**
 		 * Cannot break inside EmptyElement instance.
 		 *
@@ -796,7 +778,7 @@ function _breakAttributes( position, forceSplitText = false ) {
 	}
 
 	// If position is placed inside UIElement - throw an exception as we cannot break inside.
-	if ( position.parent instanceof UIElement ) {
+	if ( position.parent.is( 'uiElement' ) ) {
 		/**
 		 * Cannot break inside UIElement instance.
 		 *
@@ -806,7 +788,7 @@ function _breakAttributes( position, forceSplitText = false ) {
 	}
 
 	// There are no attributes to break and text nodes breaking is not forced.
-	if ( !forceSplitText && positionParent instanceof Text && isContainerOrFragment( positionParent.parent ) ) {
+	if ( !forceSplitText && positionParent.is( 'text' ) && isContainerOrFragment( positionParent.parent ) ) {
 		return Position.createFromPosition( position );
 	}
 
@@ -816,7 +798,7 @@ function _breakAttributes( position, forceSplitText = false ) {
 	}
 
 	// Break text and start again in new position.
-	if ( positionParent instanceof Text ) {
+	if ( positionParent.is( 'text' ) ) {
 		return _breakAttributes( breakTextNode( position ), forceSplitText );
 	}
 
@@ -901,7 +883,7 @@ function unwrapChildren( parent, startOffset, endOffset, attribute ) {
 			endOffset += count - 1;
 		} else {
 			// If other nested attribute is found start unwrapping there.
-			if ( child instanceof AttributeElement ) {
+			if ( child.is( 'attributeElement' ) ) {
 				unwrapChildren( child, 0, child.childCount, attribute );
 			}
 
@@ -945,10 +927,10 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 
 	while ( i < endOffset ) {
 		const child = parent.getChild( i );
-		const isText = child instanceof Text;
-		const isAttribute = child instanceof AttributeElement;
-		const isEmpty = child instanceof EmptyElement;
-		const isUI = child instanceof UIElement;
+		const isText = child.is( 'text' );
+		const isAttribute = child.is( 'attributeElement' );
+		const isEmpty = child.is( 'emptyElement' );
+		const isUI = child.is( 'uiElement' );
 
 		// Wrap text, empty elements, ui elements or attributes with higher or equal priority.
 		if ( isText || isEmpty || isUI || ( isAttribute && attribute.priority <= child.priority ) ) {
@@ -961,11 +943,10 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 			parent.insertChildren( i, newAttribute );
 
 			wrapPositions.push(	new Position( parent, i ) );
-		} else {
-			// If other nested attribute is found start wrapping there.
-			if ( child instanceof AttributeElement ) {
-				wrapChildren( child, 0, child.childCount, attribute );
-			}
+		}
+		// If other nested attribute is found start wrapping there.
+		else if ( isAttribute ) {
+			wrapChildren( child, 0, child.childCount, attribute );
 		}
 
 		i++;
@@ -1006,13 +987,13 @@ function wrapChildren( parent, startOffset, endOffset, attribute ) {
 function movePositionToTextNode( position ) {
 	const nodeBefore = position.nodeBefore;
 
-	if ( nodeBefore && nodeBefore instanceof Text ) {
+	if ( nodeBefore && nodeBefore.is( 'text' ) ) {
 		return new Position( nodeBefore, nodeBefore.data.length );
 	}
 
 	const nodeAfter = position.nodeAfter;
 
-	if ( nodeAfter && nodeAfter instanceof Text ) {
+	if ( nodeAfter && nodeAfter.is( 'text' ) ) {
 		return new Position( nodeAfter, 0 );
 	}
 
@@ -1190,7 +1171,7 @@ function unwrapAttributeElement( wrapper, toUnwrap ) {
 // @param {module:engine/view/range~Range} Range
 // @returns {Boolean}
 function rangeSpansOnAllChildren( range ) {
-	return range.start.parent == range.end.parent && range.start.parent instanceof AttributeElement &&
+	return range.start.parent == range.end.parent && range.start.parent.is( 'attributeElement' ) &&
 		range.start.offset === 0 && range.end.offset === range.start.parent.childCount;
 }
 
@@ -1223,7 +1204,7 @@ function validateNodesToInsert( nodes ) {
 			throw new CKEditorError( 'view-writer-insert-invalid-node' );
 		}
 
-		if ( !( node instanceof Text ) ) {
+		if ( !node.is( 'text' ) ) {
 			validateNodesToInsert( node.getChildren() );
 		}
 	}
@@ -1236,7 +1217,7 @@ const validNodesToInsert = [ Text, AttributeElement, ContainerElement, EmptyElem
 // @param {module:engine/view/node~Node} node
 // @returns {Boolean} Returns `true` if node is instance of ContainerElement or DocumentFragment.
 function isContainerOrFragment( node ) {
-	return node instanceof ContainerElement || node instanceof DocumentFragment;
+	return node && ( node.is( 'containerElement' ) || node.is( 'documentFragment' ) );
 }
 
 // Checks if {@link module:engine/view/range~Range#start range start} and {@link module:engine/view/range~Range#end range end} are placed

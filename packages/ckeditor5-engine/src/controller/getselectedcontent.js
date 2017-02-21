@@ -10,7 +10,6 @@
 import DocumentFragment from '../model/documentfragment';
 import Range from '../model/range';
 import Position from '../model/position';
-import TextProxy from '../model/textproxy';
 import Text from '../model/text';
 import { remove } from '../model/writer';
 
@@ -69,7 +68,7 @@ export default function getSelectedContent( selection ) {
 
 	// Clone the whole contents.
 	for ( const item of flatSubtreeRange.getItems( { shallow: true } ) ) {
-		if ( item instanceof TextProxy ) {
+		if ( item.is( 'textProxy' ) ) {
 			frag.appendChildren( new Text( item.data, item.getAttributes() ) );
 		} else {
 			frag.appendChildren( item.clone( true ) );
