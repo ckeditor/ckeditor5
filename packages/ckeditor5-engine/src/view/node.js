@@ -189,6 +189,7 @@ export default class Node {
 	 * @method #is
 	 * @param {'element'|'containerElement'|'attributeElement'|'emptyElement'|'uiElement'|
 	 * 'rootElement'|'documentFragment'|'text'|'textProxy'} type
+	 * @param {String} [name] Element name.
 	 * @returns {Boolean}
 	 */
 }

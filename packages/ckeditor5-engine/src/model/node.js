@@ -385,6 +385,7 @@ export default class Node {
 	 *
 	 * @method #is
 	 * @param {'element'|'rootElement'|'text'|'textProxy'|'documentFragment'} type
+	 * @param {String} [name] Element name.
 	 * @returns {Boolean}
 	 */
 }
