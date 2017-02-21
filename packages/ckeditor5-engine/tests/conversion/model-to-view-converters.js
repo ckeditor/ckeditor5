@@ -669,6 +669,21 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.convertMarker( 'removeMarker', 'search', range1 );
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
+
+		it( 'should do nothing when range is collapsed', () => {
+			const viewSpan = new ViewAttributeElement( 'span', { class: 'name' } );
+
+			dispatcher.on( 'addMarker:name', wrapRange( viewSpan ) );
+			dispatcher.on( 'removeMarker:name', unwrapRange( viewSpan ) );
+
+			dispatcher.convertMarker( 'addMarker', 'name', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+
+			dispatcher.convertMarker( 'removeMarker', 'name', range );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
 	} );
 
 	describe( 'insertUIElement/removeUIElement', () => {
