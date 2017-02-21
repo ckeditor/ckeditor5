@@ -49,6 +49,15 @@ export default class Schema {
 		this.objects = new Set();
 
 		/**
+		 * Names of elements to which editing operations should be limited.
+		 * For example, the <kbd>Enter</kbd> should not split such elements and
+		 * <kbd>Backspace</kbd> should not be able to leave or modify such elements.
+		 *
+		 * @member {Set.<String>} module:engine/model/schema~Schema#limits
+		 */
+		this.limits = new Set();
+
+		/**
 		 * Schema items registered in the schema.
 		 *
 		 * @private
