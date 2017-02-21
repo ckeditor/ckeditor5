@@ -152,8 +152,7 @@ class ModelConverterBuilder {
 	}
 
 	/**
-	 * Registers what type of non-collapsed marker should be converted. For collapsed markers conversion, see
-	 * {@link #fromCollapsedMarker}.
+	 * Registers what type of marker should be converted.
 	 *
 	 * @chainable
 	 * @param {String} markerName Name of marker to convert.
@@ -163,27 +162,7 @@ class ModelConverterBuilder {
 		this._from = {
 			type: 'marker',
 			name: markerName,
-			priority: null,
-			collapsed: false
-		};
-
-		return this;
-	}
-
-	/**
-	 * Registers what type of collapsed marker should be converted. For non-collapsed markers conversion,
-	 * see {@link #fromMarker}.
-	 *
-	 * @chainable
-	 * @param {String} markerName Name of marker to convert.
-	 * @returns {module:engine/conversion/buildmodelconverter~ModelConverterBuilder}
-	 */
-	fromCollapsedMarker( markerName ) {
-		this._from = {
-			type: 'marker',
-			name: markerName,
-			priority: null,
-			collapsed: true
+			priority: null
 		};
 
 		return this;
@@ -265,22 +244,35 @@ class ModelConverterBuilder {
 
 				dispatcher.on( 'selectionAttribute:' + this._from.key, convertSelectionAttribute( element ), { priority } );
 			} else {
-				if ( this._from.collapsed ) {
-					// From collapsed marker to view element -> insertUIElement, removeUIElement.
-					element = typeof element == 'string' ? new ViewUIElement( element ) : element;
+				element = typeof element == 'string' ? new ViewAttributeElement( element ) : element;
 
-					dispatcher.on( 'addMarker:' + this._from.name, insertUIElement( element ), { priority } );
-					dispatcher.on( 'removeMarker:' + this._from.name, removeUIElement( element ), { priority } );
-				} else {
-					// From non-collapsed marker to view element -> wrapRange and unwrapRange.
-					element = typeof element == 'string' ? new ViewAttributeElement( element ) : element;
+				dispatcher.on( 'addMarker:' + this._from.name, wrapRange( element ), { priority } );
+				dispatcher.on( 'removeMarker:' + this._from.name, unwrapRange( element ), { priority } );
 
-					dispatcher.on( 'addMarker:' + this._from.name, wrapRange( element ), { priority } );
-					dispatcher.on( 'removeMarker:' + this._from.name, unwrapRange( element ), { priority } );
-
-					dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( element ), { priority } );
-				}
+				dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( element ), { priority } );
 			}
+		}
+	}
+
+	toStamp( element ) {
+		for ( let dispatcher of this._dispatchers ) {
+			if ( this._from.type == 'element' || this._from.type == 'attribute' ) {
+				/**
+				 * To-stamp conversion is supported only for model markers.
+				 *
+				 * @error build-model-converter-element-to-stamp
+				 */
+				throw new CKEditorError(
+					'build-model-converter-non-marker-to-stamp: To-stamp conversion is supported only from model markers.'
+				);
+			}
+
+			const priority = this._from.priority === null ? 'normal' : this._from.priority;
+
+			element = typeof element == 'string' ? new ViewUIElement( element ) : element;
+
+			dispatcher.on( 'addMarker:' + this._from.name, insertUIElement( element ), { priority } );
+			dispatcher.on( 'removeMarker:' + this._from.name, removeUIElement( element ), { priority } );
 		}
 	}
 
@@ -321,7 +313,6 @@ class ModelConverterBuilder {
 			 * To-attribute conversion is supported only for model attributes.
 			 *
 			 * @error build-model-converter-element-to-attribute
-			 * @param {module:engine/model/range~Range} range
 			 */
 			throw new CKEditorError( 'build-model-converter-non-attribute-to-attribute: ' +
 				'To-attribute conversion is supported only from model attributes.' );
