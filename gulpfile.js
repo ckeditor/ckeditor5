@@ -46,3 +46,21 @@ function getTestOptions() {
 	return require( '@ckeditor/ckeditor5-dev-tests' )
 		.parseArguments( process.argv.slice( 2 ) );
 }
+
+// Releasing. -----------------------------------------------------------------
+
+gulp.task( 'changelog:dependencies', () => {
+	return require( '@ckeditor/ckeditor5-dev-env' )
+		.generateChangelogForDependencies( {
+			cwd: process.cwd(),
+			packages: 'packages'
+		} );
+} );
+
+gulp.task( 'release:dependencies', () => {
+	return require( '@ckeditor/ckeditor5-dev-env' )
+		.releaseDependencies( {
+			cwd: process.cwd(),
+			packages: 'packages'
+		} );
+} );
