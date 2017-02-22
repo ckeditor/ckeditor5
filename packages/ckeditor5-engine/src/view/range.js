@@ -98,8 +98,8 @@ export default class Range {
 	 * @returns {module:engine/view/range~Range} Enlarged range.
 	 */
 	getEnlarged() {
-		const start = this.start.getLastMatchingPosition( enlargeShrinkStartSkip, { direction: 'backward' } );
-		const end = this.end.getLastMatchingPosition( enlargeShrinkEndSkip );
+		const start = this.start.getLastMatchingPosition( enlargeShrinkSkip, { direction: 'backward' } );
+		const end = this.end.getLastMatchingPosition( enlargeShrinkSkip );
 
 		return new Range( start, end );
 	}
@@ -121,8 +121,8 @@ export default class Range {
 	 * @returns {module:engine/view/range~Range} Shrink range.
 	 */
 	getTrimmed() {
-		let start = this.start.getLastMatchingPosition( enlargeShrinkStartSkip );
-		let end = this.end.getLastMatchingPosition( enlargeShrinkEndSkip, { direction: 'backward' } );
+		let start = this.start.getLastMatchingPosition( enlargeShrinkSkip );
+		let end = this.end.getLastMatchingPosition( enlargeShrinkSkip, { direction: 'backward' } );
 		let nodeAfterStart = start.nodeAfter;
 		let nodeBeforeEnd = end.nodeBefore;
 
@@ -408,25 +408,8 @@ export default class Range {
 }
 
 // Function used by getEnlagred and getShrinked methods.
-function enlargeShrinkStartSkip( value ) {
+function enlargeShrinkSkip( value ) {
 	if ( value.item.is( 'attributeElement' ) || value.item.is( 'uiElement' ) ) {
-		return true;
-	}
-
-	if ( value.item.is( 'containerElement' ) && value.type == 'elementStart' ) {
-		return true;
-	}
-
-	return false;
-}
-
-// Function used by getEnlagred and getShrinked methods.
-function enlargeShrinkEndSkip( value ) {
-	if ( value.item.is( 'attributeElement' ) || value.item.is( 'uiElement' ) ) {
-		return true;
-	}
-
-	if ( value.item.is( 'containerElement' ) && value.type == 'elementEnd' ) {
 		return true;
 	}
 
