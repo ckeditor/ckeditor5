@@ -24,7 +24,6 @@ import ModelConversionDispatcher from '../../src/conversion/modelconversiondispa
 
 import {
 	insertText,
-	move,
 	remove
 } from '../../src/conversion/model-to-view-converters';
 
@@ -86,10 +85,9 @@ describe( 'Model converter builder', () => {
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
 
-		dispatcher = new ModelConversionDispatcher( { mapper, viewSelection } );
+		dispatcher = new ModelConversionDispatcher( modelDoc, { mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
-		dispatcher.on( 'move', move() );
 		dispatcher.on( 'remove', remove() );
 	} );
 

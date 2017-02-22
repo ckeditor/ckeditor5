@@ -12,12 +12,7 @@ import Mapper from '../conversion/mapper';
 import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
 import {
 	insertText,
-	remove,
-	move,
-	rename,
-	insertRangeIntoMarker,
-	insertRangeWithMarker,
-	moveInOutOfMarker
+	remove
 } from '../conversion/model-to-view-converters';
 import { convertSelectionChange } from '../conversion/view-selection-to-model-converters';
 import {
@@ -80,7 +75,7 @@ export default class EditingController {
 		 * @readonly
 		 * @member {module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher} #modelToView
 		 */
-		this.modelToView = new ModelConversionDispatcher( {
+		this.modelToView = new ModelConversionDispatcher( this.model, {
 			mapper: this.mapper,
 			viewSelection: this.view.selection
 		} );
@@ -101,10 +96,9 @@ export default class EditingController {
 
 		// Convert model selection to view.
 		this._listener.listenTo( this.model, 'changesDone', () => {
-			const selection = model.selection;
-			const markers = Array.from( model.markers.getMarkersAtPosition( selection.getFirstPosition() ) );
+			const selection = this.model.selection;
 
-			this.modelToView.convertSelection( selection, markers );
+			this.modelToView.convertSelection( selection );
 			this.view.render();
 		}, { priority: 'low' } );
 
@@ -118,18 +112,11 @@ export default class EditingController {
 		} );
 
 		// Convert view selection to model.
-		this._listener.listenTo( this.view, 'selectionChange', convertSelectionChange( model, this.mapper ) );
+		this._listener.listenTo( this.view, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
 		// Attach default content converters.
 		this.modelToView.on( 'insert:$text', insertText(), { priority: 'lowest' } );
 		this.modelToView.on( 'remove', remove(), { priority: 'low' } );
-		this.modelToView.on( 'move', move(), { priority: 'low' } );
-		this.modelToView.on( 'rename', rename(), { priority: 'low' } );
-
-		// Attach default markers converters.
-		this.modelToView.on( 'insert', insertRangeIntoMarker( this.model.markers ), { priority: 'lowest' } );
-		this.modelToView.on( 'insert', insertRangeWithMarker( this.model.markers ), { priority: 'lowest' } );
-		this.modelToView.on( 'move', moveInOutOfMarker( this.model.markers ), { priority: 'lowest' } );
 
 		// Attach default selection converters.
 		this.modelToView.on( 'selection', clearAttributes(), { priority: 'low' } );

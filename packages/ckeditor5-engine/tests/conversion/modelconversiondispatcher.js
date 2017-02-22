@@ -16,15 +16,15 @@ describe( 'ModelConversionDispatcher', () => {
 	let dispatcher, doc, root;
 
 	beforeEach( () => {
-		dispatcher = new ModelConversionDispatcher();
 		doc = new ModelDocument();
+		dispatcher = new ModelConversionDispatcher( doc );
 		root = doc.createRoot();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should create ModelConversionDispatcher with given api', () => {
 			const apiObj = {};
-			const dispatcher = new ModelConversionDispatcher( { apiObj } );
+			const dispatcher = new ModelConversionDispatcher( doc, { apiObj } );
 
 			expect( dispatcher.conversionApi.apiObj ).to.equal( apiObj );
 		} );
@@ -89,16 +89,6 @@ describe( 'ModelConversionDispatcher', () => {
 			expect( cbInsertText.called ).to.be.false;
 		} );
 
-		it( 'should fire move callback for move changes', () => {
-			const cbMove = sinon.spy();
-
-			dispatcher.on( 'move', cbMove );
-
-			doc.batch().move( image, imagePos.getShiftedBy( 3 ) );
-
-			expect( cbMove.called );
-		} );
-
 		it( 'should fire remove callback for remove changes', () => {
 			const cbRemove = sinon.spy();
 
@@ -106,17 +96,7 @@ describe( 'ModelConversionDispatcher', () => {
 
 			doc.batch().remove( image );
 
-			expect( cbRemove.called );
-		} );
-
-		it( 'should fire rename callback for rename changes', () => {
-			const cbRename = sinon.spy();
-
-			dispatcher.on( 'rename', cbRename );
-
-			doc.batch().rename( image, 'figure' );
-
-			expect( cbRename.called );
+			expect( cbRemove.called ).to.be.true;
 		} );
 
 		it( 'should fire addAttribute callbacks for add attribute change', () => {
@@ -309,37 +289,6 @@ describe( 'ModelConversionDispatcher', () => {
 	} );
 
 	describe( 'convertMove', () => {
-		it( 'should fire event for moved range - move before source position', () => {
-			root.appendChildren( new ModelText( 'barfoo' ) );
-
-			const range = ModelRange.createFromParentsAndOffsets( root, 0, root, 3 );
-			const loggedEvents = [];
-
-			dispatcher.on( 'move', ( evt, data ) => {
-				const log = 'move:' + data.sourcePosition.path + ':' + data.targetPosition.path + ':' + data.item.offsetSize;
-				loggedEvents.push( log );
-			} );
-
-			dispatcher.convertMove( ModelPosition.createFromParentAndOffset( root , 3 ), range );
-
-			expect( loggedEvents ).to.deep.equal( [ 'move:3:0:3' ] );
-		} );
-
-		it( 'should fire event for moved range - move after source position', () => {
-			root.appendChildren( new ModelText( 'barfoo' ) );
-
-			const range = ModelRange.createFromParentsAndOffsets( root, 3, root, 6 );
-			const loggedEvents = [];
-
-			dispatcher.on( 'move', ( evt, data ) => {
-				const log = 'move:' + data.sourcePosition.path + ':' + data.targetPosition.path + ':' + data.item.offsetSize;
-				loggedEvents.push( log );
-			} );
-
-			dispatcher.convertMove( ModelPosition.createFromParentAndOffset( root , 0 ), range );
-
-			expect( loggedEvents ).to.deep.equal( [ 'move:0:6:3' ] );
-		} );
 	} );
 
 	describe( 'convertRemove', () => {
@@ -362,22 +311,6 @@ describe( 'ModelConversionDispatcher', () => {
 	} );
 
 	describe( 'convertRename', () => {
-		it( 'should fire rename event with correct name, consumable, and renamed element and it\'s old name in data', ( done ) => {
-			const oldName = 'oldName';
-			const element = new ModelElement( oldName );
-			element.name = 'newName';
-
-			dispatcher.on( 'rename', ( evt, data, consumable ) => {
-				expect( evt.name ).to.equal( 'rename:newName:oldName' );
-				expect( data.element ).to.equal( element );
-				expect( data.oldName ).to.equal( oldName );
-				expect( consumable.test( data.element, 'rename' ) ).to.be.true;
-
-				done();
-			} );
-
-			dispatcher.convertRename( element, oldName );
-		} );
 	} );
 
 	describe( 'convertAttribute', () => {
@@ -545,11 +478,11 @@ describe( 'ModelConversionDispatcher', () => {
 
 			dispatcher.convertMarker( 'addMarker', 'name', range );
 
-			expect( dispatcher.fire.calledWith( 'addMarker:name', 'name', range ) );
+			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.true;
 
 			dispatcher.convertMarker( 'removeMarker', 'name', range );
 
-			expect( dispatcher.fire.calledWith( 'removeMarker:name', 'name', range ) );
+			expect( dispatcher.fire.calledWith( 'removeMarker:name' ) ).to.be.true;
 		} );
 
 		it( 'should not convert marker if it is added in graveyard', () => {

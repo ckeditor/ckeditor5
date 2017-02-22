@@ -81,11 +81,11 @@ function removeHighlight() {
 
 		for ( let i = 0; i < markerNames.length; i++ ) {
 			const name = markerNames[ i ];
-			const range = model.markers.get( name );
+			const marker = model.markers.get( name );
+			const range = marker.getRange();
 
 			if ( range.containsPosition( pos ) || range.start.isEqual( pos ) || range.end.isEqual( pos ) ) {
 				model.markers.remove( name );
-				range.detach();
 
 				markerNames.splice( i, 1 );
 				break;
