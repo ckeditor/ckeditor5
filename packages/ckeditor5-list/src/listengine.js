@@ -17,7 +17,6 @@ import {
 	modelViewChangeType,
 	modelViewMergeAfter,
 	modelViewRemove,
-	modelViewMove,
 	modelViewSplitOnInsert,
 	modelViewChangeIndent,
 	viewModelConverter,
@@ -70,11 +69,6 @@ export default class ListEngine extends Plugin {
 		editing.modelToView.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
 		data.modelToView.on( 'remove:listItem', modelViewRemove );
 		data.modelToView.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
-
-		editing.modelToView.on( 'move:listItem', modelViewMove );
-		editing.modelToView.on( 'move', modelViewMergeAfter, { priority: 'low' } );
-		data.modelToView.on( 'move:listItem', modelViewMove );
-		data.modelToView.on( 'move', modelViewMergeAfter, { priority: 'low' } );
 
 		editing.modelToView.on( 'changeAttribute:indent:listItem', modelViewChangeIndent );
 		data.modelToView.on( 'changeAttribute:indent:listItem', modelViewChangeIndent );

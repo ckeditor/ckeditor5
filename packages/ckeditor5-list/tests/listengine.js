@@ -462,18 +462,6 @@ describe( 'ListEngine', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li></li></ul>' );
 		} );
 
-		it( 'model move converter should not fire if change was already consumed', () => {
-			editor.editing.modelToView.on( 'move', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'move' );
-			}, { priority: 'highest' } );
-
-			setModelData( doc, '<listItem indent="0" type="bulleted"></listItem><paragraph>foo</paragraph>' );
-
-			doc.batch().move( root.getChild( 0 ), ModelPosition.createAt( root, 2 ) );
-
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li></li></ul><p>foo</p>' );
-		} );
-
 		it( 'model change type converter should not fire if change was already consumed', () => {
 			editor.editing.modelToView.on( 'changeAttribute:type', ( evt, data, consumable ) => {
 				consumable.consume( data.item, 'changeAttribute:type' );
