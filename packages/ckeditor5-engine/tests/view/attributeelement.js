@@ -131,5 +131,11 @@ describe( 'AttributeElement', () => {
 
 			expect( attribute.getFillerOffset() ).to.be.null;
 		} );
+
+		it( 'should return null if there is no parent', () => {
+			const attribute = new AttributeElement( 'b' );
+
+			expect( attribute.getFillerOffset() ).to.be.null;
+		} );
 	} );
 } );
