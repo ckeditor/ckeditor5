@@ -149,6 +149,10 @@ export function convertSelectionAttribute( elementCreator ) {
 			elementCreator.clone( true ) :
 			elementCreator( data.value, data, data.selection, consumable, conversionApi );
 
+		if ( !viewElement ) {
+			return;
+		}
+
 		const consumableName = 'selectionAttribute:' + data.key;
 
 		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, consumableName );
@@ -174,6 +178,10 @@ export function convertSelectionMarker( elementCreator ) {
 		const viewElement = elementCreator instanceof ViewElement ?
 			elementCreator.clone( true ) :
 			elementCreator( data, consumable, conversionApi );
+
+		if ( !viewElement ) {
+			return;
+		}
 
 		const consumableName = 'selectionMarker:' + data.name;
 
