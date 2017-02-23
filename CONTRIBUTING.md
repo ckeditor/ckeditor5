@@ -66,4 +66,4 @@ The issues pages can be used for feature requests.
 
 To accept contributions sent to us in form of code, documentation or translations, a Contributor License Agreement (CLA) must be in place in order to clarify the intellectual property license granted with them. This license is for your protection as a contributor as well as the protection of us and our users; it does not change your rights to use your own contributions for any other purpose.
 
-To sign the CLA and to have more information, please follow this link: [http://ckeditor.com/cla](http://ckeditor.com/cla).
+To sign the CLA and to have more information, please follow this link: [http://cla.ckeditor.com/](http://cla.ckeditor.com/).
