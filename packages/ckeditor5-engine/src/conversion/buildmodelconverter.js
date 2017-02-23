@@ -254,6 +254,29 @@ class ModelConverterBuilder {
 		}
 	}
 
+	/**
+	 * Registers what view stamp will be created by converter to mark marker range bounds. Separate elements will be
+	 * created at the beginning and at the end of the range. If range is collapsed then only one element will be created.
+	 *
+	 * Method accepts various ways of providing how the view element will be created. You can pass view element name as
+	 * `string`, view element instance which will be cloned and used, or creator function which returns view element that
+	 * will be used. Keep in mind that when you view element instance or creator function, it has to be/return a
+	 * proper type of view element: {@link module:engine/view/uielement~UIElement UIElement}.
+	 *
+	 *		buildModelConverter().for( dispatcher ).fromMarker( 'comment' ).toStamp( 'span' );
+	 *
+	 *		buildModelConverter().for( dispatcher ).fromMarker( 'comment' ).toStamp( new UIElement( 'span' ) );
+	 *
+	 *		buildModelConverter().for( dispatcher )
+	 *			.fromMarker( 'comment' )
+	 *			.toStamp( ( data ) => new UIElement( 'span', { 'data-name': data.marker.getName() ) );
+	 *
+	 * Creator function provides
+	 * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert insert event} parameters.
+	 *
+	 * @param {String|module:engine/view/element~UIElement|Function} element UIElement created by converter or
+	 * a function that returns view element.
+	 */
 	toStamp( element ) {
 		for ( let dispatcher of this._dispatchers ) {
 			if ( this._from.type == 'element' || this._from.type == 'attribute' ) {

@@ -91,6 +91,8 @@ export function insertText() {
 /**
  * Function factory, creates a converter that converts marker adding change to the view ui element.
  * The view ui element that will be added to the view depends on passed parameter. See {@link ~insertElement}.
+ * In a case of collapsed range element will not wrap range but separate elements will be placed at the beginning
+ * and at the end of the range.
  *
  * **Note:** unlike {@link ~insertElement}, the converter does not bind view element to model, because this converter
  * uses marker as "model source of data". This means that view ui element does not have corresponding model element.
