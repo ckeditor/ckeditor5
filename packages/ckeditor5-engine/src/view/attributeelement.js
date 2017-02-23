@@ -110,7 +110,7 @@ function getFillerOffset() {
 	let element = this.parent;
 
 	// <p><b></b></p> needs filler -> <p><b><br></b></p>
-	while ( element.is( 'attributeElement' ) ) {
+	while ( element && element.is( 'attributeElement' ) ) {
 		if ( element.childCount > 1 ) {
 			return null;
 		}
