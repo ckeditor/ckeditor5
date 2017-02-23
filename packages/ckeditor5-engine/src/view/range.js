@@ -87,7 +87,7 @@ export default class Range {
 	 *
 	 * For example:
 	 *
-	 * 		<p>Foo</p><p><b>{Bar}</b></p> -> <p>Foo</p>[<p><b>Bar</b></p>]
+	 * 		<p>Foo</p><p><b>{Bar}</b></p> -> <p>Foo</p>[<p><b>Bar</b>]</p>
 	 * 		<p><b>foo</b>{bar}<span></span></p> -> <p><b>foo[</b>bar<span></span>]</p>
 	 *
 	 * Note that in the sample above:
@@ -110,7 +110,7 @@ export default class Range {
 	 *
 	 * For example:
 	 *
-	 * 		<p>Foo</p>[<p><b>Bar</b></p>] -> <p>Foo</p><p><b>{Bar}</b></p>
+	 * 		<p>Foo</p>[<p><b>Bar</b>]</p> -> <p>Foo</p><p><b>{Bar}</b></p>
 	 * 		<p><b>foo[</b>bar<span></span>]</p> -> <p><b>foo</b>{bar}<span></span></p>
 	 *
 	 * Note that in the sample above:
