@@ -20,6 +20,8 @@ import ViewMatcher from '../../src/view/matcher';
 
 import ViewConversionDispatcher from '../../src/conversion/viewconversiondispatcher';
 
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import { convertToModelFragment, convertText } from '../../src/conversion/view-to-model-converters';
 
 function modelAttributesToString( item ) {
@@ -186,6 +188,93 @@ describe( 'View converter builder', () => {
 		modelRoot.appendChildren( result );
 
 		expect( modelToString( result ) ).to.equal( '<paragraph><$text bold="true">aaabbbcccddd</$text></paragraph>' );
+	} );
+
+	it( 'should convert from pattern to marker', () => {
+		buildViewConverter().for( dispatcher ).from( { attribute: { 'marker-name': 'search' } } ).toMarker();
+
+		const viewElement = new ViewAttributeElement( 'span', { 'marker-name': 'search' } );
+
+		const result = dispatcher.convert( viewElement, objWithContext );
+		modelRoot.appendChildren( result );
+
+		expect( modelToString( result ) ).to.equal( '<$marker marker-name="search"></$marker>' );
+	} );
+
+	it( 'should convert from element to marker using creator function', () => {
+		buildViewConverter().for( dispatcher ).fromElement( 'marker' ).toMarker( ( data ) => {
+			return new ModelElement( '$marker', { 'marker-name': data.getAttribute( 'class' ) } );
+		} );
+
+		const element = new ViewAttributeElement( 'marker', { class: 'search' } );
+
+		const result = dispatcher.convert( element, objWithContext );
+		modelRoot.appendChildren( result );
+
+		expect( modelToString( result ) ).to.equal( '<$marker marker-name="search"></$marker>' );
+	} );
+
+	it( 'should convert from multiple view entities to marker', () => {
+		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+
+		buildViewConverter().for( dispatcher )
+			.fromElement( 'marker' )
+			.from( { attribute: { 'marker-name': 'search' } } )
+			.toMarker();
+
+		const viewElement = new ViewContainerElement( 'p', null, [
+			new ViewAttributeElement( 'marker', { 'marker-name': 'comment' } ),
+			new ViewAttributeElement( 'span', { 'marker-name': 'search' } )
+		] );
+
+		const result = dispatcher.convert( viewElement, objWithContext );
+		modelRoot.appendChildren( result );
+
+		expect( modelToString( result ) ).to.equal(
+			'<paragraph><$marker marker-name="comment"></$marker><$marker marker-name="search"></$marker></paragraph>'
+		);
+	} );
+
+	it( 'should do nothing when there is no element matching to marker pattern', () => {
+		buildViewConverter().for( dispatcher ).from( { class: 'color' } ).toMarker();
+
+		const element = new ViewAttributeElement( 'span' );
+
+		expect( dispatcher.convert( element, objWithContext ) ).to.null;
+	} );
+
+	it( 'should throw an error when view element in not valid to convert to marker', () => {
+		buildViewConverter().for( dispatcher ).fromElement( 'marker' ).toMarker();
+
+		const element = new ViewAttributeElement( 'marker', { class: 'search' } );
+
+		expect( () => {
+			dispatcher.convert( element, objWithContext );
+		} ).to.throw( CKEditorError, /^build-view-converter-invalid-marker/ );
+	} );
+
+	it( 'should throw an error when model element returned by creator has not valid name', () => {
+		buildViewConverter().for( dispatcher ).fromElement( 'marker' ).toMarker( () => {
+			return new ModelElement( 'element', { 'marker-name': 'search' } );
+		} );
+
+		const element = new ViewAttributeElement( 'marker', { 'marker-name': 'search' } );
+
+		expect( () => {
+			dispatcher.convert( element, objWithContext );
+		} ).to.throw( CKEditorError, /^build-view-converter-invalid-marker/ );
+	} );
+
+	it( 'should throw an error when model element returned by creator has not valid marker-name attribute', () => {
+		buildViewConverter().for( dispatcher ).fromElement( 'marker' ).toMarker( () => {
+			return new ModelElement( '$marker', { 'foo': 'search' } );
+		} );
+
+		const element = new ViewAttributeElement( 'marker', { 'marker-name': 'search' } );
+
+		expect( () => {
+			dispatcher.convert( element, objWithContext );
+		} ).to.throw( CKEditorError, /^build-view-converter-invalid-marker/ );
 	} );
 
 	it( 'should convert from pattern to model element', () => {

@@ -11,6 +11,7 @@ import Matcher from '../view/matcher';
 import ModelElement from '../model/element';
 import ModelPosition from '../model/position';
 import modelWriter from '../model/writer';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 /**
@@ -359,6 +360,53 @@ class ViewConverterBuilder {
 		};
 
 		this._setCallback( eventCallbackGen, 'low' );
+	}
+
+	toMarker( creator ) {
+		const eventCallbackGen = function( from ) {
+			return ( evt, data, consumable ) => {
+				// There is one callback for all patterns in the matcher.
+				// This will be usually just one pattern but we support matchers with many patterns too.
+				const matchAll = from.matcher.matchAll( data.input );
+
+				// If there is no match, this callback should not do anything.
+				if ( !matchAll ) {
+					return;
+				}
+
+				let modelElement;
+
+				// When creator is provided then create model element basing on creator function.
+				if ( creator instanceof Function ) {
+					modelElement = creator( data.input );
+					// When there is no creator then create model element basing on data from view element.
+				} else {
+					modelElement = new ModelElement( '$marker', { 'marker-name': data.input.getAttribute( 'marker-name' ) } );
+				}
+
+				// Check if model element is correct (has proper name and `markerName` property is defined).
+				if ( modelElement.name != '$marker' || typeof modelElement.getAttribute( 'marker-name' ) != 'string' ) {
+					throw new CKEditorError(
+						'build-view-converter-invalid-marker: Invalid model element to mark marker range.'
+					);
+				}
+
+				// Now, for every match between matcher and actual element, we will try to consume the match.
+				for ( const match of matchAll ) {
+					// Try to consume appropriate values from consumable values list.
+					if ( !consumable.consume( data.input, from.consume || match.match ) ) {
+						continue;
+					}
+
+					data.output = modelElement;
+
+					// Prevent multiple conversion if there are other correct matches.
+					break;
+				}
+			};
+		};
+
+		this._setCallback( eventCallbackGen, 'normal' );
 	}
 
 	/**
