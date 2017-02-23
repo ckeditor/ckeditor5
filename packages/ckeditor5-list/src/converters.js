@@ -109,46 +109,6 @@ export function modelViewRemove( evt, data, consumable, conversionApi ) {
 }
 
 /**
- * Model to view converter for `listItem` model element move.
- *
- * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:move
- * @param {module:utils/eventinfo~EventInfo} evt Object containing information about the fired event.
- * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
- * @param {Object} conversionApi Conversion interface.
- */
-export function modelViewMove( evt, data, consumable, conversionApi ) {
-	if ( !consumable.consume( data.item, 'move' ) ) {
-		return;
-	}
-
-	const viewItem = conversionApi.mapper.toViewElement( data.item );
-
-	// 1. Break the container after and before the list item.
-	// This will create a view list with one view list item -- the one that changed type.
-	viewWriter.breakContainer( ViewPosition.createBefore( viewItem ) );
-	viewWriter.breakContainer( ViewPosition.createAfter( viewItem ) );
-
-	// 2. Extract view list with changed view list item and merge "hole" possibly created by breaking and removing elements.
-	const viewList = viewItem.parent;
-	const viewListPrev = viewList.previousSibling;
-	const viewListNext = viewList.nextSibling;
-
-	let insertionPosition = conversionApi.mapper.toViewPosition( data.targetPosition );
-
-	if ( insertionPosition.parent.name == 'ol' || insertionPosition.parent.name == 'ul' ) {
-		insertionPosition = viewWriter.breakContainer( insertionPosition );
-	}
-
-	viewWriter.move( ViewRange.createOn( viewList ), insertionPosition );
-
-	// No worries, merging will happen only if both elements exist and they are same type of lists.
-	mergeViewLists( viewListPrev, viewListNext );
-	mergeViewLists( viewList, viewList.nextSibling );
-	mergeViewLists( viewList.previousSibling, viewList );
-}
-
-/**
  * Model to view converter for `indent` attribute change on `listItem` model element.
  *
  * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:changeAttribute
