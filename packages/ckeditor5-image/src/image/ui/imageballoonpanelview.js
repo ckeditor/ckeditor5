@@ -19,22 +19,26 @@ const positions = {
 	//	+-----------------+
 	//	|     Balloon     |
 	//	+-----------------+
-	south: ( targetRect, balloonRect ) => ( {
-		top: targetRect.bottom + arrowVOffset,
-		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-		name: 's'
-	} ),
+	south( targetRect, balloonRect ) {
+		return {
+			top: targetRect.bottom + arrowVOffset,
+			left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
+			name: 's'
+		};
+	},
 
 	//	+-----------------+
 	//	|     Balloon     |
 	//	+-----------------+
 	//	        V
 	//	   [text range]
-	north: ( targetRect, balloonRect ) => ( {
-		top: targetRect.top - balloonRect.height - arrowVOffset,
-		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-		name: 'n'
-	} )
+	north( targetRect, balloonRect ) {
+		return {
+			top: targetRect.top - balloonRect.height - arrowVOffset,
+			left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
+			name: 'n'
+		};
+	}
 };
 
 /**

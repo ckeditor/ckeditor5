@@ -94,7 +94,7 @@ export default class ImageTextAlternative extends Plugin {
 	 * Creates balloon panel.
 	 *
 	 * @private
-	 * @return {Promise.<module:image/ui/imageballoonpanel~ImageBalloonPanelView>}
+	 * @return {Promise.<module:image/image/ui/imageballoonpanel~ImageBalloonPanelView>}
 	 */
 	_createBalloonPanel() {
 		const editor = this.editor;
