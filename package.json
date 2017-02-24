@@ -48,5 +48,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor5.git"
+  },
+  "scripts": {
+    "test": "node --max_old_space_size=4096 ./node_modules/.bin/ckeditor5-dev-tests --reporter=dots"
   }
 }
