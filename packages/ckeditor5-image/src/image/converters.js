@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/converters
+ * @module image/image/converters
  */
 
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';

@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import { viewToModelImage, modelToViewSelection, createImageAttributeConverter } from '../src/converters';
+import { viewToModelImage, modelToViewSelection, createImageAttributeConverter } from '../../src/image/converters';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { createImageViewElement } from '../src/imageengine';
-import { toImageWidget } from '../src/utils';
+import { createImageViewElement } from '../../src/image/imageengine';
+import { toImageWidget } from '../../src/image/utils';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';

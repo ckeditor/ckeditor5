@@ -4,12 +4,12 @@
  */
 
 /**
- * @module image/imageengine
+ * @module image/image/imageengine
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import WidgetEngine from './widget/widgetengine';
+import WidgetEngine from '../widget/widgetengine';
 import { viewToModelImage, modelToViewSelection, createImageAttributeConverter } from './converters';
 import { toImageWidget } from './utils';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';

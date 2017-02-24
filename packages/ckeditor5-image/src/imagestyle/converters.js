@@ -7,7 +7,7 @@
  * @module image/imagestyle/converters
  */
 
-import { isImage } from '../utils';
+import { isImage } from '../image/utils';
 
 /**
  * Returns converter for the `imageStyle` attribute. It can be used for adding, changing and removing the attribute.

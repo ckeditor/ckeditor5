@@ -4,11 +4,11 @@
  */
 
 /**
- * @module image/imagestyle/imagestyle
+ * @module image/imagestyle
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageStyleEngine from './imagestyleengine';
+import ImageStyleEngine from './imagestyle/imagestyleengine';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 /**

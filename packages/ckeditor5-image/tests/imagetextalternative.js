@@ -4,10 +4,10 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Image from '../../src/image';
-import ImageToolbar from '../../src/imagetoolbar';
-import ImageAlternateText from '../../src/imagealternatetext/imagealternatetext';
-import ImageAlternateTextEngine from '../../src/imagealternatetext/imagealternatetextengine';
+import Image from '../src/image';
+import ImageToolbar from '../src/imagetoolbar';
+import ImageTextAlternative from '../src/imagetextalternative';
+import ImageTextAlternativeEngine from '../src/imagetextalternative/imagetextalternativeengine';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -15,7 +15,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /* global Event */
 
-describe( 'ImageAlternateText', () => {
+describe( 'ImageTextAlternative', () => {
 	let editor, plugin, command, balloonPanel, form;
 
 	beforeEach( () => {
@@ -23,13 +23,13 @@ describe( 'ImageAlternateText', () => {
 		global.document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-			plugins: [ ImageAlternateText, Image ]
+			plugins: [ ImageTextAlternative, Image ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
 			newEditor.editing.view.attachDomRoot( editorElement );
-			plugin = editor.plugins.get( ImageAlternateText );
-			command = editor.commands.get( 'imageAlternateText' );
+			plugin = editor.plugins.get( ImageTextAlternative );
+			command = editor.commands.get( 'imageTextAlternative' );
 			balloonPanel = plugin.balloonPanel;
 			form = plugin.form;
 		} );
@@ -40,18 +40,18 @@ describe( 'ImageAlternateText', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( plugin ).to.be.instanceOf( ImageAlternateText );
+		expect( plugin ).to.be.instanceOf( ImageTextAlternative );
 	} );
 
-	it( 'should load ImageAlternateTextEngine plugin', () => {
-		expect( editor.plugins.get( ImageAlternateTextEngine ) ).to.be.instanceOf( ImageAlternateTextEngine );
+	it( 'should load ImageTextAlternativeEngine plugin', () => {
+		expect( editor.plugins.get( ImageTextAlternativeEngine ) ).to.be.instanceOf( ImageTextAlternativeEngine );
 	} );
 
 	describe( 'toolbar button', () => {
 		let button;
 
 		beforeEach( () => {
-			button = editor.ui.componentFactory.create( 'imageAlternateText' );
+			button = editor.ui.componentFactory.create( 'imageTextAlternative' );
 		} );
 
 		it( 'should be registered in component factory', () => {
@@ -101,10 +101,10 @@ describe( 'ImageAlternateText', () => {
 			global.document.body.appendChild( editorElement );
 
 			return ClassicTestEditor.create( editorElement, {
-				plugins: [ ImageAlternateText, ImageToolbar ]
+				plugins: [ ImageTextAlternative, ImageToolbar ]
 			} )
 			.then( newEditor => {
-				expect( newEditor.config.get( 'image.defaultToolbar' ) ).to.eql( [ 'imageAlternateText' ] );
+				expect( newEditor.config.get( 'image.defaultToolbar' ) ).to.eql( [ 'imageTextAlternative' ] );
 
 				newEditor.destroy();
 			} );
@@ -117,7 +117,7 @@ describe( 'ImageAlternateText', () => {
 			form.fire( 'submit' );
 
 			sinon.assert.calledOnce( spy );
-			sinon.assert.calledWithExactly( spy, 'imageAlternateText', { newValue: form.lebeledInput.inputView.element.value } );
+			sinon.assert.calledWithExactly( spy, 'imageTextAlternative', { newValue: form.lebeledInput.inputView.element.value } );
 		} );
 
 		it( 'should detach panel on cancel', () => {
@@ -132,14 +132,14 @@ describe( 'ImageAlternateText', () => {
 			global.document.body.appendChild( editorElement );
 
 			return ClassicTestEditor.create( editorElement, {
-				plugins: [ ImageAlternateText, Image, ImageToolbar ],
+				plugins: [ ImageTextAlternative, Image, ImageToolbar ],
 				image: {
-					toolbar: [ 'imageAlternateText' ]
+					toolbar: [ 'imageTextAlternative' ]
 				}
 			} )
 			.then( newEditor => {
 				newEditor.editing.view.attachDomRoot( editorElement );
-				const plugin = newEditor.plugins.get( ImageAlternateText );
+				const plugin = newEditor.plugins.get( ImageTextAlternative );
 				const toolbarPlugin = newEditor.plugins.get( ImageToolbar );
 				const form = plugin.form;
 
@@ -197,17 +197,17 @@ describe( 'ImageAlternateText', () => {
 			global.document.body.appendChild( editorElement );
 
 			return ClassicTestEditor.create( editorElement, {
-				plugins: [ ImageAlternateText, Image, ImageToolbar ],
+				plugins: [ ImageTextAlternative, Image, ImageToolbar ],
 				image: {
-					toolbar: [ 'imageAlternateText' ]
+					toolbar: [ 'imageTextAlternative' ]
 				}
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				editor.editing.view.attachDomRoot( editorElement );
-				button = newEditor.ui.componentFactory.create( 'imageAlternateText' );
+				button = newEditor.ui.componentFactory.create( 'imageTextAlternative' );
 				imageToolbarPlugin = newEditor.plugins.get( ImageToolbar );
-				plugin = editor.plugins.get( ImageAlternateText );
+				plugin = editor.plugins.get( ImageTextAlternative );
 			} );
 		} );
 
@@ -221,7 +221,7 @@ describe( 'ImageAlternateText', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'ImageToolbar should not show when alternate text panel is visible', () => {
+		it( 'ImageToolbar should not show when text alternative panel is visible', () => {
 			setData( editor.document, '[<image src="" alt="foo bar"></image>]' );
 			button.fire( 'execute' );
 			const spy = sinon.spy( imageToolbarPlugin, 'show' );
@@ -230,7 +230,7 @@ describe( 'ImageAlternateText', () => {
 			sinon.assert.notCalled( spy );
 		} );
 
-		it( 'ImageToolbar should show when alternate text panel is not visible', () => {
+		it( 'ImageToolbar should show when text alternative panel is not visible', () => {
 			setData( editor.document, '[<image src="" alt="foo bar"></image>]' );
 			button.fire( 'execute' );
 			const spy = sinon.spy( imageToolbarPlugin, 'show' );
