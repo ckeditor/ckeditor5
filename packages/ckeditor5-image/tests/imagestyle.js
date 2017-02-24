@@ -4,9 +4,9 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ImageToolbar from '../../src/imagetoolbar';
-import ImageStyle from '../../src/imagestyle/imagestyle';
-import ImageStyleEngine from '../../src/imagestyle/imagestyleengine';
+import ImageToolbar from '../src/imagetoolbar';
+import ImageStyle from '../src/imagestyle';
+import ImageStyleEngine from '../src/imagestyle/imagestyleengine';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 

@@ -4,14 +4,14 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ImageAlternateTextEngine from '../../src/imagealternatetext/imagealternatetextengine';
-import ImageAlternateTextCommand from '../../src/imagealternatetext/imagealternatetextcommand';
+import ImageTextAlternativeEngine from '../../src/imagetextalternative/imagetextalternativeengine';
+import ImageTextAlternativeCommand from '../../src/imagetextalternative/imagetextalternativecommand';
 
-describe( 'ImageAlternateTextEngine', () => {
+describe( 'ImageTextAlternativeEngine', () => {
 	let editor;
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			plugins: [ ImageAlternateTextEngine ]
+			plugins: [ ImageTextAlternativeEngine ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
@@ -19,6 +19,6 @@ describe( 'ImageAlternateTextEngine', () => {
 	} );
 
 	it( 'should register ImageAlteranteTextCommand', () => {
-		expect( editor.commands.get( 'imageAlternateText' ) ).to.be.instanceOf( ImageAlternateTextCommand );
+		expect( editor.commands.get( 'imageTextAlternative' ) ).to.be.instanceOf( ImageTextAlternativeCommand );
 	} );
 } );

@@ -4,10 +4,10 @@
  */
 
 /**
- * @module image/utils
+ * @module image/image/utils
  */
 
-import { widgetize, isWidget } from './widget/utils';
+import { widgetize, isWidget } from '../widget/utils';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 
 const imageSymbol = Symbol( 'isImage' );

@@ -18,7 +18,7 @@ import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
-import { isImage, isImageWidget } from '../utils';
+import { isImage, isImageWidget } from '../image/utils';
 import { captionElementCreator, isCaption, getCaptionFromImage } from './utils';
 
 /**

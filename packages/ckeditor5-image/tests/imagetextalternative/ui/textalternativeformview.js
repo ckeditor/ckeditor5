@@ -5,21 +5,21 @@
 
 /* global Event */
 
-import AlternateTextFormView from '../../../src/imagealternatetext/ui/alternatetextformview';
+import TextAlternativeFormView from '../../../src/imagetextalternative/ui/textalternativeformview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
-describe( 'AlternateTextFormView', () => {
+describe( 'TextAlternativeFormView', () => {
 	let view;
 
 	beforeEach( () => {
-		view = new AlternateTextFormView( { t: () => {} } );
+		view = new TextAlternativeFormView( { t: () => {} } );
 
 		view.init();
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
-			expect( view.element.classList.contains( 'ck-alternate-text-form' ) ).to.be.true;
+			expect( view.element.classList.contains( 'cke-text-alternative-form' ) ).to.be.true;
 		} );
 
 		it( 'should create child views', () => {

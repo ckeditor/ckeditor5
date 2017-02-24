@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imagealternatetext/ui/imagealternatetextformview
+ * @module image/imagetextalternative/ui/imagetextalternativeformview
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
@@ -15,11 +15,11 @@ import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
 import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 
 /**
- * AlternateTextFormView class.
+ * TextAlternativeFormView class.
  *
  * @extends module:ui/view~View
  */
-export default class AlternateTextFormView extends View {
+export default class TextAlternativeFormView extends View {
 	/**
 	 * @inheritDoc
 	 */
@@ -63,7 +63,7 @@ export default class AlternateTextFormView extends View {
 
 			attributes: {
 				class: [
-					'ck-alternate-text-form',
+					'cke-text-alternative-form',
 				]
 			},
 
@@ -74,7 +74,7 @@ export default class AlternateTextFormView extends View {
 
 					attributes: {
 						class: [
-							'ck-alternate-text-form__actions'
+							'cke-text-alternative-form__actions'
 						]
 					},
 
@@ -121,7 +121,7 @@ export default class AlternateTextFormView extends View {
 	_createLabeledInputView() {
 		const t = this.locale.t;
 		const labeledInput = new LabeledInputView( this.locale, InputTextView );
-		labeledInput.label = t( 'Alternate image text' );
+		labeledInput.label = t( 'Text alternative' );
 
 		return labeledInput;
 	}

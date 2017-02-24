@@ -4,12 +4,12 @@
  */
 
 /**
- * @module image/imagecaption/imagecaption
+ * @module image/imagecaption
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageCaptionEngine from './imagecaptionengine';
-import '../../theme/imagecaption/theme.scss';
+import ImageCaptionEngine from './imagecaption/imagecaptionengine';
+import '../theme/imagecaption/theme.scss';
 
 /**
  * The image caption plugin.

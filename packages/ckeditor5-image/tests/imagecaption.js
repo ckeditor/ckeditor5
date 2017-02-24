@@ -6,8 +6,8 @@
 /* global window */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ImageCaption from '../../src/imagecaption/imagecaption';
-import ImageCaptionEngine from '../../src/imagecaption/imagecaptionengine';
+import ImageCaption from '../src/imagecaption';
+import ImageCaptionEngine from '../src/imagecaption/imagecaptionengine';
 
 describe( 'ImageCaption', () => {
 	let editor;

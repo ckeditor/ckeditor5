@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/ui/imageballoonpanel
+ * @module image/image/ui/imageballoonpanel
  */
 
 import throttle from '@ckeditor/ckeditor5-utils/src/lib/lodash/throttle';

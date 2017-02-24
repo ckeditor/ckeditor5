@@ -4,32 +4,32 @@
  */
 
 /**
- * @module image/imagealternatetext/imagealternatetext
+ * @module image/imagetextalternative
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import ImageAlternateTextEngine from './imagealternatetextengine';
+import ImageTextAlternativeEngine from './imagetextalternative/imagetextalternativeengine';
 import escPressHandler from '@ckeditor/ckeditor5-ui/src/bindings/escpresshandler';
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
-import ImageToolbar from '../imagetoolbar';
-import AlternateTextFormView from './ui/alternatetextformview';
-import ImageBalloonPanel from '../ui/imageballoonpanelview';
+import ImageToolbar from './imagetoolbar';
+import TextAlternativeFormView from './imagetextalternative/ui/textalternativeformview';
+import ImageBalloonPanel from './image/ui/imageballoonpanelview';
 
-import alternateTextIcon from '@ckeditor/ckeditor5-core/theme/icons/input.svg';
-import '../../theme/imagealternatetext/theme.scss';
+import textAlternativeIcon from '@ckeditor/ckeditor5-core/theme/icons/input.svg';
+import '../theme/imagetextalternative/theme.scss';
 
 /**
- * The image alternate text plugin.
+ * The image text alternative plugin.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ImageAlternateText extends Plugin {
+export default class ImageTextAlternative extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageAlternateTextEngine ];
+		return [ ImageTextAlternativeEngine ];
 	}
 
 	/**
@@ -42,12 +42,12 @@ export default class ImageAlternateText extends Plugin {
 		const defaultImageToolbarConfig = this.editor.config.get( 'image.defaultToolbar' );
 
 		if ( defaultImageToolbarConfig ) {
-			defaultImageToolbarConfig.push( 'imageAlternateText' );
+			defaultImageToolbarConfig.push( 'imageTextAlternative' );
 		}
 
 		return this._createBalloonPanel().then( panel => {
 			/**
-			 * Balloon panel containing alternate text change form.
+			 * Balloon panel containing text alternative change form.
 			 *
 			 * @member {module:image/ui/imageballoonpanel~ImageBalloonPanelView} #baloonPanel
 			 */
@@ -56,29 +56,29 @@ export default class ImageAlternateText extends Plugin {
 			/**
 			 * Form containing textarea and buttons, used to change `alt` text value.
 			 *
-			 * @member {module:image/imagealternatetext/ui/imagealternatetextformview~AlternateTextFormView} #form
+			 * @member {module:image/imagetextalternative/ui/textalternativeformview~TextAlternativeFormView} #form
 			 */
 			this.form = panel.content.get( 0 );
 		} );
 	}
 
 	/**
-	 * Creates button showing alternate text change balloon panel and registers it in
+	 * Creates button showing text alternative change balloon panel and registers it in
 	 * editor's {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
 	 *
 	 * @private
 	 */
 	_createButton() {
 		const editor = this.editor;
-		const command = editor.commands.get( 'imageAlternateText' );
+		const command = editor.commands.get( 'imageTextAlternative' );
 		const t = editor.t;
 
-		editor.ui.componentFactory.add( 'imageAlternateText', ( locale ) => {
+		editor.ui.componentFactory.add( 'imageTextAlternative', ( locale ) => {
 			const view = new ButtonView( locale );
 
 			view.set( {
-				label: t( 'Change alternate text' ),
-				icon: alternateTextIcon,
+				label: t( 'Change image text alternative' ),
+				icon: textAlternativeIcon,
 				tooltip: true
 			} );
 
@@ -100,14 +100,14 @@ export default class ImageAlternateText extends Plugin {
 		const editor = this.editor;
 
 		const panel = new ImageBalloonPanel( editor );
-		const form = new AlternateTextFormView( editor.locale );
+		const form = new TextAlternativeFormView( editor.locale );
 
 		this.listenTo( form, 'submit', () => {
-			editor.execute( 'imageAlternateText', { newValue: form.lebeledInput.inputView.element.value } );
+			editor.execute( 'imageTextAlternative', { newValue: form.lebeledInput.inputView.element.value } );
 			this._hideBalloonPanel();
 		} );
 
-		// If image toolbar is present - hide it when alternate text balloon is visible.
+		// If image toolbar is present - hide it when text alternative balloon is visible.
 		const imageToolbar = editor.plugins.get( ImageToolbar );
 
 		if ( imageToolbar ) {
@@ -152,7 +152,7 @@ export default class ImageAlternateText extends Plugin {
 	 */
 	_showBalloonPanel() {
 		const editor = this.editor;
-		const command = editor.commands.get( 'imageAlternateText' );
+		const command = editor.commands.get( 'imageTextAlternative' );
 		this.form.lebeledInput.value = command.value || '';
 		this.balloonPanel.attach();
 		this.form.lebeledInput.select();

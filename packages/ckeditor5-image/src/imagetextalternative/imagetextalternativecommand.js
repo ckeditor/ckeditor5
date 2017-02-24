@@ -4,18 +4,18 @@
  */
 
 /**
- * @module image/imagelaternatetext/imagealternatetextcommand
+ * @module image/imagelaternatetext/imagetextalternativecommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command/command';
-import { isImage } from '../utils';
+import { isImage } from '../image/utils';
 
 /**
- * The image alternate text command. It is used to change `alt` attribute on `image` elements.
+ * The image text alternative command. It is used to change `alt` attribute on `image` elements.
  *
  * @extends module:core/command/command~Command
  */
-export default class ImageAlternateTextCommand extends Command {
+export default class ImageTextAlternativeCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

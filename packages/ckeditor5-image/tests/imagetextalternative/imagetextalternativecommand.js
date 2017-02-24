@@ -4,17 +4,17 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import ImageAlternateTextCommand from '../../src/imagealternatetext/imagealternatetextcommand';
+import ImageTextAlternativeCommand from '../../src/imagetextalternative/imagetextalternativecommand';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'ImageAlternateTextCommand', () => {
+describe( 'ImageTextAlternativeCommand', () => {
 	let document, command;
 
 	beforeEach( () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {
 				document = newEditor.document;
-				command = new ImageAlternateTextCommand( newEditor );
+				command = new ImageTextAlternativeCommand( newEditor );
 
 				document.schema.registerItem( 'p', '$block' );
 
