@@ -646,11 +646,10 @@ export default class Range {
 	 * Combines all ranges from the passed array into a one range. At least one range has to be passed.
 	 * Passed ranges must not have common parts.
 	 *
-	 * The first range from the array is a reference range. If other ranges starts or ends on the exactly same position where
+	 * The first range from the array is a reference range. If other ranges start or end on the exactly same position where
 	 * the reference range, they get combined into one range.
 	 *
-	 *		[  ][]  [    ][ ][  ref range  ][ ][]  [  ]  // Passed ranges, shown sorted. "Ref range" was the first range in original array.
-	 *		        [      returned range       ]  [  ]  // The combined range.
+	 *		[  ][]  [    ][ ][             ][ ][]  [  ]  // Passed ranges, shown sorted
 	 *		[    ]                                       // The result of the function if the first range was a reference range.
 	 *	            [                           ]        // The result of the function if the third-to-seventh range was a reference range.
 	 *	                                           [  ]  // The result of the function if the last range was a reference range.
