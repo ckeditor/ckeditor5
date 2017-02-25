@@ -153,7 +153,7 @@ class ModelConverterBuilder {
 
 	/**
 	 * Registers what type of non-collapsed marker should be converted. For collapsed markers conversion, see
-	 * {@link ~fromCollapsedMarker}.
+	 * {@link #fromCollapsedMarker}.
 	 *
 	 * @chainable
 	 * @param {String} markerName Name of marker to convert.
@@ -171,7 +171,8 @@ class ModelConverterBuilder {
 	}
 
 	/**
-	 * Registers what type of collapsed marker should be converted. For non-collapsed markers conversion, see {@link ~fromMarker}.
+	 * Registers what type of collapsed marker should be converted. For non-collapsed markers conversion,
+	 * see {@link #fromMarker}.
 	 *
 	 * @chainable
 	 * @param {String} markerName Name of marker to convert.
@@ -233,8 +234,8 @@ class ModelConverterBuilder {
 	 * Creator function will be passed different values depending whether conversion is from element or from attribute:
 	 *
 	 * * from element: dispatcher's
-	 * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert insert event} parameters
-	 * will be passed,
+	 * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert insert event}
+	 * parameters will be passed,
 	 * * from attribute: there is one parameter and it is attribute value.
 	 *
 	 * This method also registers model selection to view selection converter, if conversion is from attribute.
@@ -242,7 +243,7 @@ class ModelConverterBuilder {
 	 * This method creates the converter and adds it as a callback to a proper
 	 * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher conversion dispatcher} event.
 	 *
-	 * @param {String|module:engine/view/element~ViewElement|Function} element Element created by converter or
+	 * @param {String|module:engine/view/element~Element|Function} element Element created by converter or
 	 * a function that returns view element.
 	 */
 	toElement( element ) {
