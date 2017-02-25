@@ -30,7 +30,7 @@ const graveyardName = '$graveyard';
 
 /**
  * Document tree model describes all editable data in the editor. It may contain multiple
- * {@link module:engine/model/document~Document#_roots root elements}, for example if the editor have multiple editable areas,
+ * {@link module:engine/model/document~Document#roots root elements}, for example if the editor have multiple editable areas,
  * each area will be represented by the separate root.
  *
  * All changes in the document are done by {@link module:engine/model/operation/operation~Operation operations}. To create operations in
@@ -43,8 +43,8 @@ const graveyardName = '$graveyard';
  */
 export default class Document {
 	/**
-	 * Creates an empty document instance with no {@link #_roots} (other than
-	 * a {@link #graveyard graveyard root}).
+	 * Creates an empty document instance with no {@link #roots} (other than
+	 * the {@link #graveyard graveyard root}).
 	 */
 	constructor() {
 		/**

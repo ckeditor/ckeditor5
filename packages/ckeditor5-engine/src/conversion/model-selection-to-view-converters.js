@@ -164,7 +164,7 @@ export function convertSelectionAttribute( elementCreator ) {
  * **Note:** You can use the same `elementCreator` function for this converter factory
  * and {@link module:engine/conversion/model-to-view-converters~wrapRange}.
  *
- * @see {~convertSelectionAttribute}
+ * @see module:engine/conversion/model-selection-to-view-converters~convertSelectionAttribute
  * @param {module:engine/view/attributeelement~AttributeElement|Function} elementCreator View element,
  * or function returning a view element, which will be used for wrapping.
  * @returns {Function} Selection converter.

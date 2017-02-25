@@ -651,7 +651,7 @@ export default class LiveSelection extends Selection {
 // Helper function for {@link module:engine/model/liveselection~LiveSelection#_updateAttributes}. It takes model item, checks whether
 // it is a text node (or text proxy) and if so, returns it's attributes. If not, returns `null`.
 //
-// @param {module:engine/model/item~Item}  node
+// @param {module:engine/model/item~Item|null}  node
 // @returns {Boolean}
 function getAttrsIfCharacter( node ) {
 	if ( node instanceof TextProxy || node instanceof Text ) {

@@ -7,10 +7,6 @@
  * @module engine/view/position
  */
 
-import Text from './text';
-import TextProxy from './textproxy';
-import DocumentFragment from './documentfragment';
-
 import TreeWalker from './treewalker';
 
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
@@ -52,7 +48,7 @@ export default class Position {
 	 * @type {module:engine/view/node~Node|null}
 	 */
 	get nodeAfter() {
-		if ( this.parent instanceof Text ) {
+		if ( this.parent.is( 'text' ) ) {
 			return null;
 		}
 
@@ -67,7 +63,7 @@ export default class Position {
 	 * @type {module:engine/view/node~Node|null}
 	 */
 	get nodeBefore() {
-		if ( this.parent instanceof Text ) {
+		if ( this.parent.is( 'text' ) ) {
 			return null;
 		}
 
@@ -91,7 +87,7 @@ export default class Position {
 	 * @type {Boolean}
 	 */
 	get isAtEnd() {
-		const endOffset = this.parent instanceof Text ? this.parent.data.length : this.parent.childCount;
+		const endOffset = this.parent.is( 'text' ) ? this.parent.data.length : this.parent.childCount;
 
 		return this.offset === endOffset;
 	}
@@ -172,7 +168,7 @@ export default class Position {
 	 * @returns {Array} Array with ancestors.
 	 */
 	getAncestors() {
-		if ( this.parent instanceof DocumentFragment ) {
+		if ( this.parent.is( 'documentFragment' ) ) {
 			return [ this.parent ];
 		} else {
 			return this.parent.getAncestors( { includeNode: true } );
@@ -307,7 +303,7 @@ export default class Position {
 			let node = itemOrPosition;
 
 			if ( offset == 'end' ) {
-				offset = node instanceof Text ? node.data.length : node.childCount;
+				offset = node.is( 'text' ) ? node.data.length : node.childCount;
 			} else if ( offset == 'before' ) {
 				return this.createBefore( node );
 			} else if ( offset == 'after' ) {
@@ -328,7 +324,7 @@ export default class Position {
 	 */
 	static createAfter( item ) {
 		// TextProxy is not a instance of Node so we need do handle it in specific way.
-		if ( item instanceof TextProxy ) {
+		if ( item.is( 'textProxy' ) ) {
 			return new Position( item.textNode, item.offsetInText + item.data.length );
 		}
 
@@ -353,7 +349,7 @@ export default class Position {
 	 */
 	static createBefore( item ) {
 		// TextProxy is not a instance of Node so we need do handle it in specific way.
-		if ( item instanceof TextProxy ) {
+		if ( item.is( 'textProxy' ) ) {
 			return new Position( item.textNode, item.offsetInText );
 		}
 

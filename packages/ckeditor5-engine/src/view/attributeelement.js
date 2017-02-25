@@ -50,6 +50,17 @@ export default class AttributeElement extends Element {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	is( type, name = null ) {
+		if ( !name ) {
+			return type == 'attributeElement' || super.is( type );
+		} else {
+			return ( type == 'attributeElement' && name == this.name ) || super.is( type, name );
+		}
+	}
+
+	/**
 	 * Clones provided element with priority.
 	 *
 	 * @param {Boolean} deep If set to `true` clones element and all its children recursively. When set to `false`,
@@ -99,7 +110,7 @@ function getFillerOffset() {
 	let element = this.parent;
 
 	// <p><b></b></p> needs filler -> <p><b><br></b></p>
-	while ( element instanceof AttributeElement ) {
+	while ( element && element.is( 'attributeElement' ) ) {
 		if ( element.childCount > 1 ) {
 			return null;
 		}

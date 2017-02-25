@@ -44,6 +44,13 @@ export default class Text extends Node {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	is( type ) {
+		return type == 'text';
+	}
+
+	/**
 	 * The text content.
 	 *
 	 * Setting the data fires the {@link module:engine/view/node~Node#event:change:text change event}.

@@ -22,7 +22,6 @@ import AttributeElement from '../view/attributeelement';
 import ContainerElement from '../view/containerelement';
 import EmptyElement from '../view/emptyelement';
 import UIElement from '../view/uielement';
-import ViewText from '../view/text';
 
 const ELEMENT_RANGE_START_TOKEN = '[';
 const ELEMENT_RANGE_END_TOKEN = ']';
@@ -327,7 +326,7 @@ export function parse( data, options = {} ) {
 	const ranges = rangeParser.parse( view, options.order );
 
 	// If only one element is returned inside DocumentFragment - return that element.
-	if ( view instanceof ViewDocumentFragment && view.childCount === 1 ) {
+	if ( view.is( 'documentFragment' ) && view.childCount === 1 ) {
 		view = view.getChild( 0 );
 	}
 
@@ -410,7 +409,7 @@ class RangeParser {
 	 * @param {module:engine/view/node~Node} node Staring node.
 	 */
 	_getPositions( node ) {
-		if ( node instanceof ViewDocumentFragment || node instanceof ViewElement ) {
+		if ( node.is( 'documentFragment' ) || node.is( 'element' ) ) {
 			// Copy elements into the array, when nodes will be removed from parent node this array will still have all the
 			// items needed for iteration.
 			const children = [ ...node.getChildren() ];
@@ -420,7 +419,7 @@ class RangeParser {
 			}
 		}
 
-		if ( node instanceof ViewText ) {
+		if ( node.is( 'text' ) ) {
 			const regexp = new RegExp(
 				`[${ TEXT_RANGE_START_TOKEN }${ TEXT_RANGE_END_TOKEN }\\${ ELEMENT_RANGE_END_TOKEN }\\${ ELEMENT_RANGE_START_TOKEN }]`,
 				'g'
@@ -619,11 +618,10 @@ class ViewStringify {
 	 * @param {Function} callback
 	 */
 	_walkView( root, callback ) {
-		const isElement = root instanceof ViewElement;
 		const ignore = this.ignoreRoot && this.root === root;
 
-		if ( isElement || root instanceof ViewDocumentFragment ) {
-			if ( isElement && !ignore ) {
+		if ( root.is( 'element' ) || root.is( 'documentFragment' ) ) {
+			if ( root.is( 'element' ) && !ignore ) {
 				callback( this._stringifyElementOpen( root ) );
 			}
 
@@ -636,12 +634,12 @@ class ViewStringify {
 				callback( this._stringifyElementRanges( root, offset ) );
 			}
 
-			if ( isElement && !ignore ) {
+			if ( root.is( 'element' ) && !ignore ) {
 				callback( this._stringifyElementClose( root ) );
 			}
 		}
 
-		if ( root instanceof ViewText ) {
+		if ( root.is( 'text' ) ) {
 			callback( this._stringifyTextRanges( root ) );
 		}
 	}
@@ -804,7 +802,7 @@ class ViewStringify {
 	 * @returns {String}
 	 */
 	_stringifyElementPriority( element ) {
-		if ( this.showPriority && element instanceof AttributeElement ) {
+		if ( this.showPriority && element.is( 'attributeElement' ) ) {
 			return `view-priority="${ element.priority }"`;
 		}
 
@@ -844,19 +842,17 @@ class ViewStringify {
 // @returns {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment|
 // module:engine/view/text~Text} Root node of converted elements.
 function _convertViewElements( rootNode ) {
-	const isFragment = rootNode instanceof ViewDocumentFragment;
-
-	if ( rootNode instanceof ViewElement || isFragment ) {
+	if ( rootNode.is( 'element' ) || rootNode.is( 'documentFragment' ) ) {
 		// Convert element or leave document fragment.
-		const convertedElement = isFragment ? new ViewDocumentFragment() : _convertElement( rootNode );
+		const convertedElement = rootNode.is( 'documentFragment' ) ? new ViewDocumentFragment() : _convertElement( rootNode );
 
 		// Convert all child nodes.
 		for ( let child of rootNode.getChildren() ) {
-			if ( convertedElement instanceof EmptyElement ) {
+			if ( convertedElement.is( 'emptyElement' ) ) {
 				throw new Error( `Parse error - cannot parse inside EmptyElement.` );
 			}
 
-			if ( convertedElement instanceof UIElement ) {
+			if ( convertedElement.is( 'uiElement' ) ) {
 				throw new Error( `Parse error - cannot parse inside UIElement.` );
 			}
 
@@ -895,7 +891,7 @@ function _convertElement( viewElement ) {
 	const ElementConstructor = allowedTypes[ info.type ];
 	const newElement = ElementConstructor ? new ElementConstructor( info.name ) : new ViewElement( info.name );
 
-	if ( newElement instanceof AttributeElement ) {
+	if ( newElement.is( 'attributeElement' ) ) {
 		if ( info.priority !== null ) {
 			newElement.priority = info.priority;
 		}

@@ -19,6 +19,35 @@ describe( 'AttributeElement', () => {
 		} );
 	} );
 
+	describe( 'is', () => {
+		let el;
+
+		before( () => {
+			el = new AttributeElement( 'span' );
+		} );
+
+		it( 'should return true for attributeElement/element, also with correct name and element name', () => {
+			expect( el.is( 'attributeElement' ) ).to.be.true;
+			expect( el.is( 'attributeElement', 'span' ) ).to.be.true;
+			expect( el.is( 'element' ) ).to.be.true;
+			expect( el.is( 'element', 'span' ) ).to.be.true;
+			expect( el.is( 'span' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( el.is( 'attributeElement', 'p' ) ).to.be.false;
+			expect( el.is( 'element', 'p' ) ).to.be.false;
+			expect( el.is( 'p' ) ).to.be.false;
+			expect( el.is( 'text' ) ).to.be.false;
+			expect( el.is( 'textProxy' ) ).to.be.false;
+			expect( el.is( 'containerElement' ) ).to.be.false;
+			expect( el.is( 'uiElement' ) ).to.be.false;
+			expect( el.is( 'emptyElement' ) ).to.be.false;
+			expect( el.is( 'rootElement' ) ).to.be.false;
+			expect( el.is( 'documentFragment' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'clone', () => {
 		it( 'should clone element with priority', () => {
 			const el = new AttributeElement( 'b' );
@@ -99,6 +128,12 @@ describe( 'AttributeElement', () => {
 		it( 'should return null if there is no parent container element', () => {
 			const { selection } = parse( '<attribute:b><attribute:i>[]</attribute:i>foo</attribute:b>' );
 			const attribute = selection.getFirstPosition().parent;
+
+			expect( attribute.getFillerOffset() ).to.be.null;
+		} );
+
+		it( 'should return null if there is no parent', () => {
+			const attribute = new AttributeElement( 'b' );
 
 			expect( attribute.getFillerOffset() ).to.be.null;
 		} );

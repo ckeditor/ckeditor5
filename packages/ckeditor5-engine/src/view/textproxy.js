@@ -130,6 +130,18 @@ export default class TextProxy {
 	}
 
 	/**
+	 * Checks whether given view tree object is of given type.
+	 *
+	 * Read more in {@link module:engine/view/node~Node#is}.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'textProxy';
+	}
+
+	/**
 	 * Returns ancestors array of this text proxy.
 	 *
 	 * @param {Object} options Options object.

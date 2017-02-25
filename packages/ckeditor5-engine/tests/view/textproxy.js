@@ -61,6 +61,23 @@ describe( 'TextProxy', () => {
 		} );
 	} );
 
+	describe( 'is', () => {
+		it( 'should return true for textProxy', () => {
+			expect( textProxy.is( 'textProxy' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( textProxy.is( 'text' ) ).to.be.false;
+			expect( textProxy.is( 'element' ) ).to.be.false;
+			expect( textProxy.is( 'containerElement' ) ).to.be.false;
+			expect( textProxy.is( 'attributeElement' ) ).to.be.false;
+			expect( textProxy.is( 'uiElement' ) ).to.be.false;
+			expect( textProxy.is( 'emptyElement' ) ).to.be.false;
+			expect( textProxy.is( 'rootElement' ) ).to.be.false;
+			expect( textProxy.is( 'documentFragment' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'getDocument', () => {
 		it( 'should return null if any parent has not set Document', () => {
 			expect( textProxy.document ).to.be.null;

@@ -70,6 +70,33 @@ describe( 'Element', () => {
 		} );
 	} );
 
+	describe( 'is', () => {
+		let el;
+
+		before( () => {
+			el = new Element( 'p' );
+		} );
+
+		it( 'should return true for element, element with correct name and element name', () => {
+			expect( el.is( 'element' ) ).to.be.true;
+			expect( el.is( 'element', 'p' ) ).to.be.true;
+			expect( el.is( 'p' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( el.is( 'element', 'span' ) ).to.be.false;
+			expect( el.is( 'span' ) ).to.be.false;
+			expect( el.is( 'text' ) ).to.be.false;
+			expect( el.is( 'textProxy' ) ).to.be.false;
+			expect( el.is( 'containerElement' ) ).to.be.false;
+			expect( el.is( 'attributeElement' ) ).to.be.false;
+			expect( el.is( 'uiElement' ) ).to.be.false;
+			expect( el.is( 'emptyElement' ) ).to.be.false;
+			expect( el.is( 'rootElement' ) ).to.be.false;
+			expect( el.is( 'documentFragment' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'isEmpty', () => {
 		it( 'should return true if there are no children in element', () => {
 			const element = new Element( 'p' );

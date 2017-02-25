@@ -54,6 +54,17 @@ export default class RootElement extends Element {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	is( type, name ) {
+		if ( !name ) {
+			return type == 'rootElement' || super.is( type );
+		} else {
+			return ( type == 'rootElement' && name == this.name ) || super.is( type, name );
+		}
+	}
+
+	/**
 	 * Converts `RootElement` instance to `String` containing it's name.
 	 *
 	 * @returns {String} `RootElement` instance converted to `String`.

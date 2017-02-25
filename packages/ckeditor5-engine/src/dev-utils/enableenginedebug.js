@@ -38,7 +38,6 @@ import ModelRootElement from '../model/rootelement';
 
 import ViewDocument from '../view/document';
 import ViewElement from '../view/element';
-import ViewText from '../view/text';
 import ViewDocumentFragment from '../view/documentfragment';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -167,7 +166,7 @@ function enableLoggingTools() {
 		for ( let child of this.getChildren() ) {
 			string += '\n';
 
-			if ( child instanceof ModelText ) {
+			if ( child.is( 'text' ) ) {
 				const textAttrs = mapToTags( child._attrs );
 
 				string += '\t'.repeat( level + 1 );
@@ -217,7 +216,7 @@ function enableLoggingTools() {
 		for ( let child of this.getChildren() ) {
 			string += '\n';
 
-			if ( child instanceof ModelText ) {
+			if ( child.is( 'text' ) ) {
 				const textAttrs = mapToTags( child._attrs );
 
 				string += '\t'.repeat( 1 );
@@ -369,7 +368,7 @@ function enableLoggingTools() {
 		string += '\t'.repeat( level ) + `<${ this.name }${ mapToTags( this.getAttributes() ) }>`;
 
 		for ( let child of this.getChildren() ) {
-			if ( child instanceof ViewText ) {
+			if ( child.is( 'text' ) ) {
 				string += '\n' + '\t'.repeat( level + 1 ) + child.data;
 			} else {
 				string += '\n' + child.printTree( level + 1 );
@@ -393,7 +392,7 @@ function enableLoggingTools() {
 		let string = 'ViewDocumentFragment: [';
 
 		for ( let child of this.getChildren() ) {
-			if ( child instanceof ViewText ) {
+			if ( child.is( 'text' ) ) {
 				string += '\n' + '\t'.repeat( 1 ) + child.data;
 			} else {
 				string += '\n' + child.printTree( 1 );

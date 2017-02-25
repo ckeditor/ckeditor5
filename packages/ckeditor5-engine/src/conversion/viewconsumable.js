@@ -9,9 +9,6 @@
 
 import isArray from '@ckeditor/ckeditor5-utils/src/lib/lodash/isArray';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import ViewElement from '../view/element';
-import ViewText from '../view/text';
-import ViewDocumentFragment from '../view/documentfragment';
 
 /**
  * Class used for handling consumption of view {@link module:engine/view/element~Element elements},
@@ -83,7 +80,7 @@ export default class ViewConsumable {
 		let elementConsumables;
 
 		// For text nodes and document fragments just mark them as consumable.
-		if ( element instanceof ViewText || element instanceof ViewDocumentFragment ) {
+		if ( element.is( 'text' ) || element.is( 'documentFragment' ) ) {
 			this._consumables.set( element, true );
 
 			return;
@@ -137,7 +134,7 @@ export default class ViewConsumable {
 		}
 
 		// For text nodes and document fragments return stored boolean value.
-		if ( element instanceof ViewText || element instanceof ViewDocumentFragment ) {
+		if ( element.is( 'text' ) || element.is( 'documentFragment' ) ) {
 			return elementConsumables;
 		}
 
@@ -175,7 +172,7 @@ export default class ViewConsumable {
 	 */
 	consume( element, consumables ) {
 		if ( this.test( element, consumables ) ) {
-			if ( element instanceof ViewText || element instanceof ViewDocumentFragment ) {
+			if ( element.is( 'text' ) || element.is( 'documentFragment' ) ) {
 				// For text nodes and document fragments set value to false.
 				this._consumables.set( element, false );
 			} else {
@@ -221,7 +218,7 @@ export default class ViewConsumable {
 		const elementConsumables = this._consumables.get( element );
 
 		if ( elementConsumables !== undefined ) {
-			if ( element instanceof ViewText || element instanceof ViewDocumentFragment ) {
+			if ( element.is( 'text' ) || element.is( 'documentFragment' ) ) {
 				// For text nodes and document fragments - set consumable to true.
 				this._consumables.set( element, true );
 			} else {
@@ -275,11 +272,11 @@ export default class ViewConsumable {
 
 	/**
 	 * Creates {@link module:engine/conversion/viewconsumable~ViewConsumable ViewConsumable} instance from
-	 * {@link module:engine/view/element~Element element} or {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
+	 * {@link module:engine/view/node~Node node} or {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
 	 * Instance will contain all elements, child nodes, attributes, styles and classes added for consumption.
 	 *
 	 * @static
-	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} from View element or document fragment
+	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} from View node or document fragment
 	 * from which `ViewConsumable` will be created.
 	 * @param {module:engine/conversion/viewconsumable~ViewConsumable} [instance] If provided, given `ViewConsumable` instance will be used
 	 * to add all consumables. It will be returned instead of a new instance.
@@ -289,18 +286,18 @@ export default class ViewConsumable {
 			instance = new ViewConsumable();
 		}
 
-		if ( from instanceof ViewText ) {
+		if ( from.is( 'text' ) ) {
 			instance.add( from );
 
 			return instance;
 		}
 
 		// Add `from` itself, if it is an element.
-		if ( from instanceof ViewElement ) {
+		if ( from.is( 'element' ) ) {
 			instance.add( from, ViewConsumable.consumablesFromElement( from ) );
 		}
 
-		if ( from instanceof ViewDocumentFragment ) {
+		if ( from.is( 'documentFragment' ) ) {
 			instance.add( from );
 		}
 

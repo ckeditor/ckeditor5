@@ -38,6 +38,17 @@ export default class RootEditableElement extends EditableElement {
 		this.rootName = 'main';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	is( type, name = null ) {
+		if ( !name ) {
+			return type == 'rootElement' || super.is( type );
+		} else {
+			return ( type == 'rootElement' && name == this.name ) || super.is( type, name );
+		}
+	}
+
 	get rootName() {
 		return this.getCustomProperty( rootNameSymbol );
 	}

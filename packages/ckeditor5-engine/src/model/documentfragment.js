@@ -97,6 +97,18 @@ export default class DocumentFragment {
 	}
 
 	/**
+	 * Checks whether given model tree object is of given type.
+	 *
+	 * Read more in {@link module:engine/model/node~Node#is}.
+	 *
+	 * @param {String} type
+	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'documentFragment';
+	}
+
+	/**
 	 * Gets the child at the given index. Returns `null` if incorrect index was passed.
 	 *
 	 * @param {Number} index Index of child.

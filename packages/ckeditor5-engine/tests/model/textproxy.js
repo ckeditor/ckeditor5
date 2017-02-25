@@ -100,6 +100,19 @@ describe( 'TextProxy', () => {
 		} ).to.throw( CKEditorError, /model-textproxy-wrong-length/ );
 	} );
 
+	describe( 'is', () => {
+		it( 'should return true for textProxy', () => {
+			expect( textProxy.is( 'textProxy' ) ).to.be.true;
+		} );
+
+		it( 'should return false for other accept values', () => {
+			expect( textProxy.is( 'text' ) ).to.be.false;
+			expect( textProxy.is( 'element' ) ).to.be.false;
+			expect( textProxy.is( 'documentFragment' ) ).to.be.false;
+			expect( textProxy.is( 'rootElement' ) ).to.be.false;
+		} );
+	} );
+
 	describe( 'getPath', () => {
 		it( 'should return path to the text proxy', () => {
 			expect( textProxy.getPath() ).to.deep.equal( [ 0, 5 ] );

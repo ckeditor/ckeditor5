@@ -89,7 +89,7 @@ describe( 'Range', () => {
 	describe( 'getEnlarged', () => {
 		it( 'case 1', () => {
 			expect( enlarge( '<p>f<b>{oo}</b></p><p>bar</p>' ) )
-				.to.equal( '<p>f[<b>oo</b></p>]<p>bar</p>' );
+				.to.equal( '<p>f[<b>oo</b>]</p><p>bar</p>' );
 		} );
 
 		it( 'case 2', () => {
@@ -114,7 +114,7 @@ describe( 'Range', () => {
 
 		it( 'case6', () => {
 			expect( enlarge( '<p>foo</p><p>[bar]</p><p>bom</p>' ) )
-				.to.equal( '<p>foo</p>[<p>bar</p>]<p>bom</p>' );
+				.to.equal( '<p>foo</p><p>[bar]</p><p>bom</p>' );
 		} );
 
 		function enlarge( data ) {
@@ -138,7 +138,7 @@ describe( 'Range', () => {
 
 	describe( 'getTrimmed', () => {
 		it( 'case 1', () => {
-			expect( trim( '<p>f[<b>oo</b></p>]<p>bar</p>' ) )
+			expect( trim( '<p>f[<b>oo</b>]</p><p>bar</p>' ) )
 				.to.equal( '<p>f<b>{oo}</b></p><p>bar</p>' );
 		} );
 

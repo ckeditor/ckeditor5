@@ -49,8 +49,9 @@ export default class Schema {
 		this.objects = new Set();
 
 		/**
-		 * Names of elements which have "limited" nature. They should be treated as a single container that cannot be
-		 * split by enter key.
+		 * Names of elements to which editing operations should be limited.
+		 * For example, the <kbd>Enter</kbd> should not split such elements and
+		 * <kbd>Backspace</kbd> should not be able to leave or modify such elements.
 		 *
 		 * @member {Set.<String>} module:engine/model/schema~Schema#limits
 		 */
