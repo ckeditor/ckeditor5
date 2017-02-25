@@ -43,7 +43,7 @@ import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckedito
 export default function modifySelection( dataController, selection, options = {} ) {
 	const schema = dataController.model.schema;
 	const isForward = options.direction != 'backward';
-	options.unit = options.unit ? options.unit : 'character';
+	const unit = options.unit ? options.unit : 'character';
 
 	const focus = selection.focus;
 	const walker = new TreeWalker( {
@@ -52,59 +52,59 @@ export default function modifySelection( dataController, selection, options = {}
 		direction: isForward ? 'forward' : 'backward'
 	} );
 
-	let next = walker.next();
+	const data = { walker, schema, isForward, unit };
 
-	// 1. Nothing to do here.
-	if ( next.done ) {
-		return;
+	let next;
+
+	while ( ( next = walker.next() ) ) {
+		if ( next.done ) {
+			return;
+		}
+
+		const position = tryExtendingTo( data, next.value );
+
+		if ( position ) {
+			selection.setFocus( position );
+
+			return;
+		}
 	}
+}
 
-	let value = next.value;
-
-	// 2. Focus is before/after text. Extending by text data.
+// Checks whether the selection can be extended to the the walker's next value (next position).
+function tryExtendingTo( data, value ) {
+	// If found text, we can certainly put the focus in it. Let's just find a correct position
+	// based on the unit.
 	if ( value.type == 'text' ) {
-		selection.setFocus( getCorrectPosition( walker, options.unit ) );
-
-		return;
+		return getCorrectPosition( data.walker, data.unit );
 	}
 
-	// 3. Focus is before/after element. Extend by whole element.
-	if ( value.type == ( isForward ? 'elementStart' : 'elementEnd' ) ) {
-		selection.setFocus( value.item, isForward ? 'after' : 'before' );
+	// Entering an element.
+	if ( value.type == ( data.isForward ? 'elementStart' : 'elementEnd' ) ) {
+		// If it's an object, we can select it now.
+		if ( data.schema.objects.has( value.item.name ) ) {
+			return Position.createAt( value.item, data.isForward ? 'after' : 'before' );
+		}
 
-		return;
+		// If text allowed on this position, extend to this place.
+		if ( data.schema.check( { name: '$text', inside: value.nextPosition } ) ) {
+			return value.nextPosition;
+		}
 	}
-
-	// 4. If previous scenarios are false, it means that focus is at the beginning/at the end of element and by
-	// extending we are "leaving" the element.
-	// If the element is registered as `limit` - prevent from "leaving" it.
-	if ( schema.limits.has( value.item.name ) ) {
-		return;
-	}
-
-	// Let's see what is further.
-	next = walker.next();
-
-	// 4.1. Nothing left, so let's stay where we were.
-	if ( next.done ) {
-		return;
-	}
-
-	value = next.value;
-
-	// 4.2. Text data found after leaving an element end. Put selection before it. This way extension will include
-	// "opening" element tag.
-	if ( value.type == 'text' ) {
-		selection.setFocus( value.previousPosition );
-	}
-	// 4.3. An element found after leaving previous element.
-	// When element is an object - put focus before or after that element, otherwise put it inside that element,
-	// at it's beginning or end.
+	// Leaving an element.
 	else {
-		const isObject = schema.objects.has( value.item.name );
-		const offset = isObject ? ( isForward ? 'after' : 'before' ) : ( isForward ? 0 : 'end' );
+		// If leaving a limit element, stop.
+		if ( data.schema.limits.has( value.item.name ) ) {
+			// NOTE: Fast-forward the walker until the end.
+			data.walker.skip( () => true );
 
-		selection.setFocus( value.item, offset );
+			return;
+		}
+
+		// If text allowed on this position, extend to this place.
+		if ( data.schema.check( { name: '$text', inside: value.nextPosition } ) ) {
+			return value.nextPosition;
+		}
 	}
 }
 

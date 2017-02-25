@@ -17,12 +17,7 @@ describe( 'DataController', () => {
 		dataController = new DataController( document );
 		document.schema.registerItem( 'p', '$block' );
 		document.schema.registerItem( 'x', '$block' );
-		document.schema.registerItem( 'img', '$inline' );
 
-		document.schema.allow( { name: '$text', inside: '$root' } );
-		document.schema.allow( { name: '$text', inside: 'img' } );
-		document.schema.allow( { name: '$text', inside: 'obj' } );
-		document.schema.allow( { name: '$text', inside: 'inlineObj' } );
 		document.schema.allow( { name: 'x', inside: 'p' } );
 
 		document.createRoot();
@@ -125,27 +120,6 @@ describe( 'DataController', () => {
 				} );
 
 				test(
-					'extends one element forward',
-					'<p>f[]<img></img>oo</p>',
-					'<p>f[<img></img>]oo</p>'
-				);
-
-				test(
-					'extends one non-empty element forward',
-					'<p>f[]<img>x</img>oo</p>',
-					'<p>f[<img>x</img>]oo</p>'
-				);
-
-				it( 'extends one element backward', () => {
-					setData( document, '<p>fo<img></img>[]o</p>' );
-
-					modifySelection( dataController, document.selection, { direction: 'backward' } );
-
-					expect( stringify( document.getRoot(), document.selection ) ).to.equal( '<p>fo[<img></img>]o</p>' );
-					expect( document.selection.isBackward ).to.true;
-				} );
-
-				test(
 					'unicode support - combining mark forward',
 					'<p>foo[]b̂ar</p>',
 					'<p>foo[b̂]ar</p>'
@@ -244,31 +218,29 @@ describe( 'DataController', () => {
 				} );
 
 				test(
-					'extends over boundary when next element has nested elements',
+					'stops on the first position where text is allowed - inside block',
 					'<p>a[]</p><p><x>bcd</x></p>',
 					'<p>a[</p><p>]<x>bcd</x></p>'
 				);
 
 				test(
-					'extends over element when next element has nested elements',
+					'stops on the first position where text is allowed - inside inline element',
 					'<p>a[</p><p>]<x>bcd</x>ef</p>',
-					'<p>a[</p><p><x>bcd</x>]ef</p>'
+					'<p>a[</p><p><x>]bcd</x>ef</p>'
 				);
 
 				test(
 					'extends over element when next node is a text',
-					'<p>a[]</p>bc',
-					'<p>a[</p>]bc'
+					'<p><x>a[]</x>bc</p>',
+					'<p><x>a[</x>]bc</p>'
 				);
 
-				it( 'extends over element when next node is a text (backward)', () => {
-					setData( document, 'ab<p>[]c</p>' );
-
-					modifySelection( dataController, document.selection, { direction: 'backward' } );
-
-					expect( stringify( document.getRoot(), document.selection ) ).to.equal( 'ab[<p>]c</p>' );
-					expect( document.selection.isBackward ).to.true;
-				} );
+				test(
+					'extends over element when next node is a text - backward',
+					'<p>ab<x>[]c</x></p>',
+					'<p>ab[<x>]c</x></p>',
+					{ direction: 'backward' }
+				);
 
 				it( 'shrinks over boundary of empty elements', () => {
 					setData( document, '<p>[</p><p>]</p>', { lastRangeBackward: true } );
@@ -313,15 +285,65 @@ describe( 'DataController', () => {
 					expect( document.selection.getAttribute( 'bold' ) ).to.equal( true );
 				} );
 			} );
+
+			describe( 'beyond element – skipping incorrect positions', () => {
+				beforeEach( () => {
+					document.schema.registerItem( 'quote' );
+					document.schema.allow( { name: 'quote', inside: '$root' } );
+					document.schema.allow( { name: '$block', inside: 'quote' } );
+				} );
+
+				test(
+					'skips position at the beginning of an element which does not allow text',
+					'<p>x[]</p><quote><p>y</p></quote><p>z</p>',
+					'<p>x[</p><quote><p>]y</p></quote><p>z</p>'
+				);
+
+				test(
+					'skips position at the end of an element which does not allow text - backward',
+					'<p>x</p><quote><p>y</p></quote><p>[]z</p>',
+					'<p>x</p><quote><p>y[</p></quote><p>]z</p>',
+					{ direction: 'backward' }
+				);
+
+				test(
+					'skips position at the end of an element which does not allow text',
+					'<p>x[</p><quote><p>y]</p></quote><p>z</p>',
+					'<p>x[</p><quote><p>y</p></quote><p>]z</p>'
+				);
+
+				test(
+					'skips position at the beginning of an element which does not allow text - backward',
+					'<p>x</p><quote><p>[]y</p></quote><p>z</p>',
+					'<p>x[</p><quote><p>]y</p></quote><p>z</p>',
+					{ direction: 'backward' }
+				);
+
+				test(
+					'extends to an empty block after skipping incorrect position',
+					'<p>x[]</p><quote><p></p></quote><p>z</p>',
+					'<p>x[</p><quote><p>]</p></quote><p>z</p>'
+				);
+
+				test(
+					'extends to an empty block after skipping incorrect position - backward',
+					'<p>x</p><quote><p></p></quote><p>[]z</p>',
+					'<p>x</p><quote><p>[</p></quote><p>]z</p>',
+					{ direction: 'backward' }
+				);
+			} );
 		} );
 
 		describe( 'unit=codePoint', () => {
-			test(
-				'does nothing on empty content',
-				'[]',
-				'[]',
-				{ unit: 'codePoint' }
-			);
+			it( 'does nothing on empty content', () => {
+				document.schema.allow( { name: '$text', inside: '$root' } );
+
+				setData( document, '' );
+
+				modifySelection( dataController, document.selection, { unit: 'codePoint' } );
+
+				expect( stringify( document.getRoot(), document.selection ) ).to.equal( '[]' );
+			} );
 
 			test(
 				'does nothing on empty content (with empty element)',
@@ -394,8 +416,11 @@ describe( 'DataController', () => {
 			beforeEach( () => {
 				document.schema.registerItem( 'obj' );
 				document.schema.allow( { name: 'obj', inside: '$root' } );
+				document.schema.allow( { name: '$text', inside: 'obj' } );
 				document.schema.objects.add( 'obj' );
+
 				document.schema.registerItem( 'inlineObj', '$inline' );
+				document.schema.allow( { name: '$text', inside: 'inlineObj' } );
 				document.schema.objects.add( 'inlineObj' );
 			} );
 
@@ -439,25 +464,74 @@ describe( 'DataController', () => {
 				'<p>[<inlineObj>bar</inlineObj>]foo</p>',
 				{ direction: 'backward' }
 			);
+
+			test(
+				'extends over empty inline objects - forward',
+				'<p>foo[]<inlineObj></inlineObj></p>',
+				'<p>foo[<inlineObj></inlineObj>]</p>'
+			);
+
+			test(
+				'extends over empty inline objects - backward',
+				'<p><inlineObj></inlineObj>[]foo</p>',
+				'<p>[<inlineObj></inlineObj>]foo</p>',
+				{ direction: 'backward' }
+			);
 		} );
 
 		describe( 'limits handling', () => {
 			beforeEach( () => {
-				document.schema.registerItem( 'limit' );
-				document.schema.allow( { name: 'limit', inside: '$root' } );
-				document.schema.allow( { name: '$text', inside: 'limit' } );
+				document.schema.registerItem( 'inlineLimit' );
+				document.schema.allow( { name: 'inlineLimit', inside: '$block' } );
+				document.schema.allow( { name: '$text', inside: 'inlineLimit' } );
+
+				document.schema.registerItem( 'blockLimit' );
+				document.schema.allow( { name: 'blockLimit', inside: '$root' } );
+				document.schema.allow( { name: 'p', inside: 'blockLimit' } );
+
+				document.schema.limits.add( 'inlineLimit' );
+				document.schema.limits.add( 'blockLimit' );
 			} );
 
 			test(
-				'should not extend to outside of limit element',
-				'<limit>foo[]</limit>',
-				'<limit>foo[]</limit>'
+				'should not extend to outside of inline limit element',
+				'<p>x<inlineLimit>foo[]</inlineLimit>x</p>',
+				'<p>x<inlineLimit>foo[]</inlineLimit>x</p>'
 			);
 
 			test(
-				'should not extend to outside of limit element - backward',
-				'<limit>[]foo</limit>',
-				'<limit>[]foo</limit>',
+				'should not extend to outside of inline limit element - backward',
+				'<p>x<inlineLimit>[]foo</inlineLimit>x</p>',
+				'<p>x<inlineLimit>[]foo</inlineLimit>x</p>',
+				{ direction: 'backward' }
+			);
+
+			test(
+				'should not extend to outside of block limit element',
+				'<p>x</p><blockLimit><p>foo[]</p></blockLimit><p>x</p>',
+				'<p>x</p><blockLimit><p>foo[]</p></blockLimit><p>x</p>'
+			);
+
+			test(
+				'should not extend to outside of block limit element - backward',
+				'<p>x</p><blockLimit><p>[]foo</p></blockLimit><p>x</p>',
+				'<p>x</p><blockLimit><p>[]foo</p></blockLimit><p>x</p>',
+				{ direction: 'backward' }
+			);
+
+			// This may seem counterintuitive but it makes sense. The limit element means
+			// that it can't be left or modified from inside. If you want the same behavior from outside
+			// register it as an object.
+			test(
+				'should enter a limit element',
+				'<p>foo[]</p><blockLimit><p>x</p></blockLimit>',
+				'<p>foo[</p><blockLimit><p>]x</p></blockLimit>'
+			);
+
+			test(
+				'should enter a limit element - backward',
+				'<blockLimit><p>x</p></blockLimit><p>[]foo</p>',
+				'<blockLimit><p>x[</p></blockLimit><p>]foo</p>',
 				{ direction: 'backward' }
 			);
 		} );
