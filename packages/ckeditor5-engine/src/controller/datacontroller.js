@@ -29,7 +29,7 @@ import deleteContent from './deletecontent';
 import modifySelection from './modifyselection';
 import getSelectedContent from './getselectedcontent';
 
-import { remove } from '@ckeditor/ckeditor5-engine/src/model/writer';
+import { remove } from '../model/writer';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
