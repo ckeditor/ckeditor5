@@ -263,16 +263,21 @@ class ModelConverterBuilder {
 	 * will be used. Keep in mind that when you provide view element instance or creator function, it has to be/return a
 	 * proper type of view element: {@link module:engine/view/uielement~UIElement UIElement}.
 	 *
-	 *		buildModelConverter().for( dispatcher ).fromMarker( 'comment' ).toStamp( 'span' );
-	 *
-	 *		buildModelConverter().for( dispatcher ).fromMarker( 'comment' ).toStamp( new UIElement( 'span' ) );
+	 *		buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( 'span' );
 	 *
 	 *		buildModelConverter().for( dispatcher )
-	 *			.fromMarker( 'comment' )
+	 *			.fromMarker( 'search' )
+	 *			.toStamp( new UIElement( 'span', { 'data-name': 'search' } ) );
+	 *
+	 *		buildModelConverter().for( dispatcher )
+	 *			.fromMarker( 'search' )
 	 *			.toStamp( ( data ) => new UIElement( 'span', { 'data-name': data.marker.getName() ) );
 	 *
 	 * Creator function provides
 	 * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert insert event} parameters.
+	 *
+	 * See how markers {module:engine/model/buildviewconverter~ViewConverterBuilder#toMarker view -> model serialization}
+	 * works to find out what view element format is the best for you.
 	 *
 	 * @param {String|module:engine/view/element~UIElement|Function} element UIElement created by converter or
 	 * a function that returns view element.

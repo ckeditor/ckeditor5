@@ -370,6 +370,7 @@ class ViewConverterBuilder {
 	 * 		{ name: '$marker', attribute: { data-name: /^\w/ } }
 	 *
 	 * There are two ways of creating this element:
+	 *
 	 * 1. Makes sure that converted view element will have property `data-name` then converter will
 	 * automatically take this property value. In this case there is no need to provide creator function.
 	 * For the following view:
@@ -381,11 +382,12 @@ class ViewConverterBuilder {
 	 *		buildViewConverter().for( dispatcher ).fromElement( 'marker' ).toMarker();
 	 *
 	 * 2. Creates element by creator:
+	 *
 	 * For the following view:
 	 *
 	 * 		<span foo="search"></span>foo<span foo="search"></span>
 	 *
-	 * converter should looks like this:
+	 * converter should look like this:
 	 *
 	 * 		buildViewConverter().for( dispatcher ).from( { name: 'span', { attribute: foo: /^\w/ } } ).toMarker( ( data ) => {
 	 * 			return new Element( '$marker', { 'data-name': data.getAttribute( 'foo' ) } );
