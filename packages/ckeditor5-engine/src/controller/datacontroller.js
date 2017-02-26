@@ -355,7 +355,7 @@ function extractMarkersDataFromModelElement( documentFragment ) {
 		for ( const value of walker ) {
 			// Check if current element is a marker stamp.
 			if ( value.item.name == '$marker' ) {
-				const markerName = value.item.getAttribute( 'marker-name' );
+				const markerName = value.item.getAttribute( 'data-name' );
 				const currentPosition = ModelPosition.createBefore( value.item );
 
 				// When marker of given name is not stored it means that we have found the beginning of the range.

@@ -260,7 +260,7 @@ class ModelConverterBuilder {
 	 *
 	 * Method accepts various ways of providing how the view element will be created. You can pass view element name as
 	 * `string`, view element instance which will be cloned and used, or creator function which returns view element that
-	 * will be used. Keep in mind that when you view element instance or creator function, it has to be/return a
+	 * will be used. Keep in mind that when you provide view element instance or creator function, it has to be/return a
 	 * proper type of view element: {@link module:engine/view/uielement~UIElement UIElement}.
 	 *
 	 *		buildModelConverter().for( dispatcher ).fromMarker( 'comment' ).toStamp( 'span' );

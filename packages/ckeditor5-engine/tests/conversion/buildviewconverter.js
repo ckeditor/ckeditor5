@@ -191,19 +191,19 @@ describe( 'View converter builder', () => {
 	} );
 
 	it( 'should convert from pattern to marker', () => {
-		buildViewConverter().for( dispatcher ).from( { attribute: { 'marker-name': 'search' } } ).toMarker();
+		buildViewConverter().for( dispatcher ).from( { attribute: { 'data-name': 'search' } } ).toMarker();
 
-		const viewElement = new ViewAttributeElement( 'span', { 'marker-name': 'search' } );
+		const viewElement = new ViewAttributeElement( 'span', { 'data-name': 'search' } );
 
 		const result = dispatcher.convert( viewElement, objWithContext );
 		modelRoot.appendChildren( result );
 
-		expect( modelToString( result ) ).to.equal( '<$marker marker-name="search"></$marker>' );
+		expect( modelToString( result ) ).to.equal( '<$marker data-name="search"></$marker>' );
 	} );
 
 	it( 'should convert from element to marker using creator function', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'marker' ).toMarker( ( data ) => {
-			return new ModelElement( '$marker', { 'marker-name': data.getAttribute( 'class' ) } );
+			return new ModelElement( '$marker', { 'data-name': data.getAttribute( 'class' ) } );
 		} );
 
 		const element = new ViewAttributeElement( 'marker', { class: 'search' } );
@@ -211,7 +211,7 @@ describe( 'View converter builder', () => {
 		const result = dispatcher.convert( element, objWithContext );
 		modelRoot.appendChildren( result );
 
-		expect( modelToString( result ) ).to.equal( '<$marker marker-name="search"></$marker>' );
+		expect( modelToString( result ) ).to.equal( '<$marker data-name="search"></$marker>' );
 	} );
 
 	it( 'should convert from multiple view entities to marker', () => {
@@ -219,19 +219,19 @@ describe( 'View converter builder', () => {
 
 		buildViewConverter().for( dispatcher )
 			.fromElement( 'marker' )
-			.from( { attribute: { 'marker-name': 'search' } } )
+			.from( { attribute: { 'data-name': 'search' } } )
 			.toMarker();
 
 		const viewElement = new ViewContainerElement( 'p', null, [
-			new ViewAttributeElement( 'marker', { 'marker-name': 'comment' } ),
-			new ViewAttributeElement( 'span', { 'marker-name': 'search' } )
+			new ViewAttributeElement( 'marker', { 'data-name': 'comment' } ),
+			new ViewAttributeElement( 'span', { 'data-name': 'search' } )
 		] );
 
 		const result = dispatcher.convert( viewElement, objWithContext );
 		modelRoot.appendChildren( result );
 
 		expect( modelToString( result ) ).to.equal(
-			'<paragraph><$marker marker-name="comment"></$marker><$marker marker-name="search"></$marker></paragraph>'
+			'<paragraph><$marker data-name="comment"></$marker><$marker data-name="search"></$marker></paragraph>'
 		);
 	} );
 
@@ -255,22 +255,22 @@ describe( 'View converter builder', () => {
 
 	it( 'should throw an error when model element returned by creator has not valid name', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'marker' ).toMarker( () => {
-			return new ModelElement( 'element', { 'marker-name': 'search' } );
+			return new ModelElement( 'element', { 'data-name': 'search' } );
 		} );
 
-		const element = new ViewAttributeElement( 'marker', { 'marker-name': 'search' } );
+		const element = new ViewAttributeElement( 'marker', { 'data-name': 'search' } );
 
 		expect( () => {
 			dispatcher.convert( element, objWithContext );
 		} ).to.throw( CKEditorError, /^build-view-converter-invalid-marker/ );
 	} );
 
-	it( 'should throw an error when model element returned by creator has not valid marker-name attribute', () => {
+	it( 'should throw an error when model element returned by creator has not valid data-name attribute', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'marker' ).toMarker( () => {
 			return new ModelElement( '$marker', { 'foo': 'search' } );
 		} );
 
-		const element = new ViewAttributeElement( 'marker', { 'marker-name': 'search' } );
+		const element = new ViewAttributeElement( 'marker', { 'data-name': 'search' } );
 
 		expect( () => {
 			dispatcher.convert( element, objWithContext );

@@ -231,13 +231,13 @@ describe( 'DataController', () => {
 			data.set(
 				'<p>' +
 					'F' +
-					'<m marker-name="comment"></m>' +
+					'<m data-name="comment"></m>' +
 					'o' +
-					'<m marker-name="search"></m>' +
+					'<m data-name="search"></m>' +
 					'o ba' +
-					'<m marker-name="comment"></m>' +
+					'<m data-name="comment"></m>' +
 					'r bi' +
-					'<m marker-name="search"></m>' +
+					'<m data-name="search"></m>' +
 					'z' +
 				'</p>'
 			);
@@ -258,7 +258,7 @@ describe( 'DataController', () => {
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 			buildViewConverter().for( data.viewToModel ).fromElement( 'm' ).toMarker();
 
-			data.set( '<p>F<m marker-name="comment"></m>o<m marker-name="search"></m>o ba</m>r biz</p>' );
+			data.set( '<p>F<m data-name="comment"></m>o<m data-name="search"></m>o ba</m>r biz</p>' );
 
 			expect( getData( modelDocument, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo bar biz</paragraph>' );
 			expect( Array.from( modelDocument.markers ).length ).to.equal( 2 );
@@ -481,9 +481,9 @@ describe( 'DataController', () => {
 			const spy = sinon.spy();
 			const content = new ModelDocumentFragment( [
 				new ModelText( 'x' ),
-				new ModelElement( '$marker', { 'marker-name': 'search' } ),
+				new ModelElement( '$marker', { 'data-name': 'search' } ),
 				new ModelText( 'y' ),
-				new ModelElement( '$marker', { 'marker-name': 'search' } ),
+				new ModelElement( '$marker', { 'data-name': 'search' } ),
 				new ModelText( 'z' )
 			] );
 

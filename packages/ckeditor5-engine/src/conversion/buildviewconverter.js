@@ -365,16 +365,16 @@ class ViewConverterBuilder {
 	/**
 	 * Registers how model element marking marker range will be created by converter.
 	 *
-	 * Element which marking marker range (marker stamp) has to match the following pattern:
+	 * Created element has to match the following pattern:
 	 *
-	 * 		{ name: '$marker', attribute: { marker-name: /^\w/ } }
+	 * 		{ name: '$marker', attribute: { data-name: /^\w/ } }
 	 *
 	 * There are two ways of creating this element:
-	 * 1. Makes sure that converted view element will have property `marker-name` then converter will
-	 * automatically take this property value. In this case there no need to provide creator function.
+	 * 1. Makes sure that converted view element will have property `data-name` then converter will
+	 * automatically take this property value. In this case there is no need to provide creator function.
 	 * For the following view:
 	 *
-	 *		<marker marker-name="search"></marker>foo<marker marker-name="search"></marker>
+	 *		<marker data-name="search"></marker>foo<marker data-name="search"></marker>
 	 *
 	 * converter should look like this:
 	 *
@@ -388,7 +388,7 @@ class ViewConverterBuilder {
 	 * converter should looks like this:
 	 *
 	 * 		buildViewConverter().for( dispatcher ).from( { name: 'span', { attribute: foo: /^\w/ } } ).toMarker( ( data ) => {
-	 * 			return new Element( '$marker', { 'marker-name': data.getAttribute( 'foo' ) } );
+	 * 			return new Element( '$marker', { 'data-name': data.getAttribute( 'foo' ) } );
 	 * 		} );
 	 *
 	 * @param {Function} [creator] Creator function.
@@ -412,11 +412,11 @@ class ViewConverterBuilder {
 					modelElement = creator( data.input );
 				// When there is no creator then create model element basing on data from view element.
 				} else {
-					modelElement = new ModelElement( '$marker', { 'marker-name': data.input.getAttribute( 'marker-name' ) } );
+					modelElement = new ModelElement( '$marker', { 'data-name': data.input.getAttribute( 'data-name' ) } );
 				}
 
 				// Check if model element is correct (has proper name and property).
-				if ( modelElement.name != '$marker' || typeof modelElement.getAttribute( 'marker-name' ) != 'string' ) {
+				if ( modelElement.name != '$marker' || typeof modelElement.getAttribute( 'data-name' ) != 'string' ) {
 					throw new CKEditorError(
 						'build-view-converter-invalid-marker: Invalid model element to mark marker range.'
 					);
