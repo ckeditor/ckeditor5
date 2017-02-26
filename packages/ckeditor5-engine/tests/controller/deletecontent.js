@@ -280,6 +280,37 @@ describe( 'DataController', () => {
 				expect( spyMerge.called ).to.be.false;
 				expect( spyRemove.called ).to.be.true;
 			} );
+
+			describe( 'object elements', () => {
+				beforeEach( () => {
+					const schema = doc.schema;
+
+					schema.registerItem( 'blockWidget' );
+					schema.registerItem( 'nestedEditable' );
+
+					schema.allow( { name: 'blockWidget', inside: '$root' } );
+
+					schema.allow( { name: 'nestedEditable', inside: 'blockWidget' } );
+					schema.allow( { name: '$text', inside: 'nestedEditable' } );
+
+					schema.objects.add( 'blockWidget' );
+					schema.limits.add( 'nestedEditable' );
+				} );
+
+				test(
+					'does not merge an object element (if it is first)',
+					'<blockWidget><nestedEditable>fo[o</nestedEditable></blockWidget><paragraph>b]ar</paragraph>',
+					'<blockWidget><nestedEditable>fo[]</nestedEditable></blockWidget><paragraph>ar</paragraph>',
+					{ merge: true }
+				);
+
+				test(
+					'does not merge an object element (if it is second)',
+					'<paragraph>ba[r</paragraph><blockWidget><nestedEditable>f]oo</nestedEditable></blockWidget>',
+					'<paragraph>ba[]</paragraph><blockWidget><nestedEditable>oo</nestedEditable></blockWidget>',
+					{ merge: true }
+				);
+			} );
 		} );
 
 		describe( 'in element selections scenarios', () => {
@@ -400,41 +431,109 @@ describe( 'DataController', () => {
 			} );
 		} );
 
-		describe( 'integration with limit elements', () => {
+		describe( 'integration with inline limit elements', () => {
 			beforeEach( () => {
 				doc = new Document();
 				doc.createRoot();
 
 				const schema = doc.schema;
 
-				schema.registerItem( 'limit' );
-				schema.allow( { name: 'limit', inside: '$root' } );
-				schema.allow( { name: '$text', inside: 'limit' } );
-				schema.limits.add( 'limit' );
+				schema.registerItem( 'inlineLimit' );
+				schema.allow( { name: 'inlineLimit', inside: '$root' } );
+				schema.allow( { name: '$text', inside: 'inlineLimit' } );
+				schema.limits.add( 'inlineLimit' );
+
+				schema.allow( { name: '$inline', inside: '$root' } );
+
+				schema.registerItem( 'x' );
+				schema.allow( { name: '$text', inside: 'x' } );
+				schema.allow( { name: 'x', inside: '$root' } );
 			} );
 
 			test(
-				'should delete inside limit element',
-				'<limit>foo [bar] baz</limit>',
-				'<limit>foo [] baz</limit>'
+				'should delete inside inline limit element',
+				'<inlineLimit>foo [bar] baz</inlineLimit>',
+				'<inlineLimit>foo [] baz</inlineLimit>'
 			);
 
 			test(
-				'should delete whole limit element',
-				'[<limit>foo bar</limit>]',
-				'[]'
+				'should delete whole inline limit element',
+				'x[<inlineLimit>foo bar</inlineLimit>]x',
+				'x[]x'
 			);
 
 			test(
-				'should delete from two limit elements',
-				'<limit>foo [bar</limit><limit>baz] qux</limit>',
-				'<limit>foo []</limit><limit> qux</limit>'
+				'should delete from two inline limit elements',
+				'<inlineLimit>foo [bar</inlineLimit><inlineLimit>baz] qux</inlineLimit>',
+				'<inlineLimit>foo []</inlineLimit><inlineLimit> qux</inlineLimit>'
 			);
 
 			test(
-				'should delete from two limit elements - merge',
-				'<limit>foo [bar</limit><limit>baz] qux</limit>',
-				'<limit>foo [] qux</limit>',
+				'merge option should be ignored if both elements are limits',
+				'<inlineLimit>foo [bar</inlineLimit><inlineLimit>baz] qux</inlineLimit>',
+				'<inlineLimit>foo []</inlineLimit><inlineLimit> qux</inlineLimit>',
+				{ merge: true }
+			);
+
+			test(
+				'merge option should be ignored if the first element is a limit',
+				'<inlineLimit>foo [bar</inlineLimit><x>baz] qux</x>',
+				'<inlineLimit>foo []</inlineLimit><x> qux</x>',
+				{ merge: true }
+			);
+
+			test(
+				'merge option should be ignored if the second element is a limit',
+				'<x>baz [qux</x><inlineLimit>foo] bar</inlineLimit>',
+				'<x>baz []</x><inlineLimit> bar</inlineLimit>',
+				{ merge: true }
+			);
+		} );
+
+		describe( 'integration with block limit elements', () => {
+			beforeEach( () => {
+				doc = new Document();
+				doc.createRoot();
+
+				const schema = doc.schema;
+
+				schema.registerItem( 'blockLimit' );
+				schema.allow( { name: 'blockLimit', inside: '$root' } );
+				schema.allow( { name: '$block', inside: 'blockLimit' } );
+				schema.limits.add( 'blockLimit' );
+
+				schema.registerItem( 'paragraph', '$block' );
+			} );
+
+			test(
+				'should delete inside block limit element',
+				'<blockLimit><paragraph>fo[o</paragraph><paragraph>b]ar</paragraph></blockLimit>',
+				'<blockLimit><paragraph>fo[]</paragraph><paragraph>ar</paragraph></blockLimit>'
+			);
+
+			test(
+				'should delete inside block limit element',
+				'<blockLimit><paragraph>fo[o</paragraph><paragraph>b]ar</paragraph></blockLimit>',
+				'<blockLimit><paragraph>fo[]ar</paragraph></blockLimit>',
+				{ merge: true }
+			);
+
+			test(
+				'should delete whole block limit element',
+				'<paragraph>x</paragraph>[<blockLimit><paragraph>foo</paragraph></blockLimit>]<paragraph>x</paragraph>',
+				'<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>x</paragraph>'
+			);
+
+			test(
+				'should delete from two block limit elements',
+				'<blockLimit><paragraph>foo [bar</paragraph></blockLimit><blockLimit><paragraph>baz] qux</paragraph></blockLimit>',
+				'<blockLimit><paragraph>foo []</paragraph></blockLimit><blockLimit><paragraph> qux</paragraph></blockLimit>'
+			);
+
+			test(
+				'merge option should be ignored if any of the elements is a limit',
+				'<blockLimit><paragraph>foo [bar</paragraph></blockLimit><blockLimit><paragraph>baz] qux</paragraph></blockLimit>',
+				'<blockLimit><paragraph>foo []</paragraph></blockLimit><blockLimit><paragraph> qux</paragraph></blockLimit>',
 				{ merge: true }
 			);
 		} );

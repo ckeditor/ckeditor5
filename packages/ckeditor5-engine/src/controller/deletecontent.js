@@ -21,6 +21,8 @@ import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
  * @param {Boolean} [options.merge=false] Merge elements after removing the contents of the selection.
  * For example, `<h>x[x</h><p>y]y</p>` will become: `<h>x^y</h>` with the option enabled
  * and: `<h>x^</h><p>y</p>` without it.
+ * Note: {@link module:engine/model/schema~Schema#objects object} and {@link module:engine/model/schema~Schema#limits limit}
+ * elements will not be merged.
  */
 export default function deleteContent( selection, batch, options = {} ) {
 	if ( selection.isCollapsed ) {
@@ -46,25 +48,7 @@ export default function deleteContent( selection, batch, options = {} ) {
 	// as it's hard to imagine what should actually be the default behavior. Usually, specific features will
 	// want to override that behavior anyway.
 	if ( options.merge ) {
-		const endPath = endPos.path;
-		const mergeEnd = Math.min( startPos.path.length - 1, endPath.length - 1 );
-		let mergeDepth = compareArrays( startPos.path, endPath );
-
-		if ( typeof mergeDepth == 'number' ) {
-			for ( ; mergeDepth < mergeEnd; mergeDepth++ ) {
-				const mergePath = startPos.path.slice( 0, mergeDepth );
-				mergePath.push( startPos.path[ mergeDepth ] + 1 );
-
-				const mergePos = new Position( endPos.root, mergePath );
-				const nextNode = mergePos.nodeAfter;
-
-				if ( nextNode.childCount > 0 ) {
-					batch.merge( mergePos );
-				} else {
-					batch.remove( nextNode );
-				}
-			}
-		}
+		mergeBranches( batch, startPos, endPos );
 	}
 
 	selection.collapse( startPos );
@@ -81,9 +65,42 @@ export default function deleteContent( selection, batch, options = {} ) {
 	endPos.detach();
 }
 
+function mergeBranches( batch, startPos, endPos ) {
+	const endPath = endPos.path;
+	const mergeEnd = Math.min( startPos.path.length - 1, endPath.length - 1 );
+	let mergeDepth = compareArrays( startPos.path, endPath );
+
+	if ( typeof mergeDepth == 'number' ) {
+		for ( ; mergeDepth < mergeEnd; mergeDepth++ ) {
+			const mergePath = startPos.path.slice( 0, mergeDepth );
+			mergePath.push( startPos.path[ mergeDepth ] + 1 );
+
+			const mergePos = new Position( endPos.root, mergePath );
+			const previousNode = mergePos.nodeBefore;
+			const nextNode = mergePos.nodeAfter;
+
+			if ( !checkCanBeMerged( previousNode ) || !checkCanBeMerged( nextNode ) ) {
+				return;
+			}
+
+			if ( nextNode.childCount > 0 ) {
+				batch.merge( mergePos );
+			} else {
+				batch.remove( nextNode );
+			}
+		}
+	}
+}
+
 function shouldAutoparagraph( doc, position ) {
 	const isTextAllowed = doc.schema.check( { name: '$text', inside: position } );
 	const isParagraphAllowed = doc.schema.check( { name: 'paragraph', inside: position } );
 
 	return !isTextAllowed && isParagraphAllowed;
+}
+
+function checkCanBeMerged( element ) {
+	const schema = element.document.schema;
+
+	return !schema.objects.has( element.name ) && !schema.limits.has( element.name );
 }

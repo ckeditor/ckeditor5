@@ -577,7 +577,7 @@ describe( 'DataController', () => {
 			setData( doc, '<limit>foo[</limit><limit>]bar</limit>' );
 			insertHelper( 'baz' );
 
-			expect( getData( doc ) ).to.equal( '<limit>foobaz[]bar</limit>' );
+			expect( getData( doc ) ).to.equal( '<limit>foobaz[]</limit><limit>bar</limit>' );
 		} );
 
 		it( 'should not insert disallowed elements inside limit elements', () => {
