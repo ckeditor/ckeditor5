@@ -218,20 +218,24 @@ describe( 'View converter builder', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
 		buildViewConverter().for( dispatcher )
-			.fromElement( 'marker' )
-			.from( { attribute: { 'data-name': 'search' } } )
+			.from( { attribute: { 'foo': 'marker' } } )
+			.from( { attribute: { 'bar': 'marker' } } )
+			.from( { attribute: { 'foo': 'marker', 'bar': 'marker' } } )
 			.toMarker();
 
 		const viewElement = new ViewContainerElement( 'p', null, [
-			new ViewAttributeElement( 'marker', { 'data-name': 'comment' } ),
-			new ViewAttributeElement( 'span', { 'data-name': 'search' } )
+			new ViewAttributeElement( 'span', { 'foo': 'marker', 'data-name': 'marker1' } ),
+			new ViewAttributeElement( 'span', { 'bar': 'marker', 'data-name': 'marker2' } ),
+			new ViewAttributeElement( 'span', { 'foo': 'marker', 'bar': 'marker', 'data-name': 'marker3' } )
 		] );
 
 		const result = dispatcher.convert( viewElement, objWithContext );
 		modelRoot.appendChildren( result );
 
 		expect( modelToString( result ) ).to.equal(
-			'<paragraph><$marker data-name="comment"></$marker><$marker data-name="search"></$marker></paragraph>'
+			'<paragraph>' +
+				'<$marker data-name="marker1"></$marker><$marker data-name="marker2"></$marker><$marker data-name="marker3"></$marker>' +
+			'</paragraph>'
 		);
 	} );
 

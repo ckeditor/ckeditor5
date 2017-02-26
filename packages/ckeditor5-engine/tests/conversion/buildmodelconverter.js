@@ -528,6 +528,17 @@ describe( 'Model converter builder', () => {
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			} );
 		} );
+
+		it( 'should overwrite default priority', () => {
+			range = ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 );
+
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( 'normal' );
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).withPriority( 'high' ).toStamp( 'high' );
+
+			dispatcher.convertMarker( 'addMarker', 'search', range );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<high></high>obar</p></div>' );
+		} );
 	} );
 
 	describe( 'withPriority', () => {
