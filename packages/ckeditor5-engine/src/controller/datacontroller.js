@@ -205,7 +205,7 @@ export default class DataController {
 			this.model.selection.clearAttributes();
 
 			// Parse data to model and extract markers from parsed document fragment.
-			const { documentFragment, markersData } = extractMarkersDataFromModelElement( this.parse( data ) );
+			const { documentFragment, markersData } = extractMarkersFromModelFragment( this.parse( data ) );
 
 			// Initial batch should be ignored by features like undo, etc.
 			const batch = this.model.batch( 'transparent' );
@@ -282,7 +282,7 @@ export default class DataController {
 	 * changes will be added to a new batch.
 	 */
 	insertContent( content, selection, batch ) {
-		const { documentFragment } = extractMarkersDataFromModelElement( content );
+		const { documentFragment } = extractMarkersFromModelFragment( content );
 		this.fire( 'insertContent', { content: documentFragment, selection, batch } );
 	}
 
@@ -340,7 +340,7 @@ mix( DataController, EmitterMixin );
 //
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Model DocumentFragment.
 // @returns {Object} Object with markers data and cleaned up document fragment.
-function extractMarkersDataFromModelElement( documentFragment ) {
+function extractMarkersFromModelFragment( documentFragment ) {
 	const markersData = new Map();
 
 	// Creates ModelTreeWalker with given start position.
