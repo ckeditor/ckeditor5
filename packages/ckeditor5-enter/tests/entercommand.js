@@ -26,7 +26,17 @@ describe( 'EnterCommand', () => {
 				schema.registerItem( 'img', '$inline' );
 				schema.registerItem( 'p', '$block' );
 				schema.registerItem( 'h', '$block' );
+				schema.registerItem( 'inlineLimit' );
+				schema.registerItem( 'blockLimit' );
+
+				schema.allow( { name: 'inlineLimit', inside: 'p' } );
+				schema.allow( { name: '$text', inside: 'inlineLimit' } );
 				schema.allow( { name: '$text', inside: '$root' } );
+				schema.allow( { name: 'blockLimit', inside: '$root' } );
+				schema.allow( { name: 'p', inside: 'blockLimit' } );
+
+				schema.limits.add( 'inlineLimit' );
+				schema.limits.add( 'blockLimit' );
 			} );
 	} );
 
@@ -105,6 +115,30 @@ describe( 'EnterCommand', () => {
 				'leaves one empty element after two were fully selected',
 				'<p>[abc</p><p>def]</p>',
 				'<p>[]</p>'
+			);
+
+			test(
+				'should not break inline limit elements - collapsed',
+				'<p><inlineLimit>foo[]bar</inlineLimit></p>',
+				'<p><inlineLimit>foo[]bar</inlineLimit></p>'
+			);
+
+			test(
+				'should not break inline limit elements',
+				'<p><inlineLimit>foo[bar]baz</inlineLimit></p>',
+				'<p><inlineLimit>foo[bar]baz</inlineLimit></p>'
+			);
+
+			test(
+				'should not break inline limit elements - selection partially inside',
+				'<p><inlineLimit>ba[r</inlineLimit></p><p>f]oo</p>',
+				'<p><inlineLimit>ba[r</inlineLimit></p><p>f]oo</p>'
+			);
+
+			test(
+				'should break paragraph in blockLimit',
+				'<blockLimit><p>foo[]bar</p></blockLimit>',
+				'<blockLimit><p>foo</p><p>[]bar</p></blockLimit>'
 			);
 
 			it( 'leaves one empty element after two were fully selected (backward)', () => {

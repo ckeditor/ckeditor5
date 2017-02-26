@@ -24,7 +24,7 @@ export default class EnterCommand extends Command {
 		const batch = doc.batch();
 
 		doc.enqueueChanges( () => {
-			enterBlock( this.editor.data, batch, doc.selection );
+			enterBlock( this.editor.data, batch, doc.selection, doc.schema );
 
 			this.fire( 'afterExecute', { batch } );
 		} );
@@ -36,11 +36,17 @@ export default class EnterCommand extends Command {
 // @param {engine.controller.DataController} dataController
 // @param {module:engine/model/batch~Batch} batch A batch to which the deltas will be added.
 // @param {module:engine/model/selection~Selection} selection Selection on which the action should be performed.
-function enterBlock( dataController, batch, selection ) {
+// @param {module:engine/model/schema~Schema} schema
+function enterBlock( dataController, batch, selection, schema ) {
 	const isSelectionEmpty = selection.isCollapsed;
 	const range = selection.getFirstRange();
 	const startElement = range.start.parent;
 	const endElement = range.end.parent;
+
+	// Do nothing if selection starts or ends inside `limit` elements.
+	if ( schema.limits.has( startElement.name ) || schema.limits.has( endElement.name ) ) {
+		return;
+	}
 
 	// Don't touch the root.
 	if ( startElement.root == startElement ) {
