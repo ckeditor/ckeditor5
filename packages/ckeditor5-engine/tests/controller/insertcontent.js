@@ -558,6 +558,8 @@ describe( 'DataController', () => {
 
 			schema.registerItem( 'disallowedElement' );
 			schema.allow( { name: 'disallowedElement', inside: '$clipboardHolder' } );
+
+			schema.registerItem( 'paragraph', '$block' );
 		} );
 
 		it( 'should insert limit element', () => {
@@ -585,6 +587,20 @@ describe( 'DataController', () => {
 			insertHelper( '<disallowedElement></disallowedElement>' );
 
 			expect( getData( doc ) ).to.equal( '<limit>[]</limit>' );
+		} );
+
+		it( 'should not leave the limit element when inserting at the end', () => {
+			setData( doc, '<limit>foo[]</limit>' );
+			insertHelper( '<paragraph>a</paragraph><paragraph>b</paragraph>' );
+
+			expect( getData( doc ) ).to.equal( '<limit>fooab[]</limit>' );
+		} );
+
+		it( 'should not leave the limit element when inserting at the beginning', () => {
+			setData( doc, '<limit>[]foo</limit>' );
+			insertHelper( '<paragraph>a</paragraph><paragraph>b</paragraph>' );
+
+			expect( getData( doc ) ).to.equal( '<limit>ab[]foo</limit>' );
 		} );
 	} );
 
