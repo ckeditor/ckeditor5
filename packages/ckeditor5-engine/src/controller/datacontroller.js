@@ -22,11 +22,14 @@ import ViewDocumentFragment from '../view/documentfragment';
 
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
+import ModelTreeWalker from '../model/treewalker';
 
 import insertContent from './insertcontent';
 import deleteContent from './deletecontent';
 import modifySelection from './modifyselection';
 import getSelectedContent from './getselectedcontent';
+
+import { remove } from '@ckeditor/ckeditor5-engine/src/model/writer';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
@@ -180,7 +183,10 @@ export default class DataController {
 
 	/**
 	 * Sets input data parsed by the {@link #processor data processor} and
-	 * converted by the {@link #viewToModel view to model converters}.
+	 * converted by the {@link #viewToModel view to model converters}. When markers where converted
+	 * from view to model as temporary {@link module:engine/model/element/~Element model elements} then those element
+	 * will be removed from parsed {@link module:engine/model/element/~DocumentFragment} and added to the
+	 * {@link module:engine/model/document~Document#markers markers collection}.
 	 *
 	 * This method also creates a batch with all the changes applied. If all you need is to parse data use
 	 * the {@link #parse} method.
@@ -198,10 +204,28 @@ export default class DataController {
 			this.model.selection.removeAllRanges();
 			this.model.selection.clearAttributes();
 
+			// Parse data to model and extract markers from parsed document fragment.
+			const { documentFragment, markersData } = extractMarkersDataFromModelElement( this.parse( data ) );
+
 			// Initial batch should be ignored by features like undo, etc.
-			this.model.batch( 'transparent' )
+			const batch = this.model.batch( 'transparent' );
+
+			// Replace current editor data by the new one.
+			batch
 				.remove( ModelRange.createIn( modelRoot ) )
-				.insert( ModelPosition.createAt( modelRoot, 0 ), this.parse( data ) );
+				.insert( ModelPosition.createAt( modelRoot, 0 ), documentFragment );
+
+			// Add markers to the document.
+			for ( const marker of markersData ) {
+				const markerName = marker[ 0 ];
+				const markerData = marker[ 1 ];
+				const range = new ModelRange(
+					new ModelPosition( modelRoot, markerData.startPath ),
+					markerData.endPath ? new ModelPosition( modelRoot, markerData.endPath ) : null
+				);
+
+				batch.setMarker( this.model.markers.set( markerName, range ) );
+			}
 		} );
 	}
 
@@ -247,6 +271,10 @@ export default class DataController {
 	/**
 	 * See {@link module:engine/controller/insertcontent~insertContent}.
 	 *
+	 * Note that data inserted by a data pipeline might contain temporary {@link module:engine/model/element/~Element elements}
+	 * marking {@link module:engine/model/document~Document#markers markers} ranges. We need to remove them because
+	 * data pipeline allows to set markers only by a {@link #set set method}.
+	 *
 	 * @fires insertContent
 	 * @param {module:engine/model/documentfragment~DocumentFragment} content The content to insert.
 	 * @param {module:engine/model/selection~Selection} selection Selection into which the content should be inserted.
@@ -254,7 +282,8 @@ export default class DataController {
 	 * changes will be added to a new batch.
 	 */
 	insertContent( content, selection, batch ) {
-		this.fire( 'insertContent', { content, selection, batch } );
+		const { documentFragment } = extractMarkersDataFromModelElement( content );
+		this.fire( 'insertContent', { content: documentFragment, selection, batch } );
 	}
 
 	/**
@@ -281,7 +310,7 @@ export default class DataController {
 	 * See {@link module:engine/controller/modifyselection~modifySelection}.
 	 *
 	 * @fires modifySelection
-	 * @param {module:engine/model/selection~Selection} The selection to modify.
+	 * @param {module:engine/model/selection~Selection} selection The selection to modify.
 	 * @param {Object} options See {@link module:engine/controller/modifyselection~modifySelection}'s options.
 	 */
 	modifySelection( selection, options ) {
@@ -305,6 +334,57 @@ export default class DataController {
 }
 
 mix( DataController, EmitterMixin );
+
+// Traverses given DocumentFragment and searches elements which marks marker range. Founded element is removed from
+// DocumentFragment but path of this element is stored in Map.
+//
+// @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Model DocumentFragment.
+// @returns {Object} Object with markers data and cleaned up document fragment.
+function extractMarkersDataFromModelElement( documentFragment ) {
+	const markersData = new Map();
+
+	// Creates ModelTreeWalker with given start position.
+	function walkFrom( position ) {
+		const walker = new ModelTreeWalker( {
+			startPosition: position,
+			ignoreElementEnd: true,
+			shallow: false
+		} );
+
+		// Walk through DocumentFragment.
+		for ( const value of walker ) {
+			// Check if current element is a marker stamp.
+			if ( value.item.name == '$marker' ) {
+				const markerName = value.item.getAttribute( 'marker-name' );
+				const currentPosition = ModelPosition.createBefore( value.item );
+
+				// When marker of given name is not stored it means that we have found the beginning of the range.
+				if ( !markersData.has( markerName ) ) {
+					markersData.set( markerName, { startPath: currentPosition.path } );
+				// Otherwise is means that we have found end of the marker range.
+				} else {
+					markersData.get( markerName ).endPath = currentPosition.path;
+				}
+
+				// Remove marker stamp element from DocumentFragment.
+				remove( ModelRange.createOn( value.item ) );
+
+				// Keep walking using new instance of TreeWalker but starting from last visited position.
+				// This is because after removing marker stamp element DocumentFragment structure might change
+				// and TreeWalker might omit some node.
+				walkFrom( currentPosition );
+
+				// Stop this walker, we have continued walk using new TreeWalker instance.
+				break;
+			}
+		}
+	}
+
+	// Start traversing.
+	walkFrom( ModelPosition.createAt( documentFragment, 0 ) );
+
+	return { markersData, documentFragment };
+}
 
 /**
  * Event fired when {@link #insertContent} method is called.

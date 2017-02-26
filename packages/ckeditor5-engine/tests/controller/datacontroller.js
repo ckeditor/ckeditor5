@@ -14,6 +14,7 @@ import ModelDocumentFragment from '../../src/model/documentfragment';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
 import ModelSelection from '../../src/model/selection';
+import ModelRange from '../../src/model/range';
 
 import ViewDocumentFragment from '../../src/view/documentfragment';
 
@@ -222,6 +223,54 @@ describe( 'DataController', () => {
 			expect( getData( modelDocument, { withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 
+		it( 'should extract markers stamps from converted data and set to `modelDocument#markers` collection', () => {
+			modelDocument.schema.registerItem( 'paragraph', '$block' );
+			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
+			buildViewConverter().for( data.viewToModel ).fromElement( 'm' ).toMarker();
+
+			data.set(
+				'<p>' +
+					'F' +
+					'<m marker-name="comment"></m>' +
+					'o' +
+					'<m marker-name="search"></m>' +
+					'o ba' +
+					'<m marker-name="comment"></m>' +
+					'r bi' +
+					'<m marker-name="search"></m>' +
+					'z' +
+				'</p>'
+			);
+
+			expect( getData( modelDocument, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo bar biz</paragraph>' );
+			expect( Array.from( modelDocument.markers ).length ).to.equal( 2 );
+
+			const paragraph = modelDocument.getRoot().getChild( 0 );
+			const commentMarkerRange = ModelRange.createFromParentsAndOffsets( paragraph, 1, paragraph, 6 );
+			const searchMarkerRange = ModelRange.createFromParentsAndOffsets( paragraph, 2, paragraph, 10 );
+
+			expect( modelDocument.markers.get( 'comment' ).getRange().isEqual( commentMarkerRange ) ).to.true;
+			expect( modelDocument.markers.get( 'search' ).getRange().isEqual( searchMarkerRange ) ).to.true;
+		} );
+
+		it( 'should extract collapsed markers stamps from converted data and set to `modelDocument#markers` collection', () => {
+			modelDocument.schema.registerItem( 'paragraph', '$block' );
+			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
+			buildViewConverter().for( data.viewToModel ).fromElement( 'm' ).toMarker();
+
+			data.set( '<p>F<m marker-name="comment"></m>o<m marker-name="search"></m>o ba</m>r biz</p>' );
+
+			expect( getData( modelDocument, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo bar biz</paragraph>' );
+			expect( Array.from( modelDocument.markers ).length ).to.equal( 2 );
+
+			const paragraph = modelDocument.getRoot().getChild( 0 );
+			const commentMarkerRange = ModelRange.createFromParentsAndOffsets( paragraph, 1, paragraph, 1 );
+			const searchMarkerRange = ModelRange.createFromParentsAndOffsets( paragraph, 2, paragraph, 2 );
+
+			expect( modelDocument.markers.get( 'comment' ).getRange().isEqual( commentMarkerRange ) ).to.true;
+			expect( modelDocument.markers.get( 'search' ).getRange().isEqual( searchMarkerRange ) ).to.true;
+		} );
+
 		it( 'should create a batch', () => {
 			schema.allow( { name: '$text', inside: '$root' } );
 			data.set( 'foo' );
@@ -426,6 +475,22 @@ describe( 'DataController', () => {
 				selection: modelDocument.selection,
 				content: content
 			} );
+		} );
+
+		it( 'should remove markers stamps from content', () => {
+			const spy = sinon.spy();
+			const content = new ModelDocumentFragment( [
+				new ModelText( 'x' ),
+				new ModelElement( '$marker', { 'marker-name': 'search' } ),
+				new ModelText( 'y' ),
+				new ModelElement( '$marker', { 'marker-name': 'search' } ),
+				new ModelText( 'z' )
+			] );
+
+			data.on( 'insertContent', spy );
+			data.insertContent( content, modelDocument.selection );
+
+			expect( stringify( spy.args[ 0 ][ 1 ].content ) ).to.equal( 'xyz' );
 		} );
 	} );
 
