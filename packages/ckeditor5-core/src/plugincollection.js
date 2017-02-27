@@ -19,8 +19,9 @@ export default class PluginCollection {
 	 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
+	 * @param {Array.<module:core/plugin>} availablePlugins
 	 */
-	constructor( editor ) {
+	constructor( editor, availablePlugins ) {
 		/**
 		 * @protected
 		 * @member {module:core/editor/editor~Editor} module:core/plugin~PluginCollection#_editor
@@ -29,9 +30,20 @@ export default class PluginCollection {
 
 		/**
 		 * @protected
+		 * @member {Map.<String,module:core/plugin>} module:core/plugin~PluginCollection#_availablePlugins
+		 */
+		this._availablePlugins = new Map();
+
+		/**
+		 * @protected
 		 * @member {Map} module:core/plugin~PluginCollection#_plugins
 		 */
 		this._plugins = new Map();
+
+		// Save available plugins.
+		for ( const plugin of availablePlugins ) {
+			this._availablePlugins.set( plugin.pluginName, plugin );
+		}
 	}
 
 	/**
@@ -72,13 +84,13 @@ export default class PluginCollection {
 		return Promise.all( plugins.map( loadPlugin ) )
 			.then( () => loaded );
 
-		function loadPlugin( PluginConstructor ) {
+		function loadPlugin( PluginConstructorOrName ) {
 			// The plugin is already loaded or being loaded - do nothing.
-			if ( that.get( PluginConstructor ) || loading.has( PluginConstructor ) ) {
+			if ( that.get( PluginConstructorOrName ) || loading.has( PluginConstructorOrName ) ) {
 				return;
 			}
 
-			return instantiatePlugin( PluginConstructor )
+			return instantiatePlugin( PluginConstructorOrName )
 				.catch( ( err ) => {
 					/**
 					 * It was not possible to load the plugin.
@@ -86,14 +98,16 @@ export default class PluginCollection {
 					 * @error plugincollection-load
 					 * @param {String} plugin The name of the plugin that could not be loaded.
 					 */
-					log.error( 'plugincollection-load: It was not possible to load the plugin.', { plugin: PluginConstructor } );
+					log.error( 'plugincollection-load: It was not possible to load the plugin.', { plugin: PluginConstructorOrName } );
 
 					throw err;
 				} );
 		}
 
-		function instantiatePlugin( PluginConstructor ) {
+		function instantiatePlugin( PluginConstructorOrName ) {
 			return new Promise( ( resolve ) => {
+				const PluginConstructor = getPluginConstructor( PluginConstructorOrName );
+
 				loading.add( PluginConstructor );
 
 				assertIsPlugin( PluginConstructor );
@@ -108,6 +122,29 @@ export default class PluginCollection {
 
 				resolve();
 			} );
+		}
+
+		function getPluginConstructor( PluginConstructorOrName ) {
+			if ( typeof PluginConstructorOrName === 'function' ) {
+				return PluginConstructorOrName;
+			}
+
+			const PluginConstructor = that._availablePlugins.get( PluginConstructorOrName );
+
+			if ( !PluginConstructor ) {
+				/**
+				 * The loaded plugin module is not available.
+				 *
+				 * @error plugincollection-instance
+				 * @param {*} plugin The constructor which is meant to be loaded as a plugin.
+				 */
+				throw new CKEditorError(
+					'plugincollection-instance: Given plugin name is not available.',
+					{ plugin: PluginConstructorOrName }
+				);
+			}
+
+			return PluginConstructor;
 		}
 
 		function assertIsPlugin( PluginConstructor ) {
