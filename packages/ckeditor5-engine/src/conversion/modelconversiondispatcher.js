@@ -175,6 +175,8 @@ export default class ModelConversionDispatcher {
 	}
 
 	/**
+	 * Starts conversion of insertion-change on given `range`.
+	 *
 	 * Analyzes given range and fires insertion-connected events with data based on that range.
 	 *
 	 * **Note**: This method will fire separate events for node insertion and attributes insertion. All
@@ -229,13 +231,27 @@ export default class ModelConversionDispatcher {
 		}
 	}
 
+	/**
+	 * Starts conversion of move-change of given `range`, that was moved from given `sourcePosition`.
+	 *
+	 * Fires {@link ~#event:remove remove event} and {@link ~#event:insert insert event} based on passed parameters.
+	 *
+	 * @fires remove
+	 * @fires insert
+	 * @param {module:engine/model/position~Position} sourcePosition Position from where the range has been removed.
+	 * @param {module:engine/model/range~Range} range Removed range (after remove, in
+	 * {@link module:engine/model/document~Document#graveyard graveyard root}).
+	 * @param {String} removeAs If passed, removed item is treated like it was an element of given name.
+	 */
 	convertMove( sourcePosition, range ) {
 		this.convertRemove( sourcePosition, range );
 		this.convertInsertion( range );
 	}
 
 	/**
-	 * Fires remove event with data based on passed values.
+	 * Starts conversion of remove-change of given `range`, that was removed from given `sourcePosition`.
+	 *
+	 * Fires {@link ~#event:remove remove event} with data based on passed values.
 	 *
 	 * @fires remove
 	 * @param {module:engine/model/position~Position} sourcePosition Position from where the range has been removed.
@@ -259,6 +275,8 @@ export default class ModelConversionDispatcher {
 	}
 
 	/**
+	 * Starts conversion of attribute-change on given `range`.
+	 *
 	 * Analyzes given attribute change and fires attributes-connected events with data based on passed values.
 	 *
 	 * @fires addAttribute
@@ -293,9 +311,12 @@ export default class ModelConversionDispatcher {
 	}
 
 	/**
-	 * Fires rename event with data based on passed values.
+	 * Starts conversion of rename-change of given `element` that had given `oldName`.
 	 *
-	 * @fires rename
+	 * Fires {@link ~#event:remove remove event} and {@link ~#event:insert insert event} based on passed values.
+	 *
+	 * @fires remove
+	 * @fires insert
 	 * @param {module:engine/model/element~Element} element Renamed element.
 	 * @param {String} oldName Name of the renamed element before it was renamed.
 	 */
@@ -308,6 +329,8 @@ export default class ModelConversionDispatcher {
 	}
 
 	/**
+	 * Starts selection conversion.
+	 *
 	 * Fires events for given {@link module:engine/model/selection~Selection selection} to start selection conversion.
 	 *
 	 * @fires selection
@@ -346,11 +369,14 @@ export default class ModelConversionDispatcher {
 	}
 
 	/**
-	 * Fires event for given marker change.
+	 * Starts marker-conversion.
+	 *
+	 * Fires {@link ~#event:addMarker addMarker event} or {@link ~#event:removeMarker removeMarker event} based on
+	 * given `type` with data based on passed parameters.
 	 *
 	 * @fires addMarker
 	 * @fires removeMarker
-	 * @param {String} type Change type.
+	 * @param {'addMarker'|'removeMarker'} type Change type.
 	 * @param {String} name Marker name.
 	 * @param {module:engine/model/range~Range} range Marker range.
 	 */
