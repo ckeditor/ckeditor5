@@ -9,6 +9,8 @@
 
 import Consumable from './modelconsumable';
 import Range from '../model/range';
+import Position from '../model/position';
+import DocumentFragment from '../model/documentfragment';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
@@ -93,8 +95,8 @@ import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
  *			viewSourceBtn.addClass( 'source' );
  *
  *			// Insert the button using writer API.
- *			// If `addAttribute` event is fired by `module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#convertInsert` it
- *			// is fired
+ *			// If `addAttribute` event is fired by
+ *			// `module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#convertInsert` it is fired
  *			// after `data.item` insert conversion was done. If the event is fired due to attribute insertion coming from
  *			// different source, `data.item` already existed. This means we are safe to get `viewQuote` from mapper.
  *			const viewQuote = conversionApi.mapper.toViewElement( data.item );
@@ -108,9 +110,18 @@ export default class ModelConversionDispatcher {
 	/**
 	 * Creates a `ModelConversionDispatcher` that operates using passed API.
 	 *
+	 * @param {module:engine/model/document~Document} modelDocument Model document instance bound with this dispatcher.
 	 * @param {Object} [conversionApi] Interface passed by dispatcher to the events callbacks.
 	 */
-	constructor( conversionApi = {} ) {
+	constructor( modelDocument, conversionApi = {} ) {
+		/**
+		 * Model document instance bound with this dispatcher.
+		 *
+		 * @private
+		 * @member {module:engine/model/document~Document}
+		 */
+		this._modelDocument = modelDocument;
+
 		/**
 		 * Interface passed by dispatcher to the events callbacks.
 		 *
@@ -127,12 +138,11 @@ export default class ModelConversionDispatcher {
 	 *
 	 * @see module:engine/model/document~Document#event:change
 	 * @fires insert
-	 * @fires move
 	 * @fires remove
-	 * @fires rename
 	 * @fires addAttribute
 	 * @fires removeAttribute
 	 * @fires changeAttribute
+	 * @fires addMarker
 	 * @param {String} type Change type.
 	 * @param {Object} data Additional information about the change.
 	 */
@@ -166,6 +176,8 @@ export default class ModelConversionDispatcher {
 	}
 
 	/**
+	 * Starts conversion of insertion-change on given `range`.
+	 *
 	 * Analyzes given range and fires insertion-connected events with data based on that range.
 	 *
 	 * **Note**: This method will fire separate events for node insertion and attributes insertion. All
@@ -173,6 +185,7 @@ export default class ModelConversionDispatcher {
 	 *
 	 * @fires insert
 	 * @fires addAttribute
+	 * @fires addMarker
 	 * @param {module:engine/model/range~Range} range Inserted range.
 	 */
 	convertInsertion( range ) {
@@ -198,48 +211,50 @@ export default class ModelConversionDispatcher {
 				data.attributeOldValue = null;
 				data.attributeNewValue = item.getAttribute( key );
 
-				this._testAndFire( 'addAttribute:' + key, data, consumable );
+				this._testAndFire( `addAttribute:${ key }`, data, consumable );
+			}
+		}
+
+		for ( let marker of this._modelDocument.markers ) {
+			const markerRange = marker.getRange();
+
+			// Check if inserted content is inserted into a marker.
+			if ( markerRange.containsPosition( range.start ) ) {
+				this.convertMarker( 'addMarker', marker.name, markerRange.getIntersection( range ) );
+			}
+
+			// Check if inserted content contains a marker.
+			if ( range.containsRange( markerRange ) || range.isEqual( markerRange ) ) {
+				this.convertMarker( 'addMarker', marker.name, markerRange );
 			}
 		}
 	}
 
 	/**
-	 * Fires move event with data based on passed values.
+	 * Starts conversion of move-change of given `range`, that was moved from given `sourcePosition`.
 	 *
-	 * @fires move
-	 * @param {module:engine/model/position~Position} sourcePosition Position from where the range has been moved.
-	 * @param {module:engine/model/range~Range} range Moved range (after move).
+	 * Fires {@link ~#event:remove remove event} and {@link ~#event:insert insert event} based on passed parameters.
+	 *
+	 * @fires remove
+	 * @fires insert
+	 * @param {module:engine/model/position~Position} sourcePosition Position from where the range has been removed.
+	 * @param {module:engine/model/range~Range} range Removed range (after remove, in
+	 * {@link module:engine/model/document~Document#graveyard graveyard root}).
 	 */
 	convertMove( sourcePosition, range ) {
-		// Keep in mind that move dispatcher expects flat range.
-		const consumable = this._createConsumableForRange( range, 'move' );
-
-		const items = Array.from( range.getItems( { shallow: true } ) );
-		const inSameParent = sourcePosition.parent == range.start.parent;
-		const targetsAfter = range.start.isAfter( sourcePosition );
-
-		let offset = 0;
-
-		for ( let item of items ) {
-			const data = {
-				sourcePosition: sourcePosition,
-				targetPosition: inSameParent && targetsAfter ? range.end : range.start.getShiftedBy( offset ),
-				item: item
-			};
-
-			offset += data.item.offsetSize;
-
-			this._testAndFire( 'move', data, consumable );
-		}
+		this.convertRemove( sourcePosition, range );
+		this.convertInsertion( range );
 	}
 
 	/**
-	 * Fires remove event with data based on passed values.
+	 * Starts conversion of remove-change of given `range`, that was removed from given `sourcePosition`.
+	 *
+	 * Fires {@link ~#event:remove remove event} with data based on passed values.
 	 *
 	 * @fires remove
 	 * @param {module:engine/model/position~Position} sourcePosition Position from where the range has been removed.
-	 * @param {module:engine/model/range~Range} range Removed range (after remove, in {@link module:engine/model/document~Document#graveyard
-	 * graveyard root}).
+	 * @param {module:engine/model/range~Range} range Removed range (after remove, in
+	 * {@link module:engine/model/document~Document#graveyard graveyard root}).
 	 */
 	convertRemove( sourcePosition, range ) {
 		const consumable = this._createConsumableForRange( range, 'remove' );
@@ -250,11 +265,13 @@ export default class ModelConversionDispatcher {
 				item: item
 			};
 
-			this._testAndFire( 'remove', data, consumable );
+			this._testAndFire( `remove`, data, consumable );
 		}
 	}
 
 	/**
+	 * Starts conversion of attribute-change on given `range`.
+	 *
 	 * Analyzes given attribute change and fires attributes-connected events with data based on passed values.
 	 *
 	 * @fires addAttribute
@@ -282,34 +299,50 @@ export default class ModelConversionDispatcher {
 				attributeNewValue: newValue
 			};
 
-			this._testAndFire( type + ':' + key, data, consumable, this.conversionApi );
+			this._testAndFire( `${ type }:${ key }`, data, consumable );
 		}
 	}
 
 	/**
-	 * Fires rename event with data based on passed values.
+	 * Starts conversion of rename-change of given `element` that had given `oldName`.
 	 *
-	 * @fires rename
-	 * @param {module:engine/view/element~Element} element Renamed element.
+	 * Fires {@link ~#event:remove remove event} and {@link ~#event:insert insert event} based on passed values.
+	 *
+	 * @fires remove
+	 * @fires insert
+	 * @param {module:engine/model/element~Element} element Renamed element.
 	 * @param {String} oldName Name of the renamed element before it was renamed.
 	 */
 	convertRename( element, oldName ) {
-		const consumable = new Consumable();
-		consumable.add( element, 'rename' );
+		// Create fake element that will be used to fire remove event. The fake element will have the old element name.
+		const fakeElement = element.clone( true );
+		fakeElement.name = oldName;
 
-		const data = { element, oldName };
-		this.fire( 'rename:' + element.name + ':' + oldName, data, consumable, this.conversionApi );
+		// Bind fake element with original view element so the view element will be removed.
+		this.conversionApi.mapper.bindElements(
+			fakeElement,
+			this.conversionApi.mapper.toViewElement( element )
+		);
+
+		// Create fake document fragment so a range can be created on fake element.
+		const fakeDocumentFragment = new DocumentFragment();
+		fakeDocumentFragment.appendChildren( fakeElement );
+
+		this.convertRemove( Position.createBefore( element ), Range.createOn( fakeElement ) );
+		this.convertInsertion( Range.createOn( element ) );
 	}
 
 	/**
+	 * Starts selection conversion.
+	 *
 	 * Fires events for given {@link module:engine/model/selection~Selection selection} to start selection conversion.
 	 *
 	 * @fires selection
 	 * @fires selectionAttribute
 	 * @param {module:engine/model/selection~Selection} selection Selection to convert.
-	 * @param {Array.<module:engine/model/markercollection~Marker>} markers Markers which contains selection.
 	 */
-	convertSelection( selection, markers ) {
+	convertSelection( selection ) {
+		const markers = Array.from( this._modelDocument.markers.getMarkersAtPosition( selection.getFirstPosition() ) );
 		const consumable = this._createSelectionConsumable( selection, markers );
 
 		this.fire( 'selection', { selection }, consumable, this.conversionApi );
@@ -340,11 +373,14 @@ export default class ModelConversionDispatcher {
 	}
 
 	/**
-	 * Fires event for given marker change.
+	 * Starts marker-conversion.
+	 *
+	 * Fires {@link ~#event:addMarker addMarker event} or {@link ~#event:removeMarker removeMarker event} based on
+	 * given `type` with data based on passed parameters.
 	 *
 	 * @fires addMarker
 	 * @fires removeMarker
-	 * @param {String} type Change type.
+	 * @param {'addMarker'|'removeMarker'} type Change type.
 	 * @param {String} name Marker name.
 	 * @param {module:engine/model/range~Range} range Marker range.
 	 */
@@ -448,6 +484,7 @@ export default class ModelConversionDispatcher {
 	 *
 	 * @private
 	 * @fires insert
+	 * @fires remove
 	 * @fires addAttribute
 	 * @fires removeAttribute
 	 * @fires changeAttribute
@@ -461,32 +498,19 @@ export default class ModelConversionDispatcher {
 			return;
 		}
 
-		if ( type === 'insert' || type === 'remove' || type == 'move' ) {
-			if ( data.item.is( 'textProxy' ) ) {
-				// Example: insert:$text.
-				this.fire( type + ':$text', data, consumable, this.conversionApi );
-			} else {
-				// Example: insert:paragraph.
-				this.fire( type + ':' + data.item.name, data, consumable, this.conversionApi );
-			}
-		} else {
-			// Example addAttribute:alt:img.
-			// Example addAttribute:bold:$text.
-			const name = data.item.name || '$text';
+		const name = data.item.name || '$text';
 
-			this.fire( type + ':' + name, data, consumable, this.conversionApi );
-		}
+		this.fire( type + ':' + name, data, consumable, this.conversionApi );
 	}
 
 	/**
 	 * Fired for inserted nodes.
 	 *
 	 * `insert` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `insert:<type>:<elementName>`. `type` is either `text` when one or more characters has been inserted or `element`
-	 * when {@link module:engine/model/element~Element} has been inserted. If `type` is `element`, `elementName` is added and is
-	 * equal to the {@link module:engine/model/element~Element#name name} of inserted element. This way listeners can either
-	 * listen to very general `insert` event or, i.e., very specific `insert:paragraph` event, which is fired only for
-	 * model elements with name `paragraph`.
+	 * `insert:<name>`. `name` is either `'$text'` when one or more characters has been inserted or
+	 * {@link module:engine/model/element~Element#name name} of inserted element.
+	 *
+	 * This way listeners can either listen to a general `insert` event or specific event (for example `insert:paragraph`).
 	 *
 	 * @event insert
 	 * @param {Object} data Additional information about the change.
@@ -497,34 +521,19 @@ export default class ModelConversionDispatcher {
 	 */
 
 	/**
-	 * Fired for moved nodes.
-	 *
-	 * @event move
-	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/model/position~Position} data.sourcePosition Position from where the range has been moved.
-	 * @param {module:engine/model/range~Range} data.range Moved range (after move).
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
-	 */
-
-	/**
 	 * Fired for removed nodes.
+	 *
+	 * `remove` is a namespace for a class of events. Names of actually called events follow this pattern:
+	 * `remove:<name>`. `name` is either `'$text'` when one or more characters has been removed or the
+	 * {@link module:engine/model/element~Element#name name} of removed element.
+	 *
+	 * This way listeners can either listen to a general `remove` event or specific event (for example `remove:paragraph`).
 	 *
 	 * @event remove
 	 * @param {Object} data Additional information about the change.
 	 * @param {module:engine/model/position~Position} data.sourcePosition Position from where the range has been removed.
-	 * @param {module:engine/model/range~Range} data.range Removed range (in {@link module:engine/model/document~Document#graveyard graveyard
-	 * root}).
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
-	 */
-
-	/**
-	 * Fired for renamed element.
-	 *
-	 * @event rename
-	 * @param {Object} data Additional information about the change.
-	 * @param {module:engine/model/element~Element} data.element Renamed element.
-	 * @param {String} data.oldName Old name of the renamed element.
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
+	 * @param {module:engine/model/range~Range} data.range Removed range (in {@link module:engine/model/document~Document#graveyard
+	 * graveyard root}).
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
 	 */
 
@@ -532,9 +541,12 @@ export default class ModelConversionDispatcher {
 	 * Fired when attribute has been added on a node.
 	 *
 	 * `addAttribute` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `addAttribute:<attributeKey>:<elementName>`. `attributeKey` is the key of added attribute. `elementName` is
-	 * equal to the {@link module:engine/model/element~Element#name name} of the element which got the attribute. This way listeners
-	 * can either listen to adding certain attribute, i.e. `addAttribute:bold`, or be more specific, i.e. `addAttribute:link:img`.
+	 * `addAttribute:<attributeKey>:<name>`. `attributeKey` is the key of added attribute. `name` is either `'$text'`
+	 * if attribute was added on one or more characters, or the {@link module:engine/model/element~Element#name name} of
+	 * the element on which attribute was added.
+	 *
+	 * This way listeners can either listen to a general `addAttribute:bold` event or specific event
+	 * (for example `addAttribute:link:image`).
 	 *
 	 * @event addAttribute
 	 * @param {Object} data Additional information about the change.
@@ -551,9 +563,12 @@ export default class ModelConversionDispatcher {
 	 * Fired when attribute has been removed from a node.
 	 *
 	 * `removeAttribute` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `removeAttribute:<attributeKey>:<elementName>`. `attributeKey` is the key of removed attribute. `elementName` is
-	 * equal to the {@link module:engine/model/element~Element#name name} of the element which got the attribute removed. This way listeners
-	 * can either listen to removing certain attribute, i.e. `removeAttribute:bold`, or be more specific, i.e. `removeAttribute:link:img`.
+	 * `removeAttribute:<attributeKey>:<name>`. `attributeKey` is the key of removed attribute. `name` is either `'$text'`
+	 * if attribute was removed from one or more characters, or the {@link module:engine/model/element~Element#name name} of
+	 * the element from which attribute was removed.
+	 *
+	 * This way listeners can either listen to a general `removeAttribute:bold` event or specific event
+	 * (for example `removeAttribute:link:image`).
 	 *
 	 * @event removeAttribute
 	 * @param {Object} data Additional information about the change.
@@ -570,9 +585,12 @@ export default class ModelConversionDispatcher {
 	 * Fired when attribute of a node has been changed.
 	 *
 	 * `changeAttribute` is a namespace for a class of events. Names of actually called events follow this pattern:
-	 * `changeAttribute:<attributeKey>:<elementName>`. `attributeKey` is the key of changed attribute. `elementName` is
-	 * equal to the {@link module:engine/model/element~Element#name name} of the element which got the attribute changed. This way listeners
-	 * can either listen to changing certain attribute, i.e. `changeAttribute:link`, or be more specific, i.e. `changeAttribute:link:img`.
+	 * `changeAttribute:<attributeKey>:<name>`. `attributeKey` is the key of changed attribute. `name` is either `'$text'`
+	 * if attribute was changed on one or more characters, or the {@link module:engine/model/element~Element#name name} of
+	 * the element on which attribute was changed.
+	 *
+	 * This way listeners can either listen to a general `changeAttribute:link` event or specific event
+	 * (for example `changeAttribute:link:image`).
 	 *
 	 * @event changeAttribute
 	 * @param {Object} data Additional information about the change.

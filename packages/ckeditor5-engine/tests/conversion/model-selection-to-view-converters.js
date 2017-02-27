@@ -57,7 +57,7 @@ describe( 'model-selection-to-view-converters', () => {
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
 
-		dispatcher = new ModelConversionDispatcher( { mapper, viewSelection } );
+		dispatcher = new ModelConversionDispatcher( modelDoc, { mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'addAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );

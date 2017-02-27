@@ -32,7 +32,6 @@ import {
 	removeAttribute,
 	wrapItem,
 	unwrapItem,
-	move,
 	remove,
 	eventNameToConsumableType
 } from '../../src/conversion/model-to-view-converters';
@@ -51,12 +50,11 @@ describe( 'advanced-converters', () => {
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
 
-		modelDispatcher = new ModelConversionDispatcher( { mapper } );
+		modelDispatcher = new ModelConversionDispatcher( modelDoc, { mapper } );
 		// Schema is mocked up because we don't care about it in those tests.
 		viewDispatcher = new ViewConversionDispatcher( { schema: { check: () => true } } );
 
 		modelDispatcher.on( 'insert:$text', insertText() );
-		modelDispatcher.on( 'move', move() );
 		modelDispatcher.on( 'remove', remove() );
 		viewDispatcher.on( 'text', convertText() );
 		viewDispatcher.on( 'documentFragment', convertToModelFragment() );

@@ -25,7 +25,7 @@ import modelWriter from '../model/writer';
 import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
 import ViewSelection from '../view/selection';
 import ViewDocumentFragment from '../view/documentfragment';
-import ViewElement from '../view/containerelement';
+import ViewContainerElement from '../view/containerelement';
 import ViewAttributeElement from '../view/attributeelement';
 
 import Mapper from '../conversion/mapper';
@@ -167,14 +167,15 @@ setData._parse = parse;
  *
  * @param {module:engine/model/rootelement~RootElement|module:engine/model/element~Element|module:engine/model/text~Text|
  * module:engine/model/documentfragment~DocumentFragment} node Node to stringify.
- * @param {module:engine/model/selection~Selection|module:engine/model/position~Position|module:engine/model/range~Range}
- * [selectionOrPositionOrRange=null]
+ * @param {module:engine/model/selection~Selection|module:engine/model/position~Position|
+ * module:engine/model/range~Range} [selectionOrPositionOrRange=null]
  * Selection instance which ranges will be included in returned string data. If Range instance is provided - it will be
  * converted to selection containing this range. If Position instance is provided - it will be converted to selection
  * containing one range collapsed at this position.
  * @returns {String} HTML-like string representing the model.
  */
 export function stringify( node, selectionOrPositionOrRange = null ) {
+	const modelDoc = new ModelDocument();
 	const mapper = new Mapper();
 	let selection, range;
 
@@ -208,7 +209,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	// Setup model to view converter.
 	const viewDocumentFragment = new ViewDocumentFragment();
 	const viewSelection = new ViewSelection();
-	const modelToView = new ModelConversionDispatcher( { mapper, viewSelection } );
+	const modelToView = new ModelConversionDispatcher( modelDoc, { mapper, viewSelection } );
 
 	// Bind root elements.
 	mapper.bindElements( node.root, viewDocumentFragment );
@@ -223,7 +224,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 		// Stringify object types values for properly display as an output string.
 		const attributes = convertAttributes( data.item.getAttributes(), stringifyAttributeValue );
 
-		return new ViewElement( data.item.name, attributes );
+		return new ViewContainerElement( data.item.name, attributes );
 	} ) );
 	modelToView.on( 'selection', convertRangeSelection() );
 	modelToView.on( 'selection', convertCollapsedSelection() );

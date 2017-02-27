@@ -157,7 +157,7 @@ class ModelConverterBuilder {
 	 *
 	 * @chainable
 	 * @param {String} markerName Name of marker to convert.
-	 * @returns {module:engine/conversion/modelconverterbuilder~ModelConverterBuilder}
+	 * @returns {module:engine/conversion/buildmodelconverter~ModelConverterBuilder}
 	 */
 	fromMarker( markerName ) {
 		this._from = {
@@ -176,7 +176,7 @@ class ModelConverterBuilder {
 	 *
 	 * @chainable
 	 * @param {String} markerName Name of marker to convert.
-	 * @returns {module:engine/conversion/modelconverterbuilder~ModelConverterBuilder}
+	 * @returns {module:engine/conversion/buildmodelconverter~ModelConverterBuilder}
 	 */
 	fromCollapsedMarker( markerName ) {
 		this._from = {
