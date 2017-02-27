@@ -330,6 +330,8 @@ class Insertion {
 
 	/**
 	 * @param {module:engine/model/node~Node} node
+	 * @returns {Boolean} Whether an allowed position was found.
+	 * `false` is returned if the node isn't allowed at any position up in the tree, `true` if was.
 	 */
 	_checkAndSplitToAllowedPosition( node ) {
 		const allowedIn = this._getAllowedIn( node, this.position.parent );
@@ -339,6 +341,11 @@ class Insertion {
 		}
 
 		while ( allowedIn != this.position.parent ) {
+			// If a parent which we'd need to leave is a limit element, break.
+			if ( this.schema.limits.has( this.position.parent.name ) ) {
+				return false;
+			}
+
 			if ( this.position.isAtStart ) {
 				const parent = this.position.parent;
 				this.position = Position.createBefore( parent );

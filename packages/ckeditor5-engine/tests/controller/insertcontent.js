@@ -543,6 +543,67 @@ describe( 'DataController', () => {
 		} );
 	} );
 
+	describe( 'integration with limit elements', () => {
+		beforeEach( () => {
+			doc = new Document();
+			doc.createRoot();
+			dataController = new DataController( doc );
+
+			const schema = doc.schema;
+
+			schema.registerItem( 'limit' );
+			schema.allow( { name: 'limit', inside: '$root' } );
+			schema.allow( { name: '$text', inside: 'limit' } );
+			schema.limits.add( 'limit' );
+
+			schema.registerItem( 'disallowedElement' );
+			schema.allow( { name: 'disallowedElement', inside: '$clipboardHolder' } );
+
+			schema.registerItem( 'paragraph', '$block' );
+		} );
+
+		it( 'should insert limit element', () => {
+			insertHelper( '<limit></limit>' );
+
+			expect( getData( doc ) ).to.equal( '<limit>[]</limit>' );
+		} );
+
+		it( 'should insert text into limit element', () => {
+			setData( doc, '<limit>[]</limit>' );
+			insertHelper( 'foo bar' );
+
+			expect( getData( doc ) ).to.equal( '<limit>foo bar[]</limit>' );
+		} );
+
+		it( 'should insert text into limit element', () => {
+			setData( doc, '<limit>foo[</limit><limit>]bar</limit>' );
+			insertHelper( 'baz' );
+
+			expect( getData( doc ) ).to.equal( '<limit>foobaz[]</limit><limit>bar</limit>' );
+		} );
+
+		it( 'should not insert disallowed elements inside limit elements', () => {
+			setData( doc, '<limit>[]</limit>' );
+			insertHelper( '<disallowedElement></disallowedElement>' );
+
+			expect( getData( doc ) ).to.equal( '<limit>[]</limit>' );
+		} );
+
+		it( 'should not leave the limit element when inserting at the end', () => {
+			setData( doc, '<limit>foo[]</limit>' );
+			insertHelper( '<paragraph>a</paragraph><paragraph>b</paragraph>' );
+
+			expect( getData( doc ) ).to.equal( '<limit>fooab[]</limit>' );
+		} );
+
+		it( 'should not leave the limit element when inserting at the beginning', () => {
+			setData( doc, '<limit>[]foo</limit>' );
+			insertHelper( '<paragraph>a</paragraph><paragraph>b</paragraph>' );
+
+			expect( getData( doc ) ).to.equal( '<limit>ab[]foo</limit>' );
+		} );
+	} );
+
 	// @param {module:engine/model/item~Item|String} content
 	function insertHelper( content ) {
 		if ( typeof content == 'string' ) {

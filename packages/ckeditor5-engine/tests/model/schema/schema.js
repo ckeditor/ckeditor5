@@ -43,6 +43,10 @@ describe( 'Schema', () => {
 			expect( schema.objects ).to.be.instanceOf( Set );
 		} );
 
+		it( 'should create the limits set', () => {
+			expect( schema.limits ).to.be.instanceOf( Set );
+		} );
+
 		describe( '$clipboardHolder', () => {
 			it( 'should allow $block', () => {
 				expect( schema.check( { name: '$block', inside: [ '$clipboardHolder' ] } ) ).to.be.true;

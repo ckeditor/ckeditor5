@@ -158,8 +158,8 @@ export default class TreeWalker {
 	 * For example:
 	 *
 	 * 		walker.skip( value => value.type == 'text' ); // <paragraph>[]foo</paragraph> -> <paragraph>foo[]</paragraph>
-	 * 		walker.skip( value => true ); // Move the position to the end: <paragraph>[]foo</paragraph> -> <paragraph>foo</paragraph>[]
-	 * 		walker.skip( value => false ); // Do not move the position.
+	 * 		walker.skip( () => true ); // Move the position to the end: <paragraph>[]foo</paragraph> -> <paragraph>foo</paragraph>[]
+	 * 		walker.skip( () => false ); // Do not move the position.
 	 *
 	 * @param {Function} skip Callback function. Gets {@link module:engine/model/treewalker~TreeWalkerValue} and should
 	 * return `true` if the value should be skipped or `false` if not.
