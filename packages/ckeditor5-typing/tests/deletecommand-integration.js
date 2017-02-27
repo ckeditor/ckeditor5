@@ -30,6 +30,8 @@ describe( 'DeleteCommand integration', () => {
 				doc.schema.registerItem( 'p', '$block' );
 				doc.schema.registerItem( 'img', '$inline' );
 				doc.schema.allow( { name: '$text', inside: 'img' } );
+
+				doc.schema.objects.add( 'img' );
 			} );
 	} );
 
