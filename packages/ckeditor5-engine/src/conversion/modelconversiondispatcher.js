@@ -200,9 +200,7 @@ export default class ModelConversionDispatcher {
 				range: itemRange
 			};
 
-			const name = item.name || '$text';
-
-			this._testAndFire( 'insert', consumable, data, name );
+			this._testAndFire( 'insert', data, consumable );
 
 			// Fire a separate addAttribute event for each attribute that was set on inserted items.
 			// This is important because most attributes converters will listen only to add/change/removeAttribute events.
@@ -212,7 +210,7 @@ export default class ModelConversionDispatcher {
 				data.attributeOldValue = null;
 				data.attributeNewValue = item.getAttribute( key );
 
-				this._testAndFire( `addAttribute:${ key }`, consumable, data, name );
+				this._testAndFire( `addAttribute:${ key }`, data, consumable );
 			}
 		}
 
@@ -257,9 +255,8 @@ export default class ModelConversionDispatcher {
 	 * @param {module:engine/model/position~Position} sourcePosition Position from where the range has been removed.
 	 * @param {module:engine/model/range~Range} range Removed range (after remove, in
 	 * {@link module:engine/model/document~Document#graveyard graveyard root}).
-	 * @param {String} removeAs If passed, removed item is treated like it was an element of given name.
 	 */
-	convertRemove( sourcePosition, range, removeAs = null ) {
+	convertRemove( sourcePosition, range ) {
 		const consumable = this._createConsumableForRange( range, 'remove' );
 
 		for ( let item of range.getItems( { shallow: true } ) ) {
@@ -268,9 +265,7 @@ export default class ModelConversionDispatcher {
 				item: item
 			};
 
-			const name = removeAs || item.name || '$text';
-
-			this._testAndFire( `remove`, consumable, data, name );
+			this._testAndFire( `remove`, data, consumable );
 		}
 	}
 
@@ -304,9 +299,7 @@ export default class ModelConversionDispatcher {
 				attributeNewValue: newValue
 			};
 
-			const name = item.name || '$text';
-
-			this._testAndFire( `${ type }:${ key }`, consumable, data, name );
+			this._testAndFire( `${ type }:${ key }`, data, consumable );
 		}
 	}
 
@@ -321,11 +314,20 @@ export default class ModelConversionDispatcher {
 	 * @param {String} oldName Name of the renamed element before it was renamed.
 	 */
 	convertRename( element, oldName ) {
-		const sourcePosition = Position.createBefore( element );
-		const range = Range.createOn( element );
+		const fakeElement = element.clone( true );
+		fakeElement.name = oldName;
 
-		this.convertRemove( sourcePosition, range, oldName );
-		this.convertInsertion( range );
+		const viewElement = this.conversionApi.mapper.toViewElement( element );
+
+		this.conversionApi.mapper.bindElements( fakeElement, viewElement );
+
+		element.parent.insertChildren( element.index, fakeElement );
+
+		this.convertRemove( Position.createBefore( fakeElement ), Range.createOn( fakeElement ) );
+
+		fakeElement.remove();
+
+		this.convertInsertion( Range.createOn( element ) );
 	}
 
 	/**
@@ -485,17 +487,18 @@ export default class ModelConversionDispatcher {
 	 * @fires removeAttribute
 	 * @fires changeAttribute
 	 * @param {String} type Event type.
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {Object} data Event data.
-	 * @param {String} elementName Name of element for which event is fired or `'$text'` if event is fired for text node.
+	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 */
-	_testAndFire( type, consumable, data, elementName ) {
+	_testAndFire( type, data, consumable ) {
 		if ( !consumable.test( data.item, type ) ) {
 			// Do not fire event if the item was consumed.
 			return;
 		}
 
-		this.fire( `${ type }:${ elementName }`, data, consumable, this.conversionApi );
+		const name = data.item.name || '$text';
+
+		this.fire( type + ':' + name, data, consumable, this.conversionApi );
 	}
 
 	/**
