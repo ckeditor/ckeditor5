@@ -455,14 +455,26 @@ export default class Range {
 			if ( deltaType == 'split' && this.containsPosition( sourcePosition ) ) {
 				ranges[ 0 ].end = ranges[ 1 ].end;
 				ranges.pop();
-			} else if ( type == 'move' && deltaType == 'wrap' ) {
+			}
+			// Don't ask. Just debug.
+			// Like this: https://github.com/ckeditor/ckeditor5-engine/issues/841#issuecomment-282706488.
+			else if ( type == 'move' && deltaType == 'wrap' ) {
 				// <p>a[b</p><w></w><p>c]d</p> -> <w><p>a[b</p></w><p>c]d</p>
 				if ( this.containsPosition( targetPosition ) ) {
 					return [ new Range( ranges[ 2 ].start, ranges[ 1 ].end ) ];
 				}
-				// <p>a[b</p><p>c]d</p><w></w> -><p>a[b</p><w><p>c]d</p></w>
+				// <p>a[b</p><p>c]d</p><w></w> -> <p>a[b</p><w><p>c]d</p></w>
 				else if ( this.containsPosition( sourcePosition ) ) {
 					return [ new Range( ranges[ 0 ].start, ranges[ 1 ].end ) ];
+				}
+			} else if ( type == 'move' && deltaType == 'unwrap' ) {
+				// <w><p>a[b</p></w><p>c]d</p> -> <p>a[b</p><w></w><p>c]d</p>
+				if ( this.containsPosition( sourcePosition.getShiftedBy( howMany ) ) ) {
+					return [ new Range( ranges[ 1 ].start, ranges[ 0 ].end ) ];
+				}
+				// <p>a[b</p><w><p>c]d</p></w> -> <p>a[b</p><p>c]d</p><w></w>
+				else if ( this.containsPosition( sourcePosition ) ) {
+					return [ new Range( ranges[ 0 ].start, ranges[ 2 ].end ) ];
 				}
 			}
 

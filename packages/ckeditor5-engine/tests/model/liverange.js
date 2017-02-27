@@ -490,7 +490,7 @@ describe( 'LiveRange', () => {
 
 				doc.batch().unwrap( root.getChild( 0 ) );
 
-				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><p>x</p><<p>c]d</p>' );
+				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><p>x</p><p>c]d</p>' );
 			} );
 
 			it( 'its end is intersecting with the wrapper to remove', () => {
