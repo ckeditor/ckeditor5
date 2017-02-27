@@ -86,7 +86,7 @@ export default class DataController {
 		 * @readonly
 		 * @member {module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}
 		 */
-		this.modelToView = new ModelConversionDispatcher( {
+		this.modelToView = new ModelConversionDispatcher( this.model, {
 			mapper: this.mapper
 		} );
 		this.modelToView.on( 'insert:$text', insertText(), { priority: 'lowest' } );

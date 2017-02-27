@@ -4,8 +4,6 @@
  */
 
 import ModelRange from '../model/range';
-import ModelPosition from '../model/position';
-import ModelElement from '../model/element';
 
 import ViewElement from '../view/element';
 import ViewText from '../view/text';
@@ -374,7 +372,7 @@ export function wrapRange( elementCreator ) {
  * was passed, it will be used to look for similar element in the view for unwrapping. If `Function` is provided, it is passed all
  * the parameters of the
  * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:removeMarker removeMarker event}.
- * It's expected that the function returns a {@link module:/engine/view/attributeelement~AttributeElement}. The result of
+ * It's expected that the function returns a {@link module:engine/view/attributeelement~AttributeElement}. The result of
  * the function will be used to look for similar element in the view for unwrapping.
  *
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
@@ -407,28 +405,6 @@ export function unwrapRange( elementCreator ) {
 		for ( let range of flatViewRanges ) {
 			viewWriter.unwrap( range, viewElement );
 		}
-	};
-}
-
-/**
- * Function factory, creates a default model-to-view converter for nodes move changes.
- *
- *		modelDispatcher.on( 'move', move() );
- *
- * @returns {Function} Move event converter.
- */
-export function move() {
-	return ( evt, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.item, 'move' ) ) {
-			return;
-		}
-
-		const modelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, data.item.offsetSize );
-		const sourceViewRange = conversionApi.mapper.toViewRange( modelRange );
-
-		const targetViewPosition = conversionApi.mapper.toViewPosition( data.targetPosition );
-
-		viewWriter.move( sourceViewRange, targetViewPosition );
 	};
 }
 
@@ -479,132 +455,6 @@ export function removeUIElement( elementCreator ) {
 		const enlargedViewRange = viewRange.getEnlarged();
 
 		viewWriter.clear( enlargedViewRange, viewElement );
-	};
-}
-
-/**
- * Function factory, creates default model-to-view converter for elements which name has changed.
- *
- *		modelDispatcher.on( 'rename', rename() );
- *
- * This converter re-uses converters added for `insert`, `move` and `remove` change types.
- *
- * @fires module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert
- * @fires module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:move
- * @fires module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:remove
- * @returns {Function}
- */
-export function rename() {
-	return ( evt, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.element, 'rename' ) ) {
-			return;
-		}
-
-		// Create fake model element that will represent "old version" of renamed element.
-		const fakeElement = new ModelElement( data.oldName, data.element.getAttributes() );
-		// Append the fake element to model document to enable making range on it.
-		data.element.parent.insertChildren( data.element.index, fakeElement );
-
-		// Check what was bound to renamed element.
-		const oldViewElement = conversionApi.mapper.toViewElement( data.element );
-		// Unbind renamed element.
-		conversionApi.mapper.unbindModelElement( data.element );
-		// Bind view element to the fake element.
-		conversionApi.mapper.bindElements( fakeElement, oldViewElement );
-
-		// The range that includes only the renamed element. Will be used to insert an empty element in the view.
-		const insertRange = ModelRange.createFromParentsAndOffsets( data.element.parent, data.element.startOffset, data.element, 0 );
-
-		// Move source position and range of moved nodes. Will be used to move nodes from original view element to renamed one.
-		const moveSourcePosition = ModelPosition.createAt( fakeElement, 0 );
-		const moveRange = ModelRange.createIn( data.element );
-
-		// Remove range containing the fake element. Will be used to remove original view element from the view.
-		const removeRange = ModelRange.createOn( fakeElement );
-
-		// Start the conversion. Use already defined converters by firing insertion, move and remove conversion
-		// on correct ranges / positions.
-		conversionApi.dispatcher.convertInsertion( insertRange );
-		conversionApi.dispatcher.convertMove( moveSourcePosition, moveRange );
-		conversionApi.dispatcher.convertRemove( removeRange.start, removeRange );
-
-		// Cleanup.
-		fakeElement.remove();
-	};
-}
-
-/**
- * Function factory, creates a default converter for inserting {@link module:engine/model/item~Item model item}
- * into a marker range.
- *
- *		modelDispatcher.on( 'insert', insertRangeIntoMarker( modelDocument.markers ) );
- *
- * @param {module:engine/model/markercollection~MarkerCollection} markerCollection Markers collection to check when
- * inserting.
- * @returns {Function}
- */
-export function insertRangeIntoMarker( markerCollection ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		for ( let marker of markerCollection ) {
-			const range = marker.getRange();
-
-			if ( range.containsPosition( data.range.start ) ) {
-				conversionApi.dispatcher.convertMarker( 'addMarker', marker.name, data.range );
-			}
-		}
-	};
-}
-
-/**
- * Function factory, creates a default converter for inserting a {@link module:engine/model/range~Range model range}
- * that contains a marker. This happens when marker was in a graveyard (so it was removed from the view) or was
- * created in a {@link module:engine/model/documentfragment~DocumentFragment DocumentFragment} (so it was not in the view before).
- *
- *		modelDispatcher.on( 'insert', insertRangeWithMarker( modelDocument.markers ) );
- *
- * @param {module:engine/model/markercollection~MarkerCollection} markerCollection Markers collection to check when
- * inserting.
- * @returns {Function}
- */
-export function insertRangeWithMarker( markerCollection ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		for ( let marker of markerCollection ) {
-			const range = marker.getRange();
-
-			if ( data.range.containsRange( range ) || data.range.isEqual( range ) ) {
-				conversionApi.dispatcher.convertMarker( 'addMarker', marker.name, range );
-			}
-		}
-	};
-}
-
-/**
- * Function factory, creates a default converter for move changes that move {@link module:engine/model/item~Item model items}
- * into or outside of a marker range.
- *
- *		modelDispatcher.on( 'move', moveInOutOfMarker( modelDocument.markers ) );
- *
- * @param {module:engine/model/markercollection~MarkerCollection} markerCollection Markers collection to check when
- * moving.
- * @returns {Function}
- */
-export function moveInOutOfMarker( markerCollection ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		const sourcePos = data.sourcePosition._getTransformedByInsertion( data.targetPosition, data.item.offsetSize );
-		const movedRange = ModelRange.createOn( data.item );
-
-		for ( let marker of markerCollection ) {
-			const range = marker.getRange();
-
-			const wasInMarker = range.containsPosition( sourcePos ) || range.start.isEqual( sourcePos ) || range.end.isEqual( sourcePos );
-			const common = movedRange.getIntersection( range );
-
-			if ( wasInMarker && common === null ) {
-				conversionApi.dispatcher.convertMarker( 'removeMarker', marker.name, movedRange );
-			} else if ( common !== null ) {
-				conversionApi.dispatcher.convertMarker( 'addMarker', marker.name, common );
-			}
-		}
 	};
 }
 

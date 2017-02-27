@@ -57,7 +57,7 @@ describe( 'model-selection-to-view-converters', () => {
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
 
-		dispatcher = new ModelConversionDispatcher( { mapper, viewSelection } );
+		dispatcher = new ModelConversionDispatcher( modelDoc, { mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'addAttribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
@@ -291,6 +291,31 @@ describe( 'model-selection-to-view-converters', () => {
 					.to.equal( '<div>foo<span class="marker2">[]</span>bar</div>' );
 			} );
 
+			it( 'should do nothing if creator return null', () => {
+				dispatcher.on( 'selectionMarker:marker3', convertSelectionMarker( () => {
+					return;
+				} ) );
+
+				setModelData( modelDoc, 'foobar' );
+				const marker = modelDoc.markers.set( 'marker3', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
+
+				modelSelection.setRanges( [ new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) ] );
+
+				// Remove view children manually (without firing additional conversion).
+				viewRoot.removeChildren( 0, viewRoot.childCount );
+
+				// Convert model to view.
+				dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
+				dispatcher.convertMarker( 'addMarker', marker.name, marker.getRange() );
+
+				const markers = Array.from( modelDoc.markers.getMarkersAtPosition( modelSelection.getFirstPosition() ) );
+				dispatcher.convertSelection( modelSelection, markers );
+
+				// Stringify view and check if it is same as expected.
+				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
+					.to.equal( '<div>foo{}bar</div>' );
+			} );
+
 			it( 'consumes consumable values properly', () => {
 				// Add callbacks that will fire before default ones.
 				// This should prevent default callbacks doing anything.
@@ -501,6 +526,19 @@ describe( 'model-selection-to-view-converters', () => {
 					'<strong style="text-transform:uppercase;">[]</strong>' +
 					'<span style="color:yellow;">ba</span>r',
 					{ theme: 'important' }
+				);
+			} );
+
+			it( 'convertSelectionAttribute should do nothing if creator return null', () => {
+				dispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( () => {
+					return;
+				} ) );
+
+				test(
+					[ 3, 3 ],
+					'foobar',
+					'foo{}bar',
+					{ bold: 'true' }
 				);
 			} );
 		} );

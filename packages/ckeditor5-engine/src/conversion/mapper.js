@@ -314,7 +314,7 @@ export default class Mapper {
 	 * Gets the length of the view element in the model.
 	 *
 	 * The length is calculated as follows:
-	 * * if {@link ~registerViewToModelLength length mapping callback} is provided for given `viewNode` it is used to
+	 * * if {@link #registerViewToModelLength length mapping callback} is provided for given `viewNode` it is used to
 	 * evaluate model length (`viewNode` is used as first and only parameter passed to the callback),
 	 * * length of a {@link module:engine/view/text~Text text node} is equal to the length of it's
 	 * {@link module:engine/view/text~Text#data data},

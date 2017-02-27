@@ -114,7 +114,7 @@ export function convertCollapsedSelection() {
  *		modelDispatcher.on( 'selectionAttribute:style', convertSelectionAttribute( styleCreator ) );
  *
  * **Note:** You can use the same `elementCreator` function for this converter factory
- * and {@link module:engine/conversion/model-to-view-converters~wrap}
+ * and {@link module:engine/conversion/model-to-view-converters~wrapRange}
  * model to view converter, as long as the `elementCreator` function uses only the first parameter (attribute value).
  *
  *		modelDispatcher.on( 'selection', convertCollapsedSelection() );
@@ -149,6 +149,10 @@ export function convertSelectionAttribute( elementCreator ) {
 			elementCreator.clone( true ) :
 			elementCreator( data.value, data, data.selection, consumable, conversionApi );
 
+		if ( !viewElement ) {
+			return;
+		}
+
 		const consumableName = 'selectionAttribute:' + data.key;
 
 		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, consumableName );
@@ -174,6 +178,10 @@ export function convertSelectionMarker( elementCreator ) {
 		const viewElement = elementCreator instanceof ViewElement ?
 			elementCreator.clone( true ) :
 			elementCreator( data, consumable, conversionApi );
+
+		if ( !viewElement ) {
+			return;
+		}
 
 		const consumableName = 'selectionMarker:' + data.name;
 
