@@ -372,7 +372,7 @@ export function wrapRange( elementCreator ) {
  * was passed, it will be used to look for similar element in the view for unwrapping. If `Function` is provided, it is passed all
  * the parameters of the
  * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:removeMarker removeMarker event}.
- * It's expected that the function returns a {@link module:/engine/view/attributeelement~AttributeElement}. The result of
+ * It's expected that the function returns a {@link module:engine/view/attributeelement~AttributeElement}. The result of
  * the function will be used to look for similar element in the view for unwrapping.
  *
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
