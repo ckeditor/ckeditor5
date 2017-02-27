@@ -5,7 +5,6 @@
 
 import ModelRange from '../model/range';
 
-import ViewRange from '../view/range';
 import ViewElement from '../view/element';
 import ViewText from '../view/text';
 import viewWriter from '../view/writer';
@@ -422,15 +421,8 @@ export function remove() {
 			return;
 		}
 
-		let viewRange;
-
-		if ( data.item.is( 'element' ) ) {
-			const viewElement = conversionApi.mapper.toViewElement( data.item );
-			viewRange = ViewRange.createOn( viewElement );
-		} else {
-			const modelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, data.item.offsetSize );
-			viewRange = conversionApi.mapper.toViewRange( modelRange );
-		}
+		const modelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, data.item.offsetSize );
+		const viewRange = conversionApi.mapper.toViewRange( modelRange );
 
 		viewWriter.remove( viewRange );
 		conversionApi.mapper.unbindModelElement( data.item );
