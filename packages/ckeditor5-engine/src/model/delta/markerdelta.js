@@ -95,7 +95,7 @@ register( 'setMarker', function( markerOrName, newRange ) {
  *
  * @chainable
  * @method module:engine/model/batch~Batch#removeMarker
- * @param {module:engine/model/markerscollection~Marker|String} markerOrName Marker or marker name to remove.
+ * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker or marker name to remove.
  */
 register( 'removeMarker', function( markerOrName ) {
 	const name = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;

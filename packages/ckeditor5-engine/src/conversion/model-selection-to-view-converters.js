@@ -149,6 +149,10 @@ export function convertSelectionAttribute( elementCreator ) {
 			elementCreator.clone( true ) :
 			elementCreator( data.value, data, data.selection, consumable, conversionApi );
 
+		if ( !viewElement ) {
+			return;
+		}
+
 		const consumableName = 'selectionAttribute:' + data.key;
 
 		wrapCollapsedSelectionPosition( data.selection, conversionApi.viewSelection, viewElement, consumable, consumableName );
@@ -164,7 +168,7 @@ export function convertSelectionAttribute( elementCreator ) {
  * **Note:** You can use the same `elementCreator` function for this converter factory
  * and {@link module:engine/conversion/model-to-view-converters~wrapRange}.
  *
- * @see {~convertSelectionAttribute}
+ * @see module:engine/conversion/model-selection-to-view-converters~convertSelectionAttribute
  * @param {module:engine/view/attributeelement~AttributeElement|Function} elementCreator View element,
  * or function returning a view element, which will be used for wrapping.
  * @returns {Function} Selection converter.
@@ -174,6 +178,10 @@ export function convertSelectionMarker( elementCreator ) {
 		const viewElement = elementCreator instanceof ViewElement ?
 			elementCreator.clone( true ) :
 			elementCreator( data, consumable, conversionApi );
+
+		if ( !viewElement ) {
+			return;
+		}
 
 		const consumableName = 'selectionMarker:' + data.name;
 
