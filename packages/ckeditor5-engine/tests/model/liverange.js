@@ -421,7 +421,7 @@ describe( 'LiveRange', () => {
 				// [<p>ab</p><p>x</p>]
 				doc.batch().wrap( new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ), 'w' );
 
-				expect( stringify( root, live ) ).to.equal( '<w><p>a[b</p>p>x</p></w><<p>c]d</p>' );
+				expect( stringify( root, live ) ).to.equal( '<w><p>a[b</p><p>x</p></w><p>c]d</p>' );
 			} );
 
 			it( 'its end is intersecting with the wrapped range (multiple elements)', () => {
@@ -430,7 +430,7 @@ describe( 'LiveRange', () => {
 				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
 				// [<p>x</p><p>cd</p>]
-				doc.batch().wrap( new Range( new Position( root, [ 2 ] ), new Position( root, [ 3 ] ) ), 'w' );
+				doc.batch().wrap( new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) ), 'w' );
 
 				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><w><p>x</p><p>c]d</p></w>' );
 			} );
