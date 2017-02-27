@@ -183,8 +183,8 @@ export default class DataController {
 
 	/**
 	 * Sets input data parsed by the {@link #processor data processor} and
-	 * converted by the {@link #viewToModel view to model converters}. When markers where converted
-	 * from view to model as temporary {@link module:engine/model/element/~Element model elements} then those element
+	 * converted by the {@link #viewToModel view to model converters}. If markers where converted
+	 * from view to model as temporary {@link module:engine/model/element/~Element model elements} then those elements
 	 * will be removed from parsed {@link module:engine/model/element/~DocumentFragment} and added to the
 	 * {@link module:engine/model/document~Document#markers markers collection}.
 	 *
@@ -337,7 +337,7 @@ export default class DataController {
 mix( DataController, EmitterMixin );
 
 // Traverses given DocumentFragment and searches elements which marks marker range. Found element is removed from
-// DocumentFragment but path of this element is stored in Map.
+// DocumentFragment but path of this element is stored in a Map which is then returned.
 //
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Model DocumentFragment.
 // @returns {Map} Map with markers data.
