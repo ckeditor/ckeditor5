@@ -20,7 +20,8 @@ export default class InputCommand extends Command {
 	 * Creates an instance of the command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {Number} undoStep The maximum number of atomic changes which can be contained in one batch.
+	 * @param {Number} undoStep The maximum number of atomic changes
+	 * which can be contained in one batch in the command buffer.
 	 */
 	constructor( editor, undoStep ) {
 		super( editor );
@@ -60,7 +61,7 @@ export default class InputCommand extends Command {
 	 * on the beginning of the range (which after removal is a collapsed range).
 	 *
 	 * @param {Object} [options] The command options.
-	 * @param {String} [options.text=''] Text to be inserted.
+	 * @param {String} [options.text] Text to be inserted.
 	 * @param {module:engine/model/range~Range} [options.range] Range in which the text is inserted. Defaults
 	 * to the first range in the current selection.
 	 * @param {module:engine/model/position~Position} [options.resultPosition] Position which will be used
@@ -82,7 +83,7 @@ export default class InputCommand extends Command {
 					this._buffer.batch.remove( range );
 				}
 
-				if ( text ) {
+				if ( text && text.length ) {
 					textInsertions = text.length;
 					this._buffer.batch.weakInsert( range.start, text );
 				}
