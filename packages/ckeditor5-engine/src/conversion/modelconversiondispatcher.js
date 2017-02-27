@@ -10,6 +10,7 @@
 import Consumable from './modelconsumable';
 import Range from '../model/range';
 import Position from '../model/position';
+import DocumentFragment from '../model/documentfragment';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
@@ -314,19 +315,21 @@ export default class ModelConversionDispatcher {
 	 * @param {String} oldName Name of the renamed element before it was renamed.
 	 */
 	convertRename( element, oldName ) {
+		// Create fake element that will be used to fire remove event. The fake element will have the old element name.
 		const fakeElement = element.clone( true );
 		fakeElement.name = oldName;
 
-		const viewElement = this.conversionApi.mapper.toViewElement( element );
+		// Bind fake element with original view element so the view element will be removed.
+		this.conversionApi.mapper.bindElements(
+			fakeElement,
+			this.conversionApi.mapper.toViewElement( element )
+		);
 
-		this.conversionApi.mapper.bindElements( fakeElement, viewElement );
+		// Create fake document fragment so a range can be created on fake element.
+		const fakeDocumentFragment = new DocumentFragment();
+		fakeDocumentFragment.appendChildren( fakeElement );
 
-		element.parent.insertChildren( element.index, fakeElement );
-
-		this.convertRemove( Position.createBefore( fakeElement ), Range.createOn( fakeElement ) );
-
-		fakeElement.remove();
-
+		this.convertRemove( Position.createBefore( element ), Range.createOn( fakeElement ) );
 		this.convertInsertion( Range.createOn( element ) );
 	}
 
