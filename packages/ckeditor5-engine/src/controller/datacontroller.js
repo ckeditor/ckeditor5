@@ -205,7 +205,8 @@ export default class DataController {
 			this.model.selection.clearAttributes();
 
 			// Parse data to model and extract markers from parsed document fragment.
-			const { documentFragment, markersData } = extractMarkersFromModelFragment( this.parse( data ) );
+			const documentFragment = this.parse( data );
+			const markersData = extractMarkersFromModelFragment( documentFragment );
 
 			// Initial batch should be ignored by features like undo, etc.
 			const batch = this.model.batch( 'transparent' );
@@ -282,8 +283,8 @@ export default class DataController {
 	 * changes will be added to a new batch.
 	 */
 	insertContent( content, selection, batch ) {
-		const { documentFragment } = extractMarkersFromModelFragment( content );
-		this.fire( 'insertContent', { content: documentFragment, selection, batch } );
+		extractMarkersFromModelFragment( content );
+		this.fire( 'insertContent', { content, selection, batch } );
 	}
 
 	/**
@@ -335,55 +336,47 @@ export default class DataController {
 
 mix( DataController, EmitterMixin );
 
-// Traverses given DocumentFragment and searches elements which marks marker range. Founded element is removed from
+// Traverses given DocumentFragment and searches elements which marks marker range. Found element is removed from
 // DocumentFragment but path of this element is stored in Map.
 //
 // @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Model DocumentFragment.
-// @returns {Object} Object with markers data and cleaned up document fragment.
+// @returns {Map} Map with markers data.
 function extractMarkersFromModelFragment( documentFragment ) {
-	const markersData = new Map();
+	const markerStamps = new Set();
 
-	// Creates ModelTreeWalker with given start position.
-	function walkFrom( position ) {
-		const walker = new ModelTreeWalker( {
-			startPosition: position,
-			ignoreElementEnd: true,
-			shallow: false
-		} );
+	// Create ModelTreeWalker.
+	const walker = new ModelTreeWalker( {
+		startPosition: ModelPosition.createAt( documentFragment, 0 ),
+		ignoreElementEnd: true,
+		shallow: false
+	} );
 
-		// Walk through DocumentFragment.
-		for ( const value of walker ) {
-			// Check if current element is a marker stamp.
-			if ( value.item.name == '$marker' ) {
-				const markerName = value.item.getAttribute( 'data-name' );
-				const currentPosition = ModelPosition.createBefore( value.item );
-
-				// When marker of given name is not stored it means that we have found the beginning of the range.
-				if ( !markersData.has( markerName ) ) {
-					markersData.set( markerName, { startPath: currentPosition.path } );
-				// Otherwise is means that we have found end of the marker range.
-				} else {
-					markersData.get( markerName ).endPath = currentPosition.path;
-				}
-
-				// Remove marker stamp element from DocumentFragment.
-				remove( ModelRange.createOn( value.item ) );
-
-				// Keep walking using new instance of TreeWalker but starting from last visited position.
-				// This is because after removing marker stamp element DocumentFragment structure might change
-				// and TreeWalker might omit some node.
-				walkFrom( currentPosition );
-
-				// Stop this walker, we have continued walk using new TreeWalker instance.
-				break;
-			}
+	// Walk through DocumentFragment and collect marker elements.
+	for ( const value of walker ) {
+		// Check if current element is a marker stamp.
+		if ( value.item.name == '$marker' ) {
+			markerStamps.add( value.item );
 		}
 	}
 
-	// Start traversing.
-	walkFrom( ModelPosition.createAt( documentFragment, 0 ) );
+	// Walk through collected marker elements store its path and remove its from the DocumentFragment.
+	return Array.from( markerStamps ).reduce( ( result, stamp ) => {
+		const markerName = stamp.getAttribute( 'data-name' );
+		const currentPosition = ModelPosition.createBefore( stamp );
 
-	return { markersData, documentFragment };
+		// When marker of given name is not stored it means that we have found the beginning of the range.
+		if ( !result.has( markerName ) ) {
+			result.set( markerName, { startPath: currentPosition.path } );
+		// Otherwise is means that we have found end of the marker range.
+		} else {
+			result.get( markerName ).endPath = currentPosition.path;
+		}
+
+		// Remove marker stamp element from DocumentFragment.
+		remove( ModelRange.createOn( stamp ) );
+
+		return result;
+	}, new Map() );
 }
 
 /**
