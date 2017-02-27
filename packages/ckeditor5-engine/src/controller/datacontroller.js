@@ -225,7 +225,7 @@ export default class DataController {
 					markerData.endPath ? new ModelPosition( modelRoot, markerData.endPath ) : null
 				);
 
-				batch.setMarker( this.model.markers.set( markerName, range ) );
+				batch.setMarker( markerName, range );
 			}
 		} );
 	}
