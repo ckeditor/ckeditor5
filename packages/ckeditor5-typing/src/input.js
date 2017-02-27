@@ -15,7 +15,6 @@ import diff from '@ckeditor/ckeditor5-utils/src/diff';
 import diffToChanges from '@ckeditor/ckeditor5-utils/src/difftochanges';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import InputCommand from './inputcommand';
-import ChangeBuffer from './changebuffer';
 
 /**
  * Handles text input coming from the keyboard or other input methods.
@@ -29,36 +28,19 @@ export default class Input extends Plugin {
 	init() {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
-
-		/**
-		 * Typing's change buffer used to group subsequent changes into batches.
-		 *
-		 * @protected
-		 * @member {module:typing/changebuffer~ChangeBuffer} #_buffer
-		 */
-		this._buffer = new ChangeBuffer( editor.document, editor.config.get( 'typing.undoStep' ) || 20 );
+		const inputCommand = new InputCommand( editor, editor.config.get( 'typing.undoStep' ) || 20 );
 
 		// TODO The above default configuration value should be defined using editor.config.define() once it's fixed.
 
-		editor.commands.set( 'input', new InputCommand( editor ) );
+		editor.commands.set( 'input', inputCommand );
 
 		this.listenTo( editingView, 'keydown', ( evt, data ) => {
-			this._handleKeydown( data );
+			this._handleKeydown( data, inputCommand.buffer );
 		}, { priority: 'lowest' } );
 
 		this.listenTo( editingView, 'mutations', ( evt, mutations, viewSelection ) => {
 			this._handleMutations( mutations, viewSelection );
 		} );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	destroy() {
-		super.destroy();
-
-		this._buffer.destroy();
-		this._buffer = null;
 	}
 
 	/**
@@ -75,8 +57,9 @@ export default class Input extends Plugin {
 	 *
 	 * @private
 	 * @param {module:engine/view/observer/keyobserver~KeyEventData} evtData
+	 * @param {module:typing/changebuffer~ChangeBuffer} buffer
 	 */
-	_handleKeydown( evtData ) {
+	_handleKeydown( evtData, buffer ) {
 		const doc = this.editor.document;
 
 		if ( isSafeKeystroke( evtData ) || doc.selection.isCollapsed ) {
@@ -84,7 +67,7 @@ export default class Input extends Plugin {
 		}
 
 		doc.enqueueChanges( () => {
-			this.editor.data.deleteContent( doc.selection, this._buffer.batch );
+			this.editor.data.deleteContent( doc.selection, buffer.batch );
 		} );
 	}
 
@@ -96,7 +79,7 @@ export default class Input extends Plugin {
 	 * @param {module:engine/view/selection~Selection|null} viewSelection
 	 */
 	_handleMutations( mutations, viewSelection ) {
-		new MutationHandler( this.editor, this._buffer ).handle( mutations, viewSelection );
+		new MutationHandler( this.editor ).handle( mutations, viewSelection );
 	}
 }
 
@@ -110,9 +93,8 @@ class MutationHandler {
 	 * Creates an instance of the mutation handler.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {module:typing/changebuffer~ChangeBuffer} buffer
 	 */
-	constructor( editor, buffer ) {
+	constructor( editor ) {
 		/**
 		 * Editor instance for which mutations are handled.
 		 *
@@ -128,14 +110,6 @@ class MutationHandler {
 		 * @member {module:engine/controller/editingcontroller~EditingController} #editing
 		 */
 		this.editing = this.editor.editing;
-
-		/**
-		 * The change buffer;
-		 *
-		 * @readonly
-		 * @member {module:typing/changebuffer~ChangeBuffer} #buffer
-		 */
-		this.buffer = buffer;
 	}
 
 	/**
@@ -146,24 +120,10 @@ class MutationHandler {
 	 */
 	handle( mutations, viewSelection ) {
 		for ( let mutation of mutations ) {
-			// console.log( 'if', mutation );
 			// Fortunately it will never be both.
 			this._handleTextMutation( mutation, viewSelection );
 			this._handleTextNodeInsertion( mutation );
 		}
-	}
-
-	// TODO needs proper description
-	// Check if mutation is normal typing.
-	// There is also composition (mutations will be blocked during composing in future) and spellchecking.
-	// There are also cases when spell checking generates one insertion and no deletions (like hous -> house)
-	// and the mutation is identical as typing.
-	_isTyping( insertions, deletions, firstChangeAt, lastChangeAt, viewSelection ) {
-		const viewSelectionAnchorOffset = viewSelection ? viewSelection.anchor.offset : null;
-
-		return deletions === 0 && insertions == 1 &&
-			firstChangeAt && lastChangeAt && ( lastChangeAt - firstChangeAt === 0 ) &&
-			( viewSelectionAnchorOffset <= firstChangeAt + 1 );
 	}
 
 	_handleTextMutation( mutation, viewSelection ) {
@@ -218,60 +178,23 @@ class MutationHandler {
 			}
 		}
 
-		// TODO transform into human readable and understandable text.
-		// For insertions of the same character in a row, like
-		// ab^cde - inserting c
-		// and
-		// abc^de - inserting c
-		// the diff is the same.
-		// This causes the problem with using ModelRange.createFromPositionAndShift( modelPos, 0 ); (passing when there is no removeRange)
-		// because the last character in the sequence of the same characters is always recognized as an insertion.
-		// From the other hand without ModelRange.createFromPositionAndShift( modelPos, 0 ); it works fine, but spellchecking
-		// cases which cannot be differentiated from typing ( hous -> house ) is broken because `InputCommand` wll use
-		// default selection which is [hous] to do text replacement (results in e[]).
+		// Try setting new model selection according to passed view selection.
+		let modelSelectionPosition = null;
+
+		if ( viewSelection ) {
+			modelSelectionPosition = this.editing.mapper.toModelPosition( viewSelection.anchor );
+		}
 
 		// Get the position in view and model where the changes will happen.
-		let viewPos = new ViewPosition( mutation.node, firstChangeAt );
-
-		// TODO references to previous comment about diff with same character sequence. Needs proper, dteailed description.
-		if ( viewSelection && viewSelection.anchor.offset <= firstChangeAt ) {
-			viewPos = new ViewPosition( mutation.node, viewSelection.anchor.offset - 1 );
-		}
-
-		let modelPos = this.editing.mapper.toModelPosition( viewPos );
-		let removeRange = ModelRange.createFromPositionAndShift( modelPos, deletions || 0 );
-		let insertText = newText.substr( firstChangeAt, insertions );
-
-		// TODO detailed description what is going on here.
-		if ( viewSelection && !this._isTyping( insertions, deletions, firstChangeAt, lastChangeAt, viewSelection ) ) {
-			// The beginning of the corrected word is always at the fixed position no matter what was changed
-			// by spellchecking mechanism so it may be recognized by getting last space before corrected word.
-			let lastSpaceBeforeChangeAt = 0;
-
-			for ( let i = 0; i < newText.length; i++ ) {
-				if ( newText[ i ] === ' ' ) {
-					if ( i < firstChangeAt ) {
-						lastSpaceBeforeChangeAt = i + 1;
-					} else {
-						break;
-					}
-				}
-			}
-
-			let correctedText = newText.substring( lastSpaceBeforeChangeAt, viewSelection.anchor.offset );
-
-			if ( correctedText.length ) {
-				insertText = correctedText;
-				viewPos = new ViewPosition( mutation.node, lastSpaceBeforeChangeAt );
-				modelPos = this.editing.mapper.toModelPosition( viewPos );
-				removeRange = ModelRange.createFromPositionAndShift( modelPos, insertText.length - insertions + deletions );
-			}
-		}
+		const viewPos = new ViewPosition( mutation.node, firstChangeAt );
+		const modelPos = this.editing.mapper.toModelPosition( viewPos );
+		const removeRange = ModelRange.createFromPositionAndShift( modelPos, deletions );
+		const insertText = newText.substr( firstChangeAt, insertions );
 
 		this.editor.execute( 'input', {
 			text: insertText,
 			range: removeRange,
-			buffer: this.buffer
+			resultPosition: modelSelectionPosition
 		} );
 	}
 
@@ -311,8 +234,7 @@ class MutationHandler {
 			// In this case we don't need to do this before `diff` because we diff whole nodes.
 			// Just change &nbsp; in case there are some.
 			text: insertedText.replace( /\u00A0/g, ' ' ),
-			range: new ModelRange( modelPos ),
-			buffer: this.buffer
+			range: new ModelRange( modelPos )
 		} );
 	}
 }

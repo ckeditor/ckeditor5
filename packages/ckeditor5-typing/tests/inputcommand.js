@@ -3,11 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import InputCommand from '../src/inputcommand';
 import ChangeBuffer from '../src/changebuffer';
+import Input from '../src/input';
 
 describe( 'InputCommand', () => {
 	let editor, doc, buffer;
@@ -19,9 +21,11 @@ describe( 'InputCommand', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				doc = editor.document;
-				buffer = new ChangeBuffer( doc, 20 );
 
-				editor.commands.set( 'input', new InputCommand( editor ) );
+				const inputCommand = new InputCommand( editor, 20 );
+				editor.commands.set( 'input', inputCommand );
+
+				buffer = inputCommand.buffer;
 
 				doc.schema.registerItem( 'p', '$block' );
 				doc.schema.registerItem( 'h1', '$block' );
@@ -32,6 +36,28 @@ describe( 'InputCommand', () => {
 		buffer.size = 0;
 	} );
 
+	describe( 'buffer', () => {
+		it( 'has buffer getter', () => {
+			expect( editor.commands.get( 'input' ).buffer ).to.be.an.instanceof( ChangeBuffer );
+		} );
+
+		it( 'has a buffer limit configured to default value of 20', () => {
+			expect( editor.commands.get( 'input' )._buffer ).to.have.property( 'limit', 20 );
+		} );
+
+		it( 'has a buffer configured to config.typing.undoStep', () => {
+			return VirtualTestEditor.create( {
+				plugins: [ Input ],
+				typing: {
+					undoStep: 5
+				}
+			} )
+				.then( editor => {
+					expect( editor.commands.get( 'input' )._buffer ).to.have.property( 'limit', 5 );
+				} );
+		} );
+	} );
+
 	describe( 'execute', () => {
 		it( 'uses enqueueChanges', () => {
 			setData( doc, '<p>foo[]bar</p>' );
@@ -39,7 +65,7 @@ describe( 'InputCommand', () => {
 			const spy = testUtils.sinon.spy( doc, 'enqueueChanges' );
 
 			editor.execute( 'input', {
-				buffer: buffer
+				text: ''
 			} );
 
 			expect( spy.calledOnce ).to.be.true;
@@ -49,7 +75,6 @@ describe( 'InputCommand', () => {
 			setData( doc, '<p>foo[]</p>' );
 
 			editor.execute( 'input', {
-				buffer: buffer,
 				text: 'bar',
 				range: editor.document.selection.getFirstRange()
 			} );
@@ -62,7 +87,6 @@ describe( 'InputCommand', () => {
 			setData( doc, '<p>[fooba]r</p>' );
 
 			editor.execute( 'input', {
-				buffer: buffer,
 				text: 'rab',
 				range: editor.document.selection.getFirstRange()
 			} );
@@ -75,7 +99,6 @@ describe( 'InputCommand', () => {
 			setData( doc, '<p>fo[oba]r</p>' );
 
 			editor.execute( 'input', {
-				buffer: buffer,
 				text: 'bazz',
 				range: editor.document.selection.getFirstRange()
 			} );
@@ -88,7 +111,6 @@ describe( 'InputCommand', () => {
 			setData( doc, '<p>fooba[r]</p>' );
 
 			editor.execute( 'input', {
-				buffer: buffer,
 				text: 'zzz',
 				range: editor.document.selection.getFirstRange()
 			} );
@@ -101,7 +123,6 @@ describe( 'InputCommand', () => {
 			setData( doc, '<h1>F[OO</h1><p>b]ar</p>' );
 
 			editor.execute( 'input', {
-				buffer: buffer,
 				text: 'unny c',
 				range: editor.document.selection.getFirstRange()
 			} );
@@ -114,7 +135,6 @@ describe( 'InputCommand', () => {
 			setData( doc, '<p>foob[ar]</p>' );
 
 			editor.execute( 'input', {
-				buffer: buffer,
 				text: 'az'
 			} );
 
@@ -122,11 +142,11 @@ describe( 'InputCommand', () => {
 			expect( buffer.size ).to.be.equal( 2 );
 		} );
 
-		it( 'only removes content when text is not given', () => {
+		it( 'only removes content when empty text given', () => {
 			setData( doc, '<p>[fo]obar</p>' );
 
 			editor.execute( 'input', {
-				buffer: buffer,
+				text: '',
 				range: editor.document.selection.getFirstRange()
 			} );
 
@@ -140,20 +160,7 @@ describe( 'InputCommand', () => {
 			testUtils.sinon.stub( editor.document.selection, 'getFirstRange' ).returns( null );
 
 			editor.execute( 'input', {
-				buffer: buffer,
 				text: 'baz'
-			} );
-
-			expect( getData( doc, { selection: true } ) ).to.be.equal( '<p>[fo]obar</p>' );
-			expect( buffer.size ).to.be.equal( 0 );
-		} );
-
-		it( 'does nothing when there is no buffer', () => {
-			setData( doc, '<p>[fo]obar</p>' );
-
-			editor.execute( 'input', {
-				text: 'baz',
-				range: editor.document.selection.getFirstRange()
 			} );
 
 			expect( getData( doc, { selection: true } ) ).to.be.equal( '<p>[fo]obar</p>' );
@@ -172,4 +179,16 @@ describe( 'InputCommand', () => {
 			expect( buffer.size ).to.be.equal( 0 );
 		} );
 	} );
+
+	describe( 'destroy', () => {
+		it( 'should destroy change buffer', () => {
+			const command = editor.commands.get( 'input' );
+			const destroy = command._buffer.destroy = testUtils.sinon.spy();
+
+			command.destroy();
+
+			expect( destroy.calledOnce ).to.be.true;
+			expect( command._buffer ).to.be.null;
+		} );
+	} )
 } );

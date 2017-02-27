@@ -68,24 +68,6 @@ describe( 'Input feature', () => {
 		listenter.stopListening();
 	} );
 
-	describe( 'buffer', () => {
-		it( 'has a buffer configured to default value of config.typing.undoStep', () => {
-			expect( editor.plugins.get( Input )._buffer ).to.have.property( 'limit', 20 );
-		} );
-
-		it( 'has a buffer configured to config.typing.undoStep', () => {
-			return VirtualTestEditor.create( {
-				plugins: [ Input ],
-				typing: {
-					undoStep: 5
-				}
-			} )
-				.then( editor => {
-					expect( editor.plugins.get( Input )._buffer ).to.have.property( 'limit', 5 );
-				} );
-		} );
-	} );
-
 	describe( 'mutations handling', () => {
 		it( 'should handle text mutation', () => {
 			view.fire( 'mutations', [
@@ -227,7 +209,7 @@ describe( 'Input feature', () => {
 			expect( getViewData( view ) ).to.equal( '<p>foodar{}</p>' );
 		} );
 
-		it( 'should use up to one insert and remove operations', () => {
+		it( 'should use up to one insert and remove operations (spellchecker)', () => {
 			// This test case emulates spellchecker correction.
 
 			const viewSelection = new ViewSelection();
@@ -254,11 +236,8 @@ describe( 'Input feature', () => {
 			// This test case emulates spellchecker correction.
 			editor.setData( '<p>Foo hous a</p>' );
 
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 4, modelRoot.getChild( 0 ), 8 )
-				] );
-			} );
+			const viewSelection = new ViewSelection();
+			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
 			view.fire( 'mutations',
 				[ {
@@ -266,7 +245,8 @@ describe( 'Input feature', () => {
 					oldText: 'Foo hous a',
 					newText: 'Foo house a',
 					node: viewRoot.getChild( 0 ).getChild( 0 )
-				} ]
+				} ],
+				viewSelection
 			);
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>Foo house[] a</paragraph>' );
@@ -277,11 +257,8 @@ describe( 'Input feature', () => {
 			// This test case emulates spellchecker correction.
 			editor.setData( '<p>Bar athat foo</p>' );
 
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 4, modelRoot.getChild( 0 ), 9 )
-				] );
-			} );
+			const viewSelection = new ViewSelection();
+			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
 
 			view.fire( 'mutations',
 				[ {
@@ -289,7 +266,8 @@ describe( 'Input feature', () => {
 					oldText: 'Bar athat foo',
 					newText: 'Bar that foo',
 					node: viewRoot.getChild( 0 ).getChild( 0 )
-				} ]
+				} ],
+				viewSelection
 			);
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>Bar that[] foo</paragraph>' );
@@ -300,11 +278,8 @@ describe( 'Input feature', () => {
 			// This test case emulates spellchecker correction.
 			editor.setData( '<p>Foo hous e</p>' );
 
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 4, modelRoot.getChild( 0 ), 10 )
-				] );
-			} );
+			const viewSelection = new ViewSelection();
+			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
 			view.fire( 'mutations',
 				[ {
@@ -312,7 +287,8 @@ describe( 'Input feature', () => {
 					oldText: 'Foo hous e',
 					newText: 'Foo house',
 					node: viewRoot.getChild( 0 ).getChild( 0 )
-				} ]
+				} ],
+				viewSelection
 			);
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>Foo house[]</paragraph>' );
@@ -457,20 +433,6 @@ describe( 'Input feature', () => {
 			view.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
-		} );
-	} );
-
-	describe( 'destroy', () => {
-		it( 'should destroy change buffer', () => {
-			const typing = new Input( new VirtualTestEditor() );
-			typing.init();
-
-			const destroy = typing._buffer.destroy = testUtils.sinon.spy();
-
-			typing.destroy();
-
-			expect( destroy.calledOnce ).to.be.true;
-			expect( typing._buffer ).to.be.null;
 		} );
 	} );
 } );
