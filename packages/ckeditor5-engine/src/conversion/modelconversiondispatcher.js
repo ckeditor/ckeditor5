@@ -240,7 +240,6 @@ export default class ModelConversionDispatcher {
 	 * @param {module:engine/model/position~Position} sourcePosition Position from where the range has been removed.
 	 * @param {module:engine/model/range~Range} range Removed range (after remove, in
 	 * {@link module:engine/model/document~Document#graveyard graveyard root}).
-	 * @param {String} removeAs If passed, removed item is treated like it was an element of given name.
 	 */
 	convertMove( sourcePosition, range ) {
 		this.convertRemove( sourcePosition, range );
