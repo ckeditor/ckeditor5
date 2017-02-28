@@ -34,6 +34,8 @@ export default class WidgetEngine extends Plugin {
 			}
 
 			const viewSelection = conversionApi.viewSelection;
+
+			// Check if widget was clicked or some sub-element.
 			const selectedElement = viewSelection.getSelectedElement();
 
 			if ( !selectedElement || !isWidget( selectedElement ) ) {

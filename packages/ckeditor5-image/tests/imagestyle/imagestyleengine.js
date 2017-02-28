@@ -5,7 +5,7 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ImageStyleEngine from '../../src/imagestyle/imagestyleengine';
-import ImageEngine from '../../src/imageengine';
+import ImageEngine from '../../src/image/imageengine';
 import ImageStyleCommand from '../../src/imagestyle/imagestylecommand';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';

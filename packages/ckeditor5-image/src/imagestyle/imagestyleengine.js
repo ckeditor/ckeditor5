@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageStyleCommand from './imagestylecommand';
-import ImageEngine from '../imageengine';
+import ImageEngine from '../image/imageengine';
 import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters';
 import fullSizeIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 import sideIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';

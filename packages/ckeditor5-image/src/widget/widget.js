@@ -13,6 +13,8 @@ import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobs
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
+import RootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement';
 import { isWidget } from './utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
@@ -52,15 +54,20 @@ export default class Widget extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_onMousedown( eventInfo, domEventData ) {
-		let widgetElement = domEventData.target;
 		const editor = this.editor;
 		const viewDocument = editor.editing.view;
+		let element = domEventData.target;
+
+		// Do nothing if inside nested editable.
+		if ( isInsideNestedEditable( element ) ) {
+			return;
+		}
 
 		// If target is not a widget element - check if one of the ancestors is.
-		if ( !isWidget( widgetElement ) ) {
-			widgetElement = widgetElement.findAncestor( element => isWidget( element ) );
+		if ( !isWidget( element ) ) {
+			element = element.findAncestor( isWidget );
 
-			if ( !widgetElement ) {
+			if ( !element ) {
 				return;
 			}
 		}
@@ -73,7 +80,7 @@ export default class Widget extends Plugin {
 		}
 
 		// Create model selection over widget.
-		const modelElement = editor.editing.mapper.toModelElement( widgetElement );
+		const modelElement = editor.editing.mapper.toModelElement( element );
 
 		editor.document.enqueueChanges( ( ) => {
 			this._setSelectionOverElement( modelElement );
@@ -234,4 +241,20 @@ function isArrowKeyCode( keyCode ) {
 //@returns {Boolean}
 function isDeleteKeyCode( keyCode ) {
 	return keyCode == keyCodes.delete || keyCode == keyCodes.backspace;
+}
+
+// Returns `true` when element is a nested editable or is placed inside one.
+//
+// @param {module:engine/view/element~Element}
+// @returns {Boolean}
+function isInsideNestedEditable( element ) {
+	while ( element ) {
+		if ( element instanceof ViewEditableElement && !( element instanceof RootEditableElement ) ) {
+			return true;
+		}
+
+		element = element.parent;
+	}
+
+	return false;
 }

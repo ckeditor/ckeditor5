@@ -4,44 +4,32 @@
  */
 
 /**
- * @module image/imagestyle/imagestylecommand
+ * @module image/imagelaternatetext/imagetextalternativecommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command/command';
 import { isImage } from '../image/utils';
 
 /**
- * The image style command. It is used to apply different image styles.
+ * The image text alternative command. It is used to change `alt` attribute on `image` elements.
  *
  * @extends module:core/command/command~Command
  */
-export default class ImageStyleCommand extends Command {
+export default class ImageTextAlternativeCommand extends Command {
 	/**
-	 * Creates instance of the image style command. Each command instance is handling one style.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} styles Style to apply by this command.
+	 * @inheritDoc
 	 */
-	constructor( editor, style ) {
+	constructor( editor ) {
 		super( editor );
-
 		/**
-		 * The current command value - `true` if style handled by the command is applied on currently selected image,
-		 * `false` otherwise.
+		 * The current command value - `false` if there is no `alt` attribute, otherwise contains string with `alt`
+		 * attribute value.
 		 *
 		 * @readonly
 		 * @observable
-		 * @member {Boolean} #value
+		 * @member {String|Boolean} #value
 		 */
 		this.set( 'value', false );
-
-		/**
-		 * Style handled by this command.
-		 *
-		 * @readonly
-		 * @member {module:image/imagestyle/imagestyleengine~ImageStyleFormat} #style
-		 */
-		this.style = style;
 
 		// Update current value and refresh state each time something change in model document.
 		this.listenTo( editor.document, 'changesDone', () => {
@@ -59,16 +47,10 @@ export default class ImageStyleCommand extends Command {
 		const doc = this.editor.document;
 		const element = doc.selection.getSelectedElement();
 
-		if ( !element ) {
-			this.value = false;
-
-			return;
-		}
-
-		if ( this.style.value === null ) {
-			this.value = !element.hasAttribute( 'imageStyle' );
+		if ( isImage( element ) && element.hasAttribute( 'alt' ) ) {
+			this.value = element.getAttribute( 'alt' );
 		} else {
-			this.value = ( element.getAttribute( 'imageStyle' ) == this.style.value );
+			this.value = false;
 		}
 	}
 
@@ -86,24 +68,19 @@ export default class ImageStyleCommand extends Command {
 	 *
 	 * @protected
 	 * @param {Object} options
+	 * @param {String} options.newValue New value of `alt` attribute to set.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps. New batch will be
 	 * created if this option is not set.
 	 */
-	_doExecute( options = {} ) {
-		// Stop if style is already applied.
-		if ( this.value ) {
-			return;
-		}
-
+	_doExecute( options ) {
 		const editor = this.editor;
 		const doc = editor.document;
-		const selection = doc.selection;
-		const imageElement = selection.getSelectedElement();
+		const imageElement = doc.selection.getSelectedElement();
 
 		doc.enqueueChanges( () => {
 			const batch = options.batch || doc.batch();
 
-			batch.setAttribute( imageElement, 'imageStyle', this.style.value );
+			batch.setAttribute( imageElement, 'alt', options.newValue );
 		} );
 	}
 }

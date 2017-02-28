@@ -1,0 +1,32 @@
+// Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_spacing';
+
+.cke-text-alternative {
+	&-form {
+		padding: ck-spacing( 'large' );
+		overflow: hidden;
+
+		.ck-label {
+			margin-bottom: ck-spacing( 'small' );
+		}
+
+		&__actions {
+			clear: both;
+			padding-top: ck-spacing( 'large' );
+
+			.ck-button {
+				float: right;
+
+				& + .ck-button {
+					margin-right: ck-spacing( 'medium' );
+
+					& + .ck-button {
+						float: left;
+					}
+				}
+			}
+		}
+	}
+}

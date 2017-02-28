@@ -9,6 +9,7 @@ import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/build
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ViewContainer from '@ckeditor/ckeditor5-engine/src/view/containerelement';
+import ViewEditable from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import { widgetize, setFakeSelectionLabel } from '../../src/widget/utils';
 
 describe( 'WidgetEngine', () => {
@@ -23,6 +24,10 @@ describe( 'WidgetEngine', () => {
 				document = editor.document;
 				viewDocument = editor.editing.view;
 				document.schema.registerItem( 'widget', '$block' );
+				document.schema.registerItem( 'editable' );
+				document.schema.allow( { name: '$inline', inside: 'editable' } );
+				document.schema.allow( { name: 'editable', inside: 'widget' } );
+				document.schema.allow( { name: 'editable', inside: '$root' } );
 
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'widget' )
@@ -32,6 +37,10 @@ describe( 'WidgetEngine', () => {
 
 						return element;
 					} );
+
+				buildModelConverter().for( editor.editing.modelToView )
+					.fromElement( 'editable' )
+					.toElement( () => new ViewEditable( 'figcaption', { contenteditable: true } ) );
 			} );
 	} );
 
@@ -73,6 +82,17 @@ describe( 'WidgetEngine', () => {
 
 		expect( getViewData( viewDocument ) ).to.equal(
 			'[]<div class="ck-widget" contenteditable="false">foo</div>'
+		);
+	} );
+
+	it( 'should do nothing when selection is placed in other editable', () => {
+		setModelData( document, '<widget><editable>foo bar</editable></widget><editable>[baz]</editable>' );
+
+		expect( getViewData( viewDocument ) ).to.equal(
+			'<div class="ck-widget" contenteditable="false">' +
+				'<figcaption contenteditable="true">foo bar</figcaption>' +
+			'</div>' +
+			'<figcaption contenteditable="true">{baz}</figcaption>'
 		);
 	} );
 } );
