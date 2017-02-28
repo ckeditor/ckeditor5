@@ -22,14 +22,11 @@ import ViewDocumentFragment from '../view/documentfragment';
 
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
-import ModelTreeWalker from '../model/treewalker';
 
 import insertContent from './insertcontent';
 import deleteContent from './deletecontent';
 import modifySelection from './modifyselection';
 import getSelectedContent from './getselectedcontent';
-
-import { remove } from '../model/writer';
 
 /**
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
@@ -205,8 +202,7 @@ export default class DataController {
 			this.model.selection.clearAttributes();
 
 			// Parse data to model and extract markers from parsed document fragment.
-			const documentFragment = this.parse( data );
-			const markersData = extractMarkersFromModelFragment( documentFragment );
+			const { modelItem, markersData } = this.parse( data );
 
 			// Initial batch should be ignored by features like undo, etc.
 			const batch = this.model.batch( 'transparent' );
@@ -214,15 +210,15 @@ export default class DataController {
 			// Replace current editor data by the new one.
 			batch
 				.remove( ModelRange.createIn( modelRoot ) )
-				.insert( ModelPosition.createAt( modelRoot, 0 ), documentFragment );
+				.insert( ModelPosition.createAt( modelRoot, 0 ), modelItem );
 
 			// Add markers to the document.
 			for ( const marker of markersData ) {
 				const markerName = marker[ 0 ];
-				const markerData = marker[ 1 ];
+				const markerPositionData = marker[ 1 ];
 				const range = new ModelRange(
-					new ModelPosition( modelRoot, markerData.startPath ),
-					markerData.endPath ? new ModelPosition( modelRoot, markerData.endPath ) : null
+					new ModelPosition( modelRoot, markerPositionData.startPath ),
+					markerPositionData.endPath ? new ModelPosition( modelRoot, markerPositionData.endPath ) : null
 				);
 
 				batch.setMarker( markerName, range );
@@ -238,7 +234,7 @@ export default class DataController {
 	 * @param {String} data Data to parse.
 	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
 	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
-	 * @returns {module:engine/model/documentfragment~DocumentFragment} Parsed data.
+	 * @returns {ParsedModel} Result of parsing view to model.
 	 */
 	parse( data, context = '$root' ) {
 		// data -> view
@@ -258,10 +254,15 @@ export default class DataController {
 	 * Element or document fragment which content will be converted.
 	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
 	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
-	 * @returns {module:engine/model/documentfragment~DocumentFragment} Output document fragment.
+	 * @returns {ParsedModel} Result of parsing view to model.
 	 */
 	toModel( viewElementOrFragment, context = '$root' ) {
-		return this.viewToModel.convert( viewElementOrFragment, { context: [ context ] } );
+		const conversionData = this.viewToModel.convert( viewElementOrFragment, { context: [ context ] } );
+
+		return {
+			modelItem: conversionData.conversionResult,
+			markersData: conversionData.markersData
+		};
 	}
 
 	/**
@@ -283,7 +284,6 @@ export default class DataController {
 	 * changes will be added to a new batch.
 	 */
 	insertContent( content, selection, batch ) {
-		extractMarkersFromModelFragment( content );
 		this.fire( 'insertContent', { content, selection, batch } );
 	}
 
@@ -336,49 +336,12 @@ export default class DataController {
 
 mix( DataController, EmitterMixin );
 
-// Traverses given DocumentFragment and searches elements which marks marker range. Found element is removed from
-// DocumentFragment but path of this element is stored in a Map which is then returned.
-//
-// @param {module:engine/view/documentfragment~DocumentFragment} documentFragment Model DocumentFragment.
-// @returns {Map} Map with markers data.
-function extractMarkersFromModelFragment( documentFragment ) {
-	const markerStamps = new Set();
-	const result = new Map();
-
-	// Create ModelTreeWalker.
-	const walker = new ModelTreeWalker( {
-		startPosition: ModelPosition.createAt( documentFragment, 0 ),
-		ignoreElementEnd: true,
-		shallow: false
-	} );
-
-	// Walk through DocumentFragment and collect marker elements.
-	for ( const value of walker ) {
-		// Check if current element is a marker stamp.
-		if ( value.item.name == '$marker' ) {
-			markerStamps.add( value.item );
-		}
-	}
-
-	// Walk through collected marker elements store its path and remove its from the DocumentFragment.
-	for ( const stamp of markerStamps ) {
-		const markerName = stamp.getAttribute( 'data-name' );
-		const currentPosition = ModelPosition.createBefore( stamp );
-
-		// When marker of given name is not stored it means that we have found the beginning of the range.
-		if ( !result.has( markerName ) ) {
-			result.set( markerName, { startPath: currentPosition.path } );
-		// Otherwise is means that we have found end of the marker range.
-		} else {
-			result.get( markerName ).endPath = currentPosition.path;
-		}
-
-		// Remove marker stamp element from DocumentFragment.
-		remove( ModelRange.createOn( stamp ) );
-	}
-
-	return result;
-}
+/**
+ * @typedef {Object} ParsedModel Result of parsing view to model.
+ * @property {module:engine/model/documentfragment~DocumentFragment|module:engine/model/node~Node} modelItem
+ * Fragment of parsed model.
+ * @property {Map} markersData List of parsed marker stamps in format [ 'markerName', { startPath: [ 1, 1 ], endPath: [ 1, 3 ] } ]
+ */
 
 /**
  * Event fired when {@link #insertContent} method is called.

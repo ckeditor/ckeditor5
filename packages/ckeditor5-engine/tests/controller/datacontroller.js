@@ -123,9 +123,9 @@ describe( 'DataController', () => {
 	describe( 'parse', () => {
 		it( 'should set text', () => {
 			schema.allow( { name: '$text', inside: '$root' } );
-			const model = data.parse( '<p>foo<b>bar</b></p>' );
+			const { modelItem } = data.parse( '<p>foo<b>bar</b></p>' );
 
-			expect( stringify( model ) ).to.equal( 'foobar' );
+			expect( stringify( modelItem ) ).to.equal( 'foobar' );
 		} );
 
 		it( 'should set paragraph', () => {
@@ -133,9 +133,9 @@ describe( 'DataController', () => {
 
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 
-			const model = data.parse( '<p>foo<b>bar</b></p>' );
+			const { modelItem } = data.parse( '<p>foo<b>bar</b></p>' );
 
-			expect( stringify( model ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( stringify( modelItem ) ).to.equal( '<paragraph>foobar</paragraph>' );
 		} );
 
 		it( 'should set two paragraphs', () => {
@@ -143,9 +143,9 @@ describe( 'DataController', () => {
 
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 
-			const model = data.parse( '<p>foo</p><p>bar</p>' );
+			const { modelItem } = data.parse( '<p>foo</p><p>bar</p>' );
 
-			expect( stringify( model ) ).to.equal(
+			expect( stringify( modelItem ) ).to.equal(
 				'<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 		} );
 
@@ -156,22 +156,35 @@ describe( 'DataController', () => {
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 			buildViewConverter().for( data.viewToModel ).fromElement( 'b' ).toAttribute( 'bold', true );
 
-			const model = data.parse( '<p>foo<b>bar</b></p>' );
+			const { modelItem } = data.parse( '<p>foo<b>bar</b></p>' );
 
-			expect( stringify( model ) ).to.equal(
+			expect( stringify( modelItem ) ).to.equal(
 				'<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 		} );
 
-		it( 'should parse in the root context by default', () => {
-			const model = data.parse( 'foo' );
+		it( 'should return markers data', () => {
+			schema.registerItem( 'paragraph', '$block' );
 
-			expect( stringify( model ) ).to.equal( '' );
+			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
+			buildViewConverter().for( data.viewToModel ).fromElement( 'marker' ).toMarker();
+
+			const { markersData } = data.parse( '<p>f<marker data-name="search"></marker>oob<marker data-name="search"></marker>ar</p>' );
+
+			expect( markersData ).to.instanceof( Map );
+			expect( markersData.size ).to.equal( 1 );
+			expect( markersData.get( 'search'  ) ).to.deep.equal( { startPath: [ 0, 1 ], endPath: [ 0, 4 ] } );
+		} );
+
+		it( 'should parse in the root context by default', () => {
+			const { modelItem } = data.parse( 'foo' );
+
+			expect( stringify( modelItem ) ).to.equal( '' );
 		} );
 
 		it( 'should accept parsing context', () => {
-			const model = data.parse( 'foo', '$block' );
+			const { modelItem } = data.parse( 'foo', '$block' );
 
-			expect( stringify( model ) ).to.equal( 'foo' );
+			expect( stringify( modelItem ) ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -184,18 +197,30 @@ describe( 'DataController', () => {
 
 		it( 'should convert content of an element #1', () => {
 			const viewElement = parseView( '<p>foo</p>' );
-			const modelElement = data.toModel( viewElement );
+			const { modelItem } = data.toModel( viewElement );
 
-			expect( modelElement ).to.be.instanceOf( ModelElement );
-			expect( stringify( modelElement ) ).to.equal( '<paragraph>foo</paragraph>' );
+			expect( modelItem ).to.be.instanceOf( ModelElement );
+			expect( stringify( modelItem ) ).to.equal( '<paragraph>foo</paragraph>' );
 		} );
 
 		it( 'should convert content of an element #2', () => {
 			const viewFragment = parseView( '<p>foo</p><p>bar</p>' );
-			const modelFragment = data.toModel( viewFragment );
+			const { modelItem } = data.toModel( viewFragment );
 
-			expect( modelFragment ).to.be.instanceOf( ModelDocumentFragment );
-			expect( stringify( modelFragment ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+			expect( modelItem ).to.be.instanceOf( ModelDocumentFragment );
+			expect( stringify( modelItem ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+		} );
+
+		it( 'should convert marker stamps', () => {
+			const viewElement = parseView( '<p>f<marker data-name="search"></marker>o<marker data-name="search"></marker>o</p>' );
+
+			buildViewConverter().for( data.viewToModel ).fromElement( 'marker' ).toMarker();
+
+			const { markersData } = data.toModel( viewElement );
+
+			expect( markersData ).to.instanceof( Map );
+			expect( markersData.size ).to.equal( 1 );
+			expect( markersData.get( 'search'  ) ).to.deep.equal( { startPath: [ 1 ], endPath: [ 2 ] } );
 		} );
 
 		it( 'should accept parsing context', () => {
@@ -205,13 +230,12 @@ describe( 'DataController', () => {
 			schema.allow( { name: '$text', inside: 'inlineRoot' } );
 
 			const viewFragment = new ViewDocumentFragment( [ parseView( 'foo' ) ] );
-			const modelFragmentInRoot = data.toModel( viewFragment );
 
-			expect( stringify( modelFragmentInRoot ) ).to.equal( '' );
+			// Model fragment in root.
+			expect( stringify( data.toModel( viewFragment ).modelItem ) ).to.equal( '' );
 
-			const modelFragmentInInlineRoot = data.toModel( viewFragment, 'inlineRoot' );
-
-			expect( stringify( modelFragmentInInlineRoot ) ).to.equal( 'foo' );
+			// Model fragment in inline root.
+			expect( stringify( data.toModel( viewFragment, 'inlineRoot' ).modelItem ) ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -223,16 +247,14 @@ describe( 'DataController', () => {
 			expect( getData( modelDocument, { withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 
-		it( 'should extract markers stamps from converted data and set to `modelDocument#markers` collection', () => {
+		it( 'should set markers to `modelDocument#markers` collection', () => {
 			modelDocument.schema.registerItem( 'paragraph', '$block' );
 			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
 			buildViewConverter().for( data.viewToModel ).fromElement( 'm' ).toMarker();
 
 			data.set(
 				'<p>' +
-					'F' +
-					'<m data-name="comment"></m>' +
-					'o' +
+					'Fo' +
 					'<m data-name="search"></m>' +
 					'o ba' +
 					'<m data-name="comment"></m>' +
@@ -242,30 +264,11 @@ describe( 'DataController', () => {
 				'</p>'
 			);
 
-			expect( getData( modelDocument, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo bar biz</paragraph>' );
 			expect( Array.from( modelDocument.markers ).length ).to.equal( 2 );
 
 			const paragraph = modelDocument.getRoot().getChild( 0 );
-			const commentMarkerRange = ModelRange.createFromParentsAndOffsets( paragraph, 1, paragraph, 6 );
+			const commentMarkerRange = ModelRange.createFromParentsAndOffsets( paragraph, 6, paragraph, 6 );
 			const searchMarkerRange = ModelRange.createFromParentsAndOffsets( paragraph, 2, paragraph, 10 );
-
-			expect( modelDocument.markers.get( 'comment' ).getRange().isEqual( commentMarkerRange ) ).to.true;
-			expect( modelDocument.markers.get( 'search' ).getRange().isEqual( searchMarkerRange ) ).to.true;
-		} );
-
-		it( 'should extract collapsed markers stamps from converted data and set to `modelDocument#markers` collection', () => {
-			modelDocument.schema.registerItem( 'paragraph', '$block' );
-			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
-			buildViewConverter().for( data.viewToModel ).fromElement( 'm' ).toMarker();
-
-			data.set( '<p>F<m data-name="comment"></m>o<m data-name="search"></m>o ba</m>r biz</p>' );
-
-			expect( getData( modelDocument, { withoutSelection: true } ) ).to.equal( '<paragraph>Foo bar biz</paragraph>' );
-			expect( Array.from( modelDocument.markers ).length ).to.equal( 2 );
-
-			const paragraph = modelDocument.getRoot().getChild( 0 );
-			const commentMarkerRange = ModelRange.createFromParentsAndOffsets( paragraph, 1, paragraph, 1 );
-			const searchMarkerRange = ModelRange.createFromParentsAndOffsets( paragraph, 2, paragraph, 2 );
 
 			expect( modelDocument.markers.get( 'comment' ).getRange().isEqual( commentMarkerRange ) ).to.true;
 			expect( modelDocument.markers.get( 'search' ).getRange().isEqual( searchMarkerRange ) ).to.true;
@@ -475,22 +478,6 @@ describe( 'DataController', () => {
 				selection: modelDocument.selection,
 				content: content
 			} );
-		} );
-
-		it( 'should remove markers stamps from content', () => {
-			const spy = sinon.spy();
-			const content = new ModelDocumentFragment( [
-				new ModelText( 'x' ),
-				new ModelElement( '$marker', { 'data-name': 'search' } ),
-				new ModelText( 'y' ),
-				new ModelElement( '$marker', { 'data-name': 'search' } ),
-				new ModelText( 'z' )
-			] );
-
-			data.on( 'insertContent', spy );
-			data.insertContent( content, modelDocument.selection );
-
-			expect( stringify( spy.args[ 0 ][ 1 ].content ) ).to.equal( 'xyz' );
 		} );
 	} );
 
