@@ -84,6 +84,7 @@ export default class PluginCollection {
 		const loaded = [];
 
 		// Plugins which should be remove can be the constructors or plugin names.
+		// We need to unify this because we are supporting loading plugins by names or plugin constructors.
 		removePlugins = removePlugins.reduce( ( arr, PluginConstructorOrName ) => {
 			arr.push( PluginConstructorOrName );
 
@@ -100,7 +101,7 @@ export default class PluginCollection {
 			.then( () => loaded );
 
 		function loadPlugin( PluginConstructorOrName ) {
-			// Don't load the plugin if it should be removed.
+			// Don't load the plugin if it cannot be loaded.
 			if ( removePlugins.includes( PluginConstructorOrName ) ) {
 				return;
 			}

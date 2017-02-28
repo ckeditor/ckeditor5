@@ -276,7 +276,7 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'should load allowed plugins (plugins are constructors, removedPlugins are plugin names)', () => {
+		it( 'should load allowed plugins (plugins are constructors, removedPlugins are names)', () => {
 			let plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.load( [ PluginA, PluginB, PluginC ], [ 'A' ] )
@@ -288,7 +288,7 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'should load allowed plugins (plugins and removedPlugins are plugin names)', () => {
+		it( 'should load allowed plugins (plugins and removedPlugins are names)', () => {
 			let plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.load( [ 'A', 'B', 'C' ], [ 'A' ] )
@@ -300,7 +300,7 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'should load allowed plugins (plugins are plugin names, removedPlugins are constructors)', () => {
+		it( 'should load allowed plugins (plugins are names, removedPlugins are constructors)', () => {
 			let plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.load( [ 'A', 'B', 'C' ], [ PluginA ] )
