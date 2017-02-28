@@ -9,7 +9,7 @@
 
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import { getItemsFromConfig } from '@ckeditor/ckeditor5-ui/src/toolbar/utils';
+import getItemsFromConfig from '@ckeditor/ckeditor5-ui/src/toolbar/getitemsfromconfig';
 
 /**
  * The classic editor UI class.
