@@ -16,6 +16,7 @@ import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
 
 import boldIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
 import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
@@ -334,19 +335,6 @@ function dropdown( {
 	return dropdown;
 }
 
-const ToolbarSeparatorView = class extends View {
-	constructor() {
-		super();
-
-		this.template = new Template( {
-			tag: 'span',
-			attributes: {
-				class: 'ck-toolbar-separator'
-			}
-		} );
-	}
-};
-
 function toolbarSeparator() {
 	return new ToolbarSeparatorView();
 }
@@ -358,7 +346,7 @@ const ToolbarNewlineView = class extends View {
 		this.template = new Template( {
 			tag: 'span',
 			attributes: {
-				class: 'ck-toolbar-newline'
+				class: 'ck-toolbar__newline'
 			}
 		} );
 	}
