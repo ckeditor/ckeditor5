@@ -54,7 +54,7 @@ describe( 'HeadingEngine', () => {
 		expect( document.schema.check( { name: '$inline', inside: 'heading3' } ) ).to.be.true;
 	} );
 
-	it( 'should register format command', () => {
+	it( 'should register option command', () => {
 		expect( editor.commands.has( 'heading' ) ).to.be.true;
 		const command = editor.commands.get( 'heading' );
 
@@ -82,7 +82,7 @@ describe( 'HeadingEngine', () => {
 		expect( editor.getData() ).to.equal( '<h4>foobar</h4>' );
 	} );
 
-	it( 'should make enter command insert a defaultFormat block if selection ended at the end of heading block', () => {
+	it( 'should make enter command insert a defaultOption block if selection ended at the end of heading block', () => {
 		editor.setData( '<h2>foobar</h2>' );
 		document.selection.collapse( document.getRoot().getChild( 0 ), 'end' );
 
@@ -102,10 +102,10 @@ describe( 'HeadingEngine', () => {
 	} );
 
 	describe( 'config', () => {
-		describe( 'formats', () => {
+		describe( 'options', () => {
 			describe( 'default value', () => {
 				it( 'should be set', () => {
-					expect( editor.config.get( 'heading.formats' ) ).to.deep.equal( [
+					expect( editor.config.get( 'heading.options' ) ).to.deep.equal( [
 						{ id: 'paragraph', element: 'p', label: 'Paragraph' },
 						{ id: 'heading1', element: 'h2', label: 'Heading 1' },
 						{ id: 'heading2', element: 'h3', label: 'Heading 2' },
@@ -119,7 +119,7 @@ describe( 'HeadingEngine', () => {
 						lang: 'pl',
 					} )
 					.then( editor => {
-						expect( editor.config.get( 'heading.formats' ) ).to.deep.equal( [
+						expect( editor.config.get( 'heading.options' ) ).to.deep.equal( [
 							{ id: 'paragraph', element: 'p', label: 'Akapit' },
 							{ id: 'heading1', element: 'h2', label: 'Nagłówek 1' },
 							{ id: 'heading2', element: 'h3', label: 'Nagłówek 2' },
@@ -129,8 +129,8 @@ describe( 'HeadingEngine', () => {
 				} );
 			} );
 
-			it( 'should customize formats', () => {
-				const formats = [
+			it( 'should customize options', () => {
+				const options = [
 					{ id: 'paragraph', element: 'p', label: 'Paragraph' },
 					{ id: 'h4', element: 'h4', label: 'H4' }
 				];
@@ -138,13 +138,13 @@ describe( 'HeadingEngine', () => {
 				return VirtualTestEditor.create( {
 					plugins: [ Enter, HeadingEngine ],
 					heading: {
-						formats: formats
+						options: options
 					}
 				} )
 				.then( editor => {
 					document = editor.document;
 
-					expect( editor.commands.get( 'heading' ).formats ).to.deep.equal( formats );
+					expect( editor.commands.get( 'heading' ).options ).to.deep.equal( options );
 
 					expect( document.schema.hasItem( 'paragraph' ) ).to.be.true;
 					expect( document.schema.hasItem( 'h4' ) ).to.be.true;
@@ -156,20 +156,20 @@ describe( 'HeadingEngine', () => {
 			} );
 		} );
 
-		describe( 'defaultFormatId', () => {
+		describe( 'defaultOptionId', () => {
 			it( 'should have default value', () => {
-				expect( editor.config.get( 'heading.defaultFormatId' ) ).to.equal( 'paragraph' );
+				expect( editor.config.get( 'heading.defaultOptionId' ) ).to.equal( 'paragraph' );
 			} );
 
-			it( 'should customize formats', () => {
+			it( 'should customize options', () => {
 				return VirtualTestEditor.create( {
 					plugins: [ Enter, HeadingEngine ],
 					heading: {
-						formats: [
+						options: [
 							{ id: 'foo', element: 'f', label: 'Foo' },
 							{ id: 'bar', element: 'b', label: 'Bar' }
 						],
-						defaultFormatId: 'bar'
+						defaultOptionId: 'bar'
 					}
 				} )
 				.then( editor => {

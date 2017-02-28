@@ -50,7 +50,7 @@ describe( 'Heading', () => {
 	} );
 
 	describe( 'init()', () => {
-		it( 'should register formats feature component', () => {
+		it( 'should register options feature component', () => {
 			const dropdown = editor.ui.componentFactory.create( 'headings' );
 
 			expect( dropdown ).to.be.instanceOf( DropdownView );
@@ -63,11 +63,11 @@ describe( 'Heading', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 			const dropdown = editor.ui.componentFactory.create( 'headings' );
 
-			dropdown.formatId = 'foo';
+			dropdown.id = 'foo';
 			dropdown.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'heading', { formatId: 'foo' } );
+			sinon.assert.calledWithExactly( executeSpy, 'heading', { id: 'foo' } );
 		} );
 
 		it( 'should focus view after command execution', () => {
@@ -94,7 +94,7 @@ describe( 'Heading', () => {
 
 			it( 'label', () => {
 				expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
-				command.value = command.formats[ 1 ];
+				command.value = command.options[ 1 ];
 				expect( dropdown.buttonView.label ).to.equal( 'Heading 1' );
 			} );
 		} );
@@ -110,7 +110,7 @@ describe( 'Heading', () => {
 					toolbar: [ 'heading' ],
 					lang: 'pl',
 					heading: {
-						formats: [
+						options: [
 							{ id: 'paragraph', element: 'p', label: 'Paragraph' },
 							{ id: 'heading1', element: 'h2', label: 'Heading 1' },
 							{ id: 'heading2', element: 'h3', label: 'Not automatically localized' }
@@ -125,7 +125,7 @@ describe( 'Heading', () => {
 			} );
 
 			it( 'does not alter the original config', () => {
-				expect( editor.config.get( 'heading.formats' ) ).to.deep.equal( [
+				expect( editor.config.get( 'heading.options' ) ).to.deep.equal( [
 					{ id: 'paragraph', element: 'p', label: 'Paragraph' },
 					{ id: 'heading1', element: 'h2', label: 'Heading 1' },
 					{ id: 'heading2', element: 'h3', label: 'Not automatically localized' }
@@ -136,7 +136,7 @@ describe( 'Heading', () => {
 				const buttonView = dropdown.buttonView;
 
 				expect( buttonView.label ).to.equal( 'Akapit' );
-				command.value = command.formats[ 1 ];
+				command.value = command.options[ 1 ];
 				expect( buttonView.label ).to.equal( 'Nagłówek 1' );
 			} );
 
