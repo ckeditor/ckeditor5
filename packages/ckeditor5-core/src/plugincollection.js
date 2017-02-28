@@ -92,7 +92,7 @@ export default class PluginCollection {
 		removePlugins = removePlugins.reduce( ( arr, PluginConstructorOrName ) => {
 			arr.push( PluginConstructorOrName );
 
-			if ( typeof PluginConstructorOrName === 'string' ) {
+			if ( typeof PluginConstructorOrName == 'string' ) {
 				arr.push( getPluginConstructor( PluginConstructorOrName ) );
 			} else if ( PluginConstructorOrName.pluginName ) {
 				arr.push( PluginConstructorOrName.pluginName );
@@ -167,7 +167,7 @@ export default class PluginCollection {
 		}
 
 		function getPluginConstructor( PluginConstructorOrName ) {
-			if ( typeof PluginConstructorOrName === 'function' ) {
+			if ( typeof PluginConstructorOrName == 'function' ) {
 				return PluginConstructorOrName;
 			}
 
