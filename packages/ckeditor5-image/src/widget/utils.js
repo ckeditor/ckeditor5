@@ -8,7 +8,7 @@
  */
 
 const widgetSymbol = Symbol( 'isWidget' );
-const fakeSelectionLabelSymbol = Symbol( 'fakeSelectionLabel' );
+const labelSymbol = Symbol( 'label' );
 
 /**
  * CSS class added to each widget element.
@@ -42,40 +42,48 @@ export function isWidget( element ) {
  * * adds custom property allowing to recognize widget elements by using {@link ~isWidget}.
  *
  * @param {module:engine/view/element~Element} element
+ * @param {Object} [options]
+ * @param {String|Function} [options.label] Element's label provided to {@link ~setLabel} function. It can be passed as
+ * a plain string or a function returning a string.
  * @returns {module:engine/view/element~Element} Returns same element.
  */
-export function widgetize( element ) {
+export function widgetize( element, options ) {
+	options = options || {};
 	element.setAttribute( 'contenteditable', false );
 	element.getFillerOffset = getFillerOffset;
 	element.addClass( WIDGET_CLASS_NAME );
 	element.setCustomProperty( widgetSymbol, true );
 
+	if ( options.label ) {
+		setLabel( element, options.label );
+	}
+
 	return element;
 }
 
 /**
- * Sets fake selection label for given element.
+ * Sets label for given element.
  * It can be passed as a plain string or a function returning a string. Function will be called each time label is retrieved by
- * {module:image/widget/utils~getFakeSelectionLabel}.
+ * {@link ~getLabel}.
  *
  * @param {module:engine/view/element~Element} element
  * @param {String|Function} labelOrCreator
  */
-export function setFakeSelectionLabel( element, labelOrCreator ) {
-	element.setCustomProperty( fakeSelectionLabelSymbol, labelOrCreator );
+export function setLabel( element, labelOrCreator ) {
+	element.setCustomProperty( labelSymbol, labelOrCreator );
 }
 
 /**
- * Returns fake selection label for provided element.
+ * Returns label for provided element.
  *
  * @param {module:engine/view/element~Element} element
- * @return {String|undefined}
+ * @return {String}
  */
-export function getFakeSelectionLabel( element ) {
-	const labelCreator = element.getCustomProperty( fakeSelectionLabelSymbol );
+export function getLabel( element ) {
+	const labelCreator = element.getCustomProperty( labelSymbol );
 
 	if ( !labelCreator ) {
-		return undefined;
+		return '';
 	}
 
 	return typeof labelCreator == 'function' ? labelCreator() : labelCreator;

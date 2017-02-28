@@ -54,7 +54,7 @@ export default class ImageEngine extends Plugin {
 		// Build converter from model to view for editing pipeline.
 		buildModelConverter().for( editing.modelToView )
 			.fromElement( 'image' )
-			.toElement( () => toImageWidget( createImageViewElement(), editor.t ) );
+			.toElement( () => toImageWidget( createImageViewElement(), editor.t( 'image widget' ) ) );
 
 		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'src' );
 		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'alt' );

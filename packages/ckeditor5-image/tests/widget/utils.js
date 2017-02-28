@@ -4,7 +4,7 @@
  */
 
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import { widgetize, isWidget, WIDGET_CLASS_NAME, setFakeSelectionLabel, getFakeSelectionLabel } from '../../src/widget/utils';
+import { widgetize, isWidget, WIDGET_CLASS_NAME, setLabel, getLabel } from '../../src/widget/utils';
 
 describe( 'widget utils', () => {
 	let element;
@@ -27,6 +27,20 @@ describe( 'widget utils', () => {
 		it( 'should add proper CSS class', () => {
 			expect( element.hasClass( WIDGET_CLASS_NAME ) ).to.be.true;
 		} );
+
+		it( 'should add element\'s label if one is provided', () => {
+			element = new ViewElement( 'div' );
+			widgetize( element, { label: 'foo bar baz label' } );
+
+			expect( getLabel( element ) ).to.equal( 'foo bar baz label' );
+		} );
+
+		it( 'should add element\'s label if one is provided as function', () => {
+			element = new ViewElement( 'div' );
+			widgetize( element, { label: () => 'foo bar baz label' } );
+
+			expect( getLabel( element ) ).to.equal( 'foo bar baz label' );
+		} );
 	} );
 
 	describe( 'isWidget()', () => {
@@ -39,28 +53,28 @@ describe( 'widget utils', () => {
 		} );
 	} );
 
-	describe( 'fake selection label utils', () => {
-		it( 'should allow to set fake selection for element', () => {
+	describe( 'label utils', () => {
+		it( 'should allow to set label for element', () => {
 			const element = new ViewElement( 'p' );
-			setFakeSelectionLabel( element, 'foo bar baz' );
+			setLabel( element, 'foo bar baz' );
 
-			expect( getFakeSelectionLabel( element ) ).to.equal( 'foo bar baz' );
+			expect( getLabel( element ) ).to.equal( 'foo bar baz' );
 		} );
 
-		it( 'should return undefined for elements without fake selection label', () => {
+		it( 'should return empty string for elements without label', () => {
 			const element = new ViewElement( 'div' );
 
-			expect( getFakeSelectionLabel( element ) ).to.be.undefined;
+			expect( getLabel( element ) ).to.equal( '' );
 		} );
 
 		it( 'should allow to use a function as label creator', () => {
 			const element = new ViewElement( 'p' );
 			let caption = 'foo';
-			setFakeSelectionLabel( element, () => caption );
+			setLabel( element, () => caption );
 
-			expect( getFakeSelectionLabel( element ) ).to.equal( 'foo' );
+			expect( getLabel( element ) ).to.equal( 'foo' );
 			caption = 'bar';
-			expect( getFakeSelectionLabel( element ) ).to.equal( 'bar' );
+			expect( getLabel( element ) ).to.equal( 'bar' );
 		} );
 	} );
 } );

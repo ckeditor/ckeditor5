@@ -6,7 +6,7 @@
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { toImageWidget, isImageWidget, isImage } from '../../src/image/utils';
-import { isWidget, getFakeSelectionLabel } from '../../src/widget/utils';
+import { isWidget, getLabel } from '../../src/widget/utils';
 
 describe( 'image widget utils', () => {
 	let element, image;
@@ -14,7 +14,7 @@ describe( 'image widget utils', () => {
 	beforeEach( () => {
 		image = new ViewElement( 'img' );
 		element = new ViewElement( 'figure', null, image );
-		toImageWidget( element, ( t ) => t );
+		toImageWidget( element, 'image widget' );
 	} );
 
 	describe( 'toImageWidget()', () => {
@@ -22,13 +22,13 @@ describe( 'image widget utils', () => {
 			expect( isWidget( element ) ).to.be.true;
 		} );
 
-		it( 'should set fake selection label', () => {
-			expect( getFakeSelectionLabel( element ) ).to.equal( 'image widget' );
+		it( 'should set element\'s label', () => {
+			expect( getLabel( element ) ).to.equal( 'image widget' );
 		} );
 
-		it( 'should set fake selection label combined with alt attribute', () => {
+		it( 'should set element\'s label combined with alt attribute', () => {
 			image.setAttribute( 'alt', 'foo bar baz' );
-			expect( getFakeSelectionLabel( element ) ).to.equal( 'foo bar baz image widget' );
+			expect( getLabel( element ) ).to.equal( 'foo bar baz image widget' );
 		} );
 	} );
 
