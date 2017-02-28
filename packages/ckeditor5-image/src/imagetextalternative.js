@@ -16,7 +16,7 @@ import ImageToolbar from './imagetoolbar';
 import TextAlternativeFormView from './imagetextalternative/ui/textalternativeformview';
 import ImageBalloonPanel from './image/ui/imageballoonpanelview';
 
-import textAlternativeIcon from '@ckeditor/ckeditor5-core/theme/icons/input.svg';
+import textAlternativeIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
 import '../theme/imagetextalternative/theme.scss';
 
 /**
