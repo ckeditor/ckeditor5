@@ -251,14 +251,14 @@ describe( 'PluginCollection', () => {
 				} )
 				.catch( ( err ) => {
 					expect( err ).to.be.an.instanceof( CKEditorError );
-					expect( err.message ).to.match( /^plugincollection-instance/ );
+					expect( err.message ).to.match( /^plugincollection-plugin-not-found/ );
 
 					sinon.assert.calledOnce( logSpy );
 					expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
 				} );
 		} );
 
-		it( 'should load allowed plugins (plugins and removedPlugins are constructors)', () => {
+		it( 'should load allowed plugins (plugins and removePlugins are constructors)', () => {
 			let plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.load( [ PluginA, PluginB, PluginC ], [ PluginA ] )
@@ -270,7 +270,7 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'should load allowed plugins (plugins are constructors, removedPlugins are names)', () => {
+		it( 'should load allowed plugins (plugins are constructors, removePlugins are names)', () => {
 			let plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.load( [ PluginA, PluginB, PluginC ], [ 'A' ] )
@@ -282,7 +282,7 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'should load allowed plugins (plugins and removedPlugins are names)', () => {
+		it( 'should load allowed plugins (plugins and removePlugins are names)', () => {
 			let plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.load( [ 'A', 'B', 'C' ], [ 'A' ] )
@@ -294,7 +294,7 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'should load allowed plugins (plugins are names, removedPlugins are constructors)', () => {
+		it( 'should load allowed plugins (plugins are names, removePlugins are constructors)', () => {
 			let plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.load( [ 'A', 'B', 'C' ], [ PluginA ] )
@@ -311,13 +311,13 @@ describe( 'PluginCollection', () => {
 			let plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.load( [ PluginA, PluginB, PluginC, PluginD ], [ PluginA, PluginB ] )
-			// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
+				// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
 				.then( () => {
 					throw new Error( 'Test error: this promise should not be resolved successfully' );
 				} )
 				.catch( ( err ) => {
 					expect( err ).to.be.an.instanceof( CKEditorError );
-					expect( err.message ).to.match( /^plugincollection-instance/ );
+					expect( err.message ).to.match( /^plugincollection-required/ );
 
 					expect( logSpy.calledTwice ).to.equal( true );
 				} );

@@ -16,10 +16,14 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
  */
 export default class PluginCollection {
 	/**
-	 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.
+	 * Creates an instance of the PluginCollection class.
+	 * Allows loading and initializing plugins and their dependencies.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {Array.<module:core/plugin>} availablePlugins
+	 * @param {Array.<Function>} availablePlugins Plugins (constructor) which the collection will be able to use
+	 * when {@link module:core/plugin~PluginCollection#load} is given strings (plugin names).
+	 * Usually, the editor will pass its built-in plugins to the collection so they can later be
+	 * used in `config.plugins` or `config.removePlugins` by names.
 	 */
 	constructor( editor, availablePlugins = [] ) {
 		/**
@@ -29,8 +33,10 @@ export default class PluginCollection {
 		this._editor = editor;
 
 		/**
+		 * Map of plugin constructors which can be retrieved by their names.
+		 *
 		 * @protected
-		 * @member {Map.<String|module:core/plugin~Plugin,module:core/plugin~Plugin>} module:core/plugin~PluginCollection#_availablePlugins
+		 * @member {Map.<String|Function,Function>} module:core/plugin~PluginCollection#_availablePlugins
 		 */
 		this._availablePlugins = new Map();
 
@@ -40,7 +46,6 @@ export default class PluginCollection {
 		 */
 		this._plugins = new Map();
 
-		// Save available plugins.
 		for ( const PluginConstructor of availablePlugins ) {
 			this._availablePlugins.set( PluginConstructor, PluginConstructor );
 
@@ -72,11 +77,13 @@ export default class PluginCollection {
 	}
 
 	/**
-	 * Loads a set of plugins and add them to the collection.
+	 * Loads a set of plugins and adds them to the collection.
 	 *
-	 * @param {Array.<module:core/plugin~Plugin|String>} plugins An array of {@link module:core/plugin~Plugin plugin constructors}
-	 * or plugin names.
-	 * @param {Array.<String>} removePlugins
+	 * @param {Array.<Function|String>} plugins An array of {@link module:core/plugin~Plugin plugin constructors}
+	 * or {@link module:core/plugin~Plugin.pluginName plugin names}. The second option (names) work only if
+	 * `availablePlugins` were passed to the {@link #constructor}.
+	 * @param {Array.<String|Function>} removePlugins Names of plugins or plugin constructors
+	 *  which should not be loaded (despite being specified in the `plugins` array).
 	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
 	 * collection.
 	 * @returns {Array.<module:core/plugin~Plugin>} returns.loadedPlugins The array of loaded plugins.
@@ -141,15 +148,16 @@ export default class PluginCollection {
 					PluginConstructor.requires.forEach( ( RequiredPluginConstructorOrName ) => {
 						if ( removePlugins.includes( RequiredPluginConstructorOrName ) ) {
 							/**
-							 * The plugin dependency cannot be loaded because is listed in `removePlugins` options.
+							 * Cannot load a plugin because one of its dependencies is
+							 * listed in the `removePlugins` options.
 							 *
-							 * @error plugincollection-instance
-							 * @param {*} plugin The dependency constructor which is meant to be loaded as a plugin.
-							 * @param {*} requiredBy The parent constructor which is meant to be loaded as a plugin.
+							 * @error plugincollection-required
+							 * @param {*} plugin The required plugin.
+							 * @param {*} requiredBy The parent plugin.
 							 */
 							throw new CKEditorError(
-								'plugincollection-instance: Cannot load dependency plugins because at least one is listed in ' +
-								'`removePlugins` options.',
+								'plugincollection-required: Cannot load a plugin because one of its dependencies is listed in' +
+								'the `removePlugins` options.',
 								{ plugin: RequiredPluginConstructorOrName, requiredBy: PluginConstructorOrName }
 							);
 						}
@@ -177,16 +185,18 @@ export default class PluginCollection {
 				/**
 				 * The plugin cannot be loaded by name.
 				 *
-				 * Plugin classes need to be provided to the editor before they can be loaded by name. This is usually done by the builder.
-				 * TODO update this error with links to docs because it will be a very frequent problem.
+				 * Plugin classes need to be provided to the editor before they can be loaded by name.
+				 * This is usually done by the builder.
 				 *
 				 * @error plugincollection-plugin-not-found
 				 * @param {String} pluginName The name of the plugin which could not be loaded.
 				 */
 				throw new CKEditorError(
-					'plugincollection-instance: Given plugin name is not available.',
+					'plugincollection-plugin-not-found: The plugin cannot be loaded by name.',
 					{ plugin: PluginConstructorOrName }
 				);
+
+				// TODO update this error with links to docs because it will be a frequent problem.
 			}
 
 			return PluginConstructor;
