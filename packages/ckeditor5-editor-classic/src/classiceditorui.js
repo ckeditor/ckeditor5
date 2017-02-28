@@ -83,9 +83,7 @@ export default class ClassicEditorUI {
 				const promises = [];
 
 				if ( toolbarConfig ) {
-					for ( let name of toolbarConfig ) {
-						promises.push( this.view.toolbar.items.add( this.componentFactory.create( name ) ) );
-					}
+					promises.push( this.view.toolbar.fillFromConfig( toolbarConfig, this.componentFactory ) );
 				}
 
 				return Promise.all( promises );
