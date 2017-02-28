@@ -175,10 +175,13 @@ export default class PluginCollection {
 
 			if ( !PluginConstructor ) {
 				/**
-				 * The loaded plugin module is not available.
+				 * The plugin cannot be loaded by name.
 				 *
-				 * @error plugincollection-instance
-				 * @param {*} plugin The constructor which is meant to be loaded as a plugin.
+				 * Plugin classes need to be provided to the editor before they can be loaded by name. This is usually done by the builder.
+				 * TODO update this error with links to docs because it will be a very frequent problem.
+				 *
+				 * @error plugincollection-plugin-not-found
+				 * @param {String} pluginName The name of the plugin which could not be loaded.
 				 */
 				throw new CKEditorError(
 					'plugincollection-instance: Given plugin name is not available.',
