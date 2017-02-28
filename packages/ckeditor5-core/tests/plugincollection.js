@@ -50,9 +50,7 @@ before( () => {
 	PluginJ.requires = [ 'K' ];
 	PluginK.requires = [ PluginA ];
 
-	editor = new Editor( {
-		plugins: []
-	} );
+	editor = new Editor();
 } );
 
 describe( 'PluginCollection', () => {

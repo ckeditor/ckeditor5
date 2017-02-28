@@ -21,7 +21,7 @@ export default class PluginCollection {
 	 * @param {module:core/editor/editor~Editor} editor
 	 * @param {Array.<module:core/plugin>} availablePlugins
 	 */
-	constructor( editor, availablePlugins ) {
+	constructor( editor, availablePlugins = [] ) {
 		/**
 		 * @protected
 		 * @member {module:core/editor/editor~Editor} module:core/plugin~PluginCollection#_editor

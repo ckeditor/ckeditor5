@@ -45,7 +45,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:core/plugin~PluginCollection}
 		 */
-		this.plugins = new PluginCollection( this, this.config.get( 'plugins' ) );
+		this.plugins = new PluginCollection( this );
 
 		/**
 		 * Commands registered to the editor.
