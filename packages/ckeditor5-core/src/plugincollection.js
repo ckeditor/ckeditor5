@@ -30,7 +30,7 @@ export default class PluginCollection {
 
 		/**
 		 * @protected
-		 * @member {Map.<String,module:core/plugin>} module:core/plugin~PluginCollection#_availablePlugins
+		 * @member {Map.<String,module:core/plugin~Plugin>} module:core/plugin~PluginCollection#_availablePlugins
 		 */
 		this._availablePlugins = new Map();
 
@@ -70,21 +70,41 @@ export default class PluginCollection {
 	/**
 	 * Loads a set of plugins and add them to the collection.
 	 *
-	 * @param {Function[]} plugins An array of {@link module:core/plugin~Plugin plugin constructors}.
+	 * @param {Array.<module:core/plugin~Plugin|String>} plugins An array of {@link module:core/plugin~Plugin plugin constructors}
+	 * or plugin names.
+	 * @param {Array.<String>} removePlugins
 	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
 	 * collection.
-	 * @param {Array.<module:core/plugin~Plugin>} returns.loadedPlugins The array of loaded plugins.
+	 * @returns {Array.<module:core/plugin~Plugin>} returns.loadedPlugins The array of loaded plugins.
 	 */
-	load( plugins ) {
+	load( plugins, removePlugins = [] ) {
 		const that = this;
 		const editor = this._editor;
 		const loading = new Set();
 		const loaded = [];
 
+		// Plugins which should be remove can be the constructors or plugin names.
+		removePlugins = removePlugins.reduce( ( arr, PluginConstructorOrName ) => {
+			arr.push( PluginConstructorOrName );
+
+			if ( typeof PluginConstructorOrName === 'string' ) {
+				arr.push( getPluginConstructor( PluginConstructorOrName ) );
+			} else {
+				arr.push( PluginConstructorOrName.pluginName );
+			}
+
+			return arr;
+		}, [] );
+
 		return Promise.all( plugins.map( loadPlugin ) )
 			.then( () => loaded );
 
 		function loadPlugin( PluginConstructorOrName ) {
+			// Don't load the plugin if it should be removed.
+			if ( removePlugins.includes( PluginConstructorOrName ) ) {
+				return;
+			}
+
 			// The plugin is already loaded or being loaded - do nothing.
 			if ( that.get( PluginConstructorOrName ) || loading.has( PluginConstructorOrName ) ) {
 				return;
@@ -113,7 +133,25 @@ export default class PluginCollection {
 				assertIsPlugin( PluginConstructor );
 
 				if ( PluginConstructor.requires ) {
-					PluginConstructor.requires.forEach( loadPlugin );
+					PluginConstructor.requires.forEach( ( RequiredPluginConstructorOrName ) => {
+						if ( removePlugins.includes( RequiredPluginConstructorOrName ) ) {
+							/**
+							 * The plugin dependency cannot be loaded because is listed in `removePlugins` options.
+							 *
+							 * @error plugincollection-instance
+							 * @param {*} plugin The dependency constructor which is meant to be loaded as a plugin.
+							 * @param {*} requiredBy The parent constructor which is meant to be loaded as a plugin.
+							 */
+							// jscs:disable maximumLineLength
+							throw new CKEditorError(
+								'plugincollection-instance: Cannot load dependency plugins because at least one is listed in `removePlugins` options.',
+								{ plugin: RequiredPluginConstructorOrName, requiredBy: PluginConstructorOrName }
+							);
+							// jscs:enable maximumLineLength
+						}
+
+						loadPlugin( RequiredPluginConstructorOrName );
+					} );
 				}
 
 				const plugin = new PluginConstructor( editor );

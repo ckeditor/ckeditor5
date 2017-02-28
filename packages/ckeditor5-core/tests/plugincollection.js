@@ -263,6 +263,71 @@ describe( 'PluginCollection', () => {
 					expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
 				} );
 		} );
+
+		it( 'should load allowed plugins (plugins and removedPlugins are constructors)', () => {
+			let plugins = new PluginCollection( editor, availablePlugins );
+
+			return plugins.load( [ PluginA, PluginB, PluginC ], [ PluginA ] )
+				.then( () => {
+					expect( getPlugins( plugins ).length ).to.equal( 2 );
+
+					expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
+					expect( plugins.get( PluginC ) ).to.be.an.instanceof( PluginC );
+				} );
+		} );
+
+		it( 'should load allowed plugins (plugins are constructors, removedPlugins are plugin names)', () => {
+			let plugins = new PluginCollection( editor, availablePlugins );
+
+			return plugins.load( [ PluginA, PluginB, PluginC ], [ 'A' ] )
+				.then( () => {
+					expect( getPlugins( plugins ).length ).to.equal( 2 );
+
+					expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
+					expect( plugins.get( PluginC ) ).to.be.an.instanceof( PluginC );
+				} );
+		} );
+
+		it( 'should load allowed plugins (plugins and removedPlugins are plugin names)', () => {
+			let plugins = new PluginCollection( editor, availablePlugins );
+
+			return plugins.load( [ 'A', 'B', 'C' ], [ 'A' ] )
+				.then( () => {
+					expect( getPlugins( plugins ).length ).to.equal( 2 );
+
+					expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
+					expect( plugins.get( PluginC ) ).to.be.an.instanceof( PluginC );
+				} );
+		} );
+
+		it( 'should load allowed plugins (plugins are plugin names, removedPlugins are constructors)', () => {
+			let plugins = new PluginCollection( editor, availablePlugins );
+
+			return plugins.load( [ 'A', 'B', 'C' ], [ PluginA ] )
+				.then( () => {
+					expect( getPlugins( plugins ).length ).to.equal( 2 );
+
+					expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
+					expect( plugins.get( PluginC ) ).to.be.an.instanceof( PluginC );
+				} );
+		} );
+
+		it( 'should reject when loaded plugin requires not allowed plugins', () => {
+			let logSpy = testUtils.sinon.stub( log, 'error' );
+			let plugins = new PluginCollection( editor, availablePlugins );
+
+			return plugins.load( [ PluginA, PluginB, PluginC, PluginD ], [ PluginA, PluginB ] )
+			// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
+				.then( () => {
+					throw new Error( 'Test error: this promise should not be resolved successfully' );
+				} )
+				.catch( ( err ) => {
+					expect( err ).to.be.an.instanceof( CKEditorError );
+					expect( err.message ).to.match( /^plugincollection-instance/ );
+
+					expect( logSpy.calledTwice ).to.equal( true );
+				} );
+		} );
 	} );
 
 	describe( 'get()', () => {
