@@ -109,7 +109,7 @@ export default class HeadingEngine extends Plugin {
 			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
 				const positionParent = editor.document.selection.getFirstPosition().parent;
 				const batch = data.batch;
-				const isHeading = formats.some( ( { id } ) => id == positionParent.name );
+				const isHeading = formats.some( format => format.id == positionParent.name );
 
 				if ( isHeading && positionParent.name != command.defaultFormat.id && positionParent.childCount === 0 ) {
 					batch.rename( positionParent, command.defaultFormat.id );

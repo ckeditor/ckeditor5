@@ -40,7 +40,7 @@ export default class Heading extends Plugin {
 		const collection = new Collection();
 
 		// Add formats to collection.
-		for ( let { id, label } of formats ) {
+		for ( const { id, label } of formats ) {
 			collection.add( new Model( {
 				formatId: id,
 				label: label
@@ -55,7 +55,7 @@ export default class Heading extends Plugin {
 
 		// Bind dropdown model to command.
 		dropdownModel.bind( 'isEnabled' ).to( command, 'isEnabled' );
-		dropdownModel.bind( 'label' ).to( command, 'value', ( { label } ) => label );
+		dropdownModel.bind( 'label' ).to( command, 'value', format => format.label );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'headings', ( locale ) => {
