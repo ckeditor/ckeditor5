@@ -91,19 +91,29 @@ describe( 'ListCommand', () => {
 				expect( command.isEnabled ).to.be.true;
 			} );
 
-			it( 'should be true if selection first position is in a place where listItem can be inserted', () => {
-				doc.selection.collapse( doc.getRoot(), 2 );
-				expect( command.isEnabled ).to.be.true;
-
-				doc.selection.collapse( doc.getRoot().getChild( 0 ) );
-				expect( command.isEnabled ).to.be.true;
-
-				doc.selection.collapse( doc.getRoot().getChild( 2 ) );
+			it( 'should be true if entire selection is in a list', () => {
+				setData( doc, '<listItem type="bulleted" indent="0">[a]</listItem>' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
-			it( 'should be false if selection first position is in a place where listItem cannot be inserted', () => {
-				doc.selection.collapse( doc.getRoot().getChild( 4 ) );
+			it( 'should be true if entire selection is in a block which can be turned into a list', () => {
+				setData( doc, '<paragraph>[a]</paragraph>' );
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true if selection first position is in a block which can be turned into a list', () => {
+				setData( doc, '<paragraph>[a</paragraph><widget>b]</widget>' );
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be false if selection first position is in an element which cannot be converted to a list item', () => {
+				setData( doc, '<widget><paragraph>[a</paragraph></widget><paragraph>b]</paragraph>' );
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false in a root which does not allow blocks at all', () => {
+				doc.createRoot( 'paragraph', 'inlineOnlyRoot' );
+				setData( doc, 'a[]b', { rootName: 'inlineOnlyRoot' } );
 				expect( command.isEnabled ).to.be.false;
 			} );
 		} );
