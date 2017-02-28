@@ -244,7 +244,7 @@ describe( 'PluginCollection', () => {
 
 			let plugins = new PluginCollection( editor, availablePlugins );
 
-			return plugins.load( [ 'Non-Existing-Plugin' ] )
+			return plugins.load( [ 'NonExistentPlugin' ] )
 				// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
 				.then( () => {
 					throw new Error( 'Test error: this promise should not be resolved successfully' );
@@ -258,7 +258,7 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'should load allowed plugins (plugins and removePlugins are constructors)', () => {
+		it( 'should load chosen plugins (plugins and removePlugins are constructors)', () => {
 			let plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.load( [ PluginA, PluginB, PluginC ], [ PluginA ] )
@@ -270,7 +270,7 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'should load allowed plugins (plugins are constructors, removePlugins are names)', () => {
+		it( 'should load chosen plugins (plugins are constructors, removePlugins are names)', () => {
 			let plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.load( [ PluginA, PluginB, PluginC ], [ 'A' ] )
@@ -282,7 +282,7 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'should load allowed plugins (plugins and removePlugins are names)', () => {
+		it( 'should load chosen plugins (plugins and removePlugins are names)', () => {
 			let plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.load( [ 'A', 'B', 'C' ], [ 'A' ] )
@@ -294,7 +294,7 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'should load allowed plugins (plugins are names, removePlugins are constructors)', () => {
+		it( 'should load chosen plugins (plugins are names, removePlugins are constructors)', () => {
 			let plugins = new PluginCollection( editor, availablePlugins );
 
 			return plugins.load( [ 'A', 'B', 'C' ], [ PluginA ] )
@@ -303,6 +303,20 @@ describe( 'PluginCollection', () => {
 
 					expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
 					expect( plugins.get( PluginC ) ).to.be.an.instanceof( PluginC );
+				} );
+		} );
+
+		it( 'should load chosen plugins (plugins are names, removePlugins contains an anonymous plugin)', () => {
+			class AnonymousPlugin extends Plugin {}
+
+			let plugins = new PluginCollection( editor, [ AnonymousPlugin ].concat( availablePlugins ) );
+
+			return plugins.load( [ AnonymousPlugin, 'A', 'B' ], [ AnonymousPlugin ] )
+				.then( () => {
+					expect( getPlugins( plugins ).length ).to.equal( 2 );
+
+					expect( plugins.get( PluginA ) ).to.be.an.instanceof( PluginA );
+					expect( plugins.get( PluginB ) ).to.be.an.instanceof( PluginB );
 				} );
 		} );
 
