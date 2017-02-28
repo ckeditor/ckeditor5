@@ -41,8 +41,12 @@ export default class PluginCollection {
 		this._plugins = new Map();
 
 		// Save available plugins.
-		for ( const plugin of availablePlugins ) {
-			this._availablePlugins.set( plugin.pluginName, plugin );
+		for ( const PluginConstructor of availablePlugins ) {
+			this._availablePlugins.set( PluginConstructor, PluginConstructor );
+
+			if ( PluginConstructor.pluginName ) {
+				this._availablePlugins.set( PluginConstructor.pluginName, PluginConstructor );
+			}
 		}
 	}
 
@@ -83,14 +87,14 @@ export default class PluginCollection {
 		const loading = new Set();
 		const loaded = [];
 
-		// Plugins which should be remove can be the constructors or plugin names.
-		// We need to unify this because we are supporting loading plugins by names or plugin constructors.
+		// Plugins that will be removed can be the constructors or names.
+		// We need to unify this because we are supporting loading plugins using both types.
 		removePlugins = removePlugins.reduce( ( arr, PluginConstructorOrName ) => {
 			arr.push( PluginConstructorOrName );
 
 			if ( typeof PluginConstructorOrName === 'string' ) {
 				arr.push( getPluginConstructor( PluginConstructorOrName ) );
-			} else {
+			} else if ( PluginConstructorOrName.pluginName ) {
 				arr.push( PluginConstructorOrName.pluginName );
 			}
 

@@ -31,10 +31,6 @@ before( () => {
 	PluginJ = createPlugin( 'J' );
 	PluginK = createPlugin( 'K' );
 	PluginX = class extends Plugin {
-		static get pluginName() {
-			return 'X';
-		}
-
 		constructor( editor ) {
 			super( editor );
 
