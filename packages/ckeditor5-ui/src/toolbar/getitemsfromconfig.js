@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/toolbar/utils
+ * @module ui/toolbar/getitemsfromconfig
  */
 
 import ToolbarSeparatorView from './toolbarseparatorview';
@@ -19,7 +19,7 @@ import ToolbarSeparatorView from './toolbarseparatorview';
  * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
  * @returns {Promise} A promise resolved when all toolbar items are initialized.
  */
-export function getItemsFromConfig( config, collection, factory ) {
+export default function getItemsFromConfig( config, collection, factory ) {
 	let promises = [];
 
 	if ( config ) {
