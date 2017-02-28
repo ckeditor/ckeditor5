@@ -134,25 +134,20 @@ export default class ViewConversionDispatcher {
 	 * viewItem Part of the view to be converted.
 	 * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
 	 * events. See also {@link ~ViewConversionDispatcher#event:element element event}.
-	 * @returns {module:engine/model/documentfragment~DocumentFragment} Model document fragment that is a result of the conversion process.
+	 * @returns {engine/conversion/viewconversiondispatcher~ConvertedModelData} Model data that is a result of the conversion process.
 	 */
 	convert( viewItem, additionalData = {} ) {
 		this.fire( 'viewCleanup', viewItem );
 
 		const consumable = ViewConsumable.createFrom( viewItem );
-
 		const conversionResult = this._convertItem( viewItem, consumable, additionalData );
+		let markersData = new Map();
 
 		if ( conversionResult instanceof ModelNode || conversionResult instanceof ModelDocumentFragment ) {
-			const { modelItem, markersData } = extractMarkersFromModelFragment( conversionResult );
-
-			return {
-				conversionResult: modelItem,
-				markersData: markersData
-			};
+			markersData = extractMarkersFromModelFragment( conversionResult );
 		}
 
-		return { conversionResult, markersData: new Map() };
+		return { conversionResult, markersData };
 	}
 
 	/**
@@ -242,13 +237,13 @@ mix( ViewConversionDispatcher, EmitterMixin );
 // DocumentFragment but path of this element is stored in a Map which is then returned.
 //
 // @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/node~Node} modelItem Fragment of model.
-// @returns {Object} Object with cleaned up model fragment and Map with markers data.
+// @returns {Map} List of markers data in format [ 'markerName', { startPath: [ 1, 1 ], endPath: [ 1, 4 ] } ].
 function extractMarkersFromModelFragment( modelItem ) {
 	const markerStamps = new Set();
 	const markersData = new Map();
 
 	if ( modelItem.is( 'text' ) ) {
-		return { modelItem, markersData };
+		return markersData;
 	}
 
 	// Create ModelTreeWalker.
@@ -283,16 +278,15 @@ function extractMarkersFromModelFragment( modelItem ) {
 		remove( ModelRange.createOn( stamp ) );
 	}
 
-	return { modelItem, markersData };
+	return markersData;
 }
 
 /**
  * Model data that is a result of the conversion process.
  *
- * @typedef {Object} engine/conversion/viewconversiondispatcher~ConvertedModelDocument
- * @property {module:engine/model/documentfragment~DocumentFragment|module:engine/model/element~Element|
- * module:engine/model/text~Text} modelItem Model document item.
- * @property {Map} markersData Map with markers data in format [ 'markerName', { startPath: [ 1, 1 ], endPath: [ 1, 4 ] } ]
+ * @typedef {ConvertedModelData} engine/conversion/viewconversiondispatcher~ConvertedModelData
+ * @property {module:engine/model/documentfragment~DocumentFragment|module:engine/model/element~Node} conversionResult Converted model item.
+ * @property {Map<Object>} markersData Map with markers data in format [ 'markerName', { startPath: [ 1, 1 ], endPath: [ 1, 4 ] } ].
  */
 
 /**

@@ -180,10 +180,7 @@ export default class DataController {
 
 	/**
 	 * Sets input data parsed by the {@link #processor data processor} and
-	 * converted by the {@link #viewToModel view to model converters}. If markers where converted
-	 * from view to model as temporary {@link module:engine/model/element/~Element model elements} then those elements
-	 * will be removed from parsed {@link module:engine/model/element/~DocumentFragment} and added to the
-	 * {@link module:engine/model/document~Document#markers markers collection}.
+	 * converted by the {@link #viewToModel view to model converters}.
 	 *
 	 * This method also creates a batch with all the changes applied. If all you need is to parse data use
 	 * the {@link #parse} method.
@@ -234,7 +231,7 @@ export default class DataController {
 	 * @param {String} data Data to parse.
 	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
 	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
-	 * @returns {ParsedModel} Result of parsing view to model.
+	 * @returns {engine/controller/datacontroller~ParsedModelData} Result of parsing view to model.
 	 */
 	parse( data, context = '$root' ) {
 		// data -> view
@@ -245,16 +242,15 @@ export default class DataController {
 	}
 
 	/**
-	 * Returns the content of the given {@link module:engine/view/element~Element view element} or
+	 * Returns result of the given {@link module:engine/view/element~Element view element} or
 	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment} converted by the
-	 * {@link #viewToModel view to model converters} to a
-	 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
+	 * {@link #viewToModel view to model converters}.
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElementOrFragment
 	 * Element or document fragment which content will be converted.
 	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
 	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
-	 * @returns {ParsedModel} Result of parsing view to model.
+	 * @returns {engine/controller/datacontroller~ParsedModelData} Result of parsing view to model.
 	 */
 	toModel( viewElementOrFragment, context = '$root' ) {
 		const conversionData = this.viewToModel.convert( viewElementOrFragment, { context: [ context ] } );
@@ -272,10 +268,6 @@ export default class DataController {
 
 	/**
 	 * See {@link module:engine/controller/insertcontent~insertContent}.
-	 *
-	 * Note that data inserted by a data pipeline might contain temporary {@link module:engine/model/element/~Element elements}
-	 * marking {@link module:engine/model/document~Document#markers markers} ranges. We need to remove them because
-	 * data pipeline allows to set markers only by a {@link #set set method}.
 	 *
 	 * @fires insertContent
 	 * @param {module:engine/model/documentfragment~DocumentFragment} content The content to insert.
@@ -337,7 +329,9 @@ export default class DataController {
 mix( DataController, EmitterMixin );
 
 /**
- * @typedef {Object} ParsedModel Result of parsing view to model.
+ * Result of parsing view to model.
+ *
+ * @typedef {Object} {engine/controller/datacontroller~ParsedModelData}
  * @property {module:engine/model/documentfragment~DocumentFragment|module:engine/model/node~Node} modelItem
  * Fragment of parsed model.
  * @property {Map} markersData List of parsed marker stamps in format [ 'markerName', { startPath: [ 1, 1 ], endPath: [ 1, 3 ] } ]
