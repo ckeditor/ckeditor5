@@ -12,6 +12,7 @@ import Template from '../template';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import ToolbarSeparatorView from './toolbarseparatorview';
 
 /**
  * The toolbar view class.
@@ -104,6 +105,26 @@ export default class ToolbarView extends View {
 	 */
 	focus() {
 		this._focusCycler.focusFirst();
+	}
+
+	/**
+	 * A utility which expands a plain toolbar configuration into
+	 * {@link module:ui/toolbar/toolbarview~ToolbarView#items} using a given component factory.
+	 *
+	 * @param {Array} config The toolbar config.
+	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
+	 * @returns {Promise} A promise resolved when created toolbar items are initialized.
+	 */
+	fillFromConfig( config, factory ) {
+		if ( !config ) {
+			return Promise.resolve();
+		}
+
+		return Promise.all( config.map( name => {
+			const component = name == '|' ? new ToolbarSeparatorView() : factory.create( name );
+
+			return this.items.add( component );
+		} ) );
 	}
 }
 

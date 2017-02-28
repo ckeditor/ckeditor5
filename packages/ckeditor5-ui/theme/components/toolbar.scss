@@ -4,11 +4,11 @@
 .ck-toolbar {
 	@include ck-unselectable();
 
-	&-separator {
+	&__separator {
 		display: inline-block;
 	}
 
-	&-newline {
+	&__newline {
 		display: block;
 		clear: left;
 	}

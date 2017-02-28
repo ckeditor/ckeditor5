@@ -6,7 +6,9 @@
 /* global document */
 
 import ToolbarView from '../../src/toolbar/toolbarview';
+import ToolbarSeparatorView from '../../src/toolbar/toolbarseparatorview';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
+import ComponentFactory from '../../src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../../src/focuscycler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -209,6 +211,34 @@ describe( 'ToolbarView', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 	} );
+
+	describe( 'fillFromConfig()', () => {
+		let factory;
+
+		beforeEach( () => {
+			factory = new ComponentFactory( {} );
+
+			factory.add( 'foo', namedFactory( 'foo' ) );
+			factory.add( 'bar', namedFactory( 'bar' ) );
+		} );
+
+		it( 'returns a promise', () => {
+			expect( view.fillFromConfig() ).to.be.instanceOf( Promise );
+		} );
+
+		it( 'expands the config into collection', () => {
+			return view.fillFromConfig( [ 'foo', 'bar', '|', 'foo' ], factory )
+				.then( () => {
+					const items = view.items;
+
+					expect( items ).to.have.length( 4 );
+					expect( items.get( 0 ).name ).to.equal( 'foo' );
+					expect( items.get( 1 ).name ).to.equal( 'bar' );
+					expect( items.get( 2 ) ).to.be.instanceOf( ToolbarSeparatorView );
+					expect( items.get( 3 ).name ).to.equal( 'foo' );
+				} );
+		} );
+	} );
 } );
 
 function focusable() {
@@ -224,4 +254,15 @@ function nonFocusable() {
 	view.element = document.createElement( 'li' );
 
 	return view;
+}
+
+function namedFactory( name ) {
+	return ( locale ) => {
+		const view = new View( locale );
+
+		view.name = name;
+		view.element = document.createElement( 'a' );
+
+		return view;
+	};
 }
