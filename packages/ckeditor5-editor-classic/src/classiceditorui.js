@@ -9,6 +9,7 @@
 
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import { getItemsFromConfig } from '@ckeditor/ckeditor5-ui/src/toolbar/utils';
 
 /**
  * The classic editor UI class.
@@ -83,9 +84,7 @@ export default class ClassicEditorUI {
 				const promises = [];
 
 				if ( toolbarConfig ) {
-					for ( let name of toolbarConfig ) {
-						promises.push( this.view.toolbar.items.add( this.componentFactory.create( name ) ) );
-					}
+					promises.push( getItemsFromConfig( toolbarConfig, this.view.toolbar.items, this.componentFactory ) );
 				}
 
 				return Promise.all( promises );
