@@ -11,6 +11,12 @@ import ViewConsumable from './viewconsumable';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
+import ModelRange from '../model/range';
+import ModelPosition from '../model/position';
+import ModelTreeWalker from '../model/treewalker';
+import ModelNode from '../model/node';
+import ModelDocumentFragment from '../model/documentfragment';
+import { remove } from '../model/writer';
 
 /**
  * `ViewConversionDispatcher` is a central point of {@link module:engine/view/view view} conversion, which is a process of
@@ -135,7 +141,18 @@ export default class ViewConversionDispatcher {
 
 		const consumable = ViewConsumable.createFrom( viewItem );
 
-		return this._convertItem( viewItem, consumable, additionalData );
+		const conversionResult = this._convertItem( viewItem, consumable, additionalData );
+
+		if ( conversionResult instanceof ModelNode || conversionResult instanceof ModelDocumentFragment ) {
+			const { modelItem, markersData } = extractMarkersFromModelFragment( conversionResult );
+
+			return {
+				conversionResult: modelItem,
+				markersData: markersData
+			};
+		}
+
+		return { conversionResult, markersData: new Map() };
 	}
 
 	/**
@@ -220,6 +237,63 @@ export default class ViewConversionDispatcher {
 }
 
 mix( ViewConversionDispatcher, EmitterMixin );
+
+// Traverses given model item and searches elements which marks marker range. Found element is removed from
+// DocumentFragment but path of this element is stored in a Map which is then returned.
+//
+// @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/node~Node} modelItem Fragment of model.
+// @returns {Object} Object with cleaned up model fragment and Map with markers data.
+function extractMarkersFromModelFragment( modelItem ) {
+	const markerStamps = new Set();
+	const markersData = new Map();
+
+	if ( modelItem.is( 'text' ) ) {
+		return { modelItem, markersData };
+	}
+
+	// Create ModelTreeWalker.
+	const walker = new ModelTreeWalker( {
+		startPosition: ModelPosition.createAt( modelItem, 0 ),
+		ignoreElementEnd: true,
+		shallow: false
+	} );
+
+	// Walk through DocumentFragment and collect marker elements.
+	for ( const value of walker ) {
+		// Check if current element is a marker stamp.
+		if ( value.item.name == '$marker' ) {
+			markerStamps.add( value.item );
+		}
+	}
+
+	// Walk through collected marker elements store its path and remove its from the DocumentFragment.
+	for ( const stamp of markerStamps ) {
+		const markerName = stamp.getAttribute( 'data-name' );
+		const currentPosition = ModelPosition.createBefore( stamp );
+
+		// When marker of given name is not stored it means that we have found the beginning of the range.
+		if ( !markersData.has( markerName ) ) {
+			markersData.set( markerName, { startPath: currentPosition.path } );
+			// Otherwise is means that we have found end of the marker range.
+		} else {
+			markersData.get( markerName ).endPath = currentPosition.path;
+		}
+
+		// Remove marker stamp element from DocumentFragment.
+		remove( ModelRange.createOn( stamp ) );
+	}
+
+	return { modelItem, markersData };
+}
+
+/**
+ * Model data that is a result of the conversion process.
+ *
+ * @typedef {Object} engine/conversion/viewconversiondispatcher~ConvertedModelDocument
+ * @property {module:engine/model/documentfragment~DocumentFragment|module:engine/model/element~Element|
+ * module:engine/model/text~Text} modelItem Model document item.
+ * @property {Map} markersData Map with markers data in format [ 'markerName', { startPath: [ 1, 1 ], endPath: [ 1, 4 ] } ]
+ */
 
 /**
  * Conversion interface that is registered for given {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher}
