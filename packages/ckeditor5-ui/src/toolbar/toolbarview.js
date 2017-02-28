@@ -108,12 +108,12 @@ export default class ToolbarView extends View {
 	}
 
 	/**
-	 * A utility which expands a plain toolbar configuration into a collection
-	 * of {@link module:ui/view~View views} using a given factory.
+	 * A utility which expands a plain toolbar configuration into
+	 * {@link module:ui/toolbar/toolbarview~ToolbarView#items} using a given component factory.
 	 *
 	 * @param {Array} config The toolbar config.
 	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
-	 * @returns {Promise} A promise resolved when all new toolbar items are initialized.
+	 * @returns {Promise} A promise resolved when created toolbar items are initialized.
 	 */
 	fillFromConfig( config, factory ) {
 		if ( !config ) {
