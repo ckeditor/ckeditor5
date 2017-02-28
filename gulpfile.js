@@ -47,7 +47,7 @@ function getTestOptions() {
 		.parseArguments( process.argv.slice( 2 ) );
 }
 
-// Translations ----------------------------------------------------------------
+// Translations. --------------------------------------------------------------
 
 gulp.task( 'translations:collect', () => {
 	return require( '@ckeditor/ckeditor5-dev-env' ).collectTranslations();
@@ -59,4 +59,22 @@ gulp.task( 'translations:upload', () => {
 
 gulp.task( 'translations:download', () => {
 	return require( '@ckeditor/ckeditor5-dev-env' ).downloadTranslations();
+} );
+
+// Releasing. -----------------------------------------------------------------
+
+gulp.task( 'changelog:dependencies', () => {
+	return require( '@ckeditor/ckeditor5-dev-env' )
+		.generateChangelogForDependencies( {
+			cwd: process.cwd(),
+			packages: 'packages'
+		} );
+} );
+
+gulp.task( 'release:dependencies', () => {
+	return require( '@ckeditor/ckeditor5-dev-env' )
+		.releaseDependencies( {
+			cwd: process.cwd(),
+			packages: 'packages'
+		} );
 } );
