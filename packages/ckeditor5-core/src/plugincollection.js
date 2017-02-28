@@ -143,12 +143,11 @@ export default class PluginCollection {
 							 * @param {*} plugin The dependency constructor which is meant to be loaded as a plugin.
 							 * @param {*} requiredBy The parent constructor which is meant to be loaded as a plugin.
 							 */
-							// jscs:disable maximumLineLength
 							throw new CKEditorError(
-								'plugincollection-instance: Cannot load dependency plugins because at least one is listed in `removePlugins` options.',
+								'plugincollection-instance: Cannot load dependency plugins because at least one is listed in ' +
+								'`removePlugins` options.',
 								{ plugin: RequiredPluginConstructorOrName, requiredBy: PluginConstructorOrName }
 							);
-							// jscs:enable maximumLineLength
 						}
 
 						loadPlugin( RequiredPluginConstructorOrName );
