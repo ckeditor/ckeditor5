@@ -13,6 +13,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import { getItemsFromConfig } from '@ckeditor/ckeditor5-ui/src/toolbar/utils';
 
 import Template from '../../../src/template';
 import ToolbarView from '../../../src/toolbar/toolbarview';
@@ -77,9 +78,7 @@ function createContextualToolbar( editor ) {
 		const editingView = editor.editing.view;
 
 		// Fill the toolbar with some buttons. Simply copy default editor toolbar.
-		for ( let name of editor.config.get( 'toolbar' ) ) {
-			toolbar.items.add( editor.ui.componentFactory.create( name ) );
-		}
+		getItemsFromConfig( editor.config.get( 'toolbar' ), toolbar.items, editor.ui.componentFactory );
 
 		// Let the focusTracker know about new focusable UI element.
 		editor.ui.focusTracker.add( panel.element );
