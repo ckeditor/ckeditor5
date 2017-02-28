@@ -12,7 +12,6 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import { isImageWidget } from './image/utils';
 import ImageBalloonPanel from './image/ui/imageballoonpanelview';
-import getItemsFromConfig from '@ckeditor/ckeditor5-ui/src/toolbar/getitemsfromconfig';
 
 /**
  * Image toolbar class. Creates image toolbar placed inside balloon panel that is showed when image widget is selected.
@@ -70,7 +69,7 @@ export default class ImageToolbar extends Plugin {
 		promises.push( panel.content.add( toolbar ) );
 
 		// Add buttons to the toolbar.
-		promises.push( getItemsFromConfig( toolbarConfig, toolbar.items, editor.ui.componentFactory ) );
+		promises.push( toolbar.fillFromConfig( toolbarConfig, editor.ui.componentFactory ) );
 
 		// Add balloon panel to editor's UI.
 		promises.push( editor.ui.view.body.add( panel ) );
