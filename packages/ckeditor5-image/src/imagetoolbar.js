@@ -12,7 +12,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import { isImageWidget } from './image/utils';
 import ImageBalloonPanel from './image/ui/imageballoonpanelview';
-import { getItemsFromConfig } from '@ckeditor/ckeditor5-ui/src/toolbar/utils';
+import getItemsFromConfig from '@ckeditor/ckeditor5-ui/src/toolbar/getitemsfromconfig';
 
 /**
  * Image toolbar class. Creates image toolbar placed inside balloon panel that is showed when image widget is selected.
