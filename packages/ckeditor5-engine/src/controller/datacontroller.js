@@ -343,6 +343,7 @@ mix( DataController, EmitterMixin );
 // @returns {Map} Map with markers data.
 function extractMarkersFromModelFragment( documentFragment ) {
 	const markerStamps = new Set();
+	const result = new Map();
 
 	// Create ModelTreeWalker.
 	const walker = new ModelTreeWalker( {
@@ -360,7 +361,7 @@ function extractMarkersFromModelFragment( documentFragment ) {
 	}
 
 	// Walk through collected marker elements store its path and remove its from the DocumentFragment.
-	return Array.from( markerStamps ).reduce( ( result, stamp ) => {
+	for ( const stamp of markerStamps ) {
 		const markerName = stamp.getAttribute( 'data-name' );
 		const currentPosition = ModelPosition.createBefore( stamp );
 
@@ -374,9 +375,9 @@ function extractMarkersFromModelFragment( documentFragment ) {
 
 		// Remove marker stamp element from DocumentFragment.
 		remove( ModelRange.createOn( stamp ) );
+	}
 
-		return result;
-	}, new Map() );
+	return result;
 }
 
 /**
