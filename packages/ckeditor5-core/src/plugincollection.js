@@ -30,7 +30,7 @@ export default class PluginCollection {
 
 		/**
 		 * @protected
-		 * @member {Map.<String,module:core/plugin~Plugin>} module:core/plugin~PluginCollection#_availablePlugins
+		 * @member {Map.<String|module:core/plugin~Plugin,module:core/plugin~Plugin>} module:core/plugin~PluginCollection#_availablePlugins
 		 */
 		this._availablePlugins = new Map();
 
