@@ -115,7 +115,8 @@ class MutationHandler {
 	/**
 	 * Handles given mutations.
 	 *
-	 * @param {Array.<module:engine/view/document~MutatatedText|module:engine/view/document~MutatatedChildren>} mutations
+	 * @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|
+	 * module:engine/view/observer/mutationobserver~MutatatedChildren>} mutations
 	 * @param {module:engine/view/selection~Selection|null} viewSelection
 	 */
 	handle( mutations, viewSelection ) {

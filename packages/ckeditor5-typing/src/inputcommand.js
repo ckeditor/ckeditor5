@@ -20,10 +20,10 @@ export default class InputCommand extends Command {
 	 * Creates an instance of the command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {Number} undoStep The maximum number of atomic changes
+	 * @param {Number} undoStepSize The maximum number of atomic changes
 	 * which can be contained in one batch in the command buffer.
 	 */
-	constructor( editor, undoStep ) {
+	constructor( editor, undoStepSize ) {
 		super( editor );
 
 		/**
@@ -33,7 +33,7 @@ export default class InputCommand extends Command {
 		 * @private
 		 * @member {module:typing/changebuffer~ChangeBuffer} #_buffer
 		 */
-		this._buffer = new ChangeBuffer( editor.document, undoStep );
+		this._buffer = new ChangeBuffer( editor.document, undoStepSize );
 	}
 
 	/**
@@ -47,7 +47,7 @@ export default class InputCommand extends Command {
 	}
 
 	/**
-	 * Returns the current buffer.
+	 * The current change buffer.
 	 *
 	 * @type {module:typing/changebuffer~ChangeBuffer}
 	 */
@@ -64,8 +64,9 @@ export default class InputCommand extends Command {
 	 * @param {String} [options.text] Text to be inserted.
 	 * @param {module:engine/model/range~Range} [options.range] Range in which the text is inserted. Defaults
 	 * to the first range in the current selection.
-	 * @param {module:engine/model/position~Position} [options.resultPosition] Position which will be used
-	 * to set selection on a data model.
+	 * @param {module:engine/model/position~Position} [options.resultPosition] Position at which the selection
+	 * should be placed after the insertion. If not specified, the selection will be placed right after
+	 * the inserted text.
 	 */
 	_doExecute( options = {} ) {
 		const doc = this.editor.document;
