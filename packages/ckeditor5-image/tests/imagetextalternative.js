@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Image from '../src/image';
 import ImageToolbar from '../src/imagetoolbar';
@@ -105,6 +106,28 @@ describe( 'ImageTextAlternative', () => {
 			} )
 			.then( newEditor => {
 				expect( newEditor.config.get( 'image.defaultToolbar' ) ).to.eql( [ 'imageTextAlternative' ] );
+
+				newEditor.destroy();
+			} );
+		} );
+
+		it( 'should add separator before the button if toolbar is present and already has items', () => {
+			const editorElement = global.document.createElement( 'div' );
+			global.document.body.appendChild( editorElement );
+
+			const FooPlugin = class extends Plugin {
+				init() {
+					this.editor.ui.componentFactory.add( 'foo', () => new ButtonView() );
+
+					this.editor.config.get( 'image.defaultToolbar' ).push( 'foo' );
+				}
+			};
+
+			return ClassicTestEditor.create( editorElement, {
+				plugins: [ FooPlugin, ImageTextAlternative, ImageToolbar ]
+			} )
+			.then( newEditor => {
+				expect( newEditor.config.get( 'image.defaultToolbar' ) ).to.eql( [ 'foo', '|', 'imageTextAlternative' ] );
 
 				newEditor.destroy();
 			} );
