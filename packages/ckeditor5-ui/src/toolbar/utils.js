@@ -10,10 +10,10 @@
 import ToolbarSeparatorView from './toolbarseparatorview';
 
 /**
- * An utility which expands a plain toolbar configuration into a collection
+ * A utility which expands a plain toolbar configuration into a collection
  * of {@link module:ui/view~View views} using a given factory.
  *
- * @param {Object} config The toolbar config.
+ * @param {Array} config The toolbar config.
  * @param {module:utils/collection~Collection} collection A collection into which the config
  * is expanded.
  * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
