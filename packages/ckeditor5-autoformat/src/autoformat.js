@@ -93,7 +93,7 @@ export default class Autoformat extends Plugin {
 
 			this.editor.execute( 'heading', {
 				batch,
-				formatId: `heading${ headingLevel }`
+				id: `heading${ headingLevel }`
 			} );
 		} );
 	}
