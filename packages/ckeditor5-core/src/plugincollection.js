@@ -99,12 +99,10 @@ export default class PluginCollection {
 			.map( ( item ) => getPluginConstructor( item ) )
 			.filter( ( PluginConstructor ) => !!PluginConstructor );
 
-		// Check whether a length of passed array with plugins is the same like an array with mapped plugins.
-		if ( pluginConstructorsToLoad.length !== plugins.length ) {
-			// Extract names of plugins which cannot be loaded.
-			const notFoundPlugins = plugins.filter( ( item ) => !pluginConstructorsToLoad.includes( item ) );
+		const missingPlugins = getMissingPlugins( plugins );
 
-			log.error( 'plugincollection-load: It was not possible to load the plugins.', { plugins: notFoundPlugins } );
+		if ( missingPlugins ) {
+			log.error( 'plugincollection-load: It was not possible to load the plugins.', { plugins: missingPlugins } );
 
 			/**
 			 * The plugins cannot be loaded by name.
@@ -117,7 +115,7 @@ export default class PluginCollection {
 			 */
 			return Promise.reject( new CKEditorError(
 				'plugincollection-plugin-not-found: The plugin cannot be loaded by name.',
-				{ plugins: notFoundPlugins }
+				{ plugins: missingPlugins }
 			) );
 
 			// TODO update this error with links to docs because it will be a frequent problem.
@@ -226,6 +224,20 @@ export default class PluginCollection {
 					{ plugin: PluginConstructor }
 				);
 			}
+		}
+
+		function getMissingPlugins( plugins ) {
+			const missingPlugins = [];
+
+			for ( const PluginNameOrConstructor of plugins ) {
+				const PluginConstructor = getPluginConstructor( PluginNameOrConstructor );
+
+				if ( !PluginConstructor ) {
+					missingPlugins.push( PluginNameOrConstructor );
+				}
+			}
+
+			return missingPlugins.length ? missingPlugins : null;
 		}
 	}
 
