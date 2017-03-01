@@ -13,6 +13,8 @@ import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildv
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import HeadingCommand from './headingcommand';
 
+const defaultOptionId = 'paragraph';
+
 /**
  * The headings engine feature. It handles switching between block formats &ndash; headings and paragraph.
  * This class represents the engine part of the heading feature. See also {@link module:heading/heading~Heading}.
@@ -32,8 +34,7 @@ export default class HeadingEngine extends Plugin {
 				{ id: 'heading1', element: 'h2', label: 'Heading 1' },
 				{ id: 'heading2', element: 'h3', label: 'Heading 2' },
 				{ id: 'heading3', element: 'h4', label: 'Heading 3' }
-			],
-			defaultOptionId: 'paragraph'
+			]
 		} );
 	}
 
@@ -52,7 +53,6 @@ export default class HeadingEngine extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 		const options = this._getLocalizedOptions();
-		const defaultOptionId = editor.config.get( 'heading.defaultOptionId' );
 
 		for ( let option of options ) {
 			// Skip paragraph - it is defined in required Paragraph feature.
@@ -73,7 +73,7 @@ export default class HeadingEngine extends Plugin {
 		}
 
 		// Register the heading command.
-		const command = new HeadingCommand( editor, options );
+		const command = new HeadingCommand( editor, options, defaultOptionId );
 		editor.commands.set( 'heading', command );
 	}
 

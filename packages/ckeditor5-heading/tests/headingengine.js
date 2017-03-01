@@ -140,36 +140,5 @@ describe( 'HeadingEngine', () => {
 				} );
 			} );
 		} );
-
-		describe( 'defaultOptionId', () => {
-			it( 'should have default value', () => {
-				expect( editor.config.get( 'heading.defaultOptionId' ) ).to.equal( 'paragraph' );
-			} );
-
-			it( 'should customize options', () => {
-				return VirtualTestEditor.create( {
-					plugins: [ Enter, HeadingEngine ],
-					heading: {
-						options: [
-							{ id: 'foo', element: 'f', label: 'Foo' },
-							{ id: 'bar', element: 'b', label: 'Bar' }
-						],
-						defaultOptionId: 'bar'
-					}
-				} )
-				.then( editor => {
-					document = editor.document;
-
-					expect( editor.commands.get( 'heading' ).value ).to.deep.equal( {
-						id: 'bar',
-						element: 'b',
-						label: 'Bar'
-					} );
-
-					expect( document.schema.hasItem( 'foo' ) ).to.be.true;
-					expect( document.schema.hasItem( 'bar' ) ).to.be.false;
-				} );
-			} );
-		} );
 	} );
 } );

@@ -9,7 +9,7 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 const options = [
-	{ id: 'paragraph', element: 'p', default: true },
+	{ id: 'paragraph', element: 'p' },
 	{ id: 'heading1', element: 'h2' },
 	{ id: 'heading2', element: 'h3' },
 	{ id: 'heading3', element: 'h4' }
@@ -19,15 +19,10 @@ describe( 'HeadingCommand', () => {
 	let editor, document, command, root, schema;
 
 	beforeEach( () => {
-		return ModelTestEditor.create( {
-			heading: {
-				defaultOptionId: 'paragraph'
-			}
-		} )
-		.then( newEditor => {
+		return ModelTestEditor.create().then( newEditor => {
 			editor = newEditor;
 			document = editor.document;
-			command = new HeadingCommand( editor, options );
+			command = new HeadingCommand( editor, options, 'paragraph' );
 			schema = document.schema;
 
 			for ( let option of options ) {
@@ -57,7 +52,7 @@ describe( 'HeadingCommand', () => {
 			} );
 		}
 
-		it( 'should be equal to defaultOption if option has not been found', () => {
+		it( 'should be equal to #defaultOption if option has not been found', () => {
 			schema.registerItem( 'div', '$block' );
 			setData( document, '<div>xyz</div>' );
 			const element = root.getChild( 0 );

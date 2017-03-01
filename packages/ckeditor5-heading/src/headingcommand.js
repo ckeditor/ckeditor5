@@ -22,7 +22,7 @@ export default class HeadingCommand extends Command {
 	 * @param {module:core/editor/editor~Editor} editor Editor instance.
 	 * @param {Array.<module:heading/headingcommand~HeadingOption>} options Heading options to be used by the command instance.
 	 */
-	constructor( editor, options ) {
+	constructor( editor, options, defaultOptionId ) {
 		super( editor );
 
 		/**
@@ -32,6 +32,15 @@ export default class HeadingCommand extends Command {
 		 * @member {module:heading/headingcommand~HeadingOption}
 		 */
 		this.options = options;
+
+		/**
+		 * The id of the default option among {@link #options}.
+		 *
+		 * @readonly
+		 * @private
+		 * @member {module:heading/headingcommand~HeadingOption#id}
+		 */
+		this._defaultOptionId = defaultOptionId;
 
 		/**
 		 * The currently selected heading option.
@@ -53,7 +62,7 @@ export default class HeadingCommand extends Command {
 	 */
 	get defaultOption() {
 		// See https://github.com/ckeditor/ckeditor5/issues/98.
-		return this._getOptionById( this.editor.config.get( 'heading.defaultOptionId' ) );
+		return this._getOptionById( this._defaultOptionId );
 	}
 
 	/**
