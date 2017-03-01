@@ -129,8 +129,6 @@ export default class TreeWalker {
 		 * @member {module:engine/view/node~Node} module:engine/view/treewalker~TreeWalker#_boundaryEndParent
 		 */
 		this._boundaryEndParent = this.boundaries ? this.boundaries.end.parent : null;
-
-		this._fixStartPositionInText();
 	}
 
 	/**
@@ -208,6 +206,13 @@ export default class TreeWalker {
 
 		// Text is a specific parent because it contains string instead of child nodes.
 		if ( parent instanceof Text ) {
+			if ( position.isAtEnd ) {
+				// Prevent returning "elementEnd" for Text node. Skip that value and return the next walker step.
+				this.position = Position.createAfter( parent );
+
+				return this._next();
+			}
+
 			node = parent.data[ position.offset ];
 		} else {
 			node = parent.getChild( position.offset );
@@ -306,6 +311,13 @@ export default class TreeWalker {
 
 		// Text {@link module:engine/view/text~Text} element is a specific parent because contains string instead of child nodes.
 		if ( parent instanceof Text ) {
+			if ( position.isAtStart ) {
+				// Prevent returning "elementStart" for Text node. Skip that value and return the next walker step.
+				this.position = Position.createBefore( parent );
+
+				return this._previous();
+			}
+
 			node = parent.data[ position.offset - 1 ];
 		} else {
 			node = parent.getChild( position.offset - 1 );
@@ -431,24 +443,6 @@ export default class TreeWalker {
 				length: length
 			}
 		};
-	}
-
-	/**
-	 * Fixes tree walker start position if it is at the beginning or at the end of a {@link module:engine/view/text~Text text node}.
-	 *
-	 * Without the fix, the first returned value by tree walker would have type `elementEnd` or `elementStart` but the
-	 * item would be a {@link module:engine/view/text~Text text node}.
-	 *
-	 * @private
-	 */
-	_fixStartPositionInText() {
-		const parent = this.position.parent;
-
-		if ( parent instanceof Text && this.position.isAtStart ) {
-			this.position = Position.createBefore( parent );
-		} else if ( parent instanceof Text && this.position.isAtEnd ) {
-			this.position = Position.createAfter( parent );
-		}
 	}
 }
 

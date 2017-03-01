@@ -98,8 +98,17 @@ export default class Range {
 	 * @returns {module:engine/view/range~Range} Enlarged range.
 	 */
 	getEnlarged() {
-		const start = this.start.getLastMatchingPosition( enlargeShrinkSkip, { direction: 'backward' } );
-		const end = this.end.getLastMatchingPosition( enlargeShrinkSkip );
+		let start = this.start.getLastMatchingPosition( enlargeShrinkSkip, { direction: 'backward' } );
+		let end = this.end.getLastMatchingPosition( enlargeShrinkSkip );
+
+		// Fix positions, in case if they are in Text node.
+		if ( start.parent.is( 'text' ) && start.isAtStart ) {
+			start = Position.createBefore( start.parent );
+		}
+
+		if ( end.parent.is( 'text' ) && end.isAtEnd ) {
+			end = Position.createAfter( end.parent );
+		}
 
 		return new Range( start, end );
 	}

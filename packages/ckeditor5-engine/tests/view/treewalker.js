@@ -976,7 +976,7 @@ describe( 'TreeWalker', () => {
 		} );
 	} );
 
-	it( 'should not return elementEnd for a text node when iteration begins at the start or the end of that text node', () => {
+	it( 'should not return elementEnd for a text node when iteration begins at the end of that text node', () => {
 		let iterator = new TreeWalker( {
 			startPosition: Position.createAt( textAbcd, 'end' )
 		} );
@@ -984,6 +984,18 @@ describe( 'TreeWalker', () => {
 		const step = iterator.next();
 
 		expect( step.value.type ).to.equal( 'elementEnd' );
+		expect( step.value.item ).to.equal( bold );
+	} );
+
+	it( 'should not return elementStart for a text node when iteration begins at the start of that text node', () => {
+		let iterator = new TreeWalker( {
+			startPosition: Position.createAt( textAbcd, 0 ),
+			direction: 'backward'
+		} );
+
+		const step = iterator.next();
+
+		expect( step.value.type ).to.equal( 'elementStart' );
 		expect( step.value.item ).to.equal( bold );
 	} );
 
