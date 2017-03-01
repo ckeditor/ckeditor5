@@ -19,7 +19,7 @@ import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import { isImage, isImageWidget } from '../image/utils';
-import { captionElementCreator, isCaption, getCaptionFromImage } from './utils';
+import { captionElementCreator, isCaption, getCaptionFromImage, isInsideCaption } from './utils';
 
 /**
  * The image caption engine plugin.
@@ -39,6 +39,7 @@ export default class ImageCaptionEngine extends Plugin {
 		const schema = document.schema;
 		const data = editor.data;
 		const editing = editor.editing;
+		const mapper = editing.mapper;
 
 		/**
 		 * Last selected caption editable.
@@ -46,6 +47,14 @@ export default class ImageCaptionEngine extends Plugin {
 		 *
 		 * @member {module:image/imagecaption/imagecaptionengine~ImageCaptionEngine} #_lastSelectedEditable
 		 */
+
+		/**
+		 * Function used to create caption element in editing view.
+		 *
+		 * @private
+		 * @member {Function}
+		 */
+		this._captionCreator = captionElementCreator( viewDocument );
 
 		// Schema configuration.
 		schema.registerItem( 'caption' );
@@ -57,33 +66,37 @@ export default class ImageCaptionEngine extends Plugin {
 		document.on( 'change', insertMissingCaptionElement );
 
 		// View to model converter for data pipeline.
-		const matcher = new ViewMatcher( ( element ) => {
-			const parent = element.parent;
-
-			// Convert only captions for images.
-			if ( element.name == 'figcaption' && parent && parent.name == 'figure' && parent.hasClass( 'image' ) ) {
-				return { name: true };
-			}
-
-			return null;
-		} );
-
 		buildViewConverter()
 			.for( data.viewToModel )
-			.from( matcher )
+			.from( new ViewMatcher( matchImageCaption ) )
 			.toElement( 'caption' );
 
 		// Model to view converter for data pipeline.
-		data.modelToView.on(
-			'insert:caption',
-			captionModelToView( new ViewContainerElement( 'figcaption' ) )
-		);
+		data.modelToView.on( 'insert:caption', captionModelToView( new ViewContainerElement( 'figcaption' ) ) );
 
 		// Model to view converter for editing pipeline.
+		editing.modelToView.on( 'insert:caption', captionModelToView( this._captionCreator ) );
+
 		editing.modelToView.on(
-			'insert:caption',
-			captionModelToView( captionElementCreator( viewDocument ) )
-		);
+			'insert',
+			( evt, data ) => {
+				if ( isInsideCaption( data.item ) ) {
+					const caption = data.item.parent;
+					const image = caption.parent;
+
+					const viewImage = mapper.toViewElement( image );
+					let viewCaption =  mapper.toViewElement( caption );
+
+					// Image should be already converted to the view.
+					if ( viewImage && !viewCaption ) {
+						viewCaption = this._captionCreator();
+						const viewPosition = ViewPosition.createAt( viewImage, 'end' );
+
+						mapper.bindElements( caption, viewCaption );
+						viewWriter.insert( viewPosition, viewCaption );
+					}
+				}
+			}, { priority: 'high' } );
 
 		// Adding / removing caption element when there is no text in the model.
 		const selection = viewDocument.selection;
@@ -153,7 +166,6 @@ export default class ImageCaptionEngine extends Plugin {
 		const selection = editing.view.selection;
 		const imageFigure = selection.getSelectedElement();
 		const mapper = editing.mapper;
-		const editableCreator = captionElementCreator( editing.view );
 
 		if ( imageFigure && isImageWidget( imageFigure ) ) {
 			const modelImage = mapper.toModelElement( imageFigure );
@@ -161,7 +173,7 @@ export default class ImageCaptionEngine extends Plugin {
 			let viewCaption =  mapper.toViewElement( modelCaption );
 
 			if ( !viewCaption ) {
-				viewCaption = editableCreator();
+				viewCaption = this._captionCreator();
 
 				const viewPosition = ViewPosition.createAt( imageFigure, 'end' );
 				mapper.bindElements( modelCaption, viewCaption );
@@ -215,11 +227,28 @@ function captionModelToView( elementCreator ) {
 			const imageFigure = conversionApi.mapper.toViewElement( data.range.start.parent );
 			const viewElement = ( elementCreator instanceof ViewElement ) ?
 				elementCreator.clone( true ) :
-				elementCreator( data, consumable, conversionApi );
+				elementCreator();
 
 			const viewPosition = ViewPosition.createAt( imageFigure, 'end' );
 			conversionApi.mapper.bindElements( data.item, viewElement );
 			viewWriter.insert( viewPosition, viewElement );
 		}
 	};
+}
+
+// Checks if given element is `figcaption` element and is placed inside image `figure` element.
+//
+// @private
+// @param {module:engine/view/element~Element} element
+// @returns {Object|null} Returns object accepted by {@link module:engine/view/matcher~Matcher} or `null` if element
+// cannot be matched.
+function matchImageCaption( element ) {
+	const parent = element.parent;
+
+	// Convert only captions for images.
+	if ( element.name == 'figcaption' && parent && parent.name == 'figure' && parent.hasClass( 'image' ) ) {
+		return { name: true };
+	}
+
+	return null;
 }

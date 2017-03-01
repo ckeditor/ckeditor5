@@ -61,3 +61,7 @@ export function getCaptionFromImage( imageModelElement ) {
 
 	return null;
 }
+
+export function isInsideCaption( node ) {
+	return node.parent && node.parent.name == 'caption' && node.parent.parent && node.parent.parent.name == 'image';
+}
