@@ -239,7 +239,7 @@ describe( 'PluginCollection', () => {
 				} );
 		} );
 
-		it( 'should reject when loading non-existing plugin', () => {
+		it( 'should reject when loading non-existent plugin', () => {
 			let logSpy = testUtils.sinon.stub( log, 'error' );
 
 			let plugins = new PluginCollection( editor, availablePlugins );
@@ -254,7 +254,7 @@ describe( 'PluginCollection', () => {
 					expect( err.message ).to.match( /^plugincollection-plugin-not-found/ );
 
 					sinon.assert.calledOnce( logSpy );
-					expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
+					expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-plugin-not-found:/ );
 				} );
 		} );
 

@@ -20,8 +20,8 @@ export default class PluginCollection {
 	 * Allows loading and initializing plugins and their dependencies.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
-	 * @param {Array.<Function>} availablePlugins Plugins (constructor) which the collection will be able to use
-	 * when {@link module:core/plugin~PluginCollection#load} is given strings (plugin names).
+	 * @param {Array.<Function>} [availablePlugins] Plugins (constructors) which the collection will be able to use
+	 * when {@link module:core/plugin~PluginCollection#load} is used with plugin names (strings, instead of constructors).
 	 * Usually, the editor will pass its built-in plugins to the collection so they can later be
 	 * used in `config.plugins` or `config.removePlugins` by names.
 	 */
@@ -82,8 +82,8 @@ export default class PluginCollection {
 	 * @param {Array.<Function|String>} plugins An array of {@link module:core/plugin~Plugin plugin constructors}
 	 * or {@link module:core/plugin~Plugin.pluginName plugin names}. The second option (names) work only if
 	 * `availablePlugins` were passed to the {@link #constructor}.
-	 * @param {Array.<String|Function>} removePlugins Names of plugins or plugin constructors
-	 *  which should not be loaded (despite being specified in the `plugins` array).
+	 * @param {Array.<String|Function>} [removePlugins] Names of plugins or plugin constructors
+	 * which should not be loaded (despite being specified in the `plugins` array).
 	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
 	 * collection.
 	 * @returns {Promise.<Array.<module:core/plugin~Plugin>>} returns.loadedPlugins The array of loaded plugins.
@@ -94,42 +94,36 @@ export default class PluginCollection {
 		const loading = new Set();
 		const loaded = [];
 
-		// In order to avoid using plugin names or constructors alternatively, we map all passed plugin as plugins constructors.
-		const pluginConstructorsToLoad = plugins
-			.map( ( item ) => getPluginConstructor( item ) )
-			.filter( ( PluginConstructor ) => !!PluginConstructor );
-
-		const missingPlugins = getMissingPlugins( plugins );
+		const pluginConstructors = mapToAvailableConstructors( plugins );
+		const removePluginConstructors = mapToAvailableConstructors( removePlugins );
+		const missingPlugins = getMissingPluginNames( plugins );
 
 		if ( missingPlugins ) {
-			log.error( 'plugincollection-load: It was not possible to load the plugins.', { plugins: missingPlugins } );
+			// TODO update this error docs with links to docs because it will be a frequent problem.
 
 			/**
-			 * The plugins cannot be loaded by name.
+			 * The plugins cannot be found.
 			 *
 			 * Plugin classes need to be provided to the editor before they can be loaded by name.
-			 * This is usually done by the builder.
+			 * This is usually done by the builder by setting the {@link module:core/editor/editor~Editor.build}
+			 * property.
 			 *
 			 * @error plugincollection-plugin-not-found
 			 * @param {Array.<String>} plugins The name of the plugins which could not be loaded.
 			 */
-			return Promise.reject( new CKEditorError(
-				'plugincollection-plugin-not-found: The plugin cannot be loaded by name.',
-				{ plugins: missingPlugins }
-			) );
+			const errorMsg = 'plugincollection-plugin-not-found: The plugin(s) cannot be loaded by name.';
 
-			// TODO update this error with links to docs because it will be a frequent problem.
+			// Log the error so it's more visible on the console. Hopefuly, for better DX.
+			log.error( errorMsg, { plugins: missingPlugins } );
+
+			return Promise.reject( new CKEditorError( errorMsg, { plugins: missingPlugins } ) );
 		}
 
-		// Plugins that will be removed can be the constructors or names. We need to transform plugin names to plugin constructors.
-		const pluginConstructorsToRemove = removePlugins.map( ( item ) => getPluginConstructor( item ) )
-			.filter( ( PluginConstructor ) => !!PluginConstructor );
-
-		return Promise.all( pluginConstructorsToLoad.map( loadPlugin ) )
+		return Promise.all( pluginConstructors.map( loadPlugin ) )
 			.then( () => loaded );
 
 		function loadPlugin( PluginConstructor ) {
-			if ( pluginConstructorsToRemove.includes( PluginConstructor ) ) {
+			if ( removePluginConstructors.includes( PluginConstructor ) ) {
 				return;
 			}
 
@@ -164,7 +158,7 @@ export default class PluginCollection {
 
 						if ( removePlugins.includes( RequiredPluginConstructor ) ) {
 							/**
-							 * Cannot load a plugin because one of its dependencies is listed in the `removePlugins` options.
+							 * Cannot load a plugin because one of its dependencies is listed in the `removePlugins` option.
 							 *
 							 * @error plugincollection-required
 							 * @param {Function} plugin The required plugin.
@@ -172,7 +166,7 @@ export default class PluginCollection {
 							 */
 							throw new CKEditorError(
 								'plugincollection-required: Cannot load a plugin because one of its dependencies is listed in' +
-								'the `removePlugins` options.',
+								'the `removePlugins` option.',
 								{ plugin: RequiredPluginConstructor, requiredBy: PluginConstructor }
 							);
 						}
@@ -212,18 +206,22 @@ export default class PluginCollection {
 			}
 		}
 
-		function getMissingPlugins( plugins ) {
+		function getMissingPluginNames( plugins ) {
 			const missingPlugins = [];
 
-			for ( const PluginNameOrConstructor of plugins ) {
-				const PluginConstructor = getPluginConstructor( PluginNameOrConstructor );
-
-				if ( !PluginConstructor ) {
-					missingPlugins.push( PluginNameOrConstructor );
+			for ( const pluginNameOrConstructor of plugins ) {
+				if ( !getPluginConstructor( pluginNameOrConstructor ) ) {
+					missingPlugins.push( pluginNameOrConstructor );
 				}
 			}
 
 			return missingPlugins.length ? missingPlugins : null;
+		}
+
+		function mapToAvailableConstructors( plugins ) {
+			return plugins
+				.map( pluginNameOrConstructor => getPluginConstructor( pluginNameOrConstructor ) )
+				.filter( PluginConstructor => !!PluginConstructor );
 		}
 	}
 
