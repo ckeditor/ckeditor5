@@ -86,7 +86,7 @@ export default class PluginCollection {
 	 *  which should not be loaded (despite being specified in the `plugins` array).
 	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
 	 * collection.
-	 * @returns {Array.<module:core/plugin~Plugin>} returns.loadedPlugins The array of loaded plugins.
+	 * @returns {Promise.<Array.<module:core/plugin~Plugin>>} returns.loadedPlugins The array of loaded plugins.
 	 */
 	load( plugins, removePlugins = [] ) {
 		const that = this;
@@ -94,35 +94,54 @@ export default class PluginCollection {
 		const loading = new Set();
 		const loaded = [];
 
-		// Plugins that will be removed can be the constructors or names.
-		// We need to unify this because we are supporting loading plugins using both types.
-		removePlugins = removePlugins.reduce( ( arr, PluginConstructorOrName ) => {
-			arr.push( PluginConstructorOrName );
+		// In order to avoid using plugin names or constructors alternatively, we map all passed plugin as plugins constructors.
+		const pluginConstructorsToLoad = plugins
+			.map( ( item ) => getPluginConstructor( item ) )
+			.filter( ( PluginConstructor ) => !!PluginConstructor );
 
-			if ( typeof PluginConstructorOrName == 'string' ) {
-				arr.push( getPluginConstructor( PluginConstructorOrName ) );
-			} else if ( PluginConstructorOrName.pluginName ) {
-				arr.push( PluginConstructorOrName.pluginName );
-			}
+		// Check whether a length of passed array with plugins is the same like an array with mapped plugins.
+		if ( pluginConstructorsToLoad.length !== plugins.length ) {
+			// Extract names of plugins which cannot be loaded.
+			const notFoundPlugins = plugins.filter( ( item ) => !pluginConstructorsToLoad.includes( item ) );
 
-			return arr;
-		}, [] );
+			log.error( 'plugincollection-load: It was not possible to load the plugins.', { plugins: notFoundPlugins } );
 
-		return Promise.all( plugins.map( loadPlugin ) )
+			/**
+			 * The plugins cannot be loaded by name.
+			 *
+			 * Plugin classes need to be provided to the editor before they can be loaded by name.
+			 * This is usually done by the builder.
+			 *
+			 * @error plugincollection-plugin-not-found
+			 * @param {Array.<String>} plugins The name of the plugins which could not be loaded.
+			 */
+			return Promise.reject( new CKEditorError(
+				'plugincollection-plugin-not-found: The plugin cannot be loaded by name.',
+				{ plugins: notFoundPlugins }
+			) );
+
+			// TODO update this error with links to docs because it will be a frequent problem.
+		}
+
+		// Plugins that will be removed can be the constructors or names. We need to transform plugin names to plugin constructors.
+		const pluginConstructorsToRemove = removePlugins.map( ( item ) => getPluginConstructor( item ) )
+			.filter( ( PluginConstructor ) => !!PluginConstructor );
+
+		return Promise.all( pluginConstructorsToLoad.map( loadPlugin ) )
 			.then( () => loaded );
 
-		function loadPlugin( PluginConstructorOrName ) {
+		function loadPlugin( PluginConstructor ) {
 			// Don't load the plugin if it cannot be loaded.
-			if ( removePlugins.includes( PluginConstructorOrName ) ) {
+			if ( pluginConstructorsToRemove.includes( PluginConstructor ) ) {
 				return;
 			}
 
 			// The plugin is already loaded or being loaded - do nothing.
-			if ( that.get( PluginConstructorOrName ) || loading.has( PluginConstructorOrName ) ) {
+			if ( that.get( PluginConstructor ) || loading.has( PluginConstructor ) ) {
 				return;
 			}
 
-			return instantiatePlugin( PluginConstructorOrName )
+			return instantiatePlugin( PluginConstructor )
 				.catch( ( err ) => {
 					/**
 					 * It was not possible to load the plugin.
@@ -130,39 +149,51 @@ export default class PluginCollection {
 					 * @error plugincollection-load
 					 * @param {String} plugin The name of the plugin that could not be loaded.
 					 */
-					log.error( 'plugincollection-load: It was not possible to load the plugin.', { plugin: PluginConstructorOrName } );
+					log.error( 'plugincollection-load: It was not possible to load the plugin.', { plugin: PluginConstructor } );
 
 					throw err;
 				} );
 		}
 
-		function instantiatePlugin( PluginConstructorOrName ) {
+		function instantiatePlugin( PluginConstructor ) {
 			return new Promise( ( resolve ) => {
-				const PluginConstructor = getPluginConstructor( PluginConstructorOrName );
-
 				loading.add( PluginConstructor );
 
 				assertIsPlugin( PluginConstructor );
 
 				if ( PluginConstructor.requires ) {
 					PluginConstructor.requires.forEach( ( RequiredPluginConstructorOrName ) => {
-						if ( removePlugins.includes( RequiredPluginConstructorOrName ) ) {
+						const RequiredPluginConstructor = getPluginConstructor( RequiredPluginConstructorOrName );
+
+						if ( !RequiredPluginConstructor ) {
 							/**
-							 * Cannot load a plugin because one of its dependencies is
-							 * listed in the `removePlugins` options.
+							 * The plugin cannot be loaded by name.
+							 *
+							 * @error plugincollection-plugin-not-found
+							 * @param {String} plugin The name of the plugin which could not be loaded.
+							 */
+							throw new CKEditorError(
+								'plugincollection-plugin-not-found: The plugin cannot be loaded by name.',
+								{ plugins: RequiredPluginConstructorOrName }
+							);
+						}
+
+						if ( removePlugins.includes( RequiredPluginConstructor ) ) {
+							/**
+							 * Cannot load a plugin because one of its dependencies is listed in the `removePlugins` options.
 							 *
 							 * @error plugincollection-required
-							 * @param {*} plugin The required plugin.
-							 * @param {*} requiredBy The parent plugin.
+							 * @param {Function} plugin The required plugin.
+							 * @param {Function} requiredBy The parent plugin.
 							 */
 							throw new CKEditorError(
 								'plugincollection-required: Cannot load a plugin because one of its dependencies is listed in' +
 								'the `removePlugins` options.',
-								{ plugin: RequiredPluginConstructorOrName, requiredBy: PluginConstructorOrName }
+								{ plugin: RequiredPluginConstructor, requiredBy: PluginConstructor }
 							);
 						}
 
-						loadPlugin( RequiredPluginConstructorOrName );
+						loadPlugin( RequiredPluginConstructor );
 					} );
 				}
 
@@ -179,27 +210,7 @@ export default class PluginCollection {
 				return PluginConstructorOrName;
 			}
 
-			const PluginConstructor = that._availablePlugins.get( PluginConstructorOrName );
-
-			if ( !PluginConstructor ) {
-				/**
-				 * The plugin cannot be loaded by name.
-				 *
-				 * Plugin classes need to be provided to the editor before they can be loaded by name.
-				 * This is usually done by the builder.
-				 *
-				 * @error plugincollection-plugin-not-found
-				 * @param {String} pluginName The name of the plugin which could not be loaded.
-				 */
-				throw new CKEditorError(
-					'plugincollection-plugin-not-found: The plugin cannot be loaded by name.',
-					{ plugin: PluginConstructorOrName }
-				);
-
-				// TODO update this error with links to docs because it will be a frequent problem.
-			}
-
-			return PluginConstructor;
+			return that._availablePlugins.get( PluginConstructorOrName );
 		}
 
 		function assertIsPlugin( PluginConstructor ) {

@@ -336,6 +336,27 @@ describe( 'PluginCollection', () => {
 					expect( logSpy.calledTwice ).to.equal( true );
 				} );
 		} );
+
+		it( 'should reject when loaded plugin requires non-existing plugin', () => {
+			let logSpy = testUtils.sinon.stub( log, 'error' );
+
+			let plugins = new PluginCollection( editor, availablePlugins );
+
+			PluginA.requires = [ 'NonExistentPlugin' ];
+
+			return plugins.load( [ PluginA ] )
+				// Throw here, so if by any chance plugins.load() was resolved correctly catch() will be stil executed.
+				.then( () => {
+					throw new Error( 'Test error: this promise should not be resolved successfully' );
+				} )
+				.catch( ( err ) => {
+					expect( err ).to.be.an.instanceof( CKEditorError );
+					expect( err.message ).to.match( /^plugincollection-plugin-not-found/ );
+
+					sinon.assert.calledOnce( logSpy );
+					expect( logSpy.args[ 0 ][ 0 ] ).to.match( /^plugincollection-load:/ );
+				} );
+		} );
 	} );
 
 	describe( 'get()', () => {
