@@ -53,7 +53,7 @@ export default class HeadingCommand extends Command {
 	 */
 	get defaultOption() {
 		// See https://github.com/ckeditor/ckeditor5/issues/98.
-		return this._getFormatById( this.editor.config.get( 'heading.defaultOptionId' ) );
+		return this._getOptionById( this.editor.config.get( 'heading.defaultOptionId' ) );
 	}
 
 	/**
@@ -132,7 +132,7 @@ export default class HeadingCommand extends Command {
 	 * @param {String} id
 	 * @returns {module:heading/headingcommand~HeadingOption}
 	 */
-	_getFormatById( id ) {
+	_getOptionById( id ) {
 		return this.options.find( item => item.id === id ) || this.defaultOption;
 	}
 
@@ -146,7 +146,7 @@ export default class HeadingCommand extends Command {
 		const block = findTopmostBlock( position );
 
 		if ( block ) {
-			this.value = this._getFormatById( block.name );
+			this.value = this._getOptionById( block.name );
 		}
 	}
 }
@@ -180,7 +180,7 @@ function findTopmostBlock( position, nodeAfter = true ) {
  * Heading option descriptor.
  *
  * @typedef {Object} module:heading/headingcommand~HeadingOption
- * @property {String} id Format identifier. It will be used as the element's name in the model.
- * @property {String} viewElement The name of the view element that will be used to represent the model element in the view.
+ * @property {String} id Option identifier. It will be used as the element's name in the model.
+ * @property {String} element The name of the view element that will be used to represent the model element in the view.
  * @property {String} label The display name of the option.
  */
