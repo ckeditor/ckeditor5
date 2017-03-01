@@ -16,11 +16,16 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
  */
 export default class PluginCollection {
 	/**
-	 * Creates an instance of the PluginCollection class, initializing it with a set of plugins.
+	 * Creates an instance of the PluginCollection class.
+	 * Allows loading and initializing plugins and their dependencies.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor
+	 * @param {Array.<Function>} [availablePlugins] Plugins (constructors) which the collection will be able to use
+	 * when {@link module:core/plugin~PluginCollection#load} is used with plugin names (strings, instead of constructors).
+	 * Usually, the editor will pass its built-in plugins to the collection so they can later be
+	 * used in `config.plugins` or `config.removePlugins` by names.
 	 */
-	constructor( editor ) {
+	constructor( editor, availablePlugins = [] ) {
 		/**
 		 * @protected
 		 * @member {module:core/editor/editor~Editor} module:core/plugin~PluginCollection#_editor
@@ -28,10 +33,26 @@ export default class PluginCollection {
 		this._editor = editor;
 
 		/**
+		 * Map of plugin constructors which can be retrieved by their names.
+		 *
+		 * @protected
+		 * @member {Map.<String|Function,Function>} module:core/plugin~PluginCollection#_availablePlugins
+		 */
+		this._availablePlugins = new Map();
+
+		/**
 		 * @protected
 		 * @member {Map} module:core/plugin~PluginCollection#_plugins
 		 */
 		this._plugins = new Map();
+
+		for ( const PluginConstructor of availablePlugins ) {
+			this._availablePlugins.set( PluginConstructor, PluginConstructor );
+
+			if ( PluginConstructor.pluginName ) {
+				this._availablePlugins.set( PluginConstructor.pluginName, PluginConstructor );
+			}
+		}
 	}
 
 	/**
@@ -56,23 +77,56 @@ export default class PluginCollection {
 	}
 
 	/**
-	 * Loads a set of plugins and add them to the collection.
+	 * Loads a set of plugins and adds them to the collection.
 	 *
-	 * @param {Function[]} plugins An array of {@link module:core/plugin~Plugin plugin constructors}.
+	 * @param {Array.<Function|String>} plugins An array of {@link module:core/plugin~Plugin plugin constructors}
+	 * or {@link module:core/plugin~Plugin.pluginName plugin names}. The second option (names) work only if
+	 * `availablePlugins` were passed to the {@link #constructor}.
+	 * @param {Array.<String|Function>} [removePlugins] Names of plugins or plugin constructors
+	 * which should not be loaded (despite being specified in the `plugins` array).
 	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
 	 * collection.
-	 * @param {Array.<module:core/plugin~Plugin>} returns.loadedPlugins The array of loaded plugins.
+	 * @returns {Promise.<Array.<module:core/plugin~Plugin>>} returns.loadedPlugins The array of loaded plugins.
 	 */
-	load( plugins ) {
+	load( plugins, removePlugins = [] ) {
 		const that = this;
 		const editor = this._editor;
 		const loading = new Set();
 		const loaded = [];
 
-		return Promise.all( plugins.map( loadPlugin ) )
+		const pluginConstructors = mapToAvailableConstructors( plugins );
+		const removePluginConstructors = mapToAvailableConstructors( removePlugins );
+		const missingPlugins = getMissingPluginNames( plugins );
+
+		if ( missingPlugins ) {
+			// TODO update this error docs with links to docs because it will be a frequent problem.
+
+			/**
+			 * Some plugins are not available and could not be loaded.
+			 *
+			 * Plugin classes (constructors) need to be provided to the editor before they can be loaded by name.
+			 * This is usually done by the builder by setting the {@link module:core/editor/editor~Editor.build}
+			 * property.
+			 *
+			 * @error plugincollection-plugin-not-found
+			 * @param {Array.<String>} plugins The name of the plugins which could not be loaded.
+			 */
+			const errorMsg = 'plugincollection-plugin-not-found: Some plugins are not available and could not be loaded.';
+
+			// Log the error so it's more visible on the console. Hopefuly, for better DX.
+			log.error( errorMsg, { plugins: missingPlugins } );
+
+			return Promise.reject( new CKEditorError( errorMsg, { plugins: missingPlugins } ) );
+		}
+
+		return Promise.all( pluginConstructors.map( loadPlugin ) )
 			.then( () => loaded );
 
 		function loadPlugin( PluginConstructor ) {
+			if ( removePluginConstructors.includes( PluginConstructor ) ) {
+				return;
+			}
+
 			// The plugin is already loaded or being loaded - do nothing.
 			if ( that.get( PluginConstructor ) || loading.has( PluginConstructor ) ) {
 				return;
@@ -99,7 +153,26 @@ export default class PluginCollection {
 				assertIsPlugin( PluginConstructor );
 
 				if ( PluginConstructor.requires ) {
-					PluginConstructor.requires.forEach( loadPlugin );
+					PluginConstructor.requires.forEach( ( RequiredPluginConstructorOrName ) => {
+						const RequiredPluginConstructor = getPluginConstructor( RequiredPluginConstructorOrName );
+
+						if ( removePlugins.includes( RequiredPluginConstructor ) ) {
+							/**
+							 * Cannot load a plugin because one of its dependencies is listed in the `removePlugins` option.
+							 *
+							 * @error plugincollection-required
+							 * @param {Function} plugin The required plugin.
+							 * @param {Function} requiredBy The parent plugin.
+							 */
+							throw new CKEditorError(
+								'plugincollection-required: Cannot load a plugin because one of its dependencies is listed in' +
+								'the `removePlugins` option.',
+								{ plugin: RequiredPluginConstructor, requiredBy: PluginConstructor }
+							);
+						}
+
+						loadPlugin( RequiredPluginConstructor );
+					} );
 				}
 
 				const plugin = new PluginConstructor( editor );
@@ -108,6 +181,14 @@ export default class PluginCollection {
 
 				resolve();
 			} );
+		}
+
+		function getPluginConstructor( PluginConstructorOrName ) {
+			if ( typeof PluginConstructorOrName == 'function' ) {
+				return PluginConstructorOrName;
+			}
+
+			return that._availablePlugins.get( PluginConstructorOrName );
 		}
 
 		function assertIsPlugin( PluginConstructor ) {
@@ -123,6 +204,24 @@ export default class PluginCollection {
 					{ plugin: PluginConstructor }
 				);
 			}
+		}
+
+		function getMissingPluginNames( plugins ) {
+			const missingPlugins = [];
+
+			for ( const pluginNameOrConstructor of plugins ) {
+				if ( !getPluginConstructor( pluginNameOrConstructor ) ) {
+					missingPlugins.push( pluginNameOrConstructor );
+				}
+			}
+
+			return missingPlugins.length ? missingPlugins : null;
+		}
+
+		function mapToAvailableConstructors( plugins ) {
+			return plugins
+				.map( pluginNameOrConstructor => getPluginConstructor( pluginNameOrConstructor ) )
+				.filter( PluginConstructor => !!PluginConstructor );
 		}
 	}
 
