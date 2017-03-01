@@ -102,16 +102,16 @@ export default class PluginCollection {
 			// TODO update this error docs with links to docs because it will be a frequent problem.
 
 			/**
-			 * The plugins cannot be found.
+			 * Some plugins are not available and could not be loaded.
 			 *
-			 * Plugin classes need to be provided to the editor before they can be loaded by name.
+			 * Plugin classes (constructors) need to be provided to the editor before they can be loaded by name.
 			 * This is usually done by the builder by setting the {@link module:core/editor/editor~Editor.build}
 			 * property.
 			 *
 			 * @error plugincollection-plugin-not-found
 			 * @param {Array.<String>} plugins The name of the plugins which could not be loaded.
 			 */
-			const errorMsg = 'plugincollection-plugin-not-found: The plugin(s) cannot be loaded by name.';
+			const errorMsg = 'plugincollection-plugin-not-found: Some plugins are not available and could not be loaded.';
 
 			// Log the error so it's more visible on the console. Hopefuly, for better DX.
 			log.error( errorMsg, { plugins: missingPlugins } );
