@@ -7,8 +7,6 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Input from '../src/input';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-// import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
-// import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 
