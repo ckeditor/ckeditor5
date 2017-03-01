@@ -13,7 +13,7 @@ import ClassicEditorUIView from '../src/classiceditoruiview';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import * as toolbarUtils from '@ckeditor/ckeditor5-ui/src/toolbar/utils';
+import * as enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -139,19 +139,15 @@ describe( 'ClassicEditorUI', () => {
 		} );
 
 		it( 'fills view.toolbar#items with editor config', () => {
-			const spy = testUtils.sinon.spy( toolbarUtils, 'getItemsFromConfig' );
+			const spy = testUtils.sinon.spy( view.toolbar, 'fillFromConfig' );
 
 			return ui.init().then( () => {
-				sinon.assert.calledWithExactly( spy,
-					editor.config.get( 'toolbar' ),
-					view.toolbar.items,
-					ui.componentFactory
-				);
+				sinon.assert.calledWithExactly( spy, editor.config.get( 'toolbar' ), ui.componentFactory );
 			} );
 		} );
 
 		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
-			const spy = testUtils.sinon.spy( toolbarUtils, 'enableToolbarKeyboardFocus' );
+			const spy = testUtils.sinon.spy( enableToolbarKeyboardFocus, 'default' );
 
 			return ui.init().then( () => {
 				sinon.assert.calledWithExactly( spy, {
