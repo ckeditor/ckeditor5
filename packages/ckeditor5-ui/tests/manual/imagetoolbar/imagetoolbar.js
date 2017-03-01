@@ -79,9 +79,7 @@ function createImageToolbar( editor ) {
 		const editingView = editor.editing.view;
 
 		// Fill the toolbar with some buttons. Simply copy default editor toolbar.
-		for ( let name of editor.config.get( 'toolbar' ) ) {
-			toolbar.items.add( editor.ui.componentFactory.create( name ) );
-		}
+		toolbar.fillFromConfig( editor.config.get( 'toolbar' ), editor.ui.componentFactory );
 
 		// Let the focusTracker know about new focusable UI element.
 		editor.ui.focusTracker.add( panel.element );
