@@ -8,30 +8,29 @@ import HeadingCommand from '../src/headingcommand';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-const formats = [
-	{ id: 'paragraph', viewElement: 'p', default: true },
-	{ id: 'heading1', viewElement: 'h2' },
-	{ id: 'heading2', viewElement: 'h3' },
-	{ id: 'heading3', viewElement: 'h4' }
+const options = [
+	{ id: 'paragraph', element: 'p' },
+	{ id: 'heading1', element: 'h2' },
+	{ id: 'heading2', element: 'h3' },
+	{ id: 'heading3', element: 'h4' }
 ];
 
 describe( 'HeadingCommand', () => {
 	let editor, document, command, root, schema;
 
 	beforeEach( () => {
-		return ModelTestEditor.create()
-			.then( newEditor => {
-				editor = newEditor;
-				document = editor.document;
-				command = new HeadingCommand( editor, formats );
-				schema = document.schema;
+		return ModelTestEditor.create().then( newEditor => {
+			editor = newEditor;
+			document = editor.document;
+			command = new HeadingCommand( editor, options, 'paragraph' );
+			schema = document.schema;
 
-				for ( let format of formats ) {
-					schema.registerItem( format.id, '$block' );
-				}
+			for ( let option of options ) {
+				schema.registerItem( option.id, '$block' );
+			}
 
-				root = document.getRoot();
-			} );
+			root = document.getRoot();
+		} );
 	} );
 
 	afterEach( () => {
@@ -39,39 +38,39 @@ describe( 'HeadingCommand', () => {
 	} );
 
 	describe( 'value', () => {
-		for ( let format of formats ) {
-			test( format );
+		for ( let option of options ) {
+			test( option );
 		}
 
-		function test( format ) {
-			it( `equals ${ format.id } when collapsed selection is placed inside ${ format.id } element`, () => {
-				setData( document, `<${ format.id }>foobar</${ format.id }>` );
+		function test( option ) {
+			it( `equals ${ option.id } when collapsed selection is placed inside ${ option.id } element`, () => {
+				setData( document, `<${ option.id }>foobar</${ option.id }>` );
 				const element = root.getChild( 0 );
 				document.selection.addRange( Range.createFromParentsAndOffsets( element, 3, element, 3 ) );
 
-				expect( command.value ).to.equal( format );
+				expect( command.value ).to.equal( option );
 			} );
 		}
 
-		it( 'should be equal to defaultFormat if format has not been found', () => {
+		it( 'should be equal to #defaultOption if option has not been found', () => {
 			schema.registerItem( 'div', '$block' );
 			setData( document, '<div>xyz</div>' );
 			const element = root.getChild( 0 );
 			document.selection.addRange( Range.createFromParentsAndOffsets( element, 1, element, 1 ) );
 
-			expect( command.value ).to.equal( command.defaultFormat );
+			expect( command.value ).to.equal( command.defaultOption );
 		} );
 	} );
 
 	describe( '_doExecute', () => {
 		it( 'should update value after execution', () => {
 			setData( document, '<paragraph>[]</paragraph>' );
-			command._doExecute( { formatId: 'heading1' } );
+			command._doExecute( { id: 'heading1' } );
 
 			expect( getData( document ) ).to.equal( '<heading1>[]</heading1>' );
 			expect( command.value ).to.be.object;
 			expect( command.value.id ).to.equal( 'heading1' );
-			expect( command.value.viewElement ).to.equal( 'h2' );
+			expect( command.value.element ).to.equal( 'h2' );
 		} );
 
 		describe( 'custom options', () => {
@@ -88,11 +87,11 @@ describe( 'HeadingCommand', () => {
 		} );
 
 		describe( 'collapsed selection', () => {
-			let convertTo = formats[ formats.length - 1 ];
+			let convertTo = options[ options.length - 1 ];
 
-			for ( let format of formats ) {
-				test( format, convertTo );
-				convertTo = format;
+			for ( let option of options ) {
+				test( option, convertTo );
+				convertTo = option;
 			}
 
 			it( 'uses paragraph as default value', () => {
@@ -102,9 +101,9 @@ describe( 'HeadingCommand', () => {
 				expect( getData( document ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
 
-			it( 'converts to default format when executed with already applied format', () => {
+			it( 'converts to default option when executed with already applied option', () => {
 				setData( document, '<heading1>foo[]bar</heading1>' );
-				command._doExecute( { formatId: 'heading1' } );
+				command._doExecute( { id: 'heading1' } );
 
 				expect( getData( document ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
@@ -114,7 +113,7 @@ describe( 'HeadingCommand', () => {
 				schema.allow( { name: '$text', inside: 'inlineImage' } );
 
 				setData( document, '<heading1><inlineImage>foo[]</inlineImage>bar</heading1>' );
-				command._doExecute( { formatId: 'heading1' } );
+				command._doExecute( { id: 'heading1' } );
 
 				expect( getData( document ) ).to.equal( '<paragraph><inlineImage>foo[]</inlineImage>bar</paragraph>' );
 			} );
@@ -122,7 +121,7 @@ describe( 'HeadingCommand', () => {
 			function test( from, to ) {
 				it( `converts ${ from.id } to ${ to.id } on collapsed selection`, () => {
 					setData( document, `<${ from.id }>foo[]bar</${ from.id }>` );
-					command._doExecute( { formatId: to.id } );
+					command._doExecute( { id: to.id } );
 
 					expect( getData( document ) ).to.equal( `<${ to.id }>foo[]bar</${ to.id }>` );
 				} );
@@ -130,25 +129,25 @@ describe( 'HeadingCommand', () => {
 		} );
 
 		describe( 'non-collapsed selection', () => {
-			let convertTo = formats[ formats.length - 1 ];
+			let convertTo = options[ options.length - 1 ];
 
-			for ( let format of formats ) {
-				test( format, convertTo );
-				convertTo = format;
+			for ( let option of options ) {
+				test( option, convertTo );
+				convertTo = option;
 			}
 
 			it( 'converts all elements where selection is applied', () => {
 				setData( document, '<heading1>foo[</heading1><heading2>bar</heading2><heading2>]baz</heading2>' );
-				command._doExecute( { formatId: 'paragraph' } );
+				command._doExecute( { id: 'paragraph' } );
 
 				expect( getData( document ) ).to.equal(
 					'<paragraph>foo[</paragraph><paragraph>bar</paragraph><paragraph>]baz</paragraph>'
 				);
 			} );
 
-			it( 'resets to default value all elements with same format', () => {
+			it( 'resets to default value all elements with same option', () => {
 				setData( document, '<heading1>foo[</heading1><heading1>bar</heading1><heading2>baz</heading2>]' );
-				command._doExecute( { formatId: 'heading1' } );
+				command._doExecute( { id: 'heading1' } );
 
 				expect( getData( document ) ).to.equal(
 					'<paragraph>foo[</paragraph><paragraph>bar</paragraph><heading2>baz</heading2>]'
@@ -158,7 +157,7 @@ describe( 'HeadingCommand', () => {
 			function test( from, to ) {
 				it( `converts ${ from.id } to ${ to.id } on non-collapsed selection`, () => {
 					setData( document, `<${ from.id }>foo[bar</${ from.id }><${ from.id }>baz]qux</${ from.id }>` );
-					command._doExecute( { formatId: to.id } );
+					command._doExecute( { id: to.id } );
 
 					expect( getData( document ) ).to.equal( `<${ to.id }>foo[bar</${ to.id }><${ to.id }>baz]qux</${ to.id }>` );
 				} );

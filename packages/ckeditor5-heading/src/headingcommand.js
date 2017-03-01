@@ -20,40 +20,49 @@ export default class HeadingCommand extends Command {
 	 * Creates an instance of the command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {Array.<module:heading/headingcommand~HeadingFormat>} formats Heading formats to be used by the command instance.
+	 * @param {Array.<module:heading/headingcommand~HeadingOption>} options Heading options to be used by the command instance.
 	 */
-	constructor( editor, formats ) {
+	constructor( editor, options, defaultOptionId ) {
 		super( editor );
 
 		/**
-		 * Heading formats used by this command.
+		 * Heading options used by this command.
 		 *
 		 * @readonly
-		 * @member {module:heading/headingcommand~HeadingFormat}
+		 * @member {module:heading/headingcommand~HeadingOption}
 		 */
-		this.formats = formats;
+		this.options = options;
 
 		/**
-		 * The currently selected heading format.
+		 * The id of the default option among {@link #options}.
+		 *
+		 * @readonly
+		 * @private
+		 * @member {module:heading/headingcommand~HeadingOption#id}
+		 */
+		this._defaultOptionId = defaultOptionId;
+
+		/**
+		 * The currently selected heading option.
 		 *
 		 * @readonly
 		 * @observable
-		 * @member {module:heading/headingcommand~HeadingFormat} #value
+		 * @member {module:heading/headingcommand~HeadingOption} #value
 		 */
-		this.set( 'value', this.defaultFormat );
+		this.set( 'value', this.defaultOption );
 
 		// Update current value each time changes are done on document.
 		this.listenTo( editor.document, 'changesDone', () => this._updateValue() );
 	}
 
 	/**
-	 * The default format.
+	 * The default option.
 	 *
-	 * @member {module:heading/headingcommand~HeadingFormat} #defaultFormat
+	 * @member {module:heading/headingcommand~HeadingOption} #defaultOption
 	 */
-	get defaultFormat() {
+	get defaultOption() {
 		// See https://github.com/ckeditor/ckeditor5/issues/98.
-		return this._getFormatById( 'paragraph' );
+		return this._getOptionById( this._defaultOptionId );
 	}
 
 	/**
@@ -61,16 +70,16 @@ export default class HeadingCommand extends Command {
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for executed command.
-	 * @param {String} [options.formatId] The identifier of the heading format that should be applied. It should be one of the
-	 * {@link module:heading/headingcommand~HeadingFormat heading formats} provided to the command constructor. If this parameter is not
+	 * @param {String} [options.id] The identifier of the heading option that should be applied. It should be one of the
+	 * {@link module:heading/headingcommand~HeadingOption heading options} provided to the command constructor. If this parameter is not
 	 * provided,
-	 * the value from {@link #defaultFormat defaultFormat} will be used.
+	 * the value from {@link #defaultOption defaultOption} will be used.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
 	 */
 	_doExecute( options = {} ) {
-		// TODO: What should happen if format is not found?
-		const formatId = options.formatId || this.defaultFormat.id;
+		// TODO: What should happen if option is not found?
+		const id = options.id || this.defaultOption.id;
 		const doc = this.editor.document;
 		const selection = doc.selection;
 		const startPosition = selection.getFirstPosition();
@@ -78,10 +87,10 @@ export default class HeadingCommand extends Command {
 		// Storing selection ranges and direction to fix selection after renaming. See ckeditor5-engine#367.
 		const ranges = [ ...selection.getRanges() ];
 		const isSelectionBackward = selection.isBackward;
-		// If current format is same as new format - toggle already applied format back to default one.
-		const shouldRemove = ( formatId === this.value.id );
+		// If current option is same as new option - toggle already applied option back to default one.
+		const shouldRemove = ( id === this.value.id );
 
-		// Collect elements to change format.
+		// Collect elements to change option.
 		// This implementation may not be future proof but it's satisfactory at this stage.
 		if ( selection.isCollapsed ) {
 			const block = findTopmostBlock( startPosition );
@@ -107,15 +116,15 @@ export default class HeadingCommand extends Command {
 			const batch = options.batch || doc.batch();
 
 			for ( let element of elements ) {
-				// When removing applied format.
+				// When removing applied option.
 				if ( shouldRemove ) {
-					if ( element.name === formatId ) {
-						batch.rename( element, this.defaultFormat.id );
+					if ( element.name === id ) {
+						batch.rename( element, this.defaultOption.id );
 					}
 				}
-				// When applying new format.
+				// When applying new option.
 				else {
-					batch.rename( element, formatId );
+					batch.rename( element, id );
 				}
 			}
 
@@ -126,14 +135,14 @@ export default class HeadingCommand extends Command {
 	}
 
 	/**
-	 * Returns the format by a given ID.
+	 * Returns the option by a given ID.
 	 *
 	 * @private
 	 * @param {String} id
-	 * @returns {module:heading/headingcommand~HeadingFormat}
+	 * @returns {module:heading/headingcommand~HeadingOption}
 	 */
-	_getFormatById( id ) {
-		return this.formats.find( item => item.id === id ) || this.defaultFormat;
+	_getOptionById( id ) {
+		return this.options.find( item => item.id === id ) || this.defaultOption;
 	}
 
 	/**
@@ -146,7 +155,7 @@ export default class HeadingCommand extends Command {
 		const block = findTopmostBlock( position );
 
 		if ( block ) {
-			this.value = this._getFormatById( block.name );
+			this.value = this._getOptionById( block.name );
 		}
 	}
 }
@@ -177,10 +186,10 @@ function findTopmostBlock( position, nodeAfter = true ) {
 }
 
 /**
- * Heading format descriptor.
+ * Heading option descriptor.
  *
- * @typedef {Object} module:heading/headingcommand~HeadingFormat
- * @property {String} id Format identifier. It will be used as the element's name in the model.
- * @property {String} viewElement The name of the view element that will be used to represent the model element in the view.
- * @property {String} label The display name of the format.
+ * @typedef {Object} module:heading/headingcommand~HeadingOption
+ * @property {String} id Option identifier. It will be used as the element's name in the model.
+ * @property {String} element The name of the view element that will be used to represent the model element in the view.
+ * @property {String} label The display name of the option.
  */

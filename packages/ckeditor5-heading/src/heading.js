@@ -36,35 +36,33 @@ export default class Heading extends Plugin {
 	init() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'heading' );
-		const formats = command.formats;
+		const options = command.options;
 		const collection = new Collection();
 
-		// Add formats to collection.
-		for ( let format of formats ) {
+		// Add options to collection.
+		for ( const { id, label } of options ) {
 			collection.add( new Model( {
-				formatId: format.id,
-				label: format.label
+				id, label
 			} ) );
 		}
 
 		// Create dropdown model.
 		const dropdownModel = new Model( {
-			label: 'Heading',
 			withText: true,
 			items: collection
 		} );
 
 		// Bind dropdown model to command.
 		dropdownModel.bind( 'isEnabled' ).to( command, 'isEnabled' );
-		dropdownModel.bind( 'label' ).to( command, 'value', format => format.label );
+		dropdownModel.bind( 'label' ).to( command, 'value', option => option.label );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'headings', ( locale ) => {
 			const dropdown = createListDropdown( dropdownModel, locale );
 
 			// Execute command when an item from the dropdown is selected.
-			this.listenTo( dropdown, 'execute', ( { source: { formatId } } ) => {
-				editor.execute( 'heading', { formatId } );
+			this.listenTo( dropdown, 'execute', ( { source: { id } } ) => {
+				editor.execute( 'heading', { id } );
 				editor.editing.view.focus();
 			} );
 
