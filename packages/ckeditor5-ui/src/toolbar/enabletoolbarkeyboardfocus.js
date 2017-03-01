@@ -4,28 +4,8 @@
  */
 
 /**
- * @module ui/toolbar/utils
+ * @module ui/toolbar/enabletoolbarkeyboardfocus
  */
-
-/**
- * An utility which expands a plain toolbar configuration into a collection
- * of {@link module:ui/view~View views} using a given factory.
- *
- * @param {Object} config The toolbar config.
- * @param {module:utils/collection~Collection} collection A collection into which the config
- * is expanded.
- * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
- * @returns {Promise} A promise resolved when all toolbar items are initialized.
- */
-export function getItemsFromConfig( config, collection, factory ) {
-	let promises = [];
-
-	if ( config ) {
-		promises = config.map( name => collection.add( factory.create( name ) ) );
-	}
-
-	return Promise.all( promises );
-}
 
 /**
  * Enables focus/blur toolbar navigation using `Alt+F10` and `Esc` keystrokes.
@@ -40,7 +20,7 @@ export function getItemsFromConfig( config, collection, factory ) {
  * @param {module:ui/toolbar/toolbarview~ToolbarView} options.toolbar A toolbar which is to gain
  * focus when `Alt+F10` is pressed.
  */
-export function enableToolbarKeyboardFocus( {
+export default function enableToolbarKeyboardFocus( {
 	origin,
 	originKeystrokeHandler,
 	originFocusTracker,
