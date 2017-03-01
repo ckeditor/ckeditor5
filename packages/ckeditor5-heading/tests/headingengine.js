@@ -112,21 +112,6 @@ describe( 'HeadingEngine', () => {
 						{ id: 'heading3', element: 'h4', label: 'Heading 3' }
 					] );
 				} );
-
-				it( 'should be localized', () => {
-					return VirtualTestEditor.create( {
-						plugins: [ Enter, HeadingEngine ],
-						lang: 'pl',
-					} )
-					.then( editor => {
-						expect( editor.config.get( 'heading.options' ) ).to.deep.equal( [
-							{ id: 'paragraph', element: 'p', label: 'Akapit' },
-							{ id: 'heading1', element: 'h2', label: 'Nagłówek 1' },
-							{ id: 'heading2', element: 'h3', label: 'Nagłówek 2' },
-							{ id: 'heading3', element: 'h4', label: 'Nagłówek 3' }
-						] );
-					} );
-				} );
 			} );
 
 			it( 'should customize options', () => {
