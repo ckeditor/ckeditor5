@@ -134,7 +134,7 @@ export default class HeadingEngine extends Plugin {
 		 * @readonly
 		 * @member {Array.<module:heading/headingcommand~HeadingOption>} #_cachedLocalizedOptions
 		 */
-		return ( this._cachedLocalizedOptions = editor.config.get( 'heading.options' )
+		this._cachedLocalizedOptions = editor.config.get( 'heading.options' )
 			.map( option => {
 				if ( localizedLabels[ option.label ] ) {
 					// Clone the option to avoid altering the original `config.heading.options`.
@@ -144,6 +144,8 @@ export default class HeadingEngine extends Plugin {
 				}
 
 				return option;
-			} ) );
+			} );
+
+		return this._cachedLocalizedOptions;
 	}
 }
