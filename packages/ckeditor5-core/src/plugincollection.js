@@ -129,7 +129,6 @@ export default class PluginCollection {
 			.then( () => loaded );
 
 		function loadPlugin( PluginConstructor ) {
-			// Don't load the plugin if it cannot be loaded.
 			if ( pluginConstructorsToRemove.includes( PluginConstructor ) ) {
 				return;
 			}
@@ -162,19 +161,6 @@ export default class PluginCollection {
 				if ( PluginConstructor.requires ) {
 					PluginConstructor.requires.forEach( ( RequiredPluginConstructorOrName ) => {
 						const RequiredPluginConstructor = getPluginConstructor( RequiredPluginConstructorOrName );
-
-						if ( !RequiredPluginConstructor ) {
-							/**
-							 * The plugin cannot be loaded by name.
-							 *
-							 * @error plugincollection-plugin-not-found
-							 * @param {String} plugin The name of the plugin which could not be loaded.
-							 */
-							throw new CKEditorError(
-								'plugincollection-plugin-not-found: The plugin cannot be loaded by name.',
-								{ plugins: RequiredPluginConstructorOrName }
-							);
-						}
 
 						if ( removePlugins.includes( RequiredPluginConstructor ) ) {
 							/**
