@@ -195,7 +195,7 @@ function insertMissingModelCaptionElement( evt, changeType, data, batch ) {
 	}
 }
 
-// Returns function that should be executed before model to view conversion is made. It checks if insertion is placed
+// Returns function that should be executed when model to view conversion is made. It checks if insertion is placed
 // inside model caption and makes sure that corresponding view element exists.
 //
 // @private

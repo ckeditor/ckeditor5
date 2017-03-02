@@ -186,6 +186,39 @@ describe( 'ImageCaptionEngine', () => {
 		} );
 	} );
 
+	describe( 'inserting into image caption', () => {
+		it( 'should add view caption if insertion was made to model caption', () => {
+			setModelData( document, '<image src=""><caption></caption></image>' );
+			const image = document.getRoot().getChild( 0 );
+			const caption = image.getChild( 0 );
+
+			// Check if there is no caption in the view
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				'<figure class="image ck-widget" contenteditable="false"><img src=""></img></figure>'
+			);
+
+			document.enqueueChanges( () => {
+				const batch = document.batch();
+				const position = ModelPosition.createAt( caption );
+
+				batch.insert( position, 'foo bar baz' );
+			} );
+
+			// Check if data is inside model.
+			expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
+				'<image src=""><caption>foo bar baz</caption></image>'
+			);
+
+			// Check if view has caption.
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				'<figure class="image ck-widget" contenteditable="false">' +
+					'<img src=""></img>' +
+					'<figcaption contenteditable="true">foo bar baz</figcaption>' +
+				'</figure>'
+			);
+		} );
+	} );
+
 	describe( 'editing view', () => {
 		it( 'image should have empty figcaption element when is selected', () => {
 			setModelData( document, '[<image src=""><caption></caption></image>]' );
