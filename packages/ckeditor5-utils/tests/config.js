@@ -74,12 +74,18 @@ describe( 'Config', () => {
 					first: 1,
 					second: 2
 				},
-				'b.foo.first': 1,
-				'b.foo.second': 2
+				b: {
+					foo: {
+						first: 1,
+						second: 2,
+					}
+				}
 			};
 
 			const parameters = {
-				'a.third': 3,
+				a: {
+					third: 3
+				},
 				b: {
 					foo: {
 						first: 3,
