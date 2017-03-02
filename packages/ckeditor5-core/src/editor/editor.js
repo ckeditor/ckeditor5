@@ -31,7 +31,7 @@ export default class Editor {
 	 * @param {Object} config The editor config.
 	 */
 	constructor( config ) {
-		const availablePlugins = this.constructor.build && this.constructor.build.plugins;
+		const availablePlugins = ( this.constructor.build && this.constructor.build.plugins ) || [];
 
 		/**
 		 * Holds all configurations specific to this editor instance.
