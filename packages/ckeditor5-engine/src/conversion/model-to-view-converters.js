@@ -424,7 +424,7 @@ export function remove() {
 		const modelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, data.item.offsetSize );
 		const viewRange = conversionApi.mapper.toViewRange( modelRange );
 
-		viewWriter.remove( viewRange );
+		viewWriter.remove( viewRange.getTrimmed() );
 		conversionApi.mapper.unbindModelElement( data.item );
 	};
 }
@@ -452,9 +452,8 @@ export function removeUIElement( elementCreator ) {
 		}
 
 		const viewRange = conversionApi.mapper.toViewRange( data.range );
-		const enlargedViewRange = viewRange.getEnlarged();
 
-		viewWriter.clear( enlargedViewRange, viewElement );
+		viewWriter.clear( viewRange.getEnlarged(), viewElement );
 	};
 }
 
