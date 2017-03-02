@@ -3,12 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Input from '../src/input';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+/* globals window, document, setTimeout */
 
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Typing from '../src/typing';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
 import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection';
 
@@ -16,29 +20,17 @@ import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'Spellchecking integration', () => {
-	let editor, model, modelRoot, view, viewRoot;
+	let editor;
 
 	before( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ Input, Paragraph ]
+		const container = document.createElement( 'div' );
+		document.body.appendChild( container );
+
+		return ClassicEditor.create( container, {
+			plugins: [ Enter, Typing, Paragraph, Bold, Undo ]
 		} )
 			.then( newEditor => {
-				// Mock image feature.
-				newEditor.document.schema.registerItem( 'image', '$inline' );
-
-				buildModelConverter().for( newEditor.data.modelToView, newEditor.editing.modelToView )
-					.fromElement( 'image' )
-					.toElement( 'img' );
-
-				buildViewConverter().for( newEditor.data.viewToModel )
-					.fromElement( 'img' )
-					.toElement( 'image' );
-
 				editor = newEditor;
-				model = editor.editing.model;
-				modelRoot = model.getRoot();
-				view = editor.editing.view;
-				viewRoot = view.getRoot();
 			} );
 	} );
 
@@ -48,93 +40,190 @@ describe( 'Spellchecking integration', () => {
 			'<p>Banana, orenge, appfle and the new comppputer</p>' );
 	} );
 
-	describe( 'Plain text spellchecking', () => {
-		// This tests emulates spellchecker correction on non-styled text.
+	describe( 'Plain text spellchecking (mutations)', () => {
+		// This tests emulates spellchecker correction on non-styled text by firing proper mutations.
 
 		it( 'should replace with longer word', () => {
-			emulateSpellchecker(
+			emulateSpellcheckerMutation( editor, 0, 13,
 				'The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane',
-				'The Foo house a is a Foo hous e. A Foo athat and Foo xhat. This is an istane',
-				viewRoot, view, 0, 13
-			);
+				'The Foo house a is a Foo hous e. A Foo athat and Foo xhat. This is an istane' );
 
-			expect( getModelData( model ) ).to.equal(
+			expectContent( editor,
 				'<paragraph>The Foo house[] a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</paragraph>' +
-				'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>' );
+				'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
 
-			expect( getViewData( view ) ).to.equal(
 				'<p>The Foo house{} a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>' +
 				'<p>Banana, orenge, appfle and the new comppputer</p>' );
 		} );
 
 		it( 'should replace with shorter word (merging letter after)', () => {
-			emulateSpellchecker(
+			emulateSpellcheckerMutation( editor, 0, 29,
 				'The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane',
-				'The Foo hous a is a Foo house. A Foo athat and Foo xhat. This is an istane',
-				viewRoot, view, 0, 29
-			);
+				'The Foo hous a is a Foo house. A Foo athat and Foo xhat. This is an istane' );
 
-			expect( getModelData( model ) ).to.equal(
+			expectContent( editor,
 				'<paragraph>The Foo hous a is a Foo house[]. A Foo athat and Foo xhat. This is an istane</paragraph>' +
-				'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>' );
+				'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
 
-			expect( getViewData( view ) ).to.equal(
 				'<p>The Foo hous a is a Foo house{}. A Foo athat and Foo xhat. This is an istane</p>' +
 				'<p>Banana, orenge, appfle and the new comppputer</p>' );
 		} );
 
 		it( 'should replace with same length text', () => {
-			emulateSpellchecker(
+			emulateSpellcheckerMutation( editor, 0, 43,
 				'The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane',
-				'The Foo hous a is a Foo hous e. A Food that and Foo xhat. This is an istane',
-				viewRoot, view, 0, 43
-			);
+				'The Foo hous a is a Foo hous e. A Food that and Foo xhat. This is an istane' );
 
-			expect( getModelData( model ) ).to.equal(
+			expectContent( editor,
 				'<paragraph>The Foo hous a is a Foo hous e. A Food that[] and Foo xhat. This is an istane</paragraph>' +
-				'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>' );
+				'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
 
-			expect( getViewData( view ) ).to.equal(
 				'<p>The Foo hous a is a Foo hous e. A Food that{} and Foo xhat. This is an istane</p>' +
 				'<p>Banana, orenge, appfle and the new comppputer</p>' );
 		} );
 
 		it( 'should replace with longer word on the paragraph end', () => {
-			emulateSpellchecker(
+			emulateSpellcheckerMutation( editor, 0, 77,
 				'The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane',
-				'The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an instance',
-				viewRoot, view, 0, 77
-			);
+				'The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an instance' );
 
-			expect( getModelData( model ) ).to.equal(
+			expectContent( editor,
 				'<paragraph>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an instance[]</paragraph>' +
-				'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>' );
+				'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
 
-			expect( getViewData( view ) ).to.equal(
 				'<p>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an instance{}</p>' +
 				'<p>Banana, orenge, appfle and the new comppputer</p>' );
 		} );
 
 		it( 'should replace with shorter word on the paragraph end', () => {
-			emulateSpellchecker(
+			emulateSpellcheckerMutation( editor, 1, 43,
 				'Banana, orenge, appfle and the new comppputer',
-				'Banana, orenge, appfle and the new computer',
-				viewRoot, view, 1, 43
-			);
+				'Banana, orenge, appfle and the new computer' );
 
-			expect( getModelData( model ) ).to.equal(
+			expectContent( editor,
 				'<paragraph>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</paragraph>' +
-				'<paragraph>Banana, orenge, appfle and the new computer[]</paragraph>' );
+				'<paragraph>Banana, orenge, appfle and the new computer[]</paragraph>',
 
-			expect( getViewData( view ) ).to.equal(
 				'<p>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>' +
 				'<p>Banana, orenge, appfle and the new computer{}</p>' );
 		} );
 	} );
+
+	describe( 'Plain text spellchecking (insertText)', () => {
+		// This tests emulates spellchecker correction on non-styled text by inserting correction text via native 'insertText' command.
+
+		it( 'should replace with longer word (collapsed)', ( done ) => {
+			emulateSpellcheckerInsertText( editor, 0, 12, 12, 'e' );
+
+			setTimeout( () => {
+				expectContent( editor,
+					'<paragraph>The Foo house[] a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</paragraph>' +
+					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
+
+					'<p>The Foo house{} a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>' +
+					'<p>Banana, orenge, appfle and the new comppputer</p>' );
+
+				done();
+			}, 0 );
+		} );
+
+		it( 'should replace with longer word (non-collapsed)', ( done ) => {
+			emulateSpellcheckerInsertText( editor, 0, 8, 12, 'house' );
+
+			setTimeout( () => {
+				expectContent( editor,
+					'<paragraph>The Foo house[] a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</paragraph>' +
+					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
+
+					'<p>The Foo house{} a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>' +
+					'<p>Banana, orenge, appfle and the new comppputer</p>' );
+
+				done();
+			}, 0 );
+		} );
+
+		it( 'should replace with shorter word (merging letter after - collapsed)', ( done ) => {
+			emulateSpellcheckerInsertText( editor, 0, 28, 30, 'e' );
+
+			setTimeout( () => {
+				expectContent( editor,
+					'<paragraph>The Foo hous a is a Foo house[]. A Foo athat and Foo xhat. This is an istane</paragraph>' +
+					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
+
+					'<p>The Foo hous a is a Foo house{}. A Foo athat and Foo xhat. This is an istane</p>' +
+					'<p>Banana, orenge, appfle and the new comppputer</p>' );
+
+				done();
+			}, 0 );
+		} );
+
+		it( 'should replace with shorter word (merging letter after - non-collapsed)', ( done ) => {
+			emulateSpellcheckerInsertText( editor, 0, 24, 30, 'house' );
+
+			setTimeout( () => {
+				expectContent( editor,
+					'<paragraph>The Foo hous a is a Foo house[]. A Foo athat and Foo xhat. This is an istane</paragraph>' +
+					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
+
+					'<p>The Foo hous a is a Foo house{}. A Foo athat and Foo xhat. This is an istane</p>' +
+					'<p>Banana, orenge, appfle and the new comppputer</p>' );
+
+				done();
+			}, 0 );
+		} );
+
+		it( 'should replace with same length text', ( done ) => {
+			emulateSpellcheckerInsertText( editor, 0, 37, 43, 'd that' );
+
+			setTimeout( () => {
+				expectContent( editor,
+					'<paragraph>The Foo hous a is a Foo hous e. A Food that[] and Foo xhat. This is an istane</paragraph>' +
+					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
+
+					'<p>The Foo hous a is a Foo hous e. A Food that{} and Foo xhat. This is an istane</p>' +
+					'<p>Banana, orenge, appfle and the new comppputer</p>' );
+
+				done();
+			}, 0 );
+		} );
+
+		it( 'should replace with longer word on the paragraph end', ( done ) => {
+			emulateSpellcheckerInsertText( editor, 0, 69, 75, 'instance' );
+
+			setTimeout( () => {
+				expectContent( editor,
+					'<paragraph>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an instance[]</paragraph>' +
+					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
+
+					'<p>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an instance{}</p>' +
+					'<p>Banana, orenge, appfle and the new comppputer</p>' );
+
+				done();
+			}, 0 );
+		} );
+
+		it( 'should replace with shorter word on the paragraph end', ( done ) => {
+			emulateSpellcheckerInsertText( editor, 1, 35, 45, 'computer' );
+
+			setTimeout( () => {
+				expectContent( editor,
+					'<paragraph>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</paragraph>' +
+					'<paragraph>Banana, orenge, appfle and the new computer[]</paragraph>',
+
+					'<p>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>' +
+					'<p>Banana, orenge, appfle and the new computer{}</p>' );
+
+				done();
+			}, 0 );
+		} );
+	} );
 } );
 
-function emulateSpellchecker( oldText, newText, viewRoot, view, nodeIndex, resultPositionIndex  ) {
+function emulateSpellcheckerMutation( editor, nodeIndex, resultPositionIndex, oldText, newText ) {
+	const view = editor.editing.view;
+	const viewRoot = view.getRoot();
 	const viewSelection = new ViewSelection();
+
 	viewSelection.collapse( viewRoot.getChild( nodeIndex ).getChild( 0 ), resultPositionIndex );
 
 	view.fire( 'mutations',
@@ -146,5 +235,25 @@ function emulateSpellchecker( oldText, newText, viewRoot, view, nodeIndex, resul
 		} ],
 		viewSelection
 	);
+}
+
+function emulateSpellcheckerInsertText( editor, nodeIndex, rangeStart, rangeEnd, text ) {
+	const model = editor.editing.model;
+	const modelRoot = model.getRoot();
+
+	editor.editing.view.focus();
+
+	model.enqueueChanges( () => {
+		model.selection.setRanges( [
+			ModelRange.createFromParentsAndOffsets( modelRoot.getChild( nodeIndex ), rangeStart, modelRoot.getChild( nodeIndex ), rangeEnd )
+		] );
+	} );
+
+	window.document.execCommand( 'insertText', false, text );
+}
+
+function expectContent( editor, expectedModel, expectedView ) {
+	expect( getModelData( editor.editing.model ) ).to.equal( expectedModel );
+	expect( getViewData( editor.editing.view ) ).to.equal( expectedView );
 }
 
