@@ -152,6 +152,12 @@ export default class ImageCaptionEngine extends Plugin {
 		}
 	}
 
+	/**
+	 * Updates view before each rendering, making sure that not needed empty captions are removed and focused ones are
+	 * visible when needed.
+	 *
+	 * @private
+	 */
 	_updateView() {
 		const selection = this.editor.editing.view.selection;
 
