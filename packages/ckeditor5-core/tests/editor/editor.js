@@ -51,6 +51,10 @@ class PluginD extends Plugin {
 }
 
 describe( 'Editor', () => {
+	afterEach( () => {
+		delete Editor.build;
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should create a new editor instance', () => {
 			const editor = new Editor();
@@ -60,6 +64,30 @@ describe( 'Editor', () => {
 
 			expect( editor.plugins ).to.be.an.instanceof( PluginCollection );
 			expect( getPlugins( editor ) ).to.be.empty;
+		} );
+
+		it( 'should extend an editor configuration using built in config', () => {
+			Editor.build = {
+				config: {
+					'foo.a': 1,
+					'foo.b': 2
+				}
+			};
+
+			const editor = new Editor( {
+				bar: 'foo',
+				foo: {
+					c: 3
+				},
+			} );
+
+			expect( editor.config.get( 'foo' ) ).to.deep.equal( {
+				a: 1,
+				b: 2,
+				c: 3
+			} );
+
+			expect( editor.config.get( 'bar' ) ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -243,6 +271,45 @@ describe( 'Editor', () => {
 					editor.plugins.get( PluginSync ).afterInit
 				);
 			} );
+		} );
+
+		it( 'should load plugins built in the Editor even if the passed config is empty', () => {
+			Editor.build = {
+				plugins: [ PluginA, PluginB, PluginC ]
+			};
+
+			const editor = new Editor( {} );
+
+			return editor.initPlugins()
+				.then( () => {
+					expect( getPlugins( editor ).length ).to.equal( 3 );
+
+					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
+				} );
+		} );
+
+		it( 'should load plugins built in the Editor and specified in the config', () => {
+			Editor.build = {
+				plugins: [ PluginA ]
+			};
+
+			const editor = new Editor( {
+				plugins: [
+					PluginD
+				]
+			} );
+
+			return editor.initPlugins()
+				.then( () => {
+					expect( getPlugins( editor ).length ).to.equal( 4 );
+
+					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginD ) ).to.be.an.instanceof( Plugin );
+				} );
 		} );
 	} );
 } );

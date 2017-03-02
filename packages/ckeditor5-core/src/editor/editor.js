@@ -31,6 +31,8 @@ export default class Editor {
 	 * @param {Object} config The editor config.
 	 */
 	constructor( config ) {
+		const availablePlugins = findAvailablePlugin( this.constructor.build );
+
 		/**
 		 * Holds all configurations specific to this editor instance.
 		 *
@@ -45,7 +47,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:core/plugin~PluginCollection}
 		 */
-		this.plugins = new PluginCollection( this );
+		this.plugins = new PluginCollection( this, availablePlugins );
 
 		/**
 		 * Commands registered to the editor.
@@ -84,6 +86,8 @@ export default class Editor {
 		 * @member {module:engine/controller/datacontroller~DataController}
 		 */
 		this.data = new DataController( this.document );
+
+		extendEditorConfig( this.config, this.constructor.build, availablePlugins );
 
 		/**
 		 * Instance of the {@link module:engine/controller/editingcontroller~EditingController editing controller}.
@@ -188,6 +192,42 @@ export default class Editor {
 }
 
 mix( Editor, EmitterMixin );
+
+// @param {module:utils/config~Config} config
+// @param {Object} builtInConfig
+// @param {Object.<String,*>} builtInConfig.config
+// @param {Array.<module:core/plugin~Plugin>} availablePlugins
+function extendEditorConfig( config, builtInConfig, availablePlugins ) {
+	if ( !builtInConfig ) {
+		return;
+	}
+
+	if ( builtInConfig.config ) {
+		for ( const configKey of Object.keys( builtInConfig.config ) ) {
+			config.define( configKey, builtInConfig.config[ configKey ] );
+		}
+	}
+
+	if ( availablePlugins.length ) {
+		const configPlugins = config.get( 'plugins' ) || [];
+
+		config.set( 'plugins', configPlugins.concat( availablePlugins ) );
+	}
+}
+
+// @param {Object} builtInConfig
+// @param {Array.<module:core/plugin~Plugin>} builtInConfig.plugins
+function findAvailablePlugin( builtInConfig ) {
+	if ( !builtInConfig ) {
+		return [];
+	}
+
+	if ( !builtInConfig.plugins ) {
+		return [];
+	}
+
+	return builtInConfig.plugins;
+}
 
 /**
  * Fired after {@link #initPlugins plugins are initialized}.
