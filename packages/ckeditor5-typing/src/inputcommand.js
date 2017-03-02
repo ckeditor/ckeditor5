@@ -61,7 +61,7 @@ export default class InputCommand extends Command {
 	 * on the beginning of the range (which after removal is a collapsed range).
 	 *
 	 * @param {Object} [options] The command options.
-	 * @param {String} [options.text] Text to be inserted.
+	 * @param {String} options.text Text to be inserted.
 	 * @param {module:engine/model/range~Range} [options.range] Range in which the text is inserted. Defaults
 	 * to the first range in the current selection.
 	 * @param {module:engine/model/position~Position} [options.resultPosition] Position at which the selection
@@ -76,28 +76,26 @@ export default class InputCommand extends Command {
 
 		let textInsertions = 0;
 
-		if ( range && text !== undefined ) {
-			doc.enqueueChanges( () => {
-				const isCollapsedRange = range.isCollapsed;
+		doc.enqueueChanges( () => {
+			const isCollapsedRange = range.isCollapsed;
 
-				if ( !isCollapsedRange ) {
-					this._buffer.batch.remove( range );
-				}
+			if ( !isCollapsedRange ) {
+				this._buffer.batch.remove( range );
+			}
 
-				if ( text && text.length ) {
-					textInsertions = text.length;
-					this._buffer.batch.weakInsert( range.start, text );
-				}
+			if ( text && text.length ) {
+				textInsertions = text.length;
+				this._buffer.batch.weakInsert( range.start, text );
+			}
 
-				if ( resultPosition ) {
-					this.editor.data.model.selection.collapse( resultPosition );
-				} else if ( isCollapsedRange ) {
-					// If range was collapsed just shift the selection by the number of inserted characters.
-					this.editor.data.model.selection.collapse( range.start.getShiftedBy( textInsertions ) );
-				}
+			if ( resultPosition ) {
+				this.editor.data.model.selection.collapse( resultPosition );
+			} else if ( isCollapsedRange ) {
+				// If range was collapsed just shift the selection by the number of inserted characters.
+				this.editor.data.model.selection.collapse( range.start.getShiftedBy( textInsertions ) );
+			}
 
-				this._buffer.input( textInsertions );
-			} );
-		}
+			this._buffer.input( textInsertions );
+		} );
 	}
 }

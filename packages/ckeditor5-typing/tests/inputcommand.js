@@ -154,28 +154,27 @@ describe( 'InputCommand', () => {
 			expect( buffer.size ).to.be.equal( 0 );
 		} );
 
-		it( 'does nothing when there is no range', () => {
-			setData( doc, '<p>[fo]obar</p>' );
-
-			testUtils.sinon.stub( editor.document.selection, 'getFirstRange' ).returns( null );
-
-			editor.execute( 'input', {
-				text: 'baz'
-			} );
-
-			expect( getData( doc, { selection: true } ) ).to.be.equal( '<p>[fo]obar</p>' );
-			expect( buffer.size ).to.be.equal( 0 );
-		} );
-
-		it( 'does nothing when there is no options object provided', () => {
+		it( 'only removes content when no text given (with default non-collapsed range)', () => {
 			setData( doc, '<p>[fo]obar</p>' );
 
 			const spy = testUtils.sinon.spy( doc, 'enqueueChanges' );
 
 			editor.execute( 'input' );
 
-			expect( spy.callCount ).to.be.equal( 0 );
-			expect( getData( doc, { selection: true } ) ).to.be.equal( '<p>[fo]obar</p>' );
+			expect( spy.callCount ).to.be.equal( 1 );
+			expect( getData( doc, { selection: true } ) ).to.be.equal( '<p>[]obar</p>' );
+			expect( buffer.size ).to.be.equal( 0 );
+		} );
+
+		it( 'does not change selection and content when no text given (with default collapsed range)', () => {
+			setData( doc, '<p>fo[]obar</p>' );
+
+			const spy = testUtils.sinon.spy( doc, 'enqueueChanges' );
+
+			editor.execute( 'input' );
+
+			expect( spy.callCount ).to.be.equal( 1 );
+			expect( getData( doc, { selection: true } ) ).to.be.equal( '<p>fo[]obar</p>' );
 			expect( buffer.size ).to.be.equal( 0 );
 		} );
 	} );
