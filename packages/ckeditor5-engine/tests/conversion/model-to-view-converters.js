@@ -848,5 +848,29 @@ describe( 'model-to-view-converters', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><div>கு</div></div>' );
 		} );
+
+		it( 'should not remove view ui elements that are placed next to removed content', () => {
+			modelRoot.appendChildren( new ModelText( 'foobar' ) );
+			viewRoot.appendChildren( [
+				new ViewText( 'foo' ),
+				new ViewUIElement( 'span' ),
+				new ViewText( 'bar' )
+			] );
+
+			dispatcher.on( 'remove', remove() );
+
+			// Remove 'b'.
+			modelWriter.move(
+				ModelRange.createFromParentsAndOffsets( modelRoot, 3, modelRoot, 4 ),
+				ModelPosition.createAt( modelDoc.graveyard, 'end' )
+			);
+
+			dispatcher.convertRemove(
+				ModelPosition.createFromParentAndOffset( modelRoot, 3 ),
+				ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 1 )
+			);
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div>foo<span></span>ar</div>' );
+		} );
 	} );
 } );
