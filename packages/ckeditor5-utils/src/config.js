@@ -34,7 +34,7 @@ export default class Config {
 
 		// Set default configuration.
 		if ( defaultConfigurations ) {
-			this._setObjectToTarget( this._config, defaultConfigurations, true );
+			this.define( defaultConfigurations );
 		}
 	}
 
