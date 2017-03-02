@@ -69,8 +69,10 @@ describe( 'Editor', () => {
 		it( 'should extend an editor configuration using built in config', () => {
 			Editor.build = {
 				config: {
-					'foo.a': 1,
-					'foo.b': 2
+					foo: {
+						a: 1,
+						b: 2
+					}
 				}
 			};
 
