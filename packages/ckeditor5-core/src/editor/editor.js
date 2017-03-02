@@ -31,7 +31,7 @@ export default class Editor {
 	 * @param {Object} config The editor config.
 	 */
 	constructor( config ) {
-		const availablePlugins = findAvailablePlugin( this.constructor.build );
+		const availablePlugins = this.constructor.build && this.constructor.build.plugins;
 
 		/**
 		 * Holds all configurations specific to this editor instance.
@@ -213,20 +213,6 @@ function extendEditorConfig( config, builtInConfig, availablePlugins ) {
 
 		config.set( 'plugins', configPlugins.concat( availablePlugins ) );
 	}
-}
-
-// @param {Object} builtInConfig
-// @param {Array.<module:core/plugin~Plugin>} builtInConfig.plugins
-function findAvailablePlugin( builtInConfig ) {
-	if ( !builtInConfig ) {
-		return [];
-	}
-
-	if ( !builtInConfig.plugins ) {
-		return [];
-	}
-
-	return builtInConfig.plugins;
 }
 
 /**
