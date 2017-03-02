@@ -39,6 +39,7 @@ export default class ImageEngine extends Plugin {
 		const schema = doc.schema;
 		const data = editor.data;
 		const editing = editor.editing;
+		const t = editor.t;
 
 		// Configure schema.
 		schema.registerItem( 'image' );
@@ -54,7 +55,7 @@ export default class ImageEngine extends Plugin {
 		// Build converter from model to view for editing pipeline.
 		buildModelConverter().for( editing.modelToView )
 			.fromElement( 'image' )
-			.toElement( () => toImageWidget( createImageViewElement(), editor.t( 'image widget' ) ) );
+			.toElement( () => toImageWidget( createImageViewElement(), t( 'image widget' ) ) );
 
 		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'src' );
 		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'alt' );
