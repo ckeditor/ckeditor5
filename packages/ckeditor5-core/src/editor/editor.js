@@ -31,7 +31,13 @@ export default class Editor {
 	 * @param {Object} config The editor config.
 	 */
 	constructor( config ) {
-		const availablePlugins = ( this.constructor.build && this.constructor.build.plugins ) || [];
+		/**
+		 * An array contains plugins built-in the editor.
+		 *
+		 * @protected
+		 * @member {Array.<module:core/plugin~Plugin>}
+		 */
+		this._availablePlugins = ( this.constructor.build && this.constructor.build.plugins ) || [];
 
 		/**
 		 * Holds all configurations specific to this editor instance.
@@ -39,7 +45,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:utils/config~Config}
 		 */
-		this.config = new Config( config );
+		this.config = new Config( config, this.constructor.build && this.constructor.build.config );
 
 		/**
 		 * The plugins loaded and in use by this editor instance.
@@ -47,7 +53,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:core/plugin~PluginCollection}
 		 */
-		this.plugins = new PluginCollection( this, availablePlugins );
+		this.plugins = new PluginCollection( this, this._availablePlugins );
 
 		/**
 		 * Commands registered to the editor.
@@ -87,8 +93,6 @@ export default class Editor {
 		 */
 		this.data = new DataController( this.document );
 
-		extendEditorConfig( this.config, this.constructor.build, availablePlugins );
-
 		/**
 		 * Instance of the {@link module:engine/controller/editingcontroller~EditingController editing controller}.
 		 *
@@ -120,7 +124,10 @@ export default class Editor {
 			.then( () => this.fire( 'pluginsReady' ) );
 
 		function loadPlugins() {
-			return that.plugins.load( config.get( 'plugins' ) || [] );
+			const pluginsFromConfig = config.get( 'plugins' ) || [];
+			const pluginsToLoad = pluginsFromConfig.concat( that._availablePlugins );
+
+			return that.plugins.load( pluginsToLoad );
 		}
 
 		function initPlugins( loadedPlugins, method ) {
@@ -192,28 +199,6 @@ export default class Editor {
 }
 
 mix( Editor, EmitterMixin );
-
-// @param {module:utils/config~Config} config
-// @param {Object} builtInConfig
-// @param {Object.<String,*>} builtInConfig.config
-// @param {Array.<module:core/plugin~Plugin>} availablePlugins
-function extendEditorConfig( config, builtInConfig, availablePlugins ) {
-	if ( !builtInConfig ) {
-		return;
-	}
-
-	if ( builtInConfig.config ) {
-		for ( const configKey of Object.keys( builtInConfig.config ) ) {
-			config.define( configKey, builtInConfig.config[ configKey ] );
-		}
-	}
-
-	if ( availablePlugins.length ) {
-		const configPlugins = config.get( 'plugins' ) || [];
-
-		config.set( 'plugins', configPlugins.concat( availablePlugins ) );
-	}
-}
 
 /**
  * Fired after {@link #initPlugins plugins are initialized}.
