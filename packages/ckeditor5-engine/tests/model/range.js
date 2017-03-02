@@ -18,7 +18,8 @@ import {
 	getMoveDelta,
 	getRemoveDelta,
 	getRenameDelta,
-	getSplitDelta
+	getSplitDelta,
+	getMergeDelta
 } from '../../tests/model/delta/transform/_utils/utils';
 
 describe( 'Range', () => {
@@ -837,6 +838,24 @@ describe( 'Range', () => {
 				expect( transformed.length ).to.equal( 1 );
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
+			} );
+
+			describe( 'by MergeDelta', () => {
+				it( 'merge element with collapsed range', () => {
+					root.removeChildren( root.childCount );
+					root.appendChildren( [ new Element( 'p', null, new Text( 'foo' ) ), new Element( 'p', null, new Text( 'bar' ) ) ] );
+
+					range.start = new Position( root, [ 1, 0 ] );
+					range.end = new Position( root, [ 1, 0 ] );
+
+					const delta = getMergeDelta( new Position( root, [ 1 ] ), 3, 3, 1 );
+
+					const transformed = range.getTransformedByDelta( delta );
+
+					expect( transformed.length ).to.equal( 1 );
+					expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 3 ] );
+					expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 3 ] );
+				} );
 			} );
 		} );
 	} );

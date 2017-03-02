@@ -453,8 +453,14 @@ export default class Range {
 			const ranges = this._getTransformedByMove( sourcePosition, targetPosition, howMany );
 
 			if ( deltaType == 'split' && this.containsPosition( sourcePosition ) ) {
+				// Special case for splitting element inside range.
+				// <p>f[ooba]r</p> -> <p>f[oo</p><p>ba]r</p>
 				ranges[ 0 ].end = ranges[ 1 ].end;
 				ranges.pop();
+			} else if ( deltaType == 'merge' && type == 'move' && this.isCollapsed && ranges[ 0 ].start.isEqual( sourcePosition ) ) {
+				// Special case when collapsed range is in merged element.
+				// <p>foo</p><p>[]bar{}</p> -> <p>foo[]bar{}</p>
+				ranges[ 0 ] = new Range( targetPosition.getShiftedBy( this.start.offset ) );
 			}
 
 			return ranges;
@@ -549,7 +555,7 @@ export default class Range {
 		const common = this.getIntersection( moveRange );
 
 		if ( differenceSet.length == 1 ) {
-			// `moveRange` and this range intersects.
+			// `moveRange` and this range may intersect.
 			difference = new Range(
 				differenceSet[ 0 ].start._getTransformedByDeletion( sourcePosition, howMany ),
 				differenceSet[ 0 ].end._getTransformedByDeletion( sourcePosition, howMany )
@@ -560,7 +566,7 @@ export default class Range {
 				this.start,
 				this.end._getTransformedByDeletion( sourcePosition, howMany )
 			);
-		} // else, `moveRange` wholly contains this range.
+		} // else, `moveRange` contains this range.
 
 		const insertPosition = targetPosition._getTransformedByDeletion( sourcePosition, howMany );
 
