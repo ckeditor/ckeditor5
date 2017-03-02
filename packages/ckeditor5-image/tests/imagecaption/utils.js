@@ -5,7 +5,7 @@
 
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
-import { captionElementCreator, isCaption, getCaptionFromImage } from '../../src/imagecaption/utils';
+import { captionElementCreator, isCaption, getCaptionFromImage, isInsideCaption } from '../../src/imagecaption/utils';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 
 describe( 'image captioning utils', () => {
@@ -63,6 +63,44 @@ describe( 'image captioning utils', () => {
 			const image = new ModelElement( 'image' );
 
 			expect( getCaptionFromImage( image ) ).to.be.null;
+		} );
+	} );
+
+	describe( 'isInsideCaption', () => {
+		it( 'should return false if node has no parent', () => {
+			const el = new ModelElement( 'test' );
+
+			expect( isInsideCaption( el ) ).to.be.false;
+		} );
+
+		it( 'should return false if node\'s parent is not caption', () => {
+			const el = new ModelElement( 'test' );
+			new ModelElement( 'test', null, el );
+
+			expect( isInsideCaption( el ) ).to.be.false;
+		} );
+
+		it( 'should return false if parent`s parent node is not defined', () => {
+			const el = new ModelElement( 'test' );
+			new ModelElement( 'caption', null, el );
+
+			expect( isInsideCaption( el ) ).to.be.false;
+		} );
+
+		it( 'should return false if parent\'s parent node is not an image', () => {
+			const el = new ModelElement( 'test' );
+			const parent = new ModelElement( 'caption', null, el );
+			new ModelElement( 'not-image', null, parent );
+
+			expect( isInsideCaption( el ) ).to.be.false;
+		} );
+
+		it( 'should return true if node is placed inside image\'s caption', () => {
+			const el = new ModelElement( 'test' );
+			const parent = new ModelElement( 'caption', null, el );
+			new ModelElement( 'image', null, parent );
+
+			expect( isInsideCaption( el ) ).to.be.true;
 		} );
 	} );
 } );

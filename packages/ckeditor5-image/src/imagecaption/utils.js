@@ -62,6 +62,12 @@ export function getCaptionFromImage( imageModelElement ) {
 	return null;
 }
 
+/**
+ * Returns `true` if provided `node` is placed inside image's caption.
+ *
+ * @param {module:engine/model/node~Node} node
+ * @return {Boolean}
+ */
 export function isInsideCaption( node ) {
-	return node.parent && node.parent.name == 'caption' && node.parent.parent && node.parent.parent.name == 'image';
+	return !!( node.parent && node.parent.name == 'caption' && node.parent.parent && node.parent.parent.name == 'image' );
 }
