@@ -12,13 +12,19 @@ import ModelTreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import { isImage, isImageWidget } from '../image/utils';
-import { captionElementCreator, isCaption, getCaptionFromImage, isInsideCaption } from './utils';
+import {
+	captionElementCreator,
+	isCaption,
+	getCaptionFromImage,
+	isInsideCaption,
+	matchImageCaption,
+	insertViewCaptionAndBind
+} from './utils';
 
 /**
  * The image caption engine plugin.
@@ -189,6 +195,13 @@ function insertMissingModelCaptionElement( evt, changeType, data, batch ) {
 	}
 }
 
+// Returns function that should be executed before model to view conversion is made. It checks if insertion is placed
+// inside model caption and makes sure that corresponding view element exists.
+//
+// @private
+// @param {function} creator Function that returns view caption element.
+// @param {module:engine/conversion/mapper~Mapper} mapper
+// @return {function}
 function insertMissingViewCaptionElement( creator, mapper ) {
 	return ( evt, data ) => {
 		if ( isInsideCaption( data.item ) ) {
@@ -229,35 +242,4 @@ function captionModelToView( elementCreator ) {
 			insertViewCaptionAndBind( viewCaption, data.item, viewImage, conversionApi.mapper );
 		}
 	};
-}
-
-// Checks if given element is `figcaption` element and is placed inside image `figure` element.
-//
-// @private
-// @param {module:engine/view/element~Element} element
-// @returns {Object|null} Returns object accepted by {@link module:engine/view/matcher~Matcher} or `null` if element
-// cannot be matched.
-function matchImageCaption( element ) {
-	const parent = element.parent;
-
-	// Convert only captions for images.
-	if ( element.name == 'figcaption' && parent && parent.name == 'figure' && parent.hasClass( 'image' ) ) {
-		return { name: true };
-	}
-
-	return null;
-}
-
-// Inserts `viewCaption` at the end of `viewImage` and binds it to `modelCaption`.
-//
-// @private
-// @param {module:engine/view/element~Element} viewCaption
-// @param {module:engine/model/element~Element} modelCaption
-// @param {module:engine/view/element~Element} viewImage
-// @param {module:engine/conversion/mapper~Mapper} mapper
-function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper ) {
-	const viewPosition = ViewPosition.createAt( viewImage, 'end' );
-
-	viewWriter.insert( viewPosition, viewCaption );
-	mapper.bindElements( modelCaption, viewCaption );
 }

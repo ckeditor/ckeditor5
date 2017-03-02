@@ -5,8 +5,18 @@
 
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
-import { captionElementCreator, isCaption, getCaptionFromImage, isInsideCaption } from '../../src/imagecaption/utils';
+import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
+import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
+import {
+	captionElementCreator,
+	isCaption,
+	getCaptionFromImage,
+	isInsideCaption,
+	matchImageCaption,
+	insertViewCaptionAndBind
+} from '../../src/imagecaption/utils';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import Mapper from '@ckeditor/ckeditor5-engine/src/conversion/mapper';
 
 describe( 'image captioning utils', () => {
 	let element, document;
@@ -101,6 +111,73 @@ describe( 'image captioning utils', () => {
 			new ModelElement( 'image', null, parent );
 
 			expect( isInsideCaption( el ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'matchImageCaption', () => {
+		it( 'should return null for element that is not a figcaption', () => {
+			const element = new ViewElement( 'div' );
+
+			expect( matchImageCaption( element ) ).to.be.null;
+		} );
+
+		it( 'should return null if figcaption has no parent', () => {
+			const element = new ViewElement( 'figcaption' );
+
+			expect( matchImageCaption( element ) ).to.be.null;
+		} );
+
+		it( 'should return null if figcaption\'s parent is not a figure', () => {
+			const element = new ViewElement( 'figcaption' );
+			new ViewElement( 'div', null, element );
+
+			expect( matchImageCaption( element ) ).to.be.null;
+		} );
+
+		it( 'should return null if parent has no image class', () => {
+			const element = new ViewElement( 'figcaption' );
+			new ViewElement( 'figure', null, element );
+
+			expect( matchImageCaption( element ) ).to.be.null;
+		} );
+
+		it( 'should return object if element is a valid caption', () => {
+			const element = new ViewElement( 'figcaption' );
+			new ViewElement( 'figure', { class: 'image' }, element );
+
+			expect( matchImageCaption( element ) ).to.deep.equal( { name: true } );
+		} );
+	} );
+
+	describe( 'insertViewCaptionAndBind', () => {
+		let viewCaption, modelCaption, viewImage, mapper;
+
+		beforeEach( () => {
+			viewCaption = new ViewContainerElement( 'figcaption' );
+			modelCaption = new ModelElement( 'caption' );
+			viewImage = new ViewContainerElement( 'figure', { class: 'image' } );
+			mapper = new Mapper();
+		} );
+
+		it( 'should insert provided caption to provided image', () => {
+			insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper );
+
+			expect( viewImage.getChild( 0 ) ).to.equal( viewCaption );
+		} );
+
+		it( 'should insert provided caption at the end of provided image', () => {
+			const dummyElement = new ViewElement( 'dummy' );
+			viewImage.appendChildren( dummyElement );
+
+			insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper );
+
+			expect( viewImage.getChild( 1 ) ).to.equal( viewCaption );
+		} );
+
+		it( 'should bind view caption to model caption using provided mapper', () => {
+			insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper );
+
+			expect( mapper.toModelElement( viewCaption ) ).to.equal( modelCaption );
 		} );
 	} );
 } );
