@@ -17,7 +17,6 @@ import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
-import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
 import { isImage, isImageWidget } from '../image/utils';
 import { captionElementCreator, isCaption, getCaptionFromImage, isInsideCaption } from './utils';
 
@@ -63,12 +62,12 @@ export default class ImageCaptionEngine extends Plugin {
 		schema.limits.add( 'caption' );
 
 		// Add caption element to each image inserted without it.
-		document.on( 'change', insertMissingCaptionElement );
+		document.on( 'change', insertMissingModelCaptionElement );
 
 		// View to model converter for data pipeline.
 		buildViewConverter()
 			.for( data.viewToModel )
-			.from( new ViewMatcher( matchImageCaption ) )
+			.from( matchImageCaption )
 			.toElement( 'caption' );
 
 		// Model to view converter for data pipeline.
@@ -77,45 +76,11 @@ export default class ImageCaptionEngine extends Plugin {
 		// Model to view converter for editing pipeline.
 		editing.modelToView.on( 'insert:caption', captionModelToView( this._captionCreator ) );
 
-		editing.modelToView.on(
-			'insert',
-			( evt, data ) => {
-				if ( isInsideCaption( data.item ) ) {
-					const caption = data.item.parent;
-					const image = caption.parent;
-
-					const viewImage = mapper.toViewElement( image );
-					let viewCaption =  mapper.toViewElement( caption );
-
-					// Image should be already converted to the view.
-					if ( viewImage && !viewCaption ) {
-						viewCaption = this._captionCreator();
-						const viewPosition = ViewPosition.createAt( viewImage, 'end' );
-
-						mapper.bindElements( caption, viewCaption );
-						viewWriter.insert( viewPosition, viewCaption );
-					}
-				}
-			}, { priority: 'high' } );
-
-		// Adding / removing caption element when there is no text in the model.
-		const selection = viewDocument.selection;
+		// When inserting something to caption in the model - make sure that caption in the view is also present.
+		editing.modelToView.on( 'insert', insertMissingViewCaptionElement( this._captionCreator, mapper ), { priority: 'high' } );
 
 		// Update view before each rendering.
-		this.listenTo( viewDocument, 'render', () => {
-			// Check if there is an empty caption view element to remove.
-			this._removeEmptyCaption();
-
-			// Check if image widget is selected and caption view element needs to be added.
-			this._addCaption();
-
-			// If selection is currently inside caption editable - store it to hide when empty.
-			const editableElement = selection.editableElement;
-
-			if ( editableElement && isCaption( selection.editableElement ) ) {
-				this._lastSelectedEditable = selection.editableElement;
-			}
-		}, { priority: 'high' } );
+		this.listenTo( viewDocument, 'render', () => this._updateView(), { priority: 'high' } );
 	}
 
 	/**
@@ -164,23 +129,37 @@ export default class ImageCaptionEngine extends Plugin {
 	_addCaption() {
 		const editing = this.editor.editing;
 		const selection = editing.view.selection;
-		const imageFigure = selection.getSelectedElement();
+		const viewImage = selection.getSelectedElement();
 		const mapper = editing.mapper;
 
-		if ( imageFigure && isImageWidget( imageFigure ) ) {
-			const modelImage = mapper.toModelElement( imageFigure );
+		if ( viewImage && isImageWidget( viewImage ) ) {
+			const modelImage = mapper.toModelElement( viewImage );
 			const modelCaption = getCaptionFromImage( modelImage );
 			let viewCaption =  mapper.toViewElement( modelCaption );
 
 			if ( !viewCaption ) {
 				viewCaption = this._captionCreator();
-
-				const viewPosition = ViewPosition.createAt( imageFigure, 'end' );
-				mapper.bindElements( modelCaption, viewCaption );
-				viewWriter.insert( viewPosition, viewCaption );
+				insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper );
 			}
 
 			this._lastSelectedEditable = viewCaption;
+		}
+	}
+
+	_updateView() {
+		const selection = this.editor.editing.view.selection;
+
+		// Check if there is an empty caption view element to remove.
+		this._removeEmptyCaption();
+
+		// Check if image widget is selected and caption view element needs to be added.
+		this._addCaption();
+
+		// If selection is currently inside caption editable - store it to hide when empty.
+		const editableElement = selection.editableElement;
+
+		if ( editableElement && isCaption( selection.editableElement ) ) {
+			this._lastSelectedEditable = selection.editableElement;
 		}
 	}
 }
@@ -189,7 +168,7 @@ export default class ImageCaptionEngine extends Plugin {
 // If there is none - adds it to the image element.
 //
 // @private
-function insertMissingCaptionElement( evt, changeType, data, batch ) {
+function insertMissingModelCaptionElement( evt, changeType, data, batch ) {
 	if ( changeType !== 'insert' ) {
 		return;
 	}
@@ -210,6 +189,24 @@ function insertMissingCaptionElement( evt, changeType, data, batch ) {
 	}
 }
 
+function insertMissingViewCaptionElement( creator, mapper ) {
+	return ( evt, data ) => {
+		if ( isInsideCaption( data.item ) ) {
+			const modelCaption = data.item.parent;
+			const modelImage = modelCaption.parent;
+
+			const viewImage = mapper.toViewElement( modelImage );
+			let viewCaption =  mapper.toViewElement( modelCaption );
+
+			// Image should be already converted to the view.
+			if ( viewImage && !viewCaption ) {
+				viewCaption = creator();
+				insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper );
+			}
+		}
+	};
+}
+
 // Creates a converter that converts image caption model element to view element.
 //
 // @private
@@ -224,14 +221,12 @@ function captionModelToView( elementCreator ) {
 				return;
 			}
 
-			const imageFigure = conversionApi.mapper.toViewElement( data.range.start.parent );
-			const viewElement = ( elementCreator instanceof ViewElement ) ?
+			const viewImage = conversionApi.mapper.toViewElement( data.range.start.parent );
+			const viewCaption = ( elementCreator instanceof ViewElement ) ?
 				elementCreator.clone( true ) :
 				elementCreator();
 
-			const viewPosition = ViewPosition.createAt( imageFigure, 'end' );
-			conversionApi.mapper.bindElements( data.item, viewElement );
-			viewWriter.insert( viewPosition, viewElement );
+			insertViewCaptionAndBind( viewCaption, data.item, viewImage, conversionApi.mapper );
 		}
 	};
 }
@@ -251,4 +246,18 @@ function matchImageCaption( element ) {
 	}
 
 	return null;
+}
+
+// Inserts `viewCaption` at the end of `viewImage` and binds it to `modelCaption`.
+//
+// @private
+// @param {module:engine/view/element~Element} viewCaption
+// @param {module:engine/model/element~Element} modelCaption
+// @param {module:engine/view/element~Element} viewImage
+// @param {module:engine/conversion/mapper~Mapper} mapper
+function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper ) {
+	const viewPosition = ViewPosition.createAt( viewImage, 'end' );
+
+	viewWriter.insert( viewPosition, viewCaption );
+	mapper.bindElements( modelCaption, viewCaption );
 }
