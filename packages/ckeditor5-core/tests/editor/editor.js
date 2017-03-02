@@ -289,28 +289,6 @@ describe( 'Editor', () => {
 					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
 				} );
 		} );
-
-		it( 'should load plugins built in the Editor and specified in the config', () => {
-			Editor.build = {
-				plugins: [ PluginA ]
-			};
-
-			const editor = new Editor( {
-				plugins: [
-					PluginD
-				]
-			} );
-
-			return editor.initPlugins()
-				.then( () => {
-					expect( getPlugins( editor ).length ).to.equal( 4 );
-
-					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
-					expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
-					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
-					expect( editor.plugins.get( PluginD ) ).to.be.an.instanceof( Plugin );
-				} );
-		} );
 	} );
 } );
 

@@ -31,13 +31,7 @@ export default class Editor {
 	 * @param {Object} config The editor config.
 	 */
 	constructor( config ) {
-		/**
-		 * An array contains plugins built-in the editor.
-		 *
-		 * @protected
-		 * @member {Array.<module:core/plugin~Plugin>}
-		 */
-		this._availablePlugins = ( this.constructor.build && this.constructor.build.plugins ) || [];
+		const availablePlugins = this.constructor.build && this.constructor.build.plugins;
 
 		/**
 		 * Holds all configurations specific to this editor instance.
@@ -47,13 +41,15 @@ export default class Editor {
 		 */
 		this.config = new Config( config, this.constructor.build && this.constructor.build.config );
 
+		this.config.define( 'plugins', availablePlugins );
+
 		/**
 		 * The plugins loaded and in use by this editor instance.
 		 *
 		 * @readonly
 		 * @member {module:core/plugin~PluginCollection}
 		 */
-		this.plugins = new PluginCollection( this, this._availablePlugins );
+		this.plugins = new PluginCollection( this, availablePlugins );
 
 		/**
 		 * Commands registered to the editor.
@@ -124,10 +120,7 @@ export default class Editor {
 			.then( () => this.fire( 'pluginsReady' ) );
 
 		function loadPlugins() {
-			const pluginsFromConfig = config.get( 'plugins' ) || [];
-			const pluginsToLoad = pluginsFromConfig.concat( that._availablePlugins );
-
-			return that.plugins.load( pluginsToLoad );
+			return that.plugins.load( config.get( 'plugins' ) || [] );
 		}
 
 		function initPlugins( loadedPlugins, method ) {
