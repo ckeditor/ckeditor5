@@ -42,6 +42,10 @@ export default class ImageTextAlternative extends Plugin {
 		const defaultImageToolbarConfig = this.editor.config.get( 'image.defaultToolbar' );
 
 		if ( defaultImageToolbarConfig ) {
+			if ( defaultImageToolbarConfig.length ) {
+				defaultImageToolbarConfig.push( '|' );
+			}
+
 			defaultImageToolbarConfig.push( 'imageTextAlternative' );
 		}
 

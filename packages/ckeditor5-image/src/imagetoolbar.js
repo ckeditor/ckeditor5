@@ -69,9 +69,7 @@ export default class ImageToolbar extends Plugin {
 		promises.push( panel.content.add( toolbar ) );
 
 		// Add buttons to the toolbar.
-		for ( let name of toolbarConfig ) {
-			promises.push( toolbar.items.add( editor.ui.componentFactory.create( name ) ) );
-		}
+		promises.push( toolbar.fillFromConfig( toolbarConfig, editor.ui.componentFactory ) );
 
 		// Add balloon panel to editor's UI.
 		promises.push( editor.ui.view.body.add( panel ) );
