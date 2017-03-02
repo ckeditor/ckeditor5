@@ -401,5 +401,17 @@ describe( 'Matcher', () => {
 
 			expect( matcher.getElementName() ).to.be.null;
 		} );
+
+		it( 'should return null for matching function', () => {
+			const matcher = new Matcher( () => {} );
+
+			expect( matcher.getElementName() ).to.be.null;
+		} );
+
+		it( 'should return null for matching named function', () => {
+			const matcher = new Matcher( function matchFunction() {} );
+
+			expect( matcher.getElementName() ).to.be.null;
+		} );
 	} );
 } );
