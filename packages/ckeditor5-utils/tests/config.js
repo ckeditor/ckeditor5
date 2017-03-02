@@ -67,6 +67,46 @@ describe( 'Config', () => {
 			expect( config.get( 'foo' ) ).to.equal( 10 );
 			expect( config.get( 'bar' ) ).to.equal( 2 );
 		} );
+
+		it( 'should work with deeper objects', () => {
+			const defaultConfig = {
+				a: {
+					first: 1,
+					second: 2
+				},
+				'b.foo.first': 1,
+				'b.foo.second': 2
+			};
+
+			const parameters = {
+				'a.third': 3,
+				b: {
+					foo: {
+						first: 3,
+						third: 1
+					}
+				},
+				custom: 'foo'
+			};
+
+			config = new Config( parameters, defaultConfig );
+
+			expect( config.get( 'a' ) ).to.deep.equal( {
+				first: 1,
+				second: 2,
+				third: 3
+			} );
+
+			expect( config.get( 'b' ) ).to.have.key( 'foo' );
+
+			expect( config.get( 'b.foo' ) ).to.deep.equal( {
+				first: 3,
+				second: 2,
+				third: 1
+			} );
+
+			expect( config.get( 'custom' ) ).to.equal( 'foo' );
+		} );
 	} );
 
 	describe( 'set()', () => {
