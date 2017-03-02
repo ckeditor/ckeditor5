@@ -18,7 +18,7 @@ export default class Config {
 	 *
 	 * @param {Object} [configurations] The initial configurations to be set.
 	 */
-	constructor( configurations ) {
+	constructor( configurations, defaultConfigurations ) {
 		/**
 		 * Store for the whole configuration.
 		 *
@@ -30,6 +30,11 @@ export default class Config {
 		// Set initial configuration.
 		if ( configurations ) {
 			this._setObjectToTarget( this._config, configurations );
+		}
+
+		// Set default configuration.
+		if ( defaultConfigurations ) {
+			this._setObjectToTarget( this._config, defaultConfigurations, true );
 		}
 	}
 

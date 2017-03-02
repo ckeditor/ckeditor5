@@ -23,7 +23,7 @@ describe( 'Config', () => {
 		} );
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'should set configurations', () => {
 			expect( config.get( 'creator' ) ).to.equal( 'inline' );
 			expect( config.get( 'language' ) ).to.equal( 'pl' );
@@ -41,9 +41,35 @@ describe( 'Config', () => {
 			// No error should be thrown.
 			config = new Config();
 		} );
+
+		it( 'should set default parameters', () => {
+			const defaultConfig = {
+				foo: 1,
+				bar: 2,
+			};
+
+			config = new Config( {}, defaultConfig );
+
+			expect( config.get( 'foo' ) ).to.equal( 1 );
+			expect( config.get( 'bar' ) ).to.equal( 2 );
+		} );
+
+		it( 'passed parameters should override default parameters', () => {
+			const defaultConfig = {
+				foo: 1,
+				bar: 2,
+			};
+
+			config = new Config( {
+				foo: 10,
+			}, defaultConfig );
+
+			expect( config.get( 'foo' ) ).to.equal( 10 );
+			expect( config.get( 'bar' ) ).to.equal( 2 );
+		} );
 	} );
 
-	describe( 'set', () => {
+	describe( 'set()', () => {
 		it( 'should set configurations when passing objects', () => {
 			config.set( {
 				option1: 1,
@@ -158,7 +184,7 @@ describe( 'Config', () => {
 		} );
 	} );
 
-	describe( 'define', () => {
+	describe( 'define()', () => {
 		it( 'should set configurations when passing objects', () => {
 			config.set( {
 				option1: 1,
@@ -252,7 +278,7 @@ describe( 'Config', () => {
 		} );
 	} );
 
-	describe( 'get', () => {
+	describe( 'get()', () => {
 		it( 'should retrieve a configuration', () => {
 			expect( config.get( 'creator' ) ).to.equal( 'inline' );
 		} );
