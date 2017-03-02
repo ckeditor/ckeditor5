@@ -16,9 +16,10 @@ export default class Config {
 	/**
 	 * Creates an instance of the {@link ~Config} class.
 	 *
-	 * @param {Object} [configurations] The initial configurations to be set.
+	 * @param {Object} [configurations] The initial configurations to be set. Usually, provided by the user.
+	 * @param {Object} [defaultConfigurations] The default configurations. Usually, provided by the system.
 	 */
-	constructor( configurations ) {
+	constructor( configurations, defaultConfigurations ) {
 		/**
 		 * Store for the whole configuration.
 		 *
@@ -26,6 +27,11 @@ export default class Config {
 		 * @member {Object}
 		 */
 		this._config = {};
+
+		// Set default configuration.
+		if ( defaultConfigurations ) {
+			this.define( defaultConfigurations );
+		}
 
 		// Set initial configuration.
 		if ( configurations ) {
