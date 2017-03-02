@@ -593,20 +593,20 @@ describe( 'Range', () => {
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 7 ] );
 		} );
 
-		it( 'should stick to moved range, if the transformed range is collapsed #1', () => {
+		it( 'should not stick to moved range, if the transformed range is collapsed #1', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 2 ] ) );
 			const transformed = range._getTransformedByMove( new Position( root, [ 3, 0 ] ), new Position( root, [ 6 ] ), 2 );
 
-			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 8 ] );
-			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 8 ] );
+			expect( transformed.length ).to.equal( 1 );
+			expect( transformed[ 0 ].isEqual( range ) ).to.be.true;
 		} );
 
-		it( 'should stick to moved range, if the transformed range is collapsed #2', () => {
+		it( 'should not stick to moved range, if the transformed range is collapsed #2', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 2 ] ) );
 			const transformed = range._getTransformedByMove( new Position( root, [ 3, 2 ] ), new Position( root, [ 6 ] ), 2 );
 
-			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 6 ] );
-			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 6 ] );
+			expect( transformed.length ).to.equal( 1 );
+			expect( transformed[ 0 ].isEqual( range ) ).to.be.true;
 		} );
 	} );
 

@@ -534,7 +534,7 @@ export default class Range {
 	 */
 	_getTransformedByMove( sourcePosition, targetPosition, howMany ) {
 		if ( this.isCollapsed ) {
-			const newPos = this.start._getTransformedByMove( sourcePosition, targetPosition, howMany, true, true );
+			const newPos = this.start._getTransformedByMove( sourcePosition, targetPosition, howMany, true, false );
 
 			return [ new Range( newPos ) ];
 		}
