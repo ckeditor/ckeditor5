@@ -6,6 +6,7 @@
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import DocumentFragment from '../../src/model/documentfragment';
+import MarkerCollection from '../../src/model/markercollection';
 import { jsonParseStringify } from '../../tests/model/_utils/utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -27,6 +28,12 @@ describe( 'DocumentFragment', () => {
 			expect( frag.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'xx' );
 			expect( frag.getChild( 1 ) ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( frag.getChild( 2 ) ).to.have.property( 'data' ).that.equals( 'yy' );
+		} );
+
+		it( 'should have markers collection', () => {
+			let frag = new DocumentFragment();
+
+			expect( frag ).to.have.property( 'markers' ).to.instanceof( MarkerCollection );
 		} );
 
 		it( 'should have root property, equal to itself', () => {
