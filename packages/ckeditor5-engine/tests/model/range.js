@@ -18,7 +18,8 @@ import {
 	getMoveDelta,
 	getRemoveDelta,
 	getRenameDelta,
-	getSplitDelta
+	getSplitDelta,
+	getMergeDelta
 } from '../../tests/model/delta/transform/_utils/utils';
 
 describe( 'Range', () => {
@@ -593,20 +594,22 @@ describe( 'Range', () => {
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 7 ] );
 		} );
 
-		it( 'should stick to moved range, if the transformed range is collapsed #1', () => {
+		it( 'should not stick to moved range, if the transformed range is collapsed #1', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 2 ] ) );
 			const transformed = range._getTransformedByMove( new Position( root, [ 3, 0 ] ), new Position( root, [ 6 ] ), 2 );
 
-			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 8 ] );
-			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 8 ] );
+			expect( transformed.length ).to.equal( 1 );
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 0 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 0 ] );
 		} );
 
-		it( 'should stick to moved range, if the transformed range is collapsed #2', () => {
+		it( 'should not stick to moved range, if the transformed range is collapsed #2', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 2 ] ) );
 			const transformed = range._getTransformedByMove( new Position( root, [ 3, 2 ] ), new Position( root, [ 6 ] ), 2 );
 
-			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 6 ] );
-			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 6 ] );
+			expect( transformed.length ).to.equal( 1 );
+			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
+			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 2 ] );
 		} );
 	} );
 
@@ -835,6 +838,24 @@ describe( 'Range', () => {
 				expect( transformed.length ).to.equal( 1 );
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 2 ] );
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
+			} );
+
+			describe( 'by MergeDelta', () => {
+				it( 'merge element with collapsed range', () => {
+					root.removeChildren( root.childCount );
+					root.appendChildren( [ new Element( 'p', null, new Text( 'foo' ) ), new Element( 'p', null, new Text( 'bar' ) ) ] );
+
+					range.start = new Position( root, [ 1, 0 ] );
+					range.end = new Position( root, [ 1, 0 ] );
+
+					const delta = getMergeDelta( new Position( root, [ 1 ] ), 3, 3, 1 );
+
+					const transformed = range.getTransformedByDelta( delta );
+
+					expect( transformed.length ).to.equal( 1 );
+					expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 3 ] );
+					expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 3 ] );
+				} );
 			} );
 		} );
 	} );
