@@ -54,11 +54,11 @@ describe( 'HeadingEngine', () => {
 		expect( document.schema.check( { name: '$inline', inside: 'heading3' } ) ).to.be.true;
 	} );
 
-	it( 'should register option command', () => {
-		expect( editor.commands.has( 'heading' ) ).to.be.true;
-		const command = editor.commands.get( 'heading' );
-
-		expect( command ).to.be.instanceOf( HeadingCommand );
+	it( 'should register #commands', () => {
+		expect( editor.commands.get( 'headingParagraph' ) ).to.be.instanceOf( HeadingCommand );
+		expect( editor.commands.get( 'headingHeading1' ) ).to.be.instanceOf( HeadingCommand );
+		expect( editor.commands.get( 'headingHeading2' ) ).to.be.instanceOf( HeadingCommand );
+		expect( editor.commands.get( 'headingHeading3' ) ).to.be.instanceOf( HeadingCommand );
 	} );
 
 	it( 'should convert heading1', () => {
@@ -101,6 +101,12 @@ describe( 'HeadingEngine', () => {
 		expect( getData( document ) ).to.equal( '<heading1>foo</heading1><heading1>[]bar</heading1>' );
 	} );
 
+	it( 'should not blow up if there\'s no enter command in the editor', () => {
+		return VirtualTestEditor.create( {
+			plugins: [ HeadingEngine ]
+		} );
+	} );
+
 	describe( 'config', () => {
 		describe( 'options', () => {
 			describe( 'default value', () => {
@@ -129,7 +135,11 @@ describe( 'HeadingEngine', () => {
 				.then( editor => {
 					document = editor.document;
 
-					expect( editor.commands.get( 'heading' ).options ).to.deep.equal( options );
+					const commands = editor.plugins.get( HeadingEngine ).commands;
+
+					expect( commands ).to.have.length( 2 );
+					expect( commands.get( 0 ).id ).to.equal( options[ 0 ].id );
+					expect( commands.get( 1 ).id ).to.equal( options[ 1 ].id );
 
 					expect( document.schema.hasItem( 'paragraph' ) ).to.be.true;
 					expect( document.schema.hasItem( 'h4' ) ).to.be.true;

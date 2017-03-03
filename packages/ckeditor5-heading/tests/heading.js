@@ -63,44 +63,55 @@ describe( 'Heading', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 			const dropdown = editor.ui.componentFactory.create( 'headings' );
 
-			dropdown.id = 'foo';
+			dropdown.name = 'headingParagraph';
 			dropdown.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'heading', { id: 'foo' } );
+			sinon.assert.calledWithExactly( executeSpy, 'headingParagraph' );
 		} );
 
 		it( 'should focus view after command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 			const dropdown = editor.ui.componentFactory.create( 'headings' );
 
+			dropdown.name = 'headingParagraph';
 			dropdown.fire( 'execute' );
 
 			sinon.assert.calledOnce( focusSpy );
 		} );
 
 		describe( 'model to command binding', () => {
-			let command;
+			let commands;
 
 			beforeEach( () => {
-				command = editor.commands.get( 'heading' );
+				commands = editor.plugins.get( HeadingEngine ).commands;
 			} );
 
 			it( 'isEnabled', () => {
-				expect( dropdown.buttonView.isEnabled ).to.be.true;
-				command.isEnabled = false;
+				for ( let command of commands ) {
+					command.isEnabled = false;
+				}
+
 				expect( dropdown.buttonView.isEnabled ).to.be.false;
+
+				commands.get( 'heading2' ).isEnabled = true;
+				expect( dropdown.buttonView.isEnabled ).to.be.true;
 			} );
 
 			it( 'label', () => {
+				for ( let command of commands ) {
+					command.value = false;
+				}
+
 				expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
-				command.value = command.options[ 1 ];
-				expect( dropdown.buttonView.label ).to.equal( 'Heading 1' );
+
+				commands.get( 'heading2' ).value = true;
+				expect( dropdown.buttonView.label ).to.equal( 'Heading 2' );
 			} );
 		} );
 
 		describe( 'localization', () => {
-			let command;
+			let commands;
 
 			beforeEach( () => {
 				const editorElement = document.createElement( 'div' );
@@ -120,7 +131,7 @@ describe( 'Heading', () => {
 				.then( newEditor => {
 					editor = newEditor;
 					dropdown = editor.ui.componentFactory.create( 'headings' );
-					command = editor.commands.get( 'heading' );
+					commands = editor.plugins.get( HeadingEngine ).commands;
 				} );
 			} );
 
@@ -136,7 +147,7 @@ describe( 'Heading', () => {
 				const buttonView = dropdown.buttonView;
 
 				expect( buttonView.label ).to.equal( 'Akapit' );
-				command.value = command.options[ 1 ];
+				commands.get( 'heading1' ).value = true;
 				expect( buttonView.label ).to.equal( 'Nagłówek 1' );
 			} );
 

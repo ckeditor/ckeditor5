@@ -8,6 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -27,6 +28,14 @@ export default class HeadingEngine extends Plugin {
 	 */
 	constructor( editor ) {
 		super( editor );
+
+		/**
+		 * A collection of heading commands associated with heading engine.
+		 *
+		 * @readonly
+		 * @member {module:utils/collection~Collection.<module:heading/headingcommand~HeadingCommand>}
+		 */
+		this.commands = new Collection();
 
 		editor.config.define( 'heading', {
 			options: [
@@ -70,11 +79,12 @@ export default class HeadingEngine extends Plugin {
 					.fromElement( option.element )
 					.toElement( option.id );
 			}
-		}
 
-		// Register the heading command.
-		const command = new HeadingCommand( editor, options, defaultOptionId );
-		editor.commands.set( 'heading', command );
+			// Register the heading command for this option.
+			const command = new HeadingCommand( editor, option );
+			this.commands.add( command );
+			editor.commands.set( command.name, command );
+		}
 	}
 
 	/**
@@ -84,7 +94,6 @@ export default class HeadingEngine extends Plugin {
 		// If the enter command is added to the editor, alter its behavior.
 		// Enter at the end of a heading element should create a paragraph.
 		const editor = this.editor;
-		const command = editor.commands.get( 'heading' );
 		const enterCommand = editor.commands.get( 'enter' );
 		const options = this._getLocalizedOptions();
 
@@ -94,8 +103,8 @@ export default class HeadingEngine extends Plugin {
 				const batch = data.batch;
 				const isHeading = options.some( option => option.id == positionParent.name );
 
-				if ( isHeading && positionParent.name != command.defaultOption.id && positionParent.childCount === 0 ) {
-					batch.rename( positionParent, command.defaultOption.id );
+				if ( isHeading && positionParent.name != defaultOptionId && positionParent.childCount === 0 ) {
+					batch.rename( positionParent, defaultOptionId );
 				}
 			} );
 		}

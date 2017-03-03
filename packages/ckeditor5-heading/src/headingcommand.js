@@ -9,6 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command/command';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
+import camelCase from '@ckeditor/ckeditor5-utils/src/lib/lodash/camelCase';
 
 /**
  * The heading command. It is used by the {@link module:heading/heading~Heading heading feature} to apply headings.
@@ -20,49 +21,55 @@ export default class HeadingCommand extends Command {
 	 * Creates an instance of the command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {Array.<module:heading/headingcommand~HeadingOption>} options Heading options to be used by the command instance.
+	 * @param {module:heading/headingcommand~HeadingOption} option An option to be used by the command instance.
 	 */
-	constructor( editor, options, defaultOptionId ) {
+	constructor( editor, option ) {
 		super( editor );
 
-		/**
-		 * Heading options used by this command.
-		 *
-		 * @readonly
-		 * @member {module:heading/headingcommand~HeadingOption}
-		 */
-		this.options = options;
+		Object.assign( this, option );
 
 		/**
-		 * The id of the default option among {@link #options}.
+		 * Name of the command
 		 *
 		 * @readonly
-		 * @private
-		 * @member {module:heading/headingcommand~HeadingOption#id}
+		 * @member {String}
 		 */
-		this._defaultOptionId = defaultOptionId;
+		this.name = camelCase( 'heading ' + this.id );
 
 		/**
-		 * The currently selected heading option.
+		 * TODO
 		 *
 		 * @readonly
-		 * @observable
-		 * @member {module:heading/headingcommand~HeadingOption} #value
+		 * @member {}
 		 */
-		this.set( 'value', this.defaultOption );
+		this.set( 'value', false );
 
 		// Update current value each time changes are done on document.
 		this.listenTo( editor.document, 'changesDone', () => this._updateValue() );
-	}
 
-	/**
-	 * The default option.
-	 *
-	 * @member {module:heading/headingcommand~HeadingOption} #defaultOption
-	 */
-	get defaultOption() {
-		// See https://github.com/ckeditor/ckeditor5/issues/98.
-		return this._getOptionById( this._defaultOptionId );
+		/**
+		 * Unique identifier of the command, also element's name in the model.
+		 * See {@link module:heading/headingcommand~HeadingOption#id}.
+		 *
+		 * @readonly
+		 * @member {String} #id
+		 */
+
+		/**
+		 * Element this command creates in the view.
+		 * See {@link module:heading/headingcommand~HeadingOption#element}.
+		 *
+		 * @readonly
+		 * @member {String} #element
+		 */
+
+		/**
+		 * Label of this command.
+		 * See {@link module:heading/headingcommand~HeadingOption#label}.
+		 *
+		 * @readonly
+		 * @member {String} #label
+		 */
 	}
 
 	/**
@@ -70,16 +77,11 @@ export default class HeadingCommand extends Command {
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for executed command.
-	 * @param {String} [options.id] The identifier of the heading option that should be applied. It should be one of the
-	 * {@link module:heading/headingcommand~HeadingOption heading options} provided to the command constructor. If this parameter is not
-	 * provided,
-	 * the value from {@link #defaultOption defaultOption} will be used.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
 	 */
 	_doExecute( options = {} ) {
-		// TODO: What should happen if option is not found?
-		const id = options.id || this.defaultOption.id;
+		const id = this.id;
 		const doc = this.editor.document;
 		const selection = doc.selection;
 		const startPosition = selection.getFirstPosition();
@@ -87,8 +89,6 @@ export default class HeadingCommand extends Command {
 		// Storing selection ranges and direction to fix selection after renaming. See ckeditor5-engine#367.
 		const ranges = [ ...selection.getRanges() ];
 		const isSelectionBackward = selection.isBackward;
-		// If current option is same as new option - toggle already applied option back to default one.
-		const shouldRemove = ( id === this.value.id );
 
 		// Collect elements to change option.
 		// This implementation may not be future proof but it's satisfactory at this stage.
@@ -116,33 +116,13 @@ export default class HeadingCommand extends Command {
 			const batch = options.batch || doc.batch();
 
 			for ( let element of elements ) {
-				// When removing applied option.
-				if ( shouldRemove ) {
-					if ( element.name === id ) {
-						batch.rename( element, this.defaultOption.id );
-					}
-				}
-				// When applying new option.
-				else {
-					batch.rename( element, id );
-				}
+				batch.rename( element, id );
 			}
 
 			// If range's selection start/end is placed directly in renamed block - we need to restore it's position
 			// after renaming, because renaming puts new element there.
 			doc.selection.setRanges( ranges, isSelectionBackward );
 		} );
-	}
-
-	/**
-	 * Returns the option by a given ID.
-	 *
-	 * @private
-	 * @param {String} id
-	 * @returns {module:heading/headingcommand~HeadingOption}
-	 */
-	_getOptionById( id ) {
-		return this.options.find( item => item.id === id ) || this.defaultOption;
 	}
 
 	/**
@@ -155,7 +135,7 @@ export default class HeadingCommand extends Command {
 		const block = findTopmostBlock( position );
 
 		if ( block ) {
-			this.value = this._getOptionById( block.name );
+			this.value = this.id == block.name;
 		}
 	}
 }

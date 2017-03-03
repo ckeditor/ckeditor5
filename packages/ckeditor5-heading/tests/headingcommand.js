@@ -9,23 +9,24 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 const options = [
-	{ id: 'paragraph', element: 'p' },
-	{ id: 'heading1', element: 'h2' },
-	{ id: 'heading2', element: 'h3' },
-	{ id: 'heading3', element: 'h4' }
+	{ id: 'paragraph', element: 'p', label: 'P' },
+	{ id: 'heading1', element: 'h2', label: 'H2' },
+	{ id: 'heading2', element: 'h3', label: 'H3' },
+	{ id: 'heading3', element: 'h4', label: 'H4' }
 ];
 
 describe( 'HeadingCommand', () => {
-	let editor, document, command, root, schema;
+	let editor, document, commands, root, schema;
 
 	beforeEach( () => {
 		return ModelTestEditor.create().then( newEditor => {
 			editor = newEditor;
 			document = editor.document;
-			command = new HeadingCommand( editor, options, 'paragraph' );
+			commands = {};
 			schema = document.schema;
 
 			for ( let option of options ) {
+				commands[ option.id ] = new HeadingCommand( editor, option );
 				schema.registerItem( option.id, '$block' );
 			}
 
@@ -34,7 +35,23 @@ describe( 'HeadingCommand', () => {
 	} );
 
 	afterEach( () => {
-		command.destroy();
+		for ( let id in commands ) {
+			commands[ id ].destroy();
+		}
+	} );
+
+	describe( 'basic properties', () => {
+		for ( let option of options ) {
+			test( option );
+		}
+
+		function test( { id, element, label } ) {
+			it( `are set for option.id = ${ id }`, () => {
+				expect( commands[ id ].id ).to.equal( id );
+				expect( commands[ id ].element ).to.equal( element );
+				expect( commands[ id ].label ).to.equal( label );
+			} );
+		}
 	} );
 
 	describe( 'value', () => {
@@ -42,40 +59,33 @@ describe( 'HeadingCommand', () => {
 			test( option );
 		}
 
-		function test( option ) {
-			it( `equals ${ option.id } when collapsed selection is placed inside ${ option.id } element`, () => {
-				setData( document, `<${ option.id }>foobar</${ option.id }>` );
+		function test( { id } ) {
+			it( `equals ${ id } when collapsed selection is placed inside ${ id } element`, () => {
+				setData( document, `<${ id }>foobar</${ id }>` );
 				const element = root.getChild( 0 );
 				document.selection.addRange( Range.createFromParentsAndOffsets( element, 3, element, 3 ) );
 
-				expect( command.value ).to.equal( option );
+				expect( commands[ id ].value ).to.be.true;
 			} );
 		}
-
-		it( 'should be equal to #defaultOption if option has not been found', () => {
-			schema.registerItem( 'div', '$block' );
-			setData( document, '<div>xyz</div>' );
-			const element = root.getChild( 0 );
-			document.selection.addRange( Range.createFromParentsAndOffsets( element, 1, element, 1 ) );
-
-			expect( command.value ).to.equal( command.defaultOption );
-		} );
 	} );
 
 	describe( '_doExecute', () => {
 		it( 'should update value after execution', () => {
+			const command = commands.heading1;
+
 			setData( document, '<paragraph>[]</paragraph>' );
-			command._doExecute( { id: 'heading1' } );
+			command._doExecute();
 
 			expect( getData( document ) ).to.equal( '<heading1>[]</heading1>' );
-			expect( command.value ).to.be.object;
-			expect( command.value.id ).to.equal( 'heading1' );
-			expect( command.value.element ).to.equal( 'h2' );
+			expect( command.value ).to.be.true;
 		} );
 
 		describe( 'custom options', () => {
 			it( 'should use provided batch', () => {
 				const batch = editor.document.batch();
+				const command = commands.heading1;
+
 				setData( document, '<paragraph>foo[]bar</paragraph>' );
 
 				expect( batch.deltas.length ).to.equal( 0 );
@@ -96,24 +106,26 @@ describe( 'HeadingCommand', () => {
 
 			it( 'uses paragraph as default value', () => {
 				setData( document, '<heading1>foo[]bar</heading1>' );
-				command._doExecute();
+				commands.paragraph._doExecute();
 
 				expect( getData( document ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
 
-			it( 'converts to default option when executed with already applied option', () => {
-				setData( document, '<heading1>foo[]bar</heading1>' );
-				command._doExecute( { id: 'heading1' } );
+			// it( 'converts to default option when executed with already applied option', () => {
+			// 	const command = commands.paragraph;
 
-				expect( getData( document ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
-			} );
+			// 	setData( document, '<heading1>foo[]bar</heading1>' );
+			// 	command._doExecute( { id: 'heading1' } );
+
+			// 	expect( getData( document ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+			// } );
 
 			it( 'converts topmost blocks', () => {
 				schema.registerItem( 'inlineImage', '$inline' );
 				schema.allow( { name: '$text', inside: 'inlineImage' } );
 
 				setData( document, '<heading1><inlineImage>foo[]</inlineImage>bar</heading1>' );
-				command._doExecute( { id: 'heading1' } );
+				commands.paragraph._doExecute();
 
 				expect( getData( document ) ).to.equal( '<paragraph><inlineImage>foo[]</inlineImage>bar</paragraph>' );
 			} );
@@ -121,7 +133,7 @@ describe( 'HeadingCommand', () => {
 			function test( from, to ) {
 				it( `converts ${ from.id } to ${ to.id } on collapsed selection`, () => {
 					setData( document, `<${ from.id }>foo[]bar</${ from.id }>` );
-					command._doExecute( { id: to.id } );
+					commands[ to.id ]._doExecute();
 
 					expect( getData( document ) ).to.equal( `<${ to.id }>foo[]bar</${ to.id }>` );
 				} );
@@ -138,26 +150,26 @@ describe( 'HeadingCommand', () => {
 
 			it( 'converts all elements where selection is applied', () => {
 				setData( document, '<heading1>foo[</heading1><heading2>bar</heading2><heading2>]baz</heading2>' );
-				command._doExecute( { id: 'paragraph' } );
+				commands.paragraph._doExecute();
 
 				expect( getData( document ) ).to.equal(
 					'<paragraph>foo[</paragraph><paragraph>bar</paragraph><paragraph>]baz</paragraph>'
 				);
 			} );
 
-			it( 'resets to default value all elements with same option', () => {
-				setData( document, '<heading1>foo[</heading1><heading1>bar</heading1><heading2>baz</heading2>]' );
-				command._doExecute( { id: 'heading1' } );
+			// it( 'resets to default value all elements with same option', () => {
+			// 	setData( document, '<heading1>foo[</heading1><heading1>bar</heading1><heading2>baz</heading2>]' );
+			// 	commands.heading1._doExecute();
 
-				expect( getData( document ) ).to.equal(
-					'<paragraph>foo[</paragraph><paragraph>bar</paragraph><heading2>baz</heading2>]'
-				);
-			} );
+			// 	expect( getData( document ) ).to.equal(
+			// 		'<paragraph>foo[</paragraph><paragraph>bar</paragraph><heading2>baz</heading2>]'
+			// 	);
+			// } );
 
 			function test( from, to ) {
 				it( `converts ${ from.id } to ${ to.id } on non-collapsed selection`, () => {
 					setData( document, `<${ from.id }>foo[bar</${ from.id }><${ from.id }>baz]qux</${ from.id }>` );
-					command._doExecute( { id: to.id } );
+					commands[ to.id ]._doExecute();
 
 					expect( getData( document ) ).to.equal( `<${ to.id }>foo[bar</${ to.id }><${ to.id }>baz]qux</${ to.id }>` );
 				} );
