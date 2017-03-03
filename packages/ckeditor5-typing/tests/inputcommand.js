@@ -189,5 +189,5 @@ describe( 'InputCommand', () => {
 			expect( destroy.calledOnce ).to.be.true;
 			expect( command._buffer ).to.be.null;
 		} );
-	} )
+	} );
 } );

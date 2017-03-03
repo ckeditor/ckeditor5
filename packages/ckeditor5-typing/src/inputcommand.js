@@ -61,7 +61,7 @@ export default class InputCommand extends Command {
 	 * on the beginning of the range (which after removal is a collapsed range).
 	 *
 	 * @param {Object} [options] The command options.
-	 * @param {String} options.text Text to be inserted.
+	 * @param {String} [options.text=''] Text to be inserted.
 	 * @param {module:engine/model/range~Range} [options.range] Range in which the text is inserted. Defaults
 	 * to the first range in the current selection.
 	 * @param {module:engine/model/position~Position} [options.resultPosition] Position at which the selection
@@ -70,11 +70,10 @@ export default class InputCommand extends Command {
 	 */
 	_doExecute( options = {} ) {
 		const doc = this.editor.document;
-		const text = options.text;
+		const text = options.text || '';
+		const textInsertions = text.length;
 		const range = options.range || doc.selection.getFirstRange();
 		const resultPosition = options.resultPosition;
-
-		let textInsertions = 0;
 
 		doc.enqueueChanges( () => {
 			const isCollapsedRange = range.isCollapsed;
@@ -83,10 +82,7 @@ export default class InputCommand extends Command {
 				this._buffer.batch.remove( range );
 			}
 
-			if ( text && text.length ) {
-				textInsertions = text.length;
-				this._buffer.batch.weakInsert( range.start, text );
-			}
+			this._buffer.batch.weakInsert( range.start, text );
 
 			if ( resultPosition ) {
 				this.editor.data.model.selection.collapse( resultPosition );
