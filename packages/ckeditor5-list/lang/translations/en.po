@@ -1,0 +1,11 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+
+msgctxt "Toolbar button tooltip for the Numbered List feature."
+msgid "Numbered List"
+msgstr "Numbered List"
+
+msgctxt "Toolbar button tooltip for the Bulleted List feature."
+msgid "Bulleted List"
+msgstr "Bulleted List"
