@@ -141,13 +141,13 @@ export default class ViewConversionDispatcher {
 
 		const consumable = ViewConsumable.createFrom( viewItem );
 		const conversionResult = this._convertItem( viewItem, consumable, additionalData );
-		let markersData = new Map();
+		let markers = new Map();
 
 		if ( conversionResult instanceof ModelNode || conversionResult instanceof ModelDocumentFragment ) {
-			markersData = extractMarkersFromModelFragment( conversionResult );
+			markers = extractMarkersFromModelFragment( conversionResult );
 		}
 
-		return { conversionResult, markersData };
+		return { conversionResult, markers };
 	}
 
 	/**
@@ -237,13 +237,13 @@ mix( ViewConversionDispatcher, EmitterMixin );
 // DocumentFragment but path of this element is stored in a Map which is then returned.
 //
 // @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/node~Node} modelItem Fragment of model.
-// @returns {Map} List of markers data in format [ 'markerName', { startPath: [ 1, 1 ], endPath: [ 1, 4 ] } ].
+// @returns {Map<String, module:engine/model/range~Range>} List of static markers.
 function extractMarkersFromModelFragment( modelItem ) {
 	const markerStamps = new Set();
-	const markersData = new Map();
+	const markers = new Map();
 
 	if ( modelItem.is( 'text' ) ) {
-		return markersData;
+		return markers;
 	}
 
 	// Create ModelTreeWalker.
@@ -267,18 +267,18 @@ function extractMarkersFromModelFragment( modelItem ) {
 		const currentPosition = ModelPosition.createBefore( stamp );
 
 		// When marker of given name is not stored it means that we have found the beginning of the range.
-		if ( !markersData.has( markerName ) ) {
-			markersData.set( markerName, { startPath: currentPosition.path } );
-			// Otherwise is means that we have found end of the marker range.
+		if ( !markers.has( markerName ) ) {
+			markers.set( markerName, new ModelRange( new ModelPosition( modelItem, currentPosition.path ) ) );
+		// Otherwise is means that we have found end of the marker range.
 		} else {
-			markersData.get( markerName ).endPath = currentPosition.path;
+			markers.get( markerName ).end = new ModelPosition( modelItem, currentPosition.path );
 		}
 
 		// Remove marker stamp element from DocumentFragment.
 		remove( ModelRange.createOn( stamp ) );
 	}
 
-	return markersData;
+	return markers;
 }
 
 /**
@@ -286,7 +286,7 @@ function extractMarkersFromModelFragment( modelItem ) {
  *
  * @typedef {ConvertedModelData} engine/conversion/viewconversiondispatcher~ConvertedModelData
  * @property {module:engine/model/documentfragment~DocumentFragment|module:engine/model/element~Node} conversionResult Converted model item.
- * @property {Map<Object>} markersData Map with markers data in format [ 'markerName', { startPath: [ 1, 1 ], endPath: [ 1, 4 ] } ].
+ * @property {Map<String, module:engine/model/range~Range>} markers List of static markers.
  */
 
 /**

@@ -9,6 +9,7 @@ import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewText from '../../src/view/text';
 
+import ModelRange from '../../src/model/range';
 import ModelSchema from '../../src/model/schema';
 import buildViewConverter from '../../src/conversion/buildviewconverter';
 import { convertText } from '../../src/conversion/view-to-model-converters';
@@ -180,12 +181,19 @@ describe( 'ViewConversionDispatcher', () => {
 				new ViewText( 'z' )
 			] );
 
-			const { conversionResult, markersData } = dispatcher.convert( viewElement, { context: [ '$root' ] } );
+			const { conversionResult, markers } = dispatcher.convert( viewElement, { context: [ '$root' ] } );
+
+			const markerComment = markers.get( 'comment' );
+			const markerSearch = markers.get( 'search' );
 
 			expect( stringify( conversionResult ) ).to.equal( '<paragraph>Foo bar biz</paragraph>' );
-			expect( markersData.size ).to.equal( 2 );
-			expect( markersData.get( 'comment' ) ).deep.equal( { startPath: [ 1 ], endPath: [ 6 ] } );
-			expect( markersData.get( 'search' ) ).deep.equal( { startPath: [ 2 ], endPath: [ 10 ] } );
+			expect( markers.size ).to.equal( 2 );
+
+			expect( markerComment ).to.instanceof( ModelRange );
+			expect( markerComment.isEqual( ModelRange.createFromParentsAndOffsets( conversionResult, 1, conversionResult, 6 ) ) );
+
+			expect( markerSearch ).to.instanceof( ModelRange );
+			expect( markerSearch.isEqual( ModelRange.createFromParentsAndOffsets( conversionResult, 2, conversionResult, 10 ) ) );
 		} );
 
 		it( 'should convert markers stamps for collapsed ranges', () => {
@@ -206,12 +214,19 @@ describe( 'ViewConversionDispatcher', () => {
 				new ViewText( 'o' ),
 			] );
 
-			const { conversionResult, markersData } = dispatcher.convert( viewElement, { context: [ '$root' ] } );
+			const { conversionResult, markers } = dispatcher.convert( viewElement, { context: [ '$root' ] } );
+
+			const markerComment = markers.get( 'comment' );
+			const markerSearch = markers.get( 'search' );
 
 			expect( stringify( conversionResult ) ).to.equal( '<paragraph>Foo</paragraph>' );
-			expect( markersData.size ).to.equal( 2 );
-			expect( markersData.get( 'comment' ) ).deep.equal( { startPath: [ 1 ] } );
-			expect( markersData.get( 'search' ) ).deep.equal( { startPath: [ 2 ] } );
+			expect( markers.size ).to.equal( 2 );
+
+			expect( markerComment ).to.instanceof( ModelRange );
+			expect( markerComment.isEqual( ModelRange.createFromParentsAndOffsets( conversionResult, 1, conversionResult, 1 ) ) );
+
+			expect( markerSearch ).to.instanceof( ModelRange );
+			expect( markerSearch.isEqual( ModelRange.createFromParentsAndOffsets( conversionResult, 2, conversionResult, 2 ) ) );
 		} );
 	} );
 
