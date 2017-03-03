@@ -274,7 +274,7 @@ class ModelConverterBuilder {
 	 *			.toStamp( ( data ) => new UIElement( 'span', { 'data-name': data.marker.getName() ) );
 	 *
 	 * Creator function provides
-	 * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert insert event} parameters.
+	 * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker addMarker event} parameters.
 	 *
 	 * See how markers {module:engine/model/buildviewconverter~ViewConverterBuilder#toMarker view -> model serialization}
 	 * works to find out what view element format is the best for you.
