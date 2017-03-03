@@ -4,8 +4,9 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Input from '../src/input';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Input from '../src/input';
 
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
@@ -24,6 +25,8 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 
 describe( 'Input feature', () => {
 	let editor, model, modelRoot, view, viewRoot, listenter;
+
+	testUtils.createSinonSandbox();
 
 	before( () => {
 		listenter = Object.create( EmitterMixin );
@@ -63,22 +66,6 @@ describe( 'Input feature', () => {
 
 	afterEach( () => {
 		listenter.stopListening();
-	} );
-
-	it( 'has a buffer configured to default value of config.typing.undoStep', () => {
-		expect( editor.plugins.get( Input )._buffer ).to.have.property( 'limit', 20 );
-	} );
-
-	it( 'has a buffer configured to config.typing.undoStep', () => {
-		return VirtualTestEditor.create( {
-				plugins: [ Input ],
-				typing: {
-					undoStep: 5
-				}
-			} )
-			.then( editor => {
-				expect( editor.plugins.get( Input )._buffer ).to.have.property( 'limit', 5 );
-			} );
 	} );
 
 	describe( 'mutations handling', () => {
@@ -222,14 +209,14 @@ describe( 'Input feature', () => {
 			expect( getViewData( view ) ).to.equal( '<p>foodar{}</p>' );
 		} );
 
-		it( 'should use up to one insert and remove operations', () => {
+		it( 'should use up to one insert and remove operations (spellchecker)', () => {
 			// This test case emulates spellchecker correction.
 
 			const viewSelection = new ViewSelection();
 			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
 
-			sinon.spy( Batch.prototype, 'weakInsert' );
-			sinon.spy( Batch.prototype, 'remove' );
+			testUtils.sinon.spy( Batch.prototype, 'weakInsert' );
+			testUtils.sinon.spy( Batch.prototype, 'remove' );
 
 			view.fire( 'mutations',
 				[ {
@@ -243,6 +230,69 @@ describe( 'Input feature', () => {
 
 			expect( Batch.prototype.weakInsert.calledOnce ).to.be.true;
 			expect( Batch.prototype.remove.calledOnce ).to.be.true;
+		} );
+
+		it( 'should place selection after when correcting to longer word (spellchecker)', () => {
+			// This test case emulates spellchecker correction.
+			editor.setData( '<p>Foo hous a</p>' );
+
+			const viewSelection = new ViewSelection();
+			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+
+			view.fire( 'mutations',
+				[ {
+					type: 'text',
+					oldText: 'Foo hous a',
+					newText: 'Foo house a',
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				} ],
+				viewSelection
+			);
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>Foo house[] a</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>Foo house{} a</p>' );
+		} );
+
+		it( 'should place selection after when correcting to shorter word (spellchecker)', () => {
+			// This test case emulates spellchecker correction.
+			editor.setData( '<p>Bar athat foo</p>' );
+
+			const viewSelection = new ViewSelection();
+			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
+
+			view.fire( 'mutations',
+				[ {
+					type: 'text',
+					oldText: 'Bar athat foo',
+					newText: 'Bar that foo',
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				} ],
+				viewSelection
+			);
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>Bar that[] foo</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>Bar that{} foo</p>' );
+		} );
+
+		it( 'should place selection after when merging two words (spellchecker)', () => {
+			// This test case emulates spellchecker correction.
+			editor.setData( '<p>Foo hous e</p>' );
+
+			const viewSelection = new ViewSelection();
+			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+
+			view.fire( 'mutations',
+				[ {
+					type: 'text',
+					oldText: 'Foo hous e',
+					newText: 'Foo house',
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				} ],
+				viewSelection
+			);
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>Foo house[]</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>Foo house{}</p>' );
 		} );
 
 		it( 'should replace last &nbsp; with space', () => {
@@ -268,7 +318,7 @@ describe( 'Input feature', () => {
 		it( 'should replace first &nbsp; with space', () => {
 			model.enqueueChanges( () => {
 				model.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 6, modelRoot.getChild( 0 ), 6 )
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 0, modelRoot.getChild( 0 ), 0 )
 				] );
 			} );
 
@@ -281,11 +331,17 @@ describe( 'Input feature', () => {
 				}
 			] );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph> foobar[]</paragraph>' );
-			expect( getViewData( view ) ).to.equal( '<p> foobar{}</p>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph> []foobar</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p> {}foobar</p>' );
 		} );
 
 		it( 'should replace all &nbsp; with spaces', () => {
+			model.enqueueChanges( () => {
+				model.selection.setRanges( [
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 6, modelRoot.getChild( 0 ), 6 )
+				] );
+			} );
+
 			view.fire( 'mutations', [
 				{
 					type: 'text',
@@ -295,9 +351,8 @@ describe( 'Input feature', () => {
 				}
 			] );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar   baz</paragraph>' );
-			expect( getViewData( view ) ).to.equal( '<p>foo{}bar' +
-				'   baz</p>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>foobar   baz[]</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>foobar   baz{}</p>' );
 		} );
 	} );
 
@@ -378,20 +433,6 @@ describe( 'Input feature', () => {
 			view.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
-		} );
-	} );
-
-	describe( 'destroy', () => {
-		it( 'should destroy change buffer', () => {
-			const typing = new Input( new VirtualTestEditor() );
-			typing.init();
-
-			const destroy = typing._buffer.destroy = sinon.spy();
-
-			typing.destroy();
-
-			expect( destroy.calledOnce ).to.be.true;
-			expect( typing._buffer ).to.be.null;
 		} );
 	} );
 } );
