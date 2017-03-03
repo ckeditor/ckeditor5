@@ -13,7 +13,7 @@ import TextProxy from './textproxy';
 import Range from './range';
 import Position from './position';
 import DocumentFragment from './documentfragment';
-import Document from './document';
+import MarkerCollection from './markercollection';
 import NodeList from './nodelist';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -76,7 +76,7 @@ export function insert( position, nodes ) {
 	_mergeNodesAtIndex( parent, index );
 
 	// If given element is a DocumentFragment and is set to the Document then we need to transfer its Markers.
-	if ( nodes instanceof DocumentFragment && position.root.document instanceof Document ) {
+	if ( nodes instanceof DocumentFragment && position.root.document.markers instanceof MarkerCollection ) {
 		for ( const marker of nodes.markers ) {
 			const range = new Range( new Position( parent, marker[ 1 ].start.path ),  new Position( parent, marker[ 1 ].end.path ) );
 			position.root.document.markers.set( marker[ 0 ], range );
