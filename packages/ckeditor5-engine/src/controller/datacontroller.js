@@ -214,7 +214,7 @@ export default class DataController {
 	 * @param {String} data Data to parse.
 	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
 	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
-	 * @returns {engine/model/documentfragment~DocumentFragment} Model DocumentFragment as a result of view parsing.
+	 * @returns {module:engine/model/documentfragment~DocumentFragment} Parsed data.
 	 */
 	parse( data, context = '$root' ) {
 		// data -> view
@@ -225,7 +225,7 @@ export default class DataController {
 	}
 
 	/**
-	 * Returns wrapped by {engine/model/documentfragment~DocumentFragment} result of the given
+	 * Returns wrapped by {module:engine/model/documentfragment~DocumentFragment} result of the given
 	 * {@link module:engine/view/element~Element view element} or
 	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment} converted by the
 	 * {@link #viewToModel view to model converters}.
@@ -234,7 +234,7 @@ export default class DataController {
 	 * Element or document fragment which content will be converted.
 	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
 	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
-	 * @returns {engine/model/documentfragment~DocumentFragment} View item converted to Model DocumentFragment.
+	 * @returns {module:engine/model/documentfragment~DocumentFragment} View item converted to Model DocumentFragment.
 	 */
 	toModel( viewElementOrFragment, context = '$root' ) {
 		const { conversionResult, markers } = this.viewToModel.convert( viewElementOrFragment, { context: [ context ] } );
@@ -324,7 +324,7 @@ mix( DataController, EmitterMixin );
 /**
  * Result of parsing view to model.
  *
- * @typedef {Object} {engine/controller/datacontroller~ParsedModelData}
+ * @typedef {Object} {module:engine/controller/datacontroller~ParsedModelData}
  * @property {module:engine/model/documentfragment~DocumentFragment|module:engine/model/node~Node} modelItem
  * Fragment of parsed model.
  * @property {Map<String, module:engine/model/range~Range>} markers List of parsed marker stamps.

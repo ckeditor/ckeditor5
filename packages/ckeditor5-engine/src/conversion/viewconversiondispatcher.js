@@ -134,7 +134,7 @@ export default class ViewConversionDispatcher {
 	 * viewItem Part of the view to be converted.
 	 * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
 	 * events. See also {@link ~ViewConversionDispatcher#event:element element event}.
-	 * @returns {engine/conversion/viewconversiondispatcher~ConvertedModelData} Model data that is a result of the conversion process.
+	 * @returns {module:engine/conversion/viewconversiondispatcher~ConvertedModelData} Model data that is a result of the conversion process.
 	 */
 	convert( viewItem, additionalData = {} ) {
 		this.fire( 'viewCleanup', viewItem );
