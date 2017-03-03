@@ -249,8 +249,7 @@ function extractMarkersFromModelFragment( modelItem ) {
 	// Create ModelTreeWalker.
 	const walker = new ModelTreeWalker( {
 		startPosition: ModelPosition.createAt( modelItem, 0 ),
-		ignoreElementEnd: true,
-		shallow: false
+		ignoreElementEnd: true
 	} );
 
 	// Walk through DocumentFragment and collect marker elements.
