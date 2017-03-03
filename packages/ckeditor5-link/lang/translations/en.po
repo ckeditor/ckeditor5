@@ -1,0 +1,15 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+
+msgctxt "Toolbar button tooltip for the Unlink feature."
+msgid "Unlink"
+msgstr "Unlink"
+
+msgctxt "Toolbar button tooltip for the Link feature."
+msgid "Link"
+msgstr "Link"
+
+msgctxt "Label for the url input in the Link dialog."
+msgid "Link URL"
+msgstr "Link URL"
