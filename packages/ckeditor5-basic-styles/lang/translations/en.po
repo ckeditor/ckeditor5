@@ -1,0 +1,11 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+
+msgctxt "Toolbar button tooltip for the Bold feature."
+msgid "Bold"
+msgstr "Bold"
+
+msgctxt "Toolbar button tooltip for the Italic feature."
+msgid "Italic"
+msgstr "Italic"
