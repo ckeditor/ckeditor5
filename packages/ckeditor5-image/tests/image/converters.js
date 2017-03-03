@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { viewToModelImage, modelToViewSelection, createImageAttributeConverter } from '../../src/image/converters';
+import { viewToModelImage, createImageAttributeConverter } from '../../src/image/converters';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { createImageViewElement } from '../../src/image/imageengine';
 import { toImageWidget } from '../../src/image/utils';
@@ -32,7 +32,6 @@ describe( 'Image converters', () => {
 					.fromElement( 'image' )
 					.toElement( () => toImageWidget( createImageViewElement() ) );
 
-				editor.editing.modelToView.on( 'selection', modelToViewSelection( editor.t ), { priority: 'lowest' } );
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'image' )
 					.toElement( () => toImageWidget( createImageViewElement() ) );
@@ -82,28 +81,6 @@ describe( 'Image converters', () => {
 		it( 'should not convert image if there is no img element', () => {
 			editor.setData( '<figure class="image"></figure>' );
 			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '' );
-		} );
-	} );
-
-	describe( 'modelToViewSelection', () => {
-		it( 'should convert selection over image to fake selection', () => {
-			setModelData( document, '[<image src=""></image>]' );
-
-			expect( viewDocument.selection.isFake ).to.be.true;
-			expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'image widget' );
-		} );
-
-		it( 'should convert fake selection label with alt', () => {
-			setModelData( document, '[<image src="" alt="foo bar"></image>]' );
-
-			expect( viewDocument.selection.isFake ).to.be.true;
-			expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'foo bar image widget' );
-		} );
-
-		it( 'should not convert fake selection if image is not selected', () => {
-			setModelData( document, '[]<image src="" alt="foo bar"></image>' );
-
-			expect( viewDocument.selection.isFake ).to.be.false;
 		} );
 	} );
 

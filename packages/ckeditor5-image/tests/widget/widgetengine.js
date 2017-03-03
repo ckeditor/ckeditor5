@@ -31,7 +31,11 @@ describe( 'WidgetEngine', () => {
 
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'widget' )
-					.toElement( () => widgetize( new ViewContainer( 'div' ) ) );
+					.toElement( () => {
+						const element = widgetize( new ViewContainer( 'div' ), { label: 'element label' } );
+
+						return element;
+					} );
 
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'editable' )
@@ -50,6 +54,18 @@ describe( 'WidgetEngine', () => {
 			'[<div class="ck-widget ck-widget_selected" contenteditable="false">foo bar</div>]'
 		);
 		expect( viewDocument.selection.isFake ).to.be.true;
+	} );
+
+	it( 'should use element\'s label to set fake selection if one is provided', () => {
+		setModelData( document, '[<widget>foo bar</widget>]' );
+
+		expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'element label' );
+	} );
+
+	it( 'fake selection should be empty if widget is not selected', () => {
+		setModelData( document, '<widget>foo bar</widget>' );
+
+		expect( viewDocument.selection.fakeSelectionLabel ).to.equal( '' );
 	} );
 
 	it( 'should toggle selected class', () => {
