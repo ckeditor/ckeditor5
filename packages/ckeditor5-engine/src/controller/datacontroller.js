@@ -234,7 +234,7 @@ export default class DataController {
 	 * Element or document fragment which content will be converted.
 	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
 	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
-	 * @returns {module:engine/model/documentfragment~DocumentFragment} View item converted to Model DocumentFragment.
+	 * @returns {module:engine/model/documentfragment~DocumentFragment} Output document fragment.
 	 */
 	toModel( viewElementOrFragment, context = '$root' ) {
 		const { conversionResult, markers } = this.viewToModel.convert( viewElementOrFragment, { context: [ context ] } );
@@ -246,10 +246,8 @@ export default class DataController {
 			documentFragment = conversionResult;
 		}
 
-		// Set markers to the documentFragment.
-		for ( const marker of markers ) {
-			documentFragment.markers.set( marker[ 0 ], marker[ 1 ] );
-		}
+		// Set converted markers to the documentFragment.
+		documentFragment.markers = markers;
 
 		return documentFragment;
 	}
@@ -320,15 +318,6 @@ export default class DataController {
 }
 
 mix( DataController, EmitterMixin );
-
-/**
- * Result of parsing view to model.
- *
- * @typedef {Object} {module:engine/controller/datacontroller~ParsedModelData}
- * @property {module:engine/model/documentfragment~DocumentFragment|module:engine/model/node~Node} modelItem
- * Fragment of parsed model.
- * @property {Map<String, module:engine/model/range~Range>} markers List of parsed marker stamps.
- */
 
 /**
  * Event fired when {@link #insertContent} method is called.

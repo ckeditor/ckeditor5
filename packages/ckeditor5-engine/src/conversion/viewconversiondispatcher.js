@@ -283,7 +283,7 @@ function extractMarkersFromModelFragment( modelItem ) {
 /**
  * Model data that is a result of the conversion process.
  *
- * @typedef {ConvertedModelData} engine/conversion/viewconversiondispatcher~ConvertedModelData
+ * @typedef {ConvertedModelData} module:engine/conversion/viewconversiondispatcher~ConvertedModelData
  * @property {module:engine/model/documentfragment~DocumentFragment|module:engine/model/element~Node} conversionResult Converted model item.
  * @property {Map<String, module:engine/model/range~Range>} markers List of static markers.
  */
