@@ -255,7 +255,7 @@ class ViewConverterBuilder {
 	 * @param {String|Function} element Model element name or model element creator function.
 	 */
 	toElement( element ) {
-		const eventCallbackGen = function( from ) {
+		function eventCallbackGen( from ) {
 			return ( evt, data, consumable, conversionApi ) => {
 				// There is one callback for all patterns in the matcher.
 				// This will be usually just one pattern but we support matchers with many patterns too.
@@ -302,7 +302,7 @@ class ViewConverterBuilder {
 					break;
 				}
 			};
-		};
+		}
 
 		this._setCallback( eventCallbackGen, 'normal' );
 	}
@@ -323,7 +323,7 @@ class ViewConverterBuilder {
 	 * @param {String} [value] Attribute value. Required if `keyOrCreator` is a `string`. Ignored otherwise.
 	 */
 	toAttribute( keyOrCreator, value ) {
-		const eventCallbackGen = function( from ) {
+		function eventCallbackGen( from ) {
 			return ( evt, data, consumable, conversionApi ) => {
 				// There is one callback for all patterns in the matcher.
 				// This will be usually just one pattern but we support matchers with many patterns too.
@@ -357,7 +357,7 @@ class ViewConverterBuilder {
 					break;
 				}
 			};
-		};
+		}
 
 		this._setCallback( eventCallbackGen, 'low' );
 	}
@@ -396,7 +396,7 @@ class ViewConverterBuilder {
 	 * @param {Function} [creator] Creator function.
 	 */
 	toMarker( creator ) {
-		const eventCallbackGen = function( from ) {
+		function eventCallbackGen( from ) {
 			return ( evt, data, consumable ) => {
 				// There is one callback for all patterns in the matcher.
 				// This will be usually just one pattern but we support matchers with many patterns too.
@@ -437,7 +437,7 @@ class ViewConverterBuilder {
 					break;
 				}
 			};
-		};
+		}
 
 		this._setCallback( eventCallbackGen, 'normal' );
 	}
