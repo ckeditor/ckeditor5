@@ -30,6 +30,13 @@ describe( 'image widget utils', () => {
 			image.setAttribute( 'alt', 'foo bar baz' );
 			expect( getLabel( element ) ).to.equal( 'foo bar baz image widget' );
 		} );
+
+		it( 'provided label creator should always return same label', () => {
+			image.setAttribute( 'alt', 'foo bar baz' );
+
+			expect( getLabel( element ) ).to.equal( 'foo bar baz image widget' );
+			expect( getLabel( element ) ).to.equal( 'foo bar baz image widget' );
+		} );
 	} );
 
 	describe( 'isImageWidget()', () => {

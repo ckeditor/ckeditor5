@@ -30,11 +30,7 @@ export function toImageWidget( viewElement, label ) {
 		const imgElement = viewElement.getChild( 0 );
 		const altText = imgElement.getAttribute( 'alt' );
 
-		if ( altText ) {
-			label = `${ altText } ${ label }`;
-		}
-
-		return label;
+		return altText ? `${ altText } ${ label }` : label;
 	}
 }
 
