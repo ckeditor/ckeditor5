@@ -11,7 +11,9 @@ import Node from './node';
 import Text from './text';
 import TextProxy from './textproxy';
 import Range from './range';
+import Position from './position';
 import DocumentFragment from './documentfragment';
+import Document from './document';
 import NodeList from './nodelist';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -45,16 +47,20 @@ export default writer;
 /**
  * Inserts given nodes at given position.
  *
+ * When inserted element has {@link engine/model/markercollection~MarkersCollection} and is being inserted
+ * to the element which root also has {@link engine/model/markercollection~MarkersCollection} then markers will
+ * be transferred as well.
+ *
  * @function module:engine/model/writer~writer.insert
  * @param {module:engine/model/position~Position} position Position at which nodes should be inserted.
  * @param {module:engine/model/node~NodeSet} nodes Nodes to insert.
  * @returns {module:engine/model/range~Range} Range spanning over inserted elements.
  */
 export function insert( position, nodes ) {
-	nodes = normalizeNodes( nodes );
+	const normalizedNodes = normalizeNodes( nodes );
 
 	// We have to count offset before inserting nodes because they can get merged and we would get wrong offsets.
-	const offset = nodes.reduce( ( sum, node ) => sum + node.offsetSize, 0 );
+	const offset = normalizedNodes.reduce( ( sum, node ) => sum + node.offsetSize, 0 );
 	const parent = position.parent;
 
 	// Insertion might be in a text node, we should split it if that's the case.
@@ -63,11 +69,19 @@ export function insert( position, nodes ) {
 
 	// Insert nodes at given index. After splitting we have a proper index and insertion is between nodes,
 	// using basic `Element` API.
-	parent.insertChildren( index, nodes );
+	parent.insertChildren( index, normalizedNodes );
 
 	// Merge text nodes, if possible. Merging is needed only at points where inserted nodes "touch" "old" nodes.
-	_mergeNodesAtIndex( parent, index + nodes.length );
+	_mergeNodesAtIndex( parent, index + normalizedNodes.length );
 	_mergeNodesAtIndex( parent, index );
+
+	// If given element is a DocumentFragment and is set to the Document then we need to transfer its Markers.
+	if ( nodes instanceof DocumentFragment && position.root.document instanceof Document ) {
+		for ( const marker of nodes.markers ) {
+			const range = new Range( new Position( parent, marker[ 1 ].start.path ),  new Position( parent, marker[ 1 ].end.path ) );
+			position.root.document.markers.set( marker[ 0 ], range );
+		}
+	}
 
 	return new Range( position, position.getShiftedBy( offset ) );
 }

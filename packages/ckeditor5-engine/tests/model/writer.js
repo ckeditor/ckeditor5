@@ -54,6 +54,27 @@ describe( 'writer', () => {
 
 			expectData( 'foo<$text bold="true">xxxbar</$text><image src="img.jpg"></image>xyz' );
 		} );
+
+		it( 'should transfer markers from given node to the root element of target position', () => {
+			root.appendChildren( [ new Element( 'div' ) ] );
+
+			const docFrag = new DocumentFragment( [
+				new Element( 'paragraph', null, [
+					new Text( 'foo bar' ),
+				] )
+			] );
+			const range = new Range( new Position( docFrag, [ 1, 2 ] ), new Position( docFrag, [ 1, 4 ] ) );
+
+			docFrag.markers.set( 'foo', range );
+
+			writer.insert( new Position( root, [ 10, 0 ] ), docFrag );
+
+			const marker = doc.markers.get( 'foo' );
+			const expectedRange = new Range( new Position( root, [ 10, 1, 2 ] ), new Position( root, [ 10, 1, 4 ] ) );
+
+			expectData( 'foo<$text bold="true">bar</$text><image src="img.jpg"></image>xyz<div><paragraph>foo bar</paragraph></div>' );
+			expect( marker.getRange().isEqual( expectedRange ) ).to.true;
+		} );
 	} );
 
 	describe( 'remove', () => {
