@@ -267,10 +267,10 @@ function extractMarkersFromModelFragment( modelItem ) {
 
 		// When marker of given name is not stored it means that we have found the beginning of the range.
 		if ( !markers.has( markerName ) ) {
-			markers.set( markerName, new ModelRange( new ModelPosition( modelItem, currentPosition.path ) ) );
+			markers.set( markerName, new ModelRange( ModelPosition.createFromPosition( currentPosition ) ) );
 		// Otherwise is means that we have found end of the marker range.
 		} else {
-			markers.get( markerName ).end = new ModelPosition( modelItem, currentPosition.path );
+			markers.get( markerName ).end = ModelPosition.createFromPosition( currentPosition );
 		}
 
 		// Remove marker stamp element from DocumentFragment.
