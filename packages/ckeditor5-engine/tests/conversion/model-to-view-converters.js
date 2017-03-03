@@ -877,6 +877,29 @@ describe( 'model-to-view-converters', () => {
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			} );
+
+			it( 'should insert and remove different opening and ending element', () => {
+				function creator( data, isOpening ) {
+					if ( isOpening ) {
+						return new ViewUIElement( 'span', { 'class': data.name, 'data-start': true } );
+					}
+
+					return new ViewUIElement( 'span', { 'class': data.name, 'data-end': true } );
+				}
+
+				dispatcher.on( 'addMarker:marker', insertUIElement( creator ) );
+				dispatcher.on( 'removeMarker:marker', removeUIElement( creator ) );
+
+				dispatcher.convertMarker( 'addMarker', 'marker', range );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div><p>fo<span class="marker" data-start="true"></span>oba<span class="marker" data-end="true"></span>r</p></div>'
+				);
+
+				dispatcher.convertMarker( 'removeMarker', 'marker', range );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			} );
 		} );
 	} );
 

@@ -103,11 +103,18 @@ export function insertText() {
  */
 export function insertUIElement( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		const viewElement = ( elementCreator instanceof ViewElement ) ?
-			elementCreator.clone( true ) :
-			elementCreator( data, consumable, conversionApi );
+		let viewStartElement, viewEndElement;
 
-		if ( !viewElement ) {
+		if ( elementCreator instanceof ViewElement ) {
+			viewStartElement = elementCreator.clone( true );
+			viewEndElement = elementCreator.clone( true );
+		} else {
+			const isOpening = true;
+			viewStartElement = elementCreator( data, isOpening, consumable, conversionApi );
+			viewEndElement = elementCreator( data, !isOpening, consumable, conversionApi );
+		}
+
+		if ( !viewStartElement || !viewEndElement ) {
 			return;
 		}
 
@@ -117,10 +124,10 @@ export function insertUIElement( elementCreator ) {
 
 		const mapper = conversionApi.mapper;
 
-		viewWriter.insert( mapper.toViewPosition( data.range.start ), viewElement );
+		viewWriter.insert( mapper.toViewPosition( data.range.start ), viewStartElement );
 
 		if ( !data.range.isCollapsed ) {
-			viewWriter.insert( mapper.toViewPosition( data.range.end ), viewElement.clone( true ) );
+			viewWriter.insert( mapper.toViewPosition( data.range.end ), viewEndElement );
 		}
 	};
 }
@@ -445,11 +452,18 @@ export function remove() {
  */
 export function removeUIElement( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		const viewElement = ( elementCreator instanceof ViewElement ) ?
-			elementCreator.clone( true ) :
-			elementCreator( data, consumable, conversionApi );
+		let viewStartElement, viewEndElement;
 
-		if ( !viewElement ) {
+		if ( elementCreator instanceof ViewElement ) {
+			viewStartElement = elementCreator.clone( true );
+			viewEndElement = elementCreator.clone( true );
+		} else {
+			const isOpening = true;
+			viewStartElement = elementCreator( data, isOpening, consumable, conversionApi );
+			viewEndElement = elementCreator( data, !isOpening, consumable, conversionApi );
+		}
+
+		if ( !viewStartElement || !viewEndElement ) {
 			return;
 		}
 
@@ -459,7 +473,13 @@ export function removeUIElement( elementCreator ) {
 
 		const viewRange = conversionApi.mapper.toViewRange( data.range );
 
-		viewWriter.clear( viewRange.getEnlarged(), viewElement );
+		// First remove closing element.
+		viewWriter.clear( viewRange.getEnlarged(), viewEndElement );
+
+		// If closing and opening elements are not the same then remove opening element.
+		if ( !viewStartElement.isSimilar( viewEndElement ) ) {
+			viewWriter.clear( viewRange.getEnlarged(), viewStartElement );
+		}
 	};
 }
 

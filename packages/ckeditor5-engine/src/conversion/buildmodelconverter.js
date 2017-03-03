@@ -273,8 +273,21 @@ class ModelConverterBuilder {
 	 *			.fromMarker( 'search' )
 	 *			.toStamp( ( data ) => new UIElement( 'span', { 'data-name': data.marker.getName() ) );
 	 *
+	 * Creator function provides parameter `isOpening` which defined if currently converted element is a beginning or end of
+	 * the marker range. This makes possible to create different opening and closing stamp.
+	 *
+	 *		buildModelConverter().for( dispatcher )
+	 *			.fromMarker( 'search' )
+	 *			.toStamp( ( data, isOpening ) => {
+	 *				if ( isOpening ) {
+	 *					return new UIElement( 'span', { 'data-name': data.marker.getName(), 'data-start': true ) );
+	 *				}
+	 *
+	 *				return new UIElement( 'span', { 'data-name': data.marker.getName(), 'data-end': true ) );
+	 *			}
+	 *
 	 * Creator function provides
-	 * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker addMarker event} parameters.
+	 * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#StampCreatorData} parameters.
 	 *
 	 * See how markers {module:engine/model/buildviewconverter~ViewConverterBuilder#toMarker view -> model serialization}
 	 * works to find out what view element format is the best for you.
@@ -389,3 +402,13 @@ class ModelConverterBuilder {
 export default function buildModelConverter() {
 	return new ModelConverterBuilder();
 }
+
+/**
+ * @typedef {StampCreatorData} {module:engine/conversion/buildmodelconverter~ModelConverterBuilder#StampCreatorData}
+ * @param {Object} data Additional information about the change.
+ * @param {String} data.name Marker name.
+ * @param {module:engine/model/range~Range} data.range Marker range.
+ * @param {Boolean} isOpening Defines if currently converted element is a beginning or end of the marker range.
+ * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
+ * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
+ */
