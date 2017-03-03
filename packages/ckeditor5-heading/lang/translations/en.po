@@ -1,0 +1,19 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+
+msgctxt "Drop-down option label for the paragraph format."
+msgid "Paragraph"
+msgstr "Paragraph"
+
+msgctxt "Drop-down option label for the heading level 1 format."
+msgid "Heading 1"
+msgstr "Heading 1"
+
+msgctxt "Drop-down option label for the heading level 2 format."
+msgid "Heading 2"
+msgstr "Heading 2"
+
+msgctxt "Drop-down option label for the heading level 3 format."
+msgid "Heading 3"
+msgstr "Heading 3"
