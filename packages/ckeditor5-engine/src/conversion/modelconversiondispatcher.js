@@ -237,9 +237,8 @@ export default class ModelConversionDispatcher {
 	 *
 	 * @fires remove
 	 * @fires insert
-	 * @param {module:engine/model/position~Position} sourcePosition Position from where the range has been removed.
-	 * @param {module:engine/model/range~Range} range Removed range (after remove, in
-	 * {@link module:engine/model/document~Document#graveyard graveyard root}).
+	 * @param {module:engine/model/position~Position} sourcePosition The original position from which the range was moved.
+	 * @param {module:engine/model/range~Range} range The range containing the moved content.
 	 */
 	convertMove( sourcePosition, range ) {
 		this.convertRemove( sourcePosition, range );
