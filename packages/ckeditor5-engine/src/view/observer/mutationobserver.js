@@ -247,10 +247,10 @@ export default class MutationObserver extends Observer {
  *
  * @see module:engine/view/observer/mutationobserver~MutationObserver
  * @event module:engine/view/document~Document#event:mutations
- * @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|module:engine/view/observer/mutationobserver~MutatatedChildren>}
+ * @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|module:engine/view/observer/mutationobserver~MutatedChildren>}
  * viewMutations Array of mutations.
  * For mutated texts it will be {@link module:engine/view/observer/mutationobserver~MutatedText} and for mutated elements it will be
- * {@link module:engine/view/observer/mutationobserver~MutatatedChildren}. You can recognize the type based on the `type` property.
+ * {@link module:engine/view/observer/mutationobserver~MutatedChildren}. You can recognize the type based on the `type` property.
  * @param {module:engine/view/selection~Selection|null} viewSelection View selection that is a result of converting DOM selection to view.
  * Keep in
  * mind that the DOM selection is already "updated", meaning that it already acknowledges changes done in mutation.
@@ -260,7 +260,7 @@ export default class MutationObserver extends Observer {
  * Mutation item for text.
  *
  * @see module:engine/view/document~Document#event:mutations
- * @see module:engine/view/observer/mutationobserver~MutatatedChildren
+ * @see module:engine/view/observer/mutationobserver~MutatedChildren
  *
  * @typedef {Object} module:engine/view/observer/mutationobserver~MutatedText
  *
@@ -276,7 +276,7 @@ export default class MutationObserver extends Observer {
  * @see module:engine/view/document~Document#event:mutations
  * @see module:engine/view/observer/mutationobserver~MutatedText
  *
- * @typedef {Object} module:engine/view/observer/mutationobserver~MutatatedChildren
+ * @typedef {Object} module:engine/view/observer/mutationobserver~MutatedChildren
  *
  * @property {String} type For child nodes mutations it is always 'children'.
  * @property {module:engine/view/element~Element} node Parent of the mutated children.

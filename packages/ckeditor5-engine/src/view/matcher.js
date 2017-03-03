@@ -203,9 +203,14 @@ export default class Matcher {
 	 * @returns {String|null} Element name trying to match.
 	 */
 	getElementName() {
-		return this._patterns.length == 1 && this._patterns[ 0 ].name && !( this._patterns[ 0 ].name instanceof RegExp ) ?
-			this._patterns[ 0 ].name :
-			null;
+		if ( this._patterns.length !== 1 ) {
+			return null;
+		}
+
+		const pattern = this._patterns[ 0 ];
+		const name = pattern.name;
+
+		return ( typeof pattern != 'function' && name && !( name instanceof RegExp ) ) ? name : null;
 	}
 
 }
