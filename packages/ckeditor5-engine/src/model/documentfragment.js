@@ -7,7 +7,6 @@
  * @module module:engine/model/documentfragment
  */
 
-import MarkerCollection from './markercollection';
 import NodeList from './nodelist';
 import Element from './element';
 import Text from './text';
@@ -30,12 +29,13 @@ export default class DocumentFragment {
 	 */
 	constructor( children ) {
 		/**
-		 * DocumentFragment markers collection.
+		 * DocumentFragment static markers list. This is a list of names and {@link module:engine/model/range~Range ranges}
+		 * which will be set as Markers to {@link module:engine/model/document~Document#markers document markers collection}
+		 * when DocumentFragment will be inserted to the document.
 		 *
-		 * @readonly
-		 * @member {module:engine/model/markercollection~MarkerCollection}
+		 * @member {Map<String, {module:engine/model/range~Range}>} module:engine/model/documentfragment~DocumentFragment#markers
 		 */
-		this.markers = new MarkerCollection();
+		this.markers = new Map();
 
 		/**
 		 * List of nodes contained inside the document fragment.
