@@ -235,14 +235,14 @@ describe( 'View converter builder', () => {
 			new ViewAttributeElement( 'span', { 'foo': 'marker', 'bar': 'marker', 'data-name': 'marker3' } )
 		] );
 
-		const { conversionResult, markersData } = dispatcher.convert( viewElement, objWithContext );
+		const { conversionResult, markers } = dispatcher.convert( viewElement, objWithContext );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph></paragraph>' );
 
-		expect( markersData.size ).to.equal( 3 );
-		expect( markersData.has( 'marker1' ) ).to.true;
-		expect( markersData.has( 'marker2' ) ).to.true;
-		expect( markersData.has( 'marker3' ) ).to.true;
+		expect( markers.size ).to.equal( 3 );
+		expect( markers.has( 'marker1' ) ).to.true;
+		expect( markers.has( 'marker2' ) ).to.true;
+		expect( markers.has( 'marker3' ) ).to.true;
 	} );
 
 	it( 'should do nothing when there is no element matching to marker pattern', () => {
