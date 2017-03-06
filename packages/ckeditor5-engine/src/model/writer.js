@@ -13,7 +13,6 @@ import TextProxy from './textproxy';
 import Range from './range';
 import Position from './position';
 import DocumentFragment from './documentfragment';
-import MarkerCollection from './markercollection';
 import NodeList from './nodelist';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -78,12 +77,14 @@ export function insert( position, nodes ) {
 
 	// If given element is a DocumentFragment and has markers.
 	if ( nodes instanceof DocumentFragment && nodes.markers.size ) {
-		// If node is being inserted to the Document with markers collection.
-		if ( position.root.document && position.root.document.markers instanceof MarkerCollection ) {
+		// If node is being inserted to the element attached to Document or element which root element is DocumentFragment.
+		const targetElement = position.root.document || position.root;
+
+		if ( targetElement.markers ) {
 			// We need to transfer its markers and update position markers positions.
 			for ( const marker of nodes.markers ) {
 				const range = new Range( new Position( parent, marker[ 1 ].start.path ),  new Position( parent, marker[ 1 ].end.path ) );
-				position.root.document.markers.set( marker[ 0 ], range );
+				targetElement.markers.set( marker[ 0 ], range );
 			}
 		// Otherwise we need to show warning about losing markers.
 		} else {

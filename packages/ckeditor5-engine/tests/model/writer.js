@@ -11,7 +11,7 @@ import TextProxy from '../../src/model/textproxy';
 import Position from '../../src/model/position';
 import Range from '../../src/model/range';
 import writer from '../../src/model/writer';
-import { getData } from '../../src/dev-utils/model';
+import { getData, stringify } from '../../src/dev-utils/model';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -75,6 +75,24 @@ describe( 'writer', () => {
 
 			expectData( 'foo<$text bold="true">bar</$text><image src="img.jpg"></image>xyz<div><paragraph>foo bar</paragraph></div>' );
 			expect( marker.getRange().isEqual( expectedRange ) ).to.true;
+		} );
+
+		it( 'should transfer markers from given node to the root element of target position when root is a documentFragment', () => {
+			const targetDocFrag = new DocumentFragment( [ new Element( 'div' ) ] );
+
+			const docFrag = new DocumentFragment( [
+				new Element( 'paragraph', null, [
+					new Text( 'foo bar' ),
+				] )
+			] );
+			const range = new Range( new Position( docFrag, [ 0, 2 ] ), new Position( docFrag, [ 0, 6 ] ) );
+
+			docFrag.markers.set( 'foo', range );
+
+			writer.insert( new Position( targetDocFrag, [ 0, 0 ] ), docFrag );
+
+			expect( stringify( targetDocFrag, targetDocFrag.markers.get( 'foo' ) ) )
+				.to.equal( '<div><paragraph>fo[o ba]r</paragraph></div>' );
 		} );
 
 		it( 'should log warning when element with markers is set to the element without markers collection', () => {
