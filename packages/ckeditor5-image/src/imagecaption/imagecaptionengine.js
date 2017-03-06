@@ -15,15 +15,14 @@ import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import { isImage, isImageWidget } from '../image/utils';
 import {
 	captionElementCreator,
 	isCaption,
 	getCaptionFromImage,
-	isInsideCaption,
-	matchImageCaption,
-	insertViewCaptionAndBind
+	matchImageCaption
 } from './utils';
 
 /**
@@ -249,3 +248,27 @@ function captionModelToView( elementCreator ) {
 		}
 	};
 }
+
+// Returns `true` if provided `node` is placed inside image's caption.
+//
+// @private
+// @param {module:engine/model/node~Node} node
+// @return {Boolean}
+function isInsideCaption( node ) {
+	return !!( node.parent && node.parent.name == 'caption' && node.parent.parent && node.parent.parent.name == 'image' );
+}
+
+// Inserts `viewCaption` at the end of `viewImage` and binds it to `modelCaption`.
+//
+// @private
+// @param {module:engine/view/containerelement~ContainerElement} viewCaption
+// @param {module:engine/model/element~Element} modelCaption
+// @param {module:engine/view/containerelement~ContainerElement} viewImage
+// @param {module:engine/conversion/mapper~Mapper} mapper
+export function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper ) {
+	const viewPosition = ViewPosition.createAt( viewImage, 'end' );
+
+	viewWriter.insert( viewPosition, viewCaption );
+	mapper.bindElements( modelCaption, viewCaption );
+}
+
