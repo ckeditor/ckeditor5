@@ -434,6 +434,17 @@ describe( 'LiveRange', () => {
 
 				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><w><p>x</p><p>c]d</p></w>' );
 			} );
+
+			it( 'contains element to wrap', () => {
+				setData( doc, '<p>a[b</p><p>x</p><p>c]d</p>' );
+
+				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
+
+				// [<p>x</p>]
+				doc.batch().wrap( new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) ), 'w' );
+
+				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><w><p>x</p></w><p>c]d</p>' );
+			} );
 		} );
 
 		describe( 'unwrap', () => {
@@ -493,8 +504,18 @@ describe( 'LiveRange', () => {
 				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><p>x</p><p>c]d</p>' );
 			} );
 
-			it( 'its end is intersecting with the wrapper to remove', () => {
+			it( 'its end is intersecting with the wrapper to remove (multiple elements)', () => {
 				setData( doc, '<p>a[b</p><w><p>x</p><p>c]d</p></w>' );
+
+				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
+
+				doc.batch().unwrap( root.getChild( 1 ) );
+
+				expect( stringify( root, live ) ).to.equal( '<p>a[b</p><p>x</p><p>c]d</p>' );
+			} );
+
+			it( 'contains wrapped element', () => {
+				setData( doc, '<p>a[b</p><w><p>x</p></w><p>c]d</p>' );
 
 				live = new LiveRange( doc.selection.getFirstPosition(), doc.selection.getLastPosition() );
 
