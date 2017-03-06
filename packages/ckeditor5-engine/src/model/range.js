@@ -447,40 +447,55 @@ export default class Range {
 	 * @returns {Array.<module:engine/model/range~Range>}
 	 */
 	_getTransformedByDocumentChange( type, deltaType, targetPosition, howMany, sourcePosition ) {
+		// IMPORTANT! Every special case added here has to be reflected in MarkerDelta transformations!
+		// Check /src/model/delta/basic-transformations.js.
 		if ( type == 'insert' ) {
 			return this._getTransformedByInsertion( targetPosition, howMany, false, false );
 		} else {
 			const ranges = this._getTransformedByMove( sourcePosition, targetPosition, howMany );
 
-			if ( deltaType == 'split' && this.containsPosition( sourcePosition ) ) {
-				// Special case for splitting element inside range.
-				// <p>f[ooba]r</p> -> <p>f[oo</p><p>ba]r</p>
-				ranges[ 0 ].end = ranges[ 1 ].end;
-				ranges.pop();
-			} else if ( deltaType == 'merge' && type == 'move' && this.isCollapsed && ranges[ 0 ].start.isEqual( sourcePosition ) ) {
-				// Special case when collapsed range is in merged element.
-				// <p>foo</p><p>[]bar{}</p> -> <p>foo[]bar{}</p>
-				ranges[ 0 ] = new Range( targetPosition.getShiftedBy( this.start.offset ) );
-			}
 			// Don't ask. Just debug.
 			// Like this: https://github.com/ckeditor/ckeditor5-engine/issues/841#issuecomment-282706488.
-			else if ( type == 'move' && deltaType == 'wrap' ) {
-				// <p>a[b</p><w></w><p>c]d</p> -> <w><p>a[b</p></w><p>c]d</p>
-				if ( this.containsPosition( targetPosition ) ) {
-					return [ new Range( ranges[ 2 ].start, ranges[ 1 ].end ) ];
-				}
-				// <p>a[b</p><p>c]d</p><w></w> -> <p>a[b</p><w><p>c]d</p></w>
-				else if ( this.containsPosition( sourcePosition ) ) {
+			//
+			// In following cases, in examples, the last step is the fix step.
+			// When there are multiple ranges in an example, ranges[] array indices are represented as follows:
+			// * [] is ranges[ 0 ],
+			// * {} is ranges[ 1 ],
+			// * () is ranges[ 2 ].
+			if ( type == 'move' ) {
+				if ( deltaType == 'split' && this.containsPosition( sourcePosition ) ) {
+					// Range contains a position where an element is split.
+					// <p>f[ooba]r</p> -> <p>f[ooba]r</p><p></p> -> <p>f[oo]</p><p>{ba}r</p> -> <p>f[oo</p><p>ba]r</p>
 					return [ new Range( ranges[ 0 ].start, ranges[ 1 ].end ) ];
-				}
-			} else if ( type == 'move' && deltaType == 'unwrap' ) {
-				// <w><p>a[b</p></w><p>c]d</p> -> <p>a[b</p><w></w><p>c]d</p>
-				if ( this.containsPosition( sourcePosition.getShiftedBy( howMany ) ) ) {
-					return [ new Range( ranges[ 1 ].start, ranges[ 0 ].end ) ];
-				}
-				// <p>a[b</p><w><p>c]d</p></w> -> <p>a[b</p><p>c]d</p><w></w>
-				else if ( this.containsPosition( sourcePosition ) ) {
-					return [ new Range( ranges[ 0 ].start, ranges[ 2 ].end ) ];
+				} else if ( deltaType == 'merge' && this.isCollapsed && ranges[ 0 ].start.isEqual( sourcePosition ) ) {
+					// Collapsed range is in merged element.
+					// Without fix, the range would end up in the graveyard, together with removed element.
+					// <p>foo</p><p>[]bar</p> -> <p>foobar</p><p>[]</p> -> <p>foobar</p> -> <p>foo[]bar</p>
+					return [ new Range( targetPosition.getShiftedBy( this.start.offset ) ) ];
+				} else if ( deltaType == 'wrap' ) {
+					// Range intersects (at the start) with wrapped element (<p>ab</p>).
+					// <p>a[b</p><p>c]d</p> -> <p>a[b</p><w></w><p>c]d</p> -> [<w>]<p>a(b</p>){</w><p>c}d</p> -> <w><p>a[b</p></w><p>c]d</p>
+					if ( this.containsPosition( targetPosition ) ) {
+						return [ new Range( ranges[ 2 ].start, ranges[ 1 ].end ) ];
+					}
+					// Range intersects (at the end) with wrapped element (<p>cd</p>).
+					// <p>a[b</p><p>c]d</p> -> <p>a[b</p><p>c]d</p><w></w> -> <p>a[b</p>]<w>{<p>c}d</p></w> -> <p>a[b</p><w><p>c]d</p></w>
+					else if ( this.containsPosition( sourcePosition ) ) {
+						return [ new Range( ranges[ 0 ].start, ranges[ 1 ].end ) ];
+					}
+				} else if ( deltaType == 'unwrap' ) {
+					// Range intersects (at the beginning) with unwrapped element (<w></w>).
+					// <w><p>a[b</p></w><p>c]d</p> -> <p>a{b</p>}<w>[</w><p>c]d</p> -> <p>a[b</p><w></w><p>c]d</p>
+					// <w></w> is removed in next operation, but the remove does not mess up ranges.
+					if ( this.containsPosition( sourcePosition.getShiftedBy( howMany ) ) ) {
+						return [ new Range( ranges[ 1 ].start, ranges[ 0 ].end ) ];
+					}
+					// Range intersects (at the end) with unwrapped element (<w></w>).
+					// <p>a[b</p><w><p>c]d</p></w> -> <p>a[b</p>](<p>c)d</p>{<w>}</w> -> <p>a[b</p><p>c]d</p><w></w>
+					// <w></w> is removed in next operation, but the remove does not mess up ranges.
+					else if ( this.containsPosition( sourcePosition ) ) {
+						return [ new Range( ranges[ 0 ].start, ranges[ 2 ].end ) ];
+					}
 				}
 			}
 
