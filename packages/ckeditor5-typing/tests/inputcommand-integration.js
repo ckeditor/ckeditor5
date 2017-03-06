@@ -7,7 +7,7 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
+import Typing from '../src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
