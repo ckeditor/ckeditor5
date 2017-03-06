@@ -296,9 +296,7 @@ export function parse( data, schema, options = {} ) {
 	viewToModel.on( 'text', convertToModelText() );
 
 	// Convert view to model.
-	let model = viewToModel.convert( viewDocumentFragment.root, {
-		context: options.context || [ '$root' ]
-	} ).conversionResult;
+	let model = viewToModel.convert( viewDocumentFragment.root, { context: options.context || [ '$root' ] } );
 
 	// If root DocumentFragment contains only one element - return that element.
 	if ( model.is( 'documentFragment' ) && model.childCount == 1 ) {

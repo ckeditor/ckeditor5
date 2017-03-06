@@ -284,7 +284,7 @@ describe( 'advanced-converters', () => {
 
 		it( 'should convert view image to model', () => {
 			let viewElement = new ViewContainerElement( 'img', { src: 'bar.jpg', title: 'bar' } );
-			let modelElement = viewDispatcher.convert( viewElement ).conversionResult;
+			let modelElement = viewDispatcher.convert( viewElement );
 			// Attaching to tree so tree walker works fine in `modelToString`.
 			modelRoot.appendChildren( modelElement );
 
@@ -300,7 +300,7 @@ describe( 'advanced-converters', () => {
 					new ViewContainerElement( 'figcaption', null, new ViewText( 'foobar' ) )
 				]
 			);
-			let modelElement = viewDispatcher.convert( viewElement ).conversionResult;
+			let modelElement = viewDispatcher.convert( viewElement );
 			// Attaching to tree so tree walker works fine in `modelToString`.
 			modelRoot.appendChildren( modelElement );
 
@@ -519,7 +519,7 @@ describe( 'advanced-converters', () => {
 		it( 'should convert a view element to model', () => {
 			let viewElement = new ViewAttributeElement( 'a', { href: 'foo.html', title: 'Foo title' }, new ViewText( 'foo' ) );
 
-			let modelText = viewDispatcher.convert( viewElement ).conversionResult[ 0 ];
+			let modelText = viewDispatcher.convert( viewElement )[ 0 ];
 
 			expect( modelText ).to.be.instanceof( ModelText );
 			expect( modelText.data ).to.equal( 'foo' );
@@ -578,7 +578,7 @@ describe( 'advanced-converters', () => {
 				]
 			);
 
-			let modelElement = viewDispatcher.convert( viewElement ).conversionResult;
+			let modelElement = viewDispatcher.convert( viewElement );
 			modelRoot.appendChildren( modelElement );
 
 			expect( modelToString( modelElement ) ).to.equal( '<quote linkHref="foo.html" linkTitle="Foo source">foo</quote>' );
@@ -639,7 +639,7 @@ describe( 'advanced-converters', () => {
 			] )
 		] );
 
-		let model = viewDispatcher.convert( viewTable ).conversionResult;
+		let model = viewDispatcher.convert( viewTable );
 		let modelFragment = new ModelDocumentFragment( model );
 
 		expect( modelToString( modelFragment ) )
@@ -741,7 +741,7 @@ describe( 'advanced-converters', () => {
 				] )
 			] );
 
-			let modelElement = viewDispatcher.convert( viewElement ).conversionResult;
+			let modelElement = viewDispatcher.convert( viewElement );
 			modelRoot.appendChildren( modelElement );
 
 			expect( modelToString( modelElement ) ).to.equal(
