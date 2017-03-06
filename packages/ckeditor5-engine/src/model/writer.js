@@ -16,6 +16,7 @@ import DocumentFragment from './documentfragment';
 import MarkerCollection from './markercollection';
 import NodeList from './nodelist';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * Contains functions used for composing model tree, grouped together under "model writer" name. Those functions
@@ -75,11 +76,18 @@ export function insert( position, nodes ) {
 	_mergeNodesAtIndex( parent, index + normalizedNodes.length );
 	_mergeNodesAtIndex( parent, index );
 
-	// If given element is a DocumentFragment and is being inserted to the Document then we need to transfer its Markers.
-	if ( nodes instanceof DocumentFragment && position.root.document.markers instanceof MarkerCollection ) {
-		for ( const marker of nodes.markers ) {
-			const range = new Range( new Position( parent, marker[ 1 ].start.path ),  new Position( parent, marker[ 1 ].end.path ) );
-			position.root.document.markers.set( marker[ 0 ], range );
+	// If given element is a DocumentFragment and has markers.
+	if ( nodes instanceof DocumentFragment && nodes.markers.size ) {
+		// If node is being inserted to the Document with markers collection.
+		if ( position.root.document && position.root.document.markers instanceof MarkerCollection ) {
+			// We need to transfer its markers and update position markers positions.
+			for ( const marker of nodes.markers ) {
+				const range = new Range( new Position( parent, marker[ 1 ].start.path ),  new Position( parent, marker[ 1 ].end.path ) );
+				position.root.document.markers.set( marker[ 0 ], range );
+			}
+		// Otherwise we need to show warning about losing markers.
+		} else {
+			log.warn( 'model-writer-insert-lose-markers: Element containing markers is set to element without MarkersCollection.' );
 		}
 	}
 

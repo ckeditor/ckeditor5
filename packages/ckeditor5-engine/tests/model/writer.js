@@ -14,6 +14,7 @@ import writer from '../../src/model/writer';
 import { getData } from '../../src/dev-utils/model';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 let doc, root;
 
@@ -74,6 +75,25 @@ describe( 'writer', () => {
 
 			expectData( 'foo<$text bold="true">bar</$text><image src="img.jpg"></image>xyz<div><paragraph>foo bar</paragraph></div>' );
 			expect( marker.getRange().isEqual( expectedRange ) ).to.true;
+		} );
+
+		it( 'should log warning when element with markers is set to the element without markers collection', () => {
+			const warnSpy = sinon.spy( log, 'warn' );
+			const target = new Element( 'div' );
+			const docFrag = new DocumentFragment( [
+				new Element( 'paragraph', null, [
+					new Text( 'foo bar' ),
+				] )
+			] );
+			const range = new Range( new Position( docFrag, [ 1, 2 ] ), new Position( docFrag, [ 1, 4 ] ) );
+
+			docFrag.markers.set( 'foo', range );
+
+			writer.insert( new Position( target, [ 0 ] ), docFrag );
+
+			expect( warnSpy.calledWithExactly(
+				'model-writer-insert-lose-markers: Element containing markers is set to element without MarkersCollection.'
+			) ).to.true;
 		} );
 	} );
 
