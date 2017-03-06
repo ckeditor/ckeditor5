@@ -45,7 +45,7 @@ export default class DeleteCommand extends Command {
 		 * @private
 		 * @member {typing.ChangeBuffer} #buffer
 		 */
-		this._buffer = new ChangeBuffer( editor.document, editor.config.get( 'undo.step' ) );
+		this._buffer = new ChangeBuffer( editor.document, editor.config.get( 'typing.undoStep' ) );
 	}
 
 	/**
