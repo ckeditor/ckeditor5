@@ -72,15 +72,15 @@ export default class ChangeBuffer {
 			this._onBatch( batch );
 		};
 
-		this._resetOnChangeCallback = () => {
+		this._selectionChangeCallback = () => {
 			this._reset();
 		};
 
 		doc.on( 'change', this._changeCallback );
 
-		doc.selection.on( 'change:range', this._resetOnChangeCallback );
+		doc.selection.on( 'change:range', this._selectionChangeCallback );
 
-		doc.selection.on( 'change:attribute', this._resetOnChangeCallback );
+		doc.selection.on( 'change:attribute', this._selectionChangeCallback );
 
 		/**
 		 * The current batch instance.
@@ -100,7 +100,7 @@ export default class ChangeBuffer {
 		 * The callback to document selection change:attribute and change:range events which resets the buffer.
 		 *
 		 * @private
-		 * @member #_resetOnChangeCallback
+		 * @member #_selectionChangeCallback
 		 */
 	}
 
@@ -151,8 +151,8 @@ export default class ChangeBuffer {
 	 */
 	destroy() {
 		this.document.off( 'change', this._changeCallback );
-		this.document.selection.off( 'change:range', this._resetOnChangeCallback );
-		this.document.selection.off( 'change:attribute', this._resetOnChangeCallback );
+		this.document.selection.off( 'change:range', this._selectionChangeCallback );
+		this.document.selection.off( 'change:attribute', this._selectionChangeCallback );
 	}
 
 	/**

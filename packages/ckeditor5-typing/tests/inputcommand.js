@@ -71,6 +71,20 @@ describe( 'InputCommand', () => {
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
+		it( 'should lock and unlock buffer', () => {
+			setData( doc, '<p>foo[]bar</p>' );
+
+			const spyLock = testUtils.sinon.spy( buffer, 'lock' );
+			const spyUnlock = testUtils.sinon.spy( buffer, 'unlock' );
+
+			editor.execute( 'input', {
+				text: ''
+			} );
+
+			expect( spyLock.calledOnce ).to.be.true;
+			expect( spyUnlock.calledOnce ).to.be.true;
+		} );
+
 		it( 'inserts text for collapsed range', () => {
 			setData( doc, '<p>foo[]</p>' );
 

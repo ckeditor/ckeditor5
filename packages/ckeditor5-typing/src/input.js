@@ -66,13 +66,13 @@ export default class Input extends Plugin {
 			return;
 		}
 
-		this._buffer.lock();
+		buffer.lock();
 
 		doc.enqueueChanges( () => {
 			this.editor.data.deleteContent( doc.selection, buffer.batch );
 		} );
 
-		this._buffer.unlock();
+		buffer.unlock();
 	}
 
 	/**

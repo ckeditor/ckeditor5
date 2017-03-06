@@ -23,8 +23,6 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-
 describe( 'Input feature', () => {
 	let editor, model, modelRoot, view, viewRoot, listenter;
 
@@ -438,7 +436,7 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should lock buffer if selection is not collapsed', () => {
-			const buffer = editor.plugins.get( Input )._buffer;
+			const buffer = editor.commands.get( 'input' )._buffer;
 			const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
 			const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
 
@@ -454,7 +452,7 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should not lock buffer on non printable keys', () => {
-			const buffer = editor.plugins.get( Input )._buffer;
+			const buffer = editor.commands.get( 'input' )._buffer;
 			const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
 			const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
 
@@ -467,7 +465,7 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should not lock buffer on collapsed selection', () => {
-			const buffer = editor.plugins.get( Input )._buffer;
+			const buffer = editor.commands.get( 'input' )._buffer;
 			const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
 			const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
 

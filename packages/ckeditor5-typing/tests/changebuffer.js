@@ -182,6 +182,52 @@ describe( 'ChangeBuffer', () => {
 			expect( buffer.batch ).to.not.equal( initialBatch );
 			expect( buffer.size ).to.equal( 0 );
 		} );
+
+		it( 'is reset on selection change:range', () => {
+			const initialBatch = buffer.batch;
+
+			doc.selection.fire( 'change:range' );
+
+			expect( buffer.batch ).to.not.equal( initialBatch );
+			expect( buffer.size ).to.equal( 0 );
+		} );
+
+		it( 'is reset on selection change:attribute', () => {
+			const initialBatch = buffer.batch;
+
+			doc.selection.fire( 'change:attribute' );
+
+			expect( buffer.batch ).to.not.equal( initialBatch );
+			expect( buffer.size ).to.equal( 0 );
+		} );
+
+		it( 'is not reset on selection change:range while locked', () => {
+			const initialBatch = buffer.batch;
+			buffer.size = 1;
+
+			buffer.lock();
+
+			doc.selection.fire( 'change:range' );
+
+			buffer.unlock();
+
+			expect( buffer.batch ).to.be.equal( initialBatch );
+			expect( buffer.size ).to.equal( 1 );
+		} );
+
+		it( 'is not reset on selection change:attribute while locked', () => {
+			const initialBatch = buffer.batch;
+			buffer.size = 1;
+
+			buffer.lock();
+
+			doc.selection.fire( 'change:attribute' );
+
+			buffer.unlock();
+
+			expect( buffer.batch ).to.be.equal( initialBatch );
+			expect( buffer.size ).to.equal( 1 );
+		} );
 	} );
 
 	describe( 'destroy', () => {
