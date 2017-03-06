@@ -297,7 +297,7 @@ class ModelConverterBuilder {
 	 */
 	toStamp( element ) {
 		for ( let dispatcher of this._dispatchers ) {
-			if ( this._from.type == 'element' || this._from.type == 'attribute' ) {
+			if ( this._from.type != 'marker' ) {
 				/**
 				 * To-stamp conversion is supported only for model markers.
 				 *
