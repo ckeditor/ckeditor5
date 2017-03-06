@@ -11,7 +11,7 @@
     "@ckeditor/ckeditor5-utils": "*"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-lint": "^2.0.0",
+    "@ckeditor/ckeditor5-dev-lint": "^2.0.2",
     "@ckeditor/ckeditor5-basic-styles": "*",
     "@ckeditor/ckeditor5-enter": "*",
     "@ckeditor/ckeditor5-heading": "*",
