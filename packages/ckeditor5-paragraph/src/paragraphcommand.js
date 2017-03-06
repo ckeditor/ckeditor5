@@ -58,6 +58,10 @@ export default class ParagraphCommand extends Command {
 	 * By default, if not provided, the command is applied to current {@link module:engine/model/document~Document#selection}.
 	 */
 	_doExecute( options = {} ) {
+		if ( this.value && !options.element ) {
+			return;
+		}
+
 		const document = this.editor.document;
 
 		document.enqueueChanges( () => {
