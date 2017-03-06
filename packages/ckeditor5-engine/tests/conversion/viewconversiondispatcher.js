@@ -9,7 +9,6 @@ import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewText from '../../src/view/text';
 
-import ModelRange from '../../src/model/range';
 import ModelSchema from '../../src/model/schema';
 import buildViewConverter from '../../src/conversion/buildviewconverter';
 import { convertText } from '../../src/conversion/view-to-model-converters';
@@ -82,7 +81,7 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 
 			// Use `additionalData` parameter to check if it was passed to the event.
-			const { conversionResult } = dispatcher.convert( viewText, { foo: 'bar' } );
+			const conversionResult = dispatcher.convert( viewText, { foo: 'bar' } );
 
 			// Check conversion result.
 			expect( conversionResult ).to.deep.equal( {
@@ -116,7 +115,7 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 
 			// Use `additionalData` parameter to check if it was passed to the event.
-			const { conversionResult } = dispatcher.convert( viewElement, { foo: 'bar' } );
+			const conversionResult = dispatcher.convert( viewElement, { foo: 'bar' } );
 
 			// Check conversion result.
 			expect( conversionResult ).to.deep.equal( {
@@ -149,7 +148,7 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 
 			// Use `additionalData` parameter to check if it was passed to the event.
-			const { conversionResult } = dispatcher.convert( viewFragment, { foo: 'bar' } );
+			const conversionResult = dispatcher.convert( viewFragment, { foo: 'bar' } );
 
 			// Check conversion result.
 			expect( conversionResult ).to.deep.equal( {
@@ -181,19 +180,14 @@ describe( 'ViewConversionDispatcher', () => {
 				new ViewText( 'z' )
 			] );
 
-			const { conversionResult, markers } = dispatcher.convert( viewElement, { context: [ '$root' ] } );
+			const documentFragment = dispatcher.convert( viewElement, { context: [ '$root' ] } );
 
-			const markerComment = markers.get( 'comment' );
-			const markerSearch = markers.get( 'search' );
+			const markerComment = documentFragment.markers.get( 'comment' );
+			const markerSearch = documentFragment.markers.get( 'search' );
 
-			expect( stringify( conversionResult ) ).to.equal( '<paragraph>Foo bar biz</paragraph>' );
-			expect( markers.size ).to.equal( 2 );
-
-			expect( markerComment ).to.instanceof( ModelRange );
-			expect( markerComment.isEqual( ModelRange.createFromParentsAndOffsets( conversionResult, 1, conversionResult, 6 ) ) );
-
-			expect( markerSearch ).to.instanceof( ModelRange );
-			expect( markerSearch.isEqual( ModelRange.createFromParentsAndOffsets( conversionResult, 2, conversionResult, 10 ) ) );
+			expect( documentFragment.markers.size ).to.equal( 2 );
+			expect( stringify( documentFragment, markerComment ) ).to.equal( '<paragraph>F[oo ba]r biz</paragraph>' );
+			expect( stringify( documentFragment, markerSearch ) ).to.equal( '<paragraph>Fo[o bar bi]z</paragraph>' );
 		} );
 
 		it( 'should convert markers stamps for collapsed ranges', () => {
@@ -214,19 +208,14 @@ describe( 'ViewConversionDispatcher', () => {
 				new ViewText( 'o' ),
 			] );
 
-			const { conversionResult, markers } = dispatcher.convert( viewElement, { context: [ '$root' ] } );
+			const documentFragment = dispatcher.convert( viewElement, { context: [ '$root' ] } );
 
-			const markerComment = markers.get( 'comment' );
-			const markerSearch = markers.get( 'search' );
+			const markerComment = documentFragment.markers.get( 'comment' );
+			const markerSearch = documentFragment.markers.get( 'search' );
 
-			expect( stringify( conversionResult ) ).to.equal( '<paragraph>Foo</paragraph>' );
-			expect( markers.size ).to.equal( 2 );
-
-			expect( markerComment ).to.instanceof( ModelRange );
-			expect( markerComment.isEqual( ModelRange.createFromParentsAndOffsets( conversionResult, 1, conversionResult, 1 ) ) );
-
-			expect( markerSearch ).to.instanceof( ModelRange );
-			expect( markerSearch.isEqual( ModelRange.createFromParentsAndOffsets( conversionResult, 2, conversionResult, 2 ) ) );
+			expect( documentFragment.markers.size ).to.equal( 2 );
+			expect( stringify( documentFragment, markerComment ) ).to.equal( '<paragraph>F[]oo</paragraph>' );
+			expect( stringify( documentFragment, markerSearch ) ).to.equal( '<paragraph>Fo[]o</paragraph>' );
 		} );
 	} );
 
@@ -253,9 +242,7 @@ describe( 'ViewConversionDispatcher', () => {
 				}
 			} );
 
-			const { conversionResult } = dispatcher.convert( viewFragment );
-
-			expect( conversionResult ).to.deep.equal( [
+			expect( dispatcher.convert( viewFragment ) ).to.deep.equal( [
 				{ name: 'p' },
 				{ text: 'foobar' }
 			] );
@@ -281,9 +268,7 @@ describe( 'ViewConversionDispatcher', () => {
 				data.output = conversionApi.convertChildren( data.input );
 			} );
 
-			const { conversionResult } = dispatcher.convert( viewFragment );
-
-			expect( conversionResult ).to.deep.equal( [
+			expect( dispatcher.convert( viewFragment ) ).to.deep.equal( [
 				{ name: 'p' },
 				{ text: 'foobar' }
 			] );
@@ -318,7 +303,7 @@ describe( 'ViewConversionDispatcher', () => {
 				] )
 			] );
 
-			expect( dispatcher.convert( viewStructure ).conversionResult ).to.deep.equal( [ 'foo', ' bar ', 'xyz', 'aaa ', 'bbb', ' ', 'ccc' ] );
+			expect( dispatcher.convert( viewStructure ) ).to.deep.equal( [ 'foo', ' bar ', 'xyz', 'aaa ', 'bbb', ' ', 'ccc' ] );
 		} );
 	} );
 } );

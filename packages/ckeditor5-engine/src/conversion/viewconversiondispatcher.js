@@ -134,20 +134,31 @@ export default class ViewConversionDispatcher {
 	 * viewItem Part of the view to be converted.
 	 * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
 	 * events. See also {@link ~ViewConversionDispatcher#event:element element event}.
-	 * @returns {module:engine/conversion/viewconversiondispatcher~ConvertedModelData} Model data that is a result of the conversion process.
+	 * @returns {module:engine/model/documentfragment~DocumentFragment} Model data that is a result of the conversion process
+	 * wrapped by DocumentFragment.
 	 */
 	convert( viewItem, additionalData = {} ) {
 		this.fire( 'viewCleanup', viewItem );
 
 		const consumable = ViewConsumable.createFrom( viewItem );
 		const conversionResult = this._convertItem( viewItem, consumable, additionalData );
-		let markers = new Map();
 
-		if ( conversionResult instanceof ModelNode || conversionResult instanceof ModelDocumentFragment ) {
-			markers = extractMarkersFromModelFragment( conversionResult );
+		// When conversion output is not a Node or Element we just return it.
+		if ( !( conversionResult instanceof ModelNode || conversionResult instanceof ModelDocumentFragment ) ) {
+			return conversionResult;
 		}
 
-		return { conversionResult, markers };
+		let documentFragment = conversionResult;
+
+		// When conversion result is not a DocumentFragment we need to wrap it by DocumentFragment.
+		if ( !documentFragment.is( 'documentFragment' ) ) {
+			documentFragment = new ModelDocumentFragment( [ conversionResult ] );
+		}
+
+		// Extract temporary markers stamp from model and set as static markers collection.
+		conversionResult.markers = extractMarkersFromModelFragment( conversionResult );
+
+		return conversionResult;
 	}
 
 	/**
@@ -279,14 +290,6 @@ function extractMarkersFromModelFragment( modelItem ) {
 
 	return markers;
 }
-
-/**
- * Model data that is a result of the conversion process.
- *
- * @typedef {ConvertedModelData} module:engine/conversion/viewconversiondispatcher~ConvertedModelData
- * @property {module:engine/model/documentfragment~DocumentFragment|module:engine/model/element~Node} conversionResult Converted model item.
- * @property {Map<String, module:engine/model/range~Range>} markers List of static markers.
- */
 
 /**
  * Conversion interface that is registered for given {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher}
