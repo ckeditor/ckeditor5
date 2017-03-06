@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "*",
-    "@ckeditor/ckeditor5-dev-lint": "^2.0.0",
+    "@ckeditor/ckeditor5-dev-lint": "^2.0.2",
     "@ckeditor/ckeditor5-utils": "*",
     "gulp": "^3.9.0",
     "guppy-pre-commit": "^0.4.0"
