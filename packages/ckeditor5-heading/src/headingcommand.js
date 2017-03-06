@@ -41,7 +41,7 @@ export default class HeadingCommand extends Command {
 
 		/**
 		 * Unique identifier of the command, also element's name in the model.
-		 * See {@link module:heading/headingcommand~HeadingOption#modelElement}.
+		 * See {@link module:heading/headingcommand~HeadingOption}.
 		 *
 		 * @readonly
 		 * @member {String} #modelElement
@@ -49,7 +49,7 @@ export default class HeadingCommand extends Command {
 
 		/**
 		 * Element this command creates in the view.
-		 * See {@link module:heading/headingcommand~HeadingOption#viewElement}.
+		 * See {@link module:heading/headingcommand~HeadingOption}.
 		 *
 		 * @readonly
 		 * @member {String} #viewElement
@@ -57,7 +57,7 @@ export default class HeadingCommand extends Command {
 
 		/**
 		 * User-readable title of the command.
-		 * See {@link module:heading/headingcommand~HeadingOption#title}.
+		 * See {@link module:heading/headingcommand~HeadingOption}.
 		 *
 		 * @readonly
 		 * @member {String} #title

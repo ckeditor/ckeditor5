@@ -124,7 +124,7 @@ describe( 'HeadingCommand', () => {
 				const command = commands.heading1;
 
 				setData( document, '<heading1>foo[]bar</heading1>' );
-				command._doExecute( { modelElement: 'heading1' } );
+				command._doExecute();
 
 				expect( getData( document ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
