@@ -22,7 +22,6 @@ import ViewDocumentFragment from '../view/documentfragment';
 
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
-import ModelDocumentFragment from '../model/documentfragment';
 
 import insertContent from './insertcontent';
 import deleteContent from './deletecontent';
@@ -237,19 +236,7 @@ export default class DataController {
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Output document fragment.
 	 */
 	toModel( viewElementOrFragment, context = '$root' ) {
-		const { conversionResult, markers } = this.viewToModel.convert( viewElementOrFragment, { context: [ context ] } );
-		let documentFragment;
-
-		if ( !conversionResult.is( 'documentFragment' ) ) {
-			documentFragment = new ModelDocumentFragment( [ conversionResult ] );
-		} else {
-			documentFragment = conversionResult;
-		}
-
-		// Set converted markers to the documentFragment.
-		documentFragment.markers = markers;
-
-		return documentFragment;
+		return this.viewToModel.convert( viewElementOrFragment, { context: [ context ] } );
 	}
 
 	/**

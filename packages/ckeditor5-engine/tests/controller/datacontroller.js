@@ -13,12 +13,8 @@ import buildModelConverter  from '../../src/conversion/buildmodelconverter';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import ModelText from '../../src/model/text';
 import ModelSelection from '../../src/model/selection';
-import ModelRange from '../../src/model/range';
 
 import ViewDocumentFragment from '../../src/view/documentfragment';
-import ViewContainerElement from '../../src/view/containerelement';
-import ViewAttributeElement from '../../src/view/attributeelement';
-import ViewText from '../../src/view/text';
 
 import { getData, setData, stringify, parse as parseModel } from '../../src/dev-utils/model';
 import { parse as parseView } from '../../src/dev-utils/view';
@@ -200,38 +196,6 @@ describe( 'DataController', () => {
 
 			expect( model ).to.be.instanceOf( ModelDocumentFragment );
 			expect( stringify( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
-		} );
-
-		it( 'should convert marker stamps', () => {
-			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
-			buildViewConverter().for( data.viewToModel ).fromElement( 'm' ).toMarker();
-
-			const viewFragment = new ViewDocumentFragment( [
-				new ViewContainerElement( 'p', null, [
-					new ViewText( 'Fo' ),
-					new ViewAttributeElement( 'm', { 'data-name': 'search' } ),
-					new ViewText( 'o ba' ),
-					new ViewAttributeElement( 'm', { 'data-name': 'comment' } ),
-					new ViewText( 'r bi' ),
-					new ViewAttributeElement( 'm', { 'data-name': 'search' } ),
-					new ViewText( 'z' )
-				] )
-			] );
-
-			const model = data.toModel( viewFragment );
-
-			expect( model ).instanceof( ModelDocumentFragment );
-			expect( model.markers.size ).to.equal( 2 );
-
-			const paragraph = model.getChild( 0 );
-			const commentMarkerRange = ModelRange.createFromParentsAndOffsets( paragraph, 6, paragraph, 6 );
-			const searchMarkerRange = ModelRange.createFromParentsAndOffsets( paragraph, 2, paragraph, 10 );
-
-			expect( model.markers.get( 'comment' ) ).to.instanceof( ModelRange );
-			expect( model.markers.get( 'comment' ).isEqual( commentMarkerRange ) ).to.true;
-
-			expect( model.markers.get( 'search' ) ).to.instanceof( ModelRange );
-			expect( model.markers.get( 'search' ).isEqual( searchMarkerRange ) ).to.true;
 		} );
 
 		it( 'should accept parsing context', () => {
