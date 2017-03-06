@@ -14,7 +14,7 @@ import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildv
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import HeadingCommand from './headingcommand';
 
-const defaultOptionId = 'paragraph';
+const defaultModelElement = 'paragraph';
 
 /**
  * The headings engine feature. It handles switching between block formats &ndash; headings and paragraph.
@@ -35,14 +35,14 @@ export default class HeadingEngine extends Plugin {
 		 * @readonly
 		 * @member {module:utils/collection~Collection.<module:heading/headingcommand~HeadingCommand>}
 		 */
-		this.commands = new Collection();
+		this.commands = new Collection( { idProperty: 'modelElement' } );
 
 		editor.config.define( 'heading', {
 			options: [
-				{ id: 'paragraph', element: 'p', label: 'Paragraph' },
-				{ id: 'heading1', element: 'h2', label: 'Heading 1' },
-				{ id: 'heading2', element: 'h3', label: 'Heading 2' },
-				{ id: 'heading3', element: 'h4', label: 'Heading 3' }
+				{ modelElement: 'paragraph' },
+				{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1' },
+				{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2' },
+				{ modelElement: 'heading3', viewElement: 'h4', title: 'Heading 3' }
 			]
 		} );
 	}
@@ -62,28 +62,32 @@ export default class HeadingEngine extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 		const options = this._getLocalizedOptions();
+		let command;
 
 		for ( let option of options ) {
 			// Skip paragraph - it is defined in required Paragraph feature.
-			if ( option.id !== defaultOptionId ) {
+			if ( option.modelElement !== defaultModelElement ) {
 				// Schema.
-				editor.document.schema.registerItem( option.id, '$block' );
+				editor.document.schema.registerItem( option.modelElement, '$block' );
 
 				// Build converter from model to view for data and editing pipelines.
 				buildModelConverter().for( data.modelToView, editing.modelToView )
-					.fromElement( option.id )
-					.toElement( option.element );
+					.fromElement( option.modelElement )
+					.toElement( option.viewElement );
 
 				// Build converter from view to model for data pipeline.
 				buildViewConverter().for( data.viewToModel )
-					.fromElement( option.element )
-					.toElement( option.id );
+					.fromElement( option.viewElement )
+					.toElement( option.modelElement );
+
+				// Register the heading command for this option.
+				command = new HeadingCommand( editor, option );
+				editor.commands.set( command.modelElement, command );
+			} else {
+				command = editor.commands.get( defaultModelElement );
 			}
 
-			// Register the heading command for this option.
-			const command = new HeadingCommand( editor, option );
 			this.commands.add( command );
-			editor.commands.set( command.name, command );
 		}
 	}
 
@@ -101,10 +105,10 @@ export default class HeadingEngine extends Plugin {
 			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
 				const positionParent = editor.document.selection.getFirstPosition().parent;
 				const batch = data.batch;
-				const isHeading = options.some( option => option.id == positionParent.name );
+				const isHeading = options.some( option => option.modelElement == positionParent.name );
 
-				if ( isHeading && positionParent.name != defaultOptionId && positionParent.childCount === 0 ) {
-					batch.rename( positionParent, defaultOptionId );
+				if ( isHeading && positionParent.name != defaultModelElement && positionParent.childCount === 0 ) {
+					batch.rename( positionParent, defaultModelElement );
 				}
 			} );
 		}
@@ -112,7 +116,7 @@ export default class HeadingEngine extends Plugin {
 
 	/**
 	 * Returns heading options as defined in `config.heading.options` but processed to consider
-	 * editor localization, i.e. to display {@link module:heading/headingcommand~HeadingOption#label}
+	 * editor localization, i.e. to display {@link module:heading/headingcommand~HeadingOption#title}
 	 * in the correct language.
 	 *
 	 * Note: The reason behind this method is that there's no way to use {@link utils/locale~Locale#t}
@@ -145,10 +149,10 @@ export default class HeadingEngine extends Plugin {
 		 */
 		this._cachedLocalizedOptions = editor.config.get( 'heading.options' )
 			.map( option => {
-				if ( localizedLabels[ option.label ] ) {
+				if ( localizedLabels[ option.title ] ) {
 					// Clone the option to avoid altering the original `config.heading.options`.
 					option = Object.assign( {}, option, {
-						label: localizedLabels[ option.label ]
+						title: localizedLabels[ option.title ]
 					} );
 				}
 

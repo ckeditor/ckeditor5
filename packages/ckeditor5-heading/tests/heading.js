@@ -63,18 +63,18 @@ describe( 'Heading', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 			const dropdown = editor.ui.componentFactory.create( 'headings' );
 
-			dropdown.name = 'headingParagraph';
+			dropdown.modelElement = 'paragraph';
 			dropdown.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'headingParagraph' );
+			sinon.assert.calledWithExactly( executeSpy, 'paragraph' );
 		} );
 
 		it( 'should focus view after command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 			const dropdown = editor.ui.componentFactory.create( 'headings' );
 
-			dropdown.name = 'headingParagraph';
+			dropdown.modelElement = 'paragraph';
 			dropdown.fire( 'execute' );
 
 			sinon.assert.calledOnce( focusSpy );
@@ -122,9 +122,9 @@ describe( 'Heading', () => {
 					lang: 'pl',
 					heading: {
 						options: [
-							{ id: 'paragraph', element: 'p', label: 'Paragraph' },
-							{ id: 'heading1', element: 'h2', label: 'Heading 1' },
-							{ id: 'heading2', element: 'h3', label: 'Not automatically localized' }
+							{ modelElement: 'paragraph', viewElement: 'p', title: 'Paragraph' },
+							{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1' },
+							{ modelElement: 'heading2', viewElement: 'h3', title: 'Not automatically localized' }
 						]
 					}
 				} )
@@ -137,9 +137,9 @@ describe( 'Heading', () => {
 
 			it( 'does not alter the original config', () => {
 				expect( editor.config.get( 'heading.options' ) ).to.deep.equal( [
-					{ id: 'paragraph', element: 'p', label: 'Paragraph' },
-					{ id: 'heading1', element: 'h2', label: 'Heading 1' },
-					{ id: 'heading2', element: 'h3', label: 'Not automatically localized' }
+					{ modelElement: 'paragraph', viewElement: 'p', title: 'Paragraph' },
+					{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1' },
+					{ modelElement: 'heading2', viewElement: 'h3', title: 'Not automatically localized' }
 				] );
 			} );
 

@@ -8,8 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command/command';
-import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
-import camelCase from '@ckeditor/ckeditor5-utils/src/lib/lodash/camelCase';
 
 /**
  * The heading command. It is used by the {@link module:heading/heading~Heading heading feature} to apply headings.
@@ -29,18 +27,12 @@ export default class HeadingCommand extends Command {
 		Object.assign( this, option );
 
 		/**
-		 * Name of the command
+		 * Value of the command, indicating whether it is applied in the context
+		 * of current {@link module:engine/model/document~Document#selection selection}.
 		 *
 		 * @readonly
-		 * @member {String}
-		 */
-		this.name = camelCase( 'heading ' + this.id );
-
-		/**
-		 * TODO
-		 *
-		 * @readonly
-		 * @member {}
+		 * @observable
+		 * @member {Boolean}
 		 */
 		this.set( 'value', false );
 
@@ -49,26 +41,26 @@ export default class HeadingCommand extends Command {
 
 		/**
 		 * Unique identifier of the command, also element's name in the model.
-		 * See {@link module:heading/headingcommand~HeadingOption#id}.
+		 * See {@link module:heading/headingcommand~HeadingOption#modelElement}.
 		 *
 		 * @readonly
-		 * @member {String} #id
+		 * @member {String} #modelElement
 		 */
 
 		/**
 		 * Element this command creates in the view.
-		 * See {@link module:heading/headingcommand~HeadingOption#element}.
+		 * See {@link module:heading/headingcommand~HeadingOption#viewElement}.
 		 *
 		 * @readonly
-		 * @member {String} #element
+		 * @member {String} #viewElement
 		 */
 
 		/**
-		 * Label of this command.
-		 * See {@link module:heading/headingcommand~HeadingOption#label}.
+		 * User-readable title of the command.
+		 * See {@link module:heading/headingcommand~HeadingOption#title}.
 		 *
 		 * @readonly
-		 * @member {String} #label
+		 * @member {String} #title
 		 */
 	}
 
@@ -81,47 +73,36 @@ export default class HeadingCommand extends Command {
 	 * New batch will be created if this option is not set.
 	 */
 	_doExecute( options = {} ) {
-		const id = this.id;
-		const doc = this.editor.document;
-		const selection = doc.selection;
-		const startPosition = selection.getFirstPosition();
-		const elements = [];
-		// Storing selection ranges and direction to fix selection after renaming. See ckeditor5-engine#367.
+		const editor = this.editor;
+		const document = editor.document;
+		const selection = document.selection;
 		const ranges = [ ...selection.getRanges() ];
 		const isSelectionBackward = selection.isBackward;
 
-		// Collect elements to change option.
-		// This implementation may not be future proof but it's satisfactory at this stage.
-		if ( selection.isCollapsed ) {
-			const block = findTopmostBlock( startPosition );
+		// If current option is same as new option - toggle already applied option back to default one.
+		const shouldRemove = this.value;
 
-			if ( block ) {
-				elements.push( block );
-			}
-		} else {
-			for ( let range of ranges ) {
-				let startBlock = findTopmostBlock( range.start );
-				const endBlock = findTopmostBlock( range.end, false );
+		document.enqueueChanges( () => {
+			const batch = options.batch || document.batch();
 
-				elements.push( startBlock );
-
-				while ( startBlock !== endBlock ) {
-					startBlock = startBlock.nextSibling;
-					elements.push( startBlock );
+			for ( let element of document.selection.getSelectedBlocks() ) {
+				// When removing applied option.
+				if ( shouldRemove ) {
+					if ( element.name === this.modelElement ) {
+						// Apply paragraph to the single element only instead of working
+						// on the entire selection. Share the batch with the paragraph command.
+						editor.execute( 'paragraph', { element, batch } );
+					}
 				}
-			}
-		}
-
-		doc.enqueueChanges( () => {
-			const batch = options.batch || doc.batch();
-
-			for ( let element of elements ) {
-				batch.rename( element, id );
+				// When applying new option.
+				else {
+					batch.rename( element, this.modelElement );
+				}
 			}
 
 			// If range's selection start/end is placed directly in renamed block - we need to restore it's position
 			// after renaming, because renaming puts new element there.
-			doc.selection.setRanges( ranges, isSelectionBackward );
+			selection.setRanges( ranges, isSelectionBackward );
 		} );
 	}
 
@@ -131,45 +112,19 @@ export default class HeadingCommand extends Command {
 	 * @private
 	 */
 	_updateValue() {
-		const position = this.editor.document.selection.getFirstPosition();
-		const block = findTopmostBlock( position );
+		const block = this.editor.document.selection.getSelectedBlocks().next().value;
 
 		if ( block ) {
-			this.value = this.id == block.name;
+			this.value = this.modelElement == block.name;
 		}
 	}
-}
-
-// Looks for the topmost element in the position's ancestor (up to an element in the root).
-//
-// NOTE: This method does not check the schema directly &mdash; it assumes that only block elements can be placed directly inside
-// the root.
-//
-// @private
-// @param {engine.model.Position} position
-// @param {Boolean} [nodeAfter=true] When the position is placed inside the root element, this will determine if the element before
-// or after a given position will be returned.
-// @returns {engine.model.Element}
-function findTopmostBlock( position, nodeAfter = true ) {
-	let parent = position.parent;
-
-	// If position is placed inside root - get element after/before it.
-	if ( parent instanceof RootElement ) {
-		return nodeAfter ? position.nodeAfter : position.nodeBefore;
-	}
-
-	while ( !( parent.parent instanceof RootElement ) ) {
-		parent = parent.parent;
-	}
-
-	return parent;
 }
 
 /**
  * Heading option descriptor.
  *
  * @typedef {Object} module:heading/headingcommand~HeadingOption
- * @property {String} id Option identifier. It will be used as the element's name in the model.
- * @property {String} element The name of the view element that will be used to represent the model element in the view.
- * @property {String} label The display name of the option.
+ * @property {String} modelElement Element's name in the model.
+ * @property {String} viewElement The name of the view element that will be used to represent the model element in the view.
+ * @property {String} title The user-readable title of the option.
  */

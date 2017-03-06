@@ -7,6 +7,8 @@
  * @module heading/heading
  */
 
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import HeadingCommand from './headingcommand';
 import HeadingEngine from './headingengine';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
@@ -24,7 +26,7 @@ export default class Heading extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ HeadingEngine ];
+		return [ Paragraph, HeadingEngine ];
 	}
 
 	/**
@@ -35,12 +37,22 @@ export default class Heading extends Plugin {
 		const headingEngine = editor.plugins.get( HeadingEngine );
 		const commands = headingEngine.commands;
 		const dropdownItems = new Collection();
+		let defaultCommand;
 
-		for ( let { name, label } of commands ) {
+		for ( let command of commands ) {
+			let modelElement, title;
+
+			if ( command instanceof HeadingCommand ) {
+				modelElement = command.modelElement;
+			} else {
+				modelElement = 'paragraph';
+				defaultCommand = command;
+			}
+
+			title = command.title;
+
 			// Add the option to the collection.
-			dropdownItems.add( new Model( {
-				name, label
-			} ) );
+			dropdownItems.add( new Model( { modelElement, label: title } ) );
 		}
 
 		// Create dropdown model.
@@ -59,12 +71,12 @@ export default class Heading extends Plugin {
 		dropdownModel.bind( 'label' ).to(
 			// Bind to #value of each command...
 			...getCommandsBindingTargets( commands, 'value' ),
-			// ...and chose the label of the first one which #value is true.
+			// ...and chose the title of the first one which #value is true.
 			( ...areActive ) => {
 				const index = areActive.findIndex( value => value );
 
 				// If none of the commands is active, display the first one.
-				return commands.get( index > -1 ? index : 0 ).label;
+				return index > -1 ? commands.get( index ).title : defaultCommand.title;
 			}
 		);
 
@@ -73,8 +85,8 @@ export default class Heading extends Plugin {
 			const dropdown = createListDropdown( dropdownModel, locale );
 
 			// Execute command when an item from the dropdown is selected.
-			this.listenTo( dropdown, 'execute', ( { source: { name } } ) => {
-				editor.execute( name );
+			this.listenTo( dropdown, 'execute', ( { source: { modelElement } } ) => {
+				editor.execute( modelElement );
 				editor.editing.view.focus();
 			} );
 

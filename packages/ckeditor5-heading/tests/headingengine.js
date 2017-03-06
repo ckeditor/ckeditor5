@@ -4,9 +4,10 @@
  */
 
 import HeadingEngine from '../src/headingengine';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import HeadingCommand from '../src/headingcommand';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import { add } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -55,10 +56,10 @@ describe( 'HeadingEngine', () => {
 	} );
 
 	it( 'should register #commands', () => {
-		expect( editor.commands.get( 'headingParagraph' ) ).to.be.instanceOf( HeadingCommand );
-		expect( editor.commands.get( 'headingHeading1' ) ).to.be.instanceOf( HeadingCommand );
-		expect( editor.commands.get( 'headingHeading2' ) ).to.be.instanceOf( HeadingCommand );
-		expect( editor.commands.get( 'headingHeading3' ) ).to.be.instanceOf( HeadingCommand );
+		expect( editor.commands.get( 'paragraph' ) ).to.be.instanceOf( ParagraphCommand );
+		expect( editor.commands.get( 'heading1' ) ).to.be.instanceOf( HeadingCommand );
+		expect( editor.commands.get( 'heading2' ) ).to.be.instanceOf( HeadingCommand );
+		expect( editor.commands.get( 'heading3' ) ).to.be.instanceOf( HeadingCommand );
 	} );
 
 	it( 'should convert heading1', () => {
@@ -112,18 +113,18 @@ describe( 'HeadingEngine', () => {
 			describe( 'default value', () => {
 				it( 'should be set', () => {
 					expect( editor.config.get( 'heading.options' ) ).to.deep.equal( [
-						{ id: 'paragraph', element: 'p', label: 'Paragraph' },
-						{ id: 'heading1', element: 'h2', label: 'Heading 1' },
-						{ id: 'heading2', element: 'h3', label: 'Heading 2' },
-						{ id: 'heading3', element: 'h4', label: 'Heading 3' }
+						{ modelElement: 'paragraph' },
+						{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1' },
+						{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2' },
+						{ modelElement: 'heading3', viewElement: 'h4', title: 'Heading 3' }
 					] );
 				} );
 			} );
 
 			it( 'should customize options', () => {
 				const options = [
-					{ id: 'paragraph', element: 'p', label: 'Paragraph' },
-					{ id: 'h4', element: 'h4', label: 'H4' }
+					{ modelElement: 'paragraph', viewElement: 'p', title: 'Paragraph' },
+					{ modelElement: 'h4', viewElement: 'h4', title: 'H4' }
 				];
 
 				return VirtualTestEditor.create( {
