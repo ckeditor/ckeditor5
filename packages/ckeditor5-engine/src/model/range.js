@@ -477,25 +477,25 @@ export default class Range {
 				} else if ( deltaType == 'wrap' ) {
 					// Range intersects (at the start) with wrapped element (<p>ab</p>).
 					// <p>a[b</p><p>c]d</p> -> <p>a[b</p><w></w><p>c]d</p> -> [<w>]<p>a(b</p>){</w><p>c}d</p> -> <w><p>a[b</p></w><p>c]d</p>
-					if ( sourceRange.containsPosition( this.start ) && !sourceRange.containsPosition( this.end ) ) {
+					if ( sourceRange.containsPosition( this.start ) && this.containsPosition( sourceRange.end ) ) {
 						return [ new Range( ranges[ 2 ].start, ranges[ 1 ].end ) ];
 					}
 					// Range intersects (at the end) with wrapped element (<p>cd</p>).
 					// <p>a[b</p><p>c]d</p> -> <p>a[b</p><p>c]d</p><w></w> -> <p>a[b</p>]<w>{<p>c}d</p></w> -> <p>a[b</p><w><p>c]d</p></w>
-					else if ( sourceRange.containsPosition( this.end ) && !sourceRange.containsPosition( this.start ) ) {
+					else if ( sourceRange.containsPosition( this.end ) && this.containsPosition( sourceRange.start ) ) {
 						return [ new Range( ranges[ 0 ].start, ranges[ 1 ].end ) ];
 					}
 				} else if ( deltaType == 'unwrap' ) {
 					// Range intersects (at the beginning) with unwrapped element (<w></w>).
 					// <w><p>a[b</p></w><p>c]d</p> -> <p>a{b</p>}<w>[</w><p>c]d</p> -> <p>a[b</p><w></w><p>c]d</p>
 					// <w></w> is removed in next operation, but the remove does not mess up ranges.
-					if ( sourceRange.containsPosition( this.start ) && !sourceRange.containsPosition( this.end ) ) {
+					if ( sourceRange.containsPosition( this.start ) && this.containsPosition( sourceRange.end ) ) {
 						return [ new Range( ranges[ 1 ].start, ranges[ 0 ].end ) ];
 					}
 					// Range intersects (at the end) with unwrapped element (<w></w>).
 					// <p>a[b</p><w><p>c]d</p></w> -> <p>a[b</p>](<p>c)d</p>{<w>}</w> -> <p>a[b</p><p>c]d</p><w></w>
 					// <w></w> is removed in next operation, but the remove does not mess up ranges.
-					else if ( sourceRange.containsPosition( this.end ) && !sourceRange.containsPosition( this.start ) ) {
+					else if ( sourceRange.containsPosition( this.end ) && this.containsPosition( sourceRange.start ) ) {
 						return [ new Range( ranges[ 0 ].start, ranges[ 2 ].end ) ];
 					}
 				}
