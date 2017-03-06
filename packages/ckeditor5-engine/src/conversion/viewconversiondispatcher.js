@@ -152,13 +152,13 @@ export default class ViewConversionDispatcher {
 
 		// When conversion result is not a DocumentFragment we need to wrap it by DocumentFragment.
 		if ( !documentFragment.is( 'documentFragment' ) ) {
-			documentFragment = new ModelDocumentFragment( [ conversionResult ] );
+			documentFragment = new ModelDocumentFragment( [ documentFragment ] );
 		}
 
 		// Extract temporary markers stamp from model and set as static markers collection.
-		conversionResult.markers = extractMarkersFromModelFragment( conversionResult );
+		documentFragment.markers = extractMarkersFromModelFragment( documentFragment );
 
-		return conversionResult;
+		return documentFragment;
 	}
 
 	/**
@@ -252,10 +252,6 @@ mix( ViewConversionDispatcher, EmitterMixin );
 function extractMarkersFromModelFragment( modelItem ) {
 	const markerStamps = new Set();
 	const markers = new Map();
-
-	if ( modelItem.is( 'text' ) ) {
-		return markers;
-	}
 
 	// Create ModelTreeWalker.
 	const walker = new ModelTreeWalker( {

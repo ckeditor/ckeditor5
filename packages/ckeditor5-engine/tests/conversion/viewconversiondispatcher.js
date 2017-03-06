@@ -9,9 +9,9 @@ import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewText from '../../src/view/text';
 
-import ModelSchema from '../../src/model/schema';
-import buildViewConverter from '../../src/conversion/buildviewconverter';
-import { convertText } from '../../src/conversion/view-to-model-converters';
+import ModelText from '../../src/model/text';
+import ModelElement from '../../src/model/element';
+import ModelDocumentFragment from '../../src/model/documentfragment';
 import { stringify } from '../../src/dev-utils/model';
 
 describe( 'ViewConversionDispatcher', () => {
@@ -158,64 +158,52 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 		} );
 
-		it( 'should convert markers stamps', () => {
-			const schema = new ModelSchema();
-			schema.registerItem( 'paragraph', '$block' );
+		it( 'should always wrap converted element by ModelDocumentFragment', () => {
+			const viewElement = new ViewContainerElement( 'p' );
 
-			dispatcher = new ViewConversionDispatcher( { schema } );
-			dispatcher.on( 'text', convertText() );
+			dispatcher.on( 'element', ( evt, data ) => {
+				data.output = new ModelElement( 'paragraph' );
+			} );
 
-			buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
-			buildViewConverter().for( dispatcher ).fromElement( 'm' ).toMarker();
+			const documentFragment = dispatcher.convert( viewElement, { foo: 'bar' } );
 
-			const viewElement = new ViewContainerElement( 'p', null, [
-				new ViewText( 'F' ),
-				new ViewAttributeElement( 'm', { 'data-name': 'comment' } ),
-				new ViewText( 'o' ),
-				new ViewAttributeElement( 'm', { 'data-name': 'search' } ),
-				new ViewText( 'o ba' ),
-				new ViewAttributeElement( 'm', { 'data-name': 'comment' } ),
-				new ViewText( 'r bi' ),
-				new ViewAttributeElement( 'm', { 'data-name': 'search' } ),
-				new ViewText( 'z' )
-			] );
-
-			const documentFragment = dispatcher.convert( viewElement, { context: [ '$root' ] } );
-
-			const markerComment = documentFragment.markers.get( 'comment' );
-			const markerSearch = documentFragment.markers.get( 'search' );
-
-			expect( documentFragment.markers.size ).to.equal( 2 );
-			expect( stringify( documentFragment, markerComment ) ).to.equal( '<paragraph>F[oo ba]r biz</paragraph>' );
-			expect( stringify( documentFragment, markerSearch ) ).to.equal( '<paragraph>Fo[o bar bi]z</paragraph>' );
+			expect( documentFragment ).to.instanceof( ModelDocumentFragment );
+			expect( stringify( documentFragment ) ).to.equal( '<paragraph></paragraph>' );
 		} );
 
-		it( 'should convert markers stamps for collapsed ranges', () => {
-			const schema = new ModelSchema();
-			schema.registerItem( 'paragraph', '$block' );
+		it( 'should not wrap ModelDocumentFragment', () => {
+			const viewFragment = new ViewDocumentFragment();
 
-			dispatcher = new ViewConversionDispatcher( { schema } );
-			dispatcher.on( 'text', convertText() );
+			dispatcher.on( 'documentFragment', ( evt, data ) => {
+				data.output = new ModelDocumentFragment();
+			} );
 
-			buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
-			buildViewConverter().for( dispatcher ).fromElement( 'm' ).toMarker();
+			const documentFragment = dispatcher.convert( viewFragment );
 
-			const viewElement = new ViewContainerElement( 'p', null, [
-				new ViewText( 'F' ),
-				new ViewAttributeElement( 'm', { 'data-name': 'comment' } ),
-				new ViewText( 'o' ),
-				new ViewAttributeElement( 'm', { 'data-name': 'search' } ),
-				new ViewText( 'o' ),
-			] );
+			expect( documentFragment ).to.instanceof( ModelDocumentFragment );
+			expect( documentFragment.childCount ).to.equal( 0 );
+		} );
 
-			const documentFragment = dispatcher.convert( viewElement, { context: [ '$root' ] } );
+		it( 'should extract temporary markers stamps from converter element and create static markers list', () => {
+			const viewFragment = new ViewDocumentFragment();
 
-			const markerComment = documentFragment.markers.get( 'comment' );
-			const markerSearch = documentFragment.markers.get( 'search' );
+			dispatcher.on( 'documentFragment', ( evt, data ) => {
+				data.output = new ModelDocumentFragment( [
+					new ModelText( 'fo' ),
+					new ModelElement( '$marker', { 'data-name': 'marker1' } ),
+					new ModelText( 'o' ),
+					new ModelElement( '$marker', { 'data-name': 'marker2' } ),
+					new ModelText( 'b' ),
+					new ModelElement( '$marker', { 'data-name': 'marker1' } ),
+					new ModelText( 'ar' ),
+				] );
+			} );
 
-			expect( documentFragment.markers.size ).to.equal( 2 );
-			expect( stringify( documentFragment, markerComment ) ).to.equal( '<paragraph>F[]oo</paragraph>' );
-			expect( stringify( documentFragment, markerSearch ) ).to.equal( '<paragraph>Fo[]o</paragraph>' );
+			const conversionResult = dispatcher.convert( viewFragment );
+
+			expect( conversionResult.markers.size ).to.equal( 2 );
+			expect( stringify( conversionResult, conversionResult.markers.get( 'marker1' ) ) ).to.deep.equal( 'fo[ob]ar' );
+			expect( stringify( conversionResult, conversionResult.markers.get( 'marker2' ) ) ).to.deep.equal( 'foo[]bar' );
 		} );
 	} );
 
