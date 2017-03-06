@@ -12,6 +12,7 @@ import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ImageCaptionEngine from '../../src/imagecaption/imagecaptionengine';
 import ImageEngine from '../../src/image/imageengine';
+import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
@@ -22,7 +23,7 @@ describe( 'ImageCaptionEngine', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			plugins: [ ImageCaptionEngine, ImageEngine ]
+			plugins: [ ImageCaptionEngine, ImageEngine, UndoEngine ]
 		} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -316,6 +317,39 @@ describe( 'ImageCaptionEngine', () => {
 					'<figcaption contenteditable="true"></figcaption>' +
 				'</figure>]'
 			);
+		} );
+
+		describe( 'undo/redo integration', () => {
+			it( 'should create view element after redo', () => {
+				setModelData( document, '<image src=""><caption>[foo bar baz]</caption></image>' );
+
+				const modelRoot = document.getRoot();
+				const modelImage = modelRoot.getChild( 0 );
+				const modelCaption = modelImage.getChild( 0 );
+
+				// Remove text and selection from caption.
+				document.enqueueChanges( () => {
+					const batch = document.batch();
+
+					batch.remove( ModelRange.createIn( modelCaption ) );
+					document.selection.removeAllRanges();
+				} );
+
+				// Check if there is no figcaption in the view.
+				expect( getViewData( viewDocument ) ).to.equal(
+					'[]<figure class="image ck-widget" contenteditable="false"><img src=""></img></figure>'
+				);
+
+				editor.execute( 'undo' );
+
+				// Check if figcaption is back with contents.
+				expect( getViewData( viewDocument ) ).to.equal(
+					'<figure class="image ck-widget" contenteditable="false">' +
+						'<img src=""></img>' +
+						'<figcaption contenteditable="true">{foo bar baz}</figcaption>' +
+					'</figure>'
+				);
+			} );
 		} );
 	} );
 } );
