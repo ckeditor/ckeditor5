@@ -879,8 +879,8 @@ describe( 'model-to-view-converters', () => {
 			} );
 
 			it( 'should insert and remove different opening and ending element', () => {
-				function creator( data, isOpening ) {
-					if ( isOpening ) {
+				function creator( data ) {
+					if ( data.isOpening ) {
 						return new ViewUIElement( 'span', { 'class': data.name, 'data-start': true } );
 					}
 

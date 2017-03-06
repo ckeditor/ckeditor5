@@ -109,9 +109,11 @@ export function insertUIElement( elementCreator ) {
 			viewStartElement = elementCreator.clone( true );
 			viewEndElement = elementCreator.clone( true );
 		} else {
-			const isOpening = true;
-			viewStartElement = elementCreator( data, isOpening, consumable, conversionApi );
-			viewEndElement = elementCreator( data, !isOpening, consumable, conversionApi );
+			data.isOpening = true;
+			viewStartElement = elementCreator( data, consumable, conversionApi );
+
+			data.isOpening = false;
+			viewEndElement = elementCreator( data, consumable, conversionApi );
 		}
 
 		if ( !viewStartElement || !viewEndElement ) {
@@ -458,9 +460,11 @@ export function removeUIElement( elementCreator ) {
 			viewStartElement = elementCreator.clone( true );
 			viewEndElement = elementCreator.clone( true );
 		} else {
-			const isOpening = true;
-			viewStartElement = elementCreator( data, isOpening, consumable, conversionApi );
-			viewEndElement = elementCreator( data, !isOpening, consumable, conversionApi );
+			data.isOpening = true;
+			viewStartElement = elementCreator( data, consumable, conversionApi );
+
+			data.isOpening = false;
+			viewEndElement = elementCreator( data, consumable, conversionApi );
 		}
 
 		if ( !viewStartElement || !viewEndElement ) {
