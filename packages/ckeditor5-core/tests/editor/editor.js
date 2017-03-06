@@ -16,6 +16,10 @@ class PluginA extends Plugin {
 		this.init = sinon.spy().named( 'A' );
 		this.afterInit = sinon.spy().named( 'A-after' );
 	}
+
+	static get pluginName() {
+		return 'A';
+	}
 }
 
 class PluginB extends Plugin {
@@ -24,6 +28,10 @@ class PluginB extends Plugin {
 		this.init = sinon.spy().named( 'B' );
 		this.afterInit = sinon.spy().named( 'B-after' );
 	}
+
+	static get pluginName() {
+		return 'B';
+	}
 }
 
 class PluginC extends Plugin {
@@ -31,6 +39,10 @@ class PluginC extends Plugin {
 		super( editor );
 		this.init = sinon.spy().named( 'C' );
 		this.afterInit = sinon.spy().named( 'C-after' );
+	}
+
+	static get pluginName() {
+		return 'C';
 	}
 
 	static get requires() {
@@ -43,6 +55,10 @@ class PluginD extends Plugin {
 		super( editor );
 		this.init = sinon.spy().named( 'D' );
 		this.afterInit = sinon.spy().named( 'D-after' );
+	}
+
+	static get pluginName() {
+		return 'D';
 	}
 
 	static get requires() {
@@ -289,6 +305,72 @@ describe( 'Editor', () => {
 					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
 					expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
 					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
+				} );
+		} );
+
+		it( 'should load plugins provided in the config and should ignore plugins built in the Editor', () => {
+			Editor.build = {
+				plugins: [ PluginA, PluginB, PluginC, PluginD ]
+			};
+
+			const editor = new Editor( {
+				plugins: [
+					'A',
+				]
+			} );
+
+			return editor.initPlugins()
+				.then( () => {
+					expect( getPlugins( editor ).length ).to.equal( 1 );
+
+					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+				} );
+		} );
+
+		it( 'should load plugins built in the Editor using their names', () => {
+			Editor.build = {
+				plugins: [ PluginA, PluginB, PluginC, PluginD ]
+			};
+
+			const editor = new Editor( {
+				plugins: [
+					'A',
+					'B',
+					'C'
+				]
+			} );
+
+			return editor.initPlugins()
+				.then( () => {
+					expect( getPlugins( editor ).length ).to.equal( 3 );
+
+					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
+				} );
+		} );
+
+		it( 'should load plugins inherited from the base Editor', () => {
+			Editor.build = {
+				plugins: [ PluginA, PluginB, PluginC, PluginD ]
+			};
+
+			class CustomEditor extends Editor {
+			}
+
+			const editor = new CustomEditor( {
+				plugins: [
+					'D',
+				]
+			} );
+
+			return editor.initPlugins()
+				.then( () => {
+					expect( getPlugins( editor ).length ).to.equal( 3 );
+
+					expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginD ) ).to.be.an.instanceof( Plugin );
 				} );
 		} );
 	} );
