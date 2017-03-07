@@ -165,8 +165,6 @@ export default class FloatingPanelView extends View {
  *		| #targetElement |
  *		+----------------+
  *
- * See {@link module:ui/panel/floating/floatingpanelview~FloatingPanelView#_updatePosition}.
- *
  * Positioning functions must be compatible with {@link module:utils/dom/position~Position}.
  *
  * @member {Object} module:ui/panel/floating/floatingpanelview~FloatingPanelView.defaultPositions
