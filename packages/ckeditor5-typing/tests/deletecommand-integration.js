@@ -16,8 +16,8 @@ describe( 'DeleteCommand integration', () => {
 				plugins: [
 					UndoEngine
 				],
-				undo: {
-					step: 3
+				typing: {
+					undoStep: 3
 				}
 			} )
 			.then( newEditor => {
