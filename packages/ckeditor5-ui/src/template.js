@@ -109,8 +109,8 @@ export default class Template {
 		 *
 		 * See: {@link #apply}.
 		 *
-		 * @protected
 		 * @readonly
+		 * @protected
 		 * @member {module:ui/template~RenderConfig#renderData}
 		 */
 		this._revertData = null;
@@ -189,9 +189,9 @@ export default class Template {
 	}
 
 	/**
-	 * Reverts a template {@link module:ui/template~Template#apply applied} to an existing DOM Node.
+	 * Reverts a template {@link module:ui/template~Template#apply applied} to a DOM Node.
 	 *
-	 * @param {Node} node Root node for the template to revert. Must be the same node
+	 * @param {Node} node Root node for the template to revert. In most cases, it's the same node
 	 * that {@link module:ui/template~Template#apply} has used.
 	 */
 	revert( node ) {
