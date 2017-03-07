@@ -572,7 +572,7 @@ export default class Template {
 	 * needed.
 	 *
 	 * @private
-	 * @param {Object} styles module:ui/template~TemplateDefinition.attributes.styles Styles definition.
+	 * @param {Object} styles Styles located in `attributes.style` of {@link module:ui/template~TemplateDefinition}.
 	 * @param {module:ui/template~RenderConfig} config Rendering config.
 	 */
 	_renderStyleAttribute( styles, config ) {
@@ -656,7 +656,8 @@ export default class Template {
 	}
 
 	/**
-	 * Activates {@link module:ui/template~Template#on} listeners on a passed `HTMLElement`.
+	 * Activates `on` listeners in the {@link module:ui/template~TemplateDefinition}
+	 * on a passed `HTMLElement`.
 	 *
 	 * @protected
 	 * @param {module:ui/template~RenderConfig} config Rendering config.

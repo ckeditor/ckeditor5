@@ -13,7 +13,7 @@
  * @param {Object} options Options of the utility.
  * @param {*} options.origin A view to which the focus will return when `Esc` is pressed and
  * `options.toolbar` is focused.
- * @param {module:core/keystrokehandler~KeystrokeHandler} options.originKeystrokeHandler A keystroke
+ * @param {module:utils/keystrokehandler~KeystrokeHandler} options.originKeystrokeHandler A keystroke
  * handler to register `Alt+F10` keystroke.
  * @param {module:utils/focustracker~FocusTracker} options.originFocusTracker A focus tracker
  * for `options.origin`.

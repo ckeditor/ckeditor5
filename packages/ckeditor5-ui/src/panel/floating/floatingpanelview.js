@@ -16,8 +16,12 @@ import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
 const toPx = toUnit( 'px' );
 
 /**
- * The floating panel view class. It floats around the {@link #targetElement}
+ * The floating panel view class. It floats around the
+ * {@link module:ui/panel/floating/floatingpanelview~FloatingPanelView#targetElement} in DOM
  * to remain visible in the browser viewport.
+ *
+ * See {@link module:ui/panel/floating/floatingpanelview~FloatingPanelView.defaultPositions}
+ * to learn about the positioning.
  *
  * @extends module:ui/view~View
  */
@@ -128,7 +132,7 @@ export default class FloatingPanelView extends View {
 
 /**
  * A default set of positioning functions used by the panel view to float
- * around {@link targetElement}.
+ * around {@link module:ui/panel/floating/floatingpanelview~FloatingPanelView#targetElement}.
  *
  * The available positioning functions are as follows:
  *
@@ -161,11 +165,11 @@ export default class FloatingPanelView extends View {
  *		| #targetElement |
  *		+----------------+
  *
- * See {@link #_updatePosition}.
+ * See {@link module:ui/panel/floating/floatingpanelview~FloatingPanelView#_updatePosition}.
  *
  * Positioning functions must be compatible with {@link module:utils/dom/position~Position}.
  *
- * @member {Object} module:ui/floatingpanel/floatingpanelview~FloatingPanelView#defaultPositions
+ * @member {Object} module:ui/panel/floating/floatingpanelview~FloatingPanelView.defaultPositions
  */
 FloatingPanelView.defaultPositions = {
 	nw: ( targetRect, panelRect ) => ( {

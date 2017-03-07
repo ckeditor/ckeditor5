@@ -54,7 +54,8 @@ export default class BalloonPanelView extends View {
 		 * controls the minor aspects of the balloon's visual appearance like placement
 		 * of the "arrow". To support a new position, an additional CSS must be created.
 		 *
-		 * Default position names correspond with {@link #defaultPositions}.
+		 * Default position names correspond with
+		 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
 		 *
 		 * @observable
 		 * @default 'se'
@@ -136,7 +137,7 @@ export default class BalloonPanelView extends View {
 	 *
 	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
 	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
-	 * {@link module:ui/balloonpanel/balloonpanelview~BalloonPanelView.defaultPositions}.
+	 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
 	 */
 	attachTo( options ) {
 		this.show();
@@ -174,7 +175,7 @@ export default class BalloonPanelView extends View {
  *	    >|-----|<---------------- horizontal offset
  *
  * @default 30
- * @member {Number} module:ui/balloonpanel/balloonpanelview~BalloonPanelView.arrowHorizontalOffset
+ * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowHorizontalOffset
  */
 BalloonPanelView.arrowHorizontalOffset = 30;
 
@@ -193,13 +194,13 @@ BalloonPanelView.arrowHorizontalOffset = 30;
  *		                       ^
  *
  * @default 15
- * @member {Number} module:ui/balloonpanel/balloonpanelview~BalloonPanelView.arrowVerticalOffset
+ * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowVerticalOffset
  */
 BalloonPanelView.arrowVerticalOffset = 15;
 
 /**
  * A default set of positioning functions used by the balloon panel view
- * when attaching using {@link #attachTo} method.
+ * when attaching using {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo} method.
  *
  * The available positioning functions are as follows:
  *
@@ -238,14 +239,14 @@ BalloonPanelView.arrowVerticalOffset = 15;
  *		              V
  *		         [ Target ]
  *
- * See {@link #attachTo}.
+ * See {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo}.
  *
  * Positioning functions must be compatible with {@link module:utils/dom/position~Position}.
  *
  * The name that position function returns will be reflected in balloon panel's class that
  * controls the placement of the "arrow". See {@link #position} to learn more.
  *
- * @member {Object} module:ui/balloonpanel/balloonpanelview~BalloonPanelView.defaultPositions
+ * @member {Object} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions
  */
 BalloonPanelView.defaultPositions = {
 	se: ( targetRect ) => ( {

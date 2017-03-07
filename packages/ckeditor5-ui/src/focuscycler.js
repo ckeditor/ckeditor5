@@ -52,7 +52,7 @@ export default class FocusCycler {
 	 * @param {Object} options Configuration options.
 	 * @param {module:utils/collection~Collection|Object} options.focusables
 	 * @param {module:utils/focustracker~FocusTracker} options.focusTracker
-	 * @param {module:core/keystrokehandler~KeystrokeHandler} [options.keystrokeHandler]
+	 * @param {module:utils/keystrokehandler~KeystrokeHandler} [options.keystrokeHandler]
 	 * @param {Object} [options.actions]
 	 */
 	constructor( options ) {
@@ -67,17 +67,17 @@ export default class FocusCycler {
 
 		/**
 		 * A focus tracker instance that cycler uses to determine focus
-		 * state in {@link #viewCollection}.
+		 * state in {@link #focusables}.
 		 *
 		 * @readonly
 		 * @member {module:utils/focustracker~FocusTracker} #focusTracker
 		 */
 
 		/**
-		 * Instance of the {@link module:core/keystrokehandler~KeystrokeHandler}.
+		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
 		 *
 		 * @readonly
-		 * @member {module:core/keystrokehandler~KeystrokeHandler} #keystrokeHandler
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler} #keystrokeHandler
 		 */
 
 		/**
@@ -117,7 +117,7 @@ export default class FocusCycler {
 	}
 
 	/**
-	 * Returns the first focusable view in {@link #viewCollection}.
+	 * Returns the first focusable view in {@link #focusables}.
 	 * `null` if there's none.
 	 *
 	 * @readonly
@@ -128,7 +128,7 @@ export default class FocusCycler {
 	}
 
 	/**
-	 * Returns the last focusable view in {@link #viewCollection}.
+	 * Returns the last focusable view in {@link #focusables}.
 	 * `null` if there's none.
 	 *
 	 * @readonly
@@ -139,7 +139,7 @@ export default class FocusCycler {
 	}
 
 	/**
-	 * Returns the next focusable view in {@link #viewCollection} based on {@link #current}.
+	 * Returns the next focusable view in {@link #focusables} based on {@link #current}.
 	 * `null` if there's none.
 	 *
 	 * @readonly
@@ -150,7 +150,7 @@ export default class FocusCycler {
 	}
 
 	/**
-	 * Returns the previous focusable view in {@link #viewCollection} based on {@link #current}.
+	 * Returns the previous focusable view in {@link #focusables} based on {@link #current}.
 	 * `null` if there's none.
 	 *
 	 * @readonly
@@ -161,7 +161,7 @@ export default class FocusCycler {
 	}
 
 	/**
-	 * An index of the view in the {@link #viewCollection} which is focused according
+	 * An index of the view in the {@link #focusables} which is focused according
 	 * to {@link #focusTracker}. `null` when there's no such view.
 	 *
 	 * @readonly
@@ -170,7 +170,7 @@ export default class FocusCycler {
 	get current() {
 		let index = null;
 
-		// There's no focused view in the viewCollection.
+		// There's no focused view in the focusables.
 		if ( this.focusTracker.focusedElement === null ) {
 			return null;
 		}
@@ -229,7 +229,7 @@ export default class FocusCycler {
 	}
 
 	/**
-	 * Returns the next/previous focusable view in {@link #viewCollection} with respect
+	 * Returns the next/previous focusable view in {@link #focusables} with respect
 	 * to {@link #current}.
 	 *
 	 * @protected
