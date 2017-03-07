@@ -135,7 +135,8 @@ export default class ViewConversionDispatcher {
 	 * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
 	 * events. See also {@link ~ViewConversionDispatcher#event:element element event}.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Model data that is a result of the conversion process
-	 * wrapped by DocumentFragment.
+	 * wrapped by DocumentFragment. Converted marker stamps will be set as DocumentFragment
+	 * {@link module:engine/view/documentfragment~DocumentFragment#markers static markers map}.
 	 */
 	convert( viewItem, additionalData = {} ) {
 		this.fire( 'viewCleanup', viewItem );
@@ -143,7 +144,7 @@ export default class ViewConversionDispatcher {
 		const consumable = ViewConsumable.createFrom( viewItem );
 		const conversionResult = this._convertItem( viewItem, consumable, additionalData );
 
-		// When conversion output is not a Node or Element we just return it.
+		// In some cases conversion output doesn't have to be a node and in this case we do nothing additional with this data.
 		if ( !( conversionResult instanceof ModelNode || conversionResult instanceof ModelDocumentFragment ) ) {
 			return conversionResult;
 		}

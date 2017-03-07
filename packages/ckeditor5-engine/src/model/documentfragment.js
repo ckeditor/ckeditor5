@@ -29,7 +29,7 @@ export default class DocumentFragment {
 	 */
 	constructor( children ) {
 		/**
-		 * DocumentFragment static markers list. This is a list of names and {@link module:engine/model/range~Range ranges}
+		 * DocumentFragment static markers map. This is a list of names and {@link module:engine/model/range~Range ranges}
 		 * which will be set as Markers to {@link module:engine/model/document~Document#markers document markers collection}
 		 * when DocumentFragment will be inserted to the document.
 		 *
