@@ -31,13 +31,17 @@ export default class Editor {
 	 * @param {Object} config The editor config.
 	 */
 	constructor( config ) {
+		const availablePlugins = this.constructor.build && this.constructor.build.plugins;
+
 		/**
 		 * Holds all configurations specific to this editor instance.
 		 *
 		 * @readonly
 		 * @member {module:utils/config~Config}
 		 */
-		this.config = new Config( config );
+		this.config = new Config( config, this.constructor.build && this.constructor.build.config );
+
+		this.config.define( 'plugins', availablePlugins );
 
 		/**
 		 * The plugins loaded and in use by this editor instance.
@@ -45,7 +49,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:core/plugin~PluginCollection}
 		 */
-		this.plugins = new PluginCollection( this );
+		this.plugins = new PluginCollection( this, availablePlugins );
 
 		/**
 		 * Commands registered to the editor.
