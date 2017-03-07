@@ -127,10 +127,10 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Creates the {@link module:ui/balloonpanel/balloonpanelview~BalloonPanelView} instance.
+	 * Creates the {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView} instance.
 	 *
 	 * @private
-	 * @returns {module:ui/balloonpanel/balloonpanelview~BalloonPanelView} Link balloon panel instance.
+	 * @returns {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} Link balloon panel instance.
 	 */
 	_createBalloonPanel() {
 		const editor = this.editor;
