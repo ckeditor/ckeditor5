@@ -9,9 +9,12 @@
 
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 
 /**
  * The classic editor UI class.
+ *
+ * @implements module:core/editor/editorui~EditorUI
  */
 export default class ClassicEditorUI {
 	/**
@@ -22,34 +25,22 @@ export default class ClassicEditorUI {
 	 */
 	constructor( editor, view ) {
 		/**
-		 * Editor that the UI belongs to.
-		 *
-		 * @readonly
-		 * @member {module:core/editor/editor~Editor}
+		 * @inheritDoc
 		 */
 		this.editor = editor;
 
 		/**
-		 * View of the ui.
-		 *
-		 * @readonly
-		 * @member {module:ui/editorui/editoruiview~EditorUIView}
+		 * @inheritDoc
 		 */
 		this.view = view;
 
 		/**
-		 * Instance of the {@link module:ui/componentfactory~ComponentFactory}.
-		 *
-		 * @readonly
-		 * @member {module:ui/componentfactory~ComponentFactory}
+		 * @inheritDoc
 		 */
 		this.componentFactory = new ComponentFactory( editor );
 
 		/**
-		 * Keeps information about editor focus.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
+		 * @inheritDoc
 		 */
 		this.focusTracker = new FocusTracker();
 
@@ -79,36 +70,14 @@ export default class ClassicEditorUI {
 
 		return this.view.init()
 			.then( () => {
-				const toolbarConfig = editor.config.get( 'toolbar' );
-				const promises = [];
-
-				if ( toolbarConfig ) {
-					promises.push( this.view.toolbar.fillFromConfig( toolbarConfig, this.componentFactory ) );
-				}
-
-				return Promise.all( promises );
+				return this.view.toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
 			} )
 			.then( () => {
-				const toolbarFocusTracker = this.view.toolbar.focusTracker;
-
-				// Because toolbar items can get focus, the overall state of
-				// the toolbar must also be tracked.
-				this.focusTracker.add( this.view.toolbar.element );
-
-				// Focus the toolbar on the keystroke, if not already focused.
-				editor.keystrokes.set( 'Alt+F10', ( data, cancel ) => {
-					if ( this.focusTracker.isFocused && !toolbarFocusTracker.isFocused ) {
-						this.view.toolbar.focus();
-						cancel();
-					}
-				} );
-
-				// Blur the toolbar and bring the focus back to editable on the keystroke.
-				this.view.toolbar.keystrokes.set( 'Esc', ( data, cancel ) => {
-					if ( toolbarFocusTracker.isFocused ) {
-						editor.editing.view.focus();
-						cancel();
-					}
+				enableToolbarKeyboardFocus( {
+					origin: editor.editing.view,
+					originFocusTracker: this.focusTracker,
+					originKeystrokeHandler: editor.keystrokes,
+					toolbar: this.view.toolbar
 				} );
 			} );
 	}
