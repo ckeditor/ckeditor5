@@ -296,7 +296,7 @@ describe( 'Editor', () => {
 				plugins: [ PluginA, PluginB, PluginC ]
 			};
 
-			const editor = new Editor( {} );
+			const editor = new Editor();
 
 			return editor.initPlugins()
 				.then( () => {
@@ -315,7 +315,7 @@ describe( 'Editor', () => {
 
 			const editor = new Editor( {
 				plugins: [
-					'A',
+					'A'
 				]
 			} );
 
@@ -328,6 +328,8 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should load plugins built in the Editor using their names', () => {
+			class PrivatePlugin extends Plugin {}
+
 			Editor.build = {
 				plugins: [ PluginA, PluginB, PluginC, PluginD ]
 			};
@@ -336,17 +338,19 @@ describe( 'Editor', () => {
 				plugins: [
 					'A',
 					'B',
-					'C'
+					'C',
+					PrivatePlugin
 				]
 			} );
 
 			return editor.initPlugins()
 				.then( () => {
-					expect( getPlugins( editor ).length ).to.equal( 3 );
+					expect( getPlugins( editor ).length ).to.equal( 4 );
 
 					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
 					expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
 					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PrivatePlugin ) ).to.be.an.instanceof( PrivatePlugin );
 				} );
 		} );
 
@@ -355,12 +359,34 @@ describe( 'Editor', () => {
 				plugins: [ PluginA, PluginB, PluginC, PluginD ]
 			};
 
-			class CustomEditor extends Editor {
-			}
+			class CustomEditor extends Editor {}
 
 			const editor = new CustomEditor( {
 				plugins: [
-					'D',
+					'D'
+				]
+			} );
+
+			return editor.initPlugins()
+				.then( () => {
+					expect( getPlugins( editor ).length ).to.equal( 3 );
+
+					expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginC ) ).to.be.an.instanceof( Plugin );
+					expect( editor.plugins.get( PluginD ) ).to.be.an.instanceof( Plugin );
+				} );
+		} );
+
+		it( 'should load plugins build into Editor\'s subclass', () => {
+			class CustomEditor extends Editor {}
+
+			CustomEditor.build = {
+				plugins: [ PluginA, PluginB, PluginC, PluginD ]
+			};
+
+			const editor = new CustomEditor( {
+				plugins: [
+					'D'
 				]
 			} );
 
