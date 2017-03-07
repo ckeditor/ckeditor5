@@ -43,10 +43,10 @@ export default class ToolbarView extends View {
 		this.focusTracker = new FocusTracker();
 
 		/**
-		 * Instance of the {@link module:core/keystrokehandler~KeystrokeHandler}.
+		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
 		 *
 		 * @readonly
-		 * @member {module:core/keystrokehandler~KeystrokeHandler}
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
 		 */
 		this.keystrokes = new KeystrokeHandler();
 

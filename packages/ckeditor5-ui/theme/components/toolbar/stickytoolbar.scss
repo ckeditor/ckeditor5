@@ -2,15 +2,13 @@
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
 @include ck-editor {
-	.ck-toolbar {
-		&.ck-toolbar_sticky {
-			position: fixed;
-			top: 0;
+	.ck-toolbar.ck-toolbar_sticky {
+		position: fixed;
+		top: 0;
 
-			&.ck-toolbar_sticky_bottom-limit {
-				top: auto;
-				position: absolute;
-			}
+		&.ck-toolbar_sticky_bottom-limit {
+			top: auto;
+			position: absolute;
 		}
 	}
 }

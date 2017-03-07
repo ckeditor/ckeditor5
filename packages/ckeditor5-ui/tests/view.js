@@ -272,14 +272,14 @@ describe( 'View', () => {
 			} );
 		} );
 
-		it( 'detaches the element from DOM', () => {
+		it( 'leaves the #element in DOM', () => {
 			const elRef = view.element;
+			const parentEl = document.createElement( 'div' );
 
-			document.createElement( 'div' ).appendChild( view.element );
-			expect( elRef.parentNode ).to.be.not.null;
+			parentEl.appendChild( view.element );
 
 			return view.destroy().then( () => {
-				expect( elRef.parentNode ).to.be.null;
+				expect( elRef.parentNode ).to.equal( parentEl );
 			} );
 		} );
 

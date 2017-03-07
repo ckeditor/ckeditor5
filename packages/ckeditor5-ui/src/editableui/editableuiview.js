@@ -60,6 +60,14 @@ export default class EditableUIView extends View {
 		this.set( 'isFocused', false );
 
 		/**
+		 * An external {@link #editableElement} passed into the constructor, which also means
+		 * the view will not render its {@link #template}.
+		 *
+		 * @member {HTMLElement} #externalElement
+		 */
+		this.externalElement = editableElement;
+
+		/**
 		 * The element which is the main editable element (usually the one with `contentEditable="true"`).
 		 *
 		 * @readonly
@@ -74,8 +82,8 @@ export default class EditableUIView extends View {
 	 * @returns {Promise}
 	 */
 	init() {
-		if ( this.editableElement ) {
-			this.template.apply( this.editableElement );
+		if ( this.externalElement ) {
+			this.template.apply( this.externalElement );
 		} else {
 			this.editableElement = this.element;
 		}
@@ -87,7 +95,9 @@ export default class EditableUIView extends View {
 	 * @inheritDoc
 	 */
 	destroy() {
-		this.editableElement.contentEditable = false;
+		if ( this.externalElement ) {
+			this.template.revert( this.externalElement );
+		}
 
 		return super.destroy();
 	}

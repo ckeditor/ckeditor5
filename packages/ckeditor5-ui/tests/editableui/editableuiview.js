@@ -6,7 +6,11 @@
 /* globals document */
 
 import EditableUIView from '../../src/editableui/editableuiview';
+import View from '../../src/view';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+testUtils.createSinonSandbox();
 
 describe( 'EditableUIView', () => {
 	let view, editableElement, locale;
@@ -22,6 +26,7 @@ describe( 'EditableUIView', () => {
 		it( 'sets initial values of attributes', () => {
 			expect( view.isReadOnly ).to.be.false;
 			expect( view.isFocused ).to.be.false;
+			expect( view.externalElement ).to.be.undefined;
 		} );
 
 		it( 'renders element from template when no editableElement', () => {
@@ -30,6 +35,7 @@ describe( 'EditableUIView', () => {
 			return view.init().then( () => {
 				expect( view.element ).to.equal( view.editableElement );
 				expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
+				expect( view.externalElement ).to.be.undefined;
 			} );
 		} );
 
@@ -40,6 +46,7 @@ describe( 'EditableUIView', () => {
 				expect( view.element ).to.equal( editableElement );
 				expect( view.element ).to.equal( view.editableElement );
 				expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
+				expect( view.externalElement ).to.equal( editableElement );
 			} );
 		} );
 	} );
@@ -69,14 +76,46 @@ describe( 'EditableUIView', () => {
 		} );
 	} );
 
-	describe( 'destroy', () => {
-		it( 'updates contentEditable property of editableElement', () => {
-			return new EditableUIView( locale, editableElement ).init().then( () => {
-				expect( view.editableElement.contentEditable ).to.equal( 'true' );
-			} )
-			.then( () => view.destroy() )
-			.then( () => {
-				expect( view.editableElement.contentEditable ).to.equal( 'false' );
+	describe( 'destroy()', () => {
+		it( 'calls super#destroy()', () => {
+			const spy = testUtils.sinon.spy( View.prototype, 'destroy' );
+
+			return view.destroy().then( () => {
+				sinon.assert.calledOnce( spy );
+			} );
+		} );
+
+		describe( 'when #editableElement as an argument', () => {
+			it( 'reverts contentEditable property of editableElement (was false)', () => {
+				editableElement = document.createElement( 'div' );
+				editableElement.contentEditable = false;
+
+				view = new EditableUIView( locale, editableElement );
+
+				return view.init()
+					.then( () => {
+						expect( editableElement.contentEditable ).to.equal( 'true' );
+					} )
+					.then( () => view.destroy() )
+					.then( () => {
+						expect( editableElement.contentEditable ).to.equal( 'false' );
+					} );
+			} );
+
+			it( 'reverts contentEditable property of editableElement (was true)', () => {
+				editableElement = document.createElement( 'div' );
+				editableElement.contentEditable = true;
+
+				view = new EditableUIView( locale, editableElement );
+
+				return view.init()
+					.then( () => {
+						expect( editableElement.contentEditable ).to.equal( 'true' );
+					} )
+					.then( () => view.destroy() )
+					.then( () => {
+						expect( editableElement.contentEditable ).to.equal( 'true' );
+					} );
 			} );
 		} );
 	} );
