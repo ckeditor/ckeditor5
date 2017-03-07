@@ -649,14 +649,6 @@ describe( 'Template', () => {
 			} ).to.throw( CKEditorError, /ui-template-wrong-syntax/ );
 		} );
 
-		it( 'throws when no HTMLElement passed', () => {
-			expect( () => {
-				new Template( {
-					tag: 'p'
-				} ).apply();
-			} ).to.throw( CKEditorError, /ui-template-wrong-node/ );
-		} );
-
 		it( 'accepts empty template definition', () => {
 			new Template( {} ).apply( el );
 			new Template( {} ).apply( text );
@@ -1033,14 +1025,6 @@ describe( 'Template', () => {
 
 			domEmitter = Object.create( DomEmitterMixin );
 			bind = Template.bind( observable, domEmitter );
-		} );
-
-		it( 'throws when no HTMLElement passed', () => {
-			expect( () => {
-				new Template( {
-					tag: 'p'
-				} ).revert();
-			} ).to.throw( CKEditorError, /ui-template-wrong-node/ );
 		} );
 
 		it( 'should throw if template is not applied', () => {

@@ -168,15 +168,6 @@ export default class Template {
 	 * @param {Node} node Root node for the template to apply.
 	 */
 	apply( node ) {
-		if ( !node ) {
-			/**
-			 * No DOM Node specified.
-			 *
-			 * @error ui-template-wrong-syntax
-			 */
-			throw new CKEditorError( 'ui-template-wrong-node: No DOM Node specified.' );
-		}
-
 		this._revertData = getEmptyRevertData();
 
 		this._renderNode( {
@@ -195,15 +186,6 @@ export default class Template {
 	 * that {@link module:ui/template~Template#apply} has used.
 	 */
 	revert( node ) {
-		if ( !node ) {
-			/**
-			 * No DOM Node specified.
-			 *
-			 * @error ui-template-wrong-syntax
-			 */
-			throw new CKEditorError( 'ui-template-wrong-node: No DOM Node specified.' );
-		}
-
 		if ( !this._revertData ) {
 			/**
 			 * Attempting reverting a template which has not been applied yet.
