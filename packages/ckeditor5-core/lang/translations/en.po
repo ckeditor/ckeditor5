@@ -1,0 +1,11 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+
+msgctxt "Label for the Save button."
+msgid "Save"
+msgstr "Save"
+
+msgctxt "Label for the Cancel button."
+msgid "Cancel"
+msgstr "Cancel"
