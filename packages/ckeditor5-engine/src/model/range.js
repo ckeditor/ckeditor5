@@ -447,20 +447,58 @@ export default class Range {
 	 * @returns {Array.<module:engine/model/range~Range>}
 	 */
 	_getTransformedByDocumentChange( type, deltaType, targetPosition, howMany, sourcePosition ) {
+		// IMPORTANT! Every special case added here has to be reflected in MarkerDelta transformations!
+		// Check /src/model/delta/basic-transformations.js.
 		if ( type == 'insert' ) {
 			return this._getTransformedByInsertion( targetPosition, howMany, false, false );
 		} else {
 			const ranges = this._getTransformedByMove( sourcePosition, targetPosition, howMany );
 
-			if ( deltaType == 'split' && this.containsPosition( sourcePosition ) ) {
-				// Special case for splitting element inside range.
-				// <p>f[ooba]r</p> -> <p>f[oo</p><p>ba]r</p>
-				ranges[ 0 ].end = ranges[ 1 ].end;
-				ranges.pop();
-			} else if ( deltaType == 'merge' && type == 'move' && this.isCollapsed && ranges[ 0 ].start.isEqual( sourcePosition ) ) {
-				// Special case when collapsed range is in merged element.
-				// <p>foo</p><p>[]bar{}</p> -> <p>foo[]bar{}</p>
-				ranges[ 0 ] = new Range( targetPosition.getShiftedBy( this.start.offset ) );
+			// Don't ask. Just debug.
+			// Like this: https://github.com/ckeditor/ckeditor5-engine/issues/841#issuecomment-282706488.
+			//
+			// In following cases, in examples, the last step is the fix step.
+			// When there are multiple ranges in an example, ranges[] array indices are represented as follows:
+			// * [] is ranges[ 0 ],
+			// * {} is ranges[ 1 ],
+			// * () is ranges[ 2 ].
+			if ( type == 'move' ) {
+				const sourceRange = Range.createFromPositionAndShift( sourcePosition, howMany );
+
+				if ( deltaType == 'split' && this.containsPosition( sourcePosition ) ) {
+					// Range contains a position where an element is split.
+					// <p>f[ooba]r</p> -> <p>f[ooba]r</p><p></p> -> <p>f[oo]</p><p>{ba}r</p> -> <p>f[oo</p><p>ba]r</p>
+					return [ new Range( ranges[ 0 ].start, ranges[ 1 ].end ) ];
+				} else if ( deltaType == 'merge' && this.isCollapsed && ranges[ 0 ].start.isEqual( sourcePosition ) ) {
+					// Collapsed range is in merged element.
+					// Without fix, the range would end up in the graveyard, together with removed element.
+					// <p>foo</p><p>[]bar</p> -> <p>foobar</p><p>[]</p> -> <p>foobar</p> -> <p>foo[]bar</p>
+					return [ new Range( targetPosition.getShiftedBy( this.start.offset ) ) ];
+				} else if ( deltaType == 'wrap' ) {
+					// Range intersects (at the start) with wrapped element (<p>ab</p>).
+					// <p>a[b</p><p>c]d</p> -> <p>a[b</p><w></w><p>c]d</p> -> [<w>]<p>a(b</p>){</w><p>c}d</p> -> <w><p>a[b</p></w><p>c]d</p>
+					if ( sourceRange.containsPosition( this.start ) && this.containsPosition( sourceRange.end ) ) {
+						return [ new Range( ranges[ 2 ].start, ranges[ 1 ].end ) ];
+					}
+					// Range intersects (at the end) with wrapped element (<p>cd</p>).
+					// <p>a[b</p><p>c]d</p> -> <p>a[b</p><p>c]d</p><w></w> -> <p>a[b</p>]<w>{<p>c}d</p></w> -> <p>a[b</p><w><p>c]d</p></w>
+					else if ( sourceRange.containsPosition( this.end ) && this.containsPosition( sourceRange.start ) ) {
+						return [ new Range( ranges[ 0 ].start, ranges[ 1 ].end ) ];
+					}
+				} else if ( deltaType == 'unwrap' ) {
+					// Range intersects (at the beginning) with unwrapped element (<w></w>).
+					// <w><p>a[b</p></w><p>c]d</p> -> <p>a{b</p>}<w>[</w><p>c]d</p> -> <p>a[b</p><w></w><p>c]d</p>
+					// <w></w> is removed in next operation, but the remove does not mess up ranges.
+					if ( sourceRange.containsPosition( this.start ) && this.containsPosition( sourceRange.end ) ) {
+						return [ new Range( ranges[ 1 ].start, ranges[ 0 ].end ) ];
+					}
+					// Range intersects (at the end) with unwrapped element (<w></w>).
+					// <p>a[b</p><w><p>c]d</p></w> -> <p>a[b</p>](<p>c)d</p>{<w>}</w> -> <p>a[b</p><p>c]d</p><w></w>
+					// <w></w> is removed in next operation, but the remove does not mess up ranges.
+					else if ( sourceRange.containsPosition( this.end ) && this.containsPosition( sourceRange.start ) ) {
+						return [ new Range( ranges[ 0 ].start, ranges[ 2 ].end ) ];
+					}
+				}
 			}
 
 			return ranges;
@@ -652,11 +690,10 @@ export default class Range {
 	 * Combines all ranges from the passed array into a one range. At least one range has to be passed.
 	 * Passed ranges must not have common parts.
 	 *
-	 * The first range from the array is a reference range. If other ranges starts or ends on the exactly same position where
+	 * The first range from the array is a reference range. If other ranges start or end on the exactly same position where
 	 * the reference range, they get combined into one range.
 	 *
-	 *		[  ][]  [    ][ ][  ref range  ][ ][]  [  ]  // Passed ranges, shown sorted. "Ref range" was the first range in original array.
-	 *		        [      returned range       ]  [  ]  // The combined range.
+	 *		[  ][]  [    ][ ][             ][ ][]  [  ]  // Passed ranges, shown sorted
 	 *		[    ]                                       // The result of the function if the first range was a reference range.
 	 *	            [                           ]        // The result of the function if the third-to-seventh range was a reference range.
 	 *	                                           [  ]  // The result of the function if the last range was a reference range.
