@@ -60,13 +60,12 @@ export default class EditableUIView extends View {
 		this.set( 'isFocused', false );
 
 		/**
-		 * Indicates whether the view operates on an external {@link #editableElement} or
-		 * rendered it on its own.
+		 * An external {@link #editableElement} passed into the constructor, which also means
+		 * the view will not render its {@link #template}.
 		 *
-		 * @observable
-		 * @member {Boolean} #isRendered
+		 * @member {HTMLElement} #externalElement
 		 */
-		this.set( 'isRendered', !editableElement );
+		this.externalElement = editableElement;
 
 		/**
 		 * The element which is the main editable element (usually the one with `contentEditable="true"`).
@@ -83,8 +82,8 @@ export default class EditableUIView extends View {
 	 * @returns {Promise}
 	 */
 	init() {
-		if ( !this.isRendered ) {
-			this.template.apply( this.editableElement );
+		if ( this.externalElement ) {
+			this.template.apply( this.externalElement );
 		} else {
 			this.editableElement = this.element;
 		}
@@ -96,8 +95,8 @@ export default class EditableUIView extends View {
 	 * @inheritDoc
 	 */
 	destroy() {
-		if ( !this.isRendered ) {
-			this.template.revert( this.editableElement );
+		if ( this.externalElement ) {
+			this.template.revert( this.externalElement );
 		}
 
 		return super.destroy();

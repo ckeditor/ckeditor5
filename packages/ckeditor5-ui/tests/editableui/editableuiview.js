@@ -26,7 +26,7 @@ describe( 'EditableUIView', () => {
 		it( 'sets initial values of attributes', () => {
 			expect( view.isReadOnly ).to.be.false;
 			expect( view.isFocused ).to.be.false;
-			expect( view.isRendered ).to.be.true;
+			expect( view.externalElement ).to.be.undefined;
 		} );
 
 		it( 'renders element from template when no editableElement', () => {
@@ -35,6 +35,7 @@ describe( 'EditableUIView', () => {
 			return view.init().then( () => {
 				expect( view.element ).to.equal( view.editableElement );
 				expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
+				expect( view.externalElement ).to.be.undefined;
 			} );
 		} );
 
@@ -45,7 +46,7 @@ describe( 'EditableUIView', () => {
 				expect( view.element ).to.equal( editableElement );
 				expect( view.element ).to.equal( view.editableElement );
 				expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
-				expect( view.isRendered ).to.be.false;
+				expect( view.externalElement ).to.equal( editableElement );
 			} );
 		} );
 	} );
