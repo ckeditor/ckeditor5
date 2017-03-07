@@ -111,7 +111,7 @@ export default class Template {
 		 *
 		 * @readonly
 		 * @protected
-		 * @member {module:ui/template~RenderConfig#renderData}
+		 * @member {module:ui/template~RenderData}
 		 */
 		this._revertData = null;
 	}
@@ -304,12 +304,12 @@ export default class Template {
 	 * Renders a DOM Node (either `HTMLElement` or `Text`) out of the template.
 	 *
 	 * @protected
-	 * @param {module:ui/template~RenderConfig} config Rendering config.
+	 * @param {module:ui/template~RenderData} data Rendering data.
 	 */
-	_renderNode( config ) {
+	_renderNode( data ) {
 		let isInvalid;
 
-		if ( config.node ) {
+		if ( data.node ) {
 			// When applying, a definition cannot have "tag" and "text" at the same time.
 			isInvalid = this.tag && this.text;
 		} else {
@@ -328,9 +328,9 @@ export default class Template {
 		}
 
 		if ( this.text ) {
-			return this._renderText( config );
+			return this._renderText( data );
 		} else {
-			return this._renderElement( config );
+			return this._renderElement( data );
 		}
 	}
 
@@ -338,18 +338,18 @@ export default class Template {
 	 * Renders an `HTMLElement` out of the template.
 	 *
 	 * @protected
-	 * @param {module:ui/template~RenderConfig} config Rendering config.
+	 * @param {module:ui/template~RenderData} data Rendering data.
 	 */
-	_renderElement( config ) {
-		let node = config.node;
+	_renderElement( data ) {
+		let node = data.node;
 
 		if ( !node ) {
-			node = config.node = document.createElementNS( this.ns || xhtmlNs, this.tag );
+			node = data.node = document.createElementNS( this.ns || xhtmlNs, this.tag );
 		}
 
-		this._renderAttributes( config );
-		this._renderElementChildren( config );
-		this._setUpListeners( config );
+		this._renderAttributes( data );
+		this._renderElementChildren( data );
+		this._setUpListeners( data );
 
 		return node;
 	}
@@ -358,16 +358,16 @@ export default class Template {
 	 * Renders a `Text` node out of {@link module:ui/template~Template#text}.
 	 *
 	 * @protected
-	 * @param {module:ui/template~RenderConfig} config Rendering config.
+	 * @param {module:ui/template~RenderData} data Rendering data.
 	 */
-	_renderText( config ) {
-		let node = config.node;
+	_renderText( data ) {
+		let node = data.node;
 
 		// Save the original textContent to revert it in #revert().
 		if ( node ) {
-			config.revertData.text = node.textContent;
+			data.revertData.text = node.textContent;
 		} else {
-			node = config.node = document.createTextNode( '' );
+			node = data.node = document.createTextNode( '' );
 		}
 
 		// Check if this Text Node is bound to Observable. Cases:
@@ -384,7 +384,7 @@ export default class Template {
 			this._bindToObservable( {
 				schema: this.text,
 				updater: getTextUpdater( node ),
-				config
+				data
 			} );
 		}
 		// Simply set text. Cases:
@@ -404,17 +404,17 @@ export default class Template {
 	 * Renders an `HTMLElement` attributes out of {@link module:ui/template~Template#attributes}.
 	 *
 	 * @protected
-	 * @param {module:ui/template~RenderConfig} config Rendering config.
+	 * @param {module:ui/template~RenderData} data Rendering data.
 	 */
-	_renderAttributes( config ) {
+	_renderAttributes( data ) {
 		let attrName, attrValue, domAttrValue, attrNs;
 
 		if ( !this.attributes ) {
 			return;
 		}
 
-		const node = config.node;
-		const revertData = config.revertData;
+		const node = data.node;
+		const revertData = data.revertData;
 
 		for ( attrName in this.attributes ) {
 			// Current attribute value in DOM.
@@ -473,7 +473,7 @@ export default class Template {
 				this._bindToObservable( {
 					schema: valueToBind,
 					updater: getAttributeUpdater( node, attrName, attrNs ),
-					config
+					data
 				} );
 			}
 
@@ -485,7 +485,7 @@ export default class Template {
 			//		}
 			//
 			else if ( attrName == 'style' && typeof attrValue[ 0 ] !== 'string' ) {
-				this._renderStyleAttribute( attrValue[ 0 ], config );
+				this._renderStyleAttribute( attrValue[ 0 ], data );
 			}
 
 			// Otherwise simply set the static attribute:
@@ -555,10 +555,10 @@ export default class Template {
 	 *
 	 * @private
 	 * @param {Object} styles Styles located in `attributes.style` of {@link module:ui/template~TemplateDefinition}.
-	 * @param {module:ui/template~RenderConfig} config Rendering config.
+	 * @param {module:ui/template~RenderData} data Rendering data.
 	 */
-	_renderStyleAttribute( styles, config ) {
-		const node = config.node;
+	_renderStyleAttribute( styles, data ) {
+		const node = data.node;
 
 		for ( let styleName in styles ) {
 			const styleValue = styles[ styleName ];
@@ -573,7 +573,7 @@ export default class Template {
 				this._bindToObservable( {
 					schema: [ styleValue ],
 					updater: getStyleUpdater( node, styleName ),
-					config
+					data
 				} );
 			}
 
@@ -593,12 +593,12 @@ export default class Template {
 	 * Recursively renders `HTMLElement` children from {@link module:ui/template~Template#children}.
 	 *
 	 * @protected
-	 * @param {module:ui/template~RenderConfig} config Rendering config.
+	 * @param {module:ui/template~RenderData} data Rendering data.
 	 */
-	_renderElementChildren( config ) {
-		const node = config.node;
-		const container = config.intoFragment ? document.createDocumentFragment() : node;
-		const isApplying = config.isApplying;
+	_renderElementChildren( data ) {
+		const node = data.node;
+		const container = data.intoFragment ? document.createDocumentFragment() : node;
+		const isApplying = data.isApplying;
 		let childIndex = 0;
 
 		for ( let child of this.children ) {
@@ -616,7 +616,7 @@ export default class Template {
 				}
 			} else {
 				if ( isApplying ) {
-					const revertData = config.revertData;
+					const revertData = data.revertData;
 					const childRevertData = getEmptyRevertData();
 
 					revertData.children.push( childRevertData );
@@ -632,7 +632,7 @@ export default class Template {
 			}
 		}
 
-		if ( config.intoFragment ) {
+		if ( data.intoFragment ) {
 			node.appendChild( container );
 		}
 	}
@@ -642,9 +642,9 @@ export default class Template {
 	 * on a passed `HTMLElement`.
 	 *
 	 * @protected
-	 * @param {module:ui/template~RenderConfig} config Rendering config.
+	 * @param {module:ui/template~RenderData} data Rendering data.
 	 */
-	_setUpListeners( config ) {
+	_setUpListeners( data ) {
 		if ( !this.eventListeners ) {
 			return;
 		}
@@ -653,11 +653,11 @@ export default class Template {
 			const revertBindings = this.eventListeners[ key ].map( schemaItem => {
 				const [ domEvtName, domSelector ] = key.split( '@' );
 
-				return schemaItem.activateDomEventListener( domEvtName, domSelector, config );
+				return schemaItem.activateDomEventListener( domEvtName, domSelector, data );
 			} );
 
-			if ( config.revertData ) {
-				config.revertData.bindings.push( revertBindings );
+			if ( data.revertData ) {
+				data.revertData.bindings.push( revertBindings );
 			}
 		}
 	}
@@ -672,13 +672,13 @@ export default class Template {
 	 * @param {Object} options Binding options.
 	 * @param {module:ui/template~TemplateValueSchema} options.schema
 	 * @param {Function} options.updater A function which updates DOM (like attribute or text).
-	 * @param {module:ui/template~RenderConfig} options.config Rendering config.
+	 * @param {module:ui/template~RenderData} options.data Rendering data.
 	 */
-	_bindToObservable( { schema, updater, config } ) {
-		const revertData = config.revertData;
+	_bindToObservable( { schema, updater, data } ) {
+		const revertData = data.revertData;
 
 		// Set initial values.
-		syncValueSchemaValue( schema, updater, config );
+		syncValueSchemaValue( schema, updater, data );
 
 		const revertBindings = schema
 			// Filter "falsy" (false, undefined, null, '') value schema components out.
@@ -688,7 +688,7 @@ export default class Template {
 			// Once only the actual binding are left, let the emitter listen to observable change:attribute event.
 			// TODO: Reduce the number of listeners attached as many bindings may listen
 			// to the same observable attribute.
-			.map( templateBinding => templateBinding.activateAttributeListener( schema, updater, config ) );
+			.map( templateBinding => templateBinding.activateAttributeListener( schema, updater, data ) );
 
 		if ( revertData ) {
 			revertData.bindings.push( revertBindings );
@@ -696,13 +696,13 @@ export default class Template {
 	}
 
 	/**
-	 * Reverts {@link module:ui/template~RenderConfig#revertData template data} from a node to
+	 * Reverts {@link module:ui/template~RenderData#revertData template data} from a node to
 	 * return it to the the original state.
 	 *
 	 * @protected
 	 * @param {HTMLElement|Text} node A node to be reverted.
-	 * @param {module:ui/template~RenderConfig#revertData} revertData An information
-	 * about desired node state after revert.
+	 * @param {module:ui/template~RenderData#revertData} revertData Stores information about
+	 * what changes have been made by {@link #apply} to the node.
 	 */
 	_revertTemplateFromNode( node, revertData ) {
 		for ( let binding of revertData.bindings ) {
@@ -813,11 +813,11 @@ export class TemplateBinding {
 	 *
 	 * @param {module:ui/template~TemplateValueSchema} schema A full schema to generate an attribute or text in DOM.
 	 * @param {Function} updater A DOM updater function used to update native DOM attribute or text.
-	 * @param {module:ui/template~RenderConfig} config Rendering config.
+	 * @param {module:ui/template~RenderData} data Rendering data.
 	 * @returns {Function} A function to sever the listener binding.
 	 */
-	activateAttributeListener( schema, updater, config ) {
-		const callback = () => syncValueSchemaValue( schema, updater, config );
+	activateAttributeListener( schema, updater, data ) {
+		const callback = () => syncValueSchemaValue( schema, updater, data );
 
 		this.emitter.listenTo( this.observable, 'change:' + this.attribute, callback );
 
@@ -845,10 +845,10 @@ export class TemplateToBinding extends TemplateBinding {
 	 *
 	 * @param {String} domEvtName A name of the native DOM event.
 	 * @param {String} domSelector A selector in DOM to filter delegated events.
-	 * @param {module:ui/template~RenderConfig} config Rendering config.
+	 * @param {module:ui/template~RenderData} data Rendering data.
 	 * @returns {Function} A function to sever the listener binding.
 	 */
-	activateDomEventListener( domEvtName, domSelector, config ) {
+	activateDomEventListener( domEvtName, domSelector, data ) {
 		const callback = ( evt, domEvt ) => {
 			if ( !domSelector || domEvt.target.matches( domSelector ) ) {
 				if ( typeof this.eventNameOrFunction == 'function' ) {
@@ -859,11 +859,11 @@ export class TemplateToBinding extends TemplateBinding {
 			}
 		};
 
-		this.emitter.listenTo( config.node, domEvtName, callback );
+		this.emitter.listenTo( data.node, domEvtName, callback );
 
 		// Allows revert of the listener.
 		return () => {
-			this.emitter.stopListening( config.node, domEvtName, callback );
+			this.emitter.stopListening( data.node, domEvtName, callback );
 		};
 	}
 }
@@ -1561,10 +1561,10 @@ function shouldExtend( attrName ) {
  */
 
 /**
- * The {@link module:ui/template~Template#_renderNode} config.
+ * The {@link module:ui/template~Template#_renderNode} configuration.
  *
  * @private
- * @interface module:ui/template~RenderConfig
+ * @interface module:ui/template~RenderData
  */
 
 /**
@@ -1589,8 +1589,9 @@ function shouldExtend( attrName ) {
  */
 
 /**
- * An object storing the data to help {@module:ui/template~Template#revert}
- * bring back an element to its initial state.
+ * An object storing the data that helps {@module:ui/template~Template#revert}
+ * bringing back an element to its initial state, i.e. before
+ * {@module:ui/template~Template#apply} was called.
  *
  * @member {Object} #revertData
  */
