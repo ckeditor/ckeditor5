@@ -15,7 +15,7 @@ import LinkElement from './linkelement';
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/balloonpanel/balloonpanelview';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 
 import LinkFormView from './ui/linkformview';
 
@@ -127,10 +127,10 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Creates the {@link module:ui/balloonpanel/balloonpanelview~BalloonPanelView} instance.
+	 * Creates the {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView} instance.
 	 *
 	 * @private
-	 * @returns {module:ui/balloonpanel/balloonpanelview~BalloonPanelView} Link balloon panel instance.
+	 * @returns {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} Link balloon panel instance.
 	 */
 	_createBalloonPanel() {
 		const editor = this.editor;
