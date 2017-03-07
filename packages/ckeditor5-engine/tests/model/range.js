@@ -19,7 +19,9 @@ import {
 	getRemoveDelta,
 	getRenameDelta,
 	getSplitDelta,
-	getMergeDelta
+	getMergeDelta,
+	getWrapDelta,
+	getUnwrapDelta
 } from '../../tests/model/delta/transform/_utils/utils';
 
 describe( 'Range', () => {
@@ -855,6 +857,145 @@ describe( 'Range', () => {
 					expect( transformed.length ).to.equal( 1 );
 					expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 3 ] );
 					expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 3 ] );
+				} );
+			} );
+
+			describe( 'by WrapDelta', () => {
+				it( 'maintans start position when wrapping element in which the range starts and ends', () => {
+					root.removeChildren( root.childCount );
+					root.appendChildren( [ new Element( 'p', null, new Text( 'foo' ) ), new Element( 'p', null, new Text( 'bar' ) ) ] );
+
+					// <p>f[o]o</p><p>bar</p>
+					range.start = new Position( root, [ 0, 1 ] );
+					range.end = new Position( root, [ 0, 2 ] );
+
+					const wrapRange = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+					const wrapElement = new Element( 'w' );
+					const delta = getWrapDelta( wrapRange, wrapElement, 1 );
+
+					const transformed = range.getTransformedByDelta( delta );
+
+					// <w><p>f[o]o</p></w><p>bar</p>
+					expect( transformed.length ).to.equal( 1 );
+					expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 0, 1 ] );
+					expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 0, 2 ] );
+				} );
+
+				it( 'maintans start position when wrapping element in which the range starts but not ends', () => {
+					root.removeChildren( root.childCount );
+					root.appendChildren( [ new Element( 'p', null, new Text( 'foo' ) ), new Element( 'p', null, new Text( 'bar' ) ) ] );
+
+					// <p>f[oo</p><p>b]ar</p>
+					range.start = new Position( root, [ 0, 1 ] );
+					range.end = new Position( root, [ 1, 1 ] );
+
+					const wrapRange = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+					const wrapElement = new Element( 'w' );
+					const delta = getWrapDelta( wrapRange, wrapElement, 1 );
+
+					const transformed = range.getTransformedByDelta( delta );
+
+					// <w><p>f[oo</p></w><p>b]ar</p>
+					expect( transformed.length ).to.equal( 1 );
+					expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 0, 1 ] );
+					expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
+				} );
+
+				it( 'maintans end position when wrapping element in which the range ends but not starts', () => {
+					root.removeChildren( root.childCount );
+					root.appendChildren( [ new Element( 'p', null, new Text( 'foo' ) ), new Element( 'p', null, new Text( 'bar' ) ) ] );
+
+					// <p>f[oo</p><p>b]ar</p>
+					range.start = new Position( root, [ 0, 1 ] );
+					range.end = new Position( root, [ 1, 1 ] );
+
+					const wrapRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+					const wrapElement = new Element( 'w' );
+					const delta = getWrapDelta( wrapRange, wrapElement, 1 );
+
+					const transformed = range.getTransformedByDelta( delta );
+
+					// <p>f[oo</p><w><p>b]ar</p></w>
+					expect( transformed.length ).to.equal( 1 );
+					expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
+					expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 0, 1 ] );
+				} );
+			} );
+
+			describe( 'by UnwrapDelta', () => {
+				it( 'maintans start position when wrapping element in which the range starts and ends', () => {
+					root.removeChildren( root.childCount );
+					root.appendChildren( [
+						new Element( 'w', null, [
+							new Element( 'p', null, new Text( 'foo' ) )
+						] ),
+						new Element( 'p', null, new Text( 'bar' ) )
+					] );
+
+					// <w><p>f[o]o</p></w><p>bar</p>
+					range.start = new Position( root, [ 0, 0, 1 ] );
+					range.end = new Position( root, [ 0, 0, 2 ] );
+
+					const unwrapPosition = new Position( root, [ 0 ] );
+					const delta = getUnwrapDelta( unwrapPosition, 1, 1 );
+
+					const transformed = range.getTransformedByDelta( delta );
+
+					// <p>f[o]o</p><p>bar</p>
+					expect( transformed.length ).to.equal( 1 );
+					expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
+					expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 2 ] );
+				} );
+
+				it( 'maintans start position when wrapping element in which the range starts but not ends', () => {
+					root.removeChildren( root.childCount );
+					root.appendChildren( [
+						new Element( 'w', null, [
+							new Element( 'p', null, new Text( 'foo' ) )
+						] ),
+						new Element( 'p', null, new Text( 'bar' ) )
+					] );
+
+					// <w><p>f[oo</p></w><p>b]ar</p>
+					range.start = new Position( root, [ 0, 0, 1 ] );
+					range.end = new Position( root, [ 1, 1 ] );
+
+					const unwrapPosition = new Position( root, [ 0 ] );
+					const delta = getUnwrapDelta( unwrapPosition, 1, 1 );
+
+					const transformed = range.getTransformedByDelta( delta );
+
+					// <p>f[oo</p><p>b]ar</p>
+					expect( transformed.length ).to.equal( 2 );
+
+					expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
+					expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
+
+					expect( transformed[ 1 ].root.rootName  ).to.equal( '$graveyard' );
+				} );
+
+				it( 'maintans end position when wrapping element in which the range ends but not starts', () => {
+					root.removeChildren( root.childCount );
+					root.appendChildren( [
+						new Element( 'p', null, new Text( 'foo' ) ),
+						new Element( 'w', null, [
+							new Element( 'p', null, new Text( 'bar' ) )
+						] )
+					] );
+
+					// <p>f[oo</p><w><p>b]ar</p></w>
+					range.start = new Position( root, [ 0, 1 ] );
+					range.end = new Position( root, [ 1, 0, 1 ] );
+
+					const unwrapPosition = new Position( root, [ 1 ] );
+					const delta = getUnwrapDelta( unwrapPosition, 1, 1 );
+
+					const transformed = range.getTransformedByDelta( delta );
+
+					// <p>f[oo</p><p>b]ar</p>
+					expect( transformed.length ).to.equal( 1 );
+					expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
+					expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
 				} );
 			} );
 		} );

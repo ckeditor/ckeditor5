@@ -97,33 +97,20 @@ addTransformationCase( InsertDelta, MergeDelta, ( a, b, isStrong ) => {
 	return defaultTransform( a, b, isStrong );
 } );
 
-// Add special case for MarkerDelta x SplitDelta
-addTransformationCase( MarkerDelta, SplitDelta, ( a, b, isStrong ) => {
-	// If marked range is split, we need to fix it:
-	// ab[cdef]gh   ==>  ab[cd
-	//                   ef]gh
-	// To mimic what normally happens with LiveRange if you split it.
-
-	// Mote: MarkerDelta can't get split to two deltas, neither can MarkerOperation.
-	const transformedDelta = defaultTransform( a, b, isStrong )[ 0 ];
+function transformMarkerDelta( a, b ) {
+	const transformedDelta = a.clone();
 	const transformedOp = transformedDelta.operations[ 0 ];
 
-	// Fix positions, if needed.
-	const markerOp = a.operations[ 0 ];
-
-	const source = b.position;
-	const target = b._moveOperation.targetPosition;
-
-	if ( markerOp.oldRange.containsPosition( b.position ) ) {
-		transformedOp.oldRange.end = markerOp.oldRange.end._getCombined( source, target );
-	}
-
-	if ( markerOp.newRange.containsPosition( b.position ) ) {
-		transformedOp.newRange.end = markerOp.newRange.end._getCombined( source, target );
-	}
+	transformedOp.oldRange = transformedOp.oldRange.getTransformedByDelta( b )[ 0 ];
+	transformedOp.newRange = transformedOp.newRange.getTransformedByDelta( b )[ 0 ];
 
 	return [ transformedDelta ];
-} );
+}
+
+addTransformationCase( MarkerDelta, SplitDelta, transformMarkerDelta );
+addTransformationCase( MarkerDelta, MergeDelta, transformMarkerDelta );
+addTransformationCase( MarkerDelta, WrapDelta, transformMarkerDelta );
+addTransformationCase( MarkerDelta, UnwrapDelta, transformMarkerDelta );
 
 // Add special case for MoveDelta x MergeDelta transformation.
 addTransformationCase( MoveDelta, MergeDelta, ( a, b, isStrong ) => {
