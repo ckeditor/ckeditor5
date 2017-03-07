@@ -1,0 +1,11 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+
+msgctxt "Title of the CKEditor5 editor."
+msgid "Rich Text Editor, %0"
+msgstr "Rich Text Editor, %0"
+
+msgctxt "Title of the CKEditor5 editor."
+msgid "Rich Text Editor"
+msgstr "Rich Text Editor"
