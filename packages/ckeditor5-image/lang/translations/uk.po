@@ -1,0 +1,26 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language-Team: Ukrainian (https://www.transifex.com/ckeditor/teams/11143/uk/)\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+msgctxt "Label for the image widget."
+msgid "image widget"
+msgstr "Віджет зображення"
+
+msgctxt "Label for the Side image option."
+msgid "Side image"
+msgstr "Бокове зображення"
+
+msgctxt "Label for the Full size image option."
+msgid "Full size image"
+msgstr "Повний розмір зображення"
+
+msgctxt "Label for the Change image text alternative button."
+msgid "Change image text alternative"
+msgstr ""
+
+msgctxt "Label for the image text alternative input."
+msgid "Text alternative"
+msgstr ""

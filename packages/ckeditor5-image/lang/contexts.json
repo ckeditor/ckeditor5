@@ -2,6 +2,6 @@
 	"image widget": "Label for the image widget.",
 	"Side image": "Label for the Side image option.",
 	"Full size image": "Label for the Full size image option.",
-	"Change alternate text": "Label for the Change alternate text button.",
-	"Alternate image text": "Label for the Alternate image text option."
+	"Change image text alternative": "Label for the Change image text alternative button.",
+	"Text alternative": "Label for the image text alternative input."
 }

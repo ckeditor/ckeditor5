@@ -7,9 +7,9 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Image from '../src/image';
-import ImageEngine from '../src/imageengine';
+import ImageEngine from '../src/image/imageengine';
 import Widget from '../src/widget/widget';
-import ImageAlternateText from '../src/imagealternatetext/imagealternatetext';
+import ImageTextAlternative from '../src/imagetextalternative';
 
 describe( 'Image', () => {
 	let editor;
@@ -38,7 +38,7 @@ describe( 'Image', () => {
 		expect( editor.plugins.get( Widget ) ).to.instanceOf( Widget );
 	} );
 
-	it( 'should load ImageAlternateText plugin', () => {
-		expect( editor.plugins.get( ImageAlternateText ) ).to.instanceOf( ImageAlternateText );
+	it( 'should load ImageTextAlternative plugin', () => {
+		expect( editor.plugins.get( ImageTextAlternative ) ).to.instanceOf( ImageTextAlternative );
 	} );
 } );
