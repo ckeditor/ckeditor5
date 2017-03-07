@@ -11,6 +11,12 @@ import ViewConsumable from './viewconsumable';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
+import ModelRange from '../model/range';
+import ModelPosition from '../model/position';
+import ModelTreeWalker from '../model/treewalker';
+import ModelNode from '../model/node';
+import ModelDocumentFragment from '../model/documentfragment';
+import { remove } from '../model/writer';
 
 /**
  * `ViewConversionDispatcher` is a central point of {@link module:engine/view/view view} conversion, which is a process of
@@ -128,14 +134,32 @@ export default class ViewConversionDispatcher {
 	 * viewItem Part of the view to be converted.
 	 * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
 	 * events. See also {@link ~ViewConversionDispatcher#event:element element event}.
-	 * @returns {module:engine/model/documentfragment~DocumentFragment} Model document fragment that is a result of the conversion process.
+	 * @returns {module:engine/model/documentfragment~DocumentFragment} Model data that is a result of the conversion process
+	 * wrapped by DocumentFragment. Converted marker stamps will be set as DocumentFragment
+	 * {@link module:engine/view/documentfragment~DocumentFragment#markers static markers map}.
 	 */
 	convert( viewItem, additionalData = {} ) {
 		this.fire( 'viewCleanup', viewItem );
 
 		const consumable = ViewConsumable.createFrom( viewItem );
+		const conversionResult = this._convertItem( viewItem, consumable, additionalData );
 
-		return this._convertItem( viewItem, consumable, additionalData );
+		// In some cases conversion output doesn't have to be a node and in this case we do nothing additional with this data.
+		if ( !( conversionResult instanceof ModelNode || conversionResult instanceof ModelDocumentFragment ) ) {
+			return conversionResult;
+		}
+
+		let documentFragment = conversionResult;
+
+		// When conversion result is not a DocumentFragment we need to wrap it by DocumentFragment.
+		if ( !documentFragment.is( 'documentFragment' ) ) {
+			documentFragment = new ModelDocumentFragment( [ documentFragment ] );
+		}
+
+		// Extract temporary markers stamp from model and set as static markers collection.
+		documentFragment.markers = extractMarkersFromModelFragment( documentFragment );
+
+		return documentFragment;
 	}
 
 	/**
@@ -220,6 +244,49 @@ export default class ViewConversionDispatcher {
 }
 
 mix( ViewConversionDispatcher, EmitterMixin );
+
+// Traverses given model item and searches elements which marks marker range. Found element is removed from
+// DocumentFragment but path of this element is stored in a Map which is then returned.
+//
+// @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/node~Node} modelItem Fragment of model.
+// @returns {Map<String, module:engine/model/range~Range>} List of static markers.
+function extractMarkersFromModelFragment( modelItem ) {
+	const markerStamps = new Set();
+	const markers = new Map();
+
+	// Create ModelTreeWalker.
+	const walker = new ModelTreeWalker( {
+		startPosition: ModelPosition.createAt( modelItem, 0 ),
+		ignoreElementEnd: true
+	} );
+
+	// Walk through DocumentFragment and collect marker elements.
+	for ( const value of walker ) {
+		// Check if current element is a marker stamp.
+		if ( value.item.name == '$marker' ) {
+			markerStamps.add( value.item );
+		}
+	}
+
+	// Walk through collected marker elements store its path and remove its from the DocumentFragment.
+	for ( const stamp of markerStamps ) {
+		const markerName = stamp.getAttribute( 'data-name' );
+		const currentPosition = ModelPosition.createBefore( stamp );
+
+		// When marker of given name is not stored it means that we have found the beginning of the range.
+		if ( !markers.has( markerName ) ) {
+			markers.set( markerName, new ModelRange( ModelPosition.createFromPosition( currentPosition ) ) );
+		// Otherwise is means that we have found end of the marker range.
+		} else {
+			markers.get( markerName ).end = ModelPosition.createFromPosition( currentPosition );
+		}
+
+		// Remove marker stamp element from DocumentFragment.
+		remove( ModelRange.createOn( stamp ) );
+	}
+
+	return markers;
+}
 
 /**
  * Conversion interface that is registered for given {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher}

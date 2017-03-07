@@ -9,6 +9,11 @@ import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewText from '../../src/view/text';
 
+import ModelText from '../../src/model/text';
+import ModelElement from '../../src/model/element';
+import ModelDocumentFragment from '../../src/model/documentfragment';
+import { stringify } from '../../src/dev-utils/model';
+
 describe( 'ViewConversionDispatcher', () => {
 	describe( 'constructor()', () => {
 		it( 'should create ViewConversionDispatcher with passed api', () => {
@@ -76,10 +81,10 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 
 			// Use `additionalData` parameter to check if it was passed to the event.
-			const result = dispatcher.convert( viewText, { foo: 'bar' } );
+			const conversionResult = dispatcher.convert( viewText, { foo: 'bar' } );
 
 			// Check conversion result.
-			expect( result ).to.deep.equal( {
+			expect( conversionResult ).to.deep.equal( {
 				eventName: 'text',
 				input: viewText,
 				foo: 'bar'
@@ -110,10 +115,10 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 
 			// Use `additionalData` parameter to check if it was passed to the event.
-			const result = dispatcher.convert( viewElement, { foo: 'bar' } );
+			const conversionResult = dispatcher.convert( viewElement, { foo: 'bar' } );
 
 			// Check conversion result.
-			expect( result ).to.deep.equal( {
+			expect( conversionResult ).to.deep.equal( {
 				eventName: 'element:p',
 				input: viewElement,
 				foo: 'bar'
@@ -143,14 +148,62 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 
 			// Use `additionalData` parameter to check if it was passed to the event.
-			const result = dispatcher.convert( viewFragment, { foo: 'bar' } );
+			const conversionResult = dispatcher.convert( viewFragment, { foo: 'bar' } );
 
 			// Check conversion result.
-			expect( result ).to.deep.equal( {
+			expect( conversionResult ).to.deep.equal( {
 				eventName: 'documentFragment',
 				input: viewFragment,
 				foo: 'bar'
 			} );
+		} );
+
+		it( 'should always wrap converted element by ModelDocumentFragment', () => {
+			const viewElement = new ViewContainerElement( 'p' );
+
+			dispatcher.on( 'element', ( evt, data ) => {
+				data.output = new ModelElement( 'paragraph' );
+			} );
+
+			const documentFragment = dispatcher.convert( viewElement, { foo: 'bar' } );
+
+			expect( documentFragment ).to.instanceof( ModelDocumentFragment );
+			expect( stringify( documentFragment ) ).to.equal( '<paragraph></paragraph>' );
+		} );
+
+		it( 'should not wrap ModelDocumentFragment', () => {
+			const viewFragment = new ViewDocumentFragment();
+
+			dispatcher.on( 'documentFragment', ( evt, data ) => {
+				data.output = new ModelDocumentFragment();
+			} );
+
+			const documentFragment = dispatcher.convert( viewFragment );
+
+			expect( documentFragment ).to.instanceof( ModelDocumentFragment );
+			expect( documentFragment.childCount ).to.equal( 0 );
+		} );
+
+		it( 'should extract temporary markers stamps from converter element and create static markers list', () => {
+			const viewFragment = new ViewDocumentFragment();
+
+			dispatcher.on( 'documentFragment', ( evt, data ) => {
+				data.output = new ModelDocumentFragment( [
+					new ModelText( 'fo' ),
+					new ModelElement( '$marker', { 'data-name': 'marker1' } ),
+					new ModelText( 'o' ),
+					new ModelElement( '$marker', { 'data-name': 'marker2' } ),
+					new ModelText( 'b' ),
+					new ModelElement( '$marker', { 'data-name': 'marker1' } ),
+					new ModelText( 'ar' ),
+				] );
+			} );
+
+			const conversionResult = dispatcher.convert( viewFragment );
+
+			expect( conversionResult.markers.size ).to.equal( 2 );
+			expect( stringify( conversionResult, conversionResult.markers.get( 'marker1' ) ) ).to.deep.equal( 'fo[ob]ar' );
+			expect( stringify( conversionResult, conversionResult.markers.get( 'marker2' ) ) ).to.deep.equal( 'foo[]bar' );
 		} );
 	} );
 
@@ -177,9 +230,7 @@ describe( 'ViewConversionDispatcher', () => {
 				}
 			} );
 
-			const result = dispatcher.convert( viewFragment );
-
-			expect( result ).to.deep.equal( [
+			expect( dispatcher.convert( viewFragment ) ).to.deep.equal( [
 				{ name: 'p' },
 				{ text: 'foobar' }
 			] );
@@ -205,9 +256,7 @@ describe( 'ViewConversionDispatcher', () => {
 				data.output = conversionApi.convertChildren( data.input );
 			} );
 
-			const result = dispatcher.convert( viewFragment );
-
-			expect( result ).to.deep.equal( [
+			expect( dispatcher.convert( viewFragment ) ).to.deep.equal( [
 				{ name: 'p' },
 				{ text: 'foobar' }
 			] );

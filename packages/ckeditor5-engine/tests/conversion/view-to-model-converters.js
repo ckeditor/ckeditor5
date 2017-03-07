@@ -32,10 +32,11 @@ describe( 'view-to-model-converters', () => {
 
 			dispatcher.on( 'text', convertText() );
 
-			const result = dispatcher.convert( viewText, objWithContext );
+			const conversionResult = dispatcher.convert( viewText, objWithContext );
 
-			expect( result ).to.be.instanceof( ModelText );
-			expect( result.data ).to.equal( 'foobar' );
+			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
+			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
+			expect( conversionResult.getChild( 0 ).data ).to.equal( 'foobar' );
 		} );
 
 		it( 'should not convert already consumed texts', () => {
@@ -50,10 +51,11 @@ describe( 'view-to-model-converters', () => {
 				}
 			} );
 
-			const result = dispatcher.convert( viewText, objWithContext );
+			const conversionResult = dispatcher.convert( viewText, objWithContext );
 
-			expect( result ).to.be.instanceof( ModelText );
-			expect( result.data ).to.equal( 'foo****ba****r' );
+			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
+			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
+			expect( conversionResult.getChild( 0 ).data ).to.equal( 'foo****ba****r' );
 		} );
 
 		it( 'should not convert text if it is wrong with schema', () => {
@@ -62,13 +64,15 @@ describe( 'view-to-model-converters', () => {
 			const viewText = new ViewText( 'foobar' );
 			dispatcher.on( 'text', convertText() );
 
-			let result = dispatcher.convert( viewText, objWithContext );
+			let conversionResult = dispatcher.convert( viewText, objWithContext );
 
-			expect( result ).to.be.null;
+			expect( conversionResult ).to.be.null;
 
-			result = dispatcher.convert( viewText, { context: [ '$block' ] } );
-			expect( result ).to.be.instanceof( ModelText );
-			expect( result.data ).to.equal( 'foobar' );
+			conversionResult = dispatcher.convert( viewText, { context: [ '$block' ] } );
+
+			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
+			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
+			expect( conversionResult.getChild( 0 ).data ).to.equal( 'foobar' );
 		} );
 
 		it( 'should support unicode', () => {
@@ -76,10 +80,11 @@ describe( 'view-to-model-converters', () => {
 
 			dispatcher.on( 'text', convertText() );
 
-			const result = dispatcher.convert( viewText, objWithContext );
+			const conversionResult = dispatcher.convert( viewText, objWithContext );
 
-			expect( result ).to.be.instanceof( ModelText );
-			expect( result.data ).to.equal( 'நிலைக்கு' );
+			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
+			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
+			expect( conversionResult.getChild( 0 ).data ).to.equal( 'நிலைக்கு' );
 		} );
 	} );
 
@@ -96,11 +101,11 @@ describe( 'view-to-model-converters', () => {
 			dispatcher.on( 'element', convertToModelFragment() );
 			dispatcher.on( 'documentFragment', convertToModelFragment() );
 
-			const result = dispatcher.convert( viewFragment, objWithContext );
+			const conversionResult = dispatcher.convert( viewFragment, objWithContext );
 
-			expect( result ).to.be.instanceof( ModelDocumentFragment );
-			expect( result.maxOffset ).to.equal( 6 );
-			expect( result.getChild( 0 ).data ).to.equal( 'foobar' );
+			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
+			expect( conversionResult.maxOffset ).to.equal( 6 );
+			expect( conversionResult.getChild( 0 ).data ).to.equal( 'foobar' );
 		} );
 
 		it( 'should not convert already consumed (converted) changes', () => {
@@ -121,12 +126,13 @@ describe( 'view-to-model-converters', () => {
 				}
 			} );
 
-			const result = dispatcher.convert( viewP, objWithContext );
+			const conversionResult = dispatcher.convert( viewP, objWithContext );
 
-			expect( result ).to.be.instanceof( ModelElement );
-			expect( result.name ).to.equal( 'paragraph' );
-			expect( result.maxOffset ).to.equal( 3 );
-			expect( result.getChild( 0 ).data ).to.equal( 'foo' );
+			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
+			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelElement );
+			expect( conversionResult.getChild( 0 ).name ).to.equal( 'paragraph' );
+			expect( conversionResult.getChild( 0 ).maxOffset ).to.equal( 3 );
+			expect( conversionResult.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
 		} );
 	} );
 } );

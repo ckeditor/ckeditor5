@@ -15,6 +15,10 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 /**
  * DocumentFragment represents a part of model which does not have a common root but it's top-level nodes
  * can be seen as siblings. In other words, it is a detached part of model tree, without a root.
+ *
+ * DocumentFragment has own {@link module:engine/model/markercollection~MarkerCollection}. Markers from this collection
+ * will be set to the {@link module:engine/model/document~Document#markers document markers} by a
+ * {@link module:engine/model/writer~writer.insert} function.
  */
 export default class DocumentFragment {
 	/**
@@ -24,6 +28,15 @@ export default class DocumentFragment {
 	 * Nodes to be contained inside the `DocumentFragment`.
 	 */
 	constructor( children ) {
+		/**
+		 * DocumentFragment static markers map. This is a list of names and {@link module:engine/model/range~Range ranges}
+		 * which will be set as Markers to {@link module:engine/model/document~Document#markers document markers collection}
+		 * when DocumentFragment will be inserted to the document.
+		 *
+		 * @member {Map<String, {module:engine/model/range~Range}>} module:engine/model/documentfragment~DocumentFragment#markers
+		 */
+		this.markers = new Map();
+
 		/**
 		 * List of nodes contained inside the document fragment.
 		 *

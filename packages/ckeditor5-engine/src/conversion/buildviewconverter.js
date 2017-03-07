@@ -11,6 +11,7 @@ import Matcher from '../view/matcher';
 import ModelElement from '../model/element';
 import ModelPosition from '../model/position';
 import modelWriter from '../model/writer';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 /**
@@ -254,7 +255,7 @@ class ViewConverterBuilder {
 	 * @param {String|Function} element Model element name or model element creator function.
 	 */
 	toElement( element ) {
-		const eventCallbackGen = function( from ) {
+		function eventCallbackGen( from ) {
 			return ( evt, data, consumable, conversionApi ) => {
 				// There is one callback for all patterns in the matcher.
 				// This will be usually just one pattern but we support matchers with many patterns too.
@@ -301,7 +302,7 @@ class ViewConverterBuilder {
 					break;
 				}
 			};
-		};
+		}
 
 		this._setCallback( eventCallbackGen, 'normal' );
 	}
@@ -322,7 +323,7 @@ class ViewConverterBuilder {
 	 * @param {String} [value] Attribute value. Required if `keyOrCreator` is a `string`. Ignored otherwise.
 	 */
 	toAttribute( keyOrCreator, value ) {
-		const eventCallbackGen = function( from ) {
+		function eventCallbackGen( from ) {
 			return ( evt, data, consumable, conversionApi ) => {
 				// There is one callback for all patterns in the matcher.
 				// This will be usually just one pattern but we support matchers with many patterns too.
@@ -356,9 +357,89 @@ class ViewConverterBuilder {
 					break;
 				}
 			};
-		};
+		}
 
 		this._setCallback( eventCallbackGen, 'low' );
+	}
+
+	/**
+	 * Registers how model element marking marker range will be created by converter.
+	 *
+	 * Created element has to match the following pattern:
+	 *
+	 * 		{ name: '$marker', attribute: { data-name: /^\w/ } }
+	 *
+	 * There are two ways of creating this element:
+	 *
+	 * 1. Makes sure that converted view element will have property `data-name` then converter will
+	 * automatically take this property value. In this case there is no need to provide creator function.
+	 * For the following view:
+	 *
+	 *		<marker data-name="search"></marker>foo<marker data-name="search"></marker>
+	 *
+	 * converter should look like this:
+	 *
+	 *		buildViewConverter().for( dispatcher ).fromElement( 'marker' ).toMarker();
+	 *
+	 * 2. Creates element by creator:
+	 *
+	 * For the following view:
+	 *
+	 * 		<span foo="search"></span>foo<span foo="search"></span>
+	 *
+	 * converter should look like this:
+	 *
+	 * 		buildViewConverter().for( dispatcher ).from( { name: 'span', { attribute: foo: /^\w/ } } ).toMarker( ( data ) => {
+	 * 			return new Element( '$marker', { 'data-name': data.getAttribute( 'foo' ) } );
+	 * 		} );
+	 *
+	 * @param {Function} [creator] Creator function.
+	 */
+	toMarker( creator ) {
+		function eventCallbackGen( from ) {
+			return ( evt, data, consumable ) => {
+				// There is one callback for all patterns in the matcher.
+				// This will be usually just one pattern but we support matchers with many patterns too.
+				const matchAll = from.matcher.matchAll( data.input );
+
+				// If there is no match, this callback should not do anything.
+				if ( !matchAll ) {
+					return;
+				}
+
+				let modelElement;
+
+				// When creator is provided then create model element basing on creator function.
+				if ( creator instanceof Function ) {
+					modelElement = creator( data.input );
+				// When there is no creator then create model element basing on data from view element.
+				} else {
+					modelElement = new ModelElement( '$marker', { 'data-name': data.input.getAttribute( 'data-name' ) } );
+				}
+
+				// Check if model element is correct (has proper name and property).
+				if ( modelElement.name != '$marker' || typeof modelElement.getAttribute( 'data-name' ) != 'string' ) {
+					throw new CKEditorError(
+						'build-view-converter-invalid-marker: Invalid model element to mark marker range.'
+					);
+				}
+
+				// Now, for every match between matcher and actual element, we will try to consume the match.
+				for ( const match of matchAll ) {
+					// Try to consume appropriate values from consumable values list.
+					if ( !consumable.consume( data.input, from.consume || match.match ) ) {
+						continue;
+					}
+
+					data.output = modelElement;
+
+					// Prevent multiple conversion if there are other correct matches.
+					break;
+				}
+			};
+		}
+
+		this._setCallback( eventCallbackGen, 'normal' );
 	}
 
 	/**

@@ -11,9 +11,10 @@ import TextProxy from '../../src/model/textproxy';
 import Position from '../../src/model/position';
 import Range from '../../src/model/range';
 import writer from '../../src/model/writer';
-import { getData } from '../../src/dev-utils/model';
+import { getData, stringify } from '../../src/dev-utils/model';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 let doc, root;
 
@@ -53,6 +54,60 @@ describe( 'writer', () => {
 			writer.insert( Position.createAt( root, 3 ), new Text( 'xxx', { bold: true } ) );
 
 			expectData( 'foo<$text bold="true">xxxbar</$text><image src="img.jpg"></image>xyz' );
+		} );
+
+		it( 'should transfer markers from given node to the root element of target position', () => {
+			root.appendChildren( [ new Element( 'div' ) ] );
+
+			const docFrag = new DocumentFragment( [
+				new Element( 'paragraph', null, [
+					new Text( 'foo bar' ),
+				] )
+			] );
+
+			docFrag.markers.set( 'foo', new Range( new Position( docFrag, [ 0, 2 ] ), new Position( docFrag, [ 0, 6 ] ) ) );
+
+			writer.insert( new Position( root, [ 10, 0 ] ), docFrag );
+
+			expect( stringify( root, doc.markers.get( 'foo' ).getRange() ) ).to.equal(
+				'foo<$text bold="true">bar</$text><image src="img.jpg"></image>xyz<div><paragraph>fo[o ba]r</paragraph></div>'
+			);
+		} );
+
+		it( 'should transfer markers from given node to the root element of target position when root is a documentFragment', () => {
+			const targetDocFrag = new DocumentFragment( [ new Element( 'div' ) ] );
+
+			const docFrag = new DocumentFragment( [
+				new Element( 'paragraph', null, [
+					new Text( 'foo bar' ),
+				] )
+			] );
+
+			docFrag.markers.set( 'foo', new Range( new Position( docFrag, [ 0, 2 ] ), new Position( docFrag, [ 0, 6 ] ) ) );
+
+			writer.insert( new Position( targetDocFrag, [ 0, 0 ] ), docFrag );
+
+			expect( stringify( targetDocFrag, targetDocFrag.markers.get( 'foo' ) ) )
+				.to.equal( '<div><paragraph>fo[o ba]r</paragraph></div>' );
+		} );
+
+		it( 'should log warning when element with markers is set to the element without markers collection', () => {
+			const warnSpy = sinon.spy( log, 'warn' );
+			const target = new Element( 'div' );
+			const docFrag = new DocumentFragment( [
+				new Element( 'paragraph', null, [
+					new Text( 'foo bar' ),
+				] )
+			] );
+			const range = new Range( new Position( docFrag, [ 1, 2 ] ), new Position( docFrag, [ 1, 4 ] ) );
+
+			docFrag.markers.set( 'foo', range );
+
+			writer.insert( new Position( target, [ 0 ] ), docFrag );
+
+			expect( warnSpy.calledWithExactly(
+				'model-writer-insert-lose-markers: Element containing markers is set to element without MarkersCollection.'
+			) ).to.true;
 		} );
 	} );
 

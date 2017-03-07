@@ -11,7 +11,6 @@ import buildViewConverter  from '../../src/conversion/buildviewconverter';
 import buildModelConverter  from '../../src/conversion/buildmodelconverter';
 
 import ModelDocumentFragment from '../../src/model/documentfragment';
-import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
 import ModelSelection from '../../src/model/selection';
 
@@ -124,6 +123,7 @@ describe( 'DataController', () => {
 			schema.allow( { name: '$text', inside: '$root' } );
 			const model = data.parse( '<p>foo<b>bar</b></p>' );
 
+			expect( model ).to.instanceof( ModelDocumentFragment );
 			expect( stringify( model ) ).to.equal( 'foobar' );
 		} );
 
@@ -134,6 +134,7 @@ describe( 'DataController', () => {
 
 			const model = data.parse( '<p>foo<b>bar</b></p>' );
 
+			expect( model ).to.instanceof( ModelDocumentFragment );
 			expect( stringify( model ) ).to.equal( '<paragraph>foobar</paragraph>' );
 		} );
 
@@ -144,8 +145,8 @@ describe( 'DataController', () => {
 
 			const model = data.parse( '<p>foo</p><p>bar</p>' );
 
-			expect( stringify( model ) ).to.equal(
-				'<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+			expect( model ).to.instanceof( ModelDocumentFragment );
+			expect( stringify( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 		} );
 
 		it( 'should set paragraphs with bold', () => {
@@ -157,8 +158,8 @@ describe( 'DataController', () => {
 
 			const model = data.parse( '<p>foo<b>bar</b></p>' );
 
-			expect( stringify( model ) ).to.equal(
-				'<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
+			expect( model ).to.instanceof( ModelDocumentFragment );
+			expect( stringify( model ) ).to.equal( '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 		} );
 
 		it( 'should parse in the root context by default', () => {
@@ -183,18 +184,18 @@ describe( 'DataController', () => {
 
 		it( 'should convert content of an element #1', () => {
 			const viewElement = parseView( '<p>foo</p>' );
-			const modelElement = data.toModel( viewElement );
+			const model = data.toModel( viewElement );
 
-			expect( modelElement ).to.be.instanceOf( ModelElement );
-			expect( stringify( modelElement ) ).to.equal( '<paragraph>foo</paragraph>' );
+			expect( model ).to.instanceof( ModelDocumentFragment );
+			expect( stringify( model ) ).to.equal( '<paragraph>foo</paragraph>' );
 		} );
 
 		it( 'should convert content of an element #2', () => {
 			const viewFragment = parseView( '<p>foo</p><p>bar</p>' );
-			const modelFragment = data.toModel( viewFragment );
+			const model = data.toModel( viewFragment );
 
-			expect( modelFragment ).to.be.instanceOf( ModelDocumentFragment );
-			expect( stringify( modelFragment ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
+			expect( model ).to.be.instanceOf( ModelDocumentFragment );
+			expect( stringify( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 		} );
 
 		it( 'should accept parsing context', () => {
@@ -204,13 +205,12 @@ describe( 'DataController', () => {
 			schema.allow( { name: '$text', inside: 'inlineRoot' } );
 
 			const viewFragment = new ViewDocumentFragment( [ parseView( 'foo' ) ] );
-			const modelFragmentInRoot = data.toModel( viewFragment );
 
-			expect( stringify( modelFragmentInRoot ) ).to.equal( '' );
+			// Model fragment in root.
+			expect( stringify( data.toModel( viewFragment ) ) ).to.equal( '' );
 
-			const modelFragmentInInlineRoot = data.toModel( viewFragment, 'inlineRoot' );
-
-			expect( stringify( modelFragmentInInlineRoot ) ).to.equal( 'foo' );
+			// Model fragment in inline root.
+			expect( stringify( data.toModel( viewFragment, 'inlineRoot' ) ) ).to.equal( 'foo' );
 		} );
 	} );
 
