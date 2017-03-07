@@ -91,10 +91,7 @@ export default class Autoformat extends Plugin {
 			const { batch, match } = context;
 			const headingLevel = match[ 1 ].length;
 
-			this.editor.execute( 'heading', {
-				batch,
-				id: `heading${ headingLevel }`
-			} );
+			this.editor.execute( `heading${ headingLevel }`, { batch } );
 		} );
 	}
 
