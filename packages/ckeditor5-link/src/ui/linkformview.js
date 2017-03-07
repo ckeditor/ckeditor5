@@ -64,7 +64,7 @@ export default class LinkFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.saveButtonView = this._createButton( 'Save' );
+		this.saveButtonView = this._createButton( t( 'Save' ) );
 		this.saveButtonView.type = 'submit';
 
 		/**
