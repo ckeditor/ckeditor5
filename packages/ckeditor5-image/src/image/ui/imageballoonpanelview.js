@@ -9,7 +9,7 @@
 
 import throttle from '@ckeditor/ckeditor5-utils/src/lib/lodash/throttle';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/balloonpanel/balloonpanelview';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import { isImageWidget } from '../utils';
 
 const arrowVOffset = BalloonPanelView.arrowVerticalOffset;
@@ -42,11 +42,11 @@ const positions = {
 };
 
 /**
- * Image balloon panel class. It extends {module:ui/balloonpanel/balloonpanelview~BalloonPanelView} by adding helpers
+ * Image balloon panel class. It extends {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} by adding helpers
  * to use with image widgets. It sets proper positioning on `scroll` and `resize` events and hides the panel when
  * image is no longer selected or focus is lost.
  *
- * @extends module:ui/balloonpanel/balloonpanelview~BalloonPanelView
+ * @extends module:ui/panel/balloon/balloonpanelview~BalloonPanelView
  */
 export default class ImageBalloonPanelView extends BalloonPanelView {
 	/**
