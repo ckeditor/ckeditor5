@@ -195,7 +195,7 @@ export default class Template {
 			throw new CKEditorError( 'ui-template-revert-not-applied: Attempting reverting a template which has not been applied yet.' );
 		}
 
-		this._revertNode( node, this._revertData );
+		this._revertTemplateFromNode( node, this._revertData );
 	}
 
 	/**
@@ -696,15 +696,15 @@ export default class Template {
 	}
 
 	/**
-	 * Reverts a node to the original state using information stored
-	 * in {@link module:ui/template~RenderConfig#revertData}.
+	 * Reverts {@link module:ui/template~RenderConfig#revertData template data} from a node to
+	 * return it to the the original state.
 	 *
 	 * @protected
 	 * @param {HTMLElement|Text} node A node to be reverted.
 	 * @param {module:ui/template~RenderConfig#revertData} revertData An information
 	 * about desired node state after revert.
 	 */
-	_revertNode( node, revertData ) {
+	_revertTemplateFromNode( node, revertData ) {
 		for ( let binding of revertData.bindings ) {
 			// Each binding may consist of several observable+observable#attribute.
 			// like the following has 2:
@@ -739,7 +739,7 @@ export default class Template {
 		}
 
 		for ( let i = 0; i < revertData.children.length; ++i ) {
-			this._revertNode( node.childNodes[ i ], revertData.children[ i ] );
+			this._revertTemplateFromNode( node.childNodes[ i ], revertData.children[ i ] );
 		}
 	}
 }
@@ -1563,6 +1563,7 @@ function shouldExtend( attrName ) {
 /**
  * The {@link module:ui/template~Template#_renderNode} config.
  *
+ * @private
  * @interface module:ui/template~RenderConfig
  */
 
