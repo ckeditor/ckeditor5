@@ -47,7 +47,7 @@ export function isCaption( viewElement ) {
 }
 
 /**
- * Returns caption's model element from given image element. Returns `null` if no caption is found.
+ * Returns caption model element from given image element. Returns `null` if no caption is found.
  *
  * @param {module:engine/model/element~Element} imageModelElement
  * @return {module:engine/model/element~Element|null}
