@@ -5,6 +5,8 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand';
+import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'HeadingCommand', () => {
@@ -26,12 +28,6 @@ describe( 'HeadingCommand', () => {
 
 	afterEach( () => {
 		command.destroy();
-	} );
-
-	describe( 'title', () => {
-		it( 'is set', () => {
-			expect( command.title ).to.equal( 'Paragraph' );
-		} );
 	} );
 
 	describe( 'value', () => {
@@ -70,13 +66,16 @@ describe( 'HeadingCommand', () => {
 				expect( batch.deltas.length ).to.be.above( 0 );
 			} );
 
-			it( 'should use provided element', () => {
-				setData( document, '<heading1>foo[]bar</heading1><heading1>baz</heading1>' );
+			it( 'should use provided selection', () => {
+				setData( document, '<heading1>foo[]bar</heading1><heading1>baz</heading1><heading1>qux</heading1>' );
 
-				const element = root.getChild( 1 );
+				const secondTolastHeading = root.getChild( 1 );
+				const lastHeading = root.getChild( 2 );
+				const selection = new Selection();
+				selection.addRange( Range.createFromParentsAndOffsets( secondTolastHeading, 0, lastHeading, 0 ) );
 
-				command._doExecute( { element } );
-				expect( getData( document ) ).to.equal( '<heading1>foo[]bar</heading1><paragraph>baz</paragraph>' );
+				command._doExecute( { selection } );
+				expect( getData( document ) ).to.equal( '<heading1>foo[]bar</heading1><paragraph>baz</paragraph><paragraph>qux</paragraph>' );
 			} );
 		} );
 

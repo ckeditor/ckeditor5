@@ -23,8 +23,6 @@ export default class ParagraphCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
-		const t = editor.t;
-
 		/**
 		 * Value of the command, indicating whether it is applied in the context
 		 * of current {@link module:engine/model/document~Document#selection selection}.
@@ -34,14 +32,6 @@ export default class ParagraphCommand extends Command {
 		 * @member {Boolean}
 		 */
 		this.set( 'value', false );
-
-		/**
-		 * User-readable title of the command, for use in the UI.
-		 *
-		 * @readonly
-		 * @member {String}
-		 */
-		this.title = t( 'Paragraph' );
 
 		// Update current value each time changes are done on document.
 		this.listenTo( editor.document, 'changesDone', () => this._updateValue() );
@@ -54,11 +44,11 @@ export default class ParagraphCommand extends Command {
 	 * @param {Object} [options] Options for executed command.
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
-	 * @param {module:engine/model/element~Element} [options.element] Element the command should be applied to.
-	 * By default, if not provided, the command is applied to current {@link module:engine/model/document~Document#selection}.
+	 * @param {module:engine/model/selection~Selection} [options.selection] Selection the command should be applied to.
+	 * By default, if not provided, the command is applied to {@link module:engine/model/document~Document#selection}.
 	 */
 	_doExecute( options = {} ) {
-		if ( this.value && !options.element ) {
+		if ( this.value && !options.selection ) {
 			return;
 		}
 
@@ -66,10 +56,10 @@ export default class ParagraphCommand extends Command {
 
 		document.enqueueChanges( () => {
 			const batch = options.batch || document.batch();
-			const elements = options.element ? [ options.element ] : document.selection.getSelectedBlocks();
+			const blocks = ( options.selection || document.selection ).getSelectedBlocks();
 
-			for ( let element of elements ) {
-				batch.rename( element, 'paragraph' );
+			for ( let block of blocks ) {
+				batch.rename( block, 'paragraph' );
 			}
 		} );
 	}
