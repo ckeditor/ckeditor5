@@ -4,7 +4,7 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand';
+import ParagraphCommand from '../src/paragraphcommand';
 import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -13,7 +13,7 @@ describe( 'HeadingCommand', () => {
 	let editor, document, command, root, schema;
 
 	beforeEach( () => {
-		return ModelTestEditor.create().then( newEditor => {
+		return ModelTestEditor.create().then( ( newEditor ) => {
 			editor = newEditor;
 			document = editor.document;
 			schema = document.schema;
@@ -37,11 +37,28 @@ describe( 'HeadingCommand', () => {
 			expect( command.value ).to.be.false;
 		} );
 
-		it( 'responds to changes in selection', () => {
+		it( 'responds to changes in selection (collapsed selection)', () => {
 			setData( document, '<heading1>foo[]bar</heading1>' );
 			expect( command.value ).to.be.false;
 
 			setData( document, '<paragraph>foo[]bar</paragraph>' );
+			expect( command.value ).to.be.true;
+		} );
+
+		it( 'responds to changes in selection (non–collapsed selection)', () => {
+			setData( document, '<heading1>[foo]</heading1><paragraph>bar</paragraph>' );
+			expect( command.value ).to.be.false;
+
+			setData( document, '<heading1>[foo</heading1><paragraph>bar]</paragraph>' );
+			expect( command.value ).to.be.false;
+
+			setData( document, '<heading1>foo</heading1>[<paragraph>bar]</paragraph>' );
+			expect( command.value ).to.be.true;
+
+			setData( document, '<heading1>foo</heading1><paragraph>[bar]</paragraph>' );
+			expect( command.value ).to.be.true;
+
+			setData( document, '<paragraph>[bar</paragraph><heading1>foo]</heading1>' );
 			expect( command.value ).to.be.true;
 		} );
 	} );
