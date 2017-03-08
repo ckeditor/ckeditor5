@@ -271,7 +271,7 @@ class ModelConverterBuilder {
 	 *
 	 *		buildModelConverter().for( dispatcher )
 	 *			.fromMarker( 'search' )
-	 *			.toStamp( ( data ) => new UIElement( 'span', { 'data-name': data.marker.getName() ) );
+	 *			.toStamp( ( data ) => new UIElement( 'span', { 'data-name': data.name ) );
 	 *
 	 * Creator function provides additional `data.isOpening` parameter which defined if currently converted element is
 	 * a beginning or end of the marker range. This makes possible to create different opening and closing stamp.
@@ -280,10 +280,10 @@ class ModelConverterBuilder {
 	 *			.fromMarker( 'search' )
 	 *			.toStamp( ( data ) => {
 	 *				if ( data.isOpening ) {
-	 *					return new UIElement( 'span', { 'data-name': data.marker.getName(), 'data-start': true ) );
+	 *					return new UIElement( 'span', { 'data-name': data.name, 'data-start': true ) );
 	 *				}
 	 *
-	 *				return new UIElement( 'span', { 'data-name': data.marker.getName(), 'data-end': true ) );
+	 *				return new UIElement( 'span', { 'data-name': data.name, 'data-end': true ) );
 	 *			}
 	 *
 	 * Creator function provides
