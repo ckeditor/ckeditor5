@@ -10,14 +10,14 @@
 	@include ck-unselectable();
 	@include ck-rounded-corners();
 
-	&-separator {
+	&__separator {
 		width: 1px;
 		height: calc( 1em + 2 * #{ck-spacing( 'medium' )} );
 		vertical-align: middle;
 		background: ck-border-color();
 	}
 
-	&-newline {
+	&__newline {
 		height: ck-spacing( 'small' );
 	}
 
