@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
-
 import FocusObserver from '../../../src/view/observer/focusobserver';
+import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import ViewDocument from '../../../src/view/document';
 import ViewRange from '../../../src/view/range';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 describe( 'FocusObserver', () => {
 	let viewDocument, observer;
@@ -35,12 +35,12 @@ describe( 'FocusObserver', () => {
 
 			viewDocument.on( 'focus', spy );
 
-			observer.onDomEvent( { type: 'focus', target: document.body } );
+			observer.onDomEvent( { type: 'focus', target: global.document.body } );
 
 			expect( spy.calledOnce ).to.be.true;
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( document.body );
+			expect( data.domTarget ).to.equal( global.document.body );
 		} );
 
 		it( 'should fire blur with the right event data', () => {
@@ -48,18 +48,18 @@ describe( 'FocusObserver', () => {
 
 			viewDocument.on( 'blur', spy );
 
-			observer.onDomEvent( { type: 'blur', target: document.body } );
+			observer.onDomEvent( { type: 'blur', target: global.document.body } );
 
 			expect( spy.calledOnce ).to.be.true;
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( document.body );
+			expect( data.domTarget ).to.equal( global.document.body );
 		} );
 
 		it( 'should render document after blurring', () => {
 			const renderSpy = sinon.spy( viewDocument, 'render' );
 
-			observer.onDomEvent( { type: 'blur', target: document.body } );
+			observer.onDomEvent( { type: 'blur', target: global.document.body } );
 
 			sinon.assert.calledOnce( renderSpy );
 		} );
@@ -69,8 +69,8 @@ describe( 'FocusObserver', () => {
 		let domMain, domHeader, viewMain, viewHeader;
 
 		beforeEach( () => {
-			domMain = document.createElement( 'div' );
-			domHeader = document.createElement( 'h1' );
+			domMain = global.document.createElement( 'div' );
+			domHeader = global.document.createElement( 'h1' );
 
 			viewMain = viewDocument.createRoot( domMain );
 			viewHeader = viewDocument.createRoot( domHeader, 'header' );
@@ -114,6 +114,26 @@ describe( 'FocusObserver', () => {
 			observer.onDomEvent( { type: 'blur', target: domHeader } );
 
 			expect( viewDocument.isFocused ).to.be.true;
+		} );
+
+		it( 'should call render after selectionChange event is handled', () => {
+			const renderSpy = sinon.spy( viewDocument, 'render' );
+			const selectionObserver = viewDocument.getObserver( SelectionObserver );
+
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+			sinon.assert.notCalled( renderSpy );
+			selectionObserver.fire( 'selectionChangeHandling', { domDocument: global.document } );
+			sinon.assert.called( renderSpy );
+		} );
+
+		it( 'should call render only after first selectionChange after focus', () => {
+			const renderSpy = sinon.spy( viewDocument, 'render' );
+			const selectionObserver = viewDocument.getObserver( SelectionObserver );
+
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+			selectionObserver.fire( 'selectionChangeHandling', { domDocument: global.document } );
+			selectionObserver.fire( 'selectionChangeHandling', { domDocument: global.document } );
+			sinon.assert.calledOnce( renderSpy );
 		} );
 	} );
 } );

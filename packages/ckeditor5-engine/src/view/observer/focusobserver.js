@@ -33,8 +33,8 @@ export default class FocusObserver extends DomEventObserver {
 			document.isFocused = true;
 
 			// Unfortunately native `selectionchange` event is fired asynchronously.
-			// Wait until `SelectionObserver` handle the event and then render. Otherwise rendering will overwrite new DOM
-			// selection with selection from the view.
+			// We need to wait until `SelectionObserver` handle the event and then render. Otherwise rendering will
+			// overwrite new DOM selection with selection from the view.
 			// See https://github.com/ckeditor/ckeditor5-engine/issues/795 for more details.
 			this.selectionObserver.once( 'selectionChangeHandling', () => {
 				document.render();
