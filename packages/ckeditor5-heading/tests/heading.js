@@ -198,5 +198,18 @@ describe( 'Heading', () => {
 				} );
 			}
 		} );
+
+		describe( 'class', () => {
+			it( 'is set for the listView#items in the panel', () => {
+				const listView = dropdown.listView;
+
+				expect( listView.items.map( item => item.class ) ).to.deep.equal( [
+					'ck-heading_paragraph',
+					'ck-heading_heading1',
+					'ck-heading_heading2',
+					'ck-heading_heading3'
+				] );
+			} );
+		} );
 	} );
 } );
