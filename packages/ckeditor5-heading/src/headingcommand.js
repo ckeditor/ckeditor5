@@ -7,7 +7,9 @@
  * @module heading/headingcommand
  */
 
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
 
 /**
  * The heading command. It is used by the {@link module:heading/heading~Heading heading feature} to apply headings.
@@ -89,9 +91,13 @@ export default class HeadingCommand extends Command {
 				// When removing applied option.
 				if ( shouldRemove ) {
 					if ( element.name === this.modelElement ) {
-						// Apply paragraph to the single element only instead of working
-						// on the entire selection. Share the batch with the paragraph command.
-						editor.execute( 'paragraph', { element, batch } );
+						// Apply paragraph to the selection withing that particular element only instead
+						// of working on the entire document selection.
+						const selection = new Selection();
+						selection.addRange( Range.createIn( element ) );
+
+						// Share the batch with the paragraph command.
+						editor.execute( 'paragraph', { selection, batch } );
 					}
 				}
 				// When applying new option.

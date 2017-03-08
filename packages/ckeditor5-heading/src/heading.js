@@ -34,25 +34,22 @@ export default class Heading extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const t = editor.t;
 		const headingEngine = editor.plugins.get( HeadingEngine );
 		const commands = headingEngine.commands;
 		const dropdownItems = new Collection();
 		let defaultCommand;
 
 		for ( let command of commands ) {
-			let modelElement, title;
+			// Add the option to the collection.
+			dropdownItems.add( new Model( {
+				modelElement: getCommandModelElement( command ),
+				label: getCommandTitle( command, t )
+			} ) );
 
-			if ( command instanceof HeadingCommand ) {
-				modelElement = command.modelElement;
-			} else {
-				modelElement = 'paragraph';
+			if ( !( command instanceof HeadingCommand ) ) {
 				defaultCommand = command;
 			}
-
-			title = command.title;
-
-			// Add the option to the collection.
-			dropdownItems.add( new Model( { modelElement, label: title } ) );
 		}
 
 		// Create dropdown model.
@@ -76,7 +73,7 @@ export default class Heading extends Plugin {
 				const index = areActive.findIndex( value => value );
 
 				// If none of the commands is active, display the first one.
-				return index > -1 ? commands.get( index ).title : defaultCommand.title;
+				return getCommandTitle( index > -1 ? commands.get( index ) : defaultCommand, t );
 			}
 		);
 
@@ -95,6 +92,33 @@ export default class Heading extends Plugin {
 	}
 }
 
+// Returns an array of binding components for
+// {@link module:utils/observablemixin~Observable#bind} from a set of iterable
+// commands.
+//
+// @private
+// @param {Iterable.<module:core/command/command~Command>} commands
+// @param {String} attribute
+// @returns {Array.<String>}
 function getCommandsBindingTargets( commands, attribute ) {
 	return Array.prototype.concat( ...commands.map( c => [ c, attribute ] ) );
+}
+
+// Returns the `modelElement` string for given command.
+//
+// @private
+// @param {module:core/command/command~Command} command
+// @returns {String}
+function getCommandModelElement( command ) {
+	return command instanceof HeadingCommand ? command.modelElement : 'paragraph';
+}
+
+// Returns the `title` string for given command.
+//
+// @private
+// @param {module:core/command/command~Command} command
+// @param {module:utils/locale~Locale#t} t
+// @returns {String}
+function getCommandTitle( command, t ) {
+	return command instanceof HeadingCommand ? command.title : t( 'Paragraph' );
 }
