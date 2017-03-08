@@ -136,11 +136,8 @@ describe( 'HeadingEngine', () => {
 				.then( editor => {
 					document = editor.document;
 
-					const commands = editor.plugins.get( HeadingEngine ).commands;
-
-					expect( commands ).to.have.length( 2 );
-					expect( commands.get( 0 ).id ).to.equal( options[ 0 ].id );
-					expect( commands.get( 1 ).id ).to.equal( options[ 1 ].id );
+					expect( editor.commands.get( 'h4' ) ).to.be.instanceOf( HeadingCommand );
+					expect( editor.commands.get( 'paragraph' ) ).to.be.instanceOf( ParagraphCommand );
 
 					expect( document.schema.hasItem( 'paragraph' ) ).to.be.true;
 					expect( document.schema.hasItem( 'h4' ) ).to.be.true;

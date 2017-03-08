@@ -84,28 +84,32 @@ describe( 'Heading', () => {
 			let commands;
 
 			beforeEach( () => {
-				commands = editor.plugins.get( HeadingEngine ).commands;
+				commands = {};
+
+				editor.config.get( 'heading.options' ).forEach( ( { modelElement } ) => {
+					commands[ modelElement ] = editor.commands.get( modelElement );
+				} );
 			} );
 
 			it( 'isEnabled', () => {
-				for ( let command of commands ) {
-					command.isEnabled = false;
+				for ( let name in commands ) {
+					commands[ name ].isEnabled = false;
 				}
 
 				expect( dropdown.buttonView.isEnabled ).to.be.false;
 
-				commands.get( 'heading2' ).isEnabled = true;
+				commands.heading2.isEnabled = true;
 				expect( dropdown.buttonView.isEnabled ).to.be.true;
 			} );
 
 			it( 'label', () => {
-				for ( let command of commands ) {
-					command.value = false;
+				for ( let name in commands ) {
+					commands[ name ].value = false;
 				}
 
 				expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
 
-				commands.get( 'heading2' ).value = true;
+				commands.heading2.value = true;
 				expect( dropdown.buttonView.label ).to.equal( 'Heading 2' );
 			} );
 		} );
@@ -131,7 +135,10 @@ describe( 'Heading', () => {
 				.then( newEditor => {
 					editor = newEditor;
 					dropdown = editor.ui.componentFactory.create( 'headings' );
-					commands = editor.plugins.get( HeadingEngine ).commands;
+					commands = {};
+					editor.config.get( 'heading.options' ).forEach( ( { modelElement } ) => {
+						commands[ modelElement ] = editor.commands.get( modelElement );
+					} );
 				} );
 			} );
 
@@ -147,7 +154,7 @@ describe( 'Heading', () => {
 				const buttonView = dropdown.buttonView;
 
 				expect( buttonView.label ).to.equal( 'Akapit' );
-				commands.get( 'heading1' ).value = true;
+				commands.heading1.value = true;
 				expect( buttonView.label ).to.equal( 'Nagłówek 1' );
 			} );
 
