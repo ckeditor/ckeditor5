@@ -6,19 +6,36 @@
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { toImageWidget, isImageWidget, isImage } from '../../src/image/utils';
-import { isWidget } from '../../src/widget/utils';
+import { isWidget, getLabel } from '../../src/widget/utils';
 
 describe( 'image widget utils', () => {
-	let element;
+	let element, image;
 
 	beforeEach( () => {
-		element = new ViewElement( 'div' );
-		toImageWidget( element );
+		image = new ViewElement( 'img' );
+		element = new ViewElement( 'figure', null, image );
+		toImageWidget( element, 'image widget' );
 	} );
 
 	describe( 'toImageWidget()', () => {
 		it( 'should be widgetized', () => {
 			expect( isWidget( element ) ).to.be.true;
+		} );
+
+		it( 'should set element\'s label', () => {
+			expect( getLabel( element ) ).to.equal( 'image widget' );
+		} );
+
+		it( 'should set element\'s label combined with alt attribute', () => {
+			image.setAttribute( 'alt', 'foo bar baz' );
+			expect( getLabel( element ) ).to.equal( 'foo bar baz image widget' );
+		} );
+
+		it( 'provided label creator should always return same label', () => {
+			image.setAttribute( 'alt', 'foo bar baz' );
+
+			expect( getLabel( element ) ).to.equal( 'foo bar baz image widget' );
+			expect( getLabel( element ) ).to.equal( 'foo bar baz image widget' );
 		} );
 	} );
 

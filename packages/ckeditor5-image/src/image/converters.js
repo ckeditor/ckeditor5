@@ -10,7 +10,6 @@
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import modelWriter from '@ckeditor/ckeditor5-engine/src/model/writer';
-import { isImageWidget } from './utils';
 
 /**
  * Returns function that converts image view representation:
@@ -68,35 +67,6 @@ export function viewToModelImage() {
 		data.context.pop();
 
 		data.output = modelImage;
-	};
-}
-
-/**
- * Returns model to view selection converter. This converter is applied after default selection conversion is made.
- * It creates fake view selection when {@link module:engine/view/selection~Selection#getSelectedElement} returns instance
- * of image widget.
- *
- * @param {Function} t {@link module:utils/locale~Locale#t Locale#t function} used to translate default fake selection's label.
- * @returns {Function}
- */
-export function modelToViewSelection( t ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		const viewSelection = conversionApi.viewSelection;
-		const selectedElement = viewSelection.getSelectedElement();
-
-		if ( !selectedElement || !isImageWidget( selectedElement ) ) {
-			return;
-		}
-
-		let fakeSelectionLabel = t( 'image widget' );
-		const imgElement = selectedElement.getChild( 0 );
-		const altText = imgElement.getAttribute( 'alt' );
-
-		if ( altText ) {
-			fakeSelectionLabel = `${ altText } ${ fakeSelectionLabel }`;
-		}
-
-		viewSelection.setFake( true, { label: fakeSelectionLabel } );
 	};
 }
 
