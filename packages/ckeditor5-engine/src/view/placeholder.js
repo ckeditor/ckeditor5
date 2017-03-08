@@ -27,11 +27,11 @@ export default function attachPlaceholder( document, element, placeholderText ) 
 
 	// Add checking on focus event separately because for now FocusObserver is not re-rendering view after `focus` event.
 	// Re render the view - see https://github.com/ckeditor/ckeditor5-engine/issues/795.
-	document.on( 'focus', () => {
-		updateCSSClass( document, element );
-
-		document.render();
-	} );
+	// document.on( 'focus', () => {
+	// 	updateCSSClass( document, element );
+	//
+	// 	// document.render();
+	// } );
 }
 
 // Updates placeholder class of given element
