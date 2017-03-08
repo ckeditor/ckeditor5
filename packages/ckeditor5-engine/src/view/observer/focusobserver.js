@@ -8,6 +8,7 @@
  */
 
 import DomEventObserver from './domeventobserver';
+import SelectionObserver from './selectionobserver';
 
 /**
  * {@link module:engine/view/document~Document#event:focus Focus}
@@ -26,8 +27,18 @@ export default class FocusObserver extends DomEventObserver {
 		this.domEventType = [ 'focus', 'blur' ];
 		this.useCapture = true;
 
+		this.selectionObserver = document.getObserver( SelectionObserver );
+
 		document.on( 'focus', () => {
 			document.isFocused = true;
+
+			// Unfortunately native `selectionchange` event is fired asynchronously.
+			// Wait until `SelectionObserver` handle the event and then render. Otherwise rendering will overwrite new DOM
+			// selection with selection from the view.
+			// See https://github.com/ckeditor/ckeditor5-engine/issues/795 for more details.
+			this.selectionObserver.once( 'selectionChangeHandling', () => {
+				document.render();
+			}, { priority: 'low' } );
 		} );
 
 		document.on( 'blur', ( evt, data ) => {
