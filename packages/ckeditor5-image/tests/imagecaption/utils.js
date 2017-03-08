@@ -5,7 +5,13 @@
 
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
-import { captionElementCreator, isCaption, getCaptionFromImage } from '../../src/imagecaption/utils';
+import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
+import {
+	captionElementCreator,
+	isCaption,
+	getCaptionFromImage,
+	matchImageCaption
+} from '../../src/imagecaption/utils';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 
 describe( 'image captioning utils', () => {
@@ -63,6 +69,41 @@ describe( 'image captioning utils', () => {
 			const image = new ModelElement( 'image' );
 
 			expect( getCaptionFromImage( image ) ).to.be.null;
+		} );
+	} );
+
+	describe( 'matchImageCaption', () => {
+		it( 'should return null for element that is not a figcaption', () => {
+			const element = new ViewElement( 'div' );
+
+			expect( matchImageCaption( element ) ).to.be.null;
+		} );
+
+		it( 'should return null if figcaption has no parent', () => {
+			const element = new ViewElement( 'figcaption' );
+
+			expect( matchImageCaption( element ) ).to.be.null;
+		} );
+
+		it( 'should return null if figcaption\'s parent is not a figure', () => {
+			const element = new ViewElement( 'figcaption' );
+			new ViewElement( 'div', null, element );
+
+			expect( matchImageCaption( element ) ).to.be.null;
+		} );
+
+		it( 'should return null if parent has no image class', () => {
+			const element = new ViewElement( 'figcaption' );
+			new ViewElement( 'figure', null, element );
+
+			expect( matchImageCaption( element ) ).to.be.null;
+		} );
+
+		it( 'should return object if element is a valid caption', () => {
+			const element = new ViewElement( 'figcaption' );
+			new ViewElement( 'figure', { class: 'image' }, element );
+
+			expect( matchImageCaption( element ) ).to.deep.equal( { name: true } );
 		} );
 	} );
 } );

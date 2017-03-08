@@ -47,7 +47,7 @@ export function isCaption( viewElement ) {
 }
 
 /**
- * Returns caption's model element from given image element. Returns `null` if no caption is found.
+ * Returns caption model element from given image element. Returns `null` if no caption is found.
  *
  * @param {module:engine/model/element~Element} imageModelElement
  * @return {module:engine/model/element~Element|null}
@@ -57,6 +57,25 @@ export function getCaptionFromImage( imageModelElement ) {
 		if ( node instanceof ModelElement && node.name == 'caption' ) {
 			return node;
 		}
+	}
+
+	return null;
+}
+
+/**
+ * {@link module:engine/view/matcher~Matcher} pattern. Checks if given element is `figcaption` element and is placed
+ * inside image `figure` element.
+ *
+ * @param {module:engine/view/element~Element} element
+ * @returns {Object|null} Returns object accepted by {@link module:engine/view/matcher~Matcher} or `null` if element
+ * cannot be matched.
+ */
+export function matchImageCaption( element ) {
+	const parent = element.parent;
+
+	// Convert only captions for images.
+	if ( element.name == 'figcaption' && parent && parent.name == 'figure' && parent.hasClass( 'image' ) ) {
+		return { name: true };
 	}
 
 	return null;

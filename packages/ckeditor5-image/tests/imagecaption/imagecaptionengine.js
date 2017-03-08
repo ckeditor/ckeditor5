@@ -12,6 +12,7 @@ import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ImageCaptionEngine from '../../src/imagecaption/imagecaptionengine';
 import ImageEngine from '../../src/image/imageengine';
+import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
@@ -22,7 +23,7 @@ describe( 'ImageCaptionEngine', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			plugins: [ ImageCaptionEngine, ImageEngine ]
+			plugins: [ ImageCaptionEngine, ImageEngine, UndoEngine ]
 		} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -186,6 +187,39 @@ describe( 'ImageCaptionEngine', () => {
 		} );
 	} );
 
+	describe( 'inserting into image caption', () => {
+		it( 'should add view caption if insertion was made to model caption', () => {
+			setModelData( document, '<image src=""><caption></caption></image>' );
+			const image = document.getRoot().getChild( 0 );
+			const caption = image.getChild( 0 );
+
+			// Check if there is no caption in the view
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				'<figure class="image ck-widget" contenteditable="false"><img src=""></img></figure>'
+			);
+
+			document.enqueueChanges( () => {
+				const batch = document.batch();
+				const position = ModelPosition.createAt( caption );
+
+				batch.insert( position, 'foo bar baz' );
+			} );
+
+			// Check if data is inside model.
+			expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
+				'<image src=""><caption>foo bar baz</caption></image>'
+			);
+
+			// Check if view has caption.
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				'<figure class="image ck-widget" contenteditable="false">' +
+					'<img src=""></img>' +
+					'<figcaption contenteditable="true">foo bar baz</figcaption>' +
+				'</figure>'
+			);
+		} );
+	} );
+
 	describe( 'editing view', () => {
 		it( 'image should have empty figcaption element when is selected', () => {
 			setModelData( document, '[<image src=""><caption></caption></image>]' );
@@ -283,6 +317,39 @@ describe( 'ImageCaptionEngine', () => {
 					'<figcaption contenteditable="true"></figcaption>' +
 				'</figure>]'
 			);
+		} );
+
+		describe( 'undo/redo integration', () => {
+			it( 'should create view element after redo', () => {
+				setModelData( document, '<image src=""><caption>[foo bar baz]</caption></image>' );
+
+				const modelRoot = document.getRoot();
+				const modelImage = modelRoot.getChild( 0 );
+				const modelCaption = modelImage.getChild( 0 );
+
+				// Remove text and selection from caption.
+				document.enqueueChanges( () => {
+					const batch = document.batch();
+
+					batch.remove( ModelRange.createIn( modelCaption ) );
+					document.selection.removeAllRanges();
+				} );
+
+				// Check if there is no figcaption in the view.
+				expect( getViewData( viewDocument ) ).to.equal(
+					'[]<figure class="image ck-widget" contenteditable="false"><img src=""></img></figure>'
+				);
+
+				editor.execute( 'undo' );
+
+				// Check if figcaption is back with contents.
+				expect( getViewData( viewDocument ) ).to.equal(
+					'<figure class="image ck-widget" contenteditable="false">' +
+						'<img src=""></img>' +
+						'<figcaption contenteditable="true">{foo bar baz}</figcaption>' +
+					'</figure>'
+				);
+			} );
 		} );
 	} );
 } );
