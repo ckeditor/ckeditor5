@@ -6,14 +6,7 @@
 /* globals console:false, document, window */
 
 import InlineEditor from '../../src/inline';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Link from '@ckeditor/ckeditor5-link/src/link';
+import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
 import testUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 window.editors = {};
@@ -26,7 +19,7 @@ function initEditors() {
 
 	function init( selector ) {
 		InlineEditor.create( document.querySelector( selector ), {
-			plugins: [ Link, Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
+			plugins: [ ArticlePreset ],
 			toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo', 'link', 'unlink' ]
 		} )
 		.then( editor => {
