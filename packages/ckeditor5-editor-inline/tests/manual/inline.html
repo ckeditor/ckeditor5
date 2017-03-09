@@ -8,9 +8,13 @@
 	<p>This is an editor instance.</p>
 </div>
 
-<div id="editor-2" contenteditable="true" class="custom-class" custom-attr="foo">
+<div id="editor-2" class="custom-class" custom-attr="foo">
 	<h2>Editor 2</h2>
 	<p>This is another editor instance.</p>
+	<p>
+		Unlike Editor 1 it doesn't have contenteditable=true initially.
+		Check if it's editable after initializing the editors and back to non-editable after destroying them.
+	</p>
 </div>
 
 <style>
