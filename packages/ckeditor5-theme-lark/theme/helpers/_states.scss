@@ -12,13 +12,6 @@ $ck-focus-outer-shadow: 0 0 3px 2px lighten( ck-color( 'focus' ), 10% );
 $ck-focus-ring: 1px solid ck-color( 'focus' );
 
 /**
- * A class which hides an element in DOM.
- */
-.ck-hidden {
-	display: none;
-}
-
-/**
  * A class which indicates that an element holding it is disabled.
  */
 .ck-disabled {
