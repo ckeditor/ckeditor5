@@ -77,9 +77,6 @@ export default class HeadingCommand extends Command {
 	_doExecute( options = {} ) {
 		const editor = this.editor;
 		const document = editor.document;
-		const selection = document.selection;
-		const ranges = [ ...selection.getRanges() ];
-		const isSelectionBackward = selection.isBackward;
 
 		// If current option is same as new option - toggle already applied option back to default one.
 		const shouldRemove = this.value;
@@ -87,28 +84,24 @@ export default class HeadingCommand extends Command {
 		document.enqueueChanges( () => {
 			const batch = options.batch || document.batch();
 
-			for ( let element of document.selection.getSelectedBlocks() ) {
+			for ( let block of document.selection.getSelectedBlocks() ) {
 				// When removing applied option.
 				if ( shouldRemove ) {
-					if ( element.name === this.modelElement ) {
-						// Apply paragraph to the selection withing that particular element only instead
+					if ( block.is( this.modelElement ) ) {
+						// Apply paragraph to the selection withing that particular block only instead
 						// of working on the entire document selection.
 						const selection = new Selection();
-						selection.addRange( Range.createIn( element ) );
+						selection.addRange( Range.createIn( block ) );
 
 						// Share the batch with the paragraph command.
 						editor.execute( 'paragraph', { selection, batch } );
 					}
 				}
 				// When applying new option.
-				else {
-					batch.rename( element, this.modelElement );
+				else if ( !block.is( this.modelElement ) ) {
+					batch.rename( block, this.modelElement );
 				}
 			}
-
-			// If range's selection start/end is placed directly in renamed block - we need to restore it's position
-			// after renaming, because renaming puts new element there.
-			selection.setRanges( ranges, isSelectionBackward );
 		} );
 	}
 
@@ -121,7 +114,7 @@ export default class HeadingCommand extends Command {
 		const block = this.editor.document.selection.getSelectedBlocks().next().value;
 
 		if ( block ) {
-			this.value = this.modelElement == block.name;
+			this.value = block.is( this.modelElement );
 		}
 	}
 }

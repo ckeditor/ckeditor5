@@ -158,7 +158,7 @@ describe( 'HeadingCommand', () => {
 			}
 
 			it( 'converts all elements where selection is applied', () => {
-				setData( document, '<heading1>foo[</heading1><heading2>bar</heading2><heading2>]baz</heading2>' );
+				setData( document, '<heading1>foo[</heading1><heading2>bar</heading2><heading3>]baz</heading3>' );
 				commands.heading3._doExecute();
 
 				expect( getData( document ) ).to.equal(

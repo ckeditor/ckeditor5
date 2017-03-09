@@ -9,15 +9,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import { add } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-
-add( 'pl', {
-	'Paragraph': 'Akapit',
-	'Heading 1': 'Nagłówek 1',
-	'Heading 2': 'Nagłówek 2',
-	'Heading 3': 'Nagłówek 3',
-} );
 
 describe( 'HeadingEngine', () => {
 	let editor, document;
@@ -113,7 +105,7 @@ describe( 'HeadingEngine', () => {
 			describe( 'default value', () => {
 				it( 'should be set', () => {
 					expect( editor.config.get( 'heading.options' ) ).to.deep.equal( [
-						{ modelElement: 'paragraph' },
+						{ modelElement: 'paragraph', title: 'Paragraph' },
 						{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1' },
 						{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2' },
 						{ modelElement: 'heading3', viewElement: 'h4', title: 'Heading 3' }
@@ -123,7 +115,7 @@ describe( 'HeadingEngine', () => {
 
 			it( 'should customize options', () => {
 				const options = [
-					{ modelElement: 'paragraph', viewElement: 'p', title: 'Paragraph' },
+					{ modelElement: 'paragraph', title: 'Paragraph' },
 					{ modelElement: 'h4', viewElement: 'h4', title: 'H4' }
 				];
 

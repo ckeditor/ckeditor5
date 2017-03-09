@@ -63,7 +63,7 @@ describe( 'Heading', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 			const dropdown = editor.ui.componentFactory.create( 'headings' );
 
-			dropdown.modelElement = 'paragraph';
+			dropdown.commandName = 'paragraph';
 			dropdown.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
@@ -74,7 +74,7 @@ describe( 'Heading', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 			const dropdown = editor.ui.componentFactory.create( 'headings' );
 
-			dropdown.modelElement = 'paragraph';
+			dropdown.commandName = 'paragraph';
 			dropdown.fire( 'execute' );
 
 			sinon.assert.calledOnce( focusSpy );
@@ -118,35 +118,18 @@ describe( 'Heading', () => {
 			let commands;
 
 			beforeEach( () => {
-				const editorElement = document.createElement( 'div' );
-
-				return ClassicTestEditor.create( editorElement, {
-					plugins: [ Heading ],
-					toolbar: [ 'heading' ],
-					lang: 'pl',
-					heading: {
-						options: [
-							{ modelElement: 'paragraph', viewElement: 'p', title: 'Paragraph' },
-							{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1' },
-							{ modelElement: 'heading2', viewElement: 'h3', title: 'Not automatically localized' }
-						]
-					}
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					dropdown = editor.ui.componentFactory.create( 'headings' );
-					commands = {};
-					editor.config.get( 'heading.options' ).forEach( ( { modelElement } ) => {
-						commands[ modelElement ] = editor.commands.get( modelElement );
-					} );
-				} );
+				return localizedEditor( [
+					{ modelElement: 'paragraph', title: 'Paragraph' },
+					{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1' },
+					{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2' }
+				] );
 			} );
 
 			it( 'does not alter the original config', () => {
 				expect( editor.config.get( 'heading.options' ) ).to.deep.equal( [
-					{ modelElement: 'paragraph', viewElement: 'p', title: 'Paragraph' },
+					{ modelElement: 'paragraph', title: 'Paragraph' },
 					{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1' },
-					{ modelElement: 'heading2', viewElement: 'h3', title: 'Not automatically localized' }
+					{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2' }
 				] );
 			} );
 
@@ -164,9 +147,56 @@ describe( 'Heading', () => {
 				expect( listView.items.map( item => item.label ) ).to.deep.equal( [
 					'Akapit',
 					'Nagłówek 1',
-					'Not automatically localized'
+					'Nagłówek 2'
 				] );
 			} );
+
+			it( 'allows custom titles', () => {
+				return localizedEditor( [
+					{ modelElement: 'paragraph', title: 'Custom paragraph title' },
+					{ modelElement: 'heading1', title: 'Custom heading1 title' }
+				] ).then( () => {
+					const listView = dropdown.listView;
+
+					expect( listView.items.map( item => item.label ) ).to.deep.equal( [
+						'Custom paragraph title',
+						'Custom heading1 title',
+					] );
+				} );
+			} );
+
+			it( 'translates default using the the locale', () => {
+				return localizedEditor( [
+					{ modelElement: 'paragraph', title: 'Paragraph' }
+				] ).then( () => {
+					const listView = dropdown.listView;
+
+					expect( listView.items.map( item => item.label ) ).to.deep.equal( [
+						'Akapit'
+					] );
+				} );
+			} );
+
+			function localizedEditor( options ) {
+				const editorElement = document.createElement( 'div' );
+
+				return ClassicTestEditor.create( editorElement, {
+					plugins: [ Heading ],
+					toolbar: [ 'heading' ],
+					lang: 'pl',
+					heading: {
+						options: options
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					dropdown = editor.ui.componentFactory.create( 'headings' );
+					commands = {};
+					editor.config.get( 'heading.options' ).forEach( ( { modelElement } ) => {
+						commands[ modelElement ] = editor.commands.get( modelElement );
+					} );
+				} );
+			}
 		} );
 	} );
 } );

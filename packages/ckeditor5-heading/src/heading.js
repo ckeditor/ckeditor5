@@ -41,7 +41,7 @@ export default class Heading extends Plugin {
 		for ( let option of options ) {
 			// Add the option to the collection.
 			dropdownItems.add( new Model( {
-				modelElement: option.modelElement,
+				commandName: option.modelElement,
 				label: option.title
 			} ) );
 
@@ -82,8 +82,8 @@ export default class Heading extends Plugin {
 			const dropdown = createListDropdown( dropdownModel, locale );
 
 			// Execute command when an item from the dropdown is selected.
-			this.listenTo( dropdown, 'execute', ( { source: { modelElement } } ) => {
-				editor.execute( modelElement );
+			this.listenTo( dropdown, 'execute', ( evt ) => {
+				editor.execute( evt.source.commandName );
 				editor.editing.view.focus();
 			} );
 
@@ -113,13 +113,7 @@ export default class Heading extends Plugin {
 		};
 
 		return editor.config.get( 'heading.options' ).map( option => {
-			let title;
-
-			if ( option.modelElement == 'paragraph' ) {
-				title = localizedTitles.Paragraph;
-			} else {
-				title = localizedTitles[ option.title ];
-			}
+			const title = localizedTitles[ option.title ];
 
 			if ( title && title != option.title ) {
 				// Clone the option to avoid altering the original `config.heading.options`.

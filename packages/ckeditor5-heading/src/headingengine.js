@@ -32,7 +32,7 @@ export default class HeadingEngine extends Plugin {
 		// more properties (https://github.com/ckeditor/ckeditor5/issues/403).
 		editor.config.define( 'heading', {
 			options: [
-				{ modelElement: 'paragraph' },
+				{ modelElement: 'paragraph', title: 'Paragraph' },
 				{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1' },
 				{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2' },
 				{ modelElement: 'heading3', viewElement: 'h4', title: 'Heading 3' }
@@ -55,7 +55,6 @@ export default class HeadingEngine extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 		const options = editor.config.get( 'heading.options' );
-		let command;
 
 		for ( let option of options ) {
 			// Skip paragraph - it is defined in required Paragraph feature.
@@ -74,8 +73,7 @@ export default class HeadingEngine extends Plugin {
 					.toElement( option.modelElement );
 
 				// Register the heading command for this option.
-				command = new HeadingCommand( editor, option );
-				editor.commands.set( command.modelElement, command );
+				editor.commands.set( option.modelElement, new HeadingCommand( editor, option ) );
 			}
 		}
 	}
@@ -94,9 +92,9 @@ export default class HeadingEngine extends Plugin {
 			this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
 				const positionParent = editor.document.selection.getFirstPosition().parent;
 				const batch = data.batch;
-				const isHeading = options.some( option => option.modelElement == positionParent.name );
+				const isHeading = options.some( option => positionParent.is( option.modelElement ) );
 
-				if ( isHeading && positionParent.name != defaultModelElement && positionParent.childCount === 0 ) {
+				if ( isHeading && !positionParent.is( defaultModelElement ) && positionParent.childCount === 0 ) {
 					batch.rename( positionParent, defaultModelElement );
 				}
 			} );
