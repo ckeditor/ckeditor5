@@ -7,39 +7,65 @@
  * @module engine/view/placeholder
  */
 
+import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 const CSS_CLASS = 'ck-placeholder';
 const DATA_ATTRIBUTE = 'data-placeholder';
+
+const listener = {};
+extend( listener, EmitterMixin );
+
+const elements = new WeakSet();
 
 /**
  * Attaches placeholder to provided element and updates it's visibility.
  *
- * @param {module:engine/view/document~Document} document View document containing given element.
  * @param {module:engine/view/element~Element} element Element to attach placeholder to.
- * @param {String} [placeholderText] Placeholder text, if not provided it will be loaded from placeholder data attribute.
+ * @param {String} placeholderText Placeholder text to use.
+ * @param {Function} [checkFunction] If provided it will be called before checking if placeholder should be displayed.
+ * If function returns `false` placeholder will not be showed.
  */
-export default function attachPlaceholder( document, element, placeholderText ) {
+export default function attachPlaceholder( element, placeholderText, checkFunction ) {
+	const document = element.document;
+
+	if ( !document ) {
+		/**
+		 * Provided element is not placed in any {@link module:engine/view/document~Document}.
+		 *
+		 * @error view-placeholder-element-is-detached
+		 */
+		throw new CKEditorError( 'view-placeholder-element-is-detached: Provided element is not placed in document.' );
+	}
+
 	element.setAttribute( DATA_ATTRIBUTE, placeholderText );
 
-	// Add/remove placeholder before each rendering.
-	document.on( 'render', () => {
-		updateCSSClass( document, element );
-	}, { priority: 'highest' } );
+	// If element was not used already - add listener to it.
+	if ( !elements.has( element ) ) {
+		listener.listenTo( document, 'render', () => updateCSSClass( element, checkFunction ), { priority: 'high' } );
+		elements.add( element );
+	}
 
-	// Add checking on focus event separately because for now FocusObserver is not re-rendering view after `focus` event.
-	// Re render the view - see https://github.com/ckeditor/ckeditor5-engine/issues/795.
-	// document.on( 'focus', () => {
-	// 	updateCSSClass( document, element );
-	//
-	// 	// document.render();
-	// } );
+	// Update right away too.
+	updateCSSClass( element, checkFunction );
 }
 
-// Updates placeholder class of given element
+// Updates placeholder class of given element.
 //
 // @private
-function updateCSSClass( document, element ) {
+function updateCSSClass( element, checkFunction ) {
+	// TODO: when element is removedfrom document this should not be executed.
+	const document = element.document;
 	const viewSelection = document.selection;
 	const anchor = viewSelection.anchor;
+
+	// If checkFunction is provided and returns false - remove placeholder.
+	if ( checkFunction && !checkFunction() ) {
+		element.removeClass( CSS_CLASS );
+
+		return;
+	}
 
 	// If element is empty and editor is blurred.
 	if ( !document.isFocused && !element.childCount ) {

@@ -23,8 +23,8 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 	const header = viewDoc.getRoot().getChild( 0 );
 	const paragraph = viewDoc.getRoot().getChild( 1 );
 
-	attachPlaceholder( viewDoc, header, 'Type some header text...' );
-	attachPlaceholder( viewDoc, paragraph, 'Type some paragraph text...' );
+	attachPlaceholder( header, 'Type some header text...' );
+	attachPlaceholder( paragraph, 'Type some paragraph text...' );
 	viewDoc.render();
 } )
 .catch( err => {
