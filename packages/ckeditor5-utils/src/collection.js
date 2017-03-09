@@ -28,7 +28,6 @@ export default class Collection {
 	/**
 	 * Creates a new Collection instance.
 	 *
-	 * @param {Iterable} [items] Items to be added to the collection.
 	 * @param {Object} options The options object.
 	 * @param {String} [options.idProperty='id'] The name of the property which is considered to identify an item.
 	 */
