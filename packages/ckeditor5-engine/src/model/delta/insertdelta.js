@@ -10,10 +10,8 @@
 import Delta from './delta';
 import DeltaFactory from './deltafactory';
 import RemoveDelta from './removedelta';
-import MarkerDelta from './markerdelta';
 import { register } from '../batch';
 import InsertOperation from '../operation/insertoperation';
-import MarkerOperation from '../operation/markeroperation';
 
 import DocumentFragment from '../documentfragment';
 import Range from '../../model/range.js';
