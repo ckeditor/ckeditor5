@@ -13,6 +13,12 @@ import RemoveDelta from './removedelta';
 import { register } from '../batch';
 import InsertOperation from '../operation/insertoperation';
 
+import DocumentFragment from '../documentfragment';
+import MarkerDelta from './markerdelta';
+import MarkerOperation from '../operation/markeroperation';
+import Range from '../../model/range.js';
+import Position from '../../model/position.js';
+
 /**
  * @classdesc
  * To provide specific OT behavior and better collisions solving, the {@link module:engine/model/batch~Batch#insert Batch#insert} method
@@ -95,7 +101,43 @@ register( 'insert', function( position, nodes ) {
 	delta.addOperation( insert );
 	this.document.applyOperation( insert );
 
+	if ( nodes instanceof DocumentFragment ) {
+		for ( const marker of nodes.markers ) {
+			const doc = this.document;
+			const range = moveRange( marker[ 1 ], position );
+			const markerDelta = new MarkerDelta();
+			const markerOperation = new MarkerOperation( marker[ 0 ], null, range, doc.markers, doc.version );
+
+			this.addDelta( markerDelta );
+			markerDelta.addOperation( markerOperation );
+			doc.applyOperation( markerOperation );
+		}
+	}
+
 	return this;
 } );
 
 DeltaFactory.register( InsertDelta );
+
+// Moves range relative to given position.
+//
+// @param {module:engine/model/range~Range} range
+// @param {module:engine/model/position~Position} position
+// @returns {module:engine/model/range~Range} Moved range.
+function moveRange( range, position ) {
+	const positionRoot = position.parent.root;
+
+	// Clone paths.
+	let startPath = range.start.path.concat( [] );
+	let endPath = range.end.path.concat( [] );
+
+	// Move range out of DocumentFragment.
+	startPath.shift();
+	endPath.shift();
+
+	// Set Range on position.
+	startPath = position.path.concat( startPath );
+	endPath = position.path.concat( endPath );
+
+	return new Range( new Position( positionRoot, startPath ), new Position( positionRoot, endPath ) );
+}
