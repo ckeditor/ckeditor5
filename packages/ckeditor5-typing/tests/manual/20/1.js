@@ -13,19 +13,14 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-
-window.setInterval( function() {
-	console.log( getData( window.editor.document ) );
-}, 3000 );
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic, Heading ],
 	toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo' ]
 } )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+.then( editor => {
+	window.editor = editor;
+} )
+.catch( err => {
+	console.error( err.stack );
+} );
