@@ -11,11 +11,9 @@ import Node from './node';
 import Text from './text';
 import TextProxy from './textproxy';
 import Range from './range';
-import Position from './position';
 import DocumentFragment from './documentfragment';
 import NodeList from './nodelist';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * Contains functions used for composing model tree, grouped together under "model writer" name. Those functions
@@ -47,20 +45,16 @@ export default writer;
 /**
  * Inserts given nodes at given position.
  *
- * When inserted element has {@link engine/model/markercollection~MarkersCollection} and is being inserted
- * to the element which root also has {@link engine/model/markercollection~MarkersCollection} then markers will
- * be transferred as well.
- *
  * @function module:engine/model/writer~writer.insert
  * @param {module:engine/model/position~Position} position Position at which nodes should be inserted.
  * @param {module:engine/model/node~NodeSet} nodes Nodes to insert.
  * @returns {module:engine/model/range~Range} Range spanning over inserted elements.
  */
 export function insert( position, nodes ) {
-	const normalizedNodes = normalizeNodes( nodes );
+	nodes = normalizeNodes( nodes );
 
 	// We have to count offset before inserting nodes because they can get merged and we would get wrong offsets.
-	const offset = normalizedNodes.reduce( ( sum, node ) => sum + node.offsetSize, 0 );
+	const offset = nodes.reduce( ( sum, node ) => sum + node.offsetSize, 0 );
 	const parent = position.parent;
 
 	// Insertion might be in a text node, we should split it if that's the case.
@@ -69,28 +63,11 @@ export function insert( position, nodes ) {
 
 	// Insert nodes at given index. After splitting we have a proper index and insertion is between nodes,
 	// using basic `Element` API.
-	parent.insertChildren( index, normalizedNodes );
+	parent.insertChildren( index, nodes );
 
 	// Merge text nodes, if possible. Merging is needed only at points where inserted nodes "touch" "old" nodes.
-	_mergeNodesAtIndex( parent, index + normalizedNodes.length );
+	_mergeNodesAtIndex( parent, index + nodes.length );
 	_mergeNodesAtIndex( parent, index );
-
-	// If given element is a DocumentFragment and has markers.
-	if ( nodes instanceof DocumentFragment && nodes.markers.size ) {
-		// If node is being inserted to the element attached to Document or element which root element is DocumentFragment.
-		const targetElement = position.root.document || position.root;
-
-		if ( targetElement.markers ) {
-			// We need to transfer its markers and update position markers positions.
-			for ( const marker of nodes.markers ) {
-				const range = new Range( new Position( parent, marker[ 1 ].start.path ),  new Position( parent, marker[ 1 ].end.path ) );
-				targetElement.markers.set( marker[ 0 ], range );
-			}
-		// Otherwise we need to show warning about losing markers.
-		} else {
-			log.warn( 'model-writer-insert-lose-markers: Element containing markers is set to element without MarkersCollection.' );
-		}
-	}
 
 	return new Range( position, position.getShiftedBy( offset ) );
 }
