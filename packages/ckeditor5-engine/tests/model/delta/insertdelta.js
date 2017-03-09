@@ -5,14 +5,19 @@
 
 import Document from '../../../src/model/document';
 import Element from '../../../src/model/element';
-import Position from '../../../src/model/position';
+import DocumentFragment from '../../../src/model/documentfragment';
 import Text from '../../../src/model/text';
+import Position from '../../../src/model/position';
+import Range from '../../../src/model/range';
 
 import InsertOperation from '../../../src/model/operation/insertoperation';
+import MarkerOperation from '../../../src/model/operation/markeroperation';
 import InsertDelta from '../../../src/model/delta/insertdelta';
 
 import RemoveDelta from '../../../src/model/delta/removedelta';
 import RemoveOperation from '../../../src/model/operation/removeoperation';
+
+import { stringify } from '../../../src/dev-utils/model';
 
 describe( 'Batch', () => {
 	let doc, root, batch, p, ul, chain;
@@ -51,6 +56,36 @@ describe( 'Batch', () => {
 			} );
 
 			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
+		} );
+
+		it( 'should transfer markers from given DocumentFragment', () => {
+			const documentFragment = new DocumentFragment( [ new Element( 'li', null, [ new Text( 'foo bar' ) ] ) ] );
+			const marker = new Range( new Position( documentFragment, [ 0, 1 ] ), new Position( documentFragment, [ 0, 5 ] ) );
+
+			documentFragment.markers.set( 'marker', marker );
+
+			batch.insert( new Position( root, [ 3, 0 ] ), documentFragment );
+
+			expect( Array.from( doc.markers ).length ).to.equal( 1 );
+			expect( stringify( root, doc.markers.get( 'marker' ).getRange() ) ).to.equal( 'ab<p></p><ul><li>f[oo b]ar</li></ul>c' );
+		} );
+
+		it( 'should set each marker as separate operation', () => {
+			sinon.spy( doc, 'applyOperation' );
+
+			const documentFragment = new DocumentFragment( [ new Element( 'li', null, [ new Text( 'foo bar' ) ] ) ] );
+			const marker1 = new Range( new Position( documentFragment, [ 0, 1 ] ), new Position( documentFragment, [ 0, 2 ] ) );
+			const marker2 = new Range( new Position( documentFragment, [ 0, 5 ] ), new Position( documentFragment, [ 0, 6 ] ) );
+
+			documentFragment.markers.set( 'marker1', marker1 );
+			documentFragment.markers.set( 'marker2', marker2 );
+
+			batch.insert( new Position( root, [ 3, 0 ] ), documentFragment );
+
+			expect( doc.applyOperation.calledThrice );
+			expect( doc.applyOperation.firstCall.calledWith( sinon.match( ( operation ) => operation instanceof InsertOperation ) ) );
+			expect( doc.applyOperation.secondCall.calledWith( sinon.match( ( operation ) => operation instanceof MarkerOperation ) ) );
+			expect( doc.applyOperation.thirdCall.calledWith( sinon.match( ( operation ) => operation instanceof MarkerOperation ) ) );
 		} );
 	} );
 } );

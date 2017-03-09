@@ -88,6 +88,9 @@ export default class InsertDelta extends Delta {
 /**
  * Inserts a node or nodes at the given position.
  *
+ * When inserted element is a {@link engine/model/documentfragment~DocumentFragment} and has markers its markers will
+ * be set to {@link engine/model/document~Document#markers}.
+ *
  * @chainable
  * @method module:engine/model/batch~Batch#insert
  * @param {module:engine/model/position~Position} position Position of insertion.
@@ -101,6 +104,7 @@ register( 'insert', function( position, nodes ) {
 	delta.addOperation( insert );
 	this.document.applyOperation( insert );
 
+	// When element is a DocumentFragment we need to move its markers to Document#markers.
 	if ( nodes instanceof DocumentFragment ) {
 		for ( const marker of nodes.markers ) {
 			const doc = this.document;
