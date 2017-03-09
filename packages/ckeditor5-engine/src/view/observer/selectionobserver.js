@@ -276,10 +276,10 @@ export default class SelectionObserver extends Observer {
  */
 
 /**
- * Fired when selection change is being handled.
+ * Fired when selection change is being handled. It can be used to execute code before or after actual `selectionchange`
+ * event handling.
  *
  * @event module:engine/view/observer/selectionobserver~SelectionObserver#event:selectionChangeHandling
  * @param {Object} data
- * @param {Document} domDocument DOM document on which selectionchange event was fired.
+ * @param {Document} domDocument DOM document on which `selectionchange` event was fired.
  */
-

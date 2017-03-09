@@ -11,6 +11,7 @@ import ViewSelection from '../../../src/view/selection';
 import ViewDocument from '../../../src/view/document';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import MutationObserver from '../../../src/view/observer/mutationobserver';
+import FocusObserver from '../../../src/view/observer/focusobserver';
 
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
@@ -232,6 +233,9 @@ describe( 'SelectionObserver', () => {
 
 		viewDocument.on( 'selectionChangeDone', spy );
 
+		// Disable focus observer to not re-render view on each focus.
+		viewDocument.getObserver( FocusObserver ).disable();
+
 		// Change selection.
 		changeDomSelection();
 
@@ -294,6 +298,21 @@ describe( 'SelectionObserver', () => {
 				done();
 			}, 110 );
 		}, 100 );
+	} );
+
+	it( 'should fire selectionChangeHandling on standard priority', ( done ) => {
+		let spy1 = sinon.spy();
+		let spy2 = sinon.spy();
+
+		selectionObserver.on( 'selectionChangeHandling', spy1, { priority: 'high' } );
+		viewDocument.on( 'selectionChange', spy2 );
+
+		selectionObserver.on( 'selectionChangeHandling', () => {
+			sinon.assert.callOrder( spy1, spy2 );
+			done();
+		}, { priority: 'low' } );
+
+		changeDomSelection();
 	} );
 } );
 
