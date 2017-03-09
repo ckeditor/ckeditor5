@@ -9,3 +9,10 @@
 	-webkit-user-select: none;
 	-ms-user-select: none;
 }
+
+/**
+ * A class which hides an element in DOM.
+ */
+.ck-hidden {
+	display: none;
+}
