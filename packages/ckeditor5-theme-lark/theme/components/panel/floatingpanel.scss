@@ -1,0 +1,10 @@
+// Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+.ck-floating-panel {
+	@include ck-drop-shadow();
+	@include ck-rounded-corners();
+
+	border: 1px solid ck-border-color();
+	background: ck-color( 'foreground' );
+}
