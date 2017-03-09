@@ -11,6 +11,7 @@ import ViewSelection from '../../../src/view/selection';
 import ViewDocument from '../../../src/view/document';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import MutationObserver from '../../../src/view/observer/mutationobserver';
+import FocusObserver from '../../../src/view/observer/focusobserver';
 
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
@@ -231,6 +232,9 @@ describe( 'SelectionObserver', () => {
 		const spy = sinon.spy();
 
 		viewDocument.on( 'selectionChangeDone', spy );
+
+		// Disable focus observer to not re-render view on each focus.
+		viewDocument.getObserver( FocusObserver ).disable();
 
 		// Change selection.
 		changeDomSelection();
