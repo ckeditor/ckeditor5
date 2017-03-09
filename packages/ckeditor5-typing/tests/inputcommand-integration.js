@@ -194,8 +194,13 @@ describe( 'InputCommand integration', () => {
 
 			editor.execute( 'undo' );
 
-			expectOutput( '<paragraph>Foo <$text bold="true">B</$text><$text italic="true"><$text bold="true">a</$text></$text><$text bold="true" italic="true">[]</$text> Bar</paragraph>',
-				'<p>Foo <strong>B</strong><em><strong>a{}</strong></em> Bar</p>' );
+			expectOutput(
+				'<paragraph>' +
+					'Foo <$text bold="true">B</$text><$text italic="true"><$text bold="true">a</$text></$text>' +
+					'<$text bold="true" italic="true">[]</$text> Bar' +
+				'</paragraph>',
+				'<p>Foo <strong>B</strong><em><strong>a{}</strong></em> Bar</p>'
+			);
 
 			editor.execute( 'undo' );
 
