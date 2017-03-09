@@ -38,7 +38,8 @@ export default class ParagraphCommand extends Command {
 	}
 
 	/**
-	 * Executes command.
+	 * Executes the command. All the {@link module:engine/model/schema~Schema#blocks blocks} in the selection
+	 * will be turned to paragraphs.
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for executed command.
