@@ -13,8 +13,8 @@ import ClassicEditorUIView from '../src/classiceditoruiview';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import * as enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
@@ -147,15 +147,20 @@ describe( 'ClassicEditorUI', () => {
 		} );
 
 		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
-			const spy = testUtils.sinon.spy( enableToolbarKeyboardFocus, 'default' );
+			const spy = testUtils.sinon.spy( view.toolbar, 'focus' );
 
 			return ui.init().then( () => {
-				sinon.assert.calledWithExactly( spy, {
-					origin: editor.editing.view,
-					originFocusTracker: ui.focusTracker,
-					originKeystrokeHandler: editor.keystrokes,
-					toolbar: view.toolbar
+				ui.focusTracker.isFocused = true;
+				ui.view.toolbar.focusTracker.isFocused = false;
+
+				editor.keystrokes.press( {
+					keyCode: keyCodes.f10,
+					altKey: true,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
 				} );
+
+				sinon.assert.calledOnce( spy );
 			} );
 		} );
 	} );
