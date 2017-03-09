@@ -7,6 +7,7 @@
  * @module paragraph/paragraph
  */
 
+import ParagraphCommand from './paragraphcommand';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
@@ -65,6 +66,8 @@ export default class Paragraph extends Plugin {
 		data.viewToModel.on( 'element', ( evt, data, consumable, conversionApi ) => {
 			autoparagraphParagraphLikeElements( doc, evt, data, consumable, conversionApi );
 		}, { priority: 'low' } );
+
+		editor.commands.set( 'paragraph', new ParagraphCommand( editor ) );
 	}
 }
 

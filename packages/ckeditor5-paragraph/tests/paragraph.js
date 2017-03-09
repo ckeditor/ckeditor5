@@ -4,6 +4,7 @@
  */
 
 import Paragraph from '../src/paragraph';
+import ParagraphCommand from '../src/paragraphcommand';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import {
 	getData as getModelData,
@@ -335,6 +336,12 @@ describe( 'Paragraph feature', () => {
 			editor.setData( 'foo' );
 
 			expect( getModelData( doc ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+		} );
+	} );
+
+	describe( 'command', () => {
+		it( 'should be set in the editor', () => {
+			expect( editor.commands.get( 'paragraph' ) ).to.be.instanceof( ParagraphCommand );
 		} );
 	} );
 } );
