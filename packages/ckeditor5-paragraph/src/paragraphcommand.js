@@ -48,10 +48,6 @@ export default class ParagraphCommand extends Command {
 	 * By default, if not provided, the command is applied to {@link module:engine/model/document~Document#selection}.
 	 */
 	_doExecute( options = {} ) {
-		if ( this.value && !options.selection ) {
-			return;
-		}
-
 		const document = this.editor.document;
 
 		document.enqueueChanges( () => {
@@ -59,7 +55,9 @@ export default class ParagraphCommand extends Command {
 			const blocks = ( options.selection || document.selection ).getSelectedBlocks();
 
 			for ( let block of blocks ) {
-				batch.rename( block, 'paragraph' );
+				if ( !block.is( 'paragraph' ) ) {
+					batch.rename( block, 'paragraph' );
+				}
 			}
 		} );
 	}
@@ -73,7 +71,7 @@ export default class ParagraphCommand extends Command {
 		const block = this.editor.document.selection.getSelectedBlocks().next().value;
 
 		if ( block ) {
-			this.value = block.name == 'paragraph';
+			this.value = block.is( 'paragraph' );
 		}
 	}
 }

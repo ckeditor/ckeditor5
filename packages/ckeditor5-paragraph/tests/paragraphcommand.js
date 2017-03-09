@@ -9,7 +9,7 @@ import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'HeadingCommand', () => {
+describe( 'ParagraphCommand', () => {
 	let editor, document, command, root, schema;
 
 	beforeEach( () => {
@@ -72,6 +72,16 @@ describe( 'HeadingCommand', () => {
 			expect( command.value ).to.be.true;
 		} );
 
+		it( 'should not rename blocks which already are pargraphs', () => {
+			const batch = editor.document.batch();
+
+			setData( document, '<paragraph>foo[</paragraph><heading1>bar]</heading1>' );
+			expect( batch.deltas.length ).to.equal( 0 );
+
+			command._doExecute( { batch } );
+			expect( batch.deltas.length ).to.equal( 1 );
+		} );
+
 		describe( 'custom options', () => {
 			it( 'should use provided batch', () => {
 				const batch = editor.document.batch();
@@ -120,11 +130,20 @@ describe( 'HeadingCommand', () => {
 				schema.registerItem( 'heading2', '$block' );
 
 				setData( document, '<heading1>foo[</heading1><heading2>bar</heading2><heading2>]baz</heading2>' );
-				command._doExecute();
 
+				command._doExecute();
 				expect( getData( document ) ).to.equal(
 					'<paragraph>foo[</paragraph><paragraph>bar</paragraph><paragraph>]baz</paragraph>'
 				);
+			} );
+
+			it( 'converts all elements even if already anchored in paragraph', () => {
+				schema.registerItem( 'heading2', '$block' );
+
+				setData( document, '<paragraph>foo[</paragraph><heading2>bar]</heading2>' );
+
+				command._doExecute();
+				expect( getData( document ) ).to.equal( '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
 			} );
 		} );
 	} );
