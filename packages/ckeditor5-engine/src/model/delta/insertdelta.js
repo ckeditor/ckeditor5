@@ -107,7 +107,14 @@ register( 'insert', function( position, nodes ) {
 	// When element is a DocumentFragment we need to move its markers to Document#markers.
 	if ( nodes instanceof DocumentFragment ) {
 		for ( const [ markerName, markerRange ] of nodes.markers ) {
-			this.setMarker( markerName, migrateRange( markerRange, position ) );
+			// We need to migrate marker range from DocumentFragment to Document.
+			const rangeRootPosition = Position.createAt( markerRange.root );
+			const range = new Range(
+				markerRange.start._getCombined( rangeRootPosition, position ),
+				markerRange.end._getCombined( rangeRootPosition, position )
+			);
+
+			this.setMarker( markerName, range );
 		}
 	}
 
@@ -115,26 +122,3 @@ register( 'insert', function( position, nodes ) {
 } );
 
 DeltaFactory.register( InsertDelta );
-
-// Migrates range to given position.
-//
-// @param {module:engine/model/range~Range} range
-// @param {module:engine/model/position~Position} position
-// @returns {module:engine/model/range~Range} Moved range.
-function migrateRange( range, position ) {
-	const positionRoot = position.parent.root;
-
-	// Clone paths.
-	let startPath = range.start.path.concat( [] );
-	let endPath = range.end.path.concat( [] );
-
-	// Move range out of DocumentFragment.
-	startPath.shift();
-	endPath.shift();
-
-	// Set Range on position.
-	startPath = position.path.concat( startPath );
-	endPath = position.path.concat( endPath );
-
-	return new Range( new Position( positionRoot, startPath ), new Position( positionRoot, endPath ) );
-}
