@@ -13,6 +13,7 @@
     "@ckeditor/ckeditor5-clipboard": "v0.4.1",
     "@ckeditor/ckeditor5-core": "v0.7.0",
     "@ckeditor/ckeditor5-editor-classic": "v0.7.1",
+    "@ckeditor/ckeditor5-editor-inline": "*",
     "@ckeditor/ckeditor5-engine": "v0.8.0",
     "@ckeditor/ckeditor5-enter": "v0.8.0",
     "@ckeditor/ckeditor5-heading": "v0.8.0",
