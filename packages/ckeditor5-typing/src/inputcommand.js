@@ -78,6 +78,8 @@ export default class InputCommand extends Command {
 		doc.enqueueChanges( () => {
 			const isCollapsedRange = range.isCollapsed;
 
+			this._buffer.lock();
+
 			if ( !isCollapsedRange ) {
 				this._buffer.batch.remove( range );
 			}
@@ -90,6 +92,8 @@ export default class InputCommand extends Command {
 				// If range was collapsed just shift the selection by the number of inserted characters.
 				this.editor.data.model.selection.collapse( range.start.getShiftedBy( textInsertions ) );
 			}
+
+			this._buffer.unlock();
 
 			this._buffer.input( textInsertions );
 		} );

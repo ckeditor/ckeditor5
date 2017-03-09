@@ -61,6 +61,8 @@ export default class DeleteCommand extends Command {
 		const dataController = this.editor.data;
 
 		doc.enqueueChanges( () => {
+			this._buffer.lock();
+
 			const selection = Selection.createFromSelection( doc.selection );
 
 			// Try to extend the selection in the specified direction.
@@ -85,6 +87,8 @@ export default class DeleteCommand extends Command {
 			this._buffer.input( changeCount );
 
 			doc.selection.setRanges( selection.getRanges(), selection.isBackward );
+
+			this._buffer.unlock();
 		} );
 	}
 }

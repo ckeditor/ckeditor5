@@ -60,11 +60,27 @@ export default class ChangeBuffer {
 		 */
 		this.limit = limit;
 
+		/**
+		 * Whether the buffer is locked. The locked buffer cannot be reset unless it gets unlocked.
+		 *
+		 * @readonly
+		 * @member {Boolean} #isLocked
+		 */
+		this.isLocked = false;
+
 		this._changeCallback = ( evt, type, changes, batch ) => {
 			this._onBatch( batch );
 		};
 
+		this._selectionChangeCallback = () => {
+			this._reset();
+		};
+
 		doc.on( 'change', this._changeCallback );
+
+		doc.selection.on( 'change:range', this._selectionChangeCallback );
+
+		doc.selection.on( 'change:attribute', this._selectionChangeCallback );
 
 		/**
 		 * The current batch instance.
@@ -79,13 +95,20 @@ export default class ChangeBuffer {
 		 * @private
 		 * @member #_changeCallback
 		 */
+
+		/**
+		 * The callback to document selection change:attribute and change:range events which resets the buffer.
+		 *
+		 * @private
+		 * @member #_selectionChangeCallback
+		 */
 	}
 
 	/**
 	 * The current batch to which a feature should add its deltas. Once the {@link #size}
 	 * is reached or exceeds the {@link #limit}, the batch is set to a new instance and the size is reset.
 	 *
-	 * @type {engine.treeModel.batch.Batch}
+	 * @type {module:engine/model/batch~Batch}
 	 */
 	get batch() {
 		if ( !this._batch ) {
@@ -105,8 +128,22 @@ export default class ChangeBuffer {
 		this.size += changeCount;
 
 		if ( this.size >= this.limit ) {
-			this._reset();
+			this._reset( true );
 		}
+	}
+
+	/**
+	 * Locks the buffer.
+	 */
+	lock() {
+		this.isLocked = true;
+	}
+
+	/**
+	 * Unlocks the buffer.
+	 */
+	unlock() {
+		this.isLocked = false;
 	}
 
 	/**
@@ -114,6 +151,8 @@ export default class ChangeBuffer {
 	 */
 	destroy() {
 		this.document.off( 'change', this._changeCallback );
+		this.document.selection.off( 'change:range', this._selectionChangeCallback );
+		this.document.selection.off( 'change:attribute', this._selectionChangeCallback );
 	}
 
 	/**
@@ -130,7 +169,7 @@ export default class ChangeBuffer {
 	_onBatch( batch ) {
 		// One operation means a newly created batch.
 		if ( batch.type != 'transparent' && batch !== this._batch && count( batch.getOperations() ) <= 1 ) {
-			this._reset();
+			this._reset( true );
 		}
 	}
 
@@ -138,9 +177,12 @@ export default class ChangeBuffer {
 	 * Resets the change buffer.
 	 *
 	 * @private
+	 * @param {Boolean} [ignoreLock] Whether internal lock {@link #isLocked} should be ignored.
 	 */
-	_reset() {
-		this._batch = null;
-		this.size = 0;
+	_reset( ignoreLock ) {
+		if ( !this.isLocked || ignoreLock ) {
+			this._batch = null;
+			this.size = 0;
+		}
 	}
 }
