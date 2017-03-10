@@ -8,9 +8,21 @@
 	@include ck-rounded-corners();
 
 	&__item {
-		padding: ck-spacing( 'medium' );
+		padding: ck-spacing( 'medium' ) ck-spacing( 'medium' ) ck-spacing( 'medium' ) 0;
 		cursor: pointer;
 		min-width: 12em;
+
+		// NOTE: Using absolute sizes here because otherwise each
+		// item would indent in a different way.
+		&::before {
+			content: "";
+			display: inline-block;
+			width: $ck-font-size-base;
+			font-weight: normal;
+			font-size: $ck-font-size-base;
+			text-align: center;
+			margin: 0 $ck-font-size-base/2;
+		}
 
 		&:hover,
 		&:focus {
@@ -19,11 +31,26 @@
 
 		&:focus {
 			@include ck-box-shadow( $ck-focus-outer-shadow );
+			position: relative;
+			z-index: ck-z();
 			outline: none;
 		}
 
 		&:last-of-type {
 			border: none;
+		}
+
+		&_active {
+			background: ck-color( 'foreground', -5 );
+
+			&::before {
+				content: "✓";
+			}
+
+			&:hover,
+			&:focus {
+				background: ck-color( 'foreground', -10 );
+			}
 		}
 	}
 }
