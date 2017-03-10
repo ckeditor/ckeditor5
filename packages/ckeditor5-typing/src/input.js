@@ -259,6 +259,7 @@ const safeKeycodes = [
 	34, // PageDown
 	35, // Home
 	36, // End
+	229 // Composition start key
 ];
 
 // Function keys.
