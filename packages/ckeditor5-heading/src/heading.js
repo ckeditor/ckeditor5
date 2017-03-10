@@ -41,14 +41,19 @@ export default class Heading extends Plugin {
 		let defaultOption;
 
 		for ( let option of options ) {
-			// Add the option to the collection.
-			dropdownItems.add( new Model( {
+			const command = editor.commands.get( option.modelElement );
+			const itemModel = new Model( {
 				commandName: option.modelElement,
 				label: option.title,
 				class: option.class
-			} ) );
+			} );
 
-			commands.push( editor.commands.get( option.modelElement ) );
+			itemModel.bind( 'isActive' ).to( command, 'value' );
+
+			// Add the option to the collection.
+			dropdownItems.add( itemModel );
+
+			commands.push( command );
 
 			if ( !defaultOption && option.modelElement == 'paragraph' ) {
 				defaultOption = option;

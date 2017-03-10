@@ -210,6 +210,19 @@ describe( 'Heading', () => {
 					'ck-heading_heading3'
 				] );
 			} );
+
+			it( 'reflects the #value of the commands', () => {
+				const listView = dropdown.listView;
+
+				editor.commands.get( 'heading2' ).value = true;
+
+				expect( listView.items.map( item => item.isActive ) ).to.deep.equal( [
+					false,
+					false,
+					true,
+					false
+				] );
+			} );
 		} );
 	} );
 } );
