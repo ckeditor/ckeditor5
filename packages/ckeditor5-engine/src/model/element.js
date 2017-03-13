@@ -83,9 +83,19 @@ export default class Element extends Node {
 	/**
 	 * Checks whether given model tree object is of given type.
 	 *
+	 *		obj.name; // 'listItem'
+	 *		obj instanceof Element; // true
+	 *
+	 *		obj.is( 'element' ); // true
+	 *		obj.is( 'listItem' ); // true
+	 *		obj.is( 'element', 'listItem' ); // true
+	 *		obj.is( 'text' ); // false
+	 *		obj.is( 'element', 'image' ); // false
+	 *
 	 * Read more in {@link module:engine/model/node~Node#is}.
 	 *
-	 * @param {String} type
+	 * @param {String} type Type to check when `name` parameter is present.
+	 * Otherwise, it acts like the `name` parameter.
 	 * @param {String} [name] Element name.
 	 * @returns {Boolean}
 	 */
