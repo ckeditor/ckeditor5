@@ -4,19 +4,12 @@
  */
 
 import HeadingEngine from '../src/headingengine';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import HeadingCommand from '../src/headingcommand';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import { add } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-
-add( 'pl', {
-	'Paragraph': 'Akapit',
-	'Heading 1': 'Nagłówek 1',
-	'Heading 2': 'Nagłówek 2',
-	'Heading 3': 'Nagłówek 3',
-} );
 
 describe( 'HeadingEngine', () => {
 	let editor, document;
@@ -54,11 +47,11 @@ describe( 'HeadingEngine', () => {
 		expect( document.schema.check( { name: '$inline', inside: 'heading3' } ) ).to.be.true;
 	} );
 
-	it( 'should register option command', () => {
-		expect( editor.commands.has( 'heading' ) ).to.be.true;
-		const command = editor.commands.get( 'heading' );
-
-		expect( command ).to.be.instanceOf( HeadingCommand );
+	it( 'should register #commands', () => {
+		expect( editor.commands.get( 'paragraph' ) ).to.be.instanceOf( ParagraphCommand );
+		expect( editor.commands.get( 'heading1' ) ).to.be.instanceOf( HeadingCommand );
+		expect( editor.commands.get( 'heading2' ) ).to.be.instanceOf( HeadingCommand );
+		expect( editor.commands.get( 'heading3' ) ).to.be.instanceOf( HeadingCommand );
 	} );
 
 	it( 'should convert heading1', () => {
@@ -101,23 +94,29 @@ describe( 'HeadingEngine', () => {
 		expect( getData( document ) ).to.equal( '<heading1>foo</heading1><heading1>[]bar</heading1>' );
 	} );
 
+	it( 'should not blow up if there\'s no enter command in the editor', () => {
+		return VirtualTestEditor.create( {
+			plugins: [ HeadingEngine ]
+		} );
+	} );
+
 	describe( 'config', () => {
 		describe( 'options', () => {
 			describe( 'default value', () => {
 				it( 'should be set', () => {
 					expect( editor.config.get( 'heading.options' ) ).to.deep.equal( [
-						{ id: 'paragraph', element: 'p', label: 'Paragraph' },
-						{ id: 'heading1', element: 'h2', label: 'Heading 1' },
-						{ id: 'heading2', element: 'h3', label: 'Heading 2' },
-						{ id: 'heading3', element: 'h4', label: 'Heading 3' }
+						{ modelElement: 'paragraph', title: 'Paragraph' },
+						{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1' },
+						{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2' },
+						{ modelElement: 'heading3', viewElement: 'h4', title: 'Heading 3' }
 					] );
 				} );
 			} );
 
 			it( 'should customize options', () => {
 				const options = [
-					{ id: 'paragraph', element: 'p', label: 'Paragraph' },
-					{ id: 'h4', element: 'h4', label: 'H4' }
+					{ modelElement: 'paragraph', title: 'Paragraph' },
+					{ modelElement: 'h4', viewElement: 'h4', title: 'H4' }
 				];
 
 				return VirtualTestEditor.create( {
@@ -129,7 +128,8 @@ describe( 'HeadingEngine', () => {
 				.then( editor => {
 					document = editor.document;
 
-					expect( editor.commands.get( 'heading' ).options ).to.deep.equal( options );
+					expect( editor.commands.get( 'h4' ) ).to.be.instanceOf( HeadingCommand );
+					expect( editor.commands.get( 'paragraph' ) ).to.be.instanceOf( ParagraphCommand );
 
 					expect( document.schema.hasItem( 'paragraph' ) ).to.be.true;
 					expect( document.schema.hasItem( 'h4' ) ).to.be.true;

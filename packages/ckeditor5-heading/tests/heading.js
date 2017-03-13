@@ -63,72 +63,73 @@ describe( 'Heading', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 			const dropdown = editor.ui.componentFactory.create( 'headings' );
 
-			dropdown.id = 'foo';
+			dropdown.commandName = 'paragraph';
 			dropdown.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'heading', { id: 'foo' } );
+			sinon.assert.calledWithExactly( executeSpy, 'paragraph' );
 		} );
 
 		it( 'should focus view after command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 			const dropdown = editor.ui.componentFactory.create( 'headings' );
 
+			dropdown.commandName = 'paragraph';
 			dropdown.fire( 'execute' );
 
 			sinon.assert.calledOnce( focusSpy );
 		} );
 
 		describe( 'model to command binding', () => {
-			let command;
+			let commands;
 
 			beforeEach( () => {
-				command = editor.commands.get( 'heading' );
+				commands = {};
+
+				editor.config.get( 'heading.options' ).forEach( ( { modelElement } ) => {
+					commands[ modelElement ] = editor.commands.get( modelElement );
+				} );
 			} );
 
 			it( 'isEnabled', () => {
-				expect( dropdown.buttonView.isEnabled ).to.be.true;
-				command.isEnabled = false;
+				for ( let name in commands ) {
+					commands[ name ].isEnabled = false;
+				}
+
 				expect( dropdown.buttonView.isEnabled ).to.be.false;
+
+				commands.heading2.isEnabled = true;
+				expect( dropdown.buttonView.isEnabled ).to.be.true;
 			} );
 
 			it( 'label', () => {
+				for ( let name in commands ) {
+					commands[ name ].value = false;
+				}
+
 				expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
-				command.value = command.options[ 1 ];
-				expect( dropdown.buttonView.label ).to.equal( 'Heading 1' );
+
+				commands.heading2.value = true;
+				expect( dropdown.buttonView.label ).to.equal( 'Heading 2' );
 			} );
 		} );
 
 		describe( 'localization', () => {
-			let command;
+			let commands;
 
 			beforeEach( () => {
-				const editorElement = document.createElement( 'div' );
-
-				return ClassicTestEditor.create( editorElement, {
-					plugins: [ Heading ],
-					toolbar: [ 'heading' ],
-					lang: 'pl',
-					heading: {
-						options: [
-							{ id: 'paragraph', element: 'p', label: 'Paragraph' },
-							{ id: 'heading1', element: 'h2', label: 'Heading 1' },
-							{ id: 'heading2', element: 'h3', label: 'Not automatically localized' }
-						]
-					}
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-					dropdown = editor.ui.componentFactory.create( 'headings' );
-					command = editor.commands.get( 'heading' );
-				} );
+				return localizedEditor( [
+					{ modelElement: 'paragraph', title: 'Paragraph' },
+					{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1' },
+					{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2' }
+				] );
 			} );
 
 			it( 'does not alter the original config', () => {
 				expect( editor.config.get( 'heading.options' ) ).to.deep.equal( [
-					{ id: 'paragraph', element: 'p', label: 'Paragraph' },
-					{ id: 'heading1', element: 'h2', label: 'Heading 1' },
-					{ id: 'heading2', element: 'h3', label: 'Not automatically localized' }
+					{ modelElement: 'paragraph', title: 'Paragraph' },
+					{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1' },
+					{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2' }
 				] );
 			} );
 
@@ -136,7 +137,7 @@ describe( 'Heading', () => {
 				const buttonView = dropdown.buttonView;
 
 				expect( buttonView.label ).to.equal( 'Akapit' );
-				command.value = command.options[ 1 ];
+				commands.heading1.value = true;
 				expect( buttonView.label ).to.equal( 'Nagłówek 1' );
 			} );
 
@@ -146,9 +147,56 @@ describe( 'Heading', () => {
 				expect( listView.items.map( item => item.label ) ).to.deep.equal( [
 					'Akapit',
 					'Nagłówek 1',
-					'Not automatically localized'
+					'Nagłówek 2'
 				] );
 			} );
+
+			it( 'allows custom titles', () => {
+				return localizedEditor( [
+					{ modelElement: 'paragraph', title: 'Custom paragraph title' },
+					{ modelElement: 'heading1', title: 'Custom heading1 title' }
+				] ).then( () => {
+					const listView = dropdown.listView;
+
+					expect( listView.items.map( item => item.label ) ).to.deep.equal( [
+						'Custom paragraph title',
+						'Custom heading1 title',
+					] );
+				} );
+			} );
+
+			it( 'translates default using the the locale', () => {
+				return localizedEditor( [
+					{ modelElement: 'paragraph', title: 'Paragraph' }
+				] ).then( () => {
+					const listView = dropdown.listView;
+
+					expect( listView.items.map( item => item.label ) ).to.deep.equal( [
+						'Akapit'
+					] );
+				} );
+			} );
+
+			function localizedEditor( options ) {
+				const editorElement = document.createElement( 'div' );
+
+				return ClassicTestEditor.create( editorElement, {
+					plugins: [ Heading ],
+					toolbar: [ 'heading' ],
+					lang: 'pl',
+					heading: {
+						options: options
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					dropdown = editor.ui.componentFactory.create( 'headings' );
+					commands = {};
+					editor.config.get( 'heading.options' ).forEach( ( { modelElement } ) => {
+						commands[ modelElement ] = editor.commands.get( modelElement );
+					} );
+				} );
+			}
 		} );
 	} );
 } );
