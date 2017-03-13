@@ -39,7 +39,8 @@ export default class ListItemView extends View {
 			attributes: {
 				class: [
 					'ck-list__item',
-					bind.to( 'class' )
+					bind.to( 'class' ),
+					bind.if( 'isActive', 'ck-list__item_active' )
 				],
 				style: bind.to( 'style' ),
 				tabindex: bind.to( 'tabindex' )
@@ -75,6 +76,13 @@ export default class ListItemView extends View {
 		 *
 		 * @observable
 		 * @member {String} #class
+		 */
+
+		/**
+		 * (Optional) When set, it marks the item as active among the others.
+		 *
+		 * @observable
+		 * @member {Boolean} #isActive
 		 */
 
 		/**

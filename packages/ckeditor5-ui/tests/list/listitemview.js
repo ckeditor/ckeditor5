@@ -35,6 +35,14 @@ describe( 'ListItemView', () => {
 
 				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
 			} );
+
+			it( 'reacts on view#isActive', () => {
+				expect( view.element.classList ).to.have.length( 1 );
+
+				view.set( 'isActive', true );
+
+				expect( view.element.classList.contains( 'ck-list__item_active' ) ).to.be.true;
+			} );
 		} );
 
 		describe( '"style" attribute', () => {
