@@ -296,7 +296,6 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should place non-collapsed selection after changing single character (composition)', () => {
-			// This test case emulates spellchecker correction.
 			editor.setData( '<p>Foo house</p>' );
 
 			const viewSelection = new ViewSelection();
