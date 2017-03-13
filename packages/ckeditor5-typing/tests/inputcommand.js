@@ -7,6 +7,8 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import InputCommand from '../src/inputcommand';
 import ChangeBuffer from '../src/changebuffer';
 import Input from '../src/input';
@@ -166,6 +168,30 @@ describe( 'InputCommand', () => {
 
 			expect( getData( doc, { selection: true } ) ).to.be.equal( '<p>[]obar</p>' );
 			expect( buffer.size ).to.be.equal( 0 );
+		} );
+
+		it( 'should set selection according to passed resultRange (collapsed)', () => {
+			setData( doc, '<p>[foo]bar</p>' );
+
+			editor.execute( 'input', {
+				text: 'new',
+				resultRange: new Range( new Position( doc.getRoot(), [ 0, 5 ] ) )
+			} );
+
+			expect( getData( doc, { selection: true } ) ).to.be.equal( '<p>newba[]r</p>' );
+			expect( buffer.size ).to.be.equal( 3 );
+		} );
+
+		it( 'should set selection according to passed resultRange (non-collapsed)', () => {
+			setData( doc, '<p>[foo]bar</p>' );
+
+			editor.execute( 'input', {
+				text: 'new',
+				resultRange: new Range( new Position( doc.getRoot(), [ 0, 3 ] ), new Position( doc.getRoot(), [ 0, 6 ] ) )
+			} );
+
+			expect( getData( doc, { selection: true } ) ).to.be.equal( '<p>new[bar]</p>' );
+			expect( buffer.size ).to.be.equal( 3 );
 		} );
 
 		it( 'only removes content when no text given (with default non-collapsed range)', () => {

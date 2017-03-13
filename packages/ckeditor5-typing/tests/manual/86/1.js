@@ -3,16 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals console, document, window */
+/* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import EssentialsPreset from '@ckeditor/ckeditor5-presets/src/essentials';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+
+window.setInterval( function() {
+	console.log( getData( window.editor.document ) );
+}, 3000 );
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ EssentialsPreset, Paragraph, Bold ],
-	toolbar: [ 'bold' ]
+	plugins: [ EssentialsPreset, Paragraph ],
+	toolbar: [ 'undo', 'redo' ]
 } )
 .then( editor => {
 	window.editor = editor;

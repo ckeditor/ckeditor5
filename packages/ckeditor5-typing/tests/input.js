@@ -295,6 +295,27 @@ describe( 'Input feature', () => {
 			expect( getViewData( view ) ).to.equal( '<p>Foo house{}</p>' );
 		} );
 
+		it( 'should place non-collapsed selection after changing single character (composition)', () => {
+			editor.setData( '<p>Foo house</p>' );
+
+			const viewSelection = new ViewSelection();
+			viewSelection.collapse( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
+			viewSelection.setFocus( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+
+			view.fire( 'mutations',
+				[ {
+					type: 'text',
+					oldText: 'Foo house',
+					newText: 'Foo housa',
+					node: viewRoot.getChild( 0 ).getChild( 0 )
+				} ],
+				viewSelection
+			);
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>Foo hous[a]</paragraph>' );
+			expect( getViewData( view ) ).to.equal( '<p>Foo hous{a}</p>' );
+		} );
+
 		it( 'should replace last &nbsp; with space', () => {
 			model.enqueueChanges( () => {
 				model.selection.setRanges( [

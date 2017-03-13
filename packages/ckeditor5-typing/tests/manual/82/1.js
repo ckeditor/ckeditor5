@@ -6,11 +6,9 @@
 /* globals console, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '../../../src/typing';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
+import EssentialsPreset from '@ckeditor/ckeditor5-presets/src/essentials';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 window.setInterval( function() {
@@ -18,7 +16,7 @@ window.setInterval( function() {
 }, 3000 );
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [ Enter, Typing, Paragraph, Undo, Heading ],
+	plugins: [ EssentialsPreset, Paragraph, Heading ],
 	toolbar: [ 'headings', 'undo', 'redo' ]
 } )
 .then( editor => {
