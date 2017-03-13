@@ -30,12 +30,13 @@ export default class HeadingEngine extends Plugin {
 
 		// TODO: This needs proper documentation, i.e. why paragraph entry does not need
 		// more properties (https://github.com/ckeditor/ckeditor5/issues/403).
+		// TODO: Document CSS classes as well.
 		editor.config.define( 'heading', {
 			options: [
-				{ modelElement: 'paragraph', title: 'Paragraph' },
-				{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1' },
-				{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2' },
-				{ modelElement: 'heading3', viewElement: 'h4', title: 'Heading 3' }
+				{ modelElement: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+				{ modelElement: 'heading1', viewElement: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
+				{ modelElement: 'heading2', viewElement: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
+				{ modelElement: 'heading3', viewElement: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
 			]
 		} );
 	}

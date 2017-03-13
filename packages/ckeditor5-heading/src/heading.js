@@ -14,6 +14,8 @@ import Model from '@ckeditor/ckeditor5-ui/src/model';
 import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
+import '../theme/theme.scss';
+
 /**
  * The headings feature. It introduces the `headings` drop-down list and the `heading` command which allow
  * to convert paragraphs into headings.
@@ -42,7 +44,8 @@ export default class Heading extends Plugin {
 			// Add the option to the collection.
 			dropdownItems.add( new Model( {
 				commandName: option.modelElement,
-				label: option.title
+				label: option.title,
+				class: option.class
 			} ) );
 
 			commands.push( editor.commands.get( option.modelElement ) );
