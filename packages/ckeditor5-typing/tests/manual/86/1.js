@@ -20,9 +20,9 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Enter, Typing, Paragraph, Undo ],
 	toolbar: [ 'undo', 'redo' ]
 } )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+.then( editor => {
+	window.editor = editor;
+} )
+.catch( err => {
+	console.error( err.stack );
+} );
