@@ -27,6 +27,16 @@ describe( 'ListItemView', () => {
 	} );
 
 	describe( 'DOM bindings', () => {
+		describe( '"class" attribute', () => {
+			it( 'reacts on view#class', () => {
+				expect( view.element.classList ).to.have.length( 1 );
+
+				view.set( 'class', 'foo' );
+
+				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
+			} );
+		} );
+
 		describe( '"style" attribute', () => {
 			it( 'reacts on view#style', () => {
 				expect( view.element.attributes.getNamedItem( 'style' ).value ).to.equal( 'foo' );

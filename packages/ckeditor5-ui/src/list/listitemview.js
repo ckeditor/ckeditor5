@@ -38,7 +38,8 @@ export default class ListItemView extends View {
 
 			attributes: {
 				class: [
-					'ck-list__item'
+					'ck-list__item',
+					bind.to( 'class' )
 				],
 				style: bind.to( 'style' ),
 				tabindex: bind.to( 'tabindex' )
@@ -67,6 +68,13 @@ export default class ListItemView extends View {
 		 *
 		 * @observable
 		 * @member {String} #style
+		 */
+
+		/**
+		 * (Optional) The additional class set on the {@link #element}.
+		 *
+		 * @observable
+		 * @member {String} #class
 		 */
 
 		/**
