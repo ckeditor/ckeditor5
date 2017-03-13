@@ -9,6 +9,8 @@
 	figcaption {
 		background-color: ck-color( 'foreground' );
 		padding: 10px;
+		font-size: .8em;
+		color: ck-color( 'text', 40 );
 
 		// The `:focus` styles is applied before `.focused` class inside editables.
 		// These styles show different border for a blink of an eye.
