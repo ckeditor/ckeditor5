@@ -184,10 +184,10 @@ class MutationHandler {
 		}
 
 		// Try setting new model selection according to passed view selection.
-		let modelSelectionPosition = null;
+		let modelSelectionRange = null;
 
 		if ( viewSelection ) {
-			modelSelectionPosition = this.editing.mapper.toModelPosition( viewSelection.anchor );
+			modelSelectionRange = this.editing.mapper.toModelRange( viewSelection.getFirstRange() );
 		}
 
 		// Get the position in view and model where the changes will happen.
@@ -199,7 +199,7 @@ class MutationHandler {
 		this.editor.execute( 'input', {
 			text: insertText,
 			range: removeRange,
-			resultPosition: modelSelectionPosition
+			resultRange: modelSelectionRange
 		} );
 	}
 

@@ -64,7 +64,7 @@ export default class InputCommand extends Command {
 	 * @param {String} [options.text=''] Text to be inserted.
 	 * @param {module:engine/model/range~Range} [options.range] Range in which the text is inserted. Defaults
 	 * to the first range in the current selection.
-	 * @param {module:engine/model/position~Position} [options.resultPosition] Position at which the selection
+	 * @param {module:engine/model/range~Range} [options.resultRange] Range at which the selection
 	 * should be placed after the insertion. If not specified, the selection will be placed right after
 	 * the inserted text.
 	 */
@@ -73,7 +73,7 @@ export default class InputCommand extends Command {
 		const text = options.text || '';
 		const textInsertions = text.length;
 		const range = options.range || doc.selection.getFirstRange();
-		const resultPosition = options.resultPosition;
+		const resultRange = options.resultRange;
 
 		doc.enqueueChanges( () => {
 			const isCollapsedRange = range.isCollapsed;
@@ -86,8 +86,8 @@ export default class InputCommand extends Command {
 
 			this._buffer.batch.weakInsert( range.start, text );
 
-			if ( resultPosition ) {
-				this.editor.data.model.selection.collapse( resultPosition );
+			if ( resultRange ) {
+				this.editor.data.model.selection.setRanges( [ resultRange ] );
 			} else if ( isCollapsedRange ) {
 				// If range was collapsed just shift the selection by the number of inserted characters.
 				this.editor.data.model.selection.collapse( range.start.getShiftedBy( textInsertions ) );
