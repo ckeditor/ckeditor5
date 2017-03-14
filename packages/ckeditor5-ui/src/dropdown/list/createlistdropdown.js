@@ -26,7 +26,7 @@ export default function createListDropdown( model, locale ) {
 
 	const listView = dropdownView.listView = new ListView( locale );
 
-	listView.items.bindTo( model.items ).as( itemModel => {
+	listView.items.bindTo( model.items ).using( itemModel => {
 		const item = new ListItemView( locale );
 
 		// Bind all attributes of the model to the item view.
