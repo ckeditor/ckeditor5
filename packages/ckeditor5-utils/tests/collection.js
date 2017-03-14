@@ -24,7 +24,7 @@ describe( 'Collection', () => {
 		collection = new Collection();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'allows to change the id property used by the collection', () => {
 			let item1 = { id: 'foo', name: 'xx' };
 			let item2 = { id: 'foo', name: 'yy' };
@@ -40,7 +40,7 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'add', () => {
+	describe( 'add()', () => {
 		it( 'should be chainable', () => {
 			expect( collection.add( {} ) ).to.equal( collection );
 		} );
@@ -260,7 +260,7 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'get', () => {
+	describe( 'get()', () => {
 		it( 'should return an item', () => {
 			let item = getItem( 'foo' );
 			collection.add( item );
@@ -281,7 +281,7 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'getIndex', () => {
+	describe( 'getIndex()', () => {
 		it( 'should return index of given item', () => {
 			const item1 = { foo: 'bar' };
 			const item2 = { bar: 'biz' };
@@ -317,7 +317,7 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'remove', () => {
+	describe( 'remove()', () => {
 		it( 'should remove the model by index', () => {
 			collection.add( getItem( 'bom' ) );
 			collection.add( getItem( 'foo' ) );
@@ -444,7 +444,7 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'map', () => {
+	describe( 'map()', () => {
 		it( 'uses native map', () => {
 			let spy = testUtils.sinon.stub( Array.prototype, 'map', () => {
 				return [ 'foo' ];
@@ -460,7 +460,7 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'find', () => {
+	describe( 'find()', () => {
 		it( 'uses native find', () => {
 			let needl = getItem( 'foo' );
 
@@ -478,7 +478,7 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'filter', () => {
+	describe( 'filter()', () => {
 		it( 'uses native filter', () => {
 			let needl = getItem( 'foo' );
 
@@ -496,7 +496,7 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'clear', () => {
+	describe( 'clear()', () => {
 		it( 'removes all items', () => {
 			const items = [ {}, {}, {} ];
 			const spy = sinon.spy();
