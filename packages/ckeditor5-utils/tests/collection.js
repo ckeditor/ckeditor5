@@ -24,7 +24,7 @@ describe( 'Collection', () => {
 		collection = new Collection();
 	} );
 
-	describe( 'constructor', () => {
+	describe( 'constructor()', () => {
 		it( 'allows to change the id property used by the collection', () => {
 			let item1 = { id: 'foo', name: 'xx' };
 			let item2 = { id: 'foo', name: 'yy' };
@@ -40,7 +40,7 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'add', () => {
+	describe( 'add()', () => {
 		it( 'should be chainable', () => {
 			expect( collection.add( {} ) ).to.equal( collection );
 		} );
@@ -260,7 +260,7 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'get', () => {
+	describe( 'get()', () => {
 		it( 'should return an item', () => {
 			let item = getItem( 'foo' );
 			collection.add( item );
@@ -281,7 +281,7 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'getIndex', () => {
+	describe( 'getIndex()', () => {
 		it( 'should return index of given item', () => {
 			const item1 = { foo: 'bar' };
 			const item2 = { bar: 'biz' };
@@ -317,7 +317,7 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'remove', () => {
+	describe( 'remove()', () => {
 		it( 'should remove the model by index', () => {
 			collection.add( getItem( 'bom' ) );
 			collection.add( getItem( 'foo' ) );
@@ -444,7 +444,7 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'map', () => {
+	describe( 'map()', () => {
 		it( 'uses native map', () => {
 			let spy = testUtils.sinon.stub( Array.prototype, 'map', () => {
 				return [ 'foo' ];
@@ -460,7 +460,7 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'find', () => {
+	describe( 'find()', () => {
 		it( 'uses native find', () => {
 			let needl = getItem( 'foo' );
 
@@ -478,7 +478,7 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'filter', () => {
+	describe( 'filter()', () => {
 		it( 'uses native filter', () => {
 			let needl = getItem( 'foo' );
 
@@ -496,7 +496,7 @@ describe( 'Collection', () => {
 		} );
 	} );
 
-	describe( 'clear', () => {
+	describe( 'clear()', () => {
 		it( 'removes all items', () => {
 			const items = [ {}, {}, {} ];
 			const spy = sinon.spy();
@@ -509,6 +509,224 @@ describe( 'Collection', () => {
 
 			expect( spy.callCount ).to.equal( 3 );
 			expect( collection.length ).to.equal( 0 );
+		} );
+	} );
+
+	describe( 'bindTo()', () => {
+		class FactoryClass {
+			constructor( data ) {
+				this.data = data;
+			}
+		}
+
+		it( 'provides "using()" and "as()" interfaces', () => {
+			const returned = collection.bindTo( {} );
+
+			expect( returned ).to.have.keys( 'using', 'as' );
+			expect( returned.using ).to.be.a( 'function' );
+			expect( returned.as ).to.be.a( 'function' );
+		} );
+
+		describe( 'as()', () => {
+			let items;
+
+			beforeEach( () => {
+				items = new Collection();
+			} );
+
+			it( 'does not chain', () => {
+				const returned = collection.bindTo( new Collection() ).as( FactoryClass );
+
+				expect( returned ).to.be.undefined;
+			} );
+
+			it( 'creates a binding (initial content)', () => {
+				items.add( { id: '1' } );
+				items.add( { id: '2' } );
+
+				collection.bindTo( items ).as( FactoryClass );
+
+				expect( collection ).to.have.length( 2 );
+				expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
+				expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
+				expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
+			} );
+
+			it( 'creates a binding (new content)', () => {
+				collection.bindTo( items ).as( FactoryClass );
+
+				expect( collection ).to.have.length( 0 );
+
+				items.add( { id: '1' } );
+				items.add( { id: '2' } );
+
+				expect( collection ).to.have.length( 2 );
+				expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
+				expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
+				expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
+			} );
+
+			it( 'creates a binding (item removal)', () => {
+				collection.bindTo( items ).as( FactoryClass );
+
+				expect( collection ).to.have.length( 0 );
+
+				items.add( { id: '1' } );
+				items.add( { id: '2' } );
+
+				expect( collection ).to.have.length( 2 );
+				expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
+				expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
+				expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
+
+				items.remove( 1 );
+				expect( collection.get( 0 ).data ).to.equal( items.get( 0 ) );
+
+				items.remove( 0 );
+				expect( collection ).to.have.length( 0 );
+			} );
+		} );
+
+		describe( 'using()', () => {
+			let items;
+
+			beforeEach( () => {
+				items = new Collection();
+			} );
+
+			it( 'does not chain', () => {
+				const returned = collection.bindTo( new Collection() ).using( () => {} );
+
+				expect( returned ).to.be.undefined;
+			} );
+
+			describe( 'callback', () => {
+				it( 'creates a binding (arrow function)', () => {
+					collection = new Collection();
+					collection.bindTo( items ).using( ( item ) => {
+						return new FactoryClass( item );
+					} );
+
+					expect( collection ).to.have.length( 0 );
+
+					items.add( { id: '1' } );
+					items.add( { id: '2' } );
+
+					expect( collection ).to.have.length( 2 );
+					expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
+					expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
+					expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
+				} );
+
+				// https://github.com/ckeditor/ckeditor5-ui/issues/113
+				it( 'creates a binding (normal function)', () => {
+					collection.bindTo( items ).using( function( item ) {
+						return new FactoryClass( item );
+					} );
+
+					items.add( { id: '1' } );
+
+					expect( collection ).to.have.length( 1 );
+
+					const view = collection.get( 0 );
+
+					// Wrong args will be passed to the callback if it's treated as the view constructor.
+					expect( view ).to.be.instanceOf( FactoryClass );
+					expect( view.data ).to.equal( items.get( 0 ) );
+				} );
+
+				it( 'creates a 1:1 binding', () => {
+					collection.bindTo( items ).using( item => item );
+
+					expect( collection ).to.have.length( 0 );
+
+					const item1 = { id: '100' };
+					const item2 = { id: '200' };
+
+					items.add( item1 );
+					items.add( item2 );
+
+					expect( collection ).to.have.length( 2 );
+					expect( collection.get( 0 ) ).to.equal( item1 );
+					expect( collection.get( 1 ) ).to.equal( item2 );
+				} );
+
+				it( 'creates a conditional binding', () => {
+					class CustomClass {
+						constructor( data ) {
+							this.data = data;
+						}
+					}
+
+					collection.bindTo( items ).using( item => {
+						if ( item.id == 'FactoryClass' ) {
+							return new FactoryClass( item );
+						} else {
+							return new CustomClass( item );
+						}
+					} );
+
+					expect( collection ).to.have.length( 0 );
+
+					const item1 = { id: 'FactoryClass' };
+					const item2 = { id: 'CustomClass' };
+
+					items.add( item1 );
+					items.add( item2 );
+
+					expect( collection ).to.have.length( 2 );
+					expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
+					expect( collection.get( 1 ) ).to.be.instanceOf( CustomClass );
+				} );
+
+				it( 'creates a binding to a property name', () => {
+					collection.bindTo( items ).using( item => item.prop );
+
+					expect( collection ).to.have.length( 0 );
+
+					items.add( { prop: { value: 'foo' } } );
+					items.add( { prop: { value: 'bar' } } );
+
+					expect( collection ).to.have.length( 2 );
+					expect( collection.get( 0 ).value ).to.equal( 'foo' );
+					expect( collection.get( 1 ).value ).to.equal( 'bar' );
+				} );
+			} );
+
+			describe( 'property name', () => {
+				it( 'creates a binding', () => {
+					collection.bindTo( items ).using( 'prop' );
+
+					expect( collection ).to.have.length( 0 );
+
+					items.add( { prop: { value: 'foo' } } );
+					items.add( { prop: { value: 'bar' } } );
+
+					expect( collection ).to.have.length( 2 );
+					expect( collection.get( 0 ).value ).to.equal( 'foo' );
+					expect( collection.get( 1 ).value ).to.equal( 'bar' );
+				} );
+
+				it( 'creates a binding (item removal)', () => {
+					collection.bindTo( items ).using( 'prop' );
+
+					expect( collection ).to.have.length( 0 );
+
+					items.add( { prop: { value: 'foo' } } );
+					items.add( { prop: { value: 'bar' } } );
+
+					expect( collection ).to.have.length( 2 );
+					expect( collection.get( 0 ).value ).to.equal( 'foo' );
+					expect( collection.get( 1 ).value ).to.equal( 'bar' );
+
+					items.remove( 1 );
+					expect( collection ).to.have.length( 1 );
+					expect( collection.get( 0 ).value ).to.equal( 'foo' );
+
+					items.remove( 0 );
+					expect( collection ).to.have.length( 0 );
+				} );
+			} );
 		} );
 	} );
 

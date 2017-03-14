@@ -55,6 +55,15 @@ export default class Collection {
 		 * @member {String}
 		 */
 		this._idProperty = options && options.idProperty || 'id';
+
+		/**
+		 * A helper mapping external items from bound collection ({@link #bindTo})
+		 * and actual items of the collection.
+		 *
+		 * @protected
+		 * @member {Map}
+		 */
+		this._boundItemsMap = new Map();
 	}
 
 	/**
@@ -268,6 +277,156 @@ export default class Collection {
 		while ( this.length ) {
 			this.remove( 0 );
 		}
+	}
+
+	/**
+	 * Binds and synchronizes the collection with another one.
+	 *
+	 * The binding can be a simple factory:
+	 *
+	 *		class FactoryClass {
+	 *			constructor( data ) {
+	 *				this.label = data.label;
+	 *			}
+	 *		}
+	 *
+	 *		const source = new Collection( { idProperty: 'label' } );
+	 *		const target = new Collection();
+	 *
+	 *		target.bindTo( source ).as( FactoryClass );
+	 *
+	 *		source.add( { label: 'foo' } );
+	 *		source.add( { label: 'bar' } );
+	 *
+	 *		console.log( target.length ); // 2
+	 *		console.log( target.get( 1 ).label ); // 'bar'
+	 *
+	 *		source.remove( 0 );
+	 *		console.log( target.length ); // 1
+	 *		console.log( target.get( 0 ).label ); // 'bar'
+	 *
+	 * or the factory driven by a custom callback:
+	 *
+	 *		class FooClass {
+	 *			constructor( data ) {
+	 *				this.label = data.label;
+	 *			}
+	 *		}
+	 *
+	 *		class BarClass {
+	 *			constructor( data ) {
+	 *				this.label = data.label;
+	 *			}
+	 *		}
+	 *
+	 *		const source = new Collection( { idProperty: 'label' } );
+	 *		const target = new Collection();
+	 *
+	 *		target.bindTo( source ).using( ( item ) => {
+	 *			if ( item.label == 'foo' ) {
+	 *				return new FooClass( item );
+	 *			} else {
+	 *				return new BarClass( item );
+	 *			}
+	 *		} );
+	 *
+	 *		source.add( { label: 'foo' } );
+	 *		source.add( { label: 'bar' } );
+	 *
+	 *		console.log( target.length ); // 2
+	 *		console.log( target.get( 0 ) instanceof FooClass ); // true
+	 *		console.log( target.get( 1 ) instanceof BarClass ); // true
+	 *
+	 * or the factory out of property name:
+	 *
+	 *		const source = new Collection( { idProperty: 'label' } );
+	 *		const target = new Collection();
+	 *
+	 *		target.bindTo( source ).using( 'label' );
+	 *
+	 *		source.add( { label: { value: 'foo' } } );
+	 *		source.add( { label: { value: 'bar' } } );
+	 *
+	 *		console.log( target.length ); // 2
+	 *		console.log( target.get( 0 ).value ); // 'foo'
+	 *		console.log( target.get( 1 ).value ); // 'bar'
+	 *
+	 * @param {module:utils/collection~Collection} collection A collection to be bound.
+	 * @returns {module:ui/viewcollection~ViewCollection#bindTo#using}
+	 */
+	bindTo( collection ) {
+		// Sets the actual binding using provided factory.
+		//
+		// @private
+		// @param {Function} factory A collection item factory returning collection items.
+		const bind = ( factory ) => {
+			// Load the initial content of the collection.
+			for ( let item of collection ) {
+				this.add( factory( item ) );
+			}
+
+			// Synchronize the with collection as new items are added.
+			this.listenTo( collection, 'add', ( evt, item, index ) => {
+				this.add( factory( item ), index );
+			} );
+
+			// Synchronize the with collection as new items are removed.
+			this.listenTo( collection, 'remove', ( evt, item ) => {
+				this.remove( this._boundItemsMap.get( item ) );
+
+				this._boundItemsMap.delete( item );
+			} );
+		};
+
+		return {
+			/**
+			 * Creates the class factory binding.
+			 *
+			 * @static
+			 * @param {Function} Class Specifies which class factory is to be initialized.
+			 */
+			as: ( Class ) => {
+				bind( ( item ) => {
+					const instance = new Class( item );
+
+					this._boundItemsMap.set( item, instance );
+
+					return instance;
+				} );
+			},
+
+			/**
+			 * Creates callback or property binding.
+			 *
+			 * @static
+			 * @param {Function|String} callbackOrProperty When the function is passed, it is used to
+			 * produce the items. When the string is provided, the property value is used to create
+			 * the bound collection items.
+			 */
+			using: ( callbackOrProperty ) => {
+				let factory;
+
+				if ( typeof callbackOrProperty == 'function' ) {
+					factory = ( item ) => {
+						const instance = callbackOrProperty( item );
+
+						this._boundItemsMap.set( item, instance );
+
+						return instance;
+					};
+				} else {
+					factory = ( item ) => {
+						const instance = item[ callbackOrProperty ];
+
+						this._boundItemsMap.set( item, instance );
+
+						return instance;
+					};
+				}
+
+				bind( factory );
+			}
+		};
 	}
 
 	/**
