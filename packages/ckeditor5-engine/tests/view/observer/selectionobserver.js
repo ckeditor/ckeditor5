@@ -299,21 +299,6 @@ describe( 'SelectionObserver', () => {
 			}, 110 );
 		}, 100 );
 	} );
-
-	it( 'should fire selectionChangeHandling on standard priority', ( done ) => {
-		let spy1 = sinon.spy();
-		let spy2 = sinon.spy();
-
-		selectionObserver.on( 'selectionChangeHandling', spy1, { priority: 'high' } );
-		viewDocument.on( 'selectionChange', spy2 );
-
-		selectionObserver.on( 'selectionChangeHandling', () => {
-			sinon.assert.callOrder( spy1, spy2 );
-			done();
-		}, { priority: 'low' } );
-
-		changeDomSelection();
-	} );
 } );
 
 function changeDomSelection() {
