@@ -512,6 +512,177 @@ describe( 'Collection', () => {
 		} );
 	} );
 
+	describe( 'bindTo()', () => {
+		class FactoryClass {
+			constructor( data ) {
+				this.data = data;
+			}
+		}
+
+		it( 'provides "using()" interface', () => {
+			const returned = collection.bindTo( {} );
+
+			expect( returned ).to.have.keys( 'using' );
+			expect( returned.using ).to.be.a( 'function' );
+		} );
+
+		describe( 'using()', () => {
+			let items;
+
+			beforeEach( () => {
+				items = new Collection();
+			} );
+
+			it( 'does not chain', () => {
+				const returned = collection.bindTo( new Collection() ).using( FactoryClass );
+
+				expect( returned ).to.be.undefined;
+			} );
+
+			describe( 'callback', () => {
+				it( 'creates a binding (arrow function)', () => {
+					collection = new Collection();
+					collection.bindTo( items ).using( ( item ) => {
+						return new FactoryClass( item );
+					} );
+
+					expect( collection ).to.have.length( 0 );
+
+					items.add( { id: '1' } );
+					items.add( { id: '2' } );
+
+					expect( collection ).to.have.length( 2 );
+					expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
+					expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
+					expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
+				} );
+
+				// https://github.com/ckeditor/ckeditor5-ui/issues/113
+				it( 'creates a binding (normal function)', () => {
+					collection = new Collection();
+					collection.bindTo( items ).using( function( item ) {
+						return new FactoryClass( item );
+					} );
+
+					items.add( { id: '1' } );
+
+					expect( collection ).to.have.length( 1 );
+
+					const view = collection.get( 0 );
+
+					// Wrong args will be passed to the callback if it's treated as the view constructor.
+					expect( view ).to.be.instanceOf( FactoryClass );
+					expect( view.data ).to.equal( items.get( 0 ) );
+				} );
+
+				it( 'creates a 1:1 binding', () => {
+					collection = new Collection();
+					collection.bindTo( items ).using( item => item );
+
+					expect( collection ).to.have.length( 0 );
+
+					const item1 = { id: '100' };
+					const item2 = { id: '200' };
+
+					items.add( item1 );
+					items.add( item2 );
+
+					expect( collection ).to.have.length( 2 );
+					expect( collection.get( 0 ) ).to.equal( item1 );
+					expect( collection.get( 1 ) ).to.equal( item2 );
+				} );
+			} );
+
+			describe( 'class constructor', () => {
+				it( 'creates a binding (initial content)', () => {
+					items.add( { id: '1' } );
+					items.add( { id: '2' } );
+
+					collection = new Collection();
+					collection.bindTo( items ).using( FactoryClass );
+
+					expect( collection ).to.have.length( 2 );
+					expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
+					expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
+					expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
+				} );
+
+				it( 'creates a binding (new content)', () => {
+					collection = new Collection();
+					collection.bindTo( items ).using( FactoryClass );
+
+					expect( collection ).to.have.length( 0 );
+
+					items.add( { id: '1' } );
+					items.add( { id: '2' } );
+
+					expect( collection ).to.have.length( 2 );
+					expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
+					expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
+					expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
+				} );
+
+				it( 'creates a binding (item removal)', () => {
+					collection = new Collection();
+					collection.bindTo( items ).using( FactoryClass );
+
+					expect( collection ).to.have.length( 0 );
+
+					items.add( { id: '1' } );
+					items.add( { id: '2' } );
+
+					expect( collection ).to.have.length( 2 );
+					expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
+					expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
+					expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
+
+					items.remove( 1 );
+					expect( collection.get( 0 ).data ).to.equal( items.get( 0 ) );
+
+					items.remove( 0 );
+					expect( collection ).to.have.length( 0 );
+				} );
+			} );
+
+			describe( 'property name', () => {
+				it( 'creates a binding', () => {
+					collection = new Collection();
+					collection.bindTo( items ).using( 'prop' );
+
+					expect( collection ).to.have.length( 0 );
+
+					items.add( { prop: { value: 'foo' } } );
+					items.add( { prop: { value: 'bar' } } );
+
+					expect( collection ).to.have.length( 2 );
+					expect( collection.get( 0 ).value ).to.equal( 'foo' );
+					expect( collection.get( 1 ).value ).to.equal( 'bar' );
+				} );
+
+				it( 'creates a binding (item removal)', () => {
+					collection = new Collection();
+					collection.bindTo( items ).using( 'prop' );
+
+					expect( collection ).to.have.length( 0 );
+
+					items.add( { prop: { value: 'foo' } } );
+					items.add( { prop: { value: 'bar' } } );
+
+					expect( collection ).to.have.length( 2 );
+					expect( collection.get( 0 ).value ).to.equal( 'foo' );
+					expect( collection.get( 1 ).value ).to.equal( 'bar' );
+
+					items.remove( 1 );
+					expect( collection ).to.have.length( 1 );
+					expect( collection.get( 0 ).value ).to.equal( 'foo' );
+
+					items.remove( 0 );
+					expect( collection ).to.have.length( 0 );
+				} );
+			} );
+		} );
+	} );
+
 	describe( 'iterator', () => {
 		it( 'covers the whole collection', () => {
 			let item1 = getItem( 'foo' );
