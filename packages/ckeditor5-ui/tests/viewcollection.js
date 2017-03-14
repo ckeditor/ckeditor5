@@ -6,7 +6,6 @@
 /* global document, setTimeout */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import View from '../src/view';
 import ViewCollection from '../src/viewcollection';
@@ -25,7 +24,6 @@ describe( 'ViewCollection', () => {
 			expect( collection.locale ).to.be.undefined;
 			expect( collection.ready ).to.be.false;
 			expect( collection._parentElement ).to.be.null;
-			expect( collection._boundItemsToViewsMap ).to.be.instanceOf( Map );
 			expect( collection._idProperty ).to.equal( 'viewUid' );
 		} );
 
@@ -288,139 +286,6 @@ describe( 'ViewCollection', () => {
 
 			collection.setParent( el );
 			expect( collection._parentElement ).to.equal( el );
-		} );
-	} );
-
-	describe( 'bindTo()', () => {
-		class ViewClass extends View {
-			constructor( locale, data ) {
-				super( locale );
-
-				this.template = new Template( {
-					tag: 'b'
-				} );
-
-				this.data = data;
-			}
-		}
-
-		it( 'provides "as()" interface', () => {
-			const returned = collection.bindTo( {} );
-
-			expect( returned ).to.have.keys( 'as' );
-			expect( returned.as ).to.be.a( 'function' );
-		} );
-
-		describe( 'as()', () => {
-			it( 'does not chain', () => {
-				const returned = collection.bindTo( new Collection() ).as( ViewClass );
-
-				expect( returned ).to.be.undefined;
-			} );
-
-			it( 'binds collection as a view factory – initial content', () => {
-				const locale = {};
-				const items = new Collection();
-
-				items.add( { id: '1' } );
-				items.add( { id: '2' } );
-
-				collection = new ViewCollection( locale );
-				collection.bindTo( items ).as( ViewClass );
-
-				expect( collection ).to.have.length( 2 );
-				expect( collection.get( 0 ) ).to.be.instanceOf( ViewClass );
-				expect( collection.get( 1 ) ).to.be.instanceOf( ViewClass );
-				expect( collection.get( 0 ).locale ).to.equal( locale );
-				expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
-			} );
-
-			it( 'binds collection as a view factory – new content', () => {
-				const locale = {};
-				const items = new Collection();
-
-				collection = new ViewCollection( locale );
-				collection.bindTo( items ).as( ViewClass );
-
-				expect( collection ).to.have.length( 0 );
-
-				items.add( { id: '1' } );
-				items.add( { id: '2' } );
-
-				expect( collection ).to.have.length( 2 );
-				expect( collection.get( 0 ) ).to.be.instanceOf( ViewClass );
-				expect( collection.get( 1 ) ).to.be.instanceOf( ViewClass );
-				expect( collection.get( 0 ).locale ).to.equal( locale );
-				expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
-			} );
-
-			it( 'binds collection as a view factory – item removal', () => {
-				const locale = {};
-				const items = new Collection();
-
-				collection = new ViewCollection( locale );
-				collection.bindTo( items ).as( ViewClass );
-
-				expect( collection ).to.have.length( 0 );
-
-				items.add( { id: '1' } );
-				items.add( { id: '2' } );
-
-				expect( collection ).to.have.length( 2 );
-				expect( collection.get( 0 ) ).to.be.instanceOf( ViewClass );
-				expect( collection.get( 1 ) ).to.be.instanceOf( ViewClass );
-				expect( collection.get( 0 ).locale ).to.equal( locale );
-				expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
-
-				items.remove( 1 );
-				expect( collection.get( 0 ).data ).to.equal( items.get( 0 ) );
-
-				items.remove( 0 );
-				expect( collection ).to.have.length( 0 );
-			} );
-
-			it( 'binds collection as a view factory – custom factory (arrow function)', () => {
-				const locale = {};
-				const items = new Collection();
-
-				collection = new ViewCollection( locale );
-				collection.bindTo( items ).as( ( item ) => {
-					return new ViewClass( locale, item );
-				} );
-
-				expect( collection ).to.have.length( 0 );
-
-				items.add( { id: '1' } );
-				items.add( { id: '2' } );
-
-				expect( collection ).to.have.length( 2 );
-				expect( collection.get( 0 ) ).to.be.instanceOf( ViewClass );
-				expect( collection.get( 1 ) ).to.be.instanceOf( ViewClass );
-				expect( collection.get( 0 ).locale ).to.equal( locale );
-				expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
-			} );
-
-			// https://github.com/ckeditor/ckeditor5-ui/issues/113
-			it( 'binds collection as a view factory – custom factory (normal function)', () => {
-				const locale = { locale: true };
-				const items = new Collection();
-
-				collection = new ViewCollection( locale );
-				collection.bindTo( items ).as( function( item ) {
-					return new ViewClass( locale, item );
-				} );
-
-				items.add( { id: '1' } );
-
-				expect( collection ).to.have.length( 1 );
-
-				const view = collection.get( 0 );
-
-				// Wrong args will be passed to the callback if it's treated as the view constructor.
-				expect( view ).to.be.instanceOf( ViewClass );
-				expect( view.locale ).to.equal( locale );
-				expect( view.data ).to.equal( items.get( 0 ) );
-			} );
 		} );
 	} );
 

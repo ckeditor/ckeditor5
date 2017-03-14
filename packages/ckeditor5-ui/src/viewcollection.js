@@ -11,7 +11,6 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import View from './view';
 
 /**
  * Collects {@link module:ui/view~View} instances.
@@ -70,15 +69,6 @@ export default class ViewCollection extends Collection {
 		 * @member {HTMLElement}
 		 */
 		this._parentElement = null;
-
-		/**
-		 * A helper mapping between bound collection items passed to {@link #bindTo}
-		 * and view instances. Speeds up the view management.
-		 *
-		 * @protected
-		 * @member {HTMLElement}
-		 */
-		this._boundItemsToViewsMap = new Map();
 	}
 
 	/**
@@ -148,121 +138,6 @@ export default class ViewCollection extends Collection {
 	 */
 	setParent( elementOrDocFragment ) {
 		this._parentElement = elementOrDocFragment;
-	}
-
-	/**
-	 * Binds this collection to {@link module:utils/collection~Collection another collection}. For each item in the
-	 * second collection there will be one view instance added to this collection.
-	 *
-	 * The process can be automatic:
-	 *
-	 *		// This collection stores items.
-	 *		const items = new Collection( { idProperty: 'label' } );
-	 *
-	 *		// This view collection will become a factory out of the collection of items.
-	 *		const views = new ViewCollection( locale );
-	 *
-	 *		// Activate the binding – since now, this view collection works like a **factory**.
-	 *		// Each new item is passed to the FooView constructor like new FooView( locale, item ).
-	 *		views.bindTo( items ).as( FooView );
-	 *
-	 *		// As new items arrive to the collection, each becomes an instance of FooView
-	 *		// in the view collection.
-	 *		items.add( new Model( { label: 'foo' } ) );
-	 *		items.add( new Model( { label: 'bar' } ) );
-	 *
-	 *		console.log( views.length == 2 );
-	 *
-	 *		// View collection is updated as the model is removed.
-	 *		items.remove( 0 );
-	 *		console.log( views.length == 1 );
-	 *
-	 * or the factory can be driven by a custom callback:
-	 *
-	 *		// This collection stores any kind of data.
-	 *		const data = new Collection();
-	 *
-	 *		// This view collection will become a custom factory for the data.
-	 *		const views = new ViewCollection( locale );
-	 *
-	 *		// Activate the binding – the **factory** is driven by a custom callback.
-	 *		views.bindTo( data ).as( item => {
-	 *			if ( !item.foo ) {
-	 *				return null;
-	 *			} else if ( item.foo == 'bar' ) {
-	 *				return new BarView();
-	 *			} else {
-	 *				return new DifferentView();
-	 *			}
-	 *		} );
-	 *
-	 *		// As new data arrive to the collection, each is handled individually by the callback.
-	 *		// This will produce BarView.
-	 *		data.add( { foo: 'bar' } );
-	 *
-	 *		// And this one will become DifferentView.
-	 *		data.add( { foo: 'baz' } );
-	 *
-	 *		// Also there will be no view for data lacking the `foo` property.
-	 *		data.add( {} );
-	 *
-	 *		console.log( controllers.length == 2 );
-	 *
-	 *		// View collection is also updated as the data is removed.
-	 *		data.remove( 0 );
-	 *		console.log( controllers.length == 1 );
-	 *
-	 * @param {module:utils/collection~Collection} collection A collection to be bound.
-	 * @returns {module:ui/viewcollection~ViewCollection#bindTo#as}
-	 */
-	bindTo( collection ) {
-		return {
-			/**
-			 * Determines the output view of the binding.
-			 *
-			 * @static
-			 * @param {Function|module:ui/view~View} CallbackOrViewClass Specifies the constructor of the view to be used or
-			 * a custom callback function which produces views.
-			 */
-			as: ( CallbackOrViewClass ) => {
-				let createView;
-
-				if ( CallbackOrViewClass.prototype instanceof View ) {
-					createView = ( item ) => {
-						const viewInstance = new CallbackOrViewClass( this.locale, item );
-
-						this._boundItemsToViewsMap.set( item, viewInstance );
-
-						return viewInstance;
-					};
-				} else {
-					createView = ( item ) => {
-						const viewInstance = CallbackOrViewClass( item );
-
-						this._boundItemsToViewsMap.set( item, viewInstance );
-
-						return viewInstance;
-					};
-				}
-
-				// Load the initial content of the collection.
-				for ( let item of collection ) {
-					this.add( createView( item ) );
-				}
-
-				// Synchronize views as new items are added to the collection.
-				this.listenTo( collection, 'add', ( evt, item, index ) => {
-					this.add( createView( item ), index );
-				} );
-
-				// Synchronize views as items are removed from the collection.
-				this.listenTo( collection, 'remove', ( evt, item ) => {
-					this.remove( this._boundItemsToViewsMap.get( item ) );
-
-					this._boundItemsToViewsMap.delete( item );
-				} );
-			}
-		};
 	}
 
 	/**
