@@ -152,8 +152,7 @@ class ModelConverterBuilder {
 	}
 
 	/**
-	 * Registers what type of non-collapsed marker should be converted. For collapsed markers conversion, see
-	 * {@link #fromCollapsedMarker}.
+	 * Registers what type of marker should be converted.
 	 *
 	 * @chainable
 	 * @param {String} markerName Name of marker to convert.
@@ -163,27 +162,7 @@ class ModelConverterBuilder {
 		this._from = {
 			type: 'marker',
 			name: markerName,
-			priority: null,
-			collapsed: false
-		};
-
-		return this;
-	}
-
-	/**
-	 * Registers what type of collapsed marker should be converted. For non-collapsed markers conversion,
-	 * see {@link #fromMarker}.
-	 *
-	 * @chainable
-	 * @param {String} markerName Name of marker to convert.
-	 * @returns {module:engine/conversion/buildmodelconverter~ModelConverterBuilder}
-	 */
-	fromCollapsedMarker( markerName ) {
-		this._from = {
-			type: 'marker',
-			name: markerName,
-			priority: null,
-			collapsed: true
+			priority: null
 		};
 
 		return this;
@@ -265,22 +244,76 @@ class ModelConverterBuilder {
 
 				dispatcher.on( 'selectionAttribute:' + this._from.key, convertSelectionAttribute( element ), { priority } );
 			} else {
-				if ( this._from.collapsed ) {
-					// From collapsed marker to view element -> insertUIElement, removeUIElement.
-					element = typeof element == 'string' ? new ViewUIElement( element ) : element;
+				element = typeof element == 'string' ? new ViewAttributeElement( element ) : element;
 
-					dispatcher.on( 'addMarker:' + this._from.name, insertUIElement( element ), { priority } );
-					dispatcher.on( 'removeMarker:' + this._from.name, removeUIElement( element ), { priority } );
-				} else {
-					// From non-collapsed marker to view element -> wrapRange and unwrapRange.
-					element = typeof element == 'string' ? new ViewAttributeElement( element ) : element;
+				dispatcher.on( 'addMarker:' + this._from.name, wrapRange( element ), { priority } );
+				dispatcher.on( 'removeMarker:' + this._from.name, unwrapRange( element ), { priority } );
 
-					dispatcher.on( 'addMarker:' + this._from.name, wrapRange( element ), { priority } );
-					dispatcher.on( 'removeMarker:' + this._from.name, unwrapRange( element ), { priority } );
-
-					dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( element ), { priority } );
-				}
+				dispatcher.on( 'selectionMarker:' + this._from.name, convertSelectionMarker( element ), { priority } );
 			}
+		}
+	}
+
+	/**
+	 * Registers what view stamp will be created by converter to mark marker range bounds. Separate elements will be
+	 * created at the beginning and at the end of the range. If range is collapsed then only one element will be created.
+	 *
+	 * Method accepts various ways of providing how the view element will be created. You can pass view element name as
+	 * `string`, view element instance which will be cloned and used, or creator function which returns view element that
+	 * will be used. Keep in mind that when you provide view element instance or creator function, it has to be/return a
+	 * proper type of view element: {@link module:engine/view/uielement~UIElement UIElement}.
+	 *
+	 *		buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( 'span' );
+	 *
+	 *		buildModelConverter().for( dispatcher )
+	 *			.fromMarker( 'search' )
+	 *			.toStamp( new UIElement( 'span', { 'data-name': 'search' } ) );
+	 *
+	 *		buildModelConverter().for( dispatcher )
+	 *			.fromMarker( 'search' )
+	 *			.toStamp( ( data ) => new UIElement( 'span', { 'data-name': data.name ) );
+	 *
+	 * Creator function provides additional `data.isOpening` parameter which defined if currently converted element is
+	 * a beginning or end of the marker range. This makes possible to create different opening and closing stamp.
+	 *
+	 *		buildModelConverter().for( dispatcher )
+	 *			.fromMarker( 'search' )
+	 *			.toStamp( ( data ) => {
+	 *				if ( data.isOpening ) {
+	 *					return new UIElement( 'span', { 'data-name': data.name, 'data-start': true ) );
+	 *				}
+	 *
+	 *				return new UIElement( 'span', { 'data-name': data.name, 'data-end': true ) );
+	 *			}
+	 *
+	 * Creator function provides
+	 * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#StampCreatorData} parameters.
+	 *
+	 * See how markers {module:engine/model/buildviewconverter~ViewConverterBuilder#toMarker view -> model serialization}
+	 * works to find out what view element format is the best for you.
+	 *
+	 * @param {String|module:engine/view/element~UIElement|Function} element UIElement created by converter or
+	 * a function that returns view element.
+	 */
+	toStamp( element ) {
+		for ( let dispatcher of this._dispatchers ) {
+			if ( this._from.type != 'marker' ) {
+				/**
+				 * To-stamp conversion is supported only for model markers.
+				 *
+				 * @error build-model-converter-element-to-stamp
+				 */
+				throw new CKEditorError(
+					'build-model-converter-non-marker-to-stamp: To-stamp conversion is supported only from model markers.'
+				);
+			}
+
+			const priority = this._from.priority === null ? 'normal' : this._from.priority;
+
+			element = typeof element == 'string' ? new ViewUIElement( element ) : element;
+
+			dispatcher.on( 'addMarker:' + this._from.name, insertUIElement( element ), { priority } );
+			dispatcher.on( 'removeMarker:' + this._from.name, removeUIElement( element ), { priority } );
 		}
 	}
 
@@ -321,7 +354,6 @@ class ModelConverterBuilder {
 			 * To-attribute conversion is supported only for model attributes.
 			 *
 			 * @error build-model-converter-element-to-attribute
-			 * @param {module:engine/model/range~Range} range
 			 */
 			throw new CKEditorError( 'build-model-converter-non-attribute-to-attribute: ' +
 				'To-attribute conversion is supported only from model attributes.' );
@@ -370,3 +402,13 @@ class ModelConverterBuilder {
 export default function buildModelConverter() {
 	return new ModelConverterBuilder();
 }
+
+/**
+ * @typedef {StampCreatorData} {module:engine/conversion/buildmodelconverter~ModelConverterBuilder#StampCreatorData}
+ * @param {Object} data Additional information about the change.
+ * @param {String} data.name Marker name.
+ * @param {module:engine/model/range~Range} data.range Marker range.
+ * @param {Boolean} data.isOpening Defines if currently converted element is a beginning or end of the marker range.
+ * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
+ * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
+ */

@@ -91,6 +91,8 @@ export function insertText() {
 /**
  * Function factory, creates a converter that converts marker adding change to the view ui element.
  * The view ui element that will be added to the view depends on passed parameter. See {@link ~insertElement}.
+ * In a case of collapsed range element will not wrap range but separate elements will be placed at the beginning
+ * and at the end of the range.
  *
  * **Note:** unlike {@link ~insertElement}, the converter does not bind view element to model, because this converter
  * uses marker as "model source of data". This means that view ui element does not have corresponding model element.
@@ -101,11 +103,20 @@ export function insertText() {
  */
 export function insertUIElement( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		const viewElement = ( elementCreator instanceof ViewElement ) ?
-			elementCreator.clone( true ) :
-			elementCreator( data, consumable, conversionApi );
+		let viewStartElement, viewEndElement;
 
-		if ( !viewElement ) {
+		if ( elementCreator instanceof ViewElement ) {
+			viewStartElement = elementCreator.clone( true );
+			viewEndElement = elementCreator.clone( true );
+		} else {
+			data.isOpening = true;
+			viewStartElement = elementCreator( data, consumable, conversionApi );
+
+			data.isOpening = false;
+			viewEndElement = elementCreator( data, consumable, conversionApi );
+		}
+
+		if ( !viewStartElement || !viewEndElement ) {
 			return;
 		}
 
@@ -113,9 +124,13 @@ export function insertUIElement( elementCreator ) {
 			return;
 		}
 
-		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+		const mapper = conversionApi.mapper;
 
-		viewWriter.insert( viewPosition, viewElement );
+		viewWriter.insert( mapper.toViewPosition( data.range.start ), viewStartElement );
+
+		if ( !data.range.isCollapsed ) {
+			viewWriter.insert( mapper.toViewPosition( data.range.end ), viewEndElement );
+		}
 	};
 }
 
@@ -439,11 +454,20 @@ export function remove() {
  */
 export function removeUIElement( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		const viewElement = ( elementCreator instanceof ViewElement ) ?
-			elementCreator.clone( true ) :
-			elementCreator( data, consumable, conversionApi );
+		let viewStartElement, viewEndElement;
 
-		if ( !viewElement ) {
+		if ( elementCreator instanceof ViewElement ) {
+			viewStartElement = elementCreator.clone( true );
+			viewEndElement = elementCreator.clone( true );
+		} else {
+			data.isOpening = true;
+			viewStartElement = elementCreator( data, consumable, conversionApi );
+
+			data.isOpening = false;
+			viewEndElement = elementCreator( data, consumable, conversionApi );
+		}
+
+		if ( !viewStartElement || !viewEndElement ) {
 			return;
 		}
 
@@ -453,7 +477,13 @@ export function removeUIElement( elementCreator ) {
 
 		const viewRange = conversionApi.mapper.toViewRange( data.range );
 
-		viewWriter.clear( viewRange.getEnlarged(), viewElement );
+		// First remove closing element.
+		viewWriter.clear( viewRange.getEnlarged(), viewEndElement );
+
+		// If closing and opening elements are not the same then remove opening element.
+		if ( !viewStartElement.isSimilar( viewEndElement ) ) {
+			viewWriter.clear( viewRange.getEnlarged(), viewStartElement );
+		}
 	};
 }
 

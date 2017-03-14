@@ -13,6 +13,10 @@ import RemoveDelta from './removedelta';
 import { register } from '../batch';
 import InsertOperation from '../operation/insertoperation';
 
+import DocumentFragment from '../documentfragment';
+import Range from '../../model/range.js';
+import Position from '../../model/position.js';
+
 /**
  * @classdesc
  * To provide specific OT behavior and better collisions solving, the {@link module:engine/model/batch~Batch#insert Batch#insert} method
@@ -82,6 +86,9 @@ export default class InsertDelta extends Delta {
 /**
  * Inserts a node or nodes at the given position.
  *
+ * When inserted element is a {@link engine/model/documentfragment~DocumentFragment} and has markers its markers will
+ * be set to {@link engine/model/document~Document#markers}.
+ *
  * @chainable
  * @method module:engine/model/batch~Batch#insert
  * @param {module:engine/model/position~Position} position Position of insertion.
@@ -94,6 +101,20 @@ register( 'insert', function( position, nodes ) {
 	this.addDelta( delta );
 	delta.addOperation( insert );
 	this.document.applyOperation( insert );
+
+	// When element is a DocumentFragment we need to move its markers to Document#markers.
+	if ( nodes instanceof DocumentFragment ) {
+		for ( const [ markerName, markerRange ] of nodes.markers ) {
+			// We need to migrate marker range from DocumentFragment to Document.
+			const rangeRootPosition = Position.createAt( markerRange.root );
+			const range = new Range(
+				markerRange.start._getCombined( rangeRootPosition, position ),
+				markerRange.end._getCombined( rangeRootPosition, position )
+			);
+
+			this.setMarker( markerName, range );
+		}
+	}
 
 	return this;
 } );

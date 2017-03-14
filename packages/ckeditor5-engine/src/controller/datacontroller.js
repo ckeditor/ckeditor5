@@ -224,10 +224,13 @@ export default class DataController {
 	}
 
 	/**
-	 * Returns the content of the given {@link module:engine/view/element~Element view element} or
+	 * Returns wrapped by {module:engine/model/documentfragment~DocumentFragment} result of the given
+	 * {@link module:engine/view/element~Element view element} or
 	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment} converted by the
-	 * {@link #viewToModel view to model converters} to a
-	 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
+	 * {@link #viewToModel view to model converters}.
+	 *
+	 * When marker stamps were converted during conversion process then will be set as DocumentFragment
+	 * {@link module:engine/view/documentfragment~DocumentFragment#markers static markers map}.
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElementOrFragment
 	 * Element or document fragment which content will be converted.
@@ -281,7 +284,7 @@ export default class DataController {
 	 * See {@link module:engine/controller/modifyselection~modifySelection}.
 	 *
 	 * @fires modifySelection
-	 * @param {module:engine/model/selection~Selection} The selection to modify.
+	 * @param {module:engine/model/selection~Selection} selection The selection to modify.
 	 * @param {Object} options See {@link module:engine/controller/modifyselection~modifySelection}'s options.
 	 */
 	modifySelection( selection, options ) {
