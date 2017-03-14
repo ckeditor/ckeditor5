@@ -293,7 +293,7 @@ export default class Collection {
 	 *		const source = new Collection( { idProperty: 'label' } );
 	 *		const target = new Collection();
 	 *
-	 *		target.bindTo( source ).using( FactoryClass );
+	 *		target.bindTo( source ).as( FactoryClass );
 	 *
 	 *		source.add( { label: 'foo' } );
 	 *		source.add( { label: 'bar' } );
@@ -355,37 +355,68 @@ export default class Collection {
 	 * @returns {module:ui/viewcollection~ViewCollection#bindTo#using}
 	 */
 	bindTo( collection ) {
+		// Sets the actual binding using provided factory.
+		//
+		// @private
+		// @param {Function} factory A collection item factory returning collection items.
+		const bind = ( factory ) => {
+			// Load the initial content of the collection.
+			for ( let item of collection ) {
+				this.add( factory( item ) );
+			}
+
+			// Synchronize the with collection as new items are added.
+			this.listenTo( collection, 'add', ( evt, item, index ) => {
+				this.add( factory( item ), index );
+			} );
+
+			// Synchronize the with collection as new items are removed.
+			this.listenTo( collection, 'remove', ( evt, item ) => {
+				this.remove( this._boundItemsMap.get( item ) );
+
+				this._boundItemsMap.delete( item );
+			} );
+		};
+
 		return {
 			/**
-			 * Determines the output of the binding.
+			 * Creates the class factory binding.
 			 *
 			 * @static
-			 * @param {Function|String} CallbackPropertyOrClass When specified as a callback, the callback
-			 * produces the items. When the class constructor is passed, the factory of that class is initialized.
-			 * When the string is provided, the property value is used to create the binding.
+			 * @param {Function} Class Specifies which class factory is to be initialized.
 			 */
-			using: ( CallbackPropertyOrClass ) => {
-				let createItem;
+			as: ( Class ) => {
+				bind( ( item ) => {
+					const instance = new Class( item );
 
-				if ( CallbackPropertyOrClass.toString().match( /^class/ ) ) {
-					createItem = ( item ) => {
-						const instance = new CallbackPropertyOrClass( item );
+					this._boundItemsMap.set( item, instance );
 
-						this._boundItemsMap.set( item, instance );
+					return instance;
+				} );
+			},
 
-						return instance;
-					};
-				} else if ( typeof CallbackPropertyOrClass == 'function' ) {
-					createItem = ( item ) => {
-						const instance = CallbackPropertyOrClass( item );
+			/**
+			 * Creates callback or property binding.
+			 *
+			 * @static
+			 * @param {Function|String} callbackOrProperty When the function is passed, it is used to
+			 * produce the items. When the string is provided, the property value is used to create
+			 * the bound collection items.
+			 */
+			using: ( callbackOrProperty ) => {
+				let factory;
+
+				if ( typeof callbackOrProperty == 'function' ) {
+					factory = ( item ) => {
+						const instance = callbackOrProperty( item );
 
 						this._boundItemsMap.set( item, instance );
 
 						return instance;
 					};
 				} else {
-					createItem = ( item ) => {
-						const instance = item[ CallbackPropertyOrClass ];
+					factory = ( item ) => {
+						const instance = item[ callbackOrProperty ];
 
 						this._boundItemsMap.set( item, instance );
 
@@ -393,22 +424,7 @@ export default class Collection {
 					};
 				}
 
-				// Load the initial content of the collection.
-				for ( let item of collection ) {
-					this.add( createItem( item ) );
-				}
-
-				// Synchronize the with collection as new items are added.
-				this.listenTo( collection, 'add', ( evt, item, index ) => {
-					this.add( createItem( item ), index );
-				} );
-
-				// Synchronize the with collection as new items are removed.
-				this.listenTo( collection, 'remove', ( evt, item ) => {
-					this.remove( this._boundItemsMap.get( item ) );
-
-					this._boundItemsMap.delete( item );
-				} );
+				bind( factory );
 			}
 		};
 	}

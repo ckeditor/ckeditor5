@@ -519,11 +519,69 @@ describe( 'Collection', () => {
 			}
 		}
 
-		it( 'provides "using()" interface', () => {
+		it( 'provides "using()" and "as()" interfaces', () => {
 			const returned = collection.bindTo( {} );
 
-			expect( returned ).to.have.keys( 'using' );
+			expect( returned ).to.have.keys( 'using', 'as' );
 			expect( returned.using ).to.be.a( 'function' );
+			expect( returned.as ).to.be.a( 'function' );
+		} );
+
+		describe( 'as()', () => {
+			let items;
+
+			beforeEach( () => {
+				items = new Collection();
+			} );
+
+			it( 'creates a binding (initial content)', () => {
+				items.add( { id: '1' } );
+				items.add( { id: '2' } );
+
+				collection = new Collection();
+				collection.bindTo( items ).as( FactoryClass );
+
+				expect( collection ).to.have.length( 2 );
+				expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
+				expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
+				expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
+			} );
+
+			it( 'creates a binding (new content)', () => {
+				collection = new Collection();
+				collection.bindTo( items ).as( FactoryClass );
+
+				expect( collection ).to.have.length( 0 );
+
+				items.add( { id: '1' } );
+				items.add( { id: '2' } );
+
+				expect( collection ).to.have.length( 2 );
+				expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
+				expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
+				expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
+			} );
+
+			it( 'creates a binding (item removal)', () => {
+				collection = new Collection();
+				collection.bindTo( items ).as( FactoryClass );
+
+				expect( collection ).to.have.length( 0 );
+
+				items.add( { id: '1' } );
+				items.add( { id: '2' } );
+
+				expect( collection ).to.have.length( 2 );
+				expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
+				expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
+				expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
+
+				items.remove( 1 );
+				expect( collection.get( 0 ).data ).to.equal( items.get( 0 ) );
+
+				items.remove( 0 );
+				expect( collection ).to.have.length( 0 );
+			} );
 		} );
 
 		describe( 'using()', () => {
@@ -590,57 +648,6 @@ describe( 'Collection', () => {
 					expect( collection ).to.have.length( 2 );
 					expect( collection.get( 0 ) ).to.equal( item1 );
 					expect( collection.get( 1 ) ).to.equal( item2 );
-				} );
-			} );
-
-			describe( 'class constructor', () => {
-				it( 'creates a binding (initial content)', () => {
-					items.add( { id: '1' } );
-					items.add( { id: '2' } );
-
-					collection = new Collection();
-					collection.bindTo( items ).using( FactoryClass );
-
-					expect( collection ).to.have.length( 2 );
-					expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
-					expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
-					expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
-				} );
-
-				it( 'creates a binding (new content)', () => {
-					collection = new Collection();
-					collection.bindTo( items ).using( FactoryClass );
-
-					expect( collection ).to.have.length( 0 );
-
-					items.add( { id: '1' } );
-					items.add( { id: '2' } );
-
-					expect( collection ).to.have.length( 2 );
-					expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
-					expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
-					expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
-				} );
-
-				it( 'creates a binding (item removal)', () => {
-					collection = new Collection();
-					collection.bindTo( items ).using( FactoryClass );
-
-					expect( collection ).to.have.length( 0 );
-
-					items.add( { id: '1' } );
-					items.add( { id: '2' } );
-
-					expect( collection ).to.have.length( 2 );
-					expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
-					expect( collection.get( 1 ) ).to.be.instanceOf( FactoryClass );
-					expect( collection.get( 1 ).data ).to.equal( items.get( 1 ) );
-
-					items.remove( 1 );
-					expect( collection.get( 0 ).data ).to.equal( items.get( 0 ) );
-
-					items.remove( 0 );
-					expect( collection ).to.have.length( 0 );
 				} );
 			} );
 
