@@ -534,11 +534,16 @@ describe( 'Collection', () => {
 				items = new Collection();
 			} );
 
+			it( 'does not chain', () => {
+				const returned = collection.bindTo( new Collection() ).as( FactoryClass );
+
+				expect( returned ).to.be.undefined;
+			} );
+
 			it( 'creates a binding (initial content)', () => {
 				items.add( { id: '1' } );
 				items.add( { id: '2' } );
 
-				collection = new Collection();
 				collection.bindTo( items ).as( FactoryClass );
 
 				expect( collection ).to.have.length( 2 );
@@ -548,7 +553,6 @@ describe( 'Collection', () => {
 			} );
 
 			it( 'creates a binding (new content)', () => {
-				collection = new Collection();
 				collection.bindTo( items ).as( FactoryClass );
 
 				expect( collection ).to.have.length( 0 );
@@ -563,7 +567,6 @@ describe( 'Collection', () => {
 			} );
 
 			it( 'creates a binding (item removal)', () => {
-				collection = new Collection();
 				collection.bindTo( items ).as( FactoryClass );
 
 				expect( collection ).to.have.length( 0 );
@@ -592,7 +595,7 @@ describe( 'Collection', () => {
 			} );
 
 			it( 'does not chain', () => {
-				const returned = collection.bindTo( new Collection() ).using( FactoryClass );
+				const returned = collection.bindTo( new Collection() ).using( () => {} );
 
 				expect( returned ).to.be.undefined;
 			} );
@@ -617,7 +620,6 @@ describe( 'Collection', () => {
 
 				// https://github.com/ckeditor/ckeditor5-ui/issues/113
 				it( 'creates a binding (normal function)', () => {
-					collection = new Collection();
 					collection.bindTo( items ).using( function( item ) {
 						return new FactoryClass( item );
 					} );
@@ -634,7 +636,6 @@ describe( 'Collection', () => {
 				} );
 
 				it( 'creates a 1:1 binding', () => {
-					collection = new Collection();
 					collection.bindTo( items ).using( item => item );
 
 					expect( collection ).to.have.length( 0 );
@@ -649,11 +650,51 @@ describe( 'Collection', () => {
 					expect( collection.get( 0 ) ).to.equal( item1 );
 					expect( collection.get( 1 ) ).to.equal( item2 );
 				} );
+
+				it( 'creates a conditional binding', () => {
+					class CustomClass {
+						constructor( data ) {
+							this.data = data;
+						}
+					}
+
+					collection.bindTo( items ).using( item => {
+						if ( item.id == 'FactoryClass' ) {
+							return new FactoryClass( item );
+						} else {
+							return new CustomClass( item );
+						}
+					} );
+
+					expect( collection ).to.have.length( 0 );
+
+					const item1 = { id: 'FactoryClass' };
+					const item2 = { id: 'CustomClass' };
+
+					items.add( item1 );
+					items.add( item2 );
+
+					expect( collection ).to.have.length( 2 );
+					expect( collection.get( 0 ) ).to.be.instanceOf( FactoryClass );
+					expect( collection.get( 1 ) ).to.be.instanceOf( CustomClass );
+				} );
+
+				it( 'creates a binding to a property name', () => {
+					collection.bindTo( items ).using( item => item.prop );
+
+					expect( collection ).to.have.length( 0 );
+
+					items.add( { prop: { value: 'foo' } } );
+					items.add( { prop: { value: 'bar' } } );
+
+					expect( collection ).to.have.length( 2 );
+					expect( collection.get( 0 ).value ).to.equal( 'foo' );
+					expect( collection.get( 1 ).value ).to.equal( 'bar' );
+				} );
 			} );
 
 			describe( 'property name', () => {
 				it( 'creates a binding', () => {
-					collection = new Collection();
 					collection.bindTo( items ).using( 'prop' );
 
 					expect( collection ).to.have.length( 0 );
@@ -667,7 +708,6 @@ describe( 'Collection', () => {
 				} );
 
 				it( 'creates a binding (item removal)', () => {
-					collection = new Collection();
 					collection.bindTo( items ).using( 'prop' );
 
 					expect( collection ).to.have.length( 0 );
