@@ -21,3 +21,4 @@ script:
   - ckeditor5-dev-tests-travis
 after_success:
   - codeclimate-test-reporter < coverage/lcov.info
+  - ckeditor5-dev-tests-save-revision
