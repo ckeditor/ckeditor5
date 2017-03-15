@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals setTimeout, document */
-
 import ViewRange from '../../../src/view/range';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ViewSelection from '../../../src/view/selection';
@@ -12,10 +10,14 @@ import ViewDocument from '../../../src/view/document';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import MutationObserver from '../../../src/view/observer/mutationobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
-
 import log from '@ckeditor/ckeditor5-utils/src/log';
-
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { parse } from '../../../src/dev-utils/view';
+
+const setTimeout = global.window.setTimeout;
+const setInterval = global.window.setInterval;
+const clearInterval = global.window.clearInterval;
+const domDocument = global.document;
 
 testUtils.createSinonSandbox();
 
@@ -23,10 +25,10 @@ describe( 'SelectionObserver', () => {
 	let viewDocument, viewRoot, mutationObserver, selectionObserver, domRoot, domMain;
 
 	beforeEach( ( done ) => {
-		domRoot = document.createElement( 'div' );
+		domRoot = domDocument.createElement( 'div' );
 		domRoot.innerHTML = `<div contenteditable="true"></div><div contenteditable="true" id="additional"></div>`;
 		domMain = domRoot.childNodes[ 0 ];
-		document.body.appendChild( domRoot );
+		domDocument.body.appendChild( domRoot );
 
 		viewDocument = new ViewDocument();
 		viewDocument.createRoot( domMain );
@@ -43,7 +45,7 @@ describe( 'SelectionObserver', () => {
 		viewDocument.render();
 
 		viewDocument.selection.removeAllRanges();
-		document.getSelection().removeAllRanges();
+		domDocument.getSelection().removeAllRanges();
 
 		viewDocument.isFocused = true;
 
@@ -61,7 +63,7 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should fire selectionChange when it is the only change', ( done ) => {
 		viewDocument.on( 'selectionChange', ( evt, data ) => {
-			expect( data ).to.have.property( 'domSelection' ).that.equals( document.getSelection() );
+			expect( data ).to.have.property( 'domSelection' ).that.equals( domDocument.getSelection() );
 
 			expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( ViewSelection );
 			expect( data.oldSelection.rangeCount ).to.equal( 0 );
@@ -85,7 +87,7 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should add only one listener to one document', ( done ) => {
 		// Add second roots to ensure that listener is added once.
-		viewDocument.createRoot( document.getElementById( 'additional' ), 'additional' );
+		viewDocument.createRoot( domDocument.getElementById( 'additional' ), 'additional' );
 
 		viewDocument.on( 'selectionChange', () => {
 			done();
@@ -140,6 +142,8 @@ describe( 'SelectionObserver', () => {
 	it( 'should warn and not enter infinite loop', ( done ) => {
 		// Reset infinite loop counters so other tests won't mess up with this test.
 		selectionObserver._clearInfiniteLoop();
+		clearInterval( selectionObserver._clearInfiniteLoopInterval );
+		selectionObserver._clearInfiniteLoopInterval = setInterval( () => selectionObserver._clearInfiniteLoop(), 2000 );
 
 		let counter = 100;
 
@@ -255,7 +259,7 @@ describe( 'SelectionObserver', () => {
 				const data = spy.firstCall.args[ 1 ];
 
 				expect( spy.calledOnce ).to.true;
-				expect( data ).to.have.property( 'domSelection' ).to.equal( document.getSelection() );
+				expect( data ).to.have.property( 'domSelection' ).to.equal( domDocument.getSelection() );
 
 				expect( data ).to.have.property( 'oldSelection' ).to.instanceof( ViewSelection );
 				expect( data.oldSelection.rangeCount ).to.equal( 0 );
@@ -302,7 +306,7 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	function changeDomSelection() {
-		const domSelection = document.getSelection();
+		const domSelection = domDocument.getSelection();
 		const domFoo = domMain.childNodes[ 0 ].childNodes[ 0 ];
 		const offset = domSelection.anchorOffset;
 

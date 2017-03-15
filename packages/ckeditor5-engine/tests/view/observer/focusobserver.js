@@ -9,6 +9,7 @@ import ViewRange from '../../../src/view/range';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 const setTimeout = global.window.setTimeout;
+const domDocument = global.document;
 
 describe( 'FocusObserver', () => {
 	let viewDocument, observer;
@@ -36,12 +37,12 @@ describe( 'FocusObserver', () => {
 
 			viewDocument.on( 'focus', spy );
 
-			observer.onDomEvent( { type: 'focus', target: global.document.body } );
+			observer.onDomEvent( { type: 'focus', target: domDocument.body } );
 
 			expect( spy.calledOnce ).to.be.true;
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( global.document.body );
+			expect( data.domTarget ).to.equal( domDocument.body );
 		} );
 
 		it( 'should fire blur with the right event data', () => {
@@ -49,18 +50,18 @@ describe( 'FocusObserver', () => {
 
 			viewDocument.on( 'blur', spy );
 
-			observer.onDomEvent( { type: 'blur', target: global.document.body } );
+			observer.onDomEvent( { type: 'blur', target: domDocument.body } );
 
 			expect( spy.calledOnce ).to.be.true;
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( global.document.body );
+			expect( data.domTarget ).to.equal( domDocument.body );
 		} );
 
 		it( 'should render document after blurring', () => {
 			const renderSpy = sinon.spy( viewDocument, 'render' );
 
-			observer.onDomEvent( { type: 'blur', target: global.document.body } );
+			observer.onDomEvent( { type: 'blur', target: domDocument.body } );
 
 			sinon.assert.calledOnce( renderSpy );
 		} );
@@ -70,8 +71,8 @@ describe( 'FocusObserver', () => {
 		let domMain, domHeader, viewMain, viewHeader;
 
 		beforeEach( () => {
-			domMain = global.document.createElement( 'div' );
-			domHeader = global.document.createElement( 'h1' );
+			domMain = domDocument.createElement( 'div' );
+			domHeader = domDocument.createElement( 'h1' );
 
 			viewMain = viewDocument.createRoot( domMain );
 			viewHeader = viewDocument.createRoot( domHeader, 'header' );
