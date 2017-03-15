@@ -63,7 +63,8 @@ export default class Collection {
 		 * @protected
 		 * @member {Map}
 		 */
-		this._boundItemsMap = new Map();
+		this._bindToExternalToInternalMap = new Map();
+		this._bindToInternalToExternalMap = new Map();
 	}
 
 	/**
@@ -352,31 +353,21 @@ export default class Collection {
 	 *		console.log( target.get( 1 ).value ); // 'bar'
 	 *
 	 * @param {module:utils/collection~Collection} collection A collection to be bound.
-	 * @returns {module:ui/viewcollection~ViewCollection#bindTo#using}
+	 * @returns {Object}
+	 * @returns {module:utils/collection~Collection#bindTo#as} return.as
+	 * @returns {module:utils/collection~Collection#bindTo#using} return.using
 	 */
-	bindTo( collection ) {
-		// Sets the actual binding using provided factory.
-		//
-		// @private
-		// @param {Function} factory A collection item factory returning collection items.
-		const bind = ( factory ) => {
-			// Load the initial content of the collection.
-			for ( let item of collection ) {
-				this.add( factory( item ) );
-			}
+	bindTo( externalCollection ) {
+		if ( this._bindToCollection ) {
+			/**
+			 * The collection cannot be bound more than once.
+			 *
+			 * @error collection-bind-to-rebind
+			 */
+			throw new CKEditorError( 'collection-bind-to-rebind: The collection cannot be bound more than once.' );
+		}
 
-			// Synchronize the with collection as new items are added.
-			this.listenTo( collection, 'add', ( evt, item, index ) => {
-				this.add( factory( item ), index );
-			} );
-
-			// Synchronize the with collection as new items are removed.
-			this.listenTo( collection, 'remove', ( evt, item ) => {
-				this.remove( this._boundItemsMap.get( item ) );
-
-				this._boundItemsMap.delete( item );
-			} );
-		};
+		this._bindToCollection = externalCollection;
 
 		return {
 			/**
@@ -386,13 +377,7 @@ export default class Collection {
 			 * @param {Function} Class Specifies which class factory is to be initialized.
 			 */
 			as: ( Class ) => {
-				bind( ( item ) => {
-					const instance = new Class( item );
-
-					this._boundItemsMap.set( item, instance );
-
-					return instance;
-				} );
+				this._setUpBindToBinding( item => new Class( item ) );
 			},
 
 			/**
@@ -404,29 +389,49 @@ export default class Collection {
 			 * the bound collection items.
 			 */
 			using: ( callbackOrProperty ) => {
-				let factory;
-
 				if ( typeof callbackOrProperty == 'function' ) {
-					factory = ( item ) => {
-						const instance = callbackOrProperty( item );
-
-						this._boundItemsMap.set( item, instance );
-
-						return instance;
-					};
+					this._setUpBindToBinding( item => callbackOrProperty( item ) );
 				} else {
-					factory = ( item ) => {
-						const instance = item[ callbackOrProperty ];
-
-						this._boundItemsMap.set( item, instance );
-
-						return instance;
-					};
+					this._setUpBindToBinding( item => item[ callbackOrProperty ] );
 				}
-
-				bind( factory );
 			}
 		};
+	}
+
+	_setUpBindToBinding( factory ) {
+		const externalCollection = this._bindToCollection;
+
+		// Adds the item to the collection once a change has been done to the external collection.
+		//
+		// @private
+		const addItem = ( evt, externalItem, index ) => {
+			const item = factory( externalItem );
+
+			if ( externalCollection._bindToInternalToExternalMap.has( externalItem ) ) {
+				return;
+			}
+
+			this._bindToExternalToInternalMap.set( externalItem, item );
+			this._bindToInternalToExternalMap.set( item, externalItem );
+			this.add( item, index );
+		};
+
+		// Load the initial content of the collection.
+		for ( let externalItem of externalCollection ) {
+			addItem( null, externalItem );
+		}
+
+		// Synchronize the with collection as new items are added.
+		this.listenTo( externalCollection, 'add', addItem );
+
+		// Synchronize the with collection as new items are removed.
+		this.listenTo( externalCollection, 'remove', ( evt, externalItem ) => {
+			const item = this._bindToExternalToInternalMap.get( externalItem );
+
+			this._bindToExternalToInternalMap.delete( externalItem );
+			this._bindToInternalToExternalMap.delete( item );
+			this.remove( item );
+		} );
 	}
 
 	/**

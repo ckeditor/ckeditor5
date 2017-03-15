@@ -725,6 +725,74 @@ describe( 'Collection', () => {
 				} );
 			} );
 		} );
+
+		describe( 'two–way data binding', () => {
+			it( 'works #1', () => {
+				const collectionA = new Collection();
+				const collectionB = new Collection();
+
+				collectionA.name = 'A';
+				collectionB.name = 'B';
+
+				const spyA = sinon.spy();
+				const spyB = sinon.spy();
+
+				collectionA.on( 'add', spyA );
+				collectionA.on( 'add', spyB );
+
+				collectionA.bindTo( collectionB ).using( 'data' );
+				collectionB.bindTo( collectionA ).as( FactoryClass );
+
+				collectionA.add( { value: 'foo' } );
+				collectionA.add( { value: 'bar' } );
+
+				expect( collectionA.map( i => i.value ) ).to.deep.equal( [ 'foo', 'bar' ], 'CollectionA' );
+				expect( collectionB.map( i => i ).every( i => i instanceof FactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i.data.value ) ).to.deep.equal( [ 'foo', 'bar' ], 'CollectionB' );
+
+				collectionB.add( new FactoryClass( { value: 'baz' } ) );
+
+				expect( collectionA.map( i => i.value ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionA' );
+				expect( collectionB.map( i => i ).every( i => i instanceof FactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i.data.value ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionB' );
+
+				sinon.assert.callCount( spyA, 3 );
+				sinon.assert.callCount( spyB, 3 );
+			} );
+
+			it( 'works #2', () => {
+				const collectionA = new Collection();
+				const collectionB = new Collection();
+
+				collectionA.name = 'A';
+				collectionB.name = 'B';
+
+				const spyA = sinon.spy();
+				const spyB = sinon.spy();
+
+				collectionA.on( 'add', spyA );
+				collectionA.on( 'add', spyB );
+
+				collectionA.bindTo( collectionB ).using( i => i );
+				collectionB.bindTo( collectionA ).using( i => i );
+
+				collectionA.add( new FactoryClass( 'foo' ) );
+				collectionA.add( new FactoryClass( 'bar' ) );
+
+				expect( collectionA.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar' ], 'CollectionA' );
+				expect( collectionB.map( i => i ).every( i => i instanceof FactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar' ], 'CollectionB' );
+
+				collectionB.add( new FactoryClass( 'baz' ) );
+
+				expect( collectionA.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionA' );
+				expect( collectionB.map( i => i ).every( i => i instanceof FactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionB' );
+
+				sinon.assert.callCount( spyA, 3 );
+				sinon.assert.callCount( spyB, 3 );
+			} );
+		} );
 	} );
 
 	describe( 'iterator', () => {
