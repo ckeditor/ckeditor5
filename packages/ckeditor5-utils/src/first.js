@@ -8,7 +8,7 @@
  */
 
 /**
- * Returns first item of an `iterable`.
+ * Returns first item of the given `iterable`.
  *
  * @param {Iterable.<*>} iterable
  * @returns {*}
@@ -16,9 +16,9 @@
 export default function first( iterable ) {
 	const iteratorItem = iterable.next();
 
-	if ( !iteratorItem.done ) {
-		return iteratorItem.value;
+	if ( iteratorItem.done ) {
+		return null;
 	}
 
-	return null;
+	return iteratorItem.value;
 }
