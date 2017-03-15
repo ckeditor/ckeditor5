@@ -206,7 +206,6 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should support an optional index argument', () => {
-			let collection = new Collection();
 			let item1 = getItem( 'foo' );
 			let item2 = getItem( 'bar' );
 			let item3 = getItem( 'baz' );
@@ -224,7 +223,6 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should throw when index argument is invalid', () => {
-			let collection = new Collection();
 			let item1 = getItem( 'foo' );
 			let item2 = getItem( 'bar' );
 			let item3 = getItem( 'baz' );
@@ -602,7 +600,6 @@ describe( 'Collection', () => {
 
 			describe( 'callback', () => {
 				it( 'creates a binding (arrow function)', () => {
-					collection = new Collection();
 					collection.bindTo( items ).using( ( item ) => {
 						return new FactoryClass( item );
 					} );
