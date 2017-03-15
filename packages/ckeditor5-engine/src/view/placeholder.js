@@ -17,10 +17,12 @@ const DATA_ATTRIBUTE = 'data-placeholder';
 const listener = {};
 extend( listener, EmitterMixin );
 
-const elements = new WeakSet();
+// Each document stores information about its placeholder elements and check functions.
+const documentPlaceholders = new Map();
 
 /**
- * Attaches placeholder to provided element and updates it's visibility.
+ * Attaches placeholder to provided element and updates it's visibility. To change placeholder simply call method
+ * once again with new parameters.
  *
  * @param {module:engine/view/element~Element} element Element to attach placeholder to.
  * @param {String} placeholderText Placeholder text to use.
@@ -28,6 +30,9 @@ const elements = new WeakSet();
  * If function returns `false` placeholder will not be showed.
  */
 export default function attachPlaceholder( element, placeholderText, checkFunction ) {
+	// Detach placeholder if was used before.
+	detachPlaceholder( element );
+
 	const document = element.document;
 
 	if ( !document ) {
@@ -39,24 +44,62 @@ export default function attachPlaceholder( element, placeholderText, checkFuncti
 		throw new CKEditorError( 'view-placeholder-element-is-detached: Provided element is not placed in document.' );
 	}
 
-	element.setAttribute( DATA_ATTRIBUTE, placeholderText );
-
-	// If element was not used already - add listener to it.
-	if ( !elements.has( element ) ) {
-		listener.listenTo( document, 'render', () => updateCSSClass( element, checkFunction ), { priority: 'high' } );
-		elements.add( element );
+	// Single listener per document.
+	if ( !documentPlaceholders.has( document ) ) {
+		documentPlaceholders.set( document, new Map() );
+		listener.listenTo( document, 'render', () => updateAllPlaceholders( document ), { priority: 'high' } );
 	}
 
+	// Store text in element's data attribute.
+	// This data attribute is used in CSS class to show the placeholder.
+	element.setAttribute( DATA_ATTRIBUTE, placeholderText );
+
+	// Store information about placeholder.
+	documentPlaceholders.get( document ).set( element, checkFunction );
+
 	// Update right away too.
-	updateCSSClass( element, checkFunction );
+	updateSinglePlaceholder( element, checkFunction );
+}
+
+/**
+ * Removes placeholder functionality from given element.
+ *
+ * @param {module:engine/view/element~Element} element
+ */
+export function detachPlaceholder( element ) {
+	element.removeClass( CSS_CLASS );
+	element.removeAttribute( DATA_ATTRIBUTE );
+
+	for ( let placeholders of documentPlaceholders.values() ) {
+		placeholders.delete( element );
+	}
+}
+
+// Updates all placeholders of given document.
+//
+// @private
+// @param {module:engine/view/document~Document} document
+function updateAllPlaceholders( document ) {
+	const placeholders = documentPlaceholders.get( document );
+
+	for ( let [ element, checkFunction ] of placeholders ) {
+		updateSinglePlaceholder( element, checkFunction );
+	}
 }
 
 // Updates placeholder class of given element.
 //
 // @private
-function updateCSSClass( element, checkFunction ) {
-	// TODO: when element is removedfrom document this should not be executed.
+// @param {module:engine/view/element~Element} element
+// @param {Function} checkFunction
+function updateSinglePlaceholder( element, checkFunction ) {
 	const document = element.document;
+
+	// Element was removed from document.
+	if ( !document ) {
+		return;
+	}
+
 	const viewSelection = document.selection;
 	const anchor = viewSelection.anchor;
 
