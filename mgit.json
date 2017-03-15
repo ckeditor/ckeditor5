@@ -1,23 +1,25 @@
 {
   "packages": "packages/",
   "dependencies": {
-    "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#486566f038ea573ecbb2178ec3303f462aff2f83",
+    "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#10b55612a5c18075e72cafb4fbebc0682c6416c9",
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#2b523faaff37a9f97da62c0b54b1a9c5aba46269",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#8f98e2b5617f0f04b619be666fddf0a5591deb44",
     "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#a1fa64f7263fa019ae51d40b0594b173381637bb",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#8b936cdef4aae49522b33b188a7746dc9ed45b26",
-    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#e8f8a42f81ff78f36dcd690850565c0e420d9118",
+    "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#d40bfa794c688fe6bc562bdda5a60b3098d91235",
+    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#f084a7e19c11b998b8cfb76adb343d25cfb6056a",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#accfd18f3fcdea7b228d41938ada189f65dadfcd",
-    "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#ace86b077d8653de507720ac29710ddb6f1a00cf",
-    "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#8e366450833d401f757116cf02a1b397ce3fd4f3",
+    "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#681d9e187c69c8f17f0f19b4dd85dfc5c1dea2fe",
+    "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#2f993bca6f3ef13ab476f3794ba993287f51e9f5",
     "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link#b235415e09abb0a666113a11b1ad5fcce96d3130",
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list#bc1a129aaf730ad94e79f30b43357a80efb97f92",
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm#047347ab697ced97910143dcbe85091c5bb3c178",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#876877dfeae0fa59a9ec6f5f633652d2565a1373",
-    "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#82b25faefda4993863fd69d25ab3a32ec5e4b369",
-    "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#49cfe9c1d5846eb07c8684b8632a713c5dc37cd9",
-    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#486bb224dccff30cf3a538a02569d9cf73d4d6a0",
+    "@ckeditor/ckeditor5-presets": "ckeditor/ckeditor5-presets#5e922b1d4275ac0f93ec4ed560df5c1639d63c72",
+    "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#05d371626d162b5b9d153989b470a9d245d79f6e",
+    "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#0766407b1dee815be16a330e57c092f7e36fd10d",
+    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#5b55987c1d63dd6d65847f0eea24b14e5ab6b9d1",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#57ea53364d33f64835d929e4acd32a4d0cc3b575",
-    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#8d33b8933dacf82b63f715e586646ae7222678e6"
+    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#4e299be95ba66a2ea0a5c7645d5a2a155c8095d3"
   }
 }
