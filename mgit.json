@@ -20,6 +20,6 @@
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#0766407b1dee815be16a330e57c092f7e36fd10d",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#5b55987c1d63dd6d65847f0eea24b14e5ab6b9d1",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#57ea53364d33f64835d929e4acd32a4d0cc3b575",
-    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#4e299be95ba66a2ea0a5c7645d5a2a155c8095d3"
+    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#7a0c463372c7f6f37334af347680ea9051c3f9a3"
   }
 }
