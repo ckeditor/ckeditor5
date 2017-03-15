@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5",
-  "version": "0.6.0",
+  "version": "0.8.0",
   "description": "The development version of CKEditor; the best browser-based WYSIWYG editor.",
   "keywords": [
     "CKEditor",
@@ -8,33 +8,36 @@
     "WYSIWYG"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-autoformat": "*",
-    "@ckeditor/ckeditor5-basic-styles": "*",
-    "@ckeditor/ckeditor5-clipboard": "*",
-    "@ckeditor/ckeditor5-core": "*",
-    "@ckeditor/ckeditor5-editor-classic": "*",
-    "@ckeditor/ckeditor5-engine": "*",
-    "@ckeditor/ckeditor5-enter": "*",
-    "@ckeditor/ckeditor5-heading": "*",
-    "@ckeditor/ckeditor5-image": "*",
-    "@ckeditor/ckeditor5-link": "*",
-    "@ckeditor/ckeditor5-list": "*",
-    "@ckeditor/ckeditor5-markdown-gfm": "*",
-    "@ckeditor/ckeditor5-paragraph": "*",
-    "@ckeditor/ckeditor5-theme-lark": "*",
-    "@ckeditor/ckeditor5-typing": "*",
-    "@ckeditor/ckeditor5-ui": "*",
-    "@ckeditor/ckeditor5-undo": "*",
-    "@ckeditor/ckeditor5-utils": "*"
+    "@ckeditor/ckeditor5-autoformat": "v0.4.1",
+    "@ckeditor/ckeditor5-basic-styles": "v0.7.1",
+    "@ckeditor/ckeditor5-clipboard": "v0.4.1",
+    "@ckeditor/ckeditor5-core": "v0.7.0",
+    "@ckeditor/ckeditor5-editor-classic": "v0.7.1",
+    "@ckeditor/ckeditor5-editor-inline": "*",
+    "@ckeditor/ckeditor5-engine": "v0.8.0",
+    "@ckeditor/ckeditor5-enter": "v0.8.0",
+    "@ckeditor/ckeditor5-heading": "v0.8.0",
+    "@ckeditor/ckeditor5-image": "v0.4.0",
+    "@ckeditor/ckeditor5-link": "v0.5.1",
+    "@ckeditor/ckeditor5-list": "v0.5.1",
+    "@ckeditor/ckeditor5-markdown-gfm": "v0.4.1",
+    "@ckeditor/ckeditor5-paragraph": "v0.6.1",
+    "@ckeditor/ckeditor5-presets": "v0.1.1",
+    "@ckeditor/ckeditor5-theme-lark": "v0.6.1",
+    "@ckeditor/ckeditor5-typing": "v0.8.0",
+    "@ckeditor/ckeditor5-ui": "v0.7.1",
+    "@ckeditor/ckeditor5-undo": "v0.7.1",
+    "@ckeditor/ckeditor5-utils": "v0.8.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-docs": "^6.1.0",
-    "@ckeditor/ckeditor5-dev-lint": "^2.0.0",
-    "@ckeditor/ckeditor5-dev-tests": "^6.1.0",
+    "@ckeditor/ckeditor5-dev-docs": "^6.1.5",
+    "@ckeditor/ckeditor5-dev-env": "^4.2.0",
+    "@ckeditor/ckeditor5-dev-lint": "^2.0.2",
+    "@ckeditor/ckeditor5-dev-tests": "^7.0.5",
     "gulp": "^3.9.0",
     "guppy-pre-commit": "^0.4.0",
-    "lerna": "2.0.0-beta.34",
-    "mgit2": "^0.4.0"
+    "lerna": "2.0.0-beta.37",
+    "mgit2": "^0.5.1"
   },
   "engines": {
     "node": ">=6.0.0",
@@ -47,5 +50,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor5.git"
+  },
+  "scripts": {
+    "test": "node --max_old_space_size=4096 ./node_modules/.bin/ckeditor5-dev-tests --reporter=dots"
   }
 }

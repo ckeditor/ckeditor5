@@ -46,3 +46,35 @@ function getTestOptions() {
 	return require( '@ckeditor/ckeditor5-dev-tests' )
 		.parseArguments( process.argv.slice( 2 ) );
 }
+
+// Translations. --------------------------------------------------------------
+
+gulp.task( 'translations:collect', () => {
+	return require( '@ckeditor/ckeditor5-dev-env' ).collectTranslations();
+} );
+
+gulp.task( 'translations:upload', () => {
+	return require( '@ckeditor/ckeditor5-dev-env' ).uploadTranslations();
+} );
+
+gulp.task( 'translations:download', () => {
+	return require( '@ckeditor/ckeditor5-dev-env' ).downloadTranslations();
+} );
+
+// Releasing. -----------------------------------------------------------------
+
+gulp.task( 'changelog:dependencies', () => {
+	return require( '@ckeditor/ckeditor5-dev-env' )
+		.generateChangelogForDependencies( {
+			cwd: process.cwd(),
+			packages: 'packages'
+		} );
+} );
+
+gulp.task( 'release:dependencies', () => {
+	return require( '@ckeditor/ckeditor5-dev-env' )
+		.releaseDependencies( {
+			cwd: process.cwd(),
+			packages: 'packages'
+		} );
+} );

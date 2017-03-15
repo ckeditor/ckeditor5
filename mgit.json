@@ -1,8 +1,8 @@
 {
   "packages": "packages/",
   "dependencies": {
-    "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#10b55612a5c18075e72cafb4fbebc0682c6416c9",
-    "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#2b523faaff37a9f97da62c0b54b1a9c5aba46269",
+    "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#cb072cef329eab546e1f63a79036525140b50e7d",
+    "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#c1b49e9b24854738503c3e4accaccd51d7c5cdea",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#8f98e2b5617f0f04b619be666fddf0a5591deb44",
     "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#a1fa64f7263fa019ae51d40b0594b173381637bb",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#8b936cdef4aae49522b33b188a7746dc9ed45b26",
