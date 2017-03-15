@@ -20,15 +20,16 @@ import { parse } from '../../../src/dev-utils/view';
 testUtils.createSinonSandbox();
 
 describe( 'SelectionObserver', () => {
-	let viewDocument, viewRoot, mutationObserver, selectionObserver, domRoot;
+	let viewDocument, viewRoot, mutationObserver, selectionObserver, domRoot, domMain;
 
 	beforeEach( ( done ) => {
 		domRoot = document.createElement( 'div' );
-		domRoot.innerHTML = `<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>`;
+		domRoot.innerHTML = `<div contenteditable="true"></div><div contenteditable="true" id="additional"></div>`;
+		domMain = domRoot.childNodes[ 0 ];
 		document.body.appendChild( domRoot );
 
 		viewDocument = new ViewDocument();
-		viewDocument.createRoot( document.getElementById( 'main' ) );
+		viewDocument.createRoot( domMain );
 
 		mutationObserver = viewDocument.getObserver( MutationObserver );
 		selectionObserver = viewDocument.getObserver( SelectionObserver );
@@ -299,13 +300,13 @@ describe( 'SelectionObserver', () => {
 			}, 110 );
 		}, 100 );
 	} );
+
+	function changeDomSelection() {
+		const domSelection = document.getSelection();
+		const domFoo = domMain.childNodes[ 0 ].childNodes[ 0 ];
+		const offset = domSelection.anchorOffset;
+
+		domSelection.removeAllRanges();
+		domSelection.collapse( domFoo, offset == 2 ? 3 : 2 );
+	}
 } );
-
-function changeDomSelection() {
-	const domSelection = document.getSelection();
-	const domFoo = document.getElementById( 'main' ).childNodes[ 0 ].childNodes[ 0 ];
-	const offset = domSelection.anchorOffset;
-
-	domSelection.removeAllRanges();
-	domSelection.collapse( domFoo, offset == 2 ? 3 : 2 );
-}
