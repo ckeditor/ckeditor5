@@ -8,14 +8,16 @@
  */
 
 /**
- * Returns `nth` (starts from `0` of course) item of an `iterable`.
+ * Returns `nth` (starts from `0` of course) item of the given `iterable`.
+ * Consumes all items of the generator.
+ * Consumes all items up to the index of the iterator, including the returned item.
  *
  * @param {Number} index
  * @param {Iterable.<*>} iterable
  * @returns {*}
  */
 export default function nth( index, iterable ) {
-	for ( let item of iterable ) {
+	for ( const item of iterable ) {
 		if ( index === 0 ) {
 			return item;
 		}
