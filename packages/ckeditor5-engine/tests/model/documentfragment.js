@@ -29,6 +29,12 @@ describe( 'DocumentFragment', () => {
 			expect( frag.getChild( 2 ) ).to.have.property( 'data' ).that.equals( 'yy' );
 		} );
 
+		it( 'should have markers list', () => {
+			let frag = new DocumentFragment();
+
+			expect( frag ).to.have.property( 'markers' ).to.instanceof( Map );
+		} );
+
 		it( 'should have root property, equal to itself', () => {
 			let frag = new DocumentFragment();
 

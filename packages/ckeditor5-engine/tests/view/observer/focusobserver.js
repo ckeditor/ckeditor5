@@ -4,10 +4,11 @@
  */
 
 import FocusObserver from '../../../src/view/observer/focusobserver';
-import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import ViewDocument from '../../../src/view/document';
 import ViewRange from '../../../src/view/range';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+
+const setTimeout = global.window.setTimeout;
 
 describe( 'FocusObserver', () => {
 	let viewDocument, observer;
@@ -116,24 +117,29 @@ describe( 'FocusObserver', () => {
 			expect( viewDocument.isFocused ).to.be.true;
 		} );
 
-		it( 'should call render after selectionChange event is handled', () => {
+		it( 'should delay rendering to the next iteration of event loop', ( done ) => {
 			const renderSpy = sinon.spy( viewDocument, 'render' );
-			const selectionObserver = viewDocument.getObserver( SelectionObserver );
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 			sinon.assert.notCalled( renderSpy );
-			selectionObserver.fire( 'selectionChangeHandling', { domDocument: global.document } );
-			sinon.assert.called( renderSpy );
+
+			setTimeout( () => {
+				sinon.assert.called( renderSpy );
+				done();
+			}, 0 );
 		} );
 
-		it( 'should call render only after first selectionChange after focus', () => {
+		it( 'should not call render if destroyed', ( done ) => {
 			const renderSpy = sinon.spy( viewDocument, 'render' );
-			const selectionObserver = viewDocument.getObserver( SelectionObserver );
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
-			selectionObserver.fire( 'selectionChangeHandling', { domDocument: global.document } );
-			selectionObserver.fire( 'selectionChangeHandling', { domDocument: global.document } );
-			sinon.assert.calledOnce( renderSpy );
+			sinon.assert.notCalled( renderSpy );
+			observer.destroy();
+
+			setTimeout( () => {
+				sinon.assert.notCalled( renderSpy );
+				done();
+			}, 0 );
 		} );
 	} );
 } );

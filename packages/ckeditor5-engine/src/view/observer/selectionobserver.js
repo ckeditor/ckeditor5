@@ -85,10 +85,6 @@ export default class SelectionObserver extends Observer {
 
 		this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 2000 );
 
-		this.on( 'selectionChangeHandling', ( evt, data ) => {
-			this._handleSelectionChange( data.domDocument );
-		} );
-
 		/**
 		 * Private property to store the last selection, to check if the code does not enter infinite loop.
 		 *
@@ -123,7 +119,7 @@ export default class SelectionObserver extends Observer {
 		}
 
 		this.listenTo( domDocument, 'selectionchange', () => {
-			this.fire( 'selectionChangeHandling', { domDocument } );
+			this._handleSelectionChange( domDocument );
 		} );
 
 		this._documents.add( domDocument );
@@ -273,13 +269,4 @@ export default class SelectionObserver extends Observer {
  * {@link module:engine/view/document~Document#selection}.
  * @param {module:engine/view/selection~Selection} data.newSelection New View selection which is converted DOM selection.
  * @param {Selection} data.domSelection Native DOM selection.
- */
-
-/**
- * Fired when selection change is being handled. It can be used to execute code before or after actual `selectionchange`
- * event handling.
- *
- * @event module:engine/view/observer/selectionobserver~SelectionObserver#event:selectionChangeHandling
- * @param {Object} data
- * @param {Document} domDocument DOM document on which `selectionchange` event was fired.
  */

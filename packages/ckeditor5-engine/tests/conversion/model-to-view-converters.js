@@ -669,6 +669,21 @@ describe( 'model-to-view-converters', () => {
 			dispatcher.convertMarker( 'removeMarker', 'search', range1 );
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
+
+		it( 'should do nothing when range is collapsed', () => {
+			const viewSpan = new ViewAttributeElement( 'span', { class: 'name' } );
+
+			dispatcher.on( 'addMarker:name', wrapRange( viewSpan ) );
+			dispatcher.on( 'removeMarker:name', unwrapRange( viewSpan ) );
+
+			dispatcher.convertMarker( 'addMarker', 'name', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 ) );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+
+			dispatcher.convertMarker( 'removeMarker', 'name', range );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
 	} );
 
 	describe( 'insertUIElement/removeUIElement', () => {
@@ -770,6 +785,121 @@ describe( 'model-to-view-converters', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			expect( dispatcher.fire.calledWith( 'removeMarker:marker' ) );
+		} );
+
+		it( 'should not convert or consume if generator function returned null', () => {
+			const viewUi = () => null;
+
+			sinon.spy( dispatcher, 'fire' );
+
+			dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
+			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
+
+			dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
+				expect( consumable.test( data.range, 'addMarker' ) ).to.be.true;
+			} );
+
+			dispatcher.on( 'removeMarker:marker', ( evt, data, consumable ) => {
+				expect( consumable.test( data.range, 'removeMarker' ) ).to.be.true;
+			} );
+
+			dispatcher.convertMarker( 'addMarker', 'marker', range );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
+
+			dispatcher.convertMarker( 'removeMarker', 'marker', range );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			expect( dispatcher.fire.calledWith( 'removeMarker:marker' ) );
+		} );
+
+		it( 'should be possible to overwrite', () => {
+			const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
+
+			sinon.spy( dispatcher, 'fire' );
+
+			dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
+			dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
+
+			dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
+				consumable.consume( data.range, 'addMarker' );
+			}, { priority: 'high' } );
+
+			dispatcher.on( 'removeMarker:marker', ( evt, data, consumable ) => {
+				consumable.consume( data.range, 'removeMarker' );
+			}, { priority: 'high' } );
+
+			dispatcher.convertMarker( 'addMarker', 'marker', range );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
+
+			dispatcher.convertMarker( 'removeMarker', 'marker', range );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			expect( dispatcher.fire.calledWith( 'removeMarker:marker' ) );
+		} );
+
+		describe( 'non-collapsed range', () => {
+			beforeEach( () => {
+				range = ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 5 );
+			} );
+
+			it( 'should insert and remove ui element - element as a creator', () => {
+				const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
+
+				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
+				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
+
+				dispatcher.convertMarker( 'addMarker', 'marker', range );
+
+				expect( viewToString( viewRoot ) )
+					.to.equal( '<div><p>fo<span class="marker"></span>oba<span class="marker"></span>r</p></div>' );
+
+				dispatcher.convertMarker( 'removeMarker', 'marker', range );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			} );
+
+			it( 'should insert and remove ui element - function as a creator', () => {
+				const viewUi = ( data ) => new ViewUIElement( 'span', { 'class': data.name } );
+
+				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
+				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
+
+				dispatcher.convertMarker( 'addMarker', 'marker', range );
+
+				expect( viewToString( viewRoot ) )
+					.to.equal( '<div><p>fo<span class="marker"></span>oba<span class="marker"></span>r</p></div>' );
+
+				dispatcher.convertMarker( 'removeMarker', 'marker', range );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			} );
+
+			it( 'should insert and remove different opening and ending element', () => {
+				function creator( data ) {
+					if ( data.isOpening ) {
+						return new ViewUIElement( 'span', { 'class': data.name, 'data-start': true } );
+					}
+
+					return new ViewUIElement( 'span', { 'class': data.name, 'data-end': true } );
+				}
+
+				dispatcher.on( 'addMarker:marker', insertUIElement( creator ) );
+				dispatcher.on( 'removeMarker:marker', removeUIElement( creator ) );
+
+				dispatcher.convertMarker( 'addMarker', 'marker', range );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div><p>fo<span class="marker" data-start="true"></span>oba<span class="marker" data-end="true"></span>r</p></div>'
+				);
+
+				dispatcher.convertMarker( 'removeMarker', 'marker', range );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			} );
 		} );
 	} );
 
