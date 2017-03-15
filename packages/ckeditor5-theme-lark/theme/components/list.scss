@@ -2,14 +2,15 @@
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
 .ck-list {
+	@include ck-rounded-corners();
+	@include ck-unselectable();
+
 	list-style-type: none;
 	background: ck-color( 'background' );
 
-	@include ck-rounded-corners();
-
 	&__item {
 		padding: ck-spacing( 'medium' );
-		cursor: pointer;
+		cursor: default;
 		min-width: 12em;
 
 		&:hover,
