@@ -440,7 +440,23 @@ export function remove() {
 		const viewRange = conversionApi.mapper.toViewRange( modelRange );
 
 		viewWriter.remove( viewRange.getTrimmed() );
-		conversionApi.mapper.unbindModelElement( data.item );
+
+		// Unbind this element only if it was moved to graveyard.
+		// The dispatcher#remove event will also be fired if the element was moved to another place (remove+insert are fired).
+		// Let's say that <b> is moved before <a>. The view will be changed like this:
+		//
+		// 1) start:    <a></a><b></b>
+		// 2) insert:   <b (new)></b><a></a><b></b>
+		// 3) remove:   <b (new)></b><a></a>
+		//
+		// If we'll unbind the <b> element in step 3 we'll also lose binding of the <b (new)> element in the view,
+		// because unbindModelElement() cancels both bindings – (model <b> => view <b (new)>) and (view <b (new)> => model <b>).
+		// We can't lose any of these.
+		//
+		// See #847.
+		if ( data.item.root.rootName == '$graveyard' ) {
+			conversionApi.mapper.unbindModelElement( data.item );
+		}
 	};
 }
 
