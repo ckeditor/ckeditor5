@@ -12,7 +12,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import attachPlaceholder from '../../src/view/placeholder';
+import { attachPlaceholder } from '../../src/view/placeholder';
 
 ClassicEditor.create( global.document.querySelector( '#editor' ), {
 	plugins: [ Enter, Typing, Paragraph, Undo, Heading ],

@@ -21,7 +21,7 @@ extend( listener, EmitterMixin );
 const documentPlaceholders = new Map();
 
 /**
- * Attaches placeholder to provided element and updates it's visibility. To change placeholder simply call method
+ * Attaches placeholder to provided element and updates it's visibility. To change placeholder simply call this method
  * once again with new parameters.
  *
  * @param {module:engine/view/element~Element} element Element to attach placeholder to.
@@ -29,7 +29,7 @@ const documentPlaceholders = new Map();
  * @param {Function} [checkFunction] If provided it will be called before checking if placeholder should be displayed.
  * If function returns `false` placeholder will not be showed.
  */
-export default function attachPlaceholder( element, placeholderText, checkFunction ) {
+export function attachPlaceholder( element, placeholderText, checkFunction ) {
 	// Detach placeholder if was used before.
 	detachPlaceholder( element );
 
@@ -118,6 +118,7 @@ function updateSinglePlaceholder( element, checkFunction ) {
 	}
 
 	// It there are no child elements and selection is not placed inside element.
+	// TODO: check if selection is not deeper inside.
 	if ( !element.childCount && anchor && anchor.parent !== element ) {
 		element.addClass( CSS_CLASS );
 	} else {
