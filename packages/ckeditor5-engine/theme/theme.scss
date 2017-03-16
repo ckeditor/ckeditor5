@@ -1,10 +1,8 @@
 // Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
-@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_colors.scss';
-
 .ck-placeholder::before {
 	content: attr( data-placeholder );
 	cursor: text;
-	color: ck-color( 'text', 70% );
+	color: #c2c2c2;
 }
