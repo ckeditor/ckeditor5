@@ -11,7 +11,7 @@ const path = require( 'path' );
 const tasks = require( '@ckeditor/ckeditor5-dev-bundler-webpack' );
 const { logger, bundler } = require( '@ckeditor/ckeditor5-dev-utils' );
 const getWebpackConfig = require( '@ckeditor/ckeditor5-dev-bundler-webpack/lib/utils/getwebpackconfig' );
-const getWebpackEs6Config = require( '@ckeditor/ckeditor5-dev-bundler-webpack/lib/utils/getwebpackes6config' );
+const getWebpackES6Config = require( '@ckeditor/ckeditor5-dev-bundler-webpack/lib/utils/getwebpackes6config' );
 const buildConfig = require( '../build-config' );
 const log = logger();
 const entryPoint = 'ckeditor.js';
@@ -32,13 +32,13 @@ const webpackParams = {
 	entryPoint: path.join( cwd, entryPoint ),
 	destinationPath: path.join( cwd, buildConfig.destinationPath )
 };
-const webpackEs6Config = getWebpackEs6Config( webpackParams );
+const webpackES6Config = getWebpackES6Config( webpackParams );
 const webpackConfig = getWebpackConfig( webpackParams );
 
 log.info( `Creating the "ES5" and "ES6" builds...` );
 
 Promise.all( [
-		tasks.runWebpack( webpackEs6Config ).then( () => log.info( 'The "ES6" build has been created.' ) ),
+		tasks.runWebpack( webpackES6Config ).then( () => log.info( 'The "ES6" build has been created.' ) ),
 		tasks.runWebpack( webpackConfig ).then( () => log.info( 'The "ES5" build has been created.' ) )
 	] )
 	.then( () => {
