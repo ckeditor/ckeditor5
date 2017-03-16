@@ -612,10 +612,6 @@ describe( 'DataController', () => {
 			} );
 		}
 
-		if ( !( content instanceof DocumentFragment ) ) {
-			content = new DocumentFragment( [ content ] );
-		}
-
 		insertContent( dataController, content, doc.selection );
 	}
 } );
