@@ -39,7 +39,7 @@ export default class Heading extends Plugin {
 		const options = this._getLocalizedOptions();
 		const commands = [];
 		const t = editor.t;
-		let defaultOption;
+		const defaultTitle = t( 'Heading' );
 
 		for ( let option of options ) {
 			const command = editor.commands.get( option.modelElement );
@@ -55,17 +55,13 @@ export default class Heading extends Plugin {
 			dropdownItems.add( itemModel );
 
 			commands.push( command );
-
-			if ( !defaultOption && option.modelElement == 'paragraph' ) {
-				defaultOption = option;
-			}
 		}
 
 		// Create dropdown model.
 		const dropdownModel = new Model( {
 			withText: true,
 			items: dropdownItems,
-			tooltip: t( 'Heading' )
+			tooltip: defaultTitle
 		} );
 
 		dropdownModel.bind( 'isEnabled' ).to(
@@ -82,8 +78,8 @@ export default class Heading extends Plugin {
 			( ...areActive ) => {
 				const index = areActive.findIndex( value => value );
 
-				// If none of the commands is active, display the first one.
-				return ( options[ index ] || defaultOption ).title;
+				// If none of the commands is active, display default title.
+				return options[ index ] ? options[ index ].title : defaultTitle;
 			}
 		);
 
