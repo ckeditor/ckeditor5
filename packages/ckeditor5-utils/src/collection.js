@@ -57,14 +57,21 @@ export default class Collection {
 		this._idProperty = options && options.idProperty || 'id';
 
 		/**
-		 * A helper mapping external items from bound collection ({@link #bindTo})
-		 * and actual items of the collection.
+		 * A helper mapping external items of a bound collection ({@link #bindTo})
+		 * and actual items of this collection.
 		 *
 		 * @protected
 		 * @member {Map}
 		 */
 		this._bindToExternalToInternalMap = new Map();
-		this._bindToInternalToExternalMap = new Map();
+
+		/**
+		 * A collection instance this collection is bound to as a result
+		 * of calling {@link #bindTo} method.
+		 *
+		 * @protected
+		 * @member {module:utils/collection~Collection} #_bindToCollection
+		 */
 	}
 
 	/**
@@ -398,6 +405,12 @@ export default class Collection {
 		};
 	}
 
+	/**
+	 * Finalizes and activates a binding initiated by {#bindTo}.
+	 *
+	 * @protected
+	 * @param {Function} factory
+	 */
 	_setUpBindToBinding( factory ) {
 		const externalCollection = this._bindToCollection;
 
@@ -405,14 +418,22 @@ export default class Collection {
 		//
 		// @private
 		const addItem = ( evt, externalItem, index ) => {
-			const item = factory( externalItem );
+			const isExternalBoundToThis = externalCollection._bindToCollection == this;
+			const isExternalItemBound = [
+					...externalCollection._bindToExternalToInternalMap.values()
+				].indexOf( externalItem ) > -1;
 
-			if ( externalCollection._bindToInternalToExternalMap.has( externalItem ) ) {
+			// If an external collection is bound to this collection, which makes it a 2–way binding,
+			// and the particular external collection item is already bound, don't add it here.
+			// The external item has been created **out of this collection's item** and (re)adding it will
+			// cause a loop.
+			if ( isExternalBoundToThis && isExternalItemBound ) {
 				return;
 			}
 
+			const item = factory( externalItem );
+
 			this._bindToExternalToInternalMap.set( externalItem, item );
-			this._bindToInternalToExternalMap.set( item, externalItem );
 			this.add( item, index );
 		};
 
@@ -429,7 +450,6 @@ export default class Collection {
 			const item = this._bindToExternalToInternalMap.get( externalItem );
 
 			this._bindToExternalToInternalMap.delete( externalItem );
-			this._bindToInternalToExternalMap.delete( item );
 			this.remove( item );
 		} );
 	}

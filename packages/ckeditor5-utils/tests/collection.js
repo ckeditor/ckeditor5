@@ -727,7 +727,7 @@ describe( 'Collection', () => {
 		} );
 
 		describe( 'two–way data binding', () => {
-			it( 'works #1', () => {
+			it( 'works (custom factories)', () => {
 				const collectionA = new Collection();
 				const collectionB = new Collection();
 
@@ -738,7 +738,7 @@ describe( 'Collection', () => {
 				const spyB = sinon.spy();
 
 				collectionA.on( 'add', spyA );
-				collectionA.on( 'add', spyB );
+				collectionB.on( 'add', spyB );
 
 				collectionA.bindTo( collectionB ).using( 'data' );
 				collectionB.bindTo( collectionA ).as( FactoryClass );
@@ -760,7 +760,7 @@ describe( 'Collection', () => {
 				sinon.assert.callCount( spyB, 3 );
 			} );
 
-			it( 'works #2', () => {
+			it( 'works (1:1)', () => {
 				const collectionA = new Collection();
 				const collectionB = new Collection();
 
@@ -771,7 +771,7 @@ describe( 'Collection', () => {
 				const spyB = sinon.spy();
 
 				collectionA.on( 'add', spyA );
-				collectionA.on( 'add', spyB );
+				collectionB.on( 'add', spyB );
 
 				collectionA.bindTo( collectionB ).using( i => i );
 				collectionB.bindTo( collectionA ).using( i => i );
@@ -791,6 +791,55 @@ describe( 'Collection', () => {
 
 				sinon.assert.callCount( spyA, 3 );
 				sinon.assert.callCount( spyB, 3 );
+			} );
+
+			it( 'works (double chain)', () => {
+				const collectionA = new Collection();
+				const collectionB = new Collection();
+				const collectionC = new Collection();
+
+				collectionA.name = 'A';
+				collectionB.name = 'B';
+				collectionC.name = 'C';
+
+				const spyA = sinon.spy();
+				const spyB = sinon.spy();
+				const spyC = sinon.spy();
+
+				collectionA.on( 'add', spyA );
+				collectionB.on( 'add', spyB );
+				collectionC.on( 'add', spyC );
+
+				// A<--->B--->C
+				collectionA.bindTo( collectionB ).using( i => i );
+				collectionB.bindTo( collectionA ).using( i => i );
+				collectionC.bindTo( collectionB ).using( i => i );
+
+				collectionA.add( new FactoryClass( 'foo' ) );
+				collectionA.add( new FactoryClass( 'bar' ) );
+
+				expect( collectionA.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar' ], 'CollectionA' );
+				expect( collectionB.map( i => i ).every( i => i instanceof FactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar' ], 'CollectionB' );
+				expect( collectionC.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar' ], 'CollectionC' );
+
+				collectionB.add( new FactoryClass( 'baz' ) );
+
+				expect( collectionA.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionA' );
+				expect( collectionB.map( i => i ).every( i => i instanceof FactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionB' );
+				expect( collectionC.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionC' );
+
+				collectionC.add( new FactoryClass( 'qux' ) );
+
+				expect( collectionA.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionA' );
+				expect( collectionB.map( i => i ).every( i => i instanceof FactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionB' );
+				expect( collectionC.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar', 'baz', 'qux' ], 'CollectionC' );
+
+				sinon.assert.callCount( spyA, 3 );
+				sinon.assert.callCount( spyB, 3 );
+				sinon.assert.callCount( spyC, 4 );
 			} );
 		} );
 	} );
