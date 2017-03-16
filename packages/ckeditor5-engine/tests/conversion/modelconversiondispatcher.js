@@ -288,7 +288,7 @@ describe( 'ModelConversionDispatcher', () => {
 		} );
 	} );
 
-	describe.only( 'convertMove', () => {
+	describe( 'convertMove', () => {
 		let loggedEvents;
 
 		beforeEach( () => {
