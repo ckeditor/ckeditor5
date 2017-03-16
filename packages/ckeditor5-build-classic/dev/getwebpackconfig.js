@@ -6,7 +6,7 @@
 'use strict';
 
 const webpack = require( 'webpack' );
-const getWebpackEs6Config = require( './webpackEs6Config' );
+const getWebpackEs6Config = require( './getwebpackes6config' );
 
 module.exports = function getWebpackConfig( destinationPath, moduleName ) {
 	const config = getWebpackEs6Config( destinationPath, moduleName );

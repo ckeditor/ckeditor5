@@ -11,8 +11,8 @@ const webpack = require( 'webpack' );
 const tasks = require( '@ckeditor/ckeditor5-dev-bundler-rollup' );
 
 const config = require( '../build-config' );
-const getWebpackEs6Config = require( '../dev/webpackEs6Config' );
-const getWebpackConfig = require( '../dev/webpackConfig' );
+const getWebpackConfig = require( '../dev/getwebpackconfig' );
+const getWebpackEs6Config = require( '../dev/getwebpackes6config' );
 
 console.log( 'Creating an entry file...' );
 
@@ -31,7 +31,7 @@ Promise.all( [
 		runWebpack( webpackConfig, 'ES5' ),
 	] )
 	.then( () => {
-
+		console.log( 'Finished.' );
 	} )
 	.catch( ( err ) => {
 		process.exitCode = -1;
