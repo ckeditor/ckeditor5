@@ -517,12 +517,28 @@ describe( 'Collection', () => {
 			}
 		}
 
+		function isFactoryClass( item ) {
+			return item instanceof FactoryClass;
+		}
+
 		it( 'provides "using()" and "as()" interfaces', () => {
 			const returned = collection.bindTo( {} );
 
 			expect( returned ).to.have.keys( 'using', 'as' );
 			expect( returned.using ).to.be.a( 'function' );
 			expect( returned.as ).to.be.a( 'function' );
+		} );
+
+		it( 'stores reference to bound collection', () => {
+			const collectionB = new Collection();
+
+			expect( collection._bindToCollection ).to.be.undefined;
+			expect( collectionB._bindToCollection ).to.be.undefined;
+
+			collection.bindTo( collectionB ).as( FactoryClass );
+
+			expect( collection._bindToCollection ).to.equal( collectionB );
+			expect( collectionB._bindToCollection ).to.be.undefined;
 		} );
 
 		describe( 'as()', () => {
@@ -731,15 +747,13 @@ describe( 'Collection', () => {
 				const collectionA = new Collection();
 				const collectionB = new Collection();
 
-				collectionA.name = 'A';
-				collectionB.name = 'B';
-
 				const spyA = sinon.spy();
 				const spyB = sinon.spy();
 
 				collectionA.on( 'add', spyA );
 				collectionB.on( 'add', spyB );
 
+				// A<--->B
 				collectionA.bindTo( collectionB ).using( 'data' );
 				collectionB.bindTo( collectionA ).as( FactoryClass );
 
@@ -747,13 +761,13 @@ describe( 'Collection', () => {
 				collectionA.add( { value: 'bar' } );
 
 				expect( collectionA.map( i => i.value ) ).to.deep.equal( [ 'foo', 'bar' ], 'CollectionA' );
-				expect( collectionB.map( i => i ).every( i => i instanceof FactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i ).every( isFactoryClass ) ).to.be.true;
 				expect( collectionB.map( i => i.data.value ) ).to.deep.equal( [ 'foo', 'bar' ], 'CollectionB' );
 
 				collectionB.add( new FactoryClass( { value: 'baz' } ) );
 
 				expect( collectionA.map( i => i.value ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionA' );
-				expect( collectionB.map( i => i ).every( i => i instanceof FactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i ).every( isFactoryClass ) ).to.be.true;
 				expect( collectionB.map( i => i.data.value ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionB' );
 
 				sinon.assert.callCount( spyA, 3 );
@@ -764,15 +778,13 @@ describe( 'Collection', () => {
 				const collectionA = new Collection();
 				const collectionB = new Collection();
 
-				collectionA.name = 'A';
-				collectionB.name = 'B';
-
 				const spyA = sinon.spy();
 				const spyB = sinon.spy();
 
 				collectionA.on( 'add', spyA );
 				collectionB.on( 'add', spyB );
 
+				// A<--->B
 				collectionA.bindTo( collectionB ).using( i => i );
 				collectionB.bindTo( collectionA ).using( i => i );
 
@@ -780,13 +792,13 @@ describe( 'Collection', () => {
 				collectionA.add( new FactoryClass( 'bar' ) );
 
 				expect( collectionA.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar' ], 'CollectionA' );
-				expect( collectionB.map( i => i ).every( i => i instanceof FactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i ).every( isFactoryClass ) ).to.be.true;
 				expect( collectionB.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar' ], 'CollectionB' );
 
 				collectionB.add( new FactoryClass( 'baz' ) );
 
 				expect( collectionA.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionA' );
-				expect( collectionB.map( i => i ).every( i => i instanceof FactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i ).every( isFactoryClass ) ).to.be.true;
 				expect( collectionB.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionB' );
 
 				sinon.assert.callCount( spyA, 3 );
@@ -797,10 +809,6 @@ describe( 'Collection', () => {
 				const collectionA = new Collection();
 				const collectionB = new Collection();
 				const collectionC = new Collection();
-
-				collectionA.name = 'A';
-				collectionB.name = 'B';
-				collectionC.name = 'C';
 
 				const spyA = sinon.spy();
 				const spyB = sinon.spy();
@@ -819,21 +827,21 @@ describe( 'Collection', () => {
 				collectionA.add( new FactoryClass( 'bar' ) );
 
 				expect( collectionA.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar' ], 'CollectionA' );
-				expect( collectionB.map( i => i ).every( i => i instanceof FactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i ).every( isFactoryClass ) ).to.be.true;
 				expect( collectionB.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar' ], 'CollectionB' );
 				expect( collectionC.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar' ], 'CollectionC' );
 
 				collectionB.add( new FactoryClass( 'baz' ) );
 
 				expect( collectionA.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionA' );
-				expect( collectionB.map( i => i ).every( i => i instanceof FactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i ).every( isFactoryClass ) ).to.be.true;
 				expect( collectionB.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionB' );
 				expect( collectionC.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionC' );
 
 				collectionC.add( new FactoryClass( 'qux' ) );
 
 				expect( collectionA.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionA' );
-				expect( collectionB.map( i => i ).every( i => i instanceof FactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i ).every( isFactoryClass ) ).to.be.true;
 				expect( collectionB.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionB' );
 				expect( collectionC.map( i => i.data ) ).to.deep.equal( [ 'foo', 'bar', 'baz', 'qux' ], 'CollectionC' );
 
