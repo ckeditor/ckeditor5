@@ -18,6 +18,8 @@ import RootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditabl
 import { isWidget } from './utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
+import '../../theme/widget/theme.scss';
+
 /**
  * The widget plugin.
  * Adds default {@link module:engine/view/document~Document#event:mousedown mousedown} handling on widget elements.

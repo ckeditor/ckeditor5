@@ -7,8 +7,8 @@
  * @module image/imagecaption/utils
  */
 
-import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import { createNestedEditable } from '../widget/utils';
 
 const captionSymbol = Symbol( 'imageCaption' );
 
@@ -20,17 +20,8 @@ const captionSymbol = Symbol( 'imageCaption' );
  */
 export function captionElementCreator( viewDocument ) {
 	return () => {
-		const editable = new ViewEditableElement( 'figcaption', { contenteditable: true } );
-		editable.document = viewDocument;
+		const editable = createNestedEditable( 'figcaption', viewDocument );
 		editable.setCustomProperty( captionSymbol, true );
-
-		editable.on( 'change:isFocused', ( evt, property, is ) => {
-			if ( is ) {
-				editable.addClass( 'focused' );
-			} else {
-				editable.removeClass( 'focused' );
-			}
-		} );
 
 		return editable;
 	};

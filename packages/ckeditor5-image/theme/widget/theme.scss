@@ -1,0 +1,38 @@
+// Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_colors.scss';
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_shadow.scss';
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_states.scss';
+
+.ck-widget {
+	margin: 10px 0;
+	padding: 0;
+
+	&.ck-widget_selected, &.ck-widget_selected:hover {
+		outline: 2px solid #ace;
+	}
+
+	.ck-editor__editable.ck-blurred &.ck-widget_selected {
+		outline: 2px solid #ddd;
+	}
+
+	&:hover {
+		outline: 2px solid yellow;
+	}
+
+	.ck-nested-editable {
+		// The `:focus` styles is applied before `.focused` class inside editables.
+		// These styles show different border for a blink of an eye.
+		&:focus {
+			outline: none;
+			box-shadow: none;
+		}
+
+		&.focused {
+			@include ck-focus-ring( 'outline' );
+			@include ck-box-shadow( $ck-inner-shadow );
+			background-color: ck-color( 'background' );;
+		}
+	}
+}

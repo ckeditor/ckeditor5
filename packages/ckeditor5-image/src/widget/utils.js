@@ -7,6 +7,8 @@
  * @module image/widget/utils
  */
 
+import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
+
 const widgetSymbol = Symbol( 'isWidget' );
 const labelSymbol = Symbol( 'label' );
 
@@ -16,6 +18,13 @@ const labelSymbol = Symbol( 'label' );
  * @const {String}
  */
 export const WIDGET_CLASS_NAME = 'ck-widget';
+
+/**
+ * CSS class added to each nested edtiable.
+ *
+ * @type {String}
+ */
+export const NESTED_EDITABLE_CLASS_NAME = 'ck-nested-editable';
 
 /**
  * CSS class added to currently selected widget element.
@@ -87,6 +96,29 @@ export function getLabel( element ) {
 	}
 
 	return typeof labelCreator == 'function' ? labelCreator() : labelCreator;
+}
+
+/**
+ * Creates nested editable element with proper CSS classes.
+ *
+ * @param {String} elementName Name of the element to be created.
+ * @param {module:engine/view/document~Document} viewDocument
+ * @returns {module:engine/view/editableelement~EditableElement}
+ */
+export function createNestedEditable( elementName, viewDocument ) {
+	const editable = new ViewEditableElement( elementName, { contenteditable: true } );
+	editable.addClass( NESTED_EDITABLE_CLASS_NAME );
+	editable.document = viewDocument;
+
+	editable.on( 'change:isFocused', ( evt, property, is ) => {
+		if ( is ) {
+			editable.addClass( 'focused' );
+		} else {
+			editable.removeClass( 'focused' );
+		}
+	} );
+
+	return editable;
 }
 
 // Default filler offset function applied to all widget elements.

@@ -29,18 +29,6 @@ describe( 'image captioning utils', () => {
 			expect( element.name ).to.equal( 'figcaption' );
 			expect( isCaption( element ) ).to.be.true;
 		} );
-
-		it( 'should be created in context of proper document', () => {
-			expect( element.document ).to.equal( document );
-		} );
-
-		it( 'should add proper class when element is focused', () => {
-			element.isFocused = true;
-			expect( element.hasClass( 'focused' ) ).to.be.true;
-
-			element.isFocused = false;
-			expect( element.hasClass( 'focused' ) ).to.be.false;
-		} );
 	} );
 
 	describe( 'isCaptionEditable', () => {

@@ -4,7 +4,16 @@
  */
 
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import { widgetize, isWidget, WIDGET_CLASS_NAME, setLabel, getLabel } from '../../src/widget/utils';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import {
+	widgetize,
+	isWidget,
+	setLabel,
+	getLabel,
+	createNestedEditable,
+	WIDGET_CLASS_NAME,
+	NESTED_EDITABLE_CLASS_NAME
+} from '../../src/widget/utils';
 
 describe( 'widget utils', () => {
 	let element;
@@ -75,6 +84,31 @@ describe( 'widget utils', () => {
 			expect( getLabel( element ) ).to.equal( 'foo' );
 			caption = 'bar';
 			expect( getLabel( element ) ).to.equal( 'bar' );
+		} );
+	} );
+
+	describe( 'createNestedEditable', () => {
+		let viewDocument, element;
+
+		beforeEach( () => {
+			viewDocument = new ViewDocument();
+			element = createNestedEditable( 'div', viewDocument );
+		} );
+
+		it( 'should be created in context of proper document', () => {
+			expect( element.document ).to.equal( viewDocument );
+		} );
+
+		it( 'should add proper class', () => {
+			expect( element.hasClass( NESTED_EDITABLE_CLASS_NAME ) ).to.be.true;
+		} );
+
+		it( 'should add proper class when element is focused', () => {
+			element.isFocused = true;
+			expect( element.hasClass( 'focused' ) ).to.be.true;
+
+			element.isFocused = false;
+			expect( element.hasClass( 'focused' ) ).to.be.false;
 		} );
 	} );
 } );
