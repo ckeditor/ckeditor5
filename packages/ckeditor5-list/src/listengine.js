@@ -13,12 +13,14 @@ import IndentCommand from './indentcommand';
 
 import {
 	cleanList,
+	cleanListItem,
 	modelViewInsertion,
 	modelViewChangeType,
 	modelViewMergeAfter,
 	modelViewRemove,
 	modelViewSplitOnInsert,
 	modelViewChangeIndent,
+	modelChangePostFixer,
 	viewModelConverter,
 	modelToViewPosition,
 	viewToModelPosition
@@ -51,6 +53,11 @@ export default class ListEngine extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 
+		this.editor.document.on( 'change', modelChangePostFixer( this.editor.document ), { priority: 'high' } );
+
+		editing.mapper.registerViewToModelLength( 'li', getViewListItemLength );
+		data.mapper.registerViewToModelLength( 'li', getViewListItemLength );
+
 		editing.mapper.on( 'modelToViewPosition', modelToViewPosition );
 		editing.mapper.on( 'viewToModelPosition', viewToModelPosition );
 		data.mapper.on( 'modelToViewPosition', modelToViewPosition );
@@ -73,9 +80,10 @@ export default class ListEngine extends Plugin {
 		editing.modelToView.on( 'changeAttribute:indent:listItem', modelViewChangeIndent );
 		data.modelToView.on( 'changeAttribute:indent:listItem', modelViewChangeIndent );
 
-		data.viewToModel.on( 'element:li', viewModelConverter );
 		data.viewToModel.on( 'element:ul', cleanList, { priority: 'high' } );
 		data.viewToModel.on( 'element:ol', cleanList, { priority: 'high' } );
+		data.viewToModel.on( 'element:li', cleanListItem, { priority: 'high' } );
+		data.viewToModel.on( 'element:li', viewModelConverter );
 
 		// Register commands for numbered and bulleted list.
 		editor.commands.set( 'numberedList', new ListCommand( editor, 'numbered' ) );
@@ -85,4 +93,18 @@ export default class ListEngine extends Plugin {
 		editor.commands.set( 'indentList', new IndentCommand( editor, 'forward' ) );
 		editor.commands.set( 'outdentList', new IndentCommand( editor, 'backward' ) );
 	}
+}
+
+function getViewListItemLength( element ) {
+	let length = 1;
+
+	for ( let child of element.getChildren() ) {
+		if ( child.name == 'ul' || child.name == 'ol' ) {
+			for ( let item of child.getChildren() ) {
+				length += getViewListItemLength( item );
+			}
+		}
+	}
+
+	return length;
 }
