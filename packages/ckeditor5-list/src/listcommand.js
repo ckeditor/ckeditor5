@@ -172,11 +172,13 @@ export default class ListCommand extends Command {
 			// Phew! Now it will be easier :).
 			// For each block element that was in the selection, we will either: turn it to list item,
 			// turn it to paragraph, or change it's type. Or leave it as it is.
-			for ( let element of blocks ) {
+			// Do it in reverse as there might be multiple blocks (same as with changing indents).
+			for ( let element of blocks.reverse() ) {
 				if ( turnOff && element.name == 'listItem' ) {
 					// We are turning off and the element is a `listItem` - it should be converted to `paragraph`.
 					// The order is important to keep model in correct state.
-					batch.rename( element, 'paragraph' ).removeAttribute( element, 'type' ).removeAttribute( element, 'indent' );
+					batch.rename( element, 'paragraph' );
+					// List item specific attributes are removed by post fixer.
 				} else if ( !turnOff && element.name != 'listItem' ) {
 					// We are turning on and the element is not a `listItem` - it should be converted to `listItem`.
 					// The order is important to keep model in correct state.

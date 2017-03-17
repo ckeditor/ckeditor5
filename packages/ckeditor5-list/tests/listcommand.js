@@ -140,12 +140,13 @@ describe( 'ListCommand', () => {
 					expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
 				} );
 
-				it( 'should rename closest listItem to paragraph and remove attributes', () => {
+				it( 'should rename closest listItem to paragraph', () => {
 					setData( doc, '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
 
 					command._doExecute();
 
-					expect( getData( doc ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
+					// Attributes will be removed by post fixer.
+					expect( getData( doc ) ).to.equal( '<paragraph indent="0" type="bulleted">fo[]o</paragraph>' );
 				} );
 
 				it( 'should change closest listItem\' type', () => {
@@ -216,7 +217,7 @@ describe( 'ListCommand', () => {
 					const expectedData =
 						'<listItem indent="0" type="bulleted">---</listItem>' +
 						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<paragraph>[]---</paragraph>' +
+						'<paragraph indent="2" type="bulleted">[]---</paragraph>' + // Attributes will be removed by post fixer.
 						'<listItem indent="0" type="bulleted">---</listItem>' +
 						'<listItem indent="1" type="bulleted">---</listItem>' +
 						'<listItem indent="0" type="bulleted">---</listItem>' +
@@ -271,7 +272,7 @@ describe( 'ListCommand', () => {
 					expect( getData( doc ) ).to.equal( expectedData );
 				} );
 
-				it( 'should rename closest listItem to paragraph and remove attributes', () => {
+				it( 'should rename closest listItem to paragraph', () => {
 					// From second bullet list item to first numbered list item.
 					// Command value=true, we are turning off list items.
 					doc.selection.setRanges( [ new Range(
@@ -284,10 +285,10 @@ describe( 'ListCommand', () => {
 
 					const expectedData =
 						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<paragraph>[---</paragraph>' +
+						'<paragraph indent="0" type="bulleted">[---</paragraph>' + // Attributes will be removed by post fixer.
 						'<paragraph>---</paragraph>' +
 						'<paragraph>---</paragraph>' +
-						'<paragraph>]---</paragraph>' +
+						'<paragraph indent="0" type="numbered">]---</paragraph>' + // Attributes will be removed by post fixer.
 						'<listItem indent="0" type="numbered">---</listItem>' +
 						'<listItem indent="1" type="bulleted">---</listItem>' +
 						'<listItem indent="2" type="bulleted">---</listItem>';
@@ -330,11 +331,11 @@ describe( 'ListCommand', () => {
 
 					const expectedData =
 						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<paragraph>[---</paragraph>' +
+						'<paragraph indent="0" type="bulleted">[---</paragraph>' + // Attributes will be removed by post fixer.
 						'<paragraph>---</paragraph>' +
 						'<paragraph>---</paragraph>' +
-						'<paragraph>---</paragraph>' +
-						'<paragraph>]---</paragraph>' +
+						'<paragraph indent="0" type="numbered">---</paragraph>' + // Attributes will be removed by post fixer.
+						'<paragraph indent="0" type="numbered">]---</paragraph>' + // Attributes will be removed by post fixer.
 						'<listItem indent="0" type="bulleted">---</listItem>' +
 						'<listItem indent="1" type="bulleted">---</listItem>';
 
