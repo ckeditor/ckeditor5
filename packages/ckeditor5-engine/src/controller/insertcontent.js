@@ -45,14 +45,14 @@ export default function insertContent( dataController, content, selection, batch
 	let nodesToInsert;
 
 	if ( content.is( 'documentFragment' ) ) {
-		// The set of children being inserted is the only set in this context
-		// so it's the first and last (it's a hack ;)).
 		nodesToInsert = content.getChildren();
 	} else {
 		nodesToInsert = [ content ];
 	}
 
 	insertion.handleNodes( nodesToInsert, {
+		// The set of children being inserted is the only set in this context
+		// so it's the first and last (it's a hack ;)).
 		isFirst: true,
 		isLast: true
 	} );
