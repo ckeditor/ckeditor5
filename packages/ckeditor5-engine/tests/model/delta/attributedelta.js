@@ -393,6 +393,20 @@ describe( 'Batch', () => {
 			} );
 		} );
 	} );
+
+	it( 'should not add empty delta to the batch', () => {
+		let nodeA = new Element( 'p', { a: 1 } );
+		let nodeB = new Element( 'p', { b: 2 } );
+		root.insertChildren( 0, [ nodeA, nodeB ] );
+
+		batch.setAttribute( nodeA, 'a', 1 );
+
+		expect( batch.deltas.length ).to.equal( 0 );
+
+		batch.removeAttribute( Range.createIn( root ), 'x' );
+
+		expect( batch.deltas.length ).to.equal( 0 );
+	} );
 } );
 
 describe( 'AttributeDelta', () => {
