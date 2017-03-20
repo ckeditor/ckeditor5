@@ -409,7 +409,7 @@ export default class Collection {
 	 * Finalizes and activates a binding initiated by {#bindTo}.
 	 *
 	 * @protected
-	 * @param {Function} factory
+	 * @param {Function} factory A function which produces collection items.
 	 */
 	_setUpBindToBinding( factory ) {
 		const externalCollection = this._bindToCollection;

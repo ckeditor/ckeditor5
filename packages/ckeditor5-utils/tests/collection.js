@@ -521,6 +521,14 @@ describe( 'Collection', () => {
 			return item instanceof FactoryClass;
 		}
 
+		it( 'throws when binding more than once', () => {
+			collection.bindTo( {} );
+
+			expect( () => {
+				collection.bindTo( {} );
+			} ).to.throw( CKEditorError, /^collection-bind-to-rebind/ );
+		} );
+
 		it( 'provides "using()" and "as()" interfaces', () => {
 			const returned = collection.bindTo( {} );
 
@@ -743,7 +751,7 @@ describe( 'Collection', () => {
 		} );
 
 		describe( 'two–way data binding', () => {
-			it( 'works (custom factories)', () => {
+			it( 'works with custom factories', () => {
 				const collectionA = new Collection();
 				const collectionB = new Collection();
 
@@ -774,7 +782,7 @@ describe( 'Collection', () => {
 				sinon.assert.callCount( spyB, 3 );
 			} );
 
-			it( 'works (1:1)', () => {
+			it( 'works with 1:1 binding', () => {
 				const collectionA = new Collection();
 				const collectionB = new Collection();
 
@@ -805,7 +813,7 @@ describe( 'Collection', () => {
 				sinon.assert.callCount( spyB, 3 );
 			} );
 
-			it( 'works (double chain)', () => {
+			it( 'works with double chaining', () => {
 				const collectionA = new Collection();
 				const collectionB = new Collection();
 				const collectionC = new Collection();
