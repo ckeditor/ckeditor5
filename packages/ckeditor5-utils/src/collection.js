@@ -66,6 +66,15 @@ export default class Collection {
 		this._bindToExternalToInternalMap = new Map();
 
 		/**
+		 * A helper mapping items of this collection to external items of a bound collection
+		 * ({@link #bindTo}).
+		 *
+		 * @protected
+		 * @member {Map}
+		 */
+		this._bindToInternalToExternalMap = new Map();
+
+		/**
 		 * A collection instance this collection is bound to as a result
 		 * of calling {@link #bindTo} method.
 		 *
@@ -233,6 +242,10 @@ export default class Collection {
 
 		this._items.splice( index, 1 );
 		this._itemMap.delete( id );
+
+		const externalItem = this._bindToInternalToExternalMap.get( item );
+		this._bindToInternalToExternalMap.delete( item );
+		this._bindToExternalToInternalMap.delete( externalItem );
 
 		this.fire( 'remove', item );
 
@@ -419,21 +432,20 @@ export default class Collection {
 		// @private
 		const addItem = ( evt, externalItem, index ) => {
 			const isExternalBoundToThis = externalCollection._bindToCollection == this;
-			const isExternalItemBound = [
-					...externalCollection._bindToExternalToInternalMap.values()
-				].indexOf( externalItem ) > -1;
+			const externalItemBoundTo = externalCollection._bindToInternalToExternalMap.get( externalItem );
+			const item = externalItemBoundTo || factory( externalItem );
+
+			this._bindToExternalToInternalMap.set( externalItem, item );
+			this._bindToInternalToExternalMap.set( item, externalItem );
 
 			// If an external collection is bound to this collection, which makes it a 2–way binding,
 			// and the particular external collection item is already bound, don't add it here.
 			// The external item has been created **out of this collection's item** and (re)adding it will
 			// cause a loop.
-			if ( isExternalBoundToThis && isExternalItemBound ) {
+			if ( isExternalBoundToThis && externalItemBoundTo ) {
 				return;
 			}
 
-			const item = factory( externalItem );
-
-			this._bindToExternalToInternalMap.set( externalItem, item );
 			this.add( item, index );
 		};
 
@@ -449,8 +461,9 @@ export default class Collection {
 		this.listenTo( externalCollection, 'remove', ( evt, externalItem ) => {
 			const item = this._bindToExternalToInternalMap.get( externalItem );
 
-			this._bindToExternalToInternalMap.delete( externalItem );
-			this.remove( item );
+			if ( item ) {
+				this.remove( item );
+			}
 		} );
 	}
 

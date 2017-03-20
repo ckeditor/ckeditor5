@@ -857,6 +857,60 @@ describe( 'Collection', () => {
 				sinon.assert.callCount( spyB, 3 );
 				sinon.assert.callCount( spyC, 4 );
 			} );
+
+			it( 'removes items correctly', () => {
+				const collectionA = new Collection();
+				const collectionB = new Collection();
+
+				const spyAddA = sinon.spy();
+				const spyAddB = sinon.spy();
+				const spyRemoveA = sinon.spy();
+				const spyRemoveB = sinon.spy();
+
+				collectionA.on( 'add', spyAddA );
+				collectionB.on( 'add', spyAddB );
+				collectionA.on( 'remove', spyRemoveA );
+				collectionB.on( 'remove', spyRemoveB );
+
+				// A<--->B
+				collectionA.bindTo( collectionB ).using( 'data' );
+				collectionB.bindTo( collectionA ).as( FactoryClass );
+
+				collectionA.add( { value: 'foo' } );
+				collectionA.add( { value: 'bar' } );
+
+				expect( collectionA.map( i => i.value ) ).to.deep.equal( [ 'foo', 'bar' ], 'CollectionA' );
+				expect( collectionB.map( i => i ).every( isFactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i.data.value ) ).to.deep.equal( [ 'foo', 'bar' ], 'CollectionB' );
+
+				collectionB.add( new FactoryClass( { value: 'baz' } ) );
+
+				expect( collectionA.map( i => i.value ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionA' );
+				expect( collectionB.map( i => i ).every( isFactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i.data.value ) ).to.deep.equal( [ 'foo', 'bar', 'baz' ], 'CollectionB' );
+
+				collectionB.remove( 0 );
+
+				expect( collectionA.map( i => i.value ) ).to.deep.equal( [ 'bar', 'baz' ], 'CollectionA' );
+				expect( collectionB.map( i => i ).every( isFactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i.data.value ) ).to.deep.equal( [ 'bar', 'baz' ], 'CollectionB' );
+
+				sinon.assert.callCount( spyAddA, 3 );
+				sinon.assert.callCount( spyAddB, 3 );
+				sinon.assert.callCount( spyRemoveA, 1 );
+				sinon.assert.callCount( spyRemoveB, 1 );
+
+				collectionA.remove( 1 );
+
+				expect( collectionA.map( i => i.value ) ).to.deep.equal( [ 'bar' ], 'CollectionA' );
+				expect( collectionB.map( i => i ).every( isFactoryClass ) ).to.be.true;
+				expect( collectionB.map( i => i.data.value ) ).to.deep.equal( [ 'bar' ], 'CollectionB' );
+
+				sinon.assert.callCount( spyAddA, 3 );
+				sinon.assert.callCount( spyAddB, 3 );
+				sinon.assert.callCount( spyRemoveA, 2 );
+				sinon.assert.callCount( spyRemoveB, 2 );
+			} );
 		} );
 	} );
 
