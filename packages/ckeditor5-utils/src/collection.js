@@ -432,21 +432,23 @@ export default class Collection {
 		// @private
 		const addItem = ( evt, externalItem, index ) => {
 			const isExternalBoundToThis = externalCollection._bindToCollection == this;
-			const externalItemBoundTo = externalCollection._bindToInternalToExternalMap.get( externalItem );
-			const item = externalItemBoundTo || factory( externalItem );
-
-			this._bindToExternalToInternalMap.set( externalItem, item );
-			this._bindToInternalToExternalMap.set( item, externalItem );
+			const externalItemBound = externalCollection._bindToInternalToExternalMap.get( externalItem );
 
 			// If an external collection is bound to this collection, which makes it a 2–way binding,
 			// and the particular external collection item is already bound, don't add it here.
 			// The external item has been created **out of this collection's item** and (re)adding it will
 			// cause a loop.
-			if ( isExternalBoundToThis && externalItemBoundTo ) {
-				return;
-			}
+			if ( isExternalBoundToThis && externalItemBound ) {
+				this._bindToExternalToInternalMap.set( externalItem, externalItemBound );
+				this._bindToInternalToExternalMap.set( externalItemBound, externalItem );
+			} else {
+				const item = factory( externalItem );
 
-			this.add( item, index );
+				this._bindToExternalToInternalMap.set( externalItem, item );
+				this._bindToInternalToExternalMap.set( item, externalItem );
+
+				this.add( item, index );
+			}
 		};
 
 		// Load the initial content of the collection.
