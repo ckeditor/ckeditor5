@@ -11,6 +11,7 @@ import ViewListItemElement from './viewlistitemelement';
 
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
+import modelWriter from '@ckeditor/ckeditor5-engine/src/model/writer';
 
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
@@ -353,7 +354,7 @@ export function viewModelConverter( evt, data, consumable, conversionApi ) {
 		// 3. Handle `<li>` children.
 		data.context.push( listItem );
 
-		// `listItem`s created recursievly should have bigger indent.
+		// `listItem`s created recursively should have bigger indent.
 		data.indent++;
 
 		// `listItem`s will be kept in flat structure.
@@ -373,7 +374,7 @@ export function viewModelConverter( evt, data, consumable, conversionApi ) {
 			}
 			// If it was not a list it was a "regular" list item content. Just append it to `listItem`.
 			else {
-				listItem.appendChildren( converted );
+				modelWriter.insert( ModelPosition.createAt( listItem, 'end' ), converted );
 			}
 		}
 
