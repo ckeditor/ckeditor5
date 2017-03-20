@@ -22,12 +22,12 @@ export default class ClipboardObserver extends DomEventObserver {
 	constructor( doc ) {
 		super( doc );
 
-		this.domEventType = [ 'paste', 'copy', 'cut' ];
+		this.domEventType = [ 'paste', 'copy', 'cut', 'drop' ];
 	}
 
 	onDomEvent( domEvent ) {
 		this.fire( domEvent.type, domEvent, {
-			dataTransfer: new DataTransfer( domEvent.clipboardData )
+			dataTransfer: new DataTransfer( domEvent.clipboardData ? domEvent.clipboardData : domEvent.dataTransfer )
 		} );
 	}
 }
