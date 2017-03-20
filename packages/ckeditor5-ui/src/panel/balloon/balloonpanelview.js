@@ -159,6 +159,26 @@ export default class BalloonPanelView extends View {
 
 		Object.assign( this, { top, left, position } );
 	}
+
+	/**
+	 * Works exactly the same as {module:ui/panel/balloon/balloonpanelview~BalloonPanelView.attachTo} with one exception.
+	 * Position of attached panel is constantly updated when any of element in document is scrolled. Thanks to this
+	 * panel always sticks to the target element. See #170.
+	 *
+	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
+	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
+	 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
+	 */
+	stickTo( options ) {
+		// First we need to attach the balloon panel to target element.
+		this.attachTo( options );
+
+		// Then we need to listen to scroll of eny element in the document and update position of the balloon panel.
+		this.listenTo( document, 'scroll', () => this.attachTo( options ), { useCapture: true } );
+
+		// After all we need to clean up the listener.
+		this.once( 'change:isVisible', () => this.stopListening( document, 'scroll' ) );
+	}
 }
 
 /**

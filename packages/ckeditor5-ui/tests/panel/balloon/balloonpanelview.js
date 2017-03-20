@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global window, document */
+/* global window, document, Event */
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ViewCollection from '../../../src/viewcollection';
@@ -407,6 +407,55 @@ describe( 'BalloonPanelView', () => {
 
 				expect( view.position ).to.equal( 'se' );
 			} );
+		} );
+	} );
+
+	describe( 'stickTo()', () => {
+		let attachToSpy, target, limiter;
+
+		beforeEach( () => {
+			attachToSpy = testUtils.sinon.spy( view, 'attachTo' );
+			limiter = document.createElement( 'div' );
+			target = document.createElement( 'div' );
+
+			document.body.appendChild( limiter );
+			document.body.appendChild( target );
+		} );
+
+		afterEach( () => {
+			attachToSpy.restore();
+			limiter.remove();
+			target.remove();
+		} );
+
+		it( 'should attach balloon to the target constantly when any of element in document is scrolled', () => {
+			view.stickTo( { target, limiter } );
+
+			expect( attachToSpy.calledOnce ).to.true;
+			expect( attachToSpy.lastCall.args[ 0 ] ).to.deep.equal( { target, limiter } );
+
+			document.dispatchEvent( new Event( 'scroll' ) );
+
+			expect( attachToSpy.calledTwice ).to.true;
+			expect( attachToSpy.lastCall.args[ 0 ] ).to.deep.equal( { target, limiter } );
+
+			limiter.dispatchEvent( new Event( 'scroll' ) );
+
+			expect( attachToSpy.calledThrice ).to.true;
+			expect( attachToSpy.lastCall.args[ 0 ] ).to.deep.equal( { target, limiter } );
+		} );
+
+		it( 'should stop attach when balloon is hidden', () => {
+			view.stickTo( { target, limiter } );
+
+			expect( attachToSpy.calledOnce ).to.true;
+
+			view.hide();
+
+			document.dispatchEvent( new Event( 'scroll' ) );
+
+			// Still once.
+			expect( attachToSpy.calledOnce ).to.true;
 		} );
 	} );
 } );
