@@ -508,6 +508,24 @@ describe( 'Collection', () => {
 			expect( spy.callCount ).to.equal( 3 );
 			expect( collection.length ).to.equal( 0 );
 		} );
+
+		it( 'breaks the binding', () => {
+			const external = new Collection();
+			collection.bindTo( external ).using( i => i );
+
+			external.add( { foo: 'bar' } );
+			expect( collection ).to.have.length( 1 );
+
+			collection.clear();
+
+			external.add( { foo: 'baz' } );
+			expect( collection ).to.have.length( 0 );
+
+			external.remove( 0 );
+			expect( collection ).to.have.length( 0 );
+
+			expect( collection._bindToCollection ).to.be.null;
+		} );
 	} );
 
 	describe( 'bindTo()', () => {

@@ -292,9 +292,15 @@ export default class Collection {
 	}
 
 	/**
-	 * Removes all items from the collection.
+	 * Removes all items from the collection and destroys the binding created using
+	 * {@link #bindTo}.
 	 */
 	clear() {
+		if ( this._bindToCollection ) {
+			this.stopListening( this._bindToCollection );
+			this._bindToCollection = null;
+		}
+
 		while ( this.length ) {
 			this.remove( 0 );
 		}
@@ -371,6 +377,8 @@ export default class Collection {
 	 *		console.log( target.length ); // 2
 	 *		console.log( target.get( 0 ).value ); // 'foo'
 	 *		console.log( target.get( 1 ).value ); // 'bar'
+	 *
+	 * **Note**: {@link #clear} can be used to break the binding.
 	 *
 	 * @param {module:utils/collection~Collection} collection A collection to be bound.
 	 * @returns {Object}
