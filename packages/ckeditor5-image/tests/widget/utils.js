@@ -6,11 +6,11 @@
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import {
-	widgetize,
+	toWidget,
 	isWidget,
 	setLabel,
 	getLabel,
-	createNestedEditable,
+	toWidgetEditable,
 	WIDGET_CLASS_NAME,
 	NESTED_EDITABLE_CLASS_NAME
 } from '../../src/widget/utils';
@@ -20,10 +20,10 @@ describe( 'widget utils', () => {
 
 	beforeEach( () => {
 		element = new ViewElement( 'div' );
-		widgetize( element );
+		toWidget( element );
 	} );
 
-	describe( 'widgetize()', () => {
+	describe( 'toWidget()', () => {
 		it( 'should set contenteditable to false', () => {
 			expect( element.getAttribute( 'contenteditable' ) ).to.be.false;
 		} );
@@ -39,14 +39,14 @@ describe( 'widget utils', () => {
 
 		it( 'should add element\'s label if one is provided', () => {
 			element = new ViewElement( 'div' );
-			widgetize( element, { label: 'foo bar baz label' } );
+			toWidget( element, { label: 'foo bar baz label' } );
 
 			expect( getLabel( element ) ).to.equal( 'foo bar baz label' );
 		} );
 
 		it( 'should add element\'s label if one is provided as function', () => {
 			element = new ViewElement( 'div' );
-			widgetize( element, { label: () => 'foo bar baz label' } );
+			toWidget( element, { label: () => 'foo bar baz label' } );
 
 			expect( getLabel( element ) ).to.equal( 'foo bar baz label' );
 		} );
@@ -87,12 +87,12 @@ describe( 'widget utils', () => {
 		} );
 	} );
 
-	describe( 'createNestedEditable', () => {
+	describe( 'toWidgetEditable', () => {
 		let viewDocument, element;
 
 		beforeEach( () => {
 			viewDocument = new ViewDocument();
-			element = createNestedEditable( 'div', viewDocument );
+			element = toWidgetEditable( 'div', viewDocument );
 		} );
 
 		it( 'should be created in context of proper document', () => {

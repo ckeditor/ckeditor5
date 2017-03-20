@@ -8,7 +8,7 @@
  */
 
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import { createNestedEditable } from '../widget/utils';
+import { toWidgetEditable } from '../widget/utils';
 
 const captionSymbol = Symbol( 'imageCaption' );
 
@@ -20,7 +20,7 @@ const captionSymbol = Symbol( 'imageCaption' );
  */
 export function captionElementCreator( viewDocument ) {
 	return () => {
-		const editable = createNestedEditable( 'figcaption', viewDocument );
+		const editable = toWidgetEditable( 'figcaption', viewDocument );
 		editable.setCustomProperty( captionSymbol, true );
 
 		return editable;

@@ -44,7 +44,7 @@ export function isWidget( element ) {
 }
 
 /**
- * "Widgetizes" given {@link module:engine/view/element~Element}:
+ * Converts given {@link module:engine/view/element~Element} to widget in following way:
  * * sets `contenteditable` attribute to `true`,
  * * adds custom `getFillerOffset` method returning `null`,
  * * adds `ck-widget` CSS class,
@@ -56,7 +56,7 @@ export function isWidget( element ) {
  * a plain string or a function returning a string.
  * @returns {module:engine/view/element~Element} Returns same element.
  */
-export function widgetize( element, options ) {
+export function toWidget( element, options ) {
 	options = options || {};
 	element.setAttribute( 'contenteditable', false );
 	element.getFillerOffset = getFillerOffset;
@@ -105,7 +105,7 @@ export function getLabel( element ) {
  * @param {module:engine/view/document~Document} viewDocument
  * @returns {module:engine/view/editableelement~EditableElement}
  */
-export function createNestedEditable( elementName, viewDocument ) {
+export function toWidgetEditable( elementName, viewDocument ) {
 	const editable = new ViewEditableElement( elementName, { contenteditable: true } );
 	editable.addClass( NESTED_EDITABLE_CLASS_NAME );
 	editable.document = viewDocument;
