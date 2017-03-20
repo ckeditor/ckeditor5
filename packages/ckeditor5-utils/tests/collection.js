@@ -828,7 +828,7 @@ describe( 'Collection', () => {
 				collectionB.on( 'add', spyB );
 
 				// A<--->B
-				collectionA.bindTo( collectionB ).using( i => i.data );
+				collectionA.bindTo( collectionB ).using( 'data' );
 				collectionB.bindTo( collectionA ).using( i => new FactoryClass( i ) );
 
 				collectionA.add( { v: 4 } );
@@ -845,6 +845,38 @@ describe( 'Collection', () => {
 				expect( [ ...collectionB ].map( i => i.data ) ).to.deep.equal( [ ...collectionA ] );
 				expect( collectionB.map( i => i.data.v ) ).to.deep.equal( [ 4, 6, 8 ] );
 				expect( collectionA.map( i => i.v ) ).to.deep.equal( [ 4, 6, 8 ] );
+			} );
+
+			it( 'works with custom factories (custom index)', () => {
+				const collectionA = new Collection();
+				const collectionB = new Collection();
+
+				const spyA = sinon.spy();
+				const spyB = sinon.spy();
+
+				collectionA.on( 'add', spyA );
+				collectionB.on( 'add', spyB );
+
+				// A<--->B
+				collectionA.bindTo( collectionB ).using( i => ( { v: i.v * 2 } ) );
+				collectionB.bindTo( collectionA ).using( i => ( { v: i.v / 2 } ) );
+
+				assertItems( collectionA, [], [] );
+				assertItems( collectionB, [], [] );
+
+				collectionA.add( { v: 4 } );
+				collectionA.add( { v: 6 }, 0 );
+
+				assertItems( collectionA, [ 6, 4 ], [ [ 2, 4 ], [ 3, 6 ] ] );
+				assertItems( collectionB, [ 3, 2 ], [ [ 4, 2 ], [ 6, 3 ] ] );
+
+				collectionB.add( { v: 4 }, 1 );
+
+				assertItems( collectionA, [ 6, 8, 4 ], [ [ 2, 4 ], [ 3, 6 ], [ 4, 8 ] ] );
+				assertItems( collectionB, [ 3, 4, 2 ], [ [ 4, 2 ], [ 6, 3 ], [ 8, 4 ] ] );
+
+				sinon.assert.callCount( spyA, 3 );
+				sinon.assert.callCount( spyB, 3 );
 			} );
 
 			it( 'works with 1:1 binding', () => {
