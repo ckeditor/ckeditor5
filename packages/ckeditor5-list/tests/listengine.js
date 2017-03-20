@@ -693,7 +693,7 @@ describe( 'ListEngine', () => {
 
 			describe( 'move', () => {
 				testMove(
-					'move list item inside same list',
+					'list item inside same list',
 
 					'<paragraph>p</paragraph>' +
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -711,7 +711,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testMove(
-					'move out list item from list',
+					'out list item from list',
 
 					'<paragraph>p</paragraph>' +
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -731,7 +731,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testMove(
-					'move the only list item',
+					'the only list item',
 
 					'<paragraph>p</paragraph>' +
 					'[<listItem indent="0" type="bulleted">a</listItem>]' +
@@ -747,7 +747,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testMove(
-					'move list item between two lists of same type',
+					'list item between two lists of same type',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'[<listItem indent="0" type="bulleted">b</listItem>]' +
@@ -769,7 +769,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testMove(
-					'move list item between two lists of different type',
+					'list item between two lists of different type',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'[<listItem indent="0" type="bulleted">b</listItem>]' +
@@ -795,7 +795,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testMove(
-					'move element between list items',
+					'element between list items',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'<listItem indent="0" type="bulleted">b</listItem>' +
@@ -1491,7 +1491,7 @@ describe( 'ListEngine', () => {
 
 			describe( 'remove', () => {
 				testRemove(
-					'remove the first nested item',
+					'the first nested item',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'[<listItem indent="1" type="bulleted">b</listItem>]' +
@@ -1508,7 +1508,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testRemove(
-					'remove nested item from the middle',
+					'nested item from the middle',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'<listItem indent="1" type="bulleted">b</listItem>' +
@@ -1527,7 +1527,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testRemove(
-					'remove the last nested item',
+					'the last nested item',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'<listItem indent="1" type="bulleted">b</listItem>' +
@@ -1544,7 +1544,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testRemove(
-					'remove the only nested item',
+					'the only nested item',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'[<listItem indent="1" type="bulleted">c</listItem>]',
@@ -1555,7 +1555,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testRemove(
-					'remove the only nested item from list that separates two lists',
+					'the only nested item from list that separates two lists',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'<listItem indent="1" type="numbered">b</listItem>' +
@@ -1574,7 +1574,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testRemove(
-					'remove item that has nested lists, previous item has same indent',
+					'item that has nested lists, previous item has same indent',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'[<listItem indent="0" type="bulleted">b</listItem>]' +
@@ -1595,7 +1595,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testRemove(
-					'remove item that has nested lists, previous item has smaller indent',
+					'item that has nested lists, previous item has smaller indent',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'[<listItem indent="1" type="bulleted">b</listItem>]' +
@@ -1616,7 +1616,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testRemove(
-					'remove item that has nested lists, previous item has bigger indent by 1',
+					'item that has nested lists, previous item has bigger indent by 1',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'<listItem indent="1" type="bulleted">b</listItem>' +
@@ -1641,7 +1641,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testRemove(
-					'remove item that has nested lists, previous item has bigger indent by 2',
+					'item that has nested lists, previous item has bigger indent by 2',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'<listItem indent="1" type="bulleted">b</listItem>' +
@@ -1666,7 +1666,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testRemove(
-					'remove first list item that has nested list',
+					'first list item that has nested list',
 
 					'[<listItem indent="0" type="bulleted">a</listItem>]' +
 					'<listItem indent="1" type="bulleted">b</listItem>' + // This indent should be fixed by post fixer.
@@ -2329,7 +2329,7 @@ describe( 'ListEngine', () => {
 				// Since move is in fact remove + insert and does not event have its own converter, only a few cases will be tested here.
 
 				testMove(
-					'move out nested list items',
+					'out nested list items',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'[<listItem indent="1" type="bulleted">b</listItem>' +
@@ -2365,7 +2365,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testMove(
-					'move nested list items between lists of same type',
+					'nested list items between lists of same type',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'<listItem indent="1" type="bulleted">b</listItem>' +
@@ -2409,7 +2409,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testMove(
-					'move nested list items between lists of different type',
+					'nested list items between lists of different type',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'<listItem indent="1" type="bulleted">b</listItem>' +
@@ -2455,7 +2455,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testMove(
-					'move element between nested list',
+					'element between nested list',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'<listItem indent="1" type="bulleted">b</listItem>' +
