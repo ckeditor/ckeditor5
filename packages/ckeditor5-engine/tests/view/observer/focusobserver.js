@@ -3,13 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import ViewDocument from '../../../src/view/document';
 import ViewRange from '../../../src/view/range';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-
-const setTimeout = global.window.setTimeout;
-const domDocument = global.document;
 
 describe( 'FocusObserver', () => {
 	let viewDocument, observer;
@@ -37,12 +34,12 @@ describe( 'FocusObserver', () => {
 
 			viewDocument.on( 'focus', spy );
 
-			observer.onDomEvent( { type: 'focus', target: domDocument.body } );
+			observer.onDomEvent( { type: 'focus', target: document.body } );
 
 			expect( spy.calledOnce ).to.be.true;
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( domDocument.body );
+			expect( data.domTarget ).to.equal( document.body );
 		} );
 
 		it( 'should fire blur with the right event data', () => {
@@ -50,18 +47,18 @@ describe( 'FocusObserver', () => {
 
 			viewDocument.on( 'blur', spy );
 
-			observer.onDomEvent( { type: 'blur', target: domDocument.body } );
+			observer.onDomEvent( { type: 'blur', target: document.body } );
 
 			expect( spy.calledOnce ).to.be.true;
 
 			const data = spy.args[ 0 ][ 1 ];
-			expect( data.domTarget ).to.equal( domDocument.body );
+			expect( data.domTarget ).to.equal( document.body );
 		} );
 
 		it( 'should render document after blurring', () => {
 			const renderSpy = sinon.spy( viewDocument, 'render' );
 
-			observer.onDomEvent( { type: 'blur', target: domDocument.body } );
+			observer.onDomEvent( { type: 'blur', target: document.body } );
 
 			sinon.assert.calledOnce( renderSpy );
 		} );
@@ -71,8 +68,8 @@ describe( 'FocusObserver', () => {
 		let domMain, domHeader, viewMain, viewHeader;
 
 		beforeEach( () => {
-			domMain = domDocument.createElement( 'div' );
-			domHeader = domDocument.createElement( 'h1' );
+			domMain = document.createElement( 'div' );
+			domHeader = document.createElement( 'h1' );
 
 			viewMain = viewDocument.createRoot( domMain );
 			viewHeader = viewDocument.createRoot( domHeader, 'header' );
@@ -118,29 +115,29 @@ describe( 'FocusObserver', () => {
 			expect( viewDocument.isFocused ).to.be.true;
 		} );
 
-		it( 'should delay rendering to the next iteration of event loop', ( done ) => {
+		it( 'should delay rendering to the next iteration of event loop', () => {
 			const renderSpy = sinon.spy( viewDocument, 'render' );
+			const clock = sinon.useFakeTimers();
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 			sinon.assert.notCalled( renderSpy );
+			clock.tick( 0 );
+			sinon.assert.called( renderSpy );
 
-			setTimeout( () => {
-				sinon.assert.called( renderSpy );
-				done();
-			}, 0 );
+			clock.restore();
 		} );
 
-		it( 'should not call render if destroyed', ( done ) => {
+		it( 'should not call render if destroyed', () => {
 			const renderSpy = sinon.spy( viewDocument, 'render' );
+			const clock = sinon.useFakeTimers();
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 			sinon.assert.notCalled( renderSpy );
 			observer.destroy();
+			clock.tick( 0 );
+			sinon.assert.notCalled( renderSpy );
 
-			setTimeout( () => {
-				sinon.assert.notCalled( renderSpy );
-				done();
-			}, 0 );
+			clock.restore();
 		} );
 	} );
 } );

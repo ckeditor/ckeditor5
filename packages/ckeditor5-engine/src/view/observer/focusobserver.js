@@ -7,11 +7,9 @@
  * @module engine/view/observer/focusobserver
  */
 
-import DomEventObserver from './domeventobserver';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+/* globals setTimeout, clearTimeout */
 
-const setTimeout = global.window.setTimeout;
-const clearTimeout = global.window.clearTimeout;
+import DomEventObserver from './domeventobserver';
 
 /**
  * {@link module:engine/view/document~Document#event:focus Focus}
