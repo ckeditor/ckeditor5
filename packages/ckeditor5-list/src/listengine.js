@@ -55,6 +55,18 @@ export default class ListEngine extends Plugin {
 
 		this.editor.document.on( 'change', modelChangePostFixer( this.editor.document ), { priority: 'high' } );
 
+		// Unbind all moved model elements before conversion happens. This is important for converters.
+		// TODO: fix this when changes are converted on `changesDone`.
+		this.editor.document.on( 'change', ( evt, type, changes ) => {
+			if ( type == 'move' ) {
+				for ( let item of changes.range.getItems() ) {
+					if ( item.is( 'listItem' ) ) {
+						editing.mapper.unbindModelElement( item );
+					}
+				}
+			}
+		}, { priority: 'high' } );
+
 		editing.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 		data.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 
