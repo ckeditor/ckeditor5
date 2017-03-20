@@ -42,4 +42,26 @@ export default class DataTransfer {
 	setData( type, data ) {
 		this._native.setData( type, data );
 	}
+
+	*getFiles() {
+		// DataTransfer.files and items are Array-like and might not have an iterable interface.
+		const files = this._native.files ? Array.from( this._native.files ) : [];
+		const items = this._native.items ? Array.from( this._native.items ) : [];
+
+		if ( files.length ) {
+			yield* files;
+		}
+		// // Chrome have empty DataTransfer.files, but let get files through the items interface.
+		else {
+			for ( const item of items ) {
+				if ( item.kind == 'file' ) {
+					yield item.getAsFile();
+				}
+			}
+		}
+	}
+
+	getTypes() {
+		return this._native.types;
+	}
 }
