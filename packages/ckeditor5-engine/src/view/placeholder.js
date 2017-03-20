@@ -11,14 +11,11 @@ import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-const CSS_CLASS = 'ck-placeholder';
-const DATA_ATTRIBUTE = 'data-placeholder';
-
 const listener = {};
 extend( listener, EmitterMixin );
 
 // Each document stores information about its placeholder elements and check functions.
-const documentPlaceholders = new Map();
+const documentPlaceholders = new WeakMap();
 
 /**
  * Attaches placeholder to provided element and updates it's visibility. To change placeholder simply call this method
@@ -30,9 +27,6 @@ const documentPlaceholders = new Map();
  * If function returns `false` placeholder will not be showed.
  */
 export function attachPlaceholder( element, placeholderText, checkFunction ) {
-	// Detach placeholder if was used before.
-	detachPlaceholder( element );
-
 	const document = element.document;
 
 	if ( !document ) {
@@ -44,6 +38,9 @@ export function attachPlaceholder( element, placeholderText, checkFunction ) {
 		throw new CKEditorError( 'view-placeholder-element-is-detached: Provided element is not placed in document.' );
 	}
 
+	// Detach placeholder if was used before.
+	detachPlaceholder( element );
+
 	// Single listener per document.
 	if ( !documentPlaceholders.has( document ) ) {
 		documentPlaceholders.set( document, new Map() );
@@ -52,7 +49,7 @@ export function attachPlaceholder( element, placeholderText, checkFunction ) {
 
 	// Store text in element's data attribute.
 	// This data attribute is used in CSS class to show the placeholder.
-	element.setAttribute( DATA_ATTRIBUTE, placeholderText );
+	element.setAttribute( 'data-placeholder', placeholderText );
 
 	// Store information about placeholder.
 	documentPlaceholders.get( document ).set( element, checkFunction );
@@ -67,11 +64,13 @@ export function attachPlaceholder( element, placeholderText, checkFunction ) {
  * @param {module:engine/view/element~Element} element
  */
 export function detachPlaceholder( element ) {
-	element.removeClass( CSS_CLASS );
-	element.removeAttribute( DATA_ATTRIBUTE );
+	const document = element.document;
 
-	for ( let placeholders of documentPlaceholders.values() ) {
-		placeholders.delete( element );
+	element.removeClass( 'ck-placeholder' );
+	element.removeAttribute( 'data-placeholder' );
+
+	if ( documentPlaceholders.has( document ) ) {
+		documentPlaceholders.get( document ).delete( element );
 	}
 }
 
@@ -105,23 +104,22 @@ function updateSinglePlaceholder( element, checkFunction ) {
 
 	// If checkFunction is provided and returns false - remove placeholder.
 	if ( checkFunction && !checkFunction() ) {
-		element.removeClass( CSS_CLASS );
+		element.removeClass( 'ck-placeholder' );
 
 		return;
 	}
 
 	// If element is empty and editor is blurred.
 	if ( !document.isFocused && !element.childCount ) {
-		element.addClass( CSS_CLASS );
+		element.addClass( 'ck-placeholder' );
 
 		return;
 	}
 
 	// It there are no child elements and selection is not placed inside element.
-	// TODO: check if selection is not deeper inside.
 	if ( !element.childCount && anchor && anchor.parent !== element ) {
-		element.addClass( CSS_CLASS );
+		element.addClass( 'ck-placeholder' );
 	} else {
-		element.removeClass( CSS_CLASS );
+		element.removeClass( 'ck-placeholder' );
 	}
 }
