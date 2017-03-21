@@ -7,7 +7,17 @@
     "@ckeditor/ckeditor5-dev-utils": "^2.4.2",
     "@ckeditor/ckeditor5-dev-bundler-webpack": "^1.0.0",
     "@ckeditor/ckeditor5-editor-classic": "*",
-    "@ckeditor/ckeditor5-presets": "*"
+    "@ckeditor/ckeditor5-basic-styles": "*",
+    "@ckeditor/ckeditor5-clipboard": "*",
+    "@ckeditor/ckeditor5-enter": "*",
+    "@ckeditor/ckeditor5-heading": "*",
+    "@ckeditor/ckeditor5-image": "*",
+    "@ckeditor/ckeditor5-link": "*",
+    "@ckeditor/ckeditor5-list": "*",
+    "@ckeditor/ckeditor5-paragraph": "*",
+    "@ckeditor/ckeditor5-typing": "*",
+    "@ckeditor/ckeditor5-undo": "*",
+    "webpack": "^2.2.1"
   },
   "scripts": {
     "build": "node ./bin/build.js"
