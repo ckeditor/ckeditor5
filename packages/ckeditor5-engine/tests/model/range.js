@@ -750,8 +750,8 @@ describe( 'Range', () => {
 		describe( 'by MoveDelta', () => {
 			it( 'move before range', () => {
 				const start = new Position( root, [ 0 ] );
-				const end = new Position( otherRoot, [ 0 ] );
-				const delta = getMoveDelta( start, 2, end, 1 );
+				const target = new Position( otherRoot, [ 0 ] );
+				const delta = getMoveDelta( start, 2, target, 1 );
 
 				const transformed = range.getTransformedByDelta( delta );
 
@@ -760,8 +760,8 @@ describe( 'Range', () => {
 
 			it( 'move intersecting with range (and targeting before range)', () => {
 				const start = new Position( root, [ 4 ] );
-				const end = new Position( root, [ 0 ] );
-				const delta = getMoveDelta( start, 2, end, 1 );
+				const target = new Position( root, [ 0 ] );
+				const delta = getMoveDelta( start, 2, target, 1 );
 
 				const transformed = range.getTransformedByDelta( delta );
 
@@ -772,14 +772,79 @@ describe( 'Range', () => {
 			it( 'move inside the range', () => {
 				range.end.offset = 6;
 				const start = new Position( root, [ 3 ] );
-				const end = new Position( root, [ 5 ] );
-				const delta = getMoveDelta( start, 1, end, 1 );
+				const target = new Position( root, [ 5 ] );
+				const delta = getMoveDelta( start, 1, target, 1 );
 
 				const transformed = range.getTransformedByDelta( delta );
 
 				expectRange( transformed[ 0 ], 2, 4 );
 				expectRange( transformed[ 1 ], 5, 6 );
 				expectRange( transformed[ 2 ], 4, 5 );
+			} );
+
+			// #877.
+			it( 'moved element contains range start and is moved towards inside of range', () => {
+				// Initial state:
+				// <w><p>abc</p><p>x[x</p></w><p>d]ef</p>
+				// Expected state after moving `<p>` out of `<w>`:
+				// <w><p>abc</p></w><p>x[x</p><p>d]ef</p>
+
+				const range = new Range( new Position( root, [ 0, 1, 1 ] ), new Position( root, [ 1, 1 ] ) );
+				const delta = getMoveDelta( new Position( root, [ 0, 1 ] ), 1, new Position( root, [ 1 ] ), 1 );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expect( transformed.length ).to.equal( 1 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 1, 1 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 2, 1 ] );
+			} );
+
+			it( 'moved element contains range start and is moved out of range', () => {
+				// Initial state:
+				// <p>abc</p><p>x[x</p><p>d]ef</p>
+				// Expected state after moving:
+				// <p>x[x</p><p>abc</p><p>d]ef</p>
+
+				const range = new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 2, 1 ] ) );
+				const delta = getMoveDelta( new Position( root, [ 1 ] ), 1, new Position( root, [ 0 ] ), 1 );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expect( transformed.length ).to.equal( 1 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 2, 1 ] );
+			} );
+
+			it( 'moved element contains range end and is moved towards range', () => {
+				// Initial state:
+				// <p>a[bc</p><p>def</p><p>x]x</p>
+				// Expected state after moving:
+				// <p>a[bc</p><p>x]x</p><p>def</p>
+
+				const range = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 2, 1 ] ) );
+				const delta = getMoveDelta( new Position( root, [ 2 ] ), 1, new Position( root, [ 1 ] ), 1 );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expect( transformed.length ).to.equal( 1 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
+			} );
+
+			it( 'moved element contains range end and is moved out of range', () => {
+				// Initial state:
+				// <p>a[bc</p><p>x]x</p><p>def</p>
+				// Expected state after moving:
+				// <p>a[bc</p><p>def</p><p>x]x</p>
+
+				const range = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 1, 1 ] ) );
+				const delta = getMoveDelta( new Position( root, [ 1 ] ), 1, new Position( root, [ 3 ] ), 1 );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expect( transformed.length ).to.equal( 1 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 2, 1 ] );
 			} );
 		} );
 
@@ -857,6 +922,23 @@ describe( 'Range', () => {
 					expect( transformed.length ).to.equal( 1 );
 					expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 3 ] );
 					expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 3 ] );
+				} );
+
+				// #877.
+				it( 'merge elements that contain elements with range boundaries', () => {
+					// Initial state:
+					// <w><p>x[x</p></w><w><p>y]y</p></w>
+					// Expected state after merge:
+					// <w><p>x[x</p><p>y]y</p></w>
+
+					const range = new Range( new Position( root, [ 0, 0, 1 ] ), new Position( root, [ 1, 0, 1 ] ) );
+					const delta = getMergeDelta( new Position( root, [ 1 ] ), 1, 1, 1 );
+
+					const transformed = range.getTransformedByDelta( delta );
+
+					expect( transformed.length ).to.equal( 1 );
+					expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 0, 1 ] );
+					expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 1, 1 ] );
 				} );
 			} );
 

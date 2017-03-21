@@ -241,8 +241,18 @@ export default class ModelConversionDispatcher {
 	 * @param {module:engine/model/range~Range} range The range containing the moved content.
 	 */
 	convertMove( sourcePosition, range ) {
-		this.convertRemove( sourcePosition, range );
-		this.convertInsertion( range );
+		// Move left – convert insertion first (#847).
+		if ( range.start.isBefore( sourcePosition ) ) {
+			this.convertInsertion( range );
+
+			const sourcePositionAfterInsertion
+				= sourcePosition._getTransformedByInsertion( range.start, range.end.offset - range.start.offset );
+
+			this.convertRemove( sourcePositionAfterInsertion, range );
+		} else {
+			this.convertRemove( sourcePosition, range );
+			this.convertInsertion( range );
+		}
 	}
 
 	/**

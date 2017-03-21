@@ -1002,5 +1002,104 @@ describe( 'model-to-view-converters', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>foo<span></span>ar</div>' );
 		} );
+
+		it( 'should not unbind element that has not been moved to graveyard', () => {
+			const modelElement = new ModelElement( 'a' );
+			const viewElement = new ViewElement( 'a' );
+
+			modelRoot.appendChildren( [ modelElement, new ModelText( 'b' ) ] );
+			viewRoot.appendChildren( [ viewElement, new ViewText( 'b' ) ] );
+
+			mapper.bindElements( modelElement, viewElement );
+
+			dispatcher.on( 'remove', remove() );
+
+			// Move <a></a> after "b". Can be e.g. a part of an unwrap delta (move + remove).
+			modelWriter.move(
+				ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ),
+				ModelPosition.createAt( modelRoot, 'end' )
+			);
+
+			dispatcher.convertRemove(
+				ModelPosition.createFromParentAndOffset( modelRoot, 0 ),
+				ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 )
+			);
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div>b</div>' );
+
+			expect( mapper.toModelElement( viewElement ) ).to.equal( modelElement );
+			expect( mapper.toViewElement( modelElement ) ).to.equal( viewElement );
+		} );
+
+		it( 'should unbind elements if model element was moved to graveyard', () => {
+			const modelElement = new ModelElement( 'a' );
+			const viewElement = new ViewElement( 'a' );
+
+			modelRoot.appendChildren( [ modelElement, new ModelText( 'b' ) ] );
+			viewRoot.appendChildren( [ viewElement, new ViewText( 'b' ) ] );
+
+			mapper.bindElements( modelElement, viewElement );
+
+			dispatcher.on( 'remove', remove() );
+
+			// Move <a></a> to graveyard.
+			modelWriter.move(
+				ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ),
+				ModelPosition.createAt( modelDoc.graveyard, 'end' )
+			);
+
+			dispatcher.convertRemove(
+				ModelPosition.createFromParentAndOffset( modelRoot, 0 ),
+				ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 1 )
+			);
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div>b</div>' );
+
+			expect( mapper.toModelElement( viewElement ) ).to.be.undefined;
+			expect( mapper.toViewElement( modelElement ) ).to.be.undefined;
+		} );
+
+		// TODO move to conversion/integration.js one day.
+		it( 'should not break when remove() is used as part of unwrapping', () => {
+			// The whole process looks like this:
+			// <w><a></a></w> => <a></a><w><a></a></w> => <a></a><w></w> => <a></a>
+			// The <a> is duplicated for a while in the view.
+
+			const modelAElement = new ModelElement( 'a' );
+			const modelWElement = new ModelElement( 'w' );
+			const viewAElement = new ViewContainerElement( 'a' );
+			const viewA2Element = new ViewContainerElement( 'a2' );
+			const viewWElement = new ViewContainerElement( 'w' );
+
+			modelRoot.appendChildren( modelWElement );
+			viewRoot.appendChildren( viewWElement );
+
+			modelWElement.appendChildren( modelAElement );
+			viewWElement.appendChildren( viewAElement );
+
+			mapper.bindElements( modelWElement, viewWElement );
+			mapper.bindElements( modelAElement, viewAElement );
+
+			dispatcher.on( 'remove', remove() );
+			dispatcher.on( 'insert', insertElement( () => viewA2Element ) );
+
+			modelDoc.on( 'change', ( evt, type, changes ) => {
+				dispatcher.convertChange( type, changes );
+			} );
+
+			modelDoc.batch().unwrap( modelWElement );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><a2></a2></div>' );
+
+			expect( mapper.toModelElement( viewA2Element ) ).to.equal( modelAElement );
+			expect( mapper.toViewElement( modelAElement ) ).to.equal( viewA2Element );
+
+			// This is a bit unfortunate, but we think we can live with this.
+			// The viewAElement is not in the tree and there's a high chance that all reference to it are gone.
+			expect( mapper.toModelElement( viewAElement ) ).to.equal( modelAElement );
+
+			expect( mapper.toModelElement( viewWElement ) ).to.be.undefined;
+			expect( mapper.toViewElement( modelWElement ) ).to.be.undefined;
+		} );
 	} );
 } );
