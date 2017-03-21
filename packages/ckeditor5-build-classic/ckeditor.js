@@ -19,7 +19,6 @@ import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import TypingPlugin from '@ckeditor/ckeditor5-typing/src/typing';
 import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
 
-
 export default class ClassicEditor extends ClassicEditorBase {}
 
 ClassicEditor.build = {
