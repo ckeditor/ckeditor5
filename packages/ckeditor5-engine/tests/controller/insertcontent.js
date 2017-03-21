@@ -32,7 +32,7 @@ describe( 'DataController', () => {
 			expect( batch.deltas.length ).to.be.above( 0 );
 		} );
 
-		it( 'accepts DocumentFragment' , () => {
+		it( 'accepts DocumentFragment', () => {
 			const doc = new Document();
 			const dataController = new DataController( doc );
 			const batch = doc.batch();
@@ -47,7 +47,7 @@ describe( 'DataController', () => {
 			expect( getData( doc ) ).to.equal( 'xa[]x' );
 		} );
 
-		it( 'accepts Item' , () => {
+		it( 'accepts Text', () => {
 			const doc = new Document();
 			const dataController = new DataController( doc );
 			const batch = doc.batch();
