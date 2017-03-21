@@ -11,8 +11,7 @@ import {
 	setLabel,
 	getLabel,
 	toWidgetEditable,
-	WIDGET_CLASS_NAME,
-	NESTED_EDITABLE_CLASS_NAME
+	WIDGET_CLASS_NAME
 } from '../../src/widget/utils';
 
 describe( 'widget utils', () => {
@@ -100,15 +99,15 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should add proper class', () => {
-			expect( element.hasClass( NESTED_EDITABLE_CLASS_NAME ) ).to.be.true;
+			expect( element.hasClass( 'ck-editable' ) ).to.be.true;
 		} );
 
 		it( 'should add proper class when element is focused', () => {
 			element.isFocused = true;
-			expect( element.hasClass( 'focused' ) ).to.be.true;
+			expect( element.hasClass( 'ck-editable_focused' ) ).to.be.true;
 
 			element.isFocused = false;
-			expect( element.hasClass( 'focused' ) ).to.be.false;
+			expect( element.hasClass( 'ck-editable_focused' ) ).to.be.false;
 		} );
 	} );
 } );

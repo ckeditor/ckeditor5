@@ -21,18 +21,17 @@
 		outline: 2px solid yellow;
 	}
 
-	.ck-nested-editable {
+	.ck-editable {
 		// The `:focus` styles is applied before `.focused` class inside editables.
 		// These styles show different border for a blink of an eye.
 		&:focus {
+			&.ck-editable_focused {
+				@include ck-focus-ring( 'outline' );
+				@include ck-box-shadow( $ck-inner-shadow );
+				background-color: ck-color( 'background' );;
+			}
 			outline: none;
 			box-shadow: none;
-		}
-
-		&.focused {
-			@include ck-focus-ring( 'outline' );
-			@include ck-box-shadow( $ck-inner-shadow );
-			background-color: ck-color( 'background' );;
 		}
 	}
 }

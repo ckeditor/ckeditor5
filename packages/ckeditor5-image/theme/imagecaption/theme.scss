@@ -4,7 +4,7 @@
 @import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_colors.scss';
 
 .ck-widget.image {
-	figcaption.ck-nested-editable {
+	figcaption.ck-editable {
 		background-color: ck-color( 'foreground' );
 		padding: 10px;
 		font-size: .8em;

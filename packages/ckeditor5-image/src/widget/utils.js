@@ -20,13 +20,6 @@ const labelSymbol = Symbol( 'label' );
 export const WIDGET_CLASS_NAME = 'ck-widget';
 
 /**
- * CSS class added to each nested edtiable.
- *
- * @type {String}
- */
-export const NESTED_EDITABLE_CLASS_NAME = 'ck-nested-editable';
-
-/**
  * CSS class added to currently selected widget element.
  *
  * @const {String}
@@ -107,14 +100,14 @@ export function getLabel( element ) {
  */
 export function toWidgetEditable( elementName, viewDocument ) {
 	const editable = new ViewEditableElement( elementName, { contenteditable: true } );
-	editable.addClass( NESTED_EDITABLE_CLASS_NAME );
+	editable.addClass( 'ck-editable' );
 	editable.document = viewDocument;
 
 	editable.on( 'change:isFocused', ( evt, property, is ) => {
 		if ( is ) {
-			editable.addClass( 'focused' );
+			editable.addClass( 'ck-editable_focused' );
 		} else {
-			editable.removeClass( 'focused' );
+			editable.removeClass( 'ck-editable_focused' );
 		}
 	} );
 
