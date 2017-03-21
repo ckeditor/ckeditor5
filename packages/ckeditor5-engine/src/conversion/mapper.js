@@ -159,13 +159,12 @@ export default class Mapper {
 	toModelPosition( viewPosition ) {
 		const data = {
 			viewPosition: viewPosition,
-			modelPosition: this._defaultToModelPosition( viewPosition ),
 			mapper: this
 		};
 
 		this.fire( 'viewToModelPosition', data );
 
-		return data.modelPosition;
+		return data.modelPosition ? data.modelPosition : this._defaultToModelPosition( viewPosition );
 	}
 
 	/**
@@ -190,14 +189,13 @@ export default class Mapper {
 	 */
 	toViewPosition( modelPosition ) {
 		const data = {
-			viewPosition: this._defaultToViewPosition( modelPosition ),
 			modelPosition: modelPosition,
 			mapper: this
 		};
 
 		this.fire( 'modelToViewPosition', data );
 
-		return data.viewPosition;
+		return data.viewPosition ? data.viewPosition : this._defaultToViewPosition( modelPosition );
 	}
 
 	/**
