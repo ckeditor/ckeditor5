@@ -3,10 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelRange from '../model/range';
-
 import ViewElement from '../view/element';
 import ViewText from '../view/text';
+import ViewRange from '../view/range';
+import ViewTreeWalker from '../view/treewalker';
 import viewWriter from '../view/writer';
 
 /**
@@ -436,8 +436,12 @@ export function remove() {
 			return;
 		}
 
-		const modelRange = ModelRange.createFromPositionAndShift( data.sourcePosition, data.item.offsetSize );
-		const viewRange = conversionApi.mapper.toViewRange( modelRange );
+		// Note: at this moment we should avoid mapping non existing model positions.
+		// TODO: try to simplify this if `Mapper` ever changes.
+		const viewPosition = conversionApi.mapper.toViewPosition( data.sourcePosition );
+		const viewRange = data.item.is( 'element' ) ?
+			ViewRange.createOn( viewPosition.nodeAfter ) :
+			_expandViewPositionOnText( viewPosition, data.item.offsetSize );
 
 		viewWriter.remove( viewRange.getTrimmed() );
 
@@ -458,6 +462,35 @@ export function remove() {
 			conversionApi.mapper.unbindModelElement( data.item );
 		}
 	};
+}
+
+// Helper function that seeks the end of a view range that starts at `position` and contains `howMany` many letters.
+// Because in view there might be empty view ui elements that split text nodes, we cannot just use `ViewRange#createFromPositionAndShift()`
+function _expandViewPositionOnText( position, howMany ) {
+	const walker = new ViewTreeWalker( { startPosition: position } );
+	let currentOffset = 0;
+
+	for ( let value of walker ) {
+		if ( value.type == 'text' ) {
+			let length = value.item.data.length;
+
+			if ( currentOffset + length >= howMany ) {
+				let item = value.item;
+
+				if ( item.is( 'textProxy' ) ) {
+					item = item.textNode;
+					currentOffset = currentOffset - value.item.offsetInText;
+				}
+
+				return ViewRange.createFromParentsAndOffsets(
+					position.parent, position.offset,
+					item, howMany - currentOffset
+				);
+			}
+
+			currentOffset += length;
+		}
+	}
 }
 
 /**
