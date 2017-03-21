@@ -9,10 +9,11 @@
 
 /**
  * Returns `nth` (starts from `0` of course) item of the given `iterable`.
- * Consumes all items of the generator.
- * Consumes all items up to the index of the iterator that doesn't implement the `return()` method, (e.g. Array Iterator).
- * It's necessary to implement the `return()` method to close the iterator after the return statement in the `nth` function is invoked.
- * @see http://www.ecma-international.org/ecma-262/7.0/#sec-iteratorclose.
+ *
+ * If the iterable is a generator, then it consumes **all its items**.
+ * If it's a normal iterator, then it consumes **all items up to the given index**.
+ * Refer to the [Iterators and Generators](https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Iterators_and_Generators)
+ * guide to learn differences between these interfaces.
  *
  * @param {Number} index
  * @param {Iterable.<*>} iterable
