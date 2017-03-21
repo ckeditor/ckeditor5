@@ -10,7 +10,9 @@
 /**
  * Returns `nth` (starts from `0` of course) item of the given `iterable`.
  * Consumes all items of the generator.
- * Consumes all items up to the index of the iterator, including the returned item.
+ * Consumes all items up to the index of the iterator that doesn't implement the `return()` method, (e.g. Array Iterator).
+ * It's necessary to implement the `return()` method to close the iterator after the return statement in the `nth` function is invoked.
+ * @see http://www.ecma-international.org/ecma-262/7.0/#sec-iteratorclose.
  *
  * @param {Number} index
  * @param {Iterable.<*>} iterable
