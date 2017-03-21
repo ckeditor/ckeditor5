@@ -4,6 +4,7 @@
  */
 
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
+import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import {
 	toWidget,
@@ -91,7 +92,9 @@ describe( 'widget utils', () => {
 
 		beforeEach( () => {
 			viewDocument = new ViewDocument();
-			element = toWidgetEditable( 'div', viewDocument );
+			element = new ViewEditableElement( 'div' );
+			element.document = viewDocument;
+			toWidgetEditable( element );
 		} );
 
 		it( 'should be created in context of proper document', () => {

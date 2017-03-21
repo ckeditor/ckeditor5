@@ -8,6 +8,7 @@
  */
 
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import { toWidgetEditable } from '../widget/utils';
 
 const captionSymbol = Symbol( 'imageCaption' );
@@ -20,10 +21,11 @@ const captionSymbol = Symbol( 'imageCaption' );
  */
 export function captionElementCreator( viewDocument ) {
 	return () => {
-		const editable = toWidgetEditable( 'figcaption', viewDocument );
+		const editable = new ViewEditableElement( 'figcaption' );
+		editable.document = viewDocument;
 		editable.setCustomProperty( captionSymbol, true );
 
-		return editable;
+		return toWidgetEditable( editable );
 	};
 }
 

@@ -7,8 +7,6 @@
  * @module image/widget/utils
  */
 
-import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
-
 const widgetSymbol = Symbol( 'isWidget' );
 const labelSymbol = Symbol( 'label' );
 
@@ -92,16 +90,17 @@ export function getLabel( element ) {
 }
 
 /**
- * Creates nested editable element with proper CSS classes.
+ * Adds functionality to provided {module:engine/view/editableelement~EditableElement} to act as a widget's editable:
+ * * sets `contenteditable` attribute to `true`,
+ * * adds `ck-editable` CSS class,
+ * * adds `ck-editable_focused` CSS class when editable is focused and removes it when it's blurred.
  *
- * @param {String} elementName Name of the element to be created.
- * @param {module:engine/view/document~Document} viewDocument
- * @returns {module:engine/view/editableelement~EditableElement}
+ * @param {module:engine/view/editableelement~EditableElement} editable
+ * @returns {module:engine/view/editableelement~EditableElement} Returns same element that was provided in `editable` param.
  */
-export function toWidgetEditable( elementName, viewDocument ) {
-	const editable = new ViewEditableElement( elementName, { contenteditable: true } );
+export function toWidgetEditable( editable ) {
+	editable.setAttribute( 'contenteditable', 'true' );
 	editable.addClass( 'ck-editable' );
-	editable.document = viewDocument;
 
 	editable.on( 'change:isFocused', ( evt, property, is ) => {
 		if ( is ) {
