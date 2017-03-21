@@ -292,7 +292,7 @@ describe( 'LiveRange', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 2, 1 ] );
+				expect( live.end.path ).to.deep.equal( [ 2, 1 ] ); // Included some nodes.
 				expect( spy.calledOnce ).to.be.true;
 			} );
 
@@ -307,7 +307,7 @@ describe( 'LiveRange', () => {
 				doc.fire( 'change', 'move', changes, null );
 
 				expect( live.start.path ).to.deep.equal( [ 0, 1, 4 ] );
-				expect( live.end.path ).to.deep.equal( [ 0, 2, 6 ] );
+				expect( live.end.path ).to.deep.equal( [ 0, 2, 1 ] );
 				expect( spy.calledOnce ).to.be.true;
 			} );
 
@@ -357,7 +357,7 @@ describe( 'LiveRange', () => {
 				};
 				doc.fire( 'change', 'move', changes, null );
 
-				expect( live.start.path ).to.deep.equal( [ 0, 1, 2 ] );
+				expect( live.start.path ).to.deep.equal( [ 0, 1, 9 ] );
 				expect( live.end.path ).to.deep.equal( [ 0, 1, 12 ] );
 				expect( spy.calledOnce ).to.be.true;
 			} );

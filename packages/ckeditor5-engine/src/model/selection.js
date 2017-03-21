@@ -177,7 +177,7 @@ export default class Selection {
 
 	/**
 	 * Returns a copy of the first range in the selection.
-	 * irst range is the one which {@link module:engine/model/range~Range#start start} position
+	 * First range is the one which {@link module:engine/model/range~Range#start start} position
 	 * {@link module:engine/model/position~Position#isBefore is before} start position of all other ranges
 	 * (not to confuse with the first range added to the selection).
 	 *
