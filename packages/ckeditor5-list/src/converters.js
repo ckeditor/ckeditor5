@@ -16,6 +16,7 @@ import modelWriter from '@ckeditor/ckeditor5-engine/src/model/writer';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
+import ViewTreeWalker from '@ckeditor/ckeditor5-engine/src/view/treewalker';
 import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 
 /**
@@ -105,7 +106,7 @@ export function modelViewRemove( evt, data, consumable, conversionApi ) {
 	viewWriter.breakContainer( ViewPosition.createBefore( viewItem ) );
 	viewWriter.breakContainer( ViewPosition.createAfter( viewItem ) );
 
-	// 2. Remove the UL that contains just the removed LI.
+	// 2. Remove the UL that contains just the removed <li>.
 	const viewList = viewItem.parent;
 	const viewListPrev = viewList.previousSibling;
 	const removeRange = ViewRange.createOn( viewList );
@@ -115,10 +116,14 @@ export function modelViewRemove( evt, data, consumable, conversionApi ) {
 		mergeViewLists( viewListPrev, viewListPrev.nextSibling );
 	}
 
-	// 3. Bring back nested list that was in the removed LI.
+	// 3. Bring back nested list that was in the removed <li>.
 	hoistNestedLists( data.item.getAttribute( 'indent' ) + 1, data.sourcePosition, removeRange.start, viewItem, conversionApi.mapper );
 
-	conversionApi.mapper.unbindModelElement( data.item );
+	// Unbind this element only if it was moved to graveyard.
+	// See #847.
+	if ( data.item.root.rootName == '$graveyard' ) {
+		conversionApi.mapper.unbindModelElement( data.item );
+	}
 }
 
 /**
@@ -159,7 +164,7 @@ export function modelViewChangeIndent( evt, data, consumable, conversionApi ) {
 		removePosition = removeRange.start;
 	}
 
-	// 3. Bring back nested list that was in the removed LI.
+	// 3. Bring back nested list that was in the removed <li>.
 	hoistNestedLists( data.attributeOldValue + 1, data.range.start, removeRange.start, viewItem, conversionApi.mapper );
 
 	// 4. Inject view list like it is newly inserted.
@@ -462,35 +467,24 @@ export function cleanListItem( evt, data, consumable ) {
  * @param {Object} data Object containing additional data and placeholder for mapping result.
  */
 export function modelToViewPosition( evt, data ) {
-	let posParent = data.viewPosition.parent;
+	const modelItem = data.modelPosition.nodeBefore;
 
-	// When view position is wrong it usually ends up in text node. We need to get more meaningful parent.
-	if ( posParent.is( 'text' ) ) {
-		posParent = posParent.parent;
-	}
+	if ( modelItem && modelItem.is( 'listItem' ) ) {
+		const viewItem = data.mapper.toViewElement( modelItem );
+		const topmostViewList = viewItem.getAncestors().find( ( element ) => element.is( 'ul' ) || element.is( 'ol' ) );
+		const walker = new ViewTreeWalker( {
+			startPosition: ViewPosition.createAt( viewItem, 0 )
+		} );
 
-	// If the position ended up somewhere in LI, but in model it is not in `listItem`, this means it got incorrectly mapped.
-	// In model the position is probably between two `listItem` elements and the offset reflects between which items it is.
-	if ( posParent.name == 'li' && data.modelPosition.parent.name != 'listItem' ) {
-		const viewRange = ViewRange.createIn( posParent );
+		for ( let value of walker ) {
+			if ( value.type == 'elementStart' && value.item.is( 'li' ) ) {
+				data.viewPosition = value.previousPosition;
 
-		// Because of how default model to view mapping works, the view position offset is telling us which nested
-		// LI of this LI we have to find.
-		let offset = data.viewPosition.offset;
+				break;
+			} else if ( value.type == 'elementEnd' && value.item == topmostViewList ) {
+				data.viewPosition = value.nextPosition;
 
-		// Search this LI contents for all LIs. Treat each LI like it is next offset in model.
-		for ( let item of viewRange.getItems() ) {
-			if ( item.is( 'li' ) ) {
-				offset--;
-
-				// We found enough LIs, this is the correct one.
-				if ( offset === 0 ) {
-					// Create position before correct LI.
-					data.viewPosition = ViewPosition.createBefore( item );
-					evt.stop();
-
-					break;
-				}
+				break;
 			}
 		}
 	}
@@ -651,8 +645,8 @@ function _fixItems( changePosition, document, batch ) {
 }
 
 // Helper function that creates a `<ul><li></li></ul>` or (`<ol>`) structure out of given `modelItem` model `listItem` element.
-// Then, it binds created view list item (LI) with model `listItem` element.
-// The function then returns created view list item (LI).
+// Then, it binds created view list item (<li>) with model `listItem` element.
+// The function then returns created view list item (<li>).
 function generateLiInUl( modelItem, mapper ) {
 	const listType = modelItem.getAttribute( 'type' ) == 'numbered' ? 'ol' : 'ul';
 	const viewItem = new ViewListItemElement();
