@@ -81,7 +81,7 @@ export default class ClassicEditor extends StandardEditor {
 	 */
 	static create( element, config ) {
 		return new Promise( ( resolve ) => {
-			const editor = new ClassicEditor( element, config );
+			const editor = new this( element, config );
 
 			resolve(
 				editor.initPlugins()
