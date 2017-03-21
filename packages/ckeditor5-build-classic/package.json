@@ -5,7 +5,7 @@
   "dependencies": {},
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-utils": "^2.4.2",
-    "@ckeditor/ckeditor5-dev-bundler-webpack": "^1.0.0",
+    "@ckeditor/ckeditor5-dev-webpack-utils": "^1.0.0",
     "@ckeditor/ckeditor5-editor-classic": "*",
     "@ckeditor/ckeditor5-basic-styles": "*",
     "@ckeditor/ckeditor5-clipboard": "*",

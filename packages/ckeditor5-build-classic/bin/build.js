@@ -8,10 +8,9 @@
 'use strict';
 
 const path = require( 'path' );
-const tasks = require( '@ckeditor/ckeditor5-dev-bundler-webpack' );
+const webpack = require( 'webpack' );
 const { logger, bundler } = require( '@ckeditor/ckeditor5-dev-utils' );
-const getWebpackConfig = require( '@ckeditor/ckeditor5-dev-bundler-webpack/lib/utils/getwebpackconfig' );
-const getWebpackES6Config = require( '@ckeditor/ckeditor5-dev-bundler-webpack/lib/utils/getwebpackes6config' );
+const webpackUtils = require( '@ckeditor/ckeditor5-dev-webpack-utils' );
 const buildConfig = require( '../build-config' );
 const log = logger();
 const entryPoint = 'ckeditor.js';
@@ -25,21 +24,22 @@ bundler.createEntryFile( entryPoint, {
 	config: buildConfig.editorConfig,
 } );
 
-const cwd = path.join( __dirname, '..' );
+const packageRoot = path.join( __dirname, '..' );
+const ckeditor5Root = path.join( packageRoot, '..', '..' );
 const webpackParams = {
-	cwd,
+	cwd: ckeditor5Root,
 	moduleName: buildConfig.moduleName,
-	entryPoint: path.join( cwd, entryPoint ),
-	destinationPath: path.join( cwd, buildConfig.destinationPath )
+	entryPoint: path.join( packageRoot, entryPoint ),
+	destinationPath: path.join( packageRoot, buildConfig.destinationPath )
 };
-const webpackES6Config = getWebpackES6Config( webpackParams );
-const webpackConfig = getWebpackConfig( webpackParams );
+const webpackES6Config = webpackUtils.getWebpackES6Config( webpackParams );
+const webpackConfig = webpackUtils.getWebpackConfig( webpackParams );
 
 log.info( `Creating the "ES5" and "ES6" builds...` );
 
 Promise.all( [
-		tasks.runWebpack( webpackES6Config ).then( () => log.info( 'The "ES6" build has been created.' ) ),
-		tasks.runWebpack( webpackConfig ).then( () => log.info( 'The "ES5" build has been created.' ) )
+		runWebpack( webpackES6Config ).then( () => log.info( 'The "ES6" build has been created.' ) ),
+		runWebpack( webpackConfig ).then( () => log.info( 'The "ES5" build has been created.' ) )
 	] )
 	.then( () => {
 		log.info( 'Finished.' );
@@ -49,3 +49,15 @@ Promise.all( [
 
 		log.error( err );
 	} );
+
+function runWebpack( config ) {
+	return new Promise( ( resolve, reject ) => {
+		webpack( config, ( err ) => {
+			if ( err ) {
+				return reject( err );
+			}
+
+			return resolve();
+		} );
+	} );
+}
