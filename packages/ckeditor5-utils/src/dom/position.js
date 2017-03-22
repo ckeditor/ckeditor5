@@ -103,7 +103,8 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 		const ancestorPosition = getAbsoluteRectCoordinates( new Rect( positionedElementAncestor ) );
 		const ancestorComputedStyles = global.window.getComputedStyle( positionedElementAncestor );
 
-		// (#126) If there's some positioned ancestor of the panel, then its `Rect` must be taken into
+		// (https://github.com/ckeditor/ckeditor5-ui-default/issues/126)
+		// If there's some positioned ancestor of the panel, then its `Rect` must be taken into
 		// consideration. `Rect` is always relative to the viewport while `position: absolute` works
 		// with respect to that positioned ancestor.
 		left -= ancestorPosition.left;
