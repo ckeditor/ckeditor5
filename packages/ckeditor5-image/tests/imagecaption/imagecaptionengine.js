@@ -350,6 +350,23 @@ describe( 'ImageCaptionEngine', () => {
 					'</figure>'
 				);
 			} );
+
+			it( 'undo should work after inserting the image', () => {
+				const modelRoot = document.getRoot();
+				const image = new ModelElement( 'image' );
+
+				document.enqueueChanges( () => {
+					const batch = document.batch();
+
+					batch.insert( ModelPosition.createAt( modelRoot ), image );
+				} );
+
+				expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
+					'<image><caption></caption></image>'
+				);
+
+				editor.execute( 'undo' );
+			} );
 		} );
 	} );
 } );
