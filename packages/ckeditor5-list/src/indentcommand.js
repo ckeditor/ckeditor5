@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command/command';
-import { getClosestListItem } from './utils';
+import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
  * The list indent command. It is used by the {@link module:list/list~List list feature}.
@@ -97,7 +97,7 @@ export default class IndentCommand extends Command {
 	 */
 	_checkEnabled() {
 		// Check whether any of position's ancestor is a list item.
-		const listItem = getClosestListItem( this.editor.document.selection.getFirstPosition() );
+		const listItem = first( this.editor.document.selection.getSelectedBlocks() );
 
 		// If selection is not in a list item, the command is disabled.
 		if ( !listItem ) {

@@ -40,6 +40,9 @@ export default class ListEngine extends Plugin {
 		const editor = this.editor;
 
 		// Schema.
+		// Note: in case `$block` will be ever allowed in `listItem`, keep in mind that this feature
+		// uses `Selection#getSelectedBlocks()` without any additional processing to obtain all selected list items.
+		// If there are blocks allowed inside list item, algorithms using `getSelectedBlocks()` will have to be modified.
 		const schema = editor.document.schema;
 		schema.registerItem( 'listItem', '$block' );
 		schema.allow( {

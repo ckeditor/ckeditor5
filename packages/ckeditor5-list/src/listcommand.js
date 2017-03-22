@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import { getClosestListItem } from './utils';
+import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
  * The list command. It is used by the {@link module:list/list~List list feature}.
@@ -56,10 +56,8 @@ export default class ListCommand extends Command {
 	 * Sets command's value based on the document selection.
 	 */
 	refreshValue() {
-		const position = this.editor.document.selection.getFirstPosition();
-
 		// Check whether closest `listItem` ancestor of the position has a correct type.
-		const listItem = getClosestListItem( position );
+		const listItem = first( this.editor.document.selection.getSelectedBlocks() );
 		this.value = listItem !== null && listItem.getAttribute( 'type' ) == this.type;
 	}
 

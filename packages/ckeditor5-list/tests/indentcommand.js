@@ -21,9 +21,11 @@ describe( 'IndentCommand', () => {
 		root = doc.createRoot();
 
 		doc.schema.registerItem( 'listItem', '$block' );
+		doc.schema.registerItem( 'paragraph', '$block' );
 
 		doc.schema.allow( { name: '$block', inside: '$root' } );
 		doc.schema.allow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: '$root' } );
+		doc.schema.allow( { name: 'paragraph', inside: '$root' } );
 
 		setData(
 			doc,
