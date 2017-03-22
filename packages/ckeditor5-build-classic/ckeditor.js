@@ -4,9 +4,10 @@
  */
 
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
+import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import EnterPlugin from '@ckeditor/ckeditor5-enter/src/enter';
 import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
 import ImagePlugin from '@ckeditor/ckeditor5-image/src/image';
@@ -19,13 +20,14 @@ import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import TypingPlugin from '@ckeditor/ckeditor5-typing/src/typing';
 import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
 
-export default class ClassicEditor extends ClassicEditorBase {}
+export class ClassicEditor extends ClassicEditorBase {}
 
 ClassicEditor.build = {
 	plugins: [
+		AutoformatPlugin,
+		ClipboardPlugin,
 		BoldPlugin,
 		ItalicPlugin,
-		ClipboardPlugin,
 		EnterPlugin,
 		HeadingPlugin,
 		ImagePlugin,

@@ -5,8 +5,9 @@
 
 /* globals document */
 
-import ClassicEditor from '../ckeditor';
+import { ClassicEditor } from '../ckeditor';
 import BaseClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -50,6 +51,7 @@ describe( 'ClassicEditor', () => {
 
 		it( 'should load all its dependencies', () => {
 			expect( editor.plugins.get( ParagraphPlugin ) ).to.be.instanceOf( ParagraphPlugin );
+			expect( editor.plugins.get( AutoformatPlugin ) ).to.be.instanceOf( AutoformatPlugin );
 			expect( editor.plugins.get( BoldPlugin ) ).to.be.instanceOf( BoldPlugin );
 			expect( editor.plugins.get( HeadingPlugin ) ).to.be.instanceOf( HeadingPlugin );
 			expect( editor.plugins.get( ImagePlugin ) ).to.be.instanceOf( ImagePlugin );
