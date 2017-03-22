@@ -28,7 +28,6 @@ const packageRoot = path.join( __dirname, '..' );
 const ckeditor5Root = path.join( packageRoot, '..', '..' );
 const webpackParams = {
 	cwd: ckeditor5Root,
-	moduleName: buildConfig.moduleName,
 	entryPoint: path.join( packageRoot, entryPoint ),
 	destinationPath: path.join( packageRoot, buildConfig.destinationPath )
 };
