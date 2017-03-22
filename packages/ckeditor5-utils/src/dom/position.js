@@ -109,7 +109,7 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 		left -= ancestorPosition.left;
 		top -= ancestorPosition.top;
 
-		// (https://github.com/ckeditor/ckeditor5-utils/tree/t/139)
+		// (https://github.com/ckeditor/ckeditor5-utils/issues/139)
 		// If there's some positioned ancestor of the panel, not only its position must be taken into
 		// consideration (see above) but also its internal scrolls. Scroll have an impact here because `Rect`
 		// is relative to the viewport (it doesn't care about scrolling), while `position: absolute`
@@ -117,7 +117,7 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 		left += positionedElementAncestor.scrollLeft;
 		top += positionedElementAncestor.scrollTop;
 
-		// (https://github.com/ckeditor/ckeditor5-utils/tree/t/139)
+		// (https://github.com/ckeditor/ckeditor5-utils/issues/139)
 		// If there's some positioned ancestor of the panel, then its `Rect` includes its CSS `borderWidth`
 		// while `position: absolute` positioning does not consider it.
 		// E.g. `{ position: absolute, top: 0, left: 0 }` means upper left corner of the element,
