@@ -7,13 +7,14 @@
  * @module list/list
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ListEngine from './listengine';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { parseKeystroke } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import numberedListIcon from '../theme/icons/numberedlist.svg';
 import bulletedListIcon from '../theme/icons/bulletedlist.svg';
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { parseKeystroke } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 /**
  * The lists feature. It introduces the `numberedList` and `bulletedList` buttons which

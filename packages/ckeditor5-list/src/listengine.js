@@ -7,9 +7,11 @@
  * @module list/listengine
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ListCommand from './listcommand';
 import IndentCommand from './indentcommand';
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import {
 	cleanList,
@@ -33,6 +35,13 @@ import {
  * @extends module:core/plugin~Plugin
  */
 export default class ListEngine extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ Paragraph ];
+	}
+
 	/**
 	 * @inheritDoc
 	 */
