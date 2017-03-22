@@ -1,1 +1,1 @@
-# CKEditor EcmaScript 5 Build
+# CKEditor 5 EcmaScript 6 Build
