@@ -10,6 +10,7 @@
 import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import '../../theme/placeholder.scss';
 
 const listener = {};
 extend( listener, EmitterMixin );

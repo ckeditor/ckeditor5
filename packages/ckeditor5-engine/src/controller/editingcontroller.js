@@ -23,7 +23,6 @@ import {
 } from '../conversion/model-selection-to-view-converters';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import '../../theme/theme.scss';
 
 /**
  * Controller for the editing pipeline. The editing pipeline controls {@link ~EditingController#model model} rendering,
