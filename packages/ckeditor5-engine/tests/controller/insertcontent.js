@@ -696,7 +696,5 @@ describe( 'DataController', () => {
 		}
 
 		insertContent( dataController, content, doc.selection );
-
-		return content;
 	}
 } );
