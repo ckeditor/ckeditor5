@@ -58,7 +58,10 @@ export default class Collection {
 
 		/**
 		 * A helper mapping external items of a bound collection ({@link #bindTo})
-		 * and actual items of this collection.
+		 * and actual items of this collection. It provides information
+		 * necessary to properly remove items bound to another collection.
+		 *
+		 * See {@link #_bindToInternalToExternalMap}.
 		 *
 		 * @protected
 		 * @member {WeakMap}
@@ -67,7 +70,10 @@ export default class Collection {
 
 		/**
 		 * A helper mapping items of this collection to external items of a bound collection
-		 * ({@link #bindTo}).
+		 * ({@link #bindTo}). It provides information necessary to manage the bindings, e.g.
+		 * to avoid loops in two–way bindings.
+		 *
+		 * See {@link #_bindToExternalToInternalMap}.
 		 *
 		 * @protected
 		 * @member {WeakMap}
