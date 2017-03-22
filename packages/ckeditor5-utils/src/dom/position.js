@@ -103,23 +103,25 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 		const ancestorPosition = getAbsoluteRectCoordinates( new Rect( positionedElementAncestor ) );
 		const ancestorComputedStyles = global.window.getComputedStyle( positionedElementAncestor );
 
-		// (#126) If there's some positioned ancestor of the panel, then its rect must be taken into
+		// (#126) If there's some positioned ancestor of the panel, then its `Rect` must be taken into
 		// consideration. `Rect` is always relative to the viewport while `position: absolute` works
 		// with respect to that positioned ancestor.
 		left -= ancestorPosition.left;
 		top -= ancestorPosition.top;
 
 		// (https://github.com/ckeditor/ckeditor5-utils/tree/t/139)
-		// If there's some positioned ancestor of the panel, not its position must be taken into
-		// consideration (see above) but also its internal scrolls. Scroll have an impact on Rect which,
-		// again, is relative to the viewport, while position: absolute includes scrolling.
+		// If there's some positioned ancestor of the panel, not only its position must be taken into
+		// consideration (see above) but also its internal scrolls. Scroll have an impact here because `Rect`
+		// is relative to the viewport (it doesn't care about scrolling), while `position: absolute`
+		// must compensate that scrolling.
 		left += positionedElementAncestor.scrollLeft;
 		top += positionedElementAncestor.scrollTop;
 
 		// (https://github.com/ckeditor/ckeditor5-utils/tree/t/139)
-		// If there's some positioned ancestor of the panel, then its rect contains it's border
-		// while `position: absolute` positioning does not consider it. E.g. { top: 0, left: 0 }
-		// means upper left corner of the element, not upper-left corner of its border.
+		// If there's some positioned ancestor of the panel, then its `Rect` includes its CSS `borderWidth`
+		// while `position: absolute` positioning does not consider it.
+		// E.g. `{ position: absolute, top: 0, left: 0 }` means upper left corner of the element,
+		// not upper-left corner of its border.
 		left -= parseInt( ancestorComputedStyles.borderLeftWidth, 10 );
 		top -= parseInt( ancestorComputedStyles.borderTopWidth, 10 );
 	}
