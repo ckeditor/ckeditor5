@@ -32,14 +32,14 @@ const webpackParams = {
 	entryPoint: path.join( packageRoot, entryPoint ),
 	destinationPath: path.join( packageRoot, buildConfig.destinationPath )
 };
-const webpackES6Config = webpackUtils.getWebpackES6Config( webpackParams );
 const webpackConfig = webpackUtils.getWebpackConfig( webpackParams );
+const webpackCompactConfig = webpackUtils.getWebpackCompactConfig( webpackParams );
 
-log.info( `Creating the "ES5" and "ES6" builds...` );
+log.info( `Creating the "ES6" and "Compact" builds...` );
 
 Promise.all( [
-		runWebpack( webpackES6Config ).then( () => log.info( 'The "ES6" build has been created.' ) ),
-		runWebpack( webpackConfig ).then( () => log.info( 'The "ES5" build has been created.' ) )
+		runWebpack( webpackConfig ).then( () => log.info( 'The "ES6" build has been created.' ) ),
+		runWebpack( webpackCompactConfig ).then( () => log.info( 'The "Compact" build has been created.' ) )
 	] )
 	.then( () => {
 		log.info( 'Finished.' );
