@@ -3,26 +3,19 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document, window */
-
 import global from '../../src/dom/global';
 import { getOptimalPosition } from '../../src/dom/position';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
+let element, target, limiter;
 
-let element, target, limiter, windowStub;
-
-describe( 'getOptimalPosition', () => {
+describe( 'getOptimalPosition()', () => {
 	beforeEach( () => {
-		windowStub = {
+		stubWindow( {
 			innerWidth: 10000,
 			innerHeight: 10000,
 			scrollX: 0,
 			scrollY: 0
-		};
-
-		testUtils.sinon.stub( global, 'window', windowStub );
+		} );
 	} );
 
 	describe( 'for single position', () => {
@@ -37,7 +30,7 @@ describe( 'getOptimalPosition', () => {
 		} );
 
 		it( 'should return coordinates (window scroll)', () => {
-			Object.assign( windowStub, {
+			stubWindow( {
 				innerWidth: 10000,
 				innerHeight: 10000,
 				scrollX: 100,
@@ -52,44 +45,28 @@ describe( 'getOptimalPosition', () => {
 		} );
 
 		describe( 'positioned element parent', () => {
-			let positionedParent;
-
-			beforeEach( () => {
-				positionedParent = document.createElement( 'div' );
-				document.body.appendChild( positionedParent );
-			} );
-
-			afterEach( () => {
-				positionedParent.remove();
-			} );
+			let parent;
 
 			it( 'should return coordinates', () => {
-				Object.assign( windowStub, {
+				stubWindow( {
 					innerWidth: 10000,
 					innerHeight: 10000,
 					scrollX: 1000,
-					scrollY: 1000,
-					getComputedStyle: ( el ) => {
-						return window.getComputedStyle( el );
-					}
+					scrollY: 1000
 				} );
 
-				Object.assign( positionedParent.style, {
-					position: 'absolute',
-					top: '1000px',
-					left: '1000px'
-				} );
-
-				positionedParent.appendChild( element );
-
-				stubElementRect( positionedParent, {
+				parent = getElement( {
 					top: 1000,
 					right: 1010,
 					bottom: 1010,
 					left: 1000,
 					width: 10,
 					height: 10
+				}, {
+					position: 'absolute'
 				} );
+
+				element.parentElement = parent;
 
 				assertPosition( { element, target, positions: [ attachLeft ] }, {
 					top: -900,
@@ -99,49 +76,29 @@ describe( 'getOptimalPosition', () => {
 			} );
 
 			it( 'should return coordinates (scroll and border)', () => {
-				const inflaterElement = document.createElement( 'div' );
-
-				Object.assign( windowStub, {
+				stubWindow( {
 					innerWidth: 10000,
 					innerHeight: 10000,
 					scrollX: 1000,
-					scrollY: 1000,
-					getComputedStyle: ( el ) => {
-						return window.getComputedStyle( el );
-					}
+					scrollY: 1000
 				} );
 
-				positionedParent.appendChild( inflaterElement );
-				positionedParent.appendChild( element );
-
-				Object.assign( positionedParent.style, {
-					position: 'absolute',
-					overflow: 'scroll',
-					height: '100px',
-					width: '100px',
-					top: '0px',
-					left: '0px',
-					border: '1px solid red',
-					borderLeftWidth: '20px',
-					borderTopWidth: '40px',
-				} );
-
-				Object.assign( inflaterElement.style, {
-					width: '500px',
-					height: '500px'
-				} );
-
-				positionedParent.scrollTop = 100;
-				positionedParent.scrollLeft = 200;
-
-				stubElementRect( positionedParent, {
+				parent = getElement( {
 					top: 0,
 					right: 10,
 					bottom: 10,
 					left: 0,
 					width: 10,
-					height: 10
+					height: 10,
+					scrollTop: 100,
+					scrollLeft: 200
+				}, {
+					position: 'absolute',
+					borderLeftWidth: '20px',
+					borderTopWidth: '40px',
 				} );
+
+				element.parentElement = parent;
 
 				assertPosition( { element, target, positions: [ attachLeft ] }, {
 					top: 160,
@@ -314,7 +271,7 @@ describe( 'getOptimalPosition', () => {
 		} );
 
 		it( 'should return the very first coordinates if limiter does not fit into the viewport', () => {
-			stubElementRect( limiter, {
+			getElement( limiter, {
 				top: -100,
 				right: -80,
 				bottom: -80,
@@ -382,12 +339,41 @@ const attachTop = ( targetRect, elementRect ) => ( {
 	name: 'bottom'
 } );
 
-function stubElementRect( element, rect ) {
-	if ( element.getBoundingClientRect.restore ) {
-		element.getBoundingClientRect.restore();
+// Returns a synthetic element.
+//
+// @private
+// @param {Object} properties A set of properties for the element.
+// @param {Object} styles A set of styles in `window.getComputedStyle()` format.
+function getElement( properties = {}, styles = {} ) {
+	const element = {
+		tagName: 'div',
+		scrollLeft: 0,
+		scrollTop: 0
+	};
+
+	Object.assign( element, properties );
+
+	if ( !styles.borderLeftWidth ) {
+		styles.borderLeftWidth = '0px';
 	}
 
-	testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( rect );
+	if ( !styles.borderTopWidth ) {
+		styles.borderTopWidth = '0px';
+	}
+
+	global.window.getComputedStyle.withArgs( element ).returns( styles );
+
+	return element;
+}
+
+// Stubs the window.
+//
+// @private
+// @param {Object} properties A set of properties the window should have.
+function stubWindow( properties ) {
+	global.window = Object.assign( {
+		getComputedStyle: sinon.stub()
+	}, properties );
 }
 
 //        <-- 100px ->
@@ -405,10 +391,7 @@ function stubElementRect( element, rect ) {
 //	      |
 //
 function setElementTargetPlayground() {
-	element = document.createElement( 'div' );
-	target = document.createElement( 'div' );
-
-	stubElementRect( element, {
+	element = getElement( {
 		top: 0,
 		right: 20,
 		bottom: 20,
@@ -417,7 +400,7 @@ function setElementTargetPlayground() {
 		height: 20
 	} );
 
-	stubElementRect( target, {
+	target = getElement( {
 		top: 100,
 		right: 110,
 		bottom: 110,
@@ -449,11 +432,7 @@ function setElementTargetPlayground() {
 //
 //
 function setElementTargetLimiterPlayground() {
-	element = document.createElement( 'div' );
-	target = document.createElement( 'div' );
-	limiter = document.createElement( 'div' );
-
-	stubElementRect( element, {
+	element = getElement( {
 		top: 0,
 		right: 20,
 		bottom: 20,
@@ -462,7 +441,7 @@ function setElementTargetLimiterPlayground() {
 		height: 20
 	} );
 
-	stubElementRect( limiter, {
+	limiter = getElement( {
 		top: 100,
 		right: 10,
 		bottom: 120,
@@ -471,7 +450,7 @@ function setElementTargetLimiterPlayground() {
 		height: 20
 	} );
 
-	stubElementRect( target, {
+	target = getElement( {
 		top: 100,
 		right: 10,
 		bottom: 110,
