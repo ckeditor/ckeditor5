@@ -85,25 +85,6 @@ describe( 'IndentCommand', () => {
 				);
 			} );
 
-			it( 'should increment indent of only first selected item when multiple items are selected', () => {
-				doc.selection.setRanges( [ new Range(
-					new Position( root.getChild( 4 ), [ 0 ] ),
-					new Position( root.getChild( 6 ), [ 0 ] )
-				) ] );
-
-				command._doExecute();
-
-				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="0" type="bulleted">b</listItem>' +
-					'<listItem indent="1" type="bulleted">c</listItem>' +
-					'<listItem indent="2" type="bulleted">d</listItem>' +
-					'<listItem indent="3" type="bulleted">e</listItem>' +
-					'<listItem indent="1" type="bulleted">f</listItem>' +
-					'<listItem indent="0" type="bulleted">g</listItem>'
-				);
-			} );
-
 			it( 'should increment indent of all sub-items of indented item', () => {
 				doc.selection.collapse( root.getChild( 1 ) );
 
@@ -116,6 +97,25 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="3" type="bulleted">d</listItem>' +
 					'<listItem indent="3" type="bulleted">e</listItem>' +
 					'<listItem indent="2" type="bulleted">f</listItem>' +
+					'<listItem indent="0" type="bulleted">g</listItem>'
+				);
+			} );
+
+			it( 'should increment indent of all selected item when multiple items are selected', () => {
+				doc.selection.setRanges( [ new Range(
+					new Position( root.getChild( 1 ), [ 0 ] ),
+					new Position( root.getChild( 3 ), [ 0 ] )
+				) ] );
+
+				command._doExecute();
+
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'<listItem indent="2" type="bulleted">c</listItem>' +
+					'<listItem indent="3" type="bulleted">d</listItem>' +
+					'<listItem indent="2" type="bulleted">e</listItem>' +
+					'<listItem indent="1" type="bulleted">f</listItem>' +
 					'<listItem indent="0" type="bulleted">g</listItem>'
 				);
 			} );
@@ -178,7 +178,7 @@ describe( 'IndentCommand', () => {
 				command._doExecute();
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
-					'<paragraph>a</paragraph>' +
+					'<paragraph indent="0" type="bulleted">a</paragraph>' +
 					'<listItem indent="0" type="bulleted">b</listItem>' +
 					'<listItem indent="1" type="bulleted">c</listItem>' +
 					'<listItem indent="2" type="bulleted">d</listItem>' +
@@ -195,11 +195,30 @@ describe( 'IndentCommand', () => {
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
 					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<paragraph>b</paragraph>' +
+					'<paragraph indent="0" type="bulleted">b</paragraph>' +
 					'<listItem indent="0" type="bulleted">c</listItem>' +
 					'<listItem indent="1" type="bulleted">d</listItem>' +
 					'<listItem indent="1" type="bulleted">e</listItem>' +
 					'<listItem indent="0" type="bulleted">f</listItem>' +
+					'<listItem indent="0" type="bulleted">g</listItem>'
+				);
+			} );
+
+			it( 'should outdent all selected item when multiple items are selected', () => {
+				doc.selection.setRanges( [ new Range(
+					new Position( root.getChild( 1 ), [ 0 ] ),
+					new Position( root.getChild( 3 ), [ 0 ] )
+				) ] );
+
+				command._doExecute();
+
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<paragraph indent="0" type="bulleted">b</paragraph>' +
+					'<listItem indent="0" type="bulleted">c</listItem>' +
+					'<listItem indent="1" type="bulleted">d</listItem>' +
+					'<listItem indent="2" type="bulleted">e</listItem>' +
+					'<listItem indent="1" type="bulleted">f</listItem>' +
 					'<listItem indent="0" type="bulleted">g</listItem>'
 				);
 			} );

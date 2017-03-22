@@ -51,18 +51,16 @@ export default class IndentCommand extends Command {
 	_doExecute() {
 		const doc = this.editor.document;
 		const batch = doc.batch();
-		const element = getClosestListItem( doc.selection.getFirstPosition() );
+		let itemsToChange = Array.from( doc.selection.getSelectedBlocks() );
 
 		doc.enqueueChanges( () => {
-			const oldIndent = element.getAttribute( 'indent' );
-
-			let itemsToChange = [ element ];
+			const lastItem = itemsToChange[ itemsToChange.length - 1 ];
 
 			// Indenting a list item should also indent all the items that are already sub-items of indented item.
-			let next = element.nextSibling;
+			let next = lastItem.nextSibling;
 
-			// Check all items as long as their indent is bigger than indent of changed list item.
-			while ( next && next.name == 'listItem' && next.getAttribute( 'indent' ) > oldIndent ) {
+			// Check all items after last indented item, as long as their indent is bigger than indent of that item.
+			while ( next && next.name == 'listItem' && next.getAttribute( 'indent' ) > lastItem.getAttribute( 'indent' ) ) {
 				itemsToChange.push( next );
 
 				next = next.nextSibling;
@@ -84,7 +82,8 @@ export default class IndentCommand extends Command {
 				if ( indent < 0 ) {
 					// To keep the model as correct as possible, first rename listItem, then remove attributes,
 					// as listItem without attributes is very incorrect and will cause problems in converters.
-					batch.rename( item, 'paragraph' ).removeAttribute( item, 'indent' ).removeAttribute( item, 'type' );
+					// No need to remove attributes, will be removed by post fixer.
+					batch.rename( item, 'paragraph' );
 				} else {
 					// If indent is >= 0, just change the attribute value.
 					batch.setAttribute( item, 'indent', indent );

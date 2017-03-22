@@ -151,18 +151,6 @@ describe( 'List', () => {
 			expect( editor.execute.calledWithExactly( 'indentList' ) ).to.be.true;
 		} );
 
-		it( 'should execute indentList command on tab key for non-collapsed selection and indent only first item', () => {
-			editor.setData( '<ul><li>foo</li><li>bar</li><li>xyz</li></ul>' );
-			editor.document.selection.collapse( editor.document.getRoot().getChild( 1 ) );
-			editor.document.selection.setFocus( editor.document.getRoot().getChild( 2 ) );
-
-			editor.editing.view.fire( 'keydown', domEvtDataStub );
-
-			expect( editor.execute.calledOnce ).to.be.true;
-			expect( editor.execute.calledWithExactly( 'indentList' ) ).to.be.true;
-			expect( editor.getData() ).to.equal( '<ul><li>foo<ul><li>bar</li></ul></li><li>xyz</li></ul>' );
-		} );
-
 		it( 'should execute outdentList command on shift+tab keystroke', () => {
 			domEvtDataStub.keystroke += getCode( 'shift' );
 
