@@ -61,18 +61,18 @@ export default class Collection {
 		 * and actual items of this collection.
 		 *
 		 * @protected
-		 * @member {Map}
+		 * @member {WeakMap}
 		 */
-		this._bindToExternalToInternalMap = new Map();
+		this._bindToExternalToInternalMap = new WeakMap();
 
 		/**
 		 * A helper mapping items of this collection to external items of a bound collection
 		 * ({@link #bindTo}).
 		 *
 		 * @protected
-		 * @member {Map}
+		 * @member {WeakMap}
 		 */
-		this._bindToInternalToExternalMap = new Map();
+		this._bindToInternalToExternalMap = new WeakMap();
 
 		/**
 		 * A collection instance this collection is bound to as a result

@@ -535,24 +535,8 @@ describe( 'Collection', () => {
 			}
 		}
 
-		function assertItems( collection, expectedItems, expectedMaps ) {
+		function assertItems( collection, expectedItems ) {
 			expect( collection.map( i => i.v ) ).to.deep.equal( expectedItems );
-
-			assertMaps( collection, expectedMaps );
-		}
-
-		function assertMaps( collection, expected ) {
-			const ext2Int = collection._bindToExternalToInternalMap;
-			const int2Ext = collection._bindToInternalToExternalMap;
-
-			expect( [ ...ext2Int ] ).to.have.length( expected.length );
-			expect( [ ...int2Ext ] ).to.have.length( expected.length );
-			expect( [ ...ext2Int.entries() ]
-				.map( ( [ key, val ] ) => [ key.v, val.v ] ) )
-				.to.deep.equal( expected );
-			expect( [ ...int2Ext.entries() ]
-				.map( ( [ key, val ] ) => [ val.v, key.v ] ) )
-				.to.deep.equal( expected );
 		}
 
 		it( 'throws when binding more than once', () => {
@@ -799,19 +783,19 @@ describe( 'Collection', () => {
 				collectionA.bindTo( collectionB ).using( i => ( { v: i.v * 2 } ) );
 				collectionB.bindTo( collectionA ).using( i => ( { v: i.v / 2 } ) );
 
-				assertItems( collectionA, [], [] );
-				assertItems( collectionB, [], [] );
+				assertItems( collectionA, [] );
+				assertItems( collectionB, [] );
 
 				collectionA.add( { v: 4 } );
 				collectionA.add( { v: 6 } );
 
-				assertItems( collectionA, [ 4, 6 ], [ [ 2, 4 ], [ 3, 6 ] ] );
-				assertItems( collectionB, [ 2, 3 ], [ [ 4, 2 ], [ 6, 3 ] ] );
+				assertItems( collectionA, [ 4, 6 ] );
+				assertItems( collectionB, [ 2, 3 ] );
 
 				collectionB.add( { v: 4 } );
 
-				assertItems( collectionA, [ 4, 6, 8 ], [ [ 2, 4 ], [ 3, 6 ], [ 4, 8 ] ] );
-				assertItems( collectionB, [ 2, 3, 4 ], [ [ 4, 2 ], [ 6, 3 ], [ 8, 4 ] ] );
+				assertItems( collectionA, [ 4, 6, 8 ] );
+				assertItems( collectionB, [ 2, 3, 4 ] );
 
 				sinon.assert.callCount( spyA, 3 );
 				sinon.assert.callCount( spyB, 3 );
@@ -861,19 +845,19 @@ describe( 'Collection', () => {
 				collectionA.bindTo( collectionB ).using( i => ( { v: i.v * 2 } ) );
 				collectionB.bindTo( collectionA ).using( i => ( { v: i.v / 2 } ) );
 
-				assertItems( collectionA, [], [] );
-				assertItems( collectionB, [], [] );
+				assertItems( collectionA, [] );
+				assertItems( collectionB, [] );
 
 				collectionA.add( { v: 4 } );
 				collectionA.add( { v: 6 }, 0 );
 
-				assertItems( collectionA, [ 6, 4 ], [ [ 2, 4 ], [ 3, 6 ] ] );
-				assertItems( collectionB, [ 3, 2 ], [ [ 4, 2 ], [ 6, 3 ] ] );
+				assertItems( collectionA, [ 6, 4 ] );
+				assertItems( collectionB, [ 3, 2 ] );
 
 				collectionB.add( { v: 4 }, 1 );
 
-				assertItems( collectionA, [ 6, 8, 4 ], [ [ 2, 4 ], [ 3, 6 ], [ 4, 8 ] ] );
-				assertItems( collectionB, [ 3, 4, 2 ], [ [ 4, 2 ], [ 6, 3 ], [ 8, 4 ] ] );
+				assertItems( collectionA, [ 6, 8, 4 ] );
+				assertItems( collectionB, [ 3, 4, 2 ] );
 
 				sinon.assert.callCount( spyA, 3 );
 				sinon.assert.callCount( spyB, 3 );
@@ -899,13 +883,13 @@ describe( 'Collection', () => {
 				collectionA.add( { v: 4 } );
 				collectionA.add( { v: 6 } );
 
-				assertItems( collectionA, [ 4, 6 ], [ [ 4, 4 ], [ 6, 6 ] ] );
-				assertItems( collectionB, [ 4, 6 ], [ [ 4, 4 ], [ 6, 6 ] ] );
+				assertItems( collectionA, [ 4, 6 ] );
+				assertItems( collectionB, [ 4, 6 ] );
 
 				collectionB.add( { v: 8 } );
 
-				assertItems( collectionA, [ 4, 6, 8 ], [ [ 4, 4 ], [ 6, 6 ], [ 8, 8 ] ] );
-				assertItems( collectionB, [ 4, 6, 8 ], [ [ 4, 4 ], [ 6, 6 ], [ 8, 8 ] ] );
+				assertItems( collectionA, [ 4, 6, 8 ] );
+				assertItems( collectionB, [ 4, 6, 8 ] );
 
 				expect( collectionA ).to.deep.equal( collectionB );
 
@@ -931,28 +915,28 @@ describe( 'Collection', () => {
 				collectionB.bindTo( collectionA ).using( i => ( { v: i.v / 2 } ) );
 				collectionC.bindTo( collectionB ).using( i => ( { v: -i.v } ) );
 
-				assertItems( collectionA, [], [] );
-				assertItems( collectionB, [], [] );
-				assertItems( collectionC, [], [] );
+				assertItems( collectionA, [] );
+				assertItems( collectionB, [] );
+				assertItems( collectionC, [] );
 
 				collectionA.add( { v: 4 } );
 				collectionA.add( { v: 6 } );
 
-				assertItems( collectionA, [ 4, 6 ], [ [ 2, 4 ], [ 3, 6 ] ] );
-				assertItems( collectionB, [ 2, 3 ], [ [ 4, 2 ], [ 6, 3 ] ] );
-				assertItems( collectionC, [ -2, -3 ], [ [ 2, -2 ], [ 3, -3 ] ] );
+				assertItems( collectionA, [ 4, 6 ] );
+				assertItems( collectionB, [ 2, 3 ] );
+				assertItems( collectionC, [ -2, -3 ] );
 
 				collectionB.add( { v: 4 } );
 
-				assertItems( collectionA, [ 4, 6, 8 ], [ [ 2, 4 ], [ 3, 6 ], [ 4, 8 ] ] );
-				assertItems( collectionB, [ 2, 3, 4 ], [ [ 4, 2 ], [ 6, 3 ], [ 8, 4 ] ] );
-				assertItems( collectionC, [ -2, -3, -4 ], [ [ 2, -2 ], [ 3, -3 ], [ 4, -4 ] ] );
+				assertItems( collectionA, [ 4, 6, 8 ] );
+				assertItems( collectionB, [ 2, 3, 4 ] );
+				assertItems( collectionC, [ -2, -3, -4 ] );
 
 				collectionC.add( { v: -1000 } );
 
-				assertItems( collectionA, [ 4, 6, 8 ], [ [ 2, 4 ], [ 3, 6 ], [ 4, 8 ] ] );
-				assertItems( collectionB, [ 2, 3, 4 ], [ [ 4, 2 ], [ 6, 3 ], [ 8, 4 ] ] );
-				assertItems( collectionC, [ -2, -3, -4, -1000 ], [ [ 2, -2 ], [ 3, -3 ], [ 4, -4 ] ] );
+				assertItems( collectionA, [ 4, 6, 8 ] );
+				assertItems( collectionB, [ 2, 3, 4 ] );
+				assertItems( collectionC, [ -2, -3, -4, -1000 ] );
 
 				sinon.assert.callCount( spyA, 3 );
 				sinon.assert.callCount( spyB, 3 );
@@ -983,18 +967,18 @@ describe( 'Collection', () => {
 				collectionA.add( { v: 4 } );
 				collectionA.add( { v: 6 } );
 
-				assertItems( collectionA, [ 4, 6 ], [ [ 2, 4 ], [ 3, 6 ] ] );
-				assertItems( collectionB, [ 2, 3 ], [ [ 4, 2 ], [ 6, 3 ] ] );
+				assertItems( collectionA, [ 4, 6 ] );
+				assertItems( collectionB, [ 2, 3 ] );
 
 				collectionB.add( { v: 4 } );
 
-				assertItems( collectionA, [ 4, 6, 8 ], [ [ 2, 4 ], [ 3, 6 ], [ 4, 8 ] ] );
-				assertItems( collectionB, [ 2, 3, 4 ], [ [ 4, 2 ], [ 6, 3 ], [ 8, 4 ] ] );
+				assertItems( collectionA, [ 4, 6, 8 ] );
+				assertItems( collectionB, [ 2, 3, 4 ] );
 
 				collectionB.remove( 0 );
 
-				assertItems( collectionA, [ 6, 8 ], [ [ 3, 6 ], [ 4, 8 ] ] );
-				assertItems( collectionB, [ 3, 4 ], [ [ 6, 3 ], [ 8, 4 ] ] );
+				assertItems( collectionA, [ 6, 8 ] );
+				assertItems( collectionB, [ 3, 4 ] );
 
 				sinon.assert.callCount( spyAddA, 3 );
 				sinon.assert.callCount( spyAddB, 3 );
@@ -1003,8 +987,8 @@ describe( 'Collection', () => {
 
 				collectionA.remove( 1 );
 
-				assertItems( collectionA, [ 6 ], [ [ 3, 6 ] ] );
-				assertItems( collectionB, [ 3 ], [ [ 6, 3 ] ] );
+				assertItems( collectionA, [ 6 ] );
+				assertItems( collectionB, [ 3 ] );
 
 				sinon.assert.callCount( spyAddA, 3 );
 				sinon.assert.callCount( spyAddB, 3 );
