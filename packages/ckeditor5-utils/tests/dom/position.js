@@ -51,41 +51,103 @@ describe( 'getOptimalPosition', () => {
 			} );
 		} );
 
-		it( 'should return coordinates (positioned element parent)', () => {
-			const positionedParent = document.createElement( 'div' );
+		describe( 'positioned element parent', () => {
+			let positionedParent;
 
-			Object.assign( windowStub, {
-				innerWidth: 10000,
-				innerHeight: 10000,
-				scrollX: 1000,
-				scrollY: 1000,
-				getComputedStyle: ( el ) => {
-					return window.getComputedStyle( el );
-				}
+			beforeEach( () => {
+				positionedParent = document.createElement( 'div' );
+				document.body.appendChild( positionedParent );
 			} );
 
-			Object.assign( positionedParent.style, {
-				position: 'absolute',
-				top: '1000px',
-				left: '1000px'
+			afterEach( () => {
+				positionedParent.remove();
 			} );
 
-			document.body.appendChild( positionedParent );
-			positionedParent.appendChild( element );
+			it( 'should return coordinates', () => {
+				Object.assign( windowStub, {
+					innerWidth: 10000,
+					innerHeight: 10000,
+					scrollX: 1000,
+					scrollY: 1000,
+					getComputedStyle: ( el ) => {
+						return window.getComputedStyle( el );
+					}
+				} );
 
-			stubElementRect( positionedParent, {
-				top: 1000,
-				right: 1010,
-				bottom: 1010,
-				left: 1000,
-				width: 10,
-				height: 10
+				Object.assign( positionedParent.style, {
+					position: 'absolute',
+					top: '1000px',
+					left: '1000px'
+				} );
+
+				positionedParent.appendChild( element );
+
+				stubElementRect( positionedParent, {
+					top: 1000,
+					right: 1010,
+					bottom: 1010,
+					left: 1000,
+					width: 10,
+					height: 10
+				} );
+
+				assertPosition( { element, target, positions: [ attachLeft ] }, {
+					top: -900,
+					left: -920,
+					name: 'left'
+				} );
 			} );
 
-			assertPosition( { element, target, positions: [ attachLeft ] }, {
-				top: -900,
-				left: -920,
-				name: 'left'
+			it( 'should return coordinates (scroll and border)', () => {
+				const inflaterElement = document.createElement( 'div' );
+
+				Object.assign( windowStub, {
+					innerWidth: 10000,
+					innerHeight: 10000,
+					scrollX: 1000,
+					scrollY: 1000,
+					getComputedStyle: ( el ) => {
+						return window.getComputedStyle( el );
+					}
+				} );
+
+				positionedParent.appendChild( inflaterElement );
+				positionedParent.appendChild( element );
+
+				Object.assign( positionedParent.style, {
+					position: 'absolute',
+					overflow: 'scroll',
+					height: '100px',
+					width: '100px',
+					top: '0px',
+					left: '0px',
+					border: '1px solid red',
+					borderLeftWidth: '20px',
+					borderTopWidth: '40px',
+				} );
+
+				Object.assign( inflaterElement.style, {
+					width: '500px',
+					height: '500px'
+				} );
+
+				positionedParent.scrollTop = 100;
+				positionedParent.scrollLeft = 200;
+
+				stubElementRect( positionedParent, {
+					top: 0,
+					right: 10,
+					bottom: 10,
+					left: 0,
+					width: 10,
+					height: 10
+				} );
+
+				assertPosition( { element, target, positions: [ attachLeft ] }, {
+					top: 160,
+					left: 260,
+					name: 'left'
+				} );
 			} );
 		} );
 	} );
