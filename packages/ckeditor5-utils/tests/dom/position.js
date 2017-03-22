@@ -271,7 +271,7 @@ describe( 'getOptimalPosition()', () => {
 		} );
 
 		it( 'should return the very first coordinates if limiter does not fit into the viewport', () => {
-			getElement( limiter, {
+			limiter = getElement( {
 				top: -100,
 				right: -80,
 				bottom: -80,
