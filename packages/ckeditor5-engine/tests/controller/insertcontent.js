@@ -62,6 +62,57 @@ describe( 'DataController', () => {
 			expect( getData( doc ) ).to.equal( 'xa[]x' );
 		} );
 
+		describe( 'saves the reference to the original object', () => {
+			it( 'inline-widget', () => {
+				doc = new Document();
+				doc.createRoot();
+
+				doc.schema.registerItem( 'paragraph', '$block' );
+				doc.schema.registerItem( 'inlineWidget' );
+				doc.schema.allow( { name: 'inlineWidget', inside: '$block' } );
+				doc.schema.allow( { name: 'inlineWidget', inside: '$clipboardHolder' } );
+				doc.schema.objects.add( 'inlineWidget' );
+
+				dataController = new DataController( doc );
+
+				const batch = doc.batch();
+
+				setData( doc, '<paragraph>f[]oo</paragraph>' );
+
+				const content = parse( '<inlineWidget></inlineWidget>', doc.schema, {
+					context: [ '$clipboardHolder' ]
+				} );
+
+				insertContent( dataController, content, doc.selection, batch );
+
+				expect( doc.getRoot().getChild( 0 ).getChild( 1 ) ).to.equal( content );
+			} );
+
+			it( 'image', () => {
+				doc = new Document();
+				doc.createRoot();
+
+				doc.schema.registerItem( 'paragraph', '$block' );
+				doc.schema.registerItem( 'image', '$inline' );
+				doc.schema.allow( { name: 'image', inside: '$clipboardHolder' } );
+				doc.schema.objects.add( 'image' );
+
+				dataController = new DataController( doc );
+
+				const batch = doc.batch();
+
+				setData( doc, '<paragraph>foo[]</paragraph>' );
+
+				const content = parse( '<image></image>', doc.schema, {
+					context: [ '$clipboardHolder' ]
+				} );
+
+				insertContent( dataController, content, doc.selection, batch );
+
+				expect( doc.getRoot().getChild( 0 ).getChild( 1 ) ).to.equal( content );
+			} );
+		} );
+
 		describe( 'in simple scenarios', () => {
 			beforeEach( () => {
 				doc = new Document();
@@ -645,5 +696,7 @@ describe( 'DataController', () => {
 		}
 
 		insertContent( dataController, content, doc.selection );
+
+		return content;
 	}
 } );
