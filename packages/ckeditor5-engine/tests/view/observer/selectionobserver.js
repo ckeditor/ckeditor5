@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals setTimeout, setInterval, clearInterval, document */
+
 import ViewRange from '../../../src/view/range';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ViewSelection from '../../../src/view/selection';
@@ -11,20 +13,15 @@ import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import MutationObserver from '../../../src/view/observer/mutationobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import log from '@ckeditor/ckeditor5-utils/src/log';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { parse } from '../../../src/dev-utils/view';
-
-const setTimeout = global.window.setTimeout;
-const setInterval = global.window.setInterval;
-const clearInterval = global.window.clearInterval;
-const domDocument = global.document;
 
 testUtils.createSinonSandbox();
 
 describe( 'SelectionObserver', () => {
-	let viewDocument, viewRoot, mutationObserver, selectionObserver, domRoot, domMain;
+	let viewDocument, viewRoot, mutationObserver, selectionObserver, domRoot, domMain, domDocument;
 
 	beforeEach( ( done ) => {
+		domDocument = document;
 		domRoot = domDocument.createElement( 'div' );
 		domRoot.innerHTML = `<div contenteditable="true"></div><div contenteditable="true" id="additional"></div>`;
 		domMain = domRoot.childNodes[ 0 ];

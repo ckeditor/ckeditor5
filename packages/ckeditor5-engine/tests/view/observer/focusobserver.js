@@ -178,7 +178,7 @@ describe( 'FocusObserver', () => {
 			const selectionChangeSpy = sinon.spy();
 			const renderSpy = sinon.spy();
 
-			setData( viewDocument, '<div contenteditable="true">{}foo bar</div>' );
+			setData( viewDocument, '<div contenteditable="true">foo bar</div>' );
 			viewDocument.render();
 			const domEditable = domRoot.childNodes[ 0 ];
 
@@ -186,14 +186,13 @@ describe( 'FocusObserver', () => {
 			viewDocument.on( 'render', renderSpy, { priority: 'low' } );
 
 			viewDocument.on( 'render', () => {
+				sinon.assert.notCalled( selectionChangeSpy );
 				sinon.assert.called( renderSpy );
+
 				done();
 			}, { priority: 'low' } );
 
 			observer.onDomEvent( { type: 'focus', target: domEditable } );
-
-			// Selection will land in the same place so no native selectionchange event.
-			domSelection.collapse( domEditable );
 		} );
 	} );
 } );
