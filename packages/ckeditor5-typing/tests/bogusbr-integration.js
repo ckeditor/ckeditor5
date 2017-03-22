@@ -8,13 +8,13 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
 import MutationObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mutationobserver';
 
-import Typing from '../../src/typing';
+import Typing from '../src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'Bug ckeditor5-typing#52', () => {
+describe( 'Bogus BR Integration', () => {
 	let editor;
 	let domRoot;
 	let mutationObserver;
@@ -135,6 +135,38 @@ describe( 'Bug ckeditor5-typing#52', () => {
 				generateMutationMock( 'childList', paragraph, text, [ br ] ),
 				generateMutationMock( 'characterData', text ),
 				generateMutationMock( 'characterData', text )
+			] );
+		} );
+
+		it( 'word is properly corrected on the end of the block element (with bogus br)', ( done ) => {
+			editor.document.enqueueChanges( () => {
+				editor.editing.view.getDomRoot().focus();
+				setData( editor.document, '<paragraph>Foo hous[]</paragraph>' );
+			} );
+
+			editor.document.once( 'changesDone', () => {
+				expect( editor.getData() ).to.equal( '<p>Foo house</p>' );
+				done();
+			}, { priority: 'low' } );
+
+			const paragraph = domRoot.childNodes[ 0 ];
+			const text = paragraph.childNodes [ 0 ];
+			const br = document.createElement( 'br' );
+
+			mutationObserver.disable();
+
+			text.data = 'Foo house';
+
+			mutationObserver.enable();
+
+			mutationObserver._onMutations( [
+				generateMutationMock( 'characterData', text ),
+				generateMutationMock( 'characterData', text ),
+				generateMutationMock( 'characterData', text ),
+				generateMutationMock( 'childList', paragraph, text, [ br ] ),
+				generateMutationMock( 'characterData', text ),
+				generateMutationMock( 'characterData', text ),
+				generateMutationMock( 'characterData', text ),
 			] );
 		} );
 	} );
