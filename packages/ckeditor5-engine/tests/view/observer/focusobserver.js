@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
-
+/* globals document, window */
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import ViewDocument from '../../../src/view/document';
 import ViewRange from '../../../src/view/range';
+import { setData } from '../../../src/dev-utils/view';
 
 describe( 'FocusObserver', () => {
 	let viewDocument, observer;
@@ -114,6 +114,85 @@ describe( 'FocusObserver', () => {
 			observer.onDomEvent( { type: 'blur', target: domHeader } );
 
 			expect( viewDocument.isFocused ).to.be.true;
+		} );
+
+		it( 'should delay rendering to the next iteration of event loop', () => {
+			const renderSpy = sinon.spy( viewDocument, 'render' );
+			const clock = sinon.useFakeTimers();
+
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+			sinon.assert.notCalled( renderSpy );
+			clock.tick( 0 );
+			sinon.assert.called( renderSpy );
+
+			clock.restore();
+		} );
+
+		it( 'should not call render if destroyed', () => {
+			const renderSpy = sinon.spy( viewDocument, 'render' );
+			const clock = sinon.useFakeTimers();
+
+			observer.onDomEvent( { type: 'focus', target: domMain } );
+			sinon.assert.notCalled( renderSpy );
+			observer.destroy();
+			clock.tick( 0 );
+			sinon.assert.notCalled( renderSpy );
+
+			clock.restore();
+		} );
+	} );
+
+	describe( 'integration test', () => {
+		let viewDocument, viewRoot, domRoot, observer, domSelection;
+
+		beforeEach( () => {
+			domRoot = document.createElement( 'div' );
+			document.body.appendChild( domRoot );
+			viewDocument = new ViewDocument();
+			viewRoot = viewDocument.createRoot( domRoot );
+			observer = viewDocument.getObserver( FocusObserver );
+			domSelection = window.getSelection();
+		} );
+
+		it( 'should render document after selectionChange event', ( done ) => {
+			const selectionChangeSpy = sinon.spy();
+			const renderSpy = sinon.spy();
+
+			setData( viewDocument, '<div contenteditable="true">foo bar</div>' );
+			viewDocument.render();
+			const domEditable = domRoot.childNodes[ 0 ];
+
+			viewDocument.on( 'selectionChange', selectionChangeSpy );
+			viewDocument.on( 'render', renderSpy, { priority: 'low' } );
+
+			viewDocument.on( 'render', () => {
+				sinon.assert.callOrder( selectionChangeSpy, renderSpy );
+				done();
+			}, { priority: 'low' } );
+
+			observer.onDomEvent( { type: 'focus', target: domEditable } );
+			domSelection.collapse( domEditable );
+		} );
+
+		it( 'should render without selectionChange event', ( done ) => {
+			const selectionChangeSpy = sinon.spy();
+			const renderSpy = sinon.spy();
+
+			setData( viewDocument, '<div contenteditable="true">foo bar</div>' );
+			viewDocument.render();
+			const domEditable = domRoot.childNodes[ 0 ];
+
+			viewDocument.on( 'selectionChange', selectionChangeSpy );
+			viewDocument.on( 'render', renderSpy, { priority: 'low' } );
+
+			viewDocument.on( 'render', () => {
+				sinon.assert.notCalled( selectionChangeSpy );
+				sinon.assert.called( renderSpy );
+
+				done();
+			}, { priority: 'low' } );
+
+			observer.onDomEvent( { type: 'focus', target: domEditable } );
 		} );
 	} );
 } );
