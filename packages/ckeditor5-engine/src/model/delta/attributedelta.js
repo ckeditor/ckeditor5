@@ -165,9 +165,10 @@ function changeItem( batch, doc, key, value, item ) {
 	let range, operation;
 
 	const delta = item.is( 'rootElement' ) ? new RootAttributeDelta() : new AttributeDelta();
-	batch.addDelta( delta );
 
 	if ( previousValue != value ) {
+		batch.addDelta( delta );
+
 		if ( item.is( 'rootElement' ) ) {
 			// If we change attributes of root element, we have to use `RootAttributeOperation`.
 			operation = new RootAttributeOperation( item, key, previousValue, value, doc.version );
@@ -195,7 +196,6 @@ function changeItem( batch, doc, key, value, item ) {
 // into smaller parts.
 function changeRange( batch, doc, attributeKey, attributeValue, range ) {
 	const delta = new AttributeDelta();
-	batch.addDelta( delta );
 
 	// Position of the last split, the beginning of the new range.
 	let lastSplitPosition = range.start;
@@ -233,6 +233,11 @@ function changeRange( batch, doc, attributeKey, attributeValue, range ) {
 	}
 
 	function addOperation() {
+		// Add delta to the batch only if there is at least operation in the delta. Add delta only once.
+		if ( delta.operations.length === 0 ) {
+			batch.addDelta( delta );
+		}
+
 		let range = new Range( lastSplitPosition, position );
 		const operation = new AttributeOperation( range, attributeKey, attributeValueBefore, attributeValue, doc.version );
 

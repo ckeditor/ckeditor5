@@ -24,7 +24,7 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
  *
  * @param {module:engine/controller/datacontroller~DataController} dataController The data controller in context of which the insertion
  * should be performed.
- * @param {module:engine/model/documentfragment~DocumentFragment} content The content to insert.
+ * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
  * @param {module:engine/model/selection~Selection} selection Selection into which the content should be inserted.
  * @param {module:engine/model/batch~Batch} [batch] Batch to which deltas will be added. If not specified, then
  * changes will be added to a new batch.
@@ -42,7 +42,15 @@ export default function insertContent( dataController, content, selection, batch
 
 	const insertion = new Insertion( dataController, batch, selection.anchor );
 
-	insertion.handleNodes( content.getChildren(), {
+	let nodesToInsert;
+
+	if ( content.is( 'documentFragment' ) ) {
+		nodesToInsert = content.getChildren();
+	} else {
+		nodesToInsert = [ content ];
+	}
+
+	insertion.handleNodes( nodesToInsert, {
 		// The set of children being inserted is the only set in this context
 		// so it's the first and last (it's a hack ;)).
 		isFirst: true,

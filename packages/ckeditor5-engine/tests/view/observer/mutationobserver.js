@@ -245,6 +245,105 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].oldChildren.length ).to.equal( 0 );
 	} );
 
+	it( 'should ignore mutation with bogus br inserted on the end of the empty paragraph', () => {
+		viewRoot.appendChildren( parse( '<container:p></container:p>' ) );
+
+		viewDocument.render();
+
+		const domP = domEditor.childNodes[ 2 ];
+		domP.appendChild( document.createElement( 'br' ) );
+
+		mutationObserver.flush();
+
+		expect( lastMutations.length ).to.equal( 0 );
+	} );
+
+	it( 'should ignore mutation with bogus br inserted on the end of the paragraph with text', () => {
+		viewRoot.appendChildren( parse( '<container:p>foo</container:p>' ) );
+
+		viewDocument.render();
+
+		const domP = domEditor.childNodes[ 2 ];
+		domP.appendChild( document.createElement( 'br' ) );
+
+		mutationObserver.flush();
+
+		expect( lastMutations.length ).to.equal( 0 );
+	} );
+
+	it( 'should ignore mutation with bogus br inserted on the end of the paragraph while processing text mutations', () => {
+		viewRoot.appendChildren( parse( '<container:p>foo</container:p>' ) );
+
+		viewDocument.render();
+
+		const domP = domEditor.childNodes[ 2 ];
+		domP.childNodes[ 0 ].data = 'foo ';
+		domP.appendChild( document.createElement( 'br' ) );
+
+		mutationObserver.flush();
+
+		expect( lastMutations.length ).to.equal( 1 );
+
+		expect( lastMutations[ 0 ].oldText ).to.equal( 'foo' );
+		expect( lastMutations[ 0 ].newText ).to.equal( 'foo ' );
+	} );
+
+	it( 'should not ignore mutation with br inserted not on the end of the paragraph', () => {
+		viewRoot.appendChildren( parse( '<container:p>foo</container:p>' ) );
+
+		viewDocument.render();
+
+		const domP = domEditor.childNodes[ 2 ];
+		domP.insertBefore( document.createElement( 'br' ), domP.childNodes[ 0 ] );
+
+		mutationObserver.flush();
+
+		expect( lastMutations.length ).to.equal( 1 );
+
+		expect( lastMutations[ 0 ].newChildren.length ).to.equal( 2 );
+		expect( lastMutations[ 0 ].newChildren[ 0 ].name ).to.equal( 'br' );
+		expect( lastMutations[ 0 ].newChildren[ 1 ].data ).to.equal( 'foo' );
+
+		expect( lastMutations[ 0 ].oldChildren.length ).to.equal( 1 );
+	} );
+
+	it( 'should not ignore mutation inserting element different than br on the end of the empty paragraph', () => {
+		viewRoot.appendChildren( parse( '<container:p></container:p>' ) );
+
+		viewDocument.render();
+
+		const domP = domEditor.childNodes[ 2 ];
+		domP.appendChild( document.createElement( 'span' ) );
+
+		mutationObserver.flush();
+
+		expect( lastMutations.length ).to.equal( 1 );
+
+		expect( lastMutations[ 0 ].newChildren.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].newChildren[ 0 ].name ).to.equal( 'span' );
+
+		expect( lastMutations[ 0 ].oldChildren.length ).to.equal( 0 );
+	} );
+
+	it( 'should not ignore mutation inserting element different than br on the end of the paragraph with text', () => {
+		viewRoot.appendChildren( parse( '<container:p>foo</container:p>' ) );
+
+		viewDocument.render();
+
+		const domP = domEditor.childNodes[ 2 ];
+		domP.appendChild( document.createElement( 'span' ) );
+
+		mutationObserver.flush();
+
+		expect( lastMutations.length ).to.equal( 1 );
+
+		expect( lastMutations[ 0 ].newChildren.length ).to.equal( 2 );
+		expect( lastMutations[ 0 ].newChildren[ 0 ].data ).to.equal( 'foo' );
+		expect( lastMutations[ 0 ].newChildren[ 1 ].name ).to.equal( 'span' );
+
+		expect( lastMutations[ 0 ].oldChildren.length ).to.equal( 1 );
+	} );
+
 	function expectDomEditorNotToChange() {
 		expect( domEditor.childNodes.length ).to.equal( 2 );
 		expect( domEditor.childNodes[ 0 ].tagName ).to.equal( 'P' );

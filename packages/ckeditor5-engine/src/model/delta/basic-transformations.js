@@ -111,6 +111,8 @@ addTransformationCase( MarkerDelta, SplitDelta, transformMarkerDelta );
 addTransformationCase( MarkerDelta, MergeDelta, transformMarkerDelta );
 addTransformationCase( MarkerDelta, WrapDelta, transformMarkerDelta );
 addTransformationCase( MarkerDelta, UnwrapDelta, transformMarkerDelta );
+addTransformationCase( MarkerDelta, MoveDelta, transformMarkerDelta );
+addTransformationCase( MarkerDelta, RenameDelta, transformMarkerDelta );
 
 // Add special case for MoveDelta x MergeDelta transformation.
 addTransformationCase( MoveDelta, MergeDelta, ( a, b, isStrong ) => {

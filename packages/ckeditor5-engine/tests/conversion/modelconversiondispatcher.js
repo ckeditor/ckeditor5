@@ -289,6 +289,87 @@ describe( 'ModelConversionDispatcher', () => {
 	} );
 
 	describe( 'convertMove', () => {
+		let loggedEvents;
+
+		beforeEach( () => {
+			loggedEvents = [];
+
+			dispatcher.on( 'remove', ( evt, data ) => {
+				const log = 'remove:' + data.sourcePosition.path + ':' + data.item.offsetSize;
+				loggedEvents.push( log );
+			} );
+
+			dispatcher.on( 'insert', ( evt, data ) => {
+				const log = 'insert:' + data.range.start.path + ':' + data.range.end.path;
+				loggedEvents.push( log );
+			} );
+		} );
+
+		it( 'should first fire remove and then insert if moving "right"', () => {
+			// <root>[ab]cd^ef</root> -> <root>cdabef</root>
+			root.appendChildren( new ModelText( 'cdabef' ) );
+
+			const sourcePosition = ModelPosition.createFromParentAndOffset( root, 0 );
+			const movedRange = ModelRange.createFromParentsAndOffsets( root, 2, root, 4 );
+
+			dispatcher.convertMove( sourcePosition, movedRange );
+
+			// after remove: cdef
+			// after insert: cd[ab]ef
+			expect( loggedEvents ).to.deep.equal( [ 'remove:0:2', 'insert:2:4' ] );
+		} );
+
+		it( 'should first fire insert and then remove if moving "left"', () => {
+			// <root>ab^cd[ef]</root> -> <root>abefcd</root>
+			root.appendChildren( new ModelText( 'abefcd' ) );
+
+			const sourcePosition = ModelPosition.createFromParentAndOffset( root, 4 );
+			const movedRange = ModelRange.createFromParentsAndOffsets( root, 2, root, 4 );
+
+			dispatcher.convertMove( sourcePosition, movedRange );
+
+			// after insert: ab[ef]cd[ef]
+			// after remove: ab[ef]cd
+			expect( loggedEvents ).to.deep.equal( [ 'insert:2:4', 'remove:6:2' ] );
+		} );
+
+		it( 'should first fire insert and then remove when moving like in unwrap', () => {
+			// <root>a^<w>[xyz]</w>b</root> -> <root>axyz<w></w>b</root>
+			root.appendChildren( [
+				new ModelText( 'axyz' ),
+				new ModelElement( 'w' ),
+				new ModelText( 'b' )
+			] );
+
+			const sourcePosition = new ModelPosition( root, [ 1, 0 ] );
+			const movedRange = ModelRange.createFromParentsAndOffsets( root, 1, root, 4 );
+
+			dispatcher.convertMove( sourcePosition, movedRange );
+
+			// before:       a<w>[xyz]</w>b
+			// after insert: a[xyz]<w>[xyz]</w>b
+			// after remove: a[xyz]<w></w>b
+			expect( loggedEvents ).to.deep.equal( [ 'insert:1:4', 'remove:4,0:3' ] );
+		} );
+
+		it( 'should first fire remove and then insert when moving like in wrap', () => {
+			// <root>a[xyz]<w>^</w>b</root> -> <root>a<w>xyz</w>b</root>
+			root.appendChildren( [
+				new ModelText( 'a' ),
+				new ModelElement( 'w', null, [ new ModelText( 'xyz' ) ] ),
+				new ModelText( 'b' )
+			] );
+
+			const sourcePosition = ModelPosition.createFromParentAndOffset( root, 1 );
+			const movedRange = ModelRange.createFromPositionAndShift( new ModelPosition( root, [ 1, 0 ] ), 3 );
+
+			dispatcher.convertMove( sourcePosition, movedRange );
+
+			// before:       a[xyz]<w></w>b
+			// after remove: a<w></w>b
+			// after insert: a<w>[xyz]</w>b
+			expect( loggedEvents ).to.deep.equal( [ 'remove:1:3', 'insert:1,0:1,3' ] );
+		} );
 	} );
 
 	describe( 'convertRemove', () => {
