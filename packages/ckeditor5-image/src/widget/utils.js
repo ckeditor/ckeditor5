@@ -35,7 +35,7 @@ export function isWidget( element ) {
 }
 
 /**
- * "Widgetizes" given {@link module:engine/view/element~Element}:
+ * Converts given {@link module:engine/view/element~Element} to widget in following way:
  * * sets `contenteditable` attribute to `true`,
  * * adds custom `getFillerOffset` method returning `null`,
  * * adds `ck-widget` CSS class,
@@ -47,7 +47,7 @@ export function isWidget( element ) {
  * a plain string or a function returning a string.
  * @returns {module:engine/view/element~Element} Returns same element.
  */
-export function widgetize( element, options ) {
+export function toWidget( element, options ) {
 	options = options || {};
 	element.setAttribute( 'contenteditable', false );
 	element.getFillerOffset = getFillerOffset;
@@ -87,6 +87,30 @@ export function getLabel( element ) {
 	}
 
 	return typeof labelCreator == 'function' ? labelCreator() : labelCreator;
+}
+
+/**
+ * Adds functionality to provided {module:engine/view/editableelement~EditableElement} to act as a widget's editable:
+ * * sets `contenteditable` attribute to `true`,
+ * * adds `ck-editable` CSS class,
+ * * adds `ck-editable_focused` CSS class when editable is focused and removes it when it's blurred.
+ *
+ * @param {module:engine/view/editableelement~EditableElement} editable
+ * @returns {module:engine/view/editableelement~EditableElement} Returns same element that was provided in `editable` param.
+ */
+export function toWidgetEditable( editable ) {
+	editable.setAttribute( 'contenteditable', 'true' );
+	editable.addClass( 'ck-editable' );
+
+	editable.on( 'change:isFocused', ( evt, property, is ) => {
+		if ( is ) {
+			editable.addClass( 'ck-editable_focused' );
+		} else {
+			editable.removeClass( 'ck-editable_focused' );
+		}
+	} );
+
+	return editable;
 }
 
 // Default filler offset function applied to all widget elements.

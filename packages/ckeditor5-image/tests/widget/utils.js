@@ -4,17 +4,26 @@
  */
 
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import { widgetize, isWidget, WIDGET_CLASS_NAME, setLabel, getLabel } from '../../src/widget/utils';
+import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import {
+	toWidget,
+	isWidget,
+	setLabel,
+	getLabel,
+	toWidgetEditable,
+	WIDGET_CLASS_NAME
+} from '../../src/widget/utils';
 
 describe( 'widget utils', () => {
 	let element;
 
 	beforeEach( () => {
 		element = new ViewElement( 'div' );
-		widgetize( element );
+		toWidget( element );
 	} );
 
-	describe( 'widgetize()', () => {
+	describe( 'toWidget()', () => {
 		it( 'should set contenteditable to false', () => {
 			expect( element.getAttribute( 'contenteditable' ) ).to.be.false;
 		} );
@@ -30,14 +39,14 @@ describe( 'widget utils', () => {
 
 		it( 'should add element\'s label if one is provided', () => {
 			element = new ViewElement( 'div' );
-			widgetize( element, { label: 'foo bar baz label' } );
+			toWidget( element, { label: 'foo bar baz label' } );
 
 			expect( getLabel( element ) ).to.equal( 'foo bar baz label' );
 		} );
 
 		it( 'should add element\'s label if one is provided as function', () => {
 			element = new ViewElement( 'div' );
-			widgetize( element, { label: () => 'foo bar baz label' } );
+			toWidget( element, { label: () => 'foo bar baz label' } );
 
 			expect( getLabel( element ) ).to.equal( 'foo bar baz label' );
 		} );
@@ -75,6 +84,33 @@ describe( 'widget utils', () => {
 			expect( getLabel( element ) ).to.equal( 'foo' );
 			caption = 'bar';
 			expect( getLabel( element ) ).to.equal( 'bar' );
+		} );
+	} );
+
+	describe( 'toWidgetEditable', () => {
+		let viewDocument, element;
+
+		beforeEach( () => {
+			viewDocument = new ViewDocument();
+			element = new ViewEditableElement( 'div' );
+			element.document = viewDocument;
+			toWidgetEditable( element );
+		} );
+
+		it( 'should be created in context of proper document', () => {
+			expect( element.document ).to.equal( viewDocument );
+		} );
+
+		it( 'should add proper class', () => {
+			expect( element.hasClass( 'ck-editable' ) ).to.be.true;
+		} );
+
+		it( 'should add proper class when element is focused', () => {
+			element.isFocused = true;
+			expect( element.hasClass( 'ck-editable_focused' ) ).to.be.true;
+
+			element.isFocused = false;
+			expect( element.hasClass( 'ck-editable_focused' ) ).to.be.false;
 		} );
 	} );
 } );

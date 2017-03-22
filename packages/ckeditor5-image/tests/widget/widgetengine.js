@@ -10,7 +10,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ViewContainer from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewEditable from '@ckeditor/ckeditor5-engine/src/view/editableelement';
-import { widgetize } from '../../src/widget/utils';
+import { toWidget } from '../../src/widget/utils';
 
 describe( 'WidgetEngine', () => {
 	let editor, document, viewDocument;
@@ -32,7 +32,7 @@ describe( 'WidgetEngine', () => {
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'widget' )
 					.toElement( () => {
-						const element = widgetize( new ViewContainer( 'div' ), { label: 'element label' } );
+						const element = toWidget( new ViewContainer( 'div' ), { label: 'element label' } );
 
 						return element;
 					} );
