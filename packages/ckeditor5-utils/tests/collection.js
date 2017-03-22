@@ -206,7 +206,6 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should support an optional index argument', () => {
-			let collection = new Collection();
 			let item1 = getItem( 'foo' );
 			let item2 = getItem( 'bar' );
 			let item3 = getItem( 'baz' );
@@ -224,7 +223,6 @@ describe( 'Collection', () => {
 		} );
 
 		it( 'should throw when index argument is invalid', () => {
-			let collection = new Collection();
 			let item1 = getItem( 'foo' );
 			let item2 = getItem( 'bar' );
 			let item3 = getItem( 'baz' );
@@ -510,6 +508,24 @@ describe( 'Collection', () => {
 			expect( spy.callCount ).to.equal( 3 );
 			expect( collection.length ).to.equal( 0 );
 		} );
+
+		it( 'breaks the binding', () => {
+			const external = new Collection();
+			collection.bindTo( external ).using( i => i );
+
+			external.add( { foo: 'bar' } );
+			expect( collection ).to.have.length( 1 );
+
+			collection.clear();
+
+			external.add( { foo: 'baz' } );
+			expect( collection ).to.have.length( 0 );
+
+			external.remove( 0 );
+			expect( collection ).to.have.length( 0 );
+
+			expect( collection._bindToCollection ).to.be.null;
+		} );
 	} );
 
 	describe( 'bindTo()', () => {
@@ -519,12 +535,36 @@ describe( 'Collection', () => {
 			}
 		}
 
+		function assertItems( collection, expectedItems ) {
+			expect( collection.map( i => i.v ) ).to.deep.equal( expectedItems );
+		}
+
+		it( 'throws when binding more than once', () => {
+			collection.bindTo( {} );
+
+			expect( () => {
+				collection.bindTo( {} );
+			} ).to.throw( CKEditorError, /^collection-bind-to-rebind/ );
+		} );
+
 		it( 'provides "using()" and "as()" interfaces', () => {
 			const returned = collection.bindTo( {} );
 
 			expect( returned ).to.have.keys( 'using', 'as' );
 			expect( returned.using ).to.be.a( 'function' );
 			expect( returned.as ).to.be.a( 'function' );
+		} );
+
+		it( 'stores reference to bound collection', () => {
+			const collectionB = new Collection();
+
+			expect( collection._bindToCollection ).to.be.undefined;
+			expect( collectionB._bindToCollection ).to.be.undefined;
+
+			collection.bindTo( collectionB ).as( FactoryClass );
+
+			expect( collection._bindToCollection ).to.equal( collectionB );
+			expect( collectionB._bindToCollection ).to.be.undefined;
 		} );
 
 		describe( 'as()', () => {
@@ -602,7 +642,6 @@ describe( 'Collection', () => {
 
 			describe( 'callback', () => {
 				it( 'creates a binding (arrow function)', () => {
-					collection = new Collection();
 					collection.bindTo( items ).using( ( item ) => {
 						return new FactoryClass( item );
 					} );
@@ -726,6 +765,235 @@ describe( 'Collection', () => {
 					items.remove( 0 );
 					expect( collection ).to.have.length( 0 );
 				} );
+			} );
+		} );
+
+		describe( 'two–way data binding', () => {
+			it( 'works with custom factories (1)', () => {
+				const collectionA = new Collection();
+				const collectionB = new Collection();
+
+				const spyA = sinon.spy();
+				const spyB = sinon.spy();
+
+				collectionA.on( 'add', spyA );
+				collectionB.on( 'add', spyB );
+
+				// A<--->B
+				collectionA.bindTo( collectionB ).using( i => ( { v: i.v * 2 } ) );
+				collectionB.bindTo( collectionA ).using( i => ( { v: i.v / 2 } ) );
+
+				assertItems( collectionA, [] );
+				assertItems( collectionB, [] );
+
+				collectionA.add( { v: 4 } );
+				collectionA.add( { v: 6 } );
+
+				assertItems( collectionA, [ 4, 6 ] );
+				assertItems( collectionB, [ 2, 3 ] );
+
+				collectionB.add( { v: 4 } );
+
+				assertItems( collectionA, [ 4, 6, 8 ] );
+				assertItems( collectionB, [ 2, 3, 4 ] );
+
+				sinon.assert.callCount( spyA, 3 );
+				sinon.assert.callCount( spyB, 3 );
+			} );
+
+			it( 'works with custom factories (2)', () => {
+				const collectionA = new Collection();
+				const collectionB = new Collection();
+
+				const spyA = sinon.spy();
+				const spyB = sinon.spy();
+
+				collectionA.on( 'add', spyA );
+				collectionB.on( 'add', spyB );
+
+				// A<--->B
+				collectionA.bindTo( collectionB ).using( 'data' );
+				collectionB.bindTo( collectionA ).using( i => new FactoryClass( i ) );
+
+				collectionA.add( { v: 4 } );
+				collectionA.add( { v: 6 } );
+
+				expect( [ ...collectionB ].every( i => i instanceof FactoryClass ) ).to.be.true;
+				expect( [ ...collectionB ].map( i => i.data ) ).to.deep.equal( [ ...collectionA ] );
+				expect( collectionB.map( i => i.data.v ) ).to.deep.equal( [ 4, 6 ] );
+				expect( collectionA.map( i => i.v ) ).to.deep.equal( [ 4, 6 ] );
+
+				collectionB.add( new FactoryClass( { v: 8 } ) );
+
+				expect( [ ...collectionB ].every( i => i instanceof FactoryClass ) ).to.be.true;
+				expect( [ ...collectionB ].map( i => i.data ) ).to.deep.equal( [ ...collectionA ] );
+				expect( collectionB.map( i => i.data.v ) ).to.deep.equal( [ 4, 6, 8 ] );
+				expect( collectionA.map( i => i.v ) ).to.deep.equal( [ 4, 6, 8 ] );
+			} );
+
+			it( 'works with custom factories (custom index)', () => {
+				const collectionA = new Collection();
+				const collectionB = new Collection();
+
+				const spyA = sinon.spy();
+				const spyB = sinon.spy();
+
+				collectionA.on( 'add', spyA );
+				collectionB.on( 'add', spyB );
+
+				// A<--->B
+				collectionA.bindTo( collectionB ).using( i => ( { v: i.v * 2 } ) );
+				collectionB.bindTo( collectionA ).using( i => ( { v: i.v / 2 } ) );
+
+				assertItems( collectionA, [] );
+				assertItems( collectionB, [] );
+
+				collectionA.add( { v: 4 } );
+				collectionA.add( { v: 6 }, 0 );
+
+				assertItems( collectionA, [ 6, 4 ] );
+				assertItems( collectionB, [ 3, 2 ] );
+
+				collectionB.add( { v: 4 }, 1 );
+
+				assertItems( collectionA, [ 6, 8, 4 ] );
+				assertItems( collectionB, [ 3, 4, 2 ] );
+
+				sinon.assert.callCount( spyA, 3 );
+				sinon.assert.callCount( spyB, 3 );
+			} );
+
+			it( 'works with 1:1 binding', () => {
+				const collectionA = new Collection();
+				const collectionB = new Collection();
+
+				const spyA = sinon.spy();
+				const spyB = sinon.spy();
+
+				collectionA.on( 'add', spyA );
+				collectionB.on( 'add', spyB );
+
+				// A<--->B
+				collectionA.bindTo( collectionB ).using( i => i );
+				collectionB.bindTo( collectionA ).using( i => i );
+
+				assertItems( collectionA, [], [] );
+				assertItems( collectionB, [], [] );
+
+				collectionA.add( { v: 4 } );
+				collectionA.add( { v: 6 } );
+
+				assertItems( collectionA, [ 4, 6 ] );
+				assertItems( collectionB, [ 4, 6 ] );
+
+				collectionB.add( { v: 8 } );
+
+				assertItems( collectionA, [ 4, 6, 8 ] );
+				assertItems( collectionB, [ 4, 6, 8 ] );
+
+				expect( collectionA ).to.deep.equal( collectionB );
+
+				sinon.assert.callCount( spyA, 3 );
+				sinon.assert.callCount( spyB, 3 );
+			} );
+
+			it( 'works with double chaining', () => {
+				const collectionA = new Collection();
+				const collectionB = new Collection();
+				const collectionC = new Collection();
+
+				const spyA = sinon.spy();
+				const spyB = sinon.spy();
+				const spyC = sinon.spy();
+
+				collectionA.on( 'add', spyA );
+				collectionB.on( 'add', spyB );
+				collectionC.on( 'add', spyC );
+
+				// A<--->B--->C
+				collectionA.bindTo( collectionB ).using( i => ( { v: i.v * 2 } ) );
+				collectionB.bindTo( collectionA ).using( i => ( { v: i.v / 2 } ) );
+				collectionC.bindTo( collectionB ).using( i => ( { v: -i.v } ) );
+
+				assertItems( collectionA, [] );
+				assertItems( collectionB, [] );
+				assertItems( collectionC, [] );
+
+				collectionA.add( { v: 4 } );
+				collectionA.add( { v: 6 } );
+
+				assertItems( collectionA, [ 4, 6 ] );
+				assertItems( collectionB, [ 2, 3 ] );
+				assertItems( collectionC, [ -2, -3 ] );
+
+				collectionB.add( { v: 4 } );
+
+				assertItems( collectionA, [ 4, 6, 8 ] );
+				assertItems( collectionB, [ 2, 3, 4 ] );
+				assertItems( collectionC, [ -2, -3, -4 ] );
+
+				collectionC.add( { v: -1000 } );
+
+				assertItems( collectionA, [ 4, 6, 8 ] );
+				assertItems( collectionB, [ 2, 3, 4 ] );
+				assertItems( collectionC, [ -2, -3, -4, -1000 ] );
+
+				sinon.assert.callCount( spyA, 3 );
+				sinon.assert.callCount( spyB, 3 );
+				sinon.assert.callCount( spyC, 4 );
+			} );
+
+			it( 'removes items correctly', () => {
+				const collectionA = new Collection();
+				const collectionB = new Collection();
+
+				const spyAddA = sinon.spy();
+				const spyAddB = sinon.spy();
+				const spyRemoveA = sinon.spy();
+				const spyRemoveB = sinon.spy();
+
+				collectionA.on( 'add', spyAddA );
+				collectionB.on( 'add', spyAddB );
+				collectionA.on( 'remove', spyRemoveA );
+				collectionB.on( 'remove', spyRemoveB );
+
+				// A<--->B
+				collectionA.bindTo( collectionB ).using( i => ( { v: i.v * 2 } ) );
+				collectionB.bindTo( collectionA ).using( i => ( { v: i.v / 2 } ) );
+
+				assertItems( collectionA, [], [] );
+				assertItems( collectionB, [], [] );
+
+				collectionA.add( { v: 4 } );
+				collectionA.add( { v: 6 } );
+
+				assertItems( collectionA, [ 4, 6 ] );
+				assertItems( collectionB, [ 2, 3 ] );
+
+				collectionB.add( { v: 4 } );
+
+				assertItems( collectionA, [ 4, 6, 8 ] );
+				assertItems( collectionB, [ 2, 3, 4 ] );
+
+				collectionB.remove( 0 );
+
+				assertItems( collectionA, [ 6, 8 ] );
+				assertItems( collectionB, [ 3, 4 ] );
+
+				sinon.assert.callCount( spyAddA, 3 );
+				sinon.assert.callCount( spyAddB, 3 );
+				sinon.assert.callCount( spyRemoveA, 1 );
+				sinon.assert.callCount( spyRemoveB, 1 );
+
+				collectionA.remove( 1 );
+
+				assertItems( collectionA, [ 6 ] );
+				assertItems( collectionB, [ 3 ] );
+
+				sinon.assert.callCount( spyAddA, 3 );
+				sinon.assert.callCount( spyAddB, 3 );
+				sinon.assert.callCount( spyRemoveA, 2 );
+				sinon.assert.callCount( spyRemoveB, 2 );
 			} );
 		} );
 	} );
