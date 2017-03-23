@@ -32,7 +32,7 @@ export default class KeystrokeHandler {
 		/**
 		 * Listener used to listen to events for easier keystroke handler destruction.
 		 *
-		 * @private
+		 * @protected
 		 * @member {module:utils/dom/emittermixin~Emitter}
 		 */
 		this._listener = Object.create( DomEmitterMixin );
