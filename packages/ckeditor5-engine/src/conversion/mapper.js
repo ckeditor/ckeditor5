@@ -61,6 +61,36 @@ export default class Mapper {
 		 * @member {Map}
 		 */
 		this._viewToModelLengthCallbacks = new Map();
+
+		// Default mapper algorithm for mapping model position to view position.
+		this.on( 'modelToViewPosition', ( evt, data ) => {
+			if ( data.viewPosition ) {
+				return;
+			}
+
+			let viewContainer = this._modelToViewMapping.get( data.modelPosition.parent );
+
+			data.viewPosition = this._findPositionIn( viewContainer, data.modelPosition.offset );
+		}, { priority: 'low' } );
+
+		// Default mapper algorithm for mapping view position to model position.
+		this.on( 'viewToModelPosition', ( evt, data ) => {
+			if ( data.modelPosition ) {
+				return;
+			}
+
+			let viewBlock = data.viewPosition.parent;
+			let modelParent = this._viewToModelMapping.get( viewBlock );
+
+			while ( !modelParent ) {
+				viewBlock = viewBlock.parent;
+				modelParent = this._viewToModelMapping.get( viewBlock );
+			}
+
+			let modelOffset = this._toModelOffset( data.viewPosition.parent, data.viewPosition.offset, viewBlock );
+
+			data.modelPosition = ModelPosition.createFromParentAndOffset( modelParent, modelOffset );
+		}, { priority: 'low' } );
 	}
 
 	/**
@@ -164,20 +194,7 @@ export default class Mapper {
 
 		this.fire( 'viewToModelPosition', data );
 
-		return data.modelPosition ? data.modelPosition : this._defaultToModelPosition( viewPosition );
-	}
-
-	/**
-	 * Maps model position to view position using default mapper algorithm.
-	 *
-	 * @private
-	 * @param {module:engine/model/position~Position} modelPosition
-	 * @returns {module:engine/view/position~Position} View position mapped from model position.
-	 */
-	_defaultToViewPosition( modelPosition ) {
-		let viewContainer = this._modelToViewMapping.get( modelPosition.parent );
-
-		return this._findPositionIn( viewContainer, modelPosition.offset );
+		return data.modelPosition;
 	}
 
 	/**
@@ -195,28 +212,7 @@ export default class Mapper {
 
 		this.fire( 'modelToViewPosition', data );
 
-		return data.viewPosition ? data.viewPosition : this._defaultToViewPosition( modelPosition );
-	}
-
-	/**
-	 * Maps view position to model position using default mapper algorithm.
-	 *
-	 * @private
-	 * @param {module:engine/view/position~Position} viewPosition
-	 * @returns {module:engine/model/position~Position} Model position mapped from view position.
-	 */
-	_defaultToModelPosition( viewPosition ) {
-		let viewBlock = viewPosition.parent;
-		let modelParent = this._viewToModelMapping.get( viewBlock );
-
-		while ( !modelParent ) {
-			viewBlock = viewBlock.parent;
-			modelParent = this._viewToModelMapping.get( viewBlock );
-		}
-
-		let modelOffset = this._toModelOffset( viewPosition.parent, viewPosition.offset, viewBlock );
-
-		return ModelPosition.createFromParentAndOffset( modelParent, modelOffset );
+		return data.viewPosition;
 	}
 
 	/**
@@ -440,59 +436,89 @@ export default class Mapper {
 		// Otherwise, just return the given position.
 		return viewPosition;
 	}
+
+	/**
+	 * Fired for each model-to-view position mapping request. The purpose of this event is to enable custom model-to-view position
+	 * mapping. Callbacks added to this event take {@link module:engine/model/position~Position model position} and are expected to calculate
+	 * {@link module:engine/view/position~Position view position}. Calculated view position should be added as `viewPosition` value in
+	 * `data` object that is passed as one of parameters to the event callback.
+	 *
+	 * 		// Assume that "captionedImage" model element is converted to <img> and following <span> elements in view,
+	 * 		// and the model element is bound to <img> element. Force mapping model positions inside "captionedImage" to that <span> element.
+	 *		mapper.on( 'modelToViewPosition', ( evt, data ) => {
+	 *			const positionParent = modelPosition.parent;
+	 *
+	 *			if ( positionParent.name == 'captionedImage' ) {
+	 *				const viewImg = data.mapper.toViewElement( positionParent );
+	 *				const viewCaption = viewImg.nextSibling; // The <span> element.
+	 *
+	 *				data.viewPosition = new ViewPosition( viewCaption, modelPosition.offset );
+	 *
+	 *				// Stop the event if other callbacks should not modify calculated value.
+	 *				evt.stop();
+	 *			}
+	 *		} );
+	 *
+	 * **Note:** keep in mind that custom callback provided for this event should use provided `data.modelPosition` only to check
+	 * what is before the position (or position's parent). This is important when model-to-view position mapping is used in
+	 * remove change conversion. Model after the removed position (that is being mapped) does not correspond to view, so it cannot be used:
+	 *
+	 *		// Incorrect:
+	 *		const modelElement = data.modelPosition.nodeAfter;
+	 *		const viewElement = data.mapper.toViewElement( modelElement );
+	 *		// ... Do something with `viewElement` and set `data.viewPosition`.
+	 *
+	 *		// Correct:
+	 *		const prevModelElement = data.modelPosition.nodeBefore;
+	 *		const prevViewElement = data.mapper.toViewElement( prevModelElement );
+	 *		// ... Use `prevViewElement` to find correct `data.viewPosition`.
+	 *
+	 * **Note:** default mapping callback is provided with `low` priority setting and does not cancel the event, so it is possible to attach
+	 * a custom callback after default callback and also use `data.viewPosition` calculated by default callback (for example to fix it).
+	 *
+	 * **Note:** default mapping callback will not fire if `data.viewPosition` is already set.
+	 *
+	 * **Note:** these callbacks are called **very often**. For efficiency reasons, it is advised to use them only when position
+	 * mapping between given model and view elements is unsolvable using just elements mapping and default algorithm. Also,
+	 * the condition that checks if special case scenario happened should be as simple as possible.
+	 *
+	 * @event modelToViewPosition
+	 * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
+	 * `viewPosition` value to that object with calculated {@link module:engine/view/position~Position view position}.
+	 * @param {module:engine/conversion/mapper~Mapper} data.mapper Mapper instance that fired the event.
+	 */
+
+	/**
+	 * Fired for each view-to-model position mapping request. See {@link module:engine/conversion/mapper~Mapper#event:modelToViewPosition}.
+	 *
+	 * 		// See example in `modelToViewPosition` event description.
+	 * 		// This custom mapping will map positions from <span> element next to <img> to the "captionedImage" element.
+	 *		mapper.on( 'viewToModelPosition', ( evt, data ) => {
+	 *			const positionParent = viewPosition.parent;
+	 *
+	 *			if ( positionParent.hasClass( 'image-caption' ) ) {
+	 *				const viewImg = positionParent.previousSibling;
+	 *				const modelImg = data.mapper.toModelElement( viewImg );
+	 *
+	 *				data.modelPosition = new ModelPosition( modelImg, viewPosition.offset );
+	 *				evt.stop();
+	 *			}
+	 *		} );
+	 *
+	 * **Note:** default mapping callback is provided with `low` priority setting and does not cancel the event, so it is possible to attach
+	 * a custom callback after default callback and also use `data.modelPosition` calculated by default callback (for example to fix it).
+	 *
+	 * **Note:** default mapping callback will not fire if `data.modelPosition` is already set.
+	 *
+	 * **Note:** these callbacks are called **very often**. For efficiency reasons, it is advised to use them only when position
+	 * mapping between given model and view elements is unsolvable using just elements mapping and default algorithm. Also,
+	 * the condition that checks if special case scenario happened should be as simple as possible.
+	 *
+	 * @event viewToModelPosition
+	 * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
+	 * `modelPosition` value to that object with calculated {@link module:engine/model/position~Position model position}.
+	 * @param {module:engine/conversion/mapper~Mapper} data.mapper Mapper instance that fired the event.
+	 */
 }
 
 mix( Mapper, EmitterMixin );
-
-/**
- * Fired for each model-to-view position mapping request. The purpose of this event is to enable custom model-to-view position
- * mapping. Callbacks added to this event take {@link module:engine/model/position~Position model position} and are expected to calculate
- * {@link module:engine/view/position~Position view position}. Calculated view position should be added as `viewPosition` value in
- * `data` object that is passed as one of parameters to the event callback.
- *
- * 		// Assume that "captionedImage" model element is converted to <img> and following <span> elements in view,
- * 		// and the model element is bound to <img> element. Force mapping model positions inside "captionedImage" to that <span> element.
- *		mapper.on( 'modelToViewPosition', ( evt, data ) => {
- *			const positionParent = modelPosition.parent;
- *
- *			if ( positionParent.name == 'captionedImage' ) {
- *				const viewImg = mapper.toViewElement( positionParent );
- *				const viewCaption = viewImg.nextSibling; // The <span> element.
- *
- *				data.viewPosition = new ViewPosition( viewCaption, modelPosition.offset );
- *				evt.stop();
- *			}
- *		} );
- *
- * **Note:** these callbacks are called **very often**. For efficiency reasons, it is advised to use them only when position
- * mapping between given model and view elements is unsolvable using just elements mapping and default algorithm. Also,
- * the condition that checks if special case scenario happened should be as simple as possible.
- *
- * @event modelToViewPosition
- * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
- * `viewPosition` value to that object with calculated {@link module:engine/view/position~Position view position}.
- * @param {module:engine/conversion/mapper~Mapper} data.mapper Mapper instance that fired the event.
- */
-
-/**
- * Fired for each view-to-model position mapping request. See {@link module:engine/conversion/mapper~Mapper#event:modelToViewPosition}.
- *
- * 		// See example in `modelToViewPosition` event description.
- * 		// This custom mapping will map positions from <span> element next to <img> to the "captionedImage" element.
- *		mapper.on( 'viewToModelPosition', ( evt, data ) => {
- *			const positionParent = viewPosition.parent;
- *
- *			if ( positionParent.hasClass( 'image-caption' ) ) {
- *				const viewImg = positionParent.previousSibling;
- *				const modelImg = mapper.toModelElement( viewImg );
- *
- *				data.modelPosition = new ModelPosition( modelImg, viewPosition.offset );
- *				evt.stop();
- *			}
- *		} );
- *
- * @event viewToModelPosition
- * @param {Object} data Data pipeline object that can store and pass data between callbacks. The callback should add
- * `modelPosition` value to that object with calculated {@link module:engine/model/position~Position model position}.
- * @param {module:engine/conversion/mapper~Mapper} data.mapper Mapper instance that fired the event.
- */
