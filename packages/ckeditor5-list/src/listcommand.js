@@ -167,6 +167,37 @@ export default class ListCommand extends Command {
 				}
 			}
 
+			// If we are turning on, we might change some items that are already `listItem`s but with different type.
+			// Changing one nested list item to other type should also trigger changing all its siblings so the
+			// whole nested list is of the same type.
+			if ( !turnOff ) {
+				// We need to check previous sibling of first changed item and next siblings of last changed item.
+				// All other items are already in the selection.
+				const firstSelected = blocks[ 0 ];
+
+				// Do this only for nested lists.
+				if ( firstSelected.getAttribute( 'indent' ) !== 0 ) {
+					let item = firstSelected.previousSibling;
+
+					while ( item && item.is( 'listItem' ) && item.getAttribute( 'indent' ) == firstSelected.getAttribute( 'indent' ) ) {
+						// Just add the item to selected blocks like it was selected by the user.
+						blocks.unshift( item );
+						item = item.previousSibling;
+					}
+				}
+
+				const lastSelected = blocks[ blocks.length - 1 ];
+
+				if ( lastSelected.getAttribute( 'indent' ) !== 0 ) {
+					let item = lastSelected.nextSibling;
+
+					while ( item && item.is( 'listItem' ) && item.getAttribute( 'indent' ) == lastSelected.getAttribute( 'indent' ) ) {
+						blocks.push( item );
+						item = item.nextSibling;
+					}
+				}
+			}
+
 			// Phew! Now it will be easier :).
 			// For each block element that was in the selection, we will either: turn it to list item,
 			// turn it to paragraph, or change it's type. Or leave it as it is.
@@ -174,15 +205,15 @@ export default class ListCommand extends Command {
 			for ( let element of blocks.reverse() ) {
 				if ( turnOff && element.name == 'listItem' ) {
 					// We are turning off and the element is a `listItem` - it should be converted to `paragraph`.
-					// The order is important to keep model in correct state.
-					batch.rename( element, 'paragraph' );
 					// List item specific attributes are removed by post fixer.
+					batch.rename( element, 'paragraph' );
 				} else if ( !turnOff && element.name != 'listItem' ) {
 					// We are turning on and the element is not a `listItem` - it should be converted to `listItem`.
-					// The order is important to keep model in correct state.
+					// The order of operations is important to keep model in correct state.
 					batch.setAttribute( element, 'type', this.type ).setAttribute( element, 'indent', 0 ).rename( element, 'listItem' );
 				} else if ( !turnOff && element.name == 'listItem' && element.getAttribute( 'type' ) != this.type ) {
-					// We are turning on and the element is a `listItem` but has different type - change type.
+					// We are turning on and the element is a `listItem` but has different type - change it's type and
+					// type of it's all siblings that have same indent.
 					batch.setAttribute( element, 'type', this.type );
 				}
 			}

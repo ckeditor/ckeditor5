@@ -1056,16 +1056,14 @@ describe( 'ListEngine', () => {
 									'<ul>' +
 										'<li>g</li>' +
 										'<li>h</li>' +
-									'</ul>' +
-									'<ol>' +
 										'<li>i</li>' +
-									'</ol>' +
+									'</ul>' +
 								'</li>' +
 								'<li>j</li>' +
 							'</ol>' +
 						'</li>' +
 						'<li>k</li>' +
-					'</ul>'
+					'</ol>'
 				);
 			} );
 
@@ -1078,7 +1076,7 @@ describe( 'ListEngine', () => {
 				<listItem indent=1 type="numbered"></listItem>
 				<listItem indent=2 type="bulleted">g</listItem>
 				<listItem indent=2 type="bulleted">h</listItem>
-				<listItem indent=2 type="numbered">i</listItem>
+				<listItem indent=2 type="bullered">i</listItem>
 				<listItem indent=1 type="numbered">j</listItem>
 				<listItem indent=0 type="bulleted">k</listItem>
 			 */
@@ -1094,7 +1092,7 @@ describe( 'ListEngine', () => {
 					} );
 				}
 
-				test( 'before ul',			[ 0 ],					[ 0 ] );	// --> before listItem "a"
+				test( 'before ul#1',		[ 0 ],					[ 0 ] );	// --> before listItem "a"
 				test( 'before li "a"',		[ 0, 0 ],				[ 0 ] );	// --> before listItem "a"
 				test( 'before "a"',			[ 0, 0, 0 ],			[ 0, 0 ] );	// --> beginning of listItem "a"
 				test( 'after "a"',			[ 0, 0, 1 ],			[ 0, 1 ] );	// --> end of listItem "a"
@@ -1107,14 +1105,12 @@ describe( 'ListEngine', () => {
 				test( 'before li "d"',		[ 0, 1, 1, 1 ],			[ 3 ] );	// --> before listItem "d"
 				test( 'before li "e"',		[ 0, 1, 1, 2 ],			[ 4 ] );	// --> before listItem "e"
 				test( 'before "empty" li',	[ 0, 1, 1, 3 ],			[ 5 ] );	// --> before "empty" listItem
-				test( 'before ul',			[ 0, 1, 1, 3, 0 ],		[ 5, 0 ] ); // --> inside "empty" listItem
+				test( 'before ul#2',		[ 0, 1, 1, 3, 0 ],		[ 5, 0 ] ); // --> inside "empty" listItem
 				test( 'before li "g"',		[ 0, 1, 1, 3, 0, 0 ],	[ 6 ] );	// --> before listItem "g"
 				test( 'before li "h"',		[ 0, 1, 1, 3, 0, 1 ],	[ 7 ] );	// --> before listItem "h"
-				test( 'after li "h"',		[ 0, 1, 1, 3, 0, 2 ],	[ 8 ] );	// --> before listItem "i"
-				test( 'between ul and ol',	[ 0, 1, 1, 3, 1 ],		[ 8 ] );	// --> before listItem "i"
-				test( 'before li "i"',		[ 0, 1, 1, 3, 1, 0 ],	[ 8 ] );	// --> before listItem "i"
-				test( 'after li "i"',		[ 0, 1, 1, 3, 1, 1 ],	[ 9 ] );	// --> before listItem "j"
-				test( 'after ol',			[ 0, 1, 1, 3, 2 ],		[ 9 ] );	// --> before listItem "j"
+				test( 'before li "i"',		[ 0, 1, 1, 3, 0, 2 ],	[ 8 ] );	// --> before listItem "i"
+				test( 'after li "i"',		[ 0, 1, 1, 3, 0, 3 ],	[ 9 ] );	// --> before listItem "j"
+				test( 'after ul#2',			[ 0, 1, 1, 3, 1 ],		[ 9 ] );	// --> before listItem "j"
 				test( 'before li "j"',		[ 0, 1, 1, 4 ],			[ 9 ] );	// --> before listItem "j"
 				test( 'after li "j"',		[ 0, 1, 1, 5 ],			[ 10 ] );	// --> before listItem "k"
 				test( 'end of li "bbb"',	[ 0, 1, 2 ],			[ 10 ] );	// --> before listItem "k"
@@ -1149,7 +1145,7 @@ describe( 'ListEngine', () => {
 				test( 'inside "empty" listItem',		[ 5, 0 ],	[ 0, 1, 1, 3, 0 ] );	// --> before ul
 				test( 'before listItem "g"',			[ 6 ],		[ 0, 1, 1, 3, 0, 0 ] );	// --> before li "g"
 				test( 'before listItem "h"',			[ 7 ],		[ 0, 1, 1, 3, 0, 1 ] );	// --> before li "h"
-				test( 'before listItem "i"',			[ 8 ],		[ 0, 1, 1, 3, 1, 0 ] );	// --> before li "i"
+				test( 'before listItem "i"',			[ 8 ],		[ 0, 1, 1, 3, 0, 2 ] );	// --> before li "i"
 				test( 'before listItem "j"',			[ 9 ],		[ 0, 1, 1, 4 ] );		// --> before li "j"
 				test( 'before listItem "k"',			[ 10 ],		[ 0, 2 ] );				// --> before li "k"
 				test( 'after listItem "k"',				[ 11 ],		[ 1 ] );				// --> after ul
@@ -1322,17 +1318,15 @@ describe( 'ListEngine', () => {
 
 						'<paragraph>p</paragraph>' +
 						'<listItem indent="0" type="bulleted">1</listItem>' +
-						'[<listItem indent="1" type="numbered">x</listItem>]' +
+						'[<listItem indent="1" type="numbered">x</listItem>]' + // This type should be fixed by post fixer.
 						'<listItem indent="1" type="bulleted">1.1</listItem>',
 
 						'<p>p</p>' +
 						'<ul>' +
 							'<li>' +
 								'1' +
-								'<ol>' +
-									'<li>x</li>' +
-								'</ol>' +
 								'<ul>' +
+									'<li>x</li>' +
 									'<li>1.1</li>' +
 								'</ul>' +
 							'</li>' +
@@ -1345,7 +1339,7 @@ describe( 'ListEngine', () => {
 						'<paragraph>p</paragraph>' +
 						'<listItem indent="0" type="bulleted">1</listItem>' +
 						'<listItem indent="1" type="bulleted">1.1</listItem>' +
-						'[<listItem indent="1" type="numbered">x</listItem>]',
+						'[<listItem indent="1" type="numbered">x</listItem>]', // This type should be fixed by post fixer.
 
 						'<p>p</p>' +
 						'<ul>' +
@@ -1353,10 +1347,8 @@ describe( 'ListEngine', () => {
 								'1' +
 								'<ul>' +
 									'<li>1.1</li>' +
-								'</ul>' +
-								'<ol>' +
 									'<li>x</li>' +
-								'</ol>' +
+								'</ul>' +
 							'</li>' +
 						'</ul>'
 					);
@@ -1410,6 +1402,30 @@ describe( 'ListEngine', () => {
 							'</li>' +
 						'</ol>'
 					);
+
+					testInsert(
+						'after bigger indent, in nested list, different type',
+
+						'<listItem indent="0" type="bulleted">a</listItem>' +
+						'<listItem indent="1" type="bulleted">b</listItem>' +
+						'<listItem indent="2" type="bulleted">c</listItem>' +
+						'[<listItem indent="1" type="numbered">x</listItem>]', // This type should be fixed by post fixer.
+
+						'<ul>' +
+							'<li>' +
+								'a' +
+								'<ul>' +
+									'<li>' +
+										'b' +
+										'<ul>' +
+											'<li>c</li>' +
+										'</ul>' +
+									'</li>' +
+									'<li>x</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
 				} );
 
 				// This case is pretty complex but it tests various edge cases concerning splitting lists.
@@ -1419,12 +1435,12 @@ describe( 'ListEngine', () => {
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'<listItem indent="1" type="bulleted">b</listItem>' +
 					'<listItem indent="2" type="bulleted">c</listItem>' +
-					'<listItem indent="3" type="bulleted">d</listItem>' +
+					'<listItem indent="3" type="numbered">d</listItem>' +
 					'[<paragraph>x</paragraph>]' +
-					'<listItem indent="3" type="bulleted">e</listItem>' + // This indent should be fixed by post fixer.
+					'<listItem indent="3" type="numbered">e</listItem>' + // This indent should be fixed by post fixer.
 					'<listItem indent="2" type="bulleted">f</listItem>' + // This indent should be fixed by post fixer.
 					'<listItem indent="3" type="bulleted">g</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem indent="1" type="numbered">h</listItem>' + // This indent should be fixed by post fixer.
+					'<listItem indent="1" type="bulleted">h</listItem>' + // This indent should be fixed by post fixer.
 					'<listItem indent="2" type="numbered">i</listItem>' + // This indent should be fixed by post fixer.
 					'<listItem indent="0" type="numbered">j</listItem>' + // This indent should be fixed by post fixer.
 					'<paragraph>p</paragraph>',
@@ -1438,9 +1454,9 @@ describe( 'ListEngine', () => {
 									'<ul>' +
 										'<li>' +
 											'c' +
-											'<ul>' +
+											'<ol>' +
 												'<li>d</li>' +
-											'</ul>' +
+											'</ol>' +
 										'</li>' +
 									'</ul>' +
 								'</li>' +
@@ -1448,22 +1464,24 @@ describe( 'ListEngine', () => {
 						'</li>' +
 					'</ul>' +
 					'<p>x</p>' +
-					'<ul>' +
+					'<ol>' +
 						'<li>e</li>' +
+					'</ol>' +
+					'<ul>' +
 						'<li>' +
 							'f' +
 							'<ul>' +
 								'<li>g</li>' +
 							'</ul>' +
 						'</li>' +
-					'</ul>' +
-					'<ol>' +
 						'<li>' +
 							'h' +
 							'<ol>' +
 								'<li>i</li>' +
 							'</ol>' +
 						'</li>' +
+					'</ul>' +
+					'<ol>' +
 						'<li>j</li>' +
 					'</ol>' +
 					'<p>p</p>',
@@ -1564,12 +1582,31 @@ describe( 'ListEngine', () => {
 				);
 
 				testRemove(
-					'the only nested item from list that separates two lists',
+					'list item that separates two nested lists of same type',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'<listItem indent="1" type="numbered">b</listItem>' +
-					'[<listItem indent="1" type="bulleted">c</listItem>]' +
+					'[<listItem indent="0" type="bulleted">c</listItem>]' +
 					'<listItem indent="1" type="numbered">d</listItem>',
+
+					'<ul>' +
+						'<li>' +
+							'a' +
+							'<ol>' +
+								'<li>b</li>' +
+								'<li>d</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				testRemove(
+					'list item that separates two nested lists of different type',
+
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="numbered">b</listItem>' +
+					'[<listItem indent="0" type="bulleted">c</listItem>]' +
+					'<listItem indent="1" type="bulleted">d</listItem>', // This type should be fixed by post fixer.
 
 					'<ul>' +
 						'<li>' +
@@ -1588,17 +1625,15 @@ describe( 'ListEngine', () => {
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'[<listItem indent="0" type="bulleted">b</listItem>]' +
 					'<listItem indent="1" type="bulleted">c</listItem>' +
-					'<listItem indent="1" type="numbered">d</listItem>',
+					'<listItem indent="1" type="bulleted">d</listItem>',
 
 					'<ul>' +
 						'<li>' +
 							'a' +
 							'<ul>' +
 								'<li>c</li>' +
-							'</ul>' +
-							'<ol>' +
 								'<li>d</li>' +
-							'</ol>' +
+							'</ul>' +
 						'</li>' +
 					'</ul>'
 				);
@@ -1608,18 +1643,16 @@ describe( 'ListEngine', () => {
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'[<listItem indent="1" type="bulleted">b</listItem>]' +
-					'<listItem indent="2" type="bulleted">c</listItem>' +
-					'<listItem indent="2" type="numbered">d</listItem>',
+					'<listItem indent="2" type="bulleted">c</listItem>' + // This indent should be fixed by post fixer.
+					'<listItem indent="2" type="bulleted">d</listItem>', // This indent should be fixed by post fixer.
 
 					'<ul>' +
 						'<li>' +
 							'a' +
 							'<ul>' +
 								'<li>c</li>' +
-							'</ul>' +
-							'<ol>' +
 								'<li>d</li>' +
-							'</ol>' +
+							'</ul>' +
 						'</li>' +
 					'</ul>'
 				);
@@ -1692,6 +1725,8 @@ describe( 'ListEngine', () => {
 				);
 			} );
 
+			// Note: although the feature itself does not let changing type of singular nested list item,
+			// conversion of those items is done item-by-item and this is tested in this suite.
 			describe( 'change type', () => {
 				testChangeType(
 					'list item that has nested items',
@@ -1736,7 +1771,7 @@ describe( 'ListEngine', () => {
 				);
 
 				testChangeType(
-					'list item between two nested items',
+					'list item between two nested items ',
 
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'<listItem indent="1" type="bulleted">b</listItem>' +
@@ -2050,14 +2085,12 @@ describe( 'ListEngine', () => {
 						'outdent the first item of nested list', 0,
 
 						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'[<listItem indent="1" type="numbered">b</listItem>]' +
+						'[<listItem indent="1" type="bulleted">b</listItem>]' +
 						'<listItem indent="1" type="bulleted">c</listItem>' +
 						'<listItem indent="1" type="bulleted">d</listItem>',
 
 						'<ul>' +
 							'<li>a</li>' +
-						'</ul>' +
-						'<ol>' +
 							'<li>' +
 								'b' +
 								'<ul>' +
@@ -2065,7 +2098,7 @@ describe( 'ListEngine', () => {
 									'<li>d</li>' +
 								'</ul>' +
 							'</li>' +
-						'</ol>'
+						'</ul>'
 					);
 
 					testChangeIndent(
@@ -2073,7 +2106,7 @@ describe( 'ListEngine', () => {
 
 						'<listItem indent="0" type="bulleted">a</listItem>' +
 						'<listItem indent="1" type="bulleted">b</listItem>' +
-						'[<listItem indent="2" type="numbered">c</listItem>]' +
+						'[<listItem indent="2" type="bulleted">c</listItem>]' +
 						'<listItem indent="1" type="bulleted">d</listItem>',
 
 						'<ul>' +
@@ -2081,11 +2114,7 @@ describe( 'ListEngine', () => {
 								'a' +
 								'<ul>' +
 									'<li>b</li>' +
-								'</ul>' +
-								'<ol>' +
 									'<li>c</li>' +
-								'</ol>' +
-								'<ul>' +
 									'<li>d</li>' +
 								'</ul>' +
 							'</li>' +
@@ -2494,207 +2523,310 @@ describe( 'ListEngine', () => {
 
 					false
 				);
+
+				testMove(
+					'multiple nested list items of different types #1 - fix at start',
+
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'[<listItem indent="1" type="bulleted">c</listItem>' +
+					'<listItem indent="0" type="bulleted">d</listItem>' +
+					'<listItem indent="1" type="numbered">e</listItem>]' +
+					'<listItem indent="1" type="numbered">f</listItem>' +
+					'<listItem indent="0" type="bulleted">g</listItem>' +
+					'<listItem indent="1" type="numbered">h</listItem>' +
+					'<listItem indent="1" type="numbered">i</listItem>',
+
+					8,
+
+					'<ul>' +
+						'<li>' +
+							'a' +
+							'<ul>' +
+								'<li>b</li>' +
+								'<li>f</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>' +
+							'g' +
+							'<ol>' +
+								'<li>h</li>' +
+								'<li>c</li>' +
+							'</ol>' +
+						'</li>' +
+						'<li>' +
+							'd' +
+							'<ol>' +
+								'<li>e</li>' +
+								'<li>i</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ul>'
+				);
+
+				testMove(
+					'multiple nested list items of different types #2 - fix at end',
+
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'[<listItem indent="1" type="bulleted">c</listItem>' +
+					'<listItem indent="0" type="bulleted">d</listItem>' +
+					'<listItem indent="1" type="numbered">e</listItem>]' +
+					'<listItem indent="1" type="numbered">f</listItem>' +
+					'<listItem indent="0" type="bulleted">g</listItem>' +
+					'<listItem indent="1" type="bulleted">h</listItem>' +
+					'<listItem indent="1" type="bulleted">i</listItem>',
+
+					8,
+
+					'<ul>' +
+						'<li>' +
+							'a' +
+							'<ul>' +
+								'<li>b</li>' +
+								'<li>f</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>' +
+							'g' +
+							'<ul>' +
+								'<li>h</li>' +
+								'<li>c</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>' +
+							'd' +
+							'<ul>' +
+								'<li>e</li>' +
+								'<li>i</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>'
+				);
 			} );
 		} );
 	} );
 
 	describe( 'post fixer', () => {
-		it( 'insert element before nested list', () => {
-			const modelBefore =
+		describe( 'insert', () => {
+			function test( testName, input, inserted, output ) {
+				it( testName, () => {
+					setModelData( modelDoc, input );
+
+					modelDoc.enqueueChanges( () => {
+						modelDoc.batch().insert( modelDoc.selection.getFirstPosition(), parseModel( inserted, modelDoc.schema ) );
+					} );
+
+					expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
+				} );
+			}
+
+			test(
+				'element before nested list',
+
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'<listItem indent="1" type="bulleted">b</listItem>' +
 				'[]' +
 				'<listItem indent="2" type="bulleted">d</listItem>' +
 				'<listItem indent="2" type="bulleted">e</listItem>' +
-				'<listItem indent="3" type="bulleted">f</listItem>';
+				'<listItem indent="3" type="bulleted">f</listItem>',
 
-			const insertedElement = '<paragraph>x</paragraph>';
+				'<paragraph>x</paragraph>',
 
-			const expectedModel =
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'<listItem indent="1" type="bulleted">b</listItem>' +
 				'<paragraph>x</paragraph>' +
 				'<listItem indent="0" type="bulleted">d</listItem>' +
 				'<listItem indent="0" type="bulleted">e</listItem>' +
-				'<listItem indent="1" type="bulleted">f</listItem>';
+				'<listItem indent="1" type="bulleted">f</listItem>'
+			);
 
-			// Set model data without inserted element but with selection.
-			setModelData( modelDoc, modelBefore );
+			test(
+				'list item before nested list',
 
-			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().insert( modelDoc.selection.getFirstPosition(), parseModel( insertedElement, modelDoc.schema ) );
-			} );
-
-			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( expectedModel );
-		} );
-
-		it( 'insert list item before nested list', () => {
-			const modelBefore =
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'<listItem indent="1" type="bulleted">b</listItem>' +
 				'[]' +
 				'<listItem indent="2" type="bulleted">d</listItem>' +
 				'<listItem indent="2" type="bulleted">e</listItem>' +
-				'<listItem indent="3" type="bulleted">f</listItem>';
+				'<listItem indent="3" type="bulleted">f</listItem>',
 
-			const insertedElement = '<listItem indent="0" type="bulleted">x</listItem>';
+				'<listItem indent="0" type="bulleted">x</listItem>',
 
-			const expectedModel =
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'<listItem indent="1" type="bulleted">b</listItem>' +
 				'<listItem indent="0" type="bulleted">x</listItem>' +
 				'<listItem indent="1" type="bulleted">d</listItem>' +
 				'<listItem indent="1" type="bulleted">e</listItem>' +
-				'<listItem indent="2" type="bulleted">f</listItem>';
+				'<listItem indent="2" type="bulleted">f</listItem>'
+			);
 
-			// Set model data without inserted element but with selection.
-			setModelData( modelDoc, modelBefore );
+			test(
+				'multiple list items with too big indent',
 
-			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().insert( modelDoc.selection.getFirstPosition(), parseModel( insertedElement, modelDoc.schema ) );
-			} );
-
-			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( expectedModel );
-		} );
-
-		it( 'insert list items with too big indent', () => {
-			const modelBefore =
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'<listItem indent="1" type="bulleted">b</listItem>' +
 				'[]' +
-				'<listItem indent="1" type="bulleted">c</listItem>';
+				'<listItem indent="1" type="bulleted">c</listItem>',
 
-			const insertedElement =
 				'<listItem indent="4" type="bulleted">x</listItem>' +
 				'<listItem indent="5" type="bulleted">x</listItem>' +
-				'<listItem indent="4" type="bulleted">x</listItem>';
+				'<listItem indent="4" type="bulleted">x</listItem>',
 
-			const expectedModel =
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'<listItem indent="1" type="bulleted">b</listItem>' +
 				'<listItem indent="2" type="bulleted">x</listItem>' +
 				'<listItem indent="3" type="bulleted">x</listItem>' +
 				'<listItem indent="2" type="bulleted">x</listItem>' +
-				'<listItem indent="1" type="bulleted">c</listItem>';
+				'<listItem indent="1" type="bulleted">c</listItem>'
+			);
 
-			// Set model data without inserted element but with selection.
-			setModelData( modelDoc, modelBefore );
+			test(
+				'item with different type - top level list',
 
-			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().insert( modelDoc.selection.getFirstPosition(), parseModel( insertedElement, modelDoc.schema ) );
-			} );
+				'<listItem indent="0" type="bulleted">a</listItem>' +
+				'<listItem indent="0" type="bulleted">b</listItem>' +
+				'[]' +
+				'<listItem indent="0" type="bulleted">c</listItem>',
 
-			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( expectedModel );
+				'<listItem indent="0" type="numbered">x</listItem>',
+
+				'<listItem indent="0" type="bulleted">a</listItem>' +
+				'<listItem indent="0" type="bulleted">b</listItem>' +
+				'<listItem indent="0" type="numbered">x</listItem>' +
+				'<listItem indent="0" type="bulleted">c</listItem>'
+			);
+
+			test(
+				'multiple items with different type - nested list',
+
+				'<listItem indent="0" type="bulleted">a</listItem>' +
+				'<listItem indent="1" type="bulleted">b</listItem>' +
+				'[]' +
+				'<listItem indent="2" type="bulleted">c</listItem>',
+
+				'<listItem indent="1" type="numbered">x</listItem>' +
+				'<listItem indent="2" type="numbered">x</listItem>',
+
+				'<listItem indent="0" type="bulleted">a</listItem>' +
+				'<listItem indent="1" type="bulleted">b</listItem>' +
+				'<listItem indent="1" type="bulleted">x</listItem>' +
+				'<listItem indent="2" type="bulleted">x</listItem>' +
+				'<listItem indent="2" type="bulleted">c</listItem>'
+			);
+
+			test(
+				'item with different type, in nested list, after nested list',
+
+				'<listItem indent="0" type="bulleted">a</listItem>' +
+				'<listItem indent="1" type="bulleted">b</listItem>' +
+				'<listItem indent="2" type="bulleted">c</listItem>' +
+				'[]',
+
+				'<listItem indent="1" type="numbered">x</listItem>',
+
+				'<listItem indent="0" type="bulleted">a</listItem>' +
+				'<listItem indent="1" type="bulleted">b</listItem>' +
+				'<listItem indent="2" type="bulleted">c</listItem>' +
+				'<listItem indent="1" type="bulleted">x</listItem>'
+			);
 		} );
 
-		it( 'remove first list item', () => {
-			const modelBefore =
+		describe( 'remove', () => {
+			function test( testName, input, output ) {
+				it( testName, () => {
+					setModelData( modelDoc, input );
+
+					modelDoc.enqueueChanges( () => {
+						modelDoc.batch().remove( modelDoc.selection.getFirstRange() );
+					} );
+
+					expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
+				} );
+			}
+
+			test(
+				'first list item',
+
 				'[<listItem indent="0" type="bulleted">a</listItem>]' +
 				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'<listItem indent="2" type="bulleted">c</listItem>';
+				'<listItem indent="2" type="bulleted">c</listItem>',
 
-			const expectedModel =
 				'<listItem indent="0" type="bulleted">b</listItem>' +
-				'<listItem indent="1" type="bulleted">c</listItem>';
+				'<listItem indent="1" type="bulleted">c</listItem>'
+			);
 
-			setModelData( modelDoc, modelBefore );
+			test(
+				'first list item of nested list',
 
-			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().remove( modelDoc.selection.getFirstRange() );
-			} );
-
-			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( expectedModel );
-		} );
-
-		it( 'remove list item from nested list', () => {
-			const modelBefore =
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'[<listItem indent="1" type="bulleted">b</listItem>]' +
 				'<listItem indent="2" type="bulleted">c</listItem>' +
 				'<listItem indent="3" type="bulleted">d</listItem>' +
 				'<listItem indent="1" type="bulleted">e</listItem>' +
-				'<listItem indent="2" type="bulleted">f</listItem>';
+				'<listItem indent="2" type="bulleted">f</listItem>',
 
-			const expectedModel =
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'<listItem indent="1" type="bulleted">c</listItem>' +
 				'<listItem indent="2" type="bulleted">d</listItem>' +
 				'<listItem indent="1" type="bulleted">e</listItem>' +
-				'<listItem indent="2" type="bulleted">f</listItem>';
+				'<listItem indent="2" type="bulleted">f</listItem>'
+			);
 
-			setModelData( modelDoc, modelBefore );
+			test(
+				'selection over two different nested lists of same indent',
 
-			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().remove( modelDoc.selection.getFirstRange() );
-			} );
-
-			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( expectedModel );
-		} );
-
-		it( 'rename nested item', () => {
-			const modelBefore =
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'[<listItem indent="2" type="bulleted">c</listItem>]' +
-				'<listItem indent="2" type="bulleted">d</listItem>' +
-				'<listItem indent="3" type="bulleted">e</listItem>' +
-				'<listItem indent="1" type="bulleted">f</listItem>' +
-				'<listItem indent="2" type="bulleted">g</listItem>' +
-				'<listItem indent="1" type="bulleted">h</listItem>' +
-				'<listItem indent="2" type="bulleted">i</listItem>';
-
-			const expectedModel =
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'<paragraph>c</paragraph>' +
+				'[<listItem indent="1" type="bulleted">c</listItem>' +
 				'<listItem indent="0" type="bulleted">d</listItem>' +
-				'<listItem indent="1" type="bulleted">e</listItem>' +
-				'<listItem indent="0" type="bulleted">f</listItem>' +
-				'<listItem indent="1" type="bulleted">g</listItem>' +
-				'<listItem indent="0" type="bulleted">h</listItem>' +
-				'<listItem indent="1" type="bulleted">i</listItem>';
+				'<listItem indent="1" type="numbered">e</listItem>]' +
+				'<listItem indent="1" type="numbered">f</listItem>',
 
-			setModelData( modelDoc, modelBefore );
-
-			const element = modelDoc.selection.getFirstPosition().nodeAfter;
-
-			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().rename( element, 'paragraph' );
-			} );
-
-			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( expectedModel );
+				'<listItem indent="0" type="bulleted">a</listItem>' +
+				'<listItem indent="1" type="bulleted">b</listItem>' +
+				'<listItem indent="1" type="bulleted">f</listItem>'
+			);
 		} );
 
-		it( 'move out nested list items', () => {
-			const modelBefore =
+		describe( 'move', () => {
+			function test( testName, input, offset, output ) {
+				it( testName, () => {
+					setModelData( modelDoc, input );
+
+					const targetPosition = ModelPosition.createAt( modelRoot, offset );
+
+					modelDoc.enqueueChanges( () => {
+						modelDoc.batch().move( modelDoc.selection.getFirstRange(), targetPosition );
+					} );
+
+					expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
+				} );
+			}
+
+			test(
+				'nested list item out of list structure',
+
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'[<listItem indent="1" type="bulleted">b</listItem>' +
 				'<listItem indent="2" type="bulleted">c</listItem>]' +
 				'<listItem indent="3" type="bulleted">d</listItem>' +
 				'<listItem indent="4" type="bulleted">e</listItem>' +
-				'<paragraph>x</paragraph>';
+				'<paragraph>x</paragraph>',
 
-			const expectedModel =
+				6,
+
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'<listItem indent="1" type="bulleted">d</listItem>' +
 				'<listItem indent="2" type="bulleted">e</listItem>' +
 				'<paragraph>x</paragraph>' +
 				'<listItem indent="0" type="bulleted">b</listItem>' +
-				'<listItem indent="1" type="bulleted">c</listItem>';
+				'<listItem indent="1" type="bulleted">c</listItem>'
+			);
 
-			setModelData( modelDoc, modelBefore );
+			test(
+				'list items between lists',
 
-			const targetPosition = ModelPosition.createAt( modelRoot, 6 );
-
-			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().move( modelDoc.selection.getFirstRange(), targetPosition );
-			} );
-
-			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( expectedModel );
-		} );
-
-		it( 'move list items between lists', () => {
-			const modelBefore =
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'<listItem indent="1" type="bulleted">b</listItem>' +
 				'[<listItem indent="2" type="bulleted">c</listItem>' +
@@ -2702,9 +2834,10 @@ describe( 'ListEngine', () => {
 				'<listItem indent="4" type="bulleted">e</listItem>' +
 				'<paragraph>x</paragraph>' +
 				'<listItem indent="0" type="bulleted">f</listItem>' +
-				'<listItem indent="0" type="bulleted">g</listItem>';
+				'<listItem indent="0" type="bulleted">g</listItem>',
 
-			const expectedModel =
+				7,
+
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'<listItem indent="1" type="bulleted">b</listItem>' +
 				'<listItem indent="2" type="bulleted">e</listItem>' +
@@ -2712,43 +2845,114 @@ describe( 'ListEngine', () => {
 				'<listItem indent="0" type="bulleted">f</listItem>' +
 				'<listItem indent="1" type="bulleted">c</listItem>' +
 				'<listItem indent="2" type="bulleted">d</listItem>' +
-				'<listItem indent="0" type="bulleted">g</listItem>';
+				'<listItem indent="0" type="bulleted">g</listItem>'
+			);
 
-			setModelData( modelDoc, modelBefore );
+			test(
+				'element in between nested list items',
 
-			const targetPosition = ModelPosition.createAt( modelRoot, 7 );
-
-			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().move( modelDoc.selection.getFirstRange(), targetPosition );
-			} );
-
-			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( expectedModel );
-		} );
-
-		it( 'move element between nested list items', () => {
-			const modelBefore =
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'<listItem indent="1" type="bulleted">b</listItem>' +
 				'<listItem indent="2" type="bulleted">c</listItem>' +
 				'<listItem indent="3" type="bulleted">d</listItem>' +
-				'[<paragraph>x</paragraph>]';
+				'[<paragraph>x</paragraph>]',
 
-			const expectedModel =
+				2,
+
 				'<listItem indent="0" type="bulleted">a</listItem>' +
 				'<listItem indent="1" type="bulleted">b</listItem>' +
 				'<paragraph>x</paragraph>' +
 				'<listItem indent="0" type="bulleted">c</listItem>' +
-				'<listItem indent="1" type="bulleted">d</listItem>';
+				'<listItem indent="1" type="bulleted">d</listItem>'
+			);
 
-			setModelData( modelDoc, modelBefore );
+			test(
+				'multiple nested list items of different types #1 - fix at start',
 
-			const targetPosition = ModelPosition.createAt( modelRoot, 2 );
+				'<listItem indent="0" type="bulleted">a</listItem>' +
+				'<listItem indent="1" type="bulleted">b</listItem>' +
+				'[<listItem indent="1" type="bulleted">c</listItem>' +
+				'<listItem indent="0" type="bulleted">d</listItem>' +
+				'<listItem indent="1" type="numbered">e</listItem>]' +
+				'<listItem indent="1" type="numbered">f</listItem>' +
+				'<listItem indent="0" type="bulleted">g</listItem>' +
+				'<listItem indent="1" type="numbered">h</listItem>' +
+				'<listItem indent="1" type="numbered">i</listItem>',
 
-			modelDoc.enqueueChanges( () => {
-				modelDoc.batch().move( modelDoc.selection.getFirstRange(), targetPosition );
+				8,
+
+				'<listItem indent="0" type="bulleted">a</listItem>' +
+				'<listItem indent="1" type="bulleted">b</listItem>' +
+				'<listItem indent="1" type="bulleted">f</listItem>' +
+				'<listItem indent="0" type="bulleted">g</listItem>' +
+				'<listItem indent="1" type="numbered">h</listItem>' +
+				'<listItem indent="1" type="numbered">c</listItem>' +
+				'<listItem indent="0" type="bulleted">d</listItem>' +
+				'<listItem indent="1" type="numbered">e</listItem>' +
+				'<listItem indent="1" type="numbered">i</listItem>'
+			);
+
+			test(
+				'multiple nested list items of different types #2 - fix at end',
+
+				'<listItem indent="0" type="bulleted">a</listItem>' +
+				'<listItem indent="1" type="bulleted">b</listItem>' +
+				'[<listItem indent="1" type="bulleted">c</listItem>' +
+				'<listItem indent="0" type="bulleted">d</listItem>' +
+				'<listItem indent="1" type="numbered">e</listItem>]' +
+				'<listItem indent="1" type="numbered">f</listItem>' +
+				'<listItem indent="0" type="bulleted">g</listItem>' +
+				'<listItem indent="1" type="bulleted">h</listItem>' +
+				'<listItem indent="1" type="bulleted">i</listItem>',
+
+				8,
+
+				'<listItem indent="0" type="bulleted">a</listItem>' +
+				'<listItem indent="1" type="bulleted">b</listItem>' +
+				'<listItem indent="1" type="bulleted">f</listItem>' +
+				'<listItem indent="0" type="bulleted">g</listItem>' +
+				'<listItem indent="1" type="bulleted">h</listItem>' +
+				'<listItem indent="1" type="bulleted">c</listItem>' +
+				'<listItem indent="0" type="bulleted">d</listItem>' +
+				'<listItem indent="1" type="bulleted">e</listItem>' +
+				'<listItem indent="1" type="bulleted">i</listItem>'
+			);
+		} );
+
+		describe( 'rename', () => {
+			it( 'rename nested item', () => {
+				const modelBefore =
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'[<listItem indent="2" type="bulleted">c</listItem>]' +
+					'<listItem indent="2" type="bulleted">d</listItem>' +
+					'<listItem indent="3" type="bulleted">e</listItem>' +
+					'<listItem indent="1" type="bulleted">f</listItem>' +
+					'<listItem indent="2" type="bulleted">g</listItem>' +
+					'<listItem indent="1" type="bulleted">h</listItem>' +
+					'<listItem indent="2" type="bulleted">i</listItem>';
+
+				const expectedModel =
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'<paragraph>c</paragraph>' +
+					'<listItem indent="0" type="bulleted">d</listItem>' +
+					'<listItem indent="1" type="bulleted">e</listItem>' +
+					'<listItem indent="0" type="bulleted">f</listItem>' +
+					'<listItem indent="1" type="bulleted">g</listItem>' +
+					'<listItem indent="0" type="bulleted">h</listItem>' +
+					'<listItem indent="1" type="bulleted">i</listItem>';
+
+				setModelData( modelDoc, modelBefore );
+
+				const element = modelDoc.selection.getFirstPosition().nodeAfter;
+
+				modelDoc.enqueueChanges( () => {
+					modelDoc.batch().rename( element, 'paragraph' );
+				} );
+
+				expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( expectedModel );
 			} );
-
-			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( expectedModel );
 		} );
 	} );
 

@@ -569,19 +569,27 @@ export function modelChangePostFixer( document ) {
 		if ( type == 'remove' ) {
 			// Fix list items after the cut-out range.
 			// This fix is needed if items in model after cut-out range have now wrong indents compared to their previous siblings.
-			_fixItems( changes.sourcePosition, document, batch );
+			_fixItemsIndent( changes.sourcePosition, document, batch );
+			// This fix is needed if two different nested lists got merged, change types of list items "below".
+			_fixItemsType( changes.sourcePosition, false, document, batch );
 		} else if ( type == 'move' ) {
+			// Fix list items after the cut-out range.
+			// This fix is needed if items in model after cut-out range have now wrong indents compared to their previous siblings.
+			_fixItemsIndent( changes.sourcePosition, document, batch );
+			// This fix is needed if two different nested lists got merged, change types of list items "below".
+			_fixItemsType( changes.sourcePosition, false, document, batch );
+
 			// Fix items in moved range.
 			// This fix is needed if inserted items are too deeply intended.
-			_fixItems( changes.range.start, document, batch );
+			_fixItemsIndent( changes.range.start, document, batch );
+			// This fix is needed if one or more first inserted items have different type.
+			_fixItemsType( changes.range.start, false, document, batch );
 
 			// Fix list items after inserted range.
 			// This fix is needed if items in model after inserted range have wrong indents.
-			_fixItems( changes.range.end, document, batch );
-
-			// Fix list items after the cut-out range.
-			// This fix is needed if items in model after cut-out range have now wrong indents compared to their previous siblings.
-			_fixItems( changes.sourcePosition, document, batch );
+			_fixItemsIndent( changes.range.end, document, batch );
+			// This fix is needed if one or more last inserted items have different type.
+			_fixItemsType( changes.range.end, true, document, batch );
 		} else if ( type == 'rename' && changes.oldName == 'listItem' && changes.newName != 'listItem' ) {
 			const element = changes.element;
 
@@ -594,22 +602,26 @@ export function modelChangePostFixer( document ) {
 
 			// Fix list items after the renamed element.
 			// This fix is needed if there are items after renamed element, those items should start from indent = 0.
-			_fixItems( changePos, document, batch );
+			_fixItemsIndent( changePos, document, batch );
 		} else if ( type == 'insert' ) {
 			// Fix list items in inserted range.
 			// This fix is needed if inserted items are too deeply intended.
-			_fixItems( changes.range.start, document, batch );
+			_fixItemsIndent( changes.range.start, document, batch );
+			// This fix is needed if one or more first inserted items have different type.
+			_fixItemsType( changes.range.start, false, document, batch );
 
 			// Fix list items after inserted range.
 			// This fix is needed if items in model after inserted range have wrong indents.
-			_fixItems( changes.range.end, document, batch );
+			_fixItemsIndent( changes.range.end, document, batch );
+			// This fix is needed if one or more last inserted items have different type.
+			_fixItemsType( changes.range.end, true, document, batch );
 		}
 	};
 }
 
-// Helper function for post fixer callback. Performs actual model fixing. Checks the model at the `changePosition`.
-// Looks at the node before position where change occurred and uses that node as a reference for following list items.
-function _fixItems( changePosition, document, batch ) {
+// Helper function for post fixer callback. Performs fixing of model `listElement` items indent attribute. Checks the model at the
+// `changePosition`. Looks at the node before position where change occurred and uses that node as a reference for following list items.
+function _fixItemsIndent( changePosition, document, batch ) {
 	const prevItem = changePosition.nodeBefore;
 	let nextItem = changePosition.nodeAfter;
 
@@ -644,6 +656,43 @@ function _fixItems( changePosition, document, batch ) {
 	}
 }
 
+// Helper function for post fixer callback. Performs fixing of model nested `listElement` items type attribute.
+// Checks the model at the `changePosition`. Looks at nodes after/before that position and changes those items type
+// to the same as node before/after `changePosition`.
+function _fixItemsType( changePosition, fixPrevious, document, batch ) {
+	let item = changePosition[ fixPrevious ? 'nodeBefore' : 'nodeAfter' ];
+
+	if ( !item ) {
+		// May happen if last item got removed.
+		return;
+	}
+
+	const refItem = getSiblingListItem( item, { checkAllSiblings: true, getNext: fixPrevious, sameIndent: true } );
+
+	if ( !refItem ) {
+		// May happen if first list item is inserted.
+		return;
+	}
+
+	const refIndent = refItem.getAttribute( 'indent' );
+	const refType = refItem.getAttribute( 'type' );
+
+	if ( refIndent === 0 ) {
+		// Happens if changes are done on top level lists.
+		return;
+	}
+
+	document.enqueueChanges( () => {
+		while ( item && item.is( 'listItem' ) && item.getAttribute( 'indent' ) >= refIndent ) {
+			if ( item.getAttribute( 'type' ) != refType && item.getAttribute( 'indent' ) == refIndent ) {
+				batch.setAttribute( item, 'type', refType );
+			}
+
+			item = item[ fixPrevious ? 'previousSibling' : 'nextSibling' ];
+		}
+	} );
+}
+
 // Helper function that creates a `<ul><li></li></ul>` or (`<ol>`) structure out of given `modelItem` model `listItem` element.
 // Then, it binds created view list item (<li>) with model `listItem` element.
 // The function then returns created view list item (<li>).
@@ -666,6 +715,8 @@ function generateLiInUl( modelItem, mapper ) {
 // `options.sameIndent` - whether sought sibling should have same indent (default = no),
 // `options.biggerIndent` - whether sought sibling should have bigger indent (default = no).
 // `options.smallerIndent` - whether sought sibling should have smaller indent (default = no).
+// `options.isMapped` - whether sought sibling must be mapped to view (default = no).
+// `options.mapper` - used to map model elements when `isMapped` option is set to true.
 // `options.indent` - used as reference item when first parameter is a position
 // Either `options.sameIndent` or `options.biggerIndent` should be set to `true`.
 function getSiblingListItem( modelItemOrPosition, options ) {
@@ -675,6 +726,7 @@ function getSiblingListItem( modelItemOrPosition, options ) {
 	const sameIndent = !!options.sameIndent;
 	const biggerIndent = !!options.biggerIndent;
 	const smallerIndent = !!options.smallerIndent;
+	const isMapped = !!options.isMapped;
 
 	const indent = modelItemOrPosition instanceof ModelElement ? modelItemOrPosition.getAttribute( 'indent' ) : options.indent;
 	let item = modelItemOrPosition instanceof ModelElement ? modelItemOrPosition[ direction ] : modelItemOrPosition[ posDirection ];
@@ -687,8 +739,16 @@ function getSiblingListItem( modelItemOrPosition, options ) {
 			( biggerIndent && indent < itemIndent ) ||
 			( smallerIndent && indent > itemIndent )
 		) {
-			return item;
-		} else if ( !checkAllSiblings || indent > itemIndent ) {
+			if ( !isMapped || options.mapper.toViewElement( item ) ) {
+				return item;
+			} else {
+				item = item[ direction ];
+
+				continue;
+			}
+		}
+
+		if ( !checkAllSiblings ) {
 			return null;
 		}
 
@@ -718,13 +778,14 @@ function injectViewList( modelItem, injectedItem, mapper, removePosition ) {
 	// Position where view list will be inserted.
 	let insertPosition;
 
-	// 1. Find previous list item that has same indent and break after.
+	// 1. Find previous list item that has same or smaller indent. Basically we are looking for a first model item
+	// that is "parent" or "sibling" if injected model item.
 	// If there is no such list item, it means that injected list item is the first item in "its list".
-	let prevItem = getSiblingListItem( modelItem, { sameIndent: true, checkAllSiblings: true } );
+	let prevItem = getSiblingListItem( modelItem, { sameIndent: true, smallerIndent: true, checkAllSiblings: true } );
 
-	if ( prevItem ) {
-		// There is a list item with same indent. Break the list after it. Inserted view item will be
-		// inserted in the broken space.
+	if ( prevItem && prevItem.getAttribute( 'indent' ) == modelItem.getAttribute( 'indent' ) ) {
+		// There is a list item with same indent - we found same-level sibling.
+		// Break the list after it. Inserted view item will be inserted in the broken space.
 		let viewItem = mapper.toViewElement( prevItem );
 		insertPosition = viewWriter.breakContainer( ViewPosition.createAfter( viewItem ) );
 	} else {
@@ -762,28 +823,29 @@ function injectViewList( modelItem, injectedItem, mapper, removePosition ) {
 	// 2. Handle possible children of injected model item.
 	// We have to check if next list item in model has bigger indent. If it has, it means that it and possibly
 	// some following list items should be nested in the injected view item.
-	const nextItem = getSiblingListItem( modelItem, { biggerIndent: true, getNext: true } );
+	// Look only after model elements that are already mapped to view. Some following model items might not be mapped
+	// if multiple items in model were inserted/moved at once.
+	const nextItem = getSiblingListItem(
+		modelItem,
+		{ biggerIndent: true, getNext: true, isMapped: true, mapper: mapper }
+	);
 
 	if ( nextItem ) {
 		let viewItem = mapper.toViewElement( nextItem );
 
-		// Check if `nextItem` is already mapped to view. It might not be mapped if multiple items in model were inserted
-		// and following list items were not converted yet.
-		if ( viewItem ) {
-			// Break the list between found view item and its preceding `<li>`s.
-			viewWriter.breakContainer( ViewPosition.createBefore( viewItem ) );
+		// Break the list between found view item and its preceding `<li>`s.
+		viewWriter.breakContainer( ViewPosition.createBefore( viewItem ) );
 
-			// The broken ("lower") part will be moved as nested children of the inserted view item.
-			const sourceStart = ViewPosition.createBefore( viewItem.parent );
+		// The broken ("lower") part will be moved as nested children of the inserted view item.
+		const sourceStart = ViewPosition.createBefore( viewItem.parent );
 
-			const lastModelItem = _getModelLastItem( nextItem );
-			const lastViewItem = mapper.toViewElement( lastModelItem );
-			const sourceEnd = viewWriter.breakContainer( ViewPosition.createAfter( lastViewItem ) );
-			const sourceRange = new ViewRange( sourceStart, sourceEnd );
+		const lastModelItem = _getModelLastItem( nextItem );
+		const lastViewItem = mapper.toViewElement( lastModelItem );
+		const sourceEnd = viewWriter.breakContainer( ViewPosition.createAfter( lastViewItem ) );
+		const sourceRange = new ViewRange( sourceStart, sourceEnd );
 
-			const targetPosition = ViewPosition.createAt( injectedItem, 'end' );
-			viewWriter.move( sourceRange, targetPosition );
-		}
+		const targetPosition = ViewPosition.createAt( injectedItem, 'end' );
+		viewWriter.move( sourceRange, targetPosition );
 	}
 
 	// Merge inserted view list with its possible neighbour lists.

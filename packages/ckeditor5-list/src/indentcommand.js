@@ -84,8 +84,24 @@ export default class IndentCommand extends Command {
 					// as listItem without attributes is very incorrect and will cause problems in converters.
 					// No need to remove attributes, will be removed by post fixer.
 					batch.rename( item, 'paragraph' );
-				} else {
-					// If indent is >= 0, just change the attribute value.
+				}
+				// If indent is >= 0, change the attribute value.
+				else {
+					// If indent is > 0 and the item was outdented, check whether list item's type should not be fixed.
+					if ( indent > 0 && this._indentBy < 0 ) {
+						// First, find previous sibling with same indent.
+						let prev = item.previousSibling;
+
+						while ( prev.getAttribute( 'indent' ) > indent ) {
+							prev = prev.previousSibling;
+						}
+
+						// Then check if that sibling has same type. If not, change type of this item.
+						if ( prev.getAttribute( 'type' ) != item.getAttribute( 'type' ) ) {
+							batch.setAttribute( item, 'type', prev.getAttribute( 'type' ) );
+						}
+					}
+
 					batch.setAttribute( item, 'indent', indent );
 				}
 			}

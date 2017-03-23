@@ -341,6 +341,30 @@ describe( 'ListCommand', () => {
 
 					expect( getData( doc ) ).to.equal( expectedData );
 				} );
+
+				it( 'should change type of all items in nested list if one of items changed', () => {
+					setData(
+						doc,
+						'<listItem indent="0" type="numbered">---</listItem>' +
+						'<listItem indent="1" type="numbered">---</listItem>' +
+						'<listItem indent="1" type="numbered">--[-</listItem>' +
+						'<listItem indent="0" type="numbered">---</listItem>' +
+						'<listItem indent="1" type="numbered">--]-</listItem>' +
+						'<listItem indent="1" type="numbered">---</listItem>'
+					);
+
+					command._doExecute();
+
+					const expectedData =
+						'<listItem indent="0" type="numbered">---</listItem>' +
+						'<listItem indent="1" type="bulleted">---</listItem>' +
+						'<listItem indent="1" type="bulleted">--[-</listItem>' +
+						'<listItem indent="0" type="bulleted">---</listItem>' +
+						'<listItem indent="1" type="bulleted">--]-</listItem>' +
+						'<listItem indent="1" type="bulleted">---</listItem>';
+
+					expect( getData( doc ) ).to.equal( expectedData );
+				} );
 			} );
 		} );
 	} );
