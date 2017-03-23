@@ -13,6 +13,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
 
 import ClassicTestEditorUI from '../../tests/_utils/classictesteditorui';
 import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
+import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '../../tests/_utils/utils';
@@ -39,15 +40,24 @@ describe( 'ClassicTestEditor', () => {
 		} );
 
 		it( 'creates model and view roots', () => {
-			const editor = new ClassicTestEditor( { foo: 1 } );
+			const editor = new ClassicTestEditor( editorElement );
 
 			expect( editor.document.getRoot() ).to.have.property( 'name', '$root' );
 			expect( editor.editing.view.getRoot() ).to.have.property( 'name', 'div' );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
+
+		it( 'creates editable DOM', () => {
+			const editor = new ClassicTestEditor( editorElement );
+
+			expect( editor.ui.view.editable ).to.be.instanceOf( InlineEditableUIView );
+
+			expect( editor.ui.view.editableElement.tagName ).to.equal( 'DIV' );
+			expect( editor.ui.view.editableElement ).to.equal( editor.ui.view.editable.element );
+		} );
 	} );
 
-	describe( 'create', () => {
+	describe( 'create()', () => {
 		it( 'creates an instance of editor', () => {
 			return ClassicTestEditor.create( editorElement, { foo: 1 } )
 				.then( editor => {
@@ -100,13 +110,33 @@ describe( 'ClassicTestEditor', () => {
 			return ClassicTestEditor.create( editorElement, {
 					plugins: [ EventWatcher ]
 				} )
-				.then( () => {
+				.then( editor => {
 					expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
+
+					return editor.destroy();
+				} );
+		} );
+
+		it( 'inserts editor UI next to editor element', () => {
+			return ClassicTestEditor.create( editorElement )
+				.then( editor => {
+					expect( editor.ui.view.element.previousSibling ).to.equal( editorElement );
+
+					return editor.destroy();
+				} );
+		} );
+
+		it( 'attaches editable UI as view\'s DOM root', () => {
+			return ClassicTestEditor.create( editorElement )
+				.then( editor => {
+					expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
+
+					return editor.destroy();
 				} );
 		} );
 	} );
 
-	describe( 'destroy', () => {
+	describe( 'destroy()', () => {
 		it( 'destroys UI and calls super.destroy()', () => {
 			return ClassicTestEditor.create( editorElement, { foo: 1 } )
 				.then( editor => {
@@ -117,6 +147,18 @@ describe( 'ClassicTestEditor', () => {
 						.then( () => {
 							expect( superSpy.calledOnce ).to.be.true;
 							expect( uiSpy.calledOnce ).to.be.true;
+						} );
+				} );
+		} );
+
+		it( 'restores the editor element', () => {
+			return ClassicTestEditor.create( editorElement, { foo: 1 } )
+				.then( editor => {
+					expect( editor.element.style.display ).to.equal( 'none' );
+
+					return editor.destroy()
+						.then( () => {
+							expect( editor.element.style.display ).to.equal( '' );
 						} );
 				} );
 		} );
