@@ -85,6 +85,11 @@ describe( 'Heading', () => {
 			sinon.assert.calledOnce( focusSpy );
 		} );
 
+		it( 'should add custom CSS class to dropdown', () => {
+			const dropdown = editor.ui.componentFactory.create( 'headings' );
+			expect( dropdown.element.classList.contains( 'ck-heading-dropdown' ) ).to.be.true;
+		} );
+
 		describe( 'model to command binding', () => {
 			let commands;
 
