@@ -4,12 +4,12 @@
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#cb072cef329eab546e1f63a79036525140b50e7d",
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#c1b49e9b24854738503c3e4accaccd51d7c5cdea",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#946e528203b840e929720ca98f0ee47e57d5784b",
-    "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#bc9afd5c9c987372df1fcf60d6f3bc25c1718fad",
+    "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#68f739fc4171ebe59981a3b96665abbe7db6a0a0",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#95798ba0b6d9d2034c61c670be6cff30ddd84224",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#fc99afc995f7b53298bc618c1356bf0d22ae9a86",
     "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#45f0f33b3140a67681d050ed0e768283cf23923d",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#e35529b4b5a50462a365eb04d5ca25fc1bd85a88",
-    "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#68d93fff58d3e4f037683800f3b26c0d71ca66f9",
+    "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#fc1a0774e1333b5464c00d66183f3fd0a8f88f23",
     "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#96295055af6354c8aaa88ea952a320adf5b9d4da",
     "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link#f62032fb831c82f2a7fb2c31eb679ecb117314ee",
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list#ca76b90495f48d737eec072feebc0e8e18f61948",
@@ -19,7 +19,7 @@
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#a2eb8430b23be75a4845aada7bdf07c5834b32f4",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#641ad77d304708a0b07dc8a46a55866cbcd758ae",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#5f1e584720e08ccff93bd41af2f2c9d4911a5f20",
-    "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#71cee171c91ddac42a4311e64aa8d39def87ecdf",
+    "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#cdd45157504aea8f3c28a2405a25e59bd904d8b4",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#6b7962466913298d9e1d8b9595958bad656e01b2"
   }
 }
