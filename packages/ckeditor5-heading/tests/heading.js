@@ -23,10 +23,10 @@ add( 'pl', {
 testUtils.createSinonSandbox();
 
 describe( 'Heading', () => {
-	let editor, dropdown;
+	let editor, editorElement, dropdown;
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
+		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
@@ -40,6 +40,8 @@ describe( 'Heading', () => {
 	} );
 
 	afterEach( () => {
+		editorElement.remove();
+
 		return editor.destroy();
 	} );
 
@@ -118,7 +120,7 @@ describe( 'Heading', () => {
 		} );
 
 		describe( 'localization', () => {
-			let commands;
+			let commands, editor, dropdown;
 
 			beforeEach( () => {
 				return localizedEditor( [
@@ -188,6 +190,7 @@ describe( 'Heading', () => {
 
 			function localizedEditor( options ) {
 				const editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
 
 				return ClassicTestEditor.create( editorElement, {
 					plugins: [ Heading ],
@@ -201,9 +204,14 @@ describe( 'Heading', () => {
 					editor = newEditor;
 					dropdown = editor.ui.componentFactory.create( 'headings' );
 					commands = {};
+
 					editor.config.get( 'heading.options' ).forEach( ( { modelElement } ) => {
 						commands[ modelElement ] = editor.commands.get( modelElement );
 					} );
+
+					editorElement.remove();
+
+					return editor.destroy();
 				} );
 			}
 		} );
