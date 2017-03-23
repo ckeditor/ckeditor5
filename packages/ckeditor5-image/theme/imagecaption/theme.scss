@@ -9,5 +9,9 @@
 		padding: 10px;
 		font-size: .8em;
 		color: ck-color( 'text', 40 );
+
+		&_hidden {
+			display: none;
+		}
 	}
 }
