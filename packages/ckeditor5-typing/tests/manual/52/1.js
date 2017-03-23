@@ -21,9 +21,9 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ EssentialsPreset, Paragraph, Bold, Italic, Heading ],
 	toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo' ]
 } )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+.then( editor => {
+	window.editor = editor;
+} )
+.catch( err => {
+	console.error( err.stack );
+} );

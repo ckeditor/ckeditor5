@@ -5,7 +5,8 @@
 
 /* globals document */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+
 import MutationObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mutationobserver';
 
 import Typing from '../src/typing';
@@ -14,16 +15,14 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'Bogus BR Integration', () => {
-	let editor;
-	let domRoot;
-	let mutationObserver;
+describe( 'Bogus BR integration', () => {
+	let editor, domRoot, mutationObserver, editorElement;
 
 	beforeEach( () => {
-		const container = document.createElement( 'div' );
-		document.body.appendChild( container );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
-		return ClassicEditor.create( container, {
+		return ClassicTestEditor.create( editorElement, {
 			plugins: [ Typing, Paragraph, Bold ]
 		} )
 		.then( newEditor => {
@@ -31,6 +30,12 @@ describe( 'Bogus BR Integration', () => {
 			domRoot = editor.editing.view.getDomRoot();
 			mutationObserver = editor.editing.view.getObserver( MutationObserver );
 		} );
+	} );
+
+	afterEach( () => {
+		editorElement.remove();
+
+		return editor.destroy();
 	} );
 
 	describe( 'insertText', () => {
