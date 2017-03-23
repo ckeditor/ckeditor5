@@ -15,10 +15,11 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 testUtils.createSinonSandbox();
 
 describe( 'Undo', () => {
-	let editor;
+	let editor, editorElement;
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
 				plugins: [ Undo ]
@@ -26,6 +27,12 @@ describe( 'Undo', () => {
 			.then( newEditor => {
 				editor = newEditor;
 			} );
+	} );
+
+	afterEach( () => {
+		editorElement.remove();
+
+		return editor.destroy();
 	} );
 
 	it( 'should be loaded', () => {
