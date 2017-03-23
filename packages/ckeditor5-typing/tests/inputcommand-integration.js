@@ -22,10 +22,10 @@ import { getData as getModelData } from  '@ckeditor/ckeditor5-engine/src/dev-uti
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'InputCommand integration', () => {
-	let editor, doc, viewDocument, boldView, italicView;
+	let editor, doc, viewDocument, boldView, italicView, editorElement;
 
 	beforeEach( () => {
-		const editorElement = document.createElement( 'div' );
+		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
@@ -43,6 +43,8 @@ describe( 'InputCommand integration', () => {
 	} );
 
 	afterEach( () => {
+		editorElement.remove();
+
 		return editor.destroy();
 	} );
 
