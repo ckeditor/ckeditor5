@@ -436,13 +436,27 @@ export function remove() {
 			return;
 		}
 
-		// Note: at this moment we should avoid mapping non existing model positions.
-		// TODO: try to simplify this if `Mapper` ever changes.
+		// We cannot map non-existing positions from model to view. Since a range was removed
+		// from the model, we cannot recreate that range and map it to view, because
+		// end of that range is incorrect.
+		// Instead we will use `data.sourcePosition` as this is the last correct model position and
+		// it is a position before the removed item. Then, we will calculate view range to remove "manually".
 		const viewPosition = conversionApi.mapper.toViewPosition( data.sourcePosition );
-		const viewRange = data.item.is( 'element' ) ?
-			ViewRange.createOn( viewPosition.nodeAfter ) :
-			_expandViewPositionOnText( viewPosition, data.item.offsetSize );
+		let viewRange;
 
+		if ( data.item.is( 'element' ) ) {
+			// Note: in remove conversion we cannot use model-to-view element mapping because `data.item` may be
+			// already mapped to another element (this happens when move change is converted).
+			// In this case however, `viewPosition` is the position before view element that corresponds to removed model element.
+			viewRange = ViewRange.createOn( viewPosition.nodeAfter );
+		} else {
+			// If removed item is a text node, we need to traverse view tree to find the view range to remove.
+			// Range to remove will start `viewPosition` and should contain amount of characters equal to the amount of removed characters.
+			const viewRangeEnd = _shiftViewPositionByCharacters( viewPosition, data.item.offsetSize );
+			viewRange = new ViewRange( viewPosition, viewRangeEnd );
+		}
+
+		// Trim the range to remove in case some UI elements are on the view range boundaries.
 		viewWriter.remove( viewRange.getTrimmed() );
 
 		// Unbind this element only if it was moved to graveyard.
@@ -464,31 +478,22 @@ export function remove() {
 	};
 }
 
-// Helper function that seeks the end of a view range that starts at `position` and contains `howMany` many letters.
-// Because in view there might be empty view ui elements that split text nodes, we cannot just use `ViewRange#createFromPositionAndShift()`
-function _expandViewPositionOnText( position, howMany ) {
-	const walker = new ViewTreeWalker( { startPosition: position } );
-	let currentOffset = 0;
+// Helper function that shifts given view `position` in a way that returned position is after `howMany` characters compared
+// to the original `position`.
+// Because in view there might be view ui elements splitting text nodes, we cannot simply use `ViewPosition#getShiftedBy()`.
+function _shiftViewPositionByCharacters( position, howMany ) {
+	// Create a walker that will walk the view tree starting from given position and walking characters one-by-one.
+	const walker = new ViewTreeWalker( { startPosition: position, singleCharacters: true } );
+	// We will count visited characters and return the position after `howMany` characters.
+	let charactersFound = 0;
 
 	for ( let value of walker ) {
 		if ( value.type == 'text' ) {
-			let length = value.item.data.length;
+			charactersFound++;
 
-			if ( currentOffset + length >= howMany ) {
-				let item = value.item;
-
-				if ( item.is( 'textProxy' ) ) {
-					item = item.textNode;
-					currentOffset = currentOffset - value.item.offsetInText;
-				}
-
-				return ViewRange.createFromParentsAndOffsets(
-					position.parent, position.offset,
-					item, howMany - currentOffset
-				);
+			if ( charactersFound == howMany ) {
+				return walker.position;
 			}
-
-			currentOffset += length;
 		}
 	}
 }
