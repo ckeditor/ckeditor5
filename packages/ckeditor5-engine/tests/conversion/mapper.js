@@ -214,7 +214,7 @@ describe( 'Mapper', () => {
 					expect( data.viewPosition.isEqual( viewPosition ) ).to.be.true;
 
 					data.modelPosition = stub;
-					// Do not stop the event. Test whether default algorithm was not called if data.viewPosition is already set.
+					// Do not stop the event. Test whether default algorithm was not called if data.modelPosition is already set.
 				} );
 
 				const result = mapper.toModelPosition( viewPosition );
