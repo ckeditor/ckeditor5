@@ -9,6 +9,7 @@ import insertContent from '../../src/controller/insertcontent';
 
 import DocumentFragment from '../../src/model/documentfragment';
 import Text from '../../src/model/text';
+import Element from '../../src/model/element';
 
 import { setData, getData, parse } from '../../src/dev-utils/model';
 
@@ -60,6 +61,25 @@ describe( 'DataController', () => {
 			insertContent( dataController, new Text( 'a' ), doc.selection, batch );
 
 			expect( getData( doc ) ).to.equal( 'xa[]x' );
+		} );
+
+		it( 'should save the reference to the original object', () => {
+			const doc = new Document();
+			const dataController = new DataController( doc );
+			const batch = doc.batch();
+			const content = new Element( 'image' );
+
+			doc.createRoot();
+
+			doc.schema.registerItem( 'paragraph', '$block' );
+			doc.schema.registerItem( 'image', '$inline' );
+			doc.schema.objects.add( 'image' );
+
+			setData( doc, '<paragraph>foo[]</paragraph>' );
+
+			insertContent( dataController, content, doc.selection, batch );
+
+			expect( doc.getRoot().getChild( 0 ).getChild( 1 ) ).to.equal( content );
 		} );
 
 		describe( 'in simple scenarios', () => {
