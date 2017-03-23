@@ -39,7 +39,8 @@ export default class Heading extends Plugin {
 		const options = this._getLocalizedOptions();
 		const commands = [];
 		const t = editor.t;
-		const defaultTitle = t( 'Heading' );
+		const defaultTitle = t( 'Chose heading' );
+		const dropdownTooltip = t( 'Heading' );
 
 		for ( let option of options ) {
 			const command = editor.commands.get( option.modelElement );
@@ -61,7 +62,7 @@ export default class Heading extends Plugin {
 		const dropdownModel = new Model( {
 			withText: true,
 			items: dropdownItems,
-			tooltip: defaultTitle
+			tooltip: dropdownTooltip
 		} );
 
 		dropdownModel.bind( 'isEnabled' ).to(

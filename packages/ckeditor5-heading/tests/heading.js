@@ -13,6 +13,7 @@ import { add } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 add( 'pl', {
+	'Chose heading': 'Wybierz nagłówek',
 	'Paragraph': 'Akapit',
 	'Heading': 'Nagłówek',
 	'Heading 1': 'Nagłówek 1',
@@ -57,7 +58,7 @@ describe( 'Heading', () => {
 			expect( dropdown ).to.be.instanceOf( DropdownView );
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isOn ).to.be.undefined;
-			expect( dropdown.buttonView.label ).to.equal( 'Heading' );
+			expect( dropdown.buttonView.label ).to.equal( 'Chose heading' );
 			expect( dropdown.buttonView.tooltip ).to.equal( 'Heading' );
 		} );
 
@@ -109,7 +110,7 @@ describe( 'Heading', () => {
 					commands[ name ].value = false;
 				}
 
-				expect( dropdown.buttonView.label ).to.equal( 'Heading' );
+				expect( dropdown.buttonView.label ).to.equal( 'Chose heading' );
 
 				commands.heading2.value = true;
 				expect( dropdown.buttonView.label ).to.equal( 'Heading 2' );
@@ -138,7 +139,8 @@ describe( 'Heading', () => {
 			it( 'works for the #buttonView', () => {
 				const buttonView = dropdown.buttonView;
 
-				expect( buttonView.label ).to.equal( 'Nagłówek' );
+				expect( buttonView.label ).to.equal( 'Wybierz nagłówek' );
+				expect( buttonView.tooltip ).to.equal( 'Nagłówek' );
 
 				commands.paragraph.value = true;
 				expect( buttonView.label ).to.equal( 'Akapit' );
