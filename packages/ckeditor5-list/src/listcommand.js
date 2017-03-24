@@ -38,7 +38,7 @@ export default class ListCommand extends Command {
 		 * Flag indicating whether the command is active, which means that selection starts in a list of the same type.
 		 *
 		 * @observable
-		 * @member {Boolean}
+		 * @member {Boolean} #value
 		 */
 		this.set( 'value', false );
 
@@ -58,6 +58,7 @@ export default class ListCommand extends Command {
 	refreshValue() {
 		// Check whether closest `listItem` ancestor of the position has a correct type.
 		const listItem = first( this.editor.document.selection.getSelectedBlocks() );
+
 		this.value = listItem !== null && listItem.getAttribute( 'type' ) == this.type;
 	}
 
@@ -239,7 +240,7 @@ export default class ListCommand extends Command {
 		const selection = this.editor.document.selection;
 		const schema = this.editor.document.schema;
 
-		const firstBlock = selection.getSelectedBlocks().next().value;
+		const firstBlock = first( selection.getSelectedBlocks() );
 
 		if ( !firstBlock ) {
 			return false;
