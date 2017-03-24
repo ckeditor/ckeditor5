@@ -116,7 +116,7 @@ export default class IndentCommand extends Command {
 		const listItem = first( this.editor.document.selection.getSelectedBlocks() );
 
 		// If selection is not in a list item, the command is disabled.
-		if ( !listItem ) {
+		if ( !listItem || !listItem.is( 'listItem' ) ) {
 			return false;
 		}
 

@@ -68,6 +68,15 @@ describe( 'IndentCommand', () => {
 
 				expect( command.isEnabled ).to.be.false;
 			} );
+
+			// Edge case but may happen that some other blocks will also use the indent attribute
+			// and before we fixed it the command was enabled in such a case.
+			it( 'should be false if selection starts in a paragraph with indent attribute', () => {
+				doc.schema.allow( { name: 'paragraph', attributes: [ 'indent' ], inside: '$root' } );
+				setData( doc, '<listItem indent="0">a</listItem><paragraph indent="0">b[]</paragraph>' );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
 		} );
 
 		describe( '_doExecute', () => {
