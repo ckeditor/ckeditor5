@@ -9,6 +9,7 @@
 
 import ViewText from './text';
 import ViewPosition from './position';
+import Selection from './selection';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller, isBlockFiller } from './filler';
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -577,7 +578,7 @@ export default class Renderer {
 		const oldViewSelection = domSelection && this.domConverter.domSelectionToView( domSelection );
 
 		if ( oldViewSelection && ( this.selection.isEqual( oldViewSelection ) ||
-			!this.selection.isCollapsed && this.selection.isSimilar( oldViewSelection ) ) ) {
+			this._areSimilarSelections( oldViewSelection, this.selection ) ) ) {
 			return;
 		}
 
@@ -639,6 +640,42 @@ export default class Renderer {
 				this.domConverter.focus( editable );
 			}
 		}
+	}
+
+	/**
+	 * Checks if two given selections are similar. Selections are considered similar if they are non-collapsed
+	 * and their trimmed (see {@link #_trimSelection}) representations are equal.
+	 *
+	 * @private
+	 * @param {module:engine/view/selection~Selection} current
+	 * @param {module:engine/view/selection~Selection} previous
+	 * @returns {Boolean}
+	 */
+	_areSimilarSelections( current, previous ) {
+		return !current.isCollapsed && this._trimSelection( current ).isEqual( this._trimSelection( previous ) );
+	}
+
+	/**
+	 * Creates a copy of a given selection with all of its ranges
+	 * trimmed (see {@link module:engine/view/range~Range#getTrimmed getTrimmed}).
+	 *
+	 * @private
+	 * @param {module:engine/view/selection~Selection} selection
+	 * @returns {module:engine/view/selection~Selection} Selection copy with all ranges trimmed.
+	 */
+	_trimSelection( selection ) {
+		const newSelection = Selection.createFromSelection( selection );
+		const ranges = newSelection.getRanges();
+
+		let trimmedRanges = [];
+
+		for ( let range of ranges ) {
+			trimmedRanges.push( range.getTrimmed() );
+		}
+
+		newSelection.setRanges( trimmedRanges );
+
+		return newSelection;
 	}
 }
 
