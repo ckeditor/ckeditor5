@@ -331,6 +331,17 @@ export default class Selection {
 	}
 
 	/**
+	 * Checks whether, this selection is similar to given selection. Selections are similar if they are initially
+	 * equal (see {@link #isEqual isEqual}) or if their trimmed (see {@link #getTrimmed getTrimmed}) representations are equal.
+	 *
+	 * @param {module:engine/view/selection~Selection} otherSelection Selection to compare with.
+	 * @returns {Boolean} `true` if selections are similar, `false` otherwise.
+	 */
+	isSimilar( otherSelection ) {
+		return this.isEqual( otherSelection ) || this.getTrimmed().isEqual( otherSelection.getTrimmed() );
+	}
+
+	/**
 	 * Removes all ranges that were added to the selection.
 	 *
 	 * @fires change
@@ -480,6 +491,27 @@ export default class Selection {
 		const nodeBeforeEnd = range.end.nodeBefore;
 
 		return ( nodeAfterStart instanceof Element && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
+	}
+
+	/**
+	 * Returns a copy of a selection with all of its ranges
+	 * trimmed (see {@link module:engine/view/range~Range#getTrimmed getTrimmed}).
+	 *
+	 * @returns {module:engine/view/selection~Selection} Selection with all ranges shrank.
+	 */
+	getTrimmed() {
+		const selection = Selection.createFromSelection( this );
+		const ranges = this.getRanges();
+
+		let trimmedRanges = [];
+
+		for ( let range of ranges ) {
+			trimmedRanges.push( range.getTrimmed() );
+		}
+
+		selection.setRanges( trimmedRanges );
+
+		return selection;
 	}
 
 	/**
