@@ -342,26 +342,55 @@ describe( 'ListCommand', () => {
 					expect( getData( doc ) ).to.equal( expectedData );
 				} );
 
+				// Example from docs.
 				it( 'should change type of all items in nested list if one of items changed', () => {
 					setData(
 						doc,
 						'<listItem indent="0" type="numbered">---</listItem>' +
 						'<listItem indent="1" type="numbered">---</listItem>' +
-						'<listItem indent="1" type="numbered">--[-</listItem>' +
+						'<listItem indent="2" type="numbered">---</listItem>' +
+						'<listItem indent="1" type="numbered">---</listItem>' +
+						'<listItem indent="2" type="numbered">---</listItem>' +
+						'<listItem indent="2" type="numbered">-[-</listItem>' +
+						'<listItem indent="1" type="numbered">---</listItem>' +
+						'<listItem indent="1" type="numbered">---</listItem>' +
 						'<listItem indent="0" type="numbered">---</listItem>' +
-						'<listItem indent="1" type="numbered">--]-</listItem>' +
-						'<listItem indent="1" type="numbered">---</listItem>'
+						'<listItem indent="1" type="numbered">-]-</listItem>' +
+						'<listItem indent="1" type="numbered">---</listItem>' +
+						'<listItem indent="2" type="numbered">---</listItem>' +
+						'<listItem indent="0" type="numbered">---</listItem>'
 					);
+
+					// * ------				<-- do not fix, top level item
+					//   * ------			<-- fix, because latter list item of this item's list is changed
+					//      * ------		<-- do not fix, item is not affected (different list)
+					//   * ------			<-- fix, because latter list item of this item's list is changed
+					//      * ------		<-- fix, because latter list item of this item's list is changed
+					//      * ---[--		<-- already in selection
+					//   * ------			<-- already in selection
+					//   * ------			<-- already in selection
+					// * ------				<-- already in selection, but does not cause other list items to change because is top-level
+					//   * ---]--			<-- already in selection
+					//   * ------			<-- fix, because preceding list item of this item's list is changed
+					//      * ------		<-- do not fix, item is not affected (different list)
+					// * ------				<-- do not fix, top level item
 
 					command._doExecute();
 
 					const expectedData =
 						'<listItem indent="0" type="numbered">---</listItem>' +
 						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<listItem indent="1" type="bulleted">--[-</listItem>' +
+						'<listItem indent="2" type="numbered">---</listItem>' +
+						'<listItem indent="1" type="bulleted">---</listItem>' +
+						'<listItem indent="2" type="bulleted">---</listItem>' +
+						'<listItem indent="2" type="bulleted">-[-</listItem>' +
+						'<listItem indent="1" type="bulleted">---</listItem>' +
+						'<listItem indent="1" type="bulleted">---</listItem>' +
 						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<listItem indent="1" type="bulleted">--]-</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>';
+						'<listItem indent="1" type="bulleted">-]-</listItem>' +
+						'<listItem indent="1" type="bulleted">---</listItem>' +
+						'<listItem indent="2" type="numbered">---</listItem>' +
+						'<listItem indent="0" type="numbered">---</listItem>';
 
 					expect( getData( doc ) ).to.equal( expectedData );
 				} );

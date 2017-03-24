@@ -99,16 +99,16 @@ export default class ListCommand extends Command {
 				// For example:
 				// 1  * --------
 				// 2     * --------
-				// 3        * -------- <- this is turned off.
-				// 4           * -------- <- this has to become indent = 0, because it will be first item on a new list.
-				// 5              * -------- <- this should be still be a child of item above, so indent = 1.
-				// 6        * -------- <- this also has to become indent = 0, because it shouldn't end up as a child of any of items above.
-				// 7           * -------- <- this should be still be a child of item above, so indent = 1.
-				// 8     * -------- <- this has to become indent = 0.
-				// 9        * -------- <- this should still be a child of item above, so indent = 1.
-				// 10          * -------- <- this should still be a child of item above, so indent = 2.
-				// 11          * -------- <- this should still be at the same level as item above, so indent = 2.
-				// 12 * -------- <- this and all below are left unchanged.
+				// 3        * --------			<-- this is turned off.
+				// 4           * --------		<-- this has to become indent = 0, because it will be first item on a new list.
+				// 5              * --------	<-- this should be still be a child of item above, so indent = 1.
+				// 6        * --------			<-- this has to become indent = 0, because it should not be a child of any of items above.
+				// 7           * --------		<-- this should be still be a child of item above, so indent = 1.
+				// 8     * --------				<-- this has to become indent = 0.
+				// 9        * --------			<-- this should still be a child of item above, so indent = 1.
+				// 10          * --------		<-- this should still be a child of item above, so indent = 2.
+				// 11          * --------		<-- this should still be at the same level as item above, so indent = 2.
+				// 12 * --------				<-- this and all below are left unchanged.
 				// 13    * --------
 				// 14       * --------
 				//
@@ -170,32 +170,39 @@ export default class ListCommand extends Command {
 			// If we are turning on, we might change some items that are already `listItem`s but with different type.
 			// Changing one nested list item to other type should also trigger changing all its siblings so the
 			// whole nested list is of the same type.
+			// Example (assume changing to numbered list):
+			// * ------				<-- do not fix, top level item
+			//   * ------			<-- fix, because latter list item of this item's list is changed
+			//      * ------		<-- do not fix, item is not affected (different list)
+			//   * ------			<-- fix, because latter list item of this item's list is changed
+			//      * ------		<-- fix, because latter list item of this item's list is changed
+			//      * ---[--		<-- already in selection
+			//   * ------			<-- already in selection
+			//   * ------			<-- already in selection
+			// * ------				<-- already in selection, but does not cause other list items to change because is top-level
+			//   * ---]--			<-- already in selection
+			//   * ------			<-- fix, because preceding list item of this item's list is changed
+			//      * ------		<-- do not fix, item is not affected (different list)
+			// * ------				<-- do not fix, top level item
 			if ( !turnOff ) {
-				// We need to check previous sibling of first changed item and next siblings of last changed item.
-				// All other items are already in the selection.
-				const firstSelected = blocks[ 0 ];
+				// Find lowest indent among selected items. This will be indicator what is the indent of
+				// top-most list affected by the command.
+				let lowestIndent = Number.POSITIVE_INFINITY;
 
-				// Do this only for nested lists.
-				if ( firstSelected.getAttribute( 'indent' ) !== 0 ) {
-					let item = firstSelected.previousSibling;
-
-					while ( item && item.is( 'listItem' ) && item.getAttribute( 'indent' ) == firstSelected.getAttribute( 'indent' ) ) {
-						// Just add the item to selected blocks like it was selected by the user.
-						blocks.unshift( item );
-						item = item.previousSibling;
+				for ( let item of blocks ) {
+					if ( item.is( 'listItem' ) && item.getAttribute( 'indent' ) < lowestIndent ) {
+						lowestIndent = item.getAttribute( 'indent' );
 					}
 				}
 
-				const lastSelected = blocks[ blocks.length - 1 ];
+				// Do not execute the fix for top-level lists.
+				lowestIndent = lowestIndent === 0 ? 1 : lowestIndent;
 
-				if ( lastSelected.getAttribute( 'indent' ) !== 0 ) {
-					let item = lastSelected.nextSibling;
+				// Fix types of list items that are "before" the selected blocks.
+				_fixType( blocks, true, lowestIndent );
 
-					while ( item && item.is( 'listItem' ) && item.getAttribute( 'indent' ) == lastSelected.getAttribute( 'indent' ) ) {
-						blocks.push( item );
-						item = item.nextSibling;
-					}
-				}
+				// Fix types of list items that are "after" the selected blocks.
+				_fixType( blocks, false, lowestIndent );
 			}
 
 			// Phew! Now it will be easier :).
@@ -244,5 +251,52 @@ export default class ListCommand extends Command {
 			attributes: [ 'type', 'indent' ],
 			inside: Position.createBefore( firstBlock )
 		} );
+	}
+}
+
+// Helper function used when one or more list item have their type changed. Fixes type of other list items
+// that are affected by the change (are in same lists) but are not directly in selection. The function got extracted
+// not to duplicated code, as same fix has to be performed before and after selection.
+//
+// @param {Array.<module:engine/model/node~Node>} blocks Blocks that are in selection.
+// @param {Boolean} isBackward Specified whether fix will be applied for blocks before first selected block (`true`)
+// or blocks after last selected block (`false`).
+// @param {Number} lowestIndent Lowest indent among selected blocks.
+function _fixType( blocks, isBackward, lowestIndent ) {
+	// We need to check previous sibling of first changed item and next siblings of last changed item.
+	const startingItem = isBackward ? blocks[ 0 ] : blocks[ blocks.length - 1 ];
+
+	if ( startingItem.is( 'listItem' ) ) {
+		let item = startingItem[ isBackward ? 'previousSibling' : 'nextSibling' ];
+		// During processing items, keeps the lowest indent of already processed items.
+		// This saves us from changing too many items.
+		// Following example is for going forward as it is easier to read, however same applies to going backward.
+		// * ------
+		//   * ------
+		//     * --[---
+		//   * ------		<-- `lowestIndent` should be 1
+		//     * --]---		<-- `startingItem`, `currentIndent` = 2, `lowestIndent` == 1
+		//     * ------		<-- should be fixed, `indent` == 2 == `currentIndent`
+		//   * ------		<-- should be fixed, set `currentIndent` to 1, `indent` == 1 == `currentIndent`
+		//     * ------		<-- should not be fixed, item is in different list, `indent` = 2, `indent` != `currentIndent`
+		//   * ------		<-- should be fixed, `indent` == 1 == `currentIndent`
+		// * ------			<-- break loop (`indent` < `lowestIndent`)
+		let currentIndent = startingItem.getAttribute( 'indent' );
+
+		// Look back until a list item with indent lower than reference `lowestIndent`.
+		// That would be the parent of nested sublist which contains item having `lowestIndent`.
+		while ( item && item.is( 'listItem' ) && item.getAttribute( 'indent' ) >= lowestIndent ) {
+			if ( currentIndent > item.getAttribute( 'indent' ) ) {
+				currentIndent = item.getAttribute( 'indent' );
+			}
+
+			// Found an item that is in the same nested sublist.
+			if ( item.getAttribute( 'indent' ) == currentIndent ) {
+				// Just add the item to selected blocks like it was selected by the user.
+				blocks[ isBackward ? 'unshift' : 'push' ]( item );
+			}
+
+			item = item[ isBackward ? 'previousSibling' : 'nextSibling' ];
+		}
 	}
 }
