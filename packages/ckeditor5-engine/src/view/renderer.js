@@ -576,7 +576,8 @@ export default class Renderer {
 		const domSelection = domRoot.ownerDocument.defaultView.getSelection();
 		const oldViewSelection = domSelection && this.domConverter.domSelectionToView( domSelection );
 
-		if ( oldViewSelection && this.selection.isEqual( oldViewSelection ) ) {
+		if ( oldViewSelection && ( this.selection.isEqual( oldViewSelection ) ||
+			!this.selection.isCollapsed && this.selection.isSimilar( oldViewSelection ) ) ) {
 			return;
 		}
 
