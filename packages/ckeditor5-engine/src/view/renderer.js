@@ -437,6 +437,13 @@ export default class Renderer {
 	_updateChildren( viewElement, options ) {
 		const domConverter = this.domConverter;
 		const domElement = domConverter.getCorrespondingDom( viewElement );
+
+		if ( !domElement ) {
+			// If there is no `domElement` it means that it was already removed from DOM.
+			// There is no need to update it. It will be updated when re-inserted.
+			return;
+		}
+
 		const domDocument = domElement.ownerDocument;
 
 		const filler = options.inlineFillerPosition;
@@ -463,6 +470,8 @@ export default class Renderer {
 				insertAt( domElement, i, expectedDomChildren[ i ] );
 				i++;
 			} else if ( action === 'delete' ) {
+				// Whenever element is removed from DOM, unbind it.
+				this.domConverter.unbindDomElement( actualDomChildren[ i ] );
 				remove( actualDomChildren[ i ] );
 			} else { // 'equal'
 				i++;
