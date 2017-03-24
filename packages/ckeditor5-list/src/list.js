@@ -61,9 +61,9 @@ export default class List extends Plugin {
 		this.listenTo( this.editor.editing.view, 'keydown', ( evt, data ) => {
 			let commandName = null;
 
-			if ( data.keystroke == parseKeystroke( 'tab' ) ) {
+			if ( data.keystroke == parseKeystroke( 'Tab' ) ) {
 				commandName = 'indentList';
-			} else if ( data.keystroke == parseKeystroke( 'Shift+tab' ) ) {
+			} else if ( data.keystroke == parseKeystroke( 'Shift+Tab' ) ) {
 				commandName = 'outdentList';
 			}
 
