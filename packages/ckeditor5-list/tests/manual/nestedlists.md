@@ -17,11 +17,9 @@ The loaded data should look like this:
 				<ul>
 					<li>Bullet list item 1.2.1</li>
 					<li>Bullet list item 1.2.2</li>
+					<li>Bullet list item 1.2.3</li>
+					<li>Bullet list item 1.2.4</li>
 				</ul>
-				<ol>
-					<li>Numbered list item 1.2.3</li>
-					<li>Numbered list item 1.2.4</li>
-				</ol>
 			</li>
 		</ul>
 	</li>
