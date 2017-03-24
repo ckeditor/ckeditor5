@@ -39,7 +39,10 @@ export default class HeadingCommand extends Command {
 		this.set( 'value', false );
 
 		// Update current value each time changes are done on document.
-		this.listenTo( editor.document, 'changesDone', () => this._updateValue() );
+		this.listenTo( editor.document, 'changesDone', () => {
+			this._updateValue();
+			this.refreshState();
+		} );
 
 		/**
 		 * Unique identifier of the command, also element's name in the model.
@@ -111,11 +114,29 @@ export default class HeadingCommand extends Command {
 	 * @private
 	 */
 	_updateValue() {
-		const block = this.editor.document.selection.getSelectedBlocks().next().value;
+		const block = this._getSelectedBlock();
 
-		if ( block ) {
-			this.value = block.is( this.modelElement );
-		}
+		this.value = !!block && block.is( this.modelElement );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	_checkEnabled() {
+		const block = this._getSelectedBlock();
+		const schema = this.editor.document.schema;
+
+		return !!block && schema.check( { name: this.modelElement, inside: block.parent.name } ) && !schema.objects.has( block.name );
+	}
+
+	/**
+	 * Returns currently selected block.
+	 *
+	 * @private
+	 * @returns {module:engine/model/element~Element}
+	 */
+	_getSelectedBlock() {
+		return this.editor.document.selection.getSelectedBlocks().next().value;
 	}
 }
 

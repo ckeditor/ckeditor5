@@ -33,6 +33,15 @@ describe( 'HeadingCommand', () => {
 				schema.registerItem( option.modelElement, '$block' );
 			}
 
+			schema.registerItem( 'notBlock' );
+			schema.allow( { name: 'notBlock', inside: '$root' } );
+			schema.allow( { name: '$text', inside: 'notBlock' } );
+
+			schema.registerItem( 'object' );
+			schema.allow( { name: 'object', inside: '$root' } );
+			schema.allow( { name: '$text', inside: 'object' } );
+			schema.objects.add( 'object' );
+
 			root = document.getRoot();
 		} );
 	} );
@@ -69,6 +78,19 @@ describe( 'HeadingCommand', () => {
 				document.selection.addRange( Range.createFromParentsAndOffsets( element, 3, element, 3 ) );
 
 				expect( commands[ modelElement ].value ).to.be.true;
+			} );
+
+			it( `equals false if moved from ${ modelElement } to non-block element`, () => {
+				setData( document, `<${ modelElement }>[foo]</${ modelElement }><notBlock>foo</notBlock>` );
+				const element = document.getRoot().getChild( 1 );
+
+				expect( commands[ modelElement ].value ).to.be.true;
+
+				document.enqueueChanges( () => {
+					document.selection.setRanges( [ Range.createIn( element ) ] );
+				} );
+
+				expect( commands[ modelElement ].value ).to.be.false;
 			} );
 		}
 	} );
@@ -190,5 +212,45 @@ describe( 'HeadingCommand', () => {
 				} );
 			}
 		} );
+	} );
+
+	describe( 'isEnabled', () => {
+		for ( let option of options ) {
+			test( option.modelElement );
+		}
+
+		function test( modelElement ) {
+			let command;
+
+			beforeEach( () => {
+				command = commands[ modelElement ];
+			} );
+
+			describe( `${ modelElement } command`, () => {
+				it( 'should be enabled when inside another block', () => {
+					setData( document, '<paragraph>f{}oo</paragraph>' );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be disabled if inside non-block', () => {
+					setData( document, '<notBlock>f{}oo</notBlock>' );
+
+					expect( command.isEnabled ).to.be.false;
+				} );
+
+				it( 'should be disabled if inside object', () => {
+					setData( document, '<object>f{}oo</object>' );
+
+					expect( command.isEnabled ).to.be.false;
+				} );
+
+				it( 'should be disabled if selection is placed on object', () => {
+					setData( document, '[<object>foo</object>]' );
+
+					expect( command.isEnabled ).to.be.false;
+				} );
+			} );
+		}
 	} );
 } );

@@ -58,7 +58,7 @@ describe( 'Heading', () => {
 			const dropdown = editor.ui.componentFactory.create( 'headings' );
 
 			expect( dropdown ).to.be.instanceOf( DropdownView );
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
+			expect( dropdown.buttonView.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isOn ).to.be.undefined;
 			expect( dropdown.buttonView.label ).to.equal( 'Choose heading' );
 			expect( dropdown.buttonView.tooltip ).to.equal( 'Heading' );
