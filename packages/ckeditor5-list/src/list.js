@@ -57,9 +57,9 @@ export default class List extends Plugin {
 
 		// Add tab key support.
 		// When in list item, pressing tab should indent list item, if possible.
-		// Pressing shift + tab shout outdent list item.
+		// Pressing Shift+Tab shout outdent list item.
 		this.listenTo( this.editor.editing.view, 'keydown', ( evt, data ) => {
-			let commandName = null;
+			let commandName;
 
 			if ( data.keystroke == parseKeystroke( 'Tab' ) ) {
 				commandName = 'indentList';

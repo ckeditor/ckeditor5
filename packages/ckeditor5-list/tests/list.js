@@ -129,7 +129,7 @@ describe( 'List', () => {
 
 		beforeEach( () => {
 			domEvtDataStub = {
-				keystroke: getCode( 'tab' ),
+				keystroke: getCode( 'Tab' ),
 				preventDefault() {}
 			};
 
@@ -151,8 +151,8 @@ describe( 'List', () => {
 			expect( editor.execute.calledWithExactly( 'indentList' ) ).to.be.true;
 		} );
 
-		it( 'should execute outdentList command on shift+tab keystroke', () => {
-			domEvtDataStub.keystroke += getCode( 'shift' );
+		it( 'should execute outdentList command on Shift+Tab keystroke', () => {
+			domEvtDataStub.keystroke += getCode( 'Shift' );
 
 			editor.setData( '<ul><li>foo<ul><li>bar</li></ul></li></ul>' );
 			// Collapsing selection in model, which has just flat listItems.
