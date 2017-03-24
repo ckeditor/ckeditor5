@@ -7,18 +7,22 @@
  * @module list/listengine
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ListCommand from './listcommand';
 import IndentCommand from './indentcommand';
 
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
 import {
 	cleanList,
+	cleanListItem,
 	modelViewInsertion,
 	modelViewChangeType,
 	modelViewMergeAfter,
 	modelViewRemove,
 	modelViewSplitOnInsert,
 	modelViewChangeIndent,
+	modelChangePostFixer,
 	viewModelConverter,
 	modelToViewPosition,
 	viewToModelPosition
@@ -34,10 +38,20 @@ export default class ListEngine extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ Paragraph ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 
 		// Schema.
+		// Note: in case `$block` will be ever allowed in `listItem`, keep in mind that this feature
+		// uses `Selection#getSelectedBlocks()` without any additional processing to obtain all selected list items.
+		// If there are blocks allowed inside list item, algorithms using `getSelectedBlocks()` will have to be modified.
 		const schema = editor.document.schema;
 		schema.registerItem( 'listItem', '$block' );
 		schema.allow( {
@@ -50,6 +64,23 @@ export default class ListEngine extends Plugin {
 		// Converters.
 		const data = editor.data;
 		const editing = editor.editing;
+
+		this.editor.document.on( 'change', modelChangePostFixer( this.editor.document ), { priority: 'high' } );
+
+		// Unbind all moved model elements before conversion happens. This is important for converters.
+		// TODO: fix this when changes are converted on `changesDone`.
+		this.editor.document.on( 'change', ( evt, type, changes ) => {
+			if ( type == 'move' ) {
+				for ( let item of changes.range.getItems() ) {
+					if ( item.is( 'listItem' ) ) {
+						editing.mapper.unbindModelElement( item );
+					}
+				}
+			}
+		}, { priority: 'high' } );
+
+		editing.mapper.registerViewToModelLength( 'li', getViewListItemLength );
+		data.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 
 		editing.mapper.on( 'modelToViewPosition', modelToViewPosition );
 		editing.mapper.on( 'viewToModelPosition', viewToModelPosition );
@@ -73,9 +104,10 @@ export default class ListEngine extends Plugin {
 		editing.modelToView.on( 'changeAttribute:indent:listItem', modelViewChangeIndent );
 		data.modelToView.on( 'changeAttribute:indent:listItem', modelViewChangeIndent );
 
-		data.viewToModel.on( 'element:li', viewModelConverter );
 		data.viewToModel.on( 'element:ul', cleanList, { priority: 'high' } );
 		data.viewToModel.on( 'element:ol', cleanList, { priority: 'high' } );
+		data.viewToModel.on( 'element:li', cleanListItem, { priority: 'high' } );
+		data.viewToModel.on( 'element:li', viewModelConverter );
 
 		// Register commands for numbered and bulleted list.
 		editor.commands.set( 'numberedList', new ListCommand( editor, 'numbered' ) );
@@ -85,4 +117,18 @@ export default class ListEngine extends Plugin {
 		editor.commands.set( 'indentList', new IndentCommand( editor, 'forward' ) );
 		editor.commands.set( 'outdentList', new IndentCommand( editor, 'backward' ) );
 	}
+}
+
+function getViewListItemLength( element ) {
+	let length = 1;
+
+	for ( let child of element.getChildren() ) {
+		if ( child.name == 'ul' || child.name == 'ol' ) {
+			for ( let item of child.getChildren() ) {
+				length += getViewListItemLength( item );
+			}
+		}
+	}
+
+	return length;
 }

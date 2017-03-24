@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command/command';
-import { getClosestListItem } from './utils';
+import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
  * The list indent command. It is used by the {@link module:list/list~List list feature}.
@@ -51,18 +51,16 @@ export default class IndentCommand extends Command {
 	_doExecute() {
 		const doc = this.editor.document;
 		const batch = doc.batch();
-		const element = getClosestListItem( doc.selection.getFirstPosition() );
+		let itemsToChange = Array.from( doc.selection.getSelectedBlocks() );
 
 		doc.enqueueChanges( () => {
-			const oldIndent = element.getAttribute( 'indent' );
-
-			let itemsToChange = [ element ];
+			const lastItem = itemsToChange[ itemsToChange.length - 1 ];
 
 			// Indenting a list item should also indent all the items that are already sub-items of indented item.
-			let next = element.nextSibling;
+			let next = lastItem.nextSibling;
 
-			// Check all items as long as their indent is bigger than indent of changed list item.
-			while ( next && next.name == 'listItem' && next.getAttribute( 'indent' ) > oldIndent ) {
+			// Check all items after last indented item, as long as their indent is bigger than indent of that item.
+			while ( next && next.name == 'listItem' && next.getAttribute( 'indent' ) > lastItem.getAttribute( 'indent' ) ) {
 				itemsToChange.push( next );
 
 				next = next.nextSibling;
@@ -84,9 +82,26 @@ export default class IndentCommand extends Command {
 				if ( indent < 0 ) {
 					// To keep the model as correct as possible, first rename listItem, then remove attributes,
 					// as listItem without attributes is very incorrect and will cause problems in converters.
-					batch.rename( item, 'paragraph' ).removeAttribute( item, 'indent' ).removeAttribute( item, 'type' );
-				} else {
-					// If indent is >= 0, just change the attribute value.
+					// No need to remove attributes, will be removed by post fixer.
+					batch.rename( item, 'paragraph' );
+				}
+				// If indent is >= 0, change the attribute value.
+				else {
+					// If indent is > 0 and the item was outdented, check whether list item's type should not be fixed.
+					if ( indent > 0 && this._indentBy < 0 ) {
+						// First, find previous sibling with same indent.
+						let prev = item.previousSibling;
+
+						while ( prev.getAttribute( 'indent' ) > indent ) {
+							prev = prev.previousSibling;
+						}
+
+						// Then check if that sibling has same type. If not, change type of this item.
+						if ( prev.getAttribute( 'type' ) != item.getAttribute( 'type' ) ) {
+							batch.setAttribute( item, 'type', prev.getAttribute( 'type' ) );
+						}
+					}
+
 					batch.setAttribute( item, 'indent', indent );
 				}
 			}
@@ -98,10 +113,10 @@ export default class IndentCommand extends Command {
 	 */
 	_checkEnabled() {
 		// Check whether any of position's ancestor is a list item.
-		const listItem = getClosestListItem( this.editor.document.selection.getFirstPosition() );
+		const listItem = first( this.editor.document.selection.getSelectedBlocks() );
 
 		// If selection is not in a list item, the command is disabled.
-		if ( !listItem ) {
+		if ( !listItem || !listItem.is( 'listItem' ) ) {
 			return false;
 		}
 

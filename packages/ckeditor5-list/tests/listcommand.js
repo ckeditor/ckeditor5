@@ -140,12 +140,13 @@ describe( 'ListCommand', () => {
 					expect( getData( doc ) ).to.equal( '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
 				} );
 
-				it( 'should rename closest listItem to paragraph and remove attributes', () => {
+				it( 'should rename closest listItem to paragraph', () => {
 					setData( doc, '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
 
 					command._doExecute();
 
-					expect( getData( doc ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
+					// Attributes will be removed by post fixer.
+					expect( getData( doc ) ).to.equal( '<paragraph indent="0" type="bulleted">fo[]o</paragraph>' );
 				} );
 
 				it( 'should change closest listItem\' type', () => {
@@ -216,7 +217,7 @@ describe( 'ListCommand', () => {
 					const expectedData =
 						'<listItem indent="0" type="bulleted">---</listItem>' +
 						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<paragraph>[]---</paragraph>' +
+						'<paragraph indent="2" type="bulleted">[]---</paragraph>' + // Attributes will be removed by post fixer.
 						'<listItem indent="0" type="bulleted">---</listItem>' +
 						'<listItem indent="1" type="bulleted">---</listItem>' +
 						'<listItem indent="0" type="bulleted">---</listItem>' +
@@ -271,7 +272,7 @@ describe( 'ListCommand', () => {
 					expect( getData( doc ) ).to.equal( expectedData );
 				} );
 
-				it( 'should rename closest listItem to paragraph and remove attributes', () => {
+				it( 'should rename closest listItem to paragraph', () => {
 					// From second bullet list item to first numbered list item.
 					// Command value=true, we are turning off list items.
 					doc.selection.setRanges( [ new Range(
@@ -284,10 +285,10 @@ describe( 'ListCommand', () => {
 
 					const expectedData =
 						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<paragraph>[---</paragraph>' +
+						'<paragraph indent="0" type="bulleted">[---</paragraph>' + // Attributes will be removed by post fixer.
 						'<paragraph>---</paragraph>' +
 						'<paragraph>---</paragraph>' +
-						'<paragraph>]---</paragraph>' +
+						'<paragraph indent="0" type="numbered">]---</paragraph>' + // Attributes will be removed by post fixer.
 						'<listItem indent="0" type="numbered">---</listItem>' +
 						'<listItem indent="1" type="bulleted">---</listItem>' +
 						'<listItem indent="2" type="bulleted">---</listItem>';
@@ -330,13 +331,66 @@ describe( 'ListCommand', () => {
 
 					const expectedData =
 						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<paragraph>[---</paragraph>' +
+						'<paragraph indent="0" type="bulleted">[---</paragraph>' + // Attributes will be removed by post fixer.
 						'<paragraph>---</paragraph>' +
 						'<paragraph>---</paragraph>' +
-						'<paragraph>---</paragraph>' +
-						'<paragraph>]---</paragraph>' +
+						'<paragraph indent="0" type="numbered">---</paragraph>' + // Attributes will be removed by post fixer.
+						'<paragraph indent="0" type="numbered">]---</paragraph>' + // Attributes will be removed by post fixer.
 						'<listItem indent="0" type="bulleted">---</listItem>' +
 						'<listItem indent="1" type="bulleted">---</listItem>';
+
+					expect( getData( doc ) ).to.equal( expectedData );
+				} );
+
+				// Example from docs.
+				it( 'should change type of all items in nested list if one of items changed', () => {
+					setData(
+						doc,
+						'<listItem indent="0" type="numbered">---</listItem>' +
+						'<listItem indent="1" type="numbered">---</listItem>' +
+						'<listItem indent="2" type="numbered">---</listItem>' +
+						'<listItem indent="1" type="numbered">---</listItem>' +
+						'<listItem indent="2" type="numbered">---</listItem>' +
+						'<listItem indent="2" type="numbered">-[-</listItem>' +
+						'<listItem indent="1" type="numbered">---</listItem>' +
+						'<listItem indent="1" type="numbered">---</listItem>' +
+						'<listItem indent="0" type="numbered">---</listItem>' +
+						'<listItem indent="1" type="numbered">-]-</listItem>' +
+						'<listItem indent="1" type="numbered">---</listItem>' +
+						'<listItem indent="2" type="numbered">---</listItem>' +
+						'<listItem indent="0" type="numbered">---</listItem>'
+					);
+
+					// * ------				<-- do not fix, top level item
+					//   * ------			<-- fix, because latter list item of this item's list is changed
+					//      * ------		<-- do not fix, item is not affected (different list)
+					//   * ------			<-- fix, because latter list item of this item's list is changed
+					//      * ------		<-- fix, because latter list item of this item's list is changed
+					//      * ---[--		<-- already in selection
+					//   * ------			<-- already in selection
+					//   * ------			<-- already in selection
+					// * ------				<-- already in selection, but does not cause other list items to change because is top-level
+					//   * ---]--			<-- already in selection
+					//   * ------			<-- fix, because preceding list item of this item's list is changed
+					//      * ------		<-- do not fix, item is not affected (different list)
+					// * ------				<-- do not fix, top level item
+
+					command._doExecute();
+
+					const expectedData =
+						'<listItem indent="0" type="numbered">---</listItem>' +
+						'<listItem indent="1" type="bulleted">---</listItem>' +
+						'<listItem indent="2" type="numbered">---</listItem>' +
+						'<listItem indent="1" type="bulleted">---</listItem>' +
+						'<listItem indent="2" type="bulleted">---</listItem>' +
+						'<listItem indent="2" type="bulleted">-[-</listItem>' +
+						'<listItem indent="1" type="bulleted">---</listItem>' +
+						'<listItem indent="1" type="bulleted">---</listItem>' +
+						'<listItem indent="0" type="bulleted">---</listItem>' +
+						'<listItem indent="1" type="bulleted">-]-</listItem>' +
+						'<listItem indent="1" type="bulleted">---</listItem>' +
+						'<listItem indent="2" type="numbered">---</listItem>' +
+						'<listItem indent="0" type="numbered">---</listItem>';
 
 					expect( getData( doc ) ).to.equal( expectedData );
 				} );

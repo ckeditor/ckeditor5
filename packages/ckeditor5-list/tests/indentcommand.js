@@ -21,9 +21,11 @@ describe( 'IndentCommand', () => {
 		root = doc.createRoot();
 
 		doc.schema.registerItem( 'listItem', '$block' );
+		doc.schema.registerItem( 'paragraph', '$block' );
 
 		doc.schema.allow( { name: '$block', inside: '$root' } );
 		doc.schema.allow( { name: 'listItem', attributes: [ 'type', 'indent' ], inside: '$root' } );
+		doc.schema.allow( { name: 'paragraph', inside: '$root' } );
 
 		setData(
 			doc,
@@ -66,6 +68,15 @@ describe( 'IndentCommand', () => {
 
 				expect( command.isEnabled ).to.be.false;
 			} );
+
+			// Edge case but may happen that some other blocks will also use the indent attribute
+			// and before we fixed it the command was enabled in such a case.
+			it( 'should be false if selection starts in a paragraph with indent attribute', () => {
+				doc.schema.allow( { name: 'paragraph', attributes: [ 'indent' ], inside: '$root' } );
+				setData( doc, '<listItem indent="0">a</listItem><paragraph indent="0">b[]</paragraph>' );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
 		} );
 
 		describe( '_doExecute', () => {
@@ -85,25 +96,6 @@ describe( 'IndentCommand', () => {
 				);
 			} );
 
-			it( 'should increment indent of only first selected item when multiple items are selected', () => {
-				doc.selection.setRanges( [ new Range(
-					new Position( root.getChild( 4 ), [ 0 ] ),
-					new Position( root.getChild( 6 ), [ 0 ] )
-				) ] );
-
-				command._doExecute();
-
-				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="0" type="bulleted">b</listItem>' +
-					'<listItem indent="1" type="bulleted">c</listItem>' +
-					'<listItem indent="2" type="bulleted">d</listItem>' +
-					'<listItem indent="3" type="bulleted">e</listItem>' +
-					'<listItem indent="1" type="bulleted">f</listItem>' +
-					'<listItem indent="0" type="bulleted">g</listItem>'
-				);
-			} );
-
 			it( 'should increment indent of all sub-items of indented item', () => {
 				doc.selection.collapse( root.getChild( 1 ) );
 
@@ -116,6 +108,25 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="3" type="bulleted">d</listItem>' +
 					'<listItem indent="3" type="bulleted">e</listItem>' +
 					'<listItem indent="2" type="bulleted">f</listItem>' +
+					'<listItem indent="0" type="bulleted">g</listItem>'
+				);
+			} );
+
+			it( 'should increment indent of all selected item when multiple items are selected', () => {
+				doc.selection.setRanges( [ new Range(
+					new Position( root.getChild( 1 ), [ 0 ] ),
+					new Position( root.getChild( 3 ), [ 0 ] )
+				) ] );
+
+				command._doExecute();
+
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'<listItem indent="2" type="bulleted">c</listItem>' +
+					'<listItem indent="3" type="bulleted">d</listItem>' +
+					'<listItem indent="2" type="bulleted">e</listItem>' +
+					'<listItem indent="1" type="bulleted">f</listItem>' +
 					'<listItem indent="0" type="bulleted">g</listItem>'
 				);
 			} );
@@ -178,7 +189,7 @@ describe( 'IndentCommand', () => {
 				command._doExecute();
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
-					'<paragraph>a</paragraph>' +
+					'<paragraph indent="0" type="bulleted">a</paragraph>' +
 					'<listItem indent="0" type="bulleted">b</listItem>' +
 					'<listItem indent="1" type="bulleted">c</listItem>' +
 					'<listItem indent="2" type="bulleted">d</listItem>' +
@@ -195,12 +206,71 @@ describe( 'IndentCommand', () => {
 
 				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
 					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<paragraph>b</paragraph>' +
+					'<paragraph indent="0" type="bulleted">b</paragraph>' +
 					'<listItem indent="0" type="bulleted">c</listItem>' +
 					'<listItem indent="1" type="bulleted">d</listItem>' +
 					'<listItem indent="1" type="bulleted">e</listItem>' +
 					'<listItem indent="0" type="bulleted">f</listItem>' +
 					'<listItem indent="0" type="bulleted">g</listItem>'
+				);
+			} );
+
+			it( 'should outdent all selected item when multiple items are selected', () => {
+				doc.selection.setRanges( [ new Range(
+					new Position( root.getChild( 1 ), [ 0 ] ),
+					new Position( root.getChild( 3 ), [ 0 ] )
+				) ] );
+
+				command._doExecute();
+
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<paragraph indent="0" type="bulleted">b</paragraph>' +
+					'<listItem indent="0" type="bulleted">c</listItem>' +
+					'<listItem indent="1" type="bulleted">d</listItem>' +
+					'<listItem indent="2" type="bulleted">e</listItem>' +
+					'<listItem indent="1" type="bulleted">f</listItem>' +
+					'<listItem indent="0" type="bulleted">g</listItem>'
+				);
+			} );
+
+			it( 'should fix list type if item is outdented', () => {
+				setData(
+					doc,
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'<listItem indent="2" type="numbered">c</listItem>'
+				);
+
+				doc.selection.setRanges( [ new Range(
+					new Position( root.getChild( 2 ), [ 0 ] )
+				) ] );
+
+				command._doExecute();
+
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'<listItem indent="1" type="bulleted">c</listItem>'
+				);
+			} );
+
+			it( 'should not fix list type if item is outdented to top level', () => {
+				setData(
+					doc,
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="numbered">b</listItem>'
+				);
+
+				doc.selection.setRanges( [ new Range(
+					new Position( root.getChild( 1 ), [ 0 ] )
+				) ] );
+
+				command._doExecute();
+
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="0" type="numbered">b</listItem>'
 				);
 			} );
 		} );
