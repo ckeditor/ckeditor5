@@ -34,7 +34,10 @@ export default class ParagraphCommand extends Command {
 		this.set( 'value', false );
 
 		// Update current value each time changes are done on document.
-		this.listenTo( editor.document, 'changesDone', () => this._updateValue() );
+		this.listenTo( editor.document, 'changesDone', () => {
+			this._updateValue();
+			this.refreshState();
+		} );
 	}
 
 	/**
@@ -69,10 +72,28 @@ export default class ParagraphCommand extends Command {
 	 * @private
 	 */
 	_updateValue() {
-		const block = this.editor.document.selection.getSelectedBlocks().next().value;
+		const block = this._getSelectedBlock();
 
-		if ( block ) {
-			this.value = block.is( 'paragraph' );
-		}
+		this.value = !!block && block.is( 'paragraph' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	_checkEnabled() {
+		const block = this._getSelectedBlock();
+		const schema = this.editor.document.schema;
+
+		return !!block && schema.check( { name: 'paragraph', inside: block.parent.name } ) && !schema.objects.has( block.name );
+	}
+
+	/**
+	 * Returns currently selected block.
+	 *
+	 * @private
+	 * @returns {module:engine/model/element~Element}
+	 */
+	_getSelectedBlock() {
+		return this.editor.document.selection.getSelectedBlocks().next().value;
 	}
 }
