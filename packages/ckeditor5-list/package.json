@@ -5,10 +5,10 @@
   "keywords": [],
   "dependencies": {
     "@ckeditor/ckeditor5-engine": "^0.8.0",
+    "@ckeditor/ckeditor5-paragraph": "^0.6.1",
     "@ckeditor/ckeditor5-core": "^0.7.0",
     "@ckeditor/ckeditor5-ui": "^0.7.1",
-    "@ckeditor/ckeditor5-utils": "^0.8.0",
-	"@ckeditor/ckeditor5-paragraph": "^0.6.1"
+    "@ckeditor/ckeditor5-utils": "^0.8.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^0.7.1",
