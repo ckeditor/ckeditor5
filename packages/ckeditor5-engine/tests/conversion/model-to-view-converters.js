@@ -904,7 +904,7 @@ describe( 'model-to-view-converters', () => {
 	} );
 
 	describe( 'remove', () => {
-		it( 'should remove items from view accordingly to changes in model', () => {
+		it( 'should remove items from view accordingly to changes in model #1', () => {
 			const modelDiv = new ModelElement( 'div', null, [
 				new ModelText( 'foo' ),
 				new ModelElement( 'image' ),
@@ -1001,6 +1001,30 @@ describe( 'model-to-view-converters', () => {
 			);
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div>foo<span></span>ar</div>' );
+		} );
+
+		it( 'should remove correct amount of text when it is split by view ui element', () => {
+			modelRoot.appendChildren( new ModelText( 'foobar' ) );
+			viewRoot.appendChildren( [
+				new ViewText( 'foo' ),
+				new ViewUIElement( 'span' ),
+				new ViewText( 'bar' )
+			] );
+
+			dispatcher.on( 'remove', remove() );
+
+			// Remove 'o<span></span>b'.
+			modelWriter.move(
+				ModelRange.createFromParentsAndOffsets( modelRoot, 2, modelRoot, 4 ),
+				ModelPosition.createAt( modelDoc.graveyard, 'end' )
+			);
+
+			dispatcher.convertRemove(
+				ModelPosition.createFromParentAndOffset( modelRoot, 2 ),
+				ModelRange.createFromParentsAndOffsets( modelDoc.graveyard, 0, modelDoc.graveyard, 2 )
+			);
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div>foar</div>' );
 		} );
 
 		it( 'should not unbind element that has not been moved to graveyard', () => {

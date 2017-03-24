@@ -8,10 +8,11 @@
  */
 
 import Delta from './delta';
-import DeltaFactory from './deltafactory';
 import RemoveDelta from './removedelta';
-import { register } from '../batch';
+import DeltaFactory from './deltafactory';
 import InsertOperation from '../operation/insertoperation';
+import { register } from '../batch';
+import { normalizeNodes } from './../writer';
 
 import DocumentFragment from '../documentfragment';
 import Range from '../../model/range.js';
@@ -95,8 +96,15 @@ export default class InsertDelta extends Delta {
  * @param {module:engine/model/node~NodeSet} nodes The list of nodes to be inserted.
  */
 register( 'insert', function( position, nodes ) {
+	const normalizedNodes = normalizeNodes( nodes );
+
+	// If nothing is inserted do not create delta and operation.
+	if ( normalizedNodes.length === 0 ) {
+		return this;
+	}
+
 	const delta = new InsertDelta();
-	const insert = new InsertOperation( position, nodes, this.document.version );
+	const insert = new InsertOperation( position, normalizedNodes, this.document.version );
 
 	this.addDelta( delta );
 	delta.addOperation( insert );
