@@ -10,6 +10,8 @@
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Command from '@ckeditor/ckeditor5-core/src/command/command';
 import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
  * The heading command. It is used by the {@link module:heading/heading~Heading heading feature} to apply headings.
@@ -114,7 +116,7 @@ export default class HeadingCommand extends Command {
 	 * @private
 	 */
 	_updateValue() {
-		const block = this._getSelectedBlock();
+		const block = first( this.editor.document.selection.getSelectedBlocks() );
 
 		this.value = !!block && block.is( this.modelElement );
 	}
@@ -123,20 +125,19 @@ export default class HeadingCommand extends Command {
 	 * @inheritDoc
 	 */
 	_checkEnabled() {
-		const block = this._getSelectedBlock();
+		const block = first( this.editor.document.selection.getSelectedBlocks() );
+
+		if ( !block ) {
+			return false;
+		}
+
 		const schema = this.editor.document.schema;
+		const isAllowed = schema.check( {
+			name: this.modelElement,
+			inside: Position.createBefore( block )
+		} );
 
-		return !!block && schema.check( { name: this.modelElement, inside: block.parent.name } ) && !schema.objects.has( block.name );
-	}
-
-	/**
-	 * Returns currently selected block.
-	 *
-	 * @private
-	 * @returns {module:engine/model/element~Element}
-	 */
-	_getSelectedBlock() {
-		return this.editor.document.selection.getSelectedBlocks().next().value;
+		return isAllowed && !schema.objects.has( block.name );
 	}
 }
 
