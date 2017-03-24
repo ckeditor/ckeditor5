@@ -8,6 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command/command';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 /**
  * The paragraph command.
@@ -82,9 +83,18 @@ export default class ParagraphCommand extends Command {
 	 */
 	_checkEnabled() {
 		const block = this._getSelectedBlock();
-		const schema = this.editor.document.schema;
 
-		return !!block && schema.check( { name: 'paragraph', inside: block.parent.name } ) && !schema.objects.has( block.name );
+		if ( !block ) {
+			return false;
+		}
+
+		const schema = this.editor.document.schema;
+		const isParagraphAllowed = schema.check( {
+			name: 'paragraph',
+			inside: Position.createBefore( block )
+		} );
+
+		return isParagraphAllowed && !schema.objects.has( block.name );
 	}
 
 	/**
