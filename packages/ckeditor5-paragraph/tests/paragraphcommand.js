@@ -69,11 +69,15 @@ describe( 'ParagraphCommand', () => {
 			expect( command.value ).to.be.true;
 		} );
 
-		it( 'has proper value when moved to element that is not a block', () => {
+		it( 'has proper value when inside non-block element', () => {
+			setData( document, '<notBlock>[foo]</notBlock>' );
+
+			expect( command.value ).to.be.false;
+		} );
+
+		it( 'has proper value when moved from block to element that is not a block', () => {
 			setData( document, '<paragraph>[foo]</paragraph><notBlock>foo</notBlock>' );
 			const element = document.getRoot().getChild( 1 );
-
-			expect( command.value ).to.be.true;
 
 			document.enqueueChanges( () => {
 				document.selection.setRanges( [ Range.createIn( element ) ] );

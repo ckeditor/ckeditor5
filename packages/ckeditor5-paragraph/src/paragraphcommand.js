@@ -9,6 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
  * The paragraph command.
@@ -73,7 +74,7 @@ export default class ParagraphCommand extends Command {
 	 * @private
 	 */
 	_updateValue() {
-		const block = this._getSelectedBlock();
+		const block = first( this.editor.document.selection.getSelectedBlocks() );
 
 		this.value = !!block && block.is( 'paragraph' );
 	}
@@ -82,7 +83,7 @@ export default class ParagraphCommand extends Command {
 	 * @inheritDoc
 	 */
 	_checkEnabled() {
-		const block = this._getSelectedBlock();
+		const block = first( this.editor.document.selection.getSelectedBlocks() );
 
 		if ( !block ) {
 			return false;
@@ -95,15 +96,5 @@ export default class ParagraphCommand extends Command {
 		} );
 
 		return isParagraphAllowed && !schema.objects.has( block.name );
-	}
-
-	/**
-	 * Returns currently selected block.
-	 *
-	 * @private
-	 * @returns {module:engine/model/element~Element}
-	 */
-	_getSelectedBlock() {
-		return this.editor.document.selection.getSelectedBlocks().next().value;
 	}
 }
