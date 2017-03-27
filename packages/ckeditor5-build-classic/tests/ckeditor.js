@@ -38,7 +38,7 @@ describe( 'ClassicEditor', () => {
 	} );
 
 	describe( 'create()', () => {
-		beforeEach( function () {
+		beforeEach( () => {
 			return ClassicEditor.create( editorElement )
 				.then( newEditor => {
 					editor = newEditor;
@@ -47,24 +47,6 @@ describe( 'ClassicEditor', () => {
 
 		afterEach( () => {
 			return editor.destroy();
-		} );
-
-		it( 'should load all its dependencies', () => {
-			expect( editor.plugins.get( ParagraphPlugin ) ).to.be.instanceOf( ParagraphPlugin );
-			expect( editor.plugins.get( AutoformatPlugin ) ).to.be.instanceOf( AutoformatPlugin );
-			expect( editor.plugins.get( BoldPlugin ) ).to.be.instanceOf( BoldPlugin );
-			expect( editor.plugins.get( HeadingPlugin ) ).to.be.instanceOf( HeadingPlugin );
-			expect( editor.plugins.get( ImagePlugin ) ).to.be.instanceOf( ImagePlugin );
-			expect( editor.plugins.get( ImageCaptionPlugin ) ).to.be.instanceOf( ImageCaptionPlugin );
-			expect( editor.plugins.get( ImageStylePlugin ) ).to.be.instanceOf( ImageStylePlugin );
-			expect( editor.plugins.get( ImageToolbarPlugin ) ).to.be.instanceOf( ImageToolbarPlugin );
-			expect( editor.plugins.get( ItalicPlugin ) ).to.be.instanceOf( ItalicPlugin );
-			expect( editor.plugins.get( LinkPlugin ) ).to.be.instanceOf( LinkPlugin );
-			expect( editor.plugins.get( ListPlugin ) ).to.be.instanceOf( ListPlugin );
-			expect( editor.plugins.get( ClipboardPlugin ) ).to.be.instanceOf( ClipboardPlugin );
-			expect( editor.plugins.get( EnterPlugin ) ).to.be.instanceOf( EnterPlugin );
-			expect( editor.plugins.get( TypingPlugin ) ).to.be.instanceOf( TypingPlugin );
-			expect( editor.plugins.get( UndoPlugin ) ).to.be.instanceOf( UndoPlugin );
 		} );
 
 		it( 'creates an instance which inherits from the ClassicEditor', () => {
@@ -103,4 +85,67 @@ describe( 'ClassicEditor', () => {
 				} );
 		} );
 	} );
+
+	describe( 'plugins', () => {
+		it( 'paragraph', () => {
+			const data = '<p>Some text inside a paragraph.</p>';
+
+			editor.setData( data );
+			expect( editor.getData() ).to.equal( data );
+		} );
+
+		it( 'basic-styles', () => {
+			const data = [
+				'<p>',
+				'<strong>Test:strong</strong>',
+				'<em>Test:em</em>',
+				'</p>'
+			].join( '' );
+
+			editor.setData( data );
+			expect( editor.getData() ).to.equal( data );
+		} );
+
+		it( 'heading', () => {
+			const data = [
+				'<h2>Heading 1.</h2>',
+				'<h3>Heading 1.1</h3>',
+				'<h4>Heading 1.1.1</h4>',
+				'<h2>Heading 1.2</h2>'
+			].join( '' );
+
+			editor.setData( data );
+			expect( editor.getData() ).to.equal( data );
+		} );
+
+		it( 'image', () => {
+			const data = '<figure class="image"><img src="./manual/sample.jpg"></figure>';
+
+			editor.setData( data );
+			expect( editor.getData() ).to.equal( data );
+		} );
+
+		it( 'list', () => {
+			const data = [
+				'<ul>',
+				'<li>Item 1.</li>',
+				'<li>Item 2.</li>',
+				'</ul>',
+				'<ol>',
+				'<li>Item 1.</li>',
+				'<li>Item 2.</li>',
+				'</ol>'
+			].join( '' );
+
+			editor.setData( data );
+			expect( editor.getData() ).to.equal( data );
+		} );
+
+		it( 'link', () => {
+			const data = '<p><a href="//ckeditor.com">CKEditor.com</a></p>';
+
+			editor.setData( data );
+			expect( editor.getData() ).to.equal( data );
+		} );
+	} )
 } );
