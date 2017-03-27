@@ -32,22 +32,22 @@ const webpackParams = {
 	destinationPath: path.join( packageRoot, buildConfig.destinationPath )
 };
 const webpackConfig = webpackUtils.getWebpackConfig( webpackParams );
-const webpackCompactConfig = webpackUtils.getWebpackCompactConfig( webpackParams );
+const webpackCompatConfig = webpackUtils.getWebpackCompatConfig( webpackParams );
 
-log.info( `Creating the "ES6" and "Compact" builds...` );
+log.info( `Building the "ES6" and "Compat" editors...` );
 
 Promise.all( [
-		runWebpack( webpackConfig ).then( () => log.info( 'The "ES6" build has been created.' ) ),
-		runWebpack( webpackCompactConfig ).then( () => log.info( 'The "Compact" build has been created.' ) )
-	] )
-	.then( () => {
-		log.info( 'Finished.' );
-	} )
-	.catch( ( err ) => {
-		process.exitCode = -1;
+	runWebpack( webpackConfig ).then( () => log.info( 'The "ES6" editor has been built.' ) ),
+	runWebpack( webpackCompatConfig ).then( () => log.info( 'The "Compat" editor has been built.' ) )
+] )
+.then( () => {
+	log.info( 'Finished.' );
+} )
+.catch( ( err ) => {
+	process.exitCode = -1;
 
-		log.error( err );
-	} );
+	log.error( err );
+} );
 
 function runWebpack( config ) {
 	return new Promise( ( resolve, reject ) => {

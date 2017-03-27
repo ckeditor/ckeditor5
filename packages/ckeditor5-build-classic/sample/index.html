@@ -4,163 +4,52 @@
 	<meta charset="utf-8">
 	<title>CKEditor 5 - Build Classic Sample</title>
 	<style>
-		@import url(https://fonts.googleapis.com/css?family=Roboto:300,400);
-
-		body, html {
-			margin: 0;
-			padding: 0;
-			font-size: 16px;
-			line-height: 1.5;
-			text-align: center;
-			font-family: 'Roboto', sans-serif;
-			background: url( ./bg.jpg ) calc(50% + 100px) top no-repeat #201F24;
-			color: #fff;
-			font-weight: 300;
-		}
-
-		h1,
-		h2 {
-			font-weight: 300;
-		}
-
-		a {
-			color: #88d01c;
-			text-decoration: none;
-		}
-
-		a:hover {
-			text-decoration: underline;
-		}
-
-		header h1,
-		main,
-		footer {
-			padding: 0 1em;
-		}
-
-		/* ---- CKEditor --------------------------------------------------- */
-		main .ck-editor .ck-editor__editable_inline {
-			color: #333;
-		}
-
-		main .ck-editor,
-		main .message {
-			position: relative;
-			z-index: 1;
-			max-width: 720px;
+		body {
+			max-width: 800px;
 			margin: 0 auto;
-			text-align: left;
-		}
-
-		main .ck-editor .ck-editor__editable_inline {
-			padding: 1em 2em;
-		}
-
-		.ck-editor .ck-editor__editable_inline h2,
-		.ck-editor .ck-editor__editable_inline h3,
-		.ck-editor .ck-editor__editable_inline h4,
-		.ck-editor .ck-editor__editable_inline strong {
-			font-weight: 400;
-		}
-
-		.ck-editor .ck-widget.ck-widget_selected,
-		.ck-editor .ck-widget.ck-widget_selected:hover {
-			outline: 3px solid #69A2DF;
-		}
-
-		.ck-editor .ck-editor__editable.ck-blurred .ck-widget.ck-widget_selected {
-			outline: 3px solid #DDD;
-		}
-
-		.ck-editor .ck-widget:hover {
-			outline: 3px solid #FFD25C;
-		}
-
-		/* ---- Footer --------------------------------------------------- */
-		footer {
-			overflow: hidden;
-			margin: 3em 0;
-		}
-
-		footer .copy {
-			color: #555;
-			font-size: .8em;
-		}
-
-		footer .copy a {
-			color: #4a6f12;
-		}
-
-
-		/* ---- RWD --------------------------------------------------- */
-		@media only screen and (max-device-width: 800px) {
-			body, html {
-				font-size: 150%;
-			}
-
-			/* ---- CKEditor ---------------------------- */
-			.ck-editor,
-			.message {
-				max-width: none;
-			}
-
-			.ck-reset, .ck-reset_all, .ck-reset_all * {
-				font-size: inherit;
-			}
 		}
 	</style>
 </head>
 <body>
+<div id="editor">
+	<h2>About CKEditor&nbsp;5</h2>
 
-<main>
-	<div id="editor">
-		<h2>About CKEditor&nbsp;5</h2>
-
-		<p>This is <a href="https://ckeditor5.github.io">CKEditor&nbsp;5</a>.
-		</p>
-
-		<figure class="image">
-			<img src="../tests/manual/sample.jpg" alt="Autumn fields"/>
-		</figure>
-
-		<p>After more than 2 years of building the next generation editor from
-			scratch and closing over 980 tickets, we created a highly <strong>extensible
-				and flexible architecture</strong> which consists of an <strong>amazing
-				editing framework</strong> and <strong>editing
-				solutions</strong> that will be built on top of it.</p>
-
-		<h3>Notes</h3>
-
-		<p><a href="https://ckeditor5.github.io">CKEditor&nbsp;5</a> is <em>under
-			heavy development</em> and this demo is not production-ready
-			software. For example:</p>
-
-		<ul>
-			<li><strong>Only Chrome, Opera and Safari are supported</strong>.
-			</li>
-			<li>Firefox requires enabling the <a
-				href="https://developer.mozilla.org/en-US/docs/Web/API/Document/onselectionchange">&ldquo;dom.select_events.enabled&rdquo;</a>
-				option.
-			</li>
-			<li><a href="https://github.com/ckeditor/ckeditor5/issues/342">Support
-				for pasting</a> is under development (content filtering is
-				unstable).
-			</li>
-		</ul>
-
-		<p>It has <em>bugs</em> that we are aware of &mdash; and that we
-			will be working on in the next few iterations of the project. Stay
-			tuned for some updates soon!</p>
-	</div>
-</main>
-
-<footer>
-	<p class="copy">
-		Copyright &copy; 2003-2017, <a href="http://cksource.com">CKSource</a> &ndash;
-		Frederico Knabben.
-		All rights reserved.
+	<p>This is <a href="https://ckeditor5.github.io">CKEditor&nbsp;5</a>.
 	</p>
-</footer>
+
+	<figure class="image">
+		<img src="../tests/manual/sample.jpg" alt="Autumn fields"/>
+	</figure>
+
+	<p>After more than 2 years of building the next generation editor from
+		scratch and closing over 980 tickets, we created a highly <strong>extensible
+			and flexible architecture</strong> which consists of an <strong>amazing
+			editing framework</strong> and <strong>editing
+			solutions</strong> that will be built on top of it.</p>
+
+	<h3>Notes</h3>
+
+	<p><a href="https://ckeditor5.github.io">CKEditor&nbsp;5</a> is <em>under
+		heavy development</em> and this demo is not production-ready
+		software. For example:</p>
+
+	<ul>
+		<li><strong>Only Chrome, Opera and Safari are supported</strong>.
+		</li>
+		<li>Firefox requires enabling the <a
+			href="https://developer.mozilla.org/en-US/docs/Web/API/Document/onselectionchange">&ldquo;dom.select_events.enabled&rdquo;</a>
+			option.
+		</li>
+		<li><a href="https://github.com/ckeditor/ckeditor5/issues/342">Support
+			for pasting</a> is under development (content filtering is
+			unstable).
+		</li>
+	</ul>
+
+	<p>It has <em>bugs</em> that we are aware of &mdash; and that we
+		will be working on in the next few iterations of the project. Stay
+		tuned for some updates soon!</p>
+</div>
 <script src="../build/ckeditor.js"></script>
 <script>
 	ClassicEditor.create( document.querySelector( '#editor' ) )

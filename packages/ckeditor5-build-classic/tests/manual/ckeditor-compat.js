@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { ClassicEditor } from '../../build/ckeditor.compact';
+import { ClassicEditor } from '../../build/ckeditor.compat';
 
 ClassicEditor.create( document.querySelector( '#editor' ) )
 	.then( editor => {
