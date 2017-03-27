@@ -40,17 +40,5 @@ ClassicEditor.build = {
 		TypingPlugin,
 		UndoPlugin 
 	],
-	config: {
-		toolbar: [
-			'headings',
-			'bold',
-			'italic',
-			'link',
-			'unlink',
-			'bulletedList',
-			'numberedList',
-			'undo',
-			'redo'
-		]
-	}
+	config: require( './config-editor' )
 };
