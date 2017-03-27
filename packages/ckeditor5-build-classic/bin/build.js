@@ -34,14 +34,14 @@ const webpackParams = {
 const webpackConfig = webpackUtils.getWebpackConfig( webpackParams );
 const webpackCompatConfig = webpackUtils.getWebpackCompatConfig( webpackParams );
 
-log.info( `Building the "ES6" and "Compat" editors...` );
+log.info( `Building...` );
 
 Promise.all( [
-	runWebpack( webpackConfig ).then( () => log.info( 'The "ES6" editor has been built.' ) ),
-	runWebpack( webpackCompatConfig ).then( () => log.info( 'The "Compat" editor has been built.' ) )
+	runWebpack( webpackConfig ).then( () => log.info( 'Finished building "build/ckeditor.js".' ) ),
+	runWebpack( webpackCompatConfig ).then( () => log.info( 'Finished building "build/ckeditor.compat.js".' ) )
 ] )
 .then( () => {
-	log.info( 'Finished.' );
+	log.info( 'Done.' );
 } )
 .catch( ( err ) => {
 	process.exitCode = -1;
