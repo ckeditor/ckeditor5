@@ -68,6 +68,14 @@ export default class ComponentFactory {
 	 * @returns {module:ui/view~View} The instantiated component view.
 	 */
 	create( name ) {
-		return this._components.get( name )( this.editor.locale );
+		const component = this._components.get( name );
+
+		if ( !component ) {
+			throw new CKEditorError(
+				'componentfactory-item-missing: There is no such component in the factory.', { name }
+			);
+		}
+
+		return component( this.editor.locale );
 	}
 }
