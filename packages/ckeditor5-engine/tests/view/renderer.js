@@ -290,6 +290,63 @@ describe( 'Renderer', () => {
 			expect( domRoot.childNodes[ 0 ].tagName ).to.equal( 'P' );
 		} );
 
+		it( 'should update removed item when it is reinserted', () => {
+			const viewFoo = new ViewText( 'foo' );
+			const viewP = new ViewElement( 'p', null, viewFoo );
+			const viewDiv = new ViewElement( 'div', null, viewP );
+
+			viewRoot.appendChildren( viewDiv );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			viewDiv.removeChildren( 0, 1 );
+			renderer.markToSync( 'children', viewDiv );
+			renderer.render();
+
+			viewP.removeChildren( 0, 1 );
+
+			viewDiv.appendChildren( viewP );
+			renderer.markToSync( 'children', viewDiv );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+
+			const domDiv = domRoot.childNodes[ 0 ];
+
+			expect( domDiv.tagName ).to.equal( 'DIV' );
+			expect( domDiv.childNodes.length ).to.equal( 1 );
+
+			const domP = domDiv.childNodes[ 0 ];
+
+			expect( domP.tagName ).to.equal( 'P' );
+			expect( domP.childNodes.length ).to.equal( 0 );
+		} );
+
+		it( 'should not throw when trying to update children of view element that got removed and lost its binding', () => {
+			const viewFoo = new ViewText( 'foo' );
+			const viewP = new ViewElement( 'p', null, viewFoo );
+			const viewDiv = new ViewElement( 'div', null, viewP );
+
+			viewRoot.appendChildren( viewDiv );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			viewRoot.removeChildren( 0, 1 );
+			renderer.markToSync( 'children', viewRoot );
+
+			viewDiv.removeChildren( 0, 1 );
+			renderer.markToSync( 'children', viewDiv );
+
+			viewP.removeChildren( 0, 1 );
+			renderer.markToSync( 'children', viewP );
+
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 0 );
+		} );
+
 		it( 'should not care about filler if there is no DOM', () => {
 			selectionEditable = null;
 
