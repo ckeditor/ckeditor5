@@ -6,6 +6,7 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import UndoEngine from '../src/undoengine';
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -308,6 +309,24 @@ describe( 'UndoEngine integration', () => {
 
 				editor.execute( 'undo' );
 				output( '<p>fo[o</p><p>b]ar</p>' );
+			} );
+
+			// Related to ckeditor5-engine#891 and ckeditor5-list#51.
+			it( 'change attribute of removed node then undo and redo', () => {
+				const gy = doc.graveyard;
+				const batch = doc.batch();
+				const p = new Element( 'p' );
+
+				root.appendChildren( p );
+
+				batch.remove( p );
+				batch.setAttribute( p, 'bold', true );
+
+				editor.execute( 'undo' );
+				editor.execute( 'redo' );
+
+				expect( p.root ).to.equal( gy );
+				expect( p.getAttribute( 'bold' ) ).to.be.true;
 			} );
 		} );
 	} );
