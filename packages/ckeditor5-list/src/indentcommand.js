@@ -68,7 +68,7 @@ export default class IndentCommand extends Command {
 
 			// We need to be sure to keep model in correct state after each small change, because converters
 			// bases on that state and assumes that model is correct.
-			// Because of that, if the command outdented items, we will outdent them starting from the last item, as
+			// Because of that, if the command outdents items, we will outdent them starting from the last item, as
 			// it is safer.
 			if ( this._indentBy < 0 ) {
 				itemsToChange = itemsToChange.reverse();
@@ -87,8 +87,8 @@ export default class IndentCommand extends Command {
 				}
 				// If indent is >= 0, change the attribute value.
 				else {
-					// If indent is > 0 and the item was outdented, check whether list item's type should not be fixed.
-					if ( indent > 0 && this._indentBy < 0 ) {
+					// If indent is > 0 check whether list item's type should not be fixed.
+					if ( indent > 0 ) {
 						// First, find previous sibling with same indent.
 						let prev = item.previousSibling;
 

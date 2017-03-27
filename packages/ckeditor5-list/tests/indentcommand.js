@@ -130,6 +130,29 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="0" type="bulleted">g</listItem>'
 				);
 			} );
+
+			it( 'should fix list type when item is intended if needed', () => {
+				setData(
+					doc,
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'<listItem indent="2" type="numbered">c</listItem>' +
+					'<listItem indent="1" type="bulleted">d</listItem>'
+				);
+
+				doc.selection.setRanges( [ new Range(
+					new Position( root.getChild( 3 ), [ 0 ] )
+				) ] );
+
+				command._doExecute();
+
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'<listItem indent="2" type="numbered">c</listItem>' +
+					'<listItem indent="2" type="numbered">d</listItem>'
+				);
+			} );
 		} );
 	} );
 
@@ -234,7 +257,7 @@ describe( 'IndentCommand', () => {
 				);
 			} );
 
-			it( 'should fix list type if item is outdented', () => {
+			it( 'should fix list type when item is outdented if needed', () => {
 				setData(
 					doc,
 					'<listItem indent="0" type="bulleted">a</listItem>' +
