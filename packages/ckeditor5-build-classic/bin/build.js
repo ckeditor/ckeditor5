@@ -11,17 +11,16 @@ const path = require( 'path' );
 const webpack = require( 'webpack' );
 const { logger, bundler } = require( '@ckeditor/ckeditor5-dev-utils' );
 const webpackUtils = require( '@ckeditor/ckeditor5-dev-webpack-utils' );
-const buildConfig = require( '../build-config' );
+const buildConfig = require( '../config-build' );
 const log = logger();
 const entryPoint = 'ckeditor.js';
 
 log.info( 'Creating an entry file...' );
 
-bundler.createEntryFile( entryPoint, {
+bundler.createEntryFile( entryPoint, './config-editor', {
 	plugins: buildConfig.plugins,
 	moduleName: buildConfig.moduleName,
-	editor: buildConfig.editor,
-	config: buildConfig.editorConfig,
+	editor: buildConfig.editor
 } );
 
 const packageRoot = path.join( __dirname, '..' );

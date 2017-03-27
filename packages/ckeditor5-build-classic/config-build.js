@@ -25,18 +25,5 @@ module.exports = {
 		'@ckeditor/ckeditor5-typing/src/typing',
 		'@ckeditor/ckeditor5-undo/src/undo',
 	],
-	moduleName: 'ClassicEditor',
-	editorConfig: {
-		toolbar: [
-			'headings',
-			'bold',
-			'italic',
-			'link',
-			'unlink',
-			'bulletedList',
-			'numberedList',
-			'undo',
-			'redo'
-		]
-	}
+	moduleName: 'ClassicEditor'
 };
