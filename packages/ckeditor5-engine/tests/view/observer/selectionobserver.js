@@ -181,7 +181,6 @@ describe( 'SelectionObserver', () => {
 	it( 'should not be treated as an infinite loop if changes are not often', () => {
 		const clock = testUtils.sinon.useFakeTimers( 'setInterval', 'clearInterval' );
 		const stub = testUtils.sinon.stub( log, 'warn' );
-		const changeCount = 75;
 
 		// We need to recreate SelectionObserver, so it will use mocked setInterval.
 		selectionObserver.disable();
@@ -196,7 +195,8 @@ describe( 'SelectionObserver', () => {
 				clock.restore();
 			} );
 
-		// Does changes in DOM that should not trigger infinite loop warning. Then skips clock to reset loop counter.
+		// Selectionchange event is called twice per `changeDomSelection()` execution. We call it 75 times to get
+		// 150 events. Infinite loop counter is reset, so calling this method twice should not show any warning.
 		function doChanges() {
 			return new Promise( resolve => {
 				viewDocument.once( 'selectionChangeDone', () => {
@@ -204,7 +204,7 @@ describe( 'SelectionObserver', () => {
 					resolve();
 				} );
 
-				for ( let i = 0; i < changeCount; i++ ) {
+				for ( let i = 0; i < 75; i++ ) {
 					changeDomSelection();
 				}
 			} );
