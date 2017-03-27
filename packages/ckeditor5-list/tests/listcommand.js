@@ -62,35 +62,31 @@ describe( 'ListCommand', () => {
 
 		describe( 'value', () => {
 			it( 'should be false if first position in selection is not in a list item', () => {
-				doc.selection.collapse( doc.getRoot().getChild( 3 ) );
+				doc.enqueueChanges( () => {
+					doc.selection.collapse( doc.getRoot().getChild( 3 ) );
+				} );
+
 				expect( command.value ).to.be.false;
 			} );
 
 			it( 'should be false if first position in selection is in a list item of different type', () => {
-				doc.selection.collapse( doc.getRoot().getChild( 2 ) );
+				doc.enqueueChanges( () => {
+					doc.selection.collapse( doc.getRoot().getChild( 2 ) );
+				} );
+
 				expect( command.value ).to.be.false;
 			} );
 
 			it( 'should be true if first position in selection is in a list item of same type', () => {
-				doc.selection.collapse( doc.getRoot().getChild( 1 ) );
+				doc.enqueueChanges( () => {
+					doc.selection.collapse( doc.getRoot().getChild( 1 ) );
+				} );
+
 				expect( command.value ).to.be.true;
 			} );
 		} );
 
 		describe( 'isEnabled', () => {
-			it( 'should be true if command value is true', () => {
-				command.value = true;
-				command.refreshState();
-
-				expect( command.isEnabled ).to.be.true;
-
-				command.value = false;
-				doc.selection.collapse( doc.getRoot().getChild( 1 ) );
-
-				expect( command.value ).to.be.true;
-				expect( command.isEnabled ).to.be.true;
-			} );
-
 			it( 'should be true if entire selection is in a list', () => {
 				setData( doc, '<listItem type="bulleted" indent="0">[a]</listItem>' );
 				expect( command.isEnabled ).to.be.true;
@@ -252,10 +248,12 @@ describe( 'ListCommand', () => {
 				it( 'should rename closest block to listItem and set correct attributes', () => {
 					// From first paragraph to second paragraph.
 					// Command value=false, we are turning on list items.
-					doc.selection.setRanges( [ new Range(
-						Position.createAt( root.getChild( 2 ) ),
-						Position.createAt( root.getChild( 3 ) )
-					) ] );
+					doc.enqueueChanges( () => {
+						doc.selection.setRanges( [ new Range(
+							Position.createAt( root.getChild( 2 ) ),
+							Position.createAt( root.getChild( 3 ) )
+						) ] );
+					} );
 
 					command._doExecute();
 
@@ -275,10 +273,12 @@ describe( 'ListCommand', () => {
 				it( 'should rename closest listItem to paragraph', () => {
 					// From second bullet list item to first numbered list item.
 					// Command value=true, we are turning off list items.
-					doc.selection.setRanges( [ new Range(
-						Position.createAt( root.getChild( 1 ) ),
-						Position.createAt( root.getChild( 4 ) )
-					) ] );
+					doc.enqueueChanges( () => {
+						doc.selection.setRanges( [ new Range(
+							Position.createAt( root.getChild( 1 ) ),
+							Position.createAt( root.getChild( 4 ) )
+						) ] );
+					} );
 
 					// Convert paragraphs, leave numbered list items.
 					command._doExecute();
@@ -298,10 +298,12 @@ describe( 'ListCommand', () => {
 
 				it( 'should change closest listItem\'s type', () => {
 					// From first numbered lsit item to third bulleted list item.
-					doc.selection.setRanges( [ new Range(
-						Position.createAt( root.getChild( 4 ) ),
-						Position.createAt( root.getChild( 6 ) )
-					) ] );
+					doc.enqueueChanges( () => {
+						doc.selection.setRanges( [ new Range(
+							Position.createAt( root.getChild( 4 ) ),
+							Position.createAt( root.getChild( 6 ) )
+						) ] );
+					} );
 
 					// Convert paragraphs, leave numbered list items.
 					command._doExecute();
@@ -320,11 +322,13 @@ describe( 'ListCommand', () => {
 				} );
 
 				it( 'should handle outdenting sub-items when list item is turned off', () => {
-					// From first numbered lsit item to third bulleted list item.
-					doc.selection.setRanges( [ new Range(
-						Position.createAt( root.getChild( 1 ) ),
-						Position.createAt( root.getChild( 5 ) )
-					) ] );
+					// From first numbered list item to third bulleted list item.
+					doc.enqueueChanges( () => {
+						doc.selection.setRanges( [ new Range(
+							Position.createAt( root.getChild( 1 ) ),
+							Position.createAt( root.getChild( 5 ) )
+						) ] );
+					} );
 
 					// Convert paragraphs, leave numbered list items.
 					command._doExecute();

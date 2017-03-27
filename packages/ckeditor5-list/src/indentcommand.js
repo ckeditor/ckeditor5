@@ -35,11 +35,6 @@ export default class IndentCommand extends Command {
 		 */
 		this._indentBy = indentDirection == 'forward' ? 1 : -1;
 
-		// Refresh command state after selection is changed or changes has been done to the document.
-		this.listenTo( editor.document.selection, 'change:range', () => {
-			this.refreshState();
-		} );
-
 		this.listenTo( editor.document, 'changesDone', () => {
 			this.refreshState();
 		} );
@@ -87,19 +82,17 @@ export default class IndentCommand extends Command {
 				}
 				// If indent is >= 0, change the attribute value.
 				else {
-					// If indent is > 0 check whether list item's type should not be fixed.
-					if ( indent > 0 ) {
-						// First, find previous sibling with same indent.
-						let prev = item.previousSibling;
+					// Check whether list item's type should not be fixed.
+					// First, find previous sibling with same indent - if it exists.
+					let prev = item.previousSibling;
 
-						while ( prev.getAttribute( 'indent' ) > indent ) {
-							prev = prev.previousSibling;
-						}
+					while ( prev && prev.is( 'listItem' ) && prev.getAttribute( 'indent' ) > indent ) {
+						prev = prev.previousSibling;
+					}
 
-						// Then check if that sibling has same type. If not, change type of this item.
-						if ( prev.getAttribute( 'type' ) != item.getAttribute( 'type' ) ) {
-							batch.setAttribute( item, 'type', prev.getAttribute( 'type' ) );
-						}
+					// Then check if that sibling has same type. If not, change type of this item.
+					if ( prev && prev.getAttribute( 'type' ) != item.getAttribute( 'type' ) ) {
+						batch.setAttribute( item, 'type', prev.getAttribute( 'type' ) );
 					}
 
 					batch.setAttribute( item, 'indent', indent );
@@ -120,21 +113,24 @@ export default class IndentCommand extends Command {
 			return false;
 		}
 
-		const prev = listItem.previousSibling;
-		const oldIndent = listItem.getAttribute( 'indent' );
-		const newIndent = oldIndent + this._indentBy;
-
 		if ( this._indentBy > 0 ) {
-			// If we are indenting, there are some conditions to meet.
-			// Cannot indent first list item.
-			if ( !prev || prev.name != 'listItem' ) {
-				return false;
+			// Cannot indent first item in it's list. Check if before `listItem` is a list item that is in same list.
+			// To be in the same list, the item has to have same attributes.
+			const indent = listItem.getAttribute( 'indent' );
+			const type = listItem.getAttribute( 'type' );
+
+			let prev = listItem.previousSibling;
+
+			while ( prev && prev.is( 'listItem' ) ) {
+				if ( prev.getAttribute( 'indent' ) == indent && prev.getAttribute( 'type' ) == type ) {
+					return true;
+				}
+
+				prev = prev.previousSibling;
 			}
 
-			// Indent can be at most greater by one than indent of previous item.
-			if ( prev.getAttribute( 'indent' ) + 1 < newIndent ) {
-				return false;
-			}
+			// Could not find similar list item, this means that `listItem` is first in its list.
+			return false;
 		}
 
 		// If we are outdenting it is enough to be in list item. Every list item can always be outdented.

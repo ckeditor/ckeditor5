@@ -5,15 +5,17 @@
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import List from '../src/list';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ListEngine from '../src/listengine';
+
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'List', () => {
-	let editor, bulletedListButton, numberedListButton, schema;
+	let editor, doc, bulletedListButton, numberedListButton, schema;
 
 	beforeEach( () => {
 		const editorElement = document.createElement( 'div' );
@@ -25,6 +27,7 @@ describe( 'List', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				schema = editor.document.schema;
+				doc = editor.document;
 
 				bulletedListButton = editor.ui.componentFactory.create( 'bulletedList' );
 				numberedListButton = editor.ui.componentFactory.create( 'numberedList' );
@@ -59,9 +62,7 @@ describe( 'List', () => {
 	} );
 
 	it( 'should bind bulleted list button model to bulledList command', () => {
-		editor.setData( '<ul><li>foo</li></ul>' );
-		// Collapsing selection in model, which has just flat listItems.
-		editor.document.selection.collapse( editor.document.getRoot().getChild( 0 ) );
+		setData( doc, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
 
 		const command = editor.commands.get( 'bulletedList' );
 
@@ -76,9 +77,7 @@ describe( 'List', () => {
 	} );
 
 	it( 'should bind numbered list button model to numberedList command', () => {
-		editor.setData( '<ul><li>foo</li></ul>' );
-		// Collapsing selection in model, which has just flat listItems.
-		editor.document.selection.collapse( editor.document.getRoot().getChild( 0 ) );
+		setData( doc, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
 
 		const command = editor.commands.get( 'numberedList' );
 
@@ -99,9 +98,7 @@ describe( 'List', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			editor.setData( '<ul><li></li></ul>' );
-			// Collapsing selection in model, which has just flat listItems.
-			editor.document.selection.collapse( editor.document.getRoot().getChild( 0 ) );
+			setData( doc, '<listItem type="bulleted" indent="0">[]</listItem>' );
 
 			editor.editing.view.fire( 'enter', domEvtDataStub );
 
@@ -114,9 +111,7 @@ describe( 'List', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			editor.setData( '<ul><li>foobar</li></ul>' );
-			// Collapsing selection in model, which has just flat listItems.
-			editor.document.selection.collapse( editor.document.getRoot().getChild( 0 ) );
+			setData( doc, '<listItem type="bulleted" indent="0">foo[]</listItem>' );
 
 			editor.editing.view.fire( 'enter', domEvtDataStub );
 
@@ -141,9 +136,11 @@ describe( 'List', () => {
 		} );
 
 		it( 'should execute indentList command on tab key', () => {
-			editor.setData( '<ul><li>foo</li><li>bar</li></ul>' );
-			// Collapsing selection in model, which has just flat listItems.
-			editor.document.selection.collapse( editor.document.getRoot().getChild( 1 ) );
+			setData(
+				doc,
+				'<listItem type="bulleted" indent="0">foo</listItem>' +
+				'<listItem type="bulleted" indent="0">[]bar</listItem>'
+			);
 
 			editor.editing.view.fire( 'keydown', domEvtDataStub );
 
@@ -154,9 +151,11 @@ describe( 'List', () => {
 		it( 'should execute outdentList command on Shift+Tab keystroke', () => {
 			domEvtDataStub.keystroke += getCode( 'Shift' );
 
-			editor.setData( '<ul><li>foo<ul><li>bar</li></ul></li></ul>' );
-			// Collapsing selection in model, which has just flat listItems.
-			editor.document.selection.collapse( editor.document.getRoot().getChild( 1 ) );
+			setData(
+				doc,
+				'<listItem type="bulleted" indent="0">foo</listItem>' +
+				'<listItem type="bulleted" indent="1">[]bar</listItem>'
+			);
 
 			editor.editing.view.fire( 'keydown', domEvtDataStub );
 
@@ -165,9 +164,7 @@ describe( 'List', () => {
 		} );
 
 		it( 'should not indent if command is disabled', () => {
-			editor.setData( '<ul><li>foo</li></ul>' );
-			// Collapsing selection in model, which has just flat listItems.
-			editor.document.selection.collapse( editor.document.getRoot().getChild( 0 ) );
+			setData( doc, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
 
 			editor.editing.view.fire( 'keydown', domEvtDataStub );
 
@@ -177,9 +174,11 @@ describe( 'List', () => {
 		it( 'should not indent or outdent if alt+tab is pressed', () => {
 			domEvtDataStub.keystroke += getCode( 'alt' );
 
-			editor.setData( '<ul><li>foo</li></ul>' );
-			// Collapsing selection in model, which has just flat listItems.
-			editor.document.selection.collapse( editor.document.getRoot().getChild( 0 ) );
+			setData(
+				doc,
+				'<listItem type="bulleted" indent="0">foo</listItem>' +
+				'<listItem type="bulleted" indent="0">[]bar</listItem>'
+			);
 
 			editor.editing.view.fire( 'keydown', domEvtDataStub );
 
