@@ -32,6 +32,12 @@ describe( 'ComponentFactory', () => {
 	} );
 
 	describe( 'create', () => {
+		it( 'throws when trying to create a component which has not been registered', () => {
+			expect( () => {
+				factory.create( 'foo' );
+			} ).to.throw( CKEditorError, /^componentfactory-item-missing/ );
+		} );
+
 		it( 'creates an instance', () => {
 			class View {
 				constructor( locale ) {
