@@ -83,21 +83,7 @@ export default class SelectionObserver extends Observer {
 		 */
 		this._fireSelectionChangeDoneDebounced = debounce( data => this.document.fire( 'selectionChangeDone', data ), 200 );
 
-		this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 2000 );
-
-		/**
-		 * Private property to store the last selection, to check if the code does not enter infinite loop.
-		 *
-		 * @private
-		 * @member {module:engine/view/selection~Selection} module:engine/view/observer/selectionobserver~SelectionObserver#_lastSelection
-		 */
-
-		/**
-		 * Private property to store the last but one selection, to check if the code does not enter infinite loop.
-		 *
-		 * @private
-		 * @member {module:engine/view/selection~Selection} module:engine/view/observer/selectionobserver~SelectionObserver#_lastButOneSelection
-		 */
+		this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 1000 );
 
 		/**
 		 * Private property to check if the code does not enter infinite loop.
@@ -105,6 +91,7 @@ export default class SelectionObserver extends Observer {
 		 * @private
 		 * @member {Number} module:engine/view/observer/selectionobserver~SelectionObserver#_loopbackCounter
 		 */
+		this._loopbackCounter = 0;
 	}
 
 	/**
@@ -161,7 +148,7 @@ export default class SelectionObserver extends Observer {
 		}
 
 		// Ensure we are not in the infinite loop (#400).
-		if ( this._isInfiniteLoop( newViewSelection ) ) {
+		if ( this._isInfiniteLoop() ) {
 			/**
 			 * Selection change observer detected an infinite rendering loop.
 			 * Most probably you try to put the selection in the position which is not allowed
@@ -200,26 +187,8 @@ export default class SelectionObserver extends Observer {
 	 * @param {module:engine/view/selection~Selection} newSelection DOM selection converted to view.
 	 * @returns {Boolean} True is the same selection repeat more then 10 times.
 	 */
-	_isInfiniteLoop( newSelection ) {
-		// If the position is the same a the last one or the last but one we increment the counter.
-		// We need to check last two selections because the browser will first fire a selectionchange event
-		// for an incorrect selection and then for a corrected one.
-		if ( this._lastSelection && this._lastButOneSelection &&
-			( newSelection.isEqual( this._lastSelection ) || newSelection.isEqual( this._lastButOneSelection ) ) ) {
-			this._loopbackCounter++;
-		} else {
-			this._lastButOneSelection = this._lastSelection;
-			this._lastSelection = newSelection;
-			this._loopbackCounter = 0;
-		}
-
-		// This counter is reset every 2 seconds. 50 selection changes in 2 seconds is enough high number
-		// to be very difficult (impossible) to achieve using just keyboard keys (during normal editor use).
-		if ( this._loopbackCounter > 50 ) {
-			return true;
-		}
-
-		return false;
+	_isInfiniteLoop() {
+		return ++this._loopbackCounter > 200;
 	}
 
 	/**
@@ -228,8 +197,6 @@ export default class SelectionObserver extends Observer {
 	 * @protected
 	 */
 	_clearInfiniteLoop() {
-		this._lastSelection = null;
-		this._lastButOneSelection = null;
 		this._loopbackCounter = 0;
 	}
 }

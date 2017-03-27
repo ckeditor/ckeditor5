@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals setTimeout, setInterval, clearInterval, document */
+/* globals setTimeout, document */
 
 import ViewRange from '../../../src/view/range';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -136,66 +136,52 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
-	it( 'should warn and not enter infinite loop', ( done ) => {
-		// Reset infinite loop counters so other tests won't mess up with this test.
-		selectionObserver._clearInfiniteLoop();
-		clearInterval( selectionObserver._clearInfiniteLoopInterval );
-		selectionObserver._clearInfiniteLoopInterval = setInterval( () => selectionObserver._clearInfiniteLoop(), 2000 );
-
-		let counter = 100;
+	it( 'should warn and not enter infinite loop', () => {
+		// Selectionchange event is called twice per `changeDomSelection()` execution.
+		let counter = 105;
 
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
 
-		viewDocument.on( 'selectionChange', () => {
-			counter--;
+		return new Promise( ( resolve, reject ) => {
+			testUtils.sinon.stub( log, 'warn', ( msg ) => {
+				expect( msg ).to.match( /^selectionchange-infinite-loop/ );
 
-			if ( counter > 0 ) {
-				setTimeout( changeDomSelection );
-			} else {
-				throw 'Infinite loop!';
+				resolve();
+			} );
+
+			viewDocument.on( 'selectionChangeDone', () => {
+				if ( !counter ) {
+					reject( new Error( 'Infinite loop warning was not logged.' ) );
+				}
+			} );
+
+			while ( counter > 0 ) {
+				changeDomSelection();
+				counter--;
 			}
 		} );
-
-		let warnedOnce = false;
-
-		testUtils.sinon.stub( log, 'warn', ( msg ) => {
-			if ( !warnedOnce ) {
-				warnedOnce = true;
-
-				setTimeout( () => {
-					expect( msg ).to.match( /^selectionchange-infinite-loop/ );
-					done();
-				}, 200 );
-			}
-		} );
-
-		changeDomSelection();
 	} );
 
 	it( 'should not be treated as an infinite loop if selection is changed only few times', ( done ) => {
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
-
-		// Reset infinite loop counters so other tests won't mess up with this test.
-		selectionObserver._clearInfiniteLoop();
-
 		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
-
 		const spy = testUtils.sinon.spy( log, 'warn' );
+
+		viewDocument.on( 'selectionChangeDone', () => {
+			expect( spy.called ).to.be.false;
+			done();
+		} );
 
 		for ( let i = 0; i < 10; i++ ) {
 			changeDomSelection();
 		}
-
-		setTimeout( () => {
-			expect( spy.called ).to.be.false;
-			done();
-		}, 400 );
 	} );
 
-	it( 'should not be treated as an infinite loop if changes are not often', ( done ) => {
+	it( 'should not be treated as an infinite loop if changes are not often', () => {
 		const clock = testUtils.sinon.useFakeTimers( 'setInterval', 'clearInterval' );
-		const spy = testUtils.sinon.spy( log, 'warn' );
+		const stub = testUtils.sinon.stub( log, 'warn' );
+		const changeCount = 75;
 
 		// We need to recreate SelectionObserver, so it will use mocked setInterval.
 		selectionObserver.disable();
@@ -203,31 +189,26 @@ describe( 'SelectionObserver', () => {
 		viewDocument._observers.delete( SelectionObserver );
 		viewDocument.addObserver( SelectionObserver );
 
-		// Inf-loop kicks in after 50th time the selection is changed in 2s.
-		// We will test 30 times, tick sinon clock to clean counter and then test 30 times again.
-		// Note that `changeDomSelection` fires two events.
-		let changeCount = 15;
-
-		for ( let i = 0; i < changeCount; i++ ) {
-			setTimeout( () => {
-				changeDomSelection();
-			}, i * 20 );
-		}
-
-		setTimeout( () => {
-			// Move the clock by 2100ms which will trigger callback added to `setInterval` and reset the inf-loop counter.
-			clock.tick( 2100 );
-
-			for ( let i = 0; i < changeCount; i++ ) {
-				changeDomSelection();
-			}
-
-			setTimeout( () => {
-				expect( spy.called ).to.be.false;
+		return doChanges()
+			.then( doChanges )
+			.then( () => {
+				sinon.assert.notCalled( stub );
 				clock.restore();
-				done();
-			}, 200 );
-		}, 400 );
+			} );
+
+		// Does changes in DOM that should not trigger infinite loop warning. Then skips clock to reset loop counter.
+		function doChanges() {
+			return new Promise( resolve => {
+				viewDocument.once( 'selectionChangeDone', () => {
+					clock.tick( 1100 );
+					resolve();
+				} );
+
+				for ( let i = 0; i < changeCount; i++ ) {
+					changeDomSelection();
+				}
+			} );
+		}
 	} );
 
 	it( 'should fire `selectionChangeDone` event after selection stop changing', ( done ) => {
