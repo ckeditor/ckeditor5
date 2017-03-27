@@ -111,7 +111,10 @@ describe( 'ClassicEditor', () => {
 				'<h2>Heading 1.</h2>',
 				'<h3>Heading 1.1</h3>',
 				'<h4>Heading 1.1.1</h4>',
-				'<h2>Heading 1.2</h2>'
+				'<h4>Heading 1.1.2</h4>',
+				'<h3>Heading 1.2</h3>',
+				'<h4>Heading 1.2.1</h4>',
+				'<h2>Heading 2</h2>'
 			].join( '' );
 
 			editor.setData( data );
