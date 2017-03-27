@@ -53,6 +53,12 @@ export default class ComponentFactory {
 	 */
 	add( name, callback ) {
 		if ( this._components.get( name ) ) {
+			/**
+			 * The item already exists in the component factory.
+			 *
+			 * @error componentfactory-item-exists
+			 * @param {String} name The name of the component.
+			 */
 			throw new CKEditorError(
 				'componentfactory-item-exists: The item already exists in the component factory.', { name }
 			);
@@ -71,8 +77,14 @@ export default class ComponentFactory {
 		const component = this._components.get( name );
 
 		if ( !component ) {
+			/**
+			 * There is no such UI component in the factory.
+			 *
+			 * @error componentfactory-item-missing
+			 * @param {String} name The name of the missing component.
+			 */
 			throw new CKEditorError(
-				'componentfactory-item-missing: There is no such component in the factory.', { name }
+				'componentfactory-item-missing: There is no such UI component in the factory.', { name }
 			);
 		}
 
