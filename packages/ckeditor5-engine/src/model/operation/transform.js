@@ -388,7 +388,7 @@ const ot = {
 				const aTarget = a.targetPosition.path[ 0 ];
 				const bTarget = b.targetPosition.path[ 0 ];
 
-				if ( aTarget >= bTarget && isStrong ) {
+				if ( aTarget > bTarget || ( aTarget == bTarget && isStrong ) ) {
 					// Do not change original operation!
 					a = a.clone();
 					a.targetPosition.path[ 0 ]++;

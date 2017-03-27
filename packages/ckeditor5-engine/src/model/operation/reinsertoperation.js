@@ -45,7 +45,12 @@ export default class ReinsertOperation extends MoveOperation {
 	 * @returns {module:engine/model/operation/removeoperation~RemoveOperation}
 	 */
 	getReversed() {
-		return new RemoveOperation( this.targetPosition, this.howMany, this.baseVersion + 1 );
+		const removeOp = new RemoveOperation( this.targetPosition, this.howMany, this.baseVersion + 1 );
+
+		// Make sure that nodes are put back into the `$graveyardHolder` from which they got reinserted.
+		removeOp.targetPosition = this.sourcePosition;
+
+		return removeOp;
 	}
 
 	/**

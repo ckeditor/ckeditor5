@@ -61,14 +61,19 @@ describe( 'ReinsertOperation', () => {
 		expect( clone.baseVersion ).to.equal( operation.baseVersion );
 	} );
 
-	it( 'should create a RemoveOperation as a reverse', () => {
+	it( 'should create a correct RemoveOperation as a reverse', () => {
+		// Test reversed operation's target position.
+		graveyard.appendChildren( new Element( '$graveyardHolder' ) );
+
 		let reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( RemoveOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
 		expect( reverse.howMany ).to.equal( 2 );
 		expect( reverse.sourcePosition.isEqual( rootPosition ) ).to.be.true;
-		expect( reverse.targetPosition.root ).to.equal( graveyardPosition.root );
+
+		// Reversed `ReinsertOperation` should target back to the same graveyard holder.
+		expect( reverse.targetPosition.isEqual( graveyardPosition ) ).to.be.true;
 	} );
 
 	it( 'should undo reinsert set of nodes by applying reverse operation', () => {
