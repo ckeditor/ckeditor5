@@ -135,7 +135,7 @@ class Insertion {
 		nodes = Array.from( nodes );
 
 		for ( let i = 0; i < nodes.length; i++ ) {
-			const node = nodes[ i ].clone();
+			const node = nodes[ i ];
 
 			this._handleNode( node, {
 				isFirst: i === 0 && parentContext.isFirst,
