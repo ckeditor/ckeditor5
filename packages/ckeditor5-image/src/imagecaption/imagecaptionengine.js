@@ -42,6 +42,7 @@ export default class ImageCaptionEngine extends Plugin {
 		const schema = document.schema;
 		const data = editor.data;
 		const editing = editor.editing;
+		const t = editor.t;
 
 		/**
 		 * Last selected caption editable.
@@ -57,7 +58,7 @@ export default class ImageCaptionEngine extends Plugin {
 		 * @private
 		 * @member {Function}
 		 */
-		this._createCaption = captionElementCreator( viewDocument );
+		this._createCaption = captionElementCreator( viewDocument, t( 'Enter image caption' ) );
 
 		// Schema configuration.
 		schema.registerItem( 'caption' );

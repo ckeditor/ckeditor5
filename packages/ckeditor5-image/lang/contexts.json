@@ -3,5 +3,6 @@
 	"Side image": "Label for the Side image option.",
 	"Full size image": "Label for the Full size image option.",
 	"Change image text alternative": "Label for the Change image text alternative button.",
-	"Text alternative": "Label for the image text alternative input."
+	"Text alternative": "Label for the image text alternative input.",
+	"Enter image caption": "Placeholder text for image caption displayed when caption is empty."
 }
