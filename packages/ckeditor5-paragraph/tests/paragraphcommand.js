@@ -23,6 +23,10 @@ describe( 'ParagraphCommand', () => {
 			editor.commands.set( 'paragraph', command );
 			schema.registerItem( 'paragraph', '$block' );
 			schema.registerItem( 'heading1', '$block' );
+
+			schema.registerItem( 'notBlock' );
+			schema.allow( { name: 'notBlock', inside: '$root' } );
+			schema.allow( { name: '$text', inside: 'notBlock' } );
 		} );
 	} );
 
@@ -32,8 +36,6 @@ describe( 'ParagraphCommand', () => {
 
 	describe( 'value', () => {
 		it( 'has default value', () => {
-			setData( document, '' );
-
 			expect( command.value ).to.be.false;
 		} );
 
@@ -60,6 +62,35 @@ describe( 'ParagraphCommand', () => {
 
 			setData( document, '<paragraph>[bar</paragraph><heading1>foo]</heading1>' );
 			expect( command.value ).to.be.true;
+		} );
+
+		it( 'has proper value when inside non-block element', () => {
+			setData( document, '<notBlock>[foo]</notBlock>' );
+
+			expect( command.value ).to.be.false;
+		} );
+
+		it( 'has proper value when moved from block to element that is not a block', () => {
+			setData( document, '<paragraph>[foo]</paragraph><notBlock>foo</notBlock>' );
+			const element = document.getRoot().getChild( 1 );
+
+			document.enqueueChanges( () => {
+				document.selection.setRanges( [ Range.createIn( element ) ] );
+			} );
+
+			expect( command.value ).to.be.false;
+		} );
+
+		it( 'should be refreshed after calling refreshValue()', () => {
+			setData( document, '<paragraph>[foo]</paragraph><notBlock>foo</notBlock>' );
+			const element = document.getRoot().getChild( 1 );
+
+			// Purposely not putting it in `document.enqueueChanges` to update command manually.
+			document.selection.setRanges( [ Range.createIn( element ) ] );
+
+			expect( command.value ).to.be.true;
+			command.refreshValue();
+			expect( command.value ).to.be.false;
 		} );
 	} );
 
@@ -145,6 +176,26 @@ describe( 'ParagraphCommand', () => {
 				command._doExecute();
 				expect( getData( document ) ).to.equal( '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
 			} );
+		} );
+	} );
+
+	describe( 'isEnabled', () => {
+		it( 'should be enabled when inside another block', () => {
+			setData( document, '<heading1>f{}oo</heading1>' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be disabled if inside non-block', () => {
+			setData( document, '<notBlock>f{}oo</notBlock>' );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be disabled if selection is placed on non-block element', () => {
+			setData( document, '[<notBlock>foo</notBlock>]' );
+
+			expect( command.isEnabled ).to.be.false;
 		} );
 	} );
 } );
