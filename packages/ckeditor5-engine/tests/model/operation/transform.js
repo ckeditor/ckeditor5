@@ -2757,6 +2757,47 @@ describe( 'transform', () => {
 	} );
 
 	describe( 'RemoveOperation', () => {
+		describe( 'by InsertOperation', () => {
+			it( 'should not need new graveyard holder if original operation did not needed it either', () => {
+				let op = new RemoveOperation( new Position( root, [ 1 ] ), 1, baseVersion );
+				op._needsHolderElement = false;
+
+				let transformBy = new InsertOperation( new Position( root, [ 0 ] ), [ new Node() ], baseVersion );
+
+				let transOp = transform( op, transformBy )[ 0 ];
+
+				expect( transOp._needsHolderElement ).to.be.false;
+			} );
+		} );
+
+		describe( 'by MoveOperation', () => {
+			it( 'should create not more than RemoveOperation that needs new graveyard holder', () => {
+				let op = new RemoveOperation( new Position( root, [ 1 ] ), 4, baseVersion );
+				let transformBy = new MoveOperation( new Position( root, [ 0 ] ), 2, new Position( root, [ 8 ] ), baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 2 );
+
+				expect( transOp[ 0 ]._needsHolderElement ).to.be.true;
+				expect( transOp[ 1 ]._needsHolderElement ).to.be.false;
+			} );
+
+			it( 'should not need new graveyard holder if original operation did not needed it either', () => {
+				let op = new RemoveOperation( new Position( root, [ 1 ] ), 4, baseVersion );
+				op._needsHolderElement = false;
+
+				let transformBy = new MoveOperation( new Position( root, [ 0 ] ), 2, new Position( root, [ 8 ] ), baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 2 );
+
+				expect( transOp[ 0 ]._needsHolderElement ).to.be.false;
+				expect( transOp[ 1 ]._needsHolderElement ).to.be.false;
+			} );
+		} );
+
 		describe( 'by RemoveOperation', () => {
 			it( 'removes same nodes and transformed is weak: change howMany to 0', () => {
 				let position = new Position( root, [ 2, 1 ] );
