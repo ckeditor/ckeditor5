@@ -98,7 +98,7 @@ export default class ImageCaptionEngine extends Plugin {
 
 		// Hide last selected caption if have no child elements.
 		if ( this._lastSelectedCaption && !this._lastSelectedCaption.childCount ) {
-			this._lastSelectedCaption.addClass( 'ck-editable_hidden' );
+			this._lastSelectedCaption.addClass( 'ck-hidden' );
 		}
 
 		// If whole image widget is selected.
@@ -114,7 +114,7 @@ export default class ImageCaptionEngine extends Plugin {
 		}
 
 		if ( viewCaption ) {
-			viewCaption.removeClass( 'ck-editable_hidden' );
+			viewCaption.removeClass( 'ck-hidden' );
 			this._lastSelectedCaption = viewCaption;
 		}
 	}
@@ -171,7 +171,7 @@ function captionModelToView( elementCreator, hide = true ) {
 
 			// Hide if empty.
 			if ( !captionElement.childCount ) {
-				viewCaption.addClass( 'ck-editable_hidden' );
+				viewCaption.addClass( 'ck-hidden' );
 			}
 
 			insertViewCaptionAndBind( viewCaption, data.item, viewImage, conversionApi.mapper );

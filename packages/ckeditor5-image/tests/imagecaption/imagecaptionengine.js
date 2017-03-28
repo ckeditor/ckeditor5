@@ -112,7 +112,7 @@ describe( 'ImageCaptionEngine', () => {
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 					'<figure class="image ck-widget" contenteditable="false">' +
 						'<img src="img.png"></img>' +
-						'<figcaption class="ck-editable ck-editable_hidden" contenteditable="true"></figcaption>' +
+						'<figcaption class="ck-editable ck-hidden" contenteditable="true"></figcaption>' +
 					'</figure>'
 				);
 			} );
@@ -163,7 +163,7 @@ describe( 'ImageCaptionEngine', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[]<figure class="image ck-widget" contenteditable="false">' +
 					'<img alt="" src=""></img>' +
-					'<figcaption class="ck-editable ck-editable_hidden" contenteditable="true"></figcaption>' +
+					'<figcaption class="ck-editable ck-hidden" contenteditable="true"></figcaption>' +
 				'</figure>'
 			);
 		} );
@@ -222,7 +222,7 @@ describe( 'ImageCaptionEngine', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[]<figure class="image ck-widget" contenteditable="false">' +
 					'<img src=""></img>' +
-					'<figcaption class="ck-editable ck-editable_hidden" contenteditable="true"></figcaption>' +
+					'<figcaption class="ck-editable ck-hidden" contenteditable="true"></figcaption>' +
 				'</figure>'
 			);
 		} );
@@ -248,7 +248,7 @@ describe( 'ImageCaptionEngine', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[]<figure class="image ck-widget" contenteditable="false">' +
 					'<img src=""></img>' +
-					'<figcaption class="ck-editable ck-editable_hidden" contenteditable="true"></figcaption>' +
+					'<figcaption class="ck-editable ck-hidden" contenteditable="true"></figcaption>' +
 				'</figure>'
 			);
 		} );
@@ -325,7 +325,7 @@ describe( 'ImageCaptionEngine', () => {
 				expect( getViewData( viewDocument ) ).to.equal(
 					'[]<figure class="image ck-widget" contenteditable="false">' +
 						'<img src=""></img>' +
-						'<figcaption class="ck-editable ck-editable_hidden" contenteditable="true"></figcaption>' +
+						'<figcaption class="ck-editable ck-hidden" contenteditable="true"></figcaption>' +
 					'</figure>'
 				);
 
