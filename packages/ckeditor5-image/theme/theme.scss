@@ -1,43 +1,26 @@
 // Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
-// Common styles applied to all widgets.
-.ck-widget {
-	margin: 10px 0;
-	padding: 0;
+.ck-editor__editable {
+	.image {
+		text-align: center;
+		clear: both;
 
-	&.ck-widget_selected, &.ck-widget_selected:hover {
-		outline: 2px solid #ace;
+		&.image-style-side {
+			float: right;
+			margin-left: 0.8em;
+			max-width: 50%;
+		}
 	}
 
-	.ck-editor__editable.ck-blurred &.ck-widget_selected {
-		outline: 2px solid #ddd;
+	.image > img {
+		// Prevent unnecessary margins caused by line-height (see #44).
+		display: block;
+
+		// Center the image if its width is smaller than content's width.
+		margin: 0 auto;
+
+		// Make sure the image never exceeds the size of the parent container (#67).
+		max-width: 100%;
 	}
-
-	&:hover {
-		outline: 2px solid yellow;
-	}
-}
-
-// Image widget's styles.
-.image {
-	text-align: center;
-	clear: both;
-
-	&.image-style-side {
-		float: right;
-		margin-left: 0.8em;
-		max-width: 50%;
-	}
-}
-
-.image > img {
-	// Prevent unnecessary margins caused by line-height (see #44).
-	display: block;
-
-	// Center the image if its width is smaller than content's width.
-	margin: 0 auto;
-
-	// Make sure the image never exceeds the size of the parent container (#67).
-	max-width: 100%;
 }

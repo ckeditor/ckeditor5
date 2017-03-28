@@ -7,7 +7,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Widget from '../../src/widget/widget';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import { widgetize } from '../../src/widget/utils';
+import { toWidget } from '../../src/widget/utils';
 import ViewContainer from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewEditable from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
@@ -48,7 +48,7 @@ describe( 'Widget', () => {
 						const b = new AttributeContainer( 'b' );
 						const div = new ViewContainer( 'div', null, b );
 
-						return widgetize( div );
+						return toWidget( div );
 					} );
 
 				buildModelConverter().for( editor.editing.modelToView )
