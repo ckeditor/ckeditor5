@@ -29,13 +29,13 @@ $widget-outline-thickness: 2px;
 		outline: $widget-outline-thickness solid ck-color( 'widget-hover' );
 	}
 
-.ck-editable {
-	// The `:focus` style is applied before `.ck-editable_focused` class is rendered in the view.
-	// These styles show a different border for a blink of an eye, so `:focus` need to have same styles applied.
-	&.ck-editable_focused, &:focus {
-		@include ck-focus-ring( 'outline' );
-		@include ck-box-shadow( $ck-inner-shadow );
-		background-color: ck-color( 'background' );
+	.ck-editable {
+		// The `:focus` style is applied before `.ck-editable_focused` class is rendered in the view.
+		// These styles show a different border for a blink of an eye, so `:focus` need to have same styles applied.
+		&.ck-editable_focused, &:focus {
+			@include ck-focus-ring( 'outline' );
+			@include ck-box-shadow( $ck-inner-shadow );
+			background-color: ck-color( 'background' );
+		}
 	}
-}
 }
