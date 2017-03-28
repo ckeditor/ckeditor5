@@ -10,10 +10,10 @@
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * Controller of common contextual balloon.
+ * Common contextual balloon of the Editor.
  *
  * This class reuses the same {module:ui/view~View} for each contextual balloon panel in the editor UI, makes
- * possible to add multiple views to the same balloon panel (stored in the stack, last one in the stack is visible)
+ * possible to add multiple panels to the same balloon (stored in the stack, last one in the stack is visible)
  * and prevents of displaying more than one contextual balloon panel at the same time.
  */
 export default class ContextualBalloon {
@@ -40,7 +40,7 @@ export default class ContextualBalloon {
 	}
 
 	/**
-	 * Returns configuration of currently visible panel or `null` when there is no panel in the balloon.
+	 * Returns configuration of currently visible panel or `null` when there is no panel in the stack.
 	 *
 	 * @returns {module:ui/contextualballoon~Panel|null}
 	 */
@@ -49,7 +49,7 @@ export default class ContextualBalloon {
 	}
 
 	/**
-	 * Adds panel to the stack of opened panels and makes this panel currently visible.
+	 * Adds panel to the stack and makes this panel visible.
 	 *
 	 * @param {module:ui/contextualballoon~Panel} panelData Configuration of the panel.
 	 */
@@ -60,7 +60,7 @@ export default class ContextualBalloon {
 			 *
 			 * @error contextualballoon-add-item-exist
 			 */
-			throw new CKEditorError( 'contextualballoon-add-panel-exist: Cannot add configuration of existing panel.' );
+			throw new CKEditorError( 'contextualballoon-add-panel-exist: Cannot add the same panel twice.' );
 		}
 
 		// When adding panel to the not empty balloon.
@@ -77,7 +77,7 @@ export default class ContextualBalloon {
 
 	/**
 	 * Removes panel of given {@link: module:ui/view~View} from the stack of panels.
-	 * If removed panel was currently displayed then the panel before in the stack will be displayed instead.
+	 * If removed panel was visible then the panel before in the stack will be visible instead.
 	 * When there is no panel in the stack then balloon will hide.
 	 *
 	 * @param {module:ui/view~View} view View of panel which will be removed from the balloon.
@@ -92,7 +92,7 @@ export default class ContextualBalloon {
 			throw new CKEditorError( 'contextualballoon-remove-panel-not-exist: Cannot remove configuration of not existing panel.' );
 		}
 
-		// When visible panel is been removed.
+		// When visible panel is being removed.
 		if ( this.visible.view === view ) {
 			// We need to remove it from the view content.
 			this.view.content.remove( view );
@@ -128,7 +128,7 @@ export default class ContextualBalloon {
 	}
 
 	/**
-	 * Sets panel as a content of the balloon and attach balloon using position options of the first panel.
+	 * Sets panel as a content of the balloon and attaches balloon using position options of the first panel.
 	 *
 	 * @private
 	 * @param {module:ui/contextualballoon~Panel} panelData Configuration of the panel.
@@ -140,7 +140,7 @@ export default class ContextualBalloon {
 
 	/**
 	 * Returns position options of the first panel in the stack.
-	 * This helps to keep panel in the same position.
+	 * This helps to keep balloon in the same position when panels are changed.
 	 *
 	 * @private
 	 * @returns {module:utils/dom/position~Options}
@@ -151,7 +151,7 @@ export default class ContextualBalloon {
 }
 
 /**
- * An object describing configuration of single panel added to the balloon.
+ * An object describing configuration of single panel added to the balloon stack.
  *
  * @typedef {Object} module:ui/contextualballoon~Panel
  *
