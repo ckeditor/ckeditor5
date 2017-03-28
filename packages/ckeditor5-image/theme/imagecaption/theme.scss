@@ -2,12 +2,14 @@
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
 @import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_colors.scss';
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_spacing.scss';
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/_fonts.scss';
 
-.ck-widget.image {
-	figcaption.ck-editable {
+.ck-editor__editable {
+	.image > figcaption {
 		background-color: ck-color( 'foreground' );
-		padding: 10px;
-		font-size: .8em;
+		padding: ck-spacing();
+		font-size: ck-font-size( -1 );
 		color: ck-color( 'text', 40 );
 	}
 }
