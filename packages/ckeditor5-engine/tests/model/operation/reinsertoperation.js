@@ -74,6 +74,9 @@ describe( 'ReinsertOperation', () => {
 
 		// Reversed `ReinsertOperation` should target back to the same graveyard holder.
 		expect( reverse.targetPosition.isEqual( graveyardPosition ) ).to.be.true;
+
+		// Reversed `ReinsertOperation` should not create new graveyard holder.
+		expect( reverse._needsHolderElement ).to.be.false;
 	} );
 
 	it( 'should undo reinsert set of nodes by applying reverse operation', () => {

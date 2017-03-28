@@ -49,6 +49,7 @@ export default class ReinsertOperation extends MoveOperation {
 
 		// Make sure that nodes are put back into the `$graveyardHolder` from which they got reinserted.
 		removeOp.targetPosition = this.sourcePosition;
+		removeOp._needsHolderElement = false;
 
 		return removeOp;
 	}
