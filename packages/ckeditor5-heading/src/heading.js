@@ -13,6 +13,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 import '../theme/theme.scss';
 
@@ -39,7 +40,8 @@ export default class Heading extends Plugin {
 		const options = this._getLocalizedOptions();
 		const commands = [];
 		const t = editor.t;
-		const defaultTitle = t( 'Heading' );
+		const defaultTitle = t( 'Choose heading' );
+		const dropdownTooltip = t( 'Heading' );
 
 		for ( let option of options ) {
 			const command = editor.commands.get( option.modelElement );
@@ -61,7 +63,7 @@ export default class Heading extends Plugin {
 		const dropdownModel = new Model( {
 			withText: true,
 			items: dropdownItems,
-			tooltip: defaultTitle
+			tooltip: dropdownTooltip
 		} );
 
 		dropdownModel.bind( 'isEnabled' ).to(
@@ -86,6 +88,14 @@ export default class Heading extends Plugin {
 		// Register UI component.
 		editor.ui.componentFactory.add( 'headings', ( locale ) => {
 			const dropdown = createListDropdown( dropdownModel, locale );
+
+			Template.extend( dropdown.template, {
+				attributes: {
+					class: [
+						'ck-heading-dropdown'
+					]
+				}
+			} );
 
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdown, 'execute', ( evt ) => {
