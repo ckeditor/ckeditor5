@@ -328,6 +328,26 @@ describe( 'UndoEngine integration', () => {
 				expect( p.root ).to.equal( gy );
 				expect( p.getAttribute( 'bold' ) ).to.be.true;
 			} );
+
+			// Related to ckeditor5-engine#891.
+			it( 'change attribute of removed node then undo and redo', () => {
+				const gy = doc.graveyard;
+				const batch = doc.batch();
+				const p1 = new Element( 'p' );
+				const p2 = new Element( 'p' );
+				const p3 = new Element( 'p' );
+
+				root.appendChildren( [ p1, p2 ] );
+
+				batch.remove( p1 ).remove( p2 ).insert( new Position( root, [ 0 ] ), p3 );
+
+				editor.execute( 'undo' );
+				editor.execute( 'redo' );
+
+				expect( p1.root ).to.equal( gy );
+				expect( p2.root ).to.equal( gy );
+				expect( p3.root ).to.equal( root );
+			} );
 		} );
 	} );
 } );
