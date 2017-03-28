@@ -60,7 +60,7 @@ describe( 'Heading', () => {
 	describe( 'init()', () => {
 		it( 'should register options feature component', () => {
 			const dropdown = editor.ui.componentFactory.create( 'headings' );
-			//
+
 			expect( dropdown ).to.be.instanceOf( DropdownView );
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isOn ).to.be.undefined;

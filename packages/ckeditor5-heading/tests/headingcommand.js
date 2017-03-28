@@ -37,11 +37,6 @@ describe( 'HeadingCommand', () => {
 			schema.allow( { name: 'notBlock', inside: '$root' } );
 			schema.allow( { name: '$text', inside: 'notBlock' } );
 
-			schema.registerItem( 'object' );
-			schema.allow( { name: 'object', inside: '$root' } );
-			schema.allow( { name: '$text', inside: 'object' } );
-			schema.objects.add( 'object' );
-
 			root = document.getRoot();
 		} );
 	} );
@@ -95,6 +90,19 @@ describe( 'HeadingCommand', () => {
 				} );
 
 				expect( commands[ modelElement ].value ).to.be.false;
+			} );
+
+			it( 'should be refreshed after calling refreshValue()', () => {
+				const command = commands[ modelElement ];
+				setData( document, `<${ modelElement }>[foo]</${ modelElement }><notBlock>foo</notBlock>` );
+				const element = document.getRoot().getChild( 1 );
+
+				// Purposely not putting it in `document.enqueueChanges` to update command manually.
+				document.selection.setRanges( [ Range.createIn( element ) ] );
+
+				expect( command.value ).to.be.true;
+				command.refreshValue();
+				expect( command.value ).to.be.false;
 			} );
 		}
 	} );
@@ -243,14 +251,8 @@ describe( 'HeadingCommand', () => {
 					expect( command.isEnabled ).to.be.false;
 				} );
 
-				it( 'should be disabled if inside object', () => {
-					setData( document, '<object>f{}oo</object>' );
-
-					expect( command.isEnabled ).to.be.false;
-				} );
-
-				it( 'should be disabled if selection is placed on object', () => {
-					setData( document, '[<object>foo</object>]' );
+				it( 'should be disabled if selection is placed on non-block', () => {
+					setData( document, '[<notBlock>foo</notBlock>]' );
 
 					expect( command.isEnabled ).to.be.false;
 				} );

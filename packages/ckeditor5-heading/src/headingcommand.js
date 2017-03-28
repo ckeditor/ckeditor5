@@ -42,7 +42,7 @@ export default class HeadingCommand extends Command {
 
 		// Update current value each time changes are done on document.
 		this.listenTo( editor.document, 'changesDone', () => {
-			this._updateValue();
+			this.refreshValue();
 			this.refreshState();
 		} );
 
@@ -112,10 +112,8 @@ export default class HeadingCommand extends Command {
 
 	/**
 	 * Updates command's {@link #value value} based on current selection.
-	 *
-	 * @private
 	 */
-	_updateValue() {
+	refreshValue() {
 		const block = first( this.editor.document.selection.getSelectedBlocks() );
 
 		this.value = !!block && block.is( this.modelElement );
@@ -127,17 +125,10 @@ export default class HeadingCommand extends Command {
 	_checkEnabled() {
 		const block = first( this.editor.document.selection.getSelectedBlocks() );
 
-		if ( !block ) {
-			return false;
-		}
-
-		const schema = this.editor.document.schema;
-		const isAllowed = schema.check( {
+		return !!block && this.editor.document.schema.check( {
 			name: this.modelElement,
 			inside: Position.createBefore( block )
 		} );
-
-		return isAllowed && !schema.objects.has( block.name );
 	}
 }
 
