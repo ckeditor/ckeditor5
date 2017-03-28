@@ -11,6 +11,7 @@ import HeadingEngine from '../src/headingengine';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import { add } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 add( 'pl', {
 	'Choose heading': 'Wybierz nagłówek',
@@ -36,6 +37,9 @@ describe( 'Heading', () => {
 		.then( newEditor => {
 			editor = newEditor;
 			dropdown = editor.ui.componentFactory.create( 'headings' );
+
+			// Set data so the commands will be enabled.
+			setData( editor.document, '<paragraph>f{}oo</paragraph>' );
 		} );
 	} );
 
@@ -60,7 +64,7 @@ describe( 'Heading', () => {
 			expect( dropdown ).to.be.instanceOf( DropdownView );
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isOn ).to.be.undefined;
-			expect( dropdown.buttonView.label ).to.equal( 'Choose heading' );
+			expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
 			expect( dropdown.buttonView.tooltip ).to.equal( 'Heading' );
 		} );
 
@@ -236,7 +240,7 @@ describe( 'Heading', () => {
 			it( 'reflects the #value of the commands', () => {
 				const listView = dropdown.listView;
 
-				editor.commands.get( 'heading2' ).value = true;
+				setData( editor.document, '<heading2>f{}oo</heading2>' );
 
 				expect( listView.items.map( item => item.isActive ) ).to.deep.equal( [
 					false,

@@ -10,6 +10,8 @@
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Command from '@ckeditor/ckeditor5-core/src/command/command';
 import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
  * The heading command. It is used by the {@link module:heading/heading~Heading heading feature} to apply headings.
@@ -39,7 +41,10 @@ export default class HeadingCommand extends Command {
 		this.set( 'value', false );
 
 		// Update current value each time changes are done on document.
-		this.listenTo( editor.document, 'changesDone', () => this._updateValue() );
+		this.listenTo( editor.document, 'changesDone', () => {
+			this.refreshValue();
+			this.refreshState();
+		} );
 
 		/**
 		 * Unique identifier of the command, also element's name in the model.
@@ -107,15 +112,23 @@ export default class HeadingCommand extends Command {
 
 	/**
 	 * Updates command's {@link #value value} based on current selection.
-	 *
-	 * @private
 	 */
-	_updateValue() {
-		const block = this.editor.document.selection.getSelectedBlocks().next().value;
+	refreshValue() {
+		const block = first( this.editor.document.selection.getSelectedBlocks() );
 
-		if ( block ) {
-			this.value = block.is( this.modelElement );
-		}
+		this.value = !!block && block.is( this.modelElement );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	_checkEnabled() {
+		const block = first( this.editor.document.selection.getSelectedBlocks() );
+
+		return !!block && this.editor.document.schema.check( {
+			name: this.modelElement,
+			inside: Position.createBefore( block )
+		} );
 	}
 }
 
