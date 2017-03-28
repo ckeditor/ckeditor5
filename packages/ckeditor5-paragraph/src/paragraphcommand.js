@@ -37,7 +37,7 @@ export default class ParagraphCommand extends Command {
 
 		// Update current value each time changes are done on document.
 		this.listenTo( editor.document, 'changesDone', () => {
-			this._updateValue();
+			this.refreshValue();
 			this.refreshState();
 		} );
 	}
@@ -70,10 +70,8 @@ export default class ParagraphCommand extends Command {
 
 	/**
 	 * Updates command's {@link #value value} based on current selection.
-	 *
-	 * @private
 	 */
-	_updateValue() {
+	refreshValue() {
 		const block = first( this.editor.document.selection.getSelectedBlocks() );
 
 		this.value = !!block && block.is( 'paragraph' );

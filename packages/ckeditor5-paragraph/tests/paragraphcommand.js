@@ -85,6 +85,18 @@ describe( 'ParagraphCommand', () => {
 
 			expect( command.value ).to.be.false;
 		} );
+
+		it( 'should be refreshed after calling refreshValue()', () => {
+			setData( document, '<paragraph>[foo]</paragraph><notBlock>foo</notBlock>' );
+			const element = document.getRoot().getChild( 1 );
+
+			// Purposely not putting it in `document.enqueueChanges` to update command manually.
+			document.selection.setRanges( [ Range.createIn( element ) ] );
+
+			expect( command.value ).to.be.true;
+			command.refreshValue();
+			expect( command.value ).to.be.false;
+		} );
 	} );
 
 	describe( '_doExecute', () => {
