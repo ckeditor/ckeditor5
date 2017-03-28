@@ -7,7 +7,7 @@
     "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#68f739fc4171ebe59981a3b96665abbe7db6a0a0",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#95798ba0b6d9d2034c61c670be6cff30ddd84224",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#fc99afc995f7b53298bc618c1356bf0d22ae9a86",
-    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#86ea5b5b9d6d32b31205430dfaaa5ba0ebae37fa",
+    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#ea6c88196e24a896f64839061eb2338fd3dc327a",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#e35529b4b5a50462a365eb04d5ca25fc1bd85a88",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#1c16e9608c5f678bd4cbc0d44fbb662f298346e4",
     "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#ecbe435869eda728fd9651030e88175c96cf44b2",
@@ -19,7 +19,7 @@
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#a2eb8430b23be75a4845aada7bdf07c5834b32f4",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#0f33b8115afe3d271f94717c180e1022d5b5bb11",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#ef0a7f83a145bd7f20274a4738d8d5c4cf92e523",
-    "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#cdd45157504aea8f3c28a2405a25e59bd904d8b4",
+    "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#5b3d5a59dce75f139c8aa9b61ea20d254b63d588",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#8a5144805b973a6cd59c927603db609332b73dc0"
   }
 }
