@@ -83,16 +83,9 @@ export default class ParagraphCommand extends Command {
 	_checkEnabled() {
 		const block = first( this.editor.document.selection.getSelectedBlocks() );
 
-		if ( !block ) {
-			return false;
-		}
-
-		const schema = this.editor.document.schema;
-		const isParagraphAllowed = schema.check( {
+		return !!block && this.editor.document.schema.check( {
 			name: 'paragraph',
 			inside: Position.createBefore( block )
 		} );
-
-		return isParagraphAllowed && !schema.objects.has( block.name );
 	}
 }

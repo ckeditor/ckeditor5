@@ -27,11 +27,6 @@ describe( 'ParagraphCommand', () => {
 			schema.registerItem( 'notBlock' );
 			schema.allow( { name: 'notBlock', inside: '$root' } );
 			schema.allow( { name: '$text', inside: 'notBlock' } );
-
-			schema.registerItem( 'object' );
-			schema.allow( { name: 'object', inside: '$root' } );
-			schema.allow( { name: '$text', inside: 'object' } );
-			schema.objects.add( 'object' );
 		} );
 	} );
 
@@ -197,14 +192,8 @@ describe( 'ParagraphCommand', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
-		it( 'should be disabled if inside object', () => {
-			setData( document, '<object>f{}oo</object>' );
-
-			expect( command.isEnabled ).to.be.false;
-		} );
-
-		it( 'should be disabled if selection is placed on object', () => {
-			setData( document, '[<object>foo</object>]' );
+		it( 'should be disabled if selection is placed on non-block element', () => {
+			setData( document, '[<notBlock>foo</notBlock>]' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );
