@@ -180,6 +180,24 @@ describe( 'ImageCaptionEngine', () => {
 					'</figure>'
 				);
 			} );
+
+			it( 'should show when not everything is removed from caption', () => {
+				setModelData( document, '<image src="img.png"><caption>foo bar baz</caption></image>' );
+				const image = document.getRoot().getChild( 0 );
+				const caption = image.getChild( 0 );
+
+				document.enqueueChanges( () => {
+					const batch = document.batch();
+					batch.remove( ModelRange.createFromParentsAndOffsets( caption, 0, caption, 8 ) );
+				} );
+
+				expect( getViewData( viewDocument ) ).to.equal(
+					'[]<figure class="image ck-widget" contenteditable="false">' +
+					'<img src="img.png"></img>' +
+					'<figcaption class="ck-editable" contenteditable="true">baz</figcaption>' +
+					'</figure>'
+				);
+			} );
 		} );
 	} );
 

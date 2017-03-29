@@ -82,10 +82,10 @@ export default class ImageCaptionEngine extends Plugin {
 		editing.modelToView.on( 'insert:caption', captionModelToView( this._createCaption ) );
 
 		// Always show caption in view when something is inserted in model.
-		editing.modelToView.on( 'insert', ( evt, data  ) => this._fixCaptionVisibility( data.item ), { priority: 'high' } );
+		editing.modelToView.on( 'insert', ( evt, data ) => this._fixCaptionVisibility( data.item ), { priority: 'high' } );
 
 		// Hide caption when everything is removed from it.
-		editing.modelToView.on( 'remove', ( evt, data  ) => this._fixCaptionVisibility( data.sourcePosition.parent ), { priority: 'high' } );
+		editing.modelToView.on( 'remove', ( evt, data ) => this._fixCaptionVisibility( data.sourcePosition.parent ), { priority: 'high' } );
 
 		// Update view before each rendering.
 		this.listenTo( viewDocument, 'render', () => this._updateCaptionVisibility(), { priority: 'high' } );
@@ -128,8 +128,7 @@ export default class ImageCaptionEngine extends Plugin {
 
 	/**
 	 * Fixes caption visibility during model to view conversion.
-	 * Checks if inserted node is placed inside image's caption and shows it in the view when its not empty and hides it
-	 * otherwise.
+	 * Checks if changed node is placed inside caption element and fixes it's visibility in the view.
 	 *
 	 * @private
 	 * @param {module:engine/model/node~Node} node
@@ -226,7 +225,7 @@ function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper 
 }
 
 /**
- * Checks if provided node or one of its ancestors is caption element.
+ * Checks if provided node or one of its ancestors is caption element and returns it.
  *
  * @param {module:engine/model/node~Node} node
  * @returns {module:engine/model/element~Element|null}
