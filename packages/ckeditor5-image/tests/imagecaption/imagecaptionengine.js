@@ -189,6 +189,34 @@ describe( 'ImageCaptionEngine', () => {
 			);
 		} );
 
+		it( 'should not add caption element twice', () => {
+			const image = new ModelElement( 'image', { src: '', alt: '' } );
+			const caption = new ModelElement( 'caption' );
+			const batch = document.batch();
+
+			// When first change to the document will be made - manually add caption to the image element.
+			document.once( 'change', () => {
+				document.enqueueChanges( () => {
+					batch.insert( ModelPosition.createAt( image ), caption );
+				} );
+			}, { priority: 'high' } );
+
+			document.enqueueChanges( () => {
+				batch.insert( ModelPosition.createAt( document.getRoot() ), image );
+			} );
+
+			expect( getModelData( document ) ).to.equal(
+				'[]<image alt="" src=""><caption></caption></image>'
+			);
+
+			expect( getViewData( viewDocument ) ).to.equal(
+				'[]<figure class="image ck-widget" contenteditable="false">' +
+				'<img alt="" src=""></img>' +
+				'<figcaption class="ck-editable ck-hidden" contenteditable="true"></figcaption>' +
+				'</figure>'
+			);
+		} );
+
 		it( 'should do nothing for other changes than insert', () => {
 			setModelData( document, '<image src=""><caption>foo bar</caption></image>' );
 			const image = document.getRoot().getChild( 0 );
