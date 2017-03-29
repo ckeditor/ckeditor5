@@ -49,6 +49,16 @@ export default class ContextualBalloon {
 	}
 
 	/**
+	 * Returns `true` when panel of given view is in the stack otherwise returns `false`.
+	 *
+	 * @param {module:ui:view~View} view
+	 * @returns {Boolean}
+	 */
+	isPanelInStack( view ) {
+		return this._stack.has( view );
+	}
+
+	/**
 	 * Adds panel to the stack and makes this panel visible.
 	 *
 	 * @param {module:ui/contextualballoon~Panel} panelData Configuration of the panel.

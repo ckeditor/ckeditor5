@@ -27,6 +27,36 @@ describe( 'ContextualBalloon', () => {
 		balloon.view.attachTo.restore();
 	} );
 
+	describe( 'isPanelInStack()', () => {
+		it( 'should return true when panel of given view is in stack', () => {
+			balloon.add( {
+				view: viewA,
+				position: { target: 'fake' }
+			} );
+
+			expect( balloon.isPanelInStack( viewA ) ).to.true;
+		} );
+
+		it( 'should return true when panel of given view is in stack but is not visible', () => {
+			balloon.add( {
+				view: viewA,
+				position: { target: 'fake' }
+			} );
+
+			balloon.add( {
+				view: viewB,
+				position: { target: 'fake' }
+			} );
+
+			expect( balloon.visible.view === viewB ).to.true;
+			expect( balloon.isPanelInStack( viewA ) ).to.true;
+		} );
+
+		it( 'should return false when panel of given view is not in stack', () => {
+			expect( balloon.isPanelInStack( viewA ) ).to.false;
+		} );
+	} );
+
 	describe( 'add()', () => {
 		it( 'should add panel to the stack and display in balloon', () => {
 			balloon.add( {
