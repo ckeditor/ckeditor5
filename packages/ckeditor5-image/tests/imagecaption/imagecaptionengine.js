@@ -145,7 +145,7 @@ describe( 'ImageCaptionEngine', () => {
 				);
 			} );
 
-			it.only( 'should show caption when something is inserted inside', () => {
+			it( 'should show caption when something is inserted inside', () => {
 				setModelData( document, '<image src="img.png"><caption></caption></image>' );
 				const image = document.getRoot().getChild( 0 );
 				const caption = image.getChild( 0 );
@@ -159,6 +159,24 @@ describe( 'ImageCaptionEngine', () => {
 					'[]<figure class="image ck-widget" contenteditable="false">' +
 						'<img src="img.png"></img>' +
 						'<figcaption class="ck-editable" contenteditable="true">foo bar</figcaption>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should hide when everything is removed from caption', () => {
+				setModelData( document, '<image src="img.png"><caption>foo bar baz</caption></image>' );
+				const image = document.getRoot().getChild( 0 );
+				const caption = image.getChild( 0 );
+
+				document.enqueueChanges( () => {
+					const batch = document.batch();
+					batch.remove( ModelRange.createIn( caption ) );
+				} );
+
+				expect( getViewData( viewDocument ) ).to.equal(
+					'[]<figure class="image ck-widget" contenteditable="false">' +
+					'<img src="img.png"></img>' +
+					'<figcaption class="ck-editable ck-hidden" contenteditable="true"></figcaption>' +
 					'</figure>'
 				);
 			} );
