@@ -17,9 +17,9 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .then( editor => {
 	window.editor = editor;
 
-	editor.editing.view.on( 'selectionChangeDone', () => {
+	editor.editing.view.on( 'selectionChange', () => {
 		editor.document.enqueueChanges( () => {} );
-		console.log( 'selectionChangeDone', ( new Date() ).getTime() );
+		console.log( 'selectionChange', ( new Date() ).getTime() );
 	} );
 } )
 .catch( err => {
