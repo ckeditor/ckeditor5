@@ -16,6 +16,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
 import insertAt from '@ckeditor/ckeditor5-utils/src/dom/insertat';
 import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -577,8 +578,18 @@ export default class Renderer {
 		const domSelection = domRoot.ownerDocument.defaultView.getSelection();
 		const oldViewSelection = domSelection && this.domConverter.domSelectionToView( domSelection );
 
-		if ( oldViewSelection && ( this.selection.isEqual( oldViewSelection ) ||
-			this._areSimilarSelections( oldViewSelection, this.selection ) ) ) {
+		if ( oldViewSelection && this.selection.isEqual( oldViewSelection ) ) {
+			return;
+		}
+
+		if ( oldViewSelection && this._areSimilarSelections( oldViewSelection, this.selection ) ) {
+			const data = {
+				oldSelection: oldViewSelection,
+				currentSelection: this.selection
+			};
+
+			log.warn( 'renderer-selection-similar: Rendering selection was skipped due to its similarity to the previous selection.', data );
+
 			return;
 		}
 
