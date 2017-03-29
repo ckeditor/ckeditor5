@@ -80,7 +80,7 @@ describe( 'ImageCaptionEngine', () => {
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="img.png"><figcaption>Foo bar baz.</figcaption></figure>' );
 			} );
 
-			it( 'should not convert caption if it\'s empty', () => {
+			it( 'should convert caption to figcaption with hidden class if it\'s empty', () => {
 				setModelData( document, '<image src="img.png"><caption></caption></image>' );
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="img.png"></figure>' );
@@ -106,11 +106,14 @@ describe( 'ImageCaptionEngine', () => {
 				);
 			} );
 
-			it( 'should not convert caption if it\'s empty', () => {
+			it( 'should convert caption to element with proper CSS class if it\'s empty', () => {
 				setModelData( document, '<image src="img.png"><caption></caption></image>' );
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-					'<figure class="image ck-widget" contenteditable="false"><img src="img.png"></img></figure>'
+					'<figure class="image ck-widget" contenteditable="false">' +
+						'<img src="img.png"></img>' +
+						'<figcaption class="ck-editable ck-hidden" contenteditable="true"></figcaption>' +
+					'</figure>'
 				);
 			} );
 
@@ -153,12 +156,19 @@ describe( 'ImageCaptionEngine', () => {
 				batch.insert( new ModelPosition( document.getRoot(), [ 0 ] ), image );
 			} );
 
-			expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
-				'<image alt="" src=""><caption></caption></image>'
+			expect( getModelData( document ) ).to.equal(
+				'[]<image alt="" src=""><caption></caption></image>'
+			);
+
+			expect( getViewData( viewDocument ) ).to.equal(
+				'[]<figure class="image ck-widget" contenteditable="false">' +
+					'<img alt="" src=""></img>' +
+					'<figcaption class="ck-editable ck-hidden" contenteditable="true"></figcaption>' +
+				'</figure>'
 			);
 		} );
 
-		it( 'should not add caption element if image does not have it', () => {
+		it( 'should not add caption element if image already have it', () => {
 			const caption = new ModelElement( 'caption', null, 'foo bar' );
 			const image = new ModelElement( 'image', { src: '', alt: '' }, caption );
 			const batch = document.batch();
@@ -167,8 +177,15 @@ describe( 'ImageCaptionEngine', () => {
 				batch.insert( new ModelPosition( document.getRoot(), [ 0 ] ), image );
 			} );
 
-			expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
-				'<image alt="" src=""><caption>foo bar</caption></image>'
+			expect( getModelData( document ) ).to.equal(
+				'[]<image alt="" src=""><caption>foo bar</caption></image>'
+			);
+
+			expect( getViewData( viewDocument ) ).to.equal(
+				'[]<figure class="image ck-widget" contenteditable="false">' +
+					'<img alt="" src=""></img>' +
+					'<figcaption class="ck-editable" contenteditable="true">foo bar</figcaption>' +
+				'</figure>'
 			);
 		} );
 
@@ -187,39 +204,6 @@ describe( 'ImageCaptionEngine', () => {
 		} );
 	} );
 
-	describe( 'inserting into image caption', () => {
-		it( 'should add view caption if insertion was made to model caption', () => {
-			setModelData( document, '<image src=""><caption></caption></image>' );
-			const image = document.getRoot().getChild( 0 );
-			const caption = image.getChild( 0 );
-
-			// Check if there is no caption in the view
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="image ck-widget" contenteditable="false"><img src=""></img></figure>'
-			);
-
-			document.enqueueChanges( () => {
-				const batch = document.batch();
-				const position = ModelPosition.createAt( caption );
-
-				batch.insert( position, 'foo bar baz' );
-			} );
-
-			// Check if data is inside model.
-			expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
-				'<image src=""><caption>foo bar baz</caption></image>'
-			);
-
-			// Check if view has caption.
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="image ck-widget" contenteditable="false">' +
-					'<img src=""></img>' +
-					'<figcaption class="ck-editable" contenteditable="true">foo bar baz</figcaption>' +
-				'</figure>'
-			);
-		} );
-	} );
-
 	describe( 'editing view', () => {
 		it( 'image should have empty figcaption element when is selected', () => {
 			setModelData( document, '[<image src=""><caption></caption></image>]' );
@@ -232,12 +216,13 @@ describe( 'ImageCaptionEngine', () => {
 			);
 		} );
 
-		it( 'image should not have empty figcaption element when is not selected', () => {
+		it( 'image should have empty figcaption element with hidden class when not selected', () => {
 			setModelData( document, '[]<image src=""><caption></caption></image>' );
 
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[]<figure class="image ck-widget" contenteditable="false">' +
 					'<img src=""></img>' +
+					'<figcaption class="ck-editable ck-hidden" contenteditable="true"></figcaption>' +
 				'</figure>'
 			);
 		} );
@@ -253,7 +238,7 @@ describe( 'ImageCaptionEngine', () => {
 			);
 		} );
 
-		it( 'should remove figcaption when caption is empty and image is no longer selected', () => {
+		it( 'should add hidden class to figcaption when caption is empty and image is no longer selected', () => {
 			setModelData( document, '[<image src=""><caption></caption></image>]' );
 
 			document.enqueueChanges( () => {
@@ -263,6 +248,7 @@ describe( 'ImageCaptionEngine', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[]<figure class="image ck-widget" contenteditable="false">' +
 					'<img src=""></img>' +
+					'<figcaption class="ck-editable ck-hidden" contenteditable="true"></figcaption>' +
 				'</figure>'
 			);
 		} );
@@ -337,7 +323,10 @@ describe( 'ImageCaptionEngine', () => {
 
 				// Check if there is no figcaption in the view.
 				expect( getViewData( viewDocument ) ).to.equal(
-					'[]<figure class="image ck-widget" contenteditable="false"><img src=""></img></figure>'
+					'[]<figure class="image ck-widget" contenteditable="false">' +
+						'<img src=""></img>' +
+						'<figcaption class="ck-editable ck-hidden" contenteditable="true"></figcaption>' +
+					'</figure>'
 				);
 
 				editor.execute( 'undo' );
@@ -348,6 +337,24 @@ describe( 'ImageCaptionEngine', () => {
 						'<img src=""></img>' +
 						'<figcaption class="ck-editable" contenteditable="true">{foo bar baz}</figcaption>' +
 					'</figure>'
+				);
+			} );
+
+			it( 'undo should work after inserting the image', () => {
+				const image = new ModelElement( 'image' );
+
+				setModelData( document, '[]' );
+
+				document.enqueueChanges( () => {
+					const batch = document.batch();
+
+					batch.insert( document.selection.anchor, image );
+				} );
+
+				editor.execute( 'undo' );
+
+				expect( getModelData( document ) ).to.equal(
+					'[]'
 				);
 			} );
 		} );
