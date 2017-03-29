@@ -662,25 +662,23 @@ function _fixItemsIndent( changePosition, document, batch ) {
 function _fixItemsType( changePosition, fixPrevious, document, batch ) {
 	let item = changePosition[ fixPrevious ? 'nodeBefore' : 'nodeAfter' ];
 
-	if ( !item ) {
-		// May happen if last item got removed.
+	if ( !item || !item.is( 'listItem' ) || item.getAttribute( 'indent' ) === 0 ) {
+		// !item - when last item got removed.
+		// !item.is( 'listItem' ) - when first element to fix is not a list item already.
+		// indent === 0 - do not fix if changes are done on top level lists.
 		return;
 	}
 
-	const refItem = getSiblingListItem( item, { checkAllSiblings: true, getNext: fixPrevious, sameIndent: true } );
+	const refItem = _getBoundaryItemOfSameList( item, !fixPrevious );
 
-	if ( !refItem ) {
-		// May happen if first list item is inserted.
+	if ( !refItem || refItem == item ) {
+		// !refItem - happens if first list item is inserted.
+		// refItem == item - happens if last item is inserted.
 		return;
 	}
 
 	const refIndent = refItem.getAttribute( 'indent' );
 	const refType = refItem.getAttribute( 'type' );
-
-	if ( refIndent === 0 ) {
-		// Happens if changes are done on top level lists.
-		return;
-	}
 
 	document.enqueueChanges( () => {
 		while ( item && item.is( 'listItem' ) && item.getAttribute( 'indent' ) >= refIndent ) {
@@ -839,7 +837,7 @@ function injectViewList( modelItem, injectedItem, mapper, removePosition ) {
 		// The broken ("lower") part will be moved as nested children of the inserted view item.
 		const sourceStart = ViewPosition.createBefore( viewItem.parent );
 
-		const lastModelItem = _getModelLastItem( nextItem );
+		const lastModelItem = _getBoundaryItemOfSameList( nextItem, false );
 		const lastViewItem = mapper.toViewElement( lastModelItem );
 		const sourceEnd = viewWriter.breakContainer( ViewPosition.createAfter( lastViewItem ) );
 		const sourceRange = new ViewRange( sourceStart, sourceEnd );
@@ -945,15 +943,15 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 	}
 }
 
-// Helper function to obtain the last model list item that is a forward sibling of given model list item that has
-// same or bigger indent. In other words, it looks for the last model item that is a nested item of the same item
-// that given item.
-function _getModelLastItem( item ) {
+// Helper function to obtain the first or the last model list item which is in on the same indent level as given `item`.
+function _getBoundaryItemOfSameList( item, getFirst ) {
 	const indent = item.getAttribute( 'indent' );
+	const direction = getFirst ? 'previousSibling' : 'nextSibling';
+
 	let result = item;
 
-	while ( item.nextSibling && item.nextSibling.is( 'listItem' ) && item.nextSibling.getAttribute( 'indent' ) >= indent ) {
-		item = item.nextSibling;
+	while ( item[ direction ] && item[ direction ].is( 'listItem' ) && item[ direction ].getAttribute( 'indent' ) >= indent ) {
+		item = item[ direction ];
 
 		if ( item.getAttribute( 'indent' ) == indent ) {
 			result = item;

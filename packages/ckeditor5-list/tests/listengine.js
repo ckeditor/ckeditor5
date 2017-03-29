@@ -1514,6 +1514,35 @@ describe( 'ListEngine', () => {
 
 					false
 				);
+
+				_test(
+					'two list items with mismatched types inserted in one batch',
+
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>[]',
+
+					'<ul>' +
+						'<li>' +
+							'a' +
+							'<ul>' +
+								'<li>b</li>' +
+								'<li>c</li>' +
+								'<li>d</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>',
+
+					() => {
+						const item1 = '<listItem indent="1" type="numbered">c</listItem>';
+						const item2 = '<listItem indent="1" type="bulleted">d</listItem>';
+
+						modelDoc.enqueueChanges( () => {
+							modelDoc.batch()
+								.insert( ModelPosition.createAt( modelRoot, 'end' ), parseModel( item1, modelDoc.schema ) )
+								.insert( ModelPosition.createAt( modelRoot, 'end' ), parseModel( item2, modelDoc.schema ) );
+						} );
+					}
+				);
 			} );
 
 			describe( 'remove', () => {
@@ -2730,6 +2759,31 @@ describe( 'ListEngine', () => {
 				'<listItem indent="2" type="bulleted">c</listItem>' +
 				'<listItem indent="1" type="bulleted">x</listItem>'
 			);
+
+			it( 'two list items with mismatched types inserted in one batch', () => {
+				const input =
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>';
+
+				const output =
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'<listItem indent="1" type="bulleted">c</listItem>' +
+					'<listItem indent="1" type="bulleted">d</listItem>';
+
+				setModelData( modelDoc, input );
+
+				const item1 = '<listItem indent="1" type="numbered">c</listItem>';
+				const item2 = '<listItem indent="1" type="bulleted">d</listItem>';
+
+				modelDoc.enqueueChanges( () => {
+					modelDoc.batch()
+						.insert( ModelPosition.createAt( modelRoot, 'end' ), parseModel( item1, modelDoc.schema ) )
+						.insert( ModelPosition.createAt( modelRoot, 'end' ), parseModel( item2, modelDoc.schema ) );
+				} );
+
+				expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( output );
+			} );
 		} );
 
 		describe( 'remove', () => {
