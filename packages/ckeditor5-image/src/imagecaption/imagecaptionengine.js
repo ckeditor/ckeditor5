@@ -42,7 +42,6 @@ export default class ImageCaptionEngine extends Plugin {
 		const schema = document.schema;
 		const data = editor.data;
 		const editing = editor.editing;
-
 		/**
 		 * Last selected caption editable.
 		 * It is used for hiding editable when is empty and image widget is no longer selected.
@@ -80,6 +79,9 @@ export default class ImageCaptionEngine extends Plugin {
 		// Model to view converter for the editing pipeline.
 		editing.modelToView.on( 'insert:caption', captionModelToView( this._createCaption ) );
 
+		// Always show when something is inserted into caption.
+		editing.modelToView.on( 'insert', ( evt, data  ) => this._showCaptionOnInsert( data.item ), { priority: 'high' } );
+
 		// Update view before each rendering.
 		this.listenTo( viewDocument, 'render', () => this._updateCaptionVisibility(), { priority: 'high' } );
 	}
@@ -116,6 +118,25 @@ export default class ImageCaptionEngine extends Plugin {
 		if ( viewCaption ) {
 			viewCaption.removeClass( 'ck-hidden' );
 			this._lastSelectedCaption = viewCaption;
+		}
+	}
+
+	/**
+	 * Model's insert callback. Checks if inserted node is placed inside image's caption and shows it in the view.
+	 *
+	 * @private
+	 * @param {module:engine/model/node~Node} node
+	 */
+	_showCaptionOnInsert( node ) {
+		const modelCaption = getParentCaption( node );
+		const mapper = this.editor.editing.mapper;
+
+		if ( modelCaption ) {
+			const viewCaption = mapper.toViewElement( modelCaption );
+
+			if ( viewCaption ) {
+				viewCaption.removeClass( 'ck-hidden' );
+			}
 		}
 	}
 }
@@ -191,4 +212,15 @@ function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper 
 
 	viewWriter.insert( viewPosition, viewCaption );
 	mapper.bindElements( modelCaption, viewCaption );
+}
+
+function getParentCaption( node ) {
+	const ancestors = node.getAncestors();
+	const image = ancestors.find( ancestor => ancestor.name == 'image' );
+
+	if ( image ) {
+		return getCaptionFromImage( image );
+	}
+
+	return null;
 }
