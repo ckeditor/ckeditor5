@@ -67,6 +67,16 @@ describe( 'IndentCommand', () => {
 				expect( command.isEnabled ).to.be.false;
 			} );
 
+			it( 'should be false if selection starts in first list item of top level list with different type than previous list', () => {
+				setData(
+					doc,
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="0" type="numbered">[]b</listItem>'
+				);
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
 			it( 'should be false if selection starts in a list item that has bigger indent than it\'s previous sibling', () => {
 				doc.enqueueChanges( () => {
 					doc.selection.collapse( root.getChild( 2 ) );
@@ -144,7 +154,7 @@ describe( 'IndentCommand', () => {
 				);
 			} );
 
-			it( 'should fix list type when item is intended if needed', () => {
+			it( 'should fix list type when item is intended (if needed)', () => {
 				setData(
 					doc,
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -280,7 +290,7 @@ describe( 'IndentCommand', () => {
 				);
 			} );
 
-			it( 'should fix list type when item is outdented if needed', () => {
+			it( 'should fix list type when item is outdented (if needed)', () => {
 				setData(
 					doc,
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -294,6 +304,25 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'<listItem indent="1" type="bulleted">b</listItem>' +
 					'<listItem indent="1" type="bulleted">c</listItem>'
+				);
+			} );
+
+			it( 'should fix list type when item is outdented to top level (if needed)', () => {
+				setData(
+					doc,
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="numbered">[]b</listItem>' +
+					'<listItem indent="0" type="numbered">c</listItem>'
+				);
+
+				command._doExecute();
+
+				// Another possible behaviour would be that "b" list item becomes first list item of a top level
+				// numbered list (so it does not change it's type) but it seems less correct from UX standpoint.
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="0" type="bulleted">b</listItem>' +
+					'<listItem indent="0" type="numbered">c</listItem>'
 				);
 			} );
 		} );
