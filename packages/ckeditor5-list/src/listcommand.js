@@ -42,14 +42,11 @@ export default class ListCommand extends Command {
 		 */
 		this.set( 'value', false );
 
-		const changeCallback = () => {
+		// Listen on selection and document changes and set the current command's value.
+		this.listenTo( editor.document, 'changesDone', () => {
 			this.refreshValue();
 			this.refreshState();
-		};
-
-		// Listen on selection and document changes and set the current command's value.
-		this.listenTo( editor.document.selection, 'change:range', changeCallback );
-		this.listenTo( editor.document, 'changesDone', changeCallback );
+		} );
 	}
 
 	/**
@@ -59,7 +56,7 @@ export default class ListCommand extends Command {
 		// Check whether closest `listItem` ancestor of the position has a correct type.
 		const listItem = first( this.editor.document.selection.getSelectedBlocks() );
 
-		this.value = listItem !== null && listItem.getAttribute( 'type' ) == this.type;
+		this.value = listItem && listItem.is( 'listItem' ) && listItem.getAttribute( 'type' ) == this.type;
 	}
 
 	/**
@@ -232,7 +229,7 @@ export default class ListCommand extends Command {
 	 * @inheritDoc
 	 */
 	_checkEnabled() {
-		// If command is enabled it means that we are in list item, so the command should be enabled.
+		// If command value is true it means that we are in list item, so the command should be enabled.
 		if ( this.value ) {
 			return true;
 		}

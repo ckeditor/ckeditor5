@@ -35,11 +35,6 @@ export default class IndentCommand extends Command {
 		 */
 		this._indentBy = indentDirection == 'forward' ? 1 : -1;
 
-		// Refresh command state after selection is changed or changes has been done to the document.
-		this.listenTo( editor.document.selection, 'change:range', () => {
-			this.refreshState();
-		} );
-
 		this.listenTo( editor.document, 'changesDone', () => {
 			this.refreshState();
 		} );
@@ -68,7 +63,7 @@ export default class IndentCommand extends Command {
 
 			// We need to be sure to keep model in correct state after each small change, because converters
 			// bases on that state and assumes that model is correct.
-			// Because of that, if the command outdented items, we will outdent them starting from the last item, as
+			// Because of that, if the command outdents items, we will outdent them starting from the last item, as
 			// it is safer.
 			if ( this._indentBy < 0 ) {
 				itemsToChange = itemsToChange.reverse();
@@ -87,23 +82,18 @@ export default class IndentCommand extends Command {
 				}
 				// If indent is >= 0, change the attribute value.
 				else {
-					// If indent is > 0 and the item was outdented, check whether list item's type should not be fixed.
-					if ( indent > 0 && this._indentBy < 0 ) {
-						// First, find previous sibling with same indent.
-						let prev = item.previousSibling;
-
-						while ( prev.getAttribute( 'indent' ) > indent ) {
-							prev = prev.previousSibling;
-						}
-
-						// Then check if that sibling has same type. If not, change type of this item.
-						if ( prev.getAttribute( 'type' ) != item.getAttribute( 'type' ) ) {
-							batch.setAttribute( item, 'type', prev.getAttribute( 'type' ) );
-						}
-					}
-
 					batch.setAttribute( item, 'indent', indent );
 				}
+			}
+
+			// Check whether some of changed list items' type should not be fixed.
+			// But first, reverse `itemsToChange` again -- we always want to perform those fixes starting from first item (source-wise).
+			if ( this._indentBy < 0 ) {
+				itemsToChange = itemsToChange.reverse();
+			}
+
+			for ( let item of itemsToChange ) {
+				_fixType( item, batch );
 			}
 		} );
 	}
@@ -120,24 +110,72 @@ export default class IndentCommand extends Command {
 			return false;
 		}
 
-		const prev = listItem.previousSibling;
-		const oldIndent = listItem.getAttribute( 'indent' );
-		const newIndent = oldIndent + this._indentBy;
-
 		if ( this._indentBy > 0 ) {
-			// If we are indenting, there are some conditions to meet.
-			// Cannot indent first list item.
-			if ( !prev || prev.name != 'listItem' ) {
-				return false;
+			// Cannot indent first item in it's list. Check if before `listItem` is a list item that is in same list.
+			// To be in the same list, the item has to have same attributes and cannot be "split" by an item with lower indent.
+			const indent = listItem.getAttribute( 'indent' );
+			const type = listItem.getAttribute( 'type' );
+
+			let prev = listItem.previousSibling;
+
+			while ( prev && prev.is( 'listItem' ) && prev.getAttribute( 'indent' ) >= indent ) {
+				if ( prev.getAttribute( 'indent' ) == indent ) {
+					// The item is on the same level.
+					// If it has same type, it means that we found a preceding sibling from the same list.
+					// If it does not have same type, it means that `listItem` is on different list (this can happen only
+					// on top level lists, though).
+					return prev.getAttribute( 'type' ) == type;
+				}
+
+				prev = prev.previousSibling;
 			}
 
-			// Indent can be at most greater by one than indent of previous item.
-			if ( prev.getAttribute( 'indent' ) + 1 < newIndent ) {
-				return false;
-			}
+			// Could not find similar list item, this means that `listItem` is first in its list.
+			return false;
 		}
 
 		// If we are outdenting it is enough to be in list item. Every list item can always be outdented.
 		return true;
 	}
+}
+
+// Fixes type of `item` element after it was indented/outdented. Looks for a sibling of `item` that has the same
+// indent and sets `item`'s type to the same as that sibling.
+function _fixType( item, batch ) {
+	// Find a preceding sibling of `item` that is a list item of the same list as `item`.
+	const prev = _seekListItem( item, false );
+
+	// If found, fix type.
+	if ( prev ) {
+		batch.setAttribute( item, 'type', prev.getAttribute( 'type' ) );
+
+		return;
+	}
+
+	// If not found, find a following sibling of `item` that is a list item of the same list as `item`.
+	const next = _seekListItem( item, true );
+
+	// If found, fix type.
+	if ( next ) {
+		batch.setAttribute( item, 'type', next.getAttribute( 'type' ) );
+	}
+}
+
+// Seeks for a list item that has same indent as given `item`. May look through next siblings (`seekForward = true`) or
+// previous siblings (`seekForward = false`). Returns found list item or `null` if item has not been found.
+function _seekListItem( item, seekForward ) {
+	let result = item[ seekForward ? 'nextSibling' : 'previousSibling' ];
+
+	// Look for the previous/next sibling that has same indent and is before a list item element with lower indent.
+	// If elements are split by an element with lower indent, they are on different lists.
+	while ( result && result.is( 'listItem' ) && result.getAttribute( 'indent' ) >= item.getAttribute( 'indent' ) ) {
+		if ( result.getAttribute( 'indent' ) == item.getAttribute( 'indent' ) ) {
+			// We found sibling that is on the same list.
+			return result;
+		}
+
+		result = result[ seekForward ? 'nextSibling' : 'previousSibling' ];
+	}
+
+	return null;
 }
