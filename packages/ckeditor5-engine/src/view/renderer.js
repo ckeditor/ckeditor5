@@ -582,13 +582,13 @@ export default class Renderer {
 			return;
 		}
 
-		if ( oldViewSelection && this._areSimilarSelections( oldViewSelection, this.selection ) ) {
+		if ( oldViewSelection && areSimilarSelections( oldViewSelection, this.selection ) ) {
 			const data = {
 				oldSelection: oldViewSelection,
 				currentSelection: this.selection
 			};
 
-			log.warn( 'renderer-selection-similar: Rendering selection was skipped due to its similarity to the previous selection.', data );
+			log.warn( 'renderer-skipped-selection-rendering: The selection was not rendered due to its similarity to the current one.', data );
 
 			return;
 		}
@@ -652,42 +652,38 @@ export default class Renderer {
 			}
 		}
 	}
-
-	/**
-	 * Checks if two given selections are similar. Selections are considered similar if they are non-collapsed
-	 * and their trimmed (see {@link #_trimSelection}) representations are equal.
-	 *
-	 * @private
-	 * @param {module:engine/view/selection~Selection} current
-	 * @param {module:engine/view/selection~Selection} previous
-	 * @returns {Boolean}
-	 */
-	_areSimilarSelections( current, previous ) {
-		return !current.isCollapsed && this._trimSelection( current ).isEqual( this._trimSelection( previous ) );
-	}
-
-	/**
-	 * Creates a copy of a given selection with all of its ranges
-	 * trimmed (see {@link module:engine/view/range~Range#getTrimmed getTrimmed}).
-	 *
-	 * @private
-	 * @param {module:engine/view/selection~Selection} selection
-	 * @returns {module:engine/view/selection~Selection} Selection copy with all ranges trimmed.
-	 */
-	_trimSelection( selection ) {
-		const newSelection = Selection.createFromSelection( selection );
-		const ranges = newSelection.getRanges();
-
-		let trimmedRanges = [];
-
-		for ( let range of ranges ) {
-			trimmedRanges.push( range.getTrimmed() );
-		}
-
-		newSelection.setRanges( trimmedRanges );
-
-		return newSelection;
-	}
 }
 
 mix( Renderer, ObservableMixin );
+
+// Checks if two given selections are similar. Selections are considered similar if they are non-collapsed
+// and their trimmed (see {@link #_trimSelection}) representations are equal.
+//
+// @private
+// @param {module:engine/view/selection~Selection} selection1
+// @param {module:engine/view/selection~Selection} selection2
+// @returns {Boolean}
+function areSimilarSelections( selection1, selection2 ) {
+	return !selection1.isCollapsed && trimSelection( selection1 ).isEqual( trimSelection( selection2 ) );
+}
+
+// Creates a copy of a given selection with all of its ranges
+// trimmed (see {@link module:engine/view/range~Range#getTrimmed getTrimmed}).
+//
+// @private
+// @param {module:engine/view/selection~Selection} selection
+// @returns {module:engine/view/selection~Selection} Selection copy with all ranges trimmed.
+function trimSelection( selection ) {
+	const newSelection = Selection.createFromSelection( selection );
+	const ranges = newSelection.getRanges();
+
+	let trimmedRanges = [];
+
+	for ( let range of ranges ) {
+		trimmedRanges.push( range.getTrimmed() );
+	}
+
+	newSelection.setRanges( trimmedRanges, newSelection.isBackward );
+
+	return newSelection;
+}
