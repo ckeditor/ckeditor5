@@ -67,7 +67,7 @@ describe( 'IndentCommand', () => {
 				expect( command.isEnabled ).to.be.false;
 			} );
 
-			// #53.
+			// Reported in PR #53.
 			it( 'should be false if selection starts in first list item #2', () => {
 				setData(
 					doc,
@@ -76,6 +76,20 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="0" type="bulleted">c</listItem>' +
 					'<listItem indent="1" type="bulleted">[]d</listItem>' +
 					'<listItem indent="2" type="bulleted">e</listItem>'
+				);
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			// Reported in PR #53.
+			it( 'should be false if selection starts in first list item #3', () => {
+				setData(
+					doc,
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'<listItem indent="0" type="numbered">c</listItem>' +
+					'<listItem indent="1" type="bulleted">d</listItem>' +
+					'<listItem indent="0" type="bulleted">[]e</listItem>'
 				);
 
 				expect( command.isEnabled ).to.be.false;
@@ -362,6 +376,26 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="0" type="bulleted">b</listItem>' +
 					'<listItem indent="1" type="numbered">c</listItem>' +
 					'<listItem indent="1" type="numbered">d</listItem>'
+				);
+			} );
+
+			// Reported in #53.
+			it( 'should fix list type when item is outdented #3', () => {
+				setData(
+					doc,
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="numbered">[b</listItem>' +
+					'<listItem indent="1" type="numbered">c</listItem>' +
+					'<listItem indent="1" type="numbered">d]</listItem>'
+				);
+
+				command._doExecute();
+
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="0" type="bulleted">b</listItem>' +
+					'<listItem indent="0" type="bulleted">c</listItem>' +
+					'<listItem indent="0" type="bulleted">d</listItem>'
 				);
 			} );
 

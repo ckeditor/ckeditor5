@@ -87,6 +87,11 @@ export default class IndentCommand extends Command {
 			}
 
 			// Check whether some of changed list items' type should not be fixed.
+			// But first, reverse `itemsToChange` again -- we always want to perform those fixes starting from first item (source-wise).
+			if ( this._indentBy < 0 ) {
+				itemsToChange = itemsToChange.reverse();
+			}
+
 			for ( let item of itemsToChange ) {
 				_fixType( item, batch );
 			}
@@ -114,8 +119,12 @@ export default class IndentCommand extends Command {
 			let prev = listItem.previousSibling;
 
 			while ( prev && prev.is( 'listItem' ) && prev.getAttribute( 'indent' ) >= indent ) {
-				if ( prev.getAttribute( 'indent' ) == indent && prev.getAttribute( 'type' ) == type ) {
-					return true;
+				if ( prev.getAttribute( 'indent' ) == indent ) {
+					// The item is on the same level.
+					// If it has same type, it means that we found a preceding sibling from the same list.
+					// If it does not have same type, it means that `listItem` is on different list (this can happen only
+					// on top level lists, though).
+					return prev.getAttribute( 'type' ) == type;
 				}
 
 				prev = prev.previousSibling;
