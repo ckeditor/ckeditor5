@@ -67,6 +67,20 @@ describe( 'IndentCommand', () => {
 				expect( command.isEnabled ).to.be.false;
 			} );
 
+			// #53.
+			it( 'should be false if selection starts in first list item #2', () => {
+				setData(
+					doc,
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'<listItem indent="0" type="bulleted">c</listItem>' +
+					'<listItem indent="1" type="bulleted">[]d</listItem>' +
+					'<listItem indent="2" type="bulleted">e</listItem>'
+				);
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
 			it( 'should be false if selection starts in first list item of top level list with different type than previous list', () => {
 				setData(
 					doc,
@@ -154,7 +168,7 @@ describe( 'IndentCommand', () => {
 				);
 			} );
 
-			it( 'should fix list type when item is intended (if needed)', () => {
+			it( 'should fix list type when item is intended #1', () => {
 				setData(
 					doc,
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -170,6 +184,30 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="1" type="bulleted">b</listItem>' +
 					'<listItem indent="2" type="numbered">c</listItem>' +
 					'<listItem indent="2" type="numbered">d</listItem>'
+				);
+			} );
+
+			// Not only boundary list items has to be fixed, but also items in the middle of selection.
+			it( 'should fix list type when item is intended #2', () => {
+				setData(
+					doc,
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="numbered">b</listItem>' +
+					'<listItem indent="1" type="numbered">[c</listItem>' +
+					'<listItem indent="0" type="bulleted">d</listItem>' +
+					'<listItem indent="1" type="numbered">e]</listItem>' +
+					'<listItem indent="0" type="bulleted">f</listItem>'
+				);
+
+				command._doExecute();
+
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="numbered">b</listItem>' +
+					'<listItem indent="2" type="numbered">c</listItem>' +
+					'<listItem indent="1" type="numbered">d</listItem>' +
+					'<listItem indent="2" type="numbered">e</listItem>' +
+					'<listItem indent="0" type="bulleted">f</listItem>'
 				);
 			} );
 		} );
@@ -290,7 +328,7 @@ describe( 'IndentCommand', () => {
 				);
 			} );
 
-			it( 'should fix list type when item is outdented (if needed)', () => {
+			it( 'should fix list type when item is outdented #1', () => {
 				setData(
 					doc,
 					'<listItem indent="0" type="bulleted">a</listItem>' +
@@ -304,6 +342,26 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'<listItem indent="1" type="bulleted">b</listItem>' +
 					'<listItem indent="1" type="bulleted">c</listItem>'
+				);
+			} );
+
+			// Look at next siblings if, after outdenting, a list item is a first item in it's list (list item "c").
+			it( 'should fix list type when item is outdented #2', () => {
+				setData(
+					doc,
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="numbered">[]b</listItem>' +
+					'<listItem indent="2" type="bulleted">c</listItem>' +
+					'<listItem indent="1" type="numbered">d</listItem>'
+				);
+
+				command._doExecute();
+
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="0" type="bulleted">b</listItem>' +
+					'<listItem indent="1" type="numbered">c</listItem>' +
+					'<listItem indent="1" type="numbered">d</listItem>'
 				);
 			} );
 
@@ -323,6 +381,29 @@ describe( 'IndentCommand', () => {
 					'<listItem indent="0" type="bulleted">a</listItem>' +
 					'<listItem indent="0" type="bulleted">b</listItem>' +
 					'<listItem indent="0" type="numbered">c</listItem>'
+				);
+			} );
+
+			it( 'should not fix list type when not needed', () => {
+				// There was a bug that the nested sub-list changed it's type because for a while, it was on same indent
+				// level as the originally outdented element.
+				setData(
+					doc,
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="numbered">b</listItem>' +
+					'<listItem indent="1" type="numbered">[]c</listItem>' +
+					'<listItem indent="2" type="bulleted">d</listItem>' +
+					'<listItem indent="2" type="bulleted">e</listItem>'
+				);
+
+				command._doExecute();
+
+				expect( getData( doc, { withoutSelection: true } ) ).to.equal(
+					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem indent="1" type="numbered">b</listItem>' +
+					'<listItem indent="0" type="bulleted">c</listItem>' +
+					'<listItem indent="1" type="bulleted">d</listItem>' +
+					'<listItem indent="1" type="bulleted">e</listItem>'
 				);
 			} );
 		} );
