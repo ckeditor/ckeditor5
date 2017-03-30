@@ -42,7 +42,6 @@ export default class ImageCaptionEngine extends Plugin {
 		const schema = document.schema;
 		const data = editor.data;
 		const editing = editor.editing;
-
 		/**
 		 * Last selected caption editable.
 		 * It is used for hiding editable when is empty and image widget is no longer selected.
@@ -50,6 +49,8 @@ export default class ImageCaptionEngine extends Plugin {
 		 * @private
 		 * @member {module:engine/view/editableelement~EditableElement} #_lastSelectedCaption
 		 */
+
+		this._viewCaptionsToUpdate = [];
 
 		/**
 		 * Function used to create editable caption element in the editing view.
@@ -79,6 +80,12 @@ export default class ImageCaptionEngine extends Plugin {
 
 		// Model to view converter for the editing pipeline.
 		editing.modelToView.on( 'insert:caption', captionModelToView( this._createCaption ) );
+
+		// Always show caption in view when something is inserted in model.
+		editing.modelToView.on( 'insert', ( evt, data ) => this._fixCaptionVisibility( data.item ), { priority: 'high' } );
+
+		// Hide caption when everything is removed from it.
+		editing.modelToView.on( 'remove', ( evt, data ) => this._fixCaptionVisibility( data.sourcePosition.parent ), { priority: 'high' } );
 
 		// Update view before each rendering.
 		this.listenTo( viewDocument, 'render', () => this._updateCaptionVisibility(), { priority: 'high' } );
@@ -116,6 +123,30 @@ export default class ImageCaptionEngine extends Plugin {
 		if ( viewCaption ) {
 			viewCaption.removeClass( 'ck-hidden' );
 			this._lastSelectedCaption = viewCaption;
+		}
+	}
+
+	/**
+	 * Fixes caption visibility during model to view conversion.
+	 * Checks if changed node is placed inside caption element and fixes it's visibility in the view.
+	 *
+	 * @private
+	 * @param {module:engine/model/node~Node} node
+	 */
+	_fixCaptionVisibility( node ) {
+		const modelCaption = getParentCaption( node );
+		const mapper = this.editor.editing.mapper;
+
+		if ( modelCaption ) {
+			const viewCaption = mapper.toViewElement( modelCaption );
+
+			if ( viewCaption ) {
+				if ( modelCaption.childCount ) {
+					viewCaption.removeClass( 'ck-hidden' );
+				} else {
+					viewCaption.addClass( 'ck-hidden' );
+				}
+			}
 		}
 	}
 }
@@ -195,4 +226,21 @@ function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper 
 
 	viewWriter.insert( viewPosition, viewCaption );
 	mapper.bindElements( modelCaption, viewCaption );
+}
+
+/**
+ * Checks if provided node or one of its ancestors is caption element and returns it.
+ *
+ * @param {module:engine/model/node~Node} node
+ * @returns {module:engine/model/element~Element|null}
+ */
+function getParentCaption( node ) {
+	const ancestors = node.getAncestors( { includeNode: true } );
+	const caption = ancestors.find( ancestor => ancestor.name == 'caption' );
+
+	if ( caption && caption.parent && caption.parent.name == 'image' ) {
+		return caption;
+	}
+
+	return null;
 }

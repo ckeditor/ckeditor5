@@ -80,7 +80,7 @@ describe( 'ImageCaptionEngine', () => {
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="img.png"><figcaption>Foo bar baz.</figcaption></figure>' );
 			} );
 
-			it( 'should convert caption to figcaption with hidden class if it\'s empty', () => {
+			it( 'should not convert caption to figcaption if it\'s empty', () => {
 				setModelData( document, '<image src="img.png"><caption></caption></image>' );
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="img.png"></figure>' );
@@ -142,6 +142,60 @@ describe( 'ImageCaptionEngine', () => {
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 					'<figure class="image ck-widget" contenteditable="false"><img src="img.png"></img><span></span>Foo bar baz.</figure>'
+				);
+			} );
+
+			it( 'should show caption when something is inserted inside', () => {
+				setModelData( document, '<image src="img.png"><caption></caption></image>' );
+				const image = document.getRoot().getChild( 0 );
+				const caption = image.getChild( 0 );
+
+				document.enqueueChanges( () => {
+					const batch = document.batch();
+					batch.insert( ModelPosition.createAt( caption ), 'foo bar' );
+				} );
+
+				expect( getViewData( viewDocument ) ).to.equal(
+					'[]<figure class="image ck-widget" contenteditable="false">' +
+						'<img src="img.png"></img>' +
+						'<figcaption class="ck-editable" contenteditable="true">foo bar</figcaption>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should hide when everything is removed from caption', () => {
+				setModelData( document, '<image src="img.png"><caption>foo bar baz</caption></image>' );
+				const image = document.getRoot().getChild( 0 );
+				const caption = image.getChild( 0 );
+
+				document.enqueueChanges( () => {
+					const batch = document.batch();
+					batch.remove( ModelRange.createIn( caption ) );
+				} );
+
+				expect( getViewData( viewDocument ) ).to.equal(
+					'[]<figure class="image ck-widget" contenteditable="false">' +
+					'<img src="img.png"></img>' +
+					'<figcaption class="ck-editable ck-hidden" contenteditable="true"></figcaption>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should show when not everything is removed from caption', () => {
+				setModelData( document, '<image src="img.png"><caption>foo bar baz</caption></image>' );
+				const image = document.getRoot().getChild( 0 );
+				const caption = image.getChild( 0 );
+
+				document.enqueueChanges( () => {
+					const batch = document.batch();
+					batch.remove( ModelRange.createFromParentsAndOffsets( caption, 0, caption, 8 ) );
+				} );
+
+				expect( getViewData( viewDocument ) ).to.equal(
+					'[]<figure class="image ck-widget" contenteditable="false">' +
+					'<img src="img.png"></img>' +
+					'<figcaption class="ck-editable" contenteditable="true">baz</figcaption>' +
+					'</figure>'
 				);
 			} );
 		} );
