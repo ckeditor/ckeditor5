@@ -12,7 +12,6 @@ import ModelTreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
@@ -43,15 +42,15 @@ export default class ImageCaptionEngine extends Plugin {
 		const schema = document.schema;
 		const data = editor.data;
 		const editing = editor.editing;
-		const mapper = editing.mapper;
-
 		/**
 		 * Last selected caption editable.
 		 * It is used for hiding editable when is empty and image widget is no longer selected.
 		 *
 		 * @private
-		 * @member {module:engine/view/editableelement~EditableElement} #_lastSelectedEditable
+		 * @member {module:engine/view/editableelement~EditableElement} #_lastSelectedCaption
 		 */
+
+		this._viewCaptionsToUpdate = [];
 
 		/**
 		 * Function used to create editable caption element in the editing view.
@@ -77,102 +76,77 @@ export default class ImageCaptionEngine extends Plugin {
 			.toElement( 'caption' );
 
 		// Model to view converter for the data pipeline.
-		data.modelToView.on( 'insert:caption', captionModelToView( new ViewContainerElement( 'figcaption' ) ) );
+		data.modelToView.on( 'insert:caption', captionModelToView( new ViewContainerElement( 'figcaption' ), false ) );
 
 		// Model to view converter for the editing pipeline.
 		editing.modelToView.on( 'insert:caption', captionModelToView( this._createCaption ) );
 
-		// When inserting something to caption in the model - make sure that caption in the view is also present.
-		// See https://github.com/ckeditor/ckeditor5-image/issues/58.
-		editing.modelToView.on( 'insert', insertMissingViewCaptionElement( this._createCaption, mapper ), { priority: 'high' } );
+		// Always show caption in view when something is inserted in model.
+		editing.modelToView.on( 'insert', ( evt, data ) => this._fixCaptionVisibility( data.item ), { priority: 'high' } );
+
+		// Hide caption when everything is removed from it.
+		editing.modelToView.on( 'remove', ( evt, data ) => this._fixCaptionVisibility( data.sourcePosition.parent ), { priority: 'high' } );
 
 		// Update view before each rendering.
-		this.listenTo( viewDocument, 'render', () => this._updateView(), { priority: 'high' } );
+		this.listenTo( viewDocument, 'render', () => this._updateCaptionVisibility(), { priority: 'high' } );
 	}
 
 	/**
-	 * Checks if there is an empty caption element to remove from the view.
+	 * Updates view before each rendering, making sure that empty captions (so unnecessary ones) are hidden
+	 * and then visible when the image is selected.
 	 *
 	 * @private
 	 */
-	_removeEmptyCaption() {
+	_updateCaptionVisibility() {
+		const mapper = this.editor.editing.mapper;
 		const viewSelection = this.editor.editing.view.selection;
-		const viewCaptionElement = this._lastSelectedEditable;
-
-		// No caption to hide.
-		if ( !viewCaptionElement ) {
-			return;
-		}
-
-		// If selection is placed inside caption - do not remove it.
-		if ( viewSelection.editableElement === viewCaptionElement ) {
-			return;
-		}
-
-		// Do not remove caption if selection is placed on image that contains that caption.
 		const selectedElement = viewSelection.getSelectedElement();
+		let viewCaption;
 
+		// Hide last selected caption if have no child elements.
+		if ( this._lastSelectedCaption && !this._lastSelectedCaption.childCount ) {
+			this._lastSelectedCaption.addClass( 'ck-hidden' );
+		}
+
+		// If whole image widget is selected.
 		if ( selectedElement && isImageWidget( selectedElement ) ) {
-			const viewImage = viewCaptionElement.findAncestor( element => element == selectedElement );
-
-			if ( viewImage ) {
-				return;
-			}
-		}
-
-		// Remove image caption if its empty.
-		if ( viewCaptionElement.childCount === 0 ) {
-			const mapper = this.editor.editing.mapper;
-			viewWriter.remove( ViewRange.createOn( viewCaptionElement ) );
-			mapper.unbindViewElement( viewCaptionElement );
-		}
-	}
-
-	/**
-	 * Checks if selected image needs a new caption element inside.
-	 *
-	 * @private
-	 */
-	_addCaptionWhenSelected() {
-		const editing = this.editor.editing;
-		const selection = editing.view.selection;
-		const viewImage = selection.getSelectedElement();
-		const mapper = editing.mapper;
-
-		if ( viewImage && isImageWidget( viewImage ) ) {
-			const modelImage = mapper.toModelElement( viewImage );
+			const modelImage = mapper.toModelElement( selectedElement );
 			const modelCaption = getCaptionFromImage( modelImage );
-			let viewCaption =  mapper.toViewElement( modelCaption );
+			viewCaption =  mapper.toViewElement( modelCaption );
+		}
 
-			if ( !viewCaption ) {
-				viewCaption = this._createCaption();
-				insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper );
-			}
+		// If selection is placed inside caption.
+		if ( isCaption( viewSelection.editableElement ) ) {
+			viewCaption = viewSelection.editableElement;
+		}
 
-			this._lastSelectedEditable = viewCaption;
+		if ( viewCaption ) {
+			viewCaption.removeClass( 'ck-hidden' );
+			this._lastSelectedCaption = viewCaption;
 		}
 	}
 
 	/**
-	 * Updates view before each rendering, making sure that empty captions (so unnecessary ones) are removed
-	 * and then re-added when the image is selected.
+	 * Fixes caption visibility during model to view conversion.
+	 * Checks if changed node is placed inside caption element and fixes it's visibility in the view.
 	 *
 	 * @private
+	 * @param {module:engine/model/node~Node} node
 	 */
-	_updateView() {
-		const selection = this.editor.editing.view.selection;
+	_fixCaptionVisibility( node ) {
+		const modelCaption = getParentCaption( node );
+		const mapper = this.editor.editing.mapper;
 
-		// Check if there is an empty caption view element to remove.
-		this._removeEmptyCaption();
+		if ( modelCaption ) {
+			const viewCaption = mapper.toViewElement( modelCaption );
 
-		// Check if image widget is selected and caption view element needs to be added.
-		this._addCaptionWhenSelected();
-
-		// If selection is currently inside caption editable - store it to hide when empty.
-		const editableElement = selection.editableElement;
-
-		if ( editableElement && isCaption( selection.editableElement ) ) {
-			this._lastSelectedEditable = selection.editableElement;
+			if ( viewCaption ) {
+				if ( modelCaption.childCount ) {
+					viewCaption.removeClass( 'ck-hidden' );
+				} else {
+					viewCaption.addClass( 'ck-hidden' );
+				}
+			}
 		}
 	}
 }
@@ -201,42 +175,22 @@ function insertMissingModelCaptionElement( evt, changeType, data, batch ) {
 		}
 	}
 }
-
-// Returns function that should be executed when model to view conversion is made. It checks if insertion is placed
-// inside model caption and makes sure that corresponding view element exists.
-//
-// @private
-// @param {function} creator Function that returns view caption element.
-// @param {module:engine/conversion/mapper~Mapper} mapper
-// @return {function}
-function insertMissingViewCaptionElement( creator, mapper ) {
-	return ( evt, data ) => {
-		if ( isInsideCaption( data.item ) ) {
-			const modelCaption = data.item.parent;
-			const modelImage = modelCaption.parent;
-
-			const viewImage = mapper.toViewElement( modelImage );
-			let viewCaption =  mapper.toViewElement( modelCaption );
-
-			// Image should be already converted to the view.
-			if ( viewImage && !viewCaption ) {
-				viewCaption = creator();
-				insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper );
-			}
-		}
-	};
-}
-
 // Creates a converter that converts image caption model element to view element.
 //
 // @private
 // @param {Function|module:engine/view/element~Element} elementCreator
+// @param {Boolean} [hide=true] When set to `false` view element will not be inserted when it's empty.
 // @return {Function}
-function captionModelToView( elementCreator ) {
+function captionModelToView( elementCreator, hide = true ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		const captionElement = data.item;
 
-		if ( isImage( captionElement.parent ) && ( captionElement.childCount > 0 ) ) {
+		// Return if element shouldn't be present when empty.
+		if ( !captionElement.childCount && !hide ) {
+			return;
+		}
+
+		if ( isImage( captionElement.parent ) ) {
 			if ( !consumable.consume( data.item, 'insert' ) ) {
 				return;
 			}
@@ -246,18 +200,14 @@ function captionModelToView( elementCreator ) {
 				elementCreator.clone( true ) :
 				elementCreator();
 
+			// Hide if empty.
+			if ( !captionElement.childCount ) {
+				viewCaption.addClass( 'ck-hidden' );
+			}
+
 			insertViewCaptionAndBind( viewCaption, data.item, viewImage, conversionApi.mapper );
 		}
 	};
-}
-
-// Returns `true` if provided `node` is placed inside image's caption.
-//
-// @private
-// @param {module:engine/model/node~Node} node
-// @return {Boolean}
-function isInsideCaption( node ) {
-	return !!( node.parent && node.parent.name == 'caption' && node.parent.parent && node.parent.parent.name == 'image' );
 }
 
 // Inserts `viewCaption` at the end of `viewImage` and binds it to `modelCaption`.
@@ -272,4 +222,21 @@ function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper 
 
 	viewWriter.insert( viewPosition, viewCaption );
 	mapper.bindElements( modelCaption, viewCaption );
+}
+
+/**
+ * Checks if provided node or one of its ancestors is caption element and returns it.
+ *
+ * @param {module:engine/model/node~Node} node
+ * @returns {module:engine/model/element~Element|null}
+ */
+function getParentCaption( node ) {
+	const ancestors = node.getAncestors( { includeNode: true } );
+	const caption = ancestors.find( ancestor => ancestor.name == 'caption' );
+
+	if ( caption && caption.parent && caption.parent.name == 'image' ) {
+		return caption;
+	}
+
+	return null;
 }
