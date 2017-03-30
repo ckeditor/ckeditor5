@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**CKEditor 5 Message Quote Feature** – https://github.com/ckeditor/ckeditor5-paragraph <br>
+**CKEditor 5 Block Quote Feature** – https://github.com/ckeditor/ckeditor5-paragraph <br>
 Copyright (c) 2003-2017, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of any of the following licenses at your choice:
