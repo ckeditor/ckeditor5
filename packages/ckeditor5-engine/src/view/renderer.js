@@ -9,12 +9,14 @@
 
 import ViewText from './text';
 import ViewPosition from './position';
+import Selection from './selection';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller, isBlockFiller } from './filler';
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
 import insertAt from '@ckeditor/ckeditor5-utils/src/dom/insertat';
 import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -580,6 +582,17 @@ export default class Renderer {
 			return;
 		}
 
+		if ( oldViewSelection && areSimilarSelections( oldViewSelection, this.selection ) ) {
+			const data = {
+				oldSelection: oldViewSelection,
+				currentSelection: this.selection
+			};
+
+			log.warn( 'renderer-skipped-selection-rendering: The selection was not rendered due to its similarity to the current one.', data );
+
+			return;
+		}
+
 		// Multi-range selection is not available in most browsers, and, at least in Chrome, trying to
 		// set such selection, that is not continuous, throws an error. Because of that, we will just use anchor
 		// and focus of view selection.
@@ -642,3 +655,35 @@ export default class Renderer {
 }
 
 mix( Renderer, ObservableMixin );
+
+// Checks if two given selections are similar. Selections are considered similar if they are non-collapsed
+// and their trimmed (see {@link #_trimSelection}) representations are equal.
+//
+// @private
+// @param {module:engine/view/selection~Selection} selection1
+// @param {module:engine/view/selection~Selection} selection2
+// @returns {Boolean}
+function areSimilarSelections( selection1, selection2 ) {
+	return !selection1.isCollapsed && trimSelection( selection1 ).isEqual( trimSelection( selection2 ) );
+}
+
+// Creates a copy of a given selection with all of its ranges
+// trimmed (see {@link module:engine/view/range~Range#getTrimmed getTrimmed}).
+//
+// @private
+// @param {module:engine/view/selection~Selection} selection
+// @returns {module:engine/view/selection~Selection} Selection copy with all ranges trimmed.
+function trimSelection( selection ) {
+	const newSelection = Selection.createFromSelection( selection );
+	const ranges = newSelection.getRanges();
+
+	let trimmedRanges = [];
+
+	for ( let range of ranges ) {
+		trimmedRanges.push( range.getTrimmed() );
+	}
+
+	newSelection.setRanges( trimmedRanges, newSelection.isBackward );
+
+	return newSelection;
+}

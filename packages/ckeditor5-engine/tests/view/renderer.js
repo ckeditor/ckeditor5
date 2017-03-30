@@ -8,6 +8,7 @@
 import ViewElement from '../../src/view/element';
 import ViewText from '../../src/view/text';
 import ViewRange from '../../src/view/range';
+import ViewPosition from '../../src/view/position';
 import Selection from '../../src/view/selection';
 import DomConverter from '../../src/view/domconverter';
 import Renderer from '../../src/view/renderer';
@@ -16,6 +17,7 @@ import { parse } from '../../src/dev-utils/view';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 testUtils.createSinonSandbox();
 
@@ -1347,6 +1349,297 @@ describe( 'Renderer', () => {
 				const bindSelection = renderer.domConverter.fakeSelectionToView( container );
 				expect( bindSelection ).to.be.defined;
 				expect( bindSelection.isEqual( selection ) ).to.be.true;
+			} );
+		} );
+
+		// #887
+		describe( 'similar selection', () => {
+			// Use spies to check selection updates. Some selection positions are not achievable in some
+			// browsers (e.g. <p>Foo<b>{}Bar</b></p> in Chrome) so asserting dom selection after rendering would fail.
+			let selectionCollapseSpy, selectionExtendSpy, logWarnStub;
+
+			before( () => {
+				logWarnStub = sinon.stub( log, 'warn' );
+			} );
+
+			afterEach( () => {
+				if ( selectionCollapseSpy ) {
+					selectionCollapseSpy.restore();
+					selectionCollapseSpy = null;
+				}
+
+				if ( selectionExtendSpy ) {
+					selectionExtendSpy.restore();
+					selectionExtendSpy = null;
+				}
+				logWarnStub.reset();
+			} );
+
+			after( () => {
+				logWarnStub.restore();
+			} );
+
+			it( 'should always render collapsed selection even if it is similar', () => {
+				const domSelection = document.getSelection();
+
+				const { view: viewP, selection: newSelection } = parse(
+					'<container:p>foo{}<attribute:b>bar</attribute:b></container:p>' );
+
+				viewRoot.appendChildren( viewP );
+				selection.setTo( newSelection );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				const domP = domRoot.childNodes[ 0 ];
+				const domB = domP.childNodes[ 1 ];
+				const viewB = viewRoot.getChild( 0 ).getChild( 1 );
+
+				expect( domSelection.isCollapsed ).to.true;
+				expect( domSelection.rangeCount ).to.equal( 1 );
+				expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP.childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 3 );
+				expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domP.childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 3 );
+
+				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
+				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+
+				// <container:p>foo<attribute:b>{}bar</attribute:b></container:p>
+				selection.setRanges( [ new ViewRange( new ViewPosition( viewB.getChild( 0 ), 0 ), new ViewPosition( viewB.getChild( 0 ), 0 ) ) ] );
+
+				renderer.markToSync( 'children', viewP );
+				renderer.render();
+
+				expect( selectionCollapseSpy.calledOnce ).to.true;
+				expect( selectionCollapseSpy.calledWith( domB.childNodes[ 0 ], 0 ) ).to.true;
+				expect( selectionExtendSpy.calledOnce ).to.true;
+				expect( selectionExtendSpy.calledWith( domB.childNodes[ 0 ], 0 ) ).to.true;
+				expect( logWarnStub.notCalled ).to.true;
+			} );
+
+			it( 'should always render collapsed selection even if it is similar (with empty element)', () => {
+				const domSelection = document.getSelection();
+
+				const { view: viewP, selection: newSelection } = parse(
+					'<container:p>foo<attribute:b>[]</attribute:b></container:p>' );
+
+				viewRoot.appendChildren( viewP );
+				selection.setTo( newSelection );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				const domP = domRoot.childNodes[ 0 ];
+				const domB = domP.childNodes[ 1 ];
+
+				expect( domSelection.isCollapsed ).to.true;
+				expect( domSelection.rangeCount ).to.equal( 1 );
+				expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domB.childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
+				expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domB.childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( INLINE_FILLER_LENGTH );
+
+				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
+				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+
+				// <container:p>foo{}<attribute:b></attribute:b></container:p>
+				selection.setRanges( [ new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewP.getChild( 0 ), 3 ) ) ] );
+
+				renderer.markToSync( 'children', viewP );
+				renderer.render();
+
+				expect( selectionCollapseSpy.calledOnce ).to.true;
+				expect( selectionCollapseSpy.calledWith( domP.childNodes[ 0 ], 3 ) ).to.true;
+				expect( selectionExtendSpy.calledOnce ).to.true;
+				expect( selectionExtendSpy.calledWith( domP.childNodes[ 0 ], 3 ) ).to.true;
+				expect( logWarnStub.notCalled ).to.true;
+			} );
+
+			it( 'should always render non-collapsed selection if it not is similar', () => {
+				const domSelection = document.getSelection();
+
+				const { view: viewP, selection: newSelection } = parse(
+					'<container:p>fo{o}<attribute:b>bar</attribute:b></container:p>' );
+
+				viewRoot.appendChildren( viewP );
+				selection.setTo( newSelection );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				const domP = domRoot.childNodes[ 0 ];
+				const domB = domP.childNodes[ 1 ];
+				const viewB = viewRoot.getChild( 0 ).getChild( 1 );
+
+				expect( domSelection.isCollapsed ).to.false;
+				expect( domSelection.rangeCount ).to.equal( 1 );
+				expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP.childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 2 );
+				expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domP.childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 3 );
+
+				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
+				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+
+				// <container:p>fo{o<attribute:b>b}ar</attribute:b></container:p>
+				selection.setRanges( [ new ViewRange( new ViewPosition( viewP.getChild( 0 ), 2 ), new ViewPosition( viewB.getChild( 0 ), 1 ) ) ] );
+
+				renderer.markToSync( 'children', viewP );
+				renderer.render();
+
+				expect( selectionCollapseSpy.calledOnce ).to.true;
+				expect( selectionCollapseSpy.calledWith( domP.childNodes[ 0 ], 2 ) ).to.true;
+				expect( selectionExtendSpy.calledOnce ).to.true;
+				expect( selectionExtendSpy.calledWith( domB.childNodes[ 0 ], 1 ) ).to.true;
+				expect( logWarnStub.notCalled ).to.true;
+			} );
+
+			it( 'should not render non-collapsed selection it is similar (element start)', () => {
+				const domSelection = document.getSelection();
+
+				const { view: viewP, selection: newSelection } = parse(
+					'<container:p>foo<attribute:b>{ba}r</attribute:b></container:p>' );
+
+				viewRoot.appendChildren( viewP );
+				selection.setTo( newSelection );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				const domP = domRoot.childNodes[ 0 ];
+				const domB = domP.childNodes[ 1 ];
+				const viewB = viewRoot.getChild( 0 ).getChild( 1 );
+
+				expect( domSelection.isCollapsed ).to.false;
+				expect( domSelection.rangeCount ).to.equal( 1 );
+				expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domB.childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 0 );
+				expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domB.childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 2 );
+
+				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
+				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+
+				// <container:p>foo{<attribute:b>ba}r</attribute:b></container:p>
+				selection.setRanges( [ new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewB.getChild( 0 ), 2 ) ) ] );
+
+				renderer.markToSync( 'children', viewP );
+				renderer.render();
+
+				expect( selectionCollapseSpy.notCalled ).to.true;
+				expect( selectionExtendSpy.notCalled ).to.true;
+				expect( logWarnStub.called ).to.true;
+			} );
+
+			it( 'should not render non-collapsed selection it is similar (element end)', () => {
+				const domSelection = document.getSelection();
+
+				const { view: viewP, selection: newSelection } = parse(
+					'<container:p>foo<attribute:b>b{ar}</attribute:b>baz</container:p>' );
+
+				viewRoot.appendChildren( viewP );
+				selection.setTo( newSelection );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				const domP = domRoot.childNodes[ 0 ];
+				const domB = domP.childNodes[ 1 ];
+				const viewB = viewRoot.getChild( 0 ).getChild( 1 );
+
+				expect( domSelection.isCollapsed ).to.false;
+				expect( domSelection.rangeCount ).to.equal( 1 );
+				expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domB.childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 1 );
+				expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domB.childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 3 );
+
+				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
+				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+
+				// <container:p>foo<attribute:b>b{ar</attribute:b>}baz</container:p>
+				selection.setRanges( [ new ViewRange( new ViewPosition( viewB.getChild( 0 ), 1 ), new ViewPosition( viewP.getChild( 2 ), 0 ) ) ] );
+
+				renderer.markToSync( 'children', viewP );
+				renderer.render();
+
+				expect( selectionCollapseSpy.notCalled ).to.true;
+				expect( selectionExtendSpy.notCalled ).to.true;
+				expect( logWarnStub.called ).to.true;
+			} );
+
+			it( 'should not render non-collapsed selection it is similar (element start - nested)', () => {
+				const domSelection = document.getSelection();
+
+				const { view: viewP, selection: newSelection } = parse(
+					'<container:p>foo<attribute:b><attribute:i>{ba}r</attribute:i></attribute:b></container:p>' );
+
+				viewRoot.appendChildren( viewP );
+				selection.setTo( newSelection );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				const domP = domRoot.childNodes[ 0 ];
+				const domB = domP.childNodes[ 1 ];
+				const viewI = viewRoot.getChild( 0 ).getChild( 1 ).getChild( 0 );
+
+				expect( domSelection.isCollapsed ).to.false;
+				expect( domSelection.rangeCount ).to.equal( 1 );
+				expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domB.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 0 );
+				expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domB.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 2 );
+
+				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
+				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+
+				// <container:p>foo{<attribute:b><attribute:i>ba}r</attribute:i></attribute:b></container:p>
+				selection.setRanges( [ new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewI.getChild( 0 ), 2 ) ) ] );
+
+				renderer.markToSync( 'children', viewP );
+				renderer.render();
+
+				expect( selectionCollapseSpy.notCalled ).to.true;
+				expect( selectionExtendSpy.notCalled ).to.true;
+				expect( logWarnStub.called ).to.true;
+			} );
+
+			it( 'should not render non-collapsed selection it is similar (element end - nested)', () => {
+				const domSelection = document.getSelection();
+
+				const { view: viewP, selection: newSelection } = parse(
+					'<container:p>f{oo<attribute:b><attribute:i>bar}</attribute:i></attribute:b>baz</container:p>' );
+
+				viewRoot.appendChildren( viewP );
+				selection.setTo( newSelection );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				const domP = domRoot.childNodes[ 0 ];
+				const domB = domP.childNodes[ 1 ];
+
+				expect( domSelection.isCollapsed ).to.false;
+				expect( domSelection.rangeCount ).to.equal( 1 );
+				expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP.childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 1 );
+				expect( domSelection.getRangeAt( 0 ).endContainer ).to.equal( domB.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 3 );
+
+				selectionCollapseSpy = sinon.spy( window.Selection.prototype, 'collapse' );
+				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
+
+				// <container:p>f{oo<attribute:b><attribute:i>bar</attribute:i></attribute:b>}baz</container:p>
+				selection.setRanges( [ new ViewRange( new ViewPosition( viewP.getChild( 0 ), 1 ), new ViewPosition( viewP.getChild( 2 ), 0 ) ) ] );
+
+				renderer.markToSync( 'children', viewP );
+				renderer.render();
+
+				expect( selectionCollapseSpy.notCalled ).to.true;
+				expect( selectionExtendSpy.notCalled ).to.true;
+				expect( logWarnStub.called ).to.true;
 			} );
 		} );
 	} );
