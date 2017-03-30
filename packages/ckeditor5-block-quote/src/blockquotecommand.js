@@ -46,7 +46,7 @@ export default class BlockQuoteCommand extends Command {
 	 * Updates command's {@link #value} based on the current selection.
 	 */
 	refreshValue() {
-		const firstBlock = this.editor.document.selection.getSelectedBlocks().next().value;
+		const firstBlock = first( this.editor.document.selection.getSelectedBlocks() );
 
 		// In the current implementation, the block quote must be an immediate parent of a block element.
 		this.value = !!( firstBlock && findQuote( firstBlock ) );
