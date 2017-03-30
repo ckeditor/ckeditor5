@@ -80,7 +80,7 @@ describe( 'ImageCaptionEngine', () => {
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="img.png"><figcaption>Foo bar baz.</figcaption></figure>' );
 			} );
 
-			it( 'should convert caption to figcaption with hidden class if it\'s empty', () => {
+			it( 'should not convert caption to figcaption if it\'s empty', () => {
 				setModelData( document, '<image src="img.png"><caption></caption></image>' );
 
 				expect( editor.getData() ).to.equal( '<figure class="image"><img src="img.png"></figure>' );
