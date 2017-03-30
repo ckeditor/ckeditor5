@@ -38,7 +38,7 @@ ClassicEditor.build = {
 		ListPlugin,
 		ParagraphPlugin,
 		TypingPlugin,
-		UndoPlugin 
+		UndoPlugin
 	],
 	config: require( './config-editor' )
 };

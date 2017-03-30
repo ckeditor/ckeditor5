@@ -1,11 +1,10 @@
 {
   "name": "@ckeditor/ckeditor5-build-classic",
   "version": "0.0.1",
+  "description": "CKEditor 5 classic build.",
+  "keywords": [],
   "main": "./build/ckeditor.es6.js",
-  "dependencies": {},
-  "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^2.4.2",
-    "@ckeditor/ckeditor5-dev-webpack-utils": "^1.0.0",
+  "dependencies": {
     "@ckeditor/ckeditor5-editor-classic": "*",
     "@ckeditor/ckeditor5-autoformat": "*",
     "@ckeditor/ckeditor5-basic-styles": "*",
@@ -17,8 +16,24 @@
     "@ckeditor/ckeditor5-list": "*",
     "@ckeditor/ckeditor5-paragraph": "*",
     "@ckeditor/ckeditor5-typing": "*",
-    "@ckeditor/ckeditor5-undo": "*",
+    "@ckeditor/ckeditor5-undo": "*"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-dev-utils": "^2.4.2",
+    "@ckeditor/ckeditor5-dev-webpack-utils": "^1.0.0",
     "webpack": "^2.2.1"
+  },
+  "engines": {
+    "node": ">=6.0.0",
+    "npm": ">=3.0.0"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
+  "homepage": "https://ckeditor5.github.io",
+  "bugs": "https://github.com/ckeditor/ckeditor5-build-classic/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5-build-classic.git"
   },
   "scripts": {
     "build": "node ./bin/build.js"

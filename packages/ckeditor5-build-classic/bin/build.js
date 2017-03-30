@@ -15,7 +15,7 @@ const buildConfig = require( '../config-build' );
 const log = logger();
 const entryPoint = 'ckeditor.js';
 
-log.info( 'Creating an entry file...' );
+log.info( 'Creating the entry file...' );
 
 bundler.createEntryFile( entryPoint, './config-editor', {
 	plugins: buildConfig.plugins,

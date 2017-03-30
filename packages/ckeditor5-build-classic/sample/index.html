@@ -2,15 +2,18 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor 5 - Build Classic Sample</title>
+	<title>CKEditor 5 – classic build sample</title>
 	<style>
 		body {
 			max-width: 800px;
-			margin: 0 auto;
+			margin: 20px auto;
 		}
 	</style>
 </head>
 <body>
+
+<h1>CKEditor 5 – classic build sample</h1>
+
 <div id="editor">
 	<h2>About CKEditor&nbsp;5</h2>
 
@@ -18,14 +21,14 @@
 	</p>
 
 	<figure class="image">
-		<img src="../tests/manual/sample.jpg" alt="Autumn fields"/>
+		<img src="../tests/manual/sample.jpg" alt="Autumn fields" />
 	</figure>
 
 	<p>After more than 2 years of building the next generation editor from
 		scratch and closing over 980 tickets, we created a highly <strong>extensible
-			and flexible architecture</strong> which consists of an <strong>amazing
-			editing framework</strong> and <strong>editing
-			solutions</strong> that will be built on top of it.</p>
+		and flexible architecture</strong> which consists of an <strong>amazing
+		editing framework</strong> and <strong>editing
+		solutions</strong> that will be built on top of it.</p>
 
 	<h3>Notes</h3>
 
@@ -50,15 +53,17 @@
 		will be working on in the next few iterations of the project. Stay
 		tuned for some updates soon!</p>
 </div>
+
 <script src="../build/ckeditor.js"></script>
 <script>
 	ClassicEditor.create( document.querySelector( '#editor' ) )
-		.then( editor => {
-			window.editor = editor;
-		} )
-		.catch( err => {
-			console.error( err.stack );
-		} );
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
 </script>
+
 </body>
 </html>
