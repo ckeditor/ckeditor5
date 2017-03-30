@@ -49,7 +49,6 @@ export default class Link extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		// Register click observer to handle `click` event on the view document.
 		this.editor.editing.view.addObserver( ClickObserver );
 
 		/**
@@ -229,7 +228,7 @@ export default class Link extends Plugin {
 			}
 		} );
 
-		// Close on `Esc` press when the editor is focused and link balloon is currently visible.
+		// Close the panel on esc key press when editable has focus and link balloon is currently visible.
 		this.editor.keystrokes.set( 'Esc', ( data, cancel ) => {
 			if ( this._isVisible ) {
 				this._hidePanel();
