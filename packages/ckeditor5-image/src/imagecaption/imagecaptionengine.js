@@ -42,6 +42,8 @@ export default class ImageCaptionEngine extends Plugin {
 		const schema = document.schema;
 		const data = editor.data;
 		const editing = editor.editing;
+		const t = editor.t;
+
 		/**
 		 * Last selected caption editable.
 		 * It is used for hiding editable when is empty and image widget is no longer selected.
@@ -50,15 +52,13 @@ export default class ImageCaptionEngine extends Plugin {
 		 * @member {module:engine/view/editableelement~EditableElement} #_lastSelectedCaption
 		 */
 
-		this._viewCaptionsToUpdate = [];
-
 		/**
 		 * Function used to create editable caption element in the editing view.
 		 *
 		 * @private
 		 * @member {Function}
 		 */
-		this._createCaption = captionElementCreator( viewDocument );
+		this._createCaption = captionElementCreator( viewDocument, t( 'Enter image caption' ) );
 
 		// Schema configuration.
 		schema.registerItem( 'caption' );

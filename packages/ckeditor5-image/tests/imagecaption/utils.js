@@ -19,15 +19,19 @@ describe( 'image captioning utils', () => {
 
 	beforeEach( () => {
 		document = new ViewDocument();
-		const creator = captionElementCreator( document );
+		const creator = captionElementCreator( document, 'placeholder text' );
 		element = creator();
 	} );
 
-	describe( 'editableCaptionCreator', () => {
+	describe( 'captionElementCreator', () => {
 		it( 'should create figcatpion editable element', () => {
 			expect( element ).to.be.instanceOf( ViewEditableElement );
 			expect( element.name ).to.equal( 'figcaption' );
 			expect( isCaption( element ) ).to.be.true;
+		} );
+
+		it( 'should attach placeholder', () => {
+			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'placeholder text' );
 		} );
 	} );
 
