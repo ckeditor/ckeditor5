@@ -79,7 +79,7 @@ describe( 'Link', () => {
 		it( 'should add panel to the `ui#balloon` on execute event', () => {
 			linkButton.fire( 'execute' );
 
-			expect( balloon.visible.view ).to.deep.equal( linkFeature.formView );
+			expect( balloon.visible.view ).to.equal( linkFeature.formView );
 		} );
 
 		it( 'should add panel to `ui#balloon` attached to the link element, when collapsed selection is inside link element', () => {
@@ -159,16 +159,16 @@ describe( 'Link', () => {
 			expect( editor.ui.balloon.visible ).to.null;
 		} );
 
-		it( 'should be added to `balloon#ui` and focus the link form on `CTRL+K` keystroke', () => {
+		it( 'should be added to `balloon#ui` and form should be selected on `CTRL+K` keystroke', () => {
 			const selectUrlInputSpy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 
 			editor.keystrokes.press( { keyCode: keyCodes.k, ctrlKey: true } );
 
-			expect( editor.ui.balloon.visible.view ).to.deep.equal( formView );
+			expect( editor.ui.balloon.visible.view ).to.equal( formView );
 			expect( selectUrlInputSpy.calledOnce ).to.true;
 		} );
 
-		it( 'should do nothing when panel is being added to `balloon#ui` more than once', () => {
+		it( 'should do not add panel to `balloon#ui` more than once', () => {
 			// Add panel to balloon by pressing toolbar button.
 			linkButton.fire( 'execute' );
 
@@ -231,32 +231,24 @@ describe( 'Link', () => {
 					sinon.assert.notCalled( focusEditableSpy );
 				} );
 
-				it( 'should not close after Esc key press (from editor) when panel is not visible', () => {
+				it( 'should not close after Esc key press (from editor) when panel is in stack but not visible', () => {
 					const keyEvtData = {
 						keyCode: keyCodes.esc,
-						preventDefault: sinon.spy(),
-						stopPropagation: sinon.spy()
+						preventDefault: () => {},
+						stopPropagation: () => {}
 					};
 
 					const viewMock = {
 						destroy: () => {}
 					};
 
-					// Balloon is visible.
 					balloon.add( { view: formView } );
-
-					// Balloon is not visible because other panel is added to the balloon stack.
 					balloon.add( { view: viewMock } );
 
 					editor.keystrokes.press( keyEvtData );
 
-					// Balloon is visible.
 					expect( balloon.visible.view ).to.equal( viewMock );
-
-					// Link panel is in balloon stack.
 					expect( balloon.isPanelInStack( formView ) ).to.true;
-
-					// Editable was not focused.
 					sinon.assert.notCalled( focusEditableSpy );
 				} );
 
@@ -267,7 +259,6 @@ describe( 'Link', () => {
 						stopPropagation: sinon.spy()
 					};
 
-					// Balloon is panel.
 					balloon.add( { view: formView } );
 
 					formView.keystrokes.press( keyEvtData );
