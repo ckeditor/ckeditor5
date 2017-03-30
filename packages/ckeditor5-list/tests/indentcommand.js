@@ -384,7 +384,7 @@ describe( 'IndentCommand', () => {
 				);
 			} );
 
-			it( 'should not fix list type when not needed', () => {
+			it( 'should not fix nested list items\' type when not needed', () => {
 				// There was a bug that the nested sub-list changed it's type because for a while, it was on same indent
 				// level as the originally outdented element.
 				setData(
