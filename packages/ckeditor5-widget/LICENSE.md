@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**CKEditor 5 Image Feature** – https://github.com/ckeditor/ckeditor5-image <br>
+**CKEditor 5 widget API** – https://github.com/ckeditor/ckeditor5-image <br>
 Copyright (c) 2003-2017, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of any of the following licenses at your choice:

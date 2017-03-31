@@ -1,0 +1,41 @@
+// Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+// For licensing, see LICENSE.md or http://ckeditor.com/license
+
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/colors';
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/shadow';
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/states';
+@import '~@ckeditor/ckeditor5-theme-lark/theme/helpers/spacing';
+
+@include ck-color-add( (
+	'widget-blurred': #ddd,
+	'widget-hover': #FFD25C
+) );
+
+$widget-outline-thickness: 3px;
+
+.ck-widget {
+	margin: ck-spacing() 0;
+	padding: 0;
+
+	&.ck-widget_selected, &.ck-widget_selected:hover {
+		outline: $widget-outline-thickness solid ck-color( 'focus' );
+	}
+
+	.ck-editor__editable.ck-blurred &.ck-widget_selected {
+		outline: $widget-outline-thickness solid ck-color( 'widget-blurred' );
+	}
+
+	&:hover {
+		outline: $widget-outline-thickness solid ck-color( 'widget-hover' );
+	}
+
+	.ck-editable {
+		// The `:focus` style is applied before `.ck-editable_focused` class is rendered in the view.
+		// These styles show a different border for a blink of an eye, so `:focus` need to have same styles applied.
+		&.ck-editable_focused, &:focus {
+			@include ck-focus-ring( 'outline' );
+			@include ck-box-shadow( $ck-inner-shadow );
+			background-color: ck-color( 'background' );
+		}
+	}
+}

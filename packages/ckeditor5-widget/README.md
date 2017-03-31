@@ -1,4 +1,4 @@
-CKEditor 5 Widget Feature
+CKEditor 5 widget API
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-widget.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget)
@@ -7,7 +7,7 @@ CKEditor 5 Widget Feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-widget/status.svg)](https://david-dm.org/ckeditor/ckeditor5-widget)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-widget/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-widget?type=dev)
 
-Widget feature for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-widget>.
+Widget API for CKEditor 5. More information about the project can be found at the following URL: <https://github.com/ckeditor/ckeditor5-widget>.
 
 ## License
 

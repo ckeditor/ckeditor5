@@ -1,9 +1,13 @@
 {
   "name": "@ckeditor/ckeditor5-widget",
   "version": "0.0.1",
-  "description": "Widget feature for CKEditor 5.",
+  "description": "Widget API for CKEditor 5.",
   "keywords": [],
   "dependencies": {
+	  "@ckeditor/ckeditor5-core": "^0.7.0",
+	  "@ckeditor/ckeditor5-engine": "^0.8.0",
+	  "@ckeditor/ckeditor5-utils": "^0.8.0",
+	  "@ckeditor/ckeditor5-theme-lark": "^0.6.1"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-lint": "^2.0.2",
