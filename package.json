@@ -28,7 +28,8 @@
     "@ckeditor/ckeditor5-typing": "v0.8.0",
     "@ckeditor/ckeditor5-ui": "v0.7.1",
     "@ckeditor/ckeditor5-undo": "v0.7.1",
-    "@ckeditor/ckeditor5-utils": "v0.8.0"
+    "@ckeditor/ckeditor5-utils": "v0.8.0",
+    "@ckeditor/ckeditor5-widget": "*"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-docs": "^6.1.6",
