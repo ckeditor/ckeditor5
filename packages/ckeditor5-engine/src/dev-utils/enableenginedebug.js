@@ -43,10 +43,15 @@ import ViewDocumentFragment from '../view/documentfragment';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 
+import DeltaFactory from '../model/delta/deltafactory';
+
 const treeDump = Symbol( '_treeDump' );
 
 // Maximum number of stored states of model and view document.
 const maxTreeDumpLength = 20;
+
+// Separator used to separate stringified deltas
+const LOG_SEPARATOR = '\n----------------\n';
 
 // Specified whether debug tools were already enabled.
 let enabled = false;
@@ -93,8 +98,10 @@ let log = console.log;
  * @param {Function} [logger] Function used to log messages. By default messages are logged to console.
  * @returns {module:engine/dev-utils/enableenginedebug~DebugPlugin} Plugin to be loaded in the editor.
  */
-export default function enableEngineDebug( logger = console.log ) {
-	log = logger;
+export default function enableEngineDebug( logger ) {
+	if ( logger ) {
+		log = logger;
+	}
 
 	if ( !enabled ) {
 		enabled = true;
@@ -415,6 +422,12 @@ function enableDocumentTools() {
 	ModelDocument.prototype.applyOperation = function( operation ) {
 		log( 'Applying ' + operation );
 
+		if ( !this._operationLogs ) {
+			this._operationLogs = [];
+		}
+
+		this._operationLogs.push( JSON.stringify( operation.toJSON() ) );
+
 		_modelDocumentApplyOperation.call( this, operation );
 	};
 
@@ -422,6 +435,58 @@ function enableDocumentTools() {
 		version = version === null ? this.version : version;
 
 		logDocument( this, version );
+	};
+
+
+	ModelDocument.prototype.logDeltas = function() {
+		return ( this._deltaLogs || [] ).map( JSON.stringify ).join( LOG_SEPARATOR );
+	};
+
+	ModelDocument.prototype.logAppliedDeltas = function() {
+		return ( this._appliedDeltas || [] ).map( JSON.stringify ).join( LOG_SEPARATOR );
+	};
+
+	ModelDocument.prototype.applyStringifiedDeltas = function( stringifiedDeltas ) {
+		this.enqueueChanges( () => {
+			for ( const stringifiedDelta of stringifiedDeltas.split( LOG_SEPARATOR ) ) {
+				const jsonDelta = JSON.parse( stringifiedDelta );
+				const delta = DeltaFactory.fromJSON( jsonDelta, this );
+
+				const batch = this.batch();
+
+				batch.addDelta( delta );
+
+				for ( const operation of delta.operations ) {
+					this.applyOperation( operation );
+				}
+			}
+		} );
+	};
+
+	ModelDocument.prototype.createReplayer = function( stringifiedDeltas ) {
+		this._deltaToReplay = stringifiedDeltas
+			.split( LOG_SEPARATOR )
+			.map( stringifiedDelta => JSON.parse( stringifiedDelta ) )
+			.map( jsonDelta => DeltaFactory.fromJSON( jsonDelta, this ) );
+	};
+
+	ModelDocument.prototype.nextDelta = function() {
+		this.enqueueChanges( () => {
+			const delta = this._deltaToReplay.shift();
+
+			if ( !delta ) {
+				console.warn( 'No deltas to replay' );
+
+				return;
+			}
+
+			const batch = this.batch();
+			batch.addDelta( delta );
+
+			for ( const operation of delta.operations ) {
+				this.applyOperation( operation );
+			}
+		} );
 	};
 
 	ViewDocument.prototype.log = function( version ) {
