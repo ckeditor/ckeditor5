@@ -1,0 +1,25 @@
+{
+  "name": "@ckeditor/ckeditor5-widget",
+  "version": "0.0.1",
+  "description": "Widget feature for CKEditor 5.",
+  "keywords": [],
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-dev-lint": "^2.0.2",
+    "gulp": "^3.9.1",
+    "guppy-pre-commit": "^0.4.0"
+  },
+  "engines": {
+    "node": ">=6.0.0",
+    "npm": ">=3.0.0"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
+  "homepage": "https://ckeditor5.github.io",
+  "bugs": "https://github.com/ckeditor/ckeditor5-widget/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5-widget.git"
+  }
+}
