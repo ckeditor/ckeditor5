@@ -31,15 +31,14 @@ export default class DeltaReplayer {
 	 */
 	setStringifiedDeltas( stringifiedDeltas ) {
 		if ( stringifiedDeltas === '' ) {
-			this._deltaToReplay = [];
+			this._deltasToReplay = [];
 
 			return;
 		}
 
-		this._deltaToReplay = stringifiedDeltas
+		this._deltasToReplay = stringifiedDeltas
 			.split( this._logSeparator )
-			.map( stringifiedDelta => JSON.parse( stringifiedDelta ) )
-			.map( jsonDelta => DeltaFactory.fromJSON( jsonDelta, this._document ) );
+			.map( stringifiedDelta => JSON.parse( stringifiedDelta ) );
 	}
 
 	/**
@@ -48,7 +47,7 @@ export default class DeltaReplayer {
 	 * @param {Number} timeInterval
 	 */
 	play( timeInterval = 1000 ) {
-		if ( this._deltaToReplay.length === 0 ) {
+		if ( this._deltasToReplay.length === 0 ) {
 			return;
 		}
 
@@ -88,7 +87,8 @@ export default class DeltaReplayer {
 
 		return new Promise( ( res, rej ) => {
 			document.enqueueChanges( () => {
-				const delta = this._deltaToReplay.shift();
+				const jsonDelta = this._deltasToReplay.shift();
+				const delta = DeltaFactory.fromJSON( jsonDelta, this._document );
 
 				if ( !delta ) {
 					return rej( new Error( 'No deltas to replay' ) );
