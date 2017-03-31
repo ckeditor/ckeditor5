@@ -15,6 +15,7 @@ import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 
 const toPx = toUnit( 'px' );
+const defaultLimiterElement = document.body;
 
 /**
  * The balloon panel view class.
@@ -151,7 +152,7 @@ export default class BalloonPanelView extends View {
 				defaultPositions.ne,
 				defaultPositions.nw
 			],
-			limiter: document.body,
+			limiter: defaultLimiterElement,
 			fitInViewport: true
 		}, options );
 
@@ -162,22 +163,32 @@ export default class BalloonPanelView extends View {
 
 	/**
 	 * Works exactly the same as {module:ui/panel/balloon/balloonpanelview~BalloonPanelView.attachTo} with one exception.
-	 * Position of attached panel is constantly updated when any of element in document is scrolled. Thanks to this
-	 * panel always sticks to the target element. See #170.
+	 * Position of attached panel is constantly updated when any of parents of the target or limiter elements are scrolled
+	 * or when browser window is resized. Thanks to this panel always sticks to the target element. See #170.
 	 *
 	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
 	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
 	 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
 	 */
-	stickTo( options ) {
-		// First we need to attach the balloon panel to target element.
+	keepAttachedTo( options ) {
+		// First we need to attach the balloon panel to the target element.
 		this.attachTo( options );
 
-		// Then we need to listen to scroll of eny element in the document and update position of the balloon panel.
-		this.listenTo( document, 'scroll', () => this.attachTo( options ), { useCapture: true } );
+		const target = options.target;
+		const limiter = options.limiter || defaultLimiterElement;
+
+		// Then we need to listen on scroll event of eny element in the document.
+		this.listenTo( document, 'scroll', ( evt, domEvt ) => {
+			// And update position if scrolled element contains related to the balloon elements.
+			if ( domEvt.target.contains( target ) || domEvt.target.contains( limiter ) ) {
+				this.attachTo( options );
+			}
+		}, { useCapture: true } );
 
 		// After all we need to clean up the listener.
-		this.once( 'change:isVisible', () => this.stopListening( document, 'scroll' ) );
+		this.once( 'change:isVisible', () => {
+			this.stopListening( document, 'scroll' );
+		} );
 	}
 }
 
