@@ -1,7 +1,7 @@
 {
   "name": "@ckeditor/ckeditor5-widget",
   "version": "0.0.1",
-  "description": "Widget feature for CKEditor 5.",
+  "description": "Widget API for CKEditor 5.",
   "keywords": [],
   "dependencies": {
 	  "@ckeditor/ckeditor5-core": "^0.7.0",
