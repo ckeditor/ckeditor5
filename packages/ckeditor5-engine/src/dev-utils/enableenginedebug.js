@@ -46,7 +46,7 @@ import ViewDocumentFragment from '../view/documentfragment';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 
-import DeltaFactory from '../model/delta/deltafactory';
+import DeltaReplayer from './deltareplayer';
 
 const treeDump = Symbol( '_treeDump' );
 
@@ -476,56 +476,20 @@ function enableDocumentTools() {
 		logDocument( this, version );
 	};
 
+	ModelDocument.prototype.initializeDebugging = function() {
+		this._appliedDeltas = [];
+	};
 
-	ModelDocument.prototype.logDeltas = function() {
-		return ( this._deltaLogs || [] ).map( JSON.stringify ).join( LOG_SEPARATOR );
+	ModelDocument.prototype.addAppliedDelta = function( delta ) {
+		this._appliedDeltas.push( delta.toJSON() );
 	};
 
 	ModelDocument.prototype.logAppliedDeltas = function() {
 		return ( this._appliedDeltas || [] ).map( JSON.stringify ).join( LOG_SEPARATOR );
 	};
 
-	ModelDocument.prototype.applyStringifiedDeltas = function( stringifiedDeltas ) {
-		this.enqueueChanges( () => {
-			for ( const stringifiedDelta of stringifiedDeltas.split( LOG_SEPARATOR ) ) {
-				const jsonDelta = JSON.parse( stringifiedDelta );
-				const delta = DeltaFactory.fromJSON( jsonDelta, this );
-
-				const batch = this.batch();
-
-				batch.addDelta( delta );
-
-				for ( const operation of delta.operations ) {
-					this.applyOperation( operation );
-				}
-			}
-		} );
-	};
-
 	ModelDocument.prototype.createReplayer = function( stringifiedDeltas ) {
-		this._deltaToReplay = stringifiedDeltas
-			.split( LOG_SEPARATOR )
-			.map( stringifiedDelta => JSON.parse( stringifiedDelta ) )
-			.map( jsonDelta => DeltaFactory.fromJSON( jsonDelta, this ) );
-	};
-
-	ModelDocument.prototype.nextDelta = function() {
-		this.enqueueChanges( () => {
-			const delta = this._deltaToReplay.shift();
-
-			if ( !delta ) {
-				console.warn( 'No deltas to replay' );
-
-				return;
-			}
-
-			const batch = this.batch();
-			batch.addDelta( delta );
-
-			for ( const operation of delta.operations ) {
-				this.applyOperation( operation );
-			}
-		} );
+		return new DeltaReplayer( this, LOG_SEPARATOR, stringifiedDeltas );
 	};
 
 	ViewDocument.prototype.log = function( version ) {
