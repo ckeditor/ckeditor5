@@ -1,1 +1,3 @@
-# CKEditor 5 EcmaScript 6 Build
+# CKEditor 5 classic build – standard version
+
+Just play with it.

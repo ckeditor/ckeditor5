@@ -7,21 +7,6 @@
 
 import { ClassicEditor } from '../ckeditor';
 import BaseClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
-import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
-import ImagePlugin from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaptionPlugin from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageStylePlugin from '@ckeditor/ckeditor5-image/src/imagestyle';
-import ImageToolbarPlugin from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
-import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
-import EnterPlugin from '@ckeditor/ckeditor5-enter/src/enter';
-import TypingPlugin from '@ckeditor/ckeditor5-typing/src/typing';
-import UndoPlugin from '@ckeditor/ckeditor5-undo/src/undo';
 
 describe( 'ClassicEditor', () => {
 	let editor, editorElement;
@@ -35,6 +20,16 @@ describe( 'ClassicEditor', () => {
 
 	afterEach( () => {
 		editorElement.remove();
+	} );
+
+	describe( 'buid', () => {
+		it( 'contains plugins', () => {
+			expect( ClassicEditor.build.plugins ).to.not.be.empty;
+		} );
+
+		it( 'contains config', () => {
+			expect( ClassicEditor.build.config.toolbar ).to.not.be.empty;
+		} );
 	} );
 
 	describe( 'create()', () => {
@@ -87,14 +82,14 @@ describe( 'ClassicEditor', () => {
 	} );
 
 	describe( 'plugins', () => {
-		it( 'paragraph', () => {
+		it( 'paragraph works', () => {
 			const data = '<p>Some text inside a paragraph.</p>';
 
 			editor.setData( data );
 			expect( editor.getData() ).to.equal( data );
 		} );
 
-		it( 'basic-styles', () => {
+		it( 'basic-styles work', () => {
 			const data = [
 				'<p>',
 				'<strong>Test:strong</strong>',
@@ -106,7 +101,7 @@ describe( 'ClassicEditor', () => {
 			expect( editor.getData() ).to.equal( data );
 		} );
 
-		it( 'heading', () => {
+		it( 'heading works', () => {
 			const data = [
 				'<h2>Heading 1.</h2>',
 				'<h3>Heading 1.1</h3>',
@@ -121,14 +116,14 @@ describe( 'ClassicEditor', () => {
 			expect( editor.getData() ).to.equal( data );
 		} );
 
-		it( 'image', () => {
+		it( 'image works', () => {
 			const data = '<figure class="image"><img src="./manual/sample.jpg"></figure>';
 
 			editor.setData( data );
 			expect( editor.getData() ).to.equal( data );
 		} );
 
-		it( 'list', () => {
+		it( 'list works', () => {
 			const data = [
 				'<ul>',
 				'<li>Item 1.</li>',
@@ -144,7 +139,7 @@ describe( 'ClassicEditor', () => {
 			expect( editor.getData() ).to.equal( data );
 		} );
 
-		it( 'link', () => {
+		it( 'link works', () => {
 			const data = '<p><a href="//ckeditor.com">CKEditor.com</a></p>';
 
 			editor.setData( data );
