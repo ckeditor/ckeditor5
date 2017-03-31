@@ -10,7 +10,6 @@ import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
 import Text from '../../../src/model/text';
 import Element from '../../../src/model/element';
-import Delta from '../../../src/model/delta/delta';
 import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'RemoveOperation', () => {
@@ -52,7 +51,7 @@ describe( 'RemoveOperation', () => {
 		expect( operation ).to.be.instanceof( MoveOperation );
 	} );
 
-	it( 'should remove set of nodes and append them to holder element in graveyard root', () => {
+	it( 'should be able to remove set of nodes and append them to holder element in graveyard root', () => {
 		root.insertChildren( 0, new Text( 'fozbar' ) );
 
 		doc.applyOperation( wrapInDelta(
@@ -71,64 +70,24 @@ describe( 'RemoveOperation', () => {
 		expect( graveyard.getChild( 0 ).getChild( 0 ).data ).to.equal( 'zb' );
 	} );
 
-	it( 'should create new holder element for remove operations in different deltas', () => {
+	it( 'should be able to remove set of nodes and append them to existing element in graveyard root', () => {
 		root.insertChildren( 0, new Text( 'fozbar' ) );
+		graveyard.appendChildren( new Element( '$graveyardHolder' ) );
 
-		doc.applyOperation( wrapInDelta(
-			new RemoveOperation(
-				new Position( root, [ 0 ] ),
-				1,
-				doc.version
-			)
-		) );
-
-		doc.applyOperation( wrapInDelta(
-			new RemoveOperation(
-				new Position( root, [ 0 ] ),
-				1,
-				doc.version
-			)
-		) );
-
-		doc.applyOperation( wrapInDelta(
-			new RemoveOperation(
-				new Position( root, [ 0 ] ),
-				1,
-				doc.version
-			)
-		) );
-
-		expect( graveyard.maxOffset ).to.equal( 3 );
-		expect( graveyard.getChild( 0 ).getChild( 0 ).data ).to.equal( 'f' );
-		expect( graveyard.getChild( 1 ).getChild( 0 ).data ).to.equal( 'o' );
-		expect( graveyard.getChild( 2 ).getChild( 0 ).data ).to.equal( 'z' );
-	} );
-
-	it( 'should not create new holder element for remove operation if it was already created for given delta', () => {
-		root.insertChildren( 0, new Text( 'fozbar' ) );
-
-		let delta = new Delta();
-
-		// This simulates i.e. RemoveOperation that got split into two operations during OT.
-		let removeOpA = new RemoveOperation(
-			new Position( root, [ 1 ] ),
+		const op = new RemoveOperation(
+			new Position( root, [ 0 ] ),
 			1,
 			doc.version
 		);
-		let removeOpB = new RemoveOperation(
-			new Position( root, [ 0 ] ),
-			1,
-			doc.version + 1
-		);
 
-		delta.addOperation( removeOpA );
-		delta.addOperation( removeOpB );
+		// Manually set holder element properties.
+		op._needsHolderElement = false;
+		op._holderElementOffset = 0;
 
-		doc.applyOperation( removeOpA );
-		doc.applyOperation( removeOpB );
+		doc.applyOperation( wrapInDelta( op ) );
 
-		expect( graveyard.childCount ).to.equal( 1 );
-		expect( graveyard.getChild( 0 ).getChild( 0 ).data ).to.equal( 'fo' );
+		expect( graveyard.maxOffset ).to.equal( 1 );
+		expect( graveyard.getChild( 0 ).getChild( 0 ).data ).to.equal( 'f' );
 	} );
 
 	it( 'should create RemoveOperation with same parameters when cloned', () => {
@@ -197,6 +156,8 @@ describe( 'RemoveOperation', () => {
 				doc.version
 			);
 
+			op._needsHolderElement = false;
+
 			const serialized = jsonParseStringify( op );
 
 			expect( serialized ).to.deep.equal( {
@@ -205,7 +166,8 @@ describe( 'RemoveOperation', () => {
 				howMany: 2,
 				isSticky: false,
 				sourcePosition: jsonParseStringify( op.sourcePosition ),
-				targetPosition: jsonParseStringify( op.targetPosition )
+				targetPosition: jsonParseStringify( op.targetPosition ),
+				_needsHolderElement: false
 			} );
 		} );
 	} );
@@ -217,6 +179,8 @@ describe( 'RemoveOperation', () => {
 				2,
 				doc.version
 			);
+
+			op._needsHolderElement = false;
 
 			doc.graveyard.appendChildren( [ new Element( '$graveyardHolder' ), new Element( '$graveyardHolder' ) ] );
 

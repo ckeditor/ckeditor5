@@ -355,7 +355,11 @@ const ot = {
 			);
 
 			result.isSticky = a.isSticky;
-			result._holderElementOffset = a._holderElementOffset;
+
+			if ( a instanceof RemoveOperation ) {
+				result._needsHolderElement = a._needsHolderElement;
+				result._holderElementOffset = a._holderElementOffset;
+			}
 
 			return [ result ];
 		},
@@ -388,7 +392,7 @@ const ot = {
 				const aTarget = a.targetPosition.path[ 0 ];
 				const bTarget = b.targetPosition.path[ 0 ];
 
-				if ( aTarget >= bTarget && isStrong ) {
+				if ( aTarget > bTarget || ( aTarget == bTarget && isStrong ) ) {
 					// Do not change original operation!
 					a = a.clone();
 					a.targetPosition.path[ 0 ]++;
@@ -462,9 +466,10 @@ const ot = {
 				}
 			}
 
-			// At this point we transformed this operation's source ranges it means that nothing should be changed.
-			// But since we need to return an instance of Operation we return an array with NoOperation.
 			if ( ranges.length === 0 ) {
+				// At this point we transformed this operation's source ranges it means that nothing should be changed.
+				// But since we need to return an instance of Operation we return an array with NoOperation.
+
 				if ( a instanceof RemoveOperation ) {
 					// If `a` operation was RemoveOperation, we cannot convert it to NoOperation.
 					// This is because RemoveOperation creates a holder in graveyard.
@@ -492,7 +497,7 @@ const ot = {
 			);
 
 			// Map transformed range(s) to operations and return them.
-			return ranges.reverse().map( ( range ) => {
+			return ranges.reverse().map( ( range, i ) => {
 				// We want to keep correct operation class.
 				let result = new a.constructor(
 					range.start,
@@ -502,7 +507,13 @@ const ot = {
 				);
 
 				result.isSticky = a.isSticky;
-				result._holderElementOffset = a._holderElementOffset;
+
+				if ( a instanceof RemoveOperation ) {
+					// Transformed `RemoveOperation` needs graveyard holder only when the original operation needed it.
+					// If `RemoveOperation` got split into two or more operations, only first operation needs graveyard holder.
+					result._needsHolderElement = a._needsHolderElement && i === 0;
+					result._holderElementOffset = a._holderElementOffset;
+				}
 
 				return result;
 			} );

@@ -211,10 +211,10 @@ describe( 'Mapper', () => {
 				const stub = {};
 
 				mapper.on( 'viewToModelPosition', ( evt, data ) => {
-					expect( data.viewPosition ).to.equal( viewPosition );
+					expect( data.viewPosition.isEqual( viewPosition ) ).to.be.true;
 
 					data.modelPosition = stub;
-					evt.stop();
+					// Do not stop the event. Test whether default algorithm was not called if data.modelPosition is already set.
 				} );
 
 				const result = mapper.toModelPosition( viewPosition );
@@ -222,6 +222,27 @@ describe( 'Mapper', () => {
 				expect( result ).to.equal( stub );
 			} );
 
+			it( 'should be possible to add custom position mapping callback after default callback', () => {
+				const viewPosition = new ViewPosition( viewDiv, 0 );
+
+				// Model position to which default algorithm should map `viewPosition`.
+				// This mapping is tested in a test below.
+				const modelPosition = new ModelPosition( modelDiv, [ 0 ] );
+				const stub = {};
+
+				mapper.on( 'viewToModelPosition', ( evt, data ) => {
+					expect( data.viewPosition.isEqual( viewPosition ) ).to.be.true;
+					expect( data.modelPosition.isEqual( modelPosition ) ).to.be.true;
+
+					data.modelPosition = stub;
+				}, { priority: 'low' } );
+
+				const result = mapper.toModelPosition( viewPosition );
+
+				expect( result ).to.equal( stub );
+			} );
+
+			// Default algorithm tests.
 			it( 'should transform viewDiv 0', () => createToModelTest( viewDiv, 0, modelDiv, 0 ) );
 			it( 'should transform viewDiv 1', () => createToModelTest( viewDiv, 1, modelDiv, 1 ) );
 			it( 'should transform viewDiv 2', () => createToModelTest( viewDiv, 2, modelDiv, 2 ) );
@@ -284,10 +305,10 @@ describe( 'Mapper', () => {
 				const stub = {};
 
 				mapper.on( 'modelToViewPosition', ( evt, data ) => {
-					expect( data.modelPosition ).to.equal( modelPosition );
+					expect( data.modelPosition.isEqual( modelPosition ) ).to.be.true;
 
 					data.viewPosition = stub;
-					evt.stop();
+					// Do not stop the event. Test whether default algorithm was not called if data.viewPosition is already set.
 				} );
 
 				const result = mapper.toViewPosition( modelPosition );
@@ -295,6 +316,27 @@ describe( 'Mapper', () => {
 				expect( result ).to.equal( stub );
 			} );
 
+			it( 'should be possible to add custom position mapping callback after default callback', () => {
+				const modelPosition = new ModelPosition( modelDiv, [ 0 ] );
+
+				// View position to which default algorithm should map `viewPosition`.
+				// This mapping is tested in a test below.
+				const viewPosition = new ViewPosition( viewTextX, 0 );
+				const stub = {};
+
+				mapper.on( 'modelToViewPosition', ( evt, data ) => {
+					expect( data.modelPosition.isEqual( modelPosition ) ).to.be.true;
+					expect( data.viewPosition.isEqual( viewPosition ) ).to.be.true;
+
+					data.viewPosition = stub;
+				}, { priority: 'low' } );
+
+				const result = mapper.toViewPosition( modelPosition );
+
+				expect( result ).to.equal( stub );
+			} );
+
+			// Default algorithm tests.
 			it( 'should transform modelDiv 0', () => createToViewTest( modelDiv, 0, viewTextX, 0 ) );
 			it( 'should transform modelDiv 1', () => createToViewTest( modelDiv, 1, viewTextX, 1 ) );
 			it( 'should transform modelDiv 2', () => createToViewTest( modelDiv, 2, viewTextZZ, 0 ) );

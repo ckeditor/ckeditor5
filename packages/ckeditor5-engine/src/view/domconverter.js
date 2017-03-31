@@ -134,6 +134,18 @@ export default class DomConverter {
 	}
 
 	/**
+	 * Unbinds given `domElement` from the view element it was bound to.
+	 *
+	 * @param {HTMLElement} domElement DOM element to unbind.
+	 */
+	unbindDomElement( domElement ) {
+		const viewElement = this._domToViewMapping.get( domElement );
+
+		this._domToViewMapping.delete( domElement );
+		this._viewToDomMapping.delete( viewElement );
+	}
+
+	/**
 	 * Binds DOM and View document fragments, so it will be possible to get corresponding document fragments using
 	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingViewDocumentFragment getCorrespondingViewDocumentFragment} and
 	 * {@link module:engine/view/domconverter~DomConverter#getCorrespondingDomDocumentFragment getCorrespondingDomDocumentFragment}.

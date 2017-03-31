@@ -10,6 +10,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ModelPosition from '../../src/model/position';
 import ModelRange from '../../src/model/range';
 import ModelText from '../../src/model/text';
+import ModelTextProxy from '../../src/model/textproxy';
 import ModelElement from '../../src/model/element';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
 import InsertOperation from '../../src/model/operation/insertoperation';
@@ -37,6 +38,7 @@ import ViewDocument from '../../src/view/document';
 import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewContainerElement from '../../src/view/containerelement';
 import ViewText from '../../src/view/text';
+import ViewTextProxy from '../../src/view/textproxy';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 
 /* global document */
@@ -100,6 +102,19 @@ describe( 'debug tools', () => {
 			expect( log.calledWithExactly( 'ModelText: #foo, attrs: {"foo":"bar"}' ) ).to.be.true;
 		} );
 
+		it( 'for ModelTextProxy', () => {
+			const foo = new ModelText( 'foo', { foo: 'bar' } );
+			const proxy = new ModelTextProxy( foo, 1, 1 );
+
+			expect( proxy.toString() ).to.equal( '#o' );
+
+			proxy.log();
+			expect( log.calledWithExactly( 'ModelTextProxy: #o' ) ).to.be.true;
+
+			proxy.logExtended();
+			expect( log.calledWithExactly( 'ModelTextProxy: #o, attrs: {"foo":"bar"}' ) ).to.be.true;
+		} );
+
 		it( 'for ModelElement', () => {
 			const paragraph = new ModelElement( 'paragraph', { foo: 'bar' }, new ModelText( 'foo' ) );
 
@@ -151,6 +166,31 @@ describe( 'debug tools', () => {
 
 			rangeInRoot.log();
 			expectLog( 'ModelRange: main [ 0 ] - [ 0 ]' );
+		} );
+
+		it( 'for ViewText', () => {
+			const foo = new ViewText( 'foo' );
+
+			expect( foo.toString() ).to.equal( '#foo' );
+
+			foo.log();
+			expect( log.calledWithExactly( 'ViewText: #foo' ) ).to.be.true;
+
+			foo.logExtended();
+			expect( log.calledWithExactly( 'ViewText: #foo' ) ).to.be.true;
+		} );
+
+		it( 'for ViewTextProxy', () => {
+			const foo = new ViewText( 'foo', { foo: 'bar' } );
+			const proxy = new ViewTextProxy( foo, 1, 1 );
+
+			expect( proxy.toString() ).to.equal( '#o' );
+
+			proxy.log();
+			expect( log.calledWithExactly( 'ViewTextProxy: #o' ) ).to.be.true;
+
+			proxy.logExtended();
+			expect( log.calledWithExactly( 'ViewTextProxy: #o' ) ).to.be.true;
 		} );
 
 		describe( 'for operations', () => {

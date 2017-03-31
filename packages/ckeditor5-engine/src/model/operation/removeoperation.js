@@ -30,6 +30,25 @@ export default class RemoveOperation extends MoveOperation {
 		const graveyardPosition = new Position( graveyard, [ graveyard.maxOffset, 0 ] );
 
 		super( position, howMany, graveyardPosition, baseVersion );
+
+		/**
+		 * Flag informing whether this operation should insert "holder" element (`true`) or should move removed nodes
+		 * into existing "holder" element (`false`).
+		 *
+		 * The flag should be set to `true` for each "new" `RemoveOperation` that is each `RemoveOperation` originally
+		 * created to remove some nodes from document (most likely created through `Batch` API).
+		 *
+		 * The flag should be set to `false` for each `RemoveOperation` that got created by splitting the original
+		 * `RemoveOperation`, for example during operational transformation.
+		 *
+		 * The flag should be set to `false` whenever removing nodes that were re-inserted from graveyard. This will
+		 * ensure correctness of all other operations that might change something on those nodes. This will also ensure
+		 * that redundant empty graveyard holder elements are not created.
+		 *
+		 * @protected
+		 * @type {Boolean}
+		 */
+		this._needsHolderElement = true;
 	}
 
 	/**
@@ -57,39 +76,6 @@ export default class RemoveOperation extends MoveOperation {
 	 */
 	set _holderElementOffset( offset ) {
 		this.targetPosition.path[ 0 ] = offset;
-	}
-
-	/**
-	 * Flag informing whether this operation should insert "holder" element (`true`) or should move removed nodes
-	 * into existing "holder" element (`false`).
-	 *
-	 * It is `true` for each `RemoveOperation` that is the first `RemoveOperation` in it's delta that points to given holder element.
-	 * This way only one `RemoveOperation` in given delta will insert "holder" element.
-	 *
-	 * @protected
-	 * @type {Boolean}
-	 */
-	get _needsHolderElement() {
-		if ( this.delta ) {
-			// Let's look up all operations from this delta in the same order as they are in the delta.
-			for ( let operation of this.delta.operations ) {
-				// We are interested only in `RemoveOperation`s.
-				if ( operation instanceof RemoveOperation ) {
-					// If the first `RemoveOperation` in the delta is this operation, this operation
-					// needs to insert holder element in the graveyard.
-					if ( operation == this ) {
-						return true;
-					} else if ( operation._holderElementOffset == this._holderElementOffset ) {
-						// If there is a `RemoveOperation` in this delta that "points" to the same holder element offset,
-						// that operation will already insert holder element at that offset. We should not create another holder.
-						return false;
-					}
-				}
-			}
-		}
-
-		// By default `RemoveOperation` needs holder element, so set it so, if the operation does not have delta.
-		return true;
 	}
 
 	/**
@@ -152,7 +138,9 @@ export default class RemoveOperation extends MoveOperation {
 		let sourcePosition = Position.fromJSON( json.sourcePosition, document );
 
 		const removeOp = new RemoveOperation( sourcePosition, json.howMany, json.baseVersion );
+
 		removeOp.targetPosition = Position.fromJSON( json.targetPosition, document );
+		removeOp._needsHolderElement = json._needsHolderElement;
 
 		return removeOp;
 	}

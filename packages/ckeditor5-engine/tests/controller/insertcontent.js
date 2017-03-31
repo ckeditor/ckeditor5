@@ -9,6 +9,7 @@ import insertContent from '../../src/controller/insertcontent';
 
 import DocumentFragment from '../../src/model/documentfragment';
 import Text from '../../src/model/text';
+import Element from '../../src/model/element';
 
 import { setData, getData, parse } from '../../src/dev-utils/model';
 
@@ -17,11 +18,11 @@ describe( 'DataController', () => {
 
 	describe( 'insertContent', () => {
 		it( 'uses the passed batch', () => {
-			doc = new Document();
+			const doc = new Document();
 			doc.createRoot();
 			doc.schema.allow( { name: '$text', inside: '$root' } );
 
-			dataController = new DataController( doc );
+			const dataController = new DataController( doc );
 
 			const batch = doc.batch();
 
@@ -30,6 +31,55 @@ describe( 'DataController', () => {
 			insertContent( dataController, new DocumentFragment( [ new Text( 'a' ) ] ), doc.selection, batch );
 
 			expect( batch.deltas.length ).to.be.above( 0 );
+		} );
+
+		it( 'accepts DocumentFragment', () => {
+			const doc = new Document();
+			const dataController = new DataController( doc );
+			const batch = doc.batch();
+
+			doc.createRoot();
+			doc.schema.allow( { name: '$text', inside: '$root' } );
+
+			setData( doc, 'x[]x' );
+
+			insertContent( dataController, new DocumentFragment( [ new Text( 'a' ) ] ), doc.selection, batch );
+
+			expect( getData( doc ) ).to.equal( 'xa[]x' );
+		} );
+
+		it( 'accepts Text', () => {
+			const doc = new Document();
+			const dataController = new DataController( doc );
+			const batch = doc.batch();
+
+			doc.createRoot();
+			doc.schema.allow( { name: '$text', inside: '$root' } );
+
+			setData( doc, 'x[]x' );
+
+			insertContent( dataController, new Text( 'a' ), doc.selection, batch );
+
+			expect( getData( doc ) ).to.equal( 'xa[]x' );
+		} );
+
+		it( 'should save the reference to the original object', () => {
+			const doc = new Document();
+			const dataController = new DataController( doc );
+			const batch = doc.batch();
+			const content = new Element( 'image' );
+
+			doc.createRoot();
+
+			doc.schema.registerItem( 'paragraph', '$block' );
+			doc.schema.registerItem( 'image', '$inline' );
+			doc.schema.objects.add( 'image' );
+
+			setData( doc, '<paragraph>foo[]</paragraph>' );
+
+			insertContent( dataController, content, doc.selection, batch );
+
+			expect( doc.getRoot().getChild( 0 ).getChild( 1 ) ).to.equal( content );
 		} );
 
 		describe( 'in simple scenarios', () => {
@@ -604,16 +654,14 @@ describe( 'DataController', () => {
 		} );
 	} );
 
+	// Helper function that parses given content and inserts it at the cursor position.
+	//
 	// @param {module:engine/model/item~Item|String} content
 	function insertHelper( content ) {
 		if ( typeof content == 'string' ) {
 			content = parse( content, doc.schema, {
 				context: [ '$clipboardHolder' ]
 			} );
-		}
-
-		if ( !( content instanceof DocumentFragment ) ) {
-			content = new DocumentFragment( [ content ] );
 		}
 
 		insertContent( dataController, content, doc.selection );

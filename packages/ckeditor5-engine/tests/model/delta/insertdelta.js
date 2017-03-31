@@ -87,6 +87,17 @@ describe( 'Batch', () => {
 			expect( doc.applyOperation.secondCall.calledWith( sinon.match( ( operation ) => operation instanceof MarkerOperation ) ) );
 			expect( doc.applyOperation.thirdCall.calledWith( sinon.match( ( operation ) => operation instanceof MarkerOperation ) ) );
 		} );
+
+		it( 'should not create a delta and an operation if no nodes were inserted', () => {
+			sinon.spy( doc, 'applyOperation' );
+
+			batch = doc.batch();
+
+			batch.insert( new Position( root, [ 0 ] ), [] );
+
+			expect( batch.deltas.length ).to.equal( 0 );
+			expect( doc.applyOperation.called ).to.be.false;
+		} );
 	} );
 } );
 

@@ -12,6 +12,7 @@
 import ModelPosition from '../model/position';
 import ModelRange from '../model/range';
 import ModelText from '../model/text';
+import ModelTextProxy from '../model/textproxy';
 import ModelElement from '../model/element';
 import Operation from '../model/operation/operation';
 import AttributeOperation from '../model/operation/attributeoperation';
@@ -38,6 +39,8 @@ import ModelRootElement from '../model/rootelement';
 
 import ViewDocument from '../view/document';
 import ViewElement from '../view/element';
+import ViewText from '../view/text';
+import ViewTextProxy from '../view/textproxy';
 import ViewDocumentFragment from '../view/documentfragment';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -135,11 +138,23 @@ function enableLoggingTools() {
 	};
 
 	ModelText.prototype.logExtended = function() {
-		log( `ModelText: ${ this }, attrs: ${ mapString( this._attrs ) }` );
+		log( `ModelText: ${ this }, attrs: ${ mapString( this.getAttributes() ) }` );
 	};
 
 	ModelText.prototype.log = function() {
 		log( 'ModelText: ' + this );
+	};
+
+	ModelTextProxy.prototype.toString = function() {
+		return `#${ this.data }`;
+	};
+
+	ModelTextProxy.prototype.logExtended = function() {
+		log( `ModelTextProxy: ${ this }, attrs: ${ mapString( this.getAttributes() ) }` );
+	};
+
+	ModelTextProxy.prototype.log = function() {
+		log( 'ModelTextProxy: ' + this );
 	};
 
 	ModelElement.prototype.toString = function() {
@@ -151,7 +166,7 @@ function enableLoggingTools() {
 	};
 
 	ModelElement.prototype.logExtended = function() {
-		log( `ModelElement: ${ this }, ${ this.childCount } children, attrs: ${ mapString( this._attrs ) }` );
+		log( `ModelElement: ${ this }, ${ this.childCount } children, attrs: ${ mapString( this.getAttributes() ) }` );
 	};
 
 	ModelElement.prototype.logAll = function() {
@@ -367,6 +382,30 @@ function enableLoggingTools() {
 
 		return getClassName( this ) + ': ' +
 			`${ this.range } -> ${ wrapElement }`;
+	};
+
+	ViewText.prototype.toString = function() {
+		return `#${ this.data }`;
+	};
+
+	ViewText.prototype.logExtended = function() {
+		log( 'ViewText: ' + this );
+	};
+
+	ViewText.prototype.log = function() {
+		log( 'ViewText: ' + this );
+	};
+
+	ViewTextProxy.prototype.toString = function() {
+		return `#${ this.data }`;
+	};
+
+	ViewTextProxy.prototype.logExtended = function() {
+		log( 'ViewTextProxy: ' + this );
+	};
+
+	ViewTextProxy.prototype.log = function() {
+		log( 'ViewTextProxy: ' + this );
 	};
 
 	ViewElement.prototype.printTree = function( level = 0 ) {
