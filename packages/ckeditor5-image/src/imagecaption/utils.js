@@ -10,7 +10,7 @@
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import { attachPlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
-import { toWidgetEditable } from '../widget/utils';
+import { toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
 
 const captionSymbol = Symbol( 'imageCaption' );
 

@@ -7,7 +7,7 @@
  * @module image/image/utils
  */
 
-import { toWidget, isWidget } from '../widget/utils';
+import { toWidget, isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 
 const imageSymbol = Symbol( 'isImage' );

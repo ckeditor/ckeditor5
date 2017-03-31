@@ -8,7 +8,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Image from '../src/image';
 import ImageEngine from '../src/image/imageengine';
-import Widget from '../src/widget/widget';
+import Widget from '../../ckeditor5-widget/src/widget';
 import ImageTextAlternative from '../src/imagetextalternative';
 
 describe( 'Image', () => {

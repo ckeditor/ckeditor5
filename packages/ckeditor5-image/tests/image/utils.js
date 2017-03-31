@@ -6,7 +6,7 @@
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { toImageWidget, isImageWidget, isImage } from '../../src/image/utils';
-import { isWidget, getLabel } from '../../src/widget/utils';
+import { isWidget, getLabel } from '../../../ckeditor5-widget/src/utils';
 
 describe( 'image widget utils', () => {
 	let element, image;

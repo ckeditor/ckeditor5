@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEngine from './image/imageengine';
-import Widget from './widget/widget';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import ImageTextAlternative from './imagetextalternative';
 
 import '../theme/theme.scss';
