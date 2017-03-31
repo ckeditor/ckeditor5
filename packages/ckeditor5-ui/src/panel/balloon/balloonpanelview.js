@@ -7,15 +7,14 @@
  * @module ui/panel/balloon/balloonpanelview
  */
 
-/* globals document, window */
-
 import View from '../../view';
 import Template from '../../template';
 import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 const toPx = toUnit( 'px' );
-const defaultLimiterElement = document.body;
+const defaultLimiterElement = global.document.body;
 
 /**
  * The balloon panel view class.
@@ -178,7 +177,7 @@ export default class BalloonPanelView extends View {
 		const limiter = options.limiter || defaultLimiterElement;
 
 		// Then we need to listen on scroll event of eny element in the document.
-		this.listenTo( document, 'scroll', ( evt, domEvt ) => {
+		this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {
 			// And update position if scrolled element contains related to the balloon elements.
 			if ( domEvt.target.contains( target ) || domEvt.target.contains( limiter ) ) {
 				this.attachTo( options );
@@ -186,12 +185,12 @@ export default class BalloonPanelView extends View {
 		}, { useCapture: true } );
 
 		// We need to listen on window resize event and update position.
-		this.listenTo( window, 'resize', () => this.attachTo( options ) );
+		this.listenTo( global.window, 'resize', () => this.attachTo( options ) );
 
 		// After all we need to clean up the listener.
 		this.once( 'change:isVisible', () => {
-			this.stopListening( document, 'scroll' );
-			this.stopListening( window, 'resize' );
+			this.stopListening( global.document, 'scroll' );
+			this.stopListening( global.window, 'resize' );
 		} );
 	}
 }

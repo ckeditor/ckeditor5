@@ -22,18 +22,6 @@ describe( 'BalloonPanelView', () => {
 
 		view.set( 'maxWidth', 200 );
 
-		windowStub = {
-			innerWidth: 1000,
-			innerHeight: 1000,
-			scrollX: 0,
-			scrollY: 0,
-			getComputedStyle: ( el ) => {
-				return window.getComputedStyle( el );
-			}
-		};
-
-		testUtils.sinon.stub( global, 'window', windowStub );
-
 		return view.init();
 	} );
 
@@ -160,11 +148,18 @@ describe( 'BalloonPanelView', () => {
 				height: 100
 			} );
 
-			// Make sure that limiter is fully visible in viewport.
-			Object.assign( windowStub, {
+			// Mock window dimensions.
+			windowStub = {
 				innerWidth: 500,
-				innerHeight: 500
-			} );
+				innerHeight: 500,
+				scrollX: 0,
+				scrollY: 0,
+				getComputedStyle: ( el ) => {
+					return window.getComputedStyle( el );
+				}
+			};
+
+			testUtils.sinon.stub( global, 'window', windowStub );
 		} );
 
 		it( 'should use default options', () => {
