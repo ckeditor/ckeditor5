@@ -7,7 +7,7 @@ import DeltaReplayer from '../../src/dev-utils/deltareplayer';
 
 describe( 'DeltaReplayer', () => {
 	describe( 'constructor()', () => {
-		it( 'should be able to initialize replayer with no deltas', () => {
+		it( 'should be able to initialize replayer without deltas', () => {
 			const fakeDocument = {};
 			const stringifiedDeltas = '';
 			const deltaReplayer = new DeltaReplayer( fakeDocument, '---', stringifiedDeltas );

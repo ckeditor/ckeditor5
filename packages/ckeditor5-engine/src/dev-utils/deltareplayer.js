@@ -43,6 +43,8 @@ export default class DeltaReplayer {
 	}
 
 	/**
+	 * Applies all deltas with delay between actions.
+	 *
 	 * @param {Number} timeInterval
 	 */
 	play( timeInterval = 1000 ) {
@@ -53,6 +55,29 @@ export default class DeltaReplayer {
 		this.applyNextDelta().then( () => {
 			setTimeout( () => this.play(), timeInterval );
 		} );
+	}
+
+	/**
+	 * @param {Number} numberOfDeltas Number of deltas to apply.
+	 * @returns {Promise}
+	 */
+	applyDeltas( numberOfDeltas ) {
+		if ( numberOfDeltas <= 0 ) {
+			return;
+		}
+
+		return this.applyNextDelta()
+			.then( () => this.applyDeltas( numberOfDeltas - 1 ) )
+			.catch( err => console.warn( err ) );
+	}
+
+	/**
+	 * @returns {Promise}
+	 */
+	applyAllDeltas() {
+		return this.applyNextDelta()
+			.then( () => this.applyAllDeltas() )
+			.catch( err => console.warn( err ) );
 	}
 
 	/**
@@ -79,14 +104,5 @@ export default class DeltaReplayer {
 				res();
 			} );
 		} );
-	}
-
-	/**
-	 * @returns {Promise}
-	 */
-	applyAllDeltas() {
-		return this.applyNextDelta()
-			.then( () => this.applyAllDeltas() )
-			.catch( err => console.warn( err ) );
 	}
 }
