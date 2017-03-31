@@ -8,10 +8,10 @@
 
 @include ck-color-add( (
 	'widget-blurred': #ddd,
-	'widget-hover': yellow
+	'widget-hover': #FFD25C
 ) );
 
-$widget-outline-thickness: 2px;
+$widget-outline-thickness: 3px;
 
 .ck-widget {
 	margin: ck-spacing() 0;

@@ -11,5 +11,6 @@
 		padding: ck-spacing();
 		font-size: ck-font-size( -1 );
 		color: ck-color( 'text', 40 );
+		outline-offset: -1px;
 	}
 }
