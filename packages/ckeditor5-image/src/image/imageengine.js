@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import WidgetEngine from '../widget/widgetengine';
+import WidgetEngine from '@ckeditor/ckeditor5-widget/src/widgetengine';
 import { viewToModelImage, createImageAttributeConverter } from './converters';
 import { toImageWidget } from './utils';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
