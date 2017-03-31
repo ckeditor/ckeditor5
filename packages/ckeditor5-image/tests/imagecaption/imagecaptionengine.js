@@ -248,17 +248,15 @@ describe( 'ImageCaptionEngine', () => {
 			const caption = new ModelElement( 'caption' );
 			const batch = document.batch();
 
-			// When first change to the document will be made - manually add caption to the image element.
-			document.once( 'change', () => {
-				document.enqueueChanges( () => {
-					batch.insert( ModelPosition.createAt( image ), caption );
-				} );
-			}, { priority: 'high' } );
-
 			document.enqueueChanges( () => {
-				batch.insert( ModelPosition.createAt( document.getRoot() ), image );
+				batch
+					// Since we are adding an empty image, this should trigger caption fixer.
+					.insert( ModelPosition.createAt( document.getRoot() ), image )
+					// Add caption just after the image is inserted, in same batch and enqueue changes block.
+					.insert( ModelPosition.createAt( image ), caption );
 			} );
 
+			// Check whether caption fixer added redundant caption.
 			expect( getModelData( document ) ).to.equal(
 				'[]<image alt="" src=""><caption></caption></image>'
 			);
