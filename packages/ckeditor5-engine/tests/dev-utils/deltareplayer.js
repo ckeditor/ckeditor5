@@ -78,6 +78,38 @@ describe( 'DeltaReplayer', () => {
 			} );
 		} );
 	} );
+
+	describe( 'applyDeltas', () => {
+		it( 'should apply certain number of deltas on the document', () => {
+			const doc = getDocument();
+
+			const stringifiedDeltas = [ getFirstDelta(), getSecondDelta() ]
+				.map( d => JSON.stringify( d ) )
+				.join( '---' );
+
+			const deltaReplayer = new DeltaReplayer( doc, '---', stringifiedDeltas );
+
+			return deltaReplayer.applyDeltas( 1 ).then( () => {
+				expect( Array.from( doc.getRoot().getChildren() ).length ).to.equal( 1 );
+				expect( deltaReplayer.getDeltasToReplay().length ).to.equal( 1 );
+			} );
+		} );
+
+		it( 'should not throw an error if the number of deltas is lower than number of expected deltas to replay', () => {
+			const doc = getDocument();
+
+			const stringifiedDeltas = [ getFirstDelta(), getSecondDelta() ]
+				.map( d => JSON.stringify( d ) )
+				.join( '---' );
+
+			const deltaReplayer = new DeltaReplayer( doc, '---', stringifiedDeltas );
+
+			return deltaReplayer.applyDeltas( 3 ).then( () => {
+				expect( Array.from( doc.getRoot().getChildren() ).length ).to.equal( 2 );
+				expect( deltaReplayer.getDeltasToReplay().length ).to.equal( 0 );
+			} );
+		} );
+	} );
 } );
 
 function getDocument() {
@@ -116,7 +148,7 @@ function getSecondDelta() {
 				path: [ 1 ]
 			},
 			nodes: [ {
-				name: 'heading1',
+				name: 'heading2',
 				children: [ {
 					data: 'The great world of open Web standards'
 				} ]
