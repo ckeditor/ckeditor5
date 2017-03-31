@@ -273,7 +273,7 @@ describe( 'ImageCaptionEngine', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[]<figure class="image ck-widget" contenteditable="false">' +
 				'<img alt="" src=""></img>' +
-				'<figcaption class="ck-editable ck-hidden" contenteditable="true"></figcaption>' +
+				'<figcaption class="ck-placeholder ck-editable ck-hidden" contenteditable="true" data-placeholder="Enter image caption"></figcaption>' +
 				'</figure>'
 			);
 		} );
