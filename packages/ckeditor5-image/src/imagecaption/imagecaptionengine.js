@@ -170,7 +170,11 @@ function insertMissingModelCaptionElement( evt, changeType, data, batch ) {
 
 		if ( value.type == 'elementStart' && isImage( item ) && !getCaptionFromImage( item ) ) {
 			batch.document.enqueueChanges( () => {
-				batch.insert( ModelPosition.createAt( item, 'end' ), new ModelElement( 'caption' ) );
+				// Make sure that the image does not have caption already.
+				// https://github.com/ckeditor/ckeditor5-image/issues/78
+				if ( !getCaptionFromImage( item ) ) {
+					batch.insert( ModelPosition.createAt( item, 'end' ), new ModelElement( 'caption' ) );
+				}
 			} );
 		}
 	}

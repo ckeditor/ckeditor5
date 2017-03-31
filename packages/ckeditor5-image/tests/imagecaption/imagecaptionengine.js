@@ -252,6 +252,32 @@ describe( 'ImageCaptionEngine', () => {
 			);
 		} );
 
+		it( 'should not add caption element twice', () => {
+			const image = new ModelElement( 'image', { src: '', alt: '' } );
+			const caption = new ModelElement( 'caption' );
+			const batch = document.batch();
+
+			document.enqueueChanges( () => {
+				batch
+					// Since we are adding an empty image, this should trigger caption fixer.
+					.insert( ModelPosition.createAt( document.getRoot() ), image )
+					// Add caption just after the image is inserted, in same batch and enqueue changes block.
+					.insert( ModelPosition.createAt( image ), caption );
+			} );
+
+			// Check whether caption fixer added redundant caption.
+			expect( getModelData( document ) ).to.equal(
+				'[]<image alt="" src=""><caption></caption></image>'
+			);
+
+			expect( getViewData( viewDocument ) ).to.equal(
+				'[]<figure class="image ck-widget" contenteditable="false">' +
+				'<img alt="" src=""></img>' +
+				'<figcaption class="ck-editable ck-hidden" contenteditable="true"></figcaption>' +
+				'</figure>'
+			);
+		} );
+
 		it( 'should do nothing for other changes than insert', () => {
 			setModelData( document, '<image src=""><caption>foo bar</caption></image>' );
 			const image = document.getRoot().getChild( 0 );
