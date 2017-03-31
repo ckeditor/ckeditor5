@@ -41,6 +41,10 @@ export default class DeltaReplayer {
 			.map( stringifiedDelta => JSON.parse( stringifiedDelta ) );
 	}
 
+	getDeltasToReplay() {
+		return this._deltasToReplay;
+	}
+
 	/**
 	 * Applies all deltas with delay between actions.
 	 *
@@ -88,11 +92,12 @@ export default class DeltaReplayer {
 		return new Promise( ( res, rej ) => {
 			document.enqueueChanges( () => {
 				const jsonDelta = this._deltasToReplay.shift();
-				const delta = DeltaFactory.fromJSON( jsonDelta, this._document );
 
-				if ( !delta ) {
+				if ( !jsonDelta ) {
 					return rej( new Error( 'No deltas to replay' ) );
 				}
+
+				const delta = DeltaFactory.fromJSON( jsonDelta, this._document );
 
 				const batch = document.batch();
 				batch.addDelta( delta );
