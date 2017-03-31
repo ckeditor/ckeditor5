@@ -7,7 +7,7 @@
  * @module ui/panel/balloon/balloonpanelview
  */
 
-/* globals document */
+/* globals document, window */
 
 import View from '../../view';
 import Template from '../../template';
@@ -185,9 +185,13 @@ export default class BalloonPanelView extends View {
 			}
 		}, { useCapture: true } );
 
+		// We need to listen on window resize event and update position.
+		this.listenTo( window, 'resize', () => this.attachTo( options ) );
+
 		// After all we need to clean up the listener.
 		this.once( 'change:isVisible', () => {
 			this.stopListening( document, 'scroll' );
+			this.stopListening( window, 'resize' );
 		} );
 	}
 }

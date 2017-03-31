@@ -464,6 +464,31 @@ describe( 'BalloonPanelView', () => {
 			// Still once.
 			expect( attachToSpy.calledOnce ).to.true;
 		} );
+
+		it( 'should attach balloon to the target constantly when browser window is resized', () => {
+			view.keepAttachedTo( { target, limiter } );
+
+			expect( attachToSpy.calledOnce ).to.true;
+			expect( attachToSpy.lastCall.args[ 0 ] ).to.deep.equal( { target, limiter } );
+
+			window.dispatchEvent( new Event( 'resize' ) );
+
+			expect( attachToSpy.calledTwice ).to.true;
+			expect( attachToSpy.lastCall.args[ 0 ] ).to.deep.equal( { target, limiter } );
+		} );
+
+		it( 'should stop attach when balloon is hidden', () => {
+			view.keepAttachedTo( { target, limiter } );
+
+			expect( attachToSpy.calledOnce ).to.true;
+
+			view.hide();
+
+			window.dispatchEvent( new Event( 'resize' ) );
+
+			// Still once.
+			expect( attachToSpy.calledOnce ).to.true;
+		} );
 	} );
 } );
 
