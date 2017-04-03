@@ -486,6 +486,16 @@ describe( 'BalloonPanelView', () => {
 			// Still once.
 			expect( attachToSpy.calledOnce ).to.true;
 		} );
+
+		it( 'should set default limiter as document.body', () => {
+			view.keepAttachedTo( { target } );
+
+			expect( attachToSpy.calledOnce ).to.true;
+
+			document.body.dispatchEvent( new Event( 'scroll' ) );
+
+			expect( attachToSpy.calledTwice ).to.true;
+		} );
 	} );
 } );
 
