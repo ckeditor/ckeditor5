@@ -9,7 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import WidgetEngine from '@ckeditor/ckeditor5-widget/src/widgetengine';
 import { viewToModelImage, createImageAttributeConverter } from './converters';
 import { toImageWidget } from './utils';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
@@ -23,13 +22,6 @@ import ViewEmptyElement from '@ckeditor/ckeditor5-engine/src/view/emptyelement';
  * @extends module:core/plugin~Plugin
  */
 export default class ImageEngine extends Plugin {
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ WidgetEngine ];
-	}
-
 	/**
 	 * @inheritDoc
 	 */

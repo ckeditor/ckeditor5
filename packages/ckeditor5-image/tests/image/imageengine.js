@@ -10,7 +10,6 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import { isImageWidget } from '../../src/image/utils';
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
 describe( 'ImageEngine', () => {
 	let editor, document, viewDocument;
@@ -206,64 +205,6 @@ describe( 'ImageEngine', () => {
 				expect( getViewData( viewDocument, { withoutSelection: true } ) )
 					.to.equal( '<figure class="image ck-widget" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>' );
 			} );
-		} );
-	} );
-
-	describe( 'selection conversion', () => {
-		it( 'should convert selection', () => {
-			setModelData( document, '[<image alt="alt text" src="foo.png"></image>]' );
-
-			expect( getViewData( viewDocument ) ).to.equal(
-				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
-					'<img alt="alt text" src="foo.png"></img>' +
-				'</figure>]'
-			);
-
-			expect( viewDocument.selection.isFake ).to.be.true;
-			expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'alt text image widget' );
-		} );
-
-		it( 'should create proper fake selection label when alt attribute is empty', () => {
-			setModelData( document, '[<image src="foo.png" alt=""></image>]' );
-
-			expect( getViewData( viewDocument ) ).to.equal(
-				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
-					'<img alt="" src="foo.png"></img>' +
-				'</figure>]'
-			);
-
-			expect( viewDocument.selection.isFake ).to.be.true;
-			expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'image widget' );
-		} );
-
-		it( 'should remove selected class from previously selected element', () => {
-			setModelData( document,
-				'[<image src="foo.png" alt="alt text"></image>]' +
-				'<image src="foo.png" alt="alt text"></image>'
-			);
-
-			expect( getViewData( viewDocument ) ).to.equal(
-				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
-					'<img alt="alt text" src="foo.png"></img>' +
-				'</figure>]' +
-				'<figure class="image ck-widget" contenteditable="false">' +
-					'<img alt="alt text" src="foo.png"></img>' +
-				'</figure>'
-			);
-
-			document.enqueueChanges( () => {
-				const secondImage = document.getRoot().getChild( 1 );
-				document.selection.setRanges( [ ModelRange.createOn( secondImage ) ] );
-			} );
-
-			expect( getViewData( viewDocument ) ).to.equal(
-				'<figure class="image ck-widget" contenteditable="false">' +
-					'<img alt="alt text" src="foo.png"></img>' +
-				'</figure>' +
-				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
-					'<img alt="alt text" src="foo.png"></img>' +
-				'</figure>]'
-			);
 		} );
 	} );
 } );
