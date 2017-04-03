@@ -1,70 +1,14 @@
-<div class="container-a">
-	<div class="container-b">
+<div class="container-outer">
+	<div class="container-inner">
 		<div>
 			<div id="editor-attach">
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
 				<p>Balloon is attached to the <strong>TARGET</strong> element.</p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
 			</div>
 		</div>
 
 		<div>
 			<div id="editor-stick">
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
 				<p>Balloon sticks to the <strong>TARGET</strong> element.</p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
 			</div>
 		</div>
 	</div>
@@ -75,22 +19,25 @@
 		height: 100%;
 	}
 
-	.balloon-content {
-		padding: 10px;
-		font-size: 16px;
+	.ck-balloon-panel {
+		padding: 2em;
 	}
 
 	.ck-editor__editable {
 		max-height: 300px;
 	}
 
-	.container-a {
+	.ck-editor__editable p {
+		margin: 470px 0;
+	}
+
+	.container-outer {
 		height: 500px;
 		width: 750px;
 		overflow: scroll;
 	}
 
-	.container-b {
+	.container-inner {
 		padding: 500px 30px 30px;
 		display: flex;
 		width: 1000px;
@@ -98,7 +45,7 @@
 		background: #e1e1e1;
 	}
 
-	.container-b > div {
+	.container-inner > div {
 		margin: 0 20px;
 	}
 </style>

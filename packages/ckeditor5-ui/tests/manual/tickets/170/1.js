@@ -8,30 +8,9 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
 import ArticlePresets from '@ckeditor/ckeditor5-presets/src/article';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
 
-// Content of the balloon panel.
-class BalloonContentView extends View {
-	constructor() {
-		super();
-
-		this.template = new Template( {
-			tag: 'div',
-			attributes: {
-				class: 'balloon-content'
-			},
-			children: [
-				{
-					text: 'Balloon'
-				}
-			]
-		} );
-	}
-}
-
-// Set initial scroll of one of the container element.
-document.querySelector( '.container-a' ).scrollTop = 450;
+// Set initial scroll for the outer container element.
+document.querySelector( '.container-outer' ).scrollTop = 450;
 
 // Init editor with balloon attached to the target element.
 ClassicEditor.create( document.querySelector( '#editor-attach' ), {
@@ -41,7 +20,7 @@ ClassicEditor.create( document.querySelector( '#editor-attach' ), {
 .then( editor => {
 	const panel = new BalloonPanelView();
 
-	panel.content.add( new BalloonContentView() );
+	panel.element.innerHTML = 'Balloon content.';
 	editor.ui.view.body.add( panel );
 
 	editor.ui.view.element.querySelector( '.ck-editor__editable' ).scrollTop = 360;
@@ -67,7 +46,7 @@ ClassicEditor.create( document.querySelector( '#editor-stick' ), {
 .then( editor => {
 	const panel = new BalloonPanelView();
 
-	panel.content.add( new BalloonContentView() );
+	panel.element.innerHTML = 'Balloon content.';
 	editor.ui.view.body.add( panel );
 
 	editor.ui.view.element.querySelector( '.ck-editor__editable' ).scrollTop = 360;
