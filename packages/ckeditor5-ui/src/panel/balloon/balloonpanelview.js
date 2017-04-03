@@ -188,11 +188,21 @@ export default class BalloonPanelView extends View {
 		// We need to listen on window resize event and update position.
 		this.listenTo( global.window, 'resize', () => this.attachTo( options ) );
 
-		// After all we need to clean up the listener.
+		// After all we need to clean up the listeners.
 		this.once( 'change:isVisible', () => {
 			this.stopListening( global.document, 'scroll' );
 			this.stopListening( global.window, 'resize' );
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		this.stopListening( global.document, 'scroll' );
+		this.stopListening( global.window, 'resize' );
+
+		return super.destroy();
 	}
 }
 

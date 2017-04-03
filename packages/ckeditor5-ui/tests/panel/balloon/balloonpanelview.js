@@ -472,6 +472,20 @@ describe( 'BalloonPanelView', () => {
 			// Still once.
 			expect( attachToSpy.calledOnce ).to.true;
 		} );
+
+		it( 'should stop attaching when the view will be destroyed', () => {
+			view.keepAttachedTo( { target, limiter } );
+
+			expect( attachToSpy.calledOnce ).to.true;
+
+			view.destroy();
+
+			window.dispatchEvent( new Event( 'resize' ) );
+			window.dispatchEvent( new Event( 'scroll' ) );
+
+			// Still once.
+			expect( attachToSpy.calledOnce ).to.true;
+		} );
 	} );
 } );
 
