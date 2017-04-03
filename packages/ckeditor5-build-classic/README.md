@@ -12,7 +12,7 @@ Classic build of CKEditor 5. Features the [classic creator](https://github.com/c
 The package contain two bundles of the classic editor:
 
 * `build/ckeditor.js` – minified, ES6 version of the bundle,
-* `build/ckeditor.compat.js` – minified, backward-compatible version of the bundle (`babel-preset-env` is configured to support `[ 'last 2 versions', 'ie >= 11' ]`).
+* `build/ckeditor.compat.js` – minified, backward-compatible version of the bundle ([babel-preset-env](https://github.com/babel/babel-preset-env) is configured to support `'last 2 versions'`, `'ie >= 11'`).
 
 ## Usage
 
