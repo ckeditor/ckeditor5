@@ -128,7 +128,7 @@ describe( 'DeltaReplayer', () => {
 	} );
 
 	describe( 'play', () => {
-		it( 'should play deltas with time interval', ( done ) => {
+		it( 'should play deltas with time interval', () => {
 			const doc = getDocument();
 
 			const stringifiedDeltas = [ getFirstDelta(), getSecondDelta() ]
@@ -137,11 +137,17 @@ describe( 'DeltaReplayer', () => {
 
 			const deltaReplayer = new DeltaReplayer( doc, '---', stringifiedDeltas );
 
-			deltaReplayer.play( 0, () => {
+			return deltaReplayer.play( 0 ).then( () => {
 				expect( deltaReplayer.getDeltasToReplay().length ).to.equal( 0 );
-
-				done();
 			} );
+		} );
+
+		it( 'should work with default time interval', () => {
+			const doc = getDocument();
+
+			const deltaReplayer = new DeltaReplayer( doc, '---', '' );
+
+			return deltaReplayer.play();
 		} );
 	} );
 } );

@@ -485,7 +485,7 @@ function enableDocumentTools() {
 	};
 
 	ModelDocument.prototype.getAppliedDeltas = function() {
-		return ( this._appliedDeltas || [] ).map( JSON.stringify ).join( LOG_SEPARATOR );
+		return this._appliedDeltas.map( JSON.stringify ).join( LOG_SEPARATOR );
 	};
 
 	ModelDocument.prototype.createReplayer = function( stringifiedDeltas ) {
