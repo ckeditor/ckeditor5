@@ -1,0 +1,48 @@
+{
+  "name": "@ckeditor/ckeditor5-build-classic",
+  "version": "0.0.1",
+  "description": "CKEditor 5 classic build.",
+  "keywords": [],
+  "main": "./build/ckeditor.js",
+  "dependencies": {
+    "@ckeditor/ckeditor5-editor-classic": "*",
+    "@ckeditor/ckeditor5-autoformat": "*",
+    "@ckeditor/ckeditor5-basic-styles": "*",
+    "@ckeditor/ckeditor5-clipboard": "*",
+    "@ckeditor/ckeditor5-enter": "*",
+    "@ckeditor/ckeditor5-heading": "*",
+    "@ckeditor/ckeditor5-image": "*",
+    "@ckeditor/ckeditor5-link": "*",
+    "@ckeditor/ckeditor5-list": "*",
+    "@ckeditor/ckeditor5-paragraph": "*",
+    "@ckeditor/ckeditor5-typing": "*",
+    "@ckeditor/ckeditor5-undo": "*"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-dev-utils": "^2.5.0",
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.0",
+    "babel-preset-env": "^1.2.2",
+    "babili-webpack-plugin": "^0.0.11",
+    "regenerator-runtime": "^0.10.3",
+    "webpack": "^2.3.2"
+  },
+  "engines": {
+    "node": ">=6.0.0",
+    "npm": ">=3.0.0"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
+  "homepage": "https://ckeditor5.github.io",
+  "bugs": "https://github.com/ckeditor/ckeditor5-build-classic/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5-build-classic.git"
+  },
+  "scripts": {
+    "build": "npm run create-entry-file && npm run build-ckeditor && npm run build-ckeditor-compat",
+    "create-entry-file": "./bin/create-entry-file.js",
+    "build-ckeditor": "./bin/build-ckeditor.sh",
+    "build-ckeditor-compat": "./bin/build-ckeditor-compat.sh"
+  }
+}
