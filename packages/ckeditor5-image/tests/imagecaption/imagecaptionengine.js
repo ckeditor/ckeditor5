@@ -298,7 +298,7 @@ describe( 'ImageCaptionEngine', () => {
 			setModelData( document, '[<image src=""><caption></caption></image>]' );
 
 			expect( getViewData( viewDocument ) ).to.equal(
-				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
+				'[<figure class="image ck-widget" contenteditable="false">' +
 					'<img src=""></img>' +
 					'<figcaption class="ck-placeholder ck-editable" contenteditable="true" data-placeholder="Enter image caption">' +
 					'</figcaption>' +
@@ -322,7 +322,7 @@ describe( 'ImageCaptionEngine', () => {
 			setModelData( document, '[<image src=""><caption>foo bar</caption></image>]' );
 
 			expect( getViewData( viewDocument ) ).to.equal(
-				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
+				'[<figure class="image ck-widget" contenteditable="false">' +
 					'<img src=""></img>' +
 					'<figcaption class="ck-editable" contenteditable="true" data-placeholder="Enter image caption">foo bar</figcaption>' +
 				'</figure>]'
@@ -372,7 +372,7 @@ describe( 'ImageCaptionEngine', () => {
 			} );
 
 			expect( getViewData( viewDocument ) ).to.equal(
-				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
+				'[<figure class="image ck-widget" contenteditable="false">' +
 					'<img src=""></img>' +
 					'<figcaption class="ck-editable ck-placeholder" contenteditable="true" data-placeholder="Enter image caption"></figcaption>' +
 				'</figure>]'
@@ -392,7 +392,7 @@ describe( 'ImageCaptionEngine', () => {
 					'<img src=""></img>' +
 					'<figcaption class="ck-editable" contenteditable="true" data-placeholder="Enter image caption">foo bar</figcaption>' +
 				'</figure>' +
-				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
+				'[<figure class="image ck-widget" contenteditable="false">' +
 					'<img src=""></img>' +
 					'<figcaption class="ck-placeholder ck-editable" contenteditable="true" data-placeholder="Enter image caption"></figcaption>' +
 				'</figure>]'
