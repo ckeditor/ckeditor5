@@ -484,7 +484,7 @@ function enableDocumentTools() {
 		this._appliedDeltas.push( delta.toJSON() );
 	};
 
-	ModelDocument.prototype.logAppliedDeltas = function() {
+	ModelDocument.prototype.getAppliedDeltas = function() {
 		return ( this._appliedDeltas || [] ).map( JSON.stringify ).join( LOG_SEPARATOR );
 	};
 
