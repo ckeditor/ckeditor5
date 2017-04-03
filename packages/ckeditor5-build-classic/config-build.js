@@ -6,8 +6,8 @@
 'use strict';
 
 module.exports = {
-	destinationPath: './build/',
 	editor: '@ckeditor/ckeditor5-editor-classic/src/classic',
+	moduleName: 'ClassicEditor',
 	plugins: [
 		'@ckeditor/ckeditor5-autoformat/src/autoformat',
 		'@ckeditor/ckeditor5-clipboard/src/clipboard',
@@ -24,6 +24,5 @@ module.exports = {
 		'@ckeditor/ckeditor5-paragraph/src/paragraph',
 		'@ckeditor/ckeditor5-typing/src/typing',
 		'@ckeditor/ckeditor5-undo/src/undo',
-	],
-	moduleName: 'ClassicEditor'
+	]
 };

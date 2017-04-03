@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "CKEditor 5 classic build.",
   "keywords": [],
-  "main": "./build/ckeditor.es6.js",
+  "main": "./build/ckeditor.js",
   "dependencies": {
     "@ckeditor/ckeditor5-editor-classic": "*",
     "@ckeditor/ckeditor5-autoformat": "*",
@@ -20,8 +20,12 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-utils": "^2.4.2",
-    "@ckeditor/ckeditor5-dev-webpack-utils": "^1.0.0",
-    "webpack": "^2.2.1"
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.0",
+    "babel-preset-env": "^1.2.2",
+    "babili-webpack-plugin": "^0.0.11",
+    "regenerator-runtime": "^0.10.3",
+    "webpack": "^2.3.2"
   },
   "engines": {
     "node": ">=6.0.0",
@@ -36,6 +40,9 @@
     "url": "https://github.com/ckeditor/ckeditor5-build-classic.git"
   },
   "scripts": {
-    "build": "node ./bin/build.js"
+    "build": "npm run create-entry-file && npm run build-ckeditor && npm run build-ckeditor-compat",
+    "create-entry-file": "./bin/create-entry-file.js",
+    "build-ckeditor": "./bin/build-ckeditor.sh",
+    "build-ckeditor-compat": "./bin/build-ckeditor-compat.sh"
   }
 }
