@@ -325,6 +325,31 @@ describe( 'Link', () => {
 				expect( balloon.view.attachTo.calledOnce ).to.true;
 			} );
 
+			it( 'should not duplicate `render` listener on `ViewDocument`', () => {
+				const observer = editor.editing.view.getObserver( ClickObserver );
+				const updatePositionSpy = testUtils.sinon.spy( balloon, 'updatePosition' );
+
+				editor.document.schema.allow( { name: '$text', inside: '$root' } );
+				setModelData( editor.document, '<$text linkHref="url">b[]ar</$text>' );
+
+				// Click at the same link more than once.
+				observer.fire( 'click', { target: document.body } );
+				observer.fire( 'click', { target: document.body } );
+				observer.fire( 'click', { target: document.body } );
+
+				sinon.assert.notCalled( updatePositionSpy );
+
+				const root = editor.editing.view.getRoot();
+				const text = root.getChild( 0 ).getChild( 0 );
+
+				// Move selection.
+				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
+				editor.editing.view.render();
+
+				// Position should be updated only once.
+				sinon.assert.calledOnce( updatePositionSpy );
+			} );
+
 			it( 'should close when selection goes outside the link element', () => {
 				const observer = editor.editing.view.getObserver( ClickObserver );
 

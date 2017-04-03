@@ -206,6 +206,9 @@ export default class Link extends Plugin {
 				// Then show panel but keep focus inside editor editable.
 				this._showPanel();
 
+				// Avoid duplication of the same listener.
+				this.stopListening( viewDocument, 'render' );
+
 				// Start listen to view document changes and close the panel when selection will be moved
 				// out of the actual link element.
 				this.listenTo( viewDocument, 'render', () => {
