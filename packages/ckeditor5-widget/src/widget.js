@@ -8,20 +8,22 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import WidgetEngine from './widgetengine';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import RootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditableelement';
-import { isWidget } from './utils';
+import { isWidget, WIDGET_SELECTED_CLASS_NAME, getLabel } from './utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import '../theme/theme.scss';
 
 /**
  * The widget plugin.
+ * Registers model to view selection converter for editing pipeline. It is hooked after default selection conversion.
+ * If converted selection is placed around widget element, selection is marked as fake. Additionally, proper CSS class
+ * is added to indicate that widget has been selected.
  * Adds default {@link module:engine/view/document~Document#event:mousedown mousedown} handling on widget elements.
  *
  * @extends module:core/plugin~Plugin.
@@ -30,15 +32,32 @@ export default class Widget extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
-		return [ WidgetEngine ];
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	init() {
 		const viewDocument = this.editor.editing.view;
+
+		let previouslySelected;
+
+		// Model to view selection converter.
+		// Converts selection placed over widget element to fake selection
+		this.editor.editing.modelToView.on( 'selection', ( evt, data, consumable, conversionApi ) => {
+			// Remove selected class from previously selected widget.
+			if ( previouslySelected && previouslySelected.hasClass( WIDGET_SELECTED_CLASS_NAME ) ) {
+				previouslySelected.removeClass( WIDGET_SELECTED_CLASS_NAME );
+			}
+
+			const viewSelection = conversionApi.viewSelection;
+
+			// Check if widget was clicked or some sub-element.
+			const selectedElement = viewSelection.getSelectedElement();
+
+			if ( !selectedElement || !isWidget( selectedElement ) ) {
+				return;
+			}
+
+			viewSelection.setFake( true, { label: getLabel( selectedElement ) } );
+			selectedElement.addClass( WIDGET_SELECTED_CLASS_NAME );
+			previouslySelected = selectedElement;
+		}, { priority: 'low' } );
 
 		// If mouse down is pressed on widget - create selection over whole widget.
 		viewDocument.addObserver( MouseObserver );
