@@ -11,6 +11,7 @@
     "@ckeditor/ckeditor5-autoformat": "v0.4.1",
     "@ckeditor/ckeditor5-basic-styles": "v0.7.1",
     "@ckeditor/ckeditor5-block-quote": "*",
+    "@ckeditor/ckeditor5-build-classic": "*",
     "@ckeditor/ckeditor5-clipboard": "v0.4.1",
     "@ckeditor/ckeditor5-core": "v0.7.0",
     "@ckeditor/ckeditor5-editor-classic": "v0.7.1",
