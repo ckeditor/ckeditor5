@@ -13,6 +13,7 @@ import ViewEditable from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import AttributeContainer from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /* global document */
@@ -37,6 +38,10 @@ describe( 'Widget', () => {
 				doc.schema.registerItem( 'nested' );
 				doc.schema.allow( { name: '$inline', inside: 'nested' } );
 				doc.schema.allow( { name: 'nested', inside: 'widget' } );
+				doc.schema.registerItem( 'editable' );
+				doc.schema.allow( { name: '$inline', inside: 'editable' } );
+				doc.schema.allow( { name: 'editable', inside: 'widget' } );
+				doc.schema.allow( { name: 'editable', inside: '$root' } );
 
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'paragraph' )
@@ -48,7 +53,7 @@ describe( 'Widget', () => {
 						const b = new AttributeContainer( 'b' );
 						const div = new ViewContainer( 'div', null, b );
 
-						return toWidget( div );
+						return toWidget( div, { label: 'element label' } );
 					} );
 
 				buildModelConverter().for( editor.editing.modelToView )
@@ -57,6 +62,10 @@ describe( 'Widget', () => {
 
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'nested' )
+					.toElement( () => new ViewEditable( 'figcaption', { contenteditable: true } ) );
+
+				buildModelConverter().for( editor.editing.modelToView )
+					.fromElement( 'editable' )
 					.toElement( () => new ViewEditable( 'figcaption', { contenteditable: true } ) );
 			} );
 	} );
@@ -143,6 +152,55 @@ describe( 'Widget', () => {
 		sinon.assert.calledOnce( domEventDataMock.preventDefault );
 		sinon.assert.notCalled( focusSpy );
 		expect( getModelData( doc ) ).to.equal( '[<widget></widget>]' );
+	} );
+
+	it( 'should apply fake view selection if model selection is on widget element', () => {
+		setModelData( doc, '[<widget>foo bar</widget>]' );
+
+		expect( getViewData( viewDocument ) ).to.equal(
+			'[<div class="ck-widget ck-widget_selected" contenteditable="false">foo bar<b></b></div>]'
+		);
+		expect( viewDocument.selection.isFake ).to.be.true;
+	} );
+
+	it( 'should use element\'s label to set fake selection if one is provided', () => {
+		setModelData( doc, '[<widget>foo bar</widget>]' );
+
+		expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'element label' );
+	} );
+
+	it( 'fake selection should be empty if widget is not selected', () => {
+		setModelData( doc, '<widget>foo bar</widget>' );
+
+		expect( viewDocument.selection.fakeSelectionLabel ).to.equal( '' );
+	} );
+
+	it( 'should toggle selected class', () => {
+		setModelData( doc, '[<widget>foo</widget>]' );
+
+		expect( getViewData( viewDocument ) ).to.equal(
+			'[<div class="ck-widget ck-widget_selected" contenteditable="false">foo<b></b></div>]'
+		);
+
+		doc.enqueueChanges( () => {
+			doc.selection.collapseToStart();
+		} );
+
+		expect( getViewData( viewDocument ) ).to.equal(
+			'[]<div class="ck-widget" contenteditable="false">foo<b></b></div>'
+		);
+	} );
+
+	it( 'should do nothing when selection is placed in other editable', () => {
+		setModelData( doc, '<widget><editable>foo bar</editable></widget><editable>[baz]</editable>' );
+
+		expect( getViewData( viewDocument ) ).to.equal(
+			'<div class="ck-widget" contenteditable="false">' +
+				'<figcaption contenteditable="true">foo bar</figcaption>' +
+				'<b></b>' +
+			'</div>' +
+			'<figcaption contenteditable="true">{baz}</figcaption>'
+		);
 	} );
 
 	describe( 'keys handling', () => {
