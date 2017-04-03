@@ -24,9 +24,7 @@ bundler.createEntryFile( entryPoint, './config-editor', {
 } );
 
 const packageRoot = path.join( __dirname, '..' );
-const ckeditor5Root = path.join( packageRoot, '..', '..' );
 const webpackParams = {
-	cwd: ckeditor5Root,
 	entryPoint: path.join( packageRoot, entryPoint ),
 	destinationPath: path.join( packageRoot, buildConfig.destinationPath )
 };
