@@ -25,9 +25,9 @@ export class ClassicEditor extends ClassicEditorBase {}
 ClassicEditor.build = {
 	plugins: [
 		AutoformatPlugin,
-		ClipboardPlugin,
 		BoldPlugin,
 		ItalicPlugin,
+		ClipboardPlugin,
 		EnterPlugin,
 		HeadingPlugin,
 		ImagePlugin,
