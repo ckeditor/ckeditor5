@@ -3,10 +3,25 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global console */
+
 import DeltaReplayer from '../../src/dev-utils/deltareplayer';
 import Document from '../../src/model/document';
 
 describe( 'DeltaReplayer', () => {
+	const sandbox = sinon.sandbox.create();
+	let stubs;
+
+	beforeEach( () => {
+		stubs = {
+			consoleWarn: sandbox.stub( console, 'warn' ),
+		};
+	} );
+
+	afterEach( () => {
+		sandbox.restore();
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should be able to initialize replayer without deltas', () => {
 			const doc = getDocument();
@@ -107,6 +122,7 @@ describe( 'DeltaReplayer', () => {
 			return deltaReplayer.applyDeltas( 3 ).then( () => {
 				expect( Array.from( doc.getRoot().getChildren() ).length ).to.equal( 2 );
 				expect( deltaReplayer.getDeltasToReplay().length ).to.equal( 0 );
+				sinon.assert.calledWithExactly( stubs.consoleWarn, new Error( 'No deltas to replay' ) );
 			} );
 		} );
 	} );

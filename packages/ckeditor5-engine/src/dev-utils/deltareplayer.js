@@ -87,7 +87,7 @@ export default class DeltaReplayer {
 	applyAllDeltas() {
 		return this.applyNextDelta()
 			.then( () => this.applyAllDeltas() )
-			.catch( err => console.warn( err ) );
+			.catch( () => {} );
 	}
 
 	/**
