@@ -424,7 +424,7 @@ describe( 'BalloonPanelView', () => {
 			notRelatedElement.remove();
 		} );
 
-		it( 'should attach balloon to the target constantly when any of element containing target element is scrolled', () => {
+		it( 'should attach balloon to the target constantly when any of the related element is scrolled', () => {
 			view.keepAttachedTo( { target, limiter } );
 
 			expect( attachToSpy.calledOnce ).to.true;
@@ -447,19 +447,6 @@ describe( 'BalloonPanelView', () => {
 			expect( attachToSpy.lastCall.args[ 0 ] ).to.deep.equal( { target, limiter } );
 		} );
 
-		it( 'should stop attach when balloon is hidden', () => {
-			view.keepAttachedTo( { target, limiter } );
-
-			expect( attachToSpy.calledOnce ).to.true;
-
-			view.hide();
-
-			document.dispatchEvent( new Event( 'scroll' ) );
-
-			// Still once.
-			expect( attachToSpy.calledOnce ).to.true;
-		} );
-
 		it( 'should attach balloon to the target constantly when browser window is resized', () => {
 			view.keepAttachedTo( { target, limiter } );
 
@@ -472,7 +459,7 @@ describe( 'BalloonPanelView', () => {
 			expect( attachToSpy.lastCall.args[ 0 ] ).to.deep.equal( { target, limiter } );
 		} );
 
-		it( 'should stop attach when balloon is hidden', () => {
+		it( 'should stop attaching when the balloon is hidden', () => {
 			view.keepAttachedTo( { target, limiter } );
 
 			expect( attachToSpy.calledOnce ).to.true;
@@ -480,6 +467,7 @@ describe( 'BalloonPanelView', () => {
 			view.hide();
 
 			window.dispatchEvent( new Event( 'resize' ) );
+			window.dispatchEvent( new Event( 'scroll' ) );
 
 			// Still once.
 			expect( attachToSpy.calledOnce ).to.true;
