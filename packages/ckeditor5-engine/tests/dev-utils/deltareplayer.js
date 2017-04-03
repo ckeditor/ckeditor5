@@ -110,6 +110,24 @@ describe( 'DeltaReplayer', () => {
 			} );
 		} );
 	} );
+
+	describe( 'play', () => {
+		it( 'should play deltas with time interval', ( done ) => {
+			const doc = getDocument();
+
+			const stringifiedDeltas = [ getFirstDelta(), getSecondDelta() ]
+				.map( d => JSON.stringify( d ) )
+				.join( '---' );
+
+			const deltaReplayer = new DeltaReplayer( doc, '---', stringifiedDeltas );
+
+			deltaReplayer.play( 0, () => {
+				expect( deltaReplayer.getDeltasToReplay().length ).to.equal( 0 );
+
+				done();
+			} );
+		} );
+	} );
 } );
 
 function getDocument() {

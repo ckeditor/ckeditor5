@@ -48,16 +48,23 @@ export default class DeltaReplayer {
 	/**
 	 * Applies all deltas with delay between actions.
 	 *
-	 * @param {Number} timeInterval
+	 * @param {Number} timeInterval Time between applying deltas.
+	 * @param {Function} [cb] Callback.
 	 */
-	play( timeInterval = 1000 ) {
-		if ( this._deltasToReplay.length === 0 ) {
-			return;
-		}
+	play( timeInterval = 1000, cb = () => {} ) {
+		const deltaReplayer = this;
 
-		this.applyNextDelta().then( () => {
-			setTimeout( () => this.play(), timeInterval );
-		} );
+		play();
+
+		function play() {
+			if ( deltaReplayer._deltasToReplay.length === 0 ) {
+				return cb();
+			}
+
+			deltaReplayer.applyNextDelta().then( () => {
+				setTimeout( play, timeInterval );
+			}, cb );
+		}
 	}
 
 	/**
