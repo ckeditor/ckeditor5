@@ -5,9 +5,9 @@
 
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classic';
 import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import EnterPlugin from '@ckeditor/ckeditor5-enter/src/enter';
 import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
 import ImagePlugin from '@ckeditor/ckeditor5-image/src/image';
