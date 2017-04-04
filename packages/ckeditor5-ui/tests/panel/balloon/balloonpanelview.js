@@ -259,7 +259,7 @@ describe( 'BalloonPanelView', () => {
 				expect( view.position ).to.equal( 'nw' );
 			} );
 
-			// #126
+			// https://github.com/ckeditor/ckeditor5-ui-default/issues/126
 			it( 'works in a positioned ancestor (position: absolute)', () => {
 				const positionedAncestor = document.createElement( 'div' );
 
@@ -291,7 +291,7 @@ describe( 'BalloonPanelView', () => {
 				expect( view.left ).to.equal( -80 );
 			} );
 
-			// #126
+			// https://github.com/ckeditor/ckeditor5-ui-default/issues/126
 			it( 'works in a positioned ancestor (position: static)', () => {
 				const positionedAncestor = document.createElement( 'div' );
 
