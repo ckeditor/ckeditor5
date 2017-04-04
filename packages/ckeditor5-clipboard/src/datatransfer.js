@@ -20,7 +20,7 @@ export default class DataTransfer {
 		 */
 		this._native = nativeDataTransfer;
 
-		this.files = Array.from( this.getFiles() );
+		this.files = Array.from( this._getFiles() );
 	}
 
 	/**
