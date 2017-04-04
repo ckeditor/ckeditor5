@@ -111,6 +111,7 @@ export default function enableEngineDebug( logger ) {
 
 		enableLoggingTools();
 		enableDocumentTools();
+		enableReplayerTools();
 	}
 
 	return DebugPlugin;
@@ -455,6 +456,32 @@ function enableLoggingTools() {
 	};
 }
 
+function enableReplayerTools() {
+	const _modelDocumentApplyOperation = ModelDocument.prototype.applyOperation;
+
+	ModelDocument.prototype.applyOperation = function( operation ) {
+		if ( !this._lastDelta ) {
+			this._appliedDeltas = [];
+			this._lastDelta = operation.delta;
+		} else if ( this._lastDelta !== operation.delta ) {
+			this._appliedDeltas.push( this._lastDelta.toJSON() );
+			this._lastDelta = operation.delta;
+		}
+
+		_modelDocumentApplyOperation.call( this, operation );
+	};
+
+	ModelDocument.prototype.getAppliedDeltas = function() {
+		const appliedDeltas = this._appliedDeltas.concat( this._lastDelta.toJSON() );
+
+		return appliedDeltas.map( JSON.stringify ).join( LOG_SEPARATOR );
+	};
+
+	ModelDocument.prototype.createReplayer = function( stringifiedDeltas ) {
+		return new DeltaReplayer( this, LOG_SEPARATOR, stringifiedDeltas );
+	};
+}
+
 function enableDocumentTools() {
 	const _modelDocumentApplyOperation = ModelDocument.prototype.applyOperation;
 
@@ -474,22 +501,6 @@ function enableDocumentTools() {
 		version = version === null ? this.version : version;
 
 		logDocument( this, version );
-	};
-
-	ModelDocument.prototype.initializeDebugging = function() {
-		this._appliedDeltas = [];
-	};
-
-	ModelDocument.prototype.addAppliedDelta = function( delta ) {
-		this._appliedDeltas.push( delta.toJSON() );
-	};
-
-	ModelDocument.prototype.getAppliedDeltas = function() {
-		return this._appliedDeltas.map( JSON.stringify ).join( LOG_SEPARATOR );
-	};
-
-	ModelDocument.prototype.createReplayer = function( stringifiedDeltas ) {
-		return new DeltaReplayer( this, LOG_SEPARATOR, stringifiedDeltas );
 	};
 
 	ViewDocument.prototype.log = function( version ) {

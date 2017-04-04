@@ -730,8 +730,8 @@ describe( 'debug tools', () => {
 			delta.addOperation( move );
 			delta.addOperation( remove );
 
-			modelDoc.initializeDebugging();
-			modelDoc.addAppliedDelta( delta );
+			modelDoc.applyOperation( move );
+			modelDoc.applyOperation( remove );
 
 			const stringifiedDeltas = modelDoc.getAppliedDeltas();
 
