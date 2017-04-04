@@ -472,7 +472,7 @@ export default class Renderer {
 				insertAt( domElement, i, expectedDomChildren[ i ] );
 				i++;
 			} else if ( action === 'delete' ) {
-				// Whenever element is removed from DOM, unbind it.
+				// Whenever element is removed from DOM, unbind it and all of its children.
 				this.domConverter.unbindDomElement( actualDomChildren[ i ] );
 				remove( actualDomChildren[ i ] );
 			} else { // 'equal'
