@@ -437,9 +437,6 @@ describe( 'Editor', () => {
 			};
 
 			const editor = new CustomEditor( {
-				plugins: [
-					'A'
-				],
 				removePlugins: [ 'D' ]
 			} );
 
