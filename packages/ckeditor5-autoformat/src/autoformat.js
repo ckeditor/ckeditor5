@@ -60,6 +60,13 @@ export default class Autoformat extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'autoformat/autoformat';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		this._addListAutoformats();
 		this._addHeadingAutoformats();
