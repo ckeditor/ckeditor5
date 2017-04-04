@@ -28,4 +28,11 @@ export default class Image extends Plugin {
 	static get requires() {
 		return [ ImageEngine, Widget, ImageTextAlternative ];
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'image/image';
+	}
 }

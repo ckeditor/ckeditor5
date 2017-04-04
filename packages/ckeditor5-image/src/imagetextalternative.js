@@ -35,6 +35,13 @@ export default class ImageTextAlternative extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'image/imagetextalternative';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		this._createButton();
 

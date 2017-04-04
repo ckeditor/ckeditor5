@@ -29,6 +29,13 @@ export default class ImageStyle extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'image/imagestyle';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const styles = this.editor.config.get( 'image.styles' );
 

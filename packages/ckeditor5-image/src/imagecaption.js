@@ -23,4 +23,11 @@ export default class ImageCaption extends Plugin {
 	static get requires() {
 		return [ ImageCaptionEngine ];
 	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'image/imagecaption';
+	}
 }
