@@ -9,7 +9,6 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ViewCollection from '../../../src/viewcollection';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 import ButtonView from '../../../src/button/buttonview';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import * as positionUtils from '@ckeditor/ckeditor5-utils/src/dom/position';
 
@@ -515,9 +514,9 @@ describe( 'BalloonPanelView', () => {
 			sinon.assert.calledTwice( attachToSpy );
 		} );
 
-		it( 'should work for Rect as a target', () => {
+		it( 'should work for rect as a target', () => {
 			// Just check if this normally works without errors.
-			const rect = new Rect( {} );
+			const rect = {};
 
 			view.keepAttachedTo( { target: rect, limiter } );
 
