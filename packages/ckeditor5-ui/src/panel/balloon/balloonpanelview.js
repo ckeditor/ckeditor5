@@ -161,9 +161,13 @@ export default class BalloonPanelView extends View {
 	}
 
 	/**
-	 * Works exactly the same as {module:ui/panel/balloon/balloonpanelview~BalloonPanelView.attachTo} with one exception.
-	 * Position of attached panel is constantly updated when any of parents of the target or limiter elements are scrolled
-	 * or when browser window is resized. Thanks to this panel always sticks to the target element.
+	 * Works the same way as {module:ui/panel/balloon/balloonpanelview~BalloonPanelView.attachTo}
+	 * except that the position of the panel is continuously updated when any ancestor of the
+	 * {@link module:utils/dom/position~Options#target} or {@link module:utils/dom/position~Options#limiter}
+	 * is being scrolled or when the browser window is being resized.
+	 *
+	 * Thanks to this, the panel always sticks to the {@link module:utils/dom/position~Options#target}.
+	 *
 	 * See https://github.com/ckeditor/ckeditor5-ui/issues/170.
 	 *
 	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
