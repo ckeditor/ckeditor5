@@ -428,42 +428,42 @@ describe( 'BalloonPanelView', () => {
 		it( 'should keep the balloon attached to the target when any of the related elements is scrolled', () => {
 			view.keepAttachedTo( { target, limiter } );
 
-			expect( attachToSpy.calledOnce ).to.true;
-			expect( attachToSpy.lastCall.args[ 0 ] ).to.deep.equal( { target, limiter } );
+			sinon.assert.calledOnce( attachToSpy );
+			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
 
 			document.dispatchEvent( new Event( 'scroll' ) );
 
-			expect( attachToSpy.calledTwice ).to.true;
-			expect( attachToSpy.lastCall.args[ 0 ] ).to.deep.equal( { target, limiter } );
+			sinon.assert.calledTwice( attachToSpy );
+			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
 
 			limiter.dispatchEvent( new Event( 'scroll' ) );
 
-			expect( attachToSpy.calledThrice ).to.true;
-			expect( attachToSpy.lastCall.args[ 0 ] ).to.deep.equal( { target, limiter } );
+			sinon.assert.calledThrice( attachToSpy );
+			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
 
 			notRelatedElement.dispatchEvent( new Event( 'scroll' ) );
 
 			// Nothing's changed.
-			expect( attachToSpy.calledThrice ).to.true;
-			expect( attachToSpy.lastCall.args[ 0 ] ).to.deep.equal( { target, limiter } );
+			sinon.assert.calledThrice( attachToSpy );
+			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
 		} );
 
 		it( 'should keep the balloon attached to the target when the browser window is being resized', () => {
 			view.keepAttachedTo( { target, limiter } );
 
-			expect( attachToSpy.calledOnce ).to.true;
-			expect( attachToSpy.lastCall.args[ 0 ] ).to.deep.equal( { target, limiter } );
+			sinon.assert.calledOnce( attachToSpy );
+			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
 
 			window.dispatchEvent( new Event( 'resize' ) );
 
-			expect( attachToSpy.calledTwice ).to.true;
-			expect( attachToSpy.lastCall.args[ 0 ] ).to.deep.equal( { target, limiter } );
+			sinon.assert.calledTwice( attachToSpy );
+			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
 		} );
 
 		it( 'should stop attaching when the balloon is hidden', () => {
 			view.keepAttachedTo( { target, limiter } );
 
-			expect( attachToSpy.calledOnce ).to.true;
+			sinon.assert.calledOnce( attachToSpy );
 
 			view.hide();
 
@@ -471,13 +471,13 @@ describe( 'BalloonPanelView', () => {
 			window.dispatchEvent( new Event( 'scroll' ) );
 
 			// Still once.
-			expect( attachToSpy.calledOnce ).to.true;
+			sinon.assert.calledOnce( attachToSpy );
 		} );
 
 		it( 'should stop attaching once the view is destroyed', () => {
 			view.keepAttachedTo( { target, limiter } );
 
-			expect( attachToSpy.calledOnce ).to.true;
+			sinon.assert.calledOnce( attachToSpy );
 
 			view.destroy();
 
@@ -485,17 +485,17 @@ describe( 'BalloonPanelView', () => {
 			window.dispatchEvent( new Event( 'scroll' ) );
 
 			// Still once.
-			expect( attachToSpy.calledOnce ).to.true;
+			sinon.assert.calledOnce( attachToSpy );
 		} );
 
 		it( 'should set document.body as the default limiter', () => {
 			view.keepAttachedTo( { target } );
 
-			expect( attachToSpy.calledOnce ).to.true;
+			sinon.assert.calledOnce( attachToSpy );
 
 			document.body.dispatchEvent( new Event( 'scroll' ) );
 
-			expect( attachToSpy.calledTwice ).to.true;
+			sinon.assert.calledTwice( attachToSpy );
 		} );
 
 		it( 'should work for Range as a target', () => {
@@ -508,11 +508,11 @@ describe( 'BalloonPanelView', () => {
 
 			view.keepAttachedTo( { target: range } );
 
-			expect( attachToSpy.calledOnce ).to.true;
+			sinon.assert.calledOnce( attachToSpy );
 
 			element.dispatchEvent( new Event( 'scroll' ) );
 
-			expect( attachToSpy.calledTwice ).to.true;
+			sinon.assert.calledTwice( attachToSpy );
 		} );
 
 		it( 'should work for Rect as a target', () => {
@@ -521,11 +521,11 @@ describe( 'BalloonPanelView', () => {
 
 			view.keepAttachedTo( { target: rect, limiter } );
 
-			expect( attachToSpy.calledOnce ).to.true;
+			sinon.assert.calledOnce( attachToSpy );
 
 			limiter.dispatchEvent( new Event( 'scroll' ) );
 
-			expect( attachToSpy.calledTwice ).to.true;
+			sinon.assert.calledTwice( attachToSpy );
 		} );
 	} );
 } );
