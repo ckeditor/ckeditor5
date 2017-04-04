@@ -94,6 +94,13 @@ export default class Clipboard extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'clipboard/clipboard';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const doc = editor.document;
