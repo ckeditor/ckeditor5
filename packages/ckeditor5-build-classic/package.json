@@ -24,7 +24,12 @@
     "babel-loader": "^6.4.0",
     "babel-preset-env": "^1.2.2",
     "babili-webpack-plugin": "^0.0.11",
+    "css-loader": "^0.28.0",
+    "node-sass": "^4.5.2",
+    "raw-loader": "^0.5.1",
     "regenerator-runtime": "^0.10.3",
+    "sass-loader": "^6.0.3",
+    "style-loader": "^0.16.1",
     "webpack": "^2.3.2"
   },
   "engines": {
