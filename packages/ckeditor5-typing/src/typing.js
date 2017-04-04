@@ -14,10 +14,17 @@ import Delete from './delete';
 /**
  * The typing feature. Handles typing.
  *
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class Typing extends Plugin {
 	static get requires() {
 		return [ Input, Delete ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'typing/typing';
 	}
 }

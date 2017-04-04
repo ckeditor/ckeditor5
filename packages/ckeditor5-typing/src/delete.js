@@ -14,9 +14,16 @@ import DeleteObserver from './deleteobserver';
 /**
  * The delete and backspace feature. Handles the <kbd>Delete</kbd> and <kbd>Backspace</kbd> keys in the editor.
  *
- * @extends core.Plugin
+ * @extends module:core/plugin~Plugin
  */
 export default class Delete extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'typing/delete';
+	}
+
 	init() {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
