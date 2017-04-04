@@ -10,6 +10,8 @@
 import View from '../../view';
 import Template from '../../template';
 import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
+import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange';
+import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
@@ -183,8 +185,11 @@ export default class BalloonPanelView extends View {
 
 		// Then we need to listen on scroll event of eny element in the document.
 		this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {
-			// And update position if scrolled element contains related to the balloon elements.
-			if ( domEvt.target.contains( target ) || domEvt.target.contains( limiter ) ) {
+			// We need to take HTMLElement related to the target if it is possible.
+			const targetNode = isElement( target ) ? target : isRange( target ) ? target.commonAncestorContainer : null;
+
+			// We need to update position if scrolled element contains related to the balloon elements.
+			if ( ( targetNode && domEvt.target.contains( targetNode ) ) || domEvt.target.contains( limiter ) ) {
 				this.attachTo( options );
 			}
 		}, { useCapture: true } );

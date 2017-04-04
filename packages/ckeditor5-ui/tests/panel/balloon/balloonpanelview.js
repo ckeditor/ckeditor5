@@ -9,6 +9,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ViewCollection from '../../../src/viewcollection';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 import ButtonView from '../../../src/button/buttonview';
+import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import * as positionUtils from '@ckeditor/ckeditor5-utils/src/dom/position';
 
@@ -493,6 +494,36 @@ describe( 'BalloonPanelView', () => {
 			expect( attachToSpy.calledOnce ).to.true;
 
 			document.body.dispatchEvent( new Event( 'scroll' ) );
+
+			expect( attachToSpy.calledTwice ).to.true;
+		} );
+
+		it( 'should work for Range as a target', () => {
+			const element = document.createElement( 'div' );
+			const range = document.createRange();
+
+			element.appendChild( document.createTextNode( 'foo bar' ) );
+			document.body.appendChild( element );
+			range.selectNodeContents( element );
+
+			view.keepAttachedTo( { target: range } );
+
+			expect( attachToSpy.calledOnce ).to.true;
+
+			element.dispatchEvent( new Event( 'scroll' ) );
+
+			expect( attachToSpy.calledTwice ).to.true;
+		} );
+
+		it( 'should work for Rect as a target', () => {
+			// Just check if this normally works without errors.
+			const rect = new Rect( {} );
+
+			view.keepAttachedTo( { target: rect, limiter } );
+
+			expect( attachToSpy.calledOnce ).to.true;
+
+			limiter.dispatchEvent( new Event( 'scroll' ) );
 
 			expect( attachToSpy.calledTwice ).to.true;
 		} );
