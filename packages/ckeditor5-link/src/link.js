@@ -42,6 +42,13 @@ export default class Link extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'link/link';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		this.editor.editing.view.addObserver( ClickObserver );
 
