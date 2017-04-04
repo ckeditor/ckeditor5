@@ -17,6 +17,13 @@ import EnterObserver from './enterobserver';
  * @extends module:core/plugin~Plugin
  */
 export default class Enter extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'enter/enter';
+	}
+
 	init() {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
