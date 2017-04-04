@@ -32,6 +32,13 @@ export default class Widget extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'widget/widget';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const viewDocument = this.editor.editing.view;
 
