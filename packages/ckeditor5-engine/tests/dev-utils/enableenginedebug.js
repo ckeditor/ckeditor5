@@ -717,6 +717,8 @@ describe( 'debug tools', () => {
 		it( 'getAppliedDeltas()', () => {
 			const modelDoc = new ModelDocument();
 
+			expect( modelDoc.getAppliedDeltas() ).to.equal( '' );
+
 			const otherRoot = modelDoc.createRoot( '$root', 'otherRoot' );
 			const firstEle = new ModelElement( 'paragraph' );
 			const removedEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );

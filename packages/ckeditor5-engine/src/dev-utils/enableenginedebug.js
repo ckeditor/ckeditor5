@@ -462,16 +462,21 @@ function enableReplayerTools() {
 	ModelDocument.prototype.applyOperation = function( operation ) {
 		if ( !this._lastDelta ) {
 			this._appliedDeltas = [];
-			this._lastDelta = operation.delta;
 		} else if ( this._lastDelta !== operation.delta ) {
 			this._appliedDeltas.push( this._lastDelta.toJSON() );
-			this._lastDelta = operation.delta;
 		}
+
+		this._lastDelta = operation.delta;
 
 		_modelDocumentApplyOperation.call( this, operation );
 	};
 
 	ModelDocument.prototype.getAppliedDeltas = function() {
+		// No deltas has been applied yet, return empty string.
+		if ( !this._lastDelta ) {
+			return '';
+		}
+
 		const appliedDeltas = this._appliedDeltas.concat( this._lastDelta.toJSON() );
 
 		return appliedDeltas.map( JSON.stringify ).join( LOG_SEPARATOR );
