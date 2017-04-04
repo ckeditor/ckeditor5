@@ -399,6 +399,53 @@ describe( 'Editor', () => {
 					expect( editor.plugins.get( PluginD ) ).to.be.an.instanceof( Plugin );
 				} );
 		} );
+
+		it( 'should not load plugins specified in the config as "removePlugins"', () => {
+			const editor = new Editor( {
+				plugins: [ PluginA, PluginD ],
+				removePlugins: [ PluginD ]
+			} );
+
+			return editor.initPlugins()
+				.then( () => {
+					expect( getPlugins( editor ).length ).to.equal( 1 );
+					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+				} );
+		} );
+
+		it( 'should not load plugins built in the Editor when "removePlugins" option is specified', () => {
+			Editor.build = {
+				plugins: [ PluginA, PluginD ]
+			};
+
+			const editor = new Editor( {
+				removePlugins: [ 'D' ]
+			} );
+
+			return editor.initPlugins()
+				.then( () => {
+					expect( getPlugins( editor ).length ).to.equal( 1 );
+					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+				} );
+		} );
+
+		it( 'should not load plugins build into Editor\'s subclass when "removePlugins" option is specified', () => {
+			class CustomEditor extends Editor {}
+
+			CustomEditor.build = {
+				plugins: [ PluginA, PluginD ]
+			};
+
+			const editor = new CustomEditor( {
+				removePlugins: [ 'D' ]
+			} );
+
+			return editor.initPlugins()
+				.then( () => {
+					expect( getPlugins( editor ).length ).to.equal( 1 );
+					expect( editor.plugins.get( PluginA ) ).to.be.an.instanceof( Plugin );
+				} );
+		} );
 	} );
 } );
 

@@ -120,7 +120,10 @@ export default class Editor {
 			.then( () => this.fire( 'pluginsReady' ) );
 
 		function loadPlugins() {
-			return that.plugins.load( config.get( 'plugins' ) || [] );
+			const plugins = config.get( 'plugins' ) || [];
+			const removePlugins = config.get( 'removePlugins' ) || [];
+
+			return that.plugins.load( plugins, removePlugins );
 		}
 
 		function initPlugins( loadedPlugins, method ) {
