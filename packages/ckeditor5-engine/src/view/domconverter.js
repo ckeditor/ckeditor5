@@ -134,15 +134,22 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Unbinds given `domElement` from the view element it was bound to.
+	 * Unbinds given `domElement` from the view element it was bound to. Unbinding is deep, meaning that all children of
+	 * `domElement` will be unbound too.
 	 *
 	 * @param {HTMLElement} domElement DOM element to unbind.
 	 */
 	unbindDomElement( domElement ) {
 		const viewElement = this._domToViewMapping.get( domElement );
 
-		this._domToViewMapping.delete( domElement );
-		this._viewToDomMapping.delete( viewElement );
+		if ( viewElement ) {
+			this._domToViewMapping.delete( domElement );
+			this._viewToDomMapping.delete( viewElement );
+
+			for ( let child of domElement.childNodes ) {
+				this.unbindDomElement( child );
+			}
+		}
 	}
 
 	/**
