@@ -35,6 +35,13 @@ export default class List extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'list/list';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		// Create two buttons and link them with numberedList and bulletedList commands.
 		const t = this.editor.t;
