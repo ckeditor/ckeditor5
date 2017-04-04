@@ -325,6 +325,45 @@ describe( 'Renderer', () => {
 			expect( domP.childNodes.length ).to.equal( 0 );
 		} );
 
+		it( 'should update removed item when it is reinserted #2', () => {
+			// Prepare view: root -> div "outer" -> div "inner" -> p.
+			const viewP = new ViewElement( 'p' );
+			const viewDivInner = new ViewElement( 'div', null, viewP );
+			const viewDivOuter = new ViewElement( 'div', null, viewDivInner );
+			viewRoot.appendChildren( viewDivOuter );
+
+			// Render view tree to DOM.
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			// Remove div "outer" from root and render it.
+			viewDivOuter.remove();
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			// Remove p from div "child" -- div "inner" won't be marked because it is in document fragment not view root.
+			viewP.remove();
+			// Add div "outer" back to root.
+			viewRoot.appendChildren( viewDivOuter );
+			renderer.markToSync( 'children', viewRoot );
+
+			// Render changes, view is: root -> div "outer" -> div "inner".
+			renderer.render();
+
+			// Same is expected in DOM.
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+
+			const domDivOuter = domRoot.childNodes[ 0 ];
+			expect( renderer.domConverter.viewToDom( viewDivOuter, domRoot.document ) ).to.equal( domDivOuter );
+			expect( domDivOuter.tagName ).to.equal( 'DIV' );
+			expect( domDivOuter.childNodes.length ).to.equal( 1 );
+
+			const domDivInner = domDivOuter.childNodes[ 0 ];
+			expect( renderer.domConverter.viewToDom( viewDivInner, domRoot.document ) ).to.equal( domDivInner );
+			expect( domDivInner.tagName ).to.equal( 'DIV' );
+			expect( domDivInner.childNodes.length ).to.equal( 0 );
+		} );
+
 		it( 'should not throw when trying to update children of view element that got removed and lost its binding', () => {
 			const viewFoo = new ViewText( 'foo' );
 			const viewP = new ViewElement( 'p', null, viewFoo );

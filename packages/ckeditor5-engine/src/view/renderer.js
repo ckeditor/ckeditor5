@@ -472,8 +472,8 @@ export default class Renderer {
 				insertAt( domElement, i, expectedDomChildren[ i ] );
 				i++;
 			} else if ( action === 'delete' ) {
-				// Whenever element is removed from DOM, unbind it.
-				this.domConverter.unbindDomElement( actualDomChildren[ i ] );
+				// Whenever element is removed from DOM, unbind it and all of its children.
+				unbindDeep( actualDomChildren[ i ], this.domConverter );
 				remove( actualDomChildren[ i ] );
 			} else { // 'equal'
 				i++;
@@ -686,4 +686,17 @@ function trimSelection( selection ) {
 	newSelection.setRanges( trimmedRanges, newSelection.isBackward );
 
 	return newSelection;
+}
+
+// Unbind given `domElement` and all of its children from view using given `domConverter`.
+//
+// @private
+// @param {HTMLElement} domElement
+// @param {module:engine/view/domconverter~DomConverter}
+function unbindDeep( domElement, domConverter ) {
+	domConverter.unbindDomElement( domElement );
+
+	for ( let child of domElement.childNodes ) {
+		unbindDeep( child, domConverter );
+	}
 }
