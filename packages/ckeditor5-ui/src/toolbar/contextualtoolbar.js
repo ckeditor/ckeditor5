@@ -24,7 +24,7 @@ export default class ContextualToolbar {
 	 */
 	constructor( editor ) {
 		/**
-		 * Editor that the UI belongs to.
+		 * Editor instance.
 		 *
 		 * @readonly
 		 * @member {module:core/editor/editor~Editor} #editor
@@ -32,7 +32,7 @@ export default class ContextualToolbar {
 		this.editor = editor;
 
 		/**
-		 * Panel content.
+		 * Content of the panel.
 		 *
 		 * @private
 		 * @member {module:ui/toolbar/toolbarview~ToolbarView} #_toolbarView
@@ -45,7 +45,7 @@ export default class ContextualToolbar {
 	}
 
 	/**
-	 * Adds editor component to the contextual toolbar.
+	 * Adds editor components to the contextual toolbar.
 	 *
 	 * @param {Array<String>} components List of the toolbar components.
 	 * @param {module:ui/componentfactory~ComponentFactory} [factory=core/editor/editorui#componentFactory]
