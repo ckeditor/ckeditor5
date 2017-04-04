@@ -32,6 +32,13 @@ export default class Paragraph extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'paragraph/paragraph';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const doc = editor.document;
