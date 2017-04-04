@@ -10,7 +10,6 @@
 import LivePosition from '../model/liveposition';
 import Position from '../model/position';
 import Element from '../model/element';
-import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.
@@ -65,31 +64,56 @@ export default function deleteContent( selection, batch, options = {} ) {
 	endPos.detach();
 }
 
+// This function is a result of reaching the Ballmer's peak for just the right amount of time.
+// Even I had troubles documenting it after a while and after reading it again I couldn't believe that it really works.
 function mergeBranches( batch, startPos, endPos ) {
-	const endPath = endPos.path;
-	const mergeEnd = Math.min( startPos.path.length - 1, endPath.length - 1 );
-	let mergeDepth = compareArrays( startPos.path, endPath );
+	const startParent = startPos.parent;
+	const endParent = endPos.parent;
 
-	if ( typeof mergeDepth == 'number' ) {
-		for ( ; mergeDepth < mergeEnd; mergeDepth++ ) {
-			const mergePath = startPos.path.slice( 0, mergeDepth );
-			mergePath.push( startPos.path[ mergeDepth ] + 1 );
-
-			const mergePos = new Position( endPos.root, mergePath );
-			const previousNode = mergePos.nodeBefore;
-			const nextNode = mergePos.nodeAfter;
-
-			if ( !checkCanBeMerged( previousNode ) || !checkCanBeMerged( nextNode ) ) {
-				return;
-			}
-
-			if ( nextNode.childCount > 0 ) {
-				batch.merge( mergePos );
-			} else {
-				batch.remove( nextNode );
-			}
-		}
+	// If both positions ended up in the same parent, then there's nothing more to merge:
+	// <$root><p>x[]</p><p>{}y</p></$root> => <$root><p>xy</p>[]{}</$root>
+	if ( startParent == endParent ) {
+		return;
 	}
+
+	// If one of the positions is a root, then there's nothing more to merge (at least in the current state of implementation).
+	// Theoretically in this case we could unwrap the <p>: <$root>x[]<p>[]y</p></$root>, but we don't need to support it yet
+	// so let's just abort.
+	if ( !startParent.parent || !endParent.parent ) {
+		return;
+	}
+
+	// Check if operations we'll need to do won't need to cross object or limit boundaries.
+	// E.g., we can't merge endParent into startParent in this case:
+	// <limit><startParent>x</startParent></limit><endParent></endParent>
+	if ( !checkCanBeMerged( startParent, endParent ) ) {
+		return;
+	}
+
+	// Remember next positions to merge. For example:
+	// <a><b>x[]</b></a><c><d>[]y</d></c>
+	// will become:
+	// <a><b>xy</b>[]</a><c>[]</c>
+	startPos = Position.createAfter( startParent );
+	endPos = Position.createBefore( endParent );
+
+	if ( endParent.childCount > 0 ) {
+		// At the moment, next startPos is also the position to which the endParent
+		// needs to be moved:
+		// <a><b>x[]</b></a><c><d>[]y</d></c>
+		// becomes:
+		// <a><b>x</b>[]<d>y</d></a><c>[]</c>
+		batch.move( endParent, startPos );
+
+		// To then become:
+		// <a><b>xy</b>[]</a><c>[]</c>
+		batch.merge( startPos );
+	} else {
+		batch.remove( endParent );
+	}
+
+	// Continue merging next level.
+	mergeBranches( batch, startPos, endPos );
 }
 
 function shouldAutoparagraph( doc, position ) {
@@ -99,8 +123,23 @@ function shouldAutoparagraph( doc, position ) {
 	return !isTextAllowed && isParagraphAllowed;
 }
 
-function checkCanBeMerged( element ) {
-	const schema = element.document.schema;
+function checkCanBeMerged( left, right ) {
+	const schema = left.document.schema;
+	const leftAncestors = left.getAncestors( { includeNode: true } );
+	const rightAncestors = right.getAncestors( { includeNode: true } );
 
-	return !schema.objects.has( element.name ) && !schema.limits.has( element.name );
+	// Check if any of the ancestor chains contain a limitting element which would be crossed
+	// when these elements will be merged. If so, the elements can't be merged.
+	return !leftAncestors.find( checkLimitsMerge( rightAncestors ) ) && !rightAncestors.find( checkLimitsMerge( leftAncestors ) );
+
+	function checkLimitsMerge( secondBranchAncestors ) {
+		return ( ancestor ) => {
+			// If the ancestor is in the second branch, it means that it's a common ancestor, so it won't be crossed.
+			if ( secondBranchAncestors.includes( ancestor ) ) {
+				return false;
+			}
+
+			return schema.objects.has( ancestor.name ) || schema.limits.has( ancestor.name );
+		};
+	}
 }
