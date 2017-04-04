@@ -16,7 +16,7 @@ import DeltaFactory from '../model/delta/deltafactory';
  */
 export default class DeltaReplayer {
 	/**
-	 * @param {module:engine/model/document~Document} document.
+	 * @param {module:engine/model/document~Document} document Document to reply deltas on.
 	 * @param {String} logSeparator Separator between deltas.
 	 * @param {String} stringifiedDeltas Deltas to replay.
 	 */
@@ -27,7 +27,9 @@ export default class DeltaReplayer {
 	}
 
 	/**
-	 * @param {String} stringifiedDeltas Deltas to replay.
+	 * Parses given string containing stringified deltas and sets parsed deltas as deltas to reply.
+	 *
+	 * @param {String} stringifiedDeltas Stringified deltas to replay.
 	 */
 	setStringifiedDeltas( stringifiedDeltas ) {
 		if ( stringifiedDeltas === '' ) {
@@ -41,6 +43,11 @@ export default class DeltaReplayer {
 			.map( stringifiedDelta => JSON.parse( stringifiedDelta ) );
 	}
 
+	/**
+	 * Returns deltas to reply.
+	 *
+	 * @returns {Array.<module:engine/model/delta/delta~Delta>}
+	 */
 	getDeltasToReplay() {
 		return this._deltasToReplay;
 	}
@@ -70,6 +77,8 @@ export default class DeltaReplayer {
 	}
 
 	/**
+	 * Applies `numberOfDeltas` deltas, beginning after the last applied delta (or first delta, if no deltas were applied).
+	 *
 	 * @param {Number} numberOfDeltas Number of deltas to apply.
 	 * @returns {Promise}
 	 */
@@ -84,6 +93,8 @@ export default class DeltaReplayer {
 	}
 
 	/**
+	 * Applies all deltas to replay at once.
+	 *
 	 * @returns {Promise}
 	 */
 	applyAllDeltas() {
@@ -93,6 +104,8 @@ export default class DeltaReplayer {
 	}
 
 	/**
+	 * Applies the next delta to replay.
+	 *
 	 * @returns {Promise}
 	 */
 	applyNextDelta() {

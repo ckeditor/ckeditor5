@@ -77,7 +77,7 @@ describe( 'DeltaReplayer', () => {
 		} );
 	} );
 
-	describe( 'applyAllDeltas', () => {
+	describe( 'applyAllDeltas()', () => {
 		it( 'should apply all deltas on the document', () => {
 			const doc = getDocument();
 
@@ -94,7 +94,7 @@ describe( 'DeltaReplayer', () => {
 		} );
 	} );
 
-	describe( 'applyDeltas', () => {
+	describe( 'applyDeltas()', () => {
 		it( 'should apply certain number of deltas on the document', () => {
 			const doc = getDocument();
 
@@ -127,7 +127,7 @@ describe( 'DeltaReplayer', () => {
 		} );
 	} );
 
-	describe( 'play', () => {
+	describe( 'play()', () => {
 		it( 'should play deltas with time interval', () => {
 			const doc = getDocument();
 
