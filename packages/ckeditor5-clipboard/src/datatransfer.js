@@ -19,6 +19,8 @@ export default class DataTransfer {
 		 * @member {DataTransfer} #_native
 		 */
 		this._native = nativeDataTransfer;
+
+		this.files = Array.from( this.getFiles() );
 	}
 
 	/**
@@ -43,7 +45,7 @@ export default class DataTransfer {
 		this._native.setData( type, data );
 	}
 
-	*getFiles() {
+	*_getFiles() {
 		// DataTransfer.files and items are Array-like and might not have an iterable interface.
 		const files = this._native.files ? Array.from( this._native.files ) : [];
 		const items = this._native.items ? Array.from( this._native.items ) : [];
@@ -61,7 +63,7 @@ export default class DataTransfer {
 		}
 	}
 
-	getTypes() {
+	get types() {
 		return this._native.types;
 	}
 }

@@ -111,7 +111,7 @@ export default class Clipboard extends Plugin {
 
 		// The clipboard paste pipeline.
 
-		this.listenTo( editingView, 'paste', ( evt, data ) => {
+		this.listenTo( editingView, 'input', ( evt, data ) => {
 			const dataTransfer = data.dataTransfer;
 			let content = '';
 
@@ -123,12 +123,10 @@ export default class Clipboard extends Plugin {
 
 			content = this._htmlDataProcessor.toView( content );
 
-			data.preventDefault();
-
-			editingView.fire( 'clipboardInput', { dataTransfer, content } );
+			editingView.fire( 'clipboardInputTransformation', { content } );
 		}, { priority: 'low' } );
 
-		this.listenTo( editingView, 'clipboardInput', ( evt, data ) => {
+		this.listenTo( editingView, 'clipboardInputTransformation', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
 				const dataController = this.editor.data;
 
