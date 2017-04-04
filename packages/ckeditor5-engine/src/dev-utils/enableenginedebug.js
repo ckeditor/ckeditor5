@@ -46,10 +46,15 @@ import ViewDocumentFragment from '../view/documentfragment';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 
+import DeltaReplayer from './deltareplayer';
+
 const treeDump = Symbol( '_treeDump' );
 
 // Maximum number of stored states of model and view document.
 const maxTreeDumpLength = 20;
+
+// Separator used to separate stringified deltas
+const LOG_SEPARATOR = '\n----------------\n';
 
 // Specified whether debug tools were already enabled.
 let enabled = false;
@@ -96,14 +101,17 @@ let log = console.log;
  * @param {Function} [logger] Function used to log messages. By default messages are logged to console.
  * @returns {module:engine/dev-utils/enableenginedebug~DebugPlugin} Plugin to be loaded in the editor.
  */
-export default function enableEngineDebug( logger = console.log ) {
-	log = logger;
+export default function enableEngineDebug( logger ) {
+	if ( logger ) {
+		log = logger;
+	}
 
 	if ( !enabled ) {
 		enabled = true;
 
 		enableLoggingTools();
 		enableDocumentTools();
+		enableReplayerTools();
 	}
 
 	return DebugPlugin;
@@ -448,11 +456,48 @@ function enableLoggingTools() {
 	};
 }
 
+function enableReplayerTools() {
+	const _modelDocumentApplyOperation = ModelDocument.prototype.applyOperation;
+
+	ModelDocument.prototype.applyOperation = function( operation ) {
+		if ( !this._lastDelta ) {
+			this._appliedDeltas = [];
+		} else if ( this._lastDelta !== operation.delta ) {
+			this._appliedDeltas.push( this._lastDelta.toJSON() );
+		}
+
+		this._lastDelta = operation.delta;
+
+		_modelDocumentApplyOperation.call( this, operation );
+	};
+
+	ModelDocument.prototype.getAppliedDeltas = function() {
+		// No deltas has been applied yet, return empty string.
+		if ( !this._lastDelta ) {
+			return '';
+		}
+
+		const appliedDeltas = this._appliedDeltas.concat( this._lastDelta.toJSON() );
+
+		return appliedDeltas.map( JSON.stringify ).join( LOG_SEPARATOR );
+	};
+
+	ModelDocument.prototype.createReplayer = function( stringifiedDeltas ) {
+		return new DeltaReplayer( this, LOG_SEPARATOR, stringifiedDeltas );
+	};
+}
+
 function enableDocumentTools() {
 	const _modelDocumentApplyOperation = ModelDocument.prototype.applyOperation;
 
 	ModelDocument.prototype.applyOperation = function( operation ) {
 		log( 'Applying ' + operation );
+
+		if ( !this._operationLogs ) {
+			this._operationLogs = [];
+		}
+
+		this._operationLogs.push( JSON.stringify( operation.toJSON() ) );
 
 		_modelDocumentApplyOperation.call( this, operation );
 	};

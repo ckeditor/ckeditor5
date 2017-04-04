@@ -713,6 +713,57 @@ describe( 'debug tools', () => {
 		} );
 	} );
 
+	describe( 'should provide methods for delta replayer', () => {
+		it( 'getAppliedDeltas()', () => {
+			const modelDoc = new ModelDocument();
+
+			expect( modelDoc.getAppliedDeltas() ).to.equal( '' );
+
+			const otherRoot = modelDoc.createRoot( '$root', 'otherRoot' );
+			const firstEle = new ModelElement( 'paragraph' );
+			const removedEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
+
+			otherRoot.appendChildren( [ firstEle, removedEle ] );
+
+			const delta = new MergeDelta();
+			const move = new MoveOperation( ModelPosition.createAt( removedEle, 0 ), 3, ModelPosition.createAt( firstEle, 0 ), 0 );
+			const remove = new RemoveOperation( ModelPosition.createBefore( removedEle ), 1, 1 );
+
+			delta.addOperation( move );
+			delta.addOperation( remove );
+
+			modelDoc.applyOperation( move );
+			modelDoc.applyOperation( remove );
+
+			const stringifiedDeltas = modelDoc.getAppliedDeltas();
+
+			expect( stringifiedDeltas ).to.equal( JSON.stringify( delta.toJSON() ) );
+		} );
+
+		it( 'createReplayer()', () => {
+			const modelDoc = new ModelDocument();
+
+			const otherRoot = modelDoc.createRoot( '$root', 'otherRoot' );
+			const firstEle = new ModelElement( 'paragraph' );
+			const removedEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
+
+			otherRoot.appendChildren( [ firstEle, removedEle ] );
+
+			const delta = new MergeDelta();
+			const move = new MoveOperation( ModelPosition.createAt( removedEle, 0 ), 3, ModelPosition.createAt( firstEle, 0 ), 0 );
+			const remove = new RemoveOperation( ModelPosition.createBefore( removedEle ), 1, 1 );
+
+			delta.addOperation( move );
+			delta.addOperation( remove );
+
+			const stringifiedDeltas = JSON.stringify( delta.toJSON() );
+
+			const deltaReplayer = modelDoc.createReplayer( stringifiedDeltas );
+
+			expect( deltaReplayer.getDeltasToReplay() ).to.deep.equal( [ JSON.parse( stringifiedDeltas ) ] );
+		} );
+	} );
+
 	function expectLog( expectedLogMsg ) {
 		expect( log.calledWithExactly( expectedLogMsg ) ).to.be.true;
 		log.reset();
