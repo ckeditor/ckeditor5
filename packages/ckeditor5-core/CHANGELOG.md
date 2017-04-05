@@ -5,7 +5,7 @@ Changelog
 
 ### Bug fixes
 
-* Now introduced support for `config.removePlugins` for real (we said that we did this in the previous release). Closes [#49](https://github.com/ckeditor/ckeditor5-core/issues/49). ([5834fed](https://github.com/ckeditor/ckeditor5-core/commit/5834fed))
+* This time, we introduced support for `config.removePlugins` for real (we said that we did this in the previous release, but we didn't). Closes [#49](https://github.com/ckeditor/ckeditor5-core/issues/49). ([5834fed](https://github.com/ckeditor/ckeditor5-core/commit/5834fed))
 
 ### Features
 
