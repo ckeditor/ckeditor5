@@ -252,5 +252,41 @@ describe( 'BlockQuote', () => {
 				'<paragraph>y</paragraph>'
 			);
 		} );
+
+		it( 'removes empty quote when merging into another quote', () => {
+			const data = fakeEventData();
+
+			setModelData( doc,
+				'<paragraph>x</paragraph>' +
+				'<blockQuote><paragraph>a</paragraph></blockQuote>' +
+				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
+				'<paragraph>y</paragraph>'
+			);
+
+			editor.editing.view.fire( 'delete', data );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph>x</paragraph>' +
+				'<blockQuote><paragraph>a[]</paragraph></blockQuote>' +
+				'<paragraph>y</paragraph>'
+			);
+		} );
+
+		it( 'removes empty quote when merging into a paragraph', () => {
+			const data = fakeEventData();
+
+			setModelData( doc,
+				'<paragraph>x</paragraph>' +
+				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
+				'<paragraph>y</paragraph>'
+			);
+
+			editor.editing.view.fire( 'delete', data );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<paragraph>x[]</paragraph>' +
+				'<paragraph>y</paragraph>'
+			);
+		} );
 	} );
 } );

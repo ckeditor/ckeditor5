@@ -9,6 +9,8 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
 import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
 import BlockQuote from '../../src/blockquote';
 
+import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [
 		ArticlePreset,
@@ -22,3 +24,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 .catch( err => {
 	console.error( err.stack );
 } );
+
+window.setInterval( function() {
+	console.log( getData( window.editor.document ) );
+}, 3000 );
