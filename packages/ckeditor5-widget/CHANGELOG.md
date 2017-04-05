@@ -5,5 +5,4 @@ Changelog
 
 ### Features
 
-* Initial implementation (moved from the `ckeditor5-image` package). Closes [#1](https://github.com/ckeditor/ckeditor5-widget/issues/1). ([564dd97](https://github.com/ckeditor/ckeditor5-widget/commit/564dd97))
-* Named existing plugin(s). ([1cff398](https://github.com/ckeditor/ckeditor5-widget/commit/1cff398))
+* Initial implementation (the code was moved from the `ckeditor5-image` package). Closes [#1](https://github.com/ckeditor/ckeditor5-widget/issues/1). ([564dd97](https://github.com/ckeditor/ckeditor5-widget/commit/564dd97))
