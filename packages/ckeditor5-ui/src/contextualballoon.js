@@ -12,14 +12,18 @@ import BalloonPanelView from './panel/balloon/balloonpanelview';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * Common contextual balloon of the Editor.
+ * Provides the common contextual balloon panel for the editor.
  *
- * This plugin is for reusing the same {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} instance
- * for each contextual balloon panel in the editor. Also it makes possible to add multiple views to the same balloon.
- * Views are stored in the stack, last one in the stack is currently visible. When visible view will be removed from
- * the stack then previous view become visible, if there is no more view in the stack balloon will hide.
+ * This plugin allows reusing a single {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} instance
+ * to display multiple contextual balloon panels in the editor.
  *
- * Using this plugin prevents of displaying more than one contextual balloon panel at the same time.
+ * Child views of such a panel are stored in the stack and the last one in the stack is visible. When the
+ * visible view is removed from the stack, the previous view becomes visible, etc. If there are no more
+ * views in the stack, the balloon panel will hide.
+ *
+ * It simplifies managing the views and helps
+ * avoid the unnecessary complexity of handling multiple {module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
+ * instances in the editor.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -29,7 +33,7 @@ export default class ContextualBalloon extends Plugin {
 	 */
 	init() {
 		/**
-		 * Balloon panel view.
+		 * The common balloon panel view.
 		 *
 		 * @readonly
 		 * @member {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} #view
@@ -37,8 +41,8 @@ export default class ContextualBalloon extends Plugin {
 		this.view = new BalloonPanelView();
 
 		/**
-		 * Stack of the views injected to the balloon. Last one in the stack is displayed
-		 * as content of {@link module:ui/contextualballoon~ContextualBalloon#view}.
+		 * Stack of the views injected into the balloon. Last one in the stack is displayed
+		 * as a content of {@link module:ui/contextualballoon~ContextualBalloon#view}.
 		 *
 		 * @private
 		 * @member {Map} #_stack
@@ -54,7 +58,8 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Returns configuration of currently visible view or `null` when there is no view in the stack.
+	 * Returns configuration of the currently visible view or `null` when there are no
+	 * views in the stack.
 	 *
 	 * @returns {module:ui/contextualballoon~ViewConfig|null}
 	 */
@@ -63,7 +68,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when given view is in the stack otherwise returns `false`.
+	 * Returns `true` when the given view is in the stack. Otherwise returns `false`.
 	 *
 	 * @param {module:ui/view~View} view
 	 * @returns {Boolean}
@@ -73,7 +78,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Adds view to the stack and makes it visible.
+	 * Adds a new view to the stack and makes it visible.
 	 *
 	 * @param {module:ui/contextualballoon~ViewConfig} data Configuration of the view.
 	 */
@@ -100,11 +105,11 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Removes given view from the stack. If removed view was visible
-	 * then the view before in the stack will be visible instead.
+	 * Removes the given view from the stack. If the removed view was visible,
+	 * then the view preceding it in the stack will become visible instead.
 	 * When there is no view in the stack then balloon will hide.
 	 *
-	 * @param {module:ui/view~View} view View which will be removed from the balloon.
+	 * @param {module:ui/view~View} view A view to be removed from the balloon.
 	 */
 	remove( view ) {
 		if ( !this.isViewInStack( view ) ) {
@@ -127,16 +132,14 @@ export default class ContextualBalloon extends Plugin {
 			// Next we need to check if there is other view in stack to show.
 			const last = Array.from( this._stack.values() ).pop();
 
-			// If it is.
+			// If it is some other view.
 			if ( last ) {
 				// Just show it.
 				this._show( last );
-			// Otherwise.
 			} else {
-				// Hide balloon panel.
+				// Hide the balloon panel.
 				this.view.hide();
 			}
-		// Otherwise.
 		} else {
 			// Just remove given view from the stack.
 			this._stack.delete( view );
@@ -144,7 +147,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Updates position of balloon panel according to position data
+	 * Updates the position of the balloon panel according to position data
 	 * of the first view in the stack.
 	 */
 	updatePosition() {
@@ -152,7 +155,8 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Sets view as a content of the balloon and attaches balloon using position options of the first view.
+	 * Sets the view as a content of the balloon and attaches balloon using position
+	 * options of the first view.
 	 *
 	 * @private
 	 * @param {module:ui/contextualballoon~ViewConfig} data Configuration of the view.
@@ -164,7 +168,7 @@ export default class ContextualBalloon extends Plugin {
 
 	/**
 	 * Returns position options of the first view in the stack.
-	 * This helps to keep balloon in the same position when view is changed.
+	 * This keeps the balloon in the same position when view is changed.
 	 *
 	 * @private
 	 * @returns {module:utils/dom/position~Options}
@@ -184,7 +188,7 @@ export default class ContextualBalloon extends Plugin {
 }
 
 /**
- * An object describing configuration of single view added to the balloon stack.
+ * An object describing configuration of a single view added to the balloon stack.
  *
  * @typedef {Object} module:ui/contextualballoon~ViewConfig
  *
