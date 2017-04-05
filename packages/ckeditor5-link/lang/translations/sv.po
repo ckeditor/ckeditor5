@@ -1,18 +1,18 @@
 # Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: hr\n"
-"Language-Team: Croatian (https://www.transifex.com/ckeditor/teams/11143/hr/)\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Language: sv\n"
+"Language-Team: Swedish (https://www.transifex.com/ckeditor/teams/11143/sv/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Toolbar button tooltip for the Unlink feature."
 msgid "Unlink"
-msgstr "Ukloni vezu"
+msgstr "Ta bort länk"
 
 msgctxt "Toolbar button tooltip for the Link feature."
 msgid "Link"
-msgstr "Veza"
+msgstr "Länk"
 
 msgctxt "Label for the url input in the Link dialog."
 msgid "Link URL"
-msgstr "URL veze"
+msgstr ""
