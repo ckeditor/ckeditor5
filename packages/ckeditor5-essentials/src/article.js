@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import EssentialsPreset from './essentials';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
@@ -21,6 +21,7 @@ import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 /**
  * Article editor preset. Represents a set of features which enable in the editor
@@ -31,6 +32,19 @@ import List from '@ckeditor/ckeditor5-list/src/list';
  */
 export default class Article extends Plugin {
 	static get requires() {
-		return [ EssentialsPreset, Paragraph, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Italic, Link, List ];
+		return [
+			EssentialsPreset,
+			BlockQuote,
+			Bold,
+			Heading,
+			Image,
+			ImageCaption,
+			ImageStyle,
+			ImageToolbar,
+			Italic,
+			Link,
+			List,
+			Paragraph
+		];
 	}
 }

@@ -78,7 +78,11 @@ describe( 'Article preset', () => {
 			'<figure class="image image-style-side">' +
 				'<img alt="bar" src="foo">' +
 				'<figcaption>Caption</figcaption>' +
-			'</figure>';
+			'</figure>' +
+			'<blockquote>' +
+				'<p>Quote</p>' +
+				'<ul><li>Quoted UL List item 1</li></ul>' +
+			'</blockquote>';
 
 		// Can't use data twice due to https://github.com/ckeditor/ckeditor5-utils/issues/128.
 		const expectedOutput =
@@ -96,7 +100,11 @@ describe( 'Article preset', () => {
 			'<figure class="image image-style-side">' +
 				'<img alt="bar" src="foo"></img>' +
 				'<figcaption>Caption</figcaption>' +
-			'</figure>';
+			'</figure>' +
+			'<blockquote>' +
+				'<p>Quote</p>' +
+				'<ul><li>Quoted UL List item 1</li></ul>' +
+			'</blockquote>';
 
 		editor.setData( data );
 
