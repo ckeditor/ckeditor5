@@ -103,22 +103,20 @@ class PluginGeneric extends Plugin {
 	}
 
 	init() {
-		this.balloon = this.editor.plugins.get( ContextualBalloon );
-
-		this._isOpen = false;
+		this._balloon = this.editor.plugins.get( ContextualBalloon );
 
 		this.editor.editing.view.on( 'selectionChange', () => this._hidePanel() );
 
 		this.view.bind( 'label' ).to( this );
 
 		this.view.on( 'cancel', () => {
-			if ( this.balloon.visible.view === this.view ) {
+			if ( this._isVisible ) {
 				this._hidePanel();
 			}
 		} );
 
 		this.editor.keystrokes.set( 'Esc', ( data, cancel ) => {
-			if ( this.balloon.visible.view === this.view ) {
+			if ( this._isVisible ) {
 				this._hidePanel();
 			}
 
@@ -137,10 +135,14 @@ class PluginGeneric extends Plugin {
 
 		clickOutsideHandler( {
 			emitter: this.view,
-			activator: () => this._isOpen && this.balloon.visible.view === this.view,
+			activator: () => this._isVisible,
 			contextElement: this.view.element,
 			callback: () => this._hidePanel()
 		} );
+	}
+
+	get _isVisible() {
+		return this._balloon.visible && this._balloon.visible.view === this.view;
 	}
 
 	afterInit() {
@@ -155,29 +157,26 @@ class PluginGeneric extends Plugin {
 	}
 
 	_showPanel() {
-		if ( this._isOpen ) {
+		if ( this._balloon.isViewInStack( this.view ) ) {
 			return;
 		}
 
 		const viewDocument = this.editor.editing.view;
 
-		this.balloon.add( {
+		this._balloon.add( {
 			view: this.view,
 			position: {
 				target: viewDocument.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() )
 			}
 		} );
-
-		this._isOpen = true;
 	}
 
 	_hidePanel() {
-		if ( !this._isOpen ) {
+		if ( !this._balloon.isViewInStack( this.view ) ) {
 			return;
 		}
 
-		this.balloon.remove( this.view );
-		this._isOpen = false;
+		this._balloon.remove( this.view );
 	}
 }
 
@@ -241,8 +240,6 @@ function createContextualToolbar( editor ) {
 		} )
 	};
 
-	let isOpen = false;
-
 	// Add plugins to the toolbar.
 	toolbar.fillFromConfig( [ 'PluginA', 'PluginB' ], editor.ui.componentFactory );
 
@@ -256,8 +253,6 @@ function createContextualToolbar( editor ) {
 			const isBackward = editingView.selection.isBackward;
 			const rangeRects = editingView.domConverter.viewRangeToDom( editingView.selection.getFirstRange() ).getClientRects();
 
-			isOpen = true;
-
 			balloon.add( {
 				view: toolbar,
 				position: {
@@ -268,13 +263,11 @@ function createContextualToolbar( editor ) {
 		}
 	} );
 
-	// Remove toolbar from balloon and mark as not opened.
+	// Remove toolbar from balloon.
 	function close() {
-		if ( isOpen ) {
+		if ( balloon.isViewInStack( toolbar ) ) {
 			balloon.remove( toolbar );
 		}
-
-		isOpen = false;
 	}
 }
 
