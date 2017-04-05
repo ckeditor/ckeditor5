@@ -4,6 +4,7 @@
   "description": "Upload Feature for CKEditor 5.",
   "keywords": [],
   "dependencies": {
+	  "@ckeditor/ckeditor5-core": "^0.7.0",
 	  "@ckeditor/ckeditor5-utils": "^0.8.0"
   },
   "devDependencies": {

@@ -44,7 +44,7 @@ export default class FileReader {
 	/**
 	 * Returns error that occurred during file reading.
 	 *
-	 * @returns {DOMError}
+	 * @returns {Error}
 	 */
 	get error() {
 		return this._reader.error;
@@ -53,14 +53,9 @@ export default class FileReader {
 	/**
 	 * Reads provided file.
 	 *
-	 * @param {File} file
+	 * @param file Native File object.
 	 * @returns {Promise} Returns a promise that will resolve with file's contents. Promise can be rejected in case of
 	 * error or when reading process is aborted.
-	 *
-	 *	const reader = new FileReader();
-	 *
-	 * reader.read( file )
-	 *
 	 */
 	read( file ) {
 		const reader = this._reader;
