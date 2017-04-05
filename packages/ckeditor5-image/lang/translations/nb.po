@@ -1,29 +1,29 @@
 # Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: ku\n"
-"Language-Team: Kurdish (https://www.transifex.com/ckeditor/teams/11143/ku/)\n"
+"Language: nb\n"
+"Language-Team: Norwegian Bokmål (https://www.transifex.com/ckeditor/teams/11143/nb/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Label for the image widget."
 msgid "image widget"
-msgstr "وێدجیتی وێنە"
+msgstr "Bilde-widget"
 
 msgctxt "Label for the Side image option."
 msgid "Side image"
-msgstr "لای وێنە"
+msgstr "Sidebilde"
 
 msgctxt "Label for the Full size image option."
 msgid "Full size image"
-msgstr "پڕ بەقەبارەی وێنە"
+msgstr "Bilde i full størrelse"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
-msgstr "گۆڕینی جێگروەی تێکیسی وێنە"
+msgstr "Endre tekstalternativ for bilde"
 
 msgctxt "Label for the image text alternative input."
 msgid "Text alternative"
-msgstr "جێگرەوەی تێکست"
+msgstr "Tekstalternativ for bilde"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
