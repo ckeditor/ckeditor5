@@ -255,6 +255,21 @@ describe( 'DataController', () => {
 				expect( spyRemove.called ).to.be.true;
 			} );
 
+			it( 'does not try to move the second block if not needed', () => {
+				setData( doc, '<paragraph>ab[cd</paragraph><paragraph>ef]gh</paragraph>' );
+
+				const batch = doc.batch();
+				const spyMerge = sinon.spy( batch, 'merge' );
+				const spyMove = sinon.spy( batch, 'move' );
+
+				deleteContent( doc.selection, batch, { merge: true } );
+
+				expect( getData( doc ) ).to.equal( '<paragraph>ab[]gh</paragraph>' );
+
+				expect( spyMove.called ).to.be.false;
+				expect( spyMerge.called ).to.be.true;
+			} );
+
 			// Note: in all these cases we ignore the direction of merge.
 			// If https://github.com/ckeditor/ckeditor5-engine/issues/470 was fixed we could differently treat
 			// forward and backward delete.

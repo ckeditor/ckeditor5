@@ -104,7 +104,12 @@ function mergeBranches( batch, startPos, endPos ) {
 		// <a><b>x[]</b></a><c><d>[]y</d></c>
 		// becomes:
 		// <a><b>x</b>[]<d>y</d></a><c>[]</c>
-		batch.move( endParent, startPos );
+
+		// Move the end parent only if needed.
+		// E.g. not in this case: <p>ab</p>[]{}<p>cd</p>
+		if ( !endPos.isEqual( startPos ) ) {
+			batch.move( endParent, startPos );
+		}
 
 		// To then become:
 		// <a><b>xy</b>[]</a><c>[]</c>
