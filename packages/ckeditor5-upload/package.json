@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "Upload Feature for CKEditor 5.",
   "keywords": [],
-  "dependencies": {},
+  "dependencies": {
+	  "@ckeditor/ckeditor5-utils": "^0.8.0"
+  },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-lint": "^2.0.2",
     "gulp": "^3.9.1",
