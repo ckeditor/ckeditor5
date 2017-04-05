@@ -12,6 +12,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 
 import Link from '../src/link';
 import LinkEngine from '../src/linkengine';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/contextualballoon';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import Range from '@ckeditor/ckeditor5-engine/src/view/range';
@@ -37,7 +38,7 @@ describe( 'Link', () => {
 			linkFeature = editor.plugins.get( Link );
 			linkButton = editor.ui.componentFactory.create( 'link' );
 			unlinkButton = editor.ui.componentFactory.create( 'unlink' );
-			balloon = editor.ui.balloon;
+			balloon = editor.plugins.get( ContextualBalloon );
 			formView = linkFeature.formView;
 
 			// There is no point to execute `BalloonPanelView#attachTo` so override it.
@@ -55,6 +56,10 @@ describe( 'Link', () => {
 
 	it( 'should load LinkEngine', () => {
 		expect( editor.plugins.get( LinkEngine ) ).to.instanceOf( LinkEngine );
+	} );
+
+	it( 'should load ContextualBalloon', () => {
+		expect( editor.plugins.get( ContextualBalloon ) ).to.instanceOf( ContextualBalloon );
 	} );
 
 	it( 'should register click observer', () => {
@@ -76,13 +81,15 @@ describe( 'Link', () => {
 			expect( linkButton.isEnabled ).to.be.false;
 		} );
 
-		it( 'should add panel to the `ui#balloon` on execute event', () => {
+		it( 'should add link form to the ContextualBalloon on execute event', () => {
 			linkButton.fire( 'execute' );
 
 			expect( balloon.visible.view ).to.equal( linkFeature.formView );
 		} );
 
-		it( 'should add panel to `ui#balloon` attached to the link element, when collapsed selection is inside link element', () => {
+		it( 'should add link form to the ContextualBalloon and attach balloon to the link element ' +
+			'when collapsed selection is inside link element',
+		() => {
 			editor.document.schema.allow( { name: '$text', inside: '$root' } );
 			setModelData( editor.document, '<$text linkHref="url">some[] url</$text>' );
 			editor.editing.view.isFocused = true;
@@ -97,7 +104,7 @@ describe( 'Link', () => {
 			} ) );
 		} );
 
-		it( 'should add panel to `ui#balloon` attached to the selection, when there is non-collapsed selection', () => {
+		it( 'should add link form to the ContextualBalloon and attach balloon to the selection, when selection is non-collapsed', () => {
 			editor.document.schema.allow( { name: '$text', inside: '$root' } );
 			setModelData( editor.document, 'so[me ur]l' );
 			editor.editing.view.isFocused = true;
@@ -112,7 +119,7 @@ describe( 'Link', () => {
 			} ) );
 		} );
 
-		it( 'should select panel input value when panel is opened', () => {
+		it( 'should select link input value when link balloon is opened', () => {
 			const selectUrlInputSpy = testUtils.sinon.spy( linkFeature.formView.urlInputView, 'select' );
 
 			editor.editing.view.isFocused = true;
@@ -148,27 +155,27 @@ describe( 'Link', () => {
 		} );
 	} );
 
-	describe( 'balloon panel', () => {
+	describe( 'ContextualBalloon', () => {
 		let focusEditableSpy;
 
 		beforeEach( () => {
 			focusEditableSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 		} );
 
-		it( 'should not be added to `balloon#ui` at default', () => {
-			expect( editor.ui.balloon.visible ).to.null;
+		it( 'should not be added to ContextualBalloon at default', () => {
+			expect( balloon.visible ).to.null;
 		} );
 
-		it( 'should be added to `balloon#ui` and form should be selected on `CTRL+K` keystroke', () => {
+		it( 'should be added to ContextualBalloon and form should be selected on `CTRL+K` keystroke', () => {
 			const selectUrlInputSpy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 
 			editor.keystrokes.press( { keyCode: keyCodes.k, ctrlKey: true } );
 
-			expect( editor.ui.balloon.visible.view ).to.equal( formView );
+			expect( balloon.visible.view ).to.equal( formView );
 			expect( selectUrlInputSpy.calledOnce ).to.true;
 		} );
 
-		it( 'should do not add panel to `balloon#ui` more than once', () => {
+		it( 'should not add panel to ContextualBalloon more than once', () => {
 			// Add panel to balloon by pressing toolbar button.
 			linkButton.fire( 'execute' );
 
@@ -248,7 +255,7 @@ describe( 'Link', () => {
 					editor.keystrokes.press( keyEvtData );
 
 					expect( balloon.visible.view ).to.equal( viewMock );
-					expect( balloon.isPanelInStack( formView ) ).to.true;
+					expect( balloon.isViewInStack( formView ) ).to.true;
 					sinon.assert.notCalled( focusEditableSpy );
 				} );
 

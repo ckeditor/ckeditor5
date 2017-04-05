@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 import LinkEngine from './linkengine';
 import LinkElement from './linkelement';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/contextualballoon';
 
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 
@@ -23,10 +24,10 @@ import unlinkIcon from '../theme/icons/unlink.svg';
 import '../theme/theme.scss';
 
 /**
- * The link feature. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
- * Link UI is displayed using {@link module:core/editor/editorui~EditorUI#balloon}.
+ * The link plugin. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
  *
- * It uses the {@link module:link/linkengine~LinkEngine link engine feature}.
+ * It uses the {@link module:link/linkengine~LinkEngine link engine plugin} and
+ * {@link module:ui/contextualballoon~ContextualBalloon contextual balloon plugin}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -35,7 +36,7 @@ export default class Link extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ LinkEngine ];
+		return [ LinkEngine, ContextualBalloon ];
 	}
 
 	/**
@@ -58,6 +59,14 @@ export default class Link extends Plugin {
 		 */
 		this.formView = this._createForm();
 
+		/**
+		 * Contextual balloon plugin instance.
+		 *
+		 * @private
+		 * @member {module:ui/contextualballoon~ContextualBalloon}
+		 */
+		this._balloon = this.editor.plugins.get( ContextualBalloon );
+
 		// Create toolbar buttons.
 		this._createToolbarLinkButton();
 		this._createToolbarUnlinkButton();
@@ -67,25 +76,23 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when link panel is added to the {@link module:core/editor/editorui~EditorUI#balloon} stack.
+	 * Returns `true` when link view is added to the {@link module:ui/contextualballoon~ContextualBalloon}.
 	 *
 	 * @private
 	 * @returns {Boolean}
 	 */
 	get _isInStack() {
-		return this.editor.ui.balloon.isPanelInStack( this.formView );
+		return this._balloon.isViewInStack( this.formView );
 	}
 
 	/**
-	 * Returns `true` when link panel is currently visible in {@link module:core/editor/editorui~EditorUI#balloon}.
+	 * Returns `true` when link view is currently visible in {@link module:ui/contextualballoon~ContextualBalloon}.
 	 *
 	 * @private
 	 * @returns {Boolean}
 	 */
 	get _isVisible() {
-		const balloon = this.editor.ui.balloon;
-
-		return balloon.visible && balloon.visible.view === this.formView;
+		return this._balloon.visible && this._balloon.visible.view === this.formView;
 	}
 
 	/**
@@ -112,7 +119,7 @@ export default class Link extends Plugin {
 			this._hidePanel( true );
 		} );
 
-		// Hide balloon panel after clicking on formView `Cancel` button.
+		// Hide the panel after clicking on formView `Cancel` button.
 		this.listenTo( formView, 'cancel', () => this._hidePanel( true ) );
 
 		// Close the panel on esc key press when the form has focus.
@@ -135,7 +142,7 @@ export default class Link extends Plugin {
 		const linkCommand = editor.commands.get( 'link' );
 		const t = editor.t;
 
-		// Handle `Ctrl+K` keystroke and show panel.
+		// Handle `Ctrl+K` keystroke and show the panel.
 		editor.keystrokes.set( 'CTRL+K', () => this._showPanel( true ) );
 
 		editor.ui.componentFactory.add( 'link', ( locale ) => {
@@ -193,7 +200,6 @@ export default class Link extends Plugin {
 	 */
 	_attachActions() {
 		const viewDocument = this.editor.editing.view;
-		const balloon = this.editor.ui.balloon;
 
 		// Handle click on view document and show panel when selection is placed inside the link element.
 		// Keep panel open until selection will be inside the same link element.
@@ -217,7 +223,7 @@ export default class Link extends Plugin {
 					if ( !viewSelection.isCollapsed || parentLink !== currentParentLink ) {
 						this._hidePanel();
 					} else {
-						balloon.updatePosition();
+						this._balloon.updatePosition();
 					}
 				} );
 			}
@@ -243,13 +249,13 @@ export default class Link extends Plugin {
 		clickOutsideHandler( {
 			emitter: this.formView,
 			activator: () => this._isInStack,
-			contextElement: balloon.view.element,
+			contextElement: this._balloon.view.element,
 			callback: () => this._hidePanel()
 		} );
 	}
 
 	/**
-	 * Adds panel to {@link: core/editor/editorui~EditorUI#balloon}.
+	 * Adds link view to {_@link module:ui/contextualballoon~ContextualBalloon}.
 	 *
 	 * @private
 	 * @param {Boolean} [focusInput=false] When `true` then link form will be focused on panel show.
@@ -259,7 +265,7 @@ export default class Link extends Plugin {
 			return;
 		}
 
-		this.editor.ui.balloon.add( {
+		this._balloon.add( {
 			view: this.formView,
 			position: this._getBalloonPositionData()
 		} );
@@ -270,7 +276,7 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Removes panel from {@link: core/editor/editorui~EditorUI#balloon}.
+	 * Removes link view from {_@link module:ui/contextualballoon~ContextualBalloon}.
 	 *
 	 * @private
 	 * @param {Boolean} [focusEditable=false] When `true` then editable focus will be restored on panel hide.
@@ -280,7 +286,7 @@ export default class Link extends Plugin {
 			return;
 		}
 
-		this.editor.ui.balloon.remove( this.formView );
+		this._balloon.remove( this.formView );
 		this.stopListening( this.editor.editing.view, 'render' );
 
 		if ( focusEditable ) {
