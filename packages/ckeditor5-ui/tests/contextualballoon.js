@@ -3,32 +3,56 @@
  * For licensing, see LICENSE.md.
  */
 
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import ContextualBalloon from '../src/contextualballoon';
 import BalloonPanelView from '../src/panel/balloon/balloonpanelview';
 import View from '../src/view';
 import Template from '../src/template';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
+/* global document */
 
 describe( 'ContextualBalloon', () => {
-	let balloon, viewA, viewB;
+	let balloon, viewA, viewB, editor;
 
 	beforeEach( () => {
-		balloon = new ContextualBalloon();
+		return ClassicTestEditor.create( document.createElement( 'div' ), {
+			plugins: [ ContextualBalloon ]
+		} )
+		.then( newEditor => {
+			editor = newEditor;
+			balloon = editor.plugins.get( ContextualBalloon );
 
-		viewA = new ViewA();
-		viewB = new ViewB();
+			viewA = new ViewA();
+			viewB = new ViewB();
 
-		// We don't need to test attachTo method of BalloonPanel it's enough to check if was called with proper data.
-		sinon.stub( balloon.view, 'attachTo', () => {} );
+			// We don't need to test attachTo method of BalloonPanel it's enough to check if was called with proper data.
+			sinon.stub( balloon.view, 'attachTo', () => {} );
+		} );
 	} );
 
 	afterEach( () => {
-		balloon.view.attachTo.restore();
+		editor.destroy();
 	} );
 
-	describe( 'constructor()', () => {
-		it( 'should create a class instance with properties', () => {
+	it( 'should be a plugin instance', () => {
+		expect( balloon ).to.instanceof( Plugin );
+	} );
+
+	describe( 'pluginName', () => {
+		it( 'should return plugin by name', () => {
+			expect( editor.plugins.get( 'contextualballoon' ) ).to.instanceof( ContextualBalloon );
+		} );
+	} );
+
+	describe( 'init()', () => {
+		it( 'should create a plugin instance with properties', () => {
 			expect( balloon.view ).to.instanceof( BalloonPanelView );
+		} );
+
+		it( 'should add balloon panel view to editor `body` collection', () => {
+			expect( editor.ui.view.body.getIndex( balloon.view ) ).to.above( -1 );
 		} );
 	} );
 
@@ -287,6 +311,14 @@ describe( 'ContextualBalloon', () => {
 			expect( () => {
 				balloon.remove( viewA );
 			} ).to.throw( CKEditorError, /^contextualballoon-remove-view-not-exist/ );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should balloon panel remove view from editor body collection', () => {
+			balloon.destroy();
+
+			expect( editor.ui.view.body.getIndex( balloon.view ) ).to.equal( -1 );
 		} );
 	} );
 } );

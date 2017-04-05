@@ -7,23 +7,27 @@
  * @module ui/contextualballoon
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import BalloonPanelView from './panel/balloon/balloonpanelview';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Common contextual balloon of the Editor.
  *
- * This class reuses the same {module:ui/view~View} for each contextual balloon panel in the editor UI, makes
- * possible to add multiple views to the same balloon (stored in the stack, last one in the stack is visible)
- * and prevents of displaying more than one contextual balloon panel at the same time.
+ * This plugin is for reusing the same {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} instance
+ * for each contextual balloon panel in the editor. Also it makes possible to add multiple views to the same balloon.
+ * Views are stored in the stack, last one in the stack is currently visible. When visible view will be removed from
+ * the stack then previous view become visible, if there is no more view in the stack balloon will hide.
+ *
+ * Using this plugin prevents of displaying more than one contextual balloon panel at the same time.
+ *
+ * @extends module:core/plugin~Plugin
  */
-export default class ContextualBalloon {
+export default class ContextualBalloon extends Plugin {
 	/**
-	 * Creates ContextualBalloon instance.
-	 *
-	 * @constructor
+	 * @inheritDoc
 	 */
-	constructor() {
+	init() {
 		/**
 		 * Balloon panel view.
 		 *
@@ -40,6 +44,13 @@ export default class ContextualBalloon {
 		 * @member {Map} #_stack
 		 */
 		this._stack = new Map();
+
+		// Add balloon panel view to editor `body` collection.
+		this.editor.ui.view.body.add( this.view );
+	}
+
+	static get pluginName() {
+		return 'contextualballoon';
 	}
 
 	/**
@@ -160,6 +171,15 @@ export default class ContextualBalloon {
 	 */
 	_getBalloonPosition() {
 		return Array.from( this._stack.values() )[ 0 ].position;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		this.editor.ui.view.body.remove( this.view );
+		this.view.destroy();
+		super.destroy();
 	}
 }
 
