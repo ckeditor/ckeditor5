@@ -78,7 +78,7 @@ function mergeBranches( batch, startPos, endPos ) {
 	}
 
 	// If one of the positions is a root, then there's nothing more to merge (at least in the current state of implementation).
-	// Theoretically in this case we could unwrap the <p>: <$root>x[]<p>[]y</p></$root>, but we don't need to support it yet
+	// Theoretically in this case we could unwrap the <p>: <$root>x[]<p>{}y</p></$root>, but we don't need to support it yet
 	// so let's just abort.
 	if ( !startParent.parent || !endParent.parent ) {
 		return;
@@ -92,18 +92,18 @@ function mergeBranches( batch, startPos, endPos ) {
 	}
 
 	// Remember next positions to merge. For example:
-	// <a><b>x[]</b></a><c><d>[]y</d></c>
+	// <a><b>x[]</b></a><c><d>{}y</d></c>
 	// will become:
-	// <a><b>xy</b>[]</a><c>[]</c>
+	// <a><b>xy</b>[]</a><c>{}</c>
 	startPos = Position.createAfter( startParent );
 	endPos = Position.createBefore( endParent );
 
 	if ( endParent.childCount > 0 ) {
 		// At the moment, next startPos is also the position to which the endParent
 		// needs to be moved:
-		// <a><b>x[]</b></a><c><d>[]y</d></c>
+		// <a><b>x[]</b></a><c><d>{}y</d></c>
 		// becomes:
-		// <a><b>x</b>[]<d>y</d></a><c>[]</c>
+		// <a><b>x</b>[]<d>y</d></a><c>{}</c>
 
 		// Move the end parent only if needed.
 		// E.g. not in this case: <p>ab</p>[]{}<p>cd</p>
@@ -112,7 +112,7 @@ function mergeBranches( batch, startPos, endPos ) {
 		}
 
 		// To then become:
-		// <a><b>xy</b>[]</a><c>[]</c>
+		// <a><b>xy</b>[]</a><c>{}</c>
 		batch.merge( startPos );
 	} else {
 		batch.remove( endParent );
