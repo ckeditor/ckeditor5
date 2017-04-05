@@ -84,7 +84,7 @@ describe( 'Link', () => {
 		it( 'should add link form to the ContextualBalloon on execute event', () => {
 			linkButton.fire( 'execute' );
 
-			expect( balloon.visible.view ).to.equal( linkFeature.formView );
+			expect( balloon.visibleView ).to.equal( formView );
 		} );
 
 		it( 'should add link form to the ContextualBalloon and attach balloon to the link element ' +
@@ -163,7 +163,7 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should not be added to ContextualBalloon at default', () => {
-			expect( balloon.visible ).to.null;
+			expect( balloon.visibleView ).to.null;
 		} );
 
 		it( 'should be added to ContextualBalloon and form should be selected on `CTRL+K` keystroke', () => {
@@ -171,7 +171,7 @@ describe( 'Link', () => {
 
 			editor.keystrokes.press( { keyCode: keyCodes.k, ctrlKey: true } );
 
-			expect( balloon.visible.view ).to.equal( formView );
+			expect( balloon.visibleView ).to.equal( formView );
 			expect( selectUrlInputSpy.calledOnce ).to.true;
 		} );
 
@@ -234,7 +234,7 @@ describe( 'Link', () => {
 
 					editor.keystrokes.press( keyEvtData );
 
-					expect( balloon.visible ).to.null;
+					expect( balloon.visibleView ).to.null;
 					sinon.assert.notCalled( focusEditableSpy );
 				} );
 
@@ -254,7 +254,7 @@ describe( 'Link', () => {
 
 					editor.keystrokes.press( keyEvtData );
 
-					expect( balloon.visible.view ).to.equal( viewMock );
+					expect( balloon.visibleView ).to.equal( viewMock );
 					expect( balloon.hasView( formView ) ).to.true;
 					sinon.assert.notCalled( focusEditableSpy );
 				} );
@@ -270,7 +270,7 @@ describe( 'Link', () => {
 
 					formView.keystrokes.press( keyEvtData );
 
-					expect( balloon.visible ).to.null;
+					expect( balloon.visibleView ).to.null;
 					sinon.assert.calledOnce( focusEditableSpy );
 				} );
 			} );
@@ -280,7 +280,7 @@ describe( 'Link', () => {
 					balloon.add( { view: formView } );
 					document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 
-					expect( balloon.visible ).to.null;
+					expect( balloon.visibleView ).to.null;
 					expect( focusEditableSpy.notCalled ).to.true;
 				} );
 
@@ -288,7 +288,7 @@ describe( 'Link', () => {
 					balloon.add( { view: formView } );
 					balloon.view.element.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 
-					expect( balloon.visible.view ).to.equal( formView );
+					expect( balloon.visibleView ).to.equal( formView );
 				} );
 			} );
 		} );
@@ -303,7 +303,7 @@ describe( 'Link', () => {
 
 				observer.fire( 'click', { target: document.body } );
 
-				expect( balloon.visible.view === formView ).to.true;
+				expect( balloon.visibleView ).to.equal( formView );
 				expect( selectUrlInputSpy.notCalled ).to.true;
 			} );
 
@@ -318,7 +318,7 @@ describe( 'Link', () => {
 
 				observer.fire( 'click', { target: document.body } );
 
-				expect( balloon.visible.view === formView ).to.true;
+				expect( balloon.visibleView ).to.equal( formView );
 
 				// Reset attachTo call counter.
 				balloon.view.attachTo.reset();
@@ -328,7 +328,7 @@ describe( 'Link', () => {
 				editor.editing.view.render();
 
 				// Check if balloon is still open and position was updated.
-				expect( balloon.visible.view === formView ).to.true;
+				expect( balloon.visibleView ).to.equal( formView );
 				expect( balloon.view.attachTo.calledOnce ).to.true;
 			} );
 
@@ -368,12 +368,12 @@ describe( 'Link', () => {
 
 				observer.fire( 'click', { target: document.body } );
 
-				expect( balloon.visible.view === formView ).to.true;
+				expect( balloon.visibleView ).to.equal( formView );
 
 				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
 				editor.editing.view.render();
 
-				expect( balloon.visible ).to.null;
+				expect( balloon.visibleView ).to.null;
 			} );
 
 			it( 'should close when selection goes to the other link element with the same href', () => {
@@ -387,12 +387,12 @@ describe( 'Link', () => {
 
 				observer.fire( 'click', { target: document.body } );
 
-				expect( balloon.visible.view === formView ).to.true;
+				expect( balloon.visibleView ).to.equal( formView );
 
 				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
 				editor.editing.view.render();
 
-				expect( balloon.visible ).to.null;
+				expect( balloon.visibleView ).to.null;
 			} );
 
 			it( 'should close when selection becomes non-collapsed', () => {
@@ -406,12 +406,12 @@ describe( 'Link', () => {
 
 				observer.fire( 'click', { target: {} } );
 
-				expect( balloon.visible.view === formView ).to.true;
+				expect( balloon.visibleView ).to.equal( formView );
 
 				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 2 ) ] );
 				editor.editing.view.render();
 
-				expect( balloon.visible ).to.null;
+				expect( balloon.visibleView ).to.null;
 			} );
 
 			it( 'should stop updating position after close', () => {
@@ -425,7 +425,7 @@ describe( 'Link', () => {
 
 				observer.fire( 'click', { target: {} } );
 
-				expect( balloon.visible.view === formView ).to.true;
+				expect( balloon.visibleView ).to.equal( formView );
 
 				// Close balloon by dispatching `cancel` event on formView.
 				formView.fire( 'cancel' );
@@ -447,7 +447,7 @@ describe( 'Link', () => {
 
 				observer.fire( 'click', { target: {} } );
 
-				expect( balloon.visible ).to.null;
+				expect( balloon.visibleView ).to.null;
 			} );
 
 			it( 'should not open when selection is non-collapsed', () => {
@@ -458,7 +458,7 @@ describe( 'Link', () => {
 
 				observer.fire( 'click', { target: document.body } );
 
-				expect( balloon.visible ).to.null;
+				expect( balloon.visibleView ).to.null;
 			} );
 		} );
 	} );
@@ -498,7 +498,7 @@ describe( 'Link', () => {
 
 				formView.fire( 'submit' );
 
-				expect( balloon.visible ).to.null;
+				expect( balloon.visibleView ).to.null;
 				expect( focusEditableSpy.calledOnce ).to.true;
 			} );
 
@@ -516,7 +516,7 @@ describe( 'Link', () => {
 
 				formView.fire( 'unlink' );
 
-				expect( balloon.visible ).to.null;
+				expect( balloon.visibleView ).to.null;
 				expect( focusEditableSpy.calledOnce ).to.true;
 			} );
 
@@ -525,7 +525,7 @@ describe( 'Link', () => {
 
 				formView.fire( 'cancel' );
 
-				expect( balloon.visible ).to.null;
+				expect( balloon.visibleView ).to.null;
 				expect( focusEditableSpy.calledOnce ).to.true;
 			} );
 		} );

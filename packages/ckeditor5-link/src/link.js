@@ -86,16 +86,6 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when link view is currently visible in {@link module:ui/contextualballoon~ContextualBalloon}.
-	 *
-	 * @private
-	 * @returns {Boolean}
-	 */
-	get _isVisible() {
-		return this._balloon.visible && this._balloon.visible.view === this.formView;
-	}
-
-	/**
 	 * Creates the {@link module:link/ui/linkformview~LinkFormView} instance.
 	 *
 	 * @private
@@ -229,9 +219,9 @@ export default class Link extends Plugin {
 			}
 		} );
 
-		// Focus the form if link panel is visible and tab key has been pressed.
+		// Focus the form if link balloon is currently visible and tab key has been pressed.
 		this.editor.keystrokes.set( 'Tab', ( data, cancel ) => {
-			if ( this._isVisible && !this.formView.focusTracker.isFocused ) {
+			if ( this._balloon.visibleView === this.formView && !this.formView.focusTracker.isFocused ) {
 				this.formView.focus();
 				cancel();
 			}
@@ -239,7 +229,7 @@ export default class Link extends Plugin {
 
 		// Close the panel on esc key press when editable has focus and link balloon is currently visible.
 		this.editor.keystrokes.set( 'Esc', ( data, cancel ) => {
-			if ( this._isVisible ) {
+			if ( this._balloon.visibleView === this.formView ) {
 				this._hidePanel();
 				cancel();
 			}
