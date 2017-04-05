@@ -81,7 +81,7 @@ export default class Link extends Plugin {
 	 * @private
 	 * @returns {Boolean}
 	 */
-	get _isInStack() {
+	get _isInBalloon() {
 		return this._balloon.hasView( this.formView );
 	}
 
@@ -248,7 +248,7 @@ export default class Link extends Plugin {
 		// Close on click outside of balloon panel element.
 		clickOutsideHandler( {
 			emitter: this.formView,
-			activator: () => this._isInStack,
+			activator: () => this._isInBalloon,
 			contextElement: this._balloon.view.element,
 			callback: () => this._hidePanel()
 		} );
@@ -261,7 +261,7 @@ export default class Link extends Plugin {
 	 * @param {Boolean} [focusInput=false] When `true` then link form will be focused on panel show.
 	 */
 	_showPanel( focusInput ) {
-		if ( this._isInStack ) {
+		if ( this._isInBalloon ) {
 			return;
 		}
 
@@ -282,7 +282,7 @@ export default class Link extends Plugin {
 	 * @param {Boolean} [focusEditable=false] When `true` then editable focus will be restored on panel hide.
 	 */
 	_hidePanel( focusEditable ) {
-		if ( !this._isInStack ) {
+		if ( !this._isInBalloon ) {
 			return;
 		}
 
