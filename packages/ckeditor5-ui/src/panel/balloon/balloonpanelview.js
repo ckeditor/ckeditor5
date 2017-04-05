@@ -185,7 +185,7 @@ export default class BalloonPanelView extends View {
 
 		// We need to take HTMLElement related to the target if it is possible.
 		if ( isElement( options.target ) ) {
-			target = target;
+			target = options.target;
 		} else if ( isRange( options.target ) ) {
 			target = options.target.commonAncestorContainer;
 		}
