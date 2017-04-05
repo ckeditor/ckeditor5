@@ -20,7 +20,7 @@ function initEditors() {
 	function init( selector ) {
 		InlineEditor.create( document.querySelector( selector ), {
 			plugins: [ ArticlePreset ],
-			toolbar: [ 'headings', 'bold', 'italic', 'undo', 'redo', 'link', 'unlink' ]
+			toolbar: [ 'headings', 'bold', 'italic', 'link', 'unlink', 'blockQuote', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 		} )
 		.then( editor => {
 			console.log( `${ selector } has been initialized`, editor );
