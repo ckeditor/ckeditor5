@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [0.2.0](https://github.com/ckeditor/ckeditor5-presets/compare/v0.1.1...v0.2.0) (2017-04-05)
+
+### Features
+
+* Added block quote feature to the article preset. Closes [#4](https://github.com/ckeditor/ckeditor5-presets/issues/4). ([30d7bd5](https://github.com/ckeditor/ckeditor5-presets/commit/30d7bd5))
+
+
 ## [0.1.1](https://github.com/ckeditor/ckeditor5-presets/compare/v0.1.0...v0.1.1) (2017-03-06)
 
 Initial release.
