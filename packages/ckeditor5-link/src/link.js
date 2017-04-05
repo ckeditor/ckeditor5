@@ -11,12 +11,11 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 import LinkEngine from './linkengine';
 import LinkElement from './linkelement';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/contextualballoon';
 
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
-
 import LinkFormView from './ui/linkformview';
 
 import linkIcon from '../theme/icons/link.svg';
@@ -25,9 +24,10 @@ import unlinkIcon from '../theme/icons/unlink.svg';
 import '../theme/theme.scss';
 
 /**
- * The link feature. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
+ * The link plugin. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
  *
- * It uses the {@link module:link/linkengine~LinkEngine link engine feature}.
+ * It uses the {@link module:link/linkengine~LinkEngine link engine plugin} and the
+ * {@link module:ui/contextualballoon~ContextualBalloon contextual balloon plugin}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -36,7 +36,7 @@ export default class Link extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ LinkEngine ];
+		return [ LinkEngine, ContextualBalloon ];
 	}
 
 	/**
@@ -53,27 +53,67 @@ export default class Link extends Plugin {
 		this.editor.editing.view.addObserver( ClickObserver );
 
 		/**
-		 * Balloon panel view to display the main UI.
-		 *
-		 * @member {module:link/ui/balloonpanel~BalloonPanelView}
-		 */
-		this.balloonPanelView = this._createBalloonPanel();
-
-		/**
-		 * The form view inside {@link #balloonPanelView}.
+		 * The form view displayed inside of the balloon.
 		 *
 		 * @member {module:link/ui/linkformview~LinkFormView}
 		 */
 		this.formView = this._createForm();
 
+		/**
+		 * The contextual balloon plugin instance.
+		 *
+		 * @private
+		 * @member {module:ui/contextualballoon~ContextualBalloon}
+		 */
+		this._balloon = this.editor.plugins.get( ContextualBalloon );
+
 		// Create toolbar buttons.
 		this._createToolbarLinkButton();
 		this._createToolbarUnlinkButton();
+
+		// Attach lifecycle actions to the the balloon.
+		this._attachActions();
+	}
+
+	/**
+	 * Creates the {@link module:link/ui/linkformview~LinkFormView} instance.
+	 *
+	 * @private
+	 * @returns {module:link/ui/linkformview~LinkFormView} Link form instance.
+	 */
+	_createForm() {
+		const editor = this.editor;
+		const formView = new LinkFormView( editor.locale );
+
+		formView.urlInputView.bind( 'value' ).to( editor.commands.get( 'link' ), 'value' );
+
+		// Execute link command after clicking on formView `Save` button.
+		this.listenTo( formView, 'submit', () => {
+			editor.execute( 'link', formView.urlInputView.inputView.element.value );
+			this._hidePanel( true );
+		} );
+
+		// Execute unlink command after clicking on formView `Unlink` button.
+		this.listenTo( formView, 'unlink', () => {
+			editor.execute( 'unlink' );
+			this._hidePanel( true );
+		} );
+
+		// Hide the panel after clicking on formView `Cancel` button.
+		this.listenTo( formView, 'cancel', () => this._hidePanel( true ) );
+
+		// Close the panel on esc key press when the form has focus.
+		formView.keystrokes.set( 'Esc', ( data, cancel ) => {
+			this._hidePanel( true );
+			cancel();
+		} );
+
+		return formView;
 	}
 
 	/**
 	 * Creates a toolbar link button. Clicking this button will show
-	 * {@link #balloonPanelView} attached to the selection.
+	 * {@link #_balloon} attached to the selection.
 	 *
 	 * @private
 	 */
@@ -82,8 +122,8 @@ export default class Link extends Plugin {
 		const linkCommand = editor.commands.get( 'link' );
 		const t = editor.t;
 
-		// Handle `Ctrl+K` keystroke and show panel.
-		editor.keystrokes.set( 'CTRL+K', () => this._showPanel() );
+		// Handle `Ctrl+K` keystroke and show the panel.
+		editor.keystrokes.set( 'CTRL+K', () => this._showPanel( true ) );
 
 		editor.ui.componentFactory.add( 'link', ( locale ) => {
 			const button = new ButtonView( locale );
@@ -98,7 +138,7 @@ export default class Link extends Plugin {
 			button.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
 			// Show the panel on button click.
-			this.listenTo( button, 'execute', () => this._showPanel() );
+			this.listenTo( button, 'execute', () => this._showPanel( true ) );
 
 			return button;
 		} );
@@ -134,22 +174,13 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Creates the {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView} instance.
+	 * Attaches actions which control whether the balloon panel containing the
+	 * {@link #formView} is visible or not.
 	 *
 	 * @private
-	 * @returns {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} Link balloon panel instance.
 	 */
-	_createBalloonPanel() {
-		const editor = this.editor;
-		const viewDocument = editor.editing.view;
-
-		// Create the balloon panel instance.
-		const balloonPanelView = new BalloonPanelView( editor.locale );
-		balloonPanelView.maxWidth = 300;
-
-		// Add balloonPanel.view#element to FocusTracker.
-		// @TODO: Do it automatically ckeditor5-core#23
-		editor.ui.focusTracker.add( balloonPanelView.element );
+	_attachActions() {
+		const viewDocument = this.editor.editing.view;
 
 		// Handle click on view document and show panel when selection is placed inside the link element.
 		// Keep panel open until selection will be inside the same link element.
@@ -157,123 +188,87 @@ export default class Link extends Plugin {
 			const viewSelection = viewDocument.selection;
 			const parentLink = getPositionParentLink( viewSelection.getFirstPosition() );
 
+			// When collapsed selection is inside link element (link element is clicked).
 			if ( viewSelection.isCollapsed && parentLink ) {
-				this._attachPanelToElement();
+				// Then show panel but keep focus inside editor editable.
+				this._showPanel();
 
+				// Avoid duplication of the same listener.
+				this.stopListening( viewDocument, 'render' );
+
+				// Start listen to view document changes and close the panel when selection will be moved
+				// out of the actual link element.
 				this.listenTo( viewDocument, 'render', () => {
 					const currentParentLink = getPositionParentLink( viewSelection.getFirstPosition() );
 
 					if ( !viewSelection.isCollapsed || parentLink !== currentParentLink ) {
 						this._hidePanel();
 					} else {
-						this._attachPanelToElement( parentLink );
+						this._balloon.updatePosition();
 					}
 				} );
-
-				this.listenTo( balloonPanelView, 'change:isVisible', () => this.stopListening( viewDocument, 'render' ) );
 			}
 		} );
 
-		// Focus the form if balloon panel is open and tab key has been pressed.
-		editor.keystrokes.set( 'Tab', ( data, cancel ) => {
-			if ( balloonPanelView.isVisible && !this.formView.focusTracker.isFocused ) {
+		// Focus the form if the balloon is visible and the Tab key has been pressed.
+		this.editor.keystrokes.set( 'Tab', ( data, cancel ) => {
+			if ( this._balloon.visibleView === this.formView && !this.formView.focusTracker.isFocused ) {
 				this.formView.focus();
 				cancel();
 			}
 		} );
 
-		// Close the panel on esc key press when editable has focus.
-		editor.keystrokes.set( 'Esc', ( data, cancel ) => {
-			if ( balloonPanelView.isVisible ) {
-				this._hidePanel( true );
+		// Close the panel on the Esc key press when the editable has focus and the balloon is visible.
+		this.editor.keystrokes.set( 'Esc', ( data, cancel ) => {
+			if ( this._balloon.visibleView === this.formView ) {
+				this._hidePanel();
 				cancel();
 			}
 		} );
 
 		// Close on click outside of balloon panel element.
 		clickOutsideHandler( {
-			emitter: balloonPanelView,
-			activator: () => balloonPanelView.isVisible,
-			contextElement: balloonPanelView.element,
+			emitter: this.formView,
+			activator: () => this._balloon.hasView( this.formView ),
+			contextElement: this._balloon.view.element,
 			callback: () => this._hidePanel()
 		} );
-
-		editor.ui.view.body.add( balloonPanelView );
-
-		return balloonPanelView;
 	}
 
 	/**
-	 * Creates the {@link module:link/ui/linkformview~LinkFormView} instance.
+	 * Adds the {@link #formView} to the {@link #_balloon}.
 	 *
 	 * @private
-	 * @returns {module:link/ui/linkformview~LinkFormView} Link form instance.
+	 * @param {Boolean} [focusInput=false] When `true`, link form will be focused on panel show.
 	 */
-	_createForm() {
-		const editor = this.editor;
-		const formView = new LinkFormView( editor.locale );
+	_showPanel( focusInput ) {
+		if ( this._balloon.hasView( this.formView ) ) {
+			return;
+		}
 
-		formView.urlInputView.bind( 'value' ).to( editor.commands.get( 'link' ), 'value' );
-
-		// Execute link command after clicking on formView `Save` button.
-		this.listenTo( formView, 'submit', () => {
-			editor.execute( 'link', formView.urlInputView.inputView.element.value );
-			this._hidePanel( true );
+		this._balloon.add( {
+			view: this.formView,
+			position: this._getBalloonPositionData()
 		} );
 
-		// Execute unlink command after clicking on formView `Unlink` button.
-		this.listenTo( formView, 'unlink', () => {
-			editor.execute( 'unlink' );
-			this._hidePanel( true );
-		} );
-
-		// Close the panel on esc key press when the form has focus.
-		formView.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this._hidePanel( true );
-			cancel();
-		} );
-
-		// Hide balloon panel after clicking on formView `Cancel` button.
-		this.listenTo( formView, 'cancel', () => this._hidePanel( true ) );
-
-		this.balloonPanelView.content.add( formView );
-
-		return formView;
+		if ( focusInput ) {
+			this.formView.urlInputView.select();
+		}
 	}
 
 	/**
-	 * Shows {@link #balloonPanelView link balloon panel} and attach to target element.
-	 * If selection is collapsed and is placed inside link element, then panel will be attached
-	 * to whole link element, otherwise will be attached to the selection.
+	 * Removes the {@link #formView} from the {@link #_balloon}.
 	 *
 	 * @private
-	 * @param {module:link/linkelement~LinkElement} [parentLink] Target element.
-	 */
-	_attachPanelToElement( parentLink ) {
-		const viewDocument = this.editor.editing.view;
-		const targetLink = parentLink || getPositionParentLink( viewDocument.selection.getFirstPosition() );
-
-		const target = targetLink ?
-				// When selection is inside link element, then attach panel to this element.
-				viewDocument.domConverter.getCorrespondingDomElement( targetLink )
-			:
-				// Otherwise attach panel to the selection.
-				viewDocument.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
-
-		this.balloonPanelView.attachTo( {
-			target,
-			limiter: viewDocument.domConverter.getCorrespondingDomElement( viewDocument.selection.editableElement )
-		} );
-	}
-
-	/**
-	 * Hides {@link #balloonPanelView balloon panel view}.
-	 *
-	 * @private
-	 * @param {Boolean} [focusEditable=false] When `true` then editable focus will be restored on panel hide.
+	 * @param {Boolean} [focusEditable=false] When `true`, editable focus will be restored on panel hide.
 	 */
 	_hidePanel( focusEditable ) {
-		this.balloonPanelView.hide();
+		if ( !this._balloon.hasView( this.formView ) ) {
+			return;
+		}
+
+		this._balloon.remove( this.formView );
+		this.stopListening( this.editor.editing.view, 'render' );
 
 		if ( focusEditable ) {
 			this.editor.editing.view.focus();
@@ -281,13 +276,30 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Shows {@link #balloonPanelView balloon panel view}.
+	 * Returns positioning options for the {@link #_balloon}. They control the way balloon is attached
+	 * to the target element or selection.
+	 *
+	 * If the selection is collapsed and inside a link element, then the panel will be attached to the
+	 * entire link element. Otherwise, it will be attached to the selection.
 	 *
 	 * @private
+	 * @returns {module:utils/dom/position~Options}
 	 */
-	_showPanel() {
-		this._attachPanelToElement();
-		this.formView.urlInputView.select();
+	_getBalloonPositionData() {
+		const viewDocument = this.editor.editing.view;
+		const targetLink = getPositionParentLink( viewDocument.selection.getFirstPosition() );
+
+		const target = targetLink ?
+			// When selection is inside link element, then attach panel to this element.
+			viewDocument.domConverter.getCorrespondingDomElement( targetLink )
+			:
+			// Otherwise attach panel to the selection.
+			viewDocument.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
+
+		return {
+			target,
+			limiter: viewDocument.domConverter.getCorrespondingDomElement( viewDocument.selection.editableElement )
+		};
 	}
 }
 
