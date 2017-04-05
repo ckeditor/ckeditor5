@@ -101,6 +101,19 @@ Each repository independently handles its issues. However, it's recommended to r
 	</td>
 </tr>
 
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-widget"><code>@ckeditor/ckeditor5-widget</code></a>
+		<br>
+		Introduces the widget API.
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-widget"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-widget.svg" alt="ckeditor5-widget npm package badge"></a>
+		<a href="https://travis-ci.org/ckeditor/ckeditor5-widget"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-widget/master.svg" alt="build status badge"></a>
+		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-widget/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-widget.svg" alt="ckeditor5-widget coverage badge"></a>
+	</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -178,6 +191,19 @@ Each repository independently handles its issues. However, it's recommended to r
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-basic-styles.svg" alt="ckeditor5-basic-styles npm package badge"></a>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-basic-styles"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-basic-styles/master.svg" alt="build status badge"></a>
 		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-basic-styles/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-basic-styles.svg" alt="ckeditor5-basic-styles coverage badge"></a>
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-block-quote"><code>@ckeditor/ckeditor5-block-quote</code></a>
+		<br>
+		Introduces the block quote feature.
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-block-quote.svg" alt="ckeditor5-block-quote npm package badge"></a>
+		<a href="https://travis-ci.org/ckeditor/ckeditor5-block-quote"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-block-quote/master.svg" alt="build status badge"></a>
+		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-block-quote/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-block-quote.svg" alt="ckeditor5-block-quote coverage badge"></a>
 	</td>
 </tr>
 
