@@ -82,7 +82,7 @@ export default class Link extends Plugin {
 	 * @returns {Boolean}
 	 */
 	get _isInStack() {
-		return this._balloon.isViewInStack( this.formView );
+		return this._balloon.hasView( this.formView );
 	}
 
 	/**

@@ -255,7 +255,7 @@ describe( 'Link', () => {
 					editor.keystrokes.press( keyEvtData );
 
 					expect( balloon.visible.view ).to.equal( viewMock );
-					expect( balloon.isViewInStack( formView ) ).to.true;
+					expect( balloon.hasView( formView ) ).to.true;
 					sinon.assert.notCalled( focusEditableSpy );
 				} );
 
