@@ -17,17 +17,12 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import ContextualBalloon from '../../../src/contextualballoon';
-import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 import ToolbarView from '../../../src/toolbar/toolbarview';
 import ButtonView from '../../../src/button/buttonview';
 import Template from '../../../src/template';
 import View from '../../../src/view';
 import clickOutsideHandler from '../../../src/bindings/clickoutsidehandler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-
-// Create common contextual toolbar.
-const contextualBalloon = new ContextualBalloon();
-contextualBalloon.view = new BalloonPanelView();
 
 // Plugin view which displays toolbar with component to open next
 // plugin inside and cancel button to close currently visible plugin.
@@ -103,7 +98,13 @@ class ViewA extends View {
 
 // Generic plugin class.
 class PluginGeneric extends Plugin {
+	static get requires() {
+		return [ ContextualBalloon ];
+	}
+
 	init() {
+		this.balloon = this.editor.plugins.get( ContextualBalloon );
+
 		this._isOpen = false;
 
 		this.editor.editing.view.on( 'selectionChange', () => this._hidePanel() );
@@ -111,13 +112,13 @@ class PluginGeneric extends Plugin {
 		this.view.bind( 'label' ).to( this );
 
 		this.view.on( 'cancel', () => {
-			if ( contextualBalloon.visible.view === this.view ) {
+			if ( this.balloon.visible.view === this.view ) {
 				this._hidePanel();
 			}
 		} );
 
 		this.editor.keystrokes.set( 'Esc', ( data, cancel ) => {
-			if ( contextualBalloon.visible.view === this.view ) {
+			if ( this.balloon.visible.view === this.view ) {
 				this._hidePanel();
 			}
 
@@ -136,7 +137,7 @@ class PluginGeneric extends Plugin {
 
 		clickOutsideHandler( {
 			emitter: this.view,
-			activator: () => this._isOpen && contextualBalloon.visible.view === this.view,
+			activator: () => this._isOpen && this.balloon.visible.view === this.view,
 			contextElement: this.view.element,
 			callback: () => this._hidePanel()
 		} );
@@ -160,7 +161,7 @@ class PluginGeneric extends Plugin {
 
 		const viewDocument = this.editor.editing.view;
 
-		contextualBalloon.add( {
+		this.balloon.add( {
 			view: this.view,
 			position: {
 				target: viewDocument.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() )
@@ -175,7 +176,7 @@ class PluginGeneric extends Plugin {
 			return;
 		}
 
-		contextualBalloon.remove( this.view );
+		this.balloon.remove( this.view );
 		this._isOpen = false;
 	}
 }
@@ -221,9 +222,11 @@ class PluginD extends PluginGeneric {
 
 // Create contextual toolbar.
 function createContextualToolbar( editor ) {
+	const balloon = editor.plugins.get( ContextualBalloon );
 	const toolbar = new ToolbarView();
 	const editingView = editor.editing.view;
 	const arrowVOffset = 20;
+
 	const positions = {
 		forwardSelection: ( targetRect, balloonRect ) => ( {
 			top: targetRect.bottom + arrowVOffset,
@@ -255,7 +258,7 @@ function createContextualToolbar( editor ) {
 
 			isOpen = true;
 
-			contextualBalloon.add( {
+			balloon.add( {
 				view: toolbar,
 				position: {
 					target: isBackward ? rangeRects.item( 0 ) : rangeRects.item( rangeRects.length - 1 ),
@@ -268,7 +271,7 @@ function createContextualToolbar( editor ) {
 	// Remove toolbar from balloon and mark as not opened.
 	function close() {
 		if ( isOpen ) {
-			contextualBalloon.remove( toolbar );
+			balloon.remove( toolbar );
 		}
 
 		isOpen = false;
@@ -282,10 +285,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 } )
 .then( editor => {
 	window.editor = editor;
-
-	editor.ui.view.body.add( contextualBalloon.view );
-
-	createContextualToolbar( editor, contextualBalloon );
+	createContextualToolbar( editor );
 } )
 .catch( err => {
 	console.error( err.stack );
