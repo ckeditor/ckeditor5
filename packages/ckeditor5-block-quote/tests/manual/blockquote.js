@@ -7,16 +7,14 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
 import ArticlePreset from '@ckeditor/ckeditor5-presets/src/article';
-import BlockQuote from '../../src/blockquote';
 
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [
-		ArticlePreset,
-		BlockQuote
+		ArticlePreset
 	],
-	toolbar: [ 'headings', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
+	toolbar: [ 'headings', 'bold', 'italic', 'link', 'unlink', 'blockQuote', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 } )
 .then( editor => {
 	window.editor = editor;
