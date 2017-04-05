@@ -9,6 +9,7 @@
 
 import LivePosition from '../model/liveposition';
 import Position from '../model/position';
+import Range from '../model/range';
 import Element from '../model/element';
 
 /**
@@ -85,8 +86,8 @@ function mergeBranches( batch, startPos, endPos ) {
 
 	// Check if operations we'll need to do won't need to cross object or limit boundaries.
 	// E.g., we can't merge endParent into startParent in this case:
-	// <limit><startParent>x</startParent></limit><endParent></endParent>
-	if ( !checkCanBeMerged( startParent, endParent ) ) {
+	// <limit><startParent>x[]</startParent></limit><endParent>{}</endParent>
+	if ( !checkCanBeMerged( startPos, endPos ) ) {
 		return;
 	}
 
@@ -123,23 +124,21 @@ function shouldAutoparagraph( doc, position ) {
 	return !isTextAllowed && isParagraphAllowed;
 }
 
-function checkCanBeMerged( left, right ) {
-	const schema = left.document.schema;
-	const leftAncestors = left.getAncestors( { includeNode: true } );
-	const rightAncestors = right.getAncestors( { includeNode: true } );
+// Check if parents of two positions can be merged by checking if there are no limit/object
+// boundaries between those two positions.
+//
+// E.g. in <bQ><p>x[]</p></bQ><widget><caption>{}</caption></widget>
+// we'll check <p>, <bQ>, <widget> and <caption>.
+// Usually, widget and caption are marked as objects/limits in the schema, so in this case merging will be blocked.
+function checkCanBeMerged( leftPos, rightPos ) {
+	const schema = leftPos.root.document.schema;
+	const rangeToCheck = new Range( leftPos, rightPos );
 
-	// Check if any of the ancestor chains contain a limitting element which would be crossed
-	// when these elements will be merged. If so, the elements can't be merged.
-	return !leftAncestors.find( checkLimitsMerge( rightAncestors ) ) && !rightAncestors.find( checkLimitsMerge( leftAncestors ) );
-
-	function checkLimitsMerge( secondBranchAncestors ) {
-		return ( ancestor ) => {
-			// If the ancestor is in the second branch, it means that it's a common ancestor, so it won't be crossed.
-			if ( secondBranchAncestors.includes( ancestor ) ) {
-				return false;
-			}
-
-			return schema.objects.has( ancestor.name ) || schema.limits.has( ancestor.name );
-		};
+	for ( const value of rangeToCheck.getWalker() ) {
+		if ( schema.objects.has( value.item.name ) || schema.limits.has( value.item.name ) ) {
+			return false;
+		}
 	}
+
+	return true;
 }
