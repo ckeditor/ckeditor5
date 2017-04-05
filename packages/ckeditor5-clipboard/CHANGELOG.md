@@ -3,9 +3,9 @@ Changelog
 
 ## [0.5.0](https://github.com/ckeditor/ckeditor5-clipboard/compare/v0.4.1...v0.5.0) (2017-04-05)
 
-### Bug fixes
+### Other changes
 
-* Aligned use of converter to the latest API. Closes [#14](https://github.com/ckeditor/ckeditor5-clipboard/issues/14). ([8f98e2b](https://github.com/ckeditor/ckeditor5-clipboard/commit/8f98e2b))
+* Aligned use of the `DataController` to the latest API. Closes [#14](https://github.com/ckeditor/ckeditor5-clipboard/issues/14). ([8f98e2b](https://github.com/ckeditor/ckeditor5-clipboard/commit/8f98e2b))
 
 ### Features
 
