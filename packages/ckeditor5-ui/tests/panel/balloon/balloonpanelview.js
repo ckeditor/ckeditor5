@@ -406,14 +406,17 @@ describe( 'BalloonPanelView', () => {
 	} );
 
 	describe( 'keepAttachedTo()', () => {
-		let attachToSpy, target, limiter, notRelatedElement;
+		let attachToSpy, target, targetParent, limiter, notRelatedElement;
 
 		beforeEach( () => {
 			attachToSpy = testUtils.sinon.spy( view, 'attachTo' );
 			limiter = document.createElement( 'div' );
+			targetParent = document.createElement( 'div' );
 			target = document.createElement( 'div' );
 			notRelatedElement = document.createElement( 'div' );
 
+			targetParent.appendChild( target );
+			document.body.appendChild( targetParent );
 			document.body.appendChild( limiter );
 			document.body.appendChild( notRelatedElement );
 		} );
@@ -430,7 +433,7 @@ describe( 'BalloonPanelView', () => {
 			sinon.assert.calledOnce( attachToSpy );
 			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
 
-			document.dispatchEvent( new Event( 'scroll' ) );
+			targetParent.dispatchEvent( new Event( 'scroll' ) );
 
 			sinon.assert.calledTwice( attachToSpy );
 			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
