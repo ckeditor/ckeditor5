@@ -98,7 +98,9 @@ function mergeBranches( batch, startPos, endPos ) {
 	startPos = Position.createAfter( startParent );
 	endPos = Position.createBefore( endParent );
 
-	if ( endParent.childCount > 0 ) {
+	if ( endParent.isEmpty ) {
+		batch.remove( endParent );
+	} else {
 		// At the moment, next startPos is also the position to which the endParent
 		// needs to be moved:
 		// <a><b>x[]</b></a><c><d>{}y</d></c>
@@ -114,8 +116,19 @@ function mergeBranches( batch, startPos, endPos ) {
 		// To then become:
 		// <a><b>xy</b>[]</a><c>{}</c>
 		batch.merge( startPos );
-	} else {
-		batch.remove( endParent );
+	}
+
+	// Removes empty end ancestors:
+	// <a>fo[o</a><b><a><c>bar]</c></a></b>
+	// becomes:
+	// <a>fo[]</a><b><a>{}</a></b>
+	// So we can remove <a> and <b>.
+	while ( endPos.parent.isEmpty ) {
+		const parentToRemove = endPos.parent;
+
+		endPos = Position.createBefore( parentToRemove );
+
+		batch.remove( parentToRemove );
 	}
 
 	// Continue merging next level.

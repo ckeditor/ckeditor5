@@ -234,6 +234,13 @@ describe( 'DataController', () => {
 			);
 
 			test(
+				'merges empty element into the first element',
+				'<heading1>f[oo</heading1><paragraph>bar]</paragraph><paragraph>x</paragraph>',
+				'<heading1>f[]</heading1><paragraph>x</paragraph>',
+				{ merge: true }
+			);
+
+			test(
 				'leaves just one element when all selected',
 				'<heading1>[x</heading1><paragraph>foo</paragraph><paragraph>y]</paragraph>',
 				'<heading1>[]</heading1>',
@@ -366,6 +373,51 @@ describe( 'DataController', () => {
 
 					expect( getData( doc ) )
 						.to.equal( '<pparent>x<paragraph>foo<pchild>ba[]om</pchild></paragraph></pparent>' );
+				} );
+
+				test(
+					'merges elements when right end deep nested (in an empty container)',
+					'<paragraph>fo[o</paragraph><paragraph><pchild>bar]</pchild></paragraph>',
+					'<paragraph>fo[]</paragraph>',
+					{ merge: true }
+				);
+
+				test(
+					'merges elements when left end deep nested (in an empty container)',
+					'<paragraph><pchild>[foo</pchild></paragraph><paragraph>b]ar</paragraph><paragraph>x</paragraph>',
+					'<paragraph><pchild>[]ar</pchild></paragraph><paragraph>x</paragraph>',
+					{ merge: true }
+				);
+
+				it( 'merges elements when left end deep nested (3rd level)', () => {
+					const root = doc.getRoot();
+
+					// We need to use the raw API due to https://github.com/ckeditor/ckeditor5-engine/issues/905.
+					// <paragraph>fo[o</paragraph><pparent><paragraph><pchild>bar]</pchild></paragraph></pparent>
+
+					root.appendChildren(
+						new Element( 'paragraph', null, 'foo' )
+					);
+
+					root.appendChildren(
+						new Element( 'pparent', null, [
+							new Element( 'paragraph', null, [
+								new Element( 'pchild', null, 'bar' )
+							] )
+						] )
+					);
+
+					const range = new Range(
+						new Position( doc.getRoot(), [ 0, 2 ] ), // f[oo
+						new Position( doc.getRoot(), [ 1, 0, 0, 3 ] ) // bar]
+					);
+
+					doc.selection.setRanges( [ range ] );
+
+					deleteContent( doc.selection, doc.batch(), { merge: true } );
+
+					expect( getData( doc ) )
+						.to.equal( '<paragraph>fo[]</paragraph>' );
 				} );
 			} );
 
