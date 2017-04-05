@@ -9,7 +9,7 @@ Changelog
 
 ### Other changes
 
-* Code refactoring in editor-classic to share API with editor-inline. Closes [#48](https://github.com/ckeditor/ckeditor5-editor-classic/issues/48). ([2bb1e4e](https://github.com/ckeditor/ckeditor5-editor-classic/commit/2bb1e4e))
+* Code refactoring to share API with `ckeditor5-editor-inline`. Closes [#48](https://github.com/ckeditor/ckeditor5-editor-classic/issues/48). ([2bb1e4e](https://github.com/ckeditor/ckeditor5-editor-classic/commit/2bb1e4e))
 
 
 ## [0.7.1](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v0.7.0...v0.7.1) (2017-03-06)
