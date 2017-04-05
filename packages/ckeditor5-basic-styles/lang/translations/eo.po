@@ -1,14 +1,14 @@
 # Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: ku\n"
-"Language-Team: Kurdish (https://www.transifex.com/ckeditor/teams/11143/ku/)\n"
+"Language: eo\n"
+"Language-Team: Esperanto (https://www.transifex.com/ckeditor/teams/11143/eo/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Toolbar button tooltip for the Bold feature."
 msgid "Bold"
-msgstr "قەڵەو"
+msgstr "grasa"
 
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
-msgstr "لار"
+msgstr "kursiva"
