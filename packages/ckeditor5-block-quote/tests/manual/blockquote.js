@@ -14,7 +14,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [
 		ArticlePreset
 	],
-	toolbar: [ 'headings', 'bold', 'italic', 'link', 'unlink', 'blockQuote', 'bulletedList', 'numberedList', 'undo', 'redo' ]
+	toolbar: [ 'headings', 'bold', 'italic', 'link', 'unlink', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
 } )
 .then( editor => {
 	window.editor = editor;
