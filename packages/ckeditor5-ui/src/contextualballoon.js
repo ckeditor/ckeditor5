@@ -65,7 +65,7 @@ export default class ContextualBalloon extends Plugin {
 	/**
 	 * Returns `true` when given view is in the stack otherwise returns `false`.
 	 *
-	 * @param {module:ui:view~View} view
+	 * @param {module:ui/view~View} view
 	 * @returns {Boolean}
 	 */
 	isViewInStack( view ) {
@@ -73,7 +73,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Adds view to the stack and makes is visible.
+	 * Adds view to the stack and makes it visible.
 	 *
 	 * @param {module:ui/contextualballoon~ViewConfig} data Configuration of the view.
 	 */
