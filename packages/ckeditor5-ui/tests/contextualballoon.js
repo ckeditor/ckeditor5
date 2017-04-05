@@ -14,10 +14,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 /* global document */
 
 describe( 'ContextualBalloon', () => {
-	let balloon, viewA, viewB, editor;
+	let editor, editorElement, balloon, viewA, viewB;
 
 	beforeEach( () => {
-		return ClassicTestEditor.create( document.createElement( 'div' ), {
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		return ClassicTestEditor.create( editorElement, {
 			plugins: [ ContextualBalloon ]
 		} )
 		.then( newEditor => {
