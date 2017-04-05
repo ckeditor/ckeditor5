@@ -14,7 +14,7 @@ import BalloonPanelView from './panel/balloon/balloonpanelview';
  * Common contextual balloon of the Editor.
  *
  * This class reuses the same {module:ui/view~View} for each contextual balloon panel in the editor UI, makes
- * possible to add multiple panels to the same balloon (stored in the stack, last one in the stack is visible)
+ * possible to add multiple views to the same balloon (stored in the stack, last one in the stack is visible)
  * and prevents of displaying more than one contextual balloon panel at the same time.
  */
 export default class ContextualBalloon {
@@ -33,7 +33,7 @@ export default class ContextualBalloon {
 		this.view = new BalloonPanelView();
 
 		/**
-		 * Stack of panels injected to the balloon. Last one in the stack is displayed
+		 * Stack of the views injected to the balloon. Last one in the stack is displayed
 		 * as content of {@link module:ui/contextualballoon~ContextualBalloon#view}.
 		 *
 		 * @private
@@ -43,69 +43,69 @@ export default class ContextualBalloon {
 	}
 
 	/**
-	 * Returns configuration of currently visible panel or `null` when there is no panel in the stack.
+	 * Returns configuration of currently visible view or `null` when there is no view in the stack.
 	 *
-	 * @returns {module:ui/contextualballoon~Panel|null}
+	 * @returns {module:ui/contextualballoon~ViewConfig|null}
 	 */
 	get visible() {
 		return this._stack.get( this.view.content.get( 0 ) ) || null;
 	}
 
 	/**
-	 * Returns `true` when panel of given view is in the stack otherwise returns `false`.
+	 * Returns `true` when given view is in the stack otherwise returns `false`.
 	 *
 	 * @param {module:ui:view~View} view
 	 * @returns {Boolean}
 	 */
-	isPanelInStack( view ) {
+	isViewInStack( view ) {
 		return this._stack.has( view );
 	}
 
 	/**
-	 * Adds panel to the stack and makes this panel visible.
+	 * Adds view to the stack and makes is visible.
 	 *
-	 * @param {module:ui/contextualballoon~Panel} panelData Configuration of the panel.
+	 * @param {module:ui/contextualballoon~ViewConfig} data Configuration of the view.
 	 */
-	add( panelData ) {
-		if ( this._stack.get( panelData.view ) ) {
+	add( data ) {
+		if ( this._stack.get( data.view ) ) {
 			/**
-			 * Trying to add configuration of the same panel more than once.
+			 * Trying to add configuration of the same view more than once.
 			 *
-			 * @error contextualballoon-add-item-exist
+			 * @error contextualballoon-add-view-exist
 			 */
-			throw new CKEditorError( 'contextualballoon-add-panel-exist: Cannot add the same panel twice.' );
+			throw new CKEditorError( 'contextualballoon-add-view-exist: Cannot add configuration of the same view twice.' );
 		}
 
-		// When adding panel to the not empty balloon.
+		// When adding view to the not empty balloon.
 		if ( this.visible ) {
 			// Remove displayed content from the view.
 			this.view.content.remove( this.visible.view );
 		}
 
-		// Add new panel to the stack.
-		this._stack.set( panelData.view, panelData );
+		// Add new view to the stack.
+		this._stack.set( data.view, data );
 		// And display it.
-		this._showPanel( panelData );
+		this._show( data );
 	}
 
 	/**
-	 * Removes panel of given {@link: module:ui/view~View} from the stack of panels.
-	 * If removed panel was visible then the panel before in the stack will be visible instead.
-	 * When there is no panel in the stack then balloon will hide.
+	 * Removes given view from the stack. If removed view was visible
+	 * then the view before in the stack will be visible instead.
+	 * When there is no view in the stack then balloon will hide.
 	 *
-	 * @param {module:ui/view~View} view View of panel which will be removed from the balloon.
+	 * @param {module:ui/view~View} view View which will be removed from the balloon.
 	 */
 	remove( view ) {
 		if ( !this._stack.get( view ) ) {
 			/**
-			 * Trying to remove configuration of the panel not defined in the stack.
+			 * Trying to remove configuration of the view not defined in the stack.
 			 *
-			 * @error contextualballoon-remove-panel-not-exist
+			 * @error contextualballoon-remove-view-not-exist
 			 */
-			throw new CKEditorError( 'contextualballoon-remove-panel-not-exist: Cannot remove configuration of not existing panel.' );
+			throw new CKEditorError( 'contextualballoon-remove-view-not-exist: Cannot remove configuration of not existing view.' );
 		}
 
-		// When visible panel is being removed.
+		// When visible view is being removed.
 		if ( this.visible.view === view ) {
 			// We need to remove it from the view content.
 			this.view.content.remove( view );
@@ -113,13 +113,13 @@ export default class ContextualBalloon {
 			// And then remove from the stack.
 			this._stack.delete( view );
 
-			// Next we need to check if there is other panel in stack to show.
-			const lastPanel = Array.from( this._stack ).pop();
+			// Next we need to check if there is other view in stack to show.
+			const last = Array.from( this._stack ).pop();
 
 			// If it is.
-			if ( lastPanel ) {
+			if ( last ) {
 				// Just show it.
-				this._showPanel( lastPanel[ 1 ] );
+				this._show( last[ 1 ] );
 			// Otherwise.
 			} else {
 				// Hide balloon panel.
@@ -127,33 +127,33 @@ export default class ContextualBalloon {
 			}
 		// Otherwise.
 		} else {
-			// Just remove given panel from the stack.
+			// Just remove given view from the stack.
 			this._stack.delete( view );
 		}
 	}
 
 	/**
 	 * Updates position of balloon panel according to position data
-	 * of the first panel in the {#_stack}.
+	 * of the first view in the stack.
 	 */
 	updatePosition() {
 		this.view.attachTo( this._getBalloonPosition() );
 	}
 
 	/**
-	 * Sets panel as a content of the balloon and attaches balloon using position options of the first panel.
+	 * Sets view as a content of the balloon and attaches balloon using position options of the first view.
 	 *
 	 * @private
-	 * @param {module:ui/contextualballoon~Panel} panelData Configuration of the panel.
+	 * @param {module:ui/contextualballoon~ViewConfig} data Configuration of the view.
 	 */
-	_showPanel( panelData ) {
-		this.view.content.add( panelData.view );
+	_show( data ) {
+		this.view.content.add( data.view );
 		this.view.attachTo( this._getBalloonPosition() );
 	}
 
 	/**
-	 * Returns position options of the first panel in the stack.
-	 * This helps to keep balloon in the same position when panels are changed.
+	 * Returns position options of the first view in the stack.
+	 * This helps to keep balloon in the same position when view is changed.
 	 *
 	 * @private
 	 * @returns {module:utils/dom/position~Options}
@@ -164,10 +164,10 @@ export default class ContextualBalloon {
 }
 
 /**
- * An object describing configuration of single panel added to the balloon stack.
+ * An object describing configuration of single view added to the balloon stack.
  *
- * @typedef {Object} module:ui/contextualballoon~Panel
+ * @typedef {Object} module:ui/contextualballoon~ViewConfig
  *
- * @property {module:ui/view~View} view Panel content view.
+ * @property {module:ui/view~View} view Content of the balloon.
  * @property {module:utils/dom/position~Options} position Positioning options.
  */

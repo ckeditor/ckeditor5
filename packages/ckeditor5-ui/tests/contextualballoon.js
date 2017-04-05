@@ -32,17 +32,17 @@ describe( 'ContextualBalloon', () => {
 		} );
 	} );
 
-	describe( 'isPanelInStack()', () => {
-		it( 'should return true when panel of given view is in stack', () => {
+	describe( 'isViewInStack()', () => {
+		it( 'should return true when given view is in stack', () => {
 			balloon.add( {
 				view: viewA,
 				position: { target: 'fake' }
 			} );
 
-			expect( balloon.isPanelInStack( viewA ) ).to.true;
+			expect( balloon.isViewInStack( viewA ) ).to.true;
 		} );
 
-		it( 'should return true when panel of given view is in stack but is not visible', () => {
+		it( 'should return true when given view is in stack but is not visible', () => {
 			balloon.add( {
 				view: viewA,
 				position: { target: 'fake' }
@@ -54,16 +54,16 @@ describe( 'ContextualBalloon', () => {
 			} );
 
 			expect( balloon.visible.view === viewB ).to.true;
-			expect( balloon.isPanelInStack( viewA ) ).to.true;
+			expect( balloon.isViewInStack( viewA ) ).to.true;
 		} );
 
-		it( 'should return false when panel of given view is not in stack', () => {
-			expect( balloon.isPanelInStack( viewA ) ).to.false;
+		it( 'should return false when given view is not in stack', () => {
+			expect( balloon.isViewInStack( viewA ) ).to.false;
 		} );
 	} );
 
 	describe( 'add()', () => {
-		it( 'should add panel to the stack and display in balloon', () => {
+		it( 'should add view to the stack and display in balloon', () => {
 			balloon.add( {
 				view: viewA,
 				position: { target: 'fake' }
@@ -75,7 +75,7 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
 		} );
 
-		it( 'should throw an error when try to add the same panel more than once', () => {
+		it( 'should throw an error when try to add the same view more than once', () => {
 			balloon.add( {
 				view: viewA,
 				position: { target: 'fake' }
@@ -86,10 +86,10 @@ describe( 'ContextualBalloon', () => {
 					view: viewA,
 					position: { target: 'fake' }
 				} );
-			} ).to.throw( CKEditorError, /^contextualballoon-add-panel-exist/ );
+			} ).to.throw( CKEditorError, /^contextualballoon-add-view-exist/ );
 		} );
 
-		it( 'should add multiple panels to he stack and display last one', () => {
+		it( 'should add multiple views to he stack and display last one', () => {
 			balloon.add( {
 				view: viewA,
 				position: { target: 'fake' }
@@ -104,7 +104,7 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.view.content.get( 0 ) ).to.deep.equal( viewB );
 		} );
 
-		it( 'should add multiple panels to the stack and keep balloon in the same position', () => {
+		it( 'should add multiple views to the stack and keep balloon in the same position', () => {
 			balloon.add( {
 				view: viewA,
 				position: { target: 'fake', foo: 'bar' }
@@ -130,7 +130,7 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'visible', () => {
-		it( 'should return data of currently visible panel', () => {
+		it( 'should return data of currently visible view', () => {
 			balloon.add( {
 				view: viewA,
 				position: { target: 'fake' }
@@ -142,7 +142,7 @@ describe( 'ContextualBalloon', () => {
 			} );
 		} );
 
-		it( 'should return data of currently visible panel when there is more than one in the stack', () => {
+		it( 'should return data of currently visible view when there is more than one in the stack', () => {
 			balloon.add( {
 				view: viewA,
 				position: { target: 'fake' }
@@ -165,7 +165,7 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'remove()', () => {
-		it( 'should remove panel of given view and hide balloon when there is no other panel to display', () => {
+		it( 'should remove given view and hide balloon when there is no other view to display', () => {
 			balloon.add( {
 				view: viewA,
 				position: { target: 'fake' }
@@ -176,7 +176,7 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.visible ).to.null;
 		} );
 
-		it( 'should remove panel of given view and set previous in the stack as visible when removed panel was visible', () => {
+		it( 'should remove given view and set previous in the stack as visible when removed view was visible', () => {
 			balloon.add( {
 				view: viewA,
 				position: { target: 'fake' }
@@ -195,7 +195,7 @@ describe( 'ContextualBalloon', () => {
 			} );
 		} );
 
-		it( 'should remove given panel from the stack when panel is not visible', () => {
+		it( 'should remove given view from the stack when view is not visible', () => {
 			balloon.add( {
 				view: viewA,
 				position: { target: 'fake' }
@@ -214,10 +214,10 @@ describe( 'ContextualBalloon', () => {
 			} );
 		} );
 
-		it( 'should throw an error when there is no panel of given view in the stack', () => {
+		it( 'should throw an error when there is no given view in the stack', () => {
 			expect( () => {
 				balloon.remove( viewA );
-			} ).to.throw( CKEditorError, /^contextualballoon-remove-panel-not-exist/ );
+			} ).to.throw( CKEditorError, /^contextualballoon-remove-view-not-exist/ );
 		} );
 	} );
 
@@ -236,7 +236,7 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
 		} );
 
-		it( 'should attach balloon to the target using the same position options as currently set when there is more than one panel', () => {
+		it( 'should attach balloon to the target using the same position options as currently set when there is more than one view', () => {
 			balloon.add( {
 				view: viewA,
 				position: {
@@ -264,7 +264,7 @@ describe( 'ContextualBalloon', () => {
 			} );
 		} );
 
-		it( 'should remove given panel from the stack when panel is not visible', () => {
+		it( 'should remove given view from the stack when view is not visible', () => {
 			balloon.add( {
 				view: viewA,
 				position: { target: 'fake' }
@@ -283,10 +283,10 @@ describe( 'ContextualBalloon', () => {
 			} );
 		} );
 
-		it( 'should throw an error when there is no panel of given view in the stack', () => {
+		it( 'should throw an error when there is no given view in the stack', () => {
 			expect( () => {
 				balloon.remove( viewA );
-			} ).to.throw( CKEditorError, /^contextualballoon-remove-panel-not-exist/ );
+			} ).to.throw( CKEditorError, /^contextualballoon-remove-view-not-exist/ );
 		} );
 	} );
 } );
