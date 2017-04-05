@@ -58,13 +58,15 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Returns configuration of the currently visible view or `null` when there are no
+	 * Returns the currently visible view or `null` when there are no
 	 * views in the stack.
 	 *
-	 * @returns {module:ui/contextualballoon~ViewConfig|null}
+	 * @returns {module:ui/view~View|null}
 	 */
-	get visible() {
-		return this._stack.get( this.view.content.get( 0 ) ) || null;
+	get visibleView() {
+		const item = this._stack.get( this.view.content.get( 0 ) );
+
+		return item ? item.view : null;
 	}
 
 	/**
@@ -93,9 +95,9 @@ export default class ContextualBalloon extends Plugin {
 		}
 
 		// When adding view to the not empty balloon.
-		if ( this.visible ) {
+		if ( this.visibleView ) {
 			// Remove displayed content from the view.
-			this.view.content.remove( this.visible.view );
+			this.view.content.remove( this.visibleView );
 		}
 
 		// Add new view to the stack.
@@ -122,7 +124,7 @@ export default class ContextualBalloon extends Plugin {
 		}
 
 		// When visible view is being removed.
-		if ( this.visible.view === view ) {
+		if ( this.visibleView === view ) {
 			// We need to remove it from the view content.
 			this.view.content.remove( view );
 

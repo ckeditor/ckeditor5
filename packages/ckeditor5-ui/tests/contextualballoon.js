@@ -80,7 +80,7 @@ describe( 'ContextualBalloon', () => {
 				position: { target: 'fake' }
 			} );
 
-			expect( balloon.visible.view === viewB ).to.true;
+			expect( balloon.visibleView ).to.equal( viewB );
 			expect( balloon.hasView( viewA ) ).to.true;
 		} );
 
@@ -156,17 +156,14 @@ describe( 'ContextualBalloon', () => {
 		} );
 	} );
 
-	describe( 'visible', () => {
+	describe( 'visibleView', () => {
 		it( 'should return data of currently visible view', () => {
 			balloon.add( {
 				view: viewA,
 				position: { target: 'fake' }
 			} );
 
-			expect( balloon.visible ).to.deep.equal( {
-				view: viewA,
-				position: { target: 'fake' }
-			} );
+			expect( balloon.visibleView ).to.equal( viewA );
 		} );
 
 		it( 'should return data of currently visible view when there is more than one in the stack', () => {
@@ -180,14 +177,11 @@ describe( 'ContextualBalloon', () => {
 				position: { target: 'fake' }
 			} );
 
-			expect( balloon.visible ).to.deep.equal( {
-				view: viewB,
-				position: { target: 'fake' }
-			} );
+			expect( balloon.visibleView ).to.equal( viewB );
 		} );
 
 		it( 'should return `null` when the stack is empty', () => {
-			expect( balloon.visible ).to.null;
+			expect( balloon.visibleView ).to.null;
 		} );
 	} );
 
@@ -200,7 +194,7 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.remove( viewA );
 
-			expect( balloon.visible ).to.null;
+			expect( balloon.visibleView ).to.null;
 		} );
 
 		it( 'should remove given view and set previous in the stack as visible when removed view was visible', () => {
@@ -216,10 +210,7 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.remove( viewB );
 
-			expect( balloon.visible ).to.deep.equal( {
-				view: viewA,
-				position: { target: 'fake' }
-			} );
+			expect( balloon.visibleView ).to.equal( viewA );
 		} );
 
 		it( 'should remove given view from the stack when view is not visible', () => {
@@ -235,10 +226,7 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.remove( viewA );
 
-			expect( balloon.visible ).to.deep.equal( {
-				view: viewB,
-				position: { target: 'fake' }
-			} );
+			expect( balloon.visibleView ).to.equal( viewB );
 		} );
 
 		it( 'should throw an error when there is no given view in the stack', () => {
@@ -304,10 +292,7 @@ describe( 'ContextualBalloon', () => {
 
 			balloon.remove( viewA );
 
-			expect( balloon.visible ).to.deep.equal( {
-				view: viewB,
-				position: { target: 'fake' }
-			} );
+			expect( balloon.visibleView ).to.equal( viewB );
 		} );
 
 		it( 'should throw an error when there is no given view in the stack', () => {

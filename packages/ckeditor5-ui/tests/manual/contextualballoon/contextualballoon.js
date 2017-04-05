@@ -142,7 +142,7 @@ class PluginGeneric extends Plugin {
 	}
 
 	get _isVisible() {
-		return this._balloon.visible && this._balloon.visible.view === this.view;
+		return this._balloon.visibleView === this.view;
 	}
 
 	afterInit() {
