@@ -180,16 +180,20 @@ export default class BalloonPanelView extends View {
 		// First we need to attach the balloon panel to the target element.
 		this.attachTo( options );
 
-		const target = options.target;
 		const limiter = options.limiter || defaultLimiterElement;
+		let target = null;
+
+		// We need to take HTMLElement related to the target if it is possible.
+		if ( isElement( options.target ) ) {
+			target = target;
+		} else if ( isRange( options.target ) ) {
+			target = options.target.commonAncestorContainer;
+		}
 
 		// Then we need to listen on scroll event of eny element in the document.
 		this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {
-			// We need to take HTMLElement related to the target if it is possible.
-			const targetNode = isElement( target ) ? target : isRange( target ) ? target.commonAncestorContainer : null;
-
 			// We need to update position if scrolled element contains related to the balloon elements.
-			if ( ( targetNode && domEvt.target.contains( targetNode ) ) || domEvt.target.contains( limiter ) ) {
+			if ( ( target && domEvt.target.contains( target ) ) || domEvt.target.contains( limiter ) ) {
 				this.attachTo( options );
 			}
 		}, { useCapture: true } );
