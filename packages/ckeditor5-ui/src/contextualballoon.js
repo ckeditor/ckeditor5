@@ -82,7 +82,9 @@ export default class ContextualBalloon extends Plugin {
 	/**
 	 * Adds a new view to the stack and makes it visible.
 	 *
-	 * @param {module:ui/contextualballoon~ViewConfig} data Configuration of the view.
+	 * @param {Object} data Configuration of the view.
+	 * @param {module:ui/view~View} view Content of the balloon.
+	 * @param {module:utils/dom/position~Options} position Positioning options.
 	 */
 	add( data ) {
 		if ( this.hasView( data.view ) ) {
@@ -103,7 +105,7 @@ export default class ContextualBalloon extends Plugin {
 		// Add new view to the stack.
 		this._stack.set( data.view, data );
 		// And display it.
-		this._show( data );
+		this._show( data.view );
 	}
 
 	/**
@@ -137,7 +139,7 @@ export default class ContextualBalloon extends Plugin {
 			// If it is some other view.
 			if ( last ) {
 				// Just show it.
-				this._show( last );
+				this._show( last.view );
 			} else {
 				// Hide the balloon panel.
 				this.view.hide();
@@ -161,10 +163,10 @@ export default class ContextualBalloon extends Plugin {
 	 * options of the first view.
 	 *
 	 * @private
-	 * @param {module:ui/contextualballoon~ViewConfig} data Configuration of the view.
+	 * @param {module:ui/view~View} view View to show in the balloon.
 	 */
-	_show( data ) {
-		this.view.content.add( data.view );
+	_show( view ) {
+		this.view.content.add( view );
 		this.view.attachTo( this._getBalloonPosition() );
 	}
 
@@ -188,12 +190,3 @@ export default class ContextualBalloon extends Plugin {
 		super.destroy();
 	}
 }
-
-/**
- * An object describing configuration of a single view added to the balloon stack.
- *
- * @typedef {Object} module:ui/contextualballoon~ViewConfig
- *
- * @property {module:ui/view~View} view Content of the balloon.
- * @property {module:utils/dom/position~Options} position Positioning options.
- */
