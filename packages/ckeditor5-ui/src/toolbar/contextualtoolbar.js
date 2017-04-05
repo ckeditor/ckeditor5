@@ -7,78 +7,74 @@
  * @module ui/toolbar/contextualtoolbar
  */
 
-import BalloonPanelView from '../panel/balloon/balloonpanelview';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/contextualballoon';
 import ToolbarView from './toolbarview';
+import BalloonPanelView from '../panel/balloon/balloonpanelview.js';
 
 /**
- * The contextual toolbar. This class displays given editor components
- * inside a panel attached to the selection.
+ * The contextual toolbar.
  *
- * Panel is displayed using {@link module:core/editor/editorui~EditorUI#balloon}.
+ * It uses the {@link module:ui/contextualballoon~ContextualBalloon contextual balloon plugin}.
+ *
+ * @extends module:core/plugin~Plugin
  */
-export default class ContextualToolbar {
+export default class ContextualToolbar extends Plugin {
 	/**
-	 * Creates an instance of the contextual toolbar class.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @inheritDoc
 	 */
-	constructor( editor ) {
+	static get requires() {
+		return [ ContextualBalloon ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
 		/**
-		 * Editor instance.
+		 * The toolbar view displayed in the balloon.
 		 *
-		 * @readonly
-		 * @member {module:core/editor/editor~Editor} #editor
+		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
-		this.editor = editor;
+		this.toolbarView = new ToolbarView( this.editor.locale );
 
 		/**
-		 * Content of the panel.
+		 * The contextual balloon plugin instance.
 		 *
 		 * @private
-		 * @member {module:ui/toolbar/toolbarview~ToolbarView} #_toolbarView
+		 * @member {module:ui/contextualballoon~ContextualBalloon}
 		 */
-		this._toolbarView = new ToolbarView( this.editor.locale );
+		this._balloon = this.editor.plugins.get( ContextualBalloon );
 
-		// Handle editor action and show or hide toolbar.
+		// Attach lifecycle actions.
 		this._handleSelectionChange();
 		this._handleFocusChange();
 	}
 
 	/**
-	 * Adds editor components to the contextual toolbar.
+	 * Creates toolbar components based on given configuration.
+	 * This need to be done when all plugins will be ready.
 	 *
-	 * @param {Array<String>} components List of the toolbar components.
-	 * @param {module:ui/componentfactory~ComponentFactory} [factory=core/editor/editorui#componentFactory]
-	 * A factory producing toolbar items.
+	 * @inheritDoc
 	 */
-	addComponents( components, factory = this.editor.ui.componentFactory ) {
-		this._toolbarView.fillFromConfig( components, factory );
-	}
+	afterInit() {
+		const config = this.editor.config.get( 'contextualToolbar' );
+		const factory = this.editor.ui.componentFactory;
 
-	/**
-	 * Returns true when contextual toolbar panel is currently visible
-	 * in {@link module:core/editor/editorui~EditorUI#balloon}.
-	 *
-	 * @private
-	 * @returns {Boolean}
-	 */
-	get _isVisible() {
-		const balloon = this.editor.ui.balloon;
-
-		return balloon.visible && balloon.visible.view === this._toolbarView;
+		return this.toolbarView.fillFromConfig( config, factory );
 	}
 
 	/**
 	 * Handles editor focus change and hides panel if it's needed.
 	 *
-	 * @protected
+	 * @private
 	 */
 	_handleFocusChange() {
 		const editor = this.editor;
 
 		// Hide the panel View when editor loses focus but no the other way around.
-		this._toolbarView.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
-			if ( this._isVisible &&  !isFocused ) {
+		this.toolbarView.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
+			if ( this._balloon.visibleView === this.toolbarView && !isFocused ) {
 				this._hidePanel();
 			}
 		} );
@@ -91,7 +87,7 @@ export default class ContextualToolbar {
 	 * @private
 	 */
 	_handleSelectionChange() {
-		const toolbarView = this._toolbarView;
+		const toolbarView = this.toolbarView;
 		const editingView = this.editor.editing.view;
 
 		// Hide panel when selection is changing.
@@ -102,16 +98,15 @@ export default class ContextualToolbar {
 	}
 
 	/**
-	 * Adds panel view to the {@link: core/editor/editorui~EditorUI#balloon} and attaches panel to the selection.
+	 * Adds panel view to the {@link: #_balloon} and attaches panel to the selection.
 	 *
 	 * @private
 	 */
 	_showPanel() {
 		const editingView = this.editor.editing.view;
-		const balloon = this.editor.ui.balloon;
 
 		// Do not add panel to the balloon stack twice.
-		if ( balloon.isPanelInStack( this._toolbarView ) ) {
+		if ( this._balloon.hasView( this.toolbarView ) ) {
 			return;
 		}
 
@@ -132,8 +127,8 @@ export default class ContextualToolbar {
 		const rangeRect = isBackward ? rangeRects.item( 0 ) : rangeRects.item( rangeRects.length - 1 );
 
 		// Add panel to the common editor contextual balloon.
-		balloon.add( {
-			view: this._toolbarView,
+		this._balloon.add( {
+			view: this.toolbarView,
 			position: {
 				target: rangeRect,
 				positions: isBackward ?
@@ -143,24 +138,22 @@ export default class ContextualToolbar {
 		} );
 
 		// Update panel position when editor content has changed.
-		this._toolbarView.listenTo( editingView, 'render', () => {
-			if ( this._isVisible ) {
-				balloon.updatePosition();
+		this.toolbarView.listenTo( editingView, 'render', () => {
+			if ( this._balloon.visibleView === this.toolbarView ) {
+				this._balloon.updatePosition();
 			}
 		} );
 	}
 
 	/**
-	 * Removes panel from the {@link: core/editor/editorui~EditorUI#balloon}.
+	 * Removes panel from the {@link: #_balloon}.
 	 *
 	 * @private
 	 */
 	_hidePanel() {
-		const balloon = this.editor.ui.balloon;
-
-		if ( balloon.isPanelInStack( this._toolbarView ) ) {
-			balloon.remove( this._toolbarView );
-			this._toolbarView.stopListening( this.editor.editing.view, 'render' );
+		if ( this._balloon.hasView( this.toolbarView ) ) {
+			this._balloon.remove( this.toolbarView );
+			this.toolbarView.stopListening( this.editor.editing.view, 'render' );
 		}
 	}
 }

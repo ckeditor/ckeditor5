@@ -4,8 +4,9 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import ContextualToolbar from '../../src/toolbar/contextualtoolbar';
+import ContextualBalloon from '../../src/contextualballoon';
+import ToolbarView from '../../src/toolbar/toolbarview';
 import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -19,42 +20,61 @@ describe( 'ContextualToolbar', () => {
 	let sandbox, editor, contextualToolbar, balloon, editorElement;
 
 	beforeEach( () => {
-		editorElement = document.createElement( 'div' );
-		document.body.appendChild( editorElement );
 		sandbox = sinon.sandbox.create();
 
+		editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
 		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, Bold, Italic ]
-		} ).then( newEditor => {
+			plugins: [ Paragraph, Bold, Italic, ContextualToolbar ],
+			contextualToolbar: [ 'bold', 'italic' ]
+		} )
+		.then( newEditor => {
+			newEditor.editing.view.attachDomRoot( editorElement );
+
 			editor = newEditor;
-			editor.editing.view.attachDomRoot( editorElement );
-			balloon = editor.ui.balloon;
-			contextualToolbar = new ContextualToolbar( editor );
+			contextualToolbar = editor.plugins.get( ContextualToolbar );
+			balloon = editor.plugins.get( ContextualBalloon );
+
+			// Focus the engine.
 			editor.editing.view.isFocused = true;
+
+			stubClientRects();
 		} );
 	} );
 
 	afterEach( () => {
-		editor.destroy();
 		sandbox.restore();
+		editor.destroy();
+	} );
+
+	it( 'should be loaded', () => {
+		expect( contextualToolbar ).to.instanceOf( ContextualToolbar );
+	} );
+
+	it( 'should load ContextualBalloon', () => {
+		expect( balloon ).to.instanceof( ContextualBalloon );
+	} );
+
+	it( 'should create plugin instance with properties', () => {
+		expect( contextualToolbar.toolbarView ).to.instanceof( ToolbarView );
+	} );
+
+	it( 'should create components from config', () => {
+		expect( contextualToolbar.toolbarView.items ).to.length( 2 );
 	} );
 
 	it( 'should open below if the selection is forward', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
-		stubClientRects();
-
 		editor.editing.view.fire( 'selectionChangeDone' );
 
-		expect( balloon.visible.view ).to.equal( contextualToolbar._toolbarView );
-
+		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 		expect( balloon.view.top ).to.be.above( 310 );
 	} );
 
 	it( 'should open above if the selection is forward but panel stick out of the limiter element', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
-
-		stubClientRects();
 
 		// Mock limiter rect.
 		mockBoundingBox( document.body, {
@@ -66,26 +86,21 @@ describe( 'ContextualToolbar', () => {
 
 		editor.editing.view.fire( 'selectionChangeDone' );
 
-		expect( balloon.visible.view ).to.equal( contextualToolbar._toolbarView );
-
+		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 		expect( balloon.view.top ).to.be.below( 310 );
 	} );
 
 	it( 'should open above if the selection is backward', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>', { lastRangeBackward: true } );
 
-		stubClientRects();
-
 		editor.editing.view.fire( 'selectionChangeDone' );
 
-		expect( balloon.visible.view ).to.equal( contextualToolbar._toolbarView );
+		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 		expect( balloon.view.top ).to.be.below( 100 );
 	} );
 
 	it( 'should open below if the selection is backward but panel stick out of the limiter element', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>', { lastRangeBackward: true } );
-
-		stubClientRects();
 
 		// Mock limiter rect.
 		mockBoundingBox( document.body, {
@@ -97,11 +112,11 @@ describe( 'ContextualToolbar', () => {
 
 		editor.editing.view.fire( 'selectionChangeDone' );
 
-		expect( balloon.visible.view ).to.equal( contextualToolbar._toolbarView );
+		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 		expect( balloon.view.top ).to.be.above( 100 );
 	} );
 
-	it( 'should not open if selection is collapsed and is moving', () => {
+	it( 'should not open if the collapsed selection is moving', () => {
 		setData( editor.document, '<paragraph>ba[]r</paragraph>' );
 
 		const oldSelection = editor.editing.view.selection;
@@ -115,39 +130,35 @@ describe( 'ContextualToolbar', () => {
 		editor.editing.view.fire( 'selectionChange', { oldSelection, newSelection } );
 		editor.editing.view.fire( 'selectionChangeDone' );
 
-		expect( balloon.visible ).to.null;
+		expect( balloon.visibleView ).to.null;
 	} );
 
-	it( 'should hide if editor loses focus', () => {
+	it( 'should hide if the editor loses focus', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 		editor.ui.focusTracker.isFocused = true;
 
-		stubClientRects();
-
 		editor.editing.view.fire( 'selectionChangeDone' );
 
-		expect( balloon.visible.view ).to.equal( contextualToolbar._toolbarView );
+		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 
 		editor.ui.focusTracker.isFocused = false;
 
-		expect( balloon.visible ).to.null;
+		expect( balloon.visibleView ).to.null;
 	} );
 
-	it( 'should hide if selection is changing', () => {
+	it( 'should hide if the selection is changing', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
-
-		stubClientRects();
 
 		editor.editing.view.fire( 'selectionChangeDone' );
 
-		expect( balloon.visible.view ).to.equal( contextualToolbar._toolbarView );
+		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 
 		const oldSelection = editor.editing.view.selection;
 		const newSelection = new ViewSelection();
 
 		editor.editing.view.fire( 'selectionChange', { oldSelection, newSelection } );
 
-		expect( balloon.visible ).to.null;
+		expect( balloon.visibleView ).to.null;
 	} );
 
 	it( 'should do nothing when panel is being added to balloon stack twice', () => {
@@ -155,7 +166,7 @@ describe( 'ContextualToolbar', () => {
 
 		editor.editing.view.fire( 'selectionChangeDone' );
 
-		expect( balloon.visible.view ).to.equal( contextualToolbar._toolbarView );
+		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 
 		expect( () => {
 			editor.editing.view.fire( 'selectionChangeDone' );
@@ -183,42 +194,13 @@ describe( 'ContextualToolbar', () => {
 
 		editor.editing.view.fire( 'selectionChangeDone' );
 
-		const viewMock = {};
+		const viewMock = { destroy: () => {} };
 
 		balloon.add( { view: viewMock } );
 
 		editor.editing.view.fire( 'render' );
 
 		sinon.assert.notCalled( spy );
-	} );
-
-	it( 'should not update toolbar position when is added to the balloon stack but is not visible and editor content has changed', () => {
-		const spy = sandbox.spy( balloon, 'updatePosition' );
-
-		setData( editor.document, '<paragraph>ba[r]</paragraph>' );
-
-		editor.editing.view.fire( 'selectionChangeDone' );
-
-		const viewMock = {};
-
-		balloon.add( { view: viewMock } );
-
-		editor.editing.view.fire( 'render' );
-
-		sinon.assert.notCalled( spy );
-	} );
-
-	describe( 'addComponents()', () => {
-		it( 'should adds given components as a toolbar content', () => {
-			contextualToolbar = new ContextualToolbar( editor );
-
-			expect( contextualToolbar._toolbarView ).to.instanceof( ToolbarView );
-			expect( contextualToolbar._toolbarView.items.length ).to.equal( 0 );
-
-			contextualToolbar.addComponents( [ 'bold', 'italic' ] );
-
-			expect( contextualToolbar._toolbarView.items.length ).to.equal( 2 );
-		} );
 	} );
 
 	function stubClientRects() {
