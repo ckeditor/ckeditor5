@@ -7,12 +7,8 @@ Changelog
 
 * [Safari] Fixed an issue when inserting a Spanish accent character on a non-collapsed selection wouldn't work. Closes [#82](https://github.com/ckeditor/ckeditor5-typing/issues/82). ([49cfe9c](https://github.com/ckeditor/ckeditor5-typing/commit/49cfe9c))
 * `InputCommand` now accepts `Range` instead of `Position` as a parameter. Closes [#86](https://github.com/ckeditor/ckeditor5-typing/issues/86). Closes [#54](https://github.com/ckeditor/ckeditor5-typing/issues/54). ([0766407](https://github.com/ckeditor/ckeditor5-typing/commit/0766407))
-
-  BREAKING CHANGE: `InputCommand` `options.resultPosition` was replaced with `options.resultRange`.
 * New undo step should be created on selection change or applying an attribute. Closes [#20](https://github.com/ckeditor/ckeditor5-typing/issues/20). Closes [#21](https://github.com/ckeditor/ckeditor5-typing/issues/21). ([011452b](https://github.com/ckeditor/ckeditor5-typing/commit/011452b))
 * Use `typing.undoStep` in both `InputCommand` and `DeleteCommand`. Closes [#79](https://github.com/ckeditor/ckeditor5-typing/issues/79). ([c597467](https://github.com/ckeditor/ckeditor5-typing/commit/c597467))
-
-  BREAKING CHANGE: The `undo.step` configuration option was replaced by `typing.undoStep` in `DeleteCommand`. See #79.
 
 ### Features
 
