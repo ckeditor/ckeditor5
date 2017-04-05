@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## [0.9.0](https://github.com/ckeditor/ckeditor5-utils/compare/v0.8.0...v0.9.0) (2017-04-05)
+
+### Bug fixes
+
+* getOptimalPosition() utility does not work when the parent element has a scroll. Closes [#139](https://github.com/ckeditor/ckeditor5-utils/issues/139). ([b878949](https://github.com/ckeditor/ckeditor5-utils/commit/b878949))
+
+### Features
+
+* `Collectio.bindTo` method now is not only available in the `ViewCollection` but in all `Collection`s. Closes [#125](https://github.com/ckeditor/ckeditor5-utils/issues/125). ([4e299be](https://github.com/ckeditor/ckeditor5-utils/commit/4e299be))
+* Added 'first' function. Closes [#130](https://github.com/ckeditor/ckeditor5-utils/issues/130). ([8ab07d2](https://github.com/ckeditor/ckeditor5-utils/commit/8ab07d2))
+* Two–way data binding between Collection instances. Closes [#132](https://github.com/ckeditor/ckeditor5-utils/issues/132). ([6b79624](https://github.com/ckeditor/ckeditor5-utils/commit/6b79624))
+
+
 ## [0.8.0](https://github.com/ckeditor/ckeditor5-utils/compare/v0.7.0...v0.8.0) (2017-03-06)
 
 ### Features
