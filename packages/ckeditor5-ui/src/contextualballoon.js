@@ -73,7 +73,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {module:ui/view~View} view
 	 * @returns {Boolean}
 	 */
-	isViewInStack( view ) {
+	hasView( view ) {
 		return this._stack.has( view );
 	}
 
@@ -83,7 +83,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {module:ui/contextualballoon~ViewConfig} data Configuration of the view.
 	 */
 	add( data ) {
-		if ( this.isViewInStack( data.view ) ) {
+		if ( this.hasView( data.view ) ) {
 			/**
 			 * Trying to add configuration of the same view more than once.
 			 *
@@ -112,7 +112,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {module:ui/view~View} view A view to be removed from the balloon.
 	 */
 	remove( view ) {
-		if ( !this.isViewInStack( view ) ) {
+		if ( !this.hasView( view ) ) {
 			/**
 			 * Trying to remove configuration of the view not defined in the stack.
 			 *

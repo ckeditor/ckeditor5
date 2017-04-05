@@ -59,14 +59,14 @@ describe( 'ContextualBalloon', () => {
 		} );
 	} );
 
-	describe( 'isViewInStack()', () => {
+	describe( 'hasView()', () => {
 		it( 'should return true when given view is in stack', () => {
 			balloon.add( {
 				view: viewA,
 				position: { target: 'fake' }
 			} );
 
-			expect( balloon.isViewInStack( viewA ) ).to.true;
+			expect( balloon.hasView( viewA ) ).to.true;
 		} );
 
 		it( 'should return true when given view is in stack but is not visible', () => {
@@ -81,11 +81,11 @@ describe( 'ContextualBalloon', () => {
 			} );
 
 			expect( balloon.visible.view === viewB ).to.true;
-			expect( balloon.isViewInStack( viewA ) ).to.true;
+			expect( balloon.hasView( viewA ) ).to.true;
 		} );
 
 		it( 'should return false when given view is not in stack', () => {
-			expect( balloon.isViewInStack( viewA ) ).to.false;
+			expect( balloon.hasView( viewA ) ).to.false;
 		} );
 	} );
 

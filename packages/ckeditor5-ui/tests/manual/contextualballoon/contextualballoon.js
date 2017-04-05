@@ -157,7 +157,7 @@ class PluginGeneric extends Plugin {
 	}
 
 	_showPanel() {
-		if ( this._balloon.isViewInStack( this.view ) ) {
+		if ( this._balloon.hasView( this.view ) ) {
 			return;
 		}
 
@@ -172,7 +172,7 @@ class PluginGeneric extends Plugin {
 	}
 
 	_hidePanel() {
-		if ( !this._balloon.isViewInStack( this.view ) ) {
+		if ( !this._balloon.hasView( this.view ) ) {
 			return;
 		}
 
@@ -265,7 +265,7 @@ function createContextualToolbar( editor ) {
 
 	// Remove toolbar from balloon.
 	function close() {
-		if ( balloon.isViewInStack( toolbar ) ) {
+		if ( balloon.hasView( toolbar ) ) {
 			balloon.remove( toolbar );
 		}
 	}
