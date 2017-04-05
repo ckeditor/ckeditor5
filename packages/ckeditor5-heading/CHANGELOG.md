@@ -5,9 +5,8 @@ Changelog
 
 ### Bug fixes
 
-* Changed the default heading drop-down title to a more meaningful one. Closes [#68](https://github.com/ckeditor/ckeditor5-heading/issues/68). ([1c16e96](https://github.com/ckeditor/ckeditor5-heading/commit/1c16e96))
+* Changed the default heading drop-down title to a more meaningful one. Closes [#68](https://github.com/ckeditor/ckeditor5-heading/issues/68). Closes [#62](https://github.com/ckeditor/ckeditor5-heading/issues/62). ([1c16e96](https://github.com/ckeditor/ckeditor5-heading/commit/1c16e96)) and ([e58dadc](https://github.com/ckeditor/ckeditor5-heading/commit/e58dadc))
 * Drop-down should be inactive when none of the commands can be applied to the current selection. Closes [#66](https://github.com/ckeditor/ckeditor5-heading/issues/66). ([0ebd5cd](https://github.com/ckeditor/ckeditor5-heading/commit/0ebd5cd))
-* The default dropdown label shows 'Heading'. Closes [#62](https://github.com/ckeditor/ckeditor5-heading/issues/62). ([e58dadc](https://github.com/ckeditor/ckeditor5-heading/commit/e58dadc))
 
 ### Features
 
@@ -15,10 +14,6 @@ Changelog
 * Enabled the tooltip for the 'headings' component in editor.ui#componentFactory. Closes [#55](https://github.com/ckeditor/ckeditor5-heading/issues/55). ([794e6df](https://github.com/ckeditor/ckeditor5-heading/commit/794e6df))
 * Named existing plugin(s). ([7d512cd](https://github.com/ckeditor/ckeditor5-heading/commit/7d512cd))
 * Split "heading" command into independent commands. Closes [#53](https://github.com/ckeditor/ckeditor5-heading/issues/53). Closes [#56](https://github.com/ckeditor/ckeditor5-heading/issues/56). Closes [#52](https://github.com/ckeditor/ckeditor5-heading/issues/52). ([7a8f6f0](https://github.com/ckeditor/ckeditor5-heading/commit/7a8f6f0))
-
-  BREAKING CHANGE: The "heading" command is no longer available. Replaced by "heading1", "heading2", "heading3" and "paragraph".
-  BREAKING CHANGE: `Heading` plugin requires `Paragraph` to work properly (`ParagraphCommand` registered as "paragraph" in `editor.commands`). 
-  BREAKING CHANGE: `config.heading.options` format has changed. The valid `HeadingOption` syntax is now `{ modelElement: 'heading1', viewElement: 'h1', title: 'Heading 1' }`.
 * Styled items in the headings toolbar dropdown. Closes [#38](https://github.com/ckeditor/ckeditor5-heading/issues/38). ([0365333](https://github.com/ckeditor/ckeditor5-heading/commit/0365333))
 
 ### Other changes
@@ -29,7 +24,7 @@ Changelog
 ### BREAKING CHANGES
 
 * The "heading" command is no longer available. Replaced by "heading1", "heading2", "heading3" and "paragraph".
-* `Heading` plugin requires `Paragraph` to work properly (`ParagraphCommand` registered as "paragraph" in `editor.commands`). 
+* `Heading` plugin requires `Paragraph` to work properly (`ParagraphCommand` registered as "paragraph" in `editor.commands`).
 * `config.heading.options` format has changed. The valid `HeadingOption` syntax is now `{ modelElement: 'heading1', viewElement: 'h1', title: 'Heading 1' }`.
 
 
