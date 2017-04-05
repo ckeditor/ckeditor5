@@ -26,7 +26,7 @@ import '../theme/theme.scss';
 /**
  * The link plugin. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
  *
- * It uses the {@link module:link/linkengine~LinkEngine link engine plugin} and
+ * It uses the {@link module:link/linkengine~LinkEngine link engine plugin} and the
  * {@link module:ui/contextualballoon~ContextualBalloon contextual balloon plugin}.
  *
  * @extends module:core/plugin~Plugin
@@ -53,14 +53,14 @@ export default class Link extends Plugin {
 		this.editor.editing.view.addObserver( ClickObserver );
 
 		/**
-		 * The form view inside {@link #balloonPanelView}.
+		 * The form view displayed inside of the balloon.
 		 *
 		 * @member {module:link/ui/linkformview~LinkFormView}
 		 */
 		this.formView = this._createForm();
 
 		/**
-		 * Contextual balloon plugin instance.
+		 * The contextual balloon plugin instance.
 		 *
 		 * @private
 		 * @member {module:ui/contextualballoon~ContextualBalloon}
@@ -71,7 +71,7 @@ export default class Link extends Plugin {
 		this._createToolbarLinkButton();
 		this._createToolbarUnlinkButton();
 
-		// Attach lifecycle actions to the link balloon.
+		// Attach lifecycle actions to the the balloon.
 		this._attachActions();
 	}
 
@@ -123,7 +123,7 @@ export default class Link extends Plugin {
 
 	/**
 	 * Creates a toolbar link button. Clicking this button will show
-	 * {@link #balloonPanelView} attached to the selection.
+	 * {@link #_balloon} attached to the selection.
 	 *
 	 * @private
 	 */
@@ -184,7 +184,8 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Attaches actions which defines when panel should be open or close.
+	 * Attaches actions which control whether the balloon panel containing the
+	 * {@link #formView} is visible or not.
 	 *
 	 * @private
 	 */
@@ -219,7 +220,7 @@ export default class Link extends Plugin {
 			}
 		} );
 
-		// Focus the form if link balloon is currently visible and tab key has been pressed.
+		// Focus the form if the balloon is visible and the Tab key has been pressed.
 		this.editor.keystrokes.set( 'Tab', ( data, cancel ) => {
 			if ( this._balloon.visibleView === this.formView && !this.formView.focusTracker.isFocused ) {
 				this.formView.focus();
@@ -227,7 +228,7 @@ export default class Link extends Plugin {
 			}
 		} );
 
-		// Close the panel on esc key press when editable has focus and link balloon is currently visible.
+		// Close the panel on the Esc key press when the editable has focus and the balloon is visible.
 		this.editor.keystrokes.set( 'Esc', ( data, cancel ) => {
 			if ( this._balloon.visibleView === this.formView ) {
 				this._hidePanel();
@@ -245,10 +246,10 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Adds link view to {_@link module:ui/contextualballoon~ContextualBalloon}.
+	 * Adds the {@link #formView} to the {@link #_balloon}.
 	 *
 	 * @private
-	 * @param {Boolean} [focusInput=false] When `true` then link form will be focused on panel show.
+	 * @param {Boolean} [focusInput=false] When `true`, link form will be focused on panel show.
 	 */
 	_showPanel( focusInput ) {
 		if ( this._isInBalloon ) {
@@ -266,10 +267,10 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Removes link view from {_@link module:ui/contextualballoon~ContextualBalloon}.
+	 * Removes the {@link #formView} from the {@link #_balloon}.
 	 *
 	 * @private
-	 * @param {Boolean} [focusEditable=false] When `true` then editable focus will be restored on panel hide.
+	 * @param {Boolean} [focusEditable=false] When `true`, editable focus will be restored on panel hide.
 	 */
 	_hidePanel( focusEditable ) {
 		if ( !this._isInBalloon ) {
@@ -285,9 +286,11 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Returns position configuration for the balloon panel. According to this data balloon will be attached
-	 * to the target element. If selection is collapsed and is placed inside link element, then panel
-	 * will be attached to whole link element, otherwise will be attached to the selection.
+	 * Returns positioning options for the {@link #_balloon}. They control the way balloon is attached
+	 * to the target element or selection.
+	 *
+	 * If the selection is collapsed and inside a link element, then the panel will be attached to the
+	 * entire link element. Otherwise, it will be attached to the selection.
 	 *
 	 * @private
 	 * @returns {module:utils/dom/position~Options}
