@@ -5,4 +5,4 @@ Changelog
 
 ### Features
 
-* Introduced Inline Editor. Closes: [#1](https://github.com/ckeditor/ckeditor5-editor-inline/issues/1). ([30c999f](https://github.com/ckeditor/ckeditor5-editor-inline/commit/30c999f))
+* Introduced the inline editor. Closes: [#1](https://github.com/ckeditor/ckeditor5-editor-inline/issues/1). ([30c999f](https://github.com/ckeditor/ckeditor5-editor-inline/commit/30c999f))
