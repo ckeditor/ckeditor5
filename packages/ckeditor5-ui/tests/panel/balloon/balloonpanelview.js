@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global window, document */
+/* global window, document, Event */
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ViewCollection from '../../../src/viewcollection';
@@ -21,18 +21,6 @@ describe( 'BalloonPanelView', () => {
 		view = new BalloonPanelView();
 
 		view.set( 'maxWidth', 200 );
-
-		windowStub = {
-			innerWidth: 1000,
-			innerHeight: 1000,
-			scrollX: 0,
-			scrollY: 0,
-			getComputedStyle: ( el ) => {
-				return window.getComputedStyle( el );
-			}
-		};
-
-		testUtils.sinon.stub( global, 'window', windowStub );
 
 		return view.init();
 	} );
@@ -160,11 +148,18 @@ describe( 'BalloonPanelView', () => {
 				height: 100
 			} );
 
-			// Make sure that limiter is fully visible in viewport.
-			Object.assign( windowStub, {
+			// Mock window dimensions.
+			windowStub = {
 				innerWidth: 500,
-				innerHeight: 500
-			} );
+				innerHeight: 500,
+				scrollX: 0,
+				scrollY: 0,
+				getComputedStyle: ( el ) => {
+					return window.getComputedStyle( el );
+				}
+			};
+
+			testUtils.sinon.stub( global, 'window', windowStub );
 		} );
 
 		it( 'should use default options', () => {
@@ -263,7 +258,7 @@ describe( 'BalloonPanelView', () => {
 				expect( view.position ).to.equal( 'nw' );
 			} );
 
-			// #126
+			// https://github.com/ckeditor/ckeditor5-ui-default/issues/126
 			it( 'works in a positioned ancestor (position: absolute)', () => {
 				const positionedAncestor = document.createElement( 'div' );
 
@@ -295,7 +290,7 @@ describe( 'BalloonPanelView', () => {
 				expect( view.left ).to.equal( -80 );
 			} );
 
-			// #126
+			// https://github.com/ckeditor/ckeditor5-ui-default/issues/126
 			it( 'works in a positioned ancestor (position: static)', () => {
 				const positionedAncestor = document.createElement( 'div' );
 
@@ -407,6 +402,132 @@ describe( 'BalloonPanelView', () => {
 
 				expect( view.position ).to.equal( 'se' );
 			} );
+		} );
+	} );
+
+	describe( 'keepAttachedTo()', () => {
+		let attachToSpy, target, targetParent, limiter, notRelatedElement;
+
+		beforeEach( () => {
+			attachToSpy = testUtils.sinon.spy( view, 'attachTo' );
+			limiter = document.createElement( 'div' );
+			targetParent = document.createElement( 'div' );
+			target = document.createElement( 'div' );
+			notRelatedElement = document.createElement( 'div' );
+
+			targetParent.appendChild( target );
+			document.body.appendChild( targetParent );
+			document.body.appendChild( limiter );
+			document.body.appendChild( notRelatedElement );
+		} );
+
+		afterEach( () => {
+			attachToSpy.restore();
+			limiter.remove();
+			notRelatedElement.remove();
+		} );
+
+		it( 'should keep the balloon attached to the target when any of the related elements is scrolled', () => {
+			view.keepAttachedTo( { target, limiter } );
+
+			sinon.assert.calledOnce( attachToSpy );
+			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+
+			targetParent.dispatchEvent( new Event( 'scroll' ) );
+
+			sinon.assert.calledTwice( attachToSpy );
+			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+
+			limiter.dispatchEvent( new Event( 'scroll' ) );
+
+			sinon.assert.calledThrice( attachToSpy );
+			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+
+			notRelatedElement.dispatchEvent( new Event( 'scroll' ) );
+
+			// Nothing's changed.
+			sinon.assert.calledThrice( attachToSpy );
+			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+		} );
+
+		it( 'should keep the balloon attached to the target when the browser window is being resized', () => {
+			view.keepAttachedTo( { target, limiter } );
+
+			sinon.assert.calledOnce( attachToSpy );
+			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+
+			window.dispatchEvent( new Event( 'resize' ) );
+
+			sinon.assert.calledTwice( attachToSpy );
+			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+		} );
+
+		it( 'should stop attaching when the balloon is hidden', () => {
+			view.keepAttachedTo( { target, limiter } );
+
+			sinon.assert.calledOnce( attachToSpy );
+
+			view.hide();
+
+			window.dispatchEvent( new Event( 'resize' ) );
+			window.dispatchEvent( new Event( 'scroll' ) );
+
+			// Still once.
+			sinon.assert.calledOnce( attachToSpy );
+		} );
+
+		it( 'should stop attaching once the view is destroyed', () => {
+			view.keepAttachedTo( { target, limiter } );
+
+			sinon.assert.calledOnce( attachToSpy );
+
+			view.destroy();
+
+			window.dispatchEvent( new Event( 'resize' ) );
+			window.dispatchEvent( new Event( 'scroll' ) );
+
+			// Still once.
+			sinon.assert.calledOnce( attachToSpy );
+		} );
+
+		it( 'should set document.body as the default limiter', () => {
+			view.keepAttachedTo( { target } );
+
+			sinon.assert.calledOnce( attachToSpy );
+
+			document.body.dispatchEvent( new Event( 'scroll' ) );
+
+			sinon.assert.calledTwice( attachToSpy );
+		} );
+
+		it( 'should work for Range as a target', () => {
+			const element = document.createElement( 'div' );
+			const range = document.createRange();
+
+			element.appendChild( document.createTextNode( 'foo bar' ) );
+			document.body.appendChild( element );
+			range.selectNodeContents( element );
+
+			view.keepAttachedTo( { target: range } );
+
+			sinon.assert.calledOnce( attachToSpy );
+
+			element.dispatchEvent( new Event( 'scroll' ) );
+
+			sinon.assert.calledTwice( attachToSpy );
+		} );
+
+		it( 'should work for rect as a target', () => {
+			// Just check if this normally works without errors.
+			const rect = {};
+
+			view.keepAttachedTo( { target: rect, limiter } );
+
+			sinon.assert.calledOnce( attachToSpy );
+
+			limiter.dispatchEvent( new Event( 'scroll' ) );
+
+			sinon.assert.calledTwice( attachToSpy );
 		} );
 	} );
 } );

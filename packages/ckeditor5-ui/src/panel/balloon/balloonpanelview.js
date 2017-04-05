@@ -7,14 +7,16 @@
  * @module ui/panel/balloon/balloonpanelview
  */
 
-/* globals document */
-
 import View from '../../view';
 import Template from '../../template';
 import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
+import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange';
+import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 const toPx = toUnit( 'px' );
+const defaultLimiterElement = global.document.body;
 
 /**
  * The balloon panel view class.
@@ -151,13 +153,69 @@ export default class BalloonPanelView extends View {
 				defaultPositions.ne,
 				defaultPositions.nw
 			],
-			limiter: document.body,
+			limiter: defaultLimiterElement,
 			fitInViewport: true
 		}, options );
 
 		const { top, left, name: position } = getOptimalPosition( positionOptions );
 
 		Object.assign( this, { top, left, position } );
+	}
+
+	/**
+	 * Works the same way as {module:ui/panel/balloon/balloonpanelview~BalloonPanelView.attachTo}
+	 * except that the position of the panel is continuously updated when any ancestor of the
+	 * {@link module:utils/dom/position~Options#target} or {@link module:utils/dom/position~Options#limiter}
+	 * is being scrolled or when the browser window is being resized.
+	 *
+	 * Thanks to this, the panel always sticks to the {@link module:utils/dom/position~Options#target}.
+	 *
+	 * See https://github.com/ckeditor/ckeditor5-ui/issues/170.
+	 *
+	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
+	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
+	 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
+	 */
+	keepAttachedTo( options ) {
+		// First we need to attach the balloon panel to the target element.
+		this.attachTo( options );
+
+		const limiter = options.limiter || defaultLimiterElement;
+		let target = null;
+
+		// We need to take HTMLElement related to the target if it is possible.
+		if ( isElement( options.target ) ) {
+			target = options.target;
+		} else if ( isRange( options.target ) ) {
+			target = options.target.commonAncestorContainer;
+		}
+
+		// Then we need to listen on scroll event of eny element in the document.
+		this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {
+			// We need to update position if scrolled element contains related to the balloon elements.
+			if ( ( target && domEvt.target.contains( target ) ) || domEvt.target.contains( limiter ) ) {
+				this.attachTo( options );
+			}
+		}, { useCapture: true } );
+
+		// We need to listen on window resize event and update position.
+		this.listenTo( global.window, 'resize', () => this.attachTo( options ) );
+
+		// After all we need to clean up the listeners.
+		this.once( 'change:isVisible', () => {
+			this.stopListening( global.document, 'scroll' );
+			this.stopListening( global.window, 'resize' );
+		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		this.stopListening( global.document, 'scroll' );
+		this.stopListening( global.window, 'resize' );
+
+		return super.destroy();
 	}
 }
 

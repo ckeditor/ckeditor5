@@ -1,0 +1,51 @@
+<div class="container-outer">
+	<div class="container-inner">
+		<div>
+			<div id="editor-attach">
+				<p>Balloon is attached to the <strong>TARGET</strong> element.</p>
+			</div>
+		</div>
+
+		<div>
+			<div id="editor-stick">
+				<p>Balloon sticks to the <strong>TARGET</strong> element.</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	body {
+		height: 100%;
+	}
+
+	.ck-balloon-panel {
+		padding: 2em;
+	}
+
+	.ck-editor__editable {
+		max-height: 300px;
+	}
+
+	.ck-editor__editable p {
+		margin: 470px 0;
+	}
+
+	.container-outer {
+		height: 500px;
+		width: 750px;
+		overflow: scroll;
+	}
+
+	.container-inner {
+		padding: 500px 30px 30px;
+		display: flex;
+		width: 1000px;
+		height: 2000px;
+		background: #e1e1e1;
+	}
+
+	.container-inner > div {
+		margin: 0 20px;
+	}
+</style>
