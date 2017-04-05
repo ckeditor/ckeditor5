@@ -1,11 +1,11 @@
 CKEditor 5 Block Quote Feature
 ========================================
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-quote.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-quote)
-[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-quote.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-quote)
-[![Test Coverage](https://codeclimate.com/github/ckeditor/ckeditor5-quote/badges/coverage.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-quote/coverage)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-quote/status.svg)](https://david-dm.org/ckeditor/ckeditor5-quote)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-quote/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-quote?type=dev)
+[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-block-quote.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote)
+[![Build Status](https://travis-ci.org/ckeditor/ckeditor5-block-quote.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5-block-quote)
+[![Test Coverage](https://codeclimate.com/github/ckeditor/ckeditor5-block-quote/badges/coverage.svg)](https://codeclimate.com/github/ckeditor/ckeditor5-block-quote/coverage)
+[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-block-quote/status.svg)](https://david-dm.org/ckeditor/ckeditor5-block-quote)
+[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-block-quote/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-block-quote?type=dev)
 
 The block quote feature for CKEditor 5 project. More information about the project can be found at the following url: <https://github.com/ckeditor/ckeditor5>.
 
