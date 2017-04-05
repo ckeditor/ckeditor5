@@ -8,6 +8,7 @@
  */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import BalloonPanelView from './panel/balloon/balloonpanelview';
 
 /**
  * Common contextual balloon of the Editor.
@@ -24,6 +25,14 @@ export default class ContextualBalloon {
 	 */
 	constructor() {
 		/**
+		 * Balloon panel view.
+		 *
+		 * @readonly
+		 * @member {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} #view
+		 */
+		this.view = new BalloonPanelView();
+
+		/**
 		 * Stack of panels injected to the balloon. Last one in the stack is displayed
 		 * as content of {@link module:ui/contextualballoon~ContextualBalloon#view}.
 		 *
@@ -31,12 +40,6 @@ export default class ContextualBalloon {
 		 * @member {Map} #_stack
 		 */
 		this._stack = new Map();
-
-		/**
-		 * Balloon panel view.
-		 *
-		 * @member {module:ui:view~View} #view
-		 */
 	}
 
 	/**

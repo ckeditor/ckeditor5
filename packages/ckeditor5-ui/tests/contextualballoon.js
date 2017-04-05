@@ -14,7 +14,6 @@ describe( 'ContextualBalloon', () => {
 
 	beforeEach( () => {
 		balloon = new ContextualBalloon();
-		balloon.view = new BalloonPanelView();
 
 		viewA = new ViewA();
 		viewB = new ViewB();
@@ -25,6 +24,12 @@ describe( 'ContextualBalloon', () => {
 
 	afterEach( () => {
 		balloon.view.attachTo.restore();
+	} );
+
+	describe( 'constructor()', () => {
+		it( 'should create a class instance with properties', () => {
+			expect( balloon.view ).to.instanceof( BalloonPanelView );
+		} );
 	} );
 
 	describe( 'isPanelInStack()', () => {
