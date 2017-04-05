@@ -67,7 +67,7 @@ export default class ContextualBalloon {
 	 * @param {module:ui/contextualballoon~ViewConfig} data Configuration of the view.
 	 */
 	add( data ) {
-		if ( this._stack.get( data.view ) ) {
+		if ( this.isViewInStack( data.view ) ) {
 			/**
 			 * Trying to add configuration of the same view more than once.
 			 *
@@ -96,7 +96,7 @@ export default class ContextualBalloon {
 	 * @param {module:ui/view~View} view View which will be removed from the balloon.
 	 */
 	remove( view ) {
-		if ( !this._stack.get( view ) ) {
+		if ( !this.isViewInStack( view ) ) {
 			/**
 			 * Trying to remove configuration of the view not defined in the stack.
 			 *
@@ -114,12 +114,12 @@ export default class ContextualBalloon {
 			this._stack.delete( view );
 
 			// Next we need to check if there is other view in stack to show.
-			const last = Array.from( this._stack ).pop();
+			const last = Array.from( this._stack.values() ).pop();
 
 			// If it is.
 			if ( last ) {
 				// Just show it.
-				this._show( last[ 1 ] );
+				this._show( last );
 			// Otherwise.
 			} else {
 				// Hide balloon panel.
@@ -159,7 +159,7 @@ export default class ContextualBalloon {
 	 * @returns {module:utils/dom/position~Options}
 	 */
 	_getBalloonPosition() {
-		return Array.from( this._stack )[ 0 ][ 1 ].position;
+		return Array.from( this._stack.values() )[ 0 ].position;
 	}
 }
 
