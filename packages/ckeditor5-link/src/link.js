@@ -76,16 +76,6 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when link view is added to the {@link module:ui/contextualballoon~ContextualBalloon}.
-	 *
-	 * @private
-	 * @returns {Boolean}
-	 */
-	get _isInBalloon() {
-		return this._balloon.hasView( this.formView );
-	}
-
-	/**
 	 * Creates the {@link module:link/ui/linkformview~LinkFormView} instance.
 	 *
 	 * @private
@@ -239,7 +229,7 @@ export default class Link extends Plugin {
 		// Close on click outside of balloon panel element.
 		clickOutsideHandler( {
 			emitter: this.formView,
-			activator: () => this._isInBalloon,
+			activator: () => this._balloon.hasView( this.formView ),
 			contextElement: this._balloon.view.element,
 			callback: () => this._hidePanel()
 		} );
@@ -252,7 +242,7 @@ export default class Link extends Plugin {
 	 * @param {Boolean} [focusInput=false] When `true`, link form will be focused on panel show.
 	 */
 	_showPanel( focusInput ) {
-		if ( this._isInBalloon ) {
+		if ( this._balloon.hasView( this.formView ) ) {
 			return;
 		}
 
@@ -273,7 +263,7 @@ export default class Link extends Plugin {
 	 * @param {Boolean} [focusEditable=false] When `true`, editable focus will be restored on panel hide.
 	 */
 	_hidePanel( focusEditable ) {
-		if ( !this._isInBalloon ) {
+		if ( !this._balloon.hasView( this.formView ) ) {
 			return;
 		}
 
