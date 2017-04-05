@@ -7,7 +7,7 @@
  * @module engine/dev-utils/deltareplayer
  */
 
-/* global setTimeout, console */
+/* global setTimeout */
 
 import DeltaFactory from '../model/delta/deltafactory';
 
@@ -61,17 +61,19 @@ export default class DeltaReplayer {
 	play( timeInterval = 1000 ) {
 		const deltaReplayer = this;
 
-		return new Promise( ( res ) => {
+		return new Promise( ( res, rej ) => {
 			play();
 
 			function play() {
-				if ( deltaReplayer._deltasToReplay.length === 0 ) {
-					return res();
-				}
+				deltaReplayer.applyNextDelta().then( ( isFinished ) => {
+					if ( isFinished ) {
+						return res();
+					}
 
-				deltaReplayer.applyNextDelta().then( () => {
 					setTimeout( play, timeInterval );
-				}, res );
+				} ).catch( ( err ) => {
+					rej( err );
+				} );
 			}
 		} );
 	}
@@ -88,8 +90,11 @@ export default class DeltaReplayer {
 		}
 
 		return this.applyNextDelta()
-			.then( () => this.applyDeltas( numberOfDeltas - 1 ) )
-			.catch( err => console.warn( err ) );
+			.then( ( isFinished ) => {
+				if ( !isFinished ) {
+					return this.applyDeltas( numberOfDeltas - 1 );
+				}
+			} );
 	}
 
 	/**
@@ -99,24 +104,28 @@ export default class DeltaReplayer {
 	 */
 	applyAllDeltas() {
 		return this.applyNextDelta()
-			.then( () => this.applyAllDeltas() )
-			.catch( () => {} );
+			.then( ( isFinished ) => {
+				if ( !isFinished ) {
+					return this.applyAllDeltas();
+				}
+			} );
 	}
 
 	/**
 	 * Applies the next delta to replay.
+	 * Returns promise with a `isFinished` parameter.
 	 *
-	 * @returns {Promise}
+	 * @returns {Promise.<Boolean>}
 	 */
 	applyNextDelta() {
 		const document = this._document;
 
-		return new Promise( ( res, rej ) => {
+		return new Promise( ( res ) => {
 			document.enqueueChanges( () => {
 				const jsonDelta = this._deltasToReplay.shift();
 
 				if ( !jsonDelta ) {
-					return rej( new Error( 'No deltas to replay' ) );
+					return res( true );
 				}
 
 				const delta = DeltaFactory.fromJSON( jsonDelta, this._document );
@@ -128,7 +137,7 @@ export default class DeltaReplayer {
 					document.applyOperation( operation );
 				}
 
-				res();
+				res( false );
 			} );
 		} );
 	}
