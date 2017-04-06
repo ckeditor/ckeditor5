@@ -4,6 +4,7 @@
  */
 
 export const createNativeFileMock = () => ( {
+	type: 'image/jpeg',
 	size: 1024
 } );
 
