@@ -4,6 +4,9 @@
  */
 
 import Document from '../../src/model/document';
+import Position from '../../src/model/position';
+import Range from '../../src/model/range';
+import Element from '../../src/model/element';
 import deleteContent from '../../src/controller/deletecontent';
 import { setData, getData } from '../../src/dev-utils/model';
 
@@ -154,10 +157,16 @@ describe( 'DataController', () => {
 				schema.registerItem( 'paragraph', '$block' );
 				schema.registerItem( 'heading1', '$block' );
 				schema.registerItem( 'pchild' );
+				schema.registerItem( 'pparent' );
 				schema.registerItem( 'image', '$inline' );
 
 				schema.allow( { name: 'pchild', inside: 'paragraph' } );
 				schema.allow( { name: '$text', inside: 'pchild' } );
+
+				schema.allow( { name: 'paragraph', inside: 'pparent' } );
+				schema.allow( { name: 'pparent', inside: '$root' } );
+				schema.allow( { name: '$text', inside: 'pparent' } );
+
 				schema.allow( { name: 'paragraph', attributes: [ 'align' ] } );
 			} );
 
@@ -195,6 +204,9 @@ describe( 'DataController', () => {
 				{ merge: true }
 			);
 
+			// Note: in all these cases we ignore the direction of merge.
+			// If https://github.com/ckeditor/ckeditor5-engine/issues/470 was fixed we could differently treat
+			// forward and backward delete.
 			it( 'merges second element into the first one (different name, backward selection)', () => {
 				setData(
 					doc,
@@ -222,40 +234,9 @@ describe( 'DataController', () => {
 			);
 
 			test(
-				'merges elements when deep nested',
-				'<paragraph>x<pchild>fo[o</pchild></paragraph><paragraph><pchild>b]ar</pchild>y</paragraph>',
-				'<paragraph>x<pchild>fo[]ar</pchild>y</paragraph>',
-				{ merge: true }
-			);
-
-			// For code coverage reasons.
-			test(
-				'merges element when selection is in two consecutive nodes even when it is empty',
-				'<paragraph>foo[</paragraph><paragraph>]bar</paragraph>',
-				'<paragraph>foo[]bar</paragraph>',
-				{ merge: true }
-			);
-
-			// If you disagree with this case please read the notes before this section.
-			test(
-				'merges elements when left end deep nested',
-				'<paragraph>x<pchild>fo[o</pchild></paragraph><paragraph>b]ary</paragraph>',
-				'<paragraph>x<pchild>fo[]</pchild>ary</paragraph>',
-				{ merge: true }
-			);
-
-			// If you disagree with this case please read the notes before this section.
-			test(
-				'merges elements when right end deep nested',
-				'<paragraph>xfo[o</paragraph><paragraph><pchild>b]ar</pchild>y<image></image></paragraph>',
-				'<paragraph>xfo[]<pchild>ar</pchild>y<image></image></paragraph>',
-				{ merge: true }
-			);
-
-			test(
-				'merges elements when more content in the right branch',
-				'<paragraph>xfo[o</paragraph><paragraph>b]a<pchild>r</pchild>y</paragraph>',
-				'<paragraph>xfo[]a<pchild>r</pchild>y</paragraph>',
+				'merges empty element into the first element',
+				'<heading1>f[oo</heading1><paragraph>bar]</paragraph><paragraph>x</paragraph>',
+				'<heading1>f[]</heading1><paragraph>x</paragraph>',
 				{ merge: true }
 			);
 
@@ -281,7 +262,166 @@ describe( 'DataController', () => {
 				expect( spyRemove.called ).to.be.true;
 			} );
 
-			describe( 'object elements', () => {
+			it( 'does not try to move the second block if not needed', () => {
+				setData( doc, '<paragraph>ab[cd</paragraph><paragraph>ef]gh</paragraph>' );
+
+				const batch = doc.batch();
+				const spyMerge = sinon.spy( batch, 'merge' );
+				const spyMove = sinon.spy( batch, 'move' );
+
+				deleteContent( doc.selection, batch, { merge: true } );
+
+				expect( getData( doc ) ).to.equal( '<paragraph>ab[]gh</paragraph>' );
+
+				expect( spyMove.called ).to.be.false;
+				expect( spyMerge.called ).to.be.true;
+			} );
+
+			// Note: in all these cases we ignore the direction of merge.
+			// If https://github.com/ckeditor/ckeditor5-engine/issues/470 was fixed we could differently treat
+			// forward and backward delete.
+			describe( 'with nested elements', () => {
+				test(
+					'merges elements when deep nested',
+					'<paragraph>x<pchild>fo[o</pchild></paragraph><paragraph><pchild>b]ar</pchild>y</paragraph>',
+					'<paragraph>x<pchild>fo[]ar</pchild>y</paragraph>',
+					{ merge: true }
+				);
+
+				it( 'merges elements when deep nested (3rd level)', () => {
+					const root = doc.getRoot();
+
+					// We need to use the raw API due to https://github.com/ckeditor/ckeditor5-engine/issues/905.
+					// <pparent>x<paragraph>x<pchild>fo[o</pchild></paragraph></pparent>
+					// <pparent><paragraph><pchild>b]ar</pchild>y</paragraph>y</pparent>
+
+					root.appendChildren(
+						new Element( 'pparent', null, [
+							'x',
+							new Element( 'paragraph', null, [
+								'x',
+								new Element( 'pchild', null, 'foo' )
+							] )
+						] )
+					);
+
+					root.appendChildren(
+						new Element( 'pparent', null, [
+							new Element( 'paragraph', null, [
+								new Element( 'pchild', null, 'bar' ),
+								'y'
+							] ),
+							'y'
+						] )
+					);
+
+					const range = new Range(
+						new Position( doc.getRoot(), [ 0, 1, 1, 2 ] ), // fo[o
+						new Position( doc.getRoot(), [ 1, 0, 0, 1 ] ) // b]ar
+					);
+
+					doc.selection.setRanges( [ range ] );
+
+					deleteContent( doc.selection, doc.batch(), { merge: true } );
+
+					expect( getData( doc ) )
+						.to.equal( '<pparent>x<paragraph>x<pchild>fo[]ar</pchild>y</paragraph>y</pparent>' );
+				} );
+
+				test(
+					'merges elements when left end deep nested',
+					'<paragraph>x<pchild>fo[o</pchild></paragraph><paragraph>b]ary</paragraph><paragraph>x</paragraph>',
+					'<paragraph>x<pchild>fo[]ary</pchild></paragraph><paragraph>x</paragraph>',
+					{ merge: true }
+				);
+
+				test(
+					'merges elements when right end deep nested',
+					'<paragraph>x</paragraph><paragraph>fo[o</paragraph><paragraph><pchild>b]ar</pchild>x</paragraph>',
+					'<paragraph>x</paragraph><paragraph>fo[]ar</paragraph><paragraph>x</paragraph>',
+					{ merge: true }
+				);
+
+				it( 'merges elements when left end deep nested (3rd level)', () => {
+					const root = doc.getRoot();
+
+					// We need to use the raw API due to https://github.com/ckeditor/ckeditor5-engine/issues/905.
+					// <pparent>x<paragraph>foo<pchild>ba[r</pchild></paragraph></pparent><paragraph>b]om</paragraph>
+
+					root.appendChildren(
+						new Element( 'pparent', null, [
+							'x',
+							new Element( 'paragraph', null, [
+								'foo',
+								new Element( 'pchild', null, 'bar' )
+							] )
+						] )
+					);
+
+					root.appendChildren(
+						new Element( 'paragraph', null, 'bom' )
+					);
+
+					const range = new Range(
+						new Position( doc.getRoot(), [ 0, 1, 3, 2 ] ), // ba[r
+						new Position( doc.getRoot(), [ 1, 1 ] ) // b]om
+					);
+
+					doc.selection.setRanges( [ range ] );
+
+					deleteContent( doc.selection, doc.batch(), { merge: true } );
+
+					expect( getData( doc ) )
+						.to.equal( '<pparent>x<paragraph>foo<pchild>ba[]om</pchild></paragraph></pparent>' );
+				} );
+
+				test(
+					'merges elements when right end deep nested (in an empty container)',
+					'<paragraph>fo[o</paragraph><paragraph><pchild>bar]</pchild></paragraph>',
+					'<paragraph>fo[]</paragraph>',
+					{ merge: true }
+				);
+
+				test(
+					'merges elements when left end deep nested (in an empty container)',
+					'<paragraph><pchild>[foo</pchild></paragraph><paragraph>b]ar</paragraph><paragraph>x</paragraph>',
+					'<paragraph><pchild>[]ar</pchild></paragraph><paragraph>x</paragraph>',
+					{ merge: true }
+				);
+
+				it( 'merges elements when left end deep nested (3rd level)', () => {
+					const root = doc.getRoot();
+
+					// We need to use the raw API due to https://github.com/ckeditor/ckeditor5-engine/issues/905.
+					// <paragraph>fo[o</paragraph><pparent><paragraph><pchild>bar]</pchild></paragraph></pparent>
+
+					root.appendChildren(
+						new Element( 'paragraph', null, 'foo' )
+					);
+
+					root.appendChildren(
+						new Element( 'pparent', null, [
+							new Element( 'paragraph', null, [
+								new Element( 'pchild', null, 'bar' )
+							] )
+						] )
+					);
+
+					const range = new Range(
+						new Position( doc.getRoot(), [ 0, 2 ] ), // f[oo
+						new Position( doc.getRoot(), [ 1, 0, 0, 3 ] ) // bar]
+					);
+
+					doc.selection.setRanges( [ range ] );
+
+					deleteContent( doc.selection, doc.batch(), { merge: true } );
+
+					expect( getData( doc ) )
+						.to.equal( '<paragraph>fo[]</paragraph>' );
+				} );
+			} );
+
+			describe( 'with object elements', () => {
 				beforeEach( () => {
 					const schema = doc.schema;
 
@@ -512,7 +652,7 @@ describe( 'DataController', () => {
 			);
 
 			test(
-				'should delete inside block limit element',
+				'should delete inside block limit element (with merge)',
 				'<blockLimit><paragraph>fo[o</paragraph><paragraph>b]ar</paragraph></blockLimit>',
 				'<blockLimit><paragraph>fo[]ar</paragraph></blockLimit>',
 				{ merge: true }

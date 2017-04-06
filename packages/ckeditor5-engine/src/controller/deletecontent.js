@@ -9,8 +9,8 @@
 
 import LivePosition from '../model/liveposition';
 import Position from '../model/position';
+import Range from '../model/range';
 import Element from '../model/element';
-import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.
@@ -65,31 +65,74 @@ export default function deleteContent( selection, batch, options = {} ) {
 	endPos.detach();
 }
 
+// This function is a result of reaching the Ballmer's peak for just the right amount of time.
+// Even I had troubles documenting it after a while and after reading it again I couldn't believe that it really works.
 function mergeBranches( batch, startPos, endPos ) {
-	const endPath = endPos.path;
-	const mergeEnd = Math.min( startPos.path.length - 1, endPath.length - 1 );
-	let mergeDepth = compareArrays( startPos.path, endPath );
+	const startParent = startPos.parent;
+	const endParent = endPos.parent;
 
-	if ( typeof mergeDepth == 'number' ) {
-		for ( ; mergeDepth < mergeEnd; mergeDepth++ ) {
-			const mergePath = startPos.path.slice( 0, mergeDepth );
-			mergePath.push( startPos.path[ mergeDepth ] + 1 );
-
-			const mergePos = new Position( endPos.root, mergePath );
-			const previousNode = mergePos.nodeBefore;
-			const nextNode = mergePos.nodeAfter;
-
-			if ( !checkCanBeMerged( previousNode ) || !checkCanBeMerged( nextNode ) ) {
-				return;
-			}
-
-			if ( nextNode.childCount > 0 ) {
-				batch.merge( mergePos );
-			} else {
-				batch.remove( nextNode );
-			}
-		}
+	// If both positions ended up in the same parent, then there's nothing more to merge:
+	// <$root><p>x[]</p><p>{}y</p></$root> => <$root><p>xy</p>[]{}</$root>
+	if ( startParent == endParent ) {
+		return;
 	}
+
+	// If one of the positions is a root, then there's nothing more to merge (at least in the current state of implementation).
+	// Theoretically in this case we could unwrap the <p>: <$root>x[]<p>{}y</p></$root>, but we don't need to support it yet
+	// so let's just abort.
+	if ( !startParent.parent || !endParent.parent ) {
+		return;
+	}
+
+	// Check if operations we'll need to do won't need to cross object or limit boundaries.
+	// E.g., we can't merge endParent into startParent in this case:
+	// <limit><startParent>x[]</startParent></limit><endParent>{}</endParent>
+	if ( !checkCanBeMerged( startPos, endPos ) ) {
+		return;
+	}
+
+	// Remember next positions to merge. For example:
+	// <a><b>x[]</b></a><c><d>{}y</d></c>
+	// will become:
+	// <a><b>xy</b>[]</a><c>{}</c>
+	startPos = Position.createAfter( startParent );
+	endPos = Position.createBefore( endParent );
+
+	if ( endParent.isEmpty ) {
+		batch.remove( endParent );
+	} else {
+		// At the moment, next startPos is also the position to which the endParent
+		// needs to be moved:
+		// <a><b>x[]</b></a><c><d>{}y</d></c>
+		// becomes:
+		// <a><b>x</b>[]<d>y</d></a><c>{}</c>
+
+		// Move the end parent only if needed.
+		// E.g. not in this case: <p>ab</p>[]{}<p>cd</p>
+		if ( !endPos.isEqual( startPos ) ) {
+			batch.move( endParent, startPos );
+		}
+
+		// To then become:
+		// <a><b>xy</b>[]</a><c>{}</c>
+		batch.merge( startPos );
+	}
+
+	// Removes empty end ancestors:
+	// <a>fo[o</a><b><a><c>bar]</c></a></b>
+	// becomes:
+	// <a>fo[]</a><b><a>{}</a></b>
+	// So we can remove <a> and <b>.
+	while ( endPos.parent.isEmpty ) {
+		const parentToRemove = endPos.parent;
+
+		endPos = Position.createBefore( parentToRemove );
+
+		batch.remove( parentToRemove );
+	}
+
+	// Continue merging next level.
+	mergeBranches( batch, startPos, endPos );
 }
 
 function shouldAutoparagraph( doc, position ) {
@@ -99,8 +142,21 @@ function shouldAutoparagraph( doc, position ) {
 	return !isTextAllowed && isParagraphAllowed;
 }
 
-function checkCanBeMerged( element ) {
-	const schema = element.document.schema;
+// Check if parents of two positions can be merged by checking if there are no limit/object
+// boundaries between those two positions.
+//
+// E.g. in <bQ><p>x[]</p></bQ><widget><caption>{}</caption></widget>
+// we'll check <p>, <bQ>, <widget> and <caption>.
+// Usually, widget and caption are marked as objects/limits in the schema, so in this case merging will be blocked.
+function checkCanBeMerged( leftPos, rightPos ) {
+	const schema = leftPos.root.document.schema;
+	const rangeToCheck = new Range( leftPos, rightPos );
 
-	return !schema.objects.has( element.name ) && !schema.limits.has( element.name );
+	for ( const value of rangeToCheck.getWalker() ) {
+		if ( schema.objects.has( value.item.name ) || schema.limits.has( value.item.name ) ) {
+			return false;
+		}
+	}
+
+	return true;
 }
