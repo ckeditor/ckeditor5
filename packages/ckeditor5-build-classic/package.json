@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-build-classic",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CKEditor 5 classic build.",
   "keywords": [],
   "main": "./build/ckeditor.js",
