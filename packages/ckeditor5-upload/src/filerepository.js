@@ -80,7 +80,7 @@ export default class FileRepository extends Plugin {
 	}
 
 	/**
-	 * Returns loader associated with specified file.
+	 * Returns the loader associated with specified file.
 	 * To get loader by id use `fileRepository.loaders.get( id )`.
 	 *
 	 * @param file Native File object.
@@ -139,6 +139,11 @@ export default class FileRepository extends Plugin {
 		return loader;
 	}
 
+	/**
+	 * Destroys loader.
+	 *
+	 * @param {Number|module:upload/filerepository~FileLoader} fileOrIdOrLoader Loader itself, id of the loader or file associated with that loader.
+	 */
 	destroyLoader( fileOrIdOrLoader ) {
 		const loader = fileOrIdOrLoader instanceof FileLoader ? fileOrIdOrLoader : this.getLoader( fileOrIdOrLoader );
 
