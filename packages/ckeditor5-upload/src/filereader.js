@@ -53,7 +53,7 @@ export default class FileReader {
 	/**
 	 * Reads provided file.
 	 *
-	 * @param file Native File object.
+	 * @param {File} file Native File object.
 	 * @returns {Promise} Returns a promise that will resolve with file's contents. Promise can be rejected in case of
 	 * error or when reading process is aborted.
 	 */
@@ -71,7 +71,7 @@ export default class FileReader {
 			};
 
 			reader.onabort = () => {
-				reject( 'abort' );
+				reject( 'aborted' );
 			};
 
 			this._reader.readAsDataURL( file );

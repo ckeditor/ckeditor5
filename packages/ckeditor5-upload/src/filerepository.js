@@ -7,12 +7,13 @@
  * @module upload/filerepository
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin.js';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror.js';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin.js';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection.js';
-import mix from '@ckeditor/ckeditor5-utils/src/mix.js';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 import FileReader from './filereader.js';
 
@@ -43,10 +44,25 @@ export default class FileRepository extends Plugin {
 		this.loaders = new Collection();
 
 		/**
-		 * Function that should be defined before using FileRepository. It should return adapter that will be
-		 * used to upload files.
+		 * Function that should be defined before using FileRepository. It should return new instance of
+		 * {@link module:upload/filerepository~Adapter Adapter} that will be used to upload files.
+		 * {@link module:upload/filerepository~FileLoader FileLoader} instance will be passed to that function.
 		 *
-		 * @member {function} #createAdapter
+		 *	fileRepository.createAdapter = function( loader ) {
+		 *		return {
+		 *			upload: function() {
+		 *				return doSomeUpload( loader.file );
+		 *			},
+		 *
+		 *			abort: function() {
+		 *				abortUpload();
+		 *			}
+		 *		};
+		 *	};
+		 *
+		 * @abstract
+		 * @function
+		 * @name #createAdapter
 		 */
 
 		/**
@@ -59,11 +75,11 @@ export default class FileRepository extends Plugin {
 		this.set( 'uploaded', 0 );
 
 		/**
-		 * Number of total bytes to upload.
+		 * Number of total bytes to upload. It contains `null` if value is not available yet.
 		 *
 		 * @readonly
 		 * @observable
-		 * @member {Number} #uploadTotal
+		 * @member {Number|null} #uploadTotal
 		 */
 		this.set( 'uploadTotal', null );
 
@@ -83,7 +99,7 @@ export default class FileRepository extends Plugin {
 	 * Returns the loader associated with specified file.
 	 * To get loader by id use `fileRepository.loaders.get( id )`.
 	 *
-	 * @param file Native File object.
+	 * @param {File} file Native File object.
 	 * @returns {module:upload/filerepository~FileLoader|null}
 	 */
 	getLoader( file ) {
@@ -98,15 +114,16 @@ export default class FileRepository extends Plugin {
 
 	/**
 	 * Creates loader for specified file.
-	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `filerepository-no-adapter` when
-	 * {@link #createAdapter} method is not defined for this FileRepository.
+	 * Shows console warning and returns `null` if {@link #createAdapter} method is not defined..
 	 *
-	 * @param file Native File object.
-	 * @returns {module:upload/filerepository~FileLoader}
+	 * @param {File} file Native File object.
+	 * @returns {module:upload/filerepository~FileLoader|null}
 	 */
 	createLoader( file ) {
 		if ( !this.createAdapter ) {
-			throw new CKEditorError( 'filerepository-no-adapter: No createAdapter method found.' );
+			log.warn( 'FileRepository: no createAdapter method found. Please define it before creating a loader.' );
+
+			return null;
 		}
 
 		const loader = new FileLoader( file );
@@ -115,25 +132,25 @@ export default class FileRepository extends Plugin {
 		this.loaders.add( loader );
 
 		loader.on( 'change:uploaded', () => {
-			let agregatedUploaded = 0;
+			let aggregatedUploaded = 0;
 
 			for ( const loader of this.loaders ) {
-				agregatedUploaded += loader.uploaded;
+				aggregatedUploaded += loader.uploaded;
 			}
 
-			this.uploaded = agregatedUploaded;
+			this.uploaded = aggregatedUploaded;
 		} );
 
 		loader.on( 'change:uploadTotal', () => {
-			let agregatedTotal = 0;
+			let aggregatedTotal = 0;
 
 			for ( const loader of this.loaders ) {
 				if ( loader.uploadTotal ) {
-					agregatedTotal += loader.uploadTotal;
+					aggregatedTotal += loader.uploadTotal;
 				}
 			}
 
-			this.uploadTotal = agregatedTotal;
+			this.uploadTotal = aggregatedTotal;
 		} );
 
 		return loader;
@@ -142,10 +159,11 @@ export default class FileRepository extends Plugin {
 	/**
 	 * Destroys loader.
 	 *
-	 * @param {Number|module:upload/filerepository~FileLoader} fileOrIdOrLoader Loader itself, id of the loader or file associated with that loader.
+	 * @param {File|module:upload/filerepository~FileLoader} fileOrLoader File associated with that loader or loader
+	 * itself.
 	 */
-	destroyLoader( fileOrIdOrLoader ) {
-		const loader = fileOrIdOrLoader instanceof FileLoader ? fileOrIdOrLoader : this.getLoader( fileOrIdOrLoader );
+	destroyLoader( fileOrLoader ) {
+		const loader = fileOrLoader instanceof FileLoader ? fileOrLoader : this.getLoader( fileOrLoader );
 
 		loader._destroy();
 
@@ -163,7 +181,7 @@ class FileLoader {
 	/**
 	 * Creates instance of FileLoader.
 	 *
-	 * @param file
+	 * @param {File} file
 	 * @param {module:upload/filerepository~Adapter} adapter
 	 */
 	constructor( file, adapter ) {
@@ -176,20 +194,28 @@ class FileLoader {
 		this.id = uid();
 
 		/**
-		 * File instance associated with this FileLoader.
+		 * File instance associated with FileLoader.
 		 *
 		 * @readonly
-		 * @member
+		 * @member {File}
 		 */
 		this.file = file;
 
 		/**
-		 * Adapter instance associated with this FileLoader.
+		 * Adapter instance associated with FileLoader.
 		 *
-		 * @readonly
+		 * @private
 		 * @member {module:upload/filerepository~Adapter}
 		 */
 		this._adapter = adapter;
+
+		/**
+		 * FileReader used by FileLoader.
+		 *
+		 * @protected
+		 * @member {module:upload/filereader~FileReader}
+		 */
+		this._reader = new FileReader();
 
 		/**
 		 * Current status of FileLoader. It can be one of the following:
@@ -247,9 +273,9 @@ class FileLoader {
 		 *
 		 * @readonly
 		 * @observable
-		 * @member {Object|null} #uploadedPercent
+		 * @member {Object|null} #uploadResponse
 		 */
-		this.set( 'uploadReponse', null );
+		this.set( 'uploadResponse', null );
 	}
 
 	/**
@@ -277,22 +303,21 @@ class FileLoader {
 		}
 
 		this.status = 'reading';
-		this._reader = new FileReader();
 
 		return this._reader.read( this.file )
 			.then( data => {
-				if ( this.status === 'aborted' ) {
-					throw 'aborted';
-				}
 				this.status = 'idle';
 
 				return data;
 			} )
 			.catch( err => {
-				if ( this.status != 'aborted' ) {
-					this.status = 'error';
+				if ( err === 'aborted' ) {
+					this.status = 'aborted';
+					throw 'aborted';
 				}
-				throw err;
+
+				this.status = 'error';
+				throw this._reader.error;
 			} );
 	}
 
@@ -324,18 +349,18 @@ class FileLoader {
 
 		return this._adapter.upload()
 			.then( data => {
-				if ( this.status === 'aborted' ) {
-					throw 'aborted';
-				}
-				this.uploadReponse = data;
+				this.uploadResponse = data;
 				this.status = 'idle';
 
 				return data;
 			} )
 			.catch( err => {
-				if ( this.status != 'aborted' ) {
-					this.status = 'error';
+				if ( err === 'aborted' ) {
+					this.status = 'aborted';
+					throw 'aborted';
 				}
+
+				this.status = 'error';
 				throw err;
 			} );
 	}
@@ -344,7 +369,7 @@ class FileLoader {
 	 * Aborts loading process.
 	 */
 	abort() {
-		if ( this.status == 'loading' ) {
+		if ( this.status == 'reading' ) {
 			this._reader.abort();
 		}
 
@@ -365,7 +390,7 @@ class FileLoader {
 		this._reader = undefined;
 		this._adapter = undefined;
 		this.data = undefined;
-		this.uploadReponse = undefined;
+		this.uploadResponse = undefined;
 		this.file = undefined;
 	}
 }
@@ -375,21 +400,19 @@ mix( FileLoader, ObservableMixin );
 /**
  * Adapter abstract class used by FileRepository to handle file upload.
  *
- * @abstract
- * @class Adapter
+ * @interface Adapter
  */
 
 /**
  * Executes the upload process.
  *
- * @function
- * @name module:upload/filerepository~Adapter#upload
- * @returns {Promise}
+ * @method #upload
+ * @returns {Promise} Promise that should be resolved when data is uploaded.
  */
 
 /**
- * Aborts the upload process.
+ * Aborts the upload proccess.
+ * After aborting it should reject promise returned from {@link #upload} method with "aborted" string.
  *
- * @function
- * @name module:upload/filerepository~Adapter#abort
+ * @method #abort
  */

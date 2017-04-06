@@ -7,6 +7,7 @@
 
 import FileReader from '../src/filereader';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { NativeFileReaderMock, createNativeFileMock } from './_utils/mocks';
 
 describe( 'FileReader', () => {
 	let reader, fileMock, nativeReaderMock;
@@ -14,15 +15,12 @@ describe( 'FileReader', () => {
 
 	beforeEach( () => {
 		testUtils.sinon.stub( window, 'FileReader', () => {
-			nativeReaderMock = new NativeReaderMock();
+			nativeReaderMock = new NativeFileReaderMock();
 
 			return nativeReaderMock;
 		} );
 
-		fileMock = {
-			size: 1024
-		};
-
+		fileMock = createNativeFileMock();
 		reader = new FileReader();
 	} );
 
@@ -31,11 +29,11 @@ describe( 'FileReader', () => {
 	} );
 
 	it( 'should update loaded property', () => {
-		nativeReaderMock._mockProgress( 10 );
+		nativeReaderMock.mockProgress( 10 );
 		expect( reader.loaded ).to.equal( 10 );
-		nativeReaderMock._mockProgress( 20 );
+		nativeReaderMock.mockProgress( 20 );
 		expect( reader.loaded ).to.equal( 20 );
-		nativeReaderMock._mockProgress( 55 );
+		nativeReaderMock.mockProgress( 55 );
 		expect( reader.loaded ).to.equal( 55 );
 	} );
 
@@ -50,7 +48,7 @@ describe( 'FileReader', () => {
 					expect( result ).to.equal( 'File contents.' );
 				} );
 
-			nativeReaderMock._mockLoading( 'File contents.' );
+			nativeReaderMock.mockSuccess( 'File contents.' );
 
 			return promise;
 		} );
@@ -64,20 +62,20 @@ describe( 'FileReader', () => {
 					expect( reader.error ).to.equal( 'Error during file reading.' );
 				} );
 
-			nativeReaderMock._mockError( 'Error during file reading.' );
+			nativeReaderMock.mockError( 'Error during file reading.' );
 
 			return promise;
 		} );
 
-		it( 'should reject on loading abort', () => {
+		it( 'should reject promise on loading abort', () => {
 			const promise = reader.read( fileMock )
 				.then( () => {
 					throw new Error( 'Reader should not resolve.' );
 				}, ( status ) => {
-					expect( status ).to.equal( 'abort' );
+					expect( status ).to.equal( 'aborted' );
 				} );
 
-			nativeReaderMock._mockAbort();
+			nativeReaderMock.mockAbort();
 
 			return promise;
 		} );
@@ -89,7 +87,7 @@ describe( 'FileReader', () => {
 				.then( () => {
 					throw new Error( 'Reader should not resolve.' );
 				}, ( status ) => {
-					expect( status ).to.equal( 'abort' );
+					expect( status ).to.equal( 'aborted' );
 				} );
 
 			reader.abort();
@@ -97,29 +95,4 @@ describe( 'FileReader', () => {
 			return promise;
 		} );
 	} );
-
-	function NativeReaderMock() {
-		this.readAsDataURL = () => {};
-		this.abort = () => {
-			this._mockAbort();
-		};
-
-		this._mockLoading = result => {
-			this.result = result;
-			this.onload();
-		};
-
-		this._mockError = error => {
-			this.error = error;
-			this.onerror();
-		};
-
-		this._mockAbort = () => {
-			this.onabort();
-		};
-
-		this._mockProgress = progress => {
-			this.onprogress( { loaded: progress } );
-		};
-	}
 } );
