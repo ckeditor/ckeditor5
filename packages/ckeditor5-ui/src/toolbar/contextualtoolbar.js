@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/contextualballoon';
 import ToolbarView from './toolbarview';
 import BalloonPanelView from '../panel/balloon/balloonpanelview.js';
+import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
 
 /**
  * The contextual toolbar.
@@ -73,7 +74,7 @@ export default class ContextualToolbar extends Plugin {
 		const editor = this.editor;
 
 		// Hide the panel View when editor loses focus but no the other way around.
-		this.toolbarView.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
+		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
 			if ( this._balloon.visibleView === this.toolbarView && !isFocused ) {
 				this._hidePanel();
 			}
@@ -81,20 +82,32 @@ export default class ContextualToolbar extends Plugin {
 	}
 
 	/**
-	 * Handles {@link module:core/editor/editor~Editor#editing} selection change
-	 * and show or hide toolbar.
+	 * Handles {@link modules:engine/model/document#selection} change and show or hide toolbar.
+	 *
+	 * Note that in this case it's better to listen to {@link modules:engine/model/document modelDocument}
+	 * selection instead of {@link modules:engine/view/document viewDocument} selection because the first one
+	 * is not fired when text changes styles like bold or italic and toolbar doesn't blink.
 	 *
 	 * @private
 	 */
 	_handleSelectionChange() {
-		const toolbarView = this.toolbarView;
-		const editingView = this.editor.editing.view;
+		const selection = this.editor.document.selection;
 
-		// Hide panel when selection is changing.
-		toolbarView.listenTo( editingView, 'selectionChange', () => this._hidePanel() );
+		// This is internal plugin event which is fired 200 ms after selection last change (lodash#debounce).
+		// This is to makes easy test debounced action without need to use `setTimeout`.
+		// Because lodash keeps time related stuff in a closure it's not possible to override it
+		// by sinon fake timers.
+		const fireChangeDoneDebounced = debounce( () => this.fire( '_selectionChangeDone' ), 200 );
 
-		// Display panel attached to the selection when selection stops changing.
-		toolbarView.listenTo( editingView, 'selectionChangeDone', () => this._showPanel() );
+		this.listenTo( selection, 'change:range', () => {
+			// Hide the toolbar when the selection starts changing.
+			this._hidePanel();
+
+			// Show the toolbar attached to the selection when the selection stops changing.
+			fireChangeDoneDebounced();
+		} );
+
+		this.on( '_selectionChangeDone', () => this._showPanel() );
 	}
 
 	/**
@@ -105,7 +118,7 @@ export default class ContextualToolbar extends Plugin {
 	_showPanel() {
 		const editingView = this.editor.editing.view;
 
-		// Do not add panel to the balloon stack twice.
+		// Do not add toolbar to the balloon stack twice.
 		if ( this._balloon.hasView( this.toolbarView ) ) {
 			return;
 		}
@@ -136,13 +149,6 @@ export default class ContextualToolbar extends Plugin {
 					[ positions.forwardSelection, positions.forwardSelectionAlternative ],
 			}
 		} );
-
-		// Update panel position when editor content has changed.
-		this.toolbarView.listenTo( editingView, 'render', () => {
-			if ( this._balloon.visibleView === this.toolbarView ) {
-				this._balloon.updatePosition();
-			}
-		} );
 	}
 
 	/**
@@ -153,7 +159,6 @@ export default class ContextualToolbar extends Plugin {
 	_hidePanel() {
 		if ( this._balloon.hasView( this.toolbarView ) ) {
 			this._balloon.remove( this.toolbarView );
-			this.toolbarView.stopListening( this.editor.editing.view, 'render' );
 		}
 	}
 }
