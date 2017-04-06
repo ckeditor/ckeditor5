@@ -16,7 +16,7 @@ import DeltaFactory from '../model/delta/deltafactory';
  */
 export default class DeltaReplayer {
 	/**
-	 * @param {module:engine/model/document~Document} document Document to reply deltas on.
+	 * @param {module:engine/model/document~Document} document Document to replay deltas on.
 	 * @param {String} logSeparator Separator between deltas.
 	 * @param {String} stringifiedDeltas Deltas to replay.
 	 */
@@ -27,7 +27,7 @@ export default class DeltaReplayer {
 	}
 
 	/**
-	 * Parses given string containing stringified deltas and sets parsed deltas as deltas to reply.
+	 * Parses given string containing stringified deltas and sets parsed deltas as deltas to replay.
 	 *
 	 * @param {String} stringifiedDeltas Stringified deltas to replay.
 	 */
@@ -44,7 +44,7 @@ export default class DeltaReplayer {
 	}
 
 	/**
-	 * Returns deltas to reply.
+	 * Returns deltas to replay.
 	 *
 	 * @returns {Array.<module:engine/model/delta/delta~Delta>}
 	 */
@@ -113,7 +113,7 @@ export default class DeltaReplayer {
 
 	/**
 	 * Applies the next delta to replay.
-	 * Returns promise with a `isFinished` parameter.
+	 * Returns promise with an `isFinished` parameter.
 	 *
 	 * @returns {Promise.<Boolean>}
 	 */

@@ -148,7 +148,7 @@ describe( 'DeltaReplayer', () => {
 				.then( () => {
 					throw new Error( 'It should throw an error' );
 				}, ( err ) => {
-					expect( err.name ).to.equal( 'CKEditorError' );
+					expect( err.message ).to.match( /^model-document-applyOperation-wrong-version:/ );
 				} );
 		} );
 	} );
