@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## [0.2.1](https://github.com/ckeditor/ckeditor5-presets/compare/v0.2.0...v0.2.1) (2017-04-06)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
 ## [0.2.0](https://github.com/ckeditor/ckeditor5-presets/compare/v0.1.1...v0.2.0) (2017-04-05)
 
 ### Features
