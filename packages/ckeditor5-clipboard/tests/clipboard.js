@@ -20,7 +20,7 @@ import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfr
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 
 describe( 'Clipboard feature', () => {
-	let editor, editingView;
+	let editor, editingView, clipboardPlugin;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
@@ -29,6 +29,7 @@ describe( 'Clipboard feature', () => {
 			.then( ( newEditor ) => {
 				editor = newEditor;
 				editingView = editor.editing.view;
+				clipboardPlugin = editor.plugins.get( 'clipboard' );
 			} );
 	} );
 
@@ -39,59 +40,96 @@ describe( 'Clipboard feature', () => {
 	} );
 
 	describe( 'clipboard paste pipeline', () => {
-		it( 'takes HTML data from the dataTransfer', ( done ) => {
-			const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
-			const preventDefaultSpy = sinon.spy();
+		describe( 'takes HTML data from the dataTransfer', () => {
+			it( 'and fires the input event on the editingView', ( done ) => {
+				const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
 
-			editingView.on( 'clipboardInput', ( evt, data ) => {
-				expect( preventDefaultSpy.calledOnce ).to.be.true;
+				editingView.on( 'input', ( evt, data ) => {
+					expect( preventDefaultSpy.calledOnce ).to.be.true;
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
 
-				expect( data.dataTransfer ).to.equal( dataTransferMock );
+					done();
+				} );
 
-				expect( data.content ).is.instanceOf( ViewDocumentFragment );
-				expect( stringifyView( data.content ) ).to.equal( '<p>x</p>' );
-
-				done();
+				editingView.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
 			} );
 
-			editingView.fire( 'paste', {
-				dataTransfer: dataTransferMock,
-				preventDefault: preventDefaultSpy
-			} );
-		} );
+			it( 'and fires the inputTransformation event on the clipboardPlugin', ( done ) => {
+				const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
+				const preventDefaultSpy = sinon.spy();
 
-		it( 'takes plain text data from the dataTransfer if there is no HTML', ( done ) => {
-			const dataTransferMock = createDataTransfer( { 'text/plain': 'x\n\ny  z' } );
-			const preventDefaultSpy = sinon.spy();
+				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
+					expect( data.content ).is.instanceOf( ViewDocumentFragment );
+					expect( stringifyView( data.content ) ).to.equal( '<p>x</p>' );
 
-			editingView.on( 'clipboardInput', ( evt, data ) => {
-				expect( preventDefaultSpy.calledOnce ).to.be.true;
+					done();
+				} );
 
-				expect( data.dataTransfer ).to.equal( dataTransferMock );
-
-				expect( data.content ).is.instanceOf( ViewDocumentFragment );
-				expect( stringifyView( data.content ) ).to.equal( '<p>x</p><p>y  z</p>' );
-
-				done();
-			} );
-
-			editingView.fire( 'paste', {
-				dataTransfer: dataTransferMock,
-				preventDefault: preventDefaultSpy
+				editingView.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
 			} );
 		} );
 
-		it( 'fires clipboardInput event with empty data if there is no HTML nor plain text', ( done ) => {
+		describe( 'takes plain text data from the dataTransfer if there is no HTML', () => {
+			it( 'and fires the input event on the editingView', ( done ) => {
+				const dataTransferMock = createDataTransfer( { 'text/plain': 'x\n\ny  z' } );
+				const preventDefaultSpy = sinon.spy();
+
+				editingView.on( 'input', ( evt, data ) => {
+					expect( preventDefaultSpy.calledOnce ).to.be.true;
+					expect( data.dataTransfer ).to.equal( dataTransferMock );
+
+					done();
+				} );
+
+				editingView.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+
+			it( 'and fires the inputTransformation event on the clipboardPlugin', ( done ) => {
+				const dataTransferMock = createDataTransfer( { 'text/plain': 'x\n\ny  z' } );
+				const preventDefaultSpy = sinon.spy();
+
+				clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
+					expect( data.content ).is.instanceOf( ViewDocumentFragment );
+					expect( stringifyView( data.content ) ).to.equal( '<p>x</p><p>y  z</p>' );
+
+					done();
+				} );
+
+				editingView.fire( 'paste', {
+					dataTransfer: dataTransferMock,
+					preventDefault: preventDefaultSpy
+				} );
+			} );
+		} );
+
+		it( 'fires events with empty data if there is no HTML nor plain text', ( done ) => {
 			const dataTransferMock = createDataTransfer( {} );
 			const preventDefaultSpy = sinon.spy();
+			const editorViewCalled = sinon.spy();
 
-			editingView.on( 'clipboardInput', ( evt, data ) => {
+			editingView.on( 'input', ( evt, data ) => {
 				expect( preventDefaultSpy.calledOnce ).to.be.true;
 
 				expect( data.dataTransfer ).to.equal( dataTransferMock );
 
+				editorViewCalled();
+			} );
+
+			clipboardPlugin.on( 'inputTransformation', ( evt, data ) => {
 				expect( data.content ).is.instanceOf( ViewDocumentFragment );
 				expect( stringifyView( data.content ) ).to.equal( '' );
+
+				expect( editorViewCalled.calledOnce ).to.be.true;
 
 				done();
 			} );
@@ -110,7 +148,7 @@ describe( 'Clipboard feature', () => {
 				evt.stop();
 			} );
 
-			editingView.on( 'clipboardInput', spy );
+			editingView.on( 'input', spy );
 
 			editingView.fire( 'paste', {
 				dataTransfer: dataTransferMock,
@@ -152,7 +190,7 @@ describe( 'Clipboard feature', () => {
 			const dataTransferMock = createDataTransfer( { 'text/plain': '' } );
 			const spy = sinon.stub( editor.data, 'insertContent' );
 
-			editingView.fire( 'clipboardInput', {
+			editingView.fire( 'input', {
 				dataTransfer: dataTransferMock,
 				content: new ViewDocumentFragment()
 			} );
@@ -160,11 +198,11 @@ describe( 'Clipboard feature', () => {
 			expect( spy.callCount ).to.equal( 0 );
 		} );
 
-		it( 'uses low priority observer for the clipboardInput event', () => {
+		it( 'uses low priority observer for the input event', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': 'x' } );
 			const spy = sinon.stub( editor.data, 'insertContent' );
 
-			editingView.on( 'clipboardInput', ( evt ) => {
+			editingView.on( 'input', ( evt ) => {
 				evt.stop();
 			} );
 
