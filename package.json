@@ -24,7 +24,7 @@
     "@ckeditor/ckeditor5-list": "^0.6.0",
     "@ckeditor/ckeditor5-markdown-gfm": "^0.4.2",
     "@ckeditor/ckeditor5-paragraph": "^0.7.0",
-    "@ckeditor/ckeditor5-presets": "^0.2.0",
+    "@ckeditor/ckeditor5-presets": "^0.2.1",
     "@ckeditor/ckeditor5-theme-lark": "^0.7.0",
     "@ckeditor/ckeditor5-typing": "^0.9.0",
     "@ckeditor/ckeditor5-ui": "^0.8.0",
