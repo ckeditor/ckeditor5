@@ -39,7 +39,7 @@ describe( 'MarkerCollection', () => {
 	} );
 
 	describe( 'set', () => {
-		it( 'should create a marker, fire add event and return true', () => {
+		it( 'should create a marker, fire add:<markerName> event and return true', () => {
 			sinon.spy( markers, 'fire' );
 
 			const result = markers.set( 'name', range );
@@ -48,18 +48,18 @@ describe( 'MarkerCollection', () => {
 			expect( result ).to.equal( marker );
 			expect( marker.name ).to.equal( 'name' );
 			expect( marker.getRange().isEqual( range ) ).to.be.true;
-			expect( markers.fire.calledWithExactly( 'add', marker ) ).to.be.true;
+			expect( markers.fire.calledWithExactly( 'add:name', marker ) ).to.be.true;
 		} );
 
-		it( 'should fire remove event, and create a new marker if marker with given name was in the collection', () => {
+		it( 'should fire remove:<markerName> event, and create a new marker if marker with given name was in the collection', () => {
 			const marker1 = markers.set( 'name', range );
 
 			sinon.spy( markers, 'fire' );
 
 			const marker2 = markers.set( 'name', range2 );
 
-			expect( markers.fire.calledWithExactly( 'remove', marker1 ) ).to.be.true;
-			expect( markers.fire.calledWithExactly( 'add', marker2 ) ).to.be.true;
+			expect( markers.fire.calledWithExactly( 'remove:name', marker1 ) ).to.be.true;
+			expect( markers.fire.calledWithExactly( 'add:name', marker2 ) ).to.be.true;
 
 			expect( marker2.name ).to.equal( 'name' );
 			expect( marker2.getRange().isEqual( range2 ) ).to.be.true;
@@ -113,7 +113,7 @@ describe( 'MarkerCollection', () => {
 	} );
 
 	describe( 'remove', () => {
-		it( 'should remove marker, return true and fire remove event', () => {
+		it( 'should remove marker, return true and fire remove:<markerName> event', () => {
 			const marker = markers.set( 'name', range );
 
 			sinon.spy( markers, 'fire' );
@@ -121,7 +121,7 @@ describe( 'MarkerCollection', () => {
 			const result = markers.remove( 'name' );
 
 			expect( result ).to.be.true;
-			expect( markers.fire.calledWithExactly( 'remove', marker ) ).to.be.true;
+			expect( markers.fire.calledWithExactly( 'remove:name', marker ) ).to.be.true;
 			expect( markers.get( 'name' ) ).to.be.null;
 		} );
 
@@ -158,7 +158,7 @@ describe( 'MarkerCollection', () => {
 			const result = markers.remove( marker );
 
 			expect( result ).to.be.true;
-			expect( markers.fire.calledWithExactly( 'remove', marker ) ).to.be.true;
+			expect( markers.fire.calledWithExactly( 'remove:name', marker ) ).to.be.true;
 			expect( markers.get( 'name' ) ).to.be.null;
 		} );
 	} );

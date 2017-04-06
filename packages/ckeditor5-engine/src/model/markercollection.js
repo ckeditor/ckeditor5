@@ -100,7 +100,7 @@ export default class MarkerCollection {
 		const marker = new Marker( markerName, liveRange );
 
 		this._markers.set( markerName, marker );
-		this.fire( 'add', marker );
+		this.fire( 'add:' + markerName, marker );
 
 		return marker;
 	}
@@ -117,7 +117,7 @@ export default class MarkerCollection {
 
 		if ( oldMarker ) {
 			this._markers.delete( markerName );
-			this.fire( 'remove', oldMarker );
+			this.fire( 'remove:' + markerName, oldMarker );
 
 			this._destroyMarker( oldMarker );
 
