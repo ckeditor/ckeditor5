@@ -112,8 +112,8 @@ export default class DeltaReplayer {
 	}
 
 	/**
-	 * Applies the next delta to replay.
-	 * Returns promise with an `isFinished` parameter.
+	 * Applies the next delta to replay. Returns promise with `isFinished` parameter that is `true` if the last
+	 * delta in replayer has been applied, `false` otherwise.
 	 *
 	 * @returns {Promise.<Boolean>}
 	 */
