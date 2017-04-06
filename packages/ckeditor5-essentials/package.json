@@ -4,8 +4,8 @@
   "description": "The presets of plugins for CKEditor 5.",
   "keywords": [],
   "dependencies": {
-    "@ckeditor/ckeditor5-autoformat": "^0.4.1",
-    "@ckeditor/ckeditor5-basic-styles": "^0.7.1",
+    "@ckeditor/ckeditor5-autoformat": "^0.5.0",
+    "@ckeditor/ckeditor5-basic-styles": "^0.8.0",
     "@ckeditor/ckeditor5-block-quote": "^0.1.0",
     "@ckeditor/ckeditor5-clipboard": "^0.5.0",
     "@ckeditor/ckeditor5-core": "^0.8.0",
