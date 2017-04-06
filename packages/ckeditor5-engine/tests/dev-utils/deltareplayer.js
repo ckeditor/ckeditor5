@@ -3,25 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global console */
-
 import DeltaReplayer from '../../src/dev-utils/deltareplayer';
 import Document from '../../src/model/document';
 
 describe( 'DeltaReplayer', () => {
-	const sandbox = sinon.sandbox.create();
-	let stubs;
-
-	beforeEach( () => {
-		stubs = {
-			consoleWarn: sandbox.stub( console, 'warn' ),
-		};
-	} );
-
-	afterEach( () => {
-		sandbox.restore();
-	} );
-
 	describe( 'constructor()', () => {
 		it( 'should be able to initialize replayer without deltas', () => {
 			const doc = getDocument();
@@ -48,8 +33,9 @@ describe( 'DeltaReplayer', () => {
 
 			const deltaReplayer = new DeltaReplayer( doc, '---', JSON.stringify( delta ) );
 
-			return deltaReplayer.applyNextDelta().then( () => {
+			return deltaReplayer.applyNextDelta().then( ( isFinished ) => {
 				expect( deltaReplayer.getDeltasToReplay() ).to.deep.equal( [] );
+				expect( isFinished ).to.equal( false );
 			} );
 		} );
 
@@ -64,15 +50,12 @@ describe( 'DeltaReplayer', () => {
 			} );
 		} );
 
-		it( 'should throw an error if 0 deltas are provided', () => {
+		it( 'should resolve with true if 0 deltas are provided', () => {
 			const doc = getDocument();
 			const deltaReplayer = new DeltaReplayer( doc, '---', '' );
 
-			return deltaReplayer.applyNextDelta().then( () => {
-				throw new Error( 'This should throw an error' );
-			}, ( err ) => {
-				expect( err instanceof Error ).to.equal( true );
-				expect( err.message ).to.equal( 'No deltas to replay' );
+			return deltaReplayer.applyNextDelta().then( ( isFinished ) => {
+				expect( isFinished ).to.equal( true );
 			} );
 		} );
 	} );
@@ -122,7 +105,6 @@ describe( 'DeltaReplayer', () => {
 			return deltaReplayer.applyDeltas( 3 ).then( () => {
 				expect( Array.from( doc.getRoot().getChildren() ).length ).to.equal( 2 );
 				expect( deltaReplayer.getDeltasToReplay().length ).to.equal( 0 );
-				sinon.assert.calledWithExactly( stubs.consoleWarn, new Error( 'No deltas to replay' ) );
 			} );
 		} );
 	} );
@@ -148,6 +130,26 @@ describe( 'DeltaReplayer', () => {
 			const deltaReplayer = new DeltaReplayer( doc, '---', '' );
 
 			return deltaReplayer.play();
+		} );
+
+		it( 'should correctly handle errors coming from the engine', () => {
+			const doc = getDocument();
+
+			const invalidDelta = getSecondDelta();
+			invalidDelta.operations[ 0 ].baseVersion = 3;
+
+			const stringifiedDeltas = [ getFirstDelta(), invalidDelta ]
+				.map( d => JSON.stringify( d ) )
+				.join( '---' );
+
+			const deltaReplayer = new DeltaReplayer( doc, '---', stringifiedDeltas );
+
+			return deltaReplayer.play( 1 )
+				.then( () => {
+					throw new Error( 'It should throw an error' );
+				}, ( err ) => {
+					expect( err.message ).to.match( /^model-document-applyOperation-wrong-version:/ );
+				} );
 		} );
 	} );
 } );
