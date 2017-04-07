@@ -177,63 +177,23 @@ export default class BalloonPanelView extends View {
 	 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
 	 */
 	pin( options ) {
-		// See https://github.com/ckeditor/ckeditor5-ui/issues/170.
-
 		this.unpin();
 
-		const limiter = options.limiter || defaultLimiterElement;
-		let target = null;
-
-		// We need to take HTMLElement related to the target if it is possible.
-		if ( isElement( options.target ) ) {
-			target = options.target;
-		} else if ( isRange( options.target ) ) {
-			target = options.target.commonAncestorContainer;
-		}
-
-		// Starts managing the pinned state of the panel.
-		//
-		// @private
-		const startPinning = () => {
-			this.attachTo( options );
-
-			// Then we need to listen on scroll event of eny element in the document.
-			this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {
-				// We need to update position if scrolled element contains related to the balloon elements.
-				if ( ( target && domEvt.target.contains( target ) ) || domEvt.target.contains( limiter ) ) {
-					this.attachTo( options );
-				}
-			}, { useCapture: true } );
-
-			// We need to listen on window resize event and update position.
-			this.listenTo( global.window, 'resize', () => {
-				this.attachTo( options );
-			} );
-		};
-
-		// Stops managing the pinned state of the panel.
-		//
-		// @private
-		const stopPinning = () => {
-			this.stopListening( global.document, 'scroll' );
-			this.stopListening( global.window, 'resize' );
+		this._pinWhenVisible = () => {
+			if ( this.isVisible ) {
+				this._startPinning( options );
+			} else {
+				this._stopPinning();
+			}
 		};
 
 		// If the panel is already visible, enable the listeners immediately.
-		if ( this.isVisible ) {
-			startPinning();
-		}
+		this._pinWhenVisible();
 
 		// Control the state of the listeners depending on whether the panel is visible
 		// or not.
 		// TODO: Use on() (https://github.com/ckeditor/ckeditor5-utils/issues/144).
-		this.listenTo( this, 'change:isVisible', () => {
-			if ( this.isVisible ) {
-				startPinning();
-			} else {
-				stopPinning();
-			}
-		} );
+		this.listenTo( this, 'change:isVisible', this._pinWhenVisible );
 	}
 
 	/**
@@ -246,7 +206,53 @@ export default class BalloonPanelView extends View {
 
 		// Deactivate the panel pin() control logic.
 		// TODO: Use off() (https://github.com/ckeditor/ckeditor5-utils/issues/144).
-		this.stopListening( this, 'change:isVisible' );
+		if ( this._pinWhenVisible ) {
+			this.stopListening( this, 'change:isVisible', this._pinWhenVisible );
+		}
+	}
+
+	/**
+	 * Starts managing the pinned state of the panel. See {@link #pin}.
+	 *
+	 * @private
+	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
+	 * {@link module:utils/dom/position~getOptimalPosition}.
+	 */
+	_startPinning( options ) {
+		this.attachTo( options );
+
+		const limiter = options.limiter || defaultLimiterElement;
+		let target = null;
+
+		// We need to take HTMLElement related to the target if it is possible.
+		if ( isElement( options.target ) ) {
+			target = options.target;
+		} else if ( isRange( options.target ) ) {
+			target = options.target.commonAncestorContainer;
+		}
+
+		// Then we need to listen on scroll event of eny element in the document.
+		this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {
+			// We need to update position if scrolled element contains related to the balloon elements.
+			if ( ( target && domEvt.target.contains( target ) ) || domEvt.target.contains( limiter ) ) {
+				this.attachTo( options );
+			}
+		}, { useCapture: true } );
+
+		// We need to listen on window resize event and update position.
+		this.listenTo( global.window, 'resize', () => {
+			this.attachTo( options );
+		} );
+	}
+
+	/**
+	 * Stops managing the pinned state of the panel. See {@link #pin}.
+	 *
+	 * @private
+	 */
+	_stopPinning() {
+		this.stopListening( global.document, 'scroll' );
+		this.stopListening( global.window, 'resize' );
 	}
 }
 
