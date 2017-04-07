@@ -36,10 +36,13 @@ describe( 'ContextualToolbar', () => {
 			contextualToolbar = editor.plugins.get( ContextualToolbar );
 			balloon = editor.plugins.get( ContextualBalloon );
 
+			stubClientRects();
+
 			// Focus the engine.
 			editor.editing.view.isFocused = true;
 
-			stubClientRects();
+			// Init child view.
+			return contextualToolbar.toolbarView.init();
 		} );
 	} );
 
@@ -154,14 +157,6 @@ describe( 'ContextualToolbar', () => {
 	it( 'should open below if the selection is forward', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
-		// Mock limiter.
-		mockBoundingBox( document.body, {
-			left: 0,
-			width: 1000,
-			top: 0,
-			height: 1000
-		} );
-
 		contextualToolbar.fire( '_selectionChangeDone' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
@@ -187,14 +182,6 @@ describe( 'ContextualToolbar', () => {
 
 	it( 'should open above if the selection is backward', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>', { lastRangeBackward: true } );
-
-		// Mock limiter.
-		mockBoundingBox( document.body, {
-			left: 0,
-			width: 1000,
-			top: 0,
-			height: 1000
-		} );
 
 		contextualToolbar.fire( '_selectionChangeDone' );
 
