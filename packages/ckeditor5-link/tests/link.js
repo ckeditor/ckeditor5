@@ -220,6 +220,19 @@ describe( 'Link', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
+		it( 'should keep editor ui focused when link form has focus', () => {
+			editor.ui.focusTracker.isFocused = false;
+
+			// Open balloon panel with link inside.
+			linkButton.fire( 'execute' );
+
+			// Be sure that form view is focused.
+			formView.element.dispatchEvent( new Event( 'focus' ) );
+
+			// Check if editor ui is focused.
+			expect( editor.ui.focusTracker.isFocused ).to.true;
+		} );
+
 		describe( 'close listeners', () => {
 			describe( 'keyboard', () => {
 				it( 'should close after Esc key press (from editor) and not focus editable', () => {
