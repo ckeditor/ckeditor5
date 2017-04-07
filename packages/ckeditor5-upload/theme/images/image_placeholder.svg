@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="350px" height="169px" viewBox="0 0 350 169" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 43 (38999) - http://www.bohemiancoding.com/sketch -->
+    <title>image_placeholder</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="image_placeholder">
+            <rect id="Rectangle-10" fill="#EBF1F7" x="0" y="0" width="350" height="169" rx="4"></rect>
+            <text id="Uploading-image…" font-family="Georgia" font-size="14" font-weight="normal" fill="#A1B0C2">
+                <tspan x="117.100586" y="89">Uploading image…</tspan>
+            </text>
+        </g>
+    </g>
+</svg>
