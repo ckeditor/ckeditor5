@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/contextualballoon';
+import ContextualBalloon from '../contextualballoon';
 import ToolbarView from './toolbarview';
 import BalloonPanelView from '../panel/balloon/balloonpanelview.js';
 import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
