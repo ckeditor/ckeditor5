@@ -9,7 +9,7 @@
     "@ckeditor/ckeditor5-core": "ckeditor/ckeditor5-core#d484ac6363e88ff8f14947d218cfc15b5586b575",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#f2c03f66828047fa8a555d1a9637b297e86442b6",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#5359033bda53256493b652b38b54c36dc6243a84",
-    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#3a8ebed444d9b04304536ce88ddc370125de2a0f",
+    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#8978c87705e3d085296cbfc00f14c8045e0d050c",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#b1433379e7117447a1e487c5b5869779e82be832",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#1c5675f3da28630600de658ef99795d8791ffac2",
     "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#0e8c6cab3759f5616f6d02a9ffc31aa099491adc",
@@ -20,7 +20,7 @@
     "@ckeditor/ckeditor5-presets": "ckeditor/ckeditor5-presets#705afe9efb738b2fc946db07ff90852f5e58bb60",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#44fe146b5d912765a131fc3dc06557ce12d65082",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#f26c3ba5a060e4644947b7f3a4097c0b3b06e0e2",
-    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#3ceb6a674c7401ef38e48da5265ecdb009b18f51",
+    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#f2dd63f9a95a5b1db51f1d474eaa9f5a85c8937d",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#1902daf7837e48a623f852c8b2624c9971f45319",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#afb7048e6653217e632cf51aefacc61cb2d0d0b0",
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#fefb015d00f01f5eb17d01d856c53c7ad29ef068"
