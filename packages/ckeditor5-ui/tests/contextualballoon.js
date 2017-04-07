@@ -251,6 +251,25 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
 		} );
 
+		it( 'should attach balloon to the target using new position options', () => {
+			balloon.add( {
+				view: viewA,
+				position: { target: 'fake' }
+			} );
+
+			balloon.view.attachTo.reset();
+
+			balloon.updatePosition( { target: 'new' } );
+
+			expect( balloon.view.attachTo.calledOnce );
+			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'new' } );
+
+			balloon.updatePosition();
+
+			expect( balloon.view.attachTo.calledTwice );
+			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'new' } );
+		} );
+
 		it( 'should attach balloon to the target using the same position options as currently set when there is more than one view', () => {
 			balloon.add( {
 				view: viewA,
