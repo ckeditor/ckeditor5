@@ -99,7 +99,7 @@ export default class ContextualToolbar extends Plugin {
 	 *
 	 * Note that in this case it's better to listen to {@link modules:engine/model/document modelDocument}
 	 * selection instead of {@link modules:engine/view/document viewDocument} selection because the first one
-	 * is not fired when text changes styles like bold or italic and toolbar doesn't blink.
+	 * doesn't fire `change` event after text styles changes (like bold or italic) and toolbar doesn't blink.
 	 *
 	 * @private
 	 */
