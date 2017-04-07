@@ -75,6 +75,15 @@ export default class BalloonPanelView extends View {
 		this.set( 'isVisible', false );
 
 		/**
+		 * Controls whether the balloon panel has an arrow.
+		 *
+		 * @observable
+		 * @default true
+		 * @member {Boolean} #withArrow
+		 */
+		this.set( 'withArrow', true );
+
+		/**
 		 * Max width of the balloon panel, as in CSS.
 		 *
 		 * @observable
@@ -94,8 +103,9 @@ export default class BalloonPanelView extends View {
 			attributes: {
 				class: [
 					'ck-balloon-panel',
-					bind.to( 'position', ( value ) => `ck-balloon-panel_arrow_${ value }` ),
-					bind.if( 'isVisible', 'ck-balloon-panel_visible' )
+					bind.to( 'position', ( value ) => `ck-balloon-panel_${ value }` ),
+					bind.if( 'isVisible', 'ck-balloon-panel_visible' ),
+					bind.if( 'withArrow', 'ck-balloon-panel_arrow' )
 				],
 
 				style: {
@@ -347,24 +357,24 @@ BalloonPanelView.defaultPositions = {
 	se: ( targetRect ) => ( {
 		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - BalloonPanelView.arrowHorizontalOffset,
-		name: 'se'
+		name: 'arrow_se'
 	} ),
 
 	sw: ( targetRect, balloonRect ) => ( {
 		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
-		name: 'sw'
+		name: 'arrow_sw'
 	} ),
 
 	ne: ( targetRect, balloonRect ) => ( {
 		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - BalloonPanelView.arrowHorizontalOffset,
-		name: 'ne'
+		name: 'arrow_ne'
 	} ),
 
 	nw: ( targetRect, balloonRect ) => ( {
 		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
-		name: 'nw'
+		name: 'arrow_nw'
 	} )
 };
