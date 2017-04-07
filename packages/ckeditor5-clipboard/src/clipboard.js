@@ -91,15 +91,11 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  * @extends module:core.plugin~Plugin
  */
 export default class Clipboard extends Plugin {
-	static get pluginName() {
-		return 'clipboard';
-	}
-
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'clipboard/clipboard';
+		return 'clipboard';
 	}
 
 	/**
