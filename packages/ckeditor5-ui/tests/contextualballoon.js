@@ -97,10 +97,36 @@ describe( 'ContextualBalloon', () => {
 				position: { target: 'fake' }
 			} );
 
+			viewA.ready = true;
+
 			expect( balloon.view.content.length ).to.equal( 1 );
 			expect( balloon.view.content.get( 0 ) ).to.deep.equal( viewA );
 			expect( balloon.view.attachTo.calledOnce ).to.true;
 			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
+		} );
+
+		it( 'should wait for view init', () => {
+			balloon.add( {
+				view: viewA,
+				position: { target: 'fake' }
+			} );
+
+			sinon.assert.notCalled( balloon.view.attachTo );
+
+			viewA.ready = true;
+
+			sinon.assert.calledOnce( balloon.view.attachTo );
+		} );
+
+		it( 'should not wait when view is ready', () => {
+			viewA.ready = true;
+
+			balloon.add( {
+				view: viewA,
+				position: { target: 'fake' }
+			} );
+
+			sinon.assert.calledOnce( balloon.view.attachTo );
 		} );
 
 		it( 'should throw an error when try to add the same view more than once', () => {
@@ -138,10 +164,14 @@ describe( 'ContextualBalloon', () => {
 				position: { target: 'fake', foo: 'bar' }
 			} );
 
+			viewA.ready = true;
+
 			balloon.add( {
 				view: viewB,
 				position: { target: 'fake', bar: 'biz' }
 			} );
+
+			viewB.ready = true;
 
 			expect( balloon.view.attachTo.calledTwice ).to.true;
 

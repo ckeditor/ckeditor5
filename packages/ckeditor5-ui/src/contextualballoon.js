@@ -177,7 +177,13 @@ export default class ContextualBalloon extends Plugin {
 	 */
 	_show( view ) {
 		this.view.content.add( view );
-		this.view.attachTo( this._getBalloonPosition() );
+
+		// When view is not rendered we need to wait for it. See: https://github.com/ckeditor/ckeditor5-ui/issues/187.
+		if ( !view.ready ) {
+			view.once( 'change:ready', () => this.view.attachTo( this._getBalloonPosition() ) );
+		} else {
+			this.view.attachTo( this._getBalloonPosition() );
+		}
 	}
 
 	/**
