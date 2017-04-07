@@ -170,15 +170,16 @@ export default class BalloonPanelView extends View {
 	 *
 	 * Thanks to this, the panel always sticks to the {@link module:utils/dom/position~Options#target}.
 	 *
-	 * See https://github.com/ckeditor/ckeditor5-ui/issues/170.
+	 * See: {@link #unpin}.
 	 *
 	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
 	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
 	 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
 	 */
-	keepAttachedTo( options ) {
-		// First we need to attach the balloon panel to the target element.
-		this.attachTo( options );
+	pin( options ) {
+		// See https://github.com/ckeditor/ckeditor5-ui/issues/170.
+
+		this.unpin();
 
 		const limiter = options.limiter || defaultLimiterElement;
 		let target = null;
@@ -190,32 +191,62 @@ export default class BalloonPanelView extends View {
 			target = options.target.commonAncestorContainer;
 		}
 
-		// Then we need to listen on scroll event of eny element in the document.
-		this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {
-			// We need to update position if scrolled element contains related to the balloon elements.
-			if ( ( target && domEvt.target.contains( target ) ) || domEvt.target.contains( limiter ) ) {
+		// Starts managing the pinned state of the panel.
+		//
+		// @private
+		const startPinning = () => {
+			this.attachTo( options );
+
+			// Then we need to listen on scroll event of eny element in the document.
+			this.listenTo( global.document, 'scroll', ( evt, domEvt ) => {
+				// We need to update position if scrolled element contains related to the balloon elements.
+				if ( ( target && domEvt.target.contains( target ) ) || domEvt.target.contains( limiter ) ) {
+					this.attachTo( options );
+				}
+			}, { useCapture: true } );
+
+			// We need to listen on window resize event and update position.
+			this.listenTo( global.window, 'resize', () => {
 				this.attachTo( options );
-			}
-		}, { useCapture: true } );
+			} );
+		};
 
-		// We need to listen on window resize event and update position.
-		this.listenTo( global.window, 'resize', () => this.attachTo( options ) );
-
-		// After all we need to clean up the listeners.
-		this.once( 'change:isVisible', () => {
+		// Stops managing the pinned state of the panel.
+		//
+		// @private
+		const stopPinning = () => {
 			this.stopListening( global.document, 'scroll' );
 			this.stopListening( global.window, 'resize' );
+		};
+
+		// If the panel is already visible, enable the listeners immediately.
+		if ( this.isVisible ) {
+			startPinning();
+		}
+
+		// Control the state of the listeners depending on whether the panel is visible
+		// or not.
+		// TODO: Use on() (https://github.com/ckeditor/ckeditor5-utils/issues/144).
+		this.listenTo( this, 'change:isVisible', () => {
+			if ( this.isVisible ) {
+				startPinning();
+			} else {
+				stopPinning();
+			}
 		} );
 	}
 
 	/**
-	 * @inheritDoc
+	 * Stops pinning the panel, as set up by {@link #pin}.
 	 */
-	destroy() {
+	unpin() {
+		// Deactivate listeners attached by pin().
 		this.stopListening( global.document, 'scroll' );
 		this.stopListening( global.window, 'resize' );
 
-		return super.destroy();
+		// Deactivate the panel pin() control logic.
+		// TODO: Use off() (https://github.com/ckeditor/ckeditor5-utils/issues/144).
+		this.stopListening( this, 'change:isVisible' );
 	}
 }
 

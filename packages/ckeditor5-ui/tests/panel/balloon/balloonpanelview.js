@@ -405,7 +405,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 	} );
 
-	describe( 'keepAttachedTo()', () => {
+	describe( 'pin()', () => {
 		let attachToSpy, target, targetParent, limiter, notRelatedElement;
 
 		beforeEach( () => {
@@ -415,6 +415,8 @@ describe( 'BalloonPanelView', () => {
 			target = document.createElement( 'div' );
 			notRelatedElement = document.createElement( 'div' );
 
+			view.show();
+
 			targetParent.appendChild( target );
 			document.body.appendChild( targetParent );
 			document.body.appendChild( limiter );
@@ -422,13 +424,35 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		afterEach( () => {
-			attachToSpy.restore();
+			targetParent.remove();
 			limiter.remove();
 			notRelatedElement.remove();
 		} );
 
-		it( 'should keep the balloon attached to the target when any of the related elements is scrolled', () => {
-			view.keepAttachedTo( { target, limiter } );
+		it( 'should not pin until the balloon gets visible', () => {
+			view.hide();
+
+			view.pin( { target, limiter } );
+			sinon.assert.notCalled( attachToSpy );
+
+			view.show();
+			sinon.assert.calledOnce( attachToSpy );
+		} );
+
+		it( 'should stop pinning when the balloon becomes invisible', () => {
+			view.show();
+
+			view.pin( { target, limiter } );
+			sinon.assert.calledOnce( attachToSpy );
+
+			view.hide();
+
+			targetParent.dispatchEvent( new Event( 'scroll' ) );
+			sinon.assert.calledOnce( attachToSpy );
+		} );
+
+		it( 'should keep the balloon pinned to the target when any of the related elements is scrolled', () => {
+			view.pin( { target, limiter } );
 
 			sinon.assert.calledOnce( attachToSpy );
 			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
@@ -450,8 +474,8 @@ describe( 'BalloonPanelView', () => {
 			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
 		} );
 
-		it( 'should keep the balloon attached to the target when the browser window is being resized', () => {
-			view.keepAttachedTo( { target, limiter } );
+		it( 'should keep the balloon pinned to the target when the browser window is being resized', () => {
+			view.pin( { target, limiter } );
 
 			sinon.assert.calledOnce( attachToSpy );
 			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
@@ -463,7 +487,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should stop attaching when the balloon is hidden', () => {
-			view.keepAttachedTo( { target, limiter } );
+			view.pin( { target, limiter } );
 
 			sinon.assert.calledOnce( attachToSpy );
 
@@ -477,7 +501,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should stop attaching once the view is destroyed', () => {
-			view.keepAttachedTo( { target, limiter } );
+			view.pin( { target, limiter } );
 
 			sinon.assert.calledOnce( attachToSpy );
 
@@ -491,7 +515,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should set document.body as the default limiter', () => {
-			view.keepAttachedTo( { target } );
+			view.pin( { target } );
 
 			sinon.assert.calledOnce( attachToSpy );
 
@@ -508,7 +532,7 @@ describe( 'BalloonPanelView', () => {
 			document.body.appendChild( element );
 			range.selectNodeContents( element );
 
-			view.keepAttachedTo( { target: range } );
+			view.pin( { target: range } );
 
 			sinon.assert.calledOnce( attachToSpy );
 
@@ -521,13 +545,51 @@ describe( 'BalloonPanelView', () => {
 			// Just check if this normally works without errors.
 			const rect = {};
 
-			view.keepAttachedTo( { target: rect, limiter } );
+			view.pin( { target: rect, limiter } );
 
 			sinon.assert.calledOnce( attachToSpy );
 
 			limiter.dispatchEvent( new Event( 'scroll' ) );
 
 			sinon.assert.calledTwice( attachToSpy );
+		} );
+	} );
+
+	describe( 'unpin()', () => {
+		let attachToSpy, target, targetParent, limiter;
+
+		beforeEach( () => {
+			attachToSpy = testUtils.sinon.spy( view, 'attachTo' );
+			limiter = document.createElement( 'div' );
+			targetParent = document.createElement( 'div' );
+			target = document.createElement( 'div' );
+
+			view.show();
+
+			targetParent.appendChild( target );
+			document.body.appendChild( targetParent );
+			document.body.appendChild( limiter );
+		} );
+
+		afterEach( () => {
+			targetParent.remove();
+			limiter.remove();
+		} );
+
+		it( 'should stop attaching when the balloon is hidden', () => {
+			view.pin( { target, limiter } );
+			sinon.assert.calledOnce( attachToSpy );
+
+			view.unpin();
+
+			view.hide();
+			window.dispatchEvent( new Event( 'resize' ) );
+			window.dispatchEvent( new Event( 'scroll' ) );
+			view.show();
+			window.dispatchEvent( new Event( 'resize' ) );
+			window.dispatchEvent( new Event( 'scroll' ) );
+
+			sinon.assert.calledOnce( attachToSpy );
 		} );
 	} );
 } );
