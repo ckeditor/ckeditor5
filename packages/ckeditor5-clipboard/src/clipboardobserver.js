@@ -43,6 +43,20 @@ export default class ClipboardObserver extends DomEventObserver {
 }
 
 /**
+ * Fired when user dropped content into one of the editables.
+ *
+ * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
+ *
+ * Note that this event is not available by default. To make it available {@link module:clipboard/clipboardobserver~ClipboardObserver}
+ * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/document~Document#addObserver} method.
+ * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
+ *
+ * @see module:clipboard/clipboardobserver~ClipboardObserver
+ * @event module:engine/view/document~Document#event:drop
+ * @param {module:clipboard/clipboardobserver~ClipboardEventData} data Event data.
+ */
+
+/**
  * Fired when user pasted content into one of the editables.
  *
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
