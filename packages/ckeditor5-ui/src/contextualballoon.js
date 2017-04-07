@@ -32,6 +32,13 @@ export default class ContextualBalloon extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'contextualballoon';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		/**
 		 * The common balloon panel view.
@@ -52,10 +59,6 @@ export default class ContextualBalloon extends Plugin {
 
 		// Add balloon panel view to editor `body` collection.
 		this.editor.ui.view.body.add( this.view );
-	}
-
-	static get pluginName() {
-		return 'contextualballoon';
 	}
 
 	/**

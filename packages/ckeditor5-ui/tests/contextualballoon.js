@@ -39,13 +39,14 @@ describe( 'ContextualBalloon', () => {
 		editor.destroy();
 	} );
 
-	it( 'should be a plugin instance', () => {
+	it( 'should create a plugin instance', () => {
 		expect( balloon ).to.instanceof( Plugin );
+		expect( balloon ).to.instanceof( ContextualBalloon );
 	} );
 
 	describe( 'pluginName', () => {
 		it( 'should return plugin by name', () => {
-			expect( editor.plugins.get( 'contextualballoon' ) ).to.instanceof( ContextualBalloon );
+			expect( editor.plugins.get( 'contextualballoon' ) ).to.equal( balloon );
 		} );
 	} );
 
