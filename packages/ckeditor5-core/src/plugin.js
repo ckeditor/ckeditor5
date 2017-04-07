@@ -62,8 +62,10 @@ export default class Plugin {
 	 * {@link module:core/plugincollection~PluginCollection#get} by its
 	 * name and its constructor. If not, then only by its constructor.
 	 *
-	 * The name should reflect the package name + path to that module. E.g. `ckeditor5-image/src/image.js` plugin
-	 * should be named `image/image` (the `ckeditor5-` prefix is stripped during compilation).
+	 * The name should reflect the package name + the plugin module name. E.g. `ckeditor5-image/src/image.js` plugin
+	 * should be named `image/image` (the `ckeditor5-` prefix is stripped during compilation). If plugin is kept
+	 * deeper in the directory structure, it's recommended to only use the module file name, not the whole path.
+	 * So, e.g. a plugin defined in `ckeditor5-ui/src/notification/notification.js` file may be named `ui/notification`.
 	 *
 	 * To keep a plugin class definition tight it's recommended to define this property as a static getter:
 	 *
