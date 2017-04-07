@@ -46,7 +46,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		console.log( 'text/plain\n', data.dataTransfer.getData( 'text/plain' ) );
 	} );
 
-	editor.editing.view.on( 'clipboardInput', ( evt, data ) => {
+	editor.editing.view.on( 'input', ( evt, data ) => {
 		console.log( '----- clipboardInput -----' );
 		console.log( 'stringify( data.content )\n', stringifyView( data.content ) );
 	} );

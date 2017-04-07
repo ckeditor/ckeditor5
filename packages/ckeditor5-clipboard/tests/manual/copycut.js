@@ -45,7 +45,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	editor.editing.view.on( 'copy', onViewEvent, { priority: 'lowest' } );
 	editor.editing.view.on( 'cut', onViewEvent, { priority: 'lowest' } );
 
-	editor.editing.view.on( 'clipboardInput', onPipelineEvent );
+	editor.editing.view.on( 'input', onPipelineEvent );
 	editor.editing.view.on( 'clipboardOutput', ( evt, data ) => {
 		console.clear();
 		onPipelineEvent( evt, data );

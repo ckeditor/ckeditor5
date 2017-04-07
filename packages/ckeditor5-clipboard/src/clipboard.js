@@ -34,8 +34,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  * 2. prevent the default action of the native `paste` or `drop` event,
  * 3. fire {@link module:engine/view/document~Document#event:input} with a
  * {@link module:clipboard/datatransfer~DataTransfer `dataTransfer`} property.
- * 4. fire {@link module:clipboard/clipboard~Clipboard#event:inputTransformation} with a
- * {@link module:clipboard/clipboard~ClipboardInputEventData `data`} containing the clipboard data parsed to
+ * 4. fire {@link module:clipboard/clipboard~Clipboard#event:inputTransformation} with a `data` containing the clipboard data parsed to
  * a {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
  *
  * These action are performed by a low priority listeners, so they can be overridden by a normal ones
