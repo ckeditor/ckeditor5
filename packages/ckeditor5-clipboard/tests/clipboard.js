@@ -29,7 +29,7 @@ describe( 'Clipboard feature', () => {
 			.then( ( newEditor ) => {
 				editor = newEditor;
 				editingView = editor.editing.view;
-				clipboardPlugin = editor.plugins.get( 'clipboard' );
+				clipboardPlugin = editor.plugins.get( 'clipboard/clipboard' );
 			} );
 	} );
 
