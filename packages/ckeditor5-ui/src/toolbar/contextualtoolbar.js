@@ -47,6 +47,19 @@ export default class ContextualToolbar extends Plugin {
 		 */
 		this._balloon = this.editor.plugins.get( ContextualBalloon );
 
+		/**
+		 * This is internal plugin event which is fired 200 ms after selection last change (lodash#debounce).
+		 * This is to makes easy test debounced action without need to use `setTimeout`. Lodash keeps time related
+		 * stuff in a closure and it's not possible to override it by sinon fake timers.
+		 *
+		 * This debounced function is stored as a plugin property to make possible to cancel
+		 * trailing debounced invocation on destroy.
+		 *
+		 * @private
+		 * @member {Function}
+		 */
+		this._fireChangeDoneDebounced = debounce( () => this.fire( '_selectionChangeDone' ), 200 );
+
 		// Attach lifecycle actions.
 		this._handleSelectionChange();
 		this._handleFocusChange();
@@ -93,21 +106,19 @@ export default class ContextualToolbar extends Plugin {
 	_handleSelectionChange() {
 		const selection = this.editor.document.selection;
 
-		// This is internal plugin event which is fired 200 ms after selection last change (lodash#debounce).
-		// This is to makes easy test debounced action without need to use `setTimeout`.
-		// Because lodash keeps time related stuff in a closure it's not possible to override it
-		// by sinon fake timers.
-		const fireChangeDoneDebounced = debounce( () => this.fire( '_selectionChangeDone' ), 200 );
+		this.listenTo( selection, 'change:range', ( evt, data ) => {
+			// When the selection is not changed by a collaboration and when is not collapsed.
+			if ( data.directChange || selection.isCollapsed ) {
+				// Hide the toolbar when the selection starts changing.
+				this._hidePanel();
+			}
 
-		this.listenTo( selection, 'change:range', () => {
-			// Hide the toolbar when the selection starts changing.
-			this._hidePanel();
-
-			// Show the toolbar attached to the selection when the selection stops changing.
-			fireChangeDoneDebounced();
+			// Fire internal `_selectionChangeDone` when the selection stops changing.
+			this._fireChangeDoneDebounced();
 		} );
 
-		this.on( '_selectionChangeDone', () => this._showPanel() );
+		// Hide the toolbar when the selection stops changing.
+		this.listenTo( this, '_selectionChangeDone', () => this._showPanel() );
 	}
 
 	/**
@@ -128,6 +139,40 @@ export default class ContextualToolbar extends Plugin {
 			return;
 		}
 
+		// Add panel to the common editor contextual balloon.
+		this._balloon.add( {
+			view: this.toolbarView,
+			position: this._getBalloonPositionData()
+		} );
+
+		// Update panel position when selection changes while balloon will be opened (by a collaboration).
+		this.listenTo( this.editor.editing.view, 'render', () => {
+			this._balloon.updatePosition( this._getBalloonPositionData() );
+		} );
+	}
+
+	/**
+	 * Removes panel from the {@link: #_balloon}.
+	 *
+	 * @private
+	 */
+	_hidePanel() {
+		if ( this._balloon.hasView( this.toolbarView ) ) {
+			this.stopListening( this.editor.editing.view, 'render' );
+			this._balloon.remove( this.toolbarView );
+		}
+	}
+
+	/**
+	 * Returns positioning options for the {@link #_balloon}. They control the way balloon is attached
+	 * to the selection.
+	 *
+	 * @private
+	 * @returns {module:utils/dom/position~Options}
+	 */
+	_getBalloonPositionData() {
+		const editingView = this.editor.editing.view;
+
 		// Get direction of the selection.
 		const isBackward = editingView.selection.isBackward;
 
@@ -139,27 +184,21 @@ export default class ContextualToolbar extends Plugin {
 		// Select the proper range rect depending on the direction of the selection.
 		const rangeRect = isBackward ? rangeRects.item( 0 ) : rangeRects.item( rangeRects.length - 1 );
 
-		// Add panel to the common editor contextual balloon.
-		this._balloon.add( {
-			view: this.toolbarView,
-			position: {
-				target: rangeRect,
-				positions: isBackward ?
-					[ positions.backwardSelection, positions.backwardSelectionAlternative ] :
-					[ positions.forwardSelection, positions.forwardSelectionAlternative ],
-			}
-		} );
+		return {
+			target: rangeRect,
+			positions: isBackward ?
+				[ positions.backwardSelection, positions.backwardSelectionAlternative ] :
+				[ positions.forwardSelection, positions.forwardSelectionAlternative ],
+		};
 	}
 
 	/**
-	 * Removes panel from the {@link: #_balloon}.
-	 *
-	 * @private
+	 * @inheritDoc
 	 */
-	_hidePanel() {
-		if ( this._balloon.hasView( this.toolbarView ) ) {
-			this._balloon.remove( this.toolbarView );
-		}
+	destroy() {
+		this._fireChangeDoneDebounced.cancel();
+		this.stopListening();
+		super.destroy();
 	}
 }
 

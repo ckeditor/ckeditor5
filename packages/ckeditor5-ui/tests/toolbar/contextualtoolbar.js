@@ -44,7 +44,8 @@ describe( 'ContextualToolbar', () => {
 
 	afterEach( () => {
 		sandbox.restore();
-		editor.destroy();
+
+		return editor.destroy();
 	} );
 
 	it( 'should be loaded', () => {
@@ -63,7 +64,7 @@ describe( 'ContextualToolbar', () => {
 		expect( contextualToolbar.toolbarView.items ).to.length( 2 );
 	} );
 
-	it( 'should fire internal `_selectionChangeDone` event 200 ms after last selection change', () => {
+	it( 'should fire internal `_selectionChangeDone` event 200 ms after last selection change', ( done ) => {
 		// This test uses setTimeout to test lodash#debounce because sinon fake timers
 		// doesn't work with lodash. Lodash keeps time related stuff in a closure
 		// and sinon is not able to override it.
@@ -72,7 +73,7 @@ describe( 'ContextualToolbar', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 		contextualToolbar.on( '_selectionChangeDone', spy );
 
-		editor.document.selection.fire( 'change:range' );
+		editor.document.selection.fire( 'change:range', {} );
 
 		// Not yet.
 		sinon.assert.notCalled( spy );
@@ -83,7 +84,7 @@ describe( 'ContextualToolbar', () => {
 			sinon.assert.notCalled( spy );
 
 			// Fire event one more time.
-			editor.document.selection.fire( 'change:range' );
+			editor.document.selection.fire( 'change:range', {} );
 
 			// Another 100 ms waiting.
 			setTimeout( () => {
@@ -94,6 +95,7 @@ describe( 'ContextualToolbar', () => {
 				setTimeout( () => {
 					// And here it is.
 					sinon.assert.calledOnce( spy );
+					done();
 				}, 100 );
 			}, 100 );
 		}, 100 );
@@ -109,20 +111,54 @@ describe( 'ContextualToolbar', () => {
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 	} );
 
-	it( 'should close when selection starts changing', () => {
+	it( 'should close when selection starts changing by a directChange', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
 		contextualToolbar.fire( '_selectionChangeDone' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 
-		editor.document.selection.fire( 'change:range' );
+		editor.document.selection.fire( 'change:range', { directChange: true } );
+
+		expect( balloon.visibleView ).to.null;
+	} );
+
+	it( 'should not close when selection starts changing by not a directChange', () => {
+		setData( editor.document, '<paragraph>[bar]</paragraph>' );
+
+		contextualToolbar.fire( '_selectionChangeDone' );
+
+		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
+
+		editor.document.selection.fire( 'change:range', { directChange: false } );
+
+		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
+	} );
+
+	it( 'should close when selection starts changing by not a directChange but will become collapsed', () => {
+		setData( editor.document, '<paragraph>[bar]</paragraph>' );
+
+		contextualToolbar.fire( '_selectionChangeDone' );
+
+		// Collapse range silently (without firing `change:range` { directChange: true } event).
+		const range = editor.document.selection._ranges[ 0 ];
+		range.end = range.start;
+
+		editor.document.selection.fire( 'change:range', { directChange: false } );
 
 		expect( balloon.visibleView ).to.null;
 	} );
 
 	it( 'should open below if the selection is forward', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
+
+		// Mock limiter.
+		mockBoundingBox( document.body, {
+			left: 0,
+			width: 1000,
+			top: 0,
+			height: 1000
+		} );
 
 		contextualToolbar.fire( '_selectionChangeDone' );
 
@@ -150,6 +186,14 @@ describe( 'ContextualToolbar', () => {
 	it( 'should open above if the selection is backward', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>', { lastRangeBackward: true } );
 
+		// Mock limiter.
+		mockBoundingBox( document.body, {
+			left: 0,
+			width: 1000,
+			top: 0,
+			height: 1000
+		} );
+
 		contextualToolbar.fire( '_selectionChangeDone' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
@@ -176,12 +220,12 @@ describe( 'ContextualToolbar', () => {
 	it( 'should not open if the collapsed selection is moving', () => {
 		setData( editor.document, '<paragraph>ba[]r</paragraph>' );
 
-		editor.document.selection.fire( 'change:range' );
+		editor.document.selection.fire( 'change:range', {} );
 		contextualToolbar.fire( '_selectionChangeDone' );
 
 		setData( editor.document, '<paragraph>b[]ar</paragraph>' );
 
-		editor.document.selection.fire( 'change:range' );
+		editor.document.selection.fire( 'change:range', {} );
 		contextualToolbar.fire( '_selectionChangeDone' );
 
 		expect( balloon.visibleView ).to.null;
@@ -210,6 +254,52 @@ describe( 'ContextualToolbar', () => {
 		expect( () => {
 			contextualToolbar.fire( '_selectionChangeDone' );
 		} ).to.not.throw();
+	} );
+
+	it( 'should update balloon position when toolbar is opened and editor content has changed', () => {
+		const spy = sandbox.spy( balloon, 'updatePosition' );
+
+		setData( editor.document, '<paragraph>[bar]</paragraph>' );
+
+		contextualToolbar.fire( '_selectionChangeDone' );
+
+		sinon.assert.notCalled( spy );
+
+		editor.editing.view.fire( 'render' );
+
+		sinon.assert.calledOnce( spy );
+	} );
+
+	it( 'should update balloon position when toolbar is closed', () => {
+		const spy = sandbox.spy( balloon, 'updatePosition' );
+
+		setData( editor.document, '<paragraph>[bar]</paragraph>' );
+
+		contextualToolbar.fire( '_selectionChangeDone' );
+
+		// Hide toolbar.
+		editor.document.selection.fire( 'change:range', { directChange: true } );
+
+		editor.editing.view.fire( 'render' );
+
+		sinon.assert.notCalled( spy );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should not fire `_selectionChangeDone` after plugin destroy', ( done ) => {
+			const spy = sandbox.spy();
+
+			contextualToolbar.on( '_selectionChangeDone', spy );
+
+			editor.document.selection.fire( 'change:range', { directChange: true } );
+
+			contextualToolbar.destroy();
+
+			setTimeout( () => {
+				sinon.assert.notCalled( spy );
+				done();
+			}, 200 );
+		} );
 	} );
 
 	function stubClientRects() {
