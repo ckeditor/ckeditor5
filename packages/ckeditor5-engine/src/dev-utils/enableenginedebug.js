@@ -54,7 +54,7 @@ const treeDump = Symbol( '_treeDump' );
 const maxTreeDumpLength = 20;
 
 // Separator used to separate stringified deltas
-const LOG_SEPARATOR = '\n----------------\n';
+const LOG_SEPARATOR = '-------';
 
 // Specified whether debug tools were already enabled.
 let enabled = false;
