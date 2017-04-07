@@ -196,7 +196,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 			return;
 		}
 
-		const domListener = this._createDomListener( event );
+		const domListener = this._createDomListener( event, !!options.useCapture );
 
 		// Attach the native DOM listener to DOM Node.
 		this._domNode.addEventListener( event, domListener, !!options.useCapture );
@@ -244,9 +244,11 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * @param {String} event
 	 *
 	 * @method module:utils/dom/emittermixin~ProxyEmitter#_createDomListener
+	 * @param {String} event The name of the event.
+	 * @param {Boolean} useCapture Indicates whether the listener was created for capturing event.
 	 * @returns {Function} The DOM listener callback.
 	 */
-	_createDomListener( event ) {
+	_createDomListener( event, useCapture ) {
 		const domListener = domEvt => {
 			this.fire( event, domEvt );
 		};
@@ -255,7 +257,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 		// detach it from the DOM Node, when it is no longer necessary.
 		// See: {@link off}.
 		domListener.removeListener = () => {
-			this._domNode.removeEventListener( event, domListener );
+			this._domNode.removeEventListener( event, domListener, useCapture );
 			delete this._domListeners[ event ];
 		};
 
