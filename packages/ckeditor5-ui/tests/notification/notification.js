@@ -7,7 +7,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Notification from '../src/notification';
+import Notification from '../../src/notification/notification';
 
 describe( 'Notification', () => {
 	let editor, notification;
