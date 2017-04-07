@@ -1,0 +1,152 @@
+/**
+ * Copyright (c) 2016, CKSource - Frederico Knabben. All rights reserved.
+ */
+
+/* globals window */
+
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Notification from '../src/notification';
+
+describe( 'Notification', () => {
+	let editor, notification;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( () => {
+		return VirtualTestEditor.create( {
+			plugins: [ Notification ]
+		} )
+		.then( newEditor => {
+			editor = newEditor;
+			notification = editor.plugins.get( Notification );
+		} );
+	} );
+
+	describe( 'init()', () => {
+		it( 'should create notification plugin', () => {
+			expect( notification ).to.instanceof( Notification );
+			expect( notification ).to.instanceof( Plugin );
+		} );
+	} );
+
+	describe( 'showSuccess()', () => {
+		it( 'should fire `show:success` event with given data', () => {
+			const spy = testUtils.sinon.spy();
+
+			notification.on( 'show:success', spy );
+
+			notification.showSuccess( 'foo bar' );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.firstCall.args[ 1 ] ).to.deep.equal( {
+				message: 'foo bar',
+				type: 'success'
+			} );
+		} );
+
+		it( 'should fire `show:success` event with additional namespace', () => {
+			const spy = testUtils.sinon.spy();
+
+			notification.on( 'show:success:something:else', spy );
+
+			notification.showSuccess( 'foo bar', {
+				namespace: 'something:else'
+			} );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.firstCall.args[ 1 ] ).to.deep.equal( {
+				message: 'foo bar',
+				type: 'success'
+			} );
+		} );
+	} );
+
+	describe( 'showInfo()', () => {
+		it( 'should fire `show:info` event with given data', () => {
+			const spy = testUtils.sinon.spy();
+
+			notification.on( 'show:info', spy );
+
+			notification.showInfo( 'foo bar' );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.firstCall.args[ 1 ] ).to.deep.equal( {
+				message: 'foo bar',
+				type: 'info'
+			} );
+		} );
+
+		it( 'should fire `show:info` event with additional namespace', () => {
+			const spy = testUtils.sinon.spy();
+
+			notification.on( 'show:info:something:else', spy );
+
+			notification.showInfo( 'foo bar', {
+				namespace: 'something:else'
+			} );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.firstCall.args[ 1 ] ).to.deep.equal( {
+				message: 'foo bar',
+				type: 'info'
+			} );
+		} );
+	} );
+
+	describe( 'showWarning()', () => {
+		let alertStub;
+
+		beforeEach( () => {
+			alertStub = testUtils.sinon.stub( window, 'alert' );
+		} );
+
+		it( 'should fire `show:warning` event with given data', () => {
+			const spy = testUtils.sinon.spy();
+
+			notification.on( 'show:warning', spy );
+
+			notification.showWarning( 'foo bar' );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.firstCall.args[ 1 ] ).to.deep.equal( {
+				message: 'foo bar',
+				type: 'warning'
+			} );
+		} );
+
+		it( 'should fire `show:warning` event with additional namespace', () => {
+			const spy = testUtils.sinon.spy();
+
+			notification.on( 'show:warning:something:else', spy );
+
+			notification.showWarning( 'foo bar', {
+				namespace: 'something:else'
+			} );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.firstCall.args[ 1 ] ).to.deep.equal( {
+				message: 'foo bar',
+				type: 'warning'
+			} );
+		} );
+
+		it( 'should display `warning` message as system alert if is not cached and stopped by other plugins', () => {
+			notification.showWarning( 'foo bar' );
+
+			sinon.assert.calledOnce( alertStub );
+			expect( alertStub.firstCall.args[ 0 ] ).to.equal( 'foo bar' );
+		} );
+
+		it( 'should not display alert when `warning` message is cached and stopped by other plugins', () => {
+			notification.on( 'show:warning', evt => {
+				evt.stop();
+			} );
+
+			notification.showWarning( 'foo bar' );
+
+			sinon.assert.notCalled( alertStub );
+		} );
+	} );
+} );
