@@ -45,7 +45,15 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  *
  * ### On {@link module:engine/view/document~Document#event:input}
  *
- * TODO
+ * This action is performed by a low priority listener, so it can be overridden by a normal one.
+ *
+ * At this stage the dataTransfer object can be processed by the features, which want to transform the original dataTransform.
+ *
+ *		this.listenTo( editor.editing.view, 'input', ( evt, data ) => {
+ *			const content = customTransform( data.dataTransfer.get( 'text/html' ) );
+ *			const transformedContent = transform( content );
+ * 			data.dataTransfer.set( 'text/html', transformedContent );
+ *		} );
  *
  * ### On {@link module:clipboard/clipboard~Clipboard#event:inputTransformation}
  *
@@ -57,7 +65,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  * At this stage the pasted content can be processed by the features. E.g. a feature which wants to transform
  * a pasted text into a link can be implemented in this way:
  *
- *		this.listenTo( editor.editing.view, 'clipboardInput', ( evt, data ) => {
+ *		this.listenTo( editor.plugins.get( 'clipboard/clipboard' ), 'inputTransformation', ( evt, data ) => {
  *			if ( data.content.childCount == 1 && isUrlText( data.content.getChild( 0 ) ) ) {
  *				const linkUrl = data.content.getChild( 0 ).data;
  *
