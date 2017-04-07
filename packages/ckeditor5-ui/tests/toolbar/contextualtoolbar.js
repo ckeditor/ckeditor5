@@ -93,13 +93,13 @@ describe( 'ContextualToolbar', () => {
 				// Still not yet.
 				sinon.assert.notCalled( spy );
 
-				// Another 100 ms waiting.
+				// Another 101 ms waiting.
 				setTimeout( () => {
 					// And here it is.
 					sinon.assert.calledOnce( spy );
 					done();
 				}, 100 );
-			}, 100 );
+			}, 101 );
 		}, 100 );
 	} );
 
