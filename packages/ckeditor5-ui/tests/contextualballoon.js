@@ -11,7 +11,7 @@ import Template from '../src/template';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-/* global document */
+/* global document, Event */
 
 describe( 'ContextualBalloon', () => {
 	let editor, editorElement, balloon, viewA, viewB;
@@ -56,6 +56,19 @@ describe( 'ContextualBalloon', () => {
 
 		it( 'should add balloon panel view to editor `body` collection', () => {
 			expect( editor.ui.view.body.getIndex( balloon.view ) ).to.above( -1 );
+		} );
+
+		it( 'should register balloon panel element in ui focus tracker', () => {
+			editor.ui.focusTracker.isfocused = false;
+
+			balloon.add( {
+				view: viewA,
+				position: { target: 'fake' }
+			} );
+
+			balloon.view.element.dispatchEvent( new Event( 'focus' ) );
+
+			expect( editor.ui.focusTracker.isFocused ).to.true;
 		} );
 	} );
 
