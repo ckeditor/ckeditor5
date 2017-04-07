@@ -6,6 +6,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import ContextualToolbar from '../../src/toolbar/contextualtoolbar';
 import ContextualBalloon from '../../src/contextualballoon';
 import ToolbarView from '../../src/toolbar/toolbarview';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -48,7 +49,8 @@ describe( 'ContextualToolbar', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should be loaded', () => {
+	it( 'should create a plugin instance', () => {
+		expect( contextualToolbar ).to.instanceOf( Plugin );
 		expect( contextualToolbar ).to.instanceOf( ContextualToolbar );
 	} );
 
@@ -283,6 +285,12 @@ describe( 'ContextualToolbar', () => {
 		editor.editing.view.fire( 'render' );
 
 		sinon.assert.notCalled( spy );
+	} );
+
+	describe( 'pluginName', () => {
+		it( 'should return plugin by name', () => {
+			expect( editor.plugins.get( 'contextualballoon' ) ).to.equal( balloon );
+		} );
 	} );
 
 	describe( 'destroy()', () => {

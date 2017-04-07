@@ -24,6 +24,13 @@ export default class ContextualToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'contextualtoolbar';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ ContextualBalloon ];
 	}
