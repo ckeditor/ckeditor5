@@ -11,7 +11,7 @@ import Template from '../src/template';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-/* global document */
+/* global document, window, Event */
 
 describe( 'ContextualBalloon', () => {
 	let editor, editorElement, balloon, viewA, viewB;
@@ -100,6 +100,23 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.view.content.get( 0 ) ).to.deep.equal( viewA );
 			expect( balloon.view.attachTo.calledOnce ).to.true;
 			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
+		} );
+
+		it( 'should update balloon position on scroll and resize', () => {
+			balloon.add( {
+				view: viewA,
+				position: { target: document.createElement( 'div' ) }
+			} );
+
+			sinon.assert.calledOnce( balloon.view.attachTo );
+
+			window.dispatchEvent( new Event( 'resize' ) );
+
+			sinon.assert.calledTwice( balloon.view.attachTo );
+
+			document.dispatchEvent( new Event( 'scroll' ) );
+
+			sinon.assert.calledThrice( balloon.view.attachTo );
 		} );
 
 		it( 'should throw an error when try to add the same view more than once', () => {
