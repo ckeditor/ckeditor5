@@ -55,14 +55,11 @@ describe( 'ContextualToolbar', () => {
 	it( 'should create a plugin instance', () => {
 		expect( contextualToolbar ).to.instanceOf( Plugin );
 		expect( contextualToolbar ).to.instanceOf( ContextualToolbar );
+		expect( contextualToolbar.toolbarView ).to.instanceof( ToolbarView );
 	} );
 
 	it( 'should load ContextualBalloon', () => {
 		expect( balloon ).to.instanceof( ContextualBalloon );
-	} );
-
-	it( 'should create plugin instance with properties', () => {
-		expect( contextualToolbar.toolbarView ).to.instanceof( ToolbarView );
 	} );
 
 	it( 'should create components from config', () => {
