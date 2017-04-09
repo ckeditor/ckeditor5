@@ -74,7 +74,7 @@ export default class ContextualToolbar extends Plugin {
 
 	/**
 	 * Creates toolbar components based on given configuration.
-	 * This need to be done when all plugins will be ready.
+	 * This needs to be done when all plugins will be ready.
 	 *
 	 * @inheritDoc
 	 */
@@ -106,7 +106,7 @@ export default class ContextualToolbar extends Plugin {
 	 *
 	 * Note that in this case it's better to listen to {@link modules:engine/model/document modelDocument}
 	 * selection instead of {@link modules:engine/view/document viewDocument} selection because the first one
-	 * doesn't fire `change` event after text styles changes (like bold or italic) and toolbar doesn't blink.
+	 * doesn't fire `change` event after text style change (like bold or italic) and toolbar doesn't blink.
 	 *
 	 * @private
 	 */
