@@ -796,6 +796,22 @@ describe( 'Selection', () => {
 		} );
 	} );
 
+	describe( 'createFromRanges()', () => {
+		it( 'should create a Selection instance from given ranges', () => {
+			const ranges = [ range1, range2, range3 ];
+			const selection = Selection.createFromRanges( ranges );
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( ranges );
+		} );
+
+		it( 'should create a Selection instance from given ranges and isLastBackward flag', () => {
+			const ranges = [ range1, range2, range3 ];
+			const selection = Selection.createFromRanges( ranges, true );
+
+			expect( selection.isBackward ).to.be.true;
+		} );
+	} );
+
 	describe( 'getSelectedElement()', () => {
 		let schema;
 
