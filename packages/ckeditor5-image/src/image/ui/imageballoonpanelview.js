@@ -23,7 +23,7 @@ const positions = {
 		return {
 			top: targetRect.bottom + arrowVOffset,
 			left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-			name: 's'
+			name: 'arrow_s'
 		};
 	},
 
@@ -36,7 +36,7 @@ const positions = {
 		return {
 			top: targetRect.top - balloonRect.height - arrowVOffset,
 			left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-			name: 'n'
+			name: 'arrow_n'
 		};
 	}
 };
