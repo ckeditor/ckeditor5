@@ -61,9 +61,9 @@ export default class BalloonPanelView extends View {
 		 *
 		 * @observable
 		 * @default 'se'
-		 * @member {'se'|'sw'|'ne'|'nw'} #position
+		 * @member {'arrow_se'|'arrow_sw'|'arrow_ne'|'arrow_nw'} #position
 		 */
-		this.set( 'position', 'se' );
+		this.set( 'position', 'arrow_se' );
 
 		/**
 		 * Controls whether the balloon panel is visible or not.
@@ -88,6 +88,14 @@ export default class BalloonPanelView extends View {
 		 *
 		 * @observable
 		 * @member {Number} #maxWidth
+		 */
+
+		/**
+		 * A callback that starts pining the panel when {@link #isVisible} gets
+		 * `true`. Used by {@link #pin}.
+		 *
+		 * @private
+		 * @member {Function} #_pinWhenVisibleCallback
 		 */
 
 		/**
@@ -189,7 +197,7 @@ export default class BalloonPanelView extends View {
 	pin( options ) {
 		this.unpin();
 
-		this._pinWhenVisible = () => {
+		this._pinWhenVisibleCallback = () => {
 			if ( this.isVisible ) {
 				this._startPinning( options );
 			} else {
@@ -198,12 +206,14 @@ export default class BalloonPanelView extends View {
 		};
 
 		// If the panel is already visible, enable the listeners immediately.
-		this._pinWhenVisible();
+		if ( this.isVisible ) {
+			this._startPinning( options );
+		}
 
 		// Control the state of the listeners depending on whether the panel is visible
 		// or not.
 		// TODO: Use on() (https://github.com/ckeditor/ckeditor5-utils/issues/144).
-		this.listenTo( this, 'change:isVisible', this._pinWhenVisible );
+		this.listenTo( this, 'change:isVisible', this._pinWhenVisibleCallback );
 	}
 
 	/**
@@ -214,10 +224,12 @@ export default class BalloonPanelView extends View {
 		this.stopListening( global.document, 'scroll' );
 		this.stopListening( global.window, 'resize' );
 
-		// Deactivate the panel pin() control logic.
-		// TODO: Use off() (https://github.com/ckeditor/ckeditor5-utils/issues/144).
-		if ( this._pinWhenVisible ) {
-			this.stopListening( this, 'change:isVisible', this._pinWhenVisible );
+		if ( this._pinWhenVisibleCallback ) {
+			// Deactivate the panel pin() control logic.
+			// TODO: Use off() (https://github.com/ckeditor/ckeditor5-utils/issues/144).
+			this.stopListening( this, 'change:isVisible', this._pinWhenVisibleCallback );
+
+			this._pinWhenVisibleCallback = null;
 		}
 	}
 

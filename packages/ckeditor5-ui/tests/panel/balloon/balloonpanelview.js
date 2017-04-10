@@ -25,6 +25,12 @@ describe( 'BalloonPanelView', () => {
 		return view.init();
 	} );
 
+	afterEach( () => {
+		if ( view ) {
+			return view.destroy();
+		}
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.tagName ).to.equal( 'DIV' );
@@ -35,7 +41,7 @@ describe( 'BalloonPanelView', () => {
 		it( 'should set default values', () => {
 			expect( view.top ).to.equal( 0 );
 			expect( view.left ).to.equal( 0 );
-			expect( view.position ).to.equal( 'se' );
+			expect( view.position ).to.equal( 'arrow_se' );
 			expect( view.isVisible ).to.equal( false );
 		} );
 
@@ -49,7 +55,7 @@ describe( 'BalloonPanelView', () => {
 			it( 'should react on view#position', () => {
 				expect( view.element.classList.contains( 'ck-balloon-panel_arrow_se' ) ).to.true;
 
-				view.position = 'sw';
+				view.position = 'arrow_sw';
 
 				expect( view.element.classList.contains( 'ck-balloon-panel_arrow_sw' ) ).to.true;
 			} );
@@ -96,9 +102,10 @@ describe( 'BalloonPanelView', () => {
 				expect( view.element.childNodes.length ).to.equal( 0 );
 
 				const button = new ButtonView( { t() {} } );
-				view.content.add( button );
 
-				expect( view.element.childNodes.length ).to.equal( 1 );
+				return view.content.add( button ).then( () => {
+					expect( view.element.childNodes.length ).to.equal( 1 );
+				} );
 			} );
 		} );
 	} );
@@ -203,7 +210,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'se' );
+				expect( view.position ).to.equal( 'arrow_se' );
 			} );
 
 			it( 'should put balloon on the `south east` side of the target element when target is on the top left side of the limiter', () => {
@@ -216,7 +223,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'se' );
+				expect( view.position ).to.equal( 'arrow_se' );
 			} );
 
 			it( 'should put balloon on the `south west` side of the target element when target is on the right side of the limiter', () => {
@@ -229,7 +236,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'sw' );
+				expect( view.position ).to.equal( 'arrow_sw' );
 			} );
 
 			it( 'should put balloon on the `north east` side of the target element when target is on the bottom of the limiter ', () => {
@@ -242,7 +249,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'ne' );
+				expect( view.position ).to.equal( 'arrow_ne' );
 			} );
 
 			it( 'should put balloon on the `north west` side of the target element when target is on the bottom right of the limiter', () => {
@@ -255,7 +262,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'nw' );
+				expect( view.position ).to.equal( 'arrow_nw' );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-ui-default/issues/126
@@ -336,7 +343,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'sw' );
+				expect( view.position ).to.equal( 'arrow_sw' );
 			} );
 
 			it( 'should put balloon on the `south east` position when `south west` is limited', () => {
@@ -356,7 +363,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'se' );
+				expect( view.position ).to.equal( 'arrow_se' );
 			} );
 
 			it( 'should put balloon on the `north east` position when `south east` is limited', () => {
@@ -380,7 +387,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'ne' );
+				expect( view.position ).to.equal( 'arrow_ne' );
 			} );
 
 			it( 'should put balloon on the `south east` position when `north east` is limited', () => {
@@ -400,7 +407,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'se' );
+				expect( view.position ).to.equal( 'arrow_se' );
 			} );
 		} );
 	} );
@@ -409,7 +416,7 @@ describe( 'BalloonPanelView', () => {
 		let attachToSpy, target, targetParent, limiter, notRelatedElement;
 
 		beforeEach( () => {
-			attachToSpy = testUtils.sinon.spy( view, 'attachTo' );
+			attachToSpy = sinon.spy( view, 'attachTo' );
 			limiter = document.createElement( 'div' );
 			targetParent = document.createElement( 'div' );
 			target = document.createElement( 'div' );
@@ -449,6 +456,22 @@ describe( 'BalloonPanelView', () => {
 
 			targetParent.dispatchEvent( new Event( 'scroll' ) );
 			sinon.assert.calledOnce( attachToSpy );
+		} );
+
+		it( 'should unpin if already pinned', () => {
+			const unpinSpy = testUtils.sinon.spy( view, 'unpin' );
+
+			view.show();
+			sinon.assert.notCalled( attachToSpy );
+
+			view.pin( { target, limiter } );
+			sinon.assert.calledOnce( attachToSpy );
+
+			view.pin( { target, limiter } );
+			sinon.assert.calledTwice( unpinSpy );
+
+			targetParent.dispatchEvent( new Event( 'scroll' ) );
+			sinon.assert.calledThrice( attachToSpy );
 		} );
 
 		it( 'should keep the balloon pinned to the target when any of the related elements is scrolled', () => {
@@ -505,13 +528,15 @@ describe( 'BalloonPanelView', () => {
 
 			sinon.assert.calledOnce( attachToSpy );
 
-			view.destroy();
+			return view.destroy().then( () => {
+				view = null;
 
-			window.dispatchEvent( new Event( 'resize' ) );
-			window.dispatchEvent( new Event( 'scroll' ) );
+				window.dispatchEvent( new Event( 'resize' ) );
+				window.dispatchEvent( new Event( 'scroll' ) );
 
-			// Still once.
-			sinon.assert.calledOnce( attachToSpy );
+				// Still once.
+				sinon.assert.calledOnce( attachToSpy );
+			} );
 		} );
 
 		it( 'should set document.body as the default limiter', () => {
@@ -559,7 +584,7 @@ describe( 'BalloonPanelView', () => {
 		let attachToSpy, target, targetParent, limiter;
 
 		beforeEach( () => {
-			attachToSpy = testUtils.sinon.spy( view, 'attachTo' );
+			attachToSpy = sinon.spy( view, 'attachTo' );
 			limiter = document.createElement( 'div' );
 			targetParent = document.createElement( 'div' );
 			target = document.createElement( 'div' );
@@ -576,7 +601,7 @@ describe( 'BalloonPanelView', () => {
 			limiter.remove();
 		} );
 
-		it( 'should stop attaching when the balloon is hidden', () => {
+		it( 'should stop attaching', () => {
 			view.pin( { target, limiter } );
 			sinon.assert.calledOnce( attachToSpy );
 
@@ -584,10 +609,10 @@ describe( 'BalloonPanelView', () => {
 
 			view.hide();
 			window.dispatchEvent( new Event( 'resize' ) );
-			window.dispatchEvent( new Event( 'scroll' ) );
+			document.dispatchEvent( new Event( 'scroll' ) );
 			view.show();
 			window.dispatchEvent( new Event( 'resize' ) );
-			window.dispatchEvent( new Event( 'scroll' ) );
+			document.dispatchEvent( new Event( 'scroll' ) );
 
 			sinon.assert.calledOnce( attachToSpy );
 		} );
