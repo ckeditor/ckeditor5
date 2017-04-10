@@ -7,14 +7,14 @@
  * @module engine/model/selection
  */
 
-import Position from './position';
-import Element from './element';
-import Range from './range';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Element from './element';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import Position from './position';
+import Range from './range';
+import mapsEqual from '@ckeditor/ckeditor5-utils/src/mapsequal';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-import mapsEqual from '@ckeditor/ckeditor5-utils/src/mapsequal';
 
 /**
  * `Selection` is a group of {@link module:engine/model/range~Range ranges} which has a direction specified by
@@ -624,21 +624,6 @@ export default class Selection {
 	static createFromSelection( otherSelection ) {
 		const selection = new this();
 		selection.setTo( otherSelection );
-
-		return selection;
-	}
-
-	/**
-	 * Creates and returns an instance of `Selection` from the given ranges.
-	 * Accepts a flag describing in which way the selection is made (see {@link #addRange addRange}).
-	 *
-	 * @param {Array.<module:engine/view/range~Range>} ranges Array of ranges to set.
-	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end
-	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
-	 */
-	static createFromRanges( ranges, isLastBackward ) {
-		const selection = new this();
-		selection.setRanges( ranges, isLastBackward );
 
 		return selection;
 	}
