@@ -64,6 +64,15 @@ describe( 'InlineEditorUI', () => {
 				ui.focusTracker.isFocused = true;
 				expect( view.panel.isVisible ).to.be.true;
 			} );
+
+			// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
+			it( 'pin() is called on editor.editable.view#render', () => {
+				const spy = sinon.spy( view.panel, 'pin' );
+
+				editor.editing.view.fire( 'render' );
+
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 
 		describe( 'editable', () => {
