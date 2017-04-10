@@ -53,7 +53,7 @@ export class NativeFileReaderMock {
 	mockError( error ) {
 		this.error = error;
 		this.onerror();
-	};
+	}
 
 	mockAbort() {
 		this.onabort();

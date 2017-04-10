@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ImageUploadCommand from '../src/imageuploadcommand';
 import FileRepository from '../src/filerepository';
 import { createNativeFileMock, AdapterMock } from './_utils/mocks';
@@ -15,7 +15,7 @@ describe( 'ImageUploadCommand', () => {
 	let editor, command, adapterMock, document, fileRepository;
 
 	beforeEach( () => {
-		return ClassicTestEditor.create( {
+		return VirtualTestEditor.create( {
 			plugins: [ FileRepository, Image, Paragraph ]
 		} )
 		.then( newEditor => {

@@ -48,6 +48,7 @@ export default class ImageUploadEngine extends Plugin {
 			}
 		} );
 
+		// Listen on document changes and start upload process when image with `uploadId` attribute is present.
 		doc.on( 'change', ( evt, type, data, batch ) => {
 			if ( type === 'insert' ) {
 				for ( const value of data.range ) {
@@ -68,6 +69,7 @@ export default class ImageUploadEngine extends Plugin {
 			}
 		} );
 
+		// Model to view converter for image's `uploadId` attribute.
 		editor.editing.modelToView.on( 'addAttribute:uploadId:image', ( evt, data, consumable ) => {
 			if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
 				return;
@@ -76,12 +78,20 @@ export default class ImageUploadEngine extends Plugin {
 			const modelImage = data.item;
 			const viewFigure = editor.editing.mapper.toViewElement( modelImage );
 			const viewImg = viewFigure.getChild( 0 );
-			viewImg.setAttribute( 'src', uploadingPlaceholder );
+			const svgData = 'data:image/svg+xml;utf8,' + uploadingPlaceholder;
 
-			// TODO: if there are data -> show data
+			viewImg.setAttribute( 'src', svgData );
 		} );
 	}
 
+	/**
+	 * Performs image loading. Image is read from the disk and temporary data is displayed, after uploading process
+	 * is complete we replace temporary data with target image from the server.
+	 *
+	 * @param {module:upload/filerepository~FileLoader} loader
+	 * @param {module:engine/model/batch~Batch} batch
+	 * @param {module:engine/model/element~Element} imageElement
+	 */
 	load( loader, batch, imageElement ) {
 		const editor = this.editor;
 		const doc = editor.document;
@@ -105,14 +115,12 @@ export default class ImageUploadEngine extends Plugin {
 				clean();
 			} )
 			.catch( msg => {
-				// Might be 'aborted'
+				// Might be 'aborted'.
 				if ( loader.status == 'error' ) {
 					notification.showWarning( msg, { namespace: 'upload' } );
 				}
 
 				clean();
-
-				// TODO: delete image
 			} );
 
 		function clean() {

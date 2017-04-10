@@ -10,6 +10,7 @@
 	  "@ckeditor/ckeditor5-utils": "^0.8.0"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-clipboard": "^0.5.0",
     "@ckeditor/ckeditor5-dev-lint": "^2.0.2",
     "@ckeditor/ckeditor5-image": "v0.4.0",
   	"@ckeditor/ckeditor5-paragraph": "v0.6.1",
