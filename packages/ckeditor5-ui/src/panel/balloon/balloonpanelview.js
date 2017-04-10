@@ -210,10 +210,7 @@ export default class BalloonPanelView extends View {
 			}
 		};
 
-		// If the panel is already visible, start pinning immediately.
-		if ( this.isVisible ) {
-			this._startPinning( options );
-		}
+		this._startPinning( options );
 
 		// Control the state of the listeners depending on whether the panel is visible
 		// or not.
@@ -234,6 +231,8 @@ export default class BalloonPanelView extends View {
 			this.stopListening( this, 'change:isVisible', this._pinWhenIsVisibleCallback );
 
 			this._pinWhenIsVisibleCallback = null;
+
+			this.hide();
 		}
 	}
 
