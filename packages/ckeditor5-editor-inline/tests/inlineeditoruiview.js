@@ -5,7 +5,7 @@
 
 import InlineEditorUIView from '../src/inlineeditoruiview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
-import FloatingPanelView from '@ckeditor/ckeditor5-ui/src/panel/floating/floatingpanelview';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 
@@ -30,7 +30,7 @@ describe( 'InlineEditorUIView', () => {
 
 		describe( '#panel', () => {
 			it( 'is created', () => {
-				expect( view.panel ).to.be.instanceof( FloatingPanelView );
+				expect( view.panel ).to.be.instanceof( BalloonPanelView );
 			} );
 
 			it( 'is given a locale object', () => {
@@ -43,6 +43,10 @@ describe( 'InlineEditorUIView', () => {
 
 			it( 'is put into the #body collection', () => {
 				expect( view.body.get( 0 ) ).to.equal( view.panel );
+			} );
+
+			it( 'gets view.panel#withArrow set', () => {
+				expect( view.panel.withArrow ).to.be.false;
 			} );
 		} );
 

@@ -57,16 +57,12 @@ describe( 'InlineEditorUI', () => {
 		} );
 
 		describe( 'panel', () => {
-			it( 'binds view.panel#isActive to editor.ui#focusTracker', () => {
+			it( 'binds view.panel#isVisible to editor.ui#focusTracker', () => {
 				ui.focusTracker.isFocused = false;
-				expect( view.panel.isActive ).to.be.false;
+				expect( view.panel.isVisible ).to.be.false;
 
 				ui.focusTracker.isFocused = true;
-				expect( view.panel.isActive ).to.be.true;
-			} );
-
-			it( 'sets view.panel#targetElement', () => {
-				expect( view.panel.targetElement ).to.equal( view.editableElement );
+				expect( view.panel.isVisible ).to.be.true;
 			} );
 		} );
 
