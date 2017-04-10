@@ -46,6 +46,7 @@ describe( 'ImageCaptionEngine', () => {
 	it( 'should set proper schema rules', () => {
 		expect( document.schema.check( { name: 'caption', iniside: 'image' } ) ).to.be.true;
 		expect( document.schema.check( { name: '$inline', inside: 'caption' } ) ).to.be.true;
+		expect( document.schema.itemExtends( 'caption', '$block' ) ).to.be.true;
 		expect( document.schema.limits.has( 'caption' ) );
 	} );
 
