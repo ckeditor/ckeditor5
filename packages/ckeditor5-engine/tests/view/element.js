@@ -7,6 +7,8 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
 import Node from '../../src/view/node';
 import Element from '../../src/view/element';
 
+import encodedImage from './_utils/encodedimage.js';
+
 describe( 'Element', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element without attributes', () => {
@@ -767,10 +769,12 @@ describe( 'Element', () => {
 		describe( 'getStyleNames', () => {
 			it( 'should return iterator with all style names', () => {
 				const names = [ 'color', 'position' ];
+
 				el.setStyle( {
 					color: 'red',
 					position: 'absolute'
 				} );
+
 				const iterator = el.getStyleNames();
 				let i = 0;
 
@@ -830,6 +834,31 @@ describe( 'Element', () => {
 				expect( el.hasStyle( 'padding-top' ) ).to.be.false;
 				expect( el.hasStyle( 'margin-top' ) ).to.be.false;
 				expect( el.hasStyle( 'color' ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'styles parsing edge cases', () => {
+			it( 'should not crash and not add any styles if styles attribute was empty', () => {
+				const element = new Element( 'div', { style: '' } );
+				const styles = Array.from( element.getStyleNames() );
+
+				expect( styles ).to.deep.equal( [] );
+			} );
+
+			it( 'should be able to parse big styles definition', () => {
+				expect( () => {
+					new Element( 'div', { style: `background-image:url('data:image/jpeg;base64,${ encodedImage }')` } );
+				} ).not.to.throw();
+			} );
+
+			it( 'should work with both types of quotes and ignore values inside quotes', () => {
+				let element;
+
+				element = new Element( 'div', { style: 'background-image:url("im;color:g.jpg")' } );
+				expect( element.getStyle( 'background-image' ) ).to.equal( 'url("im;color:g.jpg")' );
+
+				element = new Element( 'div', { style: 'background-image:url(\'im;color:g.jpg\')' } );
+				expect( element.getStyle( 'background-image' ) ).to.equal( 'url(\'im;color:g.jpg\')' );
 			} );
 		} );
 	} );

@@ -685,12 +685,62 @@ export default class Element extends Node {
 // @param {Map.<String, String>} stylesMap Map to insert parsed properties and values.
 // @param {String} stylesString Styles to parse.
 function parseInlineStyles( stylesMap, stylesString ) {
-	const regex = /\s*([^:;\s]+)\s*:\s*([^;]+)\s*(?=;|$)/g;
-	let matchStyle;
+	let quoteType = null;
+	let propertyNameStart = 0;
+	let propertyValueStart = 0;
+	let propertyName = null;
+
+	const tokens = [];
+
 	stylesMap.clear();
 
-	while ( ( matchStyle = regex.exec( stylesString ) ) !== null ) {
-		stylesMap.set( matchStyle[ 1 ], matchStyle[ 2 ].trim() );
+	if ( stylesString === '' ) {
+		return;
+	}
+
+	if ( stylesString.charAt( stylesString.length - 1 ) != ';' ) {
+		stylesString = stylesString + ';';
+	}
+
+	for ( let i = 0; i < stylesString.length; i++ ) {
+		const char = stylesString.charAt( i );
+
+		if ( quoteType === null ) {
+			switch ( char ) {
+				case ':':
+					if ( !propertyName ) {
+						propertyName = stylesString.substr( propertyNameStart, i - propertyNameStart );
+						propertyValueStart = i + 1;
+					}
+
+					break;
+
+				case '"':
+				case '\'':
+					quoteType = char;
+
+					break;
+
+				case ';':
+					let propertyValue = stylesString.substr( propertyValueStart, i - propertyValueStart );
+
+					tokens.push( {
+						name: propertyName,
+						value: propertyValue
+					} );
+
+					propertyName = null;
+					propertyNameStart = i + 1;
+
+					break;
+			}
+		} else if ( char === quoteType ) {
+			quoteType = null;
+		}
+	}
+
+	for ( let token of tokens ) {
+		stylesMap.set( token.name.trim(), token.value.trim() );
 	}
 }
 
