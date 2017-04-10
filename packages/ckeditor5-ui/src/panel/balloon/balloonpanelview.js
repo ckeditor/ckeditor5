@@ -52,12 +52,14 @@ export default class BalloonPanelView extends View {
 
 		/**
 		 * Balloon panel's current position. The position name is reflected in the CSS class set
-		 * to the balloon, i.e. `.ck-balloon-panel_arrow_se` for "se" position. The class
+		 * to the balloon, i.e. `.ck-balloon-panel_arrow_se` for "arrow_se" position. The class
 		 * controls the minor aspects of the balloon's visual appearance like placement
 		 * of the "arrow". To support a new position, an additional CSS must be created.
 		 *
 		 * Default position names correspond with
 		 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
+		 *
+		 * See {@link #attachTo} to learn about custom balloon positions.
 		 *
 		 * See {@link #withArrow}.
 		 *
@@ -77,7 +79,8 @@ export default class BalloonPanelView extends View {
 		this.set( 'isVisible', false );
 
 		/**
-		 * Controls whether the balloon panel has an arrow.
+		 * Controls whether the balloon panel has an arrow. The presence of the arrow
+		 * is reflected in `ck-balloon-panel_with-arrow` CSS class.
 		 *
 		 * @observable
 		 * @default true
