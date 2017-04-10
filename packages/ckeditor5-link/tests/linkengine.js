@@ -7,7 +7,9 @@ import LinkEngine from '../src/linkengine';
 import LinkCommand from '../src/linkcommand';
 import LinkElement from '../src/linkelement';
 import UnlinkCommand from '../src/unlinkcommand';
+
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
@@ -16,14 +18,12 @@ describe( 'LinkEngine', () => {
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-				plugins: [ LinkEngine ]
+				plugins: [ Paragraph, LinkEngine ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 
 				doc = editor.document;
-
-				doc.schema.allow( { name: '$text', inside: '$root' } );
 			} );
 	} );
 
@@ -32,7 +32,7 @@ describe( 'LinkEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( doc.schema.check( { name: '$inline', attributes: [ 'linkHref' ] } ) ).to.be.true;
+		expect( doc.schema.check( { name: '$inline', attributes: [ 'linkHref' ], inside: '$block' } ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
@@ -55,24 +55,26 @@ describe( 'LinkEngine', () => {
 
 	describe( 'data pipeline conversions', () => {
 		it( 'should convert `<a href="url">` to `linkHref="url"` attribute', () => {
-			editor.setData( '<a href="url">foo</a>bar' );
+			editor.setData( '<p><a href="url">foo</a>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text linkHref="url">foo</$text>bar' );
-			expect( editor.getData() ).to.equal( '<a href="url">foo</a>bar' );
+			expect( getModelData( doc, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p><a href="url">foo</a>bar</p>' );
 		} );
 	} );
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert attribute', () => {
-			setModelData( doc, '<$text linkHref="url">foo</$text>bar' );
+			setModelData( doc, '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<a href="url">foo</a>bar' );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><a href="url">foo</a>bar</p>' );
 		} );
 
 		it( 'should convert to `LinkElement` instance', () => {
-			setModelData( doc, '<$text linkHref="url">foo</$text>bar' );
+			setModelData( doc, '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
 
-			expect( editor.editing.view.getRoot().getChild( 0 ) ).to.be.instanceof( LinkElement );
+			expect( editor.editing.view.getRoot().getChild( 0 ).getChild( 0 ) ).to.be.instanceof( LinkElement );
 		} );
 	} );
 } );
