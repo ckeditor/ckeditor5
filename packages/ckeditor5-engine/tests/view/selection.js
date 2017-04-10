@@ -26,6 +26,22 @@ describe( 'Selection', () => {
 		range3 = Range.createFromParentsAndOffsets( el, 12, el, 14 );
 	} );
 
+	describe( 'createFromRanges', () => {
+		it( 'should be able to initialize selection with ranges', () => {
+			const ranges = [ range1, range2, range3 ];
+			const selection = Selection.createFromRanges( ranges );
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( ranges );
+		} );
+
+		it( 'should be able to initialize selection with ranges and isLastBackward flag', () => {
+			const ranges = [ range1, range2, range3 ];
+			const selection = Selection.createFromRanges( ranges, true );
+
+			expect( selection.isBackward ).to.be.true;
+		} );
+	} );
+
 	describe( 'anchor', () => {
 		it( 'should return null if no ranges in selection', () => {
 			expect( selection.anchor ).to.be.null;

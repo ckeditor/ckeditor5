@@ -497,6 +497,21 @@ export default class Selection {
 	}
 
 	/**
+	 * Creates and returns an instance of `Selection` that is created from the given ranges.
+	 * Accepts a flag describing in which way the selection is made (see {@link #addRange addRange}).
+	 *
+	 * @param {Array.<module:engine/view/range~Range>} ranges Array of ranges to set.
+	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end
+	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
+	 */
+	static createFromRanges( ranges, isLastBackward ) {
+		const selection = new Selection();
+		selection.setRanges( ranges, isLastBackward );
+
+		return selection;
+	}
+
+	/**
 	 * Adds range to selection - creates copy of given range so it can be safely used and modified.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
