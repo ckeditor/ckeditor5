@@ -69,8 +69,14 @@ describe( 'InlineEditorUI', () => {
 			it( 'pin() is called on editor.editable.view#render', () => {
 				const spy = sinon.spy( view.panel, 'pin' );
 
-				editor.editing.view.fire( 'render' );
+				view.panel.hide();
 
+				editor.editing.view.fire( 'render' );
+				sinon.assert.notCalled( spy );
+
+				view.panel.show();
+
+				editor.editing.view.fire( 'render' );
 				sinon.assert.calledOnce( spy );
 			} );
 		} );
