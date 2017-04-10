@@ -412,7 +412,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 	} );
 
-	describe( 'pin()', () => {
+	describe( 'pin() and unpin()', () => {
 		let attachToSpy, target, targetParent, limiter, notRelatedElement;
 
 		beforeEach( () => {
@@ -436,100 +436,86 @@ describe( 'BalloonPanelView', () => {
 			notRelatedElement.remove();
 		} );
 
-		it( 'should not pin until the balloon gets visible', () => {
-			view.hide();
+		describe( 'pin()', () => {
+			it( 'should not pin until the balloon gets visible', () => {
+				view.hide();
 
-			view.pin( { target, limiter } );
-			sinon.assert.notCalled( attachToSpy );
+				view.pin( { target, limiter } );
+				sinon.assert.notCalled( attachToSpy );
 
-			view.show();
-			sinon.assert.calledOnce( attachToSpy );
-		} );
+				view.show();
+				sinon.assert.calledOnce( attachToSpy );
+			} );
 
-		it( 'should stop pinning when the balloon becomes invisible', () => {
-			view.show();
+			it( 'should stop pinning when the balloon becomes invisible', () => {
+				view.show();
 
-			view.pin( { target, limiter } );
-			sinon.assert.calledOnce( attachToSpy );
+				view.pin( { target, limiter } );
+				sinon.assert.calledOnce( attachToSpy );
 
-			view.hide();
+				view.hide();
 
-			targetParent.dispatchEvent( new Event( 'scroll' ) );
-			sinon.assert.calledOnce( attachToSpy );
-		} );
+				targetParent.dispatchEvent( new Event( 'scroll' ) );
+				sinon.assert.calledOnce( attachToSpy );
+			} );
 
-		it( 'should unpin if already pinned', () => {
-			const unpinSpy = testUtils.sinon.spy( view, 'unpin' );
+			it( 'should unpin if already pinned', () => {
+				const unpinSpy = testUtils.sinon.spy( view, 'unpin' );
 
-			view.show();
-			sinon.assert.notCalled( attachToSpy );
+				view.show();
+				sinon.assert.notCalled( attachToSpy );
 
-			view.pin( { target, limiter } );
-			sinon.assert.calledOnce( attachToSpy );
+				view.pin( { target, limiter } );
+				sinon.assert.calledOnce( attachToSpy );
 
-			view.pin( { target, limiter } );
-			sinon.assert.calledTwice( unpinSpy );
+				view.pin( { target, limiter } );
+				sinon.assert.calledTwice( unpinSpy );
 
-			targetParent.dispatchEvent( new Event( 'scroll' ) );
-			sinon.assert.calledThrice( attachToSpy );
-		} );
+				targetParent.dispatchEvent( new Event( 'scroll' ) );
+				sinon.assert.calledThrice( attachToSpy );
+			} );
 
-		it( 'should keep the balloon pinned to the target when any of the related elements is scrolled', () => {
-			view.pin( { target, limiter } );
+			it( 'should keep the balloon pinned to the target when any of the related elements is scrolled', () => {
+				view.pin( { target, limiter } );
 
-			sinon.assert.calledOnce( attachToSpy );
-			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+				sinon.assert.calledOnce( attachToSpy );
+				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
 
-			targetParent.dispatchEvent( new Event( 'scroll' ) );
+				targetParent.dispatchEvent( new Event( 'scroll' ) );
 
-			sinon.assert.calledTwice( attachToSpy );
-			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+				sinon.assert.calledTwice( attachToSpy );
+				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
 
-			limiter.dispatchEvent( new Event( 'scroll' ) );
+				limiter.dispatchEvent( new Event( 'scroll' ) );
 
-			sinon.assert.calledThrice( attachToSpy );
-			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+				sinon.assert.calledThrice( attachToSpy );
+				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
 
-			notRelatedElement.dispatchEvent( new Event( 'scroll' ) );
+				notRelatedElement.dispatchEvent( new Event( 'scroll' ) );
 
-			// Nothing's changed.
-			sinon.assert.calledThrice( attachToSpy );
-			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
-		} );
+				// Nothing's changed.
+				sinon.assert.calledThrice( attachToSpy );
+				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+			} );
 
-		it( 'should keep the balloon pinned to the target when the browser window is being resized', () => {
-			view.pin( { target, limiter } );
+			it( 'should keep the balloon pinned to the target when the browser window is being resized', () => {
+				view.pin( { target, limiter } );
 
-			sinon.assert.calledOnce( attachToSpy );
-			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+				sinon.assert.calledOnce( attachToSpy );
+				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
 
-			window.dispatchEvent( new Event( 'resize' ) );
+				window.dispatchEvent( new Event( 'resize' ) );
 
-			sinon.assert.calledTwice( attachToSpy );
-			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
-		} );
+				sinon.assert.calledTwice( attachToSpy );
+				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+			} );
 
-		it( 'should stop attaching when the balloon is hidden', () => {
-			view.pin( { target, limiter } );
+			it( 'should stop attaching when the balloon is hidden', () => {
+				view.pin( { target, limiter } );
 
-			sinon.assert.calledOnce( attachToSpy );
+				sinon.assert.calledOnce( attachToSpy );
 
-			view.hide();
-
-			window.dispatchEvent( new Event( 'resize' ) );
-			window.dispatchEvent( new Event( 'scroll' ) );
-
-			// Still once.
-			sinon.assert.calledOnce( attachToSpy );
-		} );
-
-		it( 'should stop attaching once the view is destroyed', () => {
-			view.pin( { target, limiter } );
-
-			sinon.assert.calledOnce( attachToSpy );
-
-			return view.destroy().then( () => {
-				view = null;
+				view.hide();
 
 				window.dispatchEvent( new Event( 'resize' ) );
 				window.dispatchEvent( new Event( 'scroll' ) );
@@ -537,84 +523,80 @@ describe( 'BalloonPanelView', () => {
 				// Still once.
 				sinon.assert.calledOnce( attachToSpy );
 			} );
+
+			it( 'should stop attaching once the view is destroyed', () => {
+				view.pin( { target, limiter } );
+
+				sinon.assert.calledOnce( attachToSpy );
+
+				return view.destroy().then( () => {
+					view = null;
+
+					window.dispatchEvent( new Event( 'resize' ) );
+					window.dispatchEvent( new Event( 'scroll' ) );
+
+					// Still once.
+					sinon.assert.calledOnce( attachToSpy );
+				} );
+			} );
+
+			it( 'should set document.body as the default limiter', () => {
+				view.pin( { target } );
+
+				sinon.assert.calledOnce( attachToSpy );
+
+				document.body.dispatchEvent( new Event( 'scroll' ) );
+
+				sinon.assert.calledTwice( attachToSpy );
+			} );
+
+			it( 'should work for Range as a target', () => {
+				const element = document.createElement( 'div' );
+				const range = document.createRange();
+
+				element.appendChild( document.createTextNode( 'foo bar' ) );
+				document.body.appendChild( element );
+				range.selectNodeContents( element );
+
+				view.pin( { target: range } );
+
+				sinon.assert.calledOnce( attachToSpy );
+
+				element.dispatchEvent( new Event( 'scroll' ) );
+
+				sinon.assert.calledTwice( attachToSpy );
+			} );
+
+			it( 'should work for rect as a target', () => {
+				// Just check if this normally works without errors.
+				const rect = {};
+
+				view.pin( { target: rect, limiter } );
+
+				sinon.assert.calledOnce( attachToSpy );
+
+				limiter.dispatchEvent( new Event( 'scroll' ) );
+
+				sinon.assert.calledTwice( attachToSpy );
+			} );
 		} );
 
-		it( 'should set document.body as the default limiter', () => {
-			view.pin( { target } );
+		describe( 'unpin()', () => {
+			it( 'should stop attaching', () => {
+				view.pin( { target, limiter } );
+				sinon.assert.calledOnce( attachToSpy );
 
-			sinon.assert.calledOnce( attachToSpy );
+				view.unpin();
 
-			document.body.dispatchEvent( new Event( 'scroll' ) );
+				view.hide();
+				window.dispatchEvent( new Event( 'resize' ) );
+				document.dispatchEvent( new Event( 'scroll' ) );
+				view.show();
+				window.dispatchEvent( new Event( 'resize' ) );
+				document.dispatchEvent( new Event( 'scroll' ) );
 
-			sinon.assert.calledTwice( attachToSpy );
-		} );
-
-		it( 'should work for Range as a target', () => {
-			const element = document.createElement( 'div' );
-			const range = document.createRange();
-
-			element.appendChild( document.createTextNode( 'foo bar' ) );
-			document.body.appendChild( element );
-			range.selectNodeContents( element );
-
-			view.pin( { target: range } );
-
-			sinon.assert.calledOnce( attachToSpy );
-
-			element.dispatchEvent( new Event( 'scroll' ) );
-
-			sinon.assert.calledTwice( attachToSpy );
-		} );
-
-		it( 'should work for rect as a target', () => {
-			// Just check if this normally works without errors.
-			const rect = {};
-
-			view.pin( { target: rect, limiter } );
-
-			sinon.assert.calledOnce( attachToSpy );
-
-			limiter.dispatchEvent( new Event( 'scroll' ) );
-
-			sinon.assert.calledTwice( attachToSpy );
-		} );
-	} );
-
-	describe( 'unpin()', () => {
-		let attachToSpy, target, targetParent, limiter;
-
-		beforeEach( () => {
-			attachToSpy = sinon.spy( view, 'attachTo' );
-			limiter = document.createElement( 'div' );
-			targetParent = document.createElement( 'div' );
-			target = document.createElement( 'div' );
-
-			view.show();
-
-			targetParent.appendChild( target );
-			document.body.appendChild( targetParent );
-			document.body.appendChild( limiter );
-		} );
-
-		afterEach( () => {
-			targetParent.remove();
-			limiter.remove();
-		} );
-
-		it( 'should stop attaching', () => {
-			view.pin( { target, limiter } );
-			sinon.assert.calledOnce( attachToSpy );
-
-			view.unpin();
-
-			view.hide();
-			window.dispatchEvent( new Event( 'resize' ) );
-			document.dispatchEvent( new Event( 'scroll' ) );
-			view.show();
-			window.dispatchEvent( new Event( 'resize' ) );
-			document.dispatchEvent( new Event( 'scroll' ) );
-
-			sinon.assert.calledOnce( attachToSpy );
+				sinon.assert.calledOnce( attachToSpy );
+			} );
 		} );
 	} );
 } );
