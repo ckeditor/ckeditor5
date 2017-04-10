@@ -23,9 +23,13 @@ import mapsEqual from '@ckeditor/ckeditor5-utils/src/mapsequal';
  */
 export default class Selection {
 	/**
-	 * Creates an empty selection.
+	 * Creates new selection instance.
+	 *
+	 * @param {Iterable.<module:engine/view/range~Range>} [ranges] An optional iterable object of ranges to set.
+	 * @param {Boolean} [isLastBackward] An optional flag describing if last added range was selected forward - from start to end
+	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
 	 */
-	constructor() {
+	constructor( ranges, isLastBackward ) {
 		/**
 		 * Specifies whether the last added range was added as a backward or forward range.
 		 *
@@ -49,6 +53,10 @@ export default class Selection {
 		 * @member {Map} module:engine/model/selection~Selection#_attrs
 		 */
 		this._attrs = new Map();
+
+		if ( ranges ) {
+			this.setRanges( ranges, isLastBackward );
+		}
 	}
 
 	/**

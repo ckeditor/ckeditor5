@@ -48,6 +48,28 @@ describe( 'Selection', () => {
 		liveRange.detach();
 	} );
 
+	describe( 'constructor()', () => {
+		it( 'should be able to create an empty selection', () => {
+			const selection = new Selection();
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [] );
+		} );
+
+		it( 'should be able to create a selection from the given ranges', () => {
+			const ranges = [ range1, range2, range3 ];
+			const selection = new Selection( ranges );
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( ranges );
+		} );
+
+		it( 'should be able to create a selection from the given ranges and isLastBackward flag', () => {
+			const ranges = [ range1, range2, range3 ];
+			const selection = new Selection( ranges, true );
+
+			expect( selection.isBackward ).to.be.true;
+		} );
+	} );
+
 	describe( 'isCollapsed', () => {
 		it( 'should return false for empty selection', () => {
 			expect( selection.isCollapsed ).to.be.false;
@@ -793,22 +815,6 @@ describe( 'Selection', () => {
 			for ( let i = 0; i < selectionRanges.length; i++ ) {
 				expect( selectionRanges[ i ].isEqual( snapshotRanges[ i ] ) ).to.be.true;
 			}
-		} );
-	} );
-
-	describe( 'createFromRanges()', () => {
-		it( 'should create a Selection instance from given ranges', () => {
-			const ranges = [ range1, range2, range3 ];
-			const selection = Selection.createFromRanges( ranges );
-
-			expect( Array.from( selection.getRanges() ) ).to.deep.equal( ranges );
-		} );
-
-		it( 'should create a Selection instance from given ranges and isLastBackward flag', () => {
-			const ranges = [ range1, range2, range3 ];
-			const selection = Selection.createFromRanges( ranges, true );
-
-			expect( selection.isBackward ).to.be.true;
 		} );
 	} );
 

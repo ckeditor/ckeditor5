@@ -33,8 +33,12 @@ import Element from './element';
 export default class Selection {
 	/**
 	 * Creates new selection instance.
+	 *
+	 * @param {Iterable.<module:engine/view/range~Range>} [ranges] An optional array of ranges to set.
+	 * @param {Boolean} [isLastBackward] An optional flag describing if last added range was selected forward - from start to end
+	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
 	 */
-	constructor() {
+	constructor( ranges, isLastBackward ) {
 		/**
 		 * Stores all ranges that are selected.
 		 *
@@ -66,6 +70,10 @@ export default class Selection {
 		 * @member {String}
 		 */
 		this._fakeSelectionLabel = '';
+
+		if ( ranges ) {
+			this.setRanges( ranges, isLastBackward );
+		}
 	}
 
 	/**
@@ -348,7 +356,7 @@ export default class Selection {
 	 * Accepts a flag describing in which way the selection is made (see {@link #addRange addRange}).
 	 *
 	 * @fires change
-	 * @param {Array.<module:engine/view/range~Range>} newRanges Array of ranges to set.
+	 * @param {Iterable.<module:engine/view/range~Range>} newRanges Iterable object of ranges to set.
 	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end
 	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
 	 */
@@ -492,21 +500,6 @@ export default class Selection {
 	static createFromSelection( otherSelection ) {
 		const selection = new Selection();
 		selection.setTo( otherSelection );
-
-		return selection;
-	}
-
-	/**
-	 * Creates and returns an instance of `Selection` from the given ranges.
-	 * Accepts a flag describing in which way the selection is made (see {@link #addRange addRange}).
-	 *
-	 * @param {Array.<module:engine/view/range~Range>} ranges Array of ranges to set.
-	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end
-	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
-	 */
-	static createFromRanges( ranges, isLastBackward ) {
-		const selection = new Selection();
-		selection.setRanges( ranges, isLastBackward );
 
 		return selection;
 	}
