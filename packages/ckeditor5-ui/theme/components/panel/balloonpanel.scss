@@ -9,7 +9,7 @@
 
 	z-index: ck-z( 'modal' );
 
-	&.ck-balloon-panel_arrow {
+	&.ck-balloon-panel_with-arrow {
 		&:before,
 		&:after {
 			content: "";
@@ -23,7 +23,9 @@
 		&:after {
 			z-index: ck-z( 'default', 1 );
 		}
+	}
 
+	&.ck-balloon-panel_arrow {
 		&_s,
 		&_se,
 		&_sw {

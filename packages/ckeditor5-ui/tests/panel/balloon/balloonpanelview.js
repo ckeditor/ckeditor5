@@ -43,6 +43,7 @@ describe( 'BalloonPanelView', () => {
 			expect( view.left ).to.equal( 0 );
 			expect( view.position ).to.equal( 'arrow_se' );
 			expect( view.isVisible ).to.equal( false );
+			expect( view.withArrow ).to.equal( true );
 		} );
 
 		it( 'creates view#content collection', () => {
@@ -58,6 +59,14 @@ describe( 'BalloonPanelView', () => {
 				view.position = 'arrow_sw';
 
 				expect( view.element.classList.contains( 'ck-balloon-panel_arrow_sw' ) ).to.true;
+			} );
+
+			it( 'should react on view#withArrow', () => {
+				expect( view.element.classList.contains( 'ck-balloon-panel_with-arrow' ) ).to.be.true;
+
+				view.withArrow = false;
+
+				expect( view.element.classList.contains( 'ck-balloon-panel_with-arrow' ) ).to.be.false;
 			} );
 		} );
 

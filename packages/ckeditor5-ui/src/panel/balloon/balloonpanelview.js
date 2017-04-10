@@ -59,8 +59,10 @@ export default class BalloonPanelView extends View {
 		 * Default position names correspond with
 		 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
 		 *
+		 * See {@link #withArrow}.
+		 *
 		 * @observable
-		 * @default 'se'
+		 * @default 'arrow_se'
 		 * @member {'arrow_se'|'arrow_sw'|'arrow_ne'|'arrow_nw'} #position
 		 */
 		this.set( 'position', 'arrow_se' );
@@ -113,7 +115,7 @@ export default class BalloonPanelView extends View {
 					'ck-balloon-panel',
 					bind.to( 'position', ( value ) => `ck-balloon-panel_${ value }` ),
 					bind.if( 'isVisible', 'ck-balloon-panel_visible' ),
-					bind.if( 'withArrow', 'ck-balloon-panel_arrow' )
+					bind.if( 'withArrow', 'ck-balloon-panel_with-arrow' )
 				],
 
 				style: {
