@@ -7,7 +7,7 @@ import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conver
 import FileRepository from './filerepository';
 import ImageUploadCommand from './imageuploadcommand';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import uploadingPlaceholder from '../theme/images/image_placeholder.svg';
+import uploadingPlaceholder from '../theme/icons/image_placeholder.svg';
 import { isImageType } from './utils';
 
 /**

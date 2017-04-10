@@ -19,13 +19,13 @@ import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import List from '@ckeditor/ckeditor5-list/src/list';
-import ImageUpload from '../../src/imageuploadengine';
+import ImageUploadEngine from '../../src/imageuploadengine';
 import { AdapterMock } from '../_utils/mocks';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [
-		Enter, Typing, Paragraph, Heading, Image, ImageToolbar, ImageUpload,
-		Undo, Clipboard, ImageCaption, ImageStyle, Bold, Italic, Heading, List
+		Enter, Typing, Paragraph, Heading, Undo, Bold, Italic, Heading, List, Image, ImageToolbar, Clipboard,
+		ImageCaption, ImageStyle, ImageUploadEngine
 	],
 	toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList' ]
 } )
