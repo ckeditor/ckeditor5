@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window */
+/* globals window, setTimeout */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ImageEngine from '@ckeditor/ckeditor5-image/src/image/imageengine';
@@ -18,8 +18,10 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import imagePlaceholder from '../theme/icons/image_placeholder.svg';
 import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 
-describe.only( 'ImageUploadEngine', () => {
+describe( 'ImageUploadEngine', () => {
+	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 	let editor, document, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
 	testUtils.createSinonSandbox();
 
@@ -109,5 +111,90 @@ describe.only( 'ImageUploadEngine', () => {
 			'[]<figure class="image ck-widget" contenteditable="false">' +
 				'<img></img>' +
 			'</figure>' );
+	} );
+
+	it( 'should replace placeholder with read data once it is present', ( done ) => {
+		const file = createNativeFileMock();
+		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'imageUpload', { file } );
+
+		adapterMock.uploadStartedCallback = () => {
+			expect( getViewData( viewDocument ) ).to.equal(
+				'<figure class="image ck-widget" contenteditable="false">' +
+					`<img src="${ base64Sample }"></img>` +
+				'</figure>' +
+				'<p>{}foo bar</p>' );
+			expect( loader.status ).to.equal( 'uploading' );
+			done();
+		};
+
+		expect( loader.status ).to.equal( 'reading' );
+		nativeReaderMock.mockSuccess( base64Sample );
+	} );
+
+	it( 'should replace read data with server response once it is present', ( done ) => {
+		const file = createNativeFileMock();
+		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'imageUpload', { file } );
+
+		adapterMock.uploadStartedCallback = () => {
+			document.once( 'changesDone', () => {
+				expect( getViewData( viewDocument ) ).to.equal(
+					'<figure class="image ck-widget" contenteditable="false"><img src="image.png"></img></figure><p>{}foo bar</p>'
+				);
+				expect( loader.status ).to.equal( 'idle' );
+
+				done();
+			} );
+
+			adapterMock.mockSuccess( { original: 'image.png' } );
+		};
+
+		nativeReaderMock.mockSuccess( base64Sample );
+	} );
+
+	it( 'should fire notification event in case of error', ( done ) => {
+		const notification = editor.plugins.get( Notification );
+		const file = createNativeFileMock();
+
+		notification.on( 'show:warning', ( evt, data ) => {
+			expect( data.message ).to.equal( 'Reading error.' );
+			evt.stop();
+
+			done();
+		}, { priority: 'high' } );
+
+		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'imageUpload', { file } );
+
+		nativeReaderMock.mockError( 'Reading error.' );
+	} );
+
+	it( 'should not fire notification on abort', ( done ) => {
+		const notification = editor.plugins.get( Notification );
+		const file = createNativeFileMock();
+		const spy = testUtils.sinon.spy();
+
+		notification.on( 'show:warning', evt => {
+			spy();
+			evt.stop();
+		}, { priority: 'high' } );
+
+		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'imageUpload', { file } );
+		nativeReaderMock.mockAbort();
+
+		setTimeout( () => {
+			sinon.assert.notCalled( spy );
+			done();
+		}, 0 );
+	} );
+
+	it( 'should do nothing if image does not have uploadId', () => {
+		setModelData( document, '<image src="image.png"></image>' );
+
+		expect( getViewData( viewDocument ) ).to.equal(
+			'[]<figure class="image ck-widget" contenteditable="false"><img src="image.png"></img></figure>'
+		);
 	} );
 } );

@@ -42,7 +42,7 @@ export default class ImageUploadEngine extends Plugin {
 		editor.editing.view.on( 'input', ( evt, data ) => {
 			for ( const file of data.dataTransfer.files ) {
 				if ( isImageType( file ) ) {
-					editor.execute( 'imageUpload', { file: file } );
+					editor.execute( 'imageUpload', { file } );
 					evt.stop();
 				}
 			}

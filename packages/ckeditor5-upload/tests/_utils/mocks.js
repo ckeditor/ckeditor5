@@ -17,6 +17,10 @@ export class AdapterMock {
 		return new Promise( ( resolve, reject ) => {
 			this._resolveCallback = resolve;
 			this._rejectCallback = reject;
+
+			if ( this.uploadStartedCallback ) {
+				this.uploadStartedCallback();
+			}
 		} );
 	}
 
