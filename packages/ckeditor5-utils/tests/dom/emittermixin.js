@@ -129,6 +129,18 @@ describe( 'DomEmitterMixin', () => {
 			sinon.assert.calledTwice( spy2 );
 		} );
 
+		it( 'should stop listening to a specific event callback (re–listen)', () => {
+			const spy = testUtils.sinon.spy();
+
+			domEmitter.listenTo( node, 'event', spy );
+			node.dispatchEvent( new Event( 'event' ) );
+			domEmitter.stopListening( node, 'event', spy );
+
+			domEmitter.listenTo( node, 'event', spy );
+			node.dispatchEvent( new Event( 'event' ) );
+			sinon.assert.calledTwice( spy );
+		} );
+
 		it( 'should stop listening to an specific event', () => {
 			const spy1a = testUtils.sinon.spy();
 			const spy1b = testUtils.sinon.spy();
@@ -454,6 +466,41 @@ describe( 'DomEmitterMixin', () => {
 			iframeNode.dispatchEvent( new Event( 'test' ) );
 
 			sinon.assert.calledOnce( spy );
+		} );
+
+		describe( 'event capturing', () => {
+			beforeEach( () => {
+				document.body.appendChild( node );
+			} );
+
+			afterEach( () => {
+				document.body.removeChild( node );
+			} );
+
+			it( 'should remove listeners when re–listen', () => {
+				const spy = testUtils.sinon.spy();
+
+				domEmitter.listenTo( document, 'test', spy, { useCapture: true } );
+
+				node.dispatchEvent( new Event( 'test' ) );
+				sinon.assert.calledOnce( spy );
+
+				domEmitter.stopListening( document, 'test' );
+
+				node.dispatchEvent( new Event( 'test' ) );
+				sinon.assert.calledOnce( spy );
+
+				// Listen again.
+				domEmitter.listenTo( document, 'test', spy, { useCapture: true } );
+
+				node.dispatchEvent( new Event( 'test', { bubbles: false } ) );
+				sinon.assert.calledTwice( spy );
+
+				domEmitter.stopListening( document, 'test' );
+
+				node.dispatchEvent( new Event( 'test', { bubbles: false } ) );
+				sinon.assert.calledTwice( spy );
+			} );
 		} );
 	} );
 } );
