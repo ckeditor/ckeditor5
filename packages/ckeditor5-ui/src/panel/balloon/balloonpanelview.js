@@ -227,8 +227,7 @@ export default class BalloonPanelView extends View {
 	unpin() {
 		if ( this._pinWhenIsVisibleCallback ) {
 			// Deactivate listeners attached by pin().
-			this.stopListening( global.document, 'scroll' );
-			this.stopListening( global.window, 'resize' );
+			this._stopPinning();
 
 			// Deactivate the panel pin() control logic.
 			// TODO: Use off() (https://github.com/ckeditor/ckeditor5-utils/issues/144).
