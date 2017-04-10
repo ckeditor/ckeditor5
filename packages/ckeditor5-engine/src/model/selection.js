@@ -621,7 +621,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Creates and returns an instance of `Selection` that is created from the given ranges.
+	 * Creates and returns an instance of `Selection` from the given ranges.
 	 * Accepts a flag describing in which way the selection is made (see {@link #addRange addRange}).
 	 *
 	 * @param {Array.<module:engine/view/range~Range>} ranges Array of ranges to set.
