@@ -95,7 +95,7 @@ export default class BalloonPanelView extends View {
 		 * `true`. Used by {@link #pin}.
 		 *
 		 * @private
-		 * @member {Function} #_pinWhenVisibleCallback
+		 * @member {Function} #_pinWhenIsVisibleCallback
 		 */
 
 		/**
@@ -197,7 +197,7 @@ export default class BalloonPanelView extends View {
 	pin( options ) {
 		this.unpin();
 
-		this._pinWhenVisibleCallback = () => {
+		this._pinWhenIsVisibleCallback = () => {
 			if ( this.isVisible ) {
 				this._startPinning( options );
 			} else {
@@ -205,7 +205,7 @@ export default class BalloonPanelView extends View {
 			}
 		};
 
-		// If the panel is already visible, enable the listeners immediately.
+		// If the panel is already visible, start pinning immediately.
 		if ( this.isVisible ) {
 			this._startPinning( options );
 		}
@@ -213,23 +213,23 @@ export default class BalloonPanelView extends View {
 		// Control the state of the listeners depending on whether the panel is visible
 		// or not.
 		// TODO: Use on() (https://github.com/ckeditor/ckeditor5-utils/issues/144).
-		this.listenTo( this, 'change:isVisible', this._pinWhenVisibleCallback );
+		this.listenTo( this, 'change:isVisible', this._pinWhenIsVisibleCallback );
 	}
 
 	/**
 	 * Stops pinning the panel, as set up by {@link #pin}.
 	 */
 	unpin() {
-		// Deactivate listeners attached by pin().
-		this.stopListening( global.document, 'scroll' );
-		this.stopListening( global.window, 'resize' );
+		if ( this._pinWhenIsVisibleCallback ) {
+			// Deactivate listeners attached by pin().
+			this.stopListening( global.document, 'scroll' );
+			this.stopListening( global.window, 'resize' );
 
-		if ( this._pinWhenVisibleCallback ) {
 			// Deactivate the panel pin() control logic.
 			// TODO: Use off() (https://github.com/ckeditor/ckeditor5-utils/issues/144).
-			this.stopListening( this, 'change:isVisible', this._pinWhenVisibleCallback );
+			this.stopListening( this, 'change:isVisible', this._pinWhenIsVisibleCallback );
 
-			this._pinWhenVisibleCallback = null;
+			this._pinWhenIsVisibleCallback = null;
 		}
 	}
 

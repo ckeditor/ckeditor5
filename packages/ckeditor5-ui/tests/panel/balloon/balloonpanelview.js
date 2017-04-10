@@ -437,14 +437,26 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		describe( 'pin()', () => {
-			it( 'should not pin until the balloon gets visible', () => {
+			it( 'should not show the balloon', () => {
+				const showSpy = sinon.spy( view, 'show' );
+
 				view.hide();
 
 				view.pin( { target, limiter } );
-				sinon.assert.notCalled( attachToSpy );
+				sinon.assert.notCalled( showSpy );
+			} );
+
+			it( 'should start pinning when the balloon is visible', () => {
+				view.hide();
+				view.pin( { target, limiter } );
+
+				targetParent.dispatchEvent( new Event( 'scroll' ) );
 
 				view.show();
-				sinon.assert.calledOnce( attachToSpy );
+
+				targetParent.dispatchEvent( new Event( 'scroll' ) );
+
+				sinon.assert.calledTwice( attachToSpy );
 			} );
 
 			it( 'should stop pinning when the balloon becomes invisible', () => {
@@ -582,6 +594,15 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		describe( 'unpin()', () => {
+			it( 'should not hide the balloon if pinned', () => {
+				const hideSpy = sinon.spy( view, 'hide' );
+
+				view.pin( { target, limiter } );
+				view.unpin();
+
+				sinon.assert.notCalled( hideSpy );
+			} );
+
 			it( 'should stop attaching', () => {
 				view.pin( { target, limiter } );
 				sinon.assert.calledOnce( attachToSpy );
