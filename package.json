@@ -36,10 +36,10 @@
     "@ckeditor/ckeditor5-dev-docs": "^6.1.6",
     "@ckeditor/ckeditor5-dev-env": "^4.4.0",
     "@ckeditor/ckeditor5-dev-lint": "^2.0.2",
-    "@ckeditor/ckeditor5-dev-tests": "^7.2.0",
+    "@ckeditor/ckeditor5-dev-tests": "^7.2.2",
     "gulp": "^3.9.0",
     "guppy-pre-commit": "^0.4.0",
-    "lerna": "2.0.0-beta.37",
+    "lerna": "^2.0.0-rc.1",
     "mgit2": "^0.5.1"
   },
   "engines": {
