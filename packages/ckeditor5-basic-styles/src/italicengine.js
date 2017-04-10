@@ -32,7 +32,7 @@ export default class ItalicEngine extends Plugin {
 		const editing = editor.editing;
 
 		// Allow italic attribute on all inline nodes.
-		editor.document.schema.allow( { name: '$inline', attributes: [ ITALIC ] } );
+		editor.document.schema.allow( { name: '$inline', attributes: [ ITALIC ], inside: '$block' } );
 
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )
