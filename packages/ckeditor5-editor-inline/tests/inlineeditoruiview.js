@@ -169,7 +169,7 @@ describe( 'InlineEditorUIView', () => {
 				const position = view.panelPositions[ positionIndex ];
 				const editableRect = {
 					top: 0,
-					bottom: 99,  // !
+					bottom: 99, // !
 					left: 100,
 					right: 100,
 					width: 100,
