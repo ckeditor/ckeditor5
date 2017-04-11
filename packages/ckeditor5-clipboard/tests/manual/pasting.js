@@ -36,6 +36,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 } )
 .then( editor => {
 	window.editor = editor;
+	const clipboard = editor.plugins.get( 'clipboard/clipboard' );
 
 	editor.editing.view.on( 'paste', ( evt, data ) => {
 		console.clear();
@@ -46,9 +47,9 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		console.log( 'text/plain\n', data.dataTransfer.getData( 'text/plain' ) );
 	} );
 
-	editor.editing.view.on( 'input', ( evt, data ) => {
+	clipboard.on( 'inputTransformation', ( evt, data ) => {
 		console.log( '----- clipboardInput -----' );
-		console.log( 'stringify( data.content )\n', stringifyView( data.content ) );
+		console.log( 'stringify( data.dataTransfer )\n', stringifyView( data.content ) );
 	} );
 } )
 .catch( err => {

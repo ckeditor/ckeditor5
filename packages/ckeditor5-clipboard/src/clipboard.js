@@ -191,18 +191,6 @@ export default class Clipboard extends Plugin {
 }
 
 /**
- * Fired with a `dataTransfer`, which comes from the clipboard (was pasted or dropped) and
- * should be processed in order to be inserted into the editor.
- * It's part of the {@link module:clipboard/clipboard~Clipboard "clipboard pipeline"}.
- *
- * @see module:clipboard/clipboardobserver~ClipboardObserver
- * @see module:clipboard/clipboard~Clipboard
- * @event module:engine/view/document~Document#event:input
- * @param {Object} data Event data.
- * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer Data transfer instance.
- */
-
-/**
  * Fired with a `content`, which comes from the clipboard (was pasted or dropped) and
  * should be processed in order to be inserted into the editor.
  * It's part of the {@link module:clipboard/clipboard~Clipboard "clipboard pipeline"}.

@@ -20,6 +20,12 @@ export default class DataTransfer {
 		 */
 		this._native = nativeDataTransfer;
 
+		/**
+		 * The array of files created from the native `DataTransfer#files` and `DataTransfer#items` objects.
+		 *
+		 * @public
+		 * @member {Array.<File>} #files
+		 */
 		this.files = Array.from( this._getFiles() );
 	}
 
