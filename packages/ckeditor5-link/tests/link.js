@@ -41,8 +41,9 @@ describe( 'Link', () => {
 			balloon = editor.plugins.get( ContextualBalloon );
 			formView = linkFeature.formView;
 
-			// There is no point to execute `BalloonPanelView#attachTo` so override it.
+			// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
 			testUtils.sinon.stub( balloon.view, 'attachTo', () => {} );
+			testUtils.sinon.stub( balloon.view, 'pin', () => {} );
 		} );
 	} );
 
@@ -98,7 +99,7 @@ describe( 'Link', () => {
 
 			const linkElement = editorElement.querySelector( 'a' );
 
-			sinon.assert.calledWithExactly( balloon.view.attachTo, sinon.match( {
+			sinon.assert.calledWithExactly( balloon.view.pin, sinon.match( {
 				target: linkElement,
 				limiter: editorElement
 			} ) );
@@ -113,7 +114,7 @@ describe( 'Link', () => {
 
 			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
 
-			sinon.assert.calledWithExactly( balloon.view.attachTo, sinon.match( {
+			sinon.assert.calledWithExactly( balloon.view.pin, sinon.match( {
 				target: selectedRange,
 				limiter: editorElement
 			} ) );
@@ -320,8 +321,7 @@ describe( 'Link', () => {
 
 				expect( balloon.visibleView ).to.equal( formView );
 
-				// Reset attachTo call counter.
-				balloon.view.attachTo.reset();
+				const updatePositionSpy = testUtils.sinon.spy( balloon, 'updatePosition' );
 
 				// Move selection.
 				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
@@ -329,7 +329,7 @@ describe( 'Link', () => {
 
 				// Check if balloon is still open and position was updated.
 				expect( balloon.visibleView ).to.equal( formView );
-				expect( balloon.view.attachTo.calledOnce ).to.true;
+				expect( updatePositionSpy.calledOnce ).to.true;
 			} );
 
 			it( 'should not duplicate `render` listener on `ViewDocument`', () => {
@@ -430,14 +430,13 @@ describe( 'Link', () => {
 				// Close balloon by dispatching `cancel` event on formView.
 				formView.fire( 'cancel' );
 
-				// Reset attachTo call counter.
-				balloon.view.attachTo.reset();
+				const updatePositionSpy = testUtils.sinon.spy( balloon, 'updatePosition' );
 
 				// Move selection inside link element.
 				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 2, text, 2 ) ], true );
 				editor.editing.view.render();
 
-				expect( balloon.view.attachTo.notCalled ).to.true;
+				expect( updatePositionSpy.notCalled ).to.true;
 			} );
 
 			it( 'should not open when selection is not inside link element', () => {
