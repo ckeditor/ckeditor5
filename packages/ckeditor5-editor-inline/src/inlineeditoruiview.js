@@ -163,7 +163,7 @@ function getPanelPositionTop( editableRect, panelRect ) {
 
 	if ( editableRect.top > panelRect.height ) {
 		top = editableRect.top - panelRect.height;
-	} else if ( editableRect.bottom > panelRect.height ) {
+	} else if ( editableRect.bottom > panelRect.height + 50 ) {
 		top = 0;
 	} else {
 		top = editableRect.bottom;
