@@ -7,7 +7,7 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
 import Node from '../../src/view/node';
 import Element from '../../src/view/element';
 
-import encodedImage from './_utils/encodedimage.js';
+import encodedImage from './_utils/encodedimage.txt';
 
 describe( 'Element', () => {
 	describe( 'constructor()', () => {
