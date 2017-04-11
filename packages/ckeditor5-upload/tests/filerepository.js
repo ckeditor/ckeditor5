@@ -217,7 +217,8 @@ describe( 'FileRepository', () => {
 					done();
 				} );
 
-				loader.uploadedPercent = 23;
+				loader.uploaded = 23;
+				loader.uploadTotal = 100;
 			} );
 
 			it( 'should initialize uploadResponse observable', ( done ) => {
