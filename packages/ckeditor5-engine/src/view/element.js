@@ -735,8 +735,10 @@ function parseInlineStyles( stylesMap, stylesString ) {
 					// Use previously stored property value start to obtain property value.
 					let propertyValue = stylesString.substr( propertyValueStart, i - propertyValueStart );
 
-					// Save parsed part.
-					stylesMap.set( propertyName.trim(), propertyValue.trim() );
+					if ( propertyName ) {
+						// Save parsed part.
+						stylesMap.set( propertyName.trim(), propertyValue.trim() );
+					}
 
 					propertyName = null;
 

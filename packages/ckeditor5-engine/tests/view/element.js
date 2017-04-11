@@ -837,7 +837,7 @@ describe( 'Element', () => {
 			} );
 		} );
 
-		describe( 'styles parsing edge cases', () => {
+		describe( 'styles parsing edge cases and incorrect styles', () => {
 			it( 'should not crash and not add any styles if styles attribute was empty', () => {
 				const element = new Element( 'div', { style: '' } );
 				const styles = Array.from( element.getStyleNames() );
@@ -859,6 +859,42 @@ describe( 'Element', () => {
 
 				element = new Element( 'div', { style: 'background-image:url(\'im;color:g.jpg\')' } );
 				expect( element.getStyle( 'background-image' ) ).to.equal( 'url(\'im;color:g.jpg\')' );
+			} );
+
+			it( 'should not be confused by whitespaces', () => {
+				const element = new Element( 'div', { style: '\ncolor:\n red ' } );
+
+				expect( element.getStyle( 'color' ) ).to.equal( 'red' );
+			} );
+
+			it( 'should not be confused by duplicated semicolon', () => {
+				const element = new Element( 'div', { style: 'color: red;; display: inline' } );
+
+				expect( element.getStyle( 'color' ) ).to.equal( 'red' );
+				expect( element.getStyle( 'display' ) ).to.equal( 'inline' );
+			} );
+
+			it( 'should not throw when value is missing', () => {
+				const element = new Element( 'div', { style: 'color:; display: inline' } );
+
+				expect( element.getStyle( 'color' ) ).to.equal( '' );
+				expect( element.getStyle( 'display' ) ).to.equal( 'inline' );
+			} );
+
+			it( 'should not throw when colon is duplicated', () => {
+				const element = new Element( 'div', { style: 'color:: red; display: inline' } );
+
+				// The result makes no sense, but here we just check that the algorithm doesn't crash.
+				expect( element.getStyle( 'color' ) ).to.equal( ': red' );
+				expect( element.getStyle( 'display' ) ).to.equal( 'inline' );
+			} );
+
+			it( 'should not throw when random stuff passed', () => {
+				const element = new Element( 'div', { style: 'color: red;:; ;;" ":  display: inline; \'aaa;:' } );
+
+				// The result makes no sense, but here we just check that the algorithm doesn't crash.
+				expect( element.getStyle( 'color' ) ).to.equal( 'red' );
+				expect( element.getStyle( 'display' ) ).to.be.undefined;
 			} );
 		} );
 	} );
