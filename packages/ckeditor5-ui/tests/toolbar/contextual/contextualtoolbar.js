@@ -113,6 +113,14 @@ describe( 'ContextualToolbar', () => {
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 	} );
 
+	it( 'should add additional class to the ContextualBalloon#view', () => {
+		setData( editor.document, '<paragraph>[bar]</paragraph>' );
+
+		contextualToolbar.fire( '_selectionChangeDebounced' );
+
+		expect( balloon.view.className ).to.equal( 'ck-toolbar__container' );
+	} );
+
 	it( 'should close when selection starts changing by a directChange', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 

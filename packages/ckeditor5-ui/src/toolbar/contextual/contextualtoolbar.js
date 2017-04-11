@@ -149,7 +149,8 @@ export default class ContextualToolbar extends Plugin {
 		// Add panel to the common editor contextual balloon.
 		this._balloon.add( {
 			view: this.toolbarView,
-			position: this._getBalloonPositionData()
+			position: this._getBalloonPositionData(),
+			balloonClassName: 'ck-toolbar__container'
 		} );
 
 		// Update panel position when selection changes while balloon will be opened (by a collaboration).
