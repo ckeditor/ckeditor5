@@ -45,8 +45,19 @@ export default class InlineEditorUI {
 		this.focusTracker = new FocusTracker();
 
 		// Set–up the view#panel.
-		view.panel.bind( 'isActive' ).to( this.focusTracker, 'isFocused' );
-		view.panel.targetElement = view.editableElement;
+		view.panel.bind( 'isVisible' ).to( this.focusTracker, 'isFocused' );
+
+		// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
+		view.listenTo( editor.editing.view, 'render', () => {
+			// Don't pin if the panel is not already visible. It prevents the panel
+			// showing up when there's no focus in the UI.
+			if ( view.panel.isVisible ) {
+				view.panel.pin( {
+					target: view.editableElement,
+					positions: view.panelPositions
+				} );
+			}
+		} );
 
 		// Setup the editable.
 		const editingRoot = editor.editing.createRoot( view.editableElement );

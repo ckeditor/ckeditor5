@@ -9,7 +9,7 @@
 
 import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import FloatingPanelView from '@ckeditor/ckeditor5-ui/src/panel/floating/floatingpanelview';
+import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
@@ -36,12 +36,14 @@ export default class InlineEditorUIView extends EditorUIView {
 		this.toolbar = new ToolbarView( locale );
 
 		/**
-		 * A floating panel view instance.
+		 * A balloon panel view instance.
 		 *
 		 * @readonly
-		 * @member {module:ui/panel/floating/floatingpanelview~FloatingPanelView}
+		 * @member {module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
 		 */
-		this.panel = new FloatingPanelView( locale );
+		this.panel = new BalloonPanelView( locale );
+
+		this.panel.withArrow = false;
 
 		Template.extend( this.panel.template, {
 			attributes: {
@@ -75,4 +77,73 @@ export default class InlineEditorUIView extends EditorUIView {
 	get editableElement() {
 		return this.editable.element;
 	}
+
+	/**
+	 * A set of positioning functions used by the {@link #panel} to float around
+	 * {@link #editableElement}.
+	 *
+	 * The positioning functions are as follows:
+	 *
+	 * * South east:
+	 *
+	 *		+------------------+
+	 *		| #editableElement |
+	 *		+------------------+
+	 *		           [ Panel ]
+	 *
+	 * * South west:
+	 *
+	 *		+------------------+
+	 *		| #editableElement |
+	 *		+------------------+
+	 *		[ Panel ]
+	 *
+	 * * North east:
+	 *
+	 *		           [ Panel ]
+	 *		+------------------+
+	 *		| #editableElement |
+	 *		+------------------+
+	 *
+	 *
+	 * * North west:
+	 *
+	 *		[ Panel ]
+	 *		+------------------+
+	 *		| #editableElement |
+	 *		+------------------+
+	 *
+	 * @type {module:utils/dom/position~Options#positions}
+	 */
+	get panelPositions() {
+		return panelPositions;
+	}
 }
+
+// A set of positioning functions used by the
+// {@link module:editor-inline/inlineeditoruiview~InlineEditableUIView#panel}.
+//
+// @private
+// @type {module:utils/dom/position~Options#positions}
+const panelPositions = [
+	( editableRect, panelRect ) => ( {
+		top: editableRect.top - panelRect.height,
+		left: editableRect.left,
+		name: 'toolbar_nw'
+	} ),
+	( editableRect ) => ( {
+		top: editableRect.bottom,
+		left: editableRect.left,
+		name: 'toolbar_sw'
+	} ),
+	( editableRect, panelRect ) => ( {
+		top: editableRect.top - panelRect.height,
+		left: editableRect.left + editableRect.width - panelRect.width,
+		name: 'toolbar_ne'
+	} ),
+	( editableRect, panelRect ) => ( {
+		top: editableRect.bottom,
+		left: editableRect.left + editableRect.width - panelRect.width,
+		name: 'toolbar_se'
+	} )
+];

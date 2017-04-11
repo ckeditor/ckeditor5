@@ -14,6 +14,7 @@
     "@ckeditor/ckeditor5-dev-lint": "^2.0.2",
     "@ckeditor/ckeditor5-basic-styles": "^0.8.0",
     "@ckeditor/ckeditor5-paragraph": "^0.7.0",
+    "@ckeditor/ckeditor5-presets": "^0.2.1",
     "gulp": "^3.9.0",
     "guppy-pre-commit": "^0.4.0"
   },

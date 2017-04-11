@@ -57,16 +57,31 @@ describe( 'InlineEditorUI', () => {
 		} );
 
 		describe( 'panel', () => {
-			it( 'binds view.panel#isActive to editor.ui#focusTracker', () => {
+			it( 'binds view.panel#isVisible to editor.ui#focusTracker', () => {
 				ui.focusTracker.isFocused = false;
-				expect( view.panel.isActive ).to.be.false;
+				expect( view.panel.isVisible ).to.be.false;
 
 				ui.focusTracker.isFocused = true;
-				expect( view.panel.isActive ).to.be.true;
+				expect( view.panel.isVisible ).to.be.true;
 			} );
 
-			it( 'sets view.panel#targetElement', () => {
-				expect( view.panel.targetElement ).to.equal( view.editableElement );
+			// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
+			it( 'pin() is called on editor.editable.view#render', () => {
+				const spy = sinon.spy( view.panel, 'pin' );
+
+				view.panel.hide();
+
+				editor.editing.view.fire( 'render' );
+				sinon.assert.notCalled( spy );
+
+				view.panel.show();
+
+				editor.editing.view.fire( 'render' );
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledWithExactly( spy, {
+					target: view.editableElement,
+					positions: sinon.match.array
+				} );
 			} );
 		} );
 
