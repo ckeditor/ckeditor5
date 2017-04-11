@@ -185,6 +185,24 @@ describe( 'ContextualBalloon', () => {
 				foo: 'bar'
 			} );
 		} );
+
+		it( 'should set additional css class of visible view to BalloonPanelView', () => {
+			balloon.add( {
+				view: viewA,
+				position: { target: 'fake' },
+				balloonClassName: 'foo'
+			} );
+
+			expect( balloon.view.className ).to.equal( 'foo' );
+
+			balloon.add( {
+				view: viewB,
+				position: { target: 'fake' },
+				balloonClassName: 'bar'
+			} );
+
+			expect( balloon.view.className ).to.equal( 'bar' );
+		} );
 	} );
 
 	describe( 'visibleView', () => {
@@ -264,6 +282,24 @@ describe( 'ContextualBalloon', () => {
 			expect( () => {
 				balloon.remove( viewA );
 			} ).to.throw( CKEditorError, /^contextualballoon-remove-view-not-exist/ );
+		} );
+
+		it( 'should set additional css class of visible view to BalloonPanelView', () => {
+			balloon.add( {
+				view: viewA,
+				position: { target: 'fake' },
+				balloonClassName: 'foo'
+			} );
+
+			balloon.add( {
+				view: viewB,
+				position: { target: 'fake' },
+				balloonClassName: 'bar'
+			} );
+
+			balloon.remove( viewB );
+
+			expect( balloon.view.className ).to.equal( 'foo' );
 		} );
 	} );
 

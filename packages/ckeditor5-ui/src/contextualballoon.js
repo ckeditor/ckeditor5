@@ -87,8 +87,9 @@ export default class ContextualBalloon extends Plugin {
 	 * Adds a new view to the stack and makes it visible.
 	 *
 	 * @param {Object} data Configuration of the view.
-	 * @param {module:ui/view~View} view Content of the balloon.
-	 * @param {module:utils/dom/position~Options} position Positioning options.
+	 * @param {module:ui/view~View} [data.view] Content of the balloon.
+	 * @param {module:utils/dom/position~Options} [data.position] Positioning options.
+	 * @param {String} [data.balloonClassName] Additional css class for {@link #view} added when given view is visible.
 	 */
 	add( data ) {
 		if ( this.hasView( data.view ) ) {
@@ -109,7 +110,7 @@ export default class ContextualBalloon extends Plugin {
 		// Add new view to the stack.
 		this._stack.set( data.view, data );
 		// And display it.
-		this._show( data.view );
+		this._show( data );
 	}
 
 	/**
@@ -143,7 +144,7 @@ export default class ContextualBalloon extends Plugin {
 			// If it is some other view.
 			if ( last ) {
 				// Just show it.
-				this._show( last.view );
+				this._show( last );
 			} else {
 				// Hide the balloon panel.
 				this.view.hide();
@@ -173,10 +174,13 @@ export default class ContextualBalloon extends Plugin {
 	 * options of the first view.
 	 *
 	 * @private
-	 * @param {module:ui/view~View} view View to show in the balloon.
+	 * @param {Object} data Configuration.
+	 * @param {module:ui/view~View} [data.view] View to show in the balloon.
+	 * @param {String} [data.balloonClassName=''] View to show in the balloon.
 	 */
-	_show( view ) {
+	_show( { view, balloonClassName = '' } ) {
 		this.view.content.add( view );
+		this.view.className = balloonClassName;
 
 		// When view is not rendered we need to wait for it. See: https://github.com/ckeditor/ckeditor5-ui/issues/187.
 		if ( !view.ready ) {
