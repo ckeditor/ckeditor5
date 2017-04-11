@@ -106,6 +106,18 @@ describe( 'BalloonPanelView', () => {
 			} );
 		} );
 
+		describe( 'className', () => {
+			it( 'should set additional class to the view#element', () => {
+				view.className = 'foo';
+
+				expect( view.element.classList.contains( 'foo' ) ).to.true;
+
+				view.className = '';
+
+				expect( view.element.classList.contains( 'foo' ) ).to.false;
+			} );
+		} );
+
 		describe( 'children', () => {
 			it( 'should react on view#content', () => {
 				expect( view.element.childNodes.length ).to.equal( 0 );

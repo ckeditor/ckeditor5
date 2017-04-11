@@ -89,6 +89,15 @@ export default class BalloonPanelView extends View {
 		this.set( 'withArrow', true );
 
 		/**
+		 * Additional css class added to the {#element}.
+		 *
+		 * @observable
+		 * @default ''
+		 * @member {String} #className
+		 */
+		this.set( 'className', '' );
+
+		/**
 		 * Max width of the balloon panel, as in CSS.
 		 *
 		 * @observable
@@ -118,7 +127,8 @@ export default class BalloonPanelView extends View {
 					'ck-balloon-panel',
 					bind.to( 'position', ( value ) => `ck-balloon-panel_${ value }` ),
 					bind.if( 'isVisible', 'ck-balloon-panel_visible' ),
-					bind.if( 'withArrow', 'ck-balloon-panel_with-arrow' )
+					bind.if( 'withArrow', 'ck-balloon-panel_with-arrow' ),
+					bind.to( 'className' )
 				],
 
 				style: {
