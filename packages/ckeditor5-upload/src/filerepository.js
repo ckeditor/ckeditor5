@@ -266,7 +266,9 @@ class FileLoader {
 		 * @observable
 		 * @member {Number} #uploadedPercent
 		 */
-		this.set( 'uploadedPercent', 0 );
+		this.bind( 'uploadedPercent' ).to( this, 'uploaded', this, 'uploadTotal', ( uploaded, total ) => {
+			return total ? ( uploaded / total * 100 ) : 0;
+		} );
 
 		/**
 		 * Response of the upload.

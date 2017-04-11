@@ -30,14 +30,37 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList' ]
 } )
 .then( editor => {
+	let adapterMock, progress;
+	const total = 500;
+
 	window.editor = editor;
+
+	const progressButton = document.getElementById( 'progress' );
 
 	// Register fake adapter.
 	editor.plugins.get( 'fileRepository' ).createAdapter = loader => {
-		const adapterMock = new AdapterMock( loader );
+		adapterMock = new AdapterMock( loader );
+		progress = 0;
+		loader.on( 'change:uploadedPercent', () => {
+			console.log( `Loader upload progress: ${ loader.uploadedPercent }%` );
+		}  );
+
+		progressButton.removeAttribute( 'disabled' );
 
 		return adapterMock;
 	};
+
+	progressButton.addEventListener( 'click', () => {
+		if ( adapterMock ) {
+			progress += 100;
+			adapterMock.mockProgress( progress, total );
+
+			if ( progress == total ) {
+				progressButton.setAttribute( 'disabled', 'true' );
+				adapterMock.mockSuccess( { original: './sample.jpg' } );
+			}
+		}
+	} );
 } )
 .catch( err => {
 	console.error( err.stack );
