@@ -154,6 +154,14 @@ describe( 'ContextualToolbar', () => {
 	it( 'should open below if the selection is forward', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
+		// Mock limiter rect.
+		mockBoundingBox( document.body, {
+			left: 0,
+			width: 1000,
+			top: 0,
+			height: 1000
+		} );
+
 		contextualToolbar.fire( '_selectionChangeDone' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
@@ -179,6 +187,14 @@ describe( 'ContextualToolbar', () => {
 
 	it( 'should open above if the selection is backward', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>', { lastRangeBackward: true } );
+
+		// Mock limiter rect.
+		mockBoundingBox( document.body, {
+			left: 0,
+			width: 1000,
+			top: 0,
+			height: 1000
+		} );
 
 		contextualToolbar.fire( '_selectionChangeDone' );
 
