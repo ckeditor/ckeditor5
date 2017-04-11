@@ -25,6 +25,12 @@ describe( 'BalloonPanelView', () => {
 		return view.init();
 	} );
 
+	afterEach( () => {
+		if ( view ) {
+			return view.destroy();
+		}
+	} );
+
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.tagName ).to.equal( 'DIV' );
@@ -35,8 +41,9 @@ describe( 'BalloonPanelView', () => {
 		it( 'should set default values', () => {
 			expect( view.top ).to.equal( 0 );
 			expect( view.left ).to.equal( 0 );
-			expect( view.position ).to.equal( 'se' );
+			expect( view.position ).to.equal( 'arrow_se' );
 			expect( view.isVisible ).to.equal( false );
+			expect( view.withArrow ).to.equal( true );
 		} );
 
 		it( 'creates view#content collection', () => {
@@ -49,9 +56,17 @@ describe( 'BalloonPanelView', () => {
 			it( 'should react on view#position', () => {
 				expect( view.element.classList.contains( 'ck-balloon-panel_arrow_se' ) ).to.true;
 
-				view.position = 'sw';
+				view.position = 'arrow_sw';
 
 				expect( view.element.classList.contains( 'ck-balloon-panel_arrow_sw' ) ).to.true;
+			} );
+
+			it( 'should react on view#withArrow', () => {
+				expect( view.element.classList.contains( 'ck-balloon-panel_with-arrow' ) ).to.be.true;
+
+				view.withArrow = false;
+
+				expect( view.element.classList.contains( 'ck-balloon-panel_with-arrow' ) ).to.be.false;
 			} );
 		} );
 
@@ -96,9 +111,10 @@ describe( 'BalloonPanelView', () => {
 				expect( view.element.childNodes.length ).to.equal( 0 );
 
 				const button = new ButtonView( { t() {} } );
-				view.content.add( button );
 
-				expect( view.element.childNodes.length ).to.equal( 1 );
+				return view.content.add( button ).then( () => {
+					expect( view.element.childNodes.length ).to.equal( 1 );
+				} );
 			} );
 		} );
 	} );
@@ -203,7 +219,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'se' );
+				expect( view.position ).to.equal( 'arrow_se' );
 			} );
 
 			it( 'should put balloon on the `south east` side of the target element when target is on the top left side of the limiter', () => {
@@ -216,7 +232,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'se' );
+				expect( view.position ).to.equal( 'arrow_se' );
 			} );
 
 			it( 'should put balloon on the `south west` side of the target element when target is on the right side of the limiter', () => {
@@ -229,7 +245,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'sw' );
+				expect( view.position ).to.equal( 'arrow_sw' );
 			} );
 
 			it( 'should put balloon on the `north east` side of the target element when target is on the bottom of the limiter ', () => {
@@ -242,7 +258,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'ne' );
+				expect( view.position ).to.equal( 'arrow_ne' );
 			} );
 
 			it( 'should put balloon on the `north west` side of the target element when target is on the bottom right of the limiter', () => {
@@ -255,7 +271,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'nw' );
+				expect( view.position ).to.equal( 'arrow_nw' );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-ui-default/issues/126
@@ -336,7 +352,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'sw' );
+				expect( view.position ).to.equal( 'arrow_sw' );
 			} );
 
 			it( 'should put balloon on the `south east` position when `south west` is limited', () => {
@@ -356,7 +372,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'se' );
+				expect( view.position ).to.equal( 'arrow_se' );
 			} );
 
 			it( 'should put balloon on the `north east` position when `south east` is limited', () => {
@@ -380,7 +396,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'ne' );
+				expect( view.position ).to.equal( 'arrow_ne' );
 			} );
 
 			it( 'should put balloon on the `south east` position when `north east` is limited', () => {
@@ -400,20 +416,22 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'se' );
+				expect( view.position ).to.equal( 'arrow_se' );
 			} );
 		} );
 	} );
 
-	describe( 'keepAttachedTo()', () => {
+	describe( 'pin() and unpin()', () => {
 		let attachToSpy, target, targetParent, limiter, notRelatedElement;
 
 		beforeEach( () => {
-			attachToSpy = testUtils.sinon.spy( view, 'attachTo' );
+			attachToSpy = sinon.spy( view, 'attachTo' );
 			limiter = document.createElement( 'div' );
 			targetParent = document.createElement( 'div' );
 			target = document.createElement( 'div' );
 			notRelatedElement = document.createElement( 'div' );
+
+			view.show();
 
 			targetParent.appendChild( target );
 			document.body.appendChild( targetParent );
@@ -422,112 +440,194 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		afterEach( () => {
-			attachToSpy.restore();
+			targetParent.remove();
 			limiter.remove();
 			notRelatedElement.remove();
 		} );
 
-		it( 'should keep the balloon attached to the target when any of the related elements is scrolled', () => {
-			view.keepAttachedTo( { target, limiter } );
+		describe( 'pin()', () => {
+			it( 'should show the balloon', () => {
+				const spy = sinon.spy( view, 'show' );
 
-			sinon.assert.calledOnce( attachToSpy );
-			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+				view.hide();
 
-			targetParent.dispatchEvent( new Event( 'scroll' ) );
+				view.pin( { target, limiter } );
+				sinon.assert.calledOnce( spy );
+			} );
 
-			sinon.assert.calledTwice( attachToSpy );
-			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+			it( 'should start pinning when the balloon is visible', () => {
+				view.pin( { target, limiter } );
+				sinon.assert.calledOnce( attachToSpy );
 
-			limiter.dispatchEvent( new Event( 'scroll' ) );
+				view.hide();
+				targetParent.dispatchEvent( new Event( 'scroll' ) );
 
-			sinon.assert.calledThrice( attachToSpy );
-			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+				view.show();
+				sinon.assert.calledTwice( attachToSpy );
 
-			notRelatedElement.dispatchEvent( new Event( 'scroll' ) );
+				targetParent.dispatchEvent( new Event( 'scroll' ) );
+				sinon.assert.calledThrice( attachToSpy );
+			} );
 
-			// Nothing's changed.
-			sinon.assert.calledThrice( attachToSpy );
-			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+			it( 'should stop pinning when the balloon becomes invisible', () => {
+				view.show();
+
+				view.pin( { target, limiter } );
+				sinon.assert.calledOnce( attachToSpy );
+
+				view.hide();
+
+				targetParent.dispatchEvent( new Event( 'scroll' ) );
+				sinon.assert.calledOnce( attachToSpy );
+			} );
+
+			it( 'should unpin if already pinned', () => {
+				const unpinSpy = testUtils.sinon.spy( view, 'unpin' );
+
+				view.show();
+				sinon.assert.notCalled( attachToSpy );
+
+				view.pin( { target, limiter } );
+				sinon.assert.calledOnce( attachToSpy );
+
+				view.pin( { target, limiter } );
+				sinon.assert.calledTwice( unpinSpy );
+
+				targetParent.dispatchEvent( new Event( 'scroll' ) );
+				sinon.assert.calledThrice( attachToSpy );
+			} );
+
+			it( 'should keep the balloon pinned to the target when any of the related elements is scrolled', () => {
+				view.pin( { target, limiter } );
+
+				sinon.assert.calledOnce( attachToSpy );
+				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+
+				targetParent.dispatchEvent( new Event( 'scroll' ) );
+
+				sinon.assert.calledTwice( attachToSpy );
+				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+
+				limiter.dispatchEvent( new Event( 'scroll' ) );
+
+				sinon.assert.calledThrice( attachToSpy );
+				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+
+				notRelatedElement.dispatchEvent( new Event( 'scroll' ) );
+
+				// Nothing's changed.
+				sinon.assert.calledThrice( attachToSpy );
+				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+			} );
+
+			it( 'should keep the balloon pinned to the target when the browser window is being resized', () => {
+				view.pin( { target, limiter } );
+
+				sinon.assert.calledOnce( attachToSpy );
+				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+
+				window.dispatchEvent( new Event( 'resize' ) );
+
+				sinon.assert.calledTwice( attachToSpy );
+				sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+			} );
+
+			it( 'should stop attaching when the balloon is hidden', () => {
+				view.pin( { target, limiter } );
+
+				sinon.assert.calledOnce( attachToSpy );
+
+				view.hide();
+
+				window.dispatchEvent( new Event( 'resize' ) );
+				window.dispatchEvent( new Event( 'scroll' ) );
+
+				// Still once.
+				sinon.assert.calledOnce( attachToSpy );
+			} );
+
+			it( 'should stop attaching once the view is destroyed', () => {
+				view.pin( { target, limiter } );
+
+				sinon.assert.calledOnce( attachToSpy );
+
+				return view.destroy().then( () => {
+					view = null;
+
+					window.dispatchEvent( new Event( 'resize' ) );
+					window.dispatchEvent( new Event( 'scroll' ) );
+
+					// Still once.
+					sinon.assert.calledOnce( attachToSpy );
+				} );
+			} );
+
+			it( 'should set document.body as the default limiter', () => {
+				view.pin( { target } );
+
+				sinon.assert.calledOnce( attachToSpy );
+
+				document.body.dispatchEvent( new Event( 'scroll' ) );
+
+				sinon.assert.calledTwice( attachToSpy );
+			} );
+
+			it( 'should work for Range as a target', () => {
+				const element = document.createElement( 'div' );
+				const range = document.createRange();
+
+				element.appendChild( document.createTextNode( 'foo bar' ) );
+				document.body.appendChild( element );
+				range.selectNodeContents( element );
+
+				view.pin( { target: range } );
+
+				sinon.assert.calledOnce( attachToSpy );
+
+				element.dispatchEvent( new Event( 'scroll' ) );
+
+				sinon.assert.calledTwice( attachToSpy );
+			} );
+
+			it( 'should work for rect as a target', () => {
+				// Just check if this normally works without errors.
+				const rect = {};
+
+				view.pin( { target: rect, limiter } );
+
+				sinon.assert.calledOnce( attachToSpy );
+
+				limiter.dispatchEvent( new Event( 'scroll' ) );
+
+				sinon.assert.calledTwice( attachToSpy );
+			} );
 		} );
 
-		it( 'should keep the balloon attached to the target when the browser window is being resized', () => {
-			view.keepAttachedTo( { target, limiter } );
+		describe( 'unpin()', () => {
+			it( 'should hide the balloon if pinned', () => {
+				const spy = sinon.spy( view, 'hide' );
 
-			sinon.assert.calledOnce( attachToSpy );
-			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
+				view.pin( { target, limiter } );
+				view.unpin();
 
-			window.dispatchEvent( new Event( 'resize' ) );
+				sinon.assert.calledOnce( spy );
+			} );
 
-			sinon.assert.calledTwice( attachToSpy );
-			sinon.assert.calledWith( attachToSpy.lastCall, { target, limiter } );
-		} );
+			it( 'should stop attaching', () => {
+				view.pin( { target, limiter } );
+				sinon.assert.calledOnce( attachToSpy );
 
-		it( 'should stop attaching when the balloon is hidden', () => {
-			view.keepAttachedTo( { target, limiter } );
+				view.unpin();
 
-			sinon.assert.calledOnce( attachToSpy );
+				view.hide();
+				window.dispatchEvent( new Event( 'resize' ) );
+				document.dispatchEvent( new Event( 'scroll' ) );
+				view.show();
+				window.dispatchEvent( new Event( 'resize' ) );
+				document.dispatchEvent( new Event( 'scroll' ) );
 
-			view.hide();
-
-			window.dispatchEvent( new Event( 'resize' ) );
-			window.dispatchEvent( new Event( 'scroll' ) );
-
-			// Still once.
-			sinon.assert.calledOnce( attachToSpy );
-		} );
-
-		it( 'should stop attaching once the view is destroyed', () => {
-			view.keepAttachedTo( { target, limiter } );
-
-			sinon.assert.calledOnce( attachToSpy );
-
-			view.destroy();
-
-			window.dispatchEvent( new Event( 'resize' ) );
-			window.dispatchEvent( new Event( 'scroll' ) );
-
-			// Still once.
-			sinon.assert.calledOnce( attachToSpy );
-		} );
-
-		it( 'should set document.body as the default limiter', () => {
-			view.keepAttachedTo( { target } );
-
-			sinon.assert.calledOnce( attachToSpy );
-
-			document.body.dispatchEvent( new Event( 'scroll' ) );
-
-			sinon.assert.calledTwice( attachToSpy );
-		} );
-
-		it( 'should work for Range as a target', () => {
-			const element = document.createElement( 'div' );
-			const range = document.createRange();
-
-			element.appendChild( document.createTextNode( 'foo bar' ) );
-			document.body.appendChild( element );
-			range.selectNodeContents( element );
-
-			view.keepAttachedTo( { target: range } );
-
-			sinon.assert.calledOnce( attachToSpy );
-
-			element.dispatchEvent( new Event( 'scroll' ) );
-
-			sinon.assert.calledTwice( attachToSpy );
-		} );
-
-		it( 'should work for rect as a target', () => {
-			// Just check if this normally works without errors.
-			const rect = {};
-
-			view.keepAttachedTo( { target: rect, limiter } );
-
-			sinon.assert.calledOnce( attachToSpy );
-
-			limiter.dispatchEvent( new Event( 'scroll' ) );
-
-			sinon.assert.calledTwice( attachToSpy );
+				sinon.assert.calledOnce( attachToSpy );
+			} );
 		} );
 	} );
 } );

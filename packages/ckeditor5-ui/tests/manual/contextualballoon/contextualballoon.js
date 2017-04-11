@@ -230,13 +230,13 @@ function createContextualToolbar( editor ) {
 		forwardSelection: ( targetRect, balloonRect ) => ( {
 			top: targetRect.bottom + arrowVOffset,
 			left: targetRect.right - balloonRect.width / 2,
-			name: 's'
+			name: 'arrow_s'
 		} ),
 
 		backwardSelection: ( targetRect, balloonRect ) => ( {
 			top: targetRect.top - balloonRect.height - arrowVOffset,
 			left: targetRect.left - balloonRect.width / 2,
-			name: 'n'
+			name: 'arrow_n'
 		} )
 	};
 
