@@ -51,7 +51,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  *		this.listenTo( editor.editing.view, 'clipboardInput', ( evt, data ) => {
  *			const content = customTransform( data.dataTransfer.get( 'text/html' ) );
  *			const transformedContent = transform( content );
- * 			data.dataTransfer.set( 'text/html', transformedContent );
+ *			data.dataTransfer.set( 'text/html', transformedContent );
  *		} );
  *
  * ### On {@link module:clipboard/clipboard~Clipboard#event:inputTransformation}

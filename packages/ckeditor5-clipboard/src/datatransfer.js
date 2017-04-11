@@ -13,20 +13,29 @@
 export default class DataTransfer {
 	constructor( nativeDataTransfer ) {
 		/**
+		 * The array of files created from the native `DataTransfer#files` or `DataTransfer#items`.
+		 *
+		 * @readonly
+		 * @member {Array.<File>} #files
+		 */
+		this.files = getFiles( nativeDataTransfer );
+
+		/**
 		 * The native DataTransfer object.
 		 *
 		 * @private
 		 * @member {DataTransfer} #_native
 		 */
 		this._native = nativeDataTransfer;
+	}
 
-		/**
-		 * The array of files created from the native `DataTransfer#files` and `DataTransfer#items` objects.
-		 *
-		 * @public
-		 * @member {Array.<File>} #files
-		 */
-		this.files = Array.from( this._getFiles() );
+	/**
+	 * Returns an array of available native content types.
+	 *
+	 * @returns {Array.<String>}
+	 */
+	get types() {
+		return this._native.types;
 	}
 
 	/**
@@ -50,26 +59,18 @@ export default class DataTransfer {
 	setData( type, data ) {
 		this._native.setData( type, data );
 	}
+}
 
-	*_getFiles() {
-		// DataTransfer.files and items are Array-like and might not have an iterable interface.
-		const files = this._native.files ? Array.from( this._native.files ) : [];
-		const items = this._native.items ? Array.from( this._native.items ) : [];
+function getFiles( nativeDataTransfer ) {
+	// DataTransfer.files and items are Array-like and might not have an iterable interface.
+	const files = nativeDataTransfer.files ? Array.from( nativeDataTransfer.files ) : [];
+	const items = nativeDataTransfer.items ? Array.from( nativeDataTransfer.items ) : [];
 
-		if ( files.length ) {
-			yield* files;
-		}
-		// // Chrome have empty DataTransfer.files, but let get files through the items interface.
-		else {
-			for ( const item of items ) {
-				if ( item.kind == 'file' ) {
-					yield item.getAsFile();
-				}
-			}
-		}
+	if ( files.length ) {
+		return files;
 	}
-
-	get types() {
-		return this._native.types;
-	}
+	// Chrome have empty DataTransfer.files, but let get files through the items interface.
+	return items
+		.filter( item => item.kind === 'file' )
+		.map( item => item.getAsFile() );
 }
