@@ -7,7 +7,7 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
 import ArticlePresets from '@ckeditor/ckeditor5-presets/src/article';
-import ContextualToolbar from '../../../src/toolbar/contextualtoolbar';
+import ContextualToolbar from '../../../src/toolbar/contextual/contextualtoolbar';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ ArticlePresets, ContextualToolbar ],
