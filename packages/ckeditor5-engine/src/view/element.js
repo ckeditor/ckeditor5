@@ -685,12 +685,72 @@ export default class Element extends Node {
 // @param {Map.<String, String>} stylesMap Map to insert parsed properties and values.
 // @param {String} stylesString Styles to parse.
 function parseInlineStyles( stylesMap, stylesString ) {
-	const regex = /\s*([^:;\s]+)\s*:\s*([^;]+)\s*(?=;|$)/g;
-	let matchStyle;
+	// `null` if no quote was found in input string or last found quote was a closing quote. See below.
+	let quoteType = null;
+	let propertyNameStart = 0;
+	let propertyValueStart = 0;
+	let propertyName = null;
+
 	stylesMap.clear();
 
-	while ( ( matchStyle = regex.exec( stylesString ) ) !== null ) {
-		stylesMap.set( matchStyle[ 1 ], matchStyle[ 2 ].trim() );
+	// Do not set anything if input string is empty.
+	if ( stylesString === '' ) {
+		return;
+	}
+
+	// Fix inline styles that do not end with `;` so they are compatible with algorithm below.
+	if ( stylesString.charAt( stylesString.length - 1 ) != ';' ) {
+		stylesString = stylesString + ';';
+	}
+
+	// Seek the whole string for "special characters".
+	for ( let i = 0; i < stylesString.length; i++ ) {
+		const char = stylesString.charAt( i );
+
+		if ( quoteType === null ) {
+			// No quote found yet or last found quote was a closing quote.
+			switch ( char ) {
+				case ':':
+					// Most of time colon means that property name just ended.
+					// Sometimes however `:` is found inside property value (for example in background image url).
+					if ( !propertyName ) {
+						// Treat this as end of property only if property name is not already saved.
+						// Save property name.
+						propertyName = stylesString.substr( propertyNameStart, i - propertyNameStart );
+						// Save this point as the start of property value.
+						propertyValueStart = i + 1;
+					}
+
+					break;
+
+				case '"':
+				case '\'':
+					// Opening quote found (this is an opening quote, because `quoteType` is `null`).
+					quoteType = char;
+
+					break;
+
+				case ';':
+					// Property value just ended.
+					// Use previously stored property value start to obtain property value.
+					let propertyValue = stylesString.substr( propertyValueStart, i - propertyValueStart );
+
+					if ( propertyName ) {
+						// Save parsed part.
+						stylesMap.set( propertyName.trim(), propertyValue.trim() );
+					}
+
+					propertyName = null;
+
+					// Save this point as property name start. Property name starts immediately after previous property value ends.
+					propertyNameStart = i + 1;
+
+					break;
+			}
+		} else if ( char === quoteType ) {
+			// If a quote char is found and it is a closing quote, mark this fact by `null`-ing `quoteType`.
+			quoteType = null;
+		}
 	}
 }
 
