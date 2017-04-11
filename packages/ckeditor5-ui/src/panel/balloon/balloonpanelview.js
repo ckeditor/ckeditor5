@@ -359,6 +359,42 @@ BalloonPanelView.arrowVerticalOffset = 15;
  *		              V
  *		         [ Target ]
  *
+ *
+ * * Forward selection:
+ *
+ * 		[text range]
+ * 		           ^
+ * 		  +-----------------+
+ * 		  |     Balloon     |
+ * 		  +-----------------+
+ *
+ *
+ * * Forward selection alternative:
+ *
+ * 		  +-----------------+
+ * 		  |     Balloon     |
+ * 		  +-----------------+
+ * 		           V
+ * 		[text range]
+ *
+ *
+ * * Backward selection:
+ *
+ * 		+-----------------+
+ * 		|     Balloon     |
+ * 		+-----------------+
+ * 		         V
+ * 		         [text range]
+ *
+ *
+ * * Backward selection alternative:
+ *
+ * 		         [text range]
+ * 		         ^
+ * 		+-----------------+
+ * 		|     Balloon     |
+ * 		+-----------------+
+ *
  * See {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo}.
  *
  * Positioning functions must be compatible with {@link module:utils/dom/position~Position}.
@@ -391,5 +427,29 @@ BalloonPanelView.defaultPositions = {
 		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_nw'
+	} ),
+
+	forwardSelection: ( targetRect, balloonRect ) => ( {
+		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
+		left: targetRect.right - balloonRect.width / 2,
+		name: 'arrow_s'
+	} ),
+
+	forwardSelectionAlternative: ( targetRect, balloonRect ) => ( {
+		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
+		left: targetRect.right - balloonRect.width / 2,
+		name: 'arrow_n'
+	} ),
+
+	backwardSelection: ( targetRect, balloonRect ) => ( {
+		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
+		left: targetRect.left - balloonRect.width / 2,
+		name: 'arrow_n'
+	} ),
+
+	backwardSelectionAlternative: ( targetRect, balloonRect ) => ( {
+		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
+		left: targetRect.left - balloonRect.width / 2,
+		name: 'arrow_s'
 	} )
 };

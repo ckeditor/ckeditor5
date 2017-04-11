@@ -13,6 +13,8 @@ import ToolbarView from './toolbarview';
 import BalloonPanelView from '../panel/balloon/balloonpanelview.js';
 import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
 
+const defaultPositions = BalloonPanelView.defaultPositions;
+
 /**
  * The contextual toolbar.
  *
@@ -194,8 +196,8 @@ export default class ContextualToolbar extends Plugin {
 		return {
 			target: rangeRect,
 			positions: isBackward ?
-				[ positions.backwardSelection, positions.backwardSelectionAlternative ] :
-				[ positions.forwardSelection, positions.forwardSelectionAlternative ],
+				[ defaultPositions.backwardSelection, defaultPositions.backwardSelectionAlternative ] :
+				[ defaultPositions.forwardSelection, defaultPositions.forwardSelectionAlternative ],
 		};
 	}
 
@@ -208,51 +210,3 @@ export default class ContextualToolbar extends Plugin {
 		super.destroy();
 	}
 }
-
-// List of available toolbar positions.
-const arrowVOffset = BalloonPanelView.arrowVerticalOffset;
-const positions = {
-	//     [text range]
-	//                ^
-	//       +-----------------+
-	//       |     Balloon     |
-	//       +-----------------+
-	forwardSelection: ( targetRect, balloonRect ) => ( {
-		top: targetRect.bottom + arrowVOffset,
-		left: targetRect.right - balloonRect.width / 2,
-		name: 's'
-	} ),
-
-	//       +-----------------+
-	//       |     Balloon     |
-	//       +-----------------+
-	//                V
-	//     [text range]
-	forwardSelectionAlternative: ( targetRect, balloonRect ) => ( {
-		top: targetRect.top - balloonRect.height - arrowVOffset,
-		left: targetRect.right - balloonRect.width / 2,
-		name: 'n'
-	} ),
-
-	//	+-----------------+
-	//	|     Balloon     |
-	//	+-----------------+
-	//	        V
-	//	        [text range]
-	backwardSelection: ( targetRect, balloonRect ) => ( {
-		top: targetRect.top - balloonRect.height - arrowVOffset,
-		left: targetRect.left - balloonRect.width / 2,
-		name: 'n'
-	} ),
-
-	//       [text range]
-	//                  ^
-	//         +-----------------+
-	//         |     Balloon     |
-	//         +-----------------+
-	backwardSelectionAlternative: ( targetRect, balloonRect ) => ( {
-		top: targetRect.bottom + arrowVOffset,
-		left: targetRect.left - balloonRect.width / 2,
-		name: 's'
-	} )
-};

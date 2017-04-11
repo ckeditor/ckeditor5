@@ -630,6 +630,96 @@ describe( 'BalloonPanelView', () => {
 			} );
 		} );
 	} );
+
+	describe( 'defaultPositions', () => {
+		let positions, balloonRect, targetRect;
+
+		beforeEach( () => {
+			positions = BalloonPanelView.defaultPositions;
+
+			targetRect = {
+				top: 100,
+				bottom: 200,
+				left: 100,
+				right: 200,
+				width: 100,
+				height: 100
+			};
+
+			balloonRect = {
+				top: 0,
+				bottom: 0,
+				left: 0,
+				right: 0,
+				width: 50,
+				height: 50
+			};
+		} );
+
+		it( 'se', () => {
+			expect( positions.se( targetRect ) ).to.deep.equal( {
+				top: 215,
+				left: 120,
+				name: 'arrow_se'
+			} );
+		} );
+
+		it( 'sw', () => {
+			expect( positions.sw( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 215,
+				left: 130,
+				name: 'arrow_sw'
+			} );
+		} );
+
+		it( 'ne', () => {
+			expect( positions.ne( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 35,
+				left: 120,
+				name: 'arrow_ne'
+			} );
+		} );
+
+		it( 'nw', () => {
+			expect( positions.nw( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 35,
+				left: 130,
+				name: 'arrow_nw'
+			} );
+		} );
+
+		it( 'forwardSelection', () => {
+			expect( positions.forwardSelection( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 215,
+				left: 175,
+				name: 'arrow_s'
+			} );
+		} );
+
+		it( 'forwardSelectionAlternative', () => {
+			expect( positions.forwardSelectionAlternative( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 35,
+				left: 175,
+				name: 'arrow_n'
+			} );
+		} );
+
+		it( 'backwardSelection', () => {
+			expect( positions.backwardSelection( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 35,
+				left: 75,
+				name: 'arrow_n'
+			} );
+		} );
+
+		it( 'backwardSelectionAlternative', () => {
+			expect( positions.backwardSelectionAlternative( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 215,
+				left: 75,
+				name: 'arrow_s'
+			} );
+		} );
+	} );
 } );
 
 function mockBoundingBox( element, data ) {
