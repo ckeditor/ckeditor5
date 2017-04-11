@@ -66,14 +66,14 @@ describe( 'ContextualToolbar', () => {
 		expect( contextualToolbar.toolbarView.items ).to.length( 2 );
 	} );
 
-	it( 'should fire internal `_selectionChangeDone` event 200 ms after last selection change', ( done ) => {
+	it( 'should fire internal `_selectionChangeDebounced` event 200 ms after last selection change', ( done ) => {
 		// This test uses setTimeout to test lodash#debounce because sinon fake timers
 		// doesn't work with lodash. Lodash keeps time related stuff in a closure
 		// and sinon is not able to override it.
 
 		const spy = sandbox.spy();
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
-		contextualToolbar.on( '_selectionChangeDone', spy );
+		contextualToolbar.on( '_selectionChangeDebounced', spy );
 
 		editor.document.selection.fire( 'change:range', {} );
 
@@ -108,7 +108,7 @@ describe( 'ContextualToolbar', () => {
 
 		expect( balloon.visibleView ).to.null;
 
-		contextualToolbar.fire( '_selectionChangeDone' );
+		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 	} );
@@ -116,7 +116,7 @@ describe( 'ContextualToolbar', () => {
 	it( 'should close when selection starts changing by a directChange', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
-		contextualToolbar.fire( '_selectionChangeDone' );
+		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 
@@ -128,7 +128,7 @@ describe( 'ContextualToolbar', () => {
 	it( 'should not close when selection starts changing by not a directChange', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
-		contextualToolbar.fire( '_selectionChangeDone' );
+		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 
@@ -140,7 +140,7 @@ describe( 'ContextualToolbar', () => {
 	it( 'should close when selection starts changing by not a directChange but will become collapsed', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
-		contextualToolbar.fire( '_selectionChangeDone' );
+		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		// Collapse range silently (without firing `change:range` { directChange: true } event).
 		const range = editor.document.selection._ranges[ 0 ];
@@ -162,7 +162,7 @@ describe( 'ContextualToolbar', () => {
 			height: 1000
 		} );
 
-		contextualToolbar.fire( '_selectionChangeDone' );
+		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 		expect( balloon.view.top ).to.be.above( 310 );
@@ -179,7 +179,7 @@ describe( 'ContextualToolbar', () => {
 			height: 310
 		} );
 
-		contextualToolbar.fire( '_selectionChangeDone' );
+		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 		expect( balloon.view.top ).to.be.below( 310 );
@@ -196,7 +196,7 @@ describe( 'ContextualToolbar', () => {
 			height: 1000
 		} );
 
-		contextualToolbar.fire( '_selectionChangeDone' );
+		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 		expect( balloon.view.top ).to.be.below( 100 );
@@ -213,7 +213,7 @@ describe( 'ContextualToolbar', () => {
 			height: 905
 		} );
 
-		contextualToolbar.fire( '_selectionChangeDone' );
+		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 		expect( balloon.view.top ).to.be.above( 100 );
@@ -223,12 +223,12 @@ describe( 'ContextualToolbar', () => {
 		setData( editor.document, '<paragraph>ba[]r</paragraph>' );
 
 		editor.document.selection.fire( 'change:range', {} );
-		contextualToolbar.fire( '_selectionChangeDone' );
+		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		setData( editor.document, '<paragraph>b[]ar</paragraph>' );
 
 		editor.document.selection.fire( 'change:range', {} );
-		contextualToolbar.fire( '_selectionChangeDone' );
+		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.null;
 	} );
@@ -237,7 +237,7 @@ describe( 'ContextualToolbar', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 		editor.ui.focusTracker.isFocused = true;
 
-		contextualToolbar.fire( '_selectionChangeDone' );
+		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 
@@ -249,12 +249,12 @@ describe( 'ContextualToolbar', () => {
 	it( 'should do nothing when panel is being added to balloon stack twice', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
-		contextualToolbar.fire( '_selectionChangeDone' );
+		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 
 		expect( () => {
-			contextualToolbar.fire( '_selectionChangeDone' );
+			contextualToolbar.fire( '_selectionChangeDebounced' );
 		} ).to.not.throw();
 	} );
 
@@ -263,7 +263,7 @@ describe( 'ContextualToolbar', () => {
 
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
-		contextualToolbar.fire( '_selectionChangeDone' );
+		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		sinon.assert.notCalled( spy );
 
@@ -277,7 +277,7 @@ describe( 'ContextualToolbar', () => {
 
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
-		contextualToolbar.fire( '_selectionChangeDone' );
+		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		// Hide toolbar.
 		editor.document.selection.fire( 'change:range', { directChange: true } );
@@ -294,10 +294,10 @@ describe( 'ContextualToolbar', () => {
 	} );
 
 	describe( 'destroy()', () => {
-		it( 'should not fire `_selectionChangeDone` after plugin destroy', ( done ) => {
+		it( 'should not fire `_selectionChangeDebounced` after plugin destroy', ( done ) => {
 			const spy = sandbox.spy();
 
-			contextualToolbar.on( '_selectionChangeDone', spy );
+			contextualToolbar.on( '_selectionChangeDebounced', spy );
 
 			editor.document.selection.fire( 'change:range', { directChange: true } );
 

@@ -57,17 +57,15 @@ export default class ContextualToolbar extends Plugin {
 		this._balloon = this.editor.plugins.get( ContextualBalloon );
 
 		/**
-		 * This is internal plugin event which is fired 200 ms after selection last change (lodash#debounce).
-		 * This is to makes easy test debounced action without need to use `setTimeout`. Lodash keeps time related
-		 * stuff in a closure and it's not possible to override it by sinon fake timers.
+		 * Fires {@link #event:_selectionChangeDebounced} event using `lodash#debounce`.
 		 *
-		 * This debounced function is stored as a plugin property to make possible to cancel
+		 * This function is stored as a plugin property to make possible to cancel
 		 * trailing debounced invocation on destroy.
 		 *
 		 * @private
 		 * @member {Function}
 		 */
-		this._fireChangeDoneDebounced = debounce( () => this.fire( '_selectionChangeDone' ), 200 );
+		this._fireSelectionChangeDebounced = debounce( () => this.fire( '_selectionChangeDebounced' ), 200 );
 
 		// Attach lifecycle actions.
 		this._handleSelectionChange();
@@ -122,12 +120,12 @@ export default class ContextualToolbar extends Plugin {
 				this._hidePanel();
 			}
 
-			// Fire internal `_selectionChangeDone` when the selection stops changing.
-			this._fireChangeDoneDebounced();
+			// Fire internal `_selectionChangeDebounced` when the selection stops changing.
+			this._fireSelectionChangeDebounced();
 		} );
 
 		// Hide the toolbar when the selection stops changing.
-		this.listenTo( this, '_selectionChangeDone', () => this._showPanel() );
+		this.listenTo( this, '_selectionChangeDebounced', () => this._showPanel() );
 	}
 
 	/**
@@ -205,8 +203,17 @@ export default class ContextualToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	destroy() {
-		this._fireChangeDoneDebounced.cancel();
+		this._fireSelectionChangeDebounced.cancel();
 		this.stopListening();
 		super.destroy();
 	}
+
+	/**
+	 * This is internal plugin event which is fired 200 ms after model selection last change (lodash#debounce).
+	 * This is to makes easy test debounced action without need to use `setTimeout`. Lodash keeps time related
+	 * stuff in a closure and it's not possible to override it by sinon fake timers.
+	 *
+	 * @private
+	 * @event _selectionChangeDebounced
+	 */
 }
