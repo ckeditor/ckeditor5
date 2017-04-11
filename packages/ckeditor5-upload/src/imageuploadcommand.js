@@ -26,7 +26,7 @@ export default class ImageUploadCommand extends Command {
 	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
 	 * New batch will be created if this option is not set.
 	 */
-	_doExecute( options = {} ) {
+	_doExecute( options ) {
 		const editor = this.editor;
 		const doc = editor.document;
 		const batch = options.batch || doc.batch();
