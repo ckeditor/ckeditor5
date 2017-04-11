@@ -84,35 +84,43 @@ export default class InlineEditorUIView extends EditorUIView {
 	 *
 	 * The positioning functions are as follows:
 	 *
-	 * * South east:
-	 *
-	 *		+------------------+
-	 *		| #editableElement |
-	 *		+------------------+
-	 *		           [ Panel ]
-	 *
-	 * * South west:
-	 *
-	 *		+------------------+
-	 *		| #editableElement |
-	 *		+------------------+
-	 *		[ Panel ]
-	 *
-	 * * North east:
-	 *
-	 *		           [ Panel ]
-	 *		+------------------+
-	 *		| #editableElement |
-	 *		+------------------+
-	 *
-	 *
-	 * * North west:
+	 * * West:
 	 *
 	 *		[ Panel ]
 	 *		+------------------+
 	 *		| #editableElement |
 	 *		+------------------+
 	 *
+	 *  	+------------------+
+	 *		| #editableElement |
+	 *		|[ Panel ]         |
+	 *		|                  |
+	 *		+------------------+
+	 *
+	 *		+------------------+
+	 *		| #editableElement |
+	 *		+------------------+
+	 *		[ Panel ]
+	 *
+	 * * East:
+	 *
+	 *		           [ Panel ]
+	 *		+------------------+
+	 *		| #editableElement |
+	 *		+------------------+
+	 *
+	 *  	+------------------+
+	 *		| #editableElement |
+	 *		|         [ Panel ]|
+	 *		|                  |
+	 *		+------------------+
+	 *
+	 *		+------------------+
+	 *		| #editableElement |
+	 *		+------------------+
+	 *		           [ Panel ]
+	 *
+	 * @readonly
 	 * @type {module:utils/dom/position~Options#positions}
 	 */
 	get panelPositions() {
@@ -126,24 +134,40 @@ export default class InlineEditorUIView extends EditorUIView {
 // @private
 // @type {module:utils/dom/position~Options#positions}
 const panelPositions = [
-	( editableRect, panelRect ) => ( {
-		top: editableRect.top - panelRect.height,
-		left: editableRect.left,
-		name: 'toolbar_nw'
-	} ),
-	( editableRect ) => ( {
-		top: editableRect.bottom,
-		left: editableRect.left,
-		name: 'toolbar_sw'
-	} ),
-	( editableRect, panelRect ) => ( {
-		top: editableRect.top - panelRect.height,
-		left: editableRect.left + editableRect.width - panelRect.width,
-		name: 'toolbar_ne'
-	} ),
-	( editableRect, panelRect ) => ( {
-		top: editableRect.bottom,
-		left: editableRect.left + editableRect.width - panelRect.width,
-		name: 'toolbar_se'
-	} )
+	( editableRect, panelRect ) => {
+		return {
+			top: getPanelPositionTop( editableRect, panelRect ),
+			left: editableRect.left,
+			name: 'toolbar_west'
+		};
+	},
+	( editableRect, panelRect ) => {
+		return {
+			top: getPanelPositionTop( editableRect, panelRect ),
+			left: editableRect.left + editableRect.width - panelRect.width,
+			name: 'toolbar_east'
+		};
+	}
 ];
+
+// Determines panel top position for
+// {@link module:editor-inline/inlineeditoruiview~InlineEditableUIView#panelPositions}
+//
+// @private
+// @param {module:utils/dom/rect~Rect} editableRect Rect of the
+// {@link module:editor-inline/inlineeditoruiview~InlineEditableUIView#editableElement}.
+// @param {module:utils/dom/rect~Rect} panelRect Rect of the
+// {@link module:editor-inline/inlineeditoruiview~InlineEditableUIView#panel}.
+function getPanelPositionTop( editableRect, panelRect ) {
+	let top;
+
+	if ( editableRect.top > panelRect.height ) {
+		top = editableRect.top - panelRect.height;
+	} else if ( editableRect.bottom > panelRect.height ) {
+		top = 0;
+	} else {
+		top = editableRect.bottom;
+	}
+
+	return top;
+}
