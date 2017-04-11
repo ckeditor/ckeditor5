@@ -75,7 +75,7 @@ describe( 'FileReader', () => {
 					expect( status ).to.equal( 'aborted' );
 				} );
 
-			nativeReaderMock.mockAbort();
+			nativeReaderMock.abort();
 
 			return promise;
 		} );

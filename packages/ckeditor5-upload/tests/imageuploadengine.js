@@ -182,7 +182,7 @@ describe( 'ImageUploadEngine', () => {
 
 		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
-		nativeReaderMock.mockAbort();
+		nativeReaderMock.abort();
 
 		setTimeout( () => {
 			sinon.assert.notCalled( spy );
