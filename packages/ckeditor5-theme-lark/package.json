@@ -7,7 +7,7 @@
     "@ckeditor/ckeditor5-ui": "^0.8.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^0.7.1",
+    "@ckeditor/ckeditor5-basic-styles": "^0.8.0",
     "@ckeditor/ckeditor5-dev-lint": "^2.0.2",
     "@ckeditor/ckeditor5-utils": "^0.9.0",
     "gulp": "^3.9.0",
