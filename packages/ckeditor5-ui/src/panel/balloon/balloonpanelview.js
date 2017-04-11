@@ -52,18 +52,22 @@ export default class BalloonPanelView extends View {
 
 		/**
 		 * Balloon panel's current position. The position name is reflected in the CSS class set
-		 * to the balloon, i.e. `.ck-balloon-panel_arrow_se` for "se" position. The class
+		 * to the balloon, i.e. `.ck-balloon-panel_arrow_se` for "arrow_se" position. The class
 		 * controls the minor aspects of the balloon's visual appearance like placement
 		 * of the "arrow". To support a new position, an additional CSS must be created.
 		 *
 		 * Default position names correspond with
 		 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
 		 *
+		 * See {@link #attachTo} to learn about custom balloon positions.
+		 *
+		 * See {@link #withArrow}.
+		 *
 		 * @observable
-		 * @default 'se'
-		 * @member {'se'|'sw'|'ne'|'nw'} #position
+		 * @default 'arrow_se'
+		 * @member {'arrow_se'|'arrow_sw'|'arrow_ne'|'arrow_nw'} #position
 		 */
-		this.set( 'position', 'se' );
+		this.set( 'position', 'arrow_se' );
 
 		/**
 		 * Controls whether the balloon panel is visible or not.
@@ -75,10 +79,28 @@ export default class BalloonPanelView extends View {
 		this.set( 'isVisible', false );
 
 		/**
+		 * Controls whether the balloon panel has an arrow. The presence of the arrow
+		 * is reflected in `ck-balloon-panel_with-arrow` CSS class.
+		 *
+		 * @observable
+		 * @default true
+		 * @member {Boolean} #withArrow
+		 */
+		this.set( 'withArrow', true );
+
+		/**
 		 * Max width of the balloon panel, as in CSS.
 		 *
 		 * @observable
 		 * @member {Number} #maxWidth
+		 */
+
+		/**
+		 * A callback that starts pining the panel when {@link #isVisible} gets
+		 * `true`. Used by {@link #pin}.
+		 *
+		 * @private
+		 * @member {Function} #_pinWhenIsVisibleCallback
 		 */
 
 		/**
@@ -94,8 +116,9 @@ export default class BalloonPanelView extends View {
 			attributes: {
 				class: [
 					'ck-balloon-panel',
-					bind.to( 'position', ( value ) => `ck-balloon-panel_arrow_${ value }` ),
-					bind.if( 'isVisible', 'ck-balloon-panel_visible' )
+					bind.to( 'position', ( value ) => `ck-balloon-panel_${ value }` ),
+					bind.if( 'isVisible', 'ck-balloon-panel_visible' ),
+					bind.if( 'withArrow', 'ck-balloon-panel_with-arrow' )
 				],
 
 				style: {
@@ -170,14 +193,57 @@ export default class BalloonPanelView extends View {
 	 *
 	 * Thanks to this, the panel always sticks to the {@link module:utils/dom/position~Options#target}.
 	 *
-	 * See https://github.com/ckeditor/ckeditor5-ui/issues/170.
+	 * See: {@link #unpin}.
 	 *
 	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
 	 * {@link module:utils/dom/position~getOptimalPosition}. Default `positions` array is
 	 * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
 	 */
-	keepAttachedTo( options ) {
-		// First we need to attach the balloon panel to the target element.
+	pin( options ) {
+		this.unpin();
+
+		this._pinWhenIsVisibleCallback = () => {
+			if ( this.isVisible ) {
+				this._startPinning( options );
+			} else {
+				this._stopPinning();
+			}
+		};
+
+		this._startPinning( options );
+
+		// Control the state of the listeners depending on whether the panel is visible
+		// or not.
+		// TODO: Use on() (https://github.com/ckeditor/ckeditor5-utils/issues/144).
+		this.listenTo( this, 'change:isVisible', this._pinWhenIsVisibleCallback );
+	}
+
+	/**
+	 * Stops pinning the panel, as set up by {@link #pin}.
+	 */
+	unpin() {
+		if ( this._pinWhenIsVisibleCallback ) {
+			// Deactivate listeners attached by pin().
+			this._stopPinning();
+
+			// Deactivate the panel pin() control logic.
+			// TODO: Use off() (https://github.com/ckeditor/ckeditor5-utils/issues/144).
+			this.stopListening( this, 'change:isVisible', this._pinWhenIsVisibleCallback );
+
+			this._pinWhenIsVisibleCallback = null;
+
+			this.hide();
+		}
+	}
+
+	/**
+	 * Starts managing the pinned state of the panel. See {@link #pin}.
+	 *
+	 * @private
+	 * @param {module:utils/dom/position~Options} options Positioning options compatible with
+	 * {@link module:utils/dom/position~getOptimalPosition}.
+	 */
+	_startPinning( options ) {
 		this.attachTo( options );
 
 		const limiter = options.limiter || defaultLimiterElement;
@@ -199,23 +265,19 @@ export default class BalloonPanelView extends View {
 		}, { useCapture: true } );
 
 		// We need to listen on window resize event and update position.
-		this.listenTo( global.window, 'resize', () => this.attachTo( options ) );
-
-		// After all we need to clean up the listeners.
-		this.once( 'change:isVisible', () => {
-			this.stopListening( global.document, 'scroll' );
-			this.stopListening( global.window, 'resize' );
+		this.listenTo( global.window, 'resize', () => {
+			this.attachTo( options );
 		} );
 	}
 
 	/**
-	 * @inheritDoc
+	 * Stops managing the pinned state of the panel. See {@link #pin}.
+	 *
+	 * @private
 	 */
-	destroy() {
+	_stopPinning() {
 		this.stopListening( global.document, 'scroll' );
 		this.stopListening( global.window, 'resize' );
-
-		return super.destroy();
 	}
 }
 
@@ -310,24 +372,24 @@ BalloonPanelView.defaultPositions = {
 	se: ( targetRect ) => ( {
 		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - BalloonPanelView.arrowHorizontalOffset,
-		name: 'se'
+		name: 'arrow_se'
 	} ),
 
 	sw: ( targetRect, balloonRect ) => ( {
 		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
-		name: 'sw'
+		name: 'arrow_sw'
 	} ),
 
 	ne: ( targetRect, balloonRect ) => ( {
 		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - BalloonPanelView.arrowHorizontalOffset,
-		name: 'ne'
+		name: 'arrow_ne'
 	} ),
 
 	nw: ( targetRect, balloonRect ) => ( {
 		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
-		name: 'nw'
+		name: 'arrow_nw'
 	} )
 };

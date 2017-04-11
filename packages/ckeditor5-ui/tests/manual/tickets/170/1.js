@@ -52,7 +52,7 @@ ClassicEditor.create( document.querySelector( '#editor-stick' ), {
 	editor.ui.view.element.querySelector( '.ck-editor__editable' ).scrollTop = 360;
 
 	panel.init().then( () => {
-		panel.keepAttachedTo( {
+		panel.pin( {
 			target: editor.ui.view.element.querySelector( '.ck-editor__editable p strong' ),
 			limiter: editor.ui.view.editableElement
 		} );
