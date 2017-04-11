@@ -16,6 +16,17 @@ import { isImageType } from './utils';
  * @extends module:core/plugin~Plugin
  */
 export default class ImageUploadEngine extends Plugin {
+	constructor( editor ) {
+		super( editor );
+
+		/**
+		 * Image's placeholder that is displayed before real image data can be accessed.
+		 *
+		 * @member {String} #placeholder
+		 */
+		this.placeholder = 'data:image/svg+xml;utf8,' + uploadingPlaceholder;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -78,9 +89,8 @@ export default class ImageUploadEngine extends Plugin {
 			const modelImage = data.item;
 			const viewFigure = editor.editing.mapper.toViewElement( modelImage );
 			const viewImg = viewFigure.getChild( 0 );
-			const svgData = 'data:image/svg+xml;utf8,' + uploadingPlaceholder;
 
-			viewImg.setAttribute( 'src', svgData );
+			viewImg.setAttribute( 'src', this.placeholder );
 		} );
 	}
 

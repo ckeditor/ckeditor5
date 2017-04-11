@@ -197,4 +197,16 @@ describe( 'ImageUploadEngine', () => {
 			'[]<figure class="image ck-widget" contenteditable="false"><img src="image.png"></img></figure>'
 		);
 	} );
+
+	it( 'should allow to customize placeholder image', () => {
+		const uploadEngine = editor.plugins.get( ImageUploadEngine );
+		uploadEngine.placeholder = base64Sample;
+		setModelData( document, '<image uploadId="1234"></image>' );
+
+		expect( getViewData( viewDocument ) ).to.equal(
+			'[]<figure class="image ck-widget" contenteditable="false">' +
+			`<img src="${ base64Sample }"></img>` +
+			'</figure>'
+		);
+	} );
 } );
