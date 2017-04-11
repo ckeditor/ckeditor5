@@ -78,6 +78,10 @@ describe( 'InlineEditorUI', () => {
 
 				editor.editing.view.fire( 'render' );
 				sinon.assert.calledOnce( spy );
+				sinon.assert.calledWithExactly( spy, {
+					target: view.editableElement,
+					positions: sinon.match.array
+				} );
 			} );
 		} );
 

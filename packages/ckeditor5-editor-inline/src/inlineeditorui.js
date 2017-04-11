@@ -45,12 +45,6 @@ export default class InlineEditorUI {
 		this.focusTracker = new FocusTracker();
 
 		// Set–up the view#panel.
-		const { nw, sw, ne, se } = InlineEditorUI.defaultPositions;
-		const panelOptions = {
-			target: view.editableElement,
-			positions: [ nw, sw, ne, se ]
-		};
-
 		view.panel.bind( 'isVisible' ).to( this.focusTracker, 'isFocused' );
 
 		// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
@@ -58,7 +52,10 @@ export default class InlineEditorUI {
 			// Don't pin if the panel is not already visible. It prevents the panel
 			// showing up when there's no focus in the UI.
 			if ( view.panel.isVisible ) {
-				view.panel.pin( panelOptions );
+				view.panel.pin( {
+					target: view.editableElement,
+					positions: view.panelPositions
+				} );
 			}
 		} );
 
@@ -105,68 +102,3 @@ export default class InlineEditorUI {
 		return this.view.destroy();
 	}
 }
-
-/**
- * A default set of positioning functions used by the toolbar to float around
- * {@link module:editor-inline/inlineeditoruiview~InlineEditorUIView#editableElement}.
- *
- * The available positioning functions are as follows:
- *
- * * South east:
- *
- *		+------------------+
- *		| #editableElement |
- *		+------------------+
- *		           [ Panel ]
- *
- * * South west:
- *
- *		+------------------+
- *		| #editableElement |
- *		+------------------+
- *		[ Panel ]
- *
- * * North east:
- *
- *		           [ Panel ]
- *		+------------------+
- *		| #editableElement |
- *		+------------------+
- *
- *
- * * North west:
- *
- *		[ Panel ]
- *		+------------------+
- *		| #editableElement |
- *		+------------------+
- *
- * Positioning functions must be compatible with {@link module:utils/dom/position~Position}.
- *
- * @member {Object} module:editor-inline/inlineeditorui~InlineEditorUI.defaultPositions
- */
-InlineEditorUI.defaultPositions = {
-	nw: ( targetRect, panelRect ) => ( {
-		top: targetRect.top - panelRect.height,
-		left: targetRect.left,
-		name: 'toolbar_nw'
-	} ),
-
-	sw: ( targetRect ) => ( {
-		top: targetRect.bottom,
-		left: targetRect.left,
-		name: 'toolbar_sw'
-	} ),
-
-	ne: ( targetRect, panelRect ) => ( {
-		top: targetRect.top - panelRect.height,
-		left: targetRect.left + targetRect.width - panelRect.width,
-		name: 'toolbar_ne'
-	} ),
-
-	se: ( targetRect, panelRect ) => ( {
-		top: targetRect.bottom,
-		left: targetRect.left + targetRect.width - panelRect.width,
-		name: 'toolbar_se'
-	} )
-};
