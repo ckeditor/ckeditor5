@@ -151,7 +151,7 @@ describe( 'ContextualToolbar', () => {
 		expect( balloon.visibleView ).to.null;
 	} );
 
-	it( 'should open below if the selection is forward', () => {
+	it( 'should put balloon on the `south` if the selection is forward', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
 		// Mock limiter rect.
@@ -165,10 +165,10 @@ describe( 'ContextualToolbar', () => {
 		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-		expect( balloon.view.top ).to.be.above( 310 );
+		expect( balloon.view.position ).to.equal( 'arrow_s' );
 	} );
 
-	it( 'should open above if the selection is forward but panel stick out of the limiter element', () => {
+	it( 'should put balloon on the `north` if the selection is forward `south` is limited', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
 		// Mock limiter rect.
@@ -182,10 +182,10 @@ describe( 'ContextualToolbar', () => {
 		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-		expect( balloon.view.top ).to.be.below( 310 );
+		expect( balloon.view.position ).to.equal( 'arrow_n' );
 	} );
 
-	it( 'should open above if the selection is backward', () => {
+	it( 'should put balloon on the `north` if the selection is backward', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>', { lastRangeBackward: true } );
 
 		// Mock limiter rect.
@@ -199,10 +199,10 @@ describe( 'ContextualToolbar', () => {
 		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-		expect( balloon.view.top ).to.be.below( 100 );
+		expect( balloon.view.position ).to.equal( 'arrow_n' );
 	} );
 
-	it( 'should open below if the selection is backward but panel stick out of the limiter element', () => {
+	it( 'should put balloon on the `south` if the selection is backward `north` is limited', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>', { lastRangeBackward: true } );
 
 		// Mock limiter rect.
@@ -216,7 +216,7 @@ describe( 'ContextualToolbar', () => {
 		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-		expect( balloon.view.top ).to.be.above( 100 );
+		expect( balloon.view.position ).to.be.equal( 'arrow_s' );
 	} );
 
 	it( 'should not open if the collapsed selection is moving', () => {
