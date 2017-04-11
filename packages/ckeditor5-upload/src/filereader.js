@@ -9,8 +9,8 @@
 
 /* globals window */
 
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin.js';
-import mix from '@ckeditor/ckeditor5-utils/src/mix.js';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * FileReader class - wrapper over native FileReader.

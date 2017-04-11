@@ -46,7 +46,8 @@ export default class FileRepository extends Plugin {
 		/**
 		 * Function that should be defined before using FileRepository. It should return new instance of
 		 * {@link module:upload/filerepository~Adapter Adapter} that will be used to upload files.
-		 * {@link module:upload/filerepository~FileLoader FileLoader} instance will be passed to that function.
+		 * {@link module:upload/filerepository~FileLoader FileLoader} instance associated with the adapter
+		 * will be passed to that function.
 		 *
 		 *	fileRepository.createAdapter = function( loader ) {
 		 *		return new ServerAdapter();
@@ -436,7 +437,8 @@ mix( FileLoader, ObservableMixin );
  *		original: 'http://server/orginal-size.image.png'
  *	}
  *
- * Take a look at {@link module:upload/filerepository~Adapter example Adapter implementation}.
+ * Take a look at {@link module:upload/filerepository~Adapter example Adapter implementation} and
+ * {@link module:upload/filerepository~FileRepository#createAdapter createAdapter method}.
  *
  * @method module:upload/filerepository~Adapter#upload
  * @returns {Promise} Promise that should be resolved when data is uploaded.
@@ -446,7 +448,8 @@ mix( FileLoader, ObservableMixin );
  * Aborts the upload process.
  * After aborting it should reject promise returned from {@link #upload upload()} method with "aborted" string.
  *
- * Take a look at {@link module:upload/filerepository~Adapter example Adapter implementation}.
+ * Take a look at {@link module:upload/filerepository~Adapter example Adapter implementation} and
+ * {@link module:upload/filerepository~FileRepository#createAdapter createAdapter method}.
  *
  * @method module:upload/filerepository~Adapter#abort
  */
