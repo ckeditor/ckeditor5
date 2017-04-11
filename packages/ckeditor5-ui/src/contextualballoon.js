@@ -167,7 +167,7 @@ export default class ContextualBalloon extends Plugin {
 	 */
 	_show( view ) {
 		this.view.content.add( view );
-		this.view.keepAttachedTo( this._getBalloonPosition() );
+		this.view.pin( this._getBalloonPosition() );
 	}
 
 	/**
