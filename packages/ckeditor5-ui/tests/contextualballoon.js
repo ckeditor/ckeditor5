@@ -7,7 +7,6 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import ContextualBalloon from '../src/contextualballoon';
 import BalloonPanelView from '../src/panel/balloon/balloonpanelview';
 import View from '../src/view';
-import Template from '../src/template';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
@@ -30,8 +29,8 @@ describe( 'ContextualBalloon', () => {
 			// We don't need to test attachTo method of BalloonPanel it's enough to check if was called with proper data.
 			sinon.stub( balloon.view, 'attachTo', () => {} );
 
-			viewA = new ViewA();
-			viewB = new ViewB();
+			viewA = new View();
+			viewB = new View();
 
 			// Add viewA to the pane and init viewB.
 			return Promise.all( [
@@ -91,7 +90,17 @@ describe( 'ContextualBalloon', () => {
 	describe( 'add()', () => {
 		it( 'should return promise resolved when view is ready', ( done ) => {
 			const clock = sinon.useFakeTimers();
-			const view = new LongInitView();
+
+			const view = {
+				init: () => {
+					return new Promise( ( resolve ) => {
+						setTimeout( () => {
+							resolve();
+						}, 10 );
+					} );
+				},
+				destroy: () => {}
+			};
 
 			const result = balloon.add( {
 				view: view,
@@ -99,8 +108,11 @@ describe( 'ContextualBalloon', () => {
 			} );
 
 			expect( result ).to.instanceof( Promise );
+
 			result.then( done );
+
 			clock.tick( 11 );
+			clock.restore();
 		} );
 
 		it( 'should add view to the stack and display in balloon attached using given position options', () => {
@@ -195,7 +207,17 @@ describe( 'ContextualBalloon', () => {
 
 		it( 'should wait for init of preceding view when was is not ready', ( done ) => {
 			const clock = sinon.useFakeTimers();
-			const view = new LongInitView();
+
+			const view = {
+				init: () => {
+					return new Promise( ( resolve ) => {
+						setTimeout( () => {
+							resolve();
+						}, 10 );
+					} );
+				},
+				destroy: () => {}
+			};
 
 			balloon.add( {
 				view: view,
@@ -210,6 +232,7 @@ describe( 'ContextualBalloon', () => {
 			balloon.remove( viewB ).then( done );
 
 			clock.tick( 11 );
+			clock.restore();
 		} );
 
 		it( 'should remove given view from the stack when view is not visible', () => {
@@ -273,21 +296,3 @@ describe( 'ContextualBalloon', () => {
 		} );
 	} );
 } );
-
-class GenericView extends View {
-	constructor( locale ) {
-		super( locale );
-
-		this.template = new Template( { tag: 'div' } );
-	}
-}
-
-class ViewA extends GenericView {}
-
-class ViewB extends GenericView {}
-
-class LongInitView extends GenericView {
-	init() {
-		setTimeout( () => super.init(), 10 );
-	}
-}
