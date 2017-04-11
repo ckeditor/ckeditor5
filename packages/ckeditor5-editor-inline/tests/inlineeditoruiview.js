@@ -94,7 +94,7 @@ describe( 'InlineEditorUIView', () => {
 	} );
 
 	describe( 'panelPositions', () => {
-		it( 'returns the right positions in the right order', () => {
+		it( 'returns the positions in the right order', () => {
 			const positions = view.panelPositions;
 			const editableRect = {
 				top: 100,
@@ -105,39 +105,128 @@ describe( 'InlineEditorUIView', () => {
 				height: 100
 			};
 			const panelRect = {
-				top: 0,
-				bottom: 0,
-				left: 0,
-				right: 0,
 				width: 50,
 				height: 50
 			};
 
-			expect( positions ).to.have.length( 4 );
-
-			expect( positions[ 0 ]( editableRect, panelRect ) ).to.deep.equal( {
-				name: 'toolbar_nw',
-				left: 100,
-				top: 50
-			} );
-
-			expect( positions[ 1 ]( editableRect, panelRect ) ).to.deep.equal( {
-				name: 'toolbar_sw',
-				left: 100,
-				top: 200
-			} );
-
-			expect( positions[ 2 ]( editableRect, panelRect ) ).to.deep.equal( {
-				name: 'toolbar_ne',
-				left: 150,
-				top: 50
-			} );
-
-			expect( positions[ 3 ]( editableRect, panelRect ) ).to.deep.equal( {
-				name: 'toolbar_se',
-				left: 150,
-				top: 200
-			} );
+			expect( positions ).to.have.length( 2 );
+			expect( positions[ 0 ]( editableRect, panelRect ).name ).to.equal( 'toolbar_west' );
+			expect( positions[ 1 ]( editableRect, panelRect ).name ).to.equal( 'toolbar_east' );
 		} );
+
+		describe( 'west', () => {
+			testTopPositions( 0, 100 );
+		} );
+
+		describe( 'east', () => {
+			testTopPositions( 1, 150 );
+		} );
+
+		function testTopPositions( positionIndex, expectedLeft ) {
+			it( 'positions the panel above editable when there\'s enough space', () => {
+				const position = view.panelPositions[ positionIndex ];
+				const editableRect = {
+					top: 101, // !
+					bottom: 200,
+					left: 100,
+					right: 100,
+					width: 100,
+					height: 100
+				};
+				const panelRect = {
+					width: 50,
+					height: 100 // !
+				};
+
+				const { top, left } = position( editableRect, panelRect );
+
+				expect( top ).to.equal( 1 );
+				expect( left ).to.equal( expectedLeft );
+			} );
+
+			it( 'positions the panel over the editable when there\'s not enough space above (1)', () => {
+				const position = view.panelPositions[ positionIndex ];
+				const editableRect = {
+					top: 100, // !
+					bottom: 300,
+					left: 100,
+					right: 100,
+					width: 100,
+					height: 200
+				};
+				const panelRect = {
+					width: 50,
+					height: 100 // !
+				};
+
+				const { top, left } = position( editableRect, panelRect );
+
+				expect( top ).to.equal( 0 );
+				expect( left ).to.equal( expectedLeft );
+			} );
+
+			it( 'positions the panel over the editable when there\'s not enough space above (2)', () => {
+				const position = view.panelPositions[ positionIndex ];
+				const editableRect = {
+					top: 99, // !
+					bottom: 399,
+					left: 100,
+					right: 100,
+					width: 100,
+					height: 200
+				};
+				const panelRect = {
+					width: 50,
+					height: 100 // !
+				};
+
+				const { top, left } = position( editableRect, panelRect );
+
+				expect( top ).to.equal( 0 );
+				expect( left ).to.equal( expectedLeft );
+			} );
+
+			it( 'positions the panel over the editable when there\'s not enough space above (3)', () => {
+				const position = view.panelPositions[ positionIndex ];
+				const editableRect = {
+					top: 51, // !
+					bottom: 399,
+					left: 100,
+					right: 100,
+					width: 100,
+					height: 200
+				};
+				const panelRect = {
+					width: 50,
+					height: 100 // !
+				};
+
+				const { top, left } = position( editableRect, panelRect );
+
+				expect( top ).to.equal( 0 );
+				expect( left ).to.equal( expectedLeft );
+			} );
+
+			it( 'positions the panel below the editable when there\'s not enough space above/over', () => {
+				const position = view.panelPositions[ positionIndex ];
+				const editableRect = {
+					top: 50,
+					bottom: 150, // !
+					left: 100,
+					right: 100,
+					width: 100,
+					height: 100
+				};
+				const panelRect = {
+					width: 50,
+					height: 100 // !
+				};
+
+				const { top, left } = position( editableRect, panelRect );
+
+				expect( top ).to.equal( 150 );
+				expect( left ).to.equal( expectedLeft );
+			} );
+		}
 	} );
 } );
