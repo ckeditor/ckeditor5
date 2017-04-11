@@ -18,9 +18,9 @@
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm#57f962ec3e349676eba278a1648f2fc73e88e41a",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#5aef207c1f960b8a5b690282094c4ddf613967c2",
     "@ckeditor/ckeditor5-presets": "ckeditor/ckeditor5-presets#705afe9efb738b2fc946db07ff90852f5e58bb60",
-    "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#fcb4db663765741d1584038786a8e5ad63f75d03",
+    "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#c2ae35833d9f0248ea88eee618d714a107c1edc2",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#5ce22b8e59963c4d9249c85a65ac0a5a8e3c37e5",
-    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#cb5e915656cf87ccb3d1f4ab7694b8296c3958bb",
+    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#d3cb995af235020246b3e37070e6c5103bf75ffa",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#af50fb3688ebdb798dbe982387ac6b3a8bcf1a42",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#16995e20b94f6b22f5557986baf7b463387f2b59",
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#fefb015d00f01f5eb17d01d856c53c7ad29ef068"
