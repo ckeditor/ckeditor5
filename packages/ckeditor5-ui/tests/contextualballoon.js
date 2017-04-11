@@ -11,7 +11,7 @@ import Template from '../src/template';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-/* global document, window, Event */
+/* global document */
 
 describe( 'ContextualBalloon', () => {
 	let editor, editorElement, balloon, viewA, viewB;
@@ -30,8 +30,9 @@ describe( 'ContextualBalloon', () => {
 			viewA = new ViewA();
 			viewB = new ViewB();
 
-			// We don't need to test attachTo method of BalloonPanel it's enough to check if was called with proper data.
+			// We don't need to test BalloonPanelView attachTo and pin methods it's enough to check if was called with proper data.
 			sinon.stub( balloon.view, 'attachTo', () => {} );
+			sinon.stub( balloon.view, 'pin', () => {} );
 		} );
 	} );
 
@@ -98,25 +99,17 @@ describe( 'ContextualBalloon', () => {
 
 			expect( balloon.view.content.length ).to.equal( 1 );
 			expect( balloon.view.content.get( 0 ) ).to.deep.equal( viewA );
-			expect( balloon.view.attachTo.calledOnce ).to.true;
-			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
+			expect( balloon.view.pin.calledOnce ).to.true;
+			expect( balloon.view.pin.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
 		} );
 
-		it( 'should update balloon position on scroll and resize', () => {
+		it( 'should pin balloon to the target element', () => {
 			balloon.add( {
 				view: viewA,
 				position: { target: document.createElement( 'div' ) }
 			} );
 
-			sinon.assert.calledOnce( balloon.view.attachTo );
-
-			window.dispatchEvent( new Event( 'resize' ) );
-
-			sinon.assert.calledTwice( balloon.view.attachTo );
-
-			document.dispatchEvent( new Event( 'scroll' ) );
-
-			sinon.assert.calledThrice( balloon.view.attachTo );
+			sinon.assert.calledOnce( balloon.view.pin );
 		} );
 
 		it( 'should throw an error when try to add the same view more than once', () => {
@@ -159,14 +152,14 @@ describe( 'ContextualBalloon', () => {
 				position: { target: 'fake', bar: 'biz' }
 			} );
 
-			expect( balloon.view.attachTo.calledTwice ).to.true;
+			expect( balloon.view.pin.calledTwice ).to.true;
 
-			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( {
+			expect( balloon.view.pin.firstCall.args[ 0 ] ).to.deep.equal( {
 				target: 'fake',
 				foo: 'bar'
 			} );
 
-			expect( balloon.view.attachTo.secondCall.args[ 0 ] ).to.deep.equal( {
+			expect( balloon.view.pin.secondCall.args[ 0 ] ).to.deep.equal( {
 				target: 'fake',
 				foo: 'bar'
 			} );
@@ -254,21 +247,7 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'updatePosition()', () => {
-		it( 'should attach balloon to the target using the same position options as currently set', () => {
-			balloon.add( {
-				view: viewA,
-				position: { target: 'fake' }
-			} );
-
-			balloon.view.attachTo.reset();
-
-			balloon.updatePosition();
-
-			expect( balloon.view.attachTo.calledOnce );
-			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
-		} );
-
-		it( 'should attach balloon to the target using the same position options as currently set when there is more than one view', () => {
+		it( 'should attach balloon to the target using the same position options as first view in the stack', () => {
 			balloon.add( {
 				view: viewA,
 				position: {
