@@ -131,16 +131,6 @@ describe( 'BalloonPanelView', () => {
 		} );
 	} );
 
-	describe( 'isVisible', () => {
-		it( 'should return view#isVisible value', () => {
-			expect( view.isVisible ).to.false;
-
-			view.isVisible = true;
-
-			expect( view.isVisible ).to.true;
-		} );
-	} );
-
 	describe( 'show()', () => {
 		it( 'should set view#isVisible as true', () => {
 			view.isVisible = false;
