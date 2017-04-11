@@ -15,96 +15,100 @@ $ck-balloon-arrow-half-width: 10px;
 	background: ck-color( 'background' );
 	border: 1px solid ck-border-color( 'foreground' );
 
-	&:before,
-	&:after {
-		width: 0;
-		height: 0;
-		border-style: solid;
-	}
-
-	&_arrow_s,
-	&_arrow_se,
-	&_arrow_sw {
+	&.ck-balloon-panel_with-arrow {
 		&:before,
 		&:after {
-			border-width: 0 $ck-balloon-arrow-half-width $ck-balloon-arrow-height $ck-balloon-arrow-half-width;
-		}
-
-		&:before {
-			border-color: transparent transparent ck-border-color( 'foreground' ) transparent;
-		}
-
-		&:after {
-			border-color: transparent transparent ck-color( 'background' ) transparent;
-			margin-top: $ck-balloon-arrow-offset;
+			width: 0;
+			height: 0;
+			border-style: solid;
 		}
 	}
 
-	&_arrow_n,
-	&_arrow_ne,
-	&_arrow_nw {
-		&:before,
-		&:after {
-			border-width: $ck-balloon-arrow-height $ck-balloon-arrow-half-width 0 $ck-balloon-arrow-half-width;
+	&.ck-balloon-panel_arrow {
+		&_s,
+		&_se,
+		&_sw {
+			&:before,
+			&:after {
+				border-width: 0 $ck-balloon-arrow-half-width $ck-balloon-arrow-height $ck-balloon-arrow-half-width;
+			}
+
+			&:before {
+				border-color: transparent transparent ck-border-color( 'foreground' ) transparent;
+			}
+
+			&:after {
+				border-color: transparent transparent ck-color( 'background' ) transparent;
+				margin-top: $ck-balloon-arrow-offset;
+			}
 		}
 
-		&:before {
-			border-color: ck-border-color( 'foreground' ) transparent  transparent;
+		&_n,
+		&_ne,
+		&_nw {
+			&:before,
+			&:after {
+				border-width: $ck-balloon-arrow-height $ck-balloon-arrow-half-width 0 $ck-balloon-arrow-half-width;
+			}
+
+			&:before {
+				border-color: ck-border-color( 'foreground' ) transparent  transparent;
+			}
+
+			&:after {
+				border-color: ck-color( 'background' ) transparent transparent transparent;
+				margin-bottom: $ck-balloon-arrow-offset;
+			}
 		}
 
-		&:after {
-			border-color: ck-color( 'background' ) transparent transparent transparent;
-			margin-bottom: $ck-balloon-arrow-offset;
+		&_s {
+			&:before,
+			&:after {
+				left: 50%;
+				margin-left: -$ck-balloon-arrow-half-width;
+				top: -$ck-balloon-arrow-height;
+			}
 		}
-	}
 
-	&_arrow_s {
-		&:before,
-		&:after {
-			left: 50%;
-			margin-left: -$ck-balloon-arrow-half-width;
-			top: -$ck-balloon-arrow-height;
+		&_se {
+			&:before,
+			&:after {
+				left: 2 * $ck-balloon-arrow-half-width;
+				top: -$ck-balloon-arrow-height;
+			}
 		}
-	}
 
-	&_arrow_se {
-		&:before,
-		&:after {
-			left: 2 * $ck-balloon-arrow-half-width;
-			top: -$ck-balloon-arrow-height;
+		&_sw {
+			&:before,
+			&:after {
+				right: 2 * $ck-balloon-arrow-half-width;
+				top: -$ck-balloon-arrow-height;
+			}
 		}
-	}
 
-	&_arrow_sw {
-		&:before,
-		&:after {
-			right: 2 * $ck-balloon-arrow-half-width;
-			top: -$ck-balloon-arrow-height;
+		&_n {
+			&:before,
+			&:after {
+				left: 50%;
+				margin-left: -$ck-balloon-arrow-half-width;
+				bottom: -$ck-balloon-arrow-height;
+			}
 		}
-	}
 
-	&_arrow_n {
-		&:before,
-		&:after {
-			left: 50%;
-			margin-left: -$ck-balloon-arrow-half-width;
-			bottom: -$ck-balloon-arrow-height;
+		&_ne {
+			&:before,
+			&:after {
+				left: 2 * $ck-balloon-arrow-half-width;
+				bottom: -$ck-balloon-arrow-height;
+			}
 		}
-	}
 
-	&_arrow_ne {
-		&:before,
-		&:after {
-			left: 2 * $ck-balloon-arrow-half-width;
-			bottom: -$ck-balloon-arrow-height;
-		}
-	}
-
-	&_arrow_nw {
-		&:before,
-		&:after {
-			right: 2 * $ck-balloon-arrow-half-width;
-			bottom: -$ck-balloon-arrow-height;
+		&_nw {
+			&:before,
+			&:after {
+				right: 2 * $ck-balloon-arrow-half-width;
+				bottom: -$ck-balloon-arrow-height;
+			}
 		}
 	}
 }
