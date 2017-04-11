@@ -49,15 +49,7 @@ export default class FileRepository extends Plugin {
 		 * {@link module:upload/filerepository~FileLoader FileLoader} instance will be passed to that function.
 		 *
 		 *	fileRepository.createAdapter = function( loader ) {
-		 *		return {
-		 *			upload: function() {
-		 *				return doSomeUpload( loader.file );
-		 *			},
-		 *
-		 *			abort: function() {
-		 *				abortUpload();
-		 *			}
-		 *		};
+		 *		return new ServerAdapter();
 		 *	};
 		 *
 		 * @abstract
@@ -400,21 +392,61 @@ class FileLoader {
 mix( FileLoader, ObservableMixin );
 
 /**
- * Adapter abstract class used by FileRepository to handle file upload.
+ * Adapter interface used by FileRepository to handle file upload. Adapter is a bridge between the editor and server that
+ * handles file uploads. It should contain logic necessary to initiate upload process and monitor its progress.
+ *
+ * It should implement two methods:
+ * * {@link module:upload/filerepository~Adapter#upload upload()},
+ * * {@link module:upload/filerepository~Adapter#abort abort()}.
+ *
+ * Example adapter implementation:
+ *
+ *	class Adapter {
+ *		constructor( loader ) {
+ *			// Save Loader instance to update upload progress.
+ *			this.loader = loader;
+ *		}
+ *
+ *		upload() {
+ *			// Update loader's progress.
+ *			server.onUploadProgress( data => {
+ *				loader.uploadTotal = data.total;
+ *				loader.uploaded = data.uploaded;
+ *			} ):
+ *
+ *			// Return promise that will be resolved when file is uploaded.
+ *			return server.upload( loader.file );
+ *		}
+ *
+ *		abort() {
+ *			// Reject promise returned from upload() method.
+ *			server.abortUpload();
+ *		}
+ *	}
  *
  * @interface Adapter
  */
 
 /**
  * Executes the upload process.
+ * This method should return a promise that will resolve when data will be uploaded to server. Promise should be
+ * resolved with an object containing information about uploaded file:
  *
- * @method #upload
+ *	{
+ *		original: 'http://server/orginal-size.image.png'
+ *	}
+ *
+ * Take a look at {@link module:upload/filerepository~Adapter example Adapter implementation}.
+ *
+ * @method module:upload/filerepository~Adapter#upload
  * @returns {Promise} Promise that should be resolved when data is uploaded.
  */
 
 /**
- * Aborts the upload proccess.
- * After aborting it should reject promise returned from {@link #upload} method with "aborted" string.
+ * Aborts the upload process.
+ * After aborting it should reject promise returned from {@link #upload upload()} method with "aborted" string.
  *
- * @method #abort
+ * Take a look at {@link module:upload/filerepository~Adapter example Adapter implementation}.
+ *
+ * @method module:upload/filerepository~Adapter#abort
  */
