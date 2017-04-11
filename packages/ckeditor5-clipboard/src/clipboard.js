@@ -32,7 +32,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  *
  * 1. get HTML or plain text from the clipboard,
  * 2. prevent the default action of the native `paste` or `drop` event,
- * 3. fire {@link module:engine/view/document~Document#event:input} with a
+ * 3. fire {@link module:engine/view/document~Document#event:clipboardInput} with a
  * {@link module:clipboard/datatransfer~DataTransfer `dataTransfer`} property.
  * 4. fire {@link module:clipboard/clipboard~Clipboard#event:inputTransformation} with a `data` containing the clipboard data parsed to
  * a {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
@@ -42,13 +42,13 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  * data from the clipboard (the {@link module:clipboard/datatransfer~DataTransfer `DataTransfer`}).
  * should plug a listener at this stage.
  *
- * ### On {@link module:engine/view/document~Document#event:input}
+ * ### On {@link module:engine/view/document~Document#event:clipboardInput}
  *
  * This action is performed by a low priority listener, so it can be overridden by a normal one.
  *
  * At this stage the dataTransfer object can be processed by the features, which want to transform the original dataTransform.
  *
- *		this.listenTo( editor.editing.view, 'input', ( evt, data ) => {
+ *		this.listenTo( editor.editing.view, 'clipboardInput', ( evt, data ) => {
  *			const content = customTransform( data.dataTransfer.get( 'text/html' ) );
  *			const transformedContent = transform( content );
  * 			data.dataTransfer.set( 'text/html', transformedContent );
@@ -132,7 +132,7 @@ export default class Clipboard extends Plugin {
 
 		// The clipboard paste pipeline.
 
-		this.listenTo( editingView, 'input', ( evt, data ) => {
+		this.listenTo( editingView, 'clipboardInput', ( evt, data ) => {
 			const dataTransfer = data.dataTransfer;
 			let content = '';
 

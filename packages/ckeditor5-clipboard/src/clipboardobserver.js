@@ -24,14 +24,13 @@ export default class ClipboardObserver extends DomEventObserver {
 
 		this.domEventType = [ 'paste', 'copy', 'cut', 'drop' ];
 
-		doc.on( 'paste', _handleInput, { priority: 'low' } );
-		doc.on( 'drop', _handleInput, { priority: 'low' } );
+		this.listenTo( doc, 'paste', handleInput, { priority: 'low' } );
+		this.listenTo( doc, 'drop', handleInput, { priority: 'low' } );
 
-		function _handleInput( evt, data ) {
-			// Prevent page refreshing.
+		function handleInput( evt, data ) {
 			data.preventDefault();
 
-			doc.fire( 'input', { dataTransfer: data.dataTransfer } );
+			doc.fire( 'clipboardInput', { dataTransfer: data.dataTransfer } );
 		}
 	}
 
