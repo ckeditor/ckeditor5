@@ -141,12 +141,12 @@ describe( 'ImageBalloonPanel', () => {
 		const balloonRect = { width: 50, height: 20 };
 
 		const northPosition = north( targetRect, balloonRect );
-		expect( northPosition.name ).to.equal( 'n' );
+		expect( northPosition.name ).to.equal( 'arrow_n' );
 		expect( northPosition.top ).to.equal( targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset );
 		expect( northPosition.left ).to.equal( targetRect.left + targetRect.width / 2 - balloonRect.width / 2 );
 
 		const southPosition = south( targetRect, balloonRect );
-		expect( southPosition.name ).to.equal( 's' );
+		expect( southPosition.name ).to.equal( 'arrow_s' );
 		expect( southPosition.top ).to.equal( targetRect.bottom + BalloonPanelView.arrowVerticalOffset );
 		expect( southPosition.left ).to.equal( targetRect.left + targetRect.width / 2 - balloonRect.width / 2 );
 	}
