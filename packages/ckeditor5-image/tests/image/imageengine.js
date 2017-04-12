@@ -58,7 +58,7 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert if there is no image class', () => {
-				editor.setData( '<figure><img src="foo.png" alt="alt text" /></figure>' );
+				editor.setData( '<figure class="quote">My quote</figure>' );
 
 				expect( getModelData( document, { withoutSelection: true } ) )
 					.to.equal( '' );
@@ -139,6 +139,13 @@ describe( 'ImageEngine', () => {
 				editor.setData( '<figure class="image"><img src="foo.png" alt="alt text" /><figcaption></figcaption></figure>' );
 
 				sinon.assert.calledOnce( conversionSpy );
+			} );
+
+			it( 'should convert bare img element', () => {
+				editor.setData( '<img src="foo.png" alt="alt text" />' );
+
+				expect( getModelData( document, { withoutSelection: true } ) )
+					.to.equal( '<image alt="alt text" src="foo.png"></image>' );
 			} );
 		} );
 	} );

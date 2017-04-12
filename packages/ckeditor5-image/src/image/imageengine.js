@@ -9,8 +9,10 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import { viewToModelImage, createImageAttributeConverter } from './converters';
+import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import { viewFigureToModel, createImageAttributeConverter } from './converters';
 import { toImageWidget } from './utils';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewEmptyElement from '@ckeditor/ckeditor5-engine/src/view/emptyelement';
 
@@ -52,8 +54,18 @@ export default class ImageEngine extends Plugin {
 		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'src' );
 		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'alt' );
 
+		// Build converter for view img element to model image element.
+		buildViewConverter().for( data.viewToModel )
+			.from( { name: 'img', attribute: { src: /.+/ } } )
+			.toElement( ( viewImage ) => new ModelElement( 'image', { src: viewImage.getAttribute( 'src' ) } ) );
+
+		// Build converter for alt attribute.
+		buildViewConverter().for( data.viewToModel )
+			.fromAttribute( 'alt' )
+			.toAttribute( 'alt' );
+
 		// Converter for figure element from view to model.
-		data.viewToModel.on( 'element:figure', viewToModelImage() );
+		data.viewToModel.on( 'element:figure', viewFigureToModel() );
 	}
 }
 
