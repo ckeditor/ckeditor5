@@ -215,21 +215,23 @@ describe( 'Link', () => {
 			sinon.assert.notCalled( spy );
 
 			// Balloon is visible, form focused.
-			balloon.add( { view: formView } );
-			formView.focusTracker.isFocused = true;
+			return balloon.add( { view: formView } )
+				.then( () => {
+					formView.focusTracker.isFocused = true;
 
-			editor.keystrokes.press( keyEvtData );
-			sinon.assert.notCalled( keyEvtData.preventDefault );
-			sinon.assert.notCalled( keyEvtData.stopPropagation );
-			sinon.assert.notCalled( spy );
+					editor.keystrokes.press( keyEvtData );
+					sinon.assert.notCalled( keyEvtData.preventDefault );
+					sinon.assert.notCalled( keyEvtData.stopPropagation );
+					sinon.assert.notCalled( spy );
 
-			// Balloon is still visible, form not focused.
-			formView.focusTracker.isFocused = false;
+					// Balloon is still visible, form not focused.
+					formView.focusTracker.isFocused = false;
 
-			editor.keystrokes.press( keyEvtData );
-			sinon.assert.calledOnce( keyEvtData.preventDefault );
-			sinon.assert.calledOnce( keyEvtData.stopPropagation );
-			sinon.assert.calledOnce( spy );
+					editor.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
 		} );
 
 		describe( 'close listeners', () => {
@@ -242,12 +244,12 @@ describe( 'Link', () => {
 					};
 
 					// Balloon is visible.
-					balloon.add( { view: formView } );
+					return balloon.add( { view: formView } ).then( () => {
+						editor.keystrokes.press( keyEvtData );
 
-					editor.keystrokes.press( keyEvtData );
-
-					expect( balloon.visibleView ).to.null;
-					sinon.assert.notCalled( focusEditableSpy );
+						expect( balloon.visibleView ).to.null;
+						sinon.assert.notCalled( focusEditableSpy );
+					} );
 				} );
 
 				it( 'should not close after Esc key press (from editor) when panel is in stack but not visible', () => {
@@ -258,17 +260,21 @@ describe( 'Link', () => {
 					};
 
 					const viewMock = {
+						init: () => {},
 						destroy: () => {}
 					};
 
-					balloon.add( { view: formView } );
-					balloon.add( { view: viewMock } );
+					return balloon.add( { view: formView } )
+						.then( () => {
+							return balloon.add( { view: viewMock } );
+						} )
+						.then( () => {
+							editor.keystrokes.press( keyEvtData );
 
-					editor.keystrokes.press( keyEvtData );
-
-					expect( balloon.visibleView ).to.equal( viewMock );
-					expect( balloon.hasView( formView ) ).to.true;
-					sinon.assert.notCalled( focusEditableSpy );
+							expect( balloon.visibleView ).to.equal( viewMock );
+							expect( balloon.hasView( formView ) ).to.true;
+							sinon.assert.notCalled( focusEditableSpy );
+						} );
 				} );
 
 				it( 'should close after Esc key press (from the form) and focus editable', () => {
@@ -278,29 +284,34 @@ describe( 'Link', () => {
 						stopPropagation: sinon.spy()
 					};
 
-					balloon.add( { view: formView } );
+					return balloon.add( { view: formView } )
+						.then( () => {
+							formView.keystrokes.press( keyEvtData );
 
-					formView.keystrokes.press( keyEvtData );
-
-					expect( balloon.visibleView ).to.null;
-					sinon.assert.calledOnce( focusEditableSpy );
+							expect( balloon.visibleView ).to.null;
+							sinon.assert.calledOnce( focusEditableSpy );
+						} );
 				} );
 			} );
 
 			describe( 'mouse', () => {
 				it( 'should close and not focus editable on click outside the panel', () => {
-					balloon.add( { view: formView } );
-					document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+					return balloon.add( { view: formView } )
+						.then( () => {
+							document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 
-					expect( balloon.visibleView ).to.null;
-					expect( focusEditableSpy.notCalled ).to.true;
+							expect( balloon.visibleView ).to.null;
+							expect( focusEditableSpy.notCalled ).to.true;
+						} );
 				} );
 
 				it( 'should not close on click inside the panel', () => {
-					balloon.add( { view: formView } );
-					balloon.view.element.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+					return balloon.add( { view: formView } )
+						.then( () => {
+							balloon.view.element.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 
-					expect( balloon.visibleView ).to.equal( formView );
+							expect( balloon.visibleView ).to.equal( formView );
+						} );
 				} );
 			} );
 		} );
@@ -502,12 +513,13 @@ describe( 'Link', () => {
 			} );
 
 			it( 'should hide and focus editable on formView#submit event', () => {
-				balloon.add( { view: formView } );
+				return balloon.add( { view: formView } )
+					.then( () => {
+						formView.fire( 'submit' );
 
-				formView.fire( 'submit' );
-
-				expect( balloon.visibleView ).to.null;
-				expect( focusEditableSpy.calledOnce ).to.true;
+						expect( balloon.visibleView ).to.null;
+						expect( focusEditableSpy.calledOnce ).to.true;
+					} );
 			} );
 
 			it( 'should execute unlink command on formView#unlink event', () => {
@@ -520,21 +532,23 @@ describe( 'Link', () => {
 			} );
 
 			it( 'should hide and focus editable on formView#unlink event', () => {
-				balloon.add( { view: formView } );
+				return balloon.add( { view: formView } )
+					.then( () => {
+						formView.fire( 'unlink' );
 
-				formView.fire( 'unlink' );
-
-				expect( balloon.visibleView ).to.null;
-				expect( focusEditableSpy.calledOnce ).to.true;
+						expect( balloon.visibleView ).to.null;
+						expect( focusEditableSpy.calledOnce ).to.true;
+					} );
 			} );
 
 			it( 'should hide and focus editable on formView#cancel event', () => {
-				balloon.add( { view: formView } );
+				return balloon.add( { view: formView } )
+					.then( () => {
+						formView.fire( 'cancel' );
 
-				formView.fire( 'cancel' );
-
-				expect( balloon.visibleView ).to.null;
-				expect( focusEditableSpy.calledOnce ).to.true;
+						expect( balloon.visibleView ).to.null;
+						expect( focusEditableSpy.calledOnce ).to.true;
+					} );
 			} );
 		} );
 	} );
