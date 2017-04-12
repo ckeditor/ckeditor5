@@ -42,7 +42,7 @@ export default class ContextualBalloon extends Plugin {
 
 		/**
 		 * Stack of the views injected into the balloon. Last one in the stack is displayed
-		 * as a content of {@link module:ui/contextualballoon~ContextualBalloon#view}.
+		 * as a content of {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon#view}.
 		 *
 		 * @private
 		 * @member {Map} #_stack
