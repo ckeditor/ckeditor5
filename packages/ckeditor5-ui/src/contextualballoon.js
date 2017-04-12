@@ -49,8 +49,8 @@ export default class ContextualBalloon extends Plugin {
 		 */
 		this._stack = new Map();
 
-		// Add balloon panel view to editor `body` collection.
-		this.editor.ui.view.body.add( this.view );
+		// Add balloon panel view to editor `body` collection and wait until view will be ready.
+		return this.editor.ui.view.body.add( this.view );
 	}
 
 	static get pluginName() {
