@@ -151,7 +151,11 @@ class ViewConverterBuilder {
 			pattern.attribute[ key ] = value;
 		}
 
-		return this.from( pattern );
+		this.from( pattern );
+
+		this._from[ this._from.length - 1 ].attributeKey = key;
+
+		return this;
 	}
 
 	/**
@@ -197,9 +201,9 @@ class ViewConverterBuilder {
 	 *			.toAttribute( 'bold', 'true' } );
 	 *
 	 *		buildViewConverter().for( dispatcher )
-	 *			.fromElement( 'img' ).consuming( { name: true, attributes: [ 'src', 'title' ] } )
+	 *			.fromElement( 'img' ).consuming( { name: true, attribute: [ 'src', 'title' ] } )
 	 *			.toElement( ( viewElement ) => new ModelElement( 'image', { src: viewElement.getAttribute( 'src' ),
-	 *																		title: viewElement.getAttribute( 'title' ) } );
+	 *			                                                            title: viewElement.getAttribute( 'title' ) } );
 	 *
 	 * **Note:** All and only values from passed object has to be consumable on converted view element. This means that
 	 * using `consuming` method, you can either make looser conversion conditions (like in first example) or tighter
@@ -277,6 +281,11 @@ class ViewConverterBuilder {
 					// Create model element basing on creator function or element name.
 					const modelElement = element instanceof Function ? element( data.input ) : new ModelElement( element );
 
+					// Do not convert if element building function returned falsy value.
+					if ( !modelElement ) {
+						continue;
+					}
+
 					// Check whether generated structure is okay with `Schema`.
 					const keys = Array.from( modelElement.getAttributeKeys() );
 
@@ -320,13 +329,15 @@ class ViewConverterBuilder {
 	 * representing attribute key and attribute value or a function that returns an object with `key` and `value` properties.
 	 * If you provide creator function, it will be passed converted view element as first and only parameter.
 	 *
-	 *		buildViewConverter().for( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttribute( 'bold', 'true' );
+	 *		buildViewConverter().for( dispatcher ).fromAttribute( 'alt' ).toAttribute( 'alt' );
+	 *		buildViewConverter().for( dispatcher ).fromAttribute( 'style', { 'font-weight': 'bold' } ).toAttribute( 'bold', true );
 	 *		buildViewConverter().for( dispatcher )
 	 *			.fromAttribute( 'class' )
-	 *			.toAttribute( ( viewElement ) => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
+	 *			.toAttribute( ( viewElement ) => ( { key: 'class', value: 'class-' + viewElement.getAttribute( 'class' ) } ) );
 	 *
 	 * @param {String|Function} keyOrCreator Attribute key or a creator function.
-	 * @param {String} [value] Attribute value. Required if `keyOrCreator` is a `string`. Ignored otherwise.
+	 * @param {String} [value] Attribute value. Ignored if `keyOrCreator` is not a `string`. If `keyOrCreator` is `string`,
+	 * if `value` is not set, attribute value from converted element will be used.
 	 */
 	toAttribute( keyOrCreator, value ) {
 		function eventCallbackGen( from ) {
@@ -354,7 +365,20 @@ class ViewConverterBuilder {
 					}
 
 					// Use attribute creator function, if provided.
-					let attribute = keyOrCreator instanceof Function ? keyOrCreator( data.input ) : { key: keyOrCreator, value: value };
+					let attribute;
+
+					if ( keyOrCreator instanceof Function ) {
+						attribute = keyOrCreator( data.input );
+
+						if ( !attribute ) {
+							return;
+						}
+					} else {
+						attribute = {
+							key: keyOrCreator,
+							value: value ? value : data.input.getAttribute( from.attributeKey )
+						};
+					}
 
 					// Set attribute on current `output`. `Schema` is checked inside this helper function.
 					setAttributeOn( data.output, attribute, data, conversionApi );
