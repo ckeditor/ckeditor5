@@ -141,9 +141,15 @@ class ViewConverterBuilder {
 	 * @param {String|RegExp} [value] View attribute value.
 	 * @returns {module:engine/conversion/buildviewconverter~ViewConverterBuilder}
 	 */
-	fromAttribute( key, value = /.*/ ) {
+	fromAttribute( key, value = /.+/ ) {
 		let pattern = {};
-		pattern[ key ] = value;
+
+		if ( key === 'style' || key === 'class' ) {
+			pattern[ key ] = value;
+		} else {
+			pattern.attribute = {};
+			pattern.attribute[ key ] = value;
+		}
 
 		return this.from( pattern );
 	}
