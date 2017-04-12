@@ -12,7 +12,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 
 import Link from '../src/link';
 import LinkEngine from '../src/linkengine';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/contextualballoon';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import Range from '@ckeditor/ckeditor5-engine/src/view/range';
@@ -43,6 +43,8 @@ describe( 'Link', () => {
 
 			// There is no point to execute `BalloonPanelView#attachTo` so override it.
 			testUtils.sinon.stub( balloon.view, 'attachTo', () => {} );
+
+			return formView.init();
 		} );
 	} );
 
@@ -90,6 +92,8 @@ describe( 'Link', () => {
 		it( 'should add link form to the ContextualBalloon and attach balloon to the link element ' +
 			'when collapsed selection is inside link element',
 		() => {
+			const balloonAddSpy = testUtils.sinon.spy( balloon, 'add' );
+
 			editor.document.schema.allow( { name: '$text', inside: '$root' } );
 			setModelData( editor.document, '<$text linkHref="url">some[] url</$text>' );
 			editor.editing.view.isFocused = true;
@@ -98,13 +102,18 @@ describe( 'Link', () => {
 
 			const linkElement = editorElement.querySelector( 'a' );
 
-			sinon.assert.calledWithExactly( balloon.view.attachTo, sinon.match( {
-				target: linkElement,
-				limiter: editorElement
-			} ) );
+			sinon.assert.calledWithExactly( balloonAddSpy, {
+				view: formView,
+				position: {
+					target: linkElement,
+					limiter: editorElement
+				}
+			} );
 		} );
 
 		it( 'should add link form to the ContextualBalloon and attach balloon to the selection, when selection is non-collapsed', () => {
+			const balloonAddSpy = testUtils.sinon.spy( balloon, 'add' );
+
 			editor.document.schema.allow( { name: '$text', inside: '$root' } );
 			setModelData( editor.document, 'so[me ur]l' );
 			editor.editing.view.isFocused = true;
@@ -113,10 +122,13 @@ describe( 'Link', () => {
 
 			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
 
-			sinon.assert.calledWithExactly( balloon.view.attachTo, sinon.match( {
-				target: selectedRange,
-				limiter: editorElement
-			} ) );
+			sinon.assert.calledWithExactly( balloonAddSpy, {
+				view: formView,
+				position: {
+					target: selectedRange,
+					limiter: editorElement
+				}
+			} );
 		} );
 
 		it( 'should select link input value when link balloon is opened', () => {
@@ -203,21 +215,23 @@ describe( 'Link', () => {
 			sinon.assert.notCalled( spy );
 
 			// Balloon is visible, form focused.
-			balloon.add( { view: formView } );
-			formView.focusTracker.isFocused = true;
+			return balloon.add( { view: formView } )
+				.then( () => {
+					formView.focusTracker.isFocused = true;
 
-			editor.keystrokes.press( keyEvtData );
-			sinon.assert.notCalled( keyEvtData.preventDefault );
-			sinon.assert.notCalled( keyEvtData.stopPropagation );
-			sinon.assert.notCalled( spy );
+					editor.keystrokes.press( keyEvtData );
+					sinon.assert.notCalled( keyEvtData.preventDefault );
+					sinon.assert.notCalled( keyEvtData.stopPropagation );
+					sinon.assert.notCalled( spy );
 
-			// Balloon is still visible, form not focused.
-			formView.focusTracker.isFocused = false;
+					// Balloon is still visible, form not focused.
+					formView.focusTracker.isFocused = false;
 
-			editor.keystrokes.press( keyEvtData );
-			sinon.assert.calledOnce( keyEvtData.preventDefault );
-			sinon.assert.calledOnce( keyEvtData.stopPropagation );
-			sinon.assert.calledOnce( spy );
+					editor.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( keyEvtData.preventDefault );
+					sinon.assert.calledOnce( keyEvtData.stopPropagation );
+					sinon.assert.calledOnce( spy );
+				} );
 		} );
 
 		describe( 'close listeners', () => {
@@ -230,12 +244,12 @@ describe( 'Link', () => {
 					};
 
 					// Balloon is visible.
-					balloon.add( { view: formView } );
+					return balloon.add( { view: formView } ).then( () => {
+						editor.keystrokes.press( keyEvtData );
 
-					editor.keystrokes.press( keyEvtData );
-
-					expect( balloon.visibleView ).to.null;
-					sinon.assert.notCalled( focusEditableSpy );
+						expect( balloon.visibleView ).to.null;
+						sinon.assert.notCalled( focusEditableSpy );
+					} );
 				} );
 
 				it( 'should not close after Esc key press (from editor) when panel is in stack but not visible', () => {
@@ -246,17 +260,21 @@ describe( 'Link', () => {
 					};
 
 					const viewMock = {
+						init: () => {},
 						destroy: () => {}
 					};
 
-					balloon.add( { view: formView } );
-					balloon.add( { view: viewMock } );
+					return balloon.add( { view: formView } )
+						.then( () => {
+							return balloon.add( { view: viewMock } );
+						} )
+						.then( () => {
+							editor.keystrokes.press( keyEvtData );
 
-					editor.keystrokes.press( keyEvtData );
-
-					expect( balloon.visibleView ).to.equal( viewMock );
-					expect( balloon.hasView( formView ) ).to.true;
-					sinon.assert.notCalled( focusEditableSpy );
+							expect( balloon.visibleView ).to.equal( viewMock );
+							expect( balloon.hasView( formView ) ).to.true;
+							sinon.assert.notCalled( focusEditableSpy );
+						} );
 				} );
 
 				it( 'should close after Esc key press (from the form) and focus editable', () => {
@@ -266,29 +284,34 @@ describe( 'Link', () => {
 						stopPropagation: sinon.spy()
 					};
 
-					balloon.add( { view: formView } );
+					return balloon.add( { view: formView } )
+						.then( () => {
+							formView.keystrokes.press( keyEvtData );
 
-					formView.keystrokes.press( keyEvtData );
-
-					expect( balloon.visibleView ).to.null;
-					sinon.assert.calledOnce( focusEditableSpy );
+							expect( balloon.visibleView ).to.null;
+							sinon.assert.calledOnce( focusEditableSpy );
+						} );
 				} );
 			} );
 
 			describe( 'mouse', () => {
 				it( 'should close and not focus editable on click outside the panel', () => {
-					balloon.add( { view: formView } );
-					document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+					return balloon.add( { view: formView } )
+						.then( () => {
+							document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 
-					expect( balloon.visibleView ).to.null;
-					expect( focusEditableSpy.notCalled ).to.true;
+							expect( balloon.visibleView ).to.null;
+							expect( focusEditableSpy.notCalled ).to.true;
+						} );
 				} );
 
 				it( 'should not close on click inside the panel', () => {
-					balloon.add( { view: formView } );
-					balloon.view.element.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
+					return balloon.add( { view: formView } )
+						.then( () => {
+							balloon.view.element.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 
-					expect( balloon.visibleView ).to.equal( formView );
+							expect( balloon.visibleView ).to.equal( formView );
+						} );
 				} );
 			} );
 		} );
@@ -308,6 +331,7 @@ describe( 'Link', () => {
 			} );
 
 			it( 'should keep open and update position until collapsed selection stay inside the same link element', () => {
+				const balloonUpdatePositionSpy = testUtils.sinon.spy( balloon, 'updatePosition' );
 				const observer = editor.editing.view.getObserver( ClickObserver );
 
 				editor.document.schema.allow( { name: '$text', inside: '$root' } );
@@ -320,16 +344,13 @@ describe( 'Link', () => {
 
 				expect( balloon.visibleView ).to.equal( formView );
 
-				// Reset attachTo call counter.
-				balloon.view.attachTo.reset();
-
 				// Move selection.
 				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
 				editor.editing.view.render();
 
 				// Check if balloon is still open and position was updated.
 				expect( balloon.visibleView ).to.equal( formView );
-				expect( balloon.view.attachTo.calledOnce ).to.true;
+				expect( balloonUpdatePositionSpy.calledOnce ).to.true;
 			} );
 
 			it( 'should not duplicate `render` listener on `ViewDocument`', () => {
@@ -415,6 +436,7 @@ describe( 'Link', () => {
 			} );
 
 			it( 'should stop updating position after close', () => {
+				const balloonUpdatePositionSpy = testUtils.sinon.spy( balloon, 'updatePosition' );
 				const observer = editor.editing.view.getObserver( ClickObserver );
 
 				editor.document.schema.allow( { name: '$text', inside: '$root' } );
@@ -430,14 +452,11 @@ describe( 'Link', () => {
 				// Close balloon by dispatching `cancel` event on formView.
 				formView.fire( 'cancel' );
 
-				// Reset attachTo call counter.
-				balloon.view.attachTo.reset();
-
 				// Move selection inside link element.
 				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 2, text, 2 ) ], true );
 				editor.editing.view.render();
 
-				expect( balloon.view.attachTo.notCalled ).to.true;
+				expect( balloonUpdatePositionSpy.notCalled ).to.true;
 			} );
 
 			it( 'should not open when selection is not inside link element', () => {
@@ -494,12 +513,13 @@ describe( 'Link', () => {
 			} );
 
 			it( 'should hide and focus editable on formView#submit event', () => {
-				balloon.add( { view: formView } );
+				return balloon.add( { view: formView } )
+					.then( () => {
+						formView.fire( 'submit' );
 
-				formView.fire( 'submit' );
-
-				expect( balloon.visibleView ).to.null;
-				expect( focusEditableSpy.calledOnce ).to.true;
+						expect( balloon.visibleView ).to.null;
+						expect( focusEditableSpy.calledOnce ).to.true;
+					} );
 			} );
 
 			it( 'should execute unlink command on formView#unlink event', () => {
@@ -512,21 +532,23 @@ describe( 'Link', () => {
 			} );
 
 			it( 'should hide and focus editable on formView#unlink event', () => {
-				balloon.add( { view: formView } );
+				return balloon.add( { view: formView } )
+					.then( () => {
+						formView.fire( 'unlink' );
 
-				formView.fire( 'unlink' );
-
-				expect( balloon.visibleView ).to.null;
-				expect( focusEditableSpy.calledOnce ).to.true;
+						expect( balloon.visibleView ).to.null;
+						expect( focusEditableSpy.calledOnce ).to.true;
+					} );
 			} );
 
 			it( 'should hide and focus editable on formView#cancel event', () => {
-				balloon.add( { view: formView } );
+				return balloon.add( { view: formView } )
+					.then( () => {
+						formView.fire( 'cancel' );
 
-				formView.fire( 'cancel' );
-
-				expect( balloon.visibleView ).to.null;
-				expect( focusEditableSpy.calledOnce ).to.true;
+						expect( balloon.visibleView ).to.null;
+						expect( focusEditableSpy.calledOnce ).to.true;
+					} );
 			} );
 		} );
 	} );

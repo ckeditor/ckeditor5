@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 import LinkEngine from './linkengine';
 import LinkElement from './linkelement';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/contextualballoon';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
 
@@ -27,7 +27,7 @@ import '../theme/theme.scss';
  * The link plugin. It introduces the Link and Unlink buttons and the <kbd>Ctrl+K</kbd> keystroke.
  *
  * It uses the {@link module:link/linkengine~LinkEngine link engine plugin} and the
- * {@link module:ui/contextualballoon~ContextualBalloon contextual balloon plugin}.
+ * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon plugin}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -63,7 +63,7 @@ export default class Link extends Plugin {
 		 * The contextual balloon plugin instance.
 		 *
 		 * @private
-		 * @member {module:ui/contextualballoon~ContextualBalloon}
+		 * @member {module:ui/panel/balloon/contextualballoon~ContextualBalloon}
 		 */
 		this._balloon = this.editor.plugins.get( ContextualBalloon );
 
