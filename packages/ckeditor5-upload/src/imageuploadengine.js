@@ -23,6 +23,7 @@ export default class ImageUploadEngine extends Plugin {
 		/**
 		 * Image's placeholder that is displayed before real image data can be accessed.
 		 *
+		 * @protected
 		 * @member {String} #placeholder
 		 */
 		this.placeholder = 'data:image/svg+xml;utf8,' + uploadingPlaceholder;
@@ -99,6 +100,7 @@ export default class ImageUploadEngine extends Plugin {
 	 * Performs image loading. Image is read from the disk and temporary data is displayed, after uploading process
 	 * is complete we replace temporary data with target image from the server.
 	 *
+	 * @protected
 	 * @param {module:upload/filerepository~FileLoader} loader
 	 * @param {module:engine/model/batch~Batch} batch
 	 * @param {module:engine/model/element~Element} imageElement

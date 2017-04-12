@@ -65,7 +65,10 @@ export default class FileRepository extends Plugin {
 		this.set( 'uploaded', 0 );
 
 		/**
-		 * Number of total bytes to upload. It contains `null` if value is not available yet.
+		 * Number of total bytes to upload.
+		 * It might be different than the file size because of headers and additional data.
+		 * It contains `null` if value is not available yet, so it's better to use {@link #uploadPercent} to monitor
+		 * the progress.
 		 *
 		 * @readonly
 		 * @observable
@@ -104,7 +107,7 @@ export default class FileRepository extends Plugin {
 
 	/**
 	 * Creates loader for specified file.
-	 * Shows console warning and returns `null` if {@link #createAdapter} method is not defined..
+	 * Shows console warning and returns `null` if {@link #createAdapter} method is not defined.
 	 *
 	 * @param {File} file Native File object.
 	 * @returns {module:upload/filerepository~FileLoader|null}
