@@ -4,7 +4,7 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import ContextualToolbar from '../../../src/toolbar/contextual/contextualtoolbar';
-import ContextualBalloon from '../../../src/contextualballoon';
+import ContextualBalloon from '../../../src/panel/balloon/contextualballoon';
 import ToolbarView from '../../../src/toolbar/toolbarview';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';

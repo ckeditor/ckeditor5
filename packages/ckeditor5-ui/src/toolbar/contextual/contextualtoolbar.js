@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ContextualBalloon from '../../contextualballoon';
+import ContextualBalloon from '../../panel/balloon/contextualballoon';
 import ToolbarView from '../toolbarview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
 import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
@@ -18,7 +18,7 @@ const defaultPositions = BalloonPanelView.defaultPositions;
 /**
  * The contextual toolbar.
  *
- * It uses the {@link module:ui/contextualballoon~ContextualBalloon contextual balloon plugin}.
+ * It uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon plugin}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -52,7 +52,7 @@ export default class ContextualToolbar extends Plugin {
 		 * The contextual balloon plugin instance.
 		 *
 		 * @private
-		 * @member {module:ui/contextualballoon~ContextualBalloon}
+		 * @member {module:ui/panel/balloon/contextualballoon~ContextualBalloon}
 		 */
 		this._balloon = this.editor.plugins.get( ContextualBalloon );
 

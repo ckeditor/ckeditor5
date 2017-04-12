@@ -4,11 +4,11 @@
  */
 
 /**
- * @module ui/contextualballoon
+ * @module ui/panel/balloon/contextualballoon
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import BalloonPanelView from './panel/balloon/balloonpanelview';
+import BalloonPanelView from './balloonpanelview';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
@@ -49,15 +49,15 @@ export default class ContextualBalloon extends Plugin {
 
 		/**
 		 * Stack of the views injected into the balloon. Last one in the stack is displayed
-		 * as a content of {@link module:ui/contextualballoon~ContextualBalloon#view}.
+		 * as a content of {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon#view}.
 		 *
 		 * @private
 		 * @member {Map} #_stack
 		 */
 		this._stack = new Map();
 
-		// Add balloon panel view to editor `body` collection.
-		this.editor.ui.view.body.add( this.view );
+		// Add balloon panel view to editor `body` collection and wait until view will be ready.
+		return this.editor.ui.view.body.add( this.view );
 	}
 
 	/**
@@ -89,6 +89,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {module:ui/view~View} [data.view] Content of the balloon.
 	 * @param {module:utils/dom/position~Options} [data.position] Positioning options.
 	 * @param {String} [data.balloonClassName] Additional css class for {@link #view} added when given view is visible.
+	 * @returns {Promise} A Promise resolved when the child {@link module:ui/view~View#init} is done.
 	 */
 	add( data ) {
 		if ( this.hasView( data.view ) ) {
@@ -109,7 +110,7 @@ export default class ContextualBalloon extends Plugin {
 		// Add new view to the stack.
 		this._stack.set( data.view, data );
 		// And display it.
-		this._show( data );
+		return this._show( data );
 	}
 
 	/**
@@ -118,6 +119,7 @@ export default class ContextualBalloon extends Plugin {
 	 * When there is no view in the stack then balloon will hide.
 	 *
 	 * @param {module:ui/view~View} view A view to be removed from the balloon.
+	 * @returns {Promise} A Promise resolved when the preceding view is ready.
 	 */
 	remove( view ) {
 		if ( !this.hasView( view ) ) {
@@ -128,6 +130,9 @@ export default class ContextualBalloon extends Plugin {
 			 */
 			throw new CKEditorError( 'contextualballoon-remove-view-not-exist: Cannot remove configuration of not existing view.' );
 		}
+
+		// A Promise resolved when the preceding view is ready.
+		let promise = Promise.resolve();
 
 		// When visible view is being removed.
 		if ( this.visibleView === view ) {
@@ -143,7 +148,7 @@ export default class ContextualBalloon extends Plugin {
 			// If it is some other view.
 			if ( last ) {
 				// Just show it.
-				this._show( last );
+				promise = this._show( last );
 			} else {
 				// Hide the balloon panel.
 				this.view.hide();
@@ -152,6 +157,8 @@ export default class ContextualBalloon extends Plugin {
 			// Just remove given view from the stack.
 			this._stack.delete( view );
 		}
+
+		return promise;
 	}
 
 	/**
@@ -175,18 +182,14 @@ export default class ContextualBalloon extends Plugin {
 	 * @private
 	 * @param {Object} data Configuration.
 	 * @param {module:ui/view~View} [data.view] View to show in the balloon.
-	 * @param {String} [data.balloonClassName=''] View to show in the balloon.
+	 * @param {String} [data.balloonClassName=''] Additional class name which will added to the {#_balloon} view.
 	 */
 	_show( { view, balloonClassName = '' } ) {
-		this.view.content.add( view );
 		this.view.className = balloonClassName;
 
-		// When view is not rendered we need to wait for it. See: https://github.com/ckeditor/ckeditor5-ui/issues/187.
-		if ( !view.ready ) {
-			view.once( 'change:ready', () => this.view.attachTo( this._getBalloonPosition() ) );
-		} else {
-			this.view.attachTo( this._getBalloonPosition() );
-		}
+		return this.view.content.add( view ).then( () => {
+			this.view.pin( this._getBalloonPosition() );
+		} );
 	}
 
 	/**
@@ -206,6 +209,7 @@ export default class ContextualBalloon extends Plugin {
 	destroy() {
 		this.editor.ui.view.body.remove( this.view );
 		this.view.destroy();
+		this._stack.clear();
 		super.destroy();
 	}
 }
