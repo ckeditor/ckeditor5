@@ -23,7 +23,7 @@ describe( 'FileRepository', () => {
 		} )
 			.then( newEditor => {
 				editor = newEditor;
-				fileRepository = editor.plugins.get( 'fileRepository' );
+				fileRepository = editor.plugins.get( 'upload/filerepository' );
 				fileRepository.createAdapter = loader => {
 					adapterMock = new AdapterMock( loader );
 

@@ -38,7 +38,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	const progressButton = document.getElementById( 'progress' );
 
 	// Register fake adapter.
-	editor.plugins.get( 'fileRepository' ).createAdapter = loader => {
+	editor.plugins.get( 'upload/filerepository' ).createAdapter = loader => {
 		adapterMock = new AdapterMock( loader );
 		progress = 0;
 		loader.on( 'change:uploadedPercent', () => {

@@ -29,7 +29,7 @@ export default class FileRepository extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'fileRepository';
+		return 'upload/filerepository';
 	}
 
 	/**
