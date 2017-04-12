@@ -26,8 +26,9 @@ describe( 'ContextualBalloon', () => {
 			editor = newEditor;
 			balloon = editor.plugins.get( ContextualBalloon );
 
-			// We don't need to test attachTo method of BalloonPanel it's enough to check if was called with proper data.
+			// We don't need to test BalloonPanelView attachTo and pin methods it's enough to check if was called with proper data.
 			sinon.stub( balloon.view, 'attachTo', () => {} );
+			sinon.stub( balloon.view, 'pin', () => {} );
 
 			viewA = new View();
 			viewB = new View();
@@ -118,8 +119,12 @@ describe( 'ContextualBalloon', () => {
 		it( 'should add view to the stack and display in balloon attached using given position options', () => {
 			expect( balloon.view.content.length ).to.equal( 1 );
 			expect( balloon.view.content.get( 0 ) ).to.deep.equal( viewA );
-			expect( balloon.view.attachTo.calledOnce ).to.true;
-			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
+			expect( balloon.view.pin.calledOnce ).to.true;
+			expect( balloon.view.pin.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
+		} );
+
+		it( 'should pin balloon to the target element', () => {
+			sinon.assert.calledOnce( balloon.view.pin );
 		} );
 
 		it( 'should throw an error when try to add the same view more than once', () => {
@@ -147,13 +152,13 @@ describe( 'ContextualBalloon', () => {
 				position: { target: 'other' }
 			} )
 			.then( () => {
-				expect( balloon.view.attachTo.calledTwice ).to.true;
+				expect( balloon.view.pin.calledTwice ).to.true;
 
-				expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( {
+				expect( balloon.view.pin.firstCall.args[ 0 ] ).to.deep.equal( {
 					target: 'fake'
 				} );
 
-				expect( balloon.view.attachTo.secondCall.args[ 0 ] ).to.deep.equal( {
+				expect( balloon.view.pin.secondCall.args[ 0 ] ).to.deep.equal( {
 					target: 'fake'
 				} );
 			} );
@@ -254,16 +259,7 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'updatePosition()', () => {
-		it( 'should attach balloon to the target using the same position options as currently set', () => {
-			balloon.view.attachTo.reset();
-
-			balloon.updatePosition();
-
-			expect( balloon.view.attachTo.calledOnce );
-			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
-		} );
-
-		it( 'should attach balloon to the target using the same position options as currently set when there is more than one view', () => {
+		it( 'should attach balloon to the target using the same position options as first view in the stack', () => {
 			balloon.add( {
 				view: viewB,
 				position: {
