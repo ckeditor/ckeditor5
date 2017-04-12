@@ -12,7 +12,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 
 import Link from '../src/link';
 import LinkEngine from '../src/linkengine';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/contextualballoon';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import Range from '@ckeditor/ckeditor5-engine/src/view/range';
