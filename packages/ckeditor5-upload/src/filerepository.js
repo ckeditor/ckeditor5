@@ -350,8 +350,7 @@ class FileLoader {
 				return data;
 			} )
 			.catch( err => {
-				if ( err === 'aborted' ) {
-					this.status = 'aborted';
+				if ( this.status === 'aborted' ) {
 					throw 'aborted';
 				}
 
@@ -364,15 +363,17 @@ class FileLoader {
 	 * Aborts loading process.
 	 */
 	abort() {
-		if ( this.status == 'reading' ) {
+		const status = this.status;
+		this.status = 'aborted';
+
+		if ( status == 'reading' ) {
 			this._reader.abort();
 		}
 
-		if ( this.status == 'uploading' && this._adapter.abort ) {
+		if ( status == 'uploading' && this._adapter.abort ) {
 			this._adapter.abort();
 		}
 
-		this.status = 'aborted';
 		this._destroy();
 	}
 
@@ -452,7 +453,7 @@ mix( FileLoader, ObservableMixin );
 
 /**
  * Aborts the upload process.
- * After aborting it should reject promise returned from {@link #upload upload()} method with "aborted" string.
+ * After aborting it should reject promise returned from {@link #upload upload()}.
  *
  * Take a look at {@link module:upload/filerepository~Adapter example Adapter implementation} and
  * {@link module:upload/filerepository~FileRepository#createAdapter createAdapter method}.
