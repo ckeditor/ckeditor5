@@ -16,7 +16,7 @@ import EssentialsPresets from '@ckeditor/ckeditor5-presets/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import ContextualBalloon from '../../../src/contextualballoon';
+import ContextualBalloon from '../../../src/panel/balloon/contextualballoon';
 import ToolbarView from '../../../src/toolbar/toolbarview';
 import ButtonView from '../../../src/button/buttonview';
 import Template from '../../../src/template';
@@ -230,13 +230,13 @@ function createContextualToolbar( editor ) {
 		forwardSelection: ( targetRect, balloonRect ) => ( {
 			top: targetRect.bottom + arrowVOffset,
 			left: targetRect.right - balloonRect.width / 2,
-			name: 's'
+			name: 'arrow_s'
 		} ),
 
 		backwardSelection: ( targetRect, balloonRect ) => ( {
 			top: targetRect.top - balloonRect.height - arrowVOffset,
 			left: targetRect.left - balloonRect.width / 2,
-			name: 'n'
+			name: 'arrow_n'
 		} )
 	};
 

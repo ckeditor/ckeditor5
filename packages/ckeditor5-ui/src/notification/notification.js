@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/notification
+ * @module ui/notification/notification
  */
 
 /* globals window */
@@ -19,7 +19,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
  * notifications makes possible to switch the notifications UI.
  *
  * Note that every unhandled and not stopped `warning` notification will be displayed as system alert.
- * See {@link module:ui/notification~Notification#showWarning}.
+ * See {@link module:ui/notification/notification~Notification#showWarning}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -28,7 +28,7 @@ export default class Notification extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'notification';
+		return 'ui/notification';
 	}
 
 	/**
