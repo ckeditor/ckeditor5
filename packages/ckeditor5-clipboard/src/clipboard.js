@@ -17,7 +17,7 @@ import normalizeClipboardHtml from './utils/normalizeclipboarddata';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
 /**
- * The clipboard feature. Currently, it's only responsible for intercepting the `paste` event and
+ * The clipboard feature. Currently, it's responsible for intercepting the `paste` and `drop` events and
  * passing the pasted content through the clipboard pipeline.
  *
  * ## Clipboard input pipeline
@@ -26,21 +26,35 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  * before it gets inserted into the editor. The pipeline consists of two events on which
  * the features can listen in order to modify or totally override the default behavior.
  *
- * ### On {@link module:engine/view/document~Document#event:paste}
+ * ### On {@link module:engine/view/document~Document#event:paste} and {@link module:engine/view/document~Document#event:drop}
  *
  * The default action is to:
  *
  * 1. get HTML or plain text from the clipboard,
- * 2. prevent the default action of the native `paste` event,
- * 3. fire {@link module:engine/view/document~Document#event:clipboardInput} with the clipboard data parsed to
+ * 2. prevent the default action of the native `paste` or `drop` event,
+ * 3. fire {@link module:engine/view/document~Document#event:clipboardInput} with a
+ * {@link module:clipboard/datatransfer~DataTransfer `dataTransfer`} property.
+ * 4. fire {@link module:clipboard/clipboard~Clipboard#event:inputTransformation} with a `data` containing the clipboard data parsed to
  * a {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
  *
- * This action is performed by a low priority listener, so it can be overridden by a normal one
+ * These action are performed by a low priority listeners, so they can be overridden by a normal ones
  * when a deeper change in pasting behavior is needed. For example, a feature which wants to differently read
  * data from the clipboard (the {@link module:clipboard/datatransfer~DataTransfer `DataTransfer`}).
  * should plug a listener at this stage.
  *
  * ### On {@link module:engine/view/document~Document#event:clipboardInput}
+ *
+ * This action is performed by a low priority listener, so it can be overridden by a normal one.
+ *
+ * At this stage the dataTransfer object can be processed by the features, which want to transform the original dataTransform.
+ *
+ *		this.listenTo( editor.editing.view, 'clipboardInput', ( evt, data ) => {
+ *			const content = customTransform( data.dataTransfer.get( 'text/html' ) );
+ *			const transformedContent = transform( content );
+ *			data.dataTransfer.set( 'text/html', transformedContent );
+ *		} );
+ *
+ * ### On {@link module:clipboard/clipboard~Clipboard#event:inputTransformation}
  *
  * The default action is to insert the content (`data.content`, represented by a
  * {@link module:engine/view/documentfragment~DocumentFragment}) to an editor if the data is not empty.
@@ -50,7 +64,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  * At this stage the pasted content can be processed by the features. E.g. a feature which wants to transform
  * a pasted text into a link can be implemented in this way:
  *
- *		this.listenTo( editor.editing.view, 'clipboardInput', ( evt, data ) => {
+ *		this.listenTo( editor.plugins.get( 'clipboard/clipboard' ), 'inputTransformation', ( evt, data ) => {
  *			if ( data.content.childCount == 1 && isUrlText( data.content.getChild( 0 ) ) ) {
  *				const linkUrl = data.content.getChild( 0 ).data;
  *
@@ -118,7 +132,7 @@ export default class Clipboard extends Plugin {
 
 		// The clipboard paste pipeline.
 
-		this.listenTo( editingView, 'paste', ( evt, data ) => {
+		this.listenTo( editingView, 'clipboardInput', ( evt, data ) => {
 			const dataTransfer = data.dataTransfer;
 			let content = '';
 
@@ -130,17 +144,15 @@ export default class Clipboard extends Plugin {
 
 			content = this._htmlDataProcessor.toView( content );
 
-			data.preventDefault();
-
-			editingView.fire( 'clipboardInput', { dataTransfer, content } );
+			this.fire( 'inputTransformation', { content } );
 		}, { priority: 'low' } );
 
-		this.listenTo( editingView, 'clipboardInput', ( evt, data ) => {
+		this.listenTo( this, 'inputTransformation', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
 				const dataController = this.editor.data;
 
 				// Convert the pasted content to a model document fragment.
-				// Convertion is contextual, but in this case we need an "all allowed" context and for that
+				// Conversion is contextual, but in this case we need an "all allowed" context and for that
 				// we use the $clipboardHolder item.
 				const modelFragment = dataController.toModel( data.content, '$clipboardHolder' );
 
@@ -179,34 +191,16 @@ export default class Clipboard extends Plugin {
 }
 
 /**
- * Fired with a content which comes from the clipboard (was pasted or dropped) and
+ * Fired with a `content`, which comes from the clipboard (was pasted or dropped) and
  * should be processed in order to be inserted into the editor.
  * It's part of the {@link module:clipboard/clipboard~Clipboard "clipboard pipeline"}.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
  * @see module:clipboard/clipboard~Clipboard
- * @event module:engine/view/document~Document#event:clipboardInput
- * @param {module:clipboard/clipboard~ClipboardInputEventData} data Event data.
- */
-
-/**
- * The value of the {@link module:engine/view/document~Document#event:clipboardInput} event.
- *
- * @class module:clipboard/clipboard~ClipboardInputEventData
- */
-
-/**
- * Data transfer instance.
- *
- * @readonly
- * @member {module:clipboard/datatransfer~DataTransfer} module:clipboard/clipboard~ClipboardInputEventData#dataTransfer
- */
-
-/**
- * Content to be inserted into the editor. It can be modified by the event listeners.
- * Read more about the clipboard pipelines in {@link module:clipboard/clipboard~Clipboard}.
- *
- * @member {module:engine/view/documentfragment~DocumentFragment} module:clipboard/clipboard~ClipboardInputEventData#content
+ * @event module:clipboard/clipboard~Clipboard#event:inputTransformation
+ * @param {Object} data Event data.
+ * @param {module:engine/view/documentfragment~DocumentFragment} data.content Event data. Content to be inserted into the editor.
+ * It can be modified by the event listeners. Read more about the clipboard pipelines in {@link module:clipboard/clipboard~Clipboard}
  */
 
 /**

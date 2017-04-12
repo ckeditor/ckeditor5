@@ -18,30 +18,65 @@ describe( 'ClipboardObserver', () => {
 	} );
 
 	it( 'should define domEventType', () => {
-		expect( observer.domEventType ).to.deep.equal( [ 'paste', 'copy', 'cut' ] );
+		expect( observer.domEventType ).to.deep.equal( [ 'paste', 'copy', 'cut', 'drop' ] );
 	} );
 
 	describe( 'onDomEvent', () => {
-		it( 'should fire paste with the right event data', () => {
-			const spy = sinon.spy();
-			const dataTransfer = {
+		let pasteSpy, preventDefaultSpy;
+
+		function getDataTransfer() {
+			return {
 				getData( type ) {
 					return 'foo:' + type;
 				}
 			};
+		}
 
-			viewDocument.on( 'paste', spy );
+		beforeEach( () => {
+			pasteSpy = sinon.spy();
+			preventDefaultSpy = sinon.spy();
+		} );
 
-			observer.onDomEvent( { type: 'paste', target: document.body, clipboardData: dataTransfer } );
+		it( 'should fire paste with the right event data - clipboardData', () => {
+			const dataTransfer = getDataTransfer();
 
-			expect( spy.calledOnce ).to.be.true;
+			viewDocument.on( 'paste', pasteSpy );
 
-			const data = spy.args[ 0 ][ 1 ];
+			observer.onDomEvent( {
+				type: 'paste',
+				target: document.body,
+				clipboardData: dataTransfer,
+				preventDefault: preventDefaultSpy
+			} );
+
+			expect( pasteSpy.calledOnce ).to.be.true;
+
+			const data = pasteSpy.args[ 0 ][ 1 ];
 			expect( data.domTarget ).to.equal( document.body );
 			expect( data.dataTransfer ).to.be.instanceOf( DataTransfer );
 			expect( data.dataTransfer.getData( 'x/y' ) ).to.equal( 'foo:x/y' );
+			expect( preventDefaultSpy.calledOnce ).to.be.true;
 		} );
 
-		// If it fires paste it fires all the other events too.
+		it( 'should fire paste with the right event data - dataTransfer', () => {
+			const dataTransfer = getDataTransfer();
+
+			viewDocument.on( 'drop', pasteSpy );
+
+			observer.onDomEvent( {
+				type: 'drop',
+				target: document.body,
+				dataTransfer,
+				preventDefault: preventDefaultSpy
+			} );
+
+			expect( pasteSpy.calledOnce ).to.be.true;
+
+			const data = pasteSpy.args[ 0 ][ 1 ];
+			expect( data.domTarget ).to.equal( document.body );
+			expect( data.dataTransfer ).to.be.instanceOf( DataTransfer );
+			expect( data.dataTransfer.getData( 'x/y' ) ).to.equal( 'foo:x/y' );
+			expect( preventDefaultSpy.calledOnce ).to.be.true;
+		} );
 	} );
 } );

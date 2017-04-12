@@ -36,6 +36,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 } )
 .then( editor => {
 	window.editor = editor;
+	const clipboard = editor.plugins.get( 'clipboard/clipboard' );
 
 	editor.editing.view.on( 'paste', ( evt, data ) => {
 		console.clear();
@@ -45,7 +46,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	editor.editing.view.on( 'copy', onViewEvent, { priority: 'lowest' } );
 	editor.editing.view.on( 'cut', onViewEvent, { priority: 'lowest' } );
 
-	editor.editing.view.on( 'clipboardInput', onPipelineEvent );
+	clipboard.on( 'inputTransformation', onPipelineEvent );
 	editor.editing.view.on( 'clipboardOutput', ( evt, data ) => {
 		console.clear();
 		onPipelineEvent( evt, data );
