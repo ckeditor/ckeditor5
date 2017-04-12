@@ -4,9 +4,9 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ContextualBalloon from '../src/contextualballoon';
-import BalloonPanelView from '../src/panel/balloon/balloonpanelview';
-import View from '../src/view';
+import ContextualBalloon from '../../../src/panel/balloon/contextualballoon';
+import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
+import View from '../../../src/view';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 

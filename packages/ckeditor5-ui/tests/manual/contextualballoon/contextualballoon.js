@@ -16,7 +16,7 @@ import EssentialsPresets from '@ckeditor/ckeditor5-presets/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import ContextualBalloon from '../../../src/contextualballoon';
+import ContextualBalloon from '../../../src/panel/balloon/contextualballoon';
 import ToolbarView from '../../../src/toolbar/toolbarview';
 import ButtonView from '../../../src/button/buttonview';
 import Template from '../../../src/template';

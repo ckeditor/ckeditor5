@@ -4,11 +4,11 @@
  */
 
 /**
- * @module ui/contextualballoon
+ * @module ui/panel/balloon/contextualballoon
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import BalloonPanelView from './panel/balloon/balloonpanelview';
+import BalloonPanelView from './balloonpanelview';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
