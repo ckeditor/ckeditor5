@@ -196,6 +196,7 @@ export default class ContextualBalloon extends Plugin {
 	destroy() {
 		this.editor.ui.view.body.remove( this.view );
 		this.view.destroy();
+		this._stack.clear();
 		super.destroy();
 	}
 }
