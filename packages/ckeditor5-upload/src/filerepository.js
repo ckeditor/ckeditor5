@@ -48,10 +48,7 @@ export default class FileRepository extends Plugin {
 		 * {@link module:upload/filerepository~Adapter Adapter} that will be used to upload files.
 		 * {@link module:upload/filerepository~FileLoader FileLoader} instance associated with the adapter
 		 * will be passed to that function.
-		 *
-		 *	fileRepository.createAdapter = function( loader ) {
-		 *		return new ServerAdapter();
-		 *	};
+		 * For more information and example see {@link module:upload/filerepository~Adapter Adapter}.
 		 *
 		 * @abstract
 		 * @function
@@ -424,6 +421,12 @@ mix( FileLoader, ObservableMixin );
  *			server.abortUpload();
  *		}
  *	}
+ *
+ * Then adapter can be set to be used by {@link module:upload/filerepository~FileRepository FileRepository}:
+ *
+ *	editor.plugins.get( 'upload/filerepository' ).createAdapter = function( loader ) {
+ *		return new Adapter( loader );
+ *	};
  *
  * @interface Adapter
  */
