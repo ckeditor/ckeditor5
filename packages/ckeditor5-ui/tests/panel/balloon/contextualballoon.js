@@ -66,11 +66,11 @@ describe( 'ContextualBalloon', () => {
 			expect( editor.ui.view.body.getIndex( balloon.view ) ).to.above( -1 );
 		} );
 
-		it( 'should register balloon panel element in ui focus tracker', () => {
+		it( 'should register balloon panel element in editor.ui#focusTracker', () => {
 			editor.ui.focusTracker.isfocused = false;
 
 			balloon.add( {
-				view: viewA,
+				view: viewB,
 				position: { target: 'fake' }
 			} );
 
