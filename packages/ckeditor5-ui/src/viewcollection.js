@@ -135,11 +135,8 @@ export default class ViewCollection extends Collection {
 		if ( this.ready && !view.ready ) {
 			promise = promise
 				.then( () => view.init() )
-				.then( () => {
-					// The view is ready. There's no point in storing the promise
-					// any longer.
-					this._addPromises.delete( promise );
-				} );
+				// The view is ready. There's no point in storing the promise any longer.
+				.then( () => this._addPromises.delete( promise ) );
 
 			// Store the promise so it can be respected (and resolved) before #destroy()
 			// starts destroying the child view.
