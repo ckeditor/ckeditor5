@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageUploadEngine from './imageuploadengine';
-import FileDialogButtonView from './ui/fileuploadbuttonview';
+import FileDialogButtonView from './ui/filedialogbuttonview';
 import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
 
 /**

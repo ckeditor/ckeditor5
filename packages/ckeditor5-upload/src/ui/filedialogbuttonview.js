@@ -6,7 +6,7 @@
 /* globals document */
 
 /**
- * @module upload/ui/fileuploadbuttonview
+ * @module upload/ui/filedialogbuttonview
  */
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
@@ -14,11 +14,11 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 /**
- * File Upload button view.
+ * File Dialog button view.
  *
  * @extends module:ui/button/buttonview~ButtonView
  */
-export default class FileUploadButtonView extends ButtonView {
+export default class FileDialogButtonView extends ButtonView {
 	/**
 	 * @inheritDoc
 	 */
@@ -28,10 +28,10 @@ export default class FileUploadButtonView extends ButtonView {
 		/**
 		 * Hidden input view used to execute file dialog. It will be hidden and added to the end of `document.body`.
 		 *
-		 * @private
-		 * @member module:upload/ui/fileuploadbuttonview~FileDialogButtonView #_fileInputView
+		 * @protected
+		 * @member module:upload/ui/filedialogbuttonview~FileDialogButtonView #fileInputView
 		 */
-		this._fileInputView = new FileInputView( locale );
+		this.fileInputView = new FileInputView( locale );
 
 		/**
 		 * Accepted file types. Can be provided in form of file extensions, media type or one of:
@@ -42,12 +42,12 @@ export default class FileUploadButtonView extends ButtonView {
 		 * @observable
 		 * @member {String} #acceptedType
 		 */
-		this._fileInputView.bind( 'acceptedType' ).to( this, 'acceptedType' );
+		this.fileInputView.bind( 'acceptedType' ).to( this, 'acceptedType' );
 
 		/**
 		 * Fired when file dialog is closed with file selected.
 		 *
-		 *	fileUploadButtonView.on( 'done', ( evt, files ) => {
+		 *	fileDialogButtonView.on( 'done', ( evt, files ) => {
 		 *		for ( const file of files ) {
 		 *			processFile( file );
 		 *		}
@@ -56,20 +56,20 @@ export default class FileUploadButtonView extends ButtonView {
 		 * @event done
 		 * @param {Array.<File>} files Array of selected files.
 		 */
-		this._fileInputView.delegate( 'done' ).to( this );
+		this.fileInputView.delegate( 'done' ).to( this );
 
 		this.on( 'execute', () => {
-			this._fileInputView.open();
+			this.fileInputView.open();
 		} );
 
-		document.body.appendChild( this._fileInputView.element );
+		document.body.appendChild( this.fileInputView.element );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	destroy() {
-		document.body.removeChild( this._fileInputView.element );
+		document.body.removeChild( this.fileInputView.element );
 
 		return super.destroy();
 	}
@@ -114,7 +114,8 @@ class FileInputView extends View {
 			},
 
 			on: {
-				change: bind.to( () => {
+				// Removing from code coverage since we cannot programmatically set input element files.
+				change: bind.to( /* istanbul ignore next */ () => {
 					if ( this.element && this.element.files && this.element.files.length ) {
 						this.fire( 'done', this.element.files );
 					}
