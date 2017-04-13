@@ -234,6 +234,46 @@ describe( 'ViewCollection', () => {
 				sinon.assert.callOrder( spyA, spyB );
 			} );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5-ui/issues/203
+		it( 'waits for all #add promises to resolve', () => {
+			const spyA = sinon.spy();
+			const spyB = sinon.spy();
+
+			class DelayedInitView extends View {
+				constructor( delay, spy ) {
+					super();
+
+					this.delay = delay;
+					this.spy = spy;
+				}
+
+				init() {
+					return new Promise( resolve => {
+							setTimeout( () => resolve(), this.delay );
+						} )
+						.then( () => super.init() )
+						.then( () => {
+							this.spy();
+						} );
+				}
+			}
+
+			const viewA = new DelayedInitView( 200, spyA );
+			const viewB = new DelayedInitView( 100, spyB );
+
+			return collection.init().then( () => {
+					collection.add( viewA );
+					collection.add( viewB );
+				} )
+				.then( () => {
+					return collection.destroy().then( () => {
+						expect( viewA.ready ).to.be.true;
+						expect( viewB.ready ).to.be.true;
+						sinon.assert.callOrder( spyB, spyA );
+					} );
+				} );
+		} );
 	} );
 
 	describe( 'add()', () => {

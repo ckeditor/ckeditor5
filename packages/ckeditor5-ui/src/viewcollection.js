@@ -69,6 +69,16 @@ export default class ViewCollection extends Collection {
 		 * @member {HTMLElement}
 		 */
 		this._parentElement = null;
+
+		/**
+		 * A set containing promises created by {@link #add}. If the {@link #destroy} is called
+		 * before the child views' {@link module:ui/view~View#init} are completed,
+		 * {@link #destroy} will wait until all the promises are resolved.
+		 *
+		 * @private
+		 * @member {Set}
+		 */
+		this._addPromises = new Set();
 	}
 
 	/**
@@ -99,13 +109,19 @@ export default class ViewCollection extends Collection {
 	 * @returns {Promise} A Promise resolved when the destruction process is finished.
 	 */
 	destroy() {
-		let promises = [];
+		// Wait for all #add() promises to resolve before destroying the children.
+		// https://github.com/ckeditor/ckeditor5-ui/issues/203
+		return Promise.all( this._addPromises )
+			// Then begin the process of destroying the children.
+			.then( () => {
+				let destroyPromises = [];
 
-		for ( let view of this ) {
-			promises.push( view.destroy() );
-		}
+				for ( let view of this ) {
+					destroyPromises.push( view.destroy() );
+				}
 
-		return Promise.all( promises );
+				return Promise.all( destroyPromises );
+			} );
 	}
 
 	/**
@@ -123,9 +139,18 @@ export default class ViewCollection extends Collection {
 		let promise = Promise.resolve();
 
 		if ( this.ready && !view.ready ) {
-			promise = promise.then( () => {
-				return view.init();
-			} );
+			promise = promise
+				.then( () => view.init() )
+				.then( () => {
+					// The view is ready. There's no point in storing the promise
+					// any longer.
+					this._addPromises.delete( promise );
+				} );
+
+			// Store the promise so it can be respected (and resolved) before #destroy()
+			// starts destroying the child view.
+			// https://github.com/ckeditor/ckeditor5-ui/issues/203
+			this._addPromises.add( promise );
 		}
 
 		return promise;
