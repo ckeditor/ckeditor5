@@ -240,20 +240,21 @@ export default class Link extends Plugin {
 	 *
 	 * @private
 	 * @param {Boolean} [focusInput=false] When `true`, link form will be focused on panel show.
+	 * @return {Promise} A promise resolved when the {#formView} {@link module:ui/view~View#init} is done.
 	 */
 	_showPanel( focusInput ) {
 		if ( this._balloon.hasView( this.formView ) ) {
-			return;
+			return Promise.resolve();
 		}
 
-		this._balloon.add( {
+		return this._balloon.add( {
 			view: this.formView,
 			position: this._getBalloonPositionData()
+		} ).then( () => {
+			if ( focusInput ) {
+				this.formView.urlInputView.select();
+			}
 		} );
-
-		if ( focusInput ) {
-			this.formView.urlInputView.select();
-		}
 	}
 
 	/**

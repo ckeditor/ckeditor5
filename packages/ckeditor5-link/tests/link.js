@@ -139,7 +139,11 @@ describe( 'Link', () => {
 
 			linkButton.fire( 'execute' );
 
-			expect( selectUrlInputSpy.calledOnce ).to.true;
+			// Focus of url input is called async after internal promise resolve and we are
+			// not able to return this promise.
+			return wait().then( () => {
+				expect( selectUrlInputSpy.calledOnce ).to.true;
+			} );
 		} );
 	} );
 
@@ -185,7 +189,12 @@ describe( 'Link', () => {
 			editor.keystrokes.press( { keyCode: keyCodes.k, ctrlKey: true } );
 
 			expect( balloon.visibleView ).to.equal( formView );
-			expect( selectUrlInputSpy.calledOnce ).to.true;
+
+			// Focus of url input is called async after internal promise resolve and we are
+			// not able to return this promise.
+			return wait().then( () => {
+				expect( selectUrlInputSpy.calledOnce ).to.true;
+			} );
 		} );
 
 		it( 'should not add panel to ContextualBalloon more than once', () => {
@@ -341,7 +350,12 @@ describe( 'Link', () => {
 				observer.fire( 'click', { target: document.body } );
 
 				expect( balloon.visibleView ).to.equal( formView );
-				expect( selectUrlInputSpy.notCalled ).to.true;
+
+				// Focus of url input is called async after internal promise resolve and we are
+				// not able to return this promise.
+				return wait().then( () => {
+					expect( selectUrlInputSpy.notCalled ).to.true;
+				} );
 			} );
 
 			it( 'should keep open and update position until collapsed selection stay inside the same link element', () => {
@@ -569,3 +583,9 @@ describe( 'Link', () => {
 		} );
 	} );
 } );
+
+function wait( delay = 1 ) {
+	return new Promise( ( resolve ) => {
+		setTimeout( () => resolve(), delay );
+	} );
+}
