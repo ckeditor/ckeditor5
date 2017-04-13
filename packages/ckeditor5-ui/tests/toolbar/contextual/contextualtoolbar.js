@@ -14,7 +14,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
-/* global document, window, setTimeout */
+/* global document, setTimeout */
 
 describe( 'ContextualToolbar', () => {
 	let sandbox, editor, contextualToolbar, balloon, editorElement;
@@ -35,8 +35,6 @@ describe( 'ContextualToolbar', () => {
 			editor = newEditor;
 			contextualToolbar = editor.plugins.get( ContextualToolbar );
 			balloon = editor.plugins.get( ContextualBalloon );
-
-			stubClientRects();
 
 			// Focus the engine.
 			editor.editing.view.isFocused = true;
@@ -162,6 +160,8 @@ describe( 'ContextualToolbar', () => {
 	it( 'should put balloon on the `south` if the selection is forward', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
+		stubClientRects();
+
 		// Mock limiter rect.
 		mockBoundingBox( document.body, {
 			left: 0,
@@ -173,11 +173,18 @@ describe( 'ContextualToolbar', () => {
 		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-		expect( balloon.view.position ).to.equal( 'arrow_s' );
+
+		// Balloon is attached after internal promise resolve and we have
+		// no access to this promise so we need to wait for it.
+		return wait().then( () => {
+			expect( balloon.view.position ).to.equal( 'arrow_s' );
+		} );
 	} );
 
 	it( 'should put balloon on the `north` if the selection is forward `south` is limited', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
+
+		stubClientRects();
 
 		// Mock limiter rect.
 		mockBoundingBox( document.body, {
@@ -190,11 +197,18 @@ describe( 'ContextualToolbar', () => {
 		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-		expect( balloon.view.position ).to.equal( 'arrow_n' );
+
+		// Balloon is attached after internal promise resolve and we have
+		// no access to this promise so we need to wait for it.
+		return wait().then( () => {
+			expect( balloon.view.position ).to.equal( 'arrow_n' );
+		} );
 	} );
 
 	it( 'should put balloon on the `north` if the selection is backward', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>', { lastRangeBackward: true } );
+
+		stubClientRects();
 
 		// Mock limiter rect.
 		mockBoundingBox( document.body, {
@@ -207,11 +221,18 @@ describe( 'ContextualToolbar', () => {
 		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-		expect( balloon.view.position ).to.equal( 'arrow_n' );
+
+		// Balloon is attached after internal promise resolve and we have
+		// no access to this promise so we need to wait for it.
+		return wait().then( () => {
+			expect( balloon.view.position ).to.equal( 'arrow_n' );
+		} );
 	} );
 
 	it( 'should put balloon on the `south` if the selection is backward `north` is limited', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>', { lastRangeBackward: true } );
+
+		stubClientRects();
 
 		// Mock limiter rect.
 		mockBoundingBox( document.body, {
@@ -224,7 +245,12 @@ describe( 'ContextualToolbar', () => {
 		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-		expect( balloon.view.position ).to.be.equal( 'arrow_s' );
+
+		// Balloon is attached after internal promise resolve and we have
+		// no access to this promise so we need to wait for it.
+		return wait().then( () => {
+			expect( balloon.view.position ).to.equal( 'arrow_s' );
+		} );
 	} );
 
 	it( 'should not open if the collapsed selection is moving', () => {
@@ -267,7 +293,7 @@ describe( 'ContextualToolbar', () => {
 	} );
 
 	it( 'should update balloon position when toolbar is opened and editor content has changed', () => {
-		const spy = sandbox.spy( balloon, 'updatePosition' );
+		const spy = sandbox.stub( balloon, 'updatePosition' );
 
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
@@ -357,15 +383,10 @@ describe( 'ContextualToolbar', () => {
 		} );
 
 		// Mock window rect.
-		sandbox.stub( global, 'window', {
-			innerWidth: 1000,
-			innerHeight: 1000,
-			scrollX: 0,
-			scrollY: 0,
-			getComputedStyle: el => {
-				return window.getComputedStyle( el );
-			}
-		} );
+		sandbox.stub( global.window, 'innerWidth', 1000 );
+		sandbox.stub( global.window, 'innerHeight', 1000 );
+		sandbox.stub( global.window, 'scrollX', 0 );
+		sandbox.stub( global.window, 'scrollY', 0 );
 
 		// Mock balloon rect.
 		mockBoundingBox( balloon.view.element, {
@@ -383,3 +404,9 @@ describe( 'ContextualToolbar', () => {
 		sandbox.stub( element, 'getBoundingClientRect' ).returns( boundingBox );
 	}
 } );
+
+function wait( delay = 1 ) {
+	return new Promise( ( resolve ) => {
+		setTimeout( () => resolve(), delay );
+	} );
+}

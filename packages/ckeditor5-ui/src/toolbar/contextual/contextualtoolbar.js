@@ -210,11 +210,10 @@ export default class ContextualToolbar extends Plugin {
 	}
 
 	/**
-	 * This is internal plugin event which is fired 200 ms after model selection last change (lodash#debounce).
-	 * This is to makes easy test debounced action without need to use `setTimeout`. Lodash keeps time related
-	 * stuff in a closure and it's not possible to override it by sinon fake timers.
+	 * This is internal plugin event which is fired 200 ms after model selection last change.
+	 * This is to makes easy test debounced action without need to use `setTimeout`.
 	 *
-	 * @private
+	 * @protected
 	 * @event _selectionChangeDebounced
 	 */
 }
