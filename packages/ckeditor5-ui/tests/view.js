@@ -87,21 +87,47 @@ describe( 'View', () => {
 			setTestViewInstance();
 		} );
 
+		it( 'should return a promise', () => {
+			const spy = sinon.spy();
+			const child = {
+				init: () => {
+					return new Promise( resolve => {
+						setTimeout( () => resolve(), 100 );
+					} )
+					.then( () => spy() );
+				}
+			};
+
+			return view.init()
+				.then( () => {
+					const returned = view.addChildren( child );
+					expect( returned ).to.be.instanceof( Promise );
+
+					return returned.then( () => {
+						sinon.assert.calledOnce( spy );
+					} );
+				} );
+		} );
+
 		it( 'should add a single view to #_unboundChildren', () => {
 			expect( view._unboundChildren ).to.have.length( 0 );
 
 			const child = {};
 
-			view.addChildren( child );
-			expect( view._unboundChildren ).to.have.length( 1 );
-			expect( view._unboundChildren.get( 0 ) ).to.equal( child );
+			return view.addChildren( child )
+				.then( () => {
+					expect( view._unboundChildren ).to.have.length( 1 );
+					expect( view._unboundChildren.get( 0 ) ).to.equal( child );
+				} );
 		} );
 
 		it( 'should support iterables', () => {
 			expect( view._unboundChildren ).to.have.length( 0 );
 
-			view.addChildren( [ {}, {}, {} ] );
-			expect( view._unboundChildren ).to.have.length( 3 );
+			return view.addChildren( [ {}, {}, {} ] )
+				.then( () => {
+					expect( view._unboundChildren ).to.have.length( 3 );
+				} );
 		} );
 	} );
 
@@ -254,12 +280,14 @@ describe( 'View', () => {
 		it( 'clears #_unboundChildren', () => {
 			const cached = view._unboundChildren;
 
-			view.addChildren( [ new View(), new View() ] );
-			expect( cached ).to.have.length.above( 2 );
+			return view.addChildren( [ new View(), new View() ] )
+				.then( () => {
+					expect( cached ).to.have.length.above( 2 );
 
-			return view.destroy().then( () => {
-				expect( cached ).to.have.length( 0 );
-			} );
+					return view.destroy().then( () => {
+						expect( cached ).to.have.length( 0 );
+					} );
+				} );
 		} );
 
 		it( 'clears #_viewCollections', () => {
@@ -303,6 +331,44 @@ describe( 'View', () => {
 			expect( () => {
 				view.destroy();
 			} ).to.not.throw();
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-ui/issues/203
+		it( 'waits for all #addChildren promises to resolve', () => {
+			const spyA = sinon.spy();
+			const spyB = sinon.spy();
+
+			class DelayedInitView extends View {
+				constructor( delay, spy ) {
+					super();
+
+					this.delay = delay;
+					this.spy = spy;
+				}
+
+				init() {
+					return new Promise( resolve => {
+							setTimeout( () => resolve(), this.delay );
+						} )
+						.then( () => super.init() )
+						.then( () => {
+							this.spy();
+						} );
+				}
+			}
+
+			const viewA = new DelayedInitView( 200, spyA );
+			const viewB = new DelayedInitView( 100, spyB );
+
+			return view.init().then( () => {
+				view.addChildren( [ viewA, viewB ] );
+
+				return view.destroy().then( () => {
+					expect( viewA.ready ).to.be.true;
+					expect( viewB.ready ).to.be.true;
+					sinon.assert.callOrder( spyB, spyA );
+				} );
+			} );
 		} );
 	} );
 } );
