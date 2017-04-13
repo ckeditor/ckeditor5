@@ -5,3 +5,5 @@
 1. Open console.
 1. Press "Upload progress" button couple times to simulate upload process.
 1. After uploading is complete your image should be replaced with sample image from server.
+
+Repeat all the steps but this time use toolbar button to add image.

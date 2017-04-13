@@ -19,15 +19,15 @@ import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import List from '@ckeditor/ckeditor5-list/src/list';
-import ImageUploadEngine from '../../src/imageuploadengine';
+import ImageUpload from '../../src/imageupload';
 import { AdapterMock } from '../_utils/mocks';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [
 		Enter, Typing, Paragraph, Heading, Undo, Bold, Italic, Heading, List, Image, ImageToolbar, Clipboard,
-		ImageCaption, ImageStyle, ImageUploadEngine
+		ImageCaption, ImageStyle, ImageUpload
 	],
-	toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList' ]
+	toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList', 'insertImage' ]
 } )
 .then( editor => {
 	let adapterMock, progress;

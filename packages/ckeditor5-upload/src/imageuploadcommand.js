@@ -12,6 +12,10 @@ import { isImageType } from './utils';
 import Command from '@ckeditor/ckeditor5-core/src/command/command';
 
 /**
+ * @module upload/imageuploadcommand
+ */
+
+/**
  * Image upload command.
  *
  * @extends module:core/command/command~Command
