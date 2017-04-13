@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/**
+ * @module upload/imageuploadengine
+ */
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 import FileRepository from './filerepository';

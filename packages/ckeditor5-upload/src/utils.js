@@ -4,6 +4,10 @@
  */
 
 /**
+ * @module upload/utils
+ */
+
+/**
  * Checks if given file is an image.
  *
  * @param {File} file
