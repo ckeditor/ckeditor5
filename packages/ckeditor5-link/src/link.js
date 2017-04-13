@@ -90,21 +90,21 @@ export default class Link extends Plugin {
 		// Execute link command after clicking on formView `Save` button.
 		this.listenTo( formView, 'submit', () => {
 			editor.execute( 'link', formView.urlInputView.inputView.element.value );
-			this._hidePanel( true );
+			this.hidePanel( true );
 		} );
 
 		// Execute unlink command after clicking on formView `Unlink` button.
 		this.listenTo( formView, 'unlink', () => {
 			editor.execute( 'unlink' );
-			this._hidePanel( true );
+			this.hidePanel( true );
 		} );
 
 		// Hide the panel after clicking on formView `Cancel` button.
-		this.listenTo( formView, 'cancel', () => this._hidePanel( true ) );
+		this.listenTo( formView, 'cancel', () => this.hidePanel( true ) );
 
 		// Close the panel on esc key press when the form has focus.
 		formView.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this._hidePanel( true );
+			this.hidePanel( true );
 			cancel();
 		} );
 
@@ -123,7 +123,7 @@ export default class Link extends Plugin {
 		const t = editor.t;
 
 		// Handle `Ctrl+K` keystroke and show the panel.
-		editor.keystrokes.set( 'CTRL+K', () => this._showPanel( true ) );
+		editor.keystrokes.set( 'CTRL+K', () => this.showPanel( true ) );
 
 		editor.ui.componentFactory.add( 'link', ( locale ) => {
 			const button = new ButtonView( locale );
@@ -138,7 +138,7 @@ export default class Link extends Plugin {
 			button.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
 			// Show the panel on button click.
-			this.listenTo( button, 'execute', () => this._showPanel( true ) );
+			this.listenTo( button, 'execute', () => this.showPanel( true ) );
 
 			return button;
 		} );
@@ -191,7 +191,7 @@ export default class Link extends Plugin {
 			// When collapsed selection is inside link element (link element is clicked).
 			if ( viewSelection.isCollapsed && parentLink ) {
 				// Then show panel but keep focus inside editor editable.
-				this._showPanel();
+				this.showPanel();
 
 				// Avoid duplication of the same listener.
 				this.stopListening( viewDocument, 'render' );
@@ -202,7 +202,7 @@ export default class Link extends Plugin {
 					const currentParentLink = getPositionParentLink( viewSelection.getFirstPosition() );
 
 					if ( !viewSelection.isCollapsed || parentLink !== currentParentLink ) {
-						this._hidePanel();
+						this.hidePanel();
 					} else {
 						this._balloon.updatePosition();
 					}
@@ -221,7 +221,7 @@ export default class Link extends Plugin {
 		// Close the panel on the Esc key press when the editable has focus and the balloon is visible.
 		this.editor.keystrokes.set( 'Esc', ( data, cancel ) => {
 			if ( this._balloon.visibleView === this.formView ) {
-				this._hidePanel();
+				this.hidePanel();
 				cancel();
 			}
 		} );
@@ -231,19 +231,24 @@ export default class Link extends Plugin {
 			emitter: this.formView,
 			activator: () => this._balloon.hasView( this.formView ),
 			contextElement: this._balloon.view.element,
-			callback: () => this._hidePanel()
+			callback: () => this.hidePanel()
 		} );
 	}
 
 	/**
 	 * Adds the {@link #formView} to the {@link #_balloon}.
+	 * When view is already added then try to focus it `focusInput` parameter is set as true.
 	 *
-	 * @private
 	 * @param {Boolean} [focusInput=false] When `true`, link form will be focused on panel show.
 	 * @return {Promise} A promise resolved when the {#formView} {@link module:ui/view~View#init} is done.
 	 */
-	_showPanel( focusInput ) {
+	showPanel( focusInput ) {
 		if ( this._balloon.hasView( this.formView ) ) {
+			// Check if formView should be focused and focus it if is visible.
+			if ( focusInput && this._balloon.visibleView === this.formView ) {
+				this.formView.urlInputView.select();
+			}
+
 			return Promise.resolve();
 		}
 
@@ -260,20 +265,19 @@ export default class Link extends Plugin {
 	/**
 	 * Removes the {@link #formView} from the {@link #_balloon}.
 	 *
-	 * @private
 	 * @param {Boolean} [focusEditable=false] When `true`, editable focus will be restored on panel hide.
 	 */
-	_hidePanel( focusEditable ) {
+	hidePanel( focusEditable ) {
 		if ( !this._balloon.hasView( this.formView ) ) {
 			return;
 		}
 
-		this._balloon.remove( this.formView );
-		this.stopListening( this.editor.editing.view, 'render' );
-
 		if ( focusEditable ) {
 			this.editor.editing.view.focus();
 		}
+
+		this.stopListening( this.editor.editing.view, 'render' );
+		this._balloon.remove( this.formView );
 	}
 
 	/**
