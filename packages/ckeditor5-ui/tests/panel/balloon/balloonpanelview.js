@@ -189,10 +189,10 @@ describe( 'BalloonPanelView', () => {
 				element: view.element,
 				target: target,
 				positions: [
-					BalloonPanelView.defaultPositions.se,
-					BalloonPanelView.defaultPositions.sw,
-					BalloonPanelView.defaultPositions.ne,
-					BalloonPanelView.defaultPositions.nw
+					BalloonPanelView.defaultPositions.southEastArrowNorthEast,
+					BalloonPanelView.defaultPositions.southWestArrowNorthEast,
+					BalloonPanelView.defaultPositions.northEastArrowSouthWest,
+					BalloonPanelView.defaultPositions.northWestArrowSouthEast
 				],
 				limiter: document.body,
 				fitInViewport: true
@@ -658,64 +658,64 @@ describe( 'BalloonPanelView', () => {
 			};
 		} );
 
-		it( 'se', () => {
-			expect( positions.se( targetRect ) ).to.deep.equal( {
+		it( 'southEastArrowNorthEast', () => {
+			expect( positions.southEastArrowNorthEast( targetRect ) ).to.deep.equal( {
 				top: 215,
 				left: 120,
 				name: 'arrow_se'
 			} );
 		} );
 
-		it( 'sw', () => {
-			expect( positions.sw( targetRect, balloonRect ) ).to.deep.equal( {
+		it( 'southWestArrowNorthEast', () => {
+			expect( positions.southWestArrowNorthEast( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 215,
 				left: 130,
 				name: 'arrow_sw'
 			} );
 		} );
 
-		it( 'ne', () => {
-			expect( positions.ne( targetRect, balloonRect ) ).to.deep.equal( {
+		it( 'northEastArrowSouthWest', () => {
+			expect( positions.northEastArrowSouthWest( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 35,
 				left: 120,
 				name: 'arrow_ne'
 			} );
 		} );
 
-		it( 'nw', () => {
-			expect( positions.nw( targetRect, balloonRect ) ).to.deep.equal( {
+		it( 'northWestArrowSouthEast', () => {
+			expect( positions.northWestArrowSouthEast( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 35,
 				left: 130,
 				name: 'arrow_nw'
 			} );
 		} );
 
-		it( 'forwardSelection', () => {
-			expect( positions.forwardSelection( targetRect, balloonRect ) ).to.deep.equal( {
+		it( 'southEastArrowNorth', () => {
+			expect( positions.southEastArrowNorth( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 215,
 				left: 175,
 				name: 'arrow_s'
 			} );
 		} );
 
-		it( 'forwardSelectionAlternative', () => {
-			expect( positions.forwardSelectionAlternative( targetRect, balloonRect ) ).to.deep.equal( {
+		it( 'northEastArrowSouth', () => {
+			expect( positions.northEastArrowSouth( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 35,
 				left: 175,
 				name: 'arrow_n'
 			} );
 		} );
 
-		it( 'backwardSelection', () => {
-			expect( positions.backwardSelection( targetRect, balloonRect ) ).to.deep.equal( {
+		it( 'northWestArrowSouth', () => {
+			expect( positions.northWestArrowSouth( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 35,
 				left: 75,
 				name: 'arrow_n'
 			} );
 		} );
 
-		it( 'backwardSelectionAlternative', () => {
-			expect( positions.backwardSelectionAlternative( targetRect, balloonRect ) ).to.deep.equal( {
+		it( 'southWestArrowNorth', () => {
+			expect( positions.southWestArrowNorth( targetRect, balloonRect ) ).to.deep.equal( {
 				top: 215,
 				left: 75,
 				name: 'arrow_s'

@@ -181,10 +181,10 @@ export default class BalloonPanelView extends View {
 		const positionOptions = Object.assign( {}, {
 			element: this.element,
 			positions: [
-				defaultPositions.se,
-				defaultPositions.sw,
-				defaultPositions.ne,
-				defaultPositions.nw
+				defaultPositions.southEastArrowNorthEast,
+				defaultPositions.southWestArrowNorthEast,
+				defaultPositions.northEastArrowSouthWest,
+				defaultPositions.northWestArrowSouthEast
 			],
 			limiter: defaultLimiterElement,
 			fitInViewport: true
@@ -334,7 +334,7 @@ BalloonPanelView.arrowVerticalOffset = 15;
  *
  * The available positioning functions are as follows:
  *
- * * South east:
+ * * South east arrow north west:
  *
  *		[ Target ]
  *		    ^
@@ -343,7 +343,7 @@ BalloonPanelView.arrowVerticalOffset = 15;
  *		+-----------------+
  *
  *
- * * South west:
+ * * South west arrow north east:
  *
  *		         [ Target ]
  *		              ^
@@ -352,7 +352,7 @@ BalloonPanelView.arrowVerticalOffset = 15;
  *		+-----------------+
  *
  *
- * * North east:
+ * * North east arrow south west:
  *
  *		+-----------------+
  *		|     Balloon     |
@@ -361,7 +361,7 @@ BalloonPanelView.arrowVerticalOffset = 15;
  *		[ Target ]
  *
  *
- * * North west:
+ * * North west arrow south east:
  *
  *		+-----------------+
  *		|     Balloon     |
@@ -370,7 +370,7 @@ BalloonPanelView.arrowVerticalOffset = 15;
  *		         [ Target ]
  *
  *
- * * Forward selection:
+ * * South east arrow north:
  *
  * 		[text range]
  * 		           ^
@@ -379,7 +379,7 @@ BalloonPanelView.arrowVerticalOffset = 15;
  * 		  +-----------------+
  *
  *
- * * Forward selection alternative:
+ * * North east arrow south:
  *
  * 		  +-----------------+
  * 		  |     Balloon     |
@@ -388,7 +388,7 @@ BalloonPanelView.arrowVerticalOffset = 15;
  * 		[text range]
  *
  *
- * * Backward selection:
+ * * North west arrow south:
  *
  * 		+-----------------+
  * 		|     Balloon     |
@@ -397,7 +397,7 @@ BalloonPanelView.arrowVerticalOffset = 15;
  * 		         [text range]
  *
  *
- * * Backward selection alternative:
+ * * South west arrow north:
  *
  * 		         [text range]
  * 		         ^
@@ -415,49 +415,49 @@ BalloonPanelView.arrowVerticalOffset = 15;
  * @member {Object} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions
  */
 BalloonPanelView.defaultPositions = {
-	se: ( targetRect ) => ( {
+	southEastArrowNorthEast: ( targetRect ) => ( {
 		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_se'
 	} ),
 
-	sw: ( targetRect, balloonRect ) => ( {
+	southWestArrowNorthEast: ( targetRect, balloonRect ) => ( {
 		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_sw'
 	} ),
 
-	ne: ( targetRect, balloonRect ) => ( {
+	northEastArrowSouthWest: ( targetRect, balloonRect ) => ( {
 		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_ne'
 	} ),
 
-	nw: ( targetRect, balloonRect ) => ( {
+	northWestArrowSouthEast: ( targetRect, balloonRect ) => ( {
 		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_nw'
 	} ),
 
-	forwardSelection: ( targetRect, balloonRect ) => ( {
+	southEastArrowNorth: ( targetRect, balloonRect ) => ( {
 		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.right - balloonRect.width / 2,
 		name: 'arrow_s'
 	} ),
 
-	forwardSelectionAlternative: ( targetRect, balloonRect ) => ( {
+	northEastArrowSouth: ( targetRect, balloonRect ) => ( {
 		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.right - balloonRect.width / 2,
 		name: 'arrow_n'
 	} ),
 
-	backwardSelection: ( targetRect, balloonRect ) => ( {
+	northWestArrowSouth: ( targetRect, balloonRect ) => ( {
 		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left - balloonRect.width / 2,
 		name: 'arrow_n'
 	} ),
 
-	backwardSelectionAlternative: ( targetRect, balloonRect ) => ( {
+	southWestArrowNorth: ( targetRect, balloonRect ) => ( {
 		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left - balloonRect.width / 2,
 		name: 'arrow_s'
