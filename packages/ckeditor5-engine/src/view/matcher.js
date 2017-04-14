@@ -131,8 +131,8 @@ export default class Matcher {
 	 *			match: {
 	 *				name: true,
 	 *				attribute: [ 'title', 'href' ],
-	 *				classes: [ 'foo' ],
- 	 *				styles: [ 'color', 'position' ]
+	 *				class: [ 'foo' ],
+	 *				style: [ 'color', 'position' ]
 	 *			}
 	 *		}
 	 *
