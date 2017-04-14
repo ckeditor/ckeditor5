@@ -22,10 +22,11 @@ describe( 'Paragraph feature – integration', () => {
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
+					const clipboard = editor.plugins.get( 'clipboard/clipboard' );
 
 					setModelData( doc, '<paragraph>[]</paragraph>' );
 
-					editor.editing.view.fire( 'clipboardInput', {
+					clipboard.fire( 'inputTransformation', {
 						content: parseView( '<h1>foo</h1><h2>bar</h2><p>bom</p>' )
 					} );
 
@@ -41,10 +42,11 @@ describe( 'Paragraph feature – integration', () => {
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
+					const clipboard = editor.plugins.get( 'clipboard/clipboard' );
 
 					setModelData( doc, '<paragraph>[]</paragraph>' );
 
-					editor.editing.view.fire( 'clipboardInput', {
+					clipboard.fire( 'inputTransformation', {
 						content: parseView( '<h1>foo</h1><h2>bar</h2><p>bom</p>' )
 					} );
 
@@ -59,10 +61,11 @@ describe( 'Paragraph feature – integration', () => {
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
+					const clipboard = editor.plugins.get( 'clipboard/clipboard' );
 
 					setModelData( doc, '<paragraph>[]</paragraph>' );
 
-					editor.editing.view.fire( 'clipboardInput', {
+					clipboard.fire( 'inputTransformation', {
 						content: parseView( '<ul><li>foo</li><li>bar</li></ul>' )
 					} );
 
@@ -79,10 +82,11 @@ describe( 'Paragraph feature – integration', () => {
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
+					const clipboard = editor.plugins.get( 'clipboard/clipboard' );
 
 					setModelData( doc, '<paragraph>[]</paragraph>' );
 
-					editor.editing.view.fire( 'clipboardInput', {
+					clipboard.fire( 'inputTransformation', {
 						content: parseView( '<ul><li>x</li><li><h2>foo</h2><h3>bar</h3><p>bom</p></li><li>x</li></ul>' )
 					} );
 
@@ -102,10 +106,11 @@ describe( 'Paragraph feature – integration', () => {
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
+					const clipboard = editor.plugins.get( 'clipboard/clipboard' );
 
 					setModelData( doc, '<paragraph>[]</paragraph>' );
 
-					editor.editing.view.fire( 'clipboardInput', {
+					clipboard.fire( 'inputTransformation', {
 						content: parseView( '<ul><li>a<ul><li>b</li><li>c</li></ul></li></ul>' )
 					} );
 
@@ -125,10 +130,11 @@ describe( 'Paragraph feature – integration', () => {
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
+					const clipboard = editor.plugins.get( 'clipboard/clipboard' );
 
 					setModelData( doc, '<paragraph>[]</paragraph>' );
 
-					editor.editing.view.fire( 'clipboardInput', {
+					clipboard.fire( 'inputTransformation', {
 						content: parseView( '<ul><li><p>a</p>b</li></ul>' )
 					} );
 
