@@ -237,29 +237,38 @@ export default class Link extends Plugin {
 
 	/**
 	 * Adds the {@link #formView} to the {@link #_balloon}.
+	 * When view is already added then try to focus it `focusInput` parameter is set as true.
 	 *
-	 * @private
+	 * @protected
 	 * @param {Boolean} [focusInput=false] When `true`, link form will be focused on panel show.
+	 * @return {Promise} A promise resolved when the {@link #formView} {@link module:ui/view~View#init} is done.
 	 */
 	_showPanel( focusInput ) {
 		if ( this._balloon.hasView( this.formView ) ) {
-			return;
+			// Check if formView should be focused and focus it if is visible.
+			if ( focusInput && this._balloon.visibleView === this.formView ) {
+				this.formView.urlInputView.select();
+			}
+
+			return Promise.resolve();
 		}
 
-		this._balloon.add( {
-			view: this.formView,
-			position: this._getBalloonPositionData()
-		} );
-
-		if ( focusInput ) {
-			this.formView.urlInputView.select();
-		}
+		return this._balloon.add( {
+				view: this.formView,
+				position: this._getBalloonPositionData()
+			} ).then( () => {
+				if ( focusInput ) {
+					this.formView.urlInputView.select();
+				}
+			} );
 	}
 
 	/**
 	 * Removes the {@link #formView} from the {@link #_balloon}.
 	 *
-	 * @private
+	 * See {@link #_showPanel}.
+	 *
+	 * @protected
 	 * @param {Boolean} [focusEditable=false] When `true`, editable focus will be restored on panel hide.
 	 */
 	_hidePanel( focusEditable ) {
@@ -267,12 +276,12 @@ export default class Link extends Plugin {
 			return;
 		}
 
-		this._balloon.remove( this.formView );
-		this.stopListening( this.editor.editing.view, 'render' );
-
 		if ( focusEditable ) {
 			this.editor.editing.view.focus();
 		}
+
+		this.stopListening( this.editor.editing.view, 'render' );
+		this._balloon.remove( this.formView );
 	}
 
 	/**
