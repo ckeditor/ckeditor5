@@ -95,7 +95,7 @@ export default class BalloonPanelView extends View {
 		 * @default ''
 		 * @member {String} #className
 		 */
-		this.set( 'className', '' );
+		this.set( 'className' );
 
 		/**
 		 * Max width of the balloon panel, as in CSS.
