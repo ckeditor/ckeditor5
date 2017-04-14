@@ -166,7 +166,7 @@ describe( 'ContextualToolbar', () => {
 		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( spy.firstCall.args[ 0 ].position.positions ).to.deep.equal(
-			[ defaultPositions.forwardSelection, defaultPositions.forwardSelectionAlternative ]
+			[ defaultPositions.southEastArrowNorth, defaultPositions.northEastArrowSouth ]
 		);
 	} );
 
@@ -179,7 +179,7 @@ describe( 'ContextualToolbar', () => {
 		contextualToolbar.fire( '_selectionChangeDebounced' );
 
 		expect( spy.firstCall.args[ 0 ].position.positions ).to.deep.equal(
-			[ defaultPositions.backwardSelection, defaultPositions.backwardSelectionAlternative ]
+			[ defaultPositions.northWestArrowSouth, defaultPositions.southWestArrowNorth ]
 		);
 	} );
 

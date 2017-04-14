@@ -195,8 +195,8 @@ export default class ContextualToolbar extends Plugin {
 		return {
 			target: rangeRect,
 			positions: isBackward ?
-				[ defaultPositions.backwardSelection, defaultPositions.backwardSelectionAlternative ] :
-				[ defaultPositions.forwardSelection, defaultPositions.forwardSelectionAlternative ],
+				[ defaultPositions.northWestArrowSouth, defaultPositions.southWestArrowNorth ] :
+				[ defaultPositions.southEastArrowNorth, defaultPositions.northEastArrowSouth ]
 		};
 	}
 
