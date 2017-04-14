@@ -32,6 +32,7 @@ describe( 'LinkEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
+		expect( doc.schema.check( { name: '$inline', attributes: [ 'linkHref' ], inside: '$root' } ) ).to.be.false;
 		expect( doc.schema.check( { name: '$inline', attributes: [ 'linkHref' ], inside: '$block' } ) ).to.be.true;
 	} );
 
@@ -61,6 +62,17 @@ describe( 'LinkEngine', () => {
 				.to.equal( '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><a href="url">foo</a>bar</p>' );
+		} );
+
+		it( 'should be integrated with autoparagraphing', () => {
+			// Incorrect results because autoparagraphing works incorrectly (issue in paragraph).
+			// https://github.com/ckeditor/ckeditor5-paragraph/issues/10
+
+			editor.setData( '<a href="url">foo</a>bar' );
+
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
 		} );
 	} );
 
