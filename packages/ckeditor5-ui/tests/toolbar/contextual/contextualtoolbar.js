@@ -5,12 +5,12 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import ContextualToolbar from '../../../src/toolbar/contextual/contextualtoolbar';
 import ContextualBalloon from '../../../src/panel/balloon/contextualballoon';
+import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 import ToolbarView from '../../../src/toolbar/toolbarview';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
@@ -157,100 +157,30 @@ describe( 'ContextualToolbar', () => {
 		expect( balloon.visibleView ).to.null;
 	} );
 
-	it( 'should put balloon on the `south` if the selection is forward', () => {
+	it( 'should open with specified positions configuration for the forward selection', () => {
+		const spy = sandbox.stub( balloon, 'add', () => {} );
+		const defaultPositions = BalloonPanelView.defaultPositions;
+
 		setData( editor.document, '<paragraph>[bar]</paragraph>' );
 
-		stubClientRects();
-
-		// Mock limiter rect.
-		mockBoundingBox( document.body, {
-			left: 0,
-			width: 1000,
-			top: 0,
-			height: 1000
-		} );
-
 		contextualToolbar.fire( '_selectionChangeDebounced' );
 
-		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-
-		// Balloon is attached after internal promise resolve and we have
-		// no access to this promise so we need to wait for it.
-		return wait().then( () => {
-			expect( balloon.view.position ).to.equal( 'arrow_s' );
-		} );
+		expect( spy.firstCall.args[ 0 ].position.positions ).to.deep.equal(
+			[ defaultPositions.forwardSelection, defaultPositions.forwardSelectionAlternative ]
+		);
 	} );
 
-	it( 'should put balloon on the `north` if the selection is forward `south` is limited', () => {
-		setData( editor.document, '<paragraph>[bar]</paragraph>' );
+	it( 'should open with specified positions configuration for the backward selection', () => {
+		const spy = sandbox.stub( balloon, 'add', () => {} );
+		const defaultPositions = BalloonPanelView.defaultPositions;
 
-		stubClientRects();
-
-		// Mock limiter rect.
-		mockBoundingBox( document.body, {
-			left: 0,
-			width: 1000,
-			top: 0,
-			height: 310
-		} );
-
-		contextualToolbar.fire( '_selectionChangeDebounced' );
-
-		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-
-		// Balloon is attached after internal promise resolve and we have
-		// no access to this promise so we need to wait for it.
-		return wait().then( () => {
-			expect( balloon.view.position ).to.equal( 'arrow_n' );
-		} );
-	} );
-
-	it( 'should put balloon on the `north` if the selection is backward', () => {
 		setData( editor.document, '<paragraph>[bar]</paragraph>', { lastRangeBackward: true } );
 
-		stubClientRects();
-
-		// Mock limiter rect.
-		mockBoundingBox( document.body, {
-			left: 0,
-			width: 1000,
-			top: 0,
-			height: 1000
-		} );
-
 		contextualToolbar.fire( '_selectionChangeDebounced' );
 
-		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-
-		// Balloon is attached after internal promise resolve and we have
-		// no access to this promise so we need to wait for it.
-		return wait().then( () => {
-			expect( balloon.view.position ).to.equal( 'arrow_n' );
-		} );
-	} );
-
-	it( 'should put balloon on the `south` if the selection is backward `north` is limited', () => {
-		setData( editor.document, '<paragraph>[bar]</paragraph>', { lastRangeBackward: true } );
-
-		stubClientRects();
-
-		// Mock limiter rect.
-		mockBoundingBox( document.body, {
-			left: 0,
-			width: 1000,
-			top: 95,
-			height: 905
-		} );
-
-		contextualToolbar.fire( '_selectionChangeDebounced' );
-
-		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-
-		// Balloon is attached after internal promise resolve and we have
-		// no access to this promise so we need to wait for it.
-		return wait().then( () => {
-			expect( balloon.view.position ).to.equal( 'arrow_s' );
-		} );
+		expect( spy.firstCall.args[ 0 ].position.positions ).to.deep.equal(
+			[ defaultPositions.backwardSelection, defaultPositions.backwardSelectionAlternative ]
+		);
 	} );
 
 	it( 'should not open if the collapsed selection is moving', () => {
@@ -343,70 +273,4 @@ describe( 'ContextualToolbar', () => {
 			}, 200 );
 		} );
 	} );
-
-	function stubClientRects() {
-		const editingView = editor.editing.view;
-		const originalViewRangeToDom = editingView.domConverter.viewRangeToDom;
-
-		// Mock selection rect.
-		sandbox.stub( editingView.domConverter, 'viewRangeToDom', ( ...args ) => {
-			const domRange = originalViewRangeToDom.apply( editingView.domConverter, args );
-
-			sandbox.stub( domRange, 'getClientRects', () => {
-				return {
-					length: 2,
-					item: id => {
-						if ( id === 0 ) {
-							return {
-								top: 100,
-								height: 10,
-								bottom: 110,
-								left: 200,
-								width: 50,
-								right: 250
-							};
-						}
-
-						return {
-							top: 300,
-							height: 10,
-							bottom: 310,
-							left: 400,
-							width: 50,
-							right: 450
-						};
-					}
-				};
-			} );
-
-			return domRange;
-		} );
-
-		// Mock window rect.
-		sandbox.stub( global.window, 'innerWidth', 1000 );
-		sandbox.stub( global.window, 'innerHeight', 1000 );
-		sandbox.stub( global.window, 'scrollX', 0 );
-		sandbox.stub( global.window, 'scrollY', 0 );
-
-		// Mock balloon rect.
-		mockBoundingBox( balloon.view.element, {
-			width: 150,
-			height: 50
-		} );
-	}
-
-	function mockBoundingBox( element, data ) {
-		const boundingBox = Object.assign( {}, data );
-
-		boundingBox.right = boundingBox.left + boundingBox.width;
-		boundingBox.bottom = boundingBox.top + boundingBox.height;
-
-		sandbox.stub( element, 'getBoundingClientRect' ).returns( boundingBox );
-	}
 } );
-
-function wait( delay = 1 ) {
-	return new Promise( ( resolve ) => {
-		setTimeout( () => resolve(), delay );
-	} );
-}
