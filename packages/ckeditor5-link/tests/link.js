@@ -196,17 +196,6 @@ describe( 'Link', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 		} );
-
-		it( 'should keep the editor ui focused when the #_balloon is shown with the selected form', () => {
-			editor.ui.focusTracker.isFocused = false;
-
-			// Open the #_balloon with the link inside.
-			return linkFeature._showPanel( true )
-				.then( () => {
-					// Check if editor ui is focused.
-					expect( editor.ui.focusTracker.isFocused ).to.true;
-				} );
-		} );
 	} );
 
 	describe( '_hidePanel()', () => {
