@@ -241,7 +241,7 @@ export default class Link extends Plugin {
 	 *
 	 * @protected
 	 * @param {Boolean} [focusInput=false] When `true`, link form will be focused on panel show.
-	 * @return {Promise} A promise resolved when the {#formView} {@link module:ui/view~View#init} is done.
+	 * @return {Promise} A promise resolved when the {@link #formView} {@link module:ui/view~View#init} is done.
 	 */
 	_showPanel( focusInput ) {
 		if ( this._balloon.hasView( this.formView ) ) {
@@ -265,6 +265,8 @@ export default class Link extends Plugin {
 
 	/**
 	 * Removes the {@link #formView} from the {@link #_balloon}.
+	 *
+	 * See {@link #_showPanel}.
 	 *
 	 * @protected
 	 * @param {Boolean} [focusEditable=false] When `true`, editable focus will be restored on panel hide.
