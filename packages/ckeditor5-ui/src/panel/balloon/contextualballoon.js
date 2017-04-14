@@ -49,6 +49,9 @@ export default class ContextualBalloon extends Plugin {
 		 */
 		this._stack = new Map();
 
+		// Editor should be focused when contextual balloon is focused.
+		this.editor.ui.focusTracker.add( this.view.element );
+
 		// Add balloon panel view to editor `body` collection and wait until view will be ready.
 		return this.editor.ui.view.body.add( this.view );
 	}
