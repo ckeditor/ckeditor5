@@ -92,7 +92,6 @@ export default class BalloonPanelView extends View {
 		 * Additional css class added to the {#element}.
 		 *
 		 * @observable
-		 * @default ''
 		 * @member {String} #className
 		 */
 		this.set( 'className' );
