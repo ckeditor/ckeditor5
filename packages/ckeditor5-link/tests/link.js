@@ -593,6 +593,17 @@ describe( 'Link', () => {
 			focusEditableSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 		} );
 
+		it( 'should mark the editor ui as focused when the #formView is focused', () => {
+			return linkFeature._showPanel()
+				.then( () => {
+					editor.ui.focusTracker.isFocused = false;
+
+					formView.element.dispatchEvent( new Event( 'focus' ) );
+
+					expect( editor.ui.focusTracker.isFocused ).to.true;
+				} );
+		} );
+
 		describe( 'binding', () => {
 			it( 'should bind formView.urlInputView#value to link command value', () => {
 				const command = editor.commands.get( 'link' );
