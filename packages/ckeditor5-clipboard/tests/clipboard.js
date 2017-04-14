@@ -9,7 +9,10 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import ClipboardObserver from '../src/clipboardobserver';
 
-import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import {
+	stringify as stringifyView,
+	parse as parseView
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import {
 	stringify as stringifyModel,
 	setData as setModelData,
@@ -287,16 +290,98 @@ describe( 'Clipboard feature', () => {
 		it( 'sets clipboard HTML data', () => {
 			const dataTransferMock = createDataTransfer();
 
-			setModelData( editor.document, '<paragraph>f[o]o</paragraph>' );
+			const input =
+				'<blockquote>' +
+					'<p>foo</p>' +
+					'<p>bar</p>' +
+				'</blockquote>' +
+				'<ul>' +
+					'<li>u<strong>l ite</strong>m</li>' +
+					'<li>ul item</li>' +
+				'</ul>' +
+				'<p>foobar</p>' +
+				'<ol>' +
+					'<li>o<a href="foo">l ite</a>m</li>' +
+					'<li>ol item</li>' +
+				'</ol>' +
+				'<figure>' +
+					'<img src="foo.jpg" alt="image foo" />' +
+					'<figcaption>caption</figcaption>' +
+				'</figure>';
+
+			const output =
+				'<blockquote>' +
+					'<p>foo</p>' +
+					'<p>bar</p>' +
+				'</blockquote>' +
+				'<ul>' +
+					'<li>u<strong>l ite</strong>m</li>' +
+					'<li>ul item</li>' +
+				'</ul>' +
+				'<p>foobar</p>' +
+				'<ol>' +
+					'<li>o<a href="foo">l ite</a>m</li>' +
+					'<li>ol item</li>' +
+				'</ol>' +
+				'<figure>' +
+					'<img alt="image foo" src="foo.jpg">' + // Weird attributes ordering behavior + no closing "/>".
+					'<figcaption>caption</figcaption>' +
+				'</figure>';
 
 			editingView.fire( 'clipboardOutput', {
 				dataTransfer: dataTransferMock,
-				content: new ViewDocumentFragment( [ new ViewText( 'abc' ) ] ),
+				content: parseView( input ),
 				method: 'copy'
 			} );
 
-			expect( dataTransferMock.getData( 'text/html' ) ).to.equal( 'abc' );
-			expect( getModelData( editor.document ) ).to.equal( '<paragraph>f[o]o</paragraph>' );
+			expect( dataTransferMock.getData( 'text/html' ) ).to.equal( output );
+		} );
+
+		it( 'sets clipboard plain text data', () => {
+			const dataTransferMock = createDataTransfer();
+
+			const input =
+				'<container:blockquote>' +
+					'<container:p>foo</container:p>' +
+					'<container:p>bar</container:p>' +
+				'</container:blockquote>' +
+				'<container:ul>' +
+					'<container:li>u<strong>l ite</strong>m</container:li>' +
+					'<container:li>ul item</container:li>' +
+				'</container:ul>' +
+				'<container:p>foobar</container:p>' +
+				'<container:ol>' +
+					'<container:li>o<a href="foo">l ite</a>m</container:li>' +
+					'<container:li>ol item</container:li>' +
+				'</container:ol>' +
+				'<container:figure>' +
+					'<img alt="image foo" src="foo.jpg" />' +
+					'<container:figcaption>caption</container:figcaption>' +
+				'</container:figure>';
+
+			const output =
+				'foo\n' +
+				'\n' +
+				'bar\n' +
+				'\n' +
+				'ul item\n' +
+				'ul item\n' +
+				'\n' +
+				'foobar\n' +
+				'\n' +
+				'ol item\n' +
+				'ol item\n' +
+				'\n' +
+				'image foo\n' +
+				'caption';
+
+			editingView.fire( 'clipboardOutput', {
+				dataTransfer: dataTransferMock,
+				content: parseView( input ),
+				method: 'copy'
+			} );
+
+			expect( dataTransferMock.getData( 'text/plain' ) ).to.equal( output );
 		} );
 
 		it( 'does not set clipboard HTML data if content is empty', () => {
