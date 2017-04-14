@@ -10,7 +10,7 @@ import View from '../../../src/view';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-/* global document, setTimeout */
+/* global document, Event, setTimeout */
 
 describe( 'ContextualBalloon', () => {
 	let editor, editorElement, balloon, viewA, viewB;
@@ -26,7 +26,8 @@ describe( 'ContextualBalloon', () => {
 			editor = newEditor;
 			balloon = editor.plugins.get( ContextualBalloon );
 
-			// We don't need to execute BalloonPanel pin and attachTo methods it's enough to check if was called with proper data.
+			// We don't need to execute BalloonPanel pin and attachTo methods
+			// it's enough to check if was called with the proper data.
 			sinon.stub( balloon.view, 'attachTo', () => {} );
 			sinon.stub( balloon.view, 'pin', () => {} );
 
@@ -66,6 +67,19 @@ describe( 'ContextualBalloon', () => {
 
 		it( 'should add balloon panel view to editor `body` collection', () => {
 			expect( editor.ui.view.body.getIndex( balloon.view ) ).to.above( -1 );
+		} );
+
+		it( 'should register balloon panel element in editor.ui#focusTracker', () => {
+			editor.ui.focusTracker.isfocused = false;
+
+			balloon.add( {
+				view: viewB,
+				position: { target: 'fake' }
+			} );
+
+			balloon.view.element.dispatchEvent( new Event( 'focus' ) );
+
+			expect( editor.ui.focusTracker.isFocused ).to.true;
 		} );
 	} );
 
@@ -122,6 +136,10 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.view.content.get( 0 ) ).to.deep.equal( viewA );
 			expect( balloon.view.pin.calledOnce ).to.true;
 			expect( balloon.view.pin.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
+		} );
+
+		it( 'should pin balloon to the target element', () => {
+			sinon.assert.calledOnce( balloon.view.pin );
 		} );
 
 		it( 'should throw an error when try to add the same view more than once', () => {
