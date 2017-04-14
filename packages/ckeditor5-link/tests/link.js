@@ -51,6 +51,8 @@ describe( 'Link', () => {
 	} );
 
 	afterEach( () => {
+		editorElement.remove();
+
 		return editor.destroy();
 	} );
 
