@@ -70,7 +70,7 @@ describe( 'Link', () => {
 		expect( editor.editing.view.getObserver( ClickObserver ) ).to.instanceOf( ClickObserver );
 	} );
 
-	describe( 'showPanel()', () => {
+	describe( '_showPanel()', () => {
 		let balloonAddSpy;
 
 		beforeEach( () => {
@@ -79,7 +79,7 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should return promise', () => {
-			const returned = linkFeature.showPanel();
+			const returned = linkFeature._showPanel();
 
 			expect( returned ).to.instanceof( Promise );
 
@@ -90,7 +90,7 @@ describe( 'Link', () => {
 			setModelData( editor.document, '<paragraph>f[o]o</paragraph>' );
 			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
 
-			return linkFeature.showPanel()
+			return linkFeature._showPanel()
 				.then( () => {
 					expect( balloon.visibleView ).to.equal( formView );
 
@@ -108,7 +108,7 @@ describe( 'Link', () => {
 			setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
 			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
 
-			return linkFeature.showPanel()
+			return linkFeature._showPanel()
 				.then( () => {
 					expect( balloon.visibleView ).to.equal( formView );
 
@@ -128,7 +128,7 @@ describe( 'Link', () => {
 			setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 			const linkElement = editorElement.querySelector( 'a' );
 
-			return linkFeature.showPanel()
+			return linkFeature._showPanel()
 				.then( () => {
 					expect( balloon.visibleView ).to.equal( formView );
 
@@ -145,7 +145,7 @@ describe( 'Link', () => {
 		it( 'should not focus the #formView at default', () => {
 			const spy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 
-			return linkFeature.showPanel()
+			return linkFeature._showPanel()
 				.then( () => {
 					sinon.assert.notCalled( spy );
 				} );
@@ -154,7 +154,7 @@ describe( 'Link', () => {
 		it( 'should not focus the #formView when called with a `false` parameter', () => {
 			const spy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 
-			return linkFeature.showPanel( false )
+			return linkFeature._showPanel( false )
 				.then( () => {
 					sinon.assert.notCalled( spy );
 				} );
@@ -168,9 +168,9 @@ describe( 'Link', () => {
 				destroy: () => {}
 			};
 
-			return linkFeature.showPanel( false )
+			return linkFeature._showPanel( false )
 				.then( () => balloon.add( { view: viewMock } ) )
-				.then( () => linkFeature.showPanel( true ) )
+				.then( () => linkFeature._showPanel( true ) )
 				.then( () => {
 					sinon.assert.notCalled( spy );
 				} );
@@ -179,7 +179,7 @@ describe( 'Link', () => {
 		it( 'should focus the #formView when called with a `true` parameter', () => {
 			const spy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 
-			return linkFeature.showPanel( true )
+			return linkFeature._showPanel( true )
 				.then( () => {
 					sinon.assert.calledOnce( spy );
 				} );
@@ -188,8 +188,8 @@ describe( 'Link', () => {
 		it( 'should focus the #formView when called with a `true` parameter while the balloon is open and the #formView is visible', () => {
 			const spy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 
-			return linkFeature.showPanel( false )
-				.then( () => linkFeature.showPanel( true ) )
+			return linkFeature._showPanel( false )
+				.then( () => linkFeature._showPanel( true ) )
 				.then( () => {
 					sinon.assert.calledOnce( spy );
 				} );
@@ -199,7 +199,7 @@ describe( 'Link', () => {
 			editor.ui.focusTracker.isFocused = false;
 
 			// Open the #_balloon with the link inside.
-			return linkFeature.showPanel( true )
+			return linkFeature._showPanel( true )
 				.then( () => {
 					// Check if editor ui is focused.
 					expect( editor.ui.focusTracker.isFocused ).to.true;
@@ -207,42 +207,42 @@ describe( 'Link', () => {
 		} );
 	} );
 
-	describe( 'hidePanel()', () => {
+	describe( '_hidePanel()', () => {
 		beforeEach( () => {
 			return balloon.add( { view: formView } );
 		} );
 
 		it( 'should remove #formView from the #_balloon', () => {
-			linkFeature.hidePanel();
+			linkFeature._hidePanel();
 			expect( balloon.hasView( formView ) ).to.false;
 		} );
 
 		it( 'should not focus the `editable` by default', () => {
 			const spy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-			linkFeature.hidePanel();
+			linkFeature._hidePanel();
 			sinon.assert.notCalled( spy );
 		} );
 
 		it( 'should not focus the `editable` when called with a `false` parameter', () => {
 			const spy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-			linkFeature.hidePanel( false );
+			linkFeature._hidePanel( false );
 			sinon.assert.notCalled( spy );
 		} );
 
 		it( 'should focus the `editable` when called with a `true` parameter', () => {
 			const spy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-			linkFeature.hidePanel( true );
+			linkFeature._hidePanel( true );
 			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'should not throw an error when #formView is not added to the `balloon`', () => {
-			linkFeature.hidePanel( true );
+			linkFeature._hidePanel( true );
 
 			expect( () => {
-				linkFeature.hidePanel( true );
+				linkFeature._hidePanel( true );
 			} ).to.not.throw();
 		} );
 
@@ -251,7 +251,7 @@ describe( 'Link', () => {
 
 			linkFeature.listenTo( editor.editing.view, 'render', spy );
 
-			linkFeature.hidePanel();
+			linkFeature._hidePanel();
 
 			editor.editing.view.render();
 
@@ -276,7 +276,7 @@ describe( 'Link', () => {
 
 		it( 'should show the #_balloon on execute event with the selected #formView', () => {
 			// Method is stubbed because it returns internal promise which can't be returned in test.
-			const spy = testUtils.sinon.stub( linkFeature, 'showPanel', () => {} );
+			const spy = testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
 
 			linkButton.fire( 'execute' );
 
@@ -312,7 +312,7 @@ describe( 'Link', () => {
 	describe( 'keyboard support', () => {
 		it( 'should show the #_balloon with selected #formView on `CTRL+K` keystroke', () => {
 			// Method is stubbed because it returns internal promise which can't be returned in test.
-			const spy = testUtils.sinon.stub( linkFeature, 'showPanel', () => {} );
+			const spy = testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
 
 			editor.keystrokes.press( { keyCode: keyCodes.k, ctrlKey: true } );
 
@@ -337,7 +337,7 @@ describe( 'Link', () => {
 			sinon.assert.notCalled( spy );
 
 			// Balloon is visible, form focused.
-			return linkFeature.showPanel( true )
+			return linkFeature._showPanel( true )
 				.then( () => {
 					formView.focusTracker.isFocused = true;
 
@@ -357,7 +357,7 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should hide the #_balloon after Esc key press (from editor) and not focus the editable', () => {
-			const spy = testUtils.sinon.spy( linkFeature, 'hidePanel' );
+			const spy = testUtils.sinon.spy( linkFeature, '_hidePanel' );
 			const keyEvtData = {
 				keyCode: keyCodes.esc,
 				preventDefault: sinon.spy(),
@@ -365,7 +365,7 @@ describe( 'Link', () => {
 			};
 
 			// Balloon is visible.
-			return linkFeature.showPanel( false ).then( () => {
+			return linkFeature._showPanel( false ).then( () => {
 				editor.keystrokes.press( keyEvtData );
 
 				sinon.assert.calledWithExactly( spy );
@@ -373,7 +373,7 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should not hide #_balloon after Esc key press (from editor) when #_balloon is open but is not visible', () => {
-			const spy = testUtils.sinon.spy( linkFeature, 'hidePanel' );
+			const spy = testUtils.sinon.spy( linkFeature, '_hidePanel' );
 			const keyEvtData = {
 				keyCode: keyCodes.esc,
 				preventDefault: () => {},
@@ -386,7 +386,7 @@ describe( 'Link', () => {
 				destroy: () => {}
 			};
 
-			return linkFeature.showPanel( false )
+			return linkFeature._showPanel( false )
 				.then( () => balloon.add( { view: viewMock } ) )
 				.then( () => {
 					editor.keystrokes.press( keyEvtData );
@@ -396,14 +396,14 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should hide the #_balloon after Esc key press (from the form) and focus the editable', () => {
-			const spy = testUtils.sinon.spy( linkFeature, 'hidePanel' );
+			const spy = testUtils.sinon.spy( linkFeature, '_hidePanel' );
 			const keyEvtData = {
 				keyCode: keyCodes.esc,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			};
 
-			return linkFeature.showPanel( true )
+			return linkFeature._showPanel( true )
 				.then( () => {
 					formView.keystrokes.press( keyEvtData );
 
@@ -414,9 +414,9 @@ describe( 'Link', () => {
 
 	describe( 'mouse support', () => {
 		it( 'should hide #_balloon and not focus editable on click outside the #_balloon', () => {
-			const spy = testUtils.sinon.spy( linkFeature, 'hidePanel' );
+			const spy = testUtils.sinon.spy( linkFeature, '_hidePanel' );
 
-			return linkFeature.showPanel( true )
+			return linkFeature._showPanel( true )
 				.then( () => {
 					document.body.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 
@@ -425,9 +425,9 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should not hide #_balloon on click inside the #_balloon', () => {
-			const spy = testUtils.sinon.spy( linkFeature, 'hidePanel' );
+			const spy = testUtils.sinon.spy( linkFeature, '_hidePanel' );
 
-			return linkFeature.showPanel( true )
+			return linkFeature._showPanel( true )
 				.then( () => {
 					balloon.view.element.dispatchEvent( new Event( 'mouseup', { bubbles: true } ) );
 
@@ -444,7 +444,7 @@ describe( 'Link', () => {
 
 			it( 'should open with not selected formView when collapsed selection is inside link element', () => {
 				// Method is stubbed because it returns internal promise which can't be returned in test.
-				const spy = testUtils.sinon.stub( linkFeature, 'showPanel', () => {} );
+				const spy = testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
 
 				editor.document.schema.allow( { name: '$text', inside: '$root' } );
 				setModelData( editor.document, '<$text linkHref="url">fo[]o</$text>' );
@@ -456,8 +456,8 @@ describe( 'Link', () => {
 
 			it( 'should keep open and update position until collapsed selection stay inside the same link element', () => {
 				// Method is stubbed because it returns internal promise which can't be returned in test.
-				const showSpy = testUtils.sinon.stub( linkFeature, 'showPanel', () => {} );
-				const hideSpy = testUtils.sinon.stub( linkFeature, 'hidePanel' );
+				const showSpy = testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
+				const hideSpy = testUtils.sinon.stub( linkFeature, '_hidePanel' );
 				const updatePositionSpy = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
 
 				editor.document.schema.allow( { name: '$text', inside: '$root' } );
@@ -485,7 +485,7 @@ describe( 'Link', () => {
 				const updatePositionSpy = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
 
 				// Method is stubbed because it returns internal promise which can't be returned in test.
-				testUtils.sinon.stub( linkFeature, 'showPanel', () => {} );
+				testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
 
 				editor.document.schema.allow( { name: '$text', inside: '$root' } );
 				setModelData( editor.document, '<$text linkHref="url">b[]ar</$text>' );
@@ -509,10 +509,10 @@ describe( 'Link', () => {
 			} );
 
 			it( 'should close when selection goes outside the link element', () => {
-				const hideSpy = testUtils.sinon.stub( linkFeature, 'hidePanel' );
+				const hideSpy = testUtils.sinon.stub( linkFeature, '_hidePanel' );
 
 				// Method is stubbed because it returns internal promise which can't be returned in test.
-				testUtils.sinon.stub( linkFeature, 'showPanel', () => {} );
+				testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
 
 				editor.document.schema.allow( { name: '$text', inside: '$root' } );
 				setModelData( editor.document, 'foo <$text linkHref="url">b[]ar</$text>' );
@@ -531,10 +531,10 @@ describe( 'Link', () => {
 			} );
 
 			it( 'should close when selection goes to the other link element with the same href', () => {
-				const hideSpy = testUtils.sinon.stub( linkFeature, 'hidePanel' );
+				const hideSpy = testUtils.sinon.stub( linkFeature, '_hidePanel' );
 
 				// Method is stubbed because it returns internal promise which can't be returned in test.
-				testUtils.sinon.stub( linkFeature, 'showPanel', () => {} );
+				testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
 
 				editor.document.schema.allow( { name: '$text', inside: '$root' } );
 				setModelData( editor.document, '<$text linkHref="url">f[]oo</$text> bar <$text linkHref="url">biz</$text>' );
@@ -553,10 +553,10 @@ describe( 'Link', () => {
 			} );
 
 			it( 'should close when selection becomes non-collapsed', () => {
-				const hideSpy = testUtils.sinon.stub( linkFeature, 'hidePanel' );
+				const hideSpy = testUtils.sinon.stub( linkFeature, '_hidePanel' );
 
 				// Method is stubbed because it returns internal promise which can't be returned in test.
-				testUtils.sinon.stub( linkFeature, 'showPanel', () => {} );
+				testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
 
 				editor.document.schema.allow( { name: '$text', inside: '$root' } );
 				setModelData( editor.document, '<$text linkHref="url">f[]oo</$text>' );
@@ -573,7 +573,7 @@ describe( 'Link', () => {
 			} );
 
 			it( 'should not open when selection is not inside link element', () => {
-				const showSpy = testUtils.sinon.stub( linkFeature, 'showPanel' );
+				const showSpy = testUtils.sinon.stub( linkFeature, '_showPanel' );
 
 				setModelData( editor.document, '[]' );
 
@@ -583,7 +583,7 @@ describe( 'Link', () => {
 			} );
 
 			it( 'should not open when selection is non-collapsed', () => {
-				const showSpy = testUtils.sinon.stub( linkFeature, 'showPanel' );
+				const showSpy = testUtils.sinon.stub( linkFeature, '_showPanel' );
 
 				editor.document.schema.allow( { name: '$text', inside: '$root' } );
 				setModelData( editor.document, '<$text linkHref="url">f[o]o</$text>' );
@@ -626,7 +626,7 @@ describe( 'Link', () => {
 			} );
 
 			it( 'should hide and focus editable on formView#submit event', () => {
-				return linkFeature.showPanel()
+				return linkFeature._showPanel()
 					.then( () => {
 						formView.fire( 'submit' );
 
@@ -645,7 +645,7 @@ describe( 'Link', () => {
 			} );
 
 			it( 'should hide and focus editable on formView#unlink event', () => {
-				return linkFeature.showPanel()
+				return linkFeature._showPanel()
 					.then( () => {
 						formView.fire( 'unlink' );
 
@@ -655,7 +655,7 @@ describe( 'Link', () => {
 			} );
 
 			it( 'should hide and focus editable on formView#cancel event', () => {
-				return linkFeature.showPanel()
+				return linkFeature._showPanel()
 					.then( () => {
 						formView.fire( 'cancel' );
 
