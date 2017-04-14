@@ -79,17 +79,21 @@ describe( 'Link', () => {
 		} );
 
 		it( 'should return promise', () => {
-			// @TODO: test resolved promise.
-			expect( linkFeature.showPanel() ).to.instanceof( Promise );
+			const returned = linkFeature.showPanel();
+
+			expect( returned ).to.instanceof( Promise );
+
+			return returned;
 		} );
 
-		it( 'should add `formView` to the `ContextualBalloon` and attach panel to the selection when text fragment is selected', () => {
+		it( 'should add #formView to the #_balloon and attach the #_balloon to the selection when text fragment is selected', () => {
 			setModelData( editor.document, '<paragraph>f[o]o</paragraph>' );
 			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
 
 			return linkFeature.showPanel()
 				.then( () => {
 					expect( balloon.visibleView ).to.equal( formView );
+
 					sinon.assert.calledWithExactly( balloonAddSpy, {
 						view: formView,
 						position: {
@@ -100,13 +104,14 @@ describe( 'Link', () => {
 				} );
 		} );
 
-		it( 'should add `formView` to the `ContextualBalloon` and attach panel to the selection when selection is collapsed', () => {
+		it( 'should add #formView to the #_balloon and attach the #_balloon to the selection when selection is collapsed', () => {
 			setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
 			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
 
 			return linkFeature.showPanel()
 				.then( () => {
 					expect( balloon.visibleView ).to.equal( formView );
+
 					sinon.assert.calledWithExactly( balloonAddSpy, {
 						view: formView,
 						position: {
@@ -117,8 +122,8 @@ describe( 'Link', () => {
 				} );
 		} );
 
-		it( 'should add `formView` to the `ContextualBalloon` and attach panel to the link element when collapsed selection is inside ' +
-			'link element',
+		it( 'should add #formView to the #_balloon and attach the #_balloon to the link element when collapsed selection is inside ' +
+			'that link',
 		() => {
 			setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 			const linkElement = editorElement.querySelector( 'a' );
@@ -126,6 +131,7 @@ describe( 'Link', () => {
 			return linkFeature.showPanel()
 				.then( () => {
 					expect( balloon.visibleView ).to.equal( formView );
+
 					sinon.assert.calledWithExactly( balloonAddSpy, {
 						view: formView,
 						position: {
@@ -136,7 +142,7 @@ describe( 'Link', () => {
 				} );
 		} );
 
-		it( 'should not focus `formView` at default', () => {
+		it( 'should not focus the #formView at default', () => {
 			const spy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 
 			return linkFeature.showPanel()
@@ -145,7 +151,7 @@ describe( 'Link', () => {
 				} );
 		} );
 
-		it( 'should not focus `formView` when is called with `false` parameter', () => {
+		it( 'should not focus the #formView when called with a `false` parameter', () => {
 			const spy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 
 			return linkFeature.showPanel( false )
@@ -154,7 +160,7 @@ describe( 'Link', () => {
 				} );
 		} );
 
-		it( 'should not focus `formView` when is called with `true` parameter while balloon is opened but link form is not visible', () => {
+		it( 'should not focus the #formView when called with a `true` parameter while the balloon is opened but link form is not visible', () => {
 			const spy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 			const viewMock = {
 				ready: true,
@@ -170,7 +176,7 @@ describe( 'Link', () => {
 				} );
 		} );
 
-		it( 'should focus `formView` when is called with `true` parameter', () => {
+		it( 'should focus the #formView when called with a `true` parameter', () => {
 			const spy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 
 			return linkFeature.showPanel( true )
@@ -179,7 +185,7 @@ describe( 'Link', () => {
 				} );
 		} );
 
-		it( 'should focus `formView` when is called with `true` parameter while balloon is opened and linkForm is visible', () => {
+		it( 'should focus the #formView when called with a `true` parameter while the balloon is open and the #formView is visible', () => {
 			const spy = testUtils.sinon.spy( formView.urlInputView, 'select' );
 
 			return linkFeature.showPanel( false )
@@ -189,10 +195,10 @@ describe( 'Link', () => {
 				} );
 		} );
 
-		it( 'should keep editor ui focused when panel is shown with selected form', () => {
+		it( 'should keep the editor ui focused when the #_balloon is shown with the selected form', () => {
 			editor.ui.focusTracker.isFocused = false;
 
-			// Open balloon panel with link inside.
+			// Open the #_balloon with the link inside.
 			return linkFeature.showPanel( true )
 				.then( () => {
 					// Check if editor ui is focused.
@@ -206,33 +212,33 @@ describe( 'Link', () => {
 			return balloon.add( { view: formView } );
 		} );
 
-		it( 'should remove `formView` from the `ContextualBalloon` component', () => {
+		it( 'should remove #formView from the #_balloon', () => {
 			linkFeature.hidePanel();
 			expect( balloon.hasView( formView ) ).to.false;
 		} );
 
-		it( 'should not focus `editable` at default', () => {
+		it( 'should not focus the `editable` by default', () => {
 			const spy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
 			linkFeature.hidePanel();
 			sinon.assert.notCalled( spy );
 		} );
 
-		it( 'should not focus `editable` when is called with `false` parameter', () => {
+		it( 'should not focus the `editable` when called with a `false` parameter', () => {
 			const spy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
 			linkFeature.hidePanel( false );
 			sinon.assert.notCalled( spy );
 		} );
 
-		it( 'should focus `editable` when is called with `true` parameter', () => {
+		it( 'should focus the `editable` when called with a `true` parameter', () => {
 			const spy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
 			linkFeature.hidePanel( true );
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'should do not throw an error when `formView` is not added to the `balloon`', () => {
+		it( 'should not throw an error when #formView is not added to the `balloon`', () => {
 			linkFeature.hidePanel( true );
 
 			expect( () => {
@@ -268,7 +274,7 @@ describe( 'Link', () => {
 			expect( linkButton.isEnabled ).to.be.false;
 		} );
 
-		it( 'should show panel on execute event with selected `formView`', () => {
+		it( 'should show the #_balloon on execute event with the selected #formView', () => {
 			// Method is stubbed because it returns internal promise which can't be returned in test.
 			const spy = testUtils.sinon.stub( linkFeature, 'showPanel', () => {} );
 
@@ -304,7 +310,7 @@ describe( 'Link', () => {
 	} );
 
 	describe( 'keyboard support', () => {
-		it( 'should show panel with selected `formView` on `CTRL+K` keystroke', () => {
+		it( 'should show the #_balloon with selected #formView on `CTRL+K` keystroke', () => {
 			// Method is stubbed because it returns internal promise which can't be returned in test.
 			const spy = testUtils.sinon.stub( linkFeature, 'showPanel', () => {} );
 
@@ -313,7 +319,7 @@ describe( 'Link', () => {
 			sinon.assert.calledWithExactly( spy, true );
 		} );
 
-		it( 'should focus the `formView` on `Tab` key press when panel is open', () => {
+		it( 'should focus the the #formView on `Tab` key press when the #_balloon is open', () => {
 			const keyEvtData = {
 				keyCode: keyCodes.tab,
 				preventDefault: sinon.spy(),
@@ -350,7 +356,7 @@ describe( 'Link', () => {
 				} );
 		} );
 
-		it( 'should hide panel after Esc key press (from editor) and not focus editable', () => {
+		it( 'should hide the #_balloon after Esc key press (from editor) and not focus the editable', () => {
 			const spy = testUtils.sinon.spy( linkFeature, 'hidePanel' );
 			const keyEvtData = {
 				keyCode: keyCodes.esc,
@@ -366,7 +372,7 @@ describe( 'Link', () => {
 			} );
 		} );
 
-		it( 'should not hide panel after Esc key press (from editor) when panel is open but is not visible', () => {
+		it( 'should not hide #_balloon after Esc key press (from editor) when #_balloon is open but is not visible', () => {
 			const spy = testUtils.sinon.spy( linkFeature, 'hidePanel' );
 			const keyEvtData = {
 				keyCode: keyCodes.esc,
@@ -389,7 +395,7 @@ describe( 'Link', () => {
 				} );
 		} );
 
-		it( 'should hide panel after Esc key press (from the form) and focus editable', () => {
+		it( 'should hide the #_balloon after Esc key press (from the form) and focus the editable', () => {
 			const spy = testUtils.sinon.spy( linkFeature, 'hidePanel' );
 			const keyEvtData = {
 				keyCode: keyCodes.esc,
@@ -407,7 +413,7 @@ describe( 'Link', () => {
 	} );
 
 	describe( 'mouse support', () => {
-		it( 'should hide panel and not focus editable on click outside the panel', () => {
+		it( 'should hide #_balloon and not focus editable on click outside the #_balloon', () => {
 			const spy = testUtils.sinon.spy( linkFeature, 'hidePanel' );
 
 			return linkFeature.showPanel( true )
@@ -418,7 +424,7 @@ describe( 'Link', () => {
 				} );
 		} );
 
-		it( 'should not hide panel on click inside the panel', () => {
+		it( 'should not hide #_balloon on click inside the #_balloon', () => {
 			const spy = testUtils.sinon.spy( linkFeature, 'hidePanel' );
 
 			return linkFeature.showPanel( true )
