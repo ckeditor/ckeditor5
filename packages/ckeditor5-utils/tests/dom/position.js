@@ -159,6 +159,31 @@ describe( 'getOptimalPosition()', () => {
 				name: 'left'
 			} );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5-utils/issues/148
+		it( 'should return coordinates (#3)', () => {
+			const overflowedAncestor = getElement( {
+				top: 100,
+				left: 0,
+				bottom: 110,
+				right: 10,
+				width: 10,
+				height: 10
+			}, {
+				overflow: 'scroll'
+			} );
+
+			limiter.parentNode = overflowedAncestor;
+
+			assertPosition( {
+				element, target, limiter,
+				positions: [ attachRight, attachLeft ]
+			}, {
+				top: 100,
+				left: 10,
+				name: 'right'
+			} );
+		} );
 	} );
 
 	describe( 'with fitInViewport on', () => {

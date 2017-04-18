@@ -87,7 +87,7 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 	if ( !limiter && !fitInViewport ) {
 		[ name, bestPosition ] = getPosition( positions[ 0 ], targetRect, elementRect );
 	} else {
-		const limiterRect = limiter && new Rect( limiter );
+		const limiterRect = limiter && new Rect( limiter ).getVisible();
 		const viewportRect = fitInViewport && Rect.getViewportRect();
 
 		[ name, bestPosition ] =
