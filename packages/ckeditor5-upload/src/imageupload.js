@@ -40,7 +40,8 @@ export default class ImageUpload extends Plugin {
 				label: t( 'Insert image' ),
 				icon: imageIcon,
 				tooltip: true,
-				acceptedType: 'image/*'
+				acceptedType: 'image/*',
+				allowMultipleFiles: true
 			} );
 
 			view.on( 'done', ( evt, files ) => {
