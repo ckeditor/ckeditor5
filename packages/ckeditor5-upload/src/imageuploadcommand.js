@@ -6,6 +6,7 @@
 import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
+import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import FileRepository from './filerepository';
 import { isImageType } from './utils';
@@ -35,6 +36,7 @@ export default class ImageUploadCommand extends Command {
 		const doc = editor.document;
 		const batch = options.batch || doc.batch();
 		const file = options.file;
+		const selection = doc.selection;
 		const fileRepository = editor.plugins.get( FileRepository );
 
 		if ( !isImageType( file ) ) {
@@ -42,13 +44,31 @@ export default class ImageUploadCommand extends Command {
 		}
 
 		doc.enqueueChanges( () => {
+			let insertPosition;
+			const firstBlock = doc.selection.getSelectedBlocks().next().value;
+
+			if ( firstBlock ) {
+				// If first block is found - insert image before it.
+				insertPosition = ModelPosition.createBefore( firstBlock );
+			} else {
+				// If element placed in root is selected - insert after it.
+				const selectedElement = selection.getSelectedElement();
+
+				if ( selectedElement && selectedElement.parent.is( 'rootElement' ) ) {
+					insertPosition = ModelPosition.createAfter( selectedElement );
+				}
+			}
+
+			// No position to insert.
+			if ( !insertPosition ) {
+				return;
+			}
+
 			const imageElement = new ModelElement( 'image', {
 				uploadId: fileRepository.createLoader( file ).id
 			} );
 			const documentFragment = new ModelDocumentFragment( [ imageElement ] );
-
-			const firstBlock = doc.selection.getSelectedBlocks().next().value;
-			const range = ModelRange.createFromParentsAndOffsets( firstBlock, 0, firstBlock, 0 );
+			const range = new ModelRange( insertPosition );
 			const insertSelection = new ModelSelection();
 			insertSelection.setRanges( [ range ] );
 
