@@ -206,27 +206,32 @@ export default class Rect {
 	getVisible() {
 		const obj = this._obj;
 		let visibleRect = this.clone();
-		let parent = obj.parentNode || obj.commonAncestorContainer;
 
-		while ( parent && parent != global.document.body ) {
-			const parentOverflow = global.window.getComputedStyle( parent ).overflow;
+		// There's no ancestor to crop <body> with the overflow.
+		if ( obj != global.document.body ) {
+			let parent = obj.parentNode || obj.commonAncestorContainer;
 
-			if ( parentOverflow != 'visible' ) {
-				const parentRect = new Rect( parent );
-				const intersectionRect = visibleRect.getIntersection( parentRect );
+			// Check the ancestors all the way up to the <body>.
+			while ( parent && parent != global.document.body ) {
+				const parentOverflow = global.window.getComputedStyle( parent ).overflow;
 
-				if ( intersectionRect ) {
-					if ( intersectionRect.getArea() < visibleRect.getArea() ) {
-						// Reduce the visible rect to the intersection.
-						visibleRect = intersectionRect;
+				if ( parentOverflow != 'visible' ) {
+					const parentRect = new Rect( parent );
+					const intersectionRect = visibleRect.getIntersection( parentRect );
+
+					if ( intersectionRect ) {
+						if ( intersectionRect.getArea() < visibleRect.getArea() ) {
+							// Reduce the visible rect to the intersection.
+							visibleRect = intersectionRect;
+						}
+					} else {
+						// There's no intersection, the rect is completely invisible.
+						return null;
 					}
-				} else {
-					// There's no intersection, the rect is completely invisible.
-					return null;
 				}
-			}
 
-			parent = parent.parentNode;
+				parent = parent.parentNode;
+			}
 		}
 
 		return visibleRect;

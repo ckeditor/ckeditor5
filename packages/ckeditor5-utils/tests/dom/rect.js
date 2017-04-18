@@ -361,6 +361,26 @@ describe( 'Rect', () => {
 			expect( visible ).to.not.equal( rect );
 		} );
 
+		it( 'should not fail when the rect is for document#body', () => {
+			testUtils.sinon.stub( document.body, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			assertRect( new Rect( document.body ).getVisible(), {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+		} );
+
 		it( 'should return the visible rect (HTMLElement), partially cropped', () => {
 			ancestorA.style.overflow = 'scroll';
 
