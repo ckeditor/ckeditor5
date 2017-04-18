@@ -198,7 +198,7 @@ export default class Rect {
 	 * e.g. an original rect cropped by parent element rects which have `overflow` set in CSS
 	 * other than `"visible"`.
 	 *
-	 * If there's no such visible rect, which is when the rect is obscured by one or many of
+	 * If there's no such visible rect, which is when the rect is limited by one or many of
 	 * the ancestors, `null` is returned.
 	 *
 	 * @returns {module:utils/dom/rect~Rect|null} A visible rect instance or `null`, if there's none.
@@ -213,21 +213,17 @@ export default class Rect {
 
 			// Check the ancestors all the way up to the <body>.
 			while ( parent && parent != global.document.body ) {
-				const parentOverflow = global.window.getComputedStyle( parent ).overflow;
+				const parentRect = new Rect( parent );
+				const intersectionRect = visibleRect.getIntersection( parentRect );
 
-				if ( parentOverflow != 'visible' ) {
-					const parentRect = new Rect( parent );
-					const intersectionRect = visibleRect.getIntersection( parentRect );
-
-					if ( intersectionRect ) {
-						if ( intersectionRect.getArea() < visibleRect.getArea() ) {
-							// Reduce the visible rect to the intersection.
-							visibleRect = intersectionRect;
-						}
-					} else {
-						// There's no intersection, the rect is completely invisible.
-						return null;
+				if ( intersectionRect ) {
+					if ( intersectionRect.getArea() < visibleRect.getArea() ) {
+						// Reduce the visible rect to the intersection.
+						visibleRect = intersectionRect;
 					}
+				} else {
+					// There's no intersection, the rect is completely invisible.
+					return null;
 				}
 
 				parent = parent.parentNode;
