@@ -14,7 +14,8 @@ describe( 'DomEventData', () => {
 	// Todo: the whole `before` hook can be removed.
 	// Depends on: https://github.com/ckeditor/ckeditor5-engine/issues/647
 	before( () => {
-		for ( const node of document.body.childNodes ) {
+		// Use Array.from because of MS Edge (#923).
+		for ( const node of Array.from( document.body.childNodes ) ) {
 			// Remove all <!-- Comments -->
 			if ( node.nodeType === 8 ) {
 				document.body.removeChild( node );

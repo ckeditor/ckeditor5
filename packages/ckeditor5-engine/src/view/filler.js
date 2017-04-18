@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window, Range, Text */
+/* globals window, Text */
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
@@ -162,7 +162,8 @@ function jumpOverInlineFiller( evt, data ) {
 			const domOffset = domSelection.getRangeAt( 0 ).startOffset;
 
 			if ( startsWithFiller( domParent ) && domOffset <= INLINE_FILLER_LENGTH ) {
-				const domRange = new Range();
+				const domRange = domParent.ownerDocument.createRange();
+
 				domRange.setStart( domParent, 0 );
 				domRange.collapse( true );
 				domSelection.removeAllRanges();

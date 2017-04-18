@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals Range, document, window */
+/* globals document, window */
 
 import ViewElement from '../../src/view/element';
 import ViewText from '../../src/view/text';
@@ -836,7 +836,7 @@ describe( 'Renderer', () => {
 			domP.appendChild( document.createTextNode( 'x' ) );
 
 			domSelection.removeAllRanges();
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.setStart( domP.childNodes[ 0 ], 1 );
 			domRange.collapse( true );
 			domSelection.addRange( domRange );
@@ -915,7 +915,7 @@ describe( 'Renderer', () => {
 			domP.appendChild( BR_FILLER( document ) );
 
 			domSelection.removeAllRanges();
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.setStart( domP.childNodes[ 0 ], 0 );
 			domRange.collapse( true );
 			domSelection.addRange( domRange );
@@ -967,7 +967,7 @@ describe( 'Renderer', () => {
 			domB.childNodes[ 0 ].data += 'x';
 
 			domSelection.removeAllRanges();
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.setStart( domB.childNodes[ 0 ], INLINE_FILLER_LENGTH + 1 );
 			domRange.collapse( true );
 			domSelection.addRange( domRange );
@@ -1124,7 +1124,7 @@ describe( 'Renderer', () => {
 			const domSelection = document.getSelection();
 
 			domSelection.removeAllRanges();
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.setStart( domDiv, 0 );
 			domRange.collapse( true );
 			domSelection.addRange( domRange );
@@ -1151,7 +1151,7 @@ describe( 'Renderer', () => {
 			const domSelection = document.getSelection();
 
 			domSelection.removeAllRanges();
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.setStart( domDiv, 0 );
 			domRange.collapse( true );
 			domSelection.addRange( domRange );

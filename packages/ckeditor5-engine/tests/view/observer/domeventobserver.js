@@ -146,7 +146,7 @@ describe( 'DomEventObserver', () => {
 		viewDocument.addObserver( ClickCapturingObserver );
 
 		viewDocument.on( 'click', ( evt, domEventData ) => {
-			expect( domEventData.domEvent.eventPhase ).to.equal( MouseEvent.CAPTURING_PHASE );
+			expect( domEventData.domEvent.eventPhase ).to.equal( domEventData.domEvent.CAPTURING_PHASE );
 			done();
 		} );
 
