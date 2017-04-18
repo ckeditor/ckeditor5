@@ -32,7 +32,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'contextualballoon';
+		return 'ui/contextualballoon';
 	}
 
 	/**
