@@ -27,7 +27,7 @@ export default class ContextualToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'contextualtoolbar';
+		return 'ui/contextualtoolbar';
 	}
 
 	/**
