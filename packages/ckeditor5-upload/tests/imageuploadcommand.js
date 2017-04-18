@@ -45,7 +45,7 @@ describe( 'ImageUploadCommand', () => {
 			command._doExecute( { file } );
 
 			const id = fileRepository.getLoader( file ).id;
-			expect( getModelData( document ) ).to.equal( `<image uploadId="${ id }"></image><paragraph>foo[]</paragraph>` );
+			expect( getModelData( document ) ).to.equal( `[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph>` );
 		} );
 
 		it( 'should insert image after other image', () => {
@@ -55,7 +55,7 @@ describe( 'ImageUploadCommand', () => {
 			command._doExecute( { file } );
 
 			const id = fileRepository.getLoader( file ).id;
-			expect( getModelData( document ) ).to.equal( `[<image src="image.png"></image>]<image uploadId="${ id }"></image>` );
+			expect( getModelData( document ) ).to.equal( `<image src="image.png"></image>[<image uploadId="${ id }"></image>]` );
 		} );
 
 		it( 'should not insert image when proper insert position cannot be found', () => {
@@ -92,7 +92,7 @@ describe( 'ImageUploadCommand', () => {
 			command._doExecute( { batch, file } );
 			const id = fileRepository.getLoader( file ).id;
 
-			expect( getModelData( document ) ).to.equal( `<image uploadId="${ id }"></image><paragraph>foo[]</paragraph>` );
+			expect( getModelData( document ) ).to.equal( `[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph>` );
 			sinon.assert.calledOnce( spy );
 		} );
 	} );

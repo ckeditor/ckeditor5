@@ -71,7 +71,7 @@ describe( 'ImageUploadEngine', () => {
 
 		const id = fileRepository.getLoader( fileMock ).id;
 		expect( getModelData( document ) ).to.equal(
-			`<image uploadId="${ id }"></image><paragraph>foo bar baz[]</paragraph>`
+			`[<image uploadId="${ id }"></image>]<paragraph>foo bar baz</paragraph>`
 		);
 	} );
 
@@ -120,10 +120,10 @@ describe( 'ImageUploadEngine', () => {
 
 		adapterMock.uploadStartedCallback = () => {
 			expect( getViewData( viewDocument ) ).to.equal(
-				'<figure class="image ck-widget" contenteditable="false">' +
+				'[<figure class="image ck-widget" contenteditable="false">' +
 					`<img src="${ base64Sample }"></img>` +
-				'</figure>' +
-				'<p>{}foo bar</p>' );
+				'</figure>]' +
+				'<p>foo bar</p>' );
 			expect( loader.status ).to.equal( 'uploading' );
 			done();
 		};
@@ -140,7 +140,7 @@ describe( 'ImageUploadEngine', () => {
 		adapterMock.uploadStartedCallback = () => {
 			document.once( 'changesDone', () => {
 				expect( getViewData( viewDocument ) ).to.equal(
-					'<figure class="image ck-widget" contenteditable="false"><img src="image.png"></img></figure><p>{}foo bar</p>'
+					'[<figure class="image ck-widget" contenteditable="false"><img src="image.png"></img></figure>]<p>foo bar</p>'
 				);
 				expect( loader.status ).to.equal( 'idle' );
 

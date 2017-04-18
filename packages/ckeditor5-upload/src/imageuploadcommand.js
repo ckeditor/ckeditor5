@@ -45,17 +45,17 @@ export default class ImageUploadCommand extends Command {
 
 		doc.enqueueChanges( () => {
 			let insertPosition;
-			const firstBlock = doc.selection.getSelectedBlocks().next().value;
+			const selectedElement = selection.getSelectedElement();
 
-			if ( firstBlock ) {
-				// If first block is found - insert image before it.
-				insertPosition = ModelPosition.createBefore( firstBlock );
+			// If selected element is placed directly in root - put image after it.
+			if ( selectedElement && selectedElement.parent.is( 'rootElement' ) ) {
+				insertPosition = ModelPosition.createAfter( selectedElement );
 			} else {
-				// If element placed in root is selected - insert after it.
-				const selectedElement = selection.getSelectedElement();
+				// If selection is inside some block - put image before it.
+				const firstBlock = doc.selection.getSelectedBlocks().next().value;
 
-				if ( selectedElement && selectedElement.parent.is( 'rootElement' ) ) {
-					insertPosition = ModelPosition.createAfter( selectedElement );
+				if ( firstBlock ) {
+					insertPosition = ModelPosition.createBefore( firstBlock );
 				}
 			}
 
@@ -73,6 +73,7 @@ export default class ImageUploadCommand extends Command {
 			insertSelection.setRanges( [ range ] );
 
 			editor.data.insertContent( documentFragment, insertSelection, batch );
+			selection.setRanges( [ ModelRange.createOn( imageElement ) ] );
 		} );
 	}
 }
