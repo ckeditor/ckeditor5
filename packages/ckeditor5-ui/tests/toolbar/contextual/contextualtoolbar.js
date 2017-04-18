@@ -36,11 +36,12 @@ describe( 'ContextualToolbar', () => {
 			contextualToolbar = editor.plugins.get( ContextualToolbar );
 			balloon = editor.plugins.get( ContextualBalloon );
 
+			// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
+			sandbox.stub( balloon.view, 'attachTo', () => {} );
+			sandbox.stub( balloon.view, 'pin', () => {} );
+
 			// Focus the engine.
 			editor.editing.view.isFocused = true;
-
-			// Init child view.
-			return contextualToolbar.toolbarView.init();
 		} );
 	} );
 
@@ -101,159 +102,170 @@ describe( 'ContextualToolbar', () => {
 		}, 100 );
 	} );
 
-	it( 'should open when selection stops changing', () => {
-		setData( editor.document, '<paragraph>[bar]</paragraph>' );
-
-		expect( balloon.visibleView ).to.null;
-
-		contextualToolbar.fire( '_selectionChangeDebounced' );
-
-		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-	} );
-
-	it( 'should add additional class to the ContextualBalloon#view', () => {
-		setData( editor.document, '<paragraph>[bar]</paragraph>' );
-
-		contextualToolbar.fire( '_selectionChangeDebounced' );
-
-		expect( balloon.view.className ).to.equal( 'ck-toolbar__container' );
-	} );
-
-	it( 'should close when selection starts changing by a directChange', () => {
-		setData( editor.document, '<paragraph>[bar]</paragraph>' );
-
-		contextualToolbar.fire( '_selectionChangeDebounced' );
-
-		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-
-		editor.document.selection.fire( 'change:range', { directChange: true } );
-
-		expect( balloon.visibleView ).to.null;
-	} );
-
-	it( 'should not close when selection starts changing by not a directChange', () => {
-		setData( editor.document, '<paragraph>[bar]</paragraph>' );
-
-		contextualToolbar.fire( '_selectionChangeDebounced' );
-
-		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-
-		editor.document.selection.fire( 'change:range', { directChange: false } );
-
-		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-	} );
-
-	it( 'should close when selection starts changing by not a directChange but will become collapsed', () => {
-		setData( editor.document, '<paragraph>[bar]</paragraph>' );
-
-		contextualToolbar.fire( '_selectionChangeDebounced' );
-
-		// Collapse range silently (without firing `change:range` { directChange: true } event).
-		const range = editor.document.selection._ranges[ 0 ];
-		range.end = range.start;
-
-		editor.document.selection.fire( 'change:range', { directChange: false } );
-
-		expect( balloon.visibleView ).to.null;
-	} );
-
-	it( 'should open with specified positions configuration for the forward selection', () => {
-		const spy = sandbox.stub( balloon, 'add', () => {} );
-		const defaultPositions = BalloonPanelView.defaultPositions;
-
-		setData( editor.document, '<paragraph>[bar]</paragraph>' );
-
-		contextualToolbar.fire( '_selectionChangeDebounced' );
-
-		expect( spy.firstCall.args[ 0 ].position.positions ).to.deep.equal(
-			[ defaultPositions.southEastArrowNorth, defaultPositions.northEastArrowSouth ]
-		);
-	} );
-
-	it( 'should open with specified positions configuration for the backward selection', () => {
-		const spy = sandbox.stub( balloon, 'add', () => {} );
-		const defaultPositions = BalloonPanelView.defaultPositions;
-
-		setData( editor.document, '<paragraph>[bar]</paragraph>', { lastRangeBackward: true } );
-
-		contextualToolbar.fire( '_selectionChangeDebounced' );
-
-		expect( spy.firstCall.args[ 0 ].position.positions ).to.deep.equal(
-			[ defaultPositions.northWestArrowSouth, defaultPositions.southWestArrowNorth ]
-		);
-	} );
-
-	it( 'should not open if the collapsed selection is moving', () => {
-		setData( editor.document, '<paragraph>ba[]r</paragraph>' );
-
-		editor.document.selection.fire( 'change:range', {} );
-		contextualToolbar.fire( '_selectionChangeDebounced' );
-
-		setData( editor.document, '<paragraph>b[]ar</paragraph>' );
-
-		editor.document.selection.fire( 'change:range', {} );
-		contextualToolbar.fire( '_selectionChangeDebounced' );
-
-		expect( balloon.visibleView ).to.null;
-	} );
-
-	it( 'should hide if the editor loses focus', () => {
-		setData( editor.document, '<paragraph>[bar]</paragraph>' );
-		editor.ui.focusTracker.isFocused = true;
-
-		contextualToolbar.fire( '_selectionChangeDebounced' );
-
-		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-
-		editor.ui.focusTracker.isFocused = false;
-
-		expect( balloon.visibleView ).to.null;
-	} );
-
-	it( 'should do nothing when panel is being added to balloon stack twice', () => {
-		setData( editor.document, '<paragraph>[bar]</paragraph>' );
-
-		contextualToolbar.fire( '_selectionChangeDebounced' );
-
-		expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
-
-		expect( () => {
-			contextualToolbar.fire( '_selectionChangeDebounced' );
-		} ).to.not.throw();
-	} );
-
-	it( 'should update balloon position when toolbar is opened and editor content has changed', () => {
-		const spy = sandbox.stub( balloon, 'updatePosition' );
-
-		setData( editor.document, '<paragraph>[bar]</paragraph>' );
-
-		contextualToolbar.fire( '_selectionChangeDebounced' );
-
-		sinon.assert.notCalled( spy );
-
-		editor.editing.view.fire( 'render' );
-
-		sinon.assert.calledOnce( spy );
-	} );
-
-	it( 'should update balloon position when toolbar is closed', () => {
-		const spy = sandbox.spy( balloon, 'updatePosition' );
-
-		setData( editor.document, '<paragraph>[bar]</paragraph>' );
-
-		contextualToolbar.fire( '_selectionChangeDebounced' );
-
-		// Hide toolbar.
-		editor.document.selection.fire( 'change:range', { directChange: true } );
-
-		editor.editing.view.fire( 'render' );
-
-		sinon.assert.notCalled( spy );
-	} );
-
 	describe( 'pluginName', () => {
-		it( 'should return plugin by name', () => {
-			expect( editor.plugins.get( 'contextualballoon' ) ).to.equal( balloon );
+		it( 'should return plugin by its name', () => {
+			expect( editor.plugins.get( 'contextualtoolbar' ) ).to.equal( contextualToolbar );
+		} );
+	} );
+
+	describe( '_showPanel()', () => {
+		let balloonAddSpy, forwardSelectionRect, backwardSelectionRect;
+
+		beforeEach( () => {
+			forwardSelectionRect = {
+				top: 100,
+				height: 10,
+				bottom: 110,
+				left: 200,
+				width: 50,
+				right: 250
+			};
+
+			backwardSelectionRect = {
+				top: 100,
+				height: 10,
+				bottom: 110,
+				left: 200,
+				width: 50,
+				right: 250
+			};
+
+			stubSelectionRect( forwardSelectionRect, backwardSelectionRect );
+
+			balloonAddSpy = sandbox.spy( balloon, 'add' );
+			editor.editing.view.isFocused = true;
+		} );
+
+		it( 'should return promise', () => {
+			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
+
+			const returned = contextualToolbar._showPanel();
+
+			expect( returned ).to.instanceof( Promise );
+
+			return returned;
+		} );
+
+		it( 'should add #toolbarView to the #_balloon and attach the #_balloon to the selection for the forward selection', () => {
+			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
+
+			const defaultPositions = BalloonPanelView.defaultPositions;
+
+			return contextualToolbar._showPanel().then( () => {
+				sinon.assert.calledWithExactly( balloonAddSpy, {
+					view: contextualToolbar.toolbarView,
+					balloonClassName: 'ck-toolbar__container',
+					position: {
+						target: forwardSelectionRect,
+						positions: [ defaultPositions.southEastArrowNorth, defaultPositions.northEastArrowSouth ]
+					}
+				} );
+			} );
+		} );
+
+		it( 'should add #toolbarView to the #_balloon and attach the #_balloon to the selection for the backward selection', () => {
+			setData( editor.document, '<paragraph>b[a]r</paragraph>', { lastRangeBackward: true } );
+
+			const defaultPositions = BalloonPanelView.defaultPositions;
+
+			return contextualToolbar._showPanel()
+				.then( () => {
+					sinon.assert.calledWithExactly( balloonAddSpy, {
+						view: contextualToolbar.toolbarView,
+						balloonClassName: 'ck-toolbar__container',
+						position: {
+							target: backwardSelectionRect,
+							positions: [ defaultPositions.northWestArrowSouth, defaultPositions.southWestArrowNorth ]
+						}
+					} );
+				} );
+		} );
+
+		it( 'should update balloon position on ViewDocument#render event while balloon is added to the #_balloon', () => {
+			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
+
+			const spy = sinon.spy( balloon, 'updatePosition' );
+
+			editor.editing.view.fire( 'render' );
+
+			return contextualToolbar._showPanel()
+				.then( () => {
+					sinon.assert.notCalled( spy );
+
+					editor.editing.view.fire( 'render' );
+
+					sinon.assert.calledOnce( spy );
+				} );
+		} );
+
+		it( 'should not add #toolbarView to the #_balloon more than once', () => {
+			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
+
+			return contextualToolbar._showPanel()
+				.then( () => contextualToolbar._showPanel() )
+				.then( () => {
+					sinon.assert.calledOnce( balloonAddSpy );
+				} );
+		} );
+
+		it( 'should not add #toolbarView to the #_balloon when editor is not focused', () => {
+			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
+			editor.editing.view.isFocused = false;
+
+			return contextualToolbar._showPanel()
+				.then( () => {
+					sinon.assert.notCalled( balloonAddSpy );
+				} );
+		} );
+
+		it( 'should not add #toolbarView to the #_balloon when selection is collapsed', () => {
+			setData( editor.document, '<paragraph>b[]ar</paragraph>' );
+
+			return contextualToolbar._showPanel()
+				.then( () => {
+					sinon.assert.notCalled( balloonAddSpy );
+				} );
+		} );
+	} );
+
+	describe( '_hidePanel()', () => {
+		let removeBalloonSpy;
+
+		beforeEach( () => {
+			removeBalloonSpy = sandbox.spy( balloon, 'remove' );
+			editor.editing.view.isFocused = true;
+		} );
+
+		it( 'should remove #toolbarView from the #_balloon', () => {
+			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
+
+			return contextualToolbar._showPanel()
+				.then( () => {
+					contextualToolbar._hidePanel();
+
+					sinon.assert.calledWithExactly( removeBalloonSpy, contextualToolbar.toolbarView );
+				} );
+		} );
+
+		it( 'should stop update balloon position on ViewDocument#render event', () => {
+			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
+
+			const spy = sinon.spy( balloon, 'updatePosition' );
+
+			return contextualToolbar._showPanel()
+				.then( () => {
+					contextualToolbar._hidePanel();
+
+					editor.editing.view.fire( 'render' );
+
+					sinon.assert.notCalled( spy );
+				} );
+		} );
+
+		it( 'should not remove #ttolbarView when is not added to the #_balloon', () => {
+			contextualToolbar._hidePanel();
+
+			sinon.assert.notCalled( removeBalloonSpy );
 		} );
 	} );
 
@@ -273,4 +285,117 @@ describe( 'ContextualToolbar', () => {
 			}, 200 );
 		} );
 	} );
+
+	describe( 'showing and hiding', () => {
+		let showPanelSpy, hidePanelSpy;
+
+		beforeEach( () => {
+			setData( editor.document, '<paragraph>[bar]</paragraph>' );
+
+			// Methods are stubbed because return internal promise which can't be returned in test.
+			showPanelSpy = sandbox.stub( contextualToolbar, '_showPanel', () => {} );
+			hidePanelSpy = sandbox.stub( contextualToolbar, '_hidePanel', () => {} );
+		} );
+
+		it( 'should open when selection stops changing', () => {
+			sinon.assert.notCalled( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+
+			contextualToolbar.fire( '_selectionChangeDebounced' );
+
+			sinon.assert.calledOnce( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+		} );
+
+		it( 'should close when selection starts changing by a directChange', () => {
+			contextualToolbar.fire( '_selectionChangeDebounced' );
+
+			sinon.assert.calledOnce( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+
+			editor.document.selection.fire( 'change:range', { directChange: true } );
+
+			sinon.assert.calledOnce( showPanelSpy );
+			sinon.assert.calledOnce( hidePanelSpy );
+		} );
+
+		it( 'should not close when selection starts changing by not a directChange', () => {
+			contextualToolbar.fire( '_selectionChangeDebounced' );
+
+			sinon.assert.calledOnce( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+
+			editor.document.selection.fire( 'change:range', { directChange: false } );
+
+			sinon.assert.calledOnce( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+		} );
+
+		it( 'should close when selection starts changing by not a directChange but will become collapsed', () => {
+			contextualToolbar.fire( '_selectionChangeDebounced' );
+
+			sinon.assert.calledOnce( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+
+			// Collapse range silently (without firing `change:range` { directChange: true } event).
+			const range = editor.document.selection._ranges[ 0 ];
+			range.end = range.start;
+
+			editor.document.selection.fire( 'change:range', { directChange: false } );
+
+			sinon.assert.calledOnce( showPanelSpy );
+			sinon.assert.calledOnce( hidePanelSpy );
+		} );
+
+		it( 'should hide if the editor loses focus', () => {
+			editor.ui.focusTracker.isFocused = true;
+
+			contextualToolbar.fire( '_selectionChangeDebounced' );
+
+			sinon.stub( balloon, 'visibleView', { get: () => contextualToolbar.toolbarView } );
+
+			sinon.assert.calledOnce( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+
+			editor.ui.focusTracker.isFocused = false;
+
+			sinon.assert.calledOnce( showPanelSpy );
+			sinon.assert.calledOnce( hidePanelSpy );
+		} );
+
+		it( 'should not hide if the editor loses focus and #toolbarView is not visible', () => {
+			editor.ui.focusTracker.isFocused = true;
+
+			contextualToolbar.fire( '_selectionChangeDebounced' );
+
+			sinon.stub( balloon, 'visibleView', { get: () => null } );
+
+			sinon.assert.calledOnce( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+
+			editor.ui.focusTracker.isFocused = false;
+
+			sinon.assert.calledOnce( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+		} );
+	} );
+
+	function stubSelectionRect( forwardSelectionRect, backwardSelectionRect ) {
+		const editingView = editor.editing.view;
+		const originalViewRangeToDom = editingView.domConverter.viewRangeToDom;
+
+		// Mock selection rect.
+		sandbox.stub( editingView.domConverter, 'viewRangeToDom', ( ...args ) => {
+			const domRange = originalViewRangeToDom.apply( editingView.domConverter, args );
+
+			sandbox.stub( domRange, 'getClientRects', () => {
+				return {
+					length: 2,
+					item: id => id === 0 ? forwardSelectionRect : backwardSelectionRect
+				};
+			} );
+
+			return domRange;
+		} );
+	}
 } );

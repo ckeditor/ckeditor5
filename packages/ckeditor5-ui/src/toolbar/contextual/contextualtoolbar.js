@@ -131,31 +131,32 @@ export default class ContextualToolbar extends Plugin {
 	/**
 	 * Adds panel view to the {@link: #_balloon} and attaches panel to the selection.
 	 *
-	 * @private
+	 * @protected
+	 * @return {Promise} A promise resolved when the {@link #toolbarView} {@link module:ui/view~View#init} is done.
 	 */
 	_showPanel() {
 		const editingView = this.editor.editing.view;
 
 		// Do not add toolbar to the balloon stack twice.
 		if ( this._balloon.hasView( this.toolbarView ) ) {
-			return;
+			return Promise.resolve();
 		}
 
 		// This implementation assumes that only non–collapsed selections gets the contextual toolbar.
 		if ( !editingView.isFocused || editingView.selection.isCollapsed ) {
-			return;
+			return Promise.resolve();
 		}
-
-		// Add panel to the common editor contextual balloon.
-		this._balloon.add( {
-			view: this.toolbarView,
-			position: this._getBalloonPositionData(),
-			balloonClassName: 'ck-toolbar__container'
-		} );
 
 		// Update panel position when selection changes while balloon will be opened (by a collaboration).
 		this.listenTo( this.editor.editing.view, 'render', () => {
 			this._balloon.updatePosition( this._getBalloonPositionData() );
+		} );
+
+		// Add panel to the common editor contextual balloon.
+		return this._balloon.add( {
+			view: this.toolbarView,
+			position: this._getBalloonPositionData(),
+			balloonClassName: 'ck-toolbar__container'
 		} );
 	}
 
