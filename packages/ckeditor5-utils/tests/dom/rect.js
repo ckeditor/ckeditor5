@@ -26,6 +26,13 @@ describe( 'Rect', () => {
 	} );
 
 	describe( 'constructor()', () => {
+		it( 'should store passed object in #_obj property', () => {
+			const obj = {};
+			const rect = new Rect( obj );
+
+			expect( rect._obj ).to.equal( obj );
+		} );
+
 		it( 'should accept HTMLElement', () => {
 			const element = document.createElement( 'div' );
 
@@ -95,6 +102,14 @@ describe( 'Rect', () => {
 
 			expect( clone ).to.be.instanceOf( Rect );
 			expect( clone ).not.equal( rect );
+			assertRect( clone, rect );
+		} );
+
+		it( 'should preserve #_obj', () => {
+			const rect = new Rect( geometry );
+			const clone = rect.clone();
+
+			expect( clone._obj ).to.equal( rect._obj );
 			assertRect( clone, rect );
 		} );
 	} );
@@ -317,6 +332,182 @@ describe( 'Rect', () => {
 			} );
 
 			expect( rect.getArea() ).to.equal( 5000 );
+		} );
+	} );
+
+	describe( 'getVisible()', () => {
+		let element, range, ancestorA, ancestorB;
+
+		beforeEach( () => {
+			element = document.createElement( 'div' );
+			range = document.createRange();
+			ancestorA = document.createElement( 'div' );
+			ancestorB = document.createElement( 'div' );
+
+			ancestorA.append( element );
+			ancestorB.append( ancestorA );
+			document.body.appendChild( ancestorB );
+		} );
+
+		afterEach( () => {
+			ancestorA.remove();
+			ancestorB.remove();
+		} );
+
+		it( 'should return a new rect', () => {
+			const rect = new Rect( {} );
+			const visible = rect.getVisible();
+
+			expect( visible ).to.not.equal( rect );
+		} );
+
+		it( 'should return the visible rect (HTMLElement), partially cropped', () => {
+			ancestorA.style.overflow = 'scroll';
+
+			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			testUtils.sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+				top: 50,
+				right: 150,
+				bottom: 150,
+				left: 50,
+				width: 100,
+				height: 100
+			} );
+
+			assertRect( new Rect( element ).getVisible(), {
+				top: 50,
+				right: 100,
+				bottom: 100,
+				left: 50,
+				width: 50,
+				height: 50
+			} );
+		} );
+
+		it( 'should return the visible rect (HTMLElement), fully visible', () => {
+			ancestorA.style.overflow = 'scroll';
+
+			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			testUtils.sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 150,
+				bottom: 150,
+				left: 0,
+				width: 150,
+				height: 150
+			} );
+
+			assertRect( new Rect( element ).getVisible(), {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+		} );
+
+		it( 'should return the visible rect (HTMLElement), partially cropped, deep ancestor overflow', () => {
+			ancestorB.style.overflow = 'scroll';
+
+			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			testUtils.sinon.stub( ancestorB, 'getBoundingClientRect' ).returns( {
+				top: 50,
+				right: 150,
+				bottom: 150,
+				left: 50,
+				width: 100,
+				height: 100
+			} );
+
+			assertRect( new Rect( element ).getVisible(), {
+				top: 50,
+				right: 100,
+				bottom: 100,
+				left: 50,
+				width: 50,
+				height: 50
+			} );
+		} );
+
+		it( 'should return the visible rect (Range), partially cropped', () => {
+			range.setStart( ancestorA, 0 );
+			ancestorA.style.overflow = 'scroll';
+
+			testUtils.sinon.stub( range, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			testUtils.sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+				top: 50,
+				right: 150,
+				bottom: 150,
+				left: 50,
+				width: 100,
+				height: 100
+			} );
+
+			assertRect( new Rect( range ).getVisible(), {
+				top: 50,
+				right: 100,
+				bottom: 100,
+				left: 50,
+				width: 50,
+				height: 50
+			} );
+		} );
+
+		it( 'should return null if there\'s no visible rect', () => {
+			ancestorA.style.overflow = 'scroll';
+
+			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( {
+				top: 0,
+				right: 100,
+				bottom: 100,
+				left: 0,
+				width: 100,
+				height: 100
+			} );
+
+			testUtils.sinon.stub( ancestorA, 'getBoundingClientRect' ).returns( {
+				top: 150,
+				right: 200,
+				bottom: 200,
+				left: 150,
+				width: 50,
+				height: 50
+			} );
+
+			expect( new Rect( element ).getVisible() ).to.equal( null );
 		} );
 	} );
 

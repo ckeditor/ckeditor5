@@ -40,6 +40,20 @@ export default class Rect {
 	 * @param {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} obj A source object to create the rect.
 	 */
 	constructor( obj ) {
+		/**
+		 * The object this rect is for.
+		 *
+		 * @protected
+		 * @readonly
+		 * @member {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} #_obj
+		 */
+		Object.defineProperty( this, '_obj', {
+			// obj._obj if already the Rect instance
+			value: obj._obj || obj,
+			writable: false,
+			enumerable: false
+		} );
+
 		if ( isElement( obj ) || isRange( obj ) ) {
 			obj = obj.getBoundingClientRect();
 		}
@@ -177,6 +191,45 @@ export default class Rect {
 	 */
 	getArea() {
 		return this.width * this.height;
+	}
+
+	/**
+	 * Returns a new rect, a part of the original rect, which is actually visible to the user,
+	 * e.g. an original rect cropped by parent element rects which have `overflow` set in CSS
+	 * other than `"visible"`.
+	 *
+	 * If there's no such visible rect, which is when the rect is obscured by one or many of
+	 * the ancestors, `null` is returned.
+	 *
+	 * @returns {module:utils/dom/rect~Rect|null} A visible rect instance or `null`, if there's none.
+	 */
+	getVisible() {
+		const obj = this._obj;
+		let visibleRect = this.clone();
+		let parent = obj.parentNode || obj.commonAncestorContainer;
+
+		while ( parent && parent != global.document.body ) {
+			const parentOverflow = global.window.getComputedStyle( parent ).overflow;
+
+			if ( parentOverflow != 'visible' ) {
+				const parentRect = new Rect( parent );
+				const intersectionRect = visibleRect.getIntersection( parentRect );
+
+				if ( intersectionRect ) {
+					if ( intersectionRect.getArea() < visibleRect.getArea() ) {
+						// Reduce the visible rect to the intersection.
+						visibleRect = intersectionRect;
+					}
+				} else {
+					// There's no intersection, the rect is completely invisible.
+					return null;
+				}
+			}
+
+			parent = parent.parentNode;
+		}
+
+		return visibleRect;
 	}
 
 	/**
