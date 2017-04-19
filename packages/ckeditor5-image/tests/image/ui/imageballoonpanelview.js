@@ -135,19 +135,10 @@ describe( 'ImageBalloonPanel', () => {
 		expect( options.target.endContainer ).to.equal( domRange.endContainer );
 		expect( options.target.endOffset ).to.equal( domRange.endOffset );
 
-		// Check if north/south calculation is correct.
+		// Check if correct positions are used.
 		const [ north, south ] = options.positions;
-		const targetRect = { top: 10, left: 20, width: 200, height: 100, bottom: 110, right: 220 };
-		const balloonRect = { width: 50, height: 20 };
 
-		const northPosition = north( targetRect, balloonRect );
-		expect( northPosition.name ).to.equal( 'arrow_n' );
-		expect( northPosition.top ).to.equal( targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset );
-		expect( northPosition.left ).to.equal( targetRect.left + targetRect.width / 2 - balloonRect.width / 2 );
-
-		const southPosition = south( targetRect, balloonRect );
-		expect( southPosition.name ).to.equal( 'arrow_s' );
-		expect( southPosition.top ).to.equal( targetRect.bottom + BalloonPanelView.arrowVerticalOffset );
-		expect( southPosition.left ).to.equal( targetRect.left + targetRect.width / 2 - balloonRect.width / 2 );
+		expect( north ).to.equal( BalloonPanelView.defaultPositions.northArrowSouth );
+		expect( south ).to.equal( BalloonPanelView.defaultPositions.southArrowNorth );
 	}
 } );
