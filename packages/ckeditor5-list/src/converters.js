@@ -46,7 +46,10 @@ export function modelViewInsertion( evt, data, consumable, conversionApi ) {
 	const modelItem = data.item;
 	const viewItem = generateLiInUl( modelItem, conversionApi.mapper );
 
-	injectViewList( modelItem, viewItem, conversionApi.mapper );
+	// Providing kind of "default" insert position in case of converting incorrect model.
+	const insertPosition = conversionApi.mapper.toViewPosition( ModelPosition.createBefore( modelItem ) );
+
+	injectViewList( modelItem, viewItem, conversionApi.mapper, insertPosition );
 }
 
 /**
@@ -622,37 +625,37 @@ export function modelChangePostFixer( document ) {
 // Helper function for post fixer callback. Performs fixing of model `listElement` items indent attribute. Checks the model at the
 // `changePosition`. Looks at the node before position where change occurred and uses that node as a reference for following list items.
 function _fixItemsIndent( changePosition, document, batch ) {
-	const prevItem = changePosition.nodeBefore;
 	let nextItem = changePosition.nodeAfter;
 
 	if ( nextItem && nextItem.name == 'listItem' ) {
-		// This is the maximum indent that following model list item may have.
-		const maxIndent = prevItem && prevItem.is( 'listItem' ) ? prevItem.getAttribute( 'indent' ) + 1 : 0;
+		document.enqueueChanges( () => {
+			const prevItem = nextItem.previousSibling;
+			// This is the maximum indent that following model list item may have.
+			const maxIndent = prevItem && prevItem.is( 'listItem' ) ? prevItem.getAttribute( 'indent' ) + 1 : 0;
 
-		// Check how much the next item needs to be outdented.
-		let outdentBy = nextItem.getAttribute( 'indent' ) - maxIndent;
-		const items = [];
+			// Check how much the next item needs to be outdented.
+			let outdentBy = nextItem.getAttribute( 'indent' ) - maxIndent;
+			const items = [];
 
-		while ( nextItem && nextItem.name == 'listItem' && nextItem.getAttribute( 'indent' ) > maxIndent ) {
-			if ( outdentBy > nextItem.getAttribute( 'indent' ) ) {
-				outdentBy = nextItem.getAttribute( 'indent' );
+			while ( nextItem && nextItem.name == 'listItem' && nextItem.getAttribute( 'indent' ) > maxIndent ) {
+				if ( outdentBy > nextItem.getAttribute( 'indent' ) ) {
+					outdentBy = nextItem.getAttribute( 'indent' );
+				}
+
+				const newIndent = nextItem.getAttribute( 'indent' ) - outdentBy;
+
+				items.push( { item: nextItem, indent: newIndent } );
+
+				nextItem = nextItem.nextSibling;
 			}
 
-			const newIndent = nextItem.getAttribute( 'indent' ) - outdentBy;
-
-			items.push( { item: nextItem, indent: newIndent } );
-
-			nextItem = nextItem.nextSibling;
-		}
-
-		if ( items.length > 0 ) {
-			document.enqueueChanges( () => {
+			if ( items.length > 0 ) {
 				// Since we are outdenting list items, it is safer to start from the last one (it will maintain correct model state).
 				for ( let item of items.reverse() ) {
 					batch.setAttribute( item.item, 'indent', item.indent );
 				}
-			} );
-		}
+			}
+		} );
 	}
 }
 
@@ -669,18 +672,18 @@ function _fixItemsType( changePosition, fixPrevious, document, batch ) {
 		return;
 	}
 
-	const refItem = _getBoundaryItemOfSameList( item, !fixPrevious );
-
-	if ( !refItem || refItem == item ) {
-		// !refItem - happens if first list item is inserted.
-		// refItem == item - happens if last item is inserted.
-		return;
-	}
-
-	const refIndent = refItem.getAttribute( 'indent' );
-	const refType = refItem.getAttribute( 'type' );
-
 	document.enqueueChanges( () => {
+		const refItem = _getBoundaryItemOfSameList( item, !fixPrevious );
+
+		if ( !refItem || refItem == item ) {
+			// !refItem - happens if first list item is inserted.
+			// refItem == item - happens if last item is inserted.
+			return;
+		}
+
+		const refIndent = refItem.getAttribute( 'indent' );
+		const refType = refItem.getAttribute( 'type' );
+
 		while ( item && item.is( 'listItem' ) && item.getAttribute( 'indent' ) >= refIndent ) {
 			if ( item.getAttribute( 'type' ) != refType && item.getAttribute( 'indent' ) == refIndent ) {
 				batch.setAttribute( item, 'type', refType );
@@ -689,6 +692,66 @@ function _fixItemsType( changePosition, fixPrevious, document, batch ) {
 			item = item[ fixPrevious ? 'previousSibling' : 'nextSibling' ];
 		}
 	} );
+}
+
+/**
+ * Fixer for pasted content that includes list items.
+ *
+ * Fixes indent of pasted list items so the pasted items match correctly to the context they are pasted into.
+ *
+ * Example:
+ *
+ *		<listItem type="bulleted" indent=0>A</listItem>
+ *		<listItem type="bulleted" indent=1>B^</listItem>
+ *		// At ^ paste:  <listItem type="bulleted" indent=4>X</listItem>
+ *		//              <listItem type="bulleted" indent=5>Y</listItem>
+ *		<listItem type="bulleted" indent=2>C</listItem>
+ *
+ * Should become:
+ *
+ *		<listItem type="bulleted" indent=0>A</listItem>
+ *		<listItem type="bulleted" indent=1>BX</listItem>
+ *		<listItem type="bulleted" indent=2>Y/listItem>
+ *		<listItem type="bulleted" indent=2>C</listItem>
+ *
+ * @param {module:engine/model/document~Document} document Document to observe.
+ * @returns {Function} Callback to be attached to {@link module:engine/model/document~Document#event:change document change event}.
+ */
+export function modelIndentPasteFixer( evt, data ) {
+	// Check whether inserted content starts from a `listItem`. If it does not, it means that there are some other
+	// elements before it and there is no need to fix indents, because even if we insert that content into a list,
+	// that list will be broken.
+	let item = data.content.getChild( 0 );
+
+	if ( item.is( 'listItem' ) ) {
+		// Get a reference list item. Inserted list items will be fixed according to that item.
+		const pos = data.selection.getFirstPosition();
+		let refItem = null;
+
+		if ( pos.parent.is( 'listItem' ) ) {
+			refItem = pos.parent;
+		} else if ( pos.nodeBefore && pos.nodeBefore.is( 'listItem' ) ) {
+			refItem = pos.nodeBefore;
+		}
+
+		// If there is `refItem` it means that we do insert list items into an existing list.
+		if ( refItem ) {
+			// First list item in `data` has indent equal to 0 (it is a first list item). It should have indent equal
+			// to the indent of reference item. We have to fix the first item and all of it's children and following siblings.
+			// Indent of all those items has to be adjusted to reference item.
+			const indentChange = refItem.getAttribute( 'indent' );
+
+			// Fix only if there is anything to fix.
+			if ( indentChange > 0 ) {
+				// Adjust indent of all "first" list items in inserted data.
+				while ( item && item.is( 'listItem' ) ) {
+					item.setAttribute( 'indent', item.getAttribute( 'indent' ) + indentChange );
+
+					item = item.nextSibling;
+				}
+			}
+		}
+	}
 }
 
 // Helper function that creates a `<ul><li></li></ul>` or (`<ol>`) structure out of given `modelItem` model `listItem` element.
