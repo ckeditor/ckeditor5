@@ -29,6 +29,7 @@
     "@ckeditor/ckeditor5-typing": "^0.9.0",
     "@ckeditor/ckeditor5-ui": "^0.8.0",
     "@ckeditor/ckeditor5-undo": "^0.8.0",
+    "@ckeditor/ckeditor5-upload": "*",
     "@ckeditor/ckeditor5-utils": "^0.9.0",
     "@ckeditor/ckeditor5-widget": "^0.1.0"
   },
