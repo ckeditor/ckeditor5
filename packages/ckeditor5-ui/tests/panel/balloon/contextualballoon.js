@@ -26,7 +26,8 @@ describe( 'ContextualBalloon', () => {
 			editor = newEditor;
 			balloon = editor.plugins.get( ContextualBalloon );
 
-			// We don't need to test BalloonPanelView attachTo and pin methods it's enough to check if was called with proper data.
+			// We don't need to execute BalloonPanel pin and attachTo methods
+			// it's enough to check if was called with the proper data.
 			sinon.stub( balloon.view, 'attachTo', () => {} );
 			sinon.stub( balloon.view, 'pin', () => {} );
 
@@ -48,13 +49,14 @@ describe( 'ContextualBalloon', () => {
 		editor.destroy();
 	} );
 
-	it( 'should be a plugin instance', () => {
+	it( 'should create a plugin instance', () => {
 		expect( balloon ).to.instanceof( Plugin );
+		expect( balloon ).to.instanceof( ContextualBalloon );
 	} );
 
 	describe( 'pluginName', () => {
 		it( 'should return plugin by name', () => {
-			expect( editor.plugins.get( 'contextualballoon' ) ).to.instanceof( ContextualBalloon );
+			expect( editor.plugins.get( 'ui/contextualballoon' ) ).to.equal( balloon );
 		} );
 	} );
 
@@ -176,6 +178,26 @@ describe( 'ContextualBalloon', () => {
 				} );
 			} );
 		} );
+
+		it( 'should set additional css class of visible view to BalloonPanelView', () => {
+			const view = new View();
+
+			balloon.add( {
+				view: view,
+				position: { target: 'fake' },
+				balloonClassName: 'foo'
+			} );
+
+			expect( balloon.view.className ).to.equal( 'foo' );
+
+			balloon.add( {
+				view: viewB,
+				position: { target: 'fake' },
+				balloonClassName: 'bar'
+			} );
+
+			expect( balloon.view.className ).to.equal( 'bar' );
+		} );
 	} );
 
 	describe( 'visibleView', () => {
@@ -269,10 +291,30 @@ describe( 'ContextualBalloon', () => {
 				balloon.remove( viewB );
 			} ).to.throw( CKEditorError, /^contextualballoon-remove-view-not-exist/ );
 		} );
+
+		it( 'should set additional css class of visible view to BalloonPanelView', () => {
+			const view = new View();
+
+			balloon.add( {
+				view: view,
+				position: { target: 'fake' },
+				balloonClassName: 'foo'
+			} );
+
+			balloon.add( {
+				view: viewB,
+				position: { target: 'fake' },
+				balloonClassName: 'bar'
+			} );
+
+			balloon.remove( viewB );
+
+			expect( balloon.view.className ).to.equal( 'foo' );
+		} );
 	} );
 
 	describe( 'updatePosition()', () => {
-		it( 'should attach balloon to the target using the same position options as first view in the stack', () => {
+		it( 'should attach balloon to the target using position option from the first view in the stack', () => {
 			balloon.add( {
 				view: viewB,
 				position: {
@@ -285,9 +327,21 @@ describe( 'ContextualBalloon', () => {
 			balloon.updatePosition();
 
 			expect( balloon.view.attachTo.calledOnce );
-			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( {
-				target: 'fake'
-			} );
+			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'fake' } );
+		} );
+
+		it( 'should attach balloon to the target using new position options', () => {
+			balloon.view.attachTo.reset();
+
+			balloon.updatePosition( { target: 'new' } );
+
+			expect( balloon.view.attachTo.calledOnce );
+			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'new' } );
+
+			balloon.updatePosition();
+
+			expect( balloon.view.attachTo.calledTwice );
+			expect( balloon.view.attachTo.firstCall.args[ 0 ] ).to.deep.equal( { target: 'new' } );
 		} );
 
 		it( 'should throw an error when there is no given view in the stack', () => {

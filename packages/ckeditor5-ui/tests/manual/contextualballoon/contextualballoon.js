@@ -16,6 +16,7 @@ import EssentialsPresets from '@ckeditor/ckeditor5-presets/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
+import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 import ContextualBalloon from '../../../src/panel/balloon/contextualballoon';
 import ToolbarView from '../../../src/toolbar/toolbarview';
 import ButtonView from '../../../src/button/buttonview';
@@ -224,21 +225,7 @@ function createContextualToolbar( editor ) {
 	const balloon = editor.plugins.get( ContextualBalloon );
 	const toolbar = new ToolbarView();
 	const editingView = editor.editing.view;
-	const arrowVOffset = 20;
-
-	const positions = {
-		forwardSelection: ( targetRect, balloonRect ) => ( {
-			top: targetRect.bottom + arrowVOffset,
-			left: targetRect.right - balloonRect.width / 2,
-			name: 'arrow_s'
-		} ),
-
-		backwardSelection: ( targetRect, balloonRect ) => ( {
-			top: targetRect.top - balloonRect.height - arrowVOffset,
-			left: targetRect.left - balloonRect.width / 2,
-			name: 'arrow_n'
-		} )
-	};
+	const defaultPositions = BalloonPanelView.defaultPositions;
 
 	// Add plugins to the toolbar.
 	toolbar.fillFromConfig( [ 'PluginA', 'PluginB' ], editor.ui.componentFactory );
@@ -257,7 +244,7 @@ function createContextualToolbar( editor ) {
 				view: toolbar,
 				position: {
 					target: isBackward ? rangeRects.item( 0 ) : rangeRects.item( rangeRects.length - 1 ),
-					positions: [ positions[ isBackward ? 'backwardSelection' : 'forwardSelection' ] ]
+					positions: [ defaultPositions[ isBackward ? 'northArrowSouth' : 'southArrowNorth' ] ]
 				}
 			} );
 		}

@@ -19,31 +19,6 @@ import Template from '../../../src/template';
 import ToolbarView from '../../../src/toolbar/toolbarview';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 
-const arrowVOffset = BalloonPanelView.arrowVerticalOffset;
-const positions = {
-	//          [text range]
-	//                ^
-	//       +-----------------+
-	//       |     Balloon     |
-	//       +-----------------+
-	south: ( targetRect, balloonRect ) => ( {
-		top: targetRect.bottom + arrowVOffset,
-		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-		name: 's'
-	} ),
-
-	//	+-----------------+
-	//	|     Balloon     |
-	//	+-----------------+
-	//	        V
-	//	   [text range]
-	north: ( targetRect, balloonRect ) => ( {
-		top: targetRect.top - balloonRect.height - arrowVOffset,
-		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-		name: 'n'
-	} )
-};
-
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [ Enter, Typing, Paragraph, Undo, Bold, Italic, Image ],
 	toolbar: [ 'bold', 'italic', 'undo', 'redo' ]
@@ -111,9 +86,11 @@ function createImageToolbar( editor ) {
 		} );
 
 		function attachToolbar() {
+			const defaultPositions = BalloonPanelView.defaultPositions;
+
 			panel.attachTo( {
 				target: editingView.domConverter.viewRangeToDom( editingView.selection.getFirstRange() ),
-				positions: [ positions.north, positions.south ]
+				positions: [ defaultPositions.northArrowSouth, defaultPositions.southArrowNorth ]
 			} );
 		}
 	} );

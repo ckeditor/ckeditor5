@@ -31,6 +31,13 @@ export default class ContextualBalloon extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'ui/contextualballoon';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		/**
 		 * The common balloon panel view.
@@ -54,10 +61,6 @@ export default class ContextualBalloon extends Plugin {
 
 		// Add balloon panel view to editor `body` collection and wait until view will be ready.
 		return this.editor.ui.view.body.add( this.view );
-	}
-
-	static get pluginName() {
-		return 'contextualballoon';
 	}
 
 	/**
@@ -88,6 +91,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @param {Object} data Configuration of the view.
 	 * @param {module:ui/view~View} [data.view] Content of the balloon.
 	 * @param {module:utils/dom/position~Options} [data.position] Positioning options.
+	 * @param {String} [data.balloonClassName] Additional css class for {@link #view} added when given view is visible.
 	 * @returns {Promise} A Promise resolved when the child {@link module:ui/view~View#init} is done.
 	 */
 	add( data ) {
@@ -109,7 +113,7 @@ export default class ContextualBalloon extends Plugin {
 		// Add new view to the stack.
 		this._stack.set( data.view, data );
 		// And display it.
-		return this._show( data.view );
+		return this._show( data );
 	}
 
 	/**
@@ -147,7 +151,7 @@ export default class ContextualBalloon extends Plugin {
 			// If it is some other view.
 			if ( last ) {
 				// Just show it.
-				promise = this._show( last.view );
+				promise = this._show( last );
 			} else {
 				// Hide the balloon panel.
 				this.view.hide();
@@ -161,10 +165,16 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Updates the position of the balloon panel according to position data
-	 * of the first view in the stack.
+	 * Updates the position of the balloon panel according to the given position data
+	 * or position data of the first view in the stack.
+	 *
+	 * @param {module:utils/dom/position~Options} [position] position options.
 	 */
-	updatePosition() {
+	updatePosition( position ) {
+		if ( position ) {
+			this._stack.values().next().value.position = position;
+		}
+
 		this.view.attachTo( this._getBalloonPosition() );
 	}
 
@@ -173,10 +183,13 @@ export default class ContextualBalloon extends Plugin {
 	 * options of the first view.
 	 *
 	 * @private
-	 * @param {module:ui/view~View} view View to show in the balloon.
-	 * @returns {Promise} A Promise resolved when the child {@link module:ui/view~View#init} is done.
+	 * @param {Object} data Configuration.
+	 * @param {module:ui/view~View} [data.view] View to show in the balloon.
+	 * @param {String} [data.balloonClassName=''] Additional class name which will added to the {#_balloon} view.
 	 */
-	_show( view ) {
+	_show( { view, balloonClassName = '' } ) {
+		this.view.className = balloonClassName;
+
 		return this.view.content.add( view ).then( () => {
 			this.view.pin( this._getBalloonPosition() );
 		} );
@@ -190,7 +203,7 @@ export default class ContextualBalloon extends Plugin {
 	 * @returns {module:utils/dom/position~Options}
 	 */
 	_getBalloonPosition() {
-		return Array.from( this._stack.values() )[ 0 ].position;
+		return this._stack.values().next().value.position;
 	}
 
 	/**
