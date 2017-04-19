@@ -333,7 +333,7 @@ BalloonPanelView.arrowVerticalOffset = 15;
  *
  * The available positioning functions are as follows:
  *
- * * South east arrow north west:
+ * * South east (arrow north west):
  *
  *		[ Target ]
  *		    ^
@@ -342,7 +342,7 @@ BalloonPanelView.arrowVerticalOffset = 15;
  *		+-----------------+
  *
  *
- * * South west arrow north east:
+ * * South west (arrow north east):
  *
  *		         [ Target ]
  *		              ^
@@ -351,7 +351,7 @@ BalloonPanelView.arrowVerticalOffset = 15;
  *		+-----------------+
  *
  *
- * * North east arrow south west:
+ * * North east (arrow south west):
  *
  *		+-----------------+
  *		|     Balloon     |
@@ -360,7 +360,7 @@ BalloonPanelView.arrowVerticalOffset = 15;
  *		[ Target ]
  *
  *
- * * North west arrow south east:
+ * * North west (arrow south east):
  *
  *		+-----------------+
  *		|     Balloon     |
@@ -369,40 +369,56 @@ BalloonPanelView.arrowVerticalOffset = 15;
  *		         [ Target ]
  *
  *
- * * South east arrow north:
+ * * South east (arrow north):
  *
- * 		[text range]
+ * 		      [ Target ]
  * 		           ^
  * 		  +-----------------+
  * 		  |     Balloon     |
  * 		  +-----------------+
  *
  *
- * * North east arrow south:
+ * * North east (arrow south):
  *
  * 		  +-----------------+
  * 		  |     Balloon     |
  * 		  +-----------------+
  * 		           V
- * 		[text range]
+ * 		      [ Target ]
  *
  *
- * * North west arrow south:
+ * * North west (arrow south):
  *
  * 		+-----------------+
  * 		|     Balloon     |
  * 		+-----------------+
  * 		         V
- * 		         [text range]
+ * 		    [ Target ]
  *
  *
- * * South west arrow north:
+ * * South west (arrow north):
  *
- * 		         [text range]
+ * 		    [ Target ]
  * 		         ^
  * 		+-----------------+
  * 		|     Balloon     |
  * 		+-----------------+
+ *
+ * * South (arrow north):
+ *
+ * 		     [ Target ]
+ * 		         ^
+ * 		+-----------------+
+ * 		|     Balloon     |
+ * 		+-----------------+
+ *
+ * * North (arrow south):
+ *
+ * 		+-----------------+
+ * 		|     Balloon     |
+ * 		+-----------------+
+ * 		        V
+ * 		    [ Target ]
  *
  * See {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo}.
  *
