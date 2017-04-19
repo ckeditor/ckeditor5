@@ -269,15 +269,14 @@ export default class View {
 	 *		}
 	 *
 	 * @param {module:ui/view~View|Iterable.<module:ui/view~View>} children Children views to be registered.
+	 * @returns {Promise}
 	 */
 	addChildren( children ) {
 		if ( !isIterable( children ) ) {
 			children = [ children ];
 		}
 
-		for ( let child of children ) {
-			this._unboundChildren.add( child );
-		}
+		return Promise.all( children.map( c => this._unboundChildren.add( c ) ) );
 	}
 
 	/**
@@ -314,15 +313,14 @@ export default class View {
 	destroy() {
 		this.stopListening();
 
-		const promises = this._viewCollections.map( c => c.destroy() );
+		return Promise.all( this._viewCollections.map( c => c.destroy() ) )
+			.then( () => {
+				this._unboundChildren.clear();
+				this._viewCollections.clear();
 
-		this._unboundChildren.clear();
-		this._viewCollections.clear();
-
-		this.element = this.template = this.locale = this.t =
-			this._viewCollections = this._unboundChildren = null;
-
-		return Promise.all( promises );
+				this.element = this.template = this.locale = this.t =
+					this._viewCollections = this._unboundChildren = null;
+			} );
 	}
 
 	/**
