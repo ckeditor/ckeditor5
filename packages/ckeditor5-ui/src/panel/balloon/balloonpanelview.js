@@ -460,5 +460,17 @@ BalloonPanelView.defaultPositions = {
 		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left - balloonRect.width / 2,
 		name: 'arrow_s'
+	} ),
+
+	southArrowNorth: ( targetRect, balloonRect ) => ( {
+		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
+		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
+		name: 'arrow_s'
+	} ),
+
+	northArrowSouth: ( targetRect, balloonRect ) => ( {
+		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
+		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
+		name: 'arrow_n'
 	} )
 };

@@ -721,6 +721,22 @@ describe( 'BalloonPanelView', () => {
 				name: 'arrow_s'
 			} );
 		} );
+
+		it( 'southArrowNorth', () => {
+			expect( positions.southArrowNorth( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 215,
+				left: 125,
+				name: 'arrow_s'
+			} );
+		} );
+
+		it( 'northArrowSouth', () => {
+			expect( positions.northArrowSouth( targetRect, balloonRect ) ).to.deep.equal( {
+				top: 35,
+				left: 125,
+				name: 'arrow_n'
+			} );
+		} );
 	} );
 } );
 
