@@ -12,17 +12,18 @@ import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
 import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'ListEngine', () => {
 	let editor, modelDoc, modelRoot, viewDoc, viewRoot;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-			plugins: [ BoldEngine, Paragraph, ListEngine, UndoEngine ]
+			plugins: [ Clipboard, BoldEngine, Paragraph, ListEngine, UndoEngine ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
@@ -3007,6 +3008,133 @@ describe( 'ListEngine', () => {
 
 				expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( expectedModel );
 			} );
+		} );
+	} );
+
+	describe( 'paste integration', () => {
+		it( 'should fix indents of pasted list items', () => {
+			setModelData( modelDoc,
+				'<listItem type="bulleted" indent="0">A</listItem>' +
+				'<listItem type="bulleted" indent="1">B[]</listItem>' +
+				'<listItem type="bulleted" indent="2">C</listItem>'
+			);
+
+			const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
+			} );
+
+			expect( getModelData( modelDoc ) ).to.equal(
+				'<listItem indent="0" type="bulleted">A</listItem>' +
+				'<listItem indent="1" type="bulleted">BX</listItem>' +
+				'<listItem indent="2" type="bulleted">Y[]</listItem>' +
+				'<listItem indent="2" type="bulleted">C</listItem>'
+			);
+		} );
+
+		it( 'should not fix indents of list items that are separated by non-list element', () => {
+			setModelData( modelDoc,
+				'<listItem type="bulleted" indent="0">A</listItem>' +
+				'<listItem type="bulleted" indent="1">B[]</listItem>' +
+				'<listItem type="bulleted" indent="2">C</listItem>'
+			);
+
+			const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<ul><li>W<ul><li>X</li></ul></li></ul><p>Y</p><ul><li>Z</li></ul>' )
+			} );
+
+			expect( getModelData( modelDoc ) ).to.equal(
+				'<listItem indent="0" type="bulleted">A</listItem>' +
+				'<listItem indent="1" type="bulleted">BW</listItem>' +
+				'<listItem indent="2" type="bulleted">X</listItem>' +
+				'<paragraph>Y</paragraph>' +
+				'<listItem indent="0" type="bulleted">Z[]</listItem>' +
+				'<listItem indent="1" type="bulleted">C</listItem>'
+			);
+		} );
+
+		it( 'should co-work correctly with post fixer', () => {
+			setModelData( modelDoc,
+				'<listItem type="bulleted" indent="0">A</listItem>' +
+				'<listItem type="bulleted" indent="1">B[]</listItem>' +
+				'<listItem type="bulleted" indent="2">C</listItem>'
+			);
+
+			const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<p>X</p><ul><li>Y</li></ul>' )
+			} );
+
+			expect( getModelData( modelDoc ) ).to.equal(
+				'<listItem indent="0" type="bulleted">A</listItem>' +
+				'<listItem indent="1" type="bulleted">BX</listItem>' +
+				'<listItem indent="0" type="bulleted">Y[]</listItem>' +
+				'<listItem indent="1" type="bulleted">C</listItem>'
+			);
+		} );
+
+		it( 'should work if items are pasted between listItem elements', () => {
+			setModelData( modelDoc,
+				'<listItem type="bulleted" indent="0">A</listItem>' +
+				'<listItem type="bulleted" indent="1">B</listItem>[]' +
+				'<listItem type="bulleted" indent="2">C</listItem>'
+			);
+
+			const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
+			} );
+
+			expect( getModelData( modelDoc ) ).to.equal(
+				'<listItem indent="0" type="bulleted">A</listItem>' +
+				'<listItem indent="1" type="bulleted">B</listItem>' +
+				'<listItem indent="1" type="bulleted">X</listItem>' +
+				'<listItem indent="2" type="bulleted">Y[]</listItem>' +
+				'<listItem indent="2" type="bulleted">C</listItem>'
+			);
+		} );
+
+		it( 'should create correct model when list items are pasted in top-level list', () => {
+			setModelData( modelDoc,
+				'<listItem type="bulleted" indent="0">A[]</listItem>' +
+				'<listItem type="bulleted" indent="1">B</listItem>'
+			);
+
+			const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
+			} );
+
+			expect( getModelData( modelDoc ) ).to.equal(
+				'<listItem indent="0" type="bulleted">AX</listItem>' +
+				'<listItem indent="1" type="bulleted">Y[]</listItem>' +
+				'<listItem indent="1" type="bulleted">B</listItem>'
+			);
+		} );
+
+		it( 'should create correct model when list items are pasted in non-list context', () => {
+			setModelData( modelDoc,
+				'<paragraph>A[]</paragraph>' +
+				'<paragraph>B</paragraph>'
+			);
+
+			const clipboard = editor.plugins.get( 'clipboard/clipboard' );
+
+			clipboard.fire( 'inputTransformation', {
+				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
+			} );
+
+			expect( getModelData( modelDoc ) ).to.equal(
+				'<paragraph>AX</paragraph>' +
+				'<listItem indent="0" type="bulleted">Y[]</listItem>' +
+				'<paragraph>B</paragraph>'
+			);
 		} );
 	} );
 
