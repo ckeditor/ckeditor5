@@ -11,17 +11,17 @@
 	}
 
 	&.ck-balloon-panel {
-		&_arrow_s,
-		&_arrow_se,
-		&_arrow_sw {
+		&_arrow_n,
+		&_arrow_ne,
+		&_arrow_nw {
 			&:after {
 				border-bottom-color: ck-color( 'foreground' );
 			}
 		}
 
-		&_arrow_n,
-		&_arrow_ne,
-		&_arrow_nw {
+		&_arrow_s,
+		&_arrow_se,
+		&_arrow_sw {
 			&:after {
 				border-top-color: ck-color( 'foreground' );
 			}

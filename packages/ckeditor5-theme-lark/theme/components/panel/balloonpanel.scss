@@ -25,9 +25,9 @@ $ck-balloon-arrow-half-width: 10px;
 	}
 
 	&.ck-balloon-panel_arrow {
-		&_s,
-		&_se,
-		&_sw {
+		&_n,
+		&_ne,
+		&_nw {
 			&:before,
 			&:after {
 				border-width: 0 $ck-balloon-arrow-half-width $ck-balloon-arrow-height $ck-balloon-arrow-half-width;
@@ -43,9 +43,9 @@ $ck-balloon-arrow-half-width: 10px;
 			}
 		}
 
-		&_n,
-		&_ne,
-		&_nw {
+		&_s,
+		&_se,
+		&_sw {
 			&:before,
 			&:after {
 				border-width: $ck-balloon-arrow-height $ck-balloon-arrow-half-width 0 $ck-balloon-arrow-half-width;
@@ -61,37 +61,12 @@ $ck-balloon-arrow-half-width: 10px;
 			}
 		}
 
-		&_s {
-			&:before,
-			&:after {
-				left: 50%;
-				margin-left: -$ck-balloon-arrow-half-width;
-				top: -$ck-balloon-arrow-height;
-			}
-		}
-
-		&_se {
-			&:before,
-			&:after {
-				left: 2 * $ck-balloon-arrow-half-width;
-				top: -$ck-balloon-arrow-height;
-			}
-		}
-
-		&_sw {
-			&:before,
-			&:after {
-				right: 2 * $ck-balloon-arrow-half-width;
-				top: -$ck-balloon-arrow-height;
-			}
-		}
-
 		&_n {
 			&:before,
 			&:after {
 				left: 50%;
 				margin-left: -$ck-balloon-arrow-half-width;
-				bottom: -$ck-balloon-arrow-height;
+				top: -$ck-balloon-arrow-height;
 			}
 		}
 
@@ -99,11 +74,36 @@ $ck-balloon-arrow-half-width: 10px;
 			&:before,
 			&:after {
 				left: 2 * $ck-balloon-arrow-half-width;
-				bottom: -$ck-balloon-arrow-height;
+				top: -$ck-balloon-arrow-height;
 			}
 		}
 
 		&_nw {
+			&:before,
+			&:after {
+				right: 2 * $ck-balloon-arrow-half-width;
+				top: -$ck-balloon-arrow-height;
+			}
+		}
+
+		&_s {
+			&:before,
+			&:after {
+				left: 50%;
+				margin-left: -$ck-balloon-arrow-half-width;
+				bottom: -$ck-balloon-arrow-height;
+			}
+		}
+
+		&_se {
+			&:before,
+			&:after {
+				left: 2 * $ck-balloon-arrow-half-width;
+				bottom: -$ck-balloon-arrow-height;
+			}
+		}
+
+		&_sw {
 			&:before,
 			&:after {
 				right: 2 * $ck-balloon-arrow-half-width;
