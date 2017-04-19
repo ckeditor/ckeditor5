@@ -114,7 +114,7 @@ export default class ViewCollection extends Collection {
 		return Promise.all( this._addPromises )
 			// Then begin the process of destroying the children.
 			.then( () => {
-				return Promise.all( Array.from( this, view => view.destroy() ) );
+				return Promise.all( this.map( v => v.destroy() ) );
 			} );
 	}
 

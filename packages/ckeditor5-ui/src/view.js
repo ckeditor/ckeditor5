@@ -276,13 +276,7 @@ export default class View {
 			children = [ children ];
 		}
 
-		const promises = [];
-
-		for ( let child of children ) {
-			promises.push( this._unboundChildren.add( child ) );
-		}
-
-		return Promise.all( promises );
+		return Promise.all( children.map( c => this._unboundChildren.add( c ) ) );
 	}
 
 	/**
@@ -319,7 +313,7 @@ export default class View {
 	destroy() {
 		this.stopListening();
 
-		return Promise.all( Array.from( this._viewCollections, c => c.destroy() ) )
+		return Promise.all( this._viewCollections.map( c => c.destroy() ) )
 			.then( () => {
 				this._unboundChildren.clear();
 				this._viewCollections.clear();
