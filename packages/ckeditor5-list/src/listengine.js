@@ -23,6 +23,7 @@ import {
 	modelViewSplitOnInsert,
 	modelViewChangeIndent,
 	modelChangePostFixer,
+	modelIndentPasteFixer,
 	viewModelConverter,
 	modelToViewPosition,
 	viewToModelPosition
@@ -108,6 +109,9 @@ export default class ListEngine extends Plugin {
 		data.viewToModel.on( 'element:ol', cleanList, { priority: 'high' } );
 		data.viewToModel.on( 'element:li', cleanListItem, { priority: 'high' } );
 		data.viewToModel.on( 'element:li', viewModelConverter );
+
+		// Fix indentation of pasted items.
+		data.on( 'insertContent', modelIndentPasteFixer, { priority: 'high' } );
 
 		// Register commands for numbered and bulleted list.
 		editor.commands.set( 'numberedList', new ListCommand( editor, 'numbered' ) );
