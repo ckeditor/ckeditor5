@@ -102,10 +102,10 @@ export default class ContextualToolbar extends Plugin {
 	}
 
 	/**
-	 * Handles {@link module:engine/model/document#selection} change and show or hide toolbar.
+	 * Handles {@link module:engine/model/document~Document#selection} change and show or hide toolbar.
 	 *
-	 * Note that in this case it's better to listen to {@link module:engine/model/document modelDocument}
-	 * selection instead of {@link module:engine/view/document viewDocument} selection because the first one
+	 * Note that in this case it's better to listen to {@link module:engine/model/document~Document model document}
+	 * selection instead of {@link module:engine/view/document~Document view document} selection because the first one
 	 * doesn't fire `change` event after text style change (like bold or italic) and toolbar doesn't blink.
 	 *
 	 * @private
