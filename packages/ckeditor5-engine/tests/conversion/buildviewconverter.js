@@ -157,21 +157,28 @@ describe( 'View converter builder', () => {
 	} );
 
 	it( 'should convert from view attribute and key to model attribute', () => {
+		schema.allow( { name: 'paragraph', attributes: [ 'type' ], inside: '$root' } );
+
 		dispatcher.on( 'documentFragment', convertToModelFragment() );
 
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 		buildViewConverter().for( dispatcher ).fromAttribute( 'class', 'important' ).toAttribute( 'important', true );
 		buildViewConverter().for( dispatcher ).fromAttribute( 'class', 'theme-nice' ).toAttribute( 'theme', 'nice' );
+		buildViewConverter().for( dispatcher ).fromAttribute( 'data-type' ).toAttribute( 'type' );
 
 		const viewStructure = new ViewDocumentFragment( [
 			new ViewContainerElement( 'p', { class: 'important' }, new ViewText( 'foo' ) ),
-			new ViewContainerElement( 'p', { class: 'important theme-nice' }, new ViewText( 'bar' ) )
+			new ViewContainerElement( 'p', { class: 'important theme-nice' }, new ViewText( 'bar' ) ),
+			new ViewContainerElement( 'p', { 'data-type': 'foo' }, new ViewText( 'xyz' ) )
 		] );
 
 		const conversionResult = dispatcher.convert( viewStructure, objWithContext );
 
-		expect( modelToString( conversionResult ) )
-			.to.equal( '<paragraph important="true">foo</paragraph><paragraph important="true" theme="nice">bar</paragraph>' );
+		expect( modelToString( conversionResult ) ).to.equal(
+			'<paragraph important="true">foo</paragraph>' +
+			'<paragraph important="true" theme="nice">bar</paragraph>' +
+			'<paragraph type="foo">xyz</paragraph>'
+		);
 	} );
 
 	it( 'should convert from multiple view entities to model attribute', () => {
@@ -507,5 +514,39 @@ describe( 'View converter builder', () => {
 		let conversionResult = dispatcher.convert( viewElement, objWithContext );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph>foo</paragraph>' );
+	} );
+
+	it( 'should stop to element conversion if creating function returned null', () => {
+		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement(
+			( viewElement ) => viewElement.hasAttribute( 'stop' ) ? null : new ModelElement( 'paragraph' )
+		);
+
+		let viewElement = new ViewContainerElement( 'p' );
+		let conversionResult = dispatcher.convert( viewElement, objWithContext );
+		expect( modelToString( conversionResult ) ).to.equal( '<paragraph></paragraph>' );
+
+		viewElement.setAttribute( 'stop', true );
+		conversionResult = dispatcher.convert( viewElement, objWithContext );
+		expect( conversionResult ).to.be.null;
+	} );
+
+	it( 'should stop to attribute conversion if creating function returned null', () => {
+		schema.allow( { name: 'paragraph', attributes: [ 'type' ], inside: '$root' } );
+
+		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+
+		buildViewConverter().for( dispatcher ).fromAttribute( 'data-type' ).toAttribute( ( viewElement ) => {
+			const value = viewElement.getAttribute( 'data-type' );
+
+			return value == 'stop' ? null : { key: 'type', value: value };
+		} );
+
+		let viewElement = new ViewContainerElement( 'p', { 'data-type': 'foo' } );
+		let conversionResult = dispatcher.convert( viewElement, objWithContext );
+		expect( modelToString( conversionResult ) ).to.equal( '<paragraph type="foo"></paragraph>' );
+
+		viewElement.setAttribute( 'data-type', 'stop' );
+		conversionResult = dispatcher.convert( viewElement, objWithContext );
+		expect( modelToString( conversionResult ) ).to.equal( '<paragraph></paragraph>' );
 	} );
 } );
