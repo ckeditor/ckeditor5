@@ -52,7 +52,7 @@ export default class BalloonPanelView extends View {
 
 		/**
 		 * Balloon panel's current position. The position name is reflected in the CSS class set
-		 * to the balloon, i.e. `.ck-balloon-panel_arrow_se` for "arrow_se" position. The class
+		 * to the balloon, i.e. `.ck-balloon-panel_arrow_ne` for "arrow_ne" position. The class
 		 * controls the minor aspects of the balloon's visual appearance like placement
 		 * of the "arrow". To support a new position, an additional CSS must be created.
 		 *
@@ -64,10 +64,10 @@ export default class BalloonPanelView extends View {
 		 * See {@link #withArrow}.
 		 *
 		 * @observable
-		 * @default 'arrow_se'
-		 * @member {'arrow_se'|'arrow_sw'|'arrow_ne'|'arrow_nw'} #position
+		 * @default 'arrow_ne'
+		 * @member {'arrow_ne'|'arrow_nw'|'arrow_se'|'arrow_sw'} #position
 		 */
-		this.set( 'position', 'arrow_se' );
+		this.set( 'position', 'arrow_ne' );
 
 		/**
 		 * Controls whether the balloon panel is visible or not.
@@ -433,60 +433,60 @@ BalloonPanelView.defaultPositions = {
 	southEastArrowNorthEast: ( targetRect ) => ( {
 		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_se'
+		name: 'arrow_ne'
 	} ),
 
 	southWestArrowNorthEast: ( targetRect, balloonRect ) => ( {
 		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_sw'
+		name: 'arrow_nw'
 	} ),
 
 	northEastArrowSouthWest: ( targetRect, balloonRect ) => ( {
 		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_ne'
+		name: 'arrow_se'
 	} ),
 
 	northWestArrowSouthEast: ( targetRect, balloonRect ) => ( {
 		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_nw'
+		name: 'arrow_sw'
 	} ),
 
 	southEastArrowNorth: ( targetRect, balloonRect ) => ( {
 		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.right - balloonRect.width / 2,
-		name: 'arrow_s'
+		name: 'arrow_n'
 	} ),
 
 	northEastArrowSouth: ( targetRect, balloonRect ) => ( {
 		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.right - balloonRect.width / 2,
-		name: 'arrow_n'
+		name: 'arrow_s'
 	} ),
 
 	northWestArrowSouth: ( targetRect, balloonRect ) => ( {
 		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left - balloonRect.width / 2,
-		name: 'arrow_n'
+		name: 'arrow_s'
 	} ),
 
 	southWestArrowNorth: ( targetRect, balloonRect ) => ( {
 		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left - balloonRect.width / 2,
-		name: 'arrow_s'
+		name: 'arrow_n'
 	} ),
 
 	southArrowNorth: ( targetRect, balloonRect ) => ( {
 		top: targetRect.bottom + BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-		name: 'arrow_s'
+		name: 'arrow_n'
 	} ),
 
 	northArrowSouth: ( targetRect, balloonRect ) => ( {
 		top: targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset,
 		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-		name: 'arrow_n'
+		name: 'arrow_s'
 	} )
 };

@@ -26,9 +26,9 @@
 	}
 
 	&.ck-balloon-panel_arrow {
-		&_s,
-		&_se,
-		&_sw {
+		&_n,
+		&_ne,
+		&_nw {
 			&:before {
 				z-index: ck-z( 'default' );
 			}
@@ -38,9 +38,9 @@
 			}
 		}
 
-		&_n,
-		&_ne,
-		&_nw {
+		&_s,
+		&_se,
+		&_sw {
 			&:before {
 				z-index: ck-z( 'default' );
 			}
