@@ -151,9 +151,14 @@ class ViewConverterBuilder {
 			pattern.attribute[ key ] = value;
 		}
 
-		this.from( pattern );
+		const matcher = new Matcher( pattern );
 
-		this._from[ this._from.length - 1 ].attributeKey = key;
+		this._from.push( {
+			matcher: matcher,
+			consume: false,
+			priority: null,
+			attributeKey: key
+		} );
 
 		return this;
 	}
