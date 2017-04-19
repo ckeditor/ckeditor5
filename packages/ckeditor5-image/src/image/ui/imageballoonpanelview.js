@@ -12,35 +12,6 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import { isImageWidget } from '../utils';
 
-const arrowVOffset = BalloonPanelView.arrowVerticalOffset;
-const positions = {
-	//	   [text range]
-	//	        ^
-	//	+-----------------+
-	//	|     Balloon     |
-	//	+-----------------+
-	south( targetRect, balloonRect ) {
-		return {
-			top: targetRect.bottom + arrowVOffset,
-			left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-			name: 'arrow_s'
-		};
-	},
-
-	//	+-----------------+
-	//	|     Balloon     |
-	//	+-----------------+
-	//	        V
-	//	   [text range]
-	north( targetRect, balloonRect ) {
-		return {
-			top: targetRect.top - balloonRect.height - arrowVOffset,
-			left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-			name: 'arrow_n'
-		};
-	}
-};
-
 /**
  * Image balloon panel class. It extends {module:ui/panel/balloon/balloonpanelview~BalloonPanelView} by adding helpers
  * to use with image widgets. It sets proper positioning on `scroll` and `resize` events and hides the panel when
@@ -121,10 +92,11 @@ export default class ImageBalloonPanelView extends BalloonPanelView {
 	 */
 	_attach() {
 		const editingView = this.editor.editing.view;
+		const defaultPositions = BalloonPanelView.defaultPositions;
 
 		this.attachTo( {
 			target: editingView.domConverter.viewRangeToDom( editingView.selection.getFirstRange() ),
-			positions: [ positions.north, positions.south ]
+			positions: [ defaultPositions.northArrowSouth, defaultPositions.southArrowNorth ]
 		} );
 	}
 }
