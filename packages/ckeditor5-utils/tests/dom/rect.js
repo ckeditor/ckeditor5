@@ -26,11 +26,11 @@ describe( 'Rect', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should store passed object in #_obj property', () => {
+		it( 'should store passed object in #_source property', () => {
 			const obj = {};
 			const rect = new Rect( obj );
 
-			expect( rect._obj ).to.equal( obj );
+			expect( rect._source ).to.equal( obj );
 		} );
 
 		it( 'should accept HTMLElement', () => {
@@ -105,11 +105,11 @@ describe( 'Rect', () => {
 			assertRect( clone, rect );
 		} );
 
-		it( 'should preserve #_obj', () => {
+		it( 'should preserve #_source', () => {
 			const rect = new Rect( geometry );
 			const clone = rect.clone();
 
-			expect( clone._obj ).to.equal( rect._obj );
+			expect( clone._source ).to.equal( rect._source );
 			assertRect( clone, rect );
 		} );
 	} );

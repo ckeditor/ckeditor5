@@ -162,18 +162,14 @@ describe( 'getOptimalPosition()', () => {
 
 		// https://github.com/ckeditor/ckeditor5-utils/issues/148
 		it( 'should return coordinates (#3)', () => {
-			const overflowedAncestor = getElement( {
+			limiter.parentNode = getElement( {
 				top: 100,
 				left: 0,
 				bottom: 110,
 				right: 10,
 				width: 10,
 				height: 10
-			}, {
-				overflow: 'scroll'
 			} );
-
-			limiter.parentNode = overflowedAncestor;
 
 			assertPosition( {
 				element, target, limiter,

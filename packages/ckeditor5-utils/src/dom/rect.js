@@ -37,28 +37,28 @@ export default class Rect {
 	 *		// Rect out of a ClientRect.
 	 *		const rectE = new Rect( document.body.getClientRects().item( 0 ) );
 	 *
-	 * @param {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} obj A source object to create the rect.
+	 * @param {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} source A source object to create the rect.
 	 */
-	constructor( obj ) {
+	constructor( source ) {
 		/**
 		 * The object this rect is for.
 		 *
 		 * @protected
 		 * @readonly
-		 * @member {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} #_obj
+		 * @member {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} #_source
 		 */
-		Object.defineProperty( this, '_obj', {
-			// obj._obj if already the Rect instance
-			value: obj._obj || obj,
+		Object.defineProperty( this, '_source', {
+			// source._source if already the Rect instance
+			value: source._source || source,
 			writable: false,
 			enumerable: false
 		} );
 
-		if ( isElement( obj ) || isRange( obj ) ) {
-			obj = obj.getBoundingClientRect();
+		if ( isElement( source ) || isRange( source ) ) {
+			source = source.getBoundingClientRect();
 		}
 
-		rectProperties.forEach( p => this[ p ] = obj[ p ] );
+		rectProperties.forEach( p => this[ p ] = source[ p ] );
 
 		/**
 		 * The "top" value of the rect.
@@ -204,12 +204,12 @@ export default class Rect {
 	 * @returns {module:utils/dom/rect~Rect|null} A visible rect instance or `null`, if there's none.
 	 */
 	getVisible() {
-		const obj = this._obj;
+		const source = this._source;
 		let visibleRect = this.clone();
 
 		// There's no ancestor to crop <body> with the overflow.
-		if ( obj != global.document.body ) {
-			let parent = obj.parentNode || obj.commonAncestorContainer;
+		if ( source != global.document.body ) {
+			let parent = source.parentNode || source.commonAncestorContainer;
 
 			// Check the ancestors all the way up to the <body>.
 			while ( parent && parent != global.document.body ) {
