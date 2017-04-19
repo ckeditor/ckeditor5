@@ -625,37 +625,37 @@ export function modelChangePostFixer( document ) {
 // Helper function for post fixer callback. Performs fixing of model `listElement` items indent attribute. Checks the model at the
 // `changePosition`. Looks at the node before position where change occurred and uses that node as a reference for following list items.
 function _fixItemsIndent( changePosition, document, batch ) {
-	const prevItem = changePosition.nodeBefore;
 	let nextItem = changePosition.nodeAfter;
 
 	if ( nextItem && nextItem.name == 'listItem' ) {
-		// This is the maximum indent that following model list item may have.
-		const maxIndent = prevItem && prevItem.is( 'listItem' ) ? prevItem.getAttribute( 'indent' ) + 1 : 0;
+		document.enqueueChanges( () => {
+			const prevItem = nextItem.previousSibling;
+			// This is the maximum indent that following model list item may have.
+			const maxIndent = prevItem && prevItem.is( 'listItem' ) ? prevItem.getAttribute( 'indent' ) + 1 : 0;
 
-		// Check how much the next item needs to be outdented.
-		let outdentBy = nextItem.getAttribute( 'indent' ) - maxIndent;
-		const items = [];
+			// Check how much the next item needs to be outdented.
+			let outdentBy = nextItem.getAttribute( 'indent' ) - maxIndent;
+			const items = [];
 
-		while ( nextItem && nextItem.name == 'listItem' && nextItem.getAttribute( 'indent' ) > maxIndent ) {
-			if ( outdentBy > nextItem.getAttribute( 'indent' ) ) {
-				outdentBy = nextItem.getAttribute( 'indent' );
+			while ( nextItem && nextItem.name == 'listItem' && nextItem.getAttribute( 'indent' ) > maxIndent ) {
+				if ( outdentBy > nextItem.getAttribute( 'indent' ) ) {
+					outdentBy = nextItem.getAttribute( 'indent' );
+				}
+
+				const newIndent = nextItem.getAttribute( 'indent' ) - outdentBy;
+
+				items.push( { item: nextItem, indent: newIndent } );
+
+				nextItem = nextItem.nextSibling;
 			}
 
-			const newIndent = nextItem.getAttribute( 'indent' ) - outdentBy;
-
-			items.push( { item: nextItem, indent: newIndent } );
-
-			nextItem = nextItem.nextSibling;
-		}
-
-		if ( items.length > 0 ) {
-			document.enqueueChanges( () => {
+			if ( items.length > 0 ) {
 				// Since we are outdenting list items, it is safer to start from the last one (it will maintain correct model state).
 				for ( let item of items.reverse() ) {
 					batch.setAttribute( item.item, 'indent', item.indent );
 				}
-			} );
-		}
+			}
+		} );
 	}
 }
 
@@ -672,18 +672,18 @@ function _fixItemsType( changePosition, fixPrevious, document, batch ) {
 		return;
 	}
 
-	const refItem = _getBoundaryItemOfSameList( item, !fixPrevious );
-
-	if ( !refItem || refItem == item ) {
-		// !refItem - happens if first list item is inserted.
-		// refItem == item - happens if last item is inserted.
-		return;
-	}
-
-	const refIndent = refItem.getAttribute( 'indent' );
-	const refType = refItem.getAttribute( 'type' );
-
 	document.enqueueChanges( () => {
+		const refItem = _getBoundaryItemOfSameList( item, !fixPrevious );
+
+		if ( !refItem || refItem == item ) {
+			// !refItem - happens if first list item is inserted.
+			// refItem == item - happens if last item is inserted.
+			return;
+		}
+
+		const refIndent = refItem.getAttribute( 'indent' );
+		const refType = refItem.getAttribute( 'type' );
+
 		while ( item && item.is( 'listItem' ) && item.getAttribute( 'indent' ) >= refIndent ) {
 			if ( item.getAttribute( 'type' ) != refType && item.getAttribute( 'indent' ) == refIndent ) {
 				batch.setAttribute( item, 'type', refType );
