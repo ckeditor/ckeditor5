@@ -42,6 +42,8 @@ describe( 'ContextualToolbar', () => {
 
 			// Focus the engine.
 			editor.editing.view.isFocused = true;
+
+			return contextualToolbar.toolbarView.init();
 		} );
 	} );
 
@@ -184,7 +186,7 @@ describe( 'ContextualToolbar', () => {
 		it( 'should update balloon position on ViewDocument#render event while balloon is added to the #_balloon', () => {
 			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
 
-			const spy = sinon.spy( balloon, 'updatePosition' );
+			const spy = sandbox.spy( balloon, 'updatePosition' );
 
 			editor.editing.view.fire( 'render' );
 
@@ -250,7 +252,7 @@ describe( 'ContextualToolbar', () => {
 		it( 'should stop update balloon position on ViewDocument#render event', () => {
 			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
 
-			const spy = sinon.spy( balloon, 'updatePosition' );
+			const spy = sandbox.spy( balloon, 'updatePosition' );
 
 			return contextualToolbar._showPanel()
 				.then( () => {
@@ -352,7 +354,8 @@ describe( 'ContextualToolbar', () => {
 
 			contextualToolbar.fire( '_selectionChangeDebounced' );
 
-			sinon.stub( balloon, 'visibleView', { get: () => contextualToolbar.toolbarView } );
+			// Stubbing getters doesn't wor for sandbox.
+			const stub = sinon.stub( balloon, 'visibleView', { get: () => contextualToolbar.toolbarView } );
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
@@ -361,6 +364,8 @@ describe( 'ContextualToolbar', () => {
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.calledOnce( hidePanelSpy );
+
+			stub.restore();
 		} );
 
 		it( 'should not hide if the editor loses focus and #toolbarView is not visible', () => {
@@ -368,7 +373,8 @@ describe( 'ContextualToolbar', () => {
 
 			contextualToolbar.fire( '_selectionChangeDebounced' );
 
-			sinon.stub( balloon, 'visibleView', { get: () => null } );
+			// Stubbing getters doesn't wor for sandbox.
+			const stub = sinon.stub( balloon, 'visibleView', { get: () => null } );
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
@@ -377,6 +383,8 @@ describe( 'ContextualToolbar', () => {
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
+
+			stub.restore();
 		} );
 	} );
 
