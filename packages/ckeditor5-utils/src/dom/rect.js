@@ -37,14 +37,28 @@ export default class Rect {
 	 *		// Rect out of a ClientRect.
 	 *		const rectE = new Rect( document.body.getClientRects().item( 0 ) );
 	 *
-	 * @param {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} obj A source object to create the rect.
+	 * @param {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} source A source object to create the rect.
 	 */
-	constructor( obj ) {
-		if ( isElement( obj ) || isRange( obj ) ) {
-			obj = obj.getBoundingClientRect();
+	constructor( source ) {
+		/**
+		 * The object this rect is for.
+		 *
+		 * @protected
+		 * @readonly
+		 * @member {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} #_source
+		 */
+		Object.defineProperty( this, '_source', {
+			// source._source if already the Rect instance
+			value: source._source || source,
+			writable: false,
+			enumerable: false
+		} );
+
+		if ( isElement( source ) || isRange( source ) ) {
+			source = source.getBoundingClientRect();
 		}
 
-		rectProperties.forEach( p => this[ p ] = obj[ p ] );
+		rectProperties.forEach( p => this[ p ] = source[ p ] );
 
 		/**
 		 * The "top" value of the rect.
@@ -177,6 +191,46 @@ export default class Rect {
 	 */
 	getArea() {
 		return this.width * this.height;
+	}
+
+	/**
+	 * Returns a new rect, a part of the original rect, which is actually visible to the user,
+	 * e.g. an original rect cropped by parent element rects which have `overflow` set in CSS
+	 * other than `"visible"`.
+	 *
+	 * If there's no such visible rect, which is when the rect is limited by one or many of
+	 * the ancestors, `null` is returned.
+	 *
+	 * @returns {module:utils/dom/rect~Rect|null} A visible rect instance or `null`, if there's none.
+	 */
+	getVisible() {
+		const source = this._source;
+		let visibleRect = this.clone();
+
+		// There's no ancestor to crop <body> with the overflow.
+		if ( source != global.document.body ) {
+			let parent = source.parentNode || source.commonAncestorContainer;
+
+			// Check the ancestors all the way up to the <body>.
+			while ( parent && parent != global.document.body ) {
+				const parentRect = new Rect( parent );
+				const intersectionRect = visibleRect.getIntersection( parentRect );
+
+				if ( intersectionRect ) {
+					if ( intersectionRect.getArea() < visibleRect.getArea() ) {
+						// Reduce the visible rect to the intersection.
+						visibleRect = intersectionRect;
+					}
+				} else {
+					// There's no intersection, the rect is completely invisible.
+					return null;
+				}
+
+				parent = parent.parentNode;
+			}
+		}
+
+		return visibleRect;
 	}
 
 	/**
