@@ -13,6 +13,7 @@ import ClipboardObserver from './clipboardobserver';
 
 import plainTextToHtml from './utils/plaintexttohtml';
 import normalizeClipboardHtml from './utils/normalizeclipboarddata';
+import viewToPlainText from './utils/viewtoplaintext.js';
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
@@ -179,6 +180,7 @@ export default class Clipboard extends Plugin {
 		this.listenTo( editingView, 'clipboardOutput', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
 				data.dataTransfer.setData( 'text/html', this._htmlDataProcessor.toData( data.content ) );
+				data.dataTransfer.setData( 'text/plain', viewToPlainText( data.content ) );
 			}
 
 			if ( data.method == 'cut' ) {
