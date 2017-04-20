@@ -186,7 +186,7 @@ export default class Link extends Plugin {
 		// Keep panel open until selection will be inside the same link element.
 		this.listenTo( viewDocument, 'click', () => {
 			const viewSelection = viewDocument.selection;
-			const parentLink = getPositionParentLink( viewSelection.getFirstPosition() );
+			const parentLink = this._getSelectedLinkElement();
 
 			// When collapsed selection is inside link element (link element is clicked).
 			if ( viewSelection.isCollapsed && parentLink ) {
@@ -199,7 +199,7 @@ export default class Link extends Plugin {
 				// Start listen to view document changes and close the panel when selection will be moved
 				// out of the actual link element.
 				this.listenTo( viewDocument, 'render', () => {
-					const currentParentLink = getPositionParentLink( viewSelection.getFirstPosition() );
+					const currentParentLink = this._getSelectedLinkElement();
 
 					if ( !viewSelection.isCollapsed || parentLink !== currentParentLink ) {
 						this._hidePanel();
@@ -244,6 +244,9 @@ export default class Link extends Plugin {
 	 * @return {Promise} A promise resolved when the {@link #formView} {@link module:ui/view~View#init} is done.
 	 */
 	_showPanel( focusInput ) {
+		// https://github.com/ckeditor/ckeditor5-link/issues/53
+		this.formView.unlinkButtonView.isVisible = !!this._getSelectedLinkElement();
+
 		if ( this._balloon.hasView( this.formView ) ) {
 			// Check if formView should be focused and focus it if is visible.
 			if ( focusInput && this._balloon.visibleView === this.formView ) {
@@ -296,7 +299,7 @@ export default class Link extends Plugin {
 	 */
 	_getBalloonPositionData() {
 		const viewDocument = this.editor.editing.view;
-		const targetLink = getPositionParentLink( viewDocument.selection.getFirstPosition() );
+		const targetLink = this._getSelectedLinkElement();
 
 		const target = targetLink ?
 			// When selection is inside link element, then attach panel to this element.
@@ -310,14 +313,22 @@ export default class Link extends Plugin {
 			limiter: viewDocument.domConverter.getCorrespondingDomElement( viewDocument.selection.editableElement )
 		};
 	}
-}
 
-// Try to find if one of the position parent ancestors is a LinkElement,
-// if yes return this element.
-//
-// @private
-// @param {engine.view.Position} position
-// @returns {module:link/linkelement~LinkElement|null}
-function getPositionParentLink( position ) {
-	return position.parent.getAncestors().find( ( ancestor ) => ancestor instanceof LinkElement );
+	/**
+	 * Returns the {@link module:link/linkelement~LinkElement} at the first
+	 * {@link module:engine/model/position~Position} of
+	 * {@link module:engine/view/document~Document editing view's} selection or `null`
+	 * if there's none.
+	 *
+	 * @private
+	 * @returns {module:link/linkelement~LinkElement|null}
+	 */
+	_getSelectedLinkElement() {
+		return this.editor.editing.view
+			.selection
+			.getFirstPosition()
+			.parent
+			.getAncestors()
+			.find( ancestor => ancestor instanceof LinkElement );
+	}
 }

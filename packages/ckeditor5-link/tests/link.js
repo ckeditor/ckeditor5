@@ -196,6 +196,23 @@ describe( 'Link', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5-link/issues/53
+		it( 'should set formView.unlinkButtonView#isVisible depending on the selection in a link or not', () => {
+			setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
+
+			return linkFeature._showPanel()
+				.then( () => {
+					expect( formView.unlinkButtonView.isVisible ).to.be.false;
+
+					setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+
+					return linkFeature._showPanel()
+						.then( () => {
+							expect( formView.unlinkButtonView.isVisible ).to.be.true;
+						} );
+				} );
+		} );
 	} );
 
 	describe( '_hidePanel()', () => {
