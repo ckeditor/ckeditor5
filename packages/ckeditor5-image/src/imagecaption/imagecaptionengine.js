@@ -61,7 +61,7 @@ export default class ImageCaptionEngine extends Plugin {
 		this._createCaption = captionElementCreator( viewDocument, t( 'Enter image caption' ) );
 
 		// Schema configuration.
-		schema.registerItem( 'caption' );
+		schema.registerItem( 'caption', '$block' );
 		schema.allow( { name: '$inline', inside: 'caption' } );
 		schema.allow( { name: 'caption', inside: 'image' } );
 		schema.limits.add( 'caption' );
