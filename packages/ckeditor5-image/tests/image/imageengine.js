@@ -147,6 +147,28 @@ describe( 'ImageEngine', () => {
 				expect( getModelData( document, { withoutSelection: true } ) )
 					.to.equal( '<image alt="alt text" src="foo.png"></image>' );
 			} );
+
+			it( 'should not convert alt attribute on non-img element', () => {
+				const data = editor.data;
+				const editing = editor.editing;
+
+				document.schema.registerItem( 'div', '$block' );
+
+				buildModelConverter().for( data.modelToView, editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
+				buildViewConverter().for( data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+
+				editor.setData( '<div alt="foo"></div>' );
+
+				expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<div></div>' );
+			} );
+
+			it( 'should handle figure with two images', () => {
+				document.schema.allow( { name: '$text', inside: 'image' } );
+
+				editor.setData( '<figure class="image"><img src="foo.jpg" /><img src="bar.jpg" />abc</figure>' );
+
+				expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image src="foo.jpg">abc</image>' );
+			} );
 		} );
 	} );
 
