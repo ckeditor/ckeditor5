@@ -85,6 +85,14 @@ export default class ButtonView extends View {
 		this.set( 'isEnabled', true );
 
 		/**
+		 * Controls whether the button view is visible.
+		 *
+		 * @observable
+		 * @member {Boolean} #isVisible
+		 */
+		this.set( 'isVisible', true );
+
+		/**
 		 * (Optional) Whether the label of the button is hidden (e.g. button with icon only).
 		 *
 		 * @observable
@@ -142,6 +150,7 @@ export default class ButtonView extends View {
 					'ck-button',
 					bind.if( '_tooltipString', 'ck-tooltip_s' ),
 					bind.to( 'isEnabled', value => value ? 'ck-enabled' : 'ck-disabled' ),
+					bind.if( 'isVisible', 'ck-hidden', value => !value ),
 					bind.to( 'isOn', value => value ? 'ck-on' : 'ck-off' ),
 					bind.if( 'withText', 'ck-button_with-text' )
 				],
