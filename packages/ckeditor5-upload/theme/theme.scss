@@ -1,0 +1,58 @@
+
+// Move it to image/widget.
+figure.image.ck-widget {
+	position: relative;
+	overflow: hidden;
+}
+
+// Showing animation.
+.ck-appear {
+	animation: fadeIn 700ms;
+}
+
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+// Infinite progress bar on top.
+$lineWidth: 30px;
+
+.ck-infinite-progress::before {
+	content: "";
+	width: $lineWidth;
+	height: 2px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	background: rgba(0, 0, 0, 0.1);
+	animation-name: ltrsUploadProgressBefore;
+	animation-duration: 1500ms;
+	animation-iteration-count: infinite;
+	transition-timing-function: linear;
+}
+
+.ck-progress-bar {
+	height: 2px;
+	width: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: red;
+	transition: width 100ms;
+}
+
+@keyframes ltrsUploadProgressBefore {
+	0% {
+		width: $lineWidth;
+		right: 0;
+	}
+
+	50% {
+		width: $lineWidth * 1.5;
+	}
+
+	100% {
+		right: 100%;
+	}
+}

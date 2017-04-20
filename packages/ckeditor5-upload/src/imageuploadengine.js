@@ -97,6 +97,7 @@ export default class ImageUploadEngine extends Plugin {
 			const viewImg = viewFigure.getChild( 0 );
 
 			viewImg.setAttribute( 'src', this.placeholder );
+			this.fire( 'upload:reading', modelImage );
 		} );
 	}
 
@@ -122,12 +123,16 @@ export default class ImageUploadEngine extends Plugin {
 				viewImg.setAttribute( 'src', data );
 				editor.editing.view.render();
 
+				this.fire( 'upload:uploading', imageElement, loader );
+
 				return loader.upload();
 			} )
 			.then( data => {
 				doc.enqueueChanges( () => {
 					batch.setAttribute( imageElement, 'src', data.original );
 				} );
+
+				this.fire( 'upload:complete', imageElement, loader );
 
 				clean();
 			} )
