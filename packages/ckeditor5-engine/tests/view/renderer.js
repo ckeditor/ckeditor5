@@ -1257,11 +1257,14 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const container = domRoot.childNodes[ 1 ];
 				expect( domConverter.getCorrespondingViewElement( container ) ).to.be.undefined;
 				expect( container.childNodes.length ).to.equal( 1 );
+
 				const textNode = container.childNodes[ 0 ];
 				expect( textNode.textContent ).to.equal( label );
+
 				const domSelection = domRoot.ownerDocument.getSelection();
 				expect( domSelection.anchorNode ).to.equal( textNode );
 				expect( domSelection.anchorOffset ).to.equal( 0 );
@@ -1274,10 +1277,13 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const container = domRoot.childNodes[ 1 ];
 				expect( container.childNodes.length ).to.equal( 1 );
+
 				const textNode = container.childNodes[ 0 ];
 				expect( textNode.textContent ).to.equal( '\u00A0' );
+
 				const domSelection = domRoot.ownerDocument.getSelection();
 				expect( domSelection.anchorNode ).to.equal( textNode );
 				expect( domSelection.anchorOffset ).to.equal( 0 );
@@ -1293,10 +1299,13 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 1 );
+
 				const domParagraph = domRoot.childNodes[ 0 ];
 				expect( domParagraph.childNodes.length ).to.equal( 1 );
+
 				const textNode = domParagraph.childNodes[ 0 ];
 				expect( domParagraph.tagName.toLowerCase() ).to.equal( 'p' );
+
 				const domSelection = domRoot.ownerDocument.getSelection();
 
 				expect( domSelection.anchorNode ).to.equal( textNode );
@@ -1312,15 +1321,18 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const container = domRoot.childNodes[ 1 ];
 
 				selection.setFake( true, { label } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const newContainer = domRoot.childNodes[ 1 ];
 				expect( newContainer ).equals( container );
 				expect( newContainer.childNodes.length ).to.equal( 1 );
+
 				const textNode = newContainer.childNodes[ 0 ];
 				expect( textNode.textContent ).to.equal( label );
 			} );
@@ -1330,6 +1342,7 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const container = domRoot.childNodes[ 1 ];
 
 				selection.setFake( false );
@@ -1341,9 +1354,11 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const newContainer = domRoot.childNodes[ 1 ];
 				expect( newContainer ).equals( container );
 				expect( newContainer.childNodes.length ).to.equal( 1 );
+
 				const textNode = newContainer.childNodes[ 0 ];
 				expect( textNode.textContent ).to.equal( 'label 2' );
 			} );
@@ -1353,15 +1368,18 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const container = domRoot.childNodes[ 1 ];
 
 				selection.setFake( true, { label: 'label 2' } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const newContainer = domRoot.childNodes[ 1 ];
 				expect( newContainer ).equals( container );
 				expect( newContainer.childNodes.length ).to.equal( 1 );
+
 				const textNode = newContainer.childNodes[ 0 ];
 				expect( textNode.textContent ).to.equal( 'label 2' );
 			} );
@@ -1371,6 +1389,7 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const container = domRoot.childNodes[ 1 ];
 
 				expect( container.style.position ).to.equal( 'fixed' );
@@ -1383,6 +1402,7 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const container = domRoot.childNodes[ 1 ];
 
 				const bindSelection = renderer.domConverter.fakeSelectionToView( container );
