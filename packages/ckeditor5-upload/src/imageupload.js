@@ -11,8 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageUploadEngine from './imageuploadengine';
 import FileDialogButtonView from './ui/filedialogbuttonview';
 import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
-import uploadingPlaceholder from '../theme/icons/image_placeholder.svg';
-import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
+
 import '../theme/theme.scss';
 
 /**
@@ -56,67 +55,5 @@ export default class ImageUpload extends Plugin {
 
 			return view;
 		} );
-
-		const uploadEngine = editor.plugins.get( ImageUploadEngine );
-
-		// TODO: to constructor?
-		this.placeholder = 'data:image/svg+xml;utf8,' + uploadingPlaceholder;
-
-		// Reading started.
-		uploadEngine.on( 'upload:reading', ( evt, modelImage ) => {
-			const viewFigure = editor.editing.mapper.toViewElement( modelImage );
-
-			// TODO: do it better since there might be more elements.
-			const viewImg = viewFigure.getChild( 0 );
-
-			viewFigure.addClass( 'ck-appear', 'ck-infinite-progress' );
-
-			viewImg.setAttribute( 'src', this.placeholder );
-			editor.editing.view.render();
-		} );
-
-		// Uploading started.
-		uploadEngine.on( 'upload:uploading', ( evt, modelImage, loader ) => {
-			const viewFigure = editor.editing.mapper.toViewElement( modelImage );
-			const progressBar = createProgressBar();
-			viewFigure.appendChildren( progressBar );
-
-			viewFigure.removeClass( 'ck-infinite-progress' );
-			editor.editing.view.render();
-
-			loader.on( 'change:uploadedPercent', ( evt, name, value ) => {
-				progressBar.setStyle( 'width', value + '%' );
-				editor.editing.view.render();
-			} );
-		} );
-
-		uploadEngine.on( 'upload:complete', ( evt, modelImage ) => {
-			const viewFigure = editor.editing.mapper.toViewElement( modelImage );
-			const progressBar = getProgressBar( viewFigure );
-
-			if ( progressBar ) {
-				progressBar.remove();
-				editor.editing.view.render();
-			}
-		} );
 	}
-}
-
-const progressBarSymbol = Symbol( 'progress-bar' );
-
-function createProgressBar() {
-	const progressBar = new UIElement( 'div', { class: 'ck-progress-bar' } );
-	progressBar.setCustomProperty( progressBarSymbol, true );
-
-	return progressBar;
-}
-
-function getProgressBar( imageFigure ) {
-	for ( const child of imageFigure.getChildren() ) {
-		if ( child.getCustomProperty( progressBarSymbol ) ) {
-			return child;
-		}
-	}
-
-	return null;
 }
