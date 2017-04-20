@@ -46,8 +46,17 @@ describe( 'Document', () => {
 
 			const domSelection = document.getSelection();
 
-			expect( domSelection.anchorNode.data ).to.equal( 'foo' );
-			expect( domSelection.anchorOffset ).to.equal( 3 );
+			// There's a problem now. We expect that the selection was moved to "foo<b>^FILLER</b>", but Safari
+			// will render it on "foo^<b>...". Both options are correct.
+
+			if ( domSelection.anchorNode.data == 'foo' ) {
+				expect( domSelection.anchorNode.data ).to.equal( 'foo' );
+				expect( domSelection.anchorOffset ).to.equal( 3 );
+			} else {
+				expect( isInlineFiller( domSelection.anchorNode ) ).to.be.true;
+				expect( domSelection.anchorOffset ).to.equal( 0 );
+			}
+
 			expect( domSelection.isCollapsed ).to.be.true;
 		} );
 
