@@ -16,5 +16,9 @@ module.exports = {
 		'numberedList',
 		'undo',
 		'redo'
-	]
+	],
+
+	image: {
+		toolbar: [ 'imageStyleFull', 'imageStyleSide', '|' , 'imageTextAlternative' ]
+	}
 };
