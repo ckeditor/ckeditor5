@@ -1266,10 +1266,7 @@ describe( 'Renderer', () => {
 				expect( textNode.textContent ).to.equal( label );
 
 				const domSelection = domRoot.ownerDocument.getSelection();
-				expect( domSelection.anchorNode ).to.equal( textNode );
-				expect( domSelection.anchorOffset ).to.equal( 0 );
-				expect( domSelection.focusNode ).to.equal( textNode );
-				expect( domSelection.focusOffset ).to.equal( label.length );
+				assertDomSelectionContents( domSelection, container, /^fake selection label$/ );
 			} );
 
 			it( 'should render &nbsp; if no selection label is provided', () => {
@@ -1285,10 +1282,7 @@ describe( 'Renderer', () => {
 				expect( textNode.textContent ).to.equal( '\u00A0' );
 
 				const domSelection = domRoot.ownerDocument.getSelection();
-				expect( domSelection.anchorNode ).to.equal( textNode );
-				expect( domSelection.anchorOffset ).to.equal( 0 );
-				expect( domSelection.focusNode ).to.equal( textNode );
-				expect( domSelection.focusOffset ).to.equal( 1 );
+				assertDomSelectionContents( domSelection, container, /^[ \u00A0]$/ );
 			} );
 
 			it( 'should remove fake selection container when selection is no longer fake', () => {
@@ -1302,16 +1296,10 @@ describe( 'Renderer', () => {
 
 				const domParagraph = domRoot.childNodes[ 0 ];
 				expect( domParagraph.childNodes.length ).to.equal( 1 );
-
-				const textNode = domParagraph.childNodes[ 0 ];
 				expect( domParagraph.tagName.toLowerCase() ).to.equal( 'p' );
 
 				const domSelection = domRoot.ownerDocument.getSelection();
-
-				expect( domSelection.anchorNode ).to.equal( textNode );
-				expect( domSelection.anchorOffset ).to.equal( 0 );
-				expect( domSelection.focusNode ).to.equal( textNode );
-				expect( domSelection.focusOffset ).to.equal( 7 );
+				assertDomSelectionContents( domSelection, domParagraph, /^foo bar$/ );
 			} );
 
 			it( 'should reuse fake selection container #1', () => {
@@ -1409,6 +1397,18 @@ describe( 'Renderer', () => {
 				expect( bindSelection ).to.be.defined;
 				expect( bindSelection.isEqual( selection ) ).to.be.true;
 			} );
+
+			// Use a forgiving way of checking what the selection contains
+			// because Safari normalizes the selection ranges so precise checking is troublesome.
+			// Also, Edge returns a normal space instead of nbsp so we need to use even more alternatives.
+			function assertDomSelectionContents( domSelection, expectedContainer, expectedText ) {
+				const domSelectionContainer = domSelection.getRangeAt( 0 ).commonAncestorContainer;
+
+				expect( domSelection.toString() ).to.match( expectedText );
+				expect(
+					domSelectionContainer == expectedContainer.firstChild || domSelectionContainer == expectedContainer
+				).to.be.true;
+			}
 		} );
 
 		// #887
