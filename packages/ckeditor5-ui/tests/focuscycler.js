@@ -8,6 +8,10 @@ import View from '../src/view';
 import FocusCycler from '../src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+testUtils.createSinonSandbox();
 
 describe( 'FocusCycler', () => {
 	let focusables, focusTracker, cycler;
@@ -21,6 +25,8 @@ describe( 'FocusCycler', () => {
 			focusables: focusables,
 			focusTracker: focusTracker
 		} );
+
+		testUtils.sinon.stub( global.window, 'getComputedStyle' );
 
 		focusables.add( nonFocusable() );
 		focusables.add( focusable() );
@@ -223,6 +229,21 @@ describe( 'FocusCycler', () => {
 				cycler.focusFirst();
 			} ).to.not.throw();
 		} );
+
+		it( 'ignores invisible items', () => {
+			const item = focusable();
+			const spy = sinon.spy( item, 'focus' );
+
+			focusables = new ViewCollection();
+			focusables.add( nonFocusable() );
+			focusables.add( focusable( true ) );
+			focusables.add( item );
+
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			cycler.focusFirst();
+			sinon.assert.calledOnce( spy );
+		} );
 	} );
 
 	describe( 'focusLast()', () => {
@@ -385,15 +406,23 @@ describe( 'FocusCycler', () => {
 	} );
 } );
 
-function focusable() {
+function nonFocusable( isHidden ) {
 	const view = new View();
+	view.element = Math.random();
 
-	view.focus = () => {};
-	view.element = {};
+	global.window.getComputedStyle
+		.withArgs( view.element )
+		.returns( {
+			display: isHidden ? 'none' : 'block'
+		} );
 
 	return view;
 }
 
-function nonFocusable() {
-	return new View();
+function focusable( isHidden ) {
+	const view = nonFocusable( isHidden );
+
+	view.focus = () => {};
+
+	return view;
 }
