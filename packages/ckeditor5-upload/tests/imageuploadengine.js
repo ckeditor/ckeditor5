@@ -64,7 +64,7 @@ describe( 'ImageUploadEngine', () => {
 		const dataTransfer = new DataTransfer( { files: [ fileMock ] } );
 		setModelData( document, '<paragraph>foo bar baz[]</paragraph>' );
 
-		viewDocument.fire( 'input', { dataTransfer } );
+		viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 		sinon.assert.calledOnce( spy );
 		sinon.assert.calledWith( spy, 'imageUpload' );
@@ -85,7 +85,7 @@ describe( 'ImageUploadEngine', () => {
 		const dataTransfer = new DataTransfer( { files: [ fileMock ] } );
 		setModelData( document, '<paragraph>foo bar baz[]</paragraph>' );
 
-		viewDocument.fire( 'input', { dataTransfer } );
+		viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
 		sinon.assert.notCalled( spy );
 	} );
