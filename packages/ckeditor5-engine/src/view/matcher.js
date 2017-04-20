@@ -40,7 +40,7 @@ export default class Matcher {
 	 * Example pattern matching element's attributes:
 	 *
 	 *		matcher.add( {
-	 *			attributes: {
+	 *			attribute: {
 	 *				title: 'foobar',
 	 *				foo: /^\w+/
 	 *			}
@@ -130,9 +130,9 @@ export default class Matcher {
 	 *			pattern: <pattern used to match found element>,
 	 *			match: {
 	 *				name: true,
- 	 *				attributes: [ 'title', 'href' ],
-	 *				classes: [ 'foo' ],
- 	 *				styles: [ 'color', 'position' ]
+	 *				attribute: [ 'title', 'href' ],
+	 *				class: [ 'foo' ],
+	 *				style: [ 'color', 'position' ]
 	 *			}
 	 *		}
 	 *
@@ -302,7 +302,7 @@ function matchAttributes( patterns, element ) {
 				} else {
 					return null;
 				}
-			} else if ( attribute === pattern  ) {
+			} else if ( attribute === pattern ) {
 				match.push( name );
 			} else {
 				return null;
