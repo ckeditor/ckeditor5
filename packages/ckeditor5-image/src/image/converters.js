@@ -19,6 +19,9 @@ import modelWriter from '@ckeditor/ckeditor5-engine/src/model/writer';
  *
  *		<image src="..." alt="..."></image>
  *
+ * The entire contents of `<figure>` except the first `<img>` is being converted as children
+ * of the `<image>` model element.
+ *
  * @returns {Function}
  */
 export function viewFigureToModel() {
@@ -34,7 +37,7 @@ export function viewFigureToModel() {
 		}
 
 		// Find an image element inside the figure element.
-		const viewImage = Array.from( data.input.getChildren() ).find( ( viewChild ) => viewChild.is( 'img' ) );
+		const viewImage = Array.from( data.input.getChildren() ).find( viewChild => viewChild.is( 'img' ) );
 
 		// Do not convert if image element is absent, is missing src attribute or was already converted.
 		if ( !viewImage || !viewImage.hasAttribute( 'src' ) || !consumable.test( viewImage, { name: true } ) ) {

@@ -56,8 +56,8 @@ export default class ImageEngine extends Plugin {
 
 		// Build converter for view img element to model image element.
 		buildViewConverter().for( data.viewToModel )
-			.from( { name: 'img', attribute: { src: /.+/ } } )
-			.toElement( ( viewImage ) => new ModelElement( 'image', { src: viewImage.getAttribute( 'src' ) } ) );
+			.from( { name: 'img', attribute: { src: /./ } } )
+			.toElement( viewImage => new ModelElement( 'image', { src: viewImage.getAttribute( 'src' ) } ) );
 
 		// Build converter for alt attribute.
 		buildViewConverter().for( data.viewToModel )
