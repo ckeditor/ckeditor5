@@ -143,7 +143,7 @@ export function isBlockFiller( domNode, blockFiller ) {
 }
 
 /**
- * Assign key observer which move cursor from the end of the inline filler to the begging of it when
+ * Assign key observer which move cursor from the end of the inline filler to the beginning of it when
  * the left arrow is pressed, so the filler does not break navigation.
  *
  * @param {module:engine/view/document~Document} document Document instance we should inject quirks handling on.
@@ -152,7 +152,7 @@ export function injectQuirksHandling( document ) {
 	document.on( 'keydown', jumpOverInlineFiller );
 }
 
-// Move cursor from the end of the inline filler to the begging of it when, so the filler does not break navigation.
+// Move cursor from the end of the inline filler to the beginning of it when, so the filler does not break navigation.
 function jumpOverInlineFiller( evt, data ) {
 	if ( data.keyCode == keyCodes.arrowleft ) {
 		const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
@@ -162,12 +162,7 @@ function jumpOverInlineFiller( evt, data ) {
 			const domOffset = domSelection.getRangeAt( 0 ).startOffset;
 
 			if ( startsWithFiller( domParent ) && domOffset <= INLINE_FILLER_LENGTH ) {
-				const domRange = domParent.ownerDocument.createRange();
-
-				domRange.setStart( domParent, 0 );
-				domRange.collapse( true );
-				domSelection.removeAllRanges();
-				domSelection.addRange( domRange );
+				domSelection.collapse( domParent, 0 );
 			}
 		}
 	}
