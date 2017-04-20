@@ -56,7 +56,7 @@ export default class ImageUploadEngine extends Plugin {
 		editor.commands.set( 'imageUpload', new ImageUploadCommand( editor ) );
 
 		// Execute imageUpload command when image is dropped or pasted.
-		editor.editing.view.on( 'input', ( evt, data ) => {
+		editor.editing.view.on( 'clipboardInput', ( evt, data ) => {
 			for ( const file of data.dataTransfer.files ) {
 				if ( isImageType( file ) ) {
 					editor.execute( 'imageUpload', { file } );
