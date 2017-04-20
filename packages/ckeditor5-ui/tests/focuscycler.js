@@ -202,11 +202,9 @@ describe( 'FocusCycler', () => {
 
 	describe( 'focusFirst()', () => {
 		it( 'focuses first focusable view', () => {
-			const spy = sinon.spy( focusables.get( 1 ), 'focus' );
-
 			cycler.focusFirst();
 
-			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnce( focusables.get( 1 ).focus );
 		} );
 
 		it( 'does not throw when no focusable items', () => {
@@ -232,7 +230,6 @@ describe( 'FocusCycler', () => {
 
 		it( 'ignores invisible items', () => {
 			const item = focusable();
-			const spy = sinon.spy( item, 'focus' );
 
 			focusables = new ViewCollection();
 			focusables.add( nonFocusable() );
@@ -242,17 +239,15 @@ describe( 'FocusCycler', () => {
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
 			cycler.focusFirst();
-			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnce( item.focus );
 		} );
 	} );
 
 	describe( 'focusLast()', () => {
 		it( 'focuses last focusable view', () => {
-			const spy = sinon.spy( focusables.get( 3 ), 'focus' );
-
 			cycler.focusLast();
 
-			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnce( focusables.get( 3 ).focus );
 		} );
 
 		it( 'does not throw when no focusable items', () => {
@@ -279,12 +274,10 @@ describe( 'FocusCycler', () => {
 
 	describe( 'focusNext()', () => {
 		it( 'focuses next focusable view', () => {
-			const spy = sinon.spy( focusables.get( 3 ), 'focus' );
-
 			focusTracker.focusedElement = focusables.get( 2 ).element;
 			cycler.focusNext();
 
-			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnce( focusables.get( 3 ).focus );
 		} );
 
 		it( 'does not throw when no focusable items', () => {
@@ -311,12 +304,10 @@ describe( 'FocusCycler', () => {
 
 	describe( 'focusPrevious()', () => {
 		it( 'focuses previous focusable view', () => {
-			const spy = sinon.spy( focusables.get( 3 ), 'focus' );
-
 			focusTracker.focusedElement = focusables.get( 1 ).element;
 			cycler.focusPrevious();
 
-			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnce( focusables.get( 3 ).focus );
 		} );
 
 		it( 'does not throw when no focusable items', () => {
@@ -422,7 +413,7 @@ function nonFocusable( isHidden ) {
 function focusable( isHidden ) {
 	const view = nonFocusable( isHidden );
 
-	view.focus = () => {};
+	view.focus = sinon.spy();
 
 	return view;
 }
