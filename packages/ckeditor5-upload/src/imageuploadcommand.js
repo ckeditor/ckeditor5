@@ -6,6 +6,7 @@
 import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
+import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import FileRepository from './filerepository';
 import { isImageType } from './utils';
@@ -35,6 +36,7 @@ export default class ImageUploadCommand extends Command {
 		const doc = editor.document;
 		const batch = options.batch || doc.batch();
 		const file = options.file;
+		const selection = doc.selection;
 		const fileRepository = editor.plugins.get( FileRepository );
 
 		if ( !isImageType( file ) ) {
@@ -42,17 +44,36 @@ export default class ImageUploadCommand extends Command {
 		}
 
 		doc.enqueueChanges( () => {
+			let insertPosition;
+			const selectedElement = selection.getSelectedElement();
+
+			// If selected element is placed directly in root - put image after it.
+			if ( selectedElement && selectedElement.parent.is( 'rootElement' ) ) {
+				insertPosition = ModelPosition.createAfter( selectedElement );
+			} else {
+				// If selection is inside some block - put image before it.
+				const firstBlock = doc.selection.getSelectedBlocks().next().value;
+
+				if ( firstBlock ) {
+					insertPosition = ModelPosition.createBefore( firstBlock );
+				}
+			}
+
+			// No position to insert.
+			if ( !insertPosition ) {
+				return;
+			}
+
 			const imageElement = new ModelElement( 'image', {
 				uploadId: fileRepository.createLoader( file ).id
 			} );
 			const documentFragment = new ModelDocumentFragment( [ imageElement ] );
-
-			const firstBlock = doc.selection.getSelectedBlocks().next().value;
-			const range = ModelRange.createFromParentsAndOffsets( firstBlock, 0, firstBlock, 0 );
+			const range = new ModelRange( insertPosition );
 			const insertSelection = new ModelSelection();
 			insertSelection.setRanges( [ range ] );
 
 			editor.data.insertContent( documentFragment, insertSelection, batch );
+			selection.setRanges( [ ModelRange.createOn( imageElement ) ] );
 		} );
 	}
 }

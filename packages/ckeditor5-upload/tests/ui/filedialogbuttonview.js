@@ -46,6 +46,12 @@ describe( 'FileDialogButtonView', () => {
 		expect( view.fileInputView.acceptedType ).to.equal( 'audio/*' );
 	} );
 
+	it( 'should pass allowMultipleFiles to input view', () => {
+		view.set( { allowMultipleFiles: true } );
+
+		expect( view.fileInputView.allowMultipleFiles ).to.be.true;
+	} );
+
 	it( 'should delegate input view done event', ( done ) => {
 		const files = [];
 

@@ -45,6 +45,15 @@ export default class FileDialogButtonView extends ButtonView {
 		this.fileInputView.bind( 'acceptedType' ).to( this, 'acceptedType' );
 
 		/**
+		 * Indicates if multiple files can be selected. Defaults to `true`.
+		 *
+		 * @observable
+		 * @member {Boolean} #allowMultipleFiles
+		 */
+		this.set( 'allowMultipleFiles', false );
+		this.fileInputView.bind( 'allowMultipleFiles' ).to( this, 'allowMultipleFiles' );
+
+		/**
 		 * Fired when file dialog is closed with file selected.
 		 *
 		 *	fileDialogButtonView.on( 'done', ( evt, files ) => {
@@ -99,6 +108,14 @@ class FileInputView extends View {
 		 */
 		this.set( 'acceptedType' );
 
+		/**
+		 * Indicates if multiple files can be selected. Defaults to `false`.
+		 *
+		 * @observable
+		 * @member {Boolean} #allowMultipleFiles
+		 */
+		this.set( 'allowMultipleFiles', false );
+
 		const bind = this.bindTemplate;
 
 		this.template = new Template( {
@@ -110,7 +127,8 @@ class FileInputView extends View {
 				],
 				type: 'file',
 				tabindex: '-1',
-				accept: bind.to( 'acceptedType' )
+				accept: bind.to( 'acceptedType' ),
+				multiple: bind.to( 'allowMultipleFiles' )
 			},
 
 			on: {
