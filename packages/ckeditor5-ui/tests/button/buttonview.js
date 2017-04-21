@@ -25,6 +25,7 @@ describe( 'ButtonView', () => {
 			it( 'is set initially', () => {
 				expect( view.element.classList ).to.have.length( 3 );
 				expect( view.element.classList.contains( 'ck-button' ) ).to.true;
+				expect( view.element.classList.contains( 'ck-enabled' ) ).to.true;
 				expect( view.element.classList.contains( 'ck-off' ) ).to.true;
 			} );
 
@@ -42,6 +43,14 @@ describe( 'ButtonView', () => {
 
 				view.isOn = false;
 				expect( view.element.classList.contains( 'ck-on' ) ).to.false;
+			} );
+
+			it( 'reacts on view#isVisible', () => {
+				view.isVisible = true;
+				expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.false;
+
+				view.isVisible = false;
+				expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.true;
 			} );
 
 			it( 'reacts on view#withText', () => {

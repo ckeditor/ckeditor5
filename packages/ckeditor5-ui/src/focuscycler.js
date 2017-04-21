@@ -7,6 +7,8 @@
  * @module ui/focuscycler
  */
 
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+
 /**
  * Helps cycling over focusable views in a {@link module:ui/viewcollection~ViewCollection}
  * when the focus is tracked by {@link module:utils/focustracker~FocusTracker} instance.
@@ -271,5 +273,5 @@ export default class FocusCycler {
 // @param {module:ui/view~View} view A view to be checked.
 // @returns {Boolean}
 function isFocusable( view ) {
-	return view.focus;
+	return !!( view.focus && global.window.getComputedStyle( view.element ).display != 'none' );
 }

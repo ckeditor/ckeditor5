@@ -14,5 +14,7 @@
  * A class which hides an element in DOM.
  */
 .ck-hidden {
-	display: none;
+	// Override selector specificity. Otherwise, all elements with some display
+	// style defined will override this one, which is not a desired result.
+	display: none !important;
 }
