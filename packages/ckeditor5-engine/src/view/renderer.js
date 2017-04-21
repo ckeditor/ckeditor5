@@ -20,8 +20,6 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-/* global Range */
-
 /**
  * Renderer updates DOM structure and selection, to make them a reflection of the view structure and selection.
  *
@@ -560,7 +558,8 @@ export default class Renderer {
 		// Update selection.
 		const domSelection = domDocument.getSelection();
 		domSelection.removeAllRanges();
-		const domRange = new Range();
+
+		const domRange = domDocument.createRange();
 		domRange.selectNodeContents( this._fakeSelectionContainer );
 		domSelection.addRange( domRange );
 

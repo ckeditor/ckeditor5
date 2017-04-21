@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals setTimeout, Range, document */
+/* globals setTimeout, document */
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
@@ -210,7 +210,7 @@ describe( 'EditingController', () => {
 			const domSelection = document.getSelection();
 			domSelection.removeAllRanges();
 			const domBar = domRoot.childNodes[ 2 ].childNodes[ 0 ];
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.setStart( domBar, 1 );
 			domRange.setEnd( domBar, 2 );
 			domSelection.addRange( domRange );

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals Range, document, window */
+/* globals document, window */
 
 import ViewElement from '../../src/view/element';
 import ViewText from '../../src/view/text';
@@ -836,7 +836,7 @@ describe( 'Renderer', () => {
 			domP.appendChild( document.createTextNode( 'x' ) );
 
 			domSelection.removeAllRanges();
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.setStart( domP.childNodes[ 0 ], 1 );
 			domRange.collapse( true );
 			domSelection.addRange( domRange );
@@ -915,7 +915,7 @@ describe( 'Renderer', () => {
 			domP.appendChild( BR_FILLER( document ) );
 
 			domSelection.removeAllRanges();
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.setStart( domP.childNodes[ 0 ], 0 );
 			domRange.collapse( true );
 			domSelection.addRange( domRange );
@@ -967,7 +967,7 @@ describe( 'Renderer', () => {
 			domB.childNodes[ 0 ].data += 'x';
 
 			domSelection.removeAllRanges();
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.setStart( domB.childNodes[ 0 ], INLINE_FILLER_LENGTH + 1 );
 			domRange.collapse( true );
 			domSelection.addRange( domRange );
@@ -1124,7 +1124,7 @@ describe( 'Renderer', () => {
 			const domSelection = document.getSelection();
 
 			domSelection.removeAllRanges();
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.setStart( domDiv, 0 );
 			domRange.collapse( true );
 			domSelection.addRange( domRange );
@@ -1151,7 +1151,7 @@ describe( 'Renderer', () => {
 			const domSelection = document.getSelection();
 
 			domSelection.removeAllRanges();
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.setStart( domDiv, 0 );
 			domRange.collapse( true );
 			domSelection.addRange( domRange );
@@ -1257,16 +1257,16 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const container = domRoot.childNodes[ 1 ];
 				expect( domConverter.getCorrespondingViewElement( container ) ).to.be.undefined;
 				expect( container.childNodes.length ).to.equal( 1 );
+
 				const textNode = container.childNodes[ 0 ];
 				expect( textNode.textContent ).to.equal( label );
+
 				const domSelection = domRoot.ownerDocument.getSelection();
-				expect( domSelection.anchorNode ).to.equal( textNode );
-				expect( domSelection.anchorOffset ).to.equal( 0 );
-				expect( domSelection.focusNode ).to.equal( textNode );
-				expect( domSelection.focusOffset ).to.equal( label.length );
+				assertDomSelectionContents( domSelection, container, /^fake selection label$/ );
 			} );
 
 			it( 'should render &nbsp; if no selection label is provided', () => {
@@ -1274,15 +1274,15 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const container = domRoot.childNodes[ 1 ];
 				expect( container.childNodes.length ).to.equal( 1 );
+
 				const textNode = container.childNodes[ 0 ];
 				expect( textNode.textContent ).to.equal( '\u00A0' );
+
 				const domSelection = domRoot.ownerDocument.getSelection();
-				expect( domSelection.anchorNode ).to.equal( textNode );
-				expect( domSelection.anchorOffset ).to.equal( 0 );
-				expect( domSelection.focusNode ).to.equal( textNode );
-				expect( domSelection.focusOffset ).to.equal( 1 );
+				assertDomSelectionContents( domSelection, container, /^[ \u00A0]$/ );
 			} );
 
 			it( 'should remove fake selection container when selection is no longer fake', () => {
@@ -1293,16 +1293,13 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 1 );
+
 				const domParagraph = domRoot.childNodes[ 0 ];
 				expect( domParagraph.childNodes.length ).to.equal( 1 );
-				const textNode = domParagraph.childNodes[ 0 ];
 				expect( domParagraph.tagName.toLowerCase() ).to.equal( 'p' );
-				const domSelection = domRoot.ownerDocument.getSelection();
 
-				expect( domSelection.anchorNode ).to.equal( textNode );
-				expect( domSelection.anchorOffset ).to.equal( 0 );
-				expect( domSelection.focusNode ).to.equal( textNode );
-				expect( domSelection.focusOffset ).to.equal( 7 );
+				const domSelection = domRoot.ownerDocument.getSelection();
+				assertDomSelectionContents( domSelection, domParagraph, /^foo bar$/ );
 			} );
 
 			it( 'should reuse fake selection container #1', () => {
@@ -1312,15 +1309,18 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const container = domRoot.childNodes[ 1 ];
 
 				selection.setFake( true, { label } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const newContainer = domRoot.childNodes[ 1 ];
 				expect( newContainer ).equals( container );
 				expect( newContainer.childNodes.length ).to.equal( 1 );
+
 				const textNode = newContainer.childNodes[ 0 ];
 				expect( textNode.textContent ).to.equal( label );
 			} );
@@ -1330,6 +1330,7 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const container = domRoot.childNodes[ 1 ];
 
 				selection.setFake( false );
@@ -1341,9 +1342,11 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const newContainer = domRoot.childNodes[ 1 ];
 				expect( newContainer ).equals( container );
 				expect( newContainer.childNodes.length ).to.equal( 1 );
+
 				const textNode = newContainer.childNodes[ 0 ];
 				expect( textNode.textContent ).to.equal( 'label 2' );
 			} );
@@ -1353,15 +1356,18 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const container = domRoot.childNodes[ 1 ];
 
 				selection.setFake( true, { label: 'label 2' } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const newContainer = domRoot.childNodes[ 1 ];
 				expect( newContainer ).equals( container );
 				expect( newContainer.childNodes.length ).to.equal( 1 );
+
 				const textNode = newContainer.childNodes[ 0 ];
 				expect( textNode.textContent ).to.equal( 'label 2' );
 			} );
@@ -1371,6 +1377,7 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const container = domRoot.childNodes[ 1 ];
 
 				expect( container.style.position ).to.equal( 'fixed' );
@@ -1383,12 +1390,25 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
+
 				const container = domRoot.childNodes[ 1 ];
 
 				const bindSelection = renderer.domConverter.fakeSelectionToView( container );
 				expect( bindSelection ).to.be.defined;
 				expect( bindSelection.isEqual( selection ) ).to.be.true;
 			} );
+
+			// Use a forgiving way of checking what the selection contains
+			// because Safari normalizes the selection ranges so precise checking is troublesome.
+			// Also, Edge returns a normal space instead of nbsp so we need to use even more alternatives.
+			function assertDomSelectionContents( domSelection, expectedContainer, expectedText ) {
+				const domSelectionContainer = domSelection.getRangeAt( 0 ).commonAncestorContainer;
+
+				expect( domSelection.toString() ).to.match( expectedText );
+				expect(
+					domSelectionContainer == expectedContainer.firstChild || domSelectionContainer == expectedContainer
+				).to.be.true;
+			}
 		} );
 
 		// #887

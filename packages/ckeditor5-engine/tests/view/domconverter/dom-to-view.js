@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals Range, document */
+/* globals document */
 
 import ViewElement from '../../../src/view/element';
 import ViewRange from '../../../src/view/range';
@@ -545,7 +545,7 @@ describe( 'DomConverter', () => {
 			converter.bindElements( domP, viewP );
 			converter.bindElements( domB, viewP.getChild( 1 ) );
 
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.setStart( domFoo, 1 );
 			domRange.setEnd( domBar, 2 );
 
@@ -560,7 +560,7 @@ describe( 'DomConverter', () => {
 			const domB = createElement( document, 'b', null, domBar );
 			createElement( document, 'p', null, [ domFoo, domB ] );
 
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.setStart( domFoo, 1 );
 			domRange.setEnd( domBar, 2 );
 
@@ -584,7 +584,7 @@ describe( 'DomConverter', () => {
 
 			document.body.appendChild( domP );
 
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.setStart( domFoo, 1 );
 			domRange.setEnd( domBar, 2 );
 
@@ -617,7 +617,7 @@ describe( 'DomConverter', () => {
 
 			document.body.appendChild( domP );
 
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.setStart( domFoo, 2 );
 			domRange.collapse( true );
 
@@ -642,7 +642,7 @@ describe( 'DomConverter', () => {
 
 			document.body.appendChild( domP );
 
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.setStart( domFoo, 1 );
 			domRange.setEnd( domBar, 2 );
 
@@ -665,7 +665,7 @@ describe( 'DomConverter', () => {
 			viewSelection.addRange( ViewRange.createIn( new ViewElement() ) );
 			converter.bindFakeSelection( domContainer, viewSelection );
 
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.selectNodeContents( domContainer );
 			domSelection.removeAllRanges();
 			domSelection.addRange( domRange );
@@ -685,7 +685,7 @@ describe( 'DomConverter', () => {
 			viewSelection.addRange( ViewRange.createIn( new ViewElement() ) );
 			converter.bindFakeSelection( domContainer, viewSelection );
 
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domRange.selectNodeContents( domContainer.firstChild );
 			domSelection.removeAllRanges();
 			domSelection.addRange( domRange );

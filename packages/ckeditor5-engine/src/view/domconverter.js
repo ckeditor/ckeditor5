@@ -7,7 +7,7 @@
  * @module engine/view/domconverter
  */
 
-/* globals Range, Node, NodeFilter */
+/* globals document, Node, NodeFilter */
 
 import ViewText from './text';
 import ViewElement from './element';
@@ -146,7 +146,8 @@ export default class DomConverter {
 			this._domToViewMapping.delete( domElement );
 			this._viewToDomMapping.delete( viewElement );
 
-			for ( let child of domElement.childNodes ) {
+			// Use Array.from because of MS Edge (#923).
+			for ( let child of Array.from( domElement.childNodes ) ) {
 				this.unbindDomElement( child );
 			}
 		}
@@ -259,7 +260,7 @@ export default class DomConverter {
 		const domStart = this.viewPositionToDom( viewRange.start );
 		const domEnd = this.viewPositionToDom( viewRange.end );
 
-		const domRange = new Range();
+		const domRange = document.createRange();
 		domRange.setStart( domStart.parent, domStart.offset );
 		domRange.setEnd( domEnd.parent, domEnd.offset );
 
@@ -778,7 +779,7 @@ export default class DomConverter {
 
 		// Since it takes multiple lines of code to check whether a "DOM Position" is before/after another "DOM Position",
 		// we will use the fact that range will collapse if it's end is before it's start.
-		const range = new Range();
+		const range = document.createRange();
 
 		range.setStart( selection.anchorNode, selection.anchorOffset );
 		range.setEnd( selection.focusNode, selection.focusOffset );

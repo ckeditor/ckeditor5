@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document, Range */
+/* globals document */
 
 import ViewRange from '../../../src/view/range';
 import ViewDocument from '../../../src/view/document';
@@ -117,7 +117,7 @@ describe( 'Document', () => {
 			const domSelection = document.getSelection();
 			domB.childNodes[ 0 ].data += 'x';
 
-			const domRange = new Range();
+			const domRange = document.createRange();
 			domSelection.removeAllRanges();
 			domRange.setStart( domB.childNodes[ 0 ], INLINE_FILLER_LENGTH + 1 );
 			domRange.collapse( true );

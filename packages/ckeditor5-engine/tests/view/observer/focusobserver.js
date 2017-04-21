@@ -171,7 +171,7 @@ describe( 'FocusObserver', () => {
 			}, { priority: 'low' } );
 
 			observer.onDomEvent( { type: 'focus', target: domEditable } );
-			domSelection.collapse( domEditable );
+			domSelection.collapse( domEditable, 0 );
 		} );
 
 		it( 'should render without selectionChange event', ( done ) => {
