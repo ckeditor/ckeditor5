@@ -35,7 +35,6 @@ describe( 'BalloonPanelView', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.tagName ).to.equal( 'DIV' );
 			expect( view.element.classList.contains( 'ck-balloon-panel' ) ).to.true;
-			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
 		it( 'should set default values', () => {
@@ -127,6 +126,16 @@ describe( 'BalloonPanelView', () => {
 				return view.content.add( button ).then( () => {
 					expect( view.element.childNodes.length ).to.equal( 1 );
 				} );
+			} );
+		} );
+
+		describe( 'event listeners', () => {
+			it( 'prevent default on #mousedown', () => {
+				const evt = new Event( 'mousedown', { bubbles: true } );
+				const spy = sinon.spy( evt, 'preventDefault' );
+
+				view.element.dispatchEvent( evt );
+				sinon.assert.calledOnce( spy );
 			} );
 		} );
 	} );
