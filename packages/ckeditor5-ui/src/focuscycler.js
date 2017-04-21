@@ -241,11 +241,17 @@ export default class FocusCycler {
 	 */
 	_getFocusableItem( step ) {
 		// Cache for speed.
-		const current = this.current;
+		let current = this.current;
 		const collectionLength = this.focusables.length;
 
-		if ( !collectionLength || current === null ) {
+		if ( !collectionLength ) {
 			return null;
+		}
+
+		// Start from the beginning if no view is focused.
+		// https://github.com/ckeditor/ckeditor5-ui/issues/206
+		if ( current === null ) {
+			return this[ step === 1 ? 'first' : 'last' ];
 		}
 
 		// Cycle in both directions.
