@@ -10,7 +10,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from './filerepository';
 import ImageUploadCommand from './imageuploadcommand';
-import ImageUploadProgress from './imageuploadprogress';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import { isImageType } from './utils';
 
@@ -24,7 +23,7 @@ export default class ImageUploadEngine extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ FileRepository, Notification, ImageUploadProgress ];
+		return [ FileRepository, Notification ];
 	}
 
 	/**
@@ -37,7 +36,7 @@ export default class ImageUploadEngine extends Plugin {
 
 		// Setup schema to allow uploadId for images.
 		schema.allow( { name: 'image', attributes: [ 'uploadId' ], inside: '$root' } );
-		schema.allow( { name: 'image', attributes: [ 'uploadId', 'uploadStatus' ], inside: '$root' } );
+		schema.allow( { name: 'image', attributes: [ 'uploadStatus' ], inside: '$root' } );
 		schema.requireAttributes( 'image', [ 'uploadId' ] );
 
 		// Register imageUpload command.

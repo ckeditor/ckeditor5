@@ -13,6 +13,14 @@ import FileRepository from './filerepository';
 import uploadingPlaceholder from '../theme/icons/image_placeholder.svg';
 import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 
+import '../theme/imageuploadprogress.scss';
+
+/**
+ * Image upload progress plugin.
+ * Shows placeholder when image is read from disk and progress bar while image is uploading.
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class ImageUploadProgress extends Plugin {
 	constructor( editor ) {
 		super( editor );
@@ -35,6 +43,7 @@ export default class ImageUploadProgress extends Plugin {
 		editor.editing.modelToView.on( 'addAttribute:uploadStatus:image', uploadStatusChange );
 		editor.editing.modelToView.on( 'changeAttribute:uploadStatus:image', uploadStatusChange );
 
+		// Called each time uploadStatus attribute is added or changed.
 		function uploadStatusChange( evt, data, consumable ) {
 			if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
 				return;
@@ -49,27 +58,37 @@ export default class ImageUploadProgress extends Plugin {
 				return;
 			}
 
+			// Show placeholder with infinite progress bar on the top while image is read from disk.
 			if ( status == 'reading' ) {
 				viewFigure.addClass( 'ck-appear', 'ck-infinite-progress' );
 				const viewImg = viewFigure.getChild( 0 );
 				viewImg.setAttribute( 'src', placeholder );
+
+				return;
 			}
 
+			// Show progress bar on the top of the image when image is uploading.
 			if ( status == 'uploading' ) {
 				viewFigure.removeClass( 'ck-infinite-progress' );
 				const progressBar = createProgressBar();
 				viewFigure.appendChildren( progressBar );
 				const loader = fileRepository.loaders.get( uploadId );
 
+				// Update progress bar width when uploadedPercent is changed.
 				loader.on( 'change:uploadedPercent', ( evt, name, value ) => {
 					progressBar.setStyle( 'width', value + '%' );
 					editor.editing.view.render();
 				} );
+
+				return;
 			}
 
+			// Hide progress bar and clean up classes.
 			if ( status == 'complete' ) {
 				const viewFigure = editor.editing.mapper.toViewElement( modelImage );
 				const progressBar = getProgressBar( viewFigure );
+
+				viewFigure.removeClass( 'ck-appear' );
 
 				if ( progressBar ) {
 					progressBar.remove();
@@ -80,8 +99,13 @@ export default class ImageUploadProgress extends Plugin {
 	}
 }
 
+// Symbol added to progress bar UIElement to distinguish it from other elements.
 const progressBarSymbol = Symbol( 'progress-bar' );
 
+// Create progress bar element using {@link module:engine/view/uielement~UIElement}.
+//
+// @private
+// @returns {module:engine/view/uielement~UIElement}
 function createProgressBar() {
 	const progressBar = new UIElement( 'div', { class: 'ck-progress-bar' } );
 	progressBar.setCustomProperty( progressBarSymbol, true );
@@ -89,6 +113,12 @@ function createProgressBar() {
 	return progressBar;
 }
 
+// Returns progress bar {@link module:engine/view/uielement~UIElement} from image figure element. Returns `null` if
+// progress bar element is not found.
+//
+// @private
+// @param {module:engine/view/element~Element} imageFigure
+// @returns {module:engine/view/uielement~UIElement|null}
 function getProgressBar( imageFigure ) {
 	for ( const child of imageFigure.getChildren() ) {
 		if ( child.getCustomProperty( progressBarSymbol ) ) {

@@ -26,7 +26,7 @@ $lineWidth: 30px;
 	top: 0;
 	right: 0;
 	background: rgba(0, 0, 0, 0.1);
-	animation-name: ltrsUploadProgressBefore;
+	animation-name: readingProgressAnimation;
 	animation-duration: 1500ms;
 	animation-iteration-count: infinite;
 	transition-timing-function: linear;
@@ -38,11 +38,11 @@ $lineWidth: 30px;
 	position: absolute;
 	top: 0;
 	left: 0;
-	background: red;
+	background: #6ab5f9;
 	transition: width 100ms;
 }
 
-@keyframes ltrsUploadProgressBefore {
+@keyframes readingProgressAnimation {
 	0% {
 		width: $lineWidth;
 		right: 0;

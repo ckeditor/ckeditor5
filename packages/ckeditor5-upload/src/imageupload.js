@@ -9,10 +9,9 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageUploadEngine from './imageuploadengine';
+import ImageUploadProgress from './imageuploadprogress';
 import FileDialogButtonView from './ui/filedialogbuttonview';
 import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
-
-import '../theme/theme.scss';
 
 /**
  * Image upload plugin.
@@ -25,7 +24,7 @@ export default class ImageUpload extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageUploadEngine ];
+		return [ ImageUploadEngine, ImageUploadProgress ];
 	}
 
 	/**
