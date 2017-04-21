@@ -24,8 +24,8 @@ viewDocument.on( 'selectionChange', ( evt, data ) => {
 	viewDocument.render();
 } );
 
-setData( viewDocument, '<p>{}First editable.</p>', { rootName: 'editable1' } );
-setData( viewDocument, '<p>Second editable.</p>', { rootName: 'editable2' } );
+setData( viewDocument, '<container:p>{}First editable.</container:p>', { rootName: 'editable1' } );
+setData( viewDocument, '<container:p>Second editable.</container:p>', { rootName: 'editable2' } );
 
 editable1.on( 'change:isFocused', () => domEditable1.style.backgroundColor = editable1.isFocused ? 'green' : 'red' );
 editable2.on( 'change:isFocused', () => domEditable2.style.backgroundColor = editable2.isFocused ? 'green' : 'red' );
