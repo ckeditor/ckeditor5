@@ -43,9 +43,23 @@ describe( 'DataController', () => {
 			expect( data.processor ).to.be.undefined;
 		} );
 
-		it( 'should add insertContent listener', () => {
+		it( 'should add insertContent listener and inserts document fragment when event fires', () => {
 			const batch = modelDocument.batch();
 			const content = new ModelDocumentFragment( [ new ModelText( 'x' ) ] );
+
+			schema.registerItem( 'paragraph', '$block' );
+
+			setData( modelDocument, '<paragraph>a[]b</paragraph>' );
+
+			data.fire( 'insertContent', { content, selection: modelDocument.selection, batch } );
+
+			expect( getData( modelDocument ) ).to.equal( '<paragraph>ax[]b</paragraph>' );
+			expect( batch.deltas.length ).to.be.above( 0 );
+		} );
+
+		it( 'should add insertContent listener and inserts an item when event fires', () => {
+			const batch = modelDocument.batch();
+			const content = new ModelText( 'x' );
 
 			schema.registerItem( 'paragraph', '$block' );
 
