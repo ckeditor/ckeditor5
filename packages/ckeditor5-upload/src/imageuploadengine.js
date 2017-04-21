@@ -97,6 +97,8 @@ export default class ImageUploadEngine extends Plugin {
 			.then( data => {
 				const viewFigure = editor.editing.mapper.toViewElement( imageElement );
 				const viewImg = viewFigure.getChild( 0 );
+				const promise = loader.upload();
+
 				viewImg.setAttribute( 'src', data );
 				editor.editing.view.render();
 
@@ -104,7 +106,7 @@ export default class ImageUploadEngine extends Plugin {
 					batch.setAttribute( imageElement, 'uploadStatus', 'uploading' );
 				} );
 
-				return loader.upload();
+				return promise;
 			} )
 			.then( data => {
 				doc.enqueueChanges( () => {

@@ -15,7 +15,6 @@ import FileRepository from '../src/filerepository';
 import { AdapterMock, createNativeFileMock, NativeFileReaderMock } from './_utils/mocks';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import imagePlaceholder from '../theme/icons/image_placeholder.svg';
 import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
@@ -71,7 +70,7 @@ describe( 'ImageUploadEngine', () => {
 
 		const id = fileRepository.getLoader( fileMock ).id;
 		expect( getModelData( document ) ).to.equal(
-			`[<image uploadId="${ id }"></image>]<paragraph>foo bar baz</paragraph>`
+			`[<image uploadId="${ id }" uploadStatus="reading"></image>]<paragraph>foo bar baz</paragraph>`
 		);
 	} );
 
@@ -90,16 +89,6 @@ describe( 'ImageUploadEngine', () => {
 		sinon.assert.notCalled( spy );
 	} );
 
-	it( 'should convert image\'s uploadId attribute from model to view', () => {
-		setModelData( document, '<image uploadId="1234"></image>' );
-
-		expect( getViewData( viewDocument ) ).to.equal(
-			'[]<figure class="image ck-widget" contenteditable="false">' +
-				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
-			'</figure>'
-		);
-	} );
-
 	it( 'should not convert image\'s uploadId attribute if is consumed already', () => {
 		editor.editing.modelToView.on( 'addAttribute:uploadId:image', ( evt, data, consumable ) => {
 			consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
@@ -113,20 +102,21 @@ describe( 'ImageUploadEngine', () => {
 			'</figure>' );
 	} );
 
-	it( 'should replace placeholder with read data once it is present', ( done ) => {
+	it( 'should use read data once it is present', ( done ) => {
 		const file = createNativeFileMock();
 		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 
-		adapterMock.uploadStartedCallback = () => {
+		document.once( 'changesDone', () => {
 			expect( getViewData( viewDocument ) ).to.equal(
 				'[<figure class="image ck-widget" contenteditable="false">' +
-					`<img src="${ base64Sample }"></img>` +
+				`<img src="${ base64Sample }"></img>` +
 				'</figure>]' +
 				'<p>foo bar</p>' );
 			expect( loader.status ).to.equal( 'uploading' );
+
 			done();
-		};
+		} );
 
 		expect( loader.status ).to.equal( 'reading' );
 		nativeReaderMock.mockSuccess( base64Sample );
@@ -137,7 +127,7 @@ describe( 'ImageUploadEngine', () => {
 		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
 		editor.execute( 'imageUpload', { file } );
 
-		adapterMock.uploadStartedCallback = () => {
+		document.once( 'changesDone', () => {
 			document.once( 'changesDone', () => {
 				expect( getViewData( viewDocument ) ).to.equal(
 					'[<figure class="image ck-widget" contenteditable="false"><img src="image.png"></img></figure>]<p>foo bar</p>'
@@ -148,7 +138,7 @@ describe( 'ImageUploadEngine', () => {
 			} );
 
 			adapterMock.mockSuccess( { original: 'image.png' } );
-		};
+		} );
 
 		nativeReaderMock.mockSuccess( base64Sample );
 	} );
@@ -195,18 +185,6 @@ describe( 'ImageUploadEngine', () => {
 
 		expect( getViewData( viewDocument ) ).to.equal(
 			'[]<figure class="image ck-widget" contenteditable="false"><img src="image.png"></img></figure>'
-		);
-	} );
-
-	it( 'should allow to customize placeholder image', () => {
-		const uploadEngine = editor.plugins.get( ImageUploadEngine );
-		uploadEngine.placeholder = base64Sample;
-		setModelData( document, '<image uploadId="1234"></image>' );
-
-		expect( getViewData( viewDocument ) ).to.equal(
-			'[]<figure class="image ck-widget" contenteditable="false">' +
-			`<img src="${ base64Sample }"></img>` +
-			'</figure>'
 		);
 	} );
 } );
