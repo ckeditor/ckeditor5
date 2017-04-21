@@ -124,7 +124,10 @@ export default class LinkFormView extends View {
 			attributes: {
 				class: [
 					'ck-link-form',
-				]
+				],
+
+				// https://github.com/ckeditor/ckeditor5-link/issues/90
+				tabindex: '-1'
 			},
 
 			children: [
