@@ -18,6 +18,9 @@ setData( viewDocument,
 
 viewDocument.on( 'selectionChange', ( evt, data ) => {
 	viewDocument.selection.setTo( data.newSelection );
+
+	// Needed due to https://github.com/ckeditor/ckeditor5-engine/issues/796.
+	viewDocument.render();
 } );
 
 viewDocument.render();
