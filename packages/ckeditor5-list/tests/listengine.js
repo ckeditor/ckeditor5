@@ -6,6 +6,7 @@
 import ListEngine from '../src/listengine';
 import ListCommand from '../src/listcommand';
 
+import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 
@@ -3204,6 +3205,14 @@ describe( 'ListEngine', () => {
 			editor.setData( '<ul><li></li></ul>' );
 
 			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( '' );
+		} );
+
+		it( 'view converter should pass model document fragment in data.output', () => {
+			editor.data.viewToModel.on( 'element:ul', ( evt, data ) => {
+				expect( data.output ).to.be.instanceof( ModelDocumentFragment );
+			}, { priority: 'lowest' } );
+
+			editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
 		} );
 	} );
 
