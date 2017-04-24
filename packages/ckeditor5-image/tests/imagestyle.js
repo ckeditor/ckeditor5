@@ -3,9 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ImageToolbar from '../src/imagetoolbar';
 import ImageStyle from '../src/imagestyle';
 import ImageStyleEngine from '../src/imagestyle/imagestyleengine';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
@@ -67,46 +65,6 @@ describe( 'ImageStyle', () => {
 
 			spy.reset();
 		}
-	} );
-
-	it( 'should not add buttons to default image toolbar if image toolbar is not present', () => {
-		expect( editor.config.get( 'image.defaultToolbar' ) ).to.be.undefined;
-	} );
-
-	it( 'should add buttons to default image toolbar if toolbar is present', () => {
-		const editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
-
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ ImageStyle, ImageToolbar ]
-		} )
-			.then( newEditor => {
-				expect( newEditor.config.get( 'image.defaultToolbar' ) ).to.eql( [ 'imageStyleFull', 'imageStyleSide' ] );
-
-				newEditor.destroy();
-			} );
-	} );
-
-	it( 'should add separator before the button if toolbar is present and already has items', () => {
-		const editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
-
-		const FooPlugin = class extends Plugin {
-			init() {
-				this.editor.ui.componentFactory.add( 'foo', () => new ButtonView() );
-
-				this.editor.config.get( 'image.defaultToolbar' ).push( 'foo' );
-			}
-		};
-
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ FooPlugin, ImageStyle, ImageToolbar ]
-		} )
-		.then( newEditor => {
-			expect( newEditor.config.get( 'image.defaultToolbar' ) ).to.eql( [ 'foo', '|', 'imageStyleFull', 'imageStyleSide' ] );
-
-			newEditor.destroy();
-		} );
 	} );
 
 	it( 'should not add buttons to image toolbar if configuration is present', () => {

@@ -42,20 +42,6 @@ describe( 'ImageToolbar', () => {
 		expect( editor.plugins.get( ImageToolbar ) ).to.be.instanceOf( ImageToolbar );
 	} );
 
-	it( 'should initialize image.defaultToolbar to an empty array', () => {
-		const editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
-
-		return ClassicEditor.create( editorElement, {
-			plugins: [ ImageToolbar ],
-		} )
-		.then( editor => {
-			expect( editor.config.get( 'image.defaultToolbar' ) ).to.eql( [] );
-
-			return editor.destroy();
-		} );
-	} );
-
 	it( 'should not initialize if there is no configuration', () => {
 		const editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
@@ -65,25 +51,6 @@ describe( 'ImageToolbar', () => {
 		} )
 			.then( newEditor => {
 				expect( newEditor.plugins.get( ImageToolbar )._panel ).to.be.undefined;
-
-				newEditor.destroy();
-			} );
-	} );
-
-	it( 'should allow other plugins to alter default config', () => {
-		const editorElement = global.document.createElement( 'div' );
-		global.document.body.appendChild( editorElement );
-
-		return ClassicEditor.create( editorElement, {
-			plugins: [ ImageToolbar, FakeButton, AlterDefaultConfig ]
-		} )
-			.then( newEditor => {
-				const panel = newEditor.plugins.get( ImageToolbar )._panel;
-				const toolbar = panel.content.get( 0 );
-				const button = toolbar.items.get( 0 );
-
-				expect( newEditor.config.get( 'image.defaultToolbar' ) ).to.eql( [ 'fake_button' ] );
-				expect( button.label ).to.equal( 'fake button' );
 
 				newEditor.destroy();
 			} );
@@ -143,16 +110,6 @@ describe( 'ImageToolbar', () => {
 
 				return view;
 			} );
-		}
-	}
-
-	class AlterDefaultConfig extends Plugin {
-		init() {
-			const defaultImageToolbarConfig = this.editor.config.get( 'image.defaultToolbar' );
-
-			if ( defaultImageToolbarConfig ) {
-				defaultImageToolbarConfig.push( 'fake_button' );
-			}
 		}
 	}
 } );

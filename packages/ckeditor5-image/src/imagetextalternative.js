@@ -45,17 +45,6 @@ export default class ImageTextAlternative extends Plugin {
 	init() {
 		this._createButton();
 
-		// Push button to default image toolbar if the image toolbar was loaded.
-		const defaultImageToolbarConfig = this.editor.config.get( 'image.defaultToolbar' );
-
-		if ( defaultImageToolbarConfig ) {
-			if ( defaultImageToolbarConfig.length ) {
-				defaultImageToolbarConfig.push( '|' );
-			}
-
-			defaultImageToolbarConfig.push( 'imageTextAlternative' );
-		}
-
 		return this._createBalloonPanel().then( panel => {
 			/**
 			 * Balloon panel containing text alternative change form.
