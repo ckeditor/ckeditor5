@@ -156,11 +156,11 @@ export default class Element extends Node {
 	/**
 	 * Clones provided element.
 	 *
-	 * @param {Boolean} deep If set to `true` clones element and all its children recursively. When set to `false`,
+	 * @param {Boolean} [deep=false] If set to `true` clones element and all its children recursively. When set to `false`,
 	 * element will be cloned without any children.
 	 * @returns {module:engine/view/element~Element} Clone of this element.
 	 */
-	clone( deep ) {
+	clone( deep = false ) {
 		const childrenClone = [];
 
 		if ( deep ) {
