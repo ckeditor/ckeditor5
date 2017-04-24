@@ -71,7 +71,7 @@ describe( 'Element', () => {
 
 			expect( copy.name ).to.equal( 'elem' );
 			expect( Array.from( copy.getAttributes() ) ).to.deep.equal( [ [ 'bold', true ], [ 'italic', true ] ] );
-			expect( Array.from( copy.getChildren() ) ).to.deep.equal( [ p, foo ] );
+			expect( Array.from( copy.getChildren() ) ).to.deep.equal( [] );
 		} );
 
 		it( 'should clone children, if clone is deep', () => {
