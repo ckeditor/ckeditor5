@@ -13,6 +13,7 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
+import preventDefault from '../bindings/preventdefault.js';
 
 /**
  * The toolbar view class.
@@ -78,7 +79,12 @@ export default class ToolbarView extends View {
 				]
 			},
 
-			children: this.items
+			children: this.items,
+
+			on: {
+				// https://github.com/ckeditor/ckeditor5-ui/issues/206
+				mousedown: preventDefault( this )
+			}
 		} );
 
 		this.items.on( 'add', ( evt, item ) => {

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document */
+/* global document, Event */
 
 import ToolbarView from '../../src/toolbar/toolbarview';
 import ToolbarSeparatorView from '../../src/toolbar/toolbarseparatorview';
@@ -63,6 +63,16 @@ describe( 'ToolbarView', () => {
 	describe( 'template', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'ck-toolbar' ) ).to.true;
+		} );
+
+		describe( 'event listeners', () => {
+			it( 'prevent default on #mousedown', () => {
+				const evt = new Event( 'mousedown', { bubbles: true } );
+				const spy = sinon.spy( evt, 'preventDefault' );
+
+				view.element.dispatchEvent( evt );
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 	} );
 

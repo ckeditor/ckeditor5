@@ -112,10 +112,10 @@ describe( 'FocusCycler', () => {
 			expect( cycler.next ).to.equal( focusables.get( 2 ) );
 		} );
 
-		it( 'returns null when no view is focused', () => {
+		it( 'focuses the first focusable view when no view is focused', () => {
 			focusTracker.focusedElement = null;
 
-			expect( cycler.next ).to.be.null;
+			expect( cycler.next ).to.equal( focusables.get( 1 ) );
 		} );
 
 		it( 'returns null when no items', () => {
@@ -162,10 +162,10 @@ describe( 'FocusCycler', () => {
 			expect( cycler.previous ).to.equal( focusables.get( 2 ) );
 		} );
 
-		it( 'returns null when no view is focused', () => {
+		it( 'focuses the last focusable view when no view is focused', () => {
 			focusTracker.focusedElement = null;
 
-			expect( cycler.previous ).to.be.null;
+			expect( cycler.previous ).to.equal( focusables.get( 3 ) );
 		} );
 
 		it( 'returns null when no items', () => {

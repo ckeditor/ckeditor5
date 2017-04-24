@@ -13,6 +13,7 @@ import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
 import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange';
 import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+import preventDefault from '../../bindings/preventdefault.js';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 const toPx = toUnit( 'px' );
@@ -134,13 +135,15 @@ export default class BalloonPanelView extends View {
 					top: bind.to( 'top', toPx ),
 					left: bind.to( 'left', toPx ),
 					maxWidth: bind.to( 'maxWidth', toPx )
-				},
-
-				// Make this element `focusable` to be available for adding to FocusTracker.
-				tabindex: -1
+				}
 			},
 
-			children: this.content
+			children: this.content,
+
+			on: {
+				// https://github.com/ckeditor/ckeditor5-ui/issues/206
+				mousedown: preventDefault( this )
+			}
 		} );
 	}
 
