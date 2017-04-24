@@ -58,7 +58,7 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert if there is no image class', () => {
-				editor.setData( '<figure><img src="foo.png" alt="alt text" /></figure>' );
+				editor.setData( '<figure class="quote">My quote</figure>' );
 
 				expect( getModelData( document, { withoutSelection: true } ) )
 					.to.equal( '' );
@@ -139,6 +139,36 @@ describe( 'ImageEngine', () => {
 				editor.setData( '<figure class="image"><img src="foo.png" alt="alt text" /><figcaption></figcaption></figure>' );
 
 				sinon.assert.calledOnce( conversionSpy );
+			} );
+
+			it( 'should convert bare img element', () => {
+				editor.setData( '<img src="foo.png" alt="alt text" />' );
+
+				expect( getModelData( document, { withoutSelection: true } ) )
+					.to.equal( '<image alt="alt text" src="foo.png"></image>' );
+			} );
+
+			it( 'should not convert alt attribute on non-img element', () => {
+				const data = editor.data;
+				const editing = editor.editing;
+
+				document.schema.registerItem( 'div', '$block' );
+				document.schema.allow( { name: 'div', attributes: 'alt', inside: '$root' } );
+
+				buildModelConverter().for( data.modelToView, editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
+				buildViewConverter().for( data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+
+				editor.setData( '<div alt="foo"></div>' );
+
+				expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<div></div>' );
+			} );
+
+			it( 'should handle figure with two images', () => {
+				document.schema.allow( { name: '$text', inside: 'image' } );
+
+				editor.setData( '<figure class="image"><img src="foo.jpg" /><img src="bar.jpg" />abc</figure>' );
+
+				expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image src="foo.jpg">abc</image>' );
 			} );
 		} );
 	} );
