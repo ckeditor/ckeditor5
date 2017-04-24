@@ -149,12 +149,11 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Creates a copy of this element and returns it. Created element has same name and attributes as original element.
-	 * If clone is not deep, children of copied element are references to the same nodes as in original element.
-	 * If clone is deep, original element's children are also cloned.
+	 * Creates a copy of this element and returns it. Created element has the same name and attributes as the original element.
+	 * If clone is deep, the original element's children are also cloned. If not, then empty element is removed.
 	 *
 	 * @param {Boolean} [deep=false] If set to `true` clones element and all its children recursively. When set to `false`,
-	 * element will be cloned without any children.
+	 * element will be cloned without any child.
 	 */
 	clone( deep = false ) {
 		const children = deep ? Array.from( this._children ).map( ( node ) => node.clone( true ) ) : null;
