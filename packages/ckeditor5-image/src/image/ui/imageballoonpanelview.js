@@ -95,7 +95,7 @@ export default class ImageBalloonPanelView extends BalloonPanelView {
 		const defaultPositions = BalloonPanelView.defaultPositions;
 
 		this.attachTo( {
-			target: editingView.domConverter.viewRangeToDom( editingView.selection.getFirstRange() ),
+			target: editingView.domConverter.viewToDom( editingView.selection.getSelectedElement() ),
 			positions: [ defaultPositions.northArrowSouth, defaultPositions.southArrowNorth ]
 		} );
 	}
