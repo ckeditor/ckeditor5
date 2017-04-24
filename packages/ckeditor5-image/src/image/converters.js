@@ -7,7 +7,6 @@
  * @module image/image/converters
  */
 
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import modelWriter from '@ckeditor/ckeditor5-engine/src/model/writer';
 
@@ -20,52 +19,46 @@ import modelWriter from '@ckeditor/ckeditor5-engine/src/model/writer';
  *
  *		<image src="..." alt="..."></image>
  *
+ * The entire contents of `<figure>` except the first `<img>` is being converted as children
+ * of the `<image>` model element.
+ *
  * @returns {Function}
  */
-export function viewToModelImage() {
+export function viewFigureToModel() {
 	return ( evt, data, consumable, conversionApi ) => {
-		const viewFigureElement = data.input;
-
-		// *** Step 1: Validate conversion.
-		// Check if figure element can be consumed.
-		if ( !consumable.test( viewFigureElement, { name: true, class: 'image' } ) ) {
+		// Do not convert if this is not an "image figure".
+		if ( !consumable.test( data.input, { name: true, class: 'image' } ) ) {
 			return;
 		}
 
-		// Check if image element can be converted in current context.
+		// Do not convert if image cannot be placed in model at this context.
 		if ( !conversionApi.schema.check( { name: 'image', inside: data.context, attributes: 'src' } ) ) {
 			return;
 		}
 
-		// Check if img element is placed inside figure element and can be consumed with `src` attribute.
-		const viewImg = viewFigureElement.getChild( 0 );
+		// Find an image element inside the figure element.
+		const viewImage = Array.from( data.input.getChildren() ).find( viewChild => viewChild.is( 'img' ) );
 
-		if ( !viewImg || viewImg.name != 'img' || !consumable.test( viewImg, { name: true, attribute: 'src' } ) ) {
+		// Do not convert if image element is absent, is missing src attribute or was already converted.
+		if ( !viewImage || !viewImage.hasAttribute( 'src' ) || !consumable.test( viewImage, { name: true } ) ) {
 			return;
 		}
 
-		// *** Step2: Convert to model.
-		consumable.consume( viewFigureElement, { name: true, class: 'image' } );
-		consumable.consume( viewImg, { name: true, attribute: 'src' } );
+		// Convert view image to model image.
+		const modelImage = conversionApi.convertItem( viewImage, consumable, data );
 
-		// Create model element.
-		const modelImage = new ModelElement( 'image', {
-			src: viewImg.getAttribute( 'src' )
-		} );
-
-		// Convert `alt` attribute if present.
-		if ( consumable.consume( viewImg, { attribute: [ 'alt' ] } ) ) {
-			modelImage.setAttribute( 'alt', viewImg.getAttribute( 'alt' ) );
-		}
-
-		// Convert children of converted view element and append them to `modelImage`.
-		// TODO https://github.com/ckeditor/ckeditor5-engine/issues/736.
+		// Convert rest of figure element's children, but in the context of model image, because those converted
+		// children will be added as model image children.
 		data.context.push( modelImage );
-		const modelChildren = conversionApi.convertChildren( viewFigureElement, consumable, data );
-		const insertPosition = ModelPosition.createAt( modelImage, 'end' );
-		modelWriter.insert( insertPosition, modelChildren );
+
+		const modelChildren = conversionApi.convertChildren( data.input, consumable, data );
+
 		data.context.pop();
 
+		// Add converted children to model image.
+		modelWriter.insert( ModelPosition.createAt( modelImage ), modelChildren );
+
+		// Set model image as conversion result.
 		data.output = modelImage;
 	};
 }

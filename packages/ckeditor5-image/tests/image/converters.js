@@ -3,11 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import { viewToModelImage, createImageAttributeConverter } from '../../src/image/converters';
+import { viewFigureToModel, createImageAttributeConverter } from '../../src/image/converters';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { createImageViewElement } from '../../src/image/imageengine';
 import { toImageWidget } from '../../src/image/utils';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -28,10 +29,6 @@ describe( 'Image converters', () => {
 				schema.allow( { name: 'image', attributes: [ 'alt', 'src' ], inside: '$root' } );
 				schema.objects.add( 'image' );
 
-				buildModelConverter().for( )
-					.fromElement( 'image' )
-					.toElement( () => toImageWidget( createImageViewElement() ) );
-
 				buildModelConverter().for( editor.editing.modelToView )
 					.fromElement( 'image' )
 					.toElement( () => toImageWidget( createImageViewElement() ) );
@@ -41,46 +38,87 @@ describe( 'Image converters', () => {
 			} );
 	} );
 
-	describe( 'viewToModelImage', () => {
-		let dispatcher, schema;
+	describe( 'viewFigureToModel', () => {
+		function expectModel( model ) {
+			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( model );
+		}
+
+		let dispatcher, schema, imgConverterCalled;
 
 		beforeEach( () => {
+			imgConverterCalled = false;
+
 			schema = document.schema;
+			schema.allow( { name: '$text', inside: 'image' } );
+
 			dispatcher = editor.data.viewToModel;
-			dispatcher.on( 'element:figure', viewToModelImage() );
+			dispatcher.on( 'element:figure', viewFigureToModel() );
+			dispatcher.on( 'element:img', ( evt, data, consumable ) => {
+				if ( consumable.consume( data.input, { name: true, attribute: 'src' } ) ) {
+					data.output = new ModelElement( 'image', { src: data.input.getAttribute( 'src' ) } );
+
+					imgConverterCalled = true;
+				}
+			} );
 		} );
 
-		it( 'should convert view figure element', () => {
-			editor.setData( '<figure class="image"><img src="foo.png" alt="bar baz"></img></figure>' );
-			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image alt="bar baz" src="foo.png"></image>' );
+		it( 'should find img element among children and convert it using already defined converters', () => {
+			editor.setData( '<figure class="image"><img src="foo.png" /></figure>' );
+
+			expectModel( '<image src="foo.png"></image>' );
+			expect( imgConverterCalled ).to.be.true;
 		} );
 
-		it( 'should convert without alt', () => {
-			editor.setData( '<figure class="image"><img src="foo.png"></img></figure>' );
-			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image src="foo.png"></image>' );
+		it( 'should convert non-img children in image context and append them to model image element', () => {
+			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'foo' ).toElement( 'foo' );
+			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'bar' ).toElement( 'bar' );
+
+			schema.registerItem( 'foo' );
+			schema.registerItem( 'bar' );
+
+			schema.allow( { name: 'foo', inside: 'image' } );
+
+			editor.setData( '<figure class="image">x<img src="foo.png" />y<foo></foo><bar></bar></figure>' );
+
+			// Element bar not converted because schema does not allow it.
+			expectModel( '<image src="foo.png">xy<foo></foo></image>' );
 		} );
 
-		it( 'should not convert if figure element is already consumed', () => {
+		it( 'should be possible to overwrite', () => {
 			dispatcher.on( 'element:figure', ( evt, data, consumable ) => {
-				consumable.consume( data.input, { name: true, class: 'image' } );
+				consumable.consume( data.input, { name: true } );
+				consumable.consume( data.input.getChild( 0 ), { name: true } );
 
-				data.output = new ModelElement( 'not-image' );
+				data.output = new ModelElement( 'myImage', { data: { src: data.input.getChild( 0 ).getAttribute( 'src' ) } } );
 			}, { priority: 'high' } );
 
-			editor.setData( '<figure class="image"><img src="foo.png" alt="bar baz"></img></figure>' );
-			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<not-image></not-image>' );
+			editor.setData( '<figure class="image"><img src="foo.png" />xyz</figure>' );
+
+			expectModel( '<myImage data="{"src":"foo.png"}"></myImage>' );
 		} );
 
-		it( 'should not convert image if schema disallows it', () => {
-			schema.disallow( { name: 'image', attributes: [ 'alt', 'src' ], inside: '$root' } );
+		// Test exactly what figure converter does, which is putting it's children element to image element.
+		// If this has not been done, it means that figure converter was not used.
+		it( 'should not convert if figure do not have class="image" attribute', () => {
+			editor.setData( '<figure><img src="foo.png" />xyz</figure>' );
 
-			editor.setData( '<figure class="image"><img src="foo.png"></img></figure>' );
-			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '' );
+			// Default image converter will be fired.
+			expectModel( '<image src="foo.png"></image>' );
 		} );
 
-		it( 'should not convert image if there is no img element', () => {
-			editor.setData( '<figure class="image"></figure>' );
-			expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '' );
+		it( 'should not convert if there is no img element among children', () => {
+			editor.setData( '<figure class="image">xyz</figure>' );
+
+			// Figure converter outputs nothing and text is disallowed in root.
+			expectModel( '' );
+		} );
+
+		it( 'should not convert if img element was not converted', () => {
+			// Image element missing src attribute.
+			editor.setData( '<figure class="image"><img alt="abc" />xyz</figure>' );
+
+			// Figure converter outputs nothing and text is disallowed in root.
+			expectModel( '' );
 		} );
 	} );
 
