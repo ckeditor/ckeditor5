@@ -29,7 +29,10 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		Enter, Typing, Paragraph, Heading, Undo, Bold, Italic, Heading, List, Image, ImageToolbar, Clipboard,
 		ImageCaption, ImageStyle, ImageUpload
 	],
-	toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList', 'insertImage' ]
+	toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList', 'insertImage' ],
+	image: {
+		toolbar: [ 'imageStyleFull', 'imageStyleSide', '|' , 'imageTextAlternative' ]
+	}
 } )
 .then( editor => {
 	// Register fake adapter.
