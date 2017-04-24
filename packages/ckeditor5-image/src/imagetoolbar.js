@@ -17,8 +17,6 @@ import ImageBalloonPanel from './image/ui/imageballoonpanelview';
  * Image toolbar class. Creates image toolbar placed inside balloon panel that is showed when image widget is selected.
  * Toolbar components are created using editor's {@link module:ui/componentfactory~ComponentFactory ComponentFactory}
  * based on {@link module:core/editor/editor~Editor#config configuration} stored under `image.toolbar`.
- * Other plugins can add new components to the default toolbar configuration by pushing them to `image.defaultToolbar`
- * configuration. Default configuration is used when `image.toolbar` config is not present.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -36,8 +34,6 @@ export default class ImageToolbar extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		editor.config.set( 'image.defaultToolbar', [] );
-
 		/**
 		 * When set to `true`, toolbar will be repositioned and showed on each render event and focus change.
 		 * Set to `false` to temporary disable the image toolbar.
@@ -52,10 +48,10 @@ export default class ImageToolbar extends Plugin {
 	 */
 	afterInit() {
 		const editor = this.editor;
-		const toolbarConfig = editor.config.get( 'image.toolbar' ) || editor.config.get( 'image.defaultToolbar' );
+		const toolbarConfig = editor.config.get( 'image.toolbar' );
 
 		// Don't add the toolbar if there is no configuration.
-		if ( !toolbarConfig.length ) {
+		if ( !toolbarConfig || !toolbarConfig.length ) {
 			return;
 		}
 
