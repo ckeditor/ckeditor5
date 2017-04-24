@@ -103,6 +103,19 @@ Each repository independently handles its issues. However, it's recommended to r
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-upload"><code>@ckeditor/ckeditor5-upload</code></a>
+		<br>
+		Introduces the file upload utils.
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-upload"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-upload.svg" alt="ckeditor5-upload npm package badge"></a>
+		<a href="https://travis-ci.org/ckeditor/ckeditor5-upload"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-upload/master.svg" alt="build status badge"></a>
+		<a href="https://codeclimate.com/github/ckeditor/ckeditor5-upload/coverage"><img src="https://img.shields.io/codeclimate/coverage/github/ckeditor/ckeditor5-upload.svg" alt="ckeditor5-upload coverage badge"></a>
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-widget"><code>@ckeditor/ckeditor5-widget</code></a>
 		<br>
 		Introduces the widget API.
