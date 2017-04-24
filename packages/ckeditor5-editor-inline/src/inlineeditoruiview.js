@@ -35,6 +35,12 @@ export default class InlineEditorUIView extends EditorUIView {
 		 */
 		this.toolbar = new ToolbarView( locale );
 
+		Template.extend( this.toolbar.template, {
+			attributes: {
+				class: 'ck-editor-toolbar'
+			}
+		} );
+
 		/**
 		 * A balloon panel view instance.
 		 *
@@ -47,7 +53,7 @@ export default class InlineEditorUIView extends EditorUIView {
 
 		Template.extend( this.panel.template, {
 			attributes: {
-				class: 'ck-toolbar__container'
+				class: 'ck-toolbar-container'
 			}
 		} );
 
