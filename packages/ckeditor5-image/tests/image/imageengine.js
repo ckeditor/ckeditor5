@@ -153,6 +153,7 @@ describe( 'ImageEngine', () => {
 				const editing = editor.editing;
 
 				document.schema.registerItem( 'div', '$block' );
+				document.schema.allow( { name: 'div', attributes: 'alt', inside: '$root' } );
 
 				buildModelConverter().for( data.modelToView, editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 				buildViewConverter().for( data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
