@@ -1,45 +1,45 @@
+// Infinite progress bar default width.
+$lineWidth: 30px;
 
-// Move it to image/widget.
-figure.image.ck-widget {
+figure.image {
 	position: relative;
 	overflow: hidden;
-}
 
-// Showing animation.
-.ck-appear {
-	animation: fadeIn 700ms;
+	// Showing animation.
+	&.ck-appear {
+		animation: fadeIn 700ms;
+	}
+
+	// Infinite progress bar on top while image is read.
+	&.ck-infinite-progress::before {
+		content: "";
+		width: $lineWidth;
+		height: 2px;
+		position: absolute;
+		top: 0;
+		right: 0;
+		background: rgba(0, 0, 0, 0.1);
+		animation-name: readingProgressAnimation;
+		animation-duration: 1500ms;
+		animation-iteration-count: infinite;
+		transition-timing-function: linear;
+	}
+
+	// Upload progress bar.
+	.ck-progress-bar {
+		height: 2px;
+		width: 0;
+		position: absolute;
+		top: 0;
+		left: 0;
+		background: #6ab5f9;
+		transition: width 100ms;
+	}
 }
 
 @keyframes fadeIn {
 	from { opacity: 0; }
 	to   { opacity: 1; }
-}
-
-// Infinite progress bar on top.
-$lineWidth: 30px;
-
-.ck-infinite-progress::before {
-	content: "";
-	width: $lineWidth;
-	height: 2px;
-	position: absolute;
-	top: 0;
-	right: 0;
-	background: rgba(0, 0, 0, 0.1);
-	animation-name: readingProgressAnimation;
-	animation-duration: 1500ms;
-	animation-iteration-count: infinite;
-	transition-timing-function: linear;
-}
-
-.ck-progress-bar {
-	height: 2px;
-	width: 0;
-	position: absolute;
-	top: 0;
-	left: 0;
-	background: #6ab5f9;
-	transition: width 100ms;
 }
 
 @keyframes readingProgressAnimation {
