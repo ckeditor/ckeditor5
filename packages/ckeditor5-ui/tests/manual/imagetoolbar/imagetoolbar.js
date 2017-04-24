@@ -42,7 +42,7 @@ function createImageToolbar( editor ) {
 	Template.extend( panel.template, {
 		attributes: {
 			class: [
-				'ck-toolbar__container',
+				'ck-toolbar-container',
 			]
 		}
 	} );

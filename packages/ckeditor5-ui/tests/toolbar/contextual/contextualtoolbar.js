@@ -156,7 +156,7 @@ describe( 'ContextualToolbar', () => {
 			return contextualToolbar._showPanel().then( () => {
 				sinon.assert.calledWithExactly( balloonAddSpy, {
 					view: contextualToolbar.toolbarView,
-					balloonClassName: 'ck-toolbar__container',
+					balloonClassName: 'ck-toolbar-container',
 					position: {
 						target: forwardSelectionRect,
 						positions: [ defaultPositions.southEastArrowNorth, defaultPositions.northEastArrowSouth ]
@@ -174,7 +174,7 @@ describe( 'ContextualToolbar', () => {
 				.then( () => {
 					sinon.assert.calledWithExactly( balloonAddSpy, {
 						view: contextualToolbar.toolbarView,
-						balloonClassName: 'ck-toolbar__container',
+						balloonClassName: 'ck-toolbar-container',
 						position: {
 							target: backwardSelectionRect,
 							positions: [ defaultPositions.northWestArrowSouth, defaultPositions.southWestArrowNorth ]
