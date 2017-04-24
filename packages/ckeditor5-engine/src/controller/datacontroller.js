@@ -251,7 +251,7 @@ export default class DataController {
 	 * See {@link module:engine/controller/insertcontent~insertContent}.
 	 *
 	 * @fires insertContent
-	 * @param {module:engine/model/documentfragment~DocumentFragment} content The content to insert.
+	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
 	 * @param {module:engine/model/selection~Selection} selection Selection into which the content should be inserted.
 	 * @param {module:engine/model/batch~Batch} [batch] Batch to which deltas will be added. If not specified, then
 	 * changes will be added to a new batch.
@@ -316,7 +316,7 @@ mix( DataController, EmitterMixin );
  *
  * @event insertContent
  * @param {Object} data
- * @param {module:engine/view/documentfragment~DocumentFragment} data.content The content to insert.
+ * @param {module:engine/view/documentfragment~DocumentFragment||module:engine/model/item~Item} data.content The content to insert.
  * @param {module:engine/model/selection~Selection} data.selection Selection into which the content should be inserted.
  * @param {module:engine/model/batch~Batch} [data.batch] Batch to which deltas will be added.
  */
