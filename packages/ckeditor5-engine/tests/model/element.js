@@ -74,9 +74,10 @@ describe( 'Element', () => {
 			expect( Array.from( copy.getChildren() ) ).to.deep.equal( [] );
 		} );
 
-		it( 'should clone children, if clone is deep', () => {
-			let p = new Element( 'p' );
+		it( 'should clone children (deeply), if clone is deep', () => {
 			let foo = new Text( 'foo' );
+			let bar = new Text( 'bar' );
+			let p = new Element( 'p', null, bar );
 
 			let element = new Element( 'elem', { bold: true, italic: true }, [ p, foo ] );
 			let copy = element.clone( true );
@@ -86,9 +87,11 @@ describe( 'Element', () => {
 			expect( copy.childCount ).to.equal( 2 );
 
 			expect( copy.getChild( 0 ) ).not.to.equal( p );
+			expect( copy.getChild( 0 ).getChild( 0 ) ).not.to.equal( bar );
 			expect( copy.getChild( 1 ) ).not.to.equal( foo );
 
 			expect( copy.getChild( 0 ).name ).to.equal( 'p' );
+			expect( copy.getChild( 0 ).getChild( 0 ).data ).to.equal( 'bar' );
 			expect( copy.getChild( 1 ).data ).to.equal( 'foo' );
 		} );
 	} );
