@@ -31,6 +31,7 @@ describe( 'ItalicEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
+		expect( doc.schema.check( { name: '$inline', attributes: [ 'italic' ], inside: '$root' } ) ).to.be.false;
 		expect( doc.schema.check( { name: '$inline', attributes: [ 'italic' ], inside: '$block' } ) ).to.be.true;
 	} );
 
@@ -71,6 +72,17 @@ describe( 'ItalicEngine', () => {
 				.to.equal( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><em>foo</em>bar</p>' );
+		} );
+
+		it( 'should be integrated with autoparagraphing', () => {
+			// Incorrect results because autoparagraphing works incorrectly (issue in paragraph).
+			// https://github.com/ckeditor/ckeditor5-paragraph/issues/10
+
+			editor.setData( '<em>foo</em>bar' );
+
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
 		} );
 	} );
 

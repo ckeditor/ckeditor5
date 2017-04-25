@@ -31,7 +31,8 @@ describe( 'BoldEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( doc.schema.check( { name: '$inline', attributes: [ 'bold' ] } ) ).to.be.true;
+		expect( doc.schema.check( { name: '$inline', attributes: [ 'bold' ], inside: '$root' } ) ).to.be.false;
+		expect( doc.schema.check( { name: '$inline', attributes: [ 'bold' ], inside: '$block' } ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
@@ -71,6 +72,17 @@ describe( 'BoldEngine', () => {
 				.to.equal( '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><strong>foo</strong>bar</p>' );
+		} );
+
+		it( 'should be integrated with autoparagraphing', () => {
+			// Incorrect results because autoparagraphing works incorrectly (issue in paragraph).
+			// https://github.com/ckeditor/ckeditor5-paragraph/issues/10
+
+			editor.setData( '<strong>foo</strong>bar' );
+
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
 		} );
 	} );
 
