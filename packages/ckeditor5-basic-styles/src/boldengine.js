@@ -32,7 +32,7 @@ export default class BoldEngine extends Plugin {
 		const editing = editor.editing;
 
 		// Allow bold attribute on all inline nodes.
-		editor.document.schema.allow( { name: '$inline', attributes: [ BOLD ] } );
+		editor.document.schema.allow( { name: '$inline', attributes: [ BOLD ], inside: '$block' } );
 
 		// Build converter from model to view for data and editing pipelines.
 		buildModelConverter().for( data.modelToView, editing.modelToView )

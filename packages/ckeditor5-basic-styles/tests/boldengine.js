@@ -4,24 +4,25 @@
  */
 
 import BoldEngine from '../src/boldengine';
+
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ToggleAttributeCommand from '@ckeditor/ckeditor5-core/src/command/toggleattributecommand';
+
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import ToggleAttributeCommand from '@ckeditor/ckeditor5-core/src/command/toggleattributecommand';
 
 describe( 'BoldEngine', () => {
 	let editor, doc;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( {
-				plugins: [ BoldEngine ]
+				plugins: [ Paragraph, BoldEngine ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 
 				doc = editor.document;
-
-				doc.schema.allow( { name: '$text', inside: '$root' } );
 			} );
 	} );
 
@@ -30,7 +31,8 @@ describe( 'BoldEngine', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( doc.schema.check( { name: '$inline', attributes: [ 'bold' ] } ) ).to.be.true;
+		expect( doc.schema.check( { name: '$inline', attributes: [ 'bold' ], inside: '$root' } ) ).to.be.false;
+		expect( doc.schema.check( { name: '$inline', attributes: [ 'bold' ], inside: '$block' } ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
@@ -46,32 +48,49 @@ describe( 'BoldEngine', () => {
 
 	describe( 'data pipeline conversions', () => {
 		it( 'should convert <strong> to bold attribute', () => {
-			editor.setData( '<strong>foo</strong>bar' );
+			editor.setData( '<p><strong>foo</strong>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text bold="true">foo</$text>bar' );
-			expect( editor.getData() ).to.equal( '<strong>foo</strong>bar' );
+			expect( getModelData( doc, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p><strong>foo</strong>bar</p>' );
 		} );
 
 		it( 'should convert <b> to bold attribute', () => {
-			editor.setData( '<b>foo</b>bar' );
+			editor.setData( '<p><b>foo</b>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text bold="true">foo</$text>bar' );
-			expect( editor.getData() ).to.equal( '<strong>foo</strong>bar' );
+			expect( getModelData( doc, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p><strong>foo</strong>bar</p>' );
 		} );
 
 		it( 'should convert font-weight:bold to bold attribute', () => {
-			editor.setData( '<span style="font-weight: bold;">foo</span>bar' );
+			editor.setData( '<p><span style="font-weight: bold;">foo</span>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<$text bold="true">foo</$text>bar' );
-			expect( editor.getData() ).to.equal( '<strong>foo</strong>bar' );
+			expect( getModelData( doc, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p><strong>foo</strong>bar</p>' );
+		} );
+
+		it( 'should be integrated with autoparagraphing', () => {
+			// Incorrect results because autoparagraphing works incorrectly (issue in paragraph).
+			// https://github.com/ckeditor/ckeditor5-paragraph/issues/10
+
+			editor.setData( '<strong>foo</strong>bar' );
+
+			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
 		} );
 	} );
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert attribute', () => {
-			setModelData( doc, '<$text bold="true">foo</$text>bar' );
+			setModelData( doc, '<paragraph><$text bold="true">foo</$text>bar</paragraph>' );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<strong>foo</strong>bar' );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><strong>foo</strong>bar</p>' );
 		} );
 	} );
 } );
