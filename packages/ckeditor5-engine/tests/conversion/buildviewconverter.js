@@ -6,6 +6,7 @@
 import buildViewConverter from '../../src/conversion/buildviewconverter';
 
 import ModelSchema from '../../src/model/schema';
+import ModelDocumentFragment from '../../src/model/documentfragment';
 import ModelDocument from '../../src/model/document';
 import ModelElement from '../../src/model/element';
 import ModelTextProxy from '../../src/model/textproxy';
@@ -281,7 +282,10 @@ describe( 'View converter builder', () => {
 
 		const element = new ViewAttributeElement( 'span' );
 
-		expect( dispatcher.convert( element, objWithContext ) ).to.null;
+		const result = dispatcher.convert( element, objWithContext );
+
+		expect( result ).to.be.instanceof( ModelDocumentFragment );
+		expect( result.childCount ).to.equal( 0 );
 	} );
 
 	it( 'should throw an error when view element in not valid to convert to marker', () => {
@@ -390,6 +394,16 @@ describe( 'View converter builder', () => {
 
 		modelRoot.appendChildren( conversionResult );
 		expect( modelToString( conversionResult ) ).to.equal( '<span transformer="megatron">foo</span>' );
+	} );
+
+	it( 'should return model document fragment when converting attributes on text', () => {
+		buildViewConverter().for( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
+
+		let viewElement = new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) );
+
+		let conversionResult = dispatcher.convert( viewElement, objWithContext );
+
+		expect( conversionResult.is( 'documentFragment' ) ).to.be.true;
 	} );
 
 	it( 'should set different priorities for `toElement` and `toAttribute` conversion', () => {
@@ -527,7 +541,9 @@ describe( 'View converter builder', () => {
 
 		viewElement.setAttribute( 'stop', true );
 		conversionResult = dispatcher.convert( viewElement, objWithContext );
-		expect( conversionResult ).to.be.null;
+
+		expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
+		expect( conversionResult.childCount ).to.equal( 0 );
 	} );
 
 	it( 'should stop to attribute conversion if creating function returned null', () => {
