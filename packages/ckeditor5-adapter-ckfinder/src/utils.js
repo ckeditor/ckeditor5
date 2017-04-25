@@ -5,10 +5,21 @@
 
 /* globals window, document */
 
+/**
+ * @module adapter-ckfinder/utils
+ */
+
 const TOKEN_COOKIE_NAME = 'ckCsrfToken';
 const TOKEN_LENGTH = 40;
 const tokenCharset = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
+/**
+ * Returns the CSRF token value. The value is a hash stored in `document.cookie`
+ * under the `ckCsrfToken` key. The CSRF token can be used to secure the communication
+ * between the web browser and the CKFinder server.
+ *
+ * @returns {String}
+ */
 export function getCSRFToken() {
 	let token = getCookie( TOKEN_COOKIE_NAME );
 
@@ -37,11 +48,22 @@ export function getCookie( name ) {
 	return null;
 }
 
+/**
+ * Sets the value of the cookie with a given name.
+ *
+ * @param {String} name
+ * @param {String} value
+ */
 export function setCookie( name, value ) {
 	document.cookie = encodeURIComponent( name ) + '=' + encodeURIComponent( value ) + ';path=/';
 }
 
-export function generateToken( length ) {
+// Generates CSRF token with given length.
+//
+// @private
+// @param {Number} length
+// @returns {string}
+function generateToken( length ) {
 	let randValues = [];
 	let result = '';
 
