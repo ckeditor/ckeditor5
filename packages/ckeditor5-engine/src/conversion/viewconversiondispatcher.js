@@ -8,15 +8,17 @@
  */
 
 import ViewConsumable from './viewconsumable';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
 import ModelTreeWalker from '../model/treewalker';
 import ModelNode from '../model/node';
 import ModelDocumentFragment from '../model/documentfragment';
 import { remove } from '../model/writer';
+
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * `ViewConversionDispatcher` is a central point of {@link module:engine/view/view view} conversion, which is a process of
@@ -130,36 +132,34 @@ export default class ViewConversionDispatcher {
 	 * @fires element
 	 * @fires text
 	 * @fires documentFragment
-	 * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element}
-	 * viewItem Part of the view to be converted.
+	 * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element} viewItem
+	 * Part of the view to be converted.
 	 * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
 	 * events. See also {@link ~ViewConversionDispatcher#event:element element event}.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Model data that is a result of the conversion process
-	 * wrapped by DocumentFragment. Converted marker stamps will be set as DocumentFragment
+	 * wrapped in `DocumentFragment`. Converted marker stamps will be set as that document fragment's
 	 * {@link module:engine/view/documentfragment~DocumentFragment#markers static markers map}.
 	 */
 	convert( viewItem, additionalData = {} ) {
 		this.fire( 'viewCleanup', viewItem );
 
 		const consumable = ViewConsumable.createFrom( viewItem );
-		const conversionResult = this._convertItem( viewItem, consumable, additionalData );
+		let conversionResult = this._convertItem( viewItem, consumable, additionalData );
 
-		// In some cases conversion output doesn't have to be a node and in this case we do nothing additional with this data.
-		if ( !( conversionResult instanceof ModelNode || conversionResult instanceof ModelDocumentFragment ) ) {
-			return conversionResult;
+		// If conversion failed, `null` will be returned.
+		if ( !conversionResult ) {
+			return new ModelDocumentFragment();
 		}
 
-		let documentFragment = conversionResult;
-
-		// When conversion result is not a DocumentFragment we need to wrap it by DocumentFragment.
-		if ( !documentFragment.is( 'documentFragment' ) ) {
-			documentFragment = new ModelDocumentFragment( [ documentFragment ] );
+		// When conversion result is not a document fragment we need to wrap it in document fragment.
+		if ( !conversionResult.is( 'documentFragment' ) ) {
+			conversionResult = new ModelDocumentFragment( [ conversionResult ] );
 		}
 
 		// Extract temporary markers stamp from model and set as static markers collection.
-		documentFragment.markers = extractMarkersFromModelFragment( documentFragment );
+		conversionResult.markers = extractMarkersFromModelFragment( conversionResult );
 
-		return documentFragment;
+		return conversionResult;
 	}
 
 	/**
@@ -168,8 +168,7 @@ export default class ViewConversionDispatcher {
 	 */
 	_convertItem( input, consumable, additionalData = {} ) {
 		const data = extend( {}, additionalData, {
-			input: input,
-			output: null
+			input: input
 		} );
 
 		if ( input.is( 'element' ) ) {
@@ -180,6 +179,30 @@ export default class ViewConversionDispatcher {
 			this.fire( 'documentFragment', data, consumable, this.conversionApi );
 		}
 
+		// Handle incorrect `data.output`.
+		if ( data.output === undefined ) {
+			/**
+			 * Item has not been converted (output is undefined).
+			 *
+			 * @error view-conversion-dispatcher-item-not-converted
+			 */
+			log.warn( 'view-conversion-dispatcher-item-not-converted: Item has not been converted (output is undefined).', input );
+
+			data.output = null;
+		} else if ( !( data.output instanceof ModelNode || data.output instanceof ModelDocumentFragment ) ) {
+			/**
+			 * Dropped incorrect conversion result.
+			 *
+			 * Item may be converted to either {@link module:engine/model/node~Node model node} or
+			 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
+			 *
+			 * @error view-conversion-dispatcher-incorrect-result
+			 */
+			log.warn( 'view-conversion-dispatcher-incorrect-result: Dropped incorrect conversion result.', [ input, data.output ] );
+
+			data.output = null;
+		}
+
 		return data.output;
 	}
 
@@ -188,11 +211,23 @@ export default class ViewConversionDispatcher {
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertChildren
 	 */
 	_convertChildren( input, consumable, additionalData = {} ) {
+		// Get all children of view input item.
 		const viewChildren = Array.from( input.getChildren() );
-		const convertedChildren = viewChildren.map( ( viewChild ) => this._convertItem( viewChild, consumable, additionalData ) );
 
-		// Flatten and remove nulls.
-		return convertedChildren.reduce( ( a, b ) => b ? a.concat( b ) : a, [] );
+		// 1. Map those children to model.
+		// 2. Filter out wrong results.
+		// 3. Extract children from document fragments to flatten results.
+		const convertedChildren = viewChildren
+			.map( ( viewChild ) => this._convertItem( viewChild, consumable, additionalData ) )
+			.filter( ( converted ) => converted instanceof ModelNode || converted instanceof ModelDocumentFragment )
+			.reduce( ( result, filtered ) => {
+				return result.concat(
+					filtered.is( 'documentFragment' ) ? Array.from( filtered.getChildren() ) : filtered
+				);
+			}, [] );
+
+		// Normalize array to model document fragment.
+		return new ModelDocumentFragment( convertedChildren );
 	}
 
 	/**
@@ -304,6 +339,8 @@ function extractMarkersFromModelFragment( modelItem ) {
  *
  * Every fired event is passed (as first parameter) an object with `output` property. Every event may set and/or
  * modify that property. When all callbacks are done, the final value of `output` property is returned by this method.
+ * The `output` must be either {@link module:engine/model/node~Node model node} or
+ * {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
  *
  * @method #convertItem
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
@@ -329,5 +366,5 @@ function extractMarkersFromModelFragment( modelItem ) {
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
  * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
  * events. See also {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element element event}.
- * @returns {Array.<*>} Array containing results of conversion of all children of given item.
+ * @returns {module:engine/model/documentfragment} Model document fragment containing results of conversion of all children of given item.
  */

@@ -519,7 +519,7 @@ describe( 'advanced-converters', () => {
 		it( 'should convert a view element to model', () => {
 			let viewElement = new ViewAttributeElement( 'a', { href: 'foo.html', title: 'Foo title' }, new ViewText( 'foo' ) );
 
-			let modelText = viewDispatcher.convert( viewElement )[ 0 ];
+			let modelText = viewDispatcher.convert( viewElement ).getChild( 0 );
 
 			expect( modelText ).to.be.instanceof( ModelText );
 			expect( modelText.data ).to.equal( 'foo' );
@@ -603,11 +603,14 @@ describe( 'advanced-converters', () => {
 		viewDispatcher.on( 'element:tr', ( evt, data, consumable, conversionApi ) => {
 			if ( consumable.consume( data.input, { name: true } ) ) {
 				data.output = new ModelElement( 'paragraph' );
+
 				const children = conversionApi.convertChildren( data.input, consumable );
 
-				for ( let i = 1; i < children.length; i++ ) {
-					if ( children[ i ] instanceof ModelText && children[ i - 1 ] instanceof ModelText ) {
-						children.splice( i, 0, new ModelText( ' ' ) );
+				for ( let i = 1; i < children.childCount; i++ ) {
+					const child = children.getChild( i );
+
+					if ( child instanceof ModelText && child.previousSibling instanceof ModelText ) {
+						children.insertChildren( i, new ModelText( ' ' ) );
 						i++;
 					}
 				}

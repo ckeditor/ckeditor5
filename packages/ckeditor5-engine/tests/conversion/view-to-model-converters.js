@@ -66,11 +66,13 @@ describe( 'view-to-model-converters', () => {
 
 			let conversionResult = dispatcher.convert( viewText, objWithContext );
 
-			expect( conversionResult ).to.be.null;
+			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
+			expect( conversionResult.childCount ).to.equal( 0 );
 
 			conversionResult = dispatcher.convert( viewText, { context: [ '$block' ] } );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
+			expect( conversionResult.childCount ).to.equal( 1 );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
 			expect( conversionResult.getChild( 0 ).data ).to.equal( 'foobar' );
 		} );
