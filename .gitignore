@@ -8,4 +8,6 @@ node_modules/**
 build/**
 coverage/**
 packages/**
+umberto-output/**
+docs/api/**/*.json
 lerna-debug.log

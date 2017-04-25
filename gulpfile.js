@@ -25,9 +25,13 @@ gulp.task( 'docs', () => {
 			sourceFiles: [
 				process.cwd() + '/packages/ckeditor5-*/src/**/*.@(js|jsdoc)',
 				'!' + process.cwd() + '/packages/ckeditor5-*/src/lib/**/*.js'
-			],
-			destinationPath: path.join( process.cwd(), 'build', 'docs' )
+			]
 		} );
+} );
+
+gulp.task( 'umberto', () => {
+	return require( 'umberto' )
+		.buildSingleProject( true );
 } );
 
 // Tests. ---------------------------------------------------------------------
