@@ -59,11 +59,18 @@ export default class ImageToolbar extends Plugin {
 		const promises = [];
 		const toolbar = new ToolbarView();
 
+		// Add CSS class to the toolbar.
+		Template.extend( toolbar.template, {
+			attributes: {
+				class: 'ck-editor-toolbar'
+			}
+		} );
+
 		// Add CSS class to the panel.
 		Template.extend( panel.template, {
 			attributes: {
 				class: [
-					'ck-toolbar__container'
+					'ck-toolbar-container'
 				]
 			}
 		} );

@@ -56,6 +56,11 @@ describe( 'ImageToolbar', () => {
 			} );
 	} );
 
+	it( 'should set css classes', () => {
+		expect( panel.element.classList.contains( 'ck-toolbar-container' ) ).to.be.true;
+		expect( panel.content.get( 0 ).element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
+	} );
+
 	it( 'should add ImageBalloonPanel to view body', () => {
 		expect( panel ).to.be.instanceOf( ImageBalloonPanel );
 	} );
