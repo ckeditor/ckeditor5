@@ -97,7 +97,7 @@ function startExternalChanges( editor ) {
 	}
 
 	return wait( 3000 )
-		.then( () => type( [ 0, 36 ], `It's a hug, Michael. I'm hugging you. Guy's a pro. There's only one man I've ever called a coward` ) )
+		.then( () => type( [ 0, 36 ], `This specification defines the 5th major revision of the core language of the World Wide Web. ` ) )
 		.then( () => insertNewLine( [ 0 ] ) )
 		.then( () => type( [ 0, 0 ], 'a' ) )
 		.then( () => insertNewLine( [ 1 ] ) )
