@@ -11,7 +11,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import { getCSRFToken } from './utils';
+import { getCsrfToken } from './utils';
 
 /**
  * Plugin that enables CKFinder uploads in CKEditor 5.
@@ -60,8 +60,18 @@ class Adapter {
 	 * @param {module:utils/locale~Locale#t} t
 	 */
 	constructor( loader, url, t ) {
-		// Save Loader instance to update upload progress.
+		/**
+		 * FileLoader instance to use during upload.
+		 *
+		 * @member {module:upload/filerepository~FileLoader} #loader
+		 */
 		this.loader = loader;
+
+		/**
+		 * Upload URL.
+		 *
+		 * @member {String} #url
+		 */
 		this.url = url;
 
 		this.t = t;
@@ -152,7 +162,7 @@ class Adapter {
 		// Prepare form data.
 		const data = new FormData();
 		data.append( 'upload', this.loader.file );
-		data.append( 'ckCsrfToken', getCSRFToken() );
+		data.append( 'ckCsrfToken', getCsrfToken() );
 
 		// Send request.
 		this.xhr.send( data );

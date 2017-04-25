@@ -20,7 +20,7 @@ const tokenCharset = 'abcdefghijklmnopqrstuvwxyz0123456789';
  *
  * @returns {String}
  */
-export function getCSRFToken() {
+export function getCsrfToken() {
 	let token = getCookie( TOKEN_COOKIE_NAME );
 
 	if ( !token || token.length != TOKEN_LENGTH ) {
@@ -31,17 +31,22 @@ export function getCSRFToken() {
 	return token;
 }
 
+/**
+ * Returns the value of the cookie with a given name or `null` if the cookie is not found.
+ *
+ * @param {String} name
+ * @returns {String|null}
+ */
 export function getCookie( name ) {
 	name = name.toLowerCase();
 	const parts = document.cookie.split( ';' );
-	let pair, key;
 
-	for ( let i = 0; i < parts.length; i++ ) {
-		pair = parts[ i ].split( '=' );
-		key = decodeURIComponent( pair[ 0 ].trim().toLowerCase() );
+	for ( let part of parts ) {
+		const pair = part.split( '=' );
+		const key = decodeURIComponent( pair[ 0 ].trim().toLowerCase() );
 
 		if ( key === name ) {
-			return decodeURIComponent( pair.length > 1 ? pair[ 1 ] : '' );
+			return decodeURIComponent( pair[ 1 ] );
 		}
 	}
 
@@ -64,17 +69,10 @@ export function setCookie( name, value ) {
 // @param {Number} length
 // @returns {string}
 function generateToken( length ) {
-	let randValues = [];
 	let result = '';
+	const randValues = new Uint8Array( length );
 
-	if ( window.crypto && window.crypto.getRandomValues ) {
-		randValues = new Uint8Array( length );
-		window.crypto.getRandomValues( randValues );
-	} else {
-		for ( let i = 0; i < length; i++ ) {
-			randValues.push( Math.floor( Math.random() * 256 ) );
-		}
-	}
+	window.crypto.getRandomValues( randValues );
 
 	for ( let j = 0; j < randValues.length; j++ ) {
 		let character = tokenCharset.charAt( randValues[ j ] % tokenCharset.length );
