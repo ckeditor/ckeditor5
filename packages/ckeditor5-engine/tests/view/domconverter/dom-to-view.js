@@ -169,6 +169,12 @@ describe( 'DomConverter', () => {
 			expect( converter.domToView( textNode ) ).to.be.null;
 		} );
 
+		it( 'should return null for a comment', () => {
+			const comment = document.createComment( 'abc' );
+
+			expect( converter.domToView( comment ) ).to.be.null;
+		} );
+
 		describe( 'it should clear whitespaces', () => {
 			it( 'at the beginning of block element', () => {
 				const domDiv = createElement( document, 'div', {}, [

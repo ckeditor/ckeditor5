@@ -69,12 +69,13 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'DOM nodes type checking', () => {
-		let text, element, documentFragment;
+		let text, element, documentFragment, comment;
 
 		before( () => {
 			text = document.createTextNode( 'test' );
 			element = document.createElement( 'div' );
 			documentFragment = document.createDocumentFragment();
+			comment = document.createComment( 'a' );
 		} );
 
 		describe( 'isText()', () => {
@@ -85,6 +86,7 @@ describe( 'DomConverter', () => {
 			it( 'should return false for other arguments', () => {
 				expect( converter.isText( element ) ).to.be.false;
 				expect( converter.isText( documentFragment ) ).to.be.false;
+				expect( converter.isText( comment ) ).to.be.false;
 				expect( converter.isText( {} ) ).to.be.false;
 			} );
 		} );
@@ -97,6 +99,7 @@ describe( 'DomConverter', () => {
 			it( 'should return false for other arguments', () => {
 				expect( converter.isElement( text ) ).to.be.false;
 				expect( converter.isElement( documentFragment ) ).to.be.false;
+				expect( converter.isText( comment ) ).to.be.false;
 				expect( converter.isElement( {} ) ).to.be.false;
 			} );
 		} );
@@ -109,7 +112,21 @@ describe( 'DomConverter', () => {
 			it( 'should return false for other arguments', () => {
 				expect( converter.isDocumentFragment( text ) ).to.be.false;
 				expect( converter.isDocumentFragment( element ) ).to.be.false;
+				expect( converter.isText( comment ) ).to.be.false;
 				expect( converter.isDocumentFragment( {} ) ).to.be.false;
+			} );
+		} );
+
+		describe( 'isComment()', () => {
+			it( 'should return true for HTML comments', () => {
+				expect( converter.isComment( comment ) ).to.be.true;
+			} );
+
+			it( 'should return false for other arguments', () => {
+				expect( converter.isComment( text ) ).to.be.false;
+				expect( converter.isComment( element ) ).to.be.false;
+				expect( converter.isComment( documentFragment ) ).to.be.false;
+				expect( converter.isComment( {} ) ).to.be.false;
 			} );
 		} );
 	} );

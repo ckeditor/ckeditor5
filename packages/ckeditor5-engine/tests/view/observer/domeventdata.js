@@ -11,18 +11,6 @@ import ViewDocument from '../../../src/view/document';
 describe( 'DomEventData', () => {
 	let viewDocument, viewBody, domRoot;
 
-	// Todo: the whole `before` hook can be removed.
-	// Depends on: https://github.com/ckeditor/ckeditor5-engine/issues/647
-	before( () => {
-		// Use Array.from because of MS Edge (#923).
-		for ( const node of Array.from( document.body.childNodes ) ) {
-			// Remove all <!-- Comments -->
-			if ( node.nodeType === 8 ) {
-				document.body.removeChild( node );
-			}
-		}
-	} );
-
 	beforeEach( () => {
 		viewDocument = new ViewDocument();
 
