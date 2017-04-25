@@ -146,7 +146,8 @@ export default class ViewConversionDispatcher {
 		const consumable = ViewConsumable.createFrom( viewItem );
 		let conversionResult = this._convertItem( viewItem, consumable, additionalData );
 
-		// If conversion failed, `null` will be returned.
+		// We can get a null here if conversion failed (see _convertItem())
+		// or simply if an item could not be converted (e.g. due to the schema).
 		if ( !conversionResult ) {
 			return new ModelDocumentFragment();
 		}
