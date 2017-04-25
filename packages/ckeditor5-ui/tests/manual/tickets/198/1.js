@@ -12,6 +12,7 @@ import ContextualToolbar from '../../../../src/toolbar/contextual/contextualtool
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import Text from '@ckeditor/ckeditor5-engine/src/model/text';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 // Editor for the ContextualToolbar plugin.
 ClassicEditor.create( document.querySelector( '#editor-ct' ), {
@@ -19,7 +20,9 @@ ClassicEditor.create( document.querySelector( '#editor-ct' ), {
 	toolbar: [ 'undo', 'redo' ],
 	contextualToolbar: [ 'bold', 'italic' ]
 } )
-.then( editor => initExternalChangesHandler( editor, document.querySelector( '#button-ct' ) ) )
+.then( editor => {
+	initExternalChangesHandler( editor, document.querySelector( '#button-ct' ) );
+} )
 .catch( err => console.error( err.stack ) );
 
 // Editor for the Link plugin.
@@ -28,29 +31,41 @@ ClassicEditor.create( document.querySelector( '#editor-link' ), {
 	toolbar: [ 'undo', 'redo', 'link' ],
 	contextualToolbar: [ 'bold', 'italic' ]
 } )
-.then( editor => initExternalChangesHandler( editor, document.querySelector( '#button-link' ) ) )
+.then( editor => {
+	initExternalChangesHandler( editor, document.querySelector( '#button-link' ) );
+} )
 .catch( err => console.error( err.stack ) );
 
 // Editor for the Link plugin.
 ClassicEditor.create( document.querySelector( '#editor-image-toolbar' ), {
 	plugins: [ ArticlePresets ],
 	toolbar: [ 'undo', 'redo' ],
-	contextualToolbar: [ 'bold', 'italic' ]
+	image: {
+		toolbar: [ 'imageStyleFull', 'imageStyleSide', '|' , 'imageTextAlternative' ]
+	}
 } )
-.then( editor => initExternalChangesHandler( editor, document.querySelector( '#button-image-toolbar' ) ) )
+.then( editor => {
+	initExternalChangesHandler( editor, document.querySelector( '#button-image-toolbar' ), [ [ 7 ], 1 ] );
+} )
 .catch( err => console.error( err.stack ) );
 
 // Handles button click and starts external changes for the specified editor.
-function initExternalChangesHandler( editor, element ) {
+function initExternalChangesHandler( editor, element, deleteData ) {
 	element.addEventListener( 'click', () => {
 		element.disabled = true;
-		startExternalChanges( editor ).then( () => element.disabled = false );
+		startExternalChanges( editor, deleteData );
 	} );
 }
 
-function startExternalChanges( editor ) {
+function startExternalChanges( editor, deleteData = [ [ 4, 180 ], 35 ] ) {
 	const document = editor.document;
 	const bath = document.batch( 'transparent' );
+
+	function wait( delay ) {
+		return new Promise( ( resolve ) => {
+			setTimeout( () => resolve(), delay );
+		} );
+	}
 
 	function type( path, text ) {
 		return new Promise( ( resolve ) => {
@@ -80,23 +95,26 @@ function startExternalChanges( editor ) {
 	}
 
 	function insertNewLine( path ) {
-		return new Promise( ( resolve ) => {
-			setTimeout( () => {
-				document.enqueueChanges( () => {
-					bath.insert( new Position( document.getRoot(), path  ), new Element( 'paragraph' ) );
-					resolve();
-				} );
-			}, 200 );
+		return wait( 200 ).then( () => {
+			document.enqueueChanges( () => {
+				bath.insert( new Position( document.getRoot(), path ), new Element( 'paragraph' ) );
+			} );
+
+			return Promise.resolve();
 		} );
 	}
 
-	function wait( delay ) {
-		return new Promise( ( resolve ) => {
-			setTimeout( () => resolve(), delay );
+	function removeText( path, howMany ) {
+		return wait( 200 ).then( () => {
+			document.enqueueChanges( () => {
+				bath.remove( Range.createFromPositionAndShift( new Position( document.getRoot(), path ), howMany ) );
+			} );
+
+			return Promise.resolve();
 		} );
 	}
 
-	return wait( 3000 )
+	wait( 3000 )
 		.then( () => type( [ 0, 36 ], `This specification defines the 5th major revision of the core language of the World Wide Web. ` ) )
 		.then( () => insertNewLine( [ 0 ] ) )
 		.then( () => type( [ 0, 0 ], 'a' ) )
@@ -105,5 +123,6 @@ function startExternalChanges( editor ) {
 		.then( () => insertNewLine( [ 2 ] ) )
 		.then( () => type( [ 2, 0 ], 'c' ) )
 		.then( () => insertNewLine( [ 0 ] ) )
-		.then( () => type( [ 0, 0 ], 'EXTERNAL CHANGES WILL START FROM HERE -> ' ) );
+		.then( () => type( [ 0, 0 ], 'DONE :)' ) )
+		.then( () => removeText( deleteData[ 0 ], deleteData[ 1 ] ) );
 }
