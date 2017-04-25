@@ -360,6 +360,8 @@ export default class DomConverter {
 
 				return textData === '' ? null : new ViewText( textData );
 			}
+		} else if ( this.isComment( domNode ) ) {
+			return null;
 		} else {
 			if ( this.getCorrespondingView( domNode ) ) {
 				return this.getCorrespondingView( domNode );
@@ -764,6 +766,16 @@ export default class DomConverter {
 	 */
 	isDocumentFragment( node ) {
 		return node && node.nodeType == Node.DOCUMENT_FRAGMENT_NODE;
+	}
+
+	/**
+	 * Returns `true` when `node.nodeType` equals `Node.COMMENT_NODE`.
+	 *
+	 * @param {Node} node Node to check.
+	 * @returns {Boolean}
+	 */
+	isComment( node ) {
+		return node && node.nodeType == Node.COMMENT_NODE;
 	}
 
 	/**
