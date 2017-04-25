@@ -156,7 +156,7 @@ export default class ContextualToolbar extends Plugin {
 		return this._balloon.add( {
 			view: this.toolbarView,
 			position: this._getBalloonPositionData(),
-			balloonClassName: 'ck-toolbar__container'
+			balloonClassName: 'ck-toolbar-container'
 		} );
 	}
 
