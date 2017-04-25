@@ -23,7 +23,7 @@ describe( 'DomConverter', () => {
 		converter = new DomConverter();
 	} );
 
-	describe( 'bindElements', () => {
+	describe( 'bindElements()', () => {
 		it( 'should bind elements', () => {
 			const domElement = document.createElement( 'p' );
 			const viewElement = new ViewElement( 'p' );
@@ -35,7 +35,7 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'bindDocumentFragments', () => {
+	describe( 'bindDocumentFragments()', () => {
 		it( 'should bind document fragments', () => {
 			const domFragment = document.createDocumentFragment();
 			const viewFragment = new ViewDocumentFragment();
@@ -47,7 +47,7 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'getCorrespondingView', () => {
+	describe( 'getCorrespondingView()', () => {
 		it( 'should return corresponding view element if element is passed', () => {
 			const domElement = document.createElement( 'p' );
 			const viewElement = new ViewElement( 'p' );
@@ -86,7 +86,7 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'getCorrespondingViewElement', () => {
+	describe( 'getCorrespondingViewElement()', () => {
 		it( 'should return corresponding view element', () => {
 			const domElement = document.createElement( 'p' );
 			const viewElement = new ViewElement( 'p' );
@@ -97,7 +97,7 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'getCorrespondingViewDocumentFragment', () => {
+	describe( 'getCorrespondingViewDocumentFragment()', () => {
 		it( 'should return corresponding view document fragment', () => {
 			const domFragment = document.createDocumentFragment();
 			const viewFragment = converter.domToView( domFragment );
@@ -108,7 +108,7 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'getCorrespondingViewText', () => {
+	describe( 'getCorrespondingViewText()', () => {
 		it( 'should return corresponding view text based on sibling', () => {
 			const domImg = document.createElement( 'img' );
 			const domText = document.createTextNode( 'foo' );
@@ -207,7 +207,7 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'getCorrespondingDom', () => {
+	describe( 'getCorrespondingDom()', () => {
 		it( 'should return corresponding DOM element if element was passed', () => {
 			const domElement = document.createElement( 'p' );
 			const viewElement = new ViewElement( 'p' );
@@ -245,7 +245,7 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'getCorrespondingDomElement', () => {
+	describe( 'getCorrespondingDomElement()', () => {
 		it( 'should return corresponding DOM element', () => {
 			const domElement = document.createElement( 'p' );
 			const viewElement = new ViewElement( 'p' );
@@ -256,7 +256,7 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'getCorrespondingDomDocumentFragment', () => {
+	describe( 'getCorrespondingDomDocumentFragment()', () => {
 		it( 'should return corresponding DOM document fragment', () => {
 			const domFragment = document.createDocumentFragment();
 			const viewFragment = new ViewDocumentFragment();

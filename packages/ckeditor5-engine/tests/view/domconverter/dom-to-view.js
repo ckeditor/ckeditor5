@@ -24,7 +24,7 @@ describe( 'DomConverter', () => {
 		converter = new DomConverter();
 	} );
 
-	describe( 'domToView', () => {
+	describe( 'domToView()', () => {
 		it( 'should create tree of view elements from DOM elements', () => {
 			const domImg = createElement( document, 'img' );
 			const domText = document.createTextNode( 'foo' );
@@ -371,7 +371,7 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'domPositionToView', () => {
+	describe( 'domPositionToView()', () => {
 		it( 'should converter position in text', () => {
 			const domText = document.createTextNode( 'foo' );
 			const domB = createElement( document, 'b', null, 'bar' );
@@ -533,7 +533,7 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'domRangeToView', () => {
+	describe( 'domRangeToView()', () => {
 		it( 'should converter DOM range', () => {
 			const domFoo = document.createTextNode( 'foo' );
 			const domBar = document.createTextNode( 'bar' );
@@ -570,7 +570,7 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'domSelectionToView', () => {
+	describe( 'domSelectionToView()', () => {
 		it( 'should convert selection', () => {
 			const domFoo = document.createTextNode( 'foo' );
 			const domBar = document.createTextNode( 'bar' );

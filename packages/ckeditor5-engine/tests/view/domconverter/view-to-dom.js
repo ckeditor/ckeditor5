@@ -25,7 +25,7 @@ describe( 'DomConverter', () => {
 		converter = new DomConverter();
 	} );
 
-	describe( 'viewToDom', () => {
+	describe( 'viewToDom()', () => {
 		it( 'should create tree of DOM elements from view elements', () => {
 			const viewImg = new ViewElement( 'img' );
 			const viewText = new ViewText( 'foo' );
@@ -354,7 +354,7 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'viewChildrenToDom', () => {
+	describe( 'viewChildrenToDom()', () => {
 		it( 'should convert children', () => {
 			const viewP = parse( '<container:p>foo<attribute:b>bar</attribute:b></container:p>' );
 
@@ -398,7 +398,7 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'viewPositionToDom', () => {
+	describe( 'viewPositionToDom()', () => {
 		it( 'should convert the position in the text', () => {
 			const domFoo = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, domFoo );
@@ -538,7 +538,7 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'viewRangeToDom', () => {
+	describe( 'viewRangeToDom()', () => {
 		it( 'should convert view range to DOM range', () => {
 			const domFoo = document.createTextNode( 'foo' );
 			const domP = createElement( document, 'p', null, domFoo );

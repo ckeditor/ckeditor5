@@ -31,7 +31,7 @@ describe( 'DomConverter', () => {
 		} );
 	} );
 
-	describe( 'focus', () => {
+	describe( 'focus()', () => {
 		let viewEditable, domEditable, viewDocument;
 
 		beforeEach( () => {
@@ -77,7 +77,7 @@ describe( 'DomConverter', () => {
 			documentFragment = document.createDocumentFragment();
 		} );
 
-		describe( 'isText', () => {
+		describe( 'isText()', () => {
 			it( 'should return true for Text nodes', () => {
 				expect( converter.isText( text ) ).to.be.true;
 			} );
@@ -89,7 +89,7 @@ describe( 'DomConverter', () => {
 			} );
 		} );
 
-		describe( 'isElement', () => {
+		describe( 'isElement()', () => {
 			it( 'should return true for HTMLElement nodes', () => {
 				expect( converter.isElement( element ) ).to.be.true;
 			} );
@@ -101,7 +101,7 @@ describe( 'DomConverter', () => {
 			} );
 		} );
 
-		describe( 'isDocumentFragment', () => {
+		describe( 'isDocumentFragment()', () => {
 			it( 'should return true for HTMLElement nodes', () => {
 				expect( converter.isDocumentFragment( documentFragment ) ).to.be.true;
 			} );
