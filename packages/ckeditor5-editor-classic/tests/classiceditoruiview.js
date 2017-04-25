@@ -24,6 +24,10 @@ describe( 'ClassicEditorUIView', () => {
 				expect( view.toolbar ).to.be.instanceof( StickyToolbarView );
 			} );
 
+			it( 'is given the right CSS class', () => {
+				expect( view.toolbar.element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
+			} );
+
 			it( 'is given a locate object', () => {
 				expect( view.toolbar.locale ).to.equal( locale );
 			} );

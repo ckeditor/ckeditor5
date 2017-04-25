@@ -10,6 +10,7 @@
 import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import StickyToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/sticky/stickytoolbarview';
+import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 /**
  * Classic editor UI view. Uses inline editable and sticky toolbar, all
@@ -33,6 +34,12 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 		 * @member {module:ui/toolbar/sticky/stickytoolbarview~StickyToolbarView}
 		 */
 		this.toolbar = new StickyToolbarView( locale );
+
+		Template.extend( this.toolbar.template, {
+			attributes: {
+				class: 'ck-editor-toolbar'
+			}
+		} );
 
 		/**
 		 * Editable UI view.
