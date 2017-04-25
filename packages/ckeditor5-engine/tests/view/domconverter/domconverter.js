@@ -99,7 +99,7 @@ describe( 'DomConverter', () => {
 			it( 'should return false for other arguments', () => {
 				expect( converter.isElement( text ) ).to.be.false;
 				expect( converter.isElement( documentFragment ) ).to.be.false;
-				expect( converter.isText( comment ) ).to.be.false;
+				expect( converter.isElement( comment ) ).to.be.false;
 				expect( converter.isElement( {} ) ).to.be.false;
 			} );
 		} );
@@ -112,7 +112,7 @@ describe( 'DomConverter', () => {
 			it( 'should return false for other arguments', () => {
 				expect( converter.isDocumentFragment( text ) ).to.be.false;
 				expect( converter.isDocumentFragment( element ) ).to.be.false;
-				expect( converter.isText( comment ) ).to.be.false;
+				expect( converter.isDocumentFragment( comment ) ).to.be.false;
 				expect( converter.isDocumentFragment( {} ) ).to.be.false;
 			} );
 		} );
