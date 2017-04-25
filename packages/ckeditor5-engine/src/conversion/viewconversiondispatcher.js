@@ -193,7 +193,7 @@ export default class ViewConversionDispatcher {
 			 */
 			log.warn( 'view-conversion-dispatcher-incorrect-result: Dropped incorrect conversion result.', [ input, data.output ] );
 
-			data.output = null;
+			return null;
 		}
 
 		return data.output;
@@ -208,7 +208,7 @@ export default class ViewConversionDispatcher {
 		const viewChildren = Array.from( input.getChildren() );
 
 		// 1. Map those children to model.
-		// 2. Filter out wrong results.
+		// 2. Filter out items that has not been converted or for which conversion returned wrong result (for those warning is logged).
 		// 3. Extract children from document fragments to flatten results.
 		const convertedChildren = viewChildren
 			.map( ( viewChild ) => this._convertItem( viewChild, consumable, additionalData ) )
