@@ -316,7 +316,7 @@ mix( DataController, EmitterMixin );
  *
  * @event insertContent
  * @param {Object} data
- * @param {module:engine/view/documentfragment~DocumentFragment||module:engine/model/item~Item} data.content The content to insert.
+ * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/model/item~Item} data.content The content to insert.
  * @param {module:engine/model/selection~Selection} data.selection Selection into which the content should be inserted.
  * @param {module:engine/model/batch~Batch} [data.batch] Batch to which deltas will be added.
  */
