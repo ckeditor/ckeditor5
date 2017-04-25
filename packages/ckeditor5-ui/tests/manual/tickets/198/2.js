@@ -9,9 +9,8 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
 import ArticlePresets from '@ckeditor/ckeditor5-presets/src/article';
 import ContextualToolbar from '../../../../src/toolbar/contextual/contextualtoolbar';
 
-import Element from '@ckeditor/ckeditor5-engine/src/model/element';
-import Text from '@ckeditor/ckeditor5-engine/src/model/text';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 // Editor for the ContextualToolbar plugin.
 ClassicEditor.create( document.querySelector( '#editor-ct' ), {
@@ -48,69 +47,20 @@ ClassicEditor.create( document.querySelector( '#editor-image-toolbar' ), {
 } )
 .catch( err => console.error( err.stack ) );
 
-export function initExternalChangesHandler( editor, element ) {
+export function initExternalChangesHandler( editor, element, deleteData ) {
 	element.addEventListener( 'click', () => {
 		element.disabled = true;
-		startExternalChanges( editor );
+		startExternalDelete( editor, deleteData );
 	} );
 }
 
-function startExternalChanges( editor ) {
+function startExternalDelete( editor, deleteData = [ [ 1 ], 1 ] ) {
 	const document = editor.document;
 	const bath = document.batch( 'transparent' );
 
-	function wait( delay ) {
-		return new Promise( ( resolve ) => {
-			setTimeout( () => resolve(), delay );
+	setTimeout( () => {
+		document.enqueueChanges( () => {
+			bath.remove( Range.createFromPositionAndShift( new Position( document.getRoot(), deleteData[ 0 ] ), deleteData[ 1 ] ) );
 		} );
-	}
-
-	function type( path, text ) {
-		return new Promise( ( resolve ) => {
-			let position = new Position( document.getRoot(), path );
-			let index = 0;
-
-			function typing() {
-				setTimeout( () => {
-					document.enqueueChanges( () => {
-						bath.insert( position, new Text( text[ index ] ) );
-						position = position.getShiftedBy( 1 );
-
-						let nextLetter = text[ ++index ];
-
-						if ( nextLetter ) {
-							typing( nextLetter );
-						} else {
-							index = 0;
-							resolve();
-						}
-					} );
-				}, 40 );
-			}
-
-			typing();
-		} );
-	}
-
-	function insertNewLine( path ) {
-		return new Promise( ( resolve ) => {
-			setTimeout( () => {
-				document.enqueueChanges( () => {
-					bath.insert( new Position( document.getRoot(), path ), new Element( 'paragraph' ) );
-					resolve();
-				} );
-			}, 200 );
-		} );
-	}
-
-	wait( 3000 )
-		.then( () => type( [ 0, 36 ], `This specification defines the 5th major revision of the core language of the World Wide Web. ` ) )
-		.then( () => insertNewLine( [ 0 ] ) )
-		.then( () => type( [ 0, 0 ], 'a' ) )
-		.then( () => insertNewLine( [ 1 ] ) )
-		.then( () => type( [ 1, 0 ], 'b' ) )
-		.then( () => insertNewLine( [ 2 ] ) )
-		.then( () => type( [ 2, 0 ], 'c' ) )
-		.then( () => insertNewLine( [ 0 ] ) )
-		.then( () => type( [ 0, 0 ], 'DONE :)' ) );
+	}, 3000 );
 }
