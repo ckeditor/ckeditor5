@@ -269,19 +269,21 @@ describe( 'ViewConversionDispatcher', () => {
 				expect( spyText.calledOnce ).to.be.true;
 			} );
 
-			it( 'should return null if element was not converted and log a warning', () => {
+			it( 'should do nothing if element was not converted', () => {
 				sinon.spy( log, 'warn' );
 
 				dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
 					spy();
 
 					expect( conversionApi.convertItem( viewDiv ) ).to.equal( null );
+					expect( conversionApi.convertItem( viewNull ) ).to.equal( null );
 				} );
 
 				dispatcher.convert( new ViewDocumentFragment() );
 
 				expect( spy.calledOnce ).to.be.true;
-				expect( log.warn.calledOnce );
+				expect( spyNull.calledOnce ).to.be.true;
+				expect( log.warn.called ).to.be.false;
 
 				log.warn.restore();
 			} );
@@ -293,15 +295,13 @@ describe( 'ViewConversionDispatcher', () => {
 					spy();
 
 					expect( conversionApi.convertItem( viewArray ) ).to.equal( null );
-					expect( conversionApi.convertItem( viewNull ) ).to.equal( null );
 				} );
 
 				dispatcher.convert( new ViewDocumentFragment() );
 
 				expect( spy.calledOnce ).to.be.true;
 				expect( spyArray.calledOnce ).to.be.true;
-				expect( spyNull.calledOnce ).to.be.true;
-				expect( log.warn.calledOnce );
+				expect( log.warn.calledOnce ).to.be.true;
 
 				log.warn.restore();
 			} );
@@ -330,6 +330,8 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 
 			it( 'should filter out incorrectly converted elements and log warnings', () => {
+				sinon.spy( log, 'warn' );
+
 				dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
 					spy();
 
@@ -346,7 +348,9 @@ describe( 'ViewConversionDispatcher', () => {
 				expect( spy.calledOnce ).to.be.true;
 				expect( spyNull.calledOnce ).to.be.true;
 				expect( spyArray.calledOnce ).to.be.true;
-				expect( log.warn.calledThirce );
+				expect( log.warn.calledOnce ).to.be.true;
+
+				log.warn.restore();
 			} );
 		} );
 	} );

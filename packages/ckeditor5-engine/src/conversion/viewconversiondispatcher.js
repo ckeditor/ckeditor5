@@ -168,7 +168,8 @@ export default class ViewConversionDispatcher {
 	 */
 	_convertItem( input, consumable, additionalData = {} ) {
 		const data = extend( {}, additionalData, {
-			input: input
+			input: input,
+			output: null
 		} );
 
 		if ( input.is( 'element' ) ) {
@@ -180,16 +181,7 @@ export default class ViewConversionDispatcher {
 		}
 
 		// Handle incorrect `data.output`.
-		if ( data.output === undefined ) {
-			/**
-			 * Item has not been converted (output is undefined).
-			 *
-			 * @error view-conversion-dispatcher-item-not-converted
-			 */
-			log.warn( 'view-conversion-dispatcher-item-not-converted: Item has not been converted (output is undefined).', input );
-
-			data.output = null;
-		} else if ( !( data.output instanceof ModelNode || data.output instanceof ModelDocumentFragment ) ) {
+		if ( data.output && !( data.output instanceof ModelNode || data.output instanceof ModelDocumentFragment ) ) {
 			/**
 			 * Dropped incorrect conversion result.
 			 *
@@ -340,7 +332,7 @@ function extractMarkersFromModelFragment( modelItem ) {
  * Every fired event is passed (as first parameter) an object with `output` property. Every event may set and/or
  * modify that property. When all callbacks are done, the final value of `output` property is returned by this method.
  * The `output` must be either {@link module:engine/model/node~Node model node} or
- * {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
+ * {@link module:engine/model/documentfragment~DocumentFragment model document fragment} or `null` (as set by default).
  *
  * @method #convertItem
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
@@ -351,7 +343,8 @@ function extractMarkersFromModelFragment( modelItem ) {
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
  * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
  * events. See also {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element element event}.
- * @returns {*} The result of item conversion, created and modified by callbacks attached to fired event.
+ * @returns {module:engine/model/node~Node|module:engine/model/documentfragment~DocumentFragment|null} The result of item conversion,
+ * created and modified by callbacks attached to fired event, or `null` if the conversion result was incorrect.
  */
 
 /**
@@ -366,5 +359,6 @@ function extractMarkersFromModelFragment( modelItem ) {
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
  * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
  * events. See also {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element element event}.
- * @returns {module:engine/model/documentfragment} Model document fragment containing results of conversion of all children of given item.
+ * @returns {module:engine/model/documentfragment~DocumentFragment} Model document fragment containing results of conversion
+ * of all children of given item.
  */
