@@ -1,7 +1,7 @@
 // Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 // For licensing, see LICENSE.md or http://ckeditor.com/license
 
-@mixin ck-editor-toolbar {
+.ck-editor-toolbar {
 	// Toolbars should not react to ck-rounded-corners() mixin.
 	border-radius: 0;
 
@@ -25,4 +25,9 @@
 			background: ck-color( 'background' );
 		}
 	}
+
+	.ck-toolbar-container & {
+		background: ck-color( 'foreground' );
+	}
 }
+
