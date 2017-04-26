@@ -13,7 +13,7 @@ import ImageUploadProgress from './imageuploadprogress';
 
 /**
  * Image upload plugin.
- * Requires two plugins:
+ * This plugin do not do anything directly, but loads set of specific plugins to enable image uploading:
  * * {@link module:upload/imageuploadbutton~ImageUploadButton},
  * * {@link module:upload/imageuploadprogress~ImageUploadProgress}.
  *
