@@ -214,7 +214,7 @@ describe( 'Image converters', () => {
 			} );
 
 			// Make sure to pass document element to the converter and fire this callback after "normal" image callback.
-			dispatcher.on( 'element:img', convertHoistableImage( document ), { priority: 'low' } );
+			dispatcher.on( 'element:img', convertHoistableImage, { priority: 'low' } );
 
 			viewImg = new ViewEmptyElement( 'img', { src: 'foo.jpg' } );
 
@@ -289,7 +289,7 @@ describe( 'Image converters', () => {
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
 
 				// Make sure to fire this callback after "normal" div callback.
-				dispatcher.on( 'element:div', hoistImage(), { priority: 'low' } );
+				dispatcher.on( 'element:div', hoistImage, { priority: 'low' } );
 
 				// If img view element is converted it must have been converted thanks to convertHoistableImage,
 				// because image is not allowed in div.
@@ -310,7 +310,7 @@ describe( 'Image converters', () => {
 				schema.registerItem( 'div', '$block' );
 
 				dispatcher.on( 'element:p', convertToModelFragment() );
-				dispatcher.on( 'element:p', hoistImage(), { priority: 'low' } );
+				dispatcher.on( 'element:p', hoistImage, { priority: 'low' } );
 
 				const viewDiv = new ViewContainerElement( 'p', null, [ 'foo', viewImg, 'bar' ] );
 

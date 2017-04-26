@@ -103,41 +103,38 @@ function modelToViewAttributeConverter( evt, data, consumable, conversionApi ) {
 const autohoistedImages = new WeakSet();
 
 /**
+ * Converter that converts `<img>` {@link module:engine/view/element~Element view elements} that can be hoisted.
+ *
  * If an `<img>` view element has not been converted, this converter checks if that element could be converted in any
  * context "above". If it could, the converter converts the `<img>` element even though it is not allowed in current
  * context and marks it to be autohoisted. Then {@link module:image/image/converters~hoistImage another converter}
  * moves the converted element to the correct location.
- *
- * @param {module:engine/model/document~Document} doc Model document in which conversion takes place.
- * @returns {Function}
  */
-export function convertHoistableImage( doc ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		const img = data.input;
+export function convertHoistableImage( evt, data, consumable, conversionApi ) {
+	const img = data.input;
 
-		// If the image has not been consumed (converted)...
-		if ( !consumable.test( img, { name: true, attribute: [ 'src' ] } ) ) {
-			return;
-		}
-		// At this point the image has not been converted because it was not allowed by schema. It might be in wrong
-		// context or missing an attribute, but above we already checked whether the image has mandatory src attribute.
+	// If the image has not been consumed (converted)...
+	if ( !consumable.test( img, { name: true, attribute: [ 'src' ] } ) ) {
+		return;
+	}
+	// At this point the image has not been converted because it was not allowed by schema. It might be in wrong
+	// context or missing an attribute, but above we already checked whether the image has mandatory src attribute.
 
-		// If the image would be allowed if it was in one of its ancestors...
-		const allowedContext = _findAllowedContext( { name: 'image', attributes: [ 'src' ] }, data.context, doc.schema );
+	// If the image would be allowed if it was in one of its ancestors...
+	const allowedContext = _findAllowedContext( { name: 'image', attributes: [ 'src' ] }, data.context, conversionApi.schema );
 
-		if ( !allowedContext ) {
-			return;
-		}
+	if ( !allowedContext ) {
+		return;
+	}
 
-		// Convert it in that context...
-		const newData = Object.assign( {}, data );
-		newData.context = allowedContext;
+	// Convert it in that context...
+	const newData = Object.assign( {}, data );
+	newData.context = allowedContext;
 
-		data.output = conversionApi.convertItem( img, consumable, newData );
+	data.output = conversionApi.convertItem( img, consumable, newData );
 
-		// And mark that image to be hoisted.
-		autohoistedImages.add( data.output );
-	};
+	// And mark that image to be hoisted.
+	autohoistedImages.add( data.output );
 }
 
 // Basing on passed `context`, searches for "closest" context in which model element represented by `modelData`
@@ -179,105 +176,109 @@ function _findAllowedContext( modelData, context, schema ) {
 }
 
 /**
+ * Converter that hoist `image` {@link module:engine/model/element~Element model elements} to allowed context.
+ *
  * Looks through all children of converted {@link module:engine/view/element~Element view element} if it
- * has been converted to {@link module:engine/model/element~Element model element}. Breaks converted
- * element if `image` to-be-hoisted is found.
+ * has been converted to model element. Breaks model element if `image` to-be-hoisted is found.
+ *
+ *		<div><paragraph>x<image src="foo.jpg"></image>x</paragraph></div> ->
+ *		<div><paragraph>x</paragraph></div><image src="foo.jpg"></image><div><paragraph>x</paragraph></div>
+ *
+ * This works deeply, as shown in example. This converter added for `paragraph` element will break `paragraph` element and
+ * pass {@link module:engine/model/documentfragment~DocumentFragment document fragment} in `data.output`. Then,
+ * `div` will be handled by this converter and will be once again broken to hoist `image` up to the root.
  *
  * **Note:** This converter should be fired only after the view element has been already converted, meaning that
  * `data.output` for that view element should be already generated when this converter is fired.
- *
- * @returns {Function}
  */
-export function hoistImage() {
-	return ( evt, data ) => {
-		// If this element has been properly converted...
-		if ( !data.output ) {
-			return;
-		}
+export function hoistImage( evt, data ) {
+	// If this element has been properly converted...
+	if ( !data.output ) {
+		return;
+	}
 
-		// And it is an element...
-		// (If it is document fragment autohoisting does not have to break anything anyway.)
-		// (And if it is text there are no children here.)
-		if ( !data.output.is( 'element' ) ) {
-			return;
-		}
+	// And it is an element...
+	// (If it is document fragment autohoisting does not have to break anything anyway.)
+	// (And if it is text there are no children here.)
+	if ( !data.output.is( 'element' ) ) {
+		return;
+	}
 
-		// This will hold newly generated output. At the beginning it is only the original element.
-		let newOutput = [];
-		// Flag describing whether original element had any non-autohoisted children. If not, it will not be
-		// included in `newOutput` and this will have to be fixed.
-		let hasNonAutohoistedChildren = false;
+	// This will hold newly generated output. At the beginning it is only the original element.
+	let newOutput = [];
+	// Flag describing whether original element had any non-autohoisted children. If not, it will not be
+	// included in `newOutput` and this will have to be fixed.
+	let hasNonAutohoistedChildren = false;
 
-		// Check if any of its children is to be hoisted...
-		// Start from the last child - it is easier to break that way.
-		for ( let i = data.output.childCount - 1; i >= 0; i-- ) {
-			const child = data.output.getChild( i ) ;
+	// Check if any of its children is to be hoisted...
+	// Start from the last child - it is easier to break that way.
+	for ( let i = data.output.childCount - 1; i >= 0; i-- ) {
+		const child = data.output.getChild( i ) ;
 
-			if ( autohoistedImages.has( child ) ) {
-				// Break autohoisted element's parent:
-				// <parent>{ left-children... }<authoistedElement />{ right-children... }</parent>   --->
-				// <parent>{ left-children... }</parent><autohoistedElement /><parent>{ right-children... }</parent>
-				//
-				// or
-				//
-				// <parent>{ left-children... }<autohoistedElement /></parent> --->
-				// <parent>{ left-children... }</parent><autohoistedElement />
-				//
-				// or
-				//
-				// <parent><autohoistedElement />{ right-children... }</parent> --->
-				// <autohoistedElement /><parent>{ right-children... }</parent>
-				//
-				// or
-				//
-				// <parent><autohoistedElement /></parent> ---> <autohoistedElement />
+		if ( autohoistedImages.has( child ) ) {
+			// Break autohoisted element's parent:
+			// <parent>{ left-children... }<authoistedElement />{ right-children... }</parent>   --->
+			// <parent>{ left-children... }</parent><autohoistedElement /><parent>{ right-children... }</parent>
+			//
+			// or
+			//
+			// <parent>{ left-children... }<autohoistedElement /></parent> --->
+			// <parent>{ left-children... }</parent><autohoistedElement />
+			//
+			// or
+			//
+			// <parent><autohoistedElement />{ right-children... }</parent> --->
+			// <autohoistedElement /><parent>{ right-children... }</parent>
+			//
+			// or
+			//
+			// <parent><autohoistedElement /></parent> ---> <autohoistedElement />
 
-				// Check how many children has to be in broken part of parent.
-				const brokenChildrenCount = data.output.childCount - i - 1;
-				let brokenParent = null;
+			// Check how many children has to be in broken part of parent.
+			const brokenChildrenCount = data.output.childCount - i - 1;
+			let brokenParent = null;
 
-				// If there are any children to be broken, created broken parent part and move appropriate children to it.
-				if ( brokenChildrenCount > 0 ) {
-					brokenParent = data.output.clone( false );
-					brokenParent.appendChildren( data.output.removeChildren( i + 1, brokenChildrenCount ) );
-				}
-
-				// Remove autohoisted element from its parent.
-				child.remove();
-
-				// Break "leading" `data.output` in `newOutput` into one or more pieces:
-				// Remove "leading" `data.output` (note that `data.output` is always first item in `newOutput`).
-				newOutput.shift();
-
-				// Add "broken parent" at the beginning, if it was created.
-				if ( brokenParent ) {
-					newOutput.unshift( brokenParent );
-				}
-
-				// Add autohoisted element at the beginning.
-				newOutput.unshift( child );
-
-				// Add `data.output` at the beginning, if there is anything left in it.
-				if ( data.output.childCount > 0 ) {
-					newOutput.unshift( data.output );
-				}
-			} else {
-				hasNonAutohoistedChildren = true;
-			}
-		}
-
-		// If output has changed...
-		if ( newOutput.length ) {
-			if ( !hasNonAutohoistedChildren ) {
-				// Fix scenario where original element has been completely removed from results:
-				// input:				<parent><autohoistedElement /><autohoistedElement /></parent>
-				// after autohoisting:	<autohoistedElement /><autohoistedElement />
-				// after this fix:		<autohoistedElement /><autohoistedElement /><parent></parent>
-				newOutput.push( data.output );
+			// If there are any children to be broken, created broken parent part and move appropriate children to it.
+			if ( brokenChildrenCount > 0 ) {
+				brokenParent = data.output.clone( false );
+				brokenParent.appendChildren( data.output.removeChildren( i + 1, brokenChildrenCount ) );
 			}
 
-			// Normalize new output and set is as result output.
-			data.output = new ModelDocumentFragment( newOutput );
+			// Remove autohoisted element from its parent.
+			child.remove();
+
+			// Break "leading" `data.output` in `newOutput` into one or more pieces:
+			// Remove "leading" `data.output` (note that `data.output` is always first item in `newOutput`).
+			newOutput.shift();
+
+			// Add "broken parent" at the beginning, if it was created.
+			if ( brokenParent ) {
+				newOutput.unshift( brokenParent );
+			}
+
+			// Add autohoisted element at the beginning.
+			newOutput.unshift( child );
+
+			// Add `data.output` at the beginning, if there is anything left in it.
+			if ( data.output.childCount > 0 ) {
+				newOutput.unshift( data.output );
+			}
+		} else {
+			hasNonAutohoistedChildren = true;
 		}
-	};
+	}
+
+	// If output has changed...
+	if ( newOutput.length ) {
+		if ( !hasNonAutohoistedChildren ) {
+			// Fix scenario where original element has been completely removed from results:
+			// input:				<parent><autohoistedElement /><autohoistedElement /></parent>
+			// after autohoisting:	<autohoistedElement /><autohoistedElement />
+			// after this fix:		<autohoistedElement /><autohoistedElement /><parent></parent>
+			newOutput.push( data.output );
+		}
+
+		// Normalize new output and set is as result output.
+		data.output = new ModelDocumentFragment( newOutput );
+	}
 }

@@ -59,8 +59,8 @@ export default class ImageEngine extends Plugin {
 			.from( { name: 'img', attribute: { src: /./ } } )
 			.toElement( ( viewImage ) => new ModelElement( 'image', { src: viewImage.getAttribute( 'src' ) } ) );
 
-		data.viewToModel.on( 'element:img', convertHoistableImage( doc ), { priority: 'low' } );
-		data.viewToModel.on( 'element', hoistImage(), { priority: 'low' } );
+		data.viewToModel.on( 'element:img', convertHoistableImage, { priority: 'low' } );
+		data.viewToModel.on( 'element', hoistImage, { priority: 'low' } );
 
 		// Build converter for alt attribute.
 		// Note that by default attribute converters are added with `low` priority.
