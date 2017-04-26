@@ -65,7 +65,7 @@ gulp.task( 'translations:download', () => {
 
 gulp.task( 'changelog:dependencies', () => {
 	return require( '@ckeditor/ckeditor5-dev-env' )
-		.generateChangelogForDependencies( {
+		.generateChangelogForSubRepositories( {
 			cwd: process.cwd(),
 			packages: 'packages'
 		} );
@@ -73,7 +73,7 @@ gulp.task( 'changelog:dependencies', () => {
 
 gulp.task( 'release:dependencies', () => {
 	return require( '@ckeditor/ckeditor5-dev-env' )
-		.releaseDependencies( {
+		.releaseSubRepositories( {
 			cwd: process.cwd(),
 			packages: 'packages'
 		} );
