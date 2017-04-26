@@ -150,6 +150,9 @@ describe( 'Heading', () => {
 			it( 'works for the #buttonView', () => {
 				const buttonView = dropdown.buttonView;
 
+				// Setting manually paragraph.value to `false` because there might be some content in editor
+				// after initialisation (for example empty <p></p> inserted when editor is empty).
+				commands.paragraph.value = false;
 				expect( buttonView.label ).to.equal( 'Wybierz nagłówek' );
 				expect( buttonView.tooltip ).to.equal( 'Nagłówek' );
 
