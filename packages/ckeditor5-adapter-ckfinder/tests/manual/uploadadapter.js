@@ -20,13 +20,12 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import ImageUpload from '@ckeditor/ckeditor5-upload/src/imageupload';
-import ImageUploadProgress from '@ckeditor/ckeditor5-upload/src/imageuploadprogress';
 import CKFinderUploadAdapter from '../../src/uploadadapter';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	plugins: [
 		Enter, Typing, Paragraph, Heading, Undo, Bold, Italic, Heading, List, Image, ImageToolbar, Clipboard,
-		ImageCaption, ImageStyle, ImageUpload, CKFinderUploadAdapter, ImageUploadProgress
+		ImageCaption, ImageStyle, ImageUpload, CKFinderUploadAdapter
 	],
 	toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList', 'insertImage' ],
 	ckfinder: {
