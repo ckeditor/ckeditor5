@@ -12,6 +12,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import { getCsrfToken } from './utils';
+import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * Plugin that enables CKFinder uploads in CKEditor 5.
@@ -38,7 +39,16 @@ export default class CKFinderUploadAdapter extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const url = this.editor.config.get( 'ckfinder.uploadUrl' ) || '';
+		const url = this.editor.config.get( 'ckfinder.uploadUrl' );
+
+		if ( !url ) {
+			/**
+			 * Please provide `ckfinder.uploadUrl` config option.
+			 *
+			 * @error ckfinder-upload-adapter-no-config
+			 */
+			log.warn( 'ckfinder-upload-adapter-no-config: Please provide "ckfinder.uploadUrl" config option.' );
+		}
 
 		// Register CKFinderAdapter
 		this.editor.plugins.get( FileRepository ).createAdapter = loader => new Adapter( loader, url, this.editor.t );
@@ -74,6 +84,11 @@ class Adapter {
 		 */
 		this.url = url;
 
+		/**
+		 * Locale translation method.
+		 *
+		 * @member {module:utils/locale~Locale#t} #t
+		 */
 		this.t = t;
 	}
 
@@ -143,6 +158,7 @@ class Adapter {
 		} );
 
 		// Upload progress when it's supported.
+		/* istanbul ignore else */
 		if ( xhr.upload ) {
 			xhr.upload.addEventListener( 'progress', ( evt ) => {
 				if ( evt.lengthComputable ) {
