@@ -1,7 +1,7 @@
 {
 	"name": "CKEditor 5",
 	"slug": "ckeditor5",
-	"hexo-config": "hexo-custom-config.json",
+	"hexo-config": "docs/hexo-custom-config.json",
 	"path": "docs",
 	"groups": [
 		{

@@ -31,7 +31,10 @@ gulp.task( 'docs', () => {
 
 gulp.task( 'umberto', () => {
 	return require( 'umberto' )
-		.buildSingleProject( true );
+		.buildSingleProject( {
+			configDir: 'docs',
+			clean: true
+		} );
 } );
 
 // Tests. ---------------------------------------------------------------------
