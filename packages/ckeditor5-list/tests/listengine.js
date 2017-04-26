@@ -3152,15 +3152,16 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'model remove converter should not fire if change was already consumed', () => {
-			editor.editing.modelToView.on( 'remove', ( evt, data, consumable ) => {
+			editor.editing.modelToView.on( 'remove:listItem', ( evt, data, consumable ) => {
 				consumable.consume( data.item, 'remove' );
 			}, { priority: 'highest' } );
 
-			setModelData( modelDoc, '<listItem indent="0" type="bulleted"></listItem>' );
+			// Paragraph is needed to prevent autoparagraphing of empty editor.
+			setModelData( modelDoc, '<paragraph>x</paragraph><listItem indent="0" type="bulleted"></listItem>' );
 
-			modelDoc.batch().remove( modelRoot.getChild( 0 ) );
+			modelDoc.batch().remove( modelRoot.getChild( 1 ) );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li></li></ul>' );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>x</p><ul><li></li></ul>' );
 		} );
 
 		it( 'model change type converter should not fire if change was already consumed', () => {
@@ -3192,9 +3193,9 @@ describe( 'ListEngine', () => {
 				consumable.consume( data.input, { name: true } );
 			}, { priority: 'highest' } );
 
-			editor.setData( '<ul><li></li></ul>' );
+			editor.setData( '<p></p><ul><li></li></ul>' );
 
-			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( '' );
+			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
 		} );
 
 		it( 'view ul converter should not fire if change was already consumed', () => {
@@ -3202,9 +3203,9 @@ describe( 'ListEngine', () => {
 				consumable.consume( data.input, { name: true } );
 			}, { priority: 'highest' } );
 
-			editor.setData( '<ul><li></li></ul>' );
+			editor.setData( '<p></p><ul><li></li></ul>' );
 
-			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( '' );
+			expect( getModelData( modelDoc, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
 		} );
 
 		it( 'view converter should pass model document fragment in data.output', () => {
