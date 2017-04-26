@@ -8,13 +8,14 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageUploadEngine from './imageuploadengine';
-import FileDialogButtonView from './ui/filedialogbuttonview';
-import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
+import ImageUploadButton from './imageuploadbutton';
+import ImageUploadProgress from './imageuploadprogress';
 
 /**
  * Image upload plugin.
- * Adds `insertImage` button to UI component factory.
+ * This plugin do not do anything directly, but loads set of specific plugins to enable image uploading:
+ * * {@link module:upload/imageuploadbutton~ImageUploadButton},
+ * * {@link module:upload/imageuploadprogress~ImageUploadProgress}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -23,34 +24,6 @@ export default class ImageUpload extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageUploadEngine ];
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-		const editor = this.editor;
-		const t = editor.t;
-
-		editor.ui.componentFactory.add( 'insertImage', ( locale ) => {
-			const view = new FileDialogButtonView( locale );
-
-			view.set( {
-				label: t( 'Insert image' ),
-				icon: imageIcon,
-				tooltip: true,
-				acceptedType: 'image/*',
-				allowMultipleFiles: true
-			} );
-
-			view.on( 'done', ( evt, files ) => {
-				for ( const file of files ) {
-					editor.execute( 'imageUpload', { file: file } );
-				}
-			} );
-
-			return view;
-		} );
+		return [ ImageUploadButton, ImageUploadProgress ];
 	}
 }

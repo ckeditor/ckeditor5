@@ -67,7 +67,7 @@ export default class FileRepository extends Plugin {
 		/**
 		 * Number of total bytes to upload.
 		 * It might be different than the file size because of headers and additional data.
-		 * It contains `null` if value is not available yet, so it's better to use {@link #uploadPercent} to monitor
+		 * It contains `null` if value is not available yet, so it's better to use {@link #uploadedPercent} to monitor
 		 * the progress.
 		 *
 		 * @readonly
@@ -317,7 +317,7 @@ class FileLoader {
 	}
 
 	/**
-	 * Reads file using provided {@link module:upload/filereader~Adapter}.
+	 * Reads file using provided {@link module:upload/filerepository~Adapter}.
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `filerepository-upload-wrong-status` when status
 	 * is different than `idle`.
 	 * Example usage:

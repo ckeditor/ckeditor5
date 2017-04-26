@@ -8,11 +8,9 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 import FileRepository from './filerepository';
 import ImageUploadCommand from './imageuploadcommand';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import uploadingPlaceholder from '../theme/icons/image_placeholder.svg';
 import { isImageType } from './utils';
 
 /**
@@ -21,18 +19,6 @@ import { isImageType } from './utils';
  * @extends module:core/plugin~Plugin
  */
 export default class ImageUploadEngine extends Plugin {
-	constructor( editor ) {
-		super( editor );
-
-		/**
-		 * Image's placeholder that is displayed before real image data can be accessed.
-		 *
-		 * @protected
-		 * @member {String} #placeholder
-		 */
-		this.placeholder = 'data:image/svg+xml;utf8,' + uploadingPlaceholder;
-	}
-
 	/**
 	 * @inheritDoc
 	 */
@@ -50,6 +36,7 @@ export default class ImageUploadEngine extends Plugin {
 
 		// Setup schema to allow uploadId for images.
 		schema.allow( { name: 'image', attributes: [ 'uploadId' ], inside: '$root' } );
+		schema.allow( { name: 'image', attributes: [ 'uploadStatus' ], inside: '$root' } );
 		schema.requireAttributes( 'image', [ 'uploadId' ] );
 
 		// Register imageUpload command.
@@ -85,19 +72,6 @@ export default class ImageUploadEngine extends Plugin {
 				}
 			}
 		} );
-
-		// Model to view converter for image's `uploadId` attribute.
-		editor.editing.modelToView.on( 'addAttribute:uploadId:image', ( evt, data, consumable ) => {
-			if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
-				return;
-			}
-
-			const modelImage = data.item;
-			const viewFigure = editor.editing.mapper.toViewElement( modelImage );
-			const viewImg = viewFigure.getChild( 0 );
-
-			viewImg.setAttribute( 'src', this.placeholder );
-		} );
 	}
 
 	/**
@@ -115,17 +89,28 @@ export default class ImageUploadEngine extends Plugin {
 		const fileRepository = editor.plugins.get( FileRepository );
 		const notification = editor.plugins.get( Notification );
 
+		doc.enqueueChanges( () => {
+			batch.setAttribute( imageElement, 'uploadStatus', 'reading' );
+		} );
+
 		loader.read()
 			.then( data => {
 				const viewFigure = editor.editing.mapper.toViewElement( imageElement );
 				const viewImg = viewFigure.getChild( 0 );
+				const promise = loader.upload();
+
 				viewImg.setAttribute( 'src', data );
 				editor.editing.view.render();
 
-				return loader.upload();
+				doc.enqueueChanges( () => {
+					batch.setAttribute( imageElement, 'uploadStatus', 'uploading' );
+				} );
+
+				return promise;
 			} )
 			.then( data => {
 				doc.enqueueChanges( () => {
+					batch.setAttribute( imageElement, 'uploadStatus', 'complete' );
 					batch.setAttribute( imageElement, 'src', data.original );
 				} );
 
@@ -143,6 +128,7 @@ export default class ImageUploadEngine extends Plugin {
 		function clean() {
 			doc.enqueueChanges( () => {
 				batch.removeAttribute( imageElement, 'uploadId' );
+				batch.removeAttribute( imageElement, 'uploadStatus' );
 			} );
 
 			fileRepository.destroyLoader( loader );

@@ -29,7 +29,7 @@ export default class FileDialogButtonView extends ButtonView {
 		 * Hidden input view used to execute file dialog. It will be hidden and added to the end of `document.body`.
 		 *
 		 * @protected
-		 * @member module:upload/ui/filedialogbuttonview~FileDialogButtonView #fileInputView
+		 * @member module:upload/ui/filedialogbuttonview~FileInputView #fileInputView
 		 */
 		this.fileInputView = new FileInputView( locale );
 
