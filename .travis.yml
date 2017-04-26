@@ -17,6 +17,6 @@ before_install:
 install:
   - npm install mgit2 lerna @ckeditor/ckeditor5-dev-tests
   - mgit bootstrap --resolver-url-template="https://github.com/\${ path }.git"
-  - lerna bootstrap
+  - lerna bootstrap --concurrency=1
 script:
   - npm t
