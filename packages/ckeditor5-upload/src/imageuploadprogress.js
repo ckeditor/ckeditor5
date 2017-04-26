@@ -12,6 +12,7 @@ import { eventNameToConsumableType } from '@ckeditor/ckeditor5-engine/src/conver
 import FileRepository from './filerepository';
 import uploadingPlaceholder from '../theme/icons/image_placeholder.svg';
 import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
+import ImageUploadEngine from './imageuploadengine';
 
 import '../theme/imageuploadprogress.scss';
 
@@ -22,6 +23,13 @@ import '../theme/imageuploadprogress.scss';
  * @extends module:core/plugin~Plugin
  */
 export default class ImageUploadProgress extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ ImageUploadEngine ];
+	}
+
 	constructor( editor ) {
 		super( editor );
 

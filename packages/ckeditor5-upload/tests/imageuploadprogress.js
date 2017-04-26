@@ -31,7 +31,7 @@ describe( 'ImageUploadProgress', () => {
 		} );
 
 		return ClassicTestEditor.create( {
-			plugins: [ ImageEngine, ImageUploadEngine, Paragraph, ImageUploadProgress ]
+			plugins: [ ImageEngine, Paragraph, ImageUploadProgress ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
@@ -46,6 +46,10 @@ describe( 'ImageUploadProgress', () => {
 				return adapterMock;
 			};
 		} );
+	} );
+
+	it( 'should include ImageUploadEngine', () => {
+		expect( editor.plugins.get( ImageUploadEngine ) ).to.be.instanceOf( ImageUploadEngine );
 	} );
 
 	it( 'should convert image\'s "reading" uploadStatus attribute', () => {

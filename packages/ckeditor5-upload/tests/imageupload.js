@@ -7,10 +7,9 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
 import Image from '@ckeditor/ckeditor5-image/src/image';
-import FileDialogButtonView from '../src/ui/filedialogbuttonview';
 import ImageUpload from '../src/imageupload';
-import ImageUploadEngine from '../src/imageuploadengine';
-import { createNativeFileMock } from './_utils/mocks';
+import ImageUploadProgress from '../src/imageuploadprogress';
+import ImageUploadButton from '../src/imageuploadbutton';
 
 describe( 'ImageUpload', () => {
 	let editor;
@@ -27,25 +26,12 @@ describe( 'ImageUpload', () => {
 		} );
 	} );
 
-	it( 'should load ImageUploadEngine', () => {
-		expect( editor.plugins.get( ImageUploadEngine ) ).to.be.instanceOf( ImageUploadEngine );
+	it( 'should include ImageUploadProgress', () => {
+		expect( editor.plugins.get( ImageUploadProgress ) ).to.be.instanceOf( ImageUploadProgress );
 	} );
 
-	it( 'should register insertImage button', () => {
-		const button = editor.ui.componentFactory.create( 'insertImage' );
-
-		expect( button ).to.be.instanceOf( FileDialogButtonView );
-	} );
-
-	it( 'should execute imageUpload command', () => {
-		const executeStub = sinon.stub( editor, 'execute' );
-		const button = editor.ui.componentFactory.create( 'insertImage' );
-		const files = [ createNativeFileMock() ];
-
-		button.fire( 'done', files );
-		sinon.assert.calledOnce( executeStub );
-		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
-		expect( executeStub.firstCall.args[ 1 ].file ).to.equal( files[ 0 ] );
+	it( 'should include ImageUploadButton', () => {
+		expect( editor.plugins.get( ImageUploadButton ) ).to.be.instanceOf( ImageUploadButton );
 	} );
 } );
 
