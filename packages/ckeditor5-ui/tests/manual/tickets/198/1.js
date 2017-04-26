@@ -12,58 +12,49 @@ import ContextualToolbar from '../../../../src/toolbar/contextual/contextualtool
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import Text from '@ckeditor/ckeditor5-engine/src/model/text';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
-// Editor for the ContextualToolbar plugin.
-ClassicEditor.create( document.querySelector( '#editor-ct' ), {
+// Editor for the external insert.
+ClassicEditor.create( document.querySelector( '#editor-insert' ), {
 	plugins: [ ArticlePresets, ContextualToolbar ],
 	toolbar: [ 'undo', 'redo' ],
 	contextualToolbar: [ 'bold', 'italic' ]
 } )
 .then( editor => {
-	initExternalChangesHandler( editor, document.querySelector( '#button-ct' ) );
+	const element = document.querySelector( '#button-insert' );
+
+	element.addEventListener( 'click', () => {
+		element.disabled = true;
+		startExternalInsert( editor );
+	} );
 } )
 .catch( err => console.error( err.stack ) );
 
-// Editor for the Link plugin.
-ClassicEditor.create( document.querySelector( '#editor-link' ), {
-	plugins: [ ArticlePresets ],
-	toolbar: [ 'undo', 'redo', 'link' ],
+// Editor for the external delete.
+ClassicEditor.create( document.querySelector( '#editor-delete' ), {
+	plugins: [ ArticlePresets, ContextualToolbar ],
+	toolbar: [ 'undo', 'redo' ],
 	contextualToolbar: [ 'bold', 'italic' ]
 } )
 .then( editor => {
-	initExternalChangesHandler( editor, document.querySelector( '#button-link' ) );
-} )
-.catch( err => console.error( err.stack ) );
+	const element = document.querySelector( '#button-delete' );
 
-// Editor for the Link plugin.
-ClassicEditor.create( document.querySelector( '#editor-image-toolbar' ), {
-	plugins: [ ArticlePresets ],
-	toolbar: [ 'undo', 'redo' ],
-	image: {
-		toolbar: [ 'imageStyleFull', 'imageStyleSide', '|' , 'imageTextAlternative' ]
-	}
-} )
-.then( editor => {
-	initExternalChangesHandler( editor, document.querySelector( '#button-image-toolbar' ) );
-} )
-.catch( err => console.error( err.stack ) );
-
-export function initExternalChangesHandler( editor, element ) {
 	element.addEventListener( 'click', () => {
 		element.disabled = true;
-		startExternalChanges( editor );
+		startExternalDelete( editor );
+	} );
+} )
+.catch( err => console.error( err.stack ) );
+
+function wait( delay ) {
+	return new Promise( ( resolve ) => {
+		setTimeout( () => resolve(), delay );
 	} );
 }
 
-function startExternalChanges( editor ) {
+function startExternalInsert( editor ) {
 	const document = editor.document;
 	const bath = document.batch( 'transparent' );
-
-	function wait( delay ) {
-		return new Promise( ( resolve ) => {
-			setTimeout( () => resolve(), delay );
-		} );
-	}
 
 	function type( path, text ) {
 		return new Promise( ( resolve ) => {
@@ -71,7 +62,7 @@ function startExternalChanges( editor ) {
 			let index = 0;
 
 			function typing() {
-				setTimeout( () => {
+				wait( 40 ).then( () => {
 					document.enqueueChanges( () => {
 						bath.insert( position, new Text( text[ index ] ) );
 						position = position.getShiftedBy( 1 );
@@ -85,7 +76,7 @@ function startExternalChanges( editor ) {
 							resolve();
 						}
 					} );
-				}, 40 );
+				} );
 			}
 
 			typing();
@@ -93,13 +84,12 @@ function startExternalChanges( editor ) {
 	}
 
 	function insertNewLine( path ) {
-		return new Promise( ( resolve ) => {
-			setTimeout( () => {
-				document.enqueueChanges( () => {
-					bath.insert( new Position( document.getRoot(), path ), new Element( 'paragraph' ) );
-					resolve();
-				} );
-			}, 200 );
+		return wait( 200 ).then( () => {
+			document.enqueueChanges( () => {
+				bath.insert( new Position( document.getRoot(), path ), new Element( 'paragraph' ) );
+			} );
+
+			return Promise.resolve();
 		} );
 	}
 
@@ -113,4 +103,15 @@ function startExternalChanges( editor ) {
 		.then( () => type( [ 2, 0 ], 'c' ) )
 		.then( () => insertNewLine( [ 0 ] ) )
 		.then( () => type( [ 0, 0 ], 'DONE :)' ) );
+}
+
+function startExternalDelete( editor, deleteData = [ [ 1 ], 1 ] ) {
+	const document = editor.document;
+	const bath = document.batch( 'transparent' );
+
+	wait( 3000 ).then( () => {
+		document.enqueueChanges( () => {
+			bath.remove( Range.createFromPositionAndShift( new Position( document.getRoot(), [  ] ), deleteData[ 1 ] ) );
+		} );
+	} );
 }
