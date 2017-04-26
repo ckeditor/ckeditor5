@@ -105,13 +105,13 @@ function startExternalInsert( editor ) {
 		.then( () => type( [ 0, 0 ], 'DONE :)' ) );
 }
 
-function startExternalDelete( editor, deleteData = [ [ 1 ], 1 ] ) {
+function startExternalDelete( editor ) {
 	const document = editor.document;
 	const bath = document.batch( 'transparent' );
 
 	wait( 3000 ).then( () => {
 		document.enqueueChanges( () => {
-			bath.remove( Range.createFromPositionAndShift( new Position( document.getRoot(), [  ] ), deleteData[ 1 ] ) );
+			bath.remove( Range.createFromPositionAndShift( new Position( document.getRoot(), [ 1 ] ), 1 ) );
 		} );
 	} );
 }
