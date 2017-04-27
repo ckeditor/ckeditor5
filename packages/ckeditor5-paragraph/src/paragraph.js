@@ -75,6 +75,14 @@ export default class Paragraph extends Plugin {
 		}, { priority: 'low' } );
 
 		editor.commands.set( 'paragraph', new ParagraphCommand( editor ) );
+
+		// Post-fixer that takes care of adding empty paragraph elements to empty roots.
+		doc.on( 'change', ( evt, type, changes, batch ) => findEmptyRoots( doc, batch ) );
+		doc.on( 'changesDone', autoparagraphEmptyRoots, { priority: 'lowest' } );
+		editor.on( 'dataReady', () => {
+			findEmptyRoots( doc, doc.batch( 'transparent' ) );
+			autoparagraphEmptyRoots();
+		}, { priority: 'lowest' } );
 	}
 }
 
@@ -233,4 +241,40 @@ function hasParagraphLikeContent( element ) {
 	}
 
 	return false;
+}
+
+// Looks through all roots created in document and marks every empty root, saving which batch made it empty.
+const rootsToFix = new Map();
+
+function findEmptyRoots( doc, batch ) {
+	for ( let rootName of doc.getRootNames() ) {
+		const root = doc.getRoot( rootName );
+
+		if ( root.isEmpty ) {
+			rootsToFix.set( root, batch );
+		} else {
+			rootsToFix.delete( root );
+		}
+	}
+}
+
+// Fixes all empty roots.
+function autoparagraphEmptyRoots() {
+	for ( let [ root, batch ] of rootsToFix ) {
+		// Only empty roots are in `rootsToFix`. Even if root got content during `changesDone` event (because of, for example
+		// other feature), this will fire `findEmptyRoots` and remove that root from `rootsToFix`. So we are guaranteed
+		// to have only empty roots here.
+		const query = { name: 'paragraph', inside: [ root ] };
+		const doc = batch.document;
+		const schema = doc.schema;
+
+		// If paragraph element is allowed in the root, create paragraph element.
+		if ( schema.check( query ) ) {
+			doc.enqueueChanges( () => {
+				batch.insert( ModelPosition.createAt( root ), new ModelElement( 'paragraph' ) );
+			} );
+		}
+	}
+
+	rootsToFix.clear();
 }
