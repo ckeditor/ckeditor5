@@ -224,7 +224,7 @@ describe( 'Link', () => {
 					.then( () => {
 						const spy = testUtils.sinon.spy( balloon, 'updatePosition' );
 
-						viewDocument.fire( 'render' );
+						viewDocument.render();
 						sinon.assert.calledOnce( spy );
 						sinon.assert.calledWithExactly( spy );
 					} );
@@ -233,15 +233,19 @@ describe( 'Link', () => {
 			it( 'hides of the panel – editing a link and the selection moved out of the link upon #render', () => {
 				const viewDocument = editor.editing.view;
 
-				setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+				setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text>bar</paragraph>' );
 
 				return linkFeature._showPanel()
 					.then( () => {
 						const spyUpdate = testUtils.sinon.spy( balloon, 'updatePosition' );
 						const spyHide = testUtils.sinon.spy( linkFeature, '_hidePanel' );
 
-						setModelData( editor.document, '<paragraph><$text linkHref="url">b[]ar</$text></paragraph>' );
-						viewDocument.fire( 'render' );
+						const root = viewDocument.getRoot();
+						const text = root.getChild( 0 ).getChild( 1 );
+
+						// Move selection to b[]ar.
+						viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
+						viewDocument.render();
 
 						sinon.assert.calledOnce( spyHide );
 						sinon.assert.notCalled( spyUpdate );
@@ -249,6 +253,8 @@ describe( 'Link', () => {
 			} );
 
 			it( 'updates the position of the panel – creating a new link and the selection moved upon #render', () => {
+				const viewDocument = editor.editing.view;
+
 				setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
 
 				return linkFeature._showPanel()
@@ -256,7 +262,11 @@ describe( 'Link', () => {
 						const spy = testUtils.sinon.spy( balloon, 'updatePosition' );
 
 						// Fires #render.
-						setModelData( editor.document, '<paragraph>b[]ar</paragraph>' );
+						const root = viewDocument.getRoot();
+						const text = root.getChild( 0 ).getChild( 0 );
+
+						viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
+						viewDocument.render();
 
 						sinon.assert.calledOnce( spy );
 						sinon.assert.calledWithExactly( spy, {
