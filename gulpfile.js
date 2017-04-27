@@ -83,7 +83,7 @@ gulp.task( 'changelog:dependencies', () => {
 	assertIsInstalled( '@ckeditor/ckeditor5-dev-env' );
 
 	return require( '@ckeditor/ckeditor5-dev-env' )
-		.generateChangelogForDependencies( {
+		.generateChangelogForSubRepositories( {
 			cwd: process.cwd(),
 			packages: 'packages'
 		} );
@@ -93,7 +93,7 @@ gulp.task( 'release:dependencies', () => {
 	assertIsInstalled( '@ckeditor/ckeditor5-dev-env' );
 
 	return require( '@ckeditor/ckeditor5-dev-env' )
-		.releaseDependencies( {
+		.releaseSubRepositories( {
 			cwd: process.cwd(),
 			packages: 'packages'
 		} );
