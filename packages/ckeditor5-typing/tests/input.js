@@ -54,6 +54,10 @@ describe( 'Input feature', () => {
 			} );
 	} );
 
+	after( () => {
+		return editor.destroy();
+	} );
+
 	beforeEach( () => {
 		editor.setData( '<p>foobar</p>' );
 
