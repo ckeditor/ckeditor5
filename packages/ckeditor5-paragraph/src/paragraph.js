@@ -243,7 +243,9 @@ function findEmptyRoots( doc, batch ) {
 		const root = doc.getRoot( rootName );
 
 		if ( root.isEmpty ) {
-			rootsToFix.set( root, batch );
+			if ( !rootsToFix.has( root ) ) {
+				rootsToFix.set( root, batch );
+			}
 		} else {
 			rootsToFix.delete( root );
 		}

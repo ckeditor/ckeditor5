@@ -157,7 +157,6 @@ describe( 'Paragraph feature – integration', () => {
 					const doc = editor.document;
 					const root = doc.getRoot();
 
-					// Selection is in <p>, hence &nbsp;
 					expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
 					expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
 
@@ -180,6 +179,40 @@ describe( 'Paragraph feature – integration', () => {
 					editor.execute( 'undo' );
 
 					expect( editor.getData() ).to.equal( '<p>Foobar.</p>' );
+				} );
+		} );
+
+		it( 'fixing empty roots should be transparent to undo - multiple roots', () => {
+			return VirtualTestEditor.create( {
+				plugins: [ Paragraph, UndoEngine ]
+			} )
+				.then( newEditor => {
+					const editor = newEditor;
+					const doc = editor.document;
+					const root = doc.getRoot();
+					const otherRoot = doc.createRoot( '$root', 'otherRoot' );
+					editor.editing.createRoot( 'div', 'otherRoot' );
+
+					editor.data.set( '<p>Foobar.</p>', 'main' );
+					editor.data.set( '<p>Foobar.</p>', 'otherRoot' );
+
+					doc.enqueueChanges( () => {
+						doc.batch().remove( root.getChild( 0 ) );
+						doc.batch().remove( otherRoot.getChild( 0 ) );
+					} );
+
+					expect( editor.data.get( 'main' ) ).to.equal( '<p>&nbsp;</p>' );
+					expect( editor.data.get( 'otherRoot' ) ).to.equal( '<p>&nbsp;</p>' );
+
+					editor.execute( 'undo' );
+
+					expect( editor.data.get( 'main' ) ).to.equal( '<p>&nbsp;</p>' );
+					expect( editor.data.get( 'otherRoot' ) ).to.equal( '<p>Foobar.</p>' );
+
+					editor.execute( 'undo' );
+
+					expect( editor.data.get( 'main' ) ).to.equal( '<p>Foobar.</p>' );
+					expect( editor.data.get( 'otherRoot' ) ).to.equal( '<p>Foobar.</p>' );
 				} );
 		} );
 	} );
