@@ -34,8 +34,6 @@
     "@ckeditor/ckeditor5-widget": "^0.1.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-docs": "^6.1.6",
-    "@ckeditor/ckeditor5-dev-env": "^4.4.0",
     "@ckeditor/ckeditor5-dev-lint": "^2.0.2",
     "@ckeditor/ckeditor5-dev-tests": "^7.3.0",
     "gulp": "^3.9.0",
@@ -57,6 +55,8 @@
     "url": "https://github.com/ckeditor/ckeditor5.git"
   },
   "scripts": {
-    "test": "node --max_old_space_size=4096 ./node_modules/.bin/ckeditor5-dev-tests --reporter=dots"
+    "test": "node --max_old_space_size=4096 ./node_modules/.bin/ckeditor5-dev-tests --reporter=dots",
+    "install-optional-dependencies": "./scripts/install-optional-dependencies.sh",
+    "switch-to-dev-dev": "./scripts/switch-to-dev-dev.sh"
   }
 }
