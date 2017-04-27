@@ -3,6 +3,9 @@
 # @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 # For licensing, see LICENSE.md.
 
+# Symlinks packages from https://github.com/ckeditor/ckeditor5-dev in ckeditor5's node_modules.
+# This allows easily switching to dev versions of ckeditor5-dev-* packages.
+
 set -e
 
 # If it doesn't exist the following lines won't work.
