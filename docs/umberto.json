@@ -1,0 +1,80 @@
+{
+	"name": "CKEditor 5",
+	"slug": "ckeditor5",
+	"hexo-config": "docs/hexo-custom-config.json",
+	"path": "docs",
+	"groups": [
+		{
+			"name": "API",
+			"id": "api-reference",
+			"sourceDir": "api",
+			"slug": "api",
+			"type": "jsdoc"
+		},
+		{
+			"name": "Guides",
+			"id": "guides",
+			"slug": "guides",
+			"categories": [
+				{
+					"name": "Getting started",
+					"id": "getting-started",
+					"slug": "getting-started",
+					"order": 10,
+					"categories": [
+						{
+							"name": "Inserting CKEditor",
+							"id": "inserting-ckeditor",
+							"slug": "inserting-ckeditor",
+							"order": 10
+						},
+						{
+							"name": "End User Features",
+							"id": "end-user-features",
+							"order": 20
+						}
+					]
+				},
+			  	{
+				  	"name": "Plugins",
+				  	"id": "plugins",
+				  	"slug": "plugins",
+				  	"order": 30
+				}
+			]
+		},
+		{
+			"name": "Tutorials",
+			"id": "tutorials",
+			"slug": "tutorials",
+			"categories": [
+				{
+					"name": "How to",
+					"id": "how-to",
+					"slug": "how-to",
+					"order": 20,
+					"categories": [
+						{
+							"name": "Step by step",
+							"id": "step-by-step",
+							"slug": "step-by-step",
+							"order": 10
+						}
+					]
+				},
+				{
+					"name": "Advanced tutorials",
+					"id": "advanced-tutorials",
+					"slug": "advanced-tutorials",
+					"order": 10
+				}
+			]
+		}
+	],
+	"items": [
+		{
+			"path": "packages/ckeditor5-autoformat",
+			"prefix": "autoformat"
+		}
+	]
+}
