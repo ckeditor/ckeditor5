@@ -16,29 +16,6 @@ gulp.task( 'lint', ckeditor5Lint.lint );
 gulp.task( 'lint-staged', ckeditor5Lint.lintStaged );
 gulp.task( 'pre-commit', [ 'lint-staged' ] );
 
-// Documentation. -------------------------------------------------------------
-
-gulp.task( 'docs', () => {
-	assertIsInstalled( '@ckeditor/ckeditor5-dev-docs' );
-
-	return require( '@ckeditor/ckeditor5-dev-docs' )
-		.build( {
-			readmePath: path.join( process.cwd(), 'README.md' ),
-			sourceFiles: [
-				process.cwd() + '/packages/ckeditor5-*/src/**/*.@(js|jsdoc)',
-				'!' + process.cwd() + '/packages/ckeditor5-*/src/lib/**/*.js'
-			]
-		} );
-} );
-
-gulp.task( 'umberto', () => {
-	return require( 'umberto' )
-		.buildSingleProject( {
-			configDir: 'docs',
-			clean: true
-		} );
-} );
-
 // Tests. ---------------------------------------------------------------------
 
 gulp.task( 'test', () => {
@@ -55,6 +32,30 @@ function getTestOptions() {
 	return require( '@ckeditor/ckeditor5-dev-tests' )
 		.parseArguments( process.argv.slice( 2 ) );
 }
+
+// Documentation. -------------------------------------------------------------
+
+gulp.task( 'docs', () => {
+	assertIsInstalled( '@ckeditor/ckeditor5-dev-docs' );
+	assertIsInstalled( 'umberto' );
+
+	const umberto = require( 'umberto' );
+	const ckeditor5Docs = require( '@ckeditor/ckeditor5-dev-docs' );
+
+	return ckeditor5Docs.build( {
+			readmePath: path.join( process.cwd(), 'README.md' ),
+			sourceFiles: [
+				process.cwd() + '/packages/ckeditor5-*/src/**/*.@(js|jsdoc)',
+				'!' + process.cwd() + '/packages/ckeditor5-*/src/lib/**/*.js'
+			]
+		} )
+		.then( () => {
+			return umberto.buildSingleProject( {
+				configDir: 'docs',
+				clean: true
+			} );
+		} );
+} );
 
 // Translations. --------------------------------------------------------------
 
@@ -97,6 +98,8 @@ gulp.task( 'release:dependencies', () => {
 			packages: 'packages'
 		} );
 } );
+
+// Utils. ---------------------------------------------------------------------
 
 function assertIsInstalled( packageName ) {
 	try {
