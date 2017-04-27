@@ -20,8 +20,6 @@ import modelWriter from '@ckeditor/ckeditor5-engine/src/model/writer';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 
-import isArray from '@ckeditor/ckeditor5-utils/src/lib/lodash/isArray';
-
 /**
  * The paragraph feature for the editor.
  * Introduces the `<paragraph>` element in the model which renders as a `<p>` element in the DOM and data.
@@ -210,13 +208,7 @@ function mergeSubsequentParagraphs( evt, data ) {
 		return;
 	}
 
-	let node;
-
-	if ( isArray( data.output ) ) {
-		node = data.output[ 0 ];
-	} else {
-		node = data.output.getChild( 0 );
-	}
+	let node = data.output.getChild( 0 );
 
 	while ( node && node.nextSibling ) {
 		const nextSibling = node.nextSibling;
