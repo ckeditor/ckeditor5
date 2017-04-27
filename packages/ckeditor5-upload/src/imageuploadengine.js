@@ -33,6 +33,7 @@ export default class ImageUploadEngine extends Plugin {
 		const editor = this.editor;
 		const doc = editor.document;
 		const schema = doc.schema;
+		const fileRepository = editor.plugins.get( FileRepository );
 
 		// Setup schema to allow uploadId for images.
 		schema.allow( { name: 'image', attributes: [ 'uploadId' ], inside: '$root' } );
@@ -52,20 +53,27 @@ export default class ImageUploadEngine extends Plugin {
 			}
 		} );
 
-		// Listen on document changes and start upload process when image with `uploadId` attribute is present.
 		doc.on( 'change', ( evt, type, data, batch ) => {
-			if ( type === 'insert' ) {
+			// Listen on document changes and:
+			// * start upload process when image with `uploadId` attribute is inserted,
+			// * abort upload process when image `uploadId` attribute is removed.
+			if ( type === 'insert' || type === 'remove' ) {
 				for ( const value of data.range ) {
 					if ( value.type === 'elementStart' && value.item.name === 'image' ) {
 						const imageElement = value.item;
 						const uploadId = imageElement.getAttribute( 'uploadId' );
-						const fileRepository = editor.plugins.get( FileRepository );
 
 						if ( uploadId ) {
 							const loader = fileRepository.loaders.get( uploadId );
 
-							if ( loader && loader.status == 'idle' ) {
-								this.load( loader, batch, imageElement );
+							if ( loader ) {
+								if ( type === 'insert' && loader.status == 'idle' ) {
+									this.load( loader, batch, imageElement );
+								}
+
+								if ( type === 'remove' ) {
+									loader.abort();
+								}
 							}
 						}
 					}
