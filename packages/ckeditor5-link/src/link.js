@@ -231,6 +231,7 @@ export default class Link extends Plugin {
 	_showPanel( focusInput ) {
 		const editing = this.editor.editing;
 		const showViewDocument = editing.view;
+		const showIsCollapsed = showViewDocument.selection.isCollapsed;
 		const showSelectedLink = this._getSelectedLinkElement();
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/53
@@ -238,10 +239,15 @@ export default class Link extends Plugin {
 
 		this.listenTo( showViewDocument, 'render', () => {
 			const renderSelectedLink = this._getSelectedLinkElement();
+			const renderIsCollapsed = showViewDocument.selection.isCollapsed;
+			const hasSellectionExpanded = showIsCollapsed && !renderIsCollapsed;
 
-			// Hide the panel if the selection went out of the original link element
-			// upon the #render event (e.g. paragraph containing the link was removed).
-			if ( showSelectedLink !== renderSelectedLink ) {
+			// Hide the panel if:
+			//   * the selection went out of the original link element
+			//     (e.g. paragraph containing the link was removed),
+			//   * the selection has expanded
+			// upon the #render event.
+			if ( hasSellectionExpanded || showSelectedLink !== renderSelectedLink ) {
 				this._hidePanel( true );
 			}
 			// Update the position of the panel when:
