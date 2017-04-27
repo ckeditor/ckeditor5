@@ -213,6 +213,144 @@ describe( 'Link', () => {
 						} );
 				} );
 		} );
+
+		describe( 'when the document is rendering', () => {
+			it( 'should not duplicate #render listeners', () => {
+				const viewDocument = editor.editing.view;
+
+				setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
+
+				const spy = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+
+				return linkFeature._showPanel()
+					.then( () => {
+						viewDocument.render();
+						linkFeature._hidePanel();
+
+						return linkFeature._showPanel()
+							.then( () => {
+								viewDocument.render();
+								sinon.assert.calledTwice( spy );
+							} );
+					} );
+			} );
+
+			//https://github.com/ckeditor/ckeditor5-link/issues/113
+			it( 'updates the position of the panel – editing a link, then the selection remains in the link upon #render', () => {
+				const viewDocument = editor.editing.view;
+
+				setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+
+				return linkFeature._showPanel()
+					.then( () => {
+						const spy = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+
+						const root = viewDocument.getRoot();
+						const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+						// Move selection to foo[].
+						viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
+						viewDocument.render();
+
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithExactly( spy );
+					} );
+			} );
+
+			//https://github.com/ckeditor/ckeditor5-link/issues/113
+			it( 'updates the position of the panel – creating a new link, then the selection moved upon #render', () => {
+				const viewDocument = editor.editing.view;
+
+				setModelData( editor.document, '<paragraph>f[]oo</paragraph>' );
+
+				return linkFeature._showPanel()
+					.then( () => {
+						const spy = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+
+						// Fires #render.
+						const root = viewDocument.getRoot();
+						const text = root.getChild( 0 ).getChild( 0 );
+
+						viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
+						viewDocument.render();
+
+						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithExactly( spy, {
+							target: editorElement.ownerDocument.getSelection().getRangeAt( 0 ),
+							limiter: editorElement
+						} );
+					} );
+			} );
+
+			//https://github.com/ckeditor/ckeditor5-link/issues/113
+			it( 'hides of the panel – editing a link, then the selection moved out of the link upon #render', () => {
+				const viewDocument = editor.editing.view;
+
+				setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text>bar</paragraph>' );
+
+				return linkFeature._showPanel()
+					.then( () => {
+						const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+						const spyHide = testUtils.sinon.spy( linkFeature, '_hidePanel' );
+
+						const root = viewDocument.getRoot();
+						const text = root.getChild( 0 ).getChild( 1 );
+
+						// Move selection to b[]ar.
+						viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
+						viewDocument.render();
+
+						sinon.assert.calledOnce( spyHide );
+						sinon.assert.notCalled( spyUpdate );
+					} );
+			} );
+
+			//https://github.com/ckeditor/ckeditor5-link/issues/113
+			it( 'hides of the panel – editing a link, then the selection moved to another link upon #render', () => {
+				const viewDocument = editor.editing.view;
+
+				setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text>bar<$text linkHref="url">b[]az</$text></paragraph>' );
+
+				return linkFeature._showPanel()
+					.then( () => {
+						const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+						const spyHide = testUtils.sinon.spy( linkFeature, '_hidePanel' );
+
+						const root = viewDocument.getRoot();
+						const text = root.getChild( 0 ).getChild( 2 ).getChild( 0 );
+
+						// Move selection to b[]az.
+						viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
+						viewDocument.render();
+
+						sinon.assert.calledOnce( spyHide );
+						sinon.assert.notCalled( spyUpdate );
+					} );
+			} );
+
+			//https://github.com/ckeditor/ckeditor5-link/issues/113
+			it( 'hides the panel – editing a link, then the selection expands upon #render', () => {
+				const viewDocument = editor.editing.view;
+
+				setModelData( editor.document, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+
+				return linkFeature._showPanel()
+					.then( () => {
+						const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
+						const spyHide = testUtils.sinon.spy( linkFeature, '_hidePanel' );
+
+						const root = viewDocument.getRoot();
+						const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+						// Move selection to f[o]o.
+						viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 2 ) ], true );
+						viewDocument.render();
+
+						sinon.assert.calledOnce( spyHide );
+						sinon.assert.notCalled( spyUpdate );
+					} );
+			} );
+		} );
 	} );
 
 	describe( '_hidePanel()', () => {
@@ -460,124 +598,6 @@ describe( 'Link', () => {
 				observer.fire( 'click', { target: document.body } );
 
 				sinon.assert.calledWithExactly( spy );
-			} );
-
-			it( 'should keep open and update position until collapsed selection stay inside the same link element', () => {
-				// Method is stubbed because it returns internal promise which can't be returned in test.
-				const showSpy = testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
-				const hideSpy = testUtils.sinon.stub( linkFeature, '_hidePanel' );
-				const updatePositionSpy = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
-
-				editor.document.schema.allow( { name: '$text', inside: '$root' } );
-				setModelData( editor.document, '<$text linkHref="url">b[]ar</$text>' );
-
-				const root = editor.editing.view.getRoot();
-				const text = root.getChild( 0 ).getChild( 0 );
-
-				observer.fire( 'click', { target: document.body } );
-
-				// Panel is shown.
-				sinon.assert.calledOnce( showSpy );
-
-				// Move selection.
-				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
-				editor.editing.view.render();
-
-				// Check if balloon is still opened (wasn't hide).
-				sinon.assert.notCalled( hideSpy );
-				// And position was updated
-				sinon.assert.calledOnce( updatePositionSpy );
-			} );
-
-			it( 'should not duplicate `render` listener on `ViewDocument`', () => {
-				const updatePositionSpy = testUtils.sinon.stub( balloon, 'updatePosition', () => {} );
-
-				// Method is stubbed because it returns internal promise which can't be returned in test.
-				testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
-
-				editor.document.schema.allow( { name: '$text', inside: '$root' } );
-				setModelData( editor.document, '<$text linkHref="url">b[]ar</$text>' );
-
-				// Click at the same link more than once.
-				observer.fire( 'click', { target: document.body } );
-				observer.fire( 'click', { target: document.body } );
-				observer.fire( 'click', { target: document.body } );
-
-				sinon.assert.notCalled( updatePositionSpy );
-
-				const root = editor.editing.view.getRoot();
-				const text = root.getChild( 0 ).getChild( 0 );
-
-				// Move selection.
-				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
-				editor.editing.view.render();
-
-				// Position should be updated only once.
-				sinon.assert.calledOnce( updatePositionSpy );
-			} );
-
-			it( 'should close when selection goes outside the link element', () => {
-				const hideSpy = testUtils.sinon.stub( linkFeature, '_hidePanel' );
-
-				// Method is stubbed because it returns internal promise which can't be returned in test.
-				testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
-
-				editor.document.schema.allow( { name: '$text', inside: '$root' } );
-				setModelData( editor.document, 'foo <$text linkHref="url">b[]ar</$text>' );
-
-				const root = editor.editing.view.getRoot();
-				const text = root.getChild( 0 );
-
-				observer.fire( 'click', { target: document.body } );
-
-				sinon.assert.notCalled( hideSpy );
-
-				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
-				editor.editing.view.render();
-
-				sinon.assert.calledOnce( hideSpy );
-			} );
-
-			it( 'should close when selection goes to the other link element with the same href', () => {
-				const hideSpy = testUtils.sinon.stub( linkFeature, '_hidePanel' );
-
-				// Method is stubbed because it returns internal promise which can't be returned in test.
-				testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
-
-				editor.document.schema.allow( { name: '$text', inside: '$root' } );
-				setModelData( editor.document, '<$text linkHref="url">f[]oo</$text> bar <$text linkHref="url">biz</$text>' );
-
-				const root = editor.editing.view.getRoot();
-				const text = root.getChild( 2 ).getChild( 0 );
-
-				observer.fire( 'click', { target: document.body } );
-
-				sinon.assert.notCalled( hideSpy );
-
-				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
-				editor.editing.view.render();
-
-				sinon.assert.calledOnce( hideSpy );
-			} );
-
-			it( 'should close when selection becomes non-collapsed', () => {
-				const hideSpy = testUtils.sinon.stub( linkFeature, '_hidePanel' );
-
-				// Method is stubbed because it returns internal promise which can't be returned in test.
-				testUtils.sinon.stub( linkFeature, '_showPanel', () => {} );
-
-				editor.document.schema.allow( { name: '$text', inside: '$root' } );
-				setModelData( editor.document, '<$text linkHref="url">f[]oo</$text>' );
-
-				const root = editor.editing.view.getRoot();
-				const text = root.getChild( 0 ).getChild( 0 );
-
-				observer.fire( 'click', { target: {} } );
-
-				editor.editing.view.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 2 ) ] );
-				editor.editing.view.render();
-
-				sinon.assert.calledOnce( hideSpy );
 			} );
 
 			it( 'should not open when selection is not inside link element', () => {

@@ -192,21 +192,6 @@ export default class Link extends Plugin {
 			if ( viewSelection.isCollapsed && parentLink ) {
 				// Then show panel but keep focus inside editor editable.
 				this._showPanel();
-
-				// Avoid duplication of the same listener.
-				this.stopListening( viewDocument, 'render' );
-
-				// Start listen to view document changes and close the panel when selection will be moved
-				// out of the actual link element.
-				this.listenTo( viewDocument, 'render', () => {
-					const currentParentLink = this._getSelectedLinkElement();
-
-					if ( !viewSelection.isCollapsed || parentLink !== currentParentLink ) {
-						this._hidePanel();
-					} else {
-						this._balloon.updatePosition();
-					}
-				} );
 			}
 		} );
 
@@ -244,8 +229,42 @@ export default class Link extends Plugin {
 	 * @return {Promise} A promise resolved when the {@link #formView} {@link module:ui/view~View#init} is done.
 	 */
 	_showPanel( focusInput ) {
+		const editing = this.editor.editing;
+		const showViewDocument = editing.view;
+		const showIsCollapsed = showViewDocument.selection.isCollapsed;
+		const showSelectedLink = this._getSelectedLinkElement();
+
 		// https://github.com/ckeditor/ckeditor5-link/issues/53
-		this.formView.unlinkButtonView.isVisible = !!this._getSelectedLinkElement();
+		this.formView.unlinkButtonView.isVisible = !!showSelectedLink;
+
+		this.listenTo( showViewDocument, 'render', () => {
+			const renderSelectedLink = this._getSelectedLinkElement();
+			const renderIsCollapsed = showViewDocument.selection.isCollapsed;
+			const hasSellectionExpanded = showIsCollapsed && !renderIsCollapsed;
+
+			// Hide the panel if:
+			//   * the selection went out of the original link element
+			//     (e.g. paragraph containing the link was removed),
+			//   * the selection has expanded
+			// upon the #render event.
+			if ( hasSellectionExpanded || showSelectedLink !== renderSelectedLink ) {
+				this._hidePanel( true );
+			}
+			// Update the position of the panel when:
+			//  * the selection remains in the original link element,
+			//  * there was no link element in the first place, i.e. creating a new link
+			else {
+				// If still in a link element, simply update the position of the balloon.
+				if ( renderSelectedLink ) {
+					this._balloon.updatePosition();
+				}
+				// If there was no link, upon #render, the balloon must be moved
+				// to the new position in the editing view (a new native DOM range).
+				else {
+					this._balloon.updatePosition( this._getBalloonPositionData() );
+				}
+			}
+		} );
 
 		if ( this._balloon.hasView( this.formView ) ) {
 			// Check if formView should be focused and focus it if is visible.
@@ -254,16 +273,16 @@ export default class Link extends Plugin {
 			}
 
 			return Promise.resolve();
+		} else {
+			return this._balloon.add( {
+					view: this.formView,
+					position: this._getBalloonPositionData()
+				} ).then( () => {
+					if ( focusInput ) {
+						this.formView.urlInputView.select();
+					}
+				} );
 		}
-
-		return this._balloon.add( {
-				view: this.formView,
-				position: this._getBalloonPositionData()
-			} ).then( () => {
-				if ( focusInput ) {
-					this.formView.urlInputView.select();
-				}
-			} );
 	}
 
 	/**
@@ -275,6 +294,8 @@ export default class Link extends Plugin {
 	 * @param {Boolean} [focusEditable=false] When `true`, editable focus will be restored on panel hide.
 	 */
 	_hidePanel( focusEditable ) {
+		this.stopListening( this.editor.editing.view, 'render' );
+
 		if ( !this._balloon.hasView( this.formView ) ) {
 			return;
 		}
