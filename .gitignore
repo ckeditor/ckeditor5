@@ -8,5 +8,5 @@ node_modules/**
 build/**
 coverage/**
 packages/**
-docs/api/**/*.json
+docs/api/output.json
 lerna-debug.log
