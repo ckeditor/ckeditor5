@@ -5,10 +5,10 @@
 	"path": "docs",
 	"groups": [
 		{
-			"name": "API Reference",
+			"name": "API",
 			"id": "api-reference",
 			"sourceDir": "api",
-			"slug": "api-reference",
+			"slug": "api",
 			"type": "jsdoc"
 		},
 		{
