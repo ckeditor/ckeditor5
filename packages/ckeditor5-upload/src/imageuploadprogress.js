@@ -59,17 +59,18 @@ export default class ImageUploadProgress extends Plugin {
 	 */
 	uploadStatusChange( evt, data, consumable ) {
 		const editor = this.editor;
-		const fileRepository = editor.plugins.get( FileRepository );
-		const placeholder = this.placeholder;
+		const modelImage = data.item;
+		const uploadId = modelImage.getAttribute( 'uploadId' );
 
-		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) ) {
+		if ( !consumable.consume( data.item, eventNameToConsumableType( evt.name ) ) || !uploadId ) {
 			return;
 		}
 
+		const fileRepository = editor.plugins.get( FileRepository );
+		const placeholder = this.placeholder;
 		const status = data.attributeNewValue;
-		const modelImage = data.item;
 		const viewFigure = editor.editing.mapper.toViewElement( modelImage );
-		const uploadId = modelImage.getAttribute( 'uploadId' );
+
 		const loader = fileRepository.loaders.get( uploadId );
 
 		if ( !loader ) {
