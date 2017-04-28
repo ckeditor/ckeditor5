@@ -75,6 +75,8 @@ export default class Paragraph extends Plugin {
 		editor.commands.set( 'paragraph', new ParagraphCommand( editor ) );
 
 		// Post-fixer that takes care of adding empty paragraph elements to empty roots.
+		// Besides fixing content on #changesDone we also need to handle #dataReady because
+		// if initial data is empty or setData() wasn't even called there will be no #change fired.
 		doc.on( 'change', ( evt, type, changes, batch ) => findEmptyRoots( doc, batch ) );
 		doc.on( 'changesDone', autoparagraphEmptyRoots, { priority: 'lowest' } );
 		editor.on( 'dataReady', () => {

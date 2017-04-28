@@ -150,8 +150,8 @@ describe( 'Paragraph feature – integration', () => {
 	describe( 'with undo', () => {
 		it( 'fixing empty roots should be transparent to undo', () => {
 			return VirtualTestEditor.create( {
-				plugins: [ Paragraph, UndoEngine ]
-			} )
+					plugins: [ Paragraph, UndoEngine ]
+				} )
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
@@ -184,8 +184,8 @@ describe( 'Paragraph feature – integration', () => {
 
 		it( 'fixing empty roots should be transparent to undo - multiple roots', () => {
 			return VirtualTestEditor.create( {
-				plugins: [ Paragraph, UndoEngine ]
-			} )
+					plugins: [ Paragraph, UndoEngine ]
+				} )
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.document;
