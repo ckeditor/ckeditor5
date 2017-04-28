@@ -57,11 +57,15 @@ export default class ImageUploadEngine extends Plugin {
 			// Listen on document changes and:
 			// * start upload process when image with `uploadId` attribute is inserted,
 			// * abort upload process when image `uploadId` attribute is removed.
-			if ( type === 'insert' || type === 'remove' ) {
+			if ( type === 'insert' || type === 'reinsert' || type === 'remove' ) {
 				for ( const value of data.range ) {
 					if ( value.type === 'elementStart' && value.item.name === 'image' ) {
 						const imageElement = value.item;
 						const uploadId = imageElement.getAttribute( 'uploadId' );
+
+						if ( type == 'reinsert' ) {
+							console.log( 'reinsert' );
+						}
 
 						if ( uploadId ) {
 							const loader = fileRepository.loaders.get( uploadId );
@@ -72,6 +76,7 @@ export default class ImageUploadEngine extends Plugin {
 								}
 
 								if ( type === 'remove' ) {
+									console.log( 'remove' );
 									loader.abort();
 								}
 							}
@@ -130,13 +135,10 @@ export default class ImageUploadEngine extends Plugin {
 					notification.showWarning( msg, { namespace: 'upload' } );
 				}
 
-				// Remove Image if not in graveyard already.
-				// Abort is called on image removal too so prevent from removing image twice.
-				if ( imageElement.root.rootName !== '$graveyard' ) {
-					doc.enqueueChanges( () => {
-						batch.remove( imageElement );
-					} );
-				}
+				console.log( imageElement );
+				doc.enqueueChanges( () => {
+					batch.remove( imageElement );
+				} );
 
 				clean();
 			} );
