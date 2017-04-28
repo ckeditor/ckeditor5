@@ -14,9 +14,12 @@ import {
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 
 import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
+import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 
 describe( 'Paragraph feature', () => {
 	let editor, doc;
@@ -336,6 +339,59 @@ describe( 'Paragraph feature', () => {
 			editor.setData( 'foo' );
 
 			expect( getModelData( doc ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+		} );
+	} );
+
+	describe( 'post-fixing empty roots', () => {
+		it( 'should fix empty roots after editor is initialised', () => {
+			expect( doc.getRoot().childCount ).to.equal( 1 );
+			expect( doc.getRoot().getChild( 0 ).is( 'paragraph' ) ).to.be.true;
+		} );
+
+		it( 'should fix roots if it becomes empty', () => {
+			editor.setData( '<p>Foobar</p>' );
+
+			// Since `setData` first removes all contents from editor and then sets content during same enqueue
+			// changes block, this checks whether fixing empty roots does not kick too early and does not
+			// fix root if it is not needed.
+			expect( editor.getData() ).to.equal( '<p>Foobar</p>' );
+
+			editor.setData( '' );
+
+			expect( doc.getRoot().childCount ).to.equal( 1 );
+			expect( doc.getRoot().getChild( 0 ).is( 'paragraph' ) ).to.be.true;
+		} );
+
+		it( 'should not fix root if it got content during changesDone event', () => {
+			// "Autoheading feature".
+			doc.schema.registerItem( 'heading', '$block' );
+
+			buildModelConverter().for( editor.editing.modelToView, editor.data.modelToView )
+				.fromElement( 'heading' )
+				.toElement( 'h1' );
+
+			doc.on( 'changesDone', () => {
+				const root = doc.getRoot();
+
+				if ( root.isEmpty ) {
+					doc.enqueueChanges( () => {
+						doc.batch().insert( ModelPosition.createAt( root ), new ModelElement( 'heading' ) );
+					} );
+				}
+			} );
+
+			editor.setData( '' );
+
+			expect( doc.getRoot().childCount ).to.equal( 1 );
+			expect( doc.getRoot().getChild( 0 ).name ).to.equal( 'heading' );
+		} );
+
+		it( 'should not fix root which does not allow paragraph', () => {
+			doc.schema.disallow( { name: 'paragraph', inside: '$root' } );
+
+			editor.setData( '' );
+
+			expect( editor.getData() ).to.equal( '' );
 		} );
 	} );
 

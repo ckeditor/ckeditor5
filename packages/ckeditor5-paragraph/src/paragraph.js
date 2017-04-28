@@ -20,8 +20,6 @@ import modelWriter from '@ckeditor/ckeditor5-engine/src/model/writer';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 
-import isArray from '@ckeditor/ckeditor5-utils/src/lib/lodash/isArray';
-
 /**
  * The paragraph feature for the editor.
  * Introduces the `<paragraph>` element in the model which renders as a `<p>` element in the DOM and data.
@@ -75,6 +73,16 @@ export default class Paragraph extends Plugin {
 		}, { priority: 'low' } );
 
 		editor.commands.set( 'paragraph', new ParagraphCommand( editor ) );
+
+		// Post-fixer that takes care of adding empty paragraph elements to empty roots.
+		// Besides fixing content on #changesDone we also need to handle #dataReady because
+		// if initial data is empty or setData() wasn't even called there will be no #change fired.
+		doc.on( 'change', ( evt, type, changes, batch ) => findEmptyRoots( doc, batch ) );
+		doc.on( 'changesDone', autoparagraphEmptyRoots, { priority: 'lowest' } );
+		editor.on( 'dataReady', () => {
+			findEmptyRoots( doc, doc.batch( 'transparent' ) );
+			autoparagraphEmptyRoots();
+		}, { priority: 'lowest' } );
 	}
 }
 
@@ -202,13 +210,7 @@ function mergeSubsequentParagraphs( evt, data ) {
 		return;
 	}
 
-	let node;
-
-	if ( isArray( data.output ) ) {
-		node = data.output[ 0 ];
-	} else {
-		node = data.output.getChild( 0 );
-	}
+	let node = data.output.getChild( 0 );
 
 	while ( node && node.nextSibling ) {
 		const nextSibling = node.nextSibling;
@@ -233,4 +235,42 @@ function hasParagraphLikeContent( element ) {
 	}
 
 	return false;
+}
+
+// Looks through all roots created in document and marks every empty root, saving which batch made it empty.
+const rootsToFix = new Map();
+
+function findEmptyRoots( doc, batch ) {
+	for ( let rootName of doc.getRootNames() ) {
+		const root = doc.getRoot( rootName );
+
+		if ( root.isEmpty ) {
+			if ( !rootsToFix.has( root ) ) {
+				rootsToFix.set( root, batch );
+			}
+		} else {
+			rootsToFix.delete( root );
+		}
+	}
+}
+
+// Fixes all empty roots.
+function autoparagraphEmptyRoots() {
+	for ( let [ root, batch ] of rootsToFix ) {
+		// Only empty roots are in `rootsToFix`. Even if root got content during `changesDone` event (because of, for example
+		// other feature), this will fire `findEmptyRoots` and remove that root from `rootsToFix`. So we are guaranteed
+		// to have only empty roots here.
+		const query = { name: 'paragraph', inside: [ root ] };
+		const doc = batch.document;
+		const schema = doc.schema;
+
+		// If paragraph element is allowed in the root, create paragraph element.
+		if ( schema.check( query ) ) {
+			doc.enqueueChanges( () => {
+				batch.insert( ModelPosition.createAt( root ), new ModelElement( 'paragraph' ) );
+			} );
+		}
+	}
+
+	rootsToFix.clear();
 }
