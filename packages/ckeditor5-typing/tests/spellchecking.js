@@ -20,10 +20,10 @@ import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'Spellchecking integration', () => {
-	let editor, onChangesDone;
+	let editor, onChangesDone, container;
 
 	before( () => {
-		const container = document.createElement( 'div' );
+		container = document.createElement( 'div' );
 		document.body.appendChild( container );
 
 		return ClassicEditor.create( container, {
@@ -32,6 +32,12 @@ describe( 'Spellchecking integration', () => {
 		.then( newEditor => {
 			editor = newEditor;
 		} );
+	} );
+
+	after( () => {
+		container.remove();
+
+		return editor.destroy();
 	} );
 
 	beforeEach( () => {

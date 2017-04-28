@@ -27,6 +27,12 @@ describe( 'Bug ckeditor5-typing#59', () => {
 		} );
 	} );
 
+	afterEach( () => {
+		container.remove();
+
+		return editor.destroy();
+	} );
+
 	it( 'editor does not blow up when deleting last styled character', () => {
 		editor.document.enqueueChanges( () => {
 			editor.editing.view.getDomRoot().focus();

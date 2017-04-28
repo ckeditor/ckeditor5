@@ -20,6 +20,10 @@ describe( 'Delete feature', () => {
 			} );
 	} );
 
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
 	it( 'creates two commands', () => {
 		expect( editor.commands.get( 'delete' ) ).to.have.property( 'direction', 'backward' );
 		expect( editor.commands.get( 'forwardDelete' ) ).to.have.property( 'direction', 'forward' );

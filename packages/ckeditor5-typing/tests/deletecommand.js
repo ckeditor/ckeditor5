@@ -14,7 +14,7 @@ describe( 'DeleteCommand', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		return ModelTestEditor.create( )
+		return ModelTestEditor.create()
 			.then( newEditor => {
 				editor = newEditor;
 				doc = editor.document;
@@ -24,6 +24,10 @@ describe( 'DeleteCommand', () => {
 
 				doc.schema.registerItem( 'p', '$block' );
 			} );
+	} );
+
+	afterEach( () => {
+		return editor.destroy();
 	} );
 
 	it( 'has direction', () => {

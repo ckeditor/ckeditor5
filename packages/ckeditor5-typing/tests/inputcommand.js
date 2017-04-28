@@ -19,7 +19,7 @@ describe( 'InputCommand', () => {
 	testUtils.createSinonSandbox();
 
 	before( () => {
-		return ModelTestEditor.create( )
+		return ModelTestEditor.create()
 			.then( newEditor => {
 				editor = newEditor;
 				doc = editor.document;
@@ -32,6 +32,10 @@ describe( 'InputCommand', () => {
 				doc.schema.registerItem( 'p', '$block' );
 				doc.schema.registerItem( 'h1', '$block' );
 			} );
+	} );
+
+	after( () => {
+		return editor.destroy();
 	} );
 
 	beforeEach( () => {

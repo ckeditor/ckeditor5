@@ -35,6 +35,10 @@ describe( 'DeleteCommand integration', () => {
 			} );
 	} );
 
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
 	function assertOutput( output ) {
 		expect( getData( doc ) ).to.equal( output );
 	}
