@@ -130,6 +130,14 @@ export default class ImageUploadEngine extends Plugin {
 					notification.showWarning( msg, { namespace: 'upload' } );
 				}
 
+				// Remove Image if not in graveyard already.
+				// Abort is called on image removal too so prevent from removing image twice.
+				if ( imageElement.root.rootName !== '$graveyard' ) {
+					doc.enqueueChanges( () => {
+						batch.remove( imageElement );
+					} );
+				}
+
 				clean();
 			} );
 
