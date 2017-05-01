@@ -20,3 +20,10 @@ install:
   - lerna bootstrap
 script:
   - npm t
+notifications:
+  slack:
+    rooms:
+      - secure: NKUpSnmkmlRRua0URoQJjEqNfIHx6tuqJhVCbQ6vU5rdUdw6A43OfG7Qym3MRQlXymFuIF0MUsOrS6t0GeXE9hSpC+5ynF02E5wdTD1/R7Tjq0XEdx0mXJTYjuOQA16fvwMxm5p3Ub5uWpSH+gBtyG86UPCbVSxDvvmxHqResAw=
+    on_success: change
+    on_failure: always
+    on_pull_requests: false
