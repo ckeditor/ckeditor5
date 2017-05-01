@@ -12,11 +12,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 
-import modelWriter from '@ckeditor/ckeditor5-engine/src/model/writer';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 
@@ -56,21 +52,21 @@ export default class Paragraph extends Plugin {
 			.fromElement( 'p' )
 			.toElement( 'paragraph' );
 
-		// Autoparagraph text.
-		data.viewToModel.on( 'text', ( evt, data, consumable, conversionApi ) => {
-			autoparagraphText( doc, evt, data, consumable, conversionApi );
-		}, { priority: 'lowest' } );
+		// "Force conversion" converter for elements that are allowed in paragraph element.
+		// After converter added by a feature, but before "default" to-model-fragment converter.
+		// Check if this element could be converted if it was in a paragraph.
+		data.viewToModel.on( 'element', convertAutoparagraphableItem, { priority: 'low' } );
 
-		// Post-fix potential subsequent paragraphs created by autoparagraphText().
-		data.viewToModel.on( 'element', mergeSubsequentParagraphs, { priority: 'lowest' } );
-		data.viewToModel.on( 'documentFragment', mergeSubsequentParagraphs, { priority: 'lowest' } );
+		// "Force conversion" converter for texts.
+		// After default text converter.
+		// Check if this text could be converted if it was in a paragraph.
+		data.viewToModel.on( 'text', convertAutoparagraphableItem, { priority: 'lowest' } );
 
-		// Convert paragraph-like elements to paragraphs if they weren't consumed.
-		// It's a 'low' priority in order to hook in before the default 'element' converter
-		// which would then convert children before handling this element.
-		data.viewToModel.on( 'element', ( evt, data, consumable, conversionApi ) => {
-			autoparagraphParagraphLikeElements( doc, evt, data, consumable, conversionApi );
-		}, { priority: 'low' } );
+		// After all converters -- this is to be sure that the element or document fragment had its all children converted
+		// and the results are available in `data.output`.
+		// Those converters wrap "forced" items in a paragraph element.
+		data.viewToModel.on( 'element', autoparagraphItems, { priority: 'lowest' } );
+		data.viewToModel.on( 'documentFragment', autoparagraphItems, { priority: 'lowest' } );
 
 		editor.commands.set( 'paragraph', new ParagraphCommand( editor ) );
 
@@ -133,108 +129,122 @@ Paragraph.paragraphLikeElements = new Set( [
 	'td'
 ] );
 
-const paragraphsToMerge = new WeakSet();
-
-function autoparagraphText( doc, evt, data, consumable, conversionApi ) {
+// This converter forces a conversion of a non-consumed view item, if that item would be allowed by schema and converted it if was
+// inside a paragraph element. The converter checks whether conversion would be possible if there was a paragraph element
+// between `data.input` item and its parent. If the conversion would be allowed, the converter adds `"paragraph"` to the
+// context and fires conversion for `data.input` again.
+function convertAutoparagraphableItem( evt, data, consumable, conversionApi ) {
 	// If text wasn't consumed by the default converter...
-	if ( !consumable.test( data.input ) ) {
+	if ( !consumable.test( data.input, { name: data.input.name } ) ) {
 		return;
 	}
 
-	// And paragraph is allowed in this context...
-	if ( !doc.schema.check( { name: 'paragraph', inside: data.context } ) ) {
+	// But would be allowed if it was in a paragraph...
+	if ( !isParagraphable( data.input, data.context, conversionApi.schema, false ) ) {
 		return;
 	}
 
-	// Let's do autoparagraphing.
-
-	const paragraph = new ModelElement( 'paragraph' );
-
-	paragraphsToMerge.add( paragraph );
-
-	data.context.push( paragraph );
-
+	// Convert that text in paragraph context.
+	data.context.push( 'paragraph' );
 	const text = conversionApi.convertItem( data.input, consumable, data );
-
-	if ( text ) {
-		data.output = paragraph;
-		paragraph.appendChildren( text );
-	}
-
-	data.context.pop();
-}
-
-function autoparagraphParagraphLikeElements( doc, evt, data, consumable, conversionApi ) {
-	// If this is a paragraph-like element...
-	if ( !Paragraph.paragraphLikeElements.has( data.input.name ) ) {
-		return;
-	}
-
-	// Which wasn't consumed by its own converter...
-	if ( !consumable.test( data.input, { name: true } ) ) {
-		return;
-	}
-
-	// And there are no other paragraph-like elements inside this tree...
-	if ( hasParagraphLikeContent( data.input ) ) {
-		return;
-	}
-
-	// And paragraph is allowed in this context...
-	if ( !doc.schema.check( { name: 'paragraph', inside: data.context } ) ) {
-		return;
-	}
-
-	// Let's convert this element to a paragraph and then all its children.
-
-	consumable.consume( data.input, { name: true } );
-
-	const paragraph = new ModelElement( 'paragraph' );
-
-	data.context.push( paragraph );
-
-	const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
-
-	paragraph.appendChildren( modelWriter.normalizeNodes( convertedChildren ) );
-
-	// Remove the created paragraph from the stack for other converters.
-	// See https://github.com/ckeditor/ckeditor5-engine/issues/736
 	data.context.pop();
 
-	data.output = paragraph;
+	data.output = text;
 }
 
-// Merges subsequent paragraphs if they should be merged (see shouldMerge).
-function mergeSubsequentParagraphs( evt, data ) {
+// This converter checks all children of an element or document fragment that has been converted and wraps
+// children in a paragraph element if it is allowed by schema.
+//
+// Basically, after an item is "forced" to be converted by `convertAutoparagraphableItem`, we need to actually take
+// care of adding the paragraph (assumed in `convertAutoparagraphableItem`) and wrap that item in it.
+function autoparagraphItems( evt, data, consumable, conversionApi ) {
+	// Autoparagraph only if the element has been converted.
 	if ( !data.output ) {
 		return;
 	}
 
-	let node = data.output.getChild( 0 );
+	const isParagraphLike = Paragraph.paragraphLikeElements.has( data.input.name ) && !data.output.is( 'element' );
 
-	while ( node && node.nextSibling ) {
-		const nextSibling = node.nextSibling;
+	// Keep in mind that this converter is added to all elements and document fragments.
+	// This means that we have to make a smart decision in which elements (at what level) auto-paragraph should be inserted.
+	// There are three situations when it is correct to add paragraph:
+	//   -	we are converting a view document fragment: this means that we are at the top level of conversion and we should
+	//		add paragraph elements for "bare" texts (unless converting in $clipboardHolder, but this is covered by schema),
+	//   -	we are converting an element that was converted to model element: this means that it will be represented in model
+	//		and has added its context when converting children - we should add paragraph for those elements that passed
+	//		in `convertAutoparagraphableText`, because it is correct for them to be autoparagraphed,
+	//	 -	we are converting "paragraph-like" element, which children should always be autoparagraphed (if it is allowed by schema,
+	//		so we won't end up with, i.e., paragraph inside paragraph, if paragraph was in paragraph-like element).
+	const shouldAutoparagraph =
+		( data.input.is( 'documentFragment' ) ) ||
+		( data.input.is( 'element' ) && data.output.is( 'element' ) ) ||
+		isParagraphLike;
 
-		if ( paragraphsToMerge.has( node ) && paragraphsToMerge.has( nextSibling ) ) {
-			modelWriter.insert( ModelPosition.createAt( node, 'end' ), Array.from( nextSibling.getChildren() ) );
-			modelWriter.remove( ModelRange.createOn( nextSibling ) );
+	if ( !shouldAutoparagraph ) {
+		return;
+	}
+
+	// Take care of proper context. This is important for `isParagraphable` checks.
+	if ( data.output.is( 'element' ) ) {
+		data.context.push( data.output );
+	}
+
+	// `paragraph` element that will wrap auto-paragraphable children.
+	let autoParagraph = null;
+
+	// Check children and wrap them in a `paragraph` element if they need to be wrapped.
+	// Be smart when wrapping children and put all auto-paragraphable siblings in one `paragraph` parent:
+	// foo<$text bold="true">bar</$text><paragraph>xxx</paragraph>baz      --->
+	// <paragraph>foo<$text bold="true">bar</$text></paragraph><paragraph>xxx</paragraph><paragraph>baz</paragraph>
+	for ( let i = 0; i < data.output.childCount; i++ ) {
+		const child = data.output.getChild( i );
+
+		if ( isParagraphable( child, data.context, conversionApi.schema, isParagraphLike ) ) {
+			// If there is no wrapping `paragraph` element, create it.
+			if ( !autoParagraph ) {
+				autoParagraph = new ModelElement( 'paragraph' );
+				data.output.insertChildren( child.index, autoParagraph );
+			}
+			// Otherwise, use existing `paragraph` and just fix iterator.
+			// Thanks to reusing `paragraph` element, multiple siblings ends up in same container.
+			else {
+				i--;
+			}
+
+			child.remove();
+			autoParagraph.appendChildren( child );
 		} else {
-			node = node.nextSibling;
+			// That was not a paragraphable children, reset `paragraph` wrapper - following auto-paragraphable children
+			// need to be placed in a new `paragraph` element.
+			autoParagraph = null;
 		}
+	}
+
+	if ( data.output.is( 'element' ) ) {
+		data.context.pop();
 	}
 }
 
-// Checks whether an element has paragraph-like descendant.
-function hasParagraphLikeContent( element ) {
-	const range = ViewRange.createIn( element );
+function isParagraphable( node, context, schema, insideParagraphLikeElement ) {
+	const name = node.name || '$text';
 
-	for ( const value of range ) {
-		if ( value.item instanceof ViewElement && Paragraph.paragraphLikeElements.has( value.item.name ) ) {
-			return true;
-		}
+	// Node is paragraphable if it is inside paragraph like element, or...
+	// It is not allowed at this context...
+	if ( !insideParagraphLikeElement && schema.check( { name: name, inside: context } ) ) {
+		return false;
 	}
 
-	return false;
+	// And paragraph is allowed in this context...
+	if ( !schema.check( { name: 'paragraph', inside: context } ) ) {
+		return false;
+	}
+
+	// And a node would be allowed in this paragraph...
+	if ( !schema.check( { name: name, inside: context.concat( 'paragraph' ) } ) ) {
+		return false;
+	}
+
+	return true;
 }
 
 // Looks through all roots created in document and marks every empty root, saving which batch made it empty.
