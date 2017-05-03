@@ -97,7 +97,7 @@ describe( 'ImageEngine', () => {
 				const editing = editor.editing;
 
 				document.schema.registerItem( 'div', '$block' );
-				document.schema.disallow( { name: 'image', inside: 'div', attributes: [ 'src' ] } );
+				document.schema.disallow( { name: 'image', inside: '$root', attributes: 'src' } );
 
 				buildModelConverter().for( data.modelToView, editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 				buildViewConverter().for( data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
@@ -168,7 +168,113 @@ describe( 'ImageEngine', () => {
 
 				editor.setData( '<figure class="image"><img src="foo.jpg" /><img src="bar.jpg" />abc</figure>' );
 
-				expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<image src="foo.jpg">abc</image>' );
+				// The foo.jpg image is properly converted using figure converter. The other image was tried to
+				// be added as a child of foo.jpg and then was autohoisted.
+				expect( getModelData( document, { withoutSelection: true } ) )
+					.to.equal( '<image src="bar.jpg"></image><image src="foo.jpg">abc</image>' );
+			} );
+
+			describe( 'should autohoist images', () => {
+				beforeEach( () => {
+					document.schema.registerItem( 'div', '$block' );
+
+					buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
+					buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+				} );
+
+				it( 'image between non-hoisted elements', () => {
+					editor.setData( '<div>foo<img src="foo.jpg" alt="foo" />bar</div>' );
+
+					expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
+						'<div>foo</div>' +
+						'<image alt="foo" src="foo.jpg"></image>' +
+						'<div>bar</div>'
+					);
+				} );
+
+				it( 'multiple images', () => {
+					editor.setData( '<div>foo<img src="foo.jpg" alt="foo" />ba<img src="foo.jpg" alt="foo" />r</div>' );
+
+					expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
+						'<div>foo</div>' +
+						'<image alt="foo" src="foo.jpg"></image>' +
+						'<div>ba</div>' +
+						'<image alt="foo" src="foo.jpg"></image>' +
+						'<div>r</div>'
+					);
+				} );
+
+				it( 'images on borders of parent', () => {
+					editor.setData( '<div><img src="foo.jpg" alt="foo" />foobar<img src="foo.jpg" alt="foo" /></div>' );
+
+					expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
+						'<image alt="foo" src="foo.jpg"></image>' +
+						'<div>foobar</div>' +
+						'<image alt="foo" src="foo.jpg"></image>'
+					);
+				} );
+
+				it( 'images are only content of parent', () => {
+					editor.setData( '<div><img src="foo.jpg" alt="foo" /><img src="foo.jpg" alt="foo" /></div>' );
+
+					expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
+						'<image alt="foo" src="foo.jpg"></image>' +
+						'<image alt="foo" src="foo.jpg"></image>'
+					);
+				} );
+
+				it( 'deep autohoisting #1', () => {
+					document.schema.allow( { name: 'div', inside: 'div' } );
+
+					editor.setData( '<div>foo<div>xx<img src="foo.jpg" alt="foo" /></div>bar</div>' );
+
+					expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
+						'<div>' +
+							'foo' +
+							'<div>' +
+								'xx' +
+							'</div>' +
+						'</div>' +
+						'<image alt="foo" src="foo.jpg"></image>' +
+						'<div>bar</div>'
+					);
+				} );
+
+				it( 'deep autohoisting #2', () => {
+					document.schema.allow( { name: 'div', inside: 'div' } );
+
+					editor.setData(
+						'<div>x</div>' +
+						'<div><div><div><img src="foo.jpg" alt="foo" /></div></div></div>' +
+						'<div>y</div>'
+					);
+
+					expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
+						'<div>x</div><image alt="foo" src="foo.jpg"></image><div>y</div>'
+					);
+				} );
+
+				it( 'should not break a limiting element', () => {
+					document.schema.registerItem( 'limit', '$block' );
+					document.schema.allow( { name: 'div', inside: 'limit' } );
+					document.schema.limits.add( 'limit' );
+
+					buildModelConverter()
+						.for( editor.data.modelToView, editor.editing.modelToView ).fromElement( 'limit' ).toElement( 'limit' );
+
+					buildViewConverter().for( editor.data.viewToModel ).fromElement( 'limit' ).toElement( 'limit' );
+
+					editor.setData( '<limit><div>foo<img src="foo.jpg" alt="foo" />bar</div></limit>' );
+
+					// <limit> element does not have converters so it is not converted.
+					expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<limit><div>foobar</div></limit>' );
+				} );
+
+				it( 'should not convert and autohoist image element without src attribute (which is not allowed by schema)', () => {
+					editor.setData( '<div>foo<img alt="foo" />bar</div>' );
+
+					expect( getModelData( document, { withoutSelection: true } ) ).to.equal( '<div>foobar</div>' );
+				} );
 			} );
 		} );
 	} );
