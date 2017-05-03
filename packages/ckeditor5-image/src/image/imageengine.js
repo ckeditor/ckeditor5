@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
-import { viewFigureToModel, createImageAttributeConverter, convertHoistableImage, hoistImage } from './converters';
+import { viewFigureToModel, createImageAttributeConverter, convertHoistableImage, hoistImageThroughElement } from './converters';
 import { toImageWidget } from './utils';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
@@ -60,7 +60,7 @@ export default class ImageEngine extends Plugin {
 			.toElement( ( viewImage ) => new ModelElement( 'image', { src: viewImage.getAttribute( 'src' ) } ) );
 
 		data.viewToModel.on( 'element:img', convertHoistableImage, { priority: 'low' } );
-		data.viewToModel.on( 'element', hoistImage, { priority: 'low' } );
+		data.viewToModel.on( 'element', hoistImageThroughElement, { priority: 'low' } );
 
 		// Build converter for alt attribute.
 		// Note that by default attribute converters are added with `low` priority.

@@ -3,7 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-import { viewFigureToModel, createImageAttributeConverter, convertHoistableImage, hoistImage } from '../../src/image/converters';
+import {
+	viewFigureToModel,
+	createImageAttributeConverter,
+	convertHoistableImage,
+	hoistImageThroughElement
+} from '../../src/image/converters';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { createImageViewElement } from '../../src/image/imageengine';
 import { toImageWidget } from '../../src/image/utils';
@@ -281,7 +286,7 @@ describe( 'Image converters', () => {
 			} );
 		} );
 
-		describe( 'hoistImage', () => {
+		describe( 'hoistImageThroughElement', () => {
 			it( 'should hoist img element that was converted by convertHoistableImage', () => {
 				schema.registerItem( 'div', '$block' );
 
@@ -289,7 +294,7 @@ describe( 'Image converters', () => {
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
 
 				// Make sure to fire this callback after "normal" div callback.
-				dispatcher.on( 'element:div', hoistImage, { priority: 'low' } );
+				dispatcher.on( 'element:div', hoistImageThroughElement, { priority: 'low' } );
 
 				// If img view element is converted it must have been converted thanks to convertHoistableImage,
 				// because image is not allowed in div.
@@ -310,7 +315,7 @@ describe( 'Image converters', () => {
 				schema.registerItem( 'div', '$block' );
 
 				dispatcher.on( 'element:p', convertToModelFragment() );
-				dispatcher.on( 'element:p', hoistImage, { priority: 'low' } );
+				dispatcher.on( 'element:p', hoistImageThroughElement, { priority: 'low' } );
 
 				const viewDiv = new ViewContainerElement( 'p', null, [ 'foo', viewImg, 'bar' ] );
 
