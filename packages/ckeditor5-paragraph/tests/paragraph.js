@@ -13,8 +13,8 @@ import {
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 
 import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
@@ -76,6 +76,19 @@ describe( 'Paragraph feature', () => {
 
 				expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foo</paragraph>' );
 				expect( editor.getData() ).to.equal( '<p>foo</p>' );
+			} );
+
+			it( 'should autoparagraph any inline element', () => {
+				editor.document.schema.registerItem( 'span', '$inline' );
+				editor.document.schema.allow( { name: '$text', inside: '$inline' } );
+
+				buildModelConverter().for( editor.editing.modelToView, editor.data.modelToView ).fromElement( 'span' ).toElement( 'span' );
+				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'span' ).toElement( 'span' );
+
+				editor.setData( '<span>foo</span>' );
+
+				expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph><span>foo</span></paragraph>' );
+				expect( editor.getData() ).to.equal( '<p><span>foo</span></p>' );
 			} );
 
 			it( 'should not autoparagraph text (in clipboard holder)', () => {
@@ -170,20 +183,6 @@ describe( 'Paragraph feature', () => {
 				expect( modelFragment.getChild( 0 ).getChild( 0 ) ).to.be.instanceOf( ModelText );
 			} );
 
-			it( 'does not break converting inline elements', () => {
-				doc.schema.allow( { name: '$inline', attributes: [ 'bold' ] } );
-				buildViewConverter().for( editor.data.viewToModel )
-					.fromElement( 'b' )
-					.toAttribute( 'bold', true );
-
-				const modelFragment = editor.data.parse( 'foo<b>bar</b>bom' );
-
-				// The result of this test is wrong due to https://github.com/ckeditor/ckeditor5-paragraph/issues/10.
-				// It's meant to catch the odd situation in mergeSubsequentParagraphs when data.output may be an array
-				// for a while
-				expect( stringifyModel( modelFragment ) ).to.equal( '<paragraph>foobarbom</paragraph>' );
-			} );
-
 			// This test was taken from the list package.
 			it( 'does not break when some converter returns nothing', () => {
 				editor.data.viewToModel.on( 'element:li', ( evt, data, consumable ) => {
@@ -193,6 +192,45 @@ describe( 'Paragraph feature', () => {
 				const modelFragment = editor.data.parse( '<ul><li></li></ul>' );
 
 				expect( stringifyModel( modelFragment ) ).to.equal( '' );
+			} );
+
+			describe( 'should not strip attribute elements when autoparagraphing texts', () => {
+				beforeEach( () => {
+					doc.schema.allow( { name: '$inline', attributes: [ 'bold' ] } );
+					buildViewConverter().for( editor.data.viewToModel )
+						.fromElement( 'b' )
+						.toAttribute( 'bold', true );
+				} );
+
+				it( 'inside document fragment', () => {
+					const modelFragment = editor.data.parse( 'foo<b>bar</b>bom' );
+
+					expect( stringifyModel( modelFragment ) ).to.equal( '<paragraph>foo<$text bold="true">bar</$text>bom</paragraph>' );
+				} );
+
+				it( 'inside converted element', () => {
+					doc.schema.registerItem( 'blockquote' );
+					doc.schema.allow( { name: 'blockquote', inside: '$root' } );
+					doc.schema.allow( { name: '$block', inside: 'blockquote' } );
+
+					buildModelConverter().for( editor.editing.modelToView, editor.data.modelToView )
+						.fromElement( 'blockquote' )
+						.toElement( 'blockquote' );
+
+					buildViewConverter().for( editor.data.viewToModel ).fromElement( 'blockquote' ).toElement( 'blockquote' );
+
+					const modelFragment = editor.data.parse( '<blockquote>foo<b>bar</b>bom</blockquote>' );
+
+					expect( stringifyModel( modelFragment ) )
+						.to.equal( '<blockquote><paragraph>foo<$text bold="true">bar</$text>bom</paragraph></blockquote>' );
+				} );
+
+				it( 'inside paragraph-like element', () => {
+					const modelFragment = editor.data.parse( '<h1>foo</h1><h2><b>bar</b>bom</h2>' );
+
+					expect( stringifyModel( modelFragment ) )
+						.to.equal( '<paragraph>foo</paragraph><paragraph><$text bold="true">bar</$text>bom</paragraph>' );
+				} );
 			} );
 		} );
 
@@ -252,7 +290,7 @@ describe( 'Paragraph feature', () => {
 				const modelFragment = editor.data.parse( '<ul><li>a<ul><li>b</li><li>c</li></ul></li></ul>', '$clipboardHolder' );
 
 				expect( stringifyModel( modelFragment ) )
-					.to.equal( 'a<paragraph>b</paragraph><paragraph>c</paragraph>' );
+					.to.equal( '<paragraph>a</paragraph><paragraph>b</paragraph><paragraph>c</paragraph>' );
 			} );
 
 			it( 'should convert ul>li>p,text', () => {
@@ -268,7 +306,7 @@ describe( 'Paragraph feature', () => {
 				const modelFragment = editor.data.parse( '<ul><li><p>a</p>b</li></ul>', '$clipboardHolder' );
 
 				expect( stringifyModel( modelFragment ) )
-					.to.equal( '<paragraph>a</paragraph>b' );
+					.to.equal( '<paragraph>a</paragraph><paragraph>b</paragraph>' );
 			} );
 
 			it( 'should convert td', () => {
