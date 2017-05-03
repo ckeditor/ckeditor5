@@ -219,8 +219,7 @@ describe( 'ImageEngine', () => {
 
 					expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
 						'<image alt="foo" src="foo.jpg"></image>' +
-						'<image alt="foo" src="foo.jpg"></image>' +
-						'<div></div>'
+						'<image alt="foo" src="foo.jpg"></image>'
 					);
 				} );
 
@@ -244,11 +243,14 @@ describe( 'ImageEngine', () => {
 				it( 'deep autohoisting #2', () => {
 					document.schema.allow( { name: 'div', inside: 'div' } );
 
-					editor.setData( '<div><div><div><img src="foo.jpg" alt="foo" /></div></div></div>' );
+					editor.setData(
+						'<div>x</div>' +
+						'<div><div><div><img src="foo.jpg" alt="foo" /></div></div></div>' +
+						'<div>y</div>'
+					);
 
 					expect( getModelData( document, { withoutSelection: true } ) ).to.equal(
-						'<image alt="foo" src="foo.jpg"></image>' +
-						'<div><div><div></div></div></div>'
+						'<div>x</div><image alt="foo" src="foo.jpg"></image><div>y</div>'
 					);
 				} );
 

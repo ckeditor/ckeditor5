@@ -206,9 +206,6 @@ export function hoistImageThroughElement( evt, data ) {
 
 	// This will hold newly generated output. At the beginning it is only the original element.
 	const newOutput = [];
-	// Flag describing whether original element had any non-autohoisted children. If not, it will not be
-	// included in `newOutput` and this will have to be fixed.
-	let hasNonAutohoistedChildren = false;
 
 	// Check if any of its children is to be hoisted...
 	// Start from the last child - it is easier to break that way.
@@ -263,22 +260,11 @@ export function hoistImageThroughElement( evt, data ) {
 			if ( data.output.childCount > 0 ) {
 				newOutput.unshift( data.output );
 			}
-		} else {
-			hasNonAutohoistedChildren = true;
 		}
 	}
 
-	// If output has changed...
+	// If the output has changed pass it further.
 	if ( newOutput.length ) {
-		if ( !hasNonAutohoistedChildren ) {
-			// Fix scenario where original element has been completely removed from results:
-			// input:				<parent><autohoistedElement /><autohoistedElement /></parent>
-			// after autohoisting:	<autohoistedElement /><autohoistedElement />
-			// after this fix:		<autohoistedElement /><autohoistedElement /><parent></parent>
-			newOutput.push( data.output );
-		}
-
-		// Normalize new output and set is as result output.
 		data.output = new ModelDocumentFragment( newOutput );
 	}
 }
