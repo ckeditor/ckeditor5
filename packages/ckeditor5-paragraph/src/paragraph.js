@@ -39,6 +39,8 @@ export default class Paragraph extends Plugin {
 		const data = editor.data;
 		const editing = editor.editing;
 
+		editor.commands.set( 'paragraph', new ParagraphCommand( editor ) );
+
 		// Schema.
 		doc.schema.registerItem( 'paragraph', '$block' );
 
@@ -52,25 +54,29 @@ export default class Paragraph extends Plugin {
 			.fromElement( 'p' )
 			.toElement( 'paragraph' );
 
-		// "Force conversion" converter for elements that are allowed in paragraph element.
-		// After converter added by a feature, but before "default" to-model-fragment converter.
-		// Check if this element could be converted if it was in a paragraph.
-		data.viewToModel.on( 'element', convertAutoparagraphableItem, { priority: 'low' } );
+		// Content autoparagraphing. --------------------------------------------------
 
-		// "Force conversion" converter for texts.
-		// After default text converter.
-		// Check if this text could be converted if it was in a paragraph.
+		// Step 1.
+		// "Second chance" converters for elements and texts which were not allowed in their original locations.
+		// They check if this element/text could be converted if it was in a paragraph.
+		// Forcefully converted items will be temporarily in an invalid context. It's going to be fixed in step 2.
+
+		// Executed after converter added by a feature, but before "default" to-model-fragment converter.
+		data.viewToModel.on( 'element', convertAutoparagraphableItem, { priority: 'low' } );
+		// Executed after default text converter.
 		data.viewToModel.on( 'text', convertAutoparagraphableItem, { priority: 'lowest' } );
 
-		// After all converters -- this is to be sure that the element or document fragment had its all children converted
-		// and the results are available in `data.output`.
-		// Those converters wrap "forced" items in a paragraph element.
+		// Step 2.
+		// After an item is "forced" to be converted by `convertAutoparagraphableItem`, we need to actually take
+		// care of adding the paragraph (assumed in `convertAutoparagraphableItem`) and wrap that item in it.
+
+		// Executed after all converters (even default ones).
 		data.viewToModel.on( 'element', autoparagraphItems, { priority: 'lowest' } );
 		data.viewToModel.on( 'documentFragment', autoparagraphItems, { priority: 'lowest' } );
 
-		editor.commands.set( 'paragraph', new ParagraphCommand( editor ) );
+		// Empty roots autoparagraphing. -----------------------------------------------
 
-		// Post-fixer that takes care of adding empty paragraph elements to empty roots.
+		// Post-fixer which takes care of adding empty paragraph elements to empty roots.
 		// Besides fixing content on #changesDone we also need to handle #dataReady because
 		// if initial data is empty or setData() wasn't even called there will be no #change fired.
 		doc.on( 'change', ( evt, type, changes, batch ) => findEmptyRoots( doc, batch ) );
@@ -134,7 +140,7 @@ Paragraph.paragraphLikeElements = new Set( [
 // between `data.input` item and its parent. If the conversion would be allowed, the converter adds `"paragraph"` to the
 // context and fires conversion for `data.input` again.
 function convertAutoparagraphableItem( evt, data, consumable, conversionApi ) {
-	// If text wasn't consumed by the default converter...
+	// If the item wasn't consumed by some ot the dedicated converters...
 	if ( !consumable.test( data.input, { name: data.input.name } ) ) {
 		return;
 	}
@@ -144,12 +150,12 @@ function convertAutoparagraphableItem( evt, data, consumable, conversionApi ) {
 		return;
 	}
 
-	// Convert that text in paragraph context.
+	// Convert that item in a paragraph context.
 	data.context.push( 'paragraph' );
-	const text = conversionApi.convertItem( data.input, consumable, data );
+	const item = conversionApi.convertItem( data.input, consumable, data );
 	data.context.pop();
 
-	data.output = text;
+	data.output = item;
 }
 
 // This converter checks all children of an element or document fragment that has been converted and wraps
@@ -171,8 +177,8 @@ function autoparagraphItems( evt, data, consumable, conversionApi ) {
 	//   -	we are converting a view document fragment: this means that we are at the top level of conversion and we should
 	//		add paragraph elements for "bare" texts (unless converting in $clipboardHolder, but this is covered by schema),
 	//   -	we are converting an element that was converted to model element: this means that it will be represented in model
-	//		and has added its context when converting children - we should add paragraph for those elements that passed
-	//		in `convertAutoparagraphableText`, because it is correct for them to be autoparagraphed,
+	//		and has added its context when converting children - we should add paragraph for those items that passed
+	//		in `convertAutoparagraphableItem`, because it is correct for them to be autoparagraphed,
 	//	 -	we are converting "paragraph-like" element, which children should always be autoparagraphed (if it is allowed by schema,
 	//		so we won't end up with, i.e., paragraph inside paragraph, if paragraph was in paragraph-like element).
 	const shouldAutoparagraph =
@@ -185,7 +191,9 @@ function autoparagraphItems( evt, data, consumable, conversionApi ) {
 	}
 
 	// Take care of proper context. This is important for `isParagraphable` checks.
-	if ( data.output.is( 'element' ) ) {
+	const needsNewContext = data.output.is( 'element' );
+
+	if ( needsNewContext ) {
 		data.context.push( data.output );
 	}
 
@@ -220,7 +228,7 @@ function autoparagraphItems( evt, data, consumable, conversionApi ) {
 		}
 	}
 
-	if ( data.output.is( 'element' ) ) {
+	if ( needsNewContext ) {
 		data.context.pop();
 	}
 }
