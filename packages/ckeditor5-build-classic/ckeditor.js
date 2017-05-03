@@ -8,6 +8,7 @@ import EssentialsPlugin from '@ckeditor/ckeditor5-presets/src/essentials';
 import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import BlockquotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
 import ImagePlugin from '@ckeditor/ckeditor5-image/src/image';
 import ImagecaptionPlugin from '@ckeditor/ckeditor5-image/src/imagecaption';
@@ -25,6 +26,7 @@ ClassicEditor.build = {
 		AutoformatPlugin,
 		BoldPlugin,
 		ItalicPlugin,
+		BlockquotePlugin,
 		HeadingPlugin,
 		ImagePlugin,
 		ImagecaptionPlugin,

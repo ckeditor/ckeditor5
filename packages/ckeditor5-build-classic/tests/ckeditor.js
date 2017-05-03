@@ -101,6 +101,13 @@ describe( 'ClassicEditor', () => {
 			expect( editor.getData() ).to.equal( data );
 		} );
 
+		it( 'block-quote works', () => {
+			const data = '<blockquote><p>Quote</p></blockquote>';
+
+			editor.setData( data );
+			expect( editor.getData() ).to.equal( data );
+		} );
+
 		it( 'heading works', () => {
 			const data = [
 				'<h2>Heading 1.</h2>',

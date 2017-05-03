@@ -14,6 +14,7 @@ module.exports = {
 		'unlink',
 		'bulletedList',
 		'numberedList',
+		'blockQuote',
 		'undo',
 		'redo'
 	],
