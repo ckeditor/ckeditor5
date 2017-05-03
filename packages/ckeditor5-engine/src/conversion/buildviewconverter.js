@@ -238,10 +238,11 @@ class ViewConverterBuilder {
 	 *			.from( { name: 'p', class: 'custom' } ).withPriority( 9 )
 	 *			.toElement( 'customParagraph' );
 	 *
-	 * **Note:** `ViewConverterBuilder` takes care so all `toElement` conversions takes place before all `toAttribute`
-	 * conversions. This is done by setting default `toElement` priority to `10` and `toAttribute` priority to `1000`.
-	 * It is recommended to set converter priority for `toElement` conversions below `500` and `toAttribute` priority
-	 * above `500`. It is important that model elements are created before attributes, otherwise attributes would
+	 * **Note:** `ViewConverterBuilder` takes care of applying all `toElement()` conversions before all `toAttribute()`
+	 * conversions. This is done by setting default `toElement()` priority to `normal` and `toAttribute()` priority to `low`.
+	 * It is recommended to set converter priority for `toElement()` around `0` (the value of `normal` priority)
+	 * and `toAttribute()` priority around `-1000` (the value of `low` priority).
+	 * It is important that model elements are created before attributes, otherwise attributes would
 	 * not be applied or other errors may occur.
 	 *
 	 * @chainable
