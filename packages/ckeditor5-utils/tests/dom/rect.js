@@ -41,12 +41,39 @@ describe( 'Rect', () => {
 			assertRect( new Rect( element ), geometry );
 		} );
 
-		it( 'should accept Range', () => {
+		it( 'should accept Range (non–collapsed)', () => {
 			const range = document.createRange();
 
+			range.selectNode( document.body );
 			testUtils.sinon.stub( range, 'getBoundingClientRect' ).returns( geometry );
 
 			assertRect( new Rect( range ), geometry );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-utils/issues/153
+		it( 'should accept Range (collapsed)', () => {
+			const range = document.createRange();
+
+			range.collapse();
+			testUtils.sinon.stub( range, 'getClientRects' ).returns( [ geometry ] );
+
+			assertRect( new Rect( range ), geometry );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-utils/issues/153
+		it( 'should accept Range (collapsed, no Range rects available)', () => {
+			const range = document.createRange();
+			const element = document.createElement( 'div' );
+
+			range.setStart( element, 0 );
+			range.collapse();
+			testUtils.sinon.stub( range, 'getClientRects' ).returns( [] );
+			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+
+			const expectedGeometry = Object.assign( {}, geometry );
+			expectedGeometry.width = 0;
+
+			assertRect( new Rect( range ), expectedGeometry );
 		} );
 
 		it( 'should accept Rect', () => {
@@ -481,6 +508,7 @@ describe( 'Rect', () => {
 
 		it( 'should return the visible rect (Range), partially cropped', () => {
 			range.setStart( ancestorA, 0 );
+			range.setEnd( ancestorA, 1 );
 
 			testUtils.sinon.stub( range, 'getBoundingClientRect' ).returns( {
 				top: 0,

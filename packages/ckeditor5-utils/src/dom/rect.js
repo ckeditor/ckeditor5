@@ -11,8 +11,6 @@ import global from './global';
 import isRange from './isrange';
 import isElement from '../lib/lodash/isElement';
 
-const rectProperties = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
-
 /**
  * A helper class representing a `ClientRect` object, e.g. value returned by
  * the native `object.getBoundingClientRect()` method. Provides a set of methods
@@ -54,11 +52,31 @@ export default class Rect {
 			enumerable: false
 		} );
 
-		if ( isElement( source ) || isRange( source ) ) {
-			source = source.getBoundingClientRect();
-		}
+		if ( isElement( source ) ) {
+			copyRectProperties( this, source.getBoundingClientRect() );
+		} else if ( isRange( source ) ) {
+			// Use getClientRects() when the range is collapsed.
+			// https://github.com/ckeditor/ckeditor5-utils/issues/153
+			if ( source.collapsed ) {
+				const rects = source.getClientRects();
 
-		rectProperties.forEach( p => this[ p ] = source[ p ] );
+				if ( rects.length ) {
+					copyRectProperties( this, rects[ 0 ] );
+				}
+				// If there's no client rects for the Range, use parent container's bounding
+				// rect instead and adjust rect's width to simulate the actual geometry of such
+				// range.
+				// https://github.com/ckeditor/ckeditor5-utils/issues/153
+				else {
+					copyRectProperties( this, source.startContainer.getBoundingClientRect() );
+					this.width = 0;
+				}
+			} else {
+				copyRectProperties( this, source.getBoundingClientRect() );
+			}
+		} else {
+			copyRectProperties( this, source );
+		}
 
 		/**
 		 * The "top" value of the rect.
@@ -249,5 +267,18 @@ export default class Rect {
 			width: innerWidth,
 			height: innerHeight
 		} );
+	}
+}
+
+const rectProperties = [ 'top', 'right', 'bottom', 'left', 'width', 'height' ];
+
+// Acquires all the rect properties from the passed source.
+//
+// @private
+// @param {module:utils/dom/rect~Rect} rect
+// @param {ClientRect|module:utils/dom/rect~Rect|Object} source
+function copyRectProperties( rect, source ) {
+	for ( const p of rectProperties ) {
+		rect[ p ] = source[ p ];
 	}
 }
