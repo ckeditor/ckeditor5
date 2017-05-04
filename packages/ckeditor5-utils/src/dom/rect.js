@@ -54,11 +54,39 @@ export default class Rect {
 			enumerable: false
 		} );
 
-		if ( isElement( source ) || isRange( source ) ) {
-			source = source.getBoundingClientRect();
-		}
+		// Acquires all the rect properties from the passed source.
+		//
+		// @private
+		// @param {ClientRect|module:utils/dom/rect~Rect|Object} source}
+		const setProperties = source => {
+			rectProperties.forEach( p => this[ p ] = source[ p ] );
+		};
 
-		rectProperties.forEach( p => this[ p ] = source[ p ] );
+		if ( isElement( source ) ) {
+			setProperties( source.getBoundingClientRect() );
+		} else if ( isRange( source ) ) {
+			// Use getClientRects() when the range is collapsed
+			// https://github.com/ckeditor/ckeditor5-utils/issues/153
+			if ( source.collapsed ) {
+				const rects = source.getClientRects();
+
+				if ( rects.length ) {
+					setProperties( rects[ 0 ] );
+				}
+				// If there's no client rects for the Range, use parent container's bounding
+				// rect instead and adjust rect's width to simulate the actual geometry of such
+				// range.
+				// https://github.com/ckeditor/ckeditor5-utils/issues/153
+				else {
+					setProperties( source.startContainer.getBoundingClientRect() );
+					this.width = 0;
+				}
+			} else {
+				setProperties( source.getBoundingClientRect() );
+			}
+		} else {
+			setProperties( source );
+		}
 
 		/**
 		 * The "top" value of the rect.
