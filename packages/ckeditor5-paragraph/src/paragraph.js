@@ -140,7 +140,7 @@ Paragraph.paragraphLikeElements = new Set( [
 // between `data.input` item and its parent. If the conversion would be allowed, the converter adds `"paragraph"` to the
 // context and fires conversion for `data.input` again.
 function convertAutoparagraphableItem( evt, data, consumable, conversionApi ) {
-	// If the item wasn't consumed by some ot the dedicated converters...
+	// If the item wasn't consumed by some of the dedicated converters...
 	if ( !consumable.test( data.input, { name: data.input.name } ) ) {
 		return;
 	}
