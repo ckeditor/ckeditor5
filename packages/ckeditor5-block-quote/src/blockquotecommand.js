@@ -103,7 +103,7 @@ export default class BlockQuoteCommand extends Command {
 			inside: 'blockQuote'
 		} );
 
-		// Whether <mQ> can wrap the block.
+		// Whether <bQ> can wrap the block.
 		return isMQAllowed && isBlockAllowed;
 	}
 
@@ -126,7 +126,7 @@ export default class BlockQuoteCommand extends Command {
 				return;
 			}
 
-			// The group of blocks are at the beginning of an <mQ> so let's move them left (out of the <mQ>).
+			// The group of blocks are at the beginning of an <bQ> so let's move them left (out of the <bQ>).
 			if ( groupRange.start.isAtStart ) {
 				const positionBefore = Position.createBefore( groupRange.start.parent );
 
@@ -135,7 +135,7 @@ export default class BlockQuoteCommand extends Command {
 				return;
 			}
 
-			// The blocks are in the middle of an <mQ> so we need to split the <mQ> after the last block
+			// The blocks are in the middle of an <bQ> so we need to split the <bQ> after the last block
 			// so we move the items there.
 			if ( !groupRange.end.isAtEnd ) {
 				batch.split( groupRange.end );
@@ -171,9 +171,9 @@ export default class BlockQuoteCommand extends Command {
 			quotesToMerge.push( quote );
 		} );
 
-		// Merge subsequent <mQ> elements. Reverse the order again because this time we want to go through
-		// the <mQ> elements in the source order (due to how merge works – it moves the right element's content
-		// to the first element and removes the right one. Since we may need to merge a couple of subsequent `<mQ>` elements
+		// Merge subsequent <bQ> elements. Reverse the order again because this time we want to go through
+		// the <bQ> elements in the source order (due to how merge works – it moves the right element's content
+		// to the first element and removes the right one. Since we may need to merge a couple of subsequent `<bQ>` elements
 		// we want to keep the reference to the first (furthest left) one.
 		quotesToMerge.reverse().reduce( ( currentQuote, nextQuote ) => {
 			if ( currentQuote.nextSibling == nextQuote ) {
