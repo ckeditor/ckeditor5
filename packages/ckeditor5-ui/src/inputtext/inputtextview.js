@@ -38,6 +38,14 @@ export default class InputTextView extends View {
 		 */
 		this.set( 'id' );
 
+		/**
+		 * The `placeholder` attribute of the input.
+		 *
+		 * @observable
+		 * @member {String} #placeholder
+		 */
+		this.set( 'placeholder' );
+
 		const bind = this.bindTemplate;
 
 		this.template = new Template( {
@@ -48,7 +56,8 @@ export default class InputTextView extends View {
 					'ck-input',
 					'ck-input-text'
 				],
-				id: bind.to( 'id' )
+				id: bind.to( 'id' ),
+				placeholder: bind.to( 'placeholder' )
 			}
 		} );
 

@@ -56,6 +56,16 @@ describe( 'InputTextView', () => {
 				expect( view.element.id ).to.equal( 'baz' );
 			} );
 		} );
+
+		describe( 'placeholder', () => {
+			it( 'should react on view#placeholder', () => {
+				expect( view.element.placeholder ).to.equal( '' );
+
+				view.placeholder = 'baz';
+
+				expect( view.element.placeholder ).to.equal( 'baz' );
+			} );
+		} );
 	} );
 
 	describe( 'select()', () => {
