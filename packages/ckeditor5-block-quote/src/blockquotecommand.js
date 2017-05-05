@@ -64,6 +64,7 @@ export default class BlockQuoteCommand extends Command {
 	 */
 	_doExecute( options = {} ) {
 		const doc = this.editor.document;
+		const schema = doc.schema;
 		const batch = options.batch || doc.batch();
 		const blocks = Array.from( doc.selection.getSelectedBlocks() );
 
@@ -71,7 +72,13 @@ export default class BlockQuoteCommand extends Command {
 			if ( this.value ) {
 				this._removeQuote( batch, blocks.filter( findQuote ) );
 			} else {
-				this._applyQuote( batch, blocks );
+				const blocksToQuote = blocks.filter( block => {
+					// Already quoted blocks needs to be considered while quoting too
+					// in order to reuse their <bQ> elements.
+					return findQuote( block ) || checkCanBeQuoted( schema, block );
+				} );
+
+				this._applyQuote( batch, blocksToQuote );
 			}
 		} );
 	}
@@ -93,18 +100,7 @@ export default class BlockQuoteCommand extends Command {
 			return false;
 		}
 
-		const isMQAllowed = schema.check( {
-			name: 'blockQuote',
-			inside: Position.createBefore( firstBlock )
-		} );
-		const isBlockAllowed = schema.check( {
-			name: firstBlock.name,
-			attributes: Array.from( firstBlock.getAttributeKeys() ),
-			inside: 'blockQuote'
-		} );
-
-		// Whether <mQ> can wrap the block.
-		return isMQAllowed && isBlockAllowed;
+		return checkCanBeQuoted( schema, firstBlock );
 	}
 
 	/**
@@ -126,7 +122,7 @@ export default class BlockQuoteCommand extends Command {
 				return;
 			}
 
-			// The group of blocks are at the beginning of an <mQ> so let's move them left (out of the <mQ>).
+			// The group of blocks are at the beginning of an <bQ> so let's move them left (out of the <bQ>).
 			if ( groupRange.start.isAtStart ) {
 				const positionBefore = Position.createBefore( groupRange.start.parent );
 
@@ -135,7 +131,7 @@ export default class BlockQuoteCommand extends Command {
 				return;
 			}
 
-			// The blocks are in the middle of an <mQ> so we need to split the <mQ> after the last block
+			// The blocks are in the middle of an <bQ> so we need to split the <bQ> after the last block
 			// so we move the items there.
 			if ( !groupRange.end.isAtEnd ) {
 				batch.split( groupRange.end );
@@ -171,9 +167,9 @@ export default class BlockQuoteCommand extends Command {
 			quotesToMerge.push( quote );
 		} );
 
-		// Merge subsequent <mQ> elements. Reverse the order again because this time we want to go through
-		// the <mQ> elements in the source order (due to how merge works – it moves the right element's content
-		// to the first element and removes the right one. Since we may need to merge a couple of subsequent `<mQ>` elements
+		// Merge subsequent <bQ> elements. Reverse the order again because this time we want to go through
+		// the <bQ> elements in the source order (due to how merge works – it moves the right element's content
+		// to the first element and removes the right one. Since we may need to merge a couple of subsequent `<bQ>` elements
 		// we want to keep the reference to the first (furthest left) one.
 		quotesToMerge.reverse().reduce( ( currentQuote, nextQuote ) => {
 			if ( currentQuote.nextSibling == nextQuote ) {
@@ -221,4 +217,19 @@ function getRangesOfBlockGroups( blocks ) {
 	}
 
 	return ranges;
+}
+
+// Checks whether <bQ> can wrap the block.
+function checkCanBeQuoted( schema, block ) {
+	const isBQAllowed = schema.check( {
+		name: 'blockQuote',
+		inside: Position.createBefore( block )
+	} );
+	const isBlockAllowedInBQ = schema.check( {
+		name: block.name,
+		attributes: Array.from( block.getAttributeKeys() ),
+		inside: 'blockQuote'
+	} );
+
+	return isBQAllowed && isBlockAllowedInBQ;
 }
