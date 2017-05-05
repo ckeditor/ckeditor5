@@ -20,8 +20,6 @@ describe( 'BalloonPanelView', () => {
 	beforeEach( () => {
 		view = new BalloonPanelView();
 
-		view.set( 'maxWidth', 200 );
-
 		return view.init();
 	} );
 
@@ -94,14 +92,6 @@ describe( 'BalloonPanelView', () => {
 				view.left = 10;
 
 				expect( view.element.style.left ).to.equal( '10px' );
-			} );
-
-			it( 'should react on view#maxWidth', () => {
-				expect( view.element.style.maxWidth ).to.equal( '200px' );
-
-				view.maxWidth = 10;
-
-				expect( view.element.style.maxWidth ).to.equal( '10px' );
 			} );
 		} );
 
