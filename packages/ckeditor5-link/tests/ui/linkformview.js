@@ -18,7 +18,7 @@ describe( 'LinkFormView', () => {
 	let view;
 
 	beforeEach( () => {
-		view = new LinkFormView( { t: () => {} } );
+		view = new LinkFormView( { t: () => 'http://example.com' } );
 
 		return view.init();
 	} );
@@ -95,6 +95,12 @@ describe( 'LinkFormView', () => {
 			view.unlinkButtonView.fire( 'execute' );
 
 			expect( spy.calledOnce ).to.true;
+		} );
+
+		describe( 'url input view', () => {
+			it( 'has placeholder', () => {
+				expect( view.urlInputView.inputView.placeholder ).to.equal( 'http://example.com' );
+			} );
 		} );
 
 		describe( 'template', () => {

@@ -199,6 +199,7 @@ export default class LinkFormView extends View {
 		const labeledInput = new LabeledInputView( this.locale, InputTextView );
 
 		labeledInput.label = t( 'Link URL' );
+		labeledInput.inputView.placeholder = t( 'http://example.com' );
 
 		return labeledInput;
 	}
