@@ -367,6 +367,69 @@ describe( 'BlockQuoteCommand', () => {
 					'<p>y</p>'
 				);
 			} );
+
+			it( 'should not wrap a block which can not be in a quote', () => {
+				// blockQuote is allowed in root, but fooBlock can not be inside blockQuote.
+				doc.schema.registerItem( 'fooBlock', '$block' );
+				doc.schema.disallow( { name: 'fooBlock', inside: 'blockQuote' } );
+				buildModelConverter().for( editor.editing.modelToView )
+					.fromElement( 'fooBlock' )
+					.toElement( 'fooblock' );
+
+				setModelData(
+					doc,
+					'<paragraph>a[bc</paragraph>' +
+					'<fooBlock>xx</fooBlock>' +
+					'<paragraph>de]f</paragraph>'
+				);
+
+				editor.execute( 'blockQuote' );
+
+				expect( getModelData( doc ) ).to.equal(
+					'<blockQuote>' +
+						'<paragraph>a[bc</paragraph>' +
+					'</blockQuote>' +
+					'<fooBlock>xx</fooBlock>' +
+					'<blockQuote>' +
+						'<paragraph>de]f</paragraph>' +
+					'</blockQuote>'
+				);
+			} );
+
+			it( 'should not wrap a block which parent does not allow quote inside itself', () => {
+				// blockQuote is not be allowed in fooWrapper, but fooBlock can be inside blockQuote.
+				doc.schema.registerItem( 'fooWrapper' );
+				doc.schema.registerItem( 'fooBlock', '$block' );
+
+				doc.schema.allow( { name: 'fooWrapper', inside: '$root' } );
+				doc.schema.allow( { name: 'fooBlock', inside: 'fooWrapper' } );
+
+				buildModelConverter().for( editor.editing.modelToView )
+					.fromElement( 'fooWrapper' )
+					.toElement( 'foowrapper' );
+				buildModelConverter().for( editor.editing.modelToView )
+					.fromElement( 'fooBlock' )
+					.toElement( 'fooblock' );
+
+				setModelData(
+					doc,
+					'<paragraph>a[bc</paragraph>' +
+					'<fooWrapper><fooBlock>xx</fooBlock></fooWrapper>' +
+					'<paragraph>de]f</paragraph>'
+				);
+
+				editor.execute( 'blockQuote' );
+
+				expect( getModelData( doc ) ).to.equal(
+					'<blockQuote>' +
+						'<paragraph>a[bc</paragraph>' +
+					'</blockQuote>' +
+					'<fooWrapper><fooBlock>xx</fooBlock></fooWrapper>' +
+					'<blockQuote>' +
+						'<paragraph>de]f</paragraph>' +
+					'</blockQuote>'
+				);
+			} );
 		} );
 
 		describe( 'removing quote', () => {

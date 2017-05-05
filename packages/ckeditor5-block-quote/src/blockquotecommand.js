@@ -64,6 +64,7 @@ export default class BlockQuoteCommand extends Command {
 	 */
 	_doExecute( options = {} ) {
 		const doc = this.editor.document;
+		const schema = doc.schema;
 		const batch = options.batch || doc.batch();
 		const blocks = Array.from( doc.selection.getSelectedBlocks() );
 
@@ -71,7 +72,13 @@ export default class BlockQuoteCommand extends Command {
 			if ( this.value ) {
 				this._removeQuote( batch, blocks.filter( findQuote ) );
 			} else {
-				this._applyQuote( batch, blocks );
+				const blocksToQuote = blocks.filter( block => {
+					// Already quoted blocks needs to be considered while quoting too
+					// in order to reuse their <bQ> elements.
+					return findQuote( block ) || checkCanBeQuoted( schema, block );
+				} );
+
+				this._applyQuote( batch, blocksToQuote );
 			}
 		} );
 	}
@@ -93,18 +100,7 @@ export default class BlockQuoteCommand extends Command {
 			return false;
 		}
 
-		const isMQAllowed = schema.check( {
-			name: 'blockQuote',
-			inside: Position.createBefore( firstBlock )
-		} );
-		const isBlockAllowed = schema.check( {
-			name: firstBlock.name,
-			attributes: Array.from( firstBlock.getAttributeKeys() ),
-			inside: 'blockQuote'
-		} );
-
-		// Whether <bQ> can wrap the block.
-		return isMQAllowed && isBlockAllowed;
+		return checkCanBeQuoted( schema, firstBlock );
 	}
 
 	/**
@@ -221,4 +217,19 @@ function getRangesOfBlockGroups( blocks ) {
 	}
 
 	return ranges;
+}
+
+// Checks whether <bQ> can wrap the block.
+function checkCanBeQuoted( schema, block ) {
+	const isBQAllowed = schema.check( {
+		name: 'blockQuote',
+		inside: Position.createBefore( block )
+	} );
+	const isBlockAllowedInBQ = schema.check( {
+		name: block.name,
+		attributes: Array.from( block.getAttributeKeys() ),
+		inside: 'blockQuote'
+	} );
+
+	return isBQAllowed && isBlockAllowedInBQ;
 }

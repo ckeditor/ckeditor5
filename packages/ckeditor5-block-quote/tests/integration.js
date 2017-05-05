@@ -7,6 +7,8 @@
 
 import BlockQuote from '../src/blockquote';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
@@ -22,7 +24,7 @@ describe( 'BlockQuote', () => {
 		document.body.appendChild( element );
 
 		return ClassicTestEditor.create( element, {
-			plugins: [ BlockQuote, Paragraph, List, Enter, Delete ]
+			plugins: [ BlockQuote, Paragraph, Image, ImageCaption, List, Enter, Delete ]
 		} )
 		.then( newEditor => {
 			editor = newEditor;
@@ -286,6 +288,76 @@ describe( 'BlockQuote', () => {
 			expect( getModelData( doc ) ).to.equal(
 				'<paragraph>x[]</paragraph>' +
 				'<paragraph>y</paragraph>'
+			);
+		} );
+	} );
+
+	describe( 'compatibility with images', () => {
+		it( 'does not quote a simple image', () => {
+			const element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			// We can't load ImageCaption in this test because it adds <caption> to all images automatically.
+			return ClassicTestEditor.create( element, {
+					plugins: [ BlockQuote, Paragraph, Image ]
+				} )
+				.then( ( editor ) => {
+					setModelData( editor.document,
+						'<paragraph>fo[o</paragraph>' +
+						'<image src="foo.png"></image>' +
+						'<paragraph>b]ar</paragraph>'
+					);
+
+					editor.execute( 'blockQuote' );
+
+					expect( getModelData( editor.document ) ).to.equal(
+						'<blockQuote><paragraph>fo[o</paragraph></blockQuote>' +
+						'<image src="foo.png"></image>' +
+						'<blockQuote><paragraph>b]ar</paragraph></blockQuote>'
+					);
+
+					element.remove();
+					editor.destroy();
+				} );
+		} );
+
+		it( 'does not quote an image with caption', () => {
+			setModelData( doc,
+				'<paragraph>fo[o</paragraph>' +
+				'<image src="foo.png">' +
+					'<caption>xxx</caption>' +
+				'</image>' +
+				'<paragraph>b]ar</paragraph>'
+			);
+
+			editor.execute( 'blockQuote' );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<blockQuote><paragraph>fo[o</paragraph></blockQuote>' +
+				'<image src="foo.png">' +
+					'<caption>xxx</caption>' +
+				'</image>' +
+				'<blockQuote><paragraph>b]ar</paragraph></blockQuote>'
+			);
+		} );
+
+		it( 'does not add an image to existing quote', () => {
+			setModelData( doc,
+				'<paragraph>fo[o</paragraph>' +
+				'<image src="foo.png">' +
+					'<caption>xxx</caption>' +
+				'</image>' +
+				'<blockQuote><paragraph>b]ar</paragraph></blockQuote>'
+			);
+
+			editor.execute( 'blockQuote' );
+
+			expect( getModelData( doc ) ).to.equal(
+				'<blockQuote><paragraph>fo[o</paragraph></blockQuote>' +
+				'<image src="foo.png">' +
+					'<caption>xxx</caption>' +
+				'</image>' +
+				'<blockQuote><paragraph>b]ar</paragraph></blockQuote>'
 			);
 		} );
 	} );
