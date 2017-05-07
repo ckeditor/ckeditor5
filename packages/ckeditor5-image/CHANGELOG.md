@@ -1,13 +1,35 @@
 Changelog
 =========
 
+## [0.6.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.5.0...v0.6.0) (2017-05-07)
+
+### Bug fixes
+
+* Bare `<img>` (not wrapped with `<figure class="image">`) can now be pasted into the editor. Closes [#8](https://github.com/ckeditor/ckeditor5-image/issues/8). ([fb6ab1a](https://github.com/ckeditor/ckeditor5-image/commit/fb6ab1a))
+* Fixed toolbar positioning in MS Edge. Closes [#101](https://github.com/ckeditor/ckeditor5-image/issues/101). ([19941e9](https://github.com/ckeditor/ckeditor5-image/commit/19941e9))
+* The `caption` item should inherit from `$block` to automatically allow the same content. Closes [#94](https://github.com/ckeditor/ckeditor5-image/issues/94). ([02869eb](https://github.com/ckeditor/ckeditor5-image/commit/02869eb))
+
+### Features
+
+* Introduced support for pasting and loading images in context in which they cannot appear in the editor. For example, if `<p>foo<img>bar</p>` is pasted, the pasted paragraph will be split (because an image in the editor cannot be contained in a paragraph). Closes [#98](https://github.com/ckeditor/ckeditor5-image/issues/98). ([e2104b1](https://github.com/ckeditor/ckeditor5-image/commit/e2104b1))
+
+### Other changes
+
+* Removed automatically filled `config.image.defaultToolbar`. Now, when initializing the editor one must always define `config.image.toolbar`. Closes [#60](https://github.com/ckeditor/ckeditor5-image/issues/60). ([4db7b34](https://github.com/ckeditor/ckeditor5-image/commit/4db7b34))
+* Updated translations. ([22b5dbc](https://github.com/ckeditor/ckeditor5-image/commit/22b5dbc))
+
+### BREAKING CHANGES
+
+* The `config.image.defaultToolbar` is no longer available. All editor instances must have `config.image.toolbar` configured instead.
+
+
 ## [0.5.0](https://github.com/ckeditor/ckeditor5-image/compare/v0.4.0...v0.5.0) (2017-04-05)
 
 ### Bug fixes
 
 * Caption will not be automatically added for the second time if it was already added before "caption fixer" was fired. Closes [#78](https://github.com/ckeditor/ckeditor5-image/issues/78). ([e651b01](https://github.com/ckeditor/ckeditor5-image/commit/e651b01))
 * Image captions in the view are hidden instead of being removed (from the view and the DOM). Closes [#77](https://github.com/ckeditor/ckeditor5-image/issues/77). ([aae2957](https://github.com/ckeditor/ckeditor5-image/commit/aae2957))
-* The editor no longer crashes when undoing or redoing changes should reshow temporarily invisible image caption. Closes [#58](https://github.com/ckeditor/ckeditor5-image/issues/58). ([8e36645](https://github.com/ckeditor/ckeditor5-image/commit/8e36645))
+* The editor no longer crashes when undoing or redoing changes reshow temporarily invisible image caption. Closes [#58](https://github.com/ckeditor/ckeditor5-image/issues/58). ([8e36645](https://github.com/ckeditor/ckeditor5-image/commit/8e36645))
 * The image should not go (visually) beyond the boundaries of the parent container. Closes [#67](https://github.com/ckeditor/ckeditor5-image/issues/67). ([d1ee92d](https://github.com/ckeditor/ckeditor5-image/commit/d1ee92d))
 
 ### Features
