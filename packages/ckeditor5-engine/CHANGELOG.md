@@ -1,6 +1,37 @@
 Changelog
 =========
 
+## [0.10.0](https://github.com/ckeditor/ckeditor5-engine/compare/v0.9.0...v0.10.0) (2017-05-07)
+
+### Bug fixes
+
+* `DomConverter#domToView()` will not throw when converting a comment. Closes [#647](https://github.com/ckeditor/ckeditor5-engine/issues/647). ([ffc41d4](https://github.com/ckeditor/ckeditor5-engine/commit/ffc41d4))
+* `ViewConverterBuilder#fromAttribute()` should not create incorrect matcher object for `Matcher` if passed attribute was other than `class` or `style`. Closes [#919](https://github.com/ckeditor/ckeditor5-engine/issues/919). ([6701c4b](https://github.com/ckeditor/ckeditor5-engine/commit/6701c4b))
+
+  Minor upgrades to `ViewConversionBuilder`:
+
+  * converters from `ViewConversionBuilder` will not convert if "creator function" returned `null`.
+  * simplified view converters building by making `ViewConversionBuilder#toAttribute()` `value` param optional. If not set, the attribute value is taken from converted view element.
+* Improved compatibility with MS Edge. See [#923](https://github.com/ckeditor/ckeditor5-engine/issues/923). Closes [#925](https://github.com/ckeditor/ckeditor5-engine/issues/925). ([1af4a50](https://github.com/ckeditor/ckeditor5-engine/commit/1af4a50))
+* Improved performance of the `view.Element`'s inline styles parser. Big property values (like base64 encoded images) should not crash the editor anymore. Closes [#881](https://github.com/ckeditor/ckeditor5-engine/issues/881). ([3d494a3](https://github.com/ckeditor/ckeditor5-engine/commit/3d494a3))
+* Removed invalid promise catches from `dev-utils.DeltaReplayer`. Closes [#906](https://github.com/ckeditor/ckeditor5-engine/issues/906). ([69cfdd1](https://github.com/ckeditor/ckeditor5-engine/commit/69cfdd1))
+* Unified values returned in `data.output` during view-to-model conversion. See breaking changes. Closes [#932](https://github.com/ckeditor/ckeditor5-engine/issues/932). ([16ae05a](https://github.com/ckeditor/ckeditor5-engine/commit/16ae05a))
+
+### Features
+
+* Allow passing ranges to the selection constructors (in the model and in the view). Closes [#600](https://github.com/ckeditor/ckeditor5-engine/issues/600). ([da8a609](https://github.com/ckeditor/ckeditor5-engine/commit/da8a609))
+* Events fired by `model.MarkerCollection` will now include marker name after semicolon. Closes [#911](https://github.com/ckeditor/ckeditor5-engine/issues/911). ([3a8ebed](https://github.com/ckeditor/ckeditor5-engine/commit/3a8ebed))
+
+### Other changes
+
+* `model.Element#clone()` now does not clone children when passed `false` and recursively clones children when passed `true`. Closes [#689](https://github.com/ckeditor/ckeditor5-engine/issues/689). ([ccb0659](https://github.com/ckeditor/ckeditor5-engine/commit/ccb0659))
+
+### BREAKING CHANGES
+
+* `ViewConversionDispatcher#convert()` will always return `model.DocumentFragment` (which may be empty in various cases). `conversionApi#convertItem()` will log a warning if `data.output` contains a different value than `model.Node` or `model.DocumentFragment` or `null`. `conversionApi#convertChildren()` will always return `model.DocumentFragment`.
+* `model.Element#clone()` does not clone children when not in the `deep` mode. See [#689](https://github.com/ckeditor/ckeditor5-engine/issues/689).
+
+
 ## [0.9.0](https://github.com/ckeditor/ckeditor5-engine/compare/v0.8.0...v0.9.0) (2017-04-05)
 
 ### Bug fixes
