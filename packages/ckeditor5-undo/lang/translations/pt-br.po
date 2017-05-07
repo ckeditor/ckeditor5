@@ -1,0 +1,14 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: pt_BR\n"
+"Language-Team: Portuguese (Brazil) (https://www.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "Toolbar button tooltip for the Undo feature."
+msgid "Undo"
+msgstr "Desfazer"
+
+msgctxt "Toolbar button tooltip for the Redo feature."
+msgid "Redo"
+msgstr "Refazer"
