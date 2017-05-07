@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## [0.9.1](https://github.com/ckeditor/ckeditor5-typing/compare/v0.9.0...v0.9.1) (2017-05-07)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
 ## [0.9.0](https://github.com/ckeditor/ckeditor5-typing/compare/v0.8.0...v0.9.0) (2017-04-05)
 
 ### Bug fixes
