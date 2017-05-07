@@ -1,0 +1,14 @@
+# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: kn\n"
+"Language-Team: Kannada (https://www.transifex.com/ckeditor/teams/11143/kn/)\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Title of the CKEditor5 editor."
+msgid "Rich Text Editor, %0"
+msgstr "‍ಸಮೃದ್ಧ ಪಠ್ಯ ಸಂಪಾದಕ‍, %0"
+
+msgctxt "Title of the CKEditor5 editor."
+msgid "Rich Text Editor"
+msgstr "‍ಸಮೃದ್ಧ ಪಠ್ಯ ಸಂಪಾದಕ‍‍"
