@@ -4,20 +4,20 @@
   "description": "Classic Editor for CKEditor 5.",
   "keywords": [],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^0.8.0",
-    "@ckeditor/ckeditor5-engine": "^0.9.0",
-    "@ckeditor/ckeditor5-theme-lark": "^0.7.0",
-    "@ckeditor/ckeditor5-ui": "^0.8.0",
-    "@ckeditor/ckeditor5-utils": "^0.9.0"
+    "@ckeditor/ckeditor5-core": "^0.8.1",
+    "@ckeditor/ckeditor5-engine": "^0.10.0",
+    "@ckeditor/ckeditor5-theme-lark": "^0.8.0",
+    "@ckeditor/ckeditor5-ui": "^0.9.0",
+    "@ckeditor/ckeditor5-utils": "^0.9.1"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-dev-lint": "^2.0.2",
-    "@ckeditor/ckeditor5-basic-styles": "^0.8.0",
-    "@ckeditor/ckeditor5-enter": "^0.9.0",
-    "@ckeditor/ckeditor5-heading": "^0.9.0",
-    "@ckeditor/ckeditor5-paragraph": "^0.7.0",
-    "@ckeditor/ckeditor5-undo": "^0.8.0",
-    "@ckeditor/ckeditor5-typing": "^0.9.0",
+    "@ckeditor/ckeditor5-basic-styles": "^0.8.1",
+    "@ckeditor/ckeditor5-enter": "^0.9.1",
+    "@ckeditor/ckeditor5-heading": "^0.9.1",
+    "@ckeditor/ckeditor5-paragraph": "^0.8.0",
+    "@ckeditor/ckeditor5-undo": "^0.8.1",
+    "@ckeditor/ckeditor5-typing": "^0.9.1",
     "gulp": "^3.9.0",
     "guppy-pre-commit": "^0.4.0"
   },
