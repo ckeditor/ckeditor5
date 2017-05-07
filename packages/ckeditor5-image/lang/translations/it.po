@@ -27,4 +27,4 @@ msgstr "Testo alternativo"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
-msgstr ""
+msgstr "inserire didascalia dell'immagine"

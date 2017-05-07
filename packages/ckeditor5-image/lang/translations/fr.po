@@ -27,4 +27,4 @@ msgstr "Texte alternatif"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
-msgstr ""
+msgstr "Saisissez la légende de l’image"

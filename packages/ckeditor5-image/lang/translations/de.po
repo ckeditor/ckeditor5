@@ -27,4 +27,4 @@ msgstr "Textalternative"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
-msgstr ""
+msgstr "Bildunterschrift eingeben"

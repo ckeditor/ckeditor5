@@ -1,30 +1,30 @@
 # Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: tr\n"
-"Language-Team: Turkish (https://www.transifex.com/ckeditor/teams/11143/tr/)\n"
+"Language: pt_BR\n"
+"Language-Team: Portuguese (Brazil) (https://www.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgctxt "Label for the image widget."
 msgid "image widget"
-msgstr "Görsel Bileşeni"
+msgstr "Ferramenta de imagem"
 
 msgctxt "Label for the Side image option."
 msgid "Side image"
-msgstr "Yan Görsel"
+msgstr "Imagem lateral"
 
 msgctxt "Label for the Full size image option."
 msgid "Full size image"
-msgstr "Tam Boyut Görsel"
+msgstr "Imagem completa"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
-msgstr "Görsel alternatif yazısını değiştir"
+msgstr "Alterar texto alternativo da imagem"
 
 msgctxt "Label for the image text alternative input."
 msgid "Text alternative"
-msgstr "Yazı alternatifi"
+msgstr "Texto alternativo"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
-msgstr "Resim Açıklaması Gir"
+msgstr "Inserir legenda da imagem"
