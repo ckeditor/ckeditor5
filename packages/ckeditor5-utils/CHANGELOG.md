@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [0.9.1](https://github.com/ckeditor/ckeditor5-utils/compare/v0.9.0...v0.9.1) (2017-05-07)
+
+### Bug fixes
+
+* The `Rect` utility should work for collapsed DOM Ranges. Closes [#153](https://github.com/ckeditor/ckeditor5-utils/issues/153). ([92aff35](https://github.com/ckeditor/ckeditor5-utils/commit/92aff35))
+* The `getOptimalPosition()` utility should consider limiter ancestors with CSS overflow. Closes [#148](https://github.com/ckeditor/ckeditor5-utils/issues/148). ([6bf1741](https://github.com/ckeditor/ckeditor5-utils/commit/6bf1741))
+
+
 ## [0.9.0](https://github.com/ckeditor/ckeditor5-utils/compare/v0.8.0...v0.9.0) (2017-04-05)
 
 ### Bug fixes
