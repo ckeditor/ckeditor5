@@ -7,15 +7,15 @@ msgstr ""
 
 msgctxt "Drop-down option label for the paragraph format."
 msgid "Paragraph"
-msgstr "Paragraf"
+msgstr "Paragraph"
 
 msgctxt "Tooltip for the heading drop-down."
 msgid "Heading"
-msgstr ""
+msgstr "Überschrift"
 
 msgctxt "Default label for the heading drop-down."
 msgid "Choose heading"
-msgstr ""
+msgstr "Überschrift auswählen"
 
 msgctxt "Drop-down option label for the heading level 1 format."
 msgid "Heading 1"

@@ -11,11 +11,11 @@ msgstr "Paragraf"
 
 msgctxt "Tooltip for the heading drop-down."
 msgid "Heading"
-msgstr ""
+msgstr "Naslov"
 
 msgctxt "Default label for the heading drop-down."
 msgid "Choose heading"
-msgstr ""
+msgstr "Odaberite naslov"
 
 msgctxt "Drop-down option label for the heading level 1 format."
 msgid "Heading 1"

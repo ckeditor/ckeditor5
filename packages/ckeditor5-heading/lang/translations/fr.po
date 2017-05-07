@@ -15,7 +15,7 @@ msgstr "En-tête"
 
 msgctxt "Default label for the heading drop-down."
 msgid "Choose heading"
-msgstr ""
+msgstr "Choisir le titre"
 
 msgctxt "Drop-down option label for the heading level 1 format."
 msgid "Heading 1"
