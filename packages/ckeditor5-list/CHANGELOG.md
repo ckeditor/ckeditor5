@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [0.6.1](https://github.com/ckeditor/ckeditor5-list/compare/v0.6.0...v0.6.1) (2017-05-07)
+
+### Bug fixes
+
+* List's view-to-model converter now returns `model.DocumentFragment` containing `listItem` model elements, instead of an array. Closes [#60](https://github.com/ckeditor/ckeditor5/issues/60). ([331242d](https://github.com/ckeditor/ckeditor5-list/commit/331242d))
+* Pasted list items' indentation will now be correctly adjusted if they are pasted into a nested list. Closes [#56](https://github.com/ckeditor/ckeditor5-list/issues/56). ([e91c3d1](https://github.com/ckeditor/ckeditor5-list/commit/e91c3d1))
+
+### Other changes
+
+* Updated translations. ([bd83eed](https://github.com/ckeditor/ckeditor5-list/commit/bd83eed))
+
+
 ## [0.6.0](https://github.com/ckeditor/ckeditor5-list/compare/v0.5.1...v0.6.0) (2017-04-05)
 
 ### Features
