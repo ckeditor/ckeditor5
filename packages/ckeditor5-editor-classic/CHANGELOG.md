@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## [0.7.3](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v0.7.2...v0.7.3) (2017-05-07)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
 ## [0.7.2](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v0.7.1...v0.7.2) (2017-04-05)
 
 ### Bug fixes
