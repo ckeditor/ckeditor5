@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## [0.5.1](https://github.com/ckeditor/ckeditor5-autoformat/compare/v0.5.0...v0.5.1) (2017-05-07)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
 ## [0.5.0](https://github.com/ckeditor/ckeditor5-autoformat/compare/v0.4.1...v0.5.0) (2017-04-05)
 
 ### Features
