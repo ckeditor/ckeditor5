@@ -98,13 +98,6 @@ export default class BalloonPanelView extends View {
 		this.set( 'className' );
 
 		/**
-		 * Max width of the balloon panel, as in CSS.
-		 *
-		 * @observable
-		 * @member {Number} #maxWidth
-		 */
-
-		/**
 		 * A callback that starts pining the panel when {@link #isVisible} gets
 		 * `true`. Used by {@link #pin}.
 		 *
@@ -133,8 +126,7 @@ export default class BalloonPanelView extends View {
 
 				style: {
 					top: bind.to( 'top', toPx ),
-					left: bind.to( 'left', toPx ),
-					maxWidth: bind.to( 'maxWidth', toPx )
+					left: bind.to( 'left', toPx )
 				}
 			},
 
