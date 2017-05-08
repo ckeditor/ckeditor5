@@ -6,11 +6,11 @@
 import transformations from '../../../../src/model/delta/basic-transformations';
 /*jshint unused: false*/
 
-import transform from '../../../../src/model/delta/transform';
+import deltaTransform from '../../../../src/model/delta/transform';
+const transform = deltaTransform.transform;
 
 import Element from '../../../../src/model/element';
 import Position from '../../../../src/model/position';
-import Range from '../../../../src/model/range';
 
 import RenameDelta from '../../../../src/model/delta/renamedelta';
 import RenameOperation from '../../../../src/model/operation/renameoperation';

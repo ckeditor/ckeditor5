@@ -6,7 +6,8 @@
 import transformations from '../../../../src/model/delta/basic-transformations';
 /*jshint unused: false*/
 
-import transform from '../../../../src/model/delta/transform';
+import deltaTransform from '../../../../src/model/delta/transform';
+const transform = deltaTransform.transform;
 
 import Element from '../../../../src/model/element';
 import Position from '../../../../src/model/position';

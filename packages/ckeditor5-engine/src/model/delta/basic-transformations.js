@@ -7,7 +7,9 @@
  * @module engine/model/delta/basic-transformations
  */
 
-import { addTransformationCase, defaultTransform } from './transform';
+import deltaTransform from './transform';
+const addTransformationCase = deltaTransform.addTransformationCase;
+const defaultTransform = deltaTransform.defaultTransform;
 
 import Range from '../range';
 import Position from '../position';

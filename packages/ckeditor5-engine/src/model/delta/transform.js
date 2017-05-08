@@ -14,6 +14,16 @@ import arrayUtils from '@ckeditor/ckeditor5-utils/src/lib/lodash/array';
 
 const specialCases = new Map();
 
+const deltaTransform = {
+	transform,
+	defaultTransform,
+	addTransformationCase,
+	getTransformationCase,
+	transformDeltaSets
+};
+
+export default deltaTransform;
+
 /**
  * Transforms given {@link module:engine/model/delta/delta~Delta delta} by another {@link module:engine/model/delta/delta~Delta delta} and
  * returns the result of that transformation as an array containing one or more {@link module:engine/model/delta/delta~Delta delta}
@@ -39,7 +49,7 @@ const specialCases = new Map();
  * automatically and overwrites this flag.
  * @returns {Array.<module:engine/model/delta/delta~Delta>} Result of the transformation.
  */
-export default function transform( a, b, isAMoreImportantThanB ) {
+function transform( a, b, isAMoreImportantThanB ) {
 	const transformAlgorithm = getTransformationCase( a, b ) || defaultTransform;
 
 	const transformed = transformAlgorithm( a, b, isAMoreImportantThanB );
@@ -73,7 +83,7 @@ function updateBaseVersion( baseVersion, deltas ) {
  * automatically and overwrites this flag.
  * @returns {Array.<module:engine/model/delta/delta~Delta>} Result of the transformation, that is an array with single delta instance.
  */
-export function defaultTransform( a, b, isAMoreImportantThanB ) {
+function defaultTransform( a, b, isAMoreImportantThanB ) {
 	// First, resolve the flag real value.
 	isAMoreImportantThanB = getPriority( a.constructor, b.constructor, isAMoreImportantThanB );
 
@@ -167,7 +177,7 @@ export function defaultTransform( a, b, isAMoreImportantThanB ) {
  * @param {Function} B Delta constructor which instance will be transformed by.
  * @param {Function} resolver A callback that will handle custom special case transformation for instances of given delta classes.
  */
-export function addTransformationCase( A, B, resolver ) {
+function addTransformationCase( A, B, resolver ) {
 	let casesA = specialCases.get( A );
 
 	if ( !casesA ) {
@@ -184,7 +194,7 @@ export function addTransformationCase( A, B, resolver ) {
  * @param {module:engine/model/delta/delta~Delta} a Delta to transform.
  * @param {module:engine/model/delta/delta~Delta} b Delta to be transformed by.
  */
-export function getTransformationCase( a, b ) {
+function getTransformationCase( a, b ) {
 	let casesA = specialCases.get( a.constructor );
 
 	// If there are no special cases registered for class which `a` is instance of, we will
@@ -231,7 +241,7 @@ function getPriority( A, B, isAMoreImportantThanB ) {
  * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasA The first set of deltas transformed by the second set of deltas.
  * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasB The second set of deltas transformed by the first set of deltas.
  */
-export function transformDeltaSets( deltasA, deltasB, isAMoreImportantThanB ) {
+function transformDeltaSets( deltasA, deltasB, isAMoreImportantThanB ) {
 	let transformedDeltasA = Array.from( deltasA );
 	let transformedDeltasB = Array.from( deltasB );
 
