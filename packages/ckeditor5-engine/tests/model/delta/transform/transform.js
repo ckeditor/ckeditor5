@@ -45,6 +45,19 @@ describe( 'transform', () => {
 	} );
 
 	describe( 'transformDeltaSets', () => {
+		it( 'should use deltaTransform.transform', () => {
+			sinon.spy( deltaTransform, 'transform' );
+
+			const insertDelta = getInsertDelta( new Position( root, [ 0, 4 ] ), new Text( 'xxx' ), baseVersion );
+			const removeDelta = getRemoveDelta( new Position( root, [ 0, 0 ] ), 2, baseVersion );
+
+			transformDeltaSets( [ insertDelta ], [ removeDelta ] );
+
+			expect( deltaTransform.transform.called ).to.be.true;
+
+			deltaTransform.transform.restore();
+		} );
+
 		it( 'should transform two deltas', () => {
 			const insertDelta = getInsertDelta( new Position( root, [ 0, 4 ] ), new Text( 'xxx' ), baseVersion );
 			const removeDelta = getRemoveDelta( new Position( root, [ 0, 0 ] ), 2, baseVersion );
