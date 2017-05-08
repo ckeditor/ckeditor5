@@ -8,7 +8,7 @@
  */
 
 import BaseCommand from './basecommand';
-import { transformDeltaSets } from '@ckeditor/ckeditor5-engine/src/model/delta/transform';
+import deltaTransform from '@ckeditor/ckeditor5-engine/src/model/delta/transform';
 
 /**
  * The redo command stores {@link module:engine/model/batch~Batch batches} that were used to undo a batch by
@@ -88,7 +88,7 @@ export default class RedoCommand extends BaseCommand {
 			// again will result in incorrect deltas.
 			for ( let historyDelta of document.history.getDeltas( nextBaseVersion ) ) {
 				if ( !this._createdBatches.has( historyDelta.batch ) ) {
-					reversedDelta = transformDeltaSets( reversedDelta, [ historyDelta ], true ).deltasA;
+					reversedDelta = deltaTransform.transformDeltaSets( reversedDelta, [ historyDelta ], true ).deltasA;
 				}
 			}
 
