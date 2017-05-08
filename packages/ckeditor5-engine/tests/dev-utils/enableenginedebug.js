@@ -201,7 +201,7 @@ describe( 'debug tools', () => {
 			it( 'AttributeOperation', () => {
 				const op = new AttributeOperation( ModelRange.createIn( modelRoot ), 'key', null, { foo: 'bar' }, 0 );
 
-				expect( op.toString() ).to.equal( 'AttributeOperation: "key": null -> {"foo":"bar"}, main [ 0 ] - [ 6 ]' );
+				expect( op.toString() ).to.equal( 'AttributeOperation( 0 ): "key": null -> {"foo":"bar"}, main [ 0 ] - [ 6 ]' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -210,7 +210,7 @@ describe( 'debug tools', () => {
 			it( 'InsertOperation', () => {
 				const op = new InsertOperation( ModelPosition.createAt( modelRoot, 3 ), [ new ModelText( 'abc' ) ], 0 );
 
-				expect( op.toString() ).to.equal( 'InsertOperation: [ 1 ] -> main [ 3 ]' );
+				expect( op.toString() ).to.equal( 'InsertOperation( 0 ): [ 1 ] -> main [ 3 ]' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -219,7 +219,7 @@ describe( 'debug tools', () => {
 			it( 'MarkerOperation', () => {
 				const op = new MarkerOperation( 'marker', null, ModelRange.createIn( modelRoot ), modelDoc.markers, 0 );
 
-				expect( op.toString() ).to.equal( 'MarkerOperation: "marker": null -> main [ 0 ] - [ 6 ]' );
+				expect( op.toString() ).to.equal( 'MarkerOperation( 0 ): "marker": null -> main [ 0 ] - [ 6 ]' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -228,7 +228,7 @@ describe( 'debug tools', () => {
 			it( 'MoveOperation', () => {
 				const op = new MoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, ModelPosition.createAt( modelRoot, 6 ), 0 );
 
-				expect( op.toString() ).to.equal( 'MoveOperation: main [ 1 ] - [ 3 ] -> main [ 6 ]' );
+				expect( op.toString() ).to.equal( 'MoveOperation( 0 ): main [ 1 ] - [ 3 ] -> main [ 6 ]' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -237,16 +237,16 @@ describe( 'debug tools', () => {
 			it( 'NoOperation', () => {
 				const op = new NoOperation( 0 );
 
-				expect( op.toString() ).to.equal( 'NoOperation' );
+				expect( op.toString() ).to.equal( 'NoOperation( 0 )' );
 
 				op.log();
-				expect( log.calledWithExactly( 'NoOperation' ) ).to.be.true;
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
 			} );
 
 			it( 'RenameOperation', () => {
 				const op = new RenameOperation( ModelPosition.createAt( modelRoot, 1 ), 'old', 'new', 0 );
 
-				expect( op.toString() ).to.equal( 'RenameOperation: main [ 1 ]: "old" -> "new"' );
+				expect( op.toString() ).to.equal( 'RenameOperation( 0 ): main [ 1 ]: "old" -> "new"' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -255,7 +255,7 @@ describe( 'debug tools', () => {
 			it( 'RootAttributeOperation', () => {
 				const op = new RootAttributeOperation( modelRoot, 'key', 'old', null, 0 );
 
-				expect( op.toString() ).to.equal( 'RootAttributeOperation: "key": "old" -> null, main' );
+				expect( op.toString() ).to.equal( 'RootAttributeOperation( 0 ): "key": "old" -> null, main' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -283,7 +283,7 @@ describe( 'debug tools', () => {
 
 				delta.addOperation( op );
 
-				expect( delta.toString() ).to.equal( 'AttributeDelta: "key": -> {"foo":"bar"}, main [ 0 ] - [ 6 ], 1 ops' );
+				expect( delta.toString() ).to.equal( 'AttributeDelta( 0 ): "key": -> {"foo":"bar"}, main [ 0 ] - [ 6 ], 1 ops' );
 				delta.log();
 
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -295,7 +295,7 @@ describe( 'debug tools', () => {
 
 				delta.addOperation( op );
 
-				expect( delta.toString() ).to.equal( 'InsertDelta: [ 1 ] -> main [ 3 ]' );
+				expect( delta.toString() ).to.equal( 'InsertDelta( 0 ): [ 1 ] -> main [ 3 ]' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -309,7 +309,7 @@ describe( 'debug tools', () => {
 
 				delta.addOperation( op );
 
-				expect( delta.toString() ).to.equal( 'MarkerDelta: "marker": null -> main [ 0 ] - [ 6 ]' );
+				expect( delta.toString() ).to.equal( 'MarkerDelta( 0 ): "marker": null -> main [ 0 ] - [ 6 ]' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -329,7 +329,7 @@ describe( 'debug tools', () => {
 				delta.addOperation( move );
 				delta.addOperation( remove );
 
-				expect( delta.toString() ).to.equal( 'MergeDelta: otherRoot [ 1 ]' );
+				expect( delta.toString() ).to.equal( 'MergeDelta( 0 ): otherRoot [ 1 ]' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -343,7 +343,7 @@ describe( 'debug tools', () => {
 				delta.addOperation( move1 );
 				delta.addOperation( move2 );
 
-				expect( delta.toString() ).to.equal( 'MoveDelta: main [ 0 ] - [ 1 ] -> main [ 3 ]; main [ 1 ] - [ 2 ] -> main [ 6 ]' );
+				expect( delta.toString() ).to.equal( 'MoveDelta( 0 ): main [ 0 ] - [ 1 ] -> main [ 3 ]; main [ 1 ] - [ 2 ] -> main [ 6 ]' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -355,7 +355,7 @@ describe( 'debug tools', () => {
 
 				delta.addOperation( op );
 
-				expect( delta.toString() ).to.equal( 'RenameDelta: main [ 1 ]: "old" -> "new"' );
+				expect( delta.toString() ).to.equal( 'RenameDelta( 0 ): main [ 1 ]: "old" -> "new"' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -367,7 +367,7 @@ describe( 'debug tools', () => {
 
 				delta.addOperation( op );
 
-				expect( delta.toString() ).to.equal( 'RootAttributeDelta: "key": "old" -> null, main' );
+				expect( delta.toString() ).to.equal( 'RootAttributeDelta( 0 ): "key": "old" -> null, main' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -386,7 +386,7 @@ describe( 'debug tools', () => {
 				delta.addOperation( insert );
 				delta.addOperation( move );
 
-				expect( delta.toString() ).to.equal( 'SplitDelta: otherRoot [ 0, 1 ]' );
+				expect( delta.toString() ).to.equal( 'SplitDelta( 0 ): otherRoot [ 0, 1 ]' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -399,13 +399,13 @@ describe( 'debug tools', () => {
 				otherRoot.appendChildren( [ unwrapEle ] );
 
 				const delta = new UnwrapDelta();
-				const move = new MoveOperation( ModelPosition.createAt( unwrapEle, 0 ), 3, ModelPosition.createAt( otherRoot, 0 ), 1 );
-				const remove = new RemoveOperation( ModelPosition.createAt( otherRoot, 3 ), 1, 0 );
+				const move = new MoveOperation( ModelPosition.createAt( unwrapEle, 0 ), 3, ModelPosition.createAt( otherRoot, 0 ), 0 );
+				const remove = new RemoveOperation( ModelPosition.createAt( otherRoot, 3 ), 1, 1 );
 
 				delta.addOperation( move );
 				delta.addOperation( remove );
 
-				expect( delta.toString() ).to.equal( 'UnwrapDelta: otherRoot [ 0 ]' );
+				expect( delta.toString() ).to.equal( 'UnwrapDelta( 0 ): otherRoot [ 0 ]' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -420,7 +420,7 @@ describe( 'debug tools', () => {
 				delta.addOperation( insert );
 				delta.addOperation( move );
 
-				expect( delta.toString() ).to.equal( 'WrapDelta: main [ 0 ] - [ 6 ] -> <paragraph>' );
+				expect( delta.toString() ).to.equal( 'WrapDelta( 0 ): main [ 0 ] - [ 6 ] -> <paragraph>' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -434,7 +434,7 @@ describe( 'debug tools', () => {
 
 			modelDoc.applyOperation( op );
 
-			expect( log.calledWithExactly( 'Applying InsertOperation: [ 1 ] -> main [ 0 ]' ) ).to.be.true;
+			expect( log.calledWithExactly( 'Applying InsertOperation( 0 ): [ 1 ] -> main [ 0 ]' ) ).to.be.true;
 		} );
 	} );
 
@@ -768,11 +768,11 @@ describe( 'debug tools', () => {
 		expect( log.calledWithExactly( expectedLogMsg ) ).to.be.true;
 		log.reset();
 	}
+
+	function wrapInDelta( op ) {
+		const delta = new Delta();
+		delta.addOperation( op );
+
+		return op;
+	}
 } );
-
-function wrapInDelta( op ) {
-	const delta = new Delta();
-	delta.addOperation( op );
-
-	return op;
-}
