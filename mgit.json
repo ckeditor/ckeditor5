@@ -21,7 +21,7 @@
     "@ckeditor/ckeditor5-presets": "ckeditor/ckeditor5-presets#6d89f907f32def428cf176917a4948d8466ef677",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#05c5d3a0747010bf9465694e6dfc2f7a897ce35a",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#12514de06a3f9a63041d603569b2b81c01c57744",
-    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#e6426ae703dd8fb1935411bff649bafba55521ec",
+    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#5d91d18e5a868635da1261ab03db5094d0020029",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#c5749f49c7048903963b091d4103330968274e3d",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#ae3e25ac52758dd83b9d9a9e542ac01e0e3c5d8c",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#e27ba8ea84d974918b485fa5ecd6f07ccbbd39f2",
