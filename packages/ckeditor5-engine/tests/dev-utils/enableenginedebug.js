@@ -20,6 +20,7 @@ import NoOperation from '../../src/model/operation/nooperation';
 import RenameOperation from '../../src/model/operation/renameoperation';
 import RootAttributeOperation from '../../src/model/operation/rootattributeoperation';
 import RemoveOperation from '../../src/model/operation/removeoperation';
+import DeltaFactory from '../../src/model/delta/deltafactory';
 import Delta from '../../src/model/delta/delta';
 import AttributeDelta from '../../src/model/delta/attributedelta';
 import { RootAttributeDelta } from '../../src/model/delta/attributedelta';
@@ -31,6 +32,7 @@ import RenameDelta from '../../src/model/delta/renamedelta';
 import SplitDelta from '../../src/model/delta/splitdelta';
 import UnwrapDelta from '../../src/model/delta/unwrapdelta';
 import WrapDelta from '../../src/model/delta/wrapdelta';
+import deltaTransform from '../../src/model/delta/transform';
 import ModelDocument from '../../src/model/document';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 
@@ -761,6 +763,161 @@ describe( 'debug tools', () => {
 			const deltaReplayer = modelDoc.createReplayer( stringifiedDeltas );
 
 			expect( deltaReplayer.getDeltasToReplay() ).to.deep.equal( [ JSON.parse( stringifiedDeltas ) ] );
+		} );
+	} );
+
+	describe( 'should provide means for saving delta history transformation', () => {
+		let document, root, otherRoot;
+
+		beforeEach( () => {
+			document = new ModelDocument();
+			root = document.createRoot();
+			otherRoot = document.createRoot( 'other', 'other' );
+		} );
+
+		it( 'Delta#saveHistory()', () => {
+			const insertDeltaA = new InsertDelta();
+			const insertOpA = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
+			insertDeltaA.addOperation( insertOpA );
+
+			const insertDeltaB = new InsertDelta();
+			const insertOpB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
+			insertDeltaB.addOperation( insertOpB );
+
+			const insertDeltaFinalA = new InsertDelta();
+			const insertOpFinalA = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 1 );
+			insertDeltaFinalA.addOperation( insertOpFinalA );
+			const insertDeltaFinalAJsonWithoutHistory = JSON.stringify( insertDeltaFinalA );
+			insertDeltaFinalA.saveHistory( insertDeltaA, insertDeltaB, true, 0, 1 );
+
+			const insertDeltaC = new InsertDelta();
+			const insertOpC = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 1 );
+			insertDeltaC.addOperation( insertOpC );
+
+			const insertDeltaFinalB = new InsertDelta();
+			const insertOpFinalB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 2 );
+			insertDeltaFinalB.addOperation( insertOpFinalB );
+			insertDeltaFinalB.saveHistory( insertDeltaFinalA, insertDeltaC, false, 1, 3 );
+
+			expect( insertDeltaA.history ).to.be.undefined;
+			expect( insertDeltaB.history ).to.be.undefined;
+
+			expect( insertDeltaFinalA.history ).not.to.be.undefined;
+			expect( insertDeltaFinalA.history.length ).to.equal( 1 );
+			expect( insertDeltaFinalA.history[ 0 ] ).to.deep.equal( {
+				before: JSON.stringify( insertDeltaA ),
+				transformedBy: JSON.stringify( insertDeltaB ),
+				wasImportant: true,
+				resultIndex: 0,
+				resultsTotal: 1
+			} );
+
+			expect( insertDeltaFinalB.history ).not.to.be.undefined;
+			expect( insertDeltaFinalB.history.length ).to.equal( 2 );
+			expect( insertDeltaFinalB.history[ 0 ] ).to.deep.equal( {
+				before: JSON.stringify( insertDeltaA ),
+				transformedBy: JSON.stringify( insertDeltaB ),
+				wasImportant: true,
+				resultIndex: 0,
+				resultsTotal: 1
+			} );
+			expect( insertDeltaFinalB.history[ 1 ] ).to.deep.equal( {
+				before: insertDeltaFinalAJsonWithoutHistory,
+				transformedBy: JSON.stringify( insertDeltaC ),
+				wasImportant: false,
+				resultIndex: 1,
+				resultsTotal: 3
+			} );
+		} );
+
+		it( 'save delta history on deltaTransform.transform', () => {
+			const deltaA = new MoveDelta();
+			const opA = new MoveOperation( ModelPosition.createAt( root, 4 ), 4, ModelPosition.createAt( otherRoot, 4 ), 0 );
+			deltaA.addOperation( opA );
+
+			const deltaB = new InsertDelta();
+			const opB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
+			deltaB.addOperation( opB );
+
+			const deltaC = new MoveDelta();
+			const opC = new MoveOperation( ModelPosition.createAt( root, 4 ), 2, ModelPosition.createAt( root, 0 ), 1 );
+			deltaC.addOperation( opC );
+
+			let result = deltaTransform.transform( deltaA, deltaB, false );
+
+			expect( result[ 0 ].history ).not.to.be.undefined;
+			expect( result[ 0 ].history.length ).to.equal( 1 );
+
+			expect( result[ 0 ].history[ 0 ] ).to.deep.equal( {
+				before: JSON.stringify( deltaA ),
+				transformedBy: JSON.stringify( deltaB ),
+				wasImportant: false,
+				resultIndex: 0,
+				resultsTotal: 1
+			} );
+
+			const firstResultWithoutHistory = result[ 0 ].clone();
+			delete firstResultWithoutHistory.history;
+
+			result = deltaTransform.transform( result[ 0 ], deltaC, true );
+			expect( result[ 0 ].history ).not.to.be.undefined;
+			expect( result[ 0 ].history.length ).to.equal( 2 );
+
+			expect( result[ 0 ].history[ 0 ] ).to.deep.equal( {
+				before: JSON.stringify( deltaA ),
+				transformedBy: JSON.stringify( deltaB ),
+				wasImportant: false,
+				resultIndex: 0,
+				resultsTotal: 1
+			} );
+
+			expect( result[ 0 ].history[ 1 ] ).to.deep.equal( {
+				before: JSON.stringify( firstResultWithoutHistory ),
+				transformedBy: JSON.stringify( deltaC ),
+				wasImportant: true,
+				resultIndex: 0,
+				resultsTotal: 1
+			} );
+		} );
+
+		it( 'recreate delta using history', () => {
+			const deltaA = new MoveDelta();
+			const opA = new MoveOperation( ModelPosition.createAt( root, 4 ), 4, ModelPosition.createAt( otherRoot, 4 ), 0 );
+			deltaA.addOperation( opA );
+
+			const deltaB = new InsertDelta();
+			const opB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
+			deltaB.addOperation( opB );
+
+			const deltaC = new MoveDelta();
+			const opC = new MoveOperation( ModelPosition.createAt( root, 4 ), 2, ModelPosition.createAt( root, 0 ), 1 );
+			deltaC.addOperation( opC );
+
+			let original = deltaTransform.transform( deltaA, deltaB, false );
+			original = deltaTransform.transform( original[ 0 ], deltaC, true )[ 0 ];
+
+			const history = original.history;
+
+			let recreated = deltaTransform.transform(
+				DeltaFactory.fromJSON( JSON.parse( history[ 0 ].before ), document ),
+				DeltaFactory.fromJSON( JSON.parse( history[ 0 ].transformedBy ), document ),
+				history[ 0 ].wasImportant
+			);
+
+			recreated = recreated[ history[ 0 ].resultIndex ];
+
+			recreated = deltaTransform.transform(
+				recreated,
+				DeltaFactory.fromJSON( JSON.parse( history[ 1 ].transformedBy ), document ),
+				history[ 1 ].wasImportant
+			);
+
+			recreated = recreated[ history[ 1 ].resultIndex ];
+
+			delete original.history;
+			delete recreated.history;
+
+			expect( JSON.stringify( recreated ) ).to.equal( JSON.stringify( original ) );
 		} );
 	} );
 

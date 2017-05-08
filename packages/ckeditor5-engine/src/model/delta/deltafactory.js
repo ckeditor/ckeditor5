@@ -51,6 +51,13 @@ export default class DeltaFactory {
 			delta.addOperation( OperationFactory.fromJSON( operation, doc ) );
 		}
 
+		// Rewrite all other properties.
+		for ( let prop in json ) {
+			if ( prop != '__className' && delta[ prop ] === undefined ) {
+				delta[ prop ] = json[ prop ];
+			}
+		}
+
 		return delta;
 	}
 

@@ -9,6 +9,8 @@
 
 /* global console */
 
+import DeltaReplayer from './deltareplayer';
+
 import ModelPosition from '../model/position';
 import ModelRange from '../model/range';
 import ModelText from '../model/text';
@@ -33,6 +35,7 @@ import RenameDelta from '../model/delta/renamedelta';
 import SplitDelta from '../model/delta/splitdelta';
 import UnwrapDelta from '../model/delta/unwrapdelta';
 import WrapDelta from '../model/delta/wrapdelta';
+import deltaTransform from '../model/delta/transform';
 import ModelDocument from '../model/document';
 import ModelDocumentFragment from '../model/documentfragment';
 import ModelRootElement from '../model/rootelement';
@@ -46,7 +49,7 @@ import ViewDocumentFragment from '../view/documentfragment';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 
-import DeltaReplayer from './deltareplayer';
+import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 
 const treeDump = Symbol( '_treeDump' );
 
@@ -315,6 +318,36 @@ function enableLoggingTools() {
 		for ( let op of this.operations ) {
 			op.log();
 		}
+	};
+
+	Delta.prototype.saveHistory = function( before, transformedBy, wasImportant, resultIndex, resultsTotal ) {
+		const history = before.history ? before.history : [];
+
+		const beforeClone = clone( before );
+		delete beforeClone.history;
+
+		const transformedByClone = clone( transformedBy );
+		delete transformedByClone.history;
+
+		this.history = history.concat( {
+			before: JSON.stringify( beforeClone ),
+			transformedBy: JSON.stringify( transformedByClone ),
+			wasImportant: wasImportant,
+			resultIndex: resultIndex,
+			resultsTotal: resultsTotal
+		} );
+	};
+
+	const _deltaTransformTransform = deltaTransform.transform;
+
+	deltaTransform.transform = function( a, b, isAMoreImportantThanB ) {
+		const results = _deltaTransformTransform( a, b, isAMoreImportantThanB );
+
+		for ( let i = 0; i < results.length; i++ ) {
+			results[ i ].saveHistory( a, b, isAMoreImportantThanB, i, results.length );
+		}
+
+		return results;
 	};
 
 	AttributeDelta.prototype.toString = function() {
