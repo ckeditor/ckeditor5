@@ -63,10 +63,6 @@ export default class ImageUploadEngine extends Plugin {
 						const imageElement = value.item;
 						const uploadId = imageElement.getAttribute( 'uploadId' );
 
-						if ( type == 'reinsert' ) {
-							console.log( 'reinsert' );
-						}
-
 						if ( uploadId ) {
 							const loader = fileRepository.loaders.get( uploadId );
 
@@ -76,7 +72,6 @@ export default class ImageUploadEngine extends Plugin {
 								}
 
 								if ( type === 'remove' ) {
-									console.log( 'remove' );
 									loader.abort();
 								}
 							}
@@ -135,12 +130,12 @@ export default class ImageUploadEngine extends Plugin {
 					notification.showWarning( msg, { namespace: 'upload' } );
 				}
 
-				console.log( imageElement );
+				clean();
+
+				// Remove image from insertion batch.
 				doc.enqueueChanges( () => {
 					batch.remove( imageElement );
 				} );
-
-				clean();
 			} );
 
 		function clean() {
