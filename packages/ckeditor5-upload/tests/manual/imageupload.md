@@ -7,4 +7,6 @@
 
 Repeat all the steps with:
 * dropping multiple images,
-* using toolbar button to add one and multiple images.
+* using toolbar button to add one and multiple images,
+* using `Simulate error` button to stop upload, show error and remove image,
+* using `Simulate aborting` button to stop upload and remove image.
