@@ -75,7 +75,7 @@ export default class ContextualToolbar extends Plugin {
 		 * @private
 		 * @member {Function}
 		 */
-		this._stopShowPanel = spy();
+		this._resolveShowPanelPromise = spy();
 
 		// Attach lifecycle actions.
 		this._handleSelectionChange();
@@ -145,7 +145,7 @@ export default class ContextualToolbar extends Plugin {
 	 */
 	stop( evt ) {
 		evt.stop();
-		this._stopShowPanel();
+		this._resolveShowPanelPromise();
 		this.stopListening( this, 'beforeShow' );
 	}
 
@@ -172,7 +172,7 @@ export default class ContextualToolbar extends Plugin {
 		}
 
 		const showPromise = new Promise( ( resolve ) => {
-			this._stopShowPanel = resolve;
+			this._resolveShowPanelPromise = resolve;
 
 			// If `beforeShow` event is not stopped by any other plugin we can display toolbar panel.
 			this.listenTo( this, 'beforeShow', ( evt ) => {
