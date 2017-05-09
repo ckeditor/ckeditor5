@@ -403,7 +403,7 @@ describe( 'ContextualToolbar', () => {
 			return promise;
 		} );
 
-		it( 'should not show panel when `beforeShow` event will be stopped', () => {
+		it( 'should not show panel when `beforeShow` is stopped', () => {
 			const balloonAddSpy = sandbox.spy( balloon, 'add' );
 
 			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
