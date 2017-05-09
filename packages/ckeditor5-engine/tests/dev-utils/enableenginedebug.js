@@ -775,7 +775,7 @@ describe( 'debug tools', () => {
 			otherRoot = document.createRoot( 'other', 'other' );
 		} );
 
-		it( 'Delta#saveHistory()', () => {
+		it( 'Delta#_saveHistory()', () => {
 			const insertDeltaA = new InsertDelta();
 			const insertOpA = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
 			insertDeltaA.addOperation( insertOpA );
@@ -788,7 +788,13 @@ describe( 'debug tools', () => {
 			const insertOpFinalA = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 1 );
 			insertDeltaFinalA.addOperation( insertOpFinalA );
 			const insertDeltaFinalAJsonWithoutHistory = JSON.stringify( insertDeltaFinalA );
-			insertDeltaFinalA.saveHistory( insertDeltaA, insertDeltaB, true, 0, 1 );
+			insertDeltaFinalA._saveHistory( {
+				before: insertDeltaA,
+				transformedBy: insertDeltaB,
+				wasImportant: true,
+				resultIndex: 0,
+				resultsTotal: 1
+			} );
 
 			const insertDeltaC = new InsertDelta();
 			const insertOpC = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 1 );
@@ -797,7 +803,13 @@ describe( 'debug tools', () => {
 			const insertDeltaFinalB = new InsertDelta();
 			const insertOpFinalB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 2 );
 			insertDeltaFinalB.addOperation( insertOpFinalB );
-			insertDeltaFinalB.saveHistory( insertDeltaFinalA, insertDeltaC, false, 1, 3 );
+			insertDeltaFinalB._saveHistory( {
+				before: insertDeltaFinalA,
+				transformedBy: insertDeltaC,
+				wasImportant: false,
+				resultIndex: 1,
+				resultsTotal: 3
+			} );
 
 			expect( insertDeltaA.history ).to.be.undefined;
 			expect( insertDeltaB.history ).to.be.undefined;

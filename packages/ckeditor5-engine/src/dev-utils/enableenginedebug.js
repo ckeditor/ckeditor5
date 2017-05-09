@@ -320,22 +320,18 @@ function enableLoggingTools() {
 		}
 	};
 
-	Delta.prototype.saveHistory = function( before, transformedBy, wasImportant, resultIndex, resultsTotal ) {
-		const history = before.history ? before.history : [];
+	Delta.prototype._saveHistory = function( itemToSave ) {
+		const history = itemToSave.before.history ? itemToSave.before.history : [];
 
-		const beforeClone = clone( before );
-		delete beforeClone.history;
+		itemToSave.before = clone( itemToSave.before );
+		delete itemToSave.before.history;
+		itemToSave.before = JSON.stringify( itemToSave.before );
 
-		const transformedByClone = clone( transformedBy );
-		delete transformedByClone.history;
+		itemToSave.transformedBy = clone( itemToSave.transformedBy );
+		delete itemToSave.transformedBy.history;
+		itemToSave.transformedBy = JSON.stringify( itemToSave.transformedBy );
 
-		this.history = history.concat( {
-			before: JSON.stringify( beforeClone ),
-			transformedBy: JSON.stringify( transformedByClone ),
-			wasImportant: wasImportant,
-			resultIndex: resultIndex,
-			resultsTotal: resultsTotal
-		} );
+		this.history = history.concat( itemToSave );
 	};
 
 	const _deltaTransformTransform = deltaTransform.transform;
@@ -344,7 +340,13 @@ function enableLoggingTools() {
 		const results = _deltaTransformTransform( a, b, isAMoreImportantThanB );
 
 		for ( let i = 0; i < results.length; i++ ) {
-			results[ i ].saveHistory( a, b, isAMoreImportantThanB, i, results.length );
+			results[ i ]._saveHistory( {
+				before: a,
+				transformedBy: b,
+				wasImportant: isAMoreImportantThanB,
+				resultIndex: i,
+				resultsTotal: results.length
+			} );
 		}
 
 		return results;
