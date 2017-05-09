@@ -174,7 +174,7 @@ export default class ContextualToolbar extends Plugin {
 		const showPromise = new Promise( ( resolve ) => {
 			this._resolveShowPanelPromise = resolve;
 
-			// If `beforeShow` event is not stopped by any other plugin we can display toolbar panel.
+			// If `beforeShow` event is not stopped by any external code then panel will be displayed.
 			this.listenTo( this, 'beforeShow', ( evt ) => {
 				// Update panel position when selection changes while balloon will be opened
 				// (by an external document changes).
@@ -191,7 +191,7 @@ export default class ContextualToolbar extends Plugin {
 					} )
 				);
 
-				// Clean up listener to be sure that won't be duplicated in the future.
+				// Stop listening on `beforeShow` event.
 				evt.off();
 			} );
 		}, { priority: 'lowest' } );
@@ -254,7 +254,7 @@ export default class ContextualToolbar extends Plugin {
 
 	/**
 	 * This event is fired just before balloon shows.
-	 * It makes possible to listen to this event by the other plugins and prevent
+	 * It makes possible to listen to this event by an external code and prevent
 	 * ContextualToolbar of being displayed by calling {@link #stop} method.
 	 *
 	 * @event beforeShow
