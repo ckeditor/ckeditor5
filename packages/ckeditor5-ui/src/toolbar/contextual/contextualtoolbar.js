@@ -12,6 +12,7 @@ import ContextualBalloon from '../../panel/balloon/contextualballoon';
 import ToolbarView from '../toolbarview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
 import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
+import spy from '@ckeditor/ckeditor5-utils/src/spy';
 
 const defaultPositions = BalloonPanelView.defaultPositions;
 
@@ -66,6 +67,15 @@ export default class ContextualToolbar extends Plugin {
 		 * @member {Function}
 		 */
 		this._fireSelectionChangeDebounced = debounce( () => this.fire( '_selectionChangeDebounced' ), 200 );
+
+		/**
+		 * Resolve {@link #_showPanel} promise. When panel is prevented of being shown we need to resolve
+		 * this promise otherwise will be pending forever.
+		 *
+		 * @private
+		 * @member {Function}
+		 */
+		this._stopShowPanel = spy();
 
 		// Attach lifecycle actions.
 		this._handleSelectionChange();
@@ -129,10 +139,24 @@ export default class ContextualToolbar extends Plugin {
 	}
 
 	/**
+	 * Prevents panel of being displayed. This should be used together with {@link #event:beforeShow}` event.
+	 *
+	 * @param {module:utils/eventinfo~EventInfo} evt Event object provided by the {@link #event:beforeShow} event.
+	 */
+	stop( evt ) {
+		evt.stop();
+		this._stopShowPanel();
+		this.stopListening( this, 'beforeShow' );
+	}
+
+	/**
 	 * Adds panel view to the {@link: #_balloon} and attaches panel to the selection.
 	 *
+	 * Fires {@link #event:beforeShow} event just before displaying the panel.
+	 *
 	 * @protected
-	 * @return {Promise} A promise resolved when the {@link #toolbarView} {@link module:ui/view~View#init} is done.
+	 * @return {Promise} A promise resolved when the {@link #toolbarView} {@link module:ui/view~View#init} is done
+	 * or rejected when panel will be prevented of being displayed.
 	 */
 	_showPanel() {
 		const editingView = this.editor.editing.view;
@@ -147,17 +171,35 @@ export default class ContextualToolbar extends Plugin {
 			return Promise.resolve();
 		}
 
-		// Update panel position when selection changes while balloon will be opened (by a collaboration).
-		this.listenTo( this.editor.editing.view, 'render', () => {
-			this._balloon.updatePosition( this._getBalloonPositionData() );
-		} );
+		const showPromise = new Promise( ( resolve ) => {
+			this._stopShowPanel = resolve;
 
-		// Add panel to the common editor contextual balloon.
-		return this._balloon.add( {
-			view: this.toolbarView,
-			position: this._getBalloonPositionData(),
-			balloonClassName: 'ck-toolbar-container'
-		} );
+			// If `beforeShow` event is not stopped by any other plugin we can display toolbar panel.
+			this.listenTo( this, 'beforeShow', ( evt ) => {
+				// Update panel position when selection changes while balloon will be opened
+				// (by an external document changes).
+				this.listenTo( editingView, 'render', () => {
+					this._balloon.updatePosition( this._getBalloonPositionData() );
+				} );
+
+				resolve(
+					// Add panel to the common editor contextual balloon.
+					this._balloon.add( {
+						view: this.toolbarView,
+						position: this._getBalloonPositionData(),
+						balloonClassName: 'ck-toolbar-container'
+					} )
+				);
+
+				// Clean up listener to be sure that won't be duplicated in the future.
+				evt.off();
+			} );
+		}, { priority: 'lowest' } );
+
+		// Fire this event to inform interested plugins that `ContextualToolbar` is going to be shown.
+		this.fire( 'beforeShow' );
+
+		return showPromise;
 	}
 
 	/**
@@ -209,6 +251,14 @@ export default class ContextualToolbar extends Plugin {
 		this.stopListening();
 		super.destroy();
 	}
+
+	/**
+	 * This event is fired just before balloon shows.
+	 * It makes possible to listen to this event by the other plugins and prevent
+	 * ContextualToolbar of being displayed by calling {@link #stop} method.
+	 *
+	 * @event beforeShow
+	 */
 
 	/**
 	 * This is internal plugin event which is fired 200 ms after model selection last change.
