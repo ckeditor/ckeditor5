@@ -6,7 +6,8 @@
 import transformations from '../../../../src/model/delta/basic-transformations';
 /*jshint unused: false*/
 
-import { transformDeltaSets } from '../../../../src/model/delta/transform';
+import deltaTransform from '../../../../src/model/delta/transform';
+const transformDeltaSets = deltaTransform.transformDeltaSets;
 
 import Document from '../../../../src/model/document';
 import Element from '../../../../src/model/element';
@@ -44,6 +45,19 @@ describe( 'transform', () => {
 	} );
 
 	describe( 'transformDeltaSets', () => {
+		it( 'should use deltaTransform.transform', () => {
+			sinon.spy( deltaTransform, 'transform' );
+
+			const insertDelta = getInsertDelta( new Position( root, [ 0, 4 ] ), new Text( 'xxx' ), baseVersion );
+			const removeDelta = getRemoveDelta( new Position( root, [ 0, 0 ] ), 2, baseVersion );
+
+			transformDeltaSets( [ insertDelta ], [ removeDelta ] );
+
+			expect( deltaTransform.transform.called ).to.be.true;
+
+			deltaTransform.transform.restore();
+		} );
+
 		it( 'should transform two deltas', () => {
 			const insertDelta = getInsertDelta( new Position( root, [ 0, 4 ] ), new Text( 'xxx' ), baseVersion );
 			const removeDelta = getRemoveDelta( new Position( root, [ 0, 0 ] ), 2, baseVersion );

@@ -20,6 +20,7 @@ import NoOperation from '../../src/model/operation/nooperation';
 import RenameOperation from '../../src/model/operation/renameoperation';
 import RootAttributeOperation from '../../src/model/operation/rootattributeoperation';
 import RemoveOperation from '../../src/model/operation/removeoperation';
+import DeltaFactory from '../../src/model/delta/deltafactory';
 import Delta from '../../src/model/delta/delta';
 import AttributeDelta from '../../src/model/delta/attributedelta';
 import { RootAttributeDelta } from '../../src/model/delta/attributedelta';
@@ -31,6 +32,7 @@ import RenameDelta from '../../src/model/delta/renamedelta';
 import SplitDelta from '../../src/model/delta/splitdelta';
 import UnwrapDelta from '../../src/model/delta/unwrapdelta';
 import WrapDelta from '../../src/model/delta/wrapdelta';
+import deltaTransform from '../../src/model/delta/transform';
 import ModelDocument from '../../src/model/document';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 
@@ -201,7 +203,7 @@ describe( 'debug tools', () => {
 			it( 'AttributeOperation', () => {
 				const op = new AttributeOperation( ModelRange.createIn( modelRoot ), 'key', null, { foo: 'bar' }, 0 );
 
-				expect( op.toString() ).to.equal( 'AttributeOperation: "key": null -> {"foo":"bar"}, main [ 0 ] - [ 6 ]' );
+				expect( op.toString() ).to.equal( 'AttributeOperation( 0 ): "key": null -> {"foo":"bar"}, main [ 0 ] - [ 6 ]' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -210,7 +212,7 @@ describe( 'debug tools', () => {
 			it( 'InsertOperation', () => {
 				const op = new InsertOperation( ModelPosition.createAt( modelRoot, 3 ), [ new ModelText( 'abc' ) ], 0 );
 
-				expect( op.toString() ).to.equal( 'InsertOperation: [ 1 ] -> main [ 3 ]' );
+				expect( op.toString() ).to.equal( 'InsertOperation( 0 ): [ 1 ] -> main [ 3 ]' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -219,7 +221,7 @@ describe( 'debug tools', () => {
 			it( 'MarkerOperation', () => {
 				const op = new MarkerOperation( 'marker', null, ModelRange.createIn( modelRoot ), modelDoc.markers, 0 );
 
-				expect( op.toString() ).to.equal( 'MarkerOperation: "marker": null -> main [ 0 ] - [ 6 ]' );
+				expect( op.toString() ).to.equal( 'MarkerOperation( 0 ): "marker": null -> main [ 0 ] - [ 6 ]' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -228,7 +230,7 @@ describe( 'debug tools', () => {
 			it( 'MoveOperation', () => {
 				const op = new MoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, ModelPosition.createAt( modelRoot, 6 ), 0 );
 
-				expect( op.toString() ).to.equal( 'MoveOperation: main [ 1 ] - [ 3 ] -> main [ 6 ]' );
+				expect( op.toString() ).to.equal( 'MoveOperation( 0 ): main [ 1 ] - [ 3 ] -> main [ 6 ]' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -237,16 +239,16 @@ describe( 'debug tools', () => {
 			it( 'NoOperation', () => {
 				const op = new NoOperation( 0 );
 
-				expect( op.toString() ).to.equal( 'NoOperation' );
+				expect( op.toString() ).to.equal( 'NoOperation( 0 )' );
 
 				op.log();
-				expect( log.calledWithExactly( 'NoOperation' ) ).to.be.true;
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
 			} );
 
 			it( 'RenameOperation', () => {
 				const op = new RenameOperation( ModelPosition.createAt( modelRoot, 1 ), 'old', 'new', 0 );
 
-				expect( op.toString() ).to.equal( 'RenameOperation: main [ 1 ]: "old" -> "new"' );
+				expect( op.toString() ).to.equal( 'RenameOperation( 0 ): main [ 1 ]: "old" -> "new"' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -255,7 +257,7 @@ describe( 'debug tools', () => {
 			it( 'RootAttributeOperation', () => {
 				const op = new RootAttributeOperation( modelRoot, 'key', 'old', null, 0 );
 
-				expect( op.toString() ).to.equal( 'RootAttributeOperation: "key": "old" -> null, main' );
+				expect( op.toString() ).to.equal( 'RootAttributeOperation( 0 ): "key": "old" -> null, main' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -283,7 +285,7 @@ describe( 'debug tools', () => {
 
 				delta.addOperation( op );
 
-				expect( delta.toString() ).to.equal( 'AttributeDelta: "key": -> {"foo":"bar"}, main [ 0 ] - [ 6 ], 1 ops' );
+				expect( delta.toString() ).to.equal( 'AttributeDelta( 0 ): "key": -> {"foo":"bar"}, main [ 0 ] - [ 6 ], 1 ops' );
 				delta.log();
 
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -295,7 +297,7 @@ describe( 'debug tools', () => {
 
 				delta.addOperation( op );
 
-				expect( delta.toString() ).to.equal( 'InsertDelta: [ 1 ] -> main [ 3 ]' );
+				expect( delta.toString() ).to.equal( 'InsertDelta( 0 ): [ 1 ] -> main [ 3 ]' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -309,7 +311,7 @@ describe( 'debug tools', () => {
 
 				delta.addOperation( op );
 
-				expect( delta.toString() ).to.equal( 'MarkerDelta: "marker": null -> main [ 0 ] - [ 6 ]' );
+				expect( delta.toString() ).to.equal( 'MarkerDelta( 0 ): "marker": null -> main [ 0 ] - [ 6 ]' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -329,7 +331,7 @@ describe( 'debug tools', () => {
 				delta.addOperation( move );
 				delta.addOperation( remove );
 
-				expect( delta.toString() ).to.equal( 'MergeDelta: otherRoot [ 1 ]' );
+				expect( delta.toString() ).to.equal( 'MergeDelta( 0 ): otherRoot [ 1 ]' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -343,7 +345,7 @@ describe( 'debug tools', () => {
 				delta.addOperation( move1 );
 				delta.addOperation( move2 );
 
-				expect( delta.toString() ).to.equal( 'MoveDelta: main [ 0 ] - [ 1 ] -> main [ 3 ]; main [ 1 ] - [ 2 ] -> main [ 6 ]' );
+				expect( delta.toString() ).to.equal( 'MoveDelta( 0 ): main [ 0 ] - [ 1 ] -> main [ 3 ]; main [ 1 ] - [ 2 ] -> main [ 6 ]' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -355,7 +357,7 @@ describe( 'debug tools', () => {
 
 				delta.addOperation( op );
 
-				expect( delta.toString() ).to.equal( 'RenameDelta: main [ 1 ]: "old" -> "new"' );
+				expect( delta.toString() ).to.equal( 'RenameDelta( 0 ): main [ 1 ]: "old" -> "new"' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -367,7 +369,7 @@ describe( 'debug tools', () => {
 
 				delta.addOperation( op );
 
-				expect( delta.toString() ).to.equal( 'RootAttributeDelta: "key": "old" -> null, main' );
+				expect( delta.toString() ).to.equal( 'RootAttributeDelta( 0 ): "key": "old" -> null, main' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -386,7 +388,7 @@ describe( 'debug tools', () => {
 				delta.addOperation( insert );
 				delta.addOperation( move );
 
-				expect( delta.toString() ).to.equal( 'SplitDelta: otherRoot [ 0, 1 ]' );
+				expect( delta.toString() ).to.equal( 'SplitDelta( 0 ): otherRoot [ 0, 1 ]' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -399,13 +401,13 @@ describe( 'debug tools', () => {
 				otherRoot.appendChildren( [ unwrapEle ] );
 
 				const delta = new UnwrapDelta();
-				const move = new MoveOperation( ModelPosition.createAt( unwrapEle, 0 ), 3, ModelPosition.createAt( otherRoot, 0 ), 1 );
-				const remove = new RemoveOperation( ModelPosition.createAt( otherRoot, 3 ), 1, 0 );
+				const move = new MoveOperation( ModelPosition.createAt( unwrapEle, 0 ), 3, ModelPosition.createAt( otherRoot, 0 ), 0 );
+				const remove = new RemoveOperation( ModelPosition.createAt( otherRoot, 3 ), 1, 1 );
 
 				delta.addOperation( move );
 				delta.addOperation( remove );
 
-				expect( delta.toString() ).to.equal( 'UnwrapDelta: otherRoot [ 0 ]' );
+				expect( delta.toString() ).to.equal( 'UnwrapDelta( 0 ): otherRoot [ 0 ]' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -420,7 +422,7 @@ describe( 'debug tools', () => {
 				delta.addOperation( insert );
 				delta.addOperation( move );
 
-				expect( delta.toString() ).to.equal( 'WrapDelta: main [ 0 ] - [ 6 ] -> <paragraph>' );
+				expect( delta.toString() ).to.equal( 'WrapDelta( 0 ): main [ 0 ] - [ 6 ] -> <paragraph>' );
 
 				delta.log();
 				expect( log.calledWithExactly( delta.toString() ) ).to.be.true;
@@ -434,7 +436,7 @@ describe( 'debug tools', () => {
 
 			modelDoc.applyOperation( op );
 
-			expect( log.calledWithExactly( 'Applying InsertOperation: [ 1 ] -> main [ 0 ]' ) ).to.be.true;
+			expect( log.calledWithExactly( 'Applying InsertOperation( 0 ): [ 1 ] -> main [ 0 ]' ) ).to.be.true;
 		} );
 	} );
 
@@ -764,15 +766,182 @@ describe( 'debug tools', () => {
 		} );
 	} );
 
+	describe( 'should provide means for saving delta history transformation', () => {
+		let document, root, otherRoot;
+
+		beforeEach( () => {
+			document = new ModelDocument();
+			root = document.createRoot();
+			otherRoot = document.createRoot( 'other', 'other' );
+		} );
+
+		it( 'Delta#_saveHistory()', () => {
+			const insertDeltaA = new InsertDelta();
+			const insertOpA = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
+			insertDeltaA.addOperation( insertOpA );
+
+			const insertDeltaB = new InsertDelta();
+			const insertOpB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
+			insertDeltaB.addOperation( insertOpB );
+
+			const insertDeltaFinalA = new InsertDelta();
+			const insertOpFinalA = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 1 );
+			insertDeltaFinalA.addOperation( insertOpFinalA );
+			const insertDeltaFinalAJsonWithoutHistory = JSON.stringify( insertDeltaFinalA );
+			insertDeltaFinalA._saveHistory( {
+				before: insertDeltaA,
+				transformedBy: insertDeltaB,
+				wasImportant: true,
+				resultIndex: 0,
+				resultsTotal: 1
+			} );
+
+			const insertDeltaC = new InsertDelta();
+			const insertOpC = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 1 );
+			insertDeltaC.addOperation( insertOpC );
+
+			const insertDeltaFinalB = new InsertDelta();
+			const insertOpFinalB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 2 );
+			insertDeltaFinalB.addOperation( insertOpFinalB );
+			insertDeltaFinalB._saveHistory( {
+				before: insertDeltaFinalA,
+				transformedBy: insertDeltaC,
+				wasImportant: false,
+				resultIndex: 1,
+				resultsTotal: 3
+			} );
+
+			expect( insertDeltaA.history ).to.be.undefined;
+			expect( insertDeltaB.history ).to.be.undefined;
+
+			expect( insertDeltaFinalA.history ).not.to.be.undefined;
+			expect( insertDeltaFinalA.history.length ).to.equal( 1 );
+			expect( insertDeltaFinalA.history[ 0 ] ).to.deep.equal( {
+				before: JSON.stringify( insertDeltaA ),
+				transformedBy: JSON.stringify( insertDeltaB ),
+				wasImportant: true,
+				resultIndex: 0,
+				resultsTotal: 1
+			} );
+
+			expect( insertDeltaFinalB.history ).not.to.be.undefined;
+			expect( insertDeltaFinalB.history.length ).to.equal( 2 );
+			expect( insertDeltaFinalB.history[ 0 ] ).to.deep.equal( {
+				before: JSON.stringify( insertDeltaA ),
+				transformedBy: JSON.stringify( insertDeltaB ),
+				wasImportant: true,
+				resultIndex: 0,
+				resultsTotal: 1
+			} );
+			expect( insertDeltaFinalB.history[ 1 ] ).to.deep.equal( {
+				before: insertDeltaFinalAJsonWithoutHistory,
+				transformedBy: JSON.stringify( insertDeltaC ),
+				wasImportant: false,
+				resultIndex: 1,
+				resultsTotal: 3
+			} );
+		} );
+
+		it( 'save delta history on deltaTransform.transform', () => {
+			const deltaA = new MoveDelta();
+			const opA = new MoveOperation( ModelPosition.createAt( root, 4 ), 4, ModelPosition.createAt( otherRoot, 4 ), 0 );
+			deltaA.addOperation( opA );
+
+			const deltaB = new InsertDelta();
+			const opB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
+			deltaB.addOperation( opB );
+
+			const deltaC = new MoveDelta();
+			const opC = new MoveOperation( ModelPosition.createAt( root, 4 ), 2, ModelPosition.createAt( root, 0 ), 1 );
+			deltaC.addOperation( opC );
+
+			let result = deltaTransform.transform( deltaA, deltaB, false );
+
+			expect( result[ 0 ].history ).not.to.be.undefined;
+			expect( result[ 0 ].history.length ).to.equal( 1 );
+
+			expect( result[ 0 ].history[ 0 ] ).to.deep.equal( {
+				before: JSON.stringify( deltaA ),
+				transformedBy: JSON.stringify( deltaB ),
+				wasImportant: false,
+				resultIndex: 0,
+				resultsTotal: 1
+			} );
+
+			const firstResultWithoutHistory = result[ 0 ].clone();
+			delete firstResultWithoutHistory.history;
+
+			result = deltaTransform.transform( result[ 0 ], deltaC, true );
+			expect( result[ 0 ].history ).not.to.be.undefined;
+			expect( result[ 0 ].history.length ).to.equal( 2 );
+
+			expect( result[ 0 ].history[ 0 ] ).to.deep.equal( {
+				before: JSON.stringify( deltaA ),
+				transformedBy: JSON.stringify( deltaB ),
+				wasImportant: false,
+				resultIndex: 0,
+				resultsTotal: 1
+			} );
+
+			expect( result[ 0 ].history[ 1 ] ).to.deep.equal( {
+				before: JSON.stringify( firstResultWithoutHistory ),
+				transformedBy: JSON.stringify( deltaC ),
+				wasImportant: true,
+				resultIndex: 0,
+				resultsTotal: 1
+			} );
+		} );
+
+		it( 'recreate delta using history', () => {
+			const deltaA = new MoveDelta();
+			const opA = new MoveOperation( ModelPosition.createAt( root, 4 ), 4, ModelPosition.createAt( otherRoot, 4 ), 0 );
+			deltaA.addOperation( opA );
+
+			const deltaB = new InsertDelta();
+			const opB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
+			deltaB.addOperation( opB );
+
+			const deltaC = new MoveDelta();
+			const opC = new MoveOperation( ModelPosition.createAt( root, 4 ), 2, ModelPosition.createAt( root, 0 ), 1 );
+			deltaC.addOperation( opC );
+
+			let original = deltaTransform.transform( deltaA, deltaB, false );
+			original = deltaTransform.transform( original[ 0 ], deltaC, true )[ 0 ];
+
+			const history = original.history;
+
+			let recreated = deltaTransform.transform(
+				DeltaFactory.fromJSON( JSON.parse( history[ 0 ].before ), document ),
+				DeltaFactory.fromJSON( JSON.parse( history[ 0 ].transformedBy ), document ),
+				history[ 0 ].wasImportant
+			);
+
+			recreated = recreated[ history[ 0 ].resultIndex ];
+
+			recreated = deltaTransform.transform(
+				recreated,
+				DeltaFactory.fromJSON( JSON.parse( history[ 1 ].transformedBy ), document ),
+				history[ 1 ].wasImportant
+			);
+
+			recreated = recreated[ history[ 1 ].resultIndex ];
+
+			delete original.history;
+			delete recreated.history;
+
+			expect( JSON.stringify( recreated ) ).to.equal( JSON.stringify( original ) );
+		} );
+	} );
+
 	function expectLog( expectedLogMsg ) {
 		expect( log.calledWithExactly( expectedLogMsg ) ).to.be.true;
 		log.reset();
 	}
+
+	function wrapInDelta( op ) {
+		const delta = new Delta();
+		delta.addOperation( op );
+
+		return op;
+	}
 } );
-
-function wrapInDelta( op ) {
-	const delta = new Delta();
-	delta.addOperation( op );
-
-	return op;
-}

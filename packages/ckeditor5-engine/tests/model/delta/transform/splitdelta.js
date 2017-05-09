@@ -6,7 +6,8 @@
 import transformations from '../../../../src/model/delta/basic-transformations';
 /*jshint unused: false*/
 
-import transform from '../../../../src/model/delta/transform';
+import deltaTransform from '../../../../src/model/delta/transform';
+const transform = deltaTransform.transform;
 
 import Element from '../../../../src/model/element';
 import Position from '../../../../src/model/position';
@@ -22,7 +23,6 @@ import InsertOperation from '../../../../src/model/operation/insertoperation';
 import AttributeOperation from '../../../../src/model/operation/attributeoperation';
 import ReinsertOperation from '../../../../src/model/operation/reinsertoperation';
 import MoveOperation from '../../../../src/model/operation/moveoperation';
-import RemoveOperation from '../../../../src/model/operation/removeoperation';
 import NoOperation from '../../../../src/model/operation/nooperation';
 import RenameOperation from '../../../../src/model/operation/renameoperation';
 

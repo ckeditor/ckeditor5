@@ -9,6 +9,8 @@
 
 /* global console */
 
+import DeltaReplayer from './deltareplayer';
+
 import ModelPosition from '../model/position';
 import ModelRange from '../model/range';
 import ModelText from '../model/text';
@@ -33,6 +35,7 @@ import RenameDelta from '../model/delta/renamedelta';
 import SplitDelta from '../model/delta/splitdelta';
 import UnwrapDelta from '../model/delta/unwrapdelta';
 import WrapDelta from '../model/delta/wrapdelta';
+import deltaTransform from '../model/delta/transform';
 import ModelDocument from '../model/document';
 import ModelDocumentFragment from '../model/documentfragment';
 import ModelRootElement from '../model/rootelement';
@@ -46,7 +49,7 @@ import ViewDocumentFragment from '../view/documentfragment';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 
-import DeltaReplayer from './deltareplayer';
+import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 
 const treeDump = Symbol( '_treeDump' );
 
@@ -268,38 +271,38 @@ function enableLoggingTools() {
 	};
 
 	AttributeOperation.prototype.toString = function() {
-		return getClassName( this ) + ': ' +
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.range }`;
 	};
 
 	InsertOperation.prototype.toString = function() {
-		return getClassName( this ) + ': ' +
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`[ ${ this.nodes.length } ] -> ${ this.position }`;
 	};
 
 	MarkerOperation.prototype.toString = function() {
-		return getClassName( this ) + ': ' +
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ this.name }": ${ this.oldRange } -> ${ this.newRange }`;
 	};
 
 	MoveOperation.prototype.toString = function() {
 		const range = ModelRange.createFromPositionAndShift( this.sourcePosition, this.howMany );
 
-		return getClassName( this ) + ': ' +
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`${ range } -> ${ this.targetPosition }`;
 	};
 
 	NoOperation.prototype.toString = function() {
-		return 'NoOperation';
+		return `NoOperation( ${ this.baseVersion } )`;
 	};
 
 	RenameOperation.prototype.toString = function() {
-		return getClassName( this ) + ': ' +
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`${ this.position }: "${ this.oldName }" -> "${ this.newName }"`;
 	};
 
 	RootAttributeOperation.prototype.toString = function() {
-		return getClassName( this ) + ': ' +
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ this.key }": ${ JSON.stringify( this.oldValue ) } -> ${ JSON.stringify( this.newValue ) }, ${ this.root.rootName }`;
 	};
 
@@ -317,27 +320,59 @@ function enableLoggingTools() {
 		}
 	};
 
+	Delta.prototype._saveHistory = function( itemToSave ) {
+		const history = itemToSave.before.history ? itemToSave.before.history : [];
+
+		itemToSave.before = clone( itemToSave.before );
+		delete itemToSave.before.history;
+		itemToSave.before = JSON.stringify( itemToSave.before );
+
+		itemToSave.transformedBy = clone( itemToSave.transformedBy );
+		delete itemToSave.transformedBy.history;
+		itemToSave.transformedBy = JSON.stringify( itemToSave.transformedBy );
+
+		this.history = history.concat( itemToSave );
+	};
+
+	const _deltaTransformTransform = deltaTransform.transform;
+
+	deltaTransform.transform = function( a, b, isAMoreImportantThanB ) {
+		const results = _deltaTransformTransform( a, b, isAMoreImportantThanB );
+
+		for ( let i = 0; i < results.length; i++ ) {
+			results[ i ]._saveHistory( {
+				before: a,
+				transformedBy: b,
+				wasImportant: isAMoreImportantThanB,
+				resultIndex: i,
+				resultsTotal: results.length
+			} );
+		}
+
+		return results;
+	};
+
 	AttributeDelta.prototype.toString = function() {
-		return getClassName( this ) + ': ' +
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ this.key }": -> ${ JSON.stringify( this.value ) }, ${ this.range }, ${ this.operations.length } ops`;
 	};
 
 	InsertDelta.prototype.toString = function() {
 		const op = this._insertOperation;
 
-		return getClassName( this ) + ': ' +
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`[ ${ op.nodes.length } ] -> ${ op.position }`;
 	};
 
 	MarkerDelta.prototype.toString = function() {
 		const op = this.operations[ 0 ];
 
-		return getClassName( this ) + ': ' +
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ op.name }": ${ op.oldRange } -> ${ op.newRange }`;
 	};
 
 	MergeDelta.prototype.toString = function() {
-		return getClassName( this ) + ': ' +
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			this.position.toString();
 	};
 
@@ -350,38 +385,38 @@ function enableLoggingTools() {
 			opStrings.push( `${ range } -> ${ op.targetPosition }` );
 		}
 
-		return getClassName( this ) + ': ' +
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			opStrings.join( '; ' );
 	};
 
 	RenameDelta.prototype.toString = function() {
 		const op = this.operations[ 0 ];
 
-		return getClassName( this ) + ': ' +
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`${ op.position }: "${ op.oldName }" -> "${ op.newName }"`;
 	};
 
 	RootAttributeDelta.prototype.toString = function() {
 		const op = this.operations[ 0 ];
 
-		return getClassName( this ) + ': ' +
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`"${ op.key }": ${ JSON.stringify( op.oldValue ) } -> ${ JSON.stringify( op.newValue ) }, ${ op.root.rootName }`;
 	};
 
 	SplitDelta.prototype.toString = function() {
-		return getClassName( this ) + ': ' +
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			this.position.toString();
 	};
 
 	UnwrapDelta.prototype.toString = function() {
-		return getClassName( this ) + ': ' +
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			this.position.toString();
 	};
 
 	WrapDelta.prototype.toString = function() {
 		const wrapElement = this._insertOperation.nodes.getNode( 0 );
 
-		return getClassName( this ) + ': ' +
+		return getClassName( this ) + `( ${ this.baseVersion } ): ` +
 			`${ this.range } -> ${ wrapElement }`;
 	};
 
