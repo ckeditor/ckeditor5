@@ -49,6 +49,7 @@ describe( 'ContextualToolbar', () => {
 
 	afterEach( () => {
 		sandbox.restore();
+		editorElement.remove();
 
 		return editor.destroy();
 	} );
