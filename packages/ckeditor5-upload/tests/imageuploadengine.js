@@ -187,4 +187,49 @@ describe( 'ImageUploadEngine', () => {
 			'[]<figure class="image ck-widget" contenteditable="false"><img src="image.png"></img></figure>'
 		);
 	} );
+
+	it( 'should remove image in case of upload error', ( done ) => {
+		const file = createNativeFileMock();
+		const spy = testUtils.sinon.spy();
+		const notification = editor.plugins.get( Notification );
+		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
+
+		notification.on( 'show:warning', evt => {
+			spy();
+			evt.stop();
+		}, { priority: 'high' } );
+
+		editor.execute( 'imageUpload', { file } );
+
+		document.once( 'changesDone', () => {
+			document.once( 'changesDone', () => {
+				expect( getModelData( document ) ).to.equal( '<paragraph>[]foo bar</paragraph>' );
+				sinon.assert.calledOnce( spy );
+
+				done();
+			} );
+		} );
+
+		nativeReaderMock.mockError( 'Upload error.' );
+	} );
+
+	it( 'should abort upload if image is removed', () => {
+		const file = createNativeFileMock();
+		setModelData( document, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'imageUpload', { file } );
+		const abortSpy = testUtils.sinon.spy( loader, 'abort' );
+
+		expect( loader.status ).to.equal( 'reading' );
+		nativeReaderMock.mockSuccess( base64Sample );
+
+		const image = document.getRoot().getChild( 0 );
+		document.enqueueChanges( () => {
+			const batch = document.batch();
+
+			batch.remove( image );
+		} );
+
+		expect( loader.status ).to.equal( 'aborted' );
+		sinon.assert.calledOnce( abortSpy );
+	} );
 } );
