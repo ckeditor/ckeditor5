@@ -9,7 +9,7 @@
 
 import BaseCommand from './basecommand';
 import { transformRangesByDeltas } from './basecommand';
-import { transformDeltaSets } from '@ckeditor/ckeditor5-engine/src/model/delta/transform';
+import deltaTransform from '@ckeditor/ckeditor5-engine/src/model/delta/transform';
 
 /**
  * The undo command stores {@link module:engine/model/batch~Batch batches} applied to the
@@ -135,7 +135,7 @@ export default class UndoCommand extends BaseCommand {
 				}
 
 				// 3.2. Transform reversed delta by history delta and vice-versa.
-				const results = transformDeltaSets( reversedDelta, [ historyDelta ], true );
+				const results = deltaTransform.transformDeltaSets( reversedDelta, [ historyDelta ], true );
 
 				reversedDelta = results.deltasA;
 				const updatedHistoryDelta = results.deltasB;
