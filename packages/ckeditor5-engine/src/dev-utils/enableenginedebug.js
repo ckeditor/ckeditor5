@@ -343,7 +343,7 @@ function enableLoggingTools() {
 			results[ i ]._saveHistory( {
 				before: a,
 				transformedBy: b,
-				wasImportant: isAMoreImportantThanB,
+				wasImportant: !!isAMoreImportantThanB,
 				resultIndex: i,
 				resultsTotal: results.length
 			} );
