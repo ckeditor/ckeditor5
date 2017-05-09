@@ -234,7 +234,7 @@ describe( 'ContextualToolbar', () => {
 		let removeBalloonSpy;
 
 		beforeEach( () => {
-			removeBalloonSpy = sandbox.spy( balloon, 'remove' );
+			removeBalloonSpy = sandbox.stub( balloon, 'remove', () => {} );
 			editor.editing.view.isFocused = true;
 		} );
 
