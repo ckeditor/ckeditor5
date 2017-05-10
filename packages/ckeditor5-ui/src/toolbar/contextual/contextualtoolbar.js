@@ -178,8 +178,10 @@ export default class ContextualToolbar extends Plugin {
 		}, { priority: 'lowest' } );
 
 		// Fire this event to inform that `ContextualToolbar` is going to be shown.
-		// Helper function for preventing panel of being displayed is passed along the event.
-		this.fire( 'beforeShow', () => isStopped = true );
+		// Helper function for preventing the panel from being displayed is passed along with the event.
+		this.fire( 'beforeShow', () => {
+			isStopped = true;
+		} );
 
 		return showPromise;
 	}
@@ -235,12 +237,12 @@ export default class ContextualToolbar extends Plugin {
 	}
 
 	/**
-	 * This event is fired just before balloon shows.
-	 * It makes possible to listen to this event by an external code and prevent ContextualToolbar
-	 * of being displayed by calling stop function which is passed along this event.
+	 * This event is fired just before the toolbar shows.
+	 * Using this event, an external code can prevent ContextualToolbar
+	 * from being displayed by calling a `stop` function which is passed along with this event.
 	 *
 	 * @event beforeShow
-	 * @param {Function} stop Calling this function prevents panel of being displayed.
+	 * @param {Function} stop Calling this function prevents panel from being displayed.
 	 */
 
 	/**
