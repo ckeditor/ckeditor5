@@ -58,6 +58,16 @@ describe( 'ImageUploadCommand', () => {
 			expect( getModelData( document ) ).to.equal( `<paragraph>foo</paragraph>[<image uploadId="${ id }"></image>]` );
 		} );
 
+		it( 'should insert image before block if selection is in the middle', () => {
+			const file = createNativeFileMock();
+			setModelData( document, '<paragraph>f{}oo</paragraph>' );
+
+			command._doExecute( { file } );
+
+			const id = fileRepository.getLoader( file ).id;
+			expect( getModelData( document ) ).to.equal( `[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph>` );
+		} );
+
 		it( 'should insert image after other image', () => {
 			const file = createNativeFileMock();
 			setModelData( document, '[<image src="image.png"></image>]' );
