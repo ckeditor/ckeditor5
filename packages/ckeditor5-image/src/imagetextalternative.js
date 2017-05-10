@@ -49,7 +49,7 @@ export default class ImageTextAlternative extends Plugin {
 			/**
 			 * Balloon panel containing text alternative change form.
 			 *
-			 * @member {module:image/ui/imageballoonpanel~ImageBalloonPanelView} #baloonPanel
+			 * @member {module:image/image/ui/imageballoonpanel~ImageBalloonPanelView} #baloonPanel
 			 */
 			this.balloonPanel = panel;
 
