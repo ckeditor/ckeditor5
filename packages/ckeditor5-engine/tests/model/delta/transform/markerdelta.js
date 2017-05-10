@@ -232,4 +232,17 @@ describe( 'transform', () => {
 			} );
 		} );
 	} );
+
+	it( 'transforming MarkerDelta with null ranges should not crash', () => {
+		const markerDelta = getMarkerDelta( 'name', null, null, baseVersion );
+
+		// Transform `markerDelta` by any other delta that has a special transformation case with `MarkerDelta`.
+		const wrapElement = new Element( 'w' );
+		const wrapRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+		const wrapDelta = getWrapDelta( wrapRange, wrapElement, baseVersion );
+
+		expect( () => {
+			transform( markerDelta, wrapDelta );
+		} ).not.to.throw();
+	} );
 } );

@@ -103,8 +103,13 @@ function transformMarkerDelta( a, b ) {
 	const transformedDelta = a.clone();
 	const transformedOp = transformedDelta.operations[ 0 ];
 
-	transformedOp.oldRange = transformedOp.oldRange.getTransformedByDelta( b )[ 0 ];
-	transformedOp.newRange = transformedOp.newRange.getTransformedByDelta( b )[ 0 ];
+	if ( transformedOp.oldRange ) {
+		transformedOp.oldRange = transformedOp.oldRange.getTransformedByDelta( b )[ 0 ];
+	}
+
+	if ( transformedOp.newRange ) {
+		transformedOp.newRange = transformedOp.newRange.getTransformedByDelta( b )[ 0 ];
+	}
 
 	return [ transformedDelta ];
 }
