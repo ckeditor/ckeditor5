@@ -403,50 +403,18 @@ describe( 'ContextualToolbar', () => {
 			return promise;
 		} );
 
-		it( 'should not show panel when `beforeShow` is stopped', () => {
+		it( 'should not show the panel when `beforeShow` event is stopped', () => {
 			const balloonAddSpy = sandbox.spy( balloon, 'add' );
 
 			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
 
-			contextualToolbar.on( 'beforeShow', ( evt ) => {
-				contextualToolbar.stop( evt );
+			contextualToolbar.on( 'beforeShow', ( evt, stop ) => {
+				stop();
 			} );
 
 			return contextualToolbar._showPanel().then( () => {
 				sinon.assert.notCalled( balloonAddSpy );
 			} );
-		} );
-	} );
-
-	describe( 'stop', () => {
-		it( 'should stop `beforeShow` event', () => {
-			const evtMock = {
-				stop: sinon.spy()
-			};
-
-			contextualToolbar.stop( evtMock );
-
-			sinon.assert.calledOnce( evtMock.stop );
-		} );
-
-		it( 'should resolve promise and clean up listener', () => {
-			const balloonAddSpy = sandbox.spy( balloon, 'add' );
-
-			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
-
-			contextualToolbar.once( 'beforeShow', ( evt ) => {
-				contextualToolbar.stop( evt );
-			} );
-
-			return contextualToolbar._showPanel()
-				.then( () => contextualToolbar._hidePanel() )
-				.then( () => contextualToolbar._showPanel() )
-				.then( () => contextualToolbar._hidePanel() )
-				.then( () => contextualToolbar._showPanel() )
-				.then( () => {
-					// Called twice but _showPanel was called thrice.
-					sinon.assert.calledTwice( balloonAddSpy );
-				} );
 		} );
 	} );
 

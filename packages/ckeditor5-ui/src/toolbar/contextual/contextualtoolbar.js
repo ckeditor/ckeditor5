@@ -12,7 +12,6 @@ import ContextualBalloon from '../../panel/balloon/contextualballoon';
 import ToolbarView from '../toolbarview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
 import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
-import spy from '@ckeditor/ckeditor5-utils/src/spy';
 
 const defaultPositions = BalloonPanelView.defaultPositions;
 
@@ -67,15 +66,6 @@ export default class ContextualToolbar extends Plugin {
 		 * @member {Function}
 		 */
 		this._fireSelectionChangeDebounced = debounce( () => this.fire( '_selectionChangeDebounced' ), 200 );
-
-		/**
-		 * Resolve {@link #_showPanel} promise. When panel is prevented of being shown we need to resolve
-		 * this promise otherwise will be pending forever.
-		 *
-		 * @private
-		 * @member {Function}
-		 */
-		this._showPanelPromiseResolver = spy();
 
 		// Attach lifecycle actions.
 		this._handleSelectionChange();
@@ -139,17 +129,6 @@ export default class ContextualToolbar extends Plugin {
 	}
 
 	/**
-	 * Prevents panel of being displayed. This should be used together with {@link #event:beforeShow}` event.
-	 *
-	 * @param {module:utils/eventinfo~EventInfo} evt Event object provided by the {@link #event:beforeShow} event.
-	 */
-	stop( evt ) {
-		evt.stop();
-		this._showPanelPromiseResolver();
-		this.stopListening( this, 'beforeShow' );
-	}
-
-	/**
 	 * Adds panel view to the {@link: #_balloon} and attaches panel to the selection.
 	 *
 	 * Fires {@link #event:beforeShow} event just before displaying the panel.
@@ -160,6 +139,7 @@ export default class ContextualToolbar extends Plugin {
 	 */
 	_showPanel() {
 		const editingView = this.editor.editing.view;
+		let isStopped = false;
 
 		// Do not add toolbar to the balloon stack twice.
 		if ( this._balloon.hasView( this.toolbarView ) ) {
@@ -172,10 +152,15 @@ export default class ContextualToolbar extends Plugin {
 		}
 
 		const showPromise = new Promise( ( resolve ) => {
-			this._showPanelPromiseResolver = resolve;
-
 			// If `beforeShow` event is not stopped by any external code then panel will be displayed.
-			this.listenTo( this, 'beforeShow', ( evt ) => {
+			this.once( 'beforeShow', () => {
+				if ( isStopped ) {
+					isStopped = false;
+					resolve();
+
+					return;
+				}
+
 				// Update panel position when selection changes while balloon will be opened
 				// (by an external document changes).
 				this.listenTo( editingView, 'render', () => {
@@ -190,14 +175,12 @@ export default class ContextualToolbar extends Plugin {
 						balloonClassName: 'ck-toolbar-container'
 					} )
 				);
-
-				// Stop listening on `beforeShow` event.
-				evt.off();
 			} );
 		}, { priority: 'lowest' } );
 
-		// Fire this event to inform interested plugins that `ContextualToolbar` is going to be shown.
-		this.fire( 'beforeShow' );
+		// Fire this event to inform that `ContextualToolbar` is going to be shown.
+		// Helper function for preventing panel of being displayed is passed along the event.
+		this.fire( 'beforeShow', () => isStopped = true );
 
 		return showPromise;
 	}
@@ -254,10 +237,11 @@ export default class ContextualToolbar extends Plugin {
 
 	/**
 	 * This event is fired just before balloon shows.
-	 * It makes possible to listen to this event by an external code and prevent
-	 * ContextualToolbar of being displayed by calling {@link #stop} method.
+	 * It makes possible to listen to this event by an external code and prevent ContextualToolbar
+	 * of being displayed by calling stop function which is passed along this event.
 	 *
 	 * @event beforeShow
+	 * @param {Function} stop Calling this function prevents panel of being displayed.
 	 */
 
 	/**
