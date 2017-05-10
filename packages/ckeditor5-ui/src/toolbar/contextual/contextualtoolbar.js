@@ -134,8 +134,7 @@ export default class ContextualToolbar extends Plugin {
 	 * Fires {@link #event:beforeShow} event just before displaying the panel.
 	 *
 	 * @protected
-	 * @return {Promise} A promise resolved when the {@link #toolbarView} {@link module:ui/view~View#init} is done
-	 * or rejected when panel will be prevented of being displayed.
+	 * @return {Promise} A promise resolved when the {@link #toolbarView} {@link module:ui/view~View#init} is done.
 	 */
 	_showPanel() {
 		const editingView = this.editor.editing.view;
