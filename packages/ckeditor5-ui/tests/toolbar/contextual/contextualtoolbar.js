@@ -49,6 +49,7 @@ describe( 'ContextualToolbar', () => {
 
 	afterEach( () => {
 		sandbox.restore();
+		editorElement.remove();
 
 		return editor.destroy();
 	} );
@@ -234,7 +235,7 @@ describe( 'ContextualToolbar', () => {
 		let removeBalloonSpy;
 
 		beforeEach( () => {
-			removeBalloonSpy = sandbox.spy( balloon, 'remove' );
+			removeBalloonSpy = sandbox.stub( balloon, 'remove', () => {} );
 			editor.editing.view.isFocused = true;
 		} );
 
@@ -385,6 +386,35 @@ describe( 'ContextualToolbar', () => {
 			sinon.assert.notCalled( hidePanelSpy );
 
 			stub.restore();
+		} );
+	} );
+
+	describe( 'beforeShow event', () => {
+		it( 'should fire `beforeShow` event just before panel shows', () => {
+			const spy = sinon.spy();
+
+			contextualToolbar.on( 'beforeShow', spy );
+			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
+
+			const promise = contextualToolbar._showPanel();
+
+			sinon.assert.calledOnce( spy );
+
+			return promise;
+		} );
+
+		it( 'should not show the panel when `beforeShow` event is stopped', () => {
+			const balloonAddSpy = sandbox.spy( balloon, 'add' );
+
+			setData( editor.document, '<paragraph>b[a]r</paragraph>' );
+
+			contextualToolbar.on( 'beforeShow', ( evt, stop ) => {
+				stop();
+			} );
+
+			return contextualToolbar._showPanel().then( () => {
+				sinon.assert.notCalled( balloonAddSpy );
+			} );
 		} );
 	} );
 
