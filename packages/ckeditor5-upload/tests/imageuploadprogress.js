@@ -53,7 +53,7 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should convert image\'s "reading" uploadStatus attribute', () => {
-		setModelData( document, '<paragraph>foo[]</paragraph>' );
+		setModelData( document, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		expect( getViewData( viewDocument ) ).to.equal(
@@ -64,7 +64,7 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should convert image\'s "uploading" uploadStatus attribute', ( done ) => {
-		setModelData( document, '<paragraph>foo[]</paragraph>' );
+		setModelData( document, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		document.once( 'changesDone', () => {
@@ -82,7 +82,7 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should update progressbar width on progress', ( done ) => {
-		setModelData( document, '<paragraph>foo[]</paragraph>' );
+		setModelData( document, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		document.once( 'changesDone', () => {
@@ -102,7 +102,7 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should convert image\'s "complete" uploadStatus attribute', ( done ) => {
-		setModelData( document, '<paragraph>foo[]</paragraph>' );
+		setModelData( document, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		document.once( 'changesDone', () => {
@@ -126,7 +126,7 @@ describe( 'ImageUploadProgress', () => {
 		const uploadProgress = editor.plugins.get( ImageUploadProgress );
 		uploadProgress.placeholder = base64Sample;
 
-		setModelData( document, '<paragraph>foo[]</paragraph>' );
+		setModelData( document, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		expect( getViewData( viewDocument ) ).to.equal(
@@ -141,7 +141,7 @@ describe( 'ImageUploadProgress', () => {
 			consumable.consume( data.item, eventNameToConsumableType( evt.name ) );
 		}, { priority: 'highest' } );
 
-		setModelData( document, '<paragraph>foo[]</paragraph>' );
+		setModelData( document, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		expect( getViewData( viewDocument ) ).to.equal(

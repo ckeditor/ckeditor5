@@ -44,20 +44,7 @@ export default class ImageUploadCommand extends Command {
 		}
 
 		doc.enqueueChanges( () => {
-			let insertPosition;
-			const selectedElement = selection.getSelectedElement();
-
-			// If selected element is placed directly in root - put image after it.
-			if ( selectedElement && selectedElement.parent.is( 'rootElement' ) ) {
-				insertPosition = ModelPosition.createAfter( selectedElement );
-			} else {
-				// If selection is inside some block - put image before it.
-				const firstBlock = doc.selection.getSelectedBlocks().next().value;
-
-				if ( firstBlock ) {
-					insertPosition = ModelPosition.createBefore( firstBlock );
-				}
-			}
+			const insertPosition = getInsertionPosition( doc );
 
 			// No position to insert.
 			if ( !insertPosition ) {
@@ -75,5 +62,35 @@ export default class ImageUploadCommand extends Command {
 			editor.data.insertContent( documentFragment, insertSelection, batch );
 			selection.setRanges( [ ModelRange.createOn( imageElement ) ] );
 		} );
+	}
+}
+
+/**
+ * Returns correct image insertion position.
+ *
+ * @param {module:engine/model/document~Document} doc
+ * @returns {module:engine/model/position~Position|undefined}
+ */
+function getInsertionPosition( doc ) {
+	const selection = doc.selection;
+	const selectedElement = selection.getSelectedElement();
+
+	// If selected element is placed directly in root - return position after that element.
+	if ( selectedElement && selectedElement.parent.is( 'rootElement' ) ) {
+		return ModelPosition.createAfter( selectedElement );
+	}
+
+	const firstBlock = doc.selection.getSelectedBlocks().next().value;
+
+	if ( firstBlock ) {
+		const positionAfter = ModelPosition.createAfter( firstBlock );
+
+		// If selection is at the end of the block - return position after the block.
+		if ( selection.focus.isTouching( positionAfter ) ) {
+			return positionAfter;
+		}
+
+		// Otherwise return position before the block.
+		return ModelPosition.createBefore( firstBlock );
 	}
 }

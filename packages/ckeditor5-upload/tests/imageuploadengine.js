@@ -61,7 +61,7 @@ describe( 'ImageUploadEngine', () => {
 		const spy = sinon.spy( editor, 'execute' );
 		const fileMock = createNativeFileMock();
 		const dataTransfer = new DataTransfer( { files: [ fileMock ] } );
-		setModelData( document, '<paragraph>foo bar baz[]</paragraph>' );
+		setModelData( document, '<paragraph>[]foo bar baz</paragraph>' );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer } );
 
