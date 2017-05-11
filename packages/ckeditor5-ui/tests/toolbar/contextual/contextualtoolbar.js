@@ -58,6 +58,7 @@ describe( 'ContextualToolbar', () => {
 		expect( contextualToolbar ).to.instanceOf( Plugin );
 		expect( contextualToolbar ).to.instanceOf( ContextualToolbar );
 		expect( contextualToolbar.toolbarView ).to.instanceof( ToolbarView );
+		expect( contextualToolbar.toolbarView.element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
 	} );
 
 	it( 'should load ContextualBalloon', () => {
@@ -157,7 +158,7 @@ describe( 'ContextualToolbar', () => {
 			return contextualToolbar._showPanel().then( () => {
 				sinon.assert.calledWithExactly( balloonAddSpy, {
 					view: contextualToolbar.toolbarView,
-					balloonClassName: 'ck-toolbar-container',
+					balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
 					position: {
 						target: forwardSelectionRect,
 						positions: [ defaultPositions.southEastArrowNorth, defaultPositions.northEastArrowSouth ]
@@ -175,7 +176,7 @@ describe( 'ContextualToolbar', () => {
 				.then( () => {
 					sinon.assert.calledWithExactly( balloonAddSpy, {
 						view: contextualToolbar.toolbarView,
-						balloonClassName: 'ck-toolbar-container',
+						balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
 						position: {
 							target: backwardSelectionRect,
 							positions: [ defaultPositions.northWestArrowSouth, defaultPositions.southWestArrowNorth ]
