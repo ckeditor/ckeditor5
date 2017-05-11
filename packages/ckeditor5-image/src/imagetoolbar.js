@@ -70,7 +70,8 @@ export default class ImageToolbar extends Plugin {
 		Template.extend( panel.template, {
 			attributes: {
 				class: [
-					'ck-toolbar-container'
+					'ck-toolbar-container',
+					'ck-editor-toolbar-container'
 				]
 			}
 		} );
