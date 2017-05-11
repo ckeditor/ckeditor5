@@ -18,7 +18,7 @@ describe( 'LinkFormView', () => {
 	let view;
 
 	beforeEach( () => {
-		view = new LinkFormView( { t: () => 'http://example.com' } );
+		view = new LinkFormView( { t: ( val ) => val } );
 
 		return view.init();
 	} );
