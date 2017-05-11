@@ -40,7 +40,27 @@ describe( 'ImageUploadCommand', () => {
 	describe( '_doExecute', () => {
 		it( 'should insert image', () => {
 			const file = createNativeFileMock();
+			setModelData( document, '<paragraph>[]foo</paragraph>' );
+
+			command._doExecute( { file } );
+
+			const id = fileRepository.getLoader( file ).id;
+			expect( getModelData( document ) ).to.equal( `[<image uploadId="${ id }"></image>]<paragraph>foo</paragraph>` );
+		} );
+
+		it( 'should insert image after block if selection is at its end', () => {
+			const file = createNativeFileMock();
 			setModelData( document, '<paragraph>foo[]</paragraph>' );
+
+			command._doExecute( { file } );
+
+			const id = fileRepository.getLoader( file ).id;
+			expect( getModelData( document ) ).to.equal( `<paragraph>foo</paragraph>[<image uploadId="${ id }"></image>]` );
+		} );
+
+		it( 'should insert image before block if selection is in the middle', () => {
+			const file = createNativeFileMock();
+			setModelData( document, '<paragraph>f{}oo</paragraph>' );
 
 			command._doExecute( { file } );
 
@@ -87,7 +107,7 @@ describe( 'ImageUploadCommand', () => {
 			const file = createNativeFileMock();
 			const spy = sinon.spy( batch, 'insert' );
 
-			setModelData( document, '<paragraph>foo[]</paragraph>' );
+			setModelData( document, '<paragraph>[]foo</paragraph>' );
 
 			command._doExecute( { batch, file } );
 			const id = fileRepository.getLoader( file ).id;
