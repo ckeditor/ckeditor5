@@ -55,7 +55,7 @@ describe( 'Image', () => {
 		expect( editor.plugins.get( ImageTextAlternative ) ).to.instanceOf( ImageTextAlternative );
 	} );
 
-	it( 'should prevent ContextualToolbar of being displayed when Image is selected', () => {
+	it( 'should prevent the ContextualToolbar from being displayed when an image is selected', () => {
 		return ClassicTestEditor.create( editorElement, {
 			plugins: [ Image, ContextualToolbar, Paragraph ]
 		} )
@@ -68,23 +68,25 @@ describe( 'Image', () => {
 			// When image is selected along with text.
 			setModelData( newEditor.document, '<paragraph>fo[o</paragraph><image alt="alt text" src="foo.png"></image>]' );
 
-			contextualToolbar._showPanel();
+			return contextualToolbar._showPanel()
+				.then( () => {
+					// ContextualToolbar should be visible.
+					expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
 
-			// ContextualToolbar should be visible.
-			expect( balloon.visibleView ).to.equal( contextualToolbar.toolbarView );
+					// When only image is selected.
+					setModelData( newEditor.document, '<paragraph>foo</paragraph>[<image alt="alt text" src="foo.png"></image>]' );
 
-			// When only image is selected.
-			setModelData( newEditor.document, '<paragraph>foo</paragraph>[<image alt="alt text" src="foo.png"></image>]' );
+					return contextualToolbar._showPanel()
+						.then( () => {
+							// ContextualToolbar should not be visible.
+							expect( balloon.visibleView ).to.be.null;
 
-			contextualToolbar._showPanel();
+							// Cleaning up.
+							editorElement.remove();
 
-			// ContextualToolbar should not be visible.
-			expect( balloon.visibleView ).to.null;
-
-			// Cleaning up.
-			editorElement.remove();
-
-			return newEditor.destroy();
+							return newEditor.destroy();
+						} );
+				} );
 		} );
 	} );
 
