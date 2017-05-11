@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEngine from './image/imageengine';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import ImageTextAlternative from './imagetextalternative';
+import { isImageWidget } from './image/utils';
 
 import '../theme/theme.scss';
 
@@ -34,5 +35,26 @@ export default class Image extends Plugin {
 	 */
 	static get pluginName() {
 		return 'image/image';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		const editor = this.editor;
+		const contextualToolbar = editor.plugins.get( 'ui/contextualtoolbar' );
+
+		// If `ContextualToolbar` plugin is loaded, it should be disabled for images
+		// which have their own toolbar to avoid duplication.
+		// https://github.com/ckeditor/ckeditor5-image/issues/110
+		if ( contextualToolbar ) {
+			this.listenTo( contextualToolbar, 'beforeShow', ( evt, stop ) => {
+				const selectedElement = editor.editing.view.selection.getSelectedElement();
+
+				if ( selectedElement && isImageWidget( selectedElement ) ) {
+					stop();
+				}
+			} );
+		}
 	}
 }
