@@ -232,4 +232,25 @@ describe( 'transform', () => {
 			} );
 		} );
 	} );
+
+	it( 'null ranges of MarkerDelta should not be changed during transformation', () => {
+		const markerDelta = getMarkerDelta( 'name', null, null, baseVersion );
+
+		// Transform `markerDelta` by any other delta that has a special transformation case with `MarkerDelta`.
+		const wrapElement = new Element( 'w' );
+		const wrapRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+		const wrapDelta = getWrapDelta( wrapRange, wrapElement, baseVersion );
+
+		const transformed = transform( markerDelta, wrapDelta );
+
+		expect( transformed.length ).to.equal( 1 );
+		expect( transformed[ 0 ].operations.length ).to.equal( 1 );
+
+		const transformedOp = transformed[ 0 ].operations[ 0 ];
+
+		expect( transformedOp ).to.be.instanceof( MarkerOperation );
+		expect( transformedOp.oldRange ).to.be.null;
+		expect( transformedOp.newRange ).to.be.null;
+		expect( transformedOp.name ).to.equal( 'name' );
+	} );
 } );
