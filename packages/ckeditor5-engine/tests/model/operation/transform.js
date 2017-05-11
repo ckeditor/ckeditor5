@@ -18,6 +18,7 @@ import MarkerOperation from '../../../src/model/operation/markeroperation';
 import MoveOperation from '../../../src/model/operation/moveoperation';
 import RemoveOperation from '../../../src/model/operation/removeoperation';
 import RenameOperation from '../../../src/model/operation/renameoperation';
+import ReinsertOperation from '../../../src/model/operation/reinsertoperation';
 import NoOperation from '../../../src/model/operation/nooperation';
 
 describe( 'transform', () => {
@@ -2771,7 +2772,7 @@ describe( 'transform', () => {
 		} );
 
 		describe( 'by MoveOperation', () => {
-			it( 'should create not more than RemoveOperation that needs new graveyard holder', () => {
+			it( 'should create not more than one RemoveOperation that needs new graveyard holder', () => {
 				let op = new RemoveOperation( new Position( root, [ 1 ] ), 4, baseVersion );
 				let transformBy = new MoveOperation( new Position( root, [ 0 ] ), 2, new Position( root, [ 8 ] ), baseVersion );
 
@@ -2795,6 +2796,28 @@ describe( 'transform', () => {
 
 				expect( transOp[ 0 ]._needsHolderElement ).to.be.false;
 				expect( transOp[ 1 ]._needsHolderElement ).to.be.false;
+			} );
+
+			it( 'should force removing content even if was less important', () => {
+				let op = new RemoveOperation( new Position( root, [ 8 ] ), 2, baseVersion );
+
+				const targetPosition = Position.createFromPosition( op.targetPosition );
+
+				let transformBy = new MoveOperation( new Position( root, [ 8 ] ), 2, new Position( root, [ 1 ] ), baseVersion );
+
+				const sourcePosition = Position.createFromPosition( transformBy.targetPosition );
+
+				let transOp = transform( op, transformBy, false );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expectOperation( transOp[ 0 ], {
+					type: RemoveOperation,
+					howMany: 2,
+					sourcePosition: sourcePosition,
+					targetPosition: targetPosition,
+					baseVersion: baseVersion + 1
+				} );
 			} );
 		} );
 
@@ -2829,6 +2852,47 @@ describe( 'transform', () => {
 					howMany: 3,
 					sourcePosition: new Position( doc.graveyard, [ 0, 0 ] ),
 					targetPosition: new Position( doc.graveyard, [ 1, 0 ] ),
+					baseVersion: baseVersion + 1
+				} );
+			} );
+		} );
+	} );
+
+	describe( 'ReinsertOperation', () => {
+		describe( 'by RemoveOperation', () => {
+			it( 'should update sourcePosition if remove operation inserted holder offset before reinsert operation holder', () => {
+				let position = new Position( root, [ 2, 1 ] );
+				let transformBy = new RemoveOperation( position, 3, baseVersion );
+				let op = new ReinsertOperation( new Position( doc.graveyard, [ 0, 0 ] ), 3, position, baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expectOperation( transOp[ 0 ], {
+					type: ReinsertOperation,
+					howMany: 3,
+					sourcePosition: new Position( doc.graveyard, [ 1, 0 ] ),
+					targetPosition: position,
+					baseVersion: baseVersion + 1
+				} );
+			} );
+
+			it( 'should not update sourcePosition if remove operation inserted holder offset after reinsert operation source', () => {
+				let position = new Position( root, [ 2, 1 ] );
+				let transformBy = new RemoveOperation( position, 3, baseVersion );
+				transformBy.targetPosition = new Position( doc.graveyard, [ 3, 0 ] );
+				let op = new ReinsertOperation( new Position( doc.graveyard, [ 2, 0 ] ), 3, position, baseVersion );
+
+				let transOp = transform( op, transformBy );
+
+				expect( transOp.length ).to.equal( 1 );
+
+				expectOperation( transOp[ 0 ], {
+					type: ReinsertOperation,
+					howMany: 3,
+					sourcePosition: new Position( doc.graveyard, [ 2, 0 ] ),
+					targetPosition: position,
 					baseVersion: baseVersion + 1
 				} );
 			} );
