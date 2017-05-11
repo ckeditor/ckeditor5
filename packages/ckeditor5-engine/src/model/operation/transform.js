@@ -384,18 +384,30 @@ const ot = {
 				return [ b.getReversed() ];
 			}
 
-			// Special case when both operations are RemoveOperations. RemoveOperation not only moves nodes but also
-			// (usually) creates a "holder" element for them in graveyard. Each RemoveOperation should move nodes to different
-			// "holder" element. If `a` operation points after `b` operation, we move `a` offset to acknowledge
-			// "holder" element insertion.
-			if ( a instanceof RemoveOperation && b instanceof RemoveOperation ) {
-				const aTarget = a.targetPosition.path[ 0 ];
-				const bTarget = b.targetPosition.path[ 0 ];
+			// Special case when operation transformed by is RemoveOperation. RemoveOperation not only moves nodes but also
+			// (usually) creates a "holder" element for them in graveyard. This has to be taken into consideration when
+			// transforming operations that operate in graveyard root.
+			if ( b instanceof RemoveOperation && b._needsHolderElement ) {
+				a = a.clone();
 
-				if ( aTarget > bTarget || ( aTarget == bTarget && isStrong ) ) {
-					// Do not change original operation!
-					a = a.clone();
-					a.targetPosition.path[ 0 ]++;
+				const aSourceOffset = a.sourcePosition.path[ 0 ];
+				const aTargetOffset = a.targetPosition.path[ 0 ];
+
+				// We can't use Position#_getTransformedByInsertion because it works a bit differently and we would get wrong results.
+				// That's because `sourcePosition`/`targetPosition` is, for example, `[ 1, 0 ]`, while `insertionPosition` is
+				// `[ 1 ]`. In this case, `sourcePosition`/`targetPosition` would always be transformed but in fact, only
+				// "holderElement" offsets should be looked at (so `[ 1 ]` in case of `sourcePosition`/`targetPosition`, not `[ 1, 0 ]` ).
+				// This is why we are doing it "by hand".
+				if ( a.sourcePosition.root == b.targetPosition.root ) {
+					if ( aSourceOffset > b._holderElementOffset || aSourceOffset == b._holderElementOffset ) {
+						a.sourcePosition.path[ 0 ]++;
+					}
+				}
+
+				if ( a.targetPosition.root == b.targetPosition.root ) {
+					if ( aTargetOffset > b._holderElementOffset || ( aTargetOffset == b._holderElementOffset && isStrong ) ) {
+						a.targetPosition.path[ 0 ]++;
+					}
 				}
 			}
 
