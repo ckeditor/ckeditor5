@@ -11,6 +11,9 @@ import ViewDocument from '../../../src/view/document';
 import { BR_FILLER, NBSP_FILLER } from '../../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import env from '@ckeditor/ckeditor5-utils/src/env';
+
 testUtils.createSinonSandbox();
 
 describe( 'DomConverter', () => {
@@ -65,6 +68,27 @@ describe( 'DomConverter', () => {
 			converter.focus( viewEditable );
 
 			expect( focusSpy.calledOnce ).to.be.true;
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-engine/issues/951
+		it( 'should actively prevent window scroll in WebKit', () => {
+			const spy = testUtils.sinon.stub( global.window, 'scrollTo' );
+			const initialEnvWebkit = env.webkit;
+
+			env.webkit = true;
+
+			global.window.scrollX = 10;
+			global.window.scrollY = 100;
+
+			converter.focus( viewEditable );
+			sinon.assert.calledWithExactly( spy, 10, 100 );
+
+			env.webkit = false;
+
+			converter.focus( viewEditable );
+			sinon.assert.calledOnce( spy );
+
+			env.webkit = initialEnvWebkit;
 		} );
 	} );
 
