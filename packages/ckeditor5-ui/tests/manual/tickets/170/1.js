@@ -7,7 +7,7 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classic';
 import ArticlePresets from '@ckeditor/ckeditor5-presets/src/article';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
+import BalloonPanelView from '../../../../src/panel/balloon/balloonpanelview';
 
 // Set initial scroll for the outer container element.
 document.querySelector( '.container-outer' ).scrollTop = 450;
