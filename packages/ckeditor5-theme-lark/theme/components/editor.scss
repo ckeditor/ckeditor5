@@ -31,3 +31,20 @@
 	}
 }
 
+.ck-editor-toolbar-container.ck-balloon-panel_arrow {
+	&_n,
+	&_ne,
+	&_nw {
+		&:after {
+			border-bottom-color: ck-color( 'foreground' );
+		}
+	}
+
+	&_s,
+	&_se,
+	&_sw {
+		&:after {
+			border-top-color: ck-color( 'foreground' );
+		}
+	}
+}
