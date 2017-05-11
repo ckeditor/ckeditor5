@@ -738,11 +738,15 @@ export default class DomConverter {
 
 		if ( domEditable && domEditable.ownerDocument.activeElement !== domEditable ) {
 			const { scrollX, scrollY } = global.window;
+			const { scrollLeft, scrollTop } = domEditable;
 
 			domEditable.focus();
 
 			// https://github.com/ckeditor/ckeditor5-engine/issues/951
 			if ( env.webkit ) {
+				domEditable.scrollLeft = scrollLeft;
+				domEditable.scrollTop = scrollTop;
+
 				global.window.scrollTo( scrollX, scrollY );
 			}
 		}

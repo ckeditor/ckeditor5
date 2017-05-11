@@ -72,8 +72,21 @@ describe( 'DomConverter', () => {
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/951
 		it( 'should actively prevent window scroll in WebKit', () => {
-			const spy = testUtils.sinon.stub( global.window, 'scrollTo' );
+			const scrollToSpy = testUtils.sinon.stub( global.window, 'scrollTo' );
 			const initialEnvWebkit = env.webkit;
+			const scrollLeftSpy = sinon.spy();
+			const scrollTopSpy = sinon.spy();
+
+			Object.defineProperties( domEditable, {
+				scrollLeft: {
+					get: () => 20,
+					set: scrollLeftSpy
+				},
+				scrollTop: {
+					get: () => 200,
+					set: scrollTopSpy
+				}
+			} );
 
 			env.webkit = true;
 
@@ -81,12 +94,14 @@ describe( 'DomConverter', () => {
 			global.window.scrollY = 100;
 
 			converter.focus( viewEditable );
-			sinon.assert.calledWithExactly( spy, 10, 100 );
+			sinon.assert.calledWithExactly( scrollToSpy, 10, 100 );
+			sinon.assert.calledWithExactly( scrollLeftSpy, 20 );
+			sinon.assert.calledWithExactly( scrollTopSpy, 200 );
 
 			env.webkit = false;
 
 			converter.focus( viewEditable );
-			sinon.assert.calledOnce( spy );
+			sinon.assert.calledOnce( scrollToSpy );
 
 			env.webkit = initialEnvWebkit;
 		} );
