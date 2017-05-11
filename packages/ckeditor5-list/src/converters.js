@@ -316,7 +316,6 @@ export function modelViewSplitOnInsert( evt, data, consumable, conversionApi ) {
  *		                                 </ul>
  *
  * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:remove
- * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:move
  * @param {module:utils/eventinfo~EventInfo} evt Object containing information about the fired event.
  * @param {Object} data Additional information about the change.
  * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
@@ -419,7 +418,7 @@ export function cleanList( evt, data, consumable ) {
 }
 
 /**
- * View to model converter for `<li>, that cleans white space formatting from the input view.
+ * View to model converter for `<li>`, that cleans white space formatting from the input view.
  *
  * @see module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
  * @param {module:utils/eventinfo~EventInfo} evt Object containing information about the fired event.
