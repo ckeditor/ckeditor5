@@ -44,8 +44,9 @@ export default class Image extends Plugin {
 		const editor = this.editor;
 		const contextualToolbar = editor.plugins.get( 'ui/contextualtoolbar' );
 
-		// If `ContextualToolbar` plugin is loaded we need to disable it for `Image`
-		// because `Image` has its own toolbar. See: ckeditor/ckeditor5-image#110.
+		// If `ContextualToolbar` plugin is loaded, it should be disabled for images
+		// which have their own toolbar to avoid duplication.
+		// https://github.com/ckeditor/ckeditor5-image/issues/110
 		if ( contextualToolbar ) {
 			this.listenTo( contextualToolbar, 'beforeShow', ( evt, stop ) => {
 				const selectedElement = editor.editing.view.selection.getSelectedElement();
