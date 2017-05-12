@@ -18,6 +18,7 @@ import ViewDocumentFragment from './documentfragment';
 import ViewTreeWalker from './treewalker';
 import { BR_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, isInlineFiller, startsWithFiller, getDataWithoutFiller } from './filler';
 
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import getCommonAncestor from '@ckeditor/ckeditor5-utils/src/dom/getcommonancestor';
@@ -734,7 +735,15 @@ export default class DomConverter {
 		const domEditable = this.getCorrespondingDomElement( viewEditable );
 
 		if ( domEditable && domEditable.ownerDocument.activeElement !== domEditable ) {
+			const { scrollX, scrollY } = global.window;
+			const { scrollLeft, scrollTop } = domEditable;
+
 			domEditable.focus();
+
+			// https://github.com/ckeditor/ckeditor5-engine/issues/951
+			domEditable.scrollLeft = scrollLeft;
+			domEditable.scrollTop = scrollTop;
+			global.window.scrollTo( scrollX, scrollY );
 		}
 	}
 
