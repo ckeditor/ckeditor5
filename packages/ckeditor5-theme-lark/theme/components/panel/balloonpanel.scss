@@ -9,7 +9,6 @@ $ck-balloon-arrow-half-width: 10px;
 	@include ck-rounded-corners();
 	@include ck-drop-shadow();
 
-	min-width: 50px;
 	min-height: 15px;
 
 	background: ck-color( 'background' );
