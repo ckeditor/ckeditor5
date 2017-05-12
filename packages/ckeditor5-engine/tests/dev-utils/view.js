@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import { parse, stringify, getData, setData }from '../../src/dev-utils/view';
+import { parse, stringify, getData, setData } from '../../src/dev-utils/view';
 import DocumentFragment from '../../src/view/documentfragment';
 import Position from '../../src/view/position';
 import Element from '../../src/view/element';
@@ -617,7 +617,7 @@ describe( 'view test utils', () => {
 
 			expect( () => {
 				parse( 'sth' );
-			} ).to.throw( Error, `Parse error - cannot parse element's name: invalidType:b.` );
+			} ).to.throw( Error, 'Parse error - cannot parse element\'s name: invalidType:b.' );
 
 			XmlDataProcessor.prototype.toView.restore();
 		} );

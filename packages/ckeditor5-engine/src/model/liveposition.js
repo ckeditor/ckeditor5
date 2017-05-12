@@ -134,7 +134,7 @@ export default class LivePosition extends Position {
  * @method module:engine/model/liveposition~LivePosition.bindWithDocument
  */
 function bindWithDocument() {
-	/*jshint validthis: true */
+	/* jshint validthis: true */
 	// Operation types handled by LivePosition (these are operations that change model tree structure).
 	const supportedTypes = new Set( [ 'insert', 'move', 'remove', 'reinsert' ] );
 
@@ -161,23 +161,23 @@ function bindWithDocument() {
  * @param {module:engine/model/position~Position} [position] Additional position parameter provided by some change events.
  */
 function transform( type, range, position ) {
-	/*jshint validthis: true */
+	/* jshint validthis: true */
 
-	let howMany = range.end.offset - range.start.offset;
+	const howMany = range.end.offset - range.start.offset;
 	let transformed;
 
 	switch ( type ) {
 		case 'insert':
-			let insertBefore = this.stickiness == 'sticksToNext';
+			const insertBefore = this.stickiness == 'sticksToNext';
 			transformed = this._getTransformedByInsertion( range.start, howMany, insertBefore );
 			break;
 
 		case 'move':
 		case 'remove':
 		case 'reinsert':
-			let originalRange = Range.createFromPositionAndShift( position, howMany );
+			const originalRange = Range.createFromPositionAndShift( position, howMany );
 
-			let gotMoved = originalRange.containsPosition( this ) ||
+			const gotMoved = originalRange.containsPosition( this ) ||
 				( originalRange.start.isEqual( this ) && this.stickiness == 'sticksToNext' ) ||
 				( originalRange.end.isEqual( this ) && this.stickiness == 'sticksToPrevious' );
 
@@ -185,7 +185,7 @@ function transform( type, range, position ) {
 			if ( gotMoved ) {
 				transformed = this._getCombined( position, range.start );
 			} else {
-				let insertBefore = this.stickiness == 'sticksToNext';
+				const insertBefore = this.stickiness == 'sticksToNext';
 				transformed = this._getTransformedByMove( position, range.start, howMany, insertBefore );
 			}
 			break;

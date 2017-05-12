@@ -4,7 +4,7 @@
  */
 
 import transformations from '../../../../src/model/delta/basic-transformations';
-/*jshint unused: false*/
+/* jshint unused: false*/
 
 import deltaTransform from '../../../../src/model/delta/transform';
 const transform = deltaTransform.transform;
@@ -37,11 +37,11 @@ describe( 'transform', () => {
 	describe( 'AttributeDelta by', () => {
 		describe( 'WeakInsertDelta', () => {
 			it( 'weak insert inside attribute range should "fix" splitting the range', () => {
-				let attrRange = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 3, 3, 9 ] ) );
-				let attrDelta = getAttributeDelta( attrRange, 'key', 'old', 'new', baseVersion );
+				const attrRange = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 3, 3, 9 ] ) );
+				const attrDelta = getAttributeDelta( attrRange, 'key', 'old', 'new', baseVersion );
 
-				let insertPosition = new Position( root, [ 3, 3, 0 ] );
-				let insertDelta = getWeakInsertDelta(
+				const insertPosition = new Position( root, [ 3, 3, 0 ] );
+				const insertDelta = getWeakInsertDelta(
 					insertPosition,
 					[
 						'a',
@@ -52,7 +52,7 @@ describe( 'transform', () => {
 					baseVersion
 				);
 
-				let transformed = transform( attrDelta, insertDelta );
+				const transformed = transform( attrDelta, insertDelta );
 
 				expect( transformed.length ).to.equal( 2 );
 
@@ -67,7 +67,7 @@ describe( 'transform', () => {
 							key: 'key',
 							oldValue: 'old',
 							newValue: 'new',
-							baseVersion: baseVersion
+							baseVersion
 						},
 						{
 							type: AttributeOperation,
@@ -112,13 +112,13 @@ describe( 'transform', () => {
 			} );
 
 			it( 'should be normally transformed if weak insert is not in the attribute range', () => {
-				let attrRange = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 3, 3, 9 ] ) );
-				let attrDelta = getAttributeDelta( attrRange, 'key', 'old', 'new', baseVersion );
+				const attrRange = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 3, 3, 9 ] ) );
+				const attrDelta = getAttributeDelta( attrRange, 'key', 'old', 'new', baseVersion );
 
-				let insertPosition = new Position( root, [ 5 ] );
-				let insertDelta = getWeakInsertDelta( insertPosition, 'abc', baseVersion );
+				const insertPosition = new Position( root, [ 5 ] );
+				const insertDelta = getWeakInsertDelta( insertPosition, 'abc', baseVersion );
 
-				let transformed = transform( attrDelta, insertDelta );
+				const transformed = transform( attrDelta, insertDelta );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -133,7 +133,7 @@ describe( 'transform', () => {
 							key: 'key',
 							oldValue: 'old',
 							newValue: 'new',
-							baseVersion: baseVersion
+							baseVersion
 						}
 					]
 				} );
@@ -142,17 +142,17 @@ describe( 'transform', () => {
 
 		describe( 'SplitDelta', () => {
 			it( 'change attribute of split element', () => {
-				let attrRange1 = Range.createFromParentsAndOffsets( root, 0, root, 1 );
-				let attrRange2 = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 4 ] ) );
+				const attrRange1 = Range.createFromParentsAndOffsets( root, 0, root, 1 );
+				const attrRange2 = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 4 ] ) );
 
-				let attrDelta = new AttributeDelta();
+				const attrDelta = new AttributeDelta();
 				attrDelta.addOperation( new AttributeOperation( attrRange1, 'key', 'old', 'new', baseVersion ) );
 				attrDelta.addOperation( new AttributeOperation( attrRange2, 'key', 'old', 'new', baseVersion ) );
 
-				let splitPosition = new Position( root, [ 3, 3, 3, 3 ] );
-				let splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
+				const splitPosition = new Position( root, [ 3, 3, 3, 3 ] );
+				const splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
 
-				let transformed = transform( attrDelta, splitDelta );
+				const transformed = transform( attrDelta, splitDelta );
 
 				expect( transformed.length ).to.equal( 2 );
 
@@ -167,7 +167,7 @@ describe( 'transform', () => {
 							key: 'key',
 							oldValue: 'old',
 							newValue: 'new',
-							baseVersion: baseVersion
+							baseVersion
 						},
 						{
 							type: AttributeOperation,
@@ -213,14 +213,14 @@ describe( 'transform', () => {
 
 			// A different case.
 			it( 'change attribute of split element #2', () => {
-				let attrRange = new Range( new Position( root, [ 3, 3, 3 ] ), new Position( root, [ 3, 3, 3, 0 ] ) );
-				let attrDelta = new AttributeDelta();
+				const attrRange = new Range( new Position( root, [ 3, 3, 3 ] ), new Position( root, [ 3, 3, 3, 0 ] ) );
+				const attrDelta = new AttributeDelta();
 				attrDelta.addOperation( new AttributeOperation( attrRange, 'foo', null, 'bar', baseVersion ) );
 
-				let splitPosition = new Position( root, [ 3, 3, 3, 3 ] );
-				let splitDelta = getSplitDelta( splitPosition, new Element( 'p', { foo: 'old' } ), 9, baseVersion );
+				const splitPosition = new Position( root, [ 3, 3, 3, 3 ] );
+				const splitDelta = getSplitDelta( splitPosition, new Element( 'p', { foo: 'old' } ), 9, baseVersion );
 
-				let transformed = transform( attrDelta, splitDelta );
+				const transformed = transform( attrDelta, splitDelta );
 
 				expect( transformed.length ).to.equal( 2 );
 
@@ -235,7 +235,7 @@ describe( 'transform', () => {
 							key: 'foo',
 							oldValue: null,
 							newValue: 'bar',
-							baseVersion: baseVersion
+							baseVersion
 						}
 					]
 				} );

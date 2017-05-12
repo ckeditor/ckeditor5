@@ -129,9 +129,9 @@ export default class Position {
 	 * @returns {module:engine/view/position~Position} Shifted position.
 	 */
 	getShiftedBy( shift ) {
-		let shifted = Position.createFromPosition( this );
+		const shifted = Position.createFromPosition( this );
 
-		let offset = shifted.offset + shift;
+		const offset = shifted.offset + shift;
 		shifted.offset = offset < 0 ? 0 : offset;
 
 		return shifted;
@@ -300,7 +300,7 @@ export default class Position {
 		if ( itemOrPosition instanceof Position ) {
 			return this.createFromPosition( itemOrPosition );
 		} else {
-			let node = itemOrPosition;
+			const node = itemOrPosition;
 
 			if ( offset == 'end' ) {
 				offset = node.is( 'text' ) ? node.data.length : node.childCount;

@@ -4,7 +4,7 @@
  */
 
 import transformations from '../../../../src/model/delta/basic-transformations';
-/*jshint unused: false*/
+/* jshint unused: false*/
 
 import deltaTransform from '../../../../src/model/delta/transform';
 const transform = deltaTransform.transform;
@@ -48,8 +48,8 @@ describe( 'transform', () => {
 			} );
 
 			it( 'split inside oldRange', () => {
-				let splitDelta = getSplitDelta( new Position( root, [ 3, 1 ] ), new Element( 'div' ), 3, baseVersion );
-				let transformed = transform( markerDelta, splitDelta );
+				const splitDelta = getSplitDelta( new Position( root, [ 3, 1 ] ), new Element( 'div' ), 3, baseVersion );
+				const transformed = transform( markerDelta, splitDelta );
 
 				baseVersion = splitDelta.operations.length;
 
@@ -66,15 +66,15 @@ describe( 'transform', () => {
 							name: 'name',
 							oldRange: expectedOldRange,
 							newRange: expectedNewRange,
-							baseVersion: baseVersion
+							baseVersion
 						}
 					]
 				} );
 			} );
 
 			it( 'split inside newRange', () => {
-				let splitDelta = getSplitDelta( new Position( root, [ 3, 3, 3, 4 ] ), new Element( 'p' ), 8, baseVersion );
-				let transformed = transform( markerDelta, splitDelta );
+				const splitDelta = getSplitDelta( new Position( root, [ 3, 3, 3, 4 ] ), new Element( 'p' ), 8, baseVersion );
+				const transformed = transform( markerDelta, splitDelta );
 
 				baseVersion = splitDelta.operations.length;
 
@@ -91,7 +91,7 @@ describe( 'transform', () => {
 							name: 'name',
 							oldRange: expectedOldRange,
 							newRange: expectedNewRange,
-							baseVersion: baseVersion
+							baseVersion
 						}
 					]
 				} );

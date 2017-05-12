@@ -94,7 +94,7 @@ export default class LiveRange extends Range {
  * @method module:engine/model/liverange~LiveRange#bindWithDocument
  */
 function bindWithDocument() {
-	/*jshint validthis: true */
+	/* jshint validthis: true */
 	// Operation types that a range can be transformed by.
 	const supportedTypes = new Set( [ 'insert', 'move', 'remove', 'reinsert' ] );
 

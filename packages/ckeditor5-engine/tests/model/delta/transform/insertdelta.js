@@ -4,7 +4,7 @@
  */
 
 import transformations from '../../../../src/model/delta/basic-transformations';
-/*jshint unused: false*/
+/* jshint unused: false*/
 
 import deltaTransform from '../../../../src/model/delta/transform';
 const transform = deltaTransform.transform;
@@ -53,10 +53,10 @@ describe( 'transform', () => {
 
 		describe( 'InsertDelta', () => {
 			it( 'should be resolved in a same way as two insert operations', () => {
-				let insertPositionB = new Position( root, [ 3, 1 ] );
-				let insertDeltaB = getInsertDelta( insertPositionB, [ new Element( 'c' ), new Element( 'd' ) ], baseVersion );
+				const insertPositionB = new Position( root, [ 3, 1 ] );
+				const insertDeltaB = getInsertDelta( insertPositionB, [ new Element( 'c' ), new Element( 'd' ) ], baseVersion );
 
-				let transformed = transform( insertDelta, insertDeltaB );
+				const transformed = transform( insertDelta, insertDeltaB );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -76,8 +76,8 @@ describe( 'transform', () => {
 
 		describe( 'MergeDelta', () => {
 			it( 'merge in same position as insert', () => {
-				let mergeDelta = getMergeDelta( insertPosition, 4, 12, baseVersion );
-				let transformed = transform( insertDelta, mergeDelta );
+				const mergeDelta = getMergeDelta( insertPosition, 4, 12, baseVersion );
+				const transformed = transform( insertDelta, mergeDelta );
 
 				baseVersion = mergeDelta.operations.length;
 
@@ -94,7 +94,7 @@ describe( 'transform', () => {
 							sourcePosition: new Position( gy, [ 0, 0 ] ),
 							howMany: 1,
 							targetPosition: new Position( root, [ 3, 3, 3 ] ),
-							baseVersion: baseVersion
+							baseVersion
 						},
 						{
 							type: MoveOperation,
@@ -124,15 +124,15 @@ describe( 'transform', () => {
 				applyDelta( transformed[ 0 ], doc );
 				applyDelta( transformed[ 1 ], doc );
 
-				let nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3, 0 ] ), 6 ) );
+				const nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3, 0 ] ), 6 ) );
 
 				// Merge between X with "abcd" and P with "abcfoobarxyz" should be reversed and AB should be inserted between X and P.
 				expect( nodesAndText ).to.equal( 'XXXXXabcdXAABBPabcfoobarxyzP' );
 			} );
 
 			it( 'merge the node that is parent of insert position (sticky move test)', () => {
-				let mergeDelta = getMergeDelta( new Position( root, [ 3, 3 ] ), 1, 4, baseVersion );
-				let transformed = transform( insertDelta, mergeDelta );
+				const mergeDelta = getMergeDelta( new Position( root, [ 3, 3 ] ), 1, 4, baseVersion );
+				const transformed = transform( insertDelta, mergeDelta );
 
 				baseVersion = mergeDelta.operations.length;
 
@@ -147,7 +147,7 @@ describe( 'transform', () => {
 							type: InsertOperation,
 							position: new Position( root, [ 3, 2, 4 ] ),
 							nodes: [ nodeA, nodeB ],
-							baseVersion: baseVersion
+							baseVersion
 						}
 					]
 				} );
@@ -157,15 +157,15 @@ describe( 'transform', () => {
 				applyDelta( mergeDelta, doc );
 				applyDelta( transformed[ 0 ], doc );
 
-				let nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 2, 0 ] ), 7 ) );
+				const nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 2, 0 ] ), 7 ) );
 
 				// Merge between X with "a" and DIV should be applied. AB should be inserted in new, correct position.
 				expect( nodesAndText ).to.equal( 'aXXXXXabcdXAABBPabcfoobarxyzP' );
 			} );
 
 			it( 'merge at affected position but resolved by default OT', () => {
-				let mergeDelta = getMergeDelta( new Position( root, [ 3 ] ), 1, 4, baseVersion );
-				let transformed = transform( insertDelta, mergeDelta );
+				const mergeDelta = getMergeDelta( new Position( root, [ 3 ] ), 1, 4, baseVersion );
+				const transformed = transform( insertDelta, mergeDelta );
 
 				baseVersion = mergeDelta.operations.length;
 
@@ -180,7 +180,7 @@ describe( 'transform', () => {
 							type: InsertOperation,
 							position: new Position( root, [ 2, 4, 3 ] ),
 							nodes: [ nodeA, nodeB ],
-							baseVersion: baseVersion
+							baseVersion
 						}
 					]
 				} );
@@ -190,7 +190,7 @@ describe( 'transform', () => {
 				applyDelta( mergeDelta, doc );
 				applyDelta( transformed[ 0 ], doc );
 
-				let nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 2, 0 ] ), 5 ) );
+				const nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 2, 0 ] ), 5 ) );
 
 				// Merge between X with "a" and DIV should be applied. AB should be inserted in new, correct position.
 				expect( nodesAndText ).to.equal( 'aXXXXXaXDIVXXXXXabcdXAABBPabcfoobarxyzPDIV' );

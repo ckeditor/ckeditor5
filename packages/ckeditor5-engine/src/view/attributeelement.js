@@ -100,7 +100,7 @@ AttributeElement.DEFAULT_PRIORITY = DEFAULT_PRIORITY;
 //
 // @returns {Number|null} Block filler offset or `null` if block filler is not needed.
 function getFillerOffset() {
-	/*jshint validthis:true */
+	/* jshint validthis:true */
 
 	// <b>foo</b> does not need filler.
 	if ( this.childCount ) {

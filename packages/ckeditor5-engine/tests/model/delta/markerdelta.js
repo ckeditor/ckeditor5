@@ -112,7 +112,7 @@ describe( 'Batch', () => {
 		sinon.spy( doc, 'applyOperation' );
 		const batch = doc.batch().setMarker( 'name', range );
 
-		const correctDeltaMatcher = sinon.match( ( operation ) => {
+		const correctDeltaMatcher = sinon.match( operation => {
 			return operation.delta && operation.delta.batch && operation.delta.batch == batch;
 		} );
 

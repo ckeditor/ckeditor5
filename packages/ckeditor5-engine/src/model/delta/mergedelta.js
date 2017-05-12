@@ -44,7 +44,7 @@ export default class MergeDelta extends Delta {
 	 * @inheritDoc
 	 */
 	getReversed() {
-		let delta = super.getReversed();
+		const delta = super.getReversed();
 
 		if ( delta.operations.length > 0 ) {
 			delta.operations[ 1 ].isSticky = false;

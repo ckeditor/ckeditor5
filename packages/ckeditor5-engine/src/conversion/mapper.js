@@ -68,7 +68,7 @@ export default class Mapper {
 				return;
 			}
 
-			let viewContainer = this._modelToViewMapping.get( data.modelPosition.parent );
+			const viewContainer = this._modelToViewMapping.get( data.modelPosition.parent );
 
 			data.viewPosition = this._findPositionIn( viewContainer, data.modelPosition.offset );
 		}, { priority: 'low' } );
@@ -87,7 +87,7 @@ export default class Mapper {
 				modelParent = this._viewToModelMapping.get( viewBlock );
 			}
 
-			let modelOffset = this._toModelOffset( data.viewPosition.parent, data.viewPosition.offset, viewBlock );
+			const modelOffset = this._toModelOffset( data.viewPosition.parent, data.viewPosition.offset, viewBlock );
 
 			data.modelPosition = ModelPosition.createFromParentAndOffset( modelParent, modelOffset );
 		}, { priority: 'low' } );
@@ -188,7 +188,7 @@ export default class Mapper {
 	 */
 	toModelPosition( viewPosition ) {
 		const data = {
-			viewPosition: viewPosition,
+			viewPosition,
 			mapper: this
 		};
 
@@ -206,7 +206,7 @@ export default class Mapper {
 	 */
 	toViewPosition( modelPosition ) {
 		const data = {
-			modelPosition: modelPosition,
+			modelPosition,
 			mapper: this
 		};
 
@@ -340,7 +340,7 @@ export default class Mapper {
 		} else {
 			let len = 0;
 
-			for ( let child of viewNode.getChildren() ) {
+			for ( const child of viewNode.getChildren() ) {
 				len += this.getModelLength( child );
 			}
 

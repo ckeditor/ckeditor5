@@ -126,8 +126,8 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should throw an error if parent does not contain element', () => {
-			let f = new Text( 'f' );
-			let bar = new Element( 'bar', [], [] );
+			const f = new Text( 'f' );
+			const bar = new Element( 'bar', [], [] );
 
 			f.parent = bar;
 

@@ -52,7 +52,7 @@ describe( 'ReinsertOperation', () => {
 	} );
 
 	it( 'should create ReinsertOperation with same parameters when cloned', () => {
-		let clone = operation.clone();
+		const clone = operation.clone();
 
 		expect( clone ).to.be.instanceof( ReinsertOperation );
 		expect( clone.sourcePosition.isEqual( operation.sourcePosition ) ).to.be.true;
@@ -65,7 +65,7 @@ describe( 'ReinsertOperation', () => {
 		// Test reversed operation's target position.
 		graveyard.appendChildren( new Element( '$graveyardHolder' ) );
 
-		let reverse = operation.getReversed();
+		const reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( RemoveOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
@@ -80,7 +80,7 @@ describe( 'ReinsertOperation', () => {
 	} );
 
 	it( 'should undo reinsert set of nodes by applying reverse operation', () => {
-		let reverse = operation.getReversed();
+		const reverse = operation.getReversed();
 
 		const element = new Element();
 		element.insertChildren( 0, new Text( 'xx' ) );

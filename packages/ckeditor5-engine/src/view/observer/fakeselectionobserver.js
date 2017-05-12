@@ -97,7 +97,7 @@ export default class FakeSelectionObserver extends Observer {
 
 		const data = {
 			oldSelection: selection,
-			newSelection: newSelection,
+			newSelection,
 			domSelection: null
 		};
 

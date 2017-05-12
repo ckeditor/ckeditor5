@@ -61,7 +61,7 @@ export default class InsertOperation extends Operation {
 	 * @returns {module:engine/model/operation/insertoperation~InsertOperation}
 	 */
 	clone() {
-		const nodes = new NodeList( [ ...this.nodes ].map( ( node ) => node.clone( true ) ) );
+		const nodes = new NodeList( [ ...this.nodes ].map( node => node.clone( true ) ) );
 
 		return new InsertOperation( this.position, nodes, this.baseVersion );
 	}
@@ -83,7 +83,7 @@ export default class InsertOperation extends Operation {
 		// to the operation, not modified. For example, text nodes can get merged or cropped while Elements can
 		// get children. It is important that InsertOperation has the copy of original nodes in intact state.
 		const originalNodes = this.nodes;
-		this.nodes = new NodeList( [ ...originalNodes ].map( ( node ) => node.clone( true ) ) );
+		this.nodes = new NodeList( [ ...originalNodes ].map( node => node.clone( true ) ) );
 
 		const range = writer.insert( this.position, originalNodes );
 
@@ -105,9 +105,9 @@ export default class InsertOperation extends Operation {
 	 * @returns {module:engine/model/operation/insertoperation~InsertOperation}
 	 */
 	static fromJSON( json, document ) {
-		let children = [];
+		const children = [];
 
-		for ( let child of json.nodes ) {
+		for ( const child of json.nodes ) {
 			if ( child.name ) {
 				// If child has name property, it is an Element.
 				children.push( Element.fromJSON( child ) );

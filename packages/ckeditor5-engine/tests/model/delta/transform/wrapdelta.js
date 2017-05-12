@@ -4,7 +4,7 @@
  */
 
 import transformations from '../../../../src/model/delta/basic-transformations';
-/*jshint unused: false*/
+/* jshint unused: false*/
 
 import deltaTransform from '../../../../src/model/delta/transform';
 const transform = deltaTransform.transform;
@@ -43,18 +43,18 @@ describe( 'transform', () => {
 		let wrapDelta;
 
 		beforeEach( () => {
-			let wrapRange = new Range( new Position( root, [ 3, 3, 3, 1 ] ), new Position( root, [ 3, 3, 3, 5 ] ) );
-			let wrapElement = new Element( 'E' );
+			const wrapRange = new Range( new Position( root, [ 3, 3, 3, 1 ] ), new Position( root, [ 3, 3, 3, 5 ] ) );
+			const wrapElement = new Element( 'E' );
 
 			wrapDelta = getWrapDelta( wrapRange, wrapElement, baseVersion );
 		} );
 
 		describe( 'SplitDelta', () => {
 			it( 'split position is between wrapped nodes', () => {
-				let splitPosition = new Position( root, [ 3, 3, 3, 3 ] );
-				let splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
+				const splitPosition = new Position( root, [ 3, 3, 3, 3 ] );
+				const splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
 
-				let transformed = transform( wrapDelta, splitDelta );
+				const transformed = transform( wrapDelta, splitDelta );
 
 				expect( transformed.length ).to.equal( 2 );
 
@@ -68,7 +68,7 @@ describe( 'transform', () => {
 							sourcePosition: new Position( root, [ 3, 3, 4, 0 ] ),
 							howMany: 9,
 							targetPosition: new Position( root, [ 3, 3, 3, 3 ] ),
-							baseVersion: baseVersion
+							baseVersion
 						},
 						{
 							type: MoveOperation,
@@ -103,17 +103,17 @@ describe( 'transform', () => {
 				applyDelta( transformed[ 0 ], doc );
 				applyDelta( transformed[ 1 ], doc );
 
-				let nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3, 3 ] ), 1 ) );
+				const nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3, 3 ] ), 1 ) );
 
 				// WrapDelta is applied. SplitDelta is discarded.
 				expect( nodesAndText ).to.equal( 'PaEbcfoEobarxyzP' );
 			} );
 
 			it( 'split position is before wrapped nodes', () => {
-				let splitPosition = new Position( root, [ 3, 3, 3, 1 ] );
-				let splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 11, baseVersion );
+				const splitPosition = new Position( root, [ 3, 3, 3, 1 ] );
+				const splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 11, baseVersion );
 
-				let transformed = transform( wrapDelta, splitDelta );
+				const transformed = transform( wrapDelta, splitDelta );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -125,7 +125,7 @@ describe( 'transform', () => {
 						{
 							type: InsertOperation,
 							position: new Position( root, [ 3, 3, 4, 4 ] ),
-							baseVersion: baseVersion
+							baseVersion
 						},
 						{
 							type: MoveOperation,
@@ -141,7 +141,7 @@ describe( 'transform', () => {
 				applyDelta( splitDelta, doc );
 				applyDelta( transformed[ 0 ], doc );
 
-				let nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3, 3 ] ), 2 ) );
+				const nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3, 3 ] ), 2 ) );
 
 				// WrapDelta and SplitDelta are correctly applied.
 				expect( nodesAndText ).to.equal( 'PaPPEbcfoEobarxyzP' );
@@ -149,15 +149,15 @@ describe( 'transform', () => {
 
 			it( 'split position is inside wrapped node', () => {
 				// For this case, we need different WrapDelta so it is overwritten.
-				let wrapRange = new Range( new Position( root, [ 3, 3, 2 ] ), new Position( root, [ 3, 3, 4 ] ) );
-				let wrapElement = new Element( 'E' );
+				const wrapRange = new Range( new Position( root, [ 3, 3, 2 ] ), new Position( root, [ 3, 3, 4 ] ) );
+				const wrapElement = new Element( 'E' );
 
 				wrapDelta = getWrapDelta( wrapRange, wrapElement, baseVersion );
 
-				let splitPosition = new Position( root, [ 3, 3, 3, 3 ] );
-				let splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
+				const splitPosition = new Position( root, [ 3, 3, 3, 3 ] );
+				const splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
 
-				let transformed = transform( wrapDelta, splitDelta );
+				const transformed = transform( wrapDelta, splitDelta );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -169,7 +169,7 @@ describe( 'transform', () => {
 						{
 							type: InsertOperation,
 							position: new Position( root, [ 3, 3, 5 ] ),
-							baseVersion: baseVersion
+							baseVersion
 						},
 						{
 							type: MoveOperation,
@@ -185,7 +185,7 @@ describe( 'transform', () => {
 				applyDelta( splitDelta, doc );
 				applyDelta( transformed[ 0 ], doc );
 
-				let nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3, 2 ] ), 1 ) );
+				const nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3, 2 ] ), 1 ) );
 
 				// WrapDelta and SplitDelta are correctly applied.
 				expect( nodesAndText ).to.equal( 'EXabcdXPabcPPfoobarxyzPE' );

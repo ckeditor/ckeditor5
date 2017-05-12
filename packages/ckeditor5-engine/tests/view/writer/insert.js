@@ -23,7 +23,7 @@ describe( 'writer', () => {
 	 */
 	function test( input, nodesToInsert, expected ) {
 		nodesToInsert = nodesToInsert.map( node => parse( node ) );
-		let { view, selection } = parse( input );
+		const { view, selection } = parse( input );
 
 		const newRange = insert( selection.getFirstPosition(), nodesToInsert );
 		expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );

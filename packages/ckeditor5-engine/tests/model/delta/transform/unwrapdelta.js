@@ -4,7 +4,7 @@
  */
 
 import transformations from '../../../../src/model/delta/basic-transformations';
-/*jshint unused: false*/
+/* jshint unused: false*/
 
 import deltaTransform from '../../../../src/model/delta/transform';
 const transform = deltaTransform.transform;
@@ -47,10 +47,10 @@ describe( 'transform', () => {
 
 		describe( 'SplitDelta', () => {
 			it( 'split position directly in unwrapped node', () => {
-				let splitPosition = new Position( root, [ 3, 3, 3, 3 ] );
-				let splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
+				const splitPosition = new Position( root, [ 3, 3, 3, 3 ] );
+				const splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
 
-				let transformed = transform( unwrapDelta, splitDelta );
+				const transformed = transform( unwrapDelta, splitDelta );
 
 				expect( transformed.length ).to.equal( 2 );
 
@@ -64,7 +64,7 @@ describe( 'transform', () => {
 							sourcePosition: new Position( root, [ 3, 3, 4, 0 ] ),
 							howMany: 9,
 							targetPosition: new Position( root, [ 3, 3, 3, 3 ] ),
-							baseVersion: baseVersion
+							baseVersion
 						},
 						{
 							type: MoveOperation,
@@ -101,17 +101,17 @@ describe( 'transform', () => {
 				applyDelta( transformed[ 0 ], doc );
 				applyDelta( transformed[ 1 ], doc );
 
-				let nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3 ] ), 1 ) );
+				const nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3 ] ), 1 ) );
 
 				// UnwrapDelta is applied. SplitDelta is discarded.
 				expect( nodesAndText ).to.equal( 'DIVXXXXXabcdXabcfoobarxyzDIV' );
 			} );
 
 			it( 'split position before unwrapped node', () => {
-				let splitPosition = new Position( root, [ 3, 3, 3 ] );
-				let splitDelta = getSplitDelta( splitPosition, new Element( 'div' ), 1, baseVersion );
+				const splitPosition = new Position( root, [ 3, 3, 3 ] );
+				const splitDelta = getSplitDelta( splitPosition, new Element( 'div' ), 1, baseVersion );
 
-				let transformed = transform( unwrapDelta, splitDelta );
+				const transformed = transform( unwrapDelta, splitDelta );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -125,7 +125,7 @@ describe( 'transform', () => {
 							sourcePosition: new Position( root, [ 3, 4, 0, 0 ] ),
 							howMany: 12,
 							targetPosition: new Position( root, [ 3, 4, 0 ] ),
-							baseVersion: baseVersion
+							baseVersion
 						},
 						{
 							type: MoveOperation,
@@ -141,7 +141,7 @@ describe( 'transform', () => {
 				applyDelta( splitDelta, doc );
 				applyDelta( transformed[ 0 ], doc );
 
-				let nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3 ] ), 2 ) );
+				const nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3 ] ), 2 ) );
 
 				// UnwrapDelta and SplitDelta are applied.
 				expect( nodesAndText ).to.equal( 'DIVXXXXXabcdXDIVDIVabcfoobarxyzDIV' );

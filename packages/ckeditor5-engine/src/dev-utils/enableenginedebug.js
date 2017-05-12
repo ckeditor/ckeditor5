@@ -179,7 +179,7 @@ function enableLoggingTools() {
 		this.logExtended();
 		log( 'List of children:' );
 
-		for ( let child of this.getChildren() ) {
+		for ( const child of this.getChildren() ) {
 			child.log();
 		}
 	};
@@ -189,7 +189,7 @@ function enableLoggingTools() {
 
 		string += '\t'.repeat( level ) + `<${ this.rootName || this.name }${ mapToTags( this.getAttributes() ) }>`;
 
-		for ( let child of this.getChildren() ) {
+		for ( const child of this.getChildren() ) {
 			string += '\n';
 
 			if ( child.is( 'text' ) ) {
@@ -239,7 +239,7 @@ function enableLoggingTools() {
 	ModelDocumentFragment.prototype.printTree = function() {
 		let string = 'ModelDocumentFragment: [';
 
-		for ( let child of this.getChildren() ) {
+		for ( const child of this.getChildren() ) {
 			string += '\n';
 
 			if ( child.is( 'text' ) ) {
@@ -315,7 +315,7 @@ function enableLoggingTools() {
 
 		this.log();
 
-		for ( let op of this.operations ) {
+		for ( const op of this.operations ) {
 			op.log();
 		}
 	};
@@ -379,7 +379,7 @@ function enableLoggingTools() {
 	MoveDelta.prototype.toString = function() {
 		const opStrings = [];
 
-		for ( let op of this.operations ) {
+		for ( const op of this.operations ) {
 			const range = ModelRange.createFromPositionAndShift( op.sourcePosition, op.howMany );
 
 			opStrings.push( `${ range } -> ${ op.targetPosition }` );
@@ -449,7 +449,7 @@ function enableLoggingTools() {
 
 		string += '\t'.repeat( level ) + `<${ this.name }${ mapToTags( this.getAttributes() ) }>`;
 
-		for ( let child of this.getChildren() ) {
+		for ( const child of this.getChildren() ) {
 			if ( child.is( 'text' ) ) {
 				string += '\n' + '\t'.repeat( level + 1 ) + child.data;
 			} else {
@@ -473,7 +473,7 @@ function enableLoggingTools() {
 	ViewDocumentFragment.prototype.printTree = function() {
 		let string = 'ViewDocumentFragment: [';
 
-		for ( let child of this.getChildren() ) {
+		for ( const child of this.getChildren() ) {
 			if ( child.is( 'text' ) ) {
 				string += '\n' + '\t'.repeat( 1 ) + child.data;
 			} else {
@@ -602,7 +602,7 @@ class DebugPlugin extends Plugin {
 function dumpTrees( document, version ) {
 	let string = '';
 
-	for ( let root of document.roots.values() ) {
+	for ( const root of document.roots.values() ) {
 		string += root.printTree() + '\n';
 	}
 
@@ -630,7 +630,7 @@ function getClassName( obj ) {
 function mapString( map ) {
 	const obj = {};
 
-	for ( let entry of map ) {
+	for ( const entry of map ) {
 		obj[ entry[ 0 ] ] = entry[ 1 ];
 	}
 
@@ -643,7 +643,7 @@ function mapString( map ) {
 function mapToTags( map ) {
 	let string = '';
 
-	for ( let entry of map ) {
+	for ( const entry of map ) {
 		string += ` ${ entry[ 0 ] }=${ JSON.stringify( entry[ 1 ] ) }`;
 	}
 

@@ -327,7 +327,7 @@ describe( 'Selection', () => {
 			expect( selection._ranges[ 0 ].isEqual( range1 ) ).to.be.true;
 		} );
 
-		it( 'should fire change event', ( done ) => {
+		it( 'should fire change event', done => {
 			selection.once( 'change', () => {
 				expect( selection._ranges[ 0 ].isEqual( range1 ) ).to.be.true;
 				done();
@@ -504,7 +504,7 @@ describe( 'Selection', () => {
 		it( 'should return false if both selection are fake but have different label', () => {
 			const otherSelection = new Selection();
 			otherSelection.addRange( range1 );
-			otherSelection.setFake( true , { label: 'foo bar baz' } );
+			otherSelection.setFake( true, { label: 'foo bar baz' } );
 			selection.setFake( true );
 			selection.addRange( range1 );
 
@@ -519,7 +519,7 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'removeAllRanges', () => {
-		it( 'should remove all ranges and fire change event', ( done ) => {
+		it( 'should remove all ranges and fire change event', done => {
 			selection.addRange( range1 );
 			selection.addRange( range2 );
 
@@ -547,7 +547,7 @@ describe( 'Selection', () => {
 			} ).to.throw( CKEditorError, 'view-selection-invalid-range: Invalid Range.' );
 		} );
 
-		it( 'should add ranges and fire change event', ( done ) => {
+		it( 'should add ranges and fire change event', done => {
 			selection.addRange( range1 );
 
 			selection.once( 'change', () => {
@@ -582,7 +582,7 @@ describe( 'Selection', () => {
 			expect( selection.anchor.isEqual( range3.end ) ).to.be.true;
 		} );
 
-		it( 'should fire change event', ( done ) => {
+		it( 'should fire change event', done => {
 			selection.on( 'change', () => {
 				expect( selection.rangeCount ).to.equal( 1 );
 				expect( selection.getFirstRange().isEqual( range1 ) ).to.be.true;
@@ -669,7 +669,7 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'collapseToStart', () => {
-		it( 'should collapse to start position and fire change event', ( done ) => {
+		it( 'should collapse to start position and fire change event', done => {
 			selection.setRanges( [ range1, range2, range3 ] );
 			selection.once( 'change', () => {
 				expect( selection.rangeCount ).to.equal( 1 );
@@ -692,7 +692,7 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'collapseToEnd', () => {
-		it( 'should collapse to end position and fire change event', ( done ) => {
+		it( 'should collapse to end position and fire change event', done => {
 			selection.setRanges( [ range1, range2, range3 ] );
 			selection.once( 'change', () => {
 				expect( selection.rangeCount ).to.equal( 1 );
@@ -794,7 +794,7 @@ describe( 'Selection', () => {
 			expect( selection.fakeSelectionLabel ).to.equal( '' );
 		} );
 
-		it( 'should fire change event', ( done ) => {
+		it( 'should fire change event', done => {
 			selection.once( 'change', () => {
 				expect( selection.isFake ).to.be.true;
 				expect( selection.fakeSelectionLabel ).to.equal( 'foo bar baz' );

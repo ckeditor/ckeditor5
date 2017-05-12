@@ -100,7 +100,7 @@ describe( 'Matcher', () => {
 		} );
 
 		it( 'should match element attributes using RegExp', () => {
-			const pattern =  {
+			const pattern = {
 				attribute: {
 					title: /fooba./
 				}
@@ -184,7 +184,7 @@ describe( 'Matcher', () => {
 		} );
 
 		it( 'should match element styles using RegExp', () => {
-			const pattern =  {
+			const pattern = {
 				style: {
 					color: /^.*blue$/
 				}
@@ -212,7 +212,7 @@ describe( 'Matcher', () => {
 
 		it( 'should allow to use function as a pattern', () => {
 			const match = { name: true };
-			const pattern = ( element ) => {
+			const pattern = element => {
 				if ( element.name === 'div' && element.childCount > 0 ) {
 					return match;
 				}
@@ -330,13 +330,13 @@ describe( 'Matcher', () => {
 			expect( result[ 0 ] ).to.have.property( 'pattern' ).that.is.an( 'object' );
 			expect( result[ 0 ].pattern ).to.have.property( 'name' ).that.is.equal( 'p' );
 			expect( result[ 0 ] ).to.have.property( 'match' ).that.is.an( 'object' );
-			expect( result[ 0 ] .match ).to.have.property( 'name' ).that.is.true;
+			expect( result[ 0 ].match ).to.have.property( 'name' ).that.is.true;
 
 			expect( result[ 1 ] ).to.have.property( 'element' ).that.equal( el2 );
 			expect( result[ 1 ] ).to.have.property( 'pattern' ).that.is.an( 'object' );
 			expect( result[ 1 ].pattern ).to.have.property( 'name' ).that.is.equal( 'div' );
 			expect( result[ 1 ] ).to.have.property( 'match' ).that.is.an( 'object' );
-			expect( result[ 1 ] .match ).to.have.property( 'name' ).that.is.true;
+			expect( result[ 1 ].match ).to.have.property( 'name' ).that.is.true;
 
 			expect( matcher.matchAll( el3 ) ).to.be.null;
 		} );

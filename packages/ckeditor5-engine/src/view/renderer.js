@@ -198,17 +198,17 @@ export default class Renderer {
 			this.markedChildren.add( inlineFillerPosition.parent );
 		}
 
-		for ( let node of this.markedTexts ) {
+		for ( const node of this.markedTexts ) {
 			if ( !this.markedChildren.has( node.parent ) && this.domConverter.getCorrespondingDom( node.parent ) ) {
 				this._updateText( node, { inlineFillerPosition } );
 			}
 		}
 
-		for ( let element of this.markedAttributes ) {
+		for ( const element of this.markedAttributes ) {
 			this._updateAttrs( element );
 		}
 
-		for ( let element of this.markedChildren ) {
+		for ( const element of this.markedChildren ) {
 			this._updateChildren( element, { inlineFillerPosition } );
 		}
 
@@ -413,12 +413,12 @@ export default class Renderer {
 		const viewAttrKeys = viewElement.getAttributeKeys();
 
 		// Add or overwrite attributes.
-		for ( let key of viewAttrKeys ) {
+		for ( const key of viewAttrKeys ) {
 			domElement.setAttribute( key, viewElement.getAttribute( key ) );
 		}
 
 		// Remove from DOM attributes which do not exists in the view.
-		for ( let key of domAttrKeys ) {
+		for ( const key of domAttrKeys ) {
 			if ( !viewElement.hasAttribute( key ) ) {
 				domElement.removeAttribute( key );
 			}
@@ -465,7 +465,7 @@ export default class Renderer {
 
 		let i = 0;
 
-		for ( let action of actions ) {
+		for ( const action of actions ) {
 			if ( action === 'insert' ) {
 				insertAt( domElement, i, expectedDomChildren[ i ] );
 				i++;
@@ -610,7 +610,7 @@ export default class Renderer {
 	 * @private
 	 */
 	_removeDomSelection() {
-		for ( let doc of this.domDocuments ) {
+		for ( const doc of this.domDocuments ) {
 			const domSelection = doc.getSelection();
 
 			if ( domSelection.rangeCount ) {
@@ -676,9 +676,9 @@ function trimSelection( selection ) {
 	const newSelection = Selection.createFromSelection( selection );
 	const ranges = newSelection.getRanges();
 
-	let trimmedRanges = [];
+	const trimmedRanges = [];
 
-	for ( let range of ranges ) {
+	for ( const range of ranges ) {
 		trimmedRanges.push( range.getTrimmed() );
 	}
 

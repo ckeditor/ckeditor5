@@ -194,7 +194,7 @@ describe( 'EditingController', () => {
 			expect( getViewData( editing.view ) ).to.equal( '<p>f{}o</p><p></p><p>bar</p>' );
 		} );
 
-		it( 'should convert selection from view to model', ( done ) => {
+		it( 'should convert selection from view to model', done => {
 			listener.listenTo( editing.view, 'selectionChange', () => {
 				setTimeout( () => {
 					expect( getModelData( model ) ).to.equal(

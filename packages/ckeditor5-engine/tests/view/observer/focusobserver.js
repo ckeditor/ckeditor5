@@ -154,7 +154,7 @@ describe( 'FocusObserver', () => {
 			domSelection = window.getSelection();
 		} );
 
-		it( 'should render document after selectionChange event', ( done ) => {
+		it( 'should render document after selectionChange event', done => {
 			const selectionChangeSpy = sinon.spy();
 			const renderSpy = sinon.spy();
 
@@ -174,7 +174,7 @@ describe( 'FocusObserver', () => {
 			domSelection.collapse( domEditable, 0 );
 		} );
 
-		it( 'should render without selectionChange event', ( done ) => {
+		it( 'should render without selectionChange event', done => {
 			const selectionChangeSpy = sinon.spy();
 			const renderSpy = sinon.spy();
 

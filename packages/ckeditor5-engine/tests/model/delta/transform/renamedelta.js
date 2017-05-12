@@ -4,7 +4,7 @@
  */
 
 import transformations from '../../../../src/model/delta/basic-transformations';
-/*jshint unused: false*/
+/* jshint unused: false*/
 
 import deltaTransform from '../../../../src/model/delta/transform';
 const transform = deltaTransform.transform;
@@ -33,7 +33,7 @@ describe( 'transform', () => {
 	describe( 'RenameDelta by', () => {
 		describe( 'SplitDelta', () => {
 			it( 'split element is renamed', () => {
-				let renameDelta = new RenameDelta();
+				const renameDelta = new RenameDelta();
 				renameDelta.addOperation( new RenameOperation(
 					new Position( root, [ 3, 3 ] ),
 					'p',
@@ -41,10 +41,10 @@ describe( 'transform', () => {
 					baseVersion
 				) );
 
-				let splitPosition = new Position( root, [ 3, 3, 3 ] );
-				let splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
+				const splitPosition = new Position( root, [ 3, 3, 3 ] );
+				const splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
 
-				let transformed = transform( renameDelta, splitDelta );
+				const transformed = transform( renameDelta, splitDelta );
 
 				baseVersion = splitDelta.length;
 
@@ -76,7 +76,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'split element is different than renamed element', () => {
-				let renameDelta = new RenameDelta();
+				const renameDelta = new RenameDelta();
 				renameDelta.addOperation( new RenameOperation(
 					new Position( root, [ 3, 3 ] ),
 					'p',
@@ -84,10 +84,10 @@ describe( 'transform', () => {
 					baseVersion
 				) );
 
-				let splitPosition = new Position( root, [ 3, 2, 1 ] );
-				let splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
+				const splitPosition = new Position( root, [ 3, 2, 1 ] );
+				const splitDelta = getSplitDelta( splitPosition, new Element( 'p' ), 9, baseVersion );
 
-				let transformed = transform( renameDelta, splitDelta );
+				const transformed = transform( renameDelta, splitDelta );
 
 				baseVersion = splitDelta.length;
 

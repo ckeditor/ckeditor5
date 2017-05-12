@@ -102,7 +102,7 @@ export default class MutationObserver extends Observer {
 	enable() {
 		super.enable();
 
-		for ( let domElement of this._domElements ) {
+		for ( const domElement of this._domElements ) {
 			this._mutationObserver.observe( domElement, this._config );
 		}
 	}
@@ -145,7 +145,7 @@ export default class MutationObserver extends Observer {
 
 		// Handle `childList` mutations first, so we will be able to check if the `characterData` mutation is in the
 		// element with changed structure anyway.
-		for ( let mutation of domMutations ) {
+		for ( const mutation of domMutations ) {
 			if ( mutation.type === 'childList' ) {
 				const element = domConverter.getCorrespondingViewElement( mutation.target );
 
@@ -156,7 +156,7 @@ export default class MutationObserver extends Observer {
 		}
 
 		// Handle `characterData` mutations later, when we have the full list of nodes which changed structure.
-		for ( let mutation of domMutations ) {
+		for ( const mutation of domMutations ) {
 			if ( mutation.type === 'characterData' ) {
 				const text = domConverter.getCorrespondingViewText( mutation.target );
 
@@ -185,12 +185,12 @@ export default class MutationObserver extends Observer {
 		// List of mutations we will fire.
 		const viewMutations = [];
 
-		for ( let mutatedText of mutatedTexts.values() ) {
+		for ( const mutatedText of mutatedTexts.values() ) {
 			this.renderer.markToSync( 'text', mutatedText.node );
 			viewMutations.push( mutatedText );
 		}
 
-		for ( let viewElement of mutatedElements ) {
+		for ( const viewElement of mutatedElements ) {
 			const domElement = domConverter.getCorrespondingDomElement( viewElement );
 			const viewChildren = viewElement.getChildren();
 			const newViewChildren = domConverter.domChildrenToView( domElement );

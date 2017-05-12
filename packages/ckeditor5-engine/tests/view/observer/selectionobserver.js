@@ -20,10 +20,10 @@ testUtils.createSinonSandbox();
 describe( 'SelectionObserver', () => {
 	let viewDocument, viewRoot, mutationObserver, selectionObserver, domRoot, domMain, domDocument;
 
-	beforeEach( ( done ) => {
+	beforeEach( done => {
 		domDocument = document;
 		domRoot = domDocument.createElement( 'div' );
-		domRoot.innerHTML = `<div contenteditable="true"></div><div contenteditable="true" id="additional"></div>`;
+		domRoot.innerHTML = '<div contenteditable="true"></div><div contenteditable="true" id="additional"></div>';
 		domMain = domRoot.childNodes[ 0 ];
 		domDocument.body.appendChild( domRoot );
 
@@ -58,7 +58,7 @@ describe( 'SelectionObserver', () => {
 		viewDocument.destroy();
 	} );
 
-	it( 'should fire selectionChange when it is the only change', ( done ) => {
+	it( 'should fire selectionChange when it is the only change', done => {
 		viewDocument.on( 'selectionChange', ( evt, data ) => {
 			expect( data ).to.have.property( 'domSelection' ).that.equals( domDocument.getSelection() );
 
@@ -82,7 +82,7 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
-	it( 'should add only one listener to one document', ( done ) => {
+	it( 'should add only one listener to one document', done => {
 		// Add second roots to ensure that listener is added once.
 		viewDocument.createRoot( domDocument.getElementById( 'additional' ), 'additional' );
 
@@ -93,7 +93,7 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
-	it( 'should not fire selectionChange on render', ( done ) => {
+	it( 'should not fire selectionChange on render', done => {
 		viewDocument.on( 'selectionChange', () => {
 			throw 'selectionChange on render';
 		} );
@@ -105,7 +105,7 @@ describe( 'SelectionObserver', () => {
 		viewDocument.render();
 	} );
 
-	it( 'should not fired if observer is disabled', ( done ) => {
+	it( 'should not fired if observer is disabled', done => {
 		viewDocument.getObserver( SelectionObserver ).disable();
 
 		viewDocument.on( 'selectionChange', () => {
@@ -117,12 +117,12 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
-	it( 'should not fired if there is no focus', ( done ) => {
+	it( 'should not fired if there is no focus', done => {
 		viewDocument.isFocused = false;
 
 		// changeDomSelection() may focus the editable element (happens on Chrome)
 		// so cancel this because it sets the isFocused flag.
-		viewDocument.on( 'focus', ( evt ) => evt.stop(), { priority: 'highest' } );
+		viewDocument.on( 'focus', evt => evt.stop(), { priority: 'highest' } );
 
 		viewDocument.on( 'selectionChange', () => {
 			// Validate the correctness of the test. May help tracking issue with this test.
@@ -144,7 +144,7 @@ describe( 'SelectionObserver', () => {
 		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
 
 		return new Promise( ( resolve, reject ) => {
-			testUtils.sinon.stub( log, 'warn', ( msg ) => {
+			testUtils.sinon.stub( log, 'warn', msg => {
 				expect( msg ).to.match( /^selectionchange-infinite-loop/ );
 
 				resolve();
@@ -163,7 +163,7 @@ describe( 'SelectionObserver', () => {
 		} );
 	} );
 
-	it( 'should not be treated as an infinite loop if selection is changed only few times', ( done ) => {
+	it( 'should not be treated as an infinite loop if selection is changed only few times', done => {
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
 		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
 		const spy = testUtils.sinon.spy( log, 'warn' );
@@ -211,7 +211,7 @@ describe( 'SelectionObserver', () => {
 		}
 	} );
 
-	it( 'should fire `selectionChangeDone` event after selection stop changing', ( done ) => {
+	it( 'should fire `selectionChangeDone` event after selection stop changing', done => {
 		const spy = sinon.spy();
 
 		viewDocument.on( 'selectionChangeDone', spy );
@@ -258,7 +258,7 @@ describe( 'SelectionObserver', () => {
 		}, 100 );
 	} );
 
-	it( 'should not fire `selectionChangeDone` event when observer will be destroyed', ( done ) => {
+	it( 'should not fire `selectionChangeDone` event when observer will be destroyed', done => {
 		const spy = sinon.spy();
 
 		viewDocument.on( 'selectionChangeDone', spy );

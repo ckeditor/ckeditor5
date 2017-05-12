@@ -169,7 +169,7 @@ export default class ViewConversionDispatcher {
 	 */
 	_convertItem( input, consumable, additionalData = {} ) {
 		const data = extend( {}, additionalData, {
-			input: input,
+			input,
 			output: null
 		} );
 
@@ -211,8 +211,8 @@ export default class ViewConversionDispatcher {
 		// 2. Filter out items that has not been converted or for which conversion returned wrong result (for those warning is logged).
 		// 3. Extract children from document fragments to flatten results.
 		const convertedChildren = viewChildren
-			.map( ( viewChild ) => this._convertItem( viewChild, consumable, additionalData ) )
-			.filter( ( converted ) => converted instanceof ModelNode || converted instanceof ModelDocumentFragment )
+			.map( viewChild => this._convertItem( viewChild, consumable, additionalData ) )
+			.filter( converted => converted instanceof ModelNode || converted instanceof ModelDocumentFragment )
 			.reduce( ( result, filtered ) => {
 				return result.concat(
 					filtered.is( 'documentFragment' ) ? Array.from( filtered.getChildren() ) : filtered

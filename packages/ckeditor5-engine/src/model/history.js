@@ -161,7 +161,7 @@ export default class History {
 
 		// Make sure that every updated delta has correct `baseVersion`.
 		// This is crucial for algorithms in `History` and algorithms using `History`.
-		for ( let delta of updatedDeltas ) {
+		for ( const delta of updatedDeltas ) {
 			delta.baseVersion = baseVersion;
 		}
 
@@ -171,7 +171,7 @@ export default class History {
 		// Update history points.
 		const changeBy = updatedDeltas.length - deltas.length;
 
-		for ( let key of this._historyPoints.keys() ) {
+		for ( const key of this._historyPoints.keys() ) {
 			if ( key > baseVersion ) {
 				this._historyPoints.set( key, this._historyPoints.get( key ) + changeBy );
 			}
@@ -185,7 +185,7 @@ export default class History {
 	 * @param {Number} baseVersion Base version of delta.
 	 */
 	_getIndex( baseVersion ) {
-		let index = this._historyPoints.get( baseVersion );
+		const index = this._historyPoints.get( baseVersion );
 
 		// Base version not found - it is either too high or too low, or is in the middle of delta.
 		if ( index === undefined ) {

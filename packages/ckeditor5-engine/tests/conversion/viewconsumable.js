@@ -44,7 +44,7 @@ describe( 'ViewConsumable', () => {
 
 			expect( viewConsumable.test( el, { attribute: 'href' } ) ).to.be.true;
 			expect( viewConsumable.test( el, { class: 'foobar' } ) ).to.be.true;
-			expect( viewConsumable.test( el, { style: 'color' }  ) ).to.be.true;
+			expect( viewConsumable.test( el, { style: 'color' } ) ).to.be.true;
 			expect( viewConsumable.test( el, { name: true } ) ).to.be.null;
 		} );
 

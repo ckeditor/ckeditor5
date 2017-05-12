@@ -32,8 +32,8 @@ describe( 'TextProxy', () => {
 		} );
 
 		it( 'should have isPartial property', () => {
-			let startTextProxy = new TextProxy( text, 0, 4 );
-			let fullTextProxy = new TextProxy( text, 0, 8 );
+			const startTextProxy = new TextProxy( text, 0, 4 );
+			const fullTextProxy = new TextProxy( text, 0, 8 );
 
 			expect( textProxy.isPartial ).to.be.true;
 			expect( startTextProxy.isPartial ).to.be.true;

@@ -596,7 +596,7 @@ describe( 'debug tools', () => {
 
 			return TestEditor.create( div, {
 				plugins: [ DebugPlugin ]
-			} ).then( ( _editor ) => {
+			} ).then( _editor => {
 				editor = _editor;
 			} );
 		} );

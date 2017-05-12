@@ -97,7 +97,7 @@ export default class Batch {
 	 * @returns {Iterable.<module:engine/model/operation/operation~Operation>}
 	 */
 	*getOperations() {
-		for ( let delta of this.deltas ) {
+		for ( const delta of this.deltas ) {
 			yield* delta.operations;
 		}
 	}
@@ -148,7 +148,7 @@ export function register( name, creator ) {
 		 */
 		throw new CKEditorError(
 			'model-batch-register-taken: This batch method name is already taken.',
-			{ name: name } );
+			{ name } );
 	}
 
 	Batch.prototype[ name ] = creator;

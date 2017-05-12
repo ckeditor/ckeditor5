@@ -42,7 +42,7 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
  * @see module:engine/view/filler~NBSP_FILLER
  * @function
  */
-export const BR_FILLER = ( domDocument ) => {
+export const BR_FILLER = domDocument => {
 	const fillerBr = domDocument.createElement( 'br' );
 	fillerBr.dataset.ckeFiller = true;
 
@@ -56,7 +56,7 @@ export const BR_FILLER = ( domDocument ) => {
  * @see module:engine/view/filler~BR_FILLER
  * @function
  */
-export const NBSP_FILLER = ( domDocument ) => domDocument.createTextNode( '\u00A0' );
+export const NBSP_FILLER = domDocument => domDocument.createTextNode( '\u00A0' );
 
 /**
  * Length of the {@link module:engine/view/filler~INLINE_FILLER INLINE_FILLER}.

@@ -104,7 +104,7 @@ describe( 'Position', () => {
 			const { view, selection } = parse( '<p><b>{}foo</b></p>' );
 			let position = selection.getFirstPosition();
 
-			position = position.getLastMatchingPosition( ( value ) => value.type == 'text' );
+			position = position.getLastMatchingPosition( value => value.type == 'text' );
 
 			expect( stringify( view, position ) ).to.equal( '<p><b>foo[]</b></p>' );
 		} );
@@ -113,7 +113,7 @@ describe( 'Position', () => {
 			const { view, selection } = parse( '<p><b>foo{}</b></p>' );
 			let position = selection.getFirstPosition();
 
-			position = position.getLastMatchingPosition( ( value ) => value.type == 'text', { direction: 'backward' } );
+			position = position.getLastMatchingPosition( value => value.type == 'text', { direction: 'backward' } );
 
 			expect( stringify( view, position ) ).to.equal( '<p><b>[]foo</b></p>' );
 		} );
@@ -299,7 +299,7 @@ describe( 'Position', () => {
 
 			expect( position1.isBefore( position2 ) ).to.be.true;
 			expect( position2.isBefore( position1 ) ).to.be.false;
-			expect( position3.isBefore( position1  ) ).to.be.true;
+			expect( position3.isBefore( position1 ) ).to.be.true;
 			expect( position3.isBefore( position2 ) ).to.be.true;
 			expect( position1.isBefore( position3 ) ).to.be.false;
 			expect( position2.isBefore( position3 ) ).to.be.false;

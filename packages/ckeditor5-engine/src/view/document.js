@@ -149,7 +149,7 @@ export default class Document {
 
 		this._observers.set( Observer, observer );
 
-		for ( let [ name, domElement ] of this.domRoots ) {
+		for ( const [ name, domElement ] of this.domRoots ) {
 			observer.observe( domElement, name );
 		}
 
@@ -231,7 +231,7 @@ export default class Document {
 		this.renderer.markToSync( 'children', viewRoot );
 		this.renderer.domDocuments.add( domRoot.ownerDocument );
 
-		for ( let observer of this._observers.values() ) {
+		for ( const observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
 		}
 	}
@@ -295,7 +295,7 @@ export default class Document {
 	 * Disables all added observers.
 	 */
 	disableObservers() {
-		for ( let observer of this._observers.values() ) {
+		for ( const observer of this._observers.values() ) {
 			observer.disable();
 		}
 	}
@@ -304,7 +304,7 @@ export default class Document {
 	 * Enables all added observers.
 	 */
 	enableObservers() {
-		for ( let observer of this._observers.values() ) {
+		for ( const observer of this._observers.values() ) {
 			observer.enable();
 		}
 	}
@@ -313,7 +313,7 @@ export default class Document {
 	 * Destroys all observers created by view `Document`.
 	 */
 	destroy() {
-		for ( let observer of this._observers.values() ) {
+		for ( const observer of this._observers.values() ) {
 			observer.destroy();
 		}
 	}

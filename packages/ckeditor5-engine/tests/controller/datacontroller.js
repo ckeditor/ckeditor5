@@ -7,8 +7,8 @@ import ModelDocument from '../../src/model/document';
 import DataController from '../../src/controller/datacontroller';
 import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 
-import buildViewConverter  from '../../src/conversion/buildviewconverter';
-import buildModelConverter  from '../../src/conversion/buildmodelconverter';
+import buildViewConverter from '../../src/conversion/buildviewconverter';
+import buildModelConverter from '../../src/conversion/buildmodelconverter';
 
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import ModelText from '../../src/model/text';
@@ -436,9 +436,9 @@ describe( 'DataController', () => {
 			data.insertContent( content, modelDocument.selection, batch );
 
 			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( {
-				batch: batch,
+				batch,
 				selection: modelDocument.selection,
-				content: content
+				content
 			} );
 		} );
 	} );

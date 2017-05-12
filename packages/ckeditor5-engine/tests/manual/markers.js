@@ -30,9 +30,9 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	window.editor = editor;
 	model = window.editor.editing.model;
 
-	buildModelConverter().for( editor.editing.modelToView ).
-		fromMarker( 'highlight' ).
-		toElement( ( data ) => {
+	buildModelConverter().for( editor.editing.modelToView )
+		.fromMarker( 'highlight' )
+		.toElement( data => {
 			const color = data.name.split( ':' )[ 1 ];
 
 			return new ViewAttributeElement( 'span', { class: 'h-' + color } );

@@ -4,7 +4,7 @@
  */
 
 import transformations from '../../../../src/model/delta/basic-transformations';
-/*jshint unused: false*/
+/* jshint unused: false*/
 
 import deltaTransform from '../../../../src/model/delta/transform';
 const transform = deltaTransform.transform;
@@ -44,13 +44,13 @@ describe( 'transform', () => {
 		describe( 'MergeDelta', () => {
 			it( 'node on the right side of merge was removed', () => {
 				// This special case should be handled by MoveDelta x MergeDelta special case.
-				let sourcePosition = new Position( root, [ 3, 3, 3 ] );
-				let removeDelta = getRemoveDelta( sourcePosition, 1, baseVersion );
+				const sourcePosition = new Position( root, [ 3, 3, 3 ] );
+				const removeDelta = getRemoveDelta( sourcePosition, 1, baseVersion );
 
-				let mergePosition = new Position( root, [ 3, 3, 3 ] );
-				let mergeDelta = getMergeDelta( mergePosition, 4, 12, baseVersion );
+				const mergePosition = new Position( root, [ 3, 3, 3 ] );
+				const mergeDelta = getMergeDelta( mergePosition, 4, 12, baseVersion );
 
-				let transformed = transform( removeDelta, mergeDelta );
+				const transformed = transform( removeDelta, mergeDelta );
 
 				expect( transformed.length ).to.equal( 2 );
 
@@ -64,7 +64,7 @@ describe( 'transform', () => {
 							sourcePosition: new Position( gy, [ 0, 0 ] ),
 							howMany: 1,
 							targetPosition: new Position( root, [ 3, 3, 3 ] ),
-							baseVersion: baseVersion
+							baseVersion
 						},
 						{
 							type: MoveOperation,
@@ -93,7 +93,7 @@ describe( 'transform', () => {
 				applyDelta( transformed[ 0 ], doc );
 				applyDelta( transformed[ 1 ], doc );
 
-				let nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3 ] ), 1 ) );
+				const nodesAndText = getNodesAndText( Range.createFromPositionAndShift( new Position( root, [ 3, 3 ] ), 1 ) );
 
 				// RemoveDelta is applied. MergeDelta is discarded.
 				expect( nodesAndText ).to.equal( 'DIVXXXXXabcdXDIV' );
@@ -102,14 +102,14 @@ describe( 'transform', () => {
 
 		describe( 'SplitDelta', () => {
 			it( 'node inside the removed range was a node that has been split', () => {
-				let sourcePosition = new Position( root, [ 3, 3, 1 ] );
-				let removeDelta = getRemoveDelta( sourcePosition, 3, baseVersion );
+				const sourcePosition = new Position( root, [ 3, 3, 1 ] );
+				const removeDelta = getRemoveDelta( sourcePosition, 3, baseVersion );
 
-				let splitPosition = new Position( root, [ 3, 3, 2, 2 ] );
-				let nodeCopy = new Element( 'x' );
-				let splitDelta = getSplitDelta( splitPosition, nodeCopy, 2, baseVersion );
+				const splitPosition = new Position( root, [ 3, 3, 2, 2 ] );
+				const nodeCopy = new Element( 'x' );
+				const splitDelta = getSplitDelta( splitPosition, nodeCopy, 2, baseVersion );
 
-				let transformed = transform( removeDelta, splitDelta );
+				const transformed = transform( removeDelta, splitDelta );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -120,23 +120,23 @@ describe( 'transform', () => {
 					operations: [
 						{
 							type: RemoveOperation,
-							sourcePosition: sourcePosition,
+							sourcePosition,
 							howMany: 4,
-							baseVersion: baseVersion
+							baseVersion
 						}
 					]
 				} );
 			} );
 
 			it( 'last node in the removed range was a node that has been split', () => {
-				let sourcePosition = new Position( root, [ 3, 2 ] );
-				let removeDelta = getRemoveDelta( sourcePosition, 2, baseVersion );
+				const sourcePosition = new Position( root, [ 3, 2 ] );
+				const removeDelta = getRemoveDelta( sourcePosition, 2, baseVersion );
 
-				let splitPosition = new Position( root, [ 3, 3, 2 ] );
-				let nodeCopy = new Element( 'div' );
-				let splitDelta = getSplitDelta( splitPosition, nodeCopy, 2, baseVersion );
+				const splitPosition = new Position( root, [ 3, 3, 2 ] );
+				const nodeCopy = new Element( 'div' );
+				const splitDelta = getSplitDelta( splitPosition, nodeCopy, 2, baseVersion );
 
-				let transformed = transform( removeDelta, splitDelta );
+				const transformed = transform( removeDelta, splitDelta );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -147,9 +147,9 @@ describe( 'transform', () => {
 					operations: [
 						{
 							type: RemoveOperation,
-							sourcePosition: sourcePosition,
+							sourcePosition,
 							howMany: 3,
-							baseVersion: baseVersion
+							baseVersion
 						}
 					]
 				} );

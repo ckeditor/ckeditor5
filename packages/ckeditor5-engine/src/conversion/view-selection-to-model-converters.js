@@ -33,7 +33,7 @@ export function convertSelectionChange( modelDocument, mapper ) {
 
 		const ranges = [];
 
-		for ( let viewRange of viewSelection.getRanges() ) {
+		for ( const viewRange of viewSelection.getRanges() ) {
 			ranges.push( mapper.toModelRange( viewRange ) );
 		}
 

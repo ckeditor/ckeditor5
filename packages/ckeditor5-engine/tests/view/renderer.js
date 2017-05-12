@@ -126,7 +126,7 @@ describe( 'Renderer', () => {
 
 			// Fake selection editable - it is needed to render selection properly.
 			Object.defineProperty( selection, 'editableElement', {
-				get: function() {
+				get() {
 					return selectionEditable;
 				}
 			} );
@@ -508,7 +508,7 @@ describe( 'Renderer', () => {
 			expect( domP.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
-			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP.childNodes[ 0 ] .childNodes[ 0 ] );
+			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP.childNodes[ 0 ].childNodes[ 0 ] );
 			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 0 );
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
@@ -560,7 +560,7 @@ describe( 'Renderer', () => {
 			expect( domP.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
-			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP.childNodes[ 0 ] .childNodes[ 0 ] );
+			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domP.childNodes[ 0 ].childNodes[ 0 ] );
 			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 3 );
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
@@ -707,8 +707,8 @@ describe( 'Renderer', () => {
 		// #659
 		it( 'should remove filler from a modified DOM when children moved', () => {
 			// Step 1: <p><b>foo</b>"FILLER{}"<b>bar</b></p><p></p>
-			const { view: viewFragment, selection: newSelection }
-				= parse( '<container:p><attribute:b>foo</attribute:b>[]<attribute:b>bar</attribute:b></container:p><container:p></container:p>' );
+			const { view: viewFragment, selection: newSelection } =
+				parse( '<container:p><attribute:b>foo</attribute:b>[]<attribute:b>bar</attribute:b></container:p><container:p></container:p>' );
 			viewRoot.appendChildren( viewFragment );
 			selection.setTo( newSelection );
 

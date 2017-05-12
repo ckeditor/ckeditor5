@@ -6,7 +6,7 @@
 import createDocumentMock from '../../../tests/view/_utils/createdocumentmock';
 
 describe( 'createDocumentMock', () => {
-	it( 'should create document mock', ( done ) => {
+	it( 'should create document mock', done => {
 		const docMock = createDocumentMock();
 		const rootMock = {};
 

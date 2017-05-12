@@ -224,7 +224,7 @@ export default class Selection {
 	 * @returns {Iterator.<module:engine/view/range~Range>}
 	 */
 	*getRanges() {
-		for ( let range of this._ranges ) {
+		for ( const range of this._ranges ) {
 			yield Range.createFromRange( range );
 		}
 	}
@@ -240,7 +240,7 @@ export default class Selection {
 	getFirstRange() {
 		let first = null;
 
-		for ( let range of this._ranges ) {
+		for ( const range of this._ranges ) {
 			if ( !first || range.start.isBefore( first.start ) ) {
 				first = range;
 			}
@@ -259,7 +259,7 @@ export default class Selection {
 	getLastRange() {
 		let last = null;
 
-		for ( let range of this._ranges ) {
+		for ( const range of this._ranges ) {
 			if ( !last || range.end.isAfter( last.end ) ) {
 				last = range;
 			}
@@ -320,10 +320,10 @@ export default class Selection {
 			return false;
 		}
 
-		for ( let thisRange of this._ranges ) {
+		for ( const thisRange of this._ranges ) {
 			let found = false;
 
-			for ( let otherRange of otherSelection._ranges ) {
+			for ( const otherRange of otherSelection._ranges ) {
 				if ( thisRange.isEqual( otherRange ) ) {
 					found = true;
 					break;
@@ -363,7 +363,7 @@ export default class Selection {
 	setRanges( newRanges, isLastBackward ) {
 		this._ranges = [];
 
-		for ( let range of newRanges ) {
+		for ( const range of newRanges ) {
 			if ( !( range instanceof Range ) ) {
 				throw new CKEditorError( 'view-selection-invalid-range: Invalid Range.' );
 			}
@@ -514,7 +514,7 @@ export default class Selection {
 	 * @param {module:engine/view/range~Range} range
 	 */
 	_pushRange( range ) {
-		for ( let storedRange of this._ranges ) {
+		for ( const storedRange of this._ranges ) {
 			if ( range.isIntersecting( storedRange ) ) {
 				/**
 				 * Trying to add a range that intersects with another range from selection.

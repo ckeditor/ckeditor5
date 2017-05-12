@@ -77,7 +77,7 @@ export default class EditableElement extends ContainerElement {
 		this.bind( 'isFocused' ).to(
 			document,
 			'isFocused',
-			( isFocused ) => isFocused && document.selection.editableElement == this
+			isFocused => isFocused && document.selection.editableElement == this
 		);
 
 		// Update focus state before each rendering. Rendering should not change neither the selection nor the value of

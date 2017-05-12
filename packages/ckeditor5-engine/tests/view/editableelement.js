@@ -91,7 +91,7 @@ describe( 'EditableElement', () => {
 			expect( viewHeader.isFocused ).to.be.true;
 		} );
 
-		it( 'should change isFocus before actual rendering', ( done ) => {
+		it( 'should change isFocus before actual rendering', done => {
 			const rangeMain = Range.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
 			const rangeHeader = Range.createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
 			docMock.render = sinon.spy();
@@ -153,7 +153,7 @@ describe( 'EditableElement', () => {
 		} );
 	} );
 
-	describe( 'getDocument', ()=> {
+	describe( 'getDocument', () => {
 		it( 'should return document', () => {
 			const docMock = createDocumentMock();
 			const root = new RootEditableElement( 'div' );

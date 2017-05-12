@@ -143,7 +143,7 @@ describe( 'Document change event', () => {
 		expect( changes[ 0 ].key ).to.equal( 'key' );
 		expect( changes[ 0 ].oldValue ).to.equal( 'old' );
 		expect( changes[ 0 ].newValue ).to.be.null;
-	}  );
+	} );
 
 	it( 'should be fired when attribute changes', () => {
 		const elem = new Element( 'p', { key: 'old' } );
@@ -165,5 +165,5 @@ describe( 'Document change event', () => {
 		expect( changes[ 0 ].key ).to.equal( 'key' );
 		expect( changes[ 0 ].oldValue ).to.equal( 'old' );
 		expect( changes[ 0 ].newValue ).to.equal( 'new' );
-	}  );
+	} );
 } );

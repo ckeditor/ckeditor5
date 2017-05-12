@@ -88,7 +88,7 @@ describe( 'Node', () => {
 			expect( node ).to.have.property( 'document' ).that.is.null;
 
 			// DocumentFragment does not have document property, so node's document property should be null.
-			let docFrag = new DocumentFragment();
+			const docFrag = new DocumentFragment();
 			docFrag.appendChildren( node );
 			expect( node ).to.have.property( 'document' ).that.is.null;
 		} );
@@ -100,7 +100,7 @@ describe( 'Node', () => {
 		} );
 
 		it( 'should initialize attribute list with passed attributes', () => {
-			let foo = new Node( { foo: true, bar: false } );
+			const foo = new Node( { foo: true, bar: false } );
 
 			expect( count( foo.getAttributes() ) ).to.equal( 2 );
 			expect( foo.getAttribute( 'foo' ) ).to.equal( true );
@@ -136,8 +136,8 @@ describe( 'Node', () => {
 
 	describe( 'clone', () => {
 		it( 'should return a copy of cloned node', () => {
-			let node = new Node( { foo: 'bar' } );
-			let copy = node.clone();
+			const node = new Node( { foo: 'bar' } );
+			const copy = node.clone();
 
 			expect( copy ).not.to.equal( node );
 			expect( Array.from( copy.getAttributes() ) ).to.deep.equal( Array.from( node.getAttributes() ) );
@@ -146,7 +146,7 @@ describe( 'Node', () => {
 
 	describe( 'remove', () => {
 		it( 'should remove node from it\'s parent', () => {
-			let element = new Element( 'p' );
+			const element = new Element( 'p' );
 			element.appendChildren( node );
 
 			node.remove();
@@ -243,7 +243,7 @@ describe( 'Node', () => {
 	} );
 
 	describe( 'attributes interface', () => {
-		let node = new Node( { foo: 'bar' } );
+		const node = new Node( { foo: 'bar' } );
 
 		describe( 'hasAttribute', () => {
 			it( 'should return true if element contains attribute with given key', () => {
@@ -292,14 +292,14 @@ describe( 'Node', () => {
 		describe( 'removeAttribute', () => {
 			it( 'should remove attribute set on the element and return true', () => {
 				node.setAttribute( 'foo', 'bar' );
-				let result = node.removeAttribute( 'foo' );
+				const result = node.removeAttribute( 'foo' );
 
 				expect( node.getAttribute( 'foo' ) ).to.be.undefined;
 				expect( result ).to.be.true;
 			} );
 
 			it( 'should return false if element does not contain given attribute', () => {
-				let result = node.removeAttribute( 'foo' );
+				const result = node.removeAttribute( 'foo' );
 
 				expect( result ).to.be.false;
 			} );

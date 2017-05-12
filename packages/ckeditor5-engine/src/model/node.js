@@ -359,7 +359,7 @@ export default class Node {
 	 * @returns {Object} `Node` converted to plain object.
 	 */
 	toJSON() {
-		let json = {};
+		const json = {};
 
 		if ( this._attrs.size ) {
 			json.attributes = [ ...this._attrs ];

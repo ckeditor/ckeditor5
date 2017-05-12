@@ -128,7 +128,7 @@ export default class LiveSelection extends Selection {
 	 */
 	*getRanges() {
 		if ( this._ranges.length ) {
-			yield *super.getRanges();
+			yield* super.getRanges();
 		} else {
 			yield this._document._getDefaultRange();
 		}
@@ -330,7 +330,7 @@ export default class LiveSelection extends Selection {
 			this._attrs = new Map();
 		} else {
 			// If not, remove only attributes added with `low` priority.
-			for ( let [ key, priority ] of this._attributePriority ) {
+			for ( const [ key, priority ] of this._attributePriority ) {
 				if ( priority == 'low' ) {
 					this._attrs.delete( key );
 					this._attributePriority.delete( key );
@@ -345,14 +345,14 @@ export default class LiveSelection extends Selection {
 
 		// First, loop through all attributes that are set on selection right now.
 		// Check which of them are different than old attributes.
-		for ( let [ newKey, newValue ] of this.getAttributes() ) {
+		for ( const [ newKey, newValue ] of this.getAttributes() ) {
 			if ( !oldAttributes.has( newKey ) || oldAttributes.get( newKey ) !== newValue ) {
 				changed.push( newKey );
 			}
 		}
 
 		// Then, check which of old attributes got removed.
-		for ( let [ oldKey ] of oldAttributes ) {
+		for ( const [ oldKey ] of oldAttributes ) {
 			if ( !this.hasAttribute( oldKey ) ) {
 				changed.push( oldKey );
 			}
@@ -454,7 +454,7 @@ export default class LiveSelection extends Selection {
 	_setAttributesTo( attrs, directChange = true ) {
 		const changed = new Set();
 
-		for ( let [ oldKey, oldValue ] of this.getAttributes() ) {
+		for ( const [ oldKey, oldValue ] of this.getAttributes() ) {
 			// Do not remove attribute if attribute with same key and value is about to be set.
 			if ( attrs.get( oldKey ) === oldValue ) {
 				continue;
@@ -466,7 +466,7 @@ export default class LiveSelection extends Selection {
 			}
 		}
 
-		for ( let [ key, value ] of attrs ) {
+		for ( const [ key, value ] of attrs ) {
 			// Attribute may not be set because of attributes or because same key/value is already added.
 			const gotAdded = this._setAttribute( key, value, directChange );
 
@@ -488,7 +488,7 @@ export default class LiveSelection extends Selection {
 		const selectionParent = this.getFirstPosition().parent;
 
 		if ( this.isCollapsed && selectionParent.childCount === 0 ) {
-			for ( let key of selectionParent.getAttributeKeys() ) {
+			for ( const key of selectionParent.getAttributeKeys() ) {
 				if ( key.indexOf( storePrefix ) === 0 ) {
 					const realKey = key.substr( storePrefix.length );
 
@@ -533,13 +533,13 @@ export default class LiveSelection extends Selection {
 		const selectionParent = this.anchor.parent;
 		const batch = this._document.batch();
 
-		for ( let [ oldKey ] of this._getStoredAttributes() ) {
+		for ( const [ oldKey ] of this._getStoredAttributes() ) {
 			const storeKey = LiveSelection._getStoreAttributeKey( oldKey );
 
 			batch.removeAttribute( selectionParent, storeKey );
 		}
 
-		for ( let [ key, value ] of attrs ) {
+		for ( const [ key, value ] of attrs ) {
 			const storeKey = LiveSelection._getStoreAttributeKey( key );
 
 			batch.setAttribute( selectionParent, storeKey, value );
@@ -564,7 +564,7 @@ export default class LiveSelection extends Selection {
 			const range = this.getFirstRange();
 
 			// ...look for a first character node in that range and take attributes from it.
-			for ( let item of range ) {
+			for ( const item of range ) {
 				// This is not an optimal solution because of https://github.com/ckeditor/ckeditor5-engine/issues/454.
 				// It can be done better by using `break;` instead of checking `attrs === null`.
 				if ( item.type == 'text' && attrs === null ) {

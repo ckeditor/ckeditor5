@@ -39,8 +39,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 function viewAttributesToString( item ) {
 	let result = '';
 
-	for ( let key of item.getAttributeKeys() ) {
-		let value = item.getAttribute( key );
+	for ( const key of item.getAttributeKeys() ) {
+		const value = item.getAttribute( key );
 
 		if ( value ) {
 			result += ' ' + key + '="' + value + '"';
@@ -57,7 +57,7 @@ function viewToString( item ) {
 		result = item.data;
 	} else {
 		// ViewElement or ViewDocumentFragment.
-		for ( let child of item.getChildren() ) {
+		for ( const child of item.getChildren() ) {
 			result += viewToString( child );
 		}
 
@@ -99,7 +99,7 @@ describe( 'Model converter builder', () => {
 		it( 'using passed view element name', () => {
 			buildModelConverter().for( dispatcher ).fromElement( 'paragraph' ).toElement( 'p' );
 
-			let modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) );
+			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
@@ -110,7 +110,7 @@ describe( 'Model converter builder', () => {
 		it( 'using passed view element', () => {
 			buildModelConverter().for( dispatcher ).fromElement( 'image' ).toElement( new ViewContainerElement( 'img' ) );
 
-			let modelElement = new ModelElement( 'image' );
+			const modelElement = new ModelElement( 'image' );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
@@ -121,9 +121,9 @@ describe( 'Model converter builder', () => {
 		it( 'using passed creator function', () => {
 			buildModelConverter().for( dispatcher )
 				.fromElement( 'header' )
-				.toElement( ( data ) => new ViewContainerElement( 'h' + data.item.getAttribute( 'level' ) ) );
+				.toElement( data => new ViewContainerElement( 'h' + data.item.getAttribute( 'level' ) ) );
 
-			let modelElement = new ModelElement( 'header', { level: 2 }, new ModelText( 'foobar' ) );
+			const modelElement = new ModelElement( 'header', { level: 2 }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
@@ -140,7 +140,7 @@ describe( 'Model converter builder', () => {
 		it( 'using passed view element name', () => {
 			buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toElement( 'strong' );
 
-			let modelElement = new ModelText( 'foo', { bold: true } );
+			const modelElement = new ModelText( 'foo', { bold: true } );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
@@ -157,7 +157,7 @@ describe( 'Model converter builder', () => {
 		it( 'using passed view element', () => {
 			buildModelConverter().for( dispatcher ).fromAttribute( 'bold' ).toElement( new ViewAttributeElement( 'strong' ) );
 
-			let modelElement = new ModelText( 'foo', { bold: true } );
+			const modelElement = new ModelText( 'foo', { bold: true } );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
@@ -172,9 +172,9 @@ describe( 'Model converter builder', () => {
 		} );
 
 		it( 'using passed creator function', () => {
-			buildModelConverter().for( dispatcher ).fromAttribute( 'italic' ).toElement( ( value ) => new ViewAttributeElement( value ) );
+			buildModelConverter().for( dispatcher ).fromAttribute( 'italic' ).toElement( value => new ViewAttributeElement( value ) );
 
-			let modelElement = new ModelText( 'foo', { italic: 'em' } );
+			const modelElement = new ModelText( 'foo', { italic: 'em' } );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
@@ -200,7 +200,7 @@ describe( 'Model converter builder', () => {
 			dispatcher.on( 'selection', convertCollapsedSelection() );
 
 			// Model converter builder should add selection converter.
-			buildModelConverter().for( dispatcher ).fromAttribute( 'italic' ).toElement( ( value ) => new ViewAttributeElement( value ) );
+			buildModelConverter().for( dispatcher ).fromAttribute( 'italic' ).toElement( value => new ViewAttributeElement( value ) );
 
 			modelRoot.appendChildren( new ModelText( 'foo', { italic: 'em' } ) );
 
@@ -266,7 +266,7 @@ describe( 'Model converter builder', () => {
 		it( 'using default 1-to-1 conversion', () => {
 			buildModelConverter().for( dispatcher ).fromAttribute( 'class' ).toAttribute();
 
-			let modelElement = new ModelElement( 'paragraph', { class: 'myClass' }, new ModelText( 'foobar' ) );
+			const modelElement = new ModelElement( 'paragraph', { class: 'myClass' }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
@@ -287,7 +287,7 @@ describe( 'Model converter builder', () => {
 		it( 'using passed attribute key', () => {
 			buildModelConverter().for( dispatcher ).fromAttribute( 'theme' ).toAttribute( 'class' );
 
-			let modelElement = new ModelElement( 'paragraph', { theme: 'abc' }, new ModelText( 'foobar' ) );
+			const modelElement = new ModelElement( 'paragraph', { theme: 'abc' }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
@@ -308,7 +308,7 @@ describe( 'Model converter builder', () => {
 		it( 'using passed attribute key and value', () => {
 			buildModelConverter().for( dispatcher ).fromAttribute( 'highlighted' ).toAttribute( 'style', 'background:yellow' );
 
-			let modelElement = new ModelElement( 'paragraph', { 'highlighted': true }, new ModelText( 'foobar' ) );
+			const modelElement = new ModelElement( 'paragraph', { 'highlighted': true }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
@@ -324,9 +324,9 @@ describe( 'Model converter builder', () => {
 		it( 'using passed attribute creator function', () => {
 			buildModelConverter().for( dispatcher )
 				.fromAttribute( 'theme' )
-				.toAttribute( ( value ) => ( { key: 'class', value: value + '-theme' } ) );
+				.toAttribute( value => ( { key: 'class', value: value + '-theme' } ) );
 
-			let modelElement = new ModelElement( 'paragraph', { theme: 'nice' }, new ModelText( 'foobar' ) );
+			const modelElement = new ModelElement( 'paragraph', { theme: 'nice' }, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );
@@ -353,8 +353,8 @@ describe( 'Model converter builder', () => {
 			modelElement = new ModelElement( 'paragraph', null, [ modelText ] );
 			modelRoot.appendChildren( modelElement );
 
-			let viewText = new ViewText( 'foobar' );
-			let viewElement = new ViewContainerElement( 'p', null, [ viewText ] );
+			const viewText = new ViewText( 'foobar' );
+			const viewElement = new ViewContainerElement( 'p', null, [ viewText ] );
 			viewRoot.appendChildren( viewElement );
 
 			mapper.bindElements( modelElement, viewElement );
@@ -386,7 +386,7 @@ describe( 'Model converter builder', () => {
 		} );
 
 		it( 'using passed creator function', () => {
-			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( ( data ) => {
+			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( data => {
 				const className = 'search search-color-' + data.name.split( ':' )[ 1 ];
 
 				return new ViewAttributeElement( 'span', { class: className } );
@@ -427,8 +427,8 @@ describe( 'Model converter builder', () => {
 			modelElement = new ModelElement( 'paragraph', null, [ modelText ] );
 			modelRoot.appendChildren( modelElement );
 
-			let viewText = new ViewText( 'foobar' );
-			let viewElement = new ViewContainerElement( 'p', null, [ viewText ] );
+			const viewText = new ViewText( 'foobar' );
+			const viewElement = new ViewContainerElement( 'p', null, [ viewText ] );
 			viewRoot.appendChildren( viewElement );
 
 			mapper.bindElements( modelElement, viewElement );
@@ -465,7 +465,7 @@ describe( 'Model converter builder', () => {
 			} );
 
 			it( 'using passed creator function', () => {
-				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( ( data ) => {
+				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( data => {
 					const className = 'search search-color-' + data.name.split( ':' )[ 1 ];
 
 					return new ViewUIElement( 'span', { class: className } );
@@ -512,7 +512,7 @@ describe( 'Model converter builder', () => {
 			} );
 
 			it( 'using passed creator function', () => {
-				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( ( data ) => {
+				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toStamp( data => {
 					const className = 'search search-color-' + data.name.split( ':' )[ 1 ];
 
 					return new ViewUIElement( 'span', { class: className } );
@@ -546,7 +546,7 @@ describe( 'Model converter builder', () => {
 			buildModelConverter().for( dispatcher ).fromElement( 'custom' ).toElement( 'custom' );
 			buildModelConverter().for( dispatcher ).fromElement( 'custom' ).withPriority( 'high' ).toElement( 'other' );
 
-			let modelElement = new ModelElement( 'custom', null, new ModelText( 'foobar' ) );
+			const modelElement = new ModelElement( 'custom', null, new ModelText( 'foobar' ) );
 			modelRoot.appendChildren( modelElement );
 
 			dispatcher.convertInsertion( ModelRange.createIn( modelRoot ) );

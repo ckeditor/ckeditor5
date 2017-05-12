@@ -23,9 +23,9 @@ export function getNodesAndText( range ) {
 	let txt = '';
 	const treeWalker = new TreeWalker( { boundaries: range } );
 
-	for ( let value of treeWalker ) {
-		let node = value.item;
-		let nodeText = node.data;
+	for ( const value of treeWalker ) {
+		const node = value.item;
+		const nodeText = node.data;
 
 		if ( nodeText ) {
 			txt += nodeText.toLowerCase();
@@ -71,11 +71,11 @@ export function wrapInDelta( operation ) {
  * @returns {engine.model.Node|engine.model.TextProxy}
  */
 export function itemAt( parent, offset ) {
-	let index = parent.offsetToIndex( offset );
-	let node = parent.getChild( index );
+	const index = parent.offsetToIndex( offset );
+	const node = parent.getChild( index );
 
 	if ( node instanceof Text ) {
-		let offsetInText = offset - node.startOffset;
+		const offsetInText = offset - node.startOffset;
 
 		return new TextProxy( node, offsetInText, 1 );
 	}
@@ -92,7 +92,7 @@ export function itemAt( parent, offset ) {
 export function getText( element ) {
 	let text = '';
 
-	for ( let child of element.getChildren() ) {
+	for ( const child of element.getChildren() ) {
 		if ( child.data ) {
 			text += child.data;
 		} else if ( child.name ) {

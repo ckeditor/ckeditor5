@@ -100,7 +100,7 @@ describe( 'FakeSelectionObserver', () => {
 		);
 	} );
 
-	it( 'should fire `selectionChangeDone` event after selection stop changing', ( done ) => {
+	it( 'should fire `selectionChangeDone` event after selection stop changing', done => {
 		const spy = sinon.spy();
 
 		viewDocument.on( 'selectionChangeDone', spy );
@@ -127,7 +127,7 @@ describe( 'FakeSelectionObserver', () => {
 		}, 100 );
 	} );
 
-	it( 'should not fire `selectionChangeDone` event when observer will be destroyed', ( done ) => {
+	it( 'should not fire `selectionChangeDone` event when observer will be destroyed', done => {
 		const spy = sinon.spy();
 
 		viewDocument.on( 'selectionChangeDone', spy );

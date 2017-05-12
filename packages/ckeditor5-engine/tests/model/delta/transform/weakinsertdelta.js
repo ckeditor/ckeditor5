@@ -4,7 +4,7 @@
  */
 
 import transformations from '../../../../src/model/delta/basic-transformations';
-/*jshint unused: false*/
+/* jshint unused: false*/
 
 import deltaTransform from '../../../../src/model/delta/transform';
 const transform = deltaTransform.transform;
@@ -39,7 +39,7 @@ describe( 'transform', () => {
 		let insertDelta;
 
 		beforeEach( () => {
-			let insertPosition = new Position( root, [ 3, 3, 0 ] );
+			const insertPosition = new Position( root, [ 3, 3, 0 ] );
 			insertDelta = getWeakInsertDelta(
 				insertPosition,
 				[
@@ -55,10 +55,10 @@ describe( 'transform', () => {
 
 		describe( 'WeakInsertDelta', () => {
 			it( 'weak insert inside attribute range should "fix" splitting the range', () => {
-				let attrRange = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 3, 3, 9 ] ) );
-				let attrDelta = getAttributeDelta( attrRange, 'key', 'old', 'new', baseVersion );
+				const attrRange = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 3, 3, 9 ] ) );
+				const attrDelta = getAttributeDelta( attrRange, 'key', 'old', 'new', baseVersion );
 
-				let transformed = transform( insertDelta, attrDelta );
+				const transformed = transform( insertDelta, attrDelta );
 
 				expect( transformed.length ).to.equal( 2 );
 
@@ -70,7 +70,7 @@ describe( 'transform', () => {
 						{
 							type: InsertOperation,
 							position: new Position( root, [ 3, 3, 0 ] ),
-							baseVersion: baseVersion
+							baseVersion
 						}
 					]
 				} );
@@ -107,10 +107,10 @@ describe( 'transform', () => {
 			} );
 
 			it( 'should be normally transformed if weak insert is not in the attribute range', () => {
-				let attrRange = new Range( new Position( root, [ 5 ] ), new Position( root, [ 7 ] ) );
-				let attrDelta = getAttributeDelta( attrRange, 'key', 'old', 'new', baseVersion );
+				const attrRange = new Range( new Position( root, [ 5 ] ), new Position( root, [ 7 ] ) );
+				const attrDelta = getAttributeDelta( attrRange, 'key', 'old', 'new', baseVersion );
 
-				let transformed = transform( insertDelta, attrDelta );
+				const transformed = transform( insertDelta, attrDelta );
 
 				expect( transformed.length ).to.equal( 1 );
 
@@ -122,7 +122,7 @@ describe( 'transform', () => {
 						{
 							type: InsertOperation,
 							position: new Position( root, [ 3, 3, 0 ] ),
-							baseVersion: baseVersion
+							baseVersion
 						}
 					]
 				} );

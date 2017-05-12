@@ -472,7 +472,7 @@ describe( 'model test utils', () => {
 		} );
 
 		test( 'creates element with complex attributes', {
-			data: `<a foo='{"x":1,"y":2}'></a>`,
+			data: '<a foo=\'{"x":1,"y":2}\'></a>',
 			output: '<a foo="{"x":1,"y":2}"></a>',
 			check( a ) {
 				expect( count( a.getAttributes() ) ).to.equal( 1 );
@@ -504,7 +504,7 @@ describe( 'model test utils', () => {
 		it( 'throws when try to set element not registered in schema', () => {
 			expect( () => {
 				parse( '<xyz></xyz>', document.schema );
-			} ).to.throw( Error, `Element 'xyz' not allowed in context ["$root"].` );
+			} ).to.throw( Error, 'Element \'xyz\' not allowed in context ["$root"].' );
 		} );
 
 		it( 'throws when try to set text directly to $root without registering it', () => {
@@ -512,7 +512,7 @@ describe( 'model test utils', () => {
 
 			expect( () => {
 				parse( 'text', doc.schema );
-			} ).to.throw( Error, `Element '$text' not allowed in context ["$root"].` );
+			} ).to.throw( Error, 'Element \'$text\' not allowed in context ["$root"].' );
 		} );
 
 		it( 'converts data in the specified context', () => {

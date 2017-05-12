@@ -436,11 +436,11 @@ export default class TreeWalker {
 		return {
 			done: false,
 			value: {
-				type: type,
-				item: item,
-				previousPosition: previousPosition,
-				nextPosition: nextPosition,
-				length: length
+				type,
+				item,
+				previousPosition,
+				nextPosition,
+				length
 			}
 		};
 	}

@@ -17,7 +17,7 @@ import AttributeOperation from '../../../src/model/operation/attributeoperation'
 describe( 'Batch', () => {
 	let batch, doc, root;
 
-	const correctDeltaMatcher = sinon.match( ( operation ) => {
+	const correctDeltaMatcher = sinon.match( operation => {
 		return operation.delta && operation.delta.batch && operation.delta.batch == batch;
 	} );
 
@@ -30,7 +30,7 @@ describe( 'Batch', () => {
 	function getOperationsCount() {
 		let totalNumber = 0;
 
-		for ( let delta of batch.deltas ) {
+		for ( const delta of batch.deltas ) {
 			totalNumber += count( delta.operations );
 		}
 
@@ -147,8 +147,8 @@ describe( 'Batch', () => {
 		function getChangesAttrsCount() {
 			let totalNumber = 0;
 
-			for ( let delta of batch.deltas ) {
-				for ( let operation of delta.operations ) {
+			for ( const delta of batch.deltas ) {
+				for ( const operation of delta.operations ) {
 					totalNumber += count( operation.range.getItems( { singleCharacters: true } ) );
 				}
 			}
@@ -208,7 +208,7 @@ describe( 'Batch', () => {
 			} );
 
 			it( 'should not check range\'s start position node when creating operations', () => {
-				let range = new Range(
+				const range = new Range(
 					new Position( root, [ 18, 1 ] ),
 					new Position( root, [ 19 ] )
 				);
@@ -220,7 +220,7 @@ describe( 'Batch', () => {
 			} );
 
 			it( 'should not change elements attribute if range contains closing tag', () => {
-				let range = new Range(
+				const range = new Range(
 					new Position( root, [ 18, 1 ] ),
 					new Position( root, [ 21 ] )
 				);
@@ -232,7 +232,7 @@ describe( 'Batch', () => {
 			} );
 
 			it( 'should not create an operation if the range contains only closing tag', () => {
-				let range = new Range(
+				const range = new Range(
 					new Position( root, [ 18, 3 ] ),
 					new Position( root, [ 19 ] )
 				);
@@ -311,7 +311,7 @@ describe( 'Batch', () => {
 			} );
 
 			it( 'should not check range\'s start position node when creating operations', () => {
-				let range = new Range(
+				const range = new Range(
 					new Position( root, [ 18, 3 ] ),
 					new Position( root, [ 19 ] )
 				);
@@ -359,7 +359,7 @@ describe( 'Batch', () => {
 	describe( 'change attribute on root element', () => {
 		describe( 'setAttribute', () => {
 			it( 'should create the attribute on root', () => {
-				batch.setAttribute( root, 'b', 2  );
+				batch.setAttribute( root, 'b', 2 );
 				expect( getOperationsCount() ).to.equal( 1 );
 				expect( root.getAttribute( 'b' ) ).to.equal( 2 );
 			} );
@@ -395,8 +395,8 @@ describe( 'Batch', () => {
 	} );
 
 	it( 'should not add empty delta to the batch', () => {
-		let nodeA = new Element( 'p', { a: 1 } );
-		let nodeB = new Element( 'p', { b: 2 } );
+		const nodeA = new Element( 'p', { a: 1 } );
+		const nodeB = new Element( 'p', { b: 2 } );
 		root.insertChildren( 0, [ nodeA, nodeB ] );
 
 		batch.setAttribute( nodeA, 'a', 1 );
@@ -430,7 +430,7 @@ describe( 'AttributeDelta', () => {
 		} );
 
 		it( 'should be equal to attribute operations key that are in delta', () => {
-			let range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+			const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
 			delta.addOperation( new AttributeOperation( range, 'key', 'old', 'new', 0 ) );
 
 			expect( delta.key ).to.equal( 'key' );
@@ -443,7 +443,7 @@ describe( 'AttributeDelta', () => {
 		} );
 
 		it( 'should be equal to the value set by the delta operations', () => {
-			let range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+			const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
 			delta.addOperation( new AttributeOperation( range, 'key', 'old', 'new', 0 ) );
 
 			expect( delta.value ).to.equal( 'new' );
@@ -456,9 +456,9 @@ describe( 'AttributeDelta', () => {
 		} );
 
 		it( 'start and end should be equal to first and last changed position', () => {
-			let rangeA = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
-			let rangeB = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
-			let rangeC = new Range( new Position( root, [ 5 ] ), new Position( root, [ 6 ] ) );
+			const rangeA = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
+			const rangeB = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+			const rangeC = new Range( new Position( root, [ 5 ] ), new Position( root, [ 6 ] ) );
 
 			delta.addOperation( new AttributeOperation( rangeA, 'key', 'oldA', 'new', 0 ) );
 			delta.addOperation( new AttributeOperation( rangeB, 'key', 'oldB', 'new', 1 ) );
@@ -471,20 +471,20 @@ describe( 'AttributeDelta', () => {
 
 	describe( 'getReversed', () => {
 		it( 'should return empty AttributeDelta if there are no operations in delta', () => {
-			let reversed = delta.getReversed();
+			const reversed = delta.getReversed();
 
 			expect( reversed ).to.be.instanceof( AttributeDelta );
 			expect( reversed.operations.length ).to.equal( 0 );
 		} );
 
 		it( 'should return correct AttributeDelta', () => {
-			let rangeA = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
-			let rangeB = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
+			const rangeA = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
+			const rangeB = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
 
 			delta.addOperation( new AttributeOperation( rangeA, 'key', 'oldA', 'new', 0 ) );
 			delta.addOperation( new AttributeOperation( rangeB, 'key', 'oldB', 'new', 1 ) );
 
-			let reversed = delta.getReversed();
+			const reversed = delta.getReversed();
 
 			expect( reversed ).to.be.instanceof( AttributeDelta );
 			expect( reversed.operations.length ).to.equal( 2 );

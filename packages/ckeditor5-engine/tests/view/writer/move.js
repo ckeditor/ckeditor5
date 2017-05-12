@@ -24,8 +24,8 @@ describe( 'writer', () => {
 	 * @param {String} expectedRemoved
 	 */
 	function test( source, destination, sourceAfterMove, destinationAfterMove ) {
-		let { view: srcView, selection: srcSelection } = parse( source );
-		let { view: dstView, selection: dstSelection } = parse( destination );
+		const { view: srcView, selection: srcSelection } = parse( source );
+		const { view: dstView, selection: dstSelection } = parse( destination );
 
 		const newRange = move( srcSelection.getFirstRange(), dstSelection.getFirstPosition() );
 
@@ -110,7 +110,7 @@ describe( 'writer', () => {
 		} );
 
 		it( 'should correctly move text nodes inside same parent', () => {
-			let { view, selection } = parse( '<container:p>[<attribute:b>a</attribute:b>]b<attribute:b>c</attribute:b></container:p>' );
+			const { view, selection } = parse( '<container:p>[<attribute:b>a</attribute:b>]b<attribute:b>c</attribute:b></container:p>' );
 
 			const newRange = move( selection.getFirstRange(), ViewPosition.createAt( view, 2 ) );
 
@@ -119,7 +119,7 @@ describe( 'writer', () => {
 		} );
 
 		it( 'should correctly move text nodes inside same container', () => {
-			let { view, selection } = parse( '<container:p><attribute:b>a{b</attribute:b>xx<attribute:b>c}d</attribute:b>yy</container:p>' );
+			const { view, selection } = parse( '<container:p><attribute:b>a{b</attribute:b>xx<attribute:b>c}d</attribute:b>yy</container:p>' );
 
 			const viewText = view.getChild( 3 );
 			const newRange = move( selection.getFirstRange(), ViewPosition.createAt( viewText, 1 ) );

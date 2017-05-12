@@ -116,7 +116,7 @@ describe( 'Schema', () => {
 		it( 'should return SchemaItem registered under given name', () => {
 			schema.registerItem( 'new' );
 
-			let item = schema._getItem( 'new' );
+			const item = schema._getItem( 'new' );
 
 			expect( item ).to.be.instanceof( SchemaItem );
 		} );
@@ -445,8 +445,8 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'should normalize model position to an array of strings', () => {
-			let doc = new Document();
-			let root = doc.createRoot();
+			const doc = new Document();
+			const root = doc.createRoot();
 
 			root.insertChildren( 0, [
 				new Element( 'div', null, [
@@ -454,13 +454,13 @@ describe( 'Schema', () => {
 				] )
 			] );
 
-			let position = new Position( root, [ 0, 0, 0 ] );
+			const position = new Position( root, [ 0, 0, 0 ] );
 
 			expect( Schema._normalizeQueryPath( position ) ).to.deep.equal( [ '$root', 'div', 'header' ] );
 		} );
 
 		it( 'should normalize array with strings and model elements to an array of strings and drop unrecognized parts', () => {
-			let input = [
+			const input = [
 				'$root',
 				[ 'div' ],
 				new Element( 'div' ),

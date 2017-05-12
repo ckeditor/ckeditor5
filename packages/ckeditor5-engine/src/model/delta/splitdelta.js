@@ -43,7 +43,7 @@ export default class SplitDelta extends Delta {
 	 * @inheritDoc
 	 */
 	getReversed() {
-		let delta = super.getReversed();
+		const delta = super.getReversed();
 
 		if ( delta.operations.length > 0 ) {
 			delta.operations[ 0 ].isSticky = true;

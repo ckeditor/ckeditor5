@@ -142,7 +142,7 @@ class ViewConverterBuilder {
 	 * @returns {module:engine/conversion/buildviewconverter~ViewConverterBuilder}
 	 */
 	fromAttribute( key, value = /.*/ ) {
-		let pattern = {};
+		const pattern = {};
 
 		if ( key === 'style' || key === 'class' ) {
 			pattern[ key ] = value;
@@ -154,7 +154,7 @@ class ViewConverterBuilder {
 		const matcher = new Matcher( pattern );
 
 		this._from.push( {
-			matcher: matcher,
+			matcher,
 			consume: false,
 			priority: null,
 			attributeKey: key
@@ -183,7 +183,7 @@ class ViewConverterBuilder {
 		}
 
 		this._from.push( {
-			matcher: matcher,
+			matcher,
 			consume: false,
 			priority: null
 		} );
@@ -221,7 +221,7 @@ class ViewConverterBuilder {
 	 * @returns {module:engine/conversion/buildviewconverter~ViewConverterBuilder}
 	 */
 	consuming( consume ) {
-		let lastFrom = this._from[ this._from.length - 1 ];
+		const lastFrom = this._from[ this._from.length - 1 ];
 		lastFrom.consume = consume;
 
 		return this;
@@ -250,7 +250,7 @@ class ViewConverterBuilder {
 	 * @returns {module:engine/conversion/buildviewconverter~ViewConverterBuilder}
 	 */
 	withPriority( priority ) {
-		let lastFrom = this._from[ this._from.length - 1 ];
+		const lastFrom = this._from[ this._from.length - 1 ];
 		lastFrom.priority = priority;
 
 		return this;
@@ -275,7 +275,7 @@ class ViewConverterBuilder {
 			return ( evt, data, consumable, conversionApi ) => {
 				// There is one callback for all patterns in the matcher.
 				// This will be usually just one pattern but we support matchers with many patterns too.
-				let matchAll = from.matcher.matchAll( data.input );
+				const matchAll = from.matcher.matchAll( data.input );
 
 				// If there is no match, this callback should not do anything.
 				if ( !matchAll ) {
@@ -283,7 +283,7 @@ class ViewConverterBuilder {
 				}
 
 				// Now, for every match between matcher and actual element, we will try to consume the match.
-				for ( let match of matchAll ) {
+				for ( const match of matchAll ) {
 					// Create model element basing on creator function or element name.
 					const modelElement = element instanceof Function ? element( data.input ) : new ModelElement( element );
 
@@ -350,7 +350,7 @@ class ViewConverterBuilder {
 			return ( evt, data, consumable, conversionApi ) => {
 				// There is one callback for all patterns in the matcher.
 				// This will be usually just one pattern but we support matchers with many patterns too.
-				let matchAll = from.matcher.matchAll( data.input );
+				const matchAll = from.matcher.matchAll( data.input );
 
 				// If there is no match, this callback should not do anything.
 				if ( !matchAll ) {
@@ -358,7 +358,7 @@ class ViewConverterBuilder {
 				}
 
 				// Now, for every match between matcher and actual element, we will try to consume the match.
-				for ( let match of matchAll ) {
+				for ( const match of matchAll ) {
 					// Try to consume appropriate values from consumable values list.
 					if ( !consumable.consume( data.input, from.consume || match.match ) ) {
 						continue;
@@ -487,7 +487,7 @@ class ViewConverterBuilder {
 	 */
 	_setCallback( eventCallbackGen, defaultPriority ) {
 		// We will add separate event callback for each registered `from` entry.
-		for ( let from of this._from ) {
+		for ( const from of this._from ) {
 			// We have to figure out event name basing on matcher's patterns.
 			// If there is exactly one pattern and it has `name` property we will used that name.
 			const matcherElementName = from.matcher.getElementName();
@@ -497,7 +497,7 @@ class ViewConverterBuilder {
 			const priority = from.priority === null ? defaultPriority : from.priority;
 
 			// Add event to each registered dispatcher.
-			for ( let dispatcher of this._dispatchers ) {
+			for ( const dispatcher of this._dispatchers ) {
 				dispatcher.on( eventName, eventCallback, { priority } );
 			}
 		}
@@ -508,7 +508,7 @@ class ViewConverterBuilder {
 // `module:engine/model/documentfragment~DocumentFragment`.
 function setAttributeOn( toChange, attribute, data, conversionApi ) {
 	if ( isIterable( toChange ) ) {
-		for ( let node of toChange ) {
+		for ( const node of toChange ) {
 			setAttributeOn( node, attribute, data, conversionApi );
 		}
 

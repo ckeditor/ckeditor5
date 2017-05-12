@@ -40,7 +40,7 @@ const deltaTransform = {
 	 * automatically and overwrites this flag.
 	 * @returns {Array.<module:engine/model/delta/delta~Delta>} Result of the transformation.
 	 */
-	transform: function( a, b, isAMoreImportantThanB ) {
+	transform( a, b, isAMoreImportantThanB ) {
 		const transformAlgorithm = deltaTransform.getTransformationCase( a, b ) || deltaTransform.defaultTransform;
 
 		const transformed = transformAlgorithm( a, b, isAMoreImportantThanB );
@@ -63,7 +63,7 @@ const deltaTransform = {
 	 * automatically and overwrites this flag.
 	 * @returns {Array.<module:engine/model/delta/delta~Delta>} Result of the transformation, that is an array with single delta instance.
 	 */
-	defaultTransform: function( a, b, isAMoreImportantThanB ) {
+	defaultTransform( a, b, isAMoreImportantThanB ) {
 		// First, resolve the flag real value.
 		isAMoreImportantThanB = getPriority( a.constructor, b.constructor, isAMoreImportantThanB );
 
@@ -80,13 +80,13 @@ const deltaTransform = {
 		let newByOps = [];
 
 		// We take each operation from original set of operations to transform.
-		for ( let opA of a.operations ) {
+		for ( const opA of a.operations ) {
 			// We wrap the operation in the array. This is important, because operation transformation algorithm returns
 			// an array of operations so we need to make sure that our algorithm is ready to handle arrays.
 			const ops = [ opA ];
 
 			// Now the real algorithm takes place.
-			for ( let opB of byOps ) {
+			for ( const opB of byOps ) {
 				// For each operation that we need transform by...
 				for ( let i = 0; i < ops.length; i++ ) {
 					// We take each operation to transform...
@@ -137,7 +137,7 @@ const deltaTransform = {
 
 			// We add transformed operation from delta A to newly created delta.
 			// Remember that transformed operation from delta A may consist of multiple operations.
-			for ( let op of ops ) {
+			for ( const op of ops ) {
 				transformed.addOperation( op );
 			}
 
@@ -157,7 +157,7 @@ const deltaTransform = {
 	 * @param {Function} B Delta constructor which instance will be transformed by.
 	 * @param {Function} resolver A callback that will handle custom special case transformation for instances of given delta classes.
 	 */
-	addTransformationCase: function( A, B, resolver ) {
+	addTransformationCase( A, B, resolver ) {
 		let casesA = specialCases.get( A );
 
 		if ( !casesA ) {
@@ -174,7 +174,7 @@ const deltaTransform = {
 	 * @param {module:engine/model/delta/delta~Delta} a Delta to transform.
 	 * @param {module:engine/model/delta/delta~Delta} b Delta to be transformed by.
 	 */
-	getTransformationCase: function( a, b ) {
+	getTransformationCase( a, b ) {
 		let casesA = specialCases.get( a.constructor );
 
 		// If there are no special cases registered for class which `a` is instance of, we will
@@ -182,7 +182,7 @@ const deltaTransform = {
 		if ( !casesA || !casesA.get( b.constructor ) ) {
 			const cases = specialCases.keys();
 
-			for ( let caseClass of cases ) {
+			for ( const caseClass of cases ) {
 				if ( a instanceof caseClass && specialCases.get( caseClass ).get( b.constructor ) ) {
 					casesA = specialCases.get( caseClass );
 
@@ -209,20 +209,20 @@ const deltaTransform = {
 	 * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasA The first set of deltas transformed by the second set of deltas.
 	 * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasB The second set of deltas transformed by the first set of deltas.
 	 */
-	transformDeltaSets: function( deltasA, deltasB, isAMoreImportantThanB ) {
-		let transformedDeltasA = Array.from( deltasA );
-		let transformedDeltasB = Array.from( deltasB );
+	transformDeltaSets( deltasA, deltasB, isAMoreImportantThanB ) {
+		const transformedDeltasA = Array.from( deltasA );
+		const transformedDeltasB = Array.from( deltasB );
 
 		for ( let i = 0; i < transformedDeltasA.length; i++ ) {
-			let deltaA = [ transformedDeltasA[ i ] ];
+			const deltaA = [ transformedDeltasA[ i ] ];
 
 			for ( let j = 0; j < transformedDeltasB.length; j++ ) {
-				let deltaB = [ transformedDeltasB[ j ] ];
+				const deltaB = [ transformedDeltasB[ j ] ];
 
 				for ( let k = 0; k < deltaA.length; k++ ) {
 					for ( let l = 0; l < deltaB.length; l++ ) {
-						let resultAB = deltaTransform.transform( deltaA[ k ], deltaB[ l ], isAMoreImportantThanB );
-						let resultBA = deltaTransform.transform( deltaB[ l ], deltaA[ k ], !isAMoreImportantThanB );
+						const resultAB = deltaTransform.transform( deltaA[ k ], deltaB[ l ], isAMoreImportantThanB );
+						const resultBA = deltaTransform.transform( deltaB[ l ], deltaA[ k ], !isAMoreImportantThanB );
 
 						deltaA.splice( k, 1, ...resultAB );
 						k += resultAB.length - 1;
@@ -257,8 +257,8 @@ export default deltaTransform;
 
 // Updates base versions of operations inside deltas (which are the results of delta transformation).
 function updateBaseVersion( baseVersion, deltas ) {
-	for ( let delta of deltas ) {
-		for ( let op of delta.operations ) {
+	for ( const delta of deltas ) {
+		for ( const op of delta.operations ) {
 			op.baseVersion = ++baseVersion;
 		}
 	}
@@ -291,7 +291,7 @@ function padWithNoOps( deltas, howMany ) {
 	const lastDelta = deltas[ deltas.length - 1 ];
 	let baseVersion = lastDelta.operations.length + lastDelta.baseVersion;
 
-	let noDelta = new Delta();
+	const noDelta = new Delta();
 
 	for ( let i = 0; i < howMany; i++ ) {
 		noDelta.addOperation( new NoOperation( baseVersion++ ) );

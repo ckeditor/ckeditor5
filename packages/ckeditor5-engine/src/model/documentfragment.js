@@ -213,7 +213,7 @@ export default class DocumentFragment {
 	insertChildren( index, nodes ) {
 		nodes = normalize( nodes );
 
-		for ( let node of nodes ) {
+		for ( const node of nodes ) {
 			node.parent = this;
 		}
 
@@ -231,7 +231,7 @@ export default class DocumentFragment {
 	removeChildren( index, howMany = 1 ) {
 		const nodes = this._children.removeNodes( index, howMany );
 
-		for ( let node of nodes ) {
+		for ( const node of nodes ) {
 			node.parent = null;
 		}
 
@@ -245,9 +245,9 @@ export default class DocumentFragment {
 	 * @returns {Object} `DocumentFragment` instance converted to plain object.
 	 */
 	toJSON() {
-		let json = [];
+		const json = [];
 
-		for ( let node of this._children ) {
+		for ( const node of this._children ) {
 			json.push( node.toJSON() );
 		}
 
@@ -262,9 +262,9 @@ export default class DocumentFragment {
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} `DocumentFragment` instance created using given plain object.
 	 */
 	static fromJSON( json ) {
-		let children = [];
+		const children = [];
 
-		for ( let child of json ) {
+		for ( const child of json ) {
 			if ( child.name ) {
 				// If child has name property, it is an Element.
 				children.push( Element.fromJSON( child ) );
@@ -293,5 +293,5 @@ function normalize( nodes ) {
 	}
 
 	// Array.from to enable .map() on non-arrays.
-	return Array.from( nodes ).map( ( node ) => typeof node == 'string' ? new Text( node ) : node );
+	return Array.from( nodes ).map( node => typeof node == 'string' ? new Text( node ) : node );
 }

@@ -151,10 +151,10 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'should provide iterator interface with default forward direction', () => {
-			let iterator = new TreeWalker( { startPosition: rootBeginning } );
+			const iterator = new TreeWalker( { startPosition: rootBeginning } );
 			let i = 0;
 
-			for ( let value of iterator ) {
+			for ( const value of iterator ) {
 				expectValue( value, expected[ i++ ] );
 			}
 
@@ -162,10 +162,10 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'should provide iterator interface with forward direction', () => {
-			let iterator = new TreeWalker( { startPosition: rootBeginning, direction: 'forward' } );
+			const iterator = new TreeWalker( { startPosition: rootBeginning, direction: 'forward' } );
 			let i = 0;
 
-			for ( let value of iterator ) {
+			for ( const value of iterator ) {
 				expectValue( value, expected[ i++ ] );
 			}
 
@@ -173,10 +173,10 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'should provide iterator interface which backward direction', () => {
-			let iterator = new TreeWalker( { startPosition: rootEnding, direction: 'backward' } );
+			const iterator = new TreeWalker( { startPosition: rootEnding, direction: 'backward' } );
 			let i = expected.length;
 
-			for ( let value of iterator ) {
+			for ( const value of iterator ) {
 				expectValue( value, expected[ --i ], { direction: 'backward' } );
 			}
 
@@ -184,10 +184,10 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'should start iterating at the startPosition witch is not a root bound', () => {
-			let iterator = new TreeWalker( { startPosition: new Position( root, 1 ) } );
+			const iterator = new TreeWalker( { startPosition: new Position( root, 1 ) } );
 			let i = 2;
 
-			for ( let value of iterator ) {
+			for ( const value of iterator ) {
 				expectValue( value, expected[ i++ ] );
 			}
 
@@ -195,7 +195,7 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'should start iterating at the startPosition witch is not a root bound, going backward', () => {
-			let expected = [
+			const expected = [
 				{
 					type: 'elementStart',
 					item: img1,
@@ -210,10 +210,10 @@ describe( 'TreeWalker', () => {
 				}
 			];
 
-			let iterator = new TreeWalker( { startPosition: new Position( root, 1 ), direction: 'backward' } );
+			const iterator = new TreeWalker( { startPosition: new Position( root, 1 ), direction: 'backward' } );
 			let i = expected.length;
 
-			for ( let value of iterator ) {
+			for ( const value of iterator ) {
 				expectValue( value, expected[ --i ], { direction: 'backward' } );
 			}
 
@@ -275,10 +275,10 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should iterating over the range', () => {
-				let iterator = new TreeWalker( { boundaries: range } );
+				const iterator = new TreeWalker( { boundaries: range } );
 				let i = 0;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ i++ ] );
 				}
 
@@ -286,10 +286,10 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should iterating over the range going backward', () => {
-				let iterator = new TreeWalker( { boundaries: range, direction: 'backward' } );
+				const iterator = new TreeWalker( { boundaries: range, direction: 'backward' } );
 				let i = expected.length;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
@@ -338,10 +338,10 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return part of the text', () => {
-				let iterator = new TreeWalker( { boundaries: range } );
+				const iterator = new TreeWalker( { boundaries: range } );
 				let i = 0;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ i++ ] );
 				}
 
@@ -349,14 +349,14 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return part of the text going backward', () => {
-				let iterator = new TreeWalker( {
-						boundaries: range,
-						direction: 'backward'
-					}
+				const iterator = new TreeWalker( {
+					boundaries: range,
+					direction: 'backward'
+				}
 				);
 				let i = expected.length;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
@@ -405,10 +405,10 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return part of the text', () => {
-				let iterator = new TreeWalker( { boundaries: range } );
+				const iterator = new TreeWalker( { boundaries: range } );
 				let i = 0;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ i++ ] );
 				}
 
@@ -416,7 +416,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return part of the text going backward', () => {
-				let iterator = new TreeWalker( {
+				const iterator = new TreeWalker( {
 					boundaries: range,
 					startPosition: range.end,
 					direction: 'backward'
@@ -424,7 +424,7 @@ describe( 'TreeWalker', () => {
 
 				let i = expected.length;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
@@ -449,10 +449,10 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return part of the text', () => {
-				let iterator = new TreeWalker( { boundaries: range } );
+				const iterator = new TreeWalker( { boundaries: range } );
 				let i = 0;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ i++ ] );
 				}
 
@@ -460,7 +460,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return part of the text going backward', () => {
-				let iterator = new TreeWalker( {
+				const iterator = new TreeWalker( {
 					boundaries: range,
 					startPosition: range.end,
 					direction: 'backward'
@@ -468,7 +468,7 @@ describe( 'TreeWalker', () => {
 
 				let i = expected.length;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
@@ -478,7 +478,7 @@ describe( 'TreeWalker', () => {
 
 		describe( 'custom start position', () => {
 			it( 'should iterating from the start position', () => {
-				let expected = [
+				const expected = [
 					{
 						type: 'text',
 						text: 'y',
@@ -499,15 +499,15 @@ describe( 'TreeWalker', () => {
 					}
 				];
 
-				let range = Range.createFromParentsAndOffsets( bold, 1, paragraph, 3 );
+				const range = Range.createFromParentsAndOffsets( bold, 1, paragraph, 3 );
 
-				let iterator = new TreeWalker( {
+				const iterator = new TreeWalker( {
 					boundaries: range,
 					startPosition: new Position( paragraph, 1 )
 				} );
 				let i = 0;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ i++ ] );
 				}
 
@@ -515,7 +515,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should iterating from the start position going backward', () => {
-				let expected = [
+				const expected = [
 					{
 						type: 'text',
 						text: 'bcd',
@@ -536,16 +536,16 @@ describe( 'TreeWalker', () => {
 					}
 				];
 
-				let range = new Range( new Position( textAbcd, 1 ), new Position( paragraph, 3 ) );
+				const range = new Range( new Position( textAbcd, 1 ), new Position( paragraph, 3 ) );
 
-				let iterator = new TreeWalker( {
+				const iterator = new TreeWalker( {
 					boundaries: range,
 					startPosition: new Position( paragraph, 2 ),
 					direction: 'backward'
 				} );
 				let i = expected.length;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
@@ -648,10 +648,10 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return single characters', () => {
-				let iterator = new TreeWalker( { startPosition: rootBeginning, singleCharacters: true } );
+				const iterator = new TreeWalker( { startPosition: rootBeginning, singleCharacters: true } );
 				let i = 0;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ i++ ] );
 				}
 
@@ -659,14 +659,14 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return single characters going backward', () => {
-				let iterator = new TreeWalker( {
+				const iterator = new TreeWalker( {
 					startPosition: rootEnding,
 					singleCharacters: true,
 					direction: 'backward'
 				} );
 				let i = expected.length;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
@@ -727,10 +727,10 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should respect boundaries', () => {
-				let iterator = new TreeWalker( { boundaries: range, singleCharacters: true } );
+				const iterator = new TreeWalker( { boundaries: range, singleCharacters: true } );
 				let i = 0;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ i++ ] );
 				}
 
@@ -738,14 +738,14 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should respect boundaries going backward', () => {
-				let iterator = new TreeWalker( {
+				const iterator = new TreeWalker( {
 					boundaries: range,
 					singleCharacters: true,
 					direction: 'backward'
 				} );
 				let i = expected.length;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
@@ -775,10 +775,10 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'should not enter elements', () => {
-			let iterator = new TreeWalker( { startPosition: rootBeginning, shallow: true } );
+			const iterator = new TreeWalker( { startPosition: rootBeginning, shallow: true } );
 			let i = 0;
 
-			for ( let value of iterator ) {
+			for ( const value of iterator ) {
 				expectValue( value, expected[ i++ ] );
 			}
 
@@ -786,10 +786,10 @@ describe( 'TreeWalker', () => {
 		} );
 
 		it( 'should not enter elements going backward', () => {
-			let iterator = new TreeWalker( { startPosition: rootEnding, shallow: true, direction: 'backward' } );
+			const iterator = new TreeWalker( { startPosition: rootEnding, shallow: true, direction: 'backward' } );
 			let i = expected.length;
 
-			for ( let value of iterator ) {
+			for ( const value of iterator ) {
 				expectValue( value, expected[ --i ], { direction: 'backward' } );
 			}
 
@@ -849,10 +849,10 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should iterate ignoring elementEnd', () => {
-				let iterator = new TreeWalker( { startPosition: rootBeginning, ignoreElementEnd: true } );
+				const iterator = new TreeWalker( { startPosition: rootBeginning, ignoreElementEnd: true } );
 				let i = 0;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ i++ ] );
 				}
 
@@ -860,14 +860,14 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should iterate ignoring elementEnd going backward', () => {
-				let iterator = new TreeWalker( {
+				const iterator = new TreeWalker( {
 					startPosition: rootEnding,
 					ignoreElementEnd: true,
 					direction: 'backward'
 				} );
 				let i = expected.length;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
@@ -944,14 +944,14 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return single characters ignoring elementEnd', () => {
-				let iterator = new TreeWalker( {
+				const iterator = new TreeWalker( {
 					startPosition: rootBeginning,
 					singleCharacters: true,
 					ignoreElementEnd: true
 				} );
 				let i = 0;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ i++ ] );
 				}
 
@@ -959,7 +959,7 @@ describe( 'TreeWalker', () => {
 			} );
 
 			it( 'should return single characters ignoring elementEnd going backward', () => {
-				let iterator = new TreeWalker( {
+				const iterator = new TreeWalker( {
 					startPosition: rootEnding,
 					singleCharacters: true,
 					ignoreElementEnd: true,
@@ -967,7 +967,7 @@ describe( 'TreeWalker', () => {
 				} );
 				let i = expected.length;
 
-				for ( let value of iterator ) {
+				for ( const value of iterator ) {
 					expectValue( value, expected[ --i ], { direction: 'backward' } );
 				}
 
@@ -977,7 +977,7 @@ describe( 'TreeWalker', () => {
 	} );
 
 	it( 'should not return elementEnd for a text node when iteration begins at the end of that text node', () => {
-		let iterator = new TreeWalker( {
+		const iterator = new TreeWalker( {
 			startPosition: Position.createAt( textAbcd, 'end' )
 		} );
 
@@ -988,7 +988,7 @@ describe( 'TreeWalker', () => {
 	} );
 
 	it( 'should not return elementStart for a text node when iteration begins at the start of that text node', () => {
-		let iterator = new TreeWalker( {
+		const iterator = new TreeWalker( {
 			startPosition: Position.createAt( textAbcd, 0 ),
 			direction: 'backward'
 		} );
@@ -1011,7 +1011,7 @@ describe( 'TreeWalker', () => {
 			ignoreElementEnd: true
 		} );
 
-		const nodes = Array.from( iterator ).map( ( step ) => step.item );
+		const nodes = Array.from( iterator ).map( step => step.item );
 
 		expect( nodes ).to.deep.equal( [ p, foo, b, bar ] );
 	} );

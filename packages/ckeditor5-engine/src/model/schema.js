@@ -189,7 +189,7 @@ export default class Schema {
 		const path = Schema._normalizeQueryPath( query.inside );
 
 		// Get extension chain of given item and retrieve all schema items that are extended by given item.
-		const schemaItems = this._extensionChains.get( query.name ).map( ( name ) => {
+		const schemaItems = this._extensionChains.get( query.name ).map( name => {
 			return this._getItem( name );
 		} );
 
@@ -199,8 +199,8 @@ export default class Schema {
 		}
 
 		// If there is matching disallow path, this query is not valid with schema.
-		for ( let attribute of query.attributes ) {
-			for ( let schemaItem of schemaItems ) {
+		for ( const attribute of query.attributes ) {
+			for ( const schemaItem of schemaItems ) {
 				if ( schemaItem._hasMatchingPath( 'disallow', path, attribute ) ) {
 					return false;
 				}
@@ -213,10 +213,10 @@ export default class Schema {
 		// we have allowed paths for all of them.
 		// Keep in mind that if the query has no attributes, query.attribute was converted to an array
 		// with a single `undefined` value. This fits the algorithm well.
-		for ( let attribute of query.attributes ) {
+		for ( const attribute of query.attributes ) {
 			let matched = false;
 
-			for ( let schemaItem of schemaItems ) {
+			for ( const schemaItem of schemaItems ) {
 				if ( schemaItem._hasMatchingPath( 'allow', path, attribute ) ) {
 					matched = true;
 					break;
@@ -337,7 +337,7 @@ export default class Schema {
 		let normalized = [];
 
 		if ( isArray( path ) ) {
-			for ( let pathItem of path ) {
+			for ( const pathItem of path ) {
 				if ( pathItem instanceof Element ) {
 					normalized.push( pathItem.name );
 				} else if ( isString( pathItem ) ) {
@@ -454,7 +454,7 @@ export class SchemaItem {
 			attributes = [ attributes ];
 		}
 
-		for ( let attribute of attributes ) {
+		for ( const attribute of attributes ) {
 			this[ member ].push( { path, attribute } );
 		}
 	}
@@ -471,7 +471,7 @@ export class SchemaItem {
 		const source = type === 'allow' ? this._allowed : this._disallowed;
 		const paths = [];
 
-		for ( let item of source ) {
+		for ( const item of source ) {
 			if ( item.attribute === attribute ) {
 				paths.push( item.path );
 			}
@@ -491,10 +491,10 @@ export class SchemaItem {
 	_checkRequiredAttributes( attributesToCheck ) {
 		let found = true;
 
-		for ( let attributeSet of this._requiredAttributes ) {
+		for ( const attributeSet of this._requiredAttributes ) {
 			found = true;
 
-			for ( let attribute of attributeSet ) {
+			for ( const attribute of attributeSet ) {
 				if ( attributesToCheck.indexOf( attribute ) == -1 ) {
 					found = false;
 					break;

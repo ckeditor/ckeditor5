@@ -37,7 +37,7 @@ export default class WrapDelta extends Delta {
 	 * @type {module:engine/model/range~Range|null}
 	 */
 	get range() {
-		let moveOp = this._moveOperation;
+		const moveOp = this._moveOperation;
 
 		return moveOp ? Range.createFromPositionAndShift( moveOp.sourcePosition, moveOp.howMany ) : null;
 	}
@@ -48,7 +48,7 @@ export default class WrapDelta extends Delta {
 	 * @type {Number}
 	 */
 	get howMany() {
-		let range = this.range;
+		const range = this.range;
 
 		return range ? range.end.offset - range.start.offset : 0;
 	}
@@ -114,7 +114,7 @@ register( 'wrap', function( range, elementOrString ) {
 		throw new CKEditorError( 'batch-wrap-range-not-flat: Range to wrap is not flat.' );
 	}
 
-	let element = elementOrString instanceof Element ? elementOrString : new Element( elementOrString );
+	const element = elementOrString instanceof Element ? elementOrString : new Element( elementOrString );
 
 	if ( element.childCount > 0 ) {
 		/**
@@ -137,12 +137,12 @@ register( 'wrap', function( range, elementOrString ) {
 	const delta = new WrapDelta();
 	this.addDelta( delta );
 
-	let insert = new InsertOperation( range.end, element, this.document.version );
+	const insert = new InsertOperation( range.end, element, this.document.version );
 	delta.addOperation( insert );
 	this.document.applyOperation( insert );
 
-	let targetPosition = Position.createFromParentAndOffset( element, 0 );
-	let move = new MoveOperation( range.start, range.end.offset - range.start.offset, targetPosition, this.document.version );
+	const targetPosition = Position.createFromParentAndOffset( element, 0 );
+	const move = new MoveOperation( range.start, range.end.offset - range.start.offset, targetPosition, this.document.version );
 	delta.addOperation( move );
 	this.document.applyOperation( move );
 

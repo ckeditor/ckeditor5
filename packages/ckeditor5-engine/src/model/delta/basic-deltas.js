@@ -22,4 +22,4 @@ import d07 from './splitdelta';
 import d08 from './unwrapdelta';
 import d09 from './weakinsertdelta';
 import d10 from './wrapdelta';
-/*jshint unused: false*/
+/* jshint unused: false*/

@@ -29,7 +29,7 @@ import { stringify } from '../../src/dev-utils/model';
 function modelAttributesToString( item ) {
 	let result = '';
 
-	for ( let attr of item.getAttributes() ) {
+	for ( const attr of item.getAttributes() ) {
 		result += ' ' + attr[ 0 ] + '="' + attr[ 1 ] + '"';
 	}
 
@@ -40,18 +40,18 @@ function modelToString( item ) {
 	let result = '';
 
 	if ( item instanceof ModelTextProxy ) {
-		let attributes = modelAttributesToString( item );
+		const attributes = modelAttributesToString( item );
 
 		result = attributes ? '<$text' + attributes + '>' + item.data + '</$text>' : item.data;
 	} else {
-		let walker = new ModelWalker( { boundaries: ModelRange.createIn( item ), shallow: true } );
+		const walker = new ModelWalker( { boundaries: ModelRange.createIn( item ), shallow: true } );
 
-		for ( let value of walker ) {
+		for ( const value of walker ) {
 			result += modelToString( value.item );
 		}
 
 		if ( item instanceof ModelElement ) {
-			let attributes = modelAttributesToString( item );
+			const attributes = modelAttributesToString( item );
 
 			result = '<' + item.name + attributes + '>' + result + '</' + item.name + '>';
 		}
@@ -108,7 +108,7 @@ describe( 'View converter builder', () => {
 	it( 'should convert from view element to model element using creator function', () => {
 		buildViewConverter().for( dispatcher )
 			.fromElement( 'img' )
-			.toElement( ( viewElement ) => new ModelElement( 'image', { src: viewElement.getAttribute( 'src' ) } ) );
+			.toElement( viewElement => new ModelElement( 'image', { src: viewElement.getAttribute( 'src' ) } ) );
 
 		const conversionResult = dispatcher.convert( new ViewContainerElement( 'img', { src: 'foo.jpg' } ), objWithContext );
 		modelRoot.appendChildren( conversionResult );
@@ -131,7 +131,7 @@ describe( 'View converter builder', () => {
 	it( 'should convert from view element to model attributes using creator function', () => {
 		buildViewConverter().for( dispatcher )
 			.fromElement( 'a' )
-			.toAttribute( ( viewElement ) => ( { key: 'linkHref', value: viewElement.getAttribute( 'href' ) } ) );
+			.toAttribute( viewElement => ( { key: 'linkHref', value: viewElement.getAttribute( 'href' ) } ) );
 
 		const conversionResult = dispatcher.convert(
 			new ViewAttributeElement( 'a', { href: 'foo.html' }, new ViewText( 'foo' ) ), objWithContext
@@ -147,7 +147,7 @@ describe( 'View converter builder', () => {
 
 		buildViewConverter().for( dispatcher )
 			.fromAttribute( 'class' )
-			.toAttribute( ( viewElement ) => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
+			.toAttribute( viewElement => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
 
 		const conversionResult = dispatcher.convert(
 			new ViewContainerElement( 'p', { class: 'myClass' }, new ViewText( 'foo' ) ), objWithContext
@@ -227,7 +227,7 @@ describe( 'View converter builder', () => {
 
 	it( 'should convert from element to marker using creator function', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
-		buildViewConverter().for( dispatcher ).fromElement( 'marker' ).toMarker( ( data ) => {
+		buildViewConverter().for( dispatcher ).fromElement( 'marker' ).toMarker( data => {
 			return new ModelElement( '$marker', { 'data-name': data.getAttribute( 'class' ) } );
 		} );
 
@@ -384,13 +384,13 @@ describe( 'View converter builder', () => {
 			.from( { class: 'megatron', attribute: { head: 'megatron', body: 'megatron', legs: 'megatron' } } )
 			.toAttribute( 'transformer', 'megatron' );
 
-		let viewElement = new ViewContainerElement(
+		const viewElement = new ViewContainerElement(
 			'span',
 			{ class: 'megatron', body: 'megatron', legs: 'megatron', head: 'megatron' },
 			new ViewText( 'foo' )
 		);
 
-		let conversionResult = dispatcher.convert( viewElement, objWithContext );
+		const conversionResult = dispatcher.convert( viewElement, objWithContext );
 
 		modelRoot.appendChildren( conversionResult );
 		expect( modelToString( conversionResult ) ).to.equal( '<span transformer="megatron">foo</span>' );
@@ -399,9 +399,9 @@ describe( 'View converter builder', () => {
 	it( 'should return model document fragment when converting attributes on text', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
 
-		let viewElement = new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) );
+		const viewElement = new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) );
 
-		let conversionResult = dispatcher.convert( viewElement, objWithContext );
+		const conversionResult = dispatcher.convert( viewElement, objWithContext );
 
 		expect( conversionResult.is( 'documentFragment' ) ).to.be.true;
 	} );
@@ -409,10 +409,10 @@ describe( 'View converter builder', () => {
 	it( 'should set different priorities for `toElement` and `toAttribute` conversion', () => {
 		buildViewConverter().for( dispatcher )
 			.fromAttribute( 'class' )
-			.toAttribute( ( viewElement ) => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
+			.toAttribute( viewElement => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
-		let conversionResult = dispatcher.convert(
+		const conversionResult = dispatcher.convert(
 			new ViewContainerElement( 'p', { class: 'myClass' }, new ViewText( 'foo' ) ), objWithContext
 		);
 		modelRoot.appendChildren( conversionResult );
@@ -425,7 +425,7 @@ describe( 'View converter builder', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 		buildViewConverter().for( dispatcher )
 			.fromAttribute( 'class' )
-			.toAttribute( ( viewElement ) => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
+			.toAttribute( viewElement => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
 
 		let result;
 
@@ -475,18 +475,18 @@ describe( 'View converter builder', () => {
 		// Universal class converter, synonymous to .fromAttribute( 'class' ).
 		buildViewConverter().for( dispatcher )
 			.from( new ViewMatcher( { class: /.*/ } ) )
-			.toAttribute( ( viewElement ) => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
+			.toAttribute( viewElement => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
 
 		// Universal element converter.
 		buildViewConverter().for( dispatcher )
 			.from( new ViewMatcher( { name: /.*/ } ) )
-			.toElement( ( viewElement ) => new ModelElement( viewElement.name ) );
+			.toElement( viewElement => new ModelElement( viewElement.name ) );
 
-		let viewStructure = new ViewContainerElement( 'div', { class: 'myClass' }, [
+		const viewStructure = new ViewContainerElement( 'div', { class: 'myClass' }, [
 			new ViewContainerElement( 'abcd', null, new ViewText( 'foo' ) )
 		] );
 
-		let conversionResult = dispatcher.convert( viewStructure, objWithContext );
+		const conversionResult = dispatcher.convert( viewStructure, objWithContext );
 		modelRoot.appendChildren( conversionResult );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<div class="myClass"><abcd>foo</abcd></div>' );
@@ -500,13 +500,13 @@ describe( 'View converter builder', () => {
 
 		dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 
-		let viewElement = new ViewContainerElement( 'div', null,
+		const viewElement = new ViewContainerElement( 'div', null,
 			new ViewContainerElement( 'p', null,
 				new ViewText( 'foo' )
 			)
 		);
 
-		let conversionResult = dispatcher.convert( viewElement, objWithContext );
+		const conversionResult = dispatcher.convert( viewElement, objWithContext );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph>foo</paragraph>' );
 	} );
@@ -519,23 +519,23 @@ describe( 'View converter builder', () => {
 
 		dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 
-		let viewElement = new ViewContainerElement( 'p', null,
+		const viewElement = new ViewContainerElement( 'p', null,
 			new ViewAttributeElement( 'strong', null,
 				new ViewText( 'foo' )
 			)
 		);
 
-		let conversionResult = dispatcher.convert( viewElement, objWithContext );
+		const conversionResult = dispatcher.convert( viewElement, objWithContext );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph>foo</paragraph>' );
 	} );
 
 	it( 'should stop to element conversion if creating function returned null', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement(
-			( viewElement ) => viewElement.hasAttribute( 'stop' ) ? null : new ModelElement( 'paragraph' )
+			viewElement => viewElement.hasAttribute( 'stop' ) ? null : new ModelElement( 'paragraph' )
 		);
 
-		let viewElement = new ViewContainerElement( 'p' );
+		const viewElement = new ViewContainerElement( 'p' );
 		let conversionResult = dispatcher.convert( viewElement, objWithContext );
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph></paragraph>' );
 
@@ -551,13 +551,13 @@ describe( 'View converter builder', () => {
 
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
-		buildViewConverter().for( dispatcher ).fromAttribute( 'data-type' ).toAttribute( ( viewElement ) => {
+		buildViewConverter().for( dispatcher ).fromAttribute( 'data-type' ).toAttribute( viewElement => {
 			const value = viewElement.getAttribute( 'data-type' );
 
-			return value == 'stop' ? null : { key: 'type', value: value };
+			return value == 'stop' ? null : { key: 'type', value };
 		} );
 
-		let viewElement = new ViewContainerElement( 'p', { 'data-type': 'foo' } );
+		const viewElement = new ViewContainerElement( 'p', { 'data-type': 'foo' } );
 		let conversionResult = dispatcher.convert( viewElement, objWithContext );
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph type="foo"></paragraph>' );
 

@@ -82,7 +82,7 @@ export function detachPlaceholder( element ) {
 function updateAllPlaceholders( document ) {
 	const placeholders = documentPlaceholders.get( document );
 
-	for ( let [ element, checkFunction ] of placeholders ) {
+	for ( const [ element, checkFunction ] of placeholders ) {
 		updateSinglePlaceholder( element, checkFunction );
 	}
 }

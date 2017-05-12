@@ -38,7 +38,7 @@ export function convertRangeSelection() {
 
 		conversionApi.viewSelection.removeAllRanges();
 
-		for ( let range of selection.getRanges() ) {
+		for ( const range of selection.getRanges() ) {
 			const viewRange = conversionApi.mapper.toViewRange( range );
 			conversionApi.viewSelection.addRange( viewRange, selection.isBackward );
 		}
@@ -232,7 +232,7 @@ function wrapCollapsedSelectionPosition( modelSelection, viewSelection, viewElem
  */
 export function clearAttributes() {
 	return ( evt, data, consumable, conversionApi ) => {
-		for ( let range of conversionApi.viewSelection.getRanges() ) {
+		for ( const range of conversionApi.viewSelection.getRanges() ) {
 			// Not collapsed selection should not have artifacts.
 			if ( range.isCollapsed ) {
 				// Position might be in the node removed by the view writer.

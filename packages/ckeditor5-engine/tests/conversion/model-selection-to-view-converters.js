@@ -268,7 +268,7 @@ describe( 'model-selection-to-view-converters', () => {
 
 			it( 'in marker - using view element as element creator function for selection marker conversion', () => {
 				dispatcher.on( 'selectionMarker:marker2', convertSelectionMarker(
-					( data ) => new ViewAttributeElement( 'span', { 'class': data.name } )
+					data => new ViewAttributeElement( 'span', { 'class': data.name } )
 				) );
 
 				setModelData( modelDoc, 'foobar' );
@@ -293,7 +293,7 @@ describe( 'model-selection-to-view-converters', () => {
 
 			it( 'should do nothing if creator return null', () => {
 				dispatcher.on( 'selectionMarker:marker3', convertSelectionMarker( () => {
-					return;
+
 				} ) );
 
 				setModelData( modelDoc, 'foobar' );
@@ -531,7 +531,7 @@ describe( 'model-selection-to-view-converters', () => {
 
 			it( 'convertSelectionAttribute should do nothing if creator return null', () => {
 				dispatcher.on( 'selectionAttribute:bold', convertSelectionAttribute( () => {
-					return;
+
 				} ) );
 
 				test(
@@ -556,7 +556,7 @@ describe( 'model-selection-to-view-converters', () => {
 			modelDoc.schema.allow( { name: '$text', inside: 'td' } );
 
 			// "Universal" converter to convert table structure.
-			const tableConverter = insertElement( ( data ) => new ViewContainerElement( data.item.name ) );
+			const tableConverter = insertElement( data => new ViewContainerElement( data.item.name ) );
 			dispatcher.on( 'insert:table', tableConverter );
 			dispatcher.on( 'insert:tr', tableConverter );
 			dispatcher.on( 'insert:td', tableConverter );
@@ -569,13 +569,13 @@ describe( 'model-selection-to-view-converters', () => {
 					return;
 				}
 
-				for ( let range of selection.getRanges() ) {
+				for ( const range of selection.getRanges() ) {
 					const node = range.start.nodeAfter;
 
 					if ( node == range.end.nodeBefore && node instanceof ModelElement && node.name == 'td' ) {
 						consumable.consume( selection, 'selection' );
 
-						let viewNode = conversionApi.mapper.toViewElement( node );
+						const viewNode = conversionApi.mapper.toViewElement( node );
 						viewNode.addClass( 'selected' );
 					}
 				}
@@ -632,8 +632,8 @@ describe( 'model-selection-to-view-converters', () => {
 		modelSelection.refreshAttributes();
 
 		// And add or remove passed attributes.
-		for ( let key in selectionAttributes ) {
-			let value = selectionAttributes[ key ];
+		for ( const key in selectionAttributes ) {
+			const value = selectionAttributes[ key ];
 
 			if ( value ) {
 				modelSelection.setAttribute( key, value );

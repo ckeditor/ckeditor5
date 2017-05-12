@@ -24,7 +24,7 @@ describe( 'writer', () => {
 			 * @param {String} expected
 			 */
 			function test( input, expected ) {
-				let { view, selection } = parse( input );
+				const { view, selection } = parse( input );
 
 				const newPosition = breakAttributes( selection.getFirstPosition() );
 				expect( stringify( view.root, newPosition, {
@@ -136,7 +136,7 @@ describe( 'writer', () => {
 			 * @param {String} expected
 			 */
 			function test( input, expected ) {
-				let { view, selection } = parse( input );
+				const { view, selection } = parse( input );
 
 				const newRange = breakAttributes( selection.getFirstRange() );
 				expect( stringify( view.root, newRange, { showType: true } ) ).to.equal( expected );

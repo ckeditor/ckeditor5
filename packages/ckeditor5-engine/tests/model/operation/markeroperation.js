@@ -10,7 +10,7 @@ import MarkerOperation from '../../../src/model/operation/markeroperation';
 import { jsonParseStringify, wrapInDelta } from '../../model/_utils/utils';
 
 function matchRange( range ) {
-	return sinon.match( ( rangeToMatch ) => rangeToMatch.isEqual( range ) );
+	return sinon.match( rangeToMatch => rangeToMatch.isEqual( range ) );
 }
 
 describe( 'MarkerOperation', () => {

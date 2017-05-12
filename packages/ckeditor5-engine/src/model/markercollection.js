@@ -134,7 +134,7 @@ export default class MarkerCollection {
 	 * @returns {Iterator.<module:engine/model/markercollection~Marker>}
 	 */
 	*getMarkersAtPosition( position ) {
-		for ( let marker of this ) {
+		for ( const marker of this ) {
 			if ( marker.getRange().containsPosition( position ) ) {
 				yield marker;
 			}
@@ -145,7 +145,7 @@ export default class MarkerCollection {
 	 * Destroys markers collection.
 	 */
 	destroy() {
-		for ( let marker of this._markers.values() ) {
+		for ( const marker of this._markers.values() ) {
 			this._destroyMarker( marker );
 		}
 
@@ -168,7 +168,7 @@ export default class MarkerCollection {
 	 * @returns {Iterator.<module:engine/model/markercollection~Marker>}
 	 */
 	*getMarkersGroup( prefix ) {
-		for ( let marker of this._markers.values() ) {
+		for ( const marker of this._markers.values() ) {
 			if ( marker.name.startsWith( prefix + ':' ) ) {
 				yield marker;
 			}

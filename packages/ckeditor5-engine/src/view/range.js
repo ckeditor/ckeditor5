@@ -132,8 +132,8 @@ export default class Range {
 	getTrimmed() {
 		let start = this.start.getLastMatchingPosition( enlargeShrinkSkip );
 		let end = this.end.getLastMatchingPosition( enlargeShrinkSkip, { direction: 'backward' } );
-		let nodeAfterStart = start.nodeAfter;
-		let nodeBeforeEnd = end.nodeBefore;
+		const nodeAfterStart = start.nodeAfter;
+		const nodeBeforeEnd = end.nodeBefore;
 
 		// Because TreeWalker prefers positions next to text node, we need to move them manually into these text nodes.
 		if ( nodeAfterStart && nodeAfterStart.is( 'text' ) ) {
@@ -313,7 +313,7 @@ export default class Range {
 
 		const treeWalker = new TreeWalker( options );
 
-		for ( let value of treeWalker ) {
+		for ( const value of treeWalker ) {
 			yield value.item;
 		}
 	}
@@ -338,7 +338,7 @@ export default class Range {
 
 		yield treeWalker.position;
 
-		for ( let value of treeWalker ) {
+		for ( const value of treeWalker ) {
 			yield value.nextPosition;
 		}
 	}

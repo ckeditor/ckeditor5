@@ -373,7 +373,7 @@ export function wrapRange( elementCreator ) {
 		const viewRange = conversionApi.mapper.toViewRange( data.range );
 		const flatViewRanges = viewWriter.breakViewRangePerContainer( viewRange );
 
-		for ( let range of flatViewRanges ) {
+		for ( const range of flatViewRanges ) {
 			viewWriter.wrap( range, viewElement );
 		}
 	};
@@ -417,7 +417,7 @@ export function unwrapRange( elementCreator ) {
 		const viewRange = conversionApi.mapper.toViewRange( data.range );
 		const flatViewRanges = viewWriter.breakViewRangePerContainer( viewRange );
 
-		for ( let range of flatViewRanges ) {
+		for ( const range of flatViewRanges ) {
 			viewWriter.unwrap( range, viewElement );
 		}
 	};
@@ -487,7 +487,7 @@ function _shiftViewPositionByCharacters( position, howMany ) {
 	// We will count visited characters and return the position after `howMany` characters.
 	let charactersFound = 0;
 
-	for ( let value of walker ) {
+	for ( const value of walker ) {
 		if ( value.type == 'text' ) {
 			charactersFound++;
 

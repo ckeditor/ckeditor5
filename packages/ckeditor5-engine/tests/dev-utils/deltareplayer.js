@@ -33,7 +33,7 @@ describe( 'DeltaReplayer', () => {
 
 			const deltaReplayer = new DeltaReplayer( doc, '---', JSON.stringify( delta ) );
 
-			return deltaReplayer.applyNextDelta().then( ( isFinished ) => {
+			return deltaReplayer.applyNextDelta().then( isFinished => {
 				expect( deltaReplayer.getDeltasToReplay() ).to.deep.equal( [] );
 				expect( isFinished ).to.equal( false );
 			} );
@@ -54,7 +54,7 @@ describe( 'DeltaReplayer', () => {
 			const doc = getDocument();
 			const deltaReplayer = new DeltaReplayer( doc, '---', '' );
 
-			return deltaReplayer.applyNextDelta().then( ( isFinished ) => {
+			return deltaReplayer.applyNextDelta().then( isFinished => {
 				expect( isFinished ).to.equal( true );
 			} );
 		} );
@@ -147,7 +147,7 @@ describe( 'DeltaReplayer', () => {
 			return deltaReplayer.play( 1 )
 				.then( () => {
 					throw new Error( 'It should throw an error' );
-				}, ( err ) => {
+				}, err => {
 					expect( err.message ).to.match( /^model-document-applyOperation-wrong-version:/ );
 				} );
 		} );

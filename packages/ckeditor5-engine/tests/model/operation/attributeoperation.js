@@ -180,9 +180,9 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should create an AttributeOperation as a reverse', () => {
-		let range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) );
-		let operation = new AttributeOperation( range, 'x', 'old', 'new', doc.version );
-		let reverse = operation.getReversed();
+		const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) );
+		const operation = new AttributeOperation( range, 'x', 'old', 'new', doc.version );
+		const reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( AttributeOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
@@ -195,7 +195,7 @@ describe( 'AttributeOperation', () => {
 	it( 'should undo adding attribute by applying reverse operation', () => {
 		root.insertChildren( 0, new Text( 'bar' ) );
 
-		let operation = new AttributeOperation(
+		const operation = new AttributeOperation(
 			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
 			'isNew',
 			null,
@@ -203,7 +203,7 @@ describe( 'AttributeOperation', () => {
 			doc.version
 		);
 
-		let reverse = operation.getReversed();
+		const reverse = operation.getReversed();
 
 		doc.applyOperation( wrapInDelta( operation ) );
 		doc.applyOperation( wrapInDelta( reverse ) );
@@ -214,8 +214,8 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should not set attribute of element if change range starts in the middle of that element', () => {
-		let eleA = new Element( 'a', [], new Text( 'abc' ) );
-		let eleB = new Element( 'b', [], new Text( 'xyz' ) );
+		const eleA = new Element( 'a', [], new Text( 'abc' ) );
+		const eleB = new Element( 'b', [], new Text( 'xyz' ) );
 
 		root.insertChildren( 0, [ eleA, eleB ] );
 
@@ -233,10 +233,10 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should not remove attribute of element if change range starts in the middle of that element', () => {
-		let fooAttr = { foo: true };
+		const fooAttr = { foo: true };
 
-		let eleA = new Element( 'a', fooAttr, new Text( 'abc' ) );
-		let eleB = new Element( 'b', fooAttr, new Text( 'xyz' ) );
+		const eleA = new Element( 'a', fooAttr, new Text( 'abc' ) );
+		const eleB = new Element( 'b', fooAttr, new Text( 'xyz' ) );
 
 		root.insertChildren( 0, [ eleA, eleB ] );
 
@@ -256,7 +256,7 @@ describe( 'AttributeOperation', () => {
 	it( 'should undo changing attribute by applying reverse operation', () => {
 		root.insertChildren( 0, new Text( 'bar', { isNew: false } ) );
 
-		let operation = new AttributeOperation(
+		const operation = new AttributeOperation(
 			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
 			'isNew',
 			false,
@@ -264,7 +264,7 @@ describe( 'AttributeOperation', () => {
 			doc.version
 		);
 
-		let reverse = operation.getReversed();
+		const reverse = operation.getReversed();
 
 		doc.applyOperation( wrapInDelta( operation ) );
 		doc.applyOperation( wrapInDelta( reverse ) );
@@ -278,7 +278,7 @@ describe( 'AttributeOperation', () => {
 	it( 'should undo remove attribute by applying reverse operation', () => {
 		root.insertChildren( 0, new Text( 'bar', { foo: true } ) );
 
-		let operation = new AttributeOperation(
+		const operation = new AttributeOperation(
 			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
 			'foo',
 			true,
@@ -286,7 +286,7 @@ describe( 'AttributeOperation', () => {
 			doc.version
 		);
 
-		let reverse = operation.getReversed();
+		const reverse = operation.getReversed();
 
 		doc.applyOperation( wrapInDelta( operation ) );
 		doc.applyOperation( wrapInDelta( reverse ) );
@@ -330,12 +330,12 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should create an AttributeOperation with the same parameters when cloned', () => {
-		let range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
-		let baseVersion = doc.version;
+		const range = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
+		const baseVersion = doc.version;
 
-		let op = new AttributeOperation( range, 'foo', 'old', 'new', baseVersion );
+		const op = new AttributeOperation( range, 'foo', 'old', 'new', baseVersion );
 
-		let clone = op.clone();
+		const clone = op.clone();
 
 		// New instance rather than a pointer to the old instance.
 		expect( clone ).not.to.be.equal( op );
@@ -349,8 +349,8 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should merge characters in node list', () => {
-		let attrA = { foo: 'a' };
-		let attrB = { foo: 'b' };
+		const attrA = { foo: 'a' };
+		const attrB = { foo: 'b' };
 
 		root.insertChildren( 0, new Text( 'abc', attrA ) );
 		root.insertChildren( 1, new Text( 'xyz', attrB ) );
@@ -372,7 +372,7 @@ describe( 'AttributeOperation', () => {
 	it( 'should return undefined upon execution if new value is same as old value', () => {
 		root.insertChildren( 0, new Text( 'bar', { foo: true } ) );
 
-		let operation = new AttributeOperation(
+		const operation = new AttributeOperation(
 			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
 			'foo',
 			true,

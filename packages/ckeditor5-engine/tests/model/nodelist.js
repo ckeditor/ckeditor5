@@ -123,11 +123,11 @@ describe( 'NodeList', () => {
 
 	describe( 'insertNodes', () => {
 		it( 'should insert nodes at given index', () => {
-			let newImg = new Element( 'image' );
-			nodes.insertNodes( 1, [ newImg ]  );
+			const newImg = new Element( 'image' );
+			nodes.insertNodes( 1, [ newImg ] );
 
-			let bar = new Text( 'bar', { bold: true } );
-			let xyz = new Text( 'xyz' );
+			const bar = new Text( 'bar', { bold: true } );
+			const xyz = new Text( 'xyz' );
 			nodes.insertNodes( 4, [ bar, xyz ] );
 
 			expect( nodes.length ).to.equal( 6 );

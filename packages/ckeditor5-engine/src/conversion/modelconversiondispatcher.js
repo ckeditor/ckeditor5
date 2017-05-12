@@ -193,11 +193,11 @@ export default class ModelConversionDispatcher {
 		const consumable = this._createInsertConsumable( range );
 
 		// Fire a separate insert event for each node and text fragment contained in the range.
-		for ( let value of range ) {
+		for ( const value of range ) {
 			const item = value.item;
 			const itemRange = Range.createFromPositionAndShift( value.previousPosition, value.length );
 			const data = {
-				item: item,
+				item,
 				range: itemRange
 			};
 
@@ -206,7 +206,7 @@ export default class ModelConversionDispatcher {
 			// Fire a separate addAttribute event for each attribute that was set on inserted items.
 			// This is important because most attributes converters will listen only to add/change/removeAttribute events.
 			// If we would not add this part, attributes on inserted nodes would not be converted.
-			for ( let key of item.getAttributeKeys() ) {
+			for ( const key of item.getAttributeKeys() ) {
 				data.attributeKey = key;
 				data.attributeOldValue = null;
 				data.attributeNewValue = item.getAttribute( key );
@@ -215,7 +215,7 @@ export default class ModelConversionDispatcher {
 			}
 		}
 
-		for ( let marker of this._modelDocument.markers ) {
+		for ( const marker of this._modelDocument.markers ) {
 			const markerRange = marker.getRange();
 
 			// Check if inserted content is inserted into a marker.
@@ -245,8 +245,8 @@ export default class ModelConversionDispatcher {
 		if ( range.start.isBefore( sourcePosition ) ) {
 			this.convertInsertion( range );
 
-			const sourcePositionAfterInsertion
-				= sourcePosition._getTransformedByInsertion( range.start, range.end.offset - range.start.offset );
+			const sourcePositionAfterInsertion =
+				sourcePosition._getTransformedByInsertion( range.start, range.end.offset - range.start.offset );
 
 			this.convertRemove( sourcePositionAfterInsertion, range );
 		} else {
@@ -268,13 +268,13 @@ export default class ModelConversionDispatcher {
 	convertRemove( sourcePosition, range ) {
 		const consumable = this._createConsumableForRange( range, 'remove' );
 
-		for ( let item of range.getItems( { shallow: true } ) ) {
+		for ( const item of range.getItems( { shallow: true } ) ) {
 			const data = {
-				sourcePosition: sourcePosition,
-				item: item
+				sourcePosition,
+				item
 			};
 
-			this._testAndFire( `remove`, data, consumable );
+			this._testAndFire( 'remove', data, consumable );
 		}
 	}
 
@@ -297,11 +297,11 @@ export default class ModelConversionDispatcher {
 		const consumable = this._createConsumableForRange( range, type + ':' + key );
 
 		// Create a separate attribute event for each node in the range.
-		for ( let value of range ) {
+		for ( const value of range ) {
 			const item = value.item;
 			const itemRange = Range.createFromPositionAndShift( value.previousPosition, value.length );
 			const data = {
-				item: item,
+				item,
 				range: itemRange,
 				attributeKey: key,
 				attributeOldValue: oldValue,
@@ -356,9 +356,9 @@ export default class ModelConversionDispatcher {
 
 		this.fire( 'selection', { selection }, consumable, this.conversionApi );
 
-		for ( let marker of markers ) {
+		for ( const marker of markers ) {
 			const data = {
-				selection: selection,
+				selection,
 				name: marker.name
 			};
 
@@ -367,10 +367,10 @@ export default class ModelConversionDispatcher {
 			}
 		}
 
-		for ( let key of selection.getAttributeKeys() ) {
+		for ( const key of selection.getAttributeKeys() ) {
 			const data = {
-				selection: selection,
-				key: key,
+				selection,
+				key,
 				value: selection.getAttribute( key )
 			};
 
@@ -416,12 +416,12 @@ export default class ModelConversionDispatcher {
 	_createInsertConsumable( range ) {
 		const consumable = new Consumable();
 
-		for ( let value of range ) {
+		for ( const value of range ) {
 			const item = value.item;
 
 			consumable.add( item, 'insert' );
 
-			for ( let key of item.getAttributeKeys() ) {
+			for ( const key of item.getAttributeKeys() ) {
 				consumable.add( item, 'addAttribute:' + key );
 			}
 		}
@@ -441,7 +441,7 @@ export default class ModelConversionDispatcher {
 	_createConsumableForRange( range, type ) {
 		const consumable = new Consumable();
 
-		for ( let item of range.getItems() ) {
+		for ( const item of range.getItems() ) {
 			consumable.add( item, type );
 		}
 
@@ -461,11 +461,11 @@ export default class ModelConversionDispatcher {
 
 		consumable.add( selection, 'selection' );
 
-		for ( let marker of markers ) {
+		for ( const marker of markers ) {
 			consumable.add( selection, 'selectionMarker:' + marker.name );
 		}
 
-		for ( let key of selection.getAttributeKeys() ) {
+		for ( const key of selection.getAttributeKeys() ) {
 			consumable.add( selection, 'selectionAttribute:' + key );
 		}
 

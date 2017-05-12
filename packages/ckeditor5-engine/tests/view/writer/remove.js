@@ -23,7 +23,7 @@ describe( 'writer', () => {
 	 * @param {String} expectedRemoved
 	 */
 	function test( input, expectedResult, expectedRemoved ) {
-		let { view, selection } = parse( input );
+		const { view, selection } = parse( input );
 
 		const range = selection.getFirstRange();
 		const removed = remove( range );

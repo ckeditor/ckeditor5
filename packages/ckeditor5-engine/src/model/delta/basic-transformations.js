@@ -55,7 +55,7 @@ addTransformationCase( AttributeDelta, SplitDelta, ( a, b, isStrong ) => {
 
 	const deltas = defaultTransform( a, b, isStrong );
 
-	for ( let operation of a.operations ) {
+	for ( const operation of a.operations ) {
 		// If a node that has been split has it's attribute updated, we should also update attribute of
 		// the node created during splitting.
 		if ( operation.range.containsPosition( splitPosition ) || operation.range.start.isEqual( splitPosition ) ) {
@@ -299,7 +299,7 @@ addTransformationCase( SplitDelta, AttributeDelta, ( a, b ) => {
 	if ( a._cloneOperation instanceof InsertOperation ) {
 		// If element to split had it's attribute changed, we have to reflect this change in an element
 		// that is in SplitDelta's InsertOperation.
-		for ( let operation of b.operations ) {
+		for ( const operation of b.operations ) {
 			if ( operation.range.containsPosition( splitPosition ) || operation.range.start.isEqual( splitPosition ) ) {
 				if ( operation.newValue !== null ) {
 					a._cloneOperation.nodes.getNode( 0 ).setAttribute( operation.key, operation.newValue );
@@ -422,8 +422,8 @@ addTransformationCase( RemoveDelta, SplitDelta, ( a, b, isStrong ) => {
 	const insertPosition = b._cloneOperation.position;
 
 	// In case if `defaultTransform` returned more than one delta.
-	for ( let delta of deltas ) {
-		for ( let operation of delta.operations ) {
+	for ( const delta of deltas ) {
+		for ( const operation of delta.operations ) {
 			const rangeEnd = operation.sourcePosition.getShiftedBy( operation.howMany );
 
 			if ( rangeEnd.isEqual( insertPosition ) ) {
@@ -441,7 +441,7 @@ addTransformationCase( SplitDelta, RemoveDelta, ( a, b, isStrong ) => {
 
 	const insertPosition = a._cloneOperation.position;
 
-	for ( let operation of b.operations ) {
+	for ( const operation of b.operations ) {
 		const rangeEnd = operation.sourcePosition.getShiftedBy( operation.howMany );
 
 		if ( rangeEnd.isEqual( insertPosition ) ) {
@@ -507,7 +507,7 @@ function _getComplementaryAttrDelta( weakInsertDelta, attributeDelta ) {
 // This is "no-op" delta, it has no type and only no-operation, it basically does nothing.
 // It is used when we don't want to apply changes but still we need to return a delta.
 function noDelta() {
-	let noDelta = new Delta();
+	const noDelta = new Delta();
 
 	// BaseVersion will be fixed later anyway.
 	noDelta.addOperation( new NoOperation( 0 ) );

@@ -110,7 +110,7 @@ export default class Document {
 
 		// Add events that will ensure selection correctness.
 		this.selection.on( 'change:range', () => {
-			for ( let range of this.selection.getRanges() ) {
+			for ( const range of this.selection.getRanges() ) {
 				if ( !this._validateSelectionRange( range ) ) {
 					/**
 					 * Range from document selection starts or ends at incorrect position.
@@ -156,10 +156,10 @@ export default class Document {
 			 */
 			throw new CKEditorError(
 				'model-document-applyOperation-wrong-version: Only operations with matching versions can be applied.',
-				{ operation: operation } );
+				{ operation } );
 		}
 
-		let changes = operation._execute();
+		const changes = operation._execute();
 
 		this.version++;
 
@@ -259,7 +259,7 @@ export default class Document {
 			 */
 			throw new CKEditorError(
 				'model-document-getRoot-root-not-exist: Root with specified name does not exist.',
-				{ name: name }
+				{ name }
 			);
 		}
 
@@ -282,7 +282,7 @@ export default class Document {
 	 * @returns {Array.<String>} Roots names.
 	 */
 	getRootNames() {
-		return Array.from( this.roots.keys() ).filter( ( name ) => name != graveyardName );
+		return Array.from( this.roots.keys() ).filter( name => name != graveyardName );
 	}
 
 	/**
@@ -321,7 +321,7 @@ export default class Document {
 			forwardWalker = new TreeWalker( { startPosition: position } );
 		}
 
-		for ( let data of combineWalkers( backwardWalker, forwardWalker ) ) {
+		for ( const data of combineWalkers( backwardWalker, forwardWalker ) ) {
 			const type = ( data.walker == backwardWalker ? 'elementEnd' : 'elementStart' );
 			const value = data.value;
 
@@ -359,7 +359,7 @@ export default class Document {
 	 * @returns {module:engine/model/rootelement~RootElement} The default root for this document.
 	 */
 	_getDefaultRoot() {
-		for ( let root of this.roots.values() ) {
+		for ( const root of this.roots.values() ) {
 			if ( root !== this.graveyard ) {
 				return root;
 			}
@@ -477,7 +477,7 @@ function *combineWalkers( backward, forward ) {
 
 			if ( !step.done ) {
 				done = false;
-				yield {
+				yield{
 					walker: backward,
 					value: step.value
 				};
@@ -489,7 +489,7 @@ function *combineWalkers( backward, forward ) {
 
 			if ( !step.done ) {
 				done = false;
-				yield {
+				yield{
 					walker: forward,
 					value: step.value
 				};

@@ -24,7 +24,7 @@ describe( 'writer', () => {
 	 * @param {String} expected
 	 */
 	function test( input, wrapAttribute, expected ) {
-		let { view, selection } = parse( input );
+		const { view, selection } = parse( input );
 		const newRange = wrap( selection.getFirstRange(), parse( wrapAttribute ) );
 
 		expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );

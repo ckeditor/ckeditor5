@@ -23,7 +23,7 @@ describe( 'wrapPosition', () => {
 	 * @param {String} expected
 	 */
 	function test( input, unwrapAttribute, expected ) {
-		let { view, selection } = parse( input );
+		const { view, selection } = parse( input );
 
 		const newPosition = wrapPosition( selection.getFirstPosition(), parse( unwrapAttribute ) );
 		expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );

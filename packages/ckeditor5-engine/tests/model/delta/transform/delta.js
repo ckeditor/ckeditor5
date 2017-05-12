@@ -4,7 +4,7 @@
  */
 
 import transformations from '../../../../src/model/delta/basic-transformations';
-/*jshint unused: false*/
+/* jshint unused: false*/
 
 import deltaTransform from '../../../../src/model/delta/transform';
 const transform = deltaTransform.transform;
@@ -28,11 +28,11 @@ describe( 'Delta', () => {
 	} );
 
 	it( 'should have baseVersion property, equal to the baseVersion of first operation in Delta or null', () => {
-		let deltaA = new Delta();
+		const deltaA = new Delta();
 
 		expect( deltaA.baseVersion ).to.be.null;
 
-		let version = 5;
+		const version = 5;
 
 		deltaA.addOperation( new MoveOperation( new Position( root, [ 1, 2, 3 ] ), 4, new Position( root, [ 4, 0 ] ), version ) );
 
@@ -40,14 +40,14 @@ describe( 'Delta', () => {
 	} );
 
 	it( 'should be transformable by another Delta', () => {
-		let deltaA = new Delta();
-		let deltaB = new Delta();
+		const deltaA = new Delta();
+		const deltaB = new Delta();
 
 		deltaA.addOperation( new MoveOperation( new Position( root, [ 1, 2, 3 ] ), 4, new Position( root, [ 4, 0 ] ), baseVersion ) );
 		deltaB.addOperation( new MoveOperation( new Position( root, [ 1, 2, 0 ] ), 2, new Position( root, [ 4, 1 ] ), baseVersion ) );
 
-		let deltaAbyB = transform( deltaA, deltaB );
-		let deltaBbyA = transform( deltaB, deltaA );
+		const deltaAbyB = transform( deltaA, deltaB );
+		const deltaBbyA = transform( deltaB, deltaA );
 
 		expect( deltaAbyB.length ).to.equal( 1 );
 

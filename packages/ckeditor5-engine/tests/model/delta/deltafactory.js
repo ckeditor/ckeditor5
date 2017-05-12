@@ -65,7 +65,7 @@ describe( 'DeltaFactory', () => {
 				doc.version
 			) );
 
-			let deserialized = DeltaFactory.fromJSON( jsonParseStringify( delta ), doc );
+			const deserialized = DeltaFactory.fromJSON( jsonParseStringify( delta ), doc );
 
 			expect( deserialized ).to.deep.equal( delta );
 		} );
@@ -77,7 +77,7 @@ describe( 'DeltaFactory', () => {
 				doc.version
 			) );
 
-			let deserialized = DeltaFactory.fromJSON( jsonParseStringify( delta ), doc );
+			const deserialized = DeltaFactory.fromJSON( jsonParseStringify( delta ), doc );
 
 			expect( deserialized ).to.deep.equal( delta );
 		} );
@@ -90,7 +90,7 @@ describe( 'DeltaFactory', () => {
 				doc.version
 			) );
 
-			let deserialized = DeltaFactory.fromJSON( jsonParseStringify( delta ), doc );
+			const deserialized = DeltaFactory.fromJSON( jsonParseStringify( delta ), doc );
 
 			expect( deserialized ).to.deep.equal( delta );
 		} );
@@ -98,7 +98,7 @@ describe( 'DeltaFactory', () => {
 		it( 'should create delta with NoOperation', () => {
 			delta.addOperation( new NoOperation( 0 ) );
 
-			let deserialized = DeltaFactory.fromJSON( jsonParseStringify( delta ), doc );
+			const deserialized = DeltaFactory.fromJSON( jsonParseStringify( delta ), doc );
 
 			expect( deserialized ).to.deep.equal( delta );
 		} );
@@ -111,7 +111,7 @@ describe( 'DeltaFactory', () => {
 				doc.version
 			) );
 
-			let deserialized = DeltaFactory.fromJSON( jsonParseStringify( delta ), doc );
+			const deserialized = DeltaFactory.fromJSON( jsonParseStringify( delta ), doc );
 
 			expect( deserialized ).to.deep.equal( delta );
 		} );
@@ -123,7 +123,7 @@ describe( 'DeltaFactory', () => {
 				doc.version
 			) );
 
-			let deserialized = DeltaFactory.fromJSON( jsonParseStringify( delta ), doc );
+			const deserialized = DeltaFactory.fromJSON( jsonParseStringify( delta ), doc );
 
 			expect( deserialized ).to.deep.equal( delta );
 		} );
@@ -131,15 +131,15 @@ describe( 'DeltaFactory', () => {
 		it( 'should create delta with RootAttributeOperation', () => {
 			delta.addOperation( new RootAttributeOperation( root, 'key', null, 'newValue', doc.version ) );
 
-			let deserialized = DeltaFactory.fromJSON( jsonParseStringify( delta ), doc );
+			const deserialized = DeltaFactory.fromJSON( jsonParseStringify( delta ), doc );
 
 			expect( deserialized ).to.deep.equal( delta );
 		} );
 
 		it( 'should create InsertDelta instance from serialized JSON object', () => {
-			let insertDelta = new InsertDelta();
-			let serialized = jsonParseStringify( insertDelta );
-			let deserialized = DeltaFactory.fromJSON( serialized, doc );
+			const insertDelta = new InsertDelta();
+			const serialized = jsonParseStringify( insertDelta );
+			const deserialized = DeltaFactory.fromJSON( serialized, doc );
 
 			expect( deserialized ).to.be.instanceOf( InsertDelta );
 			expect( deserialized.operations ).to.have.length( 0 );
@@ -147,7 +147,7 @@ describe( 'DeltaFactory', () => {
 	} );
 
 	describe( 'register', () => {
-		it( 'should add delta deserializer', ( done ) => {
+		it( 'should add delta deserializer', done => {
 			class SomeDelta {
 				constructor() {
 					done();

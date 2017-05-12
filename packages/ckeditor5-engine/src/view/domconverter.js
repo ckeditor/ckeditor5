@@ -147,7 +147,7 @@ export default class DomConverter {
 			this._viewToDomMapping.delete( viewElement );
 
 			// Use Array.from because of MS Edge (#923).
-			for ( let child of Array.from( domElement.childNodes ) ) {
+			for ( const child of Array.from( domElement.childNodes ) ) {
 				this.unbindDomElement( child );
 			}
 		}
@@ -206,13 +206,13 @@ export default class DomConverter {
 				}
 
 				// Copy element's attributes.
-				for ( let key of viewNode.getAttributeKeys() ) {
+				for ( const key of viewNode.getAttributeKeys() ) {
 					domElement.setAttribute( key, viewNode.getAttribute( key ) );
 				}
 			}
 
 			if ( options.withChildren || options.withChildren === undefined ) {
-				for ( let child of this.viewChildrenToDom( viewNode, domDocument, options ) ) {
+				for ( const child of this.viewChildrenToDom( viewNode, domDocument, options ) ) {
 					domElement.appendChild( child );
 				}
 			}
@@ -231,10 +231,10 @@ export default class DomConverter {
 	 * @returns {Iterable.<Node>} DOM nodes.
 	 */
 	*viewChildrenToDom( viewElement, domDocument, options = {} ) {
-		let fillerPositionOffset = viewElement.getFillerOffset && viewElement.getFillerOffset();
+		const fillerPositionOffset = viewElement.getFillerOffset && viewElement.getFillerOffset();
 		let offset = 0;
 
-		for ( let childView of viewElement.getChildren() ) {
+		for ( const childView of viewElement.getChildren() ) {
 			if ( fillerPositionOffset === offset ) {
 				yield this.blockFiller( domDocument );
 			}
@@ -295,7 +295,7 @@ export default class DomConverter {
 				offset += INLINE_FILLER_LENGTH;
 			}
 
-			return { parent: domParent, offset: offset };
+			return { parent: domParent, offset };
 		} else {
 			// viewParent is instance of ViewElement.
 			let domParent, domBefore, domAfter;
@@ -329,7 +329,7 @@ export default class DomConverter {
 
 			const offset = domBefore ? indexOf( domBefore ) + 1 : 0;
 
-			return { parent: domParent, offset: offset };
+			return { parent: domParent, offset };
 		}
 	}
 
@@ -348,7 +348,7 @@ export default class DomConverter {
 	 * if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
 	 */
 	domToView( domNode, options = {} ) {
-		if ( isBlockFiller( domNode, this.blockFiller )  ) {
+		if ( isBlockFiller( domNode, this.blockFiller ) ) {
 			return null;
 		}
 
@@ -394,7 +394,7 @@ export default class DomConverter {
 			}
 
 			if ( options.withChildren || options.withChildren === undefined ) {
-				for ( let child of this.domChildrenToView( domNode, options ) ) {
+				for ( const child of this.domChildrenToView( domNode, options ) ) {
 					viewElement.appendChildren( child );
 				}
 			}
@@ -817,11 +817,11 @@ export default class DomConverter {
 	 * @returns {String} Processed text data.
 	 */
 	_processDataFromViewText( node ) {
-		let data = node.data;
+		const data = node.data;
 
 		// If any of node ancestors has a name which is in `preElements` array, then currently processed
 		// view text node is (will be) in preformatted element. We should not change whitespaces then.
-		if ( node.getAncestors().some( ( parent ) => this.preElements.includes( parent.name ) ) )  {
+		if ( node.getAncestors().some( parent => this.preElements.includes( parent.name ) ) ) {
 			return data;
 		}
 
@@ -849,7 +849,7 @@ export default class DomConverter {
 		// `_  x   x`	-> `_ _x _ x`
 		// `_  x    x`	-> `_ _x _ _x`
 		// `_   x    x` -> `_ _ x _ _x`
-		textStart = textStart.replace( /  /g, ' \u00A0' );
+		textStart = textStart.replace( / {2}/g, ' \u00A0' );
 
 		// Process `textEnd` only if there is anything to process.
 		if ( textEnd.length > 0 ) {
@@ -887,7 +887,7 @@ export default class DomConverter {
 				textEnd = '\u00A0' + textEnd.substr( 0, textEnd.length - 1 );
 			}
 
-			textEnd = textEnd.replace( /  /g, ' \u00A0' );
+			textEnd = textEnd.replace( / {2}/g, ' \u00A0' );
 		}
 
 		return textStart + textEnd;
@@ -912,7 +912,7 @@ export default class DomConverter {
 			direction: getNext ? 'forward' : 'backward'
 		} );
 
-		for ( let value of treeWalker ) {
+		for ( const value of treeWalker ) {
 			if ( value.item.is( 'containerElement' ) ) {
 				// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
 				// text node in it's container element.
@@ -1042,5 +1042,5 @@ function _hasDomParentOfType( node, types, boundaryParent ) {
 		parents = parents.slice( parents.indexOf( boundaryParent ) + 1 );
 	}
 
-	return parents.some( ( parent ) => parent.tagName && types.includes( parent.tagName.toLowerCase() ) );
+	return parents.some( parent => parent.tagName && types.includes( parent.tagName.toLowerCase() ) );
 }

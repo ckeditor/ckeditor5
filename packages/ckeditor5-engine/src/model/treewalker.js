@@ -351,11 +351,11 @@ function formatReturnValue( type, item, previousPosition, nextPosition, length )
 	return {
 		done: false,
 		value: {
-			type: type,
-			item: item,
-			previousPosition: previousPosition,
-			nextPosition: nextPosition,
-			length: length
+			type,
+			item,
+			previousPosition,
+			nextPosition,
+			length
 		}
 	};
 }

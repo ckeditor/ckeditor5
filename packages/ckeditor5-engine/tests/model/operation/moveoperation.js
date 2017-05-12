@@ -42,8 +42,8 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should move from one node to another', () => {
-		let p1 = new Element( 'p1', [], new Element( 'x' ) );
-		let p2 = new Element( 'p2' );
+		const p1 = new Element( 'p1', [], new Element( 'x' ) );
+		const p2 = new Element( 'p2' );
 
 		root.insertChildren( 0, [ p1, p2 ] );
 
@@ -100,8 +100,8 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should create a proper MoveOperation as a reverse', () => {
-		let sourcePosition = new Position( root, [ 0 ] );
-		let targetPosition = new Position( root, [ 4 ] );
+		const sourcePosition = new Position( root, [ 0 ] );
+		const targetPosition = new Position( root, [ 4 ] );
 
 		let operation = new MoveOperation( sourcePosition, 3, targetPosition, doc.version );
 		let reverse = operation.getReversed();
@@ -120,12 +120,12 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should undo move node by applying reverse operation', () => {
-		let p1 = new Element( 'p1', [], new Element( 'x' ) );
-		let p2 = new Element( 'p2' );
+		const p1 = new Element( 'p1', [], new Element( 'x' ) );
+		const p2 = new Element( 'p2' );
 
 		root.insertChildren( 0, [ p1, p2 ] );
 
-		let operation = new MoveOperation(
+		const operation = new MoveOperation(
 			new Position( root, [ 0, 0 ] ),
 			1,
 			new Position( root, [ 1, 0 ] ),
@@ -152,7 +152,7 @@ describe( 'MoveOperation', () => {
 	it( 'should throw an error if number of nodes to move exceeds the number of existing nodes in given element', () => {
 		root.insertChildren( 0, new Text( 'xbarx' ) );
 
-		let operation = new MoveOperation(
+		const operation = new MoveOperation(
 			new Position( root, [ 3 ] ),
 			3,
 			new Position( root, [ 1 ] ),
@@ -163,11 +163,11 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should throw an error if target or source parent-element specified by position does not exist', () => {
-		let p = new Element( 'p' );
+		const p = new Element( 'p' );
 		p.insertChildren( 0, new Text( 'foo' ) );
 		root.insertChildren( 0, [ new Text( 'ab' ), p ] );
 
-		let operation = new MoveOperation(
+		const operation = new MoveOperation(
 			new Position( root, [ 2, 0 ] ),
 			3,
 			new Position( root, [ 1 ] ),
@@ -182,7 +182,7 @@ describe( 'MoveOperation', () => {
 	it( 'should throw an error if operation tries to move a range between the beginning and the end of that range', () => {
 		root.insertChildren( 0, new Text( 'xbarx' ) );
 
-		let operation = new MoveOperation(
+		const operation = new MoveOperation(
 			new Position( root, [ 1 ] ),
 			3,
 			new Position( root, [ 2 ] ),
@@ -193,10 +193,10 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should throw an error if operation tries to move a range into a sub-tree of a node that is in that range', () => {
-		let p = new Element( 'p', [], [ new Element( 'p' ) ] );
+		const p = new Element( 'p', [], [ new Element( 'p' ) ] );
 		root.insertChildren( 0, [ new Text( 'ab' ), p, new Text( 'xy' ) ] );
 
-		let operation = new MoveOperation(
+		const operation = new MoveOperation(
 			new Position( root, [ 1 ] ),
 			3,
 			new Position( root, [ 2, 0, 0 ] ),
@@ -207,10 +207,10 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should not throw an error if operation move a range into a sibling', () => {
-		let p = new Element( 'p' );
+		const p = new Element( 'p' );
 		root.insertChildren( 0, [ new Text( 'ab' ), p, new Text( 'xy' ) ] );
 
-		let operation = new MoveOperation(
+		const operation = new MoveOperation(
 			new Position( root, [ 1 ] ),
 			1,
 			new Position( root, [ 2, 0 ] ),
@@ -229,11 +229,11 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should not throw when operation paths looks like incorrect but move is between different roots', () => {
-		let p = new Element( 'p' );
+		const p = new Element( 'p' );
 		root.insertChildren( 0, [ new Text( 'a' ), p, new Text( 'b' ) ] );
 		doc.graveyard.insertChildren( 0, new Text( 'abc' ) );
 
-		let operation = new MoveOperation(
+		const operation = new MoveOperation(
 			new Position( doc.graveyard, [ 0 ] ),
 			2,
 			new Position( root, [ 1, 0 ] ),
@@ -248,14 +248,14 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should create MoveOperation with the same parameters when cloned', () => {
-		let sourcePosition = new Position( root, [ 0 ] );
-		let targetPosition = new Position( root, [ 1 ] );
-		let howMany = 4;
-		let baseVersion = doc.version;
+		const sourcePosition = new Position( root, [ 0 ] );
+		const targetPosition = new Position( root, [ 1 ] );
+		const howMany = 4;
+		const baseVersion = doc.version;
 
-		let op = new MoveOperation( sourcePosition, howMany, targetPosition, baseVersion );
+		const op = new MoveOperation( sourcePosition, howMany, targetPosition, baseVersion );
 
-		let clone = op.clone();
+		const clone = op.clone();
 
 		// New instance rather than a pointer to the old instance.
 		expect( clone ).not.to.be.equal( op );
@@ -269,12 +269,12 @@ describe( 'MoveOperation', () => {
 
 	describe( 'getMovedRangeStart', () => {
 		it( 'should return move operation target position transformed by removing move operation source range', () => {
-			let sourcePosition = new Position( root, [ 0, 2 ] );
-			let targetPosition = new Position( root, [ 0, 6 ] );
-			let howMany = 3;
-			let baseVersion = doc.version;
+			const sourcePosition = new Position( root, [ 0, 2 ] );
+			const targetPosition = new Position( root, [ 0, 6 ] );
+			const howMany = 3;
+			const baseVersion = doc.version;
 
-			let op = new MoveOperation( sourcePosition, howMany, targetPosition, baseVersion );
+			const op = new MoveOperation( sourcePosition, howMany, targetPosition, baseVersion );
 
 			expect( op.getMovedRangeStart().path ).to.deep.equal( [ 0, 3 ] );
 		} );

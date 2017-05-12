@@ -167,7 +167,7 @@ export default class SelectionObserver extends Observer {
 		const data = {
 			oldSelection: this.selection,
 			newSelection: newViewSelection,
-			domSelection: domSelection
+			domSelection
 		};
 
 		// Should be fired only when selection change was the only document change.

@@ -24,7 +24,7 @@ describe( 'SchemaItem', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create empty schema item', () => {
-			let item = new SchemaItem( schema );
+			const item = new SchemaItem( schema );
 
 			expect( item._disallowed ).to.deep.equal( [] );
 			expect( item._allowed ).to.deep.equal( [] );
@@ -33,13 +33,13 @@ describe( 'SchemaItem', () => {
 
 	describe( 'allow', () => {
 		it( 'should add paths to the item as copies of passed array', () => {
-			let path1 = [ 'div', 'header' ];
-			let path2 = [ 'p' ];
+			const path1 = [ 'div', 'header' ];
+			const path2 = [ 'p' ];
 
 			item.allow( path1 );
 			item.allow( path2 );
 
-			let paths = item._getPaths( 'allow' );
+			const paths = item._getPaths( 'allow' );
 
 			expect( paths.length ).to.equal( 2 );
 
@@ -55,8 +55,8 @@ describe( 'SchemaItem', () => {
 			item.allow( [ 'div' ] );
 			item.allow( [ 'header' ], 'bold' );
 
-			let pathsWithNoAttribute = item._getPaths( 'allow' );
-			let pathsWithBoldAttribute = item._getPaths( 'allow', 'bold' );
+			const pathsWithNoAttribute = item._getPaths( 'allow' );
+			const pathsWithBoldAttribute = item._getPaths( 'allow', 'bold' );
 
 			expect( pathsWithNoAttribute.length ).to.equal( 1 );
 			expect( pathsWithNoAttribute[ 0 ] ).to.deep.equal( [ 'div' ] );
@@ -69,13 +69,13 @@ describe( 'SchemaItem', () => {
 
 	describe( 'disallow', () => {
 		it( 'should add paths to the item as copies of passed array', () => {
-			let path1 = [ 'div', 'header' ];
-			let path2 = [ 'p' ];
+			const path1 = [ 'div', 'header' ];
+			const path2 = [ 'p' ];
 
 			item.disallow( path1 );
 			item.disallow( path2 );
 
-			let paths = item._getPaths( 'disallow' );
+			const paths = item._getPaths( 'disallow' );
 
 			expect( paths.length ).to.equal( 2 );
 
@@ -91,8 +91,8 @@ describe( 'SchemaItem', () => {
 			item.disallow( [ 'div' ] );
 			item.disallow( [ 'header' ], 'bold' );
 
-			let pathsWithNoAttribute = item._getPaths( 'disallow' );
-			let pathsWithBoldAttribute = item._getPaths( 'disallow', 'bold' );
+			const pathsWithNoAttribute = item._getPaths( 'disallow' );
+			const pathsWithBoldAttribute = item._getPaths( 'disallow', 'bold' );
 
 			expect( pathsWithNoAttribute.length ).to.equal( 1 );
 			expect( pathsWithNoAttribute[ 0 ] ).to.deep.equal( [ 'div' ] );
@@ -105,7 +105,7 @@ describe( 'SchemaItem', () => {
 
 	describe( '_hasMatchingPath', () => {
 		it( 'should return true if there is at least one allowed path that matches query path', () => {
-			item.allow( [ 'div' , 'header' ] );
+			item.allow( [ 'div', 'header' ] );
 			item.allow( [ 'image' ] );
 
 			expect( item._hasMatchingPath( 'allow', [ 'div', 'header' ] ) ).to.be.true;
@@ -133,7 +133,7 @@ describe( 'SchemaItem', () => {
 			item.allow( [ 'header' ] );
 			item.disallow( [ 'header' ], 'bold' );
 
-			expect( item._hasMatchingPath( 'allow', [ 'html', 'div', 'p' ]  ) ).to.be.true;
+			expect( item._hasMatchingPath( 'allow', [ 'html', 'div', 'p' ] ) ).to.be.true;
 			expect( item._hasMatchingPath( 'allow', [ 'html', 'div' ] ) ).to.be.false;
 			expect( item._hasMatchingPath( 'allow', [ 'html', 'div' ], 'bold' ) ).to.be.true;
 
@@ -144,7 +144,7 @@ describe( 'SchemaItem', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should create proper JSON string', () => {
-			let parsedItem = JSON.parse( JSON.stringify( item ) );
+			const parsedItem = JSON.parse( JSON.stringify( item ) );
 
 			expect( parsedItem._schema ).to.equal( '[model.Schema]' );
 		} );

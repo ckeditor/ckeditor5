@@ -104,8 +104,8 @@ describe( 'RootAttributeOperation', () => {
 	} );
 
 	it( 'should create a RootAttributeOperation as a reverse', () => {
-		let operation = new RootAttributeOperation( root, 'x', 'old', 'new', doc.version );
-		let reverse = operation.getReversed();
+		const operation = new RootAttributeOperation( root, 'x', 'old', 'new', doc.version );
+		const reverse = operation.getReversed();
 
 		expect( reverse ).to.be.an.instanceof( RootAttributeOperation );
 		expect( reverse.baseVersion ).to.equal( 1 );
@@ -116,7 +116,7 @@ describe( 'RootAttributeOperation', () => {
 	} );
 
 	it( 'should undo adding attribute by applying reverse operation', () => {
-		let operation = new RootAttributeOperation(
+		const operation = new RootAttributeOperation(
 			root,
 			'isNew',
 			null,
@@ -124,7 +124,7 @@ describe( 'RootAttributeOperation', () => {
 			doc.version
 		);
 
-		let reverse = operation.getReversed();
+		const reverse = operation.getReversed();
 
 		doc.applyOperation( wrapInDelta( operation ) );
 		doc.applyOperation( wrapInDelta( reverse ) );
@@ -136,7 +136,7 @@ describe( 'RootAttributeOperation', () => {
 	it( 'should undo changing attribute by applying reverse operation', () => {
 		root.setAttribute( 'isNew', false );
 
-		let operation = new RootAttributeOperation(
+		const operation = new RootAttributeOperation(
 			root,
 			'isNew',
 			false,
@@ -144,7 +144,7 @@ describe( 'RootAttributeOperation', () => {
 			doc.version
 		);
 
-		let reverse = operation.getReversed();
+		const reverse = operation.getReversed();
 
 		doc.applyOperation( wrapInDelta( operation ) );
 		doc.applyOperation( wrapInDelta( reverse ) );
@@ -156,7 +156,7 @@ describe( 'RootAttributeOperation', () => {
 	it( 'should undo remove attribute by applying reverse operation', () => {
 		root.setAttribute( 'foo', true );
 
-		let operation = new RootAttributeOperation(
+		const operation = new RootAttributeOperation(
 			root,
 			'foo',
 			true,
@@ -164,7 +164,7 @@ describe( 'RootAttributeOperation', () => {
 			doc.version
 		);
 
-		let reverse = operation.getReversed();
+		const reverse = operation.getReversed();
 
 		doc.applyOperation( wrapInDelta( operation ) );
 		doc.applyOperation( wrapInDelta( reverse ) );
@@ -204,11 +204,11 @@ describe( 'RootAttributeOperation', () => {
 	} );
 
 	it( 'should create a RootAttributeOperation with the same parameters when cloned', () => {
-		let baseVersion = doc.version;
+		const baseVersion = doc.version;
 
-		let op = new RootAttributeOperation( root, 'foo', 'old', 'new', baseVersion );
+		const op = new RootAttributeOperation( root, 'foo', 'old', 'new', baseVersion );
 
-		let clone = op.clone();
+		const clone = op.clone();
 
 		// New instance rather than a pointer to the old instance.
 		expect( clone ).not.to.be.equal( op );

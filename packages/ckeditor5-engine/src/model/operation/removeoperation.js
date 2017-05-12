@@ -91,7 +91,7 @@ export default class RemoveOperation extends MoveOperation {
 	 * @returns {module:engine/model/operation/removeoperation~RemoveOperation}
 	 */
 	clone() {
-		let removeOperation = new RemoveOperation( this.sourcePosition, this.howMany, this.baseVersion );
+		const removeOperation = new RemoveOperation( this.sourcePosition, this.howMany, this.baseVersion );
 		removeOperation.targetPosition = Position.createFromPosition( this.targetPosition );
 
 		return removeOperation;
@@ -135,7 +135,7 @@ export default class RemoveOperation extends MoveOperation {
 	 * @returns {module:engine/model/operation/removeoperation~RemoveOperation}
 	 */
 	static fromJSON( json, document ) {
-		let sourcePosition = Position.fromJSON( json.sourcePosition, document );
+		const sourcePosition = Position.fromJSON( json.sourcePosition, document );
 
 		const removeOp = new RemoveOperation( sourcePosition, json.howMany, json.baseVersion );
 

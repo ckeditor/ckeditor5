@@ -13,7 +13,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 describe( 'Element', () => {
 	describe( 'constructor()', () => {
 		it( 'should create empty element', () => {
-			let element = new Element( 'elem' );
+			const element = new Element( 'elem' );
 
 			expect( element ).to.be.an.instanceof( Node );
 			expect( element ).to.have.property( 'name' ).that.equals( 'elem' );
@@ -23,14 +23,14 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should create element with attributes', () => {
-			let element = new Element( 'elem', { foo: 'bar' } );
+			const element = new Element( 'elem', { foo: 'bar' } );
 
 			expect( count( element.getAttributes() ) ).to.equal( 1 );
 			expect( element.getAttribute( 'foo' ) ).to.equal( 'bar' );
 		} );
 
 		it( 'should create element with children', () => {
-			let element = new Element( 'elem', [], new Text( 'foo' ) );
+			const element = new Element( 'elem', [], new Text( 'foo' ) );
 
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.maxOffset ).to.equal( 3 );
@@ -63,11 +63,11 @@ describe( 'Element', () => {
 
 	describe( 'clone', () => {
 		it( 'should return an element with same name, attributes and same instances of children if clone was not deep', () => {
-			let p = new Element( 'p' );
-			let foo = new Text( 'foo' );
+			const p = new Element( 'p' );
+			const foo = new Text( 'foo' );
 
-			let element = new Element( 'elem', { bold: true, italic: true }, [ p, foo ] );
-			let copy = element.clone();
+			const element = new Element( 'elem', { bold: true, italic: true }, [ p, foo ] );
+			const copy = element.clone();
 
 			expect( copy.name ).to.equal( 'elem' );
 			expect( Array.from( copy.getAttributes() ) ).to.deep.equal( [ [ 'bold', true ], [ 'italic', true ] ] );
@@ -75,12 +75,12 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should clone children (deeply), if clone is deep', () => {
-			let foo = new Text( 'foo' );
-			let bar = new Text( 'bar' );
-			let p = new Element( 'p', null, bar );
+			const foo = new Text( 'foo' );
+			const bar = new Text( 'bar' );
+			const p = new Element( 'p', null, bar );
 
-			let element = new Element( 'elem', { bold: true, italic: true }, [ p, foo ] );
-			let copy = element.clone( true );
+			const element = new Element( 'elem', { bold: true, italic: true }, [ p, foo ] );
+			const copy = element.clone( true );
 
 			expect( copy.name ).to.equal( 'elem' );
 			expect( Array.from( copy.getAttributes() ) ).to.deep.equal( [ [ 'bold', true ], [ 'italic', true ] ] );
@@ -98,7 +98,7 @@ describe( 'Element', () => {
 
 	describe( 'insertChildren', () => {
 		it( 'should add a child to the element', () => {
-			let element = new Element( 'elem', [], new Text( 'xy' ) );
+			const element = new Element( 'elem', [], new Text( 'xy' ) );
 			element.insertChildren( 1, new Text( 'foo' ) );
 
 			expect( element.childCount ).to.equal( 2 );
@@ -108,7 +108,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should accept arrays and strings', () => {
-			let element = new Element( 'elem' );
+			const element = new Element( 'elem' );
 			element.insertChildren( 0, [ new Element( 'image' ), 'xy', new Element( 'list' ) ] );
 
 			expect( element.childCount ).to.equal( 3 );
@@ -119,7 +119,7 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should accept strings', () => {
-			let element = new Element( 'div' );
+			const element = new Element( 'div' );
 			element.insertChildren( 0, 'abc' );
 
 			expect( element.childCount ).to.equal( 1 );
@@ -130,11 +130,11 @@ describe( 'Element', () => {
 
 	describe( 'appendChildren', () => {
 		it( 'should use insertChildren to add children at the end of the element', () => {
-			let element = new Element( 'elem', [], new Text( 'xy' ) );
+			const element = new Element( 'elem', [], new Text( 'xy' ) );
 
 			sinon.spy( element, 'insertChildren' );
 
-			let text = new Text( 'foo' );
+			const text = new Text( 'foo' );
 			element.appendChildren( text );
 
 			expect( element.insertChildren.calledWithExactly( 0, text ) );
@@ -143,8 +143,8 @@ describe( 'Element', () => {
 
 	describe( 'removeChildren', () => {
 		it( 'should remove children from the element and return them as an array', () => {
-			let element = new Element( 'elem', [], [ new Text( 'foobar' ), new Element( 'image' ) ] );
-			let removed = element.removeChildren( 1, 1 );
+			const element = new Element( 'elem', [], [ new Text( 'foobar' ), new Element( 'image' ) ] );
+			const removed = element.removeChildren( 1, 1 );
 
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.maxOffset ).to.equal( 6 );
@@ -156,8 +156,8 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should remove one child when second parameter is not specified', () => {
-			let element = new Element( 'element', [], [ new Text( 'foo' ), new Element( 'image' ) ] );
-			let removed = element.removeChildren( 0 );
+			const element = new Element( 'element', [], [ new Text( 'foo' ), new Element( 'image' ) ] );
+			const removed = element.removeChildren( 0 );
 
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.maxOffset ).to.equal( 1 );
@@ -190,10 +190,10 @@ describe( 'Element', () => {
 
 	describe( 'getChildIndex', () => {
 		it( 'should return child index', () => {
-			let element = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
-			let p = element.getChild( 0 );
-			let bar = element.getChild( 1 );
-			let h = element.getChild( 2 );
+			const element = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			const p = element.getChild( 0 );
+			const bar = element.getChild( 1 );
+			const h = element.getChild( 2 );
 
 			expect( element.getChildIndex( p ) ).to.equal( 0 );
 			expect( element.getChildIndex( bar ) ).to.equal( 1 );
@@ -203,10 +203,10 @@ describe( 'Element', () => {
 
 	describe( 'getChildStartOffset', () => {
 		it( 'should return child offset', () => {
-			let element = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
-			let p = element.getChild( 0 );
-			let bar = element.getChild( 1 );
-			let h = element.getChild( 2 );
+			const element = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			const p = element.getChild( 0 );
+			const bar = element.getChild( 1 );
+			const h = element.getChild( 2 );
 
 			expect( element.getChildStartOffset( p ) ).to.equal( 0 );
 			expect( element.getChildStartOffset( bar ) ).to.equal( 1 );
@@ -216,7 +216,7 @@ describe( 'Element', () => {
 
 	describe( 'getChildCount', () => {
 		it( 'should return number of children', () => {
-			let element = new Element( 'elem', [], new Text( 'bar' ) );
+			const element = new Element( 'elem', [], new Text( 'bar' ) );
 
 			expect( element.childCount ).to.equal( 1 );
 		} );
@@ -224,7 +224,7 @@ describe( 'Element', () => {
 
 	describe( 'getMaxOffset', () => {
 		it( 'should return offset number after the last child', () => {
-			let element = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
+			const element = new Element( 'elem', [], [ new Element( 'p' ), new Text( 'bar' ), new Element( 'h' ) ] );
 
 			expect( element.maxOffset ).to.equal( 5 );
 		} );
@@ -269,13 +269,13 @@ describe( 'Element', () => {
 
 	describe( 'toJSON', () => {
 		it( 'should serialize empty element', () => {
-			let element = new Element( 'one' );
+			const element = new Element( 'one' );
 
 			expect( jsonParseStringify( element ) ).to.deep.equal( { name: 'one' } );
 		} );
 
 		it( 'should serialize element with attributes', () => {
-			let element = new Element( 'one', { foo: true, bar: false } );
+			const element = new Element( 'one', { foo: true, bar: false } );
 
 			expect( jsonParseStringify( element ) ).to.deep.equal( {
 				attributes: [ [ 'foo', true ], [ 'bar', false ] ],
@@ -284,12 +284,12 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should serialize node with children', () => {
-			let img = new Element( 'img' );
-			let one = new Element( 'one' );
-			let two = new Element( 'two', null, [ new Text( 'ba' ), img, new Text( 'r' ) ] );
-			let three = new Element( 'three' );
+			const img = new Element( 'img' );
+			const one = new Element( 'one' );
+			const two = new Element( 'two', null, [ new Text( 'ba' ), img, new Text( 'r' ) ] );
+			const three = new Element( 'three' );
 
-			let node = new Element( null, null, [ one, two, three ] );
+			const node = new Element( null, null, [ one, two, three ] );
 
 			expect( jsonParseStringify( node ) ).to.deep.equal( {
 				children: [
@@ -313,9 +313,9 @@ describe( 'Element', () => {
 		it( 'should create element without attributes', () => {
 			const el = new Element( 'el' );
 
-			let serialized = jsonParseStringify( el );
+			const serialized = jsonParseStringify( el );
 
-			let deserialized = Element.fromJSON( serialized );
+			const deserialized = Element.fromJSON( serialized );
 
 			expect( deserialized.parent ).to.be.null;
 			expect( deserialized.name ).to.equal( 'el' );
@@ -325,9 +325,9 @@ describe( 'Element', () => {
 		it( 'should create element with attributes', () => {
 			const el = new Element( 'el', { foo: true } );
 
-			let serialized = jsonParseStringify( el );
+			const serialized = jsonParseStringify( el );
 
-			let deserialized = Element.fromJSON( serialized );
+			const deserialized = Element.fromJSON( serialized );
 
 			expect( deserialized.parent ).to.be.null;
 			expect( deserialized.name ).to.equal( 'el' );
@@ -341,9 +341,9 @@ describe( 'Element', () => {
 			const text = new Text( 'foo' );
 			const el = new Element( 'el', null, [ p, text ] );
 
-			let serialized = jsonParseStringify( el );
+			const serialized = jsonParseStringify( el );
 
-			let deserialized = Element.fromJSON( serialized );
+			const deserialized = Element.fromJSON( serialized );
 
 			expect( deserialized.parent ).to.be.null;
 			expect( deserialized.name ).to.equal( 'el' );

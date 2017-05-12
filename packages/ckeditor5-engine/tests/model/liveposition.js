@@ -28,7 +28,7 @@ describe( 'LivePosition', () => {
 	} );
 
 	it( 'should be an instance of Position', () => {
-		let live = new LivePosition( root, [ 0 ] );
+		const live = new LivePosition( root, [ 0 ] );
 		live.detach();
 
 		expect( live ).to.be.instanceof( Position );
@@ -43,7 +43,7 @@ describe( 'LivePosition', () => {
 	it( 'should listen to a change event of the document that owns this position root', () => {
 		sinon.spy( LivePosition.prototype, 'listenTo' );
 
-		let live = new LivePosition( root, [ 0 ] );
+		const live = new LivePosition( root, [ 0 ] );
 		live.detach();
 
 		expect( live.listenTo.calledWith( doc, 'change' ) ).to.be.true;
@@ -54,7 +54,7 @@ describe( 'LivePosition', () => {
 	it( 'should stop listening when detached', () => {
 		sinon.spy( LivePosition.prototype, 'stopListening' );
 
-		let live = new LivePosition( root, [ 0 ] );
+		const live = new LivePosition( root, [ 0 ] );
 		live.detach();
 
 		expect( live.stopListening.called ).to.be.true;
@@ -63,25 +63,25 @@ describe( 'LivePosition', () => {
 	} );
 
 	it( 'createFromPosition should return LivePosition', () => {
-		let position = LivePosition.createFromPosition( new Position( root, [ 0 ] ) );
+		const position = LivePosition.createFromPosition( new Position( root, [ 0 ] ) );
 		expect( position ).to.be.instanceof( LivePosition );
 		position.detach();
 	} );
 
 	it( 'createFromParentAndOffset should return LivePosition', () => {
-		let position = LivePosition.createFromParentAndOffset( ul, 0 );
+		const position = LivePosition.createFromParentAndOffset( ul, 0 );
 		expect( position ).to.be.instanceof( LivePosition );
 		position.detach();
 	} );
 
 	it( 'createBefore should return LivePosition', () => {
-		let position = LivePosition.createBefore( ul );
+		const position = LivePosition.createBefore( ul );
 		expect( position ).to.be.instanceof( LivePosition );
 		position.detach();
 	} );
 
 	it( 'createAfter should return LivePosition', () => {
-		let position = LivePosition.createAfter( ul );
+		const position = LivePosition.createAfter( ul );
 		expect( position ).to.be.instanceof( LivePosition );
 		position.detach();
 	} );
@@ -102,7 +102,7 @@ describe( 'LivePosition', () => {
 
 		describe( 'insertion', () => {
 			it( 'is in the same parent and closer offset', () => {
-				let insertRange = new Range( new Position( root, [ 1, 4, 0 ] ), new Position( root, [ 1, 4, 3 ] ) );
+				const insertRange = new Range( new Position( root, [ 1, 4, 0 ] ), new Position( root, [ 1, 4, 3 ] ) );
 
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
@@ -111,7 +111,7 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is at the same position and live position is sticking to right side', () => {
-				let insertRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
+				const insertRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
@@ -120,7 +120,7 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is before a node from the live position path', () => {
-				let insertRange = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 2 ] ) );
+				const insertRange = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 2 ] ) );
 
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
@@ -131,10 +131,10 @@ describe( 'LivePosition', () => {
 
 		describe( 'range move', () => {
 			it( 'is at the same parent and closer offset', () => {
-				let moveSource = new Position( root, [ 2 ] );
-				let moveRange = new Range( new Position( root, [ 1, 4, 0 ] ), new Position( root, [ 1, 4, 3 ] ) );
+				const moveSource = new Position( root, [ 2 ] );
+				const moveRange = new Range( new Position( root, [ 1, 4, 0 ] ), new Position( root, [ 1, 4, 3 ] ) );
 
-				let changes = {
+				const changes = {
 					range: moveRange,
 					sourcePosition: moveSource
 				};
@@ -145,10 +145,10 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is at the same position and live position is sticking to right side', () => {
-				let moveSource = new Position( root, [ 2 ] );
-				let moveRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
+				const moveSource = new Position( root, [ 2 ] );
+				const moveRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
-				let changes = {
+				const changes = {
 					range: moveRange,
 					sourcePosition: moveSource
 				};
@@ -159,10 +159,10 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is at a position before a node from the live position path', () => {
-				let moveSource = new Position( root, [ 2 ] );
-				let moveRange = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 2 ] ) );
+				const moveSource = new Position( root, [ 2 ] );
+				const moveRange = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 2 ] ) );
 
-				let changes = {
+				const changes = {
 					range: moveRange,
 					sourcePosition: moveSource
 				};
@@ -173,10 +173,10 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is from the same parent and closer offset', () => {
-				let moveSource = new Position( root, [ 1, 4, 0 ] );
-				let moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
+				const moveSource = new Position( root, [ 1, 4, 0 ] );
+				const moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
 
-				let changes = {
+				const changes = {
 					range: moveRange,
 					sourcePosition: moveSource
 				};
@@ -187,10 +187,10 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is from a position before a node from the live position path', () => {
-				let moveSource = new Position( root, [ 1, 0 ] );
-				let moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
+				const moveSource = new Position( root, [ 1, 0 ] );
+				const moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
 
-				let changes = {
+				const changes = {
 					range: moveRange,
 					sourcePosition: moveSource
 				};
@@ -201,10 +201,10 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'contains live position (same level)', () => {
-				let moveSource = new Position( root, [ 1, 4, 4 ] );
-				let moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
+				const moveSource = new Position( root, [ 1, 4, 4 ] );
+				const moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
 
-				let changes = {
+				const changes = {
 					range: moveRange,
 					sourcePosition: moveSource
 				};
@@ -215,10 +215,10 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'contains live position (deep)', () => {
-				let moveSource = new Position( root, [ 1, 3 ] );
-				let moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
+				const moveSource = new Position( root, [ 1, 3 ] );
+				const moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
 
-				let changes = {
+				const changes = {
 					range: moveRange,
 					sourcePosition: moveSource
 				};
@@ -253,7 +253,7 @@ describe( 'LivePosition', () => {
 
 		describe( 'insertion', () => {
 			it( 'is in the same parent and further offset', () => {
-				let insertRange = new Range( new Position( root, [ 1, 4, 7 ] ), new Position( root, [ 1, 4, 9 ] ) );
+				const insertRange = new Range( new Position( root, [ 1, 4, 7 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
@@ -262,11 +262,11 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is at the same position and live position is sticking to left side', () => {
-				let newLive = new LivePosition( root, path, 'sticksToPrevious' );
+				const newLive = new LivePosition( root, path, 'sticksToPrevious' );
 				spy = sinon.spy();
 				newLive.on( 'change', spy );
 
-				let insertRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
+				const insertRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
@@ -277,7 +277,7 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is after a node from the position path', () => {
-				let insertRange = new Range( new Position( root, [ 1, 5 ] ), new Position( root, [ 1, 7 ] ) );
+				const insertRange = new Range( new Position( root, [ 1, 5 ] ), new Position( root, [ 1, 7 ] ) );
 
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
@@ -286,7 +286,7 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is in different root', () => {
-				let insertRange = new Range( new Position( otherRoot, [ 1, 4, 0 ] ), new Position( otherRoot, [ 1, 4, 4 ] ) );
+				const insertRange = new Range( new Position( otherRoot, [ 1, 4, 0 ] ), new Position( otherRoot, [ 1, 4, 4 ] ) );
 
 				doc.fire( 'change', 'insert', { range: insertRange }, null );
 
@@ -297,10 +297,10 @@ describe( 'LivePosition', () => {
 
 		describe( 'range move', () => {
 			it( 'is at the same parent and further offset', () => {
-				let moveSource = new Position( root, [ 2 ] );
-				let moveRange = new Range( new Position( root, [ 1, 4, 7 ] ), new Position( root, [ 1, 4, 9 ] ) );
+				const moveSource = new Position( root, [ 2 ] );
+				const moveRange = new Range( new Position( root, [ 1, 4, 7 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
-				let changes = {
+				const changes = {
 					range: moveRange,
 					sourcePosition: moveSource
 				};
@@ -311,14 +311,14 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is at the same position and live position is sticking to left side', () => {
-				let newLive = new LivePosition( root, path, 'sticksToPrevious' );
+				const newLive = new LivePosition( root, path, 'sticksToPrevious' );
 				spy = sinon.spy();
 				newLive.on( 'change', spy );
 
-				let moveSource = new Position( root, [ 2 ] );
-				let moveRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
+				const moveSource = new Position( root, [ 2 ] );
+				const moveRange = new Range( new Position( root, [ 1, 4, 6 ] ), new Position( root, [ 1, 4, 9 ] ) );
 
-				let changes = {
+				const changes = {
 					range: moveRange,
 					sourcePosition: moveSource
 				};
@@ -331,10 +331,10 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is at a position after a node from the live position path', () => {
-				let moveSource = new Position( root, [ 2 ] );
-				let moveRange = new Range( new Position( root, [ 1, 5 ] ), new Position( root, [ 1, 7 ] ) );
+				const moveSource = new Position( root, [ 2 ] );
+				const moveRange = new Range( new Position( root, [ 1, 5 ] ), new Position( root, [ 1, 7 ] ) );
 
-				let changes = {
+				const changes = {
 					range: moveRange,
 					sourcePosition: moveSource
 				};
@@ -345,10 +345,10 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is from the same parent and further offset', () => {
-				let moveSource = new Position( root, [ 1, 4, 7 ] );
-				let moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
+				const moveSource = new Position( root, [ 1, 4, 7 ] );
+				const moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
 
-				let changes = {
+				const changes = {
 					range: moveRange,
 					sourcePosition: moveSource
 				};
@@ -359,10 +359,10 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is from a position after a node from the live position path', () => {
-				let moveSource = new Position( root, [ 1, 5 ] );
-				let moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
+				const moveSource = new Position( root, [ 1, 5 ] );
+				const moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
 
-				let changes = {
+				const changes = {
 					range: moveRange,
 					sourcePosition: moveSource
 				};
@@ -373,10 +373,10 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is to different root', () => {
-				let moveSource = new Position( root, [ 2, 0 ] );
-				let moveRange = new Range( new Position( otherRoot, [ 1, 0 ] ), new Position( otherRoot, [ 1, 4 ] ) );
+				const moveSource = new Position( root, [ 2, 0 ] );
+				const moveRange = new Range( new Position( otherRoot, [ 1, 0 ] ), new Position( otherRoot, [ 1, 4 ] ) );
 
-				let changes = {
+				const changes = {
 					range: moveRange,
 					sourcePosition: moveSource
 				};
@@ -387,10 +387,10 @@ describe( 'LivePosition', () => {
 			} );
 
 			it( 'is from different root', () => {
-				let moveSource = new Position( otherRoot, [ 1, 0 ] );
-				let moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
+				const moveSource = new Position( otherRoot, [ 1, 0 ] );
+				const moveRange = new Range( new Position( root, [ 2, 0 ] ), new Position( root, [ 2, 4 ] ) );
 
-				let changes = {
+				const changes = {
 					range: moveRange,
 					sourcePosition: moveSource
 				};
@@ -402,7 +402,7 @@ describe( 'LivePosition', () => {
 		} );
 
 		it( 'attributes changed', () => {
-			let changes = {
+			const changes = {
 				range: new Range( new Position( root, [ 1, 4, 0 ] ), new Position( root, [ 1, 4, 10 ] ) ),
 				key: 'foo',
 				oldValue: null,

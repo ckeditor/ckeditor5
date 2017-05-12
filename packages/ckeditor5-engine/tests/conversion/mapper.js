@@ -559,9 +559,9 @@ describe( 'Mapper', () => {
 			function getViewListItemLength( element ) {
 				let length = 1;
 
-				for ( let child of element.getChildren() ) {
+				for ( const child of element.getChildren() ) {
 					if ( child.name == 'ul' || child.name == 'ol' ) {
-						for ( let item of child.getChildren() ) {
+						for ( const item of child.getChildren() ) {
 							length += getViewListItemLength( item );
 						}
 					}
